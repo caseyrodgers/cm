@@ -1,0 +1,26 @@
+<div id='testset_div'>
+    <div id='testset_head'>
+        <div id='testset_head_wrapper'>$subTitle</div>
+    </div>
+    #foreach( $question in $testSet.questions )
+    #set( $probNum = $velocityCount + 1 )
+    <div class='question_wrapper'>
+        <a name='$question.questionTag' id='$question.questionTag'>&nbsp;
+        </a>
+        <div class='question_head'>
+            <div class='question_head_text'> Problem $probNum </div>
+            <div class='response_div' style='display: none;'>
+                <img id='response_image_<%= $velocityCount %>' src='/images/tutor/spacer.gif'/>
+                <div class='response_div_head_r'> &nbsp; </div>
+                <div class='response_div_head_c'> <span id='response_text_$velocityCount' class='response_div_text'> &nbsp; </span> </div>
+                <div class='response_div_head_l'> &nbsp; </div>
+            </div>
+       </div>
+       <div class='question_div' id='question_div_$velocityCount'  guid='$question.problemIndex'>$question.questionHtml
+            <div class='question_solution_link'> <a href='#' onclick='gotoTestGUID(&quot;$question.problemIndex&quot;)'><img src='/images/trifco/view_solution-88x18.gif'/></a> </div>
+       </div>
+   </div>
+   #end
+   <div id='testset_footer'> &nbsp; </div>
+   <!-- end-of-template -->
+</div>

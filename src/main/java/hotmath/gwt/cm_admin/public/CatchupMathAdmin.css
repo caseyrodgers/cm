@@ -1,0 +1,195 @@
+/** Add css rules here for your application. */
+
+.header-panel {
+     background-image: url(images/logo_1.gif);
+     background-repeat: no-repeat;
+     background-position: 5 5;
+     background-color: white;
+     text-align: left;
+}
+
+.header-panel-title {
+	position: absolute;
+	top: 15px;
+	left: 180px;
+}
+
+.header-panel-school-label {
+	text-align: center;
+}
+
+.header-panel-logout-btn-icon {
+	background: url(images/logout.png) no-repeat center left !important;
+}
+.header-panel-logout-btn-icon-over {
+	background: url(images/logout-over.png) no-repeat center left !important
+		;
+}
+.header-panel-help-btn-icon {
+	background: url(images/help.png) no-repeat center left !important;
+}
+.header-panel-help-btn-icon-over {
+	background: url(images/help-over.png) no-repeat center left !important;
+}
+
+.main-container {
+	overflow: auto;
+	position: relative;
+}
+
+.student-grid {
+	overflow: auto;
+	overflow-x: auto;
+	overflow-y: auto;
+	margin: auto;
+}
+
+.student-details {
+	overflow: auto;
+	overflow-x: auto;
+	overflow-y: auto;
+	/* position: relative; */
+}
+
+.header-panel-logo-2 {
+	float: right;
+}
+
+.main-port {
+    border: 1px solid blue;
+    text-align: center;
+    width: 100%;
+}
+
+.main-toolbar {
+	margin-top: 40px;
+}
+
+.main-toolbar-go-left {
+	text-align: center;
+	font-size: 100px;
+}
+
+.footer-panel {
+	font-size: 10px;
+	margin: auto;
+    background-color: white;
+    color: #929292;
+}
+
+.footer-panel ul {
+	margin-left: 150px;
+	margin-top: 3px;
+}
+
+.footer-panel li {
+   float: left;
+   margin-right: 20px;
+}
+
+.topic-selector {
+  width: 400px;
+}
+
+.login-panel  {
+	text-align: center;
+}
+
+.login-panel-round {
+}
+
+.login-panel-container {
+    background: url(images/login_bkg.png) no-repeat;
+    height: 88px;
+    width: 458px;
+    margin: auto;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin-left: -229px;
+    margin-top: -44px;
+}
+
+.login-panel-container-horizontal {
+   margin: 0 0 0 40px;
+}
+
+.login-panel-container-horizontal button {
+	margin-left: 20px;
+}
+
+.login-panel .login-title {
+	color: blue;
+	font-weight: bold;
+	margin-top: 5px;
+}
+
+.login-action-background {
+    background: url(images/login_button.png) no-repeat;
+    center left !important;  
+}	
+
+.login-panel a {
+	font-size: 60%;
+	display: block;
+	float: right;
+	margin-right: 10px;
+}
+
+.do-next-panel {
+	margin: 20px;
+}
+
+.header-title {
+   position: absolute;
+   right: 20px;
+   top: 18px;
+   width: 200px;
+   text-align: left;
+}
+   
+.header-toolbar-title {
+	font-weight: bold;
+	color: red;
+	width: 200px;
+	text-align: right;
+}
+  
+.percent-complete {
+  font-weight: bold;
+  background: green;
+  border: 1px solid red;
+  text-align: right;
+}
+
+.percent-complete-wrapper {
+  background-color: red;
+  height: 15px;
+  margin: 0 10px 0 10px;
+  width: 100%;
+}
+
+.percent-complete-title {
+  display: block;
+  position: absolute;
+  right: 0;
+  width: 200px;
+}
+
+
+.register-student-cancel {
+   float: right;
+}
+
+.register-student-btn {
+   float: right;
+   margin-right: 5px;
+}
+
+.register-student-btn-holder {
+   padding-top: 10px;
+}
+
+.grid-selection-btn {
+	padding-top: 5px;
+}

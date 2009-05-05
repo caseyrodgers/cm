@@ -1,0 +1,318 @@
+.pc-template-btn {
+	display: block;
+	font-size: 16pt
+}
+#pc-template-img {
+	margin-top: 20px;
+}
+.header-panel {
+	background-image: url(images/logo_1.gif);
+	background-repeat: no-repeat;
+	background-position: 5 5;
+	background-color: white;
+	text-align: left;
+}
+.main-port {
+	border: 1px solid blue;
+	text-align: center;
+	width: 100%;
+}
+.resource-accord-panel-list-view {
+	border: none;
+	text-align: left;
+	color: #0057BB;
+}
+.footer-panel {
+	font-size: 10px;
+	background-color: white;
+	color: #929292;
+}
+.footer-panel ul {
+	margin-left: 150px;
+	margin-top: 3px;
+}
+.footer-panel li {
+	float: left;
+	margin-right: 20px;
+}
+.resource-accord-panel {
+	color: #5E8005;
+	font-weight: bold;
+}
+.topic-selector {
+	width: 400px;
+}
+.login-panel {
+	text-align: center;
+}
+#testset_div h1 {
+	margin-bottom: 15px;
+}
+#testset_div {
+	margin: 15px 0 15 25px;
+}
+.quiz-panel {
+	
+}
+.login-panel-round {
+	
+}
+.login-panel {
+	
+}
+.login-panel-container {
+	background: url(images/login_bkg.png) no-repeat;
+	height: 88px;
+	width: 458px;
+	margin: auto;
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	margin-left: -229px;
+	margin-top: -44px;
+}
+.login-panel-container-horizontal {
+	margin: 0 0 0 40px;
+}
+.login-panel-container-horizontal button {
+	margin-left: 20px;
+}
+.login-panel .login-title {
+	color: blue;
+	font-weight: bold;
+	margin-top: 5px;
+}
+.login-action-background {
+	background: url(images/login_button.png) no-repeat;
+	center
+	left
+	!important;
+}
+.login-panel a {
+	font-size: 60%;
+	display: block;
+	float: right;
+	margin-right: 10px;
+}
+.resource-container {
+	background-image:
+		url(images/prescription_resource_background-1600x1050.jpg);
+	background-position: center bottom;
+	background-repeat: no-repeat;
+	max-height: 1050px;
+	max-width: 1600px;
+	width: 540px;
+}
+.resource-close {
+	margin: 5px 0 5px 10px;
+}
+.do-next-panel {
+	margin: 20px;
+}
+.topics-panel {
+	margin-top: 10px;
+	margin-bottom: 10px;
+}
+.current-topic {
+	text-align: center;
+	font-color: blue;
+}
+.header-title {
+	position: absolute;
+	right: 20px;
+	top: 18px;
+	width: 200px;
+	text-align: left;
+}
+.header-toolbar-title {
+	font-weight: bold;
+	color: red;
+	width: 200px;
+	text-align: right;
+}
+.percent-complete {
+	font-weight: bold;
+	background: green;
+	border: 1px solid red;
+	text-align: right;
+}
+.percent-complete-wrapper {
+	background-color: red;
+	height: 5px;
+	width: 100%;
+	margin: 0 100px 0 10px;
+	position: absolute;
+	top: 40px;
+	font-size: 4px;
+}
+.percent-complete-title {
+	display: block;
+	position: absolute;
+	right: 0;
+	width: 200px;
+}
+#hm_content {
+	padding: 10px;
+	font-size: 130%;
+	width: auto;
+	margin: 20px;
+	background-color: #DFE8F6;
+}
+#hm_content h1 {
+	color: blue;
+}
+.header-panel-cmu-btn-icon {
+	background: url(images/catch_me_up.png) no-repeat center left !important
+		;
+}
+.header-panel-cmu-btn-icon-over {
+	background: url(images/catch_me_up-over.png) no-repeat center left
+		!important;
+}
+.header-panel-logout-btn-icon {
+	background: url(images/logout.png) no-repeat center left !important;
+}
+.header-panel-logout-btn-icon-over {
+	background: url(images/logout-over.png) no-repeat center left !important
+		;
+}
+.header-panel-help-btn-icon {
+	background: url(images/help.png) no-repeat center left !important;
+}
+.header-panel-help-btn-icon-over {
+	background: url(images/help-over.png) no-repeat center left !important;
+}
+.header-panel-logout-btn {
+	height: 34px;
+	width: 92px;
+	position: absolute;
+	right: 100px;
+	top: 2px;
+}
+.header-panel-help-btn {
+	height: 34px;
+	width: 76px;
+	position: absolute;
+	right: 20px;
+	top: 2px;
+}
+.header-panel-cmu-btn {
+	height: 34px;
+	width: 154px;
+	position: absolute;
+	left: 44%;
+	top: 2px;
+	z-index: 2;
+}
+.quiz-page-resource p {
+	margin-bottom: 10px;
+	color: blue;
+	text-align: middle;
+}
+/** The Do Next Dialog */
+.next-dialg {
+	
+}
+.next-dialog-panel {
+	padding: 20px;
+}
+.quiz-next-panel div {
+	display: inline;
+}
+.prescription-next-panel ul {
+	margin-top: 2px;
+}
+.prescription-next-panel li {
+	list-style: none;
+	display: inline;
+	margin-left: 10px;
+}
+.main-panel-west {
+	font-size: 12px;
+}
+.header-panel-title {
+	position: absolute;
+	top: 15px;
+	left: 180px;
+}
+/** Hide the INMH button on solutions */
+#inmh_goto {
+	display: none;
+}
+.show-work-panel {
+	height: 600px;
+	position: relative;
+}
+.show-work-button {
+	position: absolute;
+	top: 12px;
+	left: 15px;
+}
+.resource-viewer-close-button {
+	position: absolute;
+	top: 12px;
+	right: 15px;
+}
+.resource-viewer-container {
+	width: 560px;
+	/**
+    min-height: 600px;
+    height: auto !important;
+    height: 600px;
+*/
+}
+.show-work-panel-flash {
+	margin-top: 10px;
+}
+.show-work-panel-bg {
+	margin: 35px 15px 10px 60px;
+	background-color: gray;
+	width: 350px;
+	padding: 5px;
+}
+#steps_head_title {
+	display: none;
+}
+#tutor_embedded {
+	margin: 10px;
+}
+.resource-viewer-impl-tutor {
+	width: 520px;
+	height: 100%;
+}
+.resource-viewer-close-button {
+	position: absolute;
+	z-index: 3;
+	top: 12px;
+	right: 15px;
+}
+.resource-viewer-impl-video {
+	width: 335px;
+	position: relative;
+}
+.resource-viewer-impl-video .resource-viewer-close-button {
+	top: 5px;
+}
+.resource-viewer-impl-video-title {
+	margin-left: 5px;
+	margin-top: 5px;
+}
+.flvplayer-widget {
+	position: absolute;
+	top: 40px;
+	left: 5px;
+}
+#wrapper,#container {
+	height: 500px;
+	width: 600px;
+}
+#wrapper {
+	bottom: 50%;
+	right: 50%;
+	position: absolute;
+}
+#container {
+	left: 50%;
+	position: relative;
+	top: 50%;
+}

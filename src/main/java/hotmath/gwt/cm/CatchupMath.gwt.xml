@@ -1,0 +1,34 @@
+<module rename-to='cm_student'>
+
+      <!-- Inherit the core Web Toolkit stuff.                        -->
+      <inherits name='com.google.gwt.user.User'/>
+
+<!--       
+      <inherits name='org.cobogw.gwt.user.User' />
+ -->      
+	
+      <!-- Inherit the default GWT style sheet.  You can change       -->
+      <!-- the theme of your GWT application by uncommenting          -->
+      <!-- any one of the following lines.                            -->
+      <inherits name='com.google.gwt.user.theme.standard.Standard'/>
+      <!-- <inherits name='com.google.gwt.user.theme.chrome.Chrome'/> -->
+      <!-- <inherits name='com.google.gwt.user.theme.dark.Dark'/>     -->
+
+      <!-- Other module inherits                                      -->
+      <inherits name='com.extjs.gxt.ui.GXT'/>
+      <inherits name='com.extjs.gxt.themes.Themes' />
+      <inherits name='com.google.gwt.json.JSON' />
+      <inherits name="com.google.gwt.http.HTTP" />
+      
+      <inherits name='pl.rmalinowski.gwt2swf.GWT2SWF' />
+      
+      <servlet path="/services/prescriptionService" class="hotmath.gwt.cm.server.service.PrescriptionServiceImpl" />
+      
+      <!-- Specify the app entry point class.                         -->
+      <entry-point class='hotmath.gwt.cm.client.CatchupMath'/>
+    
+      <!-- Specify the application specific style sheet.              -->
+  <!--      
+   <set-property name="user.agent" value="gecko"/>
+  -->	
+</module>
