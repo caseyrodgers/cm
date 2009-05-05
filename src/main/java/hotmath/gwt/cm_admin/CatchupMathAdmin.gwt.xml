@@ -1,4 +1,4 @@
-<module>
+<module rename-to='cm_admin'>
 
       <!-- Inherit the core Web Toolkit stuff.                        -->
       <inherits name='com.google.gwt.user.User'/>
@@ -14,7 +14,6 @@
       <inherits name='com.extjs.gxt.ui.GXT'/>
       <inherits name='com.extjs.gxt.themes.Themes' />
       <inherits name='com.google.gwt.json.JSON' />
-
       <!-- Specify the app entry point class.                         -->
       <entry-point class='hotmath.gwt.cm_admin.client.CatchupMathAdmin'/>
       
