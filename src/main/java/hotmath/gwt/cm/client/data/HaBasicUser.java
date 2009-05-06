@@ -1,4 +1,4 @@
-package hotmath.testset.ha;
+package hotmath.gwt.cm.client.data;
 
 /** Represents the basic user information for
  *  signing into catchup math.
@@ -16,8 +16,6 @@ public interface HaBasicUser {
     // either the uid, or the aid depending on type
     int getUserKey();
     
-    
     // hack to return the proper type
     UserType getUserType();
-    Object getUserObject();
 }

@@ -1,6 +1,6 @@
 package hotmath.cm.login.service;
 
-import hotmath.testset.ha.HaBasicUser;
+import hotmath.gwt.cm.client.data.HaBasicUser;
 import hotmath.testset.ha.HaUserFactory;
 
 import java.io.IOException;

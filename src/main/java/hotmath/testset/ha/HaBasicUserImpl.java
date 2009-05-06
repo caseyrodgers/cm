@@ -1,5 +1,7 @@
 package hotmath.testset.ha;
 
+import hotmath.gwt.cm.client.data.HaBasicUser;
+
 abstract public class HaBasicUserImpl implements HaBasicUser {
     
     public void setPassword(String password) {
