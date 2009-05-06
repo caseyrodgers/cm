@@ -562,3 +562,10 @@ img.resource-item-complete {
 	margin: 10px 15px;
 	color: #E2FFFF;
 }
+
+
+
+/** Hide the morehelp button on tutors */
+#review_link {
+   display: none;
+}
