@@ -309,4 +309,9 @@ public class HaUser extends HaBasicUserImpl {
     public UserType getUserType() {
         return UserType.STUDENT;
     }
+
+    @Override
+    public int getUserKey() {
+        return this.uid;
+    }
 }

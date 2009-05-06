@@ -24,4 +24,9 @@ public class HaAdmin extends HaBasicUserImpl {
     public UserType getUserType() {
         return UserType.ADMIN;
     }
+
+    @Override
+    public int getUserKey() {
+        return adminId;
+    }
 }

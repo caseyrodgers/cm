@@ -15,6 +15,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.catalina.startup.SetAllPropertiesRule;
+
 import com.extjs.gxt.ui.client.GXT;
 import com.extjs.gxt.ui.client.Registry;
 import com.extjs.gxt.ui.client.Style.LayoutRegion;
@@ -31,6 +33,10 @@ import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.google.gwt.json.client.JSONObject;
+import com.google.gwt.json.client.JSONParser;
+import com.google.gwt.json.client.JSONValue;
+import com.google.gwt.user.client.Cookies;
 import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.ServiceDefTarget;
@@ -65,6 +71,7 @@ public class CatchupMath implements EntryPoint {
     /**
      * This is the entry point method.
      */
+    int userId;
     public void onModuleLoad() {
         __thisInstance = this;
         GXT.setDefaultTheme(Theme.GRAY, true);
@@ -96,32 +103,51 @@ public class CatchupMath implements EntryPoint {
         // the user is in 'view' mode and we must
         // inform the server not to update the 
         // current state as the user moves around system.
-        int userId=0;
         int runId=0;
         int testId=0;
-        if(parameters.get("run_id") != null) {
-            runId = Integer.parseInt(parameters.get("run_id"));
+        String key2="";
+        try {
+            String cmKey = Cookies.getCookie("cm_key");
+            if(cmKey == null) {
+                throw new Exception("No login cookie found");   
+            }
+            cmKey = cmKey.substring(1,cmKey.length()-1);
             
-            // setup user to mascarade as real user
-            UserInfo user = new UserInfo(0,0);
-            user.setRunId(runId);
-            user.setSessionNumber(0);
-            UserInfo.setInstance(user);
+            JSONValue jsonValue = JSONParser.parse(cmKey);
+            JSONObject o = jsonValue.isObject();
+            String keyVal = o.get("key").isString().stringValue();
+            if(keyVal == null) {
+                throw new Exception("Invalid security key found in cookie");
+            }
+            if(parameters.get("key") != null) {
+                key2 = parameters.get("key");
+            }
+            if(key2 == null) {
+                throw new Exception("No key parameter found");
+            }
+            if(!key2.equals(keyVal)) {
+                throw new Exception("Security exception: key values do not match");
+            }
+            
+            
+            // we are valid ...
+            // 
+            userId = (int)o.get("uid").isNumber().doubleValue();
+            if(userId == 0) {
+                throw new Exception("'uid' is not valid");
+            }
+            
+            if(parameters.get("run_id") != null) {
+                runId = Integer.parseInt(parameters.get("run_id"));
+                // setup user to mascarade as real user
+                UserInfo user = new UserInfo(0,0);
+                user.setRunId(runId);
+                user.setSessionNumber(0);
+                UserInfo.setInstance(user);
+            }
         }
-        else if(parameters.get("test_id") != null) {
-            testId = Integer.parseInt(parameters.get("test_id"));
-            UserInfo user = new UserInfo(0,0);
-            user.setTestId(testId);
-            UserInfo.setInstance(user);
-        }
-        else if(parameters.get("uid") != null) {
-            userId = Integer.parseInt(parameters.get("uid"));
-        }
-        
-        if(runId == 0 && testId == 0 && userId == 0) {
-            setBusy(false);
-            showAlert("uid must be specified");
-            Window.Location.replace("http://localhost:8881/");
+        catch(Exception e) {
+            CatchupMath.showAlert(e.getMessage());
             return;
         }
         
@@ -140,7 +166,7 @@ public class CatchupMath implements EntryPoint {
                     return;
                 }
                 
-                UserInfo.loadUser(Integer.parseInt(parameters.get("uid")),new CmAsyncRequest() {
+                UserInfo.loadUser(userId,new CmAsyncRequest() {
                     public void requestComplete(String requestData) {
                         
                         if(UserInfo.getInstance().getRunId() > 0) {
@@ -200,8 +226,7 @@ public class CatchupMath implements EntryPoint {
                 .create(PrescriptionService.class);
 
         String point = GWT.getModuleBaseURL();
-        if (!point.endsWith("/"))
-            point += "/";
+        if (!point.endsWith("/"))            point += "/";
         point += "services/prescriptionService";
 
         ((ServiceDefTarget) prescriptionService).setServiceEntryPoint(point);
@@ -223,6 +248,7 @@ public class CatchupMath implements EntryPoint {
      * @param msg
      */
     static public void showAlert(String msg) {
+        setBusy(false);
         MessageBox.alert("Info", msg, new Listener<MessageBoxEvent>() {
             public void handleEvent(MessageBoxEvent be) {
             }

@@ -94,6 +94,10 @@ public class PrescriptionCmGuiDefinition implements CmGuiDefinition {
                 new AsyncCallback() {
                     public void onSuccess(Object result) {
                         RpcData rdata = (RpcData) result;
+                        if(rdata == null) {
+                            CatchupMath.showAlert("There was a problem reading this prescription data");
+                            return;
+                        }
                         try {
                             int correctPercent = rdata.getDataAsInt("correct_percent");
                             UserInfo.getInstance().setCorrectPercent(correctPercent);

@@ -13,6 +13,9 @@ public interface HaBasicUser {
     String getUserName();
     String getPassword();
     
+    // either the uid, or the aid depending on type
+    int getUserKey();
+    
     
     // hack to return the proper type
     UserType getUserType();
