@@ -16,6 +16,14 @@
 			<id>gwt-maven-plugins</id>
 			<url> http://snapshots.repository.codehaus.org/ </url>
 		</pluginRepository>
+
+    <pluginRepository>
+        <id>repository.jboss.org</id>
+        <name>JBoss Repository</name>
+        <url>http://repository.jboss.org/maven2</url>
+    </pluginRepository>
+
+
 	</pluginRepositories>
 
 	<dependencies>
@@ -176,6 +184,12 @@
 
 	<build>
 		<plugins>
+
+<plugin>
+   <groupId>org.twdata.maven</groupId>
+   <artifactId>maven-cli-plugin</artifactId>
+</plugin>
+
 
 			<plugin>
 				<groupId>org.mortbay.jetty</groupId>
