@@ -15,7 +15,7 @@ public class PrescriptionServiceT extends RemoteServiceServlet implements Prescr
         return null;
     }
 
-    public String getHmContent(String file) {
+    public String getHmContent(String file, String fileBase) {
         // TODO Auto-generated method stub
         return null;
     }

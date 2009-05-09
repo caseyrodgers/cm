@@ -14,7 +14,7 @@ public class ResourceViewerImplReview extends ResourceViewerContainer implements
 		String file = "/hotmath_help/" + resource.getFile();
 			 
 		PrescriptionServiceAsync s = (PrescriptionServiceAsync) Registry.get("prescriptionService");
-		s.getHmContent(file,  new AsyncCallback() {
+		s.getHmContent(file,  "/hotmath_help/topics", new AsyncCallback() {
 			public void onFailure(Throwable caught) {
 				caught.printStackTrace();
 			}

@@ -55,9 +55,10 @@ public interface PrescriptionService extends RemoteService {
 	 * Return the 'hm_content' from the requested file
 	 * 
 	 * @param file
+	 * @param baseDirectory The directory relative files should be made absolute to.
 	 * @return
 	 */
-	String getHmContent(String file);
+	String getHmContent(String file, String baseDirectory);
 
 	/**
 	 * Return the current results for the given test

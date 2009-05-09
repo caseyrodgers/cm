@@ -22,7 +22,7 @@ public interface PrescriptionServiceAsync {
 	  
 	  void getQuizHtml(int testId,AsyncCallback callback);
 	  
-	  void getHmContent(String file, AsyncCallback callback);
+	  void getHmContent(String file, String baseDirectory, AsyncCallback callback);
 	  
 	  void getQuizCurrentResults(int testId, AsyncCallback callback);
 	  

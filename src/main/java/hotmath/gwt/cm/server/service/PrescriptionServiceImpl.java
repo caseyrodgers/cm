@@ -402,9 +402,11 @@ public class PrescriptionServiceImpl extends RemoteServiceServlet implements Pre
      * hotmath space.
      * 
      * @param file
+     * @param baseDirectory The directory relative images should point
+     * 
      * @return
      */
-    public String getHmContent(String file) {
+    public String getHmContent(String file, String baseDirectory) {
         try {
             String filePath = HotMathProperties.getInstance().getHotMathWebBase();
             filePath += "/" + file;
@@ -412,7 +414,7 @@ public class PrescriptionServiceImpl extends RemoteServiceServlet implements Pre
             String html = new SbFile(filePath).getFileContents().toString("\n");
 
             HmContentExtractor ext = new HmContentExtractor();
-            String hmContent = ext.extractContent(html);
+            String hmContent = ext.extractContent(html, baseDirectory);
 
             return hmContent;
         } catch (Exception e) {
