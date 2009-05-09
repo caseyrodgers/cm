@@ -53,13 +53,17 @@ abstract public class ResourceViewerContainer extends LayoutContainer  implement
 	 * @param w
 	 */
 	public void addResource(Widget w, String title) {
-	    add(w);
-	    CmMainPanel.__lastInstance._mainContent.addResourceViewerHeader(title);
+	    addResource(w, title, null);
 	}
+
+   public void addResource(Widget w, String title, String styleName) {
+        add(w);
+        CmMainPanel.__lastInstance._mainContent.addResourceViewerHeader(title, styleName);
+    }
 
 	abstract public Widget getResourcePanel(InmhItemData resource);
 	
-	/** Should the height be set dending on viewport size
+	/** Should the height be set depending on viewport size
 	 * 
 	 * @return
 	 */
@@ -69,5 +73,18 @@ abstract public class ResourceViewerContainer extends LayoutContainer  implement
 
 	public void removeResourcePanel() {
 		// empty
+	}
+	
+	
+	public String getContainerStyleName() {
+	    String s = getStyleName();
+	    
+	    s = s.trim();
+	    // if multiple classes, return last
+	    if(s != null && s.indexOf(" ") > -1) {
+	        int x = s.indexOf(" ")+1;
+	        s = s.substring(x);
+	    }
+	    return s;
 	}
 }

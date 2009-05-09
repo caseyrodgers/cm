@@ -3,17 +3,18 @@ package hotmath.gwt.cm.client.ui.viewer;
 import hotmath.gwt.cm.client.CatchupMath;
 import hotmath.gwt.cm.client.data.InmhItemData;
 import hotmath.gwt.cm.client.service.PrescriptionServiceAsync;
+import hotmath.gwt.cm.client.ui.CmMainPanel;
 
 import com.extjs.gxt.ui.client.Registry;
-import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
-import com.extjs.gxt.ui.client.event.Events;
-import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.Window;
 import com.extjs.gxt.ui.client.widget.button.Button;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -22,18 +23,19 @@ public class ResourceViewerImplTutor extends ResourceViewerContainer implements 
         addStyleName("resource-viewer-impl-tutor");
     }
 
+    Button showWorkBtn=null;
+    
     public Widget getResourcePanel(final InmhItemData resource) {
         final String pid = resource.getFile();
 
-        final Button showWorkBtn = new Button("Show Work");
+        showWorkBtn = new Button("Show Work");
         showWorkBtn.setStyleName("show-work-button");
-        showWorkBtn.setToolTip("Display the Show Work area for this solution");
-        showWorkBtn.addListener(Events.Select, new Listener<BaseEvent>() {
-            public void handleEvent(BaseEvent be) {
+        showWorkBtn.setTitle("Display the Show Work area for this solution");
+        showWorkBtn.addSelectionListener(new SelectionListener<ButtonEvent>() {
+            public void componentSelected(ButtonEvent ce) {
                 showWork(pid);
             }
         });
-        add(showWorkBtn);
 
         // call for the solution HTML
         PrescriptionServiceAsync s = (PrescriptionServiceAsync) Registry.get("prescriptionService");
@@ -45,6 +47,7 @@ public class ResourceViewerImplTutor extends ResourceViewerContainer implements 
             public void onSuccess(Object result) {
                 String html = (String) result;
                 addResource(new HTML(html), resource.getTitle());
+                CmMainPanel.__lastInstance._mainContent.addControl(showWorkBtn);
                 try {
                     ResourceViewerImplTutor.initializeTutor(pid);
                     // for debugging

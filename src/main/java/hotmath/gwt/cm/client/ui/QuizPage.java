@@ -35,7 +35,6 @@ public class QuizPage extends LayoutContainer {
 	public QuizPage(CmAsyncRequest callbackWhenComplete) {
 		this.callbackWhenComplete = callbackWhenComplete;
 		setStyleName("quiz-panel");
-		setScrollMode(Scroll.AUTO);
 		//setLayout(new FitLayout());
 		getQuizHtmlFromServer();
 	}

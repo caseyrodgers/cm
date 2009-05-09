@@ -16,4 +16,8 @@ public interface ResourceViewer {
 	 * 
 	 */
 	void removeResourcePanel();
+	
+	
+	/** return unique style for this container */
+	String getContainerStyleName();
 }

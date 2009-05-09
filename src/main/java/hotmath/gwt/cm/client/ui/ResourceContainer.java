@@ -4,12 +4,8 @@ import hotmath.gwt.cm.client.ui.viewer.ResourceViewerContainer;
 
 import com.extjs.gxt.ui.client.Style.Scroll;
 import com.extjs.gxt.ui.client.core.El;
-import com.extjs.gxt.ui.client.event.ButtonEvent;
-import com.extjs.gxt.ui.client.event.SelectionListener;
-import com.extjs.gxt.ui.client.fx.FxConfig;
 import com.extjs.gxt.ui.client.widget.HorizontalPanel;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
-import com.extjs.gxt.ui.client.widget.button.Button;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.ResizeEvent;
@@ -17,6 +13,7 @@ import com.google.gwt.event.logical.shared.ResizeHandler;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.Widget;
 
 
 /** Main resource viewer area
@@ -28,7 +25,7 @@ public class ResourceContainer extends LayoutContainer {
 	public ResourceContainer() {
 		// setTitle("Resource Viewer");
 		setStyleName("resource-container");
-		setScrollMode(Scroll.AUTO);
+		setScrollMode(Scroll.AUTOY);
 		
 		
 		/** @TODO: move toe CmMainPanel (only one)
@@ -40,7 +37,6 @@ public class ResourceContainer extends LayoutContainer {
 		        resetChildSize();
 		    }
 		});
-		buildResourceViewerHeader();
 	}
 	
 
@@ -49,7 +45,7 @@ public class ResourceContainer extends LayoutContainer {
 	 *  
 	 */
 	public void resetChildSize() {
-	    int HEADER_OFFSET_TOP=0;
+	    int HEADER_SIZE=25;
 	    int HEADER_OFFSET_LEFT=20;
 	    
 	    try {
@@ -63,20 +59,31 @@ public class ResourceContainer extends LayoutContainer {
             int top=0;
             int left=0;
             int width=0;
+            int height=0;
             El header=null;
+            El footer=null;
 	        for(int i=0;i<getItemCount();i++) {
                 El el = getItem(i).el();
-                if(!(getItem(i) instanceof HorizontalPanel)) {
+                if(getItem(i) == _header) {
+                    header = el;
+                }
+                else if(getItem(i) == _footer) {
+                    footer = el;
+                }
+                else {
                     
                     boolean setHeight=true;
                     if(getItem(i) instanceof ResourceViewerContainer) {
                        setHeight = ((ResourceViewerContainer)getItem(i)).shouldSetResourceContinerHeight();
                     }
+                    else {
+                        continue;
+                    }
                     
                     if(setHeight) {
                         // set the height of the detail area to 80% of total space
-                        int height = CmMainPanel.__lastInstance._mainContent.getOffsetHeight();
-                        int elHeight = (int)Math.floor((double)height * .80);
+                        int cheight = CmMainPanel.__lastInstance._mainContent.getOffsetHeight();
+                        int elHeight = (int)Math.floor((double)cheight * .80);
                         el.setHeight(elHeight);
                     }
                     
@@ -85,16 +92,18 @@ public class ResourceContainer extends LayoutContainer {
                     top = el.getTop();
                     left = el.getLeft();
                     width = el.getWidth();
-                }
-                else {
-                    header = el;
+                    height = el.getHeight();
                 }
 	        }
 	        
 	        if(header != null) {
-	            header.setTop(top - 45);
+	            header.setTop(top - HEADER_SIZE);
 	            header.setLeft(left);
 	            header.setWidth(width);
+	        }
+	        if(footer != null) {
+	            footer.setTop(top + height);
+	            footer.setLeft(left);
 	        }
 	        
             layout();
@@ -106,15 +115,28 @@ public class ResourceContainer extends LayoutContainer {
 	
 	
 	
-	/** Update the header panel for the resource */
-	public void addResourceViewerHeader(String title) {
-	    _title.setText(title);
+	/** Update the header panel for the resource
+	 * 
+	 * 
+	 * @param title  The title show in title arr
+	 * @param styleName If not null, then use to customize header/footer
+	 */
+	public void addResourceViewerHeader(String title,String styleName) {
+	    buildResourceViewerHeader();
+	    
+	    if(styleName != null) {
+	        _header.setStyleName(styleName + "-header");
+	        _footer.setStyleName(styleName + "-footer");
+	    }
 	    add(_header);
+	    add(_footer);
+	    _title.setText(title);
 	    layout();
 	    resetChildSize();
 	}
 	
 	HorizontalPanel _header;
+	LayoutContainer _footer;
 	Label _title;
 	private void buildResourceViewerHeader() {
         Anchor closeAnchor = new Anchor();
@@ -126,15 +148,7 @@ public class ResourceContainer extends LayoutContainer {
                 CmMainPanel.__lastInstance.removeResource();
             }
         });
-        
-        Button closeButton = new Button("Close");
-        closeButton.setStyleName("resource-viewer-close-button");
-        closeButton.addSelectionListener( new SelectionListener<ButtonEvent>() {
-            public void componentSelected(ButtonEvent ce) {
-                CmMainPanel.__lastInstance.removeResource();
-            }
-        });
-        
+
         
         _header = new HorizontalPanel();
         _header.setStyleName("resource-viewer-header");
@@ -142,5 +156,21 @@ public class ResourceContainer extends LayoutContainer {
         _title = new Label();
         _title.setStyleName("resource-viewer-title");       
         _header.add(_title);
+        
+        _footer = new LayoutContainer();
+        _footer.setStyleName("resource-viewer-footer");
 	}
+	
+	/** Add a widget to the resource viewer header
+	 * 
+	 * @param w
+	 */
+	public void addControl(Widget w) {
+	    _header.add(w);
+	    layout();
+	}
+	
+   public void removeControl(Widget w) {
+        _header.remove(w);
+    }
 }

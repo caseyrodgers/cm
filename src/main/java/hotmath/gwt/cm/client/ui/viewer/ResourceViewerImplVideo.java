@@ -9,8 +9,10 @@ import com.google.gwt.user.client.ui.Widget;
 
 public class ResourceViewerImplVideo extends ResourceViewerContainer {
 
+    String STYLE_NAME="resource-viewer-impl-video";
+    
     public ResourceViewerImplVideo() {
-        setStyleName("resource-viewer-impl-video");
+        addStyleName(STYLE_NAME);
     }
 
     public Widget getResourcePanel(InmhItemData resource) {
@@ -20,7 +22,7 @@ public class ResourceViewerImplVideo extends ResourceViewerContainer {
         swfWidget.addParam("file", videoPath);
         Label title = new Label(resource.getTitle());
         title.setStyleName("resource-viewer-impl-video-title");
-        addResource(swfWidget, resource.getTitle());
+        addResource(swfWidget, resource.getTitle(),null);
 
         return this;
     }
