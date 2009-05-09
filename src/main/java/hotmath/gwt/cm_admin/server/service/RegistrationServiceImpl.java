@@ -14,8 +14,8 @@ import hotmath.gwt.cm_admin.client.model.StudentModel;
 import hotmath.gwt.cm_admin.client.model.StudyProgramModel;
 import hotmath.gwt.cm_admin.client.model.SubjectModel;
 import hotmath.gwt.cm_admin.client.service.RegistrationService;
+import hotmath.gwt.cm_admin.server.model.CmAdminDao;
 
-import hotmath.cm.admin.model.CmAdminDao;
 
 public class RegistrationServiceImpl extends RemoteServiceServlet implements RegistrationService {
 
