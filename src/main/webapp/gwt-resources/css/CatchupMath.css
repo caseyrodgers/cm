@@ -364,8 +364,11 @@
 }
 
 .resource-viewer-container {
+
+	background: white;
 	width: 560px;
 	/**
+	   
     min-height: 600px;
     height: auto !important;
     height: 600px;
@@ -399,19 +402,12 @@
 
 .resource-viewer-impl-video {
 	width: 335px;
-	position: relative;
+	height: 300px;
+	padding-top: 10px;
 }
 
-
-.resource-viewer-impl-video-title {
-	margin-left: 5px;
-	margin-top: 5px;
-}
 
 .flvplayer-widget {
-	position: absolute;
-	top: 40px;
-	left: 5px;
 }
 
 #wrapper,#container {
@@ -466,6 +462,9 @@
 
 .resource-viewer-header {
 	height: 50px;
+	position: absolute;
+	top: 10px;
+	left: 10px;
 }
 
 
@@ -476,7 +475,7 @@
 	position: absolute;
 	left: 10px;
 	top: 10px;
-	width: 300px;
+	width: 250px;
 }
 
 
@@ -563,9 +562,17 @@ img.resource-item-complete {
 	color: #E2FFFF;
 }
 
-
+    
 
 /** Hide the morehelp button on tutors */
 #review_link {
    display: none;
 }
+
+
+.resource-viewer-impl-test {
+	width: 400px;
+	border: 5px solid blue;
+}
+
+

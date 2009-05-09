@@ -24,7 +24,21 @@
     </pluginRepository>
 
 
+
 	</pluginRepositories>
+
+<repositories>
+    <repository>
+      <id>gson</id>
+      <url>http://google-gson.googlecode.com/svn/mavenrepo</url>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+      <releases>
+        <enabled>true</enabled>
+      </releases>
+    </repository>
+</repositories>
 
 	<dependencies>
 
@@ -180,15 +194,19 @@
 			<version>4.1</version>
 			<scope>test</scope>
 		</dependency>
+
+    <!--  Gson: Java to Json conversion -->
+    <dependency>
+      <groupId>com.google.code.gson</groupId>
+      <artifactId>gson</artifactId>
+      <version>1.3</version>
+      <scope>compile</scope>
+    </dependency>
+
 	</dependencies>
 
 	<build>
 		<plugins>
-
-<plugin>
-   <groupId>org.twdata.maven</groupId>
-   <artifactId>maven-cli-plugin</artifactId>
-</plugin>
 
 
 			<plugin>

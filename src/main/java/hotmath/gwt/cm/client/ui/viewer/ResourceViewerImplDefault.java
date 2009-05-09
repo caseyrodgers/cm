@@ -6,7 +6,7 @@ import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 
-public class ResourceViewerImplDefault extends ResourceViewerContainer implements ResourceViewer {
+public class ResourceViewerImplDefault extends ResourceViewerContainer  {
 	public Widget getResourcePanel(InmhItemData resource) {
 
 	    String url = resource.getFile();

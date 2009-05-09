@@ -1,9 +1,10 @@
 <module rename-to='cm_student'>
 
       <!-- Inherit the core Web Toolkit stuff.                        -->
-      <inherits name='com.google.gwt.user.User'/>
+      <inherits name='hotmath.gwt.shared.CmShared'/>
 
-<!--       
+<!--  
+      <inherits name='com.google.gwt.user.User'/>     
       <inherits name='org.cobogw.gwt.user.User' />
  -->      
 	

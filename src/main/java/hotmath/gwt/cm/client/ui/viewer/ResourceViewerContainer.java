@@ -3,11 +3,12 @@ package hotmath.gwt.cm.client.ui.viewer;
 import hotmath.gwt.cm.client.data.InmhItemData;
 import hotmath.gwt.cm.client.ui.CmMainPanel;
 
+import com.extjs.gxt.ui.client.Style.Scroll;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.fx.FxConfig;
-import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.HorizontalPanel;
+import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -39,39 +40,12 @@ import com.google.gwt.user.client.ui.Widget;
  *             
  *
  */
-abstract public class ResourceViewerContainer extends ContentPanel  implements	ResourceViewer{
+abstract public class ResourceViewerContainer extends LayoutContainer  implements	ResourceViewer{
     HorizontalPanel _header;
-    Label _title;
 	public ResourceViewerContainer() {
-	    getHeader().setVisible(false);
 		setStyleName("resource-viewer-container");
-		Anchor closeAnchor = new Anchor();
-		String closeHtml = "<span>Close <img src='/gwt-resources/images/close_x.png'/></span>";
-		closeAnchor.setHTML(closeHtml);
-		closeAnchor.setStyleName("resource-viewer-close-button");
-		closeAnchor.addClickHandler(new ClickHandler() {
-		    public void onClick(ClickEvent arg0) {
-                removeResourcePanel();
-                el().fadeOut(FxConfig.NONE);
-                CmMainPanel.__lastInstance.removeResource();                
-		    }
-		});
-		Button closeButton = new Button("Close");
-		closeButton.setStyleName("resource-viewer-close-button");
-		closeButton.addSelectionListener( new SelectionListener<ButtonEvent>() {
-			public void componentSelected(ButtonEvent ce) {
-				removeResourcePanel();
-				el().fadeOut(FxConfig.NONE);
-				CmMainPanel.__lastInstance.removeResource();				
-			}
-		});
-		_header = new HorizontalPanel();
-		_header.setStyleName("resource-viewer-header");
-		_header.add(closeAnchor);
-        _title = new Label();
-        _title.setStyleName("resource-viewer-title");		
-		_header.add(_title);
-		add(_header);		
+
+		setScrollMode(Scroll.AUTO);
 	}
 	
 	/** Add the resource to the center
@@ -79,12 +53,19 @@ abstract public class ResourceViewerContainer extends ContentPanel  implements	R
 	 * @param w
 	 */
 	public void addResource(Widget w, String title) {
-		//add(w, new TableData("100%", "100%"));
 	    add(w);
-		_title.setText(title);
+	    CmMainPanel.__lastInstance._mainContent.addResourceViewerHeader(title);
 	}
 
 	abstract public Widget getResourcePanel(InmhItemData resource);
+	
+	/** Should the height be set dending on viewport size
+	 * 
+	 * @return
+	 */
+	public boolean shouldSetResourceContinerHeight() {
+	    return true;
+	}
 
 	public void removeResourcePanel() {
 		// empty

@@ -23,6 +23,9 @@ import javax.servlet.http.HttpServletResponse;
  * Information is stored in CmLoginInfo object serialized as JSON
  * 
  * 
+ * current exposed as servlet that is called from YUI library
+ * 
+ * 
  * @TODO: expose via GWT RPC
  * 
  * @author casey

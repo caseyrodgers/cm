@@ -6,7 +6,6 @@ import hotmath.gwt.cm.client.service.PrescriptionServiceAsync;
 import com.extjs.gxt.ui.client.Registry;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 public class ResourceViewerImplReview extends ResourceViewerContainer implements ResourceViewer {
@@ -23,8 +22,6 @@ public class ResourceViewerImplReview extends ResourceViewerContainer implements
 				String html = (String)result;
 				
 				addResource(new HTML(html),resource.getTitle());
-				// RootPanel.get(id).getElement().setInnerHTML(html);
-				layout();
 			}
 		});
 		return this;

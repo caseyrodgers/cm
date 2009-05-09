@@ -39,6 +39,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.DecoratorPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.user.client.ui.HasVerticalAlignment.VerticalAlignmentConstant;
 
 public class PrescriptionCmGuiDefinition implements CmGuiDefinition {
 
@@ -288,24 +289,20 @@ class ResourceList extends ListView<ResourceModel> implements Listener {
 
             CmMainPanel.__lastInstance._mainContent.removeAll();
 
-            CmMainPanel.__lastInstance._mainContent.setLayout(new FitLayout());
-
-            VerticalPanel vp = new VerticalPanel();
-            vp.setVerticalAlignment(VerticalPanel.ALIGN_MIDDLE);
-            vp.setHorizontalAlignment(VerticalPanel.ALIGN_CENTER);
-            HorizontalPanel hp = new HorizontalPanel();
-            vp.add(hp);
+            //CmMainPanel.__lastInstance._mainContent.setLayout(new FitLayout());
 
             // must be a ContentPanel
-            ContentPanel cp = (ContentPanel) _viewer.getResourcePanel(resourceItem);
+            LayoutContainer cp = (LayoutContainer) _viewer.getResourcePanel(resourceItem);
 
-            DecoratorPanel dp = new DecoratorPanel();
-            dp.setStyleName("resource-wrapper-decorator");
-            dp.add(cp);
-            hp.add(dp);
-            CmMainPanel.__lastInstance._mainContent.add(vp);
+
+
+            //DecoratorPanel dp = new DecoratorPanel();
+            //dp.setStyleName("resource-wrapper-decorator");
+            //dp.add(cp);
+            //hp.add(dp);
+            CmMainPanel.__lastInstance._mainContent.add(cp);
             CmMainPanel.__lastInstance._mainContent.layout();
-            CmMainPanel.__lastInstance._mainContent.setScrollMode(Scroll.AUTO);
+            CmMainPanel.__lastInstance._mainContent.resetChildSize();
             cp.el().fadeIn(FxConfig.NONE);
 
             /**
