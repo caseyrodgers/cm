@@ -1,11 +1,11 @@
 package hotmath.gwt.cm.client.ui.context;
 
 
-import hotmath.gwt.cm.client.data.CmAsyncRequest;
 import hotmath.gwt.cm.client.ui.CmContext;
 import hotmath.gwt.cm.client.ui.CmGuiDefinition;
 import hotmath.gwt.cm.client.ui.ContextController;
 import hotmath.gwt.cm.client.ui.QuizPage;
+import hotmath.gwt.shared.client.data.CmAsyncRequest;
 
 import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
 import com.extjs.gxt.ui.client.core.Template;
