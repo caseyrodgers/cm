@@ -3,6 +3,7 @@ package hotmath.gwt.cm.client.ui.context;
 import hotmath.gwt.cm.client.CatchupMath;
 import hotmath.gwt.cm.client.service.PrescriptionServiceAsync;
 import hotmath.gwt.cm.client.ui.CmContext;
+import hotmath.gwt.cm.client.ui.ContextController;
 import hotmath.gwt.cm.client.ui.NextDialog;
 import hotmath.gwt.cm.client.ui.NextPanelInfo;
 import hotmath.gwt.cm.client.ui.NextPanelInfoImplDefault;
@@ -12,8 +13,11 @@ import hotmath.gwt.cm.client.util.UserInfo;
 import java.util.List;
 
 import com.extjs.gxt.ui.client.Registry;
+import com.extjs.gxt.ui.client.event.Listener;
+import com.extjs.gxt.ui.client.event.MessageBoxEvent;
 import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
+import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.button.IconButton;
 import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -88,21 +92,29 @@ public class QuizContext implements CmContext {
 	}
 
 	public void doNext() {
-	    CatchupMath.setBusy(true);
 	    
-        PrescriptionServiceAsync s = (PrescriptionServiceAsync) Registry.get("prescriptionService");
-        s.createTestRun(UserInfo.getInstance().getTestId(), new AsyncCallback() {
-            public void onSuccess(Object result) {
-                RpcData rdata = (RpcData)result;
-                int runId = rdata.getDataAsInt("run_id");
-                UserInfo.getInstance().setRunId(runId);
-                
-                CatchupMath.getThisInstance().showPrescriptionPanel();
+	    String msg = "Are you ready to check your test and create a customized set of review and practice problems?";
+	    MessageBox.confirm("Ready to Check Test?", msg, new Listener<MessageBoxEvent>() {
+            public void handleEvent(MessageBoxEvent be) {
+                if (be.getButtonClicked().getText().equals("Yes")) {
+                    CatchupMath.setBusy(true);
+                    PrescriptionServiceAsync s = (PrescriptionServiceAsync) Registry.get("prescriptionService");
+                    s.createTestRun(UserInfo.getInstance().getTestId(), new AsyncCallback() {
+                        public void onSuccess(Object result) {
+                            RpcData rdata = (RpcData)result;
+                            int runId = rdata.getDataAsInt("run_id");
+                            UserInfo.getInstance().setRunId(runId);
+                            
+                            CatchupMath.getThisInstance().showPrescriptionPanel();
+                        }
+                        public void onFailure(Throwable caught) {
+                            CatchupMath.showAlert(caught.getMessage());
+                        }
+                    });
+                }
             }
-            public void onFailure(Throwable caught) {
-                CatchupMath.showAlert(caught.getMessage());
-            }
-        });
+        });	    
+	    
 	}
 
 	public void doPrevious() {

@@ -209,8 +209,8 @@ public class PrescriptionServiceImpl extends RemoteServiceServlet implements Pre
     private List<PrescriptionSessionDataResource> fixupInmhResources(List<PrescriptionSessionDataResource> inmhTypes) {
 
         List<PrescriptionSessionDataResource> newTypes = new ArrayList<PrescriptionSessionDataResource>();
-        String types[][] = { { "Required Problems", "practice" }, { "Lesson", "review" }, { "Video", "video" },
-                { "Activities", "activities" }, { "Extra Problems", "workbook" } };
+        String types[][] = { { "Required Problems", "practice" }, { "Video", "video" },
+                { "Activities", "activities" }, { "Extra Problems", "workbook" },{ "Lesson", "review" } };
 
         for (int i = 0; i < types.length; i++) {
             String type[] = types[i];

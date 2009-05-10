@@ -233,11 +233,11 @@ public class PrescriptionContext implements CmContext {
                     + prescriptionData.getSessionTopics().get(prescriptionData.getCurrSession().getSessionNumber() - 1)
                     + ")");
         else {
-            prevBtn.setToolTip("Move back to Quiz");
+            prevBtn.setToolTip("No previous topics");
         }
 
         if (pn > prescriptionData.getSessionTopics().size() - 2)
-            nextBtn.setToolTip("Move to next test segment.");
+            nextBtn.setToolTip("Move to next test segment");
 
         else
             nextBtn.setToolTip("Move to the next topic ("

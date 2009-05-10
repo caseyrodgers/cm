@@ -59,20 +59,25 @@ public class PrescriptionCmGuiDefinition implements CmGuiDefinition {
         return context;
     }
 
+
+    LayoutContainer _main;
     public Widget getWestWidget() {
         CatchupMath.setBusy(true);
+
+        _main = new LayoutContainer();
+        _main.setLayout(new BorderLayout());
+        
         _guiWidget = new PrescriptionResourceAccord();
+        _main.add(_guiWidget, new BorderLayoutData(LayoutRegion.CENTER));
         // get the data for the prescription from the database
 
         getAsyncDataFromServer(UserInfo.getInstance().getSessionNumber());
 
-        LayoutContainer lc = new LayoutContainer();
-        lc.setLayout(new BorderLayout());
-        lc.add(_guiWidget, new BorderLayoutData(LayoutRegion.CENTER));
+        
         PrescriptionInfoPanel infoPanel = new PrescriptionInfoPanel(this);
-        lc.add(infoPanel, new BorderLayoutData(LayoutRegion.SOUTH, .30f));
+        _main.add(infoPanel, new BorderLayoutData(LayoutRegion.SOUTH, .30f));
 
-        return lc;
+        return _main;
     }
 
     /**
@@ -145,9 +150,9 @@ class PrescriptionResourceAccord extends LayoutContainer {
 
     PrescriptionData pdata;
     boolean isReady;
-
     public PrescriptionResourceAccord() {
         __instance = this;
+        
         setStyleName("resource-accord-panel");
         Html html = new Html("Loading your personal set of review and practice problems...");
         html.setStyleName("resource-accord-panel-loading");
@@ -166,8 +171,9 @@ class PrescriptionResourceAccord extends LayoutContainer {
         removeAll();
 
         AccordionLayout al = new AccordionLayout();
-        al.setActiveOnTop(false);
         setLayout(al);
+        al.setActiveOnTop(false);
+        
         // for each distinct resource type
         ContentPanel cp = null;
         ResourceList rl = null;
@@ -194,7 +200,8 @@ class PrescriptionResourceAccord extends LayoutContainer {
                 PrescriptionResourceAccord.__instance.layout();
             }
 
-            cp.setAnimCollapse(true);
+            cp.setAnimCollapse(false);
+            cp.collapse();
             cp.add(rl);
 
             add(cp);
@@ -204,12 +211,13 @@ class PrescriptionResourceAccord extends LayoutContainer {
             cp.addListener(Events.Expand, new Listener<BaseEvent>() {
                 public void handleEvent(BaseEvent be) {
                     CmMainPanel.__lastInstance._mainContent.removeAll();
-
+                    layout();
+                    
                     // move selected item to top
-                    // PrescriptionResourceAccord.this.remove(mycp);
-                    // mycp.el().fadeIn(FxConfig.NONE);
-                    // PrescriptionResourceAccord.this.add(mycp);
-
+                    PrescriptionResourceAccord.this.remove(mycp);
+                    //mycp.el().fadeIn(FxConfig.NONE);
+                    PrescriptionResourceAccord.this.add(mycp);
+                    layout();
                 }
             });
             cp.addListener(Events.Collapse, new Listener<BaseEvent>() {
@@ -218,14 +226,18 @@ class PrescriptionResourceAccord extends LayoutContainer {
                 }
             });
         }
-        // should we select all
-        // rl.getSelectionModel().select(0);
-        // rl.loadResource(rl.getSelectionModel().getSelectedItem());
-        layout();
+        
+//        // should we select all
+//        if(rl._store.getCount() > 0) {
+//            rl.getSelectionModel().select(0, false);
+//            rl.loadResource(rl.getSelectionModel().getSelectedItem());
+//            layout();
+//        }
+        
+        
+        al.setActiveItem(getItem(0));
 
-        al.setActiveItem(cp);
         layout();
-
         // last one in active to make sure all types are visible
         // al.setActiveItem(cp);
     }
