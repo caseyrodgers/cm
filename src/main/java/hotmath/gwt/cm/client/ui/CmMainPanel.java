@@ -22,7 +22,7 @@ public class CmMainPanel extends LayoutContainer {
     // @TODO: setup event/listener to manager
     // state change
     public TopicSelector _topicSelector;
-    CmGuiDefinition cmGuiDef;
+    public CmGuiDefinition cmGuiDef;
     // west panel is static to allow access
     // to the title.
     public ContentPanel _westPanel;

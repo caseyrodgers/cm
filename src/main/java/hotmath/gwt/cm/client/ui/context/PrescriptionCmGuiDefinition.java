@@ -230,6 +230,7 @@ class PrescriptionResourceAccord extends LayoutContainer {
 //            layout();
 //        }
         
+        // try to expand the last resource type
         try {
             cp.expand();
             layout();
@@ -242,6 +243,28 @@ class PrescriptionResourceAccord extends LayoutContainer {
         layout();
         // last one in active to make sure all types are visible
         // al.setActiveItem(cp);
+    }
+    
+    public void expandResourcePracticeProblems() {
+        expandResourceType("Required Problems");
+    }
+    
+    /** Expand the resource node exposing resource items
+     * 
+     * @param resourceType The table of the resource type
+     * 
+     */
+    public void expandResourceType(String resourceType) {
+        for(int i=0, t=getItems().size();i<t;i++) {
+            if(getItem(i) instanceof ContentPanel) {
+                ContentPanel cp = (ContentPanel)getItem(i);
+                String title = cp.getHeader().getText();
+                if(title.equals(resourceType)) {
+                    cp.expand();
+                    break;
+                }
+            }
+        }
     }
 }
 

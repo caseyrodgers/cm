@@ -88,6 +88,12 @@ public class PrescriptionContext implements CmContext {
             if (UserInfo.getInstance().isActiveUser() && !allViewed) {
                 CatchupMath.showAlert("Please view the Required Practice problems before moving forward.");
                 ContextController.getInstance().setCurrentContext(PrescriptionContext.this);
+                
+                /** YUCK ... 
+                 *   Expand the practice problems.
+                 *   @TODO: figure better way... Perhaps add listener to the accordian
+                 */
+                ((PrescriptionCmGuiDefinition)CmMainPanel.__lastInstance.cmGuiDef)._guiWidget.expandResourcePracticeProblems();
                 CmMainPanel.__lastInstance.layout();
                 return;
             }
