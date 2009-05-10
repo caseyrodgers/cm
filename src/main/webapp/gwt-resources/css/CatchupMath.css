@@ -214,14 +214,6 @@
 	width: 200px;
 }
 
-#hm_content {
-	padding: 10px;
-	font-size: 130%;
-	width: auto;
-	margin: 20px;
-	background-color: #DFE8F6;
-}
-
 #hm_content h1 {
 	color: blue;
 }
@@ -565,7 +557,7 @@ img.resource-item-complete {
     position: absolute;
     left: 10px;
     top: 5px;
-    width: 250px;
+    width: 300px;
 }
 
 
@@ -587,15 +579,20 @@ img.resource-item-complete {
 
 /** Resource video */
 
-.resource-viewer-impl-video, .resource-viewer-impl-video-header,.resource-viewer-impl-video-footer {
-    position: absolute;    
-}
 
 .resource-viewer-impl-video {
-	padding-top: 20px;
-	height: 300px;
-	text-align: center;
+    left: 100px;
+    padding-top: 20px;
+    height: 300px;
+    text-align: center;
 }
+
+.flvplayer-widget {
+   position: absolute;
+   left: 100px;
+   z-index: 0;    
+}
+
 
 .resource-viewer-impl-video-footer {
     height: 15px;
@@ -609,4 +606,14 @@ img.resource-item-complete {
 
 
 /**********  END RESOURCE STYLES ***************/
+
+
+
+.resource-viewer-container  #hm_content {
+	padding: 10px;
+	font-size: 130%;
+	width: auto;
+	margin: 20px;
+	background-color: #DFE8F6;
+}
 
