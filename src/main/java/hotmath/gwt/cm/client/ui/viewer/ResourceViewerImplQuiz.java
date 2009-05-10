@@ -1,8 +1,8 @@
 package hotmath.gwt.cm.client.ui.viewer;
 
-import hotmath.gwt.cm.client.data.CmAsyncRequest;
 import hotmath.gwt.cm.client.data.InmhItemData;
 import hotmath.gwt.cm.client.ui.QuizPage;
+import hotmath.gwt.shared.client.data.CmAsyncRequest;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Widget;

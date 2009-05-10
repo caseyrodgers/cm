@@ -1,7 +1,7 @@
 package hotmath.gwt.cm.client.util;
 
+import hotmath.gwt.shared.client.data.CmAsyncRequest;
 import hotmath.gwt.cm.client.CatchupMath;
-import hotmath.gwt.cm.client.data.CmAsyncRequest;
 import hotmath.gwt.cm.client.service.PrescriptionServiceAsync;
 import hotmath.gwt.cm.client.ui.HeaderPanel;
 

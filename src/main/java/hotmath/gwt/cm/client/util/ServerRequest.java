@@ -1,6 +1,6 @@
 package hotmath.gwt.cm.client.util;
 
-import hotmath.gwt.cm.client.data.CmAsyncRequest;
+import hotmath.gwt.shared.client.data.CmAsyncRequest;
 
 import com.google.gwt.http.client.Request;
 import com.google.gwt.http.client.RequestBuilder;

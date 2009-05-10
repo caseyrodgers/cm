@@ -1,6 +1,5 @@
 package hotmath.gwt.cm.client;
 
-import hotmath.gwt.cm.client.data.CmAsyncRequest;
 import hotmath.gwt.cm.client.service.PrescriptionService;
 import hotmath.gwt.cm.client.service.PrescriptionServiceAsync;
 import hotmath.gwt.cm.client.ui.CmMainPanel;
@@ -12,6 +11,7 @@ import hotmath.gwt.cm.client.ui.context.QuizCmGuiDefinition;
 import hotmath.gwt.cm.client.util.CmUserException;
 import hotmath.gwt.cm.client.util.UserInfo;
 import hotmath.gwt.shared.client.CmShared;
+import hotmath.gwt.shared.client.data.CmAsyncRequest;
 
 import java.util.HashMap;
 import java.util.List;
