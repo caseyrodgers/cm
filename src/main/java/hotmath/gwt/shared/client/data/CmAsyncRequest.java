@@ -1,4 +1,4 @@
-package hotmath.gwt.cm.client.data;
+package hotmath.gwt.shared.client.data;
 
 /** Provides interface to provide data from HTTP request
  * 
