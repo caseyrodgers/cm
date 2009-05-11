@@ -1,7 +1,7 @@
 package hotmath.gwt.shared.client;
 
-import hotmath.gwt.cm.client.util.CmUserException;
-import hotmath.gwt.cm.client.util.UserInfo;
+import hotmath.gwt.shared.client.model.UserInfoBase;
+import hotmath.gwt.shared.client.util.CmUserException;
 
 import java.util.HashMap;
 import java.util.List;
@@ -16,12 +16,10 @@ import com.google.gwt.user.client.Window;
 
 public class CmShared implements EntryPoint {
 
-    @Override
+    //@Override
     public void onModuleLoad() {
         System.out.println("Catchup Math shared library loaded successfully");
     }
-    
-    
 
     static Map<String,String> _queryParameters = new HashMap<String,String>();
 
@@ -56,12 +54,14 @@ public class CmShared implements EntryPoint {
                 JSONValue jsonValue = JSONParser.parse(cmKey);
                 JSONObject o = jsonValue.isObject();
                 String keyVal = o.get("key").isString().stringValue();
+                System.out.println("keyVal: " + keyVal);
                 if(keyVal == null) {
                     throw new Exception("Invalid security key found in cookie");
                 }
                 if(_queryParameters.get("key") != null) {
                     key2 = _queryParameters.get("key");
                 }
+                
                 if(key2 == null) {
                     throw new Exception("No key parameter found");
                 }
@@ -70,23 +70,42 @@ public class CmShared implements EntryPoint {
                 }
                 
                 // we are valid ...
-                // 
-                userId = (int)o.get("uid").isNumber().doubleValue();
+                //
+                boolean isAdmin = false;
+                try {
+                    userId = (int)o.get("uid").isNumber().doubleValue();
+                }
+                catch (Exception e) {
+                	System.out.println("Ignoring Exception: " + e.getLocalizedMessage());
+                }
+
+                if (userId == 0) {
+                	try {
+                    	userId = (int)o.get("aid").isNumber().doubleValue();
+                	}
+                	catch (Exception e) {
+                		System.out.println("Ignoring Exception: " + e.getLocalizedMessage());
+                	}
+                    if (userId != 0) {
+                    	isAdmin = true;
+                    }
+                }
+                
                 if(userId == 0) {
                     throw new Exception("'uid' is not valid");
                 }
+                UserInfoBase user = UserInfoBase.getInstance();
+                user.setUid(userId);
+                user.setIsAdmin(isAdmin);
             }
-            
-            
+
             // if run_id passed in, then allow user to view_only
             if(_queryParameters.get("run_id") != null) {
                 runId = Integer.parseInt(_queryParameters.get("run_id"));
-                // setup user to mascarade as real user
-                UserInfo user = new UserInfo(0,0);
+                // setup user to masquerade as real user
+                UserInfoBase user = UserInfoBase.getInstance();
                 user.setRunId(runId);
-                user.setSessionNumber(0);
                 user.setUid(userId);
-                UserInfo.setInstance(user);
             }
             
             return userId;
