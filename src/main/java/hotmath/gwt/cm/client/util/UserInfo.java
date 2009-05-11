@@ -1,9 +1,11 @@
 package hotmath.gwt.cm.client.util;
 
-import hotmath.gwt.shared.client.data.CmAsyncRequest;
 import hotmath.gwt.cm.client.CatchupMath;
 import hotmath.gwt.cm.client.service.PrescriptionServiceAsync;
 import hotmath.gwt.cm.client.ui.HeaderPanel;
+import hotmath.gwt.shared.client.data.CmAsyncRequest;
+import hotmath.gwt.shared.client.util.RpcData;
+import hotmath.gwt.shared.client.model.UserInfoBase;
 
 import com.extjs.gxt.ui.client.Registry;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -15,13 +17,26 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  *
  */
 public class UserInfo implements IsSerializable {
-	
-	
+
 	static private UserInfo __instance;
+
 	static public UserInfo getInstance() {
+		if (__instance != null) {
+			UserInfoBase base = UserInfoBase.getInstance();
+			if (base != null) {
+				if (base.getUid() != __instance.getUid() ||
+				    base.getRunId() != __instance.getRunId()) {
+	                UserInfo user = new UserInfo(0,0);
+	                user.setRunId(base.getRunId());
+	                user.setSessionNumber(0);
+	                user.setUid(base.getUid());
+	                UserInfo.setInstance(user);
+				}
+			}
+		}
 		return __instance;
 	}
-	
+
 	/** Set the shared user object
 	 * 
 	 * @param user
@@ -30,6 +45,9 @@ public class UserInfo implements IsSerializable {
 	    __instance = user;
 	}
 	
+	static public void setInstanceBase(UserInfoBase user) {
+		
+	}
 	/** Lookup this user and callback when complete 
 	 * 
 	 * @param uid
