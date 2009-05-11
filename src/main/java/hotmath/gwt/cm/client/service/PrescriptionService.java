@@ -1,7 +1,7 @@
 package hotmath.gwt.cm.client.service;
 
 import hotmath.gwt.cm.client.util.CmRpcException;
-import hotmath.gwt.cm.client.util.RpcData;
+import hotmath.gwt.shared.client.util.RpcData;
 
 import java.util.ArrayList;
 

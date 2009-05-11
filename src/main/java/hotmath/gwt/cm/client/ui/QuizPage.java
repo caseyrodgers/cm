@@ -3,9 +3,9 @@ package hotmath.gwt.cm.client.ui;
 import hotmath.gwt.cm.client.CatchupMath;
 import hotmath.gwt.cm.client.service.PrescriptionServiceAsync;
 import hotmath.gwt.cm.client.util.CmRpcException;
-import hotmath.gwt.cm.client.util.RpcData;
 import hotmath.gwt.cm.client.util.UserInfo;
 import hotmath.gwt.shared.client.data.CmAsyncRequest;
+import hotmath.gwt.shared.client.util.RpcData;
 
 import java.util.ArrayList;
 

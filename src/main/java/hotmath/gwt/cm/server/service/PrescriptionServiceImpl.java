@@ -13,7 +13,7 @@ import hotmath.gwt.cm.client.data.PrescriptionSessionData;
 import hotmath.gwt.cm.client.data.PrescriptionSessionDataResource;
 import hotmath.gwt.cm.client.service.PrescriptionService;
 import hotmath.gwt.cm.client.util.CmRpcException;
-import hotmath.gwt.cm.client.util.RpcData;
+import hotmath.gwt.shared.client.util.RpcData;
 import hotmath.inmh.INeedMoreHelpItem;
 import hotmath.inmh.INeedMoreHelpResourceType;
 import hotmath.solution.Solution;

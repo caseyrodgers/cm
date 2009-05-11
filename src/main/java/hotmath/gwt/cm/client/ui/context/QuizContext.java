@@ -7,8 +7,8 @@ import hotmath.gwt.cm.client.ui.ContextController;
 import hotmath.gwt.cm.client.ui.NextDialog;
 import hotmath.gwt.cm.client.ui.NextPanelInfo;
 import hotmath.gwt.cm.client.ui.NextPanelInfoImplDefault;
-import hotmath.gwt.cm.client.util.RpcData;
 import hotmath.gwt.cm.client.util.UserInfo;
+import hotmath.gwt.shared.client.util.RpcData;
 
 import java.util.List;
 

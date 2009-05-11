@@ -3,8 +3,8 @@ package hotmath.gwt.cm.client.ui;
 import hotmath.gwt.cm.client.data.InmhItemData;
 import hotmath.gwt.cm.client.data.PrescriptionData;
 import hotmath.gwt.cm.client.service.PrescriptionServiceAsync;
-import hotmath.gwt.cm.client.util.RpcData;
 import hotmath.gwt.cm.client.util.UserInfo;
+import hotmath.gwt.shared.client.util.RpcData;
 
 import java.util.ArrayList;
 import java.util.List;
