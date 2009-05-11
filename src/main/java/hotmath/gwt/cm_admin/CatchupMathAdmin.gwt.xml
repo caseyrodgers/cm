@@ -1,7 +1,11 @@
 <module rename-to='cm_admin'>
 
-      <!-- Inherit the core Web Toolkit stuff.                        -->
+      <!-- login/shared module -->
+      <inherits name='hotmath.gwt.shared.CmShared'/>
+      
+      <!-- Inherit the core Web Toolkit stuff.
       <inherits name='com.google.gwt.user.User'/>
+      -->
 	
       <!-- Inherit the default GWT style sheet.  You can change       -->
       <!-- the theme of your GWT application by uncommenting          -->
@@ -14,12 +18,15 @@
       <inherits name='com.extjs.gxt.ui.GXT'/>
       <inherits name='com.extjs.gxt.themes.Themes' />
       <inherits name='com.google.gwt.json.JSON' />
+      <inherits name="com.google.gwt.http.HTTP" />
+      
       <!-- Specify the app entry point class.                         -->
       <entry-point class='hotmath.gwt.cm_admin.client.CatchupMathAdmin'/>
       
       <servlet path="/services/registrationService" class="hotmath.gwt.cm_admin.server.service.RegistrationServiceImpl" />
 
-      <!-- Specify the application specific style sheet.              -->
+      <!-- Specify the application specific style sheet.
       <stylesheet src='CatchupMathAdmin.css' />
+       -->
 	
 </module>
