@@ -8,10 +8,10 @@ import hotmath.gwt.cm.client.ui.HeaderPanel;
 import hotmath.gwt.cm.client.ui.context.LoginCmGuiDefinition;
 import hotmath.gwt.cm.client.ui.context.PrescriptionCmGuiDefinition;
 import hotmath.gwt.cm.client.ui.context.QuizCmGuiDefinition;
-import hotmath.gwt.cm.client.util.CmUserException;
 import hotmath.gwt.cm.client.util.UserInfo;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.data.CmAsyncRequest;
+import hotmath.gwt.shared.client.util.CmUserException;
 
 import java.util.HashMap;
 import java.util.List;
