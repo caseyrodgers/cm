@@ -1,6 +1,7 @@
 package hotmath.cm.login.service;
 
 import hotmath.gwt.cm.client.data.HaBasicUser;
+import hotmath.gwt.cm.client.data.HaBasicUser.UserType;
 import hotmath.testset.ha.HaUserFactory;
 
 import java.io.IOException;
@@ -14,7 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 /**
  * Provide redirect back to main server to get login information.
  * 
- * Login information is stored in CmLoginInfo which provivdes basic login
+ * Login information is stored in CmLoginInfo which provides basic login
  * information, such as:
  * 
  * if is admin user (should show the admin tool on login) or a student user,
@@ -42,10 +43,18 @@ public class LoginService extends HttpServlet {
             // create a security cookie, and return URL with reference to key
             long key = System.currentTimeMillis();
             String skey = "cm_" + key;
-            Cookie loginCookie = new Cookie("cm_key", "{key:'" + skey + "',uid:" + cmUser.getUserKey() + ", type:'" + cmUser.getUserType() + "'}");
+            String userIdKey;
+            if (cmUser.getUserType() == UserType.ADMIN) {
+            	userIdKey = "',aid:";
+            }
+            else {
+            	userIdKey = "',uid:";
+            }
+            
+            Cookie loginCookie = new Cookie("cm_key", "{key:'" + skey + userIdKey + cmUser.getUserKey() + ", type:'" + cmUser.getUserType() + "'}");
             resp.addCookie(loginCookie);
             
-            String res = "{status:'OK',key:'" + skey + "'}" ;
+            String res = "{status:'OK',key:'" + skey + userIdKey + "'" + cmUser.getUserKey() + "'}" ;
             resp.getWriter().write(res);
         }
         catch(Exception e) {
