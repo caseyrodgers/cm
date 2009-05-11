@@ -7,11 +7,15 @@ import hotmath.gwt.cm_admin.client.ui.HeaderPanel;
 import hotmath.gwt.cm_admin.client.ui.FooterPanel;
 import hotmath.gwt.cm_admin.client.ui.StudentDetailsPanel;
 import hotmath.gwt.cm_admin.client.ui.StudentGridPanel;
+import hotmath.gwt.shared.client.CmShared;
+import hotmath.gwt.shared.client.data.CmAsyncRequest;
+import hotmath.gwt.shared.client.model.UserInfoBase;
 
 import com.extjs.gxt.ui.client.Registry;
 import com.extjs.gxt.ui.client.Style.LayoutRegion;
 import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.Listener;
+import com.extjs.gxt.ui.client.event.MessageBoxEvent;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.Viewport;
@@ -20,6 +24,7 @@ import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
 
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.ServiceDefTarget;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.ClickListener;
@@ -39,6 +44,7 @@ public class CatchupMathAdmin implements EntryPoint {
 	HeaderPanel     headerPanel;
 	FooterPanel     footerPanel;
 	StudentGridPanel sgp;
+	int              userId;
 	
 	static CatchupMathAdmin instance;
 
@@ -48,6 +54,26 @@ public class CatchupMathAdmin implements EntryPoint {
 	public void onModuleLoad() {
 
 		instance = this;
+		
+        try {
+            userId = CmShared.handleLoginProcess();
+            if (UserInfoBase.getInstance() != null) {
+            	UserInfoBase user = UserInfoBase.getInstance();
+            	if (! user.isAdmin()) {
+                	throw new Exception("Not an admin");
+            	}
+            }
+        }
+        catch(Exception e) {
+            CatchupMathAdmin.showAlert(e.getMessage(), new CmAsyncRequest()  {
+                public void requestComplete(String requestData) {
+                    Window.Location.assign("/"); // goto home
+                }
+                public void requestFailed(int code, String text) {
+                }
+            });
+            return;
+        }
 		
 		mainPort = new Viewport();
 		mainPort.setLayout(new BorderLayout());
@@ -106,6 +132,17 @@ public class CatchupMathAdmin implements EntryPoint {
 			}
 		});
 	}
+
+	public static void showAlert(String msg, final CmAsyncRequest callback) {
+	    //setBusy(false);
+	    MessageBox.alert("Info", msg, new Listener<MessageBoxEvent>() {
+	        public void handleEvent(MessageBoxEvent be) {
+	            if(callback != null)
+	                callback.requestComplete(be.getValue());
+	        }
+	    });
+	}
+
 
 	public void showMe() {
 		;
