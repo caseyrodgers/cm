@@ -46,6 +46,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import sb.logger.SbLogger;
 import sb.util.SbFile;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
@@ -94,12 +95,23 @@ public class PrescriptionServiceImpl extends RemoteServiceServlet implements Pre
             problemsResource.setType("practice");
             problemsResource.setLabel("Required Problems");
             int cnt = 1;
+            int MAX_SOLUTIONS=3;
             for (AssessmentPrescription.SessionData sdata : practiceProblems) {
                 InmhItemData id = new InmhItemData();
                 id.setTitle("Problem " + cnt++);
                 id.setFile(sdata.getPid());
                 id.setType("practice");
+                
+                int gradeLevel = sdata.getGradeLevel();
+                if (gradeLevel > pres.getGradeLevel()) {
+                    SbLogger.postMessage("AssessmentPrescriptionSession: inmh item not included due to higher grade level:  " + sdata.getPid() + ", " + gradeLevel);
+                    continue;
+                }
                 problemsResource.getItems().add(id);
+                
+                // only allow MAX_SOLUTIONS 
+                if(problemsResource.getItems().size() > MAX_SOLUTIONS-1)
+                    break;
             }
 
             PrescriptionSessionDataResource lessonResource = new PrescriptionSessionDataResource();

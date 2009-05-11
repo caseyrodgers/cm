@@ -168,7 +168,7 @@ public class PrescriptionContext implements CmContext {
 
         final int cs = prescriptionData.getCurrSession().getSessionNumber();
         if (cs < 1) {
-            MessageBox.confirm("On First", "No previous topics.", new Listener<MessageBoxEvent>() {
+            MessageBox.alert("On First", "No previous topics.", new Listener<MessageBoxEvent>() {
                 public void handleEvent(MessageBoxEvent be) {
                     ContextController.getInstance().setCurrentContext(PrescriptionContext.this);
                 }

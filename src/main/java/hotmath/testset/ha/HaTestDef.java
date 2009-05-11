@@ -166,11 +166,10 @@ public class HaTestDef {
 	}
 	
 	int gradeLevel=0;
+	
+	
 	/** Return the grade level for this program
 	 *  or return -1 on error.
-	 * 
-	 * 
-	 * 
 	 */
 	public int getGradeLevel() {
 		try {

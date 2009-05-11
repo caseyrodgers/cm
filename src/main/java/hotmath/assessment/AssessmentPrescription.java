@@ -1,5 +1,6 @@
 package hotmath.assessment;
 
+import hotmath.BookInfoManager;
 import hotmath.HotMathException;
 import hotmath.ProblemID;
 import hotmath.inmh.INeedMoreHelpItem;
@@ -14,7 +15,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 import sb.util.SbUtilities;
 
@@ -351,6 +351,16 @@ public class AssessmentPrescription {
 
         public String getPid() {
             return pid;
+        }
+        
+        
+        /** Return the GradeLevel for this pid
+         * 
+         * @return
+         */
+        public int getGradeLevel() throws Exception {
+            return BookInfoManager.getInstance().getBookInfo(new ProblemID(this.pid).getBook()).getGradeLevel();
+            
         }
 
         public void setPid(String pid) {
