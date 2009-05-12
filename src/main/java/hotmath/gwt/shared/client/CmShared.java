@@ -23,6 +23,20 @@ public class CmShared implements EntryPoint {
 
     static Map<String,String> _queryParameters = new HashMap<String,String>();
 
+    
+    /** Return the parameter passed on query string 
+     * 
+     * @param name
+     * @return
+     */
+    static public String getQueryParameter(String name) {
+        return _queryParameters.get(name);
+        
+    }
+    
+    /** The URL to default to if cannot log in */
+    final public static String CM_HOME_URL = "http://localhost:8080/";    
+    
     /** Return the user id for this given user
      * 
      * @return
@@ -37,7 +51,6 @@ public class CmShared implements EntryPoint {
         // inform the server not to update the 
         // current state as the user moves around system.
         int userId=0;
-        int runId=0;
         String key2="";
         try {
             if(_queryParameters.get("uid") != null)
@@ -97,15 +110,6 @@ public class CmShared implements EntryPoint {
                 UserInfoBase user = UserInfoBase.getInstance();
                 user.setUid(userId);
                 user.setIsAdmin(isAdmin);
-            }
-
-            // if run_id passed in, then allow user to view_only
-            if(_queryParameters.get("run_id") != null) {
-                runId = Integer.parseInt(_queryParameters.get("run_id"));
-                // setup user to masquerade as real user
-                UserInfoBase user = UserInfoBase.getInstance();
-                user.setRunId(runId);
-                user.setUid(userId);
             }
             
             return userId;

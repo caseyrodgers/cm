@@ -1,33 +1,20 @@
 package hotmath.cm.login.service;
 
 import hotmath.gwt.cm.client.data.HaBasicUser;
-import hotmath.gwt.cm.client.data.HaBasicUser.UserType;
+import hotmath.testset.ha.HaLoginInfo;
 import hotmath.testset.ha.HaUserFactory;
 
 import java.io.IOException;
 
 import javax.servlet.ServletException;
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * Provide redirect back to main server to get login information.
- * 
- * Login information is stored in CmLoginInfo which provides basic login
- * information, such as:
- * 
- * if is admin user (should show the admin tool on login) or a student user,
- * which would load the student tool
- * 
- * Information is stored in CmLoginInfo object serialized as JSON
+ * Exposed as servlet that is called from Login Handler js in (core.js) of CM module
  * 
  * 
- * current exposed as servlet that is called from YUI library
- * 
- * 
- * @TODO: expose via GWT RPC
  * 
  * @author casey
  * 
@@ -39,22 +26,8 @@ public class LoginService extends HttpServlet {
         String pwd = req.getParameter("pwd");
         try {
             HaBasicUser cmUser = HaUserFactory.loginToCatchup(user, pwd);
-            
-            // create a security cookie, and return URL with reference to key
-            long key = System.currentTimeMillis();
-            String skey = "cm_" + key;
-            String userIdKey;
-            if (cmUser.getUserType() == UserType.ADMIN) {
-            	userIdKey = "',aid:";
-            }
-            else {
-            	userIdKey = "',uid:";
-            }
-            
-            Cookie loginCookie = new Cookie("cm_key", "{key:'" + skey + userIdKey + cmUser.getUserKey() + ", type:'" + cmUser.getUserType() + "'}");
-            resp.addCookie(loginCookie);
-            
-            String res = "{status:'OK',key:'" + skey + userIdKey + "'" + cmUser.getUserKey() + "'}" ;
+            HaLoginInfo loginInfo = new HaLoginInfo(cmUser);
+            String res = "{status:'OK',key:'" +loginInfo.getKey() + "', type:'" + loginInfo.getType() + "', userId:" + loginInfo.getUserId() + "}" ;
             resp.getWriter().write(res);
         }
         catch(Exception e) {
@@ -63,7 +36,7 @@ public class LoginService extends HttpServlet {
         }
     }
 
-    /**    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         doPost(req, resp);
     }
-    */}
+}

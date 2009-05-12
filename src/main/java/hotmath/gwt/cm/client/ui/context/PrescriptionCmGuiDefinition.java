@@ -12,8 +12,8 @@ import hotmath.gwt.cm.client.ui.ContextController;
 import hotmath.gwt.cm.client.ui.HeaderPanel;
 import hotmath.gwt.cm.client.ui.viewer.ResourceViewer;
 import hotmath.gwt.cm.client.ui.viewer.ResourceViewerFactory;
-import hotmath.gwt.cm.client.util.RpcData;
 import hotmath.gwt.cm.client.util.UserInfo;
+import hotmath.gwt.shared.client.util.RpcData;
 
 import java.util.List;
 
@@ -25,7 +25,6 @@ import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.fx.FxConfig;
 import com.extjs.gxt.ui.client.store.ListStore;
-import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.Html;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;

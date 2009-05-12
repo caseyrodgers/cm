@@ -11,11 +11,8 @@ import hotmath.gwt.cm.client.ui.context.QuizCmGuiDefinition;
 import hotmath.gwt.cm.client.util.UserInfo;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.data.CmAsyncRequest;
-import hotmath.gwt.shared.client.util.CmUserException;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import hotmath.gwt.shared.client.data.CmAsyncRequestImplDefault;
+import hotmath.gwt.shared.client.model.UserInfoBase;
 
 import com.extjs.gxt.ui.client.GXT;
 import com.extjs.gxt.ui.client.Registry;
@@ -33,10 +30,6 @@ import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
-import com.google.gwt.json.client.JSONObject;
-import com.google.gwt.json.client.JSONParser;
-import com.google.gwt.json.client.JSONValue;
-import com.google.gwt.user.client.Cookies;
 import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.ServiceDefTarget;
@@ -97,13 +90,18 @@ public class CatchupMath implements EntryPoint {
 
         try {
             userId = CmShared.handleLoginProcess();
+
+            // if run_id passed in, then allow user to view_only
+            if(CmShared.getQueryParameter("run_id") != null) {
+                int runId = Integer.parseInt(CmShared.getQueryParameter("run_id"));
+                // setup user to masquerade as real user
+                UserInfo.getInstance().setRunId(runId);
+            }            
         }
         catch(Exception e) {
-            CatchupMath.showAlert(e.getMessage(), new CmAsyncRequest()  {
+            CatchupMath.showAlert(e.getMessage(), new CmAsyncRequestImplDefault()  {
                 public void requestComplete(String requestData) {
-                    Window.Location.assign("/"); // goto home
-                }
-                public void requestFailed(int code, String text) {
+                    Window.Location.assign(CmShared.CM_HOME_URL); // goto home
                 }
             });
             return;

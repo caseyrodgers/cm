@@ -2,6 +2,7 @@ package hotmath.gwt.cm.client.ui;
 
 import hotmath.gwt.cm.client.CatchupMath;
 import hotmath.gwt.cm.client.util.UserInfo;
+import hotmath.gwt.shared.client.CmShared;
 
 import com.extjs.gxt.ui.client.event.IconButtonEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
@@ -44,7 +45,7 @@ public class HeaderPanel extends LayoutContainer {
 		btn.setStyleName("header-panel-logout-btn");
 		btn.addSelectionListener(new SelectionListener<IconButtonEvent>() {
 			public void componentSelected(IconButtonEvent ce) {
-				Window.Location.assign("/");
+				Window.Location.assign(CmShared.CM_HOME_URL);
 			};
 		});		
 		add(btn);

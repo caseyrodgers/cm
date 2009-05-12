@@ -20,22 +20,35 @@ public class UserInfo implements IsSerializable {
 
 	static private UserInfo __instance;
 
+	/** This is only active for one session, meaning there will only be one
+	 *  userid... The state of that user will change: diff topic,resource,etc.
+	 *  
+	 *
+	 *  It is an error is getInstance is called before being set.
+	 *   
+	 * @return
+	 */
 	static public UserInfo getInstance() {
-		if (__instance != null) {
-			UserInfoBase base = UserInfoBase.getInstance();
-			if (base != null) {
-				if (base.getUid() != __instance.getUid() ||
-				    base.getRunId() != __instance.getRunId()) {
-	                UserInfo user = new UserInfo(0,0);
-	                user.setRunId(base.getRunId());
-	                user.setSessionNumber(0);
-	                user.setUid(base.getUid());
-	                UserInfo.setInstance(user);
-				}
-			}
-		}
 		return __instance;
 	}
+	
+	
+//	   static public UserInfo getInstance() {
+//	        if (__instance != null) {
+//	            UserInfoBase base = UserInfoBase.getInstance();
+//	            if (base != null) {
+//	                if (base.getUid() != __instance.getUid() || base.getRunId() != __instance.getRunId()) {
+//	                    UserInfo user = new UserInfo(0,0);
+//	                    user.setRunId(base.getRunId());
+//	                    user.setSessionNumber(0);
+//	                    user.setUid(base.getUid());
+//	                    UserInfo.setInstance(user);
+//	                }
+//	            }
+//	        }
+//	        return __instance;
+//	    }
+
 
 	/** Set the shared user object
 	 * 
@@ -114,6 +127,10 @@ public class UserInfo implements IsSerializable {
         return activeUser;
     }
 
+	/** Mark this user as the owner of the thread
+	 * 
+	 * @param activeUser
+	 */
     public void setActiveUser(boolean activeUser) {
         this.activeUser = activeUser;
     }
