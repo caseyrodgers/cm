@@ -7,6 +7,7 @@ import hotmath.gwt.cm_admin.client.ui.HeaderPanel;
 import hotmath.gwt.cm_admin.client.ui.FooterPanel;
 import hotmath.gwt.cm_admin.client.ui.StudentDetailsPanel;
 import hotmath.gwt.cm_admin.client.ui.StudentGridPanel;
+import hotmath.gwt.cm_admin.client.model.CmAdminModel;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.data.CmAsyncRequest;
 import hotmath.gwt.shared.client.model.UserInfoBase;
@@ -45,6 +46,7 @@ public class CatchupMathAdmin implements EntryPoint {
 	FooterPanel     footerPanel;
 	StudentGridPanel sgp;
 	int              userId;
+	CmAdminModel     cmAdminMdl;
 	
 	static CatchupMathAdmin instance;
 
@@ -57,12 +59,18 @@ public class CatchupMathAdmin implements EntryPoint {
 		
         try {
             userId = CmShared.handleLoginProcess();
-            if (UserInfoBase.getInstance() != null) {
-            	UserInfoBase user = UserInfoBase.getInstance();
+            UserInfoBase user = UserInfoBase.getInstance();
+            if (user != null) {
             	if (! user.isAdmin()) {
-                	throw new Exception("Not an admin");
+            		//TODO: restore Admin check
+                	//throw new Exception("Not an admin");
             	}
             }
+            else {
+            	throw new Exception("Login failed!");
+            }
+            cmAdminMdl = new CmAdminModel();
+            cmAdminMdl.setId(userId);
         }
         catch(Exception e) {
             CatchupMathAdmin.showAlert(e.getMessage(), new CmAsyncRequest()  {
@@ -93,7 +101,7 @@ public class CatchupMathAdmin implements EntryPoint {
 		mainContainer = new LayoutContainer();
 		mainContainer.setStylePrimaryName("main-container");
 		
-		sgp = new StudentGridPanel();
+		sgp = new StudentGridPanel(cmAdminMdl);
 		mainContainer.add(sgp);
 		mainContainer.setHeight(630);
 		mainContainer.setMonitorWindowResize(true);
