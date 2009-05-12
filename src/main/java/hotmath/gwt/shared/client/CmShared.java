@@ -60,7 +60,7 @@ public class CmShared implements EntryPoint {
             if(userId == 0) {
                 String cmKey = Cookies.getCookie("cm_key");
                 if(cmKey == null) {
-                    throw new Exception("No login cookie found");   
+                    throw new Exception("No login key found");   
                 }
                 cmKey = cmKey.substring(1,cmKey.length()-1);
                 
