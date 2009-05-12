@@ -47,16 +47,12 @@ public class StudentGridPanel extends LayoutContainer {
 	// TODO: undo button?
 	//private Button undoButton;
 	
-	public StudentGridPanel() {
-		
-		//TODO: get passcode from Login
-		CmAdminModel cmAdminMdl = new CmAdminModel();
-		cmAdminMdl.setPassCode("vtest");
+	public StudentGridPanel(CmAdminModel cmAdminMdl) {
 		
 	    setLayout(new FlowLayout(10));
 	    
 	    final ListStore<StudentModel> store = new ListStore<StudentModel>();
-	    getStudentsRPC(cmAdminMdl.getPassCode(), store);
+	    getStudentsRPC(cmAdminMdl.getId(), store);
 	    
 	    ColumnModel cm = defineColumns();
 
@@ -71,7 +67,7 @@ public class StudentGridPanel extends LayoutContainer {
 	    //hp.setHorizontalAlign(HorizontalAlignment.CENTER);
 	    
 	    ContentPanel cp = new ContentPanel();
-	    getAccountInfoRPC(cmAdminMdl.getPassCode(), cp);
+	    getAccountInfoRPC(cmAdminMdl.getId(), cp);
 	    //hp.add(mainContentPanel);
 	    
 	    cp.setFrame(true);  
@@ -304,10 +300,10 @@ public class StudentGridPanel extends LayoutContainer {
 		return cm;
 	}
 
-	protected void getStudentsRPC(String adminPasscode, final ListStore <StudentModel> store) {
+	protected void getStudentsRPC(Integer uid, final ListStore <StudentModel> store) {
 		RegistrationServiceAsync s = (RegistrationServiceAsync) Registry.get("registrationService");
 		
-		s.getSummariesForActiveStudents(adminPasscode, new AsyncCallback <List<StudentModel>>() {
+		s.getSummariesForActiveStudents(uid, new AsyncCallback <List<StudentModel>>() {
 
 			public void onSuccess(List<StudentModel> result) {
 				store.add(result);
@@ -320,10 +316,10 @@ public class StudentGridPanel extends LayoutContainer {
         });
 	}
 	
-	protected void getAccountInfoRPC(String adminPasscode, final ContentPanel cp) {
+	protected void getAccountInfoRPC(Integer uid, final ContentPanel cp) {
 		RegistrationServiceAsync s = (RegistrationServiceAsync) Registry.get("registrationService");
 		
-		s.getAccountInfo(adminPasscode, new AsyncCallback <AccountInfoModel> () {
+		s.getAccountInfo(uid, new AsyncCallback <AccountInfoModel> () {
 			
 			public void onSuccess(AccountInfoModel ai) {
 			    StringBuilder sb = new StringBuilder();
