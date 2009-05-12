@@ -58,7 +58,7 @@ public class RegisterStudent extends LayoutContainer {
 	private ListStore <GroupModel> groupStore;
 	private ComboBox <GroupModel> groupCombo;
 	
-	private int formHeight = 350;
+	private int formHeight = 320;
 	private int formWidth  = 340;
 	
 	public RegisterStudent(final Grid<StudentModel> grid, StudentModel sm, CmAdminModel cm) {
@@ -107,6 +107,7 @@ public class RegisterStudent extends LayoutContainer {
 		}
 		fp.add(passCode);
 
+/* don't need email field for now
 		TextField<String> email = new TextField<String>();
 		email.setFieldLabel("Email");
 		email.setEmptyText("-- enter email --");
@@ -118,10 +119,10 @@ public class RegisterStudent extends LayoutContainer {
 			email.setValue((String)stuMdl.getEmail());
 		}
 		fp.add(email);
+*/
 
 		groupStore = new ListStore <GroupModel> ();
-		//TODO: use admin id
-		getGroupListRPC(cmAdminMdl.getPassCode(), groupStore);
+		getGroupListRPC(cmAdminMdl.getId(), groupStore);
 		groupCombo = groupCombo(groupStore);
 		fp.add(groupCombo);
 		
@@ -361,13 +362,14 @@ public class RegisterStudent extends LayoutContainer {
 	        		tf.focus();
 	        		return;
 	        	}
+/* don't need email field for now
 	        	tf = (TextField<String>)fp.getItemByItemId(StudentModel.EMAIL_KEY);
 	        	String email = tf.getValue();
 	        	if (email == null) {
 	        		tf.focus();
 	        		return;
 	        	}
-
+*/
 	        	ComboBox<GroupModel> cg = (ComboBox<GroupModel>) fp.getItemByItemId("group-combo");
 	        	GroupModel g = cg.getValue();
 	        	if (g == null) {
@@ -416,14 +418,17 @@ public class RegisterStudent extends LayoutContainer {
 		        	StudentModel sm = new StudentModel();
 		        	sm.setName(name);
 		        	sm.setPasscode(passcode);
-		        	sm.setEmail(email);
+		        	//sm.setEmail(email);
 		        	sm.setProgramDescr(prog);
-		        	sm.setGroup(groupId);
+		        	sm.setGroupId(groupId);
+		        	sm.setGroup(group);
 		        	sm.setStatus("Not started");
+		        	sm.setAdminUid(cmAdminMdl.getId());
 
-	        	    eg.getStore().add(sm);
+		        	eg.getStore().add(sm);
 	        	    
-	        	    addUserRPC(stuMdl);
+		        	//TODO:  new student not available w/o update of HA_TEST
+	        	    //addUserRPC(sm);
 
 	        	    //TODO: update DB - HA_TEST
 	        	}
@@ -438,10 +443,12 @@ public class RegisterStudent extends LayoutContainer {
 	        			stuMdl.setPasscode(passcode);
 	        			stuChanged = true;
 	        		}
+/* don't need email field for now
 	        		if (! email.equals(stuMdl.getEmail())) {
 	        			stuMdl.setEmail(email);
 	        			stuChanged = true;
 	        		}
+*/
 	        		if (! groupId.equals(stuMdl.getGroupId())) {
 	        			stuMdl.setGroupId(groupId);
 	        			stuMdl.setGroup(group);
@@ -518,11 +525,11 @@ public class RegisterStudent extends LayoutContainer {
 		
 	}
 	
-	private void getGroupListRPC(String adminPasscode, final ListStore <GroupModel> store) {
+	private void getGroupListRPC(Integer uid, final ListStore <GroupModel> store) {
 		
 		inProcessCount++;
 		RegistrationServiceAsync s = (RegistrationServiceAsync) Registry.get("registrationService");
-		s.getActiveGroups(adminPasscode, new AsyncCallback <List<GroupModel>>() {
+		s.getActiveGroups(uid, new AsyncCallback <List<GroupModel>>() {
 
 			public void onSuccess(List<GroupModel> result) {
 				groupStore.add(result);
