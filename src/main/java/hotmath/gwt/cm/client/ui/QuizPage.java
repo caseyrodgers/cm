@@ -120,7 +120,7 @@ public class QuizPage extends LayoutContainer {
 		add(html);
 
 		if(UserInfo.getInstance().isActiveUser()) {
-            Anchor markCorrect = new Anchor("mark all corect");
+            Anchor markCorrect = new Anchor("mark all correct");
             markCorrect.addClickHandler(new ClickHandler() {
                 public void onClick(ClickEvent arg0) {
                     markAllCorrectAnswers();
