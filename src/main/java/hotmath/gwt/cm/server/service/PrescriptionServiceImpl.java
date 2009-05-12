@@ -86,6 +86,10 @@ public class PrescriptionServiceImpl extends RemoteServiceServlet implements Pre
                 return rdata;
             }
             // which session
+            if(sessionNumber > (totalSessions-1)) {
+                System.out.println("WARNING: session request for " + runId + " is outside bounds of prescription: " + sessionNumber + ", " + totalSessions);
+                sessionNumber = 0;
+            }
             AssessmentPrescriptionSession sess = pres.getSessions().get(sessionNumber);
 
             PrescriptionData presData = new PrescriptionData();
