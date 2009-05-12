@@ -43,14 +43,14 @@ public class RegistrationServiceImpl extends RemoteServiceServlet implements Reg
 		return progList;
 	}
 
-	public List<StudentModel> getSummariesForActiveStudents(String adminPasscode) {
+	public List<StudentModel> getSummariesForActiveStudents(Integer adminUid) {
 		CmAdminDao cma = new CmAdminDao();
-		return cma.getSummariesForActiveStudents(adminPasscode);
+		return cma.getSummariesForActiveStudents(adminUid);
 	}
 	
-	public List<StudentModel> getSummariesForInactiveStudents(String adminPasscode) {
+	public List<StudentModel> getSummariesForInactiveStudents(Integer adminUid) {
 		CmAdminDao cma = new CmAdminDao();
-		return cma.getSummariesForInactiveStudents(adminPasscode);
+		return cma.getSummariesForInactiveStudents(adminUid);
 	}
 	
 	public List<SubjectModel> getSubjectDefinitions() {
@@ -171,14 +171,14 @@ public class RegistrationServiceImpl extends RemoteServiceServlet implements Reg
 */
 	}
 	
-	public List<GroupModel> getActiveGroups(String adminPasscode) {
+	public List<GroupModel> getActiveGroups(Integer adminUid) {
 		CmAdminDao cma = new CmAdminDao();
-		return cma.getActiveGroups(adminPasscode);
+		return cma.getActiveGroups(adminUid);
 	}
 
-	public AccountInfoModel getAccountInfo(String adminPasscode) {
+	public AccountInfoModel getAccountInfo(Integer adminUid) {
 		CmAdminDao cma = new CmAdminDao();
-		return cma.getAccountInfo(adminPasscode);
+		return cma.getAccountInfo(adminUid);
 	}
 
 	public StudentModel addUser(StudentModel sm) {
