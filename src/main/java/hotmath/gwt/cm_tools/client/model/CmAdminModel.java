@@ -3,7 +3,10 @@ package hotmath.gwt.cm_admin.client.model;
 import com.extjs.gxt.ui.client.data.BaseModelData;
 
 public class CmAdminModel extends BaseModelData {
-    private static final String UID_KEY = "uid";
+
+	private static final long serialVersionUID = -9047690530665830053L;
+	
+	private static final String UID_KEY = "uid";
     private static final String SUBSCRIBER_ID_KEY = "subscriberId";
     private static final String PASSCODE_KEY = "paddcode";
 
