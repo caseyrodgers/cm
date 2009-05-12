@@ -7,9 +7,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -57,18 +54,18 @@ public class CmAdminDao {
         "LEFT JOIN v_HA_TEST_INMH_VIEWS_INFO i on i.user_name = h.user_name " +
         "LEFT JOIN v_HA_TEST_RUN_max m on m.uid = h.uid " +
         "LEFT JOIN CM_GROUP g on g.id = h.group_id " +
-        "WHERE a.passcode = ? and h.is_active = ? " +
+        "WHERE a.aid = ? and h.is_active = ? " +
         "ORDER by h.user_name asc";
 
-    public List <StudentModel> getSummariesForActiveStudents(String adminPasscode) {
-    	return getStudentSummaries(adminPasscode, true);
+    public List <StudentModel> getSummariesForActiveStudents(Integer adminUid) {
+    	return getStudentSummaries(adminUid, true);
     }
     
-    public List <StudentModel> getSummariesForInactiveStudents(String adminPasscode) {
-    	return getStudentSummaries(adminPasscode, false);
+    public List <StudentModel> getSummariesForInactiveStudents(Integer adminUid) {
+    	return getStudentSummaries(adminUid, false);
     }
 
-    public List <StudentModel> getStudentSummaries(String adminPasscode, Boolean isActive) {
+    public List <StudentModel> getStudentSummaries(Integer adminUid, Boolean isActive) {
     	List <StudentModel> l = null;
     	
     	Connection conn = null;
@@ -78,14 +75,14 @@ public class CmAdminDao {
     	try {
     		conn = HMConnectionPool.getConnection();
     		ps = conn.prepareStatement(GET_STUDENTS_SQL);
-    		ps.setString(1, adminPasscode);
+    		ps.setInt(1, adminUid);
     		ps.setInt(2, (isActive)?1:0);
     		rs = ps.executeQuery();
     		
     		l = loadStudentSummaries(rs);
     	}
     	catch (Exception e) {
-    		//logger.error(String.format("*** Error getting student summaries for Admin passcode: %s", adminPasscode), e);
+    		//logger.error(String.format("*** Error getting student summaries for Admin uid: %d", adminUid), e);
     		//throw e;
     	}
     	finally {
@@ -96,7 +93,7 @@ public class CmAdminDao {
     
     //TODO add Subject selection by school type (non-college, college)
     
-    private static String SELECT_SUBJECTS_SQL = "select * from HA_SUBJ_DEF";
+    private static String SELECT_SUBJECTS_SQL = "select * from HA_SUBJ_DEF where for_school = ?";
     
     public List <SubjectModel> getSubjectDefinitions() {
     	List <SubjectModel> l = null;
@@ -109,7 +106,8 @@ public class CmAdminDao {
     		conn = HMConnectionPool.getConnection();
     		
     		ps = conn.prepareStatement(SELECT_SUBJECTS_SQL);
-    		//ps.setString(1, schoolType);
+    		//TODO: separate queries for schools and colleges
+    		ps.setInt(1, 1);
     		rs = ps.executeQuery();
     		
     		l = loadSubjectDefinitions(rs);
@@ -168,7 +166,7 @@ public class CmAdminDao {
     private static final String GET_GROUPS_SQL =
     	"select id, name, description, is_active " +
         "from  CM_GROUP g INNER JOIN HA_ADMIN a ON g.admin_id = a.aid " +
-        "where a.passcode = ? " +
+        "where a.aid = ? " +
         " and g.is_active = ? " +
         "UNION " +
         "select g.id, g.name, g.description, g.is_active " +
@@ -177,7 +175,7 @@ public class CmAdminDao {
         " and g.is_active = ? " +
         "order by name asc";
 
-    public List <GroupModel> getActiveGroups(String adminPasscode) {
+    public List <GroupModel> getActiveGroups(Integer adminUid) {
     	List <GroupModel> l = null;
     	
     	Connection conn = null;
@@ -187,7 +185,7 @@ public class CmAdminDao {
     	try {
     		conn = HMConnectionPool.getConnection();
     		ps = conn.prepareStatement(GET_GROUPS_SQL);
-    		ps.setString(1, adminPasscode);
+    		ps.setInt(1, adminUid);
     		ps.setInt(2, 1);
     		ps.setInt(3, 1);
     		rs = ps.executeQuery();
@@ -195,7 +193,7 @@ public class CmAdminDao {
     		l = loadGroups(rs);
     	}
     	catch (Exception e) {
-    		//logger.error(String.format("*** Error getting groups for admin passcode: %s", adminPasscode), e);
+    		//logger.error(String.format("*** Error getting groups for admin uid: %d", adminUid), e);
     		//throw e;
     	}
     	finally {
@@ -204,7 +202,7 @@ public class CmAdminDao {
     	return l;
     }
     
-    public AccountInfoModel getAccountInfo(String adminPasscode) {
+    public AccountInfoModel getAccountInfo(Integer adminUid) {
     	AccountInfoModel ai = new AccountInfoModel();
 
     	//TODO: retrieve from DB
@@ -214,8 +212,8 @@ public class CmAdminDao {
     }
     
     private static final String ADD_USER_SQL =
-    	"insert into HA_USER (user_name, user_passcode, user_email, group_id, admin_id " +
-    	"values(?, ?, ?, ?, ?)";
+    	"insert into HA_USER (user_name, user_passcode, active_segment, group_id, admin_id, is_active) " +
+    	"values(?, ?, ?, ?, ?, 1)";
     
     public StudentModel addStudent(StudentModel sm) {
     	Connection conn = null;
@@ -224,12 +222,14 @@ public class CmAdminDao {
     	
     	try {
     		conn = HMConnectionPool.getConnection();
-    		ps = conn.prepareStatement(UPDATE_USER_SQL);
+    		ps = conn.prepareStatement(ADD_USER_SQL);
     		ps.setString(1, sm.getName());
     		ps.setString(2, sm.getPasscode());
-    		ps.setString(3, sm.getEmail());
+    		ps.setInt(3, 0);  //TODO: confirm start at segment 0
     		ps.setInt(4, Integer.parseInt(sm.getGroupId()));
     		ps.setInt(5, sm.getAdminUid());
+    		
+    		int count = ps.executeUpdate();
     	}
     	catch (Exception e) {
     		//logger.error(String.format("*** Error adding student with passcode: %s", sm.getPasscode()), e);
@@ -244,7 +244,7 @@ public class CmAdminDao {
     }
     
     private static final String DEACTIVATE_USER_SQL =
-    	"update HA_USER set is_active = 0 where user_passcode = ?";
+    	"update HA_USER set is_active = 0 where uid = ?";
     
     public StudentModel deactivateUser(StudentModel sm) {
     	Connection conn = null;
@@ -254,11 +254,11 @@ public class CmAdminDao {
     	try {
     		conn = HMConnectionPool.getConnection();
     		ps = conn.prepareStatement(DEACTIVATE_USER_SQL);
-    		ps.setString(1, sm.getPasscode());
+    		ps.setInt(1, sm.getUid());
     		int result = ps.executeUpdate();
     	}
     	catch (Exception e) {
-    		//logger.error(String.format("*** Error deactivating student with passcode: %s", sm.getPasscode()), e);
+    		//logger.error(String.format("*** Error deactivating student with uid: %d", sm.getUid()), e);
     		//throw e;
     	}
     	finally {
@@ -270,10 +270,11 @@ public class CmAdminDao {
 
     private static final String UPDATE_USER_SQL =
     	"update HA_USER set " +
-    	" user_name = ?, user_passcode = ?, user_email = ?, group_id = ? " +
+    	" user_name = ?, user_passcode = ?, group_id = ? " +
     	"where uid = ?";
     
     public StudentModel updateStudent(StudentModel sm) {
+    	System.out.println("in CmAdminDao.updateStudent()");
     	Connection conn = null;
     	PreparedStatement ps = null;
     	ResultSet rs = null;
@@ -283,9 +284,9 @@ public class CmAdminDao {
     		ps = conn.prepareStatement(UPDATE_USER_SQL);
     		ps.setString(1, sm.getName());
     		ps.setString(2, sm.getPasscode());
-    		ps.setString(3, sm.getEmail());
-    		ps.setInt(4, Integer.parseInt(sm.getGroupId()));
-    		ps.setInt(5, sm.getUid());
+    		//ps.setString(3, sm.getEmail());
+    		ps.setInt(3, Integer.parseInt(sm.getGroupId()));
+    		ps.setInt(4, sm.getUid());
     		int result = ps.executeUpdate();
     	}
     	catch (Exception e) {
