@@ -15,17 +15,17 @@ public interface RegistrationServiceAsync {
 	
 	  void getProgramDefinitions(AsyncCallback<List<StudyProgramModel>> callback);
 	  
-	  void getSummariesForActiveStudents(String adminPasscode, AsyncCallback<List<StudentModel>> callback);
+	  void getSummariesForActiveStudents(Integer adminUid, AsyncCallback<List<StudentModel>> callback);
 	  
-	  void getSummariesForInactiveStudents(String adminPasscode, AsyncCallback<List<StudentModel>> callback);
+	  void getSummariesForInactiveStudents(Integer adminUid, AsyncCallback<List<StudentModel>> callback);
 	  
-	  void getActiveGroups(String adminPasscode, AsyncCallback<List<GroupModel>> callback);
+	  void getActiveGroups(Integer adminUid, AsyncCallback<List<GroupModel>> callback);
 	  
 	  void getSubjectDefinitions(AsyncCallback<List<SubjectModel>> callback);
 	  
 	  void getStudentActivity(StudentModel sm, AsyncCallback<List<StudentActivityModel>> callback);
 	  
-	  void getAccountInfo(String adminPasscode, AsyncCallback<AccountInfoModel> callback);
+	  void getAccountInfo(Integer adminUid, AsyncCallback<AccountInfoModel> callback);
 	  
 	  void addUser(StudentModel sm, AsyncCallback<StudentModel> callback);
 	  

@@ -15,17 +15,17 @@ public interface RegistrationService extends RemoteService {
 
 	  List<StudyProgramModel> getProgramDefinitions();
 	  
-	  List<StudentModel> getSummariesForActiveStudents(String adminPasscode); 
+	  List<StudentModel> getSummariesForActiveStudents(Integer adminIUid); 
 
-	  List<StudentModel> getSummariesForInactiveStudents(String adminPasscode);
+	  List<StudentModel> getSummariesForInactiveStudents(Integer adminUid);
 	  
-	  List<GroupModel> getActiveGroups(String adminPasscode);
+	  List<GroupModel> getActiveGroups(Integer adminUid);
 
 	  List<SubjectModel> getSubjectDefinitions();
 	  
 	  List<StudentActivityModel> getStudentActivity(StudentModel sm);
 	  
-	  AccountInfoModel getAccountInfo(String adminPasscode);
+	  AccountInfoModel getAccountInfo(Integer adminUid);
 
 	  StudentModel addUser(StudentModel sm);
 
