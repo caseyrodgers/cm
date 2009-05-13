@@ -212,8 +212,8 @@ public class CmAdminDao {
     }
     
     private static final String ADD_USER_SQL =
-    	"insert into HA_USER (user_name, user_passcode, active_segment, group_id, admin_id, is_active) " +
-    	"values(?, ?, ?, ?, ?, 1)";
+    	"insert into HA_USER (user_name, user_passcode, active_segment, group_id, test_def_id, admin_id, is_active) " +
+    	"values(?, ?, ?, ?, (select test_def_id from HA_TEST_DEF where prog_id = ? and subj_id = ?), ?, 1)";
     
     public StudentModel addStudent(StudentModel sm) {
     	Connection conn = null;
@@ -225,9 +225,15 @@ public class CmAdminDao {
     		ps = conn.prepareStatement(ADD_USER_SQL);
     		ps.setString(1, sm.getName());
     		ps.setString(2, sm.getPasscode());
-    		ps.setInt(3, 0);  //TODO: confirm start at segment 0
+    		ps.setInt(3, 0);
     		ps.setInt(4, Integer.parseInt(sm.getGroupId()));
-    		ps.setInt(5, sm.getAdminUid());
+    		String shortName = sm.getProgramDescr();
+    		int offset = shortName.lastIndexOf(" ");
+    		String subjId = shortName.substring(0, offset);
+    		String progId = shortName.substring(offset+1);
+    		ps.setString(5, progId);
+    		ps.setString(6, subjId);
+    		ps.setInt(7, sm.getAdminUid());
     		
     		int count = ps.executeUpdate();
     	}
@@ -270,11 +276,11 @@ public class CmAdminDao {
 
     private static final String UPDATE_USER_SQL =
     	"update HA_USER set " +
-    	" user_name = ?, user_passcode = ?, group_id = ? " +
+    	" user_name = ?, user_passcode = ?, group_id = ?, active_segment = ?, " +
+    	" test_def_id = (select test_def_id from HA_TEST_DEF where prog_id = ? and subj_id = ?) " +
     	"where uid = ?";
     
     public StudentModel updateStudent(StudentModel sm) {
-    	System.out.println("in CmAdminDao.updateStudent()");
     	Connection conn = null;
     	PreparedStatement ps = null;
     	ResultSet rs = null;
@@ -282,6 +288,43 @@ public class CmAdminDao {
     	try {
     		conn = HMConnectionPool.getConnection();
     		ps = conn.prepareStatement(UPDATE_USER_SQL);
+    		ps.setString(1, sm.getName());
+    		ps.setString(2, sm.getPasscode());
+    		//ps.setString(3, sm.getEmail());
+    		ps.setInt(3, Integer.parseInt(sm.getGroupId()));
+    		String shortName = sm.getProgramDescr();
+    		int offset = shortName.lastIndexOf(" ");
+    		String subjId = shortName.substring(0, offset);
+    		String progId = shortName.substring(offset+1);
+    		ps.setInt(4, sm.getSectionNum());
+    		ps.setString(5, progId);
+    		ps.setString(6, subjId);
+    		ps.setInt(7, sm.getUid());
+    		int result = ps.executeUpdate();
+    	}
+    	catch (Exception e) {
+    		//logger.error(String.format("*** Error updating student with uid: %d", sm.getUid()), e);
+    		//throw e;
+    	}
+    	finally {
+    		SqlUtilities.releaseResources(rs, ps, conn);
+    	}
+    	return sm;    	
+    }
+
+    private static final String INSERT_USER_SQL =
+    	"insert HA_USER set " +
+    	" user_name = ?, user_passcode = ?, group_id = ? " +
+    	"where uid = ?";
+    
+    public StudentModel updateStudentProgram(StudentModel sm) {
+    	Connection conn = null;
+    	PreparedStatement ps = null;
+    	ResultSet rs = null;
+    	
+    	try {
+    		conn = HMConnectionPool.getConnection();
+    		ps = conn.prepareStatement(INSERT_USER_SQL);
     		ps.setString(1, sm.getName());
     		ps.setString(2, sm.getPasscode());
     		//ps.setString(3, sm.getEmail());
@@ -297,8 +340,6 @@ public class CmAdminDao {
     		SqlUtilities.releaseResources(rs, ps, conn);
     	}
     	return sm;    	
-
-    	
     }
 
     private List <GroupModel> loadGroups(ResultSet rs) throws Exception {
