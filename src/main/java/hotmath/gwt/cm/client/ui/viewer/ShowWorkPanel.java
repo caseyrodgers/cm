@@ -32,7 +32,7 @@ public class ShowWorkPanel extends Frame {
 		
 		__lastInstance = this;
 		setWidth("100%");
-		setHeight("400px");
+		setHeight("100%");
 		// setupGui();
 		setStyleName("show-work-panel");
 		id = "show_work_" + System.currentTimeMillis();

@@ -336,6 +336,13 @@
     color: #E43C00;
 }
 
+.hide-work-button {
+    position: absolute;
+    top: 5px;
+    right: 160px;
+    width: 130px;
+    color: #E43C00;
+}
 
 
 #steps_head_title {

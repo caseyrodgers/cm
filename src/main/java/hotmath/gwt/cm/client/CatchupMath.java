@@ -58,6 +58,7 @@ public class CatchupMath implements EntryPoint {
     HeaderPanel _headerPanel;
 
     CmProgramInfo _cmProgramInfo = new CmProgramInfo();
+
     
     /**
      * This is the entry point method.
