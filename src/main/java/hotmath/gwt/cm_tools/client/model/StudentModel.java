@@ -8,6 +8,7 @@ public class StudentModel extends BaseModelData  {
 	
 	public static final String GROUP_KEY = "group";
 	public static final String GROUP_ID_KEY = "groupId";
+	public static final String SECTION_NUM_KEY = "sectionNum";
 	
 	public static final String UID_KEY = "uid";
 	public static final String EMAIL_KEY = "email";
@@ -53,6 +54,14 @@ public class StudentModel extends BaseModelData  {
 		set(GROUP_ID_KEY, groupId);
 	}
 
+	public void setSectionNum(Integer sectionNum) {
+		set(SECTION_NUM_KEY, sectionNum);
+	}
+	
+	public Integer getSectionNum() {
+		return get(SECTION_NUM_KEY);
+	}
+	
 	public void setLastLogin(String lastLogin) {
 		set("last-login", lastLogin);
 	}
@@ -107,6 +116,14 @@ public class StudentModel extends BaseModelData  {
 	
 	public Integer getAdminUid() {
 		return get(ADMIN_UID_KEY);
+	}
+	
+	public void setProgramChanged(Boolean changed) {
+		set("programChanged", changed);
+	}
+	
+	public Boolean getProgramChanged() {
+		return get("programChanged");
 	}
 
 	public StudentModel() {
