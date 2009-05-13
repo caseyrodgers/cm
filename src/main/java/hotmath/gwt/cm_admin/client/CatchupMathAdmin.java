@@ -12,11 +12,13 @@ import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.data.CmAsyncRequest;
 import hotmath.gwt.shared.client.model.UserInfoBase;
 
+import com.extjs.gxt.ui.client.GXT;
 import com.extjs.gxt.ui.client.Registry;
 import com.extjs.gxt.ui.client.Style.LayoutRegion;
 import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.MessageBoxEvent;
+import com.extjs.gxt.ui.client.util.Theme;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.Viewport;
@@ -56,6 +58,8 @@ public class CatchupMathAdmin implements EntryPoint {
 	public void onModuleLoad() {
 
 		instance = this;
+
+		GXT.setDefaultTheme(Theme.GRAY, true);
 		
         try {
             userId = CmShared.handleLoginProcess();
