@@ -424,13 +424,11 @@ public class RegisterStudent extends LayoutContainer {
 		        	sm.setGroup(group);
 		        	sm.setStatus("Not started");
 		        	sm.setAdminUid(cmAdminMdl.getId());
+		        	sm.setSectionNum(0);
 
 		        	eg.getStore().add(sm);
 	        	    
-		        	//TODO:  new student not available w/o update of HA_TEST
-	        	    //addUserRPC(sm);
-
-	        	    //TODO: update DB - HA_TEST
+	        	    addUserRPC(sm);
 	        	}
 	        	else {
 	        		boolean stuChanged = false;
@@ -461,17 +459,14 @@ public class RegisterStudent extends LayoutContainer {
 		        	if (! stuMdl.getProgramDescr().equals(prog)) {
 			        	stuMdl.setProgramDescr(prog);
 			        	stuMdl.setStatus("Not started");
+			        	stuMdl.setSectionNum(0);
+			        	stuMdl.setProgramChanged(true);
 			        	progChanged = true;
 	        		}
 		        	if (stuChanged || progChanged) {
      	        		eg.getStore().update(stuMdl);
      	        		
-     	        		if (stuChanged) {
-     	        			updateUserRPC(stuMdl);
-     	        		}
-     	        		if (progChanged) {
-     	        			//TODO: update DB - HA_TEST
-     	        		}
+     	        	    updateUserRPC(stuMdl);
 		        	}
 	        	}
 
