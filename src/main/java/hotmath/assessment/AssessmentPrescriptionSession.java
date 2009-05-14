@@ -51,7 +51,7 @@ public class AssessmentPrescriptionSession {
     }
 
     public String toString() {
-        return name;
+        return name + ", " + getTopic();
     }
 
     /**
@@ -171,7 +171,8 @@ public class AssessmentPrescriptionSession {
         // return the topic of this session
         List<INeedMoreHelpItem> list = getSessionCategories();
         // all are the title...
-        return list.get(0).getTitle();
+        
+        return (list.size() > 0)?list.get(0).getTitle():"No Topic";
     }
 
     public List<INeedMoreHelpResourceType> getInmhTypes() throws Exception {

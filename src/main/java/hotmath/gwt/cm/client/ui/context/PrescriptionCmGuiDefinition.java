@@ -100,6 +100,9 @@ public class PrescriptionCmGuiDefinition implements CmGuiDefinition {
                             return;
                         }
                         try {
+                            String programTitle = rdata.getDataAsString("problem_title");
+                            UserInfo.getInstance().setTestName(programTitle);
+                            
                             int correctPercent = rdata.getDataAsInt("correct_percent");
                             UserInfo.getInstance().setCorrectPercent(correctPercent);
                             if(correctPercent == 100) {

@@ -12,7 +12,6 @@ import hotmath.gwt.cm.client.util.UserInfo;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.data.CmAsyncRequest;
 import hotmath.gwt.shared.client.data.CmAsyncRequestImplDefault;
-import hotmath.gwt.shared.client.model.UserInfoBase;
 
 import com.extjs.gxt.ui.client.GXT;
 import com.extjs.gxt.ui.client.Registry;
@@ -57,8 +56,6 @@ public class CatchupMath implements EntryPoint {
     LayoutContainer _mainContainer;
     HeaderPanel _headerPanel;
 
-    CmProgramInfo _cmProgramInfo = new CmProgramInfo();
-
     
     /**
      * This is the entry point method.
@@ -96,6 +93,8 @@ public class CatchupMath implements EntryPoint {
             if(CmShared.getQueryParameter("run_id") != null) {
                 int runId = Integer.parseInt(CmShared.getQueryParameter("run_id"));
                 // setup user to masquerade as real user
+                UserInfo visiter = new UserInfo(0,0);
+                UserInfo.setInstance(visiter);
                 UserInfo.getInstance().setRunId(runId);
             }            
         }
@@ -152,14 +151,6 @@ public class CatchupMath implements EntryPoint {
         return decodeURIComponent(s);
     }-*/;
 
-    /**
-     * Return the information about the current CM Program
-     * 
-     * @return
-     */
-    public CmProgramInfo getProgramInfo() {
-        return _cmProgramInfo;
-    }
 
     /**
      * Register any RPC services with the system

@@ -64,6 +64,7 @@ public class PrescriptionContext implements CmContext {
 
     public void gotoNextTopic() {
 
+        CmMainPanel.__lastInstance._mainContent.removeAll();
         NextDialog.destroyCurrentDialog();
 
         // deal with anomoly of no missed question .. move to the next quiz
@@ -184,7 +185,7 @@ public class PrescriptionContext implements CmContext {
     }
 
     public String getContextSubTitle() {
-        String title = CatchupMath.getThisInstance().getProgramInfo().getProgramName();
+        String title = getContextTitle();
         return title + "  <h2>" + prescriptionData.getCurrSession().getTopic() + "</h2>";
     }
 

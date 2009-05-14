@@ -16,6 +16,7 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 
+import sb.logger.SbLogger;
 import sb.util.SbUtilities;
 
 /**
@@ -110,8 +111,7 @@ public class AssessmentPrescription {
         for (InmhItemData id : itemsData) {
             int wi = id.getWeight();
 
-            double numPids = ((double) wi / (double) sumOfWeights)
-                    * totalPrescription;
+            double numPids = ((double) wi / (double) sumOfWeights) * totalPrescription;
             int numPids2get = (int) Math.ceil(numPids);
             // now choose tham many pids from the pool for this item
             List<ProblemID> workBookPids = id.getWookBookSolutionPool();
@@ -119,33 +119,35 @@ public class AssessmentPrescription {
                 continue; // nothing to see here.
 
             AssessmentPrescriptionSession session = new AssessmentPrescriptionSession(this,"Session: " + (sessNum + 1));
-            _sessions.add(session);
-            
-            while (numPids-- > 0) {
-                // try to find a random number, with max attempt break out
-                int tries = 10;
-                do {
-                    int rand = SbUtilities.getRandomNumber(workBookPids.size());
-                    ProblemID pid = workBookPids.get(rand);
+            for(ProblemID pid: workBookPids) {
 
+                // subject filter solutions
+                int gradeLevel = pid.getGradeLevel();
+                if (gradeLevel > getGradeLevel()) {
+                    SbLogger.postMessage("AssessmentPrescriptionSession: " + testRun.getRunId() + ", level: " + getGradeLevel() + ", inmh item not included due to higher grade level:  " + pid + ", level: " + gradeLevel);
+                    continue;
+                }
                     
+                    
+                List<SessionData> si = session.getSessionItems();
 
-                    List<SessionData> si = session.getSessionItems();
-
-                    // if this pid does not already exist in session
-                    if (!si
-                            .contains(new SessionData(null, pid.getGUID(), 0, 0))) {
-                        si.add(new SessionData(id.getInmhItem(), pid.getGUID(),
-                                (int) numPids2get, id.getWeight()));
-                        break;
-                    }
-
-                    if (si.size() > TOTAL_SESSION_SOLUTIONS - 1)
-                        break;
-
-                } while (--tries > 0);
+                si.add(new SessionData(id.getInmhItem(), pid.getGUID(), (int) numPids2get, id.getWeight()));
+ 
+                if (si.size() > TOTAL_SESSION_SOLUTIONS-1)
+                    break;
             }
-            sessNum++;
+            
+            // assert that there is at least one
+            if(session.getSessionItems().size() == 0) {
+                // this session has no items, so it is invalid and will be
+                // skipped
+                SbLogger.postMessage("AssessmentPrescriptionSession: session has no items: " + session);
+            }
+            else {
+                // add this session, and move to next
+               _sessions.add(session);
+               sessNum++;
+            }
         }
     }
 
