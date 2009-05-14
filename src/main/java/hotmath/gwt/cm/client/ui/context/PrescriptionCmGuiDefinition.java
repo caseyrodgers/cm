@@ -218,7 +218,7 @@ class PrescriptionResourceAccord extends LayoutContainer {
                     // if there is only one resource item, then show it
                     if(mycp.getItems().size() == 1) {
                         ResourceList myRl = (ResourceList)mycp.getItem(0);
-                        if(myRl.getItemCount() > 0) {
+                        if(myRl.getItemCount() ==1) {
                             myRl.getSelectionModel().select(0, false);
                             myRl.loadResource(myRl.getSelectionModel().getSelectedItem());
                         }

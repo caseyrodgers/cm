@@ -8,7 +8,7 @@ public class CmProgramInfo {
     
     
     public CmProgramInfo() {
-        programName = "Algebra 1 Proficency Test";
+        programName = "Pre-algebra Proficiency";
         int segmentCount = 4;
         currentSegment = 1;
     }
