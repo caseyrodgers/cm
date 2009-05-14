@@ -24,22 +24,16 @@ public class ShowWorkPanel extends Frame {
 	static ShowWorkPanel __lastInstance;
 	String pid;
 	public ShowWorkPanel() {
-		
 		super("show_work_panel.html");
-
+        setStyleName("show-work-panel");
 
 		DOM.setElementPropertyInt(this.getElement(), "frameBorder", 0); // disable border
-		
+	    DOM.setElementProperty(this.getElement(), "scrolling", "no"); // disable border
 		__lastInstance = this;
-		setWidth("100%");
-		setHeight("100%");
-		// setupGui();
-		setStyleName("show-work-panel");
+		setWidth("98%");
+		setHeight("500px");
 		id = "show_work_" + System.currentTimeMillis();
 		flashId = id + "_flash";
-		HTML html = new HTML("Loading ...");
-		html.getElement().setId(id);
-		html.setStyleName("show-work-panel-bg");
 	}
 	
 	/** Called from flash component

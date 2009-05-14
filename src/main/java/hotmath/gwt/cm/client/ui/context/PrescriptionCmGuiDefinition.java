@@ -203,6 +203,7 @@ class PrescriptionResourceAccord extends LayoutContainer {
             final ContentPanel mycp = cp;
 
             final ContentPanel thisCp = cp;
+            final ResourceList thisRl = rl;
             cp.addListener(Events.Expand, new Listener<BaseEvent>() {
                 public void handleEvent(BaseEvent be) {
                     CmMainPanel.__lastInstance._mainContent.removeAll();
@@ -213,6 +214,15 @@ class PrescriptionResourceAccord extends LayoutContainer {
                     //mycp.el().fadeIn(FxConfig.NONE);
                     PrescriptionResourceAccord.this.add(mycp);
                     layout();
+                    
+                    // if there is only one resource item, then show it
+                    if(mycp.getItems().size() == 1) {
+                        ResourceList myRl = (ResourceList)mycp.getItem(0);
+                        if(myRl.getItemCount() > 0) {
+                            myRl.getSelectionModel().select(0, false);
+                            myRl.loadResource(myRl.getSelectionModel().getSelectedItem());
+                        }
+                    }
                 }
             });
             cp.addListener(Events.Collapse, new Listener<BaseEvent>() {
@@ -240,8 +250,6 @@ class PrescriptionResourceAccord extends LayoutContainer {
         }
 
         layout();
-        // last one in active to make sure all types are visible
-        // al.setActiveItem(cp);
     }
     
     public void expandResourcePracticeProblems() {

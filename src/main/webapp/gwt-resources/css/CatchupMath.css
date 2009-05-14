@@ -533,7 +533,12 @@ img.resource-item-complete {
 }
 
 
-.resource-viewer-container {
+.show-work-panel {
+	margin-left: 5px;
+}
+
+.x-tab-panel-body,.resource-viewer-container,.show-work-panel, .resource-viewer-impl-tutor, .x-tab-panel {
+	border: none;
     width: 525px;
     background: url(/gwt-resources/images/resource-viewer-body.png) repeat-y;
 }

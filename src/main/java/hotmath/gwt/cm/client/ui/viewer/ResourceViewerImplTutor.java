@@ -6,14 +6,11 @@ import hotmath.gwt.cm.client.service.PrescriptionServiceAsync;
 
 import com.extjs.gxt.ui.client.Registry;
 import com.extjs.gxt.ui.client.event.BaseEvent;
-import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
-import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.TabItem;
 import com.extjs.gxt.ui.client.widget.TabPanel;
-import com.extjs.gxt.ui.client.widget.Window;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HTML;
@@ -144,42 +141,6 @@ public class ResourceViewerImplTutor extends ResourceViewerContainer implements 
         
         _tabPanel.add(item);
         
-        layout();
-        
-        
-        if(true)
-            return;
-        
-        
-        if (showWorkWin != null) {
-            removeResourcePanel();
-        }
-
-        showWorkWin = new Window();
-
-        Button viewSolutionBtn = new Button("Close Show Work");
-        viewSolutionBtn.setStyleName("view-solution-button");
-        viewSolutionBtn.setToolTip("View the solution and work through the problem");
-        viewSolutionBtn.addSelectionListener(new SelectionListener<ButtonEvent>() {
-            public void componentSelected(ButtonEvent ce) {
-                removeResourcePanel();
-            }
-        });
-        showWorkWin.add(viewSolutionBtn);
-        add(showWorkWin);
-        showWorkWin.setHeading("Show Work Window");
-        showWorkWin.setHeight(365);
-        showWorkWin.setWidth(410);
-        showWorkWin.setAnimCollapse(true);
-        showWorkWin.setCollapsible(true);
-        ShowWorkPanel showWork = new ShowWorkPanel();
-        showWork.setupForPid(pid);
-        showWorkWin.add(showWork);
-        showWorkWin.setVisible(true);
-        
-
-        
-
         layout();
     }
 
