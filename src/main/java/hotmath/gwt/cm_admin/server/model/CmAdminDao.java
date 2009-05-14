@@ -40,17 +40,18 @@ public class CmAdminDao {
         "ORDER by h.uid desc";
 */    
         "SELECT h.uid, h.user_name as name, h.user_passcode as passcode, h.user_email as email, h.admin_id as admin_uid, " +
-        " t.user_id, t.test_segment, t.test_def_id, t.create_time, t.pass_percent, concat(d.subj_id, ' ', d.prog_id) as program, " +
+        " h.uid, h.active_segment, h.test_def_id, t.create_time, t.pass_percent, t.total_segments, " +
+        " trim(concat(ifnull(d.subj_id,''), ' ', d.prog_id)) as program, " +
         " date_format(m.last_run_time,'%Y-%m-%d') as last_use_date, 0 as has_tutoring, " +
         " i.solution_views as solution_usage_count, i.video_views as video_usage_count, i.review_views as review_usage_count, " +
         " ifnull(g.id, 0) as group_id, ifnull(g.name, 'none') as group_name " +
         "FROM  HA_ADMIN a " +
         "INNER JOIN HA_USER h on a.aid = h.admin_id " +
-        "INNER JOIN (select user_id, max(create_time) as c_time " +
+        "LEFT JOIN (select user_id, max(create_time) as c_time " +
         "            from HA_TEST " +
         "            group by user_id) s on s.user_id = h.uid " +
-        "INNER JOIN HA_TEST t on t.user_id = h.uid and t.create_time = s.c_time " +
-        "INNER JOIN HA_TEST_DEF d on d.test_def_id = t.test_def_id " +
+        "LEFT JOIN HA_TEST t on t.user_id = h.uid and t.create_time = s.c_time " +
+        "LEFT JOIN HA_TEST_DEF d on d.test_def_id = h.test_def_id " +
         "LEFT JOIN v_HA_TEST_INMH_VIEWS_INFO i on i.user_name = h.user_name " +
         "LEFT JOIN v_HA_TEST_RUN_max m on m.uid = h.uid " +
         "LEFT JOIN CM_GROUP g on g.id = h.group_id " +
@@ -375,8 +376,17 @@ public class CmAdminDao {
             sm.setLastLogin(rs.getString("last_use_date"));
             int totalUsage = rs.getInt("video_usage_count") + rs.getInt("solution_usage_count") + rs.getInt("review_usage_count");
             sm.setTotalUsage(String.valueOf(totalUsage));
-            String passPercent = String.valueOf(rs.getInt("pass_percent")) + " %";
+            String passPercent = new StringBuilder(rs.getInt("pass_percent")).append("%").toString();
             sm.setPassPercent(passPercent);
+            int sectionNum = rs.getInt("active_segment");
+            if (sectionNum > 0) {
+            	int segmentCount = rs.getInt("total_segments");
+            	String status = new StringBuilder("Section ").append(sectionNum).append(" of ").append(segmentCount).toString();
+            	sm.setStatus(status);
+            }
+            else {
+            	sm.setStatus("Not started");
+            }
             String tutoringState = (rs.getInt("has_tutoring") > 0) ? "ON": "OFF";
             sm.setTutoringState(tutoringState);
             
