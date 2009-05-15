@@ -4,7 +4,10 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
+import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
@@ -28,33 +31,29 @@ public class CmAdminDao {
     }
 
     private static final String GET_STUDENTS_SQL = 
-/*
-    	"SELECT h.uid, h.user_name as name, h.user_passcode as passcode, h.user_email as email, h.admin_id as admin_uid, " +
-    	"  concat(t.subj_id, ' ', t.prog_id) as program, date_format(m.last_run_time,'%Y-%m-%d') as last_use_date, " +
-        "  i.solution_views as solution_usage_count, i.video_views as video_usage_count, i.review_views as review_usage_count " +
-        "FROM HA_ADMIN a INNER JOIN HA_USER h on a.aid = h.admin_id " +
-        "  INNER JOIN HA_TEST_DEF t on h.test_def_id = t.test_def_id  " +
-        "  LEFT JOIN v_HA_TEST_INMH_VIEWS_INFO i on i.user_name = h.user_name " +
-        "  LEFT JOIN v_HA_TEST_RUN_max m on m.uid = h.uid " +
-        "WHERE a.passcode = ? " +
-        "ORDER by h.uid desc";
-*/    
         "SELECT h.uid, h.user_name as name, h.user_passcode as passcode, h.user_email as email, h.admin_id as admin_uid, " +
-        " h.uid, h.active_segment, h.test_def_id, t.create_time, t.pass_percent, t.total_segments, " +
-        " trim(concat(ifnull(d.subj_id,''), ' ', d.prog_id)) as program, " +
-        " date_format(m.last_run_time,'%Y-%m-%d') as last_use_date, 0 as has_tutoring, " +
-        " i.solution_views as solution_usage_count, i.video_views as video_usage_count, i.review_views as review_usage_count, " +
-        " ifnull(g.id, 0) as group_id, ifnull(g.name, 'none') as group_name " +
+        "       h.active_segment, p.test_def_id, p.create_date, concat(p.pass_percent,'%') as pass_percent, t.total_segments, " +
+        "       trim(concat(ifnull(d.subj_id,''), ' ', d.prog_id)) as program, h.user_prog_id, " +
+        "       date_format(m.last_run_time,'%Y-%m-%d') as last_use_date, 0 as has_tutoring, " +
+        "       i.solution_views as solution_usage_count, i.video_views as video_usage_count, i.review_views as review_usage_count, " +
+        "       ifnull(g.id, 0) as group_id, ifnull(g.name, 'none') as group_name " +
         "FROM  HA_ADMIN a " +
-        "INNER JOIN HA_USER h on a.aid = h.admin_id " +
-        "LEFT JOIN (select user_id, max(create_time) as c_time " +
-        "            from HA_TEST " +
-        "            group by user_id) s on s.user_id = h.uid " +
-        "LEFT JOIN HA_TEST t on t.user_id = h.uid and t.create_time = s.c_time " +
-        "LEFT JOIN HA_TEST_DEF d on d.test_def_id = h.test_def_id " +
-        "LEFT JOIN v_HA_TEST_INMH_VIEWS_INFO i on i.user_name = h.user_name " +
-        "LEFT JOIN v_HA_TEST_RUN_max m on m.uid = h.uid " +
-        "LEFT JOIN CM_GROUP g on g.id = h.group_id " +
+        "INNER JOIN HA_USER h " +
+        "   on a.aid = h.admin_id " +
+        "INNER JOIN CM_USER_PROGRAM p " +
+        "   on p.user_id = h.uid and p.id = h.user_prog_id " +
+        "LEFT JOIN (select user_id, max(create_time) as c_time, test_def_id from HA_TEST group by user_id) s" +
+        "   on s.user_id = h.uid and s.test_def_id = p.test_def_id " +
+        "LEFT JOIN HA_TEST t" +
+        "   on t.user_id = h.uid and t.create_time = s.c_time " +
+        "LEFT JOIN HA_TEST_DEF d " +
+        "   on d.test_def_id = h.test_def_id " +
+        "LEFT JOIN v_HA_TEST_INMH_VIEWS_INFO i " +
+        "   on i.user_name = h.user_name " +
+        "LEFT JOIN v_HA_TEST_RUN_max m " +
+        "   on m.uid = h.uid " +
+        "LEFT JOIN CM_GROUP g " +
+        "   on g.id = h.group_id " +
         "WHERE a.aid = ? and h.is_active = ? " +
         "ORDER by h.user_name asc";
 
@@ -121,10 +120,6 @@ public class CmAdminDao {
     		SqlUtilities.releaseResources(rs, ps, conn);
     	}
     	return l;
-    }
-    
-    public void updateStudent(StudentModel sm, boolean studentIsChanged, boolean programIsChanged) {
-    	
     }
     
     private static final String GET_STUDENT_ACTIVITY_SQL =
@@ -221,6 +216,8 @@ public class CmAdminDao {
     	PreparedStatement ps = null;
     	ResultSet rs = null;
     	
+    	addStudentProgram(sm);
+    	
     	try {
     		conn = HMConnectionPool.getConnection();
     		ps = conn.prepareStatement(ADD_USER_SQL);
@@ -275,6 +272,16 @@ public class CmAdminDao {
     	
     }
 
+    public StudentModel updateStudent(StudentModel sm, Boolean studentChanged, Boolean programChanged, Boolean progIsNew) {
+    	if (progIsNew)
+    		addStudentProgram(sm);
+    	if (studentChanged)
+    		updateStudent(sm);
+    	if (programChanged)
+    		updateStudentProgram(sm);
+    	return sm;
+    }
+
     private static final String UPDATE_USER_SQL =
     	"update HA_USER set " +
     	" user_name = ?, user_passcode = ?, group_id = ?, active_segment = ?, " +
@@ -313,24 +320,35 @@ public class CmAdminDao {
     	return sm;    	
     }
 
-    private static final String INSERT_USER_SQL =
-    	"insert HA_USER set " +
-    	" user_name = ?, user_passcode = ?, group_id = ? " +
-    	"where uid = ?";
-    
+    private static final String UPDATE_USER_PROGRAM_SQL =
+    	"update CM_USER_PROGRAM " +
+    	"set pass_percent = ? " +
+    	"where id = ?";
+
+    private static final String UPDATE_USER_PROGRAM_NULL_PASS_PERCENT_SQL =
+    	"update CM_USER_PROGRAM " +
+    	"set pass_percent = null " +
+    	"where id = ?";
+
     public StudentModel updateStudentProgram(StudentModel sm) {
     	Connection conn = null;
     	PreparedStatement ps = null;
-    	ResultSet rs = null;
     	
     	try {
     		conn = HMConnectionPool.getConnection();
-    		ps = conn.prepareStatement(INSERT_USER_SQL);
-    		ps.setString(1, sm.getName());
-    		ps.setString(2, sm.getPasscode());
-    		//ps.setString(3, sm.getEmail());
-    		ps.setInt(3, Integer.parseInt(sm.getGroupId()));
-    		ps.setInt(4, sm.getUid());
+    		String s = sm.getPassPercent();
+
+    		if (s != null) {
+    			int passPcnt = Integer.parseInt(s.substring(0, s.indexOf("%")));
+    			ps = conn.prepareStatement(UPDATE_USER_PROGRAM_SQL);
+    			ps.setInt(1, passPcnt);
+    			ps.setInt(2, sm.getUserProgramId());
+    		}
+    		else {
+       			ps = conn.prepareStatement(UPDATE_USER_PROGRAM_NULL_PASS_PERCENT_SQL);
+    			ps.setInt(1, sm.getUserProgramId());
+    		}
+    		
     		int result = ps.executeUpdate();
     	}
     	catch (Exception e) {
@@ -338,10 +356,85 @@ public class CmAdminDao {
     		//throw e;
     	}
     	finally {
-    		SqlUtilities.releaseResources(rs, ps, conn);
+    		SqlUtilities.releaseResources(null, ps, conn);
     	}
     	return sm;    	
     }
+    
+    private static final String INSERT_USER_PROGRAM_SQL =
+    	"insert CM_USER_PROGRAM (user_id, admin_id, test_def_id, pass_percent, create_date) " +
+    	"values (?, ?, (select test_def_id from HA_TEST_DEF where prog_id = ? and subj_id = ?), ?, ?)";
+
+    private static final String INSERT_USER_PROGRAM_NULL_PASS_PERCENT_SQL =
+    	"insert CM_USER_PROGRAM (user_id, admin_id, test_def_id, create_date) " +
+    	"values (?, ?, (select test_def_id from HA_TEST_DEF where prog_id = ? and subj_id = ?), ?, ?)";
+    
+    private static final String SELECT_LAST_INSERT_ID_SQL = "select LAST_INSERT_ID()";
+
+    public StudentModel addStudentProgram(StudentModel sm) {
+    	Connection conn = null;
+    	PreparedStatement ps = null;
+    	
+    	try {
+    		conn = HMConnectionPool.getConnection();
+    		String s = sm.getPassPercent();
+
+    		if (s != null) {
+    			int passPcnt = Integer.parseInt(s.substring(0, s.indexOf("%")));
+    			ps = conn.prepareStatement(INSERT_USER_PROGRAM_SQL);
+    			ps.setInt(1, sm.getUid());
+    			ps.setInt(2, sm.getAdminUid());
+        		String shortName = sm.getProgramDescr();
+        		int offset = shortName.lastIndexOf(" ");
+        		String subjId = shortName.substring(0, offset);
+        		String progId = shortName.substring(offset+1);
+        		ps.setString(3, progId);
+        		ps.setString(4, subjId);
+    			ps.setInt(5, passPcnt);
+    			ps.setTimestamp(6, new Timestamp(System.currentTimeMillis()));
+    		}
+    		else {
+       			ps = conn.prepareStatement(INSERT_USER_PROGRAM_NULL_PASS_PERCENT_SQL);
+    			ps.setInt(1, sm.getUid());
+    			ps.setInt(2, sm.getAdminUid());
+        		String shortName = sm.getProgramDescr();
+        		int offset = shortName.lastIndexOf(" ");
+        		String subjId = shortName.substring(0, offset);
+        		String progId = shortName.substring(offset+1);
+        		ps.setString(3, progId);
+        		ps.setString(4, subjId);
+    			ps.setTimestamp(5, new Timestamp(System.currentTimeMillis()));
+    		}
+    		int result = ps.executeUpdate();
+    		if (result == 1) {
+    			// now get value of auto-increment id from CM_USER_PROGRAM
+    			Statement stmt = null;
+    			ResultSet rs = null;
+    			try {
+    			    stmt = conn.createStatement();
+    			    // Note: this is MySQL specific
+    		        rs = stmt.executeQuery(SELECT_LAST_INSERT_ID_SQL);
+    		        if (rs.next()) {
+    		        	int val = rs.getInt(1);
+    		        	sm.setUserProgramId(val);
+    		        }
+    			}
+    			finally {
+    				SqlUtilities.releaseResources(rs, stmt, null);
+    			}
+    		}
+    	}
+    	catch (Exception e) {
+    		//logger.error(String.format("*** Error adding student program for student with uid: %d", sm.getUid()), e);
+    		//throw e;
+    	}
+    	finally {
+    		SqlUtilities.releaseResources(null, ps, conn);
+    	}
+    	return sm;    	
+    }
+    
+    
 
     private List <GroupModel> loadGroups(ResultSet rs) throws Exception {
     	List <GroupModel> l = new ArrayList<GroupModel>();
@@ -371,12 +464,13 @@ public class CmAdminDao {
             
     		int groupId = rs.getInt("group_id");
     		sm.setGroupId(String.valueOf(groupId));
+    		sm.setUserProgramId(rs.getInt("user_prog_id"));
     		sm.setGroup(rs.getString("group_name"));
             sm.setProgramDescr(rs.getString("program"));
             sm.setLastLogin(rs.getString("last_use_date"));
             int totalUsage = rs.getInt("video_usage_count") + rs.getInt("solution_usage_count") + rs.getInt("review_usage_count");
             sm.setTotalUsage(String.valueOf(totalUsage));
-            String passPercent = new StringBuilder(rs.getInt("pass_percent")).append("%").toString();
+            String passPercent = rs.getString("pass_percent");
             sm.setPassPercent(passPercent);
             int sectionNum = rs.getInt("active_segment");
             if (sectionNum > 0) {
