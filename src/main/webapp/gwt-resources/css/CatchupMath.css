@@ -437,11 +437,13 @@
     color: #CBFF07;
     height: 45px;
     font-size: 1.3em;
+    text-align: center;
 }
 
 .cm-main-panel-header h2 {
   font-size: .7em;
   color: white;
+  text-align: center;
 }
 
 .accordian-resource-list-panel {

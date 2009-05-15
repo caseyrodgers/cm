@@ -73,7 +73,7 @@ public class QuizContext implements CmContext {
 	}
 	
 	public void setHeaderButtons(IconButton prevBtn, IconButton nextBtn) {
-		prevBtn.setEnabled(false);
+		prevBtn.setVisible(false);
 		nextBtn.setEnabled(true);
 		
 		nextBtn.setToolTip("Done taking the quiz");
