@@ -11,18 +11,18 @@ import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
+import com.extjs.gxt.ui.client.widget.Html;
 import com.extjs.gxt.ui.client.widget.TabItem;
 import com.extjs.gxt.ui.client.widget.TabPanel;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Widget;
 
 public class ResourceViewerImplTutor extends ResourceViewerContainer implements ResourceViewer {
     public ResourceViewerImplTutor() {
         addStyleName("resource-viewer-impl-tutor");
         
-        setScrollMode(Scroll.NONE);  // iframe in TabPanel need to do scrolling
+        setScrollMode(Scroll.AUTO);  // iframe in TabPanel need to do scrolling
     }
 
     Button showWorkBtn, hideWorkBtn;
@@ -46,6 +46,7 @@ public class ResourceViewerImplTutor extends ResourceViewerContainer implements 
         showWork(pid);        
        
         _solutionTabItem = new TabItem();
+        _solutionTabItem.setScrollMode(Scroll.AUTOY);
         
         _solutionTabItem.setClosable(false);
         _solutionTabItem.setText("Solution");
@@ -111,7 +112,9 @@ public class ResourceViewerImplTutor extends ResourceViewerContainer implements 
                 String html = (String) result;
                 
                 _solutionTabItem.removeAll();
-                _solutionTabItem.add(new HTML(html));
+                Html htmlO = new Html(html);
+                htmlO.setStyleName("tutor_solution_wrapper");
+                _solutionTabItem.add(htmlO);
                 try {
                     ResourceViewerImplTutor.initializeTutor(pid);
                     layout();

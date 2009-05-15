@@ -31,8 +31,8 @@ class PrescriptionInfoPanel extends LayoutContainer {
         setToolTip(context.getStatusMessage());
         
         
-        _labStatus.setText(context.getStatusMessage());
-        layout();
+        //_labStatus.setText(context.getStatusMessage());
+        //layout();
     }
     
 }
