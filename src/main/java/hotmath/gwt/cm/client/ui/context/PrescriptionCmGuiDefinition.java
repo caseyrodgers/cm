@@ -41,12 +41,14 @@ public class PrescriptionCmGuiDefinition implements CmGuiDefinition {
     PrescriptionContext context;
     PrescriptionResourceAccord _guiWidget;
     boolean isReady;
+    static public PrescriptionCmGuiDefinition __instance;
 
     /**
      * Create and read Prescription data for the current user.
      * 
      */
     public PrescriptionCmGuiDefinition() {
+        __instance = this;
         context = new PrescriptionContext(this);
     }
 
@@ -138,6 +140,21 @@ public class PrescriptionCmGuiDefinition implements CmGuiDefinition {
     public String getTitle() {
         return "Prescription Resource";
     }
+    
+    static public void solutionHasBeenViewed_Gwt(String pid) {
+        // mark the currently viewed resource as being viewed
+        ResourceModel rm = PrescriptionResourceAccord.__instance._activeResourceList.getSelectionModel().getSelectedItem();
+        InmhItemData itemData = rm.getItem();
+        PrescriptionResourceAccord.__instance._activeResourceList.markResourceAsViewed(itemData);
+    }
+    
+    static private native void publishNative() /*-{
+        $wnd.solutionHasBeenViewed_Gwt = @hotmath.gwt.cm.client.ui.context.PrescriptionCmGuiDefinition::solutionHasBeenViewed_Gwt(Ljava/lang/String;);
+    }-*/;    
+    
+    static {
+        publishNative();
+    }
 }
 
 class PrescriptionResourceAccord extends LayoutContainer {
@@ -160,6 +177,7 @@ class PrescriptionResourceAccord extends LayoutContainer {
      * 
      * @param resources
      */
+    ResourceList _activeResourceList;
     public void buildUi(PrescriptionData pdata) {
 
         List<PrescriptionSessionDataResource> resources = pdata.getCurrSession().getInmhResources();
@@ -224,6 +242,8 @@ class PrescriptionResourceAccord extends LayoutContainer {
                             myRl.loadResource(myRl.getSelectionModel().getSelectedItem());
                         }
                     }
+                    
+                    _activeResourceList = thisRl;
                 }
             });
             cp.addListener(Events.Collapse, new Listener<BaseEvent>() {
@@ -350,49 +370,60 @@ class ResourceList extends ListView<ResourceModel> implements Listener {
             CmMainPanel.__lastInstance._mainContent.resetChildSize();
             cp.el().fadeIn(FxConfig.NONE);
 
-            /**
-             * 
-             * mark this INMH resource item as being viewed
-             * 
-             */
-            PrescriptionServiceAsync s = (PrescriptionServiceAsync) Registry.get("prescriptionService");
-            s.setInmhItemAsViewed(UserInfo.getInstance().getRunId(), resourceItem.getType(), resourceItem.getFile(),
-                    new AsyncCallback() {
-
-                        public void onSuccess(Object result) {
-                            resourceItem.setViewed(true);
-
-                            // update the total count in the Header
-                            int vc = UserInfo.getInstance().getViewCount();
-                            UserInfo.getInstance().setViewCount(++vc);
-                            HeaderPanel.__instance.setLoginInfo();
-
-                            int which = -1;
-                            ResourceModel rm = getSelectionModel().getSelectedItem();
-                            for (int i = 0; i < getStore().getCount(); i++) {
-                                if (rm == getStore().getAt(i)) {
-                                    getElement(i).getElementsByTagName("img").getItem(0).setClassName(
-                                            "resource-item-complete");
-                                    PrescriptionResourceAccord.__instance.layout();
-                                }
-                            }
-
-                            if (allViewed()) {
-                                getParent().addStyleName("resource-type-complete");
-                                PrescriptionResourceAccord.__instance.layout();
-                            }
-
-                        }
-
-                        public void onFailure(Throwable caught) {
-                            caught.printStackTrace();
-                        }
-
-                    });
+            
+            // only mark NON-SOLUTION resources as viewed when simply
+            // viewing them.  The solutions are marked as viewed when 
+            // the last step has been viewed.
+            if(!resourceItem.getType().equals("practice"))
+                markResourceAsViewed(resourceItem);
+            
         } catch (Exception hme) {
             hme.printStackTrace();
             CatchupMath.showAlert("Error: " + hme.getMessage());
         }
+    }
+    
+    
+    public void markResourceAsViewed(final InmhItemData resourceItem) {
+        /**
+         * 
+         * mark this INMH resource item as being viewed
+         * 
+         */
+        PrescriptionServiceAsync s = (PrescriptionServiceAsync) Registry.get("prescriptionService");
+        s.setInmhItemAsViewed(UserInfo.getInstance().getRunId(), resourceItem.getType(), resourceItem.getFile(),
+                new AsyncCallback() {
+
+                    public void onSuccess(Object result) {
+                        resourceItem.setViewed(true);
+
+                        // update the total count in the Header
+                        int vc = UserInfo.getInstance().getViewCount();
+                        UserInfo.getInstance().setViewCount(++vc);
+                        HeaderPanel.__instance.setLoginInfo();
+
+                        int which = -1;
+                        ResourceModel rm = getSelectionModel().getSelectedItem();
+                        for (int i = 0; i < getStore().getCount(); i++) {
+                            if (rm == getStore().getAt(i)) {
+                                getElement(i).getElementsByTagName("img").getItem(0).setClassName("resource-item-complete");
+                                PrescriptionResourceAccord.__instance.layout();
+                            }
+                        }
+
+                        if (allViewed()) {
+                            getParent().addStyleName("resource-type-complete");
+                            PrescriptionResourceAccord.__instance.layout();
+                        }
+
+                    }
+
+                    public void onFailure(Throwable caught) {
+                        caught.printStackTrace();
+                    }
+
+                });
+        
     }
 }
 
