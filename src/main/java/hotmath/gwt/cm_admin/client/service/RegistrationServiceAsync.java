@@ -31,5 +31,5 @@ public interface RegistrationServiceAsync {
 	  
 	  void deactivateUser(StudentModel sm, AsyncCallback<StudentModel> callback);
 	  
-	  void updateUser(StudentModel sm, AsyncCallback<StudentModel> callback);
+	  void updateUser(StudentModel sm, Boolean stuChanged, Boolean progChanged, Boolean progIsNew, AsyncCallback<StudentModel> callback);
 }

@@ -31,5 +31,5 @@ public interface RegistrationService extends RemoteService {
 
 	  StudentModel deactivateUser(StudentModel sm);
 
-	  StudentModel updateUser(StudentModel sm);
+	  StudentModel updateUser(StudentModel sm, Boolean stuChanged, Boolean progChanged, Boolean progIsNew);
 }
