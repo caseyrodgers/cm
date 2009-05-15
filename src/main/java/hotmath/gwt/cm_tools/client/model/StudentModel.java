@@ -9,6 +9,7 @@ public class StudentModel extends BaseModelData  {
 	public static final String GROUP_KEY = "group";
 	public static final String GROUP_ID_KEY = "groupId";
 	public static final String SECTION_NUM_KEY = "sectionNum";
+	public static final String USER_PROGRAM_KEY = "userProgramId";
 	
 	public static final String UID_KEY = "uid";
 	public static final String EMAIL_KEY = "email";
@@ -54,6 +55,14 @@ public class StudentModel extends BaseModelData  {
 		set(GROUP_ID_KEY, groupId);
 	}
 
+	public Integer getUserProgramId() {
+		return get(USER_PROGRAM_KEY);
+	}
+	
+	public void setUserProgramId(Integer userProgId) {
+		set(USER_PROGRAM_KEY, userProgId);
+	}
+	
 	public void setSectionNum(Integer sectionNum) {
 		set(SECTION_NUM_KEY, sectionNum);
 	}
