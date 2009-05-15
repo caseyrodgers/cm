@@ -239,10 +239,11 @@
 #inmh_goto {
 	display: none;
 }
+
 .show-work-panel {
-	height: 600px;
 	position: relative;
 }
+
 .show-work-button {
 	position: absolute;
 	top: 12px;

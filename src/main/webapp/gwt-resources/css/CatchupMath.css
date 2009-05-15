@@ -324,8 +324,8 @@
 }
 
 .show-work-panel {
-	height: 600px;
 	position: relative;
+	width: 300px;
 }
 
 .show-work-button {
@@ -537,9 +537,9 @@ img.resource-item-complete {
 	margin-left: 5px;
 }
 
-.x-tab-panel-body,.resource-viewer-container,.show-work-panel, .resource-viewer-impl-tutor, .x-tab-panel {
+.x-tab-panel-body,.resource-viewer-container,.resource-viewer-impl-tutor, .x-tab-panel {
 	border: none;
-    width: 525px;
+    width: 550px;
     background: url(/gwt-resources/images/resource-viewer-body.png) repeat-y;
 }
 
@@ -556,7 +556,7 @@ img.resource-item-complete {
 
 .resource-viewer-header {
     height: 25px;
-    width: 525px;
+    width: 550px;
     position: absolute;
     background: url(/gwt-resources/images/resource-viewer-header.png) no-repeat;
 }
@@ -576,7 +576,7 @@ img.resource-item-complete {
 .resource-viewer-footer {
     position: absolute;
     height: 15px;
-    width: 525px;
+    width: 550px;
     background: url(/gwt-resources/images/resource-viewer-footer.png) no-repeat;  
 }
 

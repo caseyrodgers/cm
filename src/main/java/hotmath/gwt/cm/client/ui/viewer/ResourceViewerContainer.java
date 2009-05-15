@@ -70,6 +70,15 @@ abstract public class ResourceViewerContainer extends LayoutContainer  implement
 	public boolean shouldSetResourceContinerHeight() {
 	    return true;
 	}
+	
+	
+	/** Called when this object is resized 
+	 * 
+	 * @param height
+	 */
+	public void setResourceContinerHeight(int height) {
+	    
+	}
 
 	public void removeResourcePanel() {
 		// empty

@@ -2,16 +2,17 @@ package hotmath.gwt.cm.client.ui.viewer;
 
 import hotmath.gwt.cm.client.CatchupMath;
 import hotmath.gwt.cm.client.service.PrescriptionServiceAsync;
+import hotmath.gwt.cm.client.ui.CmMainPanel;
 import hotmath.gwt.cm.client.util.UserInfo;
 import hotmath.gwt.shared.client.util.RpcData;
 
 import java.util.ArrayList;
 
 import com.extjs.gxt.ui.client.Registry;
+import com.extjs.gxt.ui.client.Style.Scroll;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Frame;
-import com.google.gwt.user.client.ui.HTML;
 
 public class ShowWorkPanel extends Frame {
 
@@ -25,15 +26,18 @@ public class ShowWorkPanel extends Frame {
 	String pid;
 	public ShowWorkPanel() {
 		super("show_work_panel.html");
+	    setWidth("100%");
+	    //setHeight("500px");
+
         setStyleName("show-work-panel");
 
 		DOM.setElementPropertyInt(this.getElement(), "frameBorder", 0); // disable border
-	    DOM.setElementProperty(this.getElement(), "scrolling", "no"); // disable border
+	    DOM.setElementProperty(this.getElement(), "scrolling", "yes"); // disable border
 		__lastInstance = this;
-		setWidth("98%");
-		setHeight("500px");
 		id = "show_work_" + System.currentTimeMillis();
 		flashId = id + "_flash";
+		
+		CmMainPanel.__lastInstance._mainContent.setScrollMode(Scroll.NONE);
 	}
 	
 	/** Called from flash component

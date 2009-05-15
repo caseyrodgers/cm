@@ -4,6 +4,8 @@ import hotmath.gwt.cm.client.ui.viewer.ResourceViewerContainer;
 
 import com.extjs.gxt.ui.client.Style.Scroll;
 import com.extjs.gxt.ui.client.core.El;
+import com.extjs.gxt.ui.client.widget.Component;
+import com.extjs.gxt.ui.client.widget.Container;
 import com.extjs.gxt.ui.client.widget.HorizontalPanel;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -26,17 +28,6 @@ public class ResourceContainer extends LayoutContainer {
 		// setTitle("Resource Viewer");
 		setStyleName("resource-container");
 		setScrollMode(Scroll.AUTOY);
-		
-		
-		/** @TODO: move toe CmMainPanel (only one)
-		 * 
-		 */
-		Window.addResizeHandler(new ResizeHandler() {
-		    @Override
-		    public void onResize(ResizeEvent event) {
-		        resetChildSize();
-		    }
-		});
 	}
 	
 
@@ -64,6 +55,9 @@ public class ResourceContainer extends LayoutContainer {
             El footer=null;
 	        for(int i=0;i<getItemCount();i++) {
                 El el = getItem(i).el();
+                
+                // defer the setting of the header and footer
+                // util after we have determined the size
                 if(getItem(i) == _header) {
                     header = el;
                 }
@@ -85,6 +79,9 @@ public class ResourceContainer extends LayoutContainer {
                         int cheight = CmMainPanel.__lastInstance._mainContent.getOffsetHeight();
                         int elHeight = (int)Math.floor((double)cheight * .80);
                         el.setHeight(elHeight);
+                        
+                        int cHeight = elHeight - 10; // offset
+                        ((ResourceViewerContainer)getItem(i)).setResourceContinerHeight(cHeight);
                     }
                     
                     el.center(CmMainPanel.__lastInstance._mainContent.getElement());

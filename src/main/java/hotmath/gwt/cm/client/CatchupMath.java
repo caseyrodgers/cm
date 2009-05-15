@@ -16,6 +16,8 @@ import hotmath.gwt.shared.client.data.CmAsyncRequestImplDefault;
 import com.extjs.gxt.ui.client.GXT;
 import com.extjs.gxt.ui.client.Registry;
 import com.extjs.gxt.ui.client.Style.LayoutRegion;
+import com.extjs.gxt.ui.client.event.BaseEvent;
+import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.MessageBoxEvent;
 import com.extjs.gxt.ui.client.util.Theme;
@@ -138,6 +140,14 @@ public class CatchupMath implements EntryPoint {
                         showAlert("There was a problem logging in ");
                     }
                 });
+            }
+        });
+        
+        _mainPort.addListener(Events.Resize, new Listener() {
+            public void handleEvent(BaseEvent be) {
+                if(CmMainPanel.__lastInstance != null && CmMainPanel.__lastInstance._mainContent != null) {
+                    CmMainPanel.__lastInstance._mainContent.resetChildSize();
+                }
             }
         });
         RootPanel.get().add(_mainPort);

@@ -1,13 +1,13 @@
 package hotmath.gwt.cm.client;
 
-public class CmProgramInfo {
+class CmProgramInfo {
     
     String programName;
     int segmentCount;
     int currentSegment;
     
     
-    public CmProgramInfo() {
+    private CmProgramInfo() {
         programName = "Pre-algebra Proficiency";
         int segmentCount = 4;
         currentSegment = 1;

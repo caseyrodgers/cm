@@ -30,7 +30,7 @@ function flashWhiteboardIsReady() {
 // something. Such as 'draw', 'clear', or 'load'
 // commandData, if used, is JSON.
 function updateWhiteboard(id, command, commandData) {
-
+   
    //  only works if single object on page
    // @TODO: get browser depend object
    var fo = document.getElementById("whiteboard");
@@ -46,16 +46,15 @@ function updateWhiteboard(id, command, commandData) {
        fo.updateWhiteboard([['draw',[commandData]]]);
    }
    else {
-      alert('could not found updateWhiteboard: ' + id);
+      alert('could not find updateWhiteboard: ' + id);
    }
 }
 
 // register callback in the parent GWT to allow
 // GWT to call back.
 function setWhiteboardBackground(html) {
-    //alert('setting background: ' + html);
     var wbg = document.getElementById('whiteboard-bg');
-    wbg.innerHTML = html;
+    wbg.innerHTML = html;        
 }
 
 // setup hooks for GWT to call from the app window.

@@ -100,7 +100,7 @@ public class PrescriptionCmGuiDefinition implements CmGuiDefinition {
                             return;
                         }
                         try {
-                            String programTitle = rdata.getDataAsString("problem_title");
+                            String programTitle = rdata.getDataAsString("program_title");
                             UserInfo.getInstance().setTestName(programTitle);
                             
                             int correctPercent = rdata.getDataAsInt("correct_percent");
@@ -112,8 +112,6 @@ public class PrescriptionCmGuiDefinition implements CmGuiDefinition {
                             String json = rdata.getDataAsString("json");
                             
                             context.setPrescriptionData(new PrescriptionData(json));
-                            
-                            
                             
                             isReady = true; // signal data is ready
 

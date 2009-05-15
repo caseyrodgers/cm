@@ -3,8 +3,10 @@ package hotmath.gwt.cm.client.ui.viewer;
 import hotmath.gwt.cm.client.CatchupMath;
 import hotmath.gwt.cm.client.data.InmhItemData;
 import hotmath.gwt.cm.client.service.PrescriptionServiceAsync;
+import hotmath.gwt.cm.client.ui.CmMainPanel;
 
 import com.extjs.gxt.ui.client.Registry;
+import com.extjs.gxt.ui.client.Style.Scroll;
 import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
@@ -19,6 +21,8 @@ import com.google.gwt.user.client.ui.Widget;
 public class ResourceViewerImplTutor extends ResourceViewerContainer implements ResourceViewer {
     public ResourceViewerImplTutor() {
         addStyleName("resource-viewer-impl-tutor");
+        
+        setScrollMode(Scroll.NONE);  // iframe in TabPanel need to do scrolling
     }
 
     Button showWorkBtn, hideWorkBtn;
@@ -33,32 +37,11 @@ public class ResourceViewerImplTutor extends ResourceViewerContainer implements 
 
         _tabPanel = new TabPanel();
         addResource(_tabPanel,resource.getTitle());
-        
-//        hideWorkBtn = new Button("Hide Work");
-//        hideWorkBtn.setStyleName("hide-work-button");
-//        hideWorkBtn.setTitle("Hide the Show Work area for this solution");
-//        hideWorkBtn.addSelectionListener(new SelectionListener<ButtonEvent>() {
-//            public void componentSelected(ButtonEvent ce) {
-//                showWork();
-//           }
-//        });
-//
-//        showWorkBtn = new Button("Show Work");
-//        showWorkBtn.setStyleName("show-work-button");
-//        showWorkBtn.setTitle("Display the Show Work area for this solution");
-//        showWorkBtn.addSelectionListener(new SelectionListener<ButtonEvent>() {
-//            public void componentSelected(ButtonEvent ce) {
-//                showWork(pid);
-//           }
-//        });
-
-        
 
         // setup tab to allow for async access to solution panel
         TabPanel panel = new TabPanel();
         panel.setResizeTabs(true);
         panel.setAnimScroll(true);
-        
         
         showWork(pid);        
        
@@ -73,8 +56,10 @@ public class ResourceViewerImplTutor extends ResourceViewerContainer implements 
             public void handleEvent(BaseEvent be) {
                 String t = _tabPanel.getSelectedItem().getText();
                 if(t.equals("Solution")) {
-                    if(_solutionTabItem.getItems().size() == 0)
+                    if(_solutionTabItem.getItems().size() == 0) {
                         showSolution();
+                        CmMainPanel.__lastInstance._mainContent.resetChildSize();                        
+                    }
                 }
             }
         });
@@ -94,6 +79,21 @@ public class ResourceViewerImplTutor extends ResourceViewerContainer implements 
         }
     }
 
+
+    /** Called when the resource viewer is resized during window
+     *  change event.
+     *  
+     *  We need to catch this to resize the IFRame that contains
+     *  the Flash whiteboard.
+     *  
+     */
+    public void setResourceContinerHeight(int height) {
+        if(showWorkPanel != null) {
+            showWorkPanel.setHeight(height + "px");
+            layout();
+        }
+        
+    }
     
     /** Load the tutor 
      * 
@@ -125,10 +125,11 @@ public class ResourceViewerImplTutor extends ResourceViewerContainer implements 
 
     }
 
+    ShowWorkPanel showWorkPanel;
     public void showWork(final String pid) {
         
-        ShowWorkPanel showWork1 = new ShowWorkPanel();
-        showWork1.setupForPid(pid);
+        showWorkPanel = new ShowWorkPanel();
+        showWorkPanel.setupForPid(pid);
         
         TabPanel panel = new TabPanel();
         panel.setResizeTabs(true);
@@ -137,7 +138,7 @@ public class ResourceViewerImplTutor extends ResourceViewerContainer implements 
         TabItem item = new TabItem();
         item.setClosable(false);
         item.setText("Show Work");
-        item.add(showWork1);
+        item.add(showWorkPanel);
         
         _tabPanel.add(item);
         
