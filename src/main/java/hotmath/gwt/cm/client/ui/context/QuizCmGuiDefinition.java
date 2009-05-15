@@ -29,12 +29,16 @@ public class QuizCmGuiDefinition implements CmGuiDefinition {
 	
 	public Widget getWestWidget() {
 		String html = 
-		"<p>Welcome to Catchup Math.</p> " +
-        "<p>Please start by taking " +
-        "the quiz to the right.</p> " +
-        "<p>Then we will provide " +
-        "personalized review and " +
-        "practice to get you caught up!</p>";		
+		"<p>Take the quiz to the right." +
+        "After that, we will provide you " +
+        "personalized review and practice " +
+        " to get you caught up." +
+        "</p>" +
+        "<p>Most of the quiz questions require " +
+        " pencil and paper.  Please don’t guess." +
+        "</p>" +
+        "<p>If you log out, your answers will be saved." +
+        "</p> ";
 		
 		Template t = new Template(html);
 		HTML ohtml = new HTML(t.getHtml());

@@ -76,7 +76,7 @@ public class QuizContext implements CmContext {
 		prevBtn.setEnabled(false);
 		nextBtn.setEnabled(true);
 		
-		nextBtn.setToolTip("Check your test and get Caught Up now!");
+		nextBtn.setToolTip("Done taking the quiz");
 	}
 
 	public NextPanelInfo getNextPanelInfo() {
@@ -93,7 +93,7 @@ public class QuizContext implements CmContext {
 
 	public void doNext() {
 	    
-	    String msg = "Are you ready to check your test and create a customized set of review and practice problems?";
+	    String msg = "Are you sure you are ready to have the quiz scored?";
 	    MessageBox.confirm("Ready to Check Test?", msg, new Listener<MessageBoxEvent>() {
             public void handleEvent(MessageBoxEvent be) {
                 if (be.getButtonClicked().getText().equals("Yes")) {

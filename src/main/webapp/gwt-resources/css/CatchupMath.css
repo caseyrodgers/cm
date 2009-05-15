@@ -436,9 +436,11 @@
     background: #34383B;
     color: #CBFF07;
     height: 45px;
+    font-size: 1.3em;
 }
 
 .cm-main-panel-header h2 {
+  font-size: .7em;
   color: white;
 }
 
