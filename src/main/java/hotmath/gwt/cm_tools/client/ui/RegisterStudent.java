@@ -431,8 +431,9 @@ public class RegisterStudent extends LayoutContainer {
 	        	    addUserRPC(sm);
 	        	}
 	        	else {
-	        		boolean stuChanged = false;
-	        		boolean progChanged = false;
+	        		Boolean stuChanged = false;
+	        		Boolean progChanged = false;
+	        		Boolean progIsNew = false;
 	        		if (! name.equals(stuMdl.getName())) {
 	        			stuMdl.setName(name);
 	        			stuChanged = true;
@@ -454,19 +455,21 @@ public class RegisterStudent extends LayoutContainer {
 	        		}
 	        		if (! pass.getPassPercent().equals(stuMdl.getPassPercent())) {
 			            stuMdl.setPassPercent(pass.getPassPercent());
-			            stuChanged = true;
+			            progChanged = true;
 	        		}
 		        	if (! stuMdl.getProgramDescr().equals(prog)) {
 			        	stuMdl.setProgramDescr(prog);
 			        	stuMdl.setStatus("Not started");
 			        	stuMdl.setSectionNum(0);
 			        	stuMdl.setProgramChanged(true);
-			        	progChanged = true;
+			        	progIsNew = true;
+			        	progChanged = false;
+			        	stuChanged = true;
 	        		}
-		        	if (stuChanged || progChanged) {
+		        	if (stuChanged || progChanged || progIsNew) {
      	        		eg.getStore().update(stuMdl);
      	        		
-     	        	    updateUserRPC(stuMdl);
+     	        	    updateUserRPC(stuMdl, stuChanged, progChanged, progIsNew);
 		        	}
 	        	}
 
@@ -556,10 +559,10 @@ public class RegisterStudent extends LayoutContainer {
         });
 	}
 
-	protected void updateUserRPC(StudentModel sm) {
+	protected void updateUserRPC(StudentModel sm, Boolean stuChanged, Boolean progChanged, Boolean progIsNew) {
 		RegistrationServiceAsync s = (RegistrationServiceAsync) Registry.get("registrationService");
 		
-		s.updateUser(sm, new AsyncCallback <StudentModel> () {
+		s.updateUser(sm, stuChanged, progChanged, progIsNew, new AsyncCallback <StudentModel> () {
 			
 			public void onSuccess(StudentModel ai) {
 				// empty
@@ -694,11 +697,11 @@ public class RegisterStudent extends LayoutContainer {
 	
 	private List<PassPercent> getPassPercentList() {
 		List<PassPercent> list = new ArrayList<PassPercent> ();
-		list.add(new PassPercent("60 %"));
-		list.add(new PassPercent("70 %"));
-		list.add(new PassPercent("80 %"));
-		list.add(new PassPercent("90 %"));
-		list.add(new PassPercent("100 %"));
+		list.add(new PassPercent("60%"));
+		list.add(new PassPercent("70%"));
+		list.add(new PassPercent("80%"));
+		list.add(new PassPercent("90%"));
+		list.add(new PassPercent("100%"));
 		return list;
 	}
 	
