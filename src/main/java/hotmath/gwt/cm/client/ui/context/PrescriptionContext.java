@@ -107,7 +107,7 @@ public class PrescriptionContext implements CmContext {
 
         // deal with anomoly of no missed question .. move to the next quiz
         // section
-        boolean hasPrescription = !(UserInfo.getInstance().getCorrectPercent() == 100);
+        final boolean hasPrescription = !(UserInfo.getInstance().getCorrectPercent() == 100);
 
         // before anything can happen, the user must view the required practice
         // problems
@@ -125,9 +125,7 @@ public class PrescriptionContext implements CmContext {
                 }
             }
             if (UserInfo.getInstance().isActiveUser() && !allViewed) {
-                CatchupMath.showAlert("Please view the Required Practice problems before moving forward.");
-                ContextController.getInstance().setCurrentContext(PrescriptionContext.this);
-
+                
                 /**
                  * YUCK ... Expand the practice problems.
                  * 
@@ -137,10 +135,28 @@ public class PrescriptionContext implements CmContext {
                 ((PrescriptionCmGuiDefinition) CmMainPanel.__lastInstance.cmGuiDef)._guiWidget
                         .expandResourcePracticeProblems();
                 CmMainPanel.__lastInstance.layout();
+                
+                MessageBox.confirm("Move Next","Please view the Required Practice problems before moving forward.", new Listener<MessageBoxEvent>() {
+                    public void handleEvent(MessageBoxEvent be) {
+                        if (be.getButtonClicked().getText().equals("No")) {
+                            doMoveNextAux(hasPrescription);
+                        } else {
+                            ContextController.getInstance().setCurrentContext(PrescriptionContext.this);
+                        }
+                    }
+                });                
+                ContextController.getInstance().setCurrentContext(PrescriptionContext.this);
+
                 return;
             }
-
         }
+        
+        doMoveNextAux(hasPrescription);
+    }
+    
+    
+    private void doMoveNextAux(boolean hasPrescription) {
+        
         int cs = (hasPrescription) ? prescriptionData.getCurrSession().getSessionNumber() : 0;
         int totSegs = UserInfo.getInstance().getTestSegmentCount();
         int correctPercent = UserInfo.getInstance().getCorrectPercent();
