@@ -8,7 +8,9 @@ import java.sql.Statement;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -225,12 +227,9 @@ public class CmAdminDao {
     		ps.setString(2, sm.getPasscode());
     		ps.setInt(3, 0);
     		ps.setInt(4, Integer.parseInt(sm.getGroupId()));
-    		String shortName = sm.getProgramDescr();
-    		int offset = shortName.lastIndexOf(" ");
-    		String subjId = shortName.substring(0, offset);
-    		String progId = shortName.substring(offset+1);
-    		ps.setString(5, progId);
-    		ps.setString(6, subjId);
+    		Map <String, String> m = getSubjIdAndProgId(sm);
+    		ps.setString(5, m.get("progId"));
+    		ps.setString(6, m.get("subjId"));
     		ps.setInt(7, sm.getAdminUid());
     		
     		int count = ps.executeUpdate();
@@ -300,17 +299,16 @@ public class CmAdminDao {
     		ps.setString(2, sm.getPasscode());
     		//ps.setString(3, sm.getEmail());
     		ps.setInt(3, Integer.parseInt(sm.getGroupId()));
-    		String shortName = sm.getProgramDescr();
-    		int offset = shortName.lastIndexOf(" ");
-    		String subjId = shortName.substring(0, offset);
-    		String progId = shortName.substring(offset+1);
-    		ps.setInt(4, sm.getSectionNum());
-    		ps.setString(5, progId);
-    		ps.setString(6, subjId);
+    		int sectionNum = (sm.getSectionNum() != null) ? sm.getSectionNum().intValue() : 0;
+    		ps.setInt(4, sectionNum);
+    		Map <String, String> m = getSubjIdAndProgId(sm);
+    		ps.setString(5, m.get("progId"));
+    		ps.setString(6, m.get("subjId"));
     		ps.setInt(7, sm.getUid());
     		int result = ps.executeUpdate();
     	}
     	catch (Exception e) {
+    		System.out.println("Exception: " + e.getMessage());
     		//logger.error(String.format("*** Error updating student with uid: %d", sm.getUid()), e);
     		//throw e;
     	}
@@ -384,12 +382,9 @@ public class CmAdminDao {
     			ps = conn.prepareStatement(INSERT_USER_PROGRAM_SQL);
     			ps.setInt(1, sm.getUid());
     			ps.setInt(2, sm.getAdminUid());
-        		String shortName = sm.getProgramDescr();
-        		int offset = shortName.lastIndexOf(" ");
-        		String subjId = shortName.substring(0, offset);
-        		String progId = shortName.substring(offset+1);
-        		ps.setString(3, progId);
-        		ps.setString(4, subjId);
+        		Map <String, String> m = getSubjIdAndProgId(sm);
+        		ps.setString(3, m.get("progId"));
+        		ps.setString(4, m.get("subjId"));
     			ps.setInt(5, passPcnt);
     			ps.setTimestamp(6, new Timestamp(System.currentTimeMillis()));
     		}
@@ -397,12 +392,9 @@ public class CmAdminDao {
        			ps = conn.prepareStatement(INSERT_USER_PROGRAM_NULL_PASS_PERCENT_SQL);
     			ps.setInt(1, sm.getUid());
     			ps.setInt(2, sm.getAdminUid());
-        		String shortName = sm.getProgramDescr();
-        		int offset = shortName.lastIndexOf(" ");
-        		String subjId = shortName.substring(0, offset);
-        		String progId = shortName.substring(offset+1);
-        		ps.setString(3, progId);
-        		ps.setString(4, subjId);
+        		Map <String, String> m = getSubjIdAndProgId(sm);
+        		ps.setString(3, m.get("progId"));
+        		ps.setString(4, m.get("subjId"));
     			ps.setTimestamp(5, new Timestamp(System.currentTimeMillis()));
     		}
     		int result = ps.executeUpdate();
@@ -524,4 +516,19 @@ public class CmAdminDao {
     	return l;
     }
 	
+    private Map<String, String> getSubjIdAndProgId(StudentModel sm) {
+    	Map<String, String> m = new HashMap<String, String> ();
+    	
+		String shortName = sm.getProgramDescr();
+		int offset = shortName.lastIndexOf(" ");
+		String subjId = "";
+		if (offset > -1) {
+			subjId = shortName.substring(0, offset);
+		}
+		String progId = shortName.substring(offset+1);
+		
+		m.put("subjId", subjId);
+		m.put("progId", progId);
+    	return m;
+    }
 }
