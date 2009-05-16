@@ -292,7 +292,7 @@ public class PrescriptionContext implements CmContext {
         else {
             int sn = prescriptionData.getCurrSession().getSessionNumber();
             int ts = prescriptionData.getSessionTopics().size();
-            nextBtn.setToolTip("Move to the next topic (" + (ts-sn) + " more to go)");
+            nextBtn.setToolTip("Move to the next topic (" + (ts-sn-1) + " more to go)");
         }
     }
 
