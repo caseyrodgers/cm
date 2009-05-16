@@ -453,9 +453,16 @@ public class RegisterStudent extends LayoutContainer {
 	        			stuMdl.setGroup(group);
 	        			stuChanged = true;
 	        		}
-	        		if (! pass.getPassPercent().equals(stuMdl.getPassPercent())) {
-			            stuMdl.setPassPercent(pass.getPassPercent());
-			            progChanged = true;
+	        		String oldPassVal = stuMdl.getPassPercent();
+	        		String newPassVal = (pass != null) ? pass.getPassPercent() : null;
+	        		
+	        		if (! (newPassVal == null && oldPassVal == null)) {
+	        			if (newPassVal == null && oldPassVal != null ||
+    	        			newPassVal != null && oldPassVal == null ||
+	            			! newPassVal.equals(oldPassVal)) {
+			                stuMdl.setPassPercent(newPassVal);
+			                progChanged = true;
+		                }
 	        		}
 		        	if (! stuMdl.getProgramDescr().equals(prog)) {
 			        	stuMdl.setProgramDescr(prog);
