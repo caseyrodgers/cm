@@ -62,15 +62,15 @@ public class CmMainPanel extends LayoutContainer {
         // BorderLayoutData(LayoutRegion.CENTER));
         _westPanel.setBorders(false);
         BorderLayoutData westData = new BorderLayoutData(LayoutRegion.WEST, 250);
-        westData.setMargins(new Margins(5, 0, 5, 5));
+        westData.setMargins(new Margins(1, 0, 1, 1));
         westData.setSplit(true);
         westData.setCollapsible(false);
         _westPanel.add(cmGuiDef.getWestWidget(), new BorderLayoutData(LayoutRegion.CENTER));
         add(_westPanel, westData);
 
         BorderLayoutData centerData = new BorderLayoutData(LayoutRegion.CENTER);
-        centerData.setMargins(new Margins(5, 0, 5, 5));
-        centerData.setSplit(true);
+        centerData.setMargins(new Margins(1, 0,1, 1));
+        centerData.setSplit(false);
         add(_mainContent, centerData);
 
         Widget w = cmGuiDef.getCenterWidget();
