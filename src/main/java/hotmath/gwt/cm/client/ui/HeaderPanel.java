@@ -61,7 +61,7 @@ public class HeaderPanel extends LayoutContainer {
         UserInfo user = UserInfo.getInstance();
         int viewCount = UserInfo.getInstance().getViewCount();
         if(user != null) {
-            String s = "Hello: <b>" + user.getUserName() + "</b>, you have viewed " + viewCount + " resources";
+            String s = "Hello: <b>" + user.getUserName() + "</b>, you have viewed " + viewCount + " learning resources";
             _helloInfo.setHtml(s);
             layout();
         }

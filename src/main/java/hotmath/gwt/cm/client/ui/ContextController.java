@@ -5,8 +5,6 @@ import hotmath.gwt.cm.client.CatchupMath;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.extjs.gxt.ui.client.widget.button.IconButton;
-
 /**
  * Manages the different context switches for Catchup Math
  * 
@@ -24,9 +22,6 @@ public class ContextController {
 	}
 	
 	CmContext theContext;
-	IconButton prevBtn;
-	IconButton nextBtn;
-	
 	List<ContextChangeListener> listeners = new ArrayList<ContextChangeListener>();
 	
 	/** Add a listener that will be notified when the context changes.
@@ -71,35 +66,10 @@ public class ContextController {
   	    
         // HeaderPanel.__instance._thermometer.setPerecent(context.getContextCompletionPercent());
 		
-		context.setHeaderButtons(prevBtn, nextBtn);
-		
 		
 		fireContextChanged();
 	}
 
-	public IconButton getPrevBtn() {
-		return prevBtn;
-	}
-
-    /** Set the control that is passed to the context to
-     *  allow setting of tooltip, label, etc..
-     * @param nextBtn
-     */
-	public void setPrevBtn(IconButton prevBtn) {
-		this.prevBtn = prevBtn;
-	}
-
-	public IconButton getNextBtn() {
-		return nextBtn;
-	}
-
-	/** Set the control that is passed to the context to
-	 *  allow setting of tooltip, label, etc..
-	 * @param nextBtn
-	 */
-	public void setNextBtn(IconButton nextBtn) {
-		this.nextBtn = nextBtn;
-	}
 
 	/**
 	 * Move the system to the next logical state

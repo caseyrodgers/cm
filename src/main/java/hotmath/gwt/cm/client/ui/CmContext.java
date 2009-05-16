@@ -86,16 +86,6 @@ public interface CmContext {
 	public String getContextSubTitle();
 	
 	
-	/** Sets the 
-	 * buttons representing the prev/next steps.
-	 * Allowing each context to set up the tooltips,
-	 * actions according to their current state.
-	 * 
-	 * @param prevBtn
-	 * @param nextBtn
-	 */
-	public void setHeaderButtons(IconButton prevBtn, IconButton nextBtn);
-	
 	
 	public String getStatusMessage();
 	

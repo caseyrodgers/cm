@@ -3,21 +3,25 @@ package hotmath.gwt.cm.client.ui.context;
 import hotmath.gwt.cm.client.CatchupMath;
 import hotmath.gwt.cm.client.service.PrescriptionServiceAsync;
 import hotmath.gwt.cm.client.ui.CmContext;
-import hotmath.gwt.cm.client.ui.ContextController;
+import hotmath.gwt.cm.client.ui.CmMainPanel;
 import hotmath.gwt.cm.client.ui.NextDialog;
 import hotmath.gwt.cm.client.ui.NextPanelInfo;
 import hotmath.gwt.cm.client.ui.NextPanelInfoImplDefault;
 import hotmath.gwt.cm.client.util.UserInfo;
 import hotmath.gwt.shared.client.util.RpcData;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.extjs.gxt.ui.client.Registry;
+import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.MessageBoxEvent;
+import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.MessageBox;
+import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.button.IconButton;
 import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -71,13 +75,6 @@ public class QuizContext implements CmContext {
 	    return title + "<h2>Section " + UserInfo.getInstance().getTestSegment() + " of " + UserInfo.getInstance().getTestSegmentCount() +
 	                   "</h2>";
 	}
-	
-	public void setHeaderButtons(IconButton prevBtn, IconButton nextBtn) {
-		prevBtn.setVisible(false);
-		nextBtn.setEnabled(true);
-		
-		nextBtn.setToolTip("Done taking the quiz");
-	}
 
 	public NextPanelInfo getNextPanelInfo() {
 		return new QuizContextNextPanelInfo();
@@ -88,7 +85,19 @@ public class QuizContext implements CmContext {
 	
 	
 	public List<Component> getTools() {
-		return null;
+	    List<Component> list = new ArrayList<Component>();
+	    
+	    Button btn = new Button("Check Quiz");
+	    btn.setStyleName("cm-main-panel-next-quiz");
+	    btn.setToolTip("Done taking the quiz");
+	    
+	    btn.addSelectionListener(new SelectionListener<ButtonEvent>() {
+	        public void componentSelected(ButtonEvent ce) {
+	            doNext();
+	        }
+	    });
+	    list.add(btn);
+	    return list;
 	}
 
 	public void doNext() {

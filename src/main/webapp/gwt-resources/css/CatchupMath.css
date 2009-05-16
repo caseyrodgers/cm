@@ -405,6 +405,14 @@
     background: url(../images/main-panel-next-over.png) no-repeat center left !important;
 }
 
+
+
+.cm-main-panel-next-quiz {
+    position: absolute;
+    left: 31%;
+    top: 5px;
+}
+
 .resource-wrapper {
 }
 

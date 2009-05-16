@@ -20,6 +20,7 @@ class PrescriptionInfoPanel extends LayoutContainer {
         setStyleName("prescription-info-panel");
         
         add(_labStatus);
+        _labStatus.setText("Use the Help button to change your wallpaper.");
         ContextController.getInstance().addContextChangeListener(new ContextChangeListener() {
             public void contextChanged(CmContext context) {
                 updateStatus(context);

@@ -6,14 +6,18 @@ import hotmath.gwt.cm.client.data.PrescriptionData;
 import hotmath.gwt.cm.client.data.PrescriptionSessionDataResource;
 import hotmath.gwt.cm.client.ui.CmContext;
 import hotmath.gwt.cm.client.ui.CmMainPanel;
+import hotmath.gwt.cm.client.ui.ContextChangeListener;
 import hotmath.gwt.cm.client.ui.ContextController;
 import hotmath.gwt.cm.client.ui.NextDialog;
 import hotmath.gwt.cm.client.ui.NextPanelInfoImplDefault;
 import hotmath.gwt.cm.client.util.UserInfo;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
+import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.MessageBoxEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
@@ -58,8 +62,42 @@ public class PrescriptionContext implements CmContext {
     public void resetContext() {
     }
 
+    IconButton _previousButton;
+    IconButton _nextButton;
+
     public List<Component> getTools() {
-        return null;
+        ContextController.getInstance().addContextChangeListener(new ContextChangeListener() {
+            public void contextChanged(CmContext context) {
+                setHeaderButtons(_previousButton, _nextButton);
+            }
+        });
+        List<Component> list = new ArrayList<Component>();
+        _previousButton = new IconButton();
+        _previousButton.setStyleName("cm-main-panel-prev-icon");
+        _previousButton.setSize(60, 30);
+        _previousButton.setToolTip("Move to the previous step");
+        _previousButton.addListener(Events.Select, new Listener<BaseEvent>() {
+            public void handleEvent(BaseEvent be) {
+                // _previousButton.setEnabled(false);
+                // _nextButton.setEnabled(false);
+                ContextController.getInstance().doPrevious();
+            }
+        });
+
+        list.add(_previousButton);
+        _nextButton = new IconButton();
+        _nextButton.setStyleName("cm-main-panel-next-icon");
+        _nextButton.setToolTip("Move to the next step");
+        _nextButton.addListener(Events.Select, new Listener<BaseEvent>() {
+            public void handleEvent(BaseEvent be) {
+                ContextController.getInstance().doNext();
+                // _nextButton.setEnabled(false);
+                // _previousButton.setEnabled(false);
+            }
+        });
+        list.add(_nextButton);
+        return list;
+
     }
 
     public void gotoNextTopic() {
@@ -89,18 +127,21 @@ public class PrescriptionContext implements CmContext {
             if (UserInfo.getInstance().isActiveUser() && !allViewed) {
                 CatchupMath.showAlert("Please view the Required Practice problems before moving forward.");
                 ContextController.getInstance().setCurrentContext(PrescriptionContext.this);
-                
-                /** YUCK ... 
-                 *   Expand the practice problems.
-                 *   @TODO: figure better way... Perhaps add listener to the accordian
+
+                /**
+                 * YUCK ... Expand the practice problems.
+                 * 
+                 * @TODO: figure better way... Perhaps add listener to the
+                 *        accordian
                  */
-                ((PrescriptionCmGuiDefinition)CmMainPanel.__lastInstance.cmGuiDef)._guiWidget.expandResourcePracticeProblems();
+                ((PrescriptionCmGuiDefinition) CmMainPanel.__lastInstance.cmGuiDef)._guiWidget
+                        .expandResourcePracticeProblems();
                 CmMainPanel.__lastInstance.layout();
                 return;
             }
 
         }
-        int cs = (hasPrescription)?prescriptionData.getCurrSession().getSessionNumber():0;
+        int cs = (hasPrescription) ? prescriptionData.getCurrSession().getSessionNumber() : 0;
         int totSegs = UserInfo.getInstance().getTestSegmentCount();
         int correctPercent = UserInfo.getInstance().getCorrectPercent();
         int PASS_PERCENT = 80;
@@ -124,7 +165,7 @@ public class PrescriptionContext implements CmContext {
                     msg = "Would you like to re-take quiz section #" + currSeg;
                     testSegmentToLoad = UserInfo.getInstance().getTestSegment();
                 }
-                msg += " (pass percent: " + correctPercent + "%)";
+
 
                 final int tstl = testSegmentToLoad;
                 MessageBox.confirm("Ready for next Quiz?", msg, new Listener<MessageBoxEvent>() {
@@ -228,12 +269,14 @@ public class PrescriptionContext implements CmContext {
      * Called with prev/next buttons that should have their tooltips set to the
      * next/prev options.
      * 
+     * Move to next topic (<n> more to go)”; or, if zero topics left: “Move to next quiz”
+     * 
      */
     public void setHeaderButtons(IconButton prevBtn, IconButton nextBtn) {
+        
 
         prevBtn.setEnabled(true);
         nextBtn.setEnabled(true);
-
         int pn = prescriptionData.getCurrSession().getSessionNumber();
         if (pn > 0)
             prevBtn.setToolTip("Move to the previous topic ("
@@ -244,12 +287,13 @@ public class PrescriptionContext implements CmContext {
         }
 
         if (pn > prescriptionData.getSessionTopics().size() - 2)
-            nextBtn.setToolTip("Move to next test segment");
+            nextBtn.setToolTip("Move to next quiz");
 
-        else
-            nextBtn.setToolTip("Move to the next topic ("
-                    + prescriptionData.getSessionTopics().get(prescriptionData.getCurrSession().getSessionNumber() + 1)
-                    + ")");
+        else {
+            int sn = prescriptionData.getCurrSession().getSessionNumber();
+            int ts = prescriptionData.getSessionTopics().size();
+            nextBtn.setToolTip("Move to the next topic (" + (ts-sn) + " more to go)");
+        }
     }
 
     class NextPanelInfoImplPrescription extends NextPanelInfoImplDefault {
