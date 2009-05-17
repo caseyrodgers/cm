@@ -1,10 +1,14 @@
 package hotmath.gwt.cm_admin.client.ui;
 
+import hotmath.gwt.shared.client.CmShared;
+
 import com.extjs.gxt.ui.client.event.IconButtonEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
+import com.extjs.gxt.ui.client.widget.Html;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.button.IconButton;
 import com.google.gwt.user.client.Element;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Label;
 
 public class HeaderPanel extends LayoutContainer {
@@ -16,15 +20,16 @@ public class HeaderPanel extends LayoutContainer {
 	}
 
 	Label headerText;
-	Label schoolLabel;
+	//Label schoolLabel;
+	Html  schoolLabel;
 	
 	protected void onRender(Element parent, int index) {
 		super.onRender(parent, index);
 
-		this.setStylePrimaryName("header-panel");
+		setStyleName("header-panel");
 		
 		IconButton btn = new IconButton("header-panel-help-btn-icon");
-		btn.setStylePrimaryName("header-panel-help-btn");
+		btn.setStyleName("header-panel-help-btn");
 		btn.addSelectionListener(new SelectionListener<IconButtonEvent>() {
 			public void componentSelected(IconButtonEvent ce) {
 				//ContextController.getInstance().showHelp();
@@ -33,21 +38,22 @@ public class HeaderPanel extends LayoutContainer {
 		add(btn);
 		
 		btn = new IconButton("header-panel-logout-btn-icon");
-		btn.setStylePrimaryName("header-panel-logout-btn");
-	      btn.addSelectionListener(new SelectionListener<IconButtonEvent>() {
+		btn.setStyleName("header-panel-logout-btn");
+	    btn.addSelectionListener(new SelectionListener<IconButtonEvent>() {
 			public void componentSelected(IconButtonEvent ce) {
-				//CatchupMath.getThisInstance().showLoginPage();
+				//CmShared.logout();
+				Window.Location.assign("/");
 			};
 		});		
 		add(btn);
 		
-		schoolLabel = new Label();
-		schoolLabel.setStylePrimaryName("header-panel-school-label");
-		schoolLabel.setText("Hotmath High");
+		schoolLabel = new Html();
+		//schoolLabel.setStyleName("header-panel-school-label");
+		//setSchoolInfo();
 		add(schoolLabel);
 		
 		headerText = new Label();
-		headerText.setStylePrimaryName("header-panel-title");
+		headerText.setStyleName("header-panel-title");
 		add(headerText);
 	}
 
