@@ -4,6 +4,7 @@ import hotmath.gwt.cm.client.ui.CmContext;
 import hotmath.gwt.cm.client.ui.ContextChangeListener;
 import hotmath.gwt.cm.client.ui.ContextController;
 
+import com.extjs.gxt.ui.client.widget.Html;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.google.gwt.user.client.ui.Label;
 
@@ -14,13 +15,15 @@ import com.google.gwt.user.client.ui.Label;
  */
 class PrescriptionInfoPanel extends LayoutContainer {
     PrescriptionCmGuiDefinition cmDef;
-    Label _labStatus = new Label();
     public PrescriptionInfoPanel(PrescriptionCmGuiDefinition cm) {
         cmDef = cm;
         setStyleName("prescription-info-panel");
+
+        String html = "<p>Use the Help button to change your wallpaper.</p>" +
+                      "<p>Please view all steps of each required practice problem answers before advancing.</p>";
+        Html htmlO = new Html(html);
+        add(htmlO);
         
-        add(_labStatus);
-        _labStatus.setText("Use the Help button to change your wallpaper.");
         ContextController.getInstance().addContextChangeListener(new ContextChangeListener() {
             public void contextChanged(CmContext context) {
                 updateStatus(context);

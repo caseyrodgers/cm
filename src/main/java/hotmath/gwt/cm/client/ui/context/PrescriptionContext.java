@@ -182,7 +182,7 @@ public class PrescriptionContext implements CmContext {
                     });
                     return;
                 } else {
-                    msg = "Would you like to re-take quiz section #" + currSeg;
+                    msg = "Would you like to take your next quiz?";
                     testSegmentToLoad = UserInfo.getInstance().getTestSegment();
                 }
 

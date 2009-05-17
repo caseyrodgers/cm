@@ -437,6 +437,9 @@
     background: #34383B;
     color: #C0C662;
 }
+.prescription-info-panel p {
+	margin-bottom: 10px;
+}
 
 .prescription-info-panel .form-field {
 	color: #C0C662;

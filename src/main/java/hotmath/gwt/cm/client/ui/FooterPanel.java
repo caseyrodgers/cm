@@ -75,7 +75,7 @@ public class FooterPanel extends LayoutContainer {
              MessageBox.confirm("User Reset", "Are you sure you want to reset this user's program?",new Listener<MessageBoxEvent>() {
                   @Override
                 public void handleEvent(MessageBoxEvent be) {
-                    if(be.getButtonClicked().equals("Yes"))
+                    if(be.getButtonClicked().getText().equalsIgnoreCase("Yes"))
                        Window.Location.reload();
                 }
              });
