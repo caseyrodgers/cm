@@ -24,7 +24,6 @@
     </pluginRepository>
 
 
-
 	</pluginRepositories>
 
 <repositories>
@@ -280,6 +279,25 @@
 					</execution>
 				</executions>
 			</plugin>
+			
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>gwt-maven-plugin</artifactId>
+				<version>1.1-SNAPSHOT</version>
+				<configuration>
+					<output>${basedir}/src/main/webapp/</output>
+					<module>hotmath.gwt.cm_admin.CatchupMathAdmin</module>
+					<runTarget>hotmath.gwt.cm_admin.CatchupMathAdmin/CatchupMathAdmin.html</runTarget>
+				</configuration>
+				<executions>
+					<execution>
+						<goals>
+							<goal>compile</goal>
+							<goal>test</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
 
 			<!--
 				<plugin> <groupId>org.codehaus.mojo</groupId>
@@ -313,6 +331,7 @@
 				<platform>mac</platform>
 			</properties>
 			<activation>
+				<activeByDefault>false</activeByDefault>
 				<os>
 					<family>mac</family>
 				</os>
