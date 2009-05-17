@@ -18,12 +18,27 @@
 	text-align: center;
 }
 
+.header-panel-logout-btn {
+	height: 34px;
+	width: 92px;
+	position: absolute;
+	right: 100px;
+	top: 2px;
+}
 .header-panel-logout-btn-icon {
 	background: url(../images/logout.png) no-repeat center left !important;
 }
 .header-panel-logout-btn-icon-over {
 	background: url(../images/logout-over.png) no-repeat center left !important
 		;
+}
+
+.header-panel-help-btn {
+	height: 34px;
+	width: 76px;
+	position: absolute;
+	right: 15px;
+	top: 2px;
 }
 .header-panel-help-btn-icon {
 	background: url(../images/help.png) no-repeat center left !important;
