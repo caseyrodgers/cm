@@ -153,7 +153,6 @@ window.markCorrectResponse = function(questionList) {
 }
 
 
-
 // register a listener with Tutor to 
 // be notified when last step is reached.
 // This is used to only advance when the solution 
@@ -161,7 +160,3 @@ window.markCorrectResponse = function(questionList) {
 HmEvents.eventTutorLastStep.subscribe(function(x) {
 	solutionHasBeenViewed_Gwt(x);	
 });
-
-
-
-

@@ -7,14 +7,12 @@ import hotmath.gwt.cm.client.ui.CmMainPanel;
 
 import com.extjs.gxt.ui.client.Registry;
 import com.extjs.gxt.ui.client.Style.Scroll;
-import com.extjs.gxt.ui.client.event.BaseEvent;
-import com.extjs.gxt.ui.client.event.Events;
-import com.extjs.gxt.ui.client.event.Listener;
-import com.extjs.gxt.ui.client.widget.ContentPanel;
+import com.extjs.gxt.ui.client.event.ButtonEvent;
+import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.widget.Html;
-import com.extjs.gxt.ui.client.widget.TabItem;
-import com.extjs.gxt.ui.client.widget.TabPanel;
+import com.extjs.gxt.ui.client.widget.Window;
 import com.extjs.gxt.ui.client.widget.button.Button;
+import com.extjs.gxt.ui.client.widget.layout.FillLayout;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -28,72 +26,20 @@ public class ResourceViewerImplTutor extends ResourceViewerContainer implements 
     Button showWorkBtn, hideWorkBtn;
     String pid;
     InmhItemData resource;
-    TabPanel _tabPanel;
-    TabItem _solutionTabItem;
-    
     public Widget getResourcePanel(final InmhItemData resource) {
         this.pid = resource.getFile();
         this.resource = resource;
-
-        _tabPanel = new TabPanel();
-        addResource(_tabPanel,resource.getTitle());
-
-        // setup tab to allow for async access to solution panel
-        TabPanel panel = new TabPanel();
-        panel.setResizeTabs(true);
-        panel.setAnimScroll(true);
-        
-        showWork(pid);        
-       
-        _solutionTabItem = new TabItem();
-        _solutionTabItem.setScrollMode(Scroll.AUTOY);
-        
-        _solutionTabItem.setClosable(false);
-        _solutionTabItem.setText("Solution");
-        _tabPanel.add(_solutionTabItem);          
-        
-        
-        _tabPanel.addListener(Events.Select,new Listener() {
-            public void handleEvent(BaseEvent be) {
-                String t = _tabPanel.getSelectedItem().getText();
-                if(t.equals("Solution")) {
-                    if(_solutionTabItem.getItems().size() == 0) {
-                        showSolution();
-                        CmMainPanel.__lastInstance._mainContent.resetChildSize();                        
-                    }
-                }
-            }
-        });
-        
+        showSolution();
         
         return this;
     }
 
-    ContentPanel showWorkWin;
-
+    static Window showWorkWin;
     public void removeResourcePanel() {
         if (showWorkWin != null) {
             showWorkWin.hide();
-            showWorkWin.removeFromParent();
-            showWorkWin = null;
             layout();
         }
-    }
-
-
-    /** Called when the resource viewer is resized during window
-     *  change event.
-     *  
-     *  We need to catch this to resize the IFRame that contains
-     *  the Flash whiteboard.
-     *  
-     */
-    public void setResourceContinerHeight(int height) {
-        if(showWorkPanel != null) {
-            showWorkPanel.setHeight(height + "px");
-            layout();
-        }
-        
     }
     
     /** Load the tutor 
@@ -111,13 +57,21 @@ public class ResourceViewerImplTutor extends ResourceViewerContainer implements 
             public void onSuccess(Object result) {
                 String html = (String) result;
                 
-                _solutionTabItem.removeAll();
                 Html htmlO = new Html(html);
                 htmlO.setStyleName("tutor_solution_wrapper");
-                _solutionTabItem.add(htmlO);
+                addResource(htmlO,resource.getTitle());
+                Button showWorkBtn = new Button("Show Work");
+                showWorkBtn.setStyleName("show-work-button");
+                showWorkBtn.addSelectionListener(new SelectionListener<ButtonEvent>() {
+                    public void componentSelected(ButtonEvent ce) {
+                        showWork(pid);
+                    }
+                });
+              
+                CmMainPanel.__lastInstance._mainContent.addControl(showWorkBtn);
+                CmMainPanel.__lastInstance._mainContent.layout();
                 try {
                     ResourceViewerImplTutor.initializeTutor(pid);
-                    layout();
                 } catch (Exception e) {
                     e.printStackTrace();
                     CatchupMath.showAlert(e.getMessage());
@@ -128,24 +82,36 @@ public class ResourceViewerImplTutor extends ResourceViewerContainer implements 
 
     }
 
-    ShowWorkPanel showWorkPanel;
+    static ShowWorkPanel showWorkPanel;
     public void showWork(final String pid) {
+        if(showWorkWin == null) {
+            showWorkWin = new Window();
+            Button hideBtn = new Button("Hide");
+            hideBtn.addSelectionListener(new SelectionListener<ButtonEvent>() {
+                public void componentSelected(ButtonEvent ce) {
+                    showWorkWin.hide();
+                }
+            });
+            showWorkWin.setHeading("Show Your Work");
+            showWorkWin.getHeader().addTool(hideBtn);
+            showWorkWin.setStyleName("show-work-window");
+            showWorkWin.setScrollMode(Scroll.NONE);
+            
+            showWorkWin.setHeight(420);
+            showWorkWin.setWidth(560);
+            showWorkWin.setLayout(new FillLayout());
+        }
+        else {
+            showWorkWin.remove(showWorkPanel);
+        }
         
         showWorkPanel = new ShowWorkPanel();
         showWorkPanel.setupForPid(pid);
-        
-        TabPanel panel = new TabPanel();
-        panel.setResizeTabs(true);
-        panel.setAnimScroll(true);
-       
-        TabItem item = new TabItem();
-        item.setClosable(false);
-        item.setText("Show Work");
-        item.add(showWorkPanel);
-        
-        _tabPanel.add(item);
-        
-        layout();
+        showWorkWin.add(showWorkPanel);
+
+        showWorkWin.setVisible(true);
+        // get the position of the 'show work' button
+        // and move to it, then expand ...
     }
 
     /**

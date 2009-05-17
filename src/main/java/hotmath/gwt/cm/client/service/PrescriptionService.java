@@ -138,4 +138,13 @@ public interface PrescriptionService extends RemoteService {
 	 */
 	RpcData createTestRun(int testId) throws CmRpcException;
 	
+	
+	
+	/** Reset the current user's path through CM
+	 * 
+	 * @param userId
+	 * @throws CmRpcException
+	 */
+	void resetUser(int userId) throws CmRpcException;
+	
 }

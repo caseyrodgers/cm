@@ -324,9 +324,23 @@
 }
 
 .show-work-panel {
-	position: relative;
-	width: 300px;
+    position: relative;
+    width: 300px;
+    margin-left: 5px;
 }
+
+
+.show-work-panel-flash {
+    margin-top: 10px;
+}
+
+.show-work-panel-bg {
+    margin: 35px 15px 10px 60px;
+    background-color: gray;
+    width: 350px;
+    padding: 5px;
+}
+
 
 .show-work-button {
 	position: absolute;
@@ -545,26 +559,12 @@ img.resource-item-complete {
 }
 
 
-.show-work-panel {
-	margin-left: 5px;
-}
-
 .x-tab-panel-body,.resource-viewer-container,.resource-viewer-impl-tutor, .x-tab-panel {
 	border: none;
     width: 550px;
     background: url(/gwt-resources/images/resource-viewer-body.png) repeat-y;
 }
 
-.show-work-panel-flash {
-    margin-top: 10px;
-}
-
-.show-work-panel-bg {
-    margin: 35px 15px 10px 60px;
-    background-color: gray;
-    width: 350px;
-    padding: 5px;
-}
 
 .resource-viewer-header {
     height: 25px;

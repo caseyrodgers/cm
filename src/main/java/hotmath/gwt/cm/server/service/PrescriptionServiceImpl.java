@@ -687,7 +687,21 @@ public class PrescriptionServiceImpl extends RemoteServiceServlet implements Pre
         } finally {
             SqlUtilities.releaseResources(null, pstat, conn);
         }
-
+    }
+    
+    public void resetUser(int userId) throws CmRpcException {
+        try {
+            HaUser user = HaUser.lookUser(userId,null);
+            user.setActiveTest(0);
+            user.setActiveTestRunId(0);
+            user.setActiveTestSegment(0);
+            user.setActiveTestRunSession(0);
+            
+            user.update();
+        }
+        catch(Exception e) {
+            throw new CmRpcException(e);
+        }
     }
 }
 

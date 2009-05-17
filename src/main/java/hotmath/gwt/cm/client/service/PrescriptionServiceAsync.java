@@ -70,4 +70,6 @@ public interface PrescriptionServiceAsync {
 	   * @param callBack
 	   */
 	  void createTestRun(int testId, AsyncCallback callBack);
+	  
+	  void resetUser(int userId, AsyncCallback callback);
 }

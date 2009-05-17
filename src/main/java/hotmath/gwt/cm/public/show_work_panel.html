@@ -15,16 +15,9 @@
         <!-- PROBLEM STATEMENT: always displayed -->
         <div class="problemIndex" style='background-color: #F1F1F1;'>
         
-            <div id='whiteboard-bg'>
+            <div id='whiteboard-bg' style='display:none'>
             </div>
-         </div>
-         
-         
-         <div class="step">
-             <div class="step_title_hint">&nbsp;</div>
-             <div class="step_content"> 
-             
-             
+            
             <div id='whiteboard-object'>
               <script type="text/javascript">
                   var fo = new SWFObject("whiteboard.swf", "whiteboard", "100%", "230px", "8.0.15", "#ffffff", true);
@@ -33,9 +26,6 @@
                   /** fo.addParam("wmode", "transparent"); */
                   fo.write("whiteboard-object");
               </script>            
-           </div>
-             
-             
              </div>         
          </div>
          
@@ -43,11 +33,6 @@
       <div id="steps_tail_padding">  </div>
     </div>
     <img src="/images/tutor5/spacer.gif" id="scrollTo-button"/>
-    <div style="display: block;" id="info_section"> 
-        <a onClick="TutorManager.askATutor();return false;" onMouseOut="nd()" 
-        onMouseOver="showAskATutorTooltip()" href="#"><img src="/images/tutor5/ask_a_tutor-120x30.gif" 
-                                                           class="ask_a_tutor_image"/> </a>
-    </div>
   </div>
   <!-- HOTMATH BODY END -->
 </div>

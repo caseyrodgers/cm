@@ -27,8 +27,6 @@ public class ShowWorkPanel extends Frame {
 	public ShowWorkPanel() {
 		super("show_work_panel.html");
 	    setWidth("100%");
-	    //setHeight("500px");
-
         setStyleName("show-work-panel");
 
 		DOM.setElementPropertyInt(this.getElement(), "frameBorder", 0); // disable border

@@ -450,8 +450,8 @@ public class PrescriptionContext implements CmContext {
 
         int perComplete = UserInfo.getInstance().getCorrectPercent();
 
-        return "Topic " + (currSess + 1) + " of " + totSess + ", Section " + seg + " of " + totSegs + ", "
-                + perComplete + "% correct";
+        return "Topic: " + prescriptionData.getCurrSession().getTopic() + ", " + (currSess + 1) + " of " + totSess + ", Section: " + seg + " of " + totSegs + ", "
+                + perComplete + "% correct"; 
     }
 
 }

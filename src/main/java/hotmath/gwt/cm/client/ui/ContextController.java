@@ -1,6 +1,7 @@
 package hotmath.gwt.cm.client.ui;
 
 import hotmath.gwt.cm.client.CatchupMath;
+import hotmath.gwt.cm.client.util.UserInfo;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -69,6 +70,13 @@ public class ContextController {
 		
 		fireContextChanged();
 	}
+	 
+	 public String toString() {
+	     String msg = theContext.getStatusMessage();
+	     msg += ", user_id: " + UserInfo.getInstance().getUid() + ", run_id: " + UserInfo.getInstance().getRunId();
+	     msg = "Program: " + UserInfo.getInstance().getTestName() + ", " + msg;
+	     return msg;
+	 }
 
 
 	/**
