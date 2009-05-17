@@ -11,6 +11,8 @@ import hotmath.gwt.cm.client.ui.ContextController;
 import hotmath.gwt.cm.client.ui.NextDialog;
 import hotmath.gwt.cm.client.ui.NextPanelInfoImplDefault;
 import hotmath.gwt.cm.client.util.UserInfo;
+import hotmath.gwt.shared.client.CmShared;
+import hotmath.gwt.shared.client.data.CmAsyncRequestImplDefault;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -124,7 +126,11 @@ public class PrescriptionContext implements CmContext {
                     }
                 }
             }
-            if (UserInfo.getInstance().isActiveUser() && !allViewed) {
+            /** If all required solutions have been not been viewed, then force user to do so
+             * 
+             *  if 'debug' parameter is on URL, then this check is skipped
+             */
+            if (CmShared.getQueryParameter("debug") == null && (UserInfo.getInstance().isActiveUser() && !allViewed)) {
                 
                 /**
                  * YUCK ... Expand the practice problems.
@@ -136,15 +142,7 @@ public class PrescriptionContext implements CmContext {
                         .expandResourcePracticeProblems();
                 CmMainPanel.__lastInstance.layout();
                 
-                MessageBox.confirm("Move Next","Please view the Required Practice problems before moving forward.", new Listener<MessageBoxEvent>() {
-                    public void handleEvent(MessageBoxEvent be) {
-                        if (be.getButtonClicked().getText().equals("No")) {
-                            doMoveNextAux(hasPrescription);
-                        } else {
-                            ContextController.getInstance().setCurrentContext(PrescriptionContext.this);
-                        }
-                    }
-                });                
+                CatchupMath.showAlert("Please view the Required Practice problems before moving forward.");              
                 ContextController.getInstance().setCurrentContext(PrescriptionContext.this);
 
                 return;
@@ -175,8 +173,14 @@ public class PrescriptionContext implements CmContext {
                 String msg = "";
                 int testSegmentToLoad = 0;
                 if (correctPercent > PASS_PERCENT) {
-                    msg = "You passed this section!   Would you like to take your next quiz section?";
-                    testSegmentToLoad = UserInfo.getInstance().getTestSegment() + 1;
+                    msg = "You passed this section!  You will now be shown the next quiz.";
+                    CatchupMath.showAlert(msg,new CmAsyncRequestImplDefault() {
+                        public void requestComplete(String requestData) {
+                            UserInfo.getInstance().setTestSegment(UserInfo.getInstance().getTestSegment() + 1);
+                            CatchupMath.getThisInstance().showQuizPanel();
+                        }
+                    });
+                    return;
                 } else {
                     msg = "Would you like to re-take quiz section #" + currSeg;
                     testSegmentToLoad = UserInfo.getInstance().getTestSegment();
