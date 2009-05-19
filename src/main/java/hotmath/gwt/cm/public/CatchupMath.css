@@ -94,15 +94,7 @@
 	float: right;
 	margin-right: 10px;
 }
-.resource-container {
-	background-image:
-		url(images/prescription_resource_background-1600x1050.jpg);
-	background-position: center bottom;
-	background-repeat: no-repeat;
-	max-height: 1050px;
-	max-width: 1600px;
-	width: 540px;
-}
+
 .resource-close {
 	margin: 5px 0 5px 10px;
 }

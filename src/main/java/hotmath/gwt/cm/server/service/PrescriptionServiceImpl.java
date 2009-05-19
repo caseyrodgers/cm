@@ -13,6 +13,7 @@ import hotmath.gwt.cm.client.data.PrescriptionSessionData;
 import hotmath.gwt.cm.client.data.PrescriptionSessionDataResource;
 import hotmath.gwt.cm.client.service.PrescriptionService;
 import hotmath.gwt.cm.client.util.CmRpcException;
+import hotmath.gwt.shared.client.util.CmException;
 import hotmath.gwt.shared.client.util.RpcData;
 import hotmath.inmh.INeedMoreHelpItem;
 import hotmath.inmh.INeedMoreHelpResourceType;
@@ -152,9 +153,24 @@ public class PrescriptionServiceImpl extends RemoteServiceServlet implements Pre
                 sessionData.getInmhResources().add(resource);
             }
 
+            
+            
+            // add a results resource type to allow user to view current results
+            PrescriptionSessionDataResource resultsResource = new PrescriptionSessionDataResource();
+            resultsResource.setType("results");
+            resultsResource.setLabel("Quiz Results");
+            InmhItemData id = new InmhItemData();
+            id.setTitle("Your quiz results");
+            id.setFile("");
+            id.setType("results");
+            resultsResource.getItems().add(id);
+            
+            
+            
             sessionData.getInmhResources().add(lessonResource);
             sessionData.getInmhResources().add(problemsResource);
-
+            sessionData.getInmhResources().add(resultsResource);
+            
             // mark all items as viewed/not
             // .. get list of viewed items so far
             List<RpcData> rdata = getViewedInmhItems(runId);
@@ -215,8 +231,13 @@ public class PrescriptionServiceImpl extends RemoteServiceServlet implements Pre
     private List<PrescriptionSessionDataResource> fixupInmhResources(List<PrescriptionSessionDataResource> inmhTypes) {
 
         List<PrescriptionSessionDataResource> newTypes = new ArrayList<PrescriptionSessionDataResource>();
-        String types[][] = { { "Required Problems", "practice" }, { "Video", "video" },
-                { "Activities", "activities" }, { "Extra Problems", "workbook" },{ "Lesson", "review" } };
+        String types[][] = { 
+                { "Required Problems", "practice","Practice problems you must complete before advancing" }, 
+                { "Video", "video","Math videos related to the current topic"},
+                { "Activities", "activities","Math activities and games related to the current topic" }, 
+                { "Extra Problems", "workbook","Additional workbook problems" },
+                { "Lesson", "review","Review lesson on the current topic" },
+                { "Quiz Results", "results","The current quiz's results"}};
 
         for (int i = 0; i < types.length; i++) {
             String type[] = types[i];
@@ -227,6 +248,7 @@ public class PrescriptionServiceImpl extends RemoteServiceServlet implements Pre
                 if (r.getType().equals(type[1])) {
                     // exists, so add it
                     r.setLabel(type[0]);
+                    r.setDescription(type[2]);
                     newTypes.add(r);
                     found = true;
                     break;
@@ -236,6 +258,7 @@ public class PrescriptionServiceImpl extends RemoteServiceServlet implements Pre
                 PrescriptionSessionDataResource nr = new PrescriptionSessionDataResource();
                 nr.setLabel(type[0]);
                 nr.setType(type[1]);
+                nr.setDescription(type[2]);
                 InmhItemData iid = new InmhItemData();
                 iid.setTitle("No " + type[0] + " Available");
                 iid.setType(type[1]);
@@ -358,6 +381,8 @@ public class PrescriptionServiceImpl extends RemoteServiceServlet implements Pre
      * Returns the quiz data for this test
      * 
      * Returns valid HTML segment or null on error.
+     * 
+     * rpcData: quiz_html, test_id, quiz_segment, title
      */
     public RpcData getQuizHtml(int testId) throws CmRpcException {
         try {
@@ -445,7 +470,7 @@ public class PrescriptionServiceImpl extends RemoteServiceServlet implements Pre
             ArrayList<RpcData> rpcData = new ArrayList<RpcData>();
             for (HaTestRunResult tr : testResults) {
 
-                RpcData rd = new RpcData(Arrays.asList("pid=" + tr.getPid(), "answer=" + tr.getResult()));
+                RpcData rd = new RpcData(Arrays.asList("pid=" + tr.getPid(), "answer=" + tr.getResponseIndex()));
                 rpcData.add(rd);
             }
             return rpcData;
@@ -617,6 +642,7 @@ public class PrescriptionServiceImpl extends RemoteServiceServlet implements Pre
             rpcData.putData("test_segment", user.getActiveTestSegment());
             rpcData.putData("user_name", user.getUserName());
             rpcData.putData("session_number", user.getActiveTestRunSession());
+            rpcData.putData("gui_background_style", user.getBackgroundStyle());
             
             int totalViewCount = getTotalInmHViewCount(uid);
             
@@ -697,6 +723,49 @@ public class PrescriptionServiceImpl extends RemoteServiceServlet implements Pre
             user.setActiveTestSegment(0);
             user.setActiveTestRunSession(0);
             
+            user.update();
+        }
+        catch(Exception e) {
+            throw new CmRpcException(e);
+        }
+    }
+
+    /** Return the QuizHtml with the results stored
+     *  as a list of pids that are correct.
+     *  
+     *  rpcData:  (all from QuizHtml) and quiz_result_json,quiz_correct_count,quiz_question_count
+     */
+    @Override
+    public RpcData getQuizResultsHtml(int runId) throws CmRpcException {
+        try {
+           HaTestRun testRun = HaTestRun.lookupTestRun(runId);
+           List<HaTestRunResult> results = testRun.getTestRunResults();
+           String resultJson = "";
+           for(HaTestRunResult r: results) {
+               if(resultJson.length() > 0)
+                   resultJson += ",";
+               resultJson += Jsonizer.toJson(r);
+           }
+           resultJson = "[" + resultJson + "]";
+           
+           RpcData quizRpc = getQuizHtml(testRun.getHaTest().getTestId());
+           
+           quizRpc.putData("quiz_result_json", resultJson);
+           quizRpc.putData("quiz_question_count", testRun.getHaTest().getTestQuestionCount());
+           quizRpc.putData("quiz_correct_count", testRun.getAnsweredCorrect());
+           
+           
+           return quizRpc;
+        }
+        catch(Exception e) {
+            throw new CmRpcException(e);
+        }
+    }
+    
+    public void setUserBackground(int userId, String backgroundStyle) throws CmRpcException {
+        try {
+            HaUser user = HaUser.lookUser(userId,null);
+            user.setBackgroundStyle(backgroundStyle);
             user.update();
         }
         catch(Exception e) {

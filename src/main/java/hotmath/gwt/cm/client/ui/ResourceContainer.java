@@ -1,6 +1,7 @@
 package hotmath.gwt.cm.client.ui;
 
 import hotmath.gwt.cm.client.ui.viewer.ResourceViewerContainer;
+import hotmath.gwt.cm.client.util.UserInfo;
 
 import com.extjs.gxt.ui.client.Style.Scroll;
 import com.extjs.gxt.ui.client.core.El;
@@ -27,6 +28,14 @@ public class ResourceContainer extends LayoutContainer {
 	public ResourceContainer() {
 		// setTitle("Resource Viewer");
 		setStyleName("resource-container");
+		
+		String bgStyle = UserInfo.getInstance().getBackgroundStyle();
+		
+		if(bgStyle != null && bgStyle.length() != 0) {
+		    System.out.println("Background style set to: " + bgStyle);
+		    addStyleName(bgStyle);
+		}
+		
 		setScrollMode(Scroll.AUTOY);
 	}
 	

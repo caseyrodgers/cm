@@ -36,7 +36,7 @@ public class HeaderPanel extends LayoutContainer {
 		btn.setStyleName("header-panel-help-btn");
 		btn.addSelectionListener(new SelectionListener<IconButtonEvent>() {
 			public void componentSelected(IconButtonEvent ce) {
-				ContextController.getInstance().showHelp();
+				new HelpWindow().setVisible(true);
 			};
 		});		
 		add(btn);

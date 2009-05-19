@@ -19,8 +19,7 @@ class PrescriptionInfoPanel extends LayoutContainer {
         cmDef = cm;
         setStyleName("prescription-info-panel");
 
-        String html = "<p>Use the Help button to change your wallpaper.</p>" +
-                      "<p>Please view all steps of each required practice problem answers before advancing.</p>";
+        String html = "<p>Use the Help button to change your wallpaper.</p>";
         Html htmlO = new Html(html);
         add(htmlO);
         

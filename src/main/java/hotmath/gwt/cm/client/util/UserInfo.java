@@ -62,6 +62,7 @@ public class UserInfo implements IsSerializable {
                 user.setViewCount(ui.getDataAsInt("view_count"));
                 user.setSessionNumber(ui.getDataAsInt("session_number"));
                 user.setActiveUser(true);
+                user.setBackgroundStyle(ui.getDataAsString("gui_background_style"));
                 __instance = user;
                 
                 HeaderPanel.__instance.setLoginInfo();
@@ -86,8 +87,17 @@ public class UserInfo implements IsSerializable {
 	String userName;
 	int viewCount;
 	int correctPercent;
+	String backgroundStyle;
 	
-	public int getCorrectPercent() {
+	public String getBackgroundStyle() {
+        return backgroundStyle;
+    }
+
+    public void setBackgroundStyle(String backgroundStyle) {
+        this.backgroundStyle = backgroundStyle;
+    }
+
+    public int getCorrectPercent() {
         return correctPercent;
     }
 

@@ -176,8 +176,9 @@ public class HaTest {
 			while(rs.next()) {
 				HaTestRunResult res = new HaTestRunResult();
 				res.setPid(rs.getString("pid"));
-				res.setResult(rs.getString("response_number")); // .. as string
-				
+				String isCorrect = (rs.getInt("is_correct") == 0)?"Incorrect":"Correct";
+				res.setResult(isCorrect);
+				res.setResponseIndex(rs.getInt("response_number"));
 				results.add(res);
 			}
 		}
@@ -400,13 +401,7 @@ public class HaTest {
 			
 			pstat.close();
 			
-			
-			// now for each incorrect pid, write a result tracking its
-			// current status.
-			for(String pid: wrongGids) {
-				testRun.addRunResult( pid, "incorrect" );
-			}
-			
+			testRun.transferCurrentToTestRun();
 			
 			// update this User's row to indicate new run
 			sql = "update HA_USER set active_run_id = ? where uid = ?";
@@ -429,8 +424,7 @@ public class HaTest {
 			SqlUtilities.releaseResources(null,pstat,conn);
 		}
 	}
-	
-	
+
 	/** Return list of pids that represent all ids currently in test
 	 *  for all segments.  
 	 *  

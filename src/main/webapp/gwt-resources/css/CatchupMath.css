@@ -533,8 +533,7 @@ img.resource-item-complete {
 
 /** The main Resource Container */
 .resource-container {
-    background-image:
-    url(../images/prescription_resource_background-1600x1050.jpg);
+    background-image:url(../images/prescription_resource_background-1600x1050.jpg);
     background-attachment: fixed; 
     background-position: center bottom;
     background-repeat: no-repeat;
@@ -543,10 +542,40 @@ img.resource-item-complete {
     width: 540px;
 }
 
+.resource-container-bike1 {
+    background-image:url(/gwt-resources/images/bg/bike1-1600x1067.jpg);
+    background-attachment: fixed; 
+    background-position: center bottom;
+    background-repeat: no-repeat;
+
+    max-height: 1067px;
+    max-width: 1600px;
+}
+
+.resource-container-roses {
+    background-image:url(/gwt-resources/images/bg/roses-1600x1067.jpg);
+    background-attachment: fixed; 
+    background-position: center bottom;
+    background-repeat: no-repeat;
+
+    max-height: 1067px;
+    max-width: 1600px;
+}
+
+.resource-container-sunrise {
+    background-image:url(/gwt-resources/images/bg/sunrise-1600x1558.jpg);
+    background-attachment: fixed; 
+    background-position: center bottom;
+    background-repeat: no-repeat;
+
+    max-height: 1558px;
+    max-width: 1600px;
+}
+
+
 .resource-close {
     margin: 5px 0 5px 10px;
 }
-
 
 
 
@@ -636,7 +665,7 @@ img.resource-item-complete {
 
 
 
-.resource-viewer-container  #hm_content {
+.resource-viewer-container  #hm_content{
 	padding: 10px;
 	font-size: 130%;
 	width: auto;
@@ -645,8 +674,26 @@ img.resource-item-complete {
 }
 
 
-
-.tutor_solution_wrapper {
-   
+.resource-viewer-container #testset_div {
+	margin: 20px;
 }
+
+.resource-viewer-container #testset_div input {
+	display: none;
+}  
+
+.resource-viewer-impl-results .questionResponseSelected {
+	border: 1px solid red;
+}
+
+
+
+
+/** Quiz Results */
+.quiz-results-status-window .head {
+     background:transparent url(/images/trifco/design/quiz_head-500x24.gif) no-repeat scroll 0 0;
+     height:24px;
+     width:500px;
+}
+
 

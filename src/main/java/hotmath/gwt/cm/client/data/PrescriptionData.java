@@ -65,6 +65,8 @@ public class PrescriptionData {
 			PrescriptionSessionDataResource resource = new PrescriptionSessionDataResource();
 			resource.setType(r.get("type").isString().stringValue());
 			resource.setLabel(r.get("label").isString().stringValue());
+			
+			resource.setDescription(r.get("description").isString().stringValue());
 
 			JSONArray items = r.get("items").isArray();
 			for (int j = 0; j < items.size(); j++) {

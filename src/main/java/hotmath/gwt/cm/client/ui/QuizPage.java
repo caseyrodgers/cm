@@ -10,16 +10,12 @@ import hotmath.gwt.shared.client.util.RpcData;
 import java.util.ArrayList;
 
 import com.extjs.gxt.ui.client.Registry;
-import com.extjs.gxt.ui.client.Style.Scroll;
+import com.extjs.gxt.ui.client.widget.Html;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.json.client.JSONObject;
-import com.google.gwt.json.client.JSONParser;
-import com.google.gwt.json.client.JSONValue;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Anchor;
-import com.google.gwt.user.client.ui.HTML;
 
 public class QuizPage extends LayoutContainer {
 	
@@ -69,6 +65,11 @@ public class QuizPage extends LayoutContainer {
          $wnd.markAllCorrectAnswers();
     }-*/;
     
+
+    
+    private native void markAllCorrectAnswers2() /*-{
+    $wnd.markAllCorrectAnswers();
+}-*/;
     
     /**
      * Expose the following method into JavaScript.
@@ -116,7 +117,7 @@ public class QuizPage extends LayoutContainer {
 	private void displayQuizHtml(String quizHtml) {
 	    
 	    
-		HTML html = new HTML(quizHtml);
+		Html html = new Html(quizHtml);
 		add(html);
 
 		if(UserInfo.getInstance().isActiveUser()) {

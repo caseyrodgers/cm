@@ -45,6 +45,9 @@ public class ResourceViewerFactory {
 		else if(type.equals("testset")) {
 			return new ResourceViewerImplQuiz();
 		}
+		else if(type.equals("results")) {
+		    return new ResourceViewerImplResults();
+		}
 		else
 			return new ResourceViewerImplDefault();
 	}

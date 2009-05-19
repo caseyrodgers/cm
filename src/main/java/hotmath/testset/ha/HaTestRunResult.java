@@ -4,9 +4,16 @@ public class HaTestRunResult {
 	Integer resultId;
 	String pid;   // the solution pid
 	String result; // the answer result (correct,incorrect,unanswered)
+	int responseIndex;  // the index of the selected response
 
 	
-	public Integer getResultId() {
+	public int getResponseIndex() {
+        return responseIndex;
+    }
+    public void setResponseIndex(int responseIndex) {
+        this.responseIndex = responseIndex;
+    }
+    public Integer getResultId() {
 		return resultId;
 	}
 	public void setResultId(Integer resultId) {
@@ -26,6 +33,6 @@ public class HaTestRunResult {
 	}
 	
 	public String toString() {
-		return resultId + "," + pid + "," + result;
+		return resultId + "," + pid + "," + responseIndex + ", " + result;
 	}
 }

@@ -9,7 +9,6 @@ import hotmath.gwt.cm.client.ui.CmMainPanel;
 import hotmath.gwt.cm.client.ui.ContextChangeListener;
 import hotmath.gwt.cm.client.ui.ContextController;
 import hotmath.gwt.cm.client.ui.NextDialog;
-import hotmath.gwt.cm.client.ui.NextPanelInfoImplDefault;
 import hotmath.gwt.cm.client.util.UserInfo;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.data.CmAsyncRequestImplDefault;
@@ -18,19 +17,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.extjs.gxt.ui.client.event.BaseEvent;
-import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.MessageBoxEvent;
-import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.widget.Component;
-import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.MessageBox;
-import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.button.IconButton;
-import com.google.gwt.user.client.ui.Anchor;
-import com.google.gwt.user.client.ui.ClickListener;
-import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -313,134 +305,6 @@ public class PrescriptionContext implements CmContext {
             int sn = prescriptionData.getCurrSession().getSessionNumber();
             int ts = prescriptionData.getSessionTopics().size();
             nextBtn.setToolTip("Move to the next topic (" + (ts-sn-1) + " more to go)");
-        }
-    }
-
-    class NextPanelInfoImplPrescription extends NextPanelInfoImplDefault {
-
-        public void doNext() {
-            CatchupMath.showAlert("Do next on pres panel");
-        }
-
-        public Widget getNextPanelWidget() {
-
-            boolean areMore = areMoreSessions();
-
-            int sn = prescriptionData.getCurrSession().getSessionNumber();
-            LayoutContainer lc = new LayoutContainer();
-            lc.setStyleName("prescription-next-panel");
-
-            String html = "";
-            if (false) {
-                html = "<p>You have completed the required review and practice for this topic.  "
-                        + "However, you may continue working with it, or return later.</p>";
-                lc.add(new HTML(html));
-            } else {
-                html = "<p style='margin-bottom: 10px'>You have not completed the required review and practice for this topic.</p> ";
-                lc.add(new HTML(html));
-            }
-
-            lc.add(new HTML("<p>Here are your options: <ul>"));
-
-            if (areMore) {
-                lc.add(new HTML("<li>"));
-                Anchor a = new Anchor("Next Topic");
-                a.setTitle("Move to the next topic ("
-                        + prescriptionData.getSessionTopics().get(
-                                prescriptionData.getCurrSession().getSessionNumber() + 1) + ")");
-                a.addClickListener(new ClickListener() {
-                    public void onClick(Widget sender) {
-                        gotoNextTopic();
-                    }
-                });
-                lc.add(a);
-                lc.add(new HTML("</li>"));
-            }
-            if (sn > 0) {
-                lc.add(new HTML("<li>"));
-                Anchor a = new Anchor("Prevous Topic");
-                a.setTitle("Move to the previous topic ("
-                        + prescriptionData.getSessionTopics().get(
-                                prescriptionData.getCurrSession().getSessionNumber() - 1) + ")");
-                a.addClickListener(new ClickListener() {
-                    public void onClick(Widget sender) {
-                        gotoPreviousTopic();
-                    }
-                });
-                lc.add(a);
-                lc.add(new HTML("</li>"));
-            }
-            if (true) {
-                lc.add(new HTML("<li>"));
-                Anchor a = new Anchor("Next Quiz Segment");
-                a.setTitle("Move to the Next Quiz Segment");
-                a.addClickListener(new ClickListener() {
-                    public void onClick(Widget sender) {
-                        CatchupMath.getThisInstance().showQuizPanel();
-                    }
-                });
-                lc.add(a);
-                lc.add(new HTML("</li>"));
-            }
-            lc.add(new HTML("</ul>"));
-
-            return lc;
-        }
-
-        private boolean areMoreSessions() {
-            // are we done
-            if (prescriptionData == null)
-                return false;
-
-            int sn = prescriptionData.getCurrSession().getSessionNumber();
-            int st = prescriptionData.getSessionTopics().size();
-            boolean isDone = (sn >= (st - 1));
-
-            return !isDone;
-        }
-
-        public List<Widget> getNextPanelActions() {
-            super.getNextPanelActions().clear();
-
-            boolean areMore = areMoreSessions();
-
-            Button btn = new Button("Next Quiz", new SelectionListener<ButtonEvent>() {
-                public void componentSelected(ButtonEvent ce) {
-                    CatchupMath.getThisInstance().showQuizPanel();
-                }
-            });
-            btn.setToolTip("Take the next Quiz Segment");
-            super.getNextPanelActions().add(btn);
-
-            if (prescriptionData.getCurrSession().getSessionNumber() > 0) {
-                btn = new Button("Previous Topic", new SelectionListener<ButtonEvent>() {
-                    public void componentSelected(ButtonEvent ce) {
-                        gotoPreviousTopic();
-                    }
-                });
-                btn.setToolTip("Move to the previous topic ("
-                        + prescriptionData.getSessionTopics().get(
-                                prescriptionData.getCurrSession().getSessionNumber() - 1) + ")");
-                super.getNextPanelActions().add(btn);
-            }
-
-            if (areMore) {
-                btn = new Button("Next Topic", new SelectionListener<ButtonEvent>() {
-                    public void componentSelected(ButtonEvent ce) {
-                        gotoNextTopic();
-                    }
-                });
-                super.getNextPanelActions().add(btn);
-                btn.setToolTip("Move to the next topic ("
-                        + prescriptionData.getSessionTopics().get(
-                                prescriptionData.getCurrSession().getSessionNumber() + 1) + ")");
-            }
-
-            return super.getNextPanelActions();
-        }
-
-        public String getNextPanelToolTip() {
-            return "Move to the next topic in your prescription";
         }
     }
 

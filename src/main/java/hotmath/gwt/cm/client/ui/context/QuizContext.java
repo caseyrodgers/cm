@@ -3,7 +3,6 @@ package hotmath.gwt.cm.client.ui.context;
 import hotmath.gwt.cm.client.CatchupMath;
 import hotmath.gwt.cm.client.service.PrescriptionServiceAsync;
 import hotmath.gwt.cm.client.ui.CmContext;
-import hotmath.gwt.cm.client.ui.CmMainPanel;
 import hotmath.gwt.cm.client.ui.NextDialog;
 import hotmath.gwt.cm.client.ui.NextPanelInfo;
 import hotmath.gwt.cm.client.ui.NextPanelInfoImplDefault;
@@ -22,7 +21,6 @@ import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.button.Button;
-import com.extjs.gxt.ui.client.widget.button.IconButton;
 import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Anchor;
@@ -101,7 +99,6 @@ public class QuizContext implements CmContext {
 	}
 
 	public void doNext() {
-	    
 	    String msg = "Are you sure you are ready to have the quiz scored?";
 	    MessageBox.confirm("Ready to Check Test?", msg, new Listener<MessageBoxEvent>() {
             public void handleEvent(MessageBoxEvent be) {
@@ -125,6 +122,21 @@ public class QuizContext implements CmContext {
         });	    
 	    
 	}
+
+	
+    
+    /** Return the count of correct answers
+     * 
+     * @return
+     */
+    private native int getQuizResultsCorrect() /*-{
+        return $wnd.getQuizResultsCorrect();
+    }-*/;
+    
+
+    private native int getQuizQuestionCount() /*-{
+        return $wnd.getQuizQuestionCount();
+    }-*/;
 
 	public void doPrevious() {
 		CatchupMath.getThisInstance().showLoginPage();

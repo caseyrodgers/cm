@@ -147,4 +147,23 @@ public interface PrescriptionService extends RemoteService {
 	 */
 	void resetUser(int userId) throws CmRpcException;
 	
+	
+	/** Returns the quiz with current results marked
+	 * 
+	 * rpcData: quiz_html, title
+	 * 
+	 * @param runId
+	 * @return
+	 * @throws CmRpcException
+	 */
+	RpcData getQuizResultsHtml(int runId) throws CmRpcException;
+	
+	
+	/** Set this users background style image (in CatchupMath.css) 
+	 * 
+	 * @param userId
+	 * @param backgroundStyle
+	 * @throws CmRpcException
+	 */
+	void setUserBackground(int userId, String backgroundStyle) throws CmRpcException;
 }

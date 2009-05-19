@@ -10,7 +10,7 @@
         <div class='question_head'>
             <div class='question_head_text'> Problem $probNum </div>
             <div class='response_div' style='display: none;'>
-                <img id='response_image_<%= $velocityCount %>' src='/images/tutor/spacer.gif'/>
+                <img id='response_image_$velocityCount' src='/images/tutor/spacer.gif'/>
                 <div class='response_div_head_r'> &nbsp; </div>
                 <div class='response_div_head_c'> <span id='response_text_$velocityCount' class='response_div_text'> &nbsp; </span> </div>
                 <div class='response_div_head_l'> &nbsp; </div>

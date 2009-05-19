@@ -71,5 +71,22 @@ public interface PrescriptionServiceAsync {
 	   */
 	  void createTestRun(int testId, AsyncCallback callBack);
 	  
+	  /** Reset this user's program 
+	   * 
+	   * @param userId
+	   * @param callback
+	   */
 	  void resetUser(int userId, AsyncCallback callback);
+	  
+	  
+	  /** Return quiz with results displayed
+	   * 
+	   * @param runid
+	   * @param callback
+	   */
+	  void getQuizResultsHtml(int runid, AsyncCallback callback);
+	  
+	  
+	  /** Sets the users custom background style */
+	  void setUserBackground(int userId, String backgroundStyle, AsyncCallback callback);
 }

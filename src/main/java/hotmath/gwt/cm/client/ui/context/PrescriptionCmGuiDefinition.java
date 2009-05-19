@@ -29,7 +29,6 @@ import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.Html;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.ListView;
-import com.extjs.gxt.ui.client.widget.button.IconButton;
 import com.extjs.gxt.ui.client.widget.layout.AccordionLayout;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
@@ -121,6 +120,12 @@ public class PrescriptionCmGuiDefinition implements CmGuiDefinition {
                             _guiWidget.buildUi(context.prescriptionData);
 
                             ContextController.getInstance().setCurrentContext(context);
+                            
+                            
+                            
+                            // Select the Results resource on first topic only
+                            if(context.getPrescriptionData().getCurrSession().getSessionNumber() == 0)
+                              _guiWidget.expandResourceType("Quiz Results");
 
                         } catch (Exception e) {
                             e.printStackTrace();
@@ -194,14 +199,14 @@ class PrescriptionResourceAccord extends LayoutContainer {
         ContentPanel cp = null;
         ResourceList rl = null;
 
-        setTitle("Choose a resource type, then click one of its items.");
+        // setTitle("Choose a resource type, then click one of its items.");
         for (PrescriptionSessionDataResource resource : resources) {
             cp = new ContentPanel();
             cp.addStyleName("accordian-resource-list-panel");
             cp.setLayout(new FitLayout());
             cp.setHeading(resource.getLabel());
-            cp.getHeader()
-                    .addTool(new Html("<img class='resource-type' src='/gwt-resources/images/check_black.png'/>"));
+            cp.setToolTip(resource.getDescription());
+            cp.getHeader().addTool(new Html("<img class='resource-type' src='/gwt-resources/images/check_black.png'/>"));
             // to show check
             // cp.addStyleName("accordian-resource-list-panel-complete");
             cp.setBodyStyleName("pad-text");
@@ -212,10 +217,12 @@ class PrescriptionResourceAccord extends LayoutContainer {
                 cp.setEnabled(false);
             if (rl.allViewed() && cp.isEnabled()) {
                 // this listView needs to be marked complete
-                cp.getHeader().addStyleName("resource-type-complete");
-                PrescriptionResourceAccord.__instance.layout();
+                if(resource.getType().equals("practice")) {
+                    // only mark the practice resource
+                    cp.getHeader().addStyleName("resource-type-complete");
+                    PrescriptionResourceAccord.__instance.layout();
+                }
             }
-
             cp.setAnimCollapse(false);
             cp.collapse();
             cp.add(rl);
@@ -348,9 +355,6 @@ class ResourceList extends ListView<ResourceModel> implements Listener {
             if (_viewer != null)
                 _viewer.removeResourcePanel();
 
-            // is there a resource file?
-            if (resourceItem.getFile() == null || resourceItem.getFile().length() == 0)
-                return;
 
             _viewer = ResourceViewerFactory.create(resourceItem.getType());
 
@@ -397,6 +401,11 @@ class ResourceList extends ListView<ResourceModel> implements Listener {
                 new AsyncCallback() {
 
                     public void onSuccess(Object result) {
+                        
+                        // only mark practice problems
+                        if(!resourceItem.getType().equals("practice"))
+                            return;
+                        
                         resourceItem.setViewed(true);
 
                         // update the total count in the Header
@@ -438,7 +447,7 @@ class ResourceModel extends BaseModelData {
         set("type", item.getType());
         set("file", item.getFile());
 
-        if (item.isViewed()) {
+        if (item.getType().equals("practice") && item.isViewed()) {
             set("completeClassName", "resource-item-complete");
         } else {
             set("completeClassName", "resource-item");

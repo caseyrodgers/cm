@@ -69,7 +69,7 @@ public class CmShared implements EntryPoint {
                 String keyVal = o.get("key").isString().stringValue();
                 System.out.println("keyVal: " + keyVal);
                 if(keyVal == null) {
-                    throw new Exception("Invalid security key found in cookie");
+                    throw new Exception("Invalid security key found");
                 }
                 if(_queryParameters.get("key") != null) {
                     key2 = _queryParameters.get("key");

@@ -10,9 +10,11 @@ import java.util.List;
  *
  */
 public class PrescriptionSessionDataResource {
-	String type;
+
+    String type;
 	String label;
 	boolean viewed;
+	String description;
 	
 	public boolean isViewed() {
         return viewed;
@@ -48,4 +50,13 @@ public class PrescriptionSessionDataResource {
 	public void setItems(List<InmhItemData> items) {
 		this.items = items;
 	}
+	
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+	
 }
