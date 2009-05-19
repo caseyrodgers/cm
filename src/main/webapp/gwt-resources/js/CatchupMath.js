@@ -64,19 +64,22 @@ var _questionObjectPointer;
 
 // call from JSNI when new question has been loaded in order to set
 // the selected question answer
-window.setSolutionQuestionAnswerIndex = function(pid, which) {
+window.setSolutionQuestionAnswerIndex = function(pid, which, disabled) {
 	if (which) {
 		if (which > -1) {
 			ulNode = findQuestionByPid(pid);
 			if (ulNode) {
 				var inputElements = ulNode.getElementsByTagName("input");
-				try {
-					var cb = inputElements.item(Number(which));
-					cb.style.background = 'red';
-					cb.checked = true;
-					cb.parentNode.className = 'questionResponseSelected';
-				} catch (e) {
-					alert(e);
+				for(var i=0,t=inputElements.length;i<t;i++) {
+					var cb = inputElements.item(i);	
+					
+					// enable or disable control
+ 				    cb.disabled = disabled?true:false;
+
+ 				    if(i == which) {
+					    cb.style.background = 'red';
+					    cb.checked = true;
+ 				    }
 				}
 			}
 		}
@@ -123,7 +126,6 @@ function setBreadCrumbs(crumbs) {
 // / End for Tutor /////
 // //////////////////////
 
-
 /** Mark all questions as correct */
 window.markAllCorrectAnswers = function() {
 	showCorrectAnswers(markCorrectResponse);
@@ -133,52 +135,60 @@ window.markAllCorrectAnswers = function() {
  * 
  */
 window.getQuizResultsCorrect = function() {
-	 var count=0;
-	 showCorrectAnswers(function(ql) {
-         var inputList = ql.getElementsByTagName("input");
-	     for ( var i = 0, t = inputList.length; i < t; i++) {
-		     var d = inputList[i].parentNode.getElementsByTagName("div");
-			 if (d[0].innerHTML == 'Correct') {
-			     if(inputList[i].checked) {
-			    	 count++;
-			     }
-			 }
-		 }		 
-	 });
-	 return count;
+	var count = 0;
+	showCorrectAnswers( function(ql) {
+		var inputList = ql.getElementsByTagName("input");
+		for ( var i = 0, t = inputList.length; i < t; i++) {
+			var d = inputList[i].parentNode.getElementsByTagName("div");
+			if (d[0].innerHTML == 'Correct') {
+				if (inputList[i].checked) {
+					count++;
+				}
+			}
+		}
+	});
+	return count;
 }
- 
+
 /** Return total count of questions
  * 
  */
- window.getQuizQuestionCount = function() {
-	 var count=0;
-	 showCorrectAnswers(function(ql) { count++;});
-	 return count;
- }
- 
- /** Called from GWT to set the quiz question with the appropriate image
-  * 
-  */
- window.setQuizQuestionResult = function(questionIndex, result) {
-	 
-	 var el = getQuestionMarkImage(questionIndex);
-	 if(result == 'Correct') {
-			el.src = '/images/trifco/design/smiley-1.gif';
-  	 }
-	 else if(result == 'Incorrect'){
-  		    el.src = '/images/trifco/design/smiley-2.gif';
- 	 }
-	 else {
-			el.src = '/images/trifco/design/smiley-3.gif';
- 	 }
- 	 el.parentNode.style.display = 'block';		
- }
- 
+window.getQuizQuestionCount = function() {
+	var count = 0;
+	showCorrectAnswers( function(ql) {
+		count++;
+	});
+	return count;
+}
+
+/** Called from GWT to set the quiz question with the appropriate image
+ * 
+ */
+window.setQuizQuestionResult = function(questionIndex, result) {
+
+	var el = getQuestionMarkImage(questionIndex);
+	var elT = getQuestionMarkText(questionIndex);
+	if (result == 'Correct') {
+		el.src = '/images/trifco/design/smiley-1.gif';
+		elT.innerHTML = 'Correct';
+	} else if (result == 'Incorrect') {
+		el.src = '/images/trifco/design/smiley-2.gif';
+		elT.innerHTML = 'Incorrect';
+	} else {
+		el.src = '/images/trifco/design/smiley-3.gif';
+		elT.innerHTML = 'Not answered';
+	}
+	el.parentNode.style.display = 'block';
+}
+
 /** return the question mark image element */
- function getQuestionMarkImage(questionIndex) {
- 	return document.getElementById("response_image_" + questionIndex);
- }
+function getQuestionMarkImage(questionIndex) {
+	return document.getElementById("response_image_" + questionIndex);
+}
+
+function getQuestionMarkText(questionIndex) {
+	return document.getElementById("response_text_" + questionIndex);
+}
 
 /** Find list of questions and for each
  *  one call func to and pass the question div
@@ -186,7 +196,8 @@ window.getQuizResultsCorrect = function() {
  *
  */
 window.showCorrectAnswers = function(func) {
-	var testSet = document.getElementById('testset_div').getElementsByTagName('div');
+	var testSet = document.getElementById('testset_div').getElementsByTagName(
+			'div');
 	for ( var q = 0; q < testSet.length; q++) {
 		if (testSet[q].className == 'question_wrapper') {
 			func(testSet[q]);

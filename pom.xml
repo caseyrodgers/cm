@@ -17,27 +17,27 @@
 			<url> http://snapshots.repository.codehaus.org/ </url>
 		</pluginRepository>
 
-    <pluginRepository>
-        <id>repository.jboss.org</id>
-        <name>JBoss Repository</name>
-        <url>http://repository.jboss.org/maven2</url>
-    </pluginRepository>
+		<pluginRepository>
+			<id>repository.jboss.org</id>
+			<name>JBoss Repository</name>
+			<url>http://repository.jboss.org/maven2</url>
+		</pluginRepository>
 
 
 	</pluginRepositories>
 
-<repositories>
-    <repository>
-      <id>gson</id>
-      <url>http://google-gson.googlecode.com/svn/mavenrepo</url>
-      <snapshots>
-        <enabled>true</enabled>
-      </snapshots>
-      <releases>
-        <enabled>true</enabled>
-      </releases>
-    </repository>
-</repositories>
+	<repositories>
+		<repository>
+			<id>gson</id>
+			<url>http://google-gson.googlecode.com/svn/mavenrepo</url>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+		</repository>
+	</repositories>
 
 	<dependencies>
 
@@ -194,13 +194,13 @@
 			<scope>test</scope>
 		</dependency>
 
-    <!--  Gson: Java to Json conversion -->
-    <dependency>
-      <groupId>com.google.code.gson</groupId>
-      <artifactId>gson</artifactId>
-      <version>1.3</version>
-      <scope>compile</scope>
-    </dependency>
+		<!--  Gson: Java to Json conversion -->
+		<dependency>
+			<groupId>com.google.code.gson</groupId>
+			<artifactId>gson</artifactId>
+			<version>1.3</version>
+			<scope>compile</scope>
+		</dependency>
 
 	</dependencies>
 
@@ -208,14 +208,14 @@
 		<plugins>
 
 
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-jar-plugin</artifactId>
-        <configuration>
-          <signedjar>${project.build.directory}/signed/${project.build.finalName}.jar</signedjar>
-          <verify>true</verify>
-        </configuration>
-      </plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<configuration>
+					<signedjar>${project.build.directory}/signed/${project.build.finalName}.jar</signedjar>
+					<verify>true</verify>
+				</configuration>
+			</plugin>
 
 
 			<plugin>
@@ -267,8 +267,10 @@
 				<version>1.1-SNAPSHOT</version>
 				<configuration>
 					<output>${basedir}/src/main/webapp/</output>
-					<module>hotmath.gwt.cm.CatchupMath</module>
-					<runTarget>hotmath.gwt.cm.CatchupMath/CatchupMath.html</runTarget>
+					<modules />
+					<!--
+						<runTarget>hotmath.gwt.cm.CatchupMath/CatchupMath.html</runTarget>
+					-->
 				</configuration>
 				<executions>
 					<execution>
@@ -279,35 +281,38 @@
 					</execution>
 				</executions>
 			</plugin>
-			<!--
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>gwt-maven-plugin</artifactId>
-				<version>1.1-SNAPSHOT</version>
 				<configuration>
-					<output>${basedir}/src/main/webapp/</output>
-					<module>hotmath.gwt.cm_admin.CatchupMathAdmin</module>
-					<runTarget>hotmath.gwt.cm_admin.CatchupMathAdmin/CatchupMathAdmin.html</runTarget>
+				    <modules>
+				        <module>hotmath.gwt.cm.CatchupMath</module>
+				        <module>hotmath.gwt.cm_admin.CatchupMathAdmin</module>
+				    </modules>
+					<runTarget>hotmath.gwt.cm.CatchupMath/CatchupMath.html</runTarget>
 				</configuration>
+				<version>1.1-SNAPSHOT</version>
 				<executions>
 					<execution>
 						<goals>
 							<goal>compile</goal>
-							<goal>test</goal>
 						</goals>
 					</execution>
 				</executions>
 			</plugin>
-
-			-->
-				<plugin> <groupId>org.codehaus.mojo</groupId>
-				<artifactId>gwt-maven-plugin</artifactId> <configuration>
-				<runTarget>hotmath.gwt.cm.CatchupMath/CatchupMath.html</runTarget>
-				</configuration> <version>1.1-SNAPSHOT</version> <executions>
-				<execution> <goals> <goal>compile</goal> </goals> </execution>
-				</executions> </plugin>
 			
-
+			
+			<!--
+				<plugin> <groupId>org.codehaus.mojo</groupId>
+				<artifactId>gwt-maven-plugin</artifactId>
+				<version>1.1-SNAPSHOT</version> <configuration>
+				<output>${basedir}/src/main/webapp/</output>
+				<module>hotmath.gwt.cm_admin.CatchupMathAdmin</module>
+				<runTarget>hotmath.gwt.cm_admin.CatchupMathAdmin/CatchupMathAdmin.html</runTarget>
+				</configuration> <executions> <execution> <goals>
+				<goal>compile</goal> <goal>test</goal> </goals> </execution>
+				</executions> </plugin>
+			-->
 		</plugins>
 	</build>
 	<!--  profiles (with activation per platform) -->

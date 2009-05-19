@@ -22,8 +22,15 @@ public class ResourceViewerImplResults extends ResourceViewerContainer implement
         addStyleName("resource-viewer-impl-results");
     }
 
-    private native void setSolutionQuestionAnswerIndex(String pid, String which)/*-{
-        $wnd.setSolutionQuestionAnswerIndex(pid,which);
+    
+    /** Select the correct question response for question for pid
+     * 
+     * @param pid  The solution which question response to set
+     * @param which The index of the response set to select
+     * @param disabled Should the selection control be made disabled.
+     */
+    private native void setSolutionQuestionAnswerIndex(String pid, String which, boolean disabled)/*-{
+        $wnd.setSolutionQuestionAnswerIndex(pid,which,disabled);
     }-*/;
 
     public Widget getResourcePanel(final InmhItemData resource) {
@@ -41,7 +48,7 @@ public class ResourceViewerImplResults extends ResourceViewerContainer implement
                         int correct = rdata.getDataAsInt("quiz_correct_count");
                         _title = rdata.getDataAsString("title");
     
-                        addResource(new Html(html),resource.getTitle() + "  (" + correct + " out of " + total + ")");
+                        addResource(new Html(html),resource.getTitle() + ": " + correct + " correct out of " + total);
                         layout();
                         
                         markAnswers(resultJson);
@@ -56,10 +63,13 @@ public class ResourceViewerImplResults extends ResourceViewerContainer implement
             });
             
             return this;
-    }    
+    }
     
     
     /** Parse JSONized array of HaTestRunResult objects
+     * 
+     * and mark each question with result state (correct,incorrect,unanswered)
+     * and disable each radio button to disable each.
      * 
      * @param resultJson
      */
@@ -74,7 +84,7 @@ public class ResourceViewerImplResults extends ResourceViewerContainer implement
                 String correct = o.get("result").isString().stringValue();
                 int answerIndex = (int)o.get("responseIndex").isNumber().doubleValue();
                 
-                setSolutionQuestionAnswerIndex(pid, Integer.toString(answerIndex));
+                setSolutionQuestionAnswerIndex(pid, Integer.toString(answerIndex), true);
                 setQuizQuestionResult(i, correct);
             }
         }
