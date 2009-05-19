@@ -47,11 +47,11 @@ public class FooterPanel extends LayoutContainer {
                 String value = be.getValue();
                 
                 
-                String url = "/testsets/util/_save_feedback.jsp?comment_url=" + URL.encode(value) +
+                String url = "/testsets/util/_save_feedback.jsp?comment=" + URL.encode(value) +
                     "&state_info=" + getFeedbackStateInfo();
                 ServerRequest.makeHttpRequest(url, new CmAsyncRequestImplDefault() {
                     public void requestComplete(String requestData) {
-                        CatchupMath.getThisInstance().showAlert("Feedback success");
+                        //CatchupMath.getThisInstance().showAlert("Feedback success");
                     }
                 });
             }

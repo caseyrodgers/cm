@@ -134,7 +134,7 @@ public class PrescriptionContext implements CmContext {
                         .expandResourcePracticeProblems();
                 CmMainPanel.__lastInstance.layout();
                 
-                CatchupMath.showAlert("Please view the Required Practice problems before moving forward.");              
+                CatchupMath.showAlert("View All the Steps", "Please view all required practice problem answers to the very last step.");              
                 ContextController.getInstance().setCurrentContext(PrescriptionContext.this);
 
                 return;

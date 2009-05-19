@@ -194,12 +194,19 @@ public class CatchupMath implements EntryPoint {
      * @param msg
      */
     static public void showAlert(String msg) {
+        showAlert("Info", msg);
+    }
+
+
+    static public void showAlert(String title, String msg) {
         setBusy(false);
-        MessageBox.alert("Info", msg, new Listener<MessageBoxEvent>() {
+        MessageBox.alert(title, msg, new Listener<MessageBoxEvent>() {
             public void handleEvent(MessageBoxEvent be) {
             }
         });
     }
+
+
     
     static public void showAlert(String msg, final CmAsyncRequest callback) {
         setBusy(false);
