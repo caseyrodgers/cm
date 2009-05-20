@@ -32,6 +32,14 @@ public class HaTestRunResult {
 		this.result = result;
 	}
 	
+	/** Return true if this result is correct
+	 * 
+	 * @return
+	 */
+	public boolean isCorrect() {
+	    return (result != null && result.equals("Correct"))?true:false;
+	}
+	
 	public String toString() {
 		return resultId + "," + pid + "," + responseIndex + ", " + result;
 	}

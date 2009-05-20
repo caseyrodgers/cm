@@ -31,6 +31,14 @@ public class HelpWindow extends Window {
         setStyleName("help-window");
         setHeading("Catchup-Math Help Window");
         
+        
+        Button closeBtn = new Button("Close");
+        closeBtn.addSelectionListener(new SelectionListener<ButtonEvent>() {
+            public void componentSelected(ButtonEvent ce) {
+                HelpWindow.this.close();
+            }
+        });
+        addButton(closeBtn);
         Html messageArea = new Html();
         messageArea.setHtml(ContextController.getInstance().theContext.getStatusMessage());
         messageArea.setStyleName("help-window-message-area");

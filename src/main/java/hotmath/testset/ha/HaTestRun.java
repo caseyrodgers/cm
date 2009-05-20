@@ -174,6 +174,9 @@ public class HaTestRun {
     public String getPidList() {
         String pids = "";
         for (HaTestRunResult r : results) {
+            if(r.isCorrect())
+                continue;
+            
             if (pids.length() > 0)
                 pids += ",";
             pids += r.getPid();

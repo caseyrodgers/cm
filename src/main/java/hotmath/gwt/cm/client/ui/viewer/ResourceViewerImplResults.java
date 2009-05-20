@@ -48,7 +48,7 @@ public class ResourceViewerImplResults extends ResourceViewerContainer implement
                         int correct = rdata.getDataAsInt("quiz_correct_count");
                         _title = rdata.getDataAsString("title");
     
-                        addResource(new Html(html),resource.getTitle() + ": " + correct + " correct out of " + total);
+                        addResource(new Html(html),resource.getTitle() + ": " + correct + " out of " + total);
                         layout();
                         
                         markAnswers(resultJson);
