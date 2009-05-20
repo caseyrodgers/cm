@@ -302,7 +302,7 @@ public class RegisterStudent extends LayoutContainer {
 		combo.setForceSelection(false);
 		combo.setDisplayField("chapter");
 		combo.setEditable(false);
-		combo.setMaxLength(30);
+		combo.setMaxLength(60);
 		combo.setAllowBlank(false);
 		combo.setTriggerAction(TriggerAction.ALL);
 		combo.setStore(store);
@@ -464,7 +464,7 @@ public class RegisterStudent extends LayoutContainer {
 			                progChanged = true;
 		                }
 	        		}
-		        	if (! stuMdl.getProgramDescr().equals(prog)) {
+		        	if (stuMdl.getProgramDescr() == null || !stuMdl.getProgramDescr().equals(prog)) {
 			        	stuMdl.setProgramDescr(prog);
 			        	stuMdl.setStatus("Not started");
 			        	stuMdl.setSectionNum(0);
