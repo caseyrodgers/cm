@@ -11,29 +11,42 @@ import com.extjs.gxt.ui.client.event.SelectionChangedEvent;
 import com.extjs.gxt.ui.client.event.SelectionChangedListener;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.store.ListStore;
+import com.extjs.gxt.ui.client.widget.Html;
+import com.extjs.gxt.ui.client.widget.VerticalPanel;
 import com.extjs.gxt.ui.client.widget.Window;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.ComboBox;
 import com.extjs.gxt.ui.client.widget.form.FieldSet;
-import com.extjs.gxt.ui.client.widget.form.FormPanel;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.Label;
+
 
 public class HelpWindow extends Window {
 
     public  HelpWindow() {
-        setHeight(300);
+        setHeight(400);
         setWidth(400);
         setModal(true);
         setStyleName("help-window");
-        FormPanel fp = new FormPanel();
         setHeading("Catchup-Math Help Window");
+        
+        Html messageArea = new Html();
+        messageArea.setHtml(ContextController.getInstance().theContext.getStatusMessage());
+        messageArea.setStyleName("help-window-message-area");
+        
+        VerticalPanel vp = new VerticalPanel();
+        
+        FieldSet fs = new FieldSet();
+        fs.setHeading("General Info");
+        fs.add(messageArea);
+        vp.add(fs);
         
         ComboBox<BackgroundModel> bgCombo = new ComboBox<BackgroundModel>();
         bgCombo.setStore(getBackgrounds());  
         bgCombo.setEditable(false);
-        bgCombo.setWidth(150);
-        bgCombo.setEmptyText("-- Select Your Background -- ");
+        bgCombo.setStyleName("help-window-bg-combo");
+        bgCombo.setEmptyText("Select Your Background");
         bgCombo.addSelectionChangedListener(new SelectionChangedListener<BackgroundModel>() {
             public void selectionChanged(final SelectionChangedEvent<BackgroundModel> se) {
                 PrescriptionServiceAsync s = (PrescriptionServiceAsync) Registry.get("prescriptionService");
@@ -53,41 +66,46 @@ public class HelpWindow extends Window {
             }
         });
         
-        FieldSet fs = new FieldSet();
-        fs.setHeading("Options");
-        
-        //Html html = new Html(ContextController.getInstance().theContext.getContextHelp());
-        //html.setStyleName("help-window-text");
-        //add(html);
-        
+        fs = new FieldSet();
+        fs.setHeading("Background Image");
+        Label lab = new Label("Set which image to use for your Catchup Math background.");
+        lab.addStyleName("bg-image-label");
+        fs.add(lab);
         fs.add(bgCombo);
-        Button btn = new Button("Technical support");
-        btn.addSelectionListener(new SelectionListener<ButtonEvent>() {
+        
+        vp.add(fs);
+
+        fs = new FieldSet();
+        fs.setHeading("Additional Options");
+        
+        
+        SelectionListener<ButtonEvent> selList = new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent ce) {
+                CatchupMath.showAlert("This feature will be enabled soon");
             }
-        });
+        };
+        
+        
+        Button btn = new Button("Technical support");
+        btn.addStyleName("button");
+        btn.addSelectionListener(selList);
+        btn.setWidth(250);
         fs.add(btn);
         btn = new Button("Message to Teacher");
-        btn.addSelectionListener(new SelectionListener<ButtonEvent>() {
-            public void componentSelected(ButtonEvent ce) {
-            }
-        });
+        btn.addSelectionListener(selList);
+        btn.addStyleName("button");
         fs.add(btn);
         btn = new Button("View Detail History");
-        btn.addSelectionListener(new SelectionListener<ButtonEvent>() {
-            public void componentSelected(ButtonEvent ce) {
-            }
-        });
+        btn.addSelectionListener(selList);
+        btn.addStyleName("button");
         fs.add(btn);
         btn = new Button("Send Feedback");
-        btn.addSelectionListener(new SelectionListener<ButtonEvent>() {
-            public void componentSelected(ButtonEvent ce) {
-            }
-        });
+        btn.addSelectionListener(selList);
+        btn.addStyleName("button");
         fs.add(btn);
         
-        fp.add(fs);
-        add(fp);
+        vp.add(fs);
+        add(vp);
     }
 
     public void onClick(ClickEvent event) {
@@ -115,11 +133,23 @@ public class HelpWindow extends Window {
         m.set("text","Sunset");
         m.set("bg_style", "resource-container-sunrise");
         backgrounds.add(m);
+        
+        m = new BackgroundModel();
+        m.set("text","Forest");
+        m.set("bg_style", "resource-container-forest");
+        backgrounds.add(m);
+
+        m = new BackgroundModel();
+        m.set("text","Clouds");
+        m.set("bg_style", "resource-container-clouds");
+        backgrounds.add(m);
+
 
         
         return backgrounds;
         
     }
+   
 }
 
 
@@ -133,3 +163,6 @@ class BackgroundModel extends BaseModelData  {
         return get("bg_style");
     }
 }
+
+
+

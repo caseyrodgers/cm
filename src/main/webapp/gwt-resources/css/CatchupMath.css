@@ -572,6 +572,26 @@ img.resource-item-complete {
     max-width: 1600px;
 }
 
+.resource-container-forest {
+    background-image:url(/gwt-resources/images/bg/forest-1600x1065.jpg);
+    background-attachment: fixed; 
+    background-position: center bottom;
+    background-repeat: no-repeat;
+
+    max-height: 1065px;
+    max-width: 1600px;
+}
+
+.resource-container-clouds {
+    background-image:url(/gwt-resources/images/bg/clouds-1600x1067.jpg);
+    background-attachment: fixed; 
+    background-position: center bottom;
+    background-repeat: no-repeat;
+
+    max-height: 1067px;
+    max-width: 1600px;
+}
+
 
 .resource-close {
     margin: 5px 0 5px 10px;
@@ -697,3 +717,36 @@ img.resource-item-complete {
 }
 
 
+
+
+/** Help Window */
+.help-window {
+}
+
+.help-window-bg-combo {
+	width: 100%;
+}
+
+.help-window-message-area {
+	font-color: blue;
+	margin-top: 5px;
+	margin-bottom: 10px;
+}
+
+.help-window .button {
+  width: 250px;
+}
+
+.bg-image-label {
+   color: blue;
+   margin-top: 5px;
+   margin-bottom: 10px;
+}
+
+.help-window fieldset {
+   color: blue;
+}
+
+.help-window .x-btn {
+	width: 200px;
+}
