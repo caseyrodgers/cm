@@ -48,6 +48,9 @@ public class ResourceViewerFactory {
 		else if(type.equals("results")) {
 		    return new ResourceViewerImplResults();
 		}
+		else if(type.equals("cmextra")) {
+		    return new ResourceViewerImplTutor();
+		}
 		else
 			return new ResourceViewerImplDefault();
 	}

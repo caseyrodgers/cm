@@ -211,6 +211,9 @@ class PrescriptionResourceAccord extends LayoutContainer {
             // cp.addStyleName("accordian-resource-list-panel-complete");
             cp.setBodyStyleName("pad-text");
             // cp.setScrollMode(Scroll.AUTO);
+            
+            fixupResourceItems(resource);
+            
 
             rl = new ResourceList(resource);
             if (rl.getStore().getCount() == 0)
@@ -280,6 +283,24 @@ class PrescriptionResourceAccord extends LayoutContainer {
         }
 
         layout();
+    }
+    
+    
+    /** Provide any last minute modification to the list items
+     *  Such as assigning unique titles, as with the the cmextra
+     *  
+     *  @TODO: perhaps, assign a title when setting up .inmh_link file
+     * @param resource
+     */
+    private void fixupResourceItems(PrescriptionSessionDataResource resource) {
+        
+        if(resource.getType().equals("cmextra")) {
+            int cnt=0;
+            for(InmhItemData id: resource.getItems()) {
+                id.setTitle("Extra Problem " + (++cnt));
+            }
+        }
+        
     }
     
     public void expandResourcePracticeProblems() {

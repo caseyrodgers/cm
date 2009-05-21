@@ -250,7 +250,7 @@ public class AssessmentPrescriptionSession {
 
     
     /** Return list of Filtered resource types, showing only items 
-     *  that are app for the current test/segement
+     *  that are app for the current test/segment
      * 
      * @param linkTypeIn
      * @return
@@ -281,8 +281,10 @@ public class AssessmentPrescriptionSession {
             // " where  m.file = l.file " +
             // " and  m.file in (" + topicList + ")";
 
-            String sql = "select distinct m.file,l.link_title, l.link_key,l.link_type "
-                    + " from   inmh_assessment m, inmh_link l " + " where  m.file = l.file " + " and  m.file in ("
+            String sql = 
+                      "select distinct m.file,l.link_title, l.link_key,l.link_type "
+                    + " from   inmh_assessment m, inmh_link l " 
+                    + " where  m.file = l.file " + " and  m.file in ("
                     + topicList + ") " + " and l.link_type like '%" + linkTypeIn + "'"
                     + " order by l.link_type, link_title ";
 
@@ -299,6 +301,8 @@ public class AssessmentPrescriptionSession {
                     type = INeedMoreHelpResourceTypeDef.RESOURCE_TYPE_activity;
                 else if (linkType.equals("workbook"))
                     type = INeedMoreHelpResourceTypeDef.RESOURCE_TYPE_workbook;
+                else if (linkType.equals("cmextra"))
+                    type = INeedMoreHelpResourceTypeDef.RESOURCE_TYPE_cmextra;
 
                 INeedMoreHelpResourceType inmhType = new INeedMoreHelpResourceType(
                         INeedMoreHelpResourceTypeDef.RESOURCE_TYPES.get(type));
