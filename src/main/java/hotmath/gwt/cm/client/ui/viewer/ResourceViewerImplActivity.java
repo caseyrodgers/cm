@@ -12,7 +12,6 @@ public class ResourceViewerImplActivity extends ResourceViewerContainer {
 	public Widget getResourcePanel(InmhItemData resource) {
 	    SWFWidget swfWidget = new SWFWidget(resource.getFile(),500,400);
 	    swfWidget.setStyleName("activity-widget");
-	    setHeight(400);
 	    Label title = new Label(resource.getTitle());
 	    title.setStyleName("resource-viewer-impl-video-title");
 	    add(title);
