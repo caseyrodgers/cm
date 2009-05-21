@@ -229,3 +229,11 @@ window.markCorrectResponse = function(questionList) {
 HmEvents.eventTutorLastStep.subscribe( function(x) {
 	solutionHasBeenViewed_Gwt(x);
 });
+
+
+
+
+/** Override the Ask a tutor function */
+TutorManager.askATutor =  function() {
+   // do nothing
+};
