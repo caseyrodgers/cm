@@ -750,3 +750,9 @@ img.resource-item-complete {
 .help-window .x-btn {
 	width: 200px;
 }
+
+
+.activity-widget {
+	margin-left: 10px;
+	border: 1px solid red;
+}
