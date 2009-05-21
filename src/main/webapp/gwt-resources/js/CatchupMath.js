@@ -169,13 +169,13 @@ window.setQuizQuestionResult = function(questionIndex, result) {
 	var el = getQuestionMarkImage(questionIndex);
 	var elT = getQuestionMarkText(questionIndex);
 	if (result == 'Correct') {
-		el.src = '/images/trifco/design/smiley-1.gif';
+		el.src = '/gwt-resources/images/check_correct.png';
 		elT.innerHTML = 'Correct';
 	} else if (result == 'Incorrect') {
-		el.src = '/images/trifco/design/smiley-2.gif';
+		el.src = '/gwt-resources/images/check_incorrect.png';
 		elT.innerHTML = 'Incorrect';
 	} else {
-		el.src = '/images/trifco/design/smiley-3.gif';
+		el.src = '/gwt-resources/images/check_notanswered.png';
 		elT.innerHTML = 'Not answered';
 	}
 	el.parentNode.style.display = 'block';
