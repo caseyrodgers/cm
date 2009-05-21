@@ -133,8 +133,8 @@ public class HelpWindow extends Window {
         backgrounds.add(m);
 
         m = new BackgroundModel();
-        m.set("text","Roses");
-        m.set("bg_style", "resource-container-roses");
+        m.set("text","Tulips");
+        m.set("bg_style", "resource-container-tulips");
         backgrounds.add(m);
         
         m = new BackgroundModel();

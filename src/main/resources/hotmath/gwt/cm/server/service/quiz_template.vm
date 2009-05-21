@@ -10,8 +10,8 @@
         <div class='question_head'>
             <div class='question_head_text'> Problem $probNum </div>
             <div class='response_div' style='display: none;'>
-                <img id='response_image_$velocityCount' src='/images/tutor/spacer.gif'/>
-                <div style='float: right;color: #3E3E3E;' id='response_text_$velocityCount' class='response_div_text'> &nbsp; </div>
+                <img id='response_image_$question.problemIndex' src='/images/tutor/spacer.gif'/>
+                <div style='float: right;color: #3E3E3E;' id='response_text_$question.problemIndex' class='response_div_text'> &nbsp; </div>
             </div>
        </div>
        <div class='question_div' id='question_div_$velocityCount'  guid='$question.problemIndex'>$question.questionHtml

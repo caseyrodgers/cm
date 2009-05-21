@@ -166,7 +166,7 @@ public class HaTest {
 		Connection conn=null;
 		PreparedStatement pstat=null;
 		try {
-			String sql = "select * from HA_TEST_CURRENT where test_id = ?";
+			String sql = "select * from v_HA_TEST_CURRENT_STATUS where test_id = ?";
 			conn = HMConnectionPool.getConnection();
 			pstat = conn.prepareStatement(sql);
 			
@@ -176,10 +176,22 @@ public class HaTest {
 			while(rs.next()) {
 				HaTestRunResult res = new HaTestRunResult();
 				res.setPid(rs.getString("pid"));
-				String isCorrect = (rs.getInt("is_correct") == 0)?"Incorrect":"Correct";
-				res.setResult(isCorrect);
-				res.setResponseIndex(rs.getInt("response_number"));
-				results.add(res);
+				String isCorrect = "";
+				String re = rs.getString("is_correct");
+				String responseNum = rs.getString("response_number");
+				if(re != null) {
+				    res.setResponseIndex(rs.getInt("response_number"));
+				    if(re.equals("1"))
+				        res.setResult("Correct");
+				    else 
+				        res.setResult("Incorrect");
+				}
+				else {
+				    res.setResult("Unanswered");
+				}
+				
+                results.add(res);
+			    
 			}
 		}
 		finally {

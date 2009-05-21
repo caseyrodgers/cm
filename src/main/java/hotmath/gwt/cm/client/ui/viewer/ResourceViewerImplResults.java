@@ -83,9 +83,12 @@ public class ResourceViewerImplResults extends ResourceViewerContainer implement
                 String pid = o.get("pid").isString().stringValue();
                 String correct = o.get("result").isString().stringValue();
                 int answerIndex = (int)o.get("responseIndex").isNumber().doubleValue();
-                
-                setSolutionQuestionAnswerIndex(pid, Integer.toString(answerIndex), true);
-                setQuizQuestionResult(i, correct);
+
+                setQuizQuestionResult(pid, correct);
+                if(!correct.equals("Unanswered"))
+                    setSolutionQuestionAnswerIndex(pid, Integer.toString(answerIndex), true);
+                else 
+                    setSolutionQuestionAnswerIndex(pid, "-1", true);
             }
         }
         catch(Exception e) {
@@ -93,7 +96,7 @@ public class ResourceViewerImplResults extends ResourceViewerContainer implement
         }
     }
     
-    private native void setQuizQuestionResult(int questionIndex, String result) /*-{
-        $wnd.setQuizQuestionResult(questionIndex, result);
+    private native void setQuizQuestionResult(String pid, String result) /*-{
+        $wnd.setQuizQuestionResult(pid, result);
     }-*/;
 }

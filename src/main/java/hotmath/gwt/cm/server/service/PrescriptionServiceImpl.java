@@ -469,9 +469,10 @@ public class PrescriptionServiceImpl extends RemoteServiceServlet implements Pre
             List<HaTestRunResult> testResults = HaTest.loadTest(testId).getTestCurrentResponses();
             ArrayList<RpcData> rpcData = new ArrayList<RpcData>();
             for (HaTestRunResult tr : testResults) {
-
-                RpcData rd = new RpcData(Arrays.asList("pid=" + tr.getPid(), "answer=" + tr.getResponseIndex()));
-                rpcData.add(rd);
+                if(tr.isAnswered()) {
+                    RpcData rd = new RpcData(Arrays.asList("pid=" + tr.getPid(), "answer=" + tr.getResponseIndex()));
+                    rpcData.add(rd);
+                }
             }
             return rpcData;
         } catch (Exception e) {

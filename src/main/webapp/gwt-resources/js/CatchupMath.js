@@ -65,22 +65,18 @@ var _questionObjectPointer;
 // call from JSNI when new question has been loaded in order to set
 // the selected question answer
 window.setSolutionQuestionAnswerIndex = function(pid, which, disabled) {
-	if (which) {
-		if (which > -1) {
-			ulNode = findQuestionByPid(pid);
-			if (ulNode) {
-				var inputElements = ulNode.getElementsByTagName("input");
-				for(var i=0,t=inputElements.length;i<t;i++) {
-					var cb = inputElements.item(i);	
-					
-					// enable or disable control
- 				    cb.disabled = disabled?true:false;
+	ulNode = findQuestionByPid(pid);
+	if (ulNode) {
+		var inputElements = ulNode.getElementsByTagName("input");
+		for ( var i = 0, t = inputElements.length; i < t; i++) {
+			var cb = inputElements.item(i);
 
- 				    if(i == which) {
-					    cb.style.background = 'red';
-					    cb.checked = true;
- 				    }
-				}
+			// enable or disable control
+			cb.disabled = disabled ? true : false;
+
+			if (i == which) {
+				cb.style.background = 'red';
+				cb.checked = true;
 			}
 		}
 	}
@@ -164,10 +160,13 @@ window.getQuizQuestionCount = function() {
 /** Called from GWT to set the quiz question with the appropriate image
  * 
  */
-window.setQuizQuestionResult = function(questionIndex, result) {
+window.setQuizQuestionResult = function(pid, result) {
+	 
+	var ql = findQuestionByPid(pid);
+	 
 
-	var el = getQuestionMarkImage(questionIndex);
-	var elT = getQuestionMarkText(questionIndex);
+	var el = getQuestionMarkImage(pid);
+	var elT = getQuestionMarkText(pid);
 	if (result == 'Correct') {
 		el.src = '/gwt-resources/images/check_correct.png';
 		elT.innerHTML = 'Correct';
@@ -230,10 +229,7 @@ HmEvents.eventTutorLastStep.subscribe( function(x) {
 	solutionHasBeenViewed_Gwt(x);
 });
 
-
-
-
 /** Override the Ask a tutor function */
-TutorManager.askATutor =  function() {
-   // do nothing
+TutorManager.askATutor = function() {
+	// do nothing
 };

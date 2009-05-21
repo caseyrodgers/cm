@@ -1,5 +1,7 @@
 package hotmath.testset.ha;
 
+import hotmath.gwt.cm.client.ui.viewer.ResourceViewerImplReview;
+
 public class HaTestRunResult {
 	Integer resultId;
 	String pid;   // the solution pid
@@ -30,6 +32,14 @@ public class HaTestRunResult {
 	}
 	public void setResult(String result) {
 		this.result = result;
+	}
+	
+	/** Return true if question is answered
+	 * 
+	 * @return
+	 */
+	public boolean isAnswered() {
+	    return (result != null && result.indexOf("orrect") > -1);
 	}
 	
 	/** Return true if this result is correct
