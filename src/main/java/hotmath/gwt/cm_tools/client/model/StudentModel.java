@@ -14,6 +14,7 @@ public class StudentModel extends BaseModelData  {
 	public static final String SUBJ_ID_KEY = "subjId";
 	public static final String CHAPTER_KEY = "chapter";
 	public static final String LAST_QUIZ_KEY = "last-quiz";
+	public static final String JSON_KEY = "json";
 	
 	public static final String UID_KEY = "uid";
 	public static final String EMAIL_KEY = "email";
@@ -167,8 +168,16 @@ public class StudentModel extends BaseModelData  {
 		return get(LAST_QUIZ_KEY);
 	}
 	
-	public void setLastQuiz(String chapter) {
-		set(LAST_QUIZ_KEY, chapter);
+	public void setLastQuiz(String lastQuiz) {
+		set(LAST_QUIZ_KEY, lastQuiz);
+	}
+
+	public String getJson() {
+		return get(JSON_KEY);
+	}
+	
+	public void setJson(String json) {
+		set(JSON_KEY, json);
 	}
 
 	public StudentModel() {
