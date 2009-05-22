@@ -200,7 +200,7 @@ public class HaUser extends HaBasicUserImpl {
 		ResultSet rs = null;
 		try {
 			String sql = "select u.uid, u.user_name, u.active_run_id,u.active_test_id,u.active_segment,u.active_run_session " +
-			             " ,d.test_name as assigned_test_name, test_config_json, gui_background_style " +
+			             " ,d.test_name as assigned_test_name, u.test_config_json, gui_background_style " +
 			             " from HA_USER u INNER JOIN HA_TEST_DEF d on u.test_def_id = d.test_def_id ";
 			if(uid != null)
 				sql += " where u.uid = ?";
