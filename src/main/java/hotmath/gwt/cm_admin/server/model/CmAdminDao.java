@@ -15,6 +15,9 @@ import java.util.Map;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import hotmath.gwt.cm_admin.client.model.AccountInfoModel;
 import hotmath.gwt.cm_admin.client.model.GroupModel;
 import hotmath.gwt.cm_admin.client.model.StudentModel;
@@ -34,8 +37,9 @@ public class CmAdminDao {
 
     private static final String GET_STUDENTS_SQL = 
         "SELECT h.uid, h.user_name as name, h.user_passcode as passcode, h.user_email as email, h.admin_id as admin_uid, " +
-        "       h.active_segment, p.test_def_id, p.create_date, concat(p.pass_percent,'%') as pass_percent, t.total_segments, " +
-        "       trim(concat(ifnull(d.subj_id,''), ' ', d.prog_id)) as program, h.user_prog_id, " +
+        "       h.active_segment, h.test_config_json, h.user_prog_id, p.test_def_id, p.create_date, " +
+        "       concat(p.pass_percent,'%') as pass_percent, t.total_segments, concat(m.answered_correct*10,'%') as last_quiz, " +
+        "       trim(concat(ifnull(d.subj_id,''), ' ', d.prog_id)) as program, d.prog_id, d.subj_id, " +
         "       date_format(m.last_run_time,'%Y-%m-%d') as last_use_date, 0 as has_tutoring, " +
         "       i.solution_views as solution_usage_count, i.video_views as video_usage_count, i.review_views as review_usage_count, " +
         "       ifnull(g.id, 0) as group_id, ifnull(g.name, 'none') as group_name " +
@@ -283,7 +287,7 @@ public class CmAdminDao {
 
     private static final String UPDATE_USER_SQL =
     	"update HA_USER set " +
-    	" user_name = ?, user_passcode = ?, group_id = ?, active_segment = ?, " +
+    	" user_name = ?, user_passcode = ?, group_id = ?, active_segment = ?, test_config_json = ?, " +
     	" test_def_id = (select test_def_id from HA_TEST_DEF where prog_id = ? and subj_id = ?) " +
     	"where uid = ?";
     
@@ -301,10 +305,11 @@ public class CmAdminDao {
     		ps.setInt(3, Integer.parseInt(sm.getGroupId()));
     		int sectionNum = (sm.getSectionNum() != null) ? sm.getSectionNum().intValue() : 0;
     		ps.setInt(4, sectionNum);
+    		ps.setString(5, sm.getJson());
     		Map <String, String> m = getSubjIdAndProgId(sm);
-    		ps.setString(5, m.get("progId"));
-    		ps.setString(6, m.get("subjId"));
-    		ps.setInt(7, sm.getUid());
+    		ps.setString(6, m.get("progId"));
+    		ps.setString(7, m.get("subjId"));
+    		ps.setInt(8, sm.getUid());
     		int result = ps.executeUpdate();
     	}
     	catch (Exception e) {
@@ -414,6 +419,33 @@ public class CmAdminDao {
     			finally {
     				SqlUtilities.releaseResources(rs, stmt, null);
     			}
+    			//also get test_config_json
+    			PreparedStatement ps2 = null;
+    			rs = null;
+    			String sql = "select test_config_json from HA_TEST_DEF where subj_id = ? and prog_id = ?";
+				String json = "";
+    			try {
+    				ps2 = conn.prepareStatement(sql);
+    				ps2.setString(1, sm.getSubjId());
+    				String progId = sm.getProgId();
+    				ps2.setString(2, progId);
+    				rs = ps2.executeQuery();
+    				if (rs.next()) {
+    					json = rs.getString(1);
+    					// if Chap program set chapter
+    					if (progId.equalsIgnoreCase("chap")) {
+    						json = json.replaceFirst("XXX", sm.getChapter());
+    					}
+    					sm.setJson(json);
+    				}
+    			}
+				catch (Exception e) {
+					System.out.println(String.format("json: %s, Exception: %s", json, e.getMessage()));
+				}
+    			finally {
+    				SqlUtilities.releaseResources(rs, ps2, null);
+    			}
+    			
     		}
     	}
     	catch (Exception e) {
@@ -458,7 +490,12 @@ public class CmAdminDao {
     		sm.setGroupId(String.valueOf(groupId));
     		sm.setUserProgramId(rs.getInt("user_prog_id"));
     		sm.setGroup(rs.getString("group_name"));
-            sm.setProgramDescr(rs.getString("program"));
+    		// TODO include Chapter number in 'program'
+    		sm.setProgramDescr(rs.getString("program"));
+            sm.setProgId(rs.getString("prog_id"));
+            sm.setSubjId(rs.getString("subj_id"));
+            sm.setLastQuiz(rs.getString("last_quiz"));
+            sm.setChapter(getChapter(rs.getString("test_config_json")));
             sm.setLastLogin(rs.getString("last_use_date"));
             int totalUsage = rs.getInt("video_usage_count") + rs.getInt("solution_usage_count") + rs.getInt("review_usage_count");
             sm.setTotalUsage(String.valueOf(totalUsage));
@@ -516,19 +553,48 @@ public class CmAdminDao {
     	return l;
     }
 	
+	//TODO: eliminate this method
     private Map<String, String> getSubjIdAndProgId(StudentModel sm) {
     	Map<String, String> m = new HashMap<String, String> ();
-    	
+    	    	
 		String shortName = sm.getProgramDescr();
+		int chapOffset = shortName.indexOf("Chap");
 		int offset = shortName.lastIndexOf(" ");
-		String subjId = "";
-		if (offset > -1) {
-			subjId = shortName.substring(0, offset);
+		String subjId;
+		String progId;
+		String chapter = "";
+		if (chapOffset > 0) {
+            subjId =  shortName.substring(0, chapOffset-1);           			
+			progId = "Chap";
+			chapter = shortName.substring(offset+1);
 		}
-		String progId = shortName.substring(offset+1);
+		else if (offset > -1) {
+			subjId = shortName.substring(0, offset);
+			progId = shortName.substring(offset+1);
+		}
+		else {
+			subjId = "";
+			progId = "";
+		}
 		
 		m.put("subjId", subjId);
 		m.put("progId", progId);
     	return m;
+    }
+    
+    private String getChapter(String json) {
+    	if (json == null || json.trim().length() == 0) return null;
+    	
+    	String chap = null;
+    	try {
+    		JSONObject jo = new JSONObject(json);
+	   	    JSONArray ja = jo.getJSONArray("chapters");
+		    chap = ja.getString(0);
+    	}
+    	catch (Exception e) {
+    		System.out.println("*** Exception: " + e.getMessage());
+    	}
+	
+    	return chap;
     }
 }
