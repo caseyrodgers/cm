@@ -14,7 +14,7 @@ public class AssessmentPrescriptionFactory {
 	 * @throws Exception
 	 */
 	static public AssessmentPrescription create(HaTestRun testRun) throws Exception {
-		if(testRun.getHaTest().getTestDef().getName().indexOf("Placement") > -1)
+		if(testRun.getHaTest().getTestDef().getName().indexOf("Auto-Enrollment") > -1)
 			return new AssessmentPrescriptionPlacement(testRun);
 		else
 			return new AssessmentPrescription(testRun);

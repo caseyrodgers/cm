@@ -31,15 +31,14 @@ public class QuizCmGuiDefinition implements CmGuiDefinition {
 	public Widget getWestWidget() {
 	    
 	    String html="";
-	    if(UserInfo.getInstance().getTestName().toLowerCase().indexOf("placement") > -1) {
+	    if(UserInfo.getInstance().getTestName().indexOf("Auto-Enrollment") > -1) {
 	        html = 
-	            "<p>Take the placment quiz to the right.</p>" +
-	            "<p>After that, we will automatically " +
-	            " place you in the program where you will " +
-	            " get the most benifit." +
+	            "<p>Take the quiz to the right.</p>" +
+	            "<p>Afterwards, you may get one or two more" +
+	            "   quizzes before starting your review and practice. " +
 	            "</p>" +
-	            "<p>Most of the quiz questions require " +
-	            " pencil and paper.  Please don't guess." +
+	            "<p>Most of the quiz questions require pencil " +
+	            "   and paper. Please don't guess." +
 	            "</p>" +
 	            "<p>If you log out, your answers will be saved." +
 	            "</p> ";

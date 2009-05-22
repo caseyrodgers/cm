@@ -61,7 +61,7 @@ public class HaTestDefPlacement extends HaTestDef {
 	}
 	
 	public String getSubTitle(int segment) {
-		String t = "Placement Test";
+		String t = "Auto-Enrollment";
 		switch(segment) {
 		    case 0:
 		    case 1:

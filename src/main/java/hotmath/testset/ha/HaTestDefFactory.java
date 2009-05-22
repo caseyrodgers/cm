@@ -27,7 +27,7 @@ public class HaTestDefFactory {
 	 * @throws Exception
 	 */
 	public static HaTestDef createTestDef(String name) throws Exception {
-		if(name.toLowerCase().indexOf("placement") > -1) {
+		if(name.indexOf("Auto-Enrollment") > -1) {
 			return new HaTestDefPlacement(name);
 		}
 		else return new HaTestDef(name);

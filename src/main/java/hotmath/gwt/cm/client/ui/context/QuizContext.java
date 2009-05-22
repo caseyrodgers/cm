@@ -7,6 +7,7 @@ import hotmath.gwt.cm.client.ui.NextDialog;
 import hotmath.gwt.cm.client.ui.NextPanelInfo;
 import hotmath.gwt.cm.client.ui.NextPanelInfoImplDefault;
 import hotmath.gwt.cm.client.util.UserInfo;
+import hotmath.gwt.shared.client.data.CmAsyncRequest;
 import hotmath.gwt.shared.client.data.CmAsyncRequestImplDefault;
 import hotmath.gwt.shared.client.util.RpcData;
 
@@ -24,7 +25,6 @@ import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.Window;
 import com.extjs.gxt.ui.client.widget.button.Button;
-import com.extjs.gxt.ui.client.widget.form.FieldSet;
 import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Anchor;
@@ -106,22 +106,22 @@ public class QuizContext implements CmContext {
 	private void showAutoAssignedProgram(String assignedName) {
 	    final Window window = new Window();
 	    window.setModal(true);
-	    window.setHeight(200);
+	    window.setHeight(175);
 	    window.setWidth(300);
 	    window.setClosable(false);
 	    window.setResizable(false);
 	    window.setStyleName("auto-assignment-window");
-	    String msg = "<p>After evaluating your test responses, the following proficiency program is best suited to your requirements:</p> " 
+	    String msg = "<p>Thank you - You are now enrolled in Catchup Program:</p> " 
 	               + "<p><b>" + assignedName + "</b></p>";
 	    
 	    Html html = new Html(msg);
 	    
-	    window.setHeading("Math Placment");
+	    window.setHeading("Quiz results");
 	    window.add(html);
 	    
 
 	    Button close = new Button();
-	    close.setText("Begin " + assignedName);
+	    close.setText("OK");
 	    close.addSelectionListener(new SelectionListener<ButtonEvent>() {
 	        public void componentSelected(ButtonEvent ce) {
 	            CatchupMath.getThisInstance().showQuizPanel();
@@ -131,6 +131,16 @@ public class QuizContext implements CmContext {
 	    
 	    window.addButton(close);
 	    window.setVisible(true);
+	}
+	
+	private void showNextPlacmentQuiz() {
+	    
+	    CatchupMath.showAlert("Quiz results", "Good job - we'll now give another quiz.", new CmAsyncRequestImplDefault() {
+	        public void requestComplete(String requestData) {
+	            CatchupMath.getThisInstance().showQuizPanel();
+	        }
+	    });
+	    
 	}
 
 	public void doNext() {
@@ -159,7 +169,7 @@ public class QuizContext implements CmContext {
                                         }
                                         else {
                                             UserInfo.getInstance().setTestSegment(testSegment+1);
-                                            CatchupMath.getThisInstance().showQuizPanel();
+                                            showNextPlacmentQuiz();
                                         }
                                     }
                                     
