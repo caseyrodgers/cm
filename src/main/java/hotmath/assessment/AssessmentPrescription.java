@@ -3,6 +3,8 @@ package hotmath.assessment;
 import hotmath.BookInfoManager;
 import hotmath.HotMathException;
 import hotmath.ProblemID;
+import hotmath.gwt.cm.client.ui.NextAction;
+import hotmath.gwt.cm.client.ui.NextAction.NextActionName;
 import hotmath.inmh.INeedMoreHelpItem;
 import hotmath.inmh.INeedMoreHelpManager;
 import hotmath.testset.ha.HaTest;
@@ -319,6 +321,16 @@ public class AssessmentPrescription {
      */
     public String getPrescriptionUrl() {
     	return "assessment-prescription-session.jsp?run_id=" +this.testRun.getRunId();        	
+    }
+    
+    
+    
+    /** Determine the next action to take
+     * 
+     * @return
+     */
+    public NextAction getNextAction() {
+        return new NextAction(NextActionName.PRESCRIPTION); 
     }
     
     /** Represents a single item in a given session */

@@ -158,7 +158,7 @@ public class HaUser extends HaBasicUserImpl {
 	    	HaTestDef def = HaTestDefFactory.createTestDef(getAssignedTestName());			
 			
 		    String sql = "update HA_USER set active_test_id = ?, active_run_id = ?, active_segment = ?, active_run_session = ?, " +
-		       "test_def_id = ?, gui_background_style = ?  " +
+		       "test_def_id = ?, gui_background_style = ? " +
 	          " where uid = ?";
    	        pstat = conn.prepareStatement(sql);
 	        pstat.setInt(1,getActiveTest());

@@ -5,6 +5,7 @@ import hotmath.gwt.cm.client.ui.CmContext;
 import hotmath.gwt.cm.client.ui.CmGuiDefinition;
 import hotmath.gwt.cm.client.ui.ContextController;
 import hotmath.gwt.cm.client.ui.QuizPage;
+import hotmath.gwt.cm.client.util.UserInfo;
 import hotmath.gwt.shared.client.data.CmAsyncRequest;
 
 import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
@@ -28,17 +29,34 @@ public class QuizCmGuiDefinition implements CmGuiDefinition {
 
 	
 	public Widget getWestWidget() {
-		String html = 
-		"<p>Take the quiz to the right.</p>" +
-        "<p>After that, we will provide you " +
-        "personalized review and practice " +
-        " to get you caught up." +
-        "</p>" +
-        "<p>Most of the quiz questions require " +
-        " pencil and paper.  Please don't guess." +
-        "</p>" +
-        "<p>If you log out, your answers will be saved." +
-        "</p> ";
+	    
+	    String html="";
+	    if(UserInfo.getInstance().getTestName().toLowerCase().indexOf("placement") > -1) {
+	        html = 
+	            "<p>Take the placment quiz to the right.</p>" +
+	            "<p>After that, we will automatically " +
+	            " place you in the program where you will " +
+	            " get the most benifit." +
+	            "</p>" +
+	            "<p>Most of the quiz questions require " +
+	            " pencil and paper.  Please don't guess." +
+	            "</p>" +
+	            "<p>If you log out, your answers will be saved." +
+	            "</p> ";
+	    }
+	    else {
+    		html = 
+    		"<p>Take the quiz to the right.</p>" +
+            "<p>After that, we will provide you " +
+            "personalized review and practice " +
+            " to get you caught up." +
+            "</p>" +
+            "<p>Most of the quiz questions require " +
+            " pencil and paper.  Please don't guess." +
+            "</p>" +
+            "<p>If you log out, your answers will be saved." +
+            "</p> ";
+	    }
 		
 		Template t = new Template(html);
 		HTML ohtml = new HTML(t.getHtml());

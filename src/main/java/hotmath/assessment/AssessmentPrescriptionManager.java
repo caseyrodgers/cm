@@ -62,7 +62,7 @@ public class AssessmentPrescriptionManager {
 			HaTestRun testRun = HaTestRun.lookupTestRun(runId);
 			
 			String pidList = testRun.getPidList();
-			pres = new AssessmentPrescription(testRun);
+			pres = AssessmentPrescriptionFactory.create(testRun);
 			pres.setTestRun(testRun);
 			
 			_prescriptions.put(runId, pres);

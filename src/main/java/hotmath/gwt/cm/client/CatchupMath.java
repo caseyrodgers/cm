@@ -207,15 +207,17 @@ public class CatchupMath implements EntryPoint {
     }
 
 
-    
-    static public void showAlert(String msg, final CmAsyncRequest callback) {
+    static public void showAlert(String title, String msg, final CmAsyncRequest callback) {
         setBusy(false);
-        MessageBox.alert("Info", msg, new Listener<MessageBoxEvent>() {
+        MessageBox.alert(title, msg, new Listener<MessageBoxEvent>() {
             public void handleEvent(MessageBoxEvent be) {
                 if(callback != null)
                     callback.requestComplete(be.getValue());
             }
         });
+    }
+    static public void showAlert(String msg, final CmAsyncRequest callback) {
+        showAlert("Info", msg, callback);
     }
 
 
@@ -257,6 +259,7 @@ public class CatchupMath implements EntryPoint {
         _mainContainer.add(new CmMainPanel(new QuizCmGuiDefinition()));
         _mainContainer.layout();
     }
+    
 
     /**
      * Helper page to create the Prescription page

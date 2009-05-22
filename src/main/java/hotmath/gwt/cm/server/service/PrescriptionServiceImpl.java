@@ -12,6 +12,8 @@ import hotmath.gwt.cm.client.data.PrescriptionData;
 import hotmath.gwt.cm.client.data.PrescriptionSessionData;
 import hotmath.gwt.cm.client.data.PrescriptionSessionDataResource;
 import hotmath.gwt.cm.client.service.PrescriptionService;
+import hotmath.gwt.cm.client.ui.NextAction;
+import hotmath.gwt.cm.client.ui.NextAction.NextActionName;
 import hotmath.gwt.cm.client.util.CmRpcException;
 import hotmath.gwt.shared.client.util.CmException;
 import hotmath.gwt.shared.client.util.RpcData;
@@ -644,6 +646,7 @@ public class PrescriptionServiceImpl extends RemoteServiceServlet implements Pre
             rpcData.putData("user_name", user.getUserName());
             rpcData.putData("session_number", user.getActiveTestRunSession());
             rpcData.putData("gui_background_style", user.getBackgroundStyle());
+            rpcData.putData("test_name", user.getAssignedTestName());
             
             int totalViewCount = getTotalInmHViewCount(uid);
             
@@ -703,6 +706,29 @@ public class PrescriptionServiceImpl extends RemoteServiceServlet implements Pre
             }
 
             HaTestRun run = test.createTestRun(incorrectPids.toArray(new String[incorrectPids.size()]), answeredCorrect,incorrectPids.size());
+
+            AssessmentPrescription pres = AssessmentPrescriptionManager.getInstance().getPrescription(run.getRunId());
+            
+            // Let the prescription instruct the next action depending on 
+            // type of test,status,etc.
+            NextAction nextAction = pres.getNextAction();
+            if(!nextAction.getNextAction().equals(NextActionName.PRESCRIPTION)) {
+                // need to inform caller it needs to show the quiz ...
+                // Caught in QuizContent
+                RpcData rdata = new RpcData();
+                if(nextAction.getNextAction().equals(NextActionName.AUTO_ASSSIGNED)) {
+                    rdata.putData("redirect_action", "AUTO_ASSIGNED");
+                    rdata.putData("assigned_test", nextAction.getAssignedTest());
+                }
+                else {
+                    rdata.putData("redirect_action", "QUIZ");
+                    rdata.putData("segment", test.getUser().getActiveTestSegment());
+                }
+                
+                return rdata;
+            }
+            
+            
             RpcData rdata = new RpcData();
             rdata.putData("run_id", run.getRunId());
             rdata.putData("correct_percent",getTestPassPercent(run.getHaTest().getNumTestQuestions(), run.getAnsweredCorrect()));

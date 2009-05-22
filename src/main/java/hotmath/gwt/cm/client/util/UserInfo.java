@@ -63,6 +63,7 @@ public class UserInfo implements IsSerializable {
                 user.setSessionNumber(ui.getDataAsInt("session_number"));
                 user.setActiveUser(true);
                 user.setBackgroundStyle(ui.getDataAsString("gui_background_style"));
+                user.setTestName(ui.getDataAsString("test_name"));
                 __instance = user;
                 
                 HeaderPanel.__instance.setLoginInfo();
