@@ -10,6 +10,10 @@ public class StudentModel extends BaseModelData  {
 	public static final String GROUP_ID_KEY = "groupId";
 	public static final String SECTION_NUM_KEY = "sectionNum";
 	public static final String USER_PROGRAM_KEY = "userProgramId";
+	public static final String PROG_ID_KEY = "progId";
+	public static final String SUBJ_ID_KEY = "subjId";
+	public static final String CHAPTER_KEY = "chapter";
+	public static final String LAST_QUIZ_KEY = "last-quiz";
 	
 	public static final String UID_KEY = "uid";
 	public static final String EMAIL_KEY = "email";
@@ -133,6 +137,38 @@ public class StudentModel extends BaseModelData  {
 	
 	public Boolean getProgramChanged() {
 		return get("programChanged");
+	}
+
+	public String getProgId() {
+		return get(PROG_ID_KEY);
+	}
+	
+	public void setProgId(String progId) {
+		set(PROG_ID_KEY, progId);
+	}
+
+	public String getSubjId() {
+		return get(SUBJ_ID_KEY);
+	}
+	
+	public void setSubjId(String progId) {
+		set(SUBJ_ID_KEY, progId);
+	}
+
+	public String getChapter() {
+		return get(CHAPTER_KEY);
+	}
+	
+	public void setChapter(String chapter) {
+		set(CHAPTER_KEY, chapter);
+	}
+
+	public String getLastQuiz() {
+		return get(LAST_QUIZ_KEY);
+	}
+	
+	public void setLastQuiz(String chapter) {
+		set(LAST_QUIZ_KEY, chapter);
 	}
 
 	public StudentModel() {
