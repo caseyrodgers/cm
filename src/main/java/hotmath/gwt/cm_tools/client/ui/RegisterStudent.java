@@ -469,6 +469,7 @@ public class RegisterStudent extends LayoutContainer {
 			        	stuMdl.setStatus("Not started");
 			        	stuMdl.setSectionNum(0);
 			        	stuMdl.setProgramChanged(true);
+			        	stuMdl.setChapter(chap.getTitle());
 			        	progIsNew = true;
 			        	progChanged = false;
 			        	stuChanged = true;
@@ -651,19 +652,15 @@ public class RegisterStudent extends LayoutContainer {
 	}
 	
 	private void setChapterSelection() {
-		String prog = stuMdl.getProgramDescr();
+		String chap = stuMdl.getChapter();
 
-		if (prog != null) {
-			int offset = prog.indexOf("Chap") + 4;
-			if (offset > 4 && offset < prog.length()) {
-				String chap = prog.substring(offset).trim();
-				List <ChapterModel> list = chapStore.getModels();
-				for (ChapterModel c : list) {
-					if (chap.equals(c.getNumber())) {
-						chapCombo.setOriginalValue(c);
-						chapCombo.setValue(c);
-						break;
-					}
+		if (chap != null) {
+			List <ChapterModel> list = chapStore.getModels();
+			for (ChapterModel c : list) {
+				if (chap.equals(c.getTitle())) {
+					chapCombo.setOriginalValue(c);
+					chapCombo.setValue(c);
+					break;
 				}
 			}
     	}
