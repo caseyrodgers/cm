@@ -10,7 +10,9 @@ import java.sql.ResultSet;
 import java.sql.Statement;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 /** HaTest Class 
@@ -319,7 +321,14 @@ public class HaTest {
 		}
 	}
 	
+	static Map<Integer, HaTest> __testCache = new HashMap<Integer, HaTest>(); 
 	static public HaTest loadTest(int testId) throws HotMathException {
+	    
+	    
+	    if(__testCache.containsKey(testId))
+	        return __testCache.get(testId);
+	        
+	    
 		Connection conn=null;
 		PreparedStatement pstat=null;
 		try {
@@ -346,6 +355,8 @@ public class HaTest {
 			for(String pid: testIds) {
 				test.addPid(pid);
 			}
+			
+			__testCache.put(testId, test);
 			
 			return test;
 		}
@@ -415,13 +426,8 @@ public class HaTest {
 			testRun.transferCurrentToTestRun();
 			
 			// update this User's row to indicate new run
-			sql = "update HA_USER set active_run_id = ? where uid = ?";
-			pstat = conn.prepareStatement(sql);
-			pstat.setInt(1,testRun.getRunId());
-			pstat.setInt(2,getUser().getUid());
-			if(pstat.executeUpdate() != 1) {
-				throw new HotMathException("Error update active record");
-			}			
+			test.getUser().setActiveTestRunId(testRun.getRunId());
+			test.getUser().update();
 			
 			return testRun;
 		}

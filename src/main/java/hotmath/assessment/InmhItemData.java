@@ -114,8 +114,7 @@ public class InmhItemData {
 							SolutionManager.getSolution(pid.getGUID());
 							pids.add(pid);
 						} catch (Exception e) {
-							System.out.println("Inmh: GUID does not exist: "
-									+ s);
+							System.out.println("Inmh: GUID does not exist: " +  s);
 						}
 					}
 				}

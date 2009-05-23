@@ -17,18 +17,21 @@ import org.json.JSONObject;
 public class HaTestConfig {
 	List<String> chapters = new ArrayList<String>();
 	int passPercent;
+	int segments;
 	
 	public HaTestConfig(String json) throws HotMathException {
 		try {
 			if(json != null && json.length() > 0) {
 				JSONObject jo = new JSONObject(json);
-				JSONArray ja = jo.getJSONArray("chapters");
-			
-				for(int i=0;i<ja.length();i++) {
-					chapters.add(ja.getString(i));
+				segments = jo.getInt("segments");
+				if(!jo.isNull("chapters")) {
+				    JSONArray ja = jo.getJSONArray("chapters");
+			        for(int i=0;i<ja.length();i++) {
+				        chapters.add(ja.getString(i));
+			        }
 				}
-				if(jo.has("pass_percent"))
-					passPercent = jo.getInt("pass_percent");
+		        if(jo.has("pass_percent"))
+		            passPercent = jo.getInt("pass_percent");
 			}
 		}
 		catch(Exception e) {
