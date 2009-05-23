@@ -1,9 +1,6 @@
 package hotmath.gwt.cm_admin.server.service;
 
-import java.util.ArrayList;
 import java.util.List;
-
-import java.util.Random;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
@@ -21,26 +18,12 @@ public class RegistrationServiceImpl extends RemoteServiceServlet implements Reg
 
 	private static final long serialVersionUID = -1395419758214416432L;
 	
-	Random rand = new Random();
-
 	public RegistrationServiceImpl() {
 	}
 
-	public List<StudyProgramModel> getProgramDefinitions() {
-		
-		List <StudyProgramModel> progList = new ArrayList<StudyProgramModel>();
-		
-		// TODO obtain from DB
-		progList.add(new StudyProgramModel("Placement Test", "Placement", "Place student into a Subject Proficiency Program",
-				0, 0, 0, 0));
-		progList.add(new StudyProgramModel("Subject Proficiency", "Prof", "Catchup Math will provide subject specific quizzes, review, and practice",
-				1, 0, 1, 0));
-		progList.add(new StudyProgramModel("Subject & Chapter", "Chap", "Select subject and a specific chapter topic",
-				1, 1, 1, 0));
-		progList.add(new StudyProgramModel("Graduation Preparation", "Grad Prep", "Prepare students for success on high-stakes tests",
-				0, 0, 0, 1));
-
-		return progList;
+	public List<StudyProgramModel> getProgramDefinitions() {	
+		CmAdminDao cma = new CmAdminDao();
+		return cma.getProgramDefinitions();
 	}
 
 	public List<StudentModel> getSummariesForActiveStudents(Integer adminUid) {
