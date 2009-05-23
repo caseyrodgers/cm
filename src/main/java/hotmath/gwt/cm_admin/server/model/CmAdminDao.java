@@ -222,9 +222,6 @@ public class CmAdminDao {
     	Connection conn = null;
     	PreparedStatement ps = null;
     	ResultSet rs = null;
-    	
-    	addStudentProgram(sm);
-    	
     	try {
     		conn = HMConnectionPool.getConnection();
     		ps = conn.prepareStatement(ADD_USER_SQL);
@@ -238,8 +235,18 @@ public class CmAdminDao {
     		ps.setInt(7, sm.getAdminUid());
     		
     		int count = ps.executeUpdate();
+    		
+    		if (count == 1) {
+        	    int stuUid = this.getLastInsertId(conn);
+        	    sm.setUid(stuUid);
+        	    addStudentProgram(sm);
+        	    updateStudent(sm);
+    		}
+        	
     	}
     	catch (Exception e) {
+    	    System.out.println(String.format("*** Error adding student with passcode: %s, Exception: %s",
+    	    		sm.getPasscode(), e.getLocalizedMessage()));
     		//logger.error(String.format("*** Error adding student with passcode: %s", sm.getPasscode()), e);
     		//throw e;
     	}
@@ -289,7 +296,8 @@ public class CmAdminDao {
     private static final String UPDATE_USER_SQL =
     	"update HA_USER set " +
     	" user_name = ?, user_passcode = ?, group_id = ?, active_segment = ?, test_config_json = ?, " +
-    	" test_def_id = (select test_def_id from HA_TEST_DEF where prog_id = ? and subj_id = ?) " +
+    	" test_def_id = (select test_def_id from HA_TEST_DEF where prog_id = ? and subj_id = ?), " +
+        " user_prog_id = ? " +
     	"where uid = ?";
     
     public StudentModel updateStudent(StudentModel sm) {
@@ -310,7 +318,8 @@ public class CmAdminDao {
     		Map <String, String> m = getSubjIdAndProgId(sm);
     		ps.setString(6, m.get("progId"));
     		ps.setString(7, m.get("subjId"));
-    		ps.setInt(8, sm.getUid());
+    		ps.setInt(8, sm.getUserProgramId());
+    		ps.setInt(9, sm.getUid());
     		int result = ps.executeUpdate();
     	}
     	catch (Exception e) {
@@ -371,14 +380,12 @@ public class CmAdminDao {
 
     private static final String INSERT_USER_PROGRAM_NULL_PASS_PERCENT_SQL =
     	"insert CM_USER_PROGRAM (user_id, admin_id, test_def_id, create_date) " +
-    	"values (?, ?, (select test_def_id from HA_TEST_DEF where prog_id = ? and subj_id = ?), ?, ?)";
+    	"values (?, ?, (select test_def_id from HA_TEST_DEF where prog_id = ? and subj_id = ?), ?)";
     
-    private static final String SELECT_LAST_INSERT_ID_SQL = "select LAST_INSERT_ID()";
-
     public StudentModel addStudentProgram(StudentModel sm) {
     	Connection conn = null;
     	PreparedStatement ps = null;
-    	
+
     	try {
     		conn = HMConnectionPool.getConnection();
     		String s = sm.getPassPercent();
@@ -406,23 +413,12 @@ public class CmAdminDao {
     		int result = ps.executeUpdate();
     		if (result == 1) {
     			// now get value of auto-increment id from CM_USER_PROGRAM
-    			Statement stmt = null;
-    			ResultSet rs = null;
-    			try {
-    			    stmt = conn.createStatement();
-    			    // Note: this is MySQL specific
-    		        rs = stmt.executeQuery(SELECT_LAST_INSERT_ID_SQL);
-    		        if (rs.next()) {
-    		        	int val = rs.getInt(1);
-    		        	sm.setUserProgramId(val);
-    		        }
-    			}
-    			finally {
-    				SqlUtilities.releaseResources(rs, stmt, null);
-    			}
+				int val = getLastInsertId(conn);
+				sm.setUserProgramId(val);
     			//also get test_config_json
+
+    			ResultSet rs = null;
     			PreparedStatement ps2 = null;
-    			rs = null;
     			String sql = "select test_config_json from HA_TEST_DEF where subj_id = ? and prog_id = ?";
 				String json = "";
     			try {
@@ -450,6 +446,7 @@ public class CmAdminDao {
     		}
     	}
     	catch (Exception e) {
+    		System.out.println("*** Exception: " + e.getLocalizedMessage());
     		//logger.error(String.format("*** Error adding student program for student with uid: %d", sm.getUid()), e);
     		//throw e;
     	}
@@ -458,6 +455,28 @@ public class CmAdminDao {
     	}
     	return sm;    	
     }
+
+    private static final String SELECT_LAST_INSERT_ID_SQL = "select LAST_INSERT_ID()";
+
+	private int getLastInsertId(Connection conn) throws Exception {
+		Statement stmt = null;
+		ResultSet rs = null;
+		try {
+		    stmt = conn.createStatement();
+		    // Note: this is MySQL specific
+		    rs = stmt.executeQuery(SELECT_LAST_INSERT_ID_SQL);
+		    if (rs.next()) {
+		    	int val = rs.getInt(1);
+		    	return val;
+		    }
+		    else {
+		    	throw new Exception("Unable to obtain last auto-increment id");
+		    }
+		}
+		finally {
+			SqlUtilities.releaseResources(rs, stmt, null);
+		}
+	}
     
     private static final String PROGRAM_SQL =
     	"select id, title, description, needs_subject, needs_chapter, needs_pass_percent, needs_state " +
