@@ -22,6 +22,7 @@ import hotmath.gwt.cm_admin.client.model.AccountInfoModel;
 import hotmath.gwt.cm_admin.client.model.GroupModel;
 import hotmath.gwt.cm_admin.client.model.StudentModel;
 import hotmath.gwt.cm_admin.client.model.StudentActivityModel;
+import hotmath.gwt.cm_admin.client.model.StudyProgramModel;
 import hotmath.gwt.cm_admin.client.model.SubjectModel;
 
 import hotmath.util.HMConnectionPool;
@@ -458,8 +459,47 @@ public class CmAdminDao {
     	return sm;    	
     }
     
+    private static final String PROGRAM_SQL =
+    	"select id, title, description, needs_subject, needs_chapter, needs_pass_percent, needs_state " +
+    	"from HA_PROG_DEF where is_active = 1 order by id";
     
-
+    public List<StudyProgramModel> getProgramDefinitions() {
+    	Connection conn = null;
+    	Statement stmt = null;
+    	ResultSet rs = null;
+    	List<StudyProgramModel> rval = null;
+    	
+    	try {
+    		conn = HMConnectionPool.getConnection();
+    		stmt = conn.createStatement();
+    		rs = stmt.executeQuery(PROGRAM_SQL);
+    		rval = loadProgramDefinitions(rs);
+    	}
+    	catch (Exception e) {
+    		System.out.println("*** Exception: " + e.getLocalizedMessage());
+    	}
+    	finally {
+    		SqlUtilities.releaseResources(rs, stmt, conn);
+    	}
+    	return rval;
+    }
+    
+    private List <StudyProgramModel> loadProgramDefinitions(ResultSet rs) throws Exception {
+    	List <StudyProgramModel> l = new ArrayList<StudyProgramModel> ();
+    	while (rs.next()) {
+    		StudyProgramModel m = new StudyProgramModel();
+            m.setShortTitle(rs.getString("id"));
+            m.setTitle(rs.getString("title"));
+    		m.setDescr(rs.getString("description"));
+    		m.setNeedsChapters(rs.getInt("needs_chapter"));
+    		m.setNeedsSubject(rs.getInt("needs_subject"));
+    		m.setNeedsPassPercent(rs.getInt("needs_pass_percent"));
+    		m.setNeedsState(rs.getInt("needs_state"));
+            l.add(m);
+    	}
+    	return l;
+    }
+    
     private List <GroupModel> loadGroups(ResultSet rs) throws Exception {
     	List <GroupModel> l = new ArrayList<GroupModel>();
     	
