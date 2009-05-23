@@ -425,7 +425,14 @@ public class RegisterStudent extends LayoutContainer {
 		        	sm.setStatus("Not started");
 		        	sm.setAdminUid(cmAdminMdl.getId());
 		        	sm.setSectionNum(0);
-
+	        		String passVal = (pass != null) ? pass.getPassPercent() : null;
+	                sm.setPassPercent(passVal);
+	                String progId = (sp != null) ? (String)sp.get("shortTitle") : null;
+	                sm.setProgId(progId);
+	                String subjId = (sub != null) ? sub.getAbbrev() : null;
+                    sm.setSubjId(subjId);
+		        	String chapTitle = (chap != null) ? chap.getTitle() : null;
+		        	sm.setChapter(chapTitle);
 		        	eg.getStore().add(sm);
 	        	    
 	        	    addUserRPC(sm);
@@ -469,7 +476,13 @@ public class RegisterStudent extends LayoutContainer {
 			        	stuMdl.setStatus("Not started");
 			        	stuMdl.setSectionNum(0);
 			        	stuMdl.setProgramChanged(true);
-			        	stuMdl.setChapter(chap.getTitle());
+			        	String chapTitle = (chap != null) ? chap.getTitle() : null;
+			        	stuMdl.setChapter(chapTitle);
+		                String progId = (sp != null) ? (String)sp.get("shortTitle") : null;
+		                stuMdl.setProgId(progId);
+		                String subjId = (sub != null) ? sub.getAbbrev() : null;
+	                    stuMdl.setSubjId(subjId);
+
 			        	progIsNew = true;
 			        	progChanged = false;
 			        	stuChanged = true;
@@ -719,6 +732,7 @@ public class RegisterStudent extends LayoutContainer {
 			set("needsSubject", needsSubject);
 			set("needsChapters", needsChapters);
 			set("needsPassPercent", needsPassPercent);
+			
 		}
 	}
 
