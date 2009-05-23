@@ -561,6 +561,7 @@ public class CmAdminDao {
             String passPercent = rs.getString("pass_percent");
             sm.setPassPercent(passPercent);
             int sectionNum = rs.getInt("active_segment");
+            sm.setSectionNum(sectionNum);
             if (sectionNum > 0) {
             	int segmentCount = rs.getInt("total_segments");
             	String status = new StringBuilder("Section ").append(sectionNum).append(" of ").append(segmentCount).toString();
