@@ -102,9 +102,6 @@ public class PrescriptionCmGuiDefinition implements CmGuiDefinition {
                             return;
                         }
                         try {
-                            String programTitle = rdata.getDataAsString("program_title");
-                            UserInfo.getInstance().setTestName(programTitle);
-                            
                             int correctPercent = rdata.getDataAsInt("correct_percent");
                             UserInfo.getInstance().setCorrectPercent(correctPercent);
                             if(correctPercent == 100) {
@@ -120,8 +117,6 @@ public class PrescriptionCmGuiDefinition implements CmGuiDefinition {
                             _guiWidget.buildUi(context.prescriptionData);
 
                             ContextController.getInstance().setCurrentContext(context);
-                            
-                            
                             
                             // Select the Results resource on first topic only
                             if(context.getPrescriptionData().getCurrSession().getSessionNumber() == 0)
