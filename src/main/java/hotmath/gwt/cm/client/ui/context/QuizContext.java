@@ -151,8 +151,14 @@ public class QuizContext implements CmContext {
 	    window.setResizable(false);
 	    
 	    window.setStyleName("auto-assignment-window");
-	    String msg = "<p>" + correct + "  out of " + total + " correct.</p> " 
-	               + "<p>View graded quiz on left menu.</p>";
+	    String msg = "<p>" + correct + "  out of " + total + " correct.</p> ";
+	    
+	    if(correct != total) {
+	        msg += "<p>View graded quiz on left menu.</p>";
+	    }
+	    else {
+	        msg += "<p><b>Congratulations!</b></p>";
+	    }
 	        
 	    Html html = new Html(msg);
 	        

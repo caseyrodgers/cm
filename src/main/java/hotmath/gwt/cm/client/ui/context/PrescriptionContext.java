@@ -23,6 +23,7 @@ import com.extjs.gxt.ui.client.event.MessageBoxEvent;
 import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.button.IconButton;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -195,7 +196,7 @@ public class PrescriptionContext implements CmContext {
                         "You have completed all " + totSegs + " sections of this program!",
                         new Listener<MessageBoxEvent>() {
                             public void handleEvent(MessageBoxEvent be) {
-                                ContextController.getInstance().setCurrentContext(PrescriptionContext.this);
+                                Window.Location.assign(CmShared.CM_HOME_URL);
                             }
                         });
             }
