@@ -130,8 +130,7 @@ public class PrescriptionContext implements CmContext {
                  * @TODO: figure better way... Perhaps add listener to the
                  *        accordian
                  */
-                ((PrescriptionCmGuiDefinition) CmMainPanel.__lastInstance.cmGuiDef)._guiWidget
-                        .expandResourcePracticeProblems();
+                ((PrescriptionCmGuiDefinition) CmMainPanel.__lastInstance.cmGuiDef)._guiWidget.expandResourcePracticeProblems();
                 CmMainPanel.__lastInstance.layout();
                 
                 CatchupMath.showAlert("View All the Steps", "Please view all required practice problem answers to the very last step.");              

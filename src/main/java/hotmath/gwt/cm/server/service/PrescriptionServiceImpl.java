@@ -712,10 +712,14 @@ public class PrescriptionServiceImpl extends RemoteServiceServlet implements Pre
             // Let the prescription instruct the next action depending on 
             // type of test,status,etc.
             NextAction nextAction = pres.getNextAction();
+            RpcData rdata = new RpcData();            
+            rdata.putData("correct_answers",answeredCorrect);
+            rdata.putData("total_questions",(notAnswered + totalAnswered));
+
             if(!nextAction.getNextAction().equals(NextActionName.PRESCRIPTION)) {
                 // need to inform caller it needs to show the quiz ...
                 // Caught in QuizContent
-                RpcData rdata = new RpcData();
+
                 if(nextAction.getNextAction().equals(NextActionName.AUTO_ASSSIGNED)) {
                     rdata.putData("redirect_action", "AUTO_ASSIGNED");
                     rdata.putData("assigned_test", nextAction.getAssignedTest());
@@ -728,8 +732,6 @@ public class PrescriptionServiceImpl extends RemoteServiceServlet implements Pre
                 return rdata;
             }
             
-            
-            RpcData rdata = new RpcData();
             rdata.putData("run_id", run.getRunId());
             rdata.putData("correct_percent",getTestPassPercent(run.getHaTest().getNumTestQuestions(), run.getAnsweredCorrect()));
             return rdata;

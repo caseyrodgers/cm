@@ -119,8 +119,8 @@ public class PrescriptionCmGuiDefinition implements CmGuiDefinition {
                             ContextController.getInstance().setCurrentContext(context);
                             
                             // Select the Results resource on first topic only
-                            if(context.getPrescriptionData().getCurrSession().getSessionNumber() == 0)
-                              _guiWidget.expandResourceType("Quiz Results");
+                            //if(context.getPrescriptionData().getCurrSession().getSessionNumber() == 0)
+                            //  _guiWidget.expandResourceType("Quiz Results");
 
                         } catch (Exception e) {
                             e.printStackTrace();
@@ -199,16 +199,17 @@ class PrescriptionResourceAccord extends LayoutContainer {
             cp = new ContentPanel();
             cp.addStyleName("accordian-resource-list-panel");
             cp.setLayout(new FitLayout());
-            cp.setHeading(resource.getLabel());
-            cp.setToolTip(resource.getDescription());
-            cp.getHeader().addTool(new Html("<img class='resource-type' src='/gwt-resources/images/check_black.png'/>"));
             // to show check
             // cp.addStyleName("accordian-resource-list-panel-complete");
             cp.setBodyStyleName("pad-text");
             // cp.setScrollMode(Scroll.AUTO);
             
-            fixupResourceItems(resource);
             
+            fixupResourceItems(resource);
+
+            cp.setHeading(resource.getLabel());
+            cp.setToolTip(resource.getDescription());
+            cp.getHeader().addTool(new Html("<img class='resource-type' src='/gwt-resources/images/check_black.png'/>"));
 
             rl = new ResourceList(resource);
             if (rl.getStore().getCount() == 0)
@@ -290,12 +291,12 @@ class PrescriptionResourceAccord extends LayoutContainer {
     private void fixupResourceItems(PrescriptionSessionDataResource resource) {
         
         if(resource.getType().equals("cmextra")) {
+            // create sequenced titles
             int cnt=0;
             for(InmhItemData id: resource.getItems()) {
                 id.setTitle("Extra Problem " + (++cnt));
             }
         }
-        
     }
     
     public void expandResourcePracticeProblems() {

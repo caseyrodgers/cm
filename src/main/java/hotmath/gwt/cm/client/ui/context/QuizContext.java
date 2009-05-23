@@ -134,13 +134,42 @@ public class QuizContext implements CmContext {
 	}
 	
 	private void showNextPlacmentQuiz() {
+        CatchupMath.showAlert("Quiz results", "Good job - we'll now give another quiz.", new CmAsyncRequestImplDefault() {
+            public void requestComplete(String requestData) {
+                CatchupMath.getThisInstance().showQuizPanel();
+            }
+        });	    
+	}
+	
+	
+	private void showPrescriptionPanel(int correct, int total) {
+	    final Window window = new Window();
+	    window.setModal(true);
+	    window.setHeight(150);
+	    window.setWidth(300);
+	    window.setClosable(false);
+	    window.setResizable(false);
 	    
-	    CatchupMath.showAlert("Quiz results", "Good job - we'll now give another quiz.", new CmAsyncRequestImplDefault() {
-	        public void requestComplete(String requestData) {
-	            CatchupMath.getThisInstance().showQuizPanel();
-	        }
-	    });
-	    
+	    window.setStyleName("auto-assignment-window");
+	    String msg = "<p>" + correct + "  out of " + total + " correct.</p> " 
+	               + "<p>View graded quiz on left menu.</p>";
+	        
+	    Html html = new Html(msg);
+	        
+        window.setHeading("Quiz results");
+        window.add(html);
+	        
+        Button close = new Button();
+        close.setText("Continue");
+        close.addSelectionListener(new SelectionListener<ButtonEvent>() {
+            public void componentSelected(ButtonEvent ce) {
+                CatchupMath.getThisInstance().showPrescriptionPanel();
+                window.close();
+            }
+        });
+	        
+        window.addButton(close);
+        window.setVisible(true);
 	}
 
 	public void doNext() {
@@ -178,7 +207,9 @@ public class QuizContext implements CmContext {
                                 int runId = rdata.getDataAsInt("run_id");
                                 UserInfo.getInstance().setRunId(runId);
                                 
-                                CatchupMath.getThisInstance().showPrescriptionPanel();
+                                int correctAnswers = rdata.getDataAsInt("correct_answers");
+                                int totalQuestions = rdata.getDataAsInt("total_questions");
+                                showPrescriptionPanel(correctAnswers, totalQuestions);
                             }
                             finally {
                                 CatchupMath.setBusy(false);

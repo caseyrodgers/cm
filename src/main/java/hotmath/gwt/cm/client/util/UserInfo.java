@@ -89,8 +89,11 @@ public class UserInfo implements IsSerializable {
 	int viewCount;
 	int correctPercent;
 	String backgroundStyle;
-	
-	public String getBackgroundStyle() {
+	int correctAnswers;
+
+
+
+    public String getBackgroundStyle() {
         return backgroundStyle;
     }
 
