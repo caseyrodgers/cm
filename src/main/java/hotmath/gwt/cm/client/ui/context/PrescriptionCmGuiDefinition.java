@@ -415,16 +415,16 @@ class ResourceList extends ListView<ResourceModel> implements Listener {
 
                     public void onSuccess(Object result) {
                         
-                        // only mark practice problems
-                        if(!resourceItem.getType().equals("practice"))
-                            return;
-                        
                         resourceItem.setViewed(true);
 
                         // update the total count in the Header
                         int vc = UserInfo.getInstance().getViewCount();
                         UserInfo.getInstance().setViewCount(++vc);
                         HeaderPanel.__instance.setLoginInfo();
+                        
+                        // only mark practice problems
+                        if(!resourceItem.getType().equals("practice"))
+                            return;
 
                         int which = -1;
                         ResourceModel rm = getSelectionModel().getSelectedItem();
