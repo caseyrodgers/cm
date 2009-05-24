@@ -394,11 +394,7 @@ class ResourceList extends ListView<ResourceModel> implements Listener {
             cp.el().fadeIn(FxConfig.NONE);
 
             
-            // only mark NON-SOLUTION resources as viewed when simply
-            // viewing them.  The solutions are marked as viewed when 
-            // the last step has been viewed.
-            if(!resourceItem.getType().equals("practice"))
-                markResourceAsViewed(resourceItem);
+            markResourceAsViewed(resourceItem);
             
         } catch (Exception hme) {
             hme.printStackTrace();
