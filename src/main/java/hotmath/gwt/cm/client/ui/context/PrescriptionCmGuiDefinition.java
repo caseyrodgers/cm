@@ -414,9 +414,6 @@ class ResourceList extends ListView<ResourceModel> implements Listener {
                 new AsyncCallback() {
 
                     public void onSuccess(Object result) {
-                        
-                        resourceItem.setViewed(true);
-
                         // update the total count in the Header
                         int vc = UserInfo.getInstance().getViewCount();
                         UserInfo.getInstance().setViewCount(++vc);
@@ -425,6 +422,9 @@ class ResourceList extends ListView<ResourceModel> implements Listener {
                         // only mark practice problems
                         if(!resourceItem.getType().equals("practice"))
                             return;
+                        
+                        
+                        resourceItem.setViewed(true);
 
                         int which = -1;
                         ResourceModel rm = getSelectionModel().getSelectedItem();
