@@ -780,3 +780,10 @@ img.resource-item-complete {
 .debug-show {
 	display: block;
 }
+
+.debug-mode .debug-hide {
+	 display: block;
+	 color: red;
+	 font-size: .8em;
+	 margin-left: 10px;
+}

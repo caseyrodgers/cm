@@ -4,6 +4,7 @@ import hotmath.gwt.cm.client.CatchupMath;
 import hotmath.gwt.cm.client.service.PrescriptionServiceAsync;
 import hotmath.gwt.cm.client.util.CmRpcException;
 import hotmath.gwt.cm.client.util.UserInfo;
+import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.data.CmAsyncRequest;
 import hotmath.gwt.shared.client.util.RpcData;
 
@@ -117,7 +118,11 @@ public class QuizPage extends LayoutContainer {
 	private void displayQuizHtml(String quizHtml) {
 	    
 	    
+	    
 		Html html = new Html(quizHtml);
+		if(CmShared.getQueryParameter("debug") != "") {
+		    html.addStyleName("debug-mode");
+		}
 		add(html);
 
 		if(UserInfo.getInstance().isActiveUser()) {
