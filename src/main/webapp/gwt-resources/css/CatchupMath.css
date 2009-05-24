@@ -772,3 +772,11 @@ img.resource-item-complete {
 	font-size: 1.3em;
 	font-weight: bold;
 }
+
+.debug-hide {
+  display: none;
+}
+
+.debug-show {
+	display: block;
+}

@@ -154,8 +154,8 @@ public class QuizContext implements CmContext {
 	    String msg = "<p>" + correct + "  out of " + total + " correct.</p> ";
 	    
 	    if(correct != total) {
-	        msg += "<p>You may now begin review and practice.</p>" +
-	               "<p>View your graded quiz on left menu at any time</p>";
+	        msg += "<p>You may now begin review and practice." +
+	               "View your graded quiz on left menu at any time.</p>";
 	    }
 	    else {
 	        msg += "<p><b>Congratulations!</b></p>";

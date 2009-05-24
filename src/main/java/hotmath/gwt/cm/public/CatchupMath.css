@@ -311,3 +311,10 @@
 }
 
 
+.debug-hide {
+   display: none;
+}
+
+.debug-show {
+   display: display;
+}   

@@ -17,6 +17,7 @@
        <div class='question_div' id='question_div_$velocityCount'  guid='$question.problemIndex'>$question.questionHtml
             <div class='question_solution_link'> <a href='#' onclick='gotoTestGUID(&quot;$question.problemIndex&quot;)'><img src='/images/trifco/view_solution-88x18.gif'/></a> </div>
        </div>
+       <div class='debug-hide'>$question.problemIndex</div>
    </div>
    #end
    <div id='testset_footer'> &nbsp; </div>
