@@ -145,7 +145,7 @@ public class QuizContext implements CmContext {
 	private void showPrescriptionPanel(int correct, int total) {
 	    final Window window = new Window();
 	    window.setModal(true);
-	    window.setHeight(150);
+	    window.setHeight(175);
 	    window.setWidth(300);
 	    window.setClosable(false);
 	    window.setResizable(false);
