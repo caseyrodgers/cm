@@ -229,13 +229,11 @@ public class CmAdminDao {
     		ps.setString(2, sm.getPasscode());
     		ps.setInt(3, 0);
     		ps.setInt(4, Integer.parseInt(sm.getGroupId()));
-    		Map <String, String> m = getSubjIdAndProgId(sm);
-    		ps.setString(5, m.get("progId"));
-    		ps.setString(6, m.get("subjId"));
+    		ps.setString(5, sm.getProgId());
+    		ps.setString(6, sm.getSubjId());
     		ps.setInt(7, sm.getAdminUid());
     		
     		int count = ps.executeUpdate();
-    		
     		if (count == 1) {
         	    int stuUid = this.getLastInsertId(conn);
         	    sm.setUid(stuUid);
@@ -315,9 +313,8 @@ public class CmAdminDao {
     		int sectionNum = (sm.getSectionNum() != null) ? sm.getSectionNum().intValue() : 0;
     		ps.setInt(4, sectionNum);
     		ps.setString(5, sm.getJson());
-    		Map <String, String> m = getSubjIdAndProgId(sm);
-    		ps.setString(6, m.get("progId"));
-    		ps.setString(7, m.get("subjId"));
+    		ps.setString(6, sm.getProgId());
+    		ps.setString(7, sm.getSubjId());
     		ps.setInt(8, sm.getUserProgramId());
     		ps.setInt(9, sm.getUid());
     		int result = ps.executeUpdate();
@@ -365,6 +362,7 @@ public class CmAdminDao {
     		int result = ps.executeUpdate();
     	}
     	catch (Exception e) {
+    		System.out.println(String.format("*** Error updating student with uid: %d, Exception: %s", sm.getUid(), e.getLocalizedMessage()));
     		//logger.error(String.format("*** Error updating student with uid: %d", sm.getUid()), e);
     		//throw e;
     	}
@@ -395,9 +393,8 @@ public class CmAdminDao {
     			ps = conn.prepareStatement(INSERT_USER_PROGRAM_SQL);
     			ps.setInt(1, sm.getUid());
     			ps.setInt(2, sm.getAdminUid());
-        		Map <String, String> m = getSubjIdAndProgId(sm);
-        		ps.setString(3, m.get("progId"));
-        		ps.setString(4, m.get("subjId"));
+        		ps.setString(3, sm.getProgId());
+        		ps.setString(4, sm.getSubjId());
     			ps.setInt(5, passPcnt);
     			ps.setTimestamp(6, new Timestamp(System.currentTimeMillis()));
     		}
@@ -405,9 +402,8 @@ public class CmAdminDao {
        			ps = conn.prepareStatement(INSERT_USER_PROGRAM_NULL_PASS_PERCENT_SQL);
     			ps.setInt(1, sm.getUid());
     			ps.setInt(2, sm.getAdminUid());
-        		Map <String, String> m = getSubjIdAndProgId(sm);
-        		ps.setString(3, m.get("progId"));
-        		ps.setString(4, m.get("subjId"));
+        		ps.setString(3, sm.getProgId());
+        		ps.setString(4, sm.getSubjId());
     			ps.setTimestamp(5, new Timestamp(System.currentTimeMillis()));
     		}
     		int result = ps.executeUpdate();
@@ -613,35 +609,6 @@ public class CmAdminDao {
     	return l;
     }
 	
-	//TODO: eliminate this method
-    private Map<String, String> getSubjIdAndProgId(StudentModel sm) {
-    	Map<String, String> m = new HashMap<String, String> ();
-    	    	
-		String shortName = sm.getProgramDescr();
-		int chapOffset = shortName.indexOf("Chap");
-		int offset = shortName.lastIndexOf(" ");
-		String subjId;
-		String progId;
-		String chapter = "";
-		if (chapOffset > 0) {
-            subjId =  shortName.substring(0, chapOffset-1);           			
-			progId = "Chap";
-			chapter = shortName.substring(offset+1);
-		}
-		else if (offset > -1) {
-			subjId = shortName.substring(0, offset);
-			progId = shortName.substring(offset+1);
-		}
-		else {
-			subjId = "";
-			progId = "";
-		}
-		
-		m.put("subjId", subjId);
-		m.put("progId", progId);
-    	return m;
-    }
-    
     private String getChapter(String json) {
     	if (json == null || json.trim().length() == 0) return null;
     	
