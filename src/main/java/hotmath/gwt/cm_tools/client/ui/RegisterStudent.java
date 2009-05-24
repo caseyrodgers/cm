@@ -429,13 +429,14 @@ public class RegisterStudent extends LayoutContainer {
 	                sm.setPassPercent(passVal);
 	                String progId = (sp != null) ? (String)sp.get("shortTitle") : null;
 	                sm.setProgId(progId);
-	                String subjId = (sub != null) ? sub.getAbbrev() : null;
+	                String subjId = (sub != null) ? sub.getAbbrev() : "";
                     sm.setSubjId(subjId);
 		        	String chapTitle = (chap != null) ? chap.getTitle() : null;
 		        	sm.setChapter(chapTitle);
-		        	eg.getStore().add(sm);
 	        	    
 	        	    addUserRPC(sm);
+	        	    
+	        	    eg.getStore().add(sm);
 	        	}
 	        	else {
 	        		Boolean stuChanged = false;
@@ -480,7 +481,7 @@ public class RegisterStudent extends LayoutContainer {
 			        	stuMdl.setChapter(chapTitle);
 		                String progId = (sp != null) ? (String)sp.get("shortTitle") : null;
 		                stuMdl.setProgId(progId);
-		                String subjId = (sub != null) ? sub.getAbbrev() : null;
+		                String subjId = (sub != null) ? sub.getAbbrev() : "";
 	                    stuMdl.setSubjId(subjId);
 
 			        	progIsNew = true;
@@ -488,9 +489,10 @@ public class RegisterStudent extends LayoutContainer {
 			        	stuChanged = true;
 	        		}
 		        	if (stuChanged || progChanged || progIsNew) {
-     	        		eg.getStore().update(stuMdl);
-     	        		
+
      	        	    updateUserRPC(stuMdl, stuChanged, progChanged, progIsNew);
+     	        	    
+     	        		eg.getStore().update(stuMdl);
 		        	}
 	        	}
 
