@@ -236,11 +236,11 @@ class PrescriptionResourceAccord extends LayoutContainer {
                     CmMainPanel.__lastInstance._mainContent.removeAll();
                     layout();
                     
-                    // move selected item to top
-                    PrescriptionResourceAccord.this.remove(mycp);
+                    //// move selected item to top
+                    //PrescriptionResourceAccord.this.remove(mycp);
                     //mycp.el().fadeIn(FxConfig.NONE);
-                    PrescriptionResourceAccord.this.add(mycp);
-                    layout();
+                    //PrescriptionResourceAccord.this.add(mycp);
+                    //layout();
                     
                     // if there is only one resource item, then show it
                     if(mycp.getItems().size() == 1) {

@@ -25,9 +25,10 @@ import com.google.gwt.user.client.ui.Label;
 public class HelpWindow extends Window {
 
     public  HelpWindow() {
-        setHeight(400);
+        setHeight(450);
         setWidth(400);
         setModal(true);
+        setResizable(false);
         setStyleName("help-window");
         setHeading("Catchup-Math Help Window");
         
@@ -39,6 +40,8 @@ public class HelpWindow extends Window {
             }
         });
         addButton(closeBtn);
+        
+        
         Html messageArea = new Html();
         messageArea.setHtml(ContextController.getInstance().theContext.getStatusMessage());
         messageArea.setStyleName("help-window-message-area");
@@ -111,9 +114,14 @@ public class HelpWindow extends Window {
         btn.addSelectionListener(selList);
         btn.addStyleName("button");
         fs.add(btn);
+        vp.add(fs);
         
+        fs = new FieldSet();
+        fs.setHeading("Version Information");
+        fs.add(new Html("<div class='version'>Version: " + getVersion() + "</div>"));
         vp.add(fs);
         add(vp);
+        
     }
 
     public void onClick(ClickEvent event) {
@@ -157,7 +165,17 @@ public class HelpWindow extends Window {
         return backgrounds;
         
     }
-   
+    
+    /** Return the current version number
+     * 
+     * @todo: externalize this parameter 
+     * 
+     * 
+     * @return
+     */
+    private String getVersion() {
+        return "1.1b";
+    }
 }
 
 

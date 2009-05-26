@@ -37,7 +37,19 @@ public class CmShared implements EntryPoint {
     /** The URL to default to if cannot log in */
     final public static String CM_HOME_URL = "http://hotmath.kattare.com:8081/";
     
-    /** Return the user id for this given user
+    /** Check the query string and process log in.
+     * 
+     * Normal process is this is called with a single 'key' param that 
+     * contains a 'login' key has been placed in the HA_USER_LOGIN table.
+     * 
+     * The login is either an 'ADMIN' or a 'STUDENT'.  In either case, we return
+     * the user_id representing the validated user login.
+     * 
+     * If the record is located and validated (is_active == true), then this 
+     * user is allowed to continue.   Otherwise, we display a standardized 
+     * login failed display and return user to the CM home page.
+     * 
+     * 
      * 
      * @return
      * @throws CmUserException
@@ -53,8 +65,12 @@ public class CmShared implements EntryPoint {
         int userId=0;
         String key2="";
         try {
-            if(_queryParameters.get("uid") != null)
+            
+            if(_queryParameters.get("uid") != null) {
+                // for debugging .. perhaps this should not be allowed 
+                // during normal processing.
                 userId = Integer.parseInt(_queryParameters.get("uid"));
+            }
 
             // for testing, if uid is passed allow it override cookie
             if(userId == 0) {
@@ -111,7 +127,6 @@ public class CmShared implements EntryPoint {
                 user.setUid(userId);
                 user.setIsAdmin(isAdmin);
             }
-            
             return userId;
         }
         catch(Exception e) {

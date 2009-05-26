@@ -107,7 +107,7 @@ public class FooterPanel extends LayoutContainer {
             return;
         }
         String url = "http://hotmath.kattare.com/testsets/util/_get_prescription.jsp?run_id=" + UserInfo.getInstance().getRunId();
-        Window.open(url, "_new", "height=480,width=640,status=yes");        
+        Window.open(url, "_blank", "height=480,width=640,status=yes");        
     }
     
     

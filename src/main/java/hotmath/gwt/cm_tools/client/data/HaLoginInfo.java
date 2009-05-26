@@ -10,6 +10,14 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Timestamp;
 
+
+/** Catchup math login information
+ * 
+ * 
+ * 
+ * @author casey
+ *
+ */
 public class HaLoginInfo {
 
     String key;

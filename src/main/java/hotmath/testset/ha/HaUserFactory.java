@@ -2,7 +2,6 @@ package hotmath.testset.ha;
 
 import hotmath.HotMathException;
 import hotmath.gwt.cm.client.data.HaBasicUser;
-import hotmath.gwt.cm.client.util.CmRpcException;
 import hotmath.util.HMConnectionPool;
 import hotmath.util.sql.SqlUtilities;
 
@@ -34,7 +33,12 @@ public class HaUserFactory {
         try {
             
             // first see if user is in admin
-            String sql = "select * from HA_ADMIN where user_name = ? and passcode = ?";
+            // We search the HA_ADMIN table looking
+            // for a direct user/password match
+            String sql = "select * " +
+                         "from HA_ADMIN " +
+                         "where user_name = ? and passcode = ?";
+            
             conn = HMConnectionPool.getConnection();
             try {
                 pstat = conn.prepareStatement(sql);
@@ -57,8 +61,17 @@ public class HaUserFactory {
                 SqlUtilities.releaseResources(null,pstat,null);
             }
             
+            
             // perhaps it is a normal student
-            sql = "select * from HA_USER where user_name = ? and user_passcode = ?";
+            // To search for a student, we search the
+            // password associated with the SUBCRIBERS
+            // record that the user's HA_ADMIN record is
+            // linked to.  
+            sql = "select u.uid, u.user_name " +
+                  "from HA_USER u INNER JOIN HA_ADMIN h on u.admin_id = h.aid " +
+                  "INNER JOIN SUBSCRIBERS s on s.id = h.subscriber_id " +
+                  "where  s.password = ? " + 
+                  "and    u.user_passcode = ?";
             try {
                 pstat = conn.prepareStatement(sql);
                 
@@ -72,7 +85,7 @@ public class HaUserFactory {
                 
                 int userId = rs.getInt("uid");
                 HaUser student = HaUser.lookUser(userId, null);
-                student.setUserName(user);
+                student.setUserName(rs.getString("user_name"));
                 student.setPassword(pwd);
                 return student;
             }

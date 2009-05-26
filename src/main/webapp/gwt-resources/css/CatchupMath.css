@@ -787,3 +787,13 @@ img.resource-item-complete {
 	 font-size: .8em;
 	 margin-left: 10px;
 }
+
+
+.help-window .version {
+    font-size: .8em;
+}
+
+
+.help-window {
+   z-index: 100;
+}

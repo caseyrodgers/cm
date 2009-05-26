@@ -48,7 +48,7 @@ public class AssessmentPrescriptionPlacement extends AssessmentPrescription {
             if (thisTest.indexOf("pre-algebra") > -1) {
                 newTestName = "Pre-algebra Proficiency";
             } else if (thisTest.indexOf("algebra 1") > -1) {
-                newTestName = "Beginning Algebra Proficiency";
+                newTestName = "Algebra 1 Proficiency";
             } else if (thisTest.indexOf("geometry") > -1) {
                 newTestName = "Geometry Proficiency";
             } else if (thisTest.indexOf("algebra 2") > -1) {
