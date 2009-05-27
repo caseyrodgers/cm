@@ -98,16 +98,19 @@ public class CatchupMathAdmin implements EntryPoint {
 		
 		registerRpcServices();
 
-		BorderLayoutData bdata = new BorderLayoutData(LayoutRegion.NORTH,40);
+		BorderLayoutData bdata = new BorderLayoutData(LayoutRegion.NORTH, 40);
 		headerPanel = new HeaderPanel();
 		mainPort.add(headerPanel, bdata);
 
 		mainContainer = new LayoutContainer();
 		mainContainer.setStylePrimaryName("main-container");
 		
+		AccountInfoPanel aip = new AccountInfoPanel(cmAdminMdl);
+		mainContainer.add(aip);
+		
 		sgp = new StudentGridPanel(cmAdminMdl);
 		mainContainer.add(sgp);
-		mainContainer.setHeight(630);
+		mainContainer.setHeight(730);
 		mainContainer.setMonitorWindowResize(true);
 
 		bdata = new BorderLayoutData(LayoutRegion.CENTER);
