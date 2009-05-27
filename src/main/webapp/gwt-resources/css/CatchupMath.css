@@ -365,6 +365,7 @@
 
 #tutor_embedded {
 	margin: 10px;
+        width: auto;
 }
 
 
@@ -612,7 +613,7 @@ img.resource-item-complete {
 
 
 .x-tab-panel-body,.resource-viewer-container,.resource-viewer-impl-tutor, .x-tab-panel {
-	border: none;
+    border: none;
     width: 550px;
     background: url(/gwt-resources/images/resource-viewer-body.png) repeat-y;
 }
