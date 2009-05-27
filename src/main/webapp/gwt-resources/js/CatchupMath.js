@@ -221,10 +221,34 @@ window.markCorrectResponse = function(questionList) {
 	}
 }
 
-// register a listener with Tutor to 
-// be notified when last step is reached.
-// This is used to only advance when the solution 
-// has actually been viewed.
+
+
+
+
+
+/** Overridden from tutor5.js
+ * 
+ * @param num
+ * @return
+ */
+function scrollToStep(num) {
+	
+	// just scroll to bottom
+	var objDiv = document.getElementById("tutor_embedded").parentNode.parentNode;
+	objDiv.scrollTop = objDiv.scrollHeight;
+
+	// alert('Scroll height: ' + objDiv.scrollTop);
+
+} 
+
+
+
+
+
+//register a listener with Tutor to 
+//be notified when last step is reached.
+//This is used to only advance when the solution 
+//has actually been viewed.
 HmEvents.eventTutorLastStep.subscribe( function(x) {
 	solutionHasBeenViewed_Gwt(x);
 });
