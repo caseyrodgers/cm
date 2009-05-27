@@ -70,4 +70,9 @@ public class RegistrationServiceImpl extends RemoteServiceServlet implements Reg
 		CmAdminDao cma = new CmAdminDao();
 		return cma.updateStudent(sm, stuChanged, progChanged, progIsNew);
 	}
+
+	public AccountInfoModel getAccountInfoForAdminUid(Integer uid) {
+		CmAdminDao cma = new CmAdminDao();
+		return cma.getAccountInfo(uid);
+	}
 }
