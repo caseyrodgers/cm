@@ -7,9 +7,10 @@ public class AccountInfoModel extends BaseModelData  {
 	private static final long serialVersionUID = 5273566482319153369L;
 
 	public static final String SCHOOL_NAME_KEY = "school-name";
-	public static final String SCHOOL_USER_NAME_KEY = "school-name";
+	public static final String SCHOOL_USER_NAME_KEY = "school-user-name";
 	public static final String EXPIRATION_DATE_KEY = "expiration-date";
 	public static final String HAS_TUTORING_KEY = "has-tutoring";
+	public static final String ADMIN_USER_NAME_KEY = "admin-user-name";
 	
 	public String getSchoolName() {
 		return get(SCHOOL_NAME_KEY);
@@ -25,6 +26,14 @@ public class AccountInfoModel extends BaseModelData  {
 	
 	public void setSchoolUserName(String schoolUserName) {
 		set(SCHOOL_USER_NAME_KEY, schoolUserName);
+	}
+	
+	public String getAdminUserName() {
+		return get(ADMIN_USER_NAME_KEY);
+	}
+	
+	public void setAdminUserName(String adminUserName) {
+		set(ADMIN_USER_NAME_KEY, adminUserName);
 	}
 	
 	public String getPasscode() {
