@@ -228,6 +228,8 @@ window.markCorrectResponse = function(questionList) {
 
 /** Overridden from tutor5.js
  * 
+ * Makes sure solution scrolls to bottom of step
+ * 
  * @param num
  * @return
  */
@@ -240,8 +242,6 @@ function scrollToStep(num) {
 	// alert('Scroll height: ' + objDiv.scrollTop);
 
 } 
-
-
 
 
 
