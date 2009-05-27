@@ -782,7 +782,7 @@ img.resource-item-complete {
 }
 
 .debug-mode .debug-hide {
-	 display: block;
+	 /*display: block;*/
 	 color: red;
 	 font-size: .8em;
 	 margin-left: 10px;
