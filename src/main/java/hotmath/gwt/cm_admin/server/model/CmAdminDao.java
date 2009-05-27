@@ -232,7 +232,7 @@ public class CmAdminDao {
           	    ai.setAdminUserName(rs.getString("user_name"));
       	        ai.setStatus(rs.getString("status"));
       	        java.sql.Date dt = rs.getDate("catchup_expire_date");
-      	        String cmDate = (dt != null) ? dt.toString() : "n/a";
+      	        String cmDate = (dt != null) ? dt.toString() : "2009-07-31";
       	        ai.setExpirationDate(cmDate);
       	        Boolean hasTutoring = (rs.getDate("tutoring_expire_date") != null);
       	        ai.setHasTutoring(hasTutoring);
