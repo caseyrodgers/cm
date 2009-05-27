@@ -797,3 +797,9 @@ img.resource-item-complete {
 .help-window {
    z-index: 100;
 }
+
+.demo-complete-window p {
+	margin: 10px 15px;
+	font-size: 1.2em;
+	
+}

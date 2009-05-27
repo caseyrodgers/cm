@@ -37,6 +37,13 @@ public class CmShared implements EntryPoint {
     /** The URL to default to if cannot log in */
     final public static String CM_HOME_URL = "http://hotmath.kattare.com:8081/";
     
+    
+    /** uid that corresponds to a demo account
+     * 
+     */
+    final public static int DEMO_UID = 547;
+
+    
     /** Check the query string and process log in.
      * 
      * Normal process is this is called with a single 'key' param that 
@@ -69,7 +76,14 @@ public class CmShared implements EntryPoint {
             if(_queryParameters.get("uid") != null) {
                 // for debugging .. perhaps this should not be allowed 
                 // during normal processing.
-                userId = Integer.parseInt(_queryParameters.get("uid"));
+                
+                // check for special case demo user
+                if(_queryParameters.get("uid").equals("demo")) {
+                    userId = DEMO_UID;
+                }
+                else {
+                    userId = Integer.parseInt(_queryParameters.get("uid"));
+                }
             }
 
             // for testing, if uid is passed allow it override cookie

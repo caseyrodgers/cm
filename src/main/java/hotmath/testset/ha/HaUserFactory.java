@@ -103,4 +103,53 @@ public class HaUserFactory {
             SqlUtilities.releaseResources(null,null,conn);
         }        
     }
+    
+    /** Create a unique demo user, created by reading a template record
+     * 
+     * @throws Exception
+     */
+    final public static int DEMO_UID = 547;
+    static public HaBasicUser createDemoUser() throws Exception {
+        Connection conn=null;
+        PreparedStatement pstat=null;
+        try {
+            String sql = "select * " +
+                         "from HA_USER " +
+                         "where uid = ?";
+            
+            conn = HMConnectionPool.getConnection();
+            pstat = conn.prepareStatement(sql);
+            pstat.setInt(1,DEMO_UID);
+            ResultSet rs = pstat.executeQuery();
+            if(!rs.first())
+                throw new HotMathException("Error reading demo template user");
+            
+            
+            String demoUser="catchup_demo";
+            String demoPwd="demo_" + System.currentTimeMillis();
+            
+            PreparedStatement pstmt=null;
+            try {
+                sql = "insert into HA_USER(admin_id, user_name,user_passcode,test_def_id)values(?,?,?,?)";
+                pstmt = conn.prepareStatement(sql);
+                pstmt.setInt(1,rs.getInt("admin_id"));
+                pstmt.setString(2,"Student");
+                pstmt.setString(3,demoPwd);
+                pstmt.setInt(4,HaTestDef.PREALG_PROFICENCY);
+
+                int cnt = pstmt.executeUpdate();
+                if(cnt != 1)
+                    throw new HotMathException("Could not add new demo record");
+                
+                HaBasicUser user = loginToCatchup(demoUser, demoPwd);
+                return user;
+            }
+            finally {
+                pstmt.close();
+            }
+        }
+        finally{
+            SqlUtilities.releaseResources(null, pstat, conn);
+        }
+    }
 }

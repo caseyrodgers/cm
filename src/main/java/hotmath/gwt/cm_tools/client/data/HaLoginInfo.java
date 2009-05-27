@@ -131,7 +131,8 @@ public class HaLoginInfo {
     
     static public void main(String as[]) {
         try {
-            HaBasicUser user = HaUserFactory.loginToCatchup("casey_test1","casey_test1");
+            //HaBasicUser user = HaUserFactory.loginToCatchup("casey_test1","casey_test1");
+            HaBasicUser user = HaUserFactory.createDemoUser();
             HaLoginInfo info = new HaLoginInfo(user);
             
             System.out.println(info);

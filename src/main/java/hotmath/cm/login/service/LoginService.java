@@ -24,8 +24,15 @@ public class LoginService extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String user = req.getParameter("user");
         String pwd = req.getParameter("pwd");
+        
         try {
-            HaBasicUser cmUser = HaUserFactory.loginToCatchup(user, pwd);
+            HaBasicUser cmUser=null;
+            if(user.equals("catchup_demo")) {
+                cmUser = HaUserFactory.createDemoUser();
+            }
+            else {
+                cmUser = HaUserFactory.loginToCatchup(user, pwd);
+            }
             HaLoginInfo loginInfo = new HaLoginInfo(cmUser);
             String res = "{status:'OK',key:'" +loginInfo.getKey() + "', type:'" + loginInfo.getType() + "', userId:" + loginInfo.getUserId() + "}" ;
             resp.getWriter().write(res);

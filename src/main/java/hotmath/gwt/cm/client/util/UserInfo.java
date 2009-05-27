@@ -4,8 +4,8 @@ import hotmath.gwt.cm.client.CatchupMath;
 import hotmath.gwt.cm.client.service.PrescriptionServiceAsync;
 import hotmath.gwt.cm.client.ui.HeaderPanel;
 import hotmath.gwt.shared.client.data.CmAsyncRequest;
-import hotmath.gwt.shared.client.util.RpcData;
 import hotmath.gwt.shared.client.model.UserInfoBase;
+import hotmath.gwt.shared.client.util.RpcData;
 
 import com.extjs.gxt.ui.client.Registry;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -213,6 +213,16 @@ public class UserInfo implements IsSerializable {
 	}
 	public void setTestId(int testId) {
 		this.testId = testId;
+	}
+	
+	
+	String DEMO_USER_NAME="Student";
+	/** Return true if this is a demo user
+	 * 
+	 * @return
+	 */
+	public boolean isDemoUser() {
+	    return(this.getUserName().equals(DEMO_USER_NAME));
 	}
 
 }

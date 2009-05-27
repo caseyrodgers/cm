@@ -41,6 +41,8 @@ import java.util.List;
  */
 public class HaTestDef {
 
+    static public int PREALG_PROFICENCY=16;
+    
 	String name;
 	public String getName() {
 		return name;

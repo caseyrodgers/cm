@@ -21,9 +21,10 @@ import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.MessageBoxEvent;
 import com.extjs.gxt.ui.client.widget.Component;
+import com.extjs.gxt.ui.client.widget.Html;
 import com.extjs.gxt.ui.client.widget.MessageBox;
+import com.extjs.gxt.ui.client.widget.Window;
 import com.extjs.gxt.ui.client.widget.button.IconButton;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -165,6 +166,10 @@ public class PrescriptionContext implements CmContext {
                 String msg = "";
                 int testSegmentToLoad = 0;
                 if (correctPercent > PASS_PERCENT) {
+                    if(UserInfo.getInstance().isDemoUser()) {
+                        showDemoCompleteMessage();
+                        return;
+                    }
                     msg = "You passed this section!  You will now be shown the next quiz.";
                     CatchupMath.showAlert(msg,new CmAsyncRequestImplDefault() {
                         public void requestComplete(String requestData) {
@@ -196,7 +201,7 @@ public class PrescriptionContext implements CmContext {
                         "You have completed all " + totSegs + " sections of this program!",
                         new Listener<MessageBoxEvent>() {
                             public void handleEvent(MessageBoxEvent be) {
-                                Window.Location.assign(CmShared.CM_HOME_URL);
+                                com.google.gwt.user.client.Window.Location.assign(CmShared.CM_HOME_URL);
                             }
                         });
             }
@@ -205,6 +210,21 @@ public class PrescriptionContext implements CmContext {
             cs++; // if valid..
             prescriptionCm.getAsyncDataFromServer(cs);
         }
+    }
+    
+    
+    private void showDemoCompleteMessage() {
+        String msg = "<p>Thank you for trying Catchup Math for a Pre-algebra Session.</p>  " +
+                     "<p>Please visit our <a href='/schools.html'>Schools</a>, <a href='/colleges.html'>Colleges</a>, or <a href='/students.html'>Students</a> pages.</p>";
+
+        Window w = new Window();
+        w.setStyleName("demo-complete-window");
+        w.setHeight(200);
+        w.setWidth(350);
+        w.setHeading("Thank You");
+        Html html = new Html(msg);
+        w.add(html);
+        w.setVisible(true);
     }
 
     /**
