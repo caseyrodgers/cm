@@ -433,6 +433,7 @@ public class RegisterStudent extends LayoutContainer {
                     sm.setSubjId(subjId);
 		        	String chapTitle = (chap != null) ? chap.getTitle() : null;
 		        	sm.setChapter(chapTitle);
+		        	sm.setTotalUsage("0");
 	        	    
 	        	    addUserRPC(sm);
 	        	    
