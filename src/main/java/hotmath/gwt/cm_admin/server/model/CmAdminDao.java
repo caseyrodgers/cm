@@ -204,13 +204,52 @@ public class CmAdminDao {
     	}
     	return l;
     }
-    
+
+    private static final String ACCOUNT_INFO_SQL =
+    	"select ifnull(s.school_type, 'NONE') as school_name, s.responsible_name, s.status, sc.date_expire as catchup_expire_date, " +
+    	"  sc.service_name, st.date_expire as tutoring_expire_date, h.user_name " +
+        "from SUBSCRIBERS s " +
+        " inner join HA_ADMIN h on h.subscriber_id = s.id " +
+        " left join SUBSCRIBERS_SERVICES st on st.subscriber_id = h.subscriber_id and st.service_name = 'tutoring' " +
+        " left join SUBSCRIBERS_SERVICES sc on sc.subscriber_id = h.subscriber_id and sc.service_name = 'catchup' " +
+        "where h.aid = ?";
+
     public AccountInfoModel getAccountInfo(Integer adminUid) {
     	AccountInfoModel ai = new AccountInfoModel();
 
-    	//TODO: retrieve from DB
-    	ai.setSchoolName("Hotmath High");
+    	Connection conn = null;
+    	PreparedStatement ps = null;
+    	ResultSet rs = null;
     	
+    	try {
+    		conn = HMConnectionPool.getConnection();
+    		ps = conn.prepareStatement(ACCOUNT_INFO_SQL);
+    		ps.setInt(1, adminUid);
+    		rs = ps.executeQuery();
+    		if (rs.next()) {
+          	    ai.setSchoolName(rs.getString("school_name"));
+          	    ai.setSchoolUserName(rs.getString("responsible_name"));
+          	    ai.setAdminUserName(rs.getString("user_name"));
+      	        ai.setStatus(rs.getString("status"));
+      	        java.sql.Date dt = rs.getDate("catchup_expire_date");
+      	        String cmDate = (dt != null) ? dt.toString() : "n/a";
+      	        ai.setExpirationDate(cmDate);
+      	        Boolean hasTutoring = (rs.getDate("tutoring_expire_date") != null);
+      	        ai.setHasTutoring(hasTutoring);
+    		}
+    		else {
+    			throw new Exception("***No data found ***;");
+    		}
+    	}
+    	catch (Exception e) {
+    	    System.out.println(String.format("*** Error getting account info for admin id: %d; Exception: %s",
+    	    		adminUid, e.getLocalizedMessage()));
+    		//logger.error(String.format("*** Error getting account info for admin id: %d", adminUid), e);
+    		//throw e;
+    	}
+    	finally {
+    		SqlUtilities.releaseResources(rs, ps, conn);
+    	}
     	return ai;
     }
     
