@@ -280,4 +280,6 @@ public class CatchupMath implements EntryPoint {
         _mainContainer.add(new CmMainPanel(new PrescriptionCmGuiDefinition()));
         _mainContainer.layout();
     }
+    
+    static public String FEEDBACK_MESSAGE="<p>Please send us feedback, by using Feedback at the bottom of the page.</p>";
 }

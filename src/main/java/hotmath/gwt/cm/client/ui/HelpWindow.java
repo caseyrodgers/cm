@@ -92,7 +92,7 @@ public class HelpWindow extends Window {
         
         SelectionListener<ButtonEvent> selList = new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent ce) {
-                CatchupMath.showAlert("This feature will be enabled soon");
+                CatchupMath.showAlert("Not available");
             }
         };
         

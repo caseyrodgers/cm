@@ -169,7 +169,7 @@ class PrescriptionResourceAccord extends LayoutContainer {
         __instance = this;
         
         setStyleName("resource-accord-panel");
-        Html html = new Html("Loading your personal set of review and practice problems...");
+        Html html = new Html("");
         html.setStyleName("resource-accord-panel-loading");
         add(html);
     }
@@ -393,6 +393,9 @@ class ResourceList extends ListView<ResourceModel> implements Listener {
             CmMainPanel.__lastInstance._mainContent.resetChildSize();
             cp.el().fadeIn(FxConfig.NONE);
 
+            // practice problems are marked elsewhere
+            if(resourceItem.getType().equals("practice"))
+                return;
             
             markResourceAsViewed(resourceItem);
             

@@ -1,6 +1,7 @@
 package hotmath.gwt.cm.client.ui.context;
 
 
+import hotmath.gwt.cm.client.CatchupMath;
 import hotmath.gwt.cm.client.ui.CmContext;
 import hotmath.gwt.cm.client.ui.CmGuiDefinition;
 import hotmath.gwt.cm.client.ui.ContextController;
@@ -12,6 +13,7 @@ import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
 import com.extjs.gxt.ui.client.core.Template;
 import com.extjs.gxt.ui.client.widget.HorizontalPanel;
 import com.extjs.gxt.ui.client.widget.Html;
+import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -30,6 +32,8 @@ public class QuizCmGuiDefinition implements CmGuiDefinition {
 	
 	public Widget getWestWidget() {
 	    
+	    LayoutContainer cp = new LayoutContainer();
+	    cp.setStyleName("quiz-page-resource");
 	    String html="";
 	    if(UserInfo.getInstance().getTestName().indexOf("Auto-Enrollment") > -1) {
 	        html = 
@@ -56,11 +60,9 @@ public class QuizCmGuiDefinition implements CmGuiDefinition {
             "<p>If you log out, your answers will be saved." +
             "</p> ";
 	    }
-		
-		Template t = new Template(html);
-		HTML ohtml = new HTML(t.getHtml());
-		ohtml.setStyleName("quiz-page-resource");
-		return ohtml;
+	    cp.add(new Html(html));
+	    cp.add(new Html(CatchupMath.FEEDBACK_MESSAGE));
+		return cp;
 	}
 	
 	public Widget getCenterWidget() {

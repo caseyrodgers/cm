@@ -223,7 +223,12 @@ window.markCorrectResponse = function(questionList) {
 
 
 
+ function showAskATutorTooltip_Cm() {
+	 var msg = "Live online tutors are available 24/7 via internet whiteboard with built-in instant messaging.  You do not currently have the live tutoring option enabled.";
+	 overlib(msg);
+ }
 
+ 
 
 
 /** Overridden from tutor5.js
