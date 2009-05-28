@@ -7,10 +7,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -205,13 +202,19 @@ public class CmAdminDao {
     	return l;
     }
 
+    //TODO: determine max_students from DB (SUBSCRIBERS_SERVICES ?)
     private static final String ACCOUNT_INFO_SQL =
-    	"select ifnull(s.school_type, 'NONE') as school_name, s.responsible_name, s.status, sc.date_expire as catchup_expire_date, " +
-    	"  sc.service_name, st.date_expire as tutoring_expire_date, h.user_name " +
+    	"select ifnull(s.school_type, 'NONE') as school_name, s.responsible_name, sc.date_expire as catchup_expire_date, " +
+    	"  sc.service_name, st.date_expire as tutoring_expire_date, h.user_name, t.student_count, 100 as max_students, " +
+    	" l.login_time, date_format(l.login_time, '%Y-%m-%d %r') as login_date_time " +
         "from SUBSCRIBERS s " +
         " inner join HA_ADMIN h on h.subscriber_id = s.id " +
         " left join SUBSCRIBERS_SERVICES st on st.subscriber_id = h.subscriber_id and st.service_name = 'tutoring' " +
         " left join SUBSCRIBERS_SERVICES sc on sc.subscriber_id = h.subscriber_id and sc.service_name = 'catchup' " +
+        " left join (select admin_id, is_active, count(*) as student_count from HA_USER where is_active = 1 group by admin_id) t " +
+        "   on t.admin_id = h.aid " + 
+        " left join (select user_id, max(login_time) as login_time from HA_USER_LOGIN where user_type = 'ADMIN' group by user_id) l " +
+        "   on l.user_id = h.aid " +
         "where h.aid = ?";
 
     public AccountInfoModel getAccountInfo(Integer adminUid) {
@@ -230,12 +233,21 @@ public class CmAdminDao {
           	    ai.setSchoolName(rs.getString("school_name"));
           	    ai.setSchoolUserName(rs.getString("responsible_name"));
           	    ai.setAdminUserName(rs.getString("user_name"));
-      	        ai.setStatus(rs.getString("status"));
+      	        ai.setMaxStudents(rs.getInt("max_students"));
+      	        ai.setTotalStudents(rs.getInt("student_count"));
       	        java.sql.Date dt = rs.getDate("catchup_expire_date");
       	        String cmDate = (dt != null) ? dt.toString() : "2009-07-31";
       	        ai.setExpirationDate(cmDate);
-      	        Boolean hasTutoring = (rs.getDate("tutoring_expire_date") != null);
-      	        ai.setHasTutoring(hasTutoring);
+      	        dt = rs.getDate("tutoring_expire_date");
+      	        if (dt != null && dt.after(new java.sql.Date(System.currentTimeMillis()))) {
+      	        	ai.setHasTutoring("Enabled");
+      	        }
+      	        else {
+      	        	ai.setHasTutoring("Not Enabled");
+      	        }
+      	        //java.sql.Time time = rs.getTime("login_time");
+      	        //DateFormat df = DateFormat.getDateTimeInstance();
+      	        ai.setLastLogin(rs.getString("login_date_time"));
     		}
     		else {
     			throw new Exception("***No data found ***;");
