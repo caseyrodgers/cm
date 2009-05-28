@@ -45,19 +45,21 @@ public class AccountInfoPanel extends LayoutContainer {
 		sb.append("<div style='float:right; width:280px>'");
 		sb.append("<p><b>Admin:</b> {admin-user-name}</p>");
 		sb.append("<p><b>Last login:</b> {last-login}</p>");
+		sb.append("<p><b>Student count:</b> {total-students}</p>");
 		sb.append("</div");
 
 		sb.append("<div style='float: left; margin-right:20px; width:280px'>");
 		sb.append("<p><b>School:</b> {school-name}</p>");
-		sb.append("<p><b>Contact:</b> {school-user-name}</p>");
-		sb.append("<p><b>Status:</b> {status}</p>");
+		sb.append("<p><b>Administrator:</b> {school-user-name}</p>");
+		sb.append("<p><b>Maximum Students:</b> {max-students}</p>");
 		sb.append("<p><b>Expires:</b> {expiration-date}</p>");
-		sb.append("<p><b>Tutoring:</b> {has-tutoring}</p>");
+		sb.append("<p><b>Live Tutoring:</b> {has-tutoring}</p>");
 		sb.append("</div></div>");
 		
 		template = XTemplate.create(sb.toString());  
 		html = new HTML();
 		html.setHTML(sb.toString());
+		html.setVisible(false);
 		hp.add(html);
 		
 		//TODO: add "Details" button or tool tip
@@ -85,6 +87,7 @@ public class AccountInfoPanel extends LayoutContainer {
 
 			public void onSuccess(AccountInfoModel result) {
 				setAccountInfoModel(result);
+				html.setVisible(true);
         	}
 
 			public void onFailure(Throwable caught) {
