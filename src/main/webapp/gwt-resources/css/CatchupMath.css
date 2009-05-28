@@ -738,6 +738,10 @@ img.resource-item-complete {
 	margin-bottom: 10px;
 }
 
+.help-window li {
+	font-size: 1em;
+}
+
 .help-window .button {
   width: 250px;
 }
@@ -754,6 +758,11 @@ img.resource-item-complete {
 
 .help-window .x-btn {
 	width: 200px;
+}
+
+.help-window-additional-options table {
+	display: inline;
+	
 }
 
 

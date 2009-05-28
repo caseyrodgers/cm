@@ -252,7 +252,11 @@ public class QuizContext implements CmContext {
 	}
 	
 	public String getStatusMessage() {
-	    return "Taking quiz";
+        String msg1="<ul><li><b>Taking a quiz, Relax!</b> Work out each answer at your own pace using pencil and paper. " +
+        "Taking the quiz is part of the learning process, so don't guess, and don't stress about it. " +
+        "Press Check Quiz when you are ready to receive review and practice for the problems that you are ready to learn! " +
+        "Your quiz score is not important, only learning is important.</li></ul>";
+        return msg1;
 	}
 }
 

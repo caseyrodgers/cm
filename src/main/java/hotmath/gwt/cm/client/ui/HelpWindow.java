@@ -25,8 +25,8 @@ import com.google.gwt.user.client.ui.Label;
 public class HelpWindow extends Window {
 
     public  HelpWindow() {
-        setHeight(450);
-        setWidth(400);
+        setAutoHeight(true);
+        setWidth(490);
         setModal(true);
         setResizable(false);
         setStyleName("help-window");
@@ -50,6 +50,7 @@ public class HelpWindow extends Window {
         
         FieldSet fs = new FieldSet();
         fs.setHeading("General Info");
+        
         fs.add(messageArea);
         vp.add(fs);
         
@@ -57,7 +58,7 @@ public class HelpWindow extends Window {
         bgCombo.setStore(getBackgrounds());  
         bgCombo.setEditable(false);
         bgCombo.setStyleName("help-window-bg-combo");
-        bgCombo.setEmptyText("Select Your Background");
+        bgCombo.setEmptyText("-- Select Background --");
         bgCombo.addSelectionChangedListener(new SelectionChangedListener<BackgroundModel>() {
             public void selectionChanged(final SelectionChangedEvent<BackgroundModel> se) {
                 PrescriptionServiceAsync s = (PrescriptionServiceAsync) Registry.get("prescriptionService");
@@ -87,6 +88,7 @@ public class HelpWindow extends Window {
         vp.add(fs);
 
         fs = new FieldSet();
+        fs.setStyleName("help-window-additional-options");
         fs.setHeading("Additional Options");
         
         
@@ -116,12 +118,7 @@ public class HelpWindow extends Window {
         fs.add(btn);
         vp.add(fs);
         
-        fs = new FieldSet();
-        fs.setHeading("Version Information");
-        fs.add(new Html("<div class='version'>Version: " + getVersion() + "</div>"));
-        vp.add(fs);
         add(vp);
-        
     }
 
     public void onClick(ClickEvent event) {

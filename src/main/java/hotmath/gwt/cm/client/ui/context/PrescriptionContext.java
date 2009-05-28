@@ -329,6 +329,21 @@ public class PrescriptionContext implements CmContext {
     }
 
     public String getStatusMessage() {
+        String html1="<ul>" +
+       "<li><b>Review and Practice</b> Choose any items from left-side menu that you find helpful. " +
+           "In order to move ahead, you must view all three of the Required Practice problems all the way to " +
+           "the last step.  We hope that you have used a pencil and paper or our Show-Work feature to try the " +
+           "problems on your own first - that is how you really learn!" +
+       "</li>" +
+       "<li>" +
+           "<b>Show Work</b> The Show Work whiteboard saves your attempts at solving the practice problems so you can " +
+           "discuss later with your teacher or tutor.  You can type on the keyboard as well as draw with your mouse." +
+       "</li>" +
+       "</ul>";
+        
+        return html1;
+    }
+    public String getStatusMessage2() {
         int currSess = prescriptionData.getCurrSession().getSessionNumber();
         int totSess = prescriptionData.getSessionTopics().size();
 
