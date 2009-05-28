@@ -60,19 +60,27 @@ public class AccountInfoModel extends BaseModelData  {
 		set (EXPIRATION_DATE_KEY, expirationDate);
 	}
 	
-	public String getStatus() {
-		return get("status");
+	public Integer getMaxStudents() {
+		return get("max-students");
 	}
 
-	public void setStatus(String status) {
-		set("status", status);
+	public void setMaxStudents(Integer maxStudents) {
+		set("max-students", maxStudents);
 	}
 	
-	public Boolean getHasTutoring() {
+	public Integer getTotalStudents() {
+		return get("total-students");
+	}
+
+	public void setTotalStudents(Integer totalStudents) {
+		set("total-students", totalStudents);
+	}
+
+	public String getHasTutoring() {
 		return get(HAS_TUTORING_KEY);
 	}
 
-	public void setHasTutoring(Boolean hasTutoring) {
+	public void setHasTutoring(String hasTutoring) {
 		set (HAS_TUTORING_KEY, hasTutoring);
 	}
 	
