@@ -414,52 +414,52 @@ public class RegisterStudent extends LayoutContainer {
 	        		return;
 	        	}
 
-	        	if (isNew) {
-		        	StudentModel sm = new StudentModel();
-		        	sm.setName(name);
-		        	sm.setPasscode(passcode);
-		        	//sm.setEmail(email);
-		        	sm.setProgramDescr(prog);
-		        	sm.setGroupId(groupId);
-		        	sm.setGroup(group);
-		        	sm.setStatus("Not started");
-		        	sm.setAdminUid(cmAdminMdl.getId());
+	        	StudentModel sm = new StudentModel();
+	        	sm.setName(name);
+	        	sm.setPasscode(passcode);
+	        	//sm.setEmail(email);
+	        	sm.setProgramDescr(prog);
+	        	sm.setGroupId(groupId);
+	        	sm.setGroup(group);
+	        	sm.setAdminUid(cmAdminMdl.getId());
+        		String passVal = (pass != null) ? pass.getPassPercent() : null;
+                sm.setPassPercent(passVal);
+                String progId = (sp != null) ? (String)sp.get("shortTitle") : null;
+                sm.setProgId(progId);
+                String subjId = (sub != null) ? sub.getAbbrev() : "";
+                sm.setSubjId(subjId);
+	        	String chapTitle = (chap != null) ? chap.getTitle() : null;
+	        	sm.setChapter(chapTitle);
+	        	
+		        if (isNew) {	        	    
 		        	sm.setSectionNum(0);
-	        		String passVal = (pass != null) ? pass.getPassPercent() : null;
-	                sm.setPassPercent(passVal);
-	                String progId = (sp != null) ? (String)sp.get("shortTitle") : null;
-	                sm.setProgId(progId);
-	                String subjId = (sub != null) ? sub.getAbbrev() : "";
-                    sm.setSubjId(subjId);
-		        	String chapTitle = (chap != null) ? chap.getTitle() : null;
-		        	sm.setChapter(chapTitle);
+		        	sm.setStatus("Not started");
 		        	sm.setTotalUsage("0");
-	        	    
 	        	    addUserRPC(sm);
-	        	    
-	        	    eg.getStore().add(sm);
 	        	}
 	        	else {
 	        		Boolean stuChanged = false;
+	        		Boolean passcodeChanged = false;
 	        		Boolean progChanged = false;
 	        		Boolean progIsNew = false;
+	        		
+	        		sm.setUid(stuMdl.getUid());
+	        		sm.setUserProgramId(stuMdl.getUserProgramId());
+	        		sm.setJson(stuMdl.getJson());
+	        		
 	        		if (! name.equals(stuMdl.getName())) {
-	        			stuMdl.setName(name);
 	        			stuChanged = true;
 	        		}
 	        		if (! passcode.equals(stuMdl.getPasscode())) {
-	        			stuMdl.setPasscode(passcode);
+	        			passcodeChanged = true;
 	        			stuChanged = true;
 	        		}
 /* don't need email field for now
 	        		if (! email.equals(stuMdl.getEmail())) {
-	        			stuMdl.setEmail(email);
 	        			stuChanged = true;
 	        		}
 */
 	        		if (! groupId.equals(stuMdl.getGroupId())) {
-	        			stuMdl.setGroupId(groupId);
-	        			stuMdl.setGroup(group);
 	        			stuChanged = true;
 	        		}
 	        		String oldPassVal = stuMdl.getPassPercent();
@@ -469,35 +469,22 @@ public class RegisterStudent extends LayoutContainer {
 	        			if (newPassVal == null && oldPassVal != null ||
     	        			newPassVal != null && oldPassVal == null ||
 	            			! newPassVal.equals(oldPassVal)) {
-			                stuMdl.setPassPercent(newPassVal);
 			                progChanged = true;
 		                }
 	        		}
 		        	if (stuMdl.getProgramDescr() == null || !stuMdl.getProgramDescr().equals(prog)) {
-			        	stuMdl.setProgramDescr(prog);
-			        	stuMdl.setStatus("Not started");
-			        	stuMdl.setSectionNum(0);
-			        	stuMdl.setProgramChanged(true);
-			        	String chapTitle = (chap != null) ? chap.getTitle() : null;
-			        	stuMdl.setChapter(chapTitle);
-		                String progId = (sp != null) ? (String)sp.get("shortTitle") : null;
-		                stuMdl.setProgId(progId);
-		                String subjId = (sub != null) ? sub.getAbbrev() : "";
-	                    stuMdl.setSubjId(subjId);
+			        	sm.setStatus("Not started");
+			        	sm.setSectionNum(0);
+			        	sm.setProgramChanged(true);
 
 			        	progIsNew = true;
 			        	progChanged = false;
 			        	stuChanged = true;
 	        		}
 		        	if (stuChanged || progChanged || progIsNew) {
-
-     	        	    updateUserRPC(stuMdl, stuChanged, progChanged, progIsNew);
-     	        	    
-     	        		eg.getStore().update(stuMdl);
+     	        	    updateUserRPC(sm, stuChanged, progChanged, progIsNew, passcodeChanged);
 		        	}
 	        	}
-
-	        	fw.close();
 	        }
 	    });
 		return saveBtn;
@@ -567,13 +554,14 @@ public class RegisterStudent extends LayoutContainer {
 		
 	}
 	
-	protected void addUserRPC(StudentModel sm) {
+	protected void addUserRPC(final StudentModel sm) {
 		RegistrationServiceAsync s = (RegistrationServiceAsync) Registry.get("registrationService");
 		
 		s.addUser(sm, new AsyncCallback <StudentModel> () {
 			
 			public void onSuccess(StudentModel ai) {
-				// empty
+				eg.getStore().add(sm);
+				fw.close();
         	}
 
 			public void onFailure(Throwable caught) {
@@ -583,13 +571,15 @@ public class RegisterStudent extends LayoutContainer {
         });
 	}
 
-	protected void updateUserRPC(StudentModel sm, Boolean stuChanged, Boolean progChanged, Boolean progIsNew) {
+	protected void updateUserRPC(final StudentModel sm, Boolean stuChanged, Boolean progChanged, Boolean progIsNew,
+			Boolean passcodeChanged) {
 		RegistrationServiceAsync s = (RegistrationServiceAsync) Registry.get("registrationService");
 		
-		s.updateUser(sm, stuChanged, progChanged, progIsNew, new AsyncCallback <StudentModel> () {
+		s.updateUser(sm, stuChanged, progChanged, progIsNew, passcodeChanged, new AsyncCallback <StudentModel> () {
 			
 			public void onSuccess(StudentModel ai) {
-				// empty
+				copyStudent(sm, stuMdl);
+				fw.close();
         	}
 
 			public void onFailure(Throwable caught) {
@@ -599,6 +589,18 @@ public class RegisterStudent extends LayoutContainer {
         });
 	}
 
+	private void copyStudent(StudentModel from, StudentModel to) {
+		to.setChapter(from.getChapter());
+		to.setGroup(from.getGroup());
+		to.setGroupId(from.getGroupId());
+		to.setJson(from.getJson());
+		to.setName(from.getName());
+		to.setPasscode(from.getPasscode());
+		to.setPassPercent(from.getPassPercent());
+		to.setProgId(from.getProgId());
+		to.setProgramDescr(from.getProgramDescr());		
+	}
+	
 	private void setComboBoxSelections() {
 		if (! isNew && inProcessCount < 1) {
 			
