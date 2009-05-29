@@ -25,13 +25,12 @@ public interface RegistrationServiceAsync {
 	  
 	  void getStudentActivity(StudentModel sm, AsyncCallback<List<StudentActivityModel>> callback);
 	  
-	  void getAccountInfo(Integer adminUid, AsyncCallback<AccountInfoModel> callback);
-	  
 	  void addUser(StudentModel sm, AsyncCallback<StudentModel> callback);
 	  
 	  void deactivateUser(StudentModel sm, AsyncCallback<StudentModel> callback);
 	  
-	  void updateUser(StudentModel sm, Boolean stuChanged, Boolean progChanged, Boolean progIsNew, AsyncCallback<StudentModel> callback);
+	  void updateUser(StudentModel sm, Boolean stuChanged, Boolean progChanged, Boolean progIsNew,
+			  Boolean passcodeChanged, AsyncCallback<StudentModel> callback);
 
 	  void getAccountInfoForAdminUid(Integer uid, AsyncCallback<AccountInfoModel> callback);
 }
