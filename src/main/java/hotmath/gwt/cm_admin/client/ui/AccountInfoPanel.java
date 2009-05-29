@@ -42,13 +42,13 @@ public class AccountInfoPanel extends LayoutContainer {
 		StringBuilder sb = new StringBuilder();  
 		sb.append("<div 'style='line-height: 20px; font-size: 13px; width: 800px'>");
 		
-		sb.append("<div style='float:right; width:280px>'");
-		sb.append("<p><b>Admin:</b> {admin-user-name}</p>");
+		sb.append("<div style='float:right; width:280px; margin-left: 100px>'");
+		sb.append("<p><b>Account login name:</b> {admin-user-name}</p>");
 		sb.append("<p><b>Last login:</b> {last-login}</p>");
 		sb.append("<p><b>Student count:</b> {total-students}</p>");
 		sb.append("</div");
 
-		sb.append("<div style='float: left; margin-right:20px; width:280px'>");
+		sb.append("<div style='float: left; margin-right:100px; width:280px'>");
 		sb.append("<p><b>School:</b> {school-name}</p>");
 		sb.append("<p><b>Administrator:</b> {school-user-name}</p>");
 		sb.append("<p><b>Maximum Students:</b> {max-students}</p>");
