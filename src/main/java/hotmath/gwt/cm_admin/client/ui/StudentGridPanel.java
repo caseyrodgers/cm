@@ -70,8 +70,11 @@ public class StudentGridPanel extends LayoutContainer {
 	    getAccountInfoRPC(cmAdminMdl.getId(), cp);
 	    //hp.add(mainContentPanel);
 	    
-	    cp.setFrame(true);  
-	    cp.setSize(700, 500);  
+	    //cp.setFrame(false);
+	    //cp.setBorders(false);
+	    cp.setAutoWidth(true);
+	    //cp.setSize(700, 500);
+	    cp.setHeight(500);
 	    cp.setLayout(new FitLayout());
 	    cp.setStyleName("student-grid");
 	    
@@ -319,7 +322,7 @@ public class StudentGridPanel extends LayoutContainer {
 	protected void getAccountInfoRPC(Integer uid, final ContentPanel cp) {
 		RegistrationServiceAsync s = (RegistrationServiceAsync) Registry.get("registrationService");
 		
-		s.getAccountInfo(uid, new AsyncCallback <AccountInfoModel> () {
+		s.getAccountInfoForAdminUid(uid, new AsyncCallback <AccountInfoModel> () {
 			
 			public void onSuccess(AccountInfoModel ai) {
 			    StringBuilder sb = new StringBuilder();
