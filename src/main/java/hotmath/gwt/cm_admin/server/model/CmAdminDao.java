@@ -34,7 +34,7 @@ public class CmAdminDao {
     }
 
     private static final String GET_STUDENTS_SQL = 
-        "SELECT h.uid, h.user_name as name, h.user_passcode as passcode, h.user_email as email, h.admin_id as admin_uid, " +
+        "SELECT distinct h.uid, h.user_name as name, h.user_passcode as passcode, h.user_email as email, h.admin_id as admin_uid, " +
         "       h.active_segment, h.test_config_json, h.user_prog_id, p.test_def_id, p.create_date, " +
         "       concat(p.pass_percent,'%') as pass_percent, t.total_segments, concat(m.answered_correct*10,'%') as last_quiz, " +
         "       trim(concat(ifnull(d.subj_id,''), ' ', d.prog_id)) as program, d.prog_id, d.subj_id, " +
@@ -269,10 +269,16 @@ public class CmAdminDao {
     	"insert into HA_USER (user_name, user_passcode, active_segment, group_id, test_def_id, admin_id, is_active) " +
     	"values(?, ?, ?, ?, (select test_def_id from HA_TEST_DEF where prog_id = ? and subj_id = ?), ?, 1)";
     
-    public StudentModel addStudent(StudentModel sm) {
+    public StudentModel addStudent(StudentModel sm) throws Exception {
     	Connection conn = null;
     	PreparedStatement ps = null;
     	ResultSet rs = null;
+    	
+		Boolean isDuplicate = checkForDuplicatePasscode(sm);
+		if (isDuplicate) {
+			throw new Exception("The passcode you entered is already in use, please try again.");
+		}
+		
     	try {
     		conn = HMConnectionPool.getConnection();
     		ps = conn.prepareStatement(ADD_USER_SQL);
@@ -332,7 +338,14 @@ public class CmAdminDao {
     	
     }
 
-    public StudentModel updateStudent(StudentModel sm, Boolean studentChanged, Boolean programChanged, Boolean progIsNew) {
+    public StudentModel updateStudent(StudentModel sm, Boolean studentChanged, Boolean programChanged, Boolean progIsNew,
+    		Boolean passcodeChanged) throws Exception {
+    	if (passcodeChanged) {
+    		Boolean isDuplicate = checkForDuplicatePasscode(sm);
+    		if (isDuplicate) {
+    			throw new Exception("The passcode you entered is already in use, please try again.");
+    		}
+    	}
     	if (progIsNew)
     		addStudentProgram(sm);
     	if (studentChanged)
@@ -340,6 +353,35 @@ public class CmAdminDao {
     	if (programChanged)
     		updateStudentProgram(sm);
     	return sm;
+    }
+    
+    //TODO: assumes a single Admin per school
+    private static final String CHECK_DUPLICATE_PASSCODE_SQL =
+    	"select 1 from HA_USER where user_passcode = ? and uid <> ? and admin_id = ?";
+    
+    public Boolean checkForDuplicatePasscode(StudentModel sm) throws Exception {
+    	Connection conn = null;
+    	PreparedStatement ps = null;
+    	ResultSet rs = null;
+    	
+    	try {
+    		conn = HMConnectionPool.getConnection();
+    		ps = conn.prepareStatement(CHECK_DUPLICATE_PASSCODE_SQL);
+    		ps.setString(1, sm.getPasscode());
+    		ps.setInt(2, (sm.getUid() != null)?sm.getUid() : -1);
+    		ps.setInt(3, sm.getAdminUid());
+    		
+    		rs = ps.executeQuery();
+    		return (rs.next());
+    	}
+    	catch (Exception e) {
+    		System.out.println(String.format("*** Error checking passcoce for student with uid: %d", sm.getUid()));
+    		//logger.error(String.format("*** Error checking passcode for student with uid: %d", sm.getUid()), e);
+    		throw e;
+    	}
+    	finally {
+    		SqlUtilities.releaseResources(rs, ps, conn);
+    	}
     }
 
     private static final String UPDATE_USER_SQL =
@@ -349,7 +391,7 @@ public class CmAdminDao {
         " user_prog_id = ? " +
     	"where uid = ?";
     
-    public StudentModel updateStudent(StudentModel sm) {
+    public StudentModel updateStudent(StudentModel sm) throws Exception {
     	Connection conn = null;
     	PreparedStatement ps = null;
     	ResultSet rs = null;
@@ -371,9 +413,9 @@ public class CmAdminDao {
     		int result = ps.executeUpdate();
     	}
     	catch (Exception e) {
-    		System.out.println("Exception: " + e.getMessage());
+    		System.out.println("*** Exception: " + e.getMessage());
     		//logger.error(String.format("*** Error updating student with uid: %d", sm.getUid()), e);
-    		//throw e;
+    		throw new Exception("*** Error occurred while updating student ***");
     	}
     	finally {
     		SqlUtilities.releaseResources(rs, ps, conn);
