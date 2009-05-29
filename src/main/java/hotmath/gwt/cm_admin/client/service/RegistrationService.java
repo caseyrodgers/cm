@@ -25,13 +25,12 @@ public interface RegistrationService extends RemoteService {
 	  
 	  List<StudentActivityModel> getStudentActivity(StudentModel sm);
 	  
-	  AccountInfoModel getAccountInfo(Integer adminUid);
-
-	  StudentModel addUser(StudentModel sm);
+	  StudentModel addUser(StudentModel sm) throws Exception;
 
 	  StudentModel deactivateUser(StudentModel sm);
 
-	  StudentModel updateUser(StudentModel sm, Boolean stuChanged, Boolean progChanged, Boolean progIsNew);
+	  StudentModel updateUser(StudentModel sm, Boolean stuChanged, Boolean progChanged, Boolean progIsNew,
+			  Boolean passcodeChanged) throws Exception;
 	  
-	  AccountInfoModel getAccountInfoForAdminUid(Integer uid);
+	  AccountInfoModel getAccountInfoForAdminUid(Integer uid) throws Exception;
 }
