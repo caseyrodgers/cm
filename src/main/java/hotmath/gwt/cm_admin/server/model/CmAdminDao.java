@@ -205,8 +205,8 @@ public class CmAdminDao {
     //TODO: determine max_students from DB (SUBSCRIBERS_SERVICES ?)
     private static final String ACCOUNT_INFO_SQL =
     	"select ifnull(s.school_type, 'NONE') as school_name, s.responsible_name, sc.date_expire as catchup_expire_date, " +
-    	"  sc.service_name, st.date_expire as tutoring_expire_date, h.user_name, t.student_count, 100 as max_students, " +
-    	" l.login_time, date_format(l.login_time, '%Y-%m-%d %r') as login_date_time " +
+    	"  sc.service_name, st.date_expire as tutoring_expire_date, h.user_name, t.student_count, 1000 as max_students, " +
+    	" l.login_time, date_format(l.login_time, '%Y-%m-%d %h:%i %p') as login_date_time " +
         "from SUBSCRIBERS s " +
         " inner join HA_ADMIN h on h.subscriber_id = s.id " +
         " left join SUBSCRIBERS_SERVICES st on st.subscriber_id = h.subscriber_id and st.service_name = 'tutoring' " +
@@ -217,7 +217,7 @@ public class CmAdminDao {
         "   on l.user_id = h.aid " +
         "where h.aid = ?";
 
-    public AccountInfoModel getAccountInfo(Integer adminUid) {
+    public AccountInfoModel getAccountInfo(Integer adminUid) throws Exception {
     	AccountInfoModel ai = new AccountInfoModel();
 
     	Connection conn = null;
@@ -257,7 +257,7 @@ public class CmAdminDao {
     	    System.out.println(String.format("*** Error getting account info for admin id: %d; Exception: %s",
     	    		adminUid, e.getLocalizedMessage()));
     		//logger.error(String.format("*** Error getting account info for admin id: %d", adminUid), e);
-    		//throw e;
+    		throw e;
     	}
     	finally {
     		SqlUtilities.releaseResources(rs, ps, conn);
