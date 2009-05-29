@@ -51,12 +51,7 @@ public class RegistrationServiceImpl extends RemoteServiceServlet implements Reg
 		return cma.getActiveGroups(adminUid);
 	}
 
-	public AccountInfoModel getAccountInfo(Integer adminUid) {
-		CmAdminDao cma = new CmAdminDao();
-		return cma.getAccountInfo(adminUid);
-	}
-
-	public StudentModel addUser(StudentModel sm) {
+	public StudentModel addUser(StudentModel sm) throws Exception {
 		CmAdminDao cma = new CmAdminDao();
 		return cma.addStudent(sm);
 	}
@@ -66,12 +61,13 @@ public class RegistrationServiceImpl extends RemoteServiceServlet implements Reg
 		return cma.deactivateUser(sm);
 	}
 
-	public StudentModel updateUser(StudentModel sm, Boolean stuChanged, Boolean progChanged, Boolean progIsNew) {
+	public StudentModel updateUser(StudentModel sm, Boolean stuChanged, Boolean progChanged, Boolean progIsNew,
+			Boolean passcodeChanged) throws Exception {
 		CmAdminDao cma = new CmAdminDao();
-		return cma.updateStudent(sm, stuChanged, progChanged, progIsNew);
+		return cma.updateStudent(sm, stuChanged, progChanged, progIsNew, passcodeChanged);
 	}
 
-	public AccountInfoModel getAccountInfoForAdminUid(Integer uid) {
+	public AccountInfoModel getAccountInfoForAdminUid(Integer uid) throws Exception {
 		CmAdminDao cma = new CmAdminDao();
 		return cma.getAccountInfo(uid);
 	}
