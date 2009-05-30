@@ -5,6 +5,7 @@ import java.util.List;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 import hotmath.gwt.cm_admin.client.model.AccountInfoModel;
+import hotmath.gwt.cm_admin.client.model.ChapterModel;
 import hotmath.gwt.cm_admin.client.model.GroupModel;
 import hotmath.gwt.cm_admin.client.model.StudyProgramModel;
 import hotmath.gwt.cm_admin.client.model.StudentActivityModel;
@@ -22,6 +23,8 @@ public interface RegistrationServiceAsync {
 	  void getActiveGroups(Integer adminUid, AsyncCallback<List<GroupModel>> callback);
 	  
 	  void getSubjectDefinitions(AsyncCallback<List<SubjectModel>> callback);
+	  
+	  void getChaptersForProgramSubject(String progId, String subjId, AsyncCallback<List<ChapterModel>> callback);
 	  
 	  void getStudentActivity(StudentModel sm, AsyncCallback<List<StudentActivityModel>> callback);
 	  

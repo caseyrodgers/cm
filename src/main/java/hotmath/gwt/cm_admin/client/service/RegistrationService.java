@@ -5,6 +5,7 @@ import java.util.List;
 import com.google.gwt.user.client.rpc.RemoteService;
 
 import hotmath.gwt.cm_admin.client.model.AccountInfoModel;
+import hotmath.gwt.cm_admin.client.model.ChapterModel;
 import hotmath.gwt.cm_admin.client.model.GroupModel;
 import hotmath.gwt.cm_admin.client.model.StudentModel;
 import hotmath.gwt.cm_admin.client.model.StudentActivityModel;
@@ -24,6 +25,8 @@ public interface RegistrationService extends RemoteService {
 	  List<SubjectModel> getSubjectDefinitions();
 	  
 	  List<StudentActivityModel> getStudentActivity(StudentModel sm);
+	  
+	  List<ChapterModel> getChaptersForProgramSubject(String progId, String subjId) throws Exception;
 	  
 	  StudentModel addUser(StudentModel sm) throws Exception;
 
