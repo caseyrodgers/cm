@@ -391,7 +391,7 @@ class ResourceList extends ListView<ResourceModel> implements Listener {
             CmMainPanel.__lastInstance._mainContent.add(cp);
             CmMainPanel.__lastInstance._mainContent.layout();
             CmMainPanel.__lastInstance._mainContent.resetChildSize();
-            cp.el().fadeIn(FxConfig.NONE);
+            //cp.el().fadeIn(FxConfig.NONE);
 
             // practice problems are marked elsewhere
             if(resourceItem.getType().equals("practice"))

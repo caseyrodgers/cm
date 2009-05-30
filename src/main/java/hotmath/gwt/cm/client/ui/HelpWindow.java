@@ -171,7 +171,7 @@ public class HelpWindow extends Window {
      * @return
      */
     private String getVersion() {
-        return "1.1b";
+        return "1.2b";
     }
 }
 
