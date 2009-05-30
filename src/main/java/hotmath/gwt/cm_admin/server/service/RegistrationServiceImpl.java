@@ -5,6 +5,7 @@ import java.util.List;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
 import hotmath.gwt.cm_admin.client.model.AccountInfoModel;
+import hotmath.gwt.cm_admin.client.model.ChapterModel;
 import hotmath.gwt.cm_admin.client.model.GroupModel;
 import hotmath.gwt.cm_admin.client.model.StudentActivityModel;
 import hotmath.gwt.cm_admin.client.model.StudentModel;
@@ -39,6 +40,11 @@ public class RegistrationServiceImpl extends RemoteServiceServlet implements Reg
 	public List<SubjectModel> getSubjectDefinitions() {
 		CmAdminDao cma = new CmAdminDao();
 		return cma.getSubjectDefinitions();
+	}
+	
+	public List<ChapterModel> getChaptersForProgramSubject(String progId, String subjId) throws Exception{
+		CmAdminDao cma = new CmAdminDao();
+		return cma.getChaptersForProgramSubject(progId, subjId);
 	}
 
 	public List<StudentActivityModel> getStudentActivity(StudentModel sm) {

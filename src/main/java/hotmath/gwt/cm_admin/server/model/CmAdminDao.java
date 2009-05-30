@@ -16,6 +16,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import hotmath.gwt.cm_admin.client.model.AccountInfoModel;
+import hotmath.gwt.cm_admin.client.model.ChapterModel;
 import hotmath.gwt.cm_admin.client.model.GroupModel;
 import hotmath.gwt.cm_admin.client.model.StudentModel;
 import hotmath.gwt.cm_admin.client.model.StudentActivityModel;
@@ -200,6 +201,40 @@ public class CmAdminDao {
     		SqlUtilities.releaseResources(rs, ps, conn);
     	}
     	return l;
+    }
+    
+    private static final String CHAPTERS_SQL =
+    	"select bt.title_number, trim(bt.title) as title, td.textcode " +
+        "from HA_TEST_DEF td, BOOK_TOC bt " +
+        "where td.prog_id = ? and td.subj_id = ? " +
+        "  and bt.textcode = td.textcode and bt.parent <> 0";
+    
+    public List<ChapterModel> getChaptersForProgramSubject(String progId, String subjId) throws Exception {
+    	List <ChapterModel> l = null;
+    	
+    	Connection conn = null;
+    	PreparedStatement ps = null;
+    	ResultSet rs = null;
+    	
+    	try {
+    		conn = HMConnectionPool.getConnection();
+    		ps = conn.prepareStatement(CHAPTERS_SQL);
+    		ps.setString(1, progId);
+    		ps.setString(2, subjId);
+    		rs = ps.executeQuery();
+    		l = loadChapters(rs);
+    		System.out.println("+++ chapter 1: " + l.get(0).getChapter());
+    		return l;
+    	}
+    	catch (Exception e) {
+    		System.out.println(String.format("*** Error getting chapters for progId: %s, subjId: %s, Exception: %s",
+    			progId, subjId, e.getLocalizedMessage()));
+    		//logger.error(String.format("*** Error getting chapters for progId: %s, subjId: %s", progId, subjId), e);
+    		throw new Exception("*** Error getting Chapter list ***");
+    	}
+    	finally {
+    		SqlUtilities.releaseResources(rs, ps, conn);
+    	}
     }
 
     //TODO: determine max_students from DB (SUBSCRIBERS_SERVICES ?)
@@ -617,6 +652,16 @@ public class CmAdminDao {
     		m.setName(rs.getString("name"));
     		m.setDescription(rs.getString("description"));
     		m.setIsActive(String.valueOf(rs.getInt("is_active")));
+    		l.add(m);
+    	}
+    	return l;
+    }
+
+    private List <ChapterModel> loadChapters(ResultSet rs) throws Exception {
+    	List <ChapterModel> l = new ArrayList<ChapterModel>();
+    	
+    	while (rs.next()) {
+    		ChapterModel m = new ChapterModel(String.valueOf(rs.getInt("title_number")), rs.getString("title"));
     		l.add(m);
     	}
     	return l;
