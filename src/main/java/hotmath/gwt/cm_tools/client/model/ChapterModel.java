@@ -22,5 +22,8 @@ public class ChapterModel extends BaseModelData {
 	
 	public String getChapter() {
 		return get("chapter");
+    }
+	
+	public ChapterModel() {
 	}
 }
