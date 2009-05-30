@@ -34,7 +34,7 @@ public class CmAdminDao {
     }
 
     private static final String GET_STUDENTS_SQL = 
-        "SELECT distinct h.uid, h.user_name as name, h.user_passcode as passcode, h.user_email as email, h.admin_id as admin_uid, " +
+        "SELECT h.uid, h.user_name as name, h.user_passcode as passcode, h.user_email as email, h.admin_id as admin_uid, " +
         "       h.active_segment, h.test_config_json, h.user_prog_id, p.test_def_id, p.create_date, " +
         "       concat(p.pass_percent,'%') as pass_percent, t.total_segments, concat(m.answered_correct*10,'%') as last_quiz, " +
         "       trim(concat(ifnull(d.subj_id,''), ' ', d.prog_id)) as program, d.prog_id, d.subj_id, " +
@@ -53,7 +53,7 @@ public class CmAdminDao {
         "LEFT JOIN HA_TEST_DEF d " +
         "   on d.test_def_id = h.test_def_id " +
         "LEFT JOIN v_HA_TEST_INMH_VIEWS_INFO i " +
-        "   on i.user_name = h.user_name " +
+        "   on i.uid = h.uid " +
         "LEFT JOIN v_HA_TEST_RUN_max m " +
         "   on m.uid = h.uid " +
         "LEFT JOIN CM_GROUP g " +
