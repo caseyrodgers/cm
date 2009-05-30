@@ -42,6 +42,7 @@ public class RegisterStudent extends LayoutContainer {
 	private StudentModel stuMdl;
 	private CmAdminModel cmAdminMdl;
 	private int inProcessCount;
+	private String subjectId;
 	
 	private ListStore <StudyProgram> progStore;
 	private ComboBox<StudyProgram> progCombo;
@@ -58,6 +59,8 @@ public class RegisterStudent extends LayoutContainer {
 	private ListStore <GroupModel> groupStore;
 	private ComboBox <GroupModel> groupCombo;
 	
+	private FieldSet fs;
+	
 	private int formHeight = 320;
 	private int formWidth  = 340;
 	
@@ -65,6 +68,9 @@ public class RegisterStudent extends LayoutContainer {
 		inProcessCount = 0;
 		isNew = (sm == null);
 		stuMdl = sm;
+		if (stuMdl != null) {
+			subjectId = stuMdl.getSubjId();
+		}
 		cmAdminMdl = cm;
 		eg = grid;
 		fw = new Window();
@@ -126,7 +132,7 @@ public class RegisterStudent extends LayoutContainer {
 		groupCombo = groupCombo(groupStore);
 		fp.add(groupCombo);
 		
-		FieldSet fs = new FieldSet();
+		fs = new FieldSet();
 		fs.setHeading("&nbsp;Select Program&nbsp;");
 		fs.setStyleAttribute("margin-top", "20px");
 		
@@ -148,9 +154,8 @@ public class RegisterStudent extends LayoutContainer {
 		subjCombo = subjectCombo(subjStore);
 		fs.add(subjCombo);
 
-        List<ChapterModel> chapList = getChapterList();
 		chapStore = new ListStore <ChapterModel> ();
-		chapStore.add(chapList);
+        getChapterListRPC((stuMdl != null)?stuMdl.getProgId():null, subjectId, false, chapStore);
 		chapCombo = chapterCombo(chapStore);
 		fs.add(chapCombo);        
 		
@@ -221,6 +226,7 @@ public class RegisterStudent extends LayoutContainer {
 	        		cb.clearSelections();
 	        		cb.disable();
 	        		cb.setForceSelection(false);
+	        		subjectId = null;
 	        	}
 	        	ComboBox <ChapterModel> cc = (ComboBox<ChapterModel>) fs.getItemByItemId("chap-combo");
 	        	if (needsChapters > 0) {
@@ -273,6 +279,21 @@ public class RegisterStudent extends LayoutContainer {
 		combo.setEmptyText("-- select a subject --");
 		combo.disable();
 		combo.setWidth(280);
+		
+	    combo.addSelectionChangedListener(new SelectionChangedListener<SubjectModel>() {
+			public void selectionChanged(SelectionChangedEvent<SubjectModel> se) {
+	        	SubjectModel sm = se.getSelectedItem();
+	        	if (subjectId == null || ! subjectId.equals(sm.getAbbrev())) {
+		        	//System.out.println("old: " + ((subjectId==null)?"none":subjectId) + ", new: " + sm.getAbbrev());
+		        	subjectId = sm.getAbbrev();
+		        	ComboBox<StudyProgram> cb = (ComboBox<StudyProgram>) fs.getItemByItemId("prog-combo");
+		        	StudyProgram sp = cb.getValue();
+		        	String progId = sp.get("shortTitle");
+		        	chapStore.removeAll();
+		            getChapterListRPC(progId, subjectId, true, chapStore);
+	        	}
+	        }
+	    });
 		return combo;
 	}
 
@@ -701,7 +722,7 @@ public class RegisterStudent extends LayoutContainer {
 	}
 
 	// TODO obtain from service
-	private List<ChapterModel> getChapterList() {
+	private List<ChapterModel> getChapterList(String subjId) {
 		List<ChapterModel> list = new ArrayList<ChapterModel> ();
 		list.add(new ChapterModel("1", "Solving Linear Equations"));
 		list.add(new ChapterModel("2", "Graphing Linear Equations"));
@@ -713,8 +734,33 @@ public class RegisterStudent extends LayoutContainer {
 		return list;
 	}
 	
-	private List<ChapterModel> getChapterListRPC(SubjectModel subject) {
-		return null;
+	private void getChapterListRPC(String progId, String subjId, final Boolean chapOnly, final ListStore <ChapterModel> chapStore) {
+		if (subjId == null) return;
+		
+		inProcessCount++;
+		RegistrationServiceAsync s = (RegistrationServiceAsync) Registry.get("registrationService");
+		s.getChaptersForProgramSubject(progId, subjId, new AsyncCallback <List<ChapterModel>> () {
+
+			public void onSuccess(List<ChapterModel> result) {
+				chapStore.add(result);
+				inProcessCount--;
+				if (! chapOnly)
+				    setComboBoxSelections();
+				else {
+					chapCombo.setOriginalValue(null);
+					chapCombo.setValue(null);
+					chapCombo.clearSelections();
+				}
+        	}
+
+			public void onFailure(Throwable caught) {
+        		String msg = caught.getMessage();
+        		CatchupMathAdmin.showAlert(msg);
+        	}
+        });
+
+
+	
 	}
 	
 	private List<PassPercent> getPassPercentList() {
