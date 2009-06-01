@@ -35,7 +35,7 @@ public class CmShared implements EntryPoint {
     }
     
     /** The URL to default to if cannot log in */
-    final public static String CM_HOME_URL = "http://hotmath.kattare.com:8081/";
+    final public static String CM_HOME_URL = "http://catchupmath.com";
     
     
     /** uid that corresponds to a demo account

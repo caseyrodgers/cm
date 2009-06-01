@@ -215,7 +215,7 @@ public class PrescriptionContext implements CmContext {
     
     private void showDemoCompleteMessage() {
         String msg = "<p>Thank you for trying Catchup Math for a Pre-algebra Session.</p>  " +
-                     "<p>Please visit our <a href='/schools.html'>Schools</a>, <a href='/colleges.html'>Colleges</a>, or <a href='/students.html'>Students</a> pages.</p>";
+                     "<p>Please visit our <a href='http://catchupmath.com/schools.html'>Schools</a>, <a href='http://catchupmath.com/colleges.html'>Colleges</a>, or <a href='http://catchupmath.com/students.html'>Students</a> pages.</p>";
 
         Window w = new Window();
         w.setStyleName("demo-complete-window");
