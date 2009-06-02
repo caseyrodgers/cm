@@ -224,7 +224,7 @@ window.markCorrectResponse = function(questionList) {
 
 
  function showAskATutorTooltip_Cm() {
-	 var msg = "<div style='height:100px;padding: 5px;'><p style='margin-bottom: 5px;'>Live online tutors are available 24/7 via internet whiteboard with built-in instant messaging.</p>  <p>You do not currently have the live tutoring option enabled.</p></div>";
+	 var msg = "<div style='height:100px;padding: 5px;'><p style='margin-bottom: 5px;'>When enabled, this button connects you to an online tutor. Communication is by using an electronic whiteboard and text-chat.</p></div>";
 	 overlib(msg,FGCLASS, "ol_default_style");
  }
 

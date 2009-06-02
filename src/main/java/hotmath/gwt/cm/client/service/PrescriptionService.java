@@ -8,6 +8,16 @@ import java.util.ArrayList;
 import com.google.gwt.user.client.rpc.RemoteService;
 
 public interface PrescriptionService extends RemoteService {
+    
+    /** Save any feedback for the current state
+     * 
+     * @param comments
+     * @param commentsUrl
+     * @param stateInfo
+     * @throws CmRpcException
+     */
+    void saveFeedback(String comments, String commentsUrl, String stateInfo) throws CmRpcException;
+    
 
 	/**
 	 * Return the JSON representing this prescription

@@ -465,7 +465,7 @@
 .cm-main-panel-header {
     background: #34383B;
     color: #CBFF07;
-    height: 45px;
+    height: 55px;
     font-size: 1.2em;
     text-align: center;
 }
@@ -817,3 +817,27 @@ img.resource-item-complete {
 	font-size: 1.2em;
 	
 }
+
+
+.check-quiz-link {
+    display: block;
+    text-align: center;
+    font-size: .85em;
+    float: right;
+    margin-right: 20px;
+}
+
+.bottom {
+	margin-top: 1px;
+}
+
+
+
+#testset_div a.check-quiz-link:link,
+#testset_div a.check-quiz-link:active,
+#testset_div a.check-quiz-link:visited,
+#testset_div a.check-quiz-link:hover {
+	color: white;
+	text-decoration: underline;;
+}
+

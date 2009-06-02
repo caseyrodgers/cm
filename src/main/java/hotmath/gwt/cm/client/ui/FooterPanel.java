@@ -2,10 +2,8 @@ package hotmath.gwt.cm.client.ui;
 
 import hotmath.gwt.cm.client.CatchupMath;
 import hotmath.gwt.cm.client.service.PrescriptionServiceAsync;
-import hotmath.gwt.cm.client.util.ServerRequest;
 import hotmath.gwt.cm.client.util.UserInfo;
 import hotmath.gwt.shared.client.CmShared;
-import hotmath.gwt.shared.client.data.CmAsyncRequestImplDefault;
 
 import com.extjs.gxt.ui.client.Registry;
 import com.extjs.gxt.ui.client.event.Listener;
@@ -13,7 +11,6 @@ import com.extjs.gxt.ui.client.event.MessageBoxEvent;
 import com.extjs.gxt.ui.client.widget.Html;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.MessageBox;
-import com.google.gwt.http.client.URL;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -52,14 +49,16 @@ public class FooterPanel extends LayoutContainer {
             public void handleEvent(MessageBoxEvent be) {
                 String value = be.getValue();
                 
-                
-                String url = "/testsets/util/_save_feedback.jsp?comment=" + URL.encode(value) +
-                    "&state_info=" + getFeedbackStateInfo();
-                ServerRequest.makeHttpRequest(url, new CmAsyncRequestImplDefault() {
-                    public void requestComplete(String requestData) {
-                        //CatchupMath.getThisInstance().showAlert("Feedback success");
+                PrescriptionServiceAsync s = (PrescriptionServiceAsync) Registry.get("prescriptionService");
+                s.saveFeedback(value, "", getFeedbackStateInfo(),new AsyncCallback() {
+                    public void onSuccess(Object result) {
+                        System.out.println("Feedback saved");
+                    }
+                    public void onFailure(Throwable caught) {
+                        caught.printStackTrace();
                     }
                 });
+                        
             }
         });
     }

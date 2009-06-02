@@ -48,17 +48,10 @@ public class QuizCmGuiDefinition implements CmGuiDefinition {
 	            "</p> ";
 	    }
 	    else {
-    		html = 
-    		"<p>Take the quiz to the right.</p>" +
-            "<p>After that, we will provide you " +
-            "personalized review and practice " +
-            " to get you caught up." +
-            "</p>" +
-            "<p>Most of the quiz questions require " +
-            " pencil and paper.  Please don't guess." +
-            "</p>" +
-            "<p>If you log out, your answers will be saved." +
-            "</p> ";
+            html = "<h1>HOW TO USE CATCHUP MATH</h1>" +
+                   "<p>Take the 10-question quiz to the right.</p>" +
+                   "<p>Then, we will provide you with personalized review and practice.</p>" +
+                   "<p>Most of the quiz questions require pencil and paper. Please don't guess.</p> ";
 	    }
 	    cp.add(new Html(html));
 	    cp.add(new Html(CatchupMath.FEEDBACK_MESSAGE));

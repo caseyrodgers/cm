@@ -49,7 +49,7 @@ public class HelpWindow extends Window {
         VerticalPanel vp = new VerticalPanel();
         
         FieldSet fs = new FieldSet();
-        fs.setHeading("General Info");
+        fs.setHeading("Info");
         
         fs.add(messageArea);
         vp.add(fs);
@@ -58,7 +58,7 @@ public class HelpWindow extends Window {
         bgCombo.setStore(getBackgrounds());  
         bgCombo.setEditable(false);
         bgCombo.setStyleName("help-window-bg-combo");
-        bgCombo.setEmptyText("-- Select Background --");
+        bgCombo.setEmptyText("-- Select Wallpaper --");
         bgCombo.addSelectionChangedListener(new SelectionChangedListener<BackgroundModel>() {
             public void selectionChanged(final SelectionChangedEvent<BackgroundModel> se) {
                 PrescriptionServiceAsync s = (PrescriptionServiceAsync) Registry.get("prescriptionService");
@@ -79,8 +79,8 @@ public class HelpWindow extends Window {
         });
         
         fs = new FieldSet();
-        fs.setHeading("Background Image");
-        Label lab = new Label("Set which image to use for your Catchup Math background.");
+        fs.setHeading("@allpaper Image");
+        Label lab = new Label("Set which image to use for your Catchup Math wallpaper.");
         lab.addStyleName("bg-image-label");
         fs.add(lab);
         fs.add(bgCombo);

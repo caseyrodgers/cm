@@ -66,15 +66,11 @@ public class ContextController {
         CmMainPanel.__lastInstance._westPanel.setHeading(context.getContextSubTitle());
   	    
         // HeaderPanel.__instance._thermometer.setPerecent(context.getContextCompletionPercent());
-		
-		
 		fireContextChanged();
 	}
 	 
 	 public String toString() {
-	     String msg = theContext.getStatusMessage();
-	     msg += ", user_id: " + UserInfo.getInstance().getUid() + ", run_id: " + UserInfo.getInstance().getRunId();
-	     msg = "Program: " + UserInfo.getInstance().getTestName() + ", " + msg;
+	     String msg = (UserInfo.getInstance() != null)?UserInfo.getInstance().toString():"";
 	     return msg;
 	 }
 

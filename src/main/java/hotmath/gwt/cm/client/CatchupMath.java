@@ -168,8 +168,7 @@ public class CatchupMath implements EntryPoint {
      */
     private void setupServices() {
 
-        final PrescriptionServiceAsync prescriptionService = (PrescriptionServiceAsync) GWT
-                .create(PrescriptionService.class);
+        final PrescriptionServiceAsync prescriptionService = (PrescriptionServiceAsync) GWT.create(PrescriptionService.class);
 
         String point = GWT.getModuleBaseURL();
         if (!point.endsWith("/"))            point += "/";

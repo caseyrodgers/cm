@@ -21,6 +21,7 @@ public class CmShared implements EntryPoint {
         System.out.println("Catchup Math shared library loaded successfully");
     }
 
+    
     static Map<String,String> _queryParameters = new HashMap<String,String>();
 
     

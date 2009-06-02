@@ -1,6 +1,6 @@
 <div id='testset_div'>
     <div id='testset_head'>
-        <div id='testset_head_wrapper'>$subTitle</div>
+        <div id='testset_head_wrapper'>$subTitle<a href='#' class='check-quiz-link' onclick='checkQuiz_Gwt();return false;'>click to check quiz</a></div>
     </div>
     #foreach( $question in $testSet.questions )
     #set( $probNum = $velocityCount + 1 )
@@ -20,6 +20,7 @@
        <div class='debug-hide'>$question.problemIndex</div>
    </div>
    #end
-   <div id='testset_footer'> &nbsp; </div>
+   <div id='testset_footer'> <a href='#' class='check-quiz-link' onclick='checkQuiz_Gwt();return false;'>click to check quiz</a></div>
    <!-- end-of-template -->
 </div>
+    

@@ -423,7 +423,7 @@ class ResourceList extends ListView<ResourceModel> implements Listener {
                         HeaderPanel.__instance.setLoginInfo();
                         
                         // only mark practice problems
-                        if(!resourceItem.getType().equals("practice"))
+                        if(!resourceItem.getType().equals("practice") && !resourceItem.getType().equals("cmextra"))
                             return;
                         
                         

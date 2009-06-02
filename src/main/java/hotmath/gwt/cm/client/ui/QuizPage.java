@@ -17,6 +17,8 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Anchor;
+import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.RootPanel;
 
 public class QuizPage extends LayoutContainer {
 	
@@ -45,10 +47,18 @@ public class QuizPage extends LayoutContainer {
      */
     static private native void publishNative() /*-{
                                     $wnd.questionGuessChanged_Gwt = @hotmath.gwt.cm.client.ui.QuizPage::questionGuessChanged_Gwt(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;);
+                                    $wnd.checkQuiz_Gwt = @hotmath.gwt.cm.client.ui.QuizPage::checkQuiz_Gwt();
                                     }-*/;
 
 
 
+    /** Call Check Test from external JS 
+     * 
+     */
+    static private void checkQuiz_Gwt() {
+        ContextController.getInstance().doNext();
+    }
+    
     /** Setup method that will call a global method that will set the selected
      *  guess for the given question.
      *  
@@ -117,14 +127,11 @@ public class QuizPage extends LayoutContainer {
 	@SuppressWarnings("unchecked")
 	private void displayQuizHtml(String quizHtml) {
 	    
-	    
-	    
 		Html html = new Html(quizHtml);
 		if(CmShared.getQueryParameter("debug") != "") {
 		    html.addStyleName("debug-mode");
 		}
 		add(html);
-
 		if(UserInfo.getInstance().isActiveUser()) {
             Anchor markCorrect = new Anchor("_");
             markCorrect.addClickHandler(new ClickHandler() {

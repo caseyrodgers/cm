@@ -7,7 +7,6 @@ import hotmath.gwt.cm.client.ui.NextDialog;
 import hotmath.gwt.cm.client.ui.NextPanelInfo;
 import hotmath.gwt.cm.client.ui.NextPanelInfoImplDefault;
 import hotmath.gwt.cm.client.util.UserInfo;
-import hotmath.gwt.shared.client.data.CmAsyncRequest;
 import hotmath.gwt.shared.client.data.CmAsyncRequestImplDefault;
 import hotmath.gwt.shared.client.util.RpcData;
 
@@ -85,6 +84,11 @@ public class QuizContext implements CmContext {
 	public void resetContext() {
 	}
 	
+	SelectionListener<ButtonEvent> doNextListener = new SelectionListener<ButtonEvent>() {
+	    public void componentSelected(ButtonEvent ce) {
+            doNext();
+	    }
+	};
 	
 	public List<Component> getTools() {
 	    List<Component> list = new ArrayList<Component>();
@@ -93,11 +97,7 @@ public class QuizContext implements CmContext {
 	    btn.setStyleName("cm-main-panel-next-quiz");
 	    btn.setToolTip("Done taking the quiz");
 	    
-	    btn.addSelectionListener(new SelectionListener<ButtonEvent>() {
-	        public void componentSelected(ButtonEvent ce) {
-	            doNext();
-	        }
-	    });
+	    btn.addSelectionListener(doNextListener);
 	    list.add(btn);
 	    return list;
 	}
@@ -145,7 +145,7 @@ public class QuizContext implements CmContext {
 	private void showPrescriptionPanel(int correct, int total) {
 	    final Window window = new Window();
 	    window.setModal(true);
-	    window.setHeight(175);
+	    window.setAutoHeight(true);
 	    window.setWidth(300);
 	    window.setClosable(false);
 	    window.setResizable(false);
@@ -153,19 +153,21 @@ public class QuizContext implements CmContext {
 	    window.setStyleName("auto-assignment-window");
 	    String msg = "<p>" + correct + "  out of " + total + " correct.</p> ";
 	    
+	    window.setHeading("Quiz results");
 	    if(correct != total) {
 	        msg += "<p>You may now begin review and practice.  " +
 	               "View your graded quiz on left menu at any time.</p>";
 	    }
 	    else {
-	        msg += "<p><b>Congratulations!</b></p>";
+	        msg += "<p>All answers correct!</p>";
+	        window.setHeading("Nice Job!");
 	    }
 	        
 	    Html html = new Html(msg);
 	        
-        window.setHeading("Quiz results");
+        
         window.add(html);
-	        
+	         
         Button close = new Button();
         close.setText("Continue");
         close.addSelectionListener(new SelectionListener<ButtonEvent>() {
@@ -181,7 +183,7 @@ public class QuizContext implements CmContext {
 
 	public void doNext() {
 	    String msg = "Are you sure you are ready to have the quiz scored?";
-	    MessageBox.confirm("Ready to Check Test?", msg, new Listener<MessageBoxEvent>() {
+	    MessageBox.confirm("Ready to Check Quiz?", msg, new Listener<MessageBoxEvent>() {
             public void handleEvent(MessageBoxEvent be) {
                 if (be.getButtonClicked().getText().equals("Yes")) {
                     CatchupMath.setBusy(true);

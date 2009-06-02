@@ -7,6 +7,16 @@ import hotmath.gwt.shared.client.util.RpcData;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public interface PrescriptionServiceAsync {
+    
+    /** Save any context comments
+     * 
+     * @param comments
+     * @param commentsUrl
+     * @param stateInfo
+     * @param callback
+     */
+      void saveFeedback(String comments, String commentsUrl, String stateInfo, AsyncCallback callback);
+    
 	  void getPrescriptionSessionJson(int runId,int sessionNumber,boolean updateActiveInfo, AsyncCallback callback);
 	  
 	  void getSolutionHtml(String pid, AsyncCallback callback);

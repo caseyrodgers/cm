@@ -224,5 +224,15 @@ public class UserInfo implements IsSerializable {
 	public boolean isDemoUser() {
 	    return(this.getUserName().equals(DEMO_USER_NAME));
 	}
+	
+	@Override
+	public String toString() {
+	    return "User: " + userName +
+	           ", Uid: " + uid +
+	           ", Program: " + testName + 
+	           ", Segment: " + getTestSegment() + 
+	           ", TestId: " + getTestId() + 
+	           ", RunId: " + getRunId();
+	}
 
 }

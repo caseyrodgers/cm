@@ -614,6 +614,7 @@ public class PrescriptionServiceImpl extends RemoteServiceServlet implements Pre
     }
 
     private int getTotalInmHViewCount(int uid) throws Exception {
+        
         Connection conn = null;
         PreparedStatement pstat = null;
         try {
@@ -801,6 +802,34 @@ public class PrescriptionServiceImpl extends RemoteServiceServlet implements Pre
             throw new CmRpcException(e);
         }
     }
+    
+    public void saveFeedback(String comments, String commentsUrl, String stateInfo) throws CmRpcException {
+
+        Connection conn = null;
+        PreparedStatement pstat = null;
+
+        try {
+
+            String xml = null;
+
+            String sql = "insert into HA_FEEDBACK(entry_date, comment,comment_url,state_info)values(now(),?,?,?)";
+
+            conn = HMConnectionPool.getConnection();
+            pstat = conn.prepareStatement(sql);
+            pstat.setString(1, comments);
+            pstat.setString(2, commentsUrl);
+            pstat.setString(3, stateInfo);
+
+            if (pstat.executeUpdate() != 1)
+                throw new Exception("could not save feedback comments");
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            SqlUtilities.releaseResources(null, pstat, conn);
+        }
+    }
+    
+    
 }
 
 
