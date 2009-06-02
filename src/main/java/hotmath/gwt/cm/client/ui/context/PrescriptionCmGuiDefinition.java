@@ -233,7 +233,8 @@ class PrescriptionResourceAccord extends LayoutContainer {
             final ResourceList thisRl = rl;
             cp.addListener(Events.Expand, new Listener<BaseEvent>() {
                 public void handleEvent(BaseEvent be) {
-                    CmMainPanel.__lastInstance._mainContent.removeAll();
+                    if(PrescriptionResourceAccord.__instance._activeResourceList != null)
+                        PrescriptionResourceAccord.__instance._activeResourceList._viewer.removeResourcePanel();
                     layout();
                     
                     //// move selected item to top
