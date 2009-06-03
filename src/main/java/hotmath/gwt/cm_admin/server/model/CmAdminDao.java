@@ -55,7 +55,7 @@ public class CmAdminDao {
         "   on d.test_def_id = h.test_def_id " +
         "LEFT JOIN v_HA_TEST_INMH_VIEWS_INFO i " +
         "   on i.uid = h.uid " +
-        "LEFT JOIN v_HA_TEST_RUN_max m " +
+        "LEFT JOIN (select uid, answered_correct, max(last_run_time) as last_run_time from v_HA_TEST_RUN_max group by uid) m " +
         "   on m.uid = h.uid " +
         "LEFT JOIN CM_GROUP g " +
         "   on g.id = h.group_id " +
