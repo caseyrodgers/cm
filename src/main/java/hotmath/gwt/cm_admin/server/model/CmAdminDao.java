@@ -753,11 +753,13 @@ public class CmAdminDao {
     	String chap = null;
     	try {
     		JSONObject jo = new JSONObject(json);
-	   	    JSONArray ja = jo.getJSONArray("chapters");
-		    chap = ja.getString(0);
+    		if (jo.has("chapters")) {
+    	   	    JSONArray ja = jo.getJSONArray("chapters");
+	    	    chap = ja.getString(0);
+    		}
     	}
     	catch (Exception e) {
-    		System.out.println("*** Exception: " + e.getMessage());
+    		System.out.println("*** Exception: " + e.getStackTrace());
     	}
 	
     	return chap;
