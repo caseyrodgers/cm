@@ -22,13 +22,13 @@ public class StudentActivityModel extends BaseModelData  {
 	}
 
 	public String getProgramDescr() {
-		return get(ACTIVITY_KEY);
+		return get(PROGRAM_KEY);
 	}
 
 	public void setProgramDescr(String program) {
 		set(PROGRAM_KEY, program);
 	}
-
+	
 	public String getUseDate() {
 		return get(USE_DATE_KEY);
 	}
