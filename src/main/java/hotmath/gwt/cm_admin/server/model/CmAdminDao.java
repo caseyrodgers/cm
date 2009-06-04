@@ -130,16 +130,15 @@ public class CmAdminDao {
     private static final String GET_STUDENT_ACTIVITY_SQL =
     	"select date_format(create_time,'%Y-%m-%d') as use_date, date_format(create_time,'%h:%i %p') as start_time, " +
     	" date_format(r.run_time,'%h:%i %p') as stop_time, " +
-    	" r.answered_correct, r.answered_incorrect, concat(td.subj_id, ' ', td.prog_id) as program, " +
-    	" td.chapter as activity_section, " +  //TODO obtain activity_section from TEST_DEF.test_config_json
-    	" l.test_id as test_id, td.test_def_id as test_def_id, r.run_id as test_run_id " +
+    	" r.answered_correct, r.answered_incorrect, concat(td.subj_id, ' ', td.prog_id) as program, td.prog_id, " +
+    	" l.test_id as test_id, l.test_segment, td.test_def_id as test_def_id, r.run_id as test_run_id " +
         "from  HA_TEST l INNER JOIN HA_USER u ON l.user_id = u.uid " +
         "join HA_TEST_RUN r on r.test_id = l.test_id " +
         "join HA_TEST_DEF td on td.test_def_id = l.test_def_id " +
-        "where u.user_name = ? " +
+        "where u.uid = ? " +
         "order by use_date desc";
 
-    public List <StudentActivityModel> getStudentActivity(String studentUsername) {
+    public List <StudentActivityModel> getStudentActivity(int uid) throws Exception {
     	List <StudentActivityModel> l = null;
     	
     	Connection conn = null;
@@ -149,14 +148,17 @@ public class CmAdminDao {
     	try {
     		conn = HMConnectionPool.getConnection();
     		ps = conn.prepareStatement(GET_STUDENT_ACTIVITY_SQL);
-    		ps.setString(1, studentUsername);
+    		ps.setInt(1, uid);
     		rs = ps.executeQuery();
     		
     		l = loadStudentActivity(rs);
     	}
     	catch (Exception e) {
-    		//logger.error(String.format("*** Error getting student details for student username: %s", studentUsername), e);
-    		//throw e;
+    		System.out.println(String.format("*** Error getting student details for student uid: %d", uid));
+    		System.out.println("*** Exception: " + e.getStackTrace());
+    		//logger.error(String.format("*** Error getting student details for student uid: %d", uid), e);
+    		e = new Exception("*** Error getting student details ***");
+    		throw e;
     	}
     	finally {
     		SqlUtilities.releaseResources(rs, ps, conn);
@@ -237,7 +239,7 @@ public class CmAdminDao {
     	}
     }
 
-    //TODO: determine max_students from DB (SUBSCRIBERS_SERVICES ?)
+    //TODO: obtain max_students from DB (SUBSCRIBERS_SERVICES ?)
     private static final String ACCOUNT_INFO_SQL =
     	"select ifnull(s.school_type, 'NONE') as school_name, s.responsible_name, sc.date_expire as catchup_expire_date, " +
     	"  sc.service_name, st.date_expire as tutoring_expire_date, h.user_name, t.student_count, 1000 as max_students, " +
@@ -722,13 +724,29 @@ public class CmAdminDao {
     		m.setUseDate(rs.getString("use_date"));
     		m.setStart(rs.getString("start_time"));
     		m.setStop(rs.getString("stop_time"));
-    		m.setActivity(rs.getString("activity_section"));
+    		int sectionNum = rs.getInt("test_segment");
+    		String progId = rs.getString("prog_id");
     		StringBuilder sb = new StringBuilder();
-    		// TODO differentiate btwn started, completed, retake...
-    		sb.append("completed, ");
+			sb.append("Quiz-").append(sectionNum);
+			
+			//TODO: handle Review sections
+    		m.setActivity(sb.toString());
+    		
+    		// TODO: identify re-takes?
+
     		int numCorrect = rs.getInt("answered_correct");
     		int numIncorrect = rs.getInt("answered_incorrect");
-    		sb.append(numCorrect).append(" out of ").append(numCorrect + numIncorrect).append(" correct");
+    		sb.delete(0, sb.length());
+    		if (numCorrect != 0 || numIncorrect != 0) {
+        		sb.append("completed, ");
+        		sb.append(numCorrect).append(" out of ").append(numCorrect + numIncorrect).append(" correct");
+    		}
+    		else {
+    			if (m.getStart() != null)
+        			sb.append("started");
+    			else
+    				sb.append("not started");
+    		}
             m.setResult(sb.toString());
             
     		l.add(m);
