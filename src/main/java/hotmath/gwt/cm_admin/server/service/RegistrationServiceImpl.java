@@ -47,9 +47,9 @@ public class RegistrationServiceImpl extends RemoteServiceServlet implements Reg
 		return cma.getChaptersForProgramSubject(progId, subjId);
 	}
 
-	public List<StudentActivityModel> getStudentActivity(StudentModel sm) {
+	public List<StudentActivityModel> getStudentActivity(StudentModel sm) throws Exception {
 		CmAdminDao cma = new CmAdminDao();
-		return cma.getStudentActivity(sm.getName());
+		return cma.getStudentActivity(sm.getUid());
 	}
 	
 	public List<GroupModel> getActiveGroups(Integer adminUid) {
