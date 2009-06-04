@@ -24,7 +24,7 @@ public interface RegistrationService extends RemoteService {
 
 	  List<SubjectModel> getSubjectDefinitions();
 	  
-	  List<StudentActivityModel> getStudentActivity(StudentModel sm);
+	  List<StudentActivityModel> getStudentActivity(StudentModel sm) throws Exception;
 	  
 	  List<ChapterModel> getChaptersForProgramSubject(String progId, String subjId) throws Exception;
 	  
