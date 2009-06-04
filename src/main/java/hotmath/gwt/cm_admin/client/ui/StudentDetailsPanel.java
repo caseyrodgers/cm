@@ -64,7 +64,7 @@ public class StudentDetailsPanel extends LayoutContainer {
 		outerPanel = new ContentPanel();
 	    outerPanel.setHeading("Student Details");  
 	    outerPanel.setFrame(true);  
-	    outerPanel.setSize(690, 250);
+	    outerPanel.setSize(570, 250);
 	    outerPanel.setLayout(new RowLayout(Orientation.VERTICAL));
 	    outerPanel.setStylePrimaryName("student-details");
 	    
@@ -74,7 +74,7 @@ public class StudentDetailsPanel extends LayoutContainer {
 	    
 	    ContentPanel icp = new ContentPanel();
 	    icp.setStylePrimaryName("student-grid");
-	    icp.setSize(670, 160);
+	    icp.setSize(540, 160);
 	    icp.setLayout(new FitLayout());
 	    icp.setHeaderVisible(false);
 		
@@ -107,7 +107,7 @@ public class StudentDetailsPanel extends LayoutContainer {
 		HorizontalPanel hp = new HorizontalPanel();
 		hp.setSpacing(7);
 		hp.setHeight(30);
-		hp.setWidth(600);
+		hp.setWidth(480);
 		hp.setBorders(false);
 		
 		defineStudentInfoTemplate();
@@ -161,7 +161,7 @@ public class StudentDetailsPanel extends LayoutContainer {
 	    result.setWidth(205);
 	    result.setSortable(true);
 	    configs.add( result);
-
+/*
 	    ColumnConfig start = new ColumnConfig();
 	    start.setId(StudentActivityModel.START_KEY);  
 	    start.setHeader("Start");  
@@ -175,7 +175,7 @@ public class StudentDetailsPanel extends LayoutContainer {
 	    finish.setWidth(70);
 	    finish.setSortable(false);
 	    configs.add(finish);
-
+*/
 	    ColumnModel cm = new ColumnModel(configs);
 		return cm;
 	}
