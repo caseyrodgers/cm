@@ -88,13 +88,13 @@ public class StudentDetailsPanel extends LayoutContainer {
 	    
 	    icp.add(grid);
 		
-	    Button btn = showWorkButton(grid);
-	    btn.setStyleName("grid-selection-btn");
+	    //Button btn = showWorkButton(grid);
+	    //btn.setStyleName("grid-selection-btn");
 
 	    outerPanel.add(icp);	    
-	    outerPanel.add(btn);
+	    //outerPanel.add(btn);
 	    
-	    btn = closeButton();
+	    //btn = closeButton();
 	    //outerPanel.add(btn);
 	    
 	    fw.add(outerPanel);
