@@ -65,7 +65,7 @@ public class HeaderPanel extends LayoutContainer {
             nameCap = nameCap.substring(0,1).toUpperCase() + nameCap.substring(1);
             String s = "Hello: <b>" +  nameCap + "</b>";
             if(viewCount > 1)
-                s += ", you have viewed " + viewCount + " learning items";
+                s += ". You have viewed " + viewCount + " learning items";
             _helloInfo.setHtml(s);
             layout();
         }

@@ -75,7 +75,7 @@ window.setSolutionQuestionAnswerIndex = function(pid, which, disabled) {
 			cb.disabled = disabled ? true : false;
 
 			if (i == which) {
-				cb.style.background = 'red';
+				//cb.style.background = 'red';
 				cb.checked = true;
 			}
 		}
