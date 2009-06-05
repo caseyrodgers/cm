@@ -128,15 +128,27 @@ public class CmAdminDao {
     }
     
     private static final String GET_STUDENT_ACTIVITY_SQL =
-    	"select date_format(create_time,'%Y-%m-%d') as use_date, date_format(create_time,'%h:%i %p') as start_time, " +
-    	" date_format(r.run_time,'%h:%i %p') as stop_time, " +
-    	" r.answered_correct, r.answered_incorrect, concat(td.subj_id, ' ', td.prog_id) as program, td.prog_id, " +
-    	" l.test_id as test_id, l.test_segment, td.test_def_id as test_def_id, r.run_id as test_run_id " +
+    	"select date_format(l.create_time,'%Y-%m-%d') as use_date, date_format(l.create_time,'%h:%i %p') as start_time, " +
+    	"  date_format(r.run_time,'%h:%i %p') as stop_time, date_format(r.run_time,'%Y-%m-%d') as run_date, " +
+    	"  r.answered_correct, r.answered_incorrect, concat(td.subj_id, ' ', td.prog_id) as program, td.prog_id, " +
+    	"  l.test_id as test_id, l.test_segment, td.test_def_id as test_def_id, r.run_id as test_run_id, 'Quiz-' as activity, " +
+    	"  1 as is_quiz " +
         "from  HA_TEST l INNER JOIN HA_USER u ON l.user_id = u.uid " +
         "join HA_TEST_RUN r on r.test_id = l.test_id " +
         "join HA_TEST_DEF td on td.test_def_id = l.test_def_id " +
         "where u.uid = ? " +
-        "order by use_date desc";
+        "union " +
+        "select date_format(iu.view_time,'%Y-%m-%d') as use_date, date_format(iu.view_time,'%h:%i %p') as start_time, " +
+    	"  date_format(iu.view_time,'%h:%i %p') as stop_time, date_format(iu.view_time,'%Y-%m-%d') as run_date, " +
+    	"  0 as answered_correct, 0 as answered_incorrect, concat(td.subj_id, ' ', td.prog_id) as program, td.prog_id, " +
+    	"  l.test_id as test_id, iu.session_number as test_segment, td.test_def_id as test_def_id, r.run_id as test_run_id, " +
+    	" 'Review-' as activity, 0 as is_quiz " +
+        "from  HA_TEST l INNER JOIN HA_USER u ON l.user_id = u.uid " +
+        "join HA_TEST_RUN r on r.test_id = l.test_id " +
+        "join HA_TEST_RUN_INMH_USE iu on iu.run_id = r.run_id and iu.item_type = 'solution' " +
+        "join HA_TEST_DEF td on td.test_def_id = l.test_def_id " +
+        "where u.uid = ? " +
+        "order by use_date desc, start_time desc, test_run_id desc, test_segment desc ";
 
     public List <StudentActivityModel> getStudentActivity(int uid) throws Exception {
     	List <StudentActivityModel> l = null;
@@ -149,6 +161,7 @@ public class CmAdminDao {
     		conn = HMConnectionPool.getConnection();
     		ps = conn.prepareStatement(GET_STUDENT_ACTIVITY_SQL);
     		ps.setInt(1, uid);
+    		ps.setInt(2, uid);
     		rs = ps.executeQuery();
     		
     		l = loadStudentActivity(rs);
@@ -726,14 +739,18 @@ public class CmAdminDao {
     		m.setStop(rs.getString("stop_time"));
     		int sectionNum = rs.getInt("test_segment");
     		String progId = rs.getString("prog_id");
+
     		StringBuilder sb = new StringBuilder();
-			sb.append("Quiz-").append(sectionNum);
-			
-			//TODO: handle Review sections
+			sb.append(rs.getString("activity"));
+
+			boolean isQuiz = (rs.getInt("is_quiz") > 0);
+            m.setIsQuiz(isQuiz);
+            if (isQuiz) {
+			  sb.append(sectionNum);
+            }
     		m.setActivity(sb.toString());
     		
     		// TODO: identify re-takes?
-
     		int numCorrect = rs.getInt("answered_correct");
     		int numIncorrect = rs.getInt("answered_incorrect");
     		sb.delete(0, sb.length());
@@ -742,18 +759,43 @@ public class CmAdminDao {
         		sb.append(numCorrect).append(" out of ").append(numCorrect + numIncorrect).append(" correct");
     		}
     		else {
-    			if (m.getStart() != null)
-        			sb.append("started");
-    			else
-    				sb.append("not started");
+    			if (isQuiz) {
+        			if (m.getStart() != null)
+            			sb.append("started");
+    	    		else
+    		    		sb.append("not started");
+    			}
+    			else {
+    				sb.append("completed");
+    			}
     		}
             m.setResult(sb.toString());
-            
     		l.add(m);
     	}
+    	
+    	fixReviewSessionNumbers(l);
+    	
     	return l;
     }
 
+    private void fixReviewSessionNumbers(List<StudentActivityModel> l) {
+       int sessionNumber = 0;
+       int count = l.size() - 1;
+       for (int i=0; i <= count; i++) {
+    	   StudentActivityModel m = l.get(count - i);
+    	   if (! m.getIsQuiz()) {
+    		   sessionNumber++;
+    		   StringBuilder sb = new StringBuilder(m.getActivity());
+    		   sb.append(sessionNumber);
+    		   m.setActivity(sb.toString());
+    	   }
+    	   else {
+    		   sessionNumber = 0;
+    	   }
+       }
+       
+    }
+    
     private List <SubjectModel> loadSubjectDefinitions(ResultSet rs) throws Exception {
     	
     	List<SubjectModel> l = new ArrayList<SubjectModel>();
