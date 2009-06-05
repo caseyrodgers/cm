@@ -96,7 +96,7 @@ public class StudentGridPanel extends LayoutContainer {
         if (sm == null)
             return;
 
-        String url = "http://localhost:8081/cm_student/CatchupMath.html?uid=" + sm.getUid();
+        String url = "http://hotmath.kattare.com/cm_student/CatchupMath.html?uid=" + sm.getUid();
         Window.open(url, "_blank", "location=1,menubar=1,resizable=1");
     }
 
