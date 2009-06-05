@@ -13,7 +13,7 @@ import com.extjs.gxt.ui.client.Registry;
 import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
 import com.extjs.gxt.ui.client.Style.SelectionMode;
 import com.extjs.gxt.ui.client.core.XTemplate;
-import com.extjs.gxt.ui.client.event.ComponentEvent;
+import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.util.Util;
@@ -22,7 +22,6 @@ import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
 import com.extjs.gxt.ui.client.widget.grid.Grid;
-import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Widget;
@@ -36,7 +35,7 @@ public class StudentDetailsWindow extends Window {
     
     public StudentDetailsWindow(StudentModel studentModel) {
         this.studentModel = studentModel;
-        setSize(550,300);
+        setSize(550,320);
         setModal(true);
         setResizable(false);
         setHeading("Student Details For: " + studentModel.getName());
@@ -51,27 +50,31 @@ public class StudentDetailsWindow extends Window {
         grid.setStyleName("student-details-panel-grid");
         grid.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
         grid.getSelectionModel().setFiresEvents(true);
-        grid.setWidth(550);
-        grid.setHeight(200);
+        grid.setWidth(530);
+        grid.setHeight(250);
         
         add(studentInfoPanel());
         add(grid);
                 
-        Button btnClose = new Button("Close");
-        btnClose.addSelectionListener(new SelectionListener() {
-            public void componentSelected(ComponentEvent ce) {
-                close();
-            }
-        });
+        Button btnClose = closeButton();
         setButtonAlign(HorizontalAlignment.RIGHT);  
         addButton(btnClose);
-        
         
         getStudentActivityRPC(store, studentModel);
 
         setVisible(true);
     }
     
+	private Button closeButton() {
+		Button btn = new Button("Close", new SelectionListener<ButtonEvent>() {  
+	        @Override  
+	    	public void componentSelected(ButtonEvent ce) {
+                close();	        	
+	        }  
+	    });
+	    btn.setIconStyle("icon-delete");
+		return btn;
+	}
     
     private ColumnModel defineColumns() {
         List<ColumnConfig> configs = new ArrayList<ColumnConfig>();
@@ -134,8 +137,6 @@ public class StudentDetailsWindow extends Window {
         sb.append("  <div class='fld'><label>Group:</label><div>{group}&nbsp;</div></div>");
         sb.append("  <div class='fld'><label>Program:</label><div>{program}&nbsp;</div></div>");
         sb.append("  <div class='fld'><label>Pass %:</label><div> {pass-percent}&nbsp;</div></div>");
-        sb.append("  <div class='fld'><label>Expires:</label><div>{expiration-date}&nbsp;</div></div>");
-        sb.append("  <div class='fld'><label>Live Tutoring:</label><div>{has-tutoring}&nbsp;</div></div>");
         sb.append("</div>");
         sb.append("<div class='form right'>");
         sb.append("  <div class='fld'><label>Passcode:</label><div>{passcode}&nbsp;</div></div>");
