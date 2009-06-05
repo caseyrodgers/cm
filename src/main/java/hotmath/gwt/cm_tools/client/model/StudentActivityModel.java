@@ -12,6 +12,7 @@ public class StudentActivityModel extends BaseModelData  {
 	public static final String RESULT_KEY = "result";
 	public static final String START_KEY = "start";
 	public static final String STOP_KEY = "stop";
+	public static final String IS_QUIZ_KEY = "is-quiz";
 	
 	public String getActivity() {
 		return get(ACTIVITY_KEY);
@@ -59,6 +60,15 @@ public class StudentActivityModel extends BaseModelData  {
 
 	public void setStop(String stop) {
 		set(STOP_KEY, stop);
+	}
+
+
+	public Boolean getIsQuiz() {
+		return get(IS_QUIZ_KEY);
+	}
+
+	public void setIsQuiz(Boolean isQuiz) {
+		set(IS_QUIZ_KEY, isQuiz);
 	}
 
 	public StudentActivityModel() {
