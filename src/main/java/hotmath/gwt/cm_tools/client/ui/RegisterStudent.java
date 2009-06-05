@@ -16,7 +16,6 @@ import com.extjs.gxt.ui.client.Registry;
 import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
 import com.extjs.gxt.ui.client.data.BaseModelData;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
-import com.extjs.gxt.ui.client.event.ComponentEvent;
 import com.extjs.gxt.ui.client.event.SelectionChangedEvent;
 import com.extjs.gxt.ui.client.event.SelectionChangedListener;
 import com.extjs.gxt.ui.client.event.SelectionListener;
@@ -746,7 +745,7 @@ public class RegisterStudent extends LayoutContainer {
 	}
 	
 	private void getChapterListRPC(String progId, String subjId, final Boolean chapOnly, final ListStore <ChapterModel> chapStore) {
-		if (subjId == null) return;
+		if (progId == null || !progId.equalsIgnoreCase("chap")) return;
 		
 		inProcessCount++;
 		RegistrationServiceAsync s = (RegistrationServiceAsync) Registry.get("registrationService");
@@ -769,8 +768,6 @@ public class RegisterStudent extends LayoutContainer {
         		CatchupMathAdmin.showAlert(msg);
         	}
         });
-
-
 	
 	}
 	
