@@ -138,14 +138,29 @@
 
 .account-info  .left {
     position: absolute;
-    top: 10px;
+    top: 30px;
     left: 20px;
 }
 
 .account-info  .right {
     position: absolute;
-    top: 10px;
+    top: 30px;
     left: 385px;
+}
+
+.account-info .school-name-form .fld {
+    width: 100%;
+}
+.account-info .school-name-form {
+	width: 600px;
+    position: absolute;
+    top: 10px;
+    left: 20px;
+}
+
+.account-info .school-name-form .fld div {
+    float: right;
+    width: 420px;
 }
 
 .student-grid-panel-grid {
@@ -227,4 +242,17 @@
     position: absolute;
     top: 10px;
     left: 265px;
+}
+
+
+.admin-help {
+	
+}
+
+.faq li{
+	list-style: none;
+}
+
+.faq .question {
+	color: red;
 }
