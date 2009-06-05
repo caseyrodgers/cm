@@ -1,13 +1,13 @@
 package hotmath.gwt.cm_admin.client;
 
+import hotmath.gwt.cm.client.ui.CmMainPanel;
+import hotmath.gwt.cm_admin.client.model.CmAdminModel;
 import hotmath.gwt.cm_admin.client.service.RegistrationService;
 import hotmath.gwt.cm_admin.client.service.RegistrationServiceAsync;
 import hotmath.gwt.cm_admin.client.ui.AccountInfoPanel;
-import hotmath.gwt.cm_admin.client.ui.HeaderPanel;
 import hotmath.gwt.cm_admin.client.ui.FooterPanel;
-import hotmath.gwt.cm_admin.client.ui.StudentDetailsPanel;
+import hotmath.gwt.cm_admin.client.ui.HeaderPanel;
 import hotmath.gwt.cm_admin.client.ui.StudentGridPanel;
-import hotmath.gwt.cm_admin.client.model.CmAdminModel;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.data.CmAsyncRequest;
 import hotmath.gwt.shared.client.model.UserInfoBase;
@@ -16,6 +16,7 @@ import com.extjs.gxt.ui.client.GXT;
 import com.extjs.gxt.ui.client.Registry;
 import com.extjs.gxt.ui.client.Style.LayoutRegion;
 import com.extjs.gxt.ui.client.event.BaseEvent;
+import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.MessageBoxEvent;
 import com.extjs.gxt.ui.client.util.Theme;
@@ -24,18 +25,12 @@ import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.Viewport;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
-
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.ServiceDefTarget;
-import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.ClickListener;
-import com.google.gwt.user.client.ui.DialogBox;
-import com.google.gwt.user.client.ui.Image;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RootPanel;
-import com.google.gwt.user.client.ui.VerticalPanel;
-import com.google.gwt.user.client.ui.Widget;
 
 /**
  * Entry point classes define <code>onModuleLoad()</code>.
@@ -89,12 +84,7 @@ public class CatchupMathAdmin implements EntryPoint {
 		
 		mainPort = new Viewport();
 		mainPort.setLayout(new BorderLayout());
-		mainPort.setEnableScroll(true);
-		
-		// attempt to improve scrolling...
-		mainPort.setStyleAttribute("overflow", "auto");
-		mainPort.setStyleAttribute("overflow-x", "auto");
-		mainPort.setStyleAttribute("overflow-y", "auto");
+		mainPort.setEnableScroll(false);
 		
 		registerRpcServices();
 
@@ -103,24 +93,29 @@ public class CatchupMathAdmin implements EntryPoint {
 		mainPort.add(headerPanel, bdata);
 
 		mainContainer = new LayoutContainer();
-		mainContainer.setStylePrimaryName("main-container");
+		mainContainer.setStyleName("main-container");
 		
 		AccountInfoPanel aip = new AccountInfoPanel(cmAdminMdl);
 		mainContainer.add(aip);
 		
 		sgp = new StudentGridPanel(cmAdminMdl);
 		mainContainer.add(sgp);
-		mainContainer.setHeight(730);
-		mainContainer.setMonitorWindowResize(true);
 
 		bdata = new BorderLayoutData(LayoutRegion.CENTER);
-		bdata.setMinSize(600);
 		mainPort.add(mainContainer, bdata);
 		
 		bdata = new BorderLayoutData(LayoutRegion.SOUTH,20);
 		FooterPanel footer = new FooterPanel();
 		mainPort.add(footer, bdata);
+
 		
+        mainPort.addListener(Events.Resize, new Listener() {
+            public void handleEvent(BaseEvent be) {
+                    if(StudentGridPanel.instance != null) {
+                        StudentGridPanel.instance.resizeChildren();
+                    }
+            }
+        });		
 		RootPanel.get().add(mainPort);
 	}
 	

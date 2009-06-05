@@ -1,16 +1,12 @@
 package hotmath.gwt.cm_admin.client.ui;
 
-import java.util.List;
-
 import hotmath.gwt.cm_admin.client.CatchupMathAdmin;
 import hotmath.gwt.cm_admin.client.model.AccountInfoModel;
 import hotmath.gwt.cm_admin.client.model.CmAdminModel;
-import hotmath.gwt.cm_admin.client.model.StudentModel;
 import hotmath.gwt.cm_admin.client.service.RegistrationServiceAsync;
 
 import com.extjs.gxt.ui.client.Registry;
 import com.extjs.gxt.ui.client.core.XTemplate;
-import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.util.Util;
 import com.extjs.gxt.ui.client.widget.HorizontalPanel;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
@@ -24,7 +20,7 @@ public class AccountInfoPanel extends LayoutContainer {
 	private HTML html;
 	private AccountInfoModel model;
 	private CmAdminModel cmAdminModel;
-	
+
 	public AccountInfoPanel(CmAdminModel cmAdminMdl) {
 		
 		cmAdminModel = cmAdminMdl;
@@ -35,31 +31,28 @@ public class AccountInfoPanel extends LayoutContainer {
 		hp.setAutoWidth(true);
 		hp.setSpacing(10);
 		hp.setBorders(false);
-		hp.setStyleName("account-info");
-		// left:640px;
-		// position:absolute;
+		hp.setStyleName("account-info-panel");
 	
-		StringBuilder sb = new StringBuilder();  
-		sb.append("<div 'style='line-height: 20px; font-size: 13px; width: 800px'>");
-		
-		sb.append("<div style='float:right; width:280px; margin-left: 100px>'");
-		sb.append("<p><b>Account login name:</b> {admin-user-name}</p>");
-		sb.append("<p><b>Last login:</b> {last-login}</p>");
-		sb.append("<p><b>Student count:</b> {total-students}</p>");
-		sb.append("</div");
-
-		sb.append("<div style='float: left; margin-right:100px; width:280px'>");
-		sb.append("<p><b>School:</b> {school-name}</p>");
-		sb.append("<p><b>Administrator:</b> {school-user-name}</p>");
-		sb.append("<p><b>Maximum Students:</b> {max-students}</p>");
-		sb.append("<p><b>Expires:</b> {expiration-date}</p>");
-		sb.append("<p><b>Live Tutoring:</b> {has-tutoring}</p>");
-		sb.append("</div></div>");
+		StringBuilder sb = new StringBuilder();
+		sb.append("<div class='account-info'>");
+		sb.append("<div class='form left'>");
+		sb.append("  <div class='fld'><label>School:</label><div>{school-name}</div></div>");
+		sb.append("  <div class='fld'><label>Administrator:</label><div>{school-user-name}</div></div>");
+		sb.append("  <div class='fld'><label>Maximum Students:</label><div> {max-students}</div></div>");
+		sb.append("  <div class='fld'><label>Expires:</label><div> {expiration-date}</div></div>");
+		sb.append("  <div class='fld'><label>Live Tutoring:</label><div>{has-tutoring}</div></div>");
+		sb.append("</div>");
+        sb.append("<div class='form right'>");
+        sb.append("  <div class='fld'><label>Account login name:</label><div>{admin-user-name}</div></div>");
+        sb.append("  <div class='fld'><label>Last login:</label><div>{last-login}</div></div>");
+        sb.append("  <div class='fld'><label>Student count:</label><div>{total-students}</div></div>");
+        sb.append("</div>");		
+		sb.append("</div>");
 		
 		template = XTemplate.create(sb.toString());  
 		html = new HTML();
-		html.setHTML(sb.toString());
 		html.setVisible(false);
+		html.setHTML(sb.toString());
 		hp.add(html);
 		
 		//TODO: add "Details" button or tool tip

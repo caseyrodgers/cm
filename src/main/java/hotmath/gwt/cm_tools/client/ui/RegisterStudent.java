@@ -21,6 +21,7 @@ import com.extjs.gxt.ui.client.event.SelectionChangedEvent;
 import com.extjs.gxt.ui.client.event.SelectionChangedListener;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.store.ListStore;
+import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.Window;
 import com.extjs.gxt.ui.client.widget.button.Button;
@@ -61,7 +62,7 @@ public class RegisterStudent extends LayoutContainer {
 	
 	private FieldSet fs;
 	
-	private int formHeight = 320;
+	private int formHeight = 380;
 	private int formWidth  = 340;
 	
 	public RegisterStudent(final Grid<StudentModel> grid, StudentModel sm, CmAdminModel cm) {
@@ -80,18 +81,27 @@ public class RegisterStudent extends LayoutContainer {
 	}
 	
 	private FormPanel createForm() {
-		final FormPanel fp = new FormPanel();
+		final CombinedFormPanel fp = new CombinedFormPanel();
+		fp.setStyleName("register-student-form-panel");
 		fp.setLabelWidth(75);
-		fp.setWidth(formWidth);
 		fp.setHeight(formHeight);
+		fp.setFooter(true);
 		fp.setFrame(false);
 		fp.setHeaderVisible(false);
 		fp.setBodyBorder(false);
 		fp.setIconStyle("icon-form");
-		fp.setStyleAttribute("padding", "10px 10px 5px 10px");
 		fp.setButtonAlign(HorizontalAlignment.CENTER);
 		fp.setLayout(new FormLayout());
 		
+		FormLayout fm = (FormLayout)fp.getLayout();
+		
+		FieldSet fs = new FieldSet();
+		FormLayout fL = new FormLayout();
+		fL.setLabelWidth(fm.getLabelWidth());
+        fL.setDefaultWidth(175);
+	    fs.setLayout(fL);
+	    
+		fs.setHeading("Define User Login");
 		TextField<String> name = new TextField<String>();  
 		name.setFieldLabel("Name");
 		name.focus();
@@ -101,8 +111,7 @@ public class RegisterStudent extends LayoutContainer {
 		if (! isNew) {
 			name.setValue((String)stuMdl.getName());
 		}
-		fp.add(name);
-
+		fs.add(name);
 		TextField<String> passCode = new TextField<String>();
 		passCode.setFieldLabel("Passcode");
 		passCode.setEmptyText("-- enter passcode --");
@@ -111,7 +120,7 @@ public class RegisterStudent extends LayoutContainer {
 		if (! isNew) {
 			passCode.setValue((String)stuMdl.getPasscode());
 		}
-		fp.add(passCode);
+		fs.add(passCode);
 
 /* don't need email field for now
 		TextField<String> email = new TextField<String>();
@@ -130,14 +139,18 @@ public class RegisterStudent extends LayoutContainer {
 		groupStore = new ListStore <GroupModel> ();
 		getGroupListRPC(cmAdminMdl.getId(), groupStore);
 		groupCombo = groupCombo(groupStore);
-		fp.add(groupCombo);
+		fs.add(groupCombo);
+        fp.add(fs);
+
+
 		
 		fs = new FieldSet();
-		fs.setHeading("&nbsp;Select Program&nbsp;");
-		fs.setStyleAttribute("margin-top", "20px");
+		fs.setHeading("Assign Program");
+		fs.setStyleName("register-student-fieldset");
 		
 		FormLayout fl = new FormLayout();
-		fl.setLabelWidth(85);
+		fl.setLabelWidth(fL.getLabelWidth());
+		fl.setDefaultWidth(fL.getDefaultWidth());
 		
 		// this should be in CSS
 		// fl.setPadding(5);
@@ -175,19 +188,15 @@ public class RegisterStudent extends LayoutContainer {
 		fw.setDraggable(true);
 		fw.setModal(true);
 
-		LayoutContainer buttonHolder = new LayoutContainer();
-        buttonHolder.setStyleName("register-student-btn-holder");
-
 		Button cancelBtn = cancelButton();
         cancelBtn.setStyleName("register-student-cancel");
-		buttonHolder.add(cancelBtn);
-
+        
 		Button saveBtn = saveButton(fs, fp);
 		saveBtn.setStyleName("register-student-btn");
-        buttonHolder.add(saveBtn);
-
-		fp.add(buttonHolder);
-
+		
+		fp.setButtonAlign(HorizontalAlignment.RIGHT);  
+        fp.addButton(saveBtn);
+        fp.addButton(cancelBtn);
 		return fp;
 	}
 
@@ -366,7 +375,7 @@ public class RegisterStudent extends LayoutContainer {
 		return cancelBtn;
 	}
 
-	private Button saveButton(final FieldSet fs, final FormPanel fp) {
+	private Button saveButton(final FieldSet fs, final CombinedFormPanel fp) {
 		Button saveBtn = new Button("Save", new SelectionListener<ButtonEvent>() {  
 	        @SuppressWarnings("unchecked")
 			@Override  
@@ -799,4 +808,30 @@ public class RegisterStudent extends LayoutContainer {
 			return get("pass-percent");
 		}
 	}
+}
+
+
+
+/** Search for field in nested FieldSets
+ * 
+ * @author casey
+ *
+ */
+class CombinedFormPanel extends FormPanel {
+    public Component getItemByItemId(String itemId) {
+        
+        Component foundObject=super.getItemByItemId(itemId);
+        if(foundObject != null)
+            return foundObject;
+        
+        // search all fieldsets, looking for named item
+        for(Component comp: getItems()) {
+            if(comp instanceof FieldSet) {
+                foundObject = ((FieldSet)comp).getItemByItemId(itemId);
+                if(foundObject != null)
+                    return foundObject;
+            }
+        }
+        return null;
+    }
 }

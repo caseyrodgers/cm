@@ -777,7 +777,7 @@ public class CmAdminDao {
     		}
     	}
     	catch (Exception e) {
-    		System.out.println("*** Exception: " + e.getStackTrace());
+    		e.printStackTrace();
     	}
 	
     	return chap;
