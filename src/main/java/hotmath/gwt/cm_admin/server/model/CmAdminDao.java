@@ -350,6 +350,7 @@ public class CmAdminDao {
         	
     	}
     	catch (Exception e) {
+    	    e.printStackTrace();
     	    System.out.println(String.format("*** Error adding student with passcode: %s, Exception: %s",
     	    		sm.getPasscode(), e.getLocalizedMessage()));
     		//logger.error(String.format("*** Error adding student with passcode: %s", sm.getPasscode()), e);
@@ -634,6 +635,7 @@ public class CmAdminDao {
     		rval = loadProgramDefinitions(rs);
     	}
     	catch (Exception e) {
+    	    e.printStackTrace();
     		System.out.println("*** Exception: " + e.getLocalizedMessage());
     	}
     	finally {

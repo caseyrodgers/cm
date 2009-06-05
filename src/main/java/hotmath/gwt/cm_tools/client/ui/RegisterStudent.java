@@ -573,6 +573,7 @@ public class RegisterStudent extends LayoutContainer {
 
 			public void onSuccess(List<GroupModel> result) {
 				groupStore.add(result);
+				
 				inProcessCount--;
 				setComboBoxSelections();
         	}
