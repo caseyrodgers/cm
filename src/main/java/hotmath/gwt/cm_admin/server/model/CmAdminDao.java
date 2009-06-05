@@ -758,6 +758,7 @@ public class CmAdminDao {
         		sb.append("completed, ");
         		sb.append(numCorrect).append(" out of ").append(numCorrect + numIncorrect).append(" correct");
     		}
+    	/* only show quiz score results
     		else {
     			if (isQuiz) {
         			if (m.getStart() != null)
@@ -769,6 +770,7 @@ public class CmAdminDao {
     				sb.append("completed");
     			}
     		}
+    	*/
             m.setResult(sb.toString());
     		l.add(m);
     	}
