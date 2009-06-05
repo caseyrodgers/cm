@@ -35,6 +35,7 @@ import com.extjs.gxt.ui.client.widget.menu.Menu;
 import com.extjs.gxt.ui.client.widget.toolbar.FillToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.SeparatorToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
@@ -57,7 +58,19 @@ public class StudentGridPanel extends LayoutContainer {
     public StudentGridPanel(CmAdminModel cmAdminMdl) {
         this._cmAdminMdl = cmAdminMdl;
         final ListStore<StudentModel> store = new ListStore<StudentModel>();
-        getStudentsRPC(cmAdminMdl.getId(), store);
+        
+        
+        final int uid = cmAdminMdl.getId();
+        
+        getStudentsRPC(uid, store,null);
+        
+        // refresh the data every 10 seconds
+        Timer t = new Timer() {
+            public void run() {
+                getStudentsRPC(uid, store,null);
+            }
+          };
+        t.scheduleRepeating(1000 * 60);   
 
         ColumnModel cm = defineColumns();
 
@@ -65,6 +78,13 @@ public class StudentGridPanel extends LayoutContainer {
         _grid.setStyleName("student-grid-panel-grid");
 
         getAccountInfoRPC(cmAdminMdl.getId());
+        // refresh the data every 10 seconds
+        Timer t2 = new Timer() {
+            public void run() {
+                getAccountInfoRPC(uid);
+            }
+          };
+        t2.scheduleRepeating(1000 * 30);        
 
         _gridContainer = new FieldSet();
         _gridContainer.setStyleName("student-grid-panel-grid-container");
@@ -85,6 +105,12 @@ public class StudentGridPanel extends LayoutContainer {
         _grid.setContextMenu(contextMenu);
 
         instance = this;
+    }
+    
+    /** Force a refresh */
+    public void refreshDataNow(Integer uid) {
+        getStudentsRPC(this._cmAdminMdl.getId(), _grid.getStore(), uid);
+        getAccountInfoRPC(this._cmAdminMdl.getId());
     }
 
     /**
@@ -350,13 +376,36 @@ public class StudentGridPanel extends LayoutContainer {
         return cm;
     }
 
-    protected void getStudentsRPC(Integer uid, final ListStore<StudentModel> store) {
+    protected void getStudentsRPC(Integer uid, final ListStore<StudentModel> store,  final Integer uidToSelect) {
         RegistrationServiceAsync s = (RegistrationServiceAsync) Registry.get("registrationService");
 
         s.getSummariesForActiveStudents(uid, new AsyncCallback<List<StudentModel>>() {
 
             public void onSuccess(List<StudentModel> result) {
+                
+                // try to reselect current selection
+                int selectedUid=0;
+                if(uidToSelect != null) {
+                    selectedUid = uidToSelect;
+                }
+                else {
+                    // used current selection
+                    StudentModel sm = _grid.getSelectionModel().getSelectedItem();
+                    selectedUid = (sm != null)?sm.getUid():0;
+                }
+                
+                store.removeAll();
                 store.add(result);
+                
+                if(selectedUid > 0) {
+                    for(int i=0;i<store.getCount();i++) {
+                        if(store.getAt(i).getUid() == selectedUid) {
+                            _grid.getSelectionModel().select(store.getAt(i),false);    
+                            break;
+                        }
+                    }
+                }
+                    
             }
 
             public void onFailure(Throwable caught) {
