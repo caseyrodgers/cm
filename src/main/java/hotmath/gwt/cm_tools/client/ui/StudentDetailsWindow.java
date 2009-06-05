@@ -25,6 +25,7 @@ import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
 import com.extjs.gxt.ui.client.widget.grid.Grid;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.Widget;
 
 public class StudentDetailsWindow extends Window {
     
@@ -53,7 +54,7 @@ public class StudentDetailsWindow extends Window {
         grid.setWidth(550);
         grid.setHeight(200);
         
-        setTopComponent(studentInfoPanel());
+        add(studentInfoPanel());
         add(grid);
                 
         Button btnClose = new Button("Close");
@@ -121,16 +122,9 @@ public class StudentDetailsWindow extends Window {
         return cm;
     }
     
-    private HorizontalPanel studentInfoPanel() {
-        HorizontalPanel hp = new HorizontalPanel();
-        hp.setSpacing(7);
-        hp.setHeight(100);
-        hp.setBorders(false);
-        
+    private Widget studentInfoPanel() {
         defineStudentInfoTemplate();
-        
-        hp.add(html);
-        return hp;
+        return html;
     }    
     
     private void defineStudentInfoTemplate() {
