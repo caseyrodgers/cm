@@ -35,17 +35,19 @@ public class AccountInfoPanel extends LayoutContainer {
 	
 		StringBuilder sb = new StringBuilder();
 		sb.append("<div class='account-info'>");
+        sb.append("<div class='form school-name-form'>");
+        sb.append("  <div class='fld'><label>School:</label><div>{school-name}&nbsp;</div></div>");
+        sb.append("</div>");
 		sb.append("<div class='form left'>");
-		sb.append("  <div class='fld'><label>School:</label><div>{school-name}</div></div>");
-		sb.append("  <div class='fld'><label>Administrator:</label><div>{school-user-name}</div></div>");
-		sb.append("  <div class='fld'><label>Maximum Students:</label><div> {max-students}</div></div>");
-		sb.append("  <div class='fld'><label>Expires:</label><div> {expiration-date}</div></div>");
-		sb.append("  <div class='fld'><label>Live Tutoring:</label><div>{has-tutoring}</div></div>");
+		sb.append("  <div class='fld'><label>Administrator:</label><div>{school-user-name}&nbsp;</div></div>");
+		sb.append("  <div class='fld'><label>Maximum Students:</label><div> {max-students}&nbsp;</div></div>");
+		sb.append("  <div class='fld'><label>Expires:</label><div> {expiration-date}&nbsp;</div></div>");
+		sb.append("  <div class='fld'><label>Live Tutoring:</label><div>{has-tutoring}&nbsp;</div></div>");
 		sb.append("</div>");
         sb.append("<div class='form right'>");
-        sb.append("  <div class='fld'><label>Account login name:</label><div>{admin-user-name}</div></div>");
-        sb.append("  <div class='fld'><label>Last login:</label><div>{last-login}</div></div>");
-        sb.append("  <div class='fld'><label>Student count:</label><div>{total-students}</div></div>");
+        sb.append("  <div class='fld'><label>Account login name:</label><div>{admin-user-name}&nbsp;</div></div>");
+        sb.append("  <div class='fld'><label>Last login:</label><div>{last-login}&nbsp;</div></div>");
+        sb.append("  <div class='fld'><label>Student count:</label><div>{total-students}&nbsp;</div></div>");
         sb.append("</div>");		
 		sb.append("</div>");
 		
@@ -70,6 +72,7 @@ public class AccountInfoPanel extends LayoutContainer {
 
 	public void setAccountInfoModel(AccountInfoModel model) {
 		this.model = model;
+		
 		template.overwrite(html.getElement(), Util.getJsObject(this.model));  
 	}
 
