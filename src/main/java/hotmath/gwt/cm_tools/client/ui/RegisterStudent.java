@@ -309,6 +309,7 @@ public class RegisterStudent extends LayoutContainer {
 	private ComboBox<GroupModel> groupCombo(ListStore<GroupModel> store) {
 		ComboBox<GroupModel> combo = new ComboBox<GroupModel>();
 		combo.setFieldLabel("Group");
+		combo.setValue(store.getAt(0));	
 		combo.setForceSelection(false);
 		combo.setDisplayField(GroupModel.NAME_KEY);
 		combo.setEditable(false);
@@ -348,6 +349,7 @@ public class RegisterStudent extends LayoutContainer {
 	
 	private ComboBox<PassPercent> passPercentCombo(ListStore<PassPercent> store) {
 		ComboBox<PassPercent> combo = new ComboBox<PassPercent>();
+		combo.setValue(store.getAt(2));
 		combo.setFieldLabel("Pass Percent");
 		combo.setForceSelection(false);
 		combo.setDisplayField("pass-percent");
@@ -590,7 +592,7 @@ public class RegisterStudent extends LayoutContainer {
 		s.addUser(sm, new AsyncCallback <StudentModel> () {
 			
 			public void onSuccess(StudentModel ai) {
-				eg.getStore().add(sm);
+				StudentGridPanel.instance.refreshDataNow(ai.getUid());
 				fw.close();
         	}
 
@@ -608,7 +610,7 @@ public class RegisterStudent extends LayoutContainer {
 		s.updateUser(sm, stuChanged, progChanged, progIsNew, passcodeChanged, new AsyncCallback <StudentModel> () {
 			
 			public void onSuccess(StudentModel ai) {
-				copyStudent(sm, stuMdl);
+			    StudentGridPanel.instance.refreshDataNow(null);
 				fw.close();
         	}
 
