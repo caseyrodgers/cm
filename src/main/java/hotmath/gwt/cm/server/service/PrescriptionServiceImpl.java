@@ -15,7 +15,6 @@ import hotmath.gwt.cm.client.service.PrescriptionService;
 import hotmath.gwt.cm.client.ui.NextAction;
 import hotmath.gwt.cm.client.ui.NextAction.NextActionName;
 import hotmath.gwt.cm.client.util.CmRpcException;
-import hotmath.gwt.shared.client.util.CmException;
 import hotmath.gwt.shared.client.util.RpcData;
 import hotmath.inmh.INeedMoreHelpItem;
 import hotmath.inmh.INeedMoreHelpResourceType;
@@ -553,7 +552,7 @@ public class PrescriptionServiceImpl extends RemoteServiceServlet implements Pre
         Connection conn = null;
         PreparedStatement pstat = null;
         try {
-            String sql = "insert into HA_TEST_RUN_INMH_USE(run_id, item_type, item_file, view_time)values(?,?,?,?)";
+            String sql = "insert into HA_TEST_RUN_INMH_USE(run_id, item_type, item_file, view_time, session_number)values(?,?,?,?,?)";
             conn = HMConnectionPool.getConnection();
             pstat = conn.prepareStatement(sql);
 
@@ -561,6 +560,8 @@ public class PrescriptionServiceImpl extends RemoteServiceServlet implements Pre
             pstat.setString(2, type);
             pstat.setString(3, file);
             pstat.setTimestamp(4, new Timestamp(System.currentTimeMillis()));
+            pstat.setInt(5, HaTestRun.lookupTestRun(runId).getHaTest().getUser().getActiveTestRunSession());
+            
 
             int cnt = pstat.executeUpdate();
             if (cnt != 1)
