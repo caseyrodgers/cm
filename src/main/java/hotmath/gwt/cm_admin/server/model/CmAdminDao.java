@@ -145,7 +145,7 @@ public class CmAdminDao {
     	" 'Review-' as activity, 0 as is_quiz " +
         "from  HA_TEST l INNER JOIN HA_USER u ON l.user_id = u.uid " +
         "join HA_TEST_RUN r on r.test_id = l.test_id " +
-        "join HA_TEST_RUN_INMH_USE iu on iu.run_id = r.run_id and iu.item_type = 'solution' " +
+        "join HA_TEST_RUN_INMH_USE iu on iu.run_id = r.run_id " +
         "join HA_TEST_DEF td on td.test_def_id = l.test_def_id " +
         "where u.uid = ? " +
         "order by use_date desc, start_time desc, test_run_id desc, test_segment desc ";
