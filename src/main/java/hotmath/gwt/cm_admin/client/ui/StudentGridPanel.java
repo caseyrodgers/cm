@@ -78,7 +78,6 @@ public class StudentGridPanel extends LayoutContainer {
         _grid.setStyleName("student-grid-panel-grid");
 
         getAccountInfoRPC(cmAdminMdl.getId());
-        // refresh the data every 10 seconds
         Timer t2 = new Timer() {
             public void run() {
                 getAccountInfoRPC(uid);
@@ -107,14 +106,19 @@ public class StudentGridPanel extends LayoutContainer {
         instance = this;
     }
     
-    /** Force a refresh */
+    /** Force a refresh
+     * 
+     * 
+     * @param uid  The uid to select, or null to select current row
+     * 
+     */
     public void refreshDataNow(Integer uid) {
         getStudentsRPC(this._cmAdminMdl.getId(), _grid.getStore(), uid);
         getAccountInfoRPC(this._cmAdminMdl.getId());
     }
 
     /**
-     * Double clicked on row
+     * Log in as this user
      * 
      */
     private void loginAsSelectedUser() {
