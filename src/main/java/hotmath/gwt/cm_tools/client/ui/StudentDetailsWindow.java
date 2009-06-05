@@ -51,7 +51,7 @@ public class StudentDetailsWindow extends Window {
         grid.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
         grid.getSelectionModel().setFiresEvents(true);
         grid.setWidth(530);
-        grid.setHeight(250);
+        grid.setHeight(190);
         
         add(studentInfoPanel());
         add(grid);
