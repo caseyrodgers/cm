@@ -54,7 +54,7 @@ public class CatchupMathAdmin implements EntryPoint {
 
 		instance = this;
 
-		GXT.setDefaultTheme(Theme.GRAY, true);
+		//GXT.setDefaultTheme(Theme.GRAY, true);
 		
         try {
             userId = CmShared.handleLoginProcess();
