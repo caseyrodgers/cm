@@ -138,7 +138,7 @@ public class StudentDetailsWindow extends Window {
         sb.append("  <div class='fld'><label>Live Tutoring:</label><div>{has-tutoring}&nbsp;</div></div>");
         sb.append("</div>");
         sb.append("<div class='form right'>");
-        sb.append("  <div class='fld'><label>Passcode:</label><div>{passcode}</div>&nbsp;</div>");
+        sb.append("  <div class='fld'><label>Passcode:</label><div>{passcode}&nbsp;</div></div>");
         sb.append("  <div class='fld'><label>Tutoring:</label><div>{tutoring-state}&nbsp;</div></div>");
         sb.append("</div>");        
         sb.append("</div>");
