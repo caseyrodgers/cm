@@ -169,6 +169,7 @@ public class HaUser extends HaBasicUserImpl {
 	        pstat.setString(6,getBackgroundStyle());
 	        pstat.setInt(7,getUid());
 	        
+	        System.out.println("Updating HA_USER: " + pstat.toString());
             
 			if(pstat.executeUpdate() == 0)
 				throw new HotMathException("Could not update user record: " + getUid());
