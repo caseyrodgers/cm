@@ -7,7 +7,9 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -132,23 +134,24 @@ public class CmAdminDao {
     	"  date_format(r.run_time,'%h:%i %p') as stop_time, date_format(r.run_time,'%Y-%m-%d') as run_date, " +
     	"  r.answered_correct, r.answered_incorrect, concat(td.subj_id, ' ', td.prog_id) as program, td.prog_id, " +
     	"  l.test_id as test_id, l.test_segment, td.test_def_id as test_def_id, r.run_id as test_run_id, 'Quiz-' as activity, " +
-    	"  1 as is_quiz " +
+    	"  1 as is_quiz, 0 as resources_viewed " +
         "from  HA_TEST l INNER JOIN HA_USER u ON l.user_id = u.uid " +
         "join HA_TEST_RUN r on r.test_id = l.test_id " +
         "join HA_TEST_DEF td on td.test_def_id = l.test_def_id " +
         "where u.uid = ? " +
         "union " +
-        "select date_format(iu.view_time,'%Y-%m-%d') as use_date, date_format(iu.view_time,'%h:%i %p') as start_time, " +
-    	"  date_format(iu.view_time,'%h:%i %p') as stop_time, date_format(iu.view_time,'%Y-%m-%d') as run_date, " +
+        "select date_format(max(iu.view_time),'%Y-%m-%d') as use_date, date_format(max(iu.view_time),'%h:%i %p') as start_time, " +
+    	"  date_format(max(iu.view_time),'%h:%i %p') as stop_time, date_format(max(iu.view_time),'%Y-%m-%d') as run_date, " +
     	"  0 as answered_correct, 0 as answered_incorrect, concat(td.subj_id, ' ', td.prog_id) as program, td.prog_id, " +
     	"  l.test_id as test_id, iu.session_number as test_segment, td.test_def_id as test_def_id, r.run_id as test_run_id, " +
-    	" 'Review-' as activity, 0 as is_quiz " +
+    	" 'Review-' as activity, 0 as is_quiz, count(*) as resources_viewed " +
         "from  HA_TEST l INNER JOIN HA_USER u ON l.user_id = u.uid " +
         "join HA_TEST_RUN r on r.test_id = l.test_id " +
         "join HA_TEST_RUN_INMH_USE iu on iu.run_id = r.run_id " +
         "join HA_TEST_DEF td on td.test_def_id = l.test_def_id " +
         "where u.uid = ? " +
-        "order by use_date desc, start_time desc, test_run_id desc, test_segment desc ";
+        "group by test_run_id " +
+        "order by use_date desc, start_time desc, test_run_id desc, test_segment desc"; 
 
     public List <StudentActivityModel> getStudentActivity(int uid) throws Exception {
     	List <StudentActivityModel> l = null;
@@ -741,6 +744,9 @@ public class CmAdminDao {
     		m.setStop(rs.getString("stop_time"));
     		int sectionNum = rs.getInt("test_segment");
     		String progId = rs.getString("prog_id");
+    		
+    		int runId = rs.getInt("test_run_id");
+    		m.setRunId(runId);
 
     		StringBuilder sb = new StringBuilder();
 			sb.append(rs.getString("activity"));
@@ -756,45 +762,43 @@ public class CmAdminDao {
     		int numCorrect = rs.getInt("answered_correct");
     		int numIncorrect = rs.getInt("answered_incorrect");
     		sb.delete(0, sb.length());
-    		if (numCorrect != 0 || numIncorrect != 0) {
-        		sb.append("completed, ");
-        		sb.append(numCorrect).append(" out of ").append(numCorrect + numIncorrect).append(" correct");
+    		if (isQuiz) {
+        		int percent = (numCorrect*100) / (numCorrect + numIncorrect);
+        		sb.append(percent).append("% correct");
     		}
-    	/* only show quiz score results
     		else {
-    			if (isQuiz) {
-        			if (m.getStart() != null)
-            			sb.append("started");
-    	    		else
-    		    		sb.append("not started");
-    			}
-    			else {
-    				sb.append("completed");
-    			}
+    			int resourcesViewed = rs.getInt("resources_viewed");
+                sb.append(resourcesViewed).append(" items viewed");
     		}
-    	*/
             m.setResult(sb.toString());
     		l.add(m);
     	}
     	
-    	fixReviewSessionNumbers(l);
+    	fixReviewSectionNumbers(l);
     	
     	return l;
     }
 
-    private void fixReviewSessionNumbers(List<StudentActivityModel> l) {
-       int sessionNumber = 0;
-       int count = l.size() - 1;
-       for (int i=0; i <= count; i++) {
-    	   StudentActivityModel m = l.get(count - i);
-    	   if (! m.getIsQuiz()) {
-    		   sessionNumber++;
-    		   StringBuilder sb = new StringBuilder(m.getActivity());
-    		   sb.append(sessionNumber);
-    		   m.setActivity(sb.toString());
+    private void fixReviewSectionNumbers(List<StudentActivityModel> l) {
+       Map <Integer, StudentActivityModel> h = new HashMap<Integer, StudentActivityModel>();
+       for (StudentActivityModel m : l) {
+    	   if (m.getIsQuiz()) {
+    		   h.put(m.getRunId(), m);
     	   }
-    	   else {
-    		   sessionNumber = 0;
+       }
+       
+       for (StudentActivityModel m : l) {
+    	   if (! m.getIsQuiz()) {
+               Integer runId = m.getRunId();
+               StudentActivityModel q = h.get(runId);
+               if (q != null) {
+            	   String[] t = q.getActivity().split("-");
+            	   if (t.length > 1) {
+            		   StringBuilder sb = new StringBuilder(m.getActivity());
+            		   sb.append(t[1]);
+            		   m.setActivity(sb.toString());
+            	   }
+               }
     	   }
        }
        
