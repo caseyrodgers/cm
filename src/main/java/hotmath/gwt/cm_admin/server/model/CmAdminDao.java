@@ -266,7 +266,11 @@ public class CmAdminDao {
         " left join SUBSCRIBERS_SERVICES sc on sc.subscriber_id = h.subscriber_id and sc.service_name = 'catchup' " +
         " left join (select admin_id, is_active, count(*) as student_count from HA_USER where is_active = 1 group by admin_id) t " +
         "   on t.admin_id = h.aid " + 
-        " left join (select user_id, max(login_time) as login_time from HA_USER_LOGIN where user_type = 'ADMIN' group by user_id) l " +
+        " left join (" +
+        "   select user_id, max(login_time) as login_time from HA_USER_LOGIN u " +
+        "   where u.login_time < (select max(login_time) as login_time from HA_USER_LOGIN " +
+        "                         where user_type = 'ADMIN' and user_id = u.user_id group by user_id) " +
+        "   and u.user_id = ? group by u.user_id) l " +
         "   on l.user_id = h.aid " +
         "where h.aid = ?";
 
@@ -281,6 +285,7 @@ public class CmAdminDao {
     		conn = HMConnectionPool.getConnection();
     		ps = conn.prepareStatement(ACCOUNT_INFO_SQL);
     		ps.setInt(1, adminUid);
+    		ps.setInt(2, adminUid);
     		rs = ps.executeQuery();
     		if (rs.next()) {
           	    ai.setSchoolName(rs.getString("school_name"));
