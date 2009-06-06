@@ -134,13 +134,11 @@ public class StudentDetailsWindow extends Window {
         StringBuilder sb = new StringBuilder();
         sb.append("<div class='student-detail-info'>");
         sb.append("<div class='form left'>");
-        sb.append("  <div class='fld'><label>Group:</label><div>{group}&nbsp;</div></div>");
-        sb.append("  <div class='fld'><label>Program:</label><div>{program}&nbsp;</div></div>");
-        sb.append("  <div class='fld'><label>Pass %:</label><div> {pass-percent}&nbsp;</div></div>");
+        sb.append("  <div class='fld'><label>Pass %:</label><div>{pass-percent}&nbsp;</div></div>");
+        sb.append("  <div class='fld'><label>Tutoring:</label><div>{tutoring-state}&nbsp;</div></div>");
         sb.append("</div>");
         sb.append("<div class='form right'>");
         sb.append("  <div class='fld'><label>Passcode:</label><div>{passcode}&nbsp;</div></div>");
-        sb.append("  <div class='fld'><label>Tutoring:</label><div>{tutoring-state}&nbsp;</div></div>");
         sb.append("</div>");        
         sb.append("</div>");
 

@@ -823,7 +823,7 @@ public class CmAdminDao {
     		}
     	}
     	catch (Exception e) {
-    		e.printStackTrace();
+    		System.out.println("*** Exception: " + e.getStackTrace());
     	}
 	
     	return chap;
