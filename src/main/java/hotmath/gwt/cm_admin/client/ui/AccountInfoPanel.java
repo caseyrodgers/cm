@@ -46,7 +46,7 @@ public class AccountInfoPanel extends LayoutContainer {
 		sb.append("</div>");
         sb.append("<div class='form right'>");
         sb.append("  <div class='fld'><label>Account login name:</label><div>{admin-user-name}&nbsp;</div></div>");
-        sb.append("  <div class='fld'><label>Last login:</label><div>{last-login}&nbsp;</div></div>");
+        sb.append("  <div class='fld'><label>Previous Admin login:</label><div>{last-login}&nbsp;</div></div>");
         sb.append("  <div class='fld'><label>Student count:</label><div>{total-students}&nbsp;</div></div>");
         sb.append("</div>");		
 		sb.append("</div>");
