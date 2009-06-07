@@ -364,12 +364,12 @@
 
 
 #steps_head_title {
-	display: none;
+	
 }
 
 #tutor_embedded {
 	margin: 10px;
-        width: auto;
+    width: auto;
 }
 
 
@@ -622,7 +622,15 @@ img.resource-item-complete {
     background: url(/gwt-resources/images/resource-viewer-body.png) repeat-y;
 }
 
-.resoruce-viewer-container {
+.resource-viewer-impl-tutor {
+	background: transparent;
+	margin: auto;
+}
+
+#show-work-button {
+	position: absolute;
+	top: 8px;
+	left: 8px;
 }
 
 .resource-viewer-header {
@@ -857,11 +865,11 @@ img.resource-item-complete {
 
 
 #testset_head {
-    background: transparent url(../images/quiz_head-500x24.png) no-repeat scroll 0 0;
+    background: transparent url(/gwt-resources/css/images/quiz_head-500x24.png) no-repeat scroll 0 0;
 }
 
 #testset_footer {
-   background: transparent url(../images/quiz_footer-500x24.png) no-repeat scroll 0 0;
+   background: transparent url(/gwt-resources/images/quiz_footer-500x24.png) no-repeat scroll 0 0;
    background-color: transparent;
 }
 

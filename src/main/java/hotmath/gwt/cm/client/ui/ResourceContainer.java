@@ -167,8 +167,10 @@ public class ResourceContainer extends LayoutContainer {
 	 * @param w
 	 */
 	public void addControl(Widget w) {
-	    _header.add(w);
-	    layout();
+	    if(_header != null) {
+	        _header.add(w);
+	        layout();
+	    }
 	}
 	
    public void removeControl(Widget w) {

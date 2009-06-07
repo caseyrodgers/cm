@@ -104,9 +104,9 @@ function findQuestionByPid(pid) {
 // / For the tutor viewer
 // ///////////////////
 // called by GWT, which setups the context for the pid
-function doLoad_Gwt(pid) {
+function doLoad_Gwt(pid, title) {
 	var mc = createNewSolutionMessageContext(pid);
-	gotoGUID(mc);
+	gotoGUID(mc, title);
 }
 
 var _bookMeta = {
@@ -239,13 +239,14 @@ window.markCorrectResponse = function(questionList) {
  * @return
  */
 function scrollToStep(num) {
-	
-	// just scroll to bottom
-	var objDiv = document.getElementById("tutor_embedded").parentNode.parentNode;
+
+	// just scroll to bottom, must track the panel that is doing the scrolling
+	// @TODO: how to get a better handle on which one?  This can easily break
+    // if the DOM is changed
+	// Perhaps, this needs to call GWT JNSI and have it do the scrolling, or at
+	// least provide the source of the scrolling panel ... ?
+	var objDiv = document.getElementById("tutor_embedded").parentNode.parentNode.parentNode;
 	objDiv.scrollTop = objDiv.scrollHeight;
-
-	// alert('Scroll height: ' + objDiv.scrollTop);
-
 } 
 
 
