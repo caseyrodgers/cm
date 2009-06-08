@@ -22,6 +22,8 @@ public interface RegistrationServiceAsync {
 	  
 	  void getActiveGroups(Integer adminUid, AsyncCallback<List<GroupModel>> callback);
 	  
+	  void addGroup(Integer adminUid, GroupModel gm, AsyncCallback<GroupModel> callback);
+	  
 	  void getSubjectDefinitions(AsyncCallback<List<SubjectModel>> callback);
 	  
 	  void getChaptersForProgramSubject(String progId, String subjId, AsyncCallback<List<ChapterModel>> callback);

@@ -77,4 +77,9 @@ public class RegistrationServiceImpl extends RemoteServiceServlet implements Reg
 		CmAdminDao cma = new CmAdminDao();
 		return cma.getAccountInfo(uid);
 	}
+
+	public GroupModel addGroup(Integer adminUid, GroupModel gm) throws Exception {
+		CmAdminDao cma = new CmAdminDao();
+		return cma.addGroup(adminUid, gm);
+	}
 }

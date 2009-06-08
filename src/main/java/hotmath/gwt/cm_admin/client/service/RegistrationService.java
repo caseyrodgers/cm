@@ -22,6 +22,8 @@ public interface RegistrationService extends RemoteService {
 	  
 	  List<GroupModel> getActiveGroups(Integer adminUid);
 
+	  GroupModel addGroup(Integer adminUid, GroupModel gm) throws Exception;
+
 	  List<SubjectModel> getSubjectDefinitions();
 	  
 	  List<StudentActivityModel> getStudentActivity(StudentModel sm) throws Exception;
