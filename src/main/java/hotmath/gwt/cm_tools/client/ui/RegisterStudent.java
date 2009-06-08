@@ -321,8 +321,16 @@ public class RegisterStudent extends LayoutContainer {
 		combo.setTypeAhead(true);
 		combo.setSelectOnFocus(true);
 		combo.setEmptyText("-- select a group --");
-		//combo.disable();
 		combo.setWidth(280);
+		
+	    combo.addSelectionChangedListener(new SelectionChangedListener<GroupModel>() {
+			public void selectionChanged(SelectionChangedEvent<GroupModel> se) {
+	        	GroupModel gm = se.getSelectedItem();
+	        	if (gm.getName().equals(GroupModel.NEW_GROUP)) {
+	        		GroupWindow gw = new GroupWindow(cmAdminMdl, groupCombo, true);
+	        	}
+	        }
+	    });
 		return combo;
 	}
 	
@@ -572,6 +580,12 @@ public class RegisterStudent extends LayoutContainer {
 		s.getActiveGroups(uid, new AsyncCallback <List<GroupModel>>() {
 
 			public void onSuccess(List<GroupModel> result) {
+				// insert 'New Group' at beginning of List
+				GroupModel gm = new GroupModel();
+				gm.setName(GroupModel.NEW_GROUP);
+				gm.setId(GroupModel.NEW_GROUP);
+				result.add(0, gm);
+				
 				groupStore.add(result);
 				
 				inProcessCount--;
