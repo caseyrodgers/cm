@@ -62,7 +62,7 @@ public class GroupWindow extends LayoutContainer {
 		fp.add(name);
 
 		gw.setHeading((isNew)?"Define a New Group":"Edit Group");
-		gw.setWidth(formWidth);
+		gw.setWidth(formWidth+10);
 		gw.setHeight(formHeight+20);
 		gw.setLayout(new FitLayout());
 		gw.setResizable(false);
