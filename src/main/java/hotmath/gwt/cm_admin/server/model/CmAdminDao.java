@@ -220,7 +220,77 @@ public class CmAdminDao {
     	}
     	return l;
     }
+
+    private static final String ADD_GROUP_SQL =
+    	"insert into CM_GROUP (name, description, is_active, admin_id) " +
+    	"values( ?, ?, ?, ?)";
+
+    public GroupModel addGroup(Integer adminUid, GroupModel gm) throws Exception {
+    	Connection conn = null;
+    	PreparedStatement ps = null;
+    	ResultSet rs = null;
+    	
+		Boolean isDuplicate = checkForDuplicateGroup(adminUid, gm);
+		if (isDuplicate) {
+			throw new Exception("The group you entered already exists, please try again.");
+		}
+		
+    	try {
+    		conn = HMConnectionPool.getConnection();
+    		ps = conn.prepareStatement(ADD_GROUP_SQL);
+    		ps.setString(1, gm.getName());
+    		ps.setString(2, null);
+    		ps.setInt(3, 1);
+    		ps.setInt(4, adminUid);
+    		
+    		int count = ps.executeUpdate();
+    		if (count == 1) {
+        	    int grpId = this.getLastInsertId(conn);
+        	    gm.setId(String.valueOf(grpId));
+    		}
+    	}
+    	catch (Exception e) {
+    	    e.printStackTrace();
+    	    System.out.println(String.format("*** Error adding Group: %s, Exception: %s",
+    	    	gm.getName(), e.getLocalizedMessage()));
+    	    throw new Exception(String.format("*** Error adding Group: %s ***", gm.getName()));
+    	}
+    	finally {
+    		SqlUtilities.releaseResources(rs, ps, conn);
+    	}
+    	return gm;
+    }
+
+    //TODO: assumes a single Admin per school
+    private static final String CHECK_DUPLICATE_GROUP_SQL =
+    	"select 1 from CM_GROUP where name = ? and admin_id in (?, 0)";
     
+    public Boolean checkForDuplicateGroup(Integer adminUid, GroupModel gm) throws Exception {
+    	Connection conn = null;
+    	PreparedStatement ps = null;
+    	ResultSet rs = null;
+    	
+    	try {
+    		conn = HMConnectionPool.getConnection();
+    		ps = conn.prepareStatement(CHECK_DUPLICATE_GROUP_SQL);
+    		ps.setString(1, gm.getName());
+    		ps.setInt(2, adminUid);
+    		
+    		rs = ps.executeQuery();
+    		return (rs.next());
+    	}
+    	catch (Exception e) {
+    		e.printStackTrace();
+    		System.out.println(String.format("*** Error checking for group: %s, adminUid: %d",
+    			gm.getName(), adminUid));
+    		//logger.error(String.format("*** Error checking for group: %s, adminUid: %d", gm.getName(), adminUid), e);
+    		throw e;
+    	}
+    	finally {
+    		SqlUtilities.releaseResources(rs, ps, conn);
+    	}
+    }
+
     private static final String CHAPTERS_SQL =
     	"select bt.title_number, trim(bt.title) as title, td.textcode " +
         "from HA_TEST_DEF td, BOOK_TOC bt " +
