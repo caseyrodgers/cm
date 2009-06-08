@@ -59,6 +59,8 @@ public class RegisterStudent extends LayoutContainer {
 	private ListStore <GroupModel> groupStore;
 	private ComboBox <GroupModel> groupCombo;
 	
+	private TextField<String> name;
+	
 	private FieldSet fs;
 	
 	private int formHeight = 380;
@@ -76,6 +78,9 @@ public class RegisterStudent extends LayoutContainer {
 		fw = new Window();
 		fw.add(createForm());
  		fw.show();
+ 		if (isNew) {
+ 			name.focus();
+ 		}
 		setComboBoxSelections();
 	}
 	
@@ -101,9 +106,8 @@ public class RegisterStudent extends LayoutContainer {
 	    fs.setLayout(fL);
 	    
 		fs.setHeading("Define User Login");
-		TextField<String> name = new TextField<String>();  
+		name = new TextField<String>();  
 		name.setFieldLabel("Name");
-		name.focus();
 		name.setAllowBlank(false);
 		name.setId("name");
 		name.setEmptyText("-- enter name --");
@@ -141,8 +145,6 @@ public class RegisterStudent extends LayoutContainer {
 		fs.add(groupCombo);
         fp.add(fs);
 
-
-		
 		fs = new FieldSet();
 		fs.setHeading("Assign Program");
 		fs.setStyleName("register-student-fieldset");
@@ -196,6 +198,7 @@ public class RegisterStudent extends LayoutContainer {
 		fp.setButtonAlign(HorizontalAlignment.RIGHT);  
         fp.addButton(saveBtn);
         fp.addButton(cancelBtn);
+        
 		return fp;
 	}
 
