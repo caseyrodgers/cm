@@ -6,10 +6,11 @@ public class GroupModel extends BaseModelData {
 	
 	private static final long serialVersionUID = 2783538975661520681L;
 	
-	public static final String NAME_KEY = "name";
+	public static final String NAME_KEY = "group-name";
 	public static final String ID_KEY = "id";
 	public static final String DESC_KEY = "description";
 	public static final String IS_ACTIVE_KEY = "is-active";
+	public static final String NEW_GROUP = "--- New Group ---";
 	
 	private String id;
 	private String name;
