@@ -16,7 +16,7 @@ public interface RegistrationServiceAsync {
 	
 	  void getProgramDefinitions(AsyncCallback<List<StudyProgramModel>> callback);
 	  
-	  void getSummariesForActiveStudents(Integer adminUid, AsyncCallback<List<StudentModel>> callback);
+      void getSummariesForActiveStudents(Integer adminUid, AsyncCallback<List<StudentModel>> callback);
 	  
 	  void getSummariesForInactiveStudents(Integer adminUid, AsyncCallback<List<StudentModel>> callback);
 	  
@@ -33,6 +33,8 @@ public interface RegistrationServiceAsync {
 	  void addUser(StudentModel sm, AsyncCallback<StudentModel> callback);
 	  
 	  void deactivateUser(StudentModel sm, AsyncCallback<StudentModel> callback);
+	  
+	  void removeUser(StudentModel sm, AsyncCallback<StudentModel> callback);
 	  
 	  void updateUser(StudentModel sm, Boolean stuChanged, Boolean progChanged, Boolean progIsNew,
 			  Boolean passcodeChanged, AsyncCallback<StudentModel> callback);
