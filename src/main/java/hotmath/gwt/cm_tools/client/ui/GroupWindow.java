@@ -84,8 +84,8 @@ public class GroupWindow extends LayoutContainer {
 	private Button cancelButton() {
 		Button cancelBtn = new Button("Cancel", new SelectionListener<ButtonEvent>() {  
 	    	public void componentSelected(ButtonEvent ce) {
+                gw.close();	    	    
 	    		grpCombo.reset();
-	        	gw.close();
 	        }  
 	    });
 		return cancelBtn;
