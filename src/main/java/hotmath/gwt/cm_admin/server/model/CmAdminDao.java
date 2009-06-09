@@ -1,9 +1,18 @@
 package hotmath.gwt.cm_admin.server.model;
 
+import hotmath.gwt.cm_admin.client.model.AccountInfoModel;
+import hotmath.gwt.cm_admin.client.model.ChapterModel;
+import hotmath.gwt.cm_admin.client.model.GroupModel;
+import hotmath.gwt.cm_admin.client.model.StudentActivityModel;
+import hotmath.gwt.cm_admin.client.model.StudentModel;
+import hotmath.gwt.cm_admin.client.model.StudyProgramModel;
+import hotmath.gwt.cm_admin.client.model.SubjectModel;
+import hotmath.util.HMConnectionPool;
+import hotmath.util.sql.SqlUtilities;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -13,20 +22,8 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
 import org.json.JSONArray;
 import org.json.JSONObject;
-
-import hotmath.gwt.cm_admin.client.model.AccountInfoModel;
-import hotmath.gwt.cm_admin.client.model.ChapterModel;
-import hotmath.gwt.cm_admin.client.model.GroupModel;
-import hotmath.gwt.cm_admin.client.model.StudentModel;
-import hotmath.gwt.cm_admin.client.model.StudentActivityModel;
-import hotmath.gwt.cm_admin.client.model.StudyProgramModel;
-import hotmath.gwt.cm_admin.client.model.SubjectModel;
-
-import hotmath.util.HMConnectionPool;
-import hotmath.util.sql.SqlUtilities;
 
 public class CmAdminDao {
 	
@@ -444,7 +441,13 @@ public class CmAdminDao {
     
     private static final String DEACTIVATE_USER_SQL =
     	"update HA_USER set is_active = 0 where uid = ?";
+
     
+    /** We should probably not deactivate user because it locks
+     *  up the existing password.  Right now we have a unique
+     *  index setup on the uid+password.  So, even though 
+     *  a 
+     */
     public StudentModel deactivateUser(StudentModel sm) {
     	Connection conn = null;
     	PreparedStatement ps = null;
@@ -465,6 +468,37 @@ public class CmAdminDao {
     	}
     	return sm;    	
     	
+    }
+
+    
+    /** Remove this user from the admin's scope
+     * 
+     * @TODO: move to archive?
+     * 
+     * @param sm
+     */
+    public void removeUser(StudentModel sm) {
+        final String REMOVE_USER_SQL = "delete from HA_USER where uid = ?";
+        
+        Connection conn = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        
+        try {
+            logger.info("Removing user: " + sm.getUid());
+            conn = HMConnectionPool.getConnection();
+            ps = conn.prepareStatement(REMOVE_USER_SQL);
+            ps.setInt(1, sm.getUid());
+            if(ps.executeUpdate()==0) {
+                logger.warn("User was not removed");
+            }
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+        finally {
+            SqlUtilities.releaseResources(rs, ps, conn);
+        }
     }
 
     public StudentModel updateStudent(StudentModel sm, Boolean studentChanged, Boolean programChanged, Boolean progIsNew,

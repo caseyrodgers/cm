@@ -1,16 +1,16 @@
 package hotmath.gwt.cm_admin.client.service;
 
-import java.util.List;
-
-import com.google.gwt.user.client.rpc.RemoteService;
-
 import hotmath.gwt.cm_admin.client.model.AccountInfoModel;
 import hotmath.gwt.cm_admin.client.model.ChapterModel;
 import hotmath.gwt.cm_admin.client.model.GroupModel;
-import hotmath.gwt.cm_admin.client.model.StudentModel;
 import hotmath.gwt.cm_admin.client.model.StudentActivityModel;
+import hotmath.gwt.cm_admin.client.model.StudentModel;
 import hotmath.gwt.cm_admin.client.model.StudyProgramModel;
 import hotmath.gwt.cm_admin.client.model.SubjectModel;
+
+import java.util.List;
+
+import com.google.gwt.user.client.rpc.RemoteService;
 
 public interface RegistrationService extends RemoteService {
 
@@ -33,6 +33,8 @@ public interface RegistrationService extends RemoteService {
 	  StudentModel addUser(StudentModel sm) throws Exception;
 
 	  StudentModel deactivateUser(StudentModel sm);
+	  
+	  void removeUser(StudentModel sm);
 
 	  StudentModel updateUser(StudentModel sm, Boolean stuChanged, Boolean progChanged, Boolean progIsNew,
 			  Boolean passcodeChanged) throws Exception;
