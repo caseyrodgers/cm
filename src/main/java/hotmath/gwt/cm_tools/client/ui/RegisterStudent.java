@@ -2,6 +2,7 @@ package hotmath.gwt.cm_admin.client.ui;
 
 import hotmath.gwt.cm_admin.client.CatchupMathAdmin;
 import hotmath.gwt.cm_admin.client.model.ChapterModel;
+import hotmath.gwt.cm_admin.client.model.CmAdminDataReader;
 import hotmath.gwt.cm_admin.client.model.CmAdminModel;
 import hotmath.gwt.cm_admin.client.model.GroupModel;
 import hotmath.gwt.cm_admin.client.model.StudentModel;
@@ -32,6 +33,8 @@ import com.extjs.gxt.ui.client.widget.form.ComboBox.TriggerAction;
 import com.extjs.gxt.ui.client.widget.grid.Grid;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.layout.FormLayout;
+import com.google.gwt.user.client.Command;
+import com.google.gwt.user.client.DeferredCommand;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public class RegisterStudent extends LayoutContainer {
@@ -82,6 +85,7 @@ public class RegisterStudent extends LayoutContainer {
  			name.focus();
  		}
 		setComboBoxSelections();
+		
 	}
 	
 	private FormPanel createForm() {
@@ -115,6 +119,7 @@ public class RegisterStudent extends LayoutContainer {
 			name.setValue((String)stuMdl.getName());
 		}
 		fs.add(name);
+		
 		TextField<String> passCode = new TextField<String>();
 		passCode.setFieldLabel("Passcode");
 		passCode.setEmptyText("-- enter passcode --");
@@ -198,7 +203,7 @@ public class RegisterStudent extends LayoutContainer {
 		fp.setButtonAlign(HorizontalAlignment.RIGHT);  
         fp.addButton(saveBtn);
         fp.addButton(cancelBtn);
-        
+       
 		return fp;
 	}
 
@@ -609,7 +614,7 @@ public class RegisterStudent extends LayoutContainer {
 		s.addUser(sm, new AsyncCallback <StudentModel> () {
 			
 			public void onSuccess(StudentModel ai) {
-				StudentGridPanel.instance.refreshDataNow(ai.getUid());
+			    CmAdminDataReader.getInstance().fireRefreshData();
 				fw.close();
         	}
 
@@ -627,7 +632,7 @@ public class RegisterStudent extends LayoutContainer {
 		s.updateUser(sm, stuChanged, progChanged, progIsNew, passcodeChanged, new AsyncCallback <StudentModel> () {
 			
 			public void onSuccess(StudentModel ai) {
-			    StudentGridPanel.instance.refreshDataNow(null);
+			    CmAdminDataReader.getInstance().fireRefreshData();
 				fw.close();
         	}
 
