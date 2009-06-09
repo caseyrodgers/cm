@@ -35,6 +35,7 @@ import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.layout.FormLayout;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.DeferredCommand;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public class RegisterStudent extends LayoutContainer {
@@ -70,6 +71,8 @@ public class RegisterStudent extends LayoutContainer {
 	private int formWidth  = 340;
 	
 	public RegisterStudent(final Grid<StudentModel> grid, StudentModel sm, CmAdminModel cm) {
+
+	    
 		inProcessCount = 0;
 		isNew = (sm == null);
 		stuMdl = sm;
@@ -203,6 +206,21 @@ public class RegisterStudent extends LayoutContainer {
 		fp.setButtonAlign(HorizontalAlignment.RIGHT);  
         fp.addButton(saveBtn);
         fp.addButton(cancelBtn);
+        
+        
+        /** Seems like a bug with setting focus, so the only way to 
+         *  it to work is to set a timer and hope ... 
+         *  
+         *  It seems the form is validating before it needs to and showing error 
+         *  messages before any input has been added .. which removes the focus
+         *  
+         *  @TODO: get name.focus() to just work without the need for timing tricks.
+         */
+        new Timer() {
+            public void run() {
+                name.focus();
+            }
+        }.schedule(2000);
        
 		return fp;
 	}
