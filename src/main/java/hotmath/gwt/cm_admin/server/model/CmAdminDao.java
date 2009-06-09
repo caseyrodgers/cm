@@ -39,8 +39,7 @@ public class CmAdminDao {
         "       concat(p.pass_percent,'%') as pass_percent, t.total_segments, concat(m.answered_correct*10,'%') as last_quiz, " +
         "       trim(concat(ifnull(d.subj_id,''), ' ', d.prog_id)) as program, d.prog_id, d.subj_id, " +
         "       date_format(m.last_run_time,'%Y-%m-%d') as last_use_date, 0 as has_tutoring, " +
-        "       i.solution_views as solution_usage_count, i.video_views as video_usage_count, i.review_views as review_usage_count, " +
-        "       ifnull(g.id, 0) as group_id, ifnull(g.name, 'none') as group_name " +
+        "       tu.usage_count, ifnull(g.id, 0) as group_id, ifnull(g.name, 'none') as group_name " +
         "FROM  HA_ADMIN a " +
         "INNER JOIN HA_USER h " +
         "   on a.aid = h.admin_id " +
@@ -52,8 +51,9 @@ public class CmAdminDao {
         "   on t.user_id = h.uid and t.create_time = s.c_time " +
         "LEFT JOIN HA_TEST_DEF d " +
         "   on d.test_def_id = h.test_def_id " +
-        "LEFT JOIN v_HA_TEST_INMH_VIEWS_INFO i " +
-        "   on i.uid = h.uid " +
+        "LEFT JOIN (select u.uid, count(*) as usage_count from HA_TEST_RUN_INMH_USE i, HA_TEST t, HA_TEST_RUN r, HA_USER u " +
+        "           where t.user_id = u.uid and r.test_id = t.test_id and i.run_id = r.run_id group by u.uid) tu " +
+        "   on tu.uid = h.uid " +
         "LEFT JOIN (select uid, answered_correct, max(last_run_time) as last_run_time from v_HA_TEST_RUN_max group by uid) m " +
         "   on m.uid = h.uid " +
         "LEFT JOIN CM_GROUP g " +
@@ -824,7 +824,7 @@ public class CmAdminDao {
             sm.setLastQuiz(rs.getString("last_quiz"));
             sm.setChapter(getChapter(rs.getString("test_config_json")));
             sm.setLastLogin(rs.getString("last_use_date"));
-            int totalUsage = rs.getInt("video_usage_count") + rs.getInt("solution_usage_count") + rs.getInt("review_usage_count");
+            int totalUsage = rs.getInt("usage_count");
             sm.setTotalUsage(String.valueOf(totalUsage));
             String passPercent = rs.getString("pass_percent");
             sm.setPassPercent(passPercent);
