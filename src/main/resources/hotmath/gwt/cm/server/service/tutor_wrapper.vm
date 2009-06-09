@@ -2,7 +2,9 @@
 <div id='tutor_embedded' style='display: block'>
     <!-- HOTMATH BODY START -->
     <div id="tutoroutput" style='display: block;position: relative;'>
-        <a style='position: absolute;right: 30px;top: 3px;' class='button' href='#' onclick='showWorkDialog_Gwt();return false;'>Show Work</a>
+        <div class='cm-tutor-button-bar-top' style='position: absolute; top:3px;right: 15px;'>
+         <a class='button' href='#' onclick='showWorkDialog_Gwt();return false;'>Show Work<img  src='/gwt-resources/images/icon_show_work.png'/></a>
+        </div>        
         <div id='tutor_raw_steps_wrapper'>
             $solution_html
                      </div>
@@ -19,10 +21,10 @@
                     tabindex="1" class="notips" accesskey="s">
                     <img id='steps_next_img' src="/images/tutor5/steps_next-disabled.gif">
                 </a>
-                <div id='steps_info'> &nbsp;</div>
-                 <a class='button' href='#' onclick='showWorkDialog_Gwt();return false;'>Show Work</a>
-                 <a class='button' href='#' onmouseover='showAskATutorTooltip_Cm()' onmouseout='nd()'onclick='TutorManager.askATutor();return false;'>Ask a Tutor</a>
-            </div>
+                <div class='cm-tutor-button-bar-bottom' style='float: right;'>
+                   <a class='button' href='#' onclick='showWorkDialog_Gwt();return false;'>Show Work<img  src='/gwt-resources/images/icon_show_work.png'/></a>
+                   <a class='button' href='#' onmouseover='showAskATutorTooltip_Cm()' onmouseout='nd()'onclick='TutorManager.askATutor();return false;'>Ask a Tutor<img src='/gwt-resources/images/icon_ask_a_tutor.png'/></a>
+               </div>
         </div>
         <img id='scrollTo-button' src='/images/tutor5/spacer.gif'>
     </div>

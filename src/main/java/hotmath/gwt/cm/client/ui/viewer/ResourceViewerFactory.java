@@ -2,6 +2,7 @@ package hotmath.gwt.cm.client.ui.viewer;
 
 import hotmath.gwt.cm.client.data.InmhItemData;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.widget.Html;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -26,6 +27,8 @@ public class ResourceViewerFactory {
 	        return new ResourceViewerImplTest();
 	    }
 	    
+	    
+	    Log.debug("ResourceViewerFactory: creating new resource viewer: " + type);
 	    
 		if(type.equals("practice")) {
 			return new ResourceViewerImplTutor();

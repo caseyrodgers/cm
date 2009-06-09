@@ -13,6 +13,7 @@ import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.data.CmAsyncRequest;
 import hotmath.gwt.shared.client.data.CmAsyncRequestImplDefault;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.GXT;
 import com.extjs.gxt.ui.client.Registry;
 import com.extjs.gxt.ui.client.Style.LayoutRegion;
@@ -31,6 +32,8 @@ import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.google.gwt.user.client.Command;
+import com.google.gwt.user.client.DeferredCommand;
 import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.ServiceDefTarget;
@@ -40,6 +43,8 @@ import com.google.gwt.user.client.ui.RootPanel;
  * Entry point classes define <code>onModuleLoad()</code>.
  */
 public class CatchupMath implements EntryPoint {
+    
+    final static String version = "1.0 beta";
 
     /**
      * Return last create instance
@@ -59,11 +64,22 @@ public class CatchupMath implements EntryPoint {
     HeaderPanel _headerPanel;
 
     
+    public void onModuleLoad() {
+        Log.setUncaughtExceptionHandler();
+
+        DeferredCommand.addCommand(new Command() {
+          public void execute() {
+              onModuleLoadLocal();
+          }
+        });
+      }
     /**
      * This is the entry point method.
      */
     int userId;
-    public void onModuleLoad() {
+    public void onModuleLoadLocal() {
+        Log.info("Catchup Math Startup: " + version);
+        
         __thisInstance = this;
         GXT.setDefaultTheme(Theme.GRAY, true);
 

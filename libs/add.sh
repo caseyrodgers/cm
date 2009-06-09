@@ -6,6 +6,7 @@ mvn install:install-file -DgroupId=org.json -DartifactId=json -Dversion=1.0 -Dpa
 mvn install:install-file -DgroupId=sbserver -DartifactId=sbserver -Dversion=2.0 -Dpackaging=jar -Dfile=sqlkitchen_server.jar
 mvn install:install-file -DgroupId=gwt2swf -DartifactId=gwt2swf -Dversion=0.6.0 -Dpackaging=jar -Dfile=gwt2swf-0.6.0.jar
 mvn install:install-file -DgroupId=jade -DartifactId=jade -Dversion=1.0 -Dpackaging=jar -Dfile=jade.jar
+mvn install:install-file -DgroupId=gwt-log -DartifactId=gwt-log -Dversion=2.6.0 -Dpackaging=jar -Dfile=gwt-log-2.6.0.jar 
 
 
 

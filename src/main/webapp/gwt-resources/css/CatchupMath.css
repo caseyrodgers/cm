@@ -363,14 +363,6 @@
 }
 
 
-#steps_head_title {
-	
-}
-
-#tutor_embedded {
-   margin: 20px;
-   width: 500px;
-}
 
 
 .flvplayer-widget {
@@ -526,20 +518,48 @@ img.resource-item-complete {
 	color: #E2FFFF;
 }
 
+
+
+/** Override a few tutor layout styles */
+#tutor_embedded {
+   margin: 20px;
+   width: 500px;
+}
 #tutor_embedded a.button:link,
 #tutor_embedded a.button:active,
 #tutor_embedded a.button:visited,
 #tutor_embedded a.button:hover {
+	font-family:Tahoma,Arial;
     text-decoration: none;
-    color: white;
+    color: #FFFF00;
     margin-left: 15px;	
+    font-size: 11px;
 }
-
-
 #tutor_embedded a.button:hover {
     text-decoration: underline;
 }
+#steps_head {
+    background-image: url(/gwt-resources/images/steps_head-500x24.png);
+}
+#steps_tail {
+    background-image: url(/gwt-resources/images/steps_footer-500x24.png);
+}
+#steps_info {
+    width: 200px;
+}
 
+#tutor_embedded .cm-tutor-button-bar-bottom,
+#tutor_embedded .cm-tutor-button-bar-top {
+   line-height: 17px;
+   width: 200px;
+   text-align: right;
+}
+#tutor_embedded .cm-tutor-button-bar-top img,
+#tutor_embedded .cm-tutor-button-bar-bottom img {
+	vertical-align: middle;
+}
+
+ 
 
 /** The main Resource Container */
 .resource-container {
@@ -783,7 +803,6 @@ img.resource-item-complete {
 
 .activity-widget {
 	margin-left: 10px;
-	border: 1px solid red;
 }
 
 
@@ -882,4 +901,12 @@ img.resource-item-complete {
 
 #testset_div .question_head {
   font-size: 12px;
+}
+
+
+
+.show-work-window {
+  position: absolute;
+  top: 10px;
+  left: 10px;
 }

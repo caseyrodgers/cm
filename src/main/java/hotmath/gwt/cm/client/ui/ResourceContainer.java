@@ -3,6 +3,7 @@ package hotmath.gwt.cm.client.ui;
 import hotmath.gwt.cm.client.ui.viewer.ResourceViewerContainer;
 import hotmath.gwt.cm.client.util.UserInfo;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.Style.Scroll;
 import com.extjs.gxt.ui.client.core.El;
 import com.extjs.gxt.ui.client.widget.HorizontalPanel;
@@ -42,6 +43,8 @@ public class ResourceContainer extends LayoutContainer {
 	public void resetChildSize() {
 	    int HEADER_SIZE=25;
 	    int HEADER_OFFSET_LEFT=20;
+	    
+	    Log.info("ResourceContainer: resizing children");
 	    
 	    try {
 	        // no children

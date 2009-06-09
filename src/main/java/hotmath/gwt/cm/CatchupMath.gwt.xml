@@ -23,6 +23,12 @@
       
       <inherits name='pl.rmalinowski.gwt2swf.GWT2SWF' />
       
+      
+       <!-- Add gwt-log support, default level `OFF` -->
+       <inherits name="com.allen_sauer.gwt.log.gwt-log-OFF" />
+       <!-- Also compile at `INFO` level -->
+       <extend-property name="log_level" values="DEBUG,WARN"/>
+      
       <servlet path="/services/prescriptionService" class="hotmath.gwt.cm.server.service.PrescriptionServiceImpl" />
       
       <!-- Specify the app entry point class.                         -->
