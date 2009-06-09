@@ -1,5 +1,7 @@
 package hotmath.gwt.cm_admin.client;
 
+import hotmath.gwt.cm_admin.client.model.CmAdminDataReader;
+import hotmath.gwt.cm_admin.client.model.CmAdminDataRefresher;
 import hotmath.gwt.cm_admin.client.model.CmAdminModel;
 import hotmath.gwt.cm_admin.client.service.RegistrationService;
 import hotmath.gwt.cm_admin.client.service.RegistrationServiceAsync;
@@ -10,6 +12,9 @@ import hotmath.gwt.cm_admin.client.ui.StudentGridPanel;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.data.CmAsyncRequest;
 import hotmath.gwt.shared.client.model.UserInfoBase;
+
+import java.util.Arrays;
+import java.util.List;
 
 import com.extjs.gxt.ui.client.Registry;
 import com.extjs.gxt.ui.client.Style.LayoutRegion;
@@ -90,12 +95,20 @@ public class CatchupMathAdmin implements EntryPoint {
 
 		mainContainer = new LayoutContainer();
 		mainContainer.setStyleName("main-container");
-		
-		AccountInfoPanel aip = new AccountInfoPanel(cmAdminMdl);
-		mainContainer.add(aip);
+
+		AccountInfoPanel infoPanel = new AccountInfoPanel(cmAdminMdl);
+		mainContainer.add(infoPanel);
 		
 		sgp = new StudentGridPanel(cmAdminMdl);
 		mainContainer.add(sgp);
+		
+		
+		/** Register data refreshing services
+		 * 
+		 */
+		CmAdminDataReader.getInstance().addReader(infoPanel);
+		CmAdminDataReader.getInstance().addReader(sgp);
+		CmAdminDataReader.getInstance().fireRefreshData();  // initialize data
 
 		bdata = new BorderLayoutData(LayoutRegion.CENTER);
 		mainPort.add(mainContainer, bdata);
@@ -105,6 +118,10 @@ public class CatchupMathAdmin implements EntryPoint {
 		mainPort.add(footer, bdata);
 
 		
+		/** Monitor size of main area, to keep grid centered
+		 * 
+		 * @TODO: move this closer to StudentGridPanel (out of here?)
+		 */
         mainPort.addListener(Events.Resize, new Listener() {
             public void handleEvent(BaseEvent be) {
                     if(StudentGridPanel.instance != null) {
