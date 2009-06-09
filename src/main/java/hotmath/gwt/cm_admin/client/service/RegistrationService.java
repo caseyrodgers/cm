@@ -32,7 +32,7 @@ public interface RegistrationService extends RemoteService {
 	  
 	  StudentModel addUser(StudentModel sm) throws Exception;
 
-	  StudentModel deactivateUser(StudentModel sm);
+	  StudentModel deactivateUser(StudentModel sm) throws Exception;
 	  
 	  void removeUser(StudentModel sm);
 
