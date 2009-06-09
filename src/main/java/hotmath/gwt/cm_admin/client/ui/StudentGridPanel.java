@@ -72,19 +72,28 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
 
         add(_gridContainer);
 
+        final Menu contextMenu = new Menu();
+        Button loginAsUser = new Button("Login as User");
+        loginAsUser.addSelectionListener(new SelectionListener<ButtonEvent>() {
+            public void componentSelected(ButtonEvent ce) {
+                loginAsSelectedUser();
+                contextMenu.hide();
+            }
+        });
+        contextMenu.add(loginAsUser);
+        
         if(CmShared.getQueryParameter("debug") != null) {
-            // only show in debug mode
-            final Menu contextMenu = new Menu();
-            Button loginAsUser = new Button("Login as User");
-            loginAsUser.addSelectionListener(new SelectionListener<ButtonEvent>() {
+            Button debugUser = new Button("Debug Info");
+            debugUser.addSelectionListener(new SelectionListener<ButtonEvent>() {
                 public void componentSelected(ButtonEvent ce) {
-                    loginAsSelectedUser();
+                    showDebugInfo();
                     contextMenu.hide();
                 }
             });
-            contextMenu.add(loginAsUser);
-            _grid.setContextMenu(contextMenu);
+            contextMenu.add(debugUser);
         }
+        
+        _grid.setContextMenu(contextMenu);
 
         instance = this;
     }
@@ -121,6 +130,14 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
         Window.open(url, "_blank", "location=1,menubar=1,resizable=1");
     }
 
+    private void showDebugInfo() {
+        StudentModel sm = _grid.getSelectionModel().getSelectedItem();
+        if (sm == null)
+            return;
+        
+        CatchupMathAdmin.showAlert("UID: " + sm.getUid());
+    }
+    
     /**
      * Call when container is resized, allows dynamically resizing children to
      * fit entire size. Mainly used for the grid. It might be set to
