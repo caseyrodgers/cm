@@ -455,11 +455,13 @@ public class CmAdminDao {
     	try {
     		conn = HMConnectionPool.getConnection();
     		ps = conn.prepareStatement(DEACTIVATE_USER_SQL);
-    		ps.setInt(1, sm.getUid());
-    		StringBuilder sb = new StringBuilder(sm.getUid()).append(".").append(System.currentTimeMillis());
-    		ps.setString(2, sb.toString());
+    		StringBuilder sb = new StringBuilder();
+            sb.append(sm.getUid()).append(".").append(System.currentTimeMillis());
+    		ps.setString(1, sb.toString());
+    		ps.setInt(2, sm.getUid());
     		if (ps.executeUpdate() < 1) {
-    			throw new Exception(String.format("user deactivation failed; SQL: %s", ps.toString()));
+    		    logger.error(String.format("user deactivation failed; SQL: %s", ps.toString()));
+    			throw new Exception(String.format("*** Error deactivating student with uid: %d", sm.getUid()));
     		}
     	}
     	catch (Exception e) {
