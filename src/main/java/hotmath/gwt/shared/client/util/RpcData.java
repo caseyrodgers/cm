@@ -47,11 +47,15 @@ public class RpcData implements IsSerializable {
         rpcData.put(name, Integer.toString(value));
     }
 
-    public String getDataAsString(String name) {
+    public Object getData(String name) {
         return rpcData.get(name);
+    }
+    
+    public String getDataAsString(String name) {
+        return (String)rpcData.get(name);
     }
 
     public int getDataAsInt(String name) {
-        return Integer.parseInt(rpcData.get(name));
+        return Integer.parseInt((String)rpcData.get(name));
     }
 }

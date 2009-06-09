@@ -314,6 +314,7 @@ public class HaUser extends HaBasicUserImpl {
 	        SqlUtilities.releaseResources(rs,pstat,conn);
 	    }		
 	}
+	
 
     @Override
     public Object getUserObject() {
