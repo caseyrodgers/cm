@@ -1,37 +1,31 @@
-            <!--  Tutor GUTS go here -->
-            <div id='tutor_embedded' style='display: block'>
-                 <!-- HOTMATH BODY START -->
-                 <div id="tutoroutput" style='display: block'>
-                    <div id='tutor_raw_steps_wrapper'> 
-                     $solution_html
+<!--  Tutor GUTS go here -->
+<div id='tutor_embedded' style='display: block'>
+    <!-- HOTMATH BODY START -->
+    <div id="tutoroutput" style='display: block;position: relative;'>
+        <a style='position: absolute;right: 30px;top: 3px;' class='button' href='#' onclick='showWorkDialog_Gwt();return false;'>Show Work</a>
+        <div id='tutor_raw_steps_wrapper'>
+            $solution_html
                      </div>
-                        <div id='steps_tail'> 
-                          <div id='steps_tail_padding'>
-                            <a id='steps_prev' 
-                                onmouseover='setStepsInfoHelp(getNextMoveTo(-1))' 
-                                    onMouseOut="resetStepsInfo();"
-                                href="javascript:void(0)" onclick="showPreviousStep();return false;" class="notips" accesskey="p">
-                                <img id='steps_prev_img' src="/images/tutor5/steps_previous-disabled.gif">                        </a>
-                            <a id='steps_next' 
-                               onmouseover='setStepsInfoHelp(getNextMoveTo(1))' 
-                               onMouseOut="resetStepsInfo();"
-                               href="javascript:void(0);" onclick="showNextStep();return false;" tabindex="1" class="notips"  accesskey="s">
-                                <img  id='steps_next_img' src="/images/tutor5/steps_next-disabled.gif">                        </a>
-                                <div id='steps_info'> &nbsp; </div>
-                                <a  id='review_link' class="notips" accesskey="r"
-                                href="javascript:HomeworkHelp()" 
-                                onmouseover="setStepsInfoHelp('Choose a Review Lesson');"                            
-                                onclick="showInmhMenu();return false;"  
-                                onmouseout="resetStepsInfo();ndLocal(1000);" tabindex="2">
-                                <img id='inmh_goto' src="/images/tutor5/steps_review-enabled.gif"/>                        </a>                                        </div>
-                    </div>
-                    <img id='scrollTo-button' src='/images/tutor5/spacer.gif'>
-                    <div id='info_section' style='display: block'>
-                        <a href='#' onclick='showWorkDialog_Gwt();return false;'><img id='show-work-button' src='/gwt-resources/images/show_work.png'/> </a>                    
-                        <a href='#' onmouseover='showAskATutorTooltip_Cm()' onmouseout='nd()' onclick='TutorManager.askATutor();return false;'><img class='ask_a_tutor_image' src='/images/tutor5/ask_a_tutor-120x30.gif'/> </a> 
-                       <div id='info_section_detail'> &nbsp; </div>
-                   </div>
-                </div>
-                <!-- HOTMATH BODY END -->
-            </div>                
-            <!--  END TUTOR GUTS  -->
+        <div id='steps_tail'>
+            <div id='steps_tail_padding'>
+                <a id='steps_prev' onmouseover='setStepsInfoHelp(getNextMoveTo(-1))'
+                    onMouseOut="resetStepsInfo();" href="javascript:void(0)"
+                    onclick="showPreviousStep();return false;" class="notips"
+                    accesskey="p">
+                    <img id='steps_prev_img' src="/images/tutor5/steps_previous-disabled.gif">
+                </a>
+                <a id='steps_next' onmouseover='setStepsInfoHelp(getNextMoveTo(1))'
+                    onMouseOut="resetStepsInfo();" href="javascript:void(0);" onclick="showNextStep();return false;"
+                    tabindex="1" class="notips" accesskey="s">
+                    <img id='steps_next_img' src="/images/tutor5/steps_next-disabled.gif">
+                </a>
+                <div id='steps_info'> &nbsp;</div>
+                 <a class='button' href='#' onclick='showWorkDialog_Gwt();return false;'>Show Work</a>
+                 <a class='button' href='#' onmouseover='showAskATutorTooltip_Cm()' onmouseout='nd()'onclick='TutorManager.askATutor();return false;'>Ask a Tutor</a>
+            </div>
+        </div>
+        <img id='scrollTo-button' src='/images/tutor5/spacer.gif'>
+    </div>
+    <!-- HOTMATH BODY END -->
+</div>
+<!--  END TUTOR GUTS  -->

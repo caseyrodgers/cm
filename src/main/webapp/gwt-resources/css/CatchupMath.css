@@ -526,13 +526,19 @@ img.resource-item-complete {
 	color: #E2FFFF;
 }
 
-    
-
-/** Hide the morehelp button on tutors */
-#review_link {
-   display: none;
+#tutor_embedded a.button:link,
+#tutor_embedded a.button:active,
+#tutor_embedded a.button:visited,
+#tutor_embedded a.button:hover {
+    text-decoration: none;
+    color: white;
+    margin-left: 15px;	
 }
 
+
+#tutor_embedded a.button:hover {
+    text-decoration: underline;
+}
 
 
 /** The main Resource Container */
@@ -834,6 +840,7 @@ img.resource-item-complete {
     font-size: .85em;
     float: right;
     margin-right: 20px;
+    margin-top: 2px;
 }
 
 .bottom {
@@ -864,7 +871,7 @@ img.resource-item-complete {
 
 
 #testset_head {
-    background: transparent url(/gwt-resources/css/images/quiz_head-500x24.png) no-repeat scroll 0 0;
+    background: transparent url(/gwt-resources/images/quiz_head-500x24.png) no-repeat scroll 0 0;
 }
 
 #testset_footer {
