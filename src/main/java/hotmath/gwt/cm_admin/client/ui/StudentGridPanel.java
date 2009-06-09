@@ -40,8 +40,6 @@ import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
-//import hotmath.testset.ha.HaUser;
-
 public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefresher {
 
     static public StudentGridPanel instance;
@@ -98,13 +96,10 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
         instance = this;
     }
     
-    @Override
     public void refreshData() {
-        getStudentsRPC(_cmAdminMdl.getId(),_grid.getStore(),null);
+        getStudentsRPC(_cmAdminMdl.getId(), _grid.getStore(), null);
     }
 
-    
-    
     /** Force a refresh
      * 
      * @TODO: Combine these into one request
@@ -318,7 +313,7 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
                             String btnText = be.getButtonClicked().getText();
                             if (btnText.equalsIgnoreCase("yes")) {
                                 grid.getStore().remove(sm);
-                                removeUserRPC(sm);
+                                deactivateUserRPC(sm);
                             }
                         }
                     });
@@ -427,7 +422,22 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
         });
     }
 
+    protected void deactivateUserRPC(StudentModel sm) {
+        RegistrationServiceAsync s = (RegistrationServiceAsync) Registry.get("registrationService");
 
+        s.deactivateUser(sm, new AsyncCallback<StudentModel>() {
+
+            public void onSuccess(StudentModel ai) {
+                CmAdminDataReader.getInstance().fireRefreshData();
+            }
+
+            public void onFailure(Throwable caught) {
+                String msg = caught.getMessage();
+                CatchupMathAdmin.showAlert(msg);
+            }
+        });
+    }
+    
     protected void removeUserRPC(StudentModel sm) {
         RegistrationServiceAsync s = (RegistrationServiceAsync) Registry.get("registrationService");
 
