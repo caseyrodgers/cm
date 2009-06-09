@@ -62,7 +62,7 @@ public class RegistrationServiceImpl extends RemoteServiceServlet implements Reg
 		return cma.addStudent(sm);
 	}
 
-	public StudentModel deactivateUser(StudentModel sm) {
+	public StudentModel deactivateUser(StudentModel sm) throws Exception {
 		CmAdminDao cma = new CmAdminDao();
 		return cma.deactivateUser(sm);
 	}
