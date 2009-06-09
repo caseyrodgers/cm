@@ -440,15 +440,14 @@ public class CmAdminDao {
     }
     
     private static final String DEACTIVATE_USER_SQL =
-    	"update HA_USER set is_active = 0 where uid = ?";
+    	"update HA_USER set is_active = 0, user_passcode = ? where uid = ?";
 
     
-    /** We should probably not deactivate user because it locks
-     *  up the existing password.  Right now we have a unique
-     *  index setup on the uid+password.  So, even though 
-     *  a 
+    /** 
+     *  The user's passcode is set to their uid + '.' + current time in msec to avoid
+     *  "locking up" up the previous passcode and to prevent passcode uniqueness collisions
      */
-    public StudentModel deactivateUser(StudentModel sm) {
+    public StudentModel deactivateUser(StudentModel sm) throws Exception {
     	Connection conn = null;
     	PreparedStatement ps = null;
     	ResultSet rs = null;
@@ -457,11 +456,15 @@ public class CmAdminDao {
     		conn = HMConnectionPool.getConnection();
     		ps = conn.prepareStatement(DEACTIVATE_USER_SQL);
     		ps.setInt(1, sm.getUid());
-    		int result = ps.executeUpdate();
+    		StringBuilder sb = new StringBuilder(sm.getUid()).append(".").append(System.currentTimeMillis());
+    		ps.setString(2, sb.toString());
+    		if (ps.executeUpdate() < 1) {
+    			throw new Exception(String.format("user deactivation failed; SQL: %s", ps.toString()));
+    		}
     	}
     	catch (Exception e) {
-    		//logger.error(String.format("*** Error deactivating student with uid: %d", sm.getUid()), e);
-    		//throw e;
+    		logger.error(String.format("*** Error deactivating student with uid: %d", sm.getUid()), e);
+    		throw e;
     	}
     	finally {
     		SqlUtilities.releaseResources(rs, ps, conn);
