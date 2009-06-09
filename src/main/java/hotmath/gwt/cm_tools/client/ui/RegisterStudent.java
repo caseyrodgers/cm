@@ -216,13 +216,14 @@ public class RegisterStudent extends LayoutContainer {
          *  
          *  @TODO: get name.focus() to just work without the need for timing tricks.
          */
-        new Timer() {
-            public void run() {
-                name.focus();
-            }
-        }.schedule(2000);
-       
-		return fp;
+        if (isNew) {
+            new Timer() {
+                public void run() {
+                    name.focus();
+                }
+            }.schedule(2000);
+        }
+        return fp;
 	}
 
 	private ComboBox<StudyProgram> programCombo(ListStore<StudyProgram> store, final FieldSet fs) {
