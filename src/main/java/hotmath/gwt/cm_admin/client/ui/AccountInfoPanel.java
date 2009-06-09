@@ -2,6 +2,7 @@ package hotmath.gwt.cm_admin.client.ui;
 
 import hotmath.gwt.cm_admin.client.CatchupMathAdmin;
 import hotmath.gwt.cm_admin.client.model.AccountInfoModel;
+import hotmath.gwt.cm_admin.client.model.CmAdminDataRefresher;
 import hotmath.gwt.cm_admin.client.model.CmAdminModel;
 import hotmath.gwt.cm_admin.client.service.RegistrationServiceAsync;
 
@@ -14,7 +15,7 @@ import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HTML;
 
-public class AccountInfoPanel extends LayoutContainer {
+public class AccountInfoPanel extends LayoutContainer implements CmAdminDataRefresher {
 	
 	private XTemplate template;
 	private HTML html;
@@ -66,30 +67,44 @@ public class AccountInfoPanel extends LayoutContainer {
 		super.onRender(parent, index);
 		
 		setStyleName("account-info");
-
-		getAccountInfoRPC(cmAdminModel.getId());
 	}
 
+	/** Set the Account Info header fields
+	 * 
+	 * @param model
+	 */
 	public void setAccountInfoModel(AccountInfoModel model) {
 		this.model = model;
 		
-		template.overwrite(html.getElement(), Util.getJsObject(this.model));  
-	}
-
-	protected void getAccountInfoRPC(Integer uid) {
-		RegistrationServiceAsync s = (RegistrationServiceAsync) Registry.get("registrationService");
+		template.overwrite(html.getElement(), Util.getJsObject(this.model));
 		
-		s.getAccountInfoForAdminUid(uid, new AsyncCallback <AccountInfoModel>() {
-
-			public void onSuccess(AccountInfoModel result) {
-				setAccountInfoModel(result);
-				html.setVisible(true);
-        	}
-
-			public void onFailure(Throwable caught) {
-        		String msg = caught.getMessage();
-        		CatchupMathAdmin.showAlert(msg);
-        	}
-        });
+		html.setVisible(true);
 	}
+	
+
+    protected void getAccountInfoRPC(Integer uid) {
+        RegistrationServiceAsync s = (RegistrationServiceAsync) Registry.get("registrationService");
+
+        s.getAccountInfoForAdminUid(uid, new AsyncCallback<AccountInfoModel>() {
+
+            public void onSuccess(AccountInfoModel ai) {
+                StringBuilder sb = new StringBuilder();
+                sb.append("Manage ").append(ai.getSchoolName()).append(" Students");
+                
+                // _gridContainer.setHeading(sb.toString());
+                
+                setAccountInfoModel(ai);
+            }
+
+            public void onFailure(Throwable caught) {
+                String msg = caught.getMessage();
+                CatchupMathAdmin.showAlert(msg);
+            }
+        });
+    }
+
+    @Override
+    public void refreshData() {
+        getAccountInfoRPC(cmAdminModel.getId());
+    }	
 }

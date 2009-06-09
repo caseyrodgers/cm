@@ -1,10 +1,12 @@
 package hotmath.gwt.cm_admin.client.ui;
 
 import hotmath.gwt.cm_admin.client.CatchupMathAdmin;
-import hotmath.gwt.cm_admin.client.model.AccountInfoModel;
+import hotmath.gwt.cm_admin.client.model.CmAdminDataReader;
+import hotmath.gwt.cm_admin.client.model.CmAdminDataRefresher;
 import hotmath.gwt.cm_admin.client.model.CmAdminModel;
 import hotmath.gwt.cm_admin.client.model.StudentModel;
 import hotmath.gwt.cm_admin.client.service.RegistrationServiceAsync;
+import hotmath.gwt.shared.client.CmShared;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,13 +37,12 @@ import com.extjs.gxt.ui.client.widget.menu.Menu;
 import com.extjs.gxt.ui.client.widget.toolbar.FillToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.SeparatorToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
-import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 //import hotmath.testset.ha.HaUser;
 
-public class StudentGridPanel extends LayoutContainer {
+public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefresher {
 
     static public StudentGridPanel instance;
 
@@ -58,32 +59,11 @@ public class StudentGridPanel extends LayoutContainer {
     public StudentGridPanel(CmAdminModel cmAdminMdl) {
         this._cmAdminMdl = cmAdminMdl;
         final ListStore<StudentModel> store = new ListStore<StudentModel>();
-        
-        
-        final int uid = cmAdminMdl.getId();
-        
-        getStudentsRPC(uid, store,null);
-        
-        // refresh the data every 10 seconds
-        Timer t = new Timer() {
-            public void run() {
-                getStudentsRPC(uid, store,null);
-            }
-          };
-        t.scheduleRepeating(1000 * 60);   
 
         ColumnModel cm = defineColumns();
 
         _grid = defineGrid(store, cm);
         _grid.setStyleName("student-grid-panel-grid");
-
-        getAccountInfoRPC(cmAdminMdl.getId());
-        Timer t2 = new Timer() {
-            public void run() {
-                getAccountInfoRPC(uid);
-            }
-          };
-        t2.scheduleRepeating(1000 * 30);        
 
         _gridContainer = new FieldSet();
         _gridContainer.setStyleName("student-grid-panel-grid-container");
@@ -92,31 +72,42 @@ public class StudentGridPanel extends LayoutContainer {
 
         add(_gridContainer);
 
-        final Menu contextMenu = new Menu();
-        Button loginAsUser = new Button("Login as User");
-        loginAsUser.addSelectionListener(new SelectionListener<ButtonEvent>() {
-            public void componentSelected(ButtonEvent ce) {
-                loginAsSelectedUser();
-                contextMenu.hide();
-            }
-        });
-        contextMenu.add(loginAsUser);
-        _grid.setContextMenu(contextMenu);
+        if(CmShared.getQueryParameter("debug") != null) {
+            // only show in debug mode
+            final Menu contextMenu = new Menu();
+            Button loginAsUser = new Button("Login as User");
+            loginAsUser.addSelectionListener(new SelectionListener<ButtonEvent>() {
+                public void componentSelected(ButtonEvent ce) {
+                    loginAsSelectedUser();
+                    contextMenu.hide();
+                }
+            });
+            contextMenu.add(loginAsUser);
+            _grid.setContextMenu(contextMenu);
+        }
 
         instance = this;
     }
     
+    @Override
+    public void refreshData() {
+        getStudentsRPC(_cmAdminMdl.getId(),_grid.getStore(),null);
+    }
+
+    
+    
     /** Force a refresh
      * 
+     * @TODO: Combine these into one request
      * 
      * @param uid  The uid to select, or null to select current row
      * 
      */
     public void refreshDataNow(Integer uid) {
         getStudentsRPC(this._cmAdminMdl.getId(), _grid.getStore(), uid);
-        getAccountInfoRPC(this._cmAdminMdl.getId());
     }
 
+    
     /**
      * Log in as this user
      * 
@@ -310,7 +301,7 @@ public class StudentGridPanel extends LayoutContainer {
                             String btnText = be.getButtonClicked().getText();
                             if (btnText.equalsIgnoreCase("yes")) {
                                 grid.getStore().remove(sm);
-                                deactivateUserRPC(sm);
+                                removeUserRPC(sm);
                             }
                         }
                     });
@@ -419,31 +410,14 @@ public class StudentGridPanel extends LayoutContainer {
         });
     }
 
-    protected void getAccountInfoRPC(Integer uid) {
+
+    protected void removeUserRPC(StudentModel sm) {
         RegistrationServiceAsync s = (RegistrationServiceAsync) Registry.get("registrationService");
 
-        s.getAccountInfoForAdminUid(uid, new AsyncCallback<AccountInfoModel>() {
-
-            public void onSuccess(AccountInfoModel ai) {
-                StringBuilder sb = new StringBuilder();
-                sb.append("Manage ").append(ai.getSchoolName()).append(" Students");
-                _gridContainer.setHeading(sb.toString());
-            }
-
-            public void onFailure(Throwable caught) {
-                String msg = caught.getMessage();
-                CatchupMathAdmin.showAlert(msg);
-            }
-        });
-    }
-
-    protected void deactivateUserRPC(StudentModel sm) {
-        RegistrationServiceAsync s = (RegistrationServiceAsync) Registry.get("registrationService");
-
-        s.deactivateUser(sm, new AsyncCallback<StudentModel>() {
+        s.removeUser(sm, new AsyncCallback<StudentModel>() {
 
             public void onSuccess(StudentModel ai) {
-                // empty
+                CmAdminDataReader.getInstance().fireRefreshData();
             }
 
             public void onFailure(Throwable caught) {
