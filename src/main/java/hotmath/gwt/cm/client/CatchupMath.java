@@ -1,5 +1,6 @@
 package hotmath.gwt.cm.client;
 
+import hotmath.gwt.cm.client.data.InmhItemData;
 import hotmath.gwt.cm.client.service.PrescriptionService;
 import hotmath.gwt.cm.client.service.PrescriptionServiceAsync;
 import hotmath.gwt.cm.client.ui.CmMainPanel;
@@ -45,6 +46,10 @@ import com.google.gwt.user.client.ui.RootPanel;
 public class CatchupMath implements EntryPoint {
     
     final static String version = "1.0 beta";
+    
+    static {
+        publishNative();
+    }
 
     /**
      * Return last create instance
@@ -73,6 +78,8 @@ public class CatchupMath implements EntryPoint {
           }
         });
       }
+    
+    
     /**
      * This is the entry point method.
      */
@@ -295,6 +302,29 @@ public class CatchupMath implements EntryPoint {
         _mainContainer.add(new CmMainPanel(new PrescriptionCmGuiDefinition()));
         _mainContainer.layout();
     }
+    
+
+    static private void doResourceLoad(String type, String file) {
+        InmhItemData resourceItem = new InmhItemData();
+        resourceItem.setType(type);
+        resourceItem.setFile(file);
+        
+        CmMainPanel.__lastInstance._mainContent.showResource(resourceItem);
+    }
+    
+    /** Push a GWT method onto the global space for the app window
+     * 
+     *   This wil be called from CatchupMath.js:doResourceLoad
+     *   
+     */
+    static private native void publishNative() /*-{
+                                    $wnd.doLoadResource_Gwt = @hotmath.gwt.cm.client.CatchupMath::doResourceLoad(Ljava/lang/String;Ljava/lang/String;);
+                                    }-*/;
+
+    
+    
+    
+    
     
     static public String FEEDBACK_MESSAGE="<p>Please send us feedback, by using Feedback at the bottom of the page.</p>";
 }

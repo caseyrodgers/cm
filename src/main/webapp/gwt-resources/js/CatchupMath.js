@@ -263,3 +263,14 @@ HmEvents.eventTutorLastStep.subscribe( function(x) {
 TutorManager.askATutor = function() {
 	// do nothing
 };
+
+
+/** Call into GWT to display the requested resource 
+ * 
+ * @param type
+ * @param file
+ * @return
+ */
+function doLoadResource(type, file) {
+    doLoadResource_Gwt(type, file);
+}

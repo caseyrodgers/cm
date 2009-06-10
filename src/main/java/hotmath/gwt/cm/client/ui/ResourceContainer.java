@@ -1,6 +1,10 @@
 package hotmath.gwt.cm.client.ui;
 
+import hotmath.gwt.cm.client.CatchupMath;
+import hotmath.gwt.cm.client.data.InmhItemData;
+import hotmath.gwt.cm.client.ui.viewer.ResourceViewer;
 import hotmath.gwt.cm.client.ui.viewer.ResourceViewerContainer;
+import hotmath.gwt.cm.client.ui.viewer.ResourceViewerFactory;
 import hotmath.gwt.cm.client.util.UserInfo;
 
 import com.allen_sauer.gwt.log.client.Log;
@@ -194,4 +198,33 @@ public class ResourceContainer extends LayoutContainer {
    public void removeControl(Widget w) {
         _header.remove(w);
     }
+   
+   
+
+   /** Display a single resource, remove any previous
+    * 
+    * Do not  track its view
+    * 
+    * @param resourceItem
+    */
+   public void showResource(final InmhItemData resourceItem) {
+       try {
+           ResourceViewer viewer = ResourceViewerFactory.create(resourceItem.getType());
+
+           CmMainPanel.__lastInstance._mainContent.removeAll();
+
+           //CmMainPanel.__lastInstance._mainContent.setLayout(new FitLayout());
+
+           // must be a ContentPanel
+           LayoutContainer cp = (LayoutContainer) viewer.getResourcePanel(resourceItem);
+
+           CmMainPanel.__lastInstance._mainContent.add(cp);
+           CmMainPanel.__lastInstance._mainContent.layout();
+           CmMainPanel.__lastInstance._mainContent.resetChildSize();
+           
+       } catch (Exception hme) {
+           hme.printStackTrace();
+           CatchupMath.showAlert("Error: " + hme.getMessage());
+       }
+   }
 }
