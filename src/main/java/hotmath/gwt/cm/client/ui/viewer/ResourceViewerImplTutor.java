@@ -102,6 +102,11 @@ public class ResourceViewerImplTutor extends LayoutContainer implements Resource
     
     static ShowWorkPanel showWorkPanel;
     public void showWork(final String pid) {
+        
+        // set solution on problem statement
+        ResourceViewerImplTutor.initializeTutor(pid, resource.getTitle());
+        
+        
         if(showWorkWin == null) {
             showWorkWin = new Window();
             Button hideBtn = new Button("Hide");
