@@ -10,7 +10,7 @@ public class GroupModel extends BaseModelData {
 	public static final String ID_KEY = "id";
 	public static final String DESC_KEY = "description";
 	public static final String IS_ACTIVE_KEY = "is-active";
-	public static final String NEW_GROUP = "--- New Group ---";
+	public static final String NEW_GROUP = "--- Create Group ---";
 	
 	private String id;
 	private String name;
