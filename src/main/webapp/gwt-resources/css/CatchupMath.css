@@ -684,6 +684,20 @@ img.resource-item-complete {
     background: url(/gwt-resources/images/resource-viewer-footer.png) no-repeat;  
 }
 
+
+.resource-viewer-header {
+    height: 25px;
+    width: 550px;
+    position: absolute;
+    
+}
+
+
+
+.resource-viewer-impl-tutor {
+}
+
+
 .resource-viewer-impl-test {
 	width: 400px;
 	border: 5px solid blue;

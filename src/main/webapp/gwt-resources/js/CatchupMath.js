@@ -245,7 +245,7 @@ function scrollToStep(num) {
         // if the DOM is changed
 	// Perhaps, this needs to call GWT JNSI and have it do the scrolling, or at
 	// least provide the source of the scrolling panel ... ?
- 	var objDiv = document.getElementById("tutor_embedded").parentNode.parentNode.parentNode;
+ 	var objDiv = document.getElementById("tutor_embedded").parentNode.parentNode;
 	objDiv.scrollTop = objDiv.scrollHeight;
 } 
 

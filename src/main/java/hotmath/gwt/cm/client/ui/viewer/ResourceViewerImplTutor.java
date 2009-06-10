@@ -9,27 +9,25 @@ import com.extjs.gxt.ui.client.Registry;
 import com.extjs.gxt.ui.client.Style.Scroll;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
-import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.Html;
-import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.Window;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.layout.FillLayout;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Widget;
 
-public class ResourceViewerImplTutor extends LayoutContainer implements ResourceViewer {
-    
+public class ResourceViewerImplTutor extends ResourceViewerContainer implements ResourceViewer {
     static ResourceViewerImplTutor _instance;
-    
     static {
         publishNative();
     }
+    
     public ResourceViewerImplTutor() {
-        
         _instance = this;
         addStyleName("resource-viewer-impl-tutor");
-        setScrollMode(Scroll.AUTO);  // iframe in TabPanel need to do scrolling
+        setScrollMode(Scroll.AUTOY);
+        
+        setNoHeaderOrFooter();
     }
 
     Button showWorkBtn, hideWorkBtn;
@@ -51,6 +49,17 @@ public class ResourceViewerImplTutor extends LayoutContainer implements Resource
         }
     }
     
+    @Override
+    public boolean shouldSetResourceContinerHeight() {
+        return true;
+    }
+    
+    
+    public double getAllowedVerticalSpace() {
+        return .98;
+    }
+    
+    
     /** Load the tutor 
      * 
      */
@@ -68,30 +77,32 @@ public class ResourceViewerImplTutor extends LayoutContainer implements Resource
                 
                 Html htmlO = new Html(html);
                 htmlO.setStyleName("tutor_solution_wrapper");
+                addResource(htmlO,resource.getTitle());
+                setNoHeaderOrFooter();
                 
-                add(htmlO);
-                
+                Button showWorkBtn = new Button("Show Work");
+                showWorkBtn.setStyleName("show-work-button");
+                showWorkBtn.addSelectionListener(new SelectionListener<ButtonEvent>() {
+                    public void componentSelected(ButtonEvent ce) {
+                        showWork(pid);
+                    }
+                });
+              
                 CmMainPanel.__lastInstance._mainContent.addControl(showWorkBtn);
                 CmMainPanel.__lastInstance._mainContent.layout();
                 try {
-                    ResourceViewerImplTutor.initializeTutor(pid, resource.getTitle());
+                    ResourceViewerImplTutor.initializeTutor(pid,resource.getTitle());
                 } catch (Exception e) {
                     e.printStackTrace();
                     CatchupMath.showAlert(e.getMessage());
                 }
             }
         });
+                
+
     }
 
-    /** Called from the show-work-button display on the tutor and default in tutor_wrapper.vm
-     * 
-     * @TODO: Make this an instance var.  JSNI does not seem to 
-     * be working when specified as instance (using this).  Does not 
-     * work in hosted mode (does in web mode)
-     */
-    static public void showWorkDialog() {
-       _instance.showWork(_instance.pid);
-    }
+    
     /** publish native method to allow for opening of Show Window 
      * from external JS using current instance
      * 
@@ -100,21 +111,25 @@ public class ResourceViewerImplTutor extends LayoutContainer implements Resource
         $wnd.showWorkDialog_Gwt = @hotmath.gwt.cm.client.ui.viewer.ResourceViewerImplTutor::showWorkDialog();
     }-*/;
     
+    
+    /** Called from the show-work-button display on the tutor and default in tutor_wrapper.vm
+     * 
+     * @TODO: Make this an instance var.  JSNI does not seem to 
+     * be working when specified as instance (using this).  Does not 
+     * work in hosted mode (does in web mode)
+     */
+    static public void showWorkDialog() {
+       _instance.showWork(_instance.pid);
+    }    
+    
     static ShowWorkPanel showWorkPanel;
     public void showWork(final String pid) {
-        
-        // set solution on problem statement
-        ResourceViewerImplTutor.initializeTutor(pid, resource.getTitle());
-        
-        
         if(showWorkWin == null) {
             showWorkWin = new Window();
             Button hideBtn = new Button("Hide");
             hideBtn.addSelectionListener(new SelectionListener<ButtonEvent>() {
                 public void componentSelected(ButtonEvent ce) {
                     showWorkWin.hide();
-                    remove(showWorkWin);
-                    layout();
                 }
             });
             showWorkWin.setHeading("Show Your Work");
@@ -139,18 +154,14 @@ public class ResourceViewerImplTutor extends LayoutContainer implements Resource
         // and move to it, then expand ...
     }
 
+    
     /**
      * Call specialized JavaScript defined in main js
      * 
      * @param pid
      */
     static private native void initializeTutor(String pid, String title) /*-{
-    						     $wnd.doLoad_Gwt(pid, title);
-    						     }-*/;
+                                 $wnd.doLoad_Gwt(pid, title);
+                                 }-*/;
 
-    @Override
-    public String getContainerStyleName() {
-        // TODO Auto-generated method stub
-        return null;
-    }
 }

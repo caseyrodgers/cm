@@ -2,6 +2,7 @@ package hotmath.gwt.cm.client.ui.viewer;
 
 import hotmath.gwt.cm.client.data.InmhItemData;
 import hotmath.gwt.cm.client.ui.CmMainPanel;
+import hotmath.gwt.cm.client.ui.ResourceContainer;
 
 import com.extjs.gxt.ui.client.Style.Scroll;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
@@ -41,12 +42,28 @@ import com.google.gwt.user.client.ui.Widget;
  *
  */
 abstract public class ResourceViewerContainer extends LayoutContainer  implements	ResourceViewer{
+    
+    /** The default amount of vertical space allowed to resource container
+     * 
+     */
+    static public final double ALLOWED_VERTICAL_SPACE=.80;
     HorizontalPanel _header;
 	public ResourceViewerContainer() {
 		setStyleName("resource-viewer-container");
 
-		setScrollMode(Scroll.AUTO);
+		setScrollMode(Scroll.AUTOY);
 	}
+	
+	
+	/** Hide header and footer from resource container
+	 * 
+	 * @TODO: move into  abstraction
+	 */
+	protected void setNoHeaderOrFooter() {
+	    CmMainPanel.__lastInstance._mainContent.setNoHeaderOrFooter();
+	}
+	
+	
 	
 	/** Add the resource to the center
 	 * 
@@ -71,6 +88,14 @@ abstract public class ResourceViewerContainer extends LayoutContainer  implement
 	    return true;
 	}
 	
+	
+	/** Return the amount of vertical space to allow for the container
+	 * 
+	 * @return
+	 */
+	public double getAllowedVerticalSpace() {
+	    return ResourceViewerContainer.ALLOWED_VERTICAL_SPACE;
+	}
 	
 	/** Called when this object is resized 
 	 * 

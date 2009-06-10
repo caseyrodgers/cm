@@ -60,6 +60,7 @@ public class ResourceContainer extends LayoutContainer {
             int height=0;
             El header=null;
             El footer=null;
+            double allowedVerticalSpace=ResourceViewerContainer.ALLOWED_VERTICAL_SPACE;
 	        for(int i=0;i<getItemCount();i++) {
                 El el = getItem(i).el();
                 
@@ -76,6 +77,7 @@ public class ResourceContainer extends LayoutContainer {
                     boolean setHeight=true;
                     if(getItem(i) instanceof ResourceViewerContainer) {
                        setHeight = ((ResourceViewerContainer)getItem(i)).shouldSetResourceContinerHeight();
+                       allowedVerticalSpace = ((ResourceViewerContainer)getItem(i)).getAllowedVerticalSpace();
                     }
                     else {
                         continue;
@@ -84,7 +86,7 @@ public class ResourceContainer extends LayoutContainer {
                     if(setHeight) {
                         // set the height of the detail area to 80% of total space
                         int cheight = CmMainPanel.__lastInstance._mainContent.getOffsetHeight();
-                        int elHeight = (int)Math.floor((double)cheight * .80);
+                        int elHeight = (int)Math.floor((double)cheight * allowedVerticalSpace);
                         el.setHeight(elHeight);
                         
                         int cHeight = elHeight - 10; // offset
@@ -117,8 +119,6 @@ public class ResourceContainer extends LayoutContainer {
 	    }
 	}
 	
-	
-	
 	/** Update the header panel for the resource
 	 * 
 	 * 
@@ -126,6 +126,7 @@ public class ResourceContainer extends LayoutContainer {
 	 * @param styleName If not null, then use to customize header/footer
 	 */
 	public void addResourceViewerHeader(String title,String styleName) {
+	    noHeaderOrFooter=false;
 	    buildResourceViewerHeader();
 	    
 	    if(styleName != null) {
@@ -163,6 +164,20 @@ public class ResourceContainer extends LayoutContainer {
         
         _footer = new LayoutContainer();
         _footer.setStyleName("resource-viewer-footer");
+
+	}
+	
+	/** Do not show the header and footer
+	 * 
+	 */
+	boolean noHeaderOrFooter;
+	public void setNoHeaderOrFooter() {
+	    noHeaderOrFooter=true;
+        if(_header != null) {
+            _header.setVisible(false);
+            _footer.setVisible(false);
+            layout();
+        }
 	}
 	
 	/** Add a widget to the resource viewer header
