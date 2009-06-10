@@ -19,6 +19,7 @@ import com.extjs.gxt.ui.client.widget.form.FormPanel;
 import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.layout.FormLayout;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public class GroupWindow extends LayoutContainer {
@@ -26,6 +27,7 @@ public class GroupWindow extends LayoutContainer {
 	private Window gw;
 	private GroupModel gm;
 	private ComboBox <GroupModel> grpCombo;
+	private TextField<String> name; 
 	
 	private FieldSet fs;
 	private CmAdminModel cmAdminMdl;
@@ -38,6 +40,7 @@ public class GroupWindow extends LayoutContainer {
 		gw = new Window();
 		gw.add(createForm(isNew));
  		gw.show();
+        name.focus();
 	}
 	
 	private FormPanel createForm(boolean isNew) {
@@ -53,14 +56,24 @@ public class GroupWindow extends LayoutContainer {
 		fp.setButtonAlign(HorizontalAlignment.CENTER);
 		fp.setLayout(new FormLayout());
 		
-		TextField<String> name = new TextField<String>();  
+		name = new TextField<String>();  
 		name.setFieldLabel("Group name");
-		name.focus();
 		name.setAllowBlank(false);
 		name.setId(GroupModel.NAME_KEY);
 		name.setEmptyText("-- enter name --");
 		fp.add(name);
 
+        /** Seems like a bug with setting focus, so the only way to get it 
+         *  to work is to set a timer and hope ... 
+         *  
+         *  @TODO: get name.focus() to just work without timing tricks.
+         */
+        new Timer() {
+            public void run() {
+                name.focus();
+            }
+        }.schedule(1000);
+		
 		gw.setHeading((isNew)?"Define a New Group":"Edit Group");
 		gw.setWidth(formWidth+10);
 		gw.setHeight(formHeight+20);
@@ -78,7 +91,7 @@ public class GroupWindow extends LayoutContainer {
 		fp.setButtonAlign(HorizontalAlignment.RIGHT);  
         fp.addButton(saveBtn);
         fp.addButton(cancelBtn);
-		return fp;
+        return fp;
 	}
 
 	private Button cancelButton() {
