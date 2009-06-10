@@ -15,6 +15,7 @@ import java.util.List;
 
 import com.extjs.gxt.ui.client.Registry;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
+import com.extjs.gxt.ui.client.event.IconButtonEvent;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.MessageBoxEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
@@ -24,6 +25,7 @@ import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.Window;
 import com.extjs.gxt.ui.client.widget.button.Button;
+import com.extjs.gxt.ui.client.widget.button.IconButton;
 import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Anchor;
@@ -84,20 +86,18 @@ public class QuizContext implements CmContext {
 	public void resetContext() {
 	}
 	
-	SelectionListener<ButtonEvent> doNextListener = new SelectionListener<ButtonEvent>() {
-	    public void componentSelected(ButtonEvent ce) {
-            doNext();
-	    }
-	};
-	
 	public List<Component> getTools() {
 	    List<Component> list = new ArrayList<Component>();
 	    
-	    Button btn = new Button("Check Quiz");
-	    btn.setStyleName("cm-main-panel-next-quiz");
+	    IconButton btn = new IconButton("cm-main-panel-next-quiz");
 	    btn.setToolTip("Done taking the quiz");
 	    
-	    btn.addSelectionListener(doNextListener);
+	    btn.addSelectionListener(new SelectionListener<IconButtonEvent>() {
+	        public void componentSelected(IconButtonEvent ce) {
+	            doNext();
+	        }
+	    });
+	            
 	    list.add(btn);
 	    return list;
 	}

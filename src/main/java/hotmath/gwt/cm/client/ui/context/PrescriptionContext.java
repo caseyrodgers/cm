@@ -70,7 +70,6 @@ public class PrescriptionContext implements CmContext {
         List<Component> list = new ArrayList<Component>();
         _previousButton = new IconButton();
         _previousButton.setStyleName("cm-main-panel-prev-icon");
-        _previousButton.setSize(60, 30);
         _previousButton.setToolTip("Move to the previous step");
         _previousButton.addListener(Events.Select, new Listener<BaseEvent>() {
             public void handleEvent(BaseEvent be) {

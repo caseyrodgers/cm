@@ -388,27 +388,28 @@
 .cm-main-panel-button-panel {
   height: 50px;
   position: relative;
-  margin-top: 10px;
 }
 
 .cm-main-panel-prev-icon {
-    background: url(../images/main-panel-prev.png) no-repeat center left !important;
-    width: 60px;    
-    height: 30px;
+    background: url(/gwt-resources/images/prev_topic.png) no-repeat center left !important;
+    width: 113px;    
+    height: 46px;
     position: absolute;
-    right: 52%;
+    left:0;
+    top: 0;
 }
 
 .cm-main-panel-prev-icon-over {
-    background: url(../images/main-panel-prev-over.png) no-repeat center left !important;
+    background: url(/gwt-resources/images/prev_topic-over.png) no-repeat center left !important;
 }
 
 .cm-main-panel-next-icon {
-    background: url(../images/main-panel-next.png) no-repeat center left !important;
-    width: 60px;
-    height: 30px;
+    background: url(/gwt-resources/images/next_topic.png) no-repeat center left !important;
+    width: 113px;    
+    height: 46px;
     position: absolute;
-    left: 52%;
+    right: 0;
+    top: 0;
 }
 
 .cm-main-panel-next-icon-over {
@@ -417,10 +418,18 @@
 
 
 
+
 .cm-main-panel-next-quiz {
+    background: url(/gwt-resources/images/check_quiz.png) no-repeat center left !important;
+    width: 248px;
+    height: 51px;
     position: absolute;
-    left: 31%;
-    top: 5px;
+    left: 0;
+    top: 0;
+}
+
+.cm-main-panel-next-quiz-over {
+    background: url(/gwt-resources/images/check_quiz-over.png) no-repeat center left !important;
 }
 
 .resource-wrapper {
@@ -619,6 +628,16 @@ img.resource-item-complete {
     background-repeat: no-repeat;
 
     max-height: 1067px;
+    max-width: 1600px;
+}
+
+.resource-container-sunfield {
+    background-image:url(/gwt-resources/images/bg/sunfield-1600x1131.png);
+    background-attachment: fixed; 
+    background-position: center bottom;
+    background-repeat: no-repeat;
+
+    max-height:1131px;
     max-width: 1600px;
 }
 
