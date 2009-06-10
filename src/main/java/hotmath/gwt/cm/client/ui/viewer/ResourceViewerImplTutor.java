@@ -5,7 +5,6 @@ import hotmath.gwt.cm.client.data.InmhItemData;
 import hotmath.gwt.cm.client.service.PrescriptionServiceAsync;
 import hotmath.gwt.cm.client.ui.CmMainPanel;
 
-import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.Registry;
 import com.extjs.gxt.ui.client.Style.Scroll;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
@@ -13,6 +12,7 @@ import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.Html;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
+import com.extjs.gxt.ui.client.widget.Window;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.layout.FillLayout;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -43,7 +43,12 @@ public class ResourceViewerImplTutor extends LayoutContainer implements Resource
         return this;
     }
 
+    static Window showWorkWin;
     public void removeResourcePanel() {
+        if (showWorkWin != null) {
+            showWorkWin.hide();
+            layout();
+        }
     }
     
     /** Load the tutor 
@@ -95,48 +100,36 @@ public class ResourceViewerImplTutor extends LayoutContainer implements Resource
         $wnd.showWorkDialog_Gwt = @hotmath.gwt.cm.client.ui.viewer.ResourceViewerImplTutor::showWorkDialog();
     }-*/;
     
-    boolean showWorkActive;
+    static ShowWorkPanel showWorkPanel;
     public void showWork(final String pid) {
-
-        if(showWorkActive) {
-            Log.debug("ResourceViewerImplTutor: show work active");
-            return;
+        if(showWorkWin == null) {
+            showWorkWin = new Window();
+            Button hideBtn = new Button("Hide");
+            hideBtn.addSelectionListener(new SelectionListener<ButtonEvent>() {
+                public void componentSelected(ButtonEvent ce) {
+                    showWorkWin.hide();
+                    remove(showWorkWin);
+                    layout();
+                }
+            });
+            showWorkWin.setHeading("Show Your Work");
+            showWorkWin.getHeader().addTool(hideBtn);
+            showWorkWin.setStyleName("show-work-window");
+            showWorkWin.setScrollMode(Scroll.NONE);
+            
+            showWorkWin.setHeight(420);
+            showWorkWin.setWidth(560);
+            showWorkWin.setLayout(new FillLayout());
+        }
+        else {
+            showWorkWin.remove(showWorkPanel);
         }
         
-        
-        Log.debug("ResourceViewerImplTutor: showing ShowWork window");
-        
-        final ContentPanel showWorkWin = new ContentPanel();
-        Button hideBtn = new Button("Hide");
-        hideBtn.addSelectionListener(new SelectionListener<ButtonEvent>() {
-            public void componentSelected(ButtonEvent ce) {
-                showWorkWin.hide();
-                CmMainPanel.__lastInstance._mainContent.remove(showWorkWin);
-                CmMainPanel.__lastInstance._mainContent.layout();
-                
-                showWorkActive=false;
-            }
-        });
-        showWorkWin.setHeading("Show Your Work");
-        showWorkWin.getHeader().addTool(hideBtn);
-        showWorkWin.setScrollMode(Scroll.NONE);
-        
-        showWorkWin.setHeight(420);
-        showWorkWin.setWidth(560);
-        showWorkWin.setLayout(new FillLayout());
-        
-        ShowWorkPanel showWorkPanel = new ShowWorkPanel();
+        showWorkPanel = new ShowWorkPanel();
         showWorkPanel.setupForPid(pid);
         showWorkWin.add(showWorkPanel);
-        
-        
-        ResourceViewerImplTutor.initializeTutor(pid, resource.getTitle());
-        
-        
-        CmMainPanel.__lastInstance._mainContent.add(showWorkWin);
-        CmMainPanel.__lastInstance._mainContent.layout();
 
-        showWorkActive=true;
+        showWorkWin.setVisible(true);
         // get the position of the 'show work' button
         // and move to it, then expand ...
     }
