@@ -158,7 +158,7 @@ public class CmAdminDao {
         " where u.uid = ? " +
         ") s " +
         "group by s.test_run_id, s.is_quiz, s.use_date " +
-        "order by s.view_time desc, s.test_run_id desc, s.session_number desc";
+        "order by s.view_time asc, s.test_run_id asc, s.session_number asc";
 
     public List <StudentActivityModel> getStudentActivity(int uid) throws Exception {
     	List <StudentActivityModel> l = null;
@@ -318,7 +318,7 @@ public class CmAdminDao {
     		ps.setString(2, subjId);
     		rs = ps.executeQuery();
     		l = loadChapters(rs);
-    		System.out.println("+++ chapter 1: " + l.get(0).getChapter());
+    		//System.out.println("+++ chapter 1: " + l.get(0).getChapter());
     		return l;
     	}
     	catch (Exception e) {
@@ -859,6 +859,8 @@ public class CmAdminDao {
     private List <StudentActivityModel> loadStudentActivity(ResultSet rs) throws Exception {
     	
     	List<StudentActivityModel> l = new ArrayList<StudentActivityModel>();
+    	int previousSection = 0;
+    	int lessonsViewed = 0;
     	
     	while (rs.next()) {
     		StudentActivityModel m = new StudentActivityModel();
@@ -889,24 +891,30 @@ public class CmAdminDao {
         		int numIncorrect = rs.getInt("answered_incorrect");
         		int percent = (numCorrect*100) / (numCorrect + numIncorrect );
         		sb.append(percent).append("% correct");
+        		lessonsViewed = 0;
     		}
     		else {
-    			int lessonsViewed = rs.getInt("lessons_viewed");
+    			lessonsViewed += rs.getInt("lessons_viewed");
     			int completed = lessonsViewed / 3;
     			int inProgress = lessonsViewed % 3;
-                sb.append(completed).append(" lessons completed");
+                sb.append("total of ").append(completed).append(" lessons completed");
                 if (inProgress != 0) {
                 	sb.append(", 1 in progress");
                 }
     		}
-    		System.out.println("+++ result: " + sb.toString());
             m.setResult(sb.toString());
     		l.add(m);
     	}
     	
     	fixReviewSectionNumbers(l);
     	
-    	return l;
+    	// reverse order of list
+    	List<StudentActivityModel> m = new ArrayList<StudentActivityModel>(l.size());
+    	for (int i=(l.size() - 1); i >= 0; i--) {
+    		m.add(l.get(i));
+    	}
+   	
+    	return m;
     }
 
     private void fixReviewSectionNumbers(List<StudentActivityModel> l) {
