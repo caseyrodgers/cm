@@ -68,8 +68,7 @@ public class PrescriptionContext implements CmContext {
             }
         });
         List<Component> list = new ArrayList<Component>();
-        _previousButton = new IconButton();
-        _previousButton.setStyleName("cm-main-panel-prev-icon");
+        _previousButton = new IconButton("cm-main-panel-prev-icon");
         _previousButton.setToolTip("Move to the previous step");
         _previousButton.addListener(Events.Select, new Listener<BaseEvent>() {
             public void handleEvent(BaseEvent be) {
@@ -80,8 +79,7 @@ public class PrescriptionContext implements CmContext {
         });
 
         list.add(_previousButton);
-        _nextButton = new IconButton();
-        _nextButton.setStyleName("cm-main-panel-next-icon");
+        _nextButton = new IconButton("cm-main-panel-next-icon");
         _nextButton.setToolTip("Move to the next step");
         _nextButton.addListener(Events.Select, new Listener<BaseEvent>() {
             public void handleEvent(BaseEvent be) {

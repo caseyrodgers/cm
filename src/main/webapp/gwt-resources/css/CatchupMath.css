@@ -413,10 +413,8 @@
 }
 
 .cm-main-panel-next-icon-over {
-    background: url(../images/main-panel-next-over.png) no-repeat center left !important;
+    background: url(/gwt-resources/images/next_topic-over.png) no-repeat center left !important;
 }
-
-
 
 
 .cm-main-panel-next-quiz {
@@ -434,7 +432,6 @@
 
 .resource-wrapper {
 }
-
 
 
 .prescription-info-panel {
