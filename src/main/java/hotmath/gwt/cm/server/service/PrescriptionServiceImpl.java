@@ -707,7 +707,7 @@ public class PrescriptionServiceImpl extends RemoteServiceServlet implements Pre
                 }
             }
 
-            HaTestRun run = test.createTestRun(incorrectPids.toArray(new String[incorrectPids.size()]), answeredCorrect,incorrectPids.size());
+            HaTestRun run = test.createTestRun(incorrectPids.toArray(new String[incorrectPids.size()]), answeredCorrect, incorrectPids.size(), notAnswered);
 
             AssessmentPrescription pres = AssessmentPrescriptionManager.getInstance().getPrescription(run.getRunId());
             
@@ -766,7 +766,7 @@ public class PrescriptionServiceImpl extends RemoteServiceServlet implements Pre
      *  
      *  rpcData:  (all from QuizHtml) and quiz_result_json,quiz_correct_count,quiz_question_count
      */
-    @Override
+    //@Override
     public RpcData getQuizResultsHtml(int runId) throws CmRpcException {
         try {
            HaTestRun testRun = HaTestRun.lookupTestRun(runId);

@@ -42,10 +42,10 @@ public class AssessmentPrescriptionManager {
 	 * @return
 	 * @throws Exception
 	 */
-	public AssessmentPrescription createPrescription(int testId,String pids,int answeredCorrect, int answeredIncorrect) throws Exception {
+	public AssessmentPrescription createPrescription(int testId,String pids,int answeredCorrect, int answeredIncorrect, int notAnswered) throws Exception {
 		
 		HaTest test = HaTest.loadTest(testId);
-		AssessmentPrescription pres = AssessmentPrescriptionFactory.create(test.createTestRun(pids.split(","),answeredCorrect,answeredIncorrect));
+		AssessmentPrescription pres = AssessmentPrescriptionFactory.create(test.createTestRun(pids.split(","),answeredCorrect, answeredIncorrect, notAnswered));
 		
 		_prescriptions.put(pres.getTestRun().getRunId(), pres);
 		return pres;
