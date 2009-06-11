@@ -127,28 +127,38 @@ public class CmAdminDao {
     }
     
     private static final String GET_STUDENT_ACTIVITY_SQL =
-    	"select date_format(l.create_time,'%Y-%m-%d') as use_date, date_format(l.create_time,'%h:%i %p') as start_time, " +
-    	"  date_format(r.run_time,'%h:%i %p') as stop_time, date_format(r.run_time,'%Y-%m-%d') as run_date, " +
-    	"  r.answered_correct, r.answered_incorrect, concat(td.subj_id, ' ', td.prog_id) as program, td.prog_id, " +
-    	"  l.test_id as test_id, l.test_segment, td.test_def_id as test_def_id, r.run_id as test_run_id, 'Quiz-' as activity, " +
-    	"  1 as is_quiz, 0 as resources_viewed " +
-        "from  HA_TEST l INNER JOIN HA_USER u ON l.user_id = u.uid " +
-        "join HA_TEST_RUN r on r.test_id = l.test_id " +
-        "join HA_TEST_DEF td on td.test_def_id = l.test_def_id " +
-        "where u.uid = ? " +
-        "union " +
-        "select date_format(max(iu.view_time),'%Y-%m-%d') as use_date, date_format(max(iu.view_time),'%h:%i %p') as start_time, " +
-    	"  date_format(max(iu.view_time),'%h:%i %p') as stop_time, date_format(max(iu.view_time),'%Y-%m-%d') as run_date, " +
-    	"  0 as answered_correct, 0 as answered_incorrect, concat(td.subj_id, ' ', td.prog_id) as program, td.prog_id, " +
-    	"  l.test_id as test_id, iu.session_number as test_segment, td.test_def_id as test_def_id, r.run_id as test_run_id, " +
-    	" 'Review-' as activity, 0 as is_quiz, count(*) as resources_viewed " +
-        "from  HA_TEST l INNER JOIN HA_USER u ON l.user_id = u.uid " +
-        "join HA_TEST_RUN r on r.test_id = l.test_id " +
-        "join HA_TEST_RUN_INMH_USE iu on iu.run_id = r.run_id " +
-        "join HA_TEST_DEF td on td.test_def_id = l.test_def_id " +
-        "where u.uid = ? " +
-        "group by test_run_id " +
-        "order by use_date desc, start_time desc, test_run_id desc, test_segment desc"; 
+        "select max(s.use_date) as use_date, date_format(min(s.view_time),'%h:%i %p') as start_time, " +
+    	"  date_format(max(s.view_time),'%h:%i %p') as stop_time, max(s.view_time) as view_time, " +
+        "  max(s.run_date) as run_date, " +
+    	"  s.answered_correct, s.answered_incorrect, s.program as program, s.prog_id, " +
+    	"  s.test_id as test_id, max(s.test_segment) as test_segment, s.test_def_id, s.test_run_id, " +
+    	"  s.activity, s.is_quiz, count(*) as lessons_viewed, max(s.session_number) as session_number " +
+        "from ( " +
+        " select date_format(l.create_time,'%Y-%m-%d') as use_date, date_format(l.create_time,'%h:%i %p') as start_time, " +
+        "   date_format(r.run_time,'%h:%i %p') as stop_time, r.run_time as view_time, " +
+        "   date_format(r.run_time,'%Y-%m-%d') as run_date, " +
+        "   r.answered_correct, r.answered_incorrect, concat(td.subj_id, ' ', td.prog_id) as program,  td.prog_id, " +
+        "   l.test_id as test_id, l.test_segment, td.test_def_id as test_def_id, r.run_id as test_run_id, " +
+        "   'Quiz-' as activity, 1 as is_quiz, l.test_segment as session_number " + 
+        " from  HA_TEST l INNER JOIN HA_USER u ON l.user_id = u.uid " +
+        " join HA_TEST_RUN r on r.test_id = l.test_id " +
+        " join HA_TEST_DEF td on td.test_def_id = l.test_def_id " +
+        " where u.uid = ? " +
+        " union " +
+        " select date_format(iu.view_time,'%Y-%m-%d') as use_date, date_format(iu.view_time,'%h:%i %p') as start_time, " + 
+        "  date_format(iu.view_time,'%h:%i %p') as stop_time, iu.view_time as view_time, " +
+        "  date_format(iu.view_time,'%Y-%m-%d') as run_date, " +
+        "  0 as answered_correct, 0 as answered_incorrect, concat(td.subj_id, ' ', td.prog_id) as program, td.prog_id, " +
+        "  l.test_id as test_id, iu.session_number as test_segment, td.test_def_id as test_def_id, r.run_id as test_run_id, " +
+        "  'Review-' as activity, 0 as is_quiz, iu.session_number as session_number " +
+        " from  HA_TEST l INNER JOIN HA_USER u ON l.user_id = u.uid " + 
+        " join HA_TEST_RUN r on r.test_id = l.test_id " +
+        " join HA_TEST_RUN_INMH_USE iu on iu.run_id = r.run_id and iu.item_type = 'practice' " +
+        " join HA_TEST_DEF td on td.test_def_id = l.test_def_id " + 
+        " where u.uid = ? " +
+        ") s " +
+        "group by s.test_run_id, s.is_quiz, s.use_date " +
+        "order by s.view_time desc, s.test_run_id desc, s.session_number desc";
 
     public List <StudentActivityModel> getStudentActivity(int uid) throws Exception {
     	List <StudentActivityModel> l = null;
@@ -873,17 +883,23 @@ public class CmAdminDao {
     		m.setActivity(sb.toString());
     		
     		// TODO: identify re-takes?
-    		int numCorrect = rs.getInt("answered_correct");
-    		int numIncorrect = rs.getInt("answered_incorrect");
     		sb.delete(0, sb.length());
     		if (isQuiz) {
-        		int percent = (numCorrect*100) / (numCorrect + numIncorrect);
+        		int numCorrect = rs.getInt("answered_correct");
+        		int numIncorrect = rs.getInt("answered_incorrect");
+        		int percent = (numCorrect*100) / (numCorrect + numIncorrect );
         		sb.append(percent).append("% correct");
     		}
     		else {
-    			int resourcesViewed = rs.getInt("resources_viewed");
-                sb.append(resourcesViewed).append(" items viewed");
+    			int lessonsViewed = rs.getInt("lessons_viewed");
+    			int completed = lessonsViewed / 3;
+    			int inProgress = lessonsViewed % 3;
+                sb.append(completed).append(" lessons completed");
+                if (inProgress != 0) {
+                	sb.append(", 1 in progress");
+                }
     		}
+    		System.out.println("+++ result: " + sb.toString());
             m.setResult(sb.toString());
     		l.add(m);
     	}
