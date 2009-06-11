@@ -233,6 +233,7 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
 
     private Button registerStudentToolItem(final Grid<StudentModel> grid, final CmAdminModel cmAdminMdl) {
         Button ti = new StudenPanelButton("Register Student");
+        ti.setId("register-student-btn");
         ti.setToolTip("Register a new student");
 
         ti.addSelectionListener(new SelectionListener<ButtonEvent>() {
