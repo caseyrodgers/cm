@@ -694,7 +694,7 @@ img.resource-item-complete {
     background: url(/gwt-resources/images/resource-viewer-body.png) repeat-y;
 }
 
-.resource-viewer-impl-tutor .resource-viewer-header {
+.resource-viewer-impl-tutor {
 	background: transparent;
 }
 

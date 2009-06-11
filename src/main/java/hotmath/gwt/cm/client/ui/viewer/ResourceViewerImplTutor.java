@@ -78,7 +78,7 @@ public class ResourceViewerImplTutor extends ResourceViewerContainer implements 
                 Html htmlO = new Html(html);
                 htmlO.setStyleName("tutor_solution_wrapper");
                 addResource(htmlO,resource.getTitle());
-                // setNoHeaderOrFooter();
+                setNoHeaderOrFooter();
                 
                 Button showWorkBtn = new Button("Show Work");
                 showWorkBtn.setStyleName("show-work-button");
