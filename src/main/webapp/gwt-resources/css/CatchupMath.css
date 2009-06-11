@@ -396,7 +396,7 @@
     height: 46px;
     position: absolute;
     left:0;
-    top: 0;
+    top: 2;
 }
 
 .cm-main-panel-prev-icon-over {
@@ -409,7 +409,7 @@
     height: 46px;
     position: absolute;
     right: 0;
-    top: 0;
+    top: 2;
 }
 
 .cm-main-panel-next-icon-over {
@@ -538,7 +538,8 @@ img.resource-item-complete {
 #tutor_embedded a.button:active,
 #tutor_embedded a.button:visited,
 #tutor_embedded a.button:hover {
-	font-family:Tahoma,Arial;
+    font-family:Tahoma,Arial;
+    font-weight: bold;
     text-decoration: none;
     color: #FFFF00;
     margin-left: 15px;	
@@ -560,26 +561,38 @@ img.resource-item-complete {
 #tutor_embedded .cm-tutor-button-bar-bottom,
 #tutor_embedded .cm-tutor-button-bar-top {
    line-height: 17px;
-   width: 250px;
+   width: 280px;
    text-align: right;
 }
 #tutor_embedded .cm-tutor-button-bar-top img,
 #tutor_embedded .cm-tutor-button-bar-bottom img {
 	vertical-align: middle;
+        margin-left: 2px;
 }
 
  
 
 /** The main Resource Container */
 .resource-container {
-    background-image:url(../images/prescription_resource_background-1600x1050.jpg);
-    background-attachment: fixed; 
+   background-image:url(/gwt-resources/images/prescription_resource_background-1600x1050.jpg);
+   background-attachment: fixed; 
+   background-position: center bottom;
+   background-repeat: no-repeat;
+   max-height: 1050px;
+   max-width: 1600px;
+   width: 540px;
+}
+
+.resource-container-forest {
+    background-image:url(/gwt-resources/images/bg/forest-1600x1065.jpg);
+    background-attachment: fixed;
     background-position: center bottom;
     background-repeat: no-repeat;
-    max-height: 1050px;
+
+    max-height: 1065px;
     max-width: 1600px;
-    width: 540px;
 }
+
 
 .resource-container-bike1 {
     background-image:url(/gwt-resources/images/bg/bike1-1600x1067.jpg);
@@ -610,6 +623,17 @@ img.resource-item-complete {
     max-height: 1558px;
     max-width: 1600px;
 }
+
+.resource-container-sunfield {
+    background-image:url(/gwt-resources/images/bg/sunfield-1600x1131.png);
+    background-attachment: fixed;
+    background-position: center bottom;
+    background-repeat: no-repeat;
+
+    max-height: 1600px;
+    max-width: 1131px;
+}
+
 
 .resource-container-forest {
     background-image:url(/gwt-resources/images/bg/forest-1600x1065.jpg);
@@ -942,4 +966,9 @@ img.resource-item-complete {
   position: absolute;
   top: 10px;
   left: 10px;
+}
+
+
+#tutoroutput p {
+   margin:0 0 10px;
 }

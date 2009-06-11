@@ -157,6 +157,11 @@ public class HelpWindow extends Window {
         m.set("bg_style", "resource-container-clouds");
         backgrounds.add(m);
 
+        m = new BackgroundModel();
+        m.set("text","Sunfield");
+        m.set("bg_style", "resource-container-sunfield");
+        backgrounds.add(m);
+
 
         
         return backgrounds;
