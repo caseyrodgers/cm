@@ -528,6 +528,10 @@ img.resource-item-complete {
 }
 
 
+#tutoroutput p {
+   margin:0 0 10px;
+}
+
 
 /** Override a few tutor layout styles */
 #tutor_embedded {
@@ -690,9 +694,8 @@ img.resource-item-complete {
     background: url(/gwt-resources/images/resource-viewer-body.png) repeat-y;
 }
 
-.resource-viewer-impl-tutor {
+.resource-viewer-impl-tutor .resource-viewer-header {
 	background: transparent;
-	margin: auto;
 }
 
 #show-work-button {
@@ -969,6 +972,3 @@ img.resource-item-complete {
 }
 
 
-#tutoroutput p {
-   margin:0 0 10px;
-}

@@ -56,7 +56,7 @@ public class ResourceViewerImplTutor extends ResourceViewerContainer implements 
     
     
     public double getAllowedVerticalSpace() {
-        return .98;
+        return .90;
     }
     
     
@@ -78,7 +78,7 @@ public class ResourceViewerImplTutor extends ResourceViewerContainer implements 
                 Html htmlO = new Html(html);
                 htmlO.setStyleName("tutor_solution_wrapper");
                 addResource(htmlO,resource.getTitle());
-                setNoHeaderOrFooter();
+                // setNoHeaderOrFooter();
                 
                 Button showWorkBtn = new Button("Show Work");
                 showWorkBtn.setStyleName("show-work-button");
@@ -88,10 +88,10 @@ public class ResourceViewerImplTutor extends ResourceViewerContainer implements 
                     }
                 });
               
-                CmMainPanel.__lastInstance._mainContent.addControl(showWorkBtn);
+                //CmMainPanel.__lastInstance._mainContent.addControl(showWorkBtn);
                 CmMainPanel.__lastInstance._mainContent.layout();
                 try {
-                    ResourceViewerImplTutor.initializeTutor(pid,resource.getTitle());
+                    ResourceViewerImplTutor.initializeTutor(pid,null);
                 } catch (Exception e) {
                     e.printStackTrace();
                     CatchupMath.showAlert(e.getMessage());
