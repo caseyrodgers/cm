@@ -56,7 +56,7 @@ public class ResourceViewerImplTutor extends ResourceViewerContainer implements 
     
     
     public double getAllowedVerticalSpace() {
-        return .90;
+        return .98;
     }
     
     
