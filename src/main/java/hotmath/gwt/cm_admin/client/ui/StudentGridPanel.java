@@ -269,7 +269,7 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
     }
 
     private Button studentDetailsToolItem(final Grid<StudentModel> grid) {
-        Button ti = new StudenPanelButton("Student Details");
+        Button ti = new StudenPanelButton("Student Detail History");
         ti.setToolTip("View details for the selected student.");
 
         ti.addSelectionListener(new SelectionListener<ButtonEvent>() {
