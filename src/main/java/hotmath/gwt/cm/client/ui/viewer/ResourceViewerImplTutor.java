@@ -91,7 +91,7 @@ public class ResourceViewerImplTutor extends ResourceViewerContainer implements 
                 //CmMainPanel.__lastInstance._mainContent.addControl(showWorkBtn);
                 CmMainPanel.__lastInstance._mainContent.layout();
                 try {
-                    ResourceViewerImplTutor.initializeTutor(pid,null);
+                    ResourceViewerImplTutor.initializeTutor(pid,resource.getTitle());
                 } catch (Exception e) {
                     e.printStackTrace();
                     CatchupMath.showAlert(e.getMessage());

@@ -32,7 +32,7 @@ public class ResourceContainer extends LayoutContainer {
 		String bgStyle = UserInfo.getInstance().getBackgroundStyle();
 		
 		if(bgStyle != null && bgStyle.length() != 0) {
-		    System.out.println("Background style set to: " + bgStyle);
+		    Log.info("ResourceContainer: Background style set to: " + bgStyle);
 		    addStyleName(bgStyle);
 		}
 		

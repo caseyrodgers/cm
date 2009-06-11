@@ -329,9 +329,9 @@ public class PrescriptionContext implements CmContext {
 
     public String getStatusMessage() {
         String html1="<ul>" +
-       "<li><b>Review and Practice</b> Choose any items from left-side menu that you find helpful. " +
+       "<li><b>Review and Practice</b> Choose any items from the left-side menu that you find helpful. " +
            "In order to move ahead, you must view all three of the Required Practice problems all the way to " +
-           "the last step.  We hope that you have used a pencil and paper or our Show-Work feature to try the " +
+           "the last step.  Please use a pencil and paper or our Show-Work feature to try the " +
            "problems on your own first - that is how you really learn!" +
        "</li>" +
        "<li>" +

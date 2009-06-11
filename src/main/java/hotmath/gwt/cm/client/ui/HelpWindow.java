@@ -49,7 +49,7 @@ public class HelpWindow extends Window {
         VerticalPanel vp = new VerticalPanel();
         
         FieldSet fs = new FieldSet();
-        fs.setHeading("Info");
+        fs.setHeading("Using Catchup Math");
         
         fs.add(messageArea);
         vp.add(fs);
@@ -79,7 +79,7 @@ public class HelpWindow extends Window {
         });
         
         fs = new FieldSet();
-        fs.setHeading("@allpaper Image");
+        fs.setHeading("Wallpaper");
         Label lab = new Label("Set which image to use for your Catchup Math wallpaper.");
         lab.addStyleName("bg-image-label");
         fs.add(lab);
@@ -101,19 +101,19 @@ public class HelpWindow extends Window {
         
         Button btn = new Button("Technical support");
         btn.addStyleName("button");
-        btn.addSelectionListener(selList);
+        btn.addSelectionListener(new SelectionListener<ButtonEvent>() {
+            public void componentSelected(ButtonEvent ce) {
+                CatchupMath.showAlert("Please email support@hotmath.com for support.");
+            }
+        });
         btn.setWidth(250);
         fs.add(btn);
-        btn = new Button("Message to Teacher");
-        btn.addSelectionListener(selList);
-        btn.addStyleName("button");
-        fs.add(btn);
-        btn = new Button("View Detail History");
-        btn.addSelectionListener(selList);
-        btn.addStyleName("button");
-        fs.add(btn);
-        btn = new Button("Send Feedback");
-        btn.addSelectionListener(selList);
+        btn = new Button("Student History");
+        btn.addSelectionListener(new SelectionListener<ButtonEvent>() {
+            public void componentSelected(ButtonEvent ce) {
+                CatchupMath.showAlert("Coming soon!");     
+            }
+        });
         btn.addStyleName("button");
         fs.add(btn);
         vp.add(fs);
@@ -143,7 +143,7 @@ public class HelpWindow extends Window {
         backgrounds.add(m);
         
         m = new BackgroundModel();
-        m.set("text","Sunset");
+        m.set("text","Meadow");
         m.set("bg_style", "resource-container-sunrise");
         backgrounds.add(m);
         

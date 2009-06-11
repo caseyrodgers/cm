@@ -98,7 +98,7 @@ public class PrescriptionServiceImpl extends RemoteServiceServlet implements Pre
             List<AssessmentPrescription.SessionData> practiceProblems = sess.getSessionDataFor(sess.getTopic());
             PrescriptionSessionDataResource problemsResource = new PrescriptionSessionDataResource();
             problemsResource.setType("practice");
-            problemsResource.setLabel("Required Problems");
+            problemsResource.setLabel("Required Practice Problems");
             int cnt = 1;
             for (AssessmentPrescription.SessionData sdata : practiceProblems) {
                 InmhItemData id = new InmhItemData();
@@ -233,10 +233,10 @@ public class PrescriptionServiceImpl extends RemoteServiceServlet implements Pre
 
         List<PrescriptionSessionDataResource> newTypes = new ArrayList<PrescriptionSessionDataResource>();
         String types[][] = { 
-                { "Required Problems", "practice","Practice problems you must complete before advancing" }, 
+                { "Required Practice Problems", "practice","Practice problems you must complete before advancing" }, 
                 { "Video", "video","Math videos related to the current topic"},
                 { "Activities", "activity","Math activities and games related to the current topic" }, 
-                { "Extra Problems", "cmextra","Additional workbook problems" },
+                { "Extra Practice Problems", "cmextra","Additional workbook problems" },
                 { "Lesson", "review","Review lesson on the current topic" },
                 { "Quiz Results", "results","The current quiz's results"}};
 
