@@ -36,7 +36,8 @@ public class CmAdminDao {
     private static final String GET_STUDENTS_SQL = 
         "SELECT h.uid, h.user_name as name, h.user_passcode as passcode, h.user_email as email, h.admin_id as admin_uid, " +
         "       h.active_segment, h.test_config_json, h.user_prog_id, p.test_def_id, p.create_date, " +
-        "       concat(p.pass_percent,'%') as pass_percent, t.total_segments, concat(m.answered_correct*10,'%') as last_quiz, " +
+        "       concat(p.pass_percent,'%') as pass_percent, t.total_segments, " +
+        "       concat(format((m.answered_correct*100)/(m.answered_correct+m.answered_incorrect+m.not_answered),0),'%') as last_quiz, " +
         "       trim(concat(ifnull(d.subj_id,''), ' ', d.prog_id)) as program, d.prog_id, d.subj_id, " +
         "       date_format(m.last_run_time,'%Y-%m-%d') as last_use_date, 0 as has_tutoring, " +
         "       tu.usage_count, ifnull(g.id, 0) as group_id, ifnull(g.name, 'none') as group_name " +
@@ -54,7 +55,7 @@ public class CmAdminDao {
         "LEFT JOIN (select u.uid, count(*) as usage_count from HA_TEST_RUN_INMH_USE i, HA_TEST t, HA_TEST_RUN r, HA_USER u " +
         "           where t.user_id = u.uid and r.test_id = t.test_id and i.run_id = r.run_id group by u.uid) tu " +
         "   on tu.uid = h.uid " +
-        "LEFT JOIN (select uid, answered_correct, max(last_run_time) as last_run_time from v_HA_TEST_RUN_max group by uid) m " +
+        "LEFT JOIN (select uid, answered_correct, answered_incorrect, not_answered, max(last_run_time) as last_run_time from v_HA_TEST_RUN_max group by uid) m " +
         "   on m.uid = h.uid " +
         "LEFT JOIN CM_GROUP g " +
         "   on g.id = h.group_id " +
@@ -130,14 +131,15 @@ public class CmAdminDao {
         "select max(s.use_date) as use_date, date_format(min(s.view_time),'%h:%i %p') as start_time, " +
     	"  date_format(max(s.view_time),'%h:%i %p') as stop_time, max(s.view_time) as view_time, " +
         "  max(s.run_date) as run_date, " +
-    	"  s.answered_correct, s.answered_incorrect, s.program as program, s.prog_id, " +
+    	"  s.answered_correct, s.answered_incorrect, s.not_answered, s.program as program, s.prog_id, " +
     	"  s.test_id as test_id, max(s.test_segment) as test_segment, s.test_def_id, s.test_run_id, " +
     	"  s.activity, s.is_quiz, count(*) as lessons_viewed, max(s.session_number) as session_number " +
         "from ( " +
         " select date_format(l.create_time,'%Y-%m-%d') as use_date, date_format(l.create_time,'%h:%i %p') as start_time, " +
         "   date_format(r.run_time,'%h:%i %p') as stop_time, r.run_time as view_time, " +
         "   date_format(r.run_time,'%Y-%m-%d') as run_date, " +
-        "   r.answered_correct, r.answered_incorrect, concat(td.subj_id, ' ', td.prog_id) as program,  td.prog_id, " +
+        "   r.answered_correct, r.answered_incorrect, r.not_answered, " +
+        "   concat(td.subj_id, ' ', td.prog_id) as program,  td.prog_id, " +
         "   l.test_id as test_id, l.test_segment, td.test_def_id as test_def_id, r.run_id as test_run_id, " +
         "   'Quiz-' as activity, 1 as is_quiz, l.test_segment as session_number " + 
         " from  HA_TEST l INNER JOIN HA_USER u ON l.user_id = u.uid " +
@@ -148,7 +150,8 @@ public class CmAdminDao {
         " select date_format(iu.view_time,'%Y-%m-%d') as use_date, date_format(iu.view_time,'%h:%i %p') as start_time, " + 
         "  date_format(iu.view_time,'%h:%i %p') as stop_time, iu.view_time as view_time, " +
         "  date_format(iu.view_time,'%Y-%m-%d') as run_date, " +
-        "  0 as answered_correct, 0 as answered_incorrect, concat(td.subj_id, ' ', td.prog_id) as program, td.prog_id, " +
+        "  0 as answered_correct, 0 as answered_incorrect, 0 as not_answered, " +
+        "  concat(td.subj_id, ' ', td.prog_id) as program, td.prog_id, " +
         "  l.test_id as test_id, iu.session_number as test_segment, td.test_def_id as test_def_id, r.run_id as test_run_id, " +
         "  'Review-' as activity, 0 as is_quiz, iu.session_number as session_number " +
         " from  HA_TEST l INNER JOIN HA_USER u ON l.user_id = u.uid " + 
@@ -884,12 +887,13 @@ public class CmAdminDao {
             }
     		m.setActivity(sb.toString());
     		
-    		// TODO: identify re-takes?
+    		// TODO: flag re-takes?
     		sb.delete(0, sb.length());
     		if (isQuiz) {
         		int numCorrect = rs.getInt("answered_correct");
         		int numIncorrect = rs.getInt("answered_incorrect");
-        		int percent = (numCorrect*100) / (numCorrect + numIncorrect );
+        		int notAnswered = rs.getInt("not_answered");
+        		int percent = (numCorrect*100) / (numCorrect + numIncorrect + notAnswered);
         		sb.append(percent).append("% correct");
         		lessonsViewed = 0;
     		}
@@ -897,7 +901,11 @@ public class CmAdminDao {
     			lessonsViewed += rs.getInt("lessons_viewed");
     			int completed = lessonsViewed / 3;
     			int inProgress = lessonsViewed % 3;
-                sb.append("total of ").append(completed).append(" lessons completed");
+                sb.append("total of ").append(completed);
+                if (completed > 1)
+                	sb.append(" lessons completed");
+                else
+                	sb.append(" lesson completed");
                 if (inProgress != 0) {
                 	sb.append(", 1 in progress");
                 }
