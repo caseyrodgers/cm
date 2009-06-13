@@ -635,6 +635,15 @@ img.resource-item-complete {
     max-width: 1131px;
 }
 
+.resource-container-white {
+    background-image:none;
+    background-color: white;
+}
+
+.resource-container-none {
+    background-image:none;
+}
+
 
 .resource-container-forest {
     background-image:url(/gwt-resources/images/bg/forest-1600x1065.jpg);

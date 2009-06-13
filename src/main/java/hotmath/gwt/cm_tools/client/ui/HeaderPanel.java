@@ -1,5 +1,6 @@
 package hotmath.gwt.cm_tools.client.ui;
 
+import hotmath.gwt.cm.client.ui.HelpWindow;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.util.UserInfo;
 import hotmath.gwt.shared.client.CmShared;

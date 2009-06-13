@@ -1,7 +1,9 @@
-package hotmath.gwt.cm_tools.client.ui;
+package hotmath.gwt.cm.client.ui;
 
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.service.PrescriptionServiceAsync;
+import hotmath.gwt.cm_tools.client.ui.CmMainPanel;
+import hotmath.gwt.cm_tools.client.ui.ContextController;
 import hotmath.gwt.cm_tools.client.util.UserInfo;
 
 import com.extjs.gxt.ui.client.Registry;
@@ -161,6 +163,18 @@ public class HelpWindow extends Window {
         m.set("text","Sunfield");
         m.set("bg_style", "resource-container-sunfield");
         backgrounds.add(m);
+        
+
+        m = new BackgroundModel();
+        m.set("text","White");
+        m.set("bg_style", "resource-container-white");
+        backgrounds.add(m);
+        
+        m = new BackgroundModel();
+        m.set("text","No background image   ");
+        m.set("bg_style", "resource-container-none");
+        backgrounds.add(m);
+
 
 
         

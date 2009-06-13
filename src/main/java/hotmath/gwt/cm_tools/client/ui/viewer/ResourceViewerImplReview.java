@@ -28,6 +28,9 @@ public class ResourceViewerImplReview extends ResourceViewerContainer implements
         return this;
     }
 
-
+ 
+    public double getAllowedVerticalSpace() {
+        return .90;
+    }
 
 }
