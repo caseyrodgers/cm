@@ -1,7 +1,6 @@
 package hotmath.gwt.cm_admin.client;
 
 import hotmath.gwt.cm_admin.client.model.CmAdminDataReader;
-import hotmath.gwt.cm_admin.client.model.CmAdminDataRefresher;
 import hotmath.gwt.cm_admin.client.model.CmAdminModel;
 import hotmath.gwt.cm_admin.client.service.RegistrationService;
 import hotmath.gwt.cm_admin.client.service.RegistrationServiceAsync;
@@ -13,9 +12,7 @@ import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.data.CmAsyncRequest;
 import hotmath.gwt.shared.client.model.UserInfoBase;
 
-import java.util.Arrays;
-import java.util.List;
-
+import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.Registry;
 import com.extjs.gxt.ui.client.Style.LayoutRegion;
 import com.extjs.gxt.ui.client.event.BaseEvent;
@@ -29,6 +26,8 @@ import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.user.client.Command;
+import com.google.gwt.user.client.DeferredCommand;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.ServiceDefTarget;
 import com.google.gwt.user.client.ui.RootPanel;
@@ -48,9 +47,6 @@ public class CatchupMathAdmin implements EntryPoint {
 	
 	static CatchupMathAdmin instance;
 
-	/**
-	 * This is the entry point method.
-	 */
 	public void onModuleLoad() {
 
 		instance = this;
