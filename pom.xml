@@ -164,14 +164,11 @@
 			<scope>compile</scope>
 		</dependency>
 
-
 		<dependency>
 			<groupId>log4j</groupId>
 			<artifactId>log4j</artifactId>
 			<version>1.2.14</version>
 		</dependency>
-
-
 
 		<dependency>
 			<groupId>net.sf.json-lib</groupId>
@@ -180,7 +177,6 @@
 			<classifier>jdk15</classifier>
 			<scope>compile</scope>
 		</dependency>
-
 
 		<!--  GWT deps (from central repo) -->
 
@@ -216,7 +212,6 @@
 	<build>
 		<plugins>
 
-
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-jar-plugin</artifactId>
@@ -225,7 +220,6 @@
 					<verify>true</verify>
 				</configuration>
 			</plugin>
-
 
 			<plugin>
 				<groupId>org.mortbay.jetty</groupId>
@@ -258,7 +252,6 @@
 					</execution>
 				</executions>
 			</plugin>
-
 
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -293,7 +286,6 @@
 				</executions>
 			</plugin>
 
-			
 			<!--
 				<plugin> <groupId>org.codehaus.mojo</groupId>
 				<artifactId>gwt-maven-plugin</artifactId>
