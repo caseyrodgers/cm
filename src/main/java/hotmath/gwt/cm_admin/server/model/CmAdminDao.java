@@ -902,15 +902,24 @@ public class CmAdminDao {
     		}
     		else {
     			lessonsViewed += rs.getInt("lessons_viewed");
+    			//TODO: are there always 3 problems per session/lesson?
     			int completed = lessonsViewed / 3;
     			int inProgress = lessonsViewed % 3;
-                sb.append("total of ").append(completed);
-                if (completed > 1)
-                	sb.append(" lessons completed");
-                else
-                	sb.append(" lesson completed");
-                if (inProgress != 0) {
-                	sb.append(", 1 in progress");
+                
+                if (completed >= 1) {
+                	sb.append("total of ").append(completed);
+                    if (completed > 1)
+                	    sb.append(" lessons completed");
+                    else
+                	    sb.append(" lesson completed");
+                    if (inProgress != 0) {
+                	    sb.append(", 1 in progress");
+                    }
+                }
+                else {
+                	if (inProgress != 0) {
+                	    sb.append("1 lesson in progress");
+                    }
                 }
     		}
             m.setResult(sb.toString());
