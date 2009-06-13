@@ -80,6 +80,17 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
         });
         contextMenu.add(loginAsUser);
         
+        
+        Button showWork = new Button("Show Work");
+        showWork.addSelectionListener(new SelectionListener<ButtonEvent>() {
+            public void componentSelected(ButtonEvent ce) {
+                showWorkDialog();
+                contextMenu.hide();
+            }
+        });
+        contextMenu.add(showWork);
+
+        
         if(CmShared.getQueryParameter("debug") != null) {
             Button debugUser = new Button("Debug Info");
             debugUser.addSelectionListener(new SelectionListener<ButtonEvent>() {
@@ -125,6 +136,14 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
         Window.open(url, "_blank", "location=1,menubar=1,resizable=1");
     }
 
+    private void showWorkDialog() {
+        StudentModel sm = _grid.getSelectionModel().getSelectedItem();
+        if (sm == null)
+            return;
+        
+        new StudentShowWorkDialog(sm);
+    }
+    
     private void showDebugInfo() {
         StudentModel sm = _grid.getSelectionModel().getSelectedItem();
         if (sm == null)
