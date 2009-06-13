@@ -6,6 +6,7 @@ import hotmath.gwt.cm_admin.client.model.CmAdminDataRefresher;
 import hotmath.gwt.cm_admin.client.model.CmAdminModel;
 import hotmath.gwt.cm_admin.client.service.RegistrationServiceAsync;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.Registry;
 import com.extjs.gxt.ui.client.core.XTemplate;
 import com.extjs.gxt.ui.client.util.Util;
@@ -87,6 +88,7 @@ public class AccountInfoPanel extends LayoutContainer implements CmAdminDataRefr
     protected void getAccountInfoRPC(Integer uid) {
         RegistrationServiceAsync s = (RegistrationServiceAsync) Registry.get("registrationService");
 
+        Log.info("AccountInfoPanel: reading student info RPC");
         s.getAccountInfoForAdminUid(uid, new AsyncCallback<AccountInfoModel>() {
 
             public void onSuccess(AccountInfoModel ai) {
@@ -96,6 +98,9 @@ public class AccountInfoPanel extends LayoutContainer implements CmAdminDataRefr
                 // _gridContainer.setHeading(sb.toString());
                 
                 setAccountInfoModel(ai);
+                
+                
+                Log.info("AccountInfoPanel: student info read succesfully");
             }
 
             public void onFailure(Throwable caught) {
