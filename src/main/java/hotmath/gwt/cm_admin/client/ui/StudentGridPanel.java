@@ -44,7 +44,6 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
 
     static public StudentGridPanel instance;
 
-    private StudentDetailsPanel detailsPanel;
     private ToolBar toolBar;
 
     // TODO: undo button?
@@ -475,13 +474,6 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
         });
     }
 
-    public StudentDetailsPanel getDetailsPanel() {
-        return detailsPanel;
-    }
-
-    public void setDetailsPanel(StudentDetailsPanel detailsPanel) {
-        this.detailsPanel = detailsPanel;
-    }
 }
 
 class StudenPanelButton extends Button {
