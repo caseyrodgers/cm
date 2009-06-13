@@ -1,8 +1,13 @@
 package hotmath.gwt.cm.client.ui;
 
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
-import hotmath.gwt.cm_tools.client.util.UserInfo;
+import hotmath.gwt.cm_tools.client.ui.CmMainPanel;
+import hotmath.gwt.cm_tools.client.ui.context.CmContext;
 import hotmath.gwt.shared.client.CmShared;
+import hotmath.gwt.shared.client.eventbus.CmEvent;
+import hotmath.gwt.shared.client.eventbus.CmEventListenerImplDefault;
+import hotmath.gwt.shared.client.eventbus.EventBus;
+import hotmath.gwt.shared.client.util.UserInfo;
 
 import com.extjs.gxt.ui.client.event.IconButtonEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
@@ -54,6 +59,20 @@ public class HeaderPanel extends LayoutContainer {
 		_headerText = new Label();
 		_headerText.setStyleName("header-panel-title");
 		add(_headerText);
+		
+		
+		EventBus.getInstance().addEventListener(new CmEventListenerImplDefault() {
+		    public void handleEvent(CmEvent event) {
+		        if(event.getEventName().equals(EventBus.EVENT_TYPE_USERCHANGED)) {
+		            setLoginInfo();
+		        }
+		        else if(event.getEventName().equals(EventBus.EVENT_TYPE_CONTEXTCHANGED)) {
+		            CmContext context = (CmContext)event.getEventData();
+  		            HeaderPanel.__instance.setHeaderTitle(context.getContextTitle());
+		            CmMainPanel.__lastInstance._westPanel.setHeading(context.getContextSubTitle());
+		        }
+		    }
+		});
 	}
 	
 	

@@ -7,10 +7,10 @@ import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.data.InmhItemData;
 import hotmath.gwt.cm_tools.client.ui.CmMainPanel;
 import hotmath.gwt.cm_tools.client.ui.FooterPanel;
-import hotmath.gwt.cm_tools.client.util.UserInfo;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.data.CmAsyncRequest;
 import hotmath.gwt.shared.client.data.CmAsyncRequestImplDefault;
+import hotmath.gwt.shared.client.util.UserInfo;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.GXT;
@@ -62,22 +62,11 @@ public class CatchupMath implements EntryPoint {
     HeaderPanel _headerPanel;
 
     
-    public void onModuleLoad() {
-        Log.setUncaughtExceptionHandler();
-
-        DeferredCommand.addCommand(new Command() {
-          public void execute() {
-              onModuleLoadLocal();
-          }
-        });
-      }
-    
-    
     /**
      * This is the entry point method.
      */
     int userId;
-    public void onModuleLoadLocal() {
+    public void onModuleLoad() {
         Log.info("Catchup Math Startup: " + version);
         
         

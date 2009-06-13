@@ -15,12 +15,9 @@
       <inherits name="com.google.gwt.http.HTTP" />
       
       <inherits name='pl.rmalinowski.gwt2swf.GWT2SWF' />
-      
-      <inherits name='hotmath.gwt.shared.CmShared'/>
+
       <inherits name='hotmath.gwt.cm_tools.CatchupMathTools'/>      
           
-
-      
       <servlet path="/services/prescriptionService" class="hotmath.gwt.cm.server.service.PrescriptionServiceImpl" />
       
       <entry-point class='hotmath.gwt.cm.client.CatchupMath'/>
