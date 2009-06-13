@@ -1,0 +1,35 @@
+<module>
+
+      <!-- Inherit the core Web Toolkit stuff.                        -->
+      <inherits name='hotmath.gwt.shared.CmShared'/>
+	
+      <!-- Inherit the default GWT style sheet.  You can change       -->
+      <!-- the theme of your GWT application by uncommenting          -->
+      <!-- any one of the following lines.                            -->
+      <inherits name='com.google.gwt.user.theme.standard.Standard'/>
+      <!-- <inherits name='com.google.gwt.user.theme.chrome.Chrome'/> -->
+      <!-- <inherits name='com.google.gwt.user.theme.dark.Dark'/>     -->
+
+      <!-- Other module inherits                                      -->
+      <inherits name='com.extjs.gxt.ui.GXT'/>
+      <inherits name='com.extjs.gxt.themes.Themes' />
+      <inherits name='com.google.gwt.json.JSON' />
+      <inherits name="com.google.gwt.http.HTTP" />
+      
+      <inherits name='pl.rmalinowski.gwt2swf.GWT2SWF' />
+      
+      
+       <!-- Add gwt-log support, default level `OFF` -->
+       <inherits name="com.allen_sauer.gwt.log.gwt-log-OFF" />
+       <!-- Also compile at `INFO` level -->
+       <extend-property name="log_level" values="DEBUG,WARN"/>
+      
+      <servlet path="/services/prescriptionService" class="hotmath.gwt.cm.server.service.PrescriptionServiceImpl" />
+      
+      
+      <entry-point class='hotmath.gwt.cm_tools.client.CatchupMathTools'/>
+
+      <!--
+      <set-property name='user.agent' value='gecko'/>
+      -->       
+</module>
