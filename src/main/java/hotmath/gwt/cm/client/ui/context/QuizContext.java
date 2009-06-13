@@ -1,12 +1,13 @@
 package hotmath.gwt.cm.client.ui.context;
 
 import hotmath.gwt.cm.client.CatchupMath;
-import hotmath.gwt.cm.client.service.PrescriptionServiceAsync;
-import hotmath.gwt.cm.client.ui.CmContext;
-import hotmath.gwt.cm.client.ui.NextDialog;
-import hotmath.gwt.cm.client.ui.NextPanelInfo;
-import hotmath.gwt.cm.client.ui.NextPanelInfoImplDefault;
-import hotmath.gwt.cm.client.util.UserInfo;
+import hotmath.gwt.cm_tools.client.CatchupMathTools;
+import hotmath.gwt.cm_tools.client.service.PrescriptionServiceAsync;
+import hotmath.gwt.cm_tools.client.ui.CmContext;
+import hotmath.gwt.cm_tools.client.ui.NextDialog;
+import hotmath.gwt.cm_tools.client.ui.NextPanelInfo;
+import hotmath.gwt.cm_tools.client.ui.NextPanelInfoImplDefault;
+import hotmath.gwt.cm_tools.client.util.UserInfo;
 import hotmath.gwt.shared.client.data.CmAsyncRequestImplDefault;
 import hotmath.gwt.shared.client.util.RpcData;
 
@@ -134,7 +135,7 @@ public class QuizContext implements CmContext {
 	}
 	
 	private void showNextPlacmentQuiz() {
-        CatchupMath.showAlert("Quiz results", "Good job - we'll now give another quiz.", new CmAsyncRequestImplDefault() {
+        CatchupMathTools.showAlert("Quiz results", "Good job - we'll now give another quiz.", new CmAsyncRequestImplDefault() {
             public void requestComplete(String requestData) {
                 CatchupMath.getThisInstance().showQuizPanel();
             }
@@ -186,7 +187,7 @@ public class QuizContext implements CmContext {
 	    MessageBox.confirm("Ready to Check Quiz?", msg, new Listener<MessageBoxEvent>() {
             public void handleEvent(MessageBoxEvent be) {
                 if (be.getButtonClicked().getText().equals("Yes")) {
-                    CatchupMath.setBusy(true);
+                    CatchupMathTools.setBusy(true);
                     PrescriptionServiceAsync s = (PrescriptionServiceAsync) Registry.get("prescriptionService");
                     s.createTestRun(UserInfo.getInstance().getTestId(), new AsyncCallback() {
                         public void onSuccess(Object result) {
@@ -203,7 +204,7 @@ public class QuizContext implements CmContext {
                                         int testSegment = UserInfo.getInstance().getTestSegment();
                                         int totalSegments = UserInfo.getInstance().getTestSegmentCount();
                                         if((testSegment+1) > totalSegments) {
-                                            CatchupMath.showAlert("redirect_action QUIZ: No More Sessions");
+                                            CatchupMathTools.showAlert("redirect_action QUIZ: No More Sessions");
                                         }
                                         else {
                                             UserInfo.getInstance().setTestSegment(testSegment+1);
@@ -221,11 +222,11 @@ public class QuizContext implements CmContext {
                                 showPrescriptionPanel(correctAnswers, totalQuestions);
                             }
                             finally {
-                                CatchupMath.setBusy(false);
+                                CatchupMathTools.setBusy(false);
                             }
                         }
                         public void onFailure(Throwable caught) {
-                            CatchupMath.showAlert(caught.getMessage());
+                            CatchupMathTools.showAlert(caught.getMessage());
                         }
                     });
                 }
@@ -265,7 +266,7 @@ public class QuizContext implements CmContext {
 class QuizContextNextPanelInfo extends NextPanelInfoImplDefault {
 
 	public void doNext() {
-		CatchupMath.showAlert("Do next from the quiz");
+		CatchupMathTools.showAlert("Do next from the quiz");
 	}
 
 	public Widget getNextPanelWidget() {

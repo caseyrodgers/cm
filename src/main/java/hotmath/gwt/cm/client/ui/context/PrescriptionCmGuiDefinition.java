@@ -1,18 +1,18 @@
 package hotmath.gwt.cm.client.ui.context;
 
-import hotmath.gwt.cm.client.CatchupMath;
-import hotmath.gwt.cm.client.data.InmhItemData;
-import hotmath.gwt.cm.client.data.PrescriptionData;
-import hotmath.gwt.cm.client.data.PrescriptionSessionDataResource;
-import hotmath.gwt.cm.client.service.PrescriptionServiceAsync;
-import hotmath.gwt.cm.client.ui.CmContext;
-import hotmath.gwt.cm.client.ui.CmGuiDefinition;
-import hotmath.gwt.cm.client.ui.CmMainPanel;
-import hotmath.gwt.cm.client.ui.ContextController;
-import hotmath.gwt.cm.client.ui.HeaderPanel;
-import hotmath.gwt.cm.client.ui.viewer.ResourceViewer;
-import hotmath.gwt.cm.client.ui.viewer.ResourceViewerFactory;
-import hotmath.gwt.cm.client.util.UserInfo;
+import hotmath.gwt.cm_tools.client.CatchupMathTools;
+import hotmath.gwt.cm_tools.client.data.InmhItemData;
+import hotmath.gwt.cm_tools.client.data.PrescriptionData;
+import hotmath.gwt.cm_tools.client.data.PrescriptionSessionDataResource;
+import hotmath.gwt.cm_tools.client.service.PrescriptionServiceAsync;
+import hotmath.gwt.cm_tools.client.ui.CmContext;
+import hotmath.gwt.cm_tools.client.ui.CmGuiDefinition;
+import hotmath.gwt.cm_tools.client.ui.CmMainPanel;
+import hotmath.gwt.cm_tools.client.ui.ContextController;
+import hotmath.gwt.cm_tools.client.ui.HeaderPanel;
+import hotmath.gwt.cm_tools.client.ui.viewer.ResourceViewer;
+import hotmath.gwt.cm_tools.client.ui.viewer.ResourceViewerFactory;
+import hotmath.gwt.cm_tools.client.util.UserInfo;
 import hotmath.gwt.shared.client.util.RpcData;
 
 import java.util.List;
@@ -23,7 +23,6 @@ import com.extjs.gxt.ui.client.data.BaseModelData;
 import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
-import com.extjs.gxt.ui.client.fx.FxConfig;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.Html;
@@ -59,7 +58,7 @@ public class PrescriptionCmGuiDefinition implements CmGuiDefinition {
 
     LayoutContainer _main;
     public Widget getWestWidget() {
-        CatchupMath.setBusy(true);
+        CatchupMathTools.setBusy(true);
 
         _main = new LayoutContainer();
         _main.setLayout(new BorderLayout());
@@ -90,7 +89,7 @@ public class PrescriptionCmGuiDefinition implements CmGuiDefinition {
         // call server process to get session data as JSON string
         PrescriptionServiceAsync s = (PrescriptionServiceAsync) Registry.get("prescriptionService");
 
-        CatchupMath.setBusy(true);
+        CatchupMathTools.setBusy(true);
 
         boolean updateActive = UserInfo.getInstance().isActiveUser();
         s.getPrescriptionSessionJson(UserInfo.getInstance().getRunId(), sessionNumber, updateActive,
@@ -98,7 +97,7 @@ public class PrescriptionCmGuiDefinition implements CmGuiDefinition {
                     public void onSuccess(Object result) {
                         RpcData rdata = (RpcData) result;
                         if(rdata == null) {
-                            CatchupMath.showAlert("There was a problem reading this prescription data");
+                            CatchupMathTools.showAlert("There was a problem reading this prescription data");
                             return;
                         }
                         try {
@@ -125,7 +124,7 @@ public class PrescriptionCmGuiDefinition implements CmGuiDefinition {
                         } catch (Exception e) {
                             e.printStackTrace();
                         } finally {
-                            CatchupMath.setBusy(false);
+                            CatchupMathTools.setBusy(false);
                         }
                     }
                     public void onFailure(Throwable caught) {
@@ -403,7 +402,7 @@ class ResourceList extends ListView<ResourceModel> implements Listener {
             
         } catch (Exception hme) {
             hme.printStackTrace();
-            CatchupMath.showAlert("Error: " + hme.getMessage());
+            CatchupMathTools.showAlert("Error: " + hme.getMessage());
         }
     }
     

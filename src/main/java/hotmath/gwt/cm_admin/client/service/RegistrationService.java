@@ -5,6 +5,7 @@ import hotmath.gwt.cm_admin.client.model.ChapterModel;
 import hotmath.gwt.cm_admin.client.model.GroupModel;
 import hotmath.gwt.cm_admin.client.model.StudentActivityModel;
 import hotmath.gwt.cm_admin.client.model.StudentModel;
+import hotmath.gwt.cm_admin.client.model.StudentShowWorkModel;
 import hotmath.gwt.cm_admin.client.model.StudyProgramModel;
 import hotmath.gwt.cm_admin.client.model.SubjectModel;
 
@@ -40,4 +41,6 @@ public interface RegistrationService extends RemoteService {
 			  Boolean passcodeChanged) throws Exception;
 	  
 	  AccountInfoModel getAccountInfoForAdminUid(Integer uid) throws Exception;
+	  
+	  List<StudentShowWorkModel> getStudentShowWork(Integer uid) throws Exception;
 }

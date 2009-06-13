@@ -1,8 +1,5 @@
 <module rename-to='cm_admin'>
 
-      <!-- login/shared module -->
-      <inherits name='hotmath.gwt.shared.CmShared'/>
-      
       <!-- Inherit the core Web Toolkit stuff.
       <inherits name='com.google.gwt.user.User'/>
       -->
@@ -25,8 +22,14 @@
       
       <servlet path="/services/registrationService" class="hotmath.gwt.cm_admin.server.service.RegistrationServiceImpl" />
 
+
+      <inherits name='hotmath.gwt.cm_tools.CatchupMathTools'/>
+      
       <!-- Specify the application specific style sheet.
       <stylesheet src='CatchupMathAdmin.css' />
        -->
-	
+       
+      <!--
+      <set-property name='user.agent' value='gecko'/>
+      -->       
 </module>

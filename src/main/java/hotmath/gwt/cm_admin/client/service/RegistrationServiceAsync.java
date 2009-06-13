@@ -1,16 +1,17 @@
 package hotmath.gwt.cm_admin.client.service;
 
-import java.util.List;
-
-import com.google.gwt.user.client.rpc.AsyncCallback;
-
 import hotmath.gwt.cm_admin.client.model.AccountInfoModel;
 import hotmath.gwt.cm_admin.client.model.ChapterModel;
 import hotmath.gwt.cm_admin.client.model.GroupModel;
-import hotmath.gwt.cm_admin.client.model.StudyProgramModel;
 import hotmath.gwt.cm_admin.client.model.StudentActivityModel;
 import hotmath.gwt.cm_admin.client.model.StudentModel;
+import hotmath.gwt.cm_admin.client.model.StudentShowWorkModel;
+import hotmath.gwt.cm_admin.client.model.StudyProgramModel;
 import hotmath.gwt.cm_admin.client.model.SubjectModel;
+
+import java.util.List;
+
+import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public interface RegistrationServiceAsync {
 	
@@ -40,4 +41,6 @@ public interface RegistrationServiceAsync {
 			  Boolean passcodeChanged, AsyncCallback<StudentModel> callback);
 
 	  void getAccountInfoForAdminUid(Integer uid, AsyncCallback<AccountInfoModel> callback);
+	  
+	  void getStudentShowWork(Integer uid,AsyncCallback<List<StudentShowWorkModel>> callback);	  
 }

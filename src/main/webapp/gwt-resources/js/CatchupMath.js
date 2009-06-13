@@ -274,3 +274,8 @@ TutorManager.askATutor = function() {
 function doLoadResource(type, file) {
     doLoadResource_Gwt(type, file);
 }
+
+
+function log() {
+	//
+}

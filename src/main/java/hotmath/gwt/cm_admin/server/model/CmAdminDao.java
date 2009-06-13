@@ -5,6 +5,7 @@ import hotmath.gwt.cm_admin.client.model.ChapterModel;
 import hotmath.gwt.cm_admin.client.model.GroupModel;
 import hotmath.gwt.cm_admin.client.model.StudentActivityModel;
 import hotmath.gwt.cm_admin.client.model.StudentModel;
+import hotmath.gwt.cm_admin.client.model.StudentShowWorkModel;
 import hotmath.gwt.cm_admin.client.model.StudyProgramModel;
 import hotmath.gwt.cm_admin.client.model.SubjectModel;
 import hotmath.util.HMConnectionPool;
@@ -15,7 +16,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -977,5 +980,68 @@ public class CmAdminDao {
     	}
 	
     	return chap;
+    }
+    
+    
+    /** Return list of StudentShowWorkModel that represent
+     *  distinct list of problems that actually have show work
+     *  
+     *  
+     * viewed al
+     * @param uid
+     * @return
+     * @throws Exception
+     */
+    public List<StudentShowWorkModel> getStudentShowWork(int uid) throws Exception {
+        
+        List<StudentShowWorkModel> swModels = new ArrayList<StudentShowWorkModel>();
+        
+        Connection conn = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+
+        String sql = "select distinct a.pid, b.* " +
+                     "from   HA_TEST_RUN_WHITEBOARD a, " +
+                     "( " +
+                     "select  user_id, pid, max(insert_time_mills) as insert_time_mills  " +
+                     " from HA_TEST_RUN_WHITEBOARD b " +
+                     " group by user_id, pid " +
+                     " ) b " +
+                     " where a.user_id = ?  " +
+                     " and   b.pid = a.pid " +
+                     " and   b.user_id = a.user_id ";
+        
+         try {
+            conn = HMConnectionPool.getConnection();
+            ps = conn.prepareStatement(sql);
+            ps.setInt(1, uid);
+            rs = ps.executeQuery();
+
+            SimpleDateFormat dteForat = new SimpleDateFormat("dd MMM, hh:ss");
+            int prob=1;
+            while(rs.next()) {
+                String pid = rs.getString("pid");
+                long timeMills = rs.getLong("insert_time_mills");
+                
+                Date dte = new Date(timeMills);
+                String dteStr = dteForat.format(dte);
+                
+                StudentShowWorkModel s = new StudentShowWorkModel();
+                s.setPid(pid);
+                s.setInsertTimeMills(timeMills);
+                s.setViewTime(dteStr);
+                s.setLabel("Problem " + (prob++));
+                
+                swModels.add(s);
+            }
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+        finally {
+            SqlUtilities.releaseResources(rs, ps, conn);
+        }
+        
+        return swModels;
     }
 }

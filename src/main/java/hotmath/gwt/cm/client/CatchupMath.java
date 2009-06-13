@@ -1,43 +1,36 @@
 package hotmath.gwt.cm.client;
 
-import hotmath.gwt.cm.client.data.InmhItemData;
-import hotmath.gwt.cm.client.service.PrescriptionService;
-import hotmath.gwt.cm.client.service.PrescriptionServiceAsync;
-import hotmath.gwt.cm.client.ui.CmMainPanel;
-import hotmath.gwt.cm.client.ui.FooterPanel;
-import hotmath.gwt.cm.client.ui.HeaderPanel;
-import hotmath.gwt.cm.client.ui.context.LoginCmGuiDefinition;
 import hotmath.gwt.cm.client.ui.context.PrescriptionCmGuiDefinition;
 import hotmath.gwt.cm.client.ui.context.QuizCmGuiDefinition;
-import hotmath.gwt.cm.client.util.UserInfo;
+import hotmath.gwt.cm_tools.client.CatchupMathTools;
+import hotmath.gwt.cm_tools.client.data.InmhItemData;
+import hotmath.gwt.cm_tools.client.ui.CmMainPanel;
+import hotmath.gwt.cm_tools.client.ui.FooterPanel;
+import hotmath.gwt.cm_tools.client.ui.HeaderPanel;
+import hotmath.gwt.cm_tools.client.util.UserInfo;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.data.CmAsyncRequest;
 import hotmath.gwt.shared.client.data.CmAsyncRequestImplDefault;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.GXT;
-import com.extjs.gxt.ui.client.Registry;
 import com.extjs.gxt.ui.client.Style.LayoutRegion;
 import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
-import com.extjs.gxt.ui.client.event.MessageBoxEvent;
 import com.extjs.gxt.ui.client.util.Theme;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
-import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.Viewport;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.google.gwt.core.client.EntryPoint;
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.DeferredCommand;
 import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.rpc.ServiceDefTarget;
 import com.google.gwt.user.client.ui.RootPanel;
 
 /**
@@ -87,10 +80,9 @@ public class CatchupMath implements EntryPoint {
     public void onModuleLoadLocal() {
         Log.info("Catchup Math Startup: " + version);
         
+        
         __thisInstance = this;
         GXT.setDefaultTheme(Theme.GRAY, true);
-
-        setupServices();
 
         _mainPort = new Viewport();
         // _mainPort.setStyleName("main-port");
@@ -124,7 +116,7 @@ public class CatchupMath implements EntryPoint {
             }            
         }
         catch(Exception e) {
-            CatchupMath.showAlert(e.getMessage(), new CmAsyncRequestImplDefault()  {
+            CatchupMathTools.showAlert(e.getMessage(), new CmAsyncRequestImplDefault()  {
                 public void requestComplete(String requestData) {
                     Window.Location.assign(CmShared.CM_HOME_URL); // goto home
                 }
@@ -160,7 +152,7 @@ public class CatchupMath implements EntryPoint {
                         }
                     }
                     public void requestFailed(int code, String text) {
-                        showAlert("There was a problem logging in ");
+                        CatchupMathTools.showAlert("There was a problem logging in ");
                     }
                 });
             }
@@ -185,62 +177,7 @@ public class CatchupMath implements EntryPoint {
     }-*/;
 
 
-    /**
-     * Register any RPC services with the system
-     * 
-     */
-    private void setupServices() {
 
-        final PrescriptionServiceAsync prescriptionService = (PrescriptionServiceAsync) GWT.create(PrescriptionService.class);
-
-        String point = GWT.getModuleBaseURL();
-        if (!point.endsWith("/"))            point += "/";
-        point += "services/prescriptionService";
-
-        ((ServiceDefTarget) prescriptionService).setServiceEntryPoint(point);
-        Registry.register("prescriptionService", prescriptionService);
-    }
-
-    /**
-     * Display or hide the modal busy dialog
-     * 
-     * @param trueFalse
-     */
-    static public void setBusy(boolean trueFalse) {
-        RootPanel.get("loading").setVisible(trueFalse);
-    }
-
-    /**
-     * Display standard message dialog
-     * 
-     * @param msg
-     */
-    static public void showAlert(String msg) {
-        showAlert("Info", msg);
-    }
-
-
-    static public void showAlert(String title, String msg) {
-        setBusy(false);
-        MessageBox.alert(title, msg, new Listener<MessageBoxEvent>() {
-            public void handleEvent(MessageBoxEvent be) {
-            }
-        });
-    }
-
-
-    static public void showAlert(String title, String msg, final CmAsyncRequest callback) {
-        setBusy(false);
-        MessageBox.alert(title, msg, new Listener<MessageBoxEvent>() {
-            public void handleEvent(MessageBoxEvent be) {
-                if(callback != null)
-                    callback.requestComplete(be.getValue());
-            }
-        });
-    }
-    static public void showAlert(String msg, final CmAsyncRequest callback) {
-        showAlert("Info", msg, callback);
-    }
 
 
     /**
@@ -251,15 +188,6 @@ public class CatchupMath implements EntryPoint {
      */
     public void showLoginPage() {
         History.newItem("login");
-    }
-
-    private void showLoginPage_gwt() {
-        HeaderPanel.__instance.disable();
-
-        _mainContainer.removeAll();
-        _mainContainer.setLayout(new FitLayout());
-        _mainContainer.add(new LoginCmGuiDefinition().getCenterWidget());
-        _mainContainer.layout();
     }
 
     /**

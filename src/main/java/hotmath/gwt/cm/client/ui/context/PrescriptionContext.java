@@ -1,15 +1,16 @@
 package hotmath.gwt.cm.client.ui.context;
 
 import hotmath.gwt.cm.client.CatchupMath;
-import hotmath.gwt.cm.client.data.InmhItemData;
-import hotmath.gwt.cm.client.data.PrescriptionData;
-import hotmath.gwt.cm.client.data.PrescriptionSessionDataResource;
-import hotmath.gwt.cm.client.ui.CmContext;
-import hotmath.gwt.cm.client.ui.CmMainPanel;
-import hotmath.gwt.cm.client.ui.ContextChangeListener;
-import hotmath.gwt.cm.client.ui.ContextController;
-import hotmath.gwt.cm.client.ui.NextDialog;
-import hotmath.gwt.cm.client.util.UserInfo;
+import hotmath.gwt.cm_tools.client.CatchupMathTools;
+import hotmath.gwt.cm_tools.client.data.InmhItemData;
+import hotmath.gwt.cm_tools.client.data.PrescriptionData;
+import hotmath.gwt.cm_tools.client.data.PrescriptionSessionDataResource;
+import hotmath.gwt.cm_tools.client.ui.CmContext;
+import hotmath.gwt.cm_tools.client.ui.CmMainPanel;
+import hotmath.gwt.cm_tools.client.ui.ContextChangeListener;
+import hotmath.gwt.cm_tools.client.ui.ContextController;
+import hotmath.gwt.cm_tools.client.ui.NextDialog;
+import hotmath.gwt.cm_tools.client.util.UserInfo;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.data.CmAsyncRequestImplDefault;
 
@@ -132,7 +133,7 @@ public class PrescriptionContext implements CmContext {
                 ((PrescriptionCmGuiDefinition) CmMainPanel.__lastInstance.cmGuiDef)._guiWidget.expandResourcePracticeProblems();
                 CmMainPanel.__lastInstance.layout();
                 
-                CatchupMath.showAlert("View All the Steps", "Please view all required practice problem answers to the very last step.");              
+                CatchupMathTools.showAlert("View All the Steps", "Please view all required practice problem answers to the very last step.");              
                 ContextController.getInstance().setCurrentContext(PrescriptionContext.this);
 
                 return;
@@ -155,7 +156,7 @@ public class PrescriptionContext implements CmContext {
             if (correctPercent < PASS_PERCENT || currSeg < totSegs) {
 
                 if (!UserInfo.getInstance().isActiveUser()) {
-                    CatchupMath.showAlert("You are a visitor and cannot jump to the next test.");
+                    CatchupMathTools.showAlert("You are a visitor and cannot jump to the next test.");
                     ContextController.getInstance().setCurrentContext(PrescriptionContext.this);
                     return;
                 }
@@ -168,7 +169,7 @@ public class PrescriptionContext implements CmContext {
                         return;
                     }
                     msg = "You passed this section!  You will now be shown the next quiz.";
-                    CatchupMath.showAlert(msg,new CmAsyncRequestImplDefault() {
+                    CatchupMathTools.showAlert(msg,new CmAsyncRequestImplDefault() {
                         public void requestComplete(String requestData) {
                             UserInfo.getInstance().setTestSegment(UserInfo.getInstance().getTestSegment() + 1);
                             CatchupMath.getThisInstance().showQuizPanel();

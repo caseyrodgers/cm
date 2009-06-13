@@ -2,19 +2,15 @@ package hotmath.gwt.cm.client.ui.context;
 
 
 import hotmath.gwt.cm.client.CatchupMath;
-import hotmath.gwt.cm.client.ui.CmContext;
-import hotmath.gwt.cm.client.ui.CmGuiDefinition;
-import hotmath.gwt.cm.client.ui.ContextController;
-import hotmath.gwt.cm.client.ui.QuizPage;
-import hotmath.gwt.cm.client.util.UserInfo;
+import hotmath.gwt.cm_tools.client.ui.CmContext;
+import hotmath.gwt.cm_tools.client.ui.CmGuiDefinition;
+import hotmath.gwt.cm_tools.client.ui.ContextController;
+import hotmath.gwt.cm_tools.client.ui.QuizPage;
+import hotmath.gwt.cm_tools.client.util.UserInfo;
 import hotmath.gwt.shared.client.data.CmAsyncRequest;
 
-import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
-import com.extjs.gxt.ui.client.core.Template;
-import com.extjs.gxt.ui.client.widget.HorizontalPanel;
 import com.extjs.gxt.ui.client.widget.Html;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
-import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Widget;
 
 

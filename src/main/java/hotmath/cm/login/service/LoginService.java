@@ -1,6 +1,6 @@
 package hotmath.cm.login.service;
 
-import hotmath.gwt.cm.client.data.HaBasicUser;
+import hotmath.gwt.cm_tools.client.data.HaBasicUser;
 import hotmath.testset.ha.HaLoginInfo;
 import hotmath.testset.ha.HaUserFactory;
 

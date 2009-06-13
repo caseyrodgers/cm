@@ -1,6 +1,6 @@
 package hotmath.testset.ha;
 
-import hotmath.gwt.cm.client.data.HaBasicUser;
+import hotmath.gwt.cm_tools.client.data.HaBasicUser;
 
 abstract public class HaBasicUserImpl implements HaBasicUser {
     

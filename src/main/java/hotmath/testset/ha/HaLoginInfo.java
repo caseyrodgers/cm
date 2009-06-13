@@ -1,7 +1,7 @@
 package hotmath.testset.ha;
 
 import hotmath.HotMathException;
-import hotmath.gwt.cm.client.data.HaBasicUser;
+import hotmath.gwt.cm_tools.client.data.HaBasicUser;
 import hotmath.util.HMConnectionPool;
 import hotmath.util.sql.SqlUtilities;
 

@@ -1,8 +1,8 @@
 package hotmath.assessment;
 
 import hotmath.HotMathException;
-import hotmath.gwt.cm.client.ui.NextAction;
-import hotmath.gwt.cm.client.ui.NextAction.NextActionName;
+import hotmath.gwt.cm_tools.client.ui.NextAction;
+import hotmath.gwt.cm_tools.client.ui.NextAction.NextActionName;
 import hotmath.testset.ha.HaTestRun;
 import hotmath.testset.ha.HaUser;
 import sb.logger.SbLogger;
