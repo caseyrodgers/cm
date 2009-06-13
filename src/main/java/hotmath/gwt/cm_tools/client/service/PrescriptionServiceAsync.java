@@ -1,8 +1,6 @@
 package hotmath.gwt.cm_tools.client.service;
 
 import hotmath.gwt.cm_tools.client.util.CmRpcException;
-import hotmath.gwt.cm_tools.client.util.UserInfo;
-import hotmath.gwt.shared.client.util.RpcData;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 

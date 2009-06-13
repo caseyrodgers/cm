@@ -1,17 +1,9 @@
 package hotmath.assessment;
 
-import hotmath.HotMathException;
 import hotmath.testset.ha.HaTest;
 import hotmath.testset.ha.HaTestRun;
-import hotmath.util.HMConnectionPool;
-import hotmath.util.sql.SqlUtilities;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 

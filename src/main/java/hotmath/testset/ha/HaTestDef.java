@@ -4,7 +4,6 @@ import hotmath.BookInfo;
 import hotmath.BookInfoManager;
 import hotmath.HotMathException;
 import hotmath.HotMathLogger;
-import hotmath.ProblemID;
 import hotmath.util.HMConnectionPool;
 import hotmath.util.sql.SqlUtilities;
 
@@ -12,7 +11,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 

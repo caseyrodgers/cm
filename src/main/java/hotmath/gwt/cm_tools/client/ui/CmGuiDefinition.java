@@ -3,6 +3,8 @@ package hotmath.gwt.cm_tools.client.ui;
 
 
 
+import hotmath.gwt.cm_tools.client.ui.context.CmContext;
+
 import com.google.gwt.user.client.ui.Widget;
 
 /** A single resource that is shown in the resource type 

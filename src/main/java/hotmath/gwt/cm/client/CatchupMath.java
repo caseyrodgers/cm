@@ -254,5 +254,4 @@ public class CatchupMath implements EntryPoint {
     
     
     
-    static public String FEEDBACK_MESSAGE="<p>Please send us feedback, by using Feedback at the bottom of the page.</p>";
 }

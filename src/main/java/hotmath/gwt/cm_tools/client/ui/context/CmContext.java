@@ -1,10 +1,9 @@
-package hotmath.gwt.cm_tools.client.ui;
+package hotmath.gwt.cm_tools.client.ui.context;
 
 
 import java.util.List;
 
 import com.extjs.gxt.ui.client.widget.Component;
-import com.extjs.gxt.ui.client.widget.button.IconButton;
 
 
 /** A context is a single state of a GUI form.

@@ -1,6 +1,5 @@
 package hotmath.testset.ha;
 
-import hotmath.gwt.cm_tools.client.ui.viewer.ResourceViewerImplReview;
 
 public class HaTestRunResult {
 	Integer resultId;

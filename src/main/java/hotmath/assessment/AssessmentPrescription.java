@@ -19,7 +19,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import sb.logger.SbLogger;
-import sb.util.SbUtilities;
 
 /**
  * Class to represent an assessment prescription for a given set of INMH items.

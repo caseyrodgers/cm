@@ -1,6 +1,5 @@
 package hotmath.testset.ha;
 
-import hotmath.HotMathException;
 import hotmath.util.HMConnectionPool;
 import hotmath.util.sql.SqlUtilities;
 

@@ -1,11 +1,10 @@
 package hotmath.gwt.cm.client.ui.context;
 
-
-import hotmath.gwt.cm.client.CatchupMath;
-import hotmath.gwt.cm_tools.client.ui.CmContext;
+import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.ui.CmGuiDefinition;
 import hotmath.gwt.cm_tools.client.ui.ContextController;
 import hotmath.gwt.cm_tools.client.ui.QuizPage;
+import hotmath.gwt.cm_tools.client.ui.context.CmContext;
 import hotmath.gwt.cm_tools.client.util.UserInfo;
 import hotmath.gwt.shared.client.data.CmAsyncRequest;
 
@@ -50,7 +49,7 @@ public class QuizCmGuiDefinition implements CmGuiDefinition {
                    "<p>Most of the quiz questions require pencil and paper. Please don't guess.</p> ";
 	    }
 	    cp.add(new Html(html));
-	    cp.add(new Html(CatchupMath.FEEDBACK_MESSAGE));
+	    cp.add(new Html(CatchupMathTools.FEEDBACK_MESSAGE));
 		return cp;
 	}
 	

@@ -13,7 +13,6 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Represents a single INMH item and all the PIDS that reference ie

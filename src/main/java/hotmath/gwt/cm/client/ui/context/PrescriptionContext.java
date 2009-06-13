@@ -1,15 +1,16 @@
 package hotmath.gwt.cm.client.ui.context;
 
+
 import hotmath.gwt.cm.client.CatchupMath;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.data.InmhItemData;
 import hotmath.gwt.cm_tools.client.data.PrescriptionData;
 import hotmath.gwt.cm_tools.client.data.PrescriptionSessionDataResource;
-import hotmath.gwt.cm_tools.client.ui.CmContext;
 import hotmath.gwt.cm_tools.client.ui.CmMainPanel;
 import hotmath.gwt.cm_tools.client.ui.ContextChangeListener;
 import hotmath.gwt.cm_tools.client.ui.ContextController;
 import hotmath.gwt.cm_tools.client.ui.NextDialog;
+import hotmath.gwt.cm_tools.client.ui.context.CmContext;
 import hotmath.gwt.cm_tools.client.util.UserInfo;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.data.CmAsyncRequestImplDefault;

@@ -1,7 +1,6 @@
 package hotmath.gwt.cm_tools.client.ui.viewer;
 
 import hotmath.gwt.cm_tools.client.data.InmhItemData;
-import hotmath.gwt.cm_tools.client.ui.CmMainPanel;
 import pl.rmalinowski.gwt2swf.client.ui.SWFWidget;
 
 import com.google.gwt.user.client.ui.Label;

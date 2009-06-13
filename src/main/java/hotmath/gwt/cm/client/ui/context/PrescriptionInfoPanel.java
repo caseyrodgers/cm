@@ -1,9 +1,9 @@
 package hotmath.gwt.cm.client.ui.context;
 
-import hotmath.gwt.cm.client.CatchupMath;
-import hotmath.gwt.cm_tools.client.ui.CmContext;
+import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.ui.ContextChangeListener;
 import hotmath.gwt.cm_tools.client.ui.ContextController;
+import hotmath.gwt.cm_tools.client.ui.context.CmContext;
 
 import com.extjs.gxt.ui.client.widget.Html;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
@@ -23,7 +23,7 @@ class PrescriptionInfoPanel extends LayoutContainer {
         Html htmlO = new Html(html);
         add(htmlO);
         
-        add(new Html(CatchupMath.FEEDBACK_MESSAGE));
+        add(new Html(CatchupMathTools.FEEDBACK_MESSAGE));
         
         ContextController.getInstance().addContextChangeListener(new ContextChangeListener() {
             public void contextChanged(CmContext context) {

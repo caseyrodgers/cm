@@ -11,8 +11,6 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.dbcp.DbcpException;
-
 public class HaTestRun {
 
     Integer runId;

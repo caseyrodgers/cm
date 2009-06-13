@@ -1,7 +1,6 @@
 package hotmath.gwt.cm_tools.client.ui;
 
 import hotmath.gwt.cm_tools.client.data.InmhItemData;
-import hotmath.gwt.cm_tools.client.data.PrescriptionData;
 import hotmath.gwt.cm_tools.client.service.PrescriptionServiceAsync;
 import hotmath.gwt.cm_tools.client.util.UserInfo;
 import hotmath.gwt.shared.client.util.RpcData;

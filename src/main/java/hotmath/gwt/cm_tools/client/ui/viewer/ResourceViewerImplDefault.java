@@ -3,7 +3,6 @@ package hotmath.gwt.cm_tools.client.ui.viewer;
 import hotmath.gwt.cm_tools.client.data.InmhItemData;
 
 import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 
 public class ResourceViewerImplDefault extends ResourceViewerContainer  {
