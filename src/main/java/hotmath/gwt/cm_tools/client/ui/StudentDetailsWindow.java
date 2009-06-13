@@ -26,6 +26,16 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Widget;
 
+/*
+ * @author Bob
+ * @author Casey
+ * 
+ * Derived from StudentDetailsPanel (retired)
+ * 
+ * Displays historical record of Student activity in reverse chronological order
+ * 
+ */
+
 public class StudentDetailsWindow extends Window {
     
     StudentModel studentModel;
@@ -35,7 +45,7 @@ public class StudentDetailsWindow extends Window {
     
     public StudentDetailsWindow(StudentModel studentModel) {
         this.studentModel = studentModel;
-        setSize(550,320);
+        setSize(570,320);
         setModal(true);
         setResizable(false);
         setHeading("Student Details For: " + studentModel.getName());
@@ -50,7 +60,7 @@ public class StudentDetailsWindow extends Window {
         grid.setStyleName("student-details-panel-grid");
         grid.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
         grid.getSelectionModel().setFiresEvents(true);
-        grid.setWidth(530);
+        grid.setWidth(550);
         grid.setHeight(190);
         
         add(studentInfoPanel());
@@ -83,28 +93,32 @@ public class StudentDetailsWindow extends Window {
         date.setId(StudentActivityModel.USE_DATE_KEY);  
         date.setHeader("Date");  
         date.setWidth(75);
-        date.setSortable(true);
+        date.setSortable(false);
+        date.setMenuDisabled(true);
         configs.add(date);
         
         ColumnConfig program = new ColumnConfig();
         program.setId(StudentActivityModel.PROGRAM_KEY);  
         program.setHeader("Program");  
         program.setWidth(105);
-        program.setSortable(true);
+        program.setSortable(false);
+        program.setMenuDisabled(true);
         configs.add(program);       
         
         ColumnConfig activity = new ColumnConfig();  
         activity.setId(StudentActivityModel.ACTIVITY_KEY);  
         activity.setHeader("Activity-Section");  
         activity.setWidth(125);
-        activity.setSortable(true);
+        activity.setSortable(false);
+        activity.setMenuDisabled(true);
         configs.add(activity);
         
         ColumnConfig result = new ColumnConfig();  
         result.setId(StudentActivityModel.RESULT_KEY);  
         result.setHeader("Result");  
-        result.setWidth(205);
-        result.setSortable(true);
+        result.setWidth(225);
+        result.setSortable(false);
+        result.setMenuDisabled(true);
         configs.add( result);
 /*
         ColumnConfig start = new ColumnConfig();
