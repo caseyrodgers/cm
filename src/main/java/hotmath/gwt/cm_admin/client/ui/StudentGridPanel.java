@@ -104,6 +104,8 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
         _grid.setContextMenu(contextMenu);
 
         instance = this;
+        
+        CmAdminDataReader.getInstance().addReader(this);
     }
     
     public void refreshData() {
