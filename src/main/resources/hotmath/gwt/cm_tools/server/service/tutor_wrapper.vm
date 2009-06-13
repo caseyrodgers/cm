@@ -22,7 +22,7 @@
                     <img id='steps_next_img' src="/images/tutor5/steps_next-disabled.gif">
                 </a>
                 <div class='cm-tutor-button-bar-bottom' style='float: right;'>
-                   <a class='button' href='#' onclick='expandAllSteps();'>Expand</a>
+                   <a style='display: inline' class='button' href='#' onclick='expandAllSteps();'>Expand</a>
                    <a class='button' href='#' onclick='showWorkDialog_Gwt();return false;'>Show Work<img  src='/gwt-resources/images/icon_show_work.png'/></a>
                    <a class='button' href='#' onmouseover='showAskATutorTooltip_Cm()' onmouseout='nd()'onclick='TutorManager.askATutor();return false;'>Ask a Tutor<img src='/gwt-resources/images/icon_ask_a_tutor.png'/></a>
                </div>
