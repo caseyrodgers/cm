@@ -8,10 +8,13 @@ import hotmath.gwt.cm_admin.client.ui.AccountInfoPanel;
 import hotmath.gwt.cm_admin.client.ui.FooterPanel;
 import hotmath.gwt.cm_admin.client.ui.HeaderPanel;
 import hotmath.gwt.cm_admin.client.ui.StudentGridPanel;
+import hotmath.gwt.cm_admin.client.ui.StudentShowWorkDisplayWindow;
+import hotmath.gwt.cm_admin.client.ui.StudentShowWorkPanel;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.data.CmAsyncRequest;
 import hotmath.gwt.shared.client.model.UserInfoBase;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.Registry;
 import com.extjs.gxt.ui.client.Style.LayoutRegion;
 import com.extjs.gxt.ui.client.event.BaseEvent;
@@ -44,13 +47,17 @@ public class CatchupMathAdmin implements EntryPoint, ValueChangeHandler<String> 
     LayoutContainer mainContainer;
     HeaderPanel headerPanel;
     FooterPanel footerPanel;
-    StudentGridPanel sgp;
     int userId;
     CmAdminModel cmAdminMdl;
+    AccountInfoPanel infoPanel;
+    StudentGridPanel sgp;
+    
 
     static CatchupMathAdmin instance;
 
     public void onModuleLoad() {
+        
+        Log.info("CatchupMathAdmin is starting");
 
         instance = this;
 
@@ -82,7 +89,9 @@ public class CatchupMathAdmin implements EntryPoint, ValueChangeHandler<String> 
         }
 
         registerRpcServices();
-
+        
+        
+    
         mainPort = new Viewport();
         mainPort.setLayout(new BorderLayout());
         mainPort.setEnableScroll(false);
@@ -112,6 +121,9 @@ public class CatchupMathAdmin implements EntryPoint, ValueChangeHandler<String> 
 
         RootPanel.get().add(mainPort);
 
+
+        infoPanel = new AccountInfoPanel(cmAdminMdl);
+        sgp = new StudentGridPanel(cmAdminMdl);
         CmAdminDataReader.getInstance().fireRefreshData();
 
         // If the application starts with no history token, redirect to a new
@@ -120,26 +132,31 @@ public class CatchupMathAdmin implements EntryPoint, ValueChangeHandler<String> 
             History.newItem("main");
         }
         History.addValueChangeHandler(this);
+        History.fireCurrentHistoryState();
 
     }
 
     private void loadMainPage() {
+        Log.info("Loading CMAdmin main page");
         mainContainer.removeAll();
-        mainContainer.setLayout(new FlowLayout());
+        mainContainer.setLayout(new BorderLayout());
 
-        AccountInfoPanel infoPanel = new AccountInfoPanel(cmAdminMdl);
-        mainContainer.add(infoPanel);
-        sgp = new StudentGridPanel(cmAdminMdl);
-        mainContainer.add(sgp);
+        
+        mainContainer.add(infoPanel, new BorderLayoutData(LayoutRegion.NORTH, 150));
+        
+        mainContainer.add(sgp, new BorderLayoutData(LayoutRegion.CENTER));
         
         mainContainer.layout();
+        
+        StudentGridPanel.instance.resizeChildren();
     }
     
     private void loadShowWorkPage() {
+        Log.info("Loading CMAdmin show work page");
         mainContainer.removeAll();
-        mainContainer.setLayout(new FlowLayout());
+        mainContainer.setLayout(new FitLayout());
         
-        mainContainer.add(new Label("SHOW WORK"));
+        mainContainer.add(new StudentShowWorkPanel());
         mainContainer.layout();
     }
     
@@ -191,7 +208,10 @@ public class CatchupMathAdmin implements EntryPoint, ValueChangeHandler<String> 
     
     @Override
     public void onValueChange(ValueChangeEvent<String> history) {
-        if (history.equals("sw")) {
+        
+        Log.info("CatchupMathAdmin: history changed: " + history);
+        
+        if (history.getValue().equals("sw")) {
             loadShowWorkPage();
         } else {
             loadMainPage();
