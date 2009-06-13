@@ -1,18 +1,19 @@
 package hotmath.gwt.cm_admin.server.service;
 
-import java.util.List;
-
-import com.google.gwt.user.server.rpc.RemoteServiceServlet;
-
 import hotmath.gwt.cm_admin.client.model.AccountInfoModel;
 import hotmath.gwt.cm_admin.client.model.ChapterModel;
 import hotmath.gwt.cm_admin.client.model.GroupModel;
 import hotmath.gwt.cm_admin.client.model.StudentActivityModel;
 import hotmath.gwt.cm_admin.client.model.StudentModel;
+import hotmath.gwt.cm_admin.client.model.StudentShowWorkModel;
 import hotmath.gwt.cm_admin.client.model.StudyProgramModel;
 import hotmath.gwt.cm_admin.client.model.SubjectModel;
 import hotmath.gwt.cm_admin.client.service.RegistrationService;
 import hotmath.gwt.cm_admin.server.model.CmAdminDao;
+
+import java.util.List;
+
+import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
 
 public class RegistrationServiceImpl extends RemoteServiceServlet implements RegistrationService {
@@ -87,5 +88,10 @@ public class RegistrationServiceImpl extends RemoteServiceServlet implements Reg
 	public GroupModel addGroup(Integer adminUid, GroupModel gm) throws Exception {
 		CmAdminDao cma = new CmAdminDao();
 		return cma.addGroup(adminUid, gm);
+	}
+	
+	public List<StudentShowWorkModel> getStudentShowWork(Integer uid) throws Exception {
+	       CmAdminDao cma = new CmAdminDao();
+	       return cma.getStudentShowWork(uid);
 	}
 }
