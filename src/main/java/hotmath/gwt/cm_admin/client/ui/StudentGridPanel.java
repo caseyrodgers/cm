@@ -11,6 +11,7 @@ import hotmath.gwt.shared.client.CmShared;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.Registry;
 import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
 import com.extjs.gxt.ui.client.Style.SelectionMode;
@@ -142,7 +143,7 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
         if (sm == null)
             return;
         
-        new StudentShowWorkDialog(sm);
+        new StudentShowWorkWindow(sm);
     }
     
     private void showDebugInfo() {
@@ -193,7 +194,7 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
         toolbar.setHorizontalAlign(HorizontalAlignment.CENTER);
         toolbar.setStyleName("student-grid-panel-toolbar");
 
-        TableData tData = new TableData("150px", "30px");
+        TableData tData = new TableData("150px", "20px");
         tData.setMargin(20);
 
         Button ti = registerStudentToolItem(_grid, _cmAdminMdl);
@@ -204,34 +205,15 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
 
         ti = studentDetailsToolItem(_grid);
         toolbar.add(ti, tData);
+        
+        ti = showWorkToolItem(_grid,_cmAdminMdl);
+        toolbar.add(ti, tData);
+
 
         ti = unregisterStudentToolItem(_grid);
         toolbar.add(ti, tData);
 
         return toolbar;
-    }
-
-    private ToolBar buildToolbar() {
-        toolBar = new ToolBar();
-        toolBar.setStyleName("student-grid-panel-toolbar");
-
-        Button ti = studentDetailsToolItem(_grid);
-        toolBar.add(ti);
-        toolBar.add(new SeparatorToolItem());
-
-        ti = editStudentToolItem(_grid, _cmAdminMdl);
-        toolBar.add(ti);
-        toolBar.add(new SeparatorToolItem());
-
-        ti = registerStudentToolItem(_grid, _cmAdminMdl);
-        toolBar.add(ti);
-        toolBar.add(new SeparatorToolItem());
-
-        toolBar.add(new FillToolItem());
-        toolBar.add(new SeparatorToolItem());
-        ti = unregisterStudentToolItem(_grid);
-        toolBar.add(ti);
-        return toolBar;
     }
 
     private Grid<StudentModel> defineGrid(final ListStore<StudentModel> store, ColumnModel cm) {
@@ -288,7 +270,30 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
         });
         return ti;
     }
+    
+    private Button showWorkToolItem(final Grid<StudentModel> grid, final CmAdminModel cmAdminMdl) {
+        Button ti = new StudenPanelButton("Show Work");
+        ti.setToolTip("Show all problems that the student has entered work for.");
 
+        ti.addSelectionListener(new SelectionListener<ButtonEvent>() {
+            @Override
+            public void componentSelected(ButtonEvent ce) {
+                GridSelectionModel<StudentModel> sel = grid.getSelectionModel();
+                List<StudentModel> l = sel.getSelection();
+                if (l.size() == 0) {
+                    CatchupMathAdmin.showAlert("Please select a student.");
+                } else {
+                    StudentModel sm = l.get(0);
+                    new StudentShowWorkWindow(sm);
+                }
+                if (grid.getStore().getCount() > 0) {
+                    ce.getComponent().enable();
+                }
+            }
+
+        });
+        return ti;
+    }
     private Button studentDetailsToolItem(final Grid<StudentModel> grid) {
         Button ti = new StudenPanelButton("Student Detail History");
         ti.setToolTip("View details for the selected student.");
@@ -405,6 +410,9 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
     }
 
     protected void getStudentsRPC(Integer uid, final ListStore<StudentModel> store,  final Integer uidToSelect) {
+        
+        Log.info("StudentGridPanel: reading students RPC");
+        
         RegistrationServiceAsync s = (RegistrationServiceAsync) Registry.get("registrationService");
 
         s.getSummariesForActiveStudents(uid, new AsyncCallback<List<StudentModel>>() {
@@ -434,6 +442,7 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
                     }
                 }
                     
+                Log.info("StudentGridPanel: students RPC successfully read");
             }
 
             public void onFailure(Throwable caught) {
