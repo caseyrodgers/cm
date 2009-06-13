@@ -1,6 +1,7 @@
 package hotmath.gwt.cm_admin.client.ui;
 
 import hotmath.gwt.cm_admin.client.model.AccountInfoModel;
+import hotmath.gwt.cm_admin.client.model.CmAdminDataReader;
 import hotmath.gwt.cm_admin.client.model.CmAdminDataRefresher;
 import hotmath.gwt.cm_admin.client.model.CmAdminModel;
 import hotmath.gwt.cm_admin.client.service.RegistrationServiceAsync;
@@ -60,6 +61,8 @@ public class AccountInfoPanel extends LayoutContainer implements CmAdminDataRefr
 		//TODO: add "Details" button or tool tip
 
 		add(hp);
+		
+		CmAdminDataReader.getInstance().addReader(this);
 	}
 	
 	protected void onRender(Element parent, int index) {
