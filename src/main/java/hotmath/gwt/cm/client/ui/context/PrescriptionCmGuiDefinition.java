@@ -12,8 +12,8 @@ import hotmath.gwt.cm_tools.client.ui.ContextController;
 import hotmath.gwt.cm_tools.client.ui.context.CmContext;
 import hotmath.gwt.cm_tools.client.ui.viewer.ResourceViewer;
 import hotmath.gwt.cm_tools.client.ui.viewer.ResourceViewerFactory;
-import hotmath.gwt.cm_tools.client.util.UserInfo;
 import hotmath.gwt.shared.client.util.RpcData;
+import hotmath.gwt.shared.client.util.UserInfo;
 
 import java.util.List;
 

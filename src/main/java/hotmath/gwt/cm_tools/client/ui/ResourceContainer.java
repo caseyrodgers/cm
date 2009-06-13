@@ -5,7 +5,7 @@ import hotmath.gwt.cm_tools.client.data.InmhItemData;
 import hotmath.gwt.cm_tools.client.ui.viewer.ResourceViewer;
 import hotmath.gwt.cm_tools.client.ui.viewer.ResourceViewerContainer;
 import hotmath.gwt.cm_tools.client.ui.viewer.ResourceViewerFactory;
-import hotmath.gwt.cm_tools.client.util.UserInfo;
+import hotmath.gwt.shared.client.util.UserInfo;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.Style.Scroll;

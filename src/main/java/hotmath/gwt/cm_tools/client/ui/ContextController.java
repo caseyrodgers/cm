@@ -1,10 +1,10 @@
 package hotmath.gwt.cm_tools.client.ui;
 
-
-import hotmath.gwt.cm.client.ui.HeaderPanel;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.ui.context.CmContext;
-import hotmath.gwt.cm_tools.client.util.UserInfo;
+import hotmath.gwt.shared.client.eventbus.CmEvent;
+import hotmath.gwt.shared.client.eventbus.EventBus;
+import hotmath.gwt.shared.client.util.UserInfo;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -53,6 +53,13 @@ public class ContextController {
 	 * 
 	 */
 	protected void fireContextChanged() {
+	    
+	    EventBus.getInstance().fireEvent(new CmEvent(EventBus.EVENT_TYPE_CONTEXTCHANGED, theContext));
+	    
+	    
+	    /** @TODO: Only use the EventBus
+	     * 
+	     */
 	    for(ContextChangeListener listener: listeners) {
 	        listener.contextChanged(theContext);
 	    }
@@ -72,11 +79,6 @@ public class ContextController {
 	 */
 	 public void setCurrentContext(CmContext context) {
 		 theContext = context;
-        // Set the proper title and label info
-        HeaderPanel.__instance.setHeaderTitle(context.getContextTitle());
-        CmMainPanel.__lastInstance._westPanel.setHeading(context.getContextSubTitle());
-  	    
-        // HeaderPanel.__instance._thermometer.setPerecent(context.getContextCompletionPercent());
 		fireContextChanged();
 	}
 	 
