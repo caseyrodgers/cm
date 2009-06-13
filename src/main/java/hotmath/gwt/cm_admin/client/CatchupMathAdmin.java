@@ -12,7 +12,6 @@ import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.data.CmAsyncRequest;
 import hotmath.gwt.shared.client.model.UserInfoBase;
 
-import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.Registry;
 import com.extjs.gxt.ui.client.Style.LayoutRegion;
 import com.extjs.gxt.ui.client.event.BaseEvent;
@@ -26,8 +25,6 @@ import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.user.client.Command;
-import com.google.gwt.user.client.DeferredCommand;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.ServiceDefTarget;
 import com.google.gwt.user.client.ui.RootPanel;
