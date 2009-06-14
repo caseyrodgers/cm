@@ -27,11 +27,14 @@ public class CatchupMathTools implements EntryPoint {
           }
         });
       }
+    
+    static {
+        setupServices();
+    }
     /**
      * This is the entry point method.
      */
     public void onModuleLoadLocal() {
-        setupServices();
         Log.info("Catchup Math Tools library loaded successfully");
     }
 
@@ -79,7 +82,8 @@ public class CatchupMathTools implements EntryPoint {
      * Register any RPC services with the system
      * 
      */
-    private void setupServices() {
+    static private void setupServices() {
+        Log.info("CatchupMathTools: Setting up services");
         final PrescriptionServiceAsync prescriptionService = (PrescriptionServiceAsync) GWT.create(PrescriptionService.class);
 
         String point = GWT.getModuleBaseURL();
