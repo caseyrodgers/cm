@@ -510,6 +510,8 @@ public class RegisterStudent extends LayoutContainer {
 	        		sm.setUid(stuMdl.getUid());
 	        		sm.setUserProgramId(stuMdl.getUserProgramId());
 	        		sm.setJson(stuMdl.getJson());
+	        		sm.setStatus(stuMdl.getStatus());
+	        		sm.setSectionNum(stuMdl.getSectionNum());
 	        		
 	        		if (! name.equals(stuMdl.getName())) {
 	        			stuChanged = true;
