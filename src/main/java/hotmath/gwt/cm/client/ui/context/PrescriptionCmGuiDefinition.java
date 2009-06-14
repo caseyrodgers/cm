@@ -141,8 +141,13 @@ public class PrescriptionCmGuiDefinition implements CmGuiDefinition {
         return "Prescription Resource";
     }
     
+    /** Mark the pid as being viewed
+     * 
+     * @TODO: remove access to globals
+     * 
+     * @param pid
+     */
     static public void solutionHasBeenViewed_Gwt(String pid) {
-        // mark the currently viewed resource as being viewed
         ResourceModel rm = PrescriptionResourceAccord.__instance._activeResourceList.getSelectionModel().getSelectedItem();
         InmhItemData itemData = rm.getItem();
         PrescriptionResourceAccord.__instance._activeResourceList.markResourceAsViewed(itemData);
@@ -394,9 +399,10 @@ class ResourceList extends ListView<ResourceModel> implements Listener {
             CmMainPanel.__lastInstance._mainContent.resetChildSize();
             //cp.el().fadeIn(FxConfig.NONE);
 
-            // practice problems are marked elsewhere
-            if(resourceItem.getType().equals("practice"))
+            // practice problems/extra problems are marked only when last step is viewed
+            if(resourceItem.getType().equals("practice") || resourceItem.getType().equals("cmextra")) {
                 return;
+            }
             
             markResourceAsViewed(resourceItem);
             

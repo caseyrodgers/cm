@@ -24,6 +24,7 @@ import com.extjs.gxt.ui.client.widget.DataList;
 import com.extjs.gxt.ui.client.widget.DataListItem;
 import com.extjs.gxt.ui.client.widget.Html;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
+import com.extjs.gxt.ui.client.widget.ListView;
 import com.extjs.gxt.ui.client.widget.Window;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
@@ -145,6 +146,8 @@ public class StudentShowWorkWindow extends Window {
         final DataList list2 = new DataList();
         list2.setFlatStyle(true);
 
+        ListView<StudentShowWorkModel> lv = new ListView<StudentShowWorkModel>();
+        
         Listener<ComponentEvent> l = new Listener<ComponentEvent>() {
             public void handleEvent(ComponentEvent ce) {
                 DataList l = (DataList) ce.getComponent();
@@ -163,6 +166,8 @@ public class StudentShowWorkWindow extends Window {
             item.setData("pid", work.getPid());
             list2.add(item);
         }
+        
+        //list2.setTsetSimpleTemplate("<div class='resource-item'>{title}&nbsp;<img id='{file}' class='{completeClassName}' src='/gwt-resources/images/check_white.png'/></div>");
 
         westContainer.add(list2, new BorderLayoutData(LayoutRegion.CENTER));
         westContainer.layout();
