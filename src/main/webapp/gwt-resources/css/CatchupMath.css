@@ -546,9 +546,15 @@ img.resource-item-complete {
     margin-left: 15px;	
     font-size: 11px;
 }
-#tutor_embedded a.button:hover {
-    text-decoration: underline;
+
+#tutor_embedded a.debug-off {
+    display: none;
 }
+
+.debug-on #tutor_embedded  a.debug-off {
+    display: inline;
+}
+
 #steps_head {
     background-image: url(/gwt-resources/images/steps_head-500x24.png);
 }

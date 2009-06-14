@@ -47,7 +47,7 @@ public class StudentShowWorkWindow extends Window {
 
     public StudentShowWorkWindow(StudentModel student) {
         this.student = student;
-        setSize(770, 530);
+        setSize(770, 600);
         setResizable(true);
 
         setLayout(new BorderLayout());
@@ -107,7 +107,7 @@ public class StudentShowWorkWindow extends Window {
         LayoutContainer lc = new LayoutContainer();
         lc.setLayout(new BorderLayout());
 
-        BorderLayoutData ld = new BorderLayoutData(LayoutRegion.NORTH, 300);
+        BorderLayoutData ld = new BorderLayoutData(LayoutRegion.NORTH, 350);
         ld.setSplit(true);
 
         try {

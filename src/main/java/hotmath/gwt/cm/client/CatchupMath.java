@@ -74,8 +74,6 @@ public class CatchupMath implements EntryPoint {
         GXT.setDefaultTheme(Theme.GRAY, true);
 
         _mainPort = new Viewport();
-        // _mainPort.setStyleName("main-port");
-
         _mainPort.setLayout(new BorderLayout());
         BorderLayoutData bdata = new BorderLayoutData(LayoutRegion.NORTH, 38);
         _headerPanel = new HeaderPanel();
@@ -102,7 +100,12 @@ public class CatchupMath implements EntryPoint {
                 UserInfo visiter = new UserInfo(0,0);
                 UserInfo.setInstance(visiter);
                 UserInfo.getInstance().setRunId(runId);
-            }            
+            }
+            
+            /** Turn on debugging CSS */
+            if(CmShared.getQueryParameter("debug") != null) {
+                _mainPort.addStyleName("debug-on");
+            }
         }
         catch(Exception e) {
             CatchupMathTools.showAlert(e.getMessage(), new CmAsyncRequestImplDefault()  {
