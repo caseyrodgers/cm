@@ -802,7 +802,12 @@ img.resource-item-complete {
 	font-size: 130%;
 	width: auto;
 	margin: 20px;
-	background-color: #DFE8F6;
+        color: black;
+        background-color: white;
+}
+
+#hm_content p {
+        color: black;
 }
 
 
