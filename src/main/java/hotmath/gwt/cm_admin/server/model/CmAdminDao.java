@@ -1018,7 +1018,8 @@ public class CmAdminDao {
                      " ) b " +
                      " where a.user_id = ?  " +
                      " and   b.pid = a.pid " +
-                     " and   b.user_id = a.user_id ";
+                     " and   b.user_id = a.user_id " +
+                     " order by insert_time_mills desc";
         
          try {
             conn = HMConnectionPool.getConnection();
