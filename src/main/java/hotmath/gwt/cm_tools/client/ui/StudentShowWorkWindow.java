@@ -20,8 +20,8 @@ import com.extjs.gxt.ui.client.event.ComponentEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.SelectionListener;
+import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.DataList;
-import com.extjs.gxt.ui.client.widget.DataListItem;
 import com.extjs.gxt.ui.client.widget.Html;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.ListView;
@@ -92,7 +92,7 @@ public class StudentShowWorkWindow extends Window {
 
     private Widget createCenterPanel() {
         centerContainer.setLayout(new FitLayout());
-        String html = "<h1 style='width: 200;margin: auto;'>No problem to show</h1>";
+        String html = "<h1 style='color: blue;width: 200;margin: auto;'>No problem to show</h1>";
         centerContainer.add(new Html(html));
         return centerContainer;
     }
@@ -143,46 +143,43 @@ public class StudentShowWorkWindow extends Window {
     }
 
     private void createDataList(List<StudentShowWorkModel> showWork) {
-        final DataList list2 = new DataList();
-        list2.setFlatStyle(true);
-
-        ListView<StudentShowWorkModel> lv = new ListView<StudentShowWorkModel>();
+        final ListView<StudentShowWorkModel> lv = new ListView<StudentShowWorkModel>();
+        lv.setSimpleTemplate("<div>{view_time}&nbsp;&nbsp;&nbsp;&nbsp;{label}</div>");
         
         Listener<ComponentEvent> l = new Listener<ComponentEvent>() {
             public void handleEvent(ComponentEvent ce) {
-                DataList l = (DataList) ce.getComponent();
-                String pid = l.getSelectedItem().getData("pid");
+                String pid = lv.getSelectionModel().getSelectedItem().getPid(); 
 
-                Log.info("StudentShoworkWindow: " + "Loading solution: " + pid);
+                Log.debug("StudentShoworkWindow: " + "Loading solution: " + pid);
 
                 createCenterPanelForPid(pid);
             }
         };
 
-        list2.addListener(Events.OnClick, l);
-        for (StudentShowWorkModel work : showWork) {
-            DataListItem item = new DataListItem();
-            item.setText(work.getLabel() + " " + work.getViewTime());
-            item.setData("pid", work.getPid());
-            list2.add(item);
+        ListStore<StudentShowWorkModel> store =new ListStore<StudentShowWorkModel>(); 
+        lv.addListener(Events.OnClick, l);
+        for (int i=0,t=showWork.size();i<t;i++) {
+            StudentShowWorkModel sw = showWork.get(i);
+            store.add(sw);
         }
-        
-        //list2.setTsetSimpleTemplate("<div class='resource-item'>{title}&nbsp;<img id='{file}' class='{completeClassName}' src='/gwt-resources/images/check_white.png'/></div>");
+        lv.setStore(store);
 
-        westContainer.add(list2, new BorderLayoutData(LayoutRegion.CENTER));
+        
+
+        westContainer.add(lv, new BorderLayoutData(LayoutRegion.CENTER));
         westContainer.layout();
     }
 
     protected void getStudentShowWorkRPC() {
 
-        Log.info("StudentShowWorkWindow: reading student show work list");
+        Log.debug("StudentShowWorkWindow: reading student show work list");
         RegistrationServiceAsync s = (RegistrationServiceAsync) Registry.get("registrationService");
         s.getStudentShowWork(student.getUid(), new AsyncCallback<List<StudentShowWorkModel>>() {
 
             public void onSuccess(List<StudentShowWorkModel> list) {
                 createDataList(list);
 
-                Log.info("StudentShowWorkWindow: student show work read successfully");
+                Log.debug("StudentShowWorkWindow: student show work read successfully");
             }
 
             public void onFailure(Throwable caught) {
