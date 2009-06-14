@@ -9,7 +9,7 @@ public class StudentShowWorkModel extends BaseModelData {
     public static final String LABEL_KEY = "label";
     public static final String INSERT_TIME_KEY = "insert_time_mills";
     public static final String UID_KEY = "uid";
-    public static final String VIEW_TIME_KEY = "uid";
+    public static final String VIEW_TIME_KEY = "view_time";
 
     public String getPid() {
         return get(PID_KEY);
