@@ -198,7 +198,9 @@ public class QuizContext implements CmContext {
                                 if(na != null) {
                                     if(na.equals("AUTO_ASSIGNED")) {
                                         UserInfo.getInstance().setTestSegment(0);  // reset
-                                        showAutoAssignedProgram(rdata.getDataAsString("assigned_test"));
+                                        String testName = rdata.getDataAsString("assigned_test");
+                                        UserInfo.getInstance().setTestName(testName);
+                                        showAutoAssignedProgram(testName);
                                     }
                                     else if(na.equals("QUIZ")) {
                                         int testSegment = UserInfo.getInstance().getTestSegment();
