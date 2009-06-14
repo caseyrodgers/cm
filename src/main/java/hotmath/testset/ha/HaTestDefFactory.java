@@ -19,7 +19,7 @@ public class HaTestDefFactory {
 	
 	/** Create the appropriate HaTestDef depending on use
 	 * 
-	 * @TODO: use something other than the occurance of placement
+	 * @TODO: use something other than the occurrence of placement
 	 *        as indicate of type.
 	 * @param name
 	 * @return

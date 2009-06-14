@@ -262,7 +262,7 @@ public class HaTest {
 			pstat.setInt(2,testDef.getTestDefId());
 			pstat.setTimestamp(3,new Timestamp(System.currentTimeMillis()));
 			pstat.setInt(4,segment);
-			pstat.setInt(5,4);
+			pstat.setInt(5,config.getSegmentCount());
 			pstat.setInt(6,testIds.size());
 			
 			// make sure there are not currently defines items for this test

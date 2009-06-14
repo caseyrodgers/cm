@@ -17,13 +17,23 @@ import org.json.JSONObject;
 public class HaTestConfig {
 	List<String> chapters = new ArrayList<String>();
 	int passPercent;
-	int segments;
+	int segmentCount=4;
 	
-	public HaTestConfig(String json) throws HotMathException {
+	public int getSegmentCount() {
+        return segmentCount;
+    }
+
+
+    public void setSegmentCount(int segmentCount) {
+        this.segmentCount = segmentCount;
+    }
+
+
+    public HaTestConfig(String json) throws HotMathException {
 		try {
 			if(json != null && json.length() > 0) {
 				JSONObject jo = new JSONObject(json);
-				segments = jo.getInt("segments");
+				segmentCount = jo.getInt("segments");
 				if(!jo.isNull("chapters")) {
 				    JSONArray ja = jo.getJSONArray("chapters");
 			        for(int i=0;i<ja.length();i++) {

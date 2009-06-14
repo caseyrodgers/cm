@@ -188,11 +188,13 @@ public class QuizPage extends LayoutContainer {
 				_title = rdata.getDataAsString("title");
 				int testId = rdata.getDataAsInt("test_id");
 				int testSegment = rdata.getDataAsInt("quiz_segment");
+				int testSegmentCount = rdata.getDataAsInt("quiz_segment_count");
 				UserInfo.getInstance().setTestSegment(testSegment);
  				// update the user info with the title name
 				// @TODO: this is a hack ... temp 
 				UserInfo.getInstance().setTestName(_title);
 				UserInfo.getInstance().setTestId(testId);
+				UserInfo.getInstance().setTestSegmentCount(testSegmentCount);
 				displayQuizHtml(html);
 			}
             public void onFailure(Throwable caught) {

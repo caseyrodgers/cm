@@ -304,8 +304,10 @@ public class PrescriptionContext implements CmContext {
      * 
      */
     public void setHeaderButtons(IconButton prevBtn, IconButton nextBtn) {
-        
 
+
+        assert prescriptionData != null;
+        
         prevBtn.setEnabled(true);
         nextBtn.setEnabled(true);
         int pn = prescriptionData.getCurrSession().getSessionNumber();

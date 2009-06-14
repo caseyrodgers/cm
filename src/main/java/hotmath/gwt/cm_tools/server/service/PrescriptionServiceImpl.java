@@ -368,6 +368,7 @@ public class PrescriptionServiceImpl extends RemoteServiceServlet implements Pre
             rpcData.putData("quiz_html", quizHtml);
             rpcData.putData("test_id", haTest.getTestId());
             rpcData.putData("quiz_segment", testSegment);
+            rpcData.putData("quiz_segment_count",haTest.getTotalSegments());
             rpcData.putData("title",testTitle);
             
             return rpcData;
