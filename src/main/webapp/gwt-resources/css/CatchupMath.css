@@ -929,13 +929,22 @@ img.resource-item-complete {
 	
 }
 
-
-.check-quiz-link {
-    display: block;
-    text-align: center;
-    font-size: 1em;
-    margin-right: 20px;
+#testset_div {
+	position: relative;
 }
+
+#testset_head .check-quiz-link {
+    position: absolute;
+    right: 15px;
+    top: 2;
+    font-size: 1em;
+}
+
+#testset_footer .check-quiz-link {
+	display: block;
+	text-align: center;
+}
+
 
 .bottom {
 	margin-top: 1px;
