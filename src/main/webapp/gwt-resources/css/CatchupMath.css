@@ -933,10 +933,8 @@ img.resource-item-complete {
 .check-quiz-link {
     display: block;
     text-align: center;
-    font-size: .85em;
-    float: right;
+    font-size: 1em;
     margin-right: 20px;
-    margin-top: 2px;
 }
 
 .bottom {
