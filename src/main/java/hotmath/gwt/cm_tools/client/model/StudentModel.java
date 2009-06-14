@@ -15,7 +15,7 @@ public class StudentModel extends BaseModelData  {
 	public static final String CHAPTER_KEY = "chapter";
 	public static final String LAST_QUIZ_KEY = "last-quiz";
 	public static final String JSON_KEY = "json";
-	
+	public static final String STATUS_KEY = "status";	
 	public static final String UID_KEY = "uid";
 	public static final String EMAIL_KEY = "email";
 	public static final String ADMIN_UID_KEY = "admin_uid";
@@ -81,7 +81,11 @@ public class StudentModel extends BaseModelData  {
 	}
 
 	public void setStatus(String status) {
-		set("status", status);
+		set(STATUS_KEY, status);
+	}
+
+	public String getStatus() {
+		return get(STATUS_KEY);
 	}
 
 	public void setTotalUsage(String totalUsage) {
