@@ -482,12 +482,12 @@ public class PrescriptionServiceImpl extends RemoteServiceServlet implements Pre
         }
     }
 
-    public void saveWhiteboardData(int uid, String pid, String command, String commandData) throws CmRpcException {
+    public void saveWhiteboardData(int uid, int runId, String pid, String command, String commandData) throws CmRpcException {
         Connection conn = null;
         PreparedStatement pstat = null;
         try {
-            String sql = "insert into HA_TEST_RUN_WHITEBOARD(user_id, pid, command, command_data, insert_time_mills) "
-                    + " values(?,?,?,?,?) ";
+            String sql = "insert into HA_TEST_RUN_WHITEBOARD(user_id, pid, command, command_data, insert_time_mills, run_id) "
+                    + " values(?,?,?,?,?,?) ";
             conn = HMConnectionPool.getConnection();
             pstat = conn.prepareStatement(sql);
 
@@ -496,6 +496,7 @@ public class PrescriptionServiceImpl extends RemoteServiceServlet implements Pre
             pstat.setString(3, command);
             pstat.setString(4, commandData);
             pstat.setLong(5, System.currentTimeMillis());
+            pstat.setInt(6, runId);
 
             if (pstat.executeUpdate() != 1)
                 throw new Exception("Could not save whiteboard data (why?)");

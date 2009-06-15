@@ -90,8 +90,8 @@ public class RegistrationServiceImpl extends RemoteServiceServlet implements Reg
 		return cma.addGroup(adminUid, gm);
 	}
 	
-	public List<StudentShowWorkModel> getStudentShowWork(Integer uid) throws Exception {
+	public List<StudentShowWorkModel> getStudentShowWork(Integer uid, Integer runId) throws Exception {
 	       CmAdminDao cma = new CmAdminDao();
-	       return cma.getStudentShowWork(uid);
+	       return cma.getStudentShowWork(uid, runId);
 	}
 }

@@ -97,11 +97,12 @@ public interface PrescriptionService extends RemoteService {
 	/** Save whiteboard data for this user
 	 * 
 	 * @param uid
+	 * @param runId
 	 * @param pid
 	 * @param json
 	 * @throws CmRpcException
 	 */
-	void saveWhiteboardData(int uid, String pid, String command, String commandData) throws CmRpcException;
+	void saveWhiteboardData(int uid, int runId, String pid, String command, String commandData) throws CmRpcException;
 	
 
 	/** Get the list of whiteboard commands for this user/pid

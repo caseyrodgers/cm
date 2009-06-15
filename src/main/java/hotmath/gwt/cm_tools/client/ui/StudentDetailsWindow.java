@@ -14,14 +14,18 @@ import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
 import com.extjs.gxt.ui.client.Style.SelectionMode;
 import com.extjs.gxt.ui.client.core.XTemplate;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
+import com.extjs.gxt.ui.client.event.SelectionEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.util.Util;
 import com.extjs.gxt.ui.client.widget.Window;
 import com.extjs.gxt.ui.client.widget.button.Button;
+import com.extjs.gxt.ui.client.widget.form.FieldSet;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
 import com.extjs.gxt.ui.client.widget.grid.Grid;
+import com.extjs.gxt.ui.client.widget.menu.Menu;
+import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Widget;
@@ -41,9 +45,8 @@ public class StudentDetailsWindow extends Window {
     StudentModel studentModel;
     private HTML html;
     private XTemplate template;
-    private ListStore<StudentActivityModel> store;
-    
-    public StudentDetailsWindow(StudentModel studentModel) {
+    private Grid<StudentActivityModel> _grid; 
+    public StudentDetailsWindow(final StudentModel studentModel) {
         this.studentModel = studentModel;
         setSize(570,320);
         setModal(true);
@@ -53,19 +56,32 @@ public class StudentDetailsWindow extends Window {
 
         defineStudentInfoTemplate();
         
-        store = new ListStore<StudentActivityModel>();
+        ListStore<StudentActivityModel> store = new ListStore<StudentActivityModel>();
         ColumnModel cm = defineColumns();
         
-        final Grid<StudentActivityModel> grid = new Grid<StudentActivityModel>(store, cm);
-        grid.setStyleName("student-details-panel-grid");
-        grid.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
-        grid.getSelectionModel().setFiresEvents(true);
-        grid.setWidth(550);
-        grid.setHeight(190);
+        _grid = new Grid<StudentActivityModel>(store, cm);
+        _grid.setStyleName("student-details-panel-grid");
+        _grid.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
+        _grid.getSelectionModel().setFiresEvents(true);
+        _grid.setWidth(550);
+        _grid.setHeight(190);
         
         add(studentInfoPanel());
-        add(grid);
-                
+       
+        
+        SelectionListener<ButtonEvent> swListener = new SelectionListener<ButtonEvent>() {
+             public void componentSelected(ButtonEvent ce) {
+                showWorkForSelected();
+            }
+        };
+        
+        Button showWorkBtn = new Button("Show Work");
+        showWorkBtn.addSelectionListener(swListener);
+        ToolBar tb = new ToolBar();
+        tb.add(showWorkBtn);
+        add(tb);
+        add(_grid);
+
         Button btnClose = closeButton();
         setButtonAlign(HorizontalAlignment.RIGHT);  
         addButton(btnClose);
@@ -75,16 +91,34 @@ public class StudentDetailsWindow extends Window {
         setVisible(true);
     }
     
-	private Button closeButton() {
-		Button btn = new Button("Close", new SelectionListener<ButtonEvent>() {  
-	        @Override  
-	    	public void componentSelected(ButtonEvent ce) {
-                close();	        	
-	        }  
-	    });
-	    btn.setIconStyle("icon-delete");
-		return btn;
-	}
+    /** Display show work for the currently selected resource 
+     *  all of its children.
+     *  
+     */
+    private void showWorkForSelected() {
+        StudentActivityModel sam = _grid.getSelectionModel().getSelectedItem();
+        if(sam == null) {
+            CatchupMathAdmin.showAlert("Select an entry in the table first");
+            return;
+        }
+        int runId = sam.getRunId();
+        if(runId == 0) {
+            CatchupMathAdmin.showAlert("No Run ID");
+            return;
+        }
+        new StudentShowWorkWindow(studentModel, runId);        
+    }
+    
+    private Button closeButton() {
+    Button btn = new Button("Close", new SelectionListener<ButtonEvent>() {  
+            @Override  
+            public void componentSelected(ButtonEvent ce) {
+            close();                
+            }  
+        });
+    btn.setIconStyle("icon-delete");
+    return btn;
+    }
     
     private ColumnModel defineColumns() {
         List<ColumnConfig> configs = new ArrayList<ColumnConfig>();
@@ -120,21 +154,7 @@ public class StudentDetailsWindow extends Window {
         result.setSortable(false);
         result.setMenuDisabled(true);
         configs.add( result);
-/*
-        ColumnConfig start = new ColumnConfig();
-        start.setId(StudentActivityModel.START_KEY);  
-        start.setHeader("Start");  
-        start.setWidth(70);
-        start.setSortable(false);
-        configs.add(start);
-        
-        ColumnConfig finish = new ColumnConfig();  
-        finish.setId(StudentActivityModel.STOP_KEY);  
-        finish.setHeader("Stop");  
-        finish.setWidth(70);
-        finish.setSortable(false);
-        configs.add(finish);
-*/
+
         ColumnModel cm = new ColumnModel(configs);
         return cm;
     }
@@ -165,16 +185,16 @@ public class StudentDetailsWindow extends Window {
         RegistrationServiceAsync s = (RegistrationServiceAsync) Registry.get("registrationService");
         s.getStudentActivity(sm, new AsyncCallback <List<StudentActivityModel>>() {
 
-            public void onSuccess(List<StudentActivityModel> list) {
-                store.add(list);
-                template.overwrite(html.getElement(), Util.getJsObject(studentModel));
-                html.setVisible(true);
-            }
+        public void onSuccess(List<StudentActivityModel> list) {
+            store.add(list);
+            template.overwrite(html.getElement(), Util.getJsObject(studentModel));
+            html.setVisible(true);
+        }
 
-            public void onFailure(Throwable caught) {
-                String msg = caught.getMessage();
-                CatchupMathAdmin.showAlert(msg);
-            }
+        public void onFailure(Throwable caught) {
+            String msg = caught.getMessage();
+            CatchupMathAdmin.showAlert(msg);
+        }
         });
     }    
     

@@ -45,9 +45,15 @@ import com.google.gwt.user.client.ui.Widget;
 public class StudentShowWorkWindow extends Window {
 
     StudentModel student;
+    Integer runId;
 
     public StudentShowWorkWindow(StudentModel student) {
+        this(student, null);
+    }
+    
+    public StudentShowWorkWindow(StudentModel student, Integer runId) {
         this.student = student;
+        this.runId = runId;
         setSize(770, 600);
         setResizable(true);
 
@@ -174,7 +180,7 @@ public class StudentShowWorkWindow extends Window {
 
         Log.debug("StudentShowWorkWindow: reading student show work list");
         RegistrationServiceAsync s = (RegistrationServiceAsync) Registry.get("registrationService");
-        s.getStudentShowWork(student.getUid(), new AsyncCallback<List<StudentShowWorkModel>>() {
+        s.getStudentShowWork(student.getUid(), runId,new AsyncCallback<List<StudentShowWorkModel>>() {
 
             public void onSuccess(List<StudentShowWorkModel> list) {
                 createDataList(list);

@@ -43,7 +43,9 @@ public class ShowWorkPanel extends Frame {
 	 */
 	public void handleFlashWhiteboardOut(String json) {
 		PrescriptionServiceAsync s = (PrescriptionServiceAsync) Registry.get("prescriptionService");
-		s.saveWhiteboardData(UserInfo.getInstance().getUid(),pid,"draw",json, new AsyncCallback() {
+		int uid = UserInfo.getInstance().getUid();
+		int runId = UserInfo.getInstance().getRunId();
+		s.saveWhiteboardData(uid,runId,pid,"draw",json, new AsyncCallback() {
 			public void onFailure(Throwable caught) {
 				caught.printStackTrace();
 				// CatchupMathTools.showAlert("Whiteboard save failed: " + caught);

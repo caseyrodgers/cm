@@ -36,7 +36,7 @@ public interface PrescriptionServiceAsync {
 	  
 	  void getSolutionProblemStatementHtml(String pid,AsyncCallback callback);
 	  
-	  void saveWhiteboardData(int uid, String pid, String command, String commandData, AsyncCallback callback);
+	  void saveWhiteboardData(int uid, int runId, String pid, String command, String commandData, AsyncCallback callback);
 	  
 	  void getWhiteboardData(int uid, String pid, AsyncCallback callback);
 	  

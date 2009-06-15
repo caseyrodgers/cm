@@ -1001,7 +1001,7 @@ public class CmAdminDao {
      * @return
      * @throws Exception
      */
-    public List<StudentShowWorkModel> getStudentShowWork(int uid) throws Exception {
+    public List<StudentShowWorkModel> getStudentShowWork(int uid, Integer runId) throws Exception {
         
         List<StudentShowWorkModel> swModels = new ArrayList<StudentShowWorkModel>();
         

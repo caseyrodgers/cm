@@ -131,20 +131,6 @@ public class RegisterStudent extends LayoutContainer {
 		}
 		fs.add(passCode);
 
-/* don't need email field for now
-		TextField<String> email = new TextField<String>();
-		email.setFieldLabel("Email");
-		email.setEmptyText("-- enter email --");
-		email.setAllowBlank(false);
-		//TODO: define Validator
-		//email.setValidator(validator);
-		email.setId(StudentModel.EMAIL_KEY);
-		if (! isNew) {
-			email.setValue((String)stuMdl.getEmail());
-		}
-		fp.add(email);
-*/
-
 		groupStore = new ListStore <GroupModel> ();
 		getGroupListRPC(cmAdminMdl.getId(), groupStore);
 		groupCombo = groupCombo(groupStore);

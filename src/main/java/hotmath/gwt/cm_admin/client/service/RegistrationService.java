@@ -42,5 +42,12 @@ public interface RegistrationService extends RemoteService {
 	  
 	  AccountInfoModel getAccountInfoForAdminUid(Integer uid) throws Exception;
 	  
-	  List<StudentShowWorkModel> getStudentShowWork(Integer uid) throws Exception;
+	  /** Get this students ShowWork problems.  Restrict to named runId if non null
+	   * 
+	   * @param uid The student uid
+	   * @param runId  The runId of interest, or null for all
+	   * @return
+	   * @throws Exception
+	   */
+	  List<StudentShowWorkModel> getStudentShowWork(Integer uid, Integer runId) throws Exception;
 }

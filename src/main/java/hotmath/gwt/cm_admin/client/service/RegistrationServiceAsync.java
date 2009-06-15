@@ -42,5 +42,5 @@ public interface RegistrationServiceAsync {
 
 	  void getAccountInfoForAdminUid(Integer uid, AsyncCallback<AccountInfoModel> callback);
 	  
-	  void getStudentShowWork(Integer uid,AsyncCallback<List<StudentShowWorkModel>> callback);	  
+	  void getStudentShowWork(Integer uid,Integer runId,AsyncCallback<List<StudentShowWorkModel>> callback);	  
 }
