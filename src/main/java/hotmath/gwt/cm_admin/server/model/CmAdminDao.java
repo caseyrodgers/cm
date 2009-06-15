@@ -993,7 +993,13 @@ public class CmAdminDao {
     
     
     /** Return list of StudentShowWorkModel that represent
-     *  distinct list of problems that actually have show work
+     *  distinct list of problems that actually have show work.
+     *  
+     *  
+     *  If run_id is passed, then limit to only run_id
+     *  
+     *  @TODO: modify SQL to restrict on run_id if passed.
+     *         (if run_id == null, then return all, if run_id != null restrict)?
      *  
      *  
      * viewed al
@@ -1009,7 +1015,7 @@ public class CmAdminDao {
         PreparedStatement ps = null;
         ResultSet rs = null;
 
-        String sql = "select distinct a.pid, b.* " +
+        String sql = "select distinct a.pid,a.run_id, b.* " +
                      "from   HA_TEST_RUN_WHITEBOARD a, " +
                      "( " +
                      "select  user_id, pid, max(insert_time_mills) as insert_time_mills  " +
@@ -1030,6 +1036,16 @@ public class CmAdminDao {
             SimpleDateFormat dteForat = new SimpleDateFormat("dd MMM, hh:ss");
             int prob=1;
             while(rs.next()) {
+                
+                /** Quick hack to restrict to runId if specified
+                 * 
+                 */
+                if(runId != null) {
+                    if(rs.getInt("run_id") != runId)
+                        continue;
+                }
+                
+                
                 String pid = rs.getString("pid");
                 long timeMills = rs.getLong("insert_time_mills");
                 
