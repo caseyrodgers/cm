@@ -1,0 +1,21 @@
+export_from_db genericprealg
+export_from_db genericalg1
+export_from_db genericgeo
+export_from_db  genericalg2
+
+export_from_db mini6and7gt
+export_from_db minialg1gt
+export_from_db minigeogt
+export_from_db minialg2gt
+
+export_from_db cmextras
+export_from_db cmextrasgeo
+export_from_db cmextrasalg2
+export_from_db cmextrasgeo-2
+export_from_db alg1ptests
+export_from_db alg2ptests
+export_from_db prealgptests
+export_from_db geoptests
+
+export_from_db placement
+
