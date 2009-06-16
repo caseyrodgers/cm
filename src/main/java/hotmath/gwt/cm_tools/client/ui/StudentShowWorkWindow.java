@@ -17,7 +17,6 @@ import java.util.List;
 import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.Registry;
 import com.extjs.gxt.ui.client.Style.LayoutRegion;
-import com.extjs.gxt.ui.client.Style.Scroll;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.ComponentEvent;
 import com.extjs.gxt.ui.client.event.Events;
@@ -30,6 +29,7 @@ import com.extjs.gxt.ui.client.widget.ListView;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
+import com.extjs.gxt.ui.client.widget.layout.CenterLayout;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Widget;
@@ -59,9 +59,8 @@ public class StudentShowWorkWindow extends CmWindow {
         this.student = student;
         this.activityModel = activityModel;
         setSize(770, 600);
-        setResizable(true);
+        setResizable(false);
 
-        
         setLayout(new BorderLayout());
         String title = "Show Work for " + student.getName();
         if(programName != null)
@@ -105,8 +104,8 @@ public class StudentShowWorkWindow extends CmWindow {
     LayoutContainer centerContainer = new LayoutContainer();
 
     private Widget createCenterPanel() {
-        centerContainer.setLayout(new FitLayout());
-        String html = "<h1 style='color: blue;width: 200;margin: auto;'>No problem to show</h1>";
+        centerContainer.setLayout(new CenterLayout());
+        String html = "<h1 style='color: blue;width: 200;'>No problem to show</h1>";
         centerContainer.add(new Html(html));
         return centerContainer;
     }
@@ -121,20 +120,17 @@ public class StudentShowWorkWindow extends CmWindow {
     private Widget createCenterPanelForPid(String pid) {
         LayoutContainer lc = new LayoutContainer();
         lc.setLayout(new BorderLayout());
-
         try {
             // create temp user object to identify this student
             UserInfo user = new UserInfo(student.getUid(), 0);
             UserInfo.setInstance(user);
 
-            centerContainer.removeAll();
-            centerContainer.setLayout(new BorderLayout());
-
+            
             ShowWorkPanel workPanel = new ShowWorkPanel();
             BorderLayoutData ld = new BorderLayoutData(LayoutRegion.NORTH, 360);
             ld.setSplit(false);            
-            centerContainer.add(workPanel, ld);
-
+            lc.add(workPanel, ld);
+            
             workPanel.setupForPid(pid);
 
             InmhItemData solItem = new InmhItemData();
@@ -142,16 +138,16 @@ public class StudentShowWorkWindow extends CmWindow {
             solItem.setFile(pid);
             ResourceViewer viewer = ResourceViewerFactory.create(solItem.getType());
 
-            centerContainer.add(viewer.getResourcePanel(solItem), new BorderLayoutData(LayoutRegion.CENTER));
+            lc.add(viewer.getResourcePanel(solItem), new BorderLayoutData(LayoutRegion.CENTER));
             
-            centerContainer.layout();
+            centerContainer.removeAll();
+            centerContainer.setLayout(new FitLayout());
+            centerContainer.add(lc);
+            
         } catch (Exception e) {
             Log.error("Error creating Show Work panel for student: " + pid + "," + student.getUid(), e);
         }
-        setVisible(true);
-
         return lc;
-
     }
 
     private void createDataList(List<StudentShowWorkModel> showWork) {
@@ -165,6 +161,7 @@ public class StudentShowWorkWindow extends CmWindow {
                 Log.debug("StudentShoworkWindow: " + "Loading solution: " + pid);
 
                 createCenterPanelForPid(pid);
+                layout();
             }
         };
 
