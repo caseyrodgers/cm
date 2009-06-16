@@ -17,6 +17,7 @@ import java.util.List;
 import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.Registry;
 import com.extjs.gxt.ui.client.Style.LayoutRegion;
+import com.extjs.gxt.ui.client.Style.Scroll;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.ComponentEvent;
 import com.extjs.gxt.ui.client.event.Events;
@@ -139,7 +140,6 @@ public class StudentShowWorkWindow extends CmWindow {
             ResourceViewer viewer = ResourceViewerFactory.create(solItem.getType());
 
             lc.add(viewer.getResourcePanel(solItem), new BorderLayoutData(LayoutRegion.CENTER));
-            
             centerContainer.removeAll();
             centerContainer.setLayout(new FitLayout());
             centerContainer.add(lc);
