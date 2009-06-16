@@ -53,8 +53,8 @@ function updateWhiteboard(id, command, commandData) {
 // register callback in the parent GWT to allow
 // GWT to call back.
 function setWhiteboardBackground(html) {
-    var wbg = document.getElementById('whiteboard-bg');
-    wbg.innerHTML = html;        
+    //var wbg = document.getElementById('whiteboard-bg');
+    //wbg.innerHTML = html;        
 }
 
 // setup hooks for GWT to call from the app window.
