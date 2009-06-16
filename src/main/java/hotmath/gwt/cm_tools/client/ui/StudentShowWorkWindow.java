@@ -131,14 +131,9 @@ public class StudentShowWorkWindow extends CmWindow {
             centerContainer.setLayout(new BorderLayout());
 
             ShowWorkPanel workPanel = new ShowWorkPanel();
-            LayoutContainer swWrapper = new LayoutContainer();
-            swWrapper.setLayout(new FitLayout());
-            swWrapper.setWidth("500");
-            swWrapper.setScrollMode(Scroll.AUTO);
-            swWrapper.add(workPanel);
             BorderLayoutData ld = new BorderLayoutData(LayoutRegion.NORTH, 360);
             ld.setSplit(false);            
-            centerContainer.add(swWrapper, ld);
+            centerContainer.add(workPanel, ld);
 
             workPanel.setupForPid(pid);
 

@@ -166,8 +166,8 @@ public class HelpWindow extends CmWindow {
         
 
         m = new BackgroundModel();
-        m.set("text","White");
-        m.set("bg_style", "resource-container-white");
+        m.set("text","Neutral");
+        m.set("bg_style", "resource-container-neutral");
         backgrounds.add(m);
         
         m = new BackgroundModel();

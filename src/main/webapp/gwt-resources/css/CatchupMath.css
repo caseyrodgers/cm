@@ -641,9 +641,9 @@ img.resource-item-complete {
     max-width: 1131px;
 }
 
-.resource-container-white {
+.resource-container-neutral {
     background-image:none;
-    background-color: white;
+    background-color: #34383b;
 }
 
 .resource-container-none {
