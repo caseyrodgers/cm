@@ -71,7 +71,8 @@ public class HaUserFactory {
                   "from HA_USER u INNER JOIN HA_ADMIN h on u.admin_id = h.aid " +
                   "INNER JOIN SUBSCRIBERS s on s.id = h.subscriber_id " +
                   "where  s.password = ? " + 
-                  "and    u.user_passcode = ?";
+                  "  and  u.user_passcode = ? " +
+                  "  and  is_active = 1";
             try {
                 pstat = conn.prepareStatement(sql);
                 
@@ -130,7 +131,7 @@ public class HaUserFactory {
             
             PreparedStatement pstmt=null;
             try {
-                sql = "insert into HA_USER(admin_id, user_name,user_passcode,test_def_id)values(?,?,?,?)";
+                sql = "insert into HA_USER(admin_id, user_name,user_passcode,test_def_id,is_active)values(?,?,?,?,1)";
                 pstmt = conn.prepareStatement(sql);
                 pstmt.setInt(1,rs.getInt("admin_id"));
                 pstmt.setString(2,"Student");
