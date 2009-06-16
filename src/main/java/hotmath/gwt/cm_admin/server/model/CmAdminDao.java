@@ -58,7 +58,7 @@ public class CmAdminDao {
         "LEFT JOIN (select u.uid, count(*) as usage_count from HA_TEST_RUN_INMH_USE i, HA_TEST t, HA_TEST_RUN r, HA_USER u " +
         "           where t.user_id = u.uid and r.test_id = t.test_id and i.run_id = r.run_id group by u.uid) tu " +
         "   on tu.uid = h.uid " +
-        "LEFT JOIN (select uid, answered_correct, answered_incorrect, not_answered, max(last_run_time) as last_run_time from v_HA_TEST_RUN_max group by uid) m " +
+        "LEFT JOIN (select uid, answered_correct, answered_incorrect, not_answered, last_run_time from v_HA_TEST_RUN_last) m " +
         "   on m.uid = h.uid " +
         "LEFT JOIN CM_GROUP g " +
         "   on g.id = h.group_id " +
