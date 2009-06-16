@@ -1,14 +1,15 @@
 package hotmath.gwt.cm_admin.client.ui;
 
+import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
+
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
-import com.extjs.gxt.ui.client.widget.Window;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.user.client.ui.Frame;
 
 
-public class HelpWindow extends Window {
+public class HelpWindow extends CmWindow {
 
     public  HelpWindow() {
         setAutoHeight(true);

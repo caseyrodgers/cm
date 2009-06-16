@@ -5,6 +5,7 @@ import hotmath.gwt.cm_admin.client.CatchupMathAdmin;
 import hotmath.gwt.cm_admin.client.model.StudentActivityModel;
 import hotmath.gwt.cm_admin.client.model.StudentModel;
 import hotmath.gwt.cm_admin.client.service.RegistrationServiceAsync;
+import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,17 +15,13 @@ import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
 import com.extjs.gxt.ui.client.Style.SelectionMode;
 import com.extjs.gxt.ui.client.core.XTemplate;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
-import com.extjs.gxt.ui.client.event.SelectionEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.util.Util;
-import com.extjs.gxt.ui.client.widget.Window;
 import com.extjs.gxt.ui.client.widget.button.Button;
-import com.extjs.gxt.ui.client.widget.form.FieldSet;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
 import com.extjs.gxt.ui.client.widget.grid.Grid;
-import com.extjs.gxt.ui.client.widget.menu.Menu;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HTML;
@@ -40,7 +37,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  */
 
-public class StudentDetailsWindow extends Window {
+public class StudentDetailsWindow extends CmWindow {
     
     StudentModel studentModel;
     private HTML html;
@@ -67,7 +64,6 @@ public class StudentDetailsWindow extends Window {
         _grid.setHeight(190);
         
         add(studentInfoPanel());
-       
         
         SelectionListener<ButtonEvent> swListener = new SelectionListener<ButtonEvent>() {
              public void componentSelected(ButtonEvent ce) {
@@ -101,12 +97,7 @@ public class StudentDetailsWindow extends Window {
             CatchupMathAdmin.showAlert("Select an entry in the table first");
             return;
         }
-        int runId = sam.getRunId();
-        if(runId == 0) {
-            CatchupMathAdmin.showAlert("No Run ID");
-            return;
-        }
-        new StudentShowWorkWindow(studentModel, runId);        
+        new StudentShowWorkWindow(studentModel, sam);        
     }
     
     private Button closeButton() {

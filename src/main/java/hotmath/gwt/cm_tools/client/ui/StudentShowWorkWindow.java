@@ -1,10 +1,12 @@
 package hotmath.gwt.cm_admin.client.ui;
 
 import hotmath.gwt.cm_admin.client.CatchupMathAdmin;
+import hotmath.gwt.cm_admin.client.model.StudentActivityModel;
 import hotmath.gwt.cm_admin.client.model.StudentModel;
 import hotmath.gwt.cm_admin.client.model.StudentShowWorkModel;
 import hotmath.gwt.cm_admin.client.service.RegistrationServiceAsync;
 import hotmath.gwt.cm_tools.client.data.InmhItemData;
+import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
 import hotmath.gwt.cm_tools.client.ui.viewer.ResourceViewer;
 import hotmath.gwt.cm_tools.client.ui.viewer.ResourceViewerFactory;
 import hotmath.gwt.cm_tools.client.ui.viewer.ShowWorkPanel;
@@ -15,17 +17,16 @@ import java.util.List;
 import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.Registry;
 import com.extjs.gxt.ui.client.Style.LayoutRegion;
+import com.extjs.gxt.ui.client.Style.Scroll;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.ComponentEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.store.ListStore;
-import com.extjs.gxt.ui.client.widget.DataList;
 import com.extjs.gxt.ui.client.widget.Html;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.ListView;
-import com.extjs.gxt.ui.client.widget.Window;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
@@ -42,23 +43,30 @@ import com.google.gwt.user.client.ui.Widget;
  * @author casey
  * 
  */
-public class StudentShowWorkWindow extends Window {
+public class StudentShowWorkWindow extends CmWindow {
 
     StudentModel student;
     Integer runId;
+    String programName;
+    StudentActivityModel activityModel;
 
     public StudentShowWorkWindow(StudentModel student) {
         this(student, null);
     }
     
-    public StudentShowWorkWindow(StudentModel student, Integer runId) {
+    public StudentShowWorkWindow(StudentModel student, StudentActivityModel activityModel) {
+        setStyleName("student-show-work-window");
         this.student = student;
-        this.runId = runId;
+        this.activityModel = activityModel;
         setSize(770, 600);
         setResizable(true);
 
+        
         setLayout(new BorderLayout());
-        setHeading("Show Work for " + student.getName());
+        String title = "Show Work for " + student.getName();
+        if(programName != null)
+            title += " in program " + programName;
+        setHeading(title);
 
         add(createWestPanel(), new BorderLayoutData(LayoutRegion.WEST, 200));
         add(createCenterPanel(), new BorderLayoutData(LayoutRegion.CENTER));
@@ -86,7 +94,7 @@ public class StudentShowWorkWindow extends Window {
         westContainer = new LayoutContainer();
         westContainer.setLayout(new BorderLayout());
         LayoutContainer head = new LayoutContainer();
-        head.add(new Html("<div style='margin: 10px;'>Click on a problem below to view the associated work</div>"));
+        head.add(new Html("<div style='margin: 10px;'>Click on a date/time below to view the student show-work effort.</div>"));
         westContainer.add(head, new BorderLayoutData(LayoutRegion.NORTH, 50));
 
         getStudentShowWorkRPC();
@@ -114,11 +122,7 @@ public class StudentShowWorkWindow extends Window {
         LayoutContainer lc = new LayoutContainer();
         lc.setLayout(new BorderLayout());
 
-        BorderLayoutData ld = new BorderLayoutData(LayoutRegion.NORTH, 350);
-        ld.setSplit(true);
-
         try {
-
             // create temp user object to identify this student
             UserInfo user = new UserInfo(student.getUid(), 0);
             UserInfo.setInstance(user);
@@ -127,7 +131,14 @@ public class StudentShowWorkWindow extends Window {
             centerContainer.setLayout(new BorderLayout());
 
             ShowWorkPanel workPanel = new ShowWorkPanel();
-            centerContainer.add(workPanel, ld);
+            LayoutContainer swWrapper = new LayoutContainer();
+            swWrapper.setLayout(new FitLayout());
+            swWrapper.setWidth("500");
+            swWrapper.setScrollMode(Scroll.AUTO);
+            swWrapper.add(workPanel);
+            BorderLayoutData ld = new BorderLayoutData(LayoutRegion.NORTH, 360);
+            ld.setSplit(false);            
+            centerContainer.add(swWrapper, ld);
 
             workPanel.setupForPid(pid);
 

@@ -4,6 +4,7 @@ import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.service.PrescriptionServiceAsync;
 import hotmath.gwt.cm_tools.client.ui.CmMainPanel;
 import hotmath.gwt.cm_tools.client.ui.ContextController;
+import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
 import hotmath.gwt.shared.client.util.UserInfo;
 
 import com.extjs.gxt.ui.client.Registry;
@@ -15,7 +16,6 @@ import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.Html;
 import com.extjs.gxt.ui.client.widget.VerticalPanel;
-import com.extjs.gxt.ui.client.widget.Window;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.ComboBox;
 import com.extjs.gxt.ui.client.widget.form.FieldSet;
@@ -24,7 +24,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Label;
 
 
-public class HelpWindow extends Window {
+public class HelpWindow extends CmWindow {
 
     public  HelpWindow() {
         setAutoHeight(true);

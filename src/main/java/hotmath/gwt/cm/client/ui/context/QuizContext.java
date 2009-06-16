@@ -6,6 +6,7 @@ import hotmath.gwt.cm_tools.client.service.PrescriptionServiceAsync;
 import hotmath.gwt.cm_tools.client.ui.NextDialog;
 import hotmath.gwt.cm_tools.client.ui.NextPanelInfo;
 import hotmath.gwt.cm_tools.client.ui.NextPanelInfoImplDefault;
+import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
 import hotmath.gwt.cm_tools.client.ui.context.CmContext;
 import hotmath.gwt.shared.client.data.CmAsyncRequestImplDefault;
 import hotmath.gwt.shared.client.util.RpcData;
@@ -24,7 +25,6 @@ import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.Html;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.MessageBox;
-import com.extjs.gxt.ui.client.widget.Window;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.button.IconButton;
 import com.google.gwt.user.client.History;
@@ -105,7 +105,7 @@ public class QuizContext implements CmContext {
 	
 	
 	private void showAutoAssignedProgram(String assignedName) {
-	    final Window window = new Window();
+	    final CmWindow window = new CmWindow();
 	    window.setModal(true);
 	    window.setHeight(175);
 	    window.setWidth(300);
@@ -144,7 +144,7 @@ public class QuizContext implements CmContext {
 	
 	
 	private void showPrescriptionPanel(int correct, int total) {
-	    final Window window = new Window();
+	    final CmWindow window = new CmWindow();
 	    window.setModal(true);
 	    window.setAutoHeight(true);
 	    window.setWidth(300);

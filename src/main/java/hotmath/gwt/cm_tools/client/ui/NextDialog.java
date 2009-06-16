@@ -24,7 +24,6 @@ public class NextDialog extends Dialog {
 		setData("context", context);
 			
 		setButtons(Dialog.CANCEL);
-		setCloseAction(CloseAction.CLOSE);
 			
 		LayoutContainer lc = new LayoutContainer();
 		lc.setStyleName("next-dialog-panel");
@@ -37,7 +36,6 @@ public class NextDialog extends Dialog {
 	 */
 	static public void destroyCurrentDialog() {
 		if(_lastDialog != null) {
-			_lastDialog.close();
 			_lastDialog = null;
 		}
 	}

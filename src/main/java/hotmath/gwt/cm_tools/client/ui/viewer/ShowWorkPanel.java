@@ -24,11 +24,11 @@ public class ShowWorkPanel extends Frame {
 	String pid;
 	public ShowWorkPanel() {
 		super("show_work_panel.html");
-	    setWidth("100%");
+	    setWidth("550px");
         setStyleName("show-work-panel");
 
 		DOM.setElementPropertyInt(this.getElement(), "frameBorder", 0); // disable border
-	    DOM.setElementProperty(this.getElement(), "scrolling", "yes"); // disable border
+	    DOM.setElementProperty(this.getElement(), "scrolling", "auto"); // disable border
 		__lastInstance = this;
 		id = "show_work_" + System.currentTimeMillis();
 		flashId = id + "_flash";

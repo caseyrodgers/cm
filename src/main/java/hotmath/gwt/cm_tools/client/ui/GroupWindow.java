@@ -4,6 +4,7 @@ import hotmath.gwt.cm_admin.client.CatchupMathAdmin;
 import hotmath.gwt.cm_admin.client.model.CmAdminModel;
 import hotmath.gwt.cm_admin.client.model.GroupModel;
 import hotmath.gwt.cm_admin.client.service.RegistrationServiceAsync;
+import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
 
 import com.extjs.gxt.ui.client.Registry;
 import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
@@ -24,7 +25,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public class GroupWindow extends LayoutContainer {
 	
-	private Window gw;
+	private CmWindow gw;
 	private GroupModel gm;
 	private ComboBox <GroupModel> grpCombo;
 	private TextField<String> name; 
@@ -37,7 +38,7 @@ public class GroupWindow extends LayoutContainer {
 	public GroupWindow(CmAdminModel cm, ComboBox <GroupModel> gc, boolean isNew) {
 		cmAdminMdl = cm;
 		grpCombo = gc;
-		gw = new Window();
+		gw = new CmWindow();
 		gw.add(createForm(isNew));
  		gw.show();
         name.focus();

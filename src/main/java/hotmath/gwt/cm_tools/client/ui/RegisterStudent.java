@@ -9,6 +9,7 @@ import hotmath.gwt.cm_admin.client.model.StudentModel;
 import hotmath.gwt.cm_admin.client.model.StudyProgramModel;
 import hotmath.gwt.cm_admin.client.model.SubjectModel;
 import hotmath.gwt.cm_admin.client.service.RegistrationServiceAsync;
+import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,7 +24,6 @@ import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
-import com.extjs.gxt.ui.client.widget.Window;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.ComboBox;
 import com.extjs.gxt.ui.client.widget.form.FieldSet;
@@ -38,7 +38,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public class RegisterStudent extends LayoutContainer {
 	
-	private Window fw;
+	private CmWindow fw;
 	final Grid<StudentModel> eg;
 	private boolean isNew;
 	private StudentModel stuMdl;
@@ -79,7 +79,7 @@ public class RegisterStudent extends LayoutContainer {
 		}
 		cmAdminMdl = cm;
 		eg = grid;
-		fw = new Window();
+		fw = new CmWindow();
 		fw.add(createForm());
  		fw.show();
  		if (isNew) {

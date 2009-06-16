@@ -329,8 +329,8 @@
 
 .show-work-panel {
     position: relative;
-    width: 300px;
     margin-left: 5px;
+    background: transparent;
 }
 
 
@@ -995,4 +995,9 @@ img.resource-item-complete {
   left: 10px;
 }
 
+.student-show-work-window #tutor_embedded #steps_head_title,
+.student-show-work-window #tutor_embedded .button {
+   display: none;
+}
 
+ 

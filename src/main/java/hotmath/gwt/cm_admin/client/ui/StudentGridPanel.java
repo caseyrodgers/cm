@@ -194,7 +194,7 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
         toolbar.setHorizontalAlign(HorizontalAlignment.CENTER);
         toolbar.setStyleName("student-grid-panel-toolbar");
 
-        TableData tData = new TableData("150px", "20px");
+        TableData tData = new TableData("125px", "35px");
         tData.setMargin(20);
 
         Button ti = registerStudentToolItem(_grid, _cmAdminMdl);
