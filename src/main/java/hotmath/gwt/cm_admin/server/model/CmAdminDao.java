@@ -1033,7 +1033,7 @@ public class CmAdminDao {
             ps.setInt(1, uid);
             rs = ps.executeQuery();
 
-            SimpleDateFormat dteForat = new SimpleDateFormat("dd MMM, hh:ss");
+            SimpleDateFormat dteForat = new SimpleDateFormat("yyyy-mm-dd hh:ss a");
             int prob=1;
             while(rs.next()) {
                 
@@ -1056,7 +1056,7 @@ public class CmAdminDao {
                 s.setPid(pid);
                 s.setInsertTimeMills(timeMills);
                 s.setViewTime(dteStr);
-                s.setLabel("Problem " + (prob++));
+                s.setLabel("");
                 
                 swModels.add(s);
             }
