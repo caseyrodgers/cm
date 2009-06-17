@@ -136,7 +136,7 @@ public class CmAdminDao {
         "  max(s.run_date) as run_date, " +
     	"  s.answered_correct, s.answered_incorrect, s.not_answered, s.program as program, s.prog_id, " +
     	"  s.test_id as test_id, max(s.test_segment) as test_segment, s.test_def_id, s.test_run_id, " +
-    	"  s.activity, s.is_quiz, count(*) as lessons_viewed, max(s.session_number) as session_number " +
+    	"  s.activity, s.is_quiz, count(*) as problems_viewed, max(s.session_number) as session_number " +
         "from ( " +
         " select date_format(l.create_time,'%Y-%m-%d') as use_date, date_format(l.create_time,'%h:%i %p') as start_time, " +
         "   date_format(r.run_time,'%h:%i %p') as stop_time, r.run_time as view_time, " +
@@ -866,7 +866,7 @@ public class CmAdminDao {
     	
     	List<StudentActivityModel> l = new ArrayList<StudentActivityModel>();
     	int previousSection = 0;
-    	int lessonsViewed = 0;
+    	int problemsViewed = 0;
     	
     	while (rs.next()) {
     		StudentActivityModel m = new StudentActivityModel();
@@ -898,13 +898,14 @@ public class CmAdminDao {
         		int notAnswered = rs.getInt("not_answered");
         		int percent = (numCorrect*100) / (numCorrect + numIncorrect + notAnswered);
         		sb.append(percent).append("% correct");
-        		lessonsViewed = 0;
+        		problemsViewed = 0;
     		}
     		else {
-    			lessonsViewed += rs.getInt("lessons_viewed");
+    			problemsViewed += rs.getInt("problems_viewed");
     			//TODO: are there always 3 problems per session/lesson?
-    			int completed = lessonsViewed / 3;
-    			int inProgress = lessonsViewed % 3;
+    			int problemsPerLesson = 3;
+    			int completed = problemsViewed / problemsPerLesson;
+    			int inProgress = 0; //lessonsViewed % problemsPerLesson;
                 
                 if (completed >= 1) {
                 	sb.append("total of ").append(completed);
@@ -1034,7 +1035,7 @@ public class CmAdminDao {
             rs = ps.executeQuery();
 
             SimpleDateFormat dteForat = new SimpleDateFormat("yyyy-MM-dd hh:mm a");
-            int prob=1;
+            //int prob = 1;
             while(rs.next()) {
                 
                 /** Quick hack to restrict to runId if specified
