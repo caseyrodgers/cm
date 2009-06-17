@@ -136,14 +136,16 @@ public class CmAdminDao {
         "  max(s.run_date) as run_date, " +
     	"  s.answered_correct, s.answered_incorrect, s.not_answered, s.program as program, s.prog_id, " +
     	"  s.test_id as test_id, max(s.test_segment) as test_segment, s.test_def_id, s.test_run_id, " +
-    	"  s.activity, s.is_quiz, count(*) as problems_viewed, max(s.session_number) as session_number " +
+    	"  s.activity, s.is_quiz, count(*) as problems_viewed, max(s.session_number) as session_number, " +
+    	"  s.total_sessions " +
         "from ( " +
         " select date_format(l.create_time,'%Y-%m-%d') as use_date, date_format(l.create_time,'%h:%i %p') as start_time, " +
         "   date_format(r.run_time,'%h:%i %p') as stop_time, r.run_time as view_time, " +
         "   date_format(r.run_time,'%Y-%m-%d') as run_date, " +
         "   r.answered_correct, r.answered_incorrect, r.not_answered, " +
         "   concat(td.subj_id, ' ', td.prog_id) as program,  td.prog_id, " +
-        "   l.test_id as test_id, l.test_segment, td.test_def_id as test_def_id, r.run_id as test_run_id, " +
+        "   l.test_id as test_id, l.test_segment, td.test_def_id as test_def_id, " +
+        "   r.run_id as test_run_id, 0 as total_sessions, " +
         "   'Quiz-' as activity, 1 as is_quiz, l.test_segment as session_number " + 
         " from  HA_TEST l INNER JOIN HA_USER u ON l.user_id = u.uid " +
         " join HA_TEST_RUN r on r.test_id = l.test_id " +
@@ -155,7 +157,8 @@ public class CmAdminDao {
         "  date_format(iu.view_time,'%Y-%m-%d') as run_date, " +
         "  0 as answered_correct, 0 as answered_incorrect, 0 as not_answered, " +
         "  concat(td.subj_id, ' ', td.prog_id) as program, td.prog_id, " +
-        "  l.test_id as test_id, iu.session_number as test_segment, td.test_def_id as test_def_id, r.run_id as test_run_id, " +
+        "  l.test_id as test_id, iu.session_number as test_segment, td.test_def_id as test_def_id, " +
+        "  r.run_id as test_run_id, r.total_sessions as total_sessions, " +
         "  'Review-' as activity, 0 as is_quiz, iu.session_number as session_number " +
         " from  HA_TEST l INNER JOIN HA_USER u ON l.user_id = u.uid " + 
         " join HA_TEST_RUN r on r.test_id = l.test_id " +
@@ -906,20 +909,27 @@ public class CmAdminDao {
     			int problemsPerLesson = 3;
     			int completed = problemsViewed / problemsPerLesson;
     			int inProgress = 0; //lessonsViewed % problemsPerLesson;
+    			int totalSessions = rs.getInt("total_sessions");
                 
                 if (completed >= 1) {
-                	sb.append("total of ").append(completed);
-                    if (completed > 1)
-                	    sb.append(" lessons completed");
-                    else
-                	    sb.append(" lesson completed");
-                    if (inProgress != 0) {
-                	    sb.append(", 1 in progress");
-                    }
+                	if (totalSessions < 1) {
+                    	sb.append("total of ").append(completed);
+                        if (completed > 1)
+                    	    sb.append(" reviews completed");
+                        else
+                    	    sb.append(" review completed");
+                        if (inProgress != 0) {
+                	        sb.append(", 1 in progress");
+                        }
+                	}
+                	else {
+                		sb.append(completed).append(" out of ");
+                		sb.append(totalSessions).append(" reviewed");
+                	}
                 }
                 else {
                 	if (inProgress != 0) {
-                	    sb.append("1 lesson in progress");
+                	    sb.append("1 review in progress");
                     }
                 }
     		}
