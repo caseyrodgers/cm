@@ -59,7 +59,7 @@ public class StudentShowWorkWindow extends CmWindow {
         setStyleName("student-show-work-window");
         this.student = student;
         this.activityModel = activityModel;
-        setSize(770, 600);
+        setSize(760, 600);
         setResizable(false);
 
         setLayout(new BorderLayout());
@@ -128,7 +128,7 @@ public class StudentShowWorkWindow extends CmWindow {
 
             
             ShowWorkPanel workPanel = new ShowWorkPanel();
-            BorderLayoutData ld = new BorderLayoutData(LayoutRegion.NORTH, 360);
+            BorderLayoutData ld = new BorderLayoutData(LayoutRegion.NORTH, 290);
             ld.setSplit(false);            
             lc.add(workPanel, ld);
             

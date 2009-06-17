@@ -273,7 +273,7 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
     
     private Button showWorkToolItem(final Grid<StudentModel> grid, final CmAdminModel cmAdminMdl) {
         Button ti = new StudenPanelButton("Show Work");
-        ti.setToolTip("Show all problems that the student has entered work for.");
+        ti.setToolTip("Show all student's show work effort.");
 
         ti.addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override

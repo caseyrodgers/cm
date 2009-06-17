@@ -647,6 +647,12 @@ img.resource-item-complete {
     background-color: #34383b;
 }
 
+.resource-container-redish {
+    background-image:none;
+    background-color: #933280;
+}
+
+
 .resource-container-none {
     background-image:none;
 }

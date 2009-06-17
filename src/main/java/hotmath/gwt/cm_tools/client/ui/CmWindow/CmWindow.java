@@ -2,7 +2,9 @@ package hotmath.gwt.cm_tools.client.ui.CmWindow;
 
 import com.extjs.gxt.ui.client.widget.Window;
 
-/** GXT m3  rememoved close from Window .. ?
+/** GXT m3  removed close from Window .. ?
+ * 
+ * @TODO: remove this when the future of close is found ...
  * 
  * @author casey
  *

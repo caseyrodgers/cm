@@ -306,7 +306,7 @@ class PrescriptionResourceAccord extends LayoutContainer {
     }
     
     public void expandResourcePracticeProblems() {
-        expandResourceType("Required Problems");
+        expandResourceType("Required Practice Problems");
     }
     
     /** Expand the resource node exposing resource items
