@@ -1033,7 +1033,7 @@ public class CmAdminDao {
             ps.setInt(1, uid);
             rs = ps.executeQuery();
 
-            SimpleDateFormat dteForat = new SimpleDateFormat("yyyy-MM-dd hh:ss a");
+            SimpleDateFormat dteForat = new SimpleDateFormat("yyyy-MM-dd hh:mm a");
             int prob=1;
             while(rs.next()) {
                 
