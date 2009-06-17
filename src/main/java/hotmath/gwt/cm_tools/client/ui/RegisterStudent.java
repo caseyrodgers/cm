@@ -593,11 +593,11 @@ public class RegisterStudent extends LayoutContainer {
 		s.getActiveGroups(uid, new AsyncCallback <List<GroupModel>>() {
 
 			public void onSuccess(List<GroupModel> result) {
-				// insert 'New Group' at beginning of List
+				// append 'New Group' to end of List
 				GroupModel gm = new GroupModel();
 				gm.setName(GroupModel.NEW_GROUP);
 				gm.setId(GroupModel.NEW_GROUP);
-				result.add(0, gm);
+				result.add(gm);
 				
 				groupStore.add(result);
 				
