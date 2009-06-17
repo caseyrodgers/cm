@@ -10,11 +10,10 @@ import com.google.gwt.user.client.Timer;
  * 
  * Refreshes data every REFRESH_MILLS
  * 
- * Implemented as singlton to allow exposing the fireRefreshData
+ * Implemented as singleton to allow exposing the fireRefreshData
  * 
- * There is a single timer that fires every REFRESH_MILLS. You
- * can call fireRefreshData directly,and the next auto fire will 
- * be skipped.
+ * There is a single timer that fires every REFRESH_MILLS. You can call
+ * fireRefreshData directly and the next auto fire will be skipped.
  * 
  */
 public class CmAdminDataReader extends Timer {
@@ -23,7 +22,7 @@ public class CmAdminDataReader extends Timer {
     
     private static CmAdminDataReader __instance;
     static public CmAdminDataReader getInstance() {
-        if(__instance == null) {
+        if (__instance == null) {
             __instance = new CmAdminDataReader();
         }
         return __instance;
@@ -52,7 +51,7 @@ public class CmAdminDataReader extends Timer {
     public void run() {
         long now = System.currentTimeMillis() - lastRefresh;
         boolean needsRefreshing = now > REFRESH_MILLS;
-        if(!isRefreshing && needsRefreshing) {
+        if (!isRefreshing && needsRefreshing) {
             fireRefreshData();
         }
     }
@@ -67,7 +66,7 @@ public class CmAdminDataReader extends Timer {
             for (CmAdminDataRefresher reader : dataReaders) {
                 reader.refreshData();
             }
-            lastRefresh=System.currentTimeMillis();
+            lastRefresh = System.currentTimeMillis();
         }
         finally {
             isRefreshing = false;
