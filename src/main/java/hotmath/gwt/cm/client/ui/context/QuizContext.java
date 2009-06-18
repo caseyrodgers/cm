@@ -27,10 +27,11 @@ import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.button.IconButton;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Anchor;
-import com.google.gwt.user.client.ui.ClickListener;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -257,10 +258,11 @@ public class QuizContext implements CmContext {
 	}
 	
 	public String getStatusMessage() {
-        String msg1="<ul><li><b>Taking a quiz, Relax!</b> Work out each answer at your own pace using pencil and paper. " +
-        "Taking the quiz is part of the learning process, so don't guess, and don't stress about it. " +
-        "Press Check Quiz when you are ready to receive review and practice for the problems that you are ready to learn! " +
-        "Your quiz score is not important, only learning is important.</li></ul>";
+	    
+        String msg1="<ul><li><b>Relax! Work out each answer at your own pace using pencil and paper. " +
+        "Press Check Quiz when you are ready to receive review and practice for " +
+        "the lessons that you are ready to learn! Your quiz score is not " +
+        "important, only learning is important.</li></ul>";
         return msg1;
 	}
 }
@@ -276,8 +278,8 @@ class QuizContextNextPanelInfo extends NextPanelInfoImplDefault {
 		cp.setStyleName("quiz-next-panel");
 		cp.add(new HTML("When ready, you can "));
 		Anchor a = new Anchor("Check Your Test.");
-		a.addClickListener(new ClickListener() {
-			public void onClick(Widget sender) {
+		a.addClickHandler(new ClickHandler() {
+		    public void onClick(ClickEvent event) {
 				// History.newItem("pres=0");
 				History.newItem("pres=1");
 				NextDialog.destroyCurrentDialog();				
