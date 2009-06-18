@@ -9,6 +9,9 @@ public class CmEvent {
     String eventName;
     Object eventData;
     
+    public CmEvent(String name) {
+        this(name, null);
+    }
     public CmEvent(String name, Object data) {
         this.eventName = name;
         this.eventData = data;

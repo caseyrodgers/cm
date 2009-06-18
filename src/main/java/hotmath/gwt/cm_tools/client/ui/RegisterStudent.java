@@ -10,6 +10,8 @@ import hotmath.gwt.cm_admin.client.model.StudyProgramModel;
 import hotmath.gwt.cm_admin.client.model.SubjectModel;
 import hotmath.gwt.cm_admin.client.service.RegistrationServiceAsync;
 import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
+import hotmath.gwt.shared.client.eventbus.CmEvent;
+import hotmath.gwt.shared.client.eventbus.EventBus;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,7 +19,10 @@ import java.util.List;
 import com.extjs.gxt.ui.client.Registry;
 import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
 import com.extjs.gxt.ui.client.data.BaseModelData;
+import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
+import com.extjs.gxt.ui.client.event.Events;
+import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.SelectionChangedEvent;
 import com.extjs.gxt.ui.client.event.SelectionChangedListener;
 import com.extjs.gxt.ui.client.event.SelectionListener;
@@ -69,7 +74,8 @@ public class RegisterStudent extends LayoutContainer {
 	private int formWidth  = 340;
 	
 	public RegisterStudent(final Grid<StudentModel> grid, StudentModel sm, CmAdminModel cm) {
-
+	    
+	    EventBus.getInstance().fireEvent(new CmEvent(EventBus.EVENT_TYPE_REGISTER_STUDENT_WINDOW_OPEN));
 	    
 		inProcessCount = 0;
 		isNew = (sm == null);
@@ -80,6 +86,11 @@ public class RegisterStudent extends LayoutContainer {
 		cmAdminMdl = cm;
 		eg = grid;
 		fw = new CmWindow();
+		fw.addListener(Events.Hide, new Listener<BaseEvent>() {
+		    public void handleEvent(BaseEvent be) {
+		        EventBus.getInstance().fireEvent(new CmEvent(EventBus.EVENT_TYPE_REGISTER_STUDENT_WINDOW_CLOSED));
+		    }
+		});
 		fw.add(createForm());
  		fw.show();
  		if (isNew) {

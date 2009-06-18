@@ -193,6 +193,7 @@ class PrescriptionResourceAccord extends LayoutContainer {
         AccordionLayout al = new AccordionLayout();
         setLayout(al);
         al.setActiveOnTop(false);
+        al.setFill(true);
         
         // for each distinct resource type
         ContentPanel cp = null;
@@ -201,10 +202,10 @@ class PrescriptionResourceAccord extends LayoutContainer {
         // setTitle("Choose a resource type, then click one of its items.");
         for (PrescriptionSessionDataResource resource : resources) {
             cp = new ContentPanel();
+            cp.setAnimCollapse(false);
             cp.addStyleName("accordian-resource-list-panel");
             cp.setLayout(new FitLayout());
             // to show check
-            // cp.addStyleName("accordian-resource-list-panel-complete");
             cp.setBodyStyleName("pad-text");
             // cp.setScrollMode(Scroll.AUTO);
             
@@ -226,8 +227,8 @@ class PrescriptionResourceAccord extends LayoutContainer {
                     PrescriptionResourceAccord.__instance.layout();
                 }
             }
-            cp.setAnimCollapse(false);
-            cp.collapse();
+            // cp.setAnimCollapse(true);
+            cp.setHeight(150);
             cp.add(rl);
 
             add(cp);

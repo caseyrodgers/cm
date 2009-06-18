@@ -1,8 +1,13 @@
 package hotmath.gwt.cm_admin.client.model;
 
+import hotmath.gwt.shared.client.eventbus.CmEvent;
+import hotmath.gwt.shared.client.eventbus.CmEventListenerImplDefault;
+import hotmath.gwt.shared.client.eventbus.EventBus;
+
 import java.util.ArrayList;
 import java.util.List;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.user.client.Timer;
 
 /**
@@ -31,6 +36,7 @@ public class CmAdminDataReader extends Timer {
     List<CmAdminDataRefresher> dataReaders = new ArrayList<CmAdminDataRefresher>();
     boolean isRefreshing;
     long lastRefresh;
+    boolean skipRefresh;
 
     /** Create a data refresher with set dataReaders.
      * 
@@ -39,8 +45,19 @@ public class CmAdminDataReader extends Timer {
      * 
      * @param dataReaders
      */
-    public CmAdminDataReader() {
+    private CmAdminDataReader() {
         scheduleRepeating(REFRESH_MILLS);
+        
+        EventBus.getInstance().addEventListener(new CmEventListenerImplDefault() {
+            public void handleEvent(CmEvent event) {
+                if(event.getEventName().equals(EventBus.EVENT_TYPE_REGISTER_STUDENT_WINDOW_OPEN)) {
+                    skipRefresh=true;
+                }
+                else if(event.getEventName().equals(EventBus.EVENT_TYPE_REGISTER_STUDENT_WINDOW_CLOSED)) {
+                    skipRefresh=false;
+                }
+            }
+        });
     }
     
     public void addReader(CmAdminDataRefresher dataReader) {
@@ -51,7 +68,16 @@ public class CmAdminDataReader extends Timer {
     public void run() {
         long now = System.currentTimeMillis() - lastRefresh;
         boolean needsRefreshing = now > REFRESH_MILLS;
-        if (!isRefreshing && needsRefreshing) {
+        if(skipRefresh) {
+            Log.debug("CmAdminDataReader: skipped, by request");
+        }
+        else if(isRefreshing) {
+            Log.debug("CmAdminDataReader: skipped, is currently being refresehed&& needsRefreshing");
+        }
+        else if(!needsRefreshing) {
+            Log.debug("CmAdminDataReader: skipped, not needed");
+        }
+        else {
             fireRefreshData();
         }
     }
@@ -62,7 +88,7 @@ public class CmAdminDataReader extends Timer {
     public void fireRefreshData() {
         isRefreshing=true;
         try {
-            //System.out.println("CmAdmin: Refreshing data for: " + dataReaders.size());
+            Log.debug("CmAdminDataReader: refreshing data");
             for (CmAdminDataRefresher reader : dataReaders) {
                 reader.refreshData();
             }

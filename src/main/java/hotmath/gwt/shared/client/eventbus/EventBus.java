@@ -10,16 +10,6 @@ import java.util.List;
  */
 public class EventBus {
     
-    /** Whenever a user is set or changed
-     * 
-     */
-    static public final String EVENT_TYPE_USERCHANGED="USERCHANGED";
-    
-    /** Whenever the main context is changed
-     * 
-     */
-    static public final String EVENT_TYPE_CONTEXTCHANGED="CONTEXTCHANGED";
-    
     
     private static EventBus __instance;
     public static EventBus getInstance() {
@@ -49,4 +39,25 @@ public class EventBus {
             }
         }
     }
+    
+    /** Whenever a user is set or changed
+     * 
+     */
+    static public final String EVENT_TYPE_USERCHANGED="USERCHANGED";
+    
+    /** Whenever the main context is changed
+     * 
+     */
+    static public final String EVENT_TYPE_CONTEXTCHANGED="CONTEXTCHANGED";
+    
+    
+    /** When the RegisterStudent window is opened
+     * 
+     */
+    static public final String EVENT_TYPE_REGISTER_STUDENT_WINDOW_OPEN="REGISTERSTUDENTOPEN";
+    
+    /** When the RegisterStudent window is closed
+     * 
+     */
+    static public final String EVENT_TYPE_REGISTER_STUDENT_WINDOW_CLOSED="REGISTERSTUDENTCLOSED";
 }
