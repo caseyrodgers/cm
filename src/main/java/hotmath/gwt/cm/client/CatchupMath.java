@@ -61,6 +61,10 @@ public class CatchupMath implements EntryPoint {
     LayoutContainer _mainContainer;
     HeaderPanel _headerPanel;
 
+    /** Flag to indicate message about show work has been given (one per login)
+     * 
+     */
+    public static boolean __hasBeenInformedAboutShowWork;
     
     /**
      * This is the entry point method.
@@ -69,10 +73,12 @@ public class CatchupMath implements EntryPoint {
     public void onModuleLoad() {
         Log.info("Catchup Math Startup: " + version);
         
-        
         __thisInstance = this;
+        
         GXT.setDefaultTheme(Theme.GRAY, true);
 
+        __hasBeenInformedAboutShowWork=false;
+        
         _mainPort = new Viewport();
         _mainPort.setLayout(new BorderLayout());
         BorderLayoutData bdata = new BorderLayoutData(LayoutRegion.NORTH, 38);

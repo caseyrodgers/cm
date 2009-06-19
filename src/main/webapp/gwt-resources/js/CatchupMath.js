@@ -251,12 +251,21 @@ function scrollToStep(num) {
 
 
 
-//register a listener with Tutor to 
-//be notified when last step is reached.
-//This is used to only advance when the solution 
-//has actually been viewed.
+  /** 
+   * register a listener with Tutor to 
+   * be notified when last step is reached.
+   * This is used to only advance when the solution 
+   * has actually been viewed.
+   */
 HmEvents.eventTutorLastStep.subscribe( function(x) {
 	solutionHasBeenViewed_Gwt(x);
+});
+
+/** Register a listener with Tutor to 
+ *  be notified when first step is accessed
+ */
+HmEvents.eventTutorFirstStep.subscribe( function(x) {
+	solutionIsBeingViewed_Gwt(x);
 });
 
 /** Override the Ask a tutor function */
