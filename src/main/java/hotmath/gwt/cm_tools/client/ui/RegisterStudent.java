@@ -30,6 +30,7 @@ import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.button.Button;
+import com.extjs.gxt.ui.client.widget.form.CheckBox;
 import com.extjs.gxt.ui.client.widget.form.ComboBox;
 import com.extjs.gxt.ui.client.widget.form.FieldSet;
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
@@ -70,7 +71,7 @@ public class RegisterStudent extends LayoutContainer {
 	
 	private FieldSet fs;
 	
-	private int formHeight = 380;
+	private int formHeight = 440;
 	private int formWidth  = 340;
 	
 	public RegisterStudent(final Grid<StudentModel> grid, StudentModel sm, CmAdminModel cm) {
@@ -121,7 +122,7 @@ public class RegisterStudent extends LayoutContainer {
         fL.setDefaultWidth(175);
 	    fs.setLayout(fL);
 	    
-		fs.setHeading("Define User Login");
+		fs.setHeading("Define User Profile");
 		name = new TextField<String>();  
 		name.setFieldLabel("Name");
 		name.setAllowBlank(false);
@@ -146,9 +147,26 @@ public class RegisterStudent extends LayoutContainer {
 		getGroupListRPC(cmAdminMdl.getId(), groupStore);
 		groupCombo = groupCombo(groupStore);
 		fs.add(groupCombo);
-        fp.add(fs);
 
-		fs = new FieldSet();
+        CheckBox isShowWorkRequired = new CheckBox();
+        isShowWorkRequired.setFieldLabel("Show Work");
+        isShowWorkRequired.setId(StudentModel.SHOW_WORK_KEY);
+        if (! isNew) {
+        	isShowWorkRequired.setValue(stuMdl.getShowWorkRequired());
+        }
+        fs.add(isShowWorkRequired);
+        
+        CheckBox isTutoringAvail = new CheckBox();
+        isTutoringAvail.setFieldLabel("Tutoring");
+        isTutoringAvail.setId(StudentModel.TUTORING_AVAIL_KEY);
+        if (! isNew) {
+        	isTutoringAvail.setValue(stuMdl.getTutoringAvail());
+        }
+        fs.add(isTutoringAvail);
+        
+        fp.add(fs);
+        
+        fs = new FieldSet();
 		fs.setHeading("Assign Program");
 		fs.setStyleName("register-student-fieldset");
 		
@@ -440,6 +458,14 @@ public class RegisterStudent extends LayoutContainer {
 	        	String groupId = g.getId();
 	        	String group = g.getName();
 	        	
+	        	CheckBox csw = (CheckBox) fp.getItemByItemId(StudentModel.SHOW_WORK_KEY);
+	        	Boolean showWork = new Boolean(csw.getValue());
+	        	System.out.println("+++ show work: " + showWork);
+	        	
+	        	CheckBox cta = (CheckBox) fp.getItemByItemId(StudentModel.TUTORING_AVAIL_KEY);
+	        	Boolean tutoring = new Boolean(cta.getValue());
+	        	System.out.println("+++ tutoring: " + tutoring);
+	        	
 	        	ComboBox<StudyProgram> cb = (ComboBox<StudyProgram>) fs.getItemByItemId("prog-combo");
 	        	StudyProgram sp = cb.getValue();
 	        	if (sp == null) {
@@ -481,6 +507,8 @@ public class RegisterStudent extends LayoutContainer {
 	        	//sm.setEmail(email);
 	        	sm.setProgramDescr(prog);
 	        	sm.setGroupId(groupId);
+	        	sm.setTutoringAvail(tutoring);
+	        	sm.setShowWorkRequired(showWork);
 	        	sm.setGroup(group);
 	        	sm.setAdminUid(cmAdminMdl.getId());
         		String passVal = (pass != null) ? pass.getPassPercent() : null;
@@ -510,7 +538,10 @@ public class RegisterStudent extends LayoutContainer {
 	        		sm.setStatus(stuMdl.getStatus());
 	        		sm.setSectionNum(stuMdl.getSectionNum());
 	        		
-	        		if (! name.equals(stuMdl.getName())) {
+	        		if (! name.equals(stuMdl.getName()) ||
+	        			! tutoring.equals(stuMdl.getTutoringAvail()) ||
+	        			! showWork.equals(stuMdl.getShowWorkRequired()) ||
+	        			! groupId.equals(stuMdl.getGroupId())) {
 	        			stuChanged = true;
 	        		}
 	        		if (! passcode.equals(stuMdl.getPasscode())) {
@@ -522,9 +553,6 @@ public class RegisterStudent extends LayoutContainer {
 	        			stuChanged = true;
 	        		}
 */
-	        		if (! groupId.equals(stuMdl.getGroupId())) {
-	        			stuChanged = true;
-	        		}
 	        		String oldPassVal = stuMdl.getPassPercent();
 	        		String newPassVal = (pass != null) ? pass.getPassPercent() : null;
 	        		

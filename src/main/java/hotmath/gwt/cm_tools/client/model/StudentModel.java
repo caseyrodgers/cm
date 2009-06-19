@@ -19,6 +19,8 @@ public class StudentModel extends BaseModelData  {
 	public static final String UID_KEY = "uid";
 	public static final String EMAIL_KEY = "email";
 	public static final String ADMIN_UID_KEY = "admin_uid";
+	public static final String SHOW_WORK_KEY = "show-work";
+	public static final String TUTORING_AVAIL_KEY = "tutoring-avail";
 
 	public String getName() {
 		return get("name");
@@ -182,6 +184,22 @@ public class StudentModel extends BaseModelData  {
 	
 	public void setJson(String json) {
 		set(JSON_KEY, json);
+	}
+
+	public Boolean getShowWorkRequired() {
+		return get(SHOW_WORK_KEY);
+	}
+	
+	public void setShowWorkRequired(Boolean val) {
+		set(SHOW_WORK_KEY, val);
+	}
+
+	public Boolean getTutoringAvail() {
+		return get(TUTORING_AVAIL_KEY);
+	}
+	
+	public void setTutoringAvail(Boolean val) {
+		set(TUTORING_AVAIL_KEY, val);
 	}
 
 	public StudentModel() {

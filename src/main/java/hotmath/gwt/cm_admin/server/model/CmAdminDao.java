@@ -38,11 +38,11 @@ public class CmAdminDao {
 
     private static final String GET_STUDENTS_SQL = 
         "SELECT h.uid, h.user_name as name, h.user_passcode as passcode, h.user_email as email, h.admin_id as admin_uid, " +
-        "       h.active_segment, h.test_config_json, h.user_prog_id, p.test_def_id, p.create_date, " +
-        "       concat(p.pass_percent,'%') as pass_percent, t.total_segments, " +
+        "       h.is_show_work_required, h.is_tutoring_available,  h.active_segment, h.test_config_json, h.user_prog_id, " +
+        "       p.test_def_id, p.create_date, concat(p.pass_percent,'%') as pass_percent, t.total_segments, " +
         "       concat(format((m.answered_correct*100)/(m.answered_correct+m.answered_incorrect+m.not_answered),0),'%') as last_quiz, " +
         "       trim(concat(ifnull(d.subj_id,''), ' ', d.prog_id)) as program, d.prog_id, d.subj_id, " +
-        "       date_format(m.last_run_time,'%Y-%m-%d') as last_use_date, 0 as has_tutoring, " +
+        "       date_format(m.last_run_time,'%Y-%m-%d') as last_use_date, " +
         "       tu.usage_count, ifnull(g.id, 0) as group_id, ifnull(g.name, 'none') as group_name " +
         "FROM  HA_ADMIN a " +
         "INNER JOIN HA_USER h " +
@@ -575,7 +575,7 @@ public class CmAdminDao {
     	"update HA_USER set " +
     	" user_name = ?, user_passcode = ?, group_id = ?, active_segment = ?, test_config_json = ?, " +
     	" test_def_id = (select test_def_id from HA_TEST_DEF where prog_id = ? and subj_id = ?), " +
-        " user_prog_id = ? " +
+        " user_prog_id = ?, is_tutoring_available = ?, is_show_work_required = ? " +
     	"where uid = ?";
     
     public StudentModel updateStudent(StudentModel sm) throws Exception {
@@ -596,7 +596,9 @@ public class CmAdminDao {
     		ps.setString(6, sm.getProgId());
     		ps.setString(7, sm.getSubjId());
     		ps.setInt(8, sm.getUserProgramId());
-    		ps.setInt(9, sm.getUid());
+    		ps.setInt(9, sm.getTutoringAvail()?1:0);
+    		ps.setInt(10, sm.getShowWorkRequired()?1:0);
+    		ps.setInt(11, sm.getUid());
     		int result = ps.executeUpdate();
     	}
     	catch (Exception e) {
@@ -831,6 +833,8 @@ public class CmAdminDao {
     		sm.setName(rs.getString("name"));
     		sm.setPasscode(rs.getString("passcode"));
             sm.setEmail(rs.getString("email"));
+            sm.setShowWorkRequired(rs.getInt("is_show_work_required")>0);
+            sm.setTutoringAvail(rs.getInt("is_tutoring_available")>0);
             
     		int groupId = rs.getInt("group_id");
     		sm.setGroupId(String.valueOf(groupId));
@@ -857,7 +861,7 @@ public class CmAdminDao {
             else {
             	sm.setStatus("Not started");
             }
-            String tutoringState = (rs.getInt("has_tutoring") > 0) ? "ON": "OFF";
+            String tutoringState = (sm.getTutoringAvail()) ? "ON": "OFF";
             sm.setTutoringState(tutoringState);
             
     		l.add(sm);
