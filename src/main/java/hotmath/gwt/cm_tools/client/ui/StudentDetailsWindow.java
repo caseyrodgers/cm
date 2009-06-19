@@ -42,26 +42,26 @@ public class StudentDetailsWindow extends CmWindow {
     StudentModel studentModel;
     private HTML html;
     private XTemplate template;
-    private Grid<StudentActivityModel> _grid; 
+    private Grid<StudentActivityModel> samGrid; 
     public StudentDetailsWindow(final StudentModel studentModel) {
         this.studentModel = studentModel;
         setSize(580,320);
         setModal(true);
         setResizable(false);
         setHeading("Student Details For: " + studentModel.getName());
-        setStyleName("student-details-window");
+        //setStyleName("student-details-window");
 
         defineStudentInfoTemplate();
         
         ListStore<StudentActivityModel> store = new ListStore<StudentActivityModel>();
         ColumnModel cm = defineColumns();
         
-        _grid = new Grid<StudentActivityModel>(store, cm);
-        _grid.setStyleName("student-details-panel-grid");
-        _grid.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
-        _grid.getSelectionModel().setFiresEvents(true);
-        _grid.setWidth(560);
-        _grid.setHeight(190);
+        samGrid = new Grid<StudentActivityModel>(store, cm);
+        //samGgrid.setStyleName("student-details-panel-grid");
+        samGrid.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
+        samGrid.getSelectionModel().setFiresEvents(true);
+        samGrid.setWidth(560);
+        samGrid.setHeight(190);
         
         add(studentInfoPanel());
         
@@ -76,7 +76,7 @@ public class StudentDetailsWindow extends CmWindow {
         ToolBar tb = new ToolBar();
         tb.add(showWorkBtn);
         add(tb);
-        add(_grid);
+        add(samGrid);
 
         Button btnClose = closeButton();
         setButtonAlign(HorizontalAlignment.RIGHT);  
@@ -92,7 +92,7 @@ public class StudentDetailsWindow extends CmWindow {
      *  
      */
     private void showWorkForSelected() {
-        StudentActivityModel sam = _grid.getSelectionModel().getSelectedItem();
+        StudentActivityModel sam = samGrid.getSelectionModel().getSelectedItem();
         if(sam == null) {
             CatchupMathAdmin.showAlert("Select an entry in the table first");
             return;
