@@ -45,7 +45,7 @@ public class StudentDetailsWindow extends CmWindow {
     private Grid<StudentActivityModel> _grid; 
     public StudentDetailsWindow(final StudentModel studentModel) {
         this.studentModel = studentModel;
-        setSize(570,320);
+        setSize(580,320);
         setModal(true);
         setResizable(false);
         setHeading("Student Details For: " + studentModel.getName());
@@ -60,7 +60,7 @@ public class StudentDetailsWindow extends CmWindow {
         _grid.setStyleName("student-details-panel-grid");
         _grid.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
         _grid.getSelectionModel().setFiresEvents(true);
-        _grid.setWidth(550);
+        _grid.setWidth(560);
         _grid.setHeight(190);
         
         add(studentInfoPanel());
