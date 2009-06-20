@@ -471,12 +471,10 @@ public class RegisterStudent extends LayoutContainer {
 	        	
 	        	CheckBoxGroup cbg = (CheckBoxGroup) fp.getItemByItemId(StudentModel.SHOW_WORK_KEY);
 	        	CheckBox cbv = cbg.getValue();
-	        	System.out.println("+++ sw: " + (cbv != null));
 	        	Boolean showWork = new Boolean(cbv != null);
 	        	
 	        	cbg = (CheckBoxGroup) fp.getItemByItemId(StudentModel.TUTORING_AVAIL_KEY);
 	        	cbv = cbg.getValue();
-	        	System.out.println("+++ ta: " + (cbv == null));
 	        	Boolean tutoring = new Boolean(cbv == null);
 	        	
 	        	ComboBox<StudyProgram> cb = (ComboBox<StudyProgram>) fs.getItemByItemId("prog-combo");
