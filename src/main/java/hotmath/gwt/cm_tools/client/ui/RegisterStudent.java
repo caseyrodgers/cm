@@ -31,6 +31,7 @@ import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.CheckBox;
+import com.extjs.gxt.ui.client.widget.form.CheckBoxGroup;
 import com.extjs.gxt.ui.client.widget.form.ComboBox;
 import com.extjs.gxt.ui.client.widget.form.FieldSet;
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
@@ -71,8 +72,8 @@ public class RegisterStudent extends LayoutContainer {
 	
 	private FieldSet fs;
 	
-	private int formHeight = 440;
-	private int formWidth  = 340;
+	private int formHeight = 410;
+	private int formWidth  = 345;
 	
 	public RegisterStudent(final Grid<StudentModel> grid, StudentModel sm, CmAdminModel cm) {
 	    
@@ -104,7 +105,7 @@ public class RegisterStudent extends LayoutContainer {
 	private FormPanel createForm() {
 		final CombinedFormPanel fp = new CombinedFormPanel();
 		fp.setStyleName("register-student-form-panel");
-		fp.setLabelWidth(75);
+		fp.setLabelWidth(120);
 		fp.setHeight(formHeight);
 		fp.setFooter(true);
 		fp.setFrame(false);
@@ -118,11 +119,11 @@ public class RegisterStudent extends LayoutContainer {
 		
 		FieldSet fs = new FieldSet();
 		FormLayout fL = new FormLayout();
-		fL.setLabelWidth(fm.getLabelWidth());
+		fL.setLabelWidth(fp.getLabelWidth());
         fL.setDefaultWidth(175);
 	    fs.setLayout(fL);
 	    
-		fs.setHeading("Define User Profile");
+		fs.setHeading("Define Profile");
 		name = new TextField<String>();  
 		name.setFieldLabel("Name");
 		name.setAllowBlank(false);
@@ -147,22 +148,6 @@ public class RegisterStudent extends LayoutContainer {
 		getGroupListRPC(cmAdminMdl.getId(), groupStore);
 		groupCombo = groupCombo(groupStore);
 		fs.add(groupCombo);
-
-        CheckBox isShowWorkRequired = new CheckBox();
-        isShowWorkRequired.setFieldLabel("Show Work");
-        isShowWorkRequired.setId(StudentModel.SHOW_WORK_KEY);
-        if (! isNew) {
-        	isShowWorkRequired.setValue(stuMdl.getShowWorkRequired());
-        }
-        fs.add(isShowWorkRequired);
-        
-        CheckBox isTutoringAvail = new CheckBox();
-        isTutoringAvail.setFieldLabel("Tutoring");
-        isTutoringAvail.setId(StudentModel.TUTORING_AVAIL_KEY);
-        if (! isNew) {
-        	isTutoringAvail.setValue(stuMdl.getTutoringAvail());
-        }
-        fs.add(isTutoringAvail);
         
         fp.add(fs);
         
@@ -171,11 +156,8 @@ public class RegisterStudent extends LayoutContainer {
 		fs.setStyleName("register-student-fieldset");
 		
 		FormLayout fl = new FormLayout();
-		fl.setLabelWidth(fL.getLabelWidth());
+		fl.setLabelWidth(fp.getLabelWidth());
 		fl.setDefaultWidth(fL.getDefaultWidth());
-		
-		// this should be in CSS
-		// fl.setPadding(5);
 		
 		fs.setLayout(fl);
 		
@@ -199,6 +181,35 @@ public class RegisterStudent extends LayoutContainer {
 		passStore.add(passList);
 		passCombo = passPercentCombo(passStore);
 		fs.add(passCombo);
+		
+		//TODO: position the [ ] better 
+        CheckBox isShowWorkRequired = new CheckBox();
+        //isShowWorkRequired.setFieldLabel("Show Work");
+        isShowWorkRequired.setId(StudentModel.SHOW_WORK_KEY);
+        if (! isNew) {
+        	isShowWorkRequired.setValue(stuMdl.getShowWorkRequired());
+        }
+        //fs.add(isShowWorkRequired);
+        CheckBoxGroup showWorkGrp = new CheckBoxGroup(); 
+        showWorkGrp.setFieldLabel("Require Show Work");
+        showWorkGrp.setId(StudentModel.SHOW_WORK_KEY);
+        showWorkGrp.add(isShowWorkRequired);
+        fs.add(showWorkGrp);
+        
+		//TODO: position the [ ] better 
+        CheckBox isTutoringNotAvail = new CheckBox();
+        //isTutoringNotAvail.setFieldLabel("Tutoring");
+        isTutoringNotAvail.setId(StudentModel.TUTORING_AVAIL_KEY);
+        if (! isNew) {
+        	// we save is_tutoring_available; form displays 'Disable tutoring'; hence, value is negated
+        	isTutoringNotAvail.setValue(! stuMdl.getTutoringAvail());
+        }
+        //fs.add(isTutoringAvail);
+        CheckBoxGroup tutoringGrp = new CheckBoxGroup();  
+        tutoringGrp.setFieldLabel("Disable Tutoring");
+        tutoringGrp.setId(StudentModel.TUTORING_AVAIL_KEY);
+        tutoringGrp.add(isTutoringNotAvail);
+        fs.add(tutoringGrp);
 		
 		fp.add(fs);
 
@@ -458,13 +469,15 @@ public class RegisterStudent extends LayoutContainer {
 	        	String groupId = g.getId();
 	        	String group = g.getName();
 	        	
-	        	CheckBox csw = (CheckBox) fp.getItemByItemId(StudentModel.SHOW_WORK_KEY);
-	        	Boolean showWork = new Boolean(csw.getValue());
-	        	System.out.println("+++ show work: " + showWork);
+	        	CheckBoxGroup cbg = (CheckBoxGroup) fp.getItemByItemId(StudentModel.SHOW_WORK_KEY);
+	        	CheckBox cbv = cbg.getValue();
+	        	System.out.println("+++ sw: " + (cbv != null));
+	        	Boolean showWork = new Boolean(cbv != null);
 	        	
-	        	CheckBox cta = (CheckBox) fp.getItemByItemId(StudentModel.TUTORING_AVAIL_KEY);
-	        	Boolean tutoring = new Boolean(cta.getValue());
-	        	System.out.println("+++ tutoring: " + tutoring);
+	        	cbg = (CheckBoxGroup) fp.getItemByItemId(StudentModel.TUTORING_AVAIL_KEY);
+	        	cbv = cbg.getValue();
+	        	System.out.println("+++ ta: " + (cbv == null));
+	        	Boolean tutoring = new Boolean(cbv == null);
 	        	
 	        	ComboBox<StudyProgram> cb = (ComboBox<StudyProgram>) fs.getItemByItemId("prog-combo");
 	        	StudyProgram sp = cb.getValue();
