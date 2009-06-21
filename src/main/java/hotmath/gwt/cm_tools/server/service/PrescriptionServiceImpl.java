@@ -723,6 +723,7 @@ public class PrescriptionServiceImpl extends RemoteServiceServlet implements Pre
             int totalAnswered = 0;
             int notAnswered = 0;
             int answeredCorrect = 0;
+            int answeredIncorrect = 0;
             String sql = "select pid, is_correct from v_HA_TEST_CURRENT_STATUS where test_id = ?";
             conn = HMConnectionPool.getConnection();
             pstat = conn.prepareStatement(sql);
@@ -738,6 +739,8 @@ public class PrescriptionServiceImpl extends RemoteServiceServlet implements Pre
                 if (corr != null) {
                     if(corr == 1)
                         answeredCorrect++;
+                    else
+                    	answeredIncorrect++;
 
                     totalAnswered++;
                 }
@@ -749,7 +752,7 @@ public class PrescriptionServiceImpl extends RemoteServiceServlet implements Pre
                 }
             }
 
-            HaTestRun run = test.createTestRun(incorrectPids.toArray(new String[incorrectPids.size()]), answeredCorrect, incorrectPids.size(), notAnswered);
+            HaTestRun run = test.createTestRun(incorrectPids.toArray(new String[incorrectPids.size()]), answeredCorrect, answeredIncorrect, notAnswered);
 
             AssessmentPrescription pres = AssessmentPrescriptionManager.getInstance().getPrescription(run.getRunId());
             
