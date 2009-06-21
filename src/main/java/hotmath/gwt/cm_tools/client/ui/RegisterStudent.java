@@ -73,7 +73,7 @@ public class RegisterStudent extends LayoutContainer {
 	private FieldSet fs;
 	
 	private int formHeight = 410;
-	private int formWidth  = 345;
+	private int formWidth  = 365;
 	
 	public RegisterStudent(final Grid<StudentModel> grid, StudentModel sm, CmAdminModel cm) {
 	    
@@ -120,7 +120,7 @@ public class RegisterStudent extends LayoutContainer {
 		FieldSet fs = new FieldSet();
 		FormLayout fL = new FormLayout();
 		fL.setLabelWidth(fp.getLabelWidth());
-        fL.setDefaultWidth(175);
+        fL.setDefaultWidth(195);
 	    fs.setLayout(fL);
 	    
 		fs.setHeading("Define Profile");
@@ -184,7 +184,7 @@ public class RegisterStudent extends LayoutContainer {
 		
 		//TODO: position the [ ] better 
         CheckBox isShowWorkRequired = new CheckBox();
-        //isShowWorkRequired.setFieldLabel("Show Work");
+        isShowWorkRequired.setBoxLabel("(recommended for best results)");
         isShowWorkRequired.setId(StudentModel.SHOW_WORK_KEY);
         if (! isNew) {
         	isShowWorkRequired.setValue(stuMdl.getShowWorkRequired());
@@ -198,7 +198,7 @@ public class RegisterStudent extends LayoutContainer {
         
 		//TODO: position the [ ] better 
         CheckBox isTutoringNotAvail = new CheckBox();
-        //isTutoringNotAvail.setFieldLabel("Tutoring");
+        isTutoringNotAvail.setBoxLabel("(if/when account has tutoring)");
         isTutoringNotAvail.setId(StudentModel.TUTORING_AVAIL_KEY);
         if (! isNew) {
         	// we save is_tutoring_available; form displays 'Disable tutoring'; hence, value is negated
