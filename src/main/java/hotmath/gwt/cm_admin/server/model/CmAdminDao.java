@@ -840,7 +840,7 @@ public class CmAdminDao {
     		sm.setGroupId(String.valueOf(groupId));
     		sm.setUserProgramId(rs.getInt("user_prog_id"));
     		sm.setGroup(rs.getString("group_name"));
-    		// TODO include Chapter number in 'program'
+    		//TODO: include Chapter number in 'program'
     		sm.setProgramDescr(rs.getString("program"));
             sm.setProgId(rs.getString("prog_id"));
             sm.setSubjId(rs.getString("subj_id"));
@@ -903,8 +903,8 @@ public class CmAdminDao {
         		int numCorrect = rs.getInt("answered_correct");
         		int numIncorrect = rs.getInt("answered_incorrect");
         		int notAnswered = rs.getInt("not_answered");
-        		int percent = (numCorrect*100) / (numCorrect + numIncorrect + notAnswered);
-        		sb.append(percent).append("% correct");
+        		double percent = (double)(numCorrect*100) / (double)(numCorrect + numIncorrect + notAnswered);
+        		sb.append(java.lang.Math.round(percent)).append("% correct");
         		problemsViewed = 0;
     		}
     		else {
