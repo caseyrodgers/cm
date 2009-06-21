@@ -64,6 +64,7 @@ public class UserInfo implements IsSerializable {
                 user.setActiveUser(true);
                 user.setBackgroundStyle(ui.getDataAsString("gui_background_style"));
                 user.setTestName(ui.getDataAsString("test_name"));
+                user.setShowWorkRequired(ui.getDataAsInt("show_work_required")==0?false:true);
                 __instance = user;
                 
                 CatchupMathTools.setBusy(false);     

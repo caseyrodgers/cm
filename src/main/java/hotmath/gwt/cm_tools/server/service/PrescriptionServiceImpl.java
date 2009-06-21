@@ -691,6 +691,7 @@ public class PrescriptionServiceImpl extends RemoteServiceServlet implements Pre
             rpcData.putData("session_number", user.getActiveTestRunSession());
             rpcData.putData("gui_background_style", user.getBackgroundStyle());
             rpcData.putData("test_name", user.getAssignedTestName());
+            rpcData.putData("show_work_required", user.isShowWorkRequired()?1:0);
             
             int totalViewCount = getTotalInmHViewCount(uid);
             

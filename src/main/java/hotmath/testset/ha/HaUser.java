@@ -24,18 +24,23 @@ public class HaUser extends HaBasicUserImpl {
 	String category;
 	Integer gradeLevel;
 	String assignedTestName;
-	
 	Integer activeTestSegment;
 	Integer activeTest;
 	Integer activeTestRunId;
 	Integer activeTestRunSession;
-	
 	String backgroundStyle;
-	
-
     String testConfigJson;
+    boolean isShowWorkRequired;
     
     public HaUser() {
+    }
+    
+    public boolean isShowWorkRequired() {
+        return isShowWorkRequired;
+    }
+
+    public void setShowWorkRequired(boolean isShowWorkRequired) {
+        this.isShowWorkRequired = isShowWorkRequired;
     }
     
     /** Return the current active test run session number
@@ -205,7 +210,7 @@ public class HaUser extends HaBasicUserImpl {
 		ResultSet rs = null;
 		try {
 			String sql = "select u.uid, u.user_name, u.active_run_id,u.active_test_id,u.active_segment,u.active_run_session " +
-			             " ,d.test_name as assigned_test_name, u.test_config_json, gui_background_style " +
+			             " ,u.is_show_work_required, d.test_name as assigned_test_name, u.test_config_json, gui_background_style " +
 			             " from HA_USER u INNER JOIN HA_TEST_DEF d on u.test_def_id = d.test_def_id ";
 			if(uid != null)
 				sql += " where u.uid = ?";
@@ -233,6 +238,7 @@ public class HaUser extends HaBasicUserImpl {
 			user.setActiveTestRunSession(rs.getInt("active_run_session"));
 			user.setTestConfigJson(rs.getString("test_config_json"));
 			user.setBackgroundStyle(rs.getString("gui_background_style"));
+			user.setShowWorkRequired(rs.getInt("is_show_work_required")==0?false:true);
 			
 			return user;
 		}
