@@ -4,6 +4,11 @@ import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.data.InmhItemData;
 import hotmath.gwt.cm_tools.client.service.PrescriptionServiceAsync;
 import hotmath.gwt.cm_tools.client.ui.CmMainPanel;
+import hotmath.gwt.shared.client.eventbus.CmEvent;
+import hotmath.gwt.shared.client.eventbus.CmEventListenerImplDefault;
+import hotmath.gwt.shared.client.eventbus.EventBus;
+import hotmath.gwt.shared.client.util.RpcData;
+import hotmath.gwt.shared.client.util.UserInfo;
 
 import com.extjs.gxt.ui.client.Registry;
 import com.extjs.gxt.ui.client.Style.Scroll;
@@ -20,6 +25,14 @@ public class ResourceViewerImplTutor extends ResourceViewerContainer implements 
     static ResourceViewerImplTutor _instance;
     static {
         publishNative();
+        
+        EventBus.getInstance().addEventListener(new CmEventListenerImplDefault() {
+            public void handleEvent(CmEvent event) {
+                if(event.getEventName().equals(EventBus.EVENT_TYPE_WHITEBOARDUPDATED)) {
+                    _instance.whiteBoardHasBeenUpdated((String)event.getEventData());
+                }
+            }
+        });
     }
     
     public ResourceViewerImplTutor() {
@@ -32,6 +45,7 @@ public class ResourceViewerImplTutor extends ResourceViewerContainer implements 
 
     Button showWorkBtn, hideWorkBtn;
     String pid;
+    boolean hasShowWork;
     InmhItemData resource;
     public Widget getResourcePanel(final InmhItemData resource) {
         this.pid = resource.getFile();
@@ -67,13 +81,14 @@ public class ResourceViewerImplTutor extends ResourceViewerContainer implements 
         
         // call for the solution HTML
         PrescriptionServiceAsync s = (PrescriptionServiceAsync) Registry.get("prescriptionService");
-        s.getSolutionHtml(pid, new AsyncCallback() {
+        s.getSolutionHtml(UserInfo.getInstance().getUid(), pid, new AsyncCallback<RpcData>() {
             public void onFailure(Throwable caught) {
                 CatchupMathTools.showAlert(caught.getMessage());
             }
 
-            public void onSuccess(Object result) {
-                String html = (String) result;
+            public void onSuccess(RpcData result) {
+                String html = result.getDataAsString("solutionHtml");
+                boolean hasShowWork = result.getDataAsInt("hasShowWork") > 0;
                 
                 Html htmlO = new Html(html);
                 htmlO.setStyleName("tutor_solution_wrapper");
@@ -87,7 +102,14 @@ public class ResourceViewerImplTutor extends ResourceViewerContainer implements 
                 
 
                 try {
-                    ResourceViewerImplTutor.initializeTutor(pid,resource.getTitle());
+                    
+                    /** Show Work is not requird, then do not show the ShowWorkRequired
+                     * 
+                     */
+                    if(!UserInfo.getInstance().isShowWorkRequired())
+                        hasShowWork=true;
+                    
+                   ResourceViewerImplTutor.initializeTutor(pid,resource.getTitle(),hasShowWork);
                 } catch (Exception e) {
                     e.printStackTrace();
                     CatchupMathTools.showAlert(e.getMessage());
@@ -96,10 +118,21 @@ public class ResourceViewerImplTutor extends ResourceViewerContainer implements 
                 layout();
             }
         });
-                
-
     }
 
+    /** Notified whenever a showwork entry is made 
+     * 
+     * @param pid
+     */
+    protected void whiteBoardHasBeenUpdated(String pid) {
+        if(!this.hasShowWork && this.pid.equals(pid)) {
+            // this solution's whiteboard has been updated, so
+            // we must make sure the ForceShowWork button is removed
+            initializeTutor(pid,this.resource.getTitle(),true);
+            
+            hasShowWork = true;
+        }
+    }
     
     /** publish native method to allow for opening of Show Window 
      * from external JS using current instance
@@ -158,8 +191,8 @@ public class ResourceViewerImplTutor extends ResourceViewerContainer implements 
      * 
      * @param pid
      */
-    static private native void initializeTutor(String pid, String title) /*-{
-                                 $wnd.doLoad_Gwt(pid, title);
+    static private native void initializeTutor(String pid, String title, boolean hasShowWork) /*-{
+                                 $wnd.doLoad_Gwt(pid, title,hasShowWork);
                                  }-*/;
 
 }

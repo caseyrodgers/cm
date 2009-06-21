@@ -17,7 +17,15 @@ public interface PrescriptionServiceAsync {
     
 	  void getPrescriptionSessionJson(int runId,int sessionNumber,boolean updateActiveInfo, AsyncCallback callback);
 	  
-	  void getSolutionHtml(String pid, AsyncCallback callback);
+	  
+	  /** Return the solution HTML for the given pid, and lookup if
+	   *  this user has any show work.  (piggyback ?)
+	   *  
+	   * @param userId
+	   * @param pid
+	   * @param callback
+	   */
+	  void getSolutionHtml(int userId, String pid, AsyncCallback callback);
 
 	  /** Return the quiz segment
 	   * 

@@ -2,6 +2,8 @@ package hotmath.gwt.cm_tools.client.ui.viewer;
 
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.service.PrescriptionServiceAsync;
+import hotmath.gwt.shared.client.eventbus.CmEvent;
+import hotmath.gwt.shared.client.eventbus.EventBus;
 import hotmath.gwt.shared.client.util.RpcData;
 import hotmath.gwt.shared.client.util.UserInfo;
 
@@ -45,6 +47,8 @@ public class ShowWorkPanel extends Frame {
 		PrescriptionServiceAsync s = (PrescriptionServiceAsync) Registry.get("prescriptionService");
 		int uid = UserInfo.getInstance().getUid();
 		int runId = UserInfo.getInstance().getRunId();
+		
+		EventBus.getInstance().fireEvent(new CmEvent(EventBus.EVENT_TYPE_WHITEBOARDUPDATED, this.pid));
 		s.saveWhiteboardData(uid,runId,pid,"draw",json, new AsyncCallback() {
 			public void onFailure(Throwable caught) {
 				caught.printStackTrace();

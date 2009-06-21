@@ -1008,3 +1008,9 @@ img.resource-item-complete {
 }
 
  
+
+ .tutor_solution_wrapper {
+    position: absolute;
+    top: 0;
+    left: 0;
+ }    

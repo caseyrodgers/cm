@@ -104,9 +104,15 @@ function findQuestionByPid(pid) {
 // / For the tutor viewer
 // ///////////////////
 // called by GWT, which setups the context for the pid
-function doLoad_Gwt(pid, title) {
+function doLoad_Gwt(pid, title, hasShowWork) {
 	var mc = createNewSolutionMessageContext(pid);
 	gotoGUID(mc, title);
+	
+    if(hasShowWork) {
+    	// turn off/hide the ShowWorkFirst button
+    	document.getElementById("show-work-force").style.display = 'none';
+    }
+
 }
 
 var _bookMeta = {
@@ -264,9 +270,9 @@ HmEvents.eventTutorLastStep.subscribe( function(x) {
 /** Register a listener with Tutor to 
  *  be notified when first step is accessed
  */
-HmEvents.eventTutorFirstStep.subscribe( function(x) {
-	solutionIsBeingViewed_Gwt(x);
-});
+//HmEvents.eventTutorFirstStep.subscribe( function(x) {
+//	solutionIsBeingViewed_Gwt(x);
+//});
 
 /** Override the Ask a tutor function */
 TutorManager.askATutor = function() {

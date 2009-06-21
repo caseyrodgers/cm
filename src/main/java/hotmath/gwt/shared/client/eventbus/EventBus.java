@@ -60,4 +60,9 @@ public class EventBus {
      * 
      */
     static public final String EVENT_TYPE_REGISTER_STUDENT_WINDOW_CLOSED="REGISTERSTUDENTCLOSED";
+    
+    /** Whenever a whiteboard is updated
+     * 
+     */
+    static public final String EVENT_TYPE_WHITEBOARDUPDATED="WHITEBOARDUPDATED";
 }

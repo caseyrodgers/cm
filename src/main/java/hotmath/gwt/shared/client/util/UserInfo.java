@@ -92,8 +92,17 @@ public class UserInfo implements IsSerializable {
 	int correctPercent;
 	String backgroundStyle;
 	int correctAnswers;
+	boolean isShowWorkRequired=true;
 
 
+
+    public boolean isShowWorkRequired() {
+        return isShowWorkRequired;
+    }
+
+    public void setShowWorkRequired(boolean isShowWorkRequired) {
+        this.isShowWorkRequired = isShowWorkRequired;
+    }
 
     public String getBackgroundStyle() {
         return backgroundStyle;

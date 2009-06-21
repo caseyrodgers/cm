@@ -275,8 +275,13 @@ public class PrescriptionServiceImpl extends RemoteServiceServlet implements Pre
     /**
      * Return the raw HTML that makes up the solution
      * 
+     * Use the uid to lookup if this solution has any ShowWork applied
+     * 
+     * Return RpcData with the following members:
+     *   solutionHtml, hasShowWork
+     * 
      */
-    public String getSolutionHtml(String pid) {
+    public RpcData getSolutionHtml(int uid, String pid) throws CmRpcException{
         try {
             TutorProperties tutorProps = new TutorProperties();
             SolutionHTMLCreatorIimplVelocity creator = new SolutionHTMLCreatorIimplVelocity(tutorProps.getTemplate(),
@@ -301,12 +306,47 @@ public class PrescriptionServiceImpl extends RemoteServiceServlet implements Pre
 
             solutionHtml = VelocityTemplateFromStringManager.getInstance().processTemplate(tutorWrapper, map);
 
+            RpcData rpcData = new RpcData();
+            rpcData.putData("solutionHtml", solutionHtml);
+            rpcData.putData("hasShowWork", getHasShowWork(uid, pid)?1:0);
             // solutionHtml = "<b><img src='images/logo_1.gif'/>TEST 1</b>";
-            return solutionHtml;
+            return rpcData;
         } catch (Exception e) {
             e.printStackTrace();
-            return "ERROR: " + e.getMessage();
+            throw new CmRpcException(e);
         }
+    }
+    
+    
+    /** Return true if this solution has any Show Work activity
+     *  for this user.
+     *  
+     *  
+     * @param uid
+     * @param pid
+     * @return
+     * @throws Exception
+     */
+    private boolean getHasShowWork(int uid, String pid) throws Exception {
+        Connection conn = null;
+        PreparedStatement pstat = null;
+        try {
+            String sql = "select count(*) as cnt from HA_TEST_RUN_WHITEBOARD "
+                    + " where user_id = ? and pid = ?";
+
+            conn = HMConnectionPool.getConnection();
+            pstat = conn.prepareStatement(sql);
+
+            pstat.setInt(1, uid);
+            pstat.setString(2, pid);
+
+            ResultSet rs = pstat.executeQuery();
+            rs.first();
+            int cnt = rs.getInt("cnt");
+            return cnt > 0; 
+        } finally {
+            SqlUtilities.releaseResources(null, pstat, conn);
+        }        
     }
 
     public String getSolutionProblemStatementHtml(String pid) {

@@ -37,7 +37,7 @@ public interface PrescriptionService extends RemoteService {
 	 * @param pid
 	 * @return
 	 */
-	String getSolutionHtml(String pid);
+	RpcData getSolutionHtml(int userId, String pid) throws CmRpcException;
 	
 	
 	/** return just the problem statement as embeddable HTML

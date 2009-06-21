@@ -3,7 +3,7 @@
 // handled when loaded dynamically. The 
 // main problem is the ExternalInterface
 // from the flash component only works when
-// loadeding during page load.  It breaks
+// during page load.  It breaks
 // when loaded dynamically.
 
 // called by flash component, we funnel
