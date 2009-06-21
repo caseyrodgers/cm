@@ -73,7 +73,7 @@ public class RegisterStudent extends LayoutContainer {
 	private FieldSet fs;
 	
 	private int formHeight = 410;
-	private int formWidth  = 365;
+	private int formWidth  = 375;
 	
 	public RegisterStudent(final Grid<StudentModel> grid, StudentModel sm, CmAdminModel cm) {
 	    
@@ -114,9 +114,8 @@ public class RegisterStudent extends LayoutContainer {
 		fp.setIconStyle("icon-form");
 		fp.setButtonAlign(HorizontalAlignment.CENTER);
 		fp.setLayout(new FormLayout());
-		
-		FormLayout fm = (FormLayout)fp.getLayout();
-		
+		//fp.getLayout();
+
 		FieldSet fs = new FieldSet();
 		FormLayout fL = new FormLayout();
 		fL.setLabelWidth(fp.getLabelWidth());
@@ -182,21 +181,19 @@ public class RegisterStudent extends LayoutContainer {
 		passCombo = passPercentCombo(passStore);
 		fs.add(passCombo);
 		
-		//TODO: position the [ ] better 
         CheckBox isShowWorkRequired = new CheckBox();
         isShowWorkRequired.setBoxLabel("(recommended for best results)");
         isShowWorkRequired.setId(StudentModel.SHOW_WORK_KEY);
         if (! isNew) {
         	isShowWorkRequired.setValue(stuMdl.getShowWorkRequired());
         }
-        //fs.add(isShowWorkRequired);
+
         CheckBoxGroup showWorkGrp = new CheckBoxGroup(); 
         showWorkGrp.setFieldLabel("Require Show Work");
         showWorkGrp.setId(StudentModel.SHOW_WORK_KEY);
         showWorkGrp.add(isShowWorkRequired);
         fs.add(showWorkGrp);
         
-		//TODO: position the [ ] better 
         CheckBox isTutoringNotAvail = new CheckBox();
         isTutoringNotAvail.setBoxLabel("(if/when account has tutoring)");
         isTutoringNotAvail.setId(StudentModel.TUTORING_AVAIL_KEY);
@@ -204,7 +201,6 @@ public class RegisterStudent extends LayoutContainer {
         	// we save is_tutoring_available; form displays 'Disable tutoring'; hence, value is negated
         	isTutoringNotAvail.setValue(! stuMdl.getTutoringAvail());
         }
-        //fs.add(isTutoringAvail);
         CheckBoxGroup tutoringGrp = new CheckBoxGroup();  
         tutoringGrp.setFieldLabel("Disable Tutoring");
         tutoringGrp.setId(StudentModel.TUTORING_AVAIL_KEY);
