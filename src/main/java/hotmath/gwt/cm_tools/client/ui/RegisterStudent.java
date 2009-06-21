@@ -182,10 +182,14 @@ public class RegisterStudent extends LayoutContainer {
 		fs.add(passCombo);
 		
         CheckBox isShowWorkRequired = new CheckBox();
-        isShowWorkRequired.setBoxLabel("(recommended for best results)");
+        isShowWorkRequired.setBoxLabel("(recommended)");
         isShowWorkRequired.setId(StudentModel.SHOW_WORK_KEY);
         if (! isNew) {
         	isShowWorkRequired.setValue(stuMdl.getShowWorkRequired());
+        }
+        else {
+        	// require 'Show Work' by default
+        	isShowWorkRequired.setValue(true);
         }
 
         CheckBoxGroup showWorkGrp = new CheckBoxGroup(); 
@@ -195,14 +199,18 @@ public class RegisterStudent extends LayoutContainer {
         fs.add(showWorkGrp);
         
         CheckBox isTutoringNotAvail = new CheckBox();
-        isTutoringNotAvail.setBoxLabel("(if/when account has tutoring)");
+        isTutoringNotAvail.setBoxLabel("(if/when enabled)");
         isTutoringNotAvail.setId(StudentModel.TUTORING_AVAIL_KEY);
         if (! isNew) {
         	// we save is_tutoring_available; form displays 'Disable tutoring'; hence, value is negated
         	isTutoringNotAvail.setValue(! stuMdl.getTutoringAvail());
         }
+        else {
+        	// enable tutoring by default
+        	isTutoringNotAvail.setValue(false);
+        }
         CheckBoxGroup tutoringGrp = new CheckBoxGroup();  
-        tutoringGrp.setFieldLabel("Disable Tutoring");
+        tutoringGrp.setFieldLabel("Disallow Tutoring");
         tutoringGrp.setId(StudentModel.TUTORING_AVAIL_KEY);
         tutoringGrp.add(isTutoringNotAvail);
         fs.add(tutoringGrp);
