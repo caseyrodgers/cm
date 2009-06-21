@@ -20,7 +20,9 @@ public class StudentModel extends BaseModelData  {
 	public static final String EMAIL_KEY = "email";
 	public static final String ADMIN_UID_KEY = "admin_uid";
 	public static final String SHOW_WORK_KEY = "show-work";
+	public static final String SHOW_WORK_STATE_KEY = "show-work-state";
 	public static final String TUTORING_AVAIL_KEY = "tutoring-avail";
+	public static final String TUTORING_STATE_KEY = "tutoring-state";
 
 	public String getName() {
 		return get("name");
@@ -107,11 +109,19 @@ public class StudentModel extends BaseModelData  {
 	}
 
 	public void setTutoringState(String tutoringState) {
-		set("tutoring-state", tutoringState);
+		set(TUTORING_STATE_KEY, tutoringState);
 	}
 	
 	public String getTutoringState() {
-		return get("tutoring-state");
+		return get(TUTORING_STATE_KEY);
+	}
+
+	public void setShowWorkState(String swState) {
+		set(SHOW_WORK_STATE_KEY, swState);
+	}
+	
+	public String getShowWorkState() {
+		return get(SHOW_WORK_STATE_KEY);
 	}
 
 	public void setUid(Integer uid) {

@@ -61,7 +61,7 @@ public class StudentDetailsWindow extends CmWindow {
         samGrid.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
         samGrid.getSelectionModel().setFiresEvents(true);
         samGrid.setWidth(560);
-        samGrid.setHeight(190);
+        samGrid.setHeight(200);
         
         add(studentInfoPanel());
         
@@ -160,10 +160,13 @@ public class StudentDetailsWindow extends CmWindow {
         sb.append("<div class='student-detail-info'>");
         sb.append("<div class='form left'>");
         sb.append("  <div class='fld'><label>Pass %:</label><div>{pass-percent}&nbsp;</div></div>");
-        sb.append("  <div class='fld'><label>Tutoring:</label><div>{tutoring-state}&nbsp;</div></div>");
+        sb.append("  <div class='fld'><label>Tutoring:</label><div>{");
+        sb.append(StudentModel.TUTORING_STATE_KEY).append("}&nbsp;</div></div>");
         sb.append("</div>");
         sb.append("<div class='form right'>");
         sb.append("  <div class='fld'><label>Passcode:</label><div>{passcode}&nbsp;</div></div>");
+        sb.append("  <div class='fld'><label>Show Work:</label><div>{");
+        sb.append(StudentModel.SHOW_WORK_STATE_KEY).append("}&nbsp;</div></div>");
         sb.append("</div>");        
         sb.append("</div>");
 
