@@ -863,6 +863,8 @@ public class CmAdminDao {
             }
             String tutoringState = (sm.getTutoringAvail()) ? "ON": "OFF";
             sm.setTutoringState(tutoringState);
+            String showWorkState = (sm.getShowWorkRequired()) ? "REQUIRED" : "OPTIONAL";
+            sm.setShowWorkState(showWorkState);
             
     		l.add(sm);
     	}
