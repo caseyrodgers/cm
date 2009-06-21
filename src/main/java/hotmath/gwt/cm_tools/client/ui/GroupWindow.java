@@ -59,6 +59,7 @@ public class GroupWindow extends LayoutContainer {
 		
 		name = new TextField<String>();  
 		name.setFieldLabel("Group name");
+		name.setMaxLength(30);  // matches length in Register student form and DB
 		name.setAllowBlank(false);
 		name.setId(GroupModel.NAME_KEY);
 		name.setEmptyText("-- enter name --");
