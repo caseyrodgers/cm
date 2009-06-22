@@ -144,6 +144,8 @@ public class StudentShowWorkWindow extends CmWindow {
             centerContainer.setLayout(new FitLayout());
             centerContainer.add(lc);
             
+            layout();
+            
         } catch (Exception e) {
             Log.error("Error creating Show Work panel for student: " + pid + "," + student.getUid(), e);
         }

@@ -168,9 +168,9 @@
 }
 
 .student-grid-panel-grid-container {
-   width: 660px;
    margin-left: 100px;
-   height: 100%;
+   height: 370px;   
+   width: 750px;
 }   
 
 .student-grid-panel-toolbar {
@@ -255,4 +255,10 @@
 
 .faq .question {
 	color: red;
+}
+
+.student-details-window .students-count {
+   float: right;
+   margin-top: 8px;	
+   margin-right: 10px;
 }

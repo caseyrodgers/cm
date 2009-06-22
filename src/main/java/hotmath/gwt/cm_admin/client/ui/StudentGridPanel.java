@@ -33,6 +33,8 @@ import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
 import com.extjs.gxt.ui.client.widget.grid.Grid;
 import com.extjs.gxt.ui.client.widget.grid.GridSelectionModel;
+import com.extjs.gxt.ui.client.widget.layout.CenterLayout;
+import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.layout.TableData;
 import com.extjs.gxt.ui.client.widget.menu.Menu;
 import com.extjs.gxt.ui.client.widget.toolbar.FillToolItem;
@@ -59,17 +61,19 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
         final ListStore<StudentModel> store = new ListStore<StudentModel>();
 
         ColumnModel cm = defineColumns();
-
         _grid = defineGrid(store, cm);
         _grid.setStyleName("student-grid-panel-grid");
 
         _gridContainer = new FieldSet();
         _gridContainer.setStyleName("student-grid-panel-grid-container");
         _gridContainer.add(createToolbar());
-        _gridContainer.add(_grid);
+        
+        LayoutContainer lc = new LayoutContainer();
+        lc.setLayout(new FitLayout());
+        lc.add(_grid);
+        _gridContainer.add(lc);
 
         add(_gridContainer);
-
         final Menu contextMenu = new Menu();
         Button loginAsUser = new Button("Login as User");
         loginAsUser.addSelectionListener(new SelectionListener<ButtonEvent>() {
@@ -163,6 +167,9 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
     int MAX_HEIGHT = 400;
 
     public void resizeChildren() {
+        if(true)
+            return;
+        
         int HEADER_SIZE = 40;
         try {
 
@@ -194,7 +201,7 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
         toolbar.setHorizontalAlign(HorizontalAlignment.CENTER);
         toolbar.setStyleName("student-grid-panel-toolbar");
 
-        TableData tData = new TableData("125px", "35px");
+        TableData tData = new TableData("140px", "35px");
         tData.setMargin(20);
 
         Button ti = registerStudentToolItem(_grid, _cmAdminMdl);
@@ -220,6 +227,7 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
         final Grid<StudentModel> grid = new Grid<StudentModel>(store, cm);
         grid.setAutoExpandColumn("name");
         grid.setBorders(true);
+        grid.setStripeRows(true);
         grid.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
         grid.getSelectionModel().setFiresEvents(true);
         grid.getSelectionModel().addListener(Events.RowDoubleClick, new Listener<SelectionEvent<StudentModel>>() {
@@ -230,6 +238,9 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
                 }
             }
         });
+        
+        grid.setWidth("500px");
+        grid.setHeight("300px");
         return grid;
     }
 

@@ -18,13 +18,16 @@ import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.util.Util;
+import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
 import com.extjs.gxt.ui.client.widget.grid.Grid;
+import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 
 /*
@@ -43,16 +46,15 @@ public class StudentDetailsWindow extends CmWindow {
     private HTML html;
     private XTemplate template;
     private Grid<StudentActivityModel> samGrid; 
+    private Label _studentCount;
     public StudentDetailsWindow(final StudentModel studentModel) {
+        setStyleName("student-details-window");
         this.studentModel = studentModel;
-        setSize(580,320);
+        setSize(580,400);
         setModal(true);
         setResizable(false);
         setHeading("Student Details For: " + studentModel.getName());
-        //setStyleName("student-details-window");
 
-        defineStudentInfoTemplate();
-        
         ListStore<StudentActivityModel> store = new ListStore<StudentActivityModel>();
         ColumnModel cm = defineColumns();
         
@@ -60,8 +62,9 @@ public class StudentDetailsWindow extends CmWindow {
         //samGgrid.setStyleName("student-details-panel-grid");
         samGrid.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
         samGrid.getSelectionModel().setFiresEvents(true);
-        samGrid.setWidth(560);
-        samGrid.setHeight(200);
+        samGrid.setStripeRows(true);
+        samGrid.setWidth(565);
+        samGrid.setHeight(210);
         
         add(studentInfoPanel());
         
@@ -76,7 +79,15 @@ public class StudentDetailsWindow extends CmWindow {
         ToolBar tb = new ToolBar();
         tb.add(showWorkBtn);
         add(tb);
-        add(samGrid);
+        
+        LayoutContainer cp = new LayoutContainer();
+        cp.setLayout(new FitLayout());
+        cp.add(samGrid);
+        add(cp);
+        
+        _studentCount = new Label();
+        _studentCount.setStyleName("students-count");
+        add(_studentCount);
 
         Button btnClose = closeButton();
         setButtonAlign(HorizontalAlignment.RIGHT);  
@@ -155,6 +166,12 @@ public class StudentDetailsWindow extends CmWindow {
         return html;
     }    
     
+    
+    /** Define the template for the header (does not add to container)
+     * 
+     * Defines the global 'html' object, filled in via RPC call.
+     * 
+     */
     private void defineStudentInfoTemplate() {
         StringBuilder sb = new StringBuilder();
         sb.append("<div class='student-detail-info'>");
@@ -172,6 +189,8 @@ public class StudentDetailsWindow extends CmWindow {
 
         template = XTemplate.create(sb.toString());
         html = new HTML();
+        
+        html.setHeight("70px"); // to eliminate the jump when setting values in template
     }
     
     
@@ -183,6 +202,9 @@ public class StudentDetailsWindow extends CmWindow {
             store.add(list);
             template.overwrite(html.getElement(), Util.getJsObject(studentModel));
             html.setVisible(true);
+            
+            
+            _studentCount.setText("count: " + list.size());
         }
 
         public void onFailure(Throwable caught) {
