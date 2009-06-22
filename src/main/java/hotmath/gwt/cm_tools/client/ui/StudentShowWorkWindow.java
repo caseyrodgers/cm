@@ -106,7 +106,7 @@ public class StudentShowWorkWindow extends CmWindow {
 
     private Widget createCenterPanel() {
         centerContainer.setLayout(new CenterLayout());
-        String html = "<h1 style='color: blue;width: 200;'>No problem to show</h1>";
+        String html = "<h1 style='color: blue;width: 200;margin-'>No problem to show</h1>";
         centerContainer.add(new Html(html));
         return centerContainer;
     }
@@ -175,8 +175,11 @@ public class StudentShowWorkWindow extends CmWindow {
         }
         lv.setStore(store);
 
-        
 
+        LayoutContainer lc = new LayoutContainer();
+        lc.setLayout(new FitLayout());
+        add(lv);
+        
         westContainer.add(lv, new BorderLayoutData(LayoutRegion.CENTER));
         westContainer.layout();
     }

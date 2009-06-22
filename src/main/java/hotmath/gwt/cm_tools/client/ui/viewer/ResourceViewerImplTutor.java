@@ -109,6 +109,7 @@ public class ResourceViewerImplTutor extends ResourceViewerContainer implements 
                     if(!UserInfo.getInstance().isShowWorkRequired())
                         hasShowWork=true;
                     
+                   layout();
                    ResourceViewerImplTutor.initializeTutor(pid,resource.getTitle(),hasShowWork);
                 } catch (Exception e) {
                     e.printStackTrace();

@@ -24,6 +24,10 @@ public class ShowWorkPanel extends Frame {
 	
 	static ShowWorkPanel __lastInstance;
 	String pid;
+	
+	/** Display the Show Work Flash component in an IFRAME
+	 * 
+	 */
 	public ShowWorkPanel() {
 		super("show_work_panel.html");
 	    setWidth("550px");
