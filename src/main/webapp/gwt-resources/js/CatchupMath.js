@@ -110,7 +110,10 @@ function doLoad_Gwt(pid, title, hasShowWork) {
 	
     if(hasShowWork) {
     	// turn off/hide the ShowWorkFirst button
-    	document.getElementById("show-work-force").style.display = 'none';
+    	var swf = document.getElementById("show-work-force");
+    	if(swf) {
+     	    swf.style.display = 'none';
+    	}
     }
 
 }
