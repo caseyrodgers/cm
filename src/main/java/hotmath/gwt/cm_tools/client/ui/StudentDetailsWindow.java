@@ -1,10 +1,11 @@
-package hotmath.gwt.cm_admin.client.ui;
+package hotmath.gwt.cm_tools.client.ui;
 
 
-import hotmath.gwt.cm_admin.client.CatchupMathAdmin;
-import hotmath.gwt.cm_admin.client.model.StudentActivityModel;
-import hotmath.gwt.cm_admin.client.model.StudentModel;
-import hotmath.gwt.cm_admin.client.service.RegistrationServiceAsync;
+
+import hotmath.gwt.cm_tools.client.CatchupMathTools;
+import hotmath.gwt.cm_tools.client.model.StudentActivityModel;
+import hotmath.gwt.cm_tools.client.model.StudentModel;
+import hotmath.gwt.cm_tools.client.service.PrescriptionServiceAsync;
 import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
 
 import java.util.ArrayList;
@@ -47,6 +48,15 @@ public class StudentDetailsWindow extends CmWindow {
     private XTemplate template;
     private Grid<StudentActivityModel> samGrid; 
     private Label _studentCount;
+    
+    
+    /** Create StudentDetailsWindow for student.  Shows all student
+     * activity for given user order by last use.
+     * 
+     * StudentModel must be fully filled out to popuplate the infoPanel
+     * 
+     * @param studentModel
+     */
     public StudentDetailsWindow(final StudentModel studentModel) {
         setStyleName("student-details-window");
         this.studentModel = studentModel;
@@ -93,6 +103,8 @@ public class StudentDetailsWindow extends CmWindow {
         setButtonAlign(HorizontalAlignment.RIGHT);  
         addButton(btnClose);
         
+        template.overwrite(html.getElement(), Util.getJsObject(studentModel));
+
         getStudentActivityRPC(store, studentModel);
 
         setVisible(true);
@@ -105,7 +117,7 @@ public class StudentDetailsWindow extends CmWindow {
     private void showWorkForSelected() {
         StudentActivityModel sam = samGrid.getSelectionModel().getSelectedItem();
         if(sam == null) {
-            CatchupMathAdmin.showAlert("Select an entry in the table first");
+            CatchupMathTools.showAlert("Select an entry in the table first");
             return;
         }
         new StudentShowWorkWindow(studentModel, sam);        
@@ -195,21 +207,18 @@ public class StudentDetailsWindow extends CmWindow {
     
     
     protected void getStudentActivityRPC(final ListStore <StudentActivityModel> store, StudentModel sm) {
-        RegistrationServiceAsync s = (RegistrationServiceAsync) Registry.get("registrationService");
+        PrescriptionServiceAsync s = (PrescriptionServiceAsync) Registry.get("prescriptionService");
         s.getStudentActivity(sm, new AsyncCallback <List<StudentActivityModel>>() {
 
         public void onSuccess(List<StudentActivityModel> list) {
             store.add(list);
-            template.overwrite(html.getElement(), Util.getJsObject(studentModel));
-            html.setVisible(true);
-            
             
             _studentCount.setText("count: " + list.size());
         }
 
         public void onFailure(Throwable caught) {
             String msg = caught.getMessage();
-            CatchupMathAdmin.showAlert(msg);
+            CatchupMathTools.showAlert(msg);
         }
         });
     }    

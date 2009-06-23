@@ -1,13 +1,13 @@
 package hotmath.gwt.cm_admin.client.service;
 
-import hotmath.gwt.cm_admin.client.model.AccountInfoModel;
-import hotmath.gwt.cm_admin.client.model.ChapterModel;
-import hotmath.gwt.cm_admin.client.model.GroupModel;
-import hotmath.gwt.cm_admin.client.model.StudentActivityModel;
-import hotmath.gwt.cm_admin.client.model.StudentModel;
-import hotmath.gwt.cm_admin.client.model.StudentShowWorkModel;
-import hotmath.gwt.cm_admin.client.model.StudyProgramModel;
-import hotmath.gwt.cm_admin.client.model.SubjectModel;
+import hotmath.gwt.cm_tools.client.model.AccountInfoModel;
+import hotmath.gwt.cm_tools.client.model.ChapterModel;
+import hotmath.gwt.cm_tools.client.model.GroupModel;
+import hotmath.gwt.cm_tools.client.model.StudentActivityModel;
+import hotmath.gwt.cm_tools.client.model.StudentModel;
+import hotmath.gwt.cm_tools.client.model.StudentShowWorkModel;
+import hotmath.gwt.cm_tools.client.model.StudyProgramModel;
+import hotmath.gwt.cm_tools.client.model.SubjectModel;
 
 import java.util.List;
 
@@ -29,8 +29,6 @@ public interface RegistrationServiceAsync {
 	  
 	  void getChaptersForProgramSubject(String progId, String subjId, AsyncCallback<List<ChapterModel>> callback);
 	  
-	  void getStudentActivity(StudentModel sm, AsyncCallback<List<StudentActivityModel>> callback);
-	  
 	  void addUser(StudentModel sm, AsyncCallback<StudentModel> callback);
 	  
 	  void deactivateUser(StudentModel sm, AsyncCallback<StudentModel> callback);
@@ -41,6 +39,4 @@ public interface RegistrationServiceAsync {
 			  Boolean passcodeChanged, AsyncCallback<StudentModel> callback);
 
 	  void getAccountInfoForAdminUid(Integer uid, AsyncCallback<AccountInfoModel> callback);
-	  
-	  void getStudentShowWork(Integer uid,Integer runId,AsyncCallback<List<StudentShowWorkModel>> callback);	  
 }

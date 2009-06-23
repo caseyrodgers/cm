@@ -1,14 +1,14 @@
 package hotmath.gwt.cm_admin.client.ui;
 
 import hotmath.gwt.cm_admin.client.CatchupMathAdmin;
-import hotmath.gwt.cm_admin.client.model.ChapterModel;
-import hotmath.gwt.cm_admin.client.model.CmAdminDataReader;
-import hotmath.gwt.cm_admin.client.model.CmAdminModel;
-import hotmath.gwt.cm_admin.client.model.GroupModel;
-import hotmath.gwt.cm_admin.client.model.StudentModel;
-import hotmath.gwt.cm_admin.client.model.StudyProgramModel;
-import hotmath.gwt.cm_admin.client.model.SubjectModel;
 import hotmath.gwt.cm_admin.client.service.RegistrationServiceAsync;
+import hotmath.gwt.cm_tools.client.model.ChapterModel;
+import hotmath.gwt.cm_tools.client.model.CmAdminDataReader;
+import hotmath.gwt.cm_tools.client.model.CmAdminModel;
+import hotmath.gwt.cm_tools.client.model.GroupModel;
+import hotmath.gwt.cm_tools.client.model.StudentModel;
+import hotmath.gwt.cm_tools.client.model.StudyProgramModel;
+import hotmath.gwt.cm_tools.client.model.SubjectModel;
 import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
 import hotmath.gwt.shared.client.eventbus.EventBus;

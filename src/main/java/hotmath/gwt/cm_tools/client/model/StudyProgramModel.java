@@ -1,4 +1,4 @@
-package hotmath.gwt.cm_admin.client.model;
+package hotmath.gwt.cm_tools.client.model;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 

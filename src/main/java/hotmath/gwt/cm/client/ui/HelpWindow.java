@@ -1,9 +1,11 @@
 package hotmath.gwt.cm.client.ui;
 
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
+import hotmath.gwt.cm_tools.client.model.StudentModel;
 import hotmath.gwt.cm_tools.client.service.PrescriptionServiceAsync;
 import hotmath.gwt.cm_tools.client.ui.CmMainPanel;
 import hotmath.gwt.cm_tools.client.ui.ContextController;
+import hotmath.gwt.cm_tools.client.ui.StudentDetailsWindow;
 import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
 import hotmath.gwt.shared.client.util.UserInfo;
 
@@ -19,6 +21,7 @@ import com.extjs.gxt.ui.client.widget.VerticalPanel;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.ComboBox;
 import com.extjs.gxt.ui.client.widget.form.FieldSet;
+import com.extjs.gxt.ui.client.widget.layout.FlowLayout;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Label;
@@ -90,6 +93,7 @@ public class HelpWindow extends CmWindow {
         vp.add(fs);
 
         fs = new FieldSet();
+        fs.setLayout(new FlowLayout());
         fs.setStyleName("help-window-additional-options");
         fs.setHeading("Additional Options");
         
@@ -101,19 +105,18 @@ public class HelpWindow extends CmWindow {
         };
         
         
-        Button btn = new Button("Technical support");
+        Button btn = new Button("Technical Support");
         btn.addStyleName("button");
         btn.addSelectionListener(new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent ce) {
                 CatchupMathTools.showAlert("Please email support@hotmath.com for support.");
             }
         });
-        btn.setWidth(250);
         fs.add(btn);
         btn = new Button("Student History");
         btn.addSelectionListener(new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent ce) {
-                CatchupMathTools.showAlert("Coming soon!");     
+                showStudentHistory();
             }
         });
         btn.addStyleName("button");
@@ -121,6 +124,27 @@ public class HelpWindow extends CmWindow {
         vp.add(fs);
         
         add(vp);
+    }
+    
+    /** Show this student's hsitory.  First we must
+     *  get the student's StudentModel to make sure 
+     *  we have the current informtion, then call 
+     *  the StudentDetailWindow
+     */
+    private void showStudentHistory() {
+
+        PrescriptionServiceAsync s = (PrescriptionServiceAsync) Registry.get("prescriptionService");
+        s.getStudentModel(UserInfo.getInstance().getUid(), new AsyncCallback <StudentModel>() {
+
+        public void onSuccess(StudentModel student) {
+            new StudentDetailsWindow(student);
+        }
+
+        public void onFailure(Throwable caught) {
+            String msg = caught.getMessage();
+            CatchupMathTools.showAlert(msg);
+        }
+        });
     }
 
     public void onClick(ClickEvent event) {

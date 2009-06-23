@@ -1,15 +1,15 @@
 package hotmath.gwt.cm_admin.server.service;
 
-import hotmath.gwt.cm_admin.client.model.AccountInfoModel;
-import hotmath.gwt.cm_admin.client.model.ChapterModel;
-import hotmath.gwt.cm_admin.client.model.GroupModel;
-import hotmath.gwt.cm_admin.client.model.StudentActivityModel;
-import hotmath.gwt.cm_admin.client.model.StudentModel;
-import hotmath.gwt.cm_admin.client.model.StudentShowWorkModel;
-import hotmath.gwt.cm_admin.client.model.StudyProgramModel;
-import hotmath.gwt.cm_admin.client.model.SubjectModel;
 import hotmath.gwt.cm_admin.client.service.RegistrationService;
 import hotmath.gwt.cm_admin.server.model.CmAdminDao;
+import hotmath.gwt.cm_tools.client.model.AccountInfoModel;
+import hotmath.gwt.cm_tools.client.model.ChapterModel;
+import hotmath.gwt.cm_tools.client.model.GroupModel;
+import hotmath.gwt.cm_tools.client.model.StudentActivityModel;
+import hotmath.gwt.cm_tools.client.model.StudentModel;
+import hotmath.gwt.cm_tools.client.model.StudentShowWorkModel;
+import hotmath.gwt.cm_tools.client.model.StudyProgramModel;
+import hotmath.gwt.cm_tools.client.model.SubjectModel;
 
 import java.util.List;
 
@@ -46,11 +46,6 @@ public class RegistrationServiceImpl extends RemoteServiceServlet implements Reg
 	public List<ChapterModel> getChaptersForProgramSubject(String progId, String subjId) throws Exception{
 		CmAdminDao cma = new CmAdminDao();
 		return cma.getChaptersForProgramSubject(progId, subjId);
-	}
-
-	public List<StudentActivityModel> getStudentActivity(StudentModel sm) throws Exception {
-		CmAdminDao cma = new CmAdminDao();
-		return cma.getStudentActivity(sm.getUid());
 	}
 	
 	public List<GroupModel> getActiveGroups(Integer adminUid) {
@@ -89,9 +84,5 @@ public class RegistrationServiceImpl extends RemoteServiceServlet implements Reg
 		CmAdminDao cma = new CmAdminDao();
 		return cma.addGroup(adminUid, gm);
 	}
-	
-	public List<StudentShowWorkModel> getStudentShowWork(Integer uid, Integer runId) throws Exception {
-	       CmAdminDao cma = new CmAdminDao();
-	       return cma.getStudentShowWork(uid, runId);
-	}
+
 }

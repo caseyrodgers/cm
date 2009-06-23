@@ -9,7 +9,7 @@
             $solution_html
                      </div>
         <div id='steps_tail' style='position: relative'>
-            <a id='show-work-force' style='text-align: center;display: block;height: 20px;width: 200px;position: absolute;top: 1;left:10;' href='#' onclick='showWorkDialog_Gwt()'><img src='/gwt-resources/images/show-work-required.png'/></a>
+            <a id='show-work-force' href='#' onclick='showWorkDialog_Gwt()'><img src='/gwt-resources/images/show-work-required.png'/></a>
             <div id='steps_tail_padding'>
                 <a id='steps_prev' onmouseover='setStepsInfoHelp(getNextMoveTo(-1))'
                     onMouseOut="resetStepsInfo();" href="javascript:void(0)"

@@ -7,10 +7,14 @@ import hotmath.SolutionManager;
 import hotmath.assessment.AssessmentPrescription;
 import hotmath.assessment.AssessmentPrescriptionManager;
 import hotmath.assessment.AssessmentPrescriptionSession;
+import hotmath.gwt.cm_admin.server.model.CmAdminDao;
 import hotmath.gwt.cm_tools.client.data.InmhItemData;
 import hotmath.gwt.cm_tools.client.data.PrescriptionData;
 import hotmath.gwt.cm_tools.client.data.PrescriptionSessionData;
 import hotmath.gwt.cm_tools.client.data.PrescriptionSessionDataResource;
+import hotmath.gwt.cm_tools.client.model.StudentActivityModel;
+import hotmath.gwt.cm_tools.client.model.StudentModel;
+import hotmath.gwt.cm_tools.client.model.StudentShowWorkModel;
 import hotmath.gwt.cm_tools.client.service.PrescriptionService;
 import hotmath.gwt.cm_tools.client.ui.NextAction;
 import hotmath.gwt.cm_tools.client.ui.NextAction.NextActionName;
@@ -50,6 +54,7 @@ import java.util.Map;
 
 import sb.util.SbFile;
 
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
 public class PrescriptionServiceImpl extends RemoteServiceServlet implements PrescriptionService {
@@ -882,6 +887,38 @@ public class PrescriptionServiceImpl extends RemoteServiceServlet implements Pre
         }
     }
     
+    
+    public List<StudentShowWorkModel> getStudentShowWork(Integer uid, Integer runId) throws CmRpcException {
+        try {
+            CmAdminDao cma = new CmAdminDao();
+            return cma.getStudentShowWork(uid, runId);
+        }
+        catch(Exception e) {
+            throw new CmRpcException(e);
+        }
+    }
+    
+
+    public List<StudentActivityModel> getStudentActivity(StudentModel sm) throws CmRpcException {
+        try {
+            CmAdminDao cma = new CmAdminDao();
+            return cma.getStudentActivity(sm.getUid());
+        }
+        catch(Exception e) {
+            throw new CmRpcException(e);
+        }        
+    }
+    
+    public StudentModel getStudentModel(Integer uid) throws CmRpcException {
+        try {
+            CmAdminDao cma = new CmAdminDao();
+            return cma.getStudentModel(uid);
+        }
+        catch(Exception e) {
+            throw new CmRpcException(e);
+        }        
+    }
+
     
 }
 

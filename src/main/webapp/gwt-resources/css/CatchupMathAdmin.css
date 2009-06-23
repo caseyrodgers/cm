@@ -199,50 +199,6 @@
 }
 
 
-/** Student Detail Info */
-.student-detail-info {
-    height: 65px;
-    font-size: 12px;
-    position: relative;
-}
-
-.student-detail-info .form {
-    width: 250px;
-    /*border: 1px solid red;*/
-}
-
-.student-detail-info .fld {
-    width: 245px;
-    /*border: 1px solid blue;*/
-}
-
-.student-detail-info .fld label {
-    display: block;
-    float: left;
-    width: 90px;
-    text-align: right;
-    margin-right: 5px;
-    font-weight: bold;
-    /*border: 1px solid green;*/
-}
-
-.student-detail-info .fld div {
-    float: right;
-    width: 148px;
-    /*border: 1px solid yellow;*/
-}
-
-.student-detail-info  .left {
-    position: absolute;
-    top: 10px;
-    left: 20px;
-}
-
-.student-detail-info  .right {
-    position: absolute;
-    top: 10px;
-    left: 265px;
-}
 
 
 .admin-help {

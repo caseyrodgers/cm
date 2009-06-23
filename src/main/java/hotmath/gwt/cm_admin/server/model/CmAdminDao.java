@@ -1,13 +1,13 @@
 package hotmath.gwt.cm_admin.server.model;
 
-import hotmath.gwt.cm_admin.client.model.AccountInfoModel;
-import hotmath.gwt.cm_admin.client.model.ChapterModel;
-import hotmath.gwt.cm_admin.client.model.GroupModel;
-import hotmath.gwt.cm_admin.client.model.StudentActivityModel;
-import hotmath.gwt.cm_admin.client.model.StudentModel;
-import hotmath.gwt.cm_admin.client.model.StudentShowWorkModel;
-import hotmath.gwt.cm_admin.client.model.StudyProgramModel;
-import hotmath.gwt.cm_admin.client.model.SubjectModel;
+import hotmath.gwt.cm_tools.client.model.AccountInfoModel;
+import hotmath.gwt.cm_tools.client.model.ChapterModel;
+import hotmath.gwt.cm_tools.client.model.GroupModel;
+import hotmath.gwt.cm_tools.client.model.StudentActivityModel;
+import hotmath.gwt.cm_tools.client.model.StudentModel;
+import hotmath.gwt.cm_tools.client.model.StudentShowWorkModel;
+import hotmath.gwt.cm_tools.client.model.StudyProgramModel;
+import hotmath.gwt.cm_tools.client.model.SubjectModel;
 import hotmath.util.HMConnectionPool;
 import hotmath.util.sql.SqlUtilities;
 
@@ -36,34 +36,57 @@ public class CmAdminDao {
     public CmAdminDao() {
     }
 
-    private static final String GET_STUDENTS_SQL = 
-        "SELECT h.uid, h.user_name as name, h.user_passcode as passcode, h.user_email as email, h.admin_id as admin_uid, " +
-        "       h.is_show_work_required, h.is_tutoring_available,  h.active_segment, h.test_config_json, h.user_prog_id, " +
-        "       p.test_def_id, p.create_date, concat(p.pass_percent,'%') as pass_percent, t.total_segments, " +
-        "       concat(format((m.answered_correct*100)/(m.answered_correct+m.answered_incorrect+m.not_answered),0),'%') as last_quiz, " +
-        "       trim(concat(ifnull(d.subj_id,''), ' ', d.prog_id)) as program, d.prog_id, d.subj_id, " +
-        "       date_format(m.last_run_time,'%Y-%m-%d') as last_use_date, " +
-        "       tu.usage_count, ifnull(g.id, 0) as group_id, ifnull(g.name, 'none') as group_name " +
-        "FROM  HA_ADMIN a " +
-        "INNER JOIN HA_USER h " +
-        "   on a.aid = h.admin_id " +
-        "INNER JOIN CM_USER_PROGRAM p " +
-        "   on p.user_id = h.uid and p.id = h.user_prog_id " +
-        "LEFT JOIN (select user_id, max(create_time) as c_time, test_def_id from HA_TEST group by user_id) s" +
-        "   on s.user_id = h.uid and s.test_def_id = p.test_def_id " +
-        "LEFT JOIN HA_TEST t" +
-        "   on t.user_id = h.uid and t.create_time = s.c_time " +
-        "LEFT JOIN HA_TEST_DEF d " +
-        "   on d.test_def_id = h.test_def_id " +
-        "LEFT JOIN (select u.uid, count(*) as usage_count from HA_TEST_RUN_INMH_USE i, HA_TEST t, HA_TEST_RUN r, HA_USER u " +
-        "           where t.user_id = u.uid and r.test_id = t.test_id and i.run_id = r.run_id group by u.uid) tu " +
-        "   on tu.uid = h.uid " +
-        "LEFT JOIN (select uid, answered_correct, answered_incorrect, not_answered, last_run_time from v_HA_TEST_RUN_last) m " +
-        "   on m.uid = h.uid " +
-        "LEFT JOIN CM_GROUP g " +
-        "   on g.id = h.group_id " +
-        "WHERE a.aid = ? and h.is_active = ? " +
-        "ORDER by h.user_name asc";
+
+    enum StudentSqlType{SINGLE_STUDENT, ALL_STUDENTS_FOR_ADMIN};
+    /** Return the StudentSummary sql for either a single student or 
+     *  all students under a given AMDIN.
+     *  
+     *  @TODO: move this to a view to facilate easy reuse.
+     *  
+     * @param sqlType
+     * @return
+     */
+    private String getStudentSql(StudentSqlType sqlType) {
+        String studentSql = 
+            "SELECT h.uid, h.user_name as name, h.user_passcode as passcode, h.user_email as email, h.admin_id as admin_uid, " +
+            "       h.is_show_work_required, h.is_tutoring_available,  h.active_segment, h.test_config_json, h.user_prog_id, " +
+            "       p.test_def_id, p.create_date, concat(p.pass_percent,'%') as pass_percent, t.total_segments, " +
+            "       concat(format((m.answered_correct*100)/(m.answered_correct+m.answered_incorrect+m.not_answered),0),'%') as last_quiz, " +
+            "       trim(concat(ifnull(d.subj_id,''), ' ', d.prog_id)) as program, d.prog_id, d.subj_id, " +
+            "       date_format(m.last_run_time,'%Y-%m-%d') as last_use_date, " +
+            "       tu.usage_count, ifnull(g.id, 0) as group_id, ifnull(g.name, 'none') as group_name " +
+            "FROM  HA_ADMIN a " +
+            "INNER JOIN HA_USER h " +
+            "   on a.aid = h.admin_id " +
+            "INNER JOIN CM_USER_PROGRAM p " +
+            "   on p.user_id = h.uid and p.id = h.user_prog_id " +
+            "LEFT JOIN (select user_id, max(create_time) as c_time, test_def_id from HA_TEST group by user_id) s" +
+            "   on s.user_id = h.uid and s.test_def_id = p.test_def_id " +
+            "LEFT JOIN HA_TEST t" +
+            "   on t.user_id = h.uid and t.create_time = s.c_time " +
+            "LEFT JOIN HA_TEST_DEF d " +
+            "   on d.test_def_id = h.test_def_id " +
+            "LEFT JOIN (select u.uid, count(*) as usage_count from HA_TEST_RUN_INMH_USE i, HA_TEST t, HA_TEST_RUN r, HA_USER u " +
+            "           where t.user_id = u.uid and r.test_id = t.test_id and i.run_id = r.run_id group by u.uid) tu " +
+            "   on tu.uid = h.uid " +
+            "LEFT JOIN (select uid, answered_correct, answered_incorrect, not_answered, last_run_time from v_HA_TEST_RUN_last) m " +
+            "   on m.uid = h.uid " +
+            "LEFT JOIN CM_GROUP g " +
+            "   on g.id = h.group_id ";
+        
+            if(sqlType.equals(StudentSqlType.ALL_STUDENTS_FOR_ADMIN)) {
+                studentSql += " WHERE a.aid = ? ";
+            }
+            else {
+                // single student
+                studentSql += " WHERE h.uid = ? ";
+            }
+            
+            studentSql += " and h.is_active = ? " +
+                          "ORDER by h.user_name asc";
+            
+            return studentSql;
+    }
 
     public List <StudentModel> getSummariesForActiveStudents(Integer adminUid) {
     	return getStudentSummaries(adminUid, true);
@@ -82,7 +105,7 @@ public class CmAdminDao {
     	
     	try {
     		conn = HMConnectionPool.getConnection();
-    		ps = conn.prepareStatement(GET_STUDENTS_SQL);
+    		ps = conn.prepareStatement(getStudentSql(StudentSqlType.ALL_STUDENTS_FOR_ADMIN));
     		ps.setInt(1, adminUid);
     		ps.setInt(2, (isActive)?1:0);
     		rs = ps.executeQuery();
@@ -1086,5 +1109,39 @@ public class CmAdminDao {
         }
         
         return swModels;
+    }
+    
+    
+    /** Create a StudentModel for the named student with user_id.
+     * 
+     * @param uid The user_id of student 
+     * @return a new StudentModel
+     * 
+     * @throws Exception if student not found
+     */
+    public StudentModel getStudentModel(Integer uid) throws Exception {
+        Connection conn = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        
+        try {
+            conn = HMConnectionPool.getConnection();
+            ps = conn.prepareStatement(getStudentSql(StudentSqlType.SINGLE_STUDENT));
+            ps.setInt(1, uid);
+            ps.setInt(2, 1);
+            rs = ps.executeQuery();
+
+            List <StudentModel> l = null;
+            l = loadStudentSummaries(rs);
+            if(l.size() == 0)
+                throw new Exception("Student with uid of " + uid + " was not found");
+            if(l.size() > 1)
+                throw new Exception("Student with uid o f" + uid + " matches more than one row");
+            
+            return l.get(0);
+        }
+        finally {
+            SqlUtilities.releaseResources(rs, ps, conn);
+        }
     }
 }

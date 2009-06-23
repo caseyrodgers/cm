@@ -1,4 +1,4 @@
-package hotmath.gwt.cm_admin.client.model;
+package hotmath.gwt.cm_tools.client.model;
 
 import hotmath.gwt.shared.client.eventbus.CmEvent;
 import hotmath.gwt.shared.client.eventbus.CmEventListenerImplDefault;

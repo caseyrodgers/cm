@@ -1,10 +1,10 @@
 package hotmath.gwt.cm_admin.client.ui;
 
-import hotmath.gwt.cm_admin.client.model.AccountInfoModel;
-import hotmath.gwt.cm_admin.client.model.CmAdminDataReader;
-import hotmath.gwt.cm_admin.client.model.CmAdminDataRefresher;
-import hotmath.gwt.cm_admin.client.model.CmAdminModel;
 import hotmath.gwt.cm_admin.client.service.RegistrationServiceAsync;
+import hotmath.gwt.cm_tools.client.model.AccountInfoModel;
+import hotmath.gwt.cm_tools.client.model.CmAdminDataReader;
+import hotmath.gwt.cm_tools.client.model.CmAdminDataRefresher;
+import hotmath.gwt.cm_tools.client.model.CmAdminModel;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.Registry;

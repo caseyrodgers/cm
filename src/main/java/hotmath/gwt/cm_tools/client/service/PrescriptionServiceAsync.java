@@ -1,6 +1,11 @@
 package hotmath.gwt.cm_tools.client.service;
 
+import hotmath.gwt.cm_tools.client.model.StudentActivityModel;
+import hotmath.gwt.cm_tools.client.model.StudentModel;
+import hotmath.gwt.cm_tools.client.model.StudentShowWorkModel;
 import hotmath.gwt.shared.client.util.CmRpcException;
+
+import java.util.List;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
@@ -105,4 +110,18 @@ public interface PrescriptionServiceAsync {
 	  
 	  /** Sets the users custom background style */
 	  void setUserBackground(int userId, String backgroundStyle, AsyncCallback callback);
+	  
+	  
+	  /** Get information about this student's show work
+	   * 
+	   * @param uid The user id
+	   * @param runId the run id
+	   * @param callback
+	   */
+	  void getStudentShowWork(Integer uid,Integer runId,AsyncCallback<List<StudentShowWorkModel>> callback);
+	  
+	  
+      void getStudentActivity(StudentModel sm, AsyncCallback<List<StudentActivityModel>> callback);
+      
+      void getStudentModel(Integer uid, AsyncCallback<StudentModel> callBack);
 }

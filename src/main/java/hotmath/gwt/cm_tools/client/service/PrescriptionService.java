@@ -1,9 +1,13 @@
 package hotmath.gwt.cm_tools.client.service;
 
+import hotmath.gwt.cm_tools.client.model.StudentActivityModel;
+import hotmath.gwt.cm_tools.client.model.StudentModel;
+import hotmath.gwt.cm_tools.client.model.StudentShowWorkModel;
 import hotmath.gwt.shared.client.util.CmRpcException;
 import hotmath.gwt.shared.client.util.RpcData;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import com.google.gwt.user.client.rpc.RemoteService;
 
@@ -177,4 +181,26 @@ public interface PrescriptionService extends RemoteService {
 	 * @throws CmRpcException
 	 */
 	void setUserBackground(int userId, String backgroundStyle) throws CmRpcException;
+	
+	
+    /** Get this students ShowWork problems.  Restrict to named runId if non null
+     * 
+     * @param uid The student uid
+     * @param runId  The runId of interest, or null for all
+     * @return
+     * @throws Exception
+     */
+    List<StudentShowWorkModel> getStudentShowWork(Integer uid, Integer runId) throws CmRpcException;
+    
+
+    /** return the list of students and all the summary infomation showing their current status 
+     * 
+     * @param sm The student model
+     * @return
+     * @throws Exception
+     */
+    List<StudentActivityModel> getStudentActivity(StudentModel sm) throws CmRpcException;
+    
+    
+    StudentModel getStudentModel(Integer uid) throws CmRpcException;
 }

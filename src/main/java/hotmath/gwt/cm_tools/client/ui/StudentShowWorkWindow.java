@@ -1,11 +1,11 @@
-package hotmath.gwt.cm_admin.client.ui;
+package hotmath.gwt.cm_tools.client.ui;
 
-import hotmath.gwt.cm_admin.client.CatchupMathAdmin;
-import hotmath.gwt.cm_admin.client.model.StudentActivityModel;
-import hotmath.gwt.cm_admin.client.model.StudentModel;
-import hotmath.gwt.cm_admin.client.model.StudentShowWorkModel;
-import hotmath.gwt.cm_admin.client.service.RegistrationServiceAsync;
+import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.data.InmhItemData;
+import hotmath.gwt.cm_tools.client.model.StudentActivityModel;
+import hotmath.gwt.cm_tools.client.model.StudentModel;
+import hotmath.gwt.cm_tools.client.model.StudentShowWorkModel;
+import hotmath.gwt.cm_tools.client.service.PrescriptionServiceAsync;
 import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
 import hotmath.gwt.cm_tools.client.ui.viewer.ResourceViewer;
 import hotmath.gwt.cm_tools.client.ui.viewer.ResourceViewerFactory;
@@ -17,7 +17,6 @@ import java.util.List;
 import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.Registry;
 import com.extjs.gxt.ui.client.Style.LayoutRegion;
-import com.extjs.gxt.ui.client.Style.Scroll;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.ComponentEvent;
 import com.extjs.gxt.ui.client.event.Events;
@@ -187,7 +186,7 @@ public class StudentShowWorkWindow extends CmWindow {
     protected void getStudentShowWorkRPC() {
 
         Log.debug("StudentShowWorkWindow: reading student show work list");
-        RegistrationServiceAsync s = (RegistrationServiceAsync) Registry.get("registrationService");
+        PrescriptionServiceAsync s = (PrescriptionServiceAsync) Registry.get("prescriptionService");
         s.getStudentShowWork(student.getUid(), runId,new AsyncCallback<List<StudentShowWorkModel>>() {
 
             public void onSuccess(List<StudentShowWorkModel> list) {
@@ -198,7 +197,7 @@ public class StudentShowWorkWindow extends CmWindow {
 
             public void onFailure(Throwable caught) {
                 String msg = caught.getMessage();
-                CatchupMathAdmin.showAlert(msg);
+                CatchupMathTools.showAlert(msg);
             }
         });
     }
