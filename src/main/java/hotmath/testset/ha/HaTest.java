@@ -378,16 +378,17 @@ public class HaTest {
 	 * @param wrongGids
 	 * @param answeredCorrect
 	 * @param answeredIncorrect
+	 * @param totalSessions
 	 * @return
 	 * @throws HotMathException
 	 */
-	public HaTestRun createTestRun(String wrongGids[], int answeredCorrect, int answeredIncorrect, int notAnswered) throws HotMathException {
+	public HaTestRun createTestRun(String wrongGids[], int answeredCorrect, int answeredIncorrect, int notAnswered, int totalSessions) throws HotMathException {
 		Connection conn=null;
 		PreparedStatement pstat=null;
 		try {
 			
 			HaTest test = HaTest.loadTest(testId);
-			String sql = "insert into HA_TEST_RUN(test_id, run_time, answered_correct, answered_incorrect, not_answered, run_session)values(?,?,?,?,?,1)";
+			String sql = "insert into HA_TEST_RUN(test_id, run_time, answered_correct, answered_incorrect, not_answered, total_sessions, run_session)values(?,?,?,?,?,?,1)";
 			conn = HMConnectionPool.getConnection();
 			pstat = conn.prepareStatement(sql);
 			HaTestRun testRun = new HaTestRun();
@@ -398,6 +399,7 @@ public class HaTest {
 			pstat.setInt(3,answeredCorrect);
 			pstat.setInt(4,answeredIncorrect);
 			pstat.setInt(5,notAnswered);
+			pstat.setInt(6,totalSessions);
 			
 			int cnt = pstat.executeUpdate();
 			if(cnt != 1)
