@@ -725,13 +725,18 @@ public class PrescriptionServiceImpl extends RemoteServiceServlet implements Pre
             int notAnswered = 0;
             int answeredCorrect = 0;
             int answeredIncorrect = 0;
-            String sql = "select pid, is_correct from v_HA_TEST_CURRENT_STATUS where test_id = ?";
+            int totalSessions = 0;
+            
+            String sql = "select cs.pid, cs.is_correct t.total_segments from v_HA_TEST_CURRENT_STATUS cs, HA_TEST t where cs.test_id = ? and t.test_id = c.test_id";
             conn = HMConnectionPool.getConnection();
             pstat = conn.prepareStatement(sql);
 
             pstat.setInt(1, testId);
             ResultSet rs = pstat.executeQuery();
             while (rs.next()) {
+            	if (totalSessions < 1) {
+            		totalSessions = rs.getInt("total_segments");
+            	}
                 String pid = rs.getString("pid");
                 Integer corr = rs.getInt("is_correct");
                 if (rs.wasNull())
@@ -753,12 +758,13 @@ public class PrescriptionServiceImpl extends RemoteServiceServlet implements Pre
                 }
             }
 
-            HaTestRun run = test.createTestRun(incorrectPids.toArray(new String[incorrectPids.size()]), answeredCorrect, answeredIncorrect, notAnswered);
+            HaTestRun run = test.createTestRun(incorrectPids.toArray(new String[incorrectPids.size()]), answeredCorrect,
+            		answeredIncorrect, notAnswered, totalSessions);
 
             AssessmentPrescription pres = AssessmentPrescriptionManager.getInstance().getPrescription(run.getRunId());
             
             // Let the prescription instruct the next action depending on 
-            // type of test,status,etc.
+            // type of test, status, etc.
             NextAction nextAction = pres.getNextAction();
             RpcData rdata = new RpcData();            
             rdata.putData("correct_answers",answeredCorrect);
