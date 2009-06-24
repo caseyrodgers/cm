@@ -137,7 +137,7 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
         if (sm == null)
             return;
 
-        String url = "http://hotmath.com/cm_student/CatchupMath.html?debug=true&uid=" + sm.getUid();
+        String url = "http://hotmath.kattare.com/cm_student/CatchupMath.html?debug=true&uid=" + sm.getUid();
         Window.open(url, "_blank", "location=1,menubar=1,resizable=1");
     }
 
