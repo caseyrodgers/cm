@@ -870,8 +870,7 @@ public class CmAdminDao {
             sm.setLastQuiz(rs.getString("last_quiz"));
             sm.setChapter(getChapter(rs.getString("test_config_json")));
             sm.setLastLogin(rs.getString("last_use_date"));
-            int totalUsage = rs.getInt("usage_count");
-            sm.setTotalUsage(String.valueOf(totalUsage));
+            sm.setTotalUsage(rs.getInt("usage_count"));
             String passPercent = rs.getString("pass_percent");
             sm.setPassPercent(passPercent);
             int sectionNum = rs.getInt("active_segment");
