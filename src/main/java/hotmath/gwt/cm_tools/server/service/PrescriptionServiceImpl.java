@@ -1,5 +1,7 @@
 package hotmath.gwt.cm_tools.server.service;
 
+import hotmath.HotMathException;
+import hotmath.HotMathLogger;
 import hotmath.HotMathProperties;
 import hotmath.HotMathUtilities;
 import hotmath.ProblemID;
@@ -52,6 +54,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.log4j.Logger;
+
 import sb.util.SbFile;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -59,6 +63,7 @@ import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
 public class PrescriptionServiceImpl extends RemoteServiceServlet implements PrescriptionService {
 
+    Logger logger = Logger.getLogger(PrescriptionServiceImpl.class);
     public PrescriptionServiceImpl() {
         System.out.println("Created");
     }
@@ -286,12 +291,21 @@ public class PrescriptionServiceImpl extends RemoteServiceServlet implements Pre
      *   solutionHtml, hasShowWork
      * 
      */
+    static SolutionHTMLCreatorIimplVelocity __creator;
+    static TutorProperties __tutorProps = new TutorProperties();
+    static {
+        try {
+            __creator = new SolutionHTMLCreatorIimplVelocity(__tutorProps.getTemplate(), __tutorProps.getTutor());
+        }
+        catch(HotMathException hme) {
+            HotMathLogger.logMessage(hme, "Error creating solution creator: " + hme);
+        }
+    }
+     
     public RpcData getSolutionHtml(int uid, String pid) throws CmRpcException{
         try {
-            TutorProperties tutorProps = new TutorProperties();
-            SolutionHTMLCreatorIimplVelocity creator = new SolutionHTMLCreatorIimplVelocity(tutorProps.getTemplate(),
-                    tutorProps.getTutor());
-            String solutionHtml = creator.getSolutionHTML(tutorProps, pid).getMainHtml();
+            
+            String solutionHtml = __creator.getSolutionHTML(__tutorProps, pid).getMainHtml();
 
             ProblemID ppid = new ProblemID(pid);
             String path = ppid.getSolutionPath_DirOnly("solutions");
@@ -918,7 +932,45 @@ public class PrescriptionServiceImpl extends RemoteServiceServlet implements Pre
             throw new CmRpcException(e);
         }        
     }
-
+    
+    
+    /** Simple test to pound the getting of solution html to
+     *  see if it is responsible for the Too Many Files error.
+     *  
+     *  I suspect it was the cause, or at least the many instances 
+     *  of SolutionHTMLCreatorIimplVelocity was.
+     *  
+     * @param as
+     */
+    static public void main(String as[]) {
+        try {
+            PrescriptionServiceImpl pi = new PrescriptionServiceImpl();
+            
+            for(int i=0;i<50;i++) {
+                Connection conn = null;
+                PreparedStatement pstat = null;
+                try {
+                    String sql = "select problemindex from SOLUTIONS where booktitle = 'genericalg1'";
+    
+                    conn = HMConnectionPool.getConnection();
+                    pstat = conn.prepareStatement(sql);
+    
+                    ResultSet rs = pstat.executeQuery();
+                    while(rs.next()) {
+                        String pid = rs.getString("problemindex");
+                        
+                        pi.getSolutionHtml(700,pid);
+                    }
+                     
+                } finally {
+                    SqlUtilities.releaseResources(null, pstat, conn);
+                }
+            }
+        }
+        catch(Exception e) {
+            e.printStackTrace();
+        }
+    }
     
 }
 
