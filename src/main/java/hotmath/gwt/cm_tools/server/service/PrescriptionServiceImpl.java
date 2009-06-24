@@ -732,7 +732,7 @@ public class PrescriptionServiceImpl extends RemoteServiceServlet implements Pre
             int answeredIncorrect = 0;
             int totalSessions = 0;
             
-            String sql = "select cs.pid, cs.is_correct,t.total_segments from v_HA_TEST_CURRENT_STATUS cs, HA_TEST t where cs.test_id = ? and t.test_id = c.test_id";
+            String sql = "select cs.pid, cs.is_correct, t.total_segments from v_HA_TEST_CURRENT_STATUS cs, HA_TEST t where cs.test_id = ? and t.test_id = cs.test_id";
             conn = HMConnectionPool.getConnection();
             pstat = conn.prepareStatement(sql);
 

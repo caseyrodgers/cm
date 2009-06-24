@@ -398,4 +398,17 @@ public class AssessmentPrescription {
                 return super.equals(obj);
         }
     }
+    
+    
+    static public void main(String as[]) {
+        try {
+            // pound away and create assessments
+
+            
+            
+        }
+        catch(Exception e) {
+            e.printStackTrace();
+        }
+    }
 }
