@@ -538,7 +538,7 @@ public class RegisterStudent extends LayoutContainer {
 		        if (isNew) {	        	    
 		        	sm.setSectionNum(0);
 		        	sm.setStatus("Not started");
-		        	sm.setTotalUsage("0");
+		        	sm.setTotalUsage(0);
 	        	    addUserRPC(sm);
 	        	}
 	        	else {

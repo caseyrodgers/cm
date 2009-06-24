@@ -92,11 +92,11 @@ public class StudentModel extends BaseModelData  {
 		return get(STATUS_KEY);
 	}
 
-	public void setTotalUsage(String totalUsage) {
+	public void setTotalUsage(Integer totalUsage) {
 		set("total-usage", totalUsage);
 	}
 
-	public String getTotalUsage() {
+	public Integer getTotalUsage() {
 		return get("total-usage");
 	}
 
