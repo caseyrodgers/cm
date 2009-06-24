@@ -18,6 +18,7 @@ import hotmath.gwt.shared.client.util.UserInfo;
 
 import java.util.List;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.Registry;
 import com.extjs.gxt.ui.client.Style.LayoutRegion;
 import com.extjs.gxt.ui.client.data.BaseModelData;
@@ -434,6 +435,10 @@ class ResourceList extends ListView<ResourceModel> implements Listener {
     
     
     public void markResourceAsViewed(final InmhItemData resourceItem) {
+        
+        
+        if(UserInfo.getInstance().getRunId() == 0)
+            Log.error("PrescriptionCmGuiDefinition: run_id is null!");
         /**
          * 
          * mark this INMH resource item as being viewed

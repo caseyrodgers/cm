@@ -76,7 +76,7 @@ public class AssessmentPrescription {
      * 
      * Each one is a single session with a two tier report:
      * 
-     * -- Topic Name 1 -- Soluion 1 -- Solution 2 -- Solution 3 -- Topic Name 2
+     * -- Topic Name 1 -- Solution 1 -- Solution 2 -- Solution 3 -- Topic Name 2
      * -- Solution 4 -- Solution 5
      * 
      * 
@@ -396,19 +396,6 @@ public class AssessmentPrescription {
                 return this.pid.equals(((SessionData) obj).getPid());
             else
                 return super.equals(obj);
-        }
-    }
-    
-    
-    static public void main(String as[]) {
-        try {
-            // pound away and create assessments
-
-            
-            
-        }
-        catch(Exception e) {
-            e.printStackTrace();
         }
     }
 }
