@@ -41,7 +41,7 @@ public class CmAdminDao {
     /** Return the StudentSummary sql for either a single student or 
      *  all students under a given AMDIN.
      *  
-     *  @TODO: move this to a view to facilate easy reuse.
+     *  @TODO: move this to a view to allow easy reuse.
      *  
      * @param sqlType
      * @return

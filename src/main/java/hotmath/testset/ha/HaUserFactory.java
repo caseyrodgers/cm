@@ -1,7 +1,9 @@
 package hotmath.testset.ha;
 
 import hotmath.HotMathException;
+import hotmath.gwt.cm_admin.server.model.CmAdminDao;
 import hotmath.gwt.cm_tools.client.data.HaBasicUser;
+import hotmath.gwt.cm_tools.client.model.StudentModel;
 import hotmath.util.HMConnectionPool;
 import hotmath.util.sql.SqlUtilities;
 
@@ -111,6 +113,8 @@ public class HaUserFactory {
      */
     final public static int DEMO_UID = 547;
     static public HaBasicUser createDemoUser() throws Exception {
+
+
         Connection conn=null;
         PreparedStatement pstat=null;
         try {
@@ -125,29 +129,30 @@ public class HaUserFactory {
             if(!rs.first())
                 throw new HotMathException("Error reading demo template user");
             
+
+            int adminId = rs.getInt("admin_id");
             
             String demoUser="catchup_demo";
             String demoPwd="demo_" + System.currentTimeMillis();
-            
-            PreparedStatement pstmt=null;
-            try {
-                sql = "insert into HA_USER(admin_id, user_name,user_passcode,test_def_id,is_active)values(?,?,?,?,1)";
-                pstmt = conn.prepareStatement(sql);
-                pstmt.setInt(1,rs.getInt("admin_id"));
-                pstmt.setString(2,"Student");
-                pstmt.setString(3,demoPwd);
-                pstmt.setInt(4,HaTestDef.PREALG_PROFICENCY);
 
-                int cnt = pstmt.executeUpdate();
-                if(cnt != 1)
-                    throw new HotMathException("Could not add new demo record");
-                
-                HaBasicUser user = loginToCatchup(demoUser, demoPwd);
-                return user;
-            }
-            finally {
-                pstmt.close();
-            }
+            
+            CmAdminDao cmDao = new CmAdminDao();
+            
+            StudentModel student = new StudentModel();
+            student.setName("Student");
+            student.setPasscode(demoPwd);
+            student.setAdminUid(adminId);
+            student.setGroupId("1");
+            student.setProgId("Prof");
+            student.setSubjId("Pre-Alg");
+            student.setTutoringAvail(false);
+            student.setShowWorkRequired(false);
+            
+            cmDao.addStudent(student);            
+              
+               
+            HaBasicUser user = loginToCatchup(demoUser, demoPwd);
+            return user;
         }
         finally{
             SqlUtilities.releaseResources(null, pstat, conn);

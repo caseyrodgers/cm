@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONParser;
@@ -98,7 +99,6 @@ public class CmShared implements EntryPoint {
                 JSONValue jsonValue = JSONParser.parse(cmKey);
                 JSONObject o = jsonValue.isObject();
                 String keyVal = o.get("key").isString().stringValue();
-                System.out.println("keyVal: " + keyVal);
                 if(keyVal == null) {
                     throw new Exception("Invalid security key found");
                 }
@@ -120,7 +120,7 @@ public class CmShared implements EntryPoint {
                     userId = (int)o.get("uid").isNumber().doubleValue();
                 }
                 catch (Exception e) {
-                	System.out.println("Ignoring Exception: " + e.getLocalizedMessage());
+                	Log.warn("Ignoring Exception", e);
                 }
 
                 if (userId == 0) {
@@ -128,7 +128,7 @@ public class CmShared implements EntryPoint {
                     	userId = (int)o.get("aid").isNumber().doubleValue();
                 	}
                 	catch (Exception e) {
-                		System.out.println("Ignoring Exception: " + e.getLocalizedMessage());
+                		Log.warn("Ignoring Exception", e);
                 	}
                     if (userId != 0) {
                     	isAdmin = true;

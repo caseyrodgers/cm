@@ -14,6 +14,9 @@ import javax.servlet.http.HttpServletResponse;
 /**
  * Exposed as servlet that is called from Login Handler js in (core.js) of CM module
  * 
+ * NOTE: this creates the CatchupMath Demo user.  
+ * 
+ * @TODO: move this closer to HaUser abstraction  
  * 
  * 
  * @author casey
