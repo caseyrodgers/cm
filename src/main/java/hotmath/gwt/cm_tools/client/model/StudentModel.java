@@ -1,8 +1,9 @@
 package hotmath.gwt.cm_tools.client.model;
 
 import com.extjs.gxt.ui.client.data.BaseModelData;
+import com.google.gwt.user.client.rpc.IsSerializable;
 
-public class StudentModel extends BaseModelData  {
+public class StudentModel extends BaseModelData implements IsSerializable {
 
 	private static final long serialVersionUID = 2950521146425989628L;
 	
