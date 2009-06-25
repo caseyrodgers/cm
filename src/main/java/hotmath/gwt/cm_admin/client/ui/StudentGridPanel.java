@@ -157,22 +157,6 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
             return;
         
         CatchupMathAdmin.showAlert("UID: " + sm.getUid());
-        
-        
-        PrescriptionServiceAsync s = (PrescriptionServiceAsync) Registry.get("prescriptionService");
-        s.getStudentModel(1023, new AsyncCallback <StudentModel>() {
-
-        public void onSuccess(StudentModel student) {
-            CatchupMathTools.showAlert("Got Student: " + student);
-        }
-
-        public void onFailure(Throwable caught) {
-            String msg = caught.getMessage();
-            CatchupMathTools.showAlert(msg);
-        }
-        });
-        
-        
     }
     
     /**
