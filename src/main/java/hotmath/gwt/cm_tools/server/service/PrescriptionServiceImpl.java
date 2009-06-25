@@ -65,7 +65,7 @@ public class PrescriptionServiceImpl extends RemoteServiceServlet implements Pre
 
     Logger logger = Logger.getLogger(PrescriptionServiceImpl.class);
     public PrescriptionServiceImpl() {
-        System.out.println("Created");
+        System.out.println("PrescriptionServiceImpl Created");
     }
 
     /**

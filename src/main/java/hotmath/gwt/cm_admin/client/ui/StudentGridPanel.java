@@ -2,10 +2,12 @@ package hotmath.gwt.cm_admin.client.ui;
 
 import hotmath.gwt.cm_admin.client.CatchupMathAdmin;
 import hotmath.gwt.cm_admin.client.service.RegistrationServiceAsync;
+import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.model.CmAdminDataReader;
 import hotmath.gwt.cm_tools.client.model.CmAdminDataRefresher;
 import hotmath.gwt.cm_tools.client.model.CmAdminModel;
 import hotmath.gwt.cm_tools.client.model.StudentModel;
+import hotmath.gwt.cm_tools.client.service.PrescriptionServiceAsync;
 import hotmath.gwt.cm_tools.client.ui.StudentDetailsWindow;
 import hotmath.gwt.cm_tools.client.ui.StudentShowWorkWindow;
 import hotmath.gwt.shared.client.CmShared;
@@ -155,6 +157,22 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
             return;
         
         CatchupMathAdmin.showAlert("UID: " + sm.getUid());
+        
+        
+        PrescriptionServiceAsync s = (PrescriptionServiceAsync) Registry.get("prescriptionService");
+        s.getStudentModel(1023, new AsyncCallback <StudentModel>() {
+
+        public void onSuccess(StudentModel student) {
+            CatchupMathTools.showAlert("Got Student: " + student);
+        }
+
+        public void onFailure(Throwable caught) {
+            String msg = caught.getMessage();
+            CatchupMathTools.showAlert(msg);
+        }
+        });
+        
+        
     }
     
     /**
