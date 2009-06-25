@@ -132,20 +132,25 @@ public class HelpWindow extends CmWindow {
      *  the StudentDetailWindow
      */
     private void showStudentHistory() {
-        
-        
-        PrescriptionServiceAsync s = (PrescriptionServiceAsync) Registry.get("prescriptionService");
-        s.getStudentModel(1023, new AsyncCallback <StudentModel>() {
 
-        public void onSuccess(StudentModel student) {
-            CatchupMathTools.showAlert("Got Student: " + student);
-        }
-
-        public void onFailure(Throwable caught) {
-            String msg = caught.getMessage();
-            CatchupMathTools.showAlert(msg);
-        }
-        });
+        
+        StudentModel student = new StudentModel();
+        student.setUid(1023);
+        
+        new StudentDetailsWindow(student);
+        
+//        PrescriptionServiceAsync s = (PrescriptionServiceAsync) Registry.get("prescriptionService");
+//        s.getStudentModel(1023, new AsyncCallback <StudentModel>() {
+//
+//        public void onSuccess(StudentModel student) {
+//            CatchupMathTools.showAlert("Got Student: " + student);
+//        }
+//
+//        public void onFailure(Throwable caught) {
+//            String msg = caught.getMessage();
+//            CatchupMathTools.showAlert(msg);
+//        }
+//        });
         
 //
 //        PrescriptionServiceAsync s = (PrescriptionServiceAsync) Registry.get("prescriptionService");
