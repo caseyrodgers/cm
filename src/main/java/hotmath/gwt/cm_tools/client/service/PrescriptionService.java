@@ -1,8 +1,12 @@
 package hotmath.gwt.cm_tools.client.service;
 
+import hotmath.gwt.cm_tools.client.model.ChapterModel;
+import hotmath.gwt.cm_tools.client.model.GroupModel;
 import hotmath.gwt.cm_tools.client.model.StudentActivityModel;
 import hotmath.gwt.cm_tools.client.model.StudentModel;
 import hotmath.gwt.cm_tools.client.model.StudentShowWorkModel;
+import hotmath.gwt.cm_tools.client.model.StudyProgramModel;
+import hotmath.gwt.cm_tools.client.model.SubjectModel;
 import hotmath.gwt.shared.client.util.CmRpcException;
 import hotmath.gwt.shared.client.util.RpcData;
 
@@ -202,5 +206,78 @@ public interface PrescriptionService extends RemoteService {
     List<StudentActivityModel> getStudentActivity(StudentModel sm) throws CmRpcException;
     
     
-    StudentModel getStudentModel(Integer uid) throws CmRpcException;
+    /** Create StudentModel for user with matchin user_id
+     * 
+     * @param user_id
+     * @return
+     * @throws CmRpcException
+     */
+    StudentModel getStudentModel(Integer user_id) throws CmRpcException;
+
+    /** Read all defined program definitions
+     * 
+     * @return
+     */
+    List<StudyProgramModel> getProgramDefinitions() throws CmRpcException;
+    
+    
+    /** Return all defined subject definitions
+     * 
+     * @return
+     */
+    List<SubjectModel> getSubjectDefinitions() throws CmRpcException;
+    
+
+    /** Return list of all active groups defined for this admin
+     * 
+     * @param adminUid
+     * @return
+     */
+    List<GroupModel> getActiveGroups(Integer adminUid) throws CmRpcException;
+
+    
+    
+    /** Add user defined in StudentModel
+     * 
+     * @param sm
+     * @return
+     * @throws Exception
+     */
+    StudentModel addUser(StudentModel sm) throws CmRpcException;
+    
+
+    /** Update user information for student defined in model
+     * 
+     * @param sm
+     * @param stuChanged
+     * @param progChanged
+     * @param progIsNew
+     * @param passcodeChanged
+     * @return
+     * @throws Exception
+     */
+    StudentModel updateUser(StudentModel sm, Boolean stuChanged, Boolean progChanged, Boolean progIsNew,
+            Boolean passcodeChanged) throws Exception;
+    
+    
+    /** Return all chapters defined for this program and subject
+     * 
+     * @param progId
+     * @param subjId
+     * @return
+     * @throws CmRpcException
+     */
+    List<ChapterModel> getChaptersForProgramSubject(String progId, String subjId) throws CmRpcException;
+ 
+    
+    
+
+    /** Return the Group defined for this admin matching group model
+     * 
+     * @param adminUid
+     * @param gm
+     * @return
+     * @throws Exception
+     */
+    GroupModel addGroup(Integer adminUid, GroupModel gm) throws CmRpcException;
 }

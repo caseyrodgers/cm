@@ -59,6 +59,8 @@ public class CmShared implements EntryPoint {
      * login failed display and return user to the CM home page.
      * 
      * 
+     * @TODO: rewrite as asynchronous
+     *
      * 
      * @return
      * @throws CmUserException
@@ -152,7 +154,8 @@ public class CmShared implements EntryPoint {
 
     
     
-    /** Convert string+list to string+string
+    /** Convert string+list to string+string of
+     *  all URL parameters
      * 
      */
     static private Map<String,String> readQueryString() {

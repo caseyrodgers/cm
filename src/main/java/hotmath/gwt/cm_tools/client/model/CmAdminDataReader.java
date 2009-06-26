@@ -50,11 +50,14 @@ public class CmAdminDataReader extends Timer {
         
         EventBus.getInstance().addEventListener(new CmEventListenerImplDefault() {
             public void handleEvent(CmEvent event) {
-                if(event.getEventName().equals(EventBus.EVENT_TYPE_REGISTER_STUDENT_WINDOW_OPEN)) {
+                if(event.getEventName().equals(EventBus.EVENT_TYPE_MODAL_WINDOW_OPEN)) {
                     skipRefresh=true;
                 }
-                else if(event.getEventName().equals(EventBus.EVENT_TYPE_REGISTER_STUDENT_WINDOW_CLOSED)) {
+                else if(event.getEventName().equals(EventBus.EVENT_TYPE_MODAL_WINDOW_CLOSED)) {
                     skipRefresh=false;
+                }
+                else if(event.getEventName().equals(EventBus.EVENT_TYPE_USERCHANGED)) {
+                    fireRefreshData();
                 }
             }
         });

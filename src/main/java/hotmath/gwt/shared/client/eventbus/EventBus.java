@@ -43,26 +43,33 @@ public class EventBus {
     /** Whenever a user is set or changed
      * 
      */
-    static public final String EVENT_TYPE_USERCHANGED="USERCHANGED";
+    static public final String EVENT_TYPE_USERCHANGED="USER_CHANGED";
     
     /** Whenever the main context is changed
      * 
      */
-    static public final String EVENT_TYPE_CONTEXTCHANGED="CONTEXTCHANGED";
+    static public final String EVENT_TYPE_CONTEXTCHANGED="CONTEXT_CHANGED";
     
     
-    /** When the RegisterStudent window is opened
+    /** When a Modal window is opened
      * 
      */
-    static public final String EVENT_TYPE_REGISTER_STUDENT_WINDOW_OPEN="REGISTERSTUDENTOPEN";
+    static public final String EVENT_TYPE_MODAL_WINDOW_OPEN="MODAL_WINDOW_OPEN";
     
-    /** When the RegisterStudent window is closed
+    /** When a Modal window is closed
      * 
      */
-    static public final String EVENT_TYPE_REGISTER_STUDENT_WINDOW_CLOSED="REGISTERSTUDENTCLOSED";
+    static public final String EVENT_TYPE_MODAL_WINDOW_CLOSED="MODAL_WINDOW_CLOSED";
     
-    /** Whenever a whiteboard is updated
+    
+    /** Whenever a whiteboard is edited.
      * 
      */
-    static public final String EVENT_TYPE_WHITEBOARDUPDATED="WHITEBOARDUPDATED";
+    static public final String EVENT_TYPE_WHITEBOARDUPDATED="WHITEBOAR_DUPDATED";
+    
+    
+    /** After a user's meta data has been updated
+     * 
+     */
+    static public final String EVENT_TYPE_USER_UPDATED="USER_UPDATEd";
 }

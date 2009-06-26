@@ -233,7 +233,7 @@ public class CmAdminDao {
         " and g.is_active = ? " +
         "order by name asc";
 
-    public List <GroupModel> getActiveGroups(Integer adminUid) {
+    public List <GroupModel> getActiveGroups(Integer adminUid) throws Exception {
     	List <GroupModel> l = null;
     	
     	Connection conn = null;
@@ -249,10 +249,6 @@ public class CmAdminDao {
     		rs = ps.executeQuery();
     		
     		l = loadGroups(rs);
-    	}
-    	catch (Exception e) {
-    		//logger.error(String.format("*** Error getting groups for admin uid: %d", adminUid), e);
-    		//throw e;
     	}
     	finally {
     		SqlUtilities.releaseResources(rs, ps, conn);

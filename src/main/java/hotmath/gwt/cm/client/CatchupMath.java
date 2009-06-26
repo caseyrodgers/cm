@@ -10,6 +10,9 @@ import hotmath.gwt.cm_tools.client.ui.FooterPanel;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.data.CmAsyncRequest;
 import hotmath.gwt.shared.client.data.CmAsyncRequestImplDefault;
+import hotmath.gwt.shared.client.eventbus.CmEvent;
+import hotmath.gwt.shared.client.eventbus.CmEventListener;
+import hotmath.gwt.shared.client.eventbus.EventBus;
 import hotmath.gwt.shared.client.util.UserInfo;
 
 import com.allen_sauer.gwt.log.client.Log;
@@ -74,7 +77,7 @@ public class CatchupMath implements EntryPoint {
         Log.info("Catchup Math Startup: " + version);
         
         __thisInstance = this;
-        
+
         GXT.setDefaultTheme(Theme.GRAY, true);
 
         __hasBeenInformedAboutShowWork=false;
@@ -140,6 +143,10 @@ public class CatchupMath implements EntryPoint {
                 UserInfo.loadUser(userId,new CmAsyncRequest() {
                     public void requestComplete(String requestData) {
                         
+                        if(UserInfo.getInstance().isSingleUser())
+                            Window.setTitle("Catchup Math: Single User");
+
+                        
                         if(UserInfo.getInstance().getRunId() > 0) {
                             // load the existing run
                             showPrescriptionPanel_gwt();
@@ -164,7 +171,22 @@ public class CatchupMath implements EntryPoint {
             }
         });
         RootPanel.get().add(_mainPort);
-
+        
+        
+        /** Register an event lister waiting to see if user's data change.
+         *  If it does, we must reset this user
+         * 
+         */
+        EventBus.getInstance().addEventListener(new CmEventListener() {
+            public void handleEvent(CmEvent event) {
+                FooterPanel.resetProgram_Gwt();
+            }
+            public String getEventOfInterest() {
+                return EventBus.EVENT_TYPE_USER_UPDATED;
+            }
+        });
+        
+        
         History.fireCurrentHistoryState();
     }
     

@@ -73,17 +73,11 @@ public class FooterPanel extends LayoutContainer {
     /** Reset the current user's path through CM
      * 
      */
-    static private void resetProgram_Gwt() {
+    static public void resetProgram_Gwt() {
         PrescriptionServiceAsync s = (PrescriptionServiceAsync) Registry.get("prescriptionService");
         s.resetUser(UserInfo.getInstance().getUid(),new AsyncCallback() {
             public void onSuccess(Object result) {
-             MessageBox.confirm("User Reset", "Are you sure you want to reset this user's program?",new Listener<MessageBoxEvent>() {
-                  @Override
-                public void handleEvent(MessageBoxEvent be) {
-                    if(be.getButtonClicked().getText().equalsIgnoreCase("Yes"))
-                       Window.Location.reload();
-                }
-             });
+                Window.Location.reload();
             }
             public void onFailure(Throwable caught) {
                 CatchupMathTools.showAlert(caught.getMessage());

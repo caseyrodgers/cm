@@ -1,10 +1,12 @@
 package hotmath.gwt.cm.client.ui;
 
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
+import hotmath.gwt.cm_tools.client.model.CmAdminModel;
 import hotmath.gwt.cm_tools.client.model.StudentModel;
 import hotmath.gwt.cm_tools.client.service.PrescriptionServiceAsync;
 import hotmath.gwt.cm_tools.client.ui.CmMainPanel;
 import hotmath.gwt.cm_tools.client.ui.ContextController;
+import hotmath.gwt.cm_tools.client.ui.RegisterStudent;
 import hotmath.gwt.cm_tools.client.ui.StudentDetailsWindow;
 import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
 import hotmath.gwt.shared.client.util.UserInfo;
@@ -91,12 +93,27 @@ public class HelpWindow extends CmWindow {
         fs.add(bgCombo);
         
         vp.add(fs);
+        
+
+        if(UserInfo.getInstance().isSingleUser()) {
+            fs = new FieldSet();
+            fs.setHeading("Configuration");
+            Button btn = new Button("Setup Catchup Math");
+            btn.setToolTip("Setup the Catchup Math program to use");
+            btn.addSelectionListener(new SelectionListener<ButtonEvent>() {
+                public void componentSelected(ButtonEvent ce) {
+                    showStudentConfiguration();
+                }
+            });
+            btn.addStyleName("button");
+            fs.add(btn);
+            vp.add(fs);
+        }        
 
         fs = new FieldSet();
         fs.setLayout(new FlowLayout());
         fs.setStyleName("help-window-additional-options");
         fs.setHeading("Additional Options");
-        
         
         SelectionListener<ButtonEvent> selList = new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent ce) {
@@ -122,14 +139,40 @@ public class HelpWindow extends CmWindow {
         btn.addStyleName("button");
         fs.add(btn);
         vp.add(fs);
-        
+
         add(vp);
     }
     
-    /** Show this student's hsitory.  First we must
+    
+    /** Provide method for single user to configure programs and settings
+     *  
+     */
+    private void showStudentConfiguration() {
+        PrescriptionServiceAsync s = (PrescriptionServiceAsync) Registry.get("prescriptionService");
+        s.getStudentModel(UserInfo.getInstance().getUid(), new AsyncCallback <StudentModel>() {
+
+        public void onSuccess(StudentModel student) {
+            
+            CmAdminModel adminModel = new CmAdminModel();
+            adminModel.setId(student.getAdminUid());
+            new RegisterStudent(student, adminModel);
+        }
+
+        public void onFailure(Throwable caught) {
+            String msg = caught.getMessage();
+            CatchupMathTools.showAlert(msg);
+        }
+        });
+    }
+    
+    /** Show this student's history.  First we must
      *  get the student's StudentModel to make sure 
-     *  we have the current informtion, then call 
-     *  the StudentDetailWindow
+     *  we have the current information, then call 
+     *  the StudentDetailWindow.
+     *  
+     *  The StudentModel is read before showing details
+     *  to make sure all summary information is current
+     *  and not what it was on login.
      */
     private void showStudentHistory() {
 

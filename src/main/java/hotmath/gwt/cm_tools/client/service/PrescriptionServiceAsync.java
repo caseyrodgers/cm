@@ -1,8 +1,12 @@
 package hotmath.gwt.cm_tools.client.service;
 
+import hotmath.gwt.cm_tools.client.model.ChapterModel;
+import hotmath.gwt.cm_tools.client.model.GroupModel;
 import hotmath.gwt.cm_tools.client.model.StudentActivityModel;
 import hotmath.gwt.cm_tools.client.model.StudentModel;
 import hotmath.gwt.cm_tools.client.model.StudentShowWorkModel;
+import hotmath.gwt.cm_tools.client.model.StudyProgramModel;
+import hotmath.gwt.cm_tools.client.model.SubjectModel;
 import hotmath.gwt.shared.client.util.CmRpcException;
 
 import java.util.List;
@@ -92,7 +96,7 @@ public interface PrescriptionServiceAsync {
 	   */
 	  void createTestRun(int testId, AsyncCallback callBack);
 	  
-	  /** Reset this user's program 
+	  /** Reset this user's program and their current state information. 
 	   * 
 	   * @param userId
 	   * @param callback
@@ -120,8 +124,80 @@ public interface PrescriptionServiceAsync {
 	   */
 	  void getStudentShowWork(Integer uid,Integer runId,AsyncCallback<List<StudentShowWorkModel>> callback);
 	  
-	  
+
+	  /** Get the student activity for this student
+	   * 
+	   * @param sm
+	   * @param callback
+	   */
       void getStudentActivity(StudentModel sm, AsyncCallback<List<StudentActivityModel>> callback);
-      
+
+      /** Lookup and create a StudentMode for this user_id
+       * 
+       * @param uid
+       * @param callBack
+       */
       void getStudentModel(Integer uid, AsyncCallback<StudentModel> callBack);
+
+      /** Get list of all current Program Definitions
+       * 
+       * @param callback
+       */
+      void getProgramDefinitions(AsyncCallback<List<StudyProgramModel>> callback);
+      
+
+      /** Return all subject definitions
+       * 
+       * @param callback
+       */
+      void getSubjectDefinitions(AsyncCallback<List<SubjectModel>> callback);
+
+      
+      /** Return all active groupds defined for user
+       * 
+       * @param adminUid
+       * @param callback
+       */
+      void getActiveGroups(Integer adminUid, AsyncCallback<List<GroupModel>> callback);
+      
+
+      /** Add user defined in StudentMode
+       * 
+       * @param sm
+       * @param callback
+       */
+      void addUser(StudentModel sm, AsyncCallback<StudentModel> callback);
+      
+
+      /** Update user named in model
+       * 
+       * @param sm
+       * @param stuChanged
+       * @param progChanged
+       * @param progIsNew
+       * @param passcodeChanged
+       * @param callback
+       */
+      void updateUser(StudentModel sm, Boolean stuChanged, Boolean progChanged, Boolean progIsNew,
+              Boolean passcodeChanged, AsyncCallback<StudentModel> callback);
+
+
+      /** Get all changes defined for program with subject
+       * 
+       * @param progId
+       * @param subjId
+       * @param callback
+       */
+      void getChaptersForProgramSubject(String progId, String subjId, AsyncCallback<List<ChapterModel>> callback);
+
+
+      /** Add named group to list groups available for this admin 
+       * 
+       * @param adminUid
+       * @param gm
+       * @param callback
+       */
+      void addGroup(Integer adminUid, GroupModel gm, AsyncCallback<GroupModel> callback);
+
 }
+

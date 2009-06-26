@@ -1,6 +1,7 @@
 package hotmath.gwt.shared.client.util;
 
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
+import hotmath.gwt.cm_tools.client.data.HaBasicUser.UserType;
 import hotmath.gwt.cm_tools.client.service.PrescriptionServiceAsync;
 import hotmath.gwt.shared.client.data.CmAsyncRequest;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
@@ -93,10 +94,36 @@ public class UserInfo implements IsSerializable {
 	int correctPercent;
 	String backgroundStyle;
 	int correctAnswers;
-	boolean isShowWorkRequired=true;
+	boolean isShowWorkRequired;
+	UserType userType = UserType.SINGLE_USER;
+	
+
+	/** Define the type of user, either a student
+	 *  at a single school, or a single user purchase.
+	 */
+	static enum UserType {SCHOOL_USER, SINGLE_USER};
 
 
+	/** Set the type of user, either single or student
+	 * 
+	 * @return
+	 */
+    public UserType getUserType() {
+        return userType;
+    }
 
+    public void setUserType(UserType userType) {
+        this.userType = userType;
+    }
+
+    /** Helper method to return true if this is
+     *  user is currently setup as single user.
+     *  
+     * @return True if is single user
+     */
+    public boolean isSingleUser() {
+        return userType != null && userType.equals(UserType.SINGLE_USER)?true:false;
+    }
     public boolean isShowWorkRequired() {
         return isShowWorkRequired;
     }

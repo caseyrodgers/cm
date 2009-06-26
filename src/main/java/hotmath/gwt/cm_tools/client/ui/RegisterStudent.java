@@ -1,7 +1,6 @@
-package hotmath.gwt.cm_admin.client.ui;
+package hotmath.gwt.cm_tools.client.ui;
 
-import hotmath.gwt.cm_admin.client.CatchupMathAdmin;
-import hotmath.gwt.cm_admin.client.service.RegistrationServiceAsync;
+import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.model.ChapterModel;
 import hotmath.gwt.cm_tools.client.model.CmAdminDataReader;
 import hotmath.gwt.cm_tools.client.model.CmAdminModel;
@@ -9,6 +8,7 @@ import hotmath.gwt.cm_tools.client.model.GroupModel;
 import hotmath.gwt.cm_tools.client.model.StudentModel;
 import hotmath.gwt.cm_tools.client.model.StudyProgramModel;
 import hotmath.gwt.cm_tools.client.model.SubjectModel;
+import hotmath.gwt.cm_tools.client.service.PrescriptionServiceAsync;
 import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
 import hotmath.gwt.shared.client.eventbus.EventBus;
@@ -37,7 +37,6 @@ import com.extjs.gxt.ui.client.widget.form.FieldSet;
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
 import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.extjs.gxt.ui.client.widget.form.ComboBox.TriggerAction;
-import com.extjs.gxt.ui.client.widget.grid.Grid;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.layout.FormLayout;
 import com.google.gwt.user.client.Timer;
@@ -46,7 +45,6 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 public class RegisterStudent extends LayoutContainer {
 	
 	private CmWindow fw;
-	final Grid<StudentModel> eg;
 	private boolean isNew;
 	private StudentModel stuMdl;
 	private CmAdminModel cmAdminMdl;
@@ -75,9 +73,9 @@ public class RegisterStudent extends LayoutContainer {
 	private int formHeight = 410;
 	private int formWidth  = 375;
 	
-	public RegisterStudent(final Grid<StudentModel> grid, StudentModel sm, CmAdminModel cm) {
+	public RegisterStudent(StudentModel sm, CmAdminModel cm) {
 	    
-	    EventBus.getInstance().fireEvent(new CmEvent(EventBus.EVENT_TYPE_REGISTER_STUDENT_WINDOW_OPEN));
+	    EventBus.getInstance().fireEvent(new CmEvent(EventBus.EVENT_TYPE_MODAL_WINDOW_OPEN));
 	    
 		inProcessCount = 0;
 		isNew = (sm == null);
@@ -86,11 +84,10 @@ public class RegisterStudent extends LayoutContainer {
 			subjectId = stuMdl.getSubjId();
 		}
 		cmAdminMdl = cm;
-		eg = grid;
 		fw = new CmWindow();
 		fw.addListener(Events.Hide, new Listener<BaseEvent>() {
 		    public void handleEvent(BaseEvent be) {
-		        EventBus.getInstance().fireEvent(new CmEvent(EventBus.EVENT_TYPE_REGISTER_STUDENT_WINDOW_CLOSED));
+		        EventBus.getInstance().fireEvent(new CmEvent(EventBus.EVENT_TYPE_MODAL_WINDOW_CLOSED));
 		    }
 		});
 		fw.add(createForm());
@@ -99,7 +96,6 @@ public class RegisterStudent extends LayoutContainer {
  			name.focus();
  		}
 		setComboBoxSelections();
-		
 	}
 	
 	private FormPanel createForm() {
@@ -599,7 +595,7 @@ public class RegisterStudent extends LayoutContainer {
 	private void getStudyProgramListRPC(final ListStore <StudyProgram> progStore) {
 
 		inProcessCount++;
-		RegistrationServiceAsync s = (RegistrationServiceAsync) Registry.get("registrationService");
+		PrescriptionServiceAsync s = (PrescriptionServiceAsync) Registry.get("prescriptionService");
 		s.getProgramDefinitions(new AsyncCallback<List<StudyProgramModel>>() {
 
 			public void onSuccess(List<StudyProgramModel> spmList) {
@@ -615,7 +611,7 @@ public class RegisterStudent extends LayoutContainer {
 
 			public void onFailure(Throwable caught) {
         		String msg = caught.getMessage();
-        		CatchupMathAdmin.showAlert(msg);
+        		CatchupMathTools.showAlert(msg);
         	}
         });
 	}
@@ -623,7 +619,7 @@ public class RegisterStudent extends LayoutContainer {
 	private void getSubjectListRPC(final ListStore <SubjectModel> subjStore) {
 		
 		inProcessCount++;
-		RegistrationServiceAsync s = (RegistrationServiceAsync) Registry.get("registrationService");
+		PrescriptionServiceAsync s = (PrescriptionServiceAsync) Registry.get("prescriptionService");
 		s.getSubjectDefinitions(new AsyncCallback <List<SubjectModel>>() {
 
 			public void onSuccess(List<SubjectModel> result) {
@@ -634,7 +630,7 @@ public class RegisterStudent extends LayoutContainer {
 
 			public void onFailure(Throwable caught) {
         		String msg = caught.getMessage();
-        		CatchupMathAdmin.showAlert(msg);
+        		CatchupMathTools.showAlert(msg);
         	}
         });
 		
@@ -643,7 +639,7 @@ public class RegisterStudent extends LayoutContainer {
 	private void getGroupListRPC(Integer uid, final ListStore <GroupModel> store) {
 		
 		inProcessCount++;
-		RegistrationServiceAsync s = (RegistrationServiceAsync) Registry.get("registrationService");
+		PrescriptionServiceAsync s = (PrescriptionServiceAsync) Registry.get("prescriptionService");
 		s.getActiveGroups(uid, new AsyncCallback <List<GroupModel>>() {
 
 			public void onSuccess(List<GroupModel> result) {
@@ -661,14 +657,14 @@ public class RegisterStudent extends LayoutContainer {
 
 			public void onFailure(Throwable caught) {
         		String msg = caught.getMessage();
-        		CatchupMathAdmin.showAlert(msg);
+        		CatchupMathTools.showAlert(msg);
         	}
         });
 		
 	}
 	
 	protected void addUserRPC(final StudentModel sm) {
-		RegistrationServiceAsync s = (RegistrationServiceAsync) Registry.get("registrationService");
+	    PrescriptionServiceAsync s = (PrescriptionServiceAsync) Registry.get("prescriptionService");
 		
 		s.addUser(sm, new AsyncCallback <StudentModel> () {
 			
@@ -679,25 +675,25 @@ public class RegisterStudent extends LayoutContainer {
 
 			public void onFailure(Throwable caught) {
         		String msg = caught.getMessage();
-        		CatchupMathAdmin.showAlert(msg);
+        		CatchupMathTools.showAlert(msg);
         	}
         });
 	}
 
 	protected void updateUserRPC(final StudentModel sm, Boolean stuChanged, Boolean progChanged, Boolean progIsNew,
 			Boolean passcodeChanged) {
-		RegistrationServiceAsync s = (RegistrationServiceAsync) Registry.get("registrationService");
+	    PrescriptionServiceAsync s = (PrescriptionServiceAsync) Registry.get("prescriptionService");
 		
 		s.updateUser(sm, stuChanged, progChanged, progIsNew, passcodeChanged, new AsyncCallback <StudentModel> () {
 			
 			public void onSuccess(StudentModel ai) {
-			    CmAdminDataReader.getInstance().fireRefreshData();
+			    EventBus.getInstance().fireEvent(new CmEvent(EventBus.EVENT_TYPE_USER_UPDATED,ai));
 				fw.close();
         	}
 
 			public void onFailure(Throwable caught) {
         		String msg = caught.getMessage();
-        		CatchupMathAdmin.showAlert(msg);
+        		CatchupMathTools.showAlert(msg);
         	}
         });
 	}
@@ -722,7 +718,7 @@ public class RegisterStudent extends LayoutContainer {
     		StudyProgram sp = setProgramSelection();
 
     		if (sp == null) {
-    			CatchupMathAdmin.showAlert("Program not found!");
+    			CatchupMathTools.showAlert("Program not found!");
     			return;
     		}
     		int needsSubject = ((Integer)sp.get("needsSubject")).intValue();
@@ -830,7 +826,7 @@ public class RegisterStudent extends LayoutContainer {
 		if (progId == null || !progId.equalsIgnoreCase("chap")) return;
 		
 		inProcessCount++;
-		RegistrationServiceAsync s = (RegistrationServiceAsync) Registry.get("registrationService");
+		PrescriptionServiceAsync s = (PrescriptionServiceAsync) Registry.get("prescriptionService");
 		s.getChaptersForProgramSubject(progId, subjId, new AsyncCallback <List<ChapterModel>> () {
 
 			public void onSuccess(List<ChapterModel> result) {
@@ -847,7 +843,7 @@ public class RegisterStudent extends LayoutContainer {
 
 			public void onFailure(Throwable caught) {
         		String msg = caught.getMessage();
-        		CatchupMathAdmin.showAlert(msg);
+        		CatchupMathTools.showAlert(msg);
         	}
         });
 	

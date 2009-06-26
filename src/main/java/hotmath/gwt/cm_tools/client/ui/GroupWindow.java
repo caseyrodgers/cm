@@ -1,9 +1,9 @@
-package hotmath.gwt.cm_admin.client.ui;
+package hotmath.gwt.cm_tools.client.ui;
 
-import hotmath.gwt.cm_admin.client.CatchupMathAdmin;
-import hotmath.gwt.cm_admin.client.service.RegistrationServiceAsync;
+import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.model.CmAdminModel;
 import hotmath.gwt.cm_tools.client.model.GroupModel;
+import hotmath.gwt.cm_tools.client.service.PrescriptionServiceAsync;
 import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
 
 import com.extjs.gxt.ui.client.Registry;
@@ -119,7 +119,7 @@ public class GroupWindow extends LayoutContainer {
 	        	if (name.trim().equals(GroupModel.NEW_GROUP)) {
 	        	    tf.focus();
 	        	    String msg = "Invalid Group name, please re-enter";
-	        	    CatchupMathAdmin.showAlert(msg);
+	        	    CatchupMathTools.showAlert(msg);
 	        	    return;
 	        	}
 	        	
@@ -137,7 +137,7 @@ public class GroupWindow extends LayoutContainer {
 	}
 	
 	protected void addGroupRPC(int adminUid, final GroupModel gm) {
-		RegistrationServiceAsync s = (RegistrationServiceAsync) Registry.get("registrationService");
+		PrescriptionServiceAsync s = (PrescriptionServiceAsync) Registry.get("registrationService");
 		
 		s.addGroup(adminUid, gm, new AsyncCallback <GroupModel> () {
 			
@@ -150,7 +150,7 @@ public class GroupWindow extends LayoutContainer {
 
 			public void onFailure(Throwable caught) {
         		String msg = caught.getMessage();
-        		CatchupMathAdmin.showAlert(msg);
+        		CatchupMathTools.showAlert(msg);
         	}
         });
 	}
