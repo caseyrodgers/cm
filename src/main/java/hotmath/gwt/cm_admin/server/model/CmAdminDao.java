@@ -353,7 +353,7 @@ public class CmAdminDao {
     		System.out.println(String.format("*** Error getting chapters for progId: %s, subjId: %s, Exception: %s",
     			progId, subjId, e.getLocalizedMessage()));
     		//logger.error(String.format("*** Error getting chapters for progId: %s, subjId: %s", progId, subjId), e);
-    		throw new Exception("*** Error getting Chapter list ***");
+    		throw new Exception("*** Error getting Chapter list ***", e);
     	}
     	finally {
     		SqlUtilities.releaseResources(rs, ps, conn);

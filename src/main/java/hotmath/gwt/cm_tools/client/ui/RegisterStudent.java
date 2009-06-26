@@ -68,10 +68,10 @@ public class RegisterStudent extends LayoutContainer {
 	
 	private TextField<String> name;
 	
-	private FieldSet fs;
-	
 	private int formHeight = 410;
 	private int formWidth  = 375;
+	
+	private CombinedFormPanel _formPanel;
 	
 	public RegisterStudent(StudentModel sm, CmAdminModel cm) {
 	    
@@ -99,22 +99,22 @@ public class RegisterStudent extends LayoutContainer {
 	}
 	
 	private FormPanel createForm() {
-		final CombinedFormPanel fp = new CombinedFormPanel();
-		fp.setStyleName("register-student-form-panel");
-		fp.setLabelWidth(120);
-		fp.setHeight(formHeight);
-		fp.setFooter(true);
-		fp.setFrame(false);
-		fp.setHeaderVisible(false);
-		fp.setBodyBorder(false);
-		fp.setIconStyle("icon-form");
-		fp.setButtonAlign(HorizontalAlignment.CENTER);
-		fp.setLayout(new FormLayout());
+		_formPanel = new CombinedFormPanel();
+		_formPanel.setStyleName("register-student-form-panel");
+		_formPanel.setLabelWidth(120);
+		_formPanel.setHeight(formHeight);
+		_formPanel.setFooter(true);
+		_formPanel.setFrame(false);
+		_formPanel.setHeaderVisible(false);
+		_formPanel.setBodyBorder(false);
+		_formPanel.setIconStyle("icon-form");
+		_formPanel.setButtonAlign(HorizontalAlignment.CENTER);
+		_formPanel.setLayout(new FormLayout());
 		//fp.getLayout();
 
 		FieldSet fs = new FieldSet();
 		FormLayout fL = new FormLayout();
-		fL.setLabelWidth(fp.getLabelWidth());
+		fL.setLabelWidth(_formPanel.getLabelWidth());
         fL.setDefaultWidth(195);
 	    fs.setLayout(fL);
 	    
@@ -144,14 +144,14 @@ public class RegisterStudent extends LayoutContainer {
 		groupCombo = groupCombo(groupStore);
 		fs.add(groupCombo);
         
-        fp.add(fs);
+		_formPanel.add(fs);
         
         fs = new FieldSet();
 		fs.setHeading("Assign Program");
 		fs.setStyleName("register-student-fieldset");
 		
 		FormLayout fl = new FormLayout();
-		fl.setLabelWidth(fp.getLabelWidth());
+		fl.setLabelWidth(_formPanel.getLabelWidth());
 		fl.setDefaultWidth(fL.getDefaultWidth());
 		
 		fs.setLayout(fl);
@@ -211,7 +211,7 @@ public class RegisterStudent extends LayoutContainer {
         tutoringGrp.add(isTutoringNotAvail);
         fs.add(tutoringGrp);
 		
-		fp.add(fs);
+        _formPanel.add(fs);
 
 		fw.setHeading((isNew)?"Register a New Student":"Edit Student");
 		fw.setWidth(formWidth + 40);
@@ -224,12 +224,12 @@ public class RegisterStudent extends LayoutContainer {
 		Button cancelBtn = cancelButton();
         cancelBtn.setStyleName("register-student-cancel");
         
-		Button saveBtn = saveButton(fs, fp);
+		Button saveBtn = saveButton(fs, _formPanel);
 		saveBtn.setStyleName("register-student-btn");
 		
-		fp.setButtonAlign(HorizontalAlignment.RIGHT);  
-        fp.addButton(saveBtn);
-        fp.addButton(cancelBtn);
+		_formPanel.setButtonAlign(HorizontalAlignment.RIGHT);  
+		_formPanel.addButton(saveBtn);
+		_formPanel.addButton(cancelBtn);
         
         
         /** Seems like a bug with setting focus, so the only way to 
@@ -247,7 +247,7 @@ public class RegisterStudent extends LayoutContainer {
                 }
             }.schedule(2000);
         }
-        return fp;
+        return _formPanel;
 	}
 
 	private ComboBox<StudyProgram> programCombo(ListStore<StudyProgram> store, final FieldSet fs) {
@@ -343,13 +343,19 @@ public class RegisterStudent extends LayoutContainer {
 			public void selectionChanged(SelectionChangedEvent<SubjectModel> se) {
 	        	SubjectModel sm = se.getSelectedItem();
 	        	if (subjectId == null || ! subjectId.equals(sm.getAbbrev())) {
-		        	//System.out.println("old: " + ((subjectId==null)?"none":subjectId) + ", new: " + sm.getAbbrev());
-		        	subjectId = sm.getAbbrev();
-		        	ComboBox<StudyProgram> cb = (ComboBox<StudyProgram>) fs.getItemByItemId("prog-combo");
-		        	StudyProgram sp = cb.getValue();
-		        	String progId = sp.get("shortTitle");
-		        	chapStore.removeAll();
-		            getChapterListRPC(progId, subjectId, true, chapStore);
+	        	    try {
+    		        	//System.out.println("old: " + ((subjectId==null)?"none":subjectId) + ", new: " + sm.getAbbrev());
+    		        	subjectId = sm.getAbbrev();
+    		        	ComboBox<StudyProgram> cb = (ComboBox<StudyProgram>) _formPanel.getItemByItemId("prog-combo");
+    		        	StudyProgram sp = cb.getValue();
+    		        	String progId = sp.get("shortTitle");
+    		        	chapStore.removeAll();
+    		            getChapterListRPC(progId, subjectId, true, chapStore);
+	        	    }
+	        	    catch(Exception e) {
+	        	        e.printStackTrace();
+	        	        CatchupMathTools.showAlert(e.getMessage());
+	        	    }
 	        	}
 	        }
 	    });
