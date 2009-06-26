@@ -12,6 +12,7 @@ import hotmath.gwt.cm_tools.client.service.PrescriptionServiceAsync;
 import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
 import hotmath.gwt.shared.client.eventbus.EventBus;
+import hotmath.gwt.shared.client.util.UserInfo;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -139,10 +140,12 @@ public class RegisterStudent extends LayoutContainer {
 		}
 		fs.add(passCode);
 
-		groupStore = new ListStore <GroupModel> ();
-		getGroupListRPC(cmAdminMdl.getId(), groupStore);
-		groupCombo = groupCombo(groupStore);
-		fs.add(groupCombo);
+        groupStore = new ListStore <GroupModel> ();
+        getGroupListRPC(cmAdminMdl.getId(), groupStore);
+        groupCombo = groupCombo(groupStore);
+		if(UserInfo.getInstance() == null || !UserInfo.getInstance().isSingleUser()) {
+    		fs.add(groupCombo);
+		}
         
 		_formPanel.add(fs);
         
@@ -466,14 +469,22 @@ public class RegisterStudent extends LayoutContainer {
 	        		return;
 	        	}
 */
+                String groupId=null;
+	            String group=null;
 	        	ComboBox<GroupModel> cg = (ComboBox<GroupModel>) fp.getItemByItemId("group-combo");
-	        	GroupModel g = cg.getValue();
-	        	if (g == null) {
-	        		cg.focus();
-	        		return;
+	        	if(cg != null) {
+    	        	GroupModel g = cg.getValue();
+    	        	if (g == null) {
+    	        		cg.focus();
+    	        		return;
+    	        	}
+    	            groupId = g.getId();
+    	            group = g.getName();
 	        	}
-	        	String groupId = g.getId();
-	        	String group = g.getName();
+	        	else {
+	        	    groupId = "1";
+	        	    group = "none";
+	        	}
 	        	
 	        	CheckBoxGroup cbg = (CheckBoxGroup) fp.getItemByItemId(StudentModel.SHOW_WORK_KEY);
 	        	CheckBox cbv = cbg.getValue();

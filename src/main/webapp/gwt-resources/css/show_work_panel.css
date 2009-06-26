@@ -1,0 +1,60 @@
+#whiteboard {
+}
+
+#whiteboard-object {
+	padding: 10px;
+	margin-bottom: 5px;
+}
+	
+
+.problemindex {
+	 width: 500px;
+}
+#whiteboard-bg {
+	padding: 10px;
+	width: 500px;
+}
+
+#show_work_close_link {
+	color: white;
+	font-weight: bold;
+}
+
+
+#tutor_sw_output {
+	margin: 10px;
+    font: 12pt "Times New Roman", Times, serif;
+    width: 500px;
+    background-color: #F1F1F1;
+}
+
+#tutor_sw_output p {
+    font: 12pt "Times New Roman", Times, serif;    
+    text-align: left;
+    color: black;
+ }
+
+#tutor_sw_output .step_title_step {
+    font-family: Tahoma;
+    font-size: 12px;
+    font-weight: bold;
+    color: white;
+    padding-left: 10px;    
+}
+
+#tutor_sw_output .step_title_hint {
+    font-family: Tahoma;
+    font-size: 12px;    
+    font-weight: bold;
+    color: white;
+    padding-left: 10px;
+}
+
+
+#whiteboard-bg p {
+    margin: 0;
+}
+
+img {
+   border: none;
+}

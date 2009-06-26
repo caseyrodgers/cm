@@ -988,7 +988,7 @@ public class PrescriptionServiceImpl extends RemoteServiceServlet implements Pre
             return cma.addGroup(adminUid, gm);
         }
         catch(Exception e) {
-            throw new CmRpcException();
+            throw new CmRpcException(e);
         }
     }
 

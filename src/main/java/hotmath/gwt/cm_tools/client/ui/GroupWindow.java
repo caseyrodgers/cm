@@ -137,7 +137,7 @@ public class GroupWindow extends LayoutContainer {
 	}
 	
 	protected void addGroupRPC(int adminUid, final GroupModel gm) {
-		PrescriptionServiceAsync s = (PrescriptionServiceAsync) Registry.get("registrationService");
+		PrescriptionServiceAsync s = (PrescriptionServiceAsync) Registry.get("prescriptionService");
 		
 		s.addGroup(adminUid, gm, new AsyncCallback <GroupModel> () {
 			
