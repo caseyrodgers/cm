@@ -603,6 +603,9 @@ public class RegisterStudent extends LayoutContainer {
 		        	if (stuChanged || progChanged || progIsNew) {
      	        	    updateUserRPC(sm, stuChanged, progChanged, progIsNew, passcodeChanged);
 		        	}
+		        	else {
+		        	    fw.close();
+		        	}
 	        	}
 	        }
 	    });
@@ -704,7 +707,7 @@ public class RegisterStudent extends LayoutContainer {
 		s.updateUser(sm, stuChanged, progChanged, progIsNew, passcodeChanged, new AsyncCallback <StudentModel> () {
 			
 			public void onSuccess(StudentModel ai) {
-			    EventBus.getInstance().fireEvent(new CmEvent(EventBus.EVENT_TYPE_USER_UPDATED,ai));
+		        EventBus.getInstance().fireEvent(new CmEvent(EventBus.EVENT_TYPE_USER_PROGRAM_CHANGED,ai.getProgramChanged()));
 				fw.close();
         	}
 

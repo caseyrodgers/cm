@@ -153,8 +153,21 @@ public class StudentModel extends BaseModelData implements IsSerializable {
 		set("programChanged", changed);
 	}
 	
+	/** return true if program has been changed, or false if
+	 *  program was not changed.  
+	 *  
+	 *  If value is null, return false
+	 *  
+	 * @return
+	 */
 	public Boolean getProgramChanged() {
-		return get("programChanged");
+	    Boolean pc = get("programChanged");
+	    if(pc != null) {
+	        return get("programChanged");
+	    }
+	    else {
+	        return false;
+	    }
 	}
 
 	public String getProgId() {

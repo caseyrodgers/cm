@@ -179,10 +179,16 @@ public class CatchupMath implements EntryPoint {
          */
         EventBus.getInstance().addEventListener(new CmEventListener() {
             public void handleEvent(CmEvent event) {
-                FooterPanel.resetProgram_Gwt();
+                if(((Boolean)event.getEventData()) == true) {
+                    FooterPanel.resetProgram_Gwt();
+                }
+                else {
+                    // just refresh page
+                    FooterPanel.refreshPage();
+                }
             }
             public String getEventOfInterest() {
-                return EventBus.EVENT_TYPE_USER_UPDATED;
+                return EventBus.EVENT_TYPE_USER_PROGRAM_CHANGED;
             }
         });
         

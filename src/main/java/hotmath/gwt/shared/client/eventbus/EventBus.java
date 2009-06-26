@@ -68,8 +68,11 @@ public class EventBus {
     static public final String EVENT_TYPE_WHITEBOARDUPDATED="WHITEBOAR_DUPDATED";
     
     
-    /** After a user's meta data has been updated
+    /** After a user's program has been updated/changed
+     * 
+     * data should contain boolean indicating if change included
+     * a change to the user's program or simply a user/password type change
      * 
      */
-    static public final String EVENT_TYPE_USER_UPDATED="USER_UPDATEd";
+    static public final String EVENT_TYPE_USER_PROGRAM_CHANGED="USER_PROGRAM_CHANGED";
 }

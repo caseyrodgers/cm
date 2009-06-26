@@ -77,13 +77,21 @@ public class FooterPanel extends LayoutContainer {
         PrescriptionServiceAsync s = (PrescriptionServiceAsync) Registry.get("prescriptionService");
         s.resetUser(UserInfo.getInstance().getUid(),new AsyncCallback() {
             public void onSuccess(Object result) {
-                Window.Location.reload();
+                refreshPage();
             }
             public void onFailure(Throwable caught) {
                 CatchupMathTools.showAlert(caught.getMessage());
             }
         });
     }
+    
+    /** Reload current page
+     * 
+     */
+    static public void refreshPage() {
+        Window.Location.reload();        
+    }
+    
     
     private static void showPrescriptionSession_Gwt() {
         if(UserInfo.getInstance() == null || UserInfo.getInstance().getRunId() == 0) {
