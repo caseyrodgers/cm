@@ -31,7 +31,16 @@ public class HaUser extends HaBasicUserImpl {
 	String backgroundStyle;
     String testConfigJson;
     boolean isShowWorkRequired;
+    String  userAccountType;
     
+    public String getUserAccountType() {
+        return userAccountType;
+    }
+
+    public void setUserAccountType(String userAccountType) {
+        this.userAccountType = userAccountType;
+    }
+
     public HaUser() {
     }
     
@@ -209,9 +218,13 @@ public class HaUser extends HaBasicUserImpl {
 		PreparedStatement pstat=null;
 		ResultSet rs = null;
 		try {
-			String sql = "select u.uid, u.user_name, u.active_run_id,u.active_test_id,u.active_segment,u.active_run_session " +
-			             " ,u.is_show_work_required, d.test_name as assigned_test_name, u.test_config_json, gui_background_style " +
-			             " from HA_USER u INNER JOIN HA_TEST_DEF d on u.test_def_id = d.test_def_id ";
+			String sql =
+			     "select s.type,u.uid, u.user_name, u.active_run_id,u.active_test_id,u.active_segment,u.active_run_session " +
+		         "       ,u.is_show_work_required, d.test_name as assigned_test_name, u.test_config_json, gui_background_style " +
+		         "from HA_USER u INNER JOIN HA_TEST_DEF d on u.test_def_id = d.test_def_id " +
+		         "     INNER JOIN HA_ADMIN a on u.admin_id = a.aid " +
+		         "     INNER JOIN SUBSCRIBERS s on a.subscriber_id = s.id ";
+
 			if(uid != null)
 				sql += " where u.uid = ?";
 			else 
@@ -239,6 +252,9 @@ public class HaUser extends HaBasicUserImpl {
 			user.setTestConfigJson(rs.getString("test_config_json"));
 			user.setBackgroundStyle(rs.getString("gui_background_style"));
 			user.setShowWorkRequired(rs.getInt("is_show_work_required")==0?false:true);
+			
+			user.setUserAccountType(rs.getString("type"));
+			    
 			
 			return user;
 		}

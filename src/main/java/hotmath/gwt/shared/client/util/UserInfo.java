@@ -66,6 +66,7 @@ public class UserInfo implements IsSerializable {
                 user.setBackgroundStyle(ui.getDataAsString("gui_background_style"));
                 user.setTestName(ui.getDataAsString("test_name"));
                 user.setShowWorkRequired(ui.getDataAsInt("show_work_required")==0?false:true);
+                user.setUserAccountType(ui.getDataAsString("user_account_type"));
                 __instance = user;
                 
                 CatchupMathTools.setBusy(false);     
@@ -95,7 +96,7 @@ public class UserInfo implements IsSerializable {
 	String backgroundStyle;
 	int correctAnswers;
 	boolean isShowWorkRequired;
-	UserType userType = UserType.SINGLE_USER;
+	UserType userAccountType = UserType.SINGLE_USER;
 	
 
 	/** Define the type of user, either a student
@@ -108,21 +109,31 @@ public class UserInfo implements IsSerializable {
 	 * 
 	 * @return
 	 */
-    public UserType getUserType() {
-        return userType;
+    public UserType getUserAccountType() {
+        return userAccountType;
     }
 
-    public void setUserType(UserType userType) {
-        this.userType = userType;
+    public void setUserAccountType(UserType userType) {
+        this.userAccountType = userType;
     }
 
+    /** Set the UserType depending on the subscriber type (ST, PS)
+     * 
+     * @param userType
+     */
+    public void setUserAccountType(String userType) {
+        if(userType.equals("ST"))
+            this.userAccountType = UserType.SCHOOL_USER;
+        else 
+            this.userAccountType = UserType.SINGLE_USER;
+    }
     /** Helper method to return true if this is
      *  user is currently setup as single user.
      *  
      * @return True if is single user
      */
     public boolean isSingleUser() {
-        return userType != null && userType.equals(UserType.SINGLE_USER)?true:false;
+        return userAccountType != null && userAccountType.equals(UserType.SINGLE_USER)?true:false;
     }
     public boolean isShowWorkRequired() {
         return isShowWorkRequired;
