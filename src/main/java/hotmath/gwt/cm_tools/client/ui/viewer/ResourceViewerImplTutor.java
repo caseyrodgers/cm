@@ -158,7 +158,9 @@ public class ResourceViewerImplTutor extends ResourceViewerContainer implements 
     public void showWork(final String pid) {
         if(showWorkWin == null) {
             showWorkWin = new Window();
+            showWorkWin.setClosable(false);
             Button hideBtn = new Button("Hide");
+            hideBtn.setToolTip("Hide this window");
             hideBtn.addSelectionListener(new SelectionListener<ButtonEvent>() {
                 public void componentSelected(ButtonEvent ce) {
                     showWorkWin.hide();

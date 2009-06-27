@@ -21,7 +21,10 @@ public class UserInfo implements IsSerializable {
 
 	static private UserInfo __instance;
 
-	/** This is only active for one session, meaning there will only be one
+	/** The CM Student user object
+	 *  (will be null for CM Admin)
+	 *  
+	 *  This is only active for one session, meaning there will only be one
 	 *  userid... The state of that user will change: diff topic,resource,etc.
 	 *  
 	 *

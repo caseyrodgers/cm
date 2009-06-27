@@ -140,6 +140,9 @@ public class RegisterStudent extends LayoutContainer {
 		}
 		fs.add(passCode);
 
+		
+		_formPanel.add(fs);
+		
         groupStore = new ListStore <GroupModel> ();
         getGroupListRPC(cmAdminMdl.getId(), groupStore);
         groupCombo = groupCombo(groupStore);
@@ -147,7 +150,7 @@ public class RegisterStudent extends LayoutContainer {
     		fs.add(groupCombo);
 		}
         
-		_formPanel.add(fs);
+		
         
         fs = new FieldSet();
 		fs.setHeading("Assign Program");

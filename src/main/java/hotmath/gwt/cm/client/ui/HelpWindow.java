@@ -1,11 +1,14 @@
 package hotmath.gwt.cm.client.ui;
 
+import hotmath.gwt.cm.client.CatchupMath;
+import hotmath.gwt.cm.client.ui.context.PrescriptionContext;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.model.CmAdminModel;
 import hotmath.gwt.cm_tools.client.model.StudentModel;
 import hotmath.gwt.cm_tools.client.service.PrescriptionServiceAsync;
 import hotmath.gwt.cm_tools.client.ui.CmMainPanel;
 import hotmath.gwt.cm_tools.client.ui.ContextController;
+import hotmath.gwt.cm_tools.client.ui.FooterPanel;
 import hotmath.gwt.cm_tools.client.ui.RegisterStudent;
 import hotmath.gwt.cm_tools.client.ui.StudentDetailsWindow;
 import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
@@ -14,11 +17,14 @@ import hotmath.gwt.shared.client.util.UserInfo;
 import com.extjs.gxt.ui.client.Registry;
 import com.extjs.gxt.ui.client.data.BaseModelData;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
+import com.extjs.gxt.ui.client.event.Listener;
+import com.extjs.gxt.ui.client.event.MessageBoxEvent;
 import com.extjs.gxt.ui.client.event.SelectionChangedEvent;
 import com.extjs.gxt.ui.client.event.SelectionChangedListener;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.Html;
+import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.VerticalPanel;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.ComboBox;
@@ -97,9 +103,12 @@ public class HelpWindow extends CmWindow {
 
         if(UserInfo.getInstance().isSingleUser()) {
             fs = new FieldSet();
+            fs.setLayout(new FlowLayout());
             fs.setHeading("Configuration");
+            fs.setStyleName("help-window-additional-options");
             Button btn = new Button("Setup Catchup Math");
-            btn.setToolTip("Setup the Catchup Math program to use");
+            btn.setWidth(120);
+            btn.setToolTip("Modify your Catchup Math settings.");
             btn.addSelectionListener(new SelectionListener<ButtonEvent>() {
                 public void componentSelected(ButtonEvent ce) {
                     showStudentConfiguration();
@@ -107,6 +116,24 @@ public class HelpWindow extends CmWindow {
             });
             btn.addStyleName("button");
             fs.add(btn);
+            
+            btn = new Button("Restart Program");
+            btn.setToolTip("Restart the current program.");
+            btn.addStyleName("button");       
+            btn.setWidth(120);
+            btn.addSelectionListener(new SelectionListener<ButtonEvent>() {
+                public void componentSelected(ButtonEvent ce) {
+                    MessageBox.confirm("Restart Program", "Are you sure you would like to restart your current program?", new Listener<MessageBoxEvent>() {
+                        public void handleEvent(MessageBoxEvent be) {
+                            if (be.getButtonClicked().getText().equals("Yes")) {
+                                FooterPanel.resetProgram_Gwt();                                
+                            }
+                        }
+                    });                    
+                }
+            });
+            fs.add(btn);
+            
             vp.add(fs);
         }        
 
@@ -123,6 +150,7 @@ public class HelpWindow extends CmWindow {
         
         
         Button btn = new Button("Technical Support");
+        btn.setWidth(120);
         btn.addStyleName("button");
         btn.addSelectionListener(new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent ce) {
@@ -131,6 +159,8 @@ public class HelpWindow extends CmWindow {
         });
         fs.add(btn);
         btn = new Button("Student History");
+        btn.setToolTip("View your history of quizzes, reviews and show work efforts.");
+        btn.setWidth(120);
         btn.addSelectionListener(new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent ce) {
                 showStudentHistory();
@@ -138,6 +168,7 @@ public class HelpWindow extends CmWindow {
         });
         btn.addStyleName("button");
         fs.add(btn);
+        
         vp.add(fs);
 
         add(vp);
