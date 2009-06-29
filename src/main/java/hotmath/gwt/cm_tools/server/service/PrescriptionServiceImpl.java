@@ -320,7 +320,7 @@ public class PrescriptionServiceImpl extends RemoteServiceServlet implements Pre
             InputStream is = getClass().getResourceAsStream("tutor_wrapper.vm");
             BufferedReader br = new BufferedReader(new InputStreamReader(is));
             String tutorWrapper = null;
-            StringBuffer sb = new StringBuffer();
+            StringBuilder sb = new StringBuilder();
             while ((tutorWrapper = br.readLine()) != null) {
                 sb.append(tutorWrapper);
             }
@@ -481,7 +481,7 @@ public class PrescriptionServiceImpl extends RemoteServiceServlet implements Pre
         InputStream is = getClass().getResourceAsStream("quiz_template.vm");
         BufferedReader br = new BufferedReader(new InputStreamReader(is));
         String line = null;
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         while ((line = br.readLine()) != null) {
             sb.append(line);
         }
