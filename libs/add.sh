@@ -8,6 +8,7 @@ mvn install:install-file -DgroupId=gwt2swf -DartifactId=gwt2swf -Dversion=0.6.0 
 mvn install:install-file -DgroupId=jade -DartifactId=jade -Dversion=1.0 -Dpackaging=jar -Dfile=jade.jar
 mvn install:install-file -DgroupId=gwt-log -DartifactId=gwt-log -Dversion=2.6.0 -Dpackaging=jar -Dfile=gwt-log-2.6.0.jar 
 mvn install:install-file -DgroupId=gwt-incubator -DartifactId=gwt-incubator -Dversion=1.6.1539 -Dpackaging=jar -Dfile=gwt-incubator-march-02-2009.jar
+mvn install:install-file -DgroupId=itext -DartifactId=iText -Dversion=2.1.6 -Dpackaging=jar -Dfile=iText-2.1.6.jar
 
 
 
