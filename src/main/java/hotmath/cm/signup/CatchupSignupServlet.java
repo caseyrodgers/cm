@@ -1,9 +1,9 @@
 package hotmath.cm.signup;
 
 import hotmath.HotMathProperties;
+import hotmath.cm.dao.CmUserDao;
 import hotmath.dwr.SubscriberDelegate;
 import hotmath.gwt.cm_admin.server.model.CmAdminDao;
-import hotmath.gwt.cm_admin.server.model.CmUserDao;
 import hotmath.gwt.cm_tools.client.model.StudentModel;
 import hotmath.servlet.Registration;
 import hotmath.subscriber.HotMathExceptionPurcaseException;
