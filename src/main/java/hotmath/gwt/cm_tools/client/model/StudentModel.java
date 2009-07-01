@@ -15,6 +15,7 @@ public class StudentModel extends BaseModelData implements IsSerializable {
 	public static final String SUBJ_ID_KEY = "subjId";
 	public static final String CHAPTER_KEY = "chapter";
 	public static final String LAST_QUIZ_KEY = "last-quiz";
+	public static final String LAST_LOGIN_KEY = "last-login";
 	public static final String JSON_KEY = "json";
 	public static final String STATUS_KEY = "status";	
 	public static final String UID_KEY = "uid";
@@ -22,6 +23,7 @@ public class StudentModel extends BaseModelData implements IsSerializable {
 	public static final String ADMIN_UID_KEY = "admin_uid";
 	public static final String SHOW_WORK_KEY = "show-work";
 	public static final String SHOW_WORK_STATE_KEY = "show-work-state";
+	public static final String TOTAL_USAGE_KEY = "total-usage";
 	public static final String TUTORING_AVAIL_KEY = "tutoring-avail";
 	public static final String TUTORING_STATE_KEY = "tutoring-state";
 
@@ -80,9 +82,13 @@ public class StudentModel extends BaseModelData implements IsSerializable {
 	public Integer getSectionNum() {
 		return get(SECTION_NUM_KEY);
 	}
+
+	public String getLastLogin() {
+		return get(LAST_LOGIN_KEY);
+	}
 	
 	public void setLastLogin(String lastLogin) {
-		set("last-login", lastLogin);
+		set(LAST_LOGIN_KEY, lastLogin);
 	}
 
 	public void setStatus(String status) {
@@ -94,11 +100,11 @@ public class StudentModel extends BaseModelData implements IsSerializable {
 	}
 
 	public void setTotalUsage(Integer totalUsage) {
-		set("total-usage", totalUsage);
+		set(TOTAL_USAGE_KEY, totalUsage);
 	}
 
 	public Integer getTotalUsage() {
-		return get("total-usage");
+		return get(TOTAL_USAGE_KEY);
 	}
 
 	public String getPassPercent() {
