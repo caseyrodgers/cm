@@ -8,6 +8,7 @@ import hotmath.gwt.cm_tools.client.model.StudentModel;
 import hotmath.gwt.cm_tools.client.model.StudentShowWorkModel;
 import hotmath.gwt.cm_tools.client.model.StudyProgramModel;
 import hotmath.gwt.cm_tools.client.model.SubjectModel;
+import hotmath.testset.ha.HaAdmin;
 import hotmath.util.HMConnectionPool;
 import hotmath.util.sql.SqlUtilities;
 
@@ -1134,6 +1135,92 @@ public class CmAdminDao {
                 throw new Exception("Student with uid o f" + uid + " matches more than one row");
             
             return l.get(0);
+        }
+        finally {
+            SqlUtilities.releaseResources(rs, ps, conn);
+        }
+    }
+    
+    
+    /** Return the Admin object currently attached to this 
+     *  SUBSCRIBER record or null
+     *  
+     * @param subscriberId  The subscriber record (id) to lookup
+     * @return HaAdmin record, or null if no such record exists
+     * 
+     * @throws Exception on db errors
+     */
+    public HaAdmin getAdmin(String subscriberId) throws Exception {
+        
+        String GET_ADMIN_SQL = "select * from HA_ADMIN where subscriber_id = ?";
+
+        Connection conn = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        
+        try {
+            conn = HMConnectionPool.getConnection();
+            ps = conn.prepareStatement(GET_ADMIN_SQL);
+            ps.setString(1,subscriberId);
+            
+            rs = ps.executeQuery();
+            if(!rs.first())
+                return null;
+            
+            HaAdmin haAdmin = new HaAdmin();
+            haAdmin.setAdminId(rs.getInt("aid"));
+            haAdmin.setUserName(rs.getString("user_name"));
+            haAdmin.setPassword(rs.getString("passcode"));
+            
+            return haAdmin;
+            
+        }
+        finally {
+            SqlUtilities.releaseResources(rs, ps, conn);
+        }
+    }
+    
+    
+    /** Create a new HA_ADMIN record
+     * 
+     * @param subscriberId  The subscriber to associated with this cm admin
+     * @param userName The username for the admin account
+     * @param passcode The passcode for this admin account
+     * 
+     * @return The admin_id of the just created HA_ADMIN record
+     * 
+     * @throws Exception
+     */
+    public HaAdmin addAdmin(String subscriberId, String userName, String passcode) throws Exception {
+        
+        String ADD_ADMIN_SQL = "insert into HA_ADMIN(subscriber_id, user_name, passcode, create_date)" +
+                               "values(?,?,?,now())";
+
+        Connection conn = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        
+        try {
+            conn = HMConnectionPool.getConnection();
+            ps = conn.prepareStatement(ADD_ADMIN_SQL);
+            ps.setString(1,subscriberId);
+            ps.setString(2, userName);
+            ps.setString(3,passcode);
+            int count = ps.executeUpdate();
+            int adminId=0;
+            if (count == 1) {
+                adminId = this.getLastInsertId(conn);
+            }
+            else {
+                throw new Exception("Could not create HA_ADMIN account for unknown reason");
+            }
+
+            HaAdmin haAdmin = new HaAdmin();
+            haAdmin.setAdminId(adminId);
+            haAdmin.setUserName(userName);
+            haAdmin.setPassword(passcode);
+            
+            return haAdmin;
         }
         finally {
             SqlUtilities.releaseResources(rs, ps, conn);
