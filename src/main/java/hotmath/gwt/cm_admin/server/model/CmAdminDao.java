@@ -430,8 +430,8 @@ public class CmAdminDao {
     }
     
     private static final String ADD_USER_SQL =
-    	"insert into HA_USER (user_name, user_passcode, active_segment, group_id, test_def_id, admin_id, is_active) " +
-    	"values(?, ?, ?, ?, (select test_def_id from HA_TEST_DEF where prog_id = ? and subj_id = ?), ?, 1)";
+    	"insert into HA_USER (user_name, user_passcode, active_segment, group_id, test_def_id, admin_id, is_active,login_name) " +
+    	"values(?, ?, ?, ?, (select test_def_id from HA_TEST_DEF where prog_id = ? and subj_id = ?), ?, 1,?)";
     
     public StudentModel addStudent(StudentModel sm) throws Exception {
     	Connection conn = null;
@@ -453,6 +453,7 @@ public class CmAdminDao {
     		ps.setString(5, sm.getProgId());
     		ps.setString(6, sm.getSubjId());
     		ps.setInt(7, sm.getAdminUid());
+    		ps.setString(8, sm.getLogin());
     		
     		int count = ps.executeUpdate();
     		if (count == 1) {
@@ -467,8 +468,7 @@ public class CmAdminDao {
     	    e.printStackTrace();
     	    System.out.println(String.format("*** Error adding student with passcode: %s, Exception: %s",
     	    		sm.getPasscode(), e.getLocalizedMessage()));
-    		//logger.error(String.format("*** Error adding student with passcode: %s", sm.getPasscode()), e);
-    		//throw e;
+    		throw e;
     	}
     	finally {
     		SqlUtilities.releaseResources(rs, ps, conn);

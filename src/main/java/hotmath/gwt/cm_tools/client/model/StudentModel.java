@@ -26,23 +26,38 @@ public class StudentModel extends BaseModelData implements IsSerializable {
 	public static final String TOTAL_USAGE_KEY = "total-usage";
 	public static final String TUTORING_AVAIL_KEY = "tutoring-avail";
 	public static final String TUTORING_STATE_KEY = "tutoring-state";
+	public static final String NAME_KEY = "name";
+	public static final String LOGIN_KEY = "login";
+	public static final String PASSCODE_KEY = "passcode";
 
 	public String getName() {
-		return get("name");
+		return get(NAME_KEY);
 	}
 
 	public void setName(String name) {
-		set("name", name);
+		set(NAME_KEY, name);
 	}
 
 	public String getPasscode() {
-		return get("passcode");
+		return get(PASSCODE_KEY);
 	}
 
 	public void setPasscode(String passcode) {
-		set("passcode", passcode);
+		set(PASSCODE_KEY, passcode);
 	}
 
+	/** Login is used as the login for PS catchup accounts
+	 * 
+	 * @param login
+	 */
+    public void setLogin(String login) {
+        set(LOGIN_KEY, login);
+    }
+    
+    public String getLogin() {
+        return get(LOGIN_KEY);
+    }
+    
 	public String getProgramDescr() {
 		return get("program");
 	}
