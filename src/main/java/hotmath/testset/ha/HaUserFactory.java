@@ -70,9 +70,11 @@ public class HaUserFactory {
             // password associated with the SUBCRIBERS
             // record that the user's HA_ADMIN record is
             // linked to.
-            sql = "select u.uid, u.user_name " + "from HA_USER u INNER JOIN HA_ADMIN h on u.admin_id = h.aid "
-                    + "INNER JOIN SUBSCRIBERS s on s.id = h.subscriber_id " + "where  s.password = ? "
-                    + "  and  u.user_passcode = ? " + "  and  is_active = 1";
+            sql = "select u.uid, u.user_name " + 
+                  "from HA_USER u INNER JOIN HA_ADMIN h on u.admin_id = h.aid " +
+                  "INNER JOIN SUBSCRIBERS s on s.id = h.subscriber_id " + 
+                  "where s.student_email = ? " +
+                  "and  u.user_passcode = ? " + "  and  is_active = 1";
             try {
                 pstat = conn.prepareStatement(sql);
 
@@ -80,50 +82,20 @@ public class HaUserFactory {
                 pstat.setString(2, pwd);
 
                 ResultSet rs = pstat.executeQuery();
-                if (rs.first()) {
-                    int userId = rs.getInt("uid");
-                    HaUser student = HaUser.lookUser(userId, null);
-                    student.setUserName(rs.getString("user_name"));
-                    student.setPassword(pwd);
-                    
-                    __logger.info("Logging in user (school student): " + user);
-                    
-                    return student;
-                }
-            } finally {
-                SqlUtilities.releaseResources(null, pstat, null);
-            }
-
-            // last attempt will be to see if it is PS student
-            // which will match on HA_USER.login_name+HA_USER.user_passcode
-            sql =   "select u.uid, u.user_name  " +
-                    " from HA_USER u " +
-                    " where  u.login_name = ? " +
-                    "  and  u.user_passcode = ? " +
-                    "  and  is_active = 1";
-            try {
-                pstat = conn.prepareStatement(sql);
-
-                pstat.setString(1, user);
-                pstat.setString(2, pwd);
-
-                ResultSet rs = pstat.executeQuery();
-                if (!rs.first()) {
-                    throw new HotMathException("Invalid login");
-                }
-
+                if (!rs.first())
+                    throw new HotMathException("Could not login user to Catchup Math: " + user);
+                
                 int userId = rs.getInt("uid");
                 HaUser student = HaUser.lookUser(userId, null);
                 student.setUserName(rs.getString("user_name"));
                 student.setPassword(pwd);
                 
-                __logger.info("Logging in user (single user student): " + user);
+                __logger.info("Logging in user (school student): " + user);
                 
                 return student;
             } finally {
                 SqlUtilities.releaseResources(null, pstat, null);
             }
-
         } catch (HotMathException hme) {
             throw hme;
         } catch (Exception e) {

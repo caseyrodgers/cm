@@ -100,7 +100,7 @@ public class CatchupSignupServlet extends HttpServlet {
              *  associated with this SUBSCRIBER record
              */
             HaAdmin haAdmin = cad.getAdmin(sub.getId());
-            String uniquePassword = HotMathSubscriber.createUniqueID(purchasePlan);
+            String uniquePassword = sub.getPassword();
             if(haAdmin == null) {
                 String uniqAdminUser = "admin_" + sifo.getCardEmail();
                 haAdmin = new CmAdminDao().addAdmin(sub.getId(),uniqAdminUser, uniquePassword);
@@ -122,12 +122,7 @@ public class CatchupSignupServlet extends HttpServlet {
                  StudentModel student = new StudentModel();
                  student.setName(sifo.getFirstName() + " " + sifo.getLastName());
                  
-                 /** Single user accounts (PS) use the login/password stored in the HA_USER
-                  * 
-                  */
                  student.setPasscode(uniquePassword);
-                 student.setLogin(sifo.getCardEmail());
-                 
                  
                  student.setAdminUid(haAdmin.getAdminId());
                  student.setGroupId("1");
