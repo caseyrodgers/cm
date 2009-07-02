@@ -45,6 +45,10 @@
 	background: url(../images/help-over.png) no-repeat center left !important;
 }
 
+.printer-icon {
+	background: url(../images/icons/printer-icon.png) no-repeat center left !important;
+}
+ 
 .main-container {
 	overflow: auto;
 	position: relative;
@@ -178,28 +182,22 @@
   margin-left: 5px;
 }
 
+.student-grid-panel-button {
+	width: 200px;
+}
 
 .register-student-form-panel {
 	padding:10px 10px 5px 10px;
 }
 
-.student-grid-panel-button {
-	width: 200px;
-}
-
-
 .student-details-panel {
 }
-
 
 .student-details-window {
 }
 
 .student-details-panel-grid {
 }
-
-
-
 
 .admin-help {
 	
