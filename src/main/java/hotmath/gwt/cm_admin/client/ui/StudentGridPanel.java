@@ -22,6 +22,7 @@ import com.extjs.gxt.ui.client.core.El;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
+import com.extjs.gxt.ui.client.event.MenuEvent;
 import com.extjs.gxt.ui.client.event.MessageBoxEvent;
 import com.extjs.gxt.ui.client.event.SelectionEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
@@ -39,6 +40,7 @@ import com.extjs.gxt.ui.client.widget.grid.GridSelectionModel;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.layout.TableData;
 import com.extjs.gxt.ui.client.widget.menu.Menu;
+import com.extjs.gxt.ui.client.widget.menu.MenuItem;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -75,9 +77,9 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
 
         add(_gridContainer);
         final Menu contextMenu = new Menu();
-        Button loginAsUser = new Button("Login as User");
-        loginAsUser.addSelectionListener(new SelectionListener<ButtonEvent>() {
-            public void componentSelected(ButtonEvent ce) {
+        MenuItem loginAsUser = new MenuItem("Login as User");
+        loginAsUser.addSelectionListener(new SelectionListener<MenuEvent>() {
+            public void componentSelected(MenuEvent ce) {
                 loginAsSelectedUser();
                 contextMenu.hide();
             }
@@ -85,9 +87,9 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
         contextMenu.add(loginAsUser);
         
         
-        Button showWork = new Button("Show Work");
-        showWork.addSelectionListener(new SelectionListener<ButtonEvent>() {
-            public void componentSelected(ButtonEvent ce) {
+        MenuItem showWork = new MenuItem("Show Work");
+        showWork.addSelectionListener(new SelectionListener<MenuEvent>() {
+            public void componentSelected(MenuEvent ce) {
                 showWorkDialog();
                 contextMenu.hide();
             }
@@ -96,9 +98,9 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
 
         
         if(CmShared.getQueryParameter("debug") != null) {
-            Button debugUser = new Button("Debug Info");
-            debugUser.addSelectionListener(new SelectionListener<ButtonEvent>() {
-                public void componentSelected(ButtonEvent ce) {
+            MenuItem debugUser = new MenuItem("Debug Info");
+            debugUser.addSelectionListener(new SelectionListener<MenuEvent>() {
+                public void componentSelected(MenuEvent ce) {
                     showDebugInfo();
                     contextMenu.hide();
                 }
