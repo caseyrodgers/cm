@@ -39,7 +39,7 @@ public class CatchupSignupServlet extends HttpServlet {
         /** Register with the Hotmath signup system custom 
          *  Catchup Math implementations of key classes. 
          */
-        HotMathSubscriberServiceFactory.addServiceType("catchup", SignupSubscriberService.class);
+        HotMathSubscriberServiceFactory.addServiceType("catchup", HotmathSubscriberServiceCatchup.class);
         HmServiceImplDefault service = new HmServiceImplDefault();
         service.setName("catchup");
         service.setCost(0.0);
@@ -121,7 +121,14 @@ public class CatchupSignupServlet extends HttpServlet {
                  // create new user
                  StudentModel student = new StudentModel();
                  student.setName(sifo.getFirstName() + " " + sifo.getLastName());
+                 
+                 /** Single user accounts (PS) use the login/password stored in the HA_USER
+                  * 
+                  */
                  student.setPasscode(uniquePassword);
+                 student.setLogin(sifo.getCardEmail());
+                 
+                 
                  student.setAdminUid(haAdmin.getAdminId());
                  student.setGroupId("1");
                  student.setProgId("Auto-Enroll");
@@ -166,6 +173,12 @@ public class CatchupSignupServlet extends HttpServlet {
     }
     
     
+    /** Extract data from request and build SignupInfo to encapsulate request
+     * 
+     * @param req
+     * @return
+     * @throws Exception
+     */
     private HotMathSubscriberSignupInfo getSignupInfo(HttpServletRequest req) throws Exception {
         
         @SuppressWarnings("unchecked")
