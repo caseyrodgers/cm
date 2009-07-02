@@ -86,7 +86,6 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
         });
         contextMenu.add(loginAsUser);
         
-        
         MenuItem showWork = new MenuItem("Show Work");
         showWork.addSelectionListener(new SelectionListener<MenuEvent>() {
             public void componentSelected(MenuEvent ce) {
@@ -95,7 +94,6 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
             }
         });
         contextMenu.add(showWork);
-
         
         if(CmShared.getQueryParameter("debug") != null) {
             MenuItem debugUser = new MenuItem("Debug Info");
@@ -130,36 +128,6 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
         getStudentsRPC(this._cmAdminMdl.getId(), _grid.getStore(), uid);
     }
 
-    
-    /**
-     * Log in as this user
-     * 
-     */
-    private void loginAsSelectedUser() {
-        StudentModel sm = _grid.getSelectionModel().getSelectedItem();
-        if (sm == null)
-            return;
-
-        String url = "http://hotmath.kattare.com/cm_student/CatchupMath.html?debug=true&uid=" + sm.getUid();
-        Window.open(url, "_blank", "location=1,menubar=1,resizable=1");
-    }
-
-    private void showWorkDialog() {
-        StudentModel sm = _grid.getSelectionModel().getSelectedItem();
-        if (sm == null)
-            return;
-        
-        new StudentShowWorkWindow(sm);
-    }
-    
-    private void showDebugInfo() {
-        StudentModel sm = _grid.getSelectionModel().getSelectedItem();
-        if (sm == null)
-            return;
-        
-        CatchupMathAdmin.showAlert("UID: " + sm.getUid());
-    }
-    
     /**
      * Call when container is resized, allows dynamically resizing children to
      * fit entire size. Mainly used for the grid. It might be set to
@@ -198,6 +166,41 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
         }
     }
 
+    public void enableToolBar() {
+        for (Component ti : toolBar.getItems()) {
+            ti.enable();
+        }
+    }
+
+    /**
+     * Log in as selected user (student)
+     * 
+     */
+    private void loginAsSelectedUser() {
+        StudentModel sm = _grid.getSelectionModel().getSelectedItem();
+        if (sm == null)
+            return;
+
+        String url = "http://hotmath.kattare.com/cm_student/CatchupMath.html?debug=true&uid=" + sm.getUid();
+        Window.open(url, "_blank", "location=1,menubar=1,resizable=1");
+    }
+
+    private void showWorkDialog() {
+        StudentModel sm = _grid.getSelectionModel().getSelectedItem();
+        if (sm == null)
+            return;
+        
+        new StudentShowWorkWindow(sm);
+    }
+    
+    private void showDebugInfo() {
+        StudentModel sm = _grid.getSelectionModel().getSelectedItem();
+        if (sm == null)
+            return;
+        
+        CatchupMathAdmin.showAlert("UID: " + sm.getUid());
+    }
+    
     private HorizontalPanel createToolbar() {
         HorizontalPanel toolbar = new HorizontalPanel();
         toolbar.setHorizontalAlign(HorizontalAlignment.CENTER);
@@ -218,8 +221,10 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
         ti = showWorkToolItem(_grid,_cmAdminMdl);
         toolbar.add(ti, tData);
 
-
         ti = unregisterStudentToolItem(_grid);
+        toolbar.add(ti, tData);
+
+        ti = displayPrintableReportToolItem();
         toolbar.add(ti, tData);
 
         return toolbar;
@@ -307,6 +312,7 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
         });
         return ti;
     }
+
     private Button studentDetailsToolItem(final Grid<StudentModel> grid) {
         Button ti = new StudenPanelButton("Student Detail History");
         ti.setToolTip("View details for the selected student.");
@@ -324,12 +330,6 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
 
         });
         return ti;
-    }
-
-    public void enableToolBar() {
-        for (Component ti : toolBar.getItems()) {
-            ti.enable();
-        }
     }
 
     private Button unregisterStudentToolItem(final Grid<StudentModel> grid) {
@@ -362,6 +362,21 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
                 }
             }
 
+        });
+        return ti;
+    }
+
+    private Button displayPrintableReportToolItem() {
+        Button ti = new Button();
+        ti.setIconStyle("printer-icon");
+        ti.setToolTip("Display a printable student summary report");
+
+        ti.addSelectionListener(new SelectionListener<ButtonEvent>() {
+            @Override
+            public void componentSelected(ButtonEvent ce) {
+            	String url = "/cm_admin/genPDF?type=studentSummary&aid=" + _cmAdminMdl.getId();
+                Window.open(url, "_blank", "location=0,menubar=0,resizable=1");
+            }
         });
         return ti;
     }
@@ -460,7 +475,7 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
 
             public void onFailure(Throwable caught) {
                 String msg = caught.getMessage();
-                caught.printStackTrace();   // quite
+                caught.printStackTrace();   // quiet
                 // CatchupMathAdmin.showAlert(msg);
             }
         });
