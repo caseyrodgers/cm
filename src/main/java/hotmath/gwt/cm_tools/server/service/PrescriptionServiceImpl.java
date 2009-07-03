@@ -94,7 +94,11 @@ public class PrescriptionServiceImpl extends RemoteServiceServlet implements Pre
      */
     public RpcData getPrescriptionSessionJson(int runId, int sessionNumber, boolean updateActiveInfo)
             throws CmRpcException {
+        Connection conn=null;
         try {
+            
+            conn = HMConnectionPool.getConnection();
+            
             AssessmentPrescription pres = AssessmentPrescriptionManager.getInstance().getPrescription(runId);
 
             int totalSessions = pres.getSessions().size();
@@ -207,7 +211,7 @@ public class PrescriptionServiceImpl extends RemoteServiceServlet implements Pre
             // update this user's active run session
             if (updateActiveInfo) {
                 pres.getTest().getUser().setActiveTestRunSession(sessionNumber);
-                pres.getTest().getUser().update();
+                pres.getTest().getUser().update(conn);
             }
 
             RpcData rdata2 = new RpcData();
@@ -219,6 +223,9 @@ public class PrescriptionServiceImpl extends RemoteServiceServlet implements Pre
 
         } catch (Exception e) {
             e.printStackTrace();
+        }
+        finally {
+            SqlUtilities.releaseResources(null,null,conn);
         }
 
         return null;
@@ -525,9 +532,11 @@ public class PrescriptionServiceImpl extends RemoteServiceServlet implements Pre
      */
     public ArrayList<RpcData> getQuizCurrentResults(int userId) throws CmRpcException {
         // TODO Auto-generated method stub
+        Connection conn=null;
         try {
+            conn = HMConnectionPool.getConnection();
             int testId = HaUser.lookUser(userId, null).getActiveTest();
-            List<HaTestRunResult> testResults = HaTest.loadTest(testId).getTestCurrentResponses();
+            List<HaTestRunResult> testResults = HaTest.loadTest(testId).getTestCurrentResponses(conn);
             ArrayList<RpcData> rpcData = new ArrayList<RpcData>();
             for (HaTestRunResult tr : testResults) {
                 if (tr.isAnswered()) {
@@ -538,6 +547,9 @@ public class PrescriptionServiceImpl extends RemoteServiceServlet implements Pre
             return rpcData;
         } catch (Exception e) {
             throw new CmRpcException(e);
+        }
+        finally {
+            SqlUtilities.releaseResources(null,null,conn);
         }
     }
 
@@ -818,16 +830,21 @@ public class PrescriptionServiceImpl extends RemoteServiceServlet implements Pre
     }
 
     public void resetUser(int userId) throws CmRpcException {
+        Connection conn=null;
         try {
+            conn = HMConnectionPool.getConnection();
             HaUser user = HaUser.lookUser(userId, null);
             user.setActiveTest(0);
             user.setActiveTestRunId(0);
             user.setActiveTestSegment(0);
             user.setActiveTestRunSession(0);
 
-            user.update();
+            user.update(conn);
         } catch (Exception e) {
             throw new CmRpcException(e);
+        }
+        finally {
+            SqlUtilities.releaseResources(null,null,conn);
         }
     }
 
@@ -864,12 +881,17 @@ public class PrescriptionServiceImpl extends RemoteServiceServlet implements Pre
     }
 
     public void setUserBackground(int userId, String backgroundStyle) throws CmRpcException {
+        Connection conn=null;
         try {
+            conn = HMConnectionPool.getConnection();
             HaUser user = HaUser.lookUser(userId, null);
             user.setBackgroundStyle(backgroundStyle);
-            user.update();
+            user.update(conn);
         } catch (Exception e) {
             throw new CmRpcException(e);
+        }
+        finally {
+            SqlUtilities.releaseResources(null,null,conn);
         }
     }
 

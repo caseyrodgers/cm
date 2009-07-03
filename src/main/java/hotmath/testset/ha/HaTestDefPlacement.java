@@ -1,6 +1,5 @@
 package hotmath.testset.ha;
 
-import hotmath.util.HMConnectionPool;
 import hotmath.util.sql.SqlUtilities;
 
 import java.sql.Connection;
@@ -29,12 +28,10 @@ public class HaTestDefPlacement extends HaTestDef {
 	 */
 	
 	@Override
-	public List<String> getTestIdsForSegment(int segment, HaTestConfig config) throws Exception {
+	public List<String> getTestIdsForSegment(int segment, HaTestConfig config, Connection conn) throws Exception {
 		_lastSegment = segment;
-		Connection conn = null;
 		PreparedStatement ps=null;
 		try {
-			conn = HMConnectionPool.getConnection();
 			// Create list of 7 random solutions from
 			// each text group that is listed in the
 			// placement test.
@@ -56,7 +53,7 @@ public class HaTestDefPlacement extends HaTestDef {
 			return list;
 		}
 		finally {
-			SqlUtilities.releaseResources(null,ps,conn);
+			SqlUtilities.releaseResources(null,ps,null);
 		}		
 	}
 	

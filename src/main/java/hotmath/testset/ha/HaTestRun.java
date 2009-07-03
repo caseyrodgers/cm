@@ -97,32 +97,36 @@ public class HaTestRun {
      * @throws Exception
      */
     public void transferCurrentToTestRun() throws Exception {
-        removeAllQuizResponses();
-
-        List<HaTestRunResult> currentSelections = getHaTest().getTestCurrentResponses();
-        for (HaTestRunResult tr : currentSelections) {
-            addRunResult(tr.getPid(), tr.getResult(), tr.getResponseIndex());
+        
+        Connection conn=null;
+        try {
+            conn = HMConnectionPool.getConnection();
+            removeAllQuizResponses(conn);
+    
+            List<HaTestRunResult> currentSelections = getHaTest().getTestCurrentResponses(conn);
+            for (HaTestRunResult tr : currentSelections) {
+                addRunResult(tr.getPid(), tr.getResult(), tr.getResponseIndex(),conn);
+            }
+        }
+        finally {
+            SqlUtilities.releaseResources(null,null,conn);
         }
     }
 
-    private void removeAllQuizResponses() throws Exception {
-        Connection conn = null;
+    private void removeAllQuizResponses(Connection conn) throws Exception {
         Statement stmt = null;
         try {
-            conn = HMConnectionPool.getConnection();
             stmt = conn.createStatement();
             stmt.execute("delete from HA_TEST_RUN_RESULTS where run_id = " + getRunId());
         } finally {
-            SqlUtilities.releaseResources(null, stmt, conn);
+            SqlUtilities.releaseResources(null, stmt,null);
         }
     }
 
-    public HaTestRunResult addRunResult(String pid, String answerStatus, int answerIndex) throws HotMathException {
-        Connection conn = null;
+    public HaTestRunResult addRunResult(String pid, String answerStatus, int answerIndex, Connection conn) throws HotMathException {
         PreparedStatement pstat = null;
         try {
             String sql = "insert into HA_TEST_RUN_RESULTS(run_id, pid, answer_status, answer_index)values(?,?,?,?)";
-            conn = HMConnectionPool.getConnection();
             pstat = conn.prepareStatement(sql);
             HaTestRunResult testRun = new HaTestRunResult();
 
@@ -159,7 +163,7 @@ public class HaTestRun {
         } catch (Exception e) {
             throw new HotMathException(e, "Error adding run result: " + e.getMessage());
         } finally {
-            SqlUtilities.releaseResources(null, pstat, conn);
+            SqlUtilities.releaseResources(null, pstat, null);
         }
     }
 

@@ -10,8 +10,6 @@ import java.sql.ResultSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.apache.log4j.lf5.LogLevel;
-
 /** Manage the Catchup Math users
  * 
  * @author Casey
@@ -167,12 +165,9 @@ public class HaUser extends HaBasicUserImpl {
 	 *   
 	 * @throws Exception
 	 */
-	public void update() throws HotMathException {
-		Connection conn=null;
+	public void update(Connection conn) throws HotMathException {
 		PreparedStatement pstat=null;
 		try {
-			conn = HMConnectionPool.getConnection();
-			
 	    	HaTestDef def = HaTestDefFactory.createTestDef(getAssignedTestName());			
 			
 		    String sql = "update HA_USER set active_test_id = ?, active_run_id = ?, active_segment = ?, active_run_session = ?, " +
@@ -196,7 +191,7 @@ public class HaUser extends HaBasicUserImpl {
 			throw new HotMathException(e, "Error updating user record");
 		}
 		finally {
-			SqlUtilities.releaseResources(null,pstat,conn);
+			SqlUtilities.releaseResources(null,pstat,null);
 		}			
 	}
 	

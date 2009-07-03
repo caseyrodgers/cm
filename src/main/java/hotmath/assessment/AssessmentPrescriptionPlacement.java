@@ -5,6 +5,11 @@ import hotmath.gwt.cm_tools.client.ui.NextAction;
 import hotmath.gwt.cm_tools.client.ui.NextAction.NextActionName;
 import hotmath.testset.ha.HaTestRun;
 import hotmath.testset.ha.HaUser;
+import hotmath.util.HMConnectionPool;
+import hotmath.util.sql.SqlUtilities;
+
+import java.sql.Connection;
+
 import sb.logger.SbLogger;
 
 /**
@@ -62,15 +67,20 @@ public class AssessmentPrescriptionPlacement extends AssessmentPrescription {
 
         if (newTestName != null) {
             // assign test
+            Connection conn=null;
             try {
+                conn = HMConnectionPool.getConnection();
                 HaUser user = getTestRun().getHaTest().getUser();
                 user.setAssignedTestName(newTestName);
                 user.setActiveTestRunId(0);
                 user.setActiveTest(0);
-                getTestRun().getHaTest().getUser().update();
+                getTestRun().getHaTest().getUser().update(conn);
             } catch (HotMathException hme) {
                 SbLogger.postMessage(hme);
                 return "SOME_ERROR_PAGE_EXPLAINING_PROBLEM";
+            }
+            finally {
+                SqlUtilities.releaseResources(null,null,conn);
             }
             return "placement-assigned.jsp?uid=" + testRun.getHaTest().getUser().getUid();
         }
@@ -127,12 +137,17 @@ public class AssessmentPrescriptionPlacement extends AssessmentPrescription {
             nextAction.setNextAction(NextActionName.QUIZ);
         }
         
+        Connection conn=null;
         try {
+            conn = HMConnectionPool.getConnection();
             // update the state of this user
-            user.update();
+            user.update(conn);
         }
         catch(Exception e) {
             e.printStackTrace();
+        }
+        finally {
+            SqlUtilities.releaseResources(null,null,conn);
         }
         
         return nextAction;

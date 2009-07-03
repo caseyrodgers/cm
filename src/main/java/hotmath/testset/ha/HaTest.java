@@ -160,15 +160,13 @@ public class HaTest {
 	 * @return
 	 * @throws Exception
 	 */
-	public List<HaTestRunResult> getTestCurrentResponses() throws Exception {
+	public List<HaTestRunResult> getTestCurrentResponses(Connection conn) throws Exception {
 		
 		List<HaTestRunResult> results = new ArrayList<HaTestRunResult>();
 		
-		Connection conn=null;
 		PreparedStatement pstat=null;
 		try {
 			String sql = "select * from v_HA_TEST_CURRENT_STATUS where test_id = ?";
-			conn = HMConnectionPool.getConnection();
 			pstat = conn.prepareStatement(sql);
 			
 			pstat.setInt(1,getTestId());
@@ -196,7 +194,7 @@ public class HaTest {
 			}
 		}
 		finally {
-			SqlUtilities.releaseResources(null,pstat,conn);
+			SqlUtilities.releaseResources(null,pstat,null);
 		}	
 		
 		return results;
@@ -252,10 +250,12 @@ public class HaTest {
 			
 			HaTestConfig config = user.getTestConfig(); 
 			
-			List<String> testIds = testDef.getTestIdsForSegment(segment,config);
+			conn = HMConnectionPool.getConnection();
+			
+			List<String> testIds = testDef.getTestIdsForSegment(segment,config,conn);
 			
 			String sql = "insert into HA_TEST(user_id,test_def_id,create_time,test_segment,total_segments,test_question_count)values(?,?,?,?,?,?)";
-			conn = HMConnectionPool.getConnection();
+			
 			pstat = conn.prepareStatement(sql);
 			
 			pstat.setInt(1,uid);
@@ -306,7 +306,7 @@ public class HaTest {
 		    user.setActiveTest(testId);
 		    user.setActiveTestRunId(null);
 		    user.setActiveTestSegment(segment);
-		    user.update();
+		    user.update(conn);
 		    
 		    return loadTest(testId);
 		}
@@ -343,14 +343,14 @@ public class HaTest {
 			HaTest test = new HaTest();
 			test.setTestId(rs.getInt("test_id"));
 			test.setUser(HaUser.lookUser(rs.getInt("user_id"),null));
-			test.setTestDef(HaTestDefFactory.createTestDef(rs.getInt("test_def_id")));
+			test.setTestDef(HaTestDefFactory.createTestDef(rs.getInt("test_def_id"), conn));
 			test.setSegment(rs.getInt("test_segment"));
 			test.setNumTestQuestions(rs.getInt("test_question_count"));
 			test.setTotalSegments(rs.getInt("total_segments"));
 			pstat.close();
 			rs.close();
 
-			List<String> testIds = getTestIdsForTest(test.getTestId());
+			List<String> testIds = getTestIdsForTest(test.getTestId(),conn);
 			
 			for(String pid: testIds) {
 				test.addPid(pid);
@@ -428,7 +428,7 @@ public class HaTest {
 			
 			// update this User's row to indicate new run
 			test.getUser().setActiveTestRunId(testRun.getRunId());
-			test.getUser().update();
+			test.getUser().update(conn);
 			
 			return testRun;
 		}
@@ -452,14 +452,12 @@ public class HaTest {
 	 * @return
 	 * @throws Exception
 	 */
-	static public List<String> getTestIdsForTest(int testId) throws Exception {
+	static public List<String> getTestIdsForTest(int testId,Connection conn) throws Exception {
 		
 		List<String> pids = new ArrayList<String>();
-		Connection conn = null;
 		PreparedStatement pstat=null;
  
 		try {
-			conn = HMConnectionPool.getConnection();
 			// now read test's pids
 			String sql = "select * from HA_TEST_IDS where test_id = ?";
 			pstat = conn.prepareStatement(sql);
@@ -476,7 +474,7 @@ public class HaTest {
 			return pids;
 		}
 		finally {
-			SqlUtilities.releaseResources(null,pstat,conn);
+			SqlUtilities.releaseResources(null,pstat,null);
 		}
 	}	
 	

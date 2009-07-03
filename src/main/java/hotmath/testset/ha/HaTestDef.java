@@ -236,9 +236,9 @@ public class HaTestDef {
     List<String> list;
     int _lastSegment;
 
-    public List<String> getTestIdsForSegment(int segment, HaTestConfig config) throws Exception {
+    public List<String> getTestIdsForSegment(int segment, HaTestConfig config, Connection conn) throws Exception {
         _lastSegment = segment;
-        return getTestIdsForSegment(segment, textCode, chapter, config);
+        return getTestIdsForSegment(segment, textCode, chapter, config, conn);
     }
 
     /**
@@ -255,24 +255,22 @@ public class HaTestDef {
      * @param segment
      * @param textcode
      * @param chapter
+     * @param conn Active connection passed in
      * @return
      * @throws SQLException
      */
-    private List<String> getTestIdsForSegment(int segment, String textcode, String chapter, HaTestConfig config)
+    private List<String> getTestIdsForSegment(int segment, String textcode, String chapter, HaTestConfig config, Connection conn)
             throws Exception {
 
         // Use chapter from config if available, otherwise
         // use the default chapter defined for this test_def
 
         List<String> pids = new ArrayList<String>();
-        Connection conn = null;
         PreparedStatement ps = null;
 
         int section = 1; // alternative tests are stored in separate sections
 
         try {
-            conn = HMConnectionPool.getConnection();
-
             String sql = "";
             if (config != null && config.getChapters().size() > 0) {
                 // just use first for now
@@ -325,7 +323,7 @@ public class HaTestDef {
                 pids.add(pid);
             } while (rs.next());
         } finally {
-            SqlUtilities.releaseResources(null, ps, conn);
+            SqlUtilities.releaseResources(null, ps, null);
         }
         return pids;
     }

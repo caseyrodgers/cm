@@ -1,6 +1,5 @@
 package hotmath.testset.ha;
 
-import hotmath.util.HMConnectionPool;
 import hotmath.util.sql.SqlUtilities;
 
 import java.sql.Connection;
@@ -32,15 +31,13 @@ public class HaTestDefFactory {
 		else return new HaTestDef(name);
 	}
 	
-	public static HaTestDef createTestDef(int testDefId) throws Exception {
-		Connection conn=null;
+	public static HaTestDef createTestDef(int testDefId, Connection conn) throws Exception {
 	    PreparedStatement pstat=null;
 	    try {
 	        String sql = "select test_name  " +
 	                     " from HA_TEST_DEF d " +
 	                     " where test_def_id = ? ";
 	        
-	        conn = HMConnectionPool.getConnection();
 	        pstat = conn.prepareStatement(sql);
 	        
 	        pstat.setInt(1, testDefId);
@@ -52,7 +49,7 @@ public class HaTestDefFactory {
 	        return createTestDef(rs.getString("test_name"));
 	    }
 	    finally {
-	        SqlUtilities.releaseResources(null,pstat,conn);
+	        SqlUtilities.releaseResources(null,pstat,null);
 	    }    				
 	}
 }
