@@ -70,7 +70,7 @@ public class HaUserFactory {
             // password associated with the SUBCRIBERS
             // record that the user's HA_ADMIN record is
             // linked to.
-            sql = "select u.uid, u.user_name " + 
+            sql = "select u.uid, u.user_name, s.type " + 
                   "from HA_USER u INNER JOIN HA_ADMIN h on u.admin_id = h.aid " +
                   "INNER JOIN SUBSCRIBERS s on s.id = h.subscriber_id " + 
                   "where s.student_email = ? " +
@@ -90,7 +90,7 @@ public class HaUserFactory {
                 student.setUserName(rs.getString("user_name"));
                 student.setPassword(pwd);
                 
-                __logger.info("Logging in user (school student): " + user);
+                __logger.info("Logging in user (school student " + rs.getString("type") + "): " + user);
                 
                 return student;
             } finally {
