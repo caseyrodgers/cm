@@ -1,5 +1,6 @@
 package hotmath.assessment;
 
+import hotmath.HotMathExceptionSolutionNotFound;
 import hotmath.ProblemID;
 import hotmath.SolutionManager;
 import hotmath.concordance.ConcordanceEntry;
@@ -13,6 +14,7 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.logging.Logger;
 
 /**
  * Represents a single INMH item and all the PIDS that reference ie
@@ -24,6 +26,8 @@ public class InmhItemData {
 
 	INeedMoreHelpItem item;
 	List<String> pidsReferenced = new ArrayList<String>();
+	
+	Logger logger = Logger.getLogger(InmhItemData.class.getName());
 
 	public InmhItemData(INeedMoreHelpItem item) {
 		this.item = item;
@@ -112,8 +116,8 @@ public class InmhItemData {
 						try {
 							SolutionManager.getSolution(pid.getGUID());
 							pids.add(pid);
-						} catch (Exception e) {
-							System.out.println("Inmh: GUID does not exist: " +  s);
+						} catch (HotMathExceptionSolutionNotFound e) {
+							logger.fine("Inmh: GUID does not exist: " +  s);
 						}
 					}
 				}
