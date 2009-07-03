@@ -73,7 +73,7 @@ public class HaUserFactory {
             sql = "select u.uid, u.user_name, s.type " + 
                   "from HA_USER u INNER JOIN HA_ADMIN h on u.admin_id = h.aid " +
                   "INNER JOIN SUBSCRIBERS s on s.id = h.subscriber_id " + 
-                  "where s.student_email = ? " +
+                  "where s.password = ? " +
                   "and  u.user_passcode = ? " + "  and  is_active = 1";
             try {
                 pstat = conn.prepareStatement(sql);
