@@ -33,6 +33,7 @@ public class HaTestDefFactory {
 	
 	public static HaTestDef createTestDef(int testDefId, Connection conn) throws Exception {
 	    PreparedStatement pstat=null;
+	    ResultSet rs = null;
 	    try {
 	        String sql = "select test_name  " +
 	                     " from HA_TEST_DEF d " +
@@ -42,14 +43,14 @@ public class HaTestDefFactory {
 	        
 	        pstat.setInt(1, testDefId);
 	        
-	        ResultSet rs = pstat.executeQuery();
+	        rs = pstat.executeQuery();
 	        if(!rs.first())
 	        	throw new Exception("Test definition not found");
 	        
 	        return createTestDef(rs.getString("test_name"));
 	    }
 	    finally {
-	        SqlUtilities.releaseResources(null,pstat,null);
+	        SqlUtilities.releaseResources(rs,pstat,null);
 	    }    				
 	}
 }
