@@ -25,8 +25,14 @@ public class HaUserFactory {
     /**
      * Determine the type of user and create the appropriate user object
      * 
-     * 
      * Return either a HaUser or HaAdmin object both containing basic login info
+     * 
+     * Catchup Login Logic:
+     * 
+     * 1.  if HA_ADMIN.user_name == user && HA_ADMIN_passcode == password
+     *    then .. this user is an Admin, and log them into the cm_admin tool
+     *    
+     * 2. 
      * 
      * @param user
      * @param pwd
@@ -82,20 +88,56 @@ public class HaUserFactory {
                 pstat.setString(2, pwd);
 
                 ResultSet rs = pstat.executeQuery();
-                if (!rs.first())
-                    throw new HotMathException("Could not login user to Catchup Math: " + user);
+                if (rs.first()) { 
+                    int userId = rs.getInt("uid");
+                    HaUser student = HaUser.lookUser(userId, null);
+                    student.setUserName(rs.getString("user_name"));
+                    student.setPassword(pwd);
+                    
+                    __logger.info("Logging in user (school student " + rs.getString("type") + "): " + user);
                 
-                int userId = rs.getInt("uid");
-                HaUser student = HaUser.lookUser(userId, null);
-                student.setUserName(rs.getString("user_name"));
-                student.setPassword(pwd);
-                
-                __logger.info("Logging in user (school student " + rs.getString("type") + "): " + user);
-                
-                return student;
+                    return student;
+                }
             } finally {
                 SqlUtilities.releaseResources(null, pstat, null);
             }
+
+            
+            // perhaps it is a Single User student
+            // Then we search for the SUBSCRIBER.student_email
+            // associated with the SUBCRIBERS record that the 
+            // user's HA_ADMIN record is linked to.
+            sql = "select u.uid, u.user_name, s.type " + 
+                  "from HA_USER u INNER JOIN HA_ADMIN h on u.admin_id = h.aid " +
+                  "INNER JOIN SUBSCRIBERS s on s.id = h.subscriber_id " + 
+                  "where s.student_email = ? and s.type = 'PS' " +
+                  "and  u.user_passcode = ? " + "  and  is_active = 1";
+            try {
+                pstat = conn.prepareStatement(sql);
+
+                pstat.setString(1, user);
+                pstat.setString(2, pwd);
+
+                ResultSet rs = pstat.executeQuery();
+                if (rs.first()) { 
+                    int userId = rs.getInt("uid");
+                    HaUser student = HaUser.lookUser(userId, null);
+                    student.setUserName(rs.getString("user_name"));
+                    student.setPassword(pwd);
+                    
+                    __logger.info("Logging in user (single user student " + rs.getString("type") + "): " + user);
+                
+                    return student;
+                }
+            } finally {
+                SqlUtilities.releaseResources(null, pstat, null);
+            }
+            
+            
+            // Finally, see if a stand-alone student
+            throw new HotMathException("Could not login user to Catchup Math: " + user);
+            
+            
         } catch (HotMathException hme) {
             throw hme;
         } catch (Exception e) {
