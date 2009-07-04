@@ -125,6 +125,7 @@ public class HaTestRun {
 
     public HaTestRunResult addRunResult(String pid, String answerStatus, int answerIndex, Connection conn) throws HotMathException {
         PreparedStatement pstat = null;
+        ResultSet rs = null;
         try {
             String sql = "insert into HA_TEST_RUN_RESULTS(run_id, pid, answer_status, answer_index)values(?,?,?,?)";
             pstat = conn.prepareStatement(sql);
@@ -140,17 +141,14 @@ public class HaTestRun {
                 throw new HotMathException("Could not create new test run result for: " + runId);
 
             int autoIncKeyFromApi = -1;
-            ResultSet rs = null;
-            try {
-                rs = pstat.getGeneratedKeys();
-                if (rs.next()) {
-                    autoIncKeyFromApi = rs.getInt(1);
-                } else {
-                    throw new HotMathException("Error creating PK for test");
-                }
-            } finally {
-                rs.close();
+
+            rs = pstat.getGeneratedKeys();
+            if (rs.next()) {
+                autoIncKeyFromApi = rs.getInt(1);
+            } else {
+                throw new HotMathException("Error creating PK for test");
             }
+
             testRun.setResultId(autoIncKeyFromApi);
             testRun.setResult(answerStatus);
             testRun.setPid(pid);
@@ -163,7 +161,7 @@ public class HaTestRun {
         } catch (Exception e) {
             throw new HotMathException(e, "Error adding run result: " + e.getMessage());
         } finally {
-            SqlUtilities.releaseResources(null, pstat, null);
+            SqlUtilities.releaseResources(rs, pstat, null);
         }
     }
 
@@ -193,6 +191,7 @@ public class HaTestRun {
     static public HaTestRun lookupTestRun(int runId) throws HotMathException {
         Connection conn = null;
         PreparedStatement pstat = null;
+        ResultSet rs = null;
         try {
             String sql = "select t.*, r.*, s.pid, s.answer_status, s.answer_index, s.rid "
                     + " from   HA_TEST_RUN r INNER JOIN HA_TEST t on r.test_id = t.test_id "
@@ -203,7 +202,7 @@ public class HaTestRun {
 
             pstat.setInt(1, runId);
 
-            ResultSet rs = pstat.executeQuery();
+            rs = pstat.executeQuery();
             if (!rs.first())
                 throw new Exception("No such test run: " + runId);
 
@@ -233,7 +232,7 @@ public class HaTestRun {
         } catch (Exception e) {
             throw new HotMathException(e, "Error adding run result: " + e.getMessage());
         } finally {
-            SqlUtilities.releaseResources(null, pstat, conn);
+            SqlUtilities.releaseResources(rs, pstat, conn);
         }
     }
 }
