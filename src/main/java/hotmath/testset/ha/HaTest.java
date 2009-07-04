@@ -165,13 +165,14 @@ public class HaTest {
 		List<HaTestRunResult> results = new ArrayList<HaTestRunResult>();
 		
 		PreparedStatement pstat=null;
+		ResultSet rs = null;
 		try {
 			String sql = "select * from v_HA_TEST_CURRENT_STATUS where test_id = ?";
 			pstat = conn.prepareStatement(sql);
 			
 			pstat.setInt(1,getTestId());
 			
-			ResultSet rs = pstat.executeQuery();
+			rs = pstat.executeQuery();
 			while(rs.next()) {
 				HaTestRunResult res = new HaTestRunResult();
 				res.setPid(rs.getString("pid"));
@@ -194,7 +195,7 @@ public class HaTest {
 			}
 		}
 		finally {
-			SqlUtilities.releaseResources(null,pstat,null);
+			SqlUtilities.releaseResources(rs,pstat,null);
 		}	
 		
 		return results;
@@ -244,6 +245,7 @@ public class HaTest {
 	static public HaTest createTest(Integer uid,HaTestDef testDef,int segment) throws HotMathException {
 		Connection conn=null;
 		PreparedStatement pstat=null;
+		ResultSet rs = null;
 		try {
 			
 			HaUser user = HaUser.lookUser(uid,null);
@@ -276,7 +278,6 @@ public class HaTest {
 			
 			// extract the auto created pk
 		    int testId = -1;
-		    ResultSet rs=null;
 		    try {
 		    	rs = pstat.getGeneratedKeys();
 		    	if (rs.next()) {
@@ -286,11 +287,10 @@ public class HaTest {
 		    	}
 		    }
 		    finally {
-		    	if (rs != null) rs.close();
+				SqlUtilities.releaseResources(rs, pstat, null);
 		    }
 		    
 		    // insert IDS to use for this test
-		    pstat.close();
 		    pstat = conn.prepareStatement("insert into HA_TEST_IDS(test_id, pid) values(?,?)");
 		    for(String pid: testIds) {
 		    	pstat.setInt(1,testId);
@@ -299,8 +299,6 @@ public class HaTest {
 		    	if(pstat.executeUpdate() != 1)
 		    		throw new Exception("Could not add a problem id to a test");
 		    }
-		    
-		    pstat.close();
 		    
 		    // mark this user's record indicating this test as the active
 		    user.setActiveTest(testId);
@@ -331,12 +329,13 @@ public class HaTest {
 	    
 		Connection conn=null;
 		PreparedStatement pstat=null;
+		ResultSet rs = null;
 		try {
 			String sql = "select * from HA_TEST where test_id = ?";
 			conn = HMConnectionPool.getConnection();
 			pstat = conn.prepareStatement(sql);
 			pstat.setInt(1,testId);
-			ResultSet rs = pstat.executeQuery();
+			rs = pstat.executeQuery();
 			if(!rs.first())
 				throw new HotMathException("Could not load test");
 
@@ -347,9 +346,7 @@ public class HaTest {
 			test.setSegment(rs.getInt("test_segment"));
 			test.setNumTestQuestions(rs.getInt("test_question_count"));
 			test.setTotalSegments(rs.getInt("total_segments"));
-			pstat.close();
-			rs.close();
-
+			
 			List<String> testIds = getTestIdsForTest(test.getTestId(),conn);
 			
 			for(String pid: testIds) {
@@ -367,7 +364,7 @@ public class HaTest {
 			throw new HotMathException(e,"Error looking up Hotmath Advance user: " + e.getMessage());
 		}
 		finally {
-			SqlUtilities.releaseResources(null,pstat,conn);
+			SqlUtilities.releaseResources(rs,pstat,conn);
 		}
 	}
 	
@@ -385,6 +382,7 @@ public class HaTest {
 	public HaTestRun createTestRun(String wrongGids[], int answeredCorrect, int answeredIncorrect, int notAnswered, int totalSessions) throws HotMathException {
 		Connection conn=null;
 		PreparedStatement pstat=null;
+		ResultSet rs = null;
 		try {
 			
 			HaTest test = HaTest.loadTest(testId);
@@ -406,18 +404,13 @@ public class HaTest {
 				throw new HotMathException("Create not create new test for: " + testId);
 			
 		    int autoIncKeyFromApi = -1;
-		    ResultSet rs=null;
-		    try {
-		    	rs = pstat.getGeneratedKeys();
-		    	if (rs.next()) {
-		    		autoIncKeyFromApi = rs.getInt(1);
-		    	} else {
-		    		throw new HotMathException("Error creating PK for test");
-		    	}
+		    rs = pstat.getGeneratedKeys();
+		    if (rs.next()) {
+		   		autoIncKeyFromApi = rs.getInt(1);
+		    } else {
+		    	throw new HotMathException("Error creating PK for test");
 		    }
-		    finally {
-		    	if (rs != null) rs.close();
-		    }
+
 		    testRun.setRunId(autoIncKeyFromApi);
 			testRun.setRunTime(ts.getTime());
 			testRun.setHaTest(test);
@@ -439,7 +432,7 @@ public class HaTest {
 			throw new HotMathException(e,"Error looking up Hotmath Advance test: " + e.getMessage());
 		}
 		finally {
-			SqlUtilities.releaseResources(null,pstat,conn);
+			SqlUtilities.releaseResources(rs,pstat,conn);
 		}
 	}
 
@@ -456,13 +449,14 @@ public class HaTest {
 		
 		List<String> pids = new ArrayList<String>();
 		PreparedStatement pstat=null;
+		ResultSet rs = null;
  
 		try {
 			// now read test's pids
 			String sql = "select * from HA_TEST_IDS where test_id = ?";
 			pstat = conn.prepareStatement(sql);
 			pstat.setInt(1,testId);
-			ResultSet rs = pstat.executeQuery();
+			rs = pstat.executeQuery();
 			if(!rs.first()) {
 				// HotMathLogger.logMessage("hatest", "Could not read test pids for: " + testId,"");
 			}
@@ -474,7 +468,7 @@ public class HaTest {
 			return pids;
 		}
 		finally {
-			SqlUtilities.releaseResources(null,pstat,null);
+			SqlUtilities.releaseResources(rs,pstat,null);
 		}
 	}	
 	
