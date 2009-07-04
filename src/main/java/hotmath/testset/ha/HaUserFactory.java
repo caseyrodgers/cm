@@ -42,12 +42,13 @@ public class HaUserFactory {
     static public HaBasicUser loginToCatchup(String user, String pwd) throws Exception {
         Connection conn = null;
         PreparedStatement pstat = null;
+        ResultSet rs = null;
         try {
 
             // first see if user is in admin
             // We search the HA_ADMIN table looking
             // for a direct user/password match
-            String sql = "select * " + "from HA_ADMIN " + "where user_name = ? and passcode = ?";
+            String sql = "select * from HA_ADMIN where user_name = ? and passcode = ?";
 
             conn = HMConnectionPool.getConnection();
             try {
@@ -56,7 +57,7 @@ public class HaUserFactory {
                 pstat.setString(1, user);
                 pstat.setString(2, pwd);
 
-                ResultSet rs = pstat.executeQuery();
+                rs = pstat.executeQuery();
                 if (rs.first()) {
 
                     HaAdmin admin = new HaAdmin();
@@ -68,7 +69,7 @@ public class HaUserFactory {
                     return admin;
                 }
             } finally {
-                SqlUtilities.releaseResources(null, pstat, null);
+                SqlUtilities.releaseResources(rs, pstat, null);
             }
 
             // perhaps it is a normal student
@@ -80,14 +81,14 @@ public class HaUserFactory {
                   "from HA_USER u INNER JOIN HA_ADMIN h on u.admin_id = h.aid " +
                   "INNER JOIN SUBSCRIBERS s on s.id = h.subscriber_id " + 
                   "where s.password = ? " +
-                  "and  u.user_passcode = ? " + "  and  is_active = 1";
+                  "  and u.user_passcode = ? and u.is_active = 1";
             try {
                 pstat = conn.prepareStatement(sql);
 
                 pstat.setString(1, user);
                 pstat.setString(2, pwd);
 
-                ResultSet rs = pstat.executeQuery();
+                rs = pstat.executeQuery();
                 if (rs.first()) { 
                     int userId = rs.getInt("uid");
                     HaUser student = HaUser.lookUser(userId, null);
@@ -99,7 +100,7 @@ public class HaUserFactory {
                     return student;
                 }
             } finally {
-                SqlUtilities.releaseResources(null, pstat, null);
+                SqlUtilities.releaseResources(rs, pstat, null);
             }
 
             
@@ -111,14 +112,14 @@ public class HaUserFactory {
                   "from HA_USER u INNER JOIN HA_ADMIN h on u.admin_id = h.aid " +
                   "INNER JOIN SUBSCRIBERS s on s.id = h.subscriber_id " + 
                   "where s.student_email = ? and s.type = 'PS' " +
-                  "and  u.user_passcode = ? " + "  and  is_active = 1";
+                  "  and u.user_passcode = ? and u.is_active = 1";
             try {
                 pstat = conn.prepareStatement(sql);
 
                 pstat.setString(1, user);
                 pstat.setString(2, pwd);
 
-                ResultSet rs = pstat.executeQuery();
+                rs = pstat.executeQuery();
                 if (rs.first()) { 
                     int userId = rs.getInt("uid");
                     HaUser student = HaUser.lookUser(userId, null);
@@ -130,7 +131,7 @@ public class HaUserFactory {
                     return student;
                 }
             } finally {
-                SqlUtilities.releaseResources(null, pstat, null);
+                SqlUtilities.releaseResources(rs, pstat, null);
             }
             
             
@@ -158,13 +159,14 @@ public class HaUserFactory {
 
         Connection conn = null;
         PreparedStatement pstat = null;
+        ResultSet rs = null;
         try {
-            String sql = "select * " + "from HA_USER " + "where uid = ?";
+            String sql = "select * from HA_USER where uid = ?";
 
             conn = HMConnectionPool.getConnection();
             pstat = conn.prepareStatement(sql);
             pstat.setInt(1, DEMO_UID);
-            ResultSet rs = pstat.executeQuery();
+            rs = pstat.executeQuery();
             if (!rs.first())
                 throw new HotMathException("Error reading demo template user");
 
@@ -190,7 +192,7 @@ public class HaUserFactory {
             HaBasicUser user = loginToCatchup(demoUser, demoPwd);
             return user;
         } finally {
-            SqlUtilities.releaseResources(null, pstat, conn);
+            SqlUtilities.releaseResources(rs, pstat, conn);
         }
     }
 }
