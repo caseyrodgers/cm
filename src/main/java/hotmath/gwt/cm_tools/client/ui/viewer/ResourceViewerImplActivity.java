@@ -16,19 +16,31 @@ public class ResourceViewerImplActivity extends ResourceViewerContainer {
 	
 	
 	public Widget getResourcePanel(InmhItemData resource) {
-	    SWFWidget swfWidget = new SWFWidget(resource.getFile(),"520px","100%"); 
+	    SWFWidget swfWidget = new MySWFWidget(resource.getFile(),"520px","100%"); 
 	    swfWidget.setStyleName("activity-widget");
 	    
-	    Log.info(ResourceViewerImplActivity.class.getName() + ": HTML + " + swfWidget);
-	    
- 	    addResource(swfWidget,resource.getTitle());
- 	    
- 	    
+	    addResource(swfWidget,resource.getTitle());
  	   
 	    return this;
 	}
 	
 	public double getAllowedVerticalSpace() {
         return .90;
+    }
+}
+
+
+class MySWFWidget extends SWFWidget {
+
+    public MySWFWidget(String n, String h, String w) {
+        super(n, h, w);
+    }
+    
+    @Override
+    protected void onAfterSWFInjection() {
+        
+        String flashHtml = toString();
+        Log.info(ResourceViewerImplActivity.class.getName() + ": HTML + " + flashHtml);
+
     }
 }
