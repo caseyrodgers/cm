@@ -3,6 +3,7 @@ package hotmath.gwt.cm_tools.client.ui.viewer;
 import hotmath.gwt.cm_tools.client.data.InmhItemData;
 import pl.rmalinowski.gwt2swf.client.ui.SWFWidget;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.Style.Scroll;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -17,7 +18,12 @@ public class ResourceViewerImplActivity extends ResourceViewerContainer {
 	public Widget getResourcePanel(InmhItemData resource) {
 	    SWFWidget swfWidget = new SWFWidget(resource.getFile(),"520px","100%"); 
 	    swfWidget.setStyleName("activity-widget");
+	    
+	    Log.info(ResourceViewerImplActivity.class.getName() + ": HTML + " + swfWidget);
+	    
  	    addResource(swfWidget,resource.getTitle());
+ 	    
+ 	    
  	   
 	    return this;
 	}
