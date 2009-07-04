@@ -61,6 +61,7 @@ public class HaTestDef {
         this.name = name;
         Connection conn = null;
         PreparedStatement pstat = null;
+        ResultSet rs = null;
         try {
             String sql = "select * " + " from HA_TEST_DEF d " + " where test_name = ? ";
 
@@ -69,7 +70,7 @@ public class HaTestDef {
 
             pstat.setString(1, this.name);
 
-            ResultSet rs = pstat.executeQuery();
+            rs = pstat.executeQuery();
             if (!rs.first())
                 throw new Exception("Test definition not found");
 
@@ -81,7 +82,7 @@ public class HaTestDef {
         } catch (Exception e) {
             throw new HotMathException(e, "Error getting test definition pids: " + e.getMessage());
         } finally {
-            SqlUtilities.releaseResources(null, pstat, conn);
+            SqlUtilities.releaseResources(rs, pstat, conn);
         }
 
         indexRelatedPool = getRelatedPoolIndex();
@@ -97,6 +98,7 @@ public class HaTestDef {
     public HaTestDef(int testDefId) throws HotMathException {
         Connection conn = null;
         PreparedStatement pstat = null;
+        ResultSet rs = null;
         try {
             String sql = "select * " + " from HA_TEST_DEF d " + " where test_def_id = ? ";
 
@@ -105,7 +107,7 @@ public class HaTestDef {
 
             pstat.setInt(1, testDefId);
 
-            ResultSet rs = pstat.executeQuery();
+            rs = pstat.executeQuery();
             if (!rs.first())
                 throw new Exception("Test definition not found");
 
@@ -118,7 +120,7 @@ public class HaTestDef {
         } catch (Exception e) {
             throw new HotMathException(e, "Error getting test definition pids: " + e.getMessage());
         } finally {
-            SqlUtilities.releaseResources(null, pstat, conn);
+            SqlUtilities.releaseResources(rs, pstat, conn);
         }
 
         indexRelatedPool = getRelatedPoolIndex();
@@ -172,6 +174,7 @@ public class HaTestDef {
     public List<String> getProgramChapters() throws Exception {
         Connection conn = null;
         PreparedStatement pstat = null;
+        ResultSet rs = null;
         List<String> chapters = new ArrayList<String>();
         try {
             String sql = "select title " + " from BOOK_TOC t " + " where level = 2 " + " and textcode = ?"
@@ -182,7 +185,7 @@ public class HaTestDef {
 
             pstat.setString(1, this.textCode);
 
-            ResultSet rs = pstat.executeQuery();
+            rs = pstat.executeQuery();
             while (rs.next()) {
                 chapters.add(rs.getString("title"));
             }
@@ -192,7 +195,7 @@ public class HaTestDef {
         } catch (Exception e) {
             throw new HotMathException(e, "Error getting test definition pids: " + e.getMessage());
         } finally {
-            SqlUtilities.releaseResources(null, pstat, conn);
+            SqlUtilities.releaseResources(rs, pstat, conn);
         }
     }
 
@@ -267,6 +270,8 @@ public class HaTestDef {
 
         List<String> pids = new ArrayList<String>();
         PreparedStatement ps = null;
+        ResultSet rs = null;
+        ResultSet rs1 = null;
 
         int section = 1; // alternative tests are stored in separate sections
 
@@ -297,7 +302,7 @@ public class HaTestDef {
 
             // first run through and see how many total solutions there are ..
 
-            ResultSet rs1 = ps.executeQuery();
+            rs1 = ps.executeQuery();
             int cnt = 0;
             while (rs1.next()) {
                 cnt++;
@@ -314,7 +319,7 @@ public class HaTestDef {
             ps.setInt(5, segPnEnd);
 
             // execute query and build list of ids in test
-            ResultSet rs = ps.executeQuery();
+            rs = ps.executeQuery();
             if (!rs.first()) {
                 throw new HotMathException("No problems for test segment: " + ps);
             }
@@ -323,7 +328,8 @@ public class HaTestDef {
                 pids.add(pid);
             } while (rs.next());
         } finally {
-            SqlUtilities.releaseResources(null, ps, null);
+            SqlUtilities.releaseResources(rs1, null, null);
+            SqlUtilities.releaseResources(rs, ps, null);
         }
         return pids;
     }

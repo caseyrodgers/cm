@@ -31,6 +31,7 @@ public class HaTestDefPlacement extends HaTestDef {
 	public List<String> getTestIdsForSegment(int segment, HaTestConfig config, Connection conn) throws Exception {
 		_lastSegment = segment;
 		PreparedStatement ps=null;
+		ResultSet rs = null;
 		try {
 			// Create list of 7 random solutions from
 			// each text group that is listed in the
@@ -44,7 +45,7 @@ public class HaTestDefPlacement extends HaTestDef {
 			
 			ps.setString(1,TEXTCODE);
 			ps.setString(2, this.PLACEMENT_CHAPTERS[segment-1]);
-			ResultSet rs = ps.executeQuery();
+			rs = ps.executeQuery();
 			if(!rs.first())
 				throw new Exception("could not initialize HaTestDefPlacement: no rows found to initialize");
 			do {
@@ -53,7 +54,7 @@ public class HaTestDefPlacement extends HaTestDef {
 			return list;
 		}
 		finally {
-			SqlUtilities.releaseResources(null,ps,null);
+			SqlUtilities.releaseResources(rs,ps,null);
 		}		
 	}
 	
