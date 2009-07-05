@@ -16,9 +16,8 @@ public class ResourceViewerImplActivity extends ResourceViewerContainer {
 	
 	
 	public Widget getResourcePanel(InmhItemData resource) {
-	    SWFWidget swfWidget = new MySWFWidget(resource.getFile(),"520px","100%"); 
+	    SWFWidget swfWidget = new SWFWidget(resource.getFile(),"100%","650px");
 	    swfWidget.setStyleName("activity-widget");
-	    
 	    addResource(swfWidget,resource.getTitle());
  	   
 	    return this;
@@ -30,10 +29,15 @@ public class ResourceViewerImplActivity extends ResourceViewerContainer {
 }
 
 
+/** Special SWFWidget to spit out the contents of the Flash widget
+ * 
+ * @author casey
+ *
+ */
 class MySWFWidget extends SWFWidget {
 
-    public MySWFWidget(String n, String h, String w) {
-        super(n, h, w);
+    public MySWFWidget(String n, String w, String h) {
+        super(n, w, h);
     }
     
     @Override
