@@ -16,7 +16,7 @@ public class ResourceViewerImplActivity extends ResourceViewerContainer {
 	
 	
 	public Widget getResourcePanel(InmhItemData resource) {
-	    SWFWidget swfWidget = new SWFWidget(resource.getFile(),"100%","450px");
+	    SWFWidget swfWidget = new SWFWidget(resource.getFile(),"530px","450px");
 	    swfWidget.setStyleName("activity-widget");
 	    addResource(swfWidget,resource.getTitle());
  	   
