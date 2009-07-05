@@ -45,7 +45,7 @@ public class HaTest {
 	}
 
 	public int getNumTestQuestions() {
-		return numTestQuestions;
+		return numTestQuestions;  
 	}
 
 	public void setNumTestQuestions(int numTestQuestions) {
