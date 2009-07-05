@@ -248,11 +248,14 @@ public class HaTest {
 		ResultSet rs = null;
 		try {
 			
-			HaUser user = HaUser.lookUser(uid,null);
+
 			
-			HaTestConfig config = user.getTestConfig(); 
+ 
 			
 			conn = HMConnectionPool.getConnection();
+			
+	        HaUser user = HaUser.lookUser(conn,uid,null);
+            HaTestConfig config = user.getTestConfig();
 			
 			List<String> testIds = testDef.getTestIdsForSegment(segment,config,conn);
 			
@@ -341,7 +344,7 @@ public class HaTest {
 
 			HaTest test = new HaTest();
 			test.setTestId(rs.getInt("test_id"));
-			test.setUser(HaUser.lookUser(rs.getInt("user_id"),null));
+			test.setUser(HaUser.lookUser(conn,rs.getInt("user_id"),null));
 			test.setTestDef(HaTestDefFactory.createTestDef(rs.getInt("test_def_id"), conn));
 			test.setSegment(rs.getInt("test_segment"));
 			test.setNumTestQuestions(rs.getInt("test_question_count"));

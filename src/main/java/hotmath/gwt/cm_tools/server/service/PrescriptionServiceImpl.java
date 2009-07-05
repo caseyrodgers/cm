@@ -1,19 +1,12 @@
 package hotmath.gwt.cm_tools.server.service;
 
-import hotmath.HotMathException;
-import hotmath.HotMathLogger;
 import hotmath.HotMathProperties;
 import hotmath.HotMathUtilities;
 import hotmath.ProblemID;
 import hotmath.SolutionManager;
 import hotmath.assessment.AssessmentPrescription;
 import hotmath.assessment.AssessmentPrescriptionManager;
-import hotmath.assessment.AssessmentPrescriptionSession;
 import hotmath.gwt.cm_admin.server.model.CmAdminDao;
-import hotmath.gwt.cm_tools.client.data.InmhItemData;
-import hotmath.gwt.cm_tools.client.data.PrescriptionData;
-import hotmath.gwt.cm_tools.client.data.PrescriptionSessionData;
-import hotmath.gwt.cm_tools.client.data.PrescriptionSessionDataResource;
 import hotmath.gwt.cm_tools.client.model.ChapterModel;
 import hotmath.gwt.cm_tools.client.model.GroupModel;
 import hotmath.gwt.cm_tools.client.model.StudentActivityModel;
@@ -24,13 +17,14 @@ import hotmath.gwt.cm_tools.client.model.SubjectModel;
 import hotmath.gwt.cm_tools.client.service.PrescriptionService;
 import hotmath.gwt.cm_tools.client.ui.NextAction;
 import hotmath.gwt.cm_tools.client.ui.NextAction.NextActionName;
+import hotmath.gwt.shared.client.rpc.action.GetPrescriptionAction;
+import hotmath.gwt.shared.client.rpc.action.GetSolutionAction;
+import hotmath.gwt.shared.client.rpc.action.GetViewedInmhItemsAction;
 import hotmath.gwt.shared.client.util.CmRpcException;
 import hotmath.gwt.shared.client.util.RpcData;
-import hotmath.inmh.INeedMoreHelpItem;
-import hotmath.inmh.INeedMoreHelpResourceType;
+import hotmath.gwt.shared.server.service.ActionDispatcher;
+import hotmath.gwt.shared.server.service.command.GetPrescriptionCommand;
 import hotmath.solution.Solution;
-import hotmath.solution.writer.SolutionHTMLCreatorIimplVelocity;
-import hotmath.solution.writer.TutorProperties;
 import hotmath.testset.TestSet;
 import hotmath.testset.ha.HaTest;
 import hotmath.testset.ha.HaTestDef;
@@ -65,316 +59,52 @@ import sb.util.SbFile;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
 public class PrescriptionServiceImpl extends RemoteServiceServlet implements PrescriptionService {
-
+    
+    private static final long serialVersionUID = 1034624620689798799L;
+    
     Logger logger = Logger.getLogger(PrescriptionServiceImpl.class);
 
     public PrescriptionServiceImpl() {
-        System.out.println("PrescriptionServiceImpl Created");
+        logger.debug("PrescriptionServiceImpl Created");
     }
 
-    /**
-     * Transfer data from local data structures into JSON
-     * 
-     * 
-     * Show all INMH types, and provide an empty one where none exist
-     * 
-     * Lesson, Video, Activities, Required Problems, Extra Problems
-     * 
-     * 
-     * marks the user object with the current active session
-     * 
-     * @param runId
-     *            The run id
-     * @param sessionNumber
-     *            The session number to load
-     * @param updateActiveInfo
-     *            Should the user's active info be updated. If false, then no
-     *            user state is changed.
-     * 
-     */
-    public RpcData getPrescriptionSessionJson(int runId, int sessionNumber, boolean updateActiveInfo)
-            throws CmRpcException {
-        Connection conn=null;
+
+    public RpcData getPrescriptionSessionJson(int runId, int sessionNumber, boolean updateActiveInfo) throws CmRpcException {
         try {
-            
-            conn = HMConnectionPool.getConnection();
-            
-            AssessmentPrescription pres = AssessmentPrescriptionManager.getInstance().getPrescription(runId);
-
-            int totalSessions = pres.getSessions().size();
-            if (totalSessions == 0) {
-                // no prescription created (no missed answers?)
-                RpcData rdata = new RpcData();
-                rdata.putData("correct_percent", 100);
-                return rdata;
-            }
-            // which session
-            if (sessionNumber > (totalSessions - 1)) {
-                System.out.println("WARNING: session request for " + runId + " is outside bounds of prescription: "
-                        + sessionNumber + ", " + totalSessions);
-                sessionNumber = 0;
-            }
-            AssessmentPrescriptionSession sess = pres.getSessions().get(sessionNumber);
-
-            PrescriptionData presData = new PrescriptionData();
-
-            List<AssessmentPrescription.SessionData> practiceProblems = sess.getSessionDataFor(sess.getTopic());
-            PrescriptionSessionDataResource problemsResource = new PrescriptionSessionDataResource();
-            problemsResource.setType("practice");
-            problemsResource.setLabel("Required Practice Problems");
-            int cnt = 1;
-            for (AssessmentPrescription.SessionData sdata : practiceProblems) {
-                InmhItemData id = new InmhItemData();
-                id.setTitle("Problem " + cnt++);
-                id.setFile(sdata.getPid());
-                id.setType("practice");
-
-                problemsResource.getItems().add(id);
-            }
-
-            PrescriptionSessionDataResource lessonResource = new PrescriptionSessionDataResource();
-            lessonResource.setType("review");
-            lessonResource.setLabel("Review Lesson");
-            InmhItemData lessonId = new InmhItemData();
-
-            // Get the lesson this session is based on
-            // each session is a single topic
-            INeedMoreHelpItem item = sess.getSessionCategories().get(0);
-            lessonId.setTitle(item.getTitle());
-            lessonId.setFile(item.getFile());
-            lessonId.setType(item.getType());
-            lessonResource.getItems().add(lessonId);
-
-            // always send complete list of all topics
-            // @TODO: should we have an initialize phase and return this info
-            // This would impose two request/response
-            PrescriptionSessionData sessionData = new PrescriptionSessionData();
-            for (AssessmentPrescriptionSession s : pres.getSessions()) {
-                presData.getSessionTopics().add(s.getTopic());
-            }
-            presData.setCurrSession(sessionData);
-
-            sessionData.setTopic(sess.getTopic());
-            sessionData.setSessionNumber(sessionNumber);
-            sessionData.setName(sess.getName());
-            for (INeedMoreHelpResourceType t : sess.getPrescriptionInmhTypesDistinct()) {
-
-                // skip the workbooks for now.
-                if (t.getTypeDef().getType().equals("workbook"))
-                    continue;
-
-                PrescriptionSessionDataResource resource = new PrescriptionSessionDataResource();
-                resource.setType(t.getTypeDef().getType());
-                resource.setLabel(t.getTypeDef().getLabel());
-                for (INeedMoreHelpItem i : t.getResources()) {
-                    InmhItemData id = new InmhItemData();
-                    id.setFile(i.getFile());
-                    id.setTitle(i.getTitle());
-                    id.setType(i.getType());
-
-                    resource.getItems().add(id);
-                }
-                sessionData.getInmhResources().add(resource);
-            }
-
-            // add a results resource type to allow user to view current results
-            PrescriptionSessionDataResource resultsResource = new PrescriptionSessionDataResource();
-            resultsResource.setType("results");
-            resultsResource.setLabel("Quiz Results");
-            InmhItemData id = new InmhItemData();
-            id.setTitle("Your quiz results");
-            id.setFile("");
-            id.setType("results");
-            resultsResource.getItems().add(id);
-
-            sessionData.getInmhResources().add(lessonResource);
-            sessionData.getInmhResources().add(problemsResource);
-            sessionData.getInmhResources().add(resultsResource);
-
-            // mark all items as viewed/not
-            // .. get list of viewed items so far
-            List<RpcData> rdata = getViewedInmhItems(runId);
-            List<PrescriptionSessionDataResource> resources = fixupInmhResources(sessionData.getInmhResources());
-            for (PrescriptionSessionDataResource r : resources) {
-                for (InmhItemData itemData : r.getItems()) {
-                    // is this item viewed?
-                    for (RpcData rd : rdata) {
-                        if (rd.getDataAsString("file").equals(itemData.getFile())) {
-                            itemData.setViewed(true);
-                            break;
-                        }
-                    }
-                }
-            }
-            sessionData.setInmhResources(resources);
-
-            // update this user's active run session
-            if (updateActiveInfo) {
-                pres.getTest().getUser().setActiveTestRunSession(sessionNumber);
-                pres.getTest().getUser().update(conn);
-            }
-
-            RpcData rdata2 = new RpcData();
-            rdata2.putData("json", Jsonizer.toJson(presData));
-            rdata2.putData("correct_percent", getTestPassPercent(pres.getTest().getTestQuestionCount(), pres
-                    .getTestRun().getAnsweredCorrect()));
-            rdata2.putData("program_title", pres.getTest().getTestDef().getTitle());
-            return rdata2;
-
-        } catch (Exception e) {
-            e.printStackTrace();
+            GetPrescriptionAction getPresAction = new GetPrescriptionAction(runId,sessionNumber, updateActiveInfo);
+            return ActionDispatcher.getInstance().execute(getPresAction);
         }
-        finally {
-            SqlUtilities.releaseResources(null,null,conn);
-        }
-
-        return null;
-    }
-
-    /**
-     * Return the percent of correct from total
-     * 
-     * @param total
-     * @param correct
-     * @return
-     */
-    private int getTestPassPercent(int total, int correct) {
-
-        double percent = ((double) correct / (double) total) * 100.0d;
-
-        int ipercent = (int) Math.floor(percent);
-        return ipercent;
-    }
-
-    /**
-     * Make sure that ALL resources are in list, and provide a dummy if none do.
-     * 
-     * @param inmhTypes
-     */
-    private List<PrescriptionSessionDataResource> fixupInmhResources(List<PrescriptionSessionDataResource> inmhTypes) {
-
-        List<PrescriptionSessionDataResource> newTypes = new ArrayList<PrescriptionSessionDataResource>();
-        String types[][] = {
-                { "Required Practice Problems", "practice", "Practice problems you must complete before advancing" },
-                { "Video", "video", "Math videos related to the current topic" },
-                { "Activities", "activity", "Math activities and games related to the current topic" },
-                { "Extra Practice Problems", "cmextra", "Additional workbook problems" },
-                { "Lesson", "review", "Review lesson on the current topic" },
-                { "Quiz Results", "results", "The current quiz's results" } };
-
-        for (int i = 0; i < types.length; i++) {
-            String type[] = types[i];
-
-            // find this type, if not exist .. create it
-            boolean found = false;
-            for (PrescriptionSessionDataResource r : inmhTypes) {
-                if (r.getType().equals(type[1])) {
-                    // exists, so add it
-                    r.setLabel(type[0]);
-                    r.setDescription(type[2]);
-                    newTypes.add(r);
-                    found = true;
-                    break;
-                }
-            }
-            if (!found) {
-                PrescriptionSessionDataResource nr = new PrescriptionSessionDataResource();
-                nr.setLabel(type[0]);
-                nr.setType(type[1]);
-                nr.setDescription(type[2]);
-                InmhItemData iid = new InmhItemData();
-                iid.setTitle("No " + type[0] + " Available");
-                iid.setType(type[1]);
-                iid.setFile("");
-                // nr.getItems().add(iid);
-
-                newTypes.add(nr);
-            }
-        }
-        return newTypes;
-    }
-
-    /**
-     * Return the raw HTML that makes up the solution
-     * 
-     * Use the uid to lookup if this solution has any ShowWork applied
-     * 
-     * Return RpcData with the following members: solutionHtml, hasShowWork
-     * 
-     */
-    static SolutionHTMLCreatorIimplVelocity __creator;
-    static TutorProperties __tutorProps = new TutorProperties();
-    static {
-        try {
-            __creator = new SolutionHTMLCreatorIimplVelocity(__tutorProps.getTemplate(), __tutorProps.getTutor());
-        } catch (HotMathException hme) {
-            HotMathLogger.logMessage(hme, "Error creating solution creator: " + hme);
-        }
-    }
-
-    public RpcData getSolutionHtml(int uid, String pid) throws CmRpcException {
-        try {
-
-            String solutionHtml = __creator.getSolutionHTML(__tutorProps, pid).getMainHtml();
-
-            ProblemID ppid = new ProblemID(pid);
-            String path = ppid.getSolutionPath_DirOnly("solutions");
-            solutionHtml = HotMathUtilities.makeAbsolutePaths(path, solutionHtml);
-
-            Map<String, String> map = new HashMap<String, String>();
-            map.put("solution_html", solutionHtml);
-
-            InputStream is = getClass().getResourceAsStream("tutor_wrapper.vm");
-            BufferedReader br = new BufferedReader(new InputStreamReader(is));
-            String tutorWrapper = null;
-            StringBuilder sb = new StringBuilder();
-            while ((tutorWrapper = br.readLine()) != null) {
-                sb.append(tutorWrapper);
-            }
-            tutorWrapper = sb.toString();
-
-            solutionHtml = VelocityTemplateFromStringManager.getInstance().processTemplate(tutorWrapper, map);
-
-            RpcData rpcData = new RpcData();
-            rpcData.putData("solutionHtml", solutionHtml);
-            rpcData.putData("hasShowWork", getHasShowWork(uid, pid) ? 1 : 0);
-            // solutionHtml = "<b><img src='images/logo_1.gif'/>TEST 1</b>";
-            return rpcData;
-        } catch (Exception e) {
-            e.printStackTrace();
+        catch(Exception e) {
             throw new CmRpcException(e);
         }
     }
+    
+    
 
-    /**
-     * Return true if this solution has any Show Work activity for this user.
-     * 
-     * 
-     * @param uid
-     * @param pid
-     * @return
-     * @throws Exception
-     */
-    private boolean getHasShowWork(int uid, String pid) throws Exception {
-        Connection conn = null;
-        PreparedStatement pstat = null;
+    public ArrayList<RpcData> getViewedInmhItems(int runId) throws CmRpcException {
         try {
-            String sql = "select count(*) as cnt from HA_TEST_RUN_WHITEBOARD " + " where user_id = ? and pid = ?";
-
-            conn = HMConnectionPool.getConnection();
-            pstat = conn.prepareStatement(sql);
-
-            pstat.setInt(1, uid);
-            pstat.setString(2, pid);
-
-            ResultSet rs = pstat.executeQuery();
-            rs.first();
-            int cnt = rs.getInt("cnt");
-            return cnt > 0;
-        } finally {
-            SqlUtilities.releaseResources(null, pstat, conn);
+            GetViewedInmhItemsAction getViewedAction = new GetViewedInmhItemsAction(runId);
+            List<RpcData> rdata = ActionDispatcher.getInstance().execute(getViewedAction).getRpcData();
+            
+            return (ArrayList<RpcData>)rdata;
+        }
+        catch(Exception e) {
+            throw new CmRpcException(e);
         }
     }
+    
+    
+    public RpcData getSolutionHtml(int userId, String pid) throws CmRpcException {
+        try {
+            GetSolutionAction getViewedAction = new GetSolutionAction(userId, pid);
+            return ActionDispatcher.getInstance().execute(getViewedAction);
+        }
+        catch(Exception e) {
+            throw new CmRpcException(e);
+        }        
+    }
+
+
 
     public String getSolutionProblemStatementHtml(String pid) {
         try {
@@ -398,11 +128,13 @@ public class PrescriptionServiceImpl extends RemoteServiceServlet implements Pre
      * Returns valid HTML segment or null on error.
      */
     public RpcData getQuizHtml(int uid, int testSegment) {
+        Connection conn = null;
         try {
+            conn = HMConnectionPool.getConnection();
             String quizHtmlTemplate = readQuizHtml();
             Map<String, Object> map = new HashMap<String, Object>();
 
-            HaUser user = HaUser.lookUser(uid, null);
+            HaUser user = HaUser.lookUser(conn, uid,null);
             String testName = user.getAssignedTestName();
 
             if (testSegment == 0)
@@ -440,6 +172,9 @@ public class PrescriptionServiceImpl extends RemoteServiceServlet implements Pre
             return rpcData;
         } catch (Exception e) {
             e.printStackTrace();
+        }
+        finally {
+            SqlUtilities.releaseResources(null,null,conn);
         }
 
         return null;
@@ -531,11 +266,10 @@ public class PrescriptionServiceImpl extends RemoteServiceServlet implements Pre
      *         __gwt.typeArgs <hotmath.gwt.cm.client.util.RpcData>
      */
     public ArrayList<RpcData> getQuizCurrentResults(int userId) throws CmRpcException {
-        // TODO Auto-generated method stub
         Connection conn=null;
         try {
             conn = HMConnectionPool.getConnection();
-            int testId = HaUser.lookUser(userId, null).getActiveTest();
+            int testId = HaUser.lookUser(conn, userId,null).getActiveTest();
             List<HaTestRunResult> testResults = HaTest.loadTest(testId).getTestCurrentResponses(conn);
             ArrayList<RpcData> rpcData = new ArrayList<RpcData>();
             for (HaTestRunResult tr : testResults) {
@@ -648,48 +382,7 @@ public class PrescriptionServiceImpl extends RemoteServiceServlet implements Pre
         }
     }
 
-    public ArrayList<RpcData> getViewedInmhItems(int runId) throws CmRpcException {
-        ArrayList<RpcData> data = new ArrayList<RpcData>();
-        try {
-            HaTestRun run = HaTestRun.lookupTestRun(runId);
-            AssessmentPrescription assessment = AssessmentPrescriptionManager.getInstance().getPrescription(
-                    run.getRunId());
-            String sessionStatusJson = assessment.getSessionStatusJson();
-            Connection conn = null;
-            PreparedStatement pstat = null;
-            try {
-                String sql = "select * from HA_TEST_RUN_INMH_USE where run_id = ?";
-                conn = HMConnectionPool.getConnection();
-                pstat = conn.prepareStatement(sql);
-
-                pstat.setInt(1, runId);
-
-                ResultSet rs = pstat.executeQuery();
-                while (rs.next()) {
-                    String type = rs.getString("item_type");
-                    String file = rs.getString("item_file");
-
-                    RpcData rpcData = new RpcData();
-                    rpcData.putData("type", type);
-                    rpcData.putData("file", file);
-                    data.add(rpcData);
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-                throw new CmRpcException("Error adding test run item view: " + e.getMessage());
-            } finally {
-                SqlUtilities.releaseResources(null, pstat, conn);
-            }
-
-        } catch (Exception e) {
-            throw new CmRpcException(e);
-        }
-        return data;
-    }
-
-    private int getTotalInmHViewCount(int uid) throws Exception {
-
-        Connection conn = null;
+    private int getTotalInmHViewCount(int uid,Connection conn) throws Exception {
         PreparedStatement pstat = null;
         try {
             String sql = "select count(*) from v_HA_USER_INMH_VIEWS_TOTAL where uid = ?";
@@ -705,13 +398,16 @@ public class PrescriptionServiceImpl extends RemoteServiceServlet implements Pre
             e.printStackTrace();
             throw new CmRpcException("Error adding test run item view: " + e.getMessage());
         } finally {
-            SqlUtilities.releaseResources(null, pstat, conn);
+            SqlUtilities.releaseResources(null, pstat, null);
         }
     }
 
     public RpcData getUserInfo(int uid) throws CmRpcException {
+        Connection conn = null;
         try {
-            HaUser user = HaUser.lookUser(uid, null);
+            conn = HMConnectionPool.getConnection();
+            
+            HaUser user = HaUser.lookUser(conn, uid,null);
 
             RpcData rpcData = new RpcData();
             rpcData.putData("uid", user.getUid());
@@ -725,7 +421,7 @@ public class PrescriptionServiceImpl extends RemoteServiceServlet implements Pre
             rpcData.putData("show_work_required", user.isShowWorkRequired() ? 1 : 0);
             rpcData.putData("user_account_type",user.getUserAccountType());
 
-            int totalViewCount = getTotalInmHViewCount(uid);
+            int totalViewCount = getTotalInmHViewCount(uid,conn);
 
             rpcData.putData("view_count", totalViewCount);
 
@@ -733,6 +429,9 @@ public class PrescriptionServiceImpl extends RemoteServiceServlet implements Pre
         } catch (Exception e) {
             e.printStackTrace();
             throw new CmRpcException(e);
+        }
+        finally {
+            SqlUtilities.releaseResources(null,null,conn);
         }
     }
 
@@ -817,7 +516,7 @@ public class PrescriptionServiceImpl extends RemoteServiceServlet implements Pre
             }
 
             rdata.putData("run_id", run.getRunId());
-            rdata.putData("correct_percent", getTestPassPercent(run.getHaTest().getNumTestQuestions(), run
+            rdata.putData("correct_percent", GetPrescriptionCommand.getTestPassPercent(run.getHaTest().getNumTestQuestions(), run
                     .getAnsweredCorrect()));
             return rdata;
 
@@ -833,7 +532,7 @@ public class PrescriptionServiceImpl extends RemoteServiceServlet implements Pre
         Connection conn=null;
         try {
             conn = HMConnectionPool.getConnection();
-            HaUser user = HaUser.lookUser(userId, null);
+            HaUser user = HaUser.lookUser(conn, userId,null);
             user.setActiveTest(0);
             user.setActiveTestRunId(0);
             user.setActiveTestSegment(0);
@@ -884,7 +583,7 @@ public class PrescriptionServiceImpl extends RemoteServiceServlet implements Pre
         Connection conn=null;
         try {
             conn = HMConnectionPool.getConnection();
-            HaUser user = HaUser.lookUser(userId, null);
+            HaUser user = HaUser.lookUser(conn, userId,null);
             user.setBackgroundStyle(backgroundStyle);
             user.update(conn);
         } catch (Exception e) {
@@ -901,8 +600,6 @@ public class PrescriptionServiceImpl extends RemoteServiceServlet implements Pre
         PreparedStatement pstat = null;
 
         try {
-
-            String xml = null;
 
             String sql = "insert into HA_FEEDBACK(entry_date, comment,comment_url,state_info)values(now(),?,?,?)";
 

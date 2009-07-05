@@ -1,5 +1,7 @@
 package hotmath.gwt.shared.client.util;
 
+import hotmath.gwt.shared.client.rpc.Response;
+
 import java.util.HashMap;
 import java.util.List;
 
@@ -16,7 +18,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  * @author Casey
  * 
  */
-public class RpcData implements IsSerializable {
+public class RpcData implements Response, IsSerializable {
     /**
      * HashMap that will always contain strings for both keys and values
      */

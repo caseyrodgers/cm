@@ -197,7 +197,6 @@ public class HaUser extends HaBasicUserImpl {
 	
 	
 	/** Lookup and return HaUser user based on uid (PK) 
-	 * 
 	 * @param uid THe uid for this user
 	 * @param userName The user name to use for lookup.
 	 * 
@@ -208,8 +207,7 @@ public class HaUser extends HaBasicUserImpl {
 	 * @return
 	 * @throws HotMathException
 	 */
-	static public HaUser lookUser(Integer uid,String userName) throws HotMathException {
-		Connection conn=null;
+	static public HaUser lookUser(Connection conn,Integer uid,String userName) throws HotMathException {
 		PreparedStatement pstat=null;
 		ResultSet rs = null;
 		try {
@@ -225,7 +223,6 @@ public class HaUser extends HaBasicUserImpl {
 			else 
 				sql += " where u.user_name = ?";
 			
-			conn = HMConnectionPool.getConnection();
 			pstat = conn.prepareStatement(sql);
 			HaUser user = new HaUser();
 			
@@ -260,7 +257,7 @@ public class HaUser extends HaBasicUserImpl {
 			throw new HotMathException(e,"Error looking up Catchup Math user");
 		}
 		finally {
-			SqlUtilities.releaseResources(rs,pstat,conn);
+			SqlUtilities.releaseResources(rs,pstat,null);
 		}
 	}
 	
@@ -280,7 +277,7 @@ public class HaUser extends HaBasicUserImpl {
 	        	throw new Exception("Passcode not found");
 	        
 	        int userId = rs.getInt("uid");
-	        return lookUser(userId,null);
+	        return lookUser(conn,userId,null);
 	    }
 	    catch(HotMathException hme) {
 	        throw hme;
@@ -322,7 +319,7 @@ public class HaUser extends HaBasicUserImpl {
 		    } else {
 		    	throw new HotMathException("Error creating PK for user");
 		    }
-	        HaUser user = lookUser(uid,null);
+	        HaUser user = lookUser(conn,uid,null);
 	        return user;
 	    }
 	    catch(HotMathException hme) {

@@ -194,20 +194,6 @@ public class AssessmentPrescriptionSession {
     }
 
     /**
-     * Look up the specific INMH types for this prescription.
-     * 
-     * This is done by finding all resources that are directly linked to each
-     * topic item via inmh_link.
-     * 
-     * Each item should be filtered to only show items that are at the users
-     * level or below (ie, keep advanced videos from cluttering list).
-     * 
-     */
-    public List<INeedMoreHelpResourceType> getPrescriptionInmhTypes() throws HotMathException {
-        return getPrescriptionInmhTypes(null);
-    }
-
-    /**
      * Return distinct INMH items used by this session.
      * 
      * Return unique resource types (ie, video, workbook) and all the items that
@@ -218,10 +204,10 @@ public class AssessmentPrescriptionSession {
      * @return
      * @throws Exception
      */
-    public Collection<INeedMoreHelpResourceType> getPrescriptionInmhTypesDistinct() throws HotMathException {
+    public Collection<INeedMoreHelpResourceType> getPrescriptionInmhTypesDistinct(Connection conn) throws HotMathException {
         Map<String, INeedMoreHelpResourceType> types = new HashMap<String, INeedMoreHelpResourceType>();
         INeedMoreHelpResourceType resourceType = null;
-        for (INeedMoreHelpResourceType type : getPrescriptionInmhTypes()) {
+        for (INeedMoreHelpResourceType type : getPrescriptionInmhTypes(null,conn)) {
             if (type.getResources().size() == 0)
                 continue;
 
@@ -250,13 +236,13 @@ public class AssessmentPrescriptionSession {
 
     
     /** Return list of Filtered resource types, showing only items 
-     *  that are app for the current test/segment
+     *  that are applicable for the current test/segment
      * 
-     * @param linkTypeIn
+     * @param linkTypeIn The type to match, matches all if null
      * @return
      * @throws HotMathException
      */
-    public List<INeedMoreHelpResourceType> getPrescriptionInmhTypes(String linkTypeIn) throws HotMathException {
+    public List<INeedMoreHelpResourceType> getPrescriptionInmhTypes(String linkTypeIn, Connection conn) throws HotMathException {
 
         if (linkTypeIn == null)
             linkTypeIn = "";
@@ -271,7 +257,6 @@ public class AssessmentPrescriptionSession {
             topicList += "'" + item.getFile() + "'";
         }
 
-        Connection conn = null;
         PreparedStatement pstat = null;
         try {
             // String sql =
@@ -330,7 +315,7 @@ public class AssessmentPrescriptionSession {
         } catch (Exception e) {
             throw new HotMathException(e, "Error reading prescription inmh items: " + e.getMessage());
         } finally {
-            SqlUtilities.releaseResources(null, pstat, conn);
+            SqlUtilities.releaseResources(null, pstat, null);
         }
 
         return resourceTypes;
