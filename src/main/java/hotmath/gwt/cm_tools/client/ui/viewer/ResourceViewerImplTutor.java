@@ -10,6 +10,7 @@ import hotmath.gwt.shared.client.eventbus.EventBus;
 import hotmath.gwt.shared.client.util.RpcData;
 import hotmath.gwt.shared.client.util.UserInfo;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.Registry;
 import com.extjs.gxt.ui.client.Style.Scroll;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
@@ -78,6 +79,8 @@ public class ResourceViewerImplTutor extends ResourceViewerContainer implements 
      * 
      */
     public void showSolution() {
+        
+        Log.debug("ResourceViewerImplTutor: loading solution '" + pid + "'");
         
         // call for the solution HTML
         PrescriptionServiceAsync s = (PrescriptionServiceAsync) Registry.get("prescriptionService");

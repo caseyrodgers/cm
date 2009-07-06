@@ -449,6 +449,9 @@ class ResourceList extends ListView<ResourceModel> implements Listener {
                 new AsyncCallback() {
 
                     public void onSuccess(Object result) {
+                        
+                        Log.debug("PrescriptionResourceAccord: setItemAsViewed: " + resourceItem);
+                        
                         // update the total count in the Header
                         int vc = UserInfo.getInstance().getViewCount();
                         UserInfo.getInstance().setViewCount(++vc);
