@@ -4,6 +4,7 @@ import hotmath.BookInfo;
 import hotmath.BookInfoManager;
 import hotmath.HotMathException;
 import hotmath.HotMathLogger;
+import hotmath.cm.util.CmCacheManager;
 import hotmath.util.HMConnectionPool;
 import hotmath.util.sql.SqlUtilities;
 
@@ -17,8 +18,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
-import com.hotmath.cm.servlet.CmCacheManager;
 
 /**
  * A single Hotmath Advance test definition.
@@ -46,6 +47,7 @@ import com.hotmath.cm.servlet.CmCacheManager;
  */
 public class HaTestDef {
 
+    static Logger logger = Logger.getLogger(HaTestDef.class.getName());
     static public int PREALG_PROFICENCY = 16;
 
     String name;
@@ -67,12 +69,12 @@ public class HaTestDef {
         this.name = name;
         
         // try cache first
-        HaTestDef td = retrieveFromCache(name);
+        HaTestDef td = (HaTestDef)CmCacheManager.getInstance().retrieveFromCache(CmCacheManager.CacheName.TEST_DEF, name);
         if (td != null) {
         	this.textCode = td.getTextCode();
         	this.chapter = td.getChapter();
         	this.testDefId = td.getTestDefId();
-        	System.out.println("HaTestDef(): retrieved name: " + name);
+        	logger.info("HaTestDef(): retrieved name: " + name);
         	return;
         }
         
@@ -95,7 +97,7 @@ public class HaTestDef {
             this.chapter = rs.getString("chapter");
             this.testDefId = rs.getInt("test_def_id");
             
-            addToCache(this);
+            CmCacheManager.getInstance().addToCache(CmCacheManager.CacheName.TEST_DEF,this.getName(), this);
             
         } catch (HotMathException hme) {
             throw hme;
@@ -113,52 +115,6 @@ public class HaTestDef {
     // per segment title
     public String getSubTitle(int segment) {
         return "";
-    }
-
-    public HaTestDef(int testDefId) throws HotMathException {
-    	
-        // try cache first
-        HaTestDef td = retrieveFromCache(name);
-        if (td != null) {
-        	this.textCode = td.getTextCode();
-        	this.chapter = td.getChapter();
-        	this.testDefId = td.getTestDefId();
-        	this.name = td.getName();
-        	System.out.println("HaTestDef(): retrieved id: " + testDefId);
-        	return;
-        }
-        
-        Connection conn = null;
-        PreparedStatement pstat = null;
-        ResultSet rs = null;
-        try {
-            String sql = "select * " + " from HA_TEST_DEF d " + " where test_def_id = ? ";
-
-            conn = HMConnectionPool.getConnection();
-            pstat = conn.prepareStatement(sql);
-
-            pstat.setInt(1, testDefId);
-
-            rs = pstat.executeQuery();
-            if (!rs.first())
-                throw new Exception("Test definition not found");
-
-            this.name = rs.getString("test_name");
-            this.textCode = rs.getString("textcode");
-            this.chapter = rs.getString("chapter");
-            this.testDefId = rs.getInt("test_def_id");
-            
-            addToCache(td);
-            
-        } catch (HotMathException hme) {
-            throw hme;
-        } catch (Exception e) {
-            throw new HotMathException(e, "Error getting test definition pids: " + e.getMessage());
-        } finally {
-            SqlUtilities.releaseResources(rs, pstat, conn);
-        }
-
-        indexRelatedPool = getRelatedPoolIndex();
     }
 
     /**
@@ -381,30 +337,5 @@ public class HaTestDef {
     public String getTestInitJson(HaTest test) throws Exception {
         return null;
     }
-    
-    private HaTestDef retrieveFromCache(String name) {
-    	CacheManager cm = CacheManager.getInstance();
-    	Cache cache = cm.getCache(CmCacheManager.TEST_DEF_CACHE_KEY);
-    	
-    	Element el = cache.get(name);
-    	if(el != null) {
-    	    // return value if in cache
-    	    return (HaTestDef)cache.get(name).getObjectValue();
-    	}
-    	else {
-    	    // if not in cache, return null
-    	    return null;
-    	}
-    }
-    
-    private void addToCache(HaTestDef td) {
-    	CacheManager cm = CacheManager.getInstance();
-    	Cache cache = cm.getCache(CmCacheManager.TEST_DEF_CACHE_KEY);
-    	Element e = new Element(td.getName(), td, true, null, null);
-    	cache.put(e);
-    	System.out.println("+++ addToCache(): td.name: " + td.getName());
-    	e = new Element(td.getTestDefId(), td, true, null, null);
-    	cache.put(e);
-    	System.out.println("+++ addToCache(): td.testDefId: " + td.getTestDefId());
-    }
+
 }

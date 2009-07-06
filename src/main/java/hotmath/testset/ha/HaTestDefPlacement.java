@@ -16,10 +16,6 @@ public class HaTestDefPlacement extends HaTestDef {
 		super(name);
 	}
 
-	public HaTestDefPlacement(int id) throws Exception {
-		super(id);
-	}
-
 	/** Return set of 4 tests of 7 questions, taken from each subject:
 	 * 
 	 * 
