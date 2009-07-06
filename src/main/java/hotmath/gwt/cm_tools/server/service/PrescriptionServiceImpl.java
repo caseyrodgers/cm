@@ -65,8 +65,10 @@ public class PrescriptionServiceImpl extends RemoteServiceServlet implements Pre
     Logger logger = Logger.getLogger(PrescriptionServiceImpl.class);
 
     public PrescriptionServiceImpl() {
-        logger.debug("PrescriptionServiceImpl Created");
+        logger.info("PrescriptionServiceImpl Created");
+        hotmath.cm.util.CmCacheManager.getInstance();
     }
+
 
 
     public RpcData getPrescriptionSessionJson(int runId, int sessionNumber, boolean updateActiveInfo) throws CmRpcException {
