@@ -48,6 +48,17 @@
 				<enabled>false</enabled>
 			</snapshots>
 		</repository>
+		<repository>
+			<id>sourceforge-releases</id>
+			<name>SourceForge Releases</name>
+			<url>http://oss.sonatype.org/content/repositories/sourceforge-releases</url>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</repository>
 	</repositories>
 
 	<dependencies>
@@ -100,6 +111,12 @@
 			<artifactId>commons-fileupload</artifactId>
 			<version>1.2.1</version>
 		</dependency>
+
+        <dependency>
+            <groupId>net.sf.ehcache</groupId>
+            <artifactId>ehcache</artifactId>
+            <version>1.6.0</version>
+        </dependency>
 
 		<dependency>
 			<groupId>itext</groupId>
