@@ -13,6 +13,7 @@ import hotmath.gwt.cm_tools.client.ui.ContextController;
 import hotmath.gwt.cm_tools.client.ui.context.CmContext;
 import hotmath.gwt.cm_tools.client.ui.viewer.ResourceViewer;
 import hotmath.gwt.cm_tools.client.ui.viewer.ResourceViewerFactory;
+import hotmath.gwt.shared.client.eventbus.EventBus;
 import hotmath.gwt.shared.client.util.RpcData;
 import hotmath.gwt.shared.client.util.UserInfo;
 
@@ -149,9 +150,9 @@ public class PrescriptionCmGuiDefinition implements CmGuiDefinition {
      * 
      * @param pid
      */
-    static public void solutionHasBeenViewed_Gwt(String pid) {
-        ResourceModel rm = PrescriptionResourceAccord.__instance._activeResourceList.getSelectionModel().getSelectedItem();
-        InmhItemData itemData = rm.getItem();
+    static public void solutionHasBeenViewed_Gwt(String eventName) {
+        InmhItemData itemData = PrescriptionResourceAccord.__instance.getCurrentSolutionResource();
+        System.out.println("Solution has been viewed: " + itemData.getFile());
         PrescriptionResourceAccord.__instance._activeResourceList.markResourceAsViewed(itemData);
     }
     
@@ -193,20 +194,29 @@ class PrescriptionResourceAccord extends LayoutContainer {
         Html html = new Html("");
         html.setStyleName("resource-accord-panel-loading");
         add(html);
+        
     }
 
+    
+    /** The current active resource list
+     * 
+     */
+    ResourceList _activeResourceList;
+    
+    
     /**
      * Build or rebuild the GUI from list of resource objects
      * 
      * @param resources
      */
-    ResourceList _activeResourceList;
     public void buildUi(PrescriptionData pdata) {
 
+        _activeResourceList = null;
+        
         List<PrescriptionSessionDataResource> resources = pdata.getCurrSession().getInmhResources();
 
         removeAll();
-
+        
         AccordionLayout al = new AccordionLayout();
         setLayout(al);
         al.setActiveOnTop(false);
@@ -308,6 +318,14 @@ class PrescriptionResourceAccord extends LayoutContainer {
         layout();
     }
     
+    
+    /** Return the INMH data for the currently selected item
+     * 
+     * @return
+     */
+    public InmhItemData getCurrentSolutionResource() {
+       return _activeResourceList.getSelectionModel().getSelectedItem().getItem();
+    }
     
     /** Provide any last minute modification to the list items
      *  Such as assigning unique titles, as with the the cmextra
@@ -434,6 +452,11 @@ class ResourceList extends ListView<ResourceModel> implements Listener {
     }
     
     
+    /** Mark this resource as being viewed, should show
+     *  some visual clues.
+     *   
+     * @param resourceItem
+     */
     public void markResourceAsViewed(final InmhItemData resourceItem) {
         
         

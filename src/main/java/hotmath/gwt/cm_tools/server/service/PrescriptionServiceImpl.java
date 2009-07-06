@@ -20,6 +20,7 @@ import hotmath.gwt.cm_tools.client.ui.NextAction.NextActionName;
 import hotmath.gwt.shared.client.rpc.action.GetPrescriptionAction;
 import hotmath.gwt.shared.client.rpc.action.GetSolutionAction;
 import hotmath.gwt.shared.client.rpc.action.GetViewedInmhItemsAction;
+import hotmath.gwt.shared.client.rpc.action.SetInmhItemAsViewedAction;
 import hotmath.gwt.shared.client.util.CmRpcException;
 import hotmath.gwt.shared.client.util.RpcData;
 import hotmath.gwt.shared.server.service.ActionDispatcher;
@@ -45,7 +46,6 @@ import java.io.InputStreamReader;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -66,44 +66,35 @@ public class PrescriptionServiceImpl extends RemoteServiceServlet implements Pre
 
     public PrescriptionServiceImpl() {
         logger.info("PrescriptionServiceImpl Created");
-        hotmath.cm.util.CmCacheManager.getInstance();
     }
 
 
 
     public RpcData getPrescriptionSessionJson(int runId, int sessionNumber, boolean updateActiveInfo) throws CmRpcException {
-        try {
-            GetPrescriptionAction getPresAction = new GetPrescriptionAction(runId,sessionNumber, updateActiveInfo);
-            return ActionDispatcher.getInstance().execute(getPresAction);
-        }
-        catch(Exception e) {
-            throw new CmRpcException(e);
-        }
+        GetPrescriptionAction getPresAction = new GetPrescriptionAction(runId,sessionNumber, updateActiveInfo);
+        return ActionDispatcher.getInstance().execute(getPresAction);
     }
     
     
 
     public ArrayList<RpcData> getViewedInmhItems(int runId) throws CmRpcException {
-        try {
-            GetViewedInmhItemsAction getViewedAction = new GetViewedInmhItemsAction(runId);
-            List<RpcData> rdata = ActionDispatcher.getInstance().execute(getViewedAction).getRpcData();
-            
-            return (ArrayList<RpcData>)rdata;
-        }
-        catch(Exception e) {
-            throw new CmRpcException(e);
-        }
+        GetViewedInmhItemsAction getViewedAction = new GetViewedInmhItemsAction(runId);
+        List<RpcData> rdata = ActionDispatcher.getInstance().execute(getViewedAction).getRpcData();
+        
+        return (ArrayList<RpcData>)rdata;
     }
     
     
     public RpcData getSolutionHtml(int userId, String pid) throws CmRpcException {
-        try {
-            GetSolutionAction getViewedAction = new GetSolutionAction(userId, pid);
-            return ActionDispatcher.getInstance().execute(getViewedAction);
-        }
-        catch(Exception e) {
-            throw new CmRpcException(e);
-        }        
+        GetSolutionAction getViewedAction = new GetSolutionAction(userId, pid);
+        return ActionDispatcher.getInstance().execute(getViewedAction);
+    }
+    
+    
+
+    public void setInmhItemAsViewed(int runId, String type, String file) throws CmRpcException {
+        SetInmhItemAsViewedAction getViewedAction = new SetInmhItemAsViewedAction(runId,type,file);
+        ActionDispatcher.getInstance().execute(getViewedAction);
     }
 
 
@@ -356,32 +347,6 @@ public class PrescriptionServiceImpl extends RemoteServiceServlet implements Pre
             throw new CmRpcException(e);
         }
 
-    }
-
-    public void setInmhItemAsViewed(int runId, String type, String file) throws CmRpcException {
-        Connection conn = null;
-        PreparedStatement pstat = null;
-        try {
-            String sql = "insert into HA_TEST_RUN_INMH_USE(run_id, item_type, item_file, view_time, session_number)values(?,?,?,?,?)";
-            conn = HMConnectionPool.getConnection();
-            pstat = conn.prepareStatement(sql);
-
-            pstat.setInt(1, runId);
-            pstat.setString(2, type);
-            pstat.setString(3, file);
-            pstat.setTimestamp(4, new Timestamp(System.currentTimeMillis()));
-            pstat.setInt(5, HaTestRun.lookupTestRun(runId).getHaTest().getUser().getActiveTestRunSession());
-
-            int cnt = pstat.executeUpdate();
-            if (cnt != 1)
-                throw new Exception("Error adding test run item view");
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new CmRpcException("Error adding test run item view: " + e.getMessage());
-        } finally {
-            SqlUtilities.releaseResources(null, pstat, conn);
-        }
     }
 
     private int getTotalInmHViewCount(int uid,Connection conn) throws Exception {
