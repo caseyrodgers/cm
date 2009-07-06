@@ -386,7 +386,8 @@ public class HaTestDef {
     	CacheManager cm = CacheManager.getInstance();
     	Cache cache = cm.getCache(CmCacheManager.TEST_DEF_CACHE_KEY);
     	
-    	if(cache.isValueInCache(name)) {
+    	Element el = cache.get(name);
+    	if(el != null) {
     	    // return value if in cache
     	    return (HaTestDef)cache.get(name).getObjectValue();
     	}

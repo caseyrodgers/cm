@@ -10,6 +10,15 @@ import hotmath.gwt.shared.server.service.command.GetViewedInmhItemsCommand;
 import java.util.HashMap;
 import java.util.Map;
 
+/** Implements a Command Pattern for controlling
+ *  commands used by Catchup Math RPC calls.
+ *  
+ *  @TODO: configuration should be injected by DI
+ *  
+ *  
+ * @author casey
+ *
+ */
 public class ActionDispatcher {
 
     static private ActionDispatcher __instance;
@@ -23,6 +32,11 @@ public class ActionDispatcher {
     
     
     private ActionDispatcher() {
+        
+        /** All commands should be injected, hard coded for now
+         * 
+         * Register each command availiable to RPC
+         */
         GetPrescriptionCommand gc = new GetPrescriptionCommand();
         GetViewedInmhItemsCommand ac = new GetViewedInmhItemsCommand();
         GetSolutionCommand sc = new GetSolutionCommand();
@@ -32,7 +46,14 @@ public class ActionDispatcher {
         commands.put(sc.getActionType(), sc);
     }
     
-    /* Single point of entry */
+    
+    /** Execute the given command and return the proper Result object
+     * 
+     * @param <T>
+     * @param action
+     * @return
+     * @throws Exception
+     */
     public <T extends Response> T execute(Action<T> action) throws Exception {
         return (T) commands.get(action.getClass()).execute(action);
     }
