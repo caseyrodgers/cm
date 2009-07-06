@@ -7,12 +7,18 @@ import hotmath.HotMathLogger;
 import hotmath.util.HMConnectionPool;
 import hotmath.util.sql.SqlUtilities;
 
+import net.sf.ehcache.Cache;
+import net.sf.ehcache.CacheManager;
+import net.sf.ehcache.Element;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+
+import com.hotmath.cm.servlet.CmCacheManager;
 
 /**
  * A single Hotmath Advance test definition.
@@ -59,6 +65,17 @@ public class HaTestDef {
 
     public HaTestDef(String name) throws HotMathException {
         this.name = name;
+        
+        // try cache first
+        HaTestDef td = retrieveFromCache(name);
+        if (td != null) {
+        	this.textCode = td.getTextCode();
+        	this.chapter = td.getChapter();
+        	this.testDefId = td.getTestDefId();
+        	System.out.println("HaTestDef(): retrieved name: " + name);
+        	return;
+        }
+        
         Connection conn = null;
         PreparedStatement pstat = null;
         ResultSet rs = null;
@@ -77,6 +94,9 @@ public class HaTestDef {
             this.textCode = rs.getString("textcode");
             this.chapter = rs.getString("chapter");
             this.testDefId = rs.getInt("test_def_id");
+            
+            addToCache(this);
+            
         } catch (HotMathException hme) {
             throw hme;
         } catch (Exception e) {
@@ -96,6 +116,18 @@ public class HaTestDef {
     }
 
     public HaTestDef(int testDefId) throws HotMathException {
+    	
+        // try cache first
+        HaTestDef td = retrieveFromCache(name);
+        if (td != null) {
+        	this.textCode = td.getTextCode();
+        	this.chapter = td.getChapter();
+        	this.testDefId = td.getTestDefId();
+        	this.name = td.getName();
+        	System.out.println("HaTestDef(): retrieved id: " + testDefId);
+        	return;
+        }
+        
         Connection conn = null;
         PreparedStatement pstat = null;
         ResultSet rs = null;
@@ -115,6 +147,9 @@ public class HaTestDef {
             this.textCode = rs.getString("textcode");
             this.chapter = rs.getString("chapter");
             this.testDefId = rs.getInt("test_def_id");
+            
+            addToCache(td);
+            
         } catch (HotMathException hme) {
             throw hme;
         } catch (Exception e) {
@@ -345,5 +380,23 @@ public class HaTestDef {
      */
     public String getTestInitJson(HaTest test) throws Exception {
         return null;
+    }
+    
+    private HaTestDef retrieveFromCache(String name) {
+    	CacheManager cm = CacheManager.getInstance();
+    	Cache cache = cm.getCache(CmCacheManager.TEST_DEF_CACHE_KEY);
+    	Element e = cache.get(name);
+    	return (HaTestDef) e.getObjectValue();
+    }
+    
+    private void addToCache(HaTestDef td) {
+    	CacheManager cm = CacheManager.getInstance();
+    	Cache cache = cm.getCache(CmCacheManager.TEST_DEF_CACHE_KEY);
+    	Element e = new Element(td.getName(), td, true, null, null);
+    	cache.put(e);
+    	System.out.println("+++ addToCache(): td.name: " + td.getName());
+    	e = new Element(td.getTestDefId(), td, true, null, null);
+    	cache.put(e);
+    	System.out.println("+++ addToCache(): td.testDefId: " + td.getTestDefId());
     }
 }
