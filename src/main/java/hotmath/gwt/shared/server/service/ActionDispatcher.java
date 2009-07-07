@@ -9,6 +9,7 @@ import hotmath.gwt.shared.client.rpc.Response;
 import hotmath.gwt.shared.client.util.CmRpcException;
 import hotmath.gwt.shared.server.service.command.GetPrescriptionCommand;
 import hotmath.gwt.shared.server.service.command.GetSolutionCommand;
+import hotmath.gwt.shared.server.service.command.GetUserInfoCommand;
 import hotmath.gwt.shared.server.service.command.GetViewedInmhItemsCommand;
 
 import java.util.HashMap;
@@ -35,12 +36,9 @@ public class ActionDispatcher {
     }
     
     static {
-        HotmathFlusher.getInstance().addFlushable(new Flushable() {
-            /** remove comamnds
-             * @TODO: should be closed.
-             */
+        HotmathFlusher.getInstance().addFlushable(new Flushable() {    
             public void flush() {
-                __instance = null;
+                ActionDispatcher.flush();
             }
         });
     }
@@ -49,6 +47,14 @@ public class ActionDispatcher {
     Map<Class<? extends Action<? extends Response>>, ActionHandler> commands = new HashMap<Class<? extends Action<? extends Response>>, ActionHandler>();
     
     static Logger logger = Logger.getLogger(ActionDispatcher.class.getName());
+    
+    
+    /** remove comamnds
+     * @TODO: should be closed.
+     */
+    static public void flush() {
+        __instance = null;
+    }
     
     private ActionDispatcher() {
         
@@ -63,6 +69,7 @@ public class ActionDispatcher {
         addCommand(new GetViewedInmhItemsCommand());
         addCommand(new GetSolutionCommand());
         addCommand(new SetInmhItemAsViewedCommand());
+        addCommand(new GetUserInfoCommand());
     }
     
     

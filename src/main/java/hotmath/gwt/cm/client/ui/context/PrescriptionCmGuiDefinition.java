@@ -477,15 +477,22 @@ class ResourceList extends ListView<ResourceModel> implements Listener {
                         
                         Log.debug("PrescriptionResourceAccord: setItemAsViewed: " + resourceItem);
                         
+                        boolean isSolutionResource = (resourceItem.getType().equals("practice") || resourceItem.getType().equals("cmextra"));
+                        
                         // update the total count in the Header
+                        // only if a practice or cmextra type
                         int vc = UserInfo.getInstance().getViewCount();
-                        UserInfo.getInstance().setViewCount(++vc);
+                        if(isSolutionResource)
+                            vc++;
+                        
+                        UserInfo.getInstance().setViewCount(vc);
                         HeaderPanel.__instance.setLoginInfo();
                         
-                        // only mark practice problems
-                        if(!resourceItem.getType().equals("practice") && !resourceItem.getType().equals("cmextra"))
-                            return;
                         
+                        // only mark practice problems
+                        // 
+                        if(!isSolutionResource)
+                            return;
                         
                         resourceItem.setViewed(true);
 

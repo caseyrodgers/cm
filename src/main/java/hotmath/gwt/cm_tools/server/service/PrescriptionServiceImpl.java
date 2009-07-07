@@ -19,6 +19,7 @@ import hotmath.gwt.cm_tools.client.ui.NextAction;
 import hotmath.gwt.cm_tools.client.ui.NextAction.NextActionName;
 import hotmath.gwt.shared.client.rpc.action.GetPrescriptionAction;
 import hotmath.gwt.shared.client.rpc.action.GetSolutionAction;
+import hotmath.gwt.shared.client.rpc.action.GetUserInfoAction;
 import hotmath.gwt.shared.client.rpc.action.GetViewedInmhItemsAction;
 import hotmath.gwt.shared.client.rpc.action.SetInmhItemAsViewedAction;
 import hotmath.gwt.shared.client.util.CmRpcException;
@@ -68,14 +69,10 @@ public class PrescriptionServiceImpl extends RemoteServiceServlet implements Pre
         logger.info("PrescriptionServiceImpl Created");
     }
 
-
-
     public RpcData getPrescriptionSessionJson(int runId, int sessionNumber, boolean updateActiveInfo) throws CmRpcException {
         GetPrescriptionAction getPresAction = new GetPrescriptionAction(runId,sessionNumber, updateActiveInfo);
         return ActionDispatcher.getInstance().execute(getPresAction);
     }
-    
-    
 
     public ArrayList<RpcData> getViewedInmhItems(int runId) throws CmRpcException {
         GetViewedInmhItemsAction getViewedAction = new GetViewedInmhItemsAction(runId);
@@ -97,6 +94,11 @@ public class PrescriptionServiceImpl extends RemoteServiceServlet implements Pre
         ActionDispatcher.getInstance().execute(getViewedAction);
     }
 
+
+    public RpcData getUserInfo(int uid) throws CmRpcException {
+        GetUserInfoAction action = new GetUserInfoAction(uid);
+        return ActionDispatcher.getInstance().execute(action);
+    }
 
 
     public String getSolutionProblemStatementHtml(String pid) {
@@ -349,57 +351,6 @@ public class PrescriptionServiceImpl extends RemoteServiceServlet implements Pre
 
     }
 
-    private int getTotalInmHViewCount(final Connection conn,int uid) throws Exception {
-        PreparedStatement pstat = null;
-        try {
-            String sql = "select count(*) from v_HA_USER_INMH_VIEWS_TOTAL where uid = ?";
-            pstat = conn.prepareStatement(sql);
-            pstat.setInt(1, uid);
-            ResultSet rs = pstat.executeQuery();
-            if (!rs.first())
-                throw new Exception("Could not get count of viewed items");
-            return rs.getInt(1);
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new CmRpcException("Error adding test run item view: " + e.getMessage());
-        } finally {
-            SqlUtilities.releaseResources(null, pstat, null);
-        }
-    }
-
-    public RpcData getUserInfo(int uid) throws CmRpcException {
-        Connection conn = null;
-        try {
-            conn = HMConnectionPool.getConnection();
-            
-            HaUser user = HaUser.lookUser(conn, uid,null);
-
-            RpcData rpcData = new RpcData();
-            rpcData.putData("uid", user.getUid());
-            rpcData.putData("test_id", user.getActiveTest());
-            rpcData.putData("run_id", user.getActiveTestRunId());
-            rpcData.putData("test_segment", user.getActiveTestSegment());
-            rpcData.putData("user_name", user.getUserName());
-            rpcData.putData("session_number", user.getActiveTestRunSession());
-            rpcData.putData("gui_background_style", user.getBackgroundStyle());
-            rpcData.putData("test_name", user.getAssignedTestName());
-            rpcData.putData("show_work_required", user.isShowWorkRequired() ? 1 : 0);
-            rpcData.putData("user_account_type",user.getUserAccountType());
-
-            int totalViewCount = getTotalInmHViewCount(conn,uid);
-
-            rpcData.putData("view_count", totalViewCount);
-
-            return rpcData;
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new CmRpcException(e);
-        }
-        finally {
-            SqlUtilities.releaseResources(null,null,conn);
-        }
-    }
 
     /**
      * Create the Test run for this test by reading the current question
