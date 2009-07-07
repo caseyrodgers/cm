@@ -14,7 +14,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Logger;
+
+import org.apache.log4j.Logger;
+
 
 
 /**
@@ -70,7 +72,6 @@ public class HaTestDef {
         	this.textCode = td.getTextCode();
         	this.chapter = td.getChapter();
         	this.testDefId = td.getTestDefId();
-        	logger.info("HaTestDef(): retrieved name: " + name);
         	return;
         }
         PreparedStatement pstat = null;
