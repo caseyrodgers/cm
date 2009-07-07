@@ -209,11 +209,11 @@ public class GetPrescriptionCommand implements ActionHandler<GetPrescriptionActi
 
         List<PrescriptionSessionDataResource> newTypes = new ArrayList<PrescriptionSessionDataResource>();
         String types[][] = {
-                { "Required Practice Problems", "practice", "Practice problems you must complete before advancing" },
+                { "Lesson", "review", "Review lesson on the current topic" },
                 { "Video", "video", "Math videos related to the current topic" },
                 { "Activities", "activity", "Math activities and games related to the current topic" },
+                { "Required Practice Problems", "practice", "Practice problems you must complete before advancing" },
                 { "Extra Practice Problems", "cmextra", "Additional workbook problems" },
-                { "Lesson", "review", "Review lesson on the current topic" },
                 { "Quiz Results", "results", "The current quiz's results" } };
 
         for (int i = 0; i < types.length; i++) {

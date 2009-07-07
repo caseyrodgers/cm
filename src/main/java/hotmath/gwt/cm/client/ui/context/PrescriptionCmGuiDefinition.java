@@ -229,7 +229,8 @@ class PrescriptionResourceAccord extends LayoutContainer {
         // setTitle("Choose a resource type, then click one of its items.");
         for (PrescriptionSessionDataResource resource : resources) {
             cp = new ContentPanel();
-            cp.setAnimCollapse(false);
+            cp.setAnimCollapse(true);
+            cp.collapse();
             cp.addStyleName("accordian-resource-list-panel");
             cp.setLayout(new FitLayout());
             // to show check
@@ -300,14 +301,8 @@ class PrescriptionResourceAccord extends LayoutContainer {
             });
         }
         
-//        // should we select all
-//        if(rl._store.getCount() > 0) {
-//            rl.getSelectionModel().select(0, false);
-//            rl.loadResource(rl.getSelectionModel().getSelectedItem());
-//            layout();
-//        }
-        
-        // try to expand the last resource type
+        /** Should we expand the last resource type added?
+         * 
         try {
             cp.expand();
             layout();
@@ -316,6 +311,7 @@ class PrescriptionResourceAccord extends LayoutContainer {
         catch(Exception e) {
             e.printStackTrace();
         }
+        */
 
         layout();
     }
