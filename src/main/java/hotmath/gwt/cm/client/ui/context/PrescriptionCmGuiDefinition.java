@@ -229,7 +229,7 @@ class PrescriptionResourceAccord extends LayoutContainer {
         // setTitle("Choose a resource type, then click one of its items.");
         for (PrescriptionSessionDataResource resource : resources) {
             cp = new ContentPanel();
-            cp.setAnimCollapse(true);
+            cp.setAnimCollapse(false);
             cp.collapse();
             cp.addStyleName("accordian-resource-list-panel");
             cp.setLayout(new FitLayout());
