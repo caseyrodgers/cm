@@ -2,7 +2,6 @@ package hotmath.gwt.cm_tools.client.ui;
 
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.model.ChapterModel;
-import hotmath.gwt.cm_tools.client.model.CmAdminDataReader;
 import hotmath.gwt.cm_tools.client.model.CmAdminModel;
 import hotmath.gwt.cm_tools.client.model.GroupModel;
 import hotmath.gwt.cm_tools.client.model.StudentModel;
@@ -149,8 +148,6 @@ public class RegisterStudent extends LayoutContainer {
 		if(UserInfo.getInstance() == null || !UserInfo.getInstance().isSingleUser()) {
     		fs.add(groupCombo);
 		}
-        
-		
         
         fs = new FieldSet();
 		fs.setHeading("Assign Program");
@@ -692,7 +689,7 @@ public class RegisterStudent extends LayoutContainer {
 		s.addUser(sm, new AsyncCallback <StudentModel> () {
 			
 			public void onSuccess(StudentModel ai) {
-			    CmAdminDataReader.getInstance().fireRefreshData();
+			    EventBus.getInstance().fireEvent(new CmEvent(EventBus.EVENT_TYPE_USER_PROGRAM_CHANGED,ai.getProgramChanged()));
 				fw.close();
         	}
 

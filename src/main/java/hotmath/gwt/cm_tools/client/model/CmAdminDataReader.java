@@ -59,6 +59,9 @@ public class CmAdminDataReader extends Timer {
                 else if(event.getEventName().equals(EventBus.EVENT_TYPE_USERCHANGED)) {
                     fireRefreshData();
                 }
+                else if(event.getEventName().equals(EventBus.EVENT_TYPE_USER_PROGRAM_CHANGED)) {
+                    fireRefreshData();
+                }
             }
         });
     }
