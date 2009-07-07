@@ -8,7 +8,6 @@ import hotmath.inmh.INeedMoreHelpItemFactory;
 import hotmath.inmh.INeedMoreHelpManager;
 import hotmath.inmh.INeedMoreHelpResourceType;
 import hotmath.inmh.INeedMoreHelpResourceTypeDef;
-import hotmath.util.HMConnectionPool;
 import hotmath.util.sql.SqlUtilities;
 
 import java.sql.Connection;
@@ -204,10 +203,10 @@ public class AssessmentPrescriptionSession {
      * @return
      * @throws Exception
      */
-    public Collection<INeedMoreHelpResourceType> getPrescriptionInmhTypesDistinct(Connection conn) throws HotMathException {
+    public Collection<INeedMoreHelpResourceType> getPrescriptionInmhTypesDistinct(final Connection conn) throws HotMathException {
         Map<String, INeedMoreHelpResourceType> types = new HashMap<String, INeedMoreHelpResourceType>();
         INeedMoreHelpResourceType resourceType = null;
-        for (INeedMoreHelpResourceType type : getPrescriptionInmhTypes(null,conn)) {
+        for (INeedMoreHelpResourceType type : getPrescriptionInmhTypes(conn,null)) {
             if (type.getResources().size() == 0)
                 continue;
 
@@ -237,12 +236,12 @@ public class AssessmentPrescriptionSession {
     
     /** Return list of Filtered resource types, showing only items 
      *  that are applicable for the current test/segment
-     * 
      * @param linkTypeIn The type to match, matches all if null
+     * 
      * @return
      * @throws HotMathException
      */
-    public List<INeedMoreHelpResourceType> getPrescriptionInmhTypes(String linkTypeIn, Connection conn) throws HotMathException {
+    public List<INeedMoreHelpResourceType> getPrescriptionInmhTypes(final Connection conn, String linkTypeIn) throws HotMathException {
 
         if (linkTypeIn == null)
             linkTypeIn = "";
@@ -272,8 +271,7 @@ public class AssessmentPrescriptionSession {
                     + " where  m.file = l.file " + " and  m.file in ("
                     + topicList + ") " + " and l.link_type like '%" + linkTypeIn + "'"
                     + " order by l.link_type, link_title ";
-
-            conn = HMConnectionPool.getConnection();
+            
             pstat = conn.prepareStatement(sql);
             ResultSet rs = pstat.executeQuery();
             while (rs.next()) {

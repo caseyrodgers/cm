@@ -349,11 +349,10 @@ public class PrescriptionServiceImpl extends RemoteServiceServlet implements Pre
 
     }
 
-    private int getTotalInmHViewCount(int uid,Connection conn) throws Exception {
+    private int getTotalInmHViewCount(final Connection conn,int uid) throws Exception {
         PreparedStatement pstat = null;
         try {
             String sql = "select count(*) from v_HA_USER_INMH_VIEWS_TOTAL where uid = ?";
-            conn = HMConnectionPool.getConnection();
             pstat = conn.prepareStatement(sql);
             pstat.setInt(1, uid);
             ResultSet rs = pstat.executeQuery();
@@ -388,7 +387,7 @@ public class PrescriptionServiceImpl extends RemoteServiceServlet implements Pre
             rpcData.putData("show_work_required", user.isShowWorkRequired() ? 1 : 0);
             rpcData.putData("user_account_type",user.getUserAccountType());
 
-            int totalViewCount = getTotalInmHViewCount(uid,conn);
+            int totalViewCount = getTotalInmHViewCount(conn,uid);
 
             rpcData.putData("view_count", totalViewCount);
 
