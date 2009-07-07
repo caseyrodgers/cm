@@ -271,6 +271,8 @@ class PrescriptionResourceAccord extends LayoutContainer {
                     if(PrescriptionResourceAccord.__instance._activeResourceList != null)
                         if(PrescriptionResourceAccord.__instance._activeResourceList._viewer != null)
                             PrescriptionResourceAccord.__instance._activeResourceList._viewer.removeResourcePanel();
+                    
+                    PrescriptionResourceAccord.__instance._activeResourceList.removeResource();
                     layout();
                     
                     //// move selected item to top
@@ -449,6 +451,10 @@ class ResourceList extends ListView<ResourceModel> implements Listener {
             hme.printStackTrace();
             CatchupMathTools.showAlert("Error: " + hme.getMessage());
         }
+    }
+    
+    public void removeResource() {
+        CmMainPanel.__lastInstance._mainContent.removeAll();
     }
     
     
