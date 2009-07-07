@@ -2,7 +2,6 @@ package hotmath.cm.util;
 
 import hotmath.flusher.Flushable;
 import hotmath.flusher.HotmathFlusher;
-import hotmath.testset.ha.HaTestDef;
 
 import java.util.logging.Logger;
 
@@ -18,7 +17,6 @@ import net.sf.ehcache.Element;
  *
  */
 public class CmCacheManager  {
-
     
     static private CmCacheManager __instance;
     static public CmCacheManager getInstance() {
@@ -47,7 +45,7 @@ public class CmCacheManager  {
     /** Distinct cache names as defined in configuration files (ehcache.xml)
      * 
      */
-	public static enum CacheName{TEST_DEF};
+	public static enum CacheName { TEST_DEF };
 	
 	
 	private void flushCache() {
@@ -62,7 +60,7 @@ public class CmCacheManager  {
 	 */
 	public  CmCacheManager() {
 		CacheManager.create();
-		logger.info("+++ started Cache Manager");
+		logger.info("+++ started Cache Manager, cache names: " + CacheManager.getInstance().getCacheNames());
 	}
 	
 	/** Return named object from specified cache.
@@ -79,7 +77,7 @@ public class CmCacheManager  {
         Element el = cache.get(name);
         if(el != null) {
             // return value if in cache
-            return (HaTestDef)cache.get(name).getObjectValue();
+            return cache.get(name).getObjectValue();
         }
         else {
             // if not in cache, return null
@@ -94,7 +92,7 @@ public class CmCacheManager  {
      * @param toCache The object to cache
      */
     public void addToCache(CacheName cacheName, String key, Object toCache) {
-        logger.info("addToCache called with " + cacheName + " " + key);
+        logger.info(String.format("addToCache(): cacheName: %s, key: %s", cacheName, key));
         CacheManager cm = CacheManager.getInstance();
         Cache cache = cm.getCache(cacheName.toString());
         Element e = new Element(key, toCache);
