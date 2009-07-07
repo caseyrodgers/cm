@@ -1,6 +1,8 @@
 package hotmath.testset.ha;
 
 import hotmath.HotMathException;
+import hotmath.cm.util.CmCacheManager;
+import hotmath.cm.util.CmCacheManager.CacheName;
 import hotmath.util.HMConnectionPool;
 import hotmath.util.sql.SqlUtilities;
 
@@ -315,12 +317,11 @@ public class HaTest {
 		}
 	}
 	
-	static Map<Integer, HaTest> __testCache = new HashMap<Integer, HaTest>(); 
 	static public HaTest loadTest(final Connection conn, int testId) throws HotMathException {
 	    
-	    
-	    if(__testCache.containsKey(testId))
-	        return __testCache.get(testId);
+	    HaTest testCached = (HaTest)CmCacheManager.getInstance().retrieveFromCache(CacheName.TEST, testId);
+	    if(testCached != null)
+	        return testCached;
 	        
 		PreparedStatement pstat=null;
 		ResultSet rs = null;
@@ -340,13 +341,14 @@ public class HaTest {
 			test.setNumTestQuestions(rs.getInt("test_question_count"));
 			test.setTotalSegments(rs.getInt("total_segments"));
 			
-			List<String> testIds = getTestIdsForTest(test.getTestId(),conn);
+			List<String> testIds = getTestIdsForTest(conn,test.getTestId());
 			
 			for(String pid: testIds) {
 				test.addPid(pid);
 			}
 			
-			__testCache.put(testId, test);
+			
+			CmCacheManager.getInstance().addToCache(CacheName.TEST, testId, test);
 			
 			return test;
 		}
@@ -432,12 +434,12 @@ public class HaTest {
 	 *  for all segments.  
 	 *  
 	 *  Print warning if zero found.
-	 * 
 	 * @param testId
+	 * 
 	 * @return
 	 * @throws Exception
 	 */
-	static public List<String> getTestIdsForTest(int testId,Connection conn) throws Exception {
+	static public List<String> getTestIdsForTest(final Connection conn,int testId) throws Exception {
 		
 		List<String> pids = new ArrayList<String>();
 		PreparedStatement pstat=null;

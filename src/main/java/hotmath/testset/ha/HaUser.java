@@ -7,8 +7,9 @@ import hotmath.util.sql.SqlUtilities;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.apache.log4j.Logger;
+
 
 /** Manage the Catchup Math users
  * 
@@ -182,7 +183,7 @@ public class HaUser extends HaBasicUserImpl {
 	        pstat.setString(6,getBackgroundStyle());
 	        pstat.setInt(7,getUid());
 	        
-	        Logger.getLogger(HaUser.class.getName()).log(Level.FINEST,"Updating HA_USER: " + pstat.toString());
+	        Logger.getLogger(HaUser.class.getName()).debug("Updating HA_USER: " + pstat.toString());
             
 			if(pstat.executeUpdate() == 0)
 				throw new HotMathException("Could not update user record: " + getUid());

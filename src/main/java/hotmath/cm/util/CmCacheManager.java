@@ -44,7 +44,7 @@ public class CmCacheManager  {
     /** Distinct cache names as defined in configuration files (ehcache.xml)
      * 
      */
-	public static enum CacheName { TEST_DEF };
+	public static enum CacheName { TEST_DEF, TEST };
 
 	private void flushCache() {
     	if (logger.isInfoEnabled()) {
@@ -77,13 +77,13 @@ public class CmCacheManager  {
 	 * 
 	 * @return The cached object or null
 	 */
-    public Object retrieveFromCache(CacheName cacheName, String key) {
+    public Object retrieveFromCache(CacheName cacheName, Object key) {
         CacheManager cm = CacheManager.getInstance();
         Cache cache = cm.getCache(cacheName.toString());
 
         Element el = cache.get(key);
         if(el != null) {
-          	logger.info(String.format("retrieveFromCache(): retrieved: cacheName: %s, key: %s", cacheName, key));
+          	logger.debug(String.format("retrieveFromCache(): retrieved: cacheName: %s, key: %s", cacheName, key));
             // return value if in cache
             return el.getObjectValue();
         }
@@ -99,8 +99,8 @@ public class CmCacheManager  {
      * @param key the key for the object
      * @param toCache The object to cache
      */
-    public void addToCache(CacheName cacheName, String key, Object toCache) {
-        logger.info(String.format("addToCache(): cacheName: %s, key: %s", cacheName, key));
+    public void addToCache(CacheName cacheName, Object key, Object toCache) {
+        logger.debug(String.format("addToCache(): cacheName: %s, key: %s", cacheName, key));
 
         CacheManager cm = CacheManager.getInstance();
         Cache cache = cm.getCache(cacheName.toString());

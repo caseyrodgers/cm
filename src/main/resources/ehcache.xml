@@ -15,7 +15,15 @@
         timeToIdleSeconds="120"
 />
 
+<!--  For HaTestDef -->
 <cache name="TEST_DEF"
+       maxElementsInMemory="100"
+       eternal="true"
+       overflowToDisk="false">
+</cache>
+
+<!--  For HaTest -->
+<cache name="TEST"
        maxElementsInMemory="100"
        eternal="true"
        overflowToDisk="false">
