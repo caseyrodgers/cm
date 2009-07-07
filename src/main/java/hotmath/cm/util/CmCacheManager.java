@@ -5,13 +5,13 @@ import hotmath.flusher.HotmathFlusher;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.logging.Logger;
 
 import net.sf.ehcache.Cache;
 import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.Element;
 
-import static java.util.logging.Level.INFO;
+import org.apache.log4j.Logger;
+import org.apache.log4j.Priority;
 
 /** Manage a set of caches 
  * 
@@ -52,7 +52,7 @@ public class CmCacheManager  {
 	
 	
 	private void flushCache() {
-    	if (logger.isLoggable(INFO)) {
+    	if (logger.isEnabledFor(Priority.INFO)) {
     	    logger.info("Shutting down EHCache");
     	}
 		CacheManager.getInstance().shutdown();
@@ -65,7 +65,7 @@ public class CmCacheManager  {
 	 */
 	public  CmCacheManager() {
 		CacheManager.create();
-    	if (logger.isLoggable(INFO)) {
+    	if (logger.isEnabledFor(Priority.INFO)) {
             String[] cnArray = CacheManager.getInstance().getCacheNames();
             List<String> cNames = null;
             if (cnArray != null) {
@@ -88,8 +88,7 @@ public class CmCacheManager  {
         
         Element el = cache.get(key);
         if(el != null) {
-        	if (logger.isLoggable(INFO))
-            	logger.info(String.format("retrieveFromCache(): retrieved: cacheName: %s, key: %s", cacheName, key));
+          	logger.info(String.format("retrieveFromCache(): retrieved: cacheName: %s, key: %s", cacheName, key));
             // return value if in cache
             return el.getObjectValue();
         }
@@ -106,8 +105,8 @@ public class CmCacheManager  {
      * @param toCache The object to cache
      */
     public void addToCache(CacheName cacheName, String key, Object toCache) {
-    	if (logger.isLoggable(INFO))
-            logger.info(String.format("addToCache(): cacheName: %s, key: %s", cacheName, key));
+        logger.info(String.format("addToCache(): cacheName: %s, key: %s", cacheName, key));
+        
         CacheManager cm = CacheManager.getInstance();
         Cache cache = cm.getCache(cacheName.toString());
         Element e = new Element(key, toCache);
