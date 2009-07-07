@@ -3,12 +3,15 @@ package hotmath.cm.util;
 import hotmath.flusher.Flushable;
 import hotmath.flusher.HotmathFlusher;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.logging.Logger;
 
 import net.sf.ehcache.Cache;
 import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.Element;
 
+import static java.util.logging.Level.INFO;
 
 /** Manage a set of caches 
  * 
@@ -49,7 +52,9 @@ public class CmCacheManager  {
 	
 	
 	private void flushCache() {
-	    logger.info("Shutting down EHCache");
+    	if (logger.isLoggable(INFO)) {
+    	    logger.info("Shutting down EHCache");
+    	}
 		CacheManager.getInstance().shutdown();
 	}
 
@@ -60,7 +65,14 @@ public class CmCacheManager  {
 	 */
 	public  CmCacheManager() {
 		CacheManager.create();
-		logger.info("+++ started Cache Manager, cache names: " + CacheManager.getInstance().getCacheNames());
+    	if (logger.isLoggable(INFO)) {
+            String[] cnArray = CacheManager.getInstance().getCacheNames();
+            List<String> cNames = null;
+            if (cnArray != null) {
+            	cNames = Arrays.asList(cnArray);
+            }
+    		logger.info("+++ started Cache Manager, cache names: " + cNames);
+    	}
 	}
 	
 	/** Return named object from specified cache.
@@ -70,14 +82,16 @@ public class CmCacheManager  {
 	 * 
 	 * @return The cached object or null
 	 */
-    public Object retrieveFromCache(CacheName cacheName, String name) {
+    public Object retrieveFromCache(CacheName cacheName, String key) {
         CacheManager cm = CacheManager.getInstance();
         Cache cache = cm.getCache(cacheName.toString());
         
-        Element el = cache.get(name);
+        Element el = cache.get(key);
         if(el != null) {
+        	if (logger.isLoggable(INFO))
+            	logger.info(String.format("retrieveFromCache(): retrieved: cacheName: %s, key: %s", cacheName, key));
             // return value if in cache
-            return cache.get(name).getObjectValue();
+            return el.getObjectValue();
         }
         else {
             // if not in cache, return null
@@ -92,7 +106,8 @@ public class CmCacheManager  {
      * @param toCache The object to cache
      */
     public void addToCache(CacheName cacheName, String key, Object toCache) {
-        logger.info(String.format("addToCache(): cacheName: %s, key: %s", cacheName, key));
+    	if (logger.isLoggable(INFO))
+            logger.info(String.format("addToCache(): cacheName: %s, key: %s", cacheName, key));
         CacheManager cm = CacheManager.getInstance();
         Cache cache = cm.getCache(cacheName.toString());
         Element e = new Element(key, toCache);
