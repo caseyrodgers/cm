@@ -11,7 +11,6 @@ import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.Element;
 
 import org.apache.log4j.Logger;
-import org.apache.log4j.Priority;
 
 /** Manage a set of caches 
  * 
@@ -20,7 +19,7 @@ import org.apache.log4j.Priority;
  *
  */
 public class CmCacheManager  {
-    
+
     static private CmCacheManager __instance;
     static public CmCacheManager getInstance() {
         if(__instance == null) {
@@ -28,8 +27,7 @@ public class CmCacheManager  {
         }
         return __instance;
     }
-    
-    
+
     static {
        HotmathFlusher.getInstance().addFlushable(new Flushable() {
         public void flush() {
@@ -40,19 +38,16 @@ public class CmCacheManager  {
         }
        });
     }
-    
+
     static Logger logger = Logger.getLogger(CmCacheManager.class.getName());
-    
-    
-    
+
     /** Distinct cache names as defined in configuration files (ehcache.xml)
      * 
      */
 	public static enum CacheName { TEST_DEF };
-	
-	
+
 	private void flushCache() {
-    	if (logger.isEnabledFor(Priority.INFO)) {
+    	if (logger.isInfoEnabled()) {
     	    logger.info("Shutting down EHCache");
     	}
 		CacheManager.getInstance().shutdown();
@@ -65,7 +60,7 @@ public class CmCacheManager  {
 	 */
 	public  CmCacheManager() {
 		CacheManager.create();
-    	if (logger.isEnabledFor(Priority.INFO)) {
+    	if (logger.isInfoEnabled()) {
             String[] cnArray = CacheManager.getInstance().getCacheNames();
             List<String> cNames = null;
             if (cnArray != null) {
@@ -74,7 +69,7 @@ public class CmCacheManager  {
     		logger.info("+++ started Cache Manager, cache names: " + cNames);
     	}
 	}
-	
+
 	/** Return named object from specified cache.
 	 *  
 	 * @param cacheName  The cache name to use
@@ -85,7 +80,7 @@ public class CmCacheManager  {
     public Object retrieveFromCache(CacheName cacheName, String key) {
         CacheManager cm = CacheManager.getInstance();
         Cache cache = cm.getCache(cacheName.toString());
-        
+
         Element el = cache.get(key);
         if(el != null) {
           	logger.info(String.format("retrieveFromCache(): retrieved: cacheName: %s, key: %s", cacheName, key));
@@ -97,7 +92,7 @@ public class CmCacheManager  {
             return null;
         }
     }
-    
+
     /** Add the object to the named cache.
      * 
      * @param cacheName The cache to insert the object
@@ -106,7 +101,7 @@ public class CmCacheManager  {
      */
     public void addToCache(CacheName cacheName, String key, Object toCache) {
         logger.info(String.format("addToCache(): cacheName: %s, key: %s", cacheName, key));
-        
+
         CacheManager cm = CacheManager.getInstance();
         Cache cache = cm.getCache(cacheName.toString());
         Element e = new Element(key, toCache);
