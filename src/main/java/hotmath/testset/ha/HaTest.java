@@ -242,17 +242,10 @@ public class HaTest {
 	 * @return
 	 * @throws HotMathException
 	 */
-	static public HaTest createTest(Integer uid,HaTestDef testDef,int segment) throws HotMathException {
-		Connection conn=null;
+	static public HaTest createTest(final Connection conn, Integer uid,HaTestDef testDef,int segment) throws HotMathException {
 		PreparedStatement pstat=null;
 		ResultSet rs = null;
 		try {
-			
-
-			
- 
-			
-			conn = HMConnectionPool.getConnection();
 			
 	        HaUser user = HaUser.lookUser(conn,uid,null);
             HaTestConfig config = user.getTestConfig();
@@ -318,7 +311,7 @@ public class HaTest {
 			throw new HotMathException(e,"Error looking up Catchup Math user: " + e.getMessage());
 		}
 		finally {
-			SqlUtilities.releaseResources(null,pstat,conn);
+			SqlUtilities.releaseResources(null,pstat,null);
 		}
 	}
 	

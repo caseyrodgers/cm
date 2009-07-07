@@ -207,7 +207,7 @@ public class HaUser extends HaBasicUserImpl {
 	 * @return
 	 * @throws HotMathException
 	 */
-	static public HaUser lookUser(Connection conn,Integer uid,String userName) throws HotMathException {
+	static public HaUser lookUser(final Connection conn,Integer uid,String userName) throws HotMathException {
 		PreparedStatement pstat=null;
 		ResultSet rs = null;
 		try {

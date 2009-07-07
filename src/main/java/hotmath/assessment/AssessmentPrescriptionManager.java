@@ -53,7 +53,6 @@ public class AssessmentPrescriptionManager {
 			// first need to lookup the test for this run
 			HaTestRun testRun = HaTestRun.lookupTestRun(runId);
 			
-			String pidList = testRun.getPidList();
 			pres = AssessmentPrescriptionFactory.create(testRun);
 			pres.setTestRun(testRun);
 			

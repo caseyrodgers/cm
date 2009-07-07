@@ -17,7 +17,9 @@ import hotmath.gwt.cm_tools.client.model.SubjectModel;
 import hotmath.gwt.cm_tools.client.service.PrescriptionService;
 import hotmath.gwt.cm_tools.client.ui.NextAction;
 import hotmath.gwt.cm_tools.client.ui.NextAction.NextActionName;
+import hotmath.gwt.shared.client.rpc.action.CreateTestRunAction;
 import hotmath.gwt.shared.client.rpc.action.GetPrescriptionAction;
+import hotmath.gwt.shared.client.rpc.action.GetQuizHtmlAction;
 import hotmath.gwt.shared.client.rpc.action.GetSolutionAction;
 import hotmath.gwt.shared.client.rpc.action.GetUserInfoAction;
 import hotmath.gwt.shared.client.rpc.action.GetViewedInmhItemsAction;
@@ -26,6 +28,7 @@ import hotmath.gwt.shared.client.util.CmRpcException;
 import hotmath.gwt.shared.client.util.RpcData;
 import hotmath.gwt.shared.server.service.ActionDispatcher;
 import hotmath.gwt.shared.server.service.command.GetPrescriptionCommand;
+import hotmath.gwt.shared.server.service.command.GetQuizHtmlCommand;
 import hotmath.solution.Solution;
 import hotmath.testset.TestSet;
 import hotmath.testset.ha.HaTest;
@@ -100,6 +103,15 @@ public class PrescriptionServiceImpl extends RemoteServiceServlet implements Pre
         return ActionDispatcher.getInstance().execute(action);
     }
 
+    public RpcData createTestRun(int testId) throws CmRpcException {
+        CreateTestRunAction action = new CreateTestRunAction(testId);
+        return ActionDispatcher.getInstance().execute(action);
+    }
+    public RpcData getQuizHtml(int uid, int testSegment) throws CmRpcException {
+        GetQuizHtmlAction action = new GetQuizHtmlAction(uid, testSegment);
+        return ActionDispatcher.getInstance().execute(action);
+    }
+
 
     public String getSolutionProblemStatementHtml(String pid) {
         try {
@@ -117,64 +129,7 @@ public class PrescriptionServiceImpl extends RemoteServiceServlet implements Pre
         }
     }
 
-    /**
-     * Get the testset quiz Html to be inserted into HTML
-     * 
-     * Returns valid HTML segment or null on error.
-     */
-    public RpcData getQuizHtml(int uid, int testSegment) {
-        Connection conn = null;
-        try {
-            conn = HMConnectionPool.getConnection();
-            String quizHtmlTemplate = readQuizHtml();
-            Map<String, Object> map = new HashMap<String, Object>();
-
-            HaUser user = HaUser.lookUser(conn, uid,null);
-            String testName = user.getAssignedTestName();
-
-            if (testSegment == 0)
-                testSegment = 1;
-
-            boolean isActiveTest = user.getActiveTest() > 0;
-            HaTest haTest = null;
-            if (isActiveTest && testSegment == user.getActiveTestSegment()) {
-                // reuse the existing test
-                haTest = HaTest.loadTest(user.getActiveTest());
-            } else {
-                // register a new test
-                HaTestDef testDef = HaTestDefFactory.createTestDef(testName);
-                haTest = HaTest.createTest(uid, testDef, testSegment);
-            }
-
-            String testTitle = haTest.getTitle();
-
-            TestSet _testSet = new TestSet(haTest.getPids());
-
-            map.put("haTest", haTest);
-            map.put("testTitle", testTitle);
-            map.put("testSet", _testSet);
-            map.put("subTitle", haTest.getSubTitle(testSegment));
-
-            String quizHtml = VelocityTemplateFromStringManager.getInstance().processTemplate(quizHtmlTemplate, map);
-
-            RpcData rpcData = new RpcData();
-            rpcData.putData("quiz_html", quizHtml);
-            rpcData.putData("test_id", haTest.getTestId());
-            rpcData.putData("quiz_segment", testSegment);
-            rpcData.putData("quiz_segment_count", haTest.getTotalSegments());
-            rpcData.putData("title", testTitle);
-
-            return rpcData;
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        finally {
-            SqlUtilities.releaseResources(null,null,conn);
-        }
-
-        return null;
-    }
-
+   
     /**
      * Returns the quiz data for this test
      * 
@@ -185,7 +140,7 @@ public class PrescriptionServiceImpl extends RemoteServiceServlet implements Pre
     public RpcData getQuizHtml(int testId) throws CmRpcException {
         try {
 
-            String quizHtmlTemplate = readQuizHtml();
+            String quizHtmlTemplate = GetQuizHtmlCommand.readQuizHtmlTemplate();
             Map<String, Object> map = new HashMap<String, Object>();
 
             HaTest haTest = HaTest.loadTest(testId);
@@ -212,17 +167,6 @@ public class PrescriptionServiceImpl extends RemoteServiceServlet implements Pre
             e.printStackTrace();
             throw new CmRpcException(e.getMessage());
         }
-    }
-
-    private String readQuizHtml() throws IOException {
-        InputStream is = getClass().getResourceAsStream("quiz_template.vm");
-        BufferedReader br = new BufferedReader(new InputStreamReader(is));
-        String line = null;
-        StringBuilder sb = new StringBuilder();
-        while ((line = br.readLine()) != null) {
-            sb.append(line);
-        }
-        return sb.toString();
     }
 
     /**
@@ -351,99 +295,6 @@ public class PrescriptionServiceImpl extends RemoteServiceServlet implements Pre
 
     }
 
-
-    /**
-     * Create the Test run for this test by reading the current question
-     * selections
-     * 
-     * @param testId
-     * @param callBack
-     * @return
-     */
-    public RpcData createTestRun(int testId) throws CmRpcException {
-
-        Connection conn = null;
-        PreparedStatement pstat = null;
-        try {
-            HaTest test = HaTest.loadTest(testId);
-
-            // get list of all correct answers
-            List<String> incorrectPids = new ArrayList<String>();
-            int totalAnswered = 0;
-            int notAnswered = 0;
-            int answeredCorrect = 0;
-            int answeredIncorrect = 0;
-            int totalSessions = 0;
-
-            String sql = "select cs.pid, cs.is_correct, t.total_segments from v_HA_TEST_CURRENT_STATUS cs, HA_TEST t where cs.test_id = ? and t.test_id = cs.test_id";
-            conn = HMConnectionPool.getConnection();
-            pstat = conn.prepareStatement(sql);
-
-            pstat.setInt(1, testId);
-            ResultSet rs = pstat.executeQuery();
-            while (rs.next()) {
-                if (totalSessions < 1) {
-                    totalSessions = rs.getInt("total_segments");
-                }
-                String pid = rs.getString("pid");
-                Integer corr = rs.getInt("is_correct");
-                if (rs.wasNull())
-                    corr = null;
-
-                if (corr != null) {
-                    if (corr == 1)
-                        answeredCorrect++;
-                    else
-                        answeredIncorrect++;
-
-                    totalAnswered++;
-                } else
-                    notAnswered++;
-
-                if (corr == null || corr == 0) {
-                    incorrectPids.add(pid);
-                }
-            }
-
-            HaTestRun run = test.createTestRun(incorrectPids.toArray(new String[incorrectPids.size()]),
-                    answeredCorrect, answeredIncorrect, notAnswered, totalSessions);
-
-            AssessmentPrescription pres = AssessmentPrescriptionManager.getInstance().getPrescription(run.getRunId());
-
-            // Let the prescription instruct the next action depending on
-            // type of test, status, etc.
-            NextAction nextAction = pres.getNextAction();
-            RpcData rdata = new RpcData();
-            rdata.putData("correct_answers", answeredCorrect);
-            rdata.putData("total_questions", (notAnswered + totalAnswered));
-
-            if (!nextAction.getNextAction().equals(NextActionName.PRESCRIPTION)) {
-                // need to inform caller it needs to show the quiz ...
-                // Caught in QuizContent
-
-                if (nextAction.getNextAction().equals(NextActionName.AUTO_ASSSIGNED)) {
-                    rdata.putData("redirect_action", "AUTO_ASSIGNED");
-                    rdata.putData("assigned_test", nextAction.getAssignedTest());
-                } else {
-                    rdata.putData("redirect_action", "QUIZ");
-                    rdata.putData("segment", test.getUser().getActiveTestSegment());
-                }
-
-                return rdata;
-            }
-
-            rdata.putData("run_id", run.getRunId());
-            rdata.putData("correct_percent", GetPrescriptionCommand.getTestPassPercent(run.getHaTest().getNumTestQuestions(), run
-                    .getAnsweredCorrect()));
-            return rdata;
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new CmRpcException("Error creating new test run: " + e.getMessage());
-        } finally {
-            SqlUtilities.releaseResources(null, pstat, conn);
-        }
-    }
 
     public void resetUser(int userId) throws CmRpcException {
         Connection conn=null;

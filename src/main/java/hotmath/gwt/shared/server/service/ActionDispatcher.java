@@ -7,7 +7,9 @@ import hotmath.gwt.cm_tools.server.service.SetInmhItemAsViewedCommand;
 import hotmath.gwt.shared.client.rpc.Action;
 import hotmath.gwt.shared.client.rpc.Response;
 import hotmath.gwt.shared.client.util.CmRpcException;
+import hotmath.gwt.shared.server.service.command.CreateTestRunCommand;
 import hotmath.gwt.shared.server.service.command.GetPrescriptionCommand;
+import hotmath.gwt.shared.server.service.command.GetQuizHtmlCommand;
 import hotmath.gwt.shared.server.service.command.GetSolutionCommand;
 import hotmath.gwt.shared.server.service.command.GetUserInfoCommand;
 import hotmath.gwt.shared.server.service.command.GetViewedInmhItemsCommand;
@@ -70,6 +72,8 @@ public class ActionDispatcher {
         addCommand(new GetSolutionCommand());
         addCommand(new SetInmhItemAsViewedCommand());
         addCommand(new GetUserInfoCommand());
+        addCommand(new CreateTestRunCommand());
+        addCommand(new GetQuizHtmlCommand());
     }
     
     

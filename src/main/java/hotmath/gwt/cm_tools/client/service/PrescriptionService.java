@@ -64,7 +64,7 @@ public interface PrescriptionService extends RemoteService {
 	 * @param testSegment
 	 * @return
 	 */
-	RpcData getQuizHtml(int uid, int testSegment);
+	RpcData getQuizHtml(int uid, int testSegment) throws CmRpcException;
 	
 	
     RpcData getQuizHtml(int testId) throws CmRpcException;

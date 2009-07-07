@@ -74,6 +74,8 @@ public class AssessmentPrescriptionPlacement extends AssessmentPrescription {
                 user.setAssignedTestName(newTestName);
                 user.setActiveTestRunId(0);
                 user.setActiveTest(0);
+                
+                
                 getTestRun().getHaTest().getUser().update(conn);
             } catch (HotMathException hme) {
                 SbLogger.postMessage(hme);
@@ -125,6 +127,9 @@ public class AssessmentPrescriptionPlacement extends AssessmentPrescription {
         HaUser user = getTestRun().getHaTest().getUser();        
         if (newTestName != null) {
             // next action is another quiz
+            /** @TODO: Need to set test config json when assigning test
+             * 
+             */
             nextAction.setNextAction(NextActionName.AUTO_ASSSIGNED);
             user.setAssignedTestName(newTestName);
             user.setActiveTestSegment(0);
