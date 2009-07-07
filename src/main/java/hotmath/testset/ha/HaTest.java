@@ -250,7 +250,7 @@ public class HaTest {
 	        HaUser user = HaUser.lookUser(conn,uid,null);
             HaTestConfig config = user.getTestConfig();
 			
-			List<String> testIds = testDef.getTestIdsForSegment(segment,config,conn);
+			List<String> testIds = testDef.getTestIdsForSegment(conn,segment,config);
 			
 			String sql = "insert into HA_TEST(user_id,test_def_id,create_time,test_segment,total_segments,test_question_count)values(?,?,?,?,?,?)";
 			
@@ -302,7 +302,7 @@ public class HaTest {
 		    user.setActiveTestSegment(segment);
 		    user.update(conn);
 		    
-		    return loadTest(testId);
+		    return loadTest(conn,testId);
 		}
 		catch(HotMathException hme) {
 			throw hme;
@@ -316,19 +316,16 @@ public class HaTest {
 	}
 	
 	static Map<Integer, HaTest> __testCache = new HashMap<Integer, HaTest>(); 
-	static public HaTest loadTest(int testId) throws HotMathException {
+	static public HaTest loadTest(final Connection conn, int testId) throws HotMathException {
 	    
 	    
 	    if(__testCache.containsKey(testId))
 	        return __testCache.get(testId);
 	        
-	    
-		Connection conn=null;
 		PreparedStatement pstat=null;
 		ResultSet rs = null;
 		try {
 			String sql = "select * from HA_TEST where test_id = ?";
-			conn = HMConnectionPool.getConnection();
 			pstat = conn.prepareStatement(sql);
 			pstat.setInt(1,testId);
 			rs = pstat.executeQuery();
@@ -338,7 +335,7 @@ public class HaTest {
 			HaTest test = new HaTest();
 			test.setTestId(rs.getInt("test_id"));
 			test.setUser(HaUser.lookUser(conn,rs.getInt("user_id"),null));
-			test.setTestDef(HaTestDefFactory.createTestDef(rs.getInt("test_def_id"), conn));
+			test.setTestDef(HaTestDefFactory.createTestDef(conn, rs.getInt("test_def_id")));
 			test.setSegment(rs.getInt("test_segment"));
 			test.setNumTestQuestions(rs.getInt("test_question_count"));
 			test.setTotalSegments(rs.getInt("total_segments"));
@@ -360,7 +357,7 @@ public class HaTest {
 			throw new HotMathException(e,"Error looking up Hotmath Advance user: " + e.getMessage());
 		}
 		finally {
-			SqlUtilities.releaseResources(rs,pstat,conn);
+			SqlUtilities.releaseResources(rs,pstat,null);
 		}
 	}
 	
@@ -375,15 +372,14 @@ public class HaTest {
 	 * @return
 	 * @throws HotMathException
 	 */
-	public HaTestRun createTestRun(String wrongGids[], int answeredCorrect, int answeredIncorrect, int notAnswered, int totalSessions) throws HotMathException {
-		Connection conn=null;
+	public HaTestRun createTestRun(final Connection conn, String wrongGids[], int answeredCorrect, int answeredIncorrect, int notAnswered, int totalSessions) throws HotMathException {
+		
 		PreparedStatement pstat=null;
 		ResultSet rs = null;
 		try {
 			
-			HaTest test = HaTest.loadTest(testId);
+			HaTest test = HaTest.loadTest(conn, testId);
 			String sql = "insert into HA_TEST_RUN(test_id, run_time, answered_correct, answered_incorrect, not_answered, total_sessions, run_session)values(?,?,?,?,?,?,1)";
-			conn = HMConnectionPool.getConnection();
 			pstat = conn.prepareStatement(sql);
 			HaTestRun testRun = new HaTestRun();
 			
@@ -413,7 +409,7 @@ public class HaTest {
 			testRun.setAnsweredCorrect(answeredCorrect);
 			testRun.setAnsweredIncorrect(answeredIncorrect);
 			
-			testRun.transferCurrentToTestRun();
+			testRun.transferCurrentToTestRun(conn);
 			
 			// update this User's row to indicate new run
 			test.getUser().setActiveTestRunId(testRun.getRunId());
@@ -428,7 +424,7 @@ public class HaTest {
 			throw new HotMathException(e,"Error looking up Hotmath Advance test: " + e.getMessage());
 		}
 		finally {
-			SqlUtilities.releaseResources(rs,pstat,conn);
+			SqlUtilities.releaseResources(rs,pstat,null);
 		}
 	}
 

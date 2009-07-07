@@ -22,8 +22,8 @@ import sb.logger.SbLogger;
  */
 public class AssessmentPrescriptionPlacement extends AssessmentPrescription {
 
-    public AssessmentPrescriptionPlacement(HaTestRun testRun) throws Exception {
-        super(testRun);
+    public AssessmentPrescriptionPlacement(final Connection conn, HaTestRun testRun) throws Exception {
+        super(conn, testRun);
         setTestRun(testRun);
     }
 
@@ -36,7 +36,7 @@ public class AssessmentPrescriptionPlacement extends AssessmentPrescription {
      * 
      * @return relative URL to the proper prescription page.
      */
-    public String getPrescriptionUrl() {
+    public String getPrescriptionUrl(final Connection conn) {
 
         int correct = getTestRun().getAnsweredCorrect();
         int total = getTest().getNumTestQuestions();
@@ -61,15 +61,13 @@ public class AssessmentPrescriptionPlacement extends AssessmentPrescription {
             }
         } else if (thisTest.indexOf("algebra 2") > -1) {
             // this means user passed the last test
-            // assign to casshe
+            // assign to cache
             newTestName = "California State Exit Exam";
         }
 
         if (newTestName != null) {
             // assign test
-            Connection conn=null;
             try {
-                conn = HMConnectionPool.getConnection();
                 HaUser user = getTestRun().getHaTest().getUser();
                 user.setAssignedTestName(newTestName);
                 user.setActiveTestRunId(0);
@@ -80,9 +78,6 @@ public class AssessmentPrescriptionPlacement extends AssessmentPrescription {
             } catch (HotMathException hme) {
                 SbLogger.postMessage(hme);
                 return "SOME_ERROR_PAGE_EXPLAINING_PROBLEM";
-            }
-            finally {
-                SqlUtilities.releaseResources(null,null,conn);
             }
             return "placement-assigned.jsp?uid=" + testRun.getHaTest().getUser().getUid();
         }

@@ -9,7 +9,7 @@ import java.sql.ResultSet;
 /** manage the creation of HaTestDef objects
  * 
  * a HaTestDef object represents a specific type of test
- * either an assement test + prescription, or a placement test
+ * either an assessment test + prescription, or a placement test
  * 
  * @author Casey
  *
@@ -24,14 +24,14 @@ public class HaTestDefFactory {
 	 * @return
 	 * @throws Exception
 	 */
-	public static HaTestDef createTestDef(String name) throws Exception {
+	public static HaTestDef createTestDef(final Connection conn, String name) throws Exception {
 		if(name.indexOf("Auto-Enrollment") > -1) {
-			return new HaTestDefPlacement(name);
+			return new HaTestDefPlacement(conn, name);
 		}
-		else return new HaTestDef(name);
+		else return new HaTestDef(conn, name);
 	}
 	
-	public static HaTestDef createTestDef(int testDefId, Connection conn) throws Exception {
+	public static HaTestDef createTestDef(final Connection conn, int testDefId) throws Exception {
 	    PreparedStatement pstat=null;
 	    ResultSet rs = null;
 	    try {
@@ -47,7 +47,7 @@ public class HaTestDefFactory {
 	        if(!rs.first())
 	        	throw new Exception("Test definition not found");
 	        
-	        return createTestDef(rs.getString("test_name"));
+	        return createTestDef(conn, rs.getString("test_name"));
 	    }
 	    finally {
 	        SqlUtilities.releaseResources(rs,pstat,null);

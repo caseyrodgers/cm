@@ -4,8 +4,6 @@ import hotmath.HotMathProperties;
 import hotmath.HotMathUtilities;
 import hotmath.ProblemID;
 import hotmath.SolutionManager;
-import hotmath.assessment.AssessmentPrescription;
-import hotmath.assessment.AssessmentPrescriptionManager;
 import hotmath.gwt.cm_admin.server.model.CmAdminDao;
 import hotmath.gwt.cm_tools.client.model.ChapterModel;
 import hotmath.gwt.cm_tools.client.model.GroupModel;
@@ -15,46 +13,35 @@ import hotmath.gwt.cm_tools.client.model.StudentShowWorkModel;
 import hotmath.gwt.cm_tools.client.model.StudyProgramModel;
 import hotmath.gwt.cm_tools.client.model.SubjectModel;
 import hotmath.gwt.cm_tools.client.service.PrescriptionService;
-import hotmath.gwt.cm_tools.client.ui.NextAction;
-import hotmath.gwt.cm_tools.client.ui.NextAction.NextActionName;
 import hotmath.gwt.shared.client.rpc.action.CreateTestRunAction;
 import hotmath.gwt.shared.client.rpc.action.GetPrescriptionAction;
 import hotmath.gwt.shared.client.rpc.action.GetQuizHtmlAction;
+import hotmath.gwt.shared.client.rpc.action.GetQuizHtmlCheckedAction;
+import hotmath.gwt.shared.client.rpc.action.GetQuizResultsHtmlAction;
 import hotmath.gwt.shared.client.rpc.action.GetSolutionAction;
 import hotmath.gwt.shared.client.rpc.action.GetUserInfoAction;
 import hotmath.gwt.shared.client.rpc.action.GetViewedInmhItemsAction;
+import hotmath.gwt.shared.client.rpc.action.SaveQuizCurrentResultAction;
 import hotmath.gwt.shared.client.rpc.action.SetInmhItemAsViewedAction;
 import hotmath.gwt.shared.client.util.CmRpcException;
 import hotmath.gwt.shared.client.util.RpcData;
 import hotmath.gwt.shared.server.service.ActionDispatcher;
-import hotmath.gwt.shared.server.service.command.GetPrescriptionCommand;
-import hotmath.gwt.shared.server.service.command.GetQuizHtmlCommand;
 import hotmath.solution.Solution;
-import hotmath.testset.TestSet;
 import hotmath.testset.ha.HaTest;
-import hotmath.testset.ha.HaTestDef;
-import hotmath.testset.ha.HaTestDefFactory;
 import hotmath.testset.ha.HaTestRun;
 import hotmath.testset.ha.HaTestRunResult;
 import hotmath.testset.ha.HaUser;
 import hotmath.util.HMConnectionPool;
 import hotmath.util.HmContentExtractor;
 import hotmath.util.Jsonizer;
-import hotmath.util.VelocityTemplateFromStringManager;
 import hotmath.util.sql.SqlUtilities;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.log4j.Logger;
 
@@ -89,8 +76,6 @@ public class PrescriptionServiceImpl extends RemoteServiceServlet implements Pre
         GetSolutionAction getViewedAction = new GetSolutionAction(userId, pid);
         return ActionDispatcher.getInstance().execute(getViewedAction);
     }
-    
-    
 
     public void setInmhItemAsViewed(int runId, String type, String file) throws CmRpcException {
         SetInmhItemAsViewedAction getViewedAction = new SetInmhItemAsViewedAction(runId,type,file);
@@ -107,11 +92,16 @@ public class PrescriptionServiceImpl extends RemoteServiceServlet implements Pre
         CreateTestRunAction action = new CreateTestRunAction(testId);
         return ActionDispatcher.getInstance().execute(action);
     }
+    
     public RpcData getQuizHtml(int uid, int testSegment) throws CmRpcException {
         GetQuizHtmlAction action = new GetQuizHtmlAction(uid, testSegment);
         return ActionDispatcher.getInstance().execute(action);
     }
 
+    public RpcData getQuizHtmlChecked(int testId) throws CmRpcException {
+        GetQuizHtmlCheckedAction action = new GetQuizHtmlCheckedAction(testId);
+        return ActionDispatcher.getInstance().execute(action);
+    }
 
     public String getSolutionProblemStatementHtml(String pid) {
         try {
@@ -130,44 +120,6 @@ public class PrescriptionServiceImpl extends RemoteServiceServlet implements Pre
     }
 
    
-    /**
-     * Returns the quiz data for this test
-     * 
-     * Returns valid HTML segment or null on error.
-     * 
-     * rpcData: quiz_html, test_id, quiz_segment, title
-     */
-    public RpcData getQuizHtml(int testId) throws CmRpcException {
-        try {
-
-            String quizHtmlTemplate = GetQuizHtmlCommand.readQuizHtmlTemplate();
-            Map<String, Object> map = new HashMap<String, Object>();
-
-            HaTest haTest = HaTest.loadTest(testId);
-            String testTitle = haTest.getTitle();
-
-            TestSet _testSet = new TestSet(haTest.getPids());
-
-            int testSegment = haTest.getSegment();
-            map.put("haTest", haTest);
-            map.put("testTitle", testTitle);
-            map.put("testSet", _testSet);
-            map.put("subTitle", testSegment);
-
-            String quizHtml = VelocityTemplateFromStringManager.getInstance().processTemplate(quizHtmlTemplate, map);
-
-            RpcData rpcData = new RpcData();
-            rpcData.putData("quiz_html", quizHtml);
-            rpcData.putData("test_id", haTest.getTestId());
-            rpcData.putData("quiz_segment", testSegment);
-            rpcData.putData("title", testTitle);
-
-            return rpcData;
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new CmRpcException(e.getMessage());
-        }
-    }
 
     /**
      * Return the HTML content in the hm_content of the named file in the
@@ -209,7 +161,7 @@ public class PrescriptionServiceImpl extends RemoteServiceServlet implements Pre
         try {
             conn = HMConnectionPool.getConnection();
             int testId = HaUser.lookUser(conn, userId,null).getActiveTest();
-            List<HaTestRunResult> testResults = HaTest.loadTest(testId).getTestCurrentResponses(conn);
+            List<HaTestRunResult> testResults = HaTest.loadTest(conn,testId).getTestCurrentResponses(conn);
             ArrayList<RpcData> rpcData = new ArrayList<RpcData>();
             for (HaTestRunResult tr : testResults) {
                 if (tr.isAnswered()) {
@@ -286,13 +238,8 @@ public class PrescriptionServiceImpl extends RemoteServiceServlet implements Pre
     }
 
     public void saveQuizCurrentResult(int testId, boolean correct, int answerIndex, String pid) throws CmRpcException {
-        try {
-            HaTest test = HaTest.loadTest(testId);
-            test.saveTestQuestionChange(pid, answerIndex, correct);
-        } catch (Exception e) {
-            throw new CmRpcException(e);
-        }
-
+        SaveQuizCurrentResultAction action = new SaveQuizCurrentResultAction(testId, correct, answerIndex, pid);
+        ActionDispatcher.getInstance().execute(action);
     }
 
 
@@ -315,36 +262,9 @@ public class PrescriptionServiceImpl extends RemoteServiceServlet implements Pre
         }
     }
 
-    /**
-     * Return the QuizHtml with the results stored as a list of pids that are
-     * correct.
-     * 
-     * rpcData: (all from QuizHtml) and
-     * quiz_result_json,quiz_correct_count,quiz_question_count
-     */
-    // @Override
     public RpcData getQuizResultsHtml(int runId) throws CmRpcException {
-        try {
-            HaTestRun testRun = HaTestRun.lookupTestRun(runId);
-            List<HaTestRunResult> results = testRun.getTestRunResults();
-            String resultJson = "";
-            for (HaTestRunResult r : results) {
-                if (resultJson.length() > 0)
-                    resultJson += ",";
-                resultJson += Jsonizer.toJson(r);
-            }
-            resultJson = "[" + resultJson + "]";
-
-            RpcData quizRpc = getQuizHtml(testRun.getHaTest().getTestId());
-
-            quizRpc.putData("quiz_result_json", resultJson);
-            quizRpc.putData("quiz_question_count", testRun.getHaTest().getTestQuestionCount());
-            quizRpc.putData("quiz_correct_count", testRun.getAnsweredCorrect());
-
-            return quizRpc;
-        } catch (Exception e) {
-            throw new CmRpcException(e);
-        }
+        GetQuizResultsHtmlAction action = new GetQuizResultsHtmlAction(runId);
+        return ActionDispatcher.getInstance().execute(action);
     }
 
     public void setUserBackground(int userId, String backgroundStyle) throws CmRpcException {

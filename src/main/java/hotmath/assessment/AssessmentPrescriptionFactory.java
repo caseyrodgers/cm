@@ -2,6 +2,8 @@ package hotmath.assessment;
 
 import hotmath.testset.ha.HaTestRun;
 
+import java.sql.Connection;
+
 public class AssessmentPrescriptionFactory {
 	
 	private AssessmentPrescriptionFactory() {}
@@ -13,10 +15,10 @@ public class AssessmentPrescriptionFactory {
 	 * @return
 	 * @throws Exception
 	 */
-	static public AssessmentPrescription create(HaTestRun testRun) throws Exception {
+	static public AssessmentPrescription create(final Connection conn, HaTestRun testRun) throws Exception {
 		if(testRun.getHaTest().getTestDef().getName().indexOf("Auto-Enrollment") > -1)
-			return new AssessmentPrescriptionPlacement(testRun);
+			return new AssessmentPrescriptionPlacement(conn, testRun);
 		else
-			return new AssessmentPrescription(testRun);
+			return new AssessmentPrescription(conn, testRun);
 	}
 }

@@ -96,21 +96,14 @@ public class HaTestRun {
      * @param conn
      * @throws Exception
      */
-    public void transferCurrentToTestRun() throws Exception {
-        
-        Connection conn=null;
-        try {
-            conn = HMConnectionPool.getConnection();
-            removeAllQuizResponses(conn);
-    
-            List<HaTestRunResult> currentSelections = getHaTest().getTestCurrentResponses(conn);
-            for (HaTestRunResult tr : currentSelections) {
-                addRunResult(tr.getPid(), tr.getResult(), tr.getResponseIndex(),conn);
-            }
+    public void transferCurrentToTestRun(final Connection conn) throws Exception {
+        removeAllQuizResponses(conn);
+
+        List<HaTestRunResult> currentSelections = getHaTest().getTestCurrentResponses(conn);
+        for (HaTestRunResult tr : currentSelections) {
+            addRunResult(conn, tr.getPid(), tr.getResult(),tr.getResponseIndex());
         }
-        finally {
-            SqlUtilities.releaseResources(null,null,conn);
-        }
+
     }
 
     private void removeAllQuizResponses(Connection conn) throws Exception {
@@ -123,7 +116,7 @@ public class HaTestRun {
         }
     }
 
-    public HaTestRunResult addRunResult(String pid, String answerStatus, int answerIndex, Connection conn) throws HotMathException {
+    public HaTestRunResult addRunResult(final Connection conn, String pid, String answerStatus, int answerIndex) throws HotMathException {
         PreparedStatement pstat = null;
         ResultSet rs = null;
         try {
@@ -188,8 +181,7 @@ public class HaTestRun {
         return runId + "," + runTime + ", " + haTest;
     }
 
-    static public HaTestRun lookupTestRun(int runId) throws HotMathException {
-        Connection conn = null;
+    static public HaTestRun lookupTestRun(final Connection conn, int runId) throws HotMathException {
         PreparedStatement pstat = null;
         ResultSet rs = null;
         try {
@@ -197,7 +189,6 @@ public class HaTestRun {
                     + " from   HA_TEST_RUN r INNER JOIN HA_TEST t on r.test_id = t.test_id "
                     + " LEFT JOIN HA_TEST_RUN_RESULTS s on s.run_id = r.run_id " + " where r.run_id = ? ";
 
-            conn = HMConnectionPool.getConnection();
             pstat = conn.prepareStatement(sql);
 
             pstat.setInt(1, runId);
@@ -212,7 +203,7 @@ public class HaTestRun {
             testRun.setSessionNumber(rs.getInt("run_session"));
             testRun.setAnsweredCorrect((rs.getInt("answered_correct")));
 
-            testRun.setHaTest(HaTest.loadTest(rs.getInt("test_id")));
+            testRun.setHaTest(HaTest.loadTest(conn,rs.getInt("test_id")));
             do {
                 String pid = rs.getString("pid");
                 if (pid == null)
@@ -232,7 +223,7 @@ public class HaTestRun {
         } catch (Exception e) {
             throw new HotMathException(e, "Error adding run result: " + e.getMessage());
         } finally {
-            SqlUtilities.releaseResources(rs, pstat, conn);
+            SqlUtilities.releaseResources(rs, pstat, null);
         }
     }
 }

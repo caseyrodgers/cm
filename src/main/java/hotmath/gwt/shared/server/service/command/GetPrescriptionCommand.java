@@ -62,7 +62,7 @@ public class GetPrescriptionCommand implements ActionHandler<GetPrescriptionActi
 
             conn = HMConnectionPool.getConnection();
 
-            AssessmentPrescription pres = AssessmentPrescriptionManager.getInstance().getPrescription(runId);
+            AssessmentPrescription pres = AssessmentPrescriptionManager.getInstance().getPrescription(conn, runId);
 
             int totalSessions = pres.getSessions().size();
             if (totalSessions == 0) {

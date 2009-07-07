@@ -3,6 +3,7 @@ package hotmath.assessment;
 import hotmath.testset.ha.HaTest;
 import hotmath.testset.ha.HaTestRun;
 
+import java.sql.Connection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -34,10 +35,10 @@ public class AssessmentPrescriptionManager {
 	 * @return
 	 * @throws Exception
 	 */
-	public AssessmentPrescription createPrescription(int testId,String pids,int answeredCorrect, int answeredIncorrect, int notAnswered, int totalSessions) throws Exception {
+	public AssessmentPrescription createPrescription(final Connection conn, int testId,String pids,int answeredCorrect, int answeredIncorrect, int notAnswered, int totalSessions) throws Exception {
 		
-		HaTest test = HaTest.loadTest(testId);
-		AssessmentPrescription pres = AssessmentPrescriptionFactory.create(test.createTestRun(pids.split(","),answeredCorrect, answeredIncorrect, notAnswered, totalSessions));
+		HaTest test = HaTest.loadTest(conn,testId);
+		AssessmentPrescription pres = AssessmentPrescriptionFactory.create(conn, test.createTestRun(conn, pids.split(","),answeredCorrect, answeredIncorrect, notAnswered, totalSessions));
 		
 		_prescriptions.put(pres.getTestRun().getRunId(), pres);
 		return pres;
@@ -45,15 +46,15 @@ public class AssessmentPrescriptionManager {
 
 	
 	
-	public AssessmentPrescription getPrescription(int runId) throws Exception {
+	public AssessmentPrescription getPrescription(final Connection conn, int runId) throws Exception {
 		AssessmentPrescription pres = _prescriptions.get(runId);
 		if(pres == null) {
 			// create new one and store in map
 			
 			// first need to lookup the test for this run
-			HaTestRun testRun = HaTestRun.lookupTestRun(runId);
+			HaTestRun testRun = HaTestRun.lookupTestRun(conn, runId);
 			
-			pres = AssessmentPrescriptionFactory.create(testRun);
+			pres = AssessmentPrescriptionFactory.create(conn, testRun);
 			pres.setTestRun(testRun);
 			
 			_prescriptions.put(runId, pres);

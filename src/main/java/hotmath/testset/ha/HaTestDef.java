@@ -8,10 +8,6 @@ import hotmath.cm.util.CmCacheManager;
 import hotmath.util.HMConnectionPool;
 import hotmath.util.sql.SqlUtilities;
 
-import net.sf.ehcache.Cache;
-import net.sf.ehcache.CacheManager;
-import net.sf.ehcache.Element;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -65,7 +61,7 @@ public class HaTestDef {
     String chapter;
     int testDefId;
 
-    public HaTestDef(String name) throws HotMathException {
+    public HaTestDef(final Connection conn, String name) throws HotMathException {
         this.name = name;
         
         // try cache first
@@ -77,14 +73,11 @@ public class HaTestDef {
         	logger.info("HaTestDef(): retrieved name: " + name);
         	return;
         }
-        
-        Connection conn = null;
         PreparedStatement pstat = null;
         ResultSet rs = null;
         try {
             String sql = "select * " + " from HA_TEST_DEF d " + " where test_name = ? ";
 
-            conn = HMConnectionPool.getConnection();
             pstat = conn.prepareStatement(sql);
 
             pstat.setString(1, this.name);
@@ -104,7 +97,7 @@ public class HaTestDef {
         } catch (Exception e) {
             throw new HotMathException(e, "Error getting test definition pids: " + e.getMessage());
         } finally {
-            SqlUtilities.releaseResources(rs, pstat, conn);
+            SqlUtilities.releaseResources(rs, pstat, null);
         }
 
         indexRelatedPool = getRelatedPoolIndex();
@@ -230,9 +223,9 @@ public class HaTestDef {
     List<String> list;
     int _lastSegment;
 
-    public List<String> getTestIdsForSegment(int segment, HaTestConfig config, Connection conn) throws Exception {
+    public List<String> getTestIdsForSegment(final Connection conn, int segment, HaTestConfig config) throws Exception {
         _lastSegment = segment;
-        return getTestIdsForSegment(segment, textCode, chapter, config, conn);
+        return getTestIdsForSegment(conn, segment, textCode, chapter, config);
     }
 
     /**
@@ -246,14 +239,14 @@ public class HaTestDef {
      * @TODO: move into factory pattern
      * 
      * @param conn
+     * @param conn Active connection passed in
      * @param segment
      * @param textcode
      * @param chapter
-     * @param conn Active connection passed in
      * @return
      * @throws SQLException
      */
-    private List<String> getTestIdsForSegment(int segment, String textcode, String chapter, HaTestConfig config, Connection conn)
+    private List<String> getTestIdsForSegment(final Connection conn, int segment, String textcode, String chapter, HaTestConfig config)
             throws Exception {
 
         // Use chapter from config if available, otherwise

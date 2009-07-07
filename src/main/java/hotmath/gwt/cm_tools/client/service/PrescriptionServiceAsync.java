@@ -45,7 +45,8 @@ public interface PrescriptionServiceAsync {
 	   */
 	  void getQuizHtml(int uid, int testSegment, AsyncCallback callback);
 	  
-	  void getQuizHtml(int testId,AsyncCallback callback);
+	  
+	  void getQuizHtmlChecked(int testId,AsyncCallback callback);
 	  
 	  void getHmContent(String file, String baseDirectory, AsyncCallback callback);
 	  

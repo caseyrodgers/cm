@@ -165,10 +165,10 @@ public class HaUser extends HaBasicUserImpl {
 	 *   
 	 * @throws Exception
 	 */
-	public void update(Connection conn) throws HotMathException {
+	public void update(final Connection conn) throws HotMathException {
 		PreparedStatement pstat=null;
 		try {
-	    	HaTestDef def = HaTestDefFactory.createTestDef(getAssignedTestName());			
+	    	HaTestDef def = HaTestDefFactory.createTestDef(conn, getAssignedTestName());			
 			
 		    String sql = "update HA_USER set active_test_id = ?, active_run_id = ?, active_segment = ?, active_run_session = ?, " +
 		       "test_def_id = ?, gui_background_style = ? " +

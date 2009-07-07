@@ -36,7 +36,7 @@ public class SetInmhItemAsViewedCommand implements ActionHandler<SetInmhItemAsVi
             pstat.setString(2, action.getType());
             pstat.setString(3, action.getFile());
             pstat.setTimestamp(4, new Timestamp(System.currentTimeMillis()));
-            pstat.setInt(5, HaTestRun.lookupTestRun(action.getRunId()).getHaTest().getUser().getActiveTestRunSession());
+            pstat.setInt(5, HaTestRun.lookupTestRun(conn, action.getRunId()).getHaTest().getUser().getActiveTestRunSession());
 
             int cnt = pstat.executeUpdate();
             if (cnt != 1)

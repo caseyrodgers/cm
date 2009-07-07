@@ -91,7 +91,7 @@ public class AssessmentPrescription {
      * @param pids
      * @throws Exception
      */
-    public AssessmentPrescription(HaTestRun testRun) throws Exception {
+    public AssessmentPrescription(final Connection conn, HaTestRun testRun) throws Exception {
         
         this.testRun = testRun;
         _assessment = new InmhAssessment(testRun.getPidList());
@@ -115,7 +115,7 @@ public class AssessmentPrescription {
             double numPids = ((double) wi / (double) sumOfWeights) * totalPrescription;
             int numPids2get = (int) Math.ceil(numPids);
             // now choose tham many pids from the pool for this item
-            List<ProblemID> workBookPids = id.getWookBookSolutionPool();
+            List<ProblemID> workBookPids = id.getWookBookSolutionPool(conn);
             if (workBookPids.size() == 0)
                 continue; // nothing to see here.
 

@@ -39,7 +39,6 @@ public class CreateTestRunCommand implements ActionHandler<CreateTestRunAction, 
         Connection conn = null;
         PreparedStatement pstat = null;
         try {
-            HaTest test = HaTest.loadTest(action.getTestId());
 
             // get list of all correct answers
             List<String> incorrectPids = new ArrayList<String>();
@@ -51,6 +50,9 @@ public class CreateTestRunCommand implements ActionHandler<CreateTestRunAction, 
 
             String sql = "select cs.pid, cs.is_correct, t.total_segments from v_HA_TEST_CURRENT_STATUS cs, HA_TEST t where cs.test_id = ? and t.test_id = cs.test_id";
             conn = HMConnectionPool.getConnection();
+            
+            HaTest test = HaTest.loadTest(conn, action.getTestId());
+            
             pstat = conn.prepareStatement(sql);
 
             pstat.setInt(1, action.getTestId());
@@ -79,10 +81,10 @@ public class CreateTestRunCommand implements ActionHandler<CreateTestRunAction, 
                 }
             }
 
-            HaTestRun run = test.createTestRun(incorrectPids.toArray(new String[incorrectPids.size()]),
+            HaTestRun run = test.createTestRun(conn, incorrectPids.toArray(new String[incorrectPids.size()]),
                     answeredCorrect, answeredIncorrect, notAnswered, totalSessions);
 
-            AssessmentPrescription pres = AssessmentPrescriptionManager.getInstance().getPrescription(run.getRunId());
+            AssessmentPrescription pres = AssessmentPrescriptionManager.getInstance().getPrescription(conn, run.getRunId());
 
             // Let the prescription instruct the next action depending on
             // type of test, status, etc.

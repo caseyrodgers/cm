@@ -12,8 +12,8 @@ public class HaTestDefPlacement extends HaTestDef {
 	String TEXTCODE = "placement";
 	String PLACEMENT_CHAPTERS[] = {"prealg","alg1", "geo", "alg2"};
 	
-	public HaTestDefPlacement(String name) throws Exception {
-		super(name);
+	public HaTestDefPlacement(final Connection conn, String name) throws Exception {
+		super(conn, name);
 	}
 
 	/** Return set of 4 tests of 7 questions, taken from each subject:
@@ -24,7 +24,7 @@ public class HaTestDefPlacement extends HaTestDef {
 	 */
 	
 	@Override
-	public List<String> getTestIdsForSegment(int segment, HaTestConfig config, Connection conn) throws Exception {
+	public List<String> getTestIdsForSegment(Connection conn, int segment, HaTestConfig config) throws Exception {
 		_lastSegment = segment;
 		PreparedStatement ps=null;
 		ResultSet rs = null;

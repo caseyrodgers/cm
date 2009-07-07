@@ -67,7 +67,7 @@ public interface PrescriptionService extends RemoteService {
 	RpcData getQuizHtml(int uid, int testSegment) throws CmRpcException;
 	
 	
-    RpcData getQuizHtml(int testId) throws CmRpcException;
+    RpcData getQuizHtmlChecked(int testId) throws CmRpcException;
 
 	/**
 	 * Return the 'hm_content' from the requested file

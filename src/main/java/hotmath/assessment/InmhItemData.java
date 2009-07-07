@@ -90,17 +90,15 @@ public class InmhItemData {
 	 * 
 	 * @return
 	 */
-	public List<ProblemID> getWookBookSolutionPool() {
+	public List<ProblemID> getWookBookSolutionPool(final Connection conn) {
 
 		List<ProblemID> pids = new ArrayList<ProblemID>();
 
 		// SQL to get list of ranges that match each INMH item
 		String sql = "select range " + " from   inmh_assessment i "
 				+ " where  i.file = ? ";
-		Connection conn = null;
 		PreparedStatement ps = null;
 		try {
-			conn = HMConnectionPool.getConnection();
 			ps = conn.prepareStatement(sql);
 			ps.setString(1, this.item.getFile());
 			ResultSet rs = ps.executeQuery();
@@ -125,7 +123,7 @@ public class InmhItemData {
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
-			SqlUtilities.releaseResources(null, ps, conn);
+			SqlUtilities.releaseResources(null, ps, null);
 		}
 		return pids;
 	}

@@ -9,10 +9,13 @@ import hotmath.gwt.shared.client.rpc.Response;
 import hotmath.gwt.shared.client.util.CmRpcException;
 import hotmath.gwt.shared.server.service.command.CreateTestRunCommand;
 import hotmath.gwt.shared.server.service.command.GetPrescriptionCommand;
+import hotmath.gwt.shared.server.service.command.GetQuizHtmlCheckedCommand;
 import hotmath.gwt.shared.server.service.command.GetQuizHtmlCommand;
+import hotmath.gwt.shared.server.service.command.GetQuizResultsHtmlCommand;
 import hotmath.gwt.shared.server.service.command.GetSolutionCommand;
 import hotmath.gwt.shared.server.service.command.GetUserInfoCommand;
 import hotmath.gwt.shared.server.service.command.GetViewedInmhItemsCommand;
+import hotmath.gwt.shared.server.service.command.SaveQuizCurrentResultCommand;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -74,6 +77,9 @@ public class ActionDispatcher {
         addCommand(new GetUserInfoCommand());
         addCommand(new CreateTestRunCommand());
         addCommand(new GetQuizHtmlCommand());
+        addCommand(new GetQuizHtmlCheckedCommand());
+        addCommand(new SaveQuizCurrentResultCommand());
+        addCommand(new GetQuizResultsHtmlCommand());
     }
     
     
