@@ -4,9 +4,8 @@
    Configuration for ehcache used by 
    hotmath.cm.util.CmCacheMangager
    
-   Each cache name should be defined 
-   the static enum CachName localed in 
-   CmCacheManager 
+   Each cache name should be defined in the 
+   static enum CachName in CmCacheManager 
 
  -->
 <defaultCache
@@ -25,6 +24,13 @@
 <!--  For HaTest -->
 <cache name="TEST"
        maxElementsInMemory="100"
+       eternal="true"
+       overflowToDisk="false">
+</cache>
+
+<!-- For HA_PROG_DEF -->
+<cache name="PROG_DEF"
+       maxElementsInMemory="50"
        eternal="true"
        overflowToDisk="false">
 </cache>
