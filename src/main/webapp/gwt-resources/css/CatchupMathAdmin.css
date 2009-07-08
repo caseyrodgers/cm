@@ -31,6 +31,12 @@
 		;
 }
 
+.header-panel-guide-btn {
+    position: absolute;
+    left: 200px;
+    top: 9px;
+}
+
 .header-panel-help-btn {
 	height: 34px;
 	width: 76px;

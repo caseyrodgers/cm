@@ -20,7 +20,7 @@ public class Log4jInit extends HttpServlet {
         // if the log4j-init-file is not set, then no point in trying
         if (file != null) {
             PropertyConfigurator.configure(prefix + file);
-            Logger.getLogger(this.getClass()).info("Catchup Log4J intialized");
+            Logger.getLogger(this.getClass()) .info("Catchup Log4J intialized");
         }
     }
 

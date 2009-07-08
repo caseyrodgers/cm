@@ -1,9 +1,11 @@
 package hotmath.gwt.cm_admin.client.ui;
 
+import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.IconButtonEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.widget.Html;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
+import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.button.IconButton;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Window;
@@ -25,6 +27,17 @@ public class HeaderPanel extends LayoutContainer {
 		super.onRender(parent, index);
 
 		setStyleName("header-panel");
+		
+		
+		Button guide = new Button("Getting Started");
+		guide.setStyleName("header-panel-guide-btn");
+		guide.setToolTip("Find out how to get started with Catchup Math");
+		guide.addSelectionListener(new SelectionListener<ButtonEvent>() {
+		    public void componentSelected(ButtonEvent ce) {
+		        new GettingStartedGuideWindow();
+		    }
+        });
+		add(guide);
 		
 		IconButton btn = new IconButton("header-panel-help-btn-icon");
 		btn.setStyleName("header-panel-help-btn");
