@@ -13,6 +13,8 @@ import hotmath.gwt.cm_tools.client.ui.NextDialog;
 import hotmath.gwt.cm_tools.client.ui.context.CmContext;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.data.CmAsyncRequestImplDefault;
+import hotmath.gwt.shared.client.eventbus.CmEvent;
+import hotmath.gwt.shared.client.eventbus.EventBus;
 import hotmath.gwt.shared.client.util.UserInfo;
 
 import java.util.ArrayList;
@@ -47,6 +49,9 @@ public class PrescriptionContext implements CmContext {
 
     public void setPrescriptionData(PrescriptionData prescriptionData) {
         this.prescriptionData = prescriptionData;
+        
+        
+        EventBus.getInstance().fireEvent(new CmEvent(EventBus.EVENT_TYPE_TOPIC_CHANGED,prescriptionData.getCurrSession().getTopic()));
     }
 
     public void setCorrectPercent(int correctPercent) {
@@ -94,6 +99,7 @@ public class PrescriptionContext implements CmContext {
         return list;
 
     }
+
 
     public void gotoNextTopic() {
 

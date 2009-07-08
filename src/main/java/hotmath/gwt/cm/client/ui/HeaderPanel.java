@@ -2,6 +2,7 @@ package hotmath.gwt.cm.client.ui;
 
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.ui.CmMainPanel;
+import hotmath.gwt.cm_tools.client.ui.InfoPopupBox;
 import hotmath.gwt.cm_tools.client.ui.context.CmContext;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
@@ -9,9 +10,15 @@ import hotmath.gwt.shared.client.eventbus.CmEventListenerImplDefault;
 import hotmath.gwt.shared.client.eventbus.EventBus;
 import hotmath.gwt.shared.client.util.UserInfo;
 
+import com.extjs.gxt.ui.client.core.XDOM;
 import com.extjs.gxt.ui.client.event.IconButtonEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
+import com.extjs.gxt.ui.client.util.Params;
+import com.extjs.gxt.ui.client.util.Point;
+import com.extjs.gxt.ui.client.util.Size;
 import com.extjs.gxt.ui.client.widget.Html;
+import com.extjs.gxt.ui.client.widget.Info;
+import com.extjs.gxt.ui.client.widget.InfoConfig;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.button.IconButton;
 import com.google.gwt.user.client.Element;
@@ -71,6 +78,14 @@ public class HeaderPanel extends LayoutContainer {
   		            HeaderPanel.__instance.setHeaderTitle(context.getContextTitle());
 		            CmMainPanel.__lastInstance._westPanel.setHeading(context.getContextSubTitle());
 		        }
+		        else if(event.getEventName().equals(EventBus.EVENT_TYPE_TOPIC_CHANGED)) {
+		            if(CmShared.getQueryParameter("debug") != null) {
+    		            String title = "The topic is '" + event.getEventData() + "'";
+    		            String message = "Use any menu items you wish, before or after trying the Required Practice Problems.";
+    		            InfoConfig infoConfig = new MyInfoConfig(title,message);
+                        InfoPopupBox.display(infoConfig);
+		            }
+		        }
 		    }
 		});
 	}
@@ -103,4 +118,13 @@ public class HeaderPanel extends LayoutContainer {
 	   //	_headerText.setText(title);
 	}
 
+}
+
+
+class MyInfoConfig extends InfoConfig {
+    public MyInfoConfig(String t, String m) {
+        super(t, m);
+        display = 10000;
+        width = 300;
+    }
 }

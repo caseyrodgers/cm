@@ -75,4 +75,10 @@ public class EventBus {
      * 
      */
     static public final String EVENT_TYPE_USER_PROGRAM_CHANGED="USER_PROGRAM_CHANGED";
+    
+    
+    /** Fired whenever a new session topic is set
+     * 
+     */
+    static public final String EVENT_TYPE_TOPIC_CHANGED="TOPIC_CHANGED";
 }

@@ -58,7 +58,6 @@ public interface CmContext {
 	public String getContextHelp();
 	
 	
-	
 	/** Return the completion percent of the current 
 	 * context as an integer (ie, 60,34, etc)
 	 * 
