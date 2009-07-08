@@ -14,8 +14,9 @@ public interface RegistrationServiceAsync {
 	  void getSummariesForInactiveStudents(Integer adminUid, AsyncCallback<List<StudentModel>> callback);
 
 	  void deactivateUser(StudentModel sm, AsyncCallback<StudentModel> callback);
-	  
+
+	  @Deprecated
 	  void removeUser(StudentModel sm, AsyncCallback<StudentModel> callback);
-	  
+
 	  void getAccountInfoForAdminUid(Integer uid, AsyncCallback<AccountInfoModel> callback);
 }
