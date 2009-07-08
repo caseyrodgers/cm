@@ -1,5 +1,6 @@
 package hotmath.gwt.cm_admin.server.model;
 
+import hotmath.cm.util.CmCacheManager;
 import hotmath.gwt.cm_tools.client.model.AccountInfoModel;
 import hotmath.gwt.cm_tools.client.model.ChapterModel;
 import hotmath.gwt.cm_tools.client.model.GroupModel;
@@ -24,15 +25,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.apache.log4j.Logger;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import static hotmath.cm.util.CmCacheManager.CacheName.PROG_DEF;
+
 public class CmAdminDao {
 	
-	//private static final Logger logger = LoggerFactory.getLogger(CmAdminDao.class);
-	private static final Log logger = LogFactory.getLog(CmAdminDao.class);
+	private static final Logger logger = Logger.getLogger(CmAdminDao.class);
 
     public CmAdminDao() {
     }
@@ -40,7 +42,7 @@ public class CmAdminDao {
 
     enum StudentSqlType{SINGLE_STUDENT, ALL_STUDENTS_FOR_ADMIN};
     /** Return the StudentSummary sql for either a single student or 
-     *  all students under a given AMDIN.
+     *  all Students under a given Admin.
      *  
      *  @TODO: move this to a view to allow easy reuse.
      *  
@@ -89,15 +91,15 @@ public class CmAdminDao {
             return studentSql;
     }
 
-    public List <StudentModel> getSummariesForActiveStudents(Integer adminUid) {
+    public List <StudentModel> getSummariesForActiveStudents(Integer adminUid) throws Exception {
     	return getStudentSummaries(adminUid, true);
     }
     
-    public List <StudentModel> getSummariesForInactiveStudents(Integer adminUid) {
+    public List <StudentModel> getSummariesForInactiveStudents(Integer adminUid) throws Exception {
     	return getStudentSummaries(adminUid, false);
     }
 
-    public List <StudentModel> getStudentSummaries(Integer adminUid, Boolean isActive) {
+    public List <StudentModel> getStudentSummaries(Integer adminUid, Boolean isActive) throws Exception {
     	List <StudentModel> l = null;
     	
     	Connection conn = null;
@@ -114,8 +116,8 @@ public class CmAdminDao {
     		l = loadStudentSummaries(rs);
     	}
     	catch (Exception e) {
-    		//logger.error(String.format("*** Error getting student summaries for Admin uid: %d", adminUid), e);
-    		//throw e;
+    		logger.error(String.format("*** Error getting student summaries for Admin uid: %d", adminUid), e);
+    		throw new Exception("*** Error getting student summary data ***");
     	}
     	finally {
     		SqlUtilities.releaseResources(rs, ps, conn);
@@ -127,7 +129,7 @@ public class CmAdminDao {
     
     private static String SELECT_SUBJECTS_SQL = "select * from HA_SUBJ_DEF where for_school = ?";
     
-    public List <SubjectModel> getSubjectDefinitions() {
+    public List <SubjectModel> getSubjectDefinitions() throws Exception {
     	List <SubjectModel> l = null;
     	
     	Connection conn = null;
@@ -145,8 +147,8 @@ public class CmAdminDao {
     		l = loadSubjectDefinitions(rs);
     	}
     	catch (Exception e) {
-    		//logger.error(String.format("*** Error getting subject definitions for school type: %s", "any"), e);
-    		//throw e;
+    		logger.error(String.format("*** Error getting subject definitions for school type: %s", "any"), e);
+    	    throw new Exception("*** Error getting subject definitions ***");
     	}
     	finally {
     		SqlUtilities.releaseResources(rs, ps, conn);
@@ -210,11 +212,8 @@ public class CmAdminDao {
     		l = loadStudentActivity(rs);
     	}
     	catch (Exception e) {
-    		System.out.println(String.format("*** Error getting student details for student uid: %d", uid));
-    		System.out.println("*** Exception: " + e.getStackTrace());
-    		//logger.error(String.format("*** Error getting student details for student uid: %d", uid), e);
-    		e = new Exception("*** Error getting student details ***");
-    		throw e;
+    		logger.error(String.format("*** Error getting student details for student uid: %d", uid), e);
+    		throw new Exception("*** Error getting student details ***");
     	}
     	finally {
     		SqlUtilities.releaseResources(rs, ps, conn);
@@ -250,6 +249,10 @@ public class CmAdminDao {
     		rs = ps.executeQuery();
     		
     		l = loadGroups(rs);
+    	}
+    	catch (Exception e) {
+    		logger.error(String.format("*** Error getting groups for admin uid: %d", adminUid), e);
+    		throw new Exception("*** Error getting Group data ***");
     	}
     	finally {
     		SqlUtilities.releaseResources(rs, ps, conn);
@@ -287,8 +290,7 @@ public class CmAdminDao {
     	}
     	catch (Exception e) {
     	    e.printStackTrace();
-    	    System.out.println(String.format("*** Error adding Group: %s, Exception: %s",
-    	    	gm.getName(), e.getLocalizedMessage()));
+    	    logger.error(String.format("*** Error adding Group: %s, for adminUid: %d", gm.getName(), adminUid), e);
     	    throw new Exception(String.format("*** Error adding Group: %s ***", gm.getName()));
     	}
     	finally {
@@ -316,11 +318,8 @@ public class CmAdminDao {
     		return (rs.next());
     	}
     	catch (Exception e) {
-    		e.printStackTrace();
-    		System.out.println(String.format("*** Error checking for group: %s, adminUid: %d",
-    			gm.getName(), adminUid));
-    		//logger.error(String.format("*** Error checking for group: %s, adminUid: %d", gm.getName(), adminUid), e);
-    		throw e;
+    		logger.error(String.format("*** Error checking for group: %s, adminUid: %d", gm.getName(), adminUid), e);
+    		throw new Exception(String.format("*** Error checking for group: %s ***", gm.getName()));
     	}
     	finally {
     		SqlUtilities.releaseResources(rs, ps, conn);
@@ -347,13 +346,11 @@ public class CmAdminDao {
     		ps.setString(2, subjId);
     		rs = ps.executeQuery();
     		l = loadChapters(rs);
-    		//System.out.println("+++ chapter 1: " + l.get(0).getChapter());
+    		//logger.debug("+++ chapter 1: " + l.get(0).getChapter());
     		return l;
     	}
     	catch (Exception e) {
-    		System.out.println(String.format("*** Error getting chapters for progId: %s, subjId: %s, Exception: %s",
-    			progId, subjId, e.getLocalizedMessage()));
-    		//logger.error(String.format("*** Error getting chapters for progId: %s, subjId: %s", progId, subjId), e);
+    		logger.error(String.format("*** Error getting chapters for progId: %s, subjId: %s", progId, subjId), e);
     		throw new Exception("*** Error getting Chapter list ***", e);
     	}
     	finally {
@@ -414,14 +411,12 @@ public class CmAdminDao {
       	        ai.setLastLogin(rs.getString("login_date_time"));
     		}
     		else {
-    			throw new Exception("***No data found ***;");
+    			throw new Exception("*** No Account data found ***");
     		}
     	}
     	catch (Exception e) {
-    	    System.out.println(String.format("*** Error getting account info for admin id: %d; Exception: %s",
-    	    		adminUid, e.getLocalizedMessage()));
-    		//logger.error(String.format("*** Error getting account info for admin id: %d", adminUid), e);
-    		throw e;
+            logger.error(String.format("*** Error getting account info for admin id: %d", adminUid), e);
+    		throw new Exception("*** Error getting Account data ***");
     	}
     	finally {
     		SqlUtilities.releaseResources(rs, ps, conn);
@@ -437,12 +432,12 @@ public class CmAdminDao {
     	Connection conn = null;
     	PreparedStatement ps = null;
     	ResultSet rs = null;
-    	
+
 		Boolean isDuplicate = checkForDuplicatePasscode(sm);
 		if (isDuplicate) {
 			throw new Exception("The passcode you entered is already in use, please try again.");
 		}
-		
+
     	try {
     		conn = HMConnectionPool.getConnection();
     		ps = conn.prepareStatement(ADD_USER_SQL);
@@ -453,7 +448,7 @@ public class CmAdminDao {
     		ps.setString(5, sm.getProgId());
     		ps.setString(6, sm.getSubjId());
     		ps.setInt(7, sm.getAdminUid());
-    		
+
     		int count = ps.executeUpdate();
     		if (count == 1) {
         	    int stuUid = this.getLastInsertId(conn);
@@ -461,26 +456,20 @@ public class CmAdminDao {
         	    addStudentProgram(sm);
         	    updateStudent(sm);
     		}
-        	
     	}
     	catch (Exception e) {
-    	    e.printStackTrace();
-    	    System.out.println(String.format("*** Error adding student with passcode: %s, Exception: %s",
-    	    		sm.getPasscode(), e.getLocalizedMessage()));
-    		throw e;
+    	    logger.error(String.format("*** Error adding student with passcode: %s, Exception: %s", sm.getPasscode()), e);
+    		throw new Exception(String.format("*** Error adding Student: %s, Passcode: %s ***", sm.getName(), sm.getPasscode()));
     	}
     	finally {
     		SqlUtilities.releaseResources(rs, ps, conn);
     	}
-    	return sm;    	
-
-    	
+    	return sm;
     }
-    
+
     private static final String DEACTIVATE_USER_SQL =
     	"update HA_USER set is_active = 0, user_passcode = ? where uid = ?";
 
-    
     /** 
      *  The user's passcode is set to their uid + '.' + current time in msec to avoid
      *  "locking up" up the previous passcode and to prevent passcode uniqueness collisions
@@ -504,7 +493,7 @@ public class CmAdminDao {
     	}
     	catch (Exception e) {
     		logger.error(String.format("*** Error deactivating student with uid: %d", sm.getUid()), e);
-    		throw e;
+    		throw new Exception(String.format("*** Error deactivating student with uid: %d", sm.getUid()));
     	}
     	finally {
     		SqlUtilities.releaseResources(rs, ps, conn);
@@ -513,13 +502,13 @@ public class CmAdminDao {
     	
     }
 
-    
     /** Remove this user from the admin's scope
      * 
      * @TODO: move to archive?
      * 
      * @param sm
      */
+    @Deprecated
     public void removeUser(StudentModel sm) {
         final String REMOVE_USER_SQL = "delete from HA_USER where uid = ?";
         
@@ -581,9 +570,8 @@ public class CmAdminDao {
     		return (rs.next());
     	}
     	catch (Exception e) {
-    		System.out.println(String.format("*** Error checking passcoce for student with uid: %d", sm.getUid()));
-    		//logger.error(String.format("*** Error checking passcode for student with uid: %d", sm.getUid()), e);
-    		throw e;
+    		logger.error(String.format("*** Error checking passcode for student with uid: %d", sm.getUid()), e);
+    		throw new Exception(String.format("*** Error checking passcode for student: %s ***", sm.getName()));
     	}
     	finally {
     		SqlUtilities.releaseResources(rs, ps, conn);
@@ -621,9 +609,8 @@ public class CmAdminDao {
     		int result = ps.executeUpdate();
     	}
     	catch (Exception e) {
-    		System.out.println("*** Exception: " + e.getMessage());
-    		//logger.error(String.format("*** Error updating student with uid: %d", sm.getUid()), e);
-    		throw new Exception("*** Error occurred while updating student ***");
+    		logger.error(String.format("*** Error updating student with uid: %d", sm.getUid()), e);
+    		throw new Exception(String.format("*** Error occurred while updating student: %s ***", sm.getName()));
     	}
     	finally {
     		SqlUtilities.releaseResources(rs, ps, conn);
@@ -641,7 +628,7 @@ public class CmAdminDao {
     	"set pass_percent = null " +
     	"where id = ?";
 
-    public StudentModel updateStudentProgram(StudentModel sm) {
+    public StudentModel updateStudentProgram(StudentModel sm) throws Exception {
     	Connection conn = null;
     	PreparedStatement ps = null;
     	
@@ -663,9 +650,8 @@ public class CmAdminDao {
     		int result = ps.executeUpdate();
     	}
     	catch (Exception e) {
-    		System.out.println(String.format("*** Error updating student with uid: %d, Exception: %s", sm.getUid(), e.getLocalizedMessage()));
-    		//logger.error(String.format("*** Error updating student with uid: %d", sm.getUid()), e);
-    		//throw e;
+    		logger.error(String.format("*** Error updating student with uid: %d", sm.getUid()), e);
+    		throw new Exception(String.format("*** Error occurred while updating Student: %s ***", sm.getName()));
     	}
     	finally {
     		SqlUtilities.releaseResources(null, ps, conn);
@@ -681,7 +667,7 @@ public class CmAdminDao {
     	"insert CM_USER_PROGRAM (user_id, admin_id, test_def_id, create_date) " +
     	"values (?, ?, (select test_def_id from HA_TEST_DEF where prog_id = ? and subj_id = ?), ?)";
     
-    public StudentModel addStudentProgram(StudentModel sm) {
+    public StudentModel addStudentProgram(StudentModel sm) throws Exception {
     	Connection conn = null;
     	PreparedStatement ps = null;
 
@@ -743,9 +729,8 @@ public class CmAdminDao {
     		}
     	}
     	catch (Exception e) {
-    		System.out.println("*** Exception: " + e.getLocalizedMessage());
-    		//logger.error(String.format("*** Error adding student program for student with uid: %d", sm.getUid()), e);
-    		//throw e;
+    		logger.error(String.format("*** Error adding student program for student with uid: %d", sm.getUid()), e);
+    		throw new Exception(String.format("*** Error adding student program for student: %s ***", sm.getName()));
     	}
     	finally {
     		SqlUtilities.releaseResources(null, ps, conn);
@@ -779,28 +764,245 @@ public class CmAdminDao {
     	"select id, title, description, needs_subject, needs_chapter, needs_pass_percent, needs_state " +
     	"from HA_PROG_DEF where is_active = 1 order by id";
     
-    public List<StudyProgramModel> getProgramDefinitions() {
+    @SuppressWarnings("unchecked")
+	public List<StudyProgramModel> getProgramDefinitions() throws Exception {
+    	
+    	List<StudyProgramModel> rval =
+    		(List<StudyProgramModel>)CmCacheManager.getInstance().retrieveFromCache(PROG_DEF, PROG_DEF.toString());
+    	if (rval != null) return rval;
+    	
     	Connection conn = null;
     	Statement stmt = null;
     	ResultSet rs = null;
-    	List<StudyProgramModel> rval = null;
     	
     	try {
     		conn = HMConnectionPool.getConnection();
     		stmt = conn.createStatement();
     		rs = stmt.executeQuery(PROGRAM_SQL);
     		rval = loadProgramDefinitions(rs);
+    		
+    		CmCacheManager.getInstance().addToCache(PROG_DEF, PROG_DEF.toString(), rval);
     	}
     	catch (Exception e) {
-    	    e.printStackTrace();
-    		System.out.println("*** Exception: " + e.getLocalizedMessage());
+    		logger.error("*** Error while getting Program definitions ***", e);
+    		throw new Exception("*** Error while getting Program definitions ***");
     	}
     	finally {
     		SqlUtilities.releaseResources(rs, stmt, conn);
     	}
     	return rval;
     }
+
+    /** Return list of StudentShowWorkModel that represent
+     *  distinct list of problems that actually have show work.
+     *  
+     *  
+     *  If run_id is passed, then limit to only run_id
+     *  
+     *  @TODO: modify SQL to restrict on run_id if passed.
+     *         (if run_id == null, then return all, if run_id != null restrict)?
+     *  
+     *  
+     * viewed al
+     * @param uid
+     * @return
+     * @throws Exception
+     */
+    public List<StudentShowWorkModel> getStudentShowWork(int uid, Integer runId) throws Exception {
+        
+        List<StudentShowWorkModel> swModels = new ArrayList<StudentShowWorkModel>();
+        
+        Connection conn = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+
+        String sql = "select distinct a.pid,a.run_id, b.* " +
+                     "from   HA_TEST_RUN_WHITEBOARD a, " +
+                     "( " +
+                     "select  user_id, pid, max(insert_time_mills) as insert_time_mills  " +
+                     " from HA_TEST_RUN_WHITEBOARD b " +
+                     " group by user_id, pid " +
+                     " ) b " +
+                     " where a.user_id = ?  " +
+                     " and   b.pid = a.pid " +
+                     " and   b.user_id = a.user_id " +
+                     " order by insert_time_mills desc";
+        
+         try {
+            conn = HMConnectionPool.getConnection();
+            ps = conn.prepareStatement(sql);
+            ps.setInt(1, uid);
+            rs = ps.executeQuery();
+
+            SimpleDateFormat dteForat = new SimpleDateFormat("yyyy-MM-dd hh:mm a");
+            //int prob = 1;
+            while(rs.next()) {
+                
+                /** Quick hack to restrict to runId if specified
+                 * 
+                 */
+                if(runId != null) {
+                    if(rs.getInt("run_id") != runId)
+                        continue;
+                }
+                
+                
+                String pid = rs.getString("pid");
+                long timeMills = rs.getLong("insert_time_mills");
+                
+                Date dte = new Date(timeMills);
+                String dteStr = dteForat.format(dte);
+                
+                StudentShowWorkModel s = new StudentShowWorkModel();
+                s.setPid(pid);
+                s.setInsertTimeMills(timeMills);
+                s.setViewTime(dteStr);
+                s.setLabel("");
+                
+                swModels.add(s);
+            }
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+        finally {
+            SqlUtilities.releaseResources(rs, ps, conn);
+        }
+        
+        return swModels;
+    }
     
+    
+    /** Create a StudentModel for the named student with user_id.
+     * 
+     * @param uid The user_id of student 
+     * @return a new StudentModel
+     * 
+     * @throws Exception if student not found
+     */
+    public StudentModel getStudentModel(Integer uid) throws Exception {
+        Connection conn = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        
+        try {
+            conn = HMConnectionPool.getConnection();
+            ps = conn.prepareStatement(getStudentSql(StudentSqlType.SINGLE_STUDENT));
+            ps.setInt(1, uid);
+            ps.setInt(2, 1);
+            rs = ps.executeQuery();
+
+            List <StudentModel> l = null;
+            l = loadStudentSummaries(rs);
+            if(l.size() == 0)
+                throw new Exception(String.format("Student with UID: %d was not found", uid));
+            if(l.size() > 1)
+                throw new Exception(String.format("Student with UID: %d matches more than one row", uid));
+            
+            return l.get(0);
+        }
+        catch (Exception e) {
+        	logger.error(String.format("*** Error obtaining data for student UID: %d", uid), e);
+        	throw new Exception(String.format("*** Error obtaining data for student with UID: %d", uid));        	
+        }
+        finally {
+            SqlUtilities.releaseResources(rs, ps, conn);
+        }
+    }
+    
+    
+    /** Return the Admin object currently attached to this 
+     *  SUBSCRIBER record or null
+     *  
+     * @param subscriberId  The subscriber record (id) to lookup
+     * @return HaAdmin record, or null if no such record exists
+     * 
+     * @throws Exception on db errors
+     */
+    public HaAdmin getAdmin(String subscriberId) throws Exception {
+        
+        String GET_ADMIN_SQL = "select * from HA_ADMIN where subscriber_id = ?";
+
+        Connection conn = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        
+        try {
+            conn = HMConnectionPool.getConnection();
+            ps = conn.prepareStatement(GET_ADMIN_SQL);
+            ps.setString(1,subscriberId);
+            
+            rs = ps.executeQuery();
+            if(!rs.first())
+                return null;
+            
+            HaAdmin haAdmin = new HaAdmin();
+            haAdmin.setAdminId(rs.getInt("aid"));
+            haAdmin.setUserName(rs.getString("user_name"));
+            haAdmin.setPassword(rs.getString("passcode"));
+            
+            return haAdmin;
+        }
+        catch (Exception e) {
+        	logger.error(String.format("*** Error obtaining admins for subscriberId: %s", subscriberId), e);
+        	throw new Exception(String.format("*** Error obtaining admins for subscriberId: %s", subscriberId));        	
+        }
+        finally {
+            SqlUtilities.releaseResources(rs, ps, conn);
+        }
+    }
+    
+    
+    /** Create a new HA_ADMIN record
+     * 
+     * @param subscriberId  The subscriber to associated with this cm admin
+     * @param userName The username for the admin account
+     * @param passcode The passcode for this admin account
+     * 
+     * @return The admin_id of the just created HA_ADMIN record
+     * 
+     * @throws Exception
+     */
+    public HaAdmin addAdmin(String subscriberId, String userName, String passcode) throws Exception {
+        
+        String ADD_ADMIN_SQL = "insert into HA_ADMIN(subscriber_id, user_name, passcode, create_date)" +
+                               "values(?,?,?,now())";
+
+        Connection conn = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        
+        try {
+            conn = HMConnectionPool.getConnection();
+            ps = conn.prepareStatement(ADD_ADMIN_SQL);
+            ps.setString(1,subscriberId);
+            ps.setString(2, userName);
+            ps.setString(3,passcode);
+            int count = ps.executeUpdate();
+            int adminId=0;
+            if (count == 1) {
+                adminId = this.getLastInsertId(conn);
+            }
+            else {
+                throw new Exception("Could not create HA_ADMIN account for unknown reason");
+            }
+
+            HaAdmin haAdmin = new HaAdmin();
+            haAdmin.setAdminId(adminId);
+            haAdmin.setUserName(userName);
+            haAdmin.setPassword(passcode);
+            
+            return haAdmin;
+        }
+        catch (Exception e) {
+        	logger.error(String.format("*** Error creating admin, name: %s, subscriberId: %s, passcode: %s", userName, subscriberId, passcode), e);
+        	throw new Exception(String.format("*** Error creating HA_ADMIN, name: %s, subscriberId: %s, passcode: %s", userName, subscriberId, passcode));
+        }
+        finally {
+            SqlUtilities.releaseResources(rs, ps, conn);
+        }
+    }
+
     private List <StudyProgramModel> loadProgramDefinitions(ResultSet rs) throws Exception {
     	List <StudyProgramModel> l = new ArrayList<StudyProgramModel> ();
     	while (rs.next()) {
@@ -1026,203 +1228,4 @@ public class CmAdminDao {
     	return chap;
     }
     
-    
-    /** Return list of StudentShowWorkModel that represent
-     *  distinct list of problems that actually have show work.
-     *  
-     *  
-     *  If run_id is passed, then limit to only run_id
-     *  
-     *  @TODO: modify SQL to restrict on run_id if passed.
-     *         (if run_id == null, then return all, if run_id != null restrict)?
-     *  
-     *  
-     * viewed al
-     * @param uid
-     * @return
-     * @throws Exception
-     */
-    public List<StudentShowWorkModel> getStudentShowWork(int uid, Integer runId) throws Exception {
-        
-        List<StudentShowWorkModel> swModels = new ArrayList<StudentShowWorkModel>();
-        
-        Connection conn = null;
-        PreparedStatement ps = null;
-        ResultSet rs = null;
-
-        String sql = "select distinct a.pid,a.run_id, b.* " +
-                     "from   HA_TEST_RUN_WHITEBOARD a, " +
-                     "( " +
-                     "select  user_id, pid, max(insert_time_mills) as insert_time_mills  " +
-                     " from HA_TEST_RUN_WHITEBOARD b " +
-                     " group by user_id, pid " +
-                     " ) b " +
-                     " where a.user_id = ?  " +
-                     " and   b.pid = a.pid " +
-                     " and   b.user_id = a.user_id " +
-                     " order by insert_time_mills desc";
-        
-         try {
-            conn = HMConnectionPool.getConnection();
-            ps = conn.prepareStatement(sql);
-            ps.setInt(1, uid);
-            rs = ps.executeQuery();
-
-            SimpleDateFormat dteForat = new SimpleDateFormat("yyyy-MM-dd hh:mm a");
-            //int prob = 1;
-            while(rs.next()) {
-                
-                /** Quick hack to restrict to runId if specified
-                 * 
-                 */
-                if(runId != null) {
-                    if(rs.getInt("run_id") != runId)
-                        continue;
-                }
-                
-                
-                String pid = rs.getString("pid");
-                long timeMills = rs.getLong("insert_time_mills");
-                
-                Date dte = new Date(timeMills);
-                String dteStr = dteForat.format(dte);
-                
-                StudentShowWorkModel s = new StudentShowWorkModel();
-                s.setPid(pid);
-                s.setInsertTimeMills(timeMills);
-                s.setViewTime(dteStr);
-                s.setLabel("");
-                
-                swModels.add(s);
-            }
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-        }
-        finally {
-            SqlUtilities.releaseResources(rs, ps, conn);
-        }
-        
-        return swModels;
-    }
-    
-    
-    /** Create a StudentModel for the named student with user_id.
-     * 
-     * @param uid The user_id of student 
-     * @return a new StudentModel
-     * 
-     * @throws Exception if student not found
-     */
-    public StudentModel getStudentModel(Integer uid) throws Exception {
-        Connection conn = null;
-        PreparedStatement ps = null;
-        ResultSet rs = null;
-        
-        try {
-            conn = HMConnectionPool.getConnection();
-            ps = conn.prepareStatement(getStudentSql(StudentSqlType.SINGLE_STUDENT));
-            ps.setInt(1, uid);
-            ps.setInt(2, 1);
-            rs = ps.executeQuery();
-
-            List <StudentModel> l = null;
-            l = loadStudentSummaries(rs);
-            if(l.size() == 0)
-                throw new Exception("Student with uid of " + uid + " was not found");
-            if(l.size() > 1)
-                throw new Exception("Student with uid o f" + uid + " matches more than one row");
-            
-            return l.get(0);
-        }
-        finally {
-            SqlUtilities.releaseResources(rs, ps, conn);
-        }
-    }
-    
-    
-    /** Return the Admin object currently attached to this 
-     *  SUBSCRIBER record or null
-     *  
-     * @param subscriberId  The subscriber record (id) to lookup
-     * @return HaAdmin record, or null if no such record exists
-     * 
-     * @throws Exception on db errors
-     */
-    public HaAdmin getAdmin(String subscriberId) throws Exception {
-        
-        String GET_ADMIN_SQL = "select * from HA_ADMIN where subscriber_id = ?";
-
-        Connection conn = null;
-        PreparedStatement ps = null;
-        ResultSet rs = null;
-        
-        try {
-            conn = HMConnectionPool.getConnection();
-            ps = conn.prepareStatement(GET_ADMIN_SQL);
-            ps.setString(1,subscriberId);
-            
-            rs = ps.executeQuery();
-            if(!rs.first())
-                return null;
-            
-            HaAdmin haAdmin = new HaAdmin();
-            haAdmin.setAdminId(rs.getInt("aid"));
-            haAdmin.setUserName(rs.getString("user_name"));
-            haAdmin.setPassword(rs.getString("passcode"));
-            
-            return haAdmin;
-            
-        }
-        finally {
-            SqlUtilities.releaseResources(rs, ps, conn);
-        }
-    }
-    
-    
-    /** Create a new HA_ADMIN record
-     * 
-     * @param subscriberId  The subscriber to associated with this cm admin
-     * @param userName The username for the admin account
-     * @param passcode The passcode for this admin account
-     * 
-     * @return The admin_id of the just created HA_ADMIN record
-     * 
-     * @throws Exception
-     */
-    public HaAdmin addAdmin(String subscriberId, String userName, String passcode) throws Exception {
-        
-        String ADD_ADMIN_SQL = "insert into HA_ADMIN(subscriber_id, user_name, passcode, create_date)" +
-                               "values(?,?,?,now())";
-
-        Connection conn = null;
-        PreparedStatement ps = null;
-        ResultSet rs = null;
-        
-        try {
-            conn = HMConnectionPool.getConnection();
-            ps = conn.prepareStatement(ADD_ADMIN_SQL);
-            ps.setString(1,subscriberId);
-            ps.setString(2, userName);
-            ps.setString(3,passcode);
-            int count = ps.executeUpdate();
-            int adminId=0;
-            if (count == 1) {
-                adminId = this.getLastInsertId(conn);
-            }
-            else {
-                throw new Exception("Could not create HA_ADMIN account for unknown reason");
-            }
-
-            HaAdmin haAdmin = new HaAdmin();
-            haAdmin.setAdminId(adminId);
-            haAdmin.setUserName(userName);
-            haAdmin.setPassword(passcode);
-            
-            return haAdmin;
-        }
-        finally {
-            SqlUtilities.releaseResources(rs, ps, conn);
-        }
-    }
 }
