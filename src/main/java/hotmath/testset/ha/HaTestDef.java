@@ -17,7 +17,7 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
-
+import static hotmath.cm.util.CmCacheManager.CacheName.TEST_DEF;
 
 /**
  * A single Hotmath Advance test definition.
@@ -67,7 +67,7 @@ public class HaTestDef {
         this.name = name;
         
         // try cache first
-        HaTestDef td = (HaTestDef)CmCacheManager.getInstance().retrieveFromCache(CmCacheManager.CacheName.TEST_DEF, name);
+        HaTestDef td = (HaTestDef)CmCacheManager.getInstance().retrieveFromCache(TEST_DEF, name);
         if (td != null) {
         	this.textCode = td.getTextCode();
         	this.chapter = td.getChapter();
@@ -91,12 +91,12 @@ public class HaTestDef {
             this.chapter = rs.getString("chapter");
             this.testDefId = rs.getInt("test_def_id");
             
-            CmCacheManager.getInstance().addToCache(CmCacheManager.CacheName.TEST_DEF,this.getName(), this);
+            CmCacheManager.getInstance().addToCache(CmCacheManager.CacheName.TEST_DEF, this.getName(), this);
             
         } catch (HotMathException hme) {
             throw hme;
         } catch (Exception e) {
-            throw new HotMathException(e, "Error getting test definition pids: " + e.getMessage());
+            throw new HotMathException(e, "Error getting test definition: " + e.getMessage());
         } finally {
             SqlUtilities.releaseResources(rs, pstat, null);
         }
@@ -178,7 +178,7 @@ public class HaTestDef {
         } catch (HotMathException hme) {
             throw hme;
         } catch (Exception e) {
-            throw new HotMathException(e, "Error getting test definition pids: " + e.getMessage());
+            throw new HotMathException(e, "Error getting program chapters: " + e.getMessage());
         } finally {
             SqlUtilities.releaseResources(rs, pstat, conn);
         }
@@ -236,7 +236,7 @@ public class HaTestDef {
      * 
      * items are return in normal solution sort order
      * 
-     * @TODO: allow setting mulitple chapters
+     * @TODO: allow setting multiple chapters
      * @TODO: move into factory pattern
      * 
      * @param conn
