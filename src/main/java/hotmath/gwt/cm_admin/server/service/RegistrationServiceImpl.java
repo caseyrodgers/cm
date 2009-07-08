@@ -23,12 +23,12 @@ public class RegistrationServiceImpl extends RemoteServiceServlet implements Reg
 	public RegistrationServiceImpl() {
 	}
 
-	public List<StudentModel> getSummariesForActiveStudents(Integer adminUid) {
+	public List<StudentModel> getSummariesForActiveStudents(Integer adminUid) throws Exception {
 		CmAdminDao cma = new CmAdminDao();
 		return cma.getSummariesForActiveStudents(adminUid);
 	}
 	
-	public List<StudentModel> getSummariesForInactiveStudents(Integer adminUid) {
+	public List<StudentModel> getSummariesForInactiveStudents(Integer adminUid) throws Exception {
 		CmAdminDao cma = new CmAdminDao();
 		return cma.getSummariesForInactiveStudents(adminUid);
 	}
@@ -37,13 +37,12 @@ public class RegistrationServiceImpl extends RemoteServiceServlet implements Reg
 		CmAdminDao cma = new CmAdminDao();
 		return cma.deactivateUser(sm);
 	}
-	
+
+	@Deprecated
     public void removeUser(StudentModel sm) {
         CmAdminDao cma = new CmAdminDao();
         cma.removeUser(sm);
     }
-	
-
 
 	public AccountInfoModel getAccountInfoForAdminUid(Integer uid) throws Exception {
 		CmAdminDao cma = new CmAdminDao();
