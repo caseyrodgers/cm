@@ -36,6 +36,7 @@ public class FooterPanel extends LayoutContainer {
             html +=   "<li><a href='#' onclick='resetProgram_Gwt();'>Reset</a></li>";
             html += "<li><a href='#' onclick='showPrescriptionData_Gwt();'>prescription data</a>";
             html += "<li><a href='#' onclick='showPrescriptionSession_Gwt();'>prescription sessions</a>";
+            html += "<li><a href='#' onclick='startAutoTest_Gwt();'>Auto Test</a>";
         }
         
         html += "</ul>" + 
@@ -112,6 +113,10 @@ public class FooterPanel extends LayoutContainer {
     }
     
     
+    private static void startAutoTest_Gwt() {
+        CatchupMathTools.showAlert("Auto testing begin");
+    }
+    
     /** Define JSNI methods to expose feedback services
      * 
      */
@@ -120,6 +125,7 @@ public class FooterPanel extends LayoutContainer {
        $wnd.resetProgram_Gwt = @hotmath.gwt.cm_tools.client.ui.FooterPanel::resetProgram_Gwt();
        $wnd.showPrescriptionData_Gwt = @hotmath.gwt.cm_tools.client.ui.FooterPanel::showPrescriptionData_Gwt();
        $wnd.showPrescriptionSession_Gwt = @hotmath.gwt.cm_tools.client.ui.FooterPanel::showPrescriptionSession_Gwt();
+       $wnd.startAutoTest_Gwt = @hotmath.gwt.cm_tools.client.ui.FooterPanel::startAutoTest_Gwt();
     }-*/;
     
     static {
