@@ -8,6 +8,7 @@ import hotmath.gwt.cm_tools.client.model.StudentShowWorkModel;
 import hotmath.gwt.cm_tools.client.model.StudyProgramModel;
 import hotmath.gwt.cm_tools.client.model.SubjectModel;
 import hotmath.gwt.shared.client.util.CmRpcException;
+import hotmath.gwt.shared.client.util.RpcData;
 
 import java.util.List;
 
@@ -24,7 +25,7 @@ public interface PrescriptionServiceAsync {
      */
       void saveFeedback(String comments, String commentsUrl, String stateInfo, AsyncCallback callback);
     
-	  void getPrescriptionSessionJson(int runId,int sessionNumber,boolean updateActiveInfo, AsyncCallback callback);
+	  void getPrescriptionSessionJson(int runId,int sessionNumber,boolean updateActiveInfo, AsyncCallback <RpcData> callback);
 	  
 	  
 	  /** Return the solution HTML for the given pid, and lookup if

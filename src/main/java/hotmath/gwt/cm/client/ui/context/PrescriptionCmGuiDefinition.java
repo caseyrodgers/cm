@@ -96,9 +96,8 @@ public class PrescriptionCmGuiDefinition implements CmGuiDefinition {
 
         boolean updateActive = UserInfo.getInstance().isActiveUser();
         s.getPrescriptionSessionJson(UserInfo.getInstance().getRunId(), sessionNumber, updateActive,
-                new AsyncCallback() {
-                    public void onSuccess(Object result) {
-                        RpcData rdata = (RpcData) result;
+                new AsyncCallback<RpcData>() {
+                    public void onSuccess(RpcData rdata) {
                         if(rdata == null) {
                             CatchupMathTools.showAlert("There was a problem reading this prescription data");
                             return;
