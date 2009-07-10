@@ -24,7 +24,7 @@ import java.util.Map;
 import sb.logger.SbLogger;
 
 public class AssessmentPrescriptionSession {
-    List<SessionData> pids = new ArrayList<SessionData>();
+    List<SessionData> _pids = new ArrayList<SessionData>();
     String name;
     AssessmentPrescription prescription;
 
@@ -38,7 +38,7 @@ public class AssessmentPrescriptionSession {
     }
 
     public void addSolution(String pid, INeedMoreHelpItem item) {
-        pids.add(new SessionData(item, pid, 0, 0));
+        _pids.add(new SessionData(item, pid, 0, 0));
     }
 
     public String getName() {
@@ -46,7 +46,7 @@ public class AssessmentPrescriptionSession {
     }
 
     public List<SessionData> getSessionItems() {
-        return pids;
+        return _pids;
     }
 
     public String toString() {
@@ -60,7 +60,7 @@ public class AssessmentPrescriptionSession {
      */
     public List<ProblemID> getSessionProblemIds() {
         List<ProblemID> list = new ArrayList<ProblemID>();
-        for (SessionData sessData : this.pids) {
+        for (SessionData sessData : _pids) {
             list.add(new ProblemID(sessData.getPid()));
         }
         return list;
@@ -79,7 +79,7 @@ public class AssessmentPrescriptionSession {
      * 
      */
     public INeedMoreHelpItem getHelpItemFor(ProblemID pid) throws Exception {
-        for (SessionData sessData : this.pids) {
+        for (SessionData sessData : _pids) {
             if (sessData.getPid().equals(pid.getGUID())) {
                 return sessData.getItem();
             }
@@ -97,7 +97,7 @@ public class AssessmentPrescriptionSession {
     public List<SessionData> getSessionDataFor(String helpItem) {
         List<SessionData> list = new ArrayList<SessionData>();
 
-        for (SessionData sd : this.pids) {
+        for (SessionData sd : _pids) {
             if (sd.getItem().getTitle().equals(helpItem)) {
                 list.add(sd);
             }
@@ -128,23 +128,22 @@ public class AssessmentPrescriptionSession {
      * @throws HotMathException
      */
     public String getInmhReferencedPids(INeedMoreHelpItem item) throws HotMathException {
-        List<String> list = new ArrayList<String>();
 
-        String pids = "";
-        for (SessionData it : this.pids) {
+        StringBuilder pidSb = new StringBuilder();
+        for (SessionData it : _pids) {
             INeedMoreHelpItem[] i2 = INeedMoreHelpManager.getInstance().getHelpItems(it.getPid(), true);
 
             boolean found = false;
             for (INeedMoreHelpItem i : i2) {
                 if (i.equals(item)) {
-                    if (pids.length() > 0)
-                        pids += ",";
-                    pids += it.getPid();
+                    if (found)
+                        pidSb.append(",");
+                    pidSb.append(it.getPid());
                     found = true;
                 }
             }
         }
-        return pids;
+        return pidSb.toString();
     }
 
     /**
@@ -154,7 +153,7 @@ public class AssessmentPrescriptionSession {
      */
     public List<INeedMoreHelpItem> getSessionCategories() {
         List<INeedMoreHelpItem> list = new ArrayList<INeedMoreHelpItem>();
-        for (SessionData sessData : this.pids) {
+        for (SessionData sessData : _pids) {
             if (!list.contains(sessData.getItem()))
                 list.add(sessData.getItem());
         }
@@ -224,7 +223,7 @@ public class AssessmentPrescriptionSession {
         // @TODO: what is the correct order?
         List<INeedMoreHelpResourceType> list = new ArrayList<INeedMoreHelpResourceType>(coll);
         Collections.sort(list, new Comparator<INeedMoreHelpResourceType>() {
-            @Override
+            //@Override
             public int compare(INeedMoreHelpResourceType o1, INeedMoreHelpResourceType o2) {
                 return o1.getTypeDef().getType().compareTo(o2.getTypeDef().getType());
             }
@@ -248,12 +247,12 @@ public class AssessmentPrescriptionSession {
 
         List<INeedMoreHelpResourceType> resourceTypes = new ArrayList<INeedMoreHelpResourceType>();
 
-        String topicList = "";
+        StringBuilder topicListSb = new StringBuilder();
         for (INeedMoreHelpItem item : getSessionCategories()) {
-            if (topicList.length() > 0)
-                topicList += ",";
+            if (topicListSb.length() > 0)
+                topicListSb.append(",");
 
-            topicList += "'" + item.getFile() + "'";
+            topicListSb.append("'").append(item.getFile()).append("'");
         }
 
         PreparedStatement pstat = null;
@@ -266,10 +265,10 @@ public class AssessmentPrescriptionSession {
             // " and  m.file in (" + topicList + ")";
 
             String sql = 
-                      "select distinct m.file,l.link_title, l.link_key,l.link_type "
+                      "select distinct m.file, l.link_title, l.link_key, l.link_type "
                     + " from   inmh_assessment m, inmh_link l " 
                     + " where  m.file = l.file " + " and  m.file in ("
-                    + topicList + ") " + " and l.link_type like '%" + linkTypeIn + "'"
+                    + topicListSb.toString() + ") " + " and l.link_type like '%" + linkTypeIn + "'"
                     + " order by l.link_type, link_title ";
             
             pstat = conn.prepareStatement(sql);
