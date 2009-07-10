@@ -50,9 +50,9 @@ import org.apache.log4j.Logger;
  * 
  */
 public class GetPrescriptionCommand implements ActionHandler<GetPrescriptionAction, RpcData> {
-    
+
     Logger logger = Logger.getLogger(GetPrescriptionCommand.class);
-    
+
     @Override
     public RpcData execute(GetPrescriptionAction action) throws Exception {
 
@@ -77,8 +77,8 @@ public class GetPrescriptionCommand implements ActionHandler<GetPrescriptionActi
             }
             // which session
             if (sessionNumber > (totalSessions - 1)) {
-                System.out.println("WARNING: session request for " + runId + " is outside bounds of prescription: "
-                        + sessionNumber + ", " + totalSessions);
+                logger.warn(String.format("WARNING: session request for %d is outside bounds of prescription: %d, %d",
+                		runId, sessionNumber, totalSessions));
                 sessionNumber = 0;
             }
             AssessmentPrescriptionSession sess = pres.getSessions().get(sessionNumber);
