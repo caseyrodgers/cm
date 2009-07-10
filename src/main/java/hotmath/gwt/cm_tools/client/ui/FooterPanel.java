@@ -112,8 +112,9 @@ public class FooterPanel extends LayoutContainer {
         Window.open(url, "_blank", "height=480,width=640,status=yes");        
     }
     
-    
     private static void startAutoTest_Gwt() {
+        AutoTestWindow.getInstance().setVisible(true);
+        
         UserInfo.getInstance().setAutoTestMode(true);
         ContextController.getInstance().getTheContext().runAutoTest();
     }

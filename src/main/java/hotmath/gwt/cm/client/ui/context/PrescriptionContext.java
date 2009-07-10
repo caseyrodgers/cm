@@ -6,6 +6,7 @@ import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.data.InmhItemData;
 import hotmath.gwt.cm_tools.client.data.PrescriptionData;
 import hotmath.gwt.cm_tools.client.data.PrescriptionSessionDataResource;
+import hotmath.gwt.cm_tools.client.ui.AutoTestWindow;
 import hotmath.gwt.cm_tools.client.ui.CmMainPanel;
 import hotmath.gwt.cm_tools.client.ui.ContextChangeListener;
 import hotmath.gwt.cm_tools.client.ui.ContextController;
@@ -354,35 +355,7 @@ public class PrescriptionContext implements CmContext {
         
         return html1;
     }
-    public String getStatusMessage2() {
-        int currSess = prescriptionData.getCurrSession().getSessionNumber();
-        int totSess = prescriptionData.getSessionTopics().size();
 
-        int totSegs = UserInfo.getInstance().getTestSegmentCount();
-        int seg = UserInfo.getInstance().getTestSegment();
-        String name = UserInfo.getInstance().getTestName();
-
-        int perComplete = UserInfo.getInstance().getCorrectPercent();
-
-        return "Topic: " + prescriptionData.getCurrSession().getTopic() + " (" + (currSess + 1) + " of " + totSess + "),  Quiz: " + seg + " of " + totSegs; 
-    }
-
-    
-    /** The time it will take to view all resources on a single topic
-     * 
-     */
-    static public int TIME_FOR_ALL_RESOURCES=90000;
-    
-    /** The time it will take to view a single resource type
-     * 
-     */
-    static public int TIME_FOR_SINGLE_RESOURCE_TYPE=20000;
-    
-    /** The time it will take to view a single resource item
-     * 
-     */
-    static public  int TIME_FOR_SINGLE_RESOURCE_ITEM=5000;
-    
     public void runAutoTest() {
         int timeToWait=1;
         for(final PrescriptionSessionDataResource r: prescriptionData.getCurrSession().getInmhResources()) {
@@ -391,7 +364,10 @@ public class PrescriptionContext implements CmContext {
                     public void run() {
                         final String resourceType = r.getLabel();
                         
+                        AutoTestWindow.getInstance().addLogMessage("Testing resource: " + resourceType);
+                        
                         ((PrescriptionCmGuiDefinition) CmMainPanel.__lastInstance.cmGuiDef)._guiWidget.expandResourceType(resourceType);
+                        
                         
                          // now click on each resource
                         int timeToWait1=1;
@@ -407,20 +383,20 @@ public class PrescriptionContext implements CmContext {
                                     Timer timer1 = new Timer() {
                                         public void run() {
                                             
-                                            InfoPopupBox.display("Auto Testing", "Testing: " + resourceType + ", " + rm.getItem());
+                                            AutoTestWindow.getInstance().addLogMessage("Testing: " + resourceType + ", " + rm.getItem());
                                             
                                             rl.showResource(rm.getItem());
                                         }
                                     };
                                     timer1.schedule(timeToWait1);
-                                    timeToWait1 += TIME_FOR_SINGLE_RESOURCE_ITEM;
+                                    timeToWait1 += AutoTestWindow.getInstance().getTimeForSingleResource();
                                 }
                             }
                         }
                     }
                 };
                 timer.schedule(timeToWait);
-                timeToWait += TIME_FOR_SINGLE_RESOURCE_TYPE;                
+                timeToWait += AutoTestWindow.getInstance().getTimeForSingleResourceType();            
             }
             catch(Exception e) {
                 e.printStackTrace();
@@ -435,21 +411,23 @@ public class PrescriptionContext implements CmContext {
                 int cs =  prescriptionData.getCurrSession().getSessionNumber();
                 int ts = prescriptionData.getSessionTopics().size();
                 if((cs+1) < ts) {
+                    AutoTestWindow.getInstance().addLogMessage("Moving to Lesson: " + cs+1);
                     prescriptionCm.getAsyncDataFromServer(cs+1);
                 }
                 else {
                     int nextSegment = UserInfo.getInstance().getTestSegment();
                     if(nextSegment < UserInfo.getInstance().getTestSegmentCount()) {
                         nextSegment += 1;
+                        AutoTestWindow.getInstance().addLogMessage("Testing Quiz: " + nextSegment);
                         UserInfo.getInstance().setTestSegment(nextSegment);
                         CatchupMath.getThisInstance().showQuizPanel();
                     }
                     else {
-                        CatchupMathTools.showAlert("Auto Test has completed at " + nextSegment + "!");
+                        AutoTestWindow.getInstance().addLogMessage("Auto Test has completed at " + nextSegment + "!");
                     }
                 }
             }
         };
-        timer.schedule(TIME_FOR_ALL_RESOURCES);        
+        timer.schedule(AutoTestWindow.getInstance().getTimeForSingleLesson());        
     }
 }
