@@ -87,4 +87,10 @@ public interface CmContext {
 	
 	public String getStatusMessage();
 	
+	
+	/** Run auto tests and verify all content
+	 * 
+	 */
+	public void runAutoTest();
+	
 }

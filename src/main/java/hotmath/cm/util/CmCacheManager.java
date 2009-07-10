@@ -7,8 +7,13 @@ import java.util.Arrays;
 import java.util.List;
 
 import net.sf.ehcache.Cache;
+import net.sf.ehcache.CacheException;
 import net.sf.ehcache.CacheManager;
+import net.sf.ehcache.Ehcache;
 import net.sf.ehcache.Element;
+import net.sf.ehcache.Status;
+import net.sf.ehcache.event.CacheEventListener;
+import net.sf.ehcache.event.CacheManagerEventListener;
 
 import org.apache.log4j.Logger;
 
@@ -44,7 +49,7 @@ public class CmCacheManager  {
     /** Distinct cache names as defined in configuration files (ehcache.xml)
      * 
      */
-	public static enum CacheName { PROG_DEF, TEST_DEF, TEST };
+	public static enum CacheName { PROG_DEF, TEST_DEF, TEST, TEST_HTML, TEST_HTML_CHECKED };
 
 	private void flushCache() {
     	if (logger.isInfoEnabled()) {
@@ -65,6 +70,10 @@ public class CmCacheManager  {
             List<String> cNames = null;
             if (cnArray != null) {
             	cNames = Arrays.asList(cnArray);
+            	// registered listener for each cache
+            	for(String cn: cNames) {
+            	    CacheManager.getInstance().getCache(cn).getCacheEventNotificationService().registerListener(new CmCacheEventListener(cn));            
+            	}
             }
     		logger.info("+++ started Cache Manager, cache names: " + cNames);
     	}
@@ -108,4 +117,56 @@ public class CmCacheManager  {
         cache.put(e);
     }	
 
+    
+    class CmCacheEventListener implements CacheEventListener {
+
+        String name;
+        
+        public CmCacheEventListener(String name) {
+            super();
+            this.name = name;
+        }
+        
+        @Override
+        public void dispose() {
+            logger.info(name + " disposed");
+        }
+
+        @Override
+        public void notifyElementEvicted(Ehcache cache, Element element) {
+            logger.info(cache.getName() + " notifyElementEvicted: " + element.getKey());
+        }
+
+        @Override
+        public void notifyElementExpired(Ehcache cache, Element element) {
+            logger.info(cache.getName() + " notifyElementExpired: " + element.getKey());
+        }
+
+        @Override
+        public void notifyElementPut(Ehcache cache, Element element) throws CacheException {
+            logger.info(cache.getName() + " notifyElementPut: " + element.getKey());            
+        }
+
+        @Override
+        public void notifyElementRemoved(Ehcache cache, Element element) throws CacheException {
+            logger.info(cache.getName() + " notifyElementRemoved: " + element.getKey());
+        }
+
+        @Override
+        public void notifyElementUpdated(Ehcache cache, Element element) throws CacheException {
+            logger.info(cache.getName() + " notifyElementUpdated: " + element.getKey());            
+        }
+
+        @Override
+        public void notifyRemoveAll(Ehcache cache) {
+            logger.info(cache.getName() + " notifyRemoveAll");
+        }
+        
+        public Object clone() throws CloneNotSupportedException {
+            return super.clone();
+        }
+    }
+    
 }
+	
+	

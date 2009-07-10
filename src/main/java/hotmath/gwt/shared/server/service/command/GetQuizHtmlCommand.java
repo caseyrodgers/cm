@@ -8,6 +8,8 @@ import java.sql.Connection;
 import java.util.HashMap;
 import java.util.Map;
 
+import hotmath.cm.util.CmCacheManager;
+import hotmath.cm.util.CmCacheManager.CacheName;
 import hotmath.gwt.shared.client.rpc.Action;
 import hotmath.gwt.shared.client.rpc.Response;
 import hotmath.gwt.shared.client.rpc.action.GetQuizHtmlAction;
@@ -30,6 +32,14 @@ public class GetQuizHtmlCommand implements ActionHandler<GetQuizHtmlAction, RpcD
         
         int testSegment = action.getTestSegment();
         int uid = action.getUid();
+        
+        // get Test HTML from cache
+        String testKey = uid + "_" + testSegment;
+        RpcData rpcDataCached = (RpcData)CmCacheManager.getInstance().retrieveFromCache(CacheName.TEST_HTML,testKey);
+        if(rpcDataCached != null) {
+            return rpcDataCached;
+        }
+        
         
         Connection conn = null;
         try {
@@ -54,7 +64,7 @@ public class GetQuizHtmlCommand implements ActionHandler<GetQuizHtmlAction, RpcD
                 haTest = HaTest.createTest(conn,uid, testDef, testSegment);
             }
 
-            String testTitle = haTest.getTitle();
+            String testTitle = haTest.getTitle();   
 
             TestSet _testSet = new TestSet(haTest.getPids());
 
@@ -71,6 +81,9 @@ public class GetQuizHtmlCommand implements ActionHandler<GetQuizHtmlAction, RpcD
             rpcData.putData("quiz_segment", testSegment);
             rpcData.putData("quiz_segment_count", haTest.getTotalSegments());
             rpcData.putData("title", testTitle);
+            
+            
+            CmCacheManager.getInstance().addToCache(CacheName.TEST_HTML,testKey, rpcData);
 
             return rpcData;
         } catch (Exception e) {

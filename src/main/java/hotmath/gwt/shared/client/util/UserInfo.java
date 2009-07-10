@@ -56,10 +56,8 @@ public class UserInfo implements IsSerializable {
 	static public void loadUser(int uid, final CmAsyncRequest callback) {
 	    
         PrescriptionServiceAsync s = (PrescriptionServiceAsync) Registry.get("prescriptionService");
-        s.getUserInfo(uid, new AsyncCallback() {
-            public void onSuccess(Object result) {
-                RpcData ui = (RpcData)result;
-                
+        s.getUserInfo(uid, new AsyncCallback<RpcData>() {
+            public void onSuccess(RpcData ui) {
                 UserInfo user = new UserInfo(ui.getDataAsInt("uid"),ui.getDataAsInt("test_id"), ui.getDataAsInt("run_id"));
                 user.setTestSegment(ui.getDataAsInt("test_segment"));
                 user.setUserName(ui.getDataAsString("user_name"));
@@ -70,6 +68,7 @@ public class UserInfo implements IsSerializable {
                 user.setTestName(ui.getDataAsString("test_name"));
                 user.setShowWorkRequired(ui.getDataAsInt("show_work_required")==0?false:true);
                 user.setUserAccountType(ui.getDataAsString("user_account_type"));
+                user.setPassPercentRequired(ui.getDataAsInt("pass_percent_required"));
                 __instance = user;
                 
                 CatchupMathTools.setBusy(false);     
@@ -100,9 +99,20 @@ public class UserInfo implements IsSerializable {
 	int correctAnswers;
 	boolean isShowWorkRequired;
 	UserType userAccountType = UserType.SINGLE_USER;
+	int passPercentRequired;
 	
 
-	/** Define the type of user, either a student
+    boolean autoTestMode=false;
+
+	public boolean isAutoTestMode() {
+        return autoTestMode;
+    }
+
+    public void setAutoTestMode(boolean autoTestMode) {
+        this.autoTestMode = autoTestMode;
+    }
+
+    /** Define the type of user, either a student
 	 *  at a single school, or a single user purchase.
 	 */
 	static enum UserType {SCHOOL_USER, SINGLE_USER};
@@ -253,7 +263,6 @@ public class UserInfo implements IsSerializable {
 	public void setRunId(int runId) {
 		this.runId = runId;
 	}
-
 	
 	public int getUid() {
 		return uid;
@@ -278,14 +287,24 @@ public class UserInfo implements IsSerializable {
 	    return(this.getUserName().equals(DEMO_USER_NAME));
 	}
 	
-	@Override
-	public String toString() {
-	    return "User: " + userName +
-	           ", Uid: " + uid +
-	           ", Program: " + testName + 
-	           ", Segment: " + getTestSegment() + 
-	           ", TestId: " + getTestId() + 
-	           ", RunId: " + getRunId();
-	}
+	   
+    public int getPassPercentRequired() {
+        return passPercentRequired;
+    }
+
+    public void setPassPercentRequired(int passPercentToMoveOn) {
+        this.passPercentRequired = passPercentToMoveOn;
+    }
+
+    @Override
+    public String toString() {
+        return "UserInfo [DEMO_USER_NAME=" + DEMO_USER_NAME + ", activeUser=" + activeUser + ", autoTestMode="
+                + autoTestMode + ", backgroundStyle=" + backgroundStyle + ", correctAnswers=" + correctAnswers
+                + ", correctPercent=" + correctPercent + ", isShowWorkRequired=" + isShowWorkRequired
+                + ", passPercentRequired=" + passPercentRequired + ", runId=" + runId + ", sessionNumber="
+                + sessionNumber + ", testId=" + testId + ", testName=" + testName + ", testSegment=" + testSegment
+                + ", testSegmentCount=" + testSegmentCount + ", uid=" + uid + ", userAccountType=" + userAccountType
+                + ", userName=" + userName + ", viewCount=" + viewCount + "]";
+    }
 
 }

@@ -35,4 +35,20 @@
        overflowToDisk="false">
 </cache>
 
+<!--  For Test HTML -->
+<cache name="TEST_HTML"
+       maxElementsInMemory="50"
+       eternal="false"
+       timeToLiveSeconds="120"
+       overflowToDisk="false">
+</cache>
+
+<!--  For Test TEST_HTML_CHECKED, which is the results -->
+<cache name="TEST_HTML_CHECKED"
+       maxElementsInMemory="50"
+       eternal="false"
+       timeToLiveSeconds="120"
+       overflowToDisk="false">
+</cache>
+
 </ehcache>

@@ -35,6 +35,7 @@ public class GetUserInfoCommand implements ActionHandler<GetUserInfoAction, RpcD
             rpcData.putData("test_name", user.getAssignedTestName());
             rpcData.putData("show_work_required", user.isShowWorkRequired() ? 1 : 0);
             rpcData.putData("user_account_type",user.getUserAccountType());
+            rpcData.putData("pass_percent_required",user.getPassPercentRequired());
 
             int totalViewCount = getTotalInmHViewCount(conn,action.getUserId());
 

@@ -25,6 +25,8 @@ import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.log4j.Logger;
+
 
 
 /**
@@ -49,11 +51,13 @@ import java.util.List;
  */
 public class GetPrescriptionCommand implements ActionHandler<GetPrescriptionAction, RpcData> {
     
+    Logger logger = Logger.getLogger(GetPrescriptionCommand.class);
+    
     @Override
     public RpcData execute(GetPrescriptionAction action) throws Exception {
 
-        RpcData response = new RpcData();
-
+        logger.info("getting prescription: " + action);
+        
         int runId = action.getRunId();
         int sessionNumber = action.getSessionNumber();
 

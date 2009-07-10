@@ -12,9 +12,7 @@ import java.sql.ResultSet;
 import java.sql.Statement;
 import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 
 /** HaTest Class 
@@ -208,19 +206,17 @@ public class HaTest {
 	 * 
 	 * @throws Exception
 	 */
-	public void clearCurrentResults() throws Exception {
+	private void clearCurrentResults(final Connection conn) throws Exception {
 		
-		Connection conn=null;
 		PreparedStatement pstat=null;
 		try {
 			String sql = "delete from HA_TEST_CURRENT where test_id = ?";
-			conn = HMConnectionPool.getConnection();
 			pstat = conn.prepareStatement(sql);
 			pstat.setInt(1,getTestId());
 		    pstat.executeUpdate();
 		}
 		finally {
-			SqlUtilities.releaseResources(null,pstat,conn);
+			SqlUtilities.releaseResources(null,pstat,null);
 		}			
 	}	
 	
@@ -411,7 +407,16 @@ public class HaTest {
 			testRun.setAnsweredCorrect(answeredCorrect);
 			testRun.setAnsweredIncorrect(answeredIncorrect);
 			
+			/** transfere current selections to this test run
+			 * 
+			 */
 			testRun.transferCurrentToTestRun(conn);
+			
+			
+			/** Clear all existing selections for this test
+			 * 
+			 */
+			test.clearCurrentResults(conn);
 			
 			// update this User's row to indicate new run
 			test.getUser().setActiveTestRunId(testRun.getRunId());

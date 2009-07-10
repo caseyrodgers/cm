@@ -1,5 +1,7 @@
 package hotmath.gwt.shared.server.service.command;
 
+import hotmath.cm.util.CmCacheManager;
+import hotmath.cm.util.CmCacheManager.CacheName;
 import hotmath.gwt.shared.client.rpc.Action;
 import hotmath.gwt.shared.client.rpc.Response;
 import hotmath.gwt.shared.client.rpc.action.GetQuizHtmlCheckedAction;
@@ -24,6 +26,11 @@ public class GetQuizHtmlCheckedCommand implements ActionHandler<GetQuizHtmlCheck
 
     @Override
     public RpcData execute(GetQuizHtmlCheckedAction action) throws Exception {
+        
+        RpcData rpcDataCached = (RpcData)CmCacheManager.getInstance().retrieveFromCache(CacheName.TEST_HTML_CHECKED, action.getTestId());
+        if(rpcDataCached != null)
+            return rpcDataCached;
+        
         Connection conn=null;
         try {
 
@@ -49,6 +56,9 @@ public class GetQuizHtmlCheckedCommand implements ActionHandler<GetQuizHtmlCheck
             rpcData.putData("test_id", haTest.getTestId());
             rpcData.putData("quiz_segment", testSegment);
             rpcData.putData("title", testTitle);
+            
+            
+            CmCacheManager.getInstance().addToCache(CacheName.TEST_HTML_CHECKED, action.getTestId(), rpcData);
 
             return rpcData;
         } catch (Exception e) {

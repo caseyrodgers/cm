@@ -9,6 +9,7 @@ import hotmath.gwt.cm_tools.client.data.PrescriptionSessionDataResource;
 import hotmath.gwt.cm_tools.client.ui.CmMainPanel;
 import hotmath.gwt.cm_tools.client.ui.ContextChangeListener;
 import hotmath.gwt.cm_tools.client.ui.ContextController;
+import hotmath.gwt.cm_tools.client.ui.InfoPopupBox;
 import hotmath.gwt.cm_tools.client.ui.NextDialog;
 import hotmath.gwt.cm_tools.client.ui.context.CmContext;
 import hotmath.gwt.shared.client.CmShared;
@@ -25,10 +26,12 @@ import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.MessageBoxEvent;
 import com.extjs.gxt.ui.client.widget.Component;
+import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.Html;
 import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.Window;
 import com.extjs.gxt.ui.client.widget.button.IconButton;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -156,11 +159,12 @@ public class PrescriptionContext implements CmContext {
         int cs = (hasPrescription) ? prescriptionData.getCurrSession().getSessionNumber() : 0;
         int totSegs = UserInfo.getInstance().getTestSegmentCount();
         int correctPercent = UserInfo.getInstance().getCorrectPercent();
-        int PASS_PERCENT = 80;
+
         if (!hasPrescription || (cs + 2) > prescriptionData.getSessionTopics().size()) {
+            int passPercentRequired = UserInfo.getInstance().getPassPercentRequired();            
             int currSeg = UserInfo.getInstance().getTestSegment();
             // are there more segments?
-            if (correctPercent < PASS_PERCENT || currSeg < totSegs) {
+            if (correctPercent <= passPercentRequired || currSeg < totSegs) {
 
                 if (!UserInfo.getInstance().isActiveUser()) {
                     CatchupMathTools.showAlert("You are a visitor and cannot jump to the next test.");
@@ -170,7 +174,7 @@ public class PrescriptionContext implements CmContext {
 
                 String msg = "";
                 int testSegmentToLoad = 0;
-                if (correctPercent > PASS_PERCENT) {
+                if (correctPercent >= passPercentRequired) {
                     if(UserInfo.getInstance().isDemoUser()) {
                         showDemoCompleteMessage();
                         return;
@@ -363,4 +367,89 @@ public class PrescriptionContext implements CmContext {
         return "Topic: " + prescriptionData.getCurrSession().getTopic() + " (" + (currSess + 1) + " of " + totSess + "),  Quiz: " + seg + " of " + totSegs; 
     }
 
+    
+    /** The time it will take to view all resources on a single topic
+     * 
+     */
+    static public int TIME_FOR_ALL_RESOURCES=90000;
+    
+    /** The time it will take to view a single resource type
+     * 
+     */
+    static public int TIME_FOR_SINGLE_RESOURCE_TYPE=20000;
+    
+    /** The time it will take to view a single resource item
+     * 
+     */
+    static public  int TIME_FOR_SINGLE_RESOURCE_ITEM=5000;
+    
+    public void runAutoTest() {
+        int timeToWait=1;
+        for(final PrescriptionSessionDataResource r: prescriptionData.getCurrSession().getInmhResources()) {
+            try {
+                Timer timer = new Timer() {
+                    public void run() {
+                        final String resourceType = r.getLabel();
+                        
+                        ((PrescriptionCmGuiDefinition) CmMainPanel.__lastInstance.cmGuiDef)._guiWidget.expandResourceType(resourceType);
+                        
+                         // now click on each resource
+                        int timeToWait1=1;
+                        for(Component c: ((PrescriptionCmGuiDefinition) CmMainPanel.__lastInstance.cmGuiDef)._guiWidget.getItems()) {
+                            if(c instanceof ContentPanel) {
+                                ContentPanel cp = (ContentPanel)c;
+                                if(!cp.getHeading().equals(resourceType))
+                                    continue;
+                                final ResourceList rl = (ResourceList)cp.getItems().get(0);
+
+                                for(final ResourceModel rm: rl.getStore().getModels()) {
+                                    
+                                    Timer timer1 = new Timer() {
+                                        public void run() {
+                                            
+                                            InfoPopupBox.display("Auto Testing", "Testing: " + resourceType + ", " + rm.getItem());
+                                            
+                                            rl.showResource(rm.getItem());
+                                        }
+                                    };
+                                    timer1.schedule(timeToWait1);
+                                    timeToWait1 += TIME_FOR_SINGLE_RESOURCE_ITEM;
+                                }
+                            }
+                        }
+                    }
+                };
+                timer.schedule(timeToWait);
+                timeToWait += TIME_FOR_SINGLE_RESOURCE_TYPE;                
+            }
+            catch(Exception e) {
+                e.printStackTrace();
+            }
+        }
+        
+        /** 
+         *  Move to next test, prescription or completion
+         */
+        Timer timer = new Timer() {
+            public void run() {
+                int cs =  prescriptionData.getCurrSession().getSessionNumber();
+                int ts = prescriptionData.getSessionTopics().size();
+                if((cs+1) < ts) {
+                    prescriptionCm.getAsyncDataFromServer(cs+1);
+                }
+                else {
+                    int nextSegment = UserInfo.getInstance().getTestSegment();
+                    if(nextSegment < UserInfo.getInstance().getTestSegmentCount()) {
+                        nextSegment += 1;
+                        UserInfo.getInstance().setTestSegment(nextSegment);
+                        CatchupMath.getThisInstance().showQuizPanel();
+                    }
+                    else {
+                        CatchupMathTools.showAlert("Auto Test has completed at " + nextSegment + "!");
+                    }
+                }
+            }
+        };
+        timer.schedule(TIME_FOR_ALL_RESOURCES);        
+    }
 }

@@ -145,42 +145,51 @@ public class QuizContext implements CmContext {
 	
 	
 	private void showPrescriptionPanel(int correct, int total) {
-	    final CmWindow window = new CmWindow();
-	    window.setModal(true);
-	    window.setAutoHeight(true);
-	    window.setWidth(300);
-	    window.setClosable(false);
-	    window.setResizable(false);
 	    
-	    window.setStyleName("auto-assignment-window");
-	    String msg = "<p>" + correct + "  out of " + total + " correct.</p> ";
 	    
-	    window.setHeading("Quiz results");
-	    if(correct != total) {
-	        msg += "<p>You may now begin review and practice.  " +
-	               "View your graded quiz on left menu at any time.</p>";
+	    if(UserInfo.getInstance().isAutoTestMode()) {
+	        CatchupMath.getThisInstance().showPrescriptionPanel();
 	    }
 	    else {
-	        msg += "<p>All answers correct!</p>";
-	        window.setHeading("Nice Job!");
+    	    
+    	    
+    	    final CmWindow window = new CmWindow();
+    	    window.setModal(true);
+    	    window.setAutoHeight(true);
+    	    window.setWidth(300);
+    	    window.setClosable(false);
+    	    window.setResizable(false);
+    	    
+    	    window.setStyleName("auto-assignment-window");
+    	    String msg = "<p>" + correct + "  out of " + total + " correct.</p> ";
+    	    
+    	    window.setHeading("Quiz results");
+    	    if(correct != total) {
+    	        msg += "<p>You may now begin review and practice.  " +
+    	               "View your graded quiz on left menu at any time.</p>";
+    	    }
+    	    else {
+    	        msg += "<p>All answers correct!</p>";
+    	        window.setHeading("Nice Job!");
+    	    }
+    	        
+    	    Html html = new Html(msg);
+    	        
+            
+            window.add(html);
+    	         
+            Button close = new Button();
+            close.setText("Continue");
+            close.addSelectionListener(new SelectionListener<ButtonEvent>() {
+                public void componentSelected(ButtonEvent ce) {
+                    CatchupMath.getThisInstance().showPrescriptionPanel();
+                    window.close();
+                }
+            });
+    	        
+            window.addButton(close);
+            window.setVisible(true);
 	    }
-	        
-	    Html html = new Html(msg);
-	        
-        
-        window.add(html);
-	         
-        Button close = new Button();
-        close.setText("Continue");
-        close.addSelectionListener(new SelectionListener<ButtonEvent>() {
-            public void componentSelected(ButtonEvent ce) {
-                CatchupMath.getThisInstance().showPrescriptionPanel();
-                window.close();
-            }
-        });
-	        
-        window.addButton(close);
-        window.setVisible(true);
 	}
 
 	public void doNext() {
@@ -188,56 +197,61 @@ public class QuizContext implements CmContext {
 	    MessageBox.confirm("Ready to Check Quiz?", msg, new Listener<MessageBoxEvent>() {
             public void handleEvent(MessageBoxEvent be) {
                 if (be.getButtonClicked().getText().equals("Yes")) {
-                    CatchupMathTools.setBusy(true);
-                    PrescriptionServiceAsync s = (PrescriptionServiceAsync) Registry.get("prescriptionService");
-                    s.createTestRun(UserInfo.getInstance().getTestId(), new AsyncCallback() {
-                        public void onSuccess(Object result) {
-                            try {
-                                RpcData rdata = (RpcData)result;
-                                
-                                String na = rdata.getDataAsString("redirect_action");
-                                if(na != null) {
-                                    if(na.equals("AUTO_ASSIGNED")) {
-                                        UserInfo.getInstance().setTestSegment(0);  // reset
-                                        String testName = rdata.getDataAsString("assigned_test");
-                                        UserInfo.getInstance().setTestName(testName);
-                                        showAutoAssignedProgram(testName);
-                                    }
-                                    else if(na.equals("QUIZ")) {
-                                        int testSegment = UserInfo.getInstance().getTestSegment();
-                                        int totalSegments = UserInfo.getInstance().getTestSegmentCount();
-                                        if((testSegment+1) > totalSegments) {
-                                            CatchupMathTools.showAlert("redirect_action QUIZ: No More Sessions");
-                                        }
-                                        else {
-                                            UserInfo.getInstance().setTestSegment(testSegment+1);
-                                            showNextPlacmentQuiz();
-                                        }
-                                    }
-                                    
-                                    return;
-                                }
-                                int runId = rdata.getDataAsInt("run_id");
-                                UserInfo.getInstance().setRunId(runId);
-                                
-                                int correctAnswers = rdata.getDataAsInt("correct_answers");
-                                int totalQuestions = rdata.getDataAsInt("total_questions");
-                                showPrescriptionPanel(correctAnswers, totalQuestions);
-                            }
-                            finally {
-                                CatchupMathTools.setBusy(false);
-                            }
-                        }
-                        public void onFailure(Throwable caught) {
-                            CatchupMathTools.showAlert(caught.getMessage());
-                        }
-                    });
+                    doCheckTest();
                 }
             }
         });	    
 	    
 	}
 
+	
+	
+	public void doCheckTest() {
+        CatchupMathTools.setBusy(true);
+        PrescriptionServiceAsync s = (PrescriptionServiceAsync) Registry.get("prescriptionService");
+        s.createTestRun(UserInfo.getInstance().getTestId(), new AsyncCallback() {
+            public void onSuccess(Object result) {
+                try {
+                    RpcData rdata = (RpcData)result;
+                    
+                    String na = rdata.getDataAsString("redirect_action");
+                    if(na != null) {
+                        if(na.equals("AUTO_ASSIGNED")) {
+                            UserInfo.getInstance().setTestSegment(0);  // reset
+                            String testName = rdata.getDataAsString("assigned_test");
+                            UserInfo.getInstance().setTestName(testName);
+                            showAutoAssignedProgram(testName);
+                        }
+                        else if(na.equals("QUIZ")) {
+                            int testSegment = UserInfo.getInstance().getTestSegment();
+                            int totalSegments = UserInfo.getInstance().getTestSegmentCount();
+                            if((testSegment+1) > totalSegments) {
+                                CatchupMathTools.showAlert("redirect_action QUIZ: No More Sessions");
+                            }
+                            else {
+                                UserInfo.getInstance().setTestSegment(testSegment+1);
+                                showNextPlacmentQuiz();
+                            }
+                        }
+                        
+                        return;
+                    }
+                    int runId = rdata.getDataAsInt("run_id");
+                    UserInfo.getInstance().setRunId(runId);
+                    UserInfo.getInstance().setSessionNumber(0);  // start over
+                    int correctAnswers = rdata.getDataAsInt("correct_answers");
+                    int totalQuestions = rdata.getDataAsInt("total_questions");
+                    showPrescriptionPanel(correctAnswers, totalQuestions);
+                }
+                finally {
+                    CatchupMathTools.setBusy(false);
+                }
+            }
+            public void onFailure(Throwable caught) {
+                CatchupMathTools.showAlert(caught.getMessage());
+            }
+        });
+	}
 	
     
     /** Return the count of correct answers
@@ -265,6 +279,11 @@ public class QuizContext implements CmContext {
         "important, only learning is important.</li></ul>";
         return msg1;
 	}
+	
+
+    public void runAutoTest() {
+        doCheckTest();
+    }
 }
 
 class QuizContextNextPanelInfo extends NextPanelInfoImplDefault {
@@ -291,6 +310,4 @@ class QuizContextNextPanelInfo extends NextPanelInfoImplDefault {
 				        " your trouble spots.</p>"));
 		return cp;
 	}
-
-	
 }

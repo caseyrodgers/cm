@@ -104,7 +104,13 @@ function findQuestionByPid(pid) {
 // / For the tutor viewer
 // ///////////////////
 // called by GWT, which setups the context for the pid
-function doLoad_Gwt(pid, title, hasShowWork) {
+var _shouldExpandSteps;
+function doLoad_Gwt(pid, title, hasShowWork,shouldExpandSteps) {
+
+	// store in var, registered listener will be notified
+	// after solution has been fully initialized
+	_shouldExpandSteps = shouldExpandSteps;
+	
 	var mc = createNewSolutionMessageContext(pid);
 	gotoGUID(mc, title);
 	
@@ -269,6 +275,17 @@ function scrollToStep(num) {
 HmEvents.eventTutorLastStep.subscribe( function(x) {
 	solutionHasBeenViewed_Gwt(x);
 });
+
+
+/** Registered listener to be notified after solution is loaded fully
+ *  If _shouldExpandSteps is true, the move to last step.
+ *  
+ */
+HmEvents.eventTutorInitialized.subscribe( function(x) {
+	if(_shouldExpandSteps)
+	    expandAllSteps();
+});
+
 
 /** Register a listener with Tutor to 
  *  be notified when first step is accessed

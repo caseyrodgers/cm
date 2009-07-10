@@ -113,7 +113,13 @@ public class ResourceViewerImplTutor extends ResourceViewerContainer implements 
                         hasShowWork=true;
                     
                    layout();
-                   ResourceViewerImplTutor.initializeTutor(pid,resource.getTitle(),hasShowWork);
+                   
+                   boolean shouldExpandSolution=false;
+                   if(UserInfo.getInstance().isAutoTestMode()) {
+                       shouldExpandSolution=true;
+                       showWorkDialog();
+                   }
+                   ResourceViewerImplTutor.initializeTutor(pid,resource.getTitle(),hasShowWork,shouldExpandSolution);
                 } catch (Exception e) {
                     e.printStackTrace();
                     CatchupMathTools.showAlert(e.getMessage());
@@ -132,7 +138,7 @@ public class ResourceViewerImplTutor extends ResourceViewerContainer implements 
         if(!this.hasShowWork && this.pid.equals(pid)) {
             // this solution's whiteboard has been updated, so
             // we must make sure the ForceShowWork button is removed
-            initializeTutor(pid,this.resource.getTitle(),true);
+            initializeTutor(pid,this.resource.getTitle(),true,false);
             
             hasShowWork = true;
         }
@@ -197,8 +203,8 @@ public class ResourceViewerImplTutor extends ResourceViewerContainer implements 
      * 
      * @param pid
      */
-    static private native void initializeTutor(String pid, String title, boolean hasShowWork) /*-{
-                                 $wnd.doLoad_Gwt(pid, title,hasShowWork);
+    static private native void initializeTutor(String pid, String title, boolean hasShowWork,boolean shouldExpandSolution) /*-{
+                                 $wnd.doLoad_Gwt(pid, title,hasShowWork,shouldExpandSolution);
                                  }-*/;
 
 }

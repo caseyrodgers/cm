@@ -75,7 +75,7 @@ public class HeaderPanel extends LayoutContainer {
 		        }
 		        else if(event.getEventName().equals(EventBus.EVENT_TYPE_TOPIC_CHANGED)) {
 		            if(CmShared.getQueryParameter("debug") != null) {
-    		            String title = "The topic is '" + event.getEventData() + "'";
+    		            String title = "The lesson is '" + event.getEventData() + "'";
     		            String message = "Use any menu items you wish, before or after trying the Required Practice Problems.";
     		            InfoConfig infoConfig = new MyInfoConfig(title,message);
                         InfoPopupBox.display(infoConfig);

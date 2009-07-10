@@ -31,7 +31,8 @@ public class HaUser extends HaBasicUserImpl {
     String testConfigJson;
     boolean isShowWorkRequired;
     String  userAccountType;
-    
+    int passPercentRequired;
+
     public String getUserAccountType() {
         return userAccountType;
     }
@@ -158,7 +159,17 @@ public class HaUser extends HaBasicUserImpl {
 
 	public void setActiveTestRunId(Integer activeTestRunId) {
 		this.activeTestRunId = activeTestRunId;
-	}	
+	}
+	
+    
+    public int getPassPercentRequired() {
+        return passPercentRequired;
+    }
+
+    public void setPassPercentRequired(int passPercentRequired) {
+        this.passPercentRequired = passPercentRequired;
+    }
+	
 	
 	/** Update this user record in db
 	 * 
@@ -215,9 +226,11 @@ public class HaUser extends HaBasicUserImpl {
 			String sql =
 			     "select s.type,u.uid, u.user_name, u.active_run_id,u.active_test_id,u.active_segment,u.active_run_session " +
 		         "       ,u.is_show_work_required, d.test_name as assigned_test_name, u.test_config_json, gui_background_style " +
+		         "       ,p.pass_percent " +
 		         "from HA_USER u INNER JOIN HA_TEST_DEF d on u.test_def_id = d.test_def_id " +
-		         "     INNER JOIN HA_ADMIN a on u.admin_id = a.aid " +
-		         "     INNER JOIN SUBSCRIBERS s on a.subscriber_id = s.id ";
+		         "     JOIN HA_ADMIN a on u.admin_id = a.aid " +
+		         "     JOIN SUBSCRIBERS s on a.subscriber_id = s.id " +
+		         "     JOIN CM_USER_PROGRAM p ON (p.user_id = u.uid and p.id = u.user_prog_id) ";
 
 			if(uid != null)
 				sql += " where u.uid = ?";
@@ -245,6 +258,7 @@ public class HaUser extends HaBasicUserImpl {
 			user.setTestConfigJson(rs.getString("test_config_json"));
 			user.setBackgroundStyle(rs.getString("gui_background_style"));
 			user.setShowWorkRequired(rs.getInt("is_show_work_required")==0?false:true);
+			user.setPassPercentRequired(rs.getInt("pass_percent"));
 			
 			user.setUserAccountType(rs.getString("type"));
 			    
@@ -348,5 +362,15 @@ public class HaUser extends HaBasicUserImpl {
     @Override
     public int getUserKey() {
         return this.uid;
+    }
+
+    @Override
+    public String toString() {
+        return "HaUser [activeTest=" + activeTest + ", activeTestRunId=" + activeTestRunId + ", activeTestRunSession="
+                + activeTestRunSession + ", activeTestSegment=" + activeTestSegment + ", assignedTestName="
+                + assignedTestName + ", backgroundStyle=" + backgroundStyle + ", category=" + category
+                + ", gradeLevel=" + gradeLevel + ", isShowWorkRequired=" + isShowWorkRequired
+                + ", passPercentRequired=" + passPercentRequired + ", testConfigJson=" + testConfigJson + ", uid="
+                + uid + ", userAccountType=" + userAccountType + ", userName=" + userName + "]";
     }
 }

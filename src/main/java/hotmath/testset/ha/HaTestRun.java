@@ -103,9 +103,15 @@ public class HaTestRun {
         for (HaTestRunResult tr : currentSelections) {
             addRunResult(conn, tr.getPid(), tr.getResult(),tr.getResponseIndex());
         }
-
     }
 
+    /** Remove any current results for this test run
+     * 
+     * @TODO: why is this needed?  Is this not a new (empty) run?
+     * 
+     * @param conn
+     * @throws Exception
+     */
     private void removeAllQuizResponses(Connection conn) throws Exception {
         Statement stmt = null;
         try {

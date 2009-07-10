@@ -114,7 +114,8 @@ public class FooterPanel extends LayoutContainer {
     
     
     private static void startAutoTest_Gwt() {
-        CatchupMathTools.showAlert("Auto testing begin");
+        UserInfo.getInstance().setAutoTestMode(true);
+        ContextController.getInstance().getTheContext().runAutoTest();
     }
     
     /** Define JSNI methods to expose feedback services

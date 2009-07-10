@@ -59,6 +59,11 @@ public class QuizCmGuiDefinition implements CmGuiDefinition {
 				QuizContext qc = (QuizContext)getContext();
 				qc.setTitle(quizTitle);
 				ContextController.getInstance().setCurrentContext(qc);
+				
+				if(UserInfo.getInstance().isAutoTestMode()) {
+				    qc.doCheckTest();
+				}
+				
 			}
 			public void requestFailed(int code, String text) {
 			}

@@ -120,10 +120,11 @@ public class PrescriptionCmGuiDefinition implements CmGuiDefinition {
 
                             ContextController.getInstance().setCurrentContext(context);
                             
-                            // Select the Results resource on first topic only
-                            //if(context.getPrescriptionData().getCurrSession().getSessionNumber() == 0)
-                            //  _guiWidget.expandResourceType("Quiz Results");
 
+                            if(UserInfo.getInstance().isAutoTestMode()) {
+                                context.runAutoTest();
+                            }
+                            
                         } catch (Exception e) {
                             e.printStackTrace();
                         } finally {
@@ -412,6 +413,9 @@ class ResourceList extends ListView<ResourceModel> implements Listener {
 
     public void showResource(final InmhItemData resourceItem) {
         try {
+            
+            Log.debug("PrescriptionCmGuiDefinition.showResource: showing resource: " + resourceItem.getFile());
+            
             if (_viewer != null)
                 _viewer.removeResourcePanel();
 

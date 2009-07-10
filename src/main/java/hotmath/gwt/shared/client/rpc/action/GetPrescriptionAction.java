@@ -42,4 +42,10 @@ public class GetPrescriptionAction implements Action<RpcData>{
     public boolean getUpdateActionInfo() {
         return updateActiveInfo;
     }
+
+    @Override
+    public String toString() {
+        return "GetPrescriptionAction [runId=" + runId + ", sessionNumber=" + sessionNumber + ", updateActiveInfo="
+                + updateActiveInfo + "]";
+    }
 }
