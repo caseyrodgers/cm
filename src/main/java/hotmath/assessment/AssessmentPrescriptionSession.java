@@ -41,7 +41,8 @@ public class AssessmentPrescriptionSession {
     }
 
     public void addSolution(String pid, INeedMoreHelpItem item) {
-    	logger.debug("in addSolution()");
+    	if (logger.isDebugEnabled())
+            logger.debug(String.format("in addSolution(): pid: %s, item title: ", pid, item.getTitle()));
 
         _pids.add(new SessionData(item, pid, 0, 0));
     }
