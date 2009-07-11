@@ -382,7 +382,6 @@ public class PrescriptionContext implements CmContext {
                                     
                                     Timer timer1 = new Timer() {
                                         public void run() {
-                                            
                                             AutoTestWindow.getInstance().addLogMessage("Testing: " + resourceType + ", " + rm.getItem());
                                             
                                             rl.showResource(rm.getItem());

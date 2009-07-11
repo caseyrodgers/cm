@@ -13,6 +13,7 @@ import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONParser;
 import com.google.gwt.json.client.JSONValue;
 import com.google.gwt.user.client.Cookies;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
 
 public class CmShared implements EntryPoint {
@@ -143,7 +144,11 @@ public class CmShared implements EntryPoint {
                 UserInfoBase user = UserInfoBase.getInstance();
                 user.setUid(userId);
                 user.setIsAdmin(isAdmin);
+                
+                
+                
             }
+            
             return userId;
         }
         catch(Exception e) {

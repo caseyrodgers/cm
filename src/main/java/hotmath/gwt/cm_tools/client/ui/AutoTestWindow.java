@@ -12,9 +12,9 @@ import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.HorizontalPanel;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.ListView;
+import com.extjs.gxt.ui.client.widget.Slider;
 import com.extjs.gxt.ui.client.widget.Window;
 import com.extjs.gxt.ui.client.widget.button.Button;
-import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.google.gwt.user.client.ui.Label;
 
@@ -33,7 +33,7 @@ public class AutoTestWindow extends Window {
     private AutoTestWindow() {
         setSize(500,200);
         setTitle("Catchup Student Auto Test");
-        
+
         setClosable(false);
         setHeading("Auto Test Log");
         
@@ -54,8 +54,8 @@ public class AutoTestWindow extends Window {
             }
         });
         
-        Button btn2 = new Button("Stop");
-        btn2.addSelectionListener(new SelectionListener<ButtonEvent>() {
+        Button stop = new Button("Stop");
+        stop.addSelectionListener(new SelectionListener<ButtonEvent>() {
             
             public void componentSelected(ButtonEvent ce) {
                 addLogMessage("Stopping auto test");
@@ -64,7 +64,7 @@ public class AutoTestWindow extends Window {
         });
         
         getHeader().addTool(btn);
-        getHeader().addTool(btn2);
+        getHeader().addTool(stop);
         add(_listView);
         
         _listView.getStore().setMonitorChanges(true);
@@ -82,42 +82,51 @@ public class AutoTestWindow extends Window {
     }
     
     
-    TextField<String> _waitTimeForSingleResource = new TextField<String>();
-    TextField<String> _waitTimeForSingleResourceType = new TextField<String>();
-    TextField<String> _waitTimeForSingleLesson = new TextField<String>();    
+    Slider _waitTimeForSingleResourceSlider = new Slider();
+    Slider _waitTimeForSingleResourceTypeSlider = new Slider();
+    Slider _waitTimeForSingleLessonSlider = new Slider();
     private LayoutContainer createTopForm() {
-        
-        _waitTimeForSingleResource.setValue("3000");
-        _waitTimeForSingleResourceType.setValue("10000");
-        _waitTimeForSingleLesson.setValue("60000");
         
         LayoutContainer lc = new HorizontalPanel();
         
+        _waitTimeForSingleResourceSlider.setWidth(50);
+        _waitTimeForSingleResourceTypeSlider.setWidth(50);
+        _waitTimeForSingleLessonSlider.setWidth(50);
+        
+        _waitTimeForSingleResourceSlider.setMaxValue(3000);
+        _waitTimeForSingleResourceSlider.setValue(3000);
+        _waitTimeForSingleResourceTypeSlider.setMaxValue(10000);
+        _waitTimeForSingleResourceTypeSlider.setValue(10000);
+        _waitTimeForSingleLessonSlider.setMaxValue(60000);
+        _waitTimeForSingleLessonSlider.setValue(60000);
+        
+        
         Label l = new Label("Item: ");
         lc.add(l);
-        lc.add(_waitTimeForSingleResource);
+        lc.add(_waitTimeForSingleResourceSlider);
         
         l = new Label("Resource: ");
         lc.add(l);
-        lc.add(_waitTimeForSingleResourceType);
+        lc.add(_waitTimeForSingleResourceTypeSlider);
         
         l = new Label("Lesson: ");
         lc.add(l);
-        lc.add(_waitTimeForSingleLesson);
+        lc.add(_waitTimeForSingleLessonSlider);
+
         return lc;
     }
     
     
     public int getTimeForSingleResource() {
-        return Integer.parseInt(_waitTimeForSingleResource.getValue());
+        return _waitTimeForSingleResourceSlider.getValue();
     }
     
     public int getTimeForSingleResourceType() {
-        return Integer.parseInt(_waitTimeForSingleResourceType.getValue());
+        return _waitTimeForSingleResourceTypeSlider.getValue();
     }
     
     public int getTimeForSingleLesson() {
-        return Integer.parseInt(_waitTimeForSingleLesson.getValue());
+        return _waitTimeForSingleLessonSlider.getValue();
     }
 }
 

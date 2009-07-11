@@ -3,7 +3,15 @@ package hotmath.gwt.shared.client.eventbus;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.google.gwt.user.client.Timer;
+import com.google.gwt.user.client.Window;
+
 /** Manages the global eventbus for registering/firing events
+ * 
+ * Also, there is a main loop that fires once every minute
+ * that allows any arbitary stuff to executed on a recurring
+ * basis instead of having multiple timers.
+ * 
  * 
  * @author casey
  *
@@ -21,7 +29,28 @@ public class EventBus {
     
     
     List<CmEventListener> events = new ArrayList<CmEventListener>();
-    private EventBus() {}
+    Timer _mainTimer;
+    private EventBus() {
+        _mainTimer = new Timer() {
+            public void run() {
+                /** Deal with obscure bug in IE that adds hash to title
+                 * when viewing Flash, if the title has a hash in it.
+                 * So, we remove any hash has from title and reset.
+                 * 
+                 *  This breaks saving bookmarks, but we are not supporting 
+                 *  that.  Perhaps, we can have a timer that resets the title
+                 *  
+                 *  see:  http://bugs.adobe.com/jira/browse/FP-240 
+                 */
+                String title = Window.getTitle();
+                if(title.indexOf("#") > -1) {
+                    title = title.substring(0, title.indexOf("#"));
+                    Window.setTitle(title);
+                }                    
+            }
+        };
+        _mainTimer.scheduleRepeating(1000 * 15);        
+    }
  
     public void addEventListener(CmEventListener listener) {
         events.add(listener);
