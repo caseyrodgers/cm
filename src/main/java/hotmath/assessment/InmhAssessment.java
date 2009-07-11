@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.log4j.Logger;
 
 /** Lookup related items based on the INMH items
  *  of a given list of problem ids.
@@ -28,7 +29,10 @@ import java.util.Set;
  *
  */
 public class InmhAssessment {
-	String pids[];
+	
+	private static final Logger logger = Logger.getLogger(InmhAssessment.class);
+
+	String _pids[];
 	MyItemsMap inmhItemsMap = new MyItemsMap();
 	
 	/** Create list of help items based on comma
@@ -37,8 +41,9 @@ public class InmhAssessment {
 	 * @param pids
 	 */
 	public InmhAssessment(String pids) {
-		this.pids = pids.split(",");
-		for(String p:this.pids) {
+		logger.debug("InmhAssessment(): pids: " + pids);
+		_pids = pids.split(",");
+		for(String p : _pids) {
 			try {
 				List<INeedMoreHelpItem> inmhItems = new ArrayList<INeedMoreHelpItem>();				
 				INeedMoreHelpItem items[] = INeedMoreHelpManager.getInstance().getHelpItems(p);
@@ -47,7 +52,7 @@ public class InmhAssessment {
 				inmhItemsMap.put(p, inmhItems);
 			}
 			catch(Exception e) {
-				e.printStackTrace();
+				logger.error("ERROR obtaining INMH for pids: " + pids, e);
 			}
 		}
 	}
@@ -57,7 +62,7 @@ public class InmhAssessment {
 	 * @return
 	 */
 	public String[] getPids() {
-		return this.pids;
+		return _pids;
 	}
 	
 	/** Return the list of distinct help items
@@ -157,7 +162,7 @@ class MyItemsMap extends HashMap<String,List<INeedMoreHelpItem>> {
 	/** Return a distinct list of INMH items shared
 	 * by all guids.
 	 * 
-	 * This map is a map of uniq guids to lists of INMH items.
+	 * This map is a map of unique guids to lists of INMH items.
 	 * 
 	 * @return
 	 */
