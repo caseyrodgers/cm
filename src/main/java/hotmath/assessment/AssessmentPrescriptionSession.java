@@ -41,7 +41,7 @@ public class AssessmentPrescriptionSession {
     }
 
     public void addSolution(String pid, INeedMoreHelpItem item) {
-    	logger.debug("in addSolution()", new Exception());
+    	logger.debug("in addSolution()");
 
         _pids.add(new SessionData(item, pid, 0, 0));
     }
@@ -174,7 +174,7 @@ public class AssessmentPrescriptionSession {
         // return the topic of this session
         List<INeedMoreHelpItem> list = getSessionCategories();
         // all are the title...
-        logger.debug("in getTopic()", new Exception());
+        logger.debug("in getTopic()");
         
         return (list.size() > 0)?list.get(0).getTitle():"No Topic";
     }
