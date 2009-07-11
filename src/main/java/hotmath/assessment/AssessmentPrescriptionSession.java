@@ -21,9 +21,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import sb.logger.SbLogger;
+import org.apache.log4j.Logger;
 
 public class AssessmentPrescriptionSession {
+	
+	static Logger logger = Logger.getLogger(AssessmentPrescriptionSession.class);
+	
     List<SessionData> _pids = new ArrayList<SessionData>();
     String name;
     AssessmentPrescription prescription;
@@ -38,6 +41,8 @@ public class AssessmentPrescriptionSession {
     }
 
     public void addSolution(String pid, INeedMoreHelpItem item) {
+    	logger.debug("in addSolution()", new Exception());
+
         _pids.add(new SessionData(item, pid, 0, 0));
     }
 
@@ -169,6 +174,7 @@ public class AssessmentPrescriptionSession {
         // return the topic of this session
         List<INeedMoreHelpItem> list = getSessionCategories();
         // all are the title...
+        logger.debug("in getTopic()", new Exception());
         
         return (list.size() > 0)?list.get(0).getTitle():"No Topic";
     }
@@ -301,8 +307,7 @@ public class AssessmentPrescriptionSession {
                 if (inmhItem.getGradeLevel() <= this.prescription.getGradeLevel()) {
                     inmhType.addResource(inmhItem);
                 } else {
-                    SbLogger
-                            .postMessage("AssessmentPrescriptionSession: inmh item not included due to higher grade level: "
+                    logger.info("AssessmentPrescriptionSession: inmh item not included due to higher grade level: "
                                     + inmhItem);
                 }
                 resourceTypes.add(inmhType);
