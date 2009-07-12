@@ -160,9 +160,13 @@ public class PrescriptionServiceImpl extends RemoteServiceServlet implements Pre
         Connection conn=null;
         try {
             conn = HMConnectionPool.getConnection();
-            int testId = HaUser.lookUser(conn, userId,null).getActiveTest();
-            List<HaTestRunResult> testResults = HaTest.loadTest(conn,testId).getTestCurrentResponses(conn);
             ArrayList<RpcData> rpcData = new ArrayList<RpcData>();
+            int testId = HaUser.lookUser(conn, userId,null).getActiveTest();
+            if(testId == 0)
+                return rpcData;
+            
+            List<HaTestRunResult> testResults = HaTest.loadTest(conn,testId).getTestCurrentResponses(conn);
+            
             for (HaTestRunResult tr : testResults) {
                 if (tr.isAnswered()) {
                     RpcData rd = new RpcData(Arrays.asList("pid=" + tr.getPid(), "answer=" + tr.getResponseIndex()));

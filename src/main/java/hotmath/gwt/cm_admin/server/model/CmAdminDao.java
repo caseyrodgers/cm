@@ -712,9 +712,12 @@ public class CmAdminDao {
     				rs = ps2.executeQuery();
     				if (rs.next()) {
     					json = rs.getString(1);
-    					// if Chap program set chapter
+    					// save JSON if chap program set chapter
+    					// @TODO: support mutliple chapters
     					if (progId.equalsIgnoreCase("chap")) {
-    						json = json.replaceFirst("XXX", sm.getChapter());
+   	                        // Delimit the chapter in quotes
+                            // otherwise the parsing of the JSON fails.
+    						json = json.replaceFirst("XXX", "'" + sm.getChapter() + "'");
     					}
     					sm.setJson(json);
     				}

@@ -226,6 +226,8 @@ public class HaTestDef {
 
     public List<String> getTestIdsForSegment(final Connection conn, int segment, HaTestConfig config) throws Exception {
         _lastSegment = segment;
+
+        
         return getTestIdsForSegment(conn, segment, textCode, chapter, config);
     }
 
