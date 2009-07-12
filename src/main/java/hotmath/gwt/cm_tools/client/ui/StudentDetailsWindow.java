@@ -1,7 +1,5 @@
 package hotmath.gwt.cm_tools.client.ui;
 
-
-
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.model.StudentActivityModel;
 import hotmath.gwt.cm_tools.client.model.StudentModel;
@@ -53,7 +51,7 @@ public class StudentDetailsWindow extends CmWindow {
     /** Create StudentDetailsWindow for student.  Shows all student
      * activity for given user order by last use.
      * 
-     * StudentModel must be fully filled out to popuplate the infoPanel
+     * StudentModel must be fully filled out to populate the infoPanel
      * 
      * @param studentModel
      */
@@ -85,11 +83,11 @@ public class StudentDetailsWindow extends CmWindow {
         };
         
         Button showWorkBtn = new Button("Show Work");
+        showWorkBtn.enable();
         showWorkBtn.addSelectionListener(swListener);
-        ToolBar tb = new ToolBar();
-        tb.add(showWorkBtn);
-        add(tb);
-        
+        showWorkBtn.setStyleName("student-details-panel-sw-btn");
+        add(showWorkBtn);
+
         LayoutContainer cp = new LayoutContainer();
         cp.setLayout(new FitLayout());
         cp.add(samGrid);
@@ -106,6 +104,8 @@ public class StudentDetailsWindow extends CmWindow {
         template.overwrite(html.getElement(), Util.getJsObject(studentModel));
 
         getStudentActivityRPC(store, studentModel);
+
+        //showWorkBtn.enable();
 
         setVisible(true);
     }
