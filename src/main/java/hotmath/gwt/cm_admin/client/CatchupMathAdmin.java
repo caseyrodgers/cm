@@ -103,19 +103,6 @@ public class CatchupMathAdmin implements EntryPoint, ValueChangeHandler<String> 
 
         mainPort.add(mainContainer, new BorderLayoutData(LayoutRegion.CENTER));
 
-        /**
-         * Monitor size of main area, to keep grid centered
-         * 
-         * @TODO: move this closer to StudentGridPanel (out of here?)
-         */
-        mainPort.addListener(Events.Resize, new Listener() {
-            public void handleEvent(BaseEvent be) {
-                if (StudentGridPanel.instance != null) {
-                    StudentGridPanel.instance.resizeChildren();
-                }
-            }
-        });
-
         RootPanel.get().add(mainPort);
 
 
@@ -144,8 +131,6 @@ public class CatchupMathAdmin implements EntryPoint, ValueChangeHandler<String> 
         mainContainer.add(sgp, new BorderLayoutData(LayoutRegion.CENTER));
         
         mainContainer.layout();
-        
-        StudentGridPanel.instance.resizeChildren();
     }
     
     private void loadShowWorkPage() {

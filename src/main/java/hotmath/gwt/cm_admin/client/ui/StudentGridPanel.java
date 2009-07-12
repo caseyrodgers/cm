@@ -16,9 +16,8 @@ import java.util.List;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.Registry;
-import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
+import com.extjs.gxt.ui.client.Style.LayoutRegion;
 import com.extjs.gxt.ui.client.Style.SelectionMode;
-import com.extjs.gxt.ui.client.core.El;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
@@ -28,7 +27,6 @@ import com.extjs.gxt.ui.client.event.SelectionEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.Component;
-import com.extjs.gxt.ui.client.widget.HorizontalPanel;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.button.Button;
@@ -37,10 +35,11 @@ import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
 import com.extjs.gxt.ui.client.widget.grid.Grid;
 import com.extjs.gxt.ui.client.widget.grid.GridSelectionModel;
-import com.extjs.gxt.ui.client.widget.layout.FitLayout;
-import com.extjs.gxt.ui.client.widget.layout.TableData;
+import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
+import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
 import com.extjs.gxt.ui.client.widget.menu.Menu;
 import com.extjs.gxt.ui.client.widget.menu.MenuItem;
+import com.extjs.gxt.ui.client.widget.toolbar.FillToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -68,11 +67,11 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
 
         _gridContainer = new FieldSet();
         _gridContainer.setStyleName("student-grid-panel-grid-container");
-        _gridContainer.add(createToolbar());
         
         LayoutContainer lc = new LayoutContainer();
-        lc.setLayout(new FitLayout());
-        lc.add(_grid);
+        lc.setLayout(new BorderLayout());
+        lc.add(createToolbar(),new BorderLayoutData(LayoutRegion.NORTH,30));
+        lc.add(_grid,new BorderLayoutData(LayoutRegion.CENTER));
         _gridContainer.add(lc);
 
         add(_gridContainer);
@@ -128,44 +127,6 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
         getStudentsRPC(this._cmAdminMdl.getId(), _grid.getStore(), uid);
     }
 
-    /**
-     * Call when container is resized, allows dynamically resizing children to
-     * fit entire size. Mainly used for the grid. It might be set to
-     * position:absolute for this to work
-     * 
-     */
-    int MAX_HEIGHT = 400;
-
-    public void resizeChildren() {
-        if(true)
-            return;
-        
-        int HEADER_SIZE = 40;
-        try {
-
-            // no children
-            if (getItemCount() == 0)
-                return;
-
-            layout(); // make sure form is ready
-
-            for (int i = 0; i < getItemCount(); i++) {
-                El el = getItem(i).el();
-
-                // defer the setting of the header and footer
-                // util after we have determined the size
-                el.center(_gridContainer.getParent().getElement());
-            }
-
-            int cheight = Window.getClientHeight();
-            _grid.setHeight((int) (cheight * .40));
-            _gridContainer.setHeight(_grid.getHeight(false) + 100);
-            layout();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
     public void enableToolBar() {
         for (Component ti : toolBar.getItems()) {
             ti.enable();
@@ -201,31 +162,30 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
         CatchupMathAdmin.showAlert("UID: " + sm.getUid());
     }
     
-    private HorizontalPanel createToolbar() {
-        HorizontalPanel toolbar = new HorizontalPanel();
-        toolbar.setHorizontalAlign(HorizontalAlignment.CENTER);
+    private ToolBar createToolbar() {
+        ToolBar toolbar = new ToolBar();
+        
+        // toolbar.setHorizontalAlign(HorizontalAlignment.CENTER);
         toolbar.setStyleName("student-grid-panel-toolbar");
 
-        TableData tData = new TableData("140px", "35px");
-        tData.setMargin(20);
-
         Button ti = registerStudentToolItem(_grid, _cmAdminMdl);
-        toolbar.add(ti, tData);
+        toolbar.add(ti);
 
         ti = editStudentToolItem(_grid, _cmAdminMdl);
-        toolbar.add(ti, tData);
+        toolbar.add(ti);
 
         ti = studentDetailsToolItem(_grid);
-        toolbar.add(ti, tData);
+        toolbar.add(ti);
         
         ti = showWorkToolItem(_grid,_cmAdminMdl);
-        toolbar.add(ti, tData);
+        toolbar.add(ti);
 
         ti = unregisterStudentToolItem(_grid);
-        toolbar.add(ti, tData);
-
+        toolbar.add(ti);
+        
+        toolbar.add(new FillToolItem());
         ti = displayPrintableReportToolItem();
-        toolbar.add(ti, tData);
+        toolbar.add(ti);
 
         return toolbar;
     }
@@ -496,23 +456,6 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
             }
         });
     }
-    
-    protected void removeUserRPC(StudentModel sm) {
-        RegistrationServiceAsync s = (RegistrationServiceAsync) Registry.get("registrationService");
-
-        s.removeUser(sm, new AsyncCallback<StudentModel>() {
-
-            public void onSuccess(StudentModel ai) {
-                CmAdminDataReader.getInstance().fireRefreshData();
-            }
-
-            public void onFailure(Throwable caught) {
-                String msg = caught.getMessage();
-                CatchupMathAdmin.showAlert(msg);
-            }
-        });
-    }
-
 }
 
 class StudenPanelButton extends Button {

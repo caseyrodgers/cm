@@ -31,19 +31,33 @@
 		;
 }
 
+
 .header-panel-guide-btn {
     position: absolute;
     left: 200px;
     top: 9px;
+    width: 192px;
+    height: 32px;
 }
 
-.header-panel-help-btn {
-	height: 34px;
-	width: 76px;
-	position: absolute;
-	right: 15px;
-	top: 2px;
+.header-panel-getting-started-btn-icon {
+    background: url(../images/admin_getting_started.png) no-repeat center left !important;
 }
+.header-panel-getting-started-btn-icon-over {
+    background: url(../images/admin_getting_started.png) no-repeat center left !important;
+}
+
+
+
+
+.header-panel-help-btn {
+    height: 34px;
+    width: 76px;
+    position: absolute;
+    right: 15px;
+    top: 2px;
+}
+
 .header-panel-help-btn-icon {
 	background: url(../images/help.png) no-repeat center left !important;
 }
@@ -226,4 +240,8 @@
    float: right;
    margin-top: 8px;	
    margin-right: 10px;
+}
+
+.print-report-btn {
+  float: right;
 }

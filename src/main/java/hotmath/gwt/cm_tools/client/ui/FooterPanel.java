@@ -49,6 +49,8 @@ public class FooterPanel extends LayoutContainer {
         MessageBox.prompt("Feedback","Enter Catchup-Math feedback.",true,new Listener<MessageBoxEvent> () {
             public void handleEvent(MessageBoxEvent be) {
                 String value = be.getValue();
+                if(value == null || value.length() == 0)
+                    return;
                 
                 PrescriptionServiceAsync s = (PrescriptionServiceAsync) Registry.get("prescriptionService");
                 s.saveFeedback(value, "", getFeedbackStateInfo(),new AsyncCallback() {

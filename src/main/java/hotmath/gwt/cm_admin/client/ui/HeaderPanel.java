@@ -29,11 +29,11 @@ public class HeaderPanel extends LayoutContainer {
 		setStyleName("header-panel");
 		
 		
-		Button guide = new Button("Getting Started");
+		IconButton guide = new IconButton("header-panel-getting-started-btn-icon");
 		guide.setStyleName("header-panel-guide-btn");
 		guide.setToolTip("Find out how to get started with Catchup Math");
-		guide.addSelectionListener(new SelectionListener<ButtonEvent>() {
-		    public void componentSelected(ButtonEvent ce) {
+		guide.addSelectionListener(new SelectionListener<IconButtonEvent>() {
+		    public void componentSelected(IconButtonEvent ce) {
 		        new GettingStartedGuideWindow();
 		    }
         });
