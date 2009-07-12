@@ -205,6 +205,11 @@
 .student-details-panel-grid {
 }
 
+.student-details-panel-sw-btn {
+	padding-left: 10px;
+    padding-bottom: 10px;
+}
+
 .admin-help {
 	
 }
