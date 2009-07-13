@@ -5,6 +5,7 @@ import hotmath.gwt.cm_tools.client.service.PrescriptionServiceAsync;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.util.UserInfo;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.Registry;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.MessageBoxEvent;
@@ -55,7 +56,7 @@ public class FooterPanel extends LayoutContainer {
                 PrescriptionServiceAsync s = (PrescriptionServiceAsync) Registry.get("prescriptionService");
                 s.saveFeedback(value, "", getFeedbackStateInfo(),new AsyncCallback() {
                     public void onSuccess(Object result) {
-                        System.out.println("Feedback saved");
+                        Log.info("Feedback saved");
                     }
                     public void onFailure(Throwable caught) {
                         caught.printStackTrace();

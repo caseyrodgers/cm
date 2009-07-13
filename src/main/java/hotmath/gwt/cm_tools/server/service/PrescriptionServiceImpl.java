@@ -21,6 +21,7 @@ import hotmath.gwt.shared.client.rpc.action.GetQuizResultsHtmlAction;
 import hotmath.gwt.shared.client.rpc.action.GetSolutionAction;
 import hotmath.gwt.shared.client.rpc.action.GetUserInfoAction;
 import hotmath.gwt.shared.client.rpc.action.GetViewedInmhItemsAction;
+import hotmath.gwt.shared.client.rpc.action.SaveFeedbackAction;
 import hotmath.gwt.shared.client.rpc.action.SaveQuizCurrentResultAction;
 import hotmath.gwt.shared.client.rpc.action.SetInmhItemAsViewedAction;
 import hotmath.gwt.shared.client.util.CmRpcException;
@@ -28,12 +29,10 @@ import hotmath.gwt.shared.client.util.RpcData;
 import hotmath.gwt.shared.server.service.ActionDispatcher;
 import hotmath.solution.Solution;
 import hotmath.testset.ha.HaTest;
-import hotmath.testset.ha.HaTestRun;
 import hotmath.testset.ha.HaTestRunResult;
 import hotmath.testset.ha.HaUser;
 import hotmath.util.HMConnectionPool;
 import hotmath.util.HmContentExtractor;
-import hotmath.util.Jsonizer;
 import hotmath.util.sql.SqlUtilities;
 
 import java.sql.Connection;
@@ -82,7 +81,6 @@ public class PrescriptionServiceImpl extends RemoteServiceServlet implements Pre
         ActionDispatcher.getInstance().execute(getViewedAction);
     }
 
-
     public RpcData getUserInfo(int uid) throws CmRpcException {
         GetUserInfoAction action = new GetUserInfoAction(uid);
         return ActionDispatcher.getInstance().execute(action);
@@ -102,6 +100,12 @@ public class PrescriptionServiceImpl extends RemoteServiceServlet implements Pre
         GetQuizHtmlCheckedAction action = new GetQuizHtmlCheckedAction(testId);
         return ActionDispatcher.getInstance().execute(action);
     }
+    
+
+    public void saveFeedback(String comments, String commentsUrl, String stateInfo) throws CmRpcException {
+        SaveFeedbackAction action = new SaveFeedbackAction(comments, commentsUrl, stateInfo);
+        ActionDispatcher.getInstance().execute(action);
+    }   
 
     public String getSolutionProblemStatementHtml(String pid) {
         try {
@@ -286,29 +290,6 @@ public class PrescriptionServiceImpl extends RemoteServiceServlet implements Pre
         }
     }
 
-    public void saveFeedback(String comments, String commentsUrl, String stateInfo) throws CmRpcException {
-
-        Connection conn = null;
-        PreparedStatement pstat = null;
-
-        try {
-
-            String sql = "insert into HA_FEEDBACK(entry_date, comment,comment_url,state_info)values(now(),?,?,?)";
-
-            conn = HMConnectionPool.getConnection();
-            pstat = conn.prepareStatement(sql);
-            pstat.setString(1, comments);
-            pstat.setString(2, commentsUrl);
-            pstat.setString(3, stateInfo);
-
-            if (pstat.executeUpdate() != 1)
-                throw new Exception("could not save feedback comments");
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            SqlUtilities.releaseResources(null, pstat, conn);
-        }
-    }
 
     public List<StudentShowWorkModel> getStudentShowWork(Integer uid, Integer runId) throws CmRpcException {
         try {

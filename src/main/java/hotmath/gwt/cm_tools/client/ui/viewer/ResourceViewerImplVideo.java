@@ -1,7 +1,9 @@
 package hotmath.gwt.cm_tools.client.ui.viewer;
 
 import hotmath.gwt.cm_tools.client.data.InmhItemData;
+import pl.rmalinowski.gwt2swf.client.ui.SWFSettings;
 import pl.rmalinowski.gwt2swf.client.ui.SWFWidget;
+import pl.rmalinowski.gwt2swf.client.utils.PlayerVersion;
 
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
@@ -16,7 +18,10 @@ public class ResourceViewerImplVideo extends ResourceViewerContainer {
 
     public Widget getResourcePanel(InmhItemData resource) {
         String videoPath = "/help/flvs/tw/" + resource.getFile() + ".flv";
-        SWFWidget swfWidget = new SWFWidget("flvplayer.swf?file=" + videoPath, 320, 240);
+        SWFSettings s = new SWFSettings();
+        s.setMinPlayerVersion(new PlayerVersion(9));
+
+        SWFWidget swfWidget = new SWFWidget("flvplayer.swf?file=" + videoPath, 320, 240, s);
         swfWidget.setStyleName("flvplayer-widget");
         swfWidget.addParam("file", videoPath);
         Label title = new Label(resource.getTitle());

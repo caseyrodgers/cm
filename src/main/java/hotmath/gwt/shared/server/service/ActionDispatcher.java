@@ -15,6 +15,7 @@ import hotmath.gwt.shared.server.service.command.GetQuizResultsHtmlCommand;
 import hotmath.gwt.shared.server.service.command.GetSolutionCommand;
 import hotmath.gwt.shared.server.service.command.GetUserInfoCommand;
 import hotmath.gwt.shared.server.service.command.GetViewedInmhItemsCommand;
+import hotmath.gwt.shared.server.service.command.SaveFeedbackCommand;
 import hotmath.gwt.shared.server.service.command.SaveQuizCurrentResultCommand;
 
 import java.util.HashMap;
@@ -80,6 +81,7 @@ public class ActionDispatcher {
         addCommand(new GetQuizHtmlCheckedCommand());
         addCommand(new SaveQuizCurrentResultCommand());
         addCommand(new GetQuizResultsHtmlCommand());
+        addCommand(new SaveFeedbackCommand());
     }
     
     
