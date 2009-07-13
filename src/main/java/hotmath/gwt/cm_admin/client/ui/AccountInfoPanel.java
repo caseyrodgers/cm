@@ -9,9 +9,12 @@ import hotmath.gwt.cm_tools.client.model.CmAdminModel;
 import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.Registry;
 import com.extjs.gxt.ui.client.core.XTemplate;
+import com.extjs.gxt.ui.client.event.IconButtonEvent;
+import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.util.Util;
 import com.extjs.gxt.ui.client.widget.HorizontalPanel;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
+import com.extjs.gxt.ui.client.widget.button.IconButton;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HTML;
@@ -26,12 +29,10 @@ public class AccountInfoPanel extends LayoutContainer implements CmAdminDataRefr
 	public AccountInfoPanel(CmAdminModel cmAdminMdl) {
 		
 		cmAdminModel = cmAdminMdl;
-		
-		System.out.println("AccountInfoPanel: admin uid: " + cmAdminMdl.getId());
-		
-		HorizontalPanel hp = new HorizontalPanel();
+
+		LayoutContainer hp = new LayoutContainer();
 		hp.setAutoWidth(true);
-		hp.setSpacing(10);
+		//hp.setSpacing(10);
 		hp.setBorders(false);
 		hp.setStyleName("account-info-panel");
 	
@@ -59,7 +60,6 @@ public class AccountInfoPanel extends LayoutContainer implements CmAdminDataRefr
 		html.setHTML(sb.toString());
 		hp.add(html);
 		
-		//TODO: add "Details" button or tool tip
 
 		add(hp);
 		

@@ -4,6 +4,7 @@ import hotmath.gwt.cm_admin.client.service.RegistrationService;
 import hotmath.gwt.cm_admin.client.service.RegistrationServiceAsync;
 import hotmath.gwt.cm_admin.client.ui.AccountInfoPanel;
 import hotmath.gwt.cm_admin.client.ui.FooterPanel;
+import hotmath.gwt.cm_admin.client.ui.GettingStartedGuideWindow;
 import hotmath.gwt.cm_admin.client.ui.HeaderPanel;
 import hotmath.gwt.cm_admin.client.ui.StudentGridPanel;
 import hotmath.gwt.cm_admin.client.ui.StudentShowWorkPanel;
@@ -17,12 +18,14 @@ import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.Registry;
 import com.extjs.gxt.ui.client.Style.LayoutRegion;
 import com.extjs.gxt.ui.client.event.BaseEvent;
-import com.extjs.gxt.ui.client.event.Events;
+import com.extjs.gxt.ui.client.event.IconButtonEvent;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.MessageBoxEvent;
+import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.Viewport;
+import com.extjs.gxt.ui.client.widget.button.IconButton;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
@@ -125,8 +128,17 @@ public class CatchupMathAdmin implements EntryPoint, ValueChangeHandler<String> 
         mainContainer.removeAll();
         mainContainer.setLayout(new BorderLayout());
 
+        IconButton guide = new IconButton("header-panel-getting-started-btn-icon");
+        guide.setStyleName("header-panel-guide-btn");
+        guide.setToolTip("Find out how to get started with Catchup Math");
+        guide.addSelectionListener(new SelectionListener<IconButtonEvent>() {
+            public void componentSelected(IconButtonEvent ce) {
+                new GettingStartedGuideWindow();
+            }
+        });
         
         mainContainer.add(infoPanel, new BorderLayoutData(LayoutRegion.NORTH, 150));
+        mainContainer.add(guide);        
         
         mainContainer.add(sgp, new BorderLayoutData(LayoutRegion.CENTER));
         

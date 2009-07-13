@@ -20,6 +20,7 @@ import com.extjs.gxt.ui.client.Style.LayoutRegion;
 import com.extjs.gxt.ui.client.Style.SelectionMode;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.Events;
+import com.extjs.gxt.ui.client.event.IconButtonEvent;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.MenuEvent;
 import com.extjs.gxt.ui.client.event.MessageBoxEvent;
@@ -30,6 +31,7 @@ import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.button.Button;
+import com.extjs.gxt.ui.client.widget.button.IconButton;
 import com.extjs.gxt.ui.client.widget.form.FieldSet;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
@@ -71,9 +73,11 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
         LayoutContainer lc = new LayoutContainer();
         lc.setLayout(new BorderLayout());
         lc.add(createToolbar(),new BorderLayoutData(LayoutRegion.NORTH,30));
+        
+        
+
         lc.add(_grid,new BorderLayoutData(LayoutRegion.CENTER));
         _gridContainer.add(lc);
-
         add(_gridContainer);
         final Menu contextMenu = new Menu();
         MenuItem loginAsUser = new MenuItem("Login as User");
@@ -170,7 +174,7 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
 
         Button ti = registerStudentToolItem(_grid, _cmAdminMdl);
         toolbar.add(ti);
-
+        
         ti = editStudentToolItem(_grid, _cmAdminMdl);
         toolbar.add(ti);
 

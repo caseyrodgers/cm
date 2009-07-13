@@ -27,18 +27,6 @@ public class HeaderPanel extends LayoutContainer {
 		super.onRender(parent, index);
 
 		setStyleName("header-panel");
-		
-		
-		IconButton guide = new IconButton("header-panel-getting-started-btn-icon");
-		guide.setStyleName("header-panel-guide-btn");
-		guide.setToolTip("Find out how to get started with Catchup Math");
-		guide.addSelectionListener(new SelectionListener<IconButtonEvent>() {
-		    public void componentSelected(IconButtonEvent ce) {
-		        new GettingStartedGuideWindow();
-		    }
-        });
-		add(guide);
-		
 		IconButton btn = new IconButton("header-panel-help-btn-icon");
 		btn.setStyleName("header-panel-help-btn");
 		btn.addSelectionListener(new SelectionListener<IconButtonEvent>() {
