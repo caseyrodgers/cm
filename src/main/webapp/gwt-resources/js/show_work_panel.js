@@ -33,7 +33,7 @@ function updateWhiteboard(id, command, commandData) {
    
    //  only works if single object on page
    // @TODO: get browser depend object
-   var fo = document.getElementById("whiteboard");
+   var fo = swfobject.getObjectById("whiteboard-object");
    
    //alert(fo + ', ' + fo.name + ', ' + fo.updateWhiteboard);
    if(!fo) {

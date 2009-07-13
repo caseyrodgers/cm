@@ -1076,3 +1076,12 @@ img.resource-item-complete {
 }
 
 /** End Student Detail Info */
+
+
+
+#flash-alt-content {
+	width: 300px;
+	margin: auto;
+    margin-top: 20px;
+    text-align: center;
+}

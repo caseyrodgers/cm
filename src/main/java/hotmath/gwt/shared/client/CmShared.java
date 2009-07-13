@@ -45,6 +45,18 @@ public class CmShared implements EntryPoint {
      * 
      */
     final public static int DEMO_UID = 547;
+    
+    
+    
+    final public static int FLASH_MIN_VERSION=8;
+    
+    final public static String FLASH_ALT_CONTENT=
+        "<div id='flash-alt-content'>" +
+        "<h1>Flash version 8 or higher is required.</h1> " + 
+        "<p> " +
+        "<a href='http://www.adobe.com/go/getflashplayer'><img src='http://www.adobe.com/images/shared/download_buttons/get_flash_player.gif' alt='Get Adobe Flash player' /></a>" +
+        "</p>" +
+        "</div>";
 
     
     /** Check the query string and process log in.

@@ -3,22 +3,19 @@
 <head>
 <title>Catchup Math Show Work</title>
 <link rel="stylesheet" href="/gwt-resources/css/show_work_panel.css"
-	type="text/css" />
+    type="text/css" />
 <link rel="stylesheet" href="/css/tutor5.css" type="text/css" />
 </head>
 <body>
-<script src='/gwt-resources/js/swfobject.js'></script>
+<script src='/gwt-resources/js/swfobject/swfobject.js'></script>
 <div style="display: block;"><!-- HOTMATH BODY START -->
 <div>
 <div id="steps_head">&nbsp;</div>
 <div id='whiteboard-object'>
-    <script type="text/javascript">
-                  var fo = new SWFObject("whiteboard.swf", "whiteboard", "500px", "230px", "8.0.15", "#ffffff", true);
-                  // need this next line for local testing, it's optional if your swf is on the same domain as your html page
-                  fo.addParam("allowScriptAccess", "always");
-                  /** fo.addParam("wmode", "transparent"); */
-                  fo.write("whiteboard-object");
-     </script>
+    <h1>Flash version 8 or higher is required.</h1> 
+    <p>
+       <a href="http://www.adobe.com/go/getflashplayer"><img src="http://www.adobe.com/images/shared/download_buttons/get_flash_player.gif" alt="Get Adobe Flash player" /></a>
+    </p> 
 </div>
 <div id="steps_tail">
 <div id="steps_tail_padding"></div>
@@ -26,5 +23,8 @@
 <img src="/images/tutor5/spacer.gif" id="scrollTo-button" /></div>
 <!-- HOTMATH BODY END --></div>
 <script src='/gwt-resources/js/show_work_panel.js'></script>
+<script>
+ swfobject.embedSWF('/gwt-resources/whiteboard.swf', 'whiteboard-object', '500px', '230px','8','/gwt-resources/js/swfobject/expressInstall.swf' , null, null, null, function(o) {});
+</script>
 </body>
 </html>

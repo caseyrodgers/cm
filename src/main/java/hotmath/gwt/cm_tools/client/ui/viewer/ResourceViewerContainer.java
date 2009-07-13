@@ -36,6 +36,8 @@ import com.google.gwt.user.client.ui.Widget;
  */
 abstract public class ResourceViewerContainer extends LayoutContainer  implements	ResourceViewer{
     
+ 
+    
     /** The default amount of vertical space allowed to resource container
      * 
      */
@@ -117,4 +119,6 @@ abstract public class ResourceViewerContainer extends LayoutContainer  implement
 	    }
 	    return s;
 	}
+	
+	
 }
