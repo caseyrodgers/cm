@@ -7,13 +7,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import pl.rmalinowski.gwt2swf.client.utils.PlayerVersion;
+import pl.rmalinowski.gwt2swf.client.utils.SWFObjectUtil;
+
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONParser;
 import com.google.gwt.json.client.JSONValue;
 import com.google.gwt.user.client.Cookies;
-import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
 
 public class CmShared implements EntryPoint {
@@ -156,9 +158,14 @@ public class CmShared implements EntryPoint {
                 UserInfoBase user = UserInfoBase.getInstance();
                 user.setUid(userId);
                 user.setIsAdmin(isAdmin);
+
                 
-                
-                
+                /** Check Flash, if not supported show error .. but allow system to continue
+                 *  and initialize.
+                 */
+                if(!SWFObjectUtil.isVersionIsValid(new PlayerVersion(CmShared.FLASH_MIN_VERSION))) {
+                    new FlashVersionNotSupportedWindow();
+                }
             }
             
             return userId;

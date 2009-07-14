@@ -2,7 +2,6 @@ package hotmath.gwt.cm.client;
 
 import pl.rmalinowski.gwt2swf.client.utils.PlayerVersion;
 import pl.rmalinowski.gwt2swf.client.utils.SWFObjectUtil;
-import hotmath.gwt.cm.client.ui.FlashVersionNotSupportedWindow;
 import hotmath.gwt.cm.client.ui.HeaderPanel;
 import hotmath.gwt.cm.client.ui.context.PrescriptionCmGuiDefinition;
 import hotmath.gwt.cm.client.ui.context.QuizCmGuiDefinition;
@@ -11,6 +10,7 @@ import hotmath.gwt.cm_tools.client.data.InmhItemData;
 import hotmath.gwt.cm_tools.client.ui.CmMainPanel;
 import hotmath.gwt.cm_tools.client.ui.FooterPanel;
 import hotmath.gwt.shared.client.CmShared;
+import hotmath.gwt.shared.client.FlashVersionNotSupportedWindow;
 import hotmath.gwt.shared.client.data.CmAsyncRequest;
 import hotmath.gwt.shared.client.data.CmAsyncRequestImplDefault;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
@@ -149,14 +149,7 @@ public class CatchupMath implements EntryPoint {
                         if(UserInfo.getInstance().isSingleUser())
                             Window.setTitle("Catchup Math: Single User");
 
-                        
-                        /** Check Flash, if not supported show error .. but allow system to continue
-                         *  and initialize.
-                         */
-                        if(!SWFObjectUtil.isVersionIsValid(new PlayerVersion(CmShared.FLASH_MIN_VERSION))) {
-                            new FlashVersionNotSupportedWindow();
-                        }
-                        
+
                         
                         if(UserInfo.getInstance().getRunId() > 0) {
                             // load the existing run
