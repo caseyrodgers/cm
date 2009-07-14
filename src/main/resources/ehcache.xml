@@ -51,4 +51,12 @@
        overflowToDisk="false">
 </cache>
 
+<!-- Description of HaTestDef including all associated lesson names -->
+<cache name="TEST_DEF_DESCRIPTION"
+       maxElementsInMemory="50"
+       eternal="true"
+       overflowToDisk="false">
+</cache>
+
+
 </ehcache>

@@ -40,21 +40,24 @@ public class InmhAssessment {
 	 *  
 	 * @param pids
 	 */
+	public InmhAssessment(String pids[]) {
+        logger.debug("InmhAssessment(): pids: " + pids);
+        _pids = pids;
+        for(String p : _pids) {
+            try {
+                List<INeedMoreHelpItem> inmhItems = new ArrayList<INeedMoreHelpItem>();             
+                INeedMoreHelpItem items[] = INeedMoreHelpManager.getInstance().getHelpItems(p);
+                for(INeedMoreHelpItem h:items)
+                    inmhItems.add(h);
+                inmhItemsMap.put(p, inmhItems);
+            }
+            catch(Exception e) {
+                logger.error("ERROR obtaining INMH for pids: " + pids, e);
+            }
+        }
+	}
 	public InmhAssessment(String pids) {
-		logger.debug("InmhAssessment(): pids: " + pids);
-		_pids = pids.split(",");
-		for(String p : _pids) {
-			try {
-				List<INeedMoreHelpItem> inmhItems = new ArrayList<INeedMoreHelpItem>();				
-				INeedMoreHelpItem items[] = INeedMoreHelpManager.getInstance().getHelpItems(p);
-				for(INeedMoreHelpItem h:items)
-					inmhItems.add(h);
-				inmhItemsMap.put(p, inmhItems);
-			}
-			catch(Exception e) {
-				logger.error("ERROR obtaining INMH for pids: " + pids, e);
-			}
-		}
+		this(pids.split(","));
 	}
 	
 	/** Return array of pids used in assessment
