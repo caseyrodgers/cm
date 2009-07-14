@@ -7,6 +7,7 @@ import hotmath.SolutionManager;
 import hotmath.gwt.cm_admin.server.model.CmAdminDao;
 import hotmath.gwt.cm_tools.client.model.ChapterModel;
 import hotmath.gwt.cm_tools.client.model.GroupModel;
+import hotmath.gwt.cm_tools.client.model.LessonItemModel;
 import hotmath.gwt.cm_tools.client.model.StudentActivityModel;
 import hotmath.gwt.cm_tools.client.model.StudentModel;
 import hotmath.gwt.cm_tools.client.model.StudentShowWorkModel;
@@ -307,6 +308,16 @@ public class PrescriptionServiceImpl extends RemoteServiceServlet implements Pre
         } catch (Exception e) {
             throw new CmRpcException(e);
         }
+    }
+
+    public List<LessonItemModel> getLessonItemsForTestRun(Integer runId) throws CmRpcException {
+    	try {
+            CmAdminDao cma = new CmAdminDao();
+            return cma.getLessonItemsForTestRun(runId);    		
+    	}
+    	catch (Exception e) {
+    		throw new CmRpcException(e);
+    	}
     }
 
     public StudentModel getStudentModel(Integer uid) throws CmRpcException {

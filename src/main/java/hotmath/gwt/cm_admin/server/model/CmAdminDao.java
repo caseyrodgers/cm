@@ -4,12 +4,14 @@ import hotmath.cm.util.CmCacheManager;
 import hotmath.gwt.cm_tools.client.model.AccountInfoModel;
 import hotmath.gwt.cm_tools.client.model.ChapterModel;
 import hotmath.gwt.cm_tools.client.model.GroupModel;
+import hotmath.gwt.cm_tools.client.model.LessonItemModel;
 import hotmath.gwt.cm_tools.client.model.StudentActivityModel;
 import hotmath.gwt.cm_tools.client.model.StudentModel;
 import hotmath.gwt.cm_tools.client.model.StudentShowWorkModel;
 import hotmath.gwt.cm_tools.client.model.StudyProgramModel;
 import hotmath.gwt.cm_tools.client.model.SubjectModel;
 import hotmath.testset.ha.HaAdmin;
+import hotmath.testset.ha.HaTestDefDescription;
 import hotmath.util.HMConnectionPool;
 import hotmath.util.sql.SqlUtilities;
 
@@ -214,6 +216,39 @@ public class CmAdminDao {
     	catch (Exception e) {
     		logger.error(String.format("*** Error getting student details for student uid: %d", uid), e);
     		throw new Exception("*** Error getting student details ***");
+    	}
+    	finally {
+    		SqlUtilities.releaseResources(rs, ps, conn);
+    	}
+    	return l;
+    }
+    
+    private static final String GET_TEST_DEF_SQL =
+    	"select td.test_name from HA_TEST_DEF td, HA_TEST t, HA_TEST_RUN tr " +
+    	"where tr.run_id = ? and tr.test_id = t.test_id and t.test_def_id = td.test_def_id";
+    
+    public List <LessonItemModel> getLessonItemsForTestRun(Integer runId) throws Exception {
+   	    List <LessonItemModel> l = null;
+    	
+    	Connection conn = null;
+    	PreparedStatement ps = null;
+    	ResultSet rs = null;
+    	
+    	try {
+    		conn = HMConnectionPool.getConnection();
+    		ps = conn.prepareStatement(GET_TEST_DEF_SQL);
+    		ps.setInt(1, runId);
+    		rs = ps.executeQuery();
+    		
+    		if (rs.next()) {
+    			String testName = rs.getString(1);
+    			HaTestDefDescription tdDesc = HaTestDefDescription.getHaTestDefDescription(testName);
+    			l = loadLessonItems(tdDesc);
+    		}
+    	}
+    	catch (Exception e) {
+    		logger.error(String.format("*** Error getting lesson items for runId:  %d", runId), e);
+    		throw new Exception("*** Error getting Lesson Items ***");
     	}
     	finally {
     		SqlUtilities.releaseResources(rs, ps, conn);
@@ -713,7 +748,7 @@ public class CmAdminDao {
     				if (rs.next()) {
     					json = rs.getString(1);
     					// save JSON if chap program set chapter
-    					// @TODO: support mutliple chapters
+    					// @TODO: support multiple chapters
     					if (progId.equalsIgnoreCase("chap")) {
    	                        // Delimit the chapter in quotes
                             // otherwise the parsing of the JSON fails.
@@ -723,7 +758,7 @@ public class CmAdminDao {
     				}
     			}
 				catch (Exception e) {
-					System.out.println(String.format("json: %s, Exception: %s", json, e.getMessage()));
+					logger.error(String.format("json: %s, Exception: %s", json, e.getMessage()), e);
 				}
     			finally {
     				SqlUtilities.releaseResources(rs, ps2, null);
@@ -1097,7 +1132,6 @@ public class CmAdminDao {
     private List <StudentActivityModel> loadStudentActivity(ResultSet rs) throws Exception {
     	
     	List<StudentActivityModel> l = new ArrayList<StudentActivityModel>();
-    	int previousSection = 0;
     	int problemsViewed = 0;
     	
     	while (rs.next()) {
@@ -1202,6 +1236,18 @@ public class CmAdminDao {
        
     }
     
+    private List<LessonItemModel> loadLessonItems(HaTestDefDescription tdDesc) {
+    	List<LessonItemModel> l = new ArrayList<LessonItemModel>();
+    	
+    	for (HaTestDefDescription.LessonItem item : tdDesc.getLessonItems()) {
+    		LessonItemModel mdl = new LessonItemModel();
+    		mdl.setName(item.getName());
+    		mdl.setFile(item.getFile());
+    		l.add(mdl);
+    	}
+    	return l;
+    }
+
     private List <SubjectModel> loadSubjectDefinitions(ResultSet rs) throws Exception {
     	
     	List<SubjectModel> l = new ArrayList<SubjectModel>();

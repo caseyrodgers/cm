@@ -2,6 +2,7 @@ package hotmath.gwt.cm_tools.client.service;
 
 import hotmath.gwt.cm_tools.client.model.ChapterModel;
 import hotmath.gwt.cm_tools.client.model.GroupModel;
+import hotmath.gwt.cm_tools.client.model.LessonItemModel;
 import hotmath.gwt.cm_tools.client.model.StudentActivityModel;
 import hotmath.gwt.cm_tools.client.model.StudentModel;
 import hotmath.gwt.cm_tools.client.model.StudentShowWorkModel;
@@ -129,12 +130,19 @@ public interface PrescriptionServiceAsync {
 
 	  /** Get the student activity for this student
 	   * 
-	   * @param sm
+	   * @param sm the Student model
 	   * @param callback
 	   */
       void getStudentActivity(StudentModel sm, AsyncCallback<List<StudentActivityModel>> callback);
+      
+      /** get the Lesson Items for the specified Test Run Id 
+       * 
+       * @param run the test run id
+	   * @param callback
+       */
+      void getLessonItemsForTestRun(Integer runId, AsyncCallback<List<LessonItemModel>> callback);
 
-      /** Lookup and create a StudentMode for this user_id
+      /** Lookup and create a StudentModel for the specified uid
        * 
        * @param uid
        * @param callBack

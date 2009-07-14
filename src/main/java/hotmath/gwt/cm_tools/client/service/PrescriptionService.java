@@ -2,6 +2,7 @@ package hotmath.gwt.cm_tools.client.service;
 
 import hotmath.gwt.cm_tools.client.model.ChapterModel;
 import hotmath.gwt.cm_tools.client.model.GroupModel;
+import hotmath.gwt.cm_tools.client.model.LessonItemModel;
 import hotmath.gwt.cm_tools.client.model.StudentActivityModel;
 import hotmath.gwt.cm_tools.client.model.StudentModel;
 import hotmath.gwt.cm_tools.client.model.StudentShowWorkModel;
@@ -197,16 +198,23 @@ public interface PrescriptionService extends RemoteService {
     List<StudentShowWorkModel> getStudentShowWork(Integer uid, Integer runId) throws CmRpcException;
     
 
-    /** return the list of students and all the summary infomation showing their current status 
+    /** return the list of activities for the specified Student 
      * 
      * @param sm The student model
      * @return
      * @throws Exception
      */
     List<StudentActivityModel> getStudentActivity(StudentModel sm) throws CmRpcException;
+
+    /** return the list of Lesson Items for the specified Test Run Id 
+     * 
+     * @param run The test run id
+     * @return
+     * @throws Exception
+     */
+    List<LessonItemModel> getLessonItemsForTestRun(Integer runId) throws CmRpcException;
     
-    
-    /** Create StudentModel for user with matchin user_id
+    /** Create StudentModel for user with matching user_id
      * 
      * @param user_id
      * @return
