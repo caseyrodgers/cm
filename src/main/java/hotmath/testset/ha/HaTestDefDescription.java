@@ -23,11 +23,12 @@ import java.util.List;
 public class HaTestDefDescription {
     
     HaTestDef testDef;
-    List<LessonItem> lessonItems;
+    List<InmhItemData> lessons;
+    List<String> pids;
     
-    public HaTestDefDescription(HaTestDef def, List<LessonItem> lessonItems) throws Exception {
+    public HaTestDefDescription(HaTestDef def,List<InmhItemData> lessons) throws Exception {
         this.testDef = def;
-        this.lessonItems = lessonItems;
+        this.lessons = lessons;
     }
     
     public HaTestDefDescription() {
@@ -43,15 +44,82 @@ public class HaTestDefDescription {
     }
 
 
-    public List<LessonItem> getLessonItems() {
-        return lessonItems;
+    /** Returns all lessons for entire program
+     * 
+     * @return
+     */
+    public List<InmhItemData> getLessonItems() {
+        return lessons;
     }
 
 
-    public void setLessonNames(List<LessonItem> lessonItems) {
-        this.lessonItems = lessonItems;
+    public void setLessonItems(List<InmhItemData> lessonItems) {
+        this.lessons = lessonItems;
     }
 
+    
+    /** Return list of lesson items defined for the
+     *  named quiz segment.  This will be a subset
+     *  of the total lessons defined for this program.
+     *  
+     *  quizSegment is one based. quizSegment of zero
+     *  will result in ArrayOutOfBoundsException.
+     *  
+     *  
+     * @return
+     */
+    public List<InmhItemData> getLessonItems(Integer quizSegment) throws ArrayIndexOutOfBoundsException {
+        
+        int pidsInASegment = pids.size() / testDef.getTotalSegmentCount();
+        
+        int end = pidsInASegment * quizSegment;
+        int start = end - pidsInASegment;
+        
+        /** Extract subset of pids used in this quiz segment
+         * 
+         */
+        List<String> pidsInThisSegment = new ArrayList<String>();
+        for(int i=start;i<end;i++) {
+            pidsInThisSegment.add(pids.get(i));
+        }
+        
+        /**  now find each lesson referenced this segments subset of pids
+         * 
+         */
+        List<InmhItemData> quizSegmentLessons = new ArrayList<InmhItemData>();
+        for(InmhItemData id: lessons) {
+            
+            // is this item referenced by at least one quiz segment pid
+            boolean found=false;
+            for(String p: pidsInThisSegment) {
+                // for each pid in this test segment
+                for(String itemPid: id.getPids()) {
+                    // check to see if this pid is referenced by this item
+                    if(p.equals(itemPid)) {
+                        quizSegmentLessons.add(id);
+                        found=true;
+                        break;
+                    }
+                }
+                
+                if(found)
+                    break;
+            }
+        }
+        return quizSegmentLessons;
+    }
+    
+    /** Return list of all pids in the program
+     * 
+     * @return
+     */
+    public List<String> getPids() {
+        return pids;
+    }
+
+    public void setPids(List<String> pids) {
+        this.pids = pids;
+    }
 
     /** Return list of Lesson names based on this testName
      * 
@@ -69,7 +137,7 @@ public class HaTestDefDescription {
             conn = HMConnectionPool.getConnection();
             
             HaTestDef def = new HaTestDef(conn, testName);
-            HaTestConfig config = new HaTestConfig(null);
+            HaTestConfig config = def.getTestConfig();
             
             HaTestDefDao dao = new HaTestDefDao();
             List<String> pids = dao.getTestIds(conn, def.getTextCode(), def.getChapter(), 1, 0, 9999, config);
@@ -78,13 +146,14 @@ public class HaTestDefDescription {
             List<InmhItemData> itemsData = inmhAssessment.getInmhItemUnion("review");
             
             desc = new HaTestDefDescription();
-            List<LessonItem> lessons = new ArrayList<LessonItem>();
+            List<InmhItemData> lessons = new ArrayList<InmhItemData>();
             for(InmhItemData id: itemsData) {
-                lessons.add(desc.new LessonItem(id.getInmhItem().getTitle(), id.getInmhItem().getFile()));
+                lessons.add(id);
             }
             
+            desc.setPids(pids);
             desc.setTestDef(def);
-            desc.setLessonNames(lessons);
+            desc.setLessonItems(lessons);
             
             CmCacheManager.getInstance().addToCache(CacheName.TEST_DEF_DESCRIPTION, testName,desc);
             
@@ -93,31 +162,5 @@ public class HaTestDefDescription {
         finally {
             SqlUtilities.releaseResources(null,null,conn);
         }
-    }
-    
-    public class LessonItem {
-    	private String name;
-		private String file;
-		
-		public LessonItem(String name, String file) {
-			this.name = name;
-			this.file = file;
-		}
-    	
-    	public String getName() {
-			return name;
-		}
-    	
-		public void setName(String name) {
-			this.name = name;
-		}
-		
-		public String getFile() {
-			return file;
-		}
-		
-		public void setFile(String file) {
-			this.file = file;
-		}
     }
 }

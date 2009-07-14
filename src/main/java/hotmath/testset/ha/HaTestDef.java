@@ -53,6 +53,7 @@ public class HaTestDef {
     String textCode;
     String chapter;
     int testDefId;
+    HaTestConfig config;
     
     
     public HaTestDef(final Connection conn, String name) throws Exception {
@@ -64,6 +65,7 @@ public class HaTestDef {
             this.chapter = td.getChapter();
             this.testDefId = td.getTestDefId();
             this.textCode = td.getTextCode();
+            this.config = td.getTestConfig();
             return;
         }
         
@@ -85,6 +87,7 @@ public class HaTestDef {
             testDef.textCode = rs.getString("textcode");
             testDef.chapter = rs.getString("chapter");
             testDef.testDefId = rs.getInt("test_def_id");
+            testDef.config = new HaTestConfig(rs.getString("test_config_json"));
             
             CmCacheManager.getInstance().addToCache(CmCacheManager.CacheName.TEST_DEF, testDef.getName(), testDef);
             
@@ -99,6 +102,16 @@ public class HaTestDef {
         this.indexRelatedPool = getRelatedPoolIndex();
     }
 
+    
+    /** Return the default test configuration for this test def
+     * 
+     * @return
+     */
+    public HaTestConfig getTestConfig() {
+        return config;
+    }
+    
+    
     public String getName() {
         return name;
     }
@@ -205,7 +218,7 @@ public class HaTestDef {
 
 
     public int getTotalSegmentCount() {
-        return HaTest.SEGMENTS_PER_PROGRAM;
+        return config.getSegmentCount();
     }
 
     /**

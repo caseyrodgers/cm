@@ -5,18 +5,20 @@ import hotmath.HotMathException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.log4j.Logger;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 /** Custom configuration settings for individual 
  *   test definitions.
  *   
+ *   
  * @author Casey
  *
  */
 public class HaTestConfig {
 	List<String> chapters = new ArrayList<String>();
-	int passPercent;
+	int passPercent=80;
 	int segmentCount=4;
 	
 	public int getSegmentCount() {
@@ -29,6 +31,13 @@ public class HaTestConfig {
     }
 
 
+    /** Create HaTestConfig based on json object
+     * 
+     * If error, uses default values.
+     * 
+     * @param json
+     * @throws HotMathException
+     */
     public HaTestConfig(String json) throws HotMathException {
 		try {
 			if(json != null && json.length() > 0) {
@@ -45,7 +54,7 @@ public class HaTestConfig {
 			}
 		}
 		catch(Exception e) {
-			throw new HotMathException(e, "Error creating test config object");
+		    Logger.getLogger(this.getClass()).info("Error creating test config object (using default)", e);
 		}
 	}
 	

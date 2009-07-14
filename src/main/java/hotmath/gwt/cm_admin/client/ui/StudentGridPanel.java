@@ -430,6 +430,7 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
                 store.removeAll();
                 store.add(result);
                 
+                /** Reselect selected row */
                 if(selectedUid > 0) {
                     for(int i=0;i<store.getCount();i++) {
                         if(store.getAt(i).getUid() == selectedUid) {
@@ -438,7 +439,6 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
                         }
                     }
                 }
-                    
                 Log.info("StudentGridPanel: students RPC successfully read");
             }
 

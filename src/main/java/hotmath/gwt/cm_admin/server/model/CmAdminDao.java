@@ -1113,6 +1113,13 @@ public class CmAdminDao {
             sm.setSectionNum(sectionNum);
             if (sectionNum > 0) {
             	int segmentCount = rs.getInt("total_segments");
+            	
+            	/** IF not set, then guess
+            	 * @tTODO: this should never happen
+            	 */
+            	if(segmentCount == 0)
+            	    segmentCount = 4;
+            	
             	String status = new StringBuilder("Section ").append(sectionNum).append(" of ").append(segmentCount).toString();
             	sm.setStatus(status);
             }
