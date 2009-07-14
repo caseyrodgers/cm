@@ -11,9 +11,7 @@ import net.sf.ehcache.CacheException;
 import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.Ehcache;
 import net.sf.ehcache.Element;
-import net.sf.ehcache.Status;
 import net.sf.ehcache.event.CacheEventListener;
-import net.sf.ehcache.event.CacheManagerEventListener;
 
 import org.apache.log4j.Logger;
 
@@ -49,7 +47,7 @@ public class CmCacheManager  {
     /** Distinct cache names as defined in configuration files (ehcache.xml)
      * 
      */
-	public static enum CacheName { PROG_DEF, TEST_DEF, TEST, TEST_HTML, TEST_HTML_CHECKED, TEST_DEF_DESCRIPTION};
+	public static enum CacheName { PROG_DEF, TEST_DEF, TEST, TEST_HTML, TEST_HTML_CHECKED, TEST_DEF_DESCRIPTION };
 
 	private void flushCache() {
     	if (logger.isInfoEnabled()) {
@@ -104,9 +102,9 @@ public class CmCacheManager  {
 
     /** Add the object to the named cache.
      * 
-     * @param cacheName The cache to insert the object
+     * @param cacheName the cache to add the object to
      * @param key the key for the object
-     * @param toCache The object to cache
+     * @param toCache the object to cache
      */
     public void addToCache(CacheName cacheName, Object key, Object toCache) {
         logger.debug(String.format("addToCache(): cacheName: %s, key: %s", cacheName, key));
