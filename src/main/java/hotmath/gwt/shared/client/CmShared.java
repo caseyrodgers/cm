@@ -52,7 +52,7 @@ public class CmShared implements EntryPoint {
     
     final public static String FLASH_ALT_CONTENT=
         "<div id='flash-alt-content'>" +
-        "<h1>Flash version 8 or higher is required.</h1> " + 
+        "<p>Flash version 8 or higher is required.  Either download Flash now, try a different browser, or try a different computer.  You may proceed, but many of our learning resources require Flash.</p> " + 
         "<p> " +
         "<a href='http://www.adobe.com/go/getflashplayer'><img src='http://www.adobe.com/images/shared/download_buttons/get_flash_player.gif' alt='Get Adobe Flash player' /></a>" +
         "</p>" +

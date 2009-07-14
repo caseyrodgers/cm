@@ -17,7 +17,7 @@ public class FlashVersionNotSupportedWindow extends CmWindow {
     
     public FlashVersionNotSupportedWindow() {
         setSize(300,150);
-        setHeading("Flash version needs to be updated");
+        setHeading("Please download Flash");
         
         Html html = new Html(CmShared.FLASH_ALT_CONTENT);
         add(html);
