@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /** Class to describe a single HaTestDef. Provides 
- * a list of all possible Lesson names associated with 
+ * a list of all possible Lesson Items associated with 
  * the test.
  * 
  * Is stored in CmCacheManager.TEST_DEF_DESCRIPTION for efficiency.
@@ -23,13 +23,15 @@ import java.util.List;
 public class HaTestDefDescription {
     
     HaTestDef testDef;
-    List<String> lessonNames;
+    List<LessonItem> lessonItems;
     
-    public HaTestDefDescription(HaTestDef def, List<String> lessonNames) throws Exception {
+    public HaTestDefDescription(HaTestDef def, List<LessonItem> lessonItems) throws Exception {
         this.testDef = def;
-        this.lessonNames = lessonNames;
+        this.lessonItems = lessonItems;
     }
     
+    public HaTestDefDescription() {
+    }
     
     public HaTestDef getTestDef() {
         return testDef;
@@ -41,13 +43,13 @@ public class HaTestDefDescription {
     }
 
 
-    public List<String> getLessonNames() {
-        return lessonNames;
+    public List<LessonItem> getLessonItems() {
+        return lessonItems;
     }
 
 
-    public void setLessonNames(List<String> lessonNames) {
-        this.lessonNames = lessonNames;
+    public void setLessonNames(List<LessonItem> lessonItems) {
+        this.lessonItems = lessonItems;
     }
 
 
@@ -75,12 +77,15 @@ public class HaTestDefDescription {
             InmhAssessment inmhAssessment = new InmhAssessment(pids.toArray( new String[pids.size()] ));
             List<InmhItemData> itemsData = inmhAssessment.getInmhItemUnion("review");
             
-            List<String> lessons = new ArrayList<String>();
+            desc = new HaTestDefDescription();
+            List<LessonItem> lessons = new ArrayList<LessonItem>();
             for(InmhItemData id: itemsData) {
-                lessons.add(id.getInmhItem().getTitle());
+                lessons.add(desc.new LessonItem(id.getInmhItem().getTitle(), id.getInmhItem().getFile()));
             }
             
-            desc = new HaTestDefDescription(def, lessons);
+            desc.setTestDef(def);
+            desc.setLessonNames(lessons);
+            
             CmCacheManager.getInstance().addToCache(CacheName.TEST_DEF_DESCRIPTION, testName,desc);
             
             return desc;
@@ -88,5 +93,31 @@ public class HaTestDefDescription {
         finally {
             SqlUtilities.releaseResources(null,null,conn);
         }
+    }
+    
+    public class LessonItem {
+    	private String name;
+		private String file;
+		
+		public LessonItem(String name, String file) {
+			this.name = name;
+			this.file = file;
+		}
+    	
+    	public String getName() {
+			return name;
+		}
+    	
+		public void setName(String name) {
+			this.name = name;
+		}
+		
+		public String getFile() {
+			return file;
+		}
+		
+		public void setFile(String file) {
+			this.file = file;
+		}
     }
 }
