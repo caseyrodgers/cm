@@ -20,7 +20,6 @@ import com.extjs.gxt.ui.client.Style.LayoutRegion;
 import com.extjs.gxt.ui.client.Style.SelectionMode;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.Events;
-import com.extjs.gxt.ui.client.event.IconButtonEvent;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.MenuEvent;
 import com.extjs.gxt.ui.client.event.MessageBoxEvent;
@@ -31,7 +30,6 @@ import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.button.Button;
-import com.extjs.gxt.ui.client.widget.button.IconButton;
 import com.extjs.gxt.ui.client.widget.form.FieldSet;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
@@ -80,14 +78,7 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
         _gridContainer.add(lc);
         add(_gridContainer);
         final Menu contextMenu = new Menu();
-        MenuItem loginAsUser = new MenuItem("Login as User");
-        loginAsUser.addSelectionListener(new SelectionListener<MenuEvent>() {
-            public void componentSelected(MenuEvent ce) {
-                loginAsSelectedUser();
-                contextMenu.hide();
-            }
-        });
-        contextMenu.add(loginAsUser);
+
         
         MenuItem showWork = new MenuItem("Show Work");
         showWork.addSelectionListener(new SelectionListener<MenuEvent>() {
@@ -99,6 +90,15 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
         contextMenu.add(showWork);
         
         if(CmShared.getQueryParameter("debug") != null) {
+            MenuItem loginAsUser = new MenuItem("Login as User");
+            loginAsUser.addSelectionListener(new SelectionListener<MenuEvent>() {
+                public void componentSelected(MenuEvent ce) {
+                    loginAsSelectedUser();
+                    contextMenu.hide();
+                }
+            });
+            contextMenu.add(loginAsUser);
+            
             MenuItem debugUser = new MenuItem("Debug Info");
             debugUser.addSelectionListener(new SelectionListener<MenuEvent>() {
                 public void componentSelected(MenuEvent ce) {
@@ -146,7 +146,12 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
         if (sm == null)
             return;
 
-        String url = "http://hotmath.kattare.com/cm_student/CatchupMath.html?debug=true&uid=" + sm.getUid();
+        String debugStr = "";
+        String server=CmShared.getQueryParameter("host");
+        if(server == null || server.length() == 0)
+            server = "hotmath.com";
+        
+        String url = "http://" + server +"/cm_student/CatchupMath.html?uid=" + sm.getUid() + debugStr;
         Window.open(url, "_blank", "location=1,menubar=1,resizable=1");
     }
 
