@@ -223,7 +223,7 @@ public class CmAdminDao {
     }
     
     private static final String GET_TEST_DEF_SQL =
-    	"select td.test_name from HA_TEST_DEF td, HA_TEST t, HA_TEST_RUN tr " +
+    	"select td.test_name, tr.run_session from HA_TEST_DEF td, HA_TEST t, HA_TEST_RUN tr " +
     	"where tr.run_id = ? and tr.test_id = t.test_id and t.test_def_id = td.test_def_id";
     
     public List <LessonItemModel> getLessonItemsForTestRun(Integer runId) throws Exception {
@@ -240,9 +240,7 @@ public class CmAdminDao {
     		rs = ps.executeQuery();
     		
     		if (rs.next()) {
-    			String testName = rs.getString(1);
-    			HaTestDefDescription tdDesc = HaTestDefDescription.getHaTestDefDescription(testName);
-    			l = loadLessonItems(tdDesc);
+    			l = loadLessonItems(rs);
     		}
     	}
     	catch (Exception e) {
@@ -1242,10 +1240,14 @@ public class CmAdminDao {
        
     }
     
-    private List<LessonItemModel> loadLessonItems(HaTestDefDescription tdDesc) {
+    private List<LessonItemModel> loadLessonItems(ResultSet rs) throws Exception {
     	List<LessonItemModel> l = new ArrayList<LessonItemModel>();
     	
-    	for (InmhItemData item : tdDesc.getLessonItems()) {
+		String testName = rs.getString(1);
+		HaTestDefDescription tdDesc = HaTestDefDescription.getHaTestDefDescription(testName);
+
+		int runSession = rs.getInt(2);		
+    	for (InmhItemData item : tdDesc.getLessonItems(runSession)) {
     		LessonItemModel mdl = new LessonItemModel();
     		mdl.setName(item.getInmhItem().getFile());
     		mdl.setFile(item.getInmhItem().getTitle());
