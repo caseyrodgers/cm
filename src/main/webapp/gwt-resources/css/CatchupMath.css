@@ -986,7 +986,7 @@ img.resource-item-complete {
 
 #testset_footer {
    background: transparent url(/gwt-resources/images/quiz_footer-500x24.png) no-repeat scroll 0 0;
-   background-color: transparent;
+   backgrou nd-color: transparent;
 }
 
 
@@ -1010,9 +1010,6 @@ img.resource-item-complete {
  
 
  .tutor_solution_wrapper {
-    position: absolute;
-    top: 0;
-    left: 0;
  }    
  
  
@@ -1084,4 +1081,9 @@ img.resource-item-complete {
 	margin: auto;
     margin-top: 20px;
     text-align: center;
+}
+
+
+.show-work-panel {
+   background: green;
 }

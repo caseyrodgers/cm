@@ -30,7 +30,9 @@ public class ShowWorkPanel extends Frame {
 	 */
 	public ShowWorkPanel() {
 		super("show_work_panel.html");
-	    setWidth("550px");
+	    setWidth("530px");
+	    setHeight("530px");
+	    
         setStyleName("show-work-panel");
 
 		DOM.setElementPropertyInt(this.getElement(), "frameBorder", 0); // disable border
@@ -76,7 +78,6 @@ public class ShowWorkPanel extends Frame {
 			public void onSuccess(Object result) {
 				ArrayList<RpcData> rdata = (ArrayList<RpcData>)result;
 				// CatchupMathTools.showAlert("Whiteboard read success: " + rdata.size());
-				setWhiteboardBackground(backgroundHtml);
 				for(int i=0;i<rdata.size();i++) {
 					// swfWidget.root().invokeMethod("updateWhiteboard",params.getParameter());
 					updateFlashWhiteboard(flashId, rdata.get(i).getDataAsString("command"),rdata.get(i).getDataAsString("command_data"));
@@ -93,8 +94,15 @@ public class ShowWorkPanel extends Frame {
 	 * @param pid
 	 */
 	public void setupForPid(String pid) {
+	    
+	       this.pid = pid;
+	    
+	    /** not needed for now .. the FLash component
+	     *  communicates with the GWT engine via
+	     *  ExternalInterface.
+	     * 
 		// call for the solution HTML
-		this.pid = pid;
+
 		PrescriptionServiceAsync s = (PrescriptionServiceAsync) Registry.get("prescriptionService");
 		s.getSolutionProblemStatementHtml(pid, new AsyncCallback() {
 			public void onFailure(Throwable caught) {
@@ -106,6 +114,7 @@ public class ShowWorkPanel extends Frame {
 				backgroundHtml = html;
 			}
 		});
+		*/
 	}
 	
 	

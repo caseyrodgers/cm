@@ -155,20 +155,20 @@ public class GetPrescriptionCommand implements ActionHandler<GetPrescriptionActi
             resultsResource.getItems().add(id);
             
             
-            PrescriptionSessionDataResource flashCardResource = new PrescriptionSessionDataResource();
-            flashCardResource.setType("flashcard");
-            resultsResource.setLabel("Flash Cards");
-            id = new InmhItemData();
-            id.setTitle("Flash Cards");
-            id.setFile("");
-            id.setType("flashcard");
-            flashCardResource.getItems().add(id);
+//            PrescriptionSessionDataResource flashCardResource = new PrescriptionSessionDataResource();
+//            flashCardResource.setType("flashcard");
+//            resultsResource.setLabel("Flash Cards");
+//            id = new InmhItemData();
+//            id.setTitle("Flash Cards");
+//            id.setFile("");
+//            id.setType("flashcard");
+//            flashCardResource.getItems().add(id);
             
 
             sessionData.getInmhResources().add(lessonResource);
             sessionData.getInmhResources().add(problemsResource);
             sessionData.getInmhResources().add(resultsResource);
-            sessionData.getInmhResources().add(flashCardResource);            
+//            sessionData.getInmhResources().add(flashCardResource);            
 
 
             /** Call action and request list of INMH items */
