@@ -4,6 +4,7 @@ import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.data.InmhItemData;
 import hotmath.gwt.cm_tools.client.service.PrescriptionServiceAsync;
 import hotmath.gwt.cm_tools.client.ui.CmMainPanel;
+import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
 import hotmath.gwt.shared.client.eventbus.CmEventListenerImplDefault;
 import hotmath.gwt.shared.client.eventbus.EventBus;
@@ -13,15 +14,15 @@ import hotmath.gwt.shared.client.util.UserInfo;
 import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.Registry;
 import com.extjs.gxt.ui.client.Style.Scroll;
+import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
+import com.extjs.gxt.ui.client.event.Events;
+import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.widget.Html;
-import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.Window;
 import com.extjs.gxt.ui.client.widget.button.Button;
-import com.extjs.gxt.ui.client.widget.layout.CardLayout;
-import com.extjs.gxt.ui.client.widget.layout.FitLayout;
-import com.extjs.gxt.ui.client.widget.layout.FlowLayout;
+import com.extjs.gxt.ui.client.widget.layout.FillLayout;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -39,35 +40,18 @@ public class ResourceViewerImplTutor extends ResourceViewerContainer implements 
         });
     }
     
-    CardLayout _cardLayout = new CardLayout(); 
     public ResourceViewerImplTutor() {
         _instance = this;
         addStyleName("resource-viewer-impl-tutor");
+        setScrollMode(Scroll.AUTOY);
         
         setNoHeaderOrFooter();
-        
-        _tabSolution = new LayoutContainer();
-        _tabSolution.setLayout(new FitLayout());
-        _tabSolution.setScrollMode(Scroll.AUTOY);
-        _tabShowWork = new LayoutContainer(new FitLayout());
-        _tabShowWork.setScrollMode(Scroll.AUTOY);
-
-        setLayout(_cardLayout);
-
-        add(_tabSolution);
-        add(_tabShowWork);
-        
-        setStyleAttribute("background", "transparent");
-        _tabShowWork.setStyleAttribute("background","yellow");
-        _cardLayout.setActiveItem(_tabSolution);
     }
 
     Button showWorkBtn, hideWorkBtn;
     String pid;
     boolean hasShowWork;
     InmhItemData resource;
-    LayoutContainer _tabSolution, _tabShowWork;
-    
     public Widget getResourcePanel(final InmhItemData resource) {
         this.pid = resource.getFile();
         this.resource = resource;
@@ -76,7 +60,7 @@ public class ResourceViewerImplTutor extends ResourceViewerContainer implements 
         return this;
     }
 
-    static Window showWorkWin;
+    static CmWindow showWorkWin;
     public void removeResourcePanel() {
         if (showWorkWin != null) {
             showWorkWin.hide();
@@ -116,28 +100,23 @@ public class ResourceViewerImplTutor extends ResourceViewerContainer implements 
                 Html htmlO = new Html(html);
                 htmlO.setStyleName("tutor_solution_wrapper");
 
-                //addResource(ResourceViewerImplTutor.this,resource.getTitle());
-
-                
-                 _tabSolution.add(htmlO);
-                //_tabSolution.add(new Label("TEST TEST"));
-                _cardLayout.setActiveItem(_tabSolution);
-                
-
+                addResource(htmlO,resource.getTitle());
                 setNoHeaderOrFooter();
               
                 //CmMainPanel.__lastInstance._mainContent.addControl(showWorkBtn);
                 if(CmMainPanel.__lastInstance != null)
                     CmMainPanel.__lastInstance._mainContent.layout();
                 
+
                 try {
-                    /** Show Work is not required, then do not show the ShowWorkRequired
+                    
+                    /** Show Work is not requird, then do not show the ShowWorkRequired
                      * 
                      */
                     if(!UserInfo.getInstance().isShowWorkRequired())
                         hasShowWork=true;
                     
-                   // layout();
+                   layout();
                    
                    boolean shouldExpandSolution=false;
                    if(UserInfo.getInstance().isAutoTestMode()) {
@@ -150,7 +129,7 @@ public class ResourceViewerImplTutor extends ResourceViewerContainer implements 
                     CatchupMathTools.showAlert(e.getMessage());
                 }
                 
-                // layout();
+                layout();
             }
         });
     }
@@ -188,24 +167,62 @@ public class ResourceViewerImplTutor extends ResourceViewerContainer implements 
        _instance.showWork(_instance.pid);
     }    
     
+    static ShowWorkPanel showWorkPanel;
     public void showWork(final String pid) {
-        
-        ShowWorkPanel showWorkPanel = new ShowWorkPanel();
-        showWorkPanel.setupForPid(pid);
-        
-        _tabShowWork.removeAll();
-        _tabShowWork.setLayout(new FlowLayout());
-        Button showSolution = new Button("Show Solution");
-        showSolution.setToolTip("View the solution");
-        showSolution.addSelectionListener(new SelectionListener<ButtonEvent>() {
-            public void componentSelected(ButtonEvent ce) {
-                _cardLayout.setActiveItem(_tabSolution);
-            }
-        });
-        _tabShowWork.add(showSolution);        
-        _tabShowWork.add(showWorkPanel);
+        if(showWorkWin == null) {
+            showWorkWin = new CmWindow();
+            showWorkWin.setClosable(false);
 
-        _cardLayout.setActiveItem(_tabShowWork);
+            Button hideBtn = new Button("Hide");
+            hideBtn.setToolTip("Hide whiteboard to view problem statement");
+            hideBtn.addSelectionListener(new SelectionListener<ButtonEvent>() {
+                public void componentSelected(ButtonEvent ce) {
+                    showWorkWin.hide();
+                }
+            });
+            showWorkWin.setHeading("Enter Your Answer (try it yourself before viewing the tutorial)");
+            showWorkWin.getHeader().addTool(hideBtn);
+            
+            Button checkBtn = new Button("Check");
+            checkBtn.setToolTip("View the tutorial to check your answer");
+            checkBtn.addSelectionListener(new SelectionListener<ButtonEvent>() {
+                public void componentSelected(ButtonEvent ce) {
+                    initializeTutor(pid,resource.getTitle(),hasShowWork,true);
+                    showWorkWin.hide();
+                }
+            });
+            showWorkWin.setHeading("Enter Your Answer (try it yourself before viewing the tutorial)");
+            showWorkWin.getHeader().addTool(checkBtn);
+            showWorkWin.getHeader().addTool(hideBtn);
+            
+            
+
+            
+            showWorkWin.setStyleName("show-work-window");
+            showWorkWin.setScrollMode(Scroll.NONE);
+            
+            showWorkWin.setHeight(540);
+            showWorkWin.setWidth(560);
+            showWorkWin.setModal(true);
+
+            int left = ResourceViewerImplTutor.this.el().getLeft(false);
+            int top = ResourceViewerImplTutor.this.el().getTop(false);
+
+            showWorkWin.setPosition(left,top);
+            
+            showWorkWin.setLayout(new FillLayout());
+        }
+        else {
+            showWorkWin.remove(showWorkPanel);
+        }
+        
+        showWorkPanel = new ShowWorkPanel();
+        showWorkPanel.setupForPid(pid);
+        showWorkWin.add(showWorkPanel);
+
+        showWorkWin.setVisible(true);
+        // get the position of the 'show work' button
+        // and move to it, then expand ...
     }
 
     

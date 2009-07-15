@@ -348,8 +348,9 @@ public class PrescriptionContext implements CmContext {
            "problems on your own first - that is how you really learn!" +
        "</li>" +
        "<li>" +
-           "<b>Show Work</b> The Show Work whiteboard saves your attempts at solving the practice problems so you can " +
-           "discuss later with your teacher or tutor.  You can type on the keyboard as well as draw with your mouse." +
+           "<b>Enter Your Answer</b> You can type on the keyboard as well as draw with your mouse. " +
+           " The whiteboard saves your attempts at solving the practice problems so you can discuss later " +
+           " with your teacher or tutor or review on your own.  Your teacher may prefer that you show your work in a notebook. " +
        "</li>" +
        "</ul>";
         
