@@ -223,7 +223,7 @@ public class CmAdminDao {
     }
     
     private static final String GET_TEST_DEF_SQL =
-    	"select td.test_name, tr.run_session from HA_TEST_DEF td, HA_TEST t, HA_TEST_RUN tr " +
+    	"select td.test_name, t.test_segment from HA_TEST_DEF td, HA_TEST t, HA_TEST_RUN tr " +
     	"where tr.run_id = ? and tr.test_id = t.test_id and t.test_def_id = td.test_def_id";
     
     public List <LessonItemModel> getLessonItemsForTestRun(Integer runId) throws Exception {
@@ -1246,8 +1246,8 @@ public class CmAdminDao {
 		String testName = rs.getString(1);
 		HaTestDefDescription tdDesc = HaTestDefDescription.getHaTestDefDescription(testName);
 
-		int runSession = rs.getInt(2);		
-    	for (InmhItemData item : tdDesc.getLessonItems(runSession)) {
+		int testSegment = rs.getInt(2);		
+    	for (InmhItemData item : tdDesc.getLessonItems(testSegment)) {
     		LessonItemModel mdl = new LessonItemModel();
     		mdl.setName(item.getInmhItem().getFile());
     		mdl.setFile(item.getInmhItem().getTitle());
