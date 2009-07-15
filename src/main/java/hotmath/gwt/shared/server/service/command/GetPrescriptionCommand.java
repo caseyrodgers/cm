@@ -153,10 +153,22 @@ public class GetPrescriptionCommand implements ActionHandler<GetPrescriptionActi
             id.setFile("");
             id.setType("results");
             resultsResource.getItems().add(id);
+            
+            
+            PrescriptionSessionDataResource flashCardResource = new PrescriptionSessionDataResource();
+            flashCardResource.setType("flashcard");
+            resultsResource.setLabel("Flash Cards");
+            id = new InmhItemData();
+            id.setTitle("Flash Cards");
+            id.setFile("");
+            id.setType("flashcard");
+            flashCardResource.getItems().add(id);
+            
 
             sessionData.getInmhResources().add(lessonResource);
             sessionData.getInmhResources().add(problemsResource);
             sessionData.getInmhResources().add(resultsResource);
+            sessionData.getInmhResources().add(flashCardResource);            
 
 
             /** Call action and request list of INMH items */
@@ -216,6 +228,7 @@ public class GetPrescriptionCommand implements ActionHandler<GetPrescriptionActi
                 { "Lesson", "review", "Review lesson on the current topic" },
                 { "Video", "video", "Math videos related to the current topic" },
                 { "Activities", "activity", "Math activities and games related to the current topic" },
+                { "Flash Cards", "flashcard", "Math flash cards related to the current topic" },
                 { "Required Practice Problems", "practice", "Practice problems you must complete before advancing" },
                 { "Extra Practice Problems", "cmextra", "Additional workbook problems" },
                 { "Quiz Results", "results", "The current quiz's results" } };

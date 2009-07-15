@@ -23,11 +23,6 @@ public class ResourceViewerFactory {
      */
 	static public  ResourceViewer create(String type) throws Exception {
 	    
-	    if(false) {
-	        return new ResourceViewerImplTest();
-	    }
-	    
-	    
 	    Log.debug("ResourceViewerFactory: creating new resource viewer: " + type);
 	    
 		if(type.equals("practice")) {
@@ -53,6 +48,9 @@ public class ResourceViewerFactory {
 		}
 		else if(type.equals("cmextra")) {
 		    return new ResourceViewerImplTutor();
+		}
+		else if(type.equals("flashcard")) {
+		    return new ResourceViewerImplFlashCard();
 		}
 		else
 			return new ResourceViewerImplDefault();

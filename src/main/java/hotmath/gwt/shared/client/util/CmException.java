@@ -11,6 +11,11 @@ public class CmException extends Exception {
         super(e);
     }
 
+    public CmException(String message, Exception e) {
+        super(message, e);
+    }
+    
+    
     public CmException(String message) {
         super(message);
     }

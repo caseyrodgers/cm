@@ -1,6 +1,7 @@
 package hotmath.assessment;
 
 import hotmath.concordance.ConcordanceEntry;
+import hotmath.gwt.shared.client.util.CmException;
 import hotmath.inmh.INeedMoreHelpItem;
 import hotmath.inmh.INeedMoreHelpManager;
 import hotmath.util.HMConnectionPool;
@@ -35,12 +36,15 @@ public class InmhAssessment {
 	String _pids[];
 	MyItemsMap inmhItemsMap = new MyItemsMap();
 	
-	/** Create list of help items based on comma
-	 *  separated list of pids (pid1,pid2,etc..)
-	 *  
+
+	/** Create InmhAssessment of array of pids
+	 * 
+	 * This will create a list of INeedMoreHelpItems
+	 * that are associated by list of pids.
+	 * 
 	 * @param pids
 	 */
-	public InmhAssessment(String pids[]) {
+	public InmhAssessment(String pids[]) throws CmException {
         logger.debug("InmhAssessment(): pids: " + pids);
         _pids = pids;
         for(String p : _pids) {
@@ -52,11 +56,17 @@ public class InmhAssessment {
                 inmhItemsMap.put(p, inmhItems);
             }
             catch(Exception e) {
-                logger.error("ERROR obtaining INMH for pids: " + pids, e);
+                throw new CmException("ERROR obtaining INMH for pids: " + pids, e);
             }
         }
 	}
-	public InmhAssessment(String pids) {
+	
+    /** Create list of help items based on comma
+     *  separated list of pids (pid1,pid2,etc..)
+     *  
+     * @param pids
+     */	
+	public InmhAssessment(String pids) throws CmException {
 		this(pids.split(","));
 	}
 	

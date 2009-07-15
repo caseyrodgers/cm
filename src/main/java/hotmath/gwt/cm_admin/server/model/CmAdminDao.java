@@ -1,5 +1,7 @@
 package hotmath.gwt.cm_admin.server.model;
 
+import static hotmath.cm.util.CmCacheManager.CacheName.PROG_DEF;
+import hotmath.assessment.InmhItemData;
 import hotmath.cm.util.CmCacheManager;
 import hotmath.gwt.cm_tools.client.model.AccountInfoModel;
 import hotmath.gwt.cm_tools.client.model.ChapterModel;
@@ -28,11 +30,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
-
 import org.json.JSONArray;
 import org.json.JSONObject;
-
-import static hotmath.cm.util.CmCacheManager.CacheName.PROG_DEF;
 
 public class CmAdminDao {
 	
@@ -1246,10 +1245,10 @@ public class CmAdminDao {
     private List<LessonItemModel> loadLessonItems(HaTestDefDescription tdDesc) {
     	List<LessonItemModel> l = new ArrayList<LessonItemModel>();
     	
-    	for (HaTestDefDescription.LessonItem item : tdDesc.getLessonItems()) {
+    	for (InmhItemData item : tdDesc.getLessonItems()) {
     		LessonItemModel mdl = new LessonItemModel();
-    		mdl.setName(item.getName());
-    		mdl.setFile(item.getFile());
+    		mdl.setName(item.getInmhItem().getFile());
+    		mdl.setFile(item.getInmhItem().getTitle());
     		l.add(mdl);
     	}
     	return l;
