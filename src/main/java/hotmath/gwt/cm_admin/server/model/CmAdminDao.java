@@ -26,8 +26,10 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.json.JSONArray;
@@ -222,9 +224,11 @@ public class CmAdminDao {
     	return l;
     }
     
-    private static final String GET_TEST_DEF_SQL =
-    	"select td.test_name, t.test_segment from HA_TEST_DEF td, HA_TEST t, HA_TEST_RUN tr " +
-    	"where tr.run_id = ? and tr.test_id = t.test_id and t.test_def_id = td.test_def_id";
+    private static final String GET_TEST_RESULTS_SQL =
+        "select td.test_name, t.test_segment, im.file, rr.pid, rr.answer_status " +
+        "from HA_TEST_DEF td, HA_TEST t, HA_TEST_RUN tr, HA_TEST_RUN_RESULTS rr, inmh_map im " +
+        "where tr.run_id = ? and rr.run_id = tr.run_id and tr.test_id = t.test_id " +
+        "  and t.test_def_id = td.test_def_id and im.guid = rr.pid";
     
     public List <LessonItemModel> getLessonItemsForTestRun(Integer runId) throws Exception {
    	    List <LessonItemModel> l = null;
@@ -235,7 +239,7 @@ public class CmAdminDao {
     	
     	try {
     		conn = HMConnectionPool.getConnection();
-    		ps = conn.prepareStatement(GET_TEST_DEF_SQL);
+    		ps = conn.prepareStatement(GET_TEST_RESULTS_SQL);
     		ps.setInt(1, runId);
     		rs = ps.executeQuery();
     		
@@ -1247,10 +1251,22 @@ public class CmAdminDao {
 		HaTestDefDescription tdDesc = HaTestDefDescription.getHaTestDefDescription(testName);
 
 		int testSegment = rs.getInt(2);		
+
+		// identify incomplete topics
+		Set <String> topicFileSet = new HashSet<String>();
+		do {
+			if (! "correct".equalsIgnoreCase(rs.getString("answer_status"))) {
+				topicFileSet.add(rs.getString("file"));
+			}
+			
+		} while(rs.next());
+		
     	for (InmhItemData item : tdDesc.getLessonItems(testSegment)) {
     		LessonItemModel mdl = new LessonItemModel();
-    		mdl.setName(item.getInmhItem().getFile());
-    		mdl.setFile(item.getInmhItem().getTitle());
+    		mdl.setName(item.getInmhItem().getTitle());
+    		String file = item.getInmhItem().getFile();
+    		mdl.setFile(file);
+    		mdl.setCompleted(! topicFileSet.contains(file));
     		l.add(mdl);
     	}
     	return l;
