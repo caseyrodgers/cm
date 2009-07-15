@@ -62,13 +62,17 @@ public class HaTestDefDescription {
      *  named quiz segment.  This will be a subset
      *  of the total lessons defined for this program.
      *  
-     *  quizSegment is one based. quizSegment of zero
-     *  will result in ArrayOutOfBoundsException.
+     *  quizSegment is one based. quizSegment < 1
+     *  will result in an IllegalArgumentException.
      *  
      *  
      * @return
      */
-    public List<InmhItemData> getLessonItems(Integer quizSegment) throws ArrayIndexOutOfBoundsException {
+    public List<InmhItemData> getLessonItems(Integer quizSegment) {
+    	
+    	if (quizSegment < 1) {
+    		throw new IllegalArgumentException(String.format("quizSegment: %d, must be greater than 0", quizSegment));
+    	}
         
         int pidsInASegment = pids.size() / testDef.getTotalSegmentCount();
         
