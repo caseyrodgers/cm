@@ -183,7 +183,7 @@ public class ResourceViewerImplTutor extends ResourceViewerContainer implements 
             showWorkWin.setHeading("Enter Your Answer (try it yourself before viewing the tutorial)");
             showWorkWin.getHeader().addTool(hideBtn);
             
-            Button checkBtn = new Button("Check");
+            Button checkBtn = new Button("View solution");
             checkBtn.setToolTip("View the tutorial to check your answer");
             checkBtn.addSelectionListener(new SelectionListener<ButtonEvent>() {
                 public void componentSelected(ButtonEvent ce) {
