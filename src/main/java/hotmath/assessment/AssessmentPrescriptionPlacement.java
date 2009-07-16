@@ -1,11 +1,15 @@
 package hotmath.assessment;
 
 import hotmath.gwt.cm_admin.server.model.CmStudentDao;
+import hotmath.gwt.cm_tools.client.model.StudentActiveInfo;
 import hotmath.gwt.cm_tools.client.model.StudentModel;
+import hotmath.gwt.cm_tools.client.model.StudentUserProgramModel;
 import hotmath.gwt.cm_tools.client.ui.NextAction;
 import hotmath.gwt.cm_tools.client.ui.NextAction.NextActionName;
 import hotmath.testset.ha.HaTestRun;
 import hotmath.testset.ha.HaUser;
+import hotmath.util.HMConnectionPool;
+import hotmath.util.sql.SqlUtilities;
 
 import java.sql.Connection;
 
@@ -74,7 +78,6 @@ public class AssessmentPrescriptionPlacement extends AssessmentPrescription {
              * 
              */
             nextAction.setNextAction(NextActionName.AUTO_ASSSIGNED);
-            
             try {
                 CmStudentDao dao = new CmStudentDao();
                 StudentModel sm = dao.getStudentModel(user.getUid());
@@ -83,7 +86,21 @@ public class AssessmentPrescriptionPlacement extends AssessmentPrescription {
                 sm.setSubjId(newSubjId);
                 sm.setProgramChanged(true);
                 
-                dao.updateStudent(sm,false,true, false, true);
+                dao.updateStudent(sm,true,false, true, false);
+                
+                // now update the ActiveInfo to empty
+                StudentActiveInfo active = new StudentActiveInfo();
+                
+                Connection conn=null;
+                try {
+                    conn = HMConnectionPool.getConnection();
+                    dao.setActiveInfo(conn, user.getUid(), active);
+                }
+                finally {
+                    SqlUtilities.releaseResources(null,null,conn);
+                }
+                
+                nextAction.setAssignedTest(newTestName);
             }
             catch(Exception e) {
                 logger.info("Error updating placement program", e);

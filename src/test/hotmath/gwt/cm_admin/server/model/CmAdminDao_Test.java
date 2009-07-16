@@ -52,6 +52,19 @@ public class CmAdminDao_Test extends DbTestCase {
 
         progInfo = _dao.loadProgramInfo(conn, TEST_ID);
         assertTrue(progInfo.getTestName().equals("Algebra 1 Proficiency"));
+        
+        
+        /** Change it again to Pre-Alg
+         * 
+         */
+        sm = _dao.getStudentModel(TEST_ID);
+        sm.setProgId("Prof");
+        sm.setSubjId("Pre-Alg");
+        sm.setProgramChanged(true);
+        _dao.updateStudent(sm, true, false, true, false);
+
+        progInfo = _dao.loadProgramInfo(conn, TEST_ID);
+        assertTrue(progInfo.getTestName().equals("Pre-Algebra Proficiency"));
     }
 
     public void testLoadStudentUserProgramModel() throws Exception {
