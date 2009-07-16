@@ -1,19 +1,14 @@
 package hotmath.gwt.shared.server.service.command;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.sql.Connection;
-import java.util.HashMap;
-import java.util.Map;
-
 import hotmath.cm.util.CmCacheManager;
 import hotmath.cm.util.CmCacheManager.CacheName;
+import hotmath.gwt.cm_admin.server.model.CmAdminDao;
+import hotmath.gwt.cm_tools.client.model.StudentActiveInfo;
+import hotmath.gwt.cm_tools.client.model.StudentModel;
+import hotmath.gwt.cm_tools.client.model.StudentUserProgramModel;
 import hotmath.gwt.shared.client.rpc.Action;
 import hotmath.gwt.shared.client.rpc.Response;
 import hotmath.gwt.shared.client.rpc.action.GetQuizHtmlAction;
-import hotmath.gwt.shared.client.util.CmRpcException;
 import hotmath.gwt.shared.client.util.RpcData;
 import hotmath.gwt.shared.server.service.ActionHandler;
 import hotmath.testset.TestSet;
@@ -24,6 +19,14 @@ import hotmath.testset.ha.HaUser;
 import hotmath.util.HMConnectionPool;
 import hotmath.util.VelocityTemplateFromStringManager;
 import hotmath.util.sql.SqlUtilities;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.sql.Connection;
+import java.util.HashMap;
+import java.util.Map;
 
 public class GetQuizHtmlCommand implements ActionHandler<GetQuizHtmlAction, RpcData> {
 
@@ -47,17 +50,28 @@ public class GetQuizHtmlCommand implements ActionHandler<GetQuizHtmlAction, RpcD
             String quizHtmlTemplate = readQuizHtmlTemplate();
             Map<String, Object> map = new HashMap<String, Object>();
 
-            HaUser user = HaUser.lookUser(conn, uid,null);
-            String testName = user.getAssignedTestName();
+            
+            CmAdminDao dao = new CmAdminDao();
+            
+            // StudentModel sm = dao.getStudentModel(uid);
+            //HaUser user = HaUser.lookUser(conn, uid,null);
+            
+            StudentUserProgramModel programInfo = dao.loadProgramInfo(conn, uid);
+            
+            
+            String testName = programInfo.getTestName();
 
             if (testSegment == 0)
                 testSegment = 1;
 
-            boolean isActiveTest = user.getActiveTest() > 0;
+            StudentActiveInfo activeInfo = dao.loadActiveInfo(conn, uid);
+            
+            boolean isActiveTest = activeInfo.getActiveTestId() > 0;
+            
             HaTest haTest = null;
-            if (isActiveTest && testSegment == user.getActiveTestSegment()) {
+            if (isActiveTest && testSegment == activeInfo.getActiveSegment()) {
                 // reuse the existing test
-                haTest = HaTest.loadTest(conn,user.getActiveTest());
+                haTest = HaTest.loadTest(conn,activeInfo.getActiveTestId());
             } else {
                 // register a new test
                 HaTestDef testDef = HaTestDefFactory.createTestDef(conn,testName);

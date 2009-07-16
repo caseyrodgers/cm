@@ -1,5 +1,7 @@
 package hotmath.assessment;
 
+import hotmath.gwt.cm_admin.server.model.CmStudentDao;
+import hotmath.gwt.cm_tools.client.model.StudentModel;
 import hotmath.gwt.cm_tools.client.ui.NextAction;
 import hotmath.gwt.cm_tools.client.ui.NextAction.NextActionName;
 import hotmath.testset.ha.HaTestRun;
@@ -25,7 +27,7 @@ public class AssessmentPrescriptionPlacement extends AssessmentPrescription {
     }
 
     @Override
-    public NextAction getNextAction() {
+    public NextAction getNextAction()  {
         int correct = getTestRun().getAnsweredCorrect();
         int total = getTest().getNumTestQuestions();
 
@@ -62,12 +64,17 @@ public class AssessmentPrescriptionPlacement extends AssessmentPrescription {
              * 
              */
             nextAction.setNextAction(NextActionName.AUTO_ASSSIGNED);
-            user.setAssignedTestName(newTestName);
-            user.setActiveTestSegment(0);
-            user.setActiveTestRunId(0);
-            user.setActiveTest(0);
             
-            nextAction.setAssignedTest(newTestName);
+            try {
+                CmStudentDao dao = new CmStudentDao();
+                StudentModel sm = dao.getStudentModel(user.getUid());
+                
+//                sm.set
+//                dao.updateStudentProgram(sm);
+            }
+            catch(Exception e) {
+                e.printStackTrace();
+            }
         }
         else {
             nextAction.setNextAction(NextActionName.QUIZ);

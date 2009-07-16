@@ -2,9 +2,11 @@ package hotmath.gwt.cm_admin.server.model;
 
 import hotmath.assessment.InmhItemData;
 import hotmath.gwt.cm_tools.client.model.LessonItemModel;
+import hotmath.gwt.cm_tools.client.model.StudentActiveInfo;
 import hotmath.gwt.cm_tools.client.model.StudentActivityModel;
 import hotmath.gwt.cm_tools.client.model.StudentModel;
 import hotmath.gwt.cm_tools.client.model.StudentShowWorkModel;
+import hotmath.gwt.cm_tools.client.model.StudentUserProgramModel;
 import hotmath.testset.ha.HaTestDefDescription;
 import hotmath.util.HMConnectionPool;
 import hotmath.util.sql.SqlUtilities;
@@ -881,5 +883,107 @@ public class CmStudentDao {
 	
     	return chap;
     }
+    
+
+    
+    /** Return the currently configured user program for this user
+     * 
+     *  Return null if no program has been defined or an defined 
+     *  program does not exist.
+     *  
+     * @param userId
+     * @return
+     * @throws Exception
+     */
+     public StudentUserProgramModel loadProgramInfo(final Connection conn, Integer userId) throws Exception {
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+
+        String sql = "select * from CM_USER_PROGRAM c JOIN HA_USER u on c.id = u.user_prog_id " +
+                      "    JOIN HA_TEST_DEF t on c.test_def_id = t.test_def_id " +
+                     " and u.uid = ?";
+        try {
+            StudentUserProgramModel supm = new StudentUserProgramModel();
+            
+            ps = conn.prepareStatement(sql);
+            
+            ps.setInt(1,userId);
+            rs = ps.executeQuery();
+            if(rs.first()) {
+                supm.setId(rs.getInt("id"));
+                supm.setUserId(rs.getInt("user_id"));
+                supm.setAdminId(rs.getInt("admin_id"));
+                supm.setPassPercent(rs.getInt("pass_percent"));
+                supm.setTestDefId(rs.getInt("test_def_id"));
+                supm.setTestName(rs.getString("test_name"));
+            }
+            return supm;
+        }
+        finally {
+            SqlUtilities.releaseResources(rs, ps, null);
+        }
+    }
+    
+     
+     /** Load this user's curently active state information.  This shows
+      * the current test/run and session the user is currently viewing.
+      * 
+      * @param userId
+      * @return
+      * @throws Exception
+      */
+     public StudentActiveInfo loadActiveInfo(final Connection conn, Integer userId) throws Exception {
+         PreparedStatement ps = null;
+         ResultSet rs = null;
+
+         String sql = "select active_run_id, active_test_id, active_segment, active_run_session from HA_USER where uid = ? ";
+         try {
+             StudentActiveInfo activeInfo = new StudentActiveInfo();
+             
+             ps = conn.prepareStatement(sql);
+             
+             ps.setInt(1,userId);
+             rs = ps.executeQuery();
+             if(rs.first()) {
+                 activeInfo.setActiveRunId(rs.getInt("active_run_id"));
+                 activeInfo.setActiveRunSession(rs.getInt("active_run_session"));
+                 activeInfo.setActiveSegment(rs.getInt("active_segment"));
+                 activeInfo.setActiveTestId(rs.getInt("active_test_id"));
+             }
+             return activeInfo;
+         }
+         finally {
+             SqlUtilities.releaseResources(rs, ps, null);
+         }
+     }
+     
+     
+     /** Set the active information for the named user
+      * 
+      * @param conn
+      * @param userId
+      * @param activeInfo
+      * @throws Exception  If record cannot be updated
+      * 
+      */
+     public void setActiveInfo(final Connection conn, Integer userId, StudentActiveInfo activeInfo) throws Exception {
+         PreparedStatement ps = null;
+
+         String sql = "update HA_USER set active_run_id = ?, active_test_id = ?, active_segment = ?, active_run_session = ? where uid = ? ";
+         try {
+             ps = conn.prepareStatement(sql);
+             
+             ps.setInt(1,activeInfo.getActiveRunId());
+             ps.setInt(2, activeInfo.getActiveTestId());
+             ps.setInt(3,activeInfo.getActiveSegment());
+             ps.setInt(4, activeInfo.getActiveRunSession());
+             ps.setInt(5, userId);
+             if(ps.executeUpdate() != 1)
+                 throw new Exception("Could not update active information for id: " + userId);
+         }
+         finally {
+             SqlUtilities.releaseResources(null, ps, null);
+         }
+     }
     
 }
