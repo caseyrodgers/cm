@@ -29,7 +29,7 @@ public class StudentModel extends BaseModelData implements IsSerializable {
 	public static final String NAME_KEY = "name";
 	public static final String PASSCODE_KEY = "passcode";
 	
-
+	
 	public String getName() {
 		return get(NAME_KEY);
 	}

@@ -13,13 +13,13 @@ public class HaTestDefDescription_Test extends TestCase {
     
     public void testGetLessonNames() throws Exception {
         HaTestDefDescription desc = HaTestDefDescription.getHaTestDefDescription(TEST_NAME);
-        assertTrue(desc.getLessonNames().size() > 0);
+        assertTrue(desc.getLessonItems().size() > 0);
     }
     
     public void testGetLessonNames2() throws Exception {
         
         // should get it from cache
         HaTestDefDescription desc = HaTestDefDescription.getHaTestDefDescription(TEST_NAME);
-        assertTrue(desc.getLessonNames().size() > 0);
+        assertTrue(desc.getLessonItems().size() > 0);
     }
 }

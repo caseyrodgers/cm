@@ -1,7 +1,7 @@
 package hotmath.testset.ha;
 
 import hotmath.HotMathException;
-import hotmath.gwt.cm_admin.server.model.CmAdminDao;
+import hotmath.gwt.cm_admin.server.model.CmStudentDao;
 import hotmath.gwt.cm_tools.client.data.HaBasicUser;
 import hotmath.gwt.cm_tools.client.model.StudentModel;
 import hotmath.util.HMConnectionPool;
@@ -175,7 +175,7 @@ public class HaUserFactory {
             String demoUser = "catchup_demo";
             String demoPwd = "demo_" + System.currentTimeMillis();
 
-            CmAdminDao cmDao = new CmAdminDao();
+            CmStudentDao cmDao = new CmStudentDao();
 
             StudentModel student = new StudentModel();
             student.setName("Student");

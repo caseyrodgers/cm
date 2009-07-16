@@ -2,9 +2,8 @@ package hotmath.gwt.shared.server.service.command;
 
 import hotmath.cm.util.CmCacheManager;
 import hotmath.cm.util.CmCacheManager.CacheName;
-import hotmath.gwt.cm_admin.server.model.CmAdminDao;
+import hotmath.gwt.cm_admin.server.model.CmStudentDao;
 import hotmath.gwt.cm_tools.client.model.StudentActiveInfo;
-import hotmath.gwt.cm_tools.client.model.StudentModel;
 import hotmath.gwt.cm_tools.client.model.StudentUserProgramModel;
 import hotmath.gwt.shared.client.rpc.Action;
 import hotmath.gwt.shared.client.rpc.Response;
@@ -15,7 +14,6 @@ import hotmath.testset.TestSet;
 import hotmath.testset.ha.HaTest;
 import hotmath.testset.ha.HaTestDef;
 import hotmath.testset.ha.HaTestDefFactory;
-import hotmath.testset.ha.HaUser;
 import hotmath.util.HMConnectionPool;
 import hotmath.util.VelocityTemplateFromStringManager;
 import hotmath.util.sql.SqlUtilities;
@@ -51,7 +49,7 @@ public class GetQuizHtmlCommand implements ActionHandler<GetQuizHtmlAction, RpcD
             Map<String, Object> map = new HashMap<String, Object>();
 
             
-            CmAdminDao dao = new CmAdminDao();
+            CmStudentDao dao = new CmStudentDao();
             
             // StudentModel sm = dao.getStudentModel(uid);
             //HaUser user = HaUser.lookUser(conn, uid,null);

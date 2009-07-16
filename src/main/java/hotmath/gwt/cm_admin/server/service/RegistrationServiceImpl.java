@@ -1,7 +1,9 @@
 package hotmath.gwt.cm_admin.server.service;
 
+
 import hotmath.gwt.cm_admin.client.service.RegistrationService;
 import hotmath.gwt.cm_admin.server.model.CmAdminDao;
+import hotmath.gwt.cm_admin.server.model.CmStudentDao;
 import hotmath.gwt.cm_tools.client.model.AccountInfoModel;
 import hotmath.gwt.cm_tools.client.model.StudentModel;
 
@@ -18,23 +20,23 @@ public class RegistrationServiceImpl extends RemoteServiceServlet implements Reg
 	}
 
 	public List<StudentModel> getSummariesForActiveStudents(Integer adminUid) throws Exception {
-		CmAdminDao cma = new CmAdminDao();
+		CmStudentDao cma = new CmStudentDao();
 		return cma.getSummariesForActiveStudents(adminUid);
 	}
 	
 	public List<StudentModel> getSummariesForInactiveStudents(Integer adminUid) throws Exception {
-		CmAdminDao cma = new CmAdminDao();
+        CmStudentDao cma = new CmStudentDao();
 		return cma.getSummariesForInactiveStudents(adminUid);
 	}
 
 	public StudentModel deactivateUser(StudentModel sm) throws Exception {
-		CmAdminDao cma = new CmAdminDao();
+        CmStudentDao cma = new CmStudentDao();
 		return cma.deactivateUser(sm);
 	}
 
 	@Deprecated
     public void removeUser(StudentModel sm) {
-        CmAdminDao cma = new CmAdminDao();
+        CmStudentDao cma = new CmStudentDao();
         cma.removeUser(sm);
     }
 
