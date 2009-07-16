@@ -6,8 +6,6 @@ import hotmath.gwt.cm_tools.client.ui.NextAction;
 import hotmath.gwt.cm_tools.client.ui.NextAction.NextActionName;
 import hotmath.testset.ha.HaTestRun;
 import hotmath.testset.ha.HaUser;
-import hotmath.util.HMConnectionPool;
-import hotmath.util.sql.SqlUtilities;
 
 import java.sql.Connection;
 
@@ -33,6 +31,8 @@ public class AssessmentPrescriptionPlacement extends AssessmentPrescription {
 
         String thisTest = getTestRun().getHaTest().getSubTitle(getTest().getSegment()).toLowerCase();
         String newTestName = null;
+        String newProgId=null;
+        String newSubjId=null;
 
         NextAction nextAction = new NextAction();
         // some trigger, in this case > 1 wrong answers.
@@ -44,17 +44,27 @@ public class AssessmentPrescriptionPlacement extends AssessmentPrescription {
             // @TODO: we need single mapping api for test names.
             if (thisTest.indexOf("pre-algebra") > -1) {
                 newTestName = "Pre-algebra Proficiency";
+                newProgId="Prof";
+                newSubjId="Pre-Alg";
             } else if (thisTest.indexOf("algebra 1") > -1) {
                 newTestName = "Beginning Algebra Proficiency";
+                newProgId="Prof";
+                newSubjId="Beg Alg";
             } else if (thisTest.indexOf("geometry") > -1) {
                 newTestName = "Geometry Proficiency";
+                newProgId="Prof";
+                newSubjId="Geom";
             } else if (thisTest.indexOf("algebra 2") > -1) {
                 newTestName = "Intermediate Algebra Proficiency";
+                newProgId="Prof";
+                newSubjId="Alg 2";
             }
         } else if (thisTest.indexOf("algebra 2") > -1) {
             // this means user passed the last test
             // assign to casshe
             newTestName = "California State Exit Exam";
+            newProgId="Grad Prep";
+            newSubjId="";
         }
 
         HaUser user = getTestRun().getHaTest().getUser();        
@@ -69,30 +79,19 @@ public class AssessmentPrescriptionPlacement extends AssessmentPrescription {
                 CmStudentDao dao = new CmStudentDao();
                 StudentModel sm = dao.getStudentModel(user.getUid());
                 
-//                sm.set
-//                dao.updateStudentProgram(sm);
+                sm.setProgId(newProgId);
+                sm.setSubjId(newSubjId);
+                sm.setProgramChanged(true);
+                
+                dao.updateStudent(sm,false,true, false, true);
             }
             catch(Exception e) {
-                e.printStackTrace();
+                logger.info("Error updating placement program", e);
             }
         }
         else {
             nextAction.setNextAction(NextActionName.QUIZ);
         }
-        
-        Connection conn=null;
-        try {
-            conn = HMConnectionPool.getConnection();
-            // update the state of this user
-            user.update(conn);
-        }
-        catch(Exception e) {
-            e.printStackTrace();
-        }
-        finally {
-            SqlUtilities.releaseResources(null,null,conn);
-        }
-        
         return nextAction;
     }
 }

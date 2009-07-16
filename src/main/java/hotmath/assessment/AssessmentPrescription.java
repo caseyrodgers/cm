@@ -18,6 +18,8 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.log4j.Logger;
+
 import sb.logger.SbLogger;
 
 /**
@@ -29,6 +31,9 @@ import sb.logger.SbLogger;
  * 
  */
 public class AssessmentPrescription {
+    
+    
+    static final Logger logger = Logger.getLogger(AssessmentPrescription.class);
 
     final static public int TOTAL_SESSION_SOLUTIONS = 3;
     final static public int MAX_SESSIONS = 100;
