@@ -5,6 +5,7 @@ import hotmath.HotMathUtilities;
 import hotmath.ProblemID;
 import hotmath.SolutionManager;
 import hotmath.gwt.cm_admin.server.model.CmAdminDao;
+import hotmath.gwt.cm_admin.server.model.CmStudentDao;
 import hotmath.gwt.cm_tools.client.model.ChapterModel;
 import hotmath.gwt.cm_tools.client.model.GroupModel;
 import hotmath.gwt.cm_tools.client.model.LessonItemModel;
@@ -294,8 +295,8 @@ public class PrescriptionServiceImpl extends RemoteServiceServlet implements Pre
 
     public List<StudentShowWorkModel> getStudentShowWork(Integer uid, Integer runId) throws CmRpcException {
         try {
-            CmAdminDao cma = new CmAdminDao();
-            return cma.getStudentShowWork(uid, runId);
+            CmStudentDao dao = new CmStudentDao();
+            return dao.getStudentShowWork(uid, runId);
         } catch (Exception e) {
             throw new CmRpcException(e);
         }
@@ -303,8 +304,8 @@ public class PrescriptionServiceImpl extends RemoteServiceServlet implements Pre
 
     public List<StudentActivityModel> getStudentActivity(StudentModel sm) throws CmRpcException {
         try {
-            CmAdminDao cma = new CmAdminDao();
-            return cma.getStudentActivity(sm.getUid());
+            CmStudentDao dao = new CmStudentDao();
+            return dao.getStudentActivity(sm.getUid());
         } catch (Exception e) {
             throw new CmRpcException(e);
         }
@@ -312,8 +313,8 @@ public class PrescriptionServiceImpl extends RemoteServiceServlet implements Pre
 
     public List<LessonItemModel> getLessonItemsForTestRun(Integer runId) throws CmRpcException {
     	try {
-            CmAdminDao cma = new CmAdminDao();
-            return cma.getLessonItemsForTestRun(runId);    		
+            CmStudentDao dao = new CmStudentDao();
+            return dao.getLessonItemsForTestRun(runId);    		
     	}
     	catch (Exception e) {
     		throw new CmRpcException(e);
@@ -322,8 +323,8 @@ public class PrescriptionServiceImpl extends RemoteServiceServlet implements Pre
 
     public StudentModel getStudentModel(Integer uid) throws CmRpcException {
         try {
-            CmAdminDao cma = new CmAdminDao();
-            return cma.getStudentModel(uid);
+            CmStudentDao dao = new CmStudentDao();
+            return dao.getStudentModel(uid);
         } catch (Exception e) {
             throw new CmRpcException(e);
         }
@@ -358,8 +359,8 @@ public class PrescriptionServiceImpl extends RemoteServiceServlet implements Pre
 
     public StudentModel addUser(StudentModel sm) throws CmRpcException {
         try {
-            CmAdminDao cma = new CmAdminDao();
-            return cma.addStudent(sm);
+            CmStudentDao dao = new CmStudentDao();
+            return dao.addStudent(sm);
         } catch (Exception e) {
             throw new CmRpcException(e);
         }
@@ -368,8 +369,8 @@ public class PrescriptionServiceImpl extends RemoteServiceServlet implements Pre
     public StudentModel updateUser(StudentModel sm, Boolean stuChanged, Boolean progChanged, Boolean progIsNew,
             Boolean passcodeChanged) throws CmRpcException {
         try {
-            CmAdminDao cma = new CmAdminDao();
-            return cma.updateStudent(sm, stuChanged, progChanged, progIsNew, passcodeChanged);
+            CmStudentDao dao = new CmStudentDao();
+            return dao.updateStudent(sm, stuChanged, progChanged, progIsNew, passcodeChanged);
         } catch (Exception e) {
             throw new CmRpcException(e);
         }

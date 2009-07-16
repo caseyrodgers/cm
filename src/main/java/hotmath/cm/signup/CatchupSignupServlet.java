@@ -4,6 +4,7 @@ import hotmath.HotMathProperties;
 import hotmath.cm.dao.CmUserDao;
 import hotmath.dwr.SubscriberDelegate;
 import hotmath.gwt.cm_admin.server.model.CmAdminDao;
+import hotmath.gwt.cm_admin.server.model.CmStudentDao;
 import hotmath.gwt.cm_tools.client.model.StudentModel;
 import hotmath.servlet.Registration;
 import hotmath.subscriber.HotMathExceptionPurcaseException;
@@ -93,12 +94,10 @@ public class CatchupSignupServlet extends HttpServlet {
                     sifo.getBillingZip(), sifo.getBillingState(), sifo.getBillingAddress(), "", sifo.getBillingCity(),
                     sifo.getFirstName(), sifo.getLastName());
 
-
-            CmAdminDao cad = new CmAdminDao();
-            
             /** create or re-create the HA_ADMIN user 
              *  associated with this SUBSCRIBER record
              */
+            CmAdminDao cad = new CmAdminDao();
             HaAdmin haAdmin = cad.getAdmin(sub.getId());
             String uniquePassword = sub.getPassword();
             if(haAdmin == null) {
@@ -131,8 +130,8 @@ public class CatchupSignupServlet extends HttpServlet {
                  student.setTutoringAvail(false);
                  student.setShowWorkRequired(false);
                  
-                 student = cad.addStudent(student);
-                 
+                 CmStudentDao csd = new CmStudentDao();
+                 student = csd.addStudent(student);
                  
                  user = new HaUser();
                  user.setUid(student.getUid());

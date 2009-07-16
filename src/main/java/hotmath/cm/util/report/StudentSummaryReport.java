@@ -1,11 +1,13 @@
 package hotmath.cm.util.report;
 
 import hotmath.gwt.cm_admin.server.model.CmAdminDao;
+import hotmath.gwt.cm_admin.server.model.CmStudentDao;
 import hotmath.gwt.cm_tools.client.model.AccountInfoModel;
 import hotmath.gwt.cm_tools.client.model.StudentModel;
 
 import java.awt.Color;
 import java.io.ByteArrayOutputStream;
+import java.net.URL;
 import java.util.List;
 
 import com.lowagie.text.Cell;
@@ -14,6 +16,7 @@ import com.lowagie.text.Document;
 import com.lowagie.text.Font;
 import com.lowagie.text.FontFactory;
 import com.lowagie.text.HeaderFooter;
+import com.lowagie.text.Jpeg;
 import com.lowagie.text.Phrase;
 import com.lowagie.text.Table;
 import com.lowagie.text.pdf.PdfWriter;
@@ -24,12 +27,13 @@ public class StudentSummaryReport {
 		ByteArrayOutputStream baos = null;
 
 		try {
-			CmAdminDao dao = new CmAdminDao();
+			CmAdminDao adminDao = new CmAdminDao();
 
-			AccountInfoModel info = dao.getAccountInfo(adminId);
+			AccountInfoModel info = adminDao.getAccountInfo(adminId);
 			if (info == null) return null;
 
-			List <StudentModel> list = dao.getSummariesForActiveStudents(adminId);
+			CmStudentDao studentDao = new CmStudentDao();
+			List <StudentModel> list = studentDao.getSummariesForActiveStudents(adminId);
 			
 			Document document = new Document();
 			baos = new ByteArrayOutputStream();
@@ -42,6 +46,8 @@ public class StudentSummaryReport {
 			Phrase stuCount = buildLabelContent("Student Count: ", String.valueOf(list.size()));
 
 			heading.add(school);
+			//Chunk c = new Chunk(new Jpeg(new URL("http://localhost:8081/gwt-resources/images/logo_1.jpg")), 3.5f, 1.0f);
+			//heading.add(c);
 			heading.add(Chunk.NEWLINE);
 			heading.add(admin);
 			heading.add(Chunk.NEWLINE);
