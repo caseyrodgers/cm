@@ -9,7 +9,7 @@
 	<name>gwt-maven-archetype-project</name>
 
 	<properties>
-		<gwtVersion>1.7</gwtVersion>
+		<gwtVersion>1.6.4</gwtVersion>
 	</properties>
 	<pluginRepositories>
 		<pluginRepository>
