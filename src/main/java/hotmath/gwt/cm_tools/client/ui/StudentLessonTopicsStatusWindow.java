@@ -108,8 +108,6 @@ public class StudentLessonTopicsStatusWindow extends CmWindow {
 
         html.setHeight(String.valueOf(height)+"px");
         html.setHTML(sb.toString());
-        
-        System.out.println("+++ height: " + height);
     }
     
     protected void getStudentLessonTopicsRPC(final ListStore <LessonItemModel> store) {
@@ -117,7 +115,6 @@ public class StudentLessonTopicsStatusWindow extends CmWindow {
         s.getLessonItemsForTestRun(runId, new AsyncCallback <List<LessonItemModel>>() {
 
         public void onSuccess(List<LessonItemModel> list) {
-        	System.out.println("+++ list size: " + list.size());
             store.add(list);
             formatLessonTopics(list);
             setVisible(true);
