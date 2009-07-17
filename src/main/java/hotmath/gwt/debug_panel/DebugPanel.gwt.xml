@@ -1,0 +1,19 @@
+<module rename-to='debug_panel'>
+
+      <!-- Inherit the core Web Toolkit stuff.                        -->
+      <inherits name='com.google.gwt.user.User'/>
+      <inherits name="com.google.gwt.debugpanel.DebugPanel" />
+
+
+      <!-- Specify the app entry point class.                         -->
+      <entry-point class='hotmath.gwt.debug_panel.client.DebugPanel'/>
+
+      <stylesheet src="/gwt-resources/css/DebugPanel.css"/>
+
+      <!-- Provide our own custom implementation of the Utilities class -->
+<!--
+      <replace-with class="com.example.panel.client.MyUtil">
+          <when-type-assignable class="com.google.gwt.debugpanel.common.Utils.Util"/>
+      </replace-with>
+-->
+</module>

@@ -155,12 +155,11 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
         if (sm == null)
             return;
 
-        String debugStr = "";
         String server=CmShared.getQueryParameter("host");
         if(server == null || server.length() == 0)
             server = "hotmath.com";
         
-        String url = "http://" + server +"/cm_student/CatchupMath.html?uid=" + sm.getUid() + debugStr;
+        String url = "http://" + server +"/cm_student/CatchupMath.html?uid=" + sm.getUid() + "&debug=true";
         Window.open(url, "_blank", "location=1,menubar=1,resizable=1");
     }
 
