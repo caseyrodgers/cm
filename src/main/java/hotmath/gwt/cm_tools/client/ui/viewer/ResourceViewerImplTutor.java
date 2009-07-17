@@ -187,7 +187,7 @@ public class ResourceViewerImplTutor extends ResourceViewerContainer implements 
             checkBtn.setToolTip("View the tutorial to check your answer");
             checkBtn.addSelectionListener(new SelectionListener<ButtonEvent>() {
                 public void componentSelected(ButtonEvent ce) {
-                    initializeTutor(pid,resource.getTitle(),hasShowWork,true);
+                    // initializeTutor(pid,resource.getTitle(),hasShowWork,true);
                     showWorkWin.hide();
                 }
             });
