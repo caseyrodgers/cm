@@ -8,6 +8,7 @@ import hotmath.gwt.shared.client.eventbus.CmEvent;
 import hotmath.gwt.shared.client.eventbus.EventBus;
 import hotmath.gwt.shared.client.model.UserInfoBase;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.Registry;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.rpc.IsSerializable;
@@ -70,6 +71,8 @@ public class UserInfo implements IsSerializable {
                 user.setUserAccountType(ui.getDataAsString("user_account_type"));
                 user.setPassPercentRequired(ui.getDataAsInt("pass_percent_required"));
                 __instance = user;
+                
+                Log.info("UserInfo object set to: " + user);
                 
                 CatchupMathTools.setBusy(false);     
                 callback.requestComplete(null);

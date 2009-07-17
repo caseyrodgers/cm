@@ -89,6 +89,15 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
         });
         contextMenu.add(showWork);
         
+        MenuItem editUser = new MenuItem("Edit Student");
+        editUser.addSelectionListener(new SelectionListener<MenuEvent>() {
+            public void componentSelected(MenuEvent ce) {
+                editStudent();
+                contextMenu.hide();
+            }
+        });
+        contextMenu.add(editUser);
+        
         if(CmShared.getQueryParameter("debug") != null) {
             MenuItem loginAsUser = new MenuItem("Login as User");
             loginAsUser.addSelectionListener(new SelectionListener<MenuEvent>() {
@@ -241,21 +250,26 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
         ti.addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent ce) {
-                GridSelectionModel<StudentModel> sel = grid.getSelectionModel();
-                List<StudentModel> l = sel.getSelection();
-                if (l.size() == 0) {
-                    CatchupMathAdmin.showAlert("Please select a student.");
-                } else {
-                    StudentModel sm = l.get(0);
-                    new RegisterStudent(sm, cmAdminMdl);
-                }
+                editStudent();
                 if (grid.getStore().getCount() > 0) {
                     ce.getComponent().enable();
-                }
+                }                  
             }
 
         });
         return ti;
+    }
+    
+    private void editStudent() {
+        GridSelectionModel<StudentModel> sel = _grid.getSelectionModel();
+        List<StudentModel> l = sel.getSelection();
+        if (l.size() == 0) {
+            CatchupMathAdmin.showAlert("Please select a student.");
+        } else {
+            StudentModel sm = l.get(0);
+            new RegisterStudent(sm, _cmAdminMdl);
+        }
+      
     }
     
     private Button showWorkToolItem(final Grid<StudentModel> grid, final CmAdminModel cmAdminMdl) {

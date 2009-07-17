@@ -4,7 +4,7 @@ import hotmath.gwt.shared.client.rpc.Action;
 import hotmath.gwt.shared.client.util.RpcData;
 
 public class GetQuizHtmlAction implements Action<RpcData> {
-    
+
     int uid;
     int testSegment;
     
@@ -29,4 +29,10 @@ public class GetQuizHtmlAction implements Action<RpcData> {
         this.testSegment = testSegment;
     }
 
+    
+    @Override
+    public String toString() {
+        return "GetQuizHtmlAction [testSegment=" + testSegment + ", uid=" + uid + "]";
+    }
+    
 }

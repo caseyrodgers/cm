@@ -22,7 +22,6 @@ public class CmShared implements EntryPoint {
 
     //@Override
     public void onModuleLoad() {
-        System.out.println("Catchup Math shared library loaded successfully");
     }
 
     

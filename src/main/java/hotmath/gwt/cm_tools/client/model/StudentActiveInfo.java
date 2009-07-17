@@ -4,7 +4,11 @@ package hotmath.gwt.cm_tools.client.model;
  *  about a student's current state.
  *  
  *  
- *  All values are defaulted to zero
+ *  All values are defaulted to zero.
+ *  
+ *  If all values are zero, when user logs
+ *  in they will initialize a new program
+ *  defined in HA_USER.user_prog_id -> CM_USER_PROGRAM.id 
  *  
  * @author casey
  *

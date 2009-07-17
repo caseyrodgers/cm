@@ -26,20 +26,20 @@ import java.sql.Connection;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.log4j.Logger;
+
+import sb.util.SbTextDisplayDialog;
+
+
 public class GetQuizHtmlCommand implements ActionHandler<GetQuizHtmlAction, RpcData> {
 
+    static final Logger logger = Logger.getLogger(GetQuizHtmlCommand.class);
+    
     @Override
     public RpcData execute(GetQuizHtmlAction action) throws Exception {
         
         int testSegment = action.getTestSegment();
         int uid = action.getUid();
-        
-        // get Test HTML from cache
-        String testKey = uid + "_" + testSegment;
-        RpcData rpcDataCached = (RpcData)CmCacheManager.getInstance().retrieveFromCache(CacheName.TEST_HTML,testKey);
-        if(rpcDataCached != null) {
-            return rpcDataCached;
-        }
         
         
         Connection conn = null;
@@ -55,15 +55,26 @@ public class GetQuizHtmlCommand implements ActionHandler<GetQuizHtmlAction, RpcD
             //HaUser user = HaUser.lookUser(conn, uid,null);
             
             StudentUserProgramModel programInfo = dao.loadProgramInfo(conn, uid);
-            
+
             
             String testName = programInfo.getTestName();
 
             if (testSegment == 0)
                 testSegment = 1;
+            
+            
+            /** Check Cache for this exact test HTML.  Make sure it is unique
+             * in case program changes slightly.
+             *  
+             */
+            String testKey = programInfo.toString() + " Segment=" + testSegment;
+            RpcData rpcDataCached = (RpcData)CmCacheManager.getInstance().retrieveFromCache(CacheName.TEST_HTML,testKey);
+            if(rpcDataCached != null) {
+                return rpcDataCached;
+            }
+
 
             StudentActiveInfo activeInfo = dao.loadActiveInfo(conn, uid);
-            
             boolean isActiveTest = activeInfo.getActiveTestId() > 0;
             
             HaTest haTest = null;

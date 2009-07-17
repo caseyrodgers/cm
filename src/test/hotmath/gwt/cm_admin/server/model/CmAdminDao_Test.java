@@ -1,20 +1,23 @@
 package hotmath.gwt.cm_admin.server.model;
 
-import hotmath.gwt.cm.server.DbTestCase;
+import hotmath.gwt.cm.server.CmDbTestCase;
 import hotmath.gwt.cm_tools.client.model.StudentActiveInfo;
 import hotmath.gwt.cm_tools.client.model.StudentModel;
 import hotmath.gwt.cm_tools.client.model.StudentUserProgramModel;
 
-public class CmAdminDao_Test extends DbTestCase {
+public class CmAdminDao_Test extends CmDbTestCase {
 
     /**
      * @TODO: create method to generate test accounts for testing
      * 
      */
-    static final int TEST_ID = 700;
+    static int TEST_ID;
 
     public CmAdminDao_Test(String name) throws Exception {
         super(name);
+        
+        if(TEST_ID == 0)
+            TEST_ID = setupDemoAccount();
     }
 
     CmStudentDao _dao;
@@ -64,7 +67,7 @@ public class CmAdminDao_Test extends DbTestCase {
         _dao.updateStudent(sm, true, false, true, false);
 
         progInfo = _dao.loadProgramInfo(conn, TEST_ID);
-        assertTrue(progInfo.getTestName().equals("Pre-Algebra Proficiency"));
+        assertTrue(progInfo.getTestName().equalsIgnoreCase("Pre-algebra Proficiency"));
     }
 
     public void testLoadStudentUserProgramModel() throws Exception {
@@ -78,7 +81,6 @@ public class CmAdminDao_Test extends DbTestCase {
     public void testStudentActiveInfo() throws Exception {
         StudentActiveInfo activeInfo = _dao.loadActiveInfo(conn, TEST_ID);
         assertNotNull(activeInfo);
-        assertTrue(activeInfo.getActiveTestId() > 0);
     }
 
     public void testRestStudentActiveInfo() throws Exception {
