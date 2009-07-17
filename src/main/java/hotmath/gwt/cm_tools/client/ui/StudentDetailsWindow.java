@@ -58,7 +58,7 @@ public class StudentDetailsWindow extends CmWindow {
     public StudentDetailsWindow(final StudentModel studentModel) {
         setStyleName("student-details-window");
         this.studentModel = studentModel;
-        setSize(580,400);
+        setSize(580,410);
         setModal(true);
         setResizable(false);
         setHeading("Student Details For: " + studentModel.getName());
@@ -76,17 +76,12 @@ public class StudentDetailsWindow extends CmWindow {
         
         add(studentInfoPanel());
         
-        SelectionListener<ButtonEvent> swListener = new SelectionListener<ButtonEvent>() {
-             public void componentSelected(ButtonEvent ce) {
-                showWorkForSelected();
-            }
-        };
+        ToolBar toolBar = new ToolBar();
+        toolBar.setStyleName("student-grid-panel-toolbar");
+        toolBar.add(showWorkBtn());
+        toolBar.add(showTopicsBtn());
         
-        Button showWorkBtn = new Button("Show Work");
-        showWorkBtn.enable();
-        showWorkBtn.addSelectionListener(swListener);
-        showWorkBtn.setStyleName("student-details-panel-sw-btn");
-        add(showWorkBtn);
+        add(toolBar);
 
         LayoutContainer cp = new LayoutContainer();
         cp.setLayout(new FitLayout());
@@ -105,11 +100,50 @@ public class StudentDetailsWindow extends CmWindow {
 
         getStudentActivityRPC(store, studentModel);
 
-        //showWorkBtn.enable();
-
         setVisible(true);
     }
+
+	private Button showTopicsBtn() {
+        SelectionListener<ButtonEvent> stListener = new SelectionListener<ButtonEvent>() {
+            public void componentSelected(ButtonEvent ce) {
+               showTopicsForSelected();
+           }
+        };
+
+		Button showTopicsBtn = new Button("Show Topics");
+        showTopicsBtn.enable();
+        showTopicsBtn.addSelectionListener(stListener);
+        showTopicsBtn.setStyleName("student-details-panel-sw-btn");
+		return showTopicsBtn;
+	}
+
+	private Button showWorkBtn() {
+        SelectionListener<ButtonEvent> swListener = new SelectionListener<ButtonEvent>() {
+            public void componentSelected(ButtonEvent ce) {
+               showWorkForSelected();
+           }
+        };
+       
+		Button showWorkBtn = new Button("Show Work");
+        showWorkBtn.enable();
+        showWorkBtn.addSelectionListener(swListener);
+        showWorkBtn.setStyleName("student-details-panel-sw-btn");
+		return showWorkBtn;
+	}
     
+    /**
+     *  Display Topics for the currently selected row 
+     *  
+     */
+    private void showTopicsForSelected() {
+        StudentActivityModel sam = samGrid.getSelectionModel().getSelectedItem();
+        if(sam == null) {
+            CatchupMathTools.showAlert("Select a row in the table first");
+            return;
+        }
+        new StudentLessonTopicsStatusWindow(studentModel, sam);        
+    }
+
     /** Display show work for the currently selected resource 
      *  all of its children.
      *  
@@ -117,7 +151,7 @@ public class StudentDetailsWindow extends CmWindow {
     private void showWorkForSelected() {
         StudentActivityModel sam = samGrid.getSelectionModel().getSelectedItem();
         if(sam == null) {
-            CatchupMathTools.showAlert("Select an entry in the table first");
+            CatchupMathTools.showAlert("Select a row in the table first");
             return;
         }
         new StudentShowWorkWindow(studentModel, sam);        
