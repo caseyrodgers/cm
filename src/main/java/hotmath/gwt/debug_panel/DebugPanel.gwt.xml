@@ -9,6 +9,7 @@
       <entry-point class='hotmath.gwt.debug_panel.client.DebugPanel'/>
 
       <stylesheet src="/gwt-resources/css/DebugPanel.css"/>
+      <script src="/gwt-resources/js/DebugPanel.js"/>
 
       <!-- Provide our own custom implementation of the Utilities class -->
 <!--

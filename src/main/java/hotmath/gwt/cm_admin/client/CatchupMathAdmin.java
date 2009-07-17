@@ -106,7 +106,7 @@ public class CatchupMathAdmin implements EntryPoint, ValueChangeHandler<String> 
 
         mainPort.add(mainContainer, new BorderLayoutData(LayoutRegion.CENTER));
 
-        RootPanel.get().add(mainPort);
+        RootPanel.get("main-content").add(mainPort);
 
 
         infoPanel = new AccountInfoPanel(cmAdminMdl);
