@@ -18,6 +18,8 @@ import java.sql.Statement;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -51,50 +53,28 @@ public class CmStudentDao {
      */
     private String getStudentSql(StudentSqlType sqlType) {
         String studentSql =
-                "SELECT h.uid, h.user_name as name, h.user_passcode as passcode, h.user_email as email, h.admin_id as admin_uid, "
-                +
-                "       h.is_show_work_required, h.is_tutoring_available,  h.active_segment, h.test_config_json, h.user_prog_id, "
-                +
-                "       p.test_def_id, p.create_date, concat(p.pass_percent,'%') as pass_percent, t.total_segments, "
-                +
-                "       lpad(concat(format((m.answered_correct*100)/(m.answered_correct+m.answered_incorrect+m.not_answered),0),'%'),4,' ') as last_quiz, "
-                +
-                "       trim(concat(ifnull(d.subj_id,''), ' ', d.prog_id)) as program, d.prog_id, d.subj_id, "
-                +
-                "       date_format(m.last_run_time,'%Y-%m-%d') as last_use_date, "
-                +
-                "       tu.usage_count, ifnull(g.id, 0) as group_id, ifnull(g.name, 'none') as group_name "
-                +
-                "FROM  HA_ADMIN a "
-                +
-                "INNER JOIN HA_USER h "
-                +
-                "   on a.aid = h.admin_id "
-                +
-                "INNER JOIN CM_USER_PROGRAM p "
-                +
-                "   on p.user_id = h.uid and p.id = h.user_prog_id "
-                +
-                "LEFT JOIN (select user_id, max(create_time) as c_time, test_def_id from HA_TEST group by user_id) s"
-                +
-                "   on s.user_id = h.uid and s.test_def_id = p.test_def_id "
-                +
-                "LEFT JOIN HA_TEST t"
-                +
-                "   on t.user_id = h.uid and t.create_time = s.c_time "
-                +
-                "LEFT JOIN HA_TEST_DEF d "
-                +
-                "   on d.test_def_id = h.test_def_id "
-                +
-                "LEFT JOIN (select u.uid, count(*) as usage_count from HA_TEST_RUN_INMH_USE i, HA_TEST t, HA_TEST_RUN r, HA_USER u "
-                +
-                "           where t.user_id = u.uid and r.test_id = t.test_id and i.run_id = r.run_id group by u.uid) tu "
-                +
-                "   on tu.uid = h.uid "
-                +
-                "LEFT JOIN (select uid, answered_correct, answered_incorrect, not_answered, last_run_time from v_HA_TEST_RUN_last) m "
-                +
+                "SELECT h.uid, h.user_name as name, h.user_passcode as passcode, h.user_email as email, h.admin_id as admin_uid, " +
+                "       h.is_show_work_required, h.is_tutoring_available,  h.active_segment, h.test_config_json, h.user_prog_id, " +
+                "       p.test_def_id, p.create_date, concat(p.pass_percent,'%') as pass_percent, t.total_segments, " +
+                "       lpad(concat(format((m.answered_correct*100)/(m.answered_correct+m.answered_incorrect+m.not_answered),0),'%'),4,' ') as last_quiz, " +
+                "       trim(concat(ifnull(d.subj_id,''), ' ', d.prog_id)) as program, d.prog_id, d.subj_id, " +
+                "       date_format(m.last_run_time,'%Y-%m-%d') as last_use_date, " +
+                "       tu.usage_count, ifnull(g.id, 0) as group_id, ifnull(g.name, 'none') as group_name " +
+                "FROM  HA_ADMIN a " +
+                "INNER JOIN HA_USER h " +
+                "   on a.aid = h.admin_id " +
+                "INNER JOIN CM_USER_PROGRAM p " +
+                "   on p.user_id = h.uid and p.id = h.user_prog_id " +
+                "LEFT JOIN (select user_id, max(create_time) as c_time, test_def_id from HA_TEST group by user_id) s" +
+                "   on s.user_id = h.uid and s.test_def_id = p.test_def_id " +
+                "LEFT JOIN HA_TEST t" +
+                "   on t.user_id = h.uid and t.create_time = s.c_time " +
+                "LEFT JOIN HA_TEST_DEF d " +
+                "   on d.test_def_id = h.test_def_id " +
+                "LEFT JOIN (select u.uid, count(*) as usage_count from HA_TEST_RUN_INMH_USE i, HA_TEST t, HA_TEST_RUN r, HA_USER u " +
+                "           where t.user_id = u.uid and r.test_id = t.test_id and i.run_id = r.run_id group by u.uid) tu " +
+                "   on tu.uid = h.uid " +
+                "LEFT JOIN (select uid, answered_correct, answered_incorrect, not_answered, last_run_time from v_HA_TEST_RUN_last) m " +
                 "   on m.uid = h.uid " +
                 "LEFT JOIN CM_GROUP g " +
                 "   on g.id = h.group_id ";
@@ -145,50 +125,28 @@ public class CmStudentDao {
     }
 
     private static final String GET_STUDENT_ACTIVITY_SQL =
-            "select max(s.use_date) as use_date, date_format(min(s.view_time),'%h:%i %p') as start_time, "
-            +
-            "  date_format(max(s.view_time),'%h:%i %p') as stop_time, max(s.view_time) as view_time, "
-            +
-            "  max(s.run_date) as run_date, "
-            +
-            "  s.answered_correct, s.answered_incorrect, s.not_answered, s.program as program, s.prog_id, "
-            +
-            "  s.test_id as test_id, max(s.test_segment) as test_segment, s.test_def_id, s.test_run_id, "
-            +
-            "  s.activity, s.is_quiz, count(*) as problems_viewed, max(s.session_number) as session_number, "
-            +
-            "  s.total_sessions "
-            +
-            "from ( "
-            +
-            " select date_format(l.create_time,'%Y-%m-%d') as use_date, date_format(l.create_time,'%h:%i %p') as start_time, "
-            +
-            "   date_format(r.run_time,'%h:%i %p') as stop_time, r.run_time as view_time, "
-            +
-            "   date_format(r.run_time,'%Y-%m-%d') as run_date, "
-            +
-            "   r.answered_correct, r.answered_incorrect, r.not_answered, "
-            +
-            "   concat(td.subj_id, ' ', td.prog_id) as program,  td.prog_id, "
-            +
-            "   l.test_id as test_id, l.test_segment, td.test_def_id as test_def_id, "
-            +
-            "   r.run_id as test_run_id, 0 as total_sessions, "
-            +
-            "   'Quiz-' as activity, 1 as is_quiz, l.test_segment as session_number "
-            +
-            " from  HA_TEST l INNER JOIN HA_USER u ON l.user_id = u.uid "
-            +
-            " join HA_TEST_RUN r on r.test_id = l.test_id "
-            +
-            " join HA_TEST_DEF td on td.test_def_id = l.test_def_id "
-            +
-            " where u.uid = ? "
-            +
-            " union "
-            +
-            " select date_format(iu.view_time,'%Y-%m-%d') as use_date, date_format(iu.view_time,'%h:%i %p') as start_time, "
-            +
+            "select max(s.use_date) as use_date, date_format(min(s.view_time),'%h:%i %p') as start_time, " +
+            "  date_format(max(s.view_time),'%h:%i %p') as stop_time, max(s.view_time) as view_time, " +
+            "  max(s.run_date) as run_date, " +
+            "  s.answered_correct, s.answered_incorrect, s.not_answered, s.program as program, s.prog_id, " +
+            "  s.test_id as test_id, max(s.test_segment) as test_segment, s.test_def_id, s.test_run_id, " +
+            "  s.activity, s.is_quiz, count(*) as problems_viewed, max(s.session_number) as session_number, " +
+            "  s.total_sessions " +
+            "from ( " +
+            " select date_format(l.create_time,'%Y-%m-%d') as use_date, date_format(l.create_time,'%h:%i %p') as start_time, " +
+            "   date_format(r.run_time,'%h:%i %p') as stop_time, r.run_time as view_time, " +
+            "   date_format(r.run_time,'%Y-%m-%d') as run_date, " +
+            "   r.answered_correct, r.answered_incorrect, r.not_answered, " +
+            "   concat(td.subj_id, ' ', td.prog_id) as program,  td.prog_id, " +
+            "   l.test_id as test_id, l.test_segment, td.test_def_id as test_def_id, " +
+            "   r.run_id as test_run_id, 0 as total_sessions, " +
+            "   'Quiz-' as activity, 1 as is_quiz, l.test_segment as session_number " +
+            " from  HA_TEST l INNER JOIN HA_USER u ON l.user_id = u.uid " +
+            " join HA_TEST_RUN r on r.test_id = l.test_id " +
+            " join HA_TEST_DEF td on td.test_def_id = l.test_def_id " +
+            " where u.uid = ? " +
+            " union " +
+            " select date_format(iu.view_time,'%Y-%m-%d') as use_date, date_format(iu.view_time,'%h:%i %p') as start_time, " +
             "  date_format(iu.view_time,'%h:%i %p') as stop_time, iu.view_time as view_time, " +
             "  date_format(iu.view_time,'%Y-%m-%d') as run_date, " +
             "  0 as answered_correct, 0 as answered_incorrect, 0 as not_answered, " +
@@ -230,39 +188,41 @@ public class CmStudentDao {
     }
 
     private static final String GET_TEST_RESULTS_SQL =
-            "select td.test_name, t.test_segment, im.file, rr.pid, rr.answer_status " +
-            "from HA_TEST_DEF td, HA_TEST t, HA_TEST_RUN tr, HA_TEST_RUN_RESULTS rr, inmh_map im " +
-            "where tr.run_id = ? and rr.run_id = tr.run_id and tr.test_id = t.test_id " +
-            "  and t.test_def_id = td.test_def_id and im.guid = rr.pid";
-
-    public List<LessonItemModel> getLessonItemsForTestRun(Integer runId) throws Exception {
-        List<LessonItemModel> l = null;
-
-        Connection conn = null;
-        PreparedStatement ps = null;
-        ResultSet rs = null;
-
-        try {
-            conn = HMConnectionPool.getConnection();
-            ps = conn.prepareStatement(GET_TEST_RESULTS_SQL);
-            ps.setInt(1, runId);
-            rs = ps.executeQuery();
-
-            if (rs.next()) {
-                l = loadLessonItems(rs);
-            }
-        } catch (Exception e) {
-            logger.error(String.format("*** Error getting lesson items for runId:  %d", runId), e);
-            throw new Exception("*** Error getting Lesson Items ***");
-        } finally {
-            SqlUtilities.releaseResources(rs, ps, conn);
-        }
-        return l;
+        "select td.test_name, t.test_segment, im.file, rr.pid, rr.answer_status " +
+        "from HA_TEST_DEF td, HA_TEST t, HA_TEST_RUN tr, HA_TEST_RUN_RESULTS rr, inmh_map im " +
+        "where tr.run_id = ? and rr.run_id = tr.run_id and tr.test_id = t.test_id " +
+        "  and t.test_def_id = td.test_def_id and im.guid = rr.pid";
+    
+    public List <LessonItemModel> getLessonItemsForTestRun(Integer runId) throws Exception {
+   	    List <LessonItemModel> l = null;
+    	
+    	Connection conn = null;
+    	PreparedStatement ps = null;
+    	ResultSet rs = null;
+    	
+    	try {
+    		conn = HMConnectionPool.getConnection();
+    		ps = conn.prepareStatement(GET_TEST_RESULTS_SQL);
+    		ps.setInt(1, runId);
+    		rs = ps.executeQuery();
+    		
+    		if (rs.next()) {
+    			l = loadLessonItems(rs);
+    			sortLessonItems(l);
+    		}
+    	}
+    	catch (Exception e) {
+    		logger.error(String.format("*** Error getting lesson items for runId:  %d", runId), e);
+    		throw new Exception("*** Error getting Lesson Items ***");
+    	}
+    	finally {
+    		SqlUtilities.releaseResources(rs, ps, conn);
+    	}
+    	return l;
     }
 
     private static final String ADD_STUDENT_SQL =
-            "insert into HA_USER (user_name, user_passcode, active_segment, group_id, test_def_id, admin_id, is_active) "
-            +
+            "insert into HA_USER (user_name, user_passcode, active_segment, group_id, test_def_id, admin_id, is_active) " +
             "values(?, ?, ?, ?, (select test_def_id from HA_TEST_DEF where prog_id = ? and subj_id = ?), ?, 1)";
 
     public StudentModel addStudent(StudentModel sm) throws Exception {
@@ -870,31 +830,39 @@ public class CmStudentDao {
     }
 
     private List<LessonItemModel> loadLessonItems(ResultSet rs) throws Exception {
-        List<LessonItemModel> l = new ArrayList<LessonItemModel>();
+    	List<LessonItemModel> l = new ArrayList<LessonItemModel>();
+    	
+		String testName = rs.getString(1);
+		HaTestDefDescription tdDesc = HaTestDefDescription.getHaTestDefDescription(testName);
 
-        String testName = rs.getString(1);
-        HaTestDefDescription tdDesc = HaTestDefDescription.getHaTestDefDescription(testName);
+		int testSegment = rs.getInt(2);
 
-        int testSegment = rs.getInt(2);
-
-        // identify incomplete topics
-        Set<String> topicFileSet = new HashSet<String>();
-        do {
-            if (!"correct".equalsIgnoreCase(rs.getString("answer_status"))) {
-                topicFileSet.add(rs.getString("file"));
+		// identify incomplete topics
+		Set <String> topicFileSet = new HashSet<String>();
+		do {
+			if (!"correct".equalsIgnoreCase(rs.getString("answer_status"))) {
+				topicFileSet.add(rs.getString("file"));
+			}
+			
+		} while (rs.next());
+		
+    	for (InmhItemData item : tdDesc.getLessonItems(testSegment)) {
+    		LessonItemModel mdl = new LessonItemModel();
+    		mdl.setName(item.getInmhItem().getTitle());
+    		String file = item.getInmhItem().getFile();
+    		mdl.setFile(file);
+    		mdl.setCompleted(! topicFileSet.contains(file));
+    		l.add(mdl);
+    	}
+    	return l;
+    }
+    
+    private void sortLessonItems(List<LessonItemModel> list) {
+        Collections.sort(list, new Comparator<LessonItemModel>() {
+            public int compare(LessonItemModel o1, LessonItemModel o2) {
+                return o1.getName().compareTo(o2.getName());
             }
-
-        } while (rs.next());
-
-        for (InmhItemData item : tdDesc.getLessonItems(testSegment)) {
-            LessonItemModel mdl = new LessonItemModel();
-            mdl.setName(item.getInmhItem().getTitle());
-            String file = item.getInmhItem().getFile();
-            mdl.setFile(file);
-            mdl.setCompleted(!topicFileSet.contains(file));
-            l.add(mdl);
-        }
-        return l;
+        });
     }
 
     private String getChapter(String json) {
