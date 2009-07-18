@@ -81,7 +81,7 @@ public class CatchupMath implements EntryPoint {
         
         __thisInstance = this;
 
-        GXT.setDefaultTheme(Theme.GRAY, true);
+        // GXT.setDefaultTheme(Theme.GRAY, true);
 
         __hasBeenInformedAboutShowWork=false;
         
