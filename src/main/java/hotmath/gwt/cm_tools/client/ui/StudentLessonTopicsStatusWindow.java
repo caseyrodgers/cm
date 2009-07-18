@@ -117,7 +117,6 @@ public class StudentLessonTopicsStatusWindow extends CmWindow {
         s.getLessonItemsForTestRun(runId, new AsyncCallback <List<LessonItemModel>>() {
 
             public void onSuccess(List<LessonItemModel> list) {
-            	System.out.println("list size: " + list.size());
                 store.add(list);
                 setVisible(true);
             }
