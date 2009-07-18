@@ -8,19 +8,19 @@ public class LessonItemModel extends BaseModelData {
 
 	public static final String NAME_KEY = "name";
 	public static final String FILE_KEY = "file";
-	public static final String COMPLETED_KEY = "completed";
+	public static final String PRESCRIBED_KEY = "prescribed";
 	
 	private String name;
 	private String file;
-	private Boolean completed;
+	private String prescribed;
 	
-	public Boolean isCompleted() {
-		return completed;
+	public String getPrescribed() {
+		return prescribed;
 	}
 
-	public void setCompleted(Boolean completed) {
-        this.completed = completed;
-		set(COMPLETED_KEY, completed);
+	public void setPrescribed(String prescribed) {
+        this.prescribed = prescribed;
+		set(PRESCRIBED_KEY, prescribed);
 	}
 
 	public String getName() {
