@@ -851,7 +851,7 @@ public class CmStudentDao {
     		mdl.setName(item.getInmhItem().getTitle());
     		String file = item.getInmhItem().getFile();
     		mdl.setFile(file);
-    		mdl.setCompleted(! topicFileSet.contains(file));
+    		mdl.setPrescribed((topicFileSet.contains(file))?"Prescribed":"");
     		l.add(mdl);
     	}
     	return l;
