@@ -10,6 +10,7 @@ import hotmath.gwt.shared.client.util.UserInfo;
 
 import java.util.ArrayList;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.Registry;
 import com.extjs.gxt.ui.client.widget.Html;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
@@ -198,7 +199,8 @@ public class QuizPage extends LayoutContainer {
 				displayQuizHtml(html);
 			}
             public void onFailure(Throwable caught) {
-                caught.printStackTrace();
+                Log.error("Getting Quiz HTML", caught);
+                CatchupMathTools.showAlert("<p>Sorry, but there has been a server error: </p><b>" + caught.getMessage() + "</b><p>Please, tell your administrator or teacher.</p>");
             }
 		});
 	}

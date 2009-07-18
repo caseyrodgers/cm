@@ -28,8 +28,6 @@ import java.util.Map;
 
 import org.apache.log4j.Logger;
 
-import sb.util.SbTextDisplayDialog;
-
 
 public class GetQuizHtmlCommand implements ActionHandler<GetQuizHtmlAction, RpcData> {
 
@@ -110,14 +108,11 @@ public class GetQuizHtmlCommand implements ActionHandler<GetQuizHtmlAction, RpcD
 
             return rpcData;
         } catch (Exception e) {
-            e.printStackTrace();
+            throw e;
         }
         finally {
             SqlUtilities.releaseResources(null,null,conn);
         }
-
-        return null;
-        
     }
     
 //    public RpcData getQuizHtml(int testId) throws CmRpcException {
