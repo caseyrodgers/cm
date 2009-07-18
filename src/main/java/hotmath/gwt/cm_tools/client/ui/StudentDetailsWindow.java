@@ -110,7 +110,7 @@ public class StudentDetailsWindow extends CmWindow {
            }
         };
 
-		Button showTopicsBtn = new Button("Show Topics");
+		Button showTopicsBtn = new Button("Show Standards");
         showTopicsBtn.enable();
         showTopicsBtn.addSelectionListener(stListener);
         showTopicsBtn.setStyleName("student-details-panel-sw-btn");
