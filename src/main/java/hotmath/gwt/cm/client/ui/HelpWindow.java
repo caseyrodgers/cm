@@ -14,6 +14,7 @@ import hotmath.gwt.cm_tools.client.ui.StudentDetailsWindow;
 import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
 import hotmath.gwt.shared.client.util.UserInfo;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.Registry;
 import com.extjs.gxt.ui.client.data.BaseModelData;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
@@ -56,8 +57,14 @@ public class HelpWindow extends CmWindow {
         
         
         Html messageArea = new Html();
-        messageArea.setHtml(ContextController.getInstance().getTheContext().getStatusMessage());
-        messageArea.setStyleName("help-window-message-area");
+        try {
+            messageArea.setHtml(ContextController.getInstance().getTheContext().getStatusMessage());
+        }
+        catch(Exception e) {
+            Log.info("Error getting context help", e);
+            messageArea.setHtml("Catchup Math seems to be in an inconsistent state.  Please, try refreshing.");
+        }
+            messageArea.setStyleName("help-window-message-area");
         
         VerticalPanel vp = new VerticalPanel();
         
