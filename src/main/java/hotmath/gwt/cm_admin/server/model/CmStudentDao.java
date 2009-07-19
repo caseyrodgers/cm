@@ -833,10 +833,13 @@ public class CmStudentDao {
     	List<LessonItemModel> l = new ArrayList<LessonItemModel>();
     	
 		String testName = rs.getString(1);
-		HaTestDefDescription tdDesc = HaTestDefDescription.getHaTestDefDescription(testName);
+
 
 		int testSegment = rs.getInt(2);
 
+	    HaTestDefDescription tdDesc = HaTestDefDescription.getHaTestDefDescription(testName, testSegment);
+	    
+	    
 		// identify incomplete topics
 		Set <String> topicFileSet = new HashSet<String>();
 		do {
@@ -846,7 +849,7 @@ public class CmStudentDao {
 			
 		} while (rs.next());
 		
-    	for (InmhItemData item : tdDesc.getLessonItems(testSegment)) {
+    	for (InmhItemData item : tdDesc.getLessonItems()) {
     		LessonItemModel mdl = new LessonItemModel();
     		mdl.setName(item.getInmhItem().getTitle());
     		String file = item.getInmhItem().getFile();

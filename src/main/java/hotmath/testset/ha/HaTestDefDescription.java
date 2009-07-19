@@ -1,9 +1,13 @@
 package hotmath.testset.ha;
 
-import hotmath.assessment.InmhAssessment;
+import hotmath.assessment.AssessmentPrescription;
+import hotmath.assessment.AssessmentPrescriptionSession;
 import hotmath.assessment.InmhItemData;
+import hotmath.assessment.AssessmentPrescription.SessionData;
 import hotmath.cm.util.CmCacheManager;
 import hotmath.cm.util.CmCacheManager.CacheName;
+import hotmath.gwt.cm_admin.server.model.CmAdminDao;
+import hotmath.inmh.INeedMoreHelpItem;
 import hotmath.util.HMConnectionPool;
 import hotmath.util.sql.SqlUtilities;
 
@@ -23,12 +27,17 @@ import java.util.List;
 public class HaTestDefDescription {
     
     HaTestDef testDef;
+    Integer segment;
     List<InmhItemData> lessons;
     List<String> pids;
+    int pidsInASegment;
     
-    public HaTestDefDescription(HaTestDef def,List<InmhItemData> lessons) throws Exception {
+    public HaTestDefDescription(int pidsInASegment, HaTestDef def,Integer segment, List<InmhItemData> lessons) throws Exception {
         this.testDef = def;
+        this.segment = segment;
         this.lessons = lessons;
+        
+        this.pidsInASegment = pidsInASegment;        
     }
     
     public HaTestDefDescription() {
@@ -68,13 +77,11 @@ public class HaTestDefDescription {
      *  
      * @return
      */
-    public List<InmhItemData> getLessonItems(Integer quizSegment) {
+    public List<InmhItemData> getLessonItems2(Integer quizSegment) {
     	
     	if (quizSegment < 1) {
     		throw new IllegalArgumentException(String.format("quizSegment: %d, must be greater than 0", quizSegment));
     	}
-        
-        int pidsInASegment = pids.size() / testDef.getTotalSegmentCount();
         
         int end = pidsInASegment * quizSegment;
         int start = end - pidsInASegment;
@@ -87,7 +94,7 @@ public class HaTestDefDescription {
             pidsInThisSegment.add(pids.get(i));
         }
         
-        /**  now find each lesson referenced this segments subset of pids
+        /**  now find each lesson that references this segment's subset of pids
          * 
          */
         List<InmhItemData> quizSegmentLessons = new ArrayList<InmhItemData>();
@@ -131,8 +138,10 @@ public class HaTestDefDescription {
      * @return
      * @throws Exception
      */
-    static public HaTestDefDescription getHaTestDefDescription(String testName) throws Exception {
-        HaTestDefDescription desc = (HaTestDefDescription)CmCacheManager.getInstance().retrieveFromCache(CacheName.TEST_DEF_DESCRIPTION, testName);
+     static public HaTestDefDescription getHaTestDefDescription(String testName, Integer quizSegment) throws Exception {
+
+        String keyName = testName + "_" + quizSegment;
+        HaTestDefDescription desc = (HaTestDefDescription)CmCacheManager.getInstance().retrieveFromCache(CacheName.TEST_DEF_DESCRIPTION, keyName);
         if(desc != null)
             return desc;
         
@@ -144,22 +153,82 @@ public class HaTestDefDescription {
             HaTestConfig config = def.getTestConfig();
             
             HaTestDefDao dao = new HaTestDefDao();
-            List<String> pids = dao.getTestIds(conn, def.getTextCode(), def.getChapter(), 1, 0, 9999, config);
             
-            InmhAssessment inmhAssessment = new InmhAssessment(pids.toArray( new String[pids.size()] ));
-            List<InmhItemData> itemsData = inmhAssessment.getInmhItemUnion("review");
+
+            int totalPidsInProgram = dao.getTestIds(conn, def.getTextCode(), def.getChapter(), 1, 0, 99999, config).size();
+            int pidsInASegment = totalPidsInProgram / def.getTotalSegmentCount();
+            
+            int end = pidsInASegment * quizSegment;
+            int start = end - pidsInASegment;            
+            
+            /** Get list of all pids that are in this individal quiz in this program
+             * 
+             */
+            List<String> pids = dao.getTestIds(conn, def.getTextCode(), def.getChapter(), 1, start, end, config);
+            
+
+            /** Create a dummy TestRun
+             * 
+             */
+            HaTestRun testRun = new HaTestRun();
+            HaTest test = new HaTest();
+            test.setTestDef(def);
+            testRun.setHaTest(test);
+            /** put all pids as results in this test run
+             * 
+             */
+            for(String p: pids) {
+                HaTestRunResult r = new HaTestRunResult();
+                r.setPid(p);
+                testRun.getTestRunResults().add(r);
+            }
+            
+            
+            /** Create a new prescription based on this test run 
+             * 
+             */
+            AssessmentPrescription pres = new AssessmentPrescription(conn, testRun);
+            
+            
+            List<AssessmentPrescriptionSession> sessions = pres.getSessions();
             
             desc = new HaTestDefDescription();
+            
             List<InmhItemData> lessons = new ArrayList<InmhItemData>();
-            for(InmhItemData id: itemsData) {
-                lessons.add(id);
+            
+            /** For each session in prescription (aka, lesson in program)
+             * 
+             *  Track both the lesson and each test pid that references it
+             */
+            for(AssessmentPrescriptionSession session: sessions) {
+                
+                /** Dummy lessonData used as holder of information
+                 *  that will be used when accessing lessons belonging
+                 *  to a single session.
+                 * 
+                 */
+                InmhItemData lessonData = new InmhItemData();
+                INeedMoreHelpItem item = new INeedMoreHelpItem();
+                item.setTitle(session.getTopic());
+                lessonData.setINeedMoreHelpItem(item);
+                /** For each pid that references this session, add it 
+                 *  to tracking object.
+                 */
+                for(SessionData sessionData: session.getSessionItems()){
+                    lessonData.getPids().add(sessionData.getPid());                    
+                }
+                
+                /** Add this object to list of lesson names for this
+                 *  complete assessment (program).
+                 */
+                lessons.add(lessonData);
             }
             
             desc.setPids(pids);
             desc.setTestDef(def);
             desc.setLessonItems(lessons);
             
-            CmCacheManager.getInstance().addToCache(CacheName.TEST_DEF_DESCRIPTION, testName,desc);
+            CmCacheManager.getInstance().addToCache(CacheName.TEST_DEF_DESCRIPTION, keyName,desc);
             
             return desc;
         }

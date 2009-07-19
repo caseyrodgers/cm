@@ -24,120 +24,131 @@ import java.util.logging.Logger;
  */
 public class InmhItemData {
 
-	INeedMoreHelpItem item;
-	List<String> pidsReferenced = new ArrayList<String>();
-	
-	Logger logger = Logger.getLogger(InmhItemData.class.getName());
+    INeedMoreHelpItem item;
+    List<String> pidsReferenced = new ArrayList<String>();
 
-	public InmhItemData(INeedMoreHelpItem item) {
-		this.item = item;
-	}
+    Logger logger = Logger.getLogger(InmhItemData.class.getName());
 
-	/**
-	 * Add a solution id that references this INMH item
-	 * 
-	 * @param pid
-	 */
-	public void addProblemIndex(String pid) {
-		if (!pidsReferenced.contains(pid))
-			pidsReferenced.add(pid);
-	}
+    public InmhItemData() {
+    }
 
-	/**
-	 * Return a sorted map containing weighted values and the problem index.
-	 * 
-	 * entries are weight:solution
-	 * 
-	 * @return
-	 */
-	public List<String> getWeightedIndexes(int sumOfWeights,
-			int totalNumSolsInPrescription) {
-		List<String> values = new ArrayList<String>();
-		for (String pid : pidsReferenced) {
-			int weight = (getWeight() / sumOfWeights)
-					* totalNumSolsInPrescription;
-			values.add(String.format("%s:%s", weight, pid));
-		}
-		return values;
-	}
+    public InmhItemData(INeedMoreHelpItem item) {
+        super();
+        this.item = item;
+    }
 
-	/**
-	 * Get the weight of this InmhItem.
-	 * 
-	 * The weight is determined by how many times this item is referenced.
-	 * 
-	 * @return
-	 */
-	public int getWeight() {
-		return pidsReferenced.size();
-	}
+    /**
+     * Add a solution id that references this INMH item
+     * 
+     * @param pid
+     */
+    public void addProblemIndex(String pid) {
+        if (!pidsReferenced.contains(pid))
+            pidsReferenced.add(pid);
+    }
 
-	public INeedMoreHelpItem getInmhItem() {
-		return item;
-	}
+    /**
+     * Return a sorted map containing weighted values and the problem index.
+     * 
+     * entries are weight:solution
+     * 
+     * @return
+     */
+    public List<String> getWeightedIndexes(int sumOfWeights,
+            int totalNumSolsInPrescription) {
+        List<String> values = new ArrayList<String>();
+        for (String pid : pidsReferenced) {
+            int weight = (getWeight() / sumOfWeights)
+                    * totalNumSolsInPrescription;
+            values.add(String.format("%s:%s", weight, pid));
+        }
+        return values;
+    }
 
-	/**
-	 * Return referencing solution ids
-	 * 
-	 * @return
-	 */
-	public List<String> getPids() {
-		return pidsReferenced;
-	}
+    /**
+     * Get the weight of this InmhItem.
+     * 
+     * The weight is determined by how many times this item is referenced.
+     * 
+     * @return
+     */
+    public int getWeight() {
+        return pidsReferenced.size();
+    }
 
-	/**
-	 * Return pool of solutions that can be used for this INMH item
-	 * 
-	 * @return
-	 */
-	public List<ProblemID> getWookBookSolutionPool(final Connection conn) {
+    public void setINeedMoreHelpItem(INeedMoreHelpItem item) {
+        this.item = item;
+    }
+    
+    public INeedMoreHelpItem getInmhItem() {
+        return item;
+    }
 
-		List<ProblemID> pids = new ArrayList<ProblemID>();
+    /**
+     * Return referencing solution ids
+     * 
+     * @return
+     */
+    public List<String> getPids() {
+        return pidsReferenced;
+    }
 
-		// SQL to get list of ranges that match each INMH item
-		String sql = "select range " + " from   inmh_assessment i "
-				+ " where  i.file = ? ";
-		PreparedStatement ps = null;
-		try {
-			ps = conn.prepareStatement(sql);
-			ps.setString(1, this.item.getFile());
-			ResultSet rs = ps.executeQuery();
-			while (rs.next()) {
-				String range = rs.getString("range");
-				if (range == null || range.length() == 0)
-					continue;
+    public void setPids(List<String> pids) {
+        this.pidsReferenced = pids;
+    }
 
-				List<String> related = findSolutionsMatchingRange(range);
-				for (String s : related) {
-					ProblemID pid = new ProblemID(s);
-					if (!pids.contains(pid)) {
-						try {
-							SolutionManager.getSolution(pid.getGUID());
-							pids.add(pid);
-						} catch (HotMathExceptionSolutionNotFound e) {
-							logger.fine("Inmh: GUID does not exist: " +  s);
-						}
-					}
-				}
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		} finally {
-			SqlUtilities.releaseResources(null, ps, null);
-		}
-		return pids;
-	}
+    /**
+     * Return pool of solutions that can be used for this INMH item
+     * 
+     * @return
+     */
+    public List<ProblemID> getWookBookSolutionPool(final Connection conn) {
 
-	/**
-	 * Given a range, return all solutions matching the range
-	 * 
-	 * @param range
-	 * @return
-	 * @throws Exception
-	 */
-	private List<String> findSolutionsMatchingRange(String range)
-			throws Exception {
-		ConcordanceEntry con = new ConcordanceEntry(range);
-		return (List<String>) Arrays.asList(con.getGUIDs());
-	}
+        List<ProblemID> pids = new ArrayList<ProblemID>();
+
+        // SQL to get list of ranges that match each INMH item
+        String sql = "select range " + " from   inmh_assessment i "
+                + " where  i.file = ? ";
+        PreparedStatement ps = null;
+        try {
+            ps = conn.prepareStatement(sql);
+            ps.setString(1, this.item.getFile());
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                String range = rs.getString("range");
+                if (range == null || range.length() == 0)
+                    continue;
+
+                List<String> related = findSolutionsMatchingRange(range);
+                for (String s : related) {
+                    ProblemID pid = new ProblemID(s);
+                    if (!pids.contains(pid)) {
+                        if (SolutionManager.getInstance().doesSolutionExist(conn, pid.getGUID())) {
+                            pids.add(pid);
+                        } else {
+                            logger.fine("Inmh: GUID does not exist: " + s);
+                        }
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            SqlUtilities.releaseResources(null, ps, null);
+        }
+        return pids;
+    }
+
+    /**
+     * Given a range, return all solutions matching the range
+     * 
+     * @param range
+     * @return
+     * @throws Exception
+     */
+    private List<String> findSolutionsMatchingRange(String range)
+            throws Exception {
+        ConcordanceEntry con = new ConcordanceEntry(range);
+        return (List<String>) Arrays.asList(con.getGUIDs());
+    }
 }
