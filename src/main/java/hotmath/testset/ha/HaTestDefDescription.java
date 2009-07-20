@@ -214,9 +214,21 @@ public class HaTestDefDescription {
                 /** For each pid that references this session, add it 
                  *  to tracking object.
                  */
+                String file=null;
                 for(SessionData sessionData: session.getSessionItems()){
+                    
+                    /** All pids refernce the same Session title
+                     * 
+                     * @TODO: should this be inserted into session as getFile()?
+                     */
+                    if(file == null) {
+                        file = sessionData.getItem().getFile();
+                    }
+                    
                     lessonData.getPids().add(sessionData.getPid());                    
                 }
+                
+                item.setFile(file);
                 
                 /** Add this object to list of lesson names for this
                  *  complete assessment (program).
