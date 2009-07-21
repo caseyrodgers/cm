@@ -1,4 +1,4 @@
-<project basedir="." default="export_cm" name="export_cm">
+<project basedir="." default="import_inmh" name="catchup">
 
     <property name="textcodes" value="genericprealg,genericalg1,genericgeo,genericalg2,mini6and7gt,minialg1gt,minigeogt,minialg2gt,cmextras,cmextrasgeo,cmextrasalg2,cmextrasgeo-2,alg1ptests,alg2ptests,prealgptests,geoptests,placement,miniprealggt,miniprecalcgt"/>
 
