@@ -71,4 +71,11 @@ public class HaTestConfig {
 	public void setPassPercent(int passPercent) {
 		this.passPercent = passPercent;
 	}
+
+
+    @Override
+    public String toString() {
+        return "HaTestConfig [chapters=" + chapters + ", passPercent=" + passPercent + ", segmentCount=" + segmentCount
+                + "]";
+    }
 }

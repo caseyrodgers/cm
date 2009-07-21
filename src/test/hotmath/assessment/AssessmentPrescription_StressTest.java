@@ -1,6 +1,7 @@
 package hotmath.assessment;
 
 import hotmath.gwt.cm.server.CmDbTestCase;
+import hotmath.testset.ha.HaTestDef;
 import hotmath.testset.ha.HaTestDefDao;
 import hotmath.testset.ha.HaTestDefDescription;
 
@@ -18,11 +19,14 @@ public class AssessmentPrescription_StressTest extends CmDbTestCase {
         List<String> testNames = new HaTestDefDao().getTestNames();
         for(String tn: testNames) {
 
+            HaTestDef testDef = new HaTestDefDao().getTestDef(conn, tn);
+            
             /** The all have at least 4 sections
              * 
              */
-            for(int x=1;x<5;x++) {
-                HaTestDefDescription desc = HaTestDefDescription.getHaTestDefDescription(tn, x);
+            int segments = testDef.getTotalSegmentCount();
+            for(int x=1;x<segments;x++) {
+                HaTestDefDescription desc = HaTestDefDescription.getHaTestDefDescription(testDef.getName(), x);
                 System.out.println("Quiz: " + tn + ", " + x);
                 int cnt = desc.getLessonItems().size();
                 for(int i=0;i<cnt;i++) {

@@ -582,13 +582,8 @@ img.resource-item-complete {
 
 /** The main Resource Container */
 .resource-container {
-   background-image:url(/gwt-resources/images/prescription_resource_background-1600x1050.jpg);
-   background-attachment: fixed; 
-   background-position: center bottom;
-   background-repeat: no-repeat;
-   max-height: 1050px;
-   max-width: 1600px;
-   width: 540px;
+   background-image:url(/gwt-resources/images/bg/default.png);
+   background-repeat: repeat-x;
 }
 
 .resource-container-forest {
