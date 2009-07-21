@@ -1,11 +1,16 @@
 package hotmath.gwt.shared.server.service.command;
 
+import hotmath.gwt.cm_admin.server.model.CmStudentDao;
+import hotmath.gwt.cm_tools.client.model.StudentActiveInfo;
+import hotmath.gwt.cm_tools.client.model.StudentUserProgramModel;
 import hotmath.gwt.shared.client.rpc.Action;
 import hotmath.gwt.shared.client.rpc.Response;
 import hotmath.gwt.shared.client.rpc.action.GetUserInfoAction;
 import hotmath.gwt.shared.client.util.CmRpcException;
 import hotmath.gwt.shared.client.util.RpcData;
 import hotmath.gwt.shared.server.service.ActionHandler;
+import hotmath.testset.ha.HaTestDef;
+import hotmath.testset.ha.HaTestDefDao;
 import hotmath.testset.ha.HaUser;
 import hotmath.util.HMConnectionPool;
 import hotmath.util.sql.SqlUtilities;
@@ -24,6 +29,14 @@ public class GetUserInfoCommand implements ActionHandler<GetUserInfoAction, RpcD
             
             HaUser user = HaUser.lookUser(conn, action.getUserId(),null);
 
+            
+            CmStudentDao dao = new CmStudentDao();
+            StudentUserProgramModel si = dao.loadProgramInfo(conn, action.getUserId());
+            
+            HaTestDefDao hdao = new HaTestDefDao();
+            HaTestDef testDef = hdao.getTestDef(conn, si.getTestDefId());
+            
+            
             RpcData rpcData = new RpcData();
             rpcData.putData("uid", user.getUid());
             rpcData.putData("test_id", user.getActiveTest());
@@ -36,6 +49,7 @@ public class GetUserInfoCommand implements ActionHandler<GetUserInfoAction, RpcD
             rpcData.putData("show_work_required", user.isShowWorkRequired() ? 1 : 0);
             rpcData.putData("user_account_type",user.getUserAccountType());
             rpcData.putData("pass_percent_required",user.getPassPercentRequired());
+            rpcData.putData("test_segment_count", testDef.getTotalSegmentCount());
 
             int totalViewCount = getTotalInmHViewCount(conn,action.getUserId());
 

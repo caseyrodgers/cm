@@ -62,6 +62,33 @@ public class HaTestDefDao {
          return new HaTestDef(conn, name);
     }
      
+     
+     public HaTestDef getTestDef(final Connection conn, int testDefId) throws Exception {
+         PreparedStatement ps = null;
+         ResultSet rs = null;
+         try {
+             String sql = "select test_name from HA_TEST_DEF where test_def_id = ?";
+             ps = conn.prepareStatement(sql);
+             ps.setInt(1,testDefId);
+             rs = ps.executeQuery();
+             if(!rs.first())
+                 throw new Exception("No such test_def_id: " + testDefId);
+
+             return getTestDef(conn, rs.getString("test_name"));
+             
+         }
+         catch (Exception e) {
+             logger.error(e);
+             throw new CmException(e);
+         }
+         finally {
+             SqlUtilities.releaseResources(rs, ps, null);
+         }         
+         
+     }
+     
+     
+     
      /**
       * Return list of chapter names for book associated with this program
       * 

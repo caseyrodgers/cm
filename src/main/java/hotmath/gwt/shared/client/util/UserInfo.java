@@ -70,6 +70,7 @@ public class UserInfo implements IsSerializable {
                 user.setShowWorkRequired(ui.getDataAsInt("show_work_required")==0?false:true);
                 user.setUserAccountType(ui.getDataAsString("user_account_type"));
                 user.setPassPercentRequired(ui.getDataAsInt("pass_percent_required"));
+                user.setTestSegmentCount(ui.getDataAsInt("test_segment_count"));
                 __instance = user;
                 
                 Log.info("UserInfo object set to: " + user);
