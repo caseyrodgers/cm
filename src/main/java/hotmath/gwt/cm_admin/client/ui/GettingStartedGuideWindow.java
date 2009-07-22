@@ -5,22 +5,21 @@ import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.widget.button.Button;
+
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.user.client.ui.Frame;
-
 
 public class GettingStartedGuideWindow extends CmWindow {
 
     public  GettingStartedGuideWindow() {
         setAutoHeight(true);
         setSize(640,480);
-        
+
         setModal(true);
         setResizable(false);
         setStyleName("help-window");
-        setHeading("Catchup Math Administration Getting Started Guide");
-        
-        
+        setHeading("Catchup Math Administrator Getting Started Guide");
+
         Frame frame = new Frame("/gwt-resources/cm-admin-getting-started-guide.html");
         frame.setSize("100%", "450px");
         
@@ -33,7 +32,7 @@ public class GettingStartedGuideWindow extends CmWindow {
         addButton(closeBtn);
 
         add(frame);
-        
+
         setVisible(true);
     }
 
