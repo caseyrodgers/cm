@@ -11,6 +11,7 @@ import java.util.List;
 
 import com.extjs.gxt.ui.client.Registry;
 import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
+import com.extjs.gxt.ui.client.Style.LayoutRegion;
 import com.extjs.gxt.ui.client.Style.SelectionMode;
 import com.extjs.gxt.ui.client.core.XTemplate;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
@@ -22,6 +23,8 @@ import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
 import com.extjs.gxt.ui.client.widget.grid.Grid;
+import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
+import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -81,13 +84,18 @@ public class StudentDetailsWindow extends CmWindow {
         toolBar.add(showWorkBtn());
         toolBar.add(showTopicsBtn());
         
-        add(toolBar);
-
-        LayoutContainer cp = new LayoutContainer();
-        cp.setLayout(new FitLayout());
-        cp.add(samGrid);
-        add(cp);
         
+        LayoutContainer lc = new LayoutContainer();
+        lc.setLayout(new BorderLayout());
+        
+        lc.add(toolBar, new BorderLayoutData(LayoutRegion.NORTH,35));
+
+        LayoutContainer gridContainer = new LayoutContainer();
+        gridContainer.setLayout(new FitLayout());
+        gridContainer.add(samGrid);
+        lc.add(gridContainer, new BorderLayoutData(LayoutRegion.CENTER));
+        add(lc);
+
         _studentCount = new Label();
         _studentCount.setStyleName("students-count");
         add(_studentCount);
