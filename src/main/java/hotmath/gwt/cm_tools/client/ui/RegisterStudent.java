@@ -69,7 +69,7 @@ public class RegisterStudent extends LayoutContainer {
 	private TextField<String> name;
 	
 	private int formHeight = 410;
-	private int formWidth  = 375;
+	private int formWidth  = 475;
 	
 	private CombinedFormPanel _formPanel;
 	
@@ -115,7 +115,7 @@ public class RegisterStudent extends LayoutContainer {
 		FieldSet fs = new FieldSet();
 		FormLayout fL = new FormLayout();
 		fL.setLabelWidth(_formPanel.getLabelWidth());
-        fL.setDefaultWidth(195);
+        fL.setDefaultWidth(295);
 	    fs.setLayout(fL);
 	    
 		fs.setHeading("Define Profile");
@@ -218,7 +218,7 @@ public class RegisterStudent extends LayoutContainer {
 
 		fw.setHeading((isNew)?"Register a New Student":"Edit Student");
 		fw.setWidth(formWidth + 40);
-		fw.setHeight(formHeight+20);
+		fw.setHeight(formHeight + 20);
 		fw.setLayout(new FitLayout());
 		fw.setResizable(false);
 		fw.setDraggable(true);
@@ -233,7 +233,6 @@ public class RegisterStudent extends LayoutContainer {
 		_formPanel.setButtonAlign(HorizontalAlignment.RIGHT);  
 		_formPanel.addButton(saveBtn);
 		_formPanel.addButton(cancelBtn);
-        
         
         /** Seems like a bug with setting focus, so the only way to 
          *  it to work is to set a timer and hope ... 
