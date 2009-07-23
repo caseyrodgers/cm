@@ -28,6 +28,7 @@ public class StudentModel extends BaseModelData implements IsSerializable {
 	public static final String TUTORING_STATE_KEY = "tutoring-state";
 	public static final String NAME_KEY = "name";
 	public static final String PASSCODE_KEY = "passcode";
+	public static final String BACKGROUND_STYLE="background_style";
 	
 	
 	public String getName() {
@@ -235,6 +236,14 @@ public class StudentModel extends BaseModelData implements IsSerializable {
 		set(TUTORING_AVAIL_KEY, val);
 	}
 
+	public String getBackgroundStyle() {
+	    return get(BACKGROUND_STYLE);
+	}
+	
+	public void setBackgroundStyle(String style) {
+	    set(BACKGROUND_STYLE, style);
+	}
+	
 	public StudentModel() {
 	}
 	

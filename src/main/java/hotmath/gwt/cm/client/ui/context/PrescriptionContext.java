@@ -10,7 +10,6 @@ import hotmath.gwt.cm_tools.client.ui.AutoTestWindow;
 import hotmath.gwt.cm_tools.client.ui.CmMainPanel;
 import hotmath.gwt.cm_tools.client.ui.ContextChangeListener;
 import hotmath.gwt.cm_tools.client.ui.ContextController;
-import hotmath.gwt.cm_tools.client.ui.InfoPopupBox;
 import hotmath.gwt.cm_tools.client.ui.NextDialog;
 import hotmath.gwt.cm_tools.client.ui.context.CmContext;
 import hotmath.gwt.shared.client.CmShared;
@@ -53,8 +52,6 @@ public class PrescriptionContext implements CmContext {
 
     public void setPrescriptionData(PrescriptionData prescriptionData) {
         this.prescriptionData = prescriptionData;
-        
-        
         EventBus.getInstance().fireEvent(new CmEvent(EventBus.EVENT_TYPE_TOPIC_CHANGED,prescriptionData.getCurrSession().getTopic()));
     }
 
@@ -211,7 +208,7 @@ public class PrescriptionContext implements CmContext {
                         "You have completed all " + totSegs + " sections of this program!",
                         new Listener<MessageBoxEvent>() {
                             public void handleEvent(MessageBoxEvent be) {
-                                com.google.gwt.user.client.Window.Location.assign(CmShared.CM_HOME_URL);
+                                CatchupMathTools.showAlert("New Program is being assigned");
                             }
                         });
             }

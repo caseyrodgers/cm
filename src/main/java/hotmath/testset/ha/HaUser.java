@@ -225,7 +225,7 @@ public class HaUser extends HaBasicUserImpl {
 		try {
 			String sql =
 			     "select s.type,u.uid, u.user_name, u.active_run_id,u.active_test_id,u.active_segment,u.active_run_session " +
-		         "       ,u.is_show_work_required, d.test_name as assigned_test_name, u.test_config_json, gui_background_style " +
+		         "       ,u.is_show_work_required, d.test_name as assigned_test_name, p.test_config_json, gui_background_style " +
 		         "       ,p.pass_percent " +
 		         "from HA_USER u INNER JOIN HA_TEST_DEF d on u.test_def_id = d.test_def_id " +
 		         "     JOIN HA_ADMIN a on u.admin_id = a.aid " +

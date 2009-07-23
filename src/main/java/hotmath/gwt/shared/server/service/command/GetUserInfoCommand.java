@@ -2,6 +2,7 @@ package hotmath.gwt.shared.server.service.command;
 
 import hotmath.gwt.cm_admin.server.model.CmStudentDao;
 import hotmath.gwt.cm_tools.client.model.StudentActiveInfo;
+import hotmath.gwt.cm_tools.client.model.StudentModel;
 import hotmath.gwt.cm_tools.client.model.StudentUserProgramModel;
 import hotmath.gwt.shared.client.rpc.Action;
 import hotmath.gwt.shared.client.rpc.Response;
@@ -11,7 +12,6 @@ import hotmath.gwt.shared.client.util.RpcData;
 import hotmath.gwt.shared.server.service.ActionHandler;
 import hotmath.testset.ha.HaTestDef;
 import hotmath.testset.ha.HaTestDefDao;
-import hotmath.testset.ha.HaUser;
 import hotmath.util.HMConnectionPool;
 import hotmath.util.sql.SqlUtilities;
 
@@ -27,28 +27,28 @@ public class GetUserInfoCommand implements ActionHandler<GetUserInfoAction, RpcD
         try {
             conn = HMConnectionPool.getConnection();
             
-            HaUser user = HaUser.lookUser(conn, action.getUserId(),null);
-
             
             CmStudentDao dao = new CmStudentDao();
+            StudentModel sm = dao.getStudentModel(action.getUserId());
             StudentUserProgramModel si = dao.loadProgramInfo(conn, action.getUserId());
+            StudentActiveInfo activeInfo = dao.loadActiveInfo(conn, action.getUserId());
             
             HaTestDefDao hdao = new HaTestDefDao();
             HaTestDef testDef = hdao.getTestDef(conn, si.getTestDefId());
             
             
             RpcData rpcData = new RpcData();
-            rpcData.putData("uid", user.getUid());
-            rpcData.putData("test_id", user.getActiveTest());
-            rpcData.putData("run_id", user.getActiveTestRunId());
-            rpcData.putData("test_segment", user.getActiveTestSegment());
-            rpcData.putData("user_name", user.getUserName());
-            rpcData.putData("session_number", user.getActiveTestRunSession());
-            rpcData.putData("gui_background_style", user.getBackgroundStyle());
-            rpcData.putData("test_name", user.getAssignedTestName());
-            rpcData.putData("show_work_required", user.isShowWorkRequired() ? 1 : 0);
-            rpcData.putData("user_account_type",user.getUserAccountType());
-            rpcData.putData("pass_percent_required",user.getPassPercentRequired());
+            rpcData.putData("uid", sm.getUid());
+            rpcData.putData("test_id", activeInfo.getActiveTestId());
+            rpcData.putData("run_id", activeInfo.getActiveRunId());
+            rpcData.putData("test_segment", activeInfo.getActiveSegment());
+            rpcData.putData("user_name", sm.getName());
+            rpcData.putData("session_number", activeInfo.getActiveRunSession());
+            rpcData.putData("gui_background_style", sm.getBackgroundStyle());
+            rpcData.putData("test_name", testDef.getName());
+            rpcData.putData("show_work_required", sm.getShowWorkRequired() ? 1 : 0);
+            rpcData.putData("user_account_type","student");
+            rpcData.putData("pass_percent_required",si.getPassPercent());
             rpcData.putData("test_segment_count", testDef.getTotalSegmentCount());
 
             int totalViewCount = getTotalInmHViewCount(conn,action.getUserId());

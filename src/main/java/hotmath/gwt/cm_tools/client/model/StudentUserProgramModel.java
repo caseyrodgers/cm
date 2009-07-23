@@ -1,7 +1,14 @@
 package hotmath.gwt.cm_tools.client.model;
 
+import hotmath.testset.ha.HaTestConfig;
+
 import java.util.Date;
 
+/** Identifies a complete Catchup Math program
+ * 
+ * @author casey
+ *
+ */
 public class StudentUserProgramModel {
     
     Integer id;
@@ -11,7 +18,14 @@ public class StudentUserProgramModel {
     Integer passPercent;
     Integer adminId;
     Date createDate;
+    HaTestConfig config;
     
+    public HaTestConfig getConfig() {
+        return config;
+    }
+    public void setConfig(HaTestConfig config) {
+        this.config = config;
+    }
     public Integer getId() {
         return id;
     }
@@ -57,9 +71,9 @@ public class StudentUserProgramModel {
     
     @Override
     public String toString() {
-        return "StudentUserProgramModel [adminId=" + adminId + ", createDate=" + createDate + ", id=" + id
-                + ", passPercent=" + passPercent + ", testDefId=" + testDefId + ", testName=" + testName + ", userId="
-                + userId + "]";
+        return "StudentUserProgramModel [adminId=" + adminId + ", config=" + config + ", createDate=" + createDate
+                + ", id=" + id + ", passPercent=" + passPercent + ", testDefId=" + testDefId + ", testName=" + testName
+                + ", userId=" + userId + "]";
     }
     
 }
