@@ -47,7 +47,7 @@ public class CmCacheManager  {
     /** Distinct cache names as defined in configuration files (ehcache.xml)
      * 
      */
-	public static enum CacheName { PROG_DEF, TEST_DEF, TEST, TEST_HTML, TEST_HTML_CHECKED, TEST_DEF_DESCRIPTION };
+	public static enum CacheName { PROG_DEF, TEST_DEF, TEST, TEST_HTML, TEST_HTML_CHECKED, TEST_DEF_DESCRIPTION, REPORT_ID };
 
 	private void flushCache() {
     	if (logger.isInfoEnabled()) {
