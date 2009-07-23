@@ -2,6 +2,7 @@ package hotmath.gwt.cm_admin.client.service;
 
 import hotmath.gwt.cm_tools.client.model.AccountInfoModel;
 import hotmath.gwt.cm_tools.client.model.StudentModel;
+import hotmath.gwt.shared.client.util.RpcData;
 
 import java.util.List;
 
@@ -19,4 +20,6 @@ public interface RegistrationServiceAsync {
 	  void removeUser(StudentModel sm, AsyncCallback<StudentModel> callback);
 
 	  void getAccountInfoForAdminUid(Integer uid, AsyncCallback<AccountInfoModel> callback);
+	  
+	  void getPrintableSummaryReportId(List<RpcData> studentUids, AsyncCallback<RpcData> callback);
 }

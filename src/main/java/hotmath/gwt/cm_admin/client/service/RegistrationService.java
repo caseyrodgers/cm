@@ -2,6 +2,7 @@ package hotmath.gwt.cm_admin.client.service;
 
 import hotmath.gwt.cm_tools.client.model.AccountInfoModel;
 import hotmath.gwt.cm_tools.client.model.StudentModel;
+import hotmath.gwt.shared.client.util.RpcData;
 
 import java.util.List;
 
@@ -19,5 +20,7 @@ public interface RegistrationService extends RemoteService {
 	  void removeUser(StudentModel sm);
 
 	  AccountInfoModel getAccountInfoForAdminUid(Integer uid) throws Exception;
+	  
+	  RpcData getPrintableSummaryReportId(List<RpcData> studentUids) throws Exception;
 
 }

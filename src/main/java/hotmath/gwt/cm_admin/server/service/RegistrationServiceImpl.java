@@ -6,6 +6,7 @@ import hotmath.gwt.cm_admin.server.model.CmAdminDao;
 import hotmath.gwt.cm_admin.server.model.CmStudentDao;
 import hotmath.gwt.cm_tools.client.model.AccountInfoModel;
 import hotmath.gwt.cm_tools.client.model.StudentModel;
+import hotmath.gwt.shared.client.util.RpcData;
 
 import java.util.List;
 
@@ -20,18 +21,18 @@ public class RegistrationServiceImpl extends RemoteServiceServlet implements Reg
 	}
 
 	public List<StudentModel> getSummariesForActiveStudents(Integer adminUid) throws Exception {
-		CmStudentDao cma = new CmStudentDao();
-		return cma.getSummariesForActiveStudents(adminUid);
+		CmStudentDao dao = new CmStudentDao();
+		return dao.getSummariesForActiveStudents(adminUid);
 	}
 	
 	public List<StudentModel> getSummariesForInactiveStudents(Integer adminUid) throws Exception {
-        CmStudentDao cma = new CmStudentDao();
-		return cma.getSummariesForInactiveStudents(adminUid);
+		CmStudentDao dao = new CmStudentDao();
+		return dao.getSummariesForInactiveStudents(adminUid);
 	}
 
 	public StudentModel deactivateUser(StudentModel sm) throws Exception {
-        CmStudentDao cma = new CmStudentDao();
-		return cma.deactivateUser(sm);
+		CmStudentDao dao = new CmStudentDao();
+		return dao.deactivateUser(sm);
 	}
 
 	@Deprecated
@@ -41,7 +42,12 @@ public class RegistrationServiceImpl extends RemoteServiceServlet implements Reg
     }
 
 	public AccountInfoModel getAccountInfoForAdminUid(Integer uid) throws Exception {
-		CmAdminDao cma = new CmAdminDao();
-		return cma.getAccountInfo(uid);
+		CmAdminDao dao = new CmAdminDao();
+		return dao.getAccountInfo(uid);
+	}
+	
+	public RpcData getPrintableSummaryReportId(List<RpcData> studentUids) throws Exception {
+		CmAdminDao dao = new CmAdminDao();
+		return dao.getPrintableSummaryReportId(studentUids);
 	}
 }

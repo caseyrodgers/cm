@@ -1,6 +1,7 @@
 package hotmath.gwt.cm_admin.server.model;
 
 import static hotmath.cm.util.CmCacheManager.CacheName.PROG_DEF;
+import static hotmath.cm.util.CmCacheManager.CacheName.REPORT_ID;
 import hotmath.cm.util.CmCacheManager;
 import hotmath.gwt.cm_tools.client.model.AccountInfoModel;
 import hotmath.gwt.cm_tools.client.model.ChapterModel;
@@ -8,6 +9,7 @@ import hotmath.gwt.cm_tools.client.model.GroupModel;
 import hotmath.gwt.cm_tools.client.model.StudentModel;
 import hotmath.gwt.cm_tools.client.model.StudyProgramModel;
 import hotmath.gwt.cm_tools.client.model.SubjectModel;
+import hotmath.gwt.shared.client.util.RpcData;
 import hotmath.testset.ha.HaAdmin;
 import hotmath.util.HMConnectionPool;
 import hotmath.util.sql.SqlUtilities;
@@ -441,6 +443,14 @@ public class CmAdminDao {
         }
     }
 
+    public RpcData getPrintableSummaryReportId(List<RpcData> studentUids) {
+    	String reportId = String.format("%d%d%d", studentUids.get(0), System.currentTimeMillis(), studentUids.size());
+    	CmCacheManager.getInstance().addToCache(REPORT_ID, reportId, studentUids);
+    	RpcData d = new RpcData();
+    	d.putData("rid", reportId);
+    	return d;
+    }
+    
     private List <StudyProgramModel> loadProgramDefinitions(ResultSet rs) throws Exception {
     	List <StudyProgramModel> l = new ArrayList<StudyProgramModel> ();
     	while (rs.next()) {
