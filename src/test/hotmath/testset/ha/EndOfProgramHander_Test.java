@@ -20,7 +20,17 @@ public class EndOfProgramHander_Test extends CmDbTestCase {
         userId = setupDemoAccount();
     }
     
-    
+    public void testEndOfProgramChapterTestLast4() throws Exception {
+
+        // assign chapter test to test student (last chapter)
+        dao.assignProgramToStudent(userId, CmProgram.GEO_PROF.getSubject(),"Prof", null);
+        
+        EndOfProgramHandler eop = new EndOfProgramHandler(userId);
+        StudentUserProgramModel nextProgram = eop.getNextProgram();
+        
+        // this should just loop around
+        assertTrue(nextProgram.getTestDefId() == CmProgram.CAHSEEHM.getDefId());
+    }     
     
     public void testEndOfProgramChapterTestLast3() throws Exception {
 
