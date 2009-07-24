@@ -60,7 +60,7 @@ public class EndOfProgramHandler {
                 updateProgram("Alg 2", "Prof",null);
             }
             else if(programCurr.getTestDefId() == CmProgram.ALG2_PROF.getDefId() ) {
-                updateProgram("Grad Prep","",null);
+                updateProgram("","Grad Prep",null);
             }
             else if(programCurr.getTestDefId() == CmProgram.CAHSEEHM.getDefId()) {
                 // reset/repeat
