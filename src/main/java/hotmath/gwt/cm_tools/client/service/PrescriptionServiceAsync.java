@@ -156,14 +156,15 @@ public interface PrescriptionServiceAsync {
       void getProgramDefinitions(AsyncCallback<List<StudyProgramModel>> callback);
       
 
-      /** Return all subject definitions
+      /** Return subject definitions for specified Program
        * 
+       * @param progId
        * @param callback
        */
-      void getSubjectDefinitions(AsyncCallback<List<SubjectModel>> callback);
+      void getSubjectDefinitions(String progId, AsyncCallback<List<SubjectModel>> callback);
 
       
-      /** Return all active groupds defined for user
+      /** Return all active groups defined for user
        * 
        * @param adminUid
        * @param callback

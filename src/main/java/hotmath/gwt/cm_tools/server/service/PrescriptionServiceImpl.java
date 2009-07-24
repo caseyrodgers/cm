@@ -314,7 +314,7 @@ public class PrescriptionServiceImpl extends RemoteServiceServlet implements Pre
     public List<LessonItemModel> getLessonItemsForTestRun(Integer runId) throws CmRpcException {
     	try {
             CmStudentDao dao = new CmStudentDao();
-            return dao.getLessonItemsForTestRun(runId);    		
+            return dao.getLessonItemsForTestRun(runId);
     	}
     	catch (Exception e) {
     		throw new CmRpcException(e);
@@ -339,10 +339,10 @@ public class PrescriptionServiceImpl extends RemoteServiceServlet implements Pre
         }
     }
 
-    public List<SubjectModel> getSubjectDefinitions() throws CmRpcException {
+    public List<SubjectModel> getSubjectDefinitions(String progId) throws CmRpcException {
         try {
             CmAdminDao cma = new CmAdminDao();
-            return cma.getSubjectDefinitions();
+            return cma.getSubjectDefinitions(progId);
         } catch (Exception e) {
             throw new CmRpcException(e);
         }

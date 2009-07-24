@@ -233,7 +233,7 @@ public interface PrescriptionService extends RemoteService {
      * 
      * @return
      */
-    List<SubjectModel> getSubjectDefinitions() throws CmRpcException;
+    List<SubjectModel> getSubjectDefinitions(String progId) throws CmRpcException;
     
 
     /** Return list of all active groups defined for this admin
