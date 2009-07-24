@@ -1,6 +1,5 @@
-package hotmath.gwt.cm_tools.client.model;
+package hotmath.testset.ha;
 
-import hotmath.testset.ha.HaTestConfig;
 
 import java.util.Date;
 
@@ -25,6 +24,7 @@ public class StudentUserProgramModel {
     }
     public void setConfig(HaTestConfig config) {
         this.config = config;
+
     }
     public Integer getId() {
         return id;

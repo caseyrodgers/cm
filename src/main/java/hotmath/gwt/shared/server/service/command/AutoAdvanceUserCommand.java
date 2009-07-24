@@ -1,0 +1,34 @@
+package hotmath.gwt.shared.server.service.command;
+
+import hotmath.gwt.cm_tools.client.model.AutoUserAdvanced;
+import hotmath.gwt.shared.client.rpc.Action;
+import hotmath.gwt.shared.client.rpc.Response;
+import hotmath.gwt.shared.client.rpc.action.AutoAdvanceUserAction;
+import hotmath.gwt.shared.server.service.ActionHandler;
+import hotmath.testset.ha.EndOfProgramHandler;
+import hotmath.testset.ha.StudentUserProgramModel;
+
+import org.apache.log4j.Logger;
+
+
+public class AutoAdvanceUserCommand implements ActionHandler<AutoAdvanceUserAction, AutoUserAdvanced> {
+
+    Logger logger = Logger.getLogger(AutoAdvanceUserCommand.class);
+
+    @Override
+    public AutoUserAdvanced execute(AutoAdvanceUserAction action) throws Exception {
+        
+        int userId = action.getUserId();
+        EndOfProgramHandler eofh = new EndOfProgramHandler(userId);
+        StudentUserProgramModel program = eofh.getNextProgram();
+        
+        String chapter = program.getConfig().getChapters().size() > 0?program.getConfig().getChapters().get(0):null;
+        AutoUserAdvanced advance = new AutoUserAdvanced(program.getTestName(), chapter);
+        return advance;
+    }
+
+    @Override
+    public Class<? extends Action<? extends Response>> getActionType() {
+        return AutoAdvanceUserAction.class;
+    }
+}

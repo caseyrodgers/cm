@@ -3,7 +3,7 @@ package hotmath.gwt.cm_admin.server.model;
 import hotmath.gwt.cm.server.CmDbTestCase;
 import hotmath.gwt.cm_tools.client.model.StudentActiveInfo;
 import hotmath.gwt.cm_tools.client.model.StudentModel;
-import hotmath.gwt.cm_tools.client.model.StudentUserProgramModel;
+import hotmath.testset.ha.StudentUserProgramModel;
 
 public class CmAdminDao_Test extends CmDbTestCase {
 

@@ -5,7 +5,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 
 public class StudentModel extends BaseModelData implements IsSerializable {
 
-	private static final long serialVersionUID = 2950521146425989628L;
+    private static final long serialVersionUID = 2950521146425989628L;
 	
 	public static final String GROUP_KEY = "group";
 	public static final String GROUP_ID_KEY = "groupId";

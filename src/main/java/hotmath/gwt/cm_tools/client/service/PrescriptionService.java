@@ -1,5 +1,6 @@
 package hotmath.gwt.cm_tools.client.service;
 
+import hotmath.gwt.cm_tools.client.model.AutoUserAdvanced;
 import hotmath.gwt.cm_tools.client.model.ChapterModel;
 import hotmath.gwt.cm_tools.client.model.GroupModel;
 import hotmath.gwt.cm_tools.client.model.LessonItemModel;
@@ -14,6 +15,7 @@ import hotmath.gwt.shared.client.util.RpcData;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.rpc.RemoteService;
 
 public interface PrescriptionService extends RemoteService {
@@ -288,4 +290,13 @@ public interface PrescriptionService extends RemoteService {
      * @throws Exception
      */
     GroupModel addGroup(Integer adminUid, GroupModel gm) throws CmRpcException;
+    
+    
+    /** Automatically advance user to next logical program
+     * 
+     * @param userId
+     * @return
+     * @throws CmRpcException
+     */
+    AutoUserAdvanced autoAdvanceUser(Integer userId) throws CmRpcException;
 }

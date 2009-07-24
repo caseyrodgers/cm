@@ -6,10 +6,10 @@ import hotmath.gwt.cm_tools.client.model.StudentActiveInfo;
 import hotmath.gwt.cm_tools.client.model.StudentActivityModel;
 import hotmath.gwt.cm_tools.client.model.StudentModel;
 import hotmath.gwt.cm_tools.client.model.StudentShowWorkModel;
-import hotmath.gwt.cm_tools.client.model.StudentUserProgramModel;
 import hotmath.gwt.shared.client.util.CmException;
 import hotmath.testset.ha.HaTestConfig;
 import hotmath.testset.ha.HaTestDefDescription;
+import hotmath.testset.ha.StudentUserProgramModel;
 import hotmath.util.HMConnectionPool;
 import hotmath.util.sql.SqlUtilities;
 
@@ -381,6 +381,14 @@ public class CmStudentDao {
             " user_prog_id = ?, is_tutoring_available = ?, is_show_work_required = ?, gui_background_style = ? " +
             "where uid = ?";
 
+    /** Update the StudentModel
+     * 
+     * @TODO: move the sectionNum to segmentNum and then move to ActiveInfo
+     * 
+     * @param sm
+     * @return
+     * @throws Exception
+     */
     public StudentModel updateStudent(StudentModel sm) throws Exception {
         Connection conn = null;
         PreparedStatement ps = null;
@@ -468,37 +476,8 @@ public class CmStudentDao {
         try {
             conn = HMConnectionPool.getConnection();
             
-            /** Format the test config json that
-             *  will provide custom configuration
-             *  for this program.
-             */
-            ResultSet rs = null;
-            PreparedStatement ps2 = null;
-            String sql = "select test_config_json from HA_TEST_DEF where subj_id = ? and prog_id = ?";
-            String json = "";
-            try {
-                ps2 = conn.prepareStatement(sql);
-                ps2.setString(1, sm.getSubjId());
-                String progId = sm.getProgId();
-                ps2.setString(2, progId);
-                rs = ps2.executeQuery();
-                if (rs.next()) {
-                    json = rs.getString(1);
-                    // save JSON if chap program set chapter
-                    // @TODO: support multiple chapters
-                    if (progId.equalsIgnoreCase("chap")) {
-                        // Delimit the chapter in quotes
-                        // otherwise the parsing of the JSON fails.
-                        json = json.replaceFirst("XXX", "'" + sm.getChapter() + "'");
-                    }
-                    sm.setJson(json);
-                }
 
-            } catch (Exception e) {
-                throw new CmException("Could not configure test",e);
-            } finally {
-                SqlUtilities.releaseResources(rs, ps2, null);
-            }            
+            setTestConfig(conn, sm);
             
             String pp = sm.getPassPercent();
             if (pp != null) {
@@ -527,6 +506,7 @@ public class CmStudentDao {
                 sm.setUserProgramId(val);
             }
             
+            sm.setSectionNum(0);
             setActiveInfo(conn, sm.getUid(), new StudentActiveInfo());
         } catch (Exception e) {
             String m = String.format("*** Error adding student program for student with uid: %d", sm.getUid());
@@ -536,6 +516,55 @@ public class CmStudentDao {
             SqlUtilities.releaseResources(null, ps, conn);
         }
         return sm;
+    }
+    
+    
+    /** Set the test config json for this student by reading
+     *  the template json from HA_TEST_DEF and parsing/setting.
+     *  
+     *  This actually will set the json field in the StudentModel.
+     *  
+     *   Format the test config json that
+     *   will provide custom configuration
+     *   for this program. 
+     *  
+     *  
+     *  @TODO:  get chapter out of StudentModel, it should be in StudentModelProgramInfo
+     *  
+     * @param conn
+     * @param sm
+     * @throws Exception
+     */
+    private void setTestConfig(final Connection conn, StudentModel sm) throws Exception {
+
+        ResultSet rs = null;
+        PreparedStatement ps2 = null;
+        String sql = "select test_config_json from HA_TEST_DEF where subj_id = ? and prog_id = ?";
+        String json = "";
+        try {
+            ps2 = conn.prepareStatement(sql);
+            ps2.setString(1, sm.getSubjId());
+            String progId = sm.getProgId();
+            ps2.setString(2, progId);
+            rs = ps2.executeQuery();
+            if (rs.next()) {
+                json = rs.getString(1);
+                // save JSON if chap program set chapter
+                // @TODO: support multiple chapters
+                if (progId.equalsIgnoreCase("chap")) {
+                    // Delimit the chapter in quotes
+                    // otherwise the parsing of the JSON fails.
+                    json = json.replaceFirst("XXX", "'" + sm.getChapter() + "'");
+                }
+                sm.setJson(json);
+            }
+
+        } catch (Exception e) {
+            throw new CmException("Could not configure test",e);
+        } finally {
+            SqlUtilities.releaseResources(rs, ps2, null);
+        }            
+        
     }
 
     private static final String SELECT_LAST_INSERT_ID_SQL = "select LAST_INSERT_ID()";
@@ -703,9 +732,9 @@ public class CmStudentDao {
             String passPercent = rs.getString("pass_percent");
             sm.setPassPercent(passPercent);
             sm.setBackgroundStyle(rs.getString("gui_background_style"));
-            int sectionNum = rs.getInt("active_segment");
-            sm.setSectionNum(sectionNum);
-            if (sectionNum > 0) {
+            int activeSegment = rs.getInt("active_segment");
+            sm.setSectionNum(activeSegment);
+            if (activeSegment > 0) {
                 int segmentCount = rs.getInt("total_segments");
 
                 /**
@@ -716,7 +745,7 @@ public class CmStudentDao {
                 if (segmentCount == 0)
                     segmentCount = 4;
 
-                String status = new StringBuilder("Section ").append(sectionNum).append(" of ").append(segmentCount)
+                String status = new StringBuilder("Section ").append(activeSegment).append(" of ").append(segmentCount)
                         .toString();
                 sm.setStatus(status);
             } else {
@@ -969,7 +998,7 @@ public class CmStudentDao {
      * Set the active information for the named user
      * 
      * @TODO: Move to 1-to-1 table HA_USER_ACTIVE, or set is_active flag in HA_USER_PROGRAM
-     * 
+     * @TODO: move all active info to here (including the studentModel.getSection)
      * @param conn
      * @param userId
      * @param activeInfo
@@ -1009,6 +1038,19 @@ public class CmStudentDao {
         sm.setProgId(progId);
         sm.setSubjId(subId);
         sm.setProgramChanged(true);
+        
+        sm.setChapter(chapter);
+        
+        Connection conn = null;
+        try {
+            conn = HMConnectionPool.getConnection();
+            setTestConfig(conn, sm);
+        }
+        finally {
+            SqlUtilities.releaseResources(null,null, conn);
+            
+        }
+        
         updateStudent(sm, true, false, true, false);        
     }
 

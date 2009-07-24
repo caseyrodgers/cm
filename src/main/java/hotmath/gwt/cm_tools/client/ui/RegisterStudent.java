@@ -640,7 +640,33 @@ public class RegisterStudent extends LayoutContainer {
 
 	private void getSubjectListRPC(String progId, final ListStore <SubjectModel> subjStore) {
 		
+	    
+        /** @TODO: fix
+         * 
+         * BUG ALERT:  this causes infinite loop when updating existing student due
+         * to calling setComboBoxSelections()
+         * 
+         * Plus, this gets called too many times...
+         * 
+         * Plus, when error when selecting chapter, then you change program
+         * the error does not get reset.
+         * 
+         */
+
 		if (progId == null) return;
+
+		if(true) {
+    	    subjStore.removeAll();
+    	    subjStore.add(new SubjectModel("Pre-Algebra","Pre-Alg"));
+    	    subjStore.add(new SubjectModel("Algebra 1","Alg 1"));
+    		if(progId.equals("Prof")) {
+    		    subjStore.add(new SubjectModel("Geometry","Geom"));
+    		    subjStore.add(new SubjectModel("Algebra 2","Alg 2"));
+    		}
+    		
+    		return;
+		}
+		
 		
 		inProcessCount++;
 		PrescriptionServiceAsync s = (PrescriptionServiceAsync) Registry.get("prescriptionService");

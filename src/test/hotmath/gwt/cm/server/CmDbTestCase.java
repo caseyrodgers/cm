@@ -20,7 +20,7 @@ public class CmDbTestCase extends DbTestCase {
     public int setupDemoAccount() throws Exception {
         HaBasicUser user = HaUserFactory.createDemoUser();
 
-        new CmStudentDao().assignProgramToStudent(user.getUserKey(),"Pre-Alg", "Prof", null);
+        new CmStudentDao().assignProgramToStudent(user.getUserKey(),"Pre-Alg", "Prof",null);
         
         return user.getUserKey();
     }

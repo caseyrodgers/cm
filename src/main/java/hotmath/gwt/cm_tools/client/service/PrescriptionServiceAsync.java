@@ -1,5 +1,6 @@
 package hotmath.gwt.cm_tools.client.service;
 
+import hotmath.gwt.cm_tools.client.model.AutoUserAdvanced;
 import hotmath.gwt.cm_tools.client.model.ChapterModel;
 import hotmath.gwt.cm_tools.client.model.GroupModel;
 import hotmath.gwt.cm_tools.client.model.LessonItemModel;
@@ -209,6 +210,9 @@ public interface PrescriptionServiceAsync {
        * @param callback
        */
       void addGroup(Integer adminUid, GroupModel gm, AsyncCallback<GroupModel> callback);
-
+      
+      
+      
+      void autoAdvanceUser(Integer userId, AsyncCallback<AutoUserAdvanced> advanced);
 }
 

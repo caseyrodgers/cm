@@ -6,6 +6,7 @@ import hotmath.ProblemID;
 import hotmath.SolutionManager;
 import hotmath.gwt.cm_admin.server.model.CmAdminDao;
 import hotmath.gwt.cm_admin.server.model.CmStudentDao;
+import hotmath.gwt.cm_tools.client.model.AutoUserAdvanced;
 import hotmath.gwt.cm_tools.client.model.ChapterModel;
 import hotmath.gwt.cm_tools.client.model.GroupModel;
 import hotmath.gwt.cm_tools.client.model.LessonItemModel;
@@ -15,8 +16,10 @@ import hotmath.gwt.cm_tools.client.model.StudentShowWorkModel;
 import hotmath.gwt.cm_tools.client.model.StudyProgramModel;
 import hotmath.gwt.cm_tools.client.model.SubjectModel;
 import hotmath.gwt.cm_tools.client.service.PrescriptionService;
+import hotmath.gwt.shared.client.rpc.action.AutoAdvanceUserAction;
 import hotmath.gwt.shared.client.rpc.action.CreateTestRunAction;
 import hotmath.gwt.shared.client.rpc.action.GetPrescriptionAction;
+import hotmath.gwt.shared.client.rpc.action.GetProgramDefinitionsAction;
 import hotmath.gwt.shared.client.rpc.action.GetQuizHtmlAction;
 import hotmath.gwt.shared.client.rpc.action.GetQuizHtmlCheckedAction;
 import hotmath.gwt.shared.client.rpc.action.GetQuizResultsHtmlAction;
@@ -108,6 +111,16 @@ public class PrescriptionServiceImpl extends RemoteServiceServlet implements Pre
         SaveFeedbackAction action = new SaveFeedbackAction(comments, commentsUrl, stateInfo);
         ActionDispatcher.getInstance().execute(action);
     }   
+    
+    public AutoUserAdvanced autoAdvanceUser(Integer userId) throws CmRpcException {
+        AutoAdvanceUserAction action = new AutoAdvanceUserAction(userId);
+        return ActionDispatcher.getInstance().execute(action);
+    }
+    
+    public List<SubjectModel> getSubjectDefinitions(String progId) throws CmRpcException {
+        GetProgramDefinitionsAction action = new GetProgramDefinitionsAction(progId);
+        return ActionDispatcher.getInstance().execute(action);
+    }    
 
     public String getSolutionProblemStatementHtml(String pid) {
         try {
@@ -339,14 +352,6 @@ public class PrescriptionServiceImpl extends RemoteServiceServlet implements Pre
         }
     }
 
-    public List<SubjectModel> getSubjectDefinitions(String progId) throws CmRpcException {
-        try {
-            CmAdminDao cma = new CmAdminDao();
-            return cma.getSubjectDefinitions(progId);
-        } catch (Exception e) {
-            throw new CmRpcException(e);
-        }
-    }
 
     public List<GroupModel> getActiveGroups(Integer adminUid) throws CmRpcException {
         try {

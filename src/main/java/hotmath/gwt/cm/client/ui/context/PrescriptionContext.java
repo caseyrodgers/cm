@@ -6,6 +6,8 @@ import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.data.InmhItemData;
 import hotmath.gwt.cm_tools.client.data.PrescriptionData;
 import hotmath.gwt.cm_tools.client.data.PrescriptionSessionDataResource;
+import hotmath.gwt.cm_tools.client.model.AutoUserAdvanced;
+import hotmath.gwt.cm_tools.client.service.PrescriptionServiceAsync;
 import hotmath.gwt.cm_tools.client.ui.AutoTestWindow;
 import hotmath.gwt.cm_tools.client.ui.CmMainPanel;
 import hotmath.gwt.cm_tools.client.ui.ContextChangeListener;
@@ -21,17 +23,23 @@ import hotmath.gwt.shared.client.util.UserInfo;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.extjs.gxt.ui.client.Registry;
+import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
 import com.extjs.gxt.ui.client.event.BaseEvent;
+import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.MessageBoxEvent;
+import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.Html;
 import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.Window;
+import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.button.IconButton;
 import com.google.gwt.user.client.Timer;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -203,14 +211,9 @@ public class PrescriptionContext implements CmContext {
                     }
                 });
             } else {
-                // there are no more segments
-                MessageBox.alert("Congratulations!",
-                        "You have completed all " + totSegs + " sections of this program!",
-                        new Listener<MessageBoxEvent>() {
-                            public void handleEvent(MessageBoxEvent be) {
-                                CatchupMathTools.showAlert("New Program is being assigned");
-                            }
-                        });
+                
+                autoAdvanceUser();
+                
             }
             return;
         } else {
@@ -219,12 +222,53 @@ public class PrescriptionContext implements CmContext {
         }
     }
     
+
+    /** Auto Advance the user to the next program
+     *  
+     */
+    private void autoAdvanceUser() {
+        PrescriptionServiceAsync s = (PrescriptionServiceAsync) Registry.get("prescriptionService");
+        s.autoAdvanceUser(UserInfo.getInstance().getUid(), new AsyncCallback<AutoUserAdvanced>() {
+            public void onSuccess(AutoUserAdvanced userAdvance) {
+                
+                
+                String msg = "You have completed all " +  UserInfo.getInstance().getTestSegmentCount() + " sections of this program!" +
+                             "<p>You have been automatically advanced to:</p>" +
+                             "<b>" + userAdvance.getProgramTitle() + "</b>";
+
+
+                Window w = new Window();
+                w.setClosable(false);
+                w.setStyleName("demo-complete-window");
+                w.setHeight(200);
+                w.setWidth(350);
+                w.setHeading("Congratulations!");
+                Html html = new Html(msg);
+                w.add(html);
+                Button btnOk = new Button("OK");
+                btnOk.addSelectionListener(new SelectionListener<ButtonEvent>() {
+                    public void componentSelected(ButtonEvent ce) {
+                        com.google.gwt.user.client.Window.Location.reload();                        
+                    }
+                });
+                w.getButtonBar().setAlignment(HorizontalAlignment.RIGHT);
+                w.addButton(btnOk);
+                w.setVisible(true);
+            }
+            public void onFailure(Throwable caught) {
+                String msg = caught.getMessage();
+                CatchupMathTools.showAlert(msg);
+            }
+        });
+    }
+    
     
     private void showDemoCompleteMessage() {
         String msg = "<p>Thank you for trying Catchup Math for a Pre-algebra Session.</p>  " +
                      "<p>Please visit our <a href='http://catchupmath.com/schools.html'>Schools</a>, <a href='http://catchupmath.com/colleges.html'>Colleges</a>, or <a href='http://catchupmath.com/students.html'>Students</a> pages.</p>";
 
         Window w = new Window();
+        w.setClosable(false);
         w.setStyleName("demo-complete-window");
         w.setHeight(200);
         w.setWidth(350);
