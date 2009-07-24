@@ -165,7 +165,7 @@ public class RegisterStudent extends LayoutContainer {
 		fs.add(progCombo);
 		
 		subjStore = new ListStore <SubjectModel> ();
-		getSubjectListRPC(subjStore);
+		getSubjectListRPC((stuMdl != null)?stuMdl.getProgId():null, subjStore);
 		subjCombo = subjectCombo(subjStore);
 		fs.add(subjCombo);
 
@@ -282,6 +282,7 @@ public class RegisterStudent extends LayoutContainer {
 	        	if (needsSubject > 0) {
 	        		cb.enable();
 	        		cb.setForceSelection(true);
+	        	    getSubjectListRPC((String)sp.get("shortTitle"), subjStore);
 	        	}
 	        	else {
 	        		cb.clearSelections();
@@ -351,6 +352,8 @@ public class RegisterStudent extends LayoutContainer {
     		        	ComboBox<StudyProgram> cb = (ComboBox<StudyProgram>) _formPanel.getItemByItemId("prog-combo");
     		        	StudyProgram sp = cb.getValue();
     		        	String progId = sp.get("shortTitle");
+    		        	subjStore.removeAll();
+    		        	getSubjectListRPC(progId, subjStore);
     		        	chapStore.removeAll();
     		            getChapterListRPC(progId, subjectId, true, chapStore);
 	        	    }
@@ -635,11 +638,13 @@ public class RegisterStudent extends LayoutContainer {
         });
 	}
 
-	private void getSubjectListRPC(final ListStore <SubjectModel> subjStore) {
+	private void getSubjectListRPC(String progId, final ListStore <SubjectModel> subjStore) {
+		
+		if (progId == null) return;
 		
 		inProcessCount++;
 		PrescriptionServiceAsync s = (PrescriptionServiceAsync) Registry.get("prescriptionService");
-		s.getSubjectDefinitions(new AsyncCallback <List<SubjectModel>>() {
+		s.getSubjectDefinitions(progId, new AsyncCallback <List<SubjectModel>>() {
 
 			public void onSuccess(List<SubjectModel> result) {
 				subjStore.add(result);
