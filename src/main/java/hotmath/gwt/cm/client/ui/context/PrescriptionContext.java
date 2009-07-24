@@ -227,9 +227,14 @@ public class PrescriptionContext implements CmContext {
      *  
      */
     private void autoAdvanceUser() {
+        
+        CatchupMathTools.setBusy(true);
         PrescriptionServiceAsync s = (PrescriptionServiceAsync) Registry.get("prescriptionService");
         s.autoAdvanceUser(UserInfo.getInstance().getUid(), new AsyncCallback<AutoUserAdvanced>() {
             public void onSuccess(AutoUserAdvanced userAdvance) {
+                
+        
+                CatchupMathTools.setBusy(false);
                 
                 
                 String msg = "<p class='completed'>You have completed all " +  UserInfo.getInstance().getTestSegmentCount() + " sections of this program!</p>" +
@@ -256,6 +261,7 @@ public class PrescriptionContext implements CmContext {
                 w.setVisible(true);
             }
             public void onFailure(Throwable caught) {
+                CatchupMathTools.setBusy(false);
                 String msg = caught.getMessage();
                 CatchupMathTools.showAlert(msg);
             }
