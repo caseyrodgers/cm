@@ -239,6 +239,13 @@ public class HelpWindow extends CmWindow {
         m.set("bg_style", "resource-container");
         backgrounds.add( m );
         
+        
+        m = new BackgroundModel();
+        m.set("text","Catchup Math");
+        m.set("bg_style", "resource-container-catchup");
+        backgrounds.add(m);
+        
+        
         m = new BackgroundModel();
         m.set("text","Mountain Bike");
         m.set("bg_style", "resource-container-bike1");

@@ -102,6 +102,8 @@ public class GetQuizHtmlCommand implements ActionHandler<GetQuizHtmlAction, RpcD
             rpcData.putData("quiz_segment", testSegment);
             rpcData.putData("quiz_segment_count", haTest.getTotalSegments());
             rpcData.putData("title", testTitle);
+            String chapter = programInfo.getConfig().getChapters().size() > 0?programInfo.getConfig().getChapters().get(0):null;
+            rpcData.putData("chapter", chapter);
             
             
             CmCacheManager.getInstance().addToCache(CacheName.TEST_HTML,testKey, rpcData);

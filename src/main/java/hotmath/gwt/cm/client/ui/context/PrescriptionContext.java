@@ -232,14 +232,14 @@ public class PrescriptionContext implements CmContext {
             public void onSuccess(AutoUserAdvanced userAdvance) {
                 
                 
-                String msg = "You have completed all " +  UserInfo.getInstance().getTestSegmentCount() + " sections of this program!" +
-                             "<p>You have been automatically advanced to:</p>" +
-                             "<b>" + userAdvance.getProgramTitle() + "</b>";
-
+                String msg = "<p class='completed'>You have completed all " +  UserInfo.getInstance().getTestSegmentCount() + " sections of this program!</p>" +
+                             "<p class='advanced-to'>You have been automatically advanced to:" +
+                             "<div class='plan'><b>" + userAdvance.getProgramTitle() + "</div>" +
+                             "</p>";
 
                 Window w = new Window();
                 w.setClosable(false);
-                w.setStyleName("demo-complete-window");
+                w.setStyleName("auto-advance-window");
                 w.setHeight(200);
                 w.setWidth(350);
                 w.setHeading("Congratulations!");
