@@ -239,7 +239,7 @@ public class PrescriptionContext implements CmContext {
                 
                 
                 String msg = "<p class='completed'>You have completed this program!</p>" +
-                             "<p class='advanced-to'>You have been automatically advanced to:" +
+                             "<p class='advanced-to'>You will now be advanced to:" +
                              "<div class='plan'><b>" + userAdvance.getProgramTitle() + "</div>" +
                              "</p>";
 
