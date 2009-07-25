@@ -11,6 +11,11 @@ import hotmath.testset.ha.StudentUserProgramModel;
 import org.apache.log4j.Logger;
 
 
+/** Auto advance this user to the next logical program
+ * 
+ * @author casey
+ *
+ */
 public class AutoAdvanceUserCommand implements ActionHandler<AutoAdvanceUserAction, AutoUserAdvanced> {
 
     Logger logger = Logger.getLogger(AutoAdvanceUserCommand.class);

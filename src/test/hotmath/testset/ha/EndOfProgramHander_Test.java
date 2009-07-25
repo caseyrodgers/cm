@@ -2,8 +2,6 @@ package hotmath.testset.ha;
 
 import hotmath.gwt.cm.server.CmDbTestCase;
 import hotmath.gwt.cm_admin.server.model.CmStudentDao;
-import hotmath.testset.ha.EndOfProgramHandler;
-import hotmath.testset.ha.EndOfProgramHandler.CmProgram;
 
 public class EndOfProgramHander_Test extends CmDbTestCase {
     
@@ -20,7 +18,7 @@ public class EndOfProgramHander_Test extends CmDbTestCase {
         userId = setupDemoAccount();
     }
     
-    public void testEndOfProgramChapterTestLast5() throws Exception {
+    public void testEndOfProgramChapterTestCahseehm() throws Exception {
 
         // assign chapter test to test student (last chapter)
         dao.assignProgramToStudent(userId, CmProgram.CAHSEEHM.getSubject(),CmProgram.CAHSEEHM.getProgramId(), null);
@@ -33,7 +31,7 @@ public class EndOfProgramHander_Test extends CmDbTestCase {
     }  
     
     
-    public void testEndOfProgramChapterTestLast4() throws Exception {
+    public void testEndOfProgramChapterTestGeo() throws Exception {
 
         // assign chapter test to test student (last chapter)
         dao.assignProgramToStudent(userId, CmProgram.GEO_PROF.getSubject(),"Prof", null);
@@ -42,22 +40,10 @@ public class EndOfProgramHander_Test extends CmDbTestCase {
         StudentUserProgramModel nextProgram = eop.getNextProgram();
         
         // this should just loop around
-        assertTrue(nextProgram.getTestDefId() == CmProgram.CAHSEEHM.getDefId());
+        assertTrue(nextProgram.getTestDefId() == CmProgram.ALG2_PROF.getDefId());
     }     
     
-    public void testEndOfProgramChapterTestLast3() throws Exception {
-
-        // assign chapter test to test student (last chapter)
-        dao.assignProgramToStudent(userId, "", "Grad Prep", null);
-        
-        EndOfProgramHandler eop = new EndOfProgramHandler(userId);
-        StudentUserProgramModel nextProgram = eop.getNextProgram();
-        
-        // this should just loop around
-        assertTrue(nextProgram.getTestDefId() == CmProgram.CAHSEEHM.getDefId());
-    }    
-    
-    public void testEndOfProgramChapterTestLast() throws Exception {
+    public void testEndOfProgramChapterTesAlg1Chap() throws Exception {
 
         // assign chapter test to test student (last chapter)
         dao.assignProgramToStudent(userId, CmProgram.ALG1_CHAP.getSubject(), "Chap", "Solving Linear Equations");
@@ -73,7 +59,7 @@ public class EndOfProgramHander_Test extends CmDbTestCase {
     }  
     
     
-    public void testEndOfProgramChapterTestLast2() throws Exception {
+    public void testEndOfProgramChapterTestPreAlgChap() throws Exception {
 
         // assign chapter test to test student (last chapter)
         dao.assignProgramToStudent(userId, CmProgram.PREALG_CHAP.getSubject(), "Chap", "Linear Equations and Inequalities");

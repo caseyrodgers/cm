@@ -11,7 +11,9 @@ import hotmath.gwt.shared.client.util.RpcData;
 import hotmath.gwt.shared.server.service.ActionHandler;
 import hotmath.testset.TestSet;
 import hotmath.testset.ha.HaTest;
+import hotmath.testset.ha.HaTestConfig;
 import hotmath.testset.ha.HaTestDef;
+import hotmath.testset.ha.HaTestDefDao;
 import hotmath.testset.ha.HaTestDefFactory;
 import hotmath.testset.ha.StudentUserProgramModel;
 import hotmath.util.HMConnectionPool;
@@ -24,6 +26,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.sql.Connection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
@@ -102,7 +105,24 @@ public class GetQuizHtmlCommand implements ActionHandler<GetQuizHtmlAction, RpcD
             rpcData.putData("quiz_segment", testSegment);
             rpcData.putData("quiz_segment_count", haTest.getTotalSegments());
             rpcData.putData("title", testTitle);
-            String chapter = programInfo.getConfig().getChapters().size() > 0?programInfo.getConfig().getChapters().get(0):null;
+            
+            // pass along title and title number
+            HaTestConfig config = programInfo.getConfig();
+            String chapter = config.getChapters().size() > 0?config.getChapters().get(0):null;
+            if(chapter != null) {
+                /** If chapter is specified then add the chapter number
+                 *  to the title
+                 *  
+                 */
+                HaTestDefDao tdo = new HaTestDefDao();
+                List<String> chapters = tdo.getProgramChapters(tdo.getTestDef(conn,programInfo.getTestDefId()));
+                for(int i=0, t=chapters.size();i<t;i++) {
+                    if(chapters.get(i).equals(chapter)) {
+                        chapter = "#" + (i+1) + " " + chapter;
+                        break;
+                    }
+                }
+            }
             rpcData.putData("chapter", chapter);
             
             

@@ -229,6 +229,7 @@ public class PrescriptionContext implements CmContext {
     private void autoAdvanceUser() {
         
         CatchupMathTools.setBusy(true);
+
         PrescriptionServiceAsync s = (PrescriptionServiceAsync) Registry.get("prescriptionService");
         s.autoAdvanceUser(UserInfo.getInstance().getUid(), new AsyncCallback<AutoUserAdvanced>() {
             public void onSuccess(AutoUserAdvanced userAdvance) {
@@ -237,7 +238,7 @@ public class PrescriptionContext implements CmContext {
                 CatchupMathTools.setBusy(false);
                 
                 
-                String msg = "<p class='completed'>You have completed all " +  UserInfo.getInstance().getTestSegmentCount() + " sections of this program!</p>" +
+                String msg = "<p class='completed'>You have completed this program!</p>" +
                              "<p class='advanced-to'>You have been automatically advanced to:" +
                              "<div class='plan'><b>" + userAdvance.getProgramTitle() + "</div>" +
                              "</p>";

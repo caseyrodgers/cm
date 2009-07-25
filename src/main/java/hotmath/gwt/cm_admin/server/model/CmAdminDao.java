@@ -177,6 +177,16 @@ public class CmAdminDao {
         "where td.prog_id = ? and td.subj_id = ? " +
         "  and bt.textcode = td.textcode and bt.parent <> 0";
     
+    /** Get Chapter titles for given progId/subID
+     * 
+     *  NOTE: This is duplicated in HaTestDefDao.getProgramChapters(testDef)
+     *  
+     *  
+     * @param progId
+     * @param subjId
+     * @return
+     * @throws Exception
+     */
     public List<ChapterModel> getChaptersForProgramSubject(String progId, String subjId) throws Exception {
     	List <ChapterModel> l = null;
     	
