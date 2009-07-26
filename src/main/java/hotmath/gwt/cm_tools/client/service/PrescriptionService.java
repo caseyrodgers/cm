@@ -11,11 +11,11 @@ import hotmath.gwt.cm_tools.client.model.StudyProgramModel;
 import hotmath.gwt.cm_tools.client.model.SubjectModel;
 import hotmath.gwt.shared.client.util.CmRpcException;
 import hotmath.gwt.shared.client.util.RpcData;
+import hotmath.gwt.shared.client.util.UserInfo;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.rpc.RemoteService;
 
 public interface PrescriptionService extends RemoteService {
@@ -147,7 +147,7 @@ public interface PrescriptionService extends RemoteService {
 	
 	
 	
-	RpcData getUserInfo(int uid) throws CmRpcException;
+	UserInfo getUserInfo(int uid) throws CmRpcException;
 	
 	
 	/** Create a new test run for this test id

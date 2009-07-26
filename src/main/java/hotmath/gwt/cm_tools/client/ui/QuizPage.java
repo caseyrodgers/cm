@@ -192,14 +192,10 @@ public class QuizPage extends LayoutContainer {
 				int testSegmentCount = rdata.getDataAsInt("quiz_segment_count");
 				UserInfo.getInstance().setTestSegment(testSegment);
 				
-				String subTitle = rdata.getDataAsString("sub_title");
-				UserInfo.getInstance().setSubTitle(subTitle);
-
 				_title = title;
-				
  				// update the user info with the title name
 				// @TODO: this is a hack ... temp 
-				UserInfo.getInstance().setTestName(_title);
+				// UserInfo.getInstance().setTestName(_title);
 				UserInfo.getInstance().setTestId(testId);
 				UserInfo.getInstance().setTestSegmentCount(testSegmentCount);
 				displayQuizHtml(html);

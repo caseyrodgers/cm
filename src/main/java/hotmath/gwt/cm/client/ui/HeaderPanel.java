@@ -113,7 +113,7 @@ public class HeaderPanel extends LayoutContainer {
 	public void setHeaderTitle() {
 	   // CatchupMathTools.showAlert("Set Header info: " + UserInfo.getInstance().getSubTitle());
 	    String subTitle = UserInfo.getInstance().getSubTitle();
-	   _headerText.setText(subTitle != null?"Chapter " + subTitle:"");
+	   _headerText.setText(subTitle != null?subTitle:"");
 	}
 
 }

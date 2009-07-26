@@ -11,6 +11,7 @@ import hotmath.gwt.cm_tools.client.model.StudyProgramModel;
 import hotmath.gwt.cm_tools.client.model.SubjectModel;
 import hotmath.gwt.shared.client.util.CmRpcException;
 import hotmath.gwt.shared.client.util.RpcData;
+import hotmath.gwt.shared.client.util.UserInfo;
 
 import java.util.List;
 
@@ -89,7 +90,7 @@ public interface PrescriptionServiceAsync {
 	   * @return
 	   * @throws CmRpcException
 	   */
-	  void getUserInfo(int uid, AsyncCallback callBack);
+	  void getUserInfo(int uid, AsyncCallback<UserInfo> callBack);
 	  
 	  
 	  

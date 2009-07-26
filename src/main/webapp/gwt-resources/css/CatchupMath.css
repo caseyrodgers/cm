@@ -320,6 +320,8 @@
 	position: absolute;
 	top: 15px;
 	left: 180px;
+	color: #85C652;
+	z-index: 10;
 }
 
 /** Hide the INMH button on solutions */

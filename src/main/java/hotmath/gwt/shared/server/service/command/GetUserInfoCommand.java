@@ -8,7 +8,10 @@ import hotmath.gwt.shared.client.rpc.Response;
 import hotmath.gwt.shared.client.rpc.action.GetUserInfoAction;
 import hotmath.gwt.shared.client.util.CmRpcException;
 import hotmath.gwt.shared.client.util.RpcData;
+import hotmath.gwt.shared.client.util.UserInfo;
 import hotmath.gwt.shared.server.service.ActionHandler;
+import hotmath.testset.ha.ChapterInfo;
+import hotmath.testset.ha.HaTestConfig;
 import hotmath.testset.ha.HaTestDef;
 import hotmath.testset.ha.HaTestDefDao;
 import hotmath.testset.ha.StudentUserProgramModel;
@@ -18,11 +21,12 @@ import hotmath.util.sql.SqlUtilities;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.List;
 
-public class GetUserInfoCommand implements ActionHandler<GetUserInfoAction, RpcData> {
+public class GetUserInfoCommand implements ActionHandler<GetUserInfoAction, UserInfo> {
 
     @Override
-    public RpcData execute(GetUserInfoAction action) throws Exception {
+    public UserInfo execute(GetUserInfoAction action) throws Exception {
         Connection conn = null;
         try {
             conn = HMConnectionPool.getConnection();
@@ -36,28 +40,35 @@ public class GetUserInfoCommand implements ActionHandler<GetUserInfoAction, RpcD
             HaTestDefDao hdao = new HaTestDefDao();
             HaTestDef testDef = hdao.getTestDef(conn, si.getTestDefId());
             
-            String subTitle = hdao.getSubTitle(conn, si);
+            ChapterInfo chapterInfo = hdao.getChapterInfo(conn, si);
+
+            /** Create title sections.  The main title
+             *  will contain the chapter # (if any).  The
+             *  subtitle will contain the chapter title (if any)
+             */
+            String testTitle = testDef.getName();
+            String subTitle=null;
+            if(chapterInfo != null) {
+                testTitle += ", #" + chapterInfo.getChapterNumber();
+                subTitle = chapterInfo.getChapterTitle();
+            }
             
-            RpcData rpcData = new RpcData();
-            rpcData.putData("uid", sm.getUid());
-            rpcData.putData("test_id", activeInfo.getActiveTestId());
-            rpcData.putData("run_id", activeInfo.getActiveRunId());
-            rpcData.putData("test_segment", activeInfo.getActiveSegment());
-            rpcData.putData("user_name", sm.getName());
-            rpcData.putData("session_number", activeInfo.getActiveRunSession());
-            rpcData.putData("gui_background_style", sm.getBackgroundStyle());
-            rpcData.putData("test_name", testDef.getName());
-            rpcData.putData("sub_title", subTitle);
-            rpcData.putData("show_work_required", sm.getShowWorkRequired() ? 1 : 0);
-            rpcData.putData("user_account_type","student");
-            rpcData.putData("pass_percent_required",si.getPassPercent());
-            rpcData.putData("test_segment_count", testDef.getTotalSegmentCount());
-
-            int totalViewCount = getTotalInmHViewCount(conn,action.getUserId());
-
-            rpcData.putData("view_count", totalViewCount);
-
-            return rpcData;
+            UserInfo userInfo = new UserInfo();
+            userInfo.setUid(sm.getUid());
+            userInfo.setTestId(activeInfo.getActiveTestId());
+            userInfo.setRunId(activeInfo.getActiveRunId());
+            userInfo.setTestSegment(activeInfo.getActiveSegment());
+            userInfo.setUserName(sm.getName());
+            userInfo.setSessionNumber(activeInfo.getActiveRunSession());
+            userInfo.setBackgroundStyle(sm.getBackgroundStyle());
+            userInfo.setTestName(testTitle);
+            userInfo.setSubTitle(subTitle);
+            userInfo.setShowWorkRequired(sm.getShowWorkRequired());
+            userInfo.setPassPercentRequired(si.getPassPercent());
+            userInfo.setTestSegmentCount(testDef.getTotalSegmentCount());
+            userInfo.setViewCount(getTotalInmHViewCount(conn,action.getUserId()));
+            
+            return userInfo;
         } catch (Exception e) {
             e.printStackTrace();
             throw new CmRpcException(e);

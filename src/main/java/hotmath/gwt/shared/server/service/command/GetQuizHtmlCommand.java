@@ -10,8 +10,8 @@ import hotmath.gwt.shared.client.rpc.action.GetQuizHtmlAction;
 import hotmath.gwt.shared.client.util.RpcData;
 import hotmath.gwt.shared.server.service.ActionHandler;
 import hotmath.testset.TestSet;
+import hotmath.testset.ha.ChapterInfo;
 import hotmath.testset.ha.HaTest;
-import hotmath.testset.ha.HaTestConfig;
 import hotmath.testset.ha.HaTestDef;
 import hotmath.testset.ha.HaTestDefDao;
 import hotmath.testset.ha.HaTestDefFactory;
@@ -26,7 +26,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.sql.Connection;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
@@ -97,8 +96,16 @@ public class GetQuizHtmlCommand implements ActionHandler<GetQuizHtmlAction, RpcD
             map.put("haTest", haTest);
             map.put("testTitle", testTitle);
             map.put("testSet", _testSet);
-            String subTitle = tdo.getSubTitle(conn, programInfo);
-            map.put("subTitle", subTitle);
+            
+            ChapterInfo chapterInfo = tdo.getChapterInfo(conn, programInfo);
+
+            String subTitle=null;
+            if(chapterInfo != null) {
+                testTitle += ", #" + chapterInfo.getChapterNumber();
+                subTitle = chapterInfo.getChapterTitle();
+            }            
+
+            map.put("subTitle", "");
 
             String quizHtml = VelocityTemplateFromStringManager.getInstance().processTemplate(quizHtmlTemplate, map);
 

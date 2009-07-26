@@ -1,12 +1,12 @@
 package hotmath.gwt.shared.client.util;
 
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
-import hotmath.gwt.cm_tools.client.data.HaBasicUser.UserType;
 import hotmath.gwt.cm_tools.client.service.PrescriptionServiceAsync;
 import hotmath.gwt.shared.client.data.CmAsyncRequest;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
 import hotmath.gwt.shared.client.eventbus.EventBus;
 import hotmath.gwt.shared.client.model.UserInfoBase;
+import hotmath.gwt.shared.client.rpc.Response;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.Registry;
@@ -18,76 +18,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  * @author Casey
  *
  */
-public class UserInfo implements IsSerializable {
-
-	static private UserInfo __instance;
-
-	/** The CM Student user object
-	 *  (will be null for CM Admin)
-	 *  
-	 *  This is only active for one session, meaning there will only be one
-	 *  userid... The state of that user will change: diff topic,resource,etc.
-	 *  
-	 *
-	 *  It is an error is getInstance is called before being set.
-	 *   
-	 * @return
-	 */
-	static public UserInfo getInstance() {
-		return __instance;
-	}
-	
-	/** Set the shared user object
-	 * 
-	 * @param user
-	 */
-	static public void setInstance(UserInfo user) {
-	    __instance = user;
-	}
-	
-	static public void setInstanceBase(UserInfoBase user) {
-		
-	}
-	/** Lookup this user and callback when complete 
-	 * 
-	 * @param uid
-	 * @param callback
-	 * @return
-	 */
-	static public void loadUser(int uid, final CmAsyncRequest callback) {
-	    
-        PrescriptionServiceAsync s = (PrescriptionServiceAsync) Registry.get("prescriptionService");
-        s.getUserInfo(uid, new AsyncCallback<RpcData>() {
-            public void onSuccess(RpcData ui) {
-                UserInfo user = new UserInfo(ui.getDataAsInt("uid"),ui.getDataAsInt("test_id"), ui.getDataAsInt("run_id"));
-                user.setTestSegment(ui.getDataAsInt("test_segment"));
-                user.setUserName(ui.getDataAsString("user_name"));
-                user.setViewCount(ui.getDataAsInt("view_count"));
-                user.setSessionNumber(ui.getDataAsInt("session_number"));
-                user.setActiveUser(true);
-                user.setBackgroundStyle(ui.getDataAsString("gui_background_style"));
-                user.setTestName(ui.getDataAsString("test_name"));
-                user.setSubTitle(ui.getDataAsString("sub_title"));
-                user.setShowWorkRequired(ui.getDataAsInt("show_work_required")==0?false:true);
-                user.setUserAccountType(ui.getDataAsString("user_account_type"));
-                user.setPassPercentRequired(ui.getDataAsInt("pass_percent_required"));
-                user.setTestSegmentCount(ui.getDataAsInt("test_segment_count"));
-                __instance = user;
-                
-                Log.info("UserInfo object set to: " + user);
-                
-                CatchupMathTools.setBusy(false);     
-                callback.requestComplete(null);
-                
-                // fire an event on the event bus, passing new userinfo
-                EventBus.getInstance().fireEvent(new CmEvent(EventBus.EVENT_TYPE_USERCHANGED,user));
-            }
-            public void onFailure(Throwable caught) {
-                String msg = caught.getMessage();
-                CatchupMathTools.showAlert(msg);
-            }
-        });
-	}
+public class UserInfo implements IsSerializable, Response {
 	
 	int uid;
 	int testId;
@@ -244,6 +175,11 @@ public class UserInfo implements IsSerializable {
 		this.testSegmentCount = testSegmentCount;
 	}
 
+	public UserInfo() {
+	    // empty
+	}
+	
+	
 	public UserInfo(int uid, int testId) {
 		this.uid = uid;
 		this.testId = testId;
@@ -320,5 +256,66 @@ public class UserInfo implements IsSerializable {
                 + ", testSegmentCount=" + testSegmentCount + ", uid=" + uid + ", userAccountType=" + userAccountType
                 + ", userName=" + userName + ", viewCount=" + viewCount + "]";
     }
+    
+    
+
+    static private UserInfo __instance;
+
+    /** The CM Student user object
+     *  (will be null for CM Admin)
+     *  
+     *  This is only active for one session, meaning there will only be one
+     *  userid... The state of that user will change: diff topic,resource,etc.
+     *  
+     *
+     *  It is an error is getInstance is called before being set.
+     *   
+     * @return
+     */
+    static public UserInfo getInstance() {
+        return __instance;
+    }
+    
+    /** Set the shared user object
+     * 
+     * @param user
+     */
+    static public void setInstance(UserInfo user) {
+        __instance = user;
+    }
+    
+    static public void setInstanceBase(UserInfoBase user) {
+        
+    }
+    /** Lookup this user and callback when complete 
+     * 
+     * @param uid
+     * @param callback
+     * @return
+     */
+    static public void loadUser(int uid, final CmAsyncRequest callback) {
+        
+        PrescriptionServiceAsync s = (PrescriptionServiceAsync) Registry.get("prescriptionService");
+        s.getUserInfo(uid, new AsyncCallback<UserInfo>() {
+            public void onSuccess(UserInfo user) {
+
+                __instance = user;
+                
+                user.setActiveUser(true);
+                
+                Log.info("UserInfo object set to: " + user);
+                
+                CatchupMathTools.setBusy(false);     
+                callback.requestComplete(null);
+                
+                // fire an event on the event bus, passing new userinfo
+                EventBus.getInstance().fireEvent(new CmEvent(EventBus.EVENT_TYPE_USERCHANGED,user));
+            }
+            public void onFailure(Throwable caught) {
+                String msg = caught.getMessage();
+                CatchupMathTools.showAlert(msg);
+            }
+        });
+    }    
 
 }

@@ -31,6 +31,7 @@ import hotmath.gwt.shared.client.rpc.action.SaveQuizCurrentResultAction;
 import hotmath.gwt.shared.client.rpc.action.SetInmhItemAsViewedAction;
 import hotmath.gwt.shared.client.util.CmRpcException;
 import hotmath.gwt.shared.client.util.RpcData;
+import hotmath.gwt.shared.client.util.UserInfo;
 import hotmath.gwt.shared.server.service.ActionDispatcher;
 import hotmath.solution.Solution;
 import hotmath.testset.ha.HaTest;
@@ -86,7 +87,7 @@ public class PrescriptionServiceImpl extends RemoteServiceServlet implements Pre
         ActionDispatcher.getInstance().execute(getViewedAction);
     }
 
-    public RpcData getUserInfo(int uid) throws CmRpcException {
+    public UserInfo getUserInfo(int uid) throws CmRpcException {
         GetUserInfoAction action = new GetUserInfoAction(uid);
         return ActionDispatcher.getInstance().execute(action);
     }
