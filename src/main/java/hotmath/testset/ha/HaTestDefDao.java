@@ -238,9 +238,6 @@ public class HaTestDefDao {
          // pass along title and title number
          HaTestConfig config = programInfo.getConfig();
          
-         HaTestDef def = getTestDef(conn,programInfo.getTestDefId());
-         String subTitle = def.getTitle();
-         
          String chapter = config.getChapters().size() > 0?config.getChapters().get(0):null;
          if(chapter != null) {
              /** If chapter is specified then add the chapter number
@@ -256,8 +253,7 @@ public class HaTestDefDao {
                  }
              }
          }
-         
-         return subTitle + (chapter!=null?", " + chapter:"");
+         return chapter!=null?chapter:"";
      }
 }
 

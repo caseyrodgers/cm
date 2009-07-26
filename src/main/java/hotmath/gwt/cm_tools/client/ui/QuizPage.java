@@ -186,13 +186,17 @@ public class QuizPage extends LayoutContainer {
 			public void onSuccess(Object result) {
 			    RpcData rdata = (RpcData)result;
 				String html = rdata.getDataAsString("quiz_html");
-				_title = rdata.getDataAsString("title");
+				String title = rdata.getDataAsString("title");
 				int testId = rdata.getDataAsInt("test_id");
 				int testSegment = rdata.getDataAsInt("quiz_segment");
 				int testSegmentCount = rdata.getDataAsInt("quiz_segment_count");
 				UserInfo.getInstance().setTestSegment(testSegment);
 				
-				_title = rdata.getDataAsString("sub_title");
+				String subTitle = rdata.getDataAsString("sub_title");
+				UserInfo.getInstance().setSubTitle(subTitle);
+
+				_title = title;
+				
  				// update the user info with the title name
 				// @TODO: this is a hack ... temp 
 				UserInfo.getInstance().setTestName(_title);

@@ -36,6 +36,7 @@ public class GetUserInfoCommand implements ActionHandler<GetUserInfoAction, RpcD
             HaTestDefDao hdao = new HaTestDefDao();
             HaTestDef testDef = hdao.getTestDef(conn, si.getTestDefId());
             
+            String subTitle = hdao.getSubTitle(conn, si);
             
             RpcData rpcData = new RpcData();
             rpcData.putData("uid", sm.getUid());
@@ -46,6 +47,7 @@ public class GetUserInfoCommand implements ActionHandler<GetUserInfoAction, RpcD
             rpcData.putData("session_number", activeInfo.getActiveRunSession());
             rpcData.putData("gui_background_style", sm.getBackgroundStyle());
             rpcData.putData("test_name", testDef.getName());
+            rpcData.putData("sub_title", subTitle);
             rpcData.putData("show_work_required", sm.getShowWorkRequired() ? 1 : 0);
             rpcData.putData("user_account_type","student");
             rpcData.putData("pass_percent_required",si.getPassPercent());

@@ -67,6 +67,7 @@ public class UserInfo implements IsSerializable {
                 user.setActiveUser(true);
                 user.setBackgroundStyle(ui.getDataAsString("gui_background_style"));
                 user.setTestName(ui.getDataAsString("test_name"));
+                user.setSubTitle(ui.getDataAsString("sub_title"));
                 user.setShowWorkRequired(ui.getDataAsInt("show_work_required")==0?false:true);
                 user.setUserAccountType(ui.getDataAsString("user_account_type"));
                 user.setPassPercentRequired(ui.getDataAsInt("pass_percent_required"));
@@ -104,7 +105,16 @@ public class UserInfo implements IsSerializable {
 	boolean isShowWorkRequired;
 	UserType userAccountType = UserType.SINGLE_USER;
 	int passPercentRequired;
+	String subTitle;
 	
+
+    public String getSubTitle() {
+        return subTitle;
+    }
+
+    public void setSubTitle(String subTitle) {
+        this.subTitle = subTitle;
+    }
 
     boolean autoTestMode=false;
 

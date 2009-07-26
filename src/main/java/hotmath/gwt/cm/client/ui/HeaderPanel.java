@@ -70,7 +70,7 @@ public class HeaderPanel extends LayoutContainer {
 		        }
 		        else if(event.getEventName().equals(EventBus.EVENT_TYPE_CONTEXTCHANGED)) {
 		            CmContext context = (CmContext)event.getEventData();
-  		            HeaderPanel.__instance.setHeaderTitle(context.getContextTitle());
+  		            HeaderPanel.__instance.setHeaderTitle();
 		            CmMainPanel.__lastInstance._westPanel.setHeading(context.getContextSubTitle());
 		        }
 		        else if(event.getEventName().equals(EventBus.EVENT_TYPE_TOPIC_CHANGED)) {
@@ -110,9 +110,10 @@ public class HeaderPanel extends LayoutContainer {
 	}
 	
 	/* Set the header title for this context */
-	public void setHeaderTitle(String title) {
-	   // CatchupMathTools.showAlert("Set Header info: " + title);  
-	   //	_headerText.setText(title);
+	public void setHeaderTitle() {
+	   // CatchupMathTools.showAlert("Set Header info: " + UserInfo.getInstance().getSubTitle());
+	    String subTitle = UserInfo.getInstance().getSubTitle();
+	   _headerText.setText(subTitle != null?"Chapter " + subTitle:"");
 	}
 
 }
