@@ -21,7 +21,7 @@ public class EndOfProgramHander_Test extends CmDbTestCase {
     public void testEndOfProgramChapterTestCahseehm() throws Exception {
 
         // assign chapter test to test student (last chapter)
-        dao.assignProgramToStudent(userId, CmProgram.CAHSEEHM.getSubject(),CmProgram.CAHSEEHM.getProgramId(), null);
+        dao.assignProgramToStudent(userId, CmProgram.CAHSEEHM, null);
         
         EndOfProgramHandler eop = new EndOfProgramHandler(userId);
         StudentUserProgramModel nextProgram = eop.getNextProgram();
@@ -34,7 +34,7 @@ public class EndOfProgramHander_Test extends CmDbTestCase {
     public void testEndOfProgramChapterTestGeo() throws Exception {
 
         // assign chapter test to test student (last chapter)
-        dao.assignProgramToStudent(userId, CmProgram.GEO_PROF.getSubject(),"Prof", null);
+        dao.assignProgramToStudent(userId, CmProgram.GEO_PROF, null);
         
         EndOfProgramHandler eop = new EndOfProgramHandler(userId);
         StudentUserProgramModel nextProgram = eop.getNextProgram();
@@ -46,7 +46,7 @@ public class EndOfProgramHander_Test extends CmDbTestCase {
     public void testEndOfProgramChapterTesAlg1Chap() throws Exception {
 
         // assign chapter test to test student (last chapter)
-        dao.assignProgramToStudent(userId, CmProgram.ALG1_CHAP.getSubject(), "Chap", "Solving Linear Equations");
+        dao.assignProgramToStudent(userId, CmProgram.ALG1_CHAP, "Solving Linear Equations");
         
         EndOfProgramHandler eop = new EndOfProgramHandler(userId);
         StudentUserProgramModel nextProgram = eop.getNextProgram();
@@ -62,7 +62,7 @@ public class EndOfProgramHander_Test extends CmDbTestCase {
     public void testEndOfProgramChapterTestPreAlgChap() throws Exception {
 
         // assign chapter test to test student (last chapter)
-        dao.assignProgramToStudent(userId, CmProgram.PREALG_CHAP.getSubject(), "Chap", "Linear Equations and Inequalities");
+        dao.assignProgramToStudent(userId, CmProgram.PREALG_CHAP, "Linear Equations and Inequalities");
         
         EndOfProgramHandler eop = new EndOfProgramHandler(userId);
         StudentUserProgramModel nextProgram = eop.getNextProgram();
@@ -78,7 +78,7 @@ public class EndOfProgramHander_Test extends CmDbTestCase {
     public void testEndOfProgramChapterTest() throws Exception {
 
         // assign chapter test to test student
-        dao.assignProgramToStudent(userId, CmProgram.PREALG_CHAP.getSubject(), "Chap", "Integers");
+        dao.assignProgramToStudent(userId, CmProgram.PREALG_CHAP, "Integers");
 
         // read currently set program info
         StudentUserProgramModel currProgram = dao.loadProgramInfo(conn,userId);

@@ -7,6 +7,7 @@ import hotmath.gwt.cm_tools.client.model.StudentActivityModel;
 import hotmath.gwt.cm_tools.client.model.StudentModel;
 import hotmath.gwt.cm_tools.client.model.StudentShowWorkModel;
 import hotmath.gwt.shared.client.util.CmException;
+import hotmath.testset.ha.CmProgram;
 import hotmath.testset.ha.HaTestConfig;
 import hotmath.testset.ha.HaTestDefDescription;
 import hotmath.testset.ha.StudentUserProgramModel;
@@ -1033,10 +1034,10 @@ public class CmStudentDao {
      * @param chapter
      * @throws Exception
      */
-    public void assignProgramToStudent(Integer uid, String subId, String progId, String chapter) throws Exception {
+    public void assignProgramToStudent(Integer uid, CmProgram program, String chapter) throws Exception {
         StudentModel sm = getStudentModel(uid);
-        sm.setProgId(progId);
-        sm.setSubjId(subId);
+        sm.setProgId(program.getProgramId());
+        sm.setSubjId(program.getSubject());
         sm.setProgramChanged(true);
         
         sm.setChapter(chapter);

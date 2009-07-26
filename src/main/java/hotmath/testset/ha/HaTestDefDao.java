@@ -225,8 +225,40 @@ public class HaTestDefDao {
      }
      
      
-     
-    
+     /** Create the sub title for this program instance. 
+      *  The title should be complete, containing any 
+      *  chapter information.
+      *  
+      * @param conn
+      * @param programInfo
+      * @return
+      * @throws Exception
+      */
+     public String getSubTitle(final Connection conn, StudentUserProgramModel programInfo) throws Exception {
+         // pass along title and title number
+         HaTestConfig config = programInfo.getConfig();
+         
+         HaTestDef def = getTestDef(conn,programInfo.getTestDefId());
+         String subTitle = def.getTitle();
+         
+         String chapter = config.getChapters().size() > 0?config.getChapters().get(0):null;
+         if(chapter != null) {
+             /** If chapter is specified then add the chapter number
+              *  to the title
+              *  
+              */
+             HaTestDefDao tdo = new HaTestDefDao();
+             List<String> chapters = tdo.getProgramChapters(tdo.getTestDef(conn,programInfo.getTestDefId()));
+             for(int i=0, t=chapters.size();i<t;i++) {
+                 if(chapters.get(i).equals(chapter)) {
+                     chapter = "#" + (i+1) + " " + chapter;
+                     break;
+                 }
+             }
+         }
+         
+         return subTitle + (chapter!=null?", " + chapter:"");
+     }
 }
 
 

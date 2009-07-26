@@ -92,10 +92,13 @@ public class GetQuizHtmlCommand implements ActionHandler<GetQuizHtmlAction, RpcD
 
             TestSet _testSet = new TestSet(haTest.getPids());
 
+            HaTestDefDao tdo = new HaTestDefDao();
+            
             map.put("haTest", haTest);
             map.put("testTitle", testTitle);
             map.put("testSet", _testSet);
-            map.put("subTitle", haTest.getSubTitle(testSegment));
+            String subTitle = tdo.getSubTitle(conn, programInfo);
+            map.put("subTitle", subTitle);
 
             String quizHtml = VelocityTemplateFromStringManager.getInstance().processTemplate(quizHtmlTemplate, map);
 
@@ -105,26 +108,7 @@ public class GetQuizHtmlCommand implements ActionHandler<GetQuizHtmlAction, RpcD
             rpcData.putData("quiz_segment", testSegment);
             rpcData.putData("quiz_segment_count", haTest.getTotalSegments());
             rpcData.putData("title", testTitle);
-            
-            // pass along title and title number
-            HaTestConfig config = programInfo.getConfig();
-            String chapter = config.getChapters().size() > 0?config.getChapters().get(0):null;
-            if(chapter != null) {
-                /** If chapter is specified then add the chapter number
-                 *  to the title
-                 *  
-                 */
-                HaTestDefDao tdo = new HaTestDefDao();
-                List<String> chapters = tdo.getProgramChapters(tdo.getTestDef(conn,programInfo.getTestDefId()));
-                for(int i=0, t=chapters.size();i<t;i++) {
-                    if(chapters.get(i).equals(chapter)) {
-                        chapter = "#" + (i+1) + " " + chapter;
-                        break;
-                    }
-                }
-            }
-            rpcData.putData("chapter", chapter);
-            
+            rpcData.putData("sub_title", subTitle);
             
             CmCacheManager.getInstance().addToCache(CacheName.TEST_HTML,testKey, rpcData);
 
