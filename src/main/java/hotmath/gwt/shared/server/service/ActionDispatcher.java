@@ -28,6 +28,15 @@ import org.apache.log4j.Logger;
 /** Implements a Command Pattern for controlling
  *  commands used by Catchup Math RPC calls.
  *  
+ *  Each command invocation gets its own instance of 
+ *  the command object.  This will make sure we do
+ *  have any race conditions dealing with multiple 
+ *  threads.
+ *  
+ *  @TODO: The next step, if needed, will be to add an
+ *  object to provide pooling for each command.
+ *  
+ *  
  *  @TODO: configuration should be injected by DI
  *  
  *  
@@ -52,7 +61,7 @@ public class ActionDispatcher {
     }
     
     @SuppressWarnings("unchecked")
-    Map<Class<? extends Action<? extends Response>>, ActionHandler> commands = new HashMap<Class<? extends Action<? extends Response>>, ActionHandler>();
+    Map<Class<? extends Action<? extends Response>>, Class> commands = new HashMap<Class<? extends Action<? extends Response>>, Class>();
     
     static Logger logger = Logger.getLogger(ActionDispatcher.class.getName());
     
@@ -65,33 +74,47 @@ public class ActionDispatcher {
     }
     
     private ActionDispatcher() {
-        
-        
         logger.info("Creating new ActionDispatcher");
         
         /** All commands should be injected, hard coded for now
          * 
          * Register each command availiable to RPC
          */
-        addCommand(new GetPrescriptionCommand());
-        addCommand(new GetViewedInmhItemsCommand());
-        addCommand(new GetSolutionCommand());
-        addCommand(new SetInmhItemAsViewedCommand());
-        addCommand(new GetUserInfoCommand());
-        addCommand(new CreateTestRunCommand());
-        addCommand(new GetQuizHtmlCommand());
-        addCommand(new GetQuizHtmlCheckedCommand());
-        addCommand(new SaveQuizCurrentResultCommand());
-        addCommand(new GetQuizResultsHtmlCommand());
-        addCommand(new SaveFeedbackCommand());
-        addCommand(new AutoAdvanceUserCommand());
-        addCommand(new GetProgramDefinitionsCommand());
+        addCommand(GetPrescriptionCommand.class);
+        addCommand(GetViewedInmhItemsCommand.class);
+        addCommand(GetSolutionCommand.class);
+        addCommand(SetInmhItemAsViewedCommand.class);
+        addCommand(GetUserInfoCommand.class);
+        addCommand(CreateTestRunCommand.class);
+        addCommand(GetQuizHtmlCommand.class);
+        addCommand(GetQuizHtmlCheckedCommand.class);
+        addCommand(SaveQuizCurrentResultCommand.class);
+        addCommand(GetQuizResultsHtmlCommand.class);
+        addCommand(SaveFeedbackCommand.class);
+        addCommand(AutoAdvanceUserCommand.class);
+        addCommand(GetProgramDefinitionsCommand.class);
     }
     
     
+    /** Register a new command with system.
+     * 
+     *  An instance if created and the getActionType is called
+     *  to return the action name.  This is stored as the key for
+     *  the command.  The value is a Class object that represents
+     *  the ActionListener implementation that does all the server work.
+     *  This object is created dynamically on each invocation.
+     *  
+     * @param command
+     */
     @SuppressWarnings("unchecked")
-    private void addCommand(ActionHandler action) {
-        commands.put(action.getActionType(), action);
+    private void addCommand(Class command) {
+        try {
+            Class action = ((ActionHandler)command.newInstance()).getActionType();
+            commands.put(action, command);
+        }
+        catch(Exception e) {
+            logger.error("Could not add command: " + command.getName(), e); 
+        }
     }
     
     
@@ -108,7 +131,8 @@ public class ActionDispatcher {
         logger.debug("RPC Action executing: " + action.getClass().getName());
         
         try {
-            ActionHandler actionHandler = commands.get(action.getClass());
+            Class clazz = commands.get(action.getClass());
+            ActionHandler actionHandler = (ActionHandler)clazz.newInstance();
             if(actionHandler == null)
                 throw new CmRpcException("No such RPC Action defined: " + action.getClass().getName());
             

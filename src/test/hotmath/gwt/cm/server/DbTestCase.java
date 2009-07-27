@@ -19,7 +19,8 @@ public class DbTestCase extends TestCase {
     
     @Override
     protected void tearDown() throws Exception {
-        conn.close();
+        if(conn != null)
+            conn.close();
     }
 
 }
