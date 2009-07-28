@@ -1,9 +1,5 @@
 package hotmath.gwt.cm_tools.server.service;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.Timestamp;
-
 import hotmath.gwt.shared.client.rpc.Action;
 import hotmath.gwt.shared.client.rpc.Response;
 import hotmath.gwt.shared.client.rpc.action.SetInmhItemAsViewedAction;
@@ -11,8 +7,11 @@ import hotmath.gwt.shared.client.util.CmRpcException;
 import hotmath.gwt.shared.client.util.RpcData;
 import hotmath.gwt.shared.server.service.ActionHandler;
 import hotmath.testset.ha.HaTestRun;
-import hotmath.util.HMConnectionPool;
 import hotmath.util.sql.SqlUtilities;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.Timestamp;
 
 /** Set named INMH resource as being viewed in given runid
  * 
@@ -24,12 +23,10 @@ import hotmath.util.sql.SqlUtilities;
 public class SetInmhItemAsViewedCommand implements ActionHandler<SetInmhItemAsViewedAction, RpcData> {
 
     @Override
-    public RpcData execute(SetInmhItemAsViewedAction action) throws Exception {
-        Connection conn = null;
+    public RpcData execute(final Connection conn, SetInmhItemAsViewedAction action) throws Exception {
         PreparedStatement pstat = null;
         try {
             String sql = "insert into HA_TEST_RUN_INMH_USE(run_id, item_type, item_file, view_time, session_number)values(?,?,?,?,?)";
-            conn = HMConnectionPool.getConnection();
             pstat = conn.prepareStatement(sql);
 
             pstat.setInt(1, action.getRunId());
@@ -50,7 +47,7 @@ public class SetInmhItemAsViewedCommand implements ActionHandler<SetInmhItemAsVi
             e.printStackTrace();
             throw new CmRpcException("Error adding test run item view: " + e.getMessage());
         } finally {
-            SqlUtilities.releaseResources(null, pstat, conn);
+            SqlUtilities.releaseResources(null, pstat, null);
         }
     }
 

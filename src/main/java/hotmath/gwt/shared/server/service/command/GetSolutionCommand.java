@@ -46,7 +46,7 @@ public class GetSolutionCommand implements ActionHandler<GetSolutionAction, RpcD
     }
 
     @Override
-    public RpcData execute(GetSolutionAction action) throws Exception {
+    public RpcData execute(final Connection conn, GetSolutionAction action) throws Exception {
         try {
 
             String pid = action.getPid();

@@ -6,6 +6,8 @@ import hotmath.gwt.cm_tools.client.model.LessonItemModel;
 import hotmath.gwt.cm_tools.client.model.StudentActiveInfo;
 import hotmath.gwt.cm_tools.client.model.StudentActivityModel;
 import hotmath.gwt.cm_tools.client.model.StudentModel;
+import hotmath.gwt.cm_tools.client.model.StudentModelBasic;
+import hotmath.gwt.cm_tools.client.model.StudentModelI;
 import hotmath.gwt.cm_tools.client.model.StudentShowWorkModel;
 import hotmath.gwt.shared.client.util.CmException;
 import hotmath.testset.ha.CmProgram;
@@ -131,7 +133,7 @@ public class CmStudentDao {
         return l;
     }
 
-	private void loadChapterInfo(Connection conn, List<StudentModel> l) throws Exception {
+	private void loadChapterInfo(final Connection conn, List<StudentModel> l) throws Exception {
 
 		CmAdminDao dao = new CmAdminDao();
 		
@@ -252,18 +254,16 @@ public class CmStudentDao {
             "insert into HA_USER (user_name, user_passcode, active_segment, group_id, test_def_id, admin_id, is_active) " +
             "values(?, ?, ?, ?, (select test_def_id from HA_TEST_DEF where prog_id = ? and subj_id = ?), ?, 1)";
 
-    public StudentModel addStudent(StudentModel sm) throws Exception {
-        Connection conn = null;
+    public StudentModel addStudent(final Connection conn, StudentModel sm) throws Exception {
         PreparedStatement ps = null;
         ResultSet rs = null;
 
-        Boolean isDuplicate = checkForDuplicatePasscode(sm);
+        Boolean isDuplicate = checkForDuplicatePasscode(conn, sm);
         if (isDuplicate) {
             throw new Exception("The passcode you entered is already in use, please try again.");
         }
 
         try {
-            conn = HMConnectionPool.getConnection();
             ps = conn.prepareStatement(ADD_STUDENT_SQL);
             ps.setString(1, sm.getName());
             ps.setString(2, sm.getPasscode());
@@ -283,7 +283,7 @@ public class CmStudentDao {
         } catch (Exception e) {
             throw new Exception(String.format("Error adding Student: %s, Passcode: %s ***", sm.getName(), sm.getPasscode()),e);
         } finally {
-            SqlUtilities.releaseResources(rs, ps, conn);
+            SqlUtilities.releaseResources(rs, ps, null);
         }
         return sm;
     }
@@ -333,7 +333,7 @@ public class CmStudentDao {
      * 
      */
     @Deprecated
-    public void removeUser(StudentModel sm) {
+    public void removeUser(StudentModelI sm) {
         final String REMOVE_USER_SQL = "delete from HA_USER where uid = ?";
 
         Connection conn = null;
@@ -355,11 +355,11 @@ public class CmStudentDao {
         }
     }
 
-    public StudentModel updateStudent(StudentModel sm, Boolean studentChanged, Boolean programChanged,
+    public StudentModelI updateStudent(final Connection conn, StudentModelI sm, Boolean studentChanged, Boolean programChanged,
             Boolean progIsNew,
             Boolean passcodeChanged) throws Exception {
         if (passcodeChanged) {
-            Boolean isDuplicate = checkForDuplicatePasscode(sm);
+            Boolean isDuplicate = checkForDuplicatePasscode(conn, sm);
             if (isDuplicate) {
                 throw new Exception("The passcode you entered is already in use, please try again.");
             }
@@ -377,13 +377,11 @@ public class CmStudentDao {
     private static final String CHECK_DUPLICATE_PASSCODE_SQL =
             "select 1 from HA_USER where user_passcode = ? and uid <> ? and admin_id = ?";
 
-    public Boolean checkForDuplicatePasscode(StudentModel sm) throws Exception {
-        Connection conn = null;
+    public Boolean checkForDuplicatePasscode(final Connection conn, StudentModelI sm) throws Exception {
         PreparedStatement ps = null;
         ResultSet rs = null;
 
         try {
-            conn = HMConnectionPool.getConnection();
             ps = conn.prepareStatement(CHECK_DUPLICATE_PASSCODE_SQL);
             ps.setString(1, sm.getPasscode());
             ps.setInt(2, (sm.getUid() != null) ? sm.getUid() : -1);
@@ -395,7 +393,7 @@ public class CmStudentDao {
             logger.error(String.format("*** Error checking passcode for student with uid: %d", sm.getUid()), e);
             throw new Exception(String.format("*** Error checking passcode for student: %s ***", sm.getName()));
         } finally {
-            SqlUtilities.releaseResources(rs, ps, conn);
+            SqlUtilities.releaseResources(rs, ps, null);
         }
     }
 
@@ -414,7 +412,7 @@ public class CmStudentDao {
      * @return
      * @throws Exception
      */
-    public StudentModel updateStudent(StudentModel sm) throws Exception {
+    public StudentModelI updateStudent(StudentModelI sm) throws Exception {
         Connection conn = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
@@ -426,8 +424,12 @@ public class CmStudentDao {
             ps.setString(2, sm.getPasscode());
             // ps.setString(3, sm.getEmail());
             ps.setInt(3, Integer.parseInt(sm.getGroupId()));
-            int sectionNum = (sm.getSectionNum() != null) ? sm.getSectionNum().intValue() : 0;
-            ps.setInt(4, sectionNum);
+            /** @TODO: why is section needed here?  Should be in ActiveInfo
+            //int sectionNum = (sm.getSectionNum() != null) ? sm.getSectionNum().intValue() : 0;
+             * 
+             */
+            ps.setInt(4, 0);  // set constant zero, see if we can remove
+            
             ps.setString(5, sm.getProgId());
             ps.setString(6, sm.getSubjId());
             ps.setInt(7, sm.getUserProgramId());
@@ -455,7 +457,7 @@ public class CmStudentDao {
             "set pass_percent = null " +
             "where id = ?";
 
-    public StudentModel updateStudentProgram(StudentModel sm) throws Exception {
+    public StudentModelI updateStudentProgram(StudentModelI sm) throws Exception {
         Connection conn = null;
         PreparedStatement ps = null;
 
@@ -494,7 +496,7 @@ public class CmStudentDao {
             "insert CM_USER_PROGRAM (user_id, admin_id, test_def_id, create_date,test_config_json) " +
             "values (?, ?, (select test_def_id from HA_TEST_DEF where prog_id = ? and subj_id = ?), ?, ?)";
 
-    public StudentModel addStudentProgram(StudentModel sm) throws Exception {
+    public StudentModelI addStudentProgram(StudentModelI sm) throws Exception {
         Connection conn = null;
         PreparedStatement ps = null;
 
@@ -560,7 +562,7 @@ public class CmStudentDao {
      * @param sm
      * @throws Exception
      */
-    private void setTestConfig(final Connection conn, StudentModel sm) throws Exception {
+    private void setTestConfig(final Connection conn, StudentModelI sm) throws Exception {
 
         ResultSet rs = null;
         PreparedStatement ps2 = null;
@@ -594,7 +596,7 @@ public class CmStudentDao {
 
     private static final String SELECT_LAST_INSERT_ID_SQL = "select LAST_INSERT_ID()";
 
-    private int getLastInsertId(Connection conn) throws Exception {
+    private int getLastInsertId(final Connection conn) throws Exception {
         Statement stmt = null;
         ResultSet rs = null;
         try {
@@ -691,7 +693,7 @@ public class CmStudentDao {
     }
 
     /**
-     * Create a StudentModel for the named student with user_id.
+     * Create a complete StudentModel for the named student with user_id.
      * 
      * @param uid
      *            The user_id of student
@@ -730,6 +732,54 @@ public class CmStudentDao {
         } finally {
             SqlUtilities.releaseResources(rs, ps, conn);
             logger.info(String.format("End getStudentModel(), UID: %d, elapsed seconds: %d", uid, ((System.currentTimeMillis() - timeStart)/1000)));
+        }
+    }
+    
+    /**
+     * Return a basic student object that only contains the most important data.
+     * 
+     * The other pieces of info will be loaded lazily.
+     *  
+     * 
+     * @param conn
+     * @param uid
+     * @return
+     * @throws Exception
+     */
+    
+    public StudentModelI getStudentModelBasic(final Connection conn, Integer uid) throws Exception {
+        
+        String sql = "select * from HA_USER where uid = " + uid;
+        long timeStart = System.currentTimeMillis();
+        Statement ps = null;
+        ResultSet rs = null;
+        try {
+            ps = conn.createStatement();
+            rs = ps.executeQuery(sql);
+            if(!rs.first())
+                throw new CmException("No such student id: " + uid);
+            
+            StudentModelI sm = new StudentModelBasic();
+            sm.setUid(uid);
+            sm.setUid(rs.getInt("uid"));
+            sm.setAdminUid(rs.getInt("admin_id"));
+            sm.setName(rs.getString("user_name"));
+            sm.setPasscode(rs.getString("user_passcode"));
+            sm.setEmail(rs.getString("user_email"));
+            sm.setGroupId(rs.getString("group_id"));
+            sm.setUserProgramId(rs.getInt("user_prog_id"));
+            sm.setBackgroundStyle(rs.getString("gui_background_style"));
+            sm.setShowWorkRequired(rs.getInt("is_show_work_required")==0?false:true);
+            sm.setTutoringAvail(rs.getInt("is_tutoring_available")==0?false:true);
+
+            
+            return sm;
+            
+        } catch (Exception e) {
+            throw new Exception(String.format("*** Error obtaining data for student with UID: %d", uid));
+        } finally {
+            SqlUtilities.releaseResources(rs, ps, null);
+            logger.info(String.format("End getStudentModelBasic(), UID: %d, elapsed seconds: %d", uid, ((System.currentTimeMillis() - timeStart)/1000)));
         }
     }
 
@@ -1059,25 +1109,18 @@ public class CmStudentDao {
      * @param chapter
      * @throws Exception
      */
-    public void assignProgramToStudent(Integer uid, CmProgram program, String chapter) throws Exception {
-        StudentModel sm = getStudentModel(uid);
+    public void assignProgramToStudent(final Connection conn, Integer uid, CmProgram program, String chapter) throws Exception {
+        
+        StudentModelI sm = getStudentModelBasic(conn, uid);
         sm.setProgId(program.getProgramId());
         sm.setSubjId(program.getSubject());
         sm.setProgramChanged(true);
         
         sm.setChapter(chapter);
         
-        Connection conn = null;
-        try {
-            conn = HMConnectionPool.getConnection();
-            setTestConfig(conn, sm);
-        }
-        finally {
-            SqlUtilities.releaseResources(null,null, conn);
-            
-        }
+        setTestConfig(conn, sm);
         
-        updateStudent(sm, true, false, true, false);        
+        updateStudent(conn, sm, true, false, true, false);        
     }
 
 }

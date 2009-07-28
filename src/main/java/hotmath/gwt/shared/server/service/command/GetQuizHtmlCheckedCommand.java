@@ -25,19 +25,16 @@ import java.util.Map;
 public class GetQuizHtmlCheckedCommand implements ActionHandler<GetQuizHtmlCheckedAction, RpcData> {
 
     @Override
-    public RpcData execute(GetQuizHtmlCheckedAction action) throws Exception {
+    public RpcData execute(final Connection conn, GetQuizHtmlCheckedAction action) throws Exception {
         
         RpcData rpcDataCached = (RpcData)CmCacheManager.getInstance().retrieveFromCache(CacheName.TEST_HTML_CHECKED, action.getTestId());
         if(rpcDataCached != null)
             return rpcDataCached;
-        
-        Connection conn=null;
         try {
 
             String quizHtmlTemplate = GetQuizHtmlCommand.readQuizHtmlTemplate();
             Map<String, Object> map = new HashMap<String, Object>();
 
-            conn = HMConnectionPool.getConnection();
             HaTest haTest = HaTest.loadTest(conn, action.getTestId());
             String testTitle = haTest.getTitle();
 
@@ -66,7 +63,7 @@ public class GetQuizHtmlCheckedCommand implements ActionHandler<GetQuizHtmlCheck
             throw new CmRpcException(e.getMessage());
         }
         finally {
-            SqlUtilities.releaseResources(null,null, conn);
+            SqlUtilities.releaseResources(null,null, null);
         }
     }
 

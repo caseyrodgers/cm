@@ -1,25 +1,24 @@
 package hotmath.cm.signup;
 
-import hotmath.HotMathProperties;
 import hotmath.cm.dao.CmUserDao;
-import hotmath.dwr.SubscriberDelegate;
 import hotmath.gwt.cm_admin.server.model.CmAdminDao;
 import hotmath.gwt.cm_admin.server.model.CmStudentDao;
 import hotmath.gwt.cm_tools.client.model.StudentModel;
 import hotmath.servlet.Registration;
 import hotmath.subscriber.HotMathExceptionPurcaseException;
 import hotmath.subscriber.HotMathSubscriber;
-import hotmath.subscriber.HotMathSubscriberManager;
 import hotmath.subscriber.HotMathSubscriberSignupInfo;
 import hotmath.subscriber.PurchasePlan;
-import hotmath.subscriber.service.HmService;
 import hotmath.subscriber.service.HmServiceImplDefault;
 import hotmath.subscriber.service.HmServiceManager;
 import hotmath.subscriber.service.HotMathSubscriberServiceFactory;
 import hotmath.testset.ha.HaAdmin;
 import hotmath.testset.ha.HaUser;
+import hotmath.util.HMConnectionPool;
+import hotmath.util.sql.SqlUtilities;
 
 import java.io.IOException;
+import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -130,8 +129,15 @@ public class CatchupSignupServlet extends HttpServlet {
                  student.setTutoringAvail(false);
                  student.setShowWorkRequired(false);
                  
-                 CmStudentDao csd = new CmStudentDao();
-                 student = csd.addStudent(student);
+                 Connection conn=null;
+                 try {
+                     conn = HMConnectionPool.getConnection();
+                     CmStudentDao csd = new CmStudentDao();
+                     student = csd.addStudent(conn, student);
+                 }
+                 finally {
+                     SqlUtilities.releaseResources(null,null,conn);
+                 }
                  
                  user = new HaUser();
                  user.setUid(student.getUid());

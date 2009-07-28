@@ -12,10 +12,12 @@ import hotmath.gwt.cm_tools.client.model.GroupModel;
 import hotmath.gwt.cm_tools.client.model.LessonItemModel;
 import hotmath.gwt.cm_tools.client.model.StudentActivityModel;
 import hotmath.gwt.cm_tools.client.model.StudentModel;
+import hotmath.gwt.cm_tools.client.model.StudentModelI;
 import hotmath.gwt.cm_tools.client.model.StudentShowWorkModel;
 import hotmath.gwt.cm_tools.client.model.StudyProgramModel;
 import hotmath.gwt.cm_tools.client.model.SubjectModel;
 import hotmath.gwt.cm_tools.client.service.PrescriptionService;
+import hotmath.gwt.shared.client.rpc.action.AddStudentAction;
 import hotmath.gwt.shared.client.rpc.action.AutoAdvanceUserAction;
 import hotmath.gwt.shared.client.rpc.action.CreateTestRunAction;
 import hotmath.gwt.shared.client.rpc.action.GetPrescriptionAction;
@@ -29,6 +31,7 @@ import hotmath.gwt.shared.client.rpc.action.GetViewedInmhItemsAction;
 import hotmath.gwt.shared.client.rpc.action.SaveFeedbackAction;
 import hotmath.gwt.shared.client.rpc.action.SaveQuizCurrentResultAction;
 import hotmath.gwt.shared.client.rpc.action.SetInmhItemAsViewedAction;
+import hotmath.gwt.shared.client.rpc.action.UpdateStudentAction;
 import hotmath.gwt.shared.client.util.CmRpcException;
 import hotmath.gwt.shared.client.util.RpcData;
 import hotmath.gwt.shared.client.util.UserInfo;
@@ -107,7 +110,6 @@ public class PrescriptionServiceImpl extends RemoteServiceServlet implements Pre
         return ActionDispatcher.getInstance().execute(action);
     }
     
-
     public void saveFeedback(String comments, String commentsUrl, String stateInfo) throws CmRpcException {
         SaveFeedbackAction action = new SaveFeedbackAction(comments, commentsUrl, stateInfo);
         ActionDispatcher.getInstance().execute(action);
@@ -121,7 +123,14 @@ public class PrescriptionServiceImpl extends RemoteServiceServlet implements Pre
     public List<SubjectModel> getSubjectDefinitions(String progId) throws CmRpcException {
         GetProgramDefinitionsAction action = new GetProgramDefinitionsAction(progId);
         return ActionDispatcher.getInstance().execute(action);
-    }    
+    }
+    
+    public StudentModel updateUser(StudentModel sm, Boolean stuChanged, Boolean progChanged, Boolean progIsNew, Boolean passcodeChanged) throws CmRpcException {
+        UpdateStudentAction action = new UpdateStudentAction(sm, stuChanged, progChanged, progIsNew, passcodeChanged);
+        return ActionDispatcher.getInstance().execute(action);
+    }
+
+
 
     public String getSolutionProblemStatementHtml(String pid) {
         try {
@@ -290,6 +299,11 @@ public class PrescriptionServiceImpl extends RemoteServiceServlet implements Pre
         GetQuizResultsHtmlAction action = new GetQuizResultsHtmlAction(runId);
         return ActionDispatcher.getInstance().execute(action);
     }
+    
+    public StudentModel addUser(StudentModel sm) throws CmRpcException {
+        AddStudentAction action = new AddStudentAction(sm);
+        return ActionDispatcher.getInstance().execute(action);
+    }    
 
     public void setUserBackground(int userId, String backgroundStyle) throws CmRpcException {
         Connection conn=null;
@@ -358,25 +372,6 @@ public class PrescriptionServiceImpl extends RemoteServiceServlet implements Pre
         try {
             CmAdminDao cma = new CmAdminDao();
             return cma.getActiveGroups(adminUid);
-        } catch (Exception e) {
-            throw new CmRpcException(e);
-        }
-    }
-
-    public StudentModel addUser(StudentModel sm) throws CmRpcException {
-        try {
-            CmStudentDao dao = new CmStudentDao();
-            return dao.addStudent(sm);
-        } catch (Exception e) {
-            throw new CmRpcException(e);
-        }
-    }
-
-    public StudentModel updateUser(StudentModel sm, Boolean stuChanged, Boolean progChanged, Boolean progIsNew,
-            Boolean passcodeChanged) throws CmRpcException {
-        try {
-            CmStudentDao dao = new CmStudentDao();
-            return dao.updateStudent(sm, stuChanged, progChanged, progIsNew, passcodeChanged);
         } catch (Exception e) {
             throw new CmRpcException(e);
         }

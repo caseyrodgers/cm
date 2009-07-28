@@ -4,6 +4,7 @@ import hotmath.HotMathException;
 import hotmath.gwt.cm_admin.server.model.CmStudentDao;
 import hotmath.gwt.cm_tools.client.data.HaBasicUser;
 import hotmath.gwt.cm_tools.client.model.StudentModel;
+import hotmath.gwt.cm_tools.client.model.StudentModelBasic;
 import hotmath.util.HMConnectionPool;
 import hotmath.util.sql.SqlUtilities;
 
@@ -187,7 +188,7 @@ public class HaUserFactory {
             student.setTutoringAvail(false);
             student.setShowWorkRequired(false);
 
-            cmDao.addStudent(student);
+            cmDao.addStudent(conn, student);
 
             HaBasicUser user = loginToCatchup(demoUser, demoPwd);
             return user;

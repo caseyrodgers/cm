@@ -7,7 +7,6 @@ import hotmath.gwt.shared.client.rpc.result.GetViewedInmhItemsResult;
 import hotmath.gwt.shared.client.util.CmRpcException;
 import hotmath.gwt.shared.client.util.RpcData;
 import hotmath.gwt.shared.server.service.ActionHandler;
-import hotmath.util.HMConnectionPool;
 import hotmath.util.sql.SqlUtilities;
 
 import java.sql.Connection;
@@ -25,17 +24,15 @@ public class GetViewedInmhItemsCommand implements ActionHandler<GetViewedInmhIte
     
 
     @Override
-    public GetViewedInmhItemsResult execute(GetViewedInmhItemsAction action) throws Exception {
+    public GetViewedInmhItemsResult execute(final Connection conn, GetViewedInmhItemsAction action) throws Exception {
         
         int runId = action.getRunId();
     
         ArrayList<RpcData> data = new ArrayList<RpcData>();
         try {
-            Connection conn = null;
             PreparedStatement pstat = null;
             try {
                 String sql = "select * from HA_TEST_RUN_INMH_USE where run_id = ?";
-                conn = HMConnectionPool.getConnection();
                 pstat = conn.prepareStatement(sql);
 
                 pstat.setInt(1, runId);
@@ -54,7 +51,7 @@ public class GetViewedInmhItemsCommand implements ActionHandler<GetViewedInmhIte
                 e.printStackTrace();
                 throw new CmRpcException("Error adding test run item view: " + e.getMessage());
             } finally {
-                SqlUtilities.releaseResources(null, pstat, conn);
+                SqlUtilities.releaseResources(null, pstat, null);
             }
 
         } catch (Exception e) {

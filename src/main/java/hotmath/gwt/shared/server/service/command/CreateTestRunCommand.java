@@ -1,11 +1,5 @@
 package hotmath.gwt.shared.server.service.command;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.util.ArrayList;
-import java.util.List;
-
 import hotmath.assessment.AssessmentPrescription;
 import hotmath.assessment.AssessmentPrescriptionManager;
 import hotmath.gwt.cm_tools.client.ui.NextAction;
@@ -18,8 +12,13 @@ import hotmath.gwt.shared.client.util.RpcData;
 import hotmath.gwt.shared.server.service.ActionHandler;
 import hotmath.testset.ha.HaTest;
 import hotmath.testset.ha.HaTestRun;
-import hotmath.util.HMConnectionPool;
 import hotmath.util.sql.SqlUtilities;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.util.List;
 
 
 
@@ -34,9 +33,7 @@ import hotmath.util.sql.SqlUtilities;
 public class CreateTestRunCommand implements ActionHandler<CreateTestRunAction, RpcData> {
 
     @Override
-    public RpcData execute(CreateTestRunAction action) throws Exception {
-
-        Connection conn = null;
+    public RpcData execute(final Connection conn, CreateTestRunAction action) throws Exception {
         PreparedStatement pstat = null;
         try {
 
@@ -49,8 +46,7 @@ public class CreateTestRunCommand implements ActionHandler<CreateTestRunAction, 
             int totalSessions = 0;
 
             String sql = "select cs.pid, cs.is_correct, t.total_segments from v_HA_TEST_CURRENT_STATUS cs, HA_TEST t where cs.test_id = ? and t.test_id = cs.test_id";
-            conn = HMConnectionPool.getConnection();
-            
+
             HaTest test = HaTest.loadTest(conn, action.getTestId());
             
             pstat = conn.prepareStatement(sql);
@@ -117,7 +113,7 @@ public class CreateTestRunCommand implements ActionHandler<CreateTestRunAction, 
             e.printStackTrace();
             throw new CmRpcException("Error creating new test run: " + e.getMessage());
         } finally {
-            SqlUtilities.releaseResources(null, pstat, conn);
+            SqlUtilities.releaseResources(null, pstat,null);
         }
     }
     

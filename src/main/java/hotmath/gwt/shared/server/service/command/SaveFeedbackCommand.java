@@ -5,7 +5,6 @@ import hotmath.gwt.shared.client.rpc.Response;
 import hotmath.gwt.shared.client.rpc.action.SaveFeedbackAction;
 import hotmath.gwt.shared.client.util.RpcData;
 import hotmath.gwt.shared.server.service.ActionHandler;
-import hotmath.util.HMConnectionPool;
 import hotmath.util.sql.SqlUtilities;
 
 import java.sql.Connection;
@@ -17,17 +16,15 @@ public class SaveFeedbackCommand implements ActionHandler<SaveFeedbackAction, Rp
 
     static Logger logger = Logger.getLogger(SaveFeedbackCommand.class);
     @Override
-    public RpcData execute(SaveFeedbackAction action) throws Exception {
+    public RpcData execute(final Connection conn, SaveFeedbackAction action) throws Exception {
 
         logger.info("Saving feedback: " + action);
-        Connection conn = null;
         PreparedStatement pstat = null;
 
         try {
 
             String sql = "insert into HA_FEEDBACK(entry_date, comment,comment_url,state_info)values(now(),?,?,?)";
 
-            conn = HMConnectionPool.getConnection();
             pstat = conn.prepareStatement(sql);
             pstat.setString(1, action.getComments());
             pstat.setString(2, action.getCommentsUrl());
@@ -38,7 +35,7 @@ public class SaveFeedbackCommand implements ActionHandler<SaveFeedbackAction, Rp
         } catch (Exception e) {
             logger.info(e);
         } finally {
-            SqlUtilities.releaseResources(null, pstat, conn);
+            SqlUtilities.releaseResources(null, pstat, null);
         }    
         
         RpcData rpcData = new RpcData();

@@ -28,11 +28,8 @@ import java.util.List;
 public class GetQuizResultsHtmlCommand implements ActionHandler<GetQuizResultsHtmlAction, RpcData> {
 
     @Override
-    public RpcData execute(GetQuizResultsHtmlAction action) throws CmRpcException {
-        Connection conn = null;
+    public RpcData execute(final Connection conn, GetQuizResultsHtmlAction action) throws CmRpcException {
         try {
-            conn = HMConnectionPool.getConnection();
-            
             HaTestRun testRun = HaTestRun.lookupTestRun(conn, action.getRunId());
             
             List<HaTestRunResult> results = testRun.getTestRunResults();
@@ -55,7 +52,7 @@ public class GetQuizResultsHtmlCommand implements ActionHandler<GetQuizResultsHt
         } catch (Exception e) {
             throw new CmRpcException(e);
         } finally {
-            SqlUtilities.releaseResources(null, null, conn);
+            SqlUtilities.releaseResources(null, null, null);
         }
 
     }

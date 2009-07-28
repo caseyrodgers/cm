@@ -36,15 +36,12 @@ public class GetQuizHtmlCommand implements ActionHandler<GetQuizHtmlAction, RpcD
     static final Logger logger = Logger.getLogger(GetQuizHtmlCommand.class);
     
     @Override
-    public RpcData execute(GetQuizHtmlAction action) throws Exception {
+    public RpcData execute(final Connection conn, GetQuizHtmlAction action) throws Exception {
         
         int testSegment = action.getTestSegment();
         int uid = action.getUid();
-        
-        
-        Connection conn = null;
+
         try {
-            conn = HMConnectionPool.getConnection();
             String quizHtmlTemplate = readQuizHtmlTemplate();
             Map<String, Object> map = new HashMap<String, Object>();
 
@@ -122,9 +119,6 @@ public class GetQuizHtmlCommand implements ActionHandler<GetQuizHtmlAction, RpcD
             return rpcData;
         } catch (Exception e) {
             throw e;
-        }
-        finally {
-            SqlUtilities.releaseResources(null,null,conn);
         }
     }
     

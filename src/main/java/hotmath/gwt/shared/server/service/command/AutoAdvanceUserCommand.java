@@ -8,6 +8,8 @@ import hotmath.gwt.shared.server.service.ActionHandler;
 import hotmath.testset.ha.EndOfProgramHandler;
 import hotmath.testset.ha.StudentUserProgramModel;
 
+import java.sql.Connection;
+
 import org.apache.log4j.Logger;
 
 
@@ -21,7 +23,7 @@ public class AutoAdvanceUserCommand implements ActionHandler<AutoAdvanceUserActi
     Logger logger = Logger.getLogger(AutoAdvanceUserCommand.class);
 
     @Override
-    public AutoUserAdvanced execute(AutoAdvanceUserAction action) throws Exception {
+    public AutoUserAdvanced execute(final Connection conn, AutoAdvanceUserAction action) throws Exception {
         
         int userId = action.getUserId();
         EndOfProgramHandler eofh = new EndOfProgramHandler(userId);

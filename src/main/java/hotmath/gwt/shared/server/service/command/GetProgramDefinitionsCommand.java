@@ -1,5 +1,7 @@
 package hotmath.gwt.shared.server.service.command;
 
+import java.sql.Connection;
+
 import hotmath.gwt.cm_admin.server.model.CmAdminDao;
 import hotmath.gwt.cm_tools.client.model.SubjectModel;
 import hotmath.gwt.shared.client.rpc.Action;
@@ -17,8 +19,7 @@ public class GetProgramDefinitionsCommand implements ActionHandler<GetProgramDef
     Logger logger = Logger.getLogger(GetProgramDefinitionsCommand.class);
 
     @Override
-    public CmArrayList<SubjectModel> execute(GetProgramDefinitionsAction action) throws Exception {
-        
+    public CmArrayList<SubjectModel> execute(final Connection conn, GetProgramDefinitionsAction action) throws Exception {
         CmArrayList<SubjectModel> cma = new CmArrayList<SubjectModel>();
         CmAdminDao dao = new CmAdminDao();
         cma.addAll(dao.getSubjectDefinitions(action.getProgId()));

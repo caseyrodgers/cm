@@ -2,7 +2,7 @@ package hotmath.gwt.shared.server.service.command;
 
 import hotmath.gwt.cm_admin.server.model.CmStudentDao;
 import hotmath.gwt.cm_tools.client.model.StudentActiveInfo;
-import hotmath.gwt.cm_tools.client.model.StudentModel;
+import hotmath.gwt.cm_tools.client.model.StudentModelI;
 import hotmath.gwt.shared.client.rpc.Action;
 import hotmath.gwt.shared.client.rpc.Response;
 import hotmath.gwt.shared.client.rpc.action.GetUserInfoAction;
@@ -13,7 +13,6 @@ import hotmath.testset.ha.ChapterInfo;
 import hotmath.testset.ha.HaTestDef;
 import hotmath.testset.ha.HaTestDefDao;
 import hotmath.testset.ha.StudentUserProgramModel;
-import hotmath.util.HMConnectionPool;
 import hotmath.util.sql.SqlUtilities;
 
 import java.sql.Connection;
@@ -23,14 +22,11 @@ import java.sql.ResultSet;
 public class GetUserInfoCommand implements ActionHandler<GetUserInfoAction, UserInfo> {
 
     @Override
-    public UserInfo execute(GetUserInfoAction action) throws Exception {
-        Connection conn = null;
+    public UserInfo execute(final Connection conn, GetUserInfoAction action) throws Exception {
         try {
-            conn = HMConnectionPool.getConnection();
-            
-            
             CmStudentDao dao = new CmStudentDao();
-            StudentModel sm = dao.getStudentModel(action.getUserId());
+            StudentModelI sm = dao.getStudentModelBasic(conn, action.getUserId());
+            
             StudentUserProgramModel si = dao.loadProgramInfo(conn, action.getUserId());
             StudentActiveInfo activeInfo = dao.loadActiveInfo(conn, action.getUserId());
             
@@ -70,9 +66,6 @@ public class GetUserInfoCommand implements ActionHandler<GetUserInfoAction, User
             e.printStackTrace();
             throw new CmRpcException(e);
         }
-        finally {
-            SqlUtilities.releaseResources(null,null,conn);
-        }        
     }
 
     @Override

@@ -7,6 +7,7 @@ import hotmath.gwt.cm_tools.server.service.SetInmhItemAsViewedCommand;
 import hotmath.gwt.shared.client.rpc.Action;
 import hotmath.gwt.shared.client.rpc.Response;
 import hotmath.gwt.shared.client.util.CmRpcException;
+import hotmath.gwt.shared.server.service.command.AddStudentCommand;
 import hotmath.gwt.shared.server.service.command.AutoAdvanceUserCommand;
 import hotmath.gwt.shared.server.service.command.CreateTestRunCommand;
 import hotmath.gwt.shared.server.service.command.GetPrescriptionCommand;
@@ -19,7 +20,11 @@ import hotmath.gwt.shared.server.service.command.GetUserInfoCommand;
 import hotmath.gwt.shared.server.service.command.GetViewedInmhItemsCommand;
 import hotmath.gwt.shared.server.service.command.SaveFeedbackCommand;
 import hotmath.gwt.shared.server.service.command.SaveQuizCurrentResultCommand;
+import hotmath.gwt.shared.server.service.command.UpdateStudentCommand;
+import hotmath.util.HMConnectionPool;
+import hotmath.util.sql.SqlUtilities;
 
+import java.sql.Connection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -93,6 +98,8 @@ public class ActionDispatcher {
         addCommand(SaveFeedbackCommand.class);
         addCommand(AutoAdvanceUserCommand.class);
         addCommand(GetProgramDefinitionsCommand.class);
+        addCommand(AddStudentCommand.class);
+        addCommand(UpdateStudentCommand.class);
     }
     
     
@@ -118,7 +125,11 @@ public class ActionDispatcher {
     }
     
     
-    /** Execute the given command and return the proper Result object
+    /** Execute the given command and return the proper Result object.
+     * 
+     * Each command is given a preallocated Connection option that it
+     * will utilize for any DB access.  
+     * 
      * 
      * @param <T>
      * @param action
@@ -127,22 +138,29 @@ public class ActionDispatcher {
      */
     @SuppressWarnings("unchecked")
     public <T extends Response> T execute(Action<T> action) throws CmRpcException {
-        
+ 
+        long timeStart = System.currentTimeMillis();
         logger.debug("RPC Action executing: " + action.getClass().getName());
-        
+        Connection conn = null;
         try {
+            conn = HMConnectionPool.getConnection();
+            
             Class clazz = commands.get(action.getClass());
             ActionHandler actionHandler = (ActionHandler)clazz.newInstance();
             if(actionHandler == null)
                 throw new CmRpcException("No such RPC Action defined: " + action.getClass().getName());
             
-            return (T)actionHandler.execute(action);
+            return (T)actionHandler.execute(conn, action);
         }
         catch(CmRpcException cre) {
             throw cre;
         }
         catch(Exception e) {
             throw new CmRpcException(e);
+        }
+        finally {
+            SqlUtilities.releaseResources(null,null,conn);
+            logger.debug("RPC Action " + action.getClass().getName() + " complete: elapsed time: " + (System.currentTimeMillis() - timeStart)/ 1000);
         }
     }
 }

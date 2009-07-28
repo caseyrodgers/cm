@@ -201,14 +201,12 @@ public class CmAdminDao {
     	}
     }
 
-    public List<ChapterModel> getChaptersForProgramSubject(Connection conn, String progId, String subjId) throws Exception {
+    public List<ChapterModel> getChaptersForProgramSubject(final Connection conn, String progId, String subjId) throws Exception {
     	List <ChapterModel> l = null;
     	
     	PreparedStatement ps = null;
     	ResultSet rs = null;
-    	
     	try {
-    		conn = HMConnectionPool.getConnection();
     		ps = conn.prepareStatement(CHAPTERS_SQL);
     		ps.setString(1, progId);
     		ps.setString(2, subjId);
@@ -326,7 +324,7 @@ public class CmAdminDao {
 
     private static final String SELECT_LAST_INSERT_ID_SQL = "select LAST_INSERT_ID()";
 
-	private int getLastInsertId(Connection conn) throws Exception {
+	private int getLastInsertId(final Connection conn) throws Exception {
 		Statement stmt = null;
 		ResultSet rs = null;
 		try {

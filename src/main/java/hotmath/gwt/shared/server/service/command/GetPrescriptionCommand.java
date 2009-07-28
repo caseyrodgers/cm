@@ -17,9 +17,7 @@ import hotmath.gwt.shared.server.service.ActionDispatcher;
 import hotmath.gwt.shared.server.service.ActionHandler;
 import hotmath.inmh.INeedMoreHelpItem;
 import hotmath.inmh.INeedMoreHelpResourceType;
-import hotmath.util.HMConnectionPool;
 import hotmath.util.Jsonizer;
-import hotmath.util.sql.SqlUtilities;
 
 import java.sql.Connection;
 import java.util.ArrayList;
@@ -54,18 +52,13 @@ public class GetPrescriptionCommand implements ActionHandler<GetPrescriptionActi
     Logger logger = Logger.getLogger(GetPrescriptionCommand.class);
 
     @Override
-    public RpcData execute(GetPrescriptionAction action) throws Exception {
+    public RpcData execute(final Connection conn, GetPrescriptionAction action) throws Exception {
 
         logger.info("getting prescription: " + action);
         
         int runId = action.getRunId();
         int sessionNumber = action.getSessionNumber();
-
-        Connection conn = null;
         try {
-
-            conn = HMConnectionPool.getConnection();
-
             AssessmentPrescription pres = AssessmentPrescriptionManager.getInstance().getPrescription(conn, runId);
 
             int totalSessions = pres.getSessions().size();
@@ -193,8 +186,6 @@ public class GetPrescriptionCommand implements ActionHandler<GetPrescriptionActi
 
         } catch (Exception e) {
             throw new CmRpcException(e);
-        } finally {
-            SqlUtilities.releaseResources(null, null, conn);
         }
     }
 
