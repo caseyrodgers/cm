@@ -677,6 +677,9 @@ public class CmStudentDao {
      *             if student not found
      */
     public StudentModel getStudentModel(Integer uid) throws Exception {
+        
+        long timeStart = System.currentTimeMillis();
+        logger.info("Start getStudentModel for " + uid);
         Connection conn = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
@@ -701,6 +704,7 @@ public class CmStudentDao {
             throw new Exception(String.format("*** Error obtaining data for student with UID: %d", uid));
         } finally {
             SqlUtilities.releaseResources(rs, ps, conn);
+            logger.info("End getStudentModel, elapsed seconds: " + (System.currentTimeMillis() - timeStart)/ 1000);
         }
     }
 

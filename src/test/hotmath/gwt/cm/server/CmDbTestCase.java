@@ -1,9 +1,6 @@
 package hotmath.gwt.cm.server;
 
-import hotmath.gwt.cm_admin.server.model.CmStudentDao;
-import hotmath.gwt.cm_tools.client.data.HaBasicUser;
-import hotmath.testset.ha.CmProgram;
-import hotmath.testset.ha.HaUserFactory;
+import hotmath.gwt.shared.server.service.CmTestUtils;
 
 public class CmDbTestCase extends DbTestCase {
     
@@ -19,10 +16,6 @@ public class CmDbTestCase extends DbTestCase {
      * @throws Exception
      */
     public int setupDemoAccount() throws Exception {
-        HaBasicUser user = HaUserFactory.createDemoUser();
-
-        new CmStudentDao().assignProgramToStudent(user.getUserKey(),CmProgram.PREALG_PROF,null);
-        
-        return user.getUserKey();
+        return CmTestUtils.setupDemoAccount();
     }
 }
