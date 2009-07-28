@@ -1,7 +1,7 @@
 package hotmath.testset.ha;
 
 import hotmath.gwt.cm_admin.server.model.CmStudentDao;
-import hotmath.gwt.cm_tools.client.model.StudentModel;
+import hotmath.gwt.cm_tools.client.model.StudentModelI;
 import hotmath.util.HMConnectionPool;
 import hotmath.util.sql.SqlUtilities;
 
@@ -25,7 +25,7 @@ grad test would loop
  */
 public class EndOfProgramHandler {
     
-    StudentModel student;
+    StudentModelI student;
     CmStudentDao dao;
     public EndOfProgramHandler(int userId) throws Exception {
         dao = new CmStudentDao();
@@ -33,7 +33,7 @@ public class EndOfProgramHandler {
     }
     
     /** Move this user to the next logical program.  This should 
-     * completely move this user and return information identifiing
+     * completely move this user and return information identifying
      * the NEW program assigned.
      * 
      * This will move to the next program in a sequence. Each call will
@@ -51,20 +51,20 @@ public class EndOfProgramHandler {
             StudentUserProgramModel programCurr = dao.loadProgramInfo(conn,student.getUid());
             
             if(programCurr.getTestDefId() == CmProgram.PREALG_PROF.getDefId()) {
-                updateProgram("Alg 1","Prof",null);                
+                updateProgram(CmProgram.ALG1_PROF.getSubject(),CmProgram.ALG1_PROF.getProgramId(),null);                
             }
             else if(programCurr.getTestDefId() == CmProgram.ALG1_PROF.getDefId()) {
-                updateProgram("Geom","Prof",null);                
+                updateProgram(CmProgram.GEO_PROF.getSubject(),CmProgram.GEO_PROF.getProgramId(),null);                
             }
             else if(programCurr.getTestDefId() == CmProgram.GEO_PROF.getDefId()) {
-                updateProgram("Alg 2", "Prof",null);
+                updateProgram(CmProgram.ALG2_PROF.getSubject(), CmProgram.ALG2_PROF.getProgramId(),null);
             }
             else if(programCurr.getTestDefId() == CmProgram.ALG2_PROF.getDefId() ) {
-                updateProgram("","Grad Prep",null);
+                updateProgram(CmProgram.CAHSEEHM.getSubject(),CmProgram.CAHSEEHM.getProgramId(),null);
             }
             else if(programCurr.getTestDefId() == CmProgram.CAHSEEHM.getDefId()) {
                 // reset/repeat
-                updateProgram("", "Grad Prep",null);
+                updateProgram(CmProgram.CAHSEEHM.getSubject(), CmProgram.CAHSEEHM.getProgramId(),null);
             }
             else {
                 // if is a chapter test, then we must find the currently assigned
@@ -72,10 +72,10 @@ public class EndOfProgramHandler {
                 // next in sequence.  Otherwise, move to the associated proficiency test
                 
                 if(programCurr.getTestDefId() == CmProgram.PREALG_CHAP.getDefId()) {
-                    setupChapterTest(conn, programCurr,"Pre-Alg");
+                    setupChapterTest(conn, programCurr,CmProgram.PREALG_CHAP.getSubject());
                 }
                 else if(programCurr.getTestDefId() == CmProgram.ALG1_CHAP.getDefId()) {
-                    setupChapterTest(conn, programCurr,"Alg 1");
+                    setupChapterTest(conn, programCurr,CmProgram.ALG1_CHAP.getSubject());
                 }
                 else {
                     throw new Exception("Unknown program: " + programCurr);
@@ -142,31 +142,15 @@ public class EndOfProgramHandler {
         student.setSubjId(subId);
         student.setChapter(chapter);
         student.setProgramChanged(true);
-        dao.updateStudent(student, true, false, true, false);            
+        
+        Connection conn=null;
+        try {
+            conn = HMConnectionPool.getConnection();
+            dao.updateStudent(conn,student, true, false, true, false);
+        }
+        finally {
+            SqlUtilities.releaseResources(null,null,conn);
+        }
     }
 
-    enum CmProgram {
-        PREALG_PROF(16,"Pre-Alg", "Prof"),PREALG_CHAP(22,"Pre-Alg", "Chap"),ALG1_PROF(30,"Alg 1", "Prof"),ALG1_CHAP(32,"Alg 1", "Chap"),ALG2_PROF(29,"Alg 2", "Prof"),GEO_PROF(18,"Geom", "Prof"),CAHSEEHM(28,"", "Grad Prep");
-        
-        private final int defId;
-        private final String subject;
-        private final String programId;
-        CmProgram(int defId, String subject, String programId) {
-            this.defId = defId;
-            this.subject = subject;
-            this.programId = programId;
-        }
-        
-        public int getDefId() {
-            return defId;
-        }
-
-        public String getSubject() {
-            return subject;
-        }
-
-        public String getProgramId() {
-            return programId;
-        }
-    }
 }
