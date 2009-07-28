@@ -52,6 +52,7 @@ public class CmAdminDao {
     		ps.setString(1, progId);
     		//TODO: separate queries for schools and colleges
     		ps.setInt(2, 1);
+
     		rs = ps.executeQuery();
     		
     		l = loadSubjectDefinitions(rs);
@@ -188,9 +189,21 @@ public class CmAdminDao {
      * @throws Exception
      */
     public List<ChapterModel> getChaptersForProgramSubject(String progId, String subjId) throws Exception {
-    	List <ChapterModel> l = null;
     	
     	Connection conn = null;
+    	
+    	try {
+    		conn = HMConnectionPool.getConnection();
+    		return getChaptersForProgramSubject(conn, progId, subjId);
+    	}
+    	finally {
+    		SqlUtilities.releaseResources(null, null, conn);
+    	}
+    }
+
+    public List<ChapterModel> getChaptersForProgramSubject(Connection conn, String progId, String subjId) throws Exception {
+    	List <ChapterModel> l = null;
+    	
     	PreparedStatement ps = null;
     	ResultSet rs = null;
     	
@@ -209,7 +222,7 @@ public class CmAdminDao {
     		throw new Exception("*** Error getting Chapter list ***", e);
     	}
     	finally {
-    		SqlUtilities.releaseResources(rs, ps, conn);
+    		SqlUtilities.releaseResources(rs, ps, null);
     	}
     }
 
