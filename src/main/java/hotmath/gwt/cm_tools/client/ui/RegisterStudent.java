@@ -14,7 +14,9 @@ import hotmath.gwt.shared.client.eventbus.EventBus;
 import hotmath.gwt.shared.client.util.UserInfo;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.extjs.gxt.ui.client.Registry;
 import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
@@ -45,7 +47,11 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 public class RegisterStudent extends LayoutContainer {
 	
 	private CmWindow fw;
+	
 	private boolean isNew;
+	private boolean skipComboSet;
+	private boolean loading;
+	
 	private StudentModel stuMdl;
 	private CmAdminModel cmAdminMdl;
 	private int inProcessCount;
@@ -73,6 +79,8 @@ public class RegisterStudent extends LayoutContainer {
 	
 	private CombinedFormPanel _formPanel;
 	
+	private static final String ENTRY_REQUIRED_MSG = "This field is required";
+	
 	public RegisterStudent(StudentModel sm, CmAdminModel cm) {
 	    
 	    EventBus.getInstance().fireEvent(new CmEvent(EventBus.EVENT_TYPE_MODAL_WINDOW_OPEN));
@@ -95,6 +103,7 @@ public class RegisterStudent extends LayoutContainer {
  		if (isNew) {
  			name.focus();
  		}
+ 		skipComboSet = isNew;
 		setComboBoxSelections();
 	}
 	
@@ -165,7 +174,7 @@ public class RegisterStudent extends LayoutContainer {
 		fs.add(progCombo);
 		
 		subjStore = new ListStore <SubjectModel> ();
-		getSubjectListRPC((stuMdl != null)?stuMdl.getProgId():null, subjStore);
+		getSubjectList((stuMdl != null)?stuMdl.getProgId():null, subjStore);
 		subjCombo = subjectCombo(subjStore);
 		fs.add(subjCombo);
 
@@ -273,18 +282,27 @@ public class RegisterStudent extends LayoutContainer {
 	    combo.addSelectionChangedListener(new SelectionChangedListener<StudyProgram>() {
 	        @SuppressWarnings("unchecked")
 			public void selectionChanged(SelectionChangedEvent<StudyProgram> se) {
+	        	
+	        	if (loading) return;
+	        	
 	            StudyProgram sp = se.getSelectedItem();
 				int needsSubject = ((Integer)sp.get("needsSubject")).intValue();
 				int needsChapters = ((Integer)sp.get("needsChapters")).intValue();
 				int needsPassPercent = ((Integer)sp.get("needsPassPercent")).intValue();
 				
 	        	ComboBox <SubjectModel> cb = (ComboBox<SubjectModel>) fs.getItemByItemId("subj-combo");
+	        	
+	        	skipComboSet = true;
+	        	subjectId = null;
+	        	
 	        	if (needsSubject > 0) {
+	        		cb.clearSelections();
 	        		cb.enable();
 	        		cb.setForceSelection(true);
-	        	    getSubjectListRPC((String)sp.get("shortTitle"), subjStore);
+	        	    getSubjectList((String)sp.get("shortTitle"), subjStore);
 	        	}
 	        	else {
+	        		cb.clearInvalid();
 	        		cb.clearSelections();
 	        		cb.disable();
 	        		cb.setForceSelection(false);
@@ -292,20 +310,24 @@ public class RegisterStudent extends LayoutContainer {
 	        	}
 	        	ComboBox <ChapterModel> cc = (ComboBox<ChapterModel>) fs.getItemByItemId("chap-combo");
 	        	if (needsChapters > 0) {
+	        		cc.clearSelections();
 	        		cc.enable();
 	        		cc.setForceSelection(true);
 	        	}
 	        	else {
+	        		cc.clearInvalid();
 	        		cc.clearSelections();
 	        		cc.disable();
 	        		cc.setForceSelection(false);
 	        	}
 	        	ComboBox <PassPercent> cp = (ComboBox<PassPercent>) fs.getItemByItemId("pass-combo");
 	        	if (needsPassPercent > 0) {
+	        		cp.clearSelections();
 	        		cp.enable();
 	        		cp.setForceSelection(true);
 	        	}
 	        	else {
+	        		cp.clearInvalid();
 	        		cp.clearSelections();
 	        		cp.disable();
 	        		cp.setForceSelection(false);
@@ -344,16 +366,17 @@ public class RegisterStudent extends LayoutContainer {
 		
 	    combo.addSelectionChangedListener(new SelectionChangedListener<SubjectModel>() {
 			public void selectionChanged(SelectionChangedEvent<SubjectModel> se) {
+
+				if (loading) return;
+
 	        	SubjectModel sm = se.getSelectedItem();
 	        	if (subjectId == null || ! subjectId.equals(sm.getAbbrev())) {
 	        	    try {
-    		        	//System.out.println("old: " + ((subjectId==null)?"none":subjectId) + ", new: " + sm.getAbbrev());
+	    	        	skipComboSet = true;
     		        	subjectId = sm.getAbbrev();
     		        	ComboBox<StudyProgram> cb = (ComboBox<StudyProgram>) _formPanel.getItemByItemId("prog-combo");
     		        	StudyProgram sp = cb.getValue();
     		        	String progId = sp.get("shortTitle");
-    		        	subjStore.removeAll();
-    		        	getSubjectListRPC(progId, subjStore);
     		        	chapStore.removeAll();
     		            getChapterListRPC(progId, subjectId, true, chapStore);
 	        	    }
@@ -387,6 +410,9 @@ public class RegisterStudent extends LayoutContainer {
 		
 	    combo.addSelectionChangedListener(new SelectionChangedListener<GroupModel>() {
 			public void selectionChanged(SelectionChangedEvent<GroupModel> se) {
+
+				if (loading) return;
+	        	
 	        	GroupModel gm = se.getSelectedItem();
 	        	if (gm.getName().equals(GroupModel.NEW_GROUP)) {
 	        		GroupWindow gw = new GroupWindow(cmAdminMdl, groupCombo, true);
@@ -452,15 +478,19 @@ public class RegisterStudent extends LayoutContainer {
 			@Override  
 	    	public void componentSelected(ButtonEvent ce) {
 	        	TextField<String> tf = (TextField<String>)fp.getItemByItemId("name");
+	        	tf.clearInvalid();
 	        	String name = tf.getValue();
 	        	if (name == null) {
 	        		tf.focus();
+	        		tf.forceInvalid(ENTRY_REQUIRED_MSG);
 	        		return;
 	        	}
 	        	tf = (TextField<String>)fp.getItemByItemId("passcode");
+	        	tf.clearInvalid();
 	        	String passcode = tf.getValue();
 	        	if (passcode == null) {
 	        		tf.focus();
+	        		tf.forceInvalid(ENTRY_REQUIRED_MSG);
 	        		return;
 	        	}
 /* don't need email field for now
@@ -474,10 +504,13 @@ public class RegisterStudent extends LayoutContainer {
                 String groupId=null;
 	            String group=null;
 	        	ComboBox<GroupModel> cg = (ComboBox<GroupModel>) fp.getItemByItemId("group-combo");
+	        	cg.clearInvalid();
 	        	if(cg != null) {
     	        	GroupModel g = cg.getValue();
     	        	if (g == null) {
     	        		cg.focus();
+    	        		cg.forceInvalid(ENTRY_REQUIRED_MSG);
+    	        		cg.expand();
     	        		return;
     	        	}
     	            groupId = g.getId();
@@ -498,36 +531,48 @@ public class RegisterStudent extends LayoutContainer {
 	        	
 	        	ComboBox<StudyProgram> cb = (ComboBox<StudyProgram>) fs.getItemByItemId("prog-combo");
 	        	StudyProgram sp = cb.getValue();
+	        	cb.clearInvalid();
 	        	if (sp == null) {
 	        		cb.focus();
+	        		cb.forceInvalid(ENTRY_REQUIRED_MSG);
+	        		cb.expand();
 	        		return;
 	        	}
 	        	String prog = sp.get("shortTitle");
 
 	        	ComboBox<SubjectModel> cs = (ComboBox<SubjectModel>) fs.getItemByItemId("subj-combo");
 	        	SubjectModel sub = cs.getValue();
+	        	cs.clearInvalid();
 	        	if (sub != null) {
 	        		prog = sub.get("abbrev") + " " + prog;
 	        	}
 	        	if (((Integer)sp.get("needsSubject")).intValue() > 0 && sub == null) {
 	        		cs.focus();
+	        		cs.forceInvalid(ENTRY_REQUIRED_MSG);
+	        		cs.expand();
 	        		return;
 	        	}
 
 	        	ComboBox<ChapterModel> cc = (ComboBox<ChapterModel>) fs.getItemByItemId("chap-combo");
 	        	ChapterModel chap = cc.getValue();
+	        	cc.clearInvalid();
 	        	if (chap != null) {
 	        		prog = prog + " " + chap.get("number");
 	        	}
 	        	if (((Integer)sp.get("needsChapters")).intValue() > 0 && chap == null) {
 	        		cc.focus();
+	        		cc.forceInvalid(ENTRY_REQUIRED_MSG);
+	        		cc.expand();
 	        		return;
 	        	}
 
 	        	ComboBox<PassPercent> cp = (ComboBox<PassPercent>) fs.getItemByItemId("pass-combo");
 	        	PassPercent pass = cp.getValue();
+	        	cp.clearInvalid();
 	        	if (((Integer)sp.get("needsPassPercent")).intValue() > 0 && pass == null) {
 	        		cp.focus();
+	        		cp.forceInvalid(ENTRY_REQUIRED_MSG);
+	        		cp.expand();
 	        		return;
 	        	}
 
@@ -613,7 +658,7 @@ public class RegisterStudent extends LayoutContainer {
 	    });
 		return saveBtn;
 	}
-
+	
 	private void getStudyProgramListRPC(final ListStore <StudyProgram> progStore) {
 
 		inProcessCount++;
@@ -638,43 +683,34 @@ public class RegisterStudent extends LayoutContainer {
         });
 	}
 
-	private void getSubjectListRPC(String progId, final ListStore <SubjectModel> subjStore) {
-		
-	    
-        /** @TODO: fix
-         * 
-         * BUG ALERT:  this causes infinite loop when updating existing student due
-         * to calling setComboBoxSelections()
-         * 
-         * Plus, this gets called too many times...
-         * 
-         * Plus, when error when selecting chapter, then you change program
-         * the error does not get reset.
-         * 
-         */
+	private Map<String, List<SubjectModel>> programSubjectMap = new HashMap<String, List<SubjectModel>>();
+	
+	private void getSubjectList(final String progId, final ListStore <SubjectModel> subjStore) {
 
 		if (progId == null) return;
 
-		if(true) {
-    	    subjStore.removeAll();
-    	    subjStore.add(new SubjectModel("Pre-Algebra","Pre-Alg"));
-    	    subjStore.add(new SubjectModel("Algebra 1","Alg 1"));
-    		if(progId.equals("Prof")) {
-    		    subjStore.add(new SubjectModel("Geometry","Geom"));
-    		    subjStore.add(new SubjectModel("Algebra 2","Alg 2"));
-    		}
-    		
-    		return;
+		List<SubjectModel> subjList = programSubjectMap.get(progId);
+		if (subjList != null) {
+			subjStore.removeAll();
+			subjStore.add(subjList);
+			setComboBoxSelections();
 		}
-		
-		
+		else {
+			getSubjectListRPC(progId, subjStore);
+		}
+	}
+	
+	private void getSubjectListRPC(final String progId, final ListStore <SubjectModel> subjStore) {
+
 		inProcessCount++;
 		PrescriptionServiceAsync s = (PrescriptionServiceAsync) Registry.get("prescriptionService");
 		s.getSubjectDefinitions(progId, new AsyncCallback <List<SubjectModel>>() {
 
 			public void onSuccess(List<SubjectModel> result) {
+				subjStore.removeAll();
 				subjStore.add(result);
 				inProcessCount--;
+				programSubjectMap.put(progId, result);
 				setComboBoxSelections();
         	}
 
@@ -687,7 +723,7 @@ public class RegisterStudent extends LayoutContainer {
 	}
 	
 	private void getGroupListRPC(Integer uid, final ListStore <GroupModel> store) {
-		
+
 		inProcessCount++;
 		PrescriptionServiceAsync s = (PrescriptionServiceAsync) Registry.get("prescriptionService");
 		s.getActiveGroups(uid, new AsyncCallback <List<GroupModel>>() {
@@ -761,7 +797,9 @@ public class RegisterStudent extends LayoutContainer {
 	}
 	
 	private void setComboBoxSelections() {
-		if (! isNew && inProcessCount < 1) {
+		if (! skipComboSet && inProcessCount < 1) {
+
+			loading = true;
 			
 			setGroupSelection();
 			
@@ -780,6 +818,7 @@ public class RegisterStudent extends LayoutContainer {
     		int needsPassPercent = ((Integer)sp.get("needsPassPercent")).intValue();
     		if (needsPassPercent != 0) setPassPercentSelection();
 
+            loading = false;
 		}
 	}
 
@@ -798,7 +837,7 @@ public class RegisterStudent extends LayoutContainer {
 	
 	private StudyProgram setProgramSelection() {
 		String shortName = stuMdl.getProgramDescr();
-
+		
 		if (shortName != null) {
 			List<StudyProgram> list = progStore.getModels();
 			for (StudyProgram sp : list) {
@@ -821,6 +860,7 @@ public class RegisterStudent extends LayoutContainer {
 				if (shortName.indexOf((String) s.get("abbrev")) > -1) {
 					subjCombo.setOriginalValue(s);
 					subjCombo.setValue(s);
+					subjCombo.enable();
 					break;
 				}
 			}
@@ -837,6 +877,7 @@ public class RegisterStudent extends LayoutContainer {
 				if (chap.equals(c.getTitle())) {
 					chapCombo.setOriginalValue(c);
 					chapCombo.setValue(c);
+					chapCombo.enable();
 					break;
 				}
 			}
@@ -849,30 +890,18 @@ public class RegisterStudent extends LayoutContainer {
 		if (passPercent != null) {
 			List<PassPercent> list = passStore.getModels();
 			for (PassPercent p : list) {
-				String pass = p.getPassPercent();
 				if (passPercent.equals(p.getPassPercent())) {
 					passCombo.setOriginalValue(p);
 					passCombo.setValue(p);
+					passCombo.enable();
 					break;
 				}
 			}
 		}
 	}
 
-	// TODO obtain from service
-	private List<ChapterModel> getChapterList(String subjId) {
-		List<ChapterModel> list = new ArrayList<ChapterModel> ();
-		list.add(new ChapterModel("1", "Solving Linear Equations"));
-		list.add(new ChapterModel("2", "Graphing Linear Equations"));
-		list.add(new ChapterModel("3", "Proportions"));
-		list.add(new ChapterModel("4", "Inequalities and Absolute Value Equations"));
-		list.add(new ChapterModel("5", "Solving Linear Systems"));
-		list.add(new ChapterModel("6", "Exponents, Polynomials and Factoring"));
-
-		return list;
-	}
-	
 	private void getChapterListRPC(String progId, String subjId, final Boolean chapOnly, final ListStore <ChapterModel> chapStore) {
+
 		if (progId == null || !progId.equalsIgnoreCase("chap")) return;
 		
 		inProcessCount++;
@@ -937,8 +966,6 @@ public class RegisterStudent extends LayoutContainer {
 	}
 }
 
-
-
 /** Search for field in nested FieldSets
  * 
  * @author casey
@@ -947,7 +974,7 @@ public class RegisterStudent extends LayoutContainer {
 class CombinedFormPanel extends FormPanel {
     public Component getItemByItemId(String itemId) {
         
-        Component foundObject=super.getItemByItemId(itemId);
+        Component foundObject = super.getItemByItemId(itemId);
         if(foundObject != null)
             return foundObject;
         
