@@ -1,6 +1,7 @@
 package hotmath.gwt.cm_admin.server.model;
 
 import hotmath.assessment.InmhItemData;
+import hotmath.gwt.cm_tools.client.model.ChapterModel;
 import hotmath.gwt.cm_tools.client.model.LessonItemModel;
 import hotmath.gwt.cm_tools.client.model.StudentActiveInfo;
 import hotmath.gwt.cm_tools.client.model.StudentActivityModel;
@@ -118,6 +119,9 @@ public class CmStudentDao {
             rs = ps.executeQuery();
 
             l = loadStudentSummaries(rs);
+            
+            loadChapterInfo(conn, l);
+            
         } catch (Exception e) {
             logger.error(String.format("*** Error getting student summaries for Admin uid: %d", adminUid), e);
             throw new Exception("*** Error getting student summary data ***");
@@ -126,6 +130,26 @@ public class CmStudentDao {
         }
         return l;
     }
+
+	private void loadChapterInfo(Connection conn, List<StudentModel> l) throws Exception {
+
+		CmAdminDao dao = new CmAdminDao();
+		
+		for (StudentModel sm : l) {
+			String chapter = sm.getChapter();
+			if (chapter != null) {
+				String subjId = sm.getSubjId();
+		        List <ChapterModel> cmList = dao.getChaptersForProgramSubject(conn, "Chap", subjId);
+		        for (ChapterModel cm : cmList) {
+		        	if (cm.getTitle().equals(chapter)) {
+		        		sm.setProgramDescr(new StringBuilder(sm.getProgramDescr()).append(" ").append(cm.getNumber()).toString());
+		        		break;
+		        	}
+		        }
+		        
+			}
+		}
+	}
 
     private static final String GET_STUDENT_ACTIVITY_SQL =
             "select max(s.use_date) as use_date, date_format(min(s.view_time),'%h:%i %p') as start_time, " +
@@ -679,7 +703,6 @@ public class CmStudentDao {
     public StudentModel getStudentModel(Integer uid) throws Exception {
         
         long timeStart = System.currentTimeMillis();
-        logger.info("Start getStudentModel for " + uid);
         Connection conn = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
@@ -698,13 +721,15 @@ public class CmStudentDao {
             if (l.size() > 1)
                 throw new Exception(String.format("Student with UID: %d matches more than one row", uid));
 
+            loadChapterInfo(conn, l);
+            
             return l.get(0);
         } catch (Exception e) {
             logger.error(String.format("*** Error obtaining data for student UID: %d", uid), e);
             throw new Exception(String.format("*** Error obtaining data for student with UID: %d", uid));
         } finally {
             SqlUtilities.releaseResources(rs, ps, conn);
-            logger.info("End getStudentModel, elapsed seconds: " + (System.currentTimeMillis() - timeStart)/ 1000);
+            logger.info(String.format("End getStudentModel(), UID: %d, elapsed seconds: %d", uid, ((System.currentTimeMillis() - timeStart)/1000)));
         }
     }
 
@@ -743,9 +768,9 @@ public class CmStudentDao {
                 int segmentCount = rs.getInt("total_segments");
 
                 /**
-                 * IF not set, then guess
+                 * If not set, then guess
                  * 
-                 * @tTODO: this should never happen
+                 * @TODO: this should never happen
                  */
                 if (segmentCount == 0)
                     segmentCount = 4;
@@ -874,20 +899,16 @@ public class CmStudentDao {
     	List<LessonItemModel> l = new ArrayList<LessonItemModel>();
     	
 		String testName = rs.getString(1);
-
-
 		int testSegment = rs.getInt(2);
 
 	    HaTestDefDescription tdDesc = HaTestDefDescription.getHaTestDefDescription(testName, testSegment);
-	    
-	    
+
 		// identify incomplete topics
 		Set <String> topicFileSet = new HashSet<String>();
 		do {
 			if (!"correct".equalsIgnoreCase(rs.getString("answer_status"))) {
 				topicFileSet.add(rs.getString("file"));
 			}
-			
 		} while (rs.next());
 		
     	for (InmhItemData item : tdDesc.getLessonItems()) {
