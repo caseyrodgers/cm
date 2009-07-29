@@ -67,4 +67,11 @@
        overflowToDisk="false">
 </cache>
 
+<!--  For Subject Chapters -->
+<cache name="SUBJECT_CHAPTERS"
+       maxElementsInMemory="200"
+       eternal="true"
+       overflowToDisk="false">
+</cache>
+
 </ehcache>

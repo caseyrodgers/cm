@@ -2,6 +2,7 @@ package hotmath.gwt.cm_admin.server.model;
 
 import static hotmath.cm.util.CmCacheManager.CacheName.PROG_DEF;
 import static hotmath.cm.util.CmCacheManager.CacheName.REPORT_ID;
+import static hotmath.cm.util.CmCacheManager.CacheName.SUBJECT_CHAPTERS;
 import hotmath.cm.util.CmCacheManager;
 import hotmath.gwt.cm_tools.client.model.AccountInfoModel;
 import hotmath.gwt.cm_tools.client.model.ChapterModel;
@@ -201,8 +202,17 @@ public class CmAdminDao {
     	}
     }
 
-    public List<ChapterModel> getChaptersForProgramSubject(final Connection conn, String progId, String subjId) throws Exception {
-    	List <ChapterModel> l = null;
+    @SuppressWarnings("unchecked")
+	public List<ChapterModel> getChaptersForProgramSubject(final Connection conn, String progId, String subjId) throws Exception {
+    	
+    	String key = new StringBuilder(progId).append(".").append(subjId).toString();
+    	List <ChapterModel> l = (List<ChapterModel>)CmCacheManager.getInstance().retrieveFromCache(SUBJECT_CHAPTERS, key);
+    	
+    	if (logger.isDebugEnabled()) {
+    		logger.debug(String.format("+++ getChaptersForProgramSubject(): key: %s, retrieved: %s", key, ((l == null)?"NULL":l.size())));
+    	}
+    	
+    	if (l != null) return l;
     	
     	PreparedStatement ps = null;
     	ResultSet rs = null;
@@ -212,7 +222,9 @@ public class CmAdminDao {
     		ps.setString(2, subjId);
     		rs = ps.executeQuery();
     		l = loadChapters(rs);
-    		//logger.debug("+++ chapter 1: " + l.get(0).getChapter());
+
+    		CmCacheManager.getInstance().addToCache(SUBJECT_CHAPTERS, key, l);
+
     		return l;
     	}
     	catch (Exception e) {
