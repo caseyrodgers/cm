@@ -17,7 +17,7 @@ public class ShowTutorDialog extends Window {
     public ShowTutorDialog(String pid) {
         this.pid = pid;
         setHeading("Live Tutoring");
-        setSize(500, 400);
+        setSize(820, 570);
         buildGui();
     }
     
@@ -26,7 +26,7 @@ public class ShowTutorDialog extends Window {
         String contentUrl = "pid=" + pid;
         setLayout(new FitLayout());
         Frame f = new Frame("/collab/lwl/cm_lwl_launch.jsp?contentUrl=" + contentUrl);
-        f.setSize("100%", "400px");
+        f.setSize("100%", "500px");
         add(f);
     }
 }
