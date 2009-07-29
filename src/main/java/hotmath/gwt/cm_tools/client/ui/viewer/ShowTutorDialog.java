@@ -25,7 +25,7 @@ public class ShowTutorDialog extends Window {
     private void buildGui() {
         String contentUrl = "pid=" + pid;
         setLayout(new FitLayout());
-        Frame f = new Frame("/collab/lwl/lwl_launch.jsp?contentUrl=" + contentUrl);
+        Frame f = new Frame("/collab/lwl/cm_lwl_launch.jsp?contentUrl=" + contentUrl);
         f.setSize("100%", "400px");
         add(f);
     }
