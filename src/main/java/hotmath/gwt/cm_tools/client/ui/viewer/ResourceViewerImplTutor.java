@@ -237,7 +237,7 @@ public class ResourceViewerImplTutor extends ResourceViewerContainer implements 
     public void showTutoring(String pid) {
         
         if(showTutorPanel == null) {
-            showTutorPanel = new ShowTutorDialog();
+            showTutorPanel = new ShowTutorDialog(pid);
         }
         
         showTutorPanel.setVisible(true);
