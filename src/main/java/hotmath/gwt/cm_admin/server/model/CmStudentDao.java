@@ -157,7 +157,7 @@ public class CmStudentDao {
             "select max(s.use_date) as use_date, date_format(min(s.view_time),'%h:%i %p') as start_time, " +
             "  date_format(max(s.view_time),'%h:%i %p') as stop_time, max(s.view_time) as view_time, " +
             "  max(s.run_date) as run_date, " +
-            "  s.answered_correct, s.answered_incorrect, s.not_answered, s.program as program, s.prog_id, " +
+            "  s.answered_correct, s.answered_incorrect, s.not_answered, s.program, s.prog_id, s.subj_id, s.test_config_json, " +
             "  s.test_id as test_id, max(s.test_segment) as test_segment, s.test_def_id, s.test_run_id, " +
             "  s.activity, s.is_quiz, count(*) as problems_viewed, max(s.session_number) as session_number, " +
             "  s.total_sessions " +
@@ -166,20 +166,21 @@ public class CmStudentDao {
             "   date_format(r.run_time,'%h:%i %p') as stop_time, r.run_time as view_time, " +
             "   date_format(r.run_time,'%Y-%m-%d') as run_date, " +
             "   r.answered_correct, r.answered_incorrect, r.not_answered, " +
-            "   concat(td.subj_id, ' ', td.prog_id) as program,  td.prog_id, " +
+            "   concat(td.subj_id, ' ', td.prog_id) as program,  td.prog_id, td.subj_id, p.test_config_json, " +
             "   l.test_id as test_id, l.test_segment, td.test_def_id as test_def_id, " +
             "   r.run_id as test_run_id, 0 as total_sessions, " +
             "   'Quiz-' as activity, 1 as is_quiz, l.test_segment as session_number " +
             " from  HA_TEST l INNER JOIN HA_USER u ON l.user_id = u.uid " +
             " join HA_TEST_RUN r on r.test_id = l.test_id " +
             " join HA_TEST_DEF td on td.test_def_id = l.test_def_id " +
+            " join CM_USER_PROGRAM p on p.user_id = u.uid and p.test_def_id = td.test_def_id " +
             " where u.uid = ? " +
             " union " +
             " select date_format(iu.view_time,'%Y-%m-%d') as use_date, date_format(iu.view_time,'%h:%i %p') as start_time, " +
             "  date_format(iu.view_time,'%h:%i %p') as stop_time, iu.view_time as view_time, " +
             "  date_format(iu.view_time,'%Y-%m-%d') as run_date, " +
             "  0 as answered_correct, 0 as answered_incorrect, 0 as not_answered, " +
-            "  concat(td.subj_id, ' ', td.prog_id) as program, td.prog_id, " +
+            "  concat(td.subj_id, ' ', td.prog_id) as program, td.prog_id, td.subj_id, p.test_config_json, " +
             "  l.test_id as test_id, iu.session_number as test_segment, td.test_def_id as test_def_id, " +
             "  r.run_id as test_run_id, r.total_sessions as total_sessions, " +
             "  'Review-' as activity, 0 as is_quiz, iu.session_number as session_number " +
@@ -187,6 +188,7 @@ public class CmStudentDao {
             " join HA_TEST_RUN r on r.test_id = l.test_id " +
             " join HA_TEST_RUN_INMH_USE iu on iu.run_id = r.run_id and iu.item_type = 'practice' " +
             " join HA_TEST_DEF td on td.test_def_id = l.test_def_id " +
+            " join CM_USER_PROGRAM p on p.user_id = u.uid and p.test_def_id = td.test_def_id " +
             " where u.uid = ? " +
             ") s " +
             "group by s.test_run_id, s.is_quiz, s.use_date " +
@@ -206,7 +208,7 @@ public class CmStudentDao {
             ps.setInt(2, uid);
             rs = ps.executeQuery();
 
-            l = loadStudentActivity(rs);
+            l = loadStudentActivity(conn, rs);
         } catch (Exception e) {
             logger.error(String.format("*** Error getting student details for student uid: %d", uid), e);
             throw new Exception("*** Error getting student details ***");
@@ -801,7 +803,6 @@ public class CmStudentDao {
             sm.setGroupId(String.valueOf(groupId));
             sm.setUserProgramId(rs.getInt("user_prog_id"));
             sm.setGroup(rs.getString("group_name"));
-            // TODO: include Chapter number in 'program'
             sm.setProgramDescr(rs.getString("program"));
             sm.setProgId(rs.getString("prog_id"));
             sm.setSubjId(rs.getString("subj_id"));
@@ -841,10 +842,12 @@ public class CmStudentDao {
         return l;
     }
 
-    private List<StudentActivityModel> loadStudentActivity(ResultSet rs) throws Exception {
+    private List<StudentActivityModel> loadStudentActivity(Connection conn, ResultSet rs) throws Exception {
 
         List<StudentActivityModel> l = new ArrayList<StudentActivityModel>();
         int problemsViewed = 0;
+        
+        CmAdminDao dao = null;
 
         while (rs.next()) {
             StudentActivityModel m = new StudentActivityModel();
@@ -854,6 +857,19 @@ public class CmStudentDao {
             m.setStop(rs.getString("stop_time"));
             int sectionNum = rs.getInt("test_segment");
             String progId = rs.getString("prog_id");
+
+            if (progId.equalsIgnoreCase("chap")) {
+            	if (dao == null) dao = new CmAdminDao();
+            	String subjId = rs.getString("subj_id");
+                String chapter = getChapter(rs.getString("test_config_json"));
+		        List <ChapterModel> cmList = dao.getChaptersForProgramSubject(conn, "Chap", subjId);
+		        for (ChapterModel cm : cmList) {
+		        	if (cm.getTitle().equals(chapter)) {
+		        		m.setProgramDescr(new StringBuilder(m.getProgramDescr()).append(" ").append(cm.getNumber()).toString());
+		        		break;
+		        	}
+		        }
+            }
 
             int runId = rs.getInt("test_run_id");
             m.setRunId(runId);
@@ -885,7 +901,7 @@ public class CmStudentDao {
                 int inProgress = 0; // lessonsViewed % problemsPerLesson;
                 int totalSessions = rs.getInt("total_sessions");
 
-                if (completed >= 1) {
+                if (completed >= 0) {
                     if (totalSessions < 1) {
                         sb.append("total of ").append(completed);
                         if (completed > 1)
@@ -1001,8 +1017,7 @@ public class CmStudentDao {
     /**
      * Return the currently configured user program for this user
      * 
-     * Return null if no program has been defined or an defined program does not
-     * exist.
+     * Return null if no program has been defined or a defined program does not exist.
      * 
      * @param userId
      * @return
@@ -1012,8 +1027,9 @@ public class CmStudentDao {
         PreparedStatement ps = null;
         ResultSet rs = null;
 
-        String sql = "select c.id, c.user_id, c.pass_percent, u.admin_id, c.test_def_id, t.test_name,c.test_config_json " +
-                     "from CM_USER_PROGRAM c JOIN HA_USER u on c.id = u.user_prog_id " +
+        String sql = "select c.id, c.user_id, c.pass_percent, u.admin_id, c.test_def_id, t.test_name, c.test_config_json " +
+                     "from CM_USER_PROGRAM c " +
+                     "JOIN HA_USER u on c.id = u.user_prog_id " +
                      "JOIN HA_TEST_DEF t on c.test_def_id = t.test_def_id " +
                      "and u.uid = ?";
         try {
