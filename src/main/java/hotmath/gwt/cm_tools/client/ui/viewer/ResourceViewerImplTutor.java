@@ -154,6 +154,7 @@ public class ResourceViewerImplTutor extends ResourceViewerContainer implements 
      */
     static private native void publishNative() /*-{
         $wnd.showWorkDialog_Gwt = @hotmath.gwt.cm_tools.client.ui.viewer.ResourceViewerImplTutor::showWorkDialog();
+        $wnd.showTutoringDialog_Gwt = @hotmath.gwt.cm_tools.client.ui.viewer.ResourceViewerImplTutor::showTutoringDialog();
     }-*/;
     
     
@@ -166,6 +167,11 @@ public class ResourceViewerImplTutor extends ResourceViewerContainer implements 
     static public void showWorkDialog() {
        _instance.showWork(_instance.pid);
     }    
+    
+    
+    static public void showTutoringDialog() {
+        _instance.showTutoring(_instance.pid);
+     }    
     
     static ShowWorkPanel showWorkPanel;
     public void showWork(final String pid) {
@@ -195,7 +201,12 @@ public class ResourceViewerImplTutor extends ResourceViewerContainer implements 
             showWorkWin.getHeader().addTool(checkBtn);
             showWorkWin.getHeader().addTool(hideBtn);
             
-            
+
+            int left = ResourceViewerImplTutor.this.el().getLeft(false);
+            int top = ResourceViewerImplTutor.this.el().getTop(false);
+
+            showWorkWin.setPosition(left,top);
+
 
             
             showWorkWin.setStyleName("show-work-window");
@@ -205,11 +216,7 @@ public class ResourceViewerImplTutor extends ResourceViewerContainer implements 
             showWorkWin.setWidth(560);
             showWorkWin.setModal(true);
 
-            int left = ResourceViewerImplTutor.this.el().getLeft(false);
-            int top = ResourceViewerImplTutor.this.el().getTop(false);
-
-            showWorkWin.setPosition(left,top);
-            
+                    
             showWorkWin.setLayout(new FillLayout());
         }
         else {
@@ -224,6 +231,17 @@ public class ResourceViewerImplTutor extends ResourceViewerContainer implements 
         // get the position of the 'show work' button
         // and move to it, then expand ...
     }
+    
+    
+    static ShowTutorDialog showTutorPanel;
+    public void showTutoring(String pid) {
+        
+        if(showTutorPanel == null) {
+            showTutorPanel = new ShowTutorDialog();
+        }
+        
+        showTutorPanel.setVisible(true);
+    }
 
     
     /**
@@ -236,3 +254,4 @@ public class ResourceViewerImplTutor extends ResourceViewerContainer implements 
                                  }-*/;
 
 }
+
