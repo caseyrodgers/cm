@@ -584,7 +584,7 @@ img.resource-item-complete {
 
 /** The main Resource Container */
 
-.resource-container {
+.resource-container-snowman {
    background-image:url(/gwt-resources/images/prescription_resource_background-1600x1050.jpg);
    background-attachment: fixed;
    background-position: center bottom;
@@ -595,7 +595,7 @@ img.resource-item-complete {
 }
 
 
-.resource-container-catchup {
+.resource-container {
    background-image:url(/gwt-resources/images/bg/default.png);
    background-repeat: repeat-x;
 }

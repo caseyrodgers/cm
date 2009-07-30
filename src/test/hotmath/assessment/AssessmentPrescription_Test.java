@@ -1,0 +1,132 @@
+package hotmath.assessment;
+
+import hotmath.inmh.INeedMoreHelpResourceType;
+import hotmath.testset.ha.HaTest;
+import hotmath.testset.ha.HaTestDef;
+import hotmath.testset.ha.HaTestRun;
+import hotmath.testset.ha.HaTest_Test;
+import hotmath.testset.ha.HaUser;
+import hotmath.util.HMConnectionPool;
+
+import java.sql.Connection;
+import java.util.List;
+
+import junit.framework.TestCase;
+
+public class AssessmentPrescription_Test extends TestCase {
+
+    public AssessmentPrescription_Test(String name) throws Exception {
+        super(name);
+    }
+
+    
+    String CA_STATE_TEST="California State Exit Exam";
+    Connection conn=null;
+    
+    protected void tearDown() throws Exception {
+        conn.close();
+    }
+    
+    HaUser user;
+    int PRE_ALG_PROF = 16;
+    HaTestDef testDef;
+    HaTestRun testRun;
+
+    public void testGetInmhItemsForSession() throws Exception {
+
+        // int ct=0;
+        // int _inmhCntVideo=0;
+        //        
+        // _prescriptionNumber = 181;
+        //
+        // AssessmentPrescription pres =
+        // AssessmentPrescriptionManager.getInstance().getPrescription(_prescriptionNumber);
+        // AssessmentPrescriptionSession session = pres.getSessions().get(0);
+        //              
+        // int cnt = 0;
+        // int _inmhCntLesson = 0;
+        // for(INeedMoreHelpResourceType moreHelp: pres.readInmhItems()) {
+        // for(INeedMoreHelpItem item:moreHelp.getResources()) {
+        // if(moreHelp.getTypeDef().getType().equals("video"))
+        // _inmhCntVideo++;
+        // else
+        // _inmhCntLesson++;
+        // }
+        // }
+    }
+
+    @Override
+    protected void setUp() throws Exception {
+
+        conn = HMConnectionPool.getConnection();
+        
+        String guids[] = { "cahseehm_1_1_PracticeTest_1_1", "cahseehm_1_1_PracticeTest_10_1",
+                "cahseehm_1_1_PracticeTest_2_1", "cahseehm_1_1_PracticeTest_3_1", "cahseehm_1_1_PracticeTest_4_1",
+                "cahseehm_1_1_PracticeTest_5_1", "cahseehm_1_1_PracticeTest_6_1", "cahseehm_1_1_PracticeTest_7_1",
+                "cahseehm_1_1_PracticeTest_8_1", "cahseehm_1_1_PracticeTest_9_1" };
+        
+        user = HaUser.lookUser(conn,700, null);
+        testDef = new HaTestDef(conn, CA_STATE_TEST);
+        
+        HaTest test = HaTest.createTest(conn, user.getUid(), testDef, 1);
+        testRun = test.createTestRun(conn, guids, 0, 1, 9, 1);
+    }
+
+    public void testCreate() throws Exception {
+        AssessmentPrescription assTest = new AssessmentPrescription(conn, testRun);
+
+        assertTrue(assTest.getSessions().size() > 1);
+    }
+
+    static int _testNumber = 0;
+    static int _runId = 0;
+
+    public void testCreateNew1() throws Exception {
+
+        HaTest test = HaTest.createTest(conn,HaTest_Test.USER_TEST, new HaTestDef(conn, HaTest_Test.CHAP_TEST), 1);
+        _testNumber = test.getTestId();
+
+        String wrongGuids[] = { "test1", "test2", "test3" };
+        HaTestRun testRun = test.createTestRun(conn,wrongGuids, 1, 2,0,1);
+        _runId = testRun.getRunId();
+
+        AssessmentPrescription pres = new AssessmentPrescription(conn, testRun);
+        assertNotNull(pres);
+        assertNotNull(pres.getSessions());
+    }
+
+    public void testCreateNew() throws Exception {
+        AssessmentPrescription pres = AssessmentPrescriptionManager.getInstance().createPrescription(conn, _testNumber,
+                "alg1ptests_CourseTest_1_Algebra1PracticeTest_1_1", 1, 2, 0,1);
+        _runId = pres.getTestRun().getRunId();
+        assertNotNull(pres);
+        assertTrue(pres.getSessions().size() > 0);
+    }
+
+    public void testSession() throws Exception {
+        AssessmentPrescription pres = AssessmentPrescriptionManager.getInstance().getPrescription(conn, _runId);
+        AssessmentPrescriptionSession sess = pres.getSessions().get(0);
+        List<INeedMoreHelpResourceType> types = sess.getInmhTypes();
+        assertNotNull(types);
+    }
+
+    public void testSession2() throws Exception {
+        AssessmentPrescription pres = AssessmentPrescriptionManager.getInstance().getPrescription(conn, _runId);
+        AssessmentPrescriptionSession sess = pres.getSessions().get(0);
+        List<INeedMoreHelpResourceType> items = sess.getPrescriptionInmhTypes(conn,null);
+        assertNotNull(items);
+    }
+
+    public void testCheckIfReady() throws Exception {
+        AssessmentPrescription pres = AssessmentPrescriptionManager.getInstance().getPrescription(conn, _runId);
+        assertTrue(pres.getSessionStatusJson() != null);
+    }
+
+    public void testLookup() throws Exception {
+        AssessmentPrescription pres = AssessmentPrescriptionManager.getInstance().getPrescription(conn, _runId);
+        assertNotNull(pres);
+
+        assertTrue(pres.getSessions().size() > 0);
+    }
+
+}
