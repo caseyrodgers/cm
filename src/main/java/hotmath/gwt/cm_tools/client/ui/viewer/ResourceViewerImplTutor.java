@@ -236,6 +236,12 @@ public class ResourceViewerImplTutor extends ResourceViewerContainer implements 
     static ShowTutorDialog showTutorPanel;
     public void showTutoring(String pid) {
         
+        if(!UserInfo.getInstance().isTutoringAvail()) {
+            CatchupMathTools.showAlert("Ask a Tutor", "Live Tutoring is not currently enabled on this account.");
+            return;
+        }
+        
+        
         if(showTutorPanel == null) {
             showTutorPanel = new ShowTutorDialog(pid);
         }

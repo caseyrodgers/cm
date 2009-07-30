@@ -238,7 +238,7 @@ public class CmAdminDao {
 
     //TODO: obtain max_students from DB (SUBSCRIBERS_SERVICES ?)
     private static final String ACCOUNT_INFO_SQL =
-    	"select ifnull(s.school_type, 'NONE') as school_name, s.responsible_name, sc.date_expire as catchup_expire_date, " +
+    	"select s.id, ifnull(s.school_type, 'NONE') as school_name, s.responsible_name, sc.date_expire as catchup_expire_date, " +
     	"  sc.service_name, st.date_expire as tutoring_expire_date, h.user_name, t.student_count, 1000 as max_students, " +
     	" l.login_time, date_format(l.login_time, '%Y-%m-%d %h:%i %p') as login_date_time " +
         "from SUBSCRIBERS s " +
@@ -269,6 +269,7 @@ public class CmAdminDao {
     		ps.setInt(2, adminUid);
     		rs = ps.executeQuery();
     		if (rs.next()) {
+    		    ai.setSubscriberId(rs.getString("id"));
           	    ai.setSchoolName(rs.getString("school_name"));
           	    ai.setSchoolUserName(rs.getString("responsible_name"));
           	    ai.setAdminUserName(rs.getString("user_name"));

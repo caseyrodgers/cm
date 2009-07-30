@@ -57,6 +57,8 @@ public class GetUserInfoCommand implements ActionHandler<GetUserInfoAction, User
             userInfo.setTestName(testTitle);
             userInfo.setSubTitle(subTitle);
             userInfo.setShowWorkRequired(sm.getShowWorkRequired());
+            userInfo.setTutoringAvail(sm.getTutoringAvail());
+            
             userInfo.setPassPercentRequired(si.getPassPercent());
             userInfo.setTestSegmentCount(testDef.getTotalSegmentCount());
             userInfo.setViewCount(getTotalInmHViewCount(conn,action.getUserId()));

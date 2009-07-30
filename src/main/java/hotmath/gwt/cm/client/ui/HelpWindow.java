@@ -235,14 +235,14 @@ public class HelpWindow extends CmWindow {
         ListStore<BackgroundModel> backgrounds = new ListStore<BackgroundModel>();
         
         BackgroundModel m = new BackgroundModel();
-        m.set("text","Snow Field");
-        m.set("bg_style", "resource-container");
+        m.set("text","Snow Man");
+        m.set("bg_style", "resource-container-snowman");
         backgrounds.add( m );
         
         
         m = new BackgroundModel();
         m.set("text","Catchup Math");
-        m.set("bg_style", "resource-container-catchup");
+        m.set("bg_style", "resource-container");
         backgrounds.add(m);
         
         

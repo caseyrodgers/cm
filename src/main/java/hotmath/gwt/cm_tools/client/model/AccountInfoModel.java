@@ -11,6 +11,7 @@ public class AccountInfoModel extends BaseModelData  {
 	public static final String EXPIRATION_DATE_KEY = "expiration-date";
 	public static final String HAS_TUTORING_KEY = "has-tutoring";
 	public static final String ADMIN_USER_NAME_KEY = "admin-user-name";
+	public static final String ADMIN_SUBSCRIBER_ID = "subscriber-id";
 	
 	public String getSchoolName() {
 		return get(SCHOOL_NAME_KEY);
@@ -82,6 +83,14 @@ public class AccountInfoModel extends BaseModelData  {
 
 	public void setHasTutoring(String hasTutoring) {
 		set (HAS_TUTORING_KEY, hasTutoring);
+	}
+	
+	public void setSubscriberId(String id) {
+	    set(ADMIN_SUBSCRIBER_ID, id);
+	}
+	
+	public String getSubscriberId() {
+	    return get(ADMIN_SUBSCRIBER_ID);
 	}
 	
 	public AccountInfoModel() {

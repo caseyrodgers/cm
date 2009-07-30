@@ -34,7 +34,17 @@ public class UserInfo implements IsSerializable, Response {
 	String backgroundStyle;
 	int correctAnswers;
 	boolean isShowWorkRequired;
-	UserType userAccountType = UserType.SINGLE_USER;
+	boolean isTutoringAvail;
+	
+	public boolean isTutoringAvail() {
+        return isTutoringAvail;
+    }
+
+    public void setTutoringAvail(boolean isTutoringAvail) {
+        this.isTutoringAvail = isTutoringAvail;
+    }
+
+    UserType userAccountType = UserType.SINGLE_USER;
 	int passPercentRequired;
 	String subTitle;
 	
