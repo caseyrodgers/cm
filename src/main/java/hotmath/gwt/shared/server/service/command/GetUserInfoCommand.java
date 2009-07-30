@@ -1,5 +1,6 @@
 package hotmath.gwt.shared.server.service.command;
 
+import hotmath.gwt.cm_admin.server.model.CmAdminDao;
 import hotmath.gwt.cm_admin.server.model.CmStudentDao;
 import hotmath.gwt.cm_tools.client.model.StudentActiveInfo;
 import hotmath.gwt.cm_tools.client.model.StudentModelI;
@@ -9,6 +10,8 @@ import hotmath.gwt.shared.client.rpc.action.GetUserInfoAction;
 import hotmath.gwt.shared.client.util.CmRpcException;
 import hotmath.gwt.shared.client.util.UserInfo;
 import hotmath.gwt.shared.server.service.ActionHandler;
+import hotmath.subscriber.HotMathSubscriber;
+import hotmath.subscriber.HotMathSubscriberManager;
 import hotmath.testset.ha.ChapterInfo;
 import hotmath.testset.ha.HaTestDef;
 import hotmath.testset.ha.HaTestDefDao;
@@ -29,6 +32,8 @@ public class GetUserInfoCommand implements ActionHandler<GetUserInfoAction, User
             
             StudentUserProgramModel si = dao.loadProgramInfo(conn, action.getUserId());
             StudentActiveInfo activeInfo = dao.loadActiveInfo(conn, action.getUserId());
+            String subscriberId = new CmAdminDao().getAccountInfo(sm.getAdminUid()).getSubscriberId();
+            HotMathSubscriber sub = HotMathSubscriberManager.findSubscriber(subscriberId); 
             
             HaTestDefDao hdao = new HaTestDefDao();
             HaTestDef testDef = hdao.getTestDef(conn, si.getTestDefId());
@@ -58,6 +63,8 @@ public class GetUserInfoCommand implements ActionHandler<GetUserInfoAction, User
             userInfo.setSubTitle(subTitle);
             userInfo.setShowWorkRequired(sm.getShowWorkRequired());
             userInfo.setTutoringAvail(sm.getTutoringAvail());
+            
+            userInfo.setUserAccountType(sub.getSubscriberType());
             
             userInfo.setPassPercentRequired(si.getPassPercent());
             userInfo.setTestSegmentCount(testDef.getTotalSegmentCount());
