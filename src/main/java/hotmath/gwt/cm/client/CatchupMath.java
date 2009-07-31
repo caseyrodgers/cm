@@ -147,7 +147,7 @@ public class CatchupMath implements EntryPoint {
                     public void requestComplete(String requestData) {
                         
                         if(UserInfo.getInstance().isSingleUser())
-                            Window.setTitle("Catchup Math: Single User");
+                            Window.setTitle("Catchup Math: Student");
 
 
                         
