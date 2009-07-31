@@ -52,6 +52,7 @@ public class CmTutoringDao {
             HotMathSubscriberSignupInfo signupInfo = new HotMathSubscriberSignupInfo();
             signupInfo.setFirstName(student.getName());
             signupInfo.setLastName("");
+            signupInfo.setStudentName(student.getName());
             signupInfo.setBillingZip(sub.getZip());
             
             // setup dummy LWL record
@@ -60,10 +61,12 @@ public class CmTutoringDao {
             signupInfo.setCardExpMonth("12");
             signupInfo.setCardExpYear("10");
             signupInfo.setCardType("Visa");
-            signupInfo.setBillingAddress("");
-            signupInfo.setBillingCity("");
-            signupInfo.setBillingState("");
+            signupInfo.setBillingAddress("123 Street");
+            signupInfo.setBillingCity("Atascadero");
+            signupInfo.setBillingState("Ca");
             signupInfo.setCardEmail("APIPayPalPurchase@InstantMathHelp.com");
+            signupInfo.setBillingZip("93422");
+            signupInfo.setAutoCharge(false);
             
             sub.setSignupInfo(signupInfo);
             List<PurchasePlan> plans = new ArrayList<PurchasePlan>();
