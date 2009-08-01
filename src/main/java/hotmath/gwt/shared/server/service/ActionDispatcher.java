@@ -143,12 +143,25 @@ public class ActionDispatcher {
         logger.debug("RPC Action executing: " + action.getClass().getName());
         Connection conn = null;
         try {
-            conn = HMConnectionPool.getConnection();
-            
             Class clazz = commands.get(action.getClass());
             ActionHandler actionHandler = (ActionHandler)clazz.newInstance();
+            
             if(actionHandler == null)
                 throw new CmRpcException("No such RPC Action defined: " + action.getClass().getName());
+
+            
+            /** Should connection management be automatic (default)? 
+             * If Command object implements the ActionHandlerManualConnectionManagement
+             * interface, then no connection is automatically created, it must
+             * manually manage the creation/release of connections.
+             */
+            if(!(actionHandler instanceof ActionHandlerManualConnectionManagement)) {
+                logger.debug("RPC Action: DB Connection requested");
+                conn = HMConnectionPool.getConnection();
+            }
+            else {
+                logger.debug("RPC Action: DB Connection NOT requested");
+            }
             
             return (T)actionHandler.execute(conn, action);
         }
@@ -159,7 +172,8 @@ public class ActionDispatcher {
             throw new CmRpcException(e);
         }
         finally {
-            SqlUtilities.releaseResources(null,null,conn);
+            if(conn != null)
+                SqlUtilities.releaseResources(null,null,conn);
             logger.debug("RPC Action " + action.getClass().getName() + " complete: elapsed time: " + (System.currentTimeMillis() - timeStart)/ 1000);
         }
     }

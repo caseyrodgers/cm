@@ -9,11 +9,12 @@ import hotmath.gwt.shared.client.rpc.Response;
 import hotmath.gwt.shared.client.rpc.action.CmArrayList;
 import hotmath.gwt.shared.client.rpc.action.GetProgramDefinitionsAction;
 import hotmath.gwt.shared.server.service.ActionHandler;
+import hotmath.gwt.shared.server.service.ActionHandlerManualConnectionManagement;
 
 import org.apache.log4j.Logger;
 
 
-public class GetProgramDefinitionsCommand implements ActionHandler<GetProgramDefinitionsAction,  CmArrayList<SubjectModel>> {
+public class GetProgramDefinitionsCommand implements ActionHandlerManualConnectionManagement, ActionHandler<GetProgramDefinitionsAction,  CmArrayList<SubjectModel>> {
 
     
     Logger logger = Logger.getLogger(GetProgramDefinitionsCommand.class);

@@ -1,6 +1,8 @@
 package hotmath.gwt.shared.server.service;
 
 import hotmath.gwt.cm.server.CmDbTestCase;
+import hotmath.gwt.cm_tools.client.model.AutoUserAdvanced;
+import hotmath.gwt.shared.client.rpc.action.AutoAdvanceUserAction;
 import hotmath.gwt.shared.client.rpc.action.CreateTestRunAction;
 import hotmath.gwt.shared.client.rpc.action.GetPrescriptionAction;
 import hotmath.gwt.shared.client.rpc.action.GetQuizHtmlAction;
@@ -14,8 +16,6 @@ import hotmath.gwt.shared.client.util.RpcData;
 import hotmath.gwt.shared.client.util.UserInfo;
 
 import java.util.List;
-
-import junit.framework.TestCase;
 
 public class ActionDispatcher_Test extends CmDbTestCase {
     
@@ -40,6 +40,25 @@ public class ActionDispatcher_Test extends CmDbTestCase {
     }
     
     
+    
+
+
+    public void testGetQuizHtmlCheckedCommand() throws Exception {
+        GetQuizHtmlCheckedAction action = new GetQuizHtmlCheckedAction(TEST_ID);
+        RpcData rpcData = ActionDispatcher.getInstance().execute(action);
+        
+        assertNotNull(rpcData);
+    }
+
+    
+    public void testAutoAdvanceUserCommand() throws Exception {
+        AutoAdvanceUserAction action = new AutoAdvanceUserAction(uid);
+        AutoUserAdvanced advanced = ActionDispatcher.getInstance().execute(action);
+        
+        assertNotNull(advanced);
+        assertNotNull(advanced.getProgramName());
+    }
+
     public void testGetUserInfo() throws Exception {
         GetUserInfoAction action = new GetUserInfoAction(uid);
         UserInfo user = ActionDispatcher.getInstance().execute(action);

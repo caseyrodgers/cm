@@ -5,6 +5,7 @@ import hotmath.gwt.shared.client.rpc.Action;
 import hotmath.gwt.shared.client.rpc.Response;
 import hotmath.gwt.shared.client.rpc.action.AutoAdvanceUserAction;
 import hotmath.gwt.shared.server.service.ActionHandler;
+import hotmath.gwt.shared.server.service.ActionHandlerManualConnectionManagement;
 import hotmath.testset.ha.EndOfProgramHandler;
 import hotmath.testset.ha.StudentUserProgramModel;
 
@@ -18,7 +19,7 @@ import org.apache.log4j.Logger;
  * @author casey
  *
  */
-public class AutoAdvanceUserCommand implements ActionHandler<AutoAdvanceUserAction, AutoUserAdvanced> {
+public class AutoAdvanceUserCommand implements ActionHandlerManualConnectionManagement, ActionHandler<AutoAdvanceUserAction, AutoUserAdvanced> {
 
     Logger logger = Logger.getLogger(AutoAdvanceUserCommand.class);
 

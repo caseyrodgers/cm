@@ -8,6 +8,7 @@ import hotmath.gwt.shared.client.rpc.action.GetQuizHtmlCheckedAction;
 import hotmath.gwt.shared.client.util.CmRpcException;
 import hotmath.gwt.shared.client.util.RpcData;
 import hotmath.gwt.shared.server.service.ActionHandler;
+import hotmath.gwt.shared.server.service.ActionHandlerManualConnectionManagement;
 import hotmath.testset.TestSet;
 import hotmath.testset.ha.HaTest;
 import hotmath.util.HMConnectionPool;
@@ -22,16 +23,21 @@ import java.sql.Connection;
 import java.util.HashMap;
 import java.util.Map;
 
-public class GetQuizHtmlCheckedCommand implements ActionHandler<GetQuizHtmlCheckedAction, RpcData> {
+public class GetQuizHtmlCheckedCommand implements ActionHandlerManualConnectionManagement, ActionHandler<GetQuizHtmlCheckedAction, RpcData> {
 
     @Override
-    public RpcData execute(final Connection conn, GetQuizHtmlCheckedAction action) throws Exception {
+    public RpcData execute(final Connection autoConn, GetQuizHtmlCheckedAction action) throws Exception {
         
         RpcData rpcDataCached = (RpcData)CmCacheManager.getInstance().retrieveFromCache(CacheName.TEST_HTML_CHECKED, action.getTestId());
         if(rpcDataCached != null)
             return rpcDataCached;
+        
+        
+        Connection conn=null;
         try {
 
+            conn = HMConnectionPool.getConnection();
+            
             String quizHtmlTemplate = GetQuizHtmlCommand.readQuizHtmlTemplate();
             Map<String, Object> map = new HashMap<String, Object>();
 
@@ -63,7 +69,7 @@ public class GetQuizHtmlCheckedCommand implements ActionHandler<GetQuizHtmlCheck
             throw new CmRpcException(e.getMessage());
         }
         finally {
-            SqlUtilities.releaseResources(null,null, null);
+            SqlUtilities.releaseResources(null,null, conn);
         }
     }
 
