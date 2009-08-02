@@ -1,8 +1,8 @@
 package hotmath.gwt.shared.client.rpc.action;
 
-import hotmath.gwt.shared.client.rpc.Response;
+import com.google.gwt.user.client.rpc.IsSerializable;
 
-import java.util.ArrayList;
+import hotmath.gwt.shared.client.rpc.Response;
 
 /** Simple wrapper around ArrayList to allow returning as command response
  * 
@@ -10,6 +10,6 @@ import java.util.ArrayList;
  *
  * @param <x>
  */
-public class CmArrayList<x> extends ArrayList<x> implements Response {
+public class CmArrayList<x> implements Response, IsSerializable {
 
 }

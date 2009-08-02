@@ -8,6 +8,16 @@ public class GetQuizHtmlAction implements Action<RpcData> {
     int uid;
     int testSegment;
     
+
+
+    public GetQuizHtmlAction() {}
+    
+    public GetQuizHtmlAction(int uid, int testSegment) {
+        this.uid = uid;
+        this.testSegment = testSegment;
+    }
+    
+    
     public int getUid() {
         return uid;
     }
@@ -24,10 +34,6 @@ public class GetQuizHtmlAction implements Action<RpcData> {
         this.testSegment = testSegment;
     }
 
-    public GetQuizHtmlAction(int uid, int testSegment) {
-        this.uid = uid;
-        this.testSegment = testSegment;
-    }
 
     
     @Override

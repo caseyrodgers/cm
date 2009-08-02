@@ -1,9 +1,12 @@
 package hotmath.gwt.cm_tools.client.ui;
 
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
+import hotmath.gwt.cm_tools.client.service.CmServiceAsync;
 import hotmath.gwt.cm_tools.client.service.PrescriptionServiceAsync;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.data.CmAsyncRequest;
+import hotmath.gwt.shared.client.rpc.action.GetQuizHtmlAction;
+import hotmath.gwt.shared.client.rpc.action.SaveQuizCurrentResultAction;
 import hotmath.gwt.shared.client.util.CmRpcException;
 import hotmath.gwt.shared.client.util.RpcData;
 import hotmath.gwt.shared.client.util.UserInfo;
@@ -92,8 +95,7 @@ public class QuizPage extends LayoutContainer {
      * @param the pid of this test question.
      */
     static public String questionGuessChanged_Gwt(String correct, String answerIndex, String pid) {
-        
-        
+
         if(!UserInfo.getInstance().isActiveUser()) {
             CatchupMathTools.showAlert("You are just a visitor here, please do not change any selections");
             return "OK";
@@ -103,9 +105,9 @@ public class QuizPage extends LayoutContainer {
     	Boolean isCorrect = (correct != null && correct.equals("Correct")) ? true : false;
     	int testId = UserInfo.getInstance().getTestId();
     	
-		PrescriptionServiceAsync s = (PrescriptionServiceAsync) Registry.get("prescriptionService");
-        s.saveQuizCurrentResult(UserInfo.getInstance().getTestId(), isCorrect, Integer.parseInt(answerIndex), pid, new AsyncCallback() {
-			public void onSuccess(Object result) {
+    	CmServiceAsync s = (CmServiceAsync) Registry.get("cmService");
+    	s.execute(new SaveQuizCurrentResultAction(UserInfo.getInstance().getTestId(), isCorrect, Integer.parseInt(answerIndex), pid), new AsyncCallback<RpcData>() {
+			public void onSuccess(RpcData result) {
 				// CatchupMathTools.showAlert("Question change saved");
         	}
         	public void onFailure(Throwable caught) {
@@ -146,6 +148,9 @@ public class QuizPage extends LayoutContainer {
 		
 		layout();
 
+		/** @TODO: move to cmService
+		 * 
+		 */
 		PrescriptionServiceAsync s = (PrescriptionServiceAsync) Registry.get("prescriptionService");
         s.getQuizCurrentResults(UserInfo.getInstance().getUid(), new AsyncCallback() {
 			public void onSuccess(Object result) {
@@ -181,29 +186,32 @@ public class QuizPage extends LayoutContainer {
 		
 	    CatchupMathTools.setBusy(true);
 		
-		PrescriptionServiceAsync s = (PrescriptionServiceAsync) Registry.get("prescriptionService");
-		s.getQuizHtml(UserInfo.getInstance().getUid(), UserInfo.getInstance().getTestSegment(),new AsyncCallback() {
-			public void onSuccess(Object result) {
-			    RpcData rdata = (RpcData)result;
-				String html = rdata.getDataAsString("quiz_html");
-				String title = rdata.getDataAsString("title");
-				int testId = rdata.getDataAsInt("test_id");
-				int testSegment = rdata.getDataAsInt("quiz_segment");
-				int testSegmentCount = rdata.getDataAsInt("quiz_segment_count");
-				UserInfo.getInstance().setTestSegment(testSegment);
-				
-				_title = title;
- 				// update the user info with the title name
-				// @TODO: this is a hack ... temp 
-				// UserInfo.getInstance().setTestName(_title);
-				UserInfo.getInstance().setTestId(testId);
-				UserInfo.getInstance().setTestSegmentCount(testSegmentCount);
-				displayQuizHtml(html);
-			}
-            public void onFailure(Throwable caught) {
+		CmServiceAsync s = (CmServiceAsync) Registry.get("cmService");
+		s.execute(new GetQuizHtmlAction(UserInfo.getInstance().getUid(), UserInfo.getInstance().getTestSegment()), new AsyncCallback<RpcData>() {
+		    @Override
+		    public void onSuccess(RpcData result) {
+                RpcData rdata = (RpcData)result;
+                String html = rdata.getDataAsString("quiz_html");
+                String title = rdata.getDataAsString("title");
+                int testId = rdata.getDataAsInt("test_id");
+                int testSegment = rdata.getDataAsInt("quiz_segment");
+                int testSegmentCount = rdata.getDataAsInt("quiz_segment_count");
+                UserInfo.getInstance().setTestSegment(testSegment);
+                
+                _title = title;
+                // update the user info with the title name
+                // @TODO: this is a hack ... temp 
+                // UserInfo.getInstance().setTestName(_title);
+                UserInfo.getInstance().setTestId(testId);
+                UserInfo.getInstance().setTestSegmentCount(testSegmentCount);
+                displayQuizHtml(html);
+		    }
+		    
+		    @Override
+		    public void onFailure(Throwable caught) {
                 Log.error("Getting Quiz HTML", caught);
                 CatchupMathTools.showAlert("<p>Sorry, but there has been a server error: </p><b>" + caught.getMessage() + "</b><p>Please, tell your administrator or teacher.</p>");
-            }
-		});
+		    }
+        });
 	}
 }

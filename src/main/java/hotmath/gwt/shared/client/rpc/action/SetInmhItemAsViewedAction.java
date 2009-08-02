@@ -3,12 +3,15 @@ package hotmath.gwt.shared.client.rpc.action;
 import hotmath.gwt.shared.client.rpc.Action;
 import hotmath.gwt.shared.client.util.RpcData;
 
-public class SetInmhItemAsViewedAction implements Action<RpcData>{
+public class SetInmhItemAsViewedAction implements Action<RpcData> {
 
 
     int runId;
     String type;
     String file;
+    
+    public SetInmhItemAsViewedAction(){}
+    
     public SetInmhItemAsViewedAction(int runId, String type, String file) {
         this.runId = runId;
         this.type = type;

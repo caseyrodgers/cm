@@ -1,9 +1,11 @@
 package hotmath.gwt.cm_tools.client.model;
 
+import com.google.gwt.user.client.rpc.IsSerializable;
+
 import hotmath.gwt.shared.client.rpc.Response;
 
 
-public interface StudentModelI extends Response {
+public interface StudentModelI extends Response, IsSerializable {
 
     public String getName();
 

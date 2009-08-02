@@ -7,6 +7,8 @@ public class GetQuizResultsHtmlAction implements Action<RpcData>{
     
     int runId;
     
+    public GetQuizResultsHtmlAction(){}
+    
     public GetQuizResultsHtmlAction(int runId) {
         this.runId = runId; 
     }

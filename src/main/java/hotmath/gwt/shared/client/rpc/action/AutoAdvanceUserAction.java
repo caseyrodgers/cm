@@ -7,6 +7,8 @@ public class AutoAdvanceUserAction implements Action<AutoUserAdvanced>{
 
     Integer userId;
     
+    public AutoAdvanceUserAction() {}
+    
     public AutoAdvanceUserAction(Integer userId){
         this.userId = userId;
     }

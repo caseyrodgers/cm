@@ -3,10 +3,12 @@ package hotmath.gwt.shared.client.rpc.action;
 import hotmath.gwt.shared.client.rpc.Action;
 import hotmath.gwt.shared.client.util.RpcData;
 
-public class SaveFeedbackAction implements Action<RpcData>{
+public class SaveFeedbackAction implements Action<RpcData> {
     String comments;
     String commentsUrl;
     String stateInfo;
+    
+    public SaveFeedbackAction() {}
     
     public SaveFeedbackAction(String comments, String commentsUrl, String stateInfo){
         this.comments = comments;

@@ -4,9 +4,10 @@ import hotmath.gwt.shared.client.rpc.Action;
 import hotmath.gwt.shared.client.util.RpcData;
 
 public class GetQuizHtmlCheckedAction implements Action<RpcData> {
-    
 
     int testId;
+    
+    public GetQuizHtmlCheckedAction() {}
     
     public GetQuizHtmlCheckedAction(int testId) {
         this.testId = testId;
@@ -19,7 +20,4 @@ public class GetQuizHtmlCheckedAction implements Action<RpcData> {
     public void setTestId(int testId) {
         this.testId = testId;
     }
-    
-    
-
 }

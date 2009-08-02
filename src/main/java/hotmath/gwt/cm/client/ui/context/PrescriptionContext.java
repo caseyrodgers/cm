@@ -7,7 +7,7 @@ import hotmath.gwt.cm_tools.client.data.InmhItemData;
 import hotmath.gwt.cm_tools.client.data.PrescriptionData;
 import hotmath.gwt.cm_tools.client.data.PrescriptionSessionDataResource;
 import hotmath.gwt.cm_tools.client.model.AutoUserAdvanced;
-import hotmath.gwt.cm_tools.client.service.PrescriptionServiceAsync;
+import hotmath.gwt.cm_tools.client.service.CmServiceAsync;
 import hotmath.gwt.cm_tools.client.ui.AutoTestWindow;
 import hotmath.gwt.cm_tools.client.ui.CmMainPanel;
 import hotmath.gwt.cm_tools.client.ui.ContextChangeListener;
@@ -18,6 +18,7 @@ import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.data.CmAsyncRequestImplDefault;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
 import hotmath.gwt.shared.client.eventbus.EventBus;
+import hotmath.gwt.shared.client.rpc.action.AutoAdvanceUserAction;
 import hotmath.gwt.shared.client.util.UserInfo;
 
 import java.util.ArrayList;
@@ -230,11 +231,12 @@ public class PrescriptionContext implements CmContext {
         
         CatchupMathTools.setBusy(true);
 
-        PrescriptionServiceAsync s = (PrescriptionServiceAsync) Registry.get("prescriptionService");
-        s.autoAdvanceUser(UserInfo.getInstance().getUid(), new AsyncCallback<AutoUserAdvanced>() {
+        CmServiceAsync s = (CmServiceAsync) Registry.get("cmService");
+        s.execute(new AutoAdvanceUserAction(UserInfo.getInstance().getUid()), new AsyncCallback<AutoUserAdvanced>() {
+            @Override
             public void onSuccess(AutoUserAdvanced userAdvance) {
                 
-        
+                
                 CatchupMathTools.setBusy(false);
                 
                 
@@ -259,8 +261,10 @@ public class PrescriptionContext implements CmContext {
                 });
                 w.getButtonBar().setAlignment(HorizontalAlignment.RIGHT);
                 w.addButton(btnOk);
-                w.setVisible(true);
+                w.setVisible(true);                
             }
+            
+            @Override
             public void onFailure(Throwable caught) {
                 CatchupMathTools.setBusy(false);
                 String msg = caught.getMessage();

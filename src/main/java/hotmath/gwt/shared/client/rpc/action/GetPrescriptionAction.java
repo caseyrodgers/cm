@@ -1,14 +1,24 @@
 package hotmath.gwt.shared.client.rpc.action;
 
+import com.google.gwt.user.client.rpc.IsSerializable;
+
 import hotmath.gwt.shared.client.rpc.Action;
 import hotmath.gwt.shared.client.util.RpcData;
 
-public class GetPrescriptionAction implements Action<RpcData>{
+public class GetPrescriptionAction implements Action<RpcData> {
 
     int runId;
     int sessionNumber;
     boolean updateActiveInfo;
     
+    public GetPrescriptionAction() {}
+    
+    /** Return the Prescription data for this runid and session
+     * 
+     * @param runId
+     * @param sessionNumber
+     * @param updateActiveInfo
+     */
     public GetPrescriptionAction(int runId, int sessionNumber, boolean updateActiveInfo) {
         this.runId = runId;
         this.sessionNumber = sessionNumber;

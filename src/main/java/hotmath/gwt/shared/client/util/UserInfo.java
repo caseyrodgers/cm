@@ -1,12 +1,13 @@
 package hotmath.gwt.shared.client.util;
 
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
-import hotmath.gwt.cm_tools.client.service.PrescriptionServiceAsync;
+import hotmath.gwt.cm_tools.client.service.CmServiceAsync;
 import hotmath.gwt.shared.client.data.CmAsyncRequest;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
 import hotmath.gwt.shared.client.eventbus.EventBus;
 import hotmath.gwt.shared.client.model.UserInfoBase;
 import hotmath.gwt.shared.client.rpc.Response;
+import hotmath.gwt.shared.client.rpc.action.GetUserInfoAction;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.Registry;
@@ -305,8 +306,10 @@ public class UserInfo implements IsSerializable, Response {
      */
     static public void loadUser(int uid, final CmAsyncRequest callback) {
         
-        PrescriptionServiceAsync s = (PrescriptionServiceAsync) Registry.get("prescriptionService");
-        s.getUserInfo(uid, new AsyncCallback<UserInfo>() {
+        
+        CmServiceAsync ca = (CmServiceAsync) Registry.get("cmService");
+        ca.execute(new GetUserInfoAction(uid), new AsyncCallback<UserInfo>() {
+            @Override
             public void onSuccess(UserInfo user) {
 
                 __instance = user;
@@ -321,6 +324,8 @@ public class UserInfo implements IsSerializable, Response {
                 // fire an event on the event bus, passing new userinfo
                 EventBus.getInstance().fireEvent(new CmEvent(EventBus.EVENT_TYPE_USERCHANGED,user));
             }
+            
+            @Override
             public void onFailure(Throwable caught) {
                 String msg = caught.getMessage();
                 CatchupMathTools.showAlert(msg);

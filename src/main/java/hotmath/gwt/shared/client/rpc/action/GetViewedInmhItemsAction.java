@@ -7,6 +7,8 @@ public class GetViewedInmhItemsAction  implements Action<GetViewedInmhItemsResul
 
     int runId;
     
+    public GetViewedInmhItemsAction() {}
+    
     public GetViewedInmhItemsAction(int runId) {
         this.runId = runId;
     }

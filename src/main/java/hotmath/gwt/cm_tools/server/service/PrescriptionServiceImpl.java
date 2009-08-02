@@ -12,7 +12,6 @@ import hotmath.gwt.cm_tools.client.model.GroupModel;
 import hotmath.gwt.cm_tools.client.model.LessonItemModel;
 import hotmath.gwt.cm_tools.client.model.StudentActivityModel;
 import hotmath.gwt.cm_tools.client.model.StudentModel;
-import hotmath.gwt.cm_tools.client.model.StudentModelI;
 import hotmath.gwt.cm_tools.client.model.StudentShowWorkModel;
 import hotmath.gwt.cm_tools.client.model.StudyProgramModel;
 import hotmath.gwt.cm_tools.client.model.SubjectModel;
@@ -122,7 +121,7 @@ public class PrescriptionServiceImpl extends RemoteServiceServlet implements Pre
     
     public List<SubjectModel> getSubjectDefinitions(String progId) throws CmRpcException {
         GetProgramDefinitionsAction action = new GetProgramDefinitionsAction(progId);
-        return ActionDispatcher.getInstance().execute(action);
+        return (List<SubjectModel>)ActionDispatcher.getInstance().execute(action);
     }
     
     public StudentModel updateUser(StudentModel sm, Boolean stuChanged, Boolean progChanged, Boolean progIsNew, Boolean passcodeChanged) throws CmRpcException {

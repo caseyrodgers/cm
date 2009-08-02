@@ -5,7 +5,9 @@ import hotmath.gwt.shared.client.util.RpcData;
 
 import java.util.List;
 
-public class GetViewedInmhItemsResult implements Response {
+import com.google.gwt.user.client.rpc.IsSerializable;
+
+public class GetViewedInmhItemsResult implements Response, IsSerializable {
     
     List<RpcData> rpcData;
     

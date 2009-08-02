@@ -1,7 +1,6 @@
 package hotmath.gwt.shared.client.rpc.action;
 
 import hotmath.gwt.shared.client.rpc.Action;
-import hotmath.gwt.shared.client.util.CmRpcException;
 import hotmath.gwt.shared.client.util.RpcData;
 
 public class SaveQuizCurrentResultAction implements Action<RpcData> {
@@ -12,7 +11,9 @@ public class SaveQuizCurrentResultAction implements Action<RpcData> {
     int answerIndex;
     String pid;
     
-    public SaveQuizCurrentResultAction(int testId, boolean correct, int answerIndex, String pid) throws CmRpcException {
+    public SaveQuizCurrentResultAction() {}
+    
+    public SaveQuizCurrentResultAction(int testId, boolean correct, int answerIndex, String pid) {
         this.testId = testId;
         this.correct = correct;
         this.answerIndex = answerIndex;

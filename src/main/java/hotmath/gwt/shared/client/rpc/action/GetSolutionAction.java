@@ -3,11 +3,18 @@ package hotmath.gwt.shared.client.rpc.action;
 import hotmath.gwt.shared.client.rpc.Action;
 import hotmath.gwt.shared.client.util.RpcData;
 
-public class GetSolutionAction implements Action<RpcData>{
+public class GetSolutionAction implements Action<RpcData> {
     
     String pid;
     int uid;
+
+    public GetSolutionAction() {}
     
+    public GetSolutionAction(int uid, String pid) {
+        this.uid = uid;
+        this.pid = pid;
+    }
+
     public int getUid() {
         return uid;
     }
@@ -21,11 +28,6 @@ public class GetSolutionAction implements Action<RpcData>{
     }
 
     public void setPid(String pid) {
-        this.pid = pid;
-    }
-
-    public GetSolutionAction(int uid, String pid) {
-        this.uid = uid;
         this.pid = pid;
     }
 

@@ -6,6 +6,7 @@ import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.data.InmhItemData;
 import hotmath.gwt.cm_tools.client.data.PrescriptionData;
 import hotmath.gwt.cm_tools.client.data.PrescriptionSessionDataResource;
+import hotmath.gwt.cm_tools.client.service.CmServiceAsync;
 import hotmath.gwt.cm_tools.client.service.PrescriptionServiceAsync;
 import hotmath.gwt.cm_tools.client.ui.CmGuiDefinition;
 import hotmath.gwt.cm_tools.client.ui.CmMainPanel;
@@ -14,8 +15,10 @@ import hotmath.gwt.cm_tools.client.ui.context.CmContext;
 import hotmath.gwt.cm_tools.client.ui.viewer.ResourceViewer;
 import hotmath.gwt.cm_tools.client.ui.viewer.ResourceViewerFactory;
 import hotmath.gwt.shared.client.eventbus.EventBus;
+import hotmath.gwt.shared.client.rpc.action.GetPrescriptionAction;
 import hotmath.gwt.shared.client.util.RpcData;
 import hotmath.gwt.shared.client.util.UserInfo;
+import hotmath.gwt.shared.server.service.command.GetPrescriptionCommand;
 
 import java.util.List;
 
@@ -90,50 +93,49 @@ public class PrescriptionCmGuiDefinition implements CmGuiDefinition {
         CmMainPanel.__lastInstance._mainContent.layout();
 
         // call server process to get session data as JSON string
-        PrescriptionServiceAsync s = (PrescriptionServiceAsync) Registry.get("prescriptionService");
-
-        CatchupMathTools.setBusy(true);
-
-        boolean updateActive = UserInfo.getInstance().isActiveUser();
-        s.getPrescriptionSessionJson(UserInfo.getInstance().getRunId(), sessionNumber, updateActive,
-                new AsyncCallback<RpcData>() {
-                    public void onSuccess(RpcData rdata) {
-                        if(rdata == null) {
-                            CatchupMathTools.showAlert("There was a problem reading this prescription data");
-                            return;
-                        }
-                        try {
-                            int correctPercent = rdata.getDataAsInt("correct_percent");
-                            UserInfo.getInstance().setCorrectPercent(correctPercent);
-                            if(correctPercent == 100) {
-                                getContext().doNext();
-                                return;
-                            }
-                            String json = rdata.getDataAsString("json");
-                            
-                            context.setPrescriptionData(new PrescriptionData(json));
-                            
-                            isReady = true; // signal data is ready
-
-                            _guiWidget.buildUi(context.prescriptionData);
-
-                            ContextController.getInstance().setCurrentContext(context);
-                            
-
-                            if(UserInfo.getInstance().isAutoTestMode()) {
-                                context.runAutoTest();
-                            }
-                            
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        } finally {
-                            CatchupMathTools.setBusy(false);
-                        }
+        CmServiceAsync s = (CmServiceAsync) Registry.get("cmService");
+        boolean updateActive = UserInfo.getInstance().isActiveUser();        
+        s.execute(new GetPrescriptionAction(UserInfo.getInstance().getRunId(), sessionNumber, updateActive),new AsyncCallback<RpcData>() {
+            @Override
+            public void onSuccess(RpcData rdata) {
+                if(rdata == null) {
+                    CatchupMathTools.showAlert("There was a problem reading this prescription data");
+                    return;
+                }
+                try {
+                    int correctPercent = rdata.getDataAsInt("correct_percent");
+                    UserInfo.getInstance().setCorrectPercent(correctPercent);
+                    if(correctPercent == 100) {
+                        getContext().doNext();
+                        return;
                     }
-                    public void onFailure(Throwable caught) {
-                        caught.printStackTrace();
-                    }                    
-                });
+                    String json = rdata.getDataAsString("json");
+                    
+                    context.setPrescriptionData(new PrescriptionData(json));
+                    
+                    isReady = true; // signal data is ready
+
+                    _guiWidget.buildUi(context.prescriptionData);
+
+                    ContextController.getInstance().setCurrentContext(context);
+                    
+
+                    if(UserInfo.getInstance().isAutoTestMode()) {
+                        context.runAutoTest();
+                    }
+                    
+                } catch (Exception e) {
+                    e.printStackTrace();
+                } finally {
+                    CatchupMathTools.setBusy(false);
+                }
+            }
+            @Override
+            public void onFailure(Throwable caught) {
+                caught.printStackTrace();
+            }
+        });
+        CatchupMathTools.setBusy(true);
     }
 
     public Widget getCenterWidget() {

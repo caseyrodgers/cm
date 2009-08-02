@@ -3,13 +3,15 @@ package hotmath.gwt.shared.client.rpc.action;
 import hotmath.gwt.cm_tools.client.model.StudentModel;
 import hotmath.gwt.shared.client.rpc.Action;
 
-public class UpdateStudentAction implements Action<StudentModel>{
+public class UpdateStudentAction implements Action<StudentModel> {
     
     StudentModel student;
     Boolean stuChanged;
     Boolean progChanged;
     Boolean progIsNew;
     Boolean passcodeChanged;
+    
+    public UpdateStudentAction() {}
     
     public UpdateStudentAction(StudentModel sm, Boolean stuChanged, Boolean progChanged, Boolean progIsNew, Boolean passcodeChanged) {
         this.student = sm;

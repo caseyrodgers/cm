@@ -1,5 +1,7 @@
 package hotmath.gwt.cm_tools.client;
 
+import hotmath.gwt.cm_tools.client.service.CmService;
+import hotmath.gwt.cm_tools.client.service.CmServiceAsync;
 import hotmath.gwt.cm_tools.client.service.PrescriptionService;
 import hotmath.gwt.cm_tools.client.service.PrescriptionServiceAsync;
 import hotmath.gwt.shared.client.data.CmAsyncRequest;
@@ -84,15 +86,23 @@ public class CatchupMathTools implements EntryPoint {
      */
     static private void setupServices() {
         Log.info("CatchupMathTools: Setting up services");
-        final PrescriptionServiceAsync prescriptionService = (PrescriptionServiceAsync) GWT.create(PrescriptionService.class);
-
+        
+        
         String point = GWT.getModuleBaseURL();
         if (!point.endsWith("/"))
             point += "/";
-        point += "services/prescriptionService";
+        
+        final PrescriptionServiceAsync prescriptionService = (PrescriptionServiceAsync) GWT.create(PrescriptionService.class);
 
-        ((ServiceDefTarget) prescriptionService).setServiceEntryPoint(point);
+        ((ServiceDefTarget) prescriptionService).setServiceEntryPoint(point + "services/prescriptionService");
         Registry.register("prescriptionService", prescriptionService);
+        
+        
+        final CmServiceAsync cmService = (CmServiceAsync)GWT.create(CmService.class);
+        
+        
+        ((ServiceDefTarget) cmService).setServiceEntryPoint(point + "services/cmService");
+        Registry.register("cmService", cmService);        
     }
     
     static public String FEEDBACK_MESSAGE="<p>Please send us feedback, by using Feedback at the bottom of the page.</p>";    
