@@ -292,9 +292,11 @@ public class AssessmentPrescriptionSession {
                     type = INeedMoreHelpResourceTypeDef.RESOURCE_TYPE_workbook;
                 else if (linkType.equals("cmextra"))
                     type = INeedMoreHelpResourceTypeDef.RESOURCE_TYPE_cmextra;
+                else if (linkType.equals("flashcard"))
+                    type = INeedMoreHelpResourceTypeDef.RESOURCE_TYPE_flashcard;
+                
 
-                INeedMoreHelpResourceType inmhType = new INeedMoreHelpResourceType(
-                        INeedMoreHelpResourceTypeDef.RESOURCE_TYPES.get(type));
+                INeedMoreHelpResourceType inmhType = new INeedMoreHelpResourceType(INeedMoreHelpResourceTypeDef.RESOURCE_TYPES.get(type));
                 for (INeedMoreHelpItem item : getSessionCategories()) {
                     if (item.getFile().equals(rs.getString("file"))) {
                         inmhType.setTopic(item.getTitle());
@@ -308,7 +310,7 @@ public class AssessmentPrescriptionSession {
                 if (inmhItem.getGradeLevel() <= this.prescription.getGradeLevel()) {
                     inmhType.addResource(inmhItem);
                 } else {
-                    logger.info("AssessmentPrescriptionSession: inmh item not included due to higher grade level: "
+                    logger.debug("AssessmentPrescriptionSession: inmh item not included due to higher grade level: "
                                     + inmhItem);
                 }
                 resourceTypes.add(inmhType);

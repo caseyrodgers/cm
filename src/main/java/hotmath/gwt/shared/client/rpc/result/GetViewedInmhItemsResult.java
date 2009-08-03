@@ -11,6 +11,8 @@ public class GetViewedInmhItemsResult implements Response, IsSerializable {
     
     List<RpcData> rpcData;
     
+    public GetViewedInmhItemsResult() {}
+    
     public GetViewedInmhItemsResult(List<RpcData> data) {
         this.rpcData = data;
     }

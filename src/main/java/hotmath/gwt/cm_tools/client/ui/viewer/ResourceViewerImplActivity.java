@@ -13,7 +13,7 @@ import com.google.gwt.user.client.ui.Widget;
 
 public class ResourceViewerImplActivity extends ResourceViewerContainer {
     
-    public ResourceViewerImplActivity() throws Exception {
+    public ResourceViewerImplActivity() {
         addStyleName("resource-viewer-impl-activity");
         setScrollMode(Scroll.AUTOY);
     }
