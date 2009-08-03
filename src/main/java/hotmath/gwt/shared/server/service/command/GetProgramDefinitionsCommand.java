@@ -10,6 +10,7 @@ import hotmath.gwt.shared.server.service.ActionHandler;
 import hotmath.gwt.shared.server.service.ActionHandlerManualConnectionManagement;
 
 import java.sql.Connection;
+import java.util.ArrayList;
 
 import org.apache.log4j.Logger;
 
@@ -23,14 +24,8 @@ public class GetProgramDefinitionsCommand implements ActionHandlerManualConnecti
     public CmArrayList<SubjectModel> execute(final Connection conn, GetProgramDefinitionsAction action) throws Exception {
         CmArrayList<SubjectModel> cma = new CmArrayList<SubjectModel>();
         CmAdminDao dao = new CmAdminDao();
-        
-        if(true)
-           throw new Exception("OFFLINE ...");
-        
-        
-        // ((ArrayList<SubjectModel>)cma).addAll(dao.getSubjectDefinitions(action.getProgId()));
-        //return cma;
-        return null;
+        ((ArrayList<SubjectModel>)cma).addAll(dao.getSubjectDefinitions(action.getProgId()));
+        return cma;
     }
     
     @Override

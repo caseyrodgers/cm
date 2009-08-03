@@ -103,11 +103,10 @@ public class ResourceViewerImplTutor extends ResourceViewerContainer implements 
                 //CmMainPanel.__lastInstance._mainContent.addControl(showWorkBtn);
                 if(CmMainPanel.__lastInstance != null)
                     CmMainPanel.__lastInstance._mainContent.layout();
-                
 
                 try {
                     
-                    /** Show Work is not requird, then do not show the ShowWorkRequired
+                    /** Show Work is not required, then do not show the ShowWorkRequired
                      * 
                      */
                     if(!UserInfo.getInstance().isShowWorkRequired())
@@ -183,7 +182,7 @@ public class ResourceViewerImplTutor extends ResourceViewerContainer implements 
                     showWorkWin.hide();
                 }
             });
-            showWorkWin.setHeading("Enter Your Answer (try it yourself before viewing the tutorial)");
+            showWorkWin.setHeading("Enter your answer on the whiteboard");
             showWorkWin.getHeader().addTool(hideBtn);
             
             Button checkBtn = new Button("View solution");

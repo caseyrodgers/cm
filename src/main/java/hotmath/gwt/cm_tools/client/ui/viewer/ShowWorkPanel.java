@@ -94,27 +94,7 @@ public class ShowWorkPanel extends Frame {
 	 * @param pid
 	 */
 	public void setupForPid(String pid) {
-	    
 	       this.pid = pid;
-	    
-	    /** not needed for now .. the FLash component
-	     *  communicates with the GWT engine via
-	     *  ExternalInterface.
-	     * 
-		// call for the solution HTML
-
-		PrescriptionServiceAsync s = (PrescriptionServiceAsync) Registry.get("prescriptionService");
-		s.getSolutionProblemStatementHtml(pid, new AsyncCallback() {
-			public void onFailure(Throwable caught) {
-				caught.printStackTrace();
-			}
-
-			public void onSuccess(Object result) {
-				String html = (String) result;
-				backgroundHtml = html;
-			}
-		});
-		*/
 	}
 	
 	
