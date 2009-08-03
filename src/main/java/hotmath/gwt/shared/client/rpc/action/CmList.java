@@ -1,7 +1,5 @@
 package hotmath.gwt.shared.client.rpc.action;
 
-import com.google.gwt.user.client.rpc.IsSerializable;
-
 import hotmath.gwt.shared.client.rpc.Response;
 
 import java.util.List;
@@ -12,6 +10,6 @@ import java.util.List;
  *
  * @param <x>
  */
-public interface CmList<x> extends Response, IsSerializable, List<x> {
+public interface CmList<x> extends Response, List<x> {
 
 }
