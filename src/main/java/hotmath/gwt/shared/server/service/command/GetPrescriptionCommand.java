@@ -219,12 +219,10 @@ public class GetPrescriptionCommand implements ActionHandler<GetPrescriptionActi
      */
     static List<FC> list = new ArrayList<FC>();
     static {
-        list.add(new FC("Multiplication Flash Cards", "/learning_activities/interactivities/flashcard_multi.swf"));
-        list.add(new FC("Fraction Tech Tool", "/learning_activities/interactivities/fractech.swf"));
-        list.add(new FC("Fraction Flash Cards: Like Denominators", "/learning_activities/interactivities/flashcard_addfrac_like.swf"));
-        list.add(new FC("Fraction Flash Cards: Unike Denominators", "/learning_activities/interactivities/flashcard_addfrac_unlike.swf"));
-        list.add(new FC("Trigonometry Flashcards", "/learning_activities/interactivities/trig_flashcard.swf"));
-        list.add(new FC("Diamond Problem Flash Cards", "/learning_activities/interactivities/diamond.swf"));        
+        list.add(new FC("Math Vocabulary", "/learning_activities/interactivities/flashcard_vocab.swf"));
+        list.add(new FC("Adding Like Fractions", "/learning_activities/interactivities/flashcard_addfrac_like.swf"));
+        list.add(new FC("Adding Unlike Fractions", "/learning_activities/interactivities/flashcard_addfrac_unlike.swf"));
+        list.add(new FC("Multiplication Facts", "learning_activities/interactivities/flashcard_multi.swf"));
     }
     
 
