@@ -222,7 +222,7 @@ public class GetPrescriptionCommand implements ActionHandler<GetPrescriptionActi
         list.add(new FC("Math Vocabulary", "/learning_activities/interactivities/flashcard_vocab.swf"));
         list.add(new FC("Adding Like Fractions", "/learning_activities/interactivities/flashcard_addfrac_like.swf"));
         list.add(new FC("Adding Unlike Fractions", "/learning_activities/interactivities/flashcard_addfrac_unlike.swf"));
-        list.add(new FC("Multiplication Facts", "learning_activities/interactivities/flashcard_multi.swf"));
+        list.add(new FC("Multiplication Facts", "/learning_activities/interactivities/flashcard_multi.swf"));
     }
     
 
