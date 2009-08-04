@@ -1,14 +1,13 @@
 package hotmath.gwt.shared.client.rpc.action;
 
-import com.google.gwt.user.client.rpc.IsSerializable;
-
 import hotmath.gwt.cm_tools.client.model.SubjectModel;
 import hotmath.gwt.shared.client.rpc.Action;
 
-public class GetProgramDefinitionsAction implements Action<CmArrayList<SubjectModel>>{
+public class GetProgramDefinitionsAction implements Action<CmList<SubjectModel>>{
 
+	private static final long serialVersionUID = -4872888321062722916L;
 
-    String progId;
+	String progId;
     
     public GetProgramDefinitionsAction() {}
     
