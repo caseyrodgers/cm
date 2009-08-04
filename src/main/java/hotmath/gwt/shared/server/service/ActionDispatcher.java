@@ -9,6 +9,7 @@ import hotmath.gwt.shared.client.rpc.Response;
 import hotmath.gwt.shared.client.util.CmRpcException;
 import hotmath.gwt.shared.server.service.command.AddStudentCommand;
 import hotmath.gwt.shared.server.service.command.AutoAdvanceUserCommand;
+import hotmath.gwt.shared.server.service.command.ClearWhiteboardDataCommand;
 import hotmath.gwt.shared.server.service.command.CreateTestRunCommand;
 import hotmath.gwt.shared.server.service.command.GetPrescriptionCommand;
 import hotmath.gwt.shared.server.service.command.GetProgramDefinitionsCommand;
@@ -20,6 +21,7 @@ import hotmath.gwt.shared.server.service.command.GetUserInfoCommand;
 import hotmath.gwt.shared.server.service.command.GetViewedInmhItemsCommand;
 import hotmath.gwt.shared.server.service.command.SaveFeedbackCommand;
 import hotmath.gwt.shared.server.service.command.SaveQuizCurrentResultCommand;
+import hotmath.gwt.shared.server.service.command.SaveWhiteboardDataCommand;
 import hotmath.gwt.shared.server.service.command.UpdateStudentCommand;
 import hotmath.util.HMConnectionPool;
 import hotmath.util.sql.SqlUtilities;
@@ -100,6 +102,9 @@ public class ActionDispatcher {
         addCommand(GetProgramDefinitionsCommand.class);
         addCommand(AddStudentCommand.class);
         addCommand(UpdateStudentCommand.class);
+        addCommand(SaveWhiteboardDataCommand.class);
+        addCommand(ClearWhiteboardDataCommand.class);
+        
     }
     
     
@@ -144,6 +149,9 @@ public class ActionDispatcher {
         Connection conn = null;
         try {
             Class clazz = commands.get(action.getClass());
+            if(clazz == null)
+                throw new CmRpcException("Could not find Action: " + action.getClass().getName());
+            
             ActionHandler actionHandler = (ActionHandler)clazz.newInstance();
             
             if(actionHandler == null)

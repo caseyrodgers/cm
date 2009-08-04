@@ -210,6 +210,10 @@ public class PrescriptionServiceImpl extends RemoteServiceServlet implements Pre
         }
     }
 
+    /**
+     * @deprecated (use Command of same name)
+     * 
+     */
     public void saveWhiteboardData(int uid, int runId, String pid, String command, String commandData)
             throws CmRpcException {
         Connection conn = null;

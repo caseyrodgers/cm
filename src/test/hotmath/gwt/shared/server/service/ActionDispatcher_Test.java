@@ -3,6 +3,7 @@ package hotmath.gwt.shared.server.service;
 import hotmath.gwt.cm.server.CmDbTestCase;
 import hotmath.gwt.cm_tools.client.model.AutoUserAdvanced;
 import hotmath.gwt.shared.client.rpc.action.AutoAdvanceUserAction;
+import hotmath.gwt.shared.client.rpc.action.ClearWhiteboardDataAction;
 import hotmath.gwt.shared.client.rpc.action.CreateTestRunAction;
 import hotmath.gwt.shared.client.rpc.action.GetPrescriptionAction;
 import hotmath.gwt.shared.client.rpc.action.GetQuizHtmlAction;
@@ -12,6 +13,7 @@ import hotmath.gwt.shared.client.rpc.action.GetSolutionAction;
 import hotmath.gwt.shared.client.rpc.action.GetUserInfoAction;
 import hotmath.gwt.shared.client.rpc.action.GetViewedInmhItemsAction;
 import hotmath.gwt.shared.client.rpc.action.SaveQuizCurrentResultAction;
+import hotmath.gwt.shared.client.rpc.action.SaveWhiteboardDataAction;
 import hotmath.gwt.shared.client.util.RpcData;
 import hotmath.gwt.shared.client.util.UserInfo;
 
@@ -41,6 +43,18 @@ public class ActionDispatcher_Test extends CmDbTestCase {
     
     
     
+    public void testSaveWhiteboardDataCommand() throws Exception {
+        SaveWhiteboardDataAction action = new SaveWhiteboardDataAction(uid, TEST_RUN_ID, TEST_PID, "draw", "123");
+        RpcData rd = ActionDispatcher.getInstance().execute(action);
+        assertNotNull(rd);
+    }
+    
+    public void testClearWhiteboardDataCommand() throws Exception {
+        ClearWhiteboardDataAction action = new ClearWhiteboardDataAction(uid, TEST_RUN_ID, TEST_PID);
+        RpcData rd = ActionDispatcher.getInstance().execute(action);
+        assertNotNull(rd);
+    }
+
 
 
     public void testGetQuizHtmlCheckedCommand() throws Exception {

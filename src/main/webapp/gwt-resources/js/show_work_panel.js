@@ -43,7 +43,12 @@ function updateWhiteboard(id, command, commandData) {
        // send an array of commands.  Each element in array
        // is a command and an array of data.  For example, one
        // 'draw', but a bunch of draw requests.
-       fo.updateWhiteboard([['draw',[commandData]]]);
+	   if(command == 'draw') {
+           fo.updateWhiteboard([['draw',[commandData]]]);
+	   }
+	   else if(command == 'clear') {
+		   fo.updateWhiteboard([['clear',[]]]);
+	   }
    }
    else {
       alert('could not find updateWhiteboard: ' + id);

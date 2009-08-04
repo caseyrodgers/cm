@@ -8,6 +8,7 @@ import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
 import hotmath.gwt.shared.client.eventbus.CmEventListenerImplDefault;
 import hotmath.gwt.shared.client.eventbus.EventBus;
+import hotmath.gwt.shared.client.rpc.action.ClearWhiteboardDataAction;
 import hotmath.gwt.shared.client.rpc.action.GetSolutionAction;
 import hotmath.gwt.shared.client.util.RpcData;
 import hotmath.gwt.shared.client.util.UserInfo;
@@ -16,11 +17,17 @@ import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.Registry;
 import com.extjs.gxt.ui.client.Style.Scroll;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
+import com.extjs.gxt.ui.client.event.EventType;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.widget.Html;
+import com.extjs.gxt.ui.client.widget.Window;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.layout.FillLayout;
+import com.extjs.gxt.ui.client.widget.layout.FitLayout;
+import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
+import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.Frame;
 import com.google.gwt.user.client.ui.Widget;
 
 public class ResourceViewerImplTutor extends ResourceViewerContainer implements ResourceViewer {
@@ -174,37 +181,72 @@ public class ResourceViewerImplTutor extends ResourceViewerContainer implements 
         if(showWorkWin == null) {
             showWorkWin = new CmWindow();
             showWorkWin.setClosable(false);
+            showWorkWin.setResizable(false);
 
-            Button hideBtn = new Button("Hide");
-            hideBtn.setToolTip("Hide whiteboard to view problem statement");
-            hideBtn.addSelectionListener(new SelectionListener<ButtonEvent>() {
+            
+            Button viewSolution = new Button("View solution");
+            viewSolution.setToolTip("View the tutorial to check your answer");
+            viewSolution.addSelectionListener(new SelectionListener<ButtonEvent>() {
                 public void componentSelected(ButtonEvent ce) {
+                    initializeTutor(pid,resource.getTitle(),hasShowWork,true);
                     showWorkWin.hide();
                 }
             });
             showWorkWin.setHeading("Enter your answer on the whiteboard");
-            showWorkWin.getHeader().addTool(hideBtn);
+
             
-            Button checkBtn = new Button("View solution");
-            checkBtn.setToolTip("View the tutorial to check your answer");
-            checkBtn.addSelectionListener(new SelectionListener<ButtonEvent>() {
+            // [Back] [View Solution] [Examples] [Clear]
+            Button back = new Button("Back");
+            back.setToolTip("Return back to the solution");
+            back.addSelectionListener(new SelectionListener<ButtonEvent>() {
+                @Override
                 public void componentSelected(ButtonEvent ce) {
-                    // initializeTutor(pid,resource.getTitle(),hasShowWork,true);
                     showWorkWin.hide();
                 }
             });
-            showWorkWin.setHeading("Enter Your Answer (try it yourself before viewing the tutorial)");
-            showWorkWin.getHeader().addTool(checkBtn);
-            showWorkWin.getHeader().addTool(hideBtn);
+            
+            Button examples = new Button("Examples");
+            examples.setToolTip("View sample uses of Show Work");
+            examples.addSelectionListener(new SelectionListener<ButtonEvent>() {
+                
+                @Override
+                public void componentSelected(ButtonEvent ce) {
+                    showWorkWin.hide();  // must hide flash component to show popup
+                    new ShowWorkExampleWindow();
+                }
+            });
+            
+            Button clear = new Button("Clear");
+            clear.setToolTip("Clean the Show Work panel");            
+            clear.addSelectionListener(new SelectionListener<ButtonEvent>() {
+                @Override
+                public void componentSelected(ButtonEvent ce) {
+                    CmServiceAsync s = (CmServiceAsync) Registry.get("cmService");
+                    s.execute(new ClearWhiteboardDataAction(UserInfo.getInstance().getUid(),UserInfo.getInstance().getRunId(), pid), new AsyncCallback<RpcData>() {
+                        @Override
+                        public void onSuccess(RpcData result) {
+                           // initialize the 
+                            showWorkPanel.clearWhiteBoard();
+                        }
+                        @Override
+                        public void onFailure(Throwable caught) {
+                            caught.printStackTrace();
+                        }
+                    });
+                }
+            });
             
 
+            showWorkWin.getHeader().addTool(back);
+            showWorkWin.getHeader().addTool(viewSolution);
+            showWorkWin.getHeader().addTool(examples);
+            showWorkWin.getHeader().addTool(clear);
+            
             int left = ResourceViewerImplTutor.this.el().getLeft(false);
             int top = ResourceViewerImplTutor.this.el().getTop(false);
 
             showWorkWin.setPosition(left,top);
 
-
-            
             showWorkWin.setStyleName("show-work-window");
             showWorkWin.setScrollMode(Scroll.NONE);
             
@@ -257,3 +299,26 @@ public class ResourceViewerImplTutor extends ResourceViewerContainer implements 
 
 }
 
+
+
+/** Display a few examples of using the Show Work 
+ *   as a DHTML window.
+ *   
+ * @author casey
+ *
+ */
+class ShowWorkExampleWindow extends Window {
+    
+    public ShowWorkExampleWindow() {
+        setStyleName("show-work-example-window");
+        setSize(640,480);
+        Frame frame = new Frame("/gwt-resources/show_work_examples.html");
+        DOM.setElementPropertyInt(frame.getElement(), "frameBorder", 0); // disable border
+        DOM.setElementProperty(frame.getElement(), "scrolling", "auto"); // disable border
+        
+        frame.setSize("630px","475px");
+        setLayout(new FitLayout());
+        add(frame);
+        setVisible(true);
+    }
+}

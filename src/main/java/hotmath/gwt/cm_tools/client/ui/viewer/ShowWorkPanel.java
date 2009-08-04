@@ -44,6 +44,10 @@ public class ShowWorkPanel extends Frame {
 		// CmMainPanel.__lastInstance._mainContent.setScrollMode(Scroll.NONE);
 	}
 	
+	public void clearWhiteBoard() {
+	    updateFlashWhiteboard(flashId, "clear","{}");
+	}
+	
 	/** Called from flash component
 	 *  Save in DB.
 	 *  
