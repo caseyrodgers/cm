@@ -149,21 +149,16 @@ public class GetPrescriptionCommand implements ActionHandler<GetPrescriptionActi
             
             
             
-//           PrescriptionSessionDataResource flashCardResource = new PrescriptionSessionDataResource();
-//           flashCardResource.setType("flashcard");
-//           resultsResource.setLabel("Flash Cards");
-//           id = new InmhItemData();
-//           id.setTitle("Flash Cards");
-//           id.setFile("");
-//           id.setType("flashcard");
-//           flashCardResource.getItems().add(id);            
-            
+           PrescriptionSessionDataResource flashCardResource = new PrescriptionSessionDataResource();
+           flashCardResource.setType("flashcard");
+           resultsResource.setLabel("Flash Cards - Basic");
+           addBasicFlashCards(flashCardResource.getItems());            
   
 
             sessionData.getInmhResources().add(lessonResource);
             sessionData.getInmhResources().add(problemsResource);
             sessionData.getInmhResources().add(resultsResource);
-//            sessionData.getInmhResources().add(flashCardResource);
+            sessionData.getInmhResources().add(flashCardResource);
 
 
             /** Call action and request list of INMH items */
@@ -203,6 +198,37 @@ public class GetPrescriptionCommand implements ActionHandler<GetPrescriptionActi
         }
     }
 
+    
+    /** Add the basic/standard list of Flashcards that will
+     *  show up on each and every prescription session.
+     *  
+     * @param items
+     */
+    private void addBasicFlashCards(List<InmhItemData> items) {
+        for(FC fc: list) {
+            InmhItemData id = new InmhItemData();
+            id.setTitle(fc.title);
+            id.setFile(fc.file);
+            id.setType("flashcard");
+            
+            items.add(id);
+        }
+    }
+    /** @TODO: move to external configuration (if needed)
+     * 
+     */
+    static List<FC> list = new ArrayList<FC>();
+    static {
+        list.add(new FC("Multiplication Flash Cards", "/learning_activities/interactivities/flashcard_multi.swf"));
+        list.add(new FC("Fraction Tech Tool", "/learning_activities/interactivities/fractech.swf"));
+        list.add(new FC("Fraction Flash Cards: Like Denominators", "/learning_activities/interactivities/flashcard_addfrac_like.swf"));
+        list.add(new FC("Fraction Flash Cards: Unike Denominators", "/learning_activities/interactivities/flashcard_addfrac_unlike.swf"));
+        list.add(new FC("Trigonometry Flashcards", "/learning_activities/interactivities/trig_flashcard.swf"));
+        list.add(new FC("Diamond Problem Flash Cards", "/learning_activities/interactivities/diamond.swf"));        
+    }
+    
+
+    
     @Override
     public Class<? extends Action<? extends Response>> getActionType() {
         // TODO Auto-generated method stub
@@ -223,7 +249,7 @@ public class GetPrescriptionCommand implements ActionHandler<GetPrescriptionActi
                 { "Activities", "activity", "Math activities and games related to the current topic" },
                 { "Required Practice Problems", "practice", "Practice problems you must complete before advancing" },
                 { "Extra Practice Problems", "cmextra", "Additional workbook problems" },
-                { "Flash Cards", "flashcard", "Flashcards related to the current topic" },
+                { "Flash Cards - Basic", "flashcard", "Basic flashcards to help with general questions" },
                 { "Quiz Results", "results", "The current quiz's results" },
         };
 
@@ -280,4 +306,14 @@ public class GetPrescriptionCommand implements ActionHandler<GetPrescriptionActi
         return ipercent;
     }    
 
+}
+
+
+class FC {
+    public FC(String t, String f) {
+        this.title = t;
+        this.file = f;
+    }
+    String title;
+    String file;
 }
