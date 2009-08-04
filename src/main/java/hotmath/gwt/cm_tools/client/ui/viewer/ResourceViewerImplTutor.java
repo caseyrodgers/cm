@@ -217,7 +217,7 @@ public class ResourceViewerImplTutor extends ResourceViewerContainer implements 
             });
             
             Button clear = new Button("Clear");
-            clear.setToolTip("Clean the Show Work panel");            
+            clear.setToolTip("Clear the Show Work panel");            
             clear.addSelectionListener(new SelectionListener<ButtonEvent>() {
                 @Override
                 public void componentSelected(ButtonEvent ce) {

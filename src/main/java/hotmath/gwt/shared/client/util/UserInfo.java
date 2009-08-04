@@ -36,8 +36,17 @@ public class UserInfo implements IsSerializable, Response {
 	int correctAnswers;
 	boolean isShowWorkRequired;
 	boolean isTutoringAvail;
+	boolean isFirstView=true;
 	
-	public boolean isTutoringAvail() {
+	public boolean isFirstView() {
+        return isFirstView;
+    }
+
+    public void setFirstView(boolean isFirstView) {
+        this.isFirstView = isFirstView;
+    }
+
+    public boolean isTutoringAvail() {
         return isTutoringAvail;
     }
 
@@ -321,6 +330,11 @@ public class UserInfo implements IsSerializable, Response {
                 
                 CatchupMathTools.setBusy(false);     
                 callback.requestComplete(null);
+                
+                
+                if(user.isFirstView()) {
+                    new ShowFirstTimeVisitorWindow();
+                }
                 
                 // fire an event on the event bus, passing new userinfo
                 EventBus.getInstance().fireEvent(new CmEvent(EventBus.EVENT_TYPE_USERCHANGED,user));
