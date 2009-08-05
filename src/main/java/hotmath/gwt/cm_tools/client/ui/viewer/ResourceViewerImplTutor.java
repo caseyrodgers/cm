@@ -216,31 +216,32 @@ public class ResourceViewerImplTutor extends ResourceViewerContainer implements 
                 }
             });
             
-            Button clear = new Button("Clear");
-            clear.setToolTip("Clear the Show Work panel");            
-            clear.addSelectionListener(new SelectionListener<ButtonEvent>() {
-                @Override
-                public void componentSelected(ButtonEvent ce) {
-                    CmServiceAsync s = (CmServiceAsync) Registry.get("cmService");
-                    s.execute(new ClearWhiteboardDataAction(UserInfo.getInstance().getUid(),UserInfo.getInstance().getRunId(), pid), new AsyncCallback<RpcData>() {
-                        @Override
-                        public void onSuccess(RpcData result) {
-                           // initialize the 
-                            showWorkPanel.clearWhiteBoard();
-                        }
-                        @Override
-                        public void onFailure(Throwable caught) {
-                            caught.printStackTrace();
-                        }
-                    });
-                }
-            });
+//            Button clear = new Button("Clear");
+//            clear.setToolTip("Clear the Show Work panel");            
+//            clear.addSelectionListener(new SelectionListener<ButtonEvent>() {
+//                @Override
+//                public void componentSelected(ButtonEvent ce) {
+//                    CmServiceAsync s = (CmServiceAsync) Registry.get("cmService");
+//                    s.execute(new ClearWhiteboardDataAction(UserInfo.getInstance().getUid(),UserInfo.getInstance().getRunId(), pid), new AsyncCallback<RpcData>() {
+//                        @Override
+//                        public void onSuccess(RpcData result) {
+//                           // initialize the 
+//                            showWorkPanel.clearWhiteBoard();
+//                        }
+//                        @Override
+//                        public void onFailure(Throwable caught) {
+//                            caught.printStackTrace();
+//                        }
+//                    });
+//                }
+//            });
             
 
-            showWorkWin.getHeader().addTool(back);
+
             showWorkWin.getHeader().addTool(viewSolution);
             showWorkWin.getHeader().addTool(examples);
-            showWorkWin.getHeader().addTool(clear);
+            showWorkWin.getHeader().addTool(back);            
+//            showWorkWin.getHeader().addTool(clear);
             
             int left = ResourceViewerImplTutor.this.el().getLeft(false);
             int top = ResourceViewerImplTutor.this.el().getTop(false);
@@ -311,7 +312,8 @@ class ShowWorkExampleWindow extends Window {
     
     public ShowWorkExampleWindow() {
         setStyleName("show-work-example-window");
-        setSize(640,480);
+        setSize(440,480);
+        setHeading("Show Work Examples");
         Frame frame = new Frame("/gwt-resources/show_work_examples.html");
         DOM.setElementPropertyInt(frame.getElement(), "frameBorder", 0); // disable border
         DOM.setElementProperty(frame.getElement(), "scrolling", "auto"); // disable border
