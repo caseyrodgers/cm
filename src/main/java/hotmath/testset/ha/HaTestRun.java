@@ -23,14 +23,11 @@ public class HaTestRun {
         return this.sessionNumber;
     }
 
-    public void setSessionNumber(int sn) throws Exception {
+    public void setSessionNumber(final Connection conn, int sn) throws Exception {
         this.sessionNumber = sn;
-
-        Connection conn = null;
         PreparedStatement pstat = null;
         try {
             String sql = "update HA_TEST_RUN set run_session = ? where run_id = ?";
-            conn = HMConnectionPool.getConnection();
             pstat = conn.prepareStatement(sql);
             pstat.setInt(1, sn);
             pstat.setInt(2, this.runId);
@@ -38,7 +35,7 @@ public class HaTestRun {
             if (cnt != 1)
                 throw new HotMathException("Could not update session_number for run_id = " + this.runId);
         } finally {
-            SqlUtilities.releaseResources(null, pstat, conn);
+            SqlUtilities.releaseResources(null, pstat, null);
         }
     }
 
