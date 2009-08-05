@@ -11,9 +11,13 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.log4j.Logger;
+
 public class GeneratePDF extends HttpServlet {
 
 	private static final long serialVersionUID = 2788260006560387781L;
+	
+	private static final Logger logger = Logger.getLogger(GeneratePDF.class);
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 	throws ServletException, IOException {
@@ -34,15 +38,19 @@ public class GeneratePDF extends HttpServlet {
 	 */
 	public void makePdf(HttpServletRequest request, HttpServletResponse response, String methodGetPost) {
 		
+		String type = "unknown";
+		String reportId = null;
+		Integer adminId = -1;
 		try {
 
-			Integer adminId = Integer.parseInt(request.getParameter("aid"));
-			String type = request.getParameter("type");
+			reportId = request.getParameter("id");
+			adminId = Integer.parseInt(request.getParameter("aid"));
+			type = request.getParameter("type");
 			
 			ByteArrayOutputStream baos = null;
 			if (type.equals("studentSummary")) {
 				StudentSummaryReport ssr = new StudentSummaryReport();
-				baos = ssr.makePdf(adminId);
+				baos = ssr.makePdf(reportId, adminId);
 			}
 
 			// write PDF ByteArrayOutputStream to a ServletOutputStream
@@ -60,9 +68,12 @@ public class GeneratePDF extends HttpServlet {
 				baos.writeTo(out);
 				out.flush();
 			}
+			else {
+				// send to error page?
+			}
 
-		} catch (Exception e2) {
-			System.out.println("Error in " + getClass().getName() + "\n" + e2);
+		} catch (Exception e) {
+			logger.error(String.format("*** Error generating %s PDF for adminUID: %d", type, adminId), e);
 		}
 	}
 

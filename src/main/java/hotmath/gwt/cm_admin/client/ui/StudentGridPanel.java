@@ -155,7 +155,7 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
         if (sm == null)
             return;
 
-        String server=CmShared.getQueryParameter("host");
+        String server = CmShared.getQueryParameter("host");
         if(server == null || server.length() == 0)
             server = "hotmath.com";
         
@@ -201,7 +201,7 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
         toolbar.add(ti);
         
         toolbar.add(new FillToolItem());
-        ti = displayPrintableReportToolItem();
+        ti = displayPrintableReportToolItem(_grid);
         toolbar.add(ti);
 
         return toolbar;
@@ -252,7 +252,7 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
                 editStudent();
                 if (grid.getStore().getCount() > 0) {
                     ce.getComponent().enable();
-                }                  
+                }
             }
 
         });
@@ -348,7 +348,7 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
         return ti;
     }
 
-    private Button displayPrintableReportToolItem() {
+    private Button displayPrintableReportToolItem(final Grid<StudentModel> grid) {
         Button ti = new Button();
         ti.setIconStyle("printer-icon");
         ti.setToolTip("Display a printable student summary report");
@@ -356,8 +356,8 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
         ti.addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent ce) {
-            	String url = "/cm_admin/genPDF?type=studentSummary&aid=" + _cmAdminMdl.getId();
-                Window.open(url, "_blank", "location=0,menubar=0,resizable=1");
+                ListStore<StudentModel> store = grid.getStore();
+                displayPrintableReportRPC(store);
             }
         });
         return ti;
@@ -477,6 +477,31 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
                 CatchupMathAdmin.showAlert(msg);
             }
         });
+    }
+
+    protected void displayPrintableReportRPC(ListStore<StudentModel> store) {
+        RegistrationServiceAsync s = (RegistrationServiceAsync) Registry.get("registrationService");
+        
+        List<Integer> studentUids = new ArrayList<Integer>(store.getCount());
+        for (int i=0; i < store.getCount(); i++) {
+        	StudentModel sm = store.getAt(i);
+            studentUids.add(sm.getUid()); 	
+        }
+        
+        s.getPrintableSummaryReportId(studentUids, new AsyncCallback<String>() {
+
+            public void onSuccess(String reportId) {
+            	String url = "/cm_admin/genPDF?id=" + reportId + "&aid=" + _cmAdminMdl.getId() + "&type=studentSummary";
+                Window.open(url, "_blank", "location=0,menubar=0,resizable=1");
+            }
+
+            public void onFailure(Throwable caught) {
+                String msg = caught.getMessage();
+                CatchupMathAdmin.showAlert(msg);
+            }
+        });
+        
+        // 
     }
 }
 
