@@ -1,7 +1,6 @@
 package hotmath.testset.ha;
 
 import hotmath.HotMathException;
-import hotmath.util.HMConnectionPool;
 import hotmath.util.sql.SqlUtilities;
 
 import java.sql.Connection;
@@ -203,7 +202,7 @@ public class HaTestRun {
             HaTestRun testRun = new HaTestRun();
             testRun.setRunId(runId);
             testRun.setRunTime(rs.getTimestamp("run_time").getTime());
-            testRun.setSessionNumber(rs.getInt("run_session"));
+            testRun.setSessionNumber(conn, rs.getInt("run_session"));
             testRun.setAnsweredCorrect((rs.getInt("answered_correct")));
 
             testRun.setHaTest(HaTest.loadTest(conn,rs.getInt("test_id")));
