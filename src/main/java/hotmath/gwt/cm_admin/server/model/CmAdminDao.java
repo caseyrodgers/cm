@@ -484,12 +484,10 @@ public class CmAdminDao {
         }
     }
 
-    public RpcData getPrintableSummaryReportId(List<RpcData> studentUids) {
+    public String getPrintableSummaryReportId(List<Integer> studentUids) {
     	String reportId = String.format("%d%d%d", studentUids.get(0), System.currentTimeMillis(), studentUids.size());
     	CmCacheManager.getInstance().addToCache(REPORT_ID, reportId, studentUids);
-    	RpcData d = new RpcData();
-    	d.putData("rid", reportId);
-    	return d;
+    	return reportId;
     }
     
     private List <StudyProgramModel> loadProgramDefinitions(ResultSet rs) throws Exception {

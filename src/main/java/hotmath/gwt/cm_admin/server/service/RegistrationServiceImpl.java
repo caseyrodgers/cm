@@ -1,17 +1,14 @@
 package hotmath.gwt.cm_admin.server.service;
 
-
 import hotmath.gwt.cm_admin.client.service.RegistrationService;
 import hotmath.gwt.cm_admin.server.model.CmAdminDao;
 import hotmath.gwt.cm_admin.server.model.CmStudentDao;
 import hotmath.gwt.cm_tools.client.model.AccountInfoModel;
 import hotmath.gwt.cm_tools.client.model.StudentModel;
-import hotmath.gwt.shared.client.util.RpcData;
 
 import java.util.List;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
-
 
 public class RegistrationServiceImpl extends RemoteServiceServlet implements RegistrationService {
 
@@ -46,7 +43,7 @@ public class RegistrationServiceImpl extends RemoteServiceServlet implements Reg
 		return dao.getAccountInfo(uid);
 	}
 	
-	public RpcData getPrintableSummaryReportId(List<RpcData> studentUids) throws Exception {
+	public String getPrintableSummaryReportId(List<Integer> studentUids) throws Exception {
 		CmAdminDao dao = new CmAdminDao();
 		return dao.getPrintableSummaryReportId(studentUids);
 	}
