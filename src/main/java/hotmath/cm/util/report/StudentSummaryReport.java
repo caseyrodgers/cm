@@ -1,5 +1,8 @@
 package hotmath.cm.util.report;
 
+import static hotmath.cm.util.CmCacheManager.CacheName.REPORT_ID;
+import hotmath.cm.util.CmCacheManager;
+
 import hotmath.gwt.cm_admin.server.model.CmAdminDao;
 import hotmath.gwt.cm_admin.server.model.CmStudentDao;
 import hotmath.gwt.cm_tools.client.model.AccountInfoModel;
@@ -8,7 +11,10 @@ import hotmath.gwt.cm_tools.client.model.StudentModel;
 import java.awt.Color;
 import java.io.ByteArrayOutputStream;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.lowagie.text.Cell;
 import com.lowagie.text.Chunk;
@@ -23,17 +29,29 @@ import com.lowagie.text.pdf.PdfWriter;
 
 public class StudentSummaryReport {
 	
-	public ByteArrayOutputStream makePdf(Integer adminId) {
+	@SuppressWarnings("unchecked")
+	public ByteArrayOutputStream makePdf(String reportId, Integer adminId) {
 		ByteArrayOutputStream baos = null;
 
 		try {
+			List<Integer> studentUids = (List<Integer>)CmCacheManager.getInstance().retrieveFromCache(REPORT_ID, reportId);
+			
 			CmAdminDao adminDao = new CmAdminDao();
 
 			AccountInfoModel info = adminDao.getAccountInfo(adminId);
 			if (info == null) return null;
 
 			CmStudentDao studentDao = new CmStudentDao();
-			List <StudentModel> list = studentDao.getSummariesForActiveStudents(adminId);
+			List <StudentModel> sList = studentDao.getSummariesForActiveStudents(adminId);
+			
+			Map<Integer,StudentModel> map = new HashMap<Integer,StudentModel>(sList.size());
+			for (StudentModel sm : sList) {
+				map.put(sm.getUid(), sm);
+			}
+			List <StudentModel> list = new ArrayList<StudentModel>(studentUids.size());
+			for (Integer uid : studentUids) {
+				list.add(map.get(uid));
+			}
 			
 			Document document = new Document();
 			baos = new ByteArrayOutputStream();
