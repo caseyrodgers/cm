@@ -77,8 +77,7 @@ public class CreateTestRunCommand implements ActionHandler<CreateTestRunAction, 
                 }
             }
 
-            HaTestRun run = test.createTestRun(conn, incorrectPids.toArray(new String[incorrectPids.size()]),
-                    answeredCorrect, answeredIncorrect, notAnswered, totalSessions);
+            HaTestRun run = test.createTestRun(conn, incorrectPids.toArray(new String[incorrectPids.size()]), answeredCorrect, answeredIncorrect, notAnswered, totalSessions);
 
             AssessmentPrescription pres = AssessmentPrescriptionManager.getInstance().getPrescription(conn, run.getRunId());
 
