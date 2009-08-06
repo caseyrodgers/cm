@@ -5,6 +5,7 @@ import hotmath.gwt.cm_tools.client.data.InmhItemData;
 import hotmath.gwt.cm_tools.client.service.CmServiceAsync;
 import hotmath.gwt.cm_tools.client.ui.CmMainPanel;
 import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
+import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
 import hotmath.gwt.shared.client.eventbus.CmEventListenerImplDefault;
 import hotmath.gwt.shared.client.eventbus.EventBus;
@@ -274,6 +275,11 @@ public class ResourceViewerImplTutor extends ResourceViewerContainer implements 
     
     static ShowTutorDialog showTutorPanel;
     public void showTutoring(String pid) {
+        
+        if(CmShared.getQueryParameter("debug") == null)
+            return;
+        
+        // only allow in debug mode
         
         if(!UserInfo.getInstance().isTutoringAvail()) {
             CatchupMathTools.showAlert("Ask a Tutor", "Live Tutoring is not currently enabled on this account.");
