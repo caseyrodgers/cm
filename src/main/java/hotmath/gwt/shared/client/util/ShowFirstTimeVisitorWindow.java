@@ -14,6 +14,7 @@ public class ShowFirstTimeVisitorWindow extends CmWindow {
     public ShowFirstTimeVisitorWindow() {
         setStyleName("show-first-time-visitor-window");
         setSize(440,300);
+        setModal(true);
         
         
         Button close = new Button("Close");
