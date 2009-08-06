@@ -1,6 +1,16 @@
-<project basedir="." default="import_inmh" name="catchup">
+<!--
+    build file to create the solutions and INMH data export files that need
+    to be inported into the live server:   export
 
-    <property name="textcodes" value="genericprealg,genericalg1,genericgeo,genericalg2,mini6and7gt,minialg1gt,minigeogt,minialg2gt,cmextras,cmextrasgeo,cmextrasalg2,cmextrasgeo-2,alg1ptests,alg2ptests,prealgptests,geoptests,placement,miniprealggt,miniprecalcgt"/>
+    And, a generalized way to import the export files into the live server: import_inmh
+-->
+<project basedir="." default="" name="catchup">
+
+    <property name="textcodes" value="genericprealg,genericalg1,genericgeo\
+                                      ,genericalg2,mini6and7gt,minialg1gt,minigeogt\
+                                      ,minialg2gt,cmextras,cmextrasgeo,cmextrasalg2\
+                                      ,cmextrasgeo-2,alg1ptests,alg2ptests,prealgptests\
+                                      ,geoptests,placement,miniprealggt,miniprecalcgt"/>
 
 
 
