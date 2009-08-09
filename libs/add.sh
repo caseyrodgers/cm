@@ -1,4 +1,4 @@
-mvn install:install-file -DgroupId=com.extjs.gxt -DartifactId=gxt -Dversion=2.0 -Dpackaging=jar -Dfile=gxt-2.0.jar
+mvn install:install-file -DgroupId=com.extjs.gxt -DartifactId=gxt -Dversion=2.0 -Dpackaging=jar -Dfile=gxt-2.0.1.jar
 mvn install:install-file -DgroupId=sb -DartifactId=sblib -Dversion=2.0 -Dpackaging=jar -Dfile=sblib.jar
 mvn install:install-file -DgroupId=htmlparser -DartifactId=htmlparser -Dversion=1.6 -Dpackaging=jar -Dfile=htmlparser.jar
 mvn install:install-file -DgroupId=hotmath -DartifactId=hotmath -Dversion=2.0 -Dpackaging=jar -Dfile=hotmath2.jar
