@@ -228,7 +228,7 @@ public class StudentDetailsWindow extends CmWindow {
      */
     private void defineStudentInfoTemplate() {
         StringBuilder sb = new StringBuilder();
-        sb.append("<div class='student-detail-info'>");
+        sb.append("<div class='detail-info'>");
         sb.append("<div class='form left'>");
         sb.append("  <div class='fld'><label>Pass %:</label><div>{pass-percent}&nbsp;</div></div>");
         sb.append("  <div class='fld'><label>Tutoring:</label><div>{");

@@ -57,7 +57,7 @@ public class LoadTester {
 
             long timeComplete = (System.currentTimeMillis() - timeStart) / 1000;
 
-            _dao.removeUser(_sm);
+            _dao.removeUser(conn, _sm);
 
             return "Run time: " + timeComplete;
         } finally {

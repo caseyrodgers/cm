@@ -101,7 +101,7 @@ public class EndOfProgramHander_Test extends CmDbTestCase {
      */
     protected void tearDown() throws Exception {
         CmStudentDao dao = new CmStudentDao();
-        dao.removeUser(dao.getStudentModel(userId));
+        dao.removeUser(conn,dao.getStudentModel(userId));
     }
     
     

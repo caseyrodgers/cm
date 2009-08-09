@@ -11,6 +11,7 @@ import hotmath.gwt.cm_tools.client.service.PrescriptionServiceAsync;
 import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
 import hotmath.gwt.shared.client.eventbus.EventBus;
+import hotmath.gwt.shared.client.util.CmException;
 import hotmath.gwt.shared.client.util.UserInfo;
 
 import java.util.ArrayList;
@@ -46,14 +47,14 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public class RegisterStudent extends LayoutContainer {
 	
-	private CmWindow fw;
+	protected CmWindow _window;
 	
 	private boolean isNew;
 	private boolean skipComboSet;
 	private boolean loading;
 	
 	private StudentModel stuMdl;
-	private CmAdminModel cmAdminMdl;
+	protected CmAdminModel cmAdminMdl;
 	private int inProcessCount;
 	private String subjectId;
 	
@@ -72,12 +73,12 @@ public class RegisterStudent extends LayoutContainer {
 	private ListStore <GroupModel> groupStore;
 	private ComboBox <GroupModel> groupCombo;
 	
-	private TextField<String> name;
+	private TextField<String> userName;
 	
 	private int formHeight = 410;
 	private int formWidth  = 475;
 	
-	private CombinedFormPanel _formPanel;
+	protected CombinedFormPanel _formPanel;
 	
 	private static final String ENTRY_REQUIRED_MSG = "This field is required";
 	
@@ -92,22 +93,37 @@ public class RegisterStudent extends LayoutContainer {
 			subjectId = stuMdl.getSubjId();
 		}
 		cmAdminMdl = cm;
-		fw = new CmWindow();
-		fw.addListener(Events.Hide, new Listener<BaseEvent>() {
+		_window = new CmWindow();
+		_window.addListener(Events.Hide, new Listener<BaseEvent>() {
 		    public void handleEvent(BaseEvent be) {
 		        EventBus.getInstance().fireEvent(new CmEvent(EventBus.EVENT_TYPE_MODAL_WINDOW_CLOSED));
 		    }
 		});
-		fw.add(createForm());
- 		fw.show();
+		_window.add(createForm());
+		_window.show();
  		if (isNew) {
- 			name.focus();
+ 		   userName.focus();
  		}
  		skipComboSet = isNew;
 		setComboBoxSelections();
 	}
 	
-	private FormPanel createForm() {
+
+	/** Return list of Buttons to add to the Button bar
+	 * 
+	 * @return
+	 */
+	protected List<Button> getActionButtons() {
+	    List<Button> list = new ArrayList<Button>();
+        Button cancelBtn = cancelButton();
+        cancelBtn.setStyleName("register-student-cancel");
+        list.add(cancelButton());
+        list.add(saveButton(_fsProgram, _formPanel));
+        return list;
+	}
+	
+	FieldSet _fsProfile, _fsProgram;
+	protected FormPanel createForm() {
 		_formPanel = new CombinedFormPanel();
 		_formPanel.setStyleName("register-student-form-panel");
 		_formPanel.setLabelWidth(120);
@@ -121,22 +137,22 @@ public class RegisterStudent extends LayoutContainer {
 		_formPanel.setLayout(new FormLayout());
 		//fp.getLayout();
 
-		FieldSet fs = new FieldSet();
+		_fsProfile = new FieldSet();
 		FormLayout fL = new FormLayout();
 		fL.setLabelWidth(_formPanel.getLabelWidth());
         fL.setDefaultWidth(295);
-	    fs.setLayout(fL);
+        _fsProfile.setLayout(fL);
 	    
-		fs.setHeading("Define Profile");
-		name = new TextField<String>();  
-		name.setFieldLabel("Name");
-		name.setAllowBlank(false);
-		name.setId("name");
-		name.setEmptyText("-- enter name --");
+        _fsProfile.setHeading("Define Profile");
+        userName = new TextField<String>();  
+        userName.setFieldLabel("Name");
+        userName.setAllowBlank(false);
+        userName.setId("name");
+        userName.setEmptyText("-- enter name --");
 		if (! isNew) {
-			name.setValue((String)stuMdl.getName());
+		    userName.setValue((String)stuMdl.getName());
 		}
-		fs.add(name);
+		_fsProfile.add(userName);
 		
 		TextField<String> passCode = new TextField<String>();
 		passCode.setFieldLabel("Passcode");
@@ -146,48 +162,48 @@ public class RegisterStudent extends LayoutContainer {
 		if (! isNew) {
 			passCode.setValue((String)stuMdl.getPasscode());
 		}
-		fs.add(passCode);
+		_fsProfile.add(passCode);
 
 		
-		_formPanel.add(fs);
+		_formPanel.add(_fsProfile);
 		
         groupStore = new ListStore <GroupModel> ();
         getGroupListRPC(cmAdminMdl.getId(), groupStore);
         groupCombo = groupCombo(groupStore);
 		if(UserInfo.getInstance() == null || !UserInfo.getInstance().isSingleUser()) {
-    		fs.add(groupCombo);
+		    _fsProfile.add(groupCombo);
 		}
         
-        fs = new FieldSet();
-		fs.setHeading("Assign Program");
-		fs.setStyleName("register-student-fieldset");
+        _fsProgram = new FieldSet();
+        _fsProgram.setHeading("Assign Program");
+        _fsProgram.setStyleName("register-student-fieldset");
 		
 		FormLayout fl = new FormLayout();
 		fl.setLabelWidth(_formPanel.getLabelWidth());
 		fl.setDefaultWidth(fL.getDefaultWidth());
 		
-		fs.setLayout(fl);
+		_fsProgram.setLayout(fl);
 		
 		progStore = new ListStore <StudyProgram> ();
 		getStudyProgramListRPC(progStore);
-		progCombo = programCombo(progStore, fs);
-		fs.add(progCombo);
+		progCombo = programCombo(progStore, _fsProgram);
+		_fsProgram.add(progCombo);
 		
 		subjStore = new ListStore <SubjectModel> ();
 		getSubjectList((stuMdl != null)?stuMdl.getProgId():null, subjStore);
 		subjCombo = subjectCombo(subjStore);
-		fs.add(subjCombo);
+		_fsProgram.add(subjCombo);
 
 		chapStore = new ListStore <ChapterModel> ();
         getChapterListRPC((stuMdl != null)?stuMdl.getProgId():null, subjectId, false, chapStore);
 		chapCombo = chapterCombo(chapStore);
-		fs.add(chapCombo);        
+		_fsProgram.add(chapCombo);        
 		
 		List<PassPercent> passList = getPassPercentList();
 		passStore = new ListStore <PassPercent> ();
 		passStore.add(passList);
 		passCombo = passPercentCombo(passStore);
-		fs.add(passCombo);
+		_fsProgram.add(passCombo);
 		
         CheckBox isShowWorkRequired = new CheckBox();
         isShowWorkRequired.setBoxLabel("(recommended)");
@@ -204,7 +220,7 @@ public class RegisterStudent extends LayoutContainer {
         showWorkGrp.setFieldLabel("Require Show Work");
         showWorkGrp.setId(StudentModel.SHOW_WORK_KEY);
         showWorkGrp.add(isShowWorkRequired);
-        fs.add(showWorkGrp);
+        _fsProgram.add(showWorkGrp);
         
         CheckBox isTutoringNotAvail = new CheckBox();
         isTutoringNotAvail.setBoxLabel("(if/when enabled)");
@@ -221,27 +237,27 @@ public class RegisterStudent extends LayoutContainer {
         tutoringGrp.setFieldLabel("Disallow Tutoring");
         tutoringGrp.setId(StudentModel.TUTORING_AVAIL_KEY);
         tutoringGrp.add(isTutoringNotAvail);
-        fs.add(tutoringGrp);
+        _fsProgram.add(tutoringGrp);
 		
-        _formPanel.add(fs);
+        _formPanel.add(_fsProgram);
 
-		fw.setHeading((isNew)?"Register a New Student":"Edit Student");
-		fw.setWidth(formWidth + 40);
-		fw.setHeight(formHeight + 20);
-		fw.setLayout(new FitLayout());
-		fw.setResizable(false);
-		fw.setDraggable(true);
-		fw.setModal(true);
+        _window.setHeading((isNew)?"Register a New Student":"Edit Student");
+        _window.setWidth(formWidth + 40);
+        _window.setHeight(formHeight + 20);
+        _window.setLayout(new FitLayout());
+        _window.setResizable(false);
+        _window.setDraggable(true);
+        _window.setModal(true);
 
-		Button cancelBtn = cancelButton();
-        cancelBtn.setStyleName("register-student-cancel");
-        
-		Button saveBtn = saveButton(fs, _formPanel);
-		saveBtn.setStyleName("register-student-btn");
-		
-		_formPanel.setButtonAlign(HorizontalAlignment.RIGHT);  
-		_formPanel.addButton(saveBtn);
-		_formPanel.addButton(cancelBtn);
+
+        /** Assign buttons to the button bar
+         * 
+         */
+        _formPanel.setButtonAlign(HorizontalAlignment.RIGHT);
+        for(Button btn: getActionButtons()) {
+            btn.setStyleName("register-student-btn");
+            _formPanel.addButton(btn);
+        }
         
         /** Seems like a bug with setting focus, so the only way to 
          *  it to work is to set a timer and hope ... 
@@ -254,7 +270,7 @@ public class RegisterStudent extends LayoutContainer {
         if (isNew) {
             new Timer() {
                 public void run() {
-                    name.focus();
+                    userName.focus();
                 }
             }.schedule(2000);
         }
@@ -466,7 +482,7 @@ public class RegisterStudent extends LayoutContainer {
 	private Button cancelButton() {
 		Button cancelBtn = new Button("Cancel", new SelectionListener<ButtonEvent>() {  
 	    	public void componentSelected(ButtonEvent ce) {
-	        	fw.close();
+	    	    _window.close();
 	        }  
 	    });
 		return cancelBtn;
@@ -476,184 +492,13 @@ public class RegisterStudent extends LayoutContainer {
 		Button saveBtn = new Button("Save", new SelectionListener<ButtonEvent>() {  
 	        @SuppressWarnings("unchecked")
 			@Override  
-	    	public void componentSelected(ButtonEvent ce) {
-	        	TextField<String> tf = (TextField<String>)fp.getItemByItemId("name");
-	        	tf.clearInvalid();
-	        	String name = tf.getValue();
-	        	if (name == null) {
-	        		tf.focus();
-	        		tf.forceInvalid(ENTRY_REQUIRED_MSG);
-	        		return;
-	        	}
-	        	tf = (TextField<String>)fp.getItemByItemId("passcode");
-	        	tf.clearInvalid();
-	        	String passcode = tf.getValue();
-	        	if (passcode == null) {
-	        		tf.focus();
-	        		tf.forceInvalid(ENTRY_REQUIRED_MSG);
-	        		return;
-	        	}
-/* don't need email field for now
-	        	tf = (TextField<String>)fp.getItemByItemId(StudentModel.EMAIL_KEY);
-	        	String email = tf.getValue();
-	        	if (email == null) {
-	        		tf.focus();
-	        		return;
-	        	}
-*/
-                String groupId=null;
-	            String group=null;
-	        	ComboBox<GroupModel> cg = (ComboBox<GroupModel>) fp.getItemByItemId("group-combo");
-	        	cg.clearInvalid();
-	        	if(cg != null) {
-    	        	GroupModel g = cg.getValue();
-    	        	if (g == null) {
-    	        		cg.focus();
-    	        		cg.forceInvalid(ENTRY_REQUIRED_MSG);
-    	        		cg.expand();
-    	        		return;
-    	        	}
-    	            groupId = g.getId();
-    	            group = g.getName();
-	        	}
-	        	else {
-	        	    groupId = "1";
-	        	    group = "none";
-	        	}
-	        	
-	        	CheckBoxGroup cbg = (CheckBoxGroup) fp.getItemByItemId(StudentModel.SHOW_WORK_KEY);
-	        	CheckBox cbv = cbg.getValue();
-	        	Boolean showWork = new Boolean(cbv != null);
-	        	
-	        	cbg = (CheckBoxGroup) fp.getItemByItemId(StudentModel.TUTORING_AVAIL_KEY);
-	        	cbv = cbg.getValue();
-	        	Boolean tutoring = new Boolean(cbv == null);
-	        	
-	        	ComboBox<StudyProgram> cb = (ComboBox<StudyProgram>) fs.getItemByItemId("prog-combo");
-	        	StudyProgram sp = cb.getValue();
-	        	cb.clearInvalid();
-	        	if (sp == null) {
-	        		cb.focus();
-	        		cb.forceInvalid(ENTRY_REQUIRED_MSG);
-	        		cb.expand();
-	        		return;
-	        	}
-	        	String prog = sp.get("shortTitle");
-
-	        	ComboBox<SubjectModel> cs = (ComboBox<SubjectModel>) fs.getItemByItemId("subj-combo");
-	        	SubjectModel sub = cs.getValue();
-	        	cs.clearInvalid();
-	        	if (sub != null) {
-	        		prog = sub.get("abbrev") + " " + prog;
-	        	}
-	        	if (((Integer)sp.get("needsSubject")).intValue() > 0 && sub == null) {
-	        		cs.focus();
-	        		cs.forceInvalid(ENTRY_REQUIRED_MSG);
-	        		cs.expand();
-	        		return;
-	        	}
-
-	        	ComboBox<ChapterModel> cc = (ComboBox<ChapterModel>) fs.getItemByItemId("chap-combo");
-	        	ChapterModel chap = cc.getValue();
-	        	cc.clearInvalid();
-	        	if (chap != null) {
-	        		prog = prog + " " + chap.get("number");
-	        	}
-	        	if (((Integer)sp.get("needsChapters")).intValue() > 0 && chap == null) {
-	        		cc.focus();
-	        		cc.forceInvalid(ENTRY_REQUIRED_MSG);
-	        		cc.expand();
-	        		return;
-	        	}
-
-	        	ComboBox<PassPercent> cp = (ComboBox<PassPercent>) fs.getItemByItemId("pass-combo");
-	        	PassPercent pass = cp.getValue();
-	        	cp.clearInvalid();
-	        	if (((Integer)sp.get("needsPassPercent")).intValue() > 0 && pass == null) {
-	        		cp.focus();
-	        		cp.forceInvalid(ENTRY_REQUIRED_MSG);
-	        		cp.expand();
-	        		return;
-	        	}
-
-	        	StudentModel sm = new StudentModel();
-	        	sm.setName(name);
-	        	sm.setPasscode(passcode);
-	        	//sm.setEmail(email);
-	        	sm.setProgramDescr(prog);
-	        	sm.setGroupId(groupId);
-	        	sm.setTutoringAvail(tutoring);
-	        	sm.setShowWorkRequired(showWork);
-	        	sm.setGroup(group);
-	        	sm.setAdminUid(cmAdminMdl.getId());
-        		String passVal = (pass != null) ? pass.getPassPercent() : null;
-                sm.setPassPercent(passVal);
-                String progId = (sp != null) ? (String)sp.get("shortTitle") : null;
-                sm.setProgId(progId);
-                String subjId = (sub != null) ? sub.getAbbrev() : "";
-                sm.setSubjId(subjId);
-	        	String chapTitle = (chap != null) ? chap.getTitle() : null;
-	        	sm.setChapter(chapTitle);
-	        	
-		        if (isNew) {	        	    
-		        	sm.setSectionNum(0);
-		        	sm.setStatus("Not started");
-		        	sm.setTotalUsage(0);
-	        	    addUserRPC(sm);
-	        	}
-	        	else {
-	        		Boolean stuChanged = false;
-	        		Boolean passcodeChanged = false;
-	        		Boolean progChanged = false;
-	        		Boolean progIsNew = false;
-	        		
-	        		sm.setUid(stuMdl.getUid());
-	        		sm.setUserProgramId(stuMdl.getUserProgramId());
-	        		sm.setJson(stuMdl.getJson());
-	        		sm.setStatus(stuMdl.getStatus());
-	        		sm.setSectionNum(stuMdl.getSectionNum());
-	        		
-	        		if (! name.equals(stuMdl.getName()) ||
-	        			! tutoring.equals(stuMdl.getTutoringAvail()) ||
-	        			! showWork.equals(stuMdl.getShowWorkRequired()) ||
-	        			! groupId.equals(stuMdl.getGroupId())) {
-	        			stuChanged = true;
-	        		}
-	        		if (! passcode.equals(stuMdl.getPasscode())) {
-	        			passcodeChanged = true;
-	        			stuChanged = true;
-	        		}
-/* don't need email field for now
-	        		if (! email.equals(stuMdl.getEmail())) {
-	        			stuChanged = true;
-	        		}
-*/
-	        		String oldPassVal = stuMdl.getPassPercent();
-	        		String newPassVal = (pass != null) ? pass.getPassPercent() : null;
-	        		
-	        		if (! (newPassVal == null && oldPassVal == null)) {
-	        			if (newPassVal == null && oldPassVal != null ||
-    	        			newPassVal != null && oldPassVal == null ||
-	            			! newPassVal.equals(oldPassVal)) {
-			                progChanged = true;
-		                }
-	        		}
-		        	if (stuMdl.getProgramDescr() == null || !stuMdl.getProgramDescr().equals(prog)) {
-			        	sm.setStatus("Not started");
-			        	sm.setSectionNum(0);
-			        	sm.setProgramChanged(true);
-
-			        	progIsNew = true;
-			        	progChanged = false;
-			        	stuChanged = true;
-	        		}
-		        	if (stuChanged || progChanged || progIsNew) {
-     	        	    updateUserRPC(sm, stuChanged, progChanged, progIsNew, passcodeChanged);
-		        	}
-		        	else {
-		        	    fw.close();
-		        	}
-	        	}
+	    	public void componentSelected(ButtonEvent cx) {
+	            try {
+	                doSubmitAction(fs, fp, null);
+	            }
+	            catch(CmException cm) {
+	                cm.printStackTrace();
+	            }
 	        }
 	    });
 		return saveBtn;
@@ -756,7 +601,7 @@ public class RegisterStudent extends LayoutContainer {
 			
 			public void onSuccess(StudentModel ai) {
 			    EventBus.getInstance().fireEvent(new CmEvent(EventBus.EVENT_TYPE_USER_PROGRAM_CHANGED,ai.getProgramChanged()));
-				fw.close();
+			    _window.close();
         	}
 
 			public void onFailure(Throwable caught) {
@@ -774,7 +619,7 @@ public class RegisterStudent extends LayoutContainer {
 			
 			public void onSuccess(StudentModel ai) {
 		        EventBus.getInstance().fireEvent(new CmEvent(EventBus.EVENT_TYPE_USER_PROGRAM_CHANGED,ai.getProgramChanged()));
-				fw.close();
+		        _window.close();
         	}
 
 			public void onFailure(Throwable caught) {
@@ -928,6 +773,223 @@ public class RegisterStudent extends LayoutContainer {
 	
 	}
 	
+	
+
+	/** Perform the form save operation and display any required validation.
+	 * 
+	 * Throws CmExeptionValidationFailed on failed validation attempt.
+	 * 
+	 * if callback == null, then default operation which is saving data is performed.
+	 * If callback is provided, then after validation of form callback is called.
+	 * 
+	 * 
+	 * @TODO: separate into validation/action.  Perhaps strategy pattern.
+	 * 
+	 * @param fs
+	 * @param fp
+	 */
+	protected void doSubmitAction(final FieldSet fs, final CombinedFormPanel fp, AfterValidation callback) throws CmException {
+	    
+	    TextField<String> tf = (TextField<String>)fp.getItemByItemId("name");
+	    String name="";
+        if(tf != null) {
+            tf.clearInvalid();
+            name = tf.getValue();
+            if (name == null) {
+                tf.focus();
+                tf.forceInvalid(ENTRY_REQUIRED_MSG);
+                throw new CmExceptionValidationFailed();
+            }
+        }
+        
+        String passcode = null;
+        tf = (TextField<String>)fp.getItemByItemId("passcode");
+        if(tf != null) {
+            tf.clearInvalid();
+            passcode = tf.getValue();
+            if (passcode == null) {
+                tf.focus();
+                tf.forceInvalid(ENTRY_REQUIRED_MSG);
+                throw new CmExceptionValidationFailed();
+            }
+        }
+
+        
+        String groupId=null;
+        String group=null;
+        ComboBox<GroupModel> cg = (ComboBox<GroupModel>) fp.getItemByItemId("group-combo");
+        if(cg != null) {
+            cg.clearInvalid();
+            if(cg != null) {
+                GroupModel g = cg.getValue();
+                if (g == null) {
+                    cg.focus();
+                    cg.forceInvalid(ENTRY_REQUIRED_MSG);
+                    cg.expand();
+                    throw new CmExceptionValidationFailed();
+                }
+                groupId = g.getId();
+                group = g.getName();
+            }
+            else {
+                groupId = "1";
+                group = "none";
+            }
+        }
+        
+        CheckBoxGroup cbg = (CheckBoxGroup) fp.getItemByItemId(StudentModel.SHOW_WORK_KEY);
+        CheckBox cbv = cbg.getValue();
+        Boolean showWork = new Boolean(cbv != null);
+        
+        cbg = (CheckBoxGroup) fp.getItemByItemId(StudentModel.TUTORING_AVAIL_KEY);
+        cbv = cbg.getValue();
+        Boolean tutoring = new Boolean(cbv == null);
+        
+        ComboBox<StudyProgram> cb = (ComboBox<StudyProgram>) fs.getItemByItemId("prog-combo");
+        StudyProgram sp = cb.getValue();
+        cb.clearInvalid();
+        if (sp == null) {
+            cb.focus();
+            cb.forceInvalid(ENTRY_REQUIRED_MSG);
+            cb.expand();
+            throw new CmExceptionValidationFailed();
+        }
+        String prog = sp.get("shortTitle");
+
+        ComboBox<SubjectModel> cs = (ComboBox<SubjectModel>) fs.getItemByItemId("subj-combo");
+        SubjectModel sub = cs.getValue();
+        cs.clearInvalid();
+        if (sub != null) {
+            prog = sub.get("abbrev") + " " + prog;
+        }
+        if (((Integer)sp.get("needsSubject")).intValue() > 0 && sub == null) {
+            cs.focus();
+            cs.forceInvalid(ENTRY_REQUIRED_MSG);
+            cs.expand();
+            throw new CmExceptionValidationFailed();
+        }
+
+        ComboBox<ChapterModel> cc = (ComboBox<ChapterModel>) fs.getItemByItemId("chap-combo");
+        ChapterModel chap = cc.getValue();
+        cc.clearInvalid();
+        if (chap != null) {
+            prog = prog + " " + chap.get("number");
+        }
+        if (((Integer)sp.get("needsChapters")).intValue() > 0 && chap == null) {
+            cc.focus();
+            cc.forceInvalid(ENTRY_REQUIRED_MSG);
+            cc.expand();
+            throw new CmExceptionValidationFailed();
+        }
+
+        ComboBox<PassPercent> cp = (ComboBox<PassPercent>) fs.getItemByItemId("pass-combo");
+        PassPercent pass = cp.getValue();
+        cp.clearInvalid();
+        if (((Integer)sp.get("needsPassPercent")).intValue() > 0 && pass == null) {
+            cp.focus();
+            cp.forceInvalid(ENTRY_REQUIRED_MSG);
+            cp.expand();
+            throw new CmExceptionValidationFailed();
+        }
+
+        
+        /** Collect all the values and create a new StudentModel
+         *  to hold validated values.
+         *  
+         */
+        StudentModel sm = new StudentModel();
+        sm.setName(name);
+        sm.setPasscode(passcode);
+        //sm.setEmail(email);
+        sm.setProgramDescr(prog);
+        sm.setGroupId(groupId);
+        sm.setTutoringAvail(tutoring);
+        sm.setShowWorkRequired(showWork);
+        sm.setGroup(group);
+        sm.setAdminUid(cmAdminMdl.getId());
+        String passVal = (pass != null) ? pass.getPassPercent() : null;
+        sm.setPassPercent(passVal);
+        String progId = (sp != null) ? (String)sp.get("shortTitle") : null;
+        sm.setProgId(progId);
+        String subjId = (sub != null) ? sub.getAbbrev() : "";
+        sm.setSubjId(subjId);
+        String chapTitle = (chap != null) ? chap.getTitle() : null;
+        sm.setChapter(chapTitle);
+
+
+        /** Validation complete 
+         * 
+         * if callback has been provided, then jump to call back
+         * 
+         */
+        if(callback != null) {
+            callback.afterValidation(sm);
+            return;
+        }
+        
+        
+        
+        /** If callback not provided, then perform default operation
+         * 
+         */
+        if (isNew) {                    
+            sm.setSectionNum(0);
+            sm.setStatus("Not started");
+            sm.setTotalUsage(0);
+            addUserRPC(sm);
+        }
+        else {
+            Boolean stuChanged = false;
+            Boolean passcodeChanged = false;
+            Boolean progChanged = false;
+            Boolean progIsNew = false;
+            
+            sm.setUid(stuMdl.getUid());
+            sm.setUserProgramId(stuMdl.getUserProgramId());
+            sm.setJson(stuMdl.getJson());
+            sm.setStatus(stuMdl.getStatus());
+            sm.setSectionNum(stuMdl.getSectionNum());
+            
+            if (! name.equals(stuMdl.getName()) ||
+                ! tutoring.equals(stuMdl.getTutoringAvail()) ||
+                ! showWork.equals(stuMdl.getShowWorkRequired()) ||
+                ! groupId.equals(stuMdl.getGroupId())) {
+                stuChanged = true;
+            }
+            if (! passcode.equals(stuMdl.getPasscode())) {
+                passcodeChanged = true;
+                stuChanged = true;
+            }
+            
+            String oldPassVal = stuMdl.getPassPercent();
+            String newPassVal = (pass != null) ? pass.getPassPercent() : null;
+            
+            if (! (newPassVal == null && oldPassVal == null)) {
+                if (newPassVal == null && oldPassVal != null ||
+                    newPassVal != null && oldPassVal == null ||
+                    ! newPassVal.equals(oldPassVal)) {
+                    progChanged = true;
+                }
+            }
+            if (stuMdl.getProgramDescr() == null || !stuMdl.getProgramDescr().equals(prog)) {
+                sm.setStatus("Not started");
+                sm.setSectionNum(0);
+                sm.setProgramChanged(true);
+
+                progIsNew = true;
+                progChanged = false;
+                stuChanged = true;
+            }
+            if (stuChanged || progChanged || progIsNew) {
+                updateUserRPC(sm, stuChanged, progChanged, progIsNew, passcodeChanged);
+            }
+            else {
+                _window.close();
+            }
+        }	    
+	}
+	
+	
 	private List<PassPercent> getPassPercentList() {
 		List<PassPercent> list = new ArrayList<PassPercent> ();
 		list.add(new PassPercent("60%"));
@@ -989,3 +1051,8 @@ class CombinedFormPanel extends FormPanel {
         return null;
     }
 }
+
+class CmExceptionValidationFailed extends CmException {
+    
+}
+

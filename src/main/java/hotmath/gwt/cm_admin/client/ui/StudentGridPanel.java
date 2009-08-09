@@ -6,10 +6,12 @@ import hotmath.gwt.cm_tools.client.model.CmAdminDataReader;
 import hotmath.gwt.cm_tools.client.model.CmAdminDataRefresher;
 import hotmath.gwt.cm_tools.client.model.CmAdminModel;
 import hotmath.gwt.cm_tools.client.model.StudentModel;
+import hotmath.gwt.cm_tools.client.ui.AutoRegisterStudent;
 import hotmath.gwt.cm_tools.client.ui.RegisterStudent;
 import hotmath.gwt.cm_tools.client.ui.StudentDetailsWindow;
 import hotmath.gwt.cm_tools.client.ui.StudentShowWorkWindow;
 import hotmath.gwt.shared.client.CmShared;
+import hotmath.gwt.shared.client.rpc.result.AutoRegistrationSetup;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -201,6 +203,16 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
         toolbar.add(ti);
         
         toolbar.add(new FillToolItem());
+        
+        Button btn = new Button("Auto Registration");
+        btn.addSelectionListener(new SelectionListener<ButtonEvent>() {
+            @Override
+            public void componentSelected(ButtonEvent ce) {
+                new AutoRegisterStudent(null, _cmAdminMdl);
+            } 
+        });
+        toolbar.add(btn);
+
         ti = displayPrintableReportToolItem(_grid);
         toolbar.add(ti);
 

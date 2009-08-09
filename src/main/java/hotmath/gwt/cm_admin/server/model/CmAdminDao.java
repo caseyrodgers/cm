@@ -111,18 +111,16 @@ public class CmAdminDao {
     	"insert into CM_GROUP (name, description, is_active, admin_id) " +
     	"values( ?, ?, ?, ?)";
 
-    public GroupModel addGroup(Integer adminUid, GroupModel gm) throws Exception {
-    	Connection conn = null;
+    public GroupModel addGroup(final Connection conn, Integer adminUid, GroupModel gm) throws Exception {
     	PreparedStatement ps = null;
     	ResultSet rs = null;
     	
-		Boolean isDuplicate = checkForDuplicateGroup(adminUid, gm);
+		Boolean isDuplicate = checkForDuplicateGroup(conn, adminUid, gm);
 		if (isDuplicate) {
 			throw new Exception("The group you entered already exists, please try again.");
 		}
 		
     	try {
-    		conn = HMConnectionPool.getConnection();
     		ps = conn.prepareStatement(ADD_GROUP_SQL);
     		ps.setString(1, gm.getName());
     		ps.setString(2, null);
@@ -141,7 +139,7 @@ public class CmAdminDao {
     	    throw new Exception(String.format("*** Error adding Group: %s ***", gm.getName()));
     	}
     	finally {
-    		SqlUtilities.releaseResources(rs, ps, conn);
+    		SqlUtilities.releaseResources(rs, ps, null);
     	}
     	return gm;
     }
@@ -150,13 +148,11 @@ public class CmAdminDao {
     private static final String CHECK_DUPLICATE_GROUP_SQL =
     	"select 1 from CM_GROUP where name = ? and admin_id in (?, 0)";
     
-    public Boolean checkForDuplicateGroup(Integer adminUid, GroupModel gm) throws Exception {
-    	Connection conn = null;
+    public Boolean checkForDuplicateGroup(final Connection conn, Integer adminUid, GroupModel gm) throws Exception {
     	PreparedStatement ps = null;
     	ResultSet rs = null;
     	
     	try {
-    		conn = HMConnectionPool.getConnection();
     		ps = conn.prepareStatement(CHECK_DUPLICATE_GROUP_SQL);
     		ps.setString(1, gm.getName());
     		ps.setInt(2, adminUid);
@@ -169,7 +165,7 @@ public class CmAdminDao {
     		throw new Exception(String.format("*** Error checking for group: %s ***", gm.getName()));
     	}
     	finally {
-    		SqlUtilities.releaseResources(rs, ps, conn);
+    		SqlUtilities.releaseResources(rs, ps, null);
     	}
     }
 

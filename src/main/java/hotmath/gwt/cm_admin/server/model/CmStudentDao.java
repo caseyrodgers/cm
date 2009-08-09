@@ -294,7 +294,12 @@ public class CmStudentDao {
     /**
      * The student's passcode is set to their uid + '.' + current time in msec
      * to avoid "locking up" up the previous passcode and to prevent passcode
-     * uniqueness collisions
+     * uniqueness collisions.
+     * 
+     * 
+     * NOTE: if student does not any history (no entry in HA_TEST), then delete
+     * from DB instead of inactivating.
+     * 
      */
     public StudentModel deactivateUser(StudentModel sm) throws Exception {
         Connection conn = null;
@@ -303,6 +308,28 @@ public class CmStudentDao {
 
         try {
             conn = HMConnectionPool.getConnection();
+            
+            
+            
+            /** Remove from DB if user has never used account
+             * 
+             */
+            Statement stmt = null;
+            try {
+                stmt = conn.createStatement();
+                ResultSet rsCheck = stmt.executeQuery("select 'x' from HA_TEST where user_id = " + sm.getUid());
+                if(!rsCheck.first()) {
+                    removeUser(conn, sm);
+                    return sm;
+                }
+                
+            }
+            finally {
+                SqlUtilities.releaseResources(null,stmt,null);
+            }
+            
+            
+            
             ps = conn.prepareStatement(DEACTIVATE_STUDENT_SQL);
             StringBuilder sb = new StringBuilder();
             sb.append(sm.getUid()).append(".").append(System.currentTimeMillis());
@@ -329,20 +356,15 @@ public class CmStudentDao {
      * 
      * @param sm
      * 
-     * Lets not deprecate this.  It is still useful in testing
-     * 
      */
-    @Deprecated
-    public void removeUser(StudentModelI sm) {
+    public void removeUser(final Connection conn, StudentModelI sm) {
         final String REMOVE_USER_SQL = "delete from HA_USER where uid = ?";
 
-        Connection conn = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
 
         try {
             logger.info("Removing user: " + sm.getUid());
-            conn = HMConnectionPool.getConnection();
             ps = conn.prepareStatement(REMOVE_USER_SQL);
             ps.setInt(1, sm.getUid());
             if (ps.executeUpdate() == 0) {
@@ -351,7 +373,7 @@ public class CmStudentDao {
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            SqlUtilities.releaseResources(rs, ps, conn);
+            SqlUtilities.releaseResources(rs, ps, null);
         }
     }
 

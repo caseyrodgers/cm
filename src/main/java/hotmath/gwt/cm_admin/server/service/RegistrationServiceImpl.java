@@ -32,12 +32,6 @@ public class RegistrationServiceImpl extends RemoteServiceServlet implements Reg
 		return dao.deactivateUser(sm);
 	}
 
-	@Deprecated
-    public void removeUser(StudentModel sm) {
-        CmStudentDao cma = new CmStudentDao();
-        cma.removeUser(sm);
-    }
-
 	public AccountInfoModel getAccountInfoForAdminUid(Integer uid) throws Exception {
 		CmAdminDao dao = new CmAdminDao();
 		return dao.getAccountInfo(uid);

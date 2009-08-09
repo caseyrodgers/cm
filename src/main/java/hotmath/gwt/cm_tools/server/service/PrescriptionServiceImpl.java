@@ -16,6 +16,7 @@ import hotmath.gwt.cm_tools.client.model.StudentShowWorkModel;
 import hotmath.gwt.cm_tools.client.model.StudyProgramModel;
 import hotmath.gwt.cm_tools.client.model.SubjectModel;
 import hotmath.gwt.cm_tools.client.service.PrescriptionService;
+import hotmath.gwt.shared.client.rpc.action.AddGroupAction;
 import hotmath.gwt.shared.client.rpc.action.AddStudentAction;
 import hotmath.gwt.shared.client.rpc.action.AutoAdvanceUserAction;
 import hotmath.gwt.shared.client.rpc.action.CreateTestRunAction;
@@ -129,6 +130,10 @@ public class PrescriptionServiceImpl extends RemoteServiceServlet implements Pre
         return ActionDispatcher.getInstance().execute(action);
     }
 
+    public GroupModel addGroup(Integer adminUid, GroupModel gm) throws CmRpcException {
+        AddGroupAction action = new AddGroupAction(adminUid, gm);
+        return ActionDispatcher.getInstance().execute(action);
+    }
 
 
     public String getSolutionProblemStatementHtml(String pid) {
@@ -388,17 +393,7 @@ public class PrescriptionServiceImpl extends RemoteServiceServlet implements Pre
             throw new CmRpcException(e);
         }
     }
-    
 
-    public GroupModel addGroup(Integer adminUid, GroupModel gm) throws CmRpcException {
-        try {
-            CmAdminDao cma = new CmAdminDao();
-            return cma.addGroup(adminUid, gm);
-        }
-        catch(Exception e) {
-            throw new CmRpcException(e);
-        }
-    }
 
     
     

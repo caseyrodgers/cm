@@ -14,9 +14,6 @@ public interface RegistrationService extends RemoteService {
 	  List<StudentModel> getSummariesForInactiveStudents(Integer adminUid) throws Exception;
 
 	  StudentModel deactivateUser(StudentModel sm) throws Exception;
-  
-	  @Deprecated
-	  void removeUser(StudentModel sm);
 
 	  AccountInfoModel getAccountInfoForAdminUid(Integer uid) throws Exception;
 	  

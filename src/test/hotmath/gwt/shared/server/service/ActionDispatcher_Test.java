@@ -1,10 +1,19 @@
 package hotmath.gwt.shared.server.service;
 
 import hotmath.gwt.cm.server.CmDbTestCase;
+import hotmath.gwt.cm_admin.server.model.CmStudentDao;
 import hotmath.gwt.cm_tools.client.model.AutoUserAdvanced;
+import hotmath.gwt.cm_tools.client.model.GroupModel;
+import hotmath.gwt.cm_tools.client.model.StudentModel;
+import hotmath.gwt.shared.client.rpc.action.AddGroupAction;
 import hotmath.gwt.shared.client.rpc.action.AutoAdvanceUserAction;
 import hotmath.gwt.shared.client.rpc.action.ClearWhiteboardDataAction;
+import hotmath.gwt.shared.client.rpc.action.CmArrayList;
+import hotmath.gwt.shared.client.rpc.action.CmList;
+import hotmath.gwt.shared.client.rpc.action.CreateAutoRegistrationAccountsAction;
+import hotmath.gwt.shared.client.rpc.action.CreateAutoRegistrationPreviewAction;
 import hotmath.gwt.shared.client.rpc.action.CreateTestRunAction;
+import hotmath.gwt.shared.client.rpc.action.GetAutoRegistrationSetupAction;
 import hotmath.gwt.shared.client.rpc.action.GetPrescriptionAction;
 import hotmath.gwt.shared.client.rpc.action.GetQuizHtmlAction;
 import hotmath.gwt.shared.client.rpc.action.GetQuizHtmlCheckedAction;
@@ -14,6 +23,8 @@ import hotmath.gwt.shared.client.rpc.action.GetUserInfoAction;
 import hotmath.gwt.shared.client.rpc.action.GetViewedInmhItemsAction;
 import hotmath.gwt.shared.client.rpc.action.SaveQuizCurrentResultAction;
 import hotmath.gwt.shared.client.rpc.action.SaveWhiteboardDataAction;
+import hotmath.gwt.shared.client.rpc.result.AutoRegistrationEntry;
+import hotmath.gwt.shared.client.rpc.result.AutoRegistrationSetup;
 import hotmath.gwt.shared.client.util.RpcData;
 import hotmath.gwt.shared.client.util.UserInfo;
 
@@ -41,7 +52,52 @@ public class ActionDispatcher_Test extends CmDbTestCase {
             uid = setupDemoAccount();
     }
     
+    public void testAddGroupCommand() throws Exception {
+        AddGroupAction action = new AddGroupAction(2, new GroupModel());
+        GroupModel group = ActionDispatcher.getInstance().execute(action);
+        assertNotNull(group);
+    }
     
+    
+    public void testCreateAutoRegistrationAccountsCommand() throws Exception {
+        
+        StudentModel student = new CmStudentDao().getStudentModel(uid);
+        AutoRegistrationSetup preview = new AutoRegistrationSetup();
+        
+        CmList<AutoRegistrationEntry> entries = new CmArrayList<AutoRegistrationEntry>();
+        AutoRegistrationEntry entry = new AutoRegistrationEntry();
+        entry.setName("TEST-1");
+        entry.setPassword("TESTPWD-1");
+        entries.add(entry);
+        entry = new AutoRegistrationEntry();
+        entry.setName("TEST-2");
+        entry.setPassword("TESTPWD-2");
+        preview.setEntries(entries);
+        
+        CreateAutoRegistrationAccountsAction action = new CreateAutoRegistrationAccountsAction(2, student,entries);
+        AutoRegistrationSetup autoSetup = ActionDispatcher.getInstance().execute(action);
+        
+        assertNotNull(autoSetup);
+    }
+    
+    public void testCreateAutoRegistrationPreviewCommand() throws Exception {
+        
+        StudentModel student = new CmStudentDao().getStudentModel(uid);
+        
+        CreateAutoRegistrationPreviewAction action = new CreateAutoRegistrationPreviewAction(2,student,10);
+        AutoRegistrationSetup autoSetup = ActionDispatcher.getInstance().execute(action);
+        
+        assertNotNull(autoSetup);
+        
+        assertTrue(autoSetup.getEntries().size() == 10);
+    }
+
+    public void testGetAutoRegistrationSetupCommand() throws Exception {
+        GetAutoRegistrationSetupAction action = new GetAutoRegistrationSetupAction(2);
+        AutoRegistrationSetup autoSetup = ActionDispatcher.getInstance().execute(action);
+        
+        assertNotNull(autoSetup);
+    }
     
     public void testSaveWhiteboardDataCommand() throws Exception {
         SaveWhiteboardDataAction action = new SaveWhiteboardDataAction(uid, TEST_RUN_ID, TEST_PID, "draw", "123");

@@ -32,6 +32,7 @@ public class HelpWindow extends CmWindow {
         });
         addButton(closeBtn);
 
+        
         add(frame);
         
         setVisible(true);

@@ -1043,17 +1043,17 @@ img.resource-item-complete {
     position: relative;
 }
 
-.student-detail-info .form {
+.detail-info .form {
     width: 250px;
     /*border: 1px solid red;*/
 }
 
-.student-detail-info .fld {
+.detail-info .fld {
     width: 245px;
     /*border: 1px solid blue;*/
 }
 
-.student-detail-info .fld label {
+.detail-info .fld label {
     display: block;
     float: left;
     width: 90px;
@@ -1063,19 +1063,19 @@ img.resource-item-complete {
     /*border: 1px solid green;*/
 }
 
-.student-detail-info .fld div {
+.detail-info .fld div {
     float: right;
     width: 148px;
     /*border: 1px solid yellow;*/
 }
 
-.student-detail-info  .left {
+.detail-info  .left {
     position: absolute;
     top: 10px;
     left: 20px;
 }
 
-.student-detail-info  .right {
+.detail-info  .right {
     position: absolute;
     top: 10px;
     left: 265px;

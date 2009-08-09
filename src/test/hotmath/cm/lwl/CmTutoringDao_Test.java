@@ -20,7 +20,7 @@ public class CmTutoringDao_Test extends CmDbTestCase {
     
     @Override
     protected void tearDown() throws Exception {
-        new CmStudentDao().removeUser(new CmStudentDao().getStudentModel(uid));
+        new CmStudentDao().removeUser(conn, new CmStudentDao().getStudentModel(uid));
     }
     
     public void testGetTutoringInfo() throws Exception {
