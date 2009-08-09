@@ -46,7 +46,7 @@ public class CreateAutoRegistrationAccountsCommand implements ActionHandler<Crea
             try {
                 StudentModel studentToCreate = createStudentFromTemplate(entry, studentTemplate);
                 dao.addStudent(conn, studentToCreate);
-                entry.setMessage("Success");
+                entry.setMessage("Created successfully");
                 entry.setIsError(false);
             }
             catch(Exception ex) {

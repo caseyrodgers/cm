@@ -12,11 +12,14 @@ import hotmath.gwt.shared.client.rpc.result.AutoRegistrationSetup;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.xerces.impl.dv.DatatypeException;
+
 import com.extjs.gxt.ui.client.Registry;
 import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
 import com.extjs.gxt.ui.client.Style.LayoutRegion;
 import com.extjs.gxt.ui.client.Style.SelectionMode;
 import com.extjs.gxt.ui.client.data.BaseModelData;
+import com.extjs.gxt.ui.client.data.DataReader;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.store.ListStore;
@@ -193,7 +196,14 @@ public class AutoRegistrationWindow extends CmWindow {
 
                     _previewGrid.getStore().removeAll();
                     _previewGrid.getStore().add(createGxtModelFromEntries(result.getEntries()));
+                    
+
+                    StudentGridPanel.instance.refreshDataNow(null);
+                    
                     layout();
+                    
+                    
+                    
                 }
 
             @Override

@@ -11,7 +11,6 @@ import hotmath.gwt.cm_tools.client.ui.RegisterStudent;
 import hotmath.gwt.cm_tools.client.ui.StudentDetailsWindow;
 import hotmath.gwt.cm_tools.client.ui.StudentShowWorkWindow;
 import hotmath.gwt.shared.client.CmShared;
-import hotmath.gwt.shared.client.rpc.result.AutoRegistrationSetup;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -138,8 +137,8 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
      * @param uid  The uid to select, or null to select current row
      * 
      */
-    public void refreshDataNow(Integer uid) {
-        getStudentsRPC(this._cmAdminMdl.getId(), _grid.getStore(), uid);
+    public void refreshDataNow(Integer uid2Select) {
+        getStudentsRPC(this._cmAdminMdl.getId(), _grid.getStore(), uid2Select);
     }
 
     public void enableToolBar() {
