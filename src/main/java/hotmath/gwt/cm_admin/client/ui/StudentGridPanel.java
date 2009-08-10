@@ -499,7 +499,7 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
             studentUids.add(sm.getUid()); 	
         }
         
-        s.getPrintableSummaryReportId(studentUids, new AsyncCallback<String>() {
+        s.getPrintableStudentReportId(studentUids, new AsyncCallback<String>() {
 
             public void onSuccess(String reportId) {
             	String url = "/cm_admin/genPDF?id=" + reportId + "&aid=" + _cmAdminMdl.getId() + "&type=studentSummary";

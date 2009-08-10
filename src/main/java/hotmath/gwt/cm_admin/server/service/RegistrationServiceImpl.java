@@ -37,8 +37,8 @@ public class RegistrationServiceImpl extends RemoteServiceServlet implements Reg
 		return dao.getAccountInfo(uid);
 	}
 	
-	public String getPrintableSummaryReportId(List<Integer> studentUids) throws Exception {
+	public String getPrintableStudentReportId(List<Integer> studentUids) throws Exception {
 		CmAdminDao dao = new CmAdminDao();
-		return dao.getPrintableSummaryReportId(studentUids);
+		return dao.getPrintableStudentReportId(studentUids);
 	}
 }

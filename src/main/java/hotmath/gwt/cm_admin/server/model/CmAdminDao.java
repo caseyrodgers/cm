@@ -480,7 +480,7 @@ public class CmAdminDao {
         }
     }
 
-    public String getPrintableSummaryReportId(List<Integer> studentUids) {
+    public String getPrintableStudentReportId(List<Integer> studentUids) {
     	String reportId = String.format("%d%d%d", studentUids.get(0), System.currentTimeMillis(), studentUids.size());
     	CmCacheManager.getInstance().addToCache(REPORT_ID, reportId, studentUids);
     	return reportId;

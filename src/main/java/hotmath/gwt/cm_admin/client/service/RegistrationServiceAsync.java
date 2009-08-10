@@ -17,5 +17,5 @@ public interface RegistrationServiceAsync {
 
 	  void getAccountInfoForAdminUid(Integer uid, AsyncCallback<AccountInfoModel> callback);
 	  
-	  void getPrintableSummaryReportId(List<Integer> studentUids, AsyncCallback<String> callback);
+	  void getPrintableStudentReportId(List<Integer> studentUids, AsyncCallback<String> callback);
 }
