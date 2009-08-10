@@ -1,6 +1,5 @@
 package hotmath.gwt.cm_tools.client.ui;
 
-import hotmath.gwt.cm_admin.client.ui.AutoRegistrationWindow;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.model.CmAdminModel;
 import hotmath.gwt.cm_tools.client.model.StudentModel;
