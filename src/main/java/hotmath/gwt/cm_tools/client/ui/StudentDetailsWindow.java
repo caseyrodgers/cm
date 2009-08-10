@@ -1,6 +1,9 @@
 package hotmath.gwt.cm_tools.client.ui;
 
+import hotmath.gwt.cm_admin.client.CatchupMathAdmin;
+import hotmath.gwt.cm_admin.client.service.RegistrationServiceAsync;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
+import hotmath.gwt.cm_tools.client.model.CmAdminModel;
 import hotmath.gwt.cm_tools.client.model.StudentActivityModel;
 import hotmath.gwt.cm_tools.client.model.StudentModel;
 import hotmath.gwt.cm_tools.client.service.PrescriptionServiceAsync;
@@ -26,19 +29,21 @@ import com.extjs.gxt.ui.client.widget.grid.Grid;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
+import com.extjs.gxt.ui.client.widget.toolbar.FillToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 
 /*
- * @author Bob
- * @author Casey
- * 
+ * Displays historical record of Student activity in reverse chronological order
+ *
  * Derived from StudentDetailsPanel (retired)
  * 
- * Displays historical record of Student activity in reverse chronological order
+ * @author Bob
+ * @author Casey
  * 
  */
 
@@ -52,7 +57,7 @@ public class StudentDetailsWindow extends CmWindow {
     
     
     /** Create StudentDetailsWindow for student.  Shows all student
-     * activity for given user order by last use.
+     * activity for given user order by last use (most recent first)
      * 
      * StudentModel must be fully filled out to populate the infoPanel
      * 
@@ -83,7 +88,8 @@ public class StudentDetailsWindow extends CmWindow {
         toolBar.setStyleName("student-grid-panel-toolbar");
         toolBar.add(showWorkBtn());
         toolBar.add(showTopicsBtn());
-        
+        toolBar.add(new FillToolItem());
+        toolBar.add(displayPrintableReportToolItem(studentModel));
         
         LayoutContainer lc = new LayoutContainer();
         lc.setLayout(new BorderLayout());
@@ -98,7 +104,8 @@ public class StudentDetailsWindow extends CmWindow {
 
         _studentCount = new Label();
         _studentCount.setStyleName("students-count");
-        add(_studentCount);
+        //TODO: count not displaying correctly
+        //add(_studentCount);
 
         Button btnClose = closeButton();
         setButtonAlign(HorizontalAlignment.RIGHT);  
@@ -174,6 +181,21 @@ public class StudentDetailsWindow extends CmWindow {
         });
     btn.setIconStyle("icon-delete");
     return btn;
+    }
+    
+    private Button displayPrintableReportToolItem(final StudentModel sm) {
+        Button ti = new Button();
+        ti.setIconStyle("printer-icon");
+        ti.setToolTip("Display a printable student detail report");
+        ti.setStyleName("student-details-panel-pr-btn");
+
+        ti.addSelectionListener(new SelectionListener<ButtonEvent>() {
+            @Override
+            public void componentSelected(ButtonEvent ce) {
+                displayPrintableReportRPC(sm);
+            }
+        });
+        return ti;
     }
     
     private ColumnModel defineColumns() {
@@ -264,7 +286,29 @@ public class StudentDetailsWindow extends CmWindow {
         }
         });
     }    
-    
+
+    protected void displayPrintableReportRPC(final StudentModel sm) {
+        RegistrationServiceAsync s = (RegistrationServiceAsync) Registry.get("registrationService");
+        
+        List<Integer> studentUids = new ArrayList<Integer>();
+        studentUids.add(sm.getUid());
+        System.out.println("studentUid: " + sm.getUid());
+        
+        s.getPrintableStudentReportId(studentUids, new AsyncCallback<String>() {
+
+            public void onSuccess(String reportId) {
+            	String url = "/cm_admin/genPDF?id=" + reportId + "&aid=" + sm.getAdminUid() + "&type=studentDetail";
+                Window.open(url, "_blank", "location=0,menubar=0,resizable=1");
+            }
+
+            public void onFailure(Throwable caught) {
+                String msg = caught.getMessage();
+                CatchupMathAdmin.showAlert(msg);
+            }
+        });
+        
+        // 
+    }
 }
 
 
