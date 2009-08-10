@@ -11,6 +11,10 @@ import hotmath.gwt.cm_tools.client.ui.RegisterStudent;
 import hotmath.gwt.cm_tools.client.ui.StudentDetailsWindow;
 import hotmath.gwt.cm_tools.client.ui.StudentShowWorkWindow;
 import hotmath.gwt.shared.client.CmShared;
+import hotmath.gwt.shared.client.eventbus.CmEvent;
+import hotmath.gwt.shared.client.eventbus.CmEventListener;
+import hotmath.gwt.shared.client.eventbus.CmEventListenerImplDefault;
+import hotmath.gwt.shared.client.eventbus.EventBus;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -124,6 +128,15 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
         instance = this;
         
         CmAdminDataReader.getInstance().addReader(this);
+        
+        
+        EventBus.getInstance().addEventListener(new CmEventListenerImplDefault() {
+            public void handleEvent(CmEvent event) {
+                if(event.getEventName().equals(EventBus.EVENT_TYPE_REFRESH_STUDENT_DATA)) {
+                    refreshDataNow(null);
+                }
+            }
+        });
     }
     
     public void refreshData() {

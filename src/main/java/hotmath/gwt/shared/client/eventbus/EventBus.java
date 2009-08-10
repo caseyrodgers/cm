@@ -110,4 +110,10 @@ public class EventBus {
      * 
      */
     static public final String EVENT_TYPE_TOPIC_CHANGED="TOPIC_CHANGED";
+    
+    
+    /** Fired when the student data needs to be updated
+     *  
+     */
+    static public final String EVENT_TYPE_REFRESH_STUDENT_DATA="REFRESH_STUDENT_DATA";
 }

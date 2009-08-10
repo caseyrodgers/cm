@@ -1,9 +1,8 @@
 package hotmath.gwt.cm_tools.client.ui;
 
-import hotmath.gwt.cm_admin.client.CatchupMathAdmin;
+
 import hotmath.gwt.cm_admin.client.service.RegistrationServiceAsync;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
-import hotmath.gwt.cm_tools.client.model.CmAdminModel;
 import hotmath.gwt.cm_tools.client.model.StudentActivityModel;
 import hotmath.gwt.cm_tools.client.model.StudentModel;
 import hotmath.gwt.cm_tools.client.service.PrescriptionServiceAsync;
@@ -288,26 +287,26 @@ public class StudentDetailsWindow extends CmWindow {
     }    
 
     protected void displayPrintableReportRPC(final StudentModel sm) {
-        RegistrationServiceAsync s = (RegistrationServiceAsync) Registry.get("registrationService");
-        
-        List<Integer> studentUids = new ArrayList<Integer>();
-        studentUids.add(sm.getUid());
-        System.out.println("studentUid: " + sm.getUid());
-        
-        s.getPrintableStudentReportId(studentUids, new AsyncCallback<String>() {
-
-            public void onSuccess(String reportId) {
-            	String url = "/cm_admin/genPDF?id=" + reportId + "&aid=" + sm.getAdminUid() + "&type=studentDetail";
-                Window.open(url, "_blank", "location=0,menubar=0,resizable=1");
-            }
-
-            public void onFailure(Throwable caught) {
-                String msg = caught.getMessage();
-                CatchupMathAdmin.showAlert(msg);
-            }
-        });
-        
-        // 
+//        RegistrationServiceAsync s = (RegistrationServiceAsync) Registry.get("registrationService");
+//        
+//        List<Integer> studentUids = new ArrayList<Integer>();
+//        studentUids.add(sm.getUid());
+//        System.out.println("studentUid: " + sm.getUid());
+//        
+//        s.getPrintableStudentReportId(studentUids, new AsyncCallback<String>() {
+//
+//            public void onSuccess(String reportId) {
+//            	String url = "/cm_admin/genPDF?id=" + reportId + "&aid=" + sm.getAdminUid() + "&type=studentDetail";
+//                Window.open(url, "_blank", "location=0,menubar=0,resizable=1");
+//            }
+//
+//            public void onFailure(Throwable caught) {
+//                String msg = caught.getMessage();
+//                CatchupMathTools.showAlert(msg);
+//            }
+//        });
+//        
+//        // 
     }
 }
 

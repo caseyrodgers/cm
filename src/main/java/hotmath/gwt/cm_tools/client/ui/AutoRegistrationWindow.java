@@ -1,10 +1,12 @@
 package hotmath.gwt.cm_tools.client.ui;
 
-import hotmath.gwt.cm_admin.client.ui.StudentGridPanel;
+// import hotmath.gwt.cm_admin.client.ui.StudentGridPanel;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.model.StudentModel;
 import hotmath.gwt.cm_tools.client.service.CmServiceAsync;
 import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
+import hotmath.gwt.shared.client.eventbus.CmEvent;
+import hotmath.gwt.shared.client.eventbus.EventBus;
 import hotmath.gwt.shared.client.rpc.action.CreateAutoRegistrationAccountsAction;
 import hotmath.gwt.shared.client.rpc.action.CreateAutoRegistrationPreviewAction;
 import hotmath.gwt.shared.client.rpc.result.AutoRegistrationEntry;
@@ -196,12 +198,9 @@ public class AutoRegistrationWindow extends CmWindow {
                     _previewGrid.getStore().add(createGxtModelFromEntries(result.getEntries()));
                     
 
-                    StudentGridPanel.instance.refreshDataNow(null);
+                    EventBus.getInstance().fireEvent(new CmEvent(EventBus.EVENT_TYPE_REFRESH_STUDENT_DATA));
                     
                     layout();
-                    
-                    
-                    
                 }
 
             @Override
