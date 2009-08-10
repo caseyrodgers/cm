@@ -418,7 +418,28 @@ public class CmStudentDao {
             SqlUtilities.releaseResources(rs, ps, null);
         }
     }
-
+    
+    /** Return true if this admin has a user with password
+     * 
+     * @param conn
+     * @param adminId
+     * @param password
+     * @return
+     */
+    public Boolean checkPasswordInUse(final Connection conn, Integer adminId, String password) throws Exception {
+        
+        Statement stmt=null;
+        try {
+            stmt = conn.createStatement();
+            ResultSet rs = stmt.executeQuery("select 1 from HA_USER where admin_id = " + adminId + " and user_passcode = '" + password + "'");
+            return rs.first();
+        }
+        finally {
+            SqlUtilities.releaseResources(null,stmt, null);
+        }
+        
+    }
+    
     private static final String UPDATE_STUDENT_SQL =
             "update HA_USER set " +
             " user_name = ?, user_passcode = ?, group_id = ?, active_segment = ?, " +

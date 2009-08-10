@@ -5,6 +5,7 @@ import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.model.StudentModel;
 import hotmath.gwt.cm_tools.client.service.CmServiceAsync;
 import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
+import hotmath.gwt.shared.client.data.CmAsyncRequestImplDefault;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
 import hotmath.gwt.shared.client.eventbus.EventBus;
 import hotmath.gwt.shared.client.rpc.action.CreateAutoRegistrationAccountsAction;
@@ -76,6 +77,7 @@ public class AutoRegistrationWindow extends CmWindow {
     }
 
     Button _buttonCreate;
+    Button _buttonCancel;
     private void drawGui() {
         
         
@@ -91,8 +93,8 @@ public class AutoRegistrationWindow extends CmWindow {
         addButton(_buttonCreate);
         
         
-        Button cancel = new Button("Cancel");
-        cancel.addSelectionListener(new SelectionListener<ButtonEvent>() {
+        _buttonCancel = new Button("Cancel");
+        _buttonCancel.addSelectionListener(new SelectionListener<ButtonEvent>() {
 
             @Override
             public void componentSelected(ButtonEvent ce) {
@@ -100,7 +102,7 @@ public class AutoRegistrationWindow extends CmWindow {
             }
         });
         getButtonBar().setAlignment(HorizontalAlignment.RIGHT);
-        addButton(cancel);
+        addButton(_buttonCancel);
 
     }
 
@@ -187,19 +189,25 @@ public class AutoRegistrationWindow extends CmWindow {
                 @Override
             public void onSuccess(AutoRegistrationSetup result) {
                     
+                    _buttonCancel.setText("Close");
+                    _buttonCreate.setEnabled(false);
+                    
+                    _previewGrid.getStore().removeAll();
+                    _previewGrid.getStore().add(createGxtModelFromEntries(result.getEntries()));
+                    
+                    EventBus.getInstance().fireEvent(new CmEvent(EventBus.EVENT_TYPE_REFRESH_STUDENT_DATA));
+                    
                     if(result.getErrorCount() > 0) {
                         CatchupMathTools.showAlert("There were errors while creating the new student accounts.  Please see associated error messages");
                     }
                     else {
-                        CatchupMathTools.showAlert("Auto Student Records created successfully!");
+                        CatchupMathTools.showAlert("Auto Student Records created successfully!",new CmAsyncRequestImplDefault() {
+                            @Override
+                            public void requestComplete(String requestData) {
+                                close();
+                            }
+                        });
                     }
-
-                    _previewGrid.getStore().removeAll();
-                    _previewGrid.getStore().add(createGxtModelFromEntries(result.getEntries()));
-                    
-
-                    EventBus.getInstance().fireEvent(new CmEvent(EventBus.EVENT_TYPE_REFRESH_STUDENT_DATA));
-                    
                     layout();
                 }
 

@@ -1,6 +1,7 @@
 package hotmath.gwt.shared.server.service.command;
 
 import hotmath.gwt.cm_admin.server.model.CmAdminDao;
+import hotmath.gwt.cm_admin.server.model.CmStudentDao;
 import hotmath.gwt.cm_tools.client.model.GroupModel;
 import hotmath.gwt.cm_tools.client.model.StudentModel;
 import hotmath.gwt.shared.client.rpc.Action;
@@ -39,11 +40,19 @@ public class CreateAutoRegistrationPreviewCommand implements ActionHandler<Creat
             throw new CmException("Group '" + studentTemplate.getGroup() + "' is already in use.");
         
         
+        CmStudentDao dao = new CmStudentDao();
         /** Create a series of Student records using student model as source for template values
          * 
          */
         for(int numCreated=0;numCreated < action.getNumToCreate();numCreated++) {
-            preview.getEntries().add(createNewEntry((numCreated+1), action.getStudentTemplate()));
+            
+            AutoRegistrationEntry entry = createNewEntry((numCreated+1), action.getStudentTemplate());
+            
+            if( dao.checkPasswordInUse(conn, studentTemplate.getAdminUid(), entry.getPassword())) {
+                entry.setIsError(true);
+                entry.setMessage("Password is already in use");
+            }
+            preview.getEntries().add(entry);
         }
         
         
@@ -55,6 +64,7 @@ public class CreateAutoRegistrationPreviewCommand implements ActionHandler<Creat
         AutoRegistrationEntry entry = new AutoRegistrationEntry();
         entry.setName(template.getName() + "-" + key);
         entry.setPassword(template.getPasscode() + "-" + key);
+        
         return entry;
     }
 
