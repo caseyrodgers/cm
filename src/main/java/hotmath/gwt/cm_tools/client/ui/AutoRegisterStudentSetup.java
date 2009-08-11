@@ -41,7 +41,7 @@ public class AutoRegisterStudentSetup extends RegisterStudent {
         _groupTag.setEmptyText("-- enter group name --");
         _fsProfile.add(_groupTag);
         
-        _fsProfile.add(new Html("<p>Students will enter this value as the 'name' and they will be able to setup their own passwords</p>"));
+        _fsProfile.add(new Html("<p>Students will enter this value as the 'name' and they will be able to setup their own passwords.</p>"));
 
 	    _formPanel.layout();
 	    setVisible(true);
