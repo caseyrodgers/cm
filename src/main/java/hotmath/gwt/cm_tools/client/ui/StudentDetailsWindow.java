@@ -1,6 +1,5 @@
 package hotmath.gwt.cm_tools.client.ui;
 
-import hotmath.gwt.cm_admin.client.CatchupMathAdmin;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.model.StringHolder;
 import hotmath.gwt.cm_tools.client.model.StudentActivityModel;
@@ -302,7 +301,7 @@ public class StudentDetailsWindow extends CmWindow {
 
             public void onFailure(Throwable caught) {
                 String msg = caught.getMessage();
-                CatchupMathAdmin.showAlert(msg);
+                CatchupMathTools.showAlert(msg);
             }
         });
     }

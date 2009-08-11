@@ -1,6 +1,7 @@
 package hotmath.gwt.cm_admin.client.ui;
 
 import hotmath.gwt.cm_admin.client.CatchupMathAdmin;
+import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.service.CmServiceAsync;
 import hotmath.gwt.cm_admin.client.service.RegistrationServiceAsync;
 import hotmath.gwt.cm_tools.client.model.CmAdminDataReader;
@@ -9,6 +10,7 @@ import hotmath.gwt.cm_tools.client.model.CmAdminModel;
 import hotmath.gwt.cm_tools.client.model.StringHolder;
 import hotmath.gwt.cm_tools.client.model.StudentModel;
 import hotmath.gwt.cm_tools.client.ui.AutoRegisterStudent;
+import hotmath.gwt.cm_tools.client.ui.AutoRegisterStudentSetup;
 import hotmath.gwt.cm_tools.client.ui.RegisterStudent;
 import hotmath.gwt.cm_tools.client.ui.StudentDetailsWindow;
 import hotmath.gwt.cm_tools.client.ui.StudentShowWorkWindow;
@@ -193,7 +195,7 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
         if (sm == null)
             return;
         
-        CatchupMathAdmin.showAlert("UID: " + sm.getUid());
+        CatchupMathTools.showAlert("UID: " + sm.getUid());
     }
     
     private ToolBar createToolbar() {
@@ -223,7 +225,7 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
         btn.addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent ce) {
-                new AutoRegisterStudent(null, _cmAdminMdl);
+                new AutoRegisterStudentSetup(null, _cmAdminMdl);
             } 
         });
         toolbar.add(btn);
@@ -290,7 +292,7 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
         GridSelectionModel<StudentModel> sel = _grid.getSelectionModel();
         List<StudentModel> l = sel.getSelection();
         if (l.size() == 0) {
-            CatchupMathAdmin.showAlert("Please select a student.");
+            CatchupMathTools.showAlert("Please select a student.");
         } else {
             StudentModel sm = l.get(0);
             new RegisterStudent(sm, _cmAdminMdl);
@@ -308,7 +310,7 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
                 GridSelectionModel<StudentModel> sel = grid.getSelectionModel();
                 List<StudentModel> l = sel.getSelection();
                 if (l.size() == 0) {
-                    CatchupMathAdmin.showAlert("Please select a student.");
+                    CatchupMathTools.showAlert("Please select a student.");
                 } else {
                     StudentModel sm = l.get(0);
                     new StudentShowWorkWindow(sm);
@@ -331,7 +333,7 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
                 GridSelectionModel<StudentModel> sel = grid.getSelectionModel();
                 List<StudentModel> l = sel.getSelection();
                 if (l.size() == 0) {
-                    CatchupMathAdmin.showAlert("Please select a student.");
+                    CatchupMathTools.showAlert("Please select a student.");
                 } else {
                     new StudentDetailsWindow(l.get(0));
                 }
@@ -351,7 +353,7 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
                 GridSelectionModel<StudentModel> sel = grid.getSelectionModel();
                 List<StudentModel> l = sel.getSelection();
                 if (l.size() == 0) {
-                    CatchupMathAdmin.showAlert("Please select a student.");
+                    CatchupMathTools.showAlert("Please select a student.");
                 } else {
                     final StudentModel sm = l.get(0);
 
@@ -485,7 +487,7 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
             public void onFailure(Throwable caught) {
                 String msg = caught.getMessage();
                 caught.printStackTrace();   // quiet
-                // CatchupMathAdmin.showAlert(msg);
+                // CatchupMathTools.showAlert(msg);
             }
         });
     }
@@ -501,7 +503,7 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
 
             public void onFailure(Throwable caught) {
                 String msg = caught.getMessage();
-                CatchupMathAdmin.showAlert(msg);
+                CatchupMathTools.showAlert(msg);
             }
         });
     }
@@ -524,7 +526,7 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
 
             public void onFailure(Throwable caught) {
                 String msg = caught.getMessage();
-                CatchupMathAdmin.showAlert(msg);
+                CatchupMathTools.showAlert(msg);
             }
         });
     }

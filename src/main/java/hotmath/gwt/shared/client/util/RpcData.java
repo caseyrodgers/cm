@@ -40,6 +40,20 @@ public class RpcData implements Response, IsSerializable {
             rpcData.put(n, v); // initialize with empty string
         }
     }
+    
+    /** Should be in the form: name=value, name=value, etc..
+     * 
+     * @param nameValues
+     */
+    
+    public RpcData(String nameValues) {
+        this();
+        String pairs[] = nameValues.split(",");
+        for(String p: pairs) {
+            String nv[] = p.split("=");
+            rpcData.put(nv[0], nv[1]);
+        }
+    }
 
     public void putData(String name, String value) {
         rpcData.put(name, value);

@@ -13,6 +13,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.logging.Logger;
 
+import javax.swing.text.html.HTMLDocument.HTMLReader.PreAction;
+
 /**
  * Create the appropriate user type
  * 
@@ -33,7 +35,13 @@ public class HaUserFactory {
      * 1.  if HA_ADMIN.user_name == user && HA_ADMIN_passcode == password
      *    then .. this user is an Admin, and log them into the cm_admin tool
      *    
-     * 2. 
+     * 2. If SUBSCRIBER.password = user and HA_USER.passcode = password, then is school account.
+     *    
+     * 3.  If SUBSCRIBER.student_email + HA_USER.passcode match, then 
+     *     user is a SINGLE USER, not a school.
+     *     
+     * 4.  If HA_USER.group_name = passcode + HA_USER.group_name = password, then 
+     * this user is a HaUserAuto and will create a new account before login completes.
      * 
      * @param user
      * @param pwd
@@ -136,7 +144,47 @@ public class HaUserFactory {
             }
             
             
-            // Finally, see if a stand-alone student
+            
+            // The final possibility is an Auto Registration match on the userName and passcode. 
+            // If the passcode matches the GROUP_NAME of the HA_USER record that defines 
+            // this Auto Registration Setup. The user must be taken on the 'Auto Registration Path' 
+            // right after login. It will be an error if the subscriber record is not
+            // an ST.
+            // perhaps it is a Single User student
+            // Then we search for the SUBSCRIBER.student_email
+            // associated with the SUBCRIBERS record that the 
+            // user's HA_ADMIN record is linked to.
+            sql = 
+                "select u.uid " +
+                "from   HA_USER u JOIN CM_GROUP g ON u.group_id = g.id " +
+                "           JOIN HA_ADMIN a ON u.admin_id = a.aid " +
+                "           JOIN SUBSCRIBERS s ON a.subscriber_id = s.id " +
+                "where s.type = 'ST' " +
+                "and     s.password = ? " +
+                "and     g.name = ? " +
+                "and     is_auto_create_template = 1 ";
+            
+            try {
+                pstat = conn.prepareStatement(sql);
+
+                pstat.setString(1, user);
+                pstat.setString(2, pwd);
+
+                rs = pstat.executeQuery();
+                if (rs.first()) { 
+                    int userId = rs.getInt("uid");
+                    HaUserAutoRegistration student = new HaUserAutoRegistration(HaUser.lookUser(conn, userId,null).getUid());
+                    student.setUserName("auto");
+                    student.setPassword("auto");
+                    
+                    __logger.info("Logging in user (auto registration user student " + userId + "): " + user);
+                
+                    return student;
+                }
+            } finally {
+                SqlUtilities.releaseResources(rs, pstat, null);
+            }            
+            
             throw new HotMathException("Could not login user to Catchup Math: " + user);
             
             

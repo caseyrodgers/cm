@@ -8,7 +8,7 @@ package hotmath.gwt.cm_tools.client.data;
  */
 public interface HaBasicUser {
     
-    public static enum UserType { STUDENT, ADMIN };
+    public static enum UserType { STUDENT, ADMIN, AUTO_CREATE };
     
     String getUserName();
     String getPassword();

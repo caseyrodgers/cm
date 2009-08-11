@@ -10,7 +10,7 @@ import hotmath.gwt.cm_tools.client.model.GroupModel;
 import hotmath.gwt.cm_tools.client.model.StudentModel;
 import hotmath.gwt.cm_tools.client.model.StudyProgramModel;
 import hotmath.gwt.cm_tools.client.model.SubjectModel;
-import hotmath.gwt.shared.client.util.RpcData;
+import hotmath.gwt.shared.client.util.CmException;
 import hotmath.testset.ha.HaAdmin;
 import hotmath.util.HMConnectionPool;
 import hotmath.util.sql.SqlUtilities;
@@ -535,6 +535,68 @@ public class CmAdminDao {
     		l.add(sm);
     	}
     	return l;
+    }
+    
+    
+    /** Remove any Auto Registration Setup based on this group name
+     * 
+     *  NOTE: this only deletes users marked as is_auto_create_template > 0, not normal
+     *  user .. each is_auto_create_template account will have a unique password.
+     * 
+     * @param conn
+     * @param adminId
+     * @param groupName
+     * @throws Exception
+     */
+    public void removeAutoRegistrationSetupFor(final Connection conn, Integer adminId, String groupName) throws Exception {
+        
+        String sql  = "delete u " +
+                      " from   HA_USER u JOIN CM_GROUP g ON u.group_id = g.id " +
+                      " where u.admin_id = ? " +
+                      " and    g.name = ?" +
+                      " and is_auto_create_template = 1 ";
+        
+        
+        PreparedStatement pstat=null;
+        try {
+            pstat = conn.prepareStatement(sql);
+            
+            pstat.setInt(1, adminId);
+            pstat.setString(2, groupName);
+            int c = pstat.executeUpdate();
+            
+            logger.debug("Removed auto setup: " + groupName + ", " + c);
+        }
+        finally {
+            SqlUtilities.releaseResources(null, pstat, null);
+        }
+    }
+    
+    
+    /** Mark this account as a Auto Registration Setup account.
+     * 
+     * THis will make this account participate in the auto creation 
+     * routines during login. 
+     * @see CmAutoLoginManager
+     * 
+     * @param conn
+     * @param uid
+     * @throws Exception
+     */
+    public void markAccountAsAutoRegistrationSetup(final Connection conn, Integer uid) throws Exception {
+        
+        String sql = "update HA_USER set is_auto_create_template = 1 where uid = " + uid;
+        Statement stmt = null;
+        try {
+            stmt = conn.createStatement();
+            int cnt = stmt.executeUpdate(sql);
+            if(cnt == 0) {
+                throw new CmException("Could not setup auto creation account: " + uid);
+            }
+        }
+        finally {
+            SqlUtilities.releaseResources(null, stmt, null);
+        }
     }
 
 }

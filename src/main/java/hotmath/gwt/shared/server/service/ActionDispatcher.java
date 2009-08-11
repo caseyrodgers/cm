@@ -23,6 +23,7 @@ import hotmath.gwt.shared.server.service.command.GetReportDefCommand;
 import hotmath.gwt.shared.server.service.command.GetSolutionCommand;
 import hotmath.gwt.shared.server.service.command.GetUserInfoCommand;
 import hotmath.gwt.shared.server.service.command.GetViewedInmhItemsCommand;
+import hotmath.gwt.shared.server.service.command.SaveAutoRegistrationCommand;
 import hotmath.gwt.shared.server.service.command.SaveFeedbackCommand;
 import hotmath.gwt.shared.server.service.command.SaveQuizCurrentResultCommand;
 import hotmath.gwt.shared.server.service.command.SaveWhiteboardDataCommand;
@@ -111,6 +112,7 @@ public class ActionDispatcher {
         addCommand(CreateAutoRegistrationPreviewCommand.class);
         addCommand(CreateAutoRegistrationAccountsCommand.class);
         addCommand(AddGroupCommand.class);
+        addCommand(SaveAutoRegistrationCommand.class);
         addCommand(GetReportDefCommand.class);
     }
     

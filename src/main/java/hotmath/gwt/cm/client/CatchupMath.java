@@ -118,6 +118,7 @@ public class CatchupMath implements EntryPoint {
             if(CmShared.getQueryParameter("debug") != null) {
                 _mainPort.addStyleName("debug-on");
             }
+            
         }
         catch(Exception e) {
             CatchupMathTools.showAlert(e.getMessage(), new CmAsyncRequestImplDefault()  {
@@ -150,8 +151,11 @@ public class CatchupMath implements EntryPoint {
                             Window.setTitle("Catchup Math: Student");
 
 
-                        
-                        if(UserInfo.getInstance().getRunId() > 0) {
+                        String ac=CmShared.getQueryParameter("type");
+                        if(ac != null && ac.equals("ac")) {
+                            showAutoRegistration_gwt();
+                        }                        
+                        else if(UserInfo.getInstance().getRunId() > 0) {
                             // load the existing run
                             showPrescriptionPanel_gwt();
                         }
@@ -258,6 +262,17 @@ public class CatchupMath implements EntryPoint {
         _mainContainer.removeAll();
         _mainContainer.setLayout(new FitLayout());
         _mainContainer.add(new CmMainPanel(new PrescriptionCmGuiDefinition()));
+        _mainContainer.layout();
+    }
+    
+    
+    /** Display the Auto Registration panel
+     * 
+     */
+    private void showAutoRegistration_gwt() {
+        _mainContainer.removeAll();
+        _mainContainer.setLayout(new FitLayout());
+        _mainContainer.add(new AutoStudentRegistrationPanel() );
         _mainContainer.layout();
     }
     

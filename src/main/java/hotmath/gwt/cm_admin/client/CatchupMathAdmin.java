@@ -8,6 +8,7 @@ import hotmath.gwt.cm_admin.client.ui.GettingStartedGuideWindow;
 import hotmath.gwt.cm_admin.client.ui.HeaderPanel;
 import hotmath.gwt.cm_admin.client.ui.StudentGridPanel;
 import hotmath.gwt.cm_admin.client.ui.StudentShowWorkPanel;
+import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.model.CmAdminDataReader;
 import hotmath.gwt.cm_tools.client.model.CmAdminModel;
 import hotmath.gwt.shared.client.CmShared;
@@ -17,13 +18,9 @@ import hotmath.gwt.shared.client.model.UserInfoBase;
 import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.Registry;
 import com.extjs.gxt.ui.client.Style.LayoutRegion;
-import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.IconButtonEvent;
-import com.extjs.gxt.ui.client.event.Listener;
-import com.extjs.gxt.ui.client.event.MessageBoxEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
-import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.Viewport;
 import com.extjs.gxt.ui.client.widget.button.IconButton;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
@@ -77,7 +74,7 @@ public class CatchupMathAdmin implements EntryPoint, ValueChangeHandler<String> 
             cmAdminMdl = new CmAdminModel();
             cmAdminMdl.setId(userId);
         } catch (Exception e) {
-            CatchupMathAdmin.showAlert(e.getMessage(), new CmAsyncRequest() {
+            CatchupMathTools.showAlert(e.getMessage(), new CmAsyncRequest() {
                 public void requestComplete(String requestData) {
                     Window.Location.assign("/"); // goto home
                 }
@@ -169,25 +166,6 @@ public class CatchupMathAdmin implements EntryPoint, ValueChangeHandler<String> 
 
         ((ServiceDefTarget) regService).setServiceEntryPoint(point);
         Registry.register("registrationService", regService);
-    }
-
-    @SuppressWarnings("unchecked")
-    public static void showAlert(String msg) {
-        MessageBox.alert("Info", msg, new Listener() {
-            public void handleEvent(BaseEvent be) {
-                // empty
-            }
-        });
-    }
-
-    public static void showAlert(String msg, final CmAsyncRequest callback) {
-        // setBusy(false);
-        MessageBox.alert("Info", msg, new Listener<MessageBoxEvent>() {
-            public void handleEvent(MessageBoxEvent be) {
-                if (callback != null)
-                    callback.requestComplete(be.getValue());
-            }
-        });
     }
 
     public void showMe() {
