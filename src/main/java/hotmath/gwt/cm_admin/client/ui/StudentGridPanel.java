@@ -1,10 +1,12 @@
 package hotmath.gwt.cm_admin.client.ui;
 
 import hotmath.gwt.cm_admin.client.CatchupMathAdmin;
+import hotmath.gwt.cm_tools.client.service.CmServiceAsync;
 import hotmath.gwt.cm_admin.client.service.RegistrationServiceAsync;
 import hotmath.gwt.cm_tools.client.model.CmAdminDataReader;
 import hotmath.gwt.cm_tools.client.model.CmAdminDataRefresher;
 import hotmath.gwt.cm_tools.client.model.CmAdminModel;
+import hotmath.gwt.cm_tools.client.model.StringHolder;
 import hotmath.gwt.cm_tools.client.model.StudentModel;
 import hotmath.gwt.cm_tools.client.ui.AutoRegisterStudent;
 import hotmath.gwt.cm_tools.client.ui.RegisterStudent;
@@ -15,6 +17,7 @@ import hotmath.gwt.shared.client.eventbus.CmEvent;
 import hotmath.gwt.shared.client.eventbus.CmEventListener;
 import hotmath.gwt.shared.client.eventbus.CmEventListenerImplDefault;
 import hotmath.gwt.shared.client.eventbus.EventBus;
+import hotmath.gwt.shared.client.rpc.action.GetReportDefAction;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -504,18 +507,18 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
     }
 
     protected void displayPrintableReportRPC(ListStore<StudentModel> store) {
-        RegistrationServiceAsync s = (RegistrationServiceAsync) Registry.get("registrationService");
         
         List<Integer> studentUids = new ArrayList<Integer>(store.getCount());
         for (int i=0; i < store.getCount(); i++) {
         	StudentModel sm = store.getAt(i);
             studentUids.add(sm.getUid()); 	
         }
-        
-        s.getPrintableStudentReportId(studentUids, new AsyncCallback<String>() {
 
-            public void onSuccess(String reportId) {
-            	String url = "/cm_admin/genPDF?id=" + reportId + "&aid=" + _cmAdminMdl.getId() + "&type=studentSummary";
+        CmServiceAsync s = (CmServiceAsync) Registry.get("cmService");
+        s.execute(new GetReportDefAction(studentUids), new AsyncCallback<StringHolder>() {
+
+            public void onSuccess(StringHolder reportId) {
+            	String url = "/cm_admin/genPDF?id=" + reportId.getResponse() + "&aid=" + _cmAdminMdl.getId() + "&type=studentSummary";
                 Window.open(url, "_blank", "location=0,menubar=0,resizable=1");
             }
 
@@ -524,8 +527,6 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
                 CatchupMathAdmin.showAlert(msg);
             }
         });
-        
-        // 
     }
 }
 
