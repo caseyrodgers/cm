@@ -19,6 +19,7 @@ import hotmath.gwt.shared.server.service.command.GetProgramDefinitionsCommand;
 import hotmath.gwt.shared.server.service.command.GetQuizHtmlCheckedCommand;
 import hotmath.gwt.shared.server.service.command.GetQuizHtmlCommand;
 import hotmath.gwt.shared.server.service.command.GetQuizResultsHtmlCommand;
+import hotmath.gwt.shared.server.service.command.GetReportDefCommand;
 import hotmath.gwt.shared.server.service.command.GetSolutionCommand;
 import hotmath.gwt.shared.server.service.command.GetUserInfoCommand;
 import hotmath.gwt.shared.server.service.command.GetViewedInmhItemsCommand;
@@ -76,7 +77,7 @@ public class ActionDispatcher {
     static Logger logger = Logger.getLogger(ActionDispatcher.class.getName());
     
     
-    /** remove comamnds
+    /** remove commands
      * @TODO: should be closed.
      */
     static public void flush() {
@@ -88,7 +89,7 @@ public class ActionDispatcher {
         
         /** All commands should be injected, hard coded for now
          * 
-         * Register each command availiable to RPC
+         * Register each command available to RPC
          */
         addCommand(GetPrescriptionCommand.class);
         addCommand(GetViewedInmhItemsCommand.class);
@@ -110,6 +111,7 @@ public class ActionDispatcher {
         addCommand(CreateAutoRegistrationPreviewCommand.class);
         addCommand(CreateAutoRegistrationAccountsCommand.class);
         addCommand(AddGroupCommand.class);
+        addCommand(GetReportDefCommand.class);
     }
     
     
@@ -175,7 +177,7 @@ public class ActionDispatcher {
             else {
                 logger.debug("RPC Action: DB Connection NOT requested");
             }
-            
+
             return (T)actionHandler.execute(conn, action);
         }
         catch(CmRpcException cre) {
