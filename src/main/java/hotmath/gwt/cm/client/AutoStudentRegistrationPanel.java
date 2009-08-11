@@ -1,7 +1,5 @@
 package hotmath.gwt.cm.client;
 
-import java.util.List;
-
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.service.CmServiceAsync;
 import hotmath.gwt.cm_tools.client.ui.ContextController;
@@ -14,8 +12,8 @@ import hotmath.gwt.shared.client.eventbus.EventBus;
 import hotmath.gwt.shared.client.rpc.action.CreateAutoRegistrationAccountAction;
 import hotmath.gwt.shared.client.util.CmInfoConfig;
 import hotmath.gwt.shared.client.util.UserInfo;
-import hotmath.gwt.shared.client.util.ValdationTypeValidator;
-import hotmath.gwt.shared.client.util.ValidationType;
+
+import java.util.List;
 
 import com.extjs.gxt.ui.client.Registry;
 import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
@@ -40,7 +38,7 @@ public class AutoStudentRegistrationPanel extends ResourceContainer {
     
     TextField<String> userName;
     TextField<String> password;
-    TextField<String> email;
+    //TextField<String> email;
     TextField<String> passwordVerify;
     
     public AutoStudentRegistrationPanel() {
@@ -105,14 +103,16 @@ public class AutoStudentRegistrationPanel extends ResourceContainer {
         fsProfile.add(passwordVerify);
 
         
-        email = new TextField<String>();  
-        email.setFieldLabel("Email");
-        email.setAllowBlank(true);
-        email.setValidator(new ValdationTypeValidator(ValidationType.EMAIL));
+//        email = new TextField<String>();  
+//        email.setFieldLabel("Email");
+//        email.setAllowBlank(true);
+//        email.setValidator(new ValdationTypeValidator(ValidationType.EMAIL));
+//        
+//        email.setId("email");
+//        email.setEmptyText("-- enter email (optional) --");
         
-        email.setId("email");
-        email.setEmptyText("-- enter email (optional) --");
-        fsProfile.add(email);
+        
+        //fsProfile.add(email);
         
         _formPanel.add(fsProfile);
         
