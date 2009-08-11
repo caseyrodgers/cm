@@ -68,7 +68,7 @@ public class GetUserInfoCommand implements ActionHandler<GetUserInfoAction, User
             
             userInfo.setPassPercentRequired(si.getPassPercent());
             userInfo.setTestSegmentCount(testDef.getTotalSegmentCount());
-            userInfo.setViewCount(getTotalInmHViewCount(conn,action.getUserId()));
+            userInfo.setViewCount(dao.getTotalInmHViewCount(conn,action.getUserId()));
             
             return userInfo;
         } catch (Exception e) {
@@ -82,27 +82,4 @@ public class GetUserInfoCommand implements ActionHandler<GetUserInfoAction, User
         return GetUserInfoAction.class;
     }
     
-    
-    private int getTotalInmHViewCount(final Connection conn,int uid) throws Exception {
-        PreparedStatement pstat = null;
-        try {
-            String sql = "select count(*) from v_HA_USER_INMH_VIEWS_TOTAL " +
-                          " where item_type in ('practice','cmextra') " +
-                          " and uid = ?";
-            
-            pstat = conn.prepareStatement(sql);
-            pstat.setInt(1, uid);
-            ResultSet rs = pstat.executeQuery();
-            if (!rs.first())
-                throw new Exception("Could not get count of viewed items");
-            return rs.getInt(1);
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new CmRpcException("Error adding test run item view: " + e.getMessage());
-        } finally {
-            SqlUtilities.releaseResources(null, pstat, null);
-        }
-    }
-
 }

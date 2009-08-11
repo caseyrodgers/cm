@@ -10,6 +10,7 @@ import hotmath.gwt.cm_tools.client.model.StudentModelBasic;
 import hotmath.gwt.cm_tools.client.model.StudentModelI;
 import hotmath.gwt.cm_tools.client.model.StudentShowWorkModel;
 import hotmath.gwt.shared.client.util.CmException;
+import hotmath.gwt.shared.client.util.CmRpcException;
 import hotmath.testset.ha.CmProgram;
 import hotmath.testset.ha.HaTestConfig;
 import hotmath.testset.ha.HaTestDefDescription;
@@ -1179,5 +1180,36 @@ public class CmStudentDao {
         
         updateStudent(conn, sm, true, false, true, false);        
     }
+    
+    
+    /** Return total count of INMH items by this user
+     * 
+     * @param conn
+     * @param uid
+     * @return
+     * @throws Exception
+     */
+    public Integer getTotalInmHViewCount(final Connection conn,int uid) throws Exception {
+        PreparedStatement pstat = null;
+        try {
+            String sql = "select count(*) from v_HA_USER_INMH_VIEWS_TOTAL " +
+                          " where item_type in ('practice','cmextra') " +
+                          " and uid = ?";
+            
+            pstat = conn.prepareStatement(sql);
+            pstat.setInt(1, uid);
+            ResultSet rs = pstat.executeQuery();
+            if (!rs.first())
+                throw new Exception("Could not get count of viewed items");
+            return rs.getInt(1);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new CmRpcException("Error adding test run item view: " + e.getMessage());
+        } finally {
+            SqlUtilities.releaseResources(null, pstat, null);
+        }
+    }
+
 
 }

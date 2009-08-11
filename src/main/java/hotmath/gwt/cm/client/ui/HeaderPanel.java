@@ -71,14 +71,15 @@ public class HeaderPanel extends LayoutContainer {
 		        else if(event.getEventName().equals(EventBus.EVENT_TYPE_CONTEXTCHANGED)) {
 		            CmContext context = (CmContext)event.getEventData();
   		            HeaderPanel.__instance.setHeaderTitle();
-		            CmMainPanel.__lastInstance._westPanel.setHeading(context.getContextSubTitle());
+  		            if(CmMainPanel.__lastInstance != null)
+		                CmMainPanel.__lastInstance._westPanel.setHeading(context.getContextSubTitle());
 		        }
 		        else if(event.getEventName().equals(EventBus.EVENT_TYPE_TOPIC_CHANGED)) {
 		            /**
 		            if(CmShared.getQueryParameter("debug") != null) {
     		            String title = "The lesson is '" + event.getEventData() + "'";
     		            String message = "Use any menu items you wish, before or after trying the Required Practice Problems.";
-    		            InfoConfig infoConfig = new MyInfoConfig(title,message);
+    		            InfoConfig infoConfig = new CmInfoConfig(title,message);
                         InfoPopupBox.display(infoConfig);
 		            }
 		            */
@@ -116,13 +117,4 @@ public class HeaderPanel extends LayoutContainer {
 	   _headerText.setText(subTitle != null?subTitle:"");
 	}
 
-}
-
-
-class MyInfoConfig extends InfoConfig {
-    public MyInfoConfig(String t, String m) {
-        super(t, m);
-        display = 5000;
-        width = 300;
-    }
 }

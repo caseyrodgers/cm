@@ -11,6 +11,7 @@ import hotmath.gwt.shared.server.service.command.AddGroupCommand;
 import hotmath.gwt.shared.server.service.command.AddStudentCommand;
 import hotmath.gwt.shared.server.service.command.AutoAdvanceUserCommand;
 import hotmath.gwt.shared.server.service.command.ClearWhiteboardDataCommand;
+import hotmath.gwt.shared.server.service.command.CreateAutoRegistrationAccountCommand;
 import hotmath.gwt.shared.server.service.command.CreateAutoRegistrationAccountsCommand;
 import hotmath.gwt.shared.server.service.command.CreateAutoRegistrationPreviewCommand;
 import hotmath.gwt.shared.server.service.command.CreateTestRunCommand;
@@ -114,6 +115,7 @@ public class ActionDispatcher {
         addCommand(AddGroupCommand.class);
         addCommand(SaveAutoRegistrationCommand.class);
         addCommand(GetReportDefCommand.class);
+        addCommand(CreateAutoRegistrationAccountCommand.class);
     }
     
     

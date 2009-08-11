@@ -1,7 +1,5 @@
 package hotmath.gwt.cm.client.ui;
 
-import hotmath.gwt.cm.client.CatchupMath;
-import hotmath.gwt.cm.client.ui.context.PrescriptionContext;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.model.CmAdminModel;
 import hotmath.gwt.cm_tools.client.model.StudentModel;
@@ -62,7 +60,7 @@ public class HelpWindow extends CmWindow {
         }
         catch(Exception e) {
             Log.info("Error getting context help", e);
-            messageArea.setHtml("Catchup Math seems to be in an inconsistent state.  Please, try refreshing.");
+            messageArea.setHtml("Catchup Math makes learning fun!");
         }
             messageArea.setStyleName("help-window-message-area");
         
@@ -81,6 +79,17 @@ public class HelpWindow extends CmWindow {
         bgCombo.setEmptyText("-- Select Wallpaper --");
         bgCombo.addSelectionChangedListener(new SelectionChangedListener<BackgroundModel>() {
             public void selectionChanged(final SelectionChangedEvent<BackgroundModel> se) {
+                
+                /** @TODO: use better check
+                 * 
+                 */
+                if(!UserInfo.getInstance().isActiveUser()) {
+                    // creating new account, do not allow changing wallpaper
+                    CatchupMathTools.showAlert("You will be able to change your wallpaper once you create your own account");
+                    return;
+                }
+                
+                
                 PrescriptionServiceAsync s = (PrescriptionServiceAsync) Registry.get("prescriptionService");
                 s.setUserBackground(UserInfo.getInstance().getUid(),se.getSelectedItem().getBackgroundStyle(),new AsyncCallback() {
                     public void onSuccess(Object result) {
@@ -173,8 +182,14 @@ public class HelpWindow extends CmWindow {
                 showStudentHistory();
             }
         });
+        
+        if(!UserInfo.getInstance().isActiveUser())
+            btn.setEnabled(false);
+        
         btn.addStyleName("button");
         fs.add(btn);
+        
+
         
         vp.add(fs);
 

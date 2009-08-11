@@ -28,6 +28,11 @@ public class CmStudentDao_Test extends CmDbTestCase {
     }
     
     
+    public void testgetTotalInmHViewCount() throws Exception {
+        Integer count = _dao.getTotalInmHViewCount(conn,TEST_ID);
+        assertNotNull(count);
+    }
+    
     public void testGetStudentBasic() throws Exception {
         StudentModelI sm = _dao.getStudentModelBasic(conn,TEST_ID);
         assertNotNull(sm);

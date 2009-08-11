@@ -1,7 +1,5 @@
 package hotmath.gwt.cm.client;
 
-import pl.rmalinowski.gwt2swf.client.utils.PlayerVersion;
-import pl.rmalinowski.gwt2swf.client.utils.SWFObjectUtil;
 import hotmath.gwt.cm.client.ui.HeaderPanel;
 import hotmath.gwt.cm.client.ui.context.PrescriptionCmGuiDefinition;
 import hotmath.gwt.cm.client.ui.context.QuizCmGuiDefinition;
@@ -10,7 +8,6 @@ import hotmath.gwt.cm_tools.client.data.InmhItemData;
 import hotmath.gwt.cm_tools.client.ui.CmMainPanel;
 import hotmath.gwt.cm_tools.client.ui.FooterPanel;
 import hotmath.gwt.shared.client.CmShared;
-import hotmath.gwt.shared.client.FlashVersionNotSupportedWindow;
 import hotmath.gwt.shared.client.data.CmAsyncRequest;
 import hotmath.gwt.shared.client.data.CmAsyncRequestImplDefault;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
@@ -19,12 +16,10 @@ import hotmath.gwt.shared.client.eventbus.EventBus;
 import hotmath.gwt.shared.client.util.UserInfo;
 
 import com.allen_sauer.gwt.log.client.Log;
-import com.extjs.gxt.ui.client.GXT;
 import com.extjs.gxt.ui.client.Style.LayoutRegion;
 import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
-import com.extjs.gxt.ui.client.util.Theme;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.Viewport;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
@@ -33,8 +28,6 @@ import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
-import com.google.gwt.user.client.Command;
-import com.google.gwt.user.client.DeferredCommand;
 import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.RootPanel;
@@ -153,6 +146,7 @@ public class CatchupMath implements EntryPoint {
 
                         String ac=CmShared.getQueryParameter("type");
                         if(ac != null && ac.equals("ac")) {
+                            UserInfo.getInstance().setActiveUser(false);
                             showAutoRegistration_gwt();
                         }                        
                         else if(UserInfo.getInstance().getRunId() > 0) {
@@ -272,7 +266,7 @@ public class CatchupMath implements EntryPoint {
     private void showAutoRegistration_gwt() {
         _mainContainer.removeAll();
         _mainContainer.setLayout(new FitLayout());
-        _mainContainer.add(new AutoStudentRegistrationPanel() );
+        _mainContainer.add(new AutoStudentRegistrationPanel());
         _mainContainer.layout();
     }
     

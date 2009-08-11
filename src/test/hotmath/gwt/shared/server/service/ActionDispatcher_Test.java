@@ -10,6 +10,7 @@ import hotmath.gwt.shared.client.rpc.action.AutoAdvanceUserAction;
 import hotmath.gwt.shared.client.rpc.action.ClearWhiteboardDataAction;
 import hotmath.gwt.shared.client.rpc.action.CmArrayList;
 import hotmath.gwt.shared.client.rpc.action.CmList;
+import hotmath.gwt.shared.client.rpc.action.CreateAutoRegistrationAccountAction;
 import hotmath.gwt.shared.client.rpc.action.CreateAutoRegistrationAccountsAction;
 import hotmath.gwt.shared.client.rpc.action.CreateAutoRegistrationPreviewAction;
 import hotmath.gwt.shared.client.rpc.action.CreateTestRunAction;
@@ -50,6 +51,18 @@ public class ActionDispatcher_Test extends CmDbTestCase {
         
         if(uid == 0)
             uid = setupDemoAccount();
+    }
+    
+    
+    public void testCreateAutoRegistrationAccountCommand() throws Exception {
+        int AUTO_SETUP_UID=3953;  // is setup as auto_create_template
+        
+        String user = "user_" + System.currentTimeMillis();
+        String password = "password_" + System.currentTimeMillis();
+        CreateAutoRegistrationAccountAction action = new CreateAutoRegistrationAccountAction(AUTO_SETUP_UID, user, password);
+        UserInfo sm = ActionDispatcher.getInstance().execute(action);
+        assertNotNull(sm);
+        assertTrue(sm.getUid() > 0);
     }
     
     public void testAddGroupCommand() throws Exception {
