@@ -97,8 +97,8 @@ public class AutoRegisterStudentSetup extends RegisterStudent {
         s.execute(new SaveAutoRegistrationAction(student.getAdminUid(), student), new AsyncCallback<RpcData>() {
                 @Override
             public void onSuccess(RpcData result) {
+                    _window.hide();
                     EventBus.getInstance().fireEvent(new CmEvent(EventBus.EVENT_TYPE_REFRESH_STUDENT_DATA));
-                    hide();
             }
 
             @Override
