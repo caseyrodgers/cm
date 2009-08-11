@@ -4,6 +4,8 @@ import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.model.CmAdminModel;
 import hotmath.gwt.cm_tools.client.model.StudentModel;
 import hotmath.gwt.cm_tools.client.service.CmServiceAsync;
+import hotmath.gwt.shared.client.eventbus.CmEvent;
+import hotmath.gwt.shared.client.eventbus.EventBus;
 import hotmath.gwt.shared.client.rpc.action.SaveAutoRegistrationAction;
 import hotmath.gwt.shared.client.util.CmException;
 import hotmath.gwt.shared.client.util.RpcData;
@@ -95,7 +97,8 @@ public class AutoRegisterStudentSetup extends RegisterStudent {
         s.execute(new SaveAutoRegistrationAction(student.getAdminUid(), student), new AsyncCallback<RpcData>() {
                 @Override
             public void onSuccess(RpcData result) {
-                    CatchupMathTools.showAlert("Save OK");
+                    EventBus.getInstance().fireEvent(new CmEvent(EventBus.EVENT_TYPE_REFRESH_STUDENT_DATA));
+                    hide();
             }
 
             @Override

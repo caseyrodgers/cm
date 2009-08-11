@@ -98,8 +98,6 @@ public class AutoRegisterStudent extends RegisterStudent {
                         
                         @Override
                         public void afterValidation(StudentModel student) {
-                            
-                            
                             student.setName(_groupTag.getValue());
                             student.setPasscode(_passwordTag.getValue());
                             student.setGroup(_groupTag.getValue());

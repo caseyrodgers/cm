@@ -221,7 +221,7 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
         
         toolbar.add(new FillToolItem());
         
-        Button btn = new Button("Auto Registration");
+        Button btn = new Button("Auto Registration Setup");
         btn.addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent ce) {
