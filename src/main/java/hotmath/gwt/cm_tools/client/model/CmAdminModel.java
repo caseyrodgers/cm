@@ -1,8 +1,6 @@
 package hotmath.gwt.cm_tools.client.model;
 
-import com.extjs.gxt.ui.client.data.BaseModelData;
-
-public class CmAdminModel extends BaseModelData {
+public class CmAdminModel extends BaseModel {
 
 	private static final long serialVersionUID = -9047690530665830053L;
 	

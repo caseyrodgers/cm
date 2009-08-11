@@ -1,8 +1,6 @@
 package hotmath.gwt.cm_tools.client.model;
 
-import com.extjs.gxt.ui.client.data.BaseModelData;
-
-public class StudentActivityModel extends BaseModelData  {
+public class StudentActivityModel extends BaseModel {
 
 	private static final long serialVersionUID = 6939494404062103623L;
 	

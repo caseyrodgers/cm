@@ -2,9 +2,7 @@ package hotmath.gwt.cm_tools.client.model;
 
 import hotmath.gwt.shared.client.rpc.Response;
 
-import com.extjs.gxt.ui.client.data.BaseModelData;
-
-public class GroupModel extends BaseModelData implements Response {
+public class GroupModel extends BaseModel implements Response {
 	
 	private static final long serialVersionUID = 2783538975661520681L;
 	

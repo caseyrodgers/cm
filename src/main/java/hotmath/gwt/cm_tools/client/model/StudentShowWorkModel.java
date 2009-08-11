@@ -1,8 +1,6 @@
 package hotmath.gwt.cm_tools.client.model;
 
-import com.extjs.gxt.ui.client.data.BaseModelData;
-
-public class StudentShowWorkModel extends BaseModelData {
+public class StudentShowWorkModel extends BaseModel {
     private static final long serialVersionUID = 184993523959891704L;
 
     public static final String PID_KEY = "pid";

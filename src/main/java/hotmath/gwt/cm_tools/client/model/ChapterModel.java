@@ -1,8 +1,6 @@
 package hotmath.gwt.cm_tools.client.model;
 
-import com.extjs.gxt.ui.client.data.BaseModelData;
-
-public class ChapterModel extends BaseModelData {
+public class ChapterModel extends BaseModel {
 	
 	private static final long serialVersionUID = 8712800389384865595L;
 
