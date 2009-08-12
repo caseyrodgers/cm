@@ -75,17 +75,15 @@ public class StudentDetailsWindow extends CmWindow {
         ColumnModel cm = defineColumns();
         
         samGrid = new Grid<StudentActivityModel>(store, cm);
-        //samGgrid.setStyleName("student-details-panel-grid");
+        //samGrid.setStyleName("student-details-panel-grid");
         samGrid.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
         samGrid.getSelectionModel().setFiresEvents(true);
         samGrid.setStripeRows(true);
         samGrid.setWidth(565);
         samGrid.setHeight(210);
         
-        add(studentInfoPanel());
-        
         ToolBar toolBar = new ToolBar();
-        toolBar.setStyleName("student-grid-panel-toolbar");
+        toolBar.setStyleName("student-details-window-toolbar");
         toolBar.add(showWorkBtn());
         toolBar.add(showTopicsBtn());
         toolBar.add(new FillToolItem());
@@ -93,11 +91,14 @@ public class StudentDetailsWindow extends CmWindow {
         
         LayoutContainer lc = new LayoutContainer();
         lc.setLayout(new BorderLayout());
+        lc.setStyleName("student-details-window-container");
         
+        lc.add(studentInfoPanel());
         lc.add(toolBar, new BorderLayoutData(LayoutRegion.NORTH,35));
 
         LayoutContainer gridContainer = new LayoutContainer();
         gridContainer.setLayout(new FitLayout());
+        gridContainer.setStyleName("student-details-panel-grid");
         gridContainer.add(samGrid);
         lc.add(gridContainer, new BorderLayoutData(LayoutRegion.CENTER));
         add(lc);
