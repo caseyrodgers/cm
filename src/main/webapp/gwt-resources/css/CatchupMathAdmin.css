@@ -200,6 +200,7 @@
 .student-grid-panel-toolbar {
   margin-top: 5px;
   margin-left: 5px;
+  padding-right: 10px;
 }
 
 .student-grid-panel-button {
@@ -216,7 +217,19 @@
 .student-details-window {
 }
 
+.student-details-window-toolbar {
+  padding-top: 50px;
+  margin-left: 5px;
+  padding-right: 10px;
+}
+
+.student-details-window-container {
+  width: 570px;
+  height: 300px;
+}
+
 .student-details-panel-grid {
+	margin-top: 45px;
 }
 
 .student-details-panel-sw-btn {
