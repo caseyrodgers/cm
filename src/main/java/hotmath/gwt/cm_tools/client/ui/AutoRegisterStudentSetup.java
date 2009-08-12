@@ -43,6 +43,8 @@ public class AutoRegisterStudentSetup extends RegisterStudent {
         
         _fsProfile.add(new Html("<p>Student will Log In with your school Login Name, and use this Group name to self-register.</p>"));
 
+        
+        _fsProgram.setHeading("Assign Program for This Group");
 	    _formPanel.layout();
 	    setVisible(true);
 	}
