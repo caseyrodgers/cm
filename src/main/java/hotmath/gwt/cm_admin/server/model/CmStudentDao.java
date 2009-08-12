@@ -56,9 +56,11 @@ public class CmStudentDao {
      * @TODO: move this to a view to allow easy reuse.
      * 
      * @param sqlType
+     * @param includeSelfRegistrationTemplates  If true, then is_auto_create_template records are included
+     * 
      * @return
      */
-    private String getStudentSql(StudentSqlType sqlType) {
+    private String getStudentSql(StudentSqlType sqlType, Boolean includeSelfRegistrationTemplates) {
         String studentSql =
         	"SELECT h.uid, h.user_name as name, h.user_passcode as passcode, h.user_email as email, h.admin_id as admin_uid, " +
             "       h.is_show_work_required, h.is_tutoring_available,  h.active_segment, p.test_config_json, h.user_prog_id, " +
@@ -90,6 +92,12 @@ public class CmStudentDao {
             // single student
             studentSql += " WHERE h.uid = ? ";
         }
+        
+        
+        // to filter the Self Registration Setup records
+        if(!includeSelfRegistrationTemplates)
+            studentSql += " AND h.is_auto_create_template = 0 ";
+        
 
         studentSql += " and h.is_active = ? " +
                 "ORDER by h.user_name asc";
@@ -114,7 +122,7 @@ public class CmStudentDao {
 
         try {
             conn = HMConnectionPool.getConnection();
-            ps = conn.prepareStatement(getStudentSql(StudentSqlType.ALL_STUDENTS_FOR_ADMIN));
+            ps = conn.prepareStatement(getStudentSql(StudentSqlType.ALL_STUDENTS_FOR_ADMIN, false));
             ps.setInt(1, adminUid);
             ps.setInt(2, (isActive) ? 1 : 0);
             rs = ps.executeQuery();
@@ -122,7 +130,6 @@ public class CmStudentDao {
             l = loadStudentSummaries(rs);
             
             loadChapterInfo(conn, l);
-            
         } catch (Exception e) {
             logger.error(String.format("*** Error getting student summaries for Admin uid: %d", adminUid), e);
             throw new Exception("*** Error getting student summary data ***");
@@ -747,6 +754,19 @@ public class CmStudentDao {
      *             if student not found
      */
     public StudentModel getStudentModel(Integer uid) throws Exception {
+        // default is without templates
+        return getStudentModel(uid, false);  
+    }
+    
+    
+    /** Return student model named by uid
+     *  
+     * @param uid
+     * @param includeSelfRegTemplate  If true, then is_auto_create_template will be considered
+     * @return
+     * @throws Exception
+     */
+    public StudentModel getStudentModel(Integer uid, Boolean includeSelfRegTemplate) throws Exception {
         
         long timeStart = System.currentTimeMillis();
         Connection conn = null;
@@ -755,7 +775,7 @@ public class CmStudentDao {
 
         try {
             conn = HMConnectionPool.getConnection();
-            ps = conn.prepareStatement(getStudentSql(StudentSqlType.SINGLE_STUDENT));
+            ps = conn.prepareStatement(getStudentSql(StudentSqlType.SINGLE_STUDENT, includeSelfRegTemplate));
             ps.setInt(1, uid);
             ps.setInt(2, 1);
             rs = ps.executeQuery();

@@ -332,7 +332,7 @@ public class UserInfo implements IsSerializable, Response {
                 callback.requestComplete(null);
                 
                 
-                if(user.isFirstView()) {
+                if(user.isActiveUser() && user.isFirstView()) {
                     new ShowFirstTimeVisitorWindow();
                 }
                 

@@ -30,7 +30,7 @@ public class CreateAutoRegistrationAccountCommand implements ActionHandler<Creat
     @Override
     public UserInfo execute(Connection conn, CreateAutoRegistrationAccountAction action) throws Exception {
         CmStudentDao dao = new CmStudentDao();
-        StudentModel studentModel = dao.getStudentModel(action.getUserId());
+        StudentModel studentModel = dao.getStudentModel(action.getUserId(), true);
 
         studentModel.setPasscode(action.getPassword());
         studentModel.setName(action.getUser());

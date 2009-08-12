@@ -11,6 +11,7 @@ import hotmath.gwt.shared.client.eventbus.CmEvent;
 import hotmath.gwt.shared.client.eventbus.EventBus;
 import hotmath.gwt.shared.client.rpc.action.CreateAutoRegistrationAccountAction;
 import hotmath.gwt.shared.client.util.CmInfoConfig;
+import hotmath.gwt.shared.client.util.ShowFirstTimeVisitorWindow;
 import hotmath.gwt.shared.client.util.UserInfo;
 
 import java.util.List;
@@ -68,6 +69,7 @@ public class AutoStudentRegistrationPanel extends ResourceContainer {
         userName = new TextField<String>();  
         userName.setFieldLabel("Name");
         userName.setAllowBlank(false);
+        userName.setValidator(new MyFieldValidator());
         userName.setId("name");
         userName.setEmptyText("-- enter name --");
         fsProfile.add(userName);
@@ -78,6 +80,7 @@ public class AutoStudentRegistrationPanel extends ResourceContainer {
         password.setFieldLabel("Password");
         password.setAllowBlank(false);
         password.setId("password");
+        password.setValidator(new MyFieldValidator());
         password.setEmptyText("-- enter password --");
         fsProfile.add(password);
         
@@ -116,10 +119,10 @@ public class AutoStudentRegistrationPanel extends ResourceContainer {
         
         _formPanel.add(fsProfile);
         
-        _formPanel.add(new Html("<p>If you have forgotten your password just create a new one.</p>"));
+        _formPanel.add(new Html("<p>You will use the school Log In and with your chosen password (not your name).  We suggest that you write them both down.</p>"));
         
         
-        Button saveButton = new Button("Create Password");
+        Button saveButton = new Button("Register");
         
         
         saveButton.addSelectionListener(new SelectionListener<ButtonEvent>() {
@@ -161,7 +164,7 @@ public class AutoStudentRegistrationPanel extends ResourceContainer {
             @Override
             public String getContextTitle() {
                 // TODO Auto-generated method stub
-                return "Create Auto Registration Account";
+                return "Create Self Registration Account";
             }
             
             @Override
@@ -228,6 +231,9 @@ public class AutoStudentRegistrationPanel extends ResourceContainer {
                     public void componentSelected(ButtonEvent ce) {
                         UserInfo.setInstance(result);
                         UserInfo.getInstance().setActiveUser(true);
+                        
+                        new ShowFirstTimeVisitorWindow();
+                        
                         EventBus.getInstance().fireEvent(new CmEvent(EventBus.EVENT_TYPE_USERCHANGED, result));
                         CatchupMath.getThisInstance().showQuizPanel();
                         
@@ -247,11 +253,22 @@ public class AutoStudentRegistrationPanel extends ResourceContainer {
                 caught.printStackTrace();
                 String msg = caught.getMessage();
                 if(msg.indexOf("already in use") > -1)
-                    msg = "The password '" + password.getValue() + "' is already in use.";
+                    msg = "Please choose a different password.";
                 
-                CatchupMathTools.showAlert("Problem occurred while creating account: " + caught.getMessage());
+                CatchupMathTools.showAlert(msg);
             }
         });        
     }
  
+}
+
+
+class MyFieldValidator implements Validator {
+
+    public String validate(Field<?> field, String value) {
+        if(value.trim().length() == 0)
+            return "This field is required";
+        
+        return null;
+    }
 }

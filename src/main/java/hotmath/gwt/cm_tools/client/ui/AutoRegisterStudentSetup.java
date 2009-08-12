@@ -29,7 +29,7 @@ public class AutoRegisterStudentSetup extends RegisterStudent {
 	public AutoRegisterStudentSetup(StudentModel sm, CmAdminModel cm) {
 	    super(sm, cm);
 	    
-	    _window.setHeading("Auto Registration Setup");
+	    _window.setHeading("Self Registration Setup");
 	    _fsProfile.removeAll();
 
 	    _window.setHeight(400);
@@ -41,7 +41,7 @@ public class AutoRegisterStudentSetup extends RegisterStudent {
         _groupTag.setEmptyText("-- enter group name --");
         _fsProfile.add(_groupTag);
         
-        _fsProfile.add(new Html("<p>Students will enter this value as the 'name' and they will be able to setup their own passwords.</p>"));
+        _fsProfile.add(new Html("<p>Student will Log In with your school Login Name, and use this Group name to self-register.</p>"));
 
 	    _formPanel.layout();
 	    setVisible(true);

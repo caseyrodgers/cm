@@ -26,7 +26,7 @@ public class AutoRegisterStudent extends RegisterStudent {
 	public AutoRegisterStudent(StudentModel sm, CmAdminModel cm) {
 	    super(sm, cm);
 	    
-	    _window.setHeading("Auto Registration");
+	    _window.setHeading("Self Registration Setup");
 	    _fsProfile.removeAll();
 	    
 
