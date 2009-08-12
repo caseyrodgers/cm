@@ -29,6 +29,7 @@ import com.extjs.gxt.ui.client.widget.form.FormButtonBinding;
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
 import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.extjs.gxt.ui.client.widget.form.Validator;
+import com.extjs.gxt.ui.client.widget.layout.CenterLayout;
 import com.extjs.gxt.ui.client.widget.layout.FormLayout;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
@@ -47,8 +48,8 @@ public class AutoStudentRegistrationPanel extends ResourceContainer {
         _formPanel = new FormPanel();
         _formPanel.setStyleName("register-student-form-panel");
         _formPanel.setLabelWidth(100);
-        _formPanel.setHeight(300);
-        _formPanel.setWidth(380);
+        _formPanel.setHeight(250);
+        _formPanel.setWidth(385);
         _formPanel.setFooter(true);
         _formPanel.setFrame(true);
         _formPanel.setHeaderVisible(true);
@@ -136,8 +137,8 @@ public class AutoStudentRegistrationPanel extends ResourceContainer {
         _formPanel.addButton(saveButton);
         FormButtonBinding binding = new FormButtonBinding(_formPanel);  
 
-        setStyleAttribute("text-align", "center");
         _formPanel.setStyleAttribute("margin-top", "20px");
+        setLayout(new CenterLayout());
         add(_formPanel);
         
         
@@ -207,7 +208,7 @@ public class AutoStudentRegistrationPanel extends ResourceContainer {
 
         
         CmServiceAsync s = (CmServiceAsync) Registry.get("cmService");
-        s.execute(new CreateAutoRegistrationAccountAction(UserInfo.getInstance().getUid(), userName.getValue(), password.getValue()), new AsyncCallback<UserInfo>() {
+        s.execute(new CreateAutoRegistrationAccountAction(UserInfo.getInstance().getUid(), userName.getValue().trim(), password.getValue().trim()), new AsyncCallback<UserInfo>() {
             @Override
             public void onSuccess(final UserInfo result) {
                 
