@@ -52,7 +52,8 @@ public class SaveAutoRegistrationCommand implements ActionHandler<SaveAutoRegist
         // remove any existing auto_create_template account based on this group.
         List<GroupModel> groups = daoa.getActiveGroups(student.getAdminUid());
         for(GroupModel gm: groups) {
-            if(gm.getName().equals(groupName)) {
+            String gname = gm.getName();  // contains null for default (NONE) user 
+            if(gname != null && gname.equals(groupName)) {
                 groupModel = gm;
 
                 daoa.removeAutoRegistrationSetupFor(conn, student.getAdminUid(), groupName);

@@ -2,6 +2,11 @@ package hotmath.gwt.shared.shared;
 
 import com.google.gwt.core.client.EntryPoint;
 
+/** REMOVE ME BITCH
+ * 
+ * @author casey
+ *
+ */
 public class CmShared implements EntryPoint {
 
     @Override
