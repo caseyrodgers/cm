@@ -107,9 +107,9 @@ public class PrescriptionCmGuiDefinition implements CmGuiDefinition {
                         getContext().doNext();
                         return;
                     }
+
                     String json = rdata.getDataAsString("json");
-                    
-                    context.setPrescriptionData(new PrescriptionData(json));
+                    context.setPrescriptionData(new PrescriptionData(json));                    
                     
                     isReady = true; // signal data is ready
 

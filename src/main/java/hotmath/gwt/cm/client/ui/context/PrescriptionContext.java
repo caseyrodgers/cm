@@ -116,7 +116,7 @@ public class PrescriptionContext implements CmContext {
         CmMainPanel.__lastInstance._mainContent.removeAll();
         NextDialog.destroyCurrentDialog();
 
-        // deal with anomoly of no missed question .. move to the next quiz
+        // deal with anomaly of no missed questions .. move to the next quiz
         // section
         final boolean hasPrescription = !(UserInfo.getInstance().getCorrectPercent() == 100);
 
@@ -163,18 +163,21 @@ public class PrescriptionContext implements CmContext {
     
     private void doMoveNextAux(boolean hasPrescription) {
         
-        int cs = (hasPrescription) ? prescriptionData.getCurrSession().getSessionNumber() : 0;
-        int totSegs = UserInfo.getInstance().getTestSegmentCount();
-        int correctPercent = UserInfo.getInstance().getCorrectPercent();
-
-        if (!hasPrescription || (cs + 2) > prescriptionData.getSessionTopics().size()) {
-            int passPercentRequired = UserInfo.getInstance().getPassPercentRequired();            
-            int currSeg = UserInfo.getInstance().getTestSegment();
-            // are there more segments?
-            if (correctPercent <= passPercentRequired || currSeg < totSegs) {
-
+        /** The current session number
+         * 
+         */
+        int sessionNumber = (hasPrescription) ? prescriptionData.getCurrSession().getSessionNumber() : 0;
+        boolean thereAreNoMoreSessions = (!hasPrescription)|| !((sessionNumber+1) < (prescriptionData.getSessionTopics().size()));
+        
+        correctPercent = UserInfo.getInstance().getCorrectPercent();
+        if (!hasPrescription || thereAreNoMoreSessions) {
+            
+            // there are no more sessions, so need to move to the 'next'.  
+            // Next might be the same Quiz, the next Quiz or AutoAdvance.
+            
+            int passPercentRequired = UserInfo.getInstance().getPassPercentRequired();
                 if (!UserInfo.getInstance().isActiveUser()) {
-                    CatchupMathTools.showAlert("You are a visitor and cannot jump to the next test.");
+                    CatchupMathTools.showAlert("You are a visitor and cannot jump to the next quiz.");
                     ContextController.getInstance().setCurrentContext(PrescriptionContext.this);
                     return;
                 }
@@ -182,18 +185,36 @@ public class PrescriptionContext implements CmContext {
                 String msg = "";
                 int testSegmentToLoad = 0;
                 if (correctPercent >= passPercentRequired) {
+                    // User has passed this section, and is ready to move to next Quiz or AutoAdvance
+                    
                     if(UserInfo.getInstance().isDemoUser()) {
                         showDemoCompleteMessage();
                         return;
                     }
-                    msg = "You passed this section!  You will now be shown the next quiz.";
-                    CatchupMathTools.showAlert(msg,new CmAsyncRequestImplDefault() {
-                        public void requestComplete(String requestData) {
-                            UserInfo.getInstance().setTestSegment(UserInfo.getInstance().getTestSegment() + 1);
-                            CatchupMath.getThisInstance().showQuizPanel();
-                        }
-                    });
+                    
+                    // are there more Quizzes in this program?
+                    boolean areMoreSegments = UserInfo.getInstance().getTestSegment() < UserInfo.getInstance().getTestSegmentCount();
+                    if(areMoreSegments) {
+                        msg = "You passed this section!  You will now be shown the next quiz.";
+                        CatchupMathTools.showAlert(msg,new CmAsyncRequestImplDefault() {
+                            public void requestComplete(String requestData) {
+                                UserInfo.getInstance().setTestSegment(UserInfo.getInstance().getTestSegment() + 1);
+                                CatchupMath.getThisInstance().showQuizPanel();
+                            }
+                        });
+                    }
+                    else {
+                        msg = "You passed this section!  You will now be advanced to the next program.";
+                        CatchupMathTools.showAlert(msg,new CmAsyncRequestImplDefault() {
+                            public void requestComplete(String requestData) {
+                                autoAdvanceUser();                                
+                            }
+                        });
+                    }
+
+                    // any either case, get out of here.
                     return;
+                    
                 } else {
                     msg = "Would you like to take your next quiz?";
                     testSegmentToLoad = UserInfo.getInstance().getTestSegment();
@@ -211,15 +232,10 @@ public class PrescriptionContext implements CmContext {
                         }
                     }
                 });
-            } else {
-                
-                autoAdvanceUser();
-                
-            }
             return;
         } else {
-            cs++; // if valid..
-            prescriptionCm.getAsyncDataFromServer(cs);
+            sessionNumber++; // if valid..
+            prescriptionCm.getAsyncDataFromServer(sessionNumber);
         }
     }
     
