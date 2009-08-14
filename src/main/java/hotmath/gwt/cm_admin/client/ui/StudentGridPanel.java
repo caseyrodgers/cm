@@ -9,8 +9,8 @@ import hotmath.gwt.cm_tools.client.model.CmAdminDataRefresher;
 import hotmath.gwt.cm_tools.client.model.CmAdminModel;
 import hotmath.gwt.cm_tools.client.model.StringHolder;
 import hotmath.gwt.cm_tools.client.model.StudentModel;
-import hotmath.gwt.cm_tools.client.ui.AutoRegisterStudent;
 import hotmath.gwt.cm_tools.client.ui.AutoRegisterStudentSetup;
+import hotmath.gwt.cm_tools.client.ui.BulkStudentRegistrationWindow;
 import hotmath.gwt.cm_tools.client.ui.RegisterStudent;
 import hotmath.gwt.cm_tools.client.ui.StudentDetailsWindow;
 import hotmath.gwt.cm_tools.client.ui.StudentShowWorkWindow;
@@ -220,8 +220,17 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
         toolbar.add(ti);
         
         toolbar.add(new FillToolItem());
-        
-        Button btn = new Button("Self Registration Setup");
+
+        Button btn = new Button("Bulk Registration");
+        btn.addSelectionListener(new SelectionListener<ButtonEvent>() {
+            @Override
+            public void componentSelected(ButtonEvent ce) {
+                new BulkStudentRegistrationWindow(null, _cmAdminMdl);
+            } 
+        });
+        toolbar.add(btn);
+
+        btn = new Button("Self Registration Setup");
         btn.addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent ce) {
