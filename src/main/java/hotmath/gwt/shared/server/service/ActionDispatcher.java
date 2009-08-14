@@ -117,7 +117,6 @@ public class ActionDispatcher {
         addCommand(SaveAutoRegistrationCommand.class);
         addCommand(GetReportDefCommand.class);
         addCommand(CreateAutoRegistrationAccountCommand.class);
-        addCommand(ReadCatchupMathConfigurationCommand.class);
     }
     
     

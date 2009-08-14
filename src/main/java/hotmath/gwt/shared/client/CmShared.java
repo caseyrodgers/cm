@@ -24,7 +24,6 @@ public class CmShared implements EntryPoint {
     public void onModuleLoad() {
     }
 
-    
     static Map<String,String> _queryParameters = new HashMap<String,String>();
 
     
@@ -44,7 +43,7 @@ public class CmShared implements EntryPoint {
     /** @TODO: how to set dynamically?
      * 
      */
-    final public static String CM_HOME_URL = "http://hotmath.kattare.com:8081";
+    final public static String CM_HOME_URL = getHostName();
     
     
     /** uid that corresponds to a demo account
@@ -85,6 +84,8 @@ public class CmShared implements EntryPoint {
      * @throws CmUserException
      */
     static public int handleLoginProcess() throws CmUserException {
+
+        Log.info("CM Home URL: " + CM_HOME_URL);
         
         _queryParameters = readQueryString();
         
@@ -194,5 +195,20 @@ public class CmShared implements EntryPoint {
         }
         return m;
     }
-
+    
+    
+    static private native String getHostName() /*-{
+        var host = window.location.host;
+        if(host.indexOf("hotmath.com") > -1) {
+            host = "http://catchupmath.com";
+        }
+        else if(host.indexOf("kattare.com") > -1) {
+            host = "http://hotmath.kattare.com:8081";
+        }
+        else {
+            host = "http://" + host;
+        }
+        alert(host);
+        return host;
+}-*/;
 }
