@@ -32,7 +32,6 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 public class BulkStudentRegistrationWindow extends RegisterStudent {
 	
     TextField<String> groupFld;
-    //TextField<String> _passwordTag;
     
 	public BulkStudentRegistrationWindow(StudentModel sm, CmAdminModel cm) {
 	    super(sm, cm);
@@ -72,13 +71,19 @@ public class BulkStudentRegistrationWindow extends RegisterStudent {
         
         final FormPanel panel = new FormPanel();
         panel.setFrame(false);
+        panel.setStyleName("register-student-upload-form");
+        panel.setStyleAttribute("padding-left", "0px");
+        panel.setStyleAttribute("padding-top", "0px");
+        panel.setStyleAttribute("padding-right", "0px");
+        panel.setStyleAttribute("padding-bottom", "0px");
+        panel.setStyleAttribute("padding", "0px");
         panel.setAction("/bulkRegister");
         panel.setEncoding(Encoding.MULTIPART);  
         panel.setMethod(Method.POST);
         panel.setButtonAlign(HorizontalAlignment.CENTER);
         panel.setWidth(formWidth - 35);
         panel.setBodyBorder(false);
-        panel.setLabelWidth(110);
+        panel.setLabelWidth(120);
         panel.setBorders(false);
         panel.setFieldWidth(295);
         panel.setHeaderVisible(false);
