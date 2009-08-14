@@ -208,7 +208,6 @@ public class CmShared implements EntryPoint {
         else {
             host = "http://" + host;
         }
-        alert(host);
         return host;
 }-*/;
 }
