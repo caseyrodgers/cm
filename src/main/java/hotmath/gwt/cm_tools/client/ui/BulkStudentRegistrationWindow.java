@@ -40,25 +40,10 @@ public class BulkStudentRegistrationWindow extends RegisterStudent {
 	    
 	    _fsProfile.remove(_fsProfile.getItemByItemId("name"));
 	    _fsProfile.remove(_fsProfile.getItemByItemId("passcode"));
-	    
 	    _fsProfile.setHeading("Assign Group");
 
-		TextField<String> passcode = new TextField<String>();
-		passcode.setFieldLabel("Password pattern");
-		passcode.setEmptyText("-- enter optional password pattern --");
-		passcode.setAllowBlank(true);
-		passcode.setId("password-pattern");
-		StringBuffer sb = new StringBuffer();
-		sb.append("Pattern must contain at least one each of %A, %9, and %X for alpha, numeric, and other substitution. ");
-		sb.append("Any non-substitution characters will be preserved; for example 'falcon-%A%9%X' could generate 'falcon-M3!'");
-		passcode.setToolTip(sb.toString());
-		
-		_fsProfile.add(passcode);
-        
-	    _window.setHeight(550);
-        
-        _fsProfile.add(new Html("<p>Student will Log In with your school Login Name and the unique password you provide in the uploaded file.  Alternatively, we can generate unique passwords for you.</p>"));
-        
+	    _window.setHeight(520);
+
         _fsProgram.setHeading("Assign Program");
         
 		FieldSet fs = new FieldSet();
@@ -83,7 +68,7 @@ public class BulkStudentRegistrationWindow extends RegisterStudent {
         panel.setButtonAlign(HorizontalAlignment.CENTER);
         panel.setWidth(formWidth - 35);
         panel.setBodyBorder(false);
-        panel.setLabelWidth(120);
+        panel.setLabelWidth(110);
         panel.setBorders(false);
         panel.setFieldWidth(295);
         panel.setHeaderVisible(false);
@@ -113,7 +98,8 @@ public class BulkStudentRegistrationWindow extends RegisterStudent {
         file.setBorders(false);
         panel.add(file);
         fs.add(panel);
-        
+	    fs.add(new Html("<p>Students will Log In with your school Login Name and the unique password you provide in the uploaded file.</p>"));
+                
         _formPanel.add(fs);
         
 		FormLayout fl = new FormLayout();
