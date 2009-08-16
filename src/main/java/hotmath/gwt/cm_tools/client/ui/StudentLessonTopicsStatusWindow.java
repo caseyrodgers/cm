@@ -22,12 +22,11 @@ import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
 import com.extjs.gxt.ui.client.widget.grid.Grid;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
-
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 /**
  * Display Student's Lesson Topic (Prescribed Standards) Status
- *
+ * 
  * @author bob
  * 
  */
@@ -39,10 +38,10 @@ public class StudentLessonTopicsStatusWindow extends CmWindow {
     private StudentActivityModel activityModel;
     private Grid<LessonItemModel> limGrid;
     private int width = 400;
-    private int height = 300; 
+    private int height = 300;
 
-    public StudentLessonTopicsStatusWindow(StudentModel student, StudentActivityModel activityModel) {
-    	
+    public StudentLessonTopicsStatusWindow(StudentModel student, final StudentActivityModel activityModel) {
+
         setStyleName("student-lesson-topic-status-window");
         this.student = student;
         this.activityModel = activityModel;
@@ -50,19 +49,19 @@ public class StudentLessonTopicsStatusWindow extends CmWindow {
         setSize(width, height);
         setResizable(false);
         super.setModal(true);
-        
+
         programName = activityModel.getProgramDescr();
 
         setLayout(new BorderLayout());
         StringBuffer sb = new StringBuffer();
         sb.append("For ").append(student.getName());
-        if(programName != null)
+        if (programName != null)
             sb.append(" in program ").append(programName);
         setHeading(sb.toString());
-        
-        ListStore<LessonItemModel> store = new ListStore<LessonItemModel>();
+
+        final ListStore<LessonItemModel> store = new ListStore<LessonItemModel>();
         ColumnModel cm = defineColumns();
-        
+
         limGrid = new Grid<LessonItemModel>(store, cm);
         limGrid.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
         limGrid.getSelectionModel().setFiresEvents(false);
@@ -74,7 +73,22 @@ public class StudentLessonTopicsStatusWindow extends CmWindow {
         cp.setLayout(new FitLayout());
         cp.add(limGrid);
         add(cp);
-        
+
+        Button stateStandardsBtn = new Button("California Standards");
+        stateStandardsBtn.setToolTip("Show cooresponding california state standards");
+        stateStandardsBtn.addSelectionListener(new SelectionListener<ButtonEvent>() {
+            public void componentSelected(ButtonEvent ce) {
+                LessonItemModel lim = limGrid.getSelectionModel().getSelectedItem();
+                if (lim != null) {
+                    new StudentLessTopicsStateStandardsWindow(lim);
+                } else {
+                    CatchupMathTools.showAlert("Select a standard first");
+                }
+            }
+        });
+
+        addButton(stateStandardsBtn);
+
         Button closeBtn = new Button("Close");
         closeBtn.addSelectionListener(new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent ce) {
@@ -85,36 +99,37 @@ public class StudentLessonTopicsStatusWindow extends CmWindow {
 
         addButton(closeBtn);
         setVisible(false);
-        
+
         this.getStudentLessonTopicsRPC(store);
+
     }
-    
+
     private ColumnModel defineColumns() {
         List<ColumnConfig> configs = new ArrayList<ColumnConfig>();
 
         ColumnConfig topicName = new ColumnConfig();
-        topicName.setId(LessonItemModel.NAME_KEY);  
-        topicName.setHeader("Standards Covered This Section");  
+        topicName.setId(LessonItemModel.NAME_KEY);
+        topicName.setHeader("Standards Covered This Section");
         topicName.setWidth(240);
         topicName.setSortable(true);
         topicName.setMenuDisabled(true);
         configs.add(topicName);
-        
+
         ColumnConfig prescribed = new ColumnConfig();
-        prescribed.setId(LessonItemModel.PRESCRIBED_KEY);  
-        prescribed.setHeader("Prescribed for Review");  
+        prescribed.setId(LessonItemModel.PRESCRIBED_KEY);
+        prescribed.setHeader("Prescribed for Review");
         prescribed.setWidth(130);
         prescribed.setSortable(false);
         prescribed.setMenuDisabled(true);
-        configs.add(prescribed);       
+        configs.add(prescribed);
 
         ColumnModel cm = new ColumnModel(configs);
         return cm;
     }
 
-    protected void getStudentLessonTopicsRPC(final ListStore <LessonItemModel> store) {
+    protected void getStudentLessonTopicsRPC(final ListStore<LessonItemModel> store) {
         PrescriptionServiceAsync s = (PrescriptionServiceAsync) Registry.get("prescriptionService");
-        s.getLessonItemsForTestRun(runId, new AsyncCallback <List<LessonItemModel>>() {
+        s.getLessonItemsForTestRun(runId, new AsyncCallback<List<LessonItemModel>>() {
 
             public void onSuccess(List<LessonItemModel> list) {
                 store.add(list);
@@ -126,5 +141,6 @@ public class StudentLessonTopicsStatusWindow extends CmWindow {
                 CatchupMathTools.showAlert(msg);
             }
         });
-    }    
+    }
+
 }

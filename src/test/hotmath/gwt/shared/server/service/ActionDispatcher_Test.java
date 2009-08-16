@@ -20,6 +20,7 @@ import hotmath.gwt.shared.client.rpc.action.GetQuizHtmlAction;
 import hotmath.gwt.shared.client.rpc.action.GetQuizHtmlCheckedAction;
 import hotmath.gwt.shared.client.rpc.action.GetQuizResultsHtmlAction;
 import hotmath.gwt.shared.client.rpc.action.GetSolutionAction;
+import hotmath.gwt.shared.client.rpc.action.GetStateStandardsAction;
 import hotmath.gwt.shared.client.rpc.action.GetUserInfoAction;
 import hotmath.gwt.shared.client.rpc.action.GetViewedInmhItemsAction;
 import hotmath.gwt.shared.client.rpc.action.SaveQuizCurrentResultAction;
@@ -53,6 +54,13 @@ public class ActionDispatcher_Test extends CmDbTestCase {
             uid = setupDemoAccount();
     }
     
+
+    public void testGetStateStandards() throws Exception {
+        GetStateStandardsAction action = new GetStateStandardsAction("aas-postulate.html");
+        CmList<String> list = ActionDispatcher.getInstance().execute(action);
+        assertNotNull(list);
+        assertTrue(list.size() > 0);
+    }
     
     public void testCreateAutoRegistrationAccountCommand() throws Exception {
         int AUTO_SETUP_UID=3953;  // is setup as auto_create_template
