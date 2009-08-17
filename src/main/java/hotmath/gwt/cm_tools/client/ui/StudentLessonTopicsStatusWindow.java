@@ -4,8 +4,10 @@ import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.model.LessonItemModel;
 import hotmath.gwt.cm_tools.client.model.StudentActivityModel;
 import hotmath.gwt.cm_tools.client.model.StudentModel;
-import hotmath.gwt.cm_tools.client.service.PrescriptionServiceAsync;
+import hotmath.gwt.cm_tools.client.service.CmServiceAsync;
 import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
+import hotmath.gwt.shared.client.rpc.action.CmList;
+import hotmath.gwt.shared.client.rpc.action.GetLessonItemsForTestRunAction;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -128,15 +130,17 @@ public class StudentLessonTopicsStatusWindow extends CmWindow {
     }
 
     protected void getStudentLessonTopicsRPC(final ListStore<LessonItemModel> store) {
-        PrescriptionServiceAsync s = (PrescriptionServiceAsync) Registry.get("prescriptionService");
-        s.getLessonItemsForTestRun(runId, new AsyncCallback<List<LessonItemModel>>() {
+        CmServiceAsync s = (CmServiceAsync) Registry.get("cmService");
+        s.execute(new   GetLessonItemsForTestRunAction(runId), new AsyncCallback<CmList<LessonItemModel>>() {
 
-            public void onSuccess(List<LessonItemModel> list) {
+            @Override
+            public void onSuccess(CmList<LessonItemModel> list) {
                 store.add(list);
                 setVisible(true);
             }
 
             public void onFailure(Throwable caught) {
+                caught.toString();
                 String msg = caught.getMessage();
                 CatchupMathTools.showAlert(msg);
             }

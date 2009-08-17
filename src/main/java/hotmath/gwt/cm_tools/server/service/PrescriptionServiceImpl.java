@@ -20,6 +20,7 @@ import hotmath.gwt.shared.client.rpc.action.AddGroupAction;
 import hotmath.gwt.shared.client.rpc.action.AddStudentAction;
 import hotmath.gwt.shared.client.rpc.action.AutoAdvanceUserAction;
 import hotmath.gwt.shared.client.rpc.action.CreateTestRunAction;
+import hotmath.gwt.shared.client.rpc.action.GetLessonItemsForTestRunAction;
 import hotmath.gwt.shared.client.rpc.action.GetPrescriptionAction;
 import hotmath.gwt.shared.client.rpc.action.GetProgramDefinitionsAction;
 import hotmath.gwt.shared.client.rpc.action.GetQuizHtmlAction;
@@ -135,6 +136,12 @@ public class PrescriptionServiceImpl extends RemoteServiceServlet implements Pre
         return ActionDispatcher.getInstance().execute(action);
     }
 
+    public List<LessonItemModel> getLessonItemsForTestRun(Integer runId) throws CmRpcException {
+        GetLessonItemsForTestRunAction action = new GetLessonItemsForTestRunAction(runId);
+        return ActionDispatcher.getInstance().execute(action);
+    }
+    
+    
 
     public String getSolutionProblemStatementHtml(String pid) {
         try {
@@ -347,15 +354,7 @@ public class PrescriptionServiceImpl extends RemoteServiceServlet implements Pre
         }
     }
 
-    public List<LessonItemModel> getLessonItemsForTestRun(Integer runId) throws CmRpcException {
-    	try {
-            CmStudentDao dao = new CmStudentDao();
-            return dao.getLessonItemsForTestRun(runId);
-    	}
-    	catch (Exception e) {
-    		throw new CmRpcException(e);
-    	}
-    }
+
 
     public StudentModel getStudentModel(Integer uid) throws CmRpcException {
         try {

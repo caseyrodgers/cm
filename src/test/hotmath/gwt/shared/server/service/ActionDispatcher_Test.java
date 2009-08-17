@@ -4,6 +4,7 @@ import hotmath.gwt.cm.server.CmDbTestCase;
 import hotmath.gwt.cm_admin.server.model.CmStudentDao;
 import hotmath.gwt.cm_tools.client.model.AutoUserAdvanced;
 import hotmath.gwt.cm_tools.client.model.GroupModel;
+import hotmath.gwt.cm_tools.client.model.LessonItemModel;
 import hotmath.gwt.cm_tools.client.model.StudentModel;
 import hotmath.gwt.shared.client.rpc.action.AddGroupAction;
 import hotmath.gwt.shared.client.rpc.action.AutoAdvanceUserAction;
@@ -15,6 +16,7 @@ import hotmath.gwt.shared.client.rpc.action.CreateAutoRegistrationAccountsAction
 import hotmath.gwt.shared.client.rpc.action.CreateAutoRegistrationPreviewAction;
 import hotmath.gwt.shared.client.rpc.action.CreateTestRunAction;
 import hotmath.gwt.shared.client.rpc.action.GetAutoRegistrationSetupAction;
+import hotmath.gwt.shared.client.rpc.action.GetLessonItemsForTestRunAction;
 import hotmath.gwt.shared.client.rpc.action.GetPrescriptionAction;
 import hotmath.gwt.shared.client.rpc.action.GetQuizHtmlAction;
 import hotmath.gwt.shared.client.rpc.action.GetQuizHtmlCheckedAction;
@@ -54,6 +56,14 @@ public class ActionDispatcher_Test extends CmDbTestCase {
             uid = setupDemoAccount();
     }
     
+    
+    public void testGetLessonItemsForTestRunAction() throws Exception {
+        GetLessonItemsForTestRunAction action = new GetLessonItemsForTestRunAction(TEST_RUN_ID);
+        CmList<LessonItemModel> lessons = ActionDispatcher.getInstance().execute(action);
+        assertNotNull(lessons);
+        assertTrue(lessons.size() > 0);
+        assertTrue(lessons.get(0).getStateStandards().size() > 0);
+    }
 
     public void testGetStateStandards() throws Exception {
         GetStateStandardsAction action = new GetStateStandardsAction("aas-postulate.html");

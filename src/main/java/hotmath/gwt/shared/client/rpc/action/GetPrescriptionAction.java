@@ -1,7 +1,5 @@
 package hotmath.gwt.shared.client.rpc.action;
 
-import com.google.gwt.user.client.rpc.IsSerializable;
-
 import hotmath.gwt.shared.client.rpc.Action;
 import hotmath.gwt.shared.client.util.RpcData;
 

@@ -1,6 +1,10 @@
 package hotmath.gwt.cm_tools.client.model;
 
-public class LessonItemModel extends BaseModel {
+import hotmath.gwt.shared.client.rpc.Response;
+import hotmath.gwt.shared.client.rpc.action.CmArrayList;
+import hotmath.gwt.shared.client.rpc.action.CmList;
+
+public class LessonItemModel extends BaseModel implements Response{
 	
 	private static final long serialVersionUID = -9053678467730737870L;
 
@@ -12,7 +16,9 @@ public class LessonItemModel extends BaseModel {
 	private String file;
 	private String prescribed;
 	
-	public String getPrescribed() {
+	CmList<String> stateStandards = new CmArrayList<String>();
+	
+    public String getPrescribed() {
 		return prescribed;
 	}
 
@@ -38,4 +44,13 @@ public class LessonItemModel extends BaseModel {
 		this.file= file;
 		set(FILE_KEY, name);
 	}
+	
+
+    public CmList<String> getStateStandards() {
+        return stateStandards;
+    }
+
+    public void setStateStandards(CmList<String> stateStandards) {
+        this.stateStandards = stateStandards;
+    }
 }

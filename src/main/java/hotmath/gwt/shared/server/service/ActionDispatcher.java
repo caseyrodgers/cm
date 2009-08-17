@@ -15,6 +15,7 @@ import hotmath.gwt.shared.server.service.command.CreateAutoRegistrationAccountCo
 import hotmath.gwt.shared.server.service.command.CreateAutoRegistrationAccountsCommand;
 import hotmath.gwt.shared.server.service.command.CreateAutoRegistrationPreviewCommand;
 import hotmath.gwt.shared.server.service.command.CreateTestRunCommand;
+import hotmath.gwt.shared.server.service.command.GetLessonItemsForTestRunCommand;
 import hotmath.gwt.shared.server.service.command.GetPrescriptionCommand;
 import hotmath.gwt.shared.server.service.command.GetProgramDefinitionsCommand;
 import hotmath.gwt.shared.server.service.command.GetQuizHtmlCheckedCommand;
@@ -118,7 +119,7 @@ public class ActionDispatcher {
         addCommand(GetReportDefCommand.class);
         addCommand(CreateAutoRegistrationAccountCommand.class);
         addCommand(GetStateStandardsCommand.class);
-        
+        addCommand(GetLessonItemsForTestRunCommand.class);
     }
     
     

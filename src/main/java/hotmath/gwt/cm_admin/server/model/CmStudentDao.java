@@ -230,15 +230,13 @@ public class CmStudentDao {
         "where tr.run_id = ? and rr.run_id = tr.run_id and tr.test_id = t.test_id " +
         "  and t.test_def_id = td.test_def_id and im.guid = rr.pid";
     
-    public List <LessonItemModel> getLessonItemsForTestRun(Integer runId) throws Exception {
+    public List <LessonItemModel> getLessonItemsForTestRun(final Connection conn, Integer runId) throws Exception {
    	    List <LessonItemModel> l = null;
     	
-    	Connection conn = null;
     	PreparedStatement ps = null;
     	ResultSet rs = null;
     	
     	try {
-    		conn = HMConnectionPool.getConnection();
     		ps = conn.prepareStatement(GET_TEST_RESULTS_SQL);
     		ps.setInt(1, runId);
     		rs = ps.executeQuery();
@@ -253,7 +251,7 @@ public class CmStudentDao {
     		throw new Exception("*** Error getting Lesson Items ***");
     	}
     	finally {
-    		SqlUtilities.releaseResources(rs, ps, conn);
+    		SqlUtilities.releaseResources(rs, ps, null);
     	}
     	return l;
     }
