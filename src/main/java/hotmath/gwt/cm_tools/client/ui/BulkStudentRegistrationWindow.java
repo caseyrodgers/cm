@@ -16,9 +16,13 @@ import java.util.List;
 import com.extjs.gxt.ui.client.Registry;
 import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
+import com.extjs.gxt.ui.client.event.Events;
+import com.extjs.gxt.ui.client.event.FormEvent;
+import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.widget.Html;
 import com.extjs.gxt.ui.client.widget.MessageBox;
+import com.extjs.gxt.ui.client.widget.Window;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.FieldSet;
 import com.extjs.gxt.ui.client.widget.form.FileUploadField;
@@ -27,6 +31,10 @@ import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.extjs.gxt.ui.client.widget.form.FormPanel.Encoding;
 import com.extjs.gxt.ui.client.widget.form.FormPanel.Method;
 import com.extjs.gxt.ui.client.widget.layout.FormLayout;
+
+import com.google.gwt.json.client.JSONObject;
+import com.google.gwt.json.client.JSONParser;
+import com.google.gwt.json.client.JSONValue;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public class BulkStudentRegistrationWindow extends RegisterStudent {
@@ -42,7 +50,7 @@ public class BulkStudentRegistrationWindow extends RegisterStudent {
 	    _fsProfile.remove(_fsProfile.getItemByItemId("passcode"));
 	    _fsProfile.setHeading("Assign Group");
 
-	    _window.setHeight(520);
+	    _window.setHeight(525);
 
         _fsProgram.setHeading("Assign Program");
         
@@ -51,9 +59,8 @@ public class BulkStudentRegistrationWindow extends RegisterStudent {
 		fL.setLabelWidth(_formPanel.getLabelWidth());
         fL.setDefaultWidth(205);
         fs.setLayout(fL);
-	    
         fs.setHeading("Upload Students");
-        
+
         final FormPanel panel = new FormPanel();
         panel.setFrame(false);
         panel.setStyleName("register-student-upload-form");
@@ -62,7 +69,9 @@ public class BulkStudentRegistrationWindow extends RegisterStudent {
         panel.setStyleAttribute("padding-right", "0px");
         panel.setStyleAttribute("padding-bottom", "0px");
         panel.setStyleAttribute("padding", "0px");
-        panel.setAction("/bulkRegister");
+        StringBuffer sb = new StringBuffer("/cm_admin/bulkRegister");
+        sb.append("?aid=").append(cm.getId());
+        panel.setAction(sb.toString());
         panel.setEncoding(Encoding.MULTIPART);  
         panel.setMethod(Method.POST);
         panel.setButtonAlign(HorizontalAlignment.CENTER);
@@ -73,6 +82,22 @@ public class BulkStudentRegistrationWindow extends RegisterStudent {
         panel.setFieldWidth(295);
         panel.setHeaderVisible(false);
         panel.setShim(true);
+
+        panel.addListener(Events.Submit, new Listener<FormEvent>() {
+
+            public void handleEvent(FormEvent be) {
+
+            	String response = be.getResultHtml();
+
+                if(response.indexOf("<pre") != -1) {
+                	int offset = response.indexOf(">") + 1;
+                    response = response.substring(offset, response.length()-6);
+                }
+                JSONValue rspValue = JSONParser.parse(response);
+                JSONObject rspObj  = rspValue.isObject();
+                MessageBox.alert(rspObj.get("status").toString(), rspObj.get("msg").toString(), null);
+            }
+        }); 
         
         Button btn = new Button("Upload File");
         btn.addSelectionListener(new SelectionListener<ButtonEvent>() {  
@@ -82,11 +107,7 @@ public class BulkStudentRegistrationWindow extends RegisterStudent {
                 if (!panel.isValid()) {
                     return;
                 }
-
-                // TODO: handle submit
-                // panel.submit();
-
-                MessageBox.info("Confirmation", "Your file was successfully uploaded", null);
+                panel.submit();
             }
         });
         panel.addButton(btn);
@@ -96,9 +117,13 @@ public class BulkStudentRegistrationWindow extends RegisterStudent {
         file.setFieldLabel("File");
         file.setAllowBlank(false);
         file.setBorders(false);
+        // apparently, setName() is required...
+        file.setName("bulk.reg.field");
         panel.add(file);
+        
         fs.add(panel);
-	    fs.add(new Html("<p>Students will Log In with your school Login Name and the unique password you provide in the uploaded file.</p>"));
+
+	    fs.add(new Html("<p>Students will Log In with your school Login Name and the unique passwords you provide in the uploaded file.</p>"));
                 
         _formPanel.add(fs);
         
