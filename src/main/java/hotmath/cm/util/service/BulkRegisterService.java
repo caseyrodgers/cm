@@ -65,21 +65,23 @@ public class BulkRegisterService extends HttpServlet {
             			String key = "upload_" + System.currentTimeMillis();
             			
                         boolean hasErrors = brLoader.hasErrors();
+                        boolean hasDuplicates = brLoader.hasDupNamePasswd();
                         
                         sb.append("{key:'" + key + "', status:'");
                         sb.append((hasErrors) ? "Error" : "Successful");
                         sb.append("',msg:'");
-                        if (hasErrors) {
+                        if (hasErrors && !hasDuplicates) {
                         	sb.append("Uploaded file contains errors, please review and correct.");
+                        }
+                        else if (hasDuplicates) {
+                        	sb.append("Uploaded file contains duplicate names and/or passwords, please review and correct.");
                         }
                         else {
                         	sb.append("File uploaded successfully.");
                         }
                         sb.append("' }");
                         
-                        
-            			//TODO: put student/password List in Cache
-                        CmCacheManager.getInstance().addToCache(CacheName.BULK_UPLOAD_FILE,key, brLoader);
+                        CmCacheManager.getInstance().addToCache(CacheName.BULK_UPLOAD_FILE, key, brLoader);
             		}
             	}
             	else {
