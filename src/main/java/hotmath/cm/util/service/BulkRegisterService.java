@@ -1,5 +1,8 @@
 package hotmath.cm.util.service;
 
+import hotmath.cm.util.CmCacheManager;
+import hotmath.cm.util.CmCacheManager.CacheName;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -49,15 +52,21 @@ public class BulkRegisterService extends HttpServlet {
             	List<FileItem> fileItems = sfu.parseRequest(req);
             	if (fileItems != null  && fileItems.size() > 0) {
             		for (FileItem fi: fileItems) {
+            		    
             			InputStream is = fi.getInputStream();
-            			BulkRegLoader brLoader = new BulkRegLoader();
-            			brLoader.setInputStream(is);
-            			brLoader.load();
-                        is.close();
-
+            			BulkRegLoader brLoader=null;
+            			try {
+            			    brLoader = new BulkRegLoader(is);
+            			}
+            			finally {
+            			    is.close();
+            			}
+            			
+            			String key = "upload_" + System.currentTimeMillis();
+            			
                         boolean hasErrors = brLoader.hasErrors();
-
-                        sb.append("{status:'");
+                        
+                        sb.append("{key:'" + key + "', status:'");
                         sb.append((hasErrors) ? "Error" : "Successful");
                         sb.append("',msg:'");
                         if (hasErrors) {
@@ -68,7 +77,9 @@ public class BulkRegisterService extends HttpServlet {
                         }
                         sb.append("' }");
                         
+                        
             			//TODO: put student/password List in Cache
+                        CmCacheManager.getInstance().addToCache(CacheName.BULK_UPLOAD_FILE,key, brLoader);
             		}
             	}
             	else {
@@ -88,9 +99,5 @@ public class BulkRegisterService extends HttpServlet {
         	String res = String.format("{status: 'Error', msg:'%s' }", e.getMessage());
             resp.getWriter().write(res);
         }
-    }
-
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        ;
     }
 }

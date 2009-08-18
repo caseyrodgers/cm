@@ -3,17 +3,11 @@ package hotmath.gwt.cm_tools.client.ui;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.model.CmAdminModel;
 import hotmath.gwt.cm_tools.client.model.StudentModel;
-import hotmath.gwt.cm_tools.client.service.CmServiceAsync;
-import hotmath.gwt.shared.client.eventbus.CmEvent;
-import hotmath.gwt.shared.client.eventbus.EventBus;
-import hotmath.gwt.shared.client.rpc.action.SaveAutoRegistrationAction;
 import hotmath.gwt.shared.client.util.CmException;
-import hotmath.gwt.shared.client.util.RpcData;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import com.extjs.gxt.ui.client.Registry;
 import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.Events;
@@ -21,8 +15,6 @@ import com.extjs.gxt.ui.client.event.FormEvent;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.widget.Html;
-import com.extjs.gxt.ui.client.widget.MessageBox;
-import com.extjs.gxt.ui.client.widget.Window;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.FieldSet;
 import com.extjs.gxt.ui.client.widget.form.FileUploadField;
@@ -31,15 +23,17 @@ import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.extjs.gxt.ui.client.widget.form.FormPanel.Encoding;
 import com.extjs.gxt.ui.client.widget.form.FormPanel.Method;
 import com.extjs.gxt.ui.client.widget.layout.FormLayout;
-
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONParser;
 import com.google.gwt.json.client.JSONValue;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public class BulkStudentRegistrationWindow extends RegisterStudent {
 	
     TextField<String> groupFld;
+    String _uploadKey; //  = "upload_1250558647547";
+    FileUploadField _fileUpload;
+    FormPanel _uploadForm;
+    StudentModel _student;
     
 	public BulkStudentRegistrationWindow(StudentModel sm, CmAdminModel cm) {
 	    super(sm, cm);
@@ -61,29 +55,29 @@ public class BulkStudentRegistrationWindow extends RegisterStudent {
         fs.setLayout(fL);
         fs.setHeading("Upload Students");
 
-        final FormPanel panel = new FormPanel();
-        panel.setFrame(false);
-        panel.setStyleName("register-student-upload-form");
-        panel.setStyleAttribute("padding-left", "0px");
-        panel.setStyleAttribute("padding-top", "0px");
-        panel.setStyleAttribute("padding-right", "0px");
-        panel.setStyleAttribute("padding-bottom", "0px");
-        panel.setStyleAttribute("padding", "0px");
+        _uploadForm = new FormPanel();
+        _uploadForm.setFrame(false);
+        _uploadForm.setStyleName("register-student-upload-form");
+        _uploadForm.setStyleAttribute("padding-left", "0px");
+        _uploadForm.setStyleAttribute("padding-top", "0px");
+        _uploadForm.setStyleAttribute("padding-right", "0px");
+        _uploadForm.setStyleAttribute("padding-bottom", "0px");
+        _uploadForm.setStyleAttribute("padding", "0px");
         StringBuffer sb = new StringBuffer("/cm_admin/bulkRegister");
         sb.append("?aid=").append(cm.getId());
-        panel.setAction(sb.toString());
-        panel.setEncoding(Encoding.MULTIPART);  
-        panel.setMethod(Method.POST);
-        panel.setButtonAlign(HorizontalAlignment.CENTER);
-        panel.setWidth(formWidth - 35);
-        panel.setBodyBorder(false);
-        panel.setLabelWidth(110);
-        panel.setBorders(false);
-        panel.setFieldWidth(295);
-        panel.setHeaderVisible(false);
-        panel.setShim(true);
+        _uploadForm.setAction(sb.toString());
+        _uploadForm.setEncoding(Encoding.MULTIPART);  
+        _uploadForm.setMethod(Method.POST);
+        _uploadForm.setButtonAlign(HorizontalAlignment.CENTER);
+        _uploadForm.setWidth(formWidth - 35);
+        _uploadForm.setBodyBorder(false);
+        _uploadForm.setLabelWidth(110);
+        _uploadForm.setBorders(false);
+        _uploadForm.setFieldWidth(295);
+        _uploadForm.setHeaderVisible(false);
+        _uploadForm.setShim(true);
 
-        panel.addListener(Events.Submit, new Listener<FormEvent>() {
+        _uploadForm.addListener(Events.Submit, new Listener<FormEvent>() {
 
             public void handleEvent(FormEvent be) {
 
@@ -95,33 +89,33 @@ public class BulkStudentRegistrationWindow extends RegisterStudent {
                 }
                 JSONValue rspValue = JSONParser.parse(response);
                 JSONObject rspObj  = rspValue.isObject();
-                MessageBox.alert(rspObj.get("status").toString(), rspObj.get("msg").toString(), null);
-            }
-        }); 
-        
-        Button btn = new Button("Upload File");
-        btn.addSelectionListener(new SelectionListener<ButtonEvent>() {  
-
-            @Override
-            public void componentSelected(ButtonEvent ce) {
-                if (!panel.isValid()) {
+                String status = rspObj.get("status").isString().stringValue();
+                String msg = rspObj.get("msg").isString().stringValue();
+                _uploadKey = rspObj.get("key").isString().stringValue();
+                
+                if(status.equals("Error")) {
+                    CatchupMathTools.showAlert(msg);
                     return;
                 }
-                panel.submit();
+                
+                new AutoRegistrationWindow(_student, _uploadKey);
+                
+                // MessageBox.alert(status, msg, null);
             }
-        });
-        panel.addButton(btn);
-   
-        FileUploadField file = new FileUploadField();
-        file.setAllowBlank(false);
-        file.setFieldLabel("File");
-        file.setAllowBlank(false);
-        file.setBorders(false);
+        }); 
+
+        _fileUpload = new FileUploadField();  
+        _fileUpload.setAllowBlank(false);  
+        _fileUpload.setFieldLabel("File");  
+        _fileUpload.setAllowBlank(false);
+        _fileUpload.setFieldLabel("File");
+        _fileUpload.setAllowBlank(false);
+        _fileUpload.setBorders(false);
         // apparently, setName() is required...
-        file.setName("bulk.reg.field");
-        panel.add(file);
+        _fileUpload.setName("bulk.reg.field");
         
-        fs.add(panel);
+        _uploadForm.add(_fileUpload);
+        fs.add(_uploadForm);
 
 	    fs.add(new Html("<p>Students will Log In with your school Login Name and the unique passwords you provide in the uploaded file.</p>"));
                 
@@ -140,24 +134,26 @@ public class BulkStudentRegistrationWindow extends RegisterStudent {
 	    List<Button> list = new ArrayList<Button>();
         
         Button autoCreate = new Button("Save");
-        autoCreate  .addSelectionListener(new SelectionListener<ButtonEvent>() {
+        autoCreate.addSelectionListener(new SelectionListener<ButtonEvent>() {
             
             @Override
             public void componentSelected(ButtonEvent ce) {
                 try {
                     doSubmitAction(_fsProgram, _formPanel, new AfterValidation() {
-                        
                         //@Override
                         public void afterValidation(StudentModel student) {
-                            student.setName(groupFld.getValue());
-                            student.setGroup(groupFld.getValue());
+                            _student = student;
                             
-                            saveAutoRegistrationSetup(student);
+                            if(!_uploadForm.isValid()) {
+                                CatchupMathTools.showAlert("Select a tab delimited file containing a list of names and passwords.");
+                                return;
+                            }
+                            _uploadForm.submit();
                         }
                     });
                 }
-                catch(CmException cm) {
-                    // CatchupMathTools.showAlert("First, make sure all values on form are valid");
+                catch(CmException cme) {
+                    cme.printStackTrace();
                 }
             }
         });
@@ -177,24 +173,5 @@ public class BulkStudentRegistrationWindow extends RegisterStudent {
         list.add(close);        
         
         return list;
-	}
-	
-	
-	private void saveAutoRegistrationSetup(StudentModel student) {
-	    CmServiceAsync s = (CmServiceAsync) Registry.get("cmService");
-        s.execute(new SaveAutoRegistrationAction(student.getAdminUid(), student), new AsyncCallback<RpcData>() {
-            //@Override
-            public void onSuccess(RpcData result) {
-                    _window.hide();
-                    EventBus.getInstance().fireEvent(new CmEvent(EventBus.EVENT_TYPE_REFRESH_STUDENT_DATA));
-            }
-
-            //@Override
-            public void onFailure(Throwable caught) {
-                caught.printStackTrace();
-                CatchupMathTools.showAlert("Problem occurred while saving setup information: " + caught.getMessage());
-            }
-        });	    
-	    
 	}
 }

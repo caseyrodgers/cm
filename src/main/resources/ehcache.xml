@@ -74,4 +74,12 @@
        overflowToDisk="false">
 </cache>
 
+<!--  Admin bulk upload file (see BulkRegistrationService) -->
+<cache name="BULK_UPLOAD_FILE"
+       maxElementsInMemory="10"
+       eternal="false"
+       timeToLiveSeconds="120"
+       overflowToDisk="false">
+</cache>
+
 </ehcache>

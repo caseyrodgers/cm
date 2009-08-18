@@ -103,7 +103,7 @@ public class AutoRegisterStudent extends RegisterStudent {
                             student.setGroup(_groupTag.getValue());
                             
                             NumberModel nm = _numToCreate.getValue();
-                            new AutoRegistrationWindow(cmAdminMdl.getId(), student, nm.getNumToCreate());
+                            new AutoRegistrationWindow(student,null);
                         }
                     });
                 }

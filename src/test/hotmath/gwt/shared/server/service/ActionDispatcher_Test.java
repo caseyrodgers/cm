@@ -115,7 +115,7 @@ public class ActionDispatcher_Test extends CmDbTestCase {
         
         StudentModel student = new CmStudentDao().getStudentModel(uid);
         
-        CreateAutoRegistrationPreviewAction action = new CreateAutoRegistrationPreviewAction(2,student,10);
+        CreateAutoRegistrationPreviewAction action = new CreateAutoRegistrationPreviewAction(student,"key");
         AutoRegistrationSetup autoSetup = ActionDispatcher.getInstance().execute(action);
         
         assertNotNull(autoSetup);

@@ -14,26 +14,16 @@ import hotmath.gwt.shared.client.rpc.result.AutoRegistrationSetup;
  *
  */
 public class CreateAutoRegistrationPreviewAction implements Action<AutoRegistrationSetup> {
-    Integer adminId;
     StudentModel studentTemplate;
-    Integer numToCreate;
+    String uploadKey;
 
     public CreateAutoRegistrationPreviewAction() {
     }
     
     
-    public CreateAutoRegistrationPreviewAction(Integer adminId, StudentModel studentTemplate, Integer numToCreate) {
-        this.adminId = adminId;
+    public CreateAutoRegistrationPreviewAction(StudentModel studentTemplate, String uploadKey) {
         this.studentTemplate = studentTemplate;
-        this.numToCreate = numToCreate;
-    }
-    
-    public Integer getAdminId() {
-        return adminId;
-    }
-
-    public void setAdminId(Integer adminId) {
-        this.adminId = adminId;
+        this.uploadKey = uploadKey;
     }
 
 
@@ -47,12 +37,12 @@ public class CreateAutoRegistrationPreviewAction implements Action<AutoRegistrat
     }
 
 
-    public Integer getNumToCreate() {
-        return numToCreate;
+    public String getUploadKey() {
+        return uploadKey;
     }
 
 
-    public void setNumToCreate(Integer numToCreate) {
-        this.numToCreate = numToCreate;
+    public void setUploadKey(String uploadKey) {
+        this.uploadKey = uploadKey;
     }
 }

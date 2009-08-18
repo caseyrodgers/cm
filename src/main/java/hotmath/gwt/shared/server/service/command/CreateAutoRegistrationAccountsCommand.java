@@ -31,8 +31,8 @@ public class CreateAutoRegistrationAccountsCommand implements ActionHandler<Crea
         GroupModel groupModel = new GroupModel();
         groupModel.setName(studentTemplate.getGroup());
         
-        groupModel = new CmAdminDao().addGroup(conn, action.getAdminId(),groupModel);
-        studentTemplate.setGroupId(groupModel.getId());
+        //groupModel = new CmAdminDao().addGroup(conn, action.getAdminId(),groupModel);
+        //studentTemplate.setGroupId(groupModel.getId());
         
         
         CmStudentDao dao = new CmStudentDao();

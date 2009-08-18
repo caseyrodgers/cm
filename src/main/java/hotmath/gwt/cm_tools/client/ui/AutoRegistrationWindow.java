@@ -55,19 +55,19 @@ public class AutoRegistrationWindow extends CmWindow {
     Integer numToCreate;
     StudentModel student;
     AutoRegistrationSetup _preview;
+    String uploadFileKey;
 
-    public AutoRegistrationWindow(int adminId, StudentModel student, Integer numToCreate) {
-        this.adminId = adminId;
+    public AutoRegistrationWindow(StudentModel student, String uploadFileKey) {
         this.student = student;
-        this.numToCreate = numToCreate;
+        this.uploadFileKey = uploadFileKey;
         
         setHeading("Auto Student Registration");
-        
+
         setLayout(new CenterLayout());
         Label l = new Label("Creating Preview .. please wait");
         l.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
         add(l);
-        setSize(580,410);
+        setSize(580, 410);
         setResizable(false);
         setModal(true);
 
@@ -78,10 +78,9 @@ public class AutoRegistrationWindow extends CmWindow {
 
     Button _buttonCreate;
     Button _buttonCancel;
+
     private void drawGui() {
-        
-        
-        
+
         _buttonCreate = new Button("Create Students");
         _buttonCreate.addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
@@ -91,8 +90,7 @@ public class AutoRegistrationWindow extends CmWindow {
         });
         _buttonCreate.setEnabled(false);
         addButton(_buttonCreate);
-        
-        
+
         _buttonCancel = new Button("Cancel");
         _buttonCancel.addSelectionListener(new SelectionListener<ButtonEvent>() {
 
@@ -108,142 +106,151 @@ public class AutoRegistrationWindow extends CmWindow {
 
     private FormData formData = new FormData("-20");
     Grid<AutoRegistrationEntryGxt> _previewGrid;
+
     private void createForm(List<AutoRegistrationEntryGxt> gridModel) {
         removeAll();
 
         setLayout(new BorderLayout());
-        
-        add(createInfoPanel(), new BorderLayoutData(LayoutRegion.NORTH,85));
-        
+
+        add(createInfoPanel(), new BorderLayoutData(LayoutRegion.NORTH, 85));
+
         ListStore<AutoRegistrationEntryGxt> store = new ListStore<AutoRegistrationEntryGxt>();
         store.add(gridModel);
         _previewGrid = new Grid<AutoRegistrationEntryGxt>(store, defineColumns());
-        
+
         _previewGrid.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
         _previewGrid.getSelectionModel().setFiresEvents(true);
         _previewGrid.setStripeRows(true);
         _previewGrid.setWidth(565);
         _previewGrid.setHeight(210);
-        
+
         add(_previewGrid, new BorderLayoutData(LayoutRegion.CENTER));
         layout();
     }
 
     private Widget createInfoPanel() {
-        String html = 
-            " <div class='detail-info' style='height: 55px;' >" +
-            "     <div class='form left'>" +
-            "        <div class='fld'><label>Program:</label><div>" + student.getProgramDescr()+ "&nbsp;</div></div>" +
-            "        <div class='fld'><label>Pass %:</label><div>" + student.getPassPercent() + "&nbsp;</div></div>" +
-            "        <div class='fld'><label>Group:</label><div>" + student.getGroup() + "&nbsp;</div></div>" +            
-            "     </div>" +
-            "     <div class='form right'>" +
-            "        <div class='fld'><label>Tutoring: </label><div>" + (student.getTutoringAvail()?"Available":"Not Available") + "&nbsp;</div></div>" +
-            "        <div class='fld'><label>Show Work:</label><div>" + (student.getShowWorkRequired()?"Required":"Optional") + "&nbsp;</div></div>" +
-            "     </div>" +
-            " </div>" +
-            "<h2 style='margin-left:50px;'>The students listed below will be created using the values shown above.</h2>";
+        String html = " <div class='detail-info' style='height: 55px;' >"
+                + "     <div class='form left'>"
+                + "        <div class='fld'><label>Program:</label><div>"
+                + student.getProgramDescr()
+                + "&nbsp;</div></div>"
+                + "        <div class='fld'><label>Pass %:</label><div>"
+                + student.getPassPercent()
+                + "&nbsp;</div></div>"
+                + "        <div class='fld'><label>Group:</label><div>"
+                + student.getGroup()
+                + "&nbsp;</div></div>"
+                + "     </div>"
+                + "     <div class='form right'>"
+                + "        <div class='fld'><label>Tutoring: </label><div>"
+                + (student.getTutoringAvail() ? "Available" : "Not Available")
+                + "&nbsp;</div></div>"
+                + "        <div class='fld'><label>Show Work:</label><div>"
+                + (student.getShowWorkRequired() ? "Required" : "Optional")
+                + "&nbsp;</div></div>"
+                + "     </div>"
+                + " </div>"
+                + "<h2 style='margin-left:50px;'>The students listed below will be created using the values shown above.</h2>";
         return new Html(html);
     }
-    
-    
-    
+
     private void createPreview() {
         CmServiceAsync s = (CmServiceAsync) Registry.get("cmService");
-        s.execute(new CreateAutoRegistrationPreviewAction(adminId, student, numToCreate), new AsyncCallback<AutoRegistrationSetup>() {
-                @Override
-            public void onSuccess(AutoRegistrationSetup result) {
-                    
-                    _preview = result;
-                    
-                    // transfer from local model into Gxt model
-                    createForm(createGxtModelFromEntries(result.getEntries()));
-                    _buttonCreate.setEnabled(true);
-                    CatchupMathTools.setBusy(false);
-                }
+        s.execute(new CreateAutoRegistrationPreviewAction(student, uploadFileKey),
+                new AsyncCallback<AutoRegistrationSetup>() {
+                    @Override
+                    public void onSuccess(AutoRegistrationSetup result) {
 
-            @Override
-            public void onFailure(Throwable caught) {
-                caught.printStackTrace();
-                CatchupMathTools.showAlert("Problem occurred while creating preview: " + caught.getMessage());
-                close();
-            }
-        });
+                        _preview = result;
+
+                        // transfer from local model into Gxt model
+                        createForm(createGxtModelFromEntries(result.getEntries()));
+                        _buttonCreate.setEnabled(true);
+                        CatchupMathTools.setBusy(false);
+                    }
+
+                    @Override
+                    public void onFailure(Throwable caught) {
+                        caught.printStackTrace();
+                        CatchupMathTools.showAlert("Problem occurred while creating preview: " + caught.getMessage());
+                        close();
+                    }
+                });
     }
-    
-    
-    /** Convert from generic model, to specific GXT model
+
+    /**
+     * Convert from generic model, to specific GXT model
      * 
      */
     private List<AutoRegistrationEntryGxt> createGxtModelFromEntries(List<AutoRegistrationEntry> entries) {
         List<AutoRegistrationEntryGxt> gridModel = new ArrayList<AutoRegistrationEntryGxt>();
-        for(AutoRegistrationEntry e: entries) {
+        for (AutoRegistrationEntry e : entries) {
             gridModel.add(new AutoRegistrationEntryGxt(e));
         }
         return gridModel;
     }
-    
+
     private void createStudentAccounts() {
         CmServiceAsync s = (CmServiceAsync) Registry.get("cmService");
-        s.execute(new CreateAutoRegistrationAccountsAction(adminId, student, _preview.getEntries()), new AsyncCallback<AutoRegistrationSetup>() {
-                @Override
-            public void onSuccess(AutoRegistrationSetup result) {
-                    
-                    _buttonCancel.setText("Close");
-                    _buttonCreate.setEnabled(false);
-                    
-                    _previewGrid.getStore().removeAll();
-                    _previewGrid.getStore().add(createGxtModelFromEntries(result.getEntries()));
-                    
-                    EventBus.getInstance().fireEvent(new CmEvent(EventBus.EVENT_TYPE_REFRESH_STUDENT_DATA));
-                    
-                    if(result.getErrorCount() > 0) {
-                        CatchupMathTools.showAlert("There were errors while creating the new student accounts.  Please see associated error messages");
-                    }
-                    else {
-                        CatchupMathTools.showAlert("Auto Student Records created successfully!",new CmAsyncRequestImplDefault() {
-                            @Override
-                            public void requestComplete(String requestData) {
-                                close();
-                            }
-                        });
-                    }
-                    layout();
-                }
+        s.execute(new CreateAutoRegistrationAccountsAction(adminId, student, _preview.getEntries()),
+                new AsyncCallback<AutoRegistrationSetup>() {
+                    @Override
+                    public void onSuccess(AutoRegistrationSetup result) {
 
-            @Override
-            public void onFailure(Throwable caught) {
-                caught.printStackTrace();
-                CatchupMathTools.showAlert("Auto Student Records FAILED: "  + caught.getMessage());
-                }
-        
-        });
+                        _buttonCancel.setText("Close");
+                        _buttonCreate.setEnabled(false);
+
+                        _previewGrid.getStore().removeAll();
+                        _previewGrid.getStore().add(createGxtModelFromEntries(result.getEntries()));
+
+                        EventBus.getInstance().fireEvent(new CmEvent(EventBus.EVENT_TYPE_REFRESH_STUDENT_DATA));
+
+                        if (result.getErrorCount() > 0) {
+                            CatchupMathTools
+                                    .showAlert("There were errors while creating the new student accounts.  Please see associated error messages");
+                        } else {
+                            CatchupMathTools.showAlert("Auto Student Records created successfully!",
+                                    new CmAsyncRequestImplDefault() {
+                                        @Override
+                                        public void requestComplete(String requestData) {
+                                            close();
+                                        }
+                                    });
+                        }
+                        layout();
+                    }
+
+                    @Override
+                    public void onFailure(Throwable caught) {
+                        caught.printStackTrace();
+                        CatchupMathTools.showAlert("Auto Student Records FAILED: " + caught.getMessage());
+                    }
+
+                });
     }
 
-    
-    
     private ColumnModel defineColumns() {
         List<ColumnConfig> configs = new ArrayList<ColumnConfig>();
 
         ColumnConfig date = new ColumnConfig();
-        date.setId(AutoRegistrationEntryGxt.NAME_KEY);  
-        date.setHeader("Student Name");  
+        date.setId(AutoRegistrationEntryGxt.NAME_KEY);
+        date.setHeader("Student Name");
         date.setWidth(125);
         date.setSortable(true);
         date.setMenuDisabled(true);
         configs.add(date);
-        
+
         ColumnConfig program = new ColumnConfig();
-        program.setId(AutoRegistrationEntryGxt.PASSWORD_KEY);  
-        program.setHeader("Password");  
+        program.setId(AutoRegistrationEntryGxt.PASSWORD_KEY);
+        program.setHeader("Password");
         program.setWidth(125);
         program.setSortable(true);
         program.setMenuDisabled(true);
         configs.add(program);
-        
+
         ColumnConfig message = new ColumnConfig();
-        message.setId(AutoRegistrationEntryGxt.MESSAGE_KEY);  
-        message.setHeader("Message");  
+        message.setId(AutoRegistrationEntryGxt.MESSAGE_KEY);
+        message.setHeader("Message");
         message.setWidth(275);
         message.setSortable(true);
         message.setMenuDisabled(true);
@@ -251,26 +258,25 @@ public class AutoRegistrationWindow extends CmWindow {
 
         ColumnModel cm = new ColumnModel(configs);
         return cm;
-    }    
+    }
 }
 
-
 class AutoRegistrationEntryGxt extends BaseModelData {
-    
+
     final static String NAME_KEY = "name";
     final static String PASSWORD_KEY = "password";
     final static String MESSAGE_KEY = "message";
-    
+
     public AutoRegistrationEntryGxt(AutoRegistrationEntry entry) {
         set(NAME_KEY, entry.getName());
         set(PASSWORD_KEY, entry.getPassword());
-        
-        if(entry.getIsError() == null)
+
+        if (entry.getIsError() == null)
             set(MESSAGE_KEY, "Pending");
         else
-           set(MESSAGE_KEY,entry.getMessage());
+            set(MESSAGE_KEY, entry.getMessage());
     }
-    
+
     public void setMessage(String msg) {
         set(MESSAGE_KEY, msg);
     }
