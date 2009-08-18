@@ -61,7 +61,7 @@ public class AutoRegistrationWindow extends CmWindow {
         this.student = student;
         this.uploadFileKey = uploadFileKey;
         
-        setHeading("Auto Student Registration");
+        setHeading("Bulk Student Registration");
 
         setLayout(new CenterLayout());
         Label l = new Label("Creating Preview .. please wait");
@@ -209,7 +209,7 @@ public class AutoRegistrationWindow extends CmWindow {
                             CatchupMathTools
                                     .showAlert("There were errors while creating the new student accounts.  Please see associated error messages");
                         } else {
-                            CatchupMathTools.showAlert("Auto Student Records created successfully!",
+                            CatchupMathTools.showAlert("Bulk Student Records created successfully!",
                                     new CmAsyncRequestImplDefault() {
                                         @Override
                                         public void requestComplete(String requestData) {
@@ -223,7 +223,7 @@ public class AutoRegistrationWindow extends CmWindow {
                     @Override
                     public void onFailure(Throwable caught) {
                         caught.printStackTrace();
-                        CatchupMathTools.showAlert("Auto Student Records FAILED: " + caught.getMessage());
+                        CatchupMathTools.showAlert("Bulk Student Records FAILED: " + caught.getMessage());
                     }
 
                 });

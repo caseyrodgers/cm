@@ -117,7 +117,7 @@ public class BulkStudentRegistrationWindow extends RegisterStudent {
         _uploadForm.add(_fileUpload);
         fs.add(_uploadForm);
 
-	    fs.add(new Html("<p>Students will Log In with your school Login Name and the unique passwords you provide in the uploaded file.</p>"));
+	    fs.add(new Html("<p>Students will Log In with your school Login Name and the unique passwords you provide in the uploaded tab delimited text file.</p>"));
                 
         _formPanel.add(fs);
         
