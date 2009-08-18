@@ -11,6 +11,7 @@ mvn install:install-file -DgroupId=gwt-incubator -DartifactId=gwt-incubator -Dve
 mvn install:install-file -DgroupId=itext -DartifactId=iText -Dversion=2.1.6 -Dpackaging=jar -Dfile=iText-2.1.6.jar
 mvn install:install-file -DgroupId=gwt-debug-panel -DartifactId=gwt-debug-panel -Dversion=1.0 -Dpackaging=jar -Dfile=gwt-debug-panel-1.0.jar
 mvn install:install-file -DgroupId=xmlrpc -DartifactId=xmlrpc -Dversion=3.1.2 -Dpackaging=jar -Dfile=xmlrpc-client-3.1.2.jar
+mvn install:install-file -DgroupId=paypal -DartifactId=paypal_api_combined -Dversion=1.0 -Dpackaging=jar -Dfile=paypal_api_combined.jar 
 
 
 
