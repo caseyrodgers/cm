@@ -99,8 +99,6 @@ public class BulkStudentRegistrationWindow extends RegisterStudent {
                 }
                 
                 new AutoRegistrationWindow(_student, _uploadKey);
-                
-                // MessageBox.alert(status, msg, null);
             }
         }); 
 
