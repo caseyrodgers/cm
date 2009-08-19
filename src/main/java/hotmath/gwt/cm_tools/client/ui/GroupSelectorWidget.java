@@ -1,7 +1,5 @@
 package hotmath.gwt.cm_tools.client.ui;
 
-import java.util.List;
-
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.model.CmAdminModel;
 import hotmath.gwt.cm_tools.client.model.GroupModel;
@@ -17,6 +15,8 @@ import com.extjs.gxt.ui.client.widget.form.ComboBox;
 import com.extjs.gxt.ui.client.widget.form.ComboBox.TriggerAction;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
+import java.util.List;
+
 public class GroupSelectorWidget {
 	
 	CmAdminModel cmAdminMdl;
@@ -24,13 +24,15 @@ public class GroupSelectorWidget {
 	private ComboBox <GroupModel> groupCombo;
 	private boolean includeCreate;
 	private ProcessTracker pTracker;
+	private String id;
 
 	public GroupSelectorWidget(CmAdminModel cmAdminMdl, ListStore<GroupModel> groupStore, boolean includeCreate,
-		ProcessTracker pTracker) {
+		ProcessTracker pTracker, String id) {
 		this.cmAdminMdl= cmAdminMdl;
         this.groupStore = groupStore;
         this.includeCreate = includeCreate;
         this.pTracker = pTracker;
+        this.id = id;
         getGroupListRPC(cmAdminMdl.getId(), groupStore);
 	}
 	
@@ -46,7 +48,7 @@ public class GroupSelectorWidget {
 		combo.setTriggerAction(TriggerAction.ALL);
 		combo.setStore(groupStore);
 		combo.setTitle("Select a group");
-		combo.setId("group-combo");
+		combo.setId(this.id);
 		combo.setTypeAhead(true);
 		combo.setSelectOnFocus(true);
 		combo.setEmptyText("-- select a group --");
