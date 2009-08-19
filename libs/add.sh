@@ -1,7 +1,6 @@
 mvn install:install-file -DgroupId=com.extjs.gxt -DartifactId=gxt -Dversion=2.0 -Dpackaging=jar -Dfile=gxt-2.0.1.jar
 mvn install:install-file -DgroupId=sb -DartifactId=sblib -Dversion=2.0 -Dpackaging=jar -Dfile=sblib.jar
 mvn install:install-file -DgroupId=htmlparser -DartifactId=htmlparser -Dversion=1.6 -Dpackaging=jar -Dfile=htmlparser.jar
-mvn install:install-file -DgroupId=hotmath -DartifactId=hotmath -Dversion=2.0 -Dpackaging=jar -Dfile=hotmath2.jar
 mvn install:install-file -DgroupId=org.json -DartifactId=json -Dversion=1.0 -Dpackaging=jar -Dfile=json-1.0.jar
 mvn install:install-file -DgroupId=sbserver -DartifactId=sbserver -Dversion=2.0 -Dpackaging=jar -Dfile=sqlkitchen_server.jar
 mvn install:install-file -DgroupId=gwt2swf -DartifactId=gwt2swf -Dversion=0.6.0 -Dpackaging=jar -Dfile=gwt2swf-0.6.0.jar
@@ -12,7 +11,7 @@ mvn install:install-file -DgroupId=itext -DartifactId=iText -Dversion=2.1.6 -Dpa
 mvn install:install-file -DgroupId=gwt-debug-panel -DartifactId=gwt-debug-panel -Dversion=1.0 -Dpackaging=jar -Dfile=gwt-debug-panel-1.0.jar
 mvn install:install-file -DgroupId=xmlrpc -DartifactId=xmlrpc -Dversion=3.1.2 -Dpackaging=jar -Dfile=xmlrpc-client-3.1.2.jar
 mvn install:install-file -DgroupId=paypal -DartifactId=paypal_api_combined -Dversion=1.0 -Dpackaging=jar -Dfile=paypal_api_combined.jar 
-
+mvn install:install-file -DgroupId=hotmath -DartifactId=hotmath -Dversion=2.0 -Dpackaging=jar -Dfile=hotmath2.jar
 
 
 
