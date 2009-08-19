@@ -1,22 +1,23 @@
 package hotmath.gwt.cm_admin.client.ui;
 
-import hotmath.gwt.cm_admin.client.CatchupMathAdmin;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.service.CmServiceAsync;
 import hotmath.gwt.cm_admin.client.service.RegistrationServiceAsync;
 import hotmath.gwt.cm_tools.client.model.CmAdminDataReader;
 import hotmath.gwt.cm_tools.client.model.CmAdminDataRefresher;
 import hotmath.gwt.cm_tools.client.model.CmAdminModel;
+import hotmath.gwt.cm_tools.client.model.GroupModel;
 import hotmath.gwt.cm_tools.client.model.StringHolder;
 import hotmath.gwt.cm_tools.client.model.StudentModel;
 import hotmath.gwt.cm_tools.client.ui.AutoRegisterStudentSetup;
 import hotmath.gwt.cm_tools.client.ui.BulkStudentRegistrationWindow;
+import hotmath.gwt.cm_tools.client.ui.GroupSelectorWidget;
 import hotmath.gwt.cm_tools.client.ui.RegisterStudent;
 import hotmath.gwt.cm_tools.client.ui.StudentDetailsWindow;
 import hotmath.gwt.cm_tools.client.ui.StudentShowWorkWindow;
+import hotmath.gwt.cm_tools.client.util.ProcessTracker;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
-import hotmath.gwt.shared.client.eventbus.CmEventListener;
 import hotmath.gwt.shared.client.eventbus.CmEventListenerImplDefault;
 import hotmath.gwt.shared.client.eventbus.EventBus;
 import hotmath.gwt.shared.client.rpc.action.GetReportDefAction;
@@ -33,13 +34,19 @@ import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.MenuEvent;
 import com.extjs.gxt.ui.client.event.MessageBoxEvent;
+import com.extjs.gxt.ui.client.event.SelectionChangedEvent;
+import com.extjs.gxt.ui.client.event.SelectionChangedListener;
 import com.extjs.gxt.ui.client.event.SelectionEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.store.ListStore;
+import com.extjs.gxt.ui.client.store.Store;
+import com.extjs.gxt.ui.client.store.StoreFilter;
+import com.extjs.gxt.ui.client.util.Margins;
 import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.button.Button;
+import com.extjs.gxt.ui.client.widget.form.ComboBox;
 import com.extjs.gxt.ui.client.widget.form.FieldSet;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
@@ -47,6 +54,7 @@ import com.extjs.gxt.ui.client.widget.grid.Grid;
 import com.extjs.gxt.ui.client.widget.grid.GridSelectionModel;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
+import com.extjs.gxt.ui.client.widget.layout.FormLayout;
 import com.extjs.gxt.ui.client.widget.menu.Menu;
 import com.extjs.gxt.ui.client.widget.menu.MenuItem;
 import com.extjs.gxt.ui.client.widget.toolbar.FillToolItem;
@@ -54,7 +62,7 @@ import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
-public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefresher {
+public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefresher, ProcessTracker {
 
     static public StudentGridPanel instance;
 
@@ -66,6 +74,10 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
     FieldSet _gridContainer;
     Grid<StudentModel> _grid;
     CmAdminModel _cmAdminMdl;
+    ListStore<StudentModel> smStore;
+    
+	private ListStore <GroupModel> groupStore;
+	private ComboBox <GroupModel> groupCombo;
 
     public StudentGridPanel(CmAdminModel cmAdminMdl) {
         this._cmAdminMdl = cmAdminMdl;
@@ -77,18 +89,21 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
 
         _gridContainer = new FieldSet();
         _gridContainer.setStyleName("student-grid-panel-grid-container");
-        
+
         LayoutContainer lc = new LayoutContainer();
         lc.setLayout(new BorderLayout());
         lc.add(createToolbar(),new BorderLayoutData(LayoutRegion.NORTH,30));
-        
-        
 
         lc.add(_grid,new BorderLayoutData(LayoutRegion.CENTER));
+        
+        BorderLayoutData bdl = new BorderLayoutData(LayoutRegion.SOUTH, 60);
+        bdl.setMargins(new Margins(10, 5, 0, 5));
+        lc.add(createGroupFilter(), bdl);
         _gridContainer.add(lc);
+        
         add(_gridContainer);
+        
         final Menu contextMenu = new Menu();
-
         
         MenuItem showWork = new MenuItem("Show Work");
         showWork.addSelectionListener(new SelectionListener<MenuEvent>() {
@@ -98,7 +113,7 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
             }
         });
         contextMenu.add(showWork);
-        
+
         MenuItem editUser = new MenuItem("Edit Student");
         editUser.addSelectionListener(new SelectionListener<MenuEvent>() {
             public void componentSelected(MenuEvent ce) {
@@ -107,7 +122,7 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
             }
         });
         contextMenu.add(editUser);
-        
+
         if(CmShared.getQueryParameter("debug") != null) {
             MenuItem loginAsUser = new MenuItem("Login as User");
             loginAsUser.addSelectionListener(new SelectionListener<MenuEvent>() {
@@ -127,14 +142,13 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
             });
             contextMenu.add(debugUser);
         }
-        
+
         _grid.setContextMenu(contextMenu);
 
         instance = this;
-        
+
         CmAdminDataReader.getInstance().addReader(this);
-        
-        
+
         EventBus.getInstance().addEventListener(new CmEventListenerImplDefault() {
             public void handleEvent(CmEvent event) {
                 if(event.getEventName().equals(EventBus.EVENT_TYPE_REFRESH_STUDENT_DATA)) {
@@ -143,7 +157,7 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
             }
         });
     }
-    
+
     public void refreshData() {
         getStudentsRPC(_cmAdminMdl.getId(), _grid.getStore(), null);
     }
@@ -163,6 +177,43 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
         for (Component ti : toolBar.getItems()) {
             ti.enable();
         }
+    }
+
+    private FieldSet createGroupFilter() {
+    	
+		FieldSet fs = new FieldSet();
+		FormLayout fl = new FormLayout();
+		fl.setLabelWidth(50);
+        fl.setDefaultWidth(250);
+        fs.setLayout(fl);
+        fs.setStyleAttribute("padding-top", "10px");
+        fs.setHeading("Filter");
+        
+        groupStore = new ListStore <GroupModel> ();
+		GroupSelectorWidget gsw = new GroupSelectorWidget(_cmAdminMdl, groupStore, false, this);
+		groupCombo = gsw.groupCombo();
+		
+		GroupModel gm = new GroupModel();
+		gm.setName("--- reset ---");
+		gm.setId("--- reset---");
+		groupStore.insert(gm, 0);
+		
+		groupCombo.addSelectionChangedListener(new SelectionChangedListener<GroupModel>() {
+			public void selectionChanged(SelectionChangedEvent<GroupModel> se) {
+
+				// filter grid based on current selection
+	        	GroupModel gm = se.getSelectedItem();
+	        	
+	        	StudentModelGroupFilter smgf = new StudentModelGroupFilter();
+	        	
+	        	_grid.getStore().addFilter(smgf);
+	        	_grid.getStore().applyFilters(gm.getName());
+	        }
+	    });
+		
+		fs.add(groupCombo);
+		
+		return fs;
     }
 
     /**
@@ -189,7 +240,7 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
         
         new StudentShowWorkWindow(sm);
     }
-    
+
     private void showDebugInfo() {
         StudentModel sm = _grid.getSelectionModel().getSelectedItem();
         if (sm == null)
@@ -197,28 +248,28 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
         
         CatchupMathTools.showAlert("UID: " + sm.getUid());
     }
-    
+
     private ToolBar createToolbar() {
         ToolBar toolbar = new ToolBar();
-        
+
         // toolbar.setHorizontalAlign(HorizontalAlignment.CENTER);
         toolbar.setStyleName("student-grid-panel-toolbar");
 
         Button ti = registerStudentToolItem(_grid, _cmAdminMdl);
         toolbar.add(ti);
-        
+
         ti = editStudentToolItem(_grid, _cmAdminMdl);
         toolbar.add(ti);
 
         ti = studentDetailsToolItem(_grid);
         toolbar.add(ti);
-        
+
         ti = showWorkToolItem(_grid,_cmAdminMdl);
         toolbar.add(ti);
 
         ti = unregisterStudentToolItem(_grid);
         toolbar.add(ti);
-        
+
         toolbar.add(new FillToolItem());
 
         Button btn = new Button("Bulk Registration");
@@ -289,7 +340,7 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
             public void componentSelected(ButtonEvent ce) {
                 editStudent();
                 if (grid.getStore().getCount() > 0) {
-                    ce.getComponent().enable();
+                    //ce.getComponent().enable();
                 }
             }
 
@@ -325,7 +376,7 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
                     new StudentShowWorkWindow(sm);
                 }
                 if (grid.getStore().getCount() > 0) {
-                    ce.getComponent().enable();
+                    //ce.getComponent().enable();
                 }
             }
 
@@ -539,6 +590,21 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
             }
         });
     }
+
+	//@Override
+	public void beginStep() {
+		// empty impl
+	}
+
+	//@Override
+	public void completeStep() {
+		// empty impl
+	}
+
+	//@Override
+	public void finish() {
+		// empty impl
+	}
 }
 
 class StudenPanelButton extends Button {
@@ -546,4 +612,16 @@ class StudenPanelButton extends Button {
         super(name);
         addStyleName("student-grid-panel-button");
     }
+}
+
+class StudentModelGroupFilter implements StoreFilter <StudentModel> {
+
+	//@Override
+	public boolean select(Store<StudentModel> store, StudentModel parent,
+			StudentModel item, String property) {
+		System.out.println("+++ item.getGroup(): " + item.getGroup() + ", property: " + property);
+		if ("--- reset ---".equals(property)) return true;
+		return (property.equals(item.getGroup()));
+	}
+
 }
