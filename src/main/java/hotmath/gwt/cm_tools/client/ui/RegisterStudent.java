@@ -13,6 +13,7 @@ import hotmath.gwt.shared.client.eventbus.CmEvent;
 import hotmath.gwt.shared.client.eventbus.EventBus;
 import hotmath.gwt.shared.client.util.CmException;
 import hotmath.gwt.shared.client.util.UserInfo;
+import hotmath.gwt.cm_tools.client.util.ProcessTracker;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -45,7 +46,7 @@ import com.extjs.gxt.ui.client.widget.layout.FormLayout;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
-public class RegisterStudent extends LayoutContainer {
+public class RegisterStudent extends LayoutContainer implements ProcessTracker {
 	
 	protected CmWindow _window;
 	
@@ -163,13 +164,12 @@ public class RegisterStudent extends LayoutContainer {
 			passCode.setValue((String)stuMdl.getPasscode());
 		}
 		_fsProfile.add(passCode);
-
 		
 		_formPanel.add(_fsProfile);
-		
+
         groupStore = new ListStore <GroupModel> ();
-        getGroupListRPC(cmAdminMdl.getId(), groupStore);
-        groupCombo = groupCombo(groupStore);
+		GroupSelectorWidget gsw = new GroupSelectorWidget(cmAdminMdl, groupStore, true, this);
+		groupCombo = gsw.groupCombo();
 		if(UserInfo.getInstance() == null || !UserInfo.getInstance().isSingleUser()) {
 		    _fsProfile.add(groupCombo);
 		}
@@ -381,6 +381,7 @@ public class RegisterStudent extends LayoutContainer {
 		combo.setWidth(280);
 		
 	    combo.addSelectionChangedListener(new SelectionChangedListener<SubjectModel>() {
+			@SuppressWarnings("unchecked")
 			public void selectionChanged(SelectionChangedEvent<SubjectModel> se) {
 
 				if (loading) return;
@@ -406,38 +407,6 @@ public class RegisterStudent extends LayoutContainer {
 		return combo;
 	}
 
-	private ComboBox<GroupModel> groupCombo(ListStore<GroupModel> store) {
-		ComboBox<GroupModel> combo = new ComboBox<GroupModel>();
-		combo.setFieldLabel("Group");
-		combo.setValue(store.getAt(0));	
-		combo.setForceSelection(false);
-		combo.setDisplayField(GroupModel.NAME_KEY);
-		combo.setEditable(false);
-		combo.setMaxLength(30);
-		combo.setAllowBlank(false);
-		combo.setTriggerAction(TriggerAction.ALL);
-		combo.setStore(store);
-		combo.setTitle("Select a group");
-		combo.setId("group-combo");
-		combo.setTypeAhead(true);
-		combo.setSelectOnFocus(true);
-		combo.setEmptyText("-- select a group --");
-		combo.setWidth(280);
-		
-	    combo.addSelectionChangedListener(new SelectionChangedListener<GroupModel>() {
-			public void selectionChanged(SelectionChangedEvent<GroupModel> se) {
-
-				if (loading) return;
-	        	
-	        	GroupModel gm = se.getSelectedItem();
-	        	if (gm.getName().equals(GroupModel.NEW_GROUP)) {
-	        		GroupWindow gw = new GroupWindow(cmAdminMdl, groupCombo, true);
-	        	}
-	        }
-	    });
-		return combo;
-	}
-	
 	private ComboBox<ChapterModel> chapterCombo(ListStore<ChapterModel> store) {
 		ComboBox<ChapterModel> combo = new ComboBox<ChapterModel>();
 		combo.setFieldLabel("Chapter");
@@ -490,7 +459,6 @@ public class RegisterStudent extends LayoutContainer {
 
 	private Button saveButton(final FieldSet fs, final CombinedFormPanel fp) {
 		Button saveBtn = new Button("Save", new SelectionListener<ButtonEvent>() {  
-	        @SuppressWarnings("unchecked")
 			@Override  
 	    	public void componentSelected(ButtonEvent cx) {
 	            try {
@@ -566,34 +534,7 @@ public class RegisterStudent extends LayoutContainer {
         });
 		
 	}
-	
-	private void getGroupListRPC(Integer uid, final ListStore <GroupModel> store) {
-
-		inProcessCount++;
-		PrescriptionServiceAsync s = (PrescriptionServiceAsync) Registry.get("prescriptionService");
-		s.getActiveGroups(uid, new AsyncCallback <List<GroupModel>>() {
-
-			public void onSuccess(List<GroupModel> result) {
-				// append 'New Group' to end of List
-				GroupModel gm = new GroupModel();
-				gm.setName(GroupModel.NEW_GROUP);
-				gm.setId(GroupModel.NEW_GROUP);
-				result.add(gm);
-				
-				groupStore.add(result);
-				
-				inProcessCount--;
-				setComboBoxSelections();
-        	}
-
-			public void onFailure(Throwable caught) {
-        		String msg = caught.getMessage();
-        		CatchupMathTools.showAlert(msg);
-        	}
-        });
 		
-	}
-	
 	protected void addUserRPC(final StudentModel sm) {
 	    PrescriptionServiceAsync s = (PrescriptionServiceAsync) Registry.get("prescriptionService");
 		
@@ -1000,6 +941,8 @@ public class RegisterStudent extends LayoutContainer {
 		return list;
 	}
 	
+	
+	
 	class StudyProgram extends BaseModelData {
 		private static final long serialVersionUID = 5574506049604177840L;
 
@@ -1025,6 +968,21 @@ public class RegisterStudent extends LayoutContainer {
 		String getPassPercent() {
 			return get("pass-percent");
 		}
+	}
+
+	//@Override
+	public void beginStep() {
+		inProcessCount++;
+	}
+
+	//@Override
+	public void completeStep() {
+		inProcessCount--;
+	}
+
+	//@Override
+	public void finish() {
+		setComboBoxSelections();
 	}
 }
 
