@@ -190,12 +190,12 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
         fs.setHeading("Filter");
         
         groupStore = new ListStore <GroupModel> ();
-		GroupSelectorWidget gsw = new GroupSelectorWidget(_cmAdminMdl, groupStore, false, this);
+		GroupSelectorWidget gsw = new GroupSelectorWidget(_cmAdminMdl, groupStore, false, this, "group-filter");
 		groupCombo = gsw.groupCombo();
 		
 		GroupModel gm = new GroupModel();
-		gm.setName("--- reset ---");
-		gm.setId("--- reset---");
+		gm.setName("--- No Filtering ---");
+		gm.setId("--- No Filtering---");
 		groupStore.insert(gm, 0);
 		
 		groupCombo.addSelectionChangedListener(new SelectionChangedListener<GroupModel>() {
@@ -619,7 +619,7 @@ class StudentModelGroupFilter implements StoreFilter <StudentModel> {
 	//@Override
 	public boolean select(Store<StudentModel> store, StudentModel parent,
 			StudentModel item, String property) {
-		if ("--- reset ---".equals(property)) return true;
+		if ("--- No Filtering ---".equals(property)) return true;
 		return (property.equals(item.getGroup()));
 	}
 
