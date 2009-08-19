@@ -619,7 +619,6 @@ class StudentModelGroupFilter implements StoreFilter <StudentModel> {
 	//@Override
 	public boolean select(Store<StudentModel> store, StudentModel parent,
 			StudentModel item, String property) {
-		System.out.println("+++ item.getGroup(): " + item.getGroup() + ", property: " + property);
 		if ("--- reset ---".equals(property)) return true;
 		return (property.equals(item.getGroup()));
 	}
