@@ -165,15 +165,15 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
 		}
 		_fsProfile.add(passCode);
 		
-		_formPanel.add(_fsProfile);
-
         groupStore = new ListStore <GroupModel> ();
-		GroupSelectorWidget gsw = new GroupSelectorWidget(cmAdminMdl, groupStore, true, this);
+		GroupSelectorWidget gsw = new GroupSelectorWidget(cmAdminMdl, groupStore, true, this, "group-combo");
 		groupCombo = gsw.groupCombo();
 		if(UserInfo.getInstance() == null || !UserInfo.getInstance().isSingleUser()) {
 		    _fsProfile.add(groupCombo);
 		}
-        
+
+		_formPanel.add(_fsProfile);
+
         _fsProgram = new FieldSet();
         _fsProgram.setHeading("Assign Program");
         _fsProgram.setStyleName("register-student-fieldset");
