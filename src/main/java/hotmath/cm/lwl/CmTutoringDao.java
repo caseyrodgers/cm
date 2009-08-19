@@ -32,17 +32,27 @@ public class CmTutoringDao {
         Integer adminId = student.getAdminUid();
         AccountInfoModel accountInfo = new CmAdminDao().getAccountInfo(adminId);
         
-        StudentTutoringInfo sti = new StudentTutoringInfo(accountInfo.getSubscriberId());
-        
+        StudentTutoringInfo sti = null;
         try {
             LWLIntegrationManager.LwlAccountInfo lwlInfo = LWLIntegrationManager.getInstance().getLwlIntegrationKey(accountInfo.getSubscriberId());
-            sti.setLwlId(lwlInfo.getStudentId());
+            sti = new StudentTutoringInfo(accountInfo.getSubscriberId(), lwlInfo.getStudentId(), lwlInfo.getSchoolId(),lwlInfo.getAccountType());
+            
+            
+            // if a school account, then read the schoolNumber associated with the school
+            HotMathSubscriber sub = HotMathSubscriberManager.findSubscriber(sti.getSubscriberId());
+            if(sub.getSubscriberType().equals("ST")) {
+                AccountInfoModel school = new CmAdminDao().getAccountInfo(student.getAdminUid());
+                LWLIntegrationManager.LwlAccountInfo schoolLwlInfo = LWLIntegrationManager.getInstance().getLwlIntegrationKey(school.getSubscriberId());
+                
+                Integer schoolNumber = schoolLwlInfo.getSchoolId();
+                sti.setSchoolNumber(schoolNumber);
+            }
         }
         catch(Exception e) {
             e.printStackTrace();
         }
         
-        if(sti.getLwlId() == 0) {
+        if(sti.getStudentNumber() == 0) {
             /** Setup basic info needed for LWL integration
              * 
              */

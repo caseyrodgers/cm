@@ -10,18 +10,15 @@ package hotmath.cm.lwl;
  */
 public class StudentTutoringInfo {
     String subscriberId;
-    int lwlId;
-    
-    public int getLwlId() {
-        return lwlId;
-    }
+    Integer schoolNumber;
+    Integer studentNumber;
+    Integer accountType;
 
-    public void setLwlId(int lwlId) {
-        this.lwlId = lwlId;
-    }
-
-    public StudentTutoringInfo(String subId) {
+    public StudentTutoringInfo(String subId, Integer studentNumber, Integer schoolNumber, Integer accountType) {
         this.subscriberId = subId;
+        this.studentNumber = studentNumber;
+        this.schoolNumber = schoolNumber;
+        this.accountType = accountType;
     }
     
     public String getSubscriberId() {
@@ -29,5 +26,29 @@ public class StudentTutoringInfo {
     }
     public void setSubscriberId(String subscriberId) {
         this.subscriberId = subscriberId;
+    }
+
+    public Integer getSchoolNumber() {
+        return schoolNumber;
+    }
+
+    public void setSchoolNumber(Integer schoolNumber) {
+        this.schoolNumber = schoolNumber;
+    }
+
+    public Integer getStudentNumber() {
+        return studentNumber;
+    }
+
+    public void setStudentNumber(Integer studentNumber) {
+        this.studentNumber = studentNumber;
+    }
+
+    public Integer getAccountType() {
+        return accountType;
+    }
+
+    public void setAccountType(Integer accountType) {
+        this.accountType = accountType;
     }
 }
