@@ -77,7 +77,7 @@ public class StudentLessonTopicsStatusWindow extends CmWindow {
         add(cp);
 
         Button stateStandardsBtn = new Button("California Standards");
-        stateStandardsBtn.setToolTip("Show corresponding california state standards");
+        stateStandardsBtn.setToolTip("Show corresponding California state standards");
         stateStandardsBtn.addSelectionListener(new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent ce) {
                 LessonItemModel lim = limGrid.getSelectionModel().getSelectedItem();
