@@ -30,6 +30,7 @@ import hotmath.gwt.shared.server.service.command.SaveAutoRegistrationCommand;
 import hotmath.gwt.shared.server.service.command.SaveFeedbackCommand;
 import hotmath.gwt.shared.server.service.command.SaveQuizCurrentResultCommand;
 import hotmath.gwt.shared.server.service.command.SaveWhiteboardDataCommand;
+import hotmath.gwt.shared.server.service.command.UnregisterStudentsCommand;
 import hotmath.gwt.shared.server.service.command.UpdateStudentCommand;
 import hotmath.util.HMConnectionPool;
 import hotmath.util.sql.SqlUtilities;
@@ -120,6 +121,7 @@ public class ActionDispatcher {
         addCommand(CreateAutoRegistrationAccountCommand.class);
         addCommand(GetStateStandardsCommand.class);
         addCommand(GetLessonItemsForTestRunCommand.class);
+        addCommand(UnregisterStudentsCommand.class);
     }
     
     
