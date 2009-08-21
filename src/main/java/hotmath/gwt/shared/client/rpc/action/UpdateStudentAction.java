@@ -5,7 +5,9 @@ import hotmath.gwt.shared.client.rpc.Action;
 
 public class UpdateStudentAction implements Action<StudentModel> {
     
-    StudentModel student;
+	private static final long serialVersionUID = 728083490224703003L;
+	
+	StudentModel student;
     Boolean stuChanged;
     Boolean progChanged;
     Boolean progIsNew;
