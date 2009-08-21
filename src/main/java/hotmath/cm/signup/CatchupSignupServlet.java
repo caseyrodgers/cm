@@ -81,10 +81,13 @@ public class CatchupSignupServlet extends HttpServlet {
             sub = Registration.setupPurchase(Registration.getLoginInfo(req), sifo.getCardEmail(), sifo.getFirstName(),
                     sifo.getLastName(), sifo.getBillingZip(), "","", "", sifo);
 
+            @SuppressWarnings("unchecked")
+            Map<String, String[]> formData = req.getParameterMap();
+            String selectedService = getFData(formData.get("selected_services"));
 
             // look up the price plan for each service
             List<PurchasePlan> plans = new ArrayList<PurchasePlan>();
-            PurchasePlan purchasePlan = new PurchasePlan("TYPE_SERVICE_CATCHUP");
+            PurchasePlan purchasePlan = new PurchasePlan(selectedService);
             plans.add(purchasePlan);
             
             

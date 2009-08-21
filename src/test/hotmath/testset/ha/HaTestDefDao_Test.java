@@ -19,6 +19,19 @@ public class HaTestDefDao_Test extends CmDbTestCase {
     }
     
     
+    public void testGetSubTitle3() throws Exception {
+        int uid = setupDemoAccount();
+        
+        CmStudentDao dao = new CmStudentDao();
+        dao.assignProgramToStudent(conn,uid, CmProgram.ALG2_CHAP,"Integers");
+        StudentUserProgramModel spi = dao.loadProgramInfo(conn,uid);
+        
+        HaTestDefDao testDefDao = new HaTestDefDao();
+        ChapterInfo chapterInfo = testDefDao.getChapterInfo(conn,spi);
+        assertNotNull(chapterInfo);  // make sure has chapter number
+        assertTrue(chapterInfo.getChapterNumber() > 0);
+    }    
+    
     public void testGetSubTitle2() throws Exception {
         int uid = setupDemoAccount();
         

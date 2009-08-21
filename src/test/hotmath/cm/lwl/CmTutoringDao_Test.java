@@ -1,6 +1,7 @@
 package hotmath.cm.lwl;
 
 import hotmath.gwt.cm.server.CmDbTestCase;
+import hotmath.gwt.cm_admin.server.model.CmStudentDao;
 import hotmath.gwt.cm_tools.client.model.StudentModel;
 
 public class CmTutoringDao_Test extends CmDbTestCase {
@@ -13,13 +14,13 @@ public class CmTutoringDao_Test extends CmDbTestCase {
     @Override
     protected void setUp() throws Exception {
         super.setUp();
-        uid = 4050; // setupDemoAccount();
+        uid = setupDemoAccount(); // 4050; // 
         new CmTutoringDao().addTutoring(conn, uid);
     }
     
     @Override
     protected void tearDown() throws Exception {
-        // new CmStudentDao().removeUser(conn, new CmStudentDao().getStudentModel(uid));
+       new CmStudentDao().removeUser(conn, new CmStudentDao().getStudentModel(uid));
     }
     
     public void testGetTutoringInfo() throws Exception {

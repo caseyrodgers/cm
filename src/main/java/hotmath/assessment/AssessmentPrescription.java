@@ -119,10 +119,13 @@ public class AssessmentPrescription {
 
             double numPids = ((double) wi / (double) sumOfWeights) * totalPrescription;
             int numPids2get = (int) Math.ceil(numPids);
-            // now choose tham many pids from the pool for this item
+            
+            // now choose pids from the pool for this item
             List<ProblemID> workBookPids = id.getWookBookSolutionPool(conn);
-            if (workBookPids.size() == 0)
+            if (workBookPids.size() == 0) {
+                logger.warn("No pool solutions found for + '" + id.getInmhItem().toString() + "'");
                 continue; // nothing to see here.
+            }
 
             AssessmentPrescriptionSession session = new AssessmentPrescriptionSession(this,"Session: " + (sessNum + 1));
             for(ProblemID pid: workBookPids) {
