@@ -317,7 +317,7 @@ public class CmStudentDao {
                 if(!rsCheck.first()) {
                     removeUser(conn, sm);
                     removeCount++;
-                    break;
+                    continue;
                 }
             }
             catch (Exception e) {
