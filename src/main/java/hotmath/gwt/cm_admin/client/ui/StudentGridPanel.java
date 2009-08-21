@@ -21,6 +21,7 @@ import hotmath.gwt.shared.client.eventbus.CmEvent;
 import hotmath.gwt.shared.client.eventbus.CmEventListenerImplDefault;
 import hotmath.gwt.shared.client.eventbus.EventBus;
 import hotmath.gwt.shared.client.rpc.action.GetReportDefAction;
+import hotmath.gwt.shared.client.rpc.action.UnregisterStudentsAction;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -54,11 +55,14 @@ import com.extjs.gxt.ui.client.widget.grid.Grid;
 import com.extjs.gxt.ui.client.widget.grid.GridSelectionModel;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
-import com.extjs.gxt.ui.client.widget.layout.FormLayout;
 import com.extjs.gxt.ui.client.widget.menu.Menu;
 import com.extjs.gxt.ui.client.widget.menu.MenuItem;
 import com.extjs.gxt.ui.client.widget.toolbar.FillToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
+
+import com.google.gwt.json.client.JSONObject;
+import com.google.gwt.json.client.JSONParser;
+import com.google.gwt.json.client.JSONValue;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
@@ -99,6 +103,7 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
         BorderLayoutData bdl = new BorderLayoutData(LayoutRegion.SOUTH, 60);
         bdl.setMargins(new Margins(10, 5, 0, 5));
         lc.add(createGroupFilter(), bdl);
+        
         _gridContainer.add(lc);
         
         add(_gridContainer);
@@ -179,13 +184,17 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
         }
     }
 
+    protected static final String NO_FILTERING = "--- No Filtering ---";
+    
     private FieldSet createGroupFilter() {
     	
+		BorderLayout bl = new BorderLayout();
+		ToolBar tb = new ToolBar();
+        tb.setStyleName("student-grid-panel-toolbar");
+
 		FieldSet fs = new FieldSet();
-		FormLayout fl = new FormLayout();
-		fl.setLabelWidth(50);
-        fl.setDefaultWidth(250);
-        fs.setLayout(fl);
+		fs.add(tb);
+        fs.setLayout(bl);
         fs.setStyleAttribute("padding-top", "10px");
         fs.setHeading("Filter");
         
@@ -194,26 +203,74 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
 		groupCombo = gsw.groupCombo();
 		
 		GroupModel gm = new GroupModel();
-		gm.setName("--- No Filtering ---");
-		gm.setId("--- No Filtering---");
+		gm.setName(NO_FILTERING);
+		gm.setId(NO_FILTERING);
 		groupStore.insert(gm, 0);
+		
+		final Button unregGrp = unregisterGroupButton(_grid);
+		unregGrp.disable();
 		
 		groupCombo.addSelectionChangedListener(new SelectionChangedListener<GroupModel>() {
 			public void selectionChanged(SelectionChangedEvent<GroupModel> se) {
 
 				// filter grid based on current selection
 	        	GroupModel gm = se.getSelectedItem();
-	        	
+	        	String groupName = gm.getName();
+
 	        	StudentModelGroupFilter smgf = new StudentModelGroupFilter();
-	        	
+
+	        	if (NO_FILTERING.equals(groupName))
+	        		unregGrp.disable();
+	        	else
+	        		unregGrp.enable();
+
 	        	_grid.getStore().addFilter(smgf);
-	        	_grid.getStore().applyFilters(gm.getName());
+	        	_grid.getStore().applyFilters(groupName);
 	        }
 	    });
-		
-		fs.add(groupCombo);
+
+		tb.add(groupCombo);
+		tb.add(unregGrp);
 		
 		return fs;
+    }
+
+    private Button unregisterGroupButton(final Grid<StudentModel> grid) {
+        final Button btn = new StudenPanelButton("Unregister Group");
+        btn.setToolTip("Unregister all students in group.");
+        btn.setStyleAttribute("padding-left", "10px");
+
+        btn.addSelectionListener(new SelectionListener<ButtonEvent>() {
+            @Override
+            public void componentSelected(ButtonEvent ce) {
+            	final ListStore<StudentModel> store = grid.getStore();
+
+            	if (store.getModels().size() > 0) {
+                    String msg = "Unregister " + store.getModels().size() + " students ?";
+                    MessageBox.confirm("Unregister Students?", msg, new Listener<MessageBoxEvent>() {
+                        public void handleEvent(MessageBoxEvent be) {
+                            String btnText = be.getButtonClicked().getText();
+                            if (btnText.equalsIgnoreCase("yes")) {
+                                List <StudentModel> list = store.getModels();
+                                for (StudentModel sm : list) {
+                                	store.remove(sm);
+                                }
+                                unregisterStudentsRPC(list);
+                            }
+                        }
+                    });
+            	}
+            	else {
+            		MessageBox.info("No Students", "No students to unregister", new Listener<MessageBoxEvent>() {
+                        public void handleEvent(MessageBoxEvent be) {
+            		        btn.disable();
+                        }
+            		});
+            	}
+            }
+
+        });
+        return btn;
     }
 
     /**
@@ -251,8 +308,6 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
 
     private ToolBar createToolbar() {
         ToolBar toolbar = new ToolBar();
-
-        // toolbar.setHorizontalAlign(HorizontalAlignment.CENTER);
         toolbar.setStyleName("student-grid-panel-toolbar");
 
         Button ti = registerStudentToolItem(_grid, _cmAdminMdl);
@@ -340,7 +395,7 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
             public void componentSelected(ButtonEvent ce) {
                 editStudent();
                 if (grid.getStore().getCount() > 0) {
-                    //ce.getComponent().enable();
+                    ce.getComponent().enable();
                 }
             }
 
@@ -376,7 +431,7 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
                     new StudentShowWorkWindow(sm);
                 }
                 if (grid.getStore().getCount() > 0) {
-                    //ce.getComponent().enable();
+                    ce.getComponent().enable();
                 }
             }
 
@@ -552,6 +607,43 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
         });
     }
 
+    protected void unregisterStudentsRPC(List<StudentModel> smList) {
+        CmServiceAsync cms = (CmServiceAsync) Registry.get("cmService");
+
+        cms.execute(new UnregisterStudentsAction(smList), new AsyncCallback<StringHolder>() {
+            public void onSuccess(final StringHolder result) {
+            	String response = result.getResponse();
+            	StringBuffer sb = new StringBuffer();
+                JSONValue rspValue = JSONParser.parse(response);
+                JSONObject rspObj  = rspValue.isObject();
+                String value = rspObj.get("deactivateCount").isString().stringValue();
+                int deactivateCount = Integer.valueOf(value);
+                value = rspObj.get("deactivateErrorCount").isString().stringValue();
+                int deactivateErrorCount = Integer.valueOf(value);
+                value = rspObj.get("removeCount").isString().stringValue();
+                int removeCount = Integer.valueOf(value);
+                value = rspObj.get("removeErrorCount").isString().stringValue();
+                int removeErrorCount = Integer.valueOf(value);
+
+                if (deactivateCount> 0)
+                	sb.append("Deactivated ").append(deactivateCount).append(" student(s).").append("<br/>");
+                if (deactivateErrorCount> 0)
+                	sb.append("Deactivation of ").append(deactivateErrorCount).append(" student(s) failed.").append("<br/>");
+                if (removeCount > 0)
+                	sb.append("Removed ").append(removeCount).append(" student(s).").append("<br/>");
+                if (removeErrorCount> 0)
+                	sb.append("Removal of ").append(removeErrorCount).append(" student(s) failed.");
+
+                CatchupMathTools.showAlert(sb.toString());
+            }
+
+            public void onFailure(Throwable caught) {
+                String msg = caught.getMessage();
+                CatchupMathTools.showAlert(msg);
+            }
+        });
+    }
+
     protected void deactivateUserRPC(StudentModel sm) {
         RegistrationServiceAsync s = (RegistrationServiceAsync) Registry.get("registrationService");
 
@@ -619,7 +711,7 @@ class StudentModelGroupFilter implements StoreFilter <StudentModel> {
 	//@Override
 	public boolean select(Store<StudentModel> store, StudentModel parent,
 			StudentModel item, String property) {
-		if ("--- No Filtering ---".equals(property)) return true;
+		if (StudentGridPanel.NO_FILTERING.equals(property)) return true;
 		return (property.equals(item.getGroup()));
 	}
 
