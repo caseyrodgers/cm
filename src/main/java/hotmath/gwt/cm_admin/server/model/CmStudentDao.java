@@ -3,6 +3,7 @@ package hotmath.gwt.cm_admin.server.model;
 import hotmath.assessment.InmhItemData;
 import hotmath.gwt.cm_tools.client.model.ChapterModel;
 import hotmath.gwt.cm_tools.client.model.LessonItemModel;
+import hotmath.gwt.cm_tools.client.model.StringHolder;
 import hotmath.gwt.cm_tools.client.model.StudentActiveInfo;
 import hotmath.gwt.cm_tools.client.model.StudentActivityModel;
 import hotmath.gwt.cm_tools.client.model.StudentModel;
@@ -297,6 +298,67 @@ public class CmStudentDao {
     private static final String DEACTIVATE_STUDENT_SQL =
             "update HA_USER set is_active = 0, user_passcode = ? where uid = ?";
 
+    public StringHolder unregisterStudents(Connection conn, List<StudentModel> smList) {
+    	int removeCount = 0;
+    	int removeErrorCount = 0;
+    	int deactivateCount = 0;
+    	int deactivateErrorCount = 0;
+        PreparedStatement ps = null;
+        
+    	for (StudentModel sm : smList) {
+            Statement stmt = null;
+            ResultSet rsCheck = null;
+            try {
+                /*
+                 *  Remove from DB if user has never used account
+                 */
+                stmt = conn.createStatement();
+                rsCheck = stmt.executeQuery("select 'x' from HA_TEST where user_id = " + sm.getUid());
+                if(!rsCheck.first()) {
+                    removeUser(conn, sm);
+                    removeCount++;
+                    break;
+                }
+            }
+            catch (Exception e) {
+            	removeErrorCount++;
+            	logger.error(String.format("*** Error removing student with uid: %d", sm.getUid()), e);
+            }
+            finally {
+                SqlUtilities.releaseResources(rsCheck, stmt, null);
+            }
+            
+            /*
+             * account has been used, deactivate
+             */
+            try {
+                ps = conn.prepareStatement(DEACTIVATE_STUDENT_SQL);
+                StringBuilder sb = new StringBuilder();
+                sb.append(sm.getUid()).append(".").append(System.currentTimeMillis());
+                ps.setString(1, sb.toString());
+                ps.setInt(2, sm.getUid());
+                if (ps.executeUpdate() < 1) {
+                	deactivateErrorCount++;
+                	logger.error(String.format("*** Error deactivating student with uid: %d", sm.getUid()));
+                }
+                deactivateCount++;
+            }
+            catch (Exception e) {
+            	deactivateErrorCount++;
+            	logger.error(String.format("*** Error deactivating student with uid: %d", sm.getUid()), e);
+            }
+            finally {
+                SqlUtilities.releaseResources(null, ps, null);            	
+            }
+    	}
+    	StringHolder sh = new StringHolder();
+    	StringBuilder sb = new StringBuilder();
+    	sb.append("{ deactivateCount: '").append(deactivateCount).append("', deactivateErrorCount: '").append(deactivateErrorCount).append("'");
+    	sb.append(", removeCount: '").append(removeCount).append("', removeErrorCount: '").append(removeErrorCount).append("' }");
+    	sh.setResponse(sb.toString());
+        return sh;	
+    }
+    
     /**
      * The student's passcode is set to their uid + '.' + current time in msec
      * to avoid "locking up" up the previous passcode and to prevent passcode
@@ -304,7 +366,7 @@ public class CmStudentDao {
      * 
      * 
      * NOTE: if student does not any history (no entry in HA_TEST), then delete
-     * from DB instead of inactivating.
+     *       from DB instead of deactivating.
      * 
      */
     public StudentModel deactivateUser(StudentModel sm) throws Exception {
@@ -314,8 +376,6 @@ public class CmStudentDao {
 
         try {
             conn = HMConnectionPool.getConnection();
-            
-            
             
             /** Remove from DB if user has never used account
              * 
@@ -551,10 +611,9 @@ public class CmStudentDao {
 
         try {
             conn = HMConnectionPool.getConnection();
-            
 
             setTestConfig(conn, sm);
-            
+
             String pp = sm.getPassPercent();
             if (pp != null) {
                 int passPcnt = Integer.parseInt(pp.substring(0, pp.indexOf("%")));
