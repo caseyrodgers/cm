@@ -189,4 +189,8 @@ public class CatchupMathAdmin implements EntryPoint, ValueChangeHandler<String> 
             loadMainPage();
         }
     }
+    
+    public AccountInfoPanel getAccountInfoPanel() {
+    	return infoPanel;
+    }
 }
