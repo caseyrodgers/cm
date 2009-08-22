@@ -14,8 +14,6 @@ public class UnregisterStudentsCommand implements ActionHandler<UnregisterStuden
     @Override
     public StringHolder execute(Connection conn, UnregisterStudentsAction action) throws Exception {
         CmStudentDao dao = new CmStudentDao();
-        System.out.println("+++ execute(): action.getStudentList().size(): " + action.getStudentList().size());
-
         return dao.unregisterStudents(conn, action.getStudentList());
     }
 
