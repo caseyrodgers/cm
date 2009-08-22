@@ -475,12 +475,14 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
                     final StudentModel sm = l.get(0);
 
                     String s = "Unregister " + sm.getName() + " ?";
-                    MessageBox.confirm("Unregister Student?", s, new Listener<MessageBoxEvent>() {
+                    MessageBox.confirm("Unregister Student", s, new Listener<MessageBoxEvent>() {
                         public void handleEvent(MessageBoxEvent be) {
                             String btnText = be.getButtonClicked().getText();
                             if (btnText.equalsIgnoreCase("yes")) {
                                 grid.getStore().remove(sm);
-                                deactivateUserRPC(sm);
+                                List<StudentModel> list = new ArrayList<StudentModel>();
+                                list.add(sm);
+                                unregisterStudentsRPC(list);
                             }
                         }
                     });
@@ -646,22 +648,6 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
                 AccountInfoPanel aip = CatchupMathAdmin.getInstance().getAccountInfoPanel();
                 aip.refreshData();
 
-            }
-
-            public void onFailure(Throwable caught) {
-                String msg = caught.getMessage();
-                CatchupMathTools.showAlert(msg);
-            }
-        });
-    }
-
-    protected void deactivateUserRPC(StudentModel sm) {
-        RegistrationServiceAsync s = (RegistrationServiceAsync) Registry.get("registrationService");
-
-        s.deactivateUser(sm, new AsyncCallback<StudentModel>() {
-
-            public void onSuccess(StudentModel ai) {
-                CmAdminDataReader.getInstance().fireRefreshData();
             }
 
             public void onFailure(Throwable caught) {
