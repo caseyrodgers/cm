@@ -636,12 +636,12 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
 
                 if (unregisterCount > 0) {
                 	sb.append("Unregistered ").append(unregisterCount);
-                	sb.append((unregisterCount > 1)?" students.":"student.");
+                	sb.append((unregisterCount > 1)?" students.":" student.");
                 	if (unregisterErrorCount > 0) sb.append(" <br/>");
                 }
                 if (unregisterErrorCount> 0) {
                 	sb.append("Unregister failed for ").append(unregisterErrorCount);
-                	sb.append((unregisterErrorCount > 1)?" students.":"student.");
+                	sb.append((unregisterErrorCount > 1)?" students.":" student.");
                 }
 
                 CatchupMathTools.showAlert(sb.toString());
