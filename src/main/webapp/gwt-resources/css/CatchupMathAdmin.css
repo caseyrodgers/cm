@@ -193,7 +193,7 @@
 
 .student-grid-panel-grid-container {
    margin-left: 100px;
-   height: 370px;   
+   height: 450px;   
    width: 750px;
 }   
 
@@ -201,6 +201,13 @@
   margin-top: 5px;
   margin-left: 5px;
   padding-right: 10px;
+  height: 25px;
+}
+
+.student-grid-lower-toolbar-container {
+  margin-top: 5px;
+  padding-right: 10px;
+  height: 55px;
 }
 
 .student-grid-panel-button {
