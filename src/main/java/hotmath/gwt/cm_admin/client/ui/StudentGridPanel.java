@@ -1,5 +1,6 @@
 package hotmath.gwt.cm_admin.client.ui;
 
+import hotmath.gwt.cm_admin.client.CatchupMathAdmin;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.service.CmServiceAsync;
 import hotmath.gwt.cm_admin.client.service.RegistrationServiceAsync;
@@ -9,6 +10,7 @@ import hotmath.gwt.cm_tools.client.model.CmAdminModel;
 import hotmath.gwt.cm_tools.client.model.GroupModel;
 import hotmath.gwt.cm_tools.client.model.StringHolder;
 import hotmath.gwt.cm_tools.client.model.StudentModel;
+import hotmath.gwt.cm_admin.client.ui.AccountInfoPanel;
 import hotmath.gwt.cm_tools.client.ui.AutoRegisterStudentSetup;
 import hotmath.gwt.cm_tools.client.ui.BulkStudentRegistrationWindow;
 import hotmath.gwt.cm_tools.client.ui.GroupSelectorWidget;
@@ -100,7 +102,7 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
 
         lc.add(_grid,new BorderLayoutData(LayoutRegion.CENTER));
         
-        BorderLayoutData bdl = new BorderLayoutData(LayoutRegion.SOUTH, 60);
+        BorderLayoutData bdl = new BorderLayoutData(LayoutRegion.SOUTH, 70);
         bdl.setMargins(new Margins(10, 5, 0, 5));
         lc.add(createGroupFilter(), bdl);
         
@@ -188,28 +190,26 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
     
     private FieldSet createGroupFilter() {
     	
-		BorderLayout bl = new BorderLayout();
 		ToolBar tb = new ToolBar();
         tb.setStyleName("student-grid-panel-toolbar");
 
 		FieldSet fs = new FieldSet();
 		fs.add(tb);
-        fs.setLayout(bl);
-        fs.setStyleAttribute("padding-top", "10px");
+        fs.addStyleName("student-grid-lower-toolbar-container");
         fs.setHeading("Filter");
-        
+
         groupStore = new ListStore <GroupModel> ();
 		GroupSelectorWidget gsw = new GroupSelectorWidget(_cmAdminMdl, groupStore, false, this, "group-filter");
 		groupCombo = gsw.groupCombo();
-		
+
 		GroupModel gm = new GroupModel();
 		gm.setName(NO_FILTERING);
 		gm.setId(NO_FILTERING);
 		groupStore.insert(gm, 0);
-		
+
 		final Button unregGrp = unregisterGroupButton(_grid);
 		unregGrp.disable();
-		
+
 		groupCombo.addSelectionChangedListener(new SelectionChangedListener<GroupModel>() {
 			public void selectionChanged(SelectionChangedEvent<GroupModel> se) {
 
@@ -231,7 +231,7 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
 
 		tb.add(groupCombo);
 		tb.add(unregGrp);
-		
+
 		return fs;
     }
 
@@ -239,15 +239,17 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
         final Button btn = new StudenPanelButton("Unregister Group");
         btn.setToolTip("Unregister all students in group.");
         btn.setStyleAttribute("padding-left", "10px");
-
+        
         btn.addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent ce) {
             	final ListStore<StudentModel> store = grid.getStore();
 
             	if (store.getModels().size() > 0) {
-                    String msg = "Unregister " + store.getModels().size() + " students ?";
-                    MessageBox.confirm("Unregister Students?", msg, new Listener<MessageBoxEvent>() {
+            		StringBuffer sb = new StringBuffer(store.getModels().size());
+            		sb.append("Unregister ").append(store.getModels().size());
+        			sb.append((store.getModels().size() > 1)?" students ?":" student ?");
+                    MessageBox.confirm("Unregister Group ?", sb.toString(), new Listener<MessageBoxEvent>() {
                         public void handleEvent(MessageBoxEvent be) {
                             String btnText = be.getButtonClicked().getText();
                             if (btnText.equalsIgnoreCase("yes")) {
@@ -614,8 +616,10 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
             public void onSuccess(final StringHolder result) {
             	String response = result.getResponse();
             	StringBuffer sb = new StringBuffer();
+
                 JSONValue rspValue = JSONParser.parse(response);
                 JSONObject rspObj  = rspValue.isObject();
+
                 String value = rspObj.get("deactivateCount").isString().stringValue();
                 int deactivateCount = Integer.valueOf(value);
                 value = rspObj.get("deactivateErrorCount").isString().stringValue();
@@ -625,16 +629,23 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
                 value = rspObj.get("removeErrorCount").isString().stringValue();
                 int removeErrorCount = Integer.valueOf(value);
 
-                if (deactivateCount> 0)
-                	sb.append("Deactivated ").append(deactivateCount).append(" student(s).").append("<br/>");
-                if (deactivateErrorCount> 0)
-                	sb.append("Deactivation of ").append(deactivateErrorCount).append(" student(s) failed.").append("<br/>");
-                if (removeCount > 0)
-                	sb.append("Removed ").append(removeCount).append(" student(s).").append("<br/>");
-                if (removeErrorCount> 0)
-                	sb.append("Removal of ").append(removeErrorCount).append(" student(s) failed.");
+                int unregisterCount = deactivateCount + removeCount;
+                int unregisterErrorCount = deactivateErrorCount + removeErrorCount;
+
+                if (unregisterCount > 0) {
+                	sb.append("Unregistered ").append(unregisterCount);
+                	sb.append((unregisterCount > 1)?" students.":"student.");
+                	if (unregisterErrorCount > 0) sb.append(" <br/>");
+                }
+                if (unregisterErrorCount> 0) {
+                	sb.append("Unregister failed for ").append(unregisterErrorCount);
+                	sb.append((unregisterErrorCount > 1)?" students.":"student.");
+                }
 
                 CatchupMathTools.showAlert(sb.toString());
+                AccountInfoPanel aip = CatchupMathAdmin.getInstance().getAccountInfoPanel();
+                aip.refreshData();
+
             }
 
             public void onFailure(Throwable caught) {
