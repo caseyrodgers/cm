@@ -27,11 +27,6 @@ public class RegistrationServiceImpl extends RemoteServiceServlet implements Reg
 		return dao.getSummariesForInactiveStudents(adminUid);
 	}
 
-	public StudentModel deactivateUser(StudentModel sm) throws Exception {
-		CmStudentDao dao = new CmStudentDao();
-		return dao.deactivateUser(sm);
-	}
-
 	public AccountInfoModel getAccountInfoForAdminUid(Integer uid) throws Exception {
 		CmAdminDao dao = new CmAdminDao();
 		return dao.getAccountInfo(uid);
