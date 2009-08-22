@@ -249,7 +249,7 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
             		StringBuffer sb = new StringBuffer(store.getModels().size());
             		sb.append("Unregister ").append(store.getModels().size());
         			sb.append((store.getModels().size() > 1)?" students ?":" student ?");
-                    MessageBox.confirm("Unregister Group ?", sb.toString(), new Listener<MessageBoxEvent>() {
+                    MessageBox.confirm("Unregister Group", sb.toString(), new Listener<MessageBoxEvent>() {
                         public void handleEvent(MessageBoxEvent be) {
                             String btnText = be.getButtonClicked().getText();
                             if (btnText.equalsIgnoreCase("yes")) {
