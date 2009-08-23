@@ -64,6 +64,7 @@ import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONParser;
 import com.google.gwt.json.client.JSONValue;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
@@ -585,10 +586,7 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
         s.getSummariesForActiveStudents(uid, new AsyncCallback<List<StudentModel>>() {
 
             public void onSuccess(List<StudentModel> result) {
-                
-                /** track current scroll position */
-                Point scrollPosition = _grid.getView().getScrollState();
-                
+
                 /** save the current selection, if any */
                 int selectedUid=0;
                 if(uidToSelect != null) {
@@ -607,14 +605,18 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
                  * 
                  *  */
                 store.removeAll();
-                for(StudentModel s: result) {
-                    store.add(s);
+                if(store.getFilters() != null) {
+                    /** if filter applied, then must do each one to avoid 
+                     *  GXT bug of throwning out of bounds
+                     *  @TODO: recheck this condition on next GXT build
+                     */
+                    for(StudentModel s: result) {
+                        store.add(s);
+                    }
                 }
-                
-                
-                /** Reset scroll position */
-                if(scrollPosition != null) {
-                    _grid.el().scrollTo("top", scrollPosition.y);
+                else {
+                    /** if not filter, this is much faster */
+                    store.add(result);
                 }
                 
                 
@@ -623,6 +625,23 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
                     for(int i=0;i<store.getCount();i++) {
                         if(store.getAt(i).getUid() == selectedUid) {
                             _grid.getSelectionModel().select(store.getAt(i),false);    
+                            
+                
+                            /** Must set in separate thread for this to work due
+                             *  to GXT bug in setting the selected row on layout()
+                             *  which overrides this action.  This is the only 
+                             *  way I could get the currently selected row re-selected
+                             *  on refresh.
+                             *  
+                             *  @TODO: recheck this condition on next GXT build.
+                             */
+                            final int visRow = i;
+                            new Timer() {
+                                public void run() {
+                                    _grid.getView().ensureVisible(visRow, 0, true);
+                                }
+                            }.schedule(1);
+                            
                             break;
                         }
                     }
