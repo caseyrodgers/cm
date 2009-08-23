@@ -2,8 +2,12 @@ package hotmath.testset.ha;
 
 import hotmath.gwt.cm_tools.client.data.HaBasicUser;
 
+import java.util.Date;
+
 abstract public class HaBasicUserImpl implements HaBasicUser {
     
+	Date expireDate;
+	
     public void setPassword(String password) {
         this.password = password;
     }
@@ -18,11 +22,22 @@ abstract public class HaBasicUserImpl implements HaBasicUser {
         return password;
     }
 
-    @Override
     public String getUserName() {
         return userName;
     }
 
+    public Date getExpireDate() {
+    	return expireDate;
+    }
+    
+    public void setExpireDate(Date expireDate) {
+    	this.expireDate = expireDate;
+    }
+
+    public boolean isExpired() {
+      return expireDate == null || expireDate.before(new Date());	
+    }
+    
     abstract public Object getUserObject();
     abstract public UserType getUserType();
 }
