@@ -67,7 +67,8 @@ public class CmTutoringDao {
                 Integer schoolNumber = schoolLwlInfo.getSchoolId();
                 
                 if(schoolNumber == 0) {
-                    throw new CmException("LWL student account error: No school_number found for '" + uid + "'");
+                    throw new CmException("LWL student account error: No school_number found for '" + uid + "'. " +
+                                          " Could be the LWL_TUTORING record associated with the ");
                 }
                 studentTutoringInfo.setSchoolNumber(schoolNumber);
             }

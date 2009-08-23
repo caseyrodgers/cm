@@ -1,16 +1,15 @@
 package hotmath.gwt.cm_admin.client.ui;
 
 import hotmath.gwt.cm_admin.client.CatchupMathAdmin;
-import hotmath.gwt.cm_tools.client.CatchupMathTools;
-import hotmath.gwt.cm_tools.client.service.CmServiceAsync;
 import hotmath.gwt.cm_admin.client.service.RegistrationServiceAsync;
+import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.model.CmAdminDataReader;
 import hotmath.gwt.cm_tools.client.model.CmAdminDataRefresher;
 import hotmath.gwt.cm_tools.client.model.CmAdminModel;
 import hotmath.gwt.cm_tools.client.model.GroupModel;
 import hotmath.gwt.cm_tools.client.model.StringHolder;
 import hotmath.gwt.cm_tools.client.model.StudentModel;
-import hotmath.gwt.cm_admin.client.ui.AccountInfoPanel;
+import hotmath.gwt.cm_tools.client.service.CmServiceAsync;
 import hotmath.gwt.cm_tools.client.ui.AutoRegisterStudentSetup;
 import hotmath.gwt.cm_tools.client.ui.BulkStudentRegistrationWindow;
 import hotmath.gwt.cm_tools.client.ui.GroupSelectorWidget;
@@ -45,6 +44,7 @@ import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.store.Store;
 import com.extjs.gxt.ui.client.store.StoreFilter;
 import com.extjs.gxt.ui.client.util.Margins;
+import com.extjs.gxt.ui.client.util.Point;
 import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.MessageBox;
@@ -61,7 +61,6 @@ import com.extjs.gxt.ui.client.widget.menu.Menu;
 import com.extjs.gxt.ui.client.widget.menu.MenuItem;
 import com.extjs.gxt.ui.client.widget.toolbar.FillToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
-
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONParser;
 import com.google.gwt.json.client.JSONValue;
@@ -107,6 +106,16 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
         lc.add(createGroupFilter(), bdl);
         
         _gridContainer.add(lc);
+        
+        Button refreshBtn = new Button("Refresh Student List");
+        refreshBtn.setToolTip("Refresh the list of students");
+        refreshBtn.addSelectionListener(new SelectionListener<ButtonEvent>() {
+            public void componentSelected(ButtonEvent ce) {
+                CmAdminDataReader.getInstance().fireRefreshData();
+            }
+        });
+        refreshBtn.setStyleAttribute("margin-left", "100px");
+        add(refreshBtn);
         
         add(_gridContainer);
         
@@ -577,7 +586,10 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
 
             public void onSuccess(List<StudentModel> result) {
                 
-                // try to reselect current selection
+                /** track current scroll position */
+                Point scrollPosition = _grid.getView().getScrollState();
+                
+                /** save the current selection, if any */
                 int selectedUid=0;
                 if(uidToSelect != null) {
                     selectedUid = uidToSelect;
@@ -588,8 +600,23 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
                     selectedUid = (sm != null)?sm.getUid():0;
                 }
                 
+                /** remove all existing records, and add new set
+                 * 
+                 * NOTE: changed this to add one by one due to bug with add(list)
+                 * when filter applied
+                 * 
+                 *  */
                 store.removeAll();
-                store.add(result);
+                for(StudentModel s: result) {
+                    store.add(s);
+                }
+                
+                
+                /** Reset scroll position */
+                if(scrollPosition != null) {
+                    _grid.el().scrollTo("top", scrollPosition.y);
+                }
+                
                 
                 /** Reselect selected row */
                 if(selectedUid > 0) {
@@ -600,6 +627,7 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
                         }
                     }
                 }
+
                 Log.info("StudentGridPanel: students RPC successfully read");
             }
 

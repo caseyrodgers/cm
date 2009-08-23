@@ -1,8 +1,10 @@
 package hotmath.gwt.cm_tools.client.model;
 
+import hotmath.gwt.cm_tools.client.ui.InfoPopupBox;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
 import hotmath.gwt.shared.client.eventbus.CmEventListenerImplDefault;
 import hotmath.gwt.shared.client.eventbus.EventBus;
+import hotmath.gwt.shared.client.util.CmInfoConfig;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,7 +48,7 @@ public class CmAdminDataReader extends Timer {
      * @param dataReaders
      */
     private CmAdminDataReader() {
-        scheduleRepeating(REFRESH_MILLS);
+        // scheduleRepeating(REFRESH_MILLS);
         
         EventBus.getInstance().addEventListener(new CmEventListenerImplDefault() {
             public void handleEvent(CmEvent event) {
@@ -94,6 +96,9 @@ public class CmAdminDataReader extends Timer {
     public void fireRefreshData() {
         isRefreshing=true;
         try {
+            
+            InfoPopupBox.display(new CmInfoConfig("Updating Student List", "Updating student list"));
+            
             Log.debug("CmAdminDataReader: refreshing data");
             for (CmAdminDataRefresher reader : dataReaders) {
                 reader.refreshData();

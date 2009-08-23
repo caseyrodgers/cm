@@ -77,6 +77,9 @@ public class EndOfProgramHandler {
                 else if(programCurr.getTestDefId() == CmProgram.ALG1_CHAP.getDefId()) {
                     setupChapterTest(conn, programCurr,CmProgram.ALG1_CHAP.getSubject());
                 }
+                else if(programCurr.getTestDefId() == CmProgram.ALG2_CHAP.getDefId()) {
+                    setupChapterTest(conn, programCurr,CmProgram.ALG2_CHAP.getSubject());
+                }                
                 else {
                     throw new Exception("Unknown program: " + programCurr);
                 }

@@ -139,11 +139,19 @@ public class InfoPopupBox extends ContentPanel {
         afterShow();
     }
     
+    
     private Point position() {
-        Size s = XDOM.getViewportSize();
-        int left = (s.width - config.width) / 2;
-        int top = (s.height - config.height) / 2;
-        return new Point(left, top);
+        /** Center popup box */
+//        Size s = XDOM.getViewportSize();
+//        int left = (s.width - config.width) / 2;
+//        int top = (s.height - config.height) / 2;
+//        return new Point(left, top);
+        /** bottom right */
+            Size s = XDOM.getViewportSize();
+            int left = s.width - config.width - 10 + XDOM.getBodyScrollLeft();
+            int top = s.height - config.height - 10 - (level * (config.height + 10))
+                + XDOM.getBodyScrollTop();
+            return new Point(left, top);
     }
 
     
