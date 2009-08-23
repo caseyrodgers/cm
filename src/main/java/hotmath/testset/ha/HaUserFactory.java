@@ -4,16 +4,15 @@ import hotmath.HotMathException;
 import hotmath.gwt.cm_admin.server.model.CmStudentDao;
 import hotmath.gwt.cm_tools.client.data.HaBasicUser;
 import hotmath.gwt.cm_tools.client.model.StudentModel;
-import hotmath.gwt.cm_tools.client.model.StudentModelBasic;
 import hotmath.util.HMConnectionPool;
 import hotmath.util.sql.SqlUtilities;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.util.logging.Logger;
+import java.util.Date;
 
-import javax.swing.text.html.HTMLDocument.HTMLReader.PreAction;
+import org.apache.log4j.Logger;
 
 /**
  * Create the appropriate user type
@@ -21,6 +20,7 @@ import javax.swing.text.html.HTMLDocument.HTMLReader.PreAction;
  * @author casey
  * 
  */
+
 public class HaUserFactory {
     
     static Logger __logger = Logger.getLogger(HaUserFactory.class.getName());
@@ -54,14 +54,25 @@ public class HaUserFactory {
         ResultSet rs = null;
         try {
 
-            // first see if user is in admin
+            // first see if user is an admin
             // We search the HA_ADMIN table looking
             // for a direct user/password match
-            String sql = "select * from HA_ADMIN where user_name = ? and passcode = ?";
+        	
+        	StringBuilder sb = new StringBuilder();
+        	sb.append("select a.*, max(s.date_expire) as date_expire, s.subscriber_id ");
+            sb.append("from HA_ADMIN a ");
+            sb.append("left outer join (");
+            sb.append("   select ss.subscriber_id, max(ss.date_expire) as date_expire from SUBSCRIBERS_SERVICES ss ");
+            sb.append("   where ss.service_name = 'catchup' " );
+            sb.append("   group by ss.subscriber_id ");
+            sb.append(") s ");
+            sb.append("on a.subscriber_id = s.subscriber_id ");
+            sb.append("where a.user_name = ? and a.passcode = ? ");
+            sb.append("group by date_expire");
 
             conn = HMConnectionPool.getConnection();
             try {
-                pstat = conn.prepareStatement(sql);
+                pstat = conn.prepareStatement(sb.toString());
 
                 pstat.setString(1, user);
                 pstat.setString(2, pwd);
@@ -73,6 +84,11 @@ public class HaUserFactory {
                     admin.setUserName(user);
                     admin.setPassword(pwd);
                     admin.setAdminId(rs.getInt("aid"));
+                    java.sql.Date date = rs.getDate("date_expire");
+                    if (date != null)
+                        admin.setExpireDate(new Date(date.getTime()));
+                    
+                    __logger.info(String.format("+++ date_expire: %s, isExpired: ", date, admin.isExpired()));
 
                     __logger.info("Logging in user (CM Admin): " + user); 
                     return admin;
@@ -86,13 +102,22 @@ public class HaUserFactory {
             // password associated with the SUBCRIBERS
             // record that the user's HA_ADMIN record is
             // linked to.
-            sql = "select u.uid, u.user_name, s.type " + 
-                  "from HA_USER u INNER JOIN HA_ADMIN h on u.admin_id = h.aid " +
-                  "INNER JOIN SUBSCRIBERS s on s.id = h.subscriber_id " + 
-                  "where s.password = ? " +
-                  "  and u.user_passcode = ? and u.is_active = 1";
+            sb.delete(0, sb.toString().length());
+            
+            sb.append("select u.uid, u.user_name, s.type, ss.date_expire ");
+            sb.append("from HA_USER u INNER JOIN HA_ADMIN h on u.admin_id = h.aid ");
+            sb.append("INNER JOIN SUBSCRIBERS s on s.id = h.subscriber_id ");
+            sb.append("left outer join (");
+            sb.append("   select subscriber_id, max(date_expire) as date_expire from SUBSCRIBERS_SERVICES ");
+            sb.append("   where service_name = 'catchup' ");
+            sb.append("   group by subscriber_id ");
+            sb.append(") ss ");
+            sb.append("on h.subscriber_id = ss.subscriber_id ");
+            sb.append("where s.password = ? ");
+            sb.append("  and u.user_passcode = ? and u.is_active = 1");
+            
             try {
-                pstat = conn.prepareStatement(sql);
+                pstat = conn.prepareStatement(sb.toString());
 
                 pstat.setString(1, user);
                 pstat.setString(2, pwd);
@@ -103,6 +128,9 @@ public class HaUserFactory {
                     HaUser student = HaUser.lookUser(conn, userId,null);
                     student.setUserName(rs.getString("user_name"));
                     student.setPassword(pwd);
+                    java.sql.Date date = rs.getDate("date_expire");
+                    if (date != null)
+                        student.setExpireDate(new Date(date.getTime()));
                     
                     __logger.info("Logging in user (school student " + rs.getString("type") + "): " + user);
                 
@@ -117,13 +145,22 @@ public class HaUserFactory {
             // Then we search for the SUBSCRIBER.student_email
             // associated with the SUBCRIBERS record that the 
             // user's HA_ADMIN record is linked to.
-            sql = "select u.uid, u.user_name, s.type " + 
-                  "from HA_USER u INNER JOIN HA_ADMIN h on u.admin_id = h.aid " +
-                  "INNER JOIN SUBSCRIBERS s on s.id = h.subscriber_id " + 
-                  "where s.student_email = ? and s.type = 'PS' " +
-                  "  and u.user_passcode = ? and u.is_active = 1";
+            sb.delete(0, sb.toString().length());
+            
+            sb.append("select u.uid, u.user_name, s.type, ss.date_expire ");
+            sb.append("from HA_USER u INNER JOIN HA_ADMIN h on u.admin_id = h.aid ");
+            sb.append("INNER JOIN SUBSCRIBERS s on s.id = h.subscriber_id ");
+            sb.append("left outer join (");
+            sb.append("   select subscriber_id, max(date_expire) as date_expire from SUBSCRIBERS_SERVICES ");
+            sb.append("   where service_name = 'catchup' ");
+            sb.append("   group by subscriber_id ");
+            sb.append(") ss ");
+            sb.append("on h.subscriber_id = ss.subscriber_id ");
+            sb.append("where s.student_email = ? and s.type = 'PS' ");
+            sb.append("  and u.user_passcode = ? and u.is_active = 1");
+            
             try {
-                pstat = conn.prepareStatement(sql);
+                pstat = conn.prepareStatement(sb.toString());
 
                 pstat.setString(1, user);
                 pstat.setString(2, pwd);
@@ -154,18 +191,19 @@ public class HaUserFactory {
             // Then we search for the SUBSCRIBER.student_email
             // associated with the SUBCRIBERS record that the 
             // user's HA_ADMIN record is linked to.
-            sql = 
-                "select u.uid " +
-                "from   HA_USER u JOIN CM_GROUP g ON u.group_id = g.id " +
-                "           JOIN HA_ADMIN a ON u.admin_id = a.aid " +
-                "           JOIN SUBSCRIBERS s ON a.subscriber_id = s.id " +
-                "where s.type = 'ST' " +
-                "and     s.password = ? " +
-                "and     g.name = ? " +
-                "and     is_auto_create_template = 1 ";
+            sb.delete(0, sb.toString().length());
+
+            sb.append("select u.uid ");
+            sb.append("from   HA_USER u JOIN CM_GROUP g ON u.group_id = g.id ");
+            sb.append("    JOIN HA_ADMIN a ON u.admin_id = a.aid ");
+            sb.append("    JOIN SUBSCRIBERS s ON a.subscriber_id = s.id ");
+            sb.append("where s.type = 'ST' ");
+            sb.append("  and s.password = ? ");
+            sb.append("  and g.name = ? ");
+            sb.append("  and is_auto_create_template = 1");
             
             try {
-                pstat = conn.prepareStatement(sql);
+                pstat = conn.prepareStatement(sb.toString());
 
                 pstat.setString(1, user);
                 pstat.setString(2, pwd);
@@ -176,6 +214,7 @@ public class HaUserFactory {
                     HaUserAutoRegistration student = new HaUserAutoRegistration(HaUser.lookUser(conn, userId,null).getUid());
                     student.setUserName("auto");
                     student.setPassword("auto");
+                    student.setExpireDate(new Date(System.currentTimeMillis() + (1000*3600*24)));
                     
                     __logger.info("Logging in user (auto registration user student " + userId + "): " + user);
                 
