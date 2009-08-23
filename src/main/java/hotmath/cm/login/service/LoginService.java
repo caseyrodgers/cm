@@ -5,6 +5,7 @@ import hotmath.testset.ha.HaLoginInfo;
 import hotmath.testset.ha.HaUserFactory;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -24,9 +25,11 @@ import javax.servlet.http.HttpServletResponse;
  */
 public class LoginService extends HttpServlet {
 
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String user = req.getParameter("user");
         String pwd = req.getParameter("pwd");
+        
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         
         try {
             HaBasicUser cmUser=null;
@@ -37,8 +40,15 @@ public class LoginService extends HttpServlet {
                 cmUser = HaUserFactory.loginToCatchup(user, pwd);
             }
             HaLoginInfo loginInfo = new HaLoginInfo(cmUser);
-            String res = "{status:'OK',key:'" +loginInfo.getKey() + "', type:'" + loginInfo.getType() + "', userId:" + loginInfo.getUserId() + "}" ;
-            resp.getWriter().write(res);
+            StringBuilder sb = new StringBuilder();
+            sb.append("{status:'").append((cmUser.isExpired())?"Expired":"OK");
+            sb.append("', key:'").append(loginInfo.getKey());
+            sb.append("', type:'").append(loginInfo.getType());
+            sb.append("', userId:").append(loginInfo.getUserId());
+            String dateStr = (cmUser.getExpireDate() != null) ? dateFormat.format((cmUser.getExpireDate())) : "n/a";
+            sb.append(", expireDate: '").append(dateStr);
+            sb.append("' }");
+            resp.getWriter().write(sb.toString());
         }
         catch(Exception e) {
             resp.getWriter().write(e.getMessage());
