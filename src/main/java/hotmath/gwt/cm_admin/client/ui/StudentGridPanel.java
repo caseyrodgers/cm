@@ -211,6 +211,7 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
         groupStore = new ListStore <GroupModel> ();
 		GroupSelectorWidget gsw = new GroupSelectorWidget(_cmAdminMdl, groupStore, false, this, "group-filter");
 		groupCombo = gsw.groupCombo();
+		groupCombo.setAllowBlank(true);
 
 		GroupModel gm = new GroupModel();
 		gm.setName(NO_FILTERING);
