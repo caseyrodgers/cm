@@ -19,6 +19,9 @@ public interface HaBasicUser {
     void setExpireDate(Date expireDate);
     boolean isExpired();
     
+    void setAccountType(String accountType);
+    String getAccountType();
+    
     // either the uid, or the aid depending on type
     int getUserKey();
     
