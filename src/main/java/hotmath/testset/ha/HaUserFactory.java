@@ -57,16 +57,17 @@ public class HaUserFactory {
             // first see if user is an admin
             // We search the HA_ADMIN table looking
             // for a direct user/password match
-        	
         	StringBuilder sb = new StringBuilder();
-        	sb.append("select a.*, max(s.date_expire) as date_expire, s.subscriber_id ");
+        	sb.append("select a.*, max(ss.date_expire) as date_expire, ss.subscriber_id, s.type as account_type ");
             sb.append("from HA_ADMIN a ");
+            sb.append("inner join SUBSCRIBERS s ");
+            sb.append("   on s.id = a.subscriber_id ");
             sb.append("left outer join (");
-            sb.append("   select ss.subscriber_id, max(ss.date_expire) as date_expire from SUBSCRIBERS_SERVICES ss ");
-            sb.append("   where ss.service_name = 'catchup' " );
-            sb.append("   group by ss.subscriber_id ");
-            sb.append(") s ");
-            sb.append("on a.subscriber_id = s.subscriber_id ");
+            sb.append("   select subscriber_id, max(date_expire) as date_expire from SUBSCRIBERS_SERVICES ");
+            sb.append("   where service_name = 'catchup' " );
+            sb.append("   group by subscriber_id ");
+            sb.append(") ss ");
+            sb.append("on a.subscriber_id = ss.subscriber_id ");
             sb.append("where a.user_name = ? and a.passcode = ? ");
             sb.append("group by date_expire");
 
@@ -87,6 +88,7 @@ public class HaUserFactory {
                     java.sql.Date date = rs.getDate("date_expire");
                     if (date != null)
                         admin.setExpireDate(new Date(date.getTime()));
+                    admin.setAccountType(rs.getString("account_type"));
                     
                     __logger.info(String.format("+++ date_expire: %s, isExpired: ", date, admin.isExpired()));
 
@@ -128,6 +130,7 @@ public class HaUserFactory {
                     HaUser student = HaUser.lookUser(conn, userId,null);
                     student.setUserName(rs.getString("user_name"));
                     student.setPassword(pwd);
+                    student.setAccountType(rs.getString("type"));
                     java.sql.Date date = rs.getDate("date_expire");
                     if (date != null)
                         student.setExpireDate(new Date(date.getTime()));
@@ -171,6 +174,7 @@ public class HaUserFactory {
                     HaUser student = HaUser.lookUser(conn, userId,null);
                     student.setUserName(rs.getString("user_name"));
                     student.setPassword(pwd);
+                    student.setAccountType(rs.getString("type"));
                     
                     __logger.info("Logging in user (single user student " + rs.getString("type") + "): " + user);
                 
@@ -214,6 +218,7 @@ public class HaUserFactory {
                     HaUserAutoRegistration student = new HaUserAutoRegistration(HaUser.lookUser(conn, userId,null).getUid());
                     student.setUserName("auto");
                     student.setPassword("auto");
+                    student.setAccountType("ST");
                     student.setExpireDate(new Date(System.currentTimeMillis() + (1000*3600*24)));
                     
                     __logger.info("Logging in user (auto registration user student " + userId + "): " + user);

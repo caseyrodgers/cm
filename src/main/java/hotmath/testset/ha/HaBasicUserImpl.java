@@ -7,8 +7,9 @@ import java.util.Date;
 abstract public class HaBasicUserImpl implements HaBasicUser {
     
 	Date expireDate;
-	
-    public void setPassword(String password) {
+	String accountType;
+
+	public void setPassword(String password) {
         this.password = password;
     }
 
@@ -37,7 +38,16 @@ abstract public class HaBasicUserImpl implements HaBasicUser {
     public boolean isExpired() {
       return expireDate == null || expireDate.before(new Date());	
     }
+
+    public String getAccountType() {
+		return accountType;
+	}
+
+	public void setAccountType(String accountType) {
+		this.accountType = accountType;
+	}
     
     abstract public Object getUserObject();
     abstract public UserType getUserType();
+    
 }
