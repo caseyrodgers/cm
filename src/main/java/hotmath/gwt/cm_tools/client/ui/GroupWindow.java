@@ -22,6 +22,12 @@ import com.extjs.gxt.ui.client.widget.layout.FormLayout;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
+/**
+ * Create Group UI
+ * 
+ * @author bob
+ *
+ */
 public class GroupWindow extends LayoutContainer {
 	
 	private CmWindow gw;
@@ -145,6 +151,7 @@ public class GroupWindow extends LayoutContainer {
 				grpCombo.getStore().add(g);
 				grpCombo.getStore().sort(GroupModel.NAME_KEY, SortDir.ASC);
 				grpCombo.setValue(g);
+				CatchupMathTools.showAlert("Create Group", "Group " + g.getName() + " created");
 				gw.close();
         	}
 
