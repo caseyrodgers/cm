@@ -44,6 +44,7 @@ public class LoginService extends HttpServlet {
             sb.append("{status:'").append((cmUser.isExpired())?"Expired":"OK");
             sb.append("', key:'").append(loginInfo.getKey());
             sb.append("', type:'").append(loginInfo.getType());
+            sb.append("', accountType: '").append(cmUser.getAccountType());
             sb.append("', userId:").append(loginInfo.getUserId());
             String dateStr = (cmUser.getExpireDate() != null) ? dateFormat.format((cmUser.getExpireDate())) : "n/a";
             sb.append(", expireDate: '").append(dateStr);
