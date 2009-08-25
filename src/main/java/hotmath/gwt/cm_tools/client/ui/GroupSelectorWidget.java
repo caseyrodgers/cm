@@ -37,7 +37,7 @@ public class GroupSelectorWidget {
 	}
 	
 	public ComboBox<GroupModel> groupCombo() {
-		ComboBox<GroupModel> combo = new ComboBox<GroupModel>();
+		final ComboBox<GroupModel> combo = new ComboBox<GroupModel>();
 		combo.setFieldLabel("Group");
 		combo.setValue(groupStore.getAt(0));	
 		combo.setForceSelection(false);
@@ -59,7 +59,7 @@ public class GroupSelectorWidget {
 
 	        	GroupModel gm = se.getSelectedItem();
 	        	if (includeCreate && gm.getName().equals(GroupModel.NEW_GROUP)) {
-	        		new GroupWindow(cmAdminMdl, groupCombo, true);
+	        		new GroupWindow(cmAdminMdl, combo, true);
 	        	}
 	        }
 	    });
