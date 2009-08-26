@@ -7,9 +7,9 @@ import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.data.InmhItemData;
 import hotmath.gwt.cm_tools.client.ui.CmMainPanel;
 import hotmath.gwt.cm_tools.client.ui.FooterPanel;
+import hotmath.gwt.shared.client.CmLoginAsync;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.data.CmAsyncRequest;
-import hotmath.gwt.shared.client.data.CmAsyncRequestImplDefault;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
 import hotmath.gwt.shared.client.eventbus.CmEventListener;
 import hotmath.gwt.shared.client.eventbus.EventBus;
@@ -68,7 +68,6 @@ public class CatchupMath implements EntryPoint {
     /**
      * This is the entry point method.
      */
-    int userId;
     public void onModuleLoad() {
         Log.info("Catchup Math Startup: " + version);
         
@@ -95,73 +94,15 @@ public class CatchupMath implements EntryPoint {
         FooterPanel footer = new FooterPanel();
         _mainPort.add(footer, bdata);
 
-        try {
-            userId = CmShared.handleLoginProcess();
-
-            // if run_id passed in, then allow user to view_only
-            if(CmShared.getQueryParameter("run_id") != null) {
-                int runId = Integer.parseInt(CmShared.getQueryParameter("run_id"));
-                // setup user to masquerade as real user
-                UserInfo visiter = new UserInfo(0,0);
-                UserInfo.setInstance(visiter);
-                UserInfo.getInstance().setRunId(runId);
-            }
-            
-            /** Turn on debugging CSS */
-            if(CmShared.getQueryParameter("debug") != null) {
-                _mainPort.addStyleName("debug-on");
-            }
-            
-        }
-        catch(Exception e) {
-            CatchupMathTools.showAlert(e.getMessage(), new CmAsyncRequestImplDefault()  {
-                public void requestComplete(String requestData) {
-                    Window.Location.assign(CmShared.CM_HOME_URL); // goto home
-                }
-            });
-            return;
-        }
         
-        History.addValueChangeHandler(new ValueChangeHandler<String>() {
-            public void onValueChange(ValueChangeEvent<String> event) {
-                String historyToken = event.getValue();
+        /** Call routine to acquire the users uid
+         * 
+         */
+        CmShared.handleLoginProcessAsync(new CmLoginAsync() {
+            public void loginSuccessful(Integer uid) {
                 
-                if(UserInfo.getInstance() != null) {
-                    
-                    if(UserInfo.getInstance().getRunId() > 0) {
-                        showPrescriptionPanel_gwt();
-                    }
-                    else {
-                        showQuizPanel_gwt();
-                    }
-                    return;
-                }
+                processLoginComplete(uid);
                 
-                UserInfo.loadUser(userId,new CmAsyncRequest() {
-                    public void requestComplete(String requestData) {
-                        
-                        if(UserInfo.getInstance().isSingleUser())
-                            Window.setTitle("Catchup Math: Student");
-
-
-                        String ac=CmShared.getQueryParameter("type");
-                        if(ac != null && ac.equals("ac")) {
-                            UserInfo.getInstance().setActiveUser(false);
-                            showAutoRegistration_gwt();
-                        }                        
-                        else if(UserInfo.getInstance().getRunId() > 0) {
-                            // load the existing run
-                            showPrescriptionPanel_gwt();
-                        }
-                        else {
-                            // show the quiz and prepare for a new run
-                            showQuizPanel_gwt();
-                        }
-                    }
-                    public void requestFailed(int code, String text) {
-                        CatchupMathTools.showAlert("There was a problem logging in ");
-                    }
-                });
             }
         });
         
@@ -193,19 +134,80 @@ public class CatchupMath implements EntryPoint {
                 return EventBus.EVENT_TYPE_USER_PROGRAM_CHANGED;
             }
         });
-        
-        
-        History.fireCurrentHistoryState();
     }
     
-
     
-    private native String jsDecode(String s) /*-{
-        return decodeURIComponent(s);
-    }-*/;
+    
+    /** Call when successfully determined users uid
+     * 
+     * @param uid
+     */
+    private void processLoginComplete(final Integer uid) {
+        // if run_id passed in, then allow user to view_only
+        if(CmShared.getQueryParameter("run_id") != null) {
+            int runId = Integer.parseInt(CmShared.getQueryParameter("run_id"));
+            // setup user to masquerade as real user
+            UserInfo visiter = new UserInfo(0,0);
+            UserInfo.setInstance(visiter);
+            UserInfo.getInstance().setRunId(runId);
+        }
+        
+        /** Turn on debugging CSS */
+        if(CmShared.getQueryParameter("debug") != null) {
+            _mainPort.addStyleName("debug-on");
+        }
+        
+        
+
+        /** Add a history listener to manage the state changes
+         * 
+         */
+        History.addValueChangeHandler(new ValueChangeHandler<String>() {
+            public void onValueChange(ValueChangeEvent<String> event) {
+                String historyToken = event.getValue();
+                
+                if(UserInfo.getInstance() != null) {
+                    
+                    if(UserInfo.getInstance().getRunId() > 0) {
+                        showPrescriptionPanel_gwt();
+                    }
+                    else {
+                        showQuizPanel_gwt();
+                    }
+                    return;
+                }
+                
+                UserInfo.loadUser(uid,new CmAsyncRequest() {
+                    public void requestComplete(String requestData) {
+                        
+                        if(UserInfo.getInstance().isSingleUser())
+                            Window.setTitle("Catchup Math: Student");
 
 
-
+                        String ac=CmShared.getQueryParameter("type");
+                        if(ac != null && ac.equals("ac")) {
+                            UserInfo.getInstance().setActiveUser(false);
+                            showAutoRegistration_gwt();
+                        }                        
+                        else if(UserInfo.getInstance().getRunId() > 0) {
+                            // load the existing run
+                            showPrescriptionPanel_gwt();
+                        }
+                        else {
+                            // show the quiz and prepare for a new run
+                            showQuizPanel_gwt();
+                        }
+                    }
+                    public void requestFailed(int code, String text) {
+                        CatchupMathTools.showAlert("There was a problem reading user information from server" );
+                    }
+                });
+            }
+        });
+        
+       
+        History.fireCurrentHistoryState();
+    }
 
 
     /**

@@ -13,6 +13,7 @@ import hotmath.subscriber.service.HmServiceImplDefault;
 import hotmath.subscriber.service.HmServiceManager;
 import hotmath.subscriber.service.HotMathSubscriberServiceFactory;
 import hotmath.testset.ha.HaAdmin;
+import hotmath.testset.ha.HaLoginInfo;
 import hotmath.testset.ha.HaUser;
 import hotmath.util.HMConnectionPool;
 import hotmath.util.sql.SqlUtilities;
@@ -146,11 +147,17 @@ public class CatchupSignupServlet extends HttpServlet {
                  user.setUid(student.getUid());
              }
             
+             
+             /** Register a login, and return security key allowing auto login
+              * 
+              */
+             HaLoginInfo userInfo = new HaLoginInfo(user);
+
             
             /** Return JSON containing key values
              * 
              */
-            String returnJson = "{sid:'" + sub.getId() + "',uid:" +  user.getUid() + ", " +
+            String returnJson = "{sid:'" + sub.getId() + "',key: '" + userInfo.getKey() + "',uid:" +  user.getUid() + ", " +
                                   "userName:'" + sifo.getCardEmail() + "', " +
                                   "password:'" + uniquePassword + "'" +
                                  "}";

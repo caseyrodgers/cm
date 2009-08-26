@@ -99,8 +99,8 @@ public class CmTutoringDao {
         return studentTutoringInfo;
     }
     
-    /** Return LWL info by named uid, or null if no such
-     *  information found.
+    /** Return LWL info by named uid, attempt to create registration
+     *  if no current info found.
      *  
      * @param conn
      * @param uid
@@ -138,7 +138,7 @@ public class CmTutoringDao {
         sub.setSignupInfo(info);
         
         HotMathSubscriberServiceTutoring service = new HotMathSubscriberServiceTutoring();
-        service.installService(sub, new PurchasePlan("TYPE_SERVICE_TUTORING_0"));
+        service.installService(sub, null);
         
         if(!LWLIntegrationManager.getInstance().registerUserWithLwl(sub)) {
             throw new CmException("Could not create LWL registration for '" + uid + "'");

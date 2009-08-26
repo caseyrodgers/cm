@@ -2,12 +2,14 @@ package hotmath.testset.ha;
 
 import hotmath.HotMathException;
 import hotmath.gwt.cm_tools.client.data.HaBasicUser;
+import hotmath.gwt.shared.client.util.CmException;
 import hotmath.util.HMConnectionPool;
 import hotmath.util.sql.SqlUtilities;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.Statement;
 import java.sql.Timestamp;
 
 
@@ -23,11 +25,20 @@ public class HaLoginInfo {
     String key;
     String type;
     int    userId;
+    Boolean isConsumed;
     
     public HaLoginInfo() {
         /** empty */
     }
     
+    public Boolean getIsConsumed() {
+        return isConsumed;
+    }
+
+    public void setIsConsumed(Boolean isConsumed) {
+        this.isConsumed = isConsumed;
+    }
+
     public HaLoginInfo(HaBasicUser user) throws Exception {
         try {
             key = addLoginInfo(user);
@@ -98,33 +109,61 @@ public class HaLoginInfo {
         }
     }
     
-    static public HaLoginInfo getLoginInfo(String key) throws Exception {
-        Connection conn = null;
+    /** Reads login information for key
+     *  Throws exception if not found, or invalid.
+     *  
+     *  After a successful read of the security key, the row is
+     *  marked as is_consumed.  Any further attempt to get this
+     *  login info will result in a CmExceptionLoginAlreadyConsumed being thrown.
+     *  
+     *  
+     * @param key
+     * @return
+     * @throws Exception
+     */
+    static public HaLoginInfo getLoginInfo(final Connection conn, String key) throws Exception {
         PreparedStatement pstat = null;
-
         try {
             // first see if user is in admin
             String sql = "select * " +
                          " from HA_USER_LOGIN " +
                          " where login_key = ?";
                 
-            conn = HMConnectionPool.getConnection();
             pstat = conn.prepareStatement(sql);
 
             pstat.setString(1, key);
             ResultSet rs = pstat.executeQuery();
             if(!rs.first())
-                throw new Exception("No such Catchup Math login key: " + key);
+                throw new CmException("No such Catchup Math login key: " + key);
             
+            if(rs.getInt("is_consumed") == 1) {
+                throw new CmExceptionLoginAlreadyConsumed("Security key is invalid: " + key);
+            }
     
+            /** Mark this record as is_consumed, to disallow future logins
+             * 
+             */
+            Statement stmt=null;
+            try {
+                stmt = conn.createStatement();
+                int res = stmt.executeUpdate("update HA_USER_LOGIN set is_consumed = 1 where lid = " + rs.getInt("lid"));
+                if(res != 1) {
+                    throw new CmException("Could not update is_consumed for key: " + key);
+                }
+            }
+            finally {
+                stmt.close();
+            }
+            
             HaLoginInfo login = new HaLoginInfo();
             login.setKey(key);
             login.setType(rs.getString("user_type"));
             login.setUserId(rs.getInt("user_id"));
+            login.setIsConsumed(rs.getInt("is_consumed")==0?false:true); 
             
             return login;
         } finally {
-            SqlUtilities.releaseResources(null, pstat, conn);
+            SqlUtilities.releaseResources(null, pstat,null);
         }
     }
     

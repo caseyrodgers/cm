@@ -25,6 +25,7 @@ import hotmath.gwt.shared.client.rpc.action.GetSolutionAction;
 import hotmath.gwt.shared.client.rpc.action.GetStateStandardsAction;
 import hotmath.gwt.shared.client.rpc.action.GetUserInfoAction;
 import hotmath.gwt.shared.client.rpc.action.GetViewedInmhItemsAction;
+import hotmath.gwt.shared.client.rpc.action.ProcessLoginRequestAction;
 import hotmath.gwt.shared.client.rpc.action.SaveQuizCurrentResultAction;
 import hotmath.gwt.shared.client.rpc.action.SaveWhiteboardDataAction;
 import hotmath.gwt.shared.client.rpc.result.AutoRegistrationEntry;
@@ -56,6 +57,12 @@ public class ActionDispatcher_Test extends CmDbTestCase {
             uid = setupDemoAccount();
     }
     
+    public void testProcessLoginRequestAction() throws Exception {
+        ProcessLoginRequestAction action = new ProcessLoginRequestAction("cm_1249959105808");
+        UserInfo userInfo = ActionDispatcher.getInstance().execute(action);
+        assertNotNull(userInfo);
+        assertTrue(userInfo.getUid() > 0);
+    }
     
     public void testGetLessonItemsForTestRunAction() throws Exception {
         GetLessonItemsForTestRunAction action = new GetLessonItemsForTestRunAction(TEST_RUN_ID);
