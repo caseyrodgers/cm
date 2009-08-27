@@ -88,7 +88,6 @@ public class StudentDetailsWindow extends CmWindow {
         samGrid.setHeight(210);
 
         samGrid.getSelectionModel().addSelectionChangedListener(new SelectionChangedListener<StudentActivityModel>() {
-
             @Override
             public void selectionChanged(SelectionChangedEvent<StudentActivityModel> se) {
                 enableDisableButtons();

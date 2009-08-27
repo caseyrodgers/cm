@@ -183,7 +183,13 @@ public class HelpWindow extends CmWindow {
             }
         });
         
+        /** Only the owner of the account has access to history */
         if(!UserInfo.getInstance().isActiveUser())
+            btn.setEnabled(false);
+        
+        
+        /** Do not allow Student History for demo user */
+        if(UserInfo.getInstance().isDemoUser())
             btn.setEnabled(false);
         
         btn.addStyleName("button");

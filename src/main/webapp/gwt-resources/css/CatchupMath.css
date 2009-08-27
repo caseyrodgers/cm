@@ -1035,6 +1035,44 @@ img.resource-item-complete {
  
  
  
+ .student-details-panel {
+}
+
+.student-details-window {
+}
+
+.student-details-window-toolbar {
+  padding-top: 50px;
+  margin-left: 5px;
+  padding-right: 10px;
+}
+
+.student-details-window-container {
+  width: 570px;
+  height: 300px;
+}
+
+.student-details-panel-grid {
+    margin-top: 45px;
+}
+
+.student-details-panel-sw-btn {
+    padding-left: 10px;
+    padding-bottom: 10px;
+}
+
+.student-details-panel-pr-btn {
+    padding-right: 10px;
+    padding-bottom: 10px;
+}
+
+.student-details-window .students-count {
+   float: left;
+   margin-top: 8px; 
+   margin-right: 10px;
+}
+ 
+ 
  
  /** Student Detail Info */
 .student-detail-info {
