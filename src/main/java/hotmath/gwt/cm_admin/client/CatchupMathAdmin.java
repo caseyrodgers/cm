@@ -87,8 +87,6 @@ public class CatchupMathAdmin implements EntryPoint, ValueChangeHandler<String> 
 
         registerRpcServices();
         
-        
-    
         mainPort = new Viewport();
         mainPort.setLayout(new BorderLayout());
         mainPort.setEnableScroll(false);
