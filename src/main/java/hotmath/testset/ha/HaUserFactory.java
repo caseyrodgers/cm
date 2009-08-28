@@ -175,8 +175,12 @@ public class HaUserFactory {
                     student.setUserName(rs.getString("user_name"));
                     student.setPassword(pwd);
                     student.setAccountType(rs.getString("type"));
+                    java.sql.Date date = rs.getDate("date_expire");
+                    if (date != null)
+                        student.setExpireDate(new Date(date.getTime()));
                     
-                    __logger.info("Logging in user (single user student " + rs.getString("type") + "): " + user);
+                    __logger.info("+++ pstat: " + pstat.toString());
+                    __logger.info("Logging in user (single user student [" + rs.getString("type") + "]): " + user);
                 
                     return student;
                 }
