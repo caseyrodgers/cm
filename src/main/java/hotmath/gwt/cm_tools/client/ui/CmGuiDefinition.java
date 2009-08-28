@@ -7,8 +7,8 @@ import hotmath.gwt.cm_tools.client.ui.context.CmContext;
 
 import com.google.gwt.user.client.ui.Widget;
 
-/** A single resource that is shown in the resource type 
- *  are of the main panel.
+/** A single resource that is shown in the resource area
+ *  of the main panel.
  *  
  *  
  * @author Casey

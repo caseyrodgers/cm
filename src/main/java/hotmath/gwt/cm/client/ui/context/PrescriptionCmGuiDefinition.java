@@ -72,12 +72,39 @@ public class PrescriptionCmGuiDefinition implements CmGuiDefinition {
         // get the data for the prescription from the database
 
         getAsyncDataFromServer(UserInfo.getInstance().getSessionNumber());
-
         
         PrescriptionInfoPanel infoPanel = new PrescriptionInfoPanel(this);
-        _main.add(infoPanel, new BorderLayoutData(LayoutRegion.SOUTH, .30f));
+        _main.add(createStandardResources(), new BorderLayoutData(LayoutRegion.SOUTH, .30f));
 
+        _main.layout();
         return _main;
+    }
+
+    private ContentPanel createStandardResources() {
+        
+        ContentPanel cp = new ContentPanel();
+        
+        cp.addStyleName("accordian-resource-list-panel-standard");
+        
+        cp.setLayout(new AccordionLayout());
+        cp.setHeading("Take a break ..");
+        // cp.setToolTip("Resources that are always helpful");
+
+        for(PrescriptionSessionDataResource type: new CmInmhStandardResources()) {
+            
+            ContentPanel resource1 = new ContentPanel();
+            resource1.setHeading(type.getLabel());
+            resource1.setToolTip(type.getDescription());
+            
+            ResourceList resourceList = new ResourceList(type);
+            resourceList.setSimpleTemplate("<div class='resource-item'>{title}&nbsp;</div>");
+            resource1.add(resourceList);
+            
+            resource1.collapse();
+            cp.add(resource1);
+        }
+        
+        return cp;  
     }
 
     /**
@@ -223,50 +250,20 @@ class PrescriptionResourceAccord extends LayoutContainer {
         al.setFill(true);
         
         // for each distinct resource type
-        ContentPanel cp = null;
-        ResourceList rl = null;
+        ResourceContentPanel cp = null;
 
         // setTitle("Choose a resource type, then click one of its items.");
         for (PrescriptionSessionDataResource resource : resources) {
-            cp = new ContentPanel();
-            cp.setAnimCollapse(false);
-            cp.collapse();
-            cp.addStyleName("accordian-resource-list-panel");
-            cp.setLayout(new FitLayout());
-            // to show check
-            cp.setBodyStyleName("pad-text");
-            // cp.setScrollMode(Scroll.AUTO);
             
             
-            fixupResourceItems(resource);
-
-            cp.setHeading(resource.getLabel());
-            cp.setToolTip(resource.getDescription());
-            cp.getHeader().addTool(new Html("<img class='resource-type' src='/gwt-resources/images/check_black.png'/>"));
-
-            rl = new ResourceList(resource);
-            if(_activeResourceList == null) {
-                _activeResourceList = rl;
-            }
-            if (rl.getStore().getCount() == 0)
-                cp.setEnabled(false);
-            if (rl.allViewed() && cp.isEnabled()) {
-                // this listView needs to be marked complete
-                if(resource.getType().equals("practice")) {
-                    // only mark the practice resource
-                    cp.getHeader().addStyleName("resource-type-complete");
-                    PrescriptionResourceAccord.__instance.layout();
-                }
-            }
-            // cp.setAnimCollapse(true);
-            cp.setHeight(150);
-            cp.add(rl);
-
+            cp = createNewResourceType(resource);
             add(cp);
+            
+            
             final ContentPanel mycp = cp;
 
             final ContentPanel thisCp = cp;
-            final ResourceList thisRl = rl;
+            final ResourceList thisRl = cp.resourceList;
             cp.addListener(Events.Expand, new Listener<BaseEvent>() {
                 public void handleEvent(BaseEvent be) {
                     if(PrescriptionResourceAccord.__instance._activeResourceList != null)
@@ -314,6 +311,52 @@ class PrescriptionResourceAccord extends LayoutContainer {
         */
 
         layout();
+    }
+    
+    private ResourceContentPanel createNewResourceType(PrescriptionSessionDataResource resource) {
+        
+        ResourceContentPanel cp = new ResourceContentPanel();
+        cp.setAnimCollapse(false);
+        cp.collapse();
+        cp.addStyleName("accordian-resource-list-panel");
+        cp.setLayout(new FitLayout());
+        // to show check
+        cp.setBodyStyleName("pad-text");
+        // cp.setScrollMode(Scroll.AUTO);
+        
+        
+        fixupResourceItems(resource);
+
+        cp.setHeading(resource.getLabel());
+        cp.setToolTip(resource.getDescription());
+        cp.getHeader().addTool(new Html("<img class='resource-type' src='/gwt-resources/images/check_black.png'/>"));
+
+        ResourceList rl = new ResourceList(resource);
+        cp.resourceList = rl;
+        
+        if(_activeResourceList == null) {
+            _activeResourceList = rl;
+        }
+        if (rl.getStore().getCount() == 0)
+            cp.setEnabled(false);
+        if (rl.allViewed() && cp.isEnabled()) {
+            // this listView needs to be marked complete
+            if(resource.getType().equals("practice")) {
+                // only mark the practice resource
+                cp.getHeader().addStyleName("resource-type-complete");
+                PrescriptionResourceAccord.__instance.layout();
+            }
+        }
+        //cp.setAnimCollapse(true);
+        cp.setHeight(150);
+        cp.add(rl);
+        
+        return cp;
+        
+    }
+    
+    class ResourceContentPanel extends ContentPanel {
+        public ResourceList resourceList;
     }
     
     
@@ -378,6 +421,8 @@ class ResourceList extends ListView<ResourceModel> implements Listener {
             _store.add(new ResourceModel(id));
         }
         setStore(_store);
+        
+        String title = resource.getLabel();
         // allViewed();
         setSimpleTemplate("<div class='resource-item'>{title}&nbsp;<img id='{file}' class='{completeClassName}' src='/gwt-resources/images/check_white.png'/></div>");
         setPosition(10, 10);

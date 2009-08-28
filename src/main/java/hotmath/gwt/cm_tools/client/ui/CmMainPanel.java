@@ -9,8 +9,10 @@ import com.extjs.gxt.ui.client.Style.Scroll;
 import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
+import com.extjs.gxt.ui.client.widget.layout.AccordionLayout;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 
 public class CmMainPanel extends LayoutContainer {
@@ -50,6 +52,9 @@ public class CmMainPanel extends LayoutContainer {
         this.cmGuiDef = cmGuiDef;
         setLayout(new BorderLayout());
         _mainContent = new ResourceContainer();
+        
+        
+        
         _westPanel = new ContentPanel();
         _westPanel.setStyleName("main-panel-west");
         _westPanel.setLayout(new BorderLayout());
@@ -67,7 +72,7 @@ public class CmMainPanel extends LayoutContainer {
         _westPanel.add(cmGuiDef.getWestWidget(), new BorderLayoutData(LayoutRegion.CENTER));
         
         add(_westPanel, westData);
-
+        
         BorderLayoutData centerData = new BorderLayoutData(LayoutRegion.CENTER);
         //centerData.setMargins(new Margins(1, 0,1, 1));
         centerData.setSplit(false);
@@ -77,7 +82,6 @@ public class CmMainPanel extends LayoutContainer {
         if (w != null)
             _mainContent.add(w);
     }
-
 
     
     /** Request controls from Context

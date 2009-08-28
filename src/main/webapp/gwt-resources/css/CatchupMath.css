@@ -53,6 +53,30 @@
 	
 }
 
+.accordian-resource-list-panel-standard {
+	background: #5A5A5A;
+}
+
+.accordian-resource-list-panel-standard .x-view-item {
+    border: #5A5A5A;
+}
+.accordian-resource-list-panel-standard .x-panel-body {
+    background: #5A5A5A;
+}
+
+.accordian-resource-list-panel-standard .x-view-item-sel {
+    background: #5A5A5A;
+}
+
+.accordian-resource-list-panel-standard .x-view-item-over {
+    background: #5A5A5A;
+}
+
+
+.accordian-resource-list-panel-standard .resource-accord-panel-list-view {
+	background: #5A5A5A;
+}
+
 .footer-panel {
 	font-size: 10px;
 	background-color: white;

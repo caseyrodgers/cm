@@ -8,8 +8,12 @@ public class InmhItemData {
 	boolean viewed;
 	
 	public InmhItemData() {
-	    // 
-	    int i=1;
+	}
+	
+	public InmhItemData(String type, String file, String title) {
+	    this.type = type;
+	    this.file = file;
+	    this.title = title;
 	}
 	public boolean isViewed() {
         return viewed;
