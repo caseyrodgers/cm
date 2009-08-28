@@ -133,10 +133,11 @@ public class StudentDetailReport {
 	}
 
 	private Phrase buildLabelContent(String label, String value) {
-		 Phrase phrase = new Phrase(new Chunk(label, FontFactory.getFont(FontFactory.HELVETICA, 9, Font.BOLD, new Color(0, 0, 0))));
-		 Phrase content = new Phrase(new Chunk(value, FontFactory.getFont(FontFactory.HELVETICA, 9, Font.NORMAL, new Color(0, 0, 0))));
-		 phrase.add(content);
-		 return phrase;
+		if (value == null) value = "n/a";
+		Phrase phrase = new Phrase(new Chunk(label, FontFactory.getFont(FontFactory.HELVETICA, 9, Font.BOLD, new Color(0, 0, 0))));
+		Phrase content = new Phrase(new Chunk(value, FontFactory.getFont(FontFactory.HELVETICA, 9, Font.NORMAL, new Color(0, 0, 0))));
+		phrase.add(content);
+		return phrase;
 	}
 
 	private void addHeader(String label, String percentWidth, Table tbl) throws Exception {
