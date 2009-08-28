@@ -133,7 +133,7 @@ public class StudentDetailReport {
 	}
 
 	private Phrase buildLabelContent(String label, String value) {
-		if (value == null) value = "n/a";
+		if (value == null || value.trim().length() == 0) value = "NONE";
 		Phrase phrase = new Phrase(new Chunk(label, FontFactory.getFont(FontFactory.HELVETICA, 9, Font.BOLD, new Color(0, 0, 0))));
 		Phrase content = new Phrase(new Chunk(value, FontFactory.getFont(FontFactory.HELVETICA, 9, Font.NORMAL, new Color(0, 0, 0))));
 		phrase.add(content);
