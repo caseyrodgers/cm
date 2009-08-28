@@ -149,17 +149,10 @@ public class GetPrescriptionCommand implements ActionHandler<GetPrescriptionActi
             
             
             
-           PrescriptionSessionDataResource flashCardResource = new PrescriptionSessionDataResource();
-           flashCardResource.setType("flashcard");
-           resultsResource.setLabel("Flash Cards - Basic");
-           addBasicFlashCards(flashCardResource.getItems());            
-  
 
             sessionData.getInmhResources().add(lessonResource);
             sessionData.getInmhResources().add(problemsResource);
             sessionData.getInmhResources().add(resultsResource);
-            sessionData.getInmhResources().add(flashCardResource);
-
 
             /** Call action and request list of INMH items */
             GetViewedInmhItemsAction getViewedAction = new GetViewedInmhItemsAction(runId);
@@ -244,10 +237,8 @@ public class GetPrescriptionCommand implements ActionHandler<GetPrescriptionActi
         String types[][] = {
                 { "Lesson", "review", "Review lesson on the current topic" },
                 { "Video", "video", "Math videos related to the current topic" },
-                { "Activities", "activity", "Math activities and games related to the current topic" },
                 { "Required Practice Problems", "practice", "Practice problems you must complete before advancing" },
                 { "Extra Practice Problems", "cmextra", "Additional workbook problems" },
-                { "Flash Cards - Basic", "flashcard", "Basic flashcards to help with general questions" },
                 { "Quiz Results", "results", "The current quiz's results" },
         };
 
