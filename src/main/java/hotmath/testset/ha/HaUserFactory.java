@@ -33,7 +33,7 @@ public class HaUserFactory {
      * Catchup Login Logic:
      * 
      * 1.  if HA_ADMIN.user_name == user && HA_ADMIN_passcode == password
-     *    then .. this user is an Admin, and log them into the cm_admin tool
+     *    then .. this user is an Admin, and log them into the cm_admin tool642
      *    
      * 2. If SUBSCRIBER.password = user and HA_USER.passcode = password, then is school account.
      *    
@@ -179,7 +179,6 @@ public class HaUserFactory {
                     if (date != null)
                         student.setExpireDate(new Date(date.getTime()));
                     
-                    __logger.info("+++ pstat: " + pstat.toString());
                     __logger.info("Logging in user (single user student [" + rs.getString("type") + "]): " + user);
                 
                     return student;
