@@ -22,7 +22,6 @@ import java.util.List;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.Registry;
-import com.extjs.gxt.ui.client.Style.LayoutRegion;
 import com.extjs.gxt.ui.client.data.BaseModelData;
 import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.Events;
@@ -33,8 +32,6 @@ import com.extjs.gxt.ui.client.widget.Html;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.ListView;
 import com.extjs.gxt.ui.client.widget.layout.AccordionLayout;
-import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
-import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Widget;
@@ -65,47 +62,21 @@ public class PrescriptionCmGuiDefinition implements CmGuiDefinition {
         CatchupMathTools.setBusy(true);
 
         _main = new LayoutContainer();
-        _main.setLayout(new BorderLayout());
+        _main.setLayout(new FitLayout());
         
         _guiWidget = new PrescriptionResourceAccord();
-        _main.add(_guiWidget, new BorderLayoutData(LayoutRegion.CENTER));
+        _main.add(_guiWidget);
         // get the data for the prescription from the database
 
         getAsyncDataFromServer(UserInfo.getInstance().getSessionNumber());
         
         PrescriptionInfoPanel infoPanel = new PrescriptionInfoPanel(this);
-        _main.add(createStandardResources(), new BorderLayoutData(LayoutRegion.SOUTH, .30f));
+        // _main.add(createStandardResources(), new BorderLayoutData(LayoutRegion.SOUTH, .30f));
 
         _main.layout();
         return _main;
     }
 
-    private ContentPanel createStandardResources() {
-        
-        ContentPanel cp = new ContentPanel();
-        
-        cp.addStyleName("accordian-resource-list-panel-standard");
-        
-        cp.setLayout(new AccordionLayout());
-        cp.setHeading("Take a break ..");
-        // cp.setToolTip("Resources that are always helpful");
-
-        for(PrescriptionSessionDataResource type: new CmInmhStandardResources()) {
-            
-            ContentPanel resource1 = new ContentPanel();
-            resource1.setHeading(type.getLabel());
-            resource1.setToolTip(type.getDescription());
-            
-            ResourceList resourceList = new ResourceList(type);
-            resourceList.setSimpleTemplate("<div class='resource-item'>{title}&nbsp;</div>");
-            resource1.add(resourceList);
-            
-            resource1.collapse();
-            cp.add(resource1);
-        }
-        
-        return cp;  
-    }
 
     /**
      * Read data from server and build UI when complete
@@ -298,6 +269,8 @@ class PrescriptionResourceAccord extends LayoutContainer {
             });
         }
         
+        add(createStandardResources());
+        
         /** Should we expand the last resource type added?
          * 
         try {
@@ -312,6 +285,34 @@ class PrescriptionResourceAccord extends LayoutContainer {
 
         layout();
     }
+    
+    private ContentPanel createStandardResources() {
+        
+        ContentPanel cp = new ContentPanel();
+        
+        cp.addStyleName("accordian-resource-list-panel-standard");
+        
+        cp.setLayout(new AccordionLayout());
+        cp.setHeading("<div style='text-align: center'>Skills Practice Below</div>");
+        // cp.setToolTip("Resources that are always helpful");
+
+        for(PrescriptionSessionDataResource type: new CmInmhStandardResources()) {
+            
+            ContentPanel resource1 = new ContentPanel();
+            resource1.setHeading(type.getLabel());
+            resource1.setToolTip(type.getDescription());
+            
+            ResourceList resourceList = new ResourceList(type);
+            resourceList.setSimpleTemplate("<div class='resource-item'>{title}&nbsp;</div>");
+            resource1.add(resourceList);
+            
+            resource1.collapse();
+            cp.add(resource1);
+        }
+        
+        return cp;  
+    }
+    
     
     private ResourceContentPanel createNewResourceType(PrescriptionSessionDataResource resource) {
         

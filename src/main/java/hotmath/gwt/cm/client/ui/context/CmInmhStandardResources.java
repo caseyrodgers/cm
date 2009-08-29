@@ -37,8 +37,8 @@ public class CmInmhStandardResources extends ArrayList<PrescriptionSessionDataRe
          */
         PrescriptionSessionDataResource resourceType = new PrescriptionSessionDataResource();
         resourceType.setType("activity");
-        resourceType.setLabel("Learning Activities");
-        resourceType.setDescription("Learning resources that might help you");
+        resourceType.setLabel("Math Games");
+        resourceType.setDescription("Math games that might help you");
         
         List<InmhItemData> items = new ArrayList<InmhItemData>();
         items.add(new InmhItemData(resourceType.getType(),"/learning_activities/interactivities/diamond.swf","Diamond Problem Flash Cards"));
