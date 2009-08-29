@@ -33,7 +33,9 @@ import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.ListView;
 import com.extjs.gxt.ui.client.widget.layout.AccordionLayout;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 
 public class PrescriptionCmGuiDefinition implements CmGuiDefinition {
@@ -288,14 +290,13 @@ class PrescriptionResourceAccord extends LayoutContainer {
     
     private ContentPanel createStandardResources() {
         
-        ContentPanel cp = new ContentPanel();
+        final ContentPanel cp = new ContentPanel();
         
         cp.addStyleName("accordian-resource-list-panel-standard");
-        
         cp.setLayout(new AccordionLayout());
         cp.setHeading("<div style='text-align: center'>Skills Practice Below</div>");
         // cp.setToolTip("Resources that are always helpful");
-
+       
         for(PrescriptionSessionDataResource type: new CmInmhStandardResources()) {
             
             ContentPanel resource1 = new ContentPanel();
@@ -309,7 +310,13 @@ class PrescriptionResourceAccord extends LayoutContainer {
             resource1.collapse();
             cp.add(resource1);
         }
-        
+
+        Timer timer = new Timer() {
+            public void run() {
+                cp.expand();        
+            }
+        };
+        timer.schedule(2000);
         return cp;  
     }
     
