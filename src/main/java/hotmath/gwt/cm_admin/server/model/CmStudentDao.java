@@ -42,6 +42,8 @@ import org.json.JSONObject;
 public class CmStudentDao {
 
     private static final Logger logger = Logger.getLogger(CmStudentDao.class);
+    
+    public static final int GROUP_NONE_ID = 1;
 
     public CmStudentDao() {
     }
@@ -532,7 +534,10 @@ public class CmStudentDao {
             ps.setString(1, sm.getName());
             ps.setString(2, sm.getPasscode());
             // ps.setString(3, sm.getEmail());
-            ps.setInt(3, Integer.parseInt(sm.getGroupId()));
+            
+            // if group Id has not been set default to GROUP_NONE_ID
+            ps.setInt(3, (sm.getGroup() != null) ? Integer.parseInt(sm.getGroupId()):GROUP_NONE_ID);
+            
             /** @TODO: why is section needed here?  Should be in ActiveInfo
             //int sectionNum = (sm.getSectionNum() != null) ? sm.getSectionNum().intValue() : 0;
              * 
