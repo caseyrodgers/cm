@@ -1,5 +1,6 @@
 package hotmath.assessment;
 
+import hotmath.gwt.cm.server.CmDbTestCase;
 import hotmath.inmh.INeedMoreHelpResourceType;
 import hotmath.testset.ha.HaTest;
 import hotmath.testset.ha.HaTestDef;
@@ -11,9 +12,7 @@ import hotmath.util.HMConnectionPool;
 import java.sql.Connection;
 import java.util.List;
 
-import junit.framework.TestCase;
-
-public class AssessmentPrescription_Test extends TestCase {
+public class AssessmentPrescription_Test extends CmDbTestCase {
 
     public AssessmentPrescription_Test(String name) throws Exception {
         super(name);
@@ -27,10 +26,10 @@ public class AssessmentPrescription_Test extends TestCase {
         conn.close();
     }
     
-    HaUser user;
+    int userId;
     int PRE_ALG_PROF = 16;
     HaTestDef testDef;
-    HaTestRun testRun;
+    HaTestRun testRun=null;
 
     public void testGetInmhItemsForSession() throws Exception {
 
@@ -65,13 +64,40 @@ public class AssessmentPrescription_Test extends TestCase {
                 "cahseehm_1_1_PracticeTest_5_1", "cahseehm_1_1_PracticeTest_6_1", "cahseehm_1_1_PracticeTest_7_1",
                 "cahseehm_1_1_PracticeTest_8_1", "cahseehm_1_1_PracticeTest_9_1" };
         
-        user = HaUser.lookUser(conn,700, null);
+        userId = setupDemoAccount();
+        
         testDef = new HaTestDef(conn, CA_STATE_TEST);
         
-        HaTest test = HaTest.createTest(conn, user.getUid(), testDef, 1);
+        HaTest test = HaTest.createTest(conn, userId, testDef, 1);
         testRun = test.createTestRun(conn, guids, 0, 1, 9, 1);
     }
+    
+    
+    public void testIsPassing() throws Exception {
 
+        _testNumber = testRun.getHaTest().getTestId();
+
+        String wrongGuids[] = { "test1", "test2", "test3" };
+        HaTestRun testRun2 = testRun.getHaTest().createTestRun(conn,wrongGuids, 1, 2,0,1);
+        
+        assertTrue(!testRun2.isPassing());
+    }
+
+    public void testCreateNew1() throws Exception {
+
+        _testNumber = testRun.getHaTest().getTestId();
+
+        String wrongGuids[] = { "test1", "test2", "test3" };
+        HaTestRun testRun2 = testRun.getHaTest().createTestRun(conn,wrongGuids, 1, 2,0,1);
+        
+        _runId = testRun.getRunId();
+
+        AssessmentPrescription pres = new AssessmentPrescription(conn, testRun);
+        assertNotNull(pres);
+        assertNotNull(pres.getSessions());
+    }
+    
+    
     public void testCreate() throws Exception {
         AssessmentPrescription assTest = new AssessmentPrescription(conn, testRun);
 
@@ -81,19 +107,7 @@ public class AssessmentPrescription_Test extends TestCase {
     static int _testNumber = 0;
     static int _runId = 0;
 
-    public void testCreateNew1() throws Exception {
-
-        HaTest test = HaTest.createTest(conn,HaTest_Test.USER_TEST, new HaTestDef(conn, HaTest_Test.CHAP_TEST), 1);
-        _testNumber = test.getTestId();
-
-        String wrongGuids[] = { "test1", "test2", "test3" };
-        HaTestRun testRun = test.createTestRun(conn,wrongGuids, 1, 2,0,1);
-        _runId = testRun.getRunId();
-
-        AssessmentPrescription pres = new AssessmentPrescription(conn, testRun);
-        assertNotNull(pres);
-        assertNotNull(pres.getSessions());
-    }
+  
 
     public void testCreateNew() throws Exception {
         AssessmentPrescription pres = AssessmentPrescriptionManager.getInstance().createPrescription(conn, _testNumber,

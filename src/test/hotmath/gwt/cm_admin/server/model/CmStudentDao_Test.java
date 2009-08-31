@@ -26,7 +26,19 @@ public class CmStudentDao_Test extends CmDbTestCase {
         super.setUp();
         _dao = new CmStudentDao();
     }
+
     
+    
+    public void moveToNextQuizSegmentSlot() throws Exception {
+        _dao.moveToNextQuizSegmentSlot(conn, TEST_ID);
+        
+        StudentActiveInfo active1 = _dao.moveToNextQuizSegmentSlot(conn, TEST_ID);
+        StudentActiveInfo active = _dao.moveToNextQuizSegmentSlot(conn, TEST_ID);
+        assertNotNull(active);
+        
+        assertTrue(active1.getActiveSegmentSlot() != active.getActiveSegmentSlot());
+    }
+        
     
     public void testgetTotalInmHViewCount() throws Exception {
         Integer count = _dao.getTotalInmHViewCount(conn,TEST_ID);

@@ -8,7 +8,14 @@ package hotmath.gwt.cm_tools.client.model;
  *  
  *  If all values are zero, when user logs
  *  in they will initialize a new program
- *  defined in HA_USER.user_prog_id -> CM_USER_PROGRAM.id 
+ *  defined in HA_USER.user_prog_id -> CM_USER_PROGRAM.id
+ *  
+ *   
+ *   Each quiz is defined by a test_segment (1-n) and a test_segment_slot
+ *   The slot is between 1 and N.  The slot is updated each time the user does not pass a segment.
+ *   
+ *   Each quiz's solutions are taken from the given slot, so if a user repeats a segment they 
+ *   get different questions.
  *  
  * @author casey
  *
@@ -18,6 +25,7 @@ public class StudentActiveInfo {
     Integer activeRunId=0;
     Integer activeTestId=0;
     Integer activeSegment=0;
+    Integer activeSegmentSlot=0;
     Integer activeRunSession=0;
     
     
@@ -47,8 +55,21 @@ public class StudentActiveInfo {
     }
     
     
+    /** The quiz's segment slot, identifing which alternate 
+     *  questions sets are used.
+     *  
+     * @return
+     */
+    public Integer getActiveSegmentSlot() {
+        return activeSegmentSlot;
+    }
+    public void setActiveSegmentSlot(Integer activeSegmentSlot) {
+        this.activeSegmentSlot = activeSegmentSlot;
+    }
+    @Override
     public String toString() {
         return "StudentActiveInfo [activeRunId=" + activeRunId + ", activeRunSession=" + activeRunSession
-                + ", activeSegment=" + activeSegment + ", activeTestId=" + activeTestId + "]";
+                + ", activeSegment=" + activeSegment + ", activeSegmentSlot=" + activeSegmentSlot + ", activeTestId="
+                + activeTestId + "]";
     }
 }

@@ -2,6 +2,7 @@ package hotmath.gwt.shared.server.service.command;
 
 import hotmath.cm.util.CmCacheManager;
 import hotmath.cm.util.CmCacheManager.CacheName;
+import hotmath.gwt.cm_admin.server.model.CmAdminDao;
 import hotmath.gwt.cm_admin.server.model.CmStudentDao;
 import hotmath.gwt.cm_tools.client.model.StudentActiveInfo;
 import hotmath.gwt.shared.client.rpc.Action;
@@ -59,23 +60,52 @@ public class GetQuizHtmlCommand implements ActionHandler<GetQuizHtmlAction, RpcD
             if (testSegment == 0)
                 testSegment = 1;
             
+
+            
+            StudentActiveInfo activeInfo = dao.loadActiveInfo(conn, uid);
+
+            int testSegmentSlot = activeInfo.getActiveSegmentSlot();
+            
+            /** If user is re-taking the current segment, then move to next
+             * slot.
+             */
+            
+            /** how to know if this a retake?
+             * 
+             */
+            
+            /** determine the quiz slot to use.  
+             * 
+             * We reuse the slot if:
+             * 
+             * 1. user has never seen this quiz.
+             * 2. user has never seen this quiz segment.
+             * 3. user passed last quiz segment.
+             * 
+             * 
+             * We increment the slot if:
+             * 
+             * 1. user failed current segment
+             * 2. user is re-taking same segment
+             * 
+             * 
+             */
             
             /** Check Cache for this exact test HTML.  Make sure it is unique
              * in case program changes slightly.
              *  
              */
-            String testKey = programInfo.toString() + " Segment=" + testSegment;
-            RpcData rpcDataCached = (RpcData)CmCacheManager.getInstance().retrieveFromCache(CacheName.TEST_HTML,testKey);
-            if(rpcDataCached != null) {
-                return rpcDataCached;
-            }
+            
+            //String testKey = programInfo.toString() + " Segment=" + testSegment + "_" + testSegmentSlot;
+            //RpcData rpcDataCached = (RpcData)CmCacheManager.getInstance().retrieveFromCache(CacheName.TEST_HTML,testKey);
+            //if(rpcDataCached != null) {
+            //    return rpcDataCached;
+            //}
 
-
-            StudentActiveInfo activeInfo = dao.loadActiveInfo(conn, uid);
             boolean isActiveTest = activeInfo.getActiveTestId() > 0;
             
             HaTest haTest = null;
-            if (isActiveTest && testSegment == activeInfo.getActiveSegment()) {
+            if (false && isActiveTest && testSegment == activeInfo.getActiveSegment()) {
                 // reuse the existing test
                 haTest = HaTest.loadTest(conn,activeInfo.getActiveTestId());
             } else {
@@ -114,7 +144,7 @@ public class GetQuizHtmlCommand implements ActionHandler<GetQuizHtmlAction, RpcD
             rpcData.putData("title", testTitle);
             rpcData.putData("sub_title", subTitle);
             
-            CmCacheManager.getInstance().addToCache(CacheName.TEST_HTML,testKey, rpcData);
+            // CmCacheManager.getInstance().addToCache(CacheName.TEST_HTML,testKey, rpcData);
 
             return rpcData;
         } catch (Exception e) {

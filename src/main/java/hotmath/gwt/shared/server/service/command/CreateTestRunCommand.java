@@ -2,6 +2,7 @@ package hotmath.gwt.shared.server.service.command;
 
 import hotmath.assessment.AssessmentPrescription;
 import hotmath.assessment.AssessmentPrescriptionManager;
+import hotmath.gwt.cm_admin.server.model.CmStudentDao;
 import hotmath.gwt.cm_tools.client.ui.NextAction;
 import hotmath.gwt.cm_tools.client.ui.NextAction.NextActionName;
 import hotmath.gwt.shared.client.rpc.Action;
@@ -78,7 +79,13 @@ public class CreateTestRunCommand implements ActionHandler<CreateTestRunAction, 
             }
 
             HaTestRun run = test.createTestRun(conn, incorrectPids.toArray(new String[incorrectPids.size()]), answeredCorrect, answeredIncorrect, notAnswered, totalSessions);
+            
+            // if user DID NOT pass this quiz, we increment the zone used to retrieve quiz solutions
+            if(!run.isPassing()) {
+                new CmStudentDao().moveToNextQuizSegmentSlot(conn,test.getUser().getUid());
+            }
 
+            
             AssessmentPrescription pres = AssessmentPrescriptionManager.getInstance().getPrescription(conn, run.getRunId());
 
             // Let the prescription instruct the next action depending on

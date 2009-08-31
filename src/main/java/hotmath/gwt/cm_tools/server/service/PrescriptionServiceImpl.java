@@ -10,6 +10,7 @@ import hotmath.gwt.cm_tools.client.model.AutoUserAdvanced;
 import hotmath.gwt.cm_tools.client.model.ChapterModel;
 import hotmath.gwt.cm_tools.client.model.GroupModel;
 import hotmath.gwt.cm_tools.client.model.LessonItemModel;
+import hotmath.gwt.cm_tools.client.model.StudentActiveInfo;
 import hotmath.gwt.cm_tools.client.model.StudentActivityModel;
 import hotmath.gwt.cm_tools.client.model.StudentModel;
 import hotmath.gwt.cm_tools.client.model.StudentShowWorkModel;
@@ -300,6 +301,10 @@ public class PrescriptionServiceImpl extends RemoteServiceServlet implements Pre
             user.setActiveTestRunId(0);
             user.setActiveTestSegment(0);
             user.setActiveTestRunSession(0);
+
+            StudentActiveInfo activeInfo = new StudentActiveInfo();
+            activeInfo.setActiveSegmentSlot(0);
+            new CmStudentDao().setActiveInfo(conn, userId, activeInfo);
 
             user.update(conn);
         } catch (Exception e) {

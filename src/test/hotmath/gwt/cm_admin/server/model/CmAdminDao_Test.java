@@ -27,6 +27,19 @@ public class CmAdminDao_Test extends CmDbTestCase {
         super.setUp();
         _dao = new CmStudentDao();
     }
+    
+    
+    public void testStudentActiveInfo() throws Exception {
+        StudentActiveInfo activeInfo = _dao.loadActiveInfo(conn, TEST_ID);
+        assertNotNull(activeInfo);
+    }
+
+    public void testRestStudentActiveInfo() throws Exception {
+        StudentActiveInfo activeInfo = new StudentActiveInfo();
+        activeInfo.setActiveTestId(100);
+        _dao.setActiveInfo(conn, TEST_ID, activeInfo);
+    }
+    
 
     public void testSetStudentProgramChapter() throws Exception {
 
@@ -94,15 +107,5 @@ public class CmAdminDao_Test extends CmDbTestCase {
         assertNotNull(up.getTestName());
     }
 
-    public void testStudentActiveInfo() throws Exception {
-        StudentActiveInfo activeInfo = _dao.loadActiveInfo(conn, TEST_ID);
-        assertNotNull(activeInfo);
-    }
-
-    public void testRestStudentActiveInfo() throws Exception {
-        StudentActiveInfo activeInfo = new StudentActiveInfo();
-        activeInfo.setActiveTestId(100);
-        _dao.setActiveInfo(conn, TEST_ID, activeInfo);
-    }
 
 }

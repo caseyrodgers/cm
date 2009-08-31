@@ -16,11 +16,8 @@ import hotmath.testset.ha.ChapterInfo;
 import hotmath.testset.ha.HaTestDef;
 import hotmath.testset.ha.HaTestDefDao;
 import hotmath.testset.ha.StudentUserProgramModel;
-import hotmath.util.sql.SqlUtilities;
 
 import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 
 public class GetUserInfoCommand implements ActionHandler<GetUserInfoAction, UserInfo> {
 
@@ -66,7 +63,7 @@ public class GetUserInfoCommand implements ActionHandler<GetUserInfoAction, User
             
             userInfo.setUserAccountType(sub.getSubscriberType());
             
-            userInfo.setPassPercentRequired(si.getPassPercent());
+            userInfo.setPassPercentRequired(si.getConfig().getPassPercent());
             userInfo.setTestSegmentCount(testDef.getTotalSegmentCount());
             userInfo.setViewCount(dao.getTotalInmHViewCount(conn,action.getUserId()));
             

@@ -1,6 +1,5 @@
 package hotmath.gwt.cm.client.ui.context;
 
-
 import hotmath.gwt.cm.client.CatchupMath;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.data.InmhItemData;
@@ -61,7 +60,8 @@ public class PrescriptionContext implements CmContext {
 
     public void setPrescriptionData(PrescriptionData prescriptionData) {
         this.prescriptionData = prescriptionData;
-        EventBus.getInstance().fireEvent(new CmEvent(EventBus.EVENT_TYPE_TOPIC_CHANGED,prescriptionData.getCurrSession().getTopic()));
+        EventBus.getInstance().fireEvent(
+                new CmEvent(EventBus.EVENT_TYPE_TOPIC_CHANGED, prescriptionData.getCurrSession().getTopic()));
     }
 
     public void setCorrectPercent(int correctPercent) {
@@ -110,7 +110,6 @@ public class PrescriptionContext implements CmContext {
 
     }
 
-
     public void gotoNextTopic() {
 
         CmMainPanel.__lastInstance._mainContent.removeAll();
@@ -135,131 +134,133 @@ public class PrescriptionContext implements CmContext {
                     }
                 }
             }
-            /** If all required solutions have been not been viewed, then force user to do so
+            /**
+             * If all required solutions have been not been viewed, then force
+             * user to do so
              * 
-             *  if 'debug' parameter is on URL, then this check is skipped
+             * if 'debug' parameter is on URL, then this check is skipped
              */
             if (CmShared.getQueryParameter("debug") == null && (UserInfo.getInstance().isActiveUser() && !allViewed)) {
-                
+
                 /**
                  * YUCK ... Expand the practice problems.
                  * 
                  * @TODO: figure better way... Perhaps add listener to the
-                 *        accordian
+                 *        accordion
                  */
-                ((PrescriptionCmGuiDefinition) CmMainPanel.__lastInstance.cmGuiDef)._guiWidget.expandResourcePracticeProblems();
+                ((PrescriptionCmGuiDefinition) CmMainPanel.__lastInstance.cmGuiDef)._guiWidget
+                        .expandResourcePracticeProblems();
                 CmMainPanel.__lastInstance.layout();
-                
-                CatchupMathTools.showAlert("View All the Steps", "Please view all required practice problem answers to the very last step.");              
+
+                CatchupMathTools.showAlert("View All the Steps",
+                        "Please view all required practice problem answers to the very last step.");
                 ContextController.getInstance().setCurrentContext(PrescriptionContext.this);
 
                 return;
             }
         }
-        
+
         doMoveNextAux(hasPrescription);
     }
-    
-    
+
     private void doMoveNextAux(boolean hasPrescription) {
-        
-        /** The current session number
+
+        /**
+         * The current session number
          * 
          */
         int sessionNumber = (hasPrescription) ? prescriptionData.getCurrSession().getSessionNumber() : 0;
-        boolean thereAreNoMoreSessions = (!hasPrescription)|| !((sessionNumber+1) < (prescriptionData.getSessionTopics().size()));
-        
+        boolean thereAreNoMoreSessions = (!hasPrescription)
+                || !((sessionNumber + 1) < (prescriptionData.getSessionTopics().size()));
+
         correctPercent = UserInfo.getInstance().getCorrectPercent();
         if (!hasPrescription || thereAreNoMoreSessions) {
-            
-            // there are no more sessions, so need to move to the 'next'.  
+
+            // there are no more sessions, so need to move to the 'next'.
             // Next might be the same Quiz, the next Quiz or AutoAdvance.
-            
+
             int passPercentRequired = UserInfo.getInstance().getPassPercentRequired();
-                if (!UserInfo.getInstance().isActiveUser()) {
-                    CatchupMathTools.showAlert("You are a visitor and cannot jump to the next quiz.");
-                    ContextController.getInstance().setCurrentContext(PrescriptionContext.this);
+            if (!UserInfo.getInstance().isActiveUser()) {
+                CatchupMathTools.showAlert("You are a visitor and cannot jump to the next quiz.");
+                ContextController.getInstance().setCurrentContext(PrescriptionContext.this);
+                return;
+            }
+
+            String msg = "";
+            int testSegmentToLoad = 0;
+            if (correctPercent >= passPercentRequired) {
+                // User has passed this section, and is ready to move to next
+                // Quiz or AutoAdvance
+
+                if (UserInfo.getInstance().isDemoUser()) {
+                    showDemoCompleteMessage();
                     return;
                 }
 
-                String msg = "";
-                int testSegmentToLoad = 0;
-                if (correctPercent >= passPercentRequired) {
-                    // User has passed this section, and is ready to move to next Quiz or AutoAdvance
-                    
-                    if(UserInfo.getInstance().isDemoUser()) {
-                        showDemoCompleteMessage();
-                        return;
-                    }
-                    
-                    // are there more Quizzes in this program?
-                    boolean areMoreSegments = UserInfo.getInstance().getTestSegment() < UserInfo.getInstance().getTestSegmentCount();
-                    if(areMoreSegments) {
-                        msg = "You passed this section!  You will now be shown the next quiz.";
-                        CatchupMathTools.showAlert(msg,new CmAsyncRequestImplDefault() {
-                            public void requestComplete(String requestData) {
-                                UserInfo.getInstance().setTestSegment(UserInfo.getInstance().getTestSegment() + 1);
-                                CatchupMath.getThisInstance().showQuizPanel();
-                            }
-                        });
-                    }
-                    else {
-                        msg = "You passed this section!  You will now be advanced to the next program.";
-                        CatchupMathTools.showAlert(msg,new CmAsyncRequestImplDefault() {
-                            public void requestComplete(String requestData) {
-                                autoAdvanceUser();                                
-                            }
-                        });
-                    }
-
-                    // any either case, get out of here.
-                    return;
-                    
-                } else {
-                    msg = "Would you like to take your next quiz?";
-                    testSegmentToLoad = UserInfo.getInstance().getTestSegment();
-                }
-
-
-                final int tstl = testSegmentToLoad;
-                MessageBox.confirm("Ready for next Quiz?", msg, new Listener<MessageBoxEvent>() {
-                    public void handleEvent(MessageBoxEvent be) {
-                        if (be.getButtonClicked().getText().equals("Yes")) {
-                            UserInfo.getInstance().setTestSegment(tstl);
+                // are there more Quizzes in this program?
+                boolean areMoreSegments = UserInfo.getInstance().getTestSegment() < UserInfo.getInstance()
+                        .getTestSegmentCount();
+                if (areMoreSegments) {
+                    msg = "You passed this section!  You will now be shown the next quiz.";
+                    CatchupMathTools.showAlert(msg, new CmAsyncRequestImplDefault() {
+                        public void requestComplete(String requestData) {
+                            UserInfo.getInstance().setTestSegment(UserInfo.getInstance().getTestSegment() + 1);
                             CatchupMath.getThisInstance().showQuizPanel();
-                        } else {
-                            ContextController.getInstance().setCurrentContext(PrescriptionContext.this);
                         }
+                    });
+                } else {
+                    msg = "You passed this section!  You will now be advanced to the next program.";
+                    CatchupMathTools.showAlert(msg, new CmAsyncRequestImplDefault() {
+                        public void requestComplete(String requestData) {
+                            autoAdvanceUser();
+                        }
+                    });
+                }
+
+                // any either case, get out of here.
+                return;
+
+            } else {
+                msg = "Would you like to take your next quiz?";
+                testSegmentToLoad = UserInfo.getInstance().getTestSegment();
+            }
+
+            final int tstl = testSegmentToLoad;
+            MessageBox.confirm("Ready for next Quiz?", msg, new Listener<MessageBoxEvent>() {
+                public void handleEvent(MessageBoxEvent be) {
+                    if (be.getButtonClicked().getText().equals("Yes")) {
+                        UserInfo.getInstance().setTestSegment(tstl);
+                        CatchupMath.getThisInstance().showQuizPanel();
+                    } else {
+                        ContextController.getInstance().setCurrentContext(PrescriptionContext.this);
                     }
-                });
+                }
+            });
             return;
         } else {
             sessionNumber++; // if valid..
             prescriptionCm.getAsyncDataFromServer(sessionNumber);
         }
     }
-    
 
-    /** Auto Advance the user to the next program
-     *  
+    /**
+     * Auto Advance the user to the next program
+     * 
      */
     private void autoAdvanceUser() {
-        
+
         CatchupMathTools.setBusy(true);
 
         CmServiceAsync s = (CmServiceAsync) Registry.get("cmService");
         s.execute(new AutoAdvanceUserAction(UserInfo.getInstance().getUid()), new AsyncCallback<AutoUserAdvanced>() {
             @Override
             public void onSuccess(AutoUserAdvanced userAdvance) {
-                
-                
+
                 CatchupMathTools.setBusy(false);
-                
-                
-                String msg = "<p class='completed'>You have completed this program!</p>" +
-                             "<p class='advanced-to'>You will now be advanced to:" +
-                             "<div class='plan'><b>" + userAdvance.getProgramTitle() + "</div>" +
-                             "</p>";
+
+                String msg = "<p class='completed'>You have completed this program!</p>"
+                        + "<p class='advanced-to'>You will now be advanced to:" + "<div class='plan'><b>"
+                        + userAdvance.getProgramTitle() + "</div>" + "</p>";
 
                 Window w = new Window();
                 w.setClosable(false);
@@ -272,14 +273,14 @@ public class PrescriptionContext implements CmContext {
                 Button btnOk = new Button("OK");
                 btnOk.addSelectionListener(new SelectionListener<ButtonEvent>() {
                     public void componentSelected(ButtonEvent ce) {
-                        com.google.gwt.user.client.Window.Location.reload();                        
+                        com.google.gwt.user.client.Window.Location.reload();
                     }
                 });
                 w.getButtonBar().setAlignment(HorizontalAlignment.RIGHT);
                 w.addButton(btnOk);
-                w.setVisible(true);                
+                w.setVisible(true);
             }
-            
+
             @Override
             public void onFailure(Throwable caught) {
                 CatchupMathTools.setBusy(false);
@@ -288,11 +289,10 @@ public class PrescriptionContext implements CmContext {
             }
         });
     }
-    
-    
+
     private void showDemoCompleteMessage() {
-        String msg = "<p>Thank you for trying Catchup Math for a Pre-algebra Session.</p>  " +
-                     "<p>Please visit our <a href='http://catchupmath.com/schools.html'>Schools</a>, <a href='http://catchupmath.com/colleges.html'>Colleges</a>, or <a href='http://catchupmath.com/students.html'>Students</a> pages.</p>";
+        String msg = "<p>Thank you for trying Catchup Math for a Pre-algebra Session.</p>  "
+                + "<p>Please visit our <a href='http://catchupmath.com/schools.html'>Schools</a>, <a href='http://catchupmath.com/colleges.html'>Colleges</a>, or <a href='http://catchupmath.com/students.html'>Students</a> pages.</p>";
 
         Window w = new Window();
         w.setClosable(false);
@@ -303,15 +303,6 @@ public class PrescriptionContext implements CmContext {
         Html html = new Html(msg);
         w.add(html);
         w.setVisible(true);
-    }
-
-    /**
-     * Return the current pass percent for the current quiz
-     * 
-     * @return
-     */
-    private int getPassPercent() {
-        return 10;
     }
 
     public void gotoPreviousTopic() {
@@ -379,14 +370,14 @@ public class PrescriptionContext implements CmContext {
      * Called with prev/next buttons that should have their tooltips set to the
      * next/prev options.
      * 
-     * Move to next topic (<n> more to go)”; or, if zero topics left: “Move to next quiz”
+     * Move to next topic (<n> more to go)”; or, if zero topics left: “Move to
+     * next quiz”
      * 
      */
     public void setHeaderButtons(IconButton prevBtn, IconButton nextBtn) {
 
-
         assert prescriptionData != null;
-        
+
         prevBtn.setEnabled(true);
         nextBtn.setEnabled(true);
         int pn = prescriptionData.getCurrSession().getSessionNumber();
@@ -404,55 +395,56 @@ public class PrescriptionContext implements CmContext {
         else {
             int sn = prescriptionData.getCurrSession().getSessionNumber();
             int ts = prescriptionData.getSessionTopics().size();
-            nextBtn.setToolTip("Move to the next topic (" + (ts-sn-1) + " more to go)");
+            nextBtn.setToolTip("Move to the next topic (" + (ts - sn - 1) + " more to go)");
         }
     }
 
     public String getStatusMessage() {
-        String html1="<ul>" +
-       "<li><b>Review and Practice</b> Choose any items from the left-side menu that you find helpful. " +
-           "In order to move ahead, you must view all three of the Required Practice problems all the way to " +
-           "the last step.  Please use a pencil and paper or our Show-Work feature to try the " +
-           "problems on your own first - that is how you really learn!" +
-       "</li>" +
-       "<li>" +
-           "<b>Enter Your Answer</b> You can type on the keyboard as well as draw with your mouse. " +
-           " The whiteboard saves your attempts at solving the practice problems so you can discuss later " +
-           " with your teacher or tutor or review on your own.  Your teacher may prefer that you show your work in a notebook. " +
-       "</li>" +
-       "</ul>";
-        
+        String html1 = "<ul>"
+                + "<li><b>Review and Practice</b> Choose any items from the left-side menu that you find helpful. "
+                + "In order to move ahead, you must view all three of the Required Practice problems all the way to "
+                + "the last step.  Please use a pencil and paper or our Show-Work feature to try the "
+                + "problems on your own first - that is how you really learn!"
+                + "</li>"
+                + "<li>"
+                + "<b>Enter Your Answer</b> You can type on the keyboard as well as draw with your mouse. "
+                + " The whiteboard saves your attempts at solving the practice problems so you can discuss later "
+                + " with your teacher or tutor or review on your own.  Your teacher may prefer that you show your work in a notebook. "
+                + "</li>" + "</ul>";
+
         return html1;
     }
 
     public void runAutoTest() {
-        int timeToWait=1;
-        for(final PrescriptionSessionDataResource r: prescriptionData.getCurrSession().getInmhResources()) {
+        int timeToWait = 1;
+        for (final PrescriptionSessionDataResource r : prescriptionData.getCurrSession().getInmhResources()) {
             try {
                 Timer timer = new Timer() {
                     public void run() {
                         final String resourceType = r.getLabel();
-                        
-                        AutoTestWindow.getInstance().addLogMessage("Testing resource: " + resourceType);
-                        
-                        ((PrescriptionCmGuiDefinition) CmMainPanel.__lastInstance.cmGuiDef)._guiWidget.expandResourceType(resourceType);
-                        
-                        
-                         // now click on each resource
-                        int timeToWait1=1;
-                        for(Component c: ((PrescriptionCmGuiDefinition) CmMainPanel.__lastInstance.cmGuiDef)._guiWidget.getItems()) {
-                            if(c instanceof ContentPanel) {
-                                ContentPanel cp = (ContentPanel)c;
-                                if(!cp.getHeading().equals(resourceType))
-                                    continue;
-                                final ResourceList rl = (ResourceList)cp.getItems().get(0);
 
-                                for(final ResourceModel rm: rl.getStore().getModels()) {
-                                    
+                        AutoTestWindow.getInstance().addLogMessage("Testing resource: " + resourceType);
+
+                        ((PrescriptionCmGuiDefinition) CmMainPanel.__lastInstance.cmGuiDef)._guiWidget
+                                .expandResourceType(resourceType);
+
+                        // now click on each resource
+                        int timeToWait1 = 1;
+                        for (Component c : ((PrescriptionCmGuiDefinition) CmMainPanel.__lastInstance.cmGuiDef)._guiWidget
+                                .getItems()) {
+                            if (c instanceof ContentPanel) {
+                                ContentPanel cp = (ContentPanel) c;
+                                if (!cp.getHeading().equals(resourceType))
+                                    continue;
+                                final ResourceList rl = (ResourceList) cp.getItems().get(0);
+
+                                for (final ResourceModel rm : rl.getStore().getModels()) {
+
                                     Timer timer1 = new Timer() {
                                         public void run() {
-                                            AutoTestWindow.getInstance().addLogMessage("Testing: " + resourceType + ", " + rm.getItem());
-                                            
+                                            AutoTestWindow.getInstance().addLogMessage(
+                                                    "Testing: " + resourceType + ", " + rm.getItem());
+
                                             rl.showResource(rm.getItem());
                                         }
                                     };
@@ -464,38 +456,35 @@ public class PrescriptionContext implements CmContext {
                     }
                 };
                 timer.schedule(timeToWait);
-                timeToWait += AutoTestWindow.getInstance().getTimeForSingleResourceType();            
-            }
-            catch(Exception e) {
+                timeToWait += AutoTestWindow.getInstance().getTimeForSingleResourceType();
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }
-        
-        /** 
-         *  Move to next test, prescription or completion
+
+        /**
+         * Move to next test, prescription or completion
          */
         Timer timer = new Timer() {
             public void run() {
-                int cs =  prescriptionData.getCurrSession().getSessionNumber();
+                int cs = prescriptionData.getCurrSession().getSessionNumber();
                 int ts = prescriptionData.getSessionTopics().size();
-                if((cs+1) < ts) {
-                    AutoTestWindow.getInstance().addLogMessage("Moving to Lesson: " + cs+1);
-                    prescriptionCm.getAsyncDataFromServer(cs+1);
-                }
-                else {
+                if ((cs + 1) < ts) {
+                    AutoTestWindow.getInstance().addLogMessage("Moving to Lesson: " + cs + 1);
+                    prescriptionCm.getAsyncDataFromServer(cs + 1);
+                } else {
                     int nextSegment = UserInfo.getInstance().getTestSegment();
-                    if(nextSegment < UserInfo.getInstance().getTestSegmentCount()) {
+                    if (nextSegment < UserInfo.getInstance().getTestSegmentCount()) {
                         nextSegment += 1;
                         AutoTestWindow.getInstance().addLogMessage("Testing Quiz: " + nextSegment);
                         UserInfo.getInstance().setTestSegment(nextSegment);
                         CatchupMath.getThisInstance().showQuizPanel();
-                    }
-                    else {
+                    } else {
                         AutoTestWindow.getInstance().addLogMessage("Auto Test has completed at " + nextSegment + "!");
                     }
                 }
             }
         };
-        timer.schedule(AutoTestWindow.getInstance().getTimeForSingleLesson());        
+        timer.schedule(AutoTestWindow.getInstance().getTimeForSingleLesson());
     }
 }

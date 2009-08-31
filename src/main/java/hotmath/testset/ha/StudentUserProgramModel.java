@@ -14,7 +14,6 @@ public class StudentUserProgramModel {
     Integer userId;
     Integer testDefId;
     String testName;
-    Integer passPercent;
     Integer adminId;
     Date createDate;
     HaTestConfig config;
@@ -50,12 +49,7 @@ public class StudentUserProgramModel {
     public void setTestDefId(Integer testDefId) {
         this.testDefId = testDefId;
     }
-    public Integer getPassPercent() {
-        return passPercent;
-    }
-    public void setPassPercent(Integer passPercent) {
-        this.passPercent = passPercent;
-    }
+
     public Integer getAdminId() {
         return adminId;
     }
@@ -72,8 +66,7 @@ public class StudentUserProgramModel {
     @Override
     public String toString() {
         return "StudentUserProgramModel [adminId=" + adminId + ", config=" + config + ", createDate=" + createDate
-                + ", id=" + id + ", passPercent=" + passPercent + ", testDefId=" + testDefId + ", testName=" + testName
-                + ", userId=" + userId + "]";
+                + ", id=" + id + ", testDefId=" + testDefId + ", testName=" + testName + ", userId=" + userId + "]";
     }
     
 }

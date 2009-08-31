@@ -17,6 +17,15 @@ public class HaTestRun {
     HaTest haTest;
     int answeredCorrect, answeredIncorrect;
     int sessionNumber;
+    boolean isPassing;
+
+    public boolean isPassing() {
+        return isPassing;
+    }
+
+    public void setPassing(boolean isPassing) {
+        this.isPassing = isPassing;
+    }
 
     public int getSessionNumber() {
         return this.sessionNumber;
@@ -187,7 +196,7 @@ public class HaTestRun {
         PreparedStatement pstat = null;
         ResultSet rs = null;
         try {
-            String sql = "select t.*, r.*, s.pid, s.answer_status, s.answer_index, s.rid "
+            String sql = "select t.*, r.*, s.pid, s.answer_status, s.answer_index, s.rid, r.is_passing "
                     + " from   HA_TEST_RUN r INNER JOIN HA_TEST t on r.test_id = t.test_id "
                     + " LEFT JOIN HA_TEST_RUN_RESULTS s on s.run_id = r.run_id " + " where r.run_id = ? ";
 
@@ -204,6 +213,7 @@ public class HaTestRun {
             testRun.setRunTime(rs.getTimestamp("run_time").getTime());
             testRun.setSessionNumber(conn, rs.getInt("run_session"));
             testRun.setAnsweredCorrect((rs.getInt("answered_correct")));
+            testRun.setPassing(rs.getInt("is_passing")==0?false:true);
 
             testRun.setHaTest(HaTest.loadTest(conn,rs.getInt("test_id")));
             do {

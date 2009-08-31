@@ -74,7 +74,7 @@ public class CreateAutoRegistrationAccountCommand implements ActionHandler<Creat
         
         userInfo.setUserAccountType(sub.getSubscriberType());
         
-        userInfo.setPassPercentRequired(si.getPassPercent());
+        userInfo.setPassPercentRequired(si.getConfig().getPassPercent());
         userInfo.setTestSegmentCount(testDef.getTotalSegmentCount());
         userInfo.setViewCount(dao.getTotalInmHViewCount(conn,action.getUserId()));
         

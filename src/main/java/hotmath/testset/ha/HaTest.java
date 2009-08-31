@@ -3,6 +3,9 @@ package hotmath.testset.ha;
 import hotmath.HotMathException;
 import hotmath.cm.util.CmCacheManager;
 import hotmath.cm.util.CmCacheManager.CacheName;
+import hotmath.gwt.cm_admin.server.model.CmStudentDao;
+import hotmath.gwt.cm_tools.client.model.StudentModelI;
+import hotmath.gwt.shared.server.service.command.GetPrescriptionCommand;
 import hotmath.util.HMConnectionPool;
 import hotmath.util.sql.SqlUtilities;
 
@@ -245,21 +248,30 @@ public class HaTest {
 		ResultSet rs = null;
 		try {
 			
-	        HaUser user = HaUser.lookUser(conn,uid,null);
-            HaTestConfig config = user.getTestConfig();
 			
-			List<String> testIds = testDef.getTestIdsForSegment(conn,segment,config);
-			
-			String sql = "insert into HA_TEST(user_id,test_def_id,create_time,test_segment,total_segments,test_question_count)values(?,?,?,?,?,?)";
+			String sql = "insert into HA_TEST(user_id,test_def_id,create_time,test_segment,test_segment_slot, total_segments,test_question_count)values(?,?,?,?,?,?,?)";
 			
 			pstat = conn.prepareStatement(sql);
 			
+			
+			
+			/** Determine the proper quiz zone to use
+			 * 
+			 */
+			int segmentSlot = new CmStudentDao().loadActiveInfo(conn, uid).getActiveSegmentSlot();
+			
+            HaUser user = HaUser.lookUser(conn,uid,null);
+            HaTestConfig config = user.getTestConfig();
+            
+            List<String> testIds = testDef.getTestIdsForSegment(conn,segment,config, segmentSlot);
+
 			pstat.setInt(1,uid);
 			pstat.setInt(2,testDef.getTestDefId());
 			pstat.setTimestamp(3,new Timestamp(System.currentTimeMillis()));
 			pstat.setInt(4,segment);
-			pstat.setInt(5,config.getSegmentCount());
-			pstat.setInt(6,testIds.size());
+			pstat.setInt(5,segmentSlot);
+			pstat.setInt(6,config.getSegmentCount());
+			pstat.setInt(7,testIds.size());
 			
 			// make sure there are not currently defines items for this test
 			//Statement stmt = conn.createStatement();
@@ -372,12 +384,27 @@ public class HaTest {
 	 */
 	public HaTestRun createTestRun(final Connection conn, String wrongGids[], int answeredCorrect, int answeredIncorrect, int notAnswered, int totalSessions) throws HotMathException {
 		
+        
+	    
 		PreparedStatement pstat=null;
 		ResultSet rs = null;
 		try {
+		    
+	        /** Determine if user passed this quiz/test
+	         * 
+	         * This information is used to move to the next
+	         * quiz slot.
+	         * 
+	         */
+	        CmStudentDao dao = new CmStudentDao();
+	        StudentUserProgramModel pinfo = dao.loadProgramInfo(conn, getUser().getUid());
+	        int passPercentRequired = pinfo.getConfig().getPassPercent();
+	        int testCorrectPercent = GetPrescriptionCommand.getTestPassPercent(answeredCorrect + answeredIncorrect + notAnswered, answeredCorrect);
+	        boolean passedQuiz = (testCorrectPercent >= passPercentRequired);
+	                
 			
 			HaTest test = HaTest.loadTest(conn, testId);
-			String sql = "insert into HA_TEST_RUN(test_id, run_time, answered_correct, answered_incorrect, not_answered, total_sessions, run_session)values(?,?,?,?,?,?,1)";
+			String sql = "insert into HA_TEST_RUN(test_id, run_time, answered_correct, answered_incorrect, not_answered, total_sessions, run_session,is_passing)values(?,?,?,?,?,?,1,?)";
 			pstat = conn.prepareStatement(sql);
 			HaTestRun testRun = new HaTestRun();
 			
@@ -388,6 +415,7 @@ public class HaTest {
 			pstat.setInt(4,answeredIncorrect);
 			pstat.setInt(5,notAnswered);
 			pstat.setInt(6,totalSessions);
+			pstat.setInt(7, passedQuiz?1:0);
 			
 			int cnt = pstat.executeUpdate();
 			if(cnt != 1)
@@ -406,8 +434,9 @@ public class HaTest {
 			testRun.setHaTest(test);
 			testRun.setAnsweredCorrect(answeredCorrect);
 			testRun.setAnsweredIncorrect(answeredIncorrect);
+			testRun.setPassing(passedQuiz);
 			
-			/** transfere current selections to this test run
+			/** transfer current selections to this test run
 			 * 
 			 */
 			testRun.transferCurrentToTestRun(conn);

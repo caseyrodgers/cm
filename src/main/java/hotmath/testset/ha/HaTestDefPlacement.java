@@ -24,7 +24,7 @@ public class HaTestDefPlacement extends HaTestDef {
 	 */
 	
 	@Override
-	public List<String> getTestIdsForSegment(Connection conn, int segment, HaTestConfig config) throws Exception {
+	public List<String> getTestIdsForSegment(Connection conn, int segment, HaTestConfig config, int testSegmentSlot) throws Exception {
 		_lastSegment = segment;
 		PreparedStatement ps=null;
 		ResultSet rs = null;
@@ -33,14 +33,18 @@ public class HaTestDefPlacement extends HaTestDef {
 			// each text group that is listed in the
 			// placement test.
 			List<String> list = new ArrayList<String>();
-			String sql = "select problemindex from SOLUTIONS " + 
+			String sql = "select problemindex " +
+					     " from SOLUTIONS " + 
 			             " where booktitle = ? " +
 			             "  and chaptertitle = ? " +
+			             "  and sectiontitle = ? " + 
 			             "  order by problemnumber";
 			ps = conn.prepareStatement(sql);
 			
 			ps.setString(1,TEXTCODE);
 			ps.setString(2, this.PLACEMENT_CHAPTERS[segment-1]);
+			ps.setInt(3, testSegmentSlot);
+			
 			rs = ps.executeQuery();
 			if(!rs.first())
 				throw new Exception("could not initialize HaTestDefPlacement: no rows found to initialize");

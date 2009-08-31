@@ -201,7 +201,8 @@ public class HaTestDef {
      * Return a list of ProblemIds that are used to populate this test's
      * segment.
      * 
-     * 
+     *
+     * The segmentSlot is the position in the alternate tests to selection questions
      * 
      * @return
      * @throws HotMathException
@@ -209,11 +210,11 @@ public class HaTestDef {
     List<String> list;
     int _lastSegment;
 
-    public List<String> getTestIdsForSegment(final Connection conn, int segment, HaTestConfig config) throws Exception {
+    public List<String> getTestIdsForSegment(final Connection conn, int segment, HaTestConfig config, int segmentSlot) throws Exception {
         _lastSegment = segment;
 
         HaTestDefDao dao = new HaTestDefDao();
-        return dao.getTestIdsForSegment(conn, segment, textCode, chapter, config);
+        return dao.getTestIdsForSegment(conn, segment, textCode, chapter, config, segmentSlot);
     }
 
 

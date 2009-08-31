@@ -7,7 +7,7 @@
         </div>        
         <div id='tutor_raw_steps_wrapper'>
             $solution_html
-                     </div>
+        </div>
         <div id='steps_tail' style='position: relative'>
             <a id='show-work-force' href='#' onclick='showWorkDialog_Gwt()'><img src='/gwt-resources/images/show-work-required.png'/></a>
             <div id='steps_tail_padding'>

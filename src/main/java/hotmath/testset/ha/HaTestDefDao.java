@@ -144,14 +144,13 @@ public class HaTestDefDao {
       * @return
       * @throws SQLException
       */
-     public List<String> getTestIdsForSegment(final Connection conn, int segment, String textcode, String chapter, HaTestConfig config)  throws Exception {
+     public List<String> getTestIdsForSegment(final Connection conn, int segment, String textcode, String chapter, HaTestConfig config, int segmentSlot)  throws Exception {
 
          // Use chapter from config if available, otherwise
          // use the default chapter defined for this test_def
 
-         int section = 1; // alternative tests are stored in separate sections
-        
-         List<String> problemIds = getTestIds(conn, textcode, chapter, section,0,99999,config);
+                 
+         List<String> problemIds = getTestIds(conn, textcode, chapter, segmentSlot,0,99999,config);
 
          int cnt = problemIds.size();
          
@@ -162,9 +161,9 @@ public class HaTestDefDao {
          int segPnEnd = (segment * solsPerSeg);
          int segPnStart = (segPnEnd - (solsPerSeg - 1));
 
-         problemIds = getTestIds(conn, textcode, chapter, section,segPnStart,segPnEnd,config);
+         problemIds = getTestIds(conn, textcode, chapter, segmentSlot,segPnStart,segPnEnd,config);
          if (problemIds.size() == 0) {
-             throw new HotMathException(String.format("No problems for test segment: %s, %s, %n, %n", textcode, chapter,segPnStart, segPnEnd));
+             throw new HotMathException(String.format("No problems for test segment: %s, %s, %n, %n, %n", textcode, chapter,segPnStart, segPnEnd, segmentSlot));
          }
          return problemIds;
      }
@@ -191,26 +190,37 @@ public class HaTestDefDao {
              if (config != null && config.getChapters().size() > 0) {
                  // just use first for now
                  chapter = config.getChapters().get(0);
-    
+                 
                  sql = "SELECT problemindex " + " FROM   SOLUTIONS s "
                          + "  INNER JOIN BOOK_TOC b on b.textcode = s.booktitle " + " WHERE s.BOOKTITLE = ? "
                          + " and   b.title = ? " + " and   b.level = 2 "
                          + " and   (s.chaptertitle = b.title_number && s.SECTIONTITLE = ?) "
                          + " and  problemnumber between ? and ? ";
              } else {
-                 sql = "SELECT problemindex " + " FROM   SOLUTIONS " + " WHERE (SOLUTIONS.BOOKTITLE = ? "
-                         + " and  (SOLUTIONS.CHAPTERTITLE = ? && SOLUTIONS.SECTIONTITLE = ?)) "
-                         + " and  problemnumber between ? and ? ";
+                 
+                 /** alternate tests (question slots) are only used for NON chapter programs
+                  *                  
+                  */
+                 sql = "SELECT problemindex " + 
+                       " FROM   SOLUTIONS " + 
+                       " WHERE (SOLUTIONS.BOOKTITLE = ? " + 
+                       " and  (SOLUTIONS.CHAPTERTITLE = ? AND SOLUTIONS.SECTIONTITLE = ?)) " +
+                       " and  problemnumber between ? and ? ";
              }
-    
+             
              ps = conn.prepareStatement(sql);
-    
+             
+             
+             
              ps.setString(1, textcode);
              ps.setString(2, chapter);
-             ps.setInt(3, section);
+             ps.setInt(3, (section+1));  // test_segment_slots are zero based
              ps.setInt(4, startProblemNumber);
              ps.setInt(5, endProblemNumber);
-    
+             
+             logger.info(ps);
+             
+             
              rs = ps.executeQuery();
              
              List<String> pids = new ArrayList<String>();

@@ -1167,7 +1167,6 @@ public class CmStudentDao {
                 supm.setId(rs.getInt("id"));
                 supm.setUserId(rs.getInt("user_id"));
                 supm.setAdminId(rs.getInt("admin_id"));
-                supm.setPassPercent(rs.getInt("pass_percent"));
                 supm.setTestDefId(rs.getInt("test_def_id"));
                 supm.setTestName(rs.getString("test_name"));
                 supm.setConfig(new HaTestConfig(rs.getString("test_config_json")));
@@ -1179,7 +1178,7 @@ public class CmStudentDao {
     }
 
     /**
-     * Load this user's curently active state information. This shows the
+     * Load this user's currently active state information. This shows the
      * current test/run and session the user is currently viewing.
      * 
      * @param userId
@@ -1190,7 +1189,7 @@ public class CmStudentDao {
         PreparedStatement ps = null;
         ResultSet rs = null;
 
-        String sql = "select active_run_id, active_test_id, active_segment, active_run_session from HA_USER where uid = ? ";
+        String sql = "select active_run_id, active_test_id, active_segment, active_segment_slot, active_run_session from HA_USER where uid = ? ";
         try {
             StudentActiveInfo activeInfo = new StudentActiveInfo();
 
@@ -1203,6 +1202,7 @@ public class CmStudentDao {
                 activeInfo.setActiveRunSession(rs.getInt("active_run_session"));
                 activeInfo.setActiveSegment(rs.getInt("active_segment"));
                 activeInfo.setActiveTestId(rs.getInt("active_test_id"));
+                activeInfo.setActiveSegmentSlot(rs.getInt("active_segment_slot"));
             }
             return activeInfo;
         } finally {
@@ -1210,6 +1210,36 @@ public class CmStudentDao {
         }
     }
 
+    /** How many slots of alternate questions have been setup
+     * 
+     */
+    static public int MAX_QUIZ_SEGMENT_SLOTS=2;
+    
+    
+    
+    /** Move this user to the next quiz slot.
+     * 
+     *  A quiz slot acts like a circular data structure, rolling over back to zero.
+     * @param conn
+     * @param userId
+     * @return
+     * @throws Exception
+     */
+    public StudentActiveInfo moveToNextQuizSegmentSlot(final Connection conn, Integer userId) throws Exception {
+        StudentActiveInfo activeInfo = loadActiveInfo(conn, userId);
+        
+        int segmentSlot = activeInfo.getActiveSegmentSlot();
+        segmentSlot++;
+        
+        if(segmentSlot > (MAX_QUIZ_SEGMENT_SLOTS-1))
+            segmentSlot = 0; // roll over, back to zero
+        
+        activeInfo.setActiveSegmentSlot(segmentSlot);
+        setActiveInfo(conn, userId, activeInfo);
+        
+        return activeInfo;
+    }
+    
     /**
      * Set the active information for the named user
      * 
@@ -1224,15 +1254,16 @@ public class CmStudentDao {
     public void setActiveInfo(final Connection conn, Integer userId, StudentActiveInfo activeInfo) throws Exception {
         PreparedStatement ps = null;
 
-        String sql = "update HA_USER set active_run_id = ?, active_test_id = ?, active_segment = ?, active_run_session = ? where uid = ? ";
+        String sql = "update HA_USER set active_run_id = ?, active_test_id = ?, active_segment = ?, active_segment_slot = ?, active_run_session = ? where uid = ? ";
         try {
             ps = conn.prepareStatement(sql);
 
             ps.setInt(1, activeInfo.getActiveRunId());
             ps.setInt(2, activeInfo.getActiveTestId());
             ps.setInt(3, activeInfo.getActiveSegment());
-            ps.setInt(4, activeInfo.getActiveRunSession());
-            ps.setInt(5, userId);
+            ps.setInt(4, activeInfo.getActiveSegmentSlot());
+            ps.setInt(5, activeInfo.getActiveRunSession());
+            ps.setInt(6, userId);
             if (ps.executeUpdate() != 1)
                 throw new Exception("Could not update active information for id: " + userId);
         } finally {
