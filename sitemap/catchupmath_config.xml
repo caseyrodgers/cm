@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  sitemap_gen.py example configuration script
+
+  This file specifies a set of sample input parameters for the
+  sitemap_gen.py client.
+
+  You should copy this file into "config.xml" and modify it for
+  your server.
+
+
+  ********************************************************* -->
+
+
+<!-- ** MODIFY **
+  The "site" node describes your basic web site.
+
+  Required attributes:
+    base_url   - the top-level URL of the site being mapped
+    store_into - the webserver path to the desired output file.
+                 This should end in '.xml' or '.xml.gz'
+                 (the script will create this file)
+
+  Optional attributes:
+    verbose    - an integer from 0 (quiet) to 3 (noisy) for
+                 how much diagnostic output the script gives
+    suppress_search_engine_notify="1"
+               - disables notifying search engines about the new map
+                 (same as the "testing" command-line argument.)
+    default_encoding
+               - names a character encoding to use for URLs and
+                 file paths.  (Example: "UTF-8")
+-->
+<site
+  base_url="http://catchupmath.com/"
+  store_into="/home/hotmath/live/hotmath2/web/cm_sitemap.xml.gz"
+  verbose="1" suppress_search_engine_notify="1"
+  >
+
+  <!-- ********************************************************
+          INPUTS
+
+  All the various nodes in this section control where the script
+  looks to find URLs.
+
+  MODIFY or DELETE these entries as appropriate for your server.
+  ********************************************************* -->
+
+  <!-- ** MODIFY or DELETE **
+    "directory" nodes tell the script to walk the file system
+    and include all files and directories in the Sitemap.
+
+    Required attributes:
+      path       - path to begin walking from
+      url        - URL equivalent of that path
+
+    Optional attributes:
+      default_file - name of the index or default file for directory URLs
+  -->
+  <directory  path="/home/hotmath/live/cm/target/cm-1.0-SNAPSHOT/"    url="http://catchupmath.com/" />
+
+  <!-- ** MODIFY or DELETE **
+    "sitemap" nodes tell the script to scan other Sitemap files.  This can
+    be useful to aggregate the results of multiple runs of this script into
+    a single Sitemap.
+
+    Required attributes:
+      path       - path to the file
+  
+  <sitemap    path="/var/www/docroot/subpath/sitemap.xml" />
+-->
+
+  <!-- ********************************************************
+          FILTERS
+
+  Filters specify wild-card patterns that the script compares
+  against all URLs it finds.  Filters can be used to exclude
+  certain URLs from your Sitemap, for instance if you have
+  hidden content that you hope the search engines don't find.
+
+  Filters can be either type="wildcard", which means standard
+  path wildcards (* and ?) are used to compare against URLs,
+  or type="regexp", which means regular expressions are used
+  to compare.
+
+  Filters are applied in the order specified in this file.
+
+  An action="drop" filter causes exclusion of matching URLs.
+  An action="pass" filter causes inclusion of matching URLs,
+  shortcutting any other later filters that might also match.
+  If no filter at all matches a URL, the URL will be included.
+  Together you can build up fairly complex rules.
+
+  The default action is "drop".
+  The default type is "wildcard".
+
+  You can MODIFY or DELETE these entries as appropriate for
+  your site.  However, unlike above, the example entries in
+  this section are not contrived and may be useful to you as
+  they are.
+  ********************************************************* -->
+  <filter  action="drop"  type="wildcard"  pattern="*/resources/*" />    
+  
+  <filter  action="pass"  type="wildcard"  pattern="*/about.html" />
+  <filter  action="pass"  type="wildcard"  pattern="*/catchupmath_personal.html" />
+  <filter  action="pass"  type="wildcard"  pattern="*/colleges.html" />
+  <filter  action="pass"  type="wildcard"  pattern="*/contact.html" />
+  <filter  action="pass"  type="wildcard"  pattern="*/educators.html" />
+  <filter  action="pass"  type="wildcard"  pattern="*/faq.html" />
+  <filter  action="pass"  type="wildcard"  pattern="*/index.html" />
+  <filter  action="pass"  type="wildcard"  pattern="*/live-online-tutoring.html" />
+  <filter  action="pass"  type="wildcard"  pattern="*/schools.html" />
+  <filter  action="pass"  type="wildcard"  pattern="*/sitemap.html" />
+  <filter  action="pass"  type="wildcard"  pattern="*/students.html" />
+  <filter  action="pass"  type="wildcard"  pattern="*/support.html" />
+  
+  <filter  action="drop"  type="wildcard"  pattern="*/*.html" />
+
+  <filter  action="drop"  type="wildcard"  pattern="*~"      />
+  <filter  action="drop"  type="wildcard"  pattern="*.as"    />  
+  <filter  action="drop"  type="wildcard"  pattern="*.bak"   />
+  <filter  action="drop"  type="wildcard"  pattern="*.bat"   />  
+  <filter  action="drop"  type="wildcard"  pattern="*.com"   />
+  <filter  action="drop"  type="wildcard"  pattern="*.css"   />
+  <filter  action="drop"  type="wildcard"  pattern="*.csspp" />
+  <filter  action="drop"  type="wildcard"  pattern="*.db"    />
+  <filter  action="drop"  type="wildcard"  pattern="*.dll"   />
+  <filter  action="drop"  type="wildcard"  pattern="*.fla"   />
+  <filter  action="drop"  type="wildcard"  pattern="*.flv"   />
+  <filter  action="drop"  type="wildcard"  pattern="*.gif"   />
+  <filter  action="drop"  type="wildcard"  pattern="*.inmh_link"   />
+  <filter  action="drop"  type="wildcard"  pattern="*.jar"   />
+  <filter  action="drop"  type="wildcard"  pattern="*.jpg"   />
+  <filter  action="drop"  type="wildcard"  pattern="*.js"    />
+  <filter  action="drop"  type="wildcard"  pattern="*.json"    />
+  <filter  action="drop"  type="wildcard"  pattern="*.log"   />
+  <filter  action="drop"  type="wildcard"  pattern="*.mxi"   />
+  <filter  action="drop"  type="wildcard"  pattern="*.mxp"   />
+  <filter  action="drop"  type="wildcard"  pattern="*.mp4"   />
+  <filter  action="drop"  type="wildcard"  pattern="*.pdf"   />
+  <filter  action="drop"  type="wildcard"  pattern="*.png"   />
+  <filter  action="drop"  type="wildcard"  pattern="*.rpc"   />
+  <filter  action="drop"  type="wildcard"  pattern="*.sh"   />
+  <filter  action="drop"  type="wildcard"  pattern="*.swf"   />  
+  <filter  action="drop"  type="wildcard"  pattern="*.ttf"   />
+  <filter  action="drop"  type="wildcard"  pattern="*.xml"   />
+
+  <filter  action="drop"  type="wildcard"  pattern="*/#*"               />
+  <filter  action="drop"  type="wildcard"  pattern="*/CVS/*"            />
+  <filter  action="drop"  type="wildcard"  pattern="*/cd/*"             />
+  <filter  action="drop"  type="wildcard"  pattern="*/css/*"            />  
+  <filter  action="drop"  type="wildcard"  pattern="*/csspp/*"          />
+  <filter  action="drop"  type="wildcard"  pattern="*/dcl/*"            />
+  <filter  action="drop"  type="wildcard"  pattern="*/docs/*"           />
+  <filter  action="drop"  type="wildcard"  pattern="*/etc/*"            />
+  <filter  action="drop"  type="wildcard"  pattern="*/images/*"         />
+  <filter  action="drop"  type="wildcard"  pattern="*/inmh/*"           />
+  <filter  action="drop"  type="wildcard"  pattern="*/jlibs/*"          />
+  <filter  action="drop"  type="wildcard"  pattern="*/js/*"             />
+  <filter  action="drop"  type="wildcard"  pattern="*/keyword/*"        />
+  <filter  action="drop"  type="wildcard"  pattern="*/old/*"            />
+  <filter  action="drop"  type="wildcard"  pattern="*/staging/*"        />  
+  <filter  action="drop"  type="wildcard"  pattern="*/styles/*"         />  
+  <filter  action="drop"  type="wildcard"  pattern="*/temp/*"           />
+  <filter  action="drop"  type="wildcard"  pattern="*/Templates/*"      />
+  <filter  action="drop"  type="wildcard"  pattern="*/usage/*"          />
+  <filter  action="drop"  type="wildcard"  pattern="*/util/*"           />
+  <filter  action="drop"  type="wildcard"  pattern="*/WEB-INF/*"        />
+
+  <filter  action="drop"  type="wildcard"  pattern="*/*.jsp"            />
+
+  <!-- Exclude URLs within UNIX-style hidden files or directories       -->
+  <filter  action="drop"  type="regexp"    pattern="/\.[^/]*"     />
+
+  <!-- Exclude URLs that end in '/'                          -->
+  <filter  action="drop"  type="regexp"    pattern="/*/$"     />
+  
+</site>
