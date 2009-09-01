@@ -12,20 +12,6 @@ abstract public class ResourceViewerImplFlash extends ResourceViewerContainer {
     
     public ResourceViewerImplFlash() {
         
-        EventBus.getInstance().addEventListener(new CmEventListener() {
-            
-            @Override
-            public void handleEvent(CmEvent event) {
-                CmMainPanel.__lastInstance._mainContent.removeAll();
-            }
-            
-            @Override
-            public String getEventOfInterest() {
-                // TODO Auto-generated method stub
-                return EventBus.EVENT_TYPE_MODAL_WINDOW_OPEN;
-            }
-        });
-      
     }
 
     abstract public Widget getResourcePanel(InmhItemData resource);

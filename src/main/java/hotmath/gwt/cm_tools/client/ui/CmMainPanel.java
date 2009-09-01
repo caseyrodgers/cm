@@ -2,6 +2,10 @@ package hotmath.gwt.cm_tools.client.ui;
 
 
 
+import hotmath.gwt.shared.client.eventbus.CmEvent;
+import hotmath.gwt.shared.client.eventbus.CmEventListener;
+import hotmath.gwt.shared.client.eventbus.EventBus;
+
 import java.util.List;
 
 import com.extjs.gxt.ui.client.Style.LayoutRegion;
@@ -81,6 +85,27 @@ public class CmMainPanel extends LayoutContainer {
         Widget w = cmGuiDef.getCenterWidget();
         if (w != null)
             _mainContent.add(w);
+        
+        
+        
+
+        /** Any modal window, should hide the resource window to allow
+         *  for Flash widgets to be hidden
+         *  
+         */
+        EventBus.getInstance().addEventListener(new CmEventListener() {
+            
+            @Override
+            public void handleEvent(CmEvent event) {
+                CmMainPanel.__lastInstance._mainContent.removeAll();
+            }
+            
+            @Override
+            public String getEventOfInterest() {
+                // TODO Auto-generated method stub
+                return EventBus.EVENT_TYPE_MODAL_WINDOW_OPEN;
+            }
+        });
     }
 
     
