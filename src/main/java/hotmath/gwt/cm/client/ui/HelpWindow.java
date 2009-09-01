@@ -10,6 +10,8 @@ import hotmath.gwt.cm_tools.client.ui.FooterPanel;
 import hotmath.gwt.cm_tools.client.ui.RegisterStudent;
 import hotmath.gwt.cm_tools.client.ui.StudentDetailsWindow;
 import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
+import hotmath.gwt.shared.client.eventbus.CmEvent;
+import hotmath.gwt.shared.client.eventbus.EventBus;
 import hotmath.gwt.shared.client.util.UserInfo;
 
 import com.allen_sauer.gwt.log.client.Log;
@@ -43,6 +45,9 @@ public class HelpWindow extends CmWindow {
         setResizable(false);
         setStyleName("help-window");
         setHeading("Catchup-Math Help Window");
+        
+        
+        EventBus.getInstance().fireEvent(new CmEvent(EventBus.EVENT_TYPE_MODAL_WINDOW_OPEN,this));
         
         
         Button closeBtn = new Button("Close");
@@ -194,8 +199,6 @@ public class HelpWindow extends CmWindow {
         
         btn.addStyleName("button");
         fs.add(btn);
-        
-
         
         vp.add(fs);
 

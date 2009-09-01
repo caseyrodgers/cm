@@ -41,10 +41,10 @@ public class CmInmhStandardResources extends ArrayList<PrescriptionSessionDataRe
         resourceType.setDescription("Math games that might help you");
         
         List<InmhItemData> items = new ArrayList<InmhItemData>();
-        items.add(new InmhItemData(resourceType.getType(),"/learning_activities/interactivities/diamond.swf","Diamond Problem Flash Cards"));
-        items.add(new InmhItemData(resourceType.getType(),"/learning_activities/interactivities/quadratics.swf", "Quadratics in Factored Form"));
-        items.add(new InmhItemData(resourceType.getType(),"/learning_activities/interactivities/flashcard_addfrac_like.swf","Fraction Flash Cards: Like Denominators"));
-        items.add(new InmhItemData(resourceType.getType(),"/learning_activities/interactivities/flashcard_addfrac_unlike.swf", "Fraction Flash Cards: Unike Denominators"));
+        items.add(new InmhItemData(resourceType.getType(),"/hotmath_help/games/ctf/ctf_hotmath.swf","Catch The Fly"));
+        items.add(new InmhItemData(resourceType.getType(),"/hotmath_help/games/numbercop/numbercop_hotmath.swf", "Number Cop"));
+        items.add(new InmhItemData(resourceType.getType(),"/hotmath_help/games/kp/kp_hotmath_sound.swf","Algebra vs. the Cockroaches"));
+        items.add(new InmhItemData(resourceType.getType(),"/hotmath_help/games/factortris/factortris_hotmath_sound.swf", "Factortris"));
         resourceType.setItems(items);
         add(resourceType);
 

@@ -11,7 +11,7 @@ import com.extjs.gxt.ui.client.Style.Scroll;
 import com.extjs.gxt.ui.client.widget.Html;
 import com.google.gwt.user.client.ui.Widget;
 
-public class ResourceViewerImplActivity extends ResourceViewerContainer {
+public class ResourceViewerImplActivity extends ResourceViewerImplFlash {
     
     public ResourceViewerImplActivity() {
         addStyleName("resource-viewer-impl-activity");
