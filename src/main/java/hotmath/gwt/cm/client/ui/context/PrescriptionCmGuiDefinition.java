@@ -272,20 +272,10 @@ class PrescriptionResourceAccord extends LayoutContainer {
                 }
             });
         }
-        
-       ContentPanel takeBreak = new ContentPanel();
-       takeBreak.setHideCollapseTool(true);
-       takeBreak.setEnabled(false);
-       takeBreak.addListener(Events.Expand, new Listener<BaseEvent>() {
-            @Override
-            public void handleEvent(BaseEvent be) {
-                be.setCancelled(true);
-            }
-       });
-       takeBreak.setHeading("&nbsp;");
        
-       add(takeBreak);
-       
+       /** Add the standard resources
+        * 
+        */
        for(PrescriptionSessionDataResource type: new CmInmhStandardResources()) {
             
             ResourceContentPanel rcp = createNewResourceType(type);
@@ -309,40 +299,13 @@ class PrescriptionResourceAccord extends LayoutContainer {
 
         layout();
     }
-    
-    private ContentPanel createStandardResources() {
-        
-        final ContentPanel cp = new ContentPanel();
-        
-        cp.addStyleName("accordian-resource-list-panel-standard");
-        cp.setLayout(new AccordionLayout());
-        cp.setHeading("<div style='text-align: center'>Skills Practice Below</div>");
-        // cp.setToolTip("Resources that are always helpful");
-       
-        for(PrescriptionSessionDataResource type: new CmInmhStandardResources()) {
-            
-            ContentPanel resource1 = new ContentPanel();
-            resource1.setHeading(type.getLabel());
-            resource1.setToolTip(type.getDescription());
-            
-            ResourceList resourceList = new ResourceList(type);
-            resourceList.setSimpleTemplate("<div class='resource-item'>{title}&nbsp;</div>");
-            resource1.add(resourceList);
-            
-            resource1.collapse();
-            cp.add(resource1);
-        }
 
-        Timer timer = new Timer() {
-            public void run() {
-                cp.expand();        
-            }
-        };
-        timer.schedule(2000);
-        return cp;  
-    }
     
-    
+    /** Create the standard accordion contentPanel containing list of resources
+     * 
+     * @param resource
+     * @return
+     */
     private ResourceContentPanel createNewResourceType(PrescriptionSessionDataResource resource) {
         
         ResourceContentPanel cp = new ResourceContentPanel();

@@ -192,34 +192,6 @@ public class GetPrescriptionCommand implements ActionHandler<GetPrescriptionActi
     }
 
     
-    /** Add the basic/standard list of Flashcards that will
-     *  show up on each and every prescription session.
-     *  
-     * @param items
-     */
-    private void addBasicFlashCards(List<InmhItemData> items) {
-        for(FC fc: list) {
-            InmhItemData id = new InmhItemData();
-            id.setTitle(fc.title);
-            id.setFile(fc.file);
-            id.setType("flashcard");
-            
-            items.add(id);
-        }
-    }
-    /** @TODO: move to external configuration (if needed)
-     * 
-     */
-    static List<FC> list = new ArrayList<FC>();
-    static {
-        list.add(new FC("Math Vocabulary", "/learning_activities/interactivities/flashcard_vocab.swf"));
-        list.add(new FC("Adding Like Fractions", "/learning_activities/interactivities/flashcard_addfrac_like.swf"));
-        list.add(new FC("Adding Unlike Fractions", "/learning_activities/interactivities/flashcard_addfrac_unlike.swf"));
-        list.add(new FC("Multiplication Facts", "/learning_activities/interactivities/flashcard_multi.swf"));
-    }
-    
-
-    
     @Override
     public Class<? extends Action<? extends Response>> getActionType() {
         // TODO Auto-generated method stub
@@ -237,6 +209,7 @@ public class GetPrescriptionCommand implements ActionHandler<GetPrescriptionActi
         String types[][] = {
                 { "Lesson", "review", "Review lesson on the current topic" },
                 { "Video", "video", "Math videos related to the current topic" },
+                { "Activities", "activity", "Math activities and games related to the current topic" },                
                 { "Required Practice Problems", "practice", "Practice problems you must complete before advancing" },
                 { "Extra Practice Problems", "cmextra", "Additional workbook problems" },
                 { "Quiz Results", "results", "The current quiz's results" },
