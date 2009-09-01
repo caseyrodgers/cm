@@ -22,6 +22,7 @@ import java.util.List;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.Registry;
+import com.extjs.gxt.ui.client.Style.LayoutRegion;
 import com.extjs.gxt.ui.client.data.BaseModelData;
 import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.Events;
@@ -32,10 +33,11 @@ import com.extjs.gxt.ui.client.widget.Html;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.ListView;
 import com.extjs.gxt.ui.client.widget.layout.AccordionLayout;
+import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
+import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 
 public class PrescriptionCmGuiDefinition implements CmGuiDefinition {
@@ -64,16 +66,16 @@ public class PrescriptionCmGuiDefinition implements CmGuiDefinition {
         CatchupMathTools.setBusy(true);
 
         _main = new LayoutContainer();
-        _main.setLayout(new FitLayout());
+        _main.setLayout(new BorderLayout());
         
         _guiWidget = new PrescriptionResourceAccord();
-        _main.add(_guiWidget);
+        _main.add(_guiWidget, new BorderLayoutData(LayoutRegion.CENTER,.75f));
         // get the data for the prescription from the database
 
         getAsyncDataFromServer(UserInfo.getInstance().getSessionNumber());
         
         PrescriptionInfoPanel infoPanel = new PrescriptionInfoPanel(this);
-        // _main.add(createStandardResources(), new BorderLayoutData(LayoutRegion.SOUTH, .30f));
+        _main.add(new PrescriptionInfoPanel(PrescriptionCmGuiDefinition.__instance), new BorderLayoutData(LayoutRegion.SOUTH, .30f));
 
         _main.layout();
         return _main;
@@ -271,8 +273,28 @@ class PrescriptionResourceAccord extends LayoutContainer {
             });
         }
         
-        add(createStandardResources());
-        
+       ContentPanel takeBreak = new ContentPanel();
+       takeBreak.setHideCollapseTool(true);
+       takeBreak.setEnabled(false);
+       takeBreak.addListener(Events.Expand, new Listener<BaseEvent>() {
+            @Override
+            public void handleEvent(BaseEvent be) {
+                be.setCancelled(true);
+            }
+       });
+       takeBreak.setHeading("&nbsp;");
+       
+       add(takeBreak);
+       
+       for(PrescriptionSessionDataResource type: new CmInmhStandardResources()) {
+            
+            ResourceContentPanel rcp = createNewResourceType(type);
+            rcp.setHeading("Take a break: " + type.getLabel());
+            rcp.resourceList.setSimpleTemplate("<div class='resource-item'>{title}&nbsp;</div>");
+            
+            add(rcp);
+        }        
+       
         /** Should we expand the last resource type added?
          * 
         try {
