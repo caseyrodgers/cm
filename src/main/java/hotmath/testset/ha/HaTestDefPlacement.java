@@ -28,6 +28,10 @@ public class HaTestDefPlacement extends HaTestDef {
 		_lastSegment = segment;
 		PreparedStatement ps=null;
 		ResultSet rs = null;
+		
+		if(testSegmentSlot == 0)
+		    testSegmentSlot++;
+
 		try {
 			// Create list of 7 random solutions from
 			// each text group that is listed in the

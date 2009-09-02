@@ -60,6 +60,7 @@ public class GetSolutionCommand implements ActionHandler<GetSolutionAction, RpcD
 
             Map<String, String> map = new HashMap<String, String>();
             map.put("solution_html", solutionHtml);
+            map.put("pid", pid);
 
             InputStream is = getClass().getResourceAsStream("tutor_wrapper.vm");
             BufferedReader br = new BufferedReader(new InputStreamReader(is));

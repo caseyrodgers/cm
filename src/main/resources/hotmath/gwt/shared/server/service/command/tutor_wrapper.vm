@@ -1,13 +1,15 @@
 <!--  Tutor GUTS go here -->
 <div id='tutor_embedded' style='display: block'>
     <!-- HOTMATH BODY START -->
+    
     <div id="tutoroutput" style='display: block;position: relative;'>
         <div class='cm-tutor-button-bar-top' style='position: absolute; top:3px;right: 15px;'>
          <a class='button' href='#' onclick='showWorkDialog_Gwt();return false;'>Enter Your Answer<img  src='/gwt-resources/images/icon_show_work.png'/></a>
-        </div>        
+        </div>
         <div id='tutor_raw_steps_wrapper'>
             $solution_html
         </div>
+        
         <div id='steps_tail' style='position: relative'>
             <a id='show-work-force' href='#' onclick='showWorkDialog_Gwt()'><img src='/gwt-resources/images/show-work-required.png'/></a>
             <div id='steps_tail_padding'>
@@ -32,3 +34,5 @@
     <!-- HOTMATH BODY END -->
 </div>
 <!--  END TUTOR GUTS  -->
+<div class='debug-hide'>$pid</div>
+

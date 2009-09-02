@@ -188,7 +188,9 @@ public class HaTestDefDao {
          try {
              String sql = "";
              if (config != null && config.getChapters().size() > 0) {
-                 // just use first for now
+                 /** Is a chapter program
+                  * 
+                  */
                  chapter = config.getChapters().get(0);
                  
                  sql = "SELECT problemindex " + " FROM   SOLUTIONS s "
@@ -198,9 +200,7 @@ public class HaTestDefDao {
                          + " and  problemnumber between ? and ? ";
              } else {
                  
-                 /** alternate tests (question slots) are only used for NON chapter programs
-                  *                  
-                  */
+                 
                  sql = "SELECT problemindex " + 
                        " FROM   SOLUTIONS " + 
                        " WHERE (SOLUTIONS.BOOKTITLE = ? " + 
@@ -209,8 +209,6 @@ public class HaTestDefDao {
              }
              
              ps = conn.prepareStatement(sql);
-             
-             
              
              ps.setString(1, textcode);
              ps.setString(2, chapter);
