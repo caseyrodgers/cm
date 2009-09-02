@@ -8,11 +8,10 @@ import hotmath.gwt.cm_admin.client.ui.GettingStartedGuideWindow;
 import hotmath.gwt.cm_admin.client.ui.HeaderPanel;
 import hotmath.gwt.cm_admin.client.ui.StudentGridPanel;
 import hotmath.gwt.cm_admin.client.ui.StudentShowWorkPanel;
-import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.model.CmAdminDataReader;
 import hotmath.gwt.cm_tools.client.model.CmAdminModel;
+import hotmath.gwt.shared.client.CmLoginAsync;
 import hotmath.gwt.shared.client.CmShared;
-import hotmath.gwt.shared.client.data.CmAsyncRequest;
 import hotmath.gwt.shared.client.model.UserInfoBase;
 
 import com.allen_sauer.gwt.log.client.Log;
@@ -31,7 +30,6 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.History;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.ServiceDefTarget;
 import com.google.gwt.user.client.ui.RootPanel;
 
@@ -44,49 +42,20 @@ public class CatchupMathAdmin implements EntryPoint, ValueChangeHandler<String> 
     LayoutContainer mainContainer;
     HeaderPanel headerPanel;
     FooterPanel footerPanel;
-    int userId;
     CmAdminModel cmAdminMdl;
     AccountInfoPanel infoPanel;
     StudentGridPanel sgp;
-    
 
     static CatchupMathAdmin instance;
 
     public void onModuleLoad() {
-        
+
         Log.info("CatchupMathAdmin is starting");
+        
+        registerRpcServices();
 
         instance = this;
 
-        // GXT.setDefaultTheme(Theme.GRAY, true);
-
-        try {
-            userId = CmShared.handleLoginProcess();
-            UserInfoBase user = UserInfoBase.getInstance();
-            if (user != null) {
-                if (!user.isAdmin()) {
-                    // TODO: restore Admin check
-                    // throw new Exception("Not an admin");
-                }
-            } else {
-                throw new Exception("Login failed!");
-            }
-            cmAdminMdl = new CmAdminModel();
-            cmAdminMdl.setId(userId);
-        } catch (Exception e) {
-            CatchupMathTools.showAlert(e.getMessage(), new CmAsyncRequest() {
-                public void requestComplete(String requestData) {
-                    Window.Location.assign("/"); // goto home
-                }
-
-                public void requestFailed(int code, String text) {
-                }
-            });
-            return;
-        }
-
-        registerRpcServices();
-        
         mainPort = new Viewport();
         mainPort.setLayout(new BorderLayout());
         mainPort.setEnableScroll(false);
@@ -102,8 +71,21 @@ public class CatchupMathAdmin implements EntryPoint, ValueChangeHandler<String> 
         mainPort.add(mainContainer, new BorderLayoutData(LayoutRegion.CENTER));
 
         RootPanel.get("main-content").add(mainPort);
+        
 
+        CmShared.handleLoginProcessAsync(new CmLoginAsync() {
+            @Override
+            public void loginSuccessful(Integer uid) {
+                completeLoginProcess(uid);
+            }
+        });        
+    }
 
+    private void completeLoginProcess(int uid) {
+        UserInfoBase user = UserInfoBase.getInstance();
+        cmAdminMdl = new CmAdminModel();
+        cmAdminMdl.setId(uid);
+        
         infoPanel = new AccountInfoPanel(cmAdminMdl);
         sgp = new StudentGridPanel(cmAdminMdl);
         CmAdminDataReader.getInstance().fireRefreshData();
@@ -115,9 +97,9 @@ public class CatchupMathAdmin implements EntryPoint, ValueChangeHandler<String> 
         }
         History.addValueChangeHandler(this);
         History.fireCurrentHistoryState();
-
     }
 
+    
     private void loadMainPage() {
         Log.info("Loading CMAdmin main page");
         mainContainer.removeAll();
@@ -131,24 +113,23 @@ public class CatchupMathAdmin implements EntryPoint, ValueChangeHandler<String> 
                 new GettingStartedGuideWindow();
             }
         });
-        
+
         mainContainer.add(infoPanel, new BorderLayoutData(LayoutRegion.NORTH, 150));
-        mainContainer.add(guide);        
-        
+        mainContainer.add(guide);
+
         mainContainer.add(sgp, new BorderLayoutData(LayoutRegion.CENTER));
-        
+
         mainContainer.layout();
     }
-    
+
     private void loadShowWorkPage() {
         Log.info("Loading CMAdmin show work page");
         mainContainer.removeAll();
         mainContainer.setLayout(new FitLayout());
-        
+
         mainContainer.add(new StudentShowWorkPanel());
         mainContainer.layout();
     }
-    
 
     /**
      * Register RPC services
@@ -175,20 +156,20 @@ public class CatchupMathAdmin implements EntryPoint, ValueChangeHandler<String> 
             instance = new CatchupMathAdmin();
         return instance;
     }
-    
+
     @Override
     public void onValueChange(ValueChangeEvent<String> history) {
-        
+
         Log.info("CatchupMathAdmin: history changed: " + history);
-        
+
         if (history.getValue().equals("sw")) {
             loadShowWorkPage();
         } else {
             loadMainPage();
         }
     }
-    
+
     public AccountInfoPanel getAccountInfoPanel() {
-    	return infoPanel;
+        return infoPanel;
     }
 }
