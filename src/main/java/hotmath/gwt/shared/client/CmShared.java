@@ -52,7 +52,7 @@ public class CmShared implements EntryPoint {
      * @TODO: how to set dynamically?
      * 
      */
-    final public static String CM_HOME_URL = getHostName();
+    final public static String CM_HOME_URL = getHostURL();
 
     /**
      * uid that corresponds to a demo account
@@ -207,7 +207,7 @@ public class CmShared implements EntryPoint {
      * @return
      * @throws CmUserException
      */
-    static public int handleLoginProcess() throws CmUserException {
+    static public int handleLoginProcessXXX() throws CmUserException {
 
         Log.info("CM Home URL: " + CM_HOME_URL);
 
@@ -310,7 +310,23 @@ public class CmShared implements EntryPoint {
         for (String s : query.keySet()) {
             m.put(s, query.get(s).get(0));
         }
+        Window.Location.getHostName();
         return m;
+    }
+
+    static private String getHostURL() {
+    	String hostName = Window.Location.getHostName();
+    	if (hostName.indexOf("hotmath.com") > -1) {
+    		hostName = "catchupmath.com";
+    	}
+    	String hostPort = Window.Location.getPort();
+
+    	StringBuilder sb = new StringBuilder("http://");
+    	sb.append(hostName);
+    	if (!"80".equals(hostPort)) {
+    		sb.append(":").append(hostPort);
+    	}
+    	return sb.toString();
     }
 
     static private native String getHostName() /*-{
