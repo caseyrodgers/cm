@@ -93,19 +93,19 @@ public class CmMainPanel extends LayoutContainer {
          *  for Flash widgets to be hidden
          *  
          */
-        EventBus.getInstance().addEventListener(new CmEventListener() {
-            
-            @Override
-            public void handleEvent(CmEvent event) {
-                CmMainPanel.__lastInstance._mainContent.removeAll();
-            }
-            
-            @Override
-            public String getEventOfInterest() {
-                // TODO Auto-generated method stub
-                return EventBus.EVENT_TYPE_MODAL_WINDOW_OPEN;
-            }
-        });
+//        EventBus.getInstance().addEventListener(new CmEventListener() {
+//            
+//            @Override
+//            public void handleEvent(CmEvent event) {
+//                CmMainPanel.__lastInstance._mainContent.removeAll();
+//            }
+//            
+//            @Override
+//            public String getEventOfInterest() {
+//                // TODO Auto-generated method stub
+//                return EventBus.EVENT_TYPE_MODAL_WINDOW_OPEN;
+//            }
+//        });
     }
 
     

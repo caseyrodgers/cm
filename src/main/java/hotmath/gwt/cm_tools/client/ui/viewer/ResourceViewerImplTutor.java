@@ -275,10 +275,6 @@ public class ResourceViewerImplTutor extends ResourceViewerContainer implements 
     
     static ShowTutorDialog showTutorPanel;
     public void showTutoring(String pid) {
-        
-        // only allow in debug mode
-        if(CmShared.getQueryParameter("debug") == null)
-            return;
 
         if(!UserInfo.getInstance().isTutoringAvail()) {
             CatchupMathTools.showAlert("Ask a Tutor", "Live Tutoring is not currently enabled on this account.");

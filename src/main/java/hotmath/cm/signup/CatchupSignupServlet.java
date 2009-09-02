@@ -130,7 +130,7 @@ public class CatchupSignupServlet extends HttpServlet {
                  student.setGroupId("1");
                  student.setProgId("Auto-Enroll");
                  student.setSubjId("");
-                 student.setTutoringAvail(false);
+                 student.setTutoringAvail(true);
                  student.setShowWorkRequired(false);
                  
                  Connection conn=null;
