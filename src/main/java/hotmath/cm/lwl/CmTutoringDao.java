@@ -54,8 +54,15 @@ public class CmTutoringDao {
              * 
              * 
              */
-            LWLIntegrationManager.LwlAccountInfo adminLwlInfo = LWLIntegrationManager.getInstance().getLwlIntegrationKey(accountInfo.getSubscriberId());
-            studentTutoringInfo = new StudentTutoringInfo(accountInfo.getSubscriberId(), adminLwlInfo.getStudentId(), adminLwlInfo.getSchoolId(),adminLwlInfo.getAccountType());
+            LWLIntegrationManager.LwlAccountInfo adminLwlInfo = null;
+            try {
+                adminLwlInfo = LWLIntegrationManager.getInstance().getLwlIntegrationKey(accountInfo.getSubscriberId());
+                studentTutoringInfo = new StudentTutoringInfo(accountInfo.getSubscriberId(), adminLwlInfo.getStudentId(), adminLwlInfo.getSchoolId(),adminLwlInfo.getAccountType());
+            }
+            catch(Exception e) {
+                studentTutoringInfo = new StudentTutoringInfo(accountInfo.getSubscriberId(), lai.getStudentId(), 0,0);
+            }
+            
             
             
             // if a school account, then read the schoolNumber associated with the school
