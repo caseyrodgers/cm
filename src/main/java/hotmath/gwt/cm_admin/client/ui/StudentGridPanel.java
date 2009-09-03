@@ -289,17 +289,33 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
     /**
      * Log in as selected user (student)
      * 
+     * This is this is not the same thing as CM_HOME_URL
+     * for example, on the test server:
+     * 
+     * from hotmath.kattare.com:8081 (for admin) to hotmath.kattare.com (for student)
+     * and logout of student (at hotmath.kattare.com) and back to hotmath.kattare.com:8081
+     * 
+     * for live server, it is:
+     * 
+     * catchupmath.com (admin) -> hotmath.com (student)
+     * and logout of student must go back to catchupmath.comd
+     * 
+     * I'm for generalizing this, we must deal with all cases.
+     * 
      */
     private void loginAsSelectedUser() {
         StudentModel sm = _grid.getSelectionModel().getSelectedItem();
         if (sm == null)
             return;
 
-        String server = CmShared.CM_HOME_URL;
+        String server = CmShared.getQueryParameter("host");
+        if(server == null || server.length() == 0)
+            server = "hotmath.com";
         
-        String url = server + "/cm_student/CatchupMath.html?uid=" + sm.getUid() + "&debug=true";
+        String url = "http://" + server +"/cm_student/CatchupMath.html?uid=" + sm.getUid() + "&debug=true";
         Window.open(url, "_blank", "location=1,menubar=1,resizable=1");
     }
+    
 
     private void showWorkDialog() {
         StudentModel sm = _grid.getSelectionModel().getSelectedItem();
