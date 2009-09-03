@@ -48,7 +48,7 @@ public class CmTutoringDao {
         StudentTutoringInfo studentTutoringInfo = null;
         try {
 
-            LwlAccountInfo lai= getUserLwlInfo(conn, uid); 
+            LwlAccountInfo studentLwlInfo= getUserLwlInfo(conn, uid); 
                 
             /** Get both the admin and student LWL information.
              * 
@@ -57,10 +57,10 @@ public class CmTutoringDao {
             LWLIntegrationManager.LwlAccountInfo adminLwlInfo = null;
             try {
                 adminLwlInfo = LWLIntegrationManager.getInstance().getLwlIntegrationKey(accountInfo.getSubscriberId());
-                studentTutoringInfo = new StudentTutoringInfo(accountInfo.getSubscriberId(), adminLwlInfo.getStudentId(), adminLwlInfo.getSchoolId(),adminLwlInfo.getAccountType());
+                studentTutoringInfo = new StudentTutoringInfo(accountInfo.getSubscriberId(), studentLwlInfo.getStudentId(), adminLwlInfo.getSchoolId(),adminLwlInfo.getAccountType());
             }
             catch(Exception e) {
-                studentTutoringInfo = new StudentTutoringInfo(accountInfo.getSubscriberId(), lai.getStudentId(), 0,0);
+                studentTutoringInfo = new StudentTutoringInfo(accountInfo.getSubscriberId(), studentLwlInfo.getStudentId(), 0,0);
             }
             
             
