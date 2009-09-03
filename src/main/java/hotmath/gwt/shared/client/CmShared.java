@@ -68,16 +68,15 @@ public class CmShared implements EntryPoint {
             + "<a href='http://www.adobe.com/go/getflashplayer'><img src='http://www.adobe.com/images/shared/download_buttons/get_flash_player.gif' alt='Get Adobe Flash player' /></a>"
             + "</p>" + "</div>";
 
-    
-    
-    /** Verify login attempt by reading security key and making sure it 
-     *  validiated only once .. 
-     *  
-     *  If cookie contains current key, assume already verified.
-     *  
-     *  
-     *  If error occurs, user is shown dialog and redirected back to home page.
-     *  
+    /**
+     * Verify login attempt by reading security key and making sure it
+     * validiated only once ..
+     * 
+     * If cookie contains current key, assume already verified.
+     * 
+     * 
+     * If error occurs, user is shown dialog and redirected back to home page.
+     * 
      * @param callback
      * @throws CmException
      */
@@ -85,7 +84,7 @@ public class CmShared implements EntryPoint {
 
         try {
             _queryParameters = readQueryString();
-    
+
             // first see if run_id is passed, if so
             // the user is in 'view' mode and we must
             // inform the server not to update the
@@ -95,7 +94,7 @@ public class CmShared implements EntryPoint {
                 if (_queryParameters.get("uid") != null) {
                     // for debugging .. perhaps this should not be allowed
                     // during normal processing.
-    
+
                     // check for special case demo user
                     if (_queryParameters.get("uid").equals("demo")) {
                         userId = DEMO_UID;
@@ -104,17 +103,16 @@ public class CmShared implements EntryPoint {
                     }
                 }
             }
-    
+
             // for testing, if uid is passed allow it override cookie
             if (userId > 0) {
                 callback.loginSuccessful(userId);
-            }
-            else {
-                 final String key2 = _queryParameters.get("key");
-                 if (key2 == null || key2.length() == 0) {
+            } else {
+                final String key2 = _queryParameters.get("key");
+                if (key2 == null || key2.length() == 0) {
                     throw new CmException("Invalid login: no security key found on URL");
                 }
-    
+
                 boolean needToValidate = true;
                 final String cmKey = Cookies.getCookie("cm_key");
                 // if no cookie, then we must validate
@@ -126,58 +124,55 @@ public class CmShared implements EntryPoint {
                         throw new CmException("Invalid security key found");
                     }
                     if (key2.equals(keyVal)) {
-                        userId = (int)o.get("uid").isNumber().doubleValue();
+                        userId = (int) o.get("uid").isNumber().doubleValue();
                         needToValidate = false;
                     }
                 }
-                if(!needToValidate) {
+                if (!needToValidate) {
                     UserInfoBase user = UserInfoBase.getInstance();
                     user.setUid(userId);
                     callback.loginSuccessful(userId);
-                }
-                else {
+                } else {
                     CmServiceAsync s = (CmServiceAsync) Registry.get("cmService");
                     s.execute(new ProcessLoginRequestAction(key2), new AsyncCallback<UserInfo>() {
                         public void onSuccess(UserInfo userInfo) {
-                            
-                            /** now store in cookie, so next refresh on this page can read info
-                                from cookie.
-                            */
-                            Cookies.setCookie("cm_key","{key:'" + key2 + "',uid:" + userInfo.getUid() + "}");
-                            
-                            
+
                             /**
-                             * Check Flash, if not supported show error .. but allow system to
-                             * continue and initialize.
+                             * now store in cookie, so next refresh on this page
+                             * can read info from cookie.
+                             */
+                            Cookies.setCookie("cm_key", "{key:'" + key2 + "',uid:" + userInfo.getUid() + "}");
+
+                            /**
+                             * Check Flash, if not supported show error .. but
+                             * allow system to continue and initialize.
                              */
                             if (!SWFObjectUtil.isVersionIsValid(new PlayerVersion(CmShared.FLASH_MIN_VERSION))) {
                                 new FlashVersionNotSupportedWindow();
                             }
-                            
-                            
-                            /** Call back app waiting to be logged in ...*/
+
+                            /** Call back app waiting to be logged in ... */
                             callback.loginSuccessful(userInfo.getUid());
-                            
+
                         }
-        
+
                         public void onFailure(Throwable caught) {
-                            displayLoginError((Exception)caught);
+                            displayLoginError((Exception) caught);
                         }
                     });
                 }
             }
 
-        }
-        catch(Exception e) {
+        } catch (Exception e) {
             displayLoginError(e);
         }
     }
-    
+
     static private void displayLoginError(Exception exception) {
         String msg = "You could not be logged in, please try again.";
-        if(_queryParameters.get("debug") != null)
+        if (_queryParameters.get("debug") != null)
             msg += "<br/>" + exception.getMessage() + "";
-        
+
         CatchupMathTools.showAlert("Login Problem", msg, new CmAsyncRequestImplDefault() {
             @Override
             public void requestComplete(String requestData) {
@@ -186,7 +181,6 @@ public class CmShared implements EntryPoint {
         });
     }
 
-    
     /**
      * Check the query string and process log in.
      * 
@@ -314,19 +308,34 @@ public class CmShared implements EntryPoint {
         return m;
     }
 
+    /**
+     * This is the link we need to return to on logout.
+     * 
+     * If on hotmath.kattare.com, we need to go from port 80, to 8081 ..
+     * 
+     * This needs to parameterized.
+     * 
+     * @return
+     */
     static private String getHostURL() {
-    	String hostName = Window.Location.getHostName();
-    	if (hostName.indexOf("hotmath.com") > -1) {
-    		hostName = "catchupmath.com";
-    	}
-    	String hostPort = Window.Location.getPort();
+        String hostName = Window.Location.getHostName();
+        if (hostName.indexOf("hotmath.com") > -1) {
+            hostName = "catchupmath.com";
+        }
 
-    	StringBuilder sb = new StringBuilder("http://");
-    	sb.append(hostName);
-    	if (!"80".equals(hostPort)) {
-    		sb.append(":").append(hostPort);
-    	}
-    	return sb.toString();
+        if (hostName.indexOf("hotmath.com") > -1) {
+            hostName = "catchupmath.com";
+        } else if (hostName.equals("hotmath.kattare.com"))
+            hostName = "hotmath.kattare.com:8081";
+        else {
+            String hostPort = Window.Location.getPort();
+            if (!"80".equals(hostPort)) {
+                hostName += ":" + hostPort;
+            }
+        }
+        
+        String url = "http://" + hostName;
+        return url;
     }
 
     static private native String getHostName() /*-{
