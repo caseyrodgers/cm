@@ -274,6 +274,13 @@ public class ResourceViewerImplTutor extends ResourceViewerContainer implements 
     
     
     
+    /** Display LWL tutoring in separate browser window.
+     * 
+     * It does not play well in a DHTML controlled window
+     * 
+     * 
+     * @param pid
+     */
     public void showTutoring(String pid) {
 
         
@@ -282,11 +289,16 @@ public class ResourceViewerImplTutor extends ResourceViewerContainer implements 
             return;
         }
         
-        
-        ShowTutorDialog showTutorPanel = new ShowTutorDialog(pid);
-        
-        showTutorPanel.setVisible(true);
-    }
+        String contentUrl = "pid=" + pid;
+        String url = "/collab/lwl/cm_lwl_launch.jsp?uid=" + UserInfo.getInstance().getUid() + "&contentUrl=" + contentUrl;
+    
+        int w = 800;
+        int h = 560;
+        String windowProps = "toolbar=0, titlebar=0, status=0, menubar=0, resizable=0, width=" + w + 
+                             ", height=" + h + ", directories=0, location=0,scrollbars=0,directories=0,location=0";
+
+        com.google.gwt.user.client.Window.open(url, "_blank", windowProps);
+    }        
 
     
     /**
