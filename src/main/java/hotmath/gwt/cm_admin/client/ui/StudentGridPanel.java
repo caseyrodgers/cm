@@ -295,11 +295,9 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
         if (sm == null)
             return;
 
-        String server = CmShared.getQueryParameter("host");
-        if(server == null || server.length() == 0)
-            server = "hotmath.com";
+        String server = CmShared.CM_HOME_URL;
         
-        String url = "http://" + server +"/cm_student/CatchupMath.html?uid=" + sm.getUid() + "&debug=true";
+        String url = server + "/cm_student/CatchupMath.html?uid=" + sm.getUid() + "&debug=true";
         Window.open(url, "_blank", "location=1,menubar=1,resizable=1");
     }
 
@@ -408,7 +406,7 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
             public void componentSelected(ButtonEvent ce) {
                 editStudent();
                 if (grid.getStore().getCount() > 0) {
-                    ce.getComponent().enable();
+                    //ce.getComponent().enable();
                 }
             }
 
@@ -444,7 +442,7 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
                     new StudentShowWorkWindow(sm);
                 }
                 if (grid.getStore().getCount() > 0) {
-                    ce.getComponent().enable();
+                    //ce.getComponent().enable();
                 }
             }
 
@@ -499,7 +497,7 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
                     });
                 }
                 if (grid.getStore().getCount() == 0) {
-                    ce.getComponent().disable();
+                    //ce.getComponent().disable();
                 }
             }
 
