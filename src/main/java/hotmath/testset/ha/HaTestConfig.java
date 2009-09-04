@@ -20,16 +20,6 @@ public class HaTestConfig {
 	List<String> chapters = new ArrayList<String>();
 	int passPercent=80;
 	int segmentCount=4;
-	boolean hasAlternateTests;
-	
-	public boolean isHasAlternateTests() {
-        return hasAlternateTests;
-    }
-
-
-    public void setHasAlternateTests(boolean hasAlternateTests) {
-        this.hasAlternateTests = hasAlternateTests;
-    }
 
 
     public int getSegmentCount() {

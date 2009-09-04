@@ -1211,8 +1211,8 @@ public class CmStudentDao {
              *  is zero to always use the same slot
              */
             if(activeInfo.getActiveSegmentSlot() > 0) {
-                boolean hasAlternateTests = loadProgramInfo(conn, userId).hasAlternateTests();
-                activeInfo.setActiveSegmentSlot(0);
+                if(!loadProgramInfo(conn, userId).hasAlternateTests())
+                   activeInfo.setActiveSegmentSlot(0);
             }
             
             

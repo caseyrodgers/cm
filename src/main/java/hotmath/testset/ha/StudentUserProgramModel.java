@@ -69,6 +69,7 @@ public class StudentUserProgramModel {
     public Boolean hasAlternateTests() {
         
         if(testDefId == CmProgram.ALG1_PROF.getDefId()
+           || testDefId == CmProgram.PREALG_PROF.getDefId()
            || testDefId == CmProgram.ALG2_PROF.getDefId()
            || testDefId == CmProgram.GEO_PROF.getDefId()) {
             
