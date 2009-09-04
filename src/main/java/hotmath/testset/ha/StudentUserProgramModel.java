@@ -63,6 +63,21 @@ public class StudentUserProgramModel {
         this.createDate = createDate;
     }
     
+    /** Return true if this program has alternate tests available
+     * @return
+     */
+    public Boolean hasAlternateTests() {
+        
+        if(testDefId == CmProgram.ALG1_PROF.getDefId()
+           || testDefId == CmProgram.ALG2_PROF.getDefId()
+           || testDefId == CmProgram.GEO_PROF.getDefId()) {
+            
+            return true;
+        }
+        else
+            return false;
+    }
+    
     @Override
     public String toString() {
         return "StudentUserProgramModel [adminId=" + adminId + ", config=" + config + ", createDate=" + createDate

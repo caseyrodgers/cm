@@ -1204,6 +1204,18 @@ public class CmStudentDao {
                 activeInfo.setActiveTestId(rs.getInt("active_test_id"));
                 activeInfo.setActiveSegmentSlot(rs.getInt("active_segment_slot"));
             }
+            
+            
+            /** Check to see if this program supports alternate tests, if so
+             *  pass along the segment_slot to use .. otherwise, make sure it 
+             *  is zero to always use the same slot
+             */
+            if(activeInfo.getActiveSegmentSlot() > 0) {
+                boolean hasAlternateTests = loadProgramInfo(conn, userId).hasAlternateTests();
+                activeInfo.setActiveSegmentSlot(0);
+            }
+            
+            
             return activeInfo;
         } finally {
             SqlUtilities.releaseResources(rs, ps, null);
