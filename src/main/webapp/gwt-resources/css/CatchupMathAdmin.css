@@ -1,5 +1,5 @@
 .header-panel {
-     background-image: url(../images/logo_1.gif);
+     background-image: url(/gwt-resources/images/logo_1.gif);
      background-repeat: no-repeat;
      background-position: 5 5;
      background-color: white;
@@ -24,10 +24,10 @@
 	top: 2px;
 }
 .header-panel-logout-btn-icon {
-	background: url(../images/logout.png) no-repeat center left !important;
+	background: url(/gwt-resources/images/logout.png) no-repeat center left !important;
 }
 .header-panel-logout-btn-icon-over {
-	background: url(../images/logout-over.png) no-repeat center left !important
+	background: url(/gwt-resources/images/logout-over.png) no-repeat center left !important
 		;
 }
 
@@ -41,10 +41,10 @@
 }
 
 .header-panel-getting-started-btn-icon {
-    background: url(../images/admin_getting_started.png) no-repeat center left !important;
+    background: url(/gwt-resources/images/admin_getting_started.png) no-repeat center left !important;
 }
 .header-panel-getting-started-btn-icon-over {
-    background: url(../images/admin_getting_started-over.png) no-repeat center left !important;
+    background: url(/gwt-resources/images/admin_getting_started-over.png) no-repeat center left !important;
 }
 
 
@@ -59,14 +59,14 @@
 }
 
 .header-panel-help-btn-icon {
-	background: url(../images/help.png) no-repeat center left !important;
+	background: url(/gwt-resources/images/help.png) no-repeat center left !important;
 }
 .header-panel-help-btn-icon-over {
-	background: url(../images/help-over.png) no-repeat center left !important;
+	background: url(/gwt-resources/images/help-over.png) no-repeat center left !important;
 }
 
 .printer-icon {
-	background: url(../images/icons/printer-icon.png) no-repeat center left !important;
+	background: url(/gwt-resources/images/icons/printer-icon.png) no-repeat center left !important;
 }
  
 .main-container {
