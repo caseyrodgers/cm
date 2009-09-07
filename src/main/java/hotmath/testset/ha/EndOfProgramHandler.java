@@ -66,6 +66,10 @@ public class EndOfProgramHandler {
                 // reset/repeat
                 updateProgram(CmProgram.CAHSEEHM.getSubject(), CmProgram.CAHSEEHM.getProgramId(),null);
             }
+            else if(programCurr.getTestDefId() == CmProgram.TAKS.getDefId()) {
+                // reset/repeat
+                updateProgram(CmProgram.TAKS.getSubject(), CmProgram.TAKS.getProgramId(),null);
+            }            
             else {
                 // if is a chapter test, then we must find the currently assigned
                 // chapter number.  If there are additional chapters, then move to 
