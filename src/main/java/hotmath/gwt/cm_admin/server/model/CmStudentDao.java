@@ -260,8 +260,8 @@ public class CmStudentDao {
     }
 
     private static final String ADD_STUDENT_SQL =
-            "insert into HA_USER (user_name, user_passcode, active_segment, group_id, test_def_id, admin_id, is_active) " +
-            "values(?, ?, ?, ?, (select test_def_id from HA_TEST_DEF where prog_id = ? and subj_id = ?), ?, 1)";
+            "insert into HA_USER (user_name, user_passcode, active_segment, group_id, test_def_id, admin_id, is_active, date_created) " +
+            "values(?, ?, ?, ?, (select test_def_id from HA_TEST_DEF where prog_id = ? and subj_id = ?), ?, 1,now())";
 
     public StudentModel addStudent(final Connection conn, StudentModel sm) throws Exception {
         PreparedStatement ps = null;
