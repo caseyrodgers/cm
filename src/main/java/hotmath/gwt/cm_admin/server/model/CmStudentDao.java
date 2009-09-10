@@ -78,9 +78,10 @@ public class CmStudentDao {
             "INNER JOIN CM_USER_PROGRAM p " +
             "   on p.user_id = h.uid and p.id = h.user_prog_id " + 
             "LEFT JOIN HA_TEST_DEF d " +
-            "   on d.test_def_id = p.test_def_id " + 
+            "   on d.test_def_id = p.test_def_id " +
+            "LEFT JOIN (select user_id, max(run_id) as run_id from HA_TEST_RUN r JOIN HA_TEST t on r.test_id = t.test_id GROUP BY user_id) x ON x.user_id = h.uid " +
             "LEFT JOIN HA_TEST_RUN m " +
-            "  on m.run_id = h.active_run_id " + 
+            "  on m.run_id =  x.run_id " + 
             "LEFT JOIN HA_TEST t " +
             "  on t.user_id = h.uid and t.test_id = m.test_id " +
             "LEFT JOIN (select u.uid, count(*) as usage_count from HA_TEST_RUN_INMH_USE i, HA_TEST t, HA_TEST_RUN r, HA_USER u " + 

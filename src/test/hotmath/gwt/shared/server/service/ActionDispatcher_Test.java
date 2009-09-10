@@ -23,6 +23,7 @@ import hotmath.gwt.shared.client.rpc.action.GetQuizHtmlCheckedAction;
 import hotmath.gwt.shared.client.rpc.action.GetQuizResultsHtmlAction;
 import hotmath.gwt.shared.client.rpc.action.GetSolutionAction;
 import hotmath.gwt.shared.client.rpc.action.GetStateStandardsAction;
+import hotmath.gwt.shared.client.rpc.action.GetSummariesForActiveStudentsAction;
 import hotmath.gwt.shared.client.rpc.action.GetUserInfoAction;
 import hotmath.gwt.shared.client.rpc.action.GetViewedInmhItemsAction;
 import hotmath.gwt.shared.client.rpc.action.ProcessLoginRequestAction;
@@ -56,6 +57,15 @@ public class ActionDispatcher_Test extends CmDbTestCase {
         if(uid == 0)
             uid = setupDemoAccount();
     }
+
+    
+    public void testGetSummariesForActiveStudentsTest() throws Exception {
+        GetSummariesForActiveStudentsAction action = new GetSummariesForActiveStudentsAction(2);
+        CmList<StudentModel> students = ActionDispatcher.getInstance().execute(action);
+        assertNotNull(students);
+        assertTrue(students.size() > 0);
+    }
+
     
     public void testProcessLoginRequestAction() throws Exception {
         ProcessLoginRequestAction action = new ProcessLoginRequestAction("cm_1249959105808");

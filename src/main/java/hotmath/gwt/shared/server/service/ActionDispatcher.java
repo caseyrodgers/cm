@@ -24,6 +24,7 @@ import hotmath.gwt.shared.server.service.command.GetQuizResultsHtmlCommand;
 import hotmath.gwt.shared.server.service.command.GetReportDefCommand;
 import hotmath.gwt.shared.server.service.command.GetSolutionCommand;
 import hotmath.gwt.shared.server.service.command.GetStateStandardsCommand;
+import hotmath.gwt.shared.server.service.command.GetSummariesForActiveStudentsCommand;
 import hotmath.gwt.shared.server.service.command.GetUserInfoCommand;
 import hotmath.gwt.shared.server.service.command.GetViewedInmhItemsCommand;
 import hotmath.gwt.shared.server.service.command.ProcessLoginRequestCommand;
@@ -124,6 +125,7 @@ public class ActionDispatcher {
         addCommand(GetLessonItemsForTestRunCommand.class);
         addCommand(UnregisterStudentsCommand.class);
         addCommand(ProcessLoginRequestCommand.class);
+        addCommand(GetSummariesForActiveStudentsCommand.class);
     }
     
     
