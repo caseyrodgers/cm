@@ -241,7 +241,7 @@ public class CmAdminDao {
         " inner join HA_ADMIN h on h.subscriber_id = s.id " +
         " left join SUBSCRIBERS_SERVICES st on st.subscriber_id = h.subscriber_id and st.service_name = 'tutoring' " +
         " left join SUBSCRIBERS_SERVICES sc on sc.subscriber_id = h.subscriber_id and sc.service_name = 'catchup' " +
-        " left join (select admin_id, is_active, count(*) as student_count from HA_USER where is_active = 1 group by admin_id) t " +
+        " left join (select admin_id, is_active, count(*) as student_count from HA_USER where is_active = 1 and is_auto_create_template = 0 group by admin_id) t " +
         "   on t.admin_id = h.aid " + 
         " left join (" +
         "   select user_id, max(login_time) as login_time from HA_USER_LOGIN u " +
