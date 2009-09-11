@@ -21,6 +21,7 @@ import hotmath.gwt.shared.client.rpc.action.GetPrescriptionAction;
 import hotmath.gwt.shared.client.rpc.action.GetQuizHtmlAction;
 import hotmath.gwt.shared.client.rpc.action.GetQuizHtmlCheckedAction;
 import hotmath.gwt.shared.client.rpc.action.GetQuizResultsHtmlAction;
+import hotmath.gwt.shared.client.rpc.action.GetReviewHtmlAction;
 import hotmath.gwt.shared.client.rpc.action.GetSolutionAction;
 import hotmath.gwt.shared.client.rpc.action.GetStateStandardsAction;
 import hotmath.gwt.shared.client.rpc.action.GetSummariesForActiveStudentsAction;
@@ -58,7 +59,15 @@ public class ActionDispatcher_Test extends CmDbTestCase {
             uid = setupDemoAccount();
     }
 
-    
+
+    public void testGetReviewHtmlCommand() throws Exception {
+        GetReviewHtmlAction action = new GetReviewHtmlAction("hotmath_help/topics/angles.html", "Test");
+        RpcData rdata = ActionDispatcher.getInstance().execute(action);
+        assertNotNull(rdata);
+        assertTrue(rdata.getDataAsString("html").length() > 0);
+        assertTrue(rdata.getDataAsString("html").indexOf("doLoadResource") > -1);
+    }
+
     public void testGetSummariesForActiveStudentsTest() throws Exception {
         GetSummariesForActiveStudentsAction action = new GetSummariesForActiveStudentsAction(2);
         CmList<StudentModel> students = ActionDispatcher.getInstance().execute(action);

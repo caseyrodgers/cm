@@ -79,7 +79,7 @@ public interface PrescriptionService extends RemoteService {
 	 * @param baseDirectory The directory relative files should be made absolute to.
 	 * @return
 	 */
-	String getHmContent(String file, String baseDirectory);
+	RpcData getHmContent(String file, String baseDirectory) throws CmRpcException;
 
 	/**
 	 * Return the current results for the given test

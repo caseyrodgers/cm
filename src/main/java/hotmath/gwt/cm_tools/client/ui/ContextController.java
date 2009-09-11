@@ -4,10 +4,14 @@ import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.ui.context.CmContext;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
 import hotmath.gwt.shared.client.eventbus.EventBus;
+import hotmath.gwt.shared.client.history.CmLocation;
+import hotmath.gwt.shared.client.history.CmLocation.LocationType;
 import hotmath.gwt.shared.client.util.UserInfo;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import com.google.gwt.user.client.History;
 
 /**
  * Manages the different context switches for Catchup Math

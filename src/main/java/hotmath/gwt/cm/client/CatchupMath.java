@@ -13,6 +13,9 @@ import hotmath.gwt.shared.client.data.CmAsyncRequest;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
 import hotmath.gwt.shared.client.eventbus.CmEventListener;
 import hotmath.gwt.shared.client.eventbus.EventBus;
+import hotmath.gwt.shared.client.history.CatchupMathHistoryListener;
+import hotmath.gwt.shared.client.history.CmHistoryManager;
+import hotmath.gwt.shared.client.history.CmLocation;
 import hotmath.gwt.shared.client.util.UserInfo;
 
 import com.allen_sauer.gwt.log.client.Log;
@@ -26,8 +29,6 @@ import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.google.gwt.core.client.EntryPoint;
-import com.google.gwt.event.logical.shared.ValueChangeEvent;
-import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.RootPanel;
@@ -37,7 +38,7 @@ import com.google.gwt.user.client.ui.RootPanel;
  */
 public class CatchupMath implements EntryPoint {
     
-    final static String version = "1.0 beta";
+    final static String version = "1.0";
     
     static {
         publishNative();
@@ -106,6 +107,9 @@ public class CatchupMath implements EntryPoint {
             }
         });
         
+        /** Install listener to track any changes to the main window 
+         * 
+         */
         _mainPort.addListener(Events.Resize, new Listener<BaseEvent>() {
             public void handleEvent(BaseEvent be) {
                 if(CmMainPanel.__lastInstance != null && CmMainPanel.__lastInstance._mainContent != null) {
@@ -143,6 +147,7 @@ public class CatchupMath implements EntryPoint {
      * @param uid
      */
     private void processLoginComplete(final Integer uid) {
+        
         // if run_id passed in, then allow user to view_only
         if(CmShared.getQueryParameter("run_id") != null) {
             int runId = Integer.parseInt(CmShared.getQueryParameter("run_id"));
@@ -158,55 +163,39 @@ public class CatchupMath implements EntryPoint {
         }
         
         
-
-        /** Add a history listener to manage the state changes
-         * 
-         */
-        History.addValueChangeHandler(new ValueChangeHandler<String>() {
-            public void onValueChange(ValueChangeEvent<String> event) {
-                String historyToken = event.getValue();
+        UserInfo.loadUser(uid,new CmAsyncRequest() {
+            public void requestComplete(String requestData) {
                 
-                if(UserInfo.getInstance() != null) {
+                if(UserInfo.getInstance().isSingleUser())
+                    Window.setTitle("Catchup Math: Student");
+
+
+                String ac=CmShared.getQueryParameter("type");
+                if(ac != null && ac.equals("ac")) {
                     
-                    if(UserInfo.getInstance().getRunId() > 0) {
-                        showPrescriptionPanel_gwt();
-                    }
-                    else {
-                        showQuizPanel_gwt();
-                    }
-                    return;
+                    /** 
+                     * self registration
+                     * 
+                     * mark as not owner, since this is a
+                     */
+                    UserInfo.getInstance().setActiveUser(false);
+                    showAutoRegistration_gwt();
+                }                        
+                else {
+                    
+                    // ok, we are good to go
+                    /** Add a history listener to manage the state changes
+                     * 
+                     */
+                    History.addValueChangeHandler(new CatchupMathHistoryListener());
+                    History.fireCurrentHistoryState();    
                 }
                 
-                UserInfo.loadUser(uid,new CmAsyncRequest() {
-                    public void requestComplete(String requestData) {
-                        
-                        if(UserInfo.getInstance().isSingleUser())
-                            Window.setTitle("Catchup Math: Student");
-
-
-                        String ac=CmShared.getQueryParameter("type");
-                        if(ac != null && ac.equals("ac")) {
-                            UserInfo.getInstance().setActiveUser(false);
-                            showAutoRegistration_gwt();
-                        }                        
-                        else if(UserInfo.getInstance().getRunId() > 0) {
-                            // load the existing run
-                            showPrescriptionPanel_gwt();
-                        }
-                        else {
-                            // show the quiz and prepare for a new run
-                            showQuizPanel_gwt();
-                        }
-                    }
-                    public void requestFailed(int code, String text) {
-                        CatchupMathTools.showAlert("There was a problem reading user information from server" );
-                    }
-                });
             }
-        });
-        
-       
-        History.fireCurrentHistoryState();
+            public void requestFailed(int code, String text) {
+                CatchupMathTools.showAlert("There was a problem reading user information from server" );
+            }
+        });        
     }
 
 
@@ -231,7 +220,7 @@ public class CatchupMath implements EntryPoint {
         showQuizPanel_gwt();
     }
 
-    private void showQuizPanel_gwt() {
+    public void showQuizPanel_gwt() {
         HeaderPanel.__instance.enable();
 
         _mainContainer.removeAll();
@@ -251,8 +240,8 @@ public class CatchupMath implements EntryPoint {
         // History.newItem("pres");
         showPrescriptionPanel_gwt();
     }
-
-    private void showPrescriptionPanel_gwt() {
+    
+    public void showPrescriptionPanel_gwt() {
         HeaderPanel.__instance.enable();
 
         _mainContainer.removeAll();
@@ -273,17 +262,23 @@ public class CatchupMath implements EntryPoint {
     }
     
 
+    /** Provides helper method to load a resource into the current 
+     *  PrespccriptionContext
+     *  
+     * @param type
+     * @param file
+     */
     static private void doResourceLoad(String type, String file) {
-        InmhItemData resourceItem = new InmhItemData();
-        resourceItem.setType(type);
-        resourceItem.setFile(file);
+        CmLocation location = new CmLocation("p:" + UserInfo.getInstance().getSessionNumber() + ":" + type + ":" + file);
+        CmHistoryManager.getInstance().addHistoryLocation(location);
         
-        CmMainPanel.__lastInstance._mainContent.showResource(resourceItem);
+        
+        // CmMainPanel.__lastInstance._mainContent.showResource(resourceItem);
     }
     
     /** Push a GWT method onto the global space for the app window
      * 
-     *   This wil be called from CatchupMath.js:doResourceLoad
+     *   This will be called from CatchupMath.js:doResourceLoad
      *   
      */
     static private native void publishNative() /*-{

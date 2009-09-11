@@ -14,6 +14,9 @@ import hotmath.gwt.cm_tools.client.ui.ContextController;
 import hotmath.gwt.cm_tools.client.ui.context.CmContext;
 import hotmath.gwt.cm_tools.client.ui.viewer.ResourceViewer;
 import hotmath.gwt.cm_tools.client.ui.viewer.ResourceViewerFactory;
+import hotmath.gwt.shared.client.history.CmHistoryManager;
+import hotmath.gwt.shared.client.history.CmHistoryQueue;
+import hotmath.gwt.shared.client.history.CmLocation;
 import hotmath.gwt.shared.client.rpc.action.GetPrescriptionAction;
 import hotmath.gwt.shared.client.util.RpcData;
 import hotmath.gwt.shared.client.util.UserInfo;
@@ -28,6 +31,7 @@ import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.store.ListStore;
+import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.Html;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
@@ -36,7 +40,6 @@ import com.extjs.gxt.ui.client.widget.layout.AccordionLayout;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
-import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -88,6 +91,23 @@ public class PrescriptionCmGuiDefinition implements CmGuiDefinition {
      */
     public void getAsyncDataFromServer(int sessionNumber) {
 
+        
+        // check for a pending History CmLocation change
+        final CmLocation location = CmHistoryQueue.getInstance().popLocation();
+        if(location != null) {
+            sessionNumber = location.getLocationNumber();
+        }
+        
+        
+        // If we are currently on requested session, no need for server call
+        if(isReady && UserInfo.getInstance().getSessionNumber() == sessionNumber) {
+            // update the request resource viewed
+            setLocation(location);
+            return;
+        }
+        
+        
+        
         // clear any existing resource
         CmMainPanel.__lastInstance._mainContent.removeAll();
         CmMainPanel.__lastInstance._mainContent.layout();
@@ -123,6 +143,8 @@ public class PrescriptionCmGuiDefinition implements CmGuiDefinition {
                     if(UserInfo.getInstance().isAutoTestMode()) {
                         context.runAutoTest();
                     }
+
+                    setLocation(location);
                     
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -136,6 +158,28 @@ public class PrescriptionCmGuiDefinition implements CmGuiDefinition {
             }
         });
         CatchupMathTools.setBusy(true);
+    }
+    
+    private void setLocation(CmLocation location) {
+        if(location != null) {
+            String resourceToView = location.getResourceType();
+            if(resourceToView != null) {
+                ResourceList rl = PrescriptionResourceAccord.__instance.expandResourceType(resourceToView);
+                if(rl != null) {
+                    // select the Nth item
+                    if(location.getResourceNumber() > -1) {
+                        rl.showResource(rl._store.getAt(location.getResourceNumber()).getItem());
+                    }
+                    else {
+                        String resourceId = location.getResourceId();
+                        InmhItemData item = new InmhItemData();
+                        item.setType(resourceToView);
+                        item.setFile(resourceId);
+                        CmMainPanel.__lastInstance._mainContent.showResource(item);
+                    }
+                }
+            }
+        }
     }
 
     public Widget getCenterWidget() {
@@ -183,6 +227,12 @@ public class PrescriptionCmGuiDefinition implements CmGuiDefinition {
     
 }
 
+
+/** Defines the main accordion widget containing the resources
+ * 
+ * @author casey
+ *
+ */
 class PrescriptionResourceAccord extends LayoutContainer {
 
     static PrescriptionResourceAccord __instance;
@@ -259,7 +309,9 @@ class PrescriptionResourceAccord extends LayoutContainer {
                         ResourceList myRl = (ResourceList)mycp.getItem(0);
                         if(myRl.getItemCount() ==1) {
                             myRl.getSelectionModel().select(0, false);
-                            myRl.loadResource(myRl.getSelectionModel().getSelectedItem());
+                            
+                            ResourceModel rm = myRl.getSelectionModel().getSelectedItem();
+                            CmHistoryManager.loadResourceIntoHistory(rm.getItem().getType(),"0");
                         }
                     }
                     
@@ -379,29 +431,35 @@ class PrescriptionResourceAccord extends LayoutContainer {
     }
     
     public void expandResourcePracticeProblems() {
-        expandResourceType("Required Practice Problems");
+        expandResourceType("practice");
     }
     
     /** Expand the resource node exposing resource items
      * 
+     * Just matches with 'startsWith'
+     * 
+     * Return the ResourceList expanded, or null if no match
+     * 
+     * 
      * @param resourceType The table of the resource type
      * 
      */
-    public void expandResourceType(String resourceType) {
+    public ResourceList expandResourceType(String resourceType) {
         for(int i=0, t=getItems().size();i<t;i++) {
-            if(getItem(i) instanceof ContentPanel) {
-                ContentPanel cp = (ContentPanel)getItem(i);
-                String title = cp.getHeader().getText();
-                if(title.equals(resourceType)) {
+            if(getItem(i) instanceof ResourceContentPanel) {
+                ResourceContentPanel cp = (ResourceContentPanel)getItem(i);
+                String type = cp.resourceList.getResourceData().getType();
+                if(type.equalsIgnoreCase(resourceType)) {
                     cp.expand();
-                    break;
+                    return cp.resourceList;
                 }
             }
         }
+        return null;
     }
 }
 
-class ResourceList extends ListView<ResourceModel> implements Listener {
+class ResourceList extends ListView<ResourceModel> implements Listener<BaseEvent> {
 
     ListStore<ResourceModel> _store;
     PrescriptionSessionDataResource resource;
@@ -414,8 +472,7 @@ class ResourceList extends ListView<ResourceModel> implements Listener {
             _store.add(new ResourceModel(id));
         }
         setStore(_store);
-        
-        String title = resource.getLabel();
+
         // allViewed();
         setSimpleTemplate("<div class='resource-item'>{title}&nbsp;<img id='{file}' class='{completeClassName}' src='/gwt-resources/images/check_white.png'/></div>");
         setPosition(10, 10);
@@ -425,8 +482,19 @@ class ResourceList extends ListView<ResourceModel> implements Listener {
 
     public void handleEvent(BaseEvent be) {
         ResourceModel rm = getSelectionModel().getSelectedItem();
-        loadResource(rm);
+        
+        
+        // allow the history manager to load the resource
+        int resourceNumber=0;
+        for(ResourceModel resm: _store.getModels() ) {
+            if(resm == rm) 
+                break;
+            resourceNumber++;
+        }
+
+        CmHistoryManager.loadResourceIntoHistory(rm.getItem().getType(), Integer.toString(resourceNumber));
     }
+    
 
     public void loadResource(ResourceModel rm) {
         showResource(rm.getItem());
@@ -559,6 +627,10 @@ class ResourceList extends ListView<ResourceModel> implements Listener {
 
                 });
         
+    }
+    
+    public PrescriptionSessionDataResource getResourceData() {
+        return this.resource;
     }
 }
 

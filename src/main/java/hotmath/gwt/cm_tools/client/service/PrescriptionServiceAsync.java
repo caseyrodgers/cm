@@ -52,7 +52,7 @@ public interface PrescriptionServiceAsync {
 	  
 	  void getQuizHtmlChecked(int testId,AsyncCallback callback);
 	  
-	  void getHmContent(String file, String baseDirectory, AsyncCallback callback);
+	  void getHmContent(String file, String baseDirectory, AsyncCallback<RpcData> callback);
 	  
 	  void getQuizCurrentResults(int testId, AsyncCallback callback);
 	  

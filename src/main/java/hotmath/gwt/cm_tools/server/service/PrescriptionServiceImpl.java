@@ -1,6 +1,5 @@
 package hotmath.gwt.cm_tools.server.service;
 
-import hotmath.HotMathProperties;
 import hotmath.HotMathUtilities;
 import hotmath.ProblemID;
 import hotmath.SolutionManager;
@@ -27,6 +26,7 @@ import hotmath.gwt.shared.client.rpc.action.GetProgramDefinitionsAction;
 import hotmath.gwt.shared.client.rpc.action.GetQuizHtmlAction;
 import hotmath.gwt.shared.client.rpc.action.GetQuizHtmlCheckedAction;
 import hotmath.gwt.shared.client.rpc.action.GetQuizResultsHtmlAction;
+import hotmath.gwt.shared.client.rpc.action.GetReviewHtmlAction;
 import hotmath.gwt.shared.client.rpc.action.GetSolutionAction;
 import hotmath.gwt.shared.client.rpc.action.GetUserInfoAction;
 import hotmath.gwt.shared.client.rpc.action.GetViewedInmhItemsAction;
@@ -43,7 +43,6 @@ import hotmath.testset.ha.HaTest;
 import hotmath.testset.ha.HaTestRunResult;
 import hotmath.testset.ha.HaUser;
 import hotmath.util.HMConnectionPool;
-import hotmath.util.HmContentExtractor;
 import hotmath.util.sql.SqlUtilities;
 
 import java.sql.Connection;
@@ -54,8 +53,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.apache.log4j.Logger;
-
-import sb.util.SbFile;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
@@ -172,21 +169,9 @@ public class PrescriptionServiceImpl extends RemoteServiceServlet implements Pre
      * 
      * @return
      */
-    public String getHmContent(String file, String baseDirectory) {
-        try {
-            String filePath = HotMathProperties.getInstance().getHotMathWebBase();
-            filePath += "/" + file;
-
-            String html = new SbFile(filePath).getFileContents().toString("\n");
-
-            HmContentExtractor ext = new HmContentExtractor();
-            String hmContent = ext.extractContent(html, baseDirectory);
-
-            return hmContent;
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return "";
+    public RpcData getHmContent(String file, String baseDirectory) throws CmRpcException {
+        GetReviewHtmlAction action = new GetReviewHtmlAction(file, baseDirectory);
+        return ActionDispatcher.getInstance().execute(action);
     }
 
     /**

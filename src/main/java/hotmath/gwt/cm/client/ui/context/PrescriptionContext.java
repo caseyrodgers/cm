@@ -1,6 +1,7 @@
 package hotmath.gwt.cm.client.ui.context;
 
 import hotmath.gwt.cm.client.CatchupMath;
+import hotmath.gwt.cm.client.ui.context.PrescriptionResourceAccord.ResourceContentPanel;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.data.InmhItemData;
 import hotmath.gwt.cm_tools.client.data.PrescriptionData;
@@ -17,6 +18,9 @@ import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.data.CmAsyncRequestImplDefault;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
 import hotmath.gwt.shared.client.eventbus.EventBus;
+import hotmath.gwt.shared.client.history.CmHistoryManager;
+import hotmath.gwt.shared.client.history.CmLocation;
+import hotmath.gwt.shared.client.history.CmLocation.LocationType;
 import hotmath.gwt.shared.client.rpc.action.AutoAdvanceUserAction;
 import hotmath.gwt.shared.client.util.UserInfo;
 
@@ -189,23 +193,24 @@ public class PrescriptionContext implements CmContext {
             String msg = "";
             int testSegmentToLoad = 0;
             if (correctPercent >= passPercentRequired) {
-                // User has passed this section, and is ready to move to next
-                // Quiz or AutoAdvance
-
+                // User has passed this section, and is ready to move to next quiz/autoAdvance
                 if (UserInfo.getInstance().isDemoUser()) {
                     showDemoCompleteMessage();
                     return;
                 }
 
                 // are there more Quizzes in this program?
-                boolean areMoreSegments = UserInfo.getInstance().getTestSegment() < UserInfo.getInstance()
-                        .getTestSegmentCount();
+                boolean areMoreSegments = UserInfo.getInstance().getTestSegment() < UserInfo.getInstance().getTestSegmentCount();
                 if (areMoreSegments) {
                     msg = "You passed this section!  You will now be shown the next quiz.";
                     CatchupMathTools.showAlert(msg, new CmAsyncRequestImplDefault() {
                         public void requestComplete(String requestData) {
                             UserInfo.getInstance().setTestSegment(UserInfo.getInstance().getTestSegment() + 1);
-                            CatchupMath.getThisInstance().showQuizPanel();
+                            
+                            CmHistoryManager.getInstance().addHistoryLocation(new CmLocation(LocationType.QUIZ, UserInfo.getInstance().getTestSegment()));
+                            
+                            
+                            // CatchupMath.getThisInstance().showQuizPanel();
                         }
                     });
                 } else {
@@ -230,7 +235,9 @@ public class PrescriptionContext implements CmContext {
                 public void handleEvent(MessageBoxEvent be) {
                     if (be.getButtonClicked().getText().equals("Yes")) {
                         UserInfo.getInstance().setTestSegment(tstl);
-                        CatchupMath.getThisInstance().showQuizPanel();
+                        
+                        CmHistoryManager.getInstance().addHistoryLocation(new CmLocation(LocationType.QUIZ, UserInfo.getInstance().getTestSegment()));
+                        //CatchupMath.getThisInstance().showQuizPanel();
                     } else {
                         ContextController.getInstance().setCurrentContext(PrescriptionContext.this);
                     }
@@ -239,7 +246,9 @@ public class PrescriptionContext implements CmContext {
             return;
         } else {
             sessionNumber++; // if valid..
-            prescriptionCm.getAsyncDataFromServer(sessionNumber);
+            CmHistoryManager.getInstance().addHistoryLocation(new CmLocation(LocationType.PRESCRIPTION, sessionNumber));
+            
+            // prescriptionCm.getAsyncDataFromServer(sessionNumber);
         }
     }
 
@@ -359,7 +368,7 @@ public class PrescriptionContext implements CmContext {
     }
 
     public void doNext() {
-        gotoNextTopic();
+       gotoNextTopic();        
     }
 
     public void doPrevious() {
@@ -421,20 +430,18 @@ public class PrescriptionContext implements CmContext {
             try {
                 Timer timer = new Timer() {
                     public void run() {
-                        final String resourceType = r.getLabel();
+                        final String resourceType = r.getType();
 
                         AutoTestWindow.getInstance().addLogMessage("Testing resource: " + resourceType);
 
-                        ((PrescriptionCmGuiDefinition) CmMainPanel.__lastInstance.cmGuiDef)._guiWidget
-                                .expandResourceType(resourceType);
+                        ((PrescriptionCmGuiDefinition) CmMainPanel.__lastInstance.cmGuiDef)._guiWidget.expandResourceType(resourceType);
 
                         // now click on each resource
                         int timeToWait1 = 1;
-                        for (Component c : ((PrescriptionCmGuiDefinition) CmMainPanel.__lastInstance.cmGuiDef)._guiWidget
-                                .getItems()) {
-                            if (c instanceof ContentPanel) {
-                                ContentPanel cp = (ContentPanel) c;
-                                if (!cp.getHeading().equals(resourceType))
+                        for (Component c : ((PrescriptionCmGuiDefinition) CmMainPanel.__lastInstance.cmGuiDef)._guiWidget.getItems()) {
+                            if (c instanceof ResourceContentPanel) {
+                                ResourceContentPanel cp = (ResourceContentPanel) c;
+                                if (!cp.resourceList.getResourceData().getType().equals(resourceType))
                                     continue;
                                 final ResourceList rl = (ResourceList) cp.getItems().get(0);
 
