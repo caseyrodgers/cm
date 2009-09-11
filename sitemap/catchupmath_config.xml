@@ -33,7 +33,7 @@
 -->
 <site
   base_url="http://catchupmath.com/"
-  store_into="/home/hotmath/live/hotmath2/web/cm_sitemap.xml.gz"
+  store_into="/home/hotmath/live/cm/target/cm-1.0-SNAPSHOT/cm_sitemap.xml.gz"
   verbose="1" suppress_search_engine_notify="1"
   >
 
