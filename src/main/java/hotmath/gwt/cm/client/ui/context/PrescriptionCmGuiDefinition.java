@@ -160,6 +160,10 @@ public class PrescriptionCmGuiDefinition implements CmGuiDefinition {
         CatchupMathTools.setBusy(true);
     }
     
+    /** Update the current resource loaded
+     * 
+     * @param location
+     */
     private void setLocation(CmLocation location) {
         if(location != null) {
             String resourceToView = location.getResourceType();

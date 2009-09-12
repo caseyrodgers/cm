@@ -272,7 +272,6 @@ public class CatchupMath implements EntryPoint {
         CmLocation location = new CmLocation("p:" + UserInfo.getInstance().getSessionNumber() + ":" + type + ":" + file);
         CmHistoryManager.getInstance().addHistoryLocation(location);
         
-        
         // CmMainPanel.__lastInstance._mainContent.showResource(resourceItem);
     }
     

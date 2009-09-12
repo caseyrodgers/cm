@@ -17,7 +17,7 @@ public class CatchupMathHistoryListener implements ValueChangeHandler<String> {
         if(historyToken.length() >  0) {
             CmLocation location = new CmLocation(historyToken);
             
-            // setup HistoryQueue
+            // setup HistoryQueue to allow for asynchronous access
             CmHistoryQueue.getInstance().pushLocation(location);
         }
         

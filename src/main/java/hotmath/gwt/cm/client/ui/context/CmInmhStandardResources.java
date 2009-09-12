@@ -13,10 +13,10 @@ import java.util.List;
  * But, since this data does not change we might as well have it static.
  * 
  *  
- *  activity, /learning_activities/interactivities/diamond.swf, Diamond Problem Flash Cards
- *  activity, /learning_activities/interactivities/quadratics.swf, Quadratics in Factored Form
- *  activity, /learning_activities/interactivities/flashcard_addfrac_like.swf, Fraction Flash Cards: Like Denominators
- *  activity, /learning_activities/interactivities/flashcard_addfrac_unlike.swf, Fraction Flash Cards: Unike Denominators
+ *  activity_standard, /learning_activities/interactivities/diamond.swf, Diamond Problem Flash Cards
+ *  activity_standard, /learning_activities/interactivities/quadratics.swf, Quadratics in Factored Form
+ *  activity_standard, /learning_activities/interactivities/flashcard_addfrac_like.swf, Fraction Flash Cards: Like Denominators
+ *  activity_standard, /learning_activities/interactivities/flashcard_addfrac_unlike.swf, Fraction Flash Cards: Unike Denominators
  *  
  *  
  *  flashcard, /learning_activities/interactivities/flashcard_vocab.swf, Math Vocabulary
@@ -36,7 +36,7 @@ public class CmInmhStandardResources extends ArrayList<PrescriptionSessionDataRe
          * 
          */
         PrescriptionSessionDataResource resourceType = new PrescriptionSessionDataResource();
-        resourceType.setType("activity");
+        resourceType.setType("activity_standard");
         resourceType.setLabel("Math Games");
         resourceType.setDescription("Math games that might help you");
         

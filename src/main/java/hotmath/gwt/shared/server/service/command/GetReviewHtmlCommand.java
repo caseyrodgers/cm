@@ -9,6 +9,7 @@ import hotmath.gwt.shared.server.service.ActionHandler;
 import hotmath.gwt.shared.server.service.ActionHandlerManualConnectionManagement;
 import hotmath.util.HmContentExtractor;
 
+import java.io.File;
 import java.sql.Connection;
 
 import sb.util.SbFile;
@@ -20,7 +21,12 @@ public class GetReviewHtmlCommand implements ActionHandler<GetReviewHtmlAction, 
         
         RpcData rpcData = new RpcData();
         String filePath = HotMathProperties.getInstance().getHotMathWebBase();
-        filePath += "/" + action.getFile();
+        String p = action.getFile();
+        
+        if(!p.startsWith("/"))
+            p = "/" + p;
+        
+        filePath = filePath + p;
 
         String html = new SbFile(filePath).getFileContents().toString("\n");
 

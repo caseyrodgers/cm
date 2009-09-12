@@ -31,7 +31,7 @@ public class ResourceViewerFactory {
 		else if(type.equals("video")) { 
 	        return new ResourceViewerImplVideo();
 	    }
-		else if(type.equals("activity")) {
+		else if(type.startsWith("activity")) {
 			return new ResourceViewerImplActivity();
 		}
 		else if(type.equals("workbook")) {
