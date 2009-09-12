@@ -120,7 +120,7 @@ public class AutoStudentRegistrationPanel extends ResourceContainer {
         
         _formPanel.add(fsProfile);
         
-        _formPanel.add(new Html("<p>You will use the school Log In and with your chosen password (not your name).  We suggest that you write them both down.</p>"));
+        _formPanel.add(new Html("<p>Once you have created your account, next time you will use the school code and your own password to log in.</p>"));
         
         
         Button saveButton = new Button("Register");
