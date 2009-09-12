@@ -1,7 +1,7 @@
 package hotmath.gwt.shared.client.rpc.action;
 
 import hotmath.gwt.shared.client.rpc.Action;
-import hotmath.gwt.shared.client.util.UserInfo;
+import hotmath.gwt.shared.client.util.RpcData;
 
 
 /** Create a single user account using the Auto Registration system
@@ -9,7 +9,7 @@ import hotmath.gwt.shared.client.util.UserInfo;
  * @author casey
  *
  */
-public class CreateAutoRegistrationAccountAction implements Action<UserInfo> {
+public class CreateAutoRegistrationAccountAction implements Action<RpcData> {
     Integer userId;
     String user;
     String password;

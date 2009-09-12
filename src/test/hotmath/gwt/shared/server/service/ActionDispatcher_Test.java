@@ -104,9 +104,9 @@ public class ActionDispatcher_Test extends CmDbTestCase {
         String user = "user_" + System.currentTimeMillis();
         String password = "password_" + System.currentTimeMillis();
         CreateAutoRegistrationAccountAction action = new CreateAutoRegistrationAccountAction(AUTO_SETUP_UID, user, password);
-        UserInfo sm = ActionDispatcher.getInstance().execute(action);
+        RpcData  sm = ActionDispatcher.getInstance().execute(action);
         assertNotNull(sm);
-        assertTrue(sm.getUid() > 0);
+        assertTrue(sm.getDataAsString("key") != null);
     }
     
     public void testAddGroupCommand() throws Exception {

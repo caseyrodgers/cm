@@ -82,7 +82,7 @@ public class HaLoginInfo {
     }
 
 
-    static private String addLoginInfo(HaBasicUser user) throws Exception {
+    static public String addLoginInfo(HaBasicUser user) throws Exception {
         Connection conn = null;
         PreparedStatement pstat = null;
 

@@ -7,10 +7,12 @@ import hotmath.gwt.cm_tools.client.ui.InfoPopupBox;
 import hotmath.gwt.cm_tools.client.ui.ResourceContainer;
 import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
 import hotmath.gwt.cm_tools.client.ui.context.CmContext;
+import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
 import hotmath.gwt.shared.client.eventbus.EventBus;
 import hotmath.gwt.shared.client.rpc.action.CreateAutoRegistrationAccountAction;
 import hotmath.gwt.shared.client.util.CmInfoConfig;
+import hotmath.gwt.shared.client.util.RpcData;
 import hotmath.gwt.shared.client.util.ShowFirstTimeVisitorWindow;
 import hotmath.gwt.shared.client.util.UserInfo;
 
@@ -31,9 +33,15 @@ import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.extjs.gxt.ui.client.widget.form.Validator;
 import com.extjs.gxt.ui.client.widget.layout.CenterLayout;
 import com.extjs.gxt.ui.client.widget.layout.FormLayout;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 
+/** Provides Self Registration login screen and validation
+ * 
+ * @author casey
+ *
+ */
 public class AutoStudentRegistrationPanel extends ResourceContainer {
 
     FormPanel _formPanel;
@@ -91,7 +99,6 @@ public class AutoStudentRegistrationPanel extends ResourceContainer {
         passwordVerify.setId("passwordVerify");
         passwordVerify.setEmptyText("-- verify password --");
         passwordVerify.setValidator(new Validator() {
-            
             @Override
             public String validate(Field<?> field, String value) {
                 if(value == null || value.length() == 0)
@@ -198,6 +205,13 @@ public class AutoStudentRegistrationPanel extends ResourceContainer {
         });
     }
     
+    
+    /** Create new password
+     *  If successful, then load new user by replacing
+     *  current page.  This allows for refresh of page 
+     *  to no re-initiate the self-registration process.
+     *  
+     */
     private void doCreatePassword() {
 
         
@@ -208,9 +222,9 @@ public class AutoStudentRegistrationPanel extends ResourceContainer {
 
         
         CmServiceAsync s = (CmServiceAsync) Registry.get("cmService");
-        s.execute(new CreateAutoRegistrationAccountAction(UserInfo.getInstance().getUid(), userName.getValue().trim(), password.getValue().trim()), new AsyncCallback<UserInfo>() {
+        s.execute(new CreateAutoRegistrationAccountAction(UserInfo.getInstance().getUid(), userName.getValue().trim(), password.getValue().trim()), new AsyncCallback<RpcData>() {
             @Override
-            public void onSuccess(final UserInfo result) {
+            public void onSuccess(final RpcData rdata) {
                 
                 
                 final CmWindow win = new CmWindow();
@@ -230,16 +244,11 @@ public class AutoStudentRegistrationPanel extends ResourceContainer {
                 close.addSelectionListener(new SelectionListener<ButtonEvent>() {
                     @Override
                     public void componentSelected(ButtonEvent ce) {
-                        UserInfo.setInstance(result);
-                        UserInfo.getInstance().setActiveUser(true);
+                        String userKey = rdata.getDataAsString("key");
+                        String url = CmShared.CM_HOME_URL;
                         
-                        new ShowFirstTimeVisitorWindow();
-                        
-                        EventBus.getInstance().fireEvent(new CmEvent(EventBus.EVENT_TYPE_USERCHANGED, result));
-                        CatchupMath.getThisInstance().showQuizPanel();
-                        
-                        
-                        win.close();
+                        url += "/cm_student/CatchupMath.html?key=" + userKey;
+                        Window.Location.replace(url);
                     }
                 });
                 

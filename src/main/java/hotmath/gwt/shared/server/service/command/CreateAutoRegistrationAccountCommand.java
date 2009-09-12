@@ -2,19 +2,22 @@ package hotmath.gwt.shared.server.service.command;
 
 import hotmath.gwt.cm_admin.server.model.CmAdminDao;
 import hotmath.gwt.cm_admin.server.model.CmStudentDao;
+import hotmath.gwt.cm_tools.client.data.HaBasicUser;
 import hotmath.gwt.cm_tools.client.model.StudentActiveInfo;
 import hotmath.gwt.cm_tools.client.model.StudentModel;
-import hotmath.gwt.cm_tools.client.model.StudentModelI;
 import hotmath.gwt.shared.client.rpc.Action;
 import hotmath.gwt.shared.client.rpc.Response;
 import hotmath.gwt.shared.client.rpc.action.CreateAutoRegistrationAccountAction;
+import hotmath.gwt.shared.client.util.RpcData;
 import hotmath.gwt.shared.client.util.UserInfo;
 import hotmath.gwt.shared.server.service.ActionHandler;
 import hotmath.subscriber.HotMathSubscriber;
 import hotmath.subscriber.HotMathSubscriberManager;
 import hotmath.testset.ha.ChapterInfo;
+import hotmath.testset.ha.HaLoginInfo;
 import hotmath.testset.ha.HaTestDef;
 import hotmath.testset.ha.HaTestDefDao;
+import hotmath.testset.ha.HaUser;
 import hotmath.testset.ha.StudentUserProgramModel;
 
 import java.sql.Connection;
@@ -24,11 +27,14 @@ import java.sql.Connection;
  *  
  *  Either create all ... or none of the accounts.
  **/
-public class CreateAutoRegistrationAccountCommand implements ActionHandler<CreateAutoRegistrationAccountAction, UserInfo> {
+public class CreateAutoRegistrationAccountCommand implements ActionHandler<CreateAutoRegistrationAccountAction, RpcData> {
 
     
-    @Override
-    public UserInfo execute(Connection conn, CreateAutoRegistrationAccountAction action) throws Exception {
+    /** Return RpcData with fields:
+     * 
+     *    key = new login key
+     */
+    public RpcData execute(Connection conn, CreateAutoRegistrationAccountAction action) throws Exception {
         CmStudentDao dao = new CmStudentDao();
         StudentModel studentModel = dao.getStudentModel(action.getUserId(), true);
 
@@ -78,7 +84,14 @@ public class CreateAutoRegistrationAccountCommand implements ActionHandler<Creat
         userInfo.setTestSegmentCount(testDef.getTotalSegmentCount());
         userInfo.setViewCount(dao.getTotalInmHViewCount(conn,action.getUserId()));
         
-        return userInfo;        
+        
+        // Make a new HA_USER_LOGIN entry and return key
+        HaUser huser = new HaUser();
+        huser.setUid(userInfo.getUid());
+        
+        RpcData rdata = new RpcData();
+        rdata.putData("key", HaLoginInfo.addLoginInfo(huser));
+        return rdata;
     }
     
     
@@ -86,4 +99,5 @@ public class CreateAutoRegistrationAccountCommand implements ActionHandler<Creat
     public Class<? extends Action<? extends Response>> getActionType() {
         return CreateAutoRegistrationAccountAction.class;
     }
+    
 }
