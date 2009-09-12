@@ -11,7 +11,7 @@ import com.extjs.gxt.ui.client.widget.Html;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 
-public class ResourceViewerImplVideo extends ResourceViewerContainer {
+public class ResourceViewerImplVideo extends ResourceViewerImplFlash {
 
     String STYLE_NAME="resource-viewer-impl-video";
     

@@ -134,8 +134,9 @@ public class CatchupMath implements EntryPoint {
                     FooterPanel.refreshPage();
                 }
             }
-            public String getEventOfInterest() {
-                return EventBus.EVENT_TYPE_USER_PROGRAM_CHANGED;
+            public String[] getEventsOfInterest() {
+                String types[] = {EventBus.EVENT_TYPE_USER_PROGRAM_CHANGED};
+                return types;
             }
         });
     }

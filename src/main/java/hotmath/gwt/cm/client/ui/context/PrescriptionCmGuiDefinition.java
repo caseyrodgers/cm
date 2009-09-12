@@ -14,6 +14,8 @@ import hotmath.gwt.cm_tools.client.ui.ContextController;
 import hotmath.gwt.cm_tools.client.ui.context.CmContext;
 import hotmath.gwt.cm_tools.client.ui.viewer.ResourceViewer;
 import hotmath.gwt.cm_tools.client.ui.viewer.ResourceViewerFactory;
+import hotmath.gwt.shared.client.eventbus.CmEvent;
+import hotmath.gwt.shared.client.eventbus.EventBus;
 import hotmath.gwt.shared.client.history.CmHistoryManager;
 import hotmath.gwt.shared.client.history.CmHistoryQueue;
 import hotmath.gwt.shared.client.history.CmLocation;
@@ -31,7 +33,6 @@ import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.store.ListStore;
-import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.Html;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
@@ -519,6 +520,9 @@ class ResourceList extends ListView<ResourceModel> implements Listener<BaseEvent
      * @param resourceItem
      */
     ResourceViewer _viewer;
+    public ResourceViewer getViewer() {
+        return _viewer;
+    }
 
     public void showResource(final InmhItemData resourceItem) {
         try {
@@ -549,6 +553,13 @@ class ResourceList extends ListView<ResourceModel> implements Listener<BaseEvent
             CmMainPanel.__lastInstance._mainContent.resetChildSize();
             //cp.el().fadeIn(FxConfig.NONE);
 
+            
+            /** Fire event telling listeners that a new resource has been activated.
+             * 
+             */
+            EventBus.getInstance().fireEvent(new CmEvent(EventBus.EVENT_TYPE_RESOURCE_VIEWER_OPEN, _viewer));
+            
+            
             // practice problems/extra problems are marked only when last step is viewed
             if(resourceItem.getType().equals("practice") || resourceItem.getType().equals("cmextra")) {
                 return;

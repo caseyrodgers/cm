@@ -1,11 +1,14 @@
 package hotmath.gwt.cm_tools.client.ui;
 
-
-
+import hotmath.gwt.cm.client.ui.context.PrescriptionCmGuiDefinition;
+import hotmath.gwt.cm.client.ui.context.PrescriptionContext;
+import hotmath.gwt.cm_tools.client.ui.viewer.ResourceViewer;
+import hotmath.gwt.cm_tools.client.ui.viewer.ResourceViewerImplFlash;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
 import hotmath.gwt.shared.client.eventbus.CmEventListener;
 import hotmath.gwt.shared.client.eventbus.EventBus;
 
+import java.util.Arrays;
 import java.util.List;
 
 import com.extjs.gxt.ui.client.Style.LayoutRegion;
@@ -13,10 +16,8 @@ import com.extjs.gxt.ui.client.Style.Scroll;
 import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
-import com.extjs.gxt.ui.client.widget.layout.AccordionLayout;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
-import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 
 public class CmMainPanel extends LayoutContainer {
@@ -31,6 +32,8 @@ public class CmMainPanel extends LayoutContainer {
     // west panel is static to allow access
     // to the title.
     public ContentPanel _westPanel;
+    
+    ResourceViewer _lastResourceViewer;
 
     /**
      * Main Catchup Math application area.
@@ -88,24 +91,34 @@ public class CmMainPanel extends LayoutContainer {
         
         
         
-
         /** Any modal window, should hide the resource window to allow
          *  for Flash widgets to be hidden
          *  
          */
-//        EventBus.getInstance().addEventListener(new CmEventListener() {
-//            
-//            @Override
-//            public void handleEvent(CmEvent event) {
-//                CmMainPanel.__lastInstance._mainContent.removeAll();
-//            }
-//            
-//            @Override
-//            public String getEventOfInterest() {
-//                // TODO Auto-generated method stub
-//                return EventBus.EVENT_TYPE_MODAL_WINDOW_OPEN;
-//            }
-//        });
+        EventBus.getInstance().addEventListener(new CmEventListener() {
+            
+            @Override
+            public void handleEvent(CmEvent event) {
+                if(event.getEventName().equals(EventBus.EVENT_TYPE_MODAL_WINDOW_OPEN)) {
+                    // we must remove any resource viewer that contains
+                    // flash, otherwise the z-order gets screwed up and
+                    // the dialog will bleed through the flash.
+                    if(_lastResourceViewer instanceof ResourceViewerImplFlash) {
+                        CmMainPanel.__lastInstance._mainContent.removeAll();
+                    }
+                }
+                else if(event.getEventName().equals(EventBus.EVENT_TYPE_RESOURCE_VIEWER_OPEN)) {
+                    _lastResourceViewer = (ResourceViewer)event.getEventData();
+                }
+            }
+            
+            @Override
+            public String[] getEventsOfInterest() {
+                // TODO Auto-generated method stub
+                String types[] = {EventBus.EVENT_TYPE_MODAL_WINDOW_OPEN, EventBus.EVENT_TYPE_RESOURCE_VIEWER_OPEN};
+                return types;
+            }
+        });
     }
 
     

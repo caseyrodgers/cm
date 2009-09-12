@@ -4,7 +4,7 @@ abstract public class CmEventListenerImplDefault implements CmEventListener {
 
     abstract public void handleEvent(CmEvent event);
     
-    public String getEventOfInterest() {
+    public String[] getEventsOfInterest() {
         return null;
     }
 }

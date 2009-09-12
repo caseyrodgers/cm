@@ -7,6 +7,6 @@ public interface CmEventListener {
      *  
      * @return
      */
-    String getEventOfInterest();
+    String[] getEventsOfInterest();
     void handleEvent(CmEvent event);
 }

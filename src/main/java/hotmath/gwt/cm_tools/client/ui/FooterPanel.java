@@ -3,6 +3,8 @@ package hotmath.gwt.cm_tools.client.ui;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.service.PrescriptionServiceAsync;
 import hotmath.gwt.shared.client.CmShared;
+import hotmath.gwt.shared.client.eventbus.CmEvent;
+import hotmath.gwt.shared.client.eventbus.EventBus;
 import hotmath.gwt.shared.client.util.UserInfo;
 
 import com.allen_sauer.gwt.log.client.Log;
@@ -27,17 +29,17 @@ public class FooterPanel extends LayoutContainer {
         super.onRender(parent, index);
 
         String html = "<ul class='h-menu'>" + 
-                      "<li><a href='#' onclick='showFeedbackPanel_Gwt();'>Feedback</a></li>" +
+                      "<li><a href='#' onclick='showFeedbackPanel_Gwt();return false;'>Feedback</a></li>" +
                       "<li>About Us</li>" + 
                       "<li>Privacy</li>" + 
                       "<li>Press</li>" + 
                       "<li>Contact</li>";
         
         if(CmShared.getQueryParameter("debug") != null) {
-            html +=   "<li><a href='#' onclick='resetProgram_Gwt();'>Reset</a></li>";
-            html += "<li><a href='#' onclick='showPrescriptionData_Gwt();'>prescription data</a>";
-            html += "<li><a href='#' onclick='showPrescriptionSession_Gwt();'>prescription sessions</a>";
-            html += "<li><a href='#' onclick='startAutoTest_Gwt();'>Auto Test</a>";
+            html +=   "<li><a href='#' onclick='resetProgram_Gwt();return false;'>Reset</a></li>";
+            html += "<li><a href='#' onclick='showPrescriptionData_Gwt();return false;'>prescription data</a>";
+            html += "<li><a href='#' onclick='showPrescriptionSession_Gwt();return false;'>prescription sessions</a>";
+            html += "<li><a href='#' onclick='startAutoTest_Gwt();return false;'>Auto Test</a>";
         }
         
         html += "</ul>" + 
@@ -47,6 +49,9 @@ public class FooterPanel extends LayoutContainer {
     }
 
     static public void showFeedbackPanel_Gwt() {
+        
+        EventBus.getInstance().fireEvent(new CmEvent(EventBus.EVENT_TYPE_MODAL_WINDOW_OPEN));
+        
         MessageBox.prompt("Feedback","Enter Catchup-Math feedback.",true,new Listener<MessageBoxEvent> () {
             public void handleEvent(MessageBoxEvent be) {
                 String value = be.getValue();

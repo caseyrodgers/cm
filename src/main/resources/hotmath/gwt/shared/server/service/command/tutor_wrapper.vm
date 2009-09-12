@@ -11,7 +11,7 @@
         </div>
         
         <div id='steps_tail' style='position: relative'>
-            <a id='show-work-force' href='#' onclick='showWorkDialog_Gwt()'><img src='/gwt-resources/images/show-work-required.png'/></a>
+            <a id='show-work-force' href='#' onclick='showWorkDialog_Gwt();return false;'><img src='/gwt-resources/images/show-work-required.png'/></a>
             <div id='steps_tail_padding'>
                 <a id='steps_prev' onmouseover='setStepsInfoHelp(getNextMoveTo(-1))'
                     onMouseOut="resetStepsInfo();" href="javascript:void(0)"
@@ -26,7 +26,7 @@
                 </a>
                 <div class='cm-tutor-button-bar-bottom' style='float: right;'>
                    <a class='button debug-off' href='#' onclick='expandAllSteps();return false;'>Expand</a>
-                   <a class='button' href='#' onmouseover='showAskATutorTooltip_Cm()' onmouseout='nd()'onclick='showTutoringDialog_Gwt();return false;'>Ask a Tutor<img src='/gwt-resources/images/icon_ask_a_tutor.png'/></a>
+                   <a class='button' href='#' onmouseover='showAskATutorTooltip_Cm()' onmouseout='nd()' onclick='showTutoringDialog_Gwt();return false;'>Ask a Tutor<img src='/gwt-resources/images/icon_ask_a_tutor.png'/></a>
                </div>
         </div>
         <img id='scrollTo-button' src='/images/tutor5/spacer.gif'>

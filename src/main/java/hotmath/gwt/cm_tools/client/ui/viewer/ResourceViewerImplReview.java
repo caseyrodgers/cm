@@ -9,7 +9,7 @@ import com.extjs.gxt.ui.client.widget.Html;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Widget;
 
-public class ResourceViewerImplReview extends ResourceViewerContainer implements ResourceViewer {
+public class ResourceViewerImplReview extends ResourceViewerImplDefault implements ResourceViewer {
     
     public Widget getResourcePanel(final InmhItemData resource) {
 

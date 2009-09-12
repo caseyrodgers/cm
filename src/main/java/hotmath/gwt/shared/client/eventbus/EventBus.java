@@ -28,7 +28,7 @@ public class EventBus {
     }
     
     
-    List<CmEventListener> events = new ArrayList<CmEventListener>();
+    List<CmEventListener> listeners = new ArrayList<CmEventListener>();
     Timer _mainTimer;
     private EventBus() {
         _mainTimer = new Timer() {
@@ -53,21 +53,42 @@ public class EventBus {
     }
  
     public void addEventListener(CmEventListener listener) {
-        events.add(listener);
+        listeners.add(listener);
     }
     
     public void removeEventListener(CmEventListener listener) {
-        events.remove(listener);
+        listeners.remove(listener);
     }
     
+    /** Fire event named in event.
+     * 
+     * For each listener, if no specific events
+     * of interest are specified  then listener gets
+     * all events.  Otherwise, only events of interest
+     * are fired.
+     *  
+     * @param event
+     */
     public void fireEvent(CmEvent event) {
-        for(int i=0, t=events.size();i<t;i++) {
-            CmEventListener l=events.get(i);
-            if(l.getEventOfInterest() == null || l.getEventOfInterest().equals(event.getEventName())) {
+        for(int i=0, t=listeners.size();i<t;i++) {
+            CmEventListener l=listeners.get(i);
+            String types[] = l.getEventsOfInterest();
+            if(types == null) {
                 l.handleEvent(event);
+            }
+            else {
+                // check requested types, and fire only if requested
+                for(int ii=0,tt=types.length;ii<tt;ii++) {
+                    if(types[ii].equals(event.getEventName())) {
+                        l.handleEvent(event);
+                        break;
+                    }
+                }
             }
         }
     }
+    
+    
     
     /** Whenever a user is set or changed
      * 
@@ -116,4 +137,10 @@ public class EventBus {
      *  
      */
     static public final String EVENT_TYPE_REFRESH_STUDENT_DATA="REFRESH_STUDENT_DATA";
+    
+    
+    /** Fired everytime a new resource is viewed
+     * 
+     */
+    static public final String EVENT_TYPE_RESOURCE_VIEWER_OPEN="RESOURCE_VIEWER_OPEN";
 }
