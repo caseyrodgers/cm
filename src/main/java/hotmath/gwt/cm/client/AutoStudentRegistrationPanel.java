@@ -245,9 +245,9 @@ public class AutoStudentRegistrationPanel extends ResourceContainer {
                     @Override
                     public void componentSelected(ButtonEvent ce) {
                         String userKey = rdata.getDataAsString("key");
-                        String url = CmShared.CM_HOME_URL;
+                        String url = Window.Location.getPath();
                         
-                        url += "/cm_student/CatchupMath.html?key=" + userKey;
+                        url += "?key=" + userKey;
                         Window.Location.replace(url);
                     }
                 });
