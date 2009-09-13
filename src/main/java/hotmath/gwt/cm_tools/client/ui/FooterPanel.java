@@ -29,17 +29,17 @@ public class FooterPanel extends LayoutContainer {
         super.onRender(parent, index);
 
         String html = "<ul class='h-menu'>" + 
-                      "<li><a href='#' onclick='showFeedbackPanel_Gwt();return false;'>Feedback</a></li>" +
+                      "<li><a href='javascript:void(0)' onclick='showFeedbackPanel_Gwt();return false;'>Feedback</a></li>" +
                       "<li>About Us</li>" + 
                       "<li>Privacy</li>" + 
                       "<li>Press</li>" + 
                       "<li>Contact</li>";
         
         if(CmShared.getQueryParameter("debug") != null) {
-            html +=   "<li><a href='#' onclick='resetProgram_Gwt();return false;'>Reset</a></li>";
-            html += "<li><a href='#' onclick='showPrescriptionData_Gwt();return false;'>prescription data</a>";
-            html += "<li><a href='#' onclick='showPrescriptionSession_Gwt();return false;'>prescription sessions</a>";
-            html += "<li><a href='#' onclick='startAutoTest_Gwt();return false;'>Auto Test</a>";
+            html +=   "<li><a href='javascript:void(0)' onclick='resetProgram_Gwt();return false;'>Reset</a></li>";
+            html += "<li><a href='javascript:void(0)' onclick='showPrescriptionData_Gwt();return false;'>prescription data</a>";
+            html += "<li><a href='javascript:void(0)' onclick='showPrescriptionSession_Gwt();return false;'>prescription sessions</a>";
+            html += "<li><a href='javascript:void(0)' onclick='startAutoTest_Gwt();return false;'>Auto Test</a>";
         }
         
         html += "</ul>" + 
