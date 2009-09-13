@@ -1,6 +1,5 @@
 package hotmath.cm.dao;
 
-import hotmath.testset.ha.HaAdmin;
 import hotmath.testset.ha.HaUser;
 import hotmath.util.HMConnectionPool;
 import hotmath.util.sql.SqlUtilities;
