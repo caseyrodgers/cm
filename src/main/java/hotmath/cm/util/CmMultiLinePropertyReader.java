@@ -99,7 +99,7 @@ public class CmMultiLinePropertyReader extends Properties {
                     }
                     name = line.substring(5);
                 } else {
-                    value += line;
+                    value += (line + "\n");
                 }
             }
     

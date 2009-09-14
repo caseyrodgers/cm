@@ -1,11 +1,11 @@
 package hotmath.assessment;
 
+import hotmath.cm.util.CmCacheManager;
+import hotmath.cm.util.CmCacheManager.CacheName;
 import hotmath.testset.ha.HaTest;
 import hotmath.testset.ha.HaTestRun;
 
 import java.sql.Connection;
-import java.util.HashMap;
-import java.util.Map;
 
 
 public class AssessmentPrescriptionManager {
@@ -19,7 +19,6 @@ public class AssessmentPrescriptionManager {
 	}
 
 	
-	Map<Integer, AssessmentPrescription> _prescriptions = new HashMap<Integer, AssessmentPrescription>();
 	private AssessmentPrescriptionManager() {
 		//
 	}
@@ -35,19 +34,20 @@ public class AssessmentPrescriptionManager {
 	 * @return
 	 * @throws Exception
 	 */
-	public AssessmentPrescription createPrescription(final Connection conn, int testId,String pids,int answeredCorrect, int answeredIncorrect, int notAnswered, int totalSessions) throws Exception {
+	public AssessmentPrescription createPrescription(final Connection conn, int testId,String pids,int answeredCorrect, int answeredIncorrect, int notAnswered) throws Exception {
 		
 		HaTest test = HaTest.loadTest(conn,testId);
-		AssessmentPrescription pres = AssessmentPrescriptionFactory.create(conn, test.createTestRun(conn, pids.split(","),answeredCorrect, answeredIncorrect, notAnswered, totalSessions));
-		
-		_prescriptions.put(pres.getTestRun().getRunId(), pres);
+		AssessmentPrescription pres = AssessmentPrescriptionFactory.create(conn, test.createTestRun(conn, pids.split(","),answeredCorrect, answeredIncorrect, notAnswered));
+
+		CmCacheManager.getInstance().addToCache(CacheName.PRESCRIPTION, pres.getTestRun().getRunId().toString(), pres);
 		return pres;
 	}
 
 	
 	
-	public AssessmentPrescription getPrescription(final Connection conn, int runId) throws Exception {
-		AssessmentPrescription pres = _prescriptions.get(runId);
+	public AssessmentPrescription getPrescription(final Connection conn, Integer runId) throws Exception {
+	    
+	    AssessmentPrescription pres = (AssessmentPrescription)CmCacheManager.getInstance().retrieveFromCache(CacheName.PRESCRIPTION, runId.toString());
 		if(pres == null) {
 			// create new one and store in map
 			
@@ -57,7 +57,7 @@ public class AssessmentPrescriptionManager {
 			pres = AssessmentPrescriptionFactory.create(conn, testRun);
 			pres.setTestRun(testRun);
 			
-			_prescriptions.put(runId, pres);
+			CmCacheManager.getInstance().addToCache(CacheName.PRESCRIPTION, pres.getTestRun().getRunId().toString(), pres);
 		}
 		return pres;
 	}

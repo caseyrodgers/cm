@@ -44,7 +44,6 @@ public class CreateTestRunCommand implements ActionHandler<CreateTestRunAction, 
             int notAnswered = 0;
             int answeredCorrect = 0;
             int answeredIncorrect = 0;
-            int totalSessions = 0;
 
             String sql = "select cs.pid, cs.is_correct, t.total_segments from v_HA_TEST_CURRENT_STATUS cs, HA_TEST t where cs.test_id = ? and t.test_id = cs.test_id";
 
@@ -55,9 +54,6 @@ public class CreateTestRunCommand implements ActionHandler<CreateTestRunAction, 
             pstat.setInt(1, action.getTestId());
             ResultSet rs = pstat.executeQuery();
             while (rs.next()) {
-                if (totalSessions < 1) {
-                    totalSessions = rs.getInt("total_segments");
-                }
                 String pid = rs.getString("pid");
                 Integer corr = rs.getInt("is_correct");
                 if (rs.wasNull())
@@ -78,7 +74,7 @@ public class CreateTestRunCommand implements ActionHandler<CreateTestRunAction, 
                 }
             }
 
-            HaTestRun run = test.createTestRun(conn, incorrectPids.toArray(new String[incorrectPids.size()]), answeredCorrect, answeredIncorrect, notAnswered, totalSessions);
+            HaTestRun run = test.createTestRun(conn, incorrectPids.toArray(new String[incorrectPids.size()]), answeredCorrect, answeredIncorrect, notAnswered);
             
             // if user DID NOT pass this quiz, we increment the zone used to retrieve quiz solutions
             if(!run.isPassing()) {

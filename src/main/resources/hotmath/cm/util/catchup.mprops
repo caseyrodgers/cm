@@ -60,7 +60,9 @@ from (
  join HA_TEST_DEF td on td.test_def_id = l.test_def_id 
  join CM_USER_PROGRAM p on p.user_id = u.uid and p.test_def_id = td.test_def_id 
  where u.uid = ? 
- union 
+ 
+ union
+  
  select date_format(iu.view_time,'%Y-%m-%d') as use_date, date_format(iu.view_time,'%h:%i %p') as start_time, 
   date_format(iu.view_time,'%h:%i %p') as stop_time, iu.view_time as view_time, 
   date_format(iu.view_time,'%Y-%m-%d') as run_date, 
@@ -119,4 +121,20 @@ and   g.name = ?
 
 
 
+
+
+
+
+##
+## Class: HaTestRun
+##
+##
+
+.key=VALID_TEST_RUNS
+
+select r.run_id, u.uid
+ from   HA_TEST_RUN r JOIN HA_TEST t ON t.test_id = r.test_id 
+JOIN HA_USER u on u.uid = t.user_id 
+JOIN  HA_ADMIN a ON a.aid = u.admin_id
+JOIN SUBSCRIBERS s ON s.id = a.subscriber_id 
        

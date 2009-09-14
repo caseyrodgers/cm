@@ -1,6 +1,8 @@
 package hotmath.testset.ha;
 
 import hotmath.HotMathException;
+import hotmath.cm.util.CmMultiLinePropertyReader;
+import hotmath.util.HMConnectionPool;
 import hotmath.util.sql.SqlUtilities;
 
 import java.sql.Connection;
@@ -10,8 +12,12 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.log4j.Logger;
+
 public class HaTestRun {
 
+    static Logger __logger = Logger.getLogger(HaTestRun.class);
+    
     Integer runId;
     Long runTime;
     HaTest haTest;
@@ -237,5 +243,35 @@ public class HaTestRun {
         } finally {
             SqlUtilities.releaseResources(rs, pstat, null);
         }
+    }
+    
+    
+    /** Update the total_sessions for all test runs
+     * 
+     * @param as
+     */
+    static public void main(String as[]) {
+        
+        __logger.info("Updating HA_TEST_RUN total_sessions");
+        
+        Connection conn=null;
+        try {
+            conn = HMConnectionPool.getConnection();
+            String sql = CmMultiLinePropertyReader.getInstance().getProperty("VALID_TEST_RUNS");
+            	
+            ResultSet rs = conn.createStatement().executeQuery(sql);
+            while(rs.next()) {
+                int runId = rs.getInt("run_id");
+                
+                __logger.info("Processing: " + runId);
+                HaTest.updateTestRunSessions(conn, runId);
+            }
+            __logger.info("Completed updating HA_TEST_RUN");
+        }
+        catch(Exception e) {
+            e.printStackTrace();
+        }
+        SqlUtilities.releaseResources(null,null,conn);
+        
     }
 }

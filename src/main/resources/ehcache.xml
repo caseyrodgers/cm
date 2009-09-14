@@ -82,4 +82,14 @@
        overflowToDisk="false">
 </cache>
 
+
+<!--  Prescription Objects -->
+<cache name="PRESCRIPTION"
+       maxElementsInMemory="20"
+       eternal="false"
+       timeToLiveSeconds="120"
+       overflowToDisk="false">
+</cache>
+
+
 </ehcache>

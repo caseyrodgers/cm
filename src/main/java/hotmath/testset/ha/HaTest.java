@@ -1,6 +1,8 @@
 package hotmath.testset.ha;
 
 import hotmath.HotMathException;
+import hotmath.assessment.AssessmentPrescription;
+import hotmath.assessment.AssessmentPrescriptionManager;
 import hotmath.cm.util.CmCacheManager;
 import hotmath.cm.util.CmCacheManager.CacheName;
 import hotmath.gwt.cm_admin.server.model.CmStudentDao;
@@ -382,10 +384,7 @@ public class HaTest {
 	 * @return
 	 * @throws HotMathException
 	 */
-	public HaTestRun createTestRun(final Connection conn, String wrongGids[], int answeredCorrect, int answeredIncorrect, int notAnswered, int totalSessions) throws HotMathException {
-		
-        
-	    
+	public HaTestRun createTestRun(final Connection conn, String wrongGids[], int answeredCorrect, int answeredIncorrect, int notAnswered) throws HotMathException {
 		PreparedStatement pstat=null;
 		ResultSet rs = null;
 		try {
@@ -404,7 +403,7 @@ public class HaTest {
 	                
 			
 			HaTest test = HaTest.loadTest(conn, testId);
-			String sql = "insert into HA_TEST_RUN(test_id, run_time, answered_correct, answered_incorrect, not_answered, total_sessions, run_session,is_passing)values(?,?,?,?,?,?,1,?)";
+			String sql = "insert into HA_TEST_RUN(test_id, run_time, answered_correct, answered_incorrect, not_answered,run_session,is_passing)values(?,?,?,?,?,1,?)";
 			pstat = conn.prepareStatement(sql);
 			HaTestRun testRun = new HaTestRun();
 			
@@ -414,22 +413,22 @@ public class HaTest {
 			pstat.setInt(3,answeredCorrect);
 			pstat.setInt(4,answeredIncorrect);
 			pstat.setInt(5,notAnswered);
-			pstat.setInt(6,totalSessions);
-			pstat.setInt(7, passedQuiz?1:0);
+			pstat.setInt(6, passedQuiz?1:0);
 			
 			int cnt = pstat.executeUpdate();
 			if(cnt != 1)
 				throw new HotMathException("Create not create new test for: " + testId);
 			
-		    int autoIncKeyFromApi = -1;
+		    int runId = -1;
 		    rs = pstat.getGeneratedKeys();
 		    if (rs.next()) {
-		   		autoIncKeyFromApi = rs.getInt(1);
+		        runId = rs.getInt(1);
 		    } else {
 		    	throw new HotMathException("Error creating PK for test");
 		    }
 
-		    testRun.setRunId(autoIncKeyFromApi);
+		    
+		    testRun.setRunId(runId);
 			testRun.setRunTime(ts.getTime());
 			testRun.setHaTest(test);
 			testRun.setAnsweredCorrect(answeredCorrect);
@@ -447,10 +446,15 @@ public class HaTest {
 			 */
 			test.clearCurrentResults(conn);
 			
-			// update this User's row to indicate new run
+			/** 
+			 * update this User's row to indicate new action test run
+			 */
 			test.getUser().setActiveTestRunId(testRun.getRunId());
 			test.getUser().update(conn);
 			
+			
+			updateTestRunSessions(conn, runId);
+            
 			return testRun;
 		}
 		catch(HotMathException hme) {
@@ -462,6 +466,40 @@ public class HaTest {
 		finally {
 			SqlUtilities.releaseResources(rs,pstat,null);
 		}
+	}
+	
+	
+	/** Update the total sessions for a given test_run.
+	 * 
+	 * 
+	 *   This will create the prescription and extract the 
+	 *   session count and update appropriate HA_TEST_RUN.
+	 *  
+	 * @param conn
+	 * @param runId
+	 * @throws Exception
+	 */
+	static public void updateTestRunSessions(Connection conn, Integer runId) throws Exception {
+        /** 
+         *  now pre-create the prescription, and extract the total number of sessions
+         *  
+         *  NOTE: this is needed because, we need the test_run to create the prescription.
+         */
+        AssessmentPrescription pres = AssessmentPrescriptionManager.getInstance().getPrescription(conn, runId);
+        int totalSessions = pres.getSessions().size();
+        
+        // update the HA_TEST_RUN record
+        Statement stmt = null;
+        try {
+            stmt = conn.createStatement();
+            int c = stmt.executeUpdate("update HA_TEST_RUN set total_sessions = " + totalSessions + " where run_id = " + runId);
+            if(c != 1) {
+                throw new HotMathException("Could not update test_run with total_sessions: " + runId);
+            }
+        }
+        finally {
+            SqlUtilities.releaseResources(null,stmt,null);
+        }           
 	}
 
 	/** Return list of pids that represent all ids currently in test
