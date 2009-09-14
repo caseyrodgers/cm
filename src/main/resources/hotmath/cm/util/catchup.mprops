@@ -10,85 +10,113 @@
 
 .key=STUDENT_SUMMARY
 
-    SELECT h.uid, h.user_name as name, h.user_passcode as passcode, h.user_email as email, h.admin_id as admin_uid,
-           h.is_show_work_required, h.is_tutoring_available,  h.active_segment, p.test_config_json, h.user_prog_id,
-           p.test_def_id, p.create_date, concat(p.pass_percent,'%') as pass_percent, t.total_segments, 
-           lpad(concat(format((m.answered_correct*100)/(m.answered_correct+m.answered_incorrect+m.not_answered),0),'%'),4,' ') as last_quiz, 
-           trim(concat(ifnull(d.subj_id,''), ' ', d.prog_id)) as program, d.prog_id, d.subj_id,
-           date_format(m.run_time,'%Y-%m-%d') as last_use_date, 
-           tu.usage_count, ifnull(g.id, 0) as group_id, ifnull(g.name, 'none') as group_name, gui_background_style  
-    FROM  HA_ADMIN a 
-    INNER JOIN HA_USER h 
-       on a.aid = h.admin_id  
-    INNER JOIN CM_USER_PROGRAM p 
-       on p.user_id = h.uid and p.id = h.user_prog_id 
-    LEFT JOIN HA_TEST_DEF d 
-       on d.test_def_id = p.test_def_id 
-    LEFT JOIN (select user_id, max(run_id) as run_id from HA_TEST_RUN r JOIN HA_TEST t on r.test_id = t.test_id GROUP BY user_id) x ON x.user_id = h.uid 
-    LEFT JOIN HA_TEST_RUN m 
-      on m.run_id =  x.run_id 
-    LEFT JOIN HA_TEST t 
-      on t.user_id = h.uid and t.test_id = m.test_id 
-    LEFT JOIN (select u.uid, count(*) as usage_count from HA_TEST_RUN_INMH_USE i, HA_TEST t, HA_TEST_RUN r, HA_USER u  
-               where t.user_id = u.uid and r.test_id = t.test_id and i.run_id = r.run_id group by u.uid) tu
-       on tu.uid = h.uid 
-    LEFT JOIN CM_GROUP g 
-       on g.id = h.group_id
+SELECT h.uid, h.user_name as name, h.user_passcode as passcode, h.user_email as email, h.admin_id as admin_uid,
+       h.is_show_work_required, h.is_tutoring_available,  h.active_segment, p.test_config_json, h.user_prog_id,
+       p.test_def_id, p.create_date, concat(p.pass_percent,'%') as pass_percent, t.total_segments, 
+       lpad(concat(format((m.answered_correct*100)/(m.answered_correct+m.answered_incorrect+m.not_answered),0),'%'),4,' ') as last_quiz, 
+       trim(concat(ifnull(d.subj_id,''), ' ', d.prog_id)) as program, d.prog_id, d.subj_id,
+       date_format(m.run_time,'%Y-%m-%d') as last_use_date, 
+       tu.usage_count, ifnull(g.id, 0) as group_id, ifnull(g.name, 'none') as group_name, gui_background_style  
+FROM  HA_ADMIN a 
+INNER JOIN HA_USER h 
+   on a.aid = h.admin_id  
+INNER JOIN CM_USER_PROGRAM p 
+   on p.user_id = h.uid and p.id = h.user_prog_id 
+LEFT JOIN HA_TEST_DEF d 
+   on d.test_def_id = p.test_def_id 
+LEFT JOIN (select user_id, max(run_id) as run_id from HA_TEST_RUN r JOIN HA_TEST t on r.test_id = t.test_id GROUP BY user_id) x ON x.user_id = h.uid 
+LEFT JOIN HA_TEST_RUN m 
+  on m.run_id =  x.run_id 
+LEFT JOIN HA_TEST t 
+  on t.user_id = h.uid and t.test_id = m.test_id 
+LEFT JOIN (select u.uid, count(*) as usage_count from HA_TEST_RUN_INMH_USE i, HA_TEST t, HA_TEST_RUN r, HA_USER u  
+           where t.user_id = u.uid and r.test_id = t.test_id and i.run_id = r.run_id group by u.uid) tu
+   on tu.uid = h.uid 
+LEFT JOIN CM_GROUP g 
+   on g.id = h.group_id
+
 
 
 .key=STUDENT_ACTIVITY
 
-    select max(s.use_date) as use_date, date_format(min(s.view_time),'%h:%i %p') as start_time, 
-      date_format(max(s.view_time),'%h:%i %p') as stop_time, max(s.view_time) as view_time, 
-      max(s.run_date) as run_date, 
-      s.answered_correct, s.answered_incorrect, s.not_answered, s.program, s.prog_id, s.subj_id, s.test_config_json, 
-      s.test_id as test_id, max(s.test_segment) as test_segment, s.test_def_id, s.test_run_id, 
-      s.activity, s.is_quiz, count(*) as problems_viewed, max(s.session_number) as session_number, 
-      s.total_sessions 
-    from ( 
-     select date_format(l.create_time,'%Y-%m-%d') as use_date, date_format(l.create_time,'%h:%i %p') as start_time, 
-       date_format(r.run_time,'%h:%i %p') as stop_time, r.run_time as view_time, 
-       date_format(r.run_time,'%Y-%m-%d') as run_date, 
-       r.answered_correct, r.answered_incorrect, r.not_answered, 
-       concat(td.subj_id, ' ', td.prog_id) as program,  td.prog_id, td.subj_id, p.test_config_json, 
-       l.test_id as test_id, l.test_segment, td.test_def_id as test_def_id, 
-       r.run_id as test_run_id, 0 as total_sessions, 
-       'Quiz-' as activity, 1 as is_quiz, l.test_segment as session_number 
-     from  HA_TEST l INNER JOIN HA_USER u ON l.user_id = u.uid 
-     join HA_TEST_RUN r on r.test_id = l.test_id 
-     join HA_TEST_DEF td on td.test_def_id = l.test_def_id 
-     join CM_USER_PROGRAM p on p.user_id = u.uid and p.test_def_id = td.test_def_id 
-     where u.uid = ? 
-     union 
-     select date_format(iu.view_time,'%Y-%m-%d') as use_date, date_format(iu.view_time,'%h:%i %p') as start_time, 
-      date_format(iu.view_time,'%h:%i %p') as stop_time, iu.view_time as view_time, 
-      date_format(iu.view_time,'%Y-%m-%d') as run_date, 
-      0 as answered_correct, 0 as answered_incorrect, 0 as not_answered, 
-      concat(td.subj_id, ' ', td.prog_id) as program, td.prog_id, td.subj_id, p.test_config_json, 
-      l.test_id as test_id, iu.session_number as test_segment, td.test_def_id as test_def_id, 
-      r.run_id as test_run_id, r.total_sessions as total_sessions, 
-      'Review-' as activity, 0 as is_quiz, iu.session_number as session_number 
-     from  HA_TEST l INNER JOIN HA_USER u ON l.user_id = u.uid 
-     join HA_TEST_RUN r on r.test_id = l.test_id 
-     join HA_TEST_RUN_INMH_USE iu on iu.run_id = r.run_id and iu.item_type = 'practice' 
-     join HA_TEST_DEF td on td.test_def_id = l.test_def_id 
-     join CM_USER_PROGRAM p on p.user_id = u.uid and p.test_def_id = td.test_def_id 
-     where u.uid = ? 
-    ) s 
-    group by s.test_run_id, s.is_quiz, s.use_date 
-    order by s.view_time asc, s.test_run_id asc, s.session_number asc
+select max(s.use_date) as use_date, date_format(min(s.view_time),'%h:%i %p') as start_time, 
+  date_format(max(s.view_time),'%h:%i %p') as stop_time, max(s.view_time) as view_time, 
+  max(s.run_date) as run_date, 
+  s.answered_correct, s.answered_incorrect, s.not_answered, s.program, s.prog_id, s.subj_id, s.test_config_json, 
+  s.test_id as test_id, max(s.test_segment) as test_segment, s.test_def_id, s.test_run_id, 
+  s.activity, s.is_quiz, count(*) as problems_viewed, max(s.session_number) as session_number, 
+  s.total_sessions 
+from ( 
+ select date_format(l.create_time,'%Y-%m-%d') as use_date, date_format(l.create_time,'%h:%i %p') as start_time, 
+   date_format(r.run_time,'%h:%i %p') as stop_time, r.run_time as view_time, 
+   date_format(r.run_time,'%Y-%m-%d') as run_date, 
+   r.answered_correct, r.answered_incorrect, r.not_answered, 
+   concat(td.subj_id, ' ', td.prog_id) as program,  td.prog_id, td.subj_id, p.test_config_json, 
+   l.test_id as test_id, l.test_segment, td.test_def_id as test_def_id, 
+   r.run_id as test_run_id, 0 as total_sessions, 
+   'Quiz-' as activity, 1 as is_quiz, l.test_segment as session_number 
+ from  HA_TEST l INNER JOIN HA_USER u ON l.user_id = u.uid 
+ join HA_TEST_RUN r on r.test_id = l.test_id 
+ join HA_TEST_DEF td on td.test_def_id = l.test_def_id 
+ join CM_USER_PROGRAM p on p.user_id = u.uid and p.test_def_id = td.test_def_id 
+ where u.uid = ? 
+ union 
+ select date_format(iu.view_time,'%Y-%m-%d') as use_date, date_format(iu.view_time,'%h:%i %p') as start_time, 
+  date_format(iu.view_time,'%h:%i %p') as stop_time, iu.view_time as view_time, 
+  date_format(iu.view_time,'%Y-%m-%d') as run_date, 
+  0 as answered_correct, 0 as answered_incorrect, 0 as not_answered, 
+  concat(td.subj_id, ' ', td.prog_id) as program, td.prog_id, td.subj_id, p.test_config_json, 
+  l.test_id as test_id, iu.session_number as test_segment, td.test_def_id as test_def_id, 
+  r.run_id as test_run_id, r.total_sessions as total_sessions, 
+  'Review-' as activity, 0 as is_quiz, iu.session_number as session_number 
+ from  HA_TEST l INNER JOIN HA_USER u ON l.user_id = u.uid 
+ join HA_TEST_RUN r on r.test_id = l.test_id 
+ join HA_TEST_RUN_INMH_USE iu on iu.run_id = r.run_id and iu.item_type = 'practice' 
+ join HA_TEST_DEF td on td.test_def_id = l.test_def_id 
+ join CM_USER_PROGRAM p on p.user_id = u.uid and p.test_def_id = td.test_def_id 
+ where u.uid = ? 
+) s 
+group by s.test_run_id, s.is_quiz, s.use_date 
+order by s.view_time asc, s.test_run_id asc, s.session_number asc
     
     
     
 .key=TEST_RESULTS
 
-    select td.test_name, t.test_segment, im.file, rr.pid, rr.answer_status
-    from HA_TEST_DEF td, HA_TEST t, HA_TEST_RUN tr, HA_TEST_RUN_RESULTS rr, inmh_map im
-    where tr.run_id = ? 
-    and rr.run_id = tr.run_id 
-    and tr.test_id = t.test_id
-    and t.test_def_id = td.test_def_id and im.guid = rr.pid
+select td.test_name, t.test_segment, im.file, rr.pid, rr.answer_status
+from HA_TEST_DEF td, HA_TEST t, HA_TEST_RUN tr, HA_TEST_RUN_RESULTS rr, inmh_map im
+where tr.run_id = ? 
+and rr.run_id = tr.run_id 
+and tr.test_id = t.test_id
+and t.test_def_id = td.test_def_id and im.guid = rr.pid
     
     
     
         
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+## 
+## Class: CreateAutoRegistrationAccountCommand
+##
+## Return group names used as self-registration auto templates
+##
+
+.key=AUTO_CREATE_TEMPLATE_CHECK
+
+
+select  g.name as group_name 
+from  HA_USER u JOIN CM_GROUP g on u.group_id = g.id 
+where is_auto_create_template = 1  
+and   g.name = ?   
+
+
+
+       

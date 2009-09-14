@@ -1,13 +1,14 @@
 package hotmath.gwt.shared.server.service.command;
 
+import hotmath.cm.util.CmMultiLinePropertyReader;
 import hotmath.gwt.cm_admin.server.model.CmAdminDao;
 import hotmath.gwt.cm_admin.server.model.CmStudentDao;
-import hotmath.gwt.cm_tools.client.data.HaBasicUser;
 import hotmath.gwt.cm_tools.client.model.StudentActiveInfo;
 import hotmath.gwt.cm_tools.client.model.StudentModel;
 import hotmath.gwt.shared.client.rpc.Action;
 import hotmath.gwt.shared.client.rpc.Response;
 import hotmath.gwt.shared.client.rpc.action.CreateAutoRegistrationAccountAction;
+import hotmath.gwt.shared.client.util.CmException;
 import hotmath.gwt.shared.client.util.RpcData;
 import hotmath.gwt.shared.client.util.UserInfo;
 import hotmath.gwt.shared.server.service.ActionHandler;
@@ -19,8 +20,13 @@ import hotmath.testset.ha.HaTestDef;
 import hotmath.testset.ha.HaTestDefDao;
 import hotmath.testset.ha.HaUser;
 import hotmath.testset.ha.StudentUserProgramModel;
+import hotmath.util.sql.SqlUtilities;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+
+import org.apache.log4j.Logger;
 
 /** Create Student accounts based on StudentModel passed in (as template)
  *  and list of name/passwords.
@@ -29,12 +35,36 @@ import java.sql.Connection;
  **/
 public class CreateAutoRegistrationAccountCommand implements ActionHandler<CreateAutoRegistrationAccountAction, RpcData> {
 
+
+    static Logger __logger = Logger.getLogger(CreateAutoRegistrationAccountCommand.class);
     
     /** Return RpcData with fields:
      * 
      *    key = new login key
      */
     public RpcData execute(Connection conn, CreateAutoRegistrationAccountAction action) throws Exception {
+        
+        
+        /** make sure that password does not match a group name 
+         *  attached to a is_auto_create_template
+         * 
+         */
+        String sqlCheck = CmMultiLinePropertyReader.getInstance().getProperty("AUTO_CREATE_TEMPLATE_CHECK");
+        PreparedStatement stmt = null;
+        try {
+            stmt = conn.prepareStatement(sqlCheck);
+            stmt.setString(1, action.getPassword());
+            ResultSet rs = stmt.executeQuery();
+            if(rs.first()) {
+                __logger.error("self registration password '" + action.getPassword() + "' cannot match any existing self-registration template group names.");
+                throw new CmException("Please choose a different password");
+            }
+        }
+        finally {
+            SqlUtilities.releaseResources(null, stmt, null);
+        }
+        
+        
         CmStudentDao dao = new CmStudentDao();
         StudentModel studentModel = dao.getStudentModel(action.getUserId(), true);
 
