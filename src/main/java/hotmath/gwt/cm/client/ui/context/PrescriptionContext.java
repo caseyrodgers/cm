@@ -173,8 +173,7 @@ public class PrescriptionContext implements CmContext {
          * 
          */
         int sessionNumber = (hasPrescription) ? prescriptionData.getCurrSession().getSessionNumber() : 0;
-        boolean thereAreNoMoreSessions = (!hasPrescription)
-                || !((sessionNumber + 1) < (prescriptionData.getSessionTopics().size()));
+        boolean thereAreNoMoreSessions = (!hasPrescription) || !((sessionNumber + 1) < (prescriptionData.getSessionTopics().size()));
 
         correctPercent = UserInfo.getInstance().getCorrectPercent();
         if (!hasPrescription || thereAreNoMoreSessions) {

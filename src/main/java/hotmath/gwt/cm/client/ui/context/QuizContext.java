@@ -1,14 +1,19 @@
 package hotmath.gwt.cm.client.ui.context;
 
 import hotmath.gwt.cm.client.CatchupMath;
+import hotmath.gwt.cm.client.history.CatchupMathHistoryListener;
+import hotmath.gwt.cm.client.history.CmHistoryManager;
+import hotmath.gwt.cm.client.history.CmLocation;
+import hotmath.gwt.cm.client.history.CmLocation.LocationType;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
-import hotmath.gwt.cm_tools.client.service.PrescriptionServiceAsync;
+import hotmath.gwt.cm_tools.client.service.CmServiceAsync;
 import hotmath.gwt.cm_tools.client.ui.NextDialog;
 import hotmath.gwt.cm_tools.client.ui.NextPanelInfo;
 import hotmath.gwt.cm_tools.client.ui.NextPanelInfoImplDefault;
 import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
 import hotmath.gwt.cm_tools.client.ui.context.CmContext;
 import hotmath.gwt.shared.client.data.CmAsyncRequestImplDefault;
+import hotmath.gwt.shared.client.rpc.action.CreateTestRunAction;
 import hotmath.gwt.shared.client.util.RpcData;
 import hotmath.gwt.shared.client.util.UserInfo;
 
@@ -182,6 +187,7 @@ public class QuizContext implements CmContext {
             close.setText("Continue");
             close.addSelectionListener(new SelectionListener<ButtonEvent>() {
                 public void componentSelected(ButtonEvent ce) {
+                    UserInfo.getInstance().setSessionNumber(0);  // beginning of prescription
                     CatchupMath.getThisInstance().showPrescriptionPanel();
                     window.close();
                 }
@@ -208,12 +214,10 @@ public class QuizContext implements CmContext {
 	
 	public void doCheckTest() {
         CatchupMathTools.setBusy(true);
-        PrescriptionServiceAsync s = (PrescriptionServiceAsync) Registry.get("prescriptionService");
-        s.createTestRun(UserInfo.getInstance().getTestId(), new AsyncCallback() {
-            public void onSuccess(Object result) {
+        CmServiceAsync s = (CmServiceAsync) Registry.get("cmService");
+        s.execute(new CreateTestRunAction(UserInfo.getInstance().getTestId()), new AsyncCallback<RpcData>() {
+            public void onSuccess(RpcData rdata) {
                 try {
-                    RpcData rdata = (RpcData)result;
-                    
                     String na = rdata.getDataAsString("redirect_action");
                     if(na != null) {
                         if(na.equals("AUTO_ASSIGNED")) {
@@ -241,6 +245,7 @@ public class QuizContext implements CmContext {
                     UserInfo.getInstance().setSessionNumber(0);  // start over
                     int correctAnswers = rdata.getDataAsInt("correct_answers");
                     int totalQuestions = rdata.getDataAsInt("total_questions");
+
                     showPrescriptionPanel(correctAnswers, totalQuestions);
                 }
                 finally {

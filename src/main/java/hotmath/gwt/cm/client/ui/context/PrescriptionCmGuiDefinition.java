@@ -108,11 +108,14 @@ public class PrescriptionCmGuiDefinition implements CmGuiDefinition {
         }
         
         
+        final int sessionNumber2 = sessionNumber;
         
         // clear any existing resource
         CmMainPanel.__lastInstance._mainContent.removeAll();
         CmMainPanel.__lastInstance._mainContent.layout();
 
+        
+        Log.info("PrescriptionCmGuiDefinition.getAsyncDataFromServer:" + sessionNumber + ", " + location);
         // call server process to get session data as JSON string
         CmServiceAsync s = (CmServiceAsync) Registry.get("cmService");
         boolean updateActive = UserInfo.getInstance().isActiveUser();        
@@ -124,6 +127,9 @@ public class PrescriptionCmGuiDefinition implements CmGuiDefinition {
                     return;
                 }
                 try {
+                    
+                    UserInfo.getInstance().setSessionNumber(sessionNumber2);
+                    
                     int correctPercent = rdata.getDataAsInt("correct_percent");
                     UserInfo.getInstance().setCorrectPercent(correctPercent);
                     if(correctPercent == 100) {

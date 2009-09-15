@@ -27,6 +27,7 @@ public class CmHistoryQueue {
     
     Queue<CmLocation> locations = new LinkedList<CmLocation>();
     public void pushLocation(CmLocation location) {
+        locations.clear(); // remove any previous
         locations.add(location);
     }
     

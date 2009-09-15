@@ -1,6 +1,8 @@
 package hotmath.gwt.shared.client.util;
 
 import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
+import hotmath.gwt.shared.client.eventbus.CmEvent;
+import hotmath.gwt.shared.client.eventbus.EventBus;
 
 import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
@@ -29,6 +31,9 @@ public class ShowFirstTimeVisitorWindow extends CmWindow {
         getButtonBar().setAlignment(HorizontalAlignment.RIGHT);
         
         drawGui();
+        
+        
+        EventBus.getInstance().fireEvent(new CmEvent(EventBus.EVENT_TYPE_MODAL_WINDOW_OPEN));
         
         setVisible(true);
     }

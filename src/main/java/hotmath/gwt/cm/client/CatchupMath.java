@@ -3,6 +3,7 @@ package hotmath.gwt.cm.client;
 import hotmath.gwt.cm.client.history.CatchupMathHistoryListener;
 import hotmath.gwt.cm.client.history.CmHistoryManager;
 import hotmath.gwt.cm.client.history.CmLocation;
+import hotmath.gwt.cm.client.history.CmLocation.LocationType;
 import hotmath.gwt.cm.client.ui.HeaderPanel;
 import hotmath.gwt.cm.client.ui.context.PrescriptionCmGuiDefinition;
 import hotmath.gwt.cm.client.ui.context.QuizCmGuiDefinition;
@@ -238,9 +239,10 @@ public class CatchupMath implements EntryPoint {
      * 
      */
     public void showPrescriptionPanel() {
-        // History.newItem("pres");
-        showPrescriptionPanel_gwt();
+        CmLocation location = new CmLocation(LocationType.PRESCRIPTION, UserInfo.getInstance().getSessionNumber());
+        CmHistoryManager.getInstance().addHistoryLocation(location);    
     }
+    
     
     public void showPrescriptionPanel_gwt() {
         HeaderPanel.__instance.enable();

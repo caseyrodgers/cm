@@ -25,7 +25,9 @@ import java.util.List;
 
 /**
  * Create the Test run for this test by reading the current question
- * selections
+ * selections.
+ * 
+ * RpcData fields: redirect_action,correct_percent, correct_answers,total_questions,run_id,assignedTest
  * 
  * @param testId
  * @param callBack
@@ -76,7 +78,9 @@ public class CreateTestRunCommand implements ActionHandler<CreateTestRunAction, 
 
             HaTestRun run = test.createTestRun(conn, incorrectPids.toArray(new String[incorrectPids.size()]), answeredCorrect, answeredIncorrect, notAnswered);
             
-            // if user DID NOT pass this quiz, we increment the zone used to retrieve quiz solutions
+            /** 
+             * if user DID NOT pass this quiz, we increment the zone used to retrieve quiz solutions
+             */
             if(!run.isPassing()) {
                 new CmStudentDao().moveToNextQuizSegmentSlot(conn,test.getUser().getUid());
             }
