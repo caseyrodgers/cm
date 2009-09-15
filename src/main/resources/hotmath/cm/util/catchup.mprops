@@ -96,7 +96,18 @@ and t.test_def_id = td.test_def_id and im.guid = rr.pid
     
         
         
-        
+##
+## CmAdminDao
+##
+
+
+.key=SUBJECT_CHAPTERS_SQL
+
+select bt.title_number, trim(bt.title) as title, td.textcode
+from HA_TEST_DEF td, BOOK_TOC bt
+where td.prog_id = ? and td.subj_id = ?
+and bt.textcode = td.textcode and bt.parent <> 0
+order by bt.title_number      
         
         
         

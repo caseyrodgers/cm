@@ -1,10 +1,13 @@
 package hotmath.gwt.cm_admin.server.model;
 
 import hotmath.gwt.cm.server.CmDbTestCase;
+import hotmath.gwt.cm_tools.client.model.ChapterModel;
 import hotmath.gwt.cm_tools.client.model.StudentActiveInfo;
 import hotmath.gwt.cm_tools.client.model.StudentModelI;
 import hotmath.testset.ha.CmProgram;
 import hotmath.testset.ha.StudentUserProgramModel;
+
+import java.util.List;
 
 public class CmAdminDao_Test extends CmDbTestCase {
 
@@ -27,7 +30,19 @@ public class CmAdminDao_Test extends CmDbTestCase {
         super.setUp();
         _dao = new CmStudentDao();
     }
+
     
+    public void testGetSubjectDefinitions() throws Exception {
+        CmAdminDao dao = new CmAdminDao();
+        CmProgram p = CmProgram.GEO_CHAP;
+        List<ChapterModel> chaps = dao.getChaptersForProgramSubject(conn,p.getProgramId(), p.getSubject());
+        assertNotNull(chaps);
+        assertTrue(chaps.size() > 0);
+        
+        // make sure order is OK
+        assertTrue(Integer.parseInt(chaps.get(0).getNumber()) < Integer.parseInt(chaps.get(chaps.size()-1).getNumber()));
+    }
+
     
     public void testStudentActiveInfo() throws Exception {
         StudentActiveInfo activeInfo = _dao.loadActiveInfo(conn, TEST_ID);

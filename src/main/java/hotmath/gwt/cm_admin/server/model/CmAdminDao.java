@@ -4,6 +4,7 @@ import static hotmath.cm.util.CmCacheManager.CacheName.PROG_DEF;
 import static hotmath.cm.util.CmCacheManager.CacheName.REPORT_ID;
 import static hotmath.cm.util.CmCacheManager.CacheName.SUBJECT_CHAPTERS;
 import hotmath.cm.util.CmCacheManager;
+import hotmath.cm.util.CmMultiLinePropertyReader;
 import hotmath.gwt.cm_tools.client.model.AccountInfoModel;
 import hotmath.gwt.cm_tools.client.model.ChapterModel;
 import hotmath.gwt.cm_tools.client.model.GroupModel;
@@ -169,11 +170,6 @@ public class CmAdminDao {
     	}
     }
 
-    private static final String CHAPTERS_SQL =
-    	"select bt.title_number, trim(bt.title) as title, td.textcode " +
-        "from HA_TEST_DEF td, BOOK_TOC bt " +
-        "where td.prog_id = ? and td.subj_id = ? " +
-        "  and bt.textcode = td.textcode and bt.parent <> 0";
     
     /** Get Chapter titles for given progId/subID
      * 
@@ -213,7 +209,9 @@ public class CmAdminDao {
     	PreparedStatement ps = null;
     	ResultSet rs = null;
     	try {
-    		ps = conn.prepareStatement(CHAPTERS_SQL);
+    	    
+    	    String sql = CmMultiLinePropertyReader.getInstance().getProperty("SUBJECT_CHAPTERS_SQL");
+    		ps = conn.prepareStatement(sql);
     		ps.setString(1, progId);
     		ps.setString(2, subjId);
     		rs = ps.executeQuery();
