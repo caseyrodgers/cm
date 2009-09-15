@@ -186,8 +186,11 @@ public class QuizPage extends LayoutContainer {
 		
 	    CatchupMathTools.setBusy(true);
 		
+	    GetQuizHtmlAction quizAction = new GetQuizHtmlAction(UserInfo.getInstance().getUid(), UserInfo.getInstance().getTestSegment());
+	    Log.info("QuizPage.getQuizHtmlFromServer: " + quizAction);
+	    
 		CmServiceAsync s = (CmServiceAsync) Registry.get("cmService");
-		s.execute(new GetQuizHtmlAction(UserInfo.getInstance().getUid(), UserInfo.getInstance().getTestSegment()), new AsyncCallback<RpcData>() {
+		s.execute(quizAction, new AsyncCallback<RpcData>() {
 		    @Override
 		    public void onSuccess(RpcData result) {
                 RpcData rdata = (RpcData)result;

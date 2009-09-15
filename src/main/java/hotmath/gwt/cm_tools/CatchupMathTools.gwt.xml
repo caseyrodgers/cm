@@ -20,7 +20,7 @@
       
       
        <!-- Add gwt-log support, default level `OFF` -->
-       <inherits name="com.allen_sauer.gwt.log.gwt-log-DEBUG" />
+       <inherits name="com.allen_sauer.gwt.log.gwt-log-OFF" />
        <!-- Also compile at `INFO` level
        <extend-property name="log_level" values="DEBUG,WARN"/>
        -->

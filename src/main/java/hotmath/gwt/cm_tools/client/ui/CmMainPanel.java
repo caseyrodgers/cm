@@ -1,14 +1,11 @@
 package hotmath.gwt.cm_tools.client.ui;
 
-import hotmath.gwt.cm.client.ui.context.PrescriptionCmGuiDefinition;
-import hotmath.gwt.cm.client.ui.context.PrescriptionContext;
 import hotmath.gwt.cm_tools.client.ui.viewer.ResourceViewer;
 import hotmath.gwt.cm_tools.client.ui.viewer.ResourceViewerImplFlash;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
 import hotmath.gwt.shared.client.eventbus.CmEventListener;
 import hotmath.gwt.shared.client.eventbus.EventBus;
 
-import java.util.Arrays;
 import java.util.List;
 
 import com.extjs.gxt.ui.client.Style.LayoutRegion;
@@ -104,7 +101,7 @@ public class CmMainPanel extends LayoutContainer {
                     // flash, otherwise the z-order gets screwed up and
                     // the dialog will bleed through the flash.
                     if(_lastResourceViewer instanceof ResourceViewerImplFlash) {
-                        CmMainPanel.__lastInstance._mainContent.removeAll();
+                        CmMainPanel.__lastInstance._mainContent.removeResource();
                     }
                 }
                 else if(event.getEventName().equals(EventBus.EVENT_TYPE_RESOURCE_VIEWER_OPEN)) {
@@ -144,7 +141,7 @@ public class CmMainPanel extends LayoutContainer {
      * 
      */
     public void removeResource() {
-        CmMainPanel.__lastInstance._mainContent.removeAll();
+        CmMainPanel.__lastInstance._mainContent.removeResource();
     }
 
 }

@@ -32,6 +32,10 @@
 	background: #43464B;
 }
 
+.resource-accord-panel-list-view-selected {
+	color: yellow;
+}
+
 .accordian-resource-list-panel .x-view-item {
 	border: none;
 }

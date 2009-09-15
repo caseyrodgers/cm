@@ -4,6 +4,7 @@ import hotmath.gwt.cm.client.CatchupMath;
 import hotmath.gwt.cm.client.history.CmHistoryManager;
 import hotmath.gwt.cm.client.history.CmHistoryQueue;
 import hotmath.gwt.cm.client.history.CmLocation;
+import hotmath.gwt.cm.client.history.CmLocation.LocationType;
 import hotmath.gwt.cm.client.ui.HeaderPanel;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.data.InmhItemData;
@@ -18,6 +19,7 @@ import hotmath.gwt.cm_tools.client.ui.context.CmContext;
 import hotmath.gwt.cm_tools.client.ui.viewer.ResourceViewer;
 import hotmath.gwt.cm_tools.client.ui.viewer.ResourceViewerFactory;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
+import hotmath.gwt.shared.client.eventbus.CmEventListener;
 import hotmath.gwt.shared.client.eventbus.EventBus;
 import hotmath.gwt.shared.client.rpc.action.GetPrescriptionAction;
 import hotmath.gwt.shared.client.util.RpcData;
@@ -58,6 +60,26 @@ public class PrescriptionCmGuiDefinition implements CmGuiDefinition {
     public PrescriptionCmGuiDefinition() {
         __instance = this;
         context = new PrescriptionContext(this);
+        
+        
+        
+        /** Listen for Resource Viewer closing events and make 
+         *  sure the accordion resource lists are unselected.
+         */
+        EventBus.getInstance().addEventListener(new CmEventListener() {
+            
+            @Override
+            public void handleEvent(CmEvent event) {
+                if(_guiWidget != null && _guiWidget._activeResourceList != null)
+                    _guiWidget._activeResourceList.getSelectionModel().deselectAll();
+            }
+            
+            @Override
+            public String[] getEventsOfInterest() {
+                String s[] = {EventBus.EVENT_TYPE_RESOURCE_VIEWER_CLOSE};
+                return s;
+            }
+        });
     }
 
     public CmContext getContext() {
@@ -96,7 +118,8 @@ public class PrescriptionCmGuiDefinition implements CmGuiDefinition {
         // check for a pending History CmLocation change
         final CmLocation location = CmHistoryQueue.getInstance().popLocation();
         if(location != null) {
-            sessionNumber = location.getLocationNumber();
+            if(location.getLocationType() == LocationType.PRESCRIPTION)
+                sessionNumber = location.getLocationNumber();
         }
         
         
@@ -111,7 +134,7 @@ public class PrescriptionCmGuiDefinition implements CmGuiDefinition {
         final int sessionNumber2 = sessionNumber;
         
         // clear any existing resource
-        CmMainPanel.__lastInstance._mainContent.removeAll();
+        CmMainPanel.__lastInstance._mainContent.removeResource();
         CmMainPanel.__lastInstance._mainContent.layout();
 
         
@@ -294,46 +317,7 @@ class PrescriptionResourceAccord extends LayoutContainer {
             
             cp = createNewResourceType(resource);
             add(cp);
-            
-            
-            final ContentPanel mycp = cp;
 
-            final ContentPanel thisCp = cp;
-            final ResourceList thisRl = cp.resourceList;
-            cp.addListener(Events.Expand, new Listener<BaseEvent>() {
-                public void handleEvent(BaseEvent be) {
-                    if(PrescriptionResourceAccord.__instance._activeResourceList != null)
-                        if(PrescriptionResourceAccord.__instance._activeResourceList._viewer != null)
-                            PrescriptionResourceAccord.__instance._activeResourceList._viewer.removeResourcePanel();
-                    
-                    PrescriptionResourceAccord.__instance._activeResourceList.removeResource();
-                    layout();
-                    
-                    //// move selected item to top
-                    //PrescriptionResourceAccord.this.remove(mycp);
-                    //mycp.el().fadeIn(FxConfig.NONE);
-                    //PrescriptionResourceAccord.this.add(mycp);
-                    //layout();
-                    
-                    // if there is only one resource item, then show it
-                    if(mycp.getItems().size() == 1) {
-                        ResourceList myRl = (ResourceList)mycp.getItem(0);
-                        if(myRl.getItemCount() ==1) {
-                            myRl.getSelectionModel().select(0, false);
-                            
-                            ResourceModel rm = myRl.getSelectionModel().getSelectedItem();
-                            CmHistoryManager.loadResourceIntoHistory(rm.getItem().getType(),"0");
-                        }
-                    }
-                    
-                    _activeResourceList = thisRl;
-                }
-            });
-            cp.addListener(Events.Collapse, new Listener<BaseEvent>() {
-                public void handleEvent(BaseEvent be) {
-                    // ResourceAccordPanel._mainContent.removeAll();
-                }
-            });
         }
        
        /** Add the standard resources
@@ -407,6 +391,51 @@ class PrescriptionResourceAccord extends LayoutContainer {
         cp.setHeight(150);
         cp.add(rl);
         
+        
+        
+        
+        
+        
+        final ContentPanel mycp = cp;
+
+        final ContentPanel thisCp = cp;
+        final ResourceList thisRl = cp.resourceList;
+        cp.addListener(Events.Expand, new Listener<BaseEvent>() {
+            public void handleEvent(BaseEvent be) {
+                if(PrescriptionResourceAccord.__instance._activeResourceList != null)
+                    if(PrescriptionResourceAccord.__instance._activeResourceList._viewer != null)
+                        PrescriptionResourceAccord.__instance._activeResourceList._viewer.removeResourcePanel();
+                
+                PrescriptionResourceAccord.__instance._activeResourceList.removeResource();
+                layout();
+                
+                //// move selected item to top
+                //PrescriptionResourceAccord.this.remove(mycp);
+                //mycp.el().fadeIn(FxConfig.NONE);
+                //PrescriptionResourceAccord.this.add(mycp);
+                //layout();
+                
+                // if there is only one resource item, then show it
+                if(mycp.getItems().size() == 1) {
+                    ResourceList myRl = (ResourceList)mycp.getItem(0);
+                    if(myRl.getItemCount() ==1) {
+                        myRl.getSelectionModel().select(0, false);
+                        
+                        ResourceModel rm = myRl.getSelectionModel().getSelectedItem();
+                        CmHistoryManager.loadResourceIntoHistory(rm.getItem().getType(),"0");
+                    }
+                }
+                
+                _activeResourceList = thisRl;
+            }
+        });
+        cp.addListener(Events.Collapse, new Listener<BaseEvent>() {
+            public void handleEvent(BaseEvent be) {
+                // ResourceAccordPanel._mainContent.removeAll();
+            }
+        });        
+        
+        
         return cp;
         
     }
@@ -478,6 +507,8 @@ class ResourceList extends ListView<ResourceModel> implements Listener<BaseEvent
     public ResourceList(PrescriptionSessionDataResource resource) {
         this.resource = resource;
         setStyleName("resource-accord-panel-list-view");
+        setSelectStyle("resource-accord-panel-list-view-selected");
+        
         _store = new ListStore<ResourceModel>();
         for (InmhItemData id : resource.getItems()) {
             _store.add(new ResourceModel(id));
@@ -502,7 +533,6 @@ class ResourceList extends ListView<ResourceModel> implements Listener<BaseEvent
                 break;
             resourceNumber++;
         }
-
         CmHistoryManager.loadResourceIntoHistory(rm.getItem().getType(), Integer.toString(resourceNumber));
     }
     
@@ -543,6 +573,7 @@ class ResourceList extends ListView<ResourceModel> implements Listener<BaseEvent
 
             CmMainPanel.__lastInstance._mainContent.removeAll();
 
+            
             //CmMainPanel.__lastInstance._mainContent.setLayout(new FitLayout());
 
             // must be a ContentPanel
@@ -580,7 +611,7 @@ class ResourceList extends ListView<ResourceModel> implements Listener<BaseEvent
     }
     
     public void removeResource() {
-        CmMainPanel.__lastInstance._mainContent.removeAll();
+        CmMainPanel.__lastInstance._mainContent.removeResource();
     }
     
     
