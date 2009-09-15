@@ -1,4 +1,5 @@
-package hotmath.gwt.shared.client.history;
+package hotmath.gwt.cm.client.history;
+
 
 import java.util.LinkedList;
 import java.util.Queue;

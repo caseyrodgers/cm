@@ -1,4 +1,4 @@
-package hotmath.gwt.shared.client.history;
+package hotmath.gwt.cm.client.history;
 
 import hotmath.gwt.shared.client.util.UserInfo;
 
@@ -24,13 +24,14 @@ public class CmHistoryManager {
     private CmHistoryManager(){}
     
     
+    static Integer __uniqer = 1;
     /** Cause a new history change to occur, this will
      *  invoke the global changeListener
      *  
      * @param location
      */
     public void addHistoryLocation(CmLocation location) {
-        History.newItem(location.toString());
+        History.newItem(location.toString() + "" + ":" + (__uniqer++));
     }
     
     

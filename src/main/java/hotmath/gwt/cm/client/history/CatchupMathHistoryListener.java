@@ -1,4 +1,4 @@
-package hotmath.gwt.shared.client.history;
+package hotmath.gwt.cm.client.history;
 
 import hotmath.gwt.cm.client.CatchupMath;
 import hotmath.gwt.cm.client.ui.context.PrescriptionCmGuiDefinition;
@@ -10,7 +10,7 @@ import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 
 public class CatchupMathHistoryListener implements ValueChangeHandler<String> {
-    
+
     public void onValueChange(ValueChangeEvent<String> event) {
         final String historyToken = event.getValue();
         
@@ -20,6 +20,7 @@ public class CatchupMathHistoryListener implements ValueChangeHandler<String> {
             // setup HistoryQueue to allow for asynchronous access
             CmHistoryQueue.getInstance().pushLocation(location);
         }
+        
         
         // do default action
         if(UserInfo.getInstance().getRunId() > 0) {
@@ -41,6 +42,7 @@ public class CatchupMathHistoryListener implements ValueChangeHandler<String> {
         else {
             CatchupMath.getThisInstance().showQuizPanel_gwt();
         }
-    };
+
+    }
 }
           

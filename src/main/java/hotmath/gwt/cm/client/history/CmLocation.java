@@ -1,4 +1,4 @@
-package hotmath.gwt.shared.client.history;
+package hotmath.gwt.cm.client.history;
 
 
 

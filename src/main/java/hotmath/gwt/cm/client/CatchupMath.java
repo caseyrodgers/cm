@@ -1,5 +1,8 @@
 package hotmath.gwt.cm.client;
 
+import hotmath.gwt.cm.client.history.CatchupMathHistoryListener;
+import hotmath.gwt.cm.client.history.CmHistoryManager;
+import hotmath.gwt.cm.client.history.CmLocation;
 import hotmath.gwt.cm.client.ui.HeaderPanel;
 import hotmath.gwt.cm.client.ui.context.PrescriptionCmGuiDefinition;
 import hotmath.gwt.cm.client.ui.context.QuizCmGuiDefinition;
@@ -13,9 +16,6 @@ import hotmath.gwt.shared.client.data.CmAsyncRequest;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
 import hotmath.gwt.shared.client.eventbus.CmEventListener;
 import hotmath.gwt.shared.client.eventbus.EventBus;
-import hotmath.gwt.shared.client.history.CatchupMathHistoryListener;
-import hotmath.gwt.shared.client.history.CmHistoryManager;
-import hotmath.gwt.shared.client.history.CmLocation;
 import hotmath.gwt.shared.client.util.UserInfo;
 
 import com.allen_sauer.gwt.log.client.Log;

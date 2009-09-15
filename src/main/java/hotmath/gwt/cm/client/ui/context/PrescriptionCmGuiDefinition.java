@@ -1,6 +1,9 @@
 package hotmath.gwt.cm.client.ui.context;
 
 import hotmath.gwt.cm.client.CatchupMath;
+import hotmath.gwt.cm.client.history.CmHistoryManager;
+import hotmath.gwt.cm.client.history.CmHistoryQueue;
+import hotmath.gwt.cm.client.history.CmLocation;
 import hotmath.gwt.cm.client.ui.HeaderPanel;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.data.InmhItemData;
@@ -16,9 +19,6 @@ import hotmath.gwt.cm_tools.client.ui.viewer.ResourceViewer;
 import hotmath.gwt.cm_tools.client.ui.viewer.ResourceViewerFactory;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
 import hotmath.gwt.shared.client.eventbus.EventBus;
-import hotmath.gwt.shared.client.history.CmHistoryManager;
-import hotmath.gwt.shared.client.history.CmHistoryQueue;
-import hotmath.gwt.shared.client.history.CmLocation;
 import hotmath.gwt.shared.client.rpc.action.GetPrescriptionAction;
 import hotmath.gwt.shared.client.util.RpcData;
 import hotmath.gwt.shared.client.util.UserInfo;
