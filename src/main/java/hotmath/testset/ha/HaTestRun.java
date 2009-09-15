@@ -264,7 +264,12 @@ public class HaTestRun {
                 int runId = rs.getInt("run_id");
                 
                 __logger.info("Processing: " + runId);
-                HaTest.updateTestRunSessions(conn, runId);
+                try {
+                    HaTest.updateTestRunSessions(conn, runId);
+                }
+                catch(Exception e) {
+                    __logger.info("error processing: " + e.getMessage());
+                }
             }
             __logger.info("Completed updating HA_TEST_RUN");
         }
