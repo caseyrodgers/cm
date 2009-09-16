@@ -107,7 +107,22 @@ select bt.title_number, trim(bt.title) as title, td.textcode
 from HA_TEST_DEF td, BOOK_TOC bt
 where td.prog_id = ? and td.subj_id = ?
 and bt.textcode = td.textcode and bt.parent <> 0
-order by bt.title_number      
+order by bt.title_number   
+
+
+
+
+
+    
+.key=SELECT_SUBJECTS_SQL
+
+select sd.*
+from HA_SUBJ_DEF sd, HA_TEST_DEF td
+where sd.id = td.subj_id and td.is_active = 1 
+and td.prog_id = ? and sd.for_school = ?
+
+
+   
         
         
         

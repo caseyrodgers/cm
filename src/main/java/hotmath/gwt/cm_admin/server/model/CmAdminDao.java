@@ -33,12 +33,7 @@ public class CmAdminDao {
     }
 
     //TODO add Subject selection by school type (non-college, college)
-    
-    private static String SELECT_SUBJECTS_SQL =
-    	"select sd.* " +
-        "from HA_SUBJ_DEF sd, HA_TEST_DEF td " +
-    	"where sd.id = td.subj_id and td.is_active = 1 " + 
-    	"  and td.prog_id = ? and sd.for_school = ?";
+
     
     public List <SubjectModel> getSubjectDefinitions(String progId) throws Exception {
     	List <SubjectModel> l = null;
@@ -50,7 +45,7 @@ public class CmAdminDao {
     	try {
     		conn = HMConnectionPool.getConnection();
     		
-    		ps = conn.prepareStatement(SELECT_SUBJECTS_SQL);
+    		ps = conn.prepareStatement(CmMultiLinePropertyReader.getInstance().getProperty("SELECT_SUBJECTS_SQL"));
     		ps.setString(1, progId);
     		//TODO: separate queries for schools and colleges
     		ps.setInt(2, 1);

@@ -4,6 +4,7 @@ import hotmath.gwt.cm.server.CmDbTestCase;
 import hotmath.gwt.cm_tools.client.model.ChapterModel;
 import hotmath.gwt.cm_tools.client.model.StudentActiveInfo;
 import hotmath.gwt.cm_tools.client.model.StudentModelI;
+import hotmath.gwt.cm_tools.client.model.SubjectModel;
 import hotmath.testset.ha.CmProgram;
 import hotmath.testset.ha.StudentUserProgramModel;
 
@@ -33,6 +34,12 @@ public class CmAdminDao_Test extends CmDbTestCase {
 
     
     public void testGetSubjectDefinitions() throws Exception {
+        List<SubjectModel> sm = new CmAdminDao().getSubjectDefinitions(CmProgram.ALG1_PROF.getProgramId());
+        assertNotNull(sm);
+        assertTrue(sm.size() > 0);
+    }
+    
+    public void testGetChaptersForProgramSubject() throws Exception {
         CmAdminDao dao = new CmAdminDao();
         CmProgram p = CmProgram.GEO_CHAP;
         List<ChapterModel> chaps = dao.getChaptersForProgramSubject(conn,p.getProgramId(), p.getSubject());
