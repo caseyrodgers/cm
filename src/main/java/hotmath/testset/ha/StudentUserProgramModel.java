@@ -71,7 +71,7 @@ public class StudentUserProgramModel {
         if(testDefId == CmProgram.ALG1_PROF.getDefId()
            || testDefId == CmProgram.PREALG_PROF.getDefId()
            || testDefId == CmProgram.ALG2_PROF.getDefId()
-           || testDefId == CmProgram.GEO_PROF.getDefId()) {
+           || testDefId == CmProgram.GEOM_PROF.getDefId()) {
             
             return true;
         }

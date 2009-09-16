@@ -28,11 +28,21 @@ public class EndOfProgramHander_Test extends CmDbTestCase {
         
         // this should be moved to the Pre-Alg proficiency test
         assertTrue(nextProgram.getTestDefId() == CmProgram.GEOM_CHAP.getDefId());
-        HaTestConfig testConfig = nextProgram.getConfig();
-        assertTrue(testConfig != null);
-        assertTrue(testConfig.getChapters().size() == 0);
+        assertTrue(nextProgram.getConfig().getChapters().get(0).equals("Polygons and Areas of Plane Figures"));
     }  
     
+    
+    public void testEndOfProgramChapterTestGeoChap2Prof() throws Exception {
+
+        // assign chapter test to test student (last chapter)
+        dao.assignProgramToStudent(conn,userId, CmProgram.GEOM_CHAP, "Circles");
+        
+        EndOfProgramHandler eop = new EndOfProgramHandler(userId);
+        StudentUserProgramModel nextProgram = eop.getNextProgram();
+        
+        // this should be moved to the Pre-Alg proficiency test
+        assertTrue(nextProgram.getTestDefId() == CmProgram.GEOM_PROF.getDefId());
+    }
     
     public void testEndOfProgramChapterTestTaks() throws Exception {
 
@@ -63,7 +73,7 @@ public class EndOfProgramHander_Test extends CmDbTestCase {
     public void testEndOfProgramChapterTestGeo() throws Exception {
 
         // assign chapter test to test student (last chapter)
-        dao.assignProgramToStudent(conn,userId, CmProgram.GEO_PROF, null);
+        dao.assignProgramToStudent(conn,userId, CmProgram.GEOM_PROF, null);
         
         EndOfProgramHandler eop = new EndOfProgramHandler(userId);
         StudentUserProgramModel nextProgram = eop.getNextProgram();

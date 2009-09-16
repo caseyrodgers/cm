@@ -54,9 +54,9 @@ public class EndOfProgramHandler {
                 updateProgram(CmProgram.ALG1_PROF.getSubject(),CmProgram.ALG1_PROF.getProgramId(),null);                
             }
             else if(programCurr.getTestDefId() == CmProgram.ALG1_PROF.getDefId()) {
-                updateProgram(CmProgram.GEO_PROF.getSubject(),CmProgram.GEO_PROF.getProgramId(),null);                
+                updateProgram(CmProgram.GEOM_PROF.getSubject(),CmProgram.GEOM_PROF.getProgramId(),null);                
             }
-            else if(programCurr.getTestDefId() == CmProgram.GEO_PROF.getDefId()) {
+            else if(programCurr.getTestDefId() == CmProgram.GEOM_PROF.getDefId()) {
                 updateProgram(CmProgram.ALG2_PROF.getSubject(), CmProgram.ALG2_PROF.getProgramId(),null);
             }
             else if(programCurr.getTestDefId() == CmProgram.ALG2_PROF.getDefId() ) {
