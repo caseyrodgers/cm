@@ -41,7 +41,7 @@ public class CmAdminDao_Test extends CmDbTestCase {
     
     public void testGetChaptersForProgramSubject() throws Exception {
         CmAdminDao dao = new CmAdminDao();
-        CmProgram p = CmProgram.GEO_CHAP;
+        CmProgram p = CmProgram.GEOM_CHAP;
         List<ChapterModel> chaps = dao.getChaptersForProgramSubject(conn,p.getProgramId(), p.getSubject());
         assertNotNull(chaps);
         assertTrue(chaps.size() > 0);

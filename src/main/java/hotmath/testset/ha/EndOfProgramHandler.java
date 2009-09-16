@@ -83,6 +83,9 @@ public class EndOfProgramHandler {
                 }
                 else if(programCurr.getTestDefId() == CmProgram.ALG2_CHAP.getDefId()) {
                     setupChapterTest(conn, programCurr,CmProgram.ALG2_CHAP.getSubject());
+                }
+                else if(programCurr.getTestDefId() == CmProgram.GEOM_CHAP.getDefId()) {
+                    setupChapterTest(conn, programCurr,CmProgram.GEOM_CHAP.getSubject());
                 }                
                 else {
                     throw new Exception("Unknown program: " + programCurr);
@@ -99,6 +102,13 @@ public class EndOfProgramHandler {
     }
     
     
+    /** Move to next chapter or if at end of chap list move to associated prof test
+     * 
+     * @param conn
+     * @param program
+     * @param subjId
+     * @throws Exception
+     */
     private void setupChapterTest(final Connection conn, StudentUserProgramModel program, String subjId) throws Exception {
 
         HaTestConfig config = program.getConfig();

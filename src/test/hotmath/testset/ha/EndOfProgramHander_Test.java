@@ -18,6 +18,22 @@ public class EndOfProgramHander_Test extends CmDbTestCase {
         userId = setupDemoAccount();
     }
     
+    public void testEndOfProgramChapterTestGeoChap() throws Exception {
+
+        // assign chapter test to test student (last chapter)
+        dao.assignProgramToStudent(conn,userId, CmProgram.GEOM_CHAP, "Circles");
+        
+        EndOfProgramHandler eop = new EndOfProgramHandler(userId);
+        StudentUserProgramModel nextProgram = eop.getNextProgram();
+        
+        // this should be moved to the Pre-Alg proficiency test
+        assertTrue(nextProgram.getTestDefId() == CmProgram.GEOM_CHAP.getDefId());
+        HaTestConfig testConfig = nextProgram.getConfig();
+        assertTrue(testConfig != null);
+        assertTrue(testConfig.getChapters().size() == 0);
+    }  
+    
+    
     public void testEndOfProgramChapterTestTaks() throws Exception {
 
         // assign chapter test to test student (last chapter)
