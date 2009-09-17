@@ -107,6 +107,9 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
  		   userName.focus();
  		}
  		skipComboSet = isNew;
+ 		
+ 		Log.info("Skip Combo Set: " +skipComboSet );
+ 		
 		setComboBoxSelections();
 	}
 	
@@ -611,8 +614,10 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
 	}
 
 	private void setGroupSelection() {
-	    if(stuMdl == null)
+	    if(stuMdl == null) {
+	        Log.info("group selection model is null");
 	        return;
+	    }
 	    
 		String groupId = stuMdl.getGroupId();
 		if (groupId != null) {
