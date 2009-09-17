@@ -615,6 +615,7 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
 
 	private void setGroupSelection() {
 	    if(stuMdl == null) {
+	        new Exception().printStackTrace();
 	        Log.info("group selection model is null");
 	        return;
 	    }
