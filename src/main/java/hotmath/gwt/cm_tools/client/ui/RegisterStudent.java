@@ -302,7 +302,6 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
 	        @SuppressWarnings("unchecked")
 			public void selectionChanged(SelectionChangedEvent<StudyProgram> se) {
 	        	
-	            CatchupMathTools.showAlert("Program selected: loading=" + loading);
 	        	if (loading) return;
 	        	
 	            StudyProgram sp = se.getSelectedItem();
