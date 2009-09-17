@@ -9,18 +9,17 @@ import hotmath.gwt.cm_tools.client.model.StudyProgramModel;
 import hotmath.gwt.cm_tools.client.model.SubjectModel;
 import hotmath.gwt.cm_tools.client.service.PrescriptionServiceAsync;
 import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
+import hotmath.gwt.cm_tools.client.util.ProcessTracker;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
 import hotmath.gwt.shared.client.eventbus.EventBus;
 import hotmath.gwt.shared.client.util.CmException;
 import hotmath.gwt.shared.client.util.UserInfo;
-import hotmath.gwt.cm_tools.client.util.ProcessTracker;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.Registry;
 import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
 import com.extjs.gxt.ui.client.data.BaseModelData;
@@ -109,9 +108,6 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
  		if (isNew) {
  		   userName.focus();
  		}
- 		
- 		
- 		Log.info("Skip Combo Set: " +skipComboSet );
  		
 		setComboBoxSelections();
 	}
@@ -619,13 +615,11 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
 	private void setGroupSelection() {
 	    if(stuMdl == null) {
 	        new Exception().printStackTrace();
-	        Log.info("group selection model is null");
 	        return;
 	    }
 	    
 		String groupId = stuMdl.getGroupId();
 		if (groupId != null) {
-		    Log.info("Group selection not null");
 			List<GroupModel> l = groupStore.getModels();
 			for (GroupModel g : l) {
 				if (groupId.equals(g.getId())) {
