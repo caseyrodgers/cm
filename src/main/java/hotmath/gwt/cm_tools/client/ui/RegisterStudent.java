@@ -616,8 +616,10 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
 	}
 
 	private void setGroupSelection() {
+	    Log.info("Setting group selection");
 		String groupId = stuMdl.getGroupId();
 		if (groupId != null) {
+		    Log.info("Group selection not null");
 			List<GroupModel> l = groupStore.getModels();
 			for (GroupModel g : l) {
 				if (groupId.equals(g.getId())) {
