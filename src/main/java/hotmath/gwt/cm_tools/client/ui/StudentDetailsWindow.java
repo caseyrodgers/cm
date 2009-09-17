@@ -7,6 +7,7 @@ import hotmath.gwt.cm_tools.client.model.StudentModel;
 import hotmath.gwt.cm_tools.client.service.CmServiceAsync;
 import hotmath.gwt.cm_tools.client.service.PrescriptionServiceAsync;
 import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
+import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.rpc.action.GetReportDefAction;
 
 import java.util.ArrayList;
@@ -21,6 +22,7 @@ import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
+import com.extjs.gxt.ui.client.event.MenuEvent;
 import com.extjs.gxt.ui.client.event.SelectionChangedEvent;
 import com.extjs.gxt.ui.client.event.SelectionChangedListener;
 import com.extjs.gxt.ui.client.event.SelectionListener;
@@ -34,6 +36,8 @@ import com.extjs.gxt.ui.client.widget.grid.Grid;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
+import com.extjs.gxt.ui.client.widget.menu.Menu;
+import com.extjs.gxt.ui.client.widget.menu.MenuItem;
 import com.extjs.gxt.ui.client.widget.toolbar.FillToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.google.gwt.user.client.Window;
@@ -128,6 +132,23 @@ public class StudentDetailsWindow extends CmWindow {
 
         getStudentActivityRPC(store, studentModel);
 
+        
+        if(CmShared.getQueryParameter("debug") != null) {
+            MenuItem detailDebug = new MenuItem("Debug Info");
+            detailDebug.addSelectionListener(new SelectionListener<MenuEvent>() {
+                public void componentSelected(MenuEvent ce) {
+                    StudentActivityModel m = samGrid.getSelectionModel().getSelectedItem();
+                    CatchupMathTools.showAlert("testId: " + m.getTestId() + ", runId: " + m.getRunId());
+                }
+            });
+            final Menu contextMenu = new Menu();
+            contextMenu.add(detailDebug);
+            samGrid.setContextMenu(contextMenu);
+        }
+
+        
+        
+        
         setVisible(true);
     }
 

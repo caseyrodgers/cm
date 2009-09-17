@@ -12,6 +12,7 @@ public class StudentActivityModel extends BaseModel {
 	public static final String STOP_KEY = "stop";
 	public static final String IS_QUIZ_KEY = "is-quiz";
 	public static final String RUN_ID_KEY = "run-id";
+	public static final String TEST_ID_KEY = "test-id";
 	
 	public String getActivity() {
 		return get(ACTIVITY_KEY);
@@ -75,6 +76,14 @@ public class StudentActivityModel extends BaseModel {
 	
 	public void setRunId(Integer runId) {
 	    set(RUN_ID_KEY, runId);	
+	}
+	
+	public void setTestId(Integer testId) {
+	    set(TEST_ID_KEY, testId);
+	}
+	
+	public Integer getTestId() {
+	    return get(TEST_ID_KEY);
 	}
 	
 	public StudentActivityModel() {

@@ -914,6 +914,7 @@ public class CmStudentDao {
             m.setUseDate(rs.getString("use_date"));
             m.setStart(rs.getString("start_time"));
             m.setStop(rs.getString("stop_time"));
+            m.setTestId(rs.getInt("test_id"));
             int sectionNum = rs.getInt("test_segment");
             String progId = rs.getString("prog_id");
 
