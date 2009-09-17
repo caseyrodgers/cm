@@ -101,12 +101,15 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
 		        EventBus.getInstance().fireEvent(new CmEvent(EventBus.EVENT_TYPE_MODAL_WINDOW_CLOSED));
 		    }
 		});
+		
+		skipComboSet = isNew;
+		
 		_window.add(createForm());
 		_window.show();
  		if (isNew) {
  		   userName.focus();
  		}
- 		skipComboSet = isNew;
+ 		
  		
  		Log.info("Skip Combo Set: " +skipComboSet );
  		
