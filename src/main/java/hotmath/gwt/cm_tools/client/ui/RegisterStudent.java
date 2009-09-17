@@ -589,19 +589,14 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
 
 			loading = true;
 			
-			Log.info("Setting Group Selection");
 			setGroupSelection();
 			
-			Log.info("Setting Program Selection");
     		StudyProgram sp = setProgramSelection();
 
     		if (sp == null) {
     			CatchupMathTools.showAlert("Program not found!");
     			return;
     		}
-    		
-    		Log.info("Setting options");
-    		
     		int needsSubject = ((Integer)sp.get("needsSubject")).intValue();
     		if (needsSubject != 0) setSubjectSelection();
 
@@ -616,7 +611,9 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
 	}
 
 	private void setGroupSelection() {
-	    Log.info("Setting group selection: " + stuMdl);
+	    if(stuMdl == null)
+	        return;
+	    
 		String groupId = stuMdl.getGroupId();
 		if (groupId != null) {
 		    Log.info("Group selection not null");
