@@ -100,15 +100,14 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
 		        EventBus.getInstance().fireEvent(new CmEvent(EventBus.EVENT_TYPE_MODAL_WINDOW_CLOSED));
 		    }
 		});
-		
-		skipComboSet = isNew;
-		
 		_window.add(createForm());
 		_window.show();
  		if (isNew) {
  		   userName.focus();
  		}
- 		
+ 	     
+        skipComboSet = isNew;
+
 		setComboBoxSelections();
 	}
 	
@@ -586,7 +585,7 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
 	}
 	
 	private void setComboBoxSelections() {
-		if (! skipComboSet && inProcessCount < 1) {
+		if (this.stuMdl != null && !skipComboSet && inProcessCount < 1) {
 
 			loading = true;
 			
