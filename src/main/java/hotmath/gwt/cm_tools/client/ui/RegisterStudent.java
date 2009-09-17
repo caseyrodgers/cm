@@ -20,6 +20,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.Registry;
 import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
 import com.extjs.gxt.ui.client.data.BaseModelData;
@@ -588,14 +589,19 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
 
 			loading = true;
 			
+			Log.info("Setting Group Selection");
 			setGroupSelection();
 			
+			Log.info("Setting Program Selection");
     		StudyProgram sp = setProgramSelection();
 
     		if (sp == null) {
     			CatchupMathTools.showAlert("Program not found!");
     			return;
     		}
+    		
+    		Log.info("Setting options");
+    		
     		int needsSubject = ((Integer)sp.get("needsSubject")).intValue();
     		if (needsSubject != 0) setSubjectSelection();
 
