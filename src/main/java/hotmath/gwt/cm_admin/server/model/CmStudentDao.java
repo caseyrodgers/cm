@@ -1105,7 +1105,8 @@ public class CmStudentDao {
                 supm.setAdminId(rs.getInt("admin_id"));
                 supm.setTestDefId(rs.getInt("test_def_id"));
                 supm.setTestName(rs.getString("test_name"));
-                supm.setConfig(new HaTestConfig(rs.getString("test_config_json")));
+                int passPercent = rs.getInt("pass_percent");
+                supm.setConfig(new HaTestConfig(passPercent, rs.getString("test_config_json")));
             }
             return supm;
         } finally {

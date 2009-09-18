@@ -32,6 +32,10 @@ public class HaTestConfig {
     }
 
 
+    public HaTestConfig(String json) throws HotMathException {
+        this(null, json);
+    }
+    
     /** Create HaTestConfig based on json object
      * 
      * If error, uses default values.
@@ -39,7 +43,10 @@ public class HaTestConfig {
      * @param json
      * @throws HotMathException
      */
-    public HaTestConfig(String json) throws HotMathException {
+    public HaTestConfig(Integer passPercent, String json) throws HotMathException {
+        if(passPercent != null)
+           this.passPercent = passPercent;
+        
 		try {
 			if(json != null && json.length() > 0) {
 				JSONObject jo = new JSONObject(json);
@@ -50,6 +57,10 @@ public class HaTestConfig {
 				        chapters.add(ja.getString(i));
 			        }
 				}
+				
+				/** If pass percent is in JSON, allow override 
+				 * 
+				 */
 		        if(jo.has("pass_percent"))
 		            passPercent = jo.getInt("pass_percent");
 			}
