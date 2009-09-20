@@ -73,7 +73,7 @@ from (
   'Review-' as activity, 0 as is_quiz, iu.session_number as session_number 
  from  HA_TEST l INNER JOIN HA_USER u ON l.user_id = u.uid 
  join HA_TEST_RUN r on r.test_id = l.test_id 
- join HA_TEST_RUN_INMH_USE iu on iu.run_id = r.run_id and iu.item_type = 'practice' 
+ join v_HA_TEST_RUN_INMH_USE_REQ_PROBS iu on iu.run_id = r.run_id 
  join HA_TEST_DEF td on td.test_def_id = l.test_def_id 
  join CM_USER_PROGRAM p on p.user_id = u.uid and p.test_def_id = td.test_def_id 
  where u.uid = ? 

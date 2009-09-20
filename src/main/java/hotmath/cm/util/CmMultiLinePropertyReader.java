@@ -74,6 +74,8 @@ public class CmMultiLinePropertyReader extends Properties {
 
     private CmMultiLinePropertyReader(String propFile) {
 
+        __logger.info("Reading multi-line problem file: " + propFile);
+        
         try {
             /**
              * Read in the default multi-line property file
