@@ -244,39 +244,4 @@ public class HaTestRun {
             SqlUtilities.releaseResources(rs, pstat, null);
         }
     }
-    
-    
-    /** Update the total_sessions for all test runs
-     * 
-     * @param as
-     */
-    static public void main(String as[]) {
-        
-        __logger.info("Updating HA_TEST_RUN total_sessions");
-        
-        Connection conn=null;
-        try {
-            conn = HMConnectionPool.getConnection();
-            String sql = CmMultiLinePropertyReader.getInstance().getProperty("VALID_TEST_RUNS");
-            	
-            ResultSet rs = conn.createStatement().executeQuery(sql);
-            while(rs.next()) {
-                int runId = rs.getInt("run_id");
-                
-                __logger.info("Processing: " + runId);
-                try {
-                    HaTest.updateTestRunSessions(conn, runId);
-                }
-                catch(Exception e) {
-                    __logger.info("error processing: " + e.getMessage());
-                }
-            }
-            __logger.info("Completed updating HA_TEST_RUN");
-        }
-        catch(Exception e) {
-            e.printStackTrace();
-        }
-        SqlUtilities.releaseResources(null,null,conn);
-        
-    }
 }

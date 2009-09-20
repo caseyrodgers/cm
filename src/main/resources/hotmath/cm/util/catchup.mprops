@@ -147,10 +147,6 @@ and   g.name = ?
 
 
 
-
-
-
-
 ##
 ## Class: HaTestRun
 ##
@@ -162,5 +158,6 @@ select r.run_id, u.uid
  from   HA_TEST_RUN r JOIN HA_TEST t ON t.test_id = r.test_id 
 JOIN HA_USER u on u.uid = t.user_id 
 JOIN  HA_ADMIN a ON a.aid = u.admin_id
-JOIN SUBSCRIBERS s ON s.id = a.subscriber_id 
+JOIN SUBSCRIBERS s ON s.id = a.subscriber_id
+ 
        

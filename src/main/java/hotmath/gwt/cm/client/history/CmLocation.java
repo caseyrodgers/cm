@@ -44,7 +44,7 @@ public class CmLocation {
         
         String p[] = location.split(":");
         if(p.length < 2) {
-            warn(location + " is invalid, no sections.");
+            warn("CmLocation '" + location + "' is invalid, no sections.");
             return;
         }
         
