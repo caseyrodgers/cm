@@ -25,7 +25,15 @@ public class ShowWorkPanel extends Frame {
 	static ShowWorkPanel __lastInstance;
 	String pid;
 	
-	/** Display the Show Work Flash component in an IFRAME
+	public String getPid() {
+        return pid;
+    }
+
+    public void setPid(String pid) {
+        this.pid = pid;
+    }
+
+    /** Display the Show Work Flash component in an IFRAME
 	 * 
 	 */
 	public ShowWorkPanel() {

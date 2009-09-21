@@ -180,16 +180,9 @@ public class ResourceViewerImplTutor extends ResourceViewerContainer implements 
      }    
     
 
-    public void componentSelected(ButtonEvent ce) {
-        //CatchupMathTools.showAlert("Pid: " + _pid);
-        initializeTutor(_pid,resource.getTitle(),hasShowWork,true);
-        showWorkWin.hide();
-    }
 
     static ShowWorkPanel showWorkPanel;
-    static String _pid;
-    public void showWork(final String pid) {
-        _pid = pid;
+    public void showWork(final String pidIn) {
         if(showWorkWin == null) {
             showWorkWin = new CmWindow();
             showWorkWin.setClosable(false);
@@ -198,7 +191,13 @@ public class ResourceViewerImplTutor extends ResourceViewerContainer implements 
             
             Button viewSolution = new Button("View solution");
             viewSolution.setToolTip("View the tutorial to check your answer");
-            viewSolution.addSelectionListener(this);
+            viewSolution.addSelectionListener(new SelectionListener<ButtonEvent>() {
+                public void componentSelected(ButtonEvent ce) {
+                    //CatchupMathTools.showAlert("Pid: " + _pid);
+                    initializeTutor(showWorkPanel.getPid(),_instance.resource.getTitle(),hasShowWork,true);
+                    showWorkWin.hide();
+                }
+            });
             showWorkWin.setHeading("Enter your answer on the whiteboard");
 
             
