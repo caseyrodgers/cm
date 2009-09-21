@@ -5,11 +5,9 @@ import hotmath.gwt.cm_tools.client.data.InmhItemData;
 import hotmath.gwt.cm_tools.client.service.CmServiceAsync;
 import hotmath.gwt.cm_tools.client.ui.CmMainPanel;
 import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
-import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
 import hotmath.gwt.shared.client.eventbus.CmEventListenerImplDefault;
 import hotmath.gwt.shared.client.eventbus.EventBus;
-import hotmath.gwt.shared.client.rpc.action.ClearWhiteboardDataAction;
 import hotmath.gwt.shared.client.rpc.action.GetSolutionAction;
 import hotmath.gwt.shared.client.util.RpcData;
 import hotmath.gwt.shared.client.util.UserInfo;
@@ -18,14 +16,12 @@ import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.Registry;
 import com.extjs.gxt.ui.client.Style.Scroll;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
-import com.extjs.gxt.ui.client.event.EventType;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.widget.Html;
 import com.extjs.gxt.ui.client.widget.Window;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.layout.FillLayout;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
-import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Frame;
@@ -189,7 +185,7 @@ public class ResourceViewerImplTutor extends ResourceViewerContainer implements 
             viewSolution.setToolTip("View the tutorial to check your answer");
             viewSolution.addSelectionListener(new SelectionListener<ButtonEvent>() {
                 public void componentSelected(ButtonEvent ce) {
-                    initializeTutor(pid,resource.getTitle(),hasShowWork,true);
+                    initializeTutor(ResourceViewerImplTutor.this.pid,resource.getTitle(),hasShowWork,true);
                     showWorkWin.hide();
                 }
             });
