@@ -27,7 +27,10 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Frame;
 import com.google.gwt.user.client.ui.Widget;
 
+
 public class ResourceViewerImplTutor extends ResourceViewerContainer implements ResourceViewer {
+
+
     static ResourceViewerImplTutor _instance;
     static {
         publishNative();
@@ -176,8 +179,17 @@ public class ResourceViewerImplTutor extends ResourceViewerContainer implements 
         _instance.showTutoring(_instance.pid);
      }    
     
+
+    public void componentSelected(ButtonEvent ce) {
+        //CatchupMathTools.showAlert("Pid: " + _pid);
+        initializeTutor(_pid,resource.getTitle(),hasShowWork,true);
+        showWorkWin.hide();
+    }
+
     static ShowWorkPanel showWorkPanel;
+    static String _pid;
     public void showWork(final String pid) {
+        _pid = pid;
         if(showWorkWin == null) {
             showWorkWin = new CmWindow();
             showWorkWin.setClosable(false);
@@ -186,12 +198,7 @@ public class ResourceViewerImplTutor extends ResourceViewerContainer implements 
             
             Button viewSolution = new Button("View solution");
             viewSolution.setToolTip("View the tutorial to check your answer");
-            viewSolution.addSelectionListener(new SelectionListener<ButtonEvent>() {
-                public void componentSelected(ButtonEvent ce) {
-                    initializeTutor(ResourceViewerImplTutor.this.getPid(),resource.getTitle(),hasShowWork,true);
-                    showWorkWin.hide();
-                }
-            });
+            viewSolution.addSelectionListener(this);
             showWorkWin.setHeading("Enter your answer on the whiteboard");
 
             
