@@ -79,6 +79,9 @@ public class ResourceViewerImplTutor extends ResourceViewerContainer implements 
         return .98;
     }
     
+    public String getPid() {
+        return this.pid;
+    }
     
     /** Load the tutor 
      * 
@@ -185,7 +188,7 @@ public class ResourceViewerImplTutor extends ResourceViewerContainer implements 
             viewSolution.setToolTip("View the tutorial to check your answer");
             viewSolution.addSelectionListener(new SelectionListener<ButtonEvent>() {
                 public void componentSelected(ButtonEvent ce) {
-                    initializeTutor(ResourceViewerImplTutor.this.pid,resource.getTitle(),hasShowWork,true);
+                    initializeTutor(ResourceViewerImplTutor.this.getPid(),resource.getTitle(),hasShowWork,true);
                     showWorkWin.hide();
                 }
             });
