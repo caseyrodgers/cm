@@ -2,9 +2,9 @@ package hotmath.testset.ha;
 
 
 import hotmath.assessment.InmhItemData;
-import junit.framework.TestCase;
+import hotmath.gwt.cm.server.CmDbTestCase;
 
-public class HaTestDefDescription_Test extends TestCase {
+public class HaTestDefDescription_Test extends CmDbTestCase {
     
     //String TEST_NAME = "Algebra 1 Proficiency";
     String TEST_NAME_PROF = "Pre-Algebra Proficiency";
@@ -14,10 +14,15 @@ public class HaTestDefDescription_Test extends TestCase {
         super(name);
     }
     
-    public void testGetLessonsForChapters() throws Exception {
+    @Override
+    protected void setUp() throws Exception {
+        super.setUp();
         
-        HaTestConfig config = new HaTestConfig("{segments:2,chapters:['Rational Numbers']}");
-        HaTestDefDescription tdDesc = HaTestDefDescription.getHaTestDefDescription(TEST_NAME_CHAP, 1,config);
+        if(_testRun == null)
+            _testRun = setupDemoAccountTestRun();
+    }
+    public void testGetLessonsForChapters() throws Exception {
+        HaTestDefDescription tdDesc = HaTestDefDescription.getHaTestDefDescription(conn, _testRun.getRunId());
         for (InmhItemData item : tdDesc.getLessonItems()) {
             String file = item.getInmhItem().getFile();
             assertNotNull(file);
@@ -25,41 +30,14 @@ public class HaTestDefDescription_Test extends TestCase {
     }    
 
     
-    public void testGetLessonFiles() throws Exception {
-        HaTestDefDescription tdDesc = HaTestDefDescription.getHaTestDefDescription(TEST_NAME_PROF, 1);
-        for (InmhItemData item : tdDesc.getLessonItems()) {
-            String file = item.getInmhItem().getFile();
-            assertNotNull(file);
-        }        
-    }
-    
-
-    public void testGetLessonNames() throws Exception {
-        HaTestDefDescription desc = HaTestDefDescription.getHaTestDefDescription(TEST_NAME_PROF, 1);
-        
-        /**
-        for(InmhItemData i: desc.getLessonItems()) {
-            System.out.println(i.getInmhItem().getTitle());
-        }
-        */
-        assertTrue(desc.getLessonItems().size() > 0);
-    }
-    
-    
-    public void testGetLessonNames2() throws Exception {
-        HaTestDefDescription desc = HaTestDefDescription.getHaTestDefDescription(TEST_NAME_PROF, 3);
-        assertTrue(desc.getLessonItems().size() > 0);
-    }
-    
-    
     
     /** zero quiz should return empty (but not null)
      * 
      * @throws Exception
      */
     public void testGetLessonNamesZero() throws Exception {
-        HaTestDefDescription desc = HaTestDefDescription.getHaTestDefDescription(TEST_NAME_PROF, 0);
-        assertTrue(desc.getLessonItems().size() == 0);
+        HaTestDefDescription tdDesc = HaTestDefDescription.getHaTestDefDescription(conn, -1);
+        assertTrue(tdDesc.getLessonItems().size() == 0);
     }
 
 }

@@ -650,26 +650,7 @@ public class CmStudentDao {
         
     }
 
-    private static final String SELECT_LAST_INSERT_ID_SQL = "select LAST_INSERT_ID()";
-
-    private int getLastInsertId(final Connection conn) throws Exception {
-        Statement stmt = null;
-        ResultSet rs = null;
-        try {
-            stmt = conn.createStatement();
-            // Note: this is MySQL specific
-            rs = stmt.executeQuery(SELECT_LAST_INSERT_ID_SQL);
-            if (rs.next()) {
-                int val = rs.getInt(1);
-                return val;
-            } else {
-                throw new Exception("Unable to obtain last auto-increment id");
-            }
-        } finally {
-            SqlUtilities.releaseResources(rs, stmt, null);
-        }
-    }
-
+    
     /**
      * Return list of StudentShowWorkModel that represent distinct list of
      * problems that actually have show work.

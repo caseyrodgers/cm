@@ -140,41 +140,27 @@ public class HaTestDefDescription {
      * @param testName
      * @return
      * @throws Exception
-     */
-    static public HaTestDefDescription getHaTestDefDescription(String testName, Integer quizSegment) throws Exception {
-        return getHaTestDefDescription(testName, quizSegment, null);
-
-    }
-    
-    static public HaTestDefDescription getHaTestDefDescription(Connection conn, Integer runId) throws Exception {
-        HaTestRun run = HaTestRun.lookupTestRun(conn, runId);
+     */ 
+    static public HaTestDefDescription getHaTestDefDescription(final Connection conn, int runId) throws Exception {
         
-        HaTestConfig config = run.getHaTest().getProgramInfo().getConfig();
-        return getHaTestDefDescription(run.getHaTest().getTestDef().getName(), run.getHaTest().getSegment(), config);
-    }
+        
+        HaTestRun testRun = HaTestRun.lookupTestRun(conn, runId);
+        HaTest test = testRun.getHaTest();
 
-    static public HaTestDefDescription getHaTestDefDescription(String testName, Integer quizSegment, HaTestConfig config)
-            throws Exception {
-
-        String keyName = testName + "_" + quizSegment + "_" + config;
-        HaTestDefDescription desc = (HaTestDefDescription) CmCacheManager.getInstance().retrieveFromCache(CacheName.TEST_DEF_DESCRIPTION, keyName);
-        if (desc != null)
-            return desc;
-
-        Connection conn = null;
         try {
-            conn = HMConnectionPool.getConnection();
-
-            HaTestDef def = new HaTestDef(conn, testName);
-            if (config == null)
-                config = def.getTestConfig();
+            
+            
+            HaTestConfig config = test.getProgramInfo().getConfig();
 
             HaTestDefDao dao = new HaTestDefDao();
             
-            int totalPidsInProgram = dao.getTestIds(conn, def.getTextCode(), def.getChapter(), 0, 0, 99999, config).size();
-            int pidsInASegment = totalPidsInProgram / def.getTotalSegmentCount();
+            String chapter = test.getTestDef().getChapter();
+            String textCode = test.getTestDef().getTextCode();
+            int totalSegmentCount = test.getTestDef().getTotalSegmentCount();
+            int totalPidsInProgram = dao.getTestIds(conn, textCode, chapter, 0, 0, 99999, config).size();
+            int pidsInASegment = totalPidsInProgram / totalSegmentCount;
 
-            int end = pidsInASegment * quizSegment;
+            int end = pidsInASegment * test.getSegment();
             int start = end - pidsInASegment;
 
             /**
@@ -182,38 +168,13 @@ public class HaTestDefDescription {
              * program
              * 
              */
-            List<String> pids = dao.getTestIds(conn, def.getTextCode(), def.getChapter(), 0, start, end, config);
+            List<String> pids = dao.getTestIds(conn, textCode, chapter, 0, start, end, config);
 
-            /**
-             * Create a dummy TestRun
-             * 
-             */
-            HaTestRun testRun = new HaTestRun();
-            HaTest test = new HaTest();
-            test.setTestDef(def);
-            testRun.setHaTest(test);
-            /**
-             * put all pids as results in this test run
-             * 
-             */
-            for (String p : pids) {
-                HaTestRunResult r = new HaTestRunResult();
-                r.setPid(p);
-                testRun.getTestRunResults().add(r);
-            }
-
-            /**
-             * Create a new prescription based on this test run
-             * 
-             */
-            AssessmentPrescription pres = new AssessmentPrescription(conn, testRun);
-
-            List<AssessmentPrescriptionSession> sessions = pres.getSessions();
-
-            desc = new HaTestDefDescription();
 
             List<InmhItemData> lessons = new ArrayList<InmhItemData>();
 
+            
+            new HaTestRunDao().getTestRunLessons(conn, testRun.getRunId());
             /**
              * For each session in prescription (aka, lesson in program)
              * 

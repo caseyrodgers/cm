@@ -26,6 +26,7 @@ public class CmDbTestCase extends DbTestCase {
      * @throws Exception
      */
     public int setupDemoAccount() throws Exception {
+        
         int uid = CmTestUtils.setupDemoAccount();
         
         _user = HaUser.lookUser(conn, uid, null);
