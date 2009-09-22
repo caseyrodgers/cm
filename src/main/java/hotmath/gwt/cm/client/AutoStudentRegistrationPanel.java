@@ -220,12 +220,10 @@ public class AutoStudentRegistrationPanel extends ResourceContainer {
             return;
         }
 
-        
         CmServiceAsync s = (CmServiceAsync) Registry.get("cmService");
         s.execute(new CreateAutoRegistrationAccountAction(UserInfo.getInstance().getUid(), userName.getValue().trim(), password.getValue().trim()), new AsyncCallback<RpcData>() {
             @Override
             public void onSuccess(final RpcData rdata) {
-                
                 
                 final CmWindow win = new CmWindow();
                 win.setSize(320,200);
@@ -262,8 +260,10 @@ public class AutoStudentRegistrationPanel extends ResourceContainer {
             public void onFailure(Throwable caught) {
                 caught.printStackTrace();
                 String msg = caught.getMessage();
-                if(msg.indexOf("already in use") > -1)
+                if(msg.indexOf("passcode you entered") > -1)
                     msg = "Please choose a different password.";
+                if(msg.indexOf("name you entered") > -1)
+                    msg = "This name is taken by you or another person, if it was you login with your current password.";
                 
                 CatchupMathTools.showAlert(msg);
             }
