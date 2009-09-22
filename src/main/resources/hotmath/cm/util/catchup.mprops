@@ -3,9 +3,8 @@
 #
 
 
-#################
-## CmStudentDao
 ################
+## CmStudentDao
 ################
 
 .key=STUDENT_SUMMARY
@@ -91,15 +90,23 @@ where tr.run_id = ?
 and rr.run_id = tr.run_id 
 and tr.test_id = t.test_id
 and t.test_def_id = td.test_def_id and im.guid = rr.pid
-    
-    
+
+###
+.key=CHECK_DUPLICATE_PASSCODE
+
+select 1 from HA_USER where user_passcode = ? and uid <> ? and admin_id = ?
+
+###
+.key=CHECK_DUPLICATE_NAME
+
+select 1 from HA_USER where user_name = ? and uid <> ? and admin_id = ? and is_active = 1    
     
         
-        
+#############
 ##
 ## CmAdminDao
 ##
-
+#############
 
 .key=SUBJECT_CHAPTERS_SQL
 
