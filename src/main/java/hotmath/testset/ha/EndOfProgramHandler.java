@@ -48,7 +48,7 @@ public class EndOfProgramHandler {
         Connection conn=null;
         try {
             conn = HMConnectionPool.getConnection();
-            StudentUserProgramModel programCurr = dao.loadProgramInfo(conn,student.getUid());
+            StudentUserProgramModel programCurr = dao.loadProgramInfoCurrent(conn,student.getUid());
             
             if(programCurr.getTestDefId() == CmProgram.PREALG_PROF.getDefId()) {
                 updateProgram(CmProgram.ALG1_PROF.getSubject(),CmProgram.ALG1_PROF.getProgramId(),null);                
@@ -93,7 +93,7 @@ public class EndOfProgramHandler {
             }
 
             
-            StudentUserProgramModel programNext = dao.loadProgramInfo(conn,student.getUid());
+            StudentUserProgramModel programNext = dao.loadProgramInfoCurrent(conn,student.getUid());
             return programNext;
         }
         finally {

@@ -239,7 +239,7 @@ public class PrescriptionServiceImpl extends RemoteServiceServlet implements Pre
     }
 
     public ArrayList<RpcData> getWhiteboardData(int uid, String pid) throws CmRpcException {
-
+        
         ArrayList<RpcData> data = new ArrayList<RpcData>();
         Connection conn = null;
         PreparedStatement pstat = null;

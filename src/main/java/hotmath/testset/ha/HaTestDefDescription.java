@@ -7,6 +7,7 @@ import hotmath.assessment.AssessmentPrescription.SessionData;
 import hotmath.cm.util.CmCacheManager;
 import hotmath.cm.util.CmCacheManager.CacheName;
 import hotmath.gwt.cm_admin.server.model.CmAdminDao;
+import hotmath.gwt.cm_admin.server.model.CmStudentDao;
 import hotmath.inmh.INeedMoreHelpItem;
 import hotmath.util.HMConnectionPool;
 import hotmath.util.sql.SqlUtilities;
@@ -144,6 +145,13 @@ public class HaTestDefDescription {
         return getHaTestDefDescription(testName, quizSegment, null);
 
     }
+    
+    static public HaTestDefDescription getHaTestDefDescription(Connection conn, Integer runId) throws Exception {
+        HaTestRun run = HaTestRun.lookupTestRun(conn, runId);
+        
+        HaTestConfig config = run.getHaTest().getProgramInfo().getConfig();
+        return getHaTestDefDescription(run.getHaTest().getTestDef().getName(), run.getHaTest().getSegment(), config);
+    }
 
     static public HaTestDefDescription getHaTestDefDescription(String testName, Integer quizSegment, HaTestConfig config)
             throws Exception {
@@ -163,8 +171,7 @@ public class HaTestDefDescription {
 
             HaTestDefDao dao = new HaTestDefDao();
             
-            int totalPidsInProgram = dao.getTestIds(conn, def.getTextCode(), def.getChapter(), 1, 0, 99999, config)
-                    .size();
+            int totalPidsInProgram = dao.getTestIds(conn, def.getTextCode(), def.getChapter(), 0, 0, 99999, config).size();
             int pidsInASegment = totalPidsInProgram / def.getTotalSegmentCount();
 
             int end = pidsInASegment * quizSegment;
@@ -175,7 +182,7 @@ public class HaTestDefDescription {
              * program
              * 
              */
-            List<String> pids = dao.getTestIds(conn, def.getTextCode(), def.getChapter(), 1, start, end, config);
+            List<String> pids = dao.getTestIds(conn, def.getTextCode(), def.getChapter(), 0, start, end, config);
 
             /**
              * Create a dummy TestRun

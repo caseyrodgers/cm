@@ -52,7 +52,7 @@ public class GetQuizHtmlCommand implements ActionHandler<GetQuizHtmlAction, RpcD
             // StudentModel sm = dao.getStudentModel(uid);
             //HaUser user = HaUser.lookUser(conn, uid,null);
             
-            StudentUserProgramModel programInfo = dao.loadProgramInfo(conn, uid);
+            StudentUserProgramModel programInfo = dao.loadProgramInfoCurrent(conn, uid);
 
             
             String testName = programInfo.getTestName();

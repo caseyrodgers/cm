@@ -27,7 +27,7 @@ public class GetUserInfoCommand implements ActionHandler<GetUserInfoAction, User
             CmStudentDao dao = new CmStudentDao();
             StudentModelI sm = dao.getStudentModelBasic(conn, action.getUserId());
             
-            StudentUserProgramModel si = dao.loadProgramInfo(conn, action.getUserId());
+            StudentUserProgramModel si = dao.loadProgramInfoCurrent(conn, action.getUserId());
             StudentActiveInfo activeInfo = dao.loadActiveInfo(conn, action.getUserId());
             String subscriberId = new CmAdminDao().getAccountInfo(sm.getAdminUid()).getSubscriberId();
             HotMathSubscriber sub = HotMathSubscriberManager.findSubscriber(subscriberId); 

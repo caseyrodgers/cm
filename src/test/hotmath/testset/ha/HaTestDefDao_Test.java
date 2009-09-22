@@ -24,7 +24,7 @@ public class HaTestDefDao_Test extends CmDbTestCase {
         
         CmStudentDao dao = new CmStudentDao();
         dao.assignProgramToStudent(conn,uid, CmProgram.ALG2_CHAP,"Integers");
-        StudentUserProgramModel spi = dao.loadProgramInfo(conn,uid);
+        StudentUserProgramModel spi = dao.loadProgramInfoCurrent(conn,uid);
         
         HaTestDefDao testDefDao = new HaTestDefDao();
         ChapterInfo chapterInfo = testDefDao.getChapterInfo(conn,spi);
@@ -37,7 +37,7 @@ public class HaTestDefDao_Test extends CmDbTestCase {
         
         CmStudentDao dao = new CmStudentDao();
         dao.assignProgramToStudent(conn,uid, CmProgram.PREALG_CHAP,"Integers");
-        StudentUserProgramModel spi = dao.loadProgramInfo(conn,uid);
+        StudentUserProgramModel spi = dao.loadProgramInfoCurrent(conn,uid);
         
         HaTestDefDao testDefDao = new HaTestDefDao();
         ChapterInfo chapterInfo = testDefDao.getChapterInfo(conn,spi);
@@ -50,7 +50,7 @@ public class HaTestDefDao_Test extends CmDbTestCase {
         int uid = setupDemoAccount();
         
         CmStudentDao dao = new CmStudentDao();
-        StudentUserProgramModel spi = dao.loadProgramInfo(conn,uid);
+        StudentUserProgramModel spi = dao.loadProgramInfoCurrent(conn,uid);
         
         HaTestDefDao testDefDao = new HaTestDefDao();
         

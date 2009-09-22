@@ -73,7 +73,7 @@ public class CreateAutoRegistrationAccountCommand implements ActionHandler<Creat
         studentModel = dao.addStudent(conn, studentModel);
 
         
-        StudentUserProgramModel si = dao.loadProgramInfo(conn, studentModel.getUid());
+        StudentUserProgramModel si = dao.loadProgramInfoCurrent(conn, studentModel.getUid());
         StudentActiveInfo activeInfo = dao.loadActiveInfo(conn, studentModel.getUid());
         
         String subscriberId = new CmAdminDao().getAccountInfo(studentModel.getAdminUid()).getSubscriberId();

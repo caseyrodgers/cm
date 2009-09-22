@@ -174,7 +174,7 @@ public class StudentDetailsWindow extends CmWindow {
             if (sam != null) {
                 String desc = sam.getProgramDescr();
                 String dl = desc.toLowerCase();
-                if (dl.indexOf("chap") > -1 || dl.indexOf("auto") > -1)
+                if (dl.indexOf("auto") > -1)
                     _showTopicsBtn.disable();
                 else
                     _showTopicsBtn.enable();

@@ -57,7 +57,7 @@ public class CmStudentDao_Test extends CmDbTestCase {
     }
     
     public void testGetStudentProgram() throws Exception {
-        StudentUserProgramModel pi = _dao.loadProgramInfo(conn, TEST_ID);
+        StudentUserProgramModel pi = _dao.loadProgramInfoCurrent(conn, TEST_ID);
         assertNotNull(pi);
         assertTrue(pi.getTestDefId() > 0);
     }

@@ -84,7 +84,7 @@ order by s.view_time asc, s.test_run_id asc, s.session_number asc
     
 .key=TEST_RESULTS
 
-select td.test_name, t.test_segment, im.file, rr.pid, rr.answer_status
+select td.test_name, t.test_segment,im.file, rr.pid, rr.answer_status
 from HA_TEST_DEF td, HA_TEST t, HA_TEST_RUN tr, HA_TEST_RUN_RESULTS rr, inmh_map im
 where tr.run_id = ? 
 and rr.run_id = tr.run_id 
@@ -129,13 +129,6 @@ where sd.id = td.subj_id and td.is_active = 1
 and td.prog_id = ? and sd.for_school = ?
 
 
-   
-        
-        
-        
-        
-        
-        
         
         
 ## 
@@ -168,3 +161,121 @@ JOIN  HA_ADMIN a ON a.aid = u.admin_id
 JOIN SUBSCRIBERS s ON s.id = a.subscriber_id
  
        
+       
+##
+##       
+## Class: HaTest
+##
+## load information about a given test
+## NOTE: join to CM_USER_PROGRAM to pick
+##       up program info used to created test
+##       (is outer for backward compatibility)
+
+.key=HA_TEST_LOAD
+
+select t.*,
+       c.id          as prog_id,
+       u.admin_id    as admin_id,
+       c.create_date as prog_create_date,
+       c.test_def_id as prog_test_def_id,
+       c.test_config_json,
+       d.test_name   as prog_test_name
+from   HA_TEST t
+       join HA_USER u
+         on u.uid = t.user_id
+       left join CM_USER_PROGRAM c
+         on c.id = t.user_prog_id
+       left join HA_TEST_DEF d
+         on d.test_def_id = c.test_def_id
+where test_id = ?
+
+
+
+       
+       
+       
+##
+## Class: HaTestDefDescription
+## 
+## sql used to load program info for a given test
+
+
+.key=LOAD_PROGRAM_INFO_FOR_TEST
+
+select c.id,
+       c.user_id,
+       c.pass_percent,
+       c.test_def_id,
+       c.test_config_json,       
+       d.test_name,
+       u.admin_id
+from   CM_USER_PROGRAM c
+       join HA_TEST t
+         on c.id = t.user_prog_id
+       join HA_TEST_DEF d
+         on d.test_def_id = c.test_def_id
+       join HA_USER u
+         on u.uid = t.user_id
+where  t.test_id = ?
+
+
+
+       
+##
+## Class: HaUser
+##
+## sql used to lookup a given user
+
+.key=HA_USER_LOOKUP_USER
+
+select s.type,
+       u.uid,
+       u.user_name,
+       u.active_run_id,
+       u.active_test_id,
+       u.active_segment,
+       u.active_run_session,
+       u.is_show_work_required,
+       d.test_name as assigned_test_name,
+       p.test_config_json,
+       gui_background_style,
+       p.pass_percent
+from   HA_USER u
+       inner join HA_TEST_DEF d
+         on u.test_def_id = d.test_def_id
+       join HA_ADMIN a
+         on u.admin_id = a.aid
+       join SUBSCRIBERS s
+         on a.subscriber_id = s.id
+       join CM_USER_PROGRAM p
+         on (p.user_id = u.uid
+             and p.id = u.user_prog_id)
+             
+             
+             
+             
+##
+##  Class: HaTestRun 
+##
+##
+
+
+.key=TEST_RUN_LOOKUP
+
+
+select t.*,
+       r.*,
+       s.pid,
+       s.answer_status,
+       s.answer_index,
+       s.rid,
+       r.is_passing
+from   HA_TEST_RUN r
+       inner join HA_TEST t
+         on r.test_id = t.test_id
+       left join HA_TEST_RUN_RESULTS s
+         on s.run_id = r.run_id
+where  r.run_id = ?
+
+
+             

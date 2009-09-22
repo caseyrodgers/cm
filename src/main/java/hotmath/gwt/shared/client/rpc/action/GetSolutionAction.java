@@ -31,4 +31,9 @@ public class GetSolutionAction implements Action<RpcData> {
         this.pid = pid;
     }
 
+    @Override
+    public String toString() {
+        return "GetSolutionAction [pid=" + pid + ", uid=" + uid + "]";
+    }
+
 }

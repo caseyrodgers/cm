@@ -9,6 +9,7 @@ import hotmath.inmh.INeedMoreHelpItem;
 import hotmath.inmh.INeedMoreHelpManager;
 import hotmath.testset.ha.HaTest;
 import hotmath.testset.ha.HaTestRun;
+import hotmath.testset.ha.HaTestRunDao;
 import hotmath.util.HMConnectionPool;
 import hotmath.util.sql.SqlUtilities;
 
@@ -158,6 +159,14 @@ public class AssessmentPrescription {
                sessNum++;
             }
         }
+        
+        
+        /** Add all lesson names assigned to this prescription 
+         *  to the HaTestRunLesson object.  This table is used 
+         *  as a quick method of accessing the lessons assigned
+         *  to a testRun without having to recreate the prescription.
+         */
+        new HaTestRunDao().addLessonsToTestRun(conn,testRun, _sessions);
     }
 
     /** Return all INMH items that are referenced by session data

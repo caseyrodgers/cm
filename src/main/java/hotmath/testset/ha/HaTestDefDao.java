@@ -196,7 +196,7 @@ public class HaTestDefDao {
                  sql = "SELECT problemindex " + " FROM   SOLUTIONS s "
                          + "  INNER JOIN BOOK_TOC b on b.textcode = s.booktitle " + " WHERE s.BOOKTITLE = ? "
                          + " and   b.title = ? " + " and   b.level = 2 "
-                         + " and   (s.chaptertitle = b.title_number && s.SECTIONTITLE = ?) "
+                         + " and   (s.chaptertitle = b.title_number AND s.SECTIONTITLE = ?) "
                          + " and  problemnumber between ? and ? ";
              } else {
                  

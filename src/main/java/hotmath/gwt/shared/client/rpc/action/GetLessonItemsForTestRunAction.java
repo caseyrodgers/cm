@@ -28,5 +28,10 @@ public class GetLessonItemsForTestRunAction implements Action<CmList<LessonItemM
         this.runId = runId;
     }
 
+    @Override
+    public String toString() {
+        return "GetLessonItemsForTestRunAction [runId=" + runId + "]";
+    }
+
 
 }

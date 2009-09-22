@@ -168,7 +168,7 @@ public class ActionDispatcher {
     public <T extends Response> T execute(Action<T> action) throws CmRpcException {
  
         long timeStart = System.currentTimeMillis();
-        logger.debug("RPC Action executing: " + action.getClass().getName());
+        logger.debug("RPC Action executing: " + action.getClass().getName() + "  toString: " + action.toString());
         Connection conn = null;
         try {
             Class clazz = commands.get(action.getClass());

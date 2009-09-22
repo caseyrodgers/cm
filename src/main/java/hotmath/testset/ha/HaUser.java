@@ -1,6 +1,7 @@
 package hotmath.testset.ha;
 
 import hotmath.HotMathException;
+import hotmath.cm.util.CmMultiLinePropertyReader;
 import hotmath.util.HMConnectionPool;
 import hotmath.util.sql.SqlUtilities;
 
@@ -223,15 +224,7 @@ public class HaUser extends HaBasicUserImpl {
 		PreparedStatement pstat=null;
 		ResultSet rs = null;
 		try {
-			String sql =
-			     "select s.type,u.uid, u.user_name, u.active_run_id,u.active_test_id,u.active_segment,u.active_run_session " +
-		         "       ,u.is_show_work_required, d.test_name as assigned_test_name, p.test_config_json, gui_background_style " +
-		         "       ,p.pass_percent " +
-		         "from HA_USER u INNER JOIN HA_TEST_DEF d on u.test_def_id = d.test_def_id " +
-		         "     JOIN HA_ADMIN a on u.admin_id = a.aid " +
-		         "     JOIN SUBSCRIBERS s on a.subscriber_id = s.id " +
-		         "     JOIN CM_USER_PROGRAM p ON (p.user_id = u.uid and p.id = u.user_prog_id) ";
-
+			String sql = CmMultiLinePropertyReader.getInstance().getProperty("HA_USER_LOOKUP_USER");
 			if(uid != null)
 				sql += " where u.uid = ?";
 			else 

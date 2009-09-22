@@ -198,13 +198,19 @@ public class HaTestRun {
         return runId + "," + runTime + ", " + haTest;
     }
 
+    
+    /** Look up and load existing test run named by runId
+     * 
+     * @param conn
+     * @param runId
+     * @return
+     * @throws HotMathException
+     */
     static public HaTestRun lookupTestRun(final Connection conn, int runId) throws HotMathException {
         PreparedStatement pstat = null;
         ResultSet rs = null;
         try {
-            String sql = "select t.*, r.*, s.pid, s.answer_status, s.answer_index, s.rid, r.is_passing "
-                    + " from   HA_TEST_RUN r INNER JOIN HA_TEST t on r.test_id = t.test_id "
-                    + " LEFT JOIN HA_TEST_RUN_RESULTS s on s.run_id = r.run_id " + " where r.run_id = ? ";
+            String sql = CmMultiLinePropertyReader.getInstance().getProperty("TEST_RUN_LOOKUP");
 
             pstat = conn.prepareStatement(sql);
 
