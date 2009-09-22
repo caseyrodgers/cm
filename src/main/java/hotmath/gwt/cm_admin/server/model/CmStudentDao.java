@@ -227,7 +227,7 @@ public class CmStudentDao {
 
             int count = ps.executeUpdate();
             if (count == 1) {
-                int stuUid = this.getLastInsertId(conn);
+                int stuUid = SqlUtilities.getLastInsertId(conn);
                 sm.setUid(stuUid);
                 addStudentProgram(sm);
                 updateStudent(sm);
@@ -585,7 +585,7 @@ public class CmStudentDao {
             int result = ps.executeUpdate();
             if (result == 1) {
                 // now get value of auto-increment id from CM_USER_PROGRAM
-                int val = getLastInsertId(conn);
+                int val = SqlUtilities.getLastInsertId(conn);
                 sm.setUserProgramId(val);
             }
             

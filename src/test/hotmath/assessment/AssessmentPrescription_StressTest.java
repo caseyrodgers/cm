@@ -26,7 +26,7 @@ public class AssessmentPrescription_StressTest extends CmDbTestCase {
              */
             int segments = testDef.getTotalSegmentCount();
             for(int x=1;x<segments;x++) {
-                HaTestDefDescription desc = HaTestDefDescription.getHaTestDefDescription(testDef.getName(), x);
+                HaTestDefDescription desc =  null; // HaTestDefDescription.getHaTestDefDescription(testDef.getName(), x);
                 System.out.println("Quiz: " + tn + ", " + x);
                 int cnt = desc.getLessonItems().size();
                 for(int i=0;i<cnt;i++) {

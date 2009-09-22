@@ -143,91 +143,93 @@ public class HaTestDefDescription {
      */ 
     static public HaTestDefDescription getHaTestDefDescription(final Connection conn, int runId) throws Exception {
         
+//        
+//        HaTestRun testRun = HaTestRun.lookupTestRun(conn, runId);
+//        HaTest test = testRun.getHaTest();
+//
+//        try {
+//            
+//            
+//            HaTestConfig config = test.getProgramInfo().getConfig();
+//
+//            HaTestDefDao dao = new HaTestDefDao();
+//            
+//            String chapter = test.getTestDef().getChapter();
+//            String textCode = test.getTestDef().getTextCode();
+//            int totalSegmentCount = test.getTestDef().getTotalSegmentCount();
+//            int totalPidsInProgram = dao.getTestIds(conn, textCode, chapter, 0, 0, 99999, config).size();
+//            int pidsInASegment = totalPidsInProgram / totalSegmentCount;
+//
+//            int end = pidsInASegment * test.getSegment();
+//            int start = end - pidsInASegment;
+//
+//            /**
+//             * Get list of all pids that are in this individal quiz in this
+//             * program
+//             * 
+//             */
+//            List<String> pids = dao.getTestIds(conn, textCode, chapter, 0, start, end, config);
+//
+//
+//            List<InmhItemData> lessons = new ArrayList<InmhItemData>();
+//
+//            
+//            new HaTestRunDao().getTestRunLessons(conn, testRun.getRunId());
+//            /**
+//             * For each session in prescription (aka, lesson in program)
+//             * 
+//             * Track both the lesson and each test pid that references it
+//             */
+//            for (AssessmentPrescriptionSession session : sessions) {
+//
+//                /**
+//                 * Dummy lessonData used as holder of information that will be
+//                 * used when accessing lessons belonging to a single session.
+//                 * 
+//                 */
+//                InmhItemData lessonData = new InmhItemData();
+//                INeedMoreHelpItem item = new INeedMoreHelpItem();
+//                item.setTitle(session.getTopic());
+//                lessonData.setINeedMoreHelpItem(item);
+//                /**
+//                 * For each pid that references this session, add it to tracking
+//                 * object.
+//                 */
+//                String file = null;
+//                for (SessionData sessionData : session.getSessionItems()) {
+//
+//                    /**
+//                     * All pids refernce the same Session title
+//                     * 
+//                     * @TODO: should this be inserted into session as getFile()?
+//                     */
+//                    if (file == null) {
+//                        file = sessionData.getItem().getFile();
+//                    }
+//
+//                    lessonData.getPids().add(sessionData.getPid());
+//                }
+//
+//                item.setFile(file);
+//
+//                /**
+//                 * Add this object to list of lesson names for this complete
+//                 * assessment (program).
+//                 */
+//                lessons.add(lessonData);
+//            }
+//
+//            desc.setPids(pids);
+//            desc.setTestDef(def);
+//            desc.setLessonItems(lessons);
+//
+//            CmCacheManager.getInstance().addToCache(CacheName.TEST_DEF_DESCRIPTION, keyName, desc);
+//
+//            return desc;
+//        } finally {
+//            SqlUtilities.releaseResources(null, null, conn);
+//        }
         
-        HaTestRun testRun = HaTestRun.lookupTestRun(conn, runId);
-        HaTest test = testRun.getHaTest();
-
-        try {
-            
-            
-            HaTestConfig config = test.getProgramInfo().getConfig();
-
-            HaTestDefDao dao = new HaTestDefDao();
-            
-            String chapter = test.getTestDef().getChapter();
-            String textCode = test.getTestDef().getTextCode();
-            int totalSegmentCount = test.getTestDef().getTotalSegmentCount();
-            int totalPidsInProgram = dao.getTestIds(conn, textCode, chapter, 0, 0, 99999, config).size();
-            int pidsInASegment = totalPidsInProgram / totalSegmentCount;
-
-            int end = pidsInASegment * test.getSegment();
-            int start = end - pidsInASegment;
-
-            /**
-             * Get list of all pids that are in this individal quiz in this
-             * program
-             * 
-             */
-            List<String> pids = dao.getTestIds(conn, textCode, chapter, 0, start, end, config);
-
-
-            List<InmhItemData> lessons = new ArrayList<InmhItemData>();
-
-            
-            new HaTestRunDao().getTestRunLessons(conn, testRun.getRunId());
-            /**
-             * For each session in prescription (aka, lesson in program)
-             * 
-             * Track both the lesson and each test pid that references it
-             */
-            for (AssessmentPrescriptionSession session : sessions) {
-
-                /**
-                 * Dummy lessonData used as holder of information that will be
-                 * used when accessing lessons belonging to a single session.
-                 * 
-                 */
-                InmhItemData lessonData = new InmhItemData();
-                INeedMoreHelpItem item = new INeedMoreHelpItem();
-                item.setTitle(session.getTopic());
-                lessonData.setINeedMoreHelpItem(item);
-                /**
-                 * For each pid that references this session, add it to tracking
-                 * object.
-                 */
-                String file = null;
-                for (SessionData sessionData : session.getSessionItems()) {
-
-                    /**
-                     * All pids refernce the same Session title
-                     * 
-                     * @TODO: should this be inserted into session as getFile()?
-                     */
-                    if (file == null) {
-                        file = sessionData.getItem().getFile();
-                    }
-
-                    lessonData.getPids().add(sessionData.getPid());
-                }
-
-                item.setFile(file);
-
-                /**
-                 * Add this object to list of lesson names for this complete
-                 * assessment (program).
-                 */
-                lessons.add(lessonData);
-            }
-
-            desc.setPids(pids);
-            desc.setTestDef(def);
-            desc.setLessonItems(lessons);
-
-            CmCacheManager.getInstance().addToCache(CacheName.TEST_DEF_DESCRIPTION, keyName, desc);
-
-            return desc;
-        } finally {
-            SqlUtilities.releaseResources(null, null, conn);
-        }
+        return null;
     }
 }
