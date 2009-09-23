@@ -2,6 +2,7 @@ package hotmath.gwt.shared.client.util;
 
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.service.CmServiceAsync;
+import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.data.CmAsyncRequest;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
 import hotmath.gwt.shared.client.eventbus.EventBus;
@@ -324,7 +325,16 @@ public class UserInfo implements IsSerializable, Response {
 
                 __instance = user;
                 
-                user.setActiveUser(true);
+                // if run_id passed in, then allow user to view_only
+                if(CmShared.getQueryParameter("run_id") != null) {
+                    int runId = Integer.parseInt(CmShared.getQueryParameter("run_id"));
+                    // setup user to masquerade as real user
+                    user.setRunId(runId);
+                    user.setActiveUser(false);
+                }
+                else {
+                    user.setActiveUser(true);
+                }
                 
                 Log.info("UserInfo object set to: " + user);
                 

@@ -150,14 +150,6 @@ public class CatchupMath implements EntryPoint {
      */
     private void processLoginComplete(final Integer uid) {
         
-        // if run_id passed in, then allow user to view_only
-        if(CmShared.getQueryParameter("run_id") != null) {
-            int runId = Integer.parseInt(CmShared.getQueryParameter("run_id"));
-            // setup user to masquerade as real user
-            UserInfo visiter = new UserInfo(0,0);
-            UserInfo.setInstance(visiter);
-            UserInfo.getInstance().setRunId(runId);
-        }
         
         /** Turn on debugging CSS */
         if(CmShared.getQueryParameter("debug") != null) {

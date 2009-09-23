@@ -751,6 +751,8 @@ public class CmStudentDao {
      * @param uid
      * @param includeSelfRegTemplate  If true, then is_auto_create_template will be considered
      * @return
+     * 
+     * 
      * @throws Exception
      */
     public StudentModel getStudentModel(Integer uid, Boolean includeSelfRegTemplate) throws Exception {
