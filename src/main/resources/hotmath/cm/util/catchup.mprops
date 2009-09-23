@@ -278,4 +278,22 @@ from   HA_TEST_RUN r
 where  r.run_id = ?
 
 
+
+
+##
+## Class: HaTestRunDao
+##
+##
+
+.key=TEST_RUN_LESSONS
+
+
+select lesson_name, lesson_file, pid
+from   HA_TEST_RUN_LESSON_PID p
+  join HA_TEST_RUN_LESSON l
+    on p.lid = l.id
+where l.run_id = ?
+order by lesson_name, pid
+
+
              

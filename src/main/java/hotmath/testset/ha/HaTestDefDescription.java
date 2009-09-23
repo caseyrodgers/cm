@@ -6,8 +6,6 @@ import hotmath.assessment.InmhItemData;
 import hotmath.assessment.AssessmentPrescription.SessionData;
 import hotmath.cm.util.CmCacheManager;
 import hotmath.cm.util.CmCacheManager.CacheName;
-import hotmath.gwt.cm_admin.server.model.CmAdminDao;
-import hotmath.gwt.cm_admin.server.model.CmStudentDao;
 import hotmath.inmh.INeedMoreHelpItem;
 import hotmath.util.HMConnectionPool;
 import hotmath.util.sql.SqlUtilities;
@@ -140,96 +138,128 @@ public class HaTestDefDescription {
      * @param testName
      * @return
      * @throws Exception
-     */ 
-    static public HaTestDefDescription getHaTestDefDescription(final Connection conn, int runId) throws Exception {
+     */
+    static public HaTestDefDescription getHaTestDefDescription(HaTestRun testRun) throws Exception {
+
+
+        String testName = testRun.getHaTest().getTestDef().getName();
+        HaTestConfig config = testRun.getHaTest().getProgramInfo().getConfig();
+        int quizSegment = testRun.getHaTest().getSegment();
         
-//        
-//        HaTestRun testRun = HaTestRun.lookupTestRun(conn, runId);
-//        HaTest test = testRun.getHaTest();
-//
-//        try {
-//            
-//            
-//            HaTestConfig config = test.getProgramInfo().getConfig();
-//
-//            HaTestDefDao dao = new HaTestDefDao();
-//            
-//            String chapter = test.getTestDef().getChapter();
-//            String textCode = test.getTestDef().getTextCode();
-//            int totalSegmentCount = test.getTestDef().getTotalSegmentCount();
-//            int totalPidsInProgram = dao.getTestIds(conn, textCode, chapter, 0, 0, 99999, config).size();
-//            int pidsInASegment = totalPidsInProgram / totalSegmentCount;
-//
-//            int end = pidsInASegment * test.getSegment();
-//            int start = end - pidsInASegment;
-//
-//            /**
-//             * Get list of all pids that are in this individal quiz in this
-//             * program
-//             * 
-//             */
-//            List<String> pids = dao.getTestIds(conn, textCode, chapter, 0, start, end, config);
-//
-//
-//            List<InmhItemData> lessons = new ArrayList<InmhItemData>();
-//
-//            
-//            new HaTestRunDao().getTestRunLessons(conn, testRun.getRunId());
-//            /**
-//             * For each session in prescription (aka, lesson in program)
-//             * 
-//             * Track both the lesson and each test pid that references it
-//             */
-//            for (AssessmentPrescriptionSession session : sessions) {
-//
-//                /**
-//                 * Dummy lessonData used as holder of information that will be
-//                 * used when accessing lessons belonging to a single session.
-//                 * 
-//                 */
-//                InmhItemData lessonData = new InmhItemData();
-//                INeedMoreHelpItem item = new INeedMoreHelpItem();
-//                item.setTitle(session.getTopic());
-//                lessonData.setINeedMoreHelpItem(item);
-//                /**
-//                 * For each pid that references this session, add it to tracking
-//                 * object.
-//                 */
-//                String file = null;
-//                for (SessionData sessionData : session.getSessionItems()) {
-//
-//                    /**
-//                     * All pids refernce the same Session title
-//                     * 
-//                     * @TODO: should this be inserted into session as getFile()?
-//                     */
-//                    if (file == null) {
-//                        file = sessionData.getItem().getFile();
-//                    }
-//
-//                    lessonData.getPids().add(sessionData.getPid());
-//                }
-//
-//                item.setFile(file);
-//
-//                /**
-//                 * Add this object to list of lesson names for this complete
-//                 * assessment (program).
-//                 */
-//                lessons.add(lessonData);
-//            }
-//
-//            desc.setPids(pids);
-//            desc.setTestDef(def);
-//            desc.setLessonItems(lessons);
-//
-//            CmCacheManager.getInstance().addToCache(CacheName.TEST_DEF_DESCRIPTION, keyName, desc);
-//
-//            return desc;
-//        } finally {
-//            SqlUtilities.releaseResources(null, null, conn);
-//        }
         
-        return null;
+        String keyName = testName + "_" + quizSegment + "_" + config;
+        HaTestDefDescription desc = (HaTestDefDescription) CmCacheManager.getInstance().retrieveFromCache(CacheName.TEST_DEF_DESCRIPTION, keyName);
+        if (desc != null)
+            return desc;
+
+        Connection conn = null;
+        try {
+            conn = HMConnectionPool.getConnection();
+
+            HaTestDef def = new HaTestDef(conn, testName);
+            if (config == null)
+                config = def.getTestConfig();
+
+            HaTestDefDao dao = new HaTestDefDao();
+            
+            int totalPidsInProgram = dao.getTestIds(conn, def.getTextCode(), def.getChapter(), 0, 0, 99999, config)
+                    .size();
+            int pidsInASegment = totalPidsInProgram / def.getTotalSegmentCount();
+
+            int end = pidsInASegment * quizSegment;
+            int start = end - pidsInASegment;
+
+            /**
+             * Get list of all pids that are in this individal quiz in this
+             * program
+             * 
+             */
+            List<String> pids = dao.getTestIds(conn, def.getTextCode(), def.getChapter(), 0, start, end, config);
+
+            /**
+             * Create a dummy TestRun
+             * 
+             */
+            HaTestRun testRunDummy = new HaTestRun();
+            HaTest test = new HaTest();
+            test.setTestDef(def);
+            testRunDummy.setHaTest(test);
+            /**
+             * put all pids as results in this test run
+             * 
+             */
+            for (String p : pids) {
+                HaTestRunResult r = new HaTestRunResult();
+                r.setPid(p);
+                testRunDummy.getTestRunResults().add(r);
+            }
+
+            /**
+             * Create a new prescription based on this test run
+             * 
+             */
+            AssessmentPrescription pres = new AssessmentPrescription(conn, testRunDummy);
+
+            List<AssessmentPrescriptionSession> sessions = pres.getSessions();
+
+            desc = new HaTestDefDescription();
+
+            List<InmhItemData> lessons = new ArrayList<InmhItemData>();
+
+            
+            /**
+             * For each session in prescription (aka, lesson in program)
+             * 
+             * Track both the lesson and each test pid that references it
+             */
+            for (AssessmentPrescriptionSession session : sessions) {
+
+                /**
+                 * Dummy lessonData used as holder of information that will be
+                 * used when accessing lessons belonging to a single session.
+                 * 
+                 */
+                InmhItemData lessonData = new InmhItemData();
+                INeedMoreHelpItem item = new INeedMoreHelpItem();
+                item.setTitle(session.getTopic());
+                lessonData.setINeedMoreHelpItem(item);
+                /**
+                 * For each pid that references this session, add it to tracking
+                 * object.
+                 */
+                String file = null;
+                for (SessionData sessionData : session.getSessionItems()) {
+
+                    /**
+                     * All pids refernce the same Session title
+                     * 
+                     * @TODO: should this be inserted into session as getFile()?
+                     */
+                    if (file == null) {
+                        file = sessionData.getItem().getFile();
+                    }
+
+                    lessonData.getPids().add(sessionData.getPid());
+                }
+
+                item.setFile(file);
+
+                /**
+                 * Add this object to list of lesson names for this complete
+                 * assessment (program).
+                 */
+                lessons.add(lessonData);
+            }
+
+            desc.setPids(pids);
+            desc.setTestDef(def);
+            desc.setLessonItems(lessons);
+
+            CmCacheManager.getInstance().addToCache(CacheName.TEST_DEF_DESCRIPTION, keyName, desc);
+
+            return desc;
+        } finally {
+            SqlUtilities.releaseResources(null, null, conn);
+        }
     }
 }

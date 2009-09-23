@@ -16,6 +16,7 @@ import hotmath.gwt.shared.client.util.CmRpcException;
 import hotmath.testset.ha.CmProgram;
 import hotmath.testset.ha.HaTestConfig;
 import hotmath.testset.ha.HaTestDefDescription;
+import hotmath.testset.ha.HaTestRun;
 import hotmath.testset.ha.StudentUserProgramModel;
 import hotmath.util.HMConnectionPool;
 import hotmath.util.sql.SqlUtilities;
@@ -1018,26 +1019,26 @@ public class CmStudentDao {
      * @throws Exception
      */
     private List<LessonItemModel> loadLessonItems(Integer runId, ResultSet rs) throws Exception {
+        
     	List<LessonItemModel> l = new ArrayList<LessonItemModel>();
-    	
-		String testName = rs.getString(1);
-		int testSegment = rs.getInt(2);
 
 	    HaTestDefDescription tdDesc = null;
 	    Connection conn = null;
 	    try {
 	        conn = HMConnectionPool.getConnection();
-	        tdDesc = HaTestDefDescription.getHaTestDefDescription(conn, runId);
+	        
+	        HaTestRun testRun = HaTestRun.lookupTestRun(conn, runId);	        
+	        tdDesc = HaTestDefDescription.getHaTestDefDescription(testRun);
 	    }
 	    finally {
 	        SqlUtilities.releaseResources(null,null,conn);
 	    }
 
 		// identify incomplete topics
-		Set <String> topicFileSet = new HashSet<String>();
+		Set <String> assignedTopics = new HashSet<String>();
 		do {
 			if (!"correct".equalsIgnoreCase(rs.getString("answer_status"))) {
-				topicFileSet.add(rs.getString("file"));
+			    assignedTopics.add(rs.getString("file"));
 			}
 		} while (rs.next());
 		
@@ -1046,7 +1047,7 @@ public class CmStudentDao {
     		mdl.setName(item.getInmhItem().getTitle());
     		String file = item.getInmhItem().getFile();
     		mdl.setFile(file);
-    		mdl.setPrescribed((topicFileSet.contains(file))?"Prescribed":"");
+    		mdl.setPrescribed((assignedTopics.contains(file))?"Prescribed":"");
     		l.add(mdl);
     	}
     	return l;

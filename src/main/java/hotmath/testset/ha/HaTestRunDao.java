@@ -2,6 +2,7 @@ package hotmath.testset.ha;
 
 import hotmath.assessment.AssessmentPrescriptionSession;
 import hotmath.assessment.AssessmentPrescription.SessionData;
+import hotmath.cm.util.CmMultiLinePropertyReader;
 import hotmath.util.sql.SqlUtilities;
 
 import java.sql.Connection;
@@ -13,6 +14,9 @@ import java.util.List;
 public class HaTestRunDao {
     
     public void addLessonsToTestRun(final Connection conn, HaTestRun testRun, List<AssessmentPrescriptionSession> sessions) throws Exception  {
+        
+        if(testRun.getRunId() == null)
+            return;
         
         PreparedStatement pstat=null;
         try {
@@ -59,26 +63,42 @@ public class HaTestRunDao {
     }
     
     
+    /** Return all lessons assignged to this run
+     * 
+     * @param conn
+     * @param runId
+     * @return
+     * @throws Exception
+     */
     public List<TestRunLessonModel>  getTestRunLessons(final Connection conn, Integer runId) throws Exception {
         
         List<TestRunLessonModel> lessons = new ArrayList<TestRunLessonModel>();
         PreparedStatement pstat=null;
+        PreparedStatement pstat2 = null;
         try {
-            String sql = "select * from HA_TEST_RUN_LESSON where run_id = ? order by id";
+            String sql = CmMultiLinePropertyReader.getInstance().getProperty("TEST_RUN_LESSONS");
             pstat = conn.prepareStatement(sql);
             pstat.setInt(1, runId);
             
-            ResultSet rs = pstat.executeQuery();
-            while(rs.next()) {
-                
-                TestRunLessonModel im = new TestRunLessonModel(rs.getString("lesson_name"),rs.getString("lesson_file"));
-                lessons.add(im);
-            }
             
+            String currLesson=null;
+            ResultSet rs = pstat.executeQuery();
+            TestRunLessonModel im = null;
+            while(rs.next()) {
+                String lesson = rs.getString("lesson_name");
+                if(currLesson == null || !currLesson.equals(lesson)) {
+                    im = new TestRunLessonModel(lesson,rs.getString("lesson_file"));
+                    lessons.add(im);
+                    currLesson = lesson;
+                }
+                
+                im.getPids().add(rs.getString("pid"));
+            }
             return lessons;
         }
         finally {
             SqlUtilities.releaseResources(null,pstat,null);
+            SqlUtilities.releaseResources(null,pstat2,null);
         }        
     }
     

@@ -22,7 +22,7 @@ public class HaTestDefDescription_Test extends CmDbTestCase {
             _testRun = setupDemoAccountTestRun();
     }
     public void testGetLessonsForChapters() throws Exception {
-        HaTestDefDescription tdDesc = HaTestDefDescription.getHaTestDefDescription(conn, _testRun.getRunId());
+        HaTestDefDescription tdDesc = HaTestDefDescription.getHaTestDefDescription(_testRun);
         for (InmhItemData item : tdDesc.getLessonItems()) {
             String file = item.getInmhItem().getFile();
             assertNotNull(file);
@@ -36,7 +36,7 @@ public class HaTestDefDescription_Test extends CmDbTestCase {
      * @throws Exception
      */
     public void testGetLessonNamesZero() throws Exception {
-        HaTestDefDescription tdDesc = HaTestDefDescription.getHaTestDefDescription(conn, -1);
+        HaTestDefDescription tdDesc = HaTestDefDescription.getHaTestDefDescription(_testRun);
         assertTrue(tdDesc.getLessonItems().size() == 0);
     }
 

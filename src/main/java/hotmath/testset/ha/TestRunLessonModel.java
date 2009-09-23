@@ -1,10 +1,22 @@
 package hotmath.testset.ha;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class TestRunLessonModel {
     
     String lesson;
     String file;
+    List<String> pids = new ArrayList<String>();
     
+
+    public List<String> getPids() {
+        return pids;
+    }
+
+    public void setPids(List<String> pids) {
+        this.pids = pids;
+    }
 
     public TestRunLessonModel() {}
 
