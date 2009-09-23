@@ -2,7 +2,6 @@ package hotmath.testset.ha;
 
 import hotmath.assessment.AssessmentPrescriptionSession;
 import hotmath.assessment.AssessmentPrescription.SessionData;
-import hotmath.gwt.cm_tools.client.model.LessonItemModel;
 import hotmath.util.sql.SqlUtilities;
 
 import java.sql.Connection;
@@ -27,14 +26,22 @@ public class HaTestRunDao {
                 pstat.setString(2, s.getTopic());
                 pstat.setString(3, s.getSessionCategories().get(0).getFile());
                 
+                
+                if(pstat.executeUpdate() != 1)
+                    throw new Exception("Could not save record for unknown reason: " + testRun);
+
+                
+                int lid = SqlUtilities.getLastInsertId(conn);
+                
                 // write out each pid lesson references
                 PreparedStatement pstat2=null;
                 try {
-                    pstat2 = conn.prepareStatement("insert into HA_TEST_RUN_LESSON_PID(pid, run_id)values(?,?)");
+                    pstat2 = conn.prepareStatement("insert into HA_TEST_RUN_LESSON_PID(pid, lid, run_id)values(?,?,?)");
                     
                     for(SessionData sd: s.getSessionItems()) {
                         pstat2.setString(1, sd.getPid());
-                        pstat2.setInt(2, testRun.getRunId());
+                        pstat2.setInt(2, lid);
+                        pstat2.setInt(3, testRun.getRunId());
                         
                         if( pstat2.executeUpdate() != 1)
                             throw new Exception("Could not add to HA_TEST_RUN_LESSON_PID for unknown reasons");
@@ -44,8 +51,6 @@ public class HaTestRunDao {
                     SqlUtilities.releaseResources(null, pstat2,null);
                 }
                 
-                if(pstat.executeUpdate() != 1)
-                    throw new Exception("Could not save record for unknown reason: " + testRun);
             }
         }
         finally {
