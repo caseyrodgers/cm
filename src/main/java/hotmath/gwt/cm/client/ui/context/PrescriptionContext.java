@@ -22,11 +22,14 @@ import hotmath.gwt.shared.client.data.CmAsyncRequestImplDefault;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
 import hotmath.gwt.shared.client.eventbus.EventBus;
 import hotmath.gwt.shared.client.rpc.action.AutoAdvanceUserAction;
+import hotmath.gwt.shared.client.rpc.action.MarkPrescriptionLessonAsViewedAction;
+import hotmath.gwt.shared.client.util.RpcData;
 import hotmath.gwt.shared.client.util.UserInfo;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.Registry;
 import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
 import com.extjs.gxt.ui.client.event.BaseEvent;
@@ -167,13 +170,22 @@ public class PrescriptionContext implements CmContext {
     }
 
     private void doMoveNextAux(boolean hasPrescription) {
-
+        
+        
         /**
          * The current session number
          * 
          */
         int sessionNumber = (hasPrescription) ? prescriptionData.getCurrSession().getSessionNumber() : 0;
         boolean thereAreNoMoreSessions = (!hasPrescription) || !((sessionNumber + 1) < (prescriptionData.getSessionTopics().size()));
+        
+        
+        /** Mark this lesson as being complete
+         * 
+         */
+        if(UserInfo.getInstance().isActiveUser())
+            markLessonAsComplete(UserInfo.getInstance().getRunId(),sessionNumber);        
+        
 
         correctPercent = UserInfo.getInstance().getCorrectPercent();
         if (!hasPrescription || thereAreNoMoreSessions) {
@@ -191,6 +203,7 @@ public class PrescriptionContext implements CmContext {
             String msg = "";
             int testSegmentToLoad = 0;
             if (correctPercent >= passPercentRequired) {
+                
                 // User has passed this section, and is ready to move to next quiz/autoAdvance
                 if (UserInfo.getInstance().isDemoUser()) {
                     showDemoCompleteMessage();
@@ -206,9 +219,6 @@ public class PrescriptionContext implements CmContext {
                             UserInfo.getInstance().setTestSegment(UserInfo.getInstance().getTestSegment() + 1);
                             
                             CmHistoryManager.getInstance().addHistoryLocation(new CmLocation(LocationType.QUIZ, UserInfo.getInstance().getTestSegment()));
-                            
-                            
-                            // CatchupMath.getThisInstance().showQuizPanel();
                         }
                     });
                 } else {
@@ -248,6 +258,29 @@ public class PrescriptionContext implements CmContext {
             
             // prescriptionCm.getAsyncDataFromServer(sessionNumber);
         }
+    }
+    
+    
+    /** Mark this user as having completed this lesson 
+     * 
+     * @param runId
+     * @param session
+     */
+    private void markLessonAsComplete(final int runId, final int session) {
+        CmServiceAsync s = (CmServiceAsync) Registry.get("cmService");
+        s.execute(new MarkPrescriptionLessonAsViewedAction(prescriptionData.getCurrSession().getTopic(), runId, session), new AsyncCallback<RpcData>() {
+            @Override
+            public void onSuccess(RpcData userAdvance) {
+                Log.info("MarkPrescriptionLessonAsViewedAction complete: " + userAdvance);
+            }
+
+            @Override
+            public void onFailure(Throwable caught) {
+                CatchupMathTools.setBusy(false);
+                String msg = caught.getMessage();
+                CatchupMathTools.showAlert(msg);
+            }
+        });
     }
 
     /**

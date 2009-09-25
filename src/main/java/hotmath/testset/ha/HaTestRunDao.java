@@ -103,4 +103,31 @@ public class HaTestRunDao {
     }
     
     
+    /** Mark this lesson as being viewed.
+     * 
+     *  set the date completion, but only set
+     *  if currently unset.
+     *  
+     * @param conn
+     * @param runId
+     * @param lesson
+     * @throws Exception
+     */
+    public void markLessonAsViewed(final Connection conn, Integer runId, String lesson) throws Exception {
+        
+        PreparedStatement pstat = null;
+        try {
+            String sql = "update HA_TEST_RUN_LESSON SET date_completed = now() where run_id = ? and lesson_name = ? and date_completed is null";
+            pstat = conn.prepareStatement(sql);
+            
+            pstat.setInt(1, runId);
+            pstat.setString(2,lesson);
+            
+            pstat.executeUpdate();
+        }
+        finally {
+            SqlUtilities.releaseResources(null, pstat, null);
+        }
+    }
+    
 }

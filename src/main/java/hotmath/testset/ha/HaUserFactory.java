@@ -274,7 +274,7 @@ public class HaUserFactory {
             CmStudentDao cmDao = new CmStudentDao();
 
             StudentModel student = new StudentModel();
-            student.setName("Student");
+            student.setName("Student: " + System.currentTimeMillis());
             student.setPasscode(demoPwd);
             student.setAdminUid(adminId);
             student.setGroupId("1");

@@ -28,6 +28,7 @@ public class RpcData implements Response, IsSerializable {
         rpcData = new HashMap<String, String>();
     }
 
+    
     public RpcData(List<String> names) {
         this();
         for (String n : names) {

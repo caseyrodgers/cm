@@ -254,7 +254,6 @@ public class HaUser extends HaBasicUserImpl {
 			user.setPassPercentRequired(rs.getInt("pass_percent"));
 			
 			user.setUserAccountType(rs.getString("type"));
-			    
 			
 			return user;
 		}
@@ -268,6 +267,8 @@ public class HaUser extends HaBasicUserImpl {
 			SqlUtilities.releaseResources(rs,pstat,null);
 		}
 	}
+	
+	
 	
 	static public HaUser lookupUserByPasscode(String passCode) throws HotMathException {
 		Connection conn=null;

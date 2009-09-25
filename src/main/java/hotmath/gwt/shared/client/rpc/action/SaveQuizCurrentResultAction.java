@@ -9,6 +9,12 @@ public class SaveQuizCurrentResultAction implements Action<RpcData> {
     int testId;
     boolean correct;
     int answerIndex;
+    @Override
+    public String toString() {
+        return "SaveQuizCurrentResultAction [answerIndex=" + answerIndex + ", correct=" + correct + ", pid=" + pid
+                + ", testId=" + testId + "]";
+    }
+
     String pid;
     
     public SaveQuizCurrentResultAction() {}

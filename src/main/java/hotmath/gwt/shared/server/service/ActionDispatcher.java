@@ -28,6 +28,7 @@ import hotmath.gwt.shared.server.service.command.GetStateStandardsCommand;
 import hotmath.gwt.shared.server.service.command.GetSummariesForActiveStudentsCommand;
 import hotmath.gwt.shared.server.service.command.GetUserInfoCommand;
 import hotmath.gwt.shared.server.service.command.GetViewedInmhItemsCommand;
+import hotmath.gwt.shared.server.service.command.MarkPrescriptionLessonAsViewedCommand;
 import hotmath.gwt.shared.server.service.command.ProcessLoginRequestCommand;
 import hotmath.gwt.shared.server.service.command.SaveAutoRegistrationCommand;
 import hotmath.gwt.shared.server.service.command.SaveFeedbackCommand;
@@ -128,6 +129,7 @@ public class ActionDispatcher {
         addCommand(ProcessLoginRequestCommand.class);
         addCommand(GetSummariesForActiveStudentsCommand.class);
         addCommand(GetReviewHtmlCommand.class);
+        addCommand(MarkPrescriptionLessonAsViewedCommand.class);
     }
     
     

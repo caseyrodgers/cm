@@ -27,6 +27,7 @@ import hotmath.gwt.shared.client.rpc.action.GetStateStandardsAction;
 import hotmath.gwt.shared.client.rpc.action.GetSummariesForActiveStudentsAction;
 import hotmath.gwt.shared.client.rpc.action.GetUserInfoAction;
 import hotmath.gwt.shared.client.rpc.action.GetViewedInmhItemsAction;
+import hotmath.gwt.shared.client.rpc.action.MarkPrescriptionLessonAsViewedAction;
 import hotmath.gwt.shared.client.rpc.action.ProcessLoginRequestAction;
 import hotmath.gwt.shared.client.rpc.action.SaveQuizCurrentResultAction;
 import hotmath.gwt.shared.client.rpc.action.SaveWhiteboardDataAction;
@@ -34,6 +35,7 @@ import hotmath.gwt.shared.client.rpc.result.AutoRegistrationEntry;
 import hotmath.gwt.shared.client.rpc.result.AutoRegistrationSetup;
 import hotmath.gwt.shared.client.util.RpcData;
 import hotmath.gwt.shared.client.util.UserInfo;
+import hotmath.testset.ha.HaTestRunDao;
 
 import java.util.List;
 
@@ -53,13 +55,27 @@ public class ActionDispatcher_Test extends CmDbTestCase {
     static int uid;
     @Override    
     protected void setUp() throws Exception {
+        
+        super.setUp();
         ActionDispatcher.flush();
         
-        if(uid == 0)
-            uid = setupDemoAccount();
+        if(_testRun == null)
+            setupDemoAccountTestRun();
+        
+        uid = _user.getUid();
     }
 
 
+    public void testMarkPrescriptionLessonAsViewedCommand() throws Exception {
+
+        String lesson = new HaTestRunDao().getTestRunLessons(conn, _testRun.getRunId()).get(0).getLesson();
+        
+        MarkPrescriptionLessonAsViewedAction action = new MarkPrescriptionLessonAsViewedAction(lesson,_testRun.getRunId(), 0);
+        RpcData rdata = ActionDispatcher.getInstance().execute(action);
+        assertNotNull(rdata);
+        assertTrue(rdata.getDataAsString("status").equals("OK"));
+
+    }
     public void testGetReviewHtmlCommand() throws Exception {
         GetReviewHtmlAction action = new GetReviewHtmlAction("hotmath_help/topics/angles.html", "Test");
         RpcData rdata = ActionDispatcher.getInstance().execute(action);
