@@ -205,7 +205,7 @@ public class CmStudentDao {
 
     private static final String ADD_STUDENT_SQL =
             "insert into HA_USER (user_name, user_passcode, active_segment, group_id, test_def_id, admin_id, is_active, date_created) " +
-            "values(?, ?, ?, ?, (select test_def_id from HA_TEST_DEF where prog_id = ? and subj_id = ?), ?, 1,now())";
+            "values(?, ?, ?, ?, (select test_def_id from HA_TEST_DEF where prog_id = ? and subj_id = ?), ?, 1, now())";
 
     public StudentModel addStudent(final Connection conn, StudentModel sm) throws Exception {
         PreparedStatement ps = null;
@@ -214,6 +214,10 @@ public class CmStudentDao {
         Boolean isDuplicate = checkForDuplicatePasscode(conn, sm);
         if (isDuplicate) {
             throw new Exception("The passcode you entered is already in use, please try again.");
+        }
+        isDuplicate = checkForDuplicateName(conn, sm);
+        if (isDuplicate) {
+            throw new Exception("The name you entered is already in use, please try again.");
         }
 
         try {
@@ -408,15 +412,14 @@ public class CmStudentDao {
     }
 
     // TODO: assumes a single Admin per school
-    private static final String CHECK_DUPLICATE_PASSCODE_SQL =
-            "select 1 from HA_USER where user_passcode = ? and uid <> ? and admin_id = ?";
+    private static final String CHECK_DUPLICATE_PASSCODE_SQL = "CHECK_DUPLICATE_PASSCODE";
 
     public Boolean checkForDuplicatePasscode(final Connection conn, StudentModelI sm) throws Exception {
         PreparedStatement ps = null;
         ResultSet rs = null;
 
         try {
-            ps = conn.prepareStatement(CHECK_DUPLICATE_PASSCODE_SQL);
+            ps = conn.prepareStatement(CmMultiLinePropertyReader.getInstance().getProperty(CHECK_DUPLICATE_PASSCODE_SQL));
             ps.setString(1, sm.getPasscode());
             ps.setInt(2, (sm.getUid() != null) ? sm.getUid() : -1);
             ps.setInt(3, sm.getAdminUid());
@@ -430,7 +433,30 @@ public class CmStudentDao {
             SqlUtilities.releaseResources(rs, ps, null);
         }
     }
-    
+
+    // TODO: assumes a single Admin per school
+    private static final String CHECK_DUPLICATE_NAME_SQL = "CHECK_DUPLICATE_NAME";
+
+    public Boolean checkForDuplicateName(final Connection conn, StudentModelI sm) throws Exception {
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+
+        try {
+            ps = conn.prepareStatement(CmMultiLinePropertyReader.getInstance().getProperty(CHECK_DUPLICATE_NAME_SQL));
+            ps.setString(1, sm.getName().trim());
+            ps.setInt(2, (sm.getUid() != null) ? sm.getUid() : -1);
+            ps.setInt(3, sm.getAdminUid());
+
+            rs = ps.executeQuery();
+            return (rs.next());
+        } catch (Exception e) {
+            logger.error(String.format("*** Error checking name for student with uid: %d", sm.getUid()), e);
+            throw new Exception(String.format("*** Error checking name for student: %s ***", sm.getName()));
+        } finally {
+            SqlUtilities.releaseResources(rs, ps, null);
+        }
+    }
+
     /** Return true if this admin has a user with password
      * 
      * @param conn
@@ -825,10 +851,10 @@ public class CmStudentDao {
             sm.setShowWorkRequired(rs.getInt("is_show_work_required")==0?false:true);
             sm.setTutoringAvail(rs.getInt("is_tutoring_available")==0?false:true);
 
-            
             return sm;
             
         } catch (Exception e) {
+            logger.error(String.format("*** Error obtaining data for student UID: %d", uid), e);
             throw new Exception(String.format("*** Error obtaining data for student with UID: %d", uid));
         } finally {
             SqlUtilities.releaseResources(rs, ps, null);
