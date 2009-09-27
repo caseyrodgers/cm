@@ -34,8 +34,7 @@ LEFT JOIN (select u.uid, count(*) as usage_count from HA_TEST_RUN_INMH_USE i, HA
 LEFT JOIN CM_GROUP g 
    on g.id = h.group_id
 
-
-
+###
 .key=STUDENT_ACTIVITY
 
 select max(s.use_date) as use_date, date_format(min(s.view_time),'%h:%i %p') as start_time, 
@@ -78,10 +77,9 @@ from (
  where u.uid = ? 
 ) s 
 group by s.test_run_id, s.is_quiz, s.use_date 
-order by s.view_time asc, s.test_run_id asc, s.session_number asc
+order by s.view_time asc, s.test_run_id asc, s.session_number asc 
     
-    
-    
+### 
 .key=TEST_RESULTS
 
 select td.test_name, t.test_segment,im.file, rr.pid, rr.answer_status

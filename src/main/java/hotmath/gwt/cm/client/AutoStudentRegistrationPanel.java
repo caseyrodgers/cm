@@ -99,7 +99,7 @@ public class AutoStudentRegistrationPanel extends ResourceContainer {
         passwordVerify.setId("passwordVerify");
         passwordVerify.setEmptyText("-- verify password --");
         passwordVerify.setValidator(new Validator() {
-            @Override
+            //@Override
             public String validate(Field<?> field, String value) {
                 if(value == null || value.length() == 0)
                     return "The verify password field must be specified";
@@ -151,53 +151,53 @@ public class AutoStudentRegistrationPanel extends ResourceContainer {
         
         ContextController.getInstance().setCurrentContext(new CmContext() {
             
-            @Override
+            //@Override
             public void runAutoTest() {
             }
             
-            @Override
+            //@Override
             public void resetContext() {
             }
             
-            @Override
+            //@Override
             public List<Component> getTools() {
                 return null;
             }
             
-            @Override
+            //@Override
             public String getStatusMessage() {
                 return "Create your own personal Catchup Math password.";
             }
             
-            @Override
+            //@Override
             public String getContextTitle() {
                 // TODO Auto-generated method stub
                 return "Create Self Registration Account";
             }
             
-            @Override
+            //@Override
             public String getContextSubTitle() {
                 return "";
             }
             
-            @Override
+            //@Override
             public String getContextHelp() {
                 return getStatusMessage();
             }
             
-            @Override
+            //@Override
             public int getContextCompletionPercent() {
                 // TODO Auto-generated method stub
                 return 0;
             }
             
-            @Override
+            //@Override
             public void doPrevious() {
                 // TODO Auto-generated method stub
                 
             }
             
-            @Override
+            //@Override
             public void doNext() {
                 // TODO Auto-generated method stub
                 
@@ -222,7 +222,7 @@ public class AutoStudentRegistrationPanel extends ResourceContainer {
 
         CmServiceAsync s = (CmServiceAsync) Registry.get("cmService");
         s.execute(new CreateAutoRegistrationAccountAction(UserInfo.getInstance().getUid(), userName.getValue().trim(), password.getValue().trim()), new AsyncCallback<RpcData>() {
-            @Override
+            //@Override
             public void onSuccess(final RpcData rdata) {
                 
                 final CmWindow win = new CmWindow();
@@ -256,7 +256,7 @@ public class AutoStudentRegistrationPanel extends ResourceContainer {
                 win.setVisible(true);
             }
 
-            @Override
+            //@Override
             public void onFailure(Throwable caught) {
                 caught.printStackTrace();
                 String msg = caught.getMessage();

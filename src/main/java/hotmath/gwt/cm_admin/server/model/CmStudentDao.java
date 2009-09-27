@@ -447,6 +447,10 @@ public class CmStudentDao {
             ps.setInt(2, (sm.getUid() != null) ? sm.getUid() : -1);
             ps.setInt(3, sm.getAdminUid());
 
+            if (logger.isDebugEnabled()) {
+            	logger.debug(String.format("+++ checkForDuplicateName(): query: %s", ps.toString()));
+            }
+
             rs = ps.executeQuery();
             return (rs.next());
         } catch (Exception e) {
