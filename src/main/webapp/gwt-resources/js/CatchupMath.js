@@ -271,6 +271,10 @@ function scrollToStep(num) {
    * be notified when last step is reached.
    * This is used to only advance when the solution 
    * has actually been viewed.
+   * 
+   * 
+   * solutionHasBeenViewed_Gwt is defined GWT source: PrescriptionCmGuiDefinition
+   * 
    */
 HmEvents.eventTutorLastStep.subscribe( function(x) {
 	solutionHasBeenViewed_Gwt(x);

@@ -41,10 +41,12 @@ public class CmHistoryManager {
     /** Make a GWT History request to load resource which will
      * call our central HistoryListener (CmHistoryListener).  
      * 
-     * The history listener will analize the CmLocation and 
+     * The history listener will analyze the CmLocation and 
      * load the appropriate forms/data.
      * 
-     * Provide central location to create CmLocation object indentifing
+     * resourceNumber can be an ordinal position or the item path
+     * 
+     * Provide central location to create CmLocation object identifying
      * resource to load.
      * 
      * @param rm

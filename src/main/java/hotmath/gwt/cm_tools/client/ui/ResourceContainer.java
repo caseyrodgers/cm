@@ -232,6 +232,9 @@ public class ResourceContainer extends LayoutContainer {
            CmMainPanel.__lastInstance._mainContent.layout();
            CmMainPanel.__lastInstance._mainContent.resetChildSize();
            
+           
+           EventBus.getInstance().fireEvent(new CmEvent(EventBus.EVENT_TYPE_RESOURCE_VIEWER_OPEN, viewer));
+           
        } catch (Exception hme) {
            hme.printStackTrace();
            CatchupMathTools.showAlert("Error: " + hme.getMessage());

@@ -20,4 +20,8 @@ public interface ResourceViewer {
 	
 	/** return unique style for this container */
 	String getContainerStyleName();
+	
+	
+	public InmhItemData getResourceItem();
+	
 }

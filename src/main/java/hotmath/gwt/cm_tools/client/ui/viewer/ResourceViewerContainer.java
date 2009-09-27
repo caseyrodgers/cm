@@ -37,6 +37,8 @@ import com.google.gwt.user.client.ui.Widget;
 abstract public class ResourceViewerContainer extends LayoutContainer  implements	ResourceViewer{
     
  
+    InmhItemData item;
+    
     
     /** The default amount of vertical space allowed to resource container
      * 
@@ -84,6 +86,11 @@ abstract public class ResourceViewerContainer extends LayoutContainer  implement
 	 */
 	public boolean shouldSetResourceContinerHeight() {
 	    return true;
+	}
+	
+	
+	public InmhItemData getResourceItem() {
+	    return this.item;
 	}
 	
 	

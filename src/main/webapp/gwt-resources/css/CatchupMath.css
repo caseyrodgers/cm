@@ -1185,3 +1185,18 @@ img.resource-item-complete {
 
 .show-work-example-window {
 }
+
+
+
+.prescription-cm-gui-definition-resource-panel {
+	padding: 10px 15px 15px 15px;
+    background: #43464B;	
+}
+
+.prescription-cm-gui-definition-resource-panel .resource-button {
+	margin-top: 10px;
+}
+
+.resource-menu-button-complete-icon {
+	background: url(/gwt-resources/images/check_black.png) no-repeat center left !important;
+}

@@ -57,6 +57,7 @@ public class ResourceViewerImplTutor extends ResourceViewerContainer implements 
     boolean hasShowWork;
     InmhItemData resource;
     public Widget getResourcePanel(final InmhItemData resource) {
+        this.item = resource;
         this.pid = resource.getFile();
         this.resource = resource;
         showSolution();
@@ -129,7 +130,10 @@ public class ResourceViewerImplTutor extends ResourceViewerContainer implements 
                        shouldExpandSolution=true;
                        showWorkDialog();
                    }
-                   ResourceViewerImplTutor.initializeTutor(pid,resource.getTitle(),hasShowWork,shouldExpandSolution);
+                   ResourceViewerImplTutor.initializeTutor(resource.getFile(),resource.getTitle(),hasShowWork,shouldExpandSolution);
+                   
+                   
+                   EventBus.getInstance().fireEvent(new CmEvent(EventBus.EVENT_TYPE_SOLUTION_SHOW,resource));
                 } catch (Exception e) {
                     e.printStackTrace();
                     CatchupMathTools.showAlert(e.getMessage());

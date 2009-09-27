@@ -83,11 +83,18 @@
 </cache>
 
 
-<!--  Prescription Objects -->
+<!--  Prescription Objects 
+  
+   We want to cache this for a long time to enable the 
+   reuse of the information as the user move back/forward.
+   
+   So, I'm guessing 40 minute sessions.
+
+-->
 <cache name="PRESCRIPTION"
        maxElementsInMemory="20"
        eternal="false"
-       timeToLiveSeconds="120"
+       timeToLiveSeconds="2400"
        overflowToDisk="false">
 </cache>
 

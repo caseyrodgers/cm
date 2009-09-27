@@ -6,8 +6,12 @@ import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Widget;
 
 public class ResourceViewerImplDefault extends ResourceViewerContainer  {
+    
+    InmhItemData item;
+    
 	public Widget getResourcePanel(InmhItemData resource) {
 
+	    this.item = resource;
 	    String url = resource.getFile();
         String html = "<iframe frameborder='no' width='100%' height='400px' src='" + url + "'></iframe>";
         
@@ -15,4 +19,10 @@ public class ResourceViewerImplDefault extends ResourceViewerContainer  {
         
 		return this;
 	}
+
+    @Override
+    public InmhItemData getResourceItem() {
+        // TODO Auto-generated method stub
+        return this.item;
+    }
 }

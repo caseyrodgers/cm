@@ -67,8 +67,6 @@ public class CmMainPanel extends LayoutContainer {
 
         addTools();
 
-        // cp.add(new ResourceAccord(sData),new
-        // BorderLayoutData(LayoutRegion.CENTER));
         _westPanel.setBorders(false);
         BorderLayoutData westData = new BorderLayoutData(LayoutRegion.WEST, 226);
         westData.setSplit(false);

@@ -35,6 +35,8 @@ public class ResourceViewerImplResults extends ResourceViewerContainer implement
 
     public Widget getResourcePanel(final InmhItemData resource) {
 
+        this.item = resource;
+        
         CatchupMathTools.setBusy(true);
             
             PrescriptionServiceAsync s = (PrescriptionServiceAsync) Registry.get("prescriptionService");

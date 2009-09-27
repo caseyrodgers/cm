@@ -5,7 +5,7 @@ import com.extjs.gxt.ui.client.widget.InfoConfig;
 public class CmInfoConfig extends InfoConfig {
     public CmInfoConfig(String t, String m) {
         super(t, m);
-        display = 3000;
+        display = 6000;
         width = 300;
     }
 }

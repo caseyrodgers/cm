@@ -149,4 +149,19 @@ public class EventBus {
      * 
      */
     static public final String EVENT_TYPE_RESOURCE_VIEWER_CLOSE="RESOURCE_VIEWER_CLOSE";
+    
+    
+    
+    /** Fired when a solution has been completed (ie, moved to last step)
+     * 
+     */
+    static public final String EVENT_TYPE_SOLUTIONS_COMPLETE="EVENT_TYPE_SOLUTIONS_COMPLETE";
+    
+    
+    /** Fired each time a solution is viewed
+     * 
+     */
+    static public final String EVENT_TYPE_SOLUTION_SHOW="EVENT_TYPE_SOLUTION_SHOW";
 }
+
+

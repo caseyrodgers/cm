@@ -13,6 +13,8 @@ public class ResourceViewerImplReview extends ResourceViewerImplDefault implemen
     
     public Widget getResourcePanel(final InmhItemData resource) {
 
+        this.item = resource;
+        
         String file = "/hotmath_help/" + resource.getFile();
              
         PrescriptionServiceAsync s = (PrescriptionServiceAsync) Registry.get("prescriptionService");

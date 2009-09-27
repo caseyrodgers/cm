@@ -20,6 +20,9 @@ public class ResourceViewerImplActivity extends ResourceViewerImplFlash {
 	
 	
 	public Widget getResourcePanel(InmhItemData resource) {
+	    
+	    this.item = resource;
+	    
 	    if(!SWFObjectUtil.isVersionIsValid(new PlayerVersion(CmShared.FLASH_MIN_VERSION))) {
              Html html = new Html(CmShared.FLASH_ALT_CONTENT);
              addResource(html,resource.getTitle());

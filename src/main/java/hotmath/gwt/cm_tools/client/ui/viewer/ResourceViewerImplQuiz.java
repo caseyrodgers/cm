@@ -9,6 +9,9 @@ import com.google.gwt.user.client.ui.Widget;
 public class ResourceViewerImplQuiz  extends ResourceViewerContainer implements ResourceViewer {
 	
 	public Widget getResourcePanel(InmhItemData resource) {
+	    
+	    this.item = resource;
+	    
 		return new QuizPage(new CmAsyncRequest() {
 			public void requestComplete(String requestData) {
 			}
