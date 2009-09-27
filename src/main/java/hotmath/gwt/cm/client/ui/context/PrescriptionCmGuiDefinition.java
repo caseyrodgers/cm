@@ -355,8 +355,11 @@ class PrescriptionResourcePanel extends LayoutContainer {
     boolean isReady;
     public PrescriptionResourcePanel() {
         __instance = this;
+        setStyleName("prescription-resource-panel");
     }
 
+    Button _practiceProblemButton;
+    
     
     /**
      * Build or rebuild the GUI from list of resource objects
@@ -380,6 +383,9 @@ class PrescriptionResourcePanel extends LayoutContainer {
                 btn.setEnabled(false);
             
             
+            if(resource.getType().equals("practice"))
+                _practiceProblemButton = btn;
+            
             vp.add(btn);
         }
        
@@ -399,7 +405,7 @@ class PrescriptionResourcePanel extends LayoutContainer {
 
     
     public void expandResourcePracticeProblems() {
-        expandResourceType("practice");
+        _practiceProblemButton.showMenu();
     }
     
     /** Expand the resource node exposing resource items
@@ -413,6 +419,7 @@ class PrescriptionResourcePanel extends LayoutContainer {
      * 
      */
     public void expandResourceType(String resourceType) {
+        // show the menu for named resource
         CatchupMathTools.showAlert("Show resource type: " + resourceType);
     }
 }

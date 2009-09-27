@@ -1200,3 +1200,8 @@ img.resource-item-complete {
 .resource-menu-button-complete-icon {
 	background: url(/gwt-resources/images/check_black.png) no-repeat center left !important;
 }
+
+
+.prescription-resource-panel {
+   background: #43464B;	
+}
