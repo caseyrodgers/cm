@@ -1,12 +1,9 @@
 package hotmath.gwt.cm.client.ui.context;
 
 import hotmath.gwt.cm.client.history.CmHistoryManager;
-import hotmath.gwt.cm.client.ui.HeaderPanel;
 import hotmath.gwt.cm_tools.client.data.InmhItemData;
 import hotmath.gwt.cm_tools.client.data.PrescriptionSessionDataResource;
-import hotmath.gwt.cm_tools.client.ui.CmMainPanel;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
-import hotmath.gwt.shared.client.eventbus.CmEventListener;
 import hotmath.gwt.shared.client.eventbus.CmEventListenerImplDefault;
 import hotmath.gwt.shared.client.eventbus.EventBus;
 
@@ -16,12 +13,11 @@ import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.MenuEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
-import com.extjs.gxt.ui.client.widget.LayoutContainer;
+import com.extjs.gxt.ui.client.widget.VerticalPanel;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.menu.CheckMenuItem;
 import com.extjs.gxt.ui.client.widget.menu.Menu;
 import com.extjs.gxt.ui.client.widget.menu.MenuItem;
-import com.google.gwt.user.client.ui.RootPanel;
 
 
 /** Create a button with an optional attached menu
@@ -83,8 +79,29 @@ class ResourceMenuButton extends Button {
         PrescriptionCmGuiDefinition._registeredResources.put(resource.getType(),resource.getItems());
     }
     
+    
+    
+    /** Provide any last minute modification to the list items
+     *  Such as assigning unique titles, as with the the cmextra
+     *  
+     *  @TODO: perhaps, assign a title when setting up .inmh_link file
+     * @param resource
+     */
+    private void fixupResourceItems(PrescriptionSessionDataResource resource) {
+        
+        if(resource.getType().equals("cmextra")) {
+            // create sequenced titles
+            int cnt=0;
+            for(InmhItemData id: resource.getItems()) {
+                id.setTitle("Extra Problem " + (++cnt));
+            }
+        }
+    }
+    
     private Menu createNewResourceMenu(final PrescriptionSessionDataResource resource) {
 
+        
+        fixupResourceItems(resource);
         
         EventBus.getInstance().addEventListener(new CmEventListenerImplDefault() {
             public void handleEvent(CmEvent event) {
@@ -115,8 +132,6 @@ class ResourceMenuButton extends Button {
         menu.setToolTip(resource.getDescription());
 
         for (final InmhItemData id : resource.getItems()) {
-            
-            
             /** complete only if all items are viewed
              *  
              */
@@ -138,6 +153,8 @@ class ResourceMenuButton extends Button {
             else {
                 item = new MenuItem(id.getTitle());
             }
+            
+            item.setHideOnClick(false);
             
             menu.add(item);
             item.addSelectionListener(new SelectionListener<MenuEvent>() {
@@ -172,5 +189,10 @@ class ResourceMenuButton extends Button {
      */
     private void indicateCompletion() {
         setIconStyle("resource-menu-button-complete-icon");
+        VerticalPanel vp = (VerticalPanel)getParent();
+        if(vp != null) {
+           vp.layout(true);
+           System.out.println(vp);
+        }
     }
 }

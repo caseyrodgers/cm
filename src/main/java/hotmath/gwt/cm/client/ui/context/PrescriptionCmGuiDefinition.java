@@ -1,7 +1,6 @@
 package hotmath.gwt.cm.client.ui.context;
 
 import hotmath.gwt.cm.client.CatchupMath;
-import hotmath.gwt.cm.client.history.CmHistoryManager;
 import hotmath.gwt.cm.client.history.CmHistoryQueue;
 import hotmath.gwt.cm.client.history.CmLocation;
 import hotmath.gwt.cm.client.history.CmLocation.LocationType;
@@ -17,10 +16,10 @@ import hotmath.gwt.cm_tools.client.ui.CmMainPanel;
 import hotmath.gwt.cm_tools.client.ui.ContextController;
 import hotmath.gwt.cm_tools.client.ui.context.CmContext;
 import hotmath.gwt.cm_tools.client.ui.viewer.ResourceViewer;
-import hotmath.gwt.cm_tools.client.ui.viewer.ResourceViewerFactory;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
 import hotmath.gwt.shared.client.eventbus.CmEventListener;
+import hotmath.gwt.shared.client.eventbus.CmEventListenerImplDefault;
 import hotmath.gwt.shared.client.eventbus.EventBus;
 import hotmath.gwt.shared.client.rpc.action.GetPrescriptionAction;
 import hotmath.gwt.shared.client.util.RpcData;
@@ -34,18 +33,9 @@ import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.Registry;
 import com.extjs.gxt.ui.client.Style.LayoutRegion;
 import com.extjs.gxt.ui.client.Style.Scroll;
-import com.extjs.gxt.ui.client.data.BaseModelData;
-import com.extjs.gxt.ui.client.event.BaseEvent;
-import com.extjs.gxt.ui.client.event.Events;
-import com.extjs.gxt.ui.client.event.Listener;
-import com.extjs.gxt.ui.client.store.ListStore;
-import com.extjs.gxt.ui.client.widget.ContentPanel;
-import com.extjs.gxt.ui.client.widget.Html;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
-import com.extjs.gxt.ui.client.widget.ListView;
 import com.extjs.gxt.ui.client.widget.VerticalPanel;
 import com.extjs.gxt.ui.client.widget.button.Button;
-import com.extjs.gxt.ui.client.widget.layout.AccordionLayout;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -55,6 +45,9 @@ public class PrescriptionCmGuiDefinition implements CmGuiDefinition {
     
     
     /** Mark the pid as being viewed called from external JS
+     * 
+     * called from CatchupMath.js 
+     * 
      * 
      * @TODO: remove access to globals
      * 
@@ -124,8 +117,7 @@ public class PrescriptionCmGuiDefinition implements CmGuiDefinition {
         /** Listen for Resource Viewer closing events and make 
          *  sure the accordion resource lists are unselected.
          */
-        EventBus.getInstance().addEventListener(new CmEventListener() {
-            
+        EventBus.getInstance().addEventListener(new CmEventListenerImplDefault() {
             @Override
             public void handleEvent(CmEvent event) {
                 if(event.getEventName().equals(EventBus.EVENT_TYPE_RESOURCE_VIEWER_CLOSE)) {
@@ -148,12 +140,6 @@ public class PrescriptionCmGuiDefinition implements CmGuiDefinition {
                         markResourceAsViewed(viewer.getResourceItem());
                 }
                 
-            }
-            
-            @Override
-            public String[] getEventsOfInterest() {
-                String s[] = {EventBus.EVENT_TYPE_RESOURCE_VIEWER_CLOSE, EventBus.EVENT_TYPE_RESOURCE_VIEWER_OPEN, EventBus.EVENT_TYPE_SOLUTIONS_COMPLETE};
-                return s;
             }
         });        
         
@@ -410,23 +396,7 @@ class PrescriptionResourcePanel extends LayoutContainer {
         layout();
     }
     
-    
-    /** Provide any last minute modification to the list items
-     *  Such as assigning unique titles, as with the the cmextra
-     *  
-     *  @TODO: perhaps, assign a title when setting up .inmh_link file
-     * @param resource
-     */
-    private void fixupResourceItems(PrescriptionSessionDataResource resource) {
-        
-        if(resource.getType().equals("cmextra")) {
-            // create sequenced titles
-            int cnt=0;
-            for(InmhItemData id: resource.getItems()) {
-                id.setTitle("Extra Problem " + (++cnt));
-            }
-        }
-    }
+
     
     public void expandResourcePracticeProblems() {
         expandResourceType("practice");
