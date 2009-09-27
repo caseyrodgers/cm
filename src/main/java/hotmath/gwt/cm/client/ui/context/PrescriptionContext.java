@@ -142,7 +142,7 @@ public class PrescriptionContext implements CmContext {
              * 
              * if 'debug' parameter is on URL, then this check is skipped
              */
-            if (CmShared.getQueryParameter("debug") == null && (UserInfo.getInstance().isActiveUser() && !allViewed)) {
+            if ((UserInfo.getInstance().isActiveUser() && !allViewed)) {
 
                 /**
                  * YUCK ... Expand the practice problems.
@@ -150,12 +150,14 @@ public class PrescriptionContext implements CmContext {
                  * @TODO: figure better way... Perhaps add listener to the
                  *        accordion
                  */
-                ((PrescriptionCmGuiDefinition) CmMainPanel.__lastInstance.cmGuiDef)._guiWidget
-                        .expandResourcePracticeProblems();
-                CmMainPanel.__lastInstance.layout();
-
-                CatchupMathTools.showAlert("View All the Steps",
-                        "Please view all required practice problem answers to the very last step.");
+                ((PrescriptionCmGuiDefinition) CmMainPanel.__lastInstance.cmGuiDef)._guiWidget.expandResourcePracticeProblems();
+                CatchupMathTools.showAlert("View All the Steps","Please view all required practice problem answers to the very last step.",new CmAsyncRequestImplDefault() {
+                    
+                    @Override
+                    public void requestComplete(String requestData) {
+                        ((PrescriptionCmGuiDefinition) CmMainPanel.__lastInstance.cmGuiDef)._guiWidget.expandResourcePracticeProblems();
+                    }
+                });
                 ContextController.getInstance().setCurrentContext(PrescriptionContext.this);
 
                 return;
