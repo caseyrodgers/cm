@@ -358,7 +358,7 @@ class PrescriptionResourcePanel extends LayoutContainer {
         setStyleName("prescription-resource-panel");
     }
 
-    Button _practiceProblemButton;
+    ResourceMenuButton _practiceProblemButton;
     
     
     /**
@@ -377,7 +377,7 @@ class PrescriptionResourcePanel extends LayoutContainer {
 
         // setTitle("Choose a resource type, then click one of its items.");
         for (PrescriptionSessionDataResource resource : resources) {
-            Button btn = new ResourceMenuButton(resource);
+        ResourceMenuButton btn = new ResourceMenuButton(resource);
             
             if(resource.getItems().size() == 0)
                 btn.setEnabled(false);
@@ -405,6 +405,7 @@ class PrescriptionResourcePanel extends LayoutContainer {
 
     
     public void expandResourcePracticeProblems() {
+        _practiceProblemButton.updateCheckMarks();
         _practiceProblemButton.showMenu();
     }
     

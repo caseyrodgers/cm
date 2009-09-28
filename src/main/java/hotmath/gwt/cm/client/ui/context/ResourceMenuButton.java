@@ -58,25 +58,28 @@ class ResourceMenuButton extends Button {
             public void handleEvent(BaseEvent be) {
                 if(getMenu() == null)
                     return;
-                
-                // make sure each MenuItem is show correct state
-                for(int i=0,t=resource.getItems().size();i<t;i++) {
-                    InmhItemData id = resource.getItems().get(i);
-                    MenuItem mi = (MenuItem)getMenu().getItem(i);
-                    if(mi instanceof CheckMenuItem) {
-                        ((CheckMenuItem)mi).setChecked( id.isViewed() );
-                    }
-                }
+              
+                updateCheckMarks();
             }
         });
-        
-        
         
         /** Register resource items for this type.  This allows
          * the history mechanism to locate the proper resource to show.
          * 
          */
         PrescriptionCmGuiDefinition._registeredResources.put(resource.getType(),resource.getItems());
+    }
+    
+    
+    public void updateCheckMarks() {
+        // make sure each MenuItem is show correct state
+        for(int i=0,t=resource.getItems().size();i<t;i++) {
+            InmhItemData id = resource.getItems().get(i);
+            MenuItem mi = (MenuItem)getMenu().getItem(i);
+            if(mi instanceof CheckMenuItem) {
+                ((CheckMenuItem)mi).setChecked( id.isViewed() );
+            }
+        }        
     }
     
     
@@ -192,7 +195,6 @@ class ResourceMenuButton extends Button {
         VerticalPanel vp = (VerticalPanel)getParent();
         if(vp != null) {
            vp.layout(true);
-           System.out.println(vp);
         }
     }
 }
