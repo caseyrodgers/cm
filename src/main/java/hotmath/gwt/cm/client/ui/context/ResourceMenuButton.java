@@ -3,9 +3,6 @@ package hotmath.gwt.cm.client.ui.context;
 import hotmath.gwt.cm.client.history.CmHistoryManager;
 import hotmath.gwt.cm_tools.client.data.InmhItemData;
 import hotmath.gwt.cm_tools.client.data.PrescriptionSessionDataResource;
-import hotmath.gwt.shared.client.eventbus.CmEvent;
-import hotmath.gwt.shared.client.eventbus.CmEventListenerImplDefault;
-import hotmath.gwt.shared.client.eventbus.EventBus;
 
 import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
@@ -32,8 +29,10 @@ class ResourceMenuButton extends Button {
     
     PrescriptionSessionDataResource resource;
     
+    String initialValue;
     public ResourceMenuButton(final PrescriptionSessionDataResource resource) {
         super(resource.getLabel());
+        this.initialValue = getText();
         this.resource = resource;            
         addStyleName("resource-button");
         setWidth(185);
@@ -59,7 +58,7 @@ class ResourceMenuButton extends Button {
                 if(getMenu() == null)
                     return;
               
-                updateCheckMarks();
+                checkCompletion();
             }
         });
         
@@ -68,20 +67,53 @@ class ResourceMenuButton extends Button {
          * 
          */
         PrescriptionCmGuiDefinition._registeredResources.put(resource.getType(),resource.getItems());
+        
+        
+        checkCompletion();
     }
     
     
+    /** Check to see if this resource has been completed, if
+     * so then indicate appropriately.
+     */
+    public void checkCompletion() {
+        updateCheckMarks();
+    }
+
+    /** Update all the checkmarks to on/off
+     * 
+     */
     public void updateCheckMarks() {
+        
+        if(!resource.getType().equals("practice"))
+            return;
+        
+        
+        boolean isComplete=true;
+        int viewed=0;
         // make sure each MenuItem is show correct state
         for(int i=0,t=resource.getItems().size();i<t;i++) {
             InmhItemData id = resource.getItems().get(i);
+            if(!id.isViewed())
+                isComplete=false;
+            else 
+                viewed++;
+            
             MenuItem mi = (MenuItem)getMenu().getItem(i);
             if(mi instanceof CheckMenuItem) {
                 ((CheckMenuItem)mi).setChecked( id.isViewed() );
             }
-        }        
+        }   
+        
+        if(viewed == resource.getItems().size())
+            setText(initialValue);
+        else
+            setText(initialValue + " (" + viewed + "/" + resource.getItems().size() + ")");
+        
+        if(isComplete) {
+            indicateCompletion();
+        }
     }
-    
     
     
     /** Provide any last minute modification to the list items
@@ -105,25 +137,7 @@ class ResourceMenuButton extends Button {
 
         
         fixupResourceItems(resource);
-        
-        EventBus.getInstance().addEventListener(new CmEventListenerImplDefault() {
-            public void handleEvent(CmEvent event) {
-                if(event.getEventName().equals(EventBus.EVENT_TYPE_SOLUTIONS_COMPLETE)) {
-                    Boolean isComplete=true;
-                    for(int i=0,t=resource.getItems().size();i<t;i++) {
-                        if(!resource.getItems().get(i).isViewed()) {
-                            isComplete=false;
-                            break;
-                        }
-                    }
-                    
-                    if(isComplete) {
-                        indicateCompletion();
-                    }
-                }
-            }
-        });
-        
+
         
         /** all resources are viewed by default
          * 
@@ -190,7 +204,7 @@ class ResourceMenuButton extends Button {
     /** Make button indicate that this resource is complete
      * 
      */
-    private void indicateCompletion() {
+    public void indicateCompletion() {
         setIconStyle("resource-menu-button-complete-icon");
         VerticalPanel vp = (VerticalPanel)getParent();
         if(vp != null) {

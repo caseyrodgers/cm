@@ -16,7 +16,6 @@ import hotmath.gwt.cm_tools.client.ui.CmMainPanel;
 import hotmath.gwt.cm_tools.client.ui.ContextController;
 import hotmath.gwt.cm_tools.client.ui.context.CmContext;
 import hotmath.gwt.cm_tools.client.ui.viewer.ResourceViewer;
-import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
 import hotmath.gwt.shared.client.eventbus.CmEventListener;
 import hotmath.gwt.shared.client.eventbus.CmEventListenerImplDefault;
@@ -54,6 +53,7 @@ public class PrescriptionCmGuiDefinition implements CmGuiDefinition {
      * @param pid
      */
     static public void solutionHasBeenViewed_Gwt(String eventName) {
+        __last_solution_item.setViewed(true);
         EventBus.getInstance().fireEvent(new CmEvent(EventBus.EVENT_TYPE_SOLUTIONS_COMPLETE,__last_solution_item));
     }
     
@@ -135,8 +135,10 @@ public class PrescriptionCmGuiDefinition implements CmGuiDefinition {
                     
                     /** practice problems only get marked viewed, 
                      *  once they are fully complete (event EVENT_TYPE_SOLUTIONS_COMPLETE)
+                     *  
+                     *  practice problems are tracked elsewhere. (where?)
                      */
-                    if(CmShared.getQueryParameter("debug") != null || !viewer.getResourceItem().getType().equals("practice"))
+                    if(!viewer.getResourceItem().getType().equals("practice"))
                         markResourceAsViewed(viewer.getResourceItem());
                 }
                 
@@ -146,6 +148,10 @@ public class PrescriptionCmGuiDefinition implements CmGuiDefinition {
     }
 
 
+    /** Mark resource as viewed
+     * 
+     * @param resourceItem
+     */
   public void markResourceAsViewed(final InmhItemData resourceItem) {
         if(UserInfo.getInstance().getRunId() == 0)
             Log.error("PrescriptionCmGuiDefinition: run_id is null!");
@@ -358,6 +364,10 @@ class PrescriptionResourcePanel extends LayoutContainer {
         setStyleName("prescription-resource-panel");
     }
 
+    
+    /** The menu button that corresponds to the practice problems
+     * 
+     */
     ResourceMenuButton _practiceProblemButton;
     
     
@@ -400,6 +410,19 @@ class PrescriptionResourcePanel extends LayoutContainer {
 
         add(vp);
         layout();
+        
+        
+        
+        /** Setup a listen for solution view completions to
+         * all the updating of GUI accordingly.
+         */
+        EventBus.getInstance().addEventListener(new CmEventListenerImplDefault() {
+            public void handleEvent(CmEvent event) {
+                if(event.getEventName().equals(EventBus.EVENT_TYPE_SOLUTIONS_COMPLETE)) {
+                    _practiceProblemButton.checkCompletion();
+                }
+            }
+        });
     }
     
 

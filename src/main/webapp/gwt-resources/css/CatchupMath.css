@@ -1207,16 +1207,10 @@ img.resource-item-complete {
 }
 
 
+/** The GXT Menu Buttons */
+/** .x-menu-item-active a.x-menu-item { background-color: #E3F6AA;}
+.x-menu-item-active a.x-menu-item:hover,.x-menu-item-active a.x-menu-item:active {background-color: #E3F6AA;}
+a.x-menu-item { color:#222222;}
+*/
 
-.x-menu-item-active a.x-menu-item {
-   background-color: #E3F6AA;
-}
 
-.x-menu-item-active a.x-menu-item:hover,
-.x-menu-item-active a.x-menu-item:active {
-   background-color: #E3F6AA;
-}
-
-a.x-menu-item {
-    color:#222222;
-}
