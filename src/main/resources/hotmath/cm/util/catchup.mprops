@@ -14,7 +14,7 @@ SELECT h.uid, h.user_name as name, h.user_passcode as passcode, h.user_email as 
        p.test_def_id, p.create_date, concat(p.pass_percent,'%') as pass_percent, t.total_segments, 
        lpad(concat(format((m.answered_correct*100)/(m.answered_correct+m.answered_incorrect+m.not_answered),0),'%'),4,' ') as last_quiz, 
        trim(concat(ifnull(d.subj_id,''), ' ', d.prog_id)) as program, d.prog_id, d.subj_id,
-       date_format(m.run_time,'%Y-%m-%d') as last_use_date, 
+       date_format(l.login_time,'%Y-%m-%d') as last_use_date, 
        tu.usage_count, ifnull(g.id, 0) as group_id, ifnull(g.name, 'none') as group_name, gui_background_style  
 FROM  HA_ADMIN a 
 INNER JOIN HA_USER h 
@@ -25,7 +25,8 @@ LEFT JOIN HA_TEST_DEF d
    on d.test_def_id = p.test_def_id 
 LEFT JOIN (select user_id, max(run_id) as run_id from HA_TEST_RUN r JOIN HA_TEST t on r.test_id = t.test_id GROUP BY user_id) x ON x.user_id = h.uid 
 LEFT JOIN HA_TEST_RUN m 
-  on m.run_id =  x.run_id 
+  on m.run_id =  x.run_id
+LEFT JOIN (select user_id, max(login_time) as login_time from HA_USER_LOGIN GROUP BY user_id) l on l.user_id = h.uid 
 LEFT JOIN HA_TEST t 
   on t.user_id = h.uid and t.test_id = m.test_id 
 LEFT JOIN (select u.uid, count(*) as usage_count from HA_TEST_RUN_INMH_USE i, HA_TEST t, HA_TEST_RUN r, HA_USER u  
