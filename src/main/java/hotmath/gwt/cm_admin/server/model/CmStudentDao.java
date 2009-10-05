@@ -143,6 +143,12 @@ public class CmStudentDao {
 
 
 
+	/** Return list of activity records for student detail
+	 * 
+	 * @param uid
+	 * @return
+	 * @throws Exception
+	 */
     public List<StudentActivityModel> getStudentActivity(int uid) throws Exception {
         List<StudentActivityModel> l = null;
 

@@ -12,7 +12,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class HaTestRunDao {
+
     
+    
+    
+    /** Add all lesson names assigned to this prescription 
+     *  to the HaTestRunLesson object.  This table is used 
+     *  as a quick method of accessing the lessons assigned
+     *  to a testRun without having to recreate the prescription.
+     */
     public void addLessonsToTestRun(final Connection conn, HaTestRun testRun, List<AssessmentPrescriptionSession> sessions) throws Exception  {
         
         if(testRun.getRunId() == null)
@@ -23,16 +31,19 @@ public class HaTestRunDao {
             
             conn.createStatement().executeUpdate("delete from HA_TEST_RUN_LESSON where run_id = " + testRun.getRunId());
             
-            String sql = "insert into HA_TEST_RUN_LESSON(run_id, lesson_name, lesson_file) values(?, ?, ?)";
+            String sql = "insert into HA_TEST_RUN_LESSON(run_id, lesson_name, lesson_number, lesson_file) values(?, ?, ?, ?)";
             pstat = conn.prepareStatement(sql);
-            for(AssessmentPrescriptionSession s: sessions) {
+            for(int sn=0,t=sessions.size();sn < t;sn++) {
+                AssessmentPrescriptionSession s = sessions.get(sn);
+                
                 pstat.setInt(1, testRun.getRunId());
                 pstat.setString(2, s.getTopic());
-                pstat.setString(3, s.getSessionCategories().get(0).getFile());
+                pstat.setInt(3, sn);
+                pstat.setString(4, s.getSessionCategories().get(0).getFile());
                 
                 
                 if(pstat.executeUpdate() != 1)
-                    throw new Exception("Could not save record for unknown reason: " + testRun);
+                    throw new Exception("Could not save lesson record for unknown reason: " + testRun);
 
                 
                 int lid = SqlUtilities.getLastInsertId(conn);
