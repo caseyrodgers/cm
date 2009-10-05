@@ -45,36 +45,75 @@ select max(s.use_date) as use_date, date_format(min(s.view_time),'%h:%i %p') as 
   s.test_id as test_id, max(s.test_segment) as test_segment, s.test_def_id, s.test_run_id, 
   s.activity, s.is_quiz, count(*) as problems_viewed, max(s.session_number) as session_number, 
   s.total_sessions 
-from ( 
- select date_format(l.create_time,'%Y-%m-%d') as use_date, date_format(l.create_time,'%h:%i %p') as start_time, 
-   date_format(r.run_time,'%h:%i %p') as stop_time, r.run_time as view_time, 
-   date_format(r.run_time,'%Y-%m-%d') as run_date, 
-   r.answered_correct, r.answered_incorrect, r.not_answered, 
-   concat(td.subj_id, ' ', td.prog_id) as program,  td.prog_id, td.subj_id, p.test_config_json, 
-   l.test_id as test_id, l.test_segment, td.test_def_id as test_def_id, 
-   r.run_id as test_run_id, 0 as total_sessions, 
-   'Quiz-' as activity, 1 as is_quiz, l.test_segment as session_number 
- from  HA_TEST l INNER JOIN HA_USER u ON l.user_id = u.uid 
- join HA_TEST_RUN r on r.test_id = l.test_id 
- join HA_TEST_DEF td on td.test_def_id = l.test_def_id 
- join CM_USER_PROGRAM p on p.user_id = u.uid and p.test_def_id = td.test_def_id 
- where u.uid = ? 
+from (
+ 
+select Date_format(l.create_time,'%Y-%m-%d') as use_date,
+       Date_format(l.create_time,'%h:%i %p') as start_time,
+       Date_format(r.run_time,'%h:%i %p')    as stop_time,
+       r.run_time                            as view_time,
+       Date_format(r.run_time,'%Y-%m-%d')    as run_date,
+       r.answered_correct,
+       r.answered_incorrect,
+       r.not_answered,
+       Concat(td.subj_id,' ',td.prog_id)     as program,
+       td.prog_id,
+       td.subj_id,
+       p.test_config_json,
+       l.test_id                             as test_id,
+       l.test_segment,
+       td.test_def_id                        as test_def_id,
+       r.run_id                              as test_run_id,
+       0                                     as total_sessions,
+       'Quiz-'                               as activity,
+       1                                     as is_quiz,
+       l.test_segment                        as session_number
+from   HA_TEST l
+       inner join HA_USER u
+         on l.user_id = u.uid
+       join HA_TEST_RUN r
+         on r.test_id = l.test_id
+       join HA_TEST_DEF td
+         on td.test_def_id = l.test_def_id
+       join CM_USER_PROGRAM p
+         on p.user_id = u.uid
+            and p.test_def_id = td.test_def_id
+where  u.uid = ?
+
  
  union
   
- select date_format(iu.view_time,'%Y-%m-%d') as use_date, date_format(iu.view_time,'%h:%i %p') as start_time, 
-  date_format(iu.view_time,'%h:%i %p') as stop_time, iu.view_time as view_time, 
-  date_format(iu.view_time,'%Y-%m-%d') as run_date, 
-  0 as answered_correct, 0 as answered_incorrect, 0 as not_answered, 
-  concat(td.subj_id, ' ', td.prog_id) as program, td.prog_id, td.subj_id, p.test_config_json, 
-  l.test_id as test_id, iu.session_number as test_segment, td.test_def_id as test_def_id, 
-  r.run_id as test_run_id, r.total_sessions as total_sessions, 
-  'Review-' as activity, 0 as is_quiz, iu.session_number as session_number 
- from  HA_TEST l INNER JOIN HA_USER u ON l.user_id = u.uid 
- join HA_TEST_RUN r on r.test_id = l.test_id 
- join v_HA_TEST_RUN_INMH_USE_REQ_PROBS iu on iu.run_id = r.run_id 
- join HA_TEST_DEF td on td.test_def_id = l.test_def_id 
- join CM_USER_PROGRAM p on p.user_id = u.uid and p.test_def_id = td.test_def_id 
+select Date_format(rl.date_completed,'%Y-%m-%d') as use_date,
+         Date_format(rl.date_completed,'%h:%i %p') as start_time,
+         Date_format(rl.date_completed,'%h:%i %p') as stop_time,
+         rl.date_completed                         as view_time,
+         Date_format(rl.date_completed,'%Y-%m-%d') as run_date,
+         0                                    as answered_correct,
+         0                                    as answered_incorrect,
+         0                                    as not_answered,
+         Concat(td.subj_id,' ',td.prog_id)    as program,
+         td.prog_id,
+         td.subj_id,
+         p.test_config_json,
+         l.test_id                            as test_id,
+         l.test_segment as test_segment,
+         td.test_def_id                       as test_def_id,
+         r.run_id                             as test_run_id,
+         r.total_sessions                     as total_sessions,
+         'Review-'                            as activity,
+         0                                    as is_quiz,
+         rl.lesson_number                    as session_number
+  from   HA_TEST l
+         inner join HA_USER u
+           on l.user_id = u.uid
+         join HA_TEST_RUN r
+           on r.test_id = l.test_id
+         join HA_TEST_RUN_LESSON rl
+           on rl.run_id = r.run_id
+         join HA_TEST_DEF td
+           on td.test_def_id = l.test_def_id
+         join CM_USER_PROGRAM p
+           on p.user_id = u.uid
+              and p.test_def_id = td.test_def_id 
  where u.uid = ? 
 ) s 
 group by s.test_run_id, s.is_quiz, s.use_date 

@@ -116,6 +116,10 @@ public class AssessmentPrescription {
         // assign weights to items
         int sessNum = 0;
         for (InmhItemData id : itemsData) {
+            
+            if(id.getInmhItem().getFile().equals("/hotmath_help/topics/index_hotmath_review_full.html"))
+                continue;
+            
             int wi = id.getWeight();
 
             double numPids = ((double) wi / (double) sumOfWeights) * totalPrescription;
