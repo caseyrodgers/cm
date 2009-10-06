@@ -20,7 +20,7 @@ public class MarkPrescriptionLessonAsViewedCommand implements ActionHandler<Mark
     @Override
     public RpcData execute(Connection conn, MarkPrescriptionLessonAsViewedAction action) throws Exception {
         
-        new HaTestRunDao().markLessonAsViewed(conn, action.getRunId(),action.getLesson());
+        new HaTestRunDao().markLessonAsCompleted(conn, action.getRunId(),action.getLesson());
         return new RpcData("status=OK");
     }
 

@@ -11,10 +11,13 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.log4j.Logger;
+
 public class HaTestRunDao {
 
     
-    
+
+    final static Logger __logger = Logger.getLogger(AssessmentPrescriptionSession.class);
     
     /** Add all lesson names assigned to this prescription 
      *  to the HaTestRunLesson object.  This table is used 
@@ -74,6 +77,28 @@ public class HaTestRunDao {
     }
     
     
+    public void setLessonViewed(final Connection conn, Integer runId, Integer lessonViewed) throws Exception  {
+        
+        PreparedStatement pstat=null;
+        try {
+            
+            String sql = "update HA_TEST_RUN_LESSON set lesson_viewed = now() where run_id = ? and lesson_number = ?";
+            pstat = conn.prepareStatement(sql);
+            
+            pstat.setInt(1,runId);
+            pstat.setInt(2, lessonViewed);
+            
+            int updated = pstat.executeUpdate();
+            if(updated != 1) {
+                __logger.info("Could not update lesson viewed: " + pstat);
+            }
+        }
+        finally {
+            SqlUtilities.releaseResources(null,pstat,null);
+        }
+    }
+    
+    
     /** Return all lessons assignged to this run
      * 
      * @param conn
@@ -98,7 +123,7 @@ public class HaTestRunDao {
             while(rs.next()) {
                 String lesson = rs.getString("lesson_name");
                 if(currLesson == null || !currLesson.equals(lesson)) {
-                    im = new TestRunLessonModel(lesson,rs.getString("lesson_file"));
+                    im = new TestRunLessonModel(lesson,rs.getString("lesson_file"),rs.getDate("lesson_viewed"),rs.getDate("date_completed"));
                     lessons.add(im);
                     currLesson = lesson;
                 }
@@ -124,7 +149,7 @@ public class HaTestRunDao {
      * @param lesson
      * @throws Exception
      */
-    public void markLessonAsViewed(final Connection conn, Integer runId, String lesson) throws Exception {
+    public void markLessonAsCompleted(final Connection conn, Integer runId, String lesson) throws Exception {
         
         PreparedStatement pstat = null;
         try {

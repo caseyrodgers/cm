@@ -17,6 +17,7 @@ import hotmath.gwt.shared.server.service.ActionDispatcher;
 import hotmath.gwt.shared.server.service.ActionHandler;
 import hotmath.inmh.INeedMoreHelpItem;
 import hotmath.inmh.INeedMoreHelpResourceType;
+import hotmath.testset.ha.HaTestRunDao;
 import hotmath.util.Jsonizer;
 
 import java.sql.Connection;
@@ -178,6 +179,14 @@ public class GetPrescriptionCommand implements ActionHandler<GetPrescriptionActi
                 pres.getTest().getUser().setActiveTestRunSession(sessionNumber);
                 pres.getTest().getUser().update(conn);
             }
+            
+            
+            
+            /** Mark this lesson as being viewed
+             * 
+             */
+            new HaTestRunDao().setLessonViewed(conn,runId,sessionNumber);
+            
 
             RpcData rdata2 = new RpcData();
             rdata2.putData("json", Jsonizer.toJson(presData));
