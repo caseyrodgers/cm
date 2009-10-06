@@ -76,14 +76,10 @@ public class HeaderPanel extends LayoutContainer {
 		                CmMainPanel.__lastInstance._westPanel.setHeading(context.getContextSubTitle());
 		        }
 		        else if(event.getEventName().equals(EventBus.EVENT_TYPE_TOPIC_CHANGED)) {
-		            
-		            if(CmShared.getQueryParameter("debug") != null) {
-    		            String title = "The lesson is '" + event.getEventData() + "'";
-    		            String message = "Use any menu items you wish, before or after trying the Required Practice Problems.";
-    		            InfoConfig infoConfig = new CmInfoConfig(title,message);
-                        InfoPopupBox.display(infoConfig);
-		            }
-		            
+		            String title = "The lesson is '" + event.getEventData() + "'";
+		            String message = "Use any menu items you wish, before or after trying the Required Practice Problems.";
+		            InfoConfig infoConfig = new CmInfoConfig(title,message);
+                    InfoPopupBox.display(infoConfig);
 		        }
 		    }
 		});
