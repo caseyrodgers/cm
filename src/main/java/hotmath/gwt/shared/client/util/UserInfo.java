@@ -38,8 +38,32 @@ public class UserInfo implements IsSerializable, Response {
 	boolean isShowWorkRequired;
 	boolean isTutoringAvail;
 	boolean isFirstView=true;
+	Integer sessionCount;
+
 	
-	public boolean isFirstView() {
+
+    public UserInfo() {}
+    
+    public UserInfo(int uid, int testId) {
+        this.uid = uid;
+        this.testId = testId;
+    }
+    
+    public UserInfo(int uid, int testId, int runId) {
+        this(uid, testId);
+        this.runId = runId;
+    }
+    
+    
+	public Integer getSessionCount() {
+        return sessionCount;
+    }
+
+    public void setSessionCount(Integer sessionCount) {
+        this.sessionCount = sessionCount;
+    }
+
+    public boolean isFirstView() {
         return isFirstView;
     }
 
@@ -196,20 +220,6 @@ public class UserInfo implements IsSerializable, Response {
 		this.testSegmentCount = testSegmentCount;
 	}
 
-	public UserInfo() {
-	    // empty
-	}
-	
-	
-	public UserInfo(int uid, int testId) {
-		this.uid = uid;
-		this.testId = testId;
-	}
-	
-	public UserInfo(int uid, int testId, int runId) {
-		this(uid, testId);
-		this.runId = runId;
-	}
 	
 	public int getTestSegment() {
 		return testSegment;
@@ -343,7 +353,7 @@ public class UserInfo implements IsSerializable, Response {
                 
                 
                 if(user.isActiveUser() && user.isFirstView()) {
-                    new ShowFirstTimeVisitorWindow();
+                    new ShowFirstTimeVisitorWindow(user);
                 }
                 
                 // fire an event on the event bus, passing new userinfo

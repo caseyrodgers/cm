@@ -5,19 +5,26 @@ import hotmath.gwt.shared.client.eventbus.CmEvent;
 import hotmath.gwt.shared.client.eventbus.EventBus;
 
 import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
+import com.extjs.gxt.ui.client.Style.LayoutRegion;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
+import com.extjs.gxt.ui.client.widget.Html;
+import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.button.Button;
-import com.extjs.gxt.ui.client.widget.layout.FitLayout;
+import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
+import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
 import com.google.gwt.user.client.ui.Frame;
 
 public class ShowFirstTimeVisitorWindow extends CmWindow {
 
-    public ShowFirstTimeVisitorWindow() {
-        setStyleName("show-first-time-visitor-window");
-        setSize(440,300);
-        setModal(true);
+    UserInfo user;
+    public ShowFirstTimeVisitorWindow(UserInfo user) {
         
+        this.user = user;
+        setStyleName("show-first-time-visitor-window");
+        setSize(440,350);
+        setModal(true);
+       
         
         Button close = new Button("Close");
         close.addSelectionListener(new SelectionListener<ButtonEvent>() {
@@ -40,9 +47,11 @@ public class ShowFirstTimeVisitorWindow extends CmWindow {
     
     
     protected void drawGui() {
-       setLayout(new FitLayout());
+       setLayout(new BorderLayout());
        setHeading("Welcome to Catchup Math");
        Frame f = new Frame("/gwt-resources/first-time-visitor.html");
-       add(f);
+       
+       add(f, new BorderLayoutData(LayoutRegion.CENTER));
+       add(new ReportCardInfoPanel(user),new BorderLayoutData(LayoutRegion.SOUTH,50));       
     }
 }

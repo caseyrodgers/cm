@@ -1,12 +1,12 @@
 package hotmath.gwt.cm.client.ui.context;
 
 import hotmath.gwt.cm.client.CatchupMath;
-import hotmath.gwt.cm.client.history.CatchupMathHistoryListener;
 import hotmath.gwt.cm.client.history.CmHistoryManager;
 import hotmath.gwt.cm.client.history.CmLocation;
 import hotmath.gwt.cm.client.history.CmLocation.LocationType;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.service.CmServiceAsync;
+import hotmath.gwt.cm_tools.client.ui.CmMainPanel;
 import hotmath.gwt.cm_tools.client.ui.NextDialog;
 import hotmath.gwt.cm_tools.client.ui.NextPanelInfo;
 import hotmath.gwt.cm_tools.client.ui.NextPanelInfoImplDefault;
@@ -14,7 +14,7 @@ import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
 import hotmath.gwt.cm_tools.client.ui.context.CmContext;
 import hotmath.gwt.shared.client.data.CmAsyncRequestImplDefault;
 import hotmath.gwt.shared.client.rpc.action.CreateTestRunAction;
-import hotmath.gwt.shared.client.util.RpcData;
+import hotmath.gwt.shared.client.rpc.result.CreateTestRunResponse;
 import hotmath.gwt.shared.client.util.UserInfo;
 
 import java.util.ArrayList;
@@ -149,46 +149,71 @@ public class QuizContext implements CmContext {
 	}
 	
 	
-	private void showPrescriptionPanel(int correct, int total) {
+	private void showPrescriptionPanel(final CreateTestRunResponse runInfo) {
 	    
 	    
 	    if(UserInfo.getInstance().isAutoTestMode()) {
 	        CatchupMath.getThisInstance().showPrescriptionPanel();
 	    }
 	    else {
-    	    
-    	    
     	    final CmWindow window = new CmWindow();
     	    window.setModal(true);
     	    window.setAutoHeight(true);
-    	    window.setWidth(300);
+    	    window.setWidth(350);
     	    window.setClosable(false);
     	    window.setResizable(false);
+            window.setStyleName("auto-assignment-window");
+            window.setHeading("Quiz results");
     	    
-    	    window.setStyleName("auto-assignment-window");
-    	    String msg = "<p>" + correct + "  out of " + total + " correct.</p> ";
     	    
-    	    window.setHeading("Quiz results");
-    	    if(correct != total) {
-    	        msg += "<p>You may now begin review and practice.  " +
-    	               "View your graded quiz on left menu at any time.</p>";
+    	    
+    	    int correct = runInfo.getCorrect();
+    	    int total = runInfo.getTotal();
+    	    
+    	    
+    	    String msg = "";
+    	    if(runInfo.getPassed()) {
+    	        if(correct != total) {
+    	            msg += "Your quiz score: " + runInfo.getTestCorrectPercent() + "%</br>" +
+        	                "Congratulations, you passed!</br>" +
+        	                "You have " + runInfo.getSessionCount() + " review topics to study before advancing to the next quiz.<br/>" +
+           	                "First topic: <b>" + runInfo.getSessionName() + "</b></br>";
+    	        }
+    	        else {
+    	            msg += "Your quiz score: " + runInfo.getTestCorrectPercent() + "%</br>" +
+                    "Congratulations, you passed!</br>";
+    	        }
     	    }
     	    else {
-    	        msg += "<p>All answers correct!</p>";
-    	        window.setHeading("Nice Job!");
+    	        // did not pass
+    	        msg += "Your quiz score: " + runInfo.getTestCorrectPercent() + "%</br>" +
+    	                "You need " + UserInfo.getInstance().getPassPercentRequired() + "% to pass.</br>" +
+                        "You have " + runInfo.getSessionCount() + " review topics to study before advancing to the next quiz.<br/>" +
+                        "First topic: <b>" + runInfo.getSessionName() + "</b></br>";
     	    }
     	        
     	    Html html = new Html(msg);
-    	        
-            
             window.add(html);
     	         
             Button close = new Button();
             close.setText("Continue");
             close.addSelectionListener(new SelectionListener<ButtonEvent>() {
                 public void componentSelected(ButtonEvent ce) {
-                    UserInfo.getInstance().setSessionNumber(0);  // beginning of prescription
-                    CatchupMath.getThisInstance().showPrescriptionPanel();
+
+                    if(runInfo.getPassed()) {
+                        // are there more Quizzes in this program?
+                        boolean areMoreSegments = UserInfo.getInstance().getTestSegment() < UserInfo.getInstance().getTestSegmentCount();
+                        if (areMoreSegments) {
+                            UserInfo.getInstance().setTestSegment(UserInfo.getInstance().getTestSegment() + 1);
+                            CmHistoryManager.getInstance().addHistoryLocation(new CmLocation(LocationType.QUIZ, UserInfo.getInstance().getTestSegment()));
+                        } else {
+                            PrescriptionContext.autoAdvanceUser();
+                        }
+                    }
+                    else {
+                        UserInfo.getInstance().setSessionNumber(0);  // beginning of prescription
+                        CatchupMath.getThisInstance().showPrescriptionPanel();
+                    }
                     window.close();
                 }
             });
@@ -215,14 +240,14 @@ public class QuizContext implements CmContext {
 	public void doCheckTest() {
         CatchupMathTools.setBusy(true);
         CmServiceAsync s = (CmServiceAsync) Registry.get("cmService");
-        s.execute(new CreateTestRunAction(UserInfo.getInstance().getTestId()), new AsyncCallback<RpcData>() {
-            public void onSuccess(RpcData rdata) {
+        s.execute(new CreateTestRunAction(UserInfo.getInstance().getTestId()), new AsyncCallback<CreateTestRunResponse>() {
+            public void onSuccess(CreateTestRunResponse testRunInfo) {
                 try {
-                    String na = rdata.getDataAsString("redirect_action");
+                    String na = testRunInfo.getAction();
                     if(na != null) {
                         if(na.equals("AUTO_ASSIGNED")) {
                             UserInfo.getInstance().setTestSegment(0);  // reset
-                            String testName = rdata.getDataAsString("assigned_test");
+                            String testName = testRunInfo.getAssignedTest();
                             UserInfo.getInstance().setTestName(testName);
                             showAutoAssignedProgram(testName);
                         }
@@ -240,13 +265,11 @@ public class QuizContext implements CmContext {
                         
                         return;
                     }
-                    int runId = rdata.getDataAsInt("run_id");
+                    int runId = testRunInfo.getRunId();
                     UserInfo.getInstance().setRunId(runId);
                     UserInfo.getInstance().setSessionNumber(0);  // start over
-                    int correctAnswers = rdata.getDataAsInt("correct_answers");
-                    int totalQuestions = rdata.getDataAsInt("total_questions");
-
-                    showPrescriptionPanel(correctAnswers, totalQuestions);
+                    
+                    showPrescriptionPanel(testRunInfo);
                 }
                 finally {
                     CatchupMathTools.setBusy(false);

@@ -6,6 +6,7 @@ import hotmath.gwt.shared.client.rpc.action.CreateTestRunAction;
 import hotmath.gwt.shared.client.rpc.action.GetPrescriptionAction;
 import hotmath.gwt.shared.client.rpc.action.GetQuizHtmlAction;
 import hotmath.gwt.shared.client.rpc.action.GetUserInfoAction;
+import hotmath.gwt.shared.client.rpc.result.CreateTestRunResponse;
 import hotmath.gwt.shared.client.util.RpcData;
 import hotmath.gwt.shared.client.util.UserInfo;
 import hotmath.testset.ha.CmProgram;
@@ -49,9 +50,9 @@ public class LoadTester {
             RpcData quizRpcData = dispatcher.execute(new GetQuizHtmlAction(user.getUid(), 1));
             int testId = quizRpcData.getDataAsInt("test_id");
 
-            RpcData rpcData = dispatcher.execute(new CreateTestRunAction(testId));
+            CreateTestRunResponse userInfo = dispatcher.execute(new CreateTestRunAction(testId));
 
-            int runId = rpcData.getDataAsInt("run_id");
+            int runId = userInfo.getRunId();
 
             RpcData rdata = dispatcher.execute(new GetPrescriptionAction(runId, 1, true));
 

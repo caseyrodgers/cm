@@ -93,11 +93,6 @@ public class PrescriptionServiceImpl extends RemoteServiceServlet implements Pre
         GetUserInfoAction action = new GetUserInfoAction(uid);
         return ActionDispatcher.getInstance().execute(action);
     }
-
-    public RpcData createTestRun(int testId) throws CmRpcException {
-        CreateTestRunAction action = new CreateTestRunAction(testId);
-        return ActionDispatcher.getInstance().execute(action);
-    }
     
     public RpcData getQuizHtml(int uid, int testSegment) throws CmRpcException {
         GetQuizHtmlAction action = new GetQuizHtmlAction(uid, testSegment);

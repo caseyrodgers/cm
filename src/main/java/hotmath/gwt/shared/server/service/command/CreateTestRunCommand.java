@@ -8,8 +8,8 @@ import hotmath.gwt.cm_tools.client.ui.NextAction.NextActionName;
 import hotmath.gwt.shared.client.rpc.Action;
 import hotmath.gwt.shared.client.rpc.Response;
 import hotmath.gwt.shared.client.rpc.action.CreateTestRunAction;
+import hotmath.gwt.shared.client.rpc.result.CreateTestRunResponse;
 import hotmath.gwt.shared.client.util.CmRpcException;
-import hotmath.gwt.shared.client.util.RpcData;
 import hotmath.gwt.shared.server.service.ActionHandler;
 import hotmath.testset.ha.HaTest;
 import hotmath.testset.ha.HaTestRun;
@@ -33,10 +33,10 @@ import java.util.List;
  * @param callBack
  * @return
  */
-public class CreateTestRunCommand implements ActionHandler<CreateTestRunAction, RpcData> {
+public class CreateTestRunCommand implements ActionHandler<CreateTestRunAction, CreateTestRunResponse> {
 
     @Override
-    public RpcData execute(final Connection conn, CreateTestRunAction action) throws Exception {
+    public CreateTestRunResponse execute(Connection conn, CreateTestRunAction action) throws Exception {
         PreparedStatement pstat = null;
         try {
 
@@ -88,32 +88,42 @@ public class CreateTestRunCommand implements ActionHandler<CreateTestRunAction, 
             
             AssessmentPrescription pres = AssessmentPrescriptionManager.getInstance().getPrescription(conn, run.getRunId());
 
+            CreateTestRunResponse testRunInfo = new CreateTestRunResponse();
+            
             // Let the prescription instruct the next action depending on
             // type of test, status, etc.
             NextAction nextAction = pres.getNextAction();
-            RpcData rdata = new RpcData();
-            rdata.putData("correct_answers", answeredCorrect);
-            rdata.putData("total_questions", (notAnswered + totalAnswered));
+            
+            testRunInfo.setCorrect(answeredCorrect);
+            testRunInfo.setTotal(totalAnswered);
+            testRunInfo.setPassed(run.isPassing());
 
             if (!nextAction.getNextAction().equals(NextActionName.PRESCRIPTION)) {
                 // need to inform caller it needs to show the quiz ...
                 // Caught in QuizContent
 
                 if (nextAction.getNextAction().equals(NextActionName.AUTO_ASSSIGNED)) {
-                    rdata.putData("redirect_action", "AUTO_ASSIGNED");
-                    rdata.putData("assigned_test", nextAction.getAssignedTest());
+                    testRunInfo.setAction("AUTO_ASSIGNED");
+                    testRunInfo.setAssignedTest(nextAction.getAssignedTest());
                 } else {
-                    rdata.putData("redirect_action", "QUIZ");
-                    rdata.putData("segment", test.getUser().getActiveTestSegment());
+                    testRunInfo.setAction("QUIZ");
+                    testRunInfo.setTestSegment(test.getUser().getActiveTestSegment());
                 }
-
-                return rdata;
+                
+                return testRunInfo;
             }
 
-            rdata.putData("run_id", run.getRunId());
-            rdata.putData("correct_percent", GetPrescriptionCommand.getTestPassPercent(run.getHaTest().getNumTestQuestions(), run
-                    .getAnsweredCorrect()));
-            return rdata;
+            testRunInfo.setRunId(run.getRunId());
+            testRunInfo.setTestCorrectPercent(GetPrescriptionCommand.getTestPassPercent(run.getHaTest().getNumTestQuestions(), run.getAnsweredCorrect()));
+            
+            
+            testRunInfo.setSessionCount(pres.getSessions().size());
+            if(testRunInfo.getSessionCount() > 0)
+                testRunInfo.setSessionName(pres.getSessions().get(0).getTopic());
+            else
+                testRunInfo.setSessionName("Unknown");
+            
+            return testRunInfo;
 
         } catch (Exception e) {
             e.printStackTrace();

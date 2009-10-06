@@ -150,18 +150,6 @@ public interface PrescriptionService extends RemoteService {
 	UserInfo getUserInfo(int uid) throws CmRpcException;
 	
 	
-	/** Create a new test run for this test id
-	 * 
-	 *  return the run_id+meta
-	 * 
-	 * @param testId
-	 * @param callBack
-	 * @return
-	 */
-	RpcData createTestRun(int testId) throws CmRpcException;
-	
-	
-	
 	/** Reset the current user's path through CM
 	 * 
 	 * @param userId

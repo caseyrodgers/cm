@@ -1219,3 +1219,10 @@ a.x-menu-item { color:#222222;}
 #loading-error {
 	font-weight: bold;
 }
+
+
+
+.report-card-info-panel {
+	padding: 10px;
+	text-align: center;
+}

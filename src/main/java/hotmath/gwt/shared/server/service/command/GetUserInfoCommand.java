@@ -15,6 +15,7 @@ import hotmath.subscriber.HotMathSubscriberManager;
 import hotmath.testset.ha.ChapterInfo;
 import hotmath.testset.ha.HaTestDef;
 import hotmath.testset.ha.HaTestDefDao;
+import hotmath.testset.ha.HaTestRunDao;
 import hotmath.testset.ha.StudentUserProgramModel;
 
 import java.sql.Connection;
@@ -60,6 +61,10 @@ public class GetUserInfoCommand implements ActionHandler<GetUserInfoAction, User
             userInfo.setSubTitle(subTitle);
             userInfo.setShowWorkRequired(sm.getShowWorkRequired());
             userInfo.setTutoringAvail(sm.getTutoringAvail());
+
+            /** Set number of sessions in current prescription */
+            if(userInfo.getRunId() > 0)
+                userInfo.setSessionCount(new HaTestRunDao().getTestRunLessons(conn,userInfo.getRunId()).size());
             
             userInfo.setUserAccountType(sub.getSubscriberType());
             

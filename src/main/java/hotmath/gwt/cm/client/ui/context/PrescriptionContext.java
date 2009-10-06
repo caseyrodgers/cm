@@ -180,7 +180,7 @@ public class PrescriptionContext implements CmContext {
         /** Mark this lesson as being complete
          * 
          */
-        if(UserInfo.getInstance().isActiveUser())
+        if(hasPrescription && UserInfo.getInstance().isActiveUser())
             markLessonAsComplete(UserInfo.getInstance().getRunId(),sessionNumber);        
         
 
@@ -284,7 +284,7 @@ public class PrescriptionContext implements CmContext {
      * Auto Advance the user to the next program
      * 
      */
-    private void autoAdvanceUser() {
+    static public void autoAdvanceUser() {
 
         CatchupMathTools.setBusy(true);
 

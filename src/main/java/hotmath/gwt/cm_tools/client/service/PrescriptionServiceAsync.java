@@ -92,14 +92,7 @@ public interface PrescriptionServiceAsync {
 	   */
 	  void getUserInfo(int uid, AsyncCallback<UserInfo> callBack);
 	  
-	  
-	  
-	  /** Create a new test run from this test id
-	   * 
-	   * @param testId
-	   * @param callBack
-	   */
-	  void createTestRun(int testId, AsyncCallback callBack);
+
 	  
 	  /** Reset this user's program and their current state information. 
 	   * 
