@@ -68,6 +68,11 @@ public class CmShared implements EntryPoint {
             + "<a href='http://www.adobe.com/go/getflashplayer'><img src='http://www.adobe.com/images/shared/download_buttons/get_flash_player.gif' alt='Get Adobe Flash player' /></a>"
             + "</p>" + "</div>";
 
+    
+    static {
+        _queryParameters = readQueryString();
+    }
+    
     /**
      * Verify login attempt by reading security key and making sure it
      * validiated only once ..
@@ -83,8 +88,6 @@ public class CmShared implements EntryPoint {
     static public void handleLoginProcessAsync(final CmLoginAsync callback) {
 
         try {
-            _queryParameters = readQueryString();
-
             // first see if run_id is passed, if so
             // the user is in 'view' mode and we must
             // inform the server not to update the

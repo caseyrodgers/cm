@@ -71,6 +71,7 @@ public class CatchupMath implements EntryPoint {
      * This is the entry point method.
      */
     public void onModuleLoad() {
+        
         Log.info("Catchup Math Startup: " + version);
         
         __thisInstance = this;
@@ -96,17 +97,21 @@ public class CatchupMath implements EntryPoint {
         FooterPanel footer = new FooterPanel();
         _mainPort.add(footer, bdata);
 
+
+        
+        if(CmShared.getQueryParameter("loaderror") != null)
+            return;  
         
         /** Call routine to acquire the users uid
          * 
          */
         CmShared.handleLoginProcessAsync(new CmLoginAsync() {
             public void loginSuccessful(Integer uid) {
-                
                 processLoginComplete(uid);
                 
             }
         });
+  
         
         /** Install listener to track any changes to the main window 
          * 
