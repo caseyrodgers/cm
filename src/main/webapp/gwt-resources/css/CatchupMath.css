@@ -927,8 +927,8 @@ img.resource-item-complete {
 }
 
 
-.auto-assignment-window {
-	
+.auto-assignment-window p {
+	padding: 10px;
 }
 
 .auto-assignment-window p {

@@ -192,7 +192,7 @@ public class QuizContext implements CmContext {
                         "First topic: <b>" + runInfo.getSessionName() + "</b></br>";
     	    }
     	        
-    	    Html html = new Html(msg);
+    	    Html html = new Html("<p>" + msg + "</p>");
             window.add(html);
     	         
             Button close = new Button();
