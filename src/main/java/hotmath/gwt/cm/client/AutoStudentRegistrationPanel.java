@@ -273,9 +273,7 @@ public class AutoStudentRegistrationPanel extends ResourceContainer {
             public void onFailure(Throwable caught) {
                 caught.printStackTrace();
                 String msg = caught.getMessage();
-                if(msg.indexOf("passcode you entered") > -1)
-                    msg = "Please choose a different password.";
-                if(msg.indexOf("name you entered") > -1)
+                if(msg.indexOf("passcode you entered") > -1 || msg.indexOf("name you entered") > -1)
                     msg = "This name is taken by you or another person, if it was you login with your current password.";
                 
                 CatchupMathTools.showAlert(msg);
