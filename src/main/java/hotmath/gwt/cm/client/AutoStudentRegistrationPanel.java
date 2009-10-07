@@ -243,7 +243,7 @@ public class AutoStudentRegistrationPanel extends ResourceContainer {
                 win.setModal(true);
                 win.setClosable(false);
                 String html = "<div style='margin: 10px;'>" +
-                              "<p>Your personal password is: <br/><b>" + password + "</b>.</p>" +
+                              "<p>Your personal password is: <br/><b>" + password + "</b></p>" +
                               "<p style='margin-top: 10px;'>Please log in using Login Name of <b>" + CmShared.__loginName + "</b> and the above password.</p>" +
                               "</div>";
                 
