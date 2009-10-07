@@ -295,5 +295,37 @@ from   HA_TEST_RUN_LESSON_PID p
 where l.run_id = ?
 order by lesson_name, pid
 
+##
+## Class: CmReportCardDao
+##
 
-             
+.key=REPORT_CARD
+
+select u.uid, td.test_name, if (0<>t.total_segments, concat('Section ', 1), '') as initial,
+   if(u.active_segment<>t.total_segments, concat('Section ', u.active_segment), 'Completed') as status,
+   up.create_date, up.pass_percent, ul.first_login, q.quiz_count, pq.passed_quiz_count,
+   tr.correct, tr.incorrect,
+   lpad(concat(format((tr.correct*100)/(tr.correct+tr.incorrect),0),'%'),4,' ') as avg_passing_score,
+   q.run_id, pq.test_id
+from HA_USER u
+inner join CM_USER_PROGRAM up on up.user_id = u.uid and up.id = u.user_prog_id
+inner join HA_TEST_DEF td on td.test_def_id = up.test_def_id
+inner join HA_TEST t on t.test_def_id = td.test_def_id and t.user_id = u.uid
+left outer join (select user_id, min(login_time) as first_login from HA_USER_LOGIN group by user_id) ul on ul.user_id = u.uid
+left outer join (select count(*) as quiz_count, test_id, run_id from HA_TEST_RUN group by test_id) q on q.test_id = t.test_id
+left outer join (select count(*) as passed_quiz_count, test_id, is_passing from HA_TEST_RUN group by test_id) pq on pq.test_id = t.test_id and pq.is_passing > 0
+left outer join (select sum(answered_correct) as correct, sum(answered_incorrect+not_answered) as incorrect, test_id from HA_TEST_RUN where is_passing>0 group by test_id) tr on tr.test_id = t.test_id
+where u.uid = ? 
+
+.key=LOGIN_COUNT
+
+select count(*) from HA_USER_LOGIN ul where ul.user_id = ? and login_time >= ?
+
+.key=RESOURCE_USAGE_COUNT
+
+select count(*), item_type from HA_TEST_RUN_INMH_USE where run_id = ? group by run_id, item_type
+
+.key=LESSONS_ASSIGNED
+
+select distinct(lesson_name) from HA_TEST_RUN_LESSON where run_id = ? order by lesson_name asc
+
