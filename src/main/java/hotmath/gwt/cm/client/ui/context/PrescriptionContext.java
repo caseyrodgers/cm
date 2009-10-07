@@ -14,6 +14,7 @@ import hotmath.gwt.cm_tools.client.ui.ContextChangeListener;
 import hotmath.gwt.cm_tools.client.ui.ContextController;
 import hotmath.gwt.cm_tools.client.ui.NextDialog;
 import hotmath.gwt.cm_tools.client.ui.context.CmContext;
+import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.data.CmAsyncRequestImplDefault;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
 import hotmath.gwt.shared.client.eventbus.EventBus;
@@ -141,7 +142,7 @@ public class PrescriptionContext implements CmContext {
              * 
              * if 'debug' parameter is on URL, then this check is skipped
              */
-            if ((UserInfo.getInstance().isActiveUser() && !allViewed)) {
+            if ((UserInfo.getInstance().isActiveUser() && !allViewed) && CmShared.getQueryParameter("debug") == null) {
 
                 /**
                  * YUCK ... Expand the practice problems.
