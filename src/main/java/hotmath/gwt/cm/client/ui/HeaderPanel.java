@@ -2,19 +2,16 @@ package hotmath.gwt.cm.client.ui;
 
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.ui.CmMainPanel;
-import hotmath.gwt.cm_tools.client.ui.InfoPopupBox;
 import hotmath.gwt.cm_tools.client.ui.context.CmContext;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
 import hotmath.gwt.shared.client.eventbus.CmEventListenerImplDefault;
 import hotmath.gwt.shared.client.eventbus.EventBus;
-import hotmath.gwt.shared.client.util.CmInfoConfig;
 import hotmath.gwt.shared.client.util.UserInfo;
 
 import com.extjs.gxt.ui.client.event.IconButtonEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.widget.Html;
-import com.extjs.gxt.ui.client.widget.InfoConfig;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.button.IconButton;
 import com.google.gwt.user.client.Element;
@@ -76,10 +73,7 @@ public class HeaderPanel extends LayoutContainer {
 		                CmMainPanel.__lastInstance._westPanel.setHeading(context.getContextSubTitle());
 		        }
 		        else if(event.getEventName().equals(EventBus.EVENT_TYPE_TOPIC_CHANGED)) {
-		            String title = "The lesson is '" + event.getEventData() + "'";
-		            String message = "Use any menu items you wish, before or after trying the Required Practice Problems.";
-		            InfoConfig infoConfig = new CmInfoConfig(title,message);
-                    InfoPopupBox.display(infoConfig);
+		            new ContextChangeMessage((String)event.getEventData());
 		        }
 		    }
 		});
