@@ -353,7 +353,7 @@ public class UserInfo implements IsSerializable, Response {
                 
                 
                 if(user.isActiveUser() && user.isFirstView()) {
-                    new ShowFirstTimeVisitorWindow(user);
+                    ShowFirstTimeVisitorWindow.displayIfFirstTime(user);
                 }
                 
                 // fire an event on the event bus, passing new userinfo

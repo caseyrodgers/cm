@@ -4,15 +4,14 @@ import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
 import hotmath.gwt.shared.client.eventbus.EventBus;
 
+import java.util.Date;
+
 import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
-import com.extjs.gxt.ui.client.Style.LayoutRegion;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
-import com.extjs.gxt.ui.client.widget.Html;
-import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.button.Button;
-import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
-import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
+import com.extjs.gxt.ui.client.widget.layout.FillLayout;
+import com.google.gwt.user.client.Cookies;
 import com.google.gwt.user.client.ui.Frame;
 
 public class ShowFirstTimeVisitorWindow extends CmWindow {
@@ -22,7 +21,7 @@ public class ShowFirstTimeVisitorWindow extends CmWindow {
         
         this.user = user;
         setStyleName("show-first-time-visitor-window");
-        setSize(440,350);
+        setSize(440,300);
         setModal(true);
        
         
@@ -47,11 +46,29 @@ public class ShowFirstTimeVisitorWindow extends CmWindow {
     
     
     protected void drawGui() {
-       setLayout(new BorderLayout());
+       setLayout(new FillLayout());
        setHeading("Welcome to Catchup Math");
        Frame f = new Frame("/gwt-resources/first-time-visitor.html");
-       
-       add(f, new BorderLayoutData(LayoutRegion.CENTER));
-       add(new ReportCardInfoPanel(user),new BorderLayoutData(LayoutRegion.SOUTH,50));       
+       add(f);
+    }
+    
+
+    /** Only show dialog once a week
+     * 
+     * @param user
+     */
+    static public void displayIfFirstTime(UserInfo user) {
+        
+        String viewed = Cookies.getCookie("cm_first");
+        if(viewed == null) {
+            Date now = new Date();
+            long nowLong = now.getTime();
+            nowLong = nowLong + (1000 * 60 * 60 * 24 * 7);//seven days
+            now.setTime(nowLong);
+
+            Cookies.setCookie("cm_first", "time: " + now.getTime(), now);
+            
+            new ShowFirstTimeVisitorWindow(user);
+        }
     }
 }

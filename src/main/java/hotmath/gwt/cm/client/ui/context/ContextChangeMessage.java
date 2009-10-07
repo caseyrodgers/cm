@@ -1,0 +1,40 @@
+package hotmath.gwt.cm.client.ui.context;
+
+import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
+
+import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
+import com.extjs.gxt.ui.client.event.ButtonEvent;
+import com.extjs.gxt.ui.client.event.SelectionListener;
+import com.extjs.gxt.ui.client.widget.Html;
+import com.extjs.gxt.ui.client.widget.button.Button;
+import com.extjs.gxt.ui.client.widget.layout.FitLayout;
+
+public class ContextChangeMessage extends CmWindow {
+    
+    public ContextChangeMessage(String lesson) {
+        setStyleName("context-change-message");
+        setHeading("Current Topic");
+        setModal(true);
+        setSize(300,140);
+        String html = "<p>Your topic for review and practice is now:</p>" +
+                      "<b>" + lesson + "</b>";
+
+        setLayout(new FitLayout());
+        add(new Html(html));
+        Button close = new Button("Close");
+        close.addSelectionListener(new SelectionListener<ButtonEvent>() {
+            
+            @Override
+            public void componentSelected(ButtonEvent ce) {
+                setVisible(false);
+                close();
+            }
+        });
+        addButton(close);
+        getButtonBar().setAlignment(HorizontalAlignment.RIGHT);
+        
+        
+        setVisible(true);
+    }
+
+}

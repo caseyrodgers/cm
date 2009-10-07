@@ -201,13 +201,21 @@ public class QuizContext implements CmContext {
                 public void componentSelected(ButtonEvent ce) {
 
                     if(runInfo.getPassed()) {
-                        // are there more Quizzes in this program?
-                        boolean areMoreSegments = UserInfo.getInstance().getTestSegment() < UserInfo.getInstance().getTestSegmentCount();
-                        if (areMoreSegments) {
-                            UserInfo.getInstance().setTestSegment(UserInfo.getInstance().getTestSegment() + 1);
-                            CmHistoryManager.getInstance().addHistoryLocation(new CmLocation(LocationType.QUIZ, UserInfo.getInstance().getTestSegment()));
-                        } else {
-                            PrescriptionContext.autoAdvanceUser();
+                        
+                        // is there any prescription to view?
+                        if(runInfo.getSessionCount() > 0) {
+                            UserInfo.getInstance().setSessionNumber(0);  // beginning of prescription
+                            CatchupMath.getThisInstance().showPrescriptionPanel();
+                        }
+                        else {
+                            // are there more Quizzes in this program?
+                            boolean areMoreSegments = UserInfo.getInstance().getTestSegment() < UserInfo.getInstance().getTestSegmentCount();
+                            if (areMoreSegments) {
+                                UserInfo.getInstance().setTestSegment(UserInfo.getInstance().getTestSegment() + 1);
+                                CmHistoryManager.getInstance().addHistoryLocation(new CmLocation(LocationType.QUIZ, UserInfo.getInstance().getTestSegment()));
+                            } else {
+                                PrescriptionContext.autoAdvanceUser();
+                            }
                         }
                     }
                     else {

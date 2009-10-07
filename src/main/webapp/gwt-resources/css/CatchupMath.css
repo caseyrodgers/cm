@@ -1226,3 +1226,16 @@ a.x-menu-item { color:#222222;}
 	padding: 10px;
 	text-align: center;
 }
+
+.context-change-message {
+	text-align: center;
+}
+
+.context-change-message p {
+	margin-top: 10px;
+	margin-bottom: 10px;
+}
+
+.context-change-message b {
+   font-size: 120%;
+}
