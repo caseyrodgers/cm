@@ -39,6 +39,8 @@ public class UserInfo implements IsSerializable, Response {
 	boolean isTutoringAvail;
 	boolean isFirstView=true;
 	Integer sessionCount;
+	String password;
+	String loginName;
 
 	
 
@@ -54,8 +56,26 @@ public class UserInfo implements IsSerializable, Response {
         this.runId = runId;
     }
     
+
+    public String getLoginName() {
+        return loginName;
+    }
+
+    public void setLoginName(String loginName) {
+        this.loginName = loginName;
+    }
     
-	public Integer getSessionCount() {
+    
+    
+	public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public Integer getSessionCount() {
         return sessionCount;
     }
 
@@ -281,11 +301,13 @@ public class UserInfo implements IsSerializable, Response {
     public String toString() {
         return "UserInfo [DEMO_USER_NAME=" + DEMO_USER_NAME + ", activeUser=" + activeUser + ", autoTestMode="
                 + autoTestMode + ", backgroundStyle=" + backgroundStyle + ", correctAnswers=" + correctAnswers
-                + ", correctPercent=" + correctPercent + ", isShowWorkRequired=" + isShowWorkRequired
-                + ", passPercentRequired=" + passPercentRequired + ", runId=" + runId + ", sessionNumber="
-                + sessionNumber + ", testId=" + testId + ", testName=" + testName + ", testSegment=" + testSegment
-                + ", testSegmentCount=" + testSegmentCount + ", uid=" + uid + ", userAccountType=" + userAccountType
-                + ", userName=" + userName + ", viewCount=" + viewCount + "]";
+                + ", correctPercent=" + correctPercent + ", isFirstView=" + isFirstView + ", isShowWorkRequired="
+                + isShowWorkRequired + ", isTutoringAvail=" + isTutoringAvail + ", passPercentRequired="
+                + passPercentRequired + ", password=" + password + ", runId=" + runId + ", sessionCount="
+                + sessionCount + ", sessionNumber=" + sessionNumber + ", subTitle=" + subTitle + ", testId=" + testId
+                + ", testName=" + testName + ", testSegment=" + testSegment + ", testSegmentCount=" + testSegmentCount
+                + ", uid=" + uid + ", userAccountType=" + userAccountType + ", userName=" + userName + ", viewCount="
+                + viewCount + "]";
     }
     
     

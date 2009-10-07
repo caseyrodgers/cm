@@ -130,6 +130,7 @@ public class HaUserFactory {
                     HaUser student = HaUser.lookUser(conn, userId,null);
                     student.setUserName(rs.getString("user_name"));
                     student.setPassword(pwd);
+                    student.setLoginName(user);
                     student.setAccountType(rs.getString("type"));
                     java.sql.Date date = rs.getDate("date_expire");
                     if (date != null)
@@ -174,6 +175,7 @@ public class HaUserFactory {
                     HaUser student = HaUser.lookUser(conn, userId,null);
                     student.setUserName(rs.getString("user_name"));
                     student.setPassword(pwd);
+                    student.setLoginName(user);
                     student.setAccountType(rs.getString("type"));
                     java.sql.Date date = rs.getDate("date_expire");
                     if (date != null)
@@ -219,6 +221,7 @@ public class HaUserFactory {
                 if (rs.first()) { 
                     int userId = rs.getInt("uid");
                     HaUserAutoRegistration student = new HaUserAutoRegistration(HaUser.lookUser(conn, userId,null).getUid());
+                    student.setLoginName(user);
                     student.setUserName("auto");
                     student.setPassword("auto");
                     student.setAccountType("ST");

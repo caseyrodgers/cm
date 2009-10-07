@@ -14,6 +14,7 @@ public interface HaBasicUser {
     
     String getUserName();
     String getPassword();
+    String getLoginName();
     
     Date getExpireDate();
     void setExpireDate(Date expireDate);

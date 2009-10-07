@@ -22,6 +22,7 @@ public class ProcessLoginRequestCommand implements ActionHandler<ProcessLoginReq
         
         UserInfo userInfo = new UserInfo();
         userInfo.setUid(haLoginInfo.getUserId());
+        userInfo.setLoginName(haLoginInfo.getLoginName());
         return userInfo;
     }
 

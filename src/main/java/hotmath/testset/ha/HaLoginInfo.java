@@ -25,6 +25,16 @@ public class HaLoginInfo {
     String key;
     String type;
     int    userId;
+    String loginName;
+    public String getLoginName() {
+        return loginName;
+    }
+
+    public void setLoginName(String loginName) {
+        this.loginName = loginName;
+    }
+
+
     Boolean isConsumed;
     
     public HaLoginInfo() {
@@ -89,7 +99,7 @@ public class HaLoginInfo {
         try {
             String key = "cm_" + System.currentTimeMillis();
             // first see if user is in admin
-            String sql = "insert into HA_USER_LOGIN(user_id, login_key, user_type, login_time)values(?,?,?,?)";
+            String sql = "insert into HA_USER_LOGIN(user_id, login_key, user_type, login_time,login_name)values(?,?,?,?,?)";
                 
             conn = HMConnectionPool.getConnection();
             pstat = conn.prepareStatement(sql);
@@ -98,6 +108,7 @@ public class HaLoginInfo {
             pstat.setString(2, key);
             pstat.setString(3, user.getUserType().toString());
             pstat.setTimestamp(4, new Timestamp(System.currentTimeMillis()));
+            pstat.setString(5,user.getLoginName());
     
             if(pstat.executeUpdate() != 1)
                 throw new Exception("could not not insert new HA_USER_LOGIN record");
@@ -160,6 +171,7 @@ public class HaLoginInfo {
             login.setType(rs.getString("user_type"));
             login.setUserId(rs.getInt("user_id"));
             login.setIsConsumed(rs.getInt("is_consumed")==0?false:true); 
+            login.setLoginName(rs.getString("login_name"));
             
             return login;
         } finally {

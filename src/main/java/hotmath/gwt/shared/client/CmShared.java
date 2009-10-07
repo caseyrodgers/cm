@@ -27,6 +27,9 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public class CmShared implements EntryPoint {
+    
+    static public String __loginName;
+    
 
     // @Override
     public void onModuleLoad() {
@@ -140,6 +143,7 @@ public class CmShared implements EntryPoint {
                     s.execute(new ProcessLoginRequestAction(key2), new AsyncCallback<UserInfo>() {
                         public void onSuccess(UserInfo userInfo) {
 
+                            __loginName = userInfo.getLoginName();
                             /**
                              * now store in cookie, so next refresh on this page
                              * can read info from cookie.

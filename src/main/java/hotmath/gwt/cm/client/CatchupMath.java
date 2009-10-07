@@ -108,7 +108,6 @@ public class CatchupMath implements EntryPoint {
         CmShared.handleLoginProcessAsync(new CmLoginAsync() {
             public void loginSuccessful(Integer uid) {
                 processLoginComplete(uid);
-                
             }
         });
   
@@ -160,7 +159,6 @@ public class CatchupMath implements EntryPoint {
         if(CmShared.getQueryParameter("debug") != null) {
             _mainPort.addStyleName("debug-on");
         }
-        
         
         UserInfo.loadUser(uid,new CmAsyncRequest() {
             public void requestComplete(String requestData) {
@@ -252,6 +250,8 @@ public class CatchupMath implements EntryPoint {
     
     
     /** Display the Auto Registration panel
+     * 
+     * Does not push onto history stack.
      * 
      */
     private void showAutoRegistration_gwt() {
