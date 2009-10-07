@@ -301,8 +301,8 @@ order by lesson_name, pid
 
 .key=REPORT_CARD
 
-select u.uid, td.test_name, if (0<>t.total_segments, concat('Section ', 1), '') as initial,
-   if(u.active_segment<>t.total_segments, concat('Section ', u.active_segment), 'Completed') as status,
+select u.uid, u.admin_id, td.test_name, if (0<>t.total_segments, concat(' Section ', 1), '') as initial,
+   if(u.active_segment<>t.total_segments, concat(' Section ', u.active_segment), ' Completed') as status,
    up.create_date, up.pass_percent, ul.first_login, q.quiz_count, pq.passed_quiz_count,
    tr.correct, tr.incorrect,
    lpad(concat(format((tr.correct*100)/(tr.correct+tr.incorrect),0),'%'),4,' ') as avg_passing_score,
