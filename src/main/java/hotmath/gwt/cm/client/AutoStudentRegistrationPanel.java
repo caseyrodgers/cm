@@ -284,8 +284,8 @@ public class AutoStudentRegistrationPanel extends ResourceContainer {
     
     private void showForgotPassword() {
         
-        CmWindow w = new CmWindow();
-        w.setTitle("Forgot Self-Registration password");
+        final CmWindow w = new CmWindow();
+        w.setHeading("Forgot Self-Registration password");
         w.setStyleName("auto-student-registration-forgot-password");
         w.setLayout(new FitLayout());
         
@@ -296,6 +296,18 @@ public class AutoStudentRegistrationPanel extends ResourceContainer {
         
         w.setModal(true);
         w.add(new Html(html));
+        w.setSize(300,170);
+        
+        Button close = new Button("Close");
+        close.addSelectionListener(new SelectionListener<ButtonEvent>() {
+            @Override
+            public void componentSelected(ButtonEvent ce) {
+                w.close();
+            }
+        });
+        
+        w.getButtonBar().setAlignment(HorizontalAlignment.RIGHT);
+        w.addButton(close);        
         w.setVisible(true);
     }
  
