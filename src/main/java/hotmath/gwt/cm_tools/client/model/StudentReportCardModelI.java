@@ -6,21 +6,29 @@ import java.util.Map;
 
 public interface StudentReportCardModelI {
 
+	public String getStudentName();
+	
+	public void setStudentName(String name);
+	
     public Integer getStudentUid();
 
 	public void setStudentUid(Integer uid);
 
-	public Date getFirstLoginDate();
+	public Date getFirstActivityDate();
 
-	public void setFirstLoginDate(Date date);
+	public void setFirstActivityDate(Date date);
     
-	public Date getLastLoginDate();
+	public Date getLastActivityDate();
 
-	public void setLastLoginDate(Date date);
+	public void setLastActivityDate(Date date);
     
 	public Integer getAdminUid();
 	
 	public void setAdminUid(Integer adminUid);
+	
+	public String getGroupName();
+	
+	public void setGroupName(String name);
 	
 	public String getInitialProgramName();
 
@@ -46,12 +54,24 @@ public interface StudentReportCardModelI {
 
 	public void setQuizPassCount(Integer count);
 	
+	public Date getReportEndDate();
+	
+	public void setReportEndDate(Date date);
+	
+	public Date getReportStartDate();
+	
+	public void setReportStartDate(Date date);
+	
 	public void setResourceUsage(Map<String, Integer> map);
 	
 	public Map<String, Integer> getResourceUsage();
 	
-	public List<StudentProgramReportModelI> getProgramReportList();
+	public List<String> getPrescribedLessonList();
+	
+	public void setPrescribedLessonList(List<String> list);
+	
+	public List<StudentProgramReportModelI> getProgramReportList() throws Exception;
 
-	public void setProgramReportList(List<StudentProgramReportModelI> list);
+	public void setProgramReportList(List<StudentProgramReportModelI> list) throws Exception;
 	
 }

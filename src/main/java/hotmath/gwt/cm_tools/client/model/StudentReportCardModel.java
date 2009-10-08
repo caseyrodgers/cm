@@ -9,14 +9,19 @@ public class StudentReportCardModel implements StudentReportCardModelI {
 	private Integer adminUid;
 	private String currentProgramName;
 	private String currentProgramStatus;
-	private Date firstLoginDate;
+	private Date firstActivityDate;
+	private String groupName;
 	private String initialProgramName;
 	private String initialProgramStatus;
-	private Date lastLoginDate;
-	private List<StudentProgramReportModelI> programReportList;
+	private Date lastActivityDate;
+	private List<String> prescribedLessonList;
+	// private List<StudentProgramReportModelI> programReportList;
 	private Integer quizCount;
 	private Integer quizPassCount;
+	private Date reportEndDate;
+	private Date reportStartDate;
 	private Map<String,Integer> resourceUsage;
+	private String studentName;
 	private Integer studentUid;
 	
 	
@@ -32,8 +37,12 @@ public class StudentReportCardModel implements StudentReportCardModelI {
 		return currentProgramStatus;
 	}
 
-	public Date getFirstLoginDate() {
-		return firstLoginDate;
+	public Date getFirstActivityDate() {
+		return firstActivityDate;
+	}
+
+	public String getGroupName() {
+		return groupName;
 	}
 
 	public String getInitialProgramName() {
@@ -44,8 +53,12 @@ public class StudentReportCardModel implements StudentReportCardModelI {
 		return initialProgramStatus;
 	}
 
-	public Date getLastLoginDate() {
-		return lastLoginDate;
+	public Date getLastActivityDate() {
+		return lastActivityDate;
+	}
+
+	public List<String> getPrescribedLessonList() {
+		return prescribedLessonList;
 	}
 
 	public Integer getQuizCount() {
@@ -56,12 +69,24 @@ public class StudentReportCardModel implements StudentReportCardModelI {
 		return quizPassCount;
 	}
 
-	public List<StudentProgramReportModelI> getProgramReportList() {
-		return programReportList;
+	public List<StudentProgramReportModelI> getProgramReportList() throws Exception {
+		throw new UnsupportedOperationException();
+	}
+
+	public Date getReportEndDate() {
+		return reportEndDate;
+	}
+
+	public Date getReportStartDate() {
+		return reportStartDate;
 	}
 
 	public Map<String, Integer> getResourceUsage() {
 		return resourceUsage;
+	}
+
+	public String getStudentName() {
+		return studentName;
 	}
 
 	public Integer getStudentUid() {
@@ -80,8 +105,12 @@ public class StudentReportCardModel implements StudentReportCardModelI {
 		currentProgramStatus = status;
 	}
 
-	public void setFirstLoginDate(Date date) {
-		firstLoginDate = date;
+	public void setFirstActivityDate(Date date) {
+		firstActivityDate = date;
+	}
+
+	public void setGroupName(String name) {
+		groupName = name;
 	}
 
 	public void setInitialProgramName(String name) {
@@ -92,12 +121,16 @@ public class StudentReportCardModel implements StudentReportCardModelI {
 		initialProgramStatus = status;
 	}
 
-	public void setLastLoginDate(Date date) {
-		lastLoginDate = date;
+	public void setLastActivityDate(Date date) {
+		lastActivityDate = date;
 	}
 
-	public void setProgramReportList(List<StudentProgramReportModelI> list) {
-		programReportList = list;
+	public void setPrescribedLessonList(List<String> list) {
+		prescribedLessonList = list;
+	}
+
+	public void setProgramReportList(List<StudentProgramReportModelI> list) throws Exception {
+		throw new UnsupportedOperationException();
 	}
 
 	public void setQuizCount(Integer count) {
@@ -108,8 +141,20 @@ public class StudentReportCardModel implements StudentReportCardModelI {
 		quizPassCount = count;
 	}
 
+	public void setReportEndDate(Date date) {
+		reportEndDate = date;
+	}
+
+	public void setReportStartDate(Date date) {
+		reportStartDate = date;
+	}
+
 	public void setResourceUsage(Map<String, Integer> map) {
 		resourceUsage = map;
+	}
+
+	public void setStudentName(String name) {
+		studentName = name;
 	}
 
 	public void setStudentUid(Integer uid) {
