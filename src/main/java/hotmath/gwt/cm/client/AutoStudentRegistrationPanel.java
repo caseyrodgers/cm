@@ -24,6 +24,7 @@ import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.widget.Component;
+import com.extjs.gxt.ui.client.widget.HorizontalPanel;
 import com.extjs.gxt.ui.client.widget.Html;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.Field;
@@ -37,6 +38,7 @@ import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.layout.FormLayout;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.Label;
 
 
 /** Provides Self Registration login screen and validation
@@ -70,7 +72,17 @@ public class AutoStudentRegistrationPanel extends ResourceContainer {
         _formPanel.setHeading("Self Registration");
         
         FieldSet fsAlready = new FieldSet();
+        HorizontalPanel hp = new HorizontalPanel();
         fsAlready.setHeading("Have you already registered?");
+        Button returnToHome = new Button("Return to Home Page");
+        returnToHome.setToolTip("If you should have logged in with your personal password, click to retry from the Home page.");
+        returnToHome.addSelectionListener(new SelectionListener<ButtonEvent>() {
+            public void componentSelected(ButtonEvent ce) {
+                Window.Location.replace(CmShared.CM_HOME_URL);
+            }
+        });
+        hp.add(returnToHome);
+        
         Button alreadyRegistered = new Button("Forgot Password?");
         alreadyRegistered.setToolTip("Click here for information about your existing password");
         alreadyRegistered.addSelectionListener(new SelectionListener<ButtonEvent>() {
@@ -78,7 +90,9 @@ public class AutoStudentRegistrationPanel extends ResourceContainer {
                 showForgotPassword();
             }
         });
-        fsAlready.add(alreadyRegistered);
+        hp.add(new Label(" "));
+        hp.add(alreadyRegistered);
+        fsAlready.add(hp);
         _formPanel.add(fsAlready);
         
         FieldSet fsProfile = new FieldSet();
