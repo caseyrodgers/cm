@@ -1,6 +1,7 @@
 package hotmath.gwt.cm_tools.client.model;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 public interface StudentReportCardModelI {
@@ -13,13 +14,29 @@ public interface StudentReportCardModelI {
 
 	public void setFirstLoginDate(Date date);
     
-	public String getInitialProgramDescr();
+	public Date getLastLoginDate();
 
-	public void setInitialProgramDescr(String progDescr);
+	public void setLastLoginDate(Date date);
+    
+	public Integer getAdminUid();
+	
+	public void setAdminUid(Integer adminUid);
+	
+	public String getInitialProgramName();
 
-	public String getCurrentProgramDescr();
+	public void setInitialProgramName(String name);
 
-	public void setCurrentProgramDescr(String progDescr);
+	public String getInitialProgramStatus();
+
+	public void setInitialProgramStatus(String status);
+
+	public String getCurrentProgramName();
+
+	public void setCurrentProgramName(String name);
+
+	public String getCurrentProgramStatus();
+
+	public void setCurrentProgramStatus(String status);
 
 	public Integer getQuizCount();
 
@@ -33,8 +50,8 @@ public interface StudentReportCardModelI {
 	
 	public Map<String, Integer> getResourceUsage();
 	
-	public Integer getAdminUid();
-	
-	public void setAdminUid(Integer adminUid);
+	public List<StudentProgramReportModelI> getProgramReportList();
+
+	public void setProgramReportList(List<StudentProgramReportModelI> list);
 	
 }
