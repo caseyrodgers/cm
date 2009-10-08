@@ -290,11 +290,14 @@ public class AutoStudentRegistrationPanel extends ResourceContainer {
      */
     private void checkIfPasswordMatches(final String password) {
         
+        CatchupMathTools.showAlert("Calling CheckUserAccountStatusAction");
         CmServiceAsync s = (CmServiceAsync) Registry.get("cmService");
         s.execute(new CheckUserAccountStatusAction(password), new AsyncCallback<RpcData>() {
             //@Override
             public void onSuccess(final RpcData rdata) {
                 
+                CatchupMathTools.showAlert("CheckUserAccountStatusAction returned: " + rdata);
+                 
                 String msg = rdata.getDataAsString("message");
                 if(msg.indexOf("duplicate") > -1) {
                     msg = "You are already registered with this name";
