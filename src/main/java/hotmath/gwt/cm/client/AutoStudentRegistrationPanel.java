@@ -8,6 +8,7 @@ import hotmath.gwt.cm_tools.client.ui.ResourceContainer;
 import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
 import hotmath.gwt.cm_tools.client.ui.context.CmContext;
 import hotmath.gwt.shared.client.CmShared;
+import hotmath.gwt.shared.client.data.CmAsyncRequest;
 import hotmath.gwt.shared.client.data.CmAsyncRequestImplDefault;
 import hotmath.gwt.shared.client.rpc.action.CheckUserAccountStatusAction;
 import hotmath.gwt.shared.client.rpc.action.CreateAutoRegistrationAccountAction;
@@ -273,14 +274,23 @@ public class AutoStudentRegistrationPanel extends ResourceContainer {
                 Log.info(caught.getMessage(), caught);
                 String msg = caught.getMessage();
                 if(msg.indexOf("passcode you entered") > -1) {
-                    msg = "You are already registered with this name";
-                    CatchupMathTools.showAlert(msg);
+                    showAlreadyMsg();
                 }
                 else if(msg.indexOf("name you entered") > -1) {
                     checkIfPasswordMatches(password);
                 }
             }
         });        
+    }
+    
+    
+    private void showAlreadyMsg() {
+        String msg = "You are already registered with this name.";
+        CatchupMathTools.showAlert("Already Registered", msg,new CmAsyncRequestImplDefault() {
+            public void requestComplete(String requestData) {
+                showForgotPassword();
+            }
+        });
     }
 
     
@@ -296,14 +306,13 @@ public class AutoStudentRegistrationPanel extends ResourceContainer {
             public void onSuccess(final RpcData rdata) {
                 String msg = rdata.getDataAsString("message");
                 if(msg.indexOf("duplicate") > -1) {
-                    msg = "You are already registered with this name";
+                    showAlreadyMsg();
                 }
                 else {
                     msg = "There is another registration with that name, so please add your middle name to the first-name box (e.g., Jim Bob).";
+                    // this means the password including the date portion is unique
+                    CatchupMathTools.showAlert("Already Registered", msg);
                 }
-                
-                // this means the password including the date portion is unique
-                CatchupMathTools.showAlert("Already Registered", msg);                
             }
             
             public void onFailure(Throwable caught) {
