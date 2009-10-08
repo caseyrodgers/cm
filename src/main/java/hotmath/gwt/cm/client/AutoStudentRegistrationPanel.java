@@ -17,6 +17,7 @@ import hotmath.gwt.shared.client.util.UserInfo;
 
 import java.util.List;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.Registry;
 import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
@@ -115,7 +116,7 @@ public class AutoStudentRegistrationPanel extends ResourceContainer {
                 if(value == null || value.length() == 0)
                     return "The birth date field must be specified";
                 else {
-                    if(value.length() < 4)
+                    if(value.length() != 4)
                         return "The birth date field must be four digits, such as 0912";
                     try {
                         Integer.parseInt(value);
@@ -269,10 +270,10 @@ public class AutoStudentRegistrationPanel extends ResourceContainer {
 
             //@Override
             public void onFailure(Throwable caught) {
-                caught.printStackTrace();
+                Log.info(caught.getMessage(), caught);
                 String msg = caught.getMessage();
                 if(msg.indexOf("passcode you entered") > -1) {
-                    msg = "There is another registration with that name, so please add your middle name to the first-name box (e.g., Jim Bob)";
+                    msg = "You are already registered with this name";
                     CatchupMathTools.showAlert(msg);
                 }
                 else if(msg.indexOf("name you entered") > -1) {
@@ -289,15 +290,10 @@ public class AutoStudentRegistrationPanel extends ResourceContainer {
      * 
      */
     private void checkIfPasswordMatches(final String password) {
-        
-        CatchupMathTools.showAlert("Calling CheckUserAccountStatusAction");
         CmServiceAsync s = (CmServiceAsync) Registry.get("cmService");
         s.execute(new CheckUserAccountStatusAction(password), new AsyncCallback<RpcData>() {
             //@Override
             public void onSuccess(final RpcData rdata) {
-                
-                CatchupMathTools.showAlert("CheckUserAccountStatusAction returned: " + rdata);
-                 
                 String msg = rdata.getDataAsString("message");
                 if(msg.indexOf("duplicate") > -1) {
                     msg = "You are already registered with this name";
