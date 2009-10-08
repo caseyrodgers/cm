@@ -55,7 +55,7 @@ public class AutoStudentRegistrationPanel extends ResourceContainer {
         
         _formPanel = new FormPanel();
         _formPanel.setStyleName("register-student-form-panel");
-        _formPanel.setLabelWidth(100);
+        _formPanel.setLabelWidth(110);
         //_formPanel.setHeight(250);
         _formPanel.setWidth(395);
         _formPanel.setFooter(true);
