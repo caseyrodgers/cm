@@ -8,6 +8,8 @@ import hotmath.gwt.cm_tools.client.ui.ResourceContainer;
 import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
 import hotmath.gwt.cm_tools.client.ui.context.CmContext;
 import hotmath.gwt.shared.client.CmShared;
+import hotmath.gwt.shared.client.data.CmAsyncRequestImplDefault;
+import hotmath.gwt.shared.client.rpc.action.CheckUserAccountStatusAction;
 import hotmath.gwt.shared.client.rpc.action.CreateAutoRegistrationAccountAction;
 import hotmath.gwt.shared.client.util.CmInfoConfig;
 import hotmath.gwt.shared.client.util.RpcData;
@@ -66,7 +68,7 @@ public class AutoStudentRegistrationPanel extends ResourceContainer {
         _formPanel.setHeading("Self Registration");
         
         FieldSet fsAlready = new FieldSet();
-        fsAlready.setHeading("Already Registered");
+        fsAlready.setHeading("Have you already registered?");
         Button alreadyRegistered = new Button("Forgot Password?");
         alreadyRegistered.setToolTip("Click here for information about your existing password");
         alreadyRegistered.addSelectionListener(new SelectionListener<ButtonEvent>() {
@@ -86,7 +88,7 @@ public class AutoStudentRegistrationPanel extends ResourceContainer {
         fsProfile.setHeading("Register");
         
         firstName = new TextField<String>();  
-        firstName.setFieldLabel("Your first name");
+        firstName.setFieldLabel("First name");
         firstName.setAllowBlank(false);
         firstName.setValidator(new MyFieldValidator());
         firstName.setId("firstName");
@@ -94,7 +96,7 @@ public class AutoStudentRegistrationPanel extends ResourceContainer {
         fsProfile.add(firstName);
         
         lastName = new TextField<String>();  
-        lastName.setFieldLabel("Your last name");
+        lastName.setFieldLabel("Last name");
         lastName.setAllowBlank(false);
         lastName.setValidator(new MyFieldValidator());
         lastName.setId("lastName");
@@ -102,7 +104,7 @@ public class AutoStudentRegistrationPanel extends ResourceContainer {
         fsProfile.add(lastName);
         
         birthDate = new TextField<String>();  
-        birthDate.setFieldLabel("Your birth day");
+        birthDate.setFieldLabel("Birth date (ddmm)");
         birthDate.setAllowBlank(false);
         birthDate.setValidator(new MyFieldValidator());
         birthDate.setId("birthDate");
@@ -137,10 +139,6 @@ public class AutoStudentRegistrationPanel extends ResourceContainer {
         fsProfile.add(birthDate);
         
         _formPanel.add(fsProfile);
-        
-        
-        _formPanel.add(new Html("<p>Once you have created your account, next time you will use the school code and your own password to log in.</p>"));
-        
         
         Button saveButton = new Button("Register");
         
@@ -232,7 +230,7 @@ public class AutoStudentRegistrationPanel extends ResourceContainer {
             return;
         }
 
-        final String password = (lastName.getValue() + "-" + firstName.getValue() + "-" + birthDate.getValue());
+        final String password = (lastName.getValue() + "-" + firstName.getValue() + "-" + birthDate.getValue()).toLowerCase();
         CmServiceAsync s = (CmServiceAsync) Registry.get("cmService");
         s.execute(new CreateAutoRegistrationAccountAction(UserInfo.getInstance().getUid(), lastName.getValue() + ", " + firstName.getValue().trim(), password), new AsyncCallback<RpcData>() {
             //@Override
@@ -244,7 +242,7 @@ public class AutoStudentRegistrationPanel extends ResourceContainer {
                 win.setClosable(false);
                 String html = "<div style='margin: 10px;'>" +
                               "<p>Your personal password is: <br/><b>" + password + "</b></p>" +
-                              "<p style='margin-top: 10px;'>Please log in using Login Name of <b>" + CmShared.__loginName + "</b> and the above password.</p>" +
+                              "<p style='margin-top: 10px;'>In the future, your Login Name will be <b>" + CmShared.__loginName + "</b> along with the above password, so please write them both down!</p>" +
                               "</div>";
                 
                 win.add(new Html(html));
@@ -273,14 +271,48 @@ public class AutoStudentRegistrationPanel extends ResourceContainer {
             public void onFailure(Throwable caught) {
                 caught.printStackTrace();
                 String msg = caught.getMessage();
-                if(msg.indexOf("passcode you entered") > -1 || msg.indexOf("name you entered") > -1)
-                    msg = "This name is taken by you or another person, if it was you login with your current password.";
-                
-                CatchupMathTools.showAlert(msg);
+                if(msg.indexOf("passcode you entered") > -1) {
+                    msg = "There is another registration with that name, so please add your middle name to the first-name box (e.g., Jim Bob)";
+                    CatchupMathTools.showAlert(msg);
+                }
+                else if(msg.indexOf("name you entered") > -1) {
+                    checkIfPasswordMatches(password);
+                }
             }
         });        
     }
+
     
+    /** Check to see if only password is in use
+     * 
+     * note: userName is a match, so we are checking for message
+     * 
+     */
+    private void checkIfPasswordMatches(final String password) {
+        
+        CmServiceAsync s = (CmServiceAsync) Registry.get("cmService");
+        s.execute(new CheckUserAccountStatusAction(password), new AsyncCallback<RpcData>() {
+            //@Override
+            public void onSuccess(final RpcData rdata) {
+                
+                String msg = rdata.getDataAsString("message");
+                if(msg.indexOf("duplicate") > -1) {
+                    msg = "You are already registered with this name";
+                }
+                else {
+                    msg = "There is another registration with that name, so please add your middle name to the first-name box (e.g., Jim Bob).";
+                }
+                
+                // this means the password including the date portion is unique
+                CatchupMathTools.showAlert("Already Registered", msg);                
+            }
+            
+            public void onFailure(Throwable caught) {
+                caught.printStackTrace();
+            };
+        });
+        
+    }
     
     private void showForgotPassword() {
         
@@ -290,19 +322,18 @@ public class AutoStudentRegistrationPanel extends ResourceContainer {
         w.setLayout(new FitLayout());
         
         
-        String html = "<p>If you have already registered, then use the personal password you were previously assigned, " +
-        		      "not the self-registartion password. If you forgot your personal password, please check with your teacher.</p>";
-        
+        String html = "<p>If you have already registered, use your personal password, not the self-registration password "+
+                      "when you log in. Perhaps your password was something like Smith-Susie-0705.";
         
         w.setModal(true);
         w.add(new Html(html));
         w.setSize(300,170);
         
-        Button close = new Button("Close");
+        Button close = new Button("Go");
         close.addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent ce) {
-                w.close();
+                Window.Location.replace(CmShared.CM_HOME_URL);
             }
         });
         

@@ -36,6 +36,7 @@ public class CreateAutoRegistrationAccountsCommand implements ActionHandler<Crea
         
         CmStudentDao dao = new CmStudentDao();
         int errorCount=0;
+        
         for(AutoRegistrationEntry entry: action.getAccountsToCreate()) {
             
             preview.getEntries().add(entry);

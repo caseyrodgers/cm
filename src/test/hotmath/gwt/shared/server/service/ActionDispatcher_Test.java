@@ -8,6 +8,7 @@ import hotmath.gwt.cm_tools.client.model.LessonItemModel;
 import hotmath.gwt.cm_tools.client.model.StudentModel;
 import hotmath.gwt.shared.client.rpc.action.AddGroupAction;
 import hotmath.gwt.shared.client.rpc.action.AutoAdvanceUserAction;
+import hotmath.gwt.shared.client.rpc.action.CheckUserAccountStatusAction;
 import hotmath.gwt.shared.client.rpc.action.ClearWhiteboardDataAction;
 import hotmath.gwt.shared.client.rpc.action.CmArrayList;
 import hotmath.gwt.shared.client.rpc.action.CmList;
@@ -67,6 +68,13 @@ public class ActionDispatcher_Test extends CmDbTestCase {
     }
 
 
+    public void testCheckUserAccountStatusAction() throws Exception {
+        CheckUserAccountStatusAction action = new CheckUserAccountStatusAction(_user.getPassword());
+        RpcData rdata = ActionDispatcher.getInstance().execute(action);
+        
+        assertTrue(rdata.getDataAsString("message") != null);
+    }
+    
     public void testMarkPrescriptionLessonAsViewedCommand() throws Exception {
 
         String lesson = new HaTestRunDao().getTestRunLessons(conn, _testRun.getRunId()).get(0).getLesson();

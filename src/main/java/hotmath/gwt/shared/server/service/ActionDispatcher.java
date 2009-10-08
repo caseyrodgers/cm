@@ -10,6 +10,7 @@ import hotmath.gwt.shared.client.util.CmRpcException;
 import hotmath.gwt.shared.server.service.command.AddGroupCommand;
 import hotmath.gwt.shared.server.service.command.AddStudentCommand;
 import hotmath.gwt.shared.server.service.command.AutoAdvanceUserCommand;
+import hotmath.gwt.shared.server.service.command.CheckUserAccountStatusCommand;
 import hotmath.gwt.shared.server.service.command.ClearWhiteboardDataCommand;
 import hotmath.gwt.shared.server.service.command.CreateAutoRegistrationAccountCommand;
 import hotmath.gwt.shared.server.service.command.CreateAutoRegistrationAccountsCommand;
@@ -130,6 +131,8 @@ public class ActionDispatcher {
         addCommand(GetSummariesForActiveStudentsCommand.class);
         addCommand(GetReviewHtmlCommand.class);
         addCommand(MarkPrescriptionLessonAsViewedCommand.class);
+        addCommand(CheckUserAccountStatusCommand.class);
+        
     }
     
     

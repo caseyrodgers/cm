@@ -5,7 +5,7 @@ import hotmath.gwt.shared.client.rpc.Action;
 import hotmath.gwt.shared.client.rpc.result.AutoRegistrationSetup;
 
 
-/** Create a preview set of Student Entires that could be 
+/** Create a preview set of Student Entries that could be 
  * saved 'right now'.  No guarantee if after delay a validation
  * error might occur.
  * 
