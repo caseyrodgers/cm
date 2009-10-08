@@ -8,10 +8,10 @@ import hotmath.gwt.cm_tools.client.ui.ResourceContainer;
 import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
 import hotmath.gwt.cm_tools.client.ui.context.CmContext;
 import hotmath.gwt.shared.client.CmShared;
-import hotmath.gwt.shared.client.data.CmAsyncRequest;
 import hotmath.gwt.shared.client.data.CmAsyncRequestImplDefault;
 import hotmath.gwt.shared.client.rpc.action.CheckUserAccountStatusAction;
 import hotmath.gwt.shared.client.rpc.action.CreateAutoRegistrationAccountAction;
+import hotmath.gwt.shared.client.rpc.action.LogUserInAction;
 import hotmath.gwt.shared.client.util.CmInfoConfig;
 import hotmath.gwt.shared.client.util.RpcData;
 import hotmath.gwt.shared.client.util.UserInfo;
@@ -225,7 +225,6 @@ public class AutoStudentRegistrationPanel extends ResourceContainer {
      *  
      */
     private void doCreatePassword() {
-
         
         if(!_formPanel.isValid()) {
             InfoPopupBox.display(new CmInfoConfig("Validation problems", "Please correct any problems on the form."));
@@ -237,36 +236,8 @@ public class AutoStudentRegistrationPanel extends ResourceContainer {
         s.execute(new CreateAutoRegistrationAccountAction(UserInfo.getInstance().getUid(), lastName.getValue() + ", " + firstName.getValue().trim(), password), new AsyncCallback<RpcData>() {
             //@Override
             public void onSuccess(final RpcData rdata) {
-                
-                final CmWindow win = new CmWindow();
-                win.setSize(320,200);
-                win.setModal(true);
-                win.setClosable(false);
-                String html = "<div style='margin: 10px;'>" +
-                              "<p>Your personal password is: <br/><b>" + password + "</b></p>" +
-                              "<p style='margin-top: 10px;'>In the future, your Login Name will be <b>" + CmShared.__loginName + "</b> along with the above password, so please write them both down!</p>" +
-                              "</div>";
-                
-                win.add(new Html(html));
-                
-                win.setHeading("Your personal password for Catchup Math");
-                
-                Button close = new Button("Begin Catchup Math");
-                close.addSelectionListener(new SelectionListener<ButtonEvent>() {
-                    @Override
-                    public void componentSelected(ButtonEvent ce) {
-                        String userKey = rdata.getDataAsString("key");
-                        String url = Window.Location.getPath();
-                        
-                        url += "?key=" + userKey;
-                        Window.Location.replace(url);
-                    }
-                });
-                
-                win.getButtonBar().setAlignment(HorizontalAlignment.RIGHT);
-                win.addButton(close);
-                
-                win.setVisible(true);
+                String key = rdata.getDataAsString("key");
+                showPasswordAssignment(password,key);
             }
 
             //@Override
@@ -274,7 +245,7 @@ public class AutoStudentRegistrationPanel extends ResourceContainer {
                 Log.info(caught.getMessage(), caught);
                 String msg = caught.getMessage();
                 if(msg.indexOf("passcode you entered") > -1) {
-                    showAlreadyMsg();
+                    showAlreadyMsg(password);
                 }
                 else if(msg.indexOf("name you entered") > -1) {
                     checkIfPasswordMatches(password);
@@ -283,12 +254,59 @@ public class AutoStudentRegistrationPanel extends ResourceContainer {
         });        
     }
     
+    private void showPasswordAssignment(String password, final String key) {
+        
+        final CmWindow win = new CmWindow();
+        win.setSize(320,200);
+        win.setModal(true);
+        win.setClosable(false);
+        String html = "<div style='margin: 10px;'>" +
+                      "<p>Your personal password is: <br/><b>" + password + "</b></p>" +
+                      "<p style='margin-top: 10px;'>In the future, your Login Name will be <b>" + CmShared.__loginName + "</b> along with the above password, so please write them both down!</p>" +
+                      "</div>";
+        
+        win.add(new Html(html));
+        
+        win.setHeading("Your personal password for Catchup Math");
+        
+        Button close = new Button("Begin Catchup Math");
+        close.addSelectionListener(new SelectionListener<ButtonEvent>() {
+            @Override
+            public void componentSelected(ButtonEvent ce) {
+                String userKey = key;
+                String url = Window.Location.getPath();
+                
+                url += "?key=" + userKey;
+                Window.Location.replace(url);
+            }
+        });
+        
+        win.getButtonBar().setAlignment(HorizontalAlignment.RIGHT);
+        win.addButton(close);
+        
+        win.setVisible(true);
+    }
     
-    private void showAlreadyMsg() {
+    private void showAlreadyMsg(final String password) {
         String msg = "You are already registered with this name.";
         CatchupMathTools.showAlert("Already Registered", msg,new CmAsyncRequestImplDefault() {
             public void requestComplete(String requestData) {
-                showForgotPassword();
+                
+                /** create a login key for this user
+                 * 
+                 */
+                CmServiceAsync s = (CmServiceAsync) Registry.get("cmService");
+                s.execute(new LogUserInAction(null,password), new AsyncCallback<RpcData>() {
+                    public void onSuccess(RpcData result) {
+                        String key = result.getDataAsString("key");
+                        showPasswordAssignment(password, key);
+                    }
+                    
+                    public void onFailure(Throwable caught) {
+                        CatchupMathTools.showAlert(caught.getMessage());
+                    }
+                });
+
             }
         });
     }
@@ -306,7 +324,7 @@ public class AutoStudentRegistrationPanel extends ResourceContainer {
             public void onSuccess(final RpcData rdata) {
                 String msg = rdata.getDataAsString("message");
                 if(msg.indexOf("duplicate") > -1) {
-                    showAlreadyMsg();
+                    showAlreadyMsg(password);
                 }
                 else {
                     msg = "There is another registration with that name, so please add your middle name to the first-name box (e.g., Jim Bob).";
@@ -319,8 +337,8 @@ public class AutoStudentRegistrationPanel extends ResourceContainer {
                 caught.printStackTrace();
             };
         });
-        
     }
+    
     
     private void showForgotPassword() {
         

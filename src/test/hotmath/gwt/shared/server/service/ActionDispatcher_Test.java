@@ -28,6 +28,7 @@ import hotmath.gwt.shared.client.rpc.action.GetStateStandardsAction;
 import hotmath.gwt.shared.client.rpc.action.GetSummariesForActiveStudentsAction;
 import hotmath.gwt.shared.client.rpc.action.GetUserInfoAction;
 import hotmath.gwt.shared.client.rpc.action.GetViewedInmhItemsAction;
+import hotmath.gwt.shared.client.rpc.action.LogUserInAction;
 import hotmath.gwt.shared.client.rpc.action.MarkPrescriptionLessonAsViewedAction;
 import hotmath.gwt.shared.client.rpc.action.ProcessLoginRequestAction;
 import hotmath.gwt.shared.client.rpc.action.SaveQuizCurrentResultAction;
@@ -67,6 +68,18 @@ public class ActionDispatcher_Test extends CmDbTestCase {
         uid = _user.getUid();
     }
 
+    public void testLogUserInAction() throws Exception {
+        LogUserInAction action = new LogUserInAction(_user.getLoginName(),_user.getPassword());
+        RpcData rdata = ActionDispatcher.getInstance().execute(action);
+        
+        assertTrue(rdata.getDataAsString("key") != null);
+        
+        action = new LogUserInAction(_user.getLoginName(),"NOT_EXIST-" + System.currentTimeMillis());
+        rdata = ActionDispatcher.getInstance().execute(action);
+        
+        assertTrue(rdata.getDataAsString("message") != null);
+
+   }
 
     public void testCheckUserAccountStatusAction() throws Exception {
         CheckUserAccountStatusAction action = new CheckUserAccountStatusAction(_user.getPassword());

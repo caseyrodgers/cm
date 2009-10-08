@@ -252,6 +252,7 @@ public class HaUser extends HaBasicUserImpl {
 			user.setBackgroundStyle(rs.getString("gui_background_style"));
 			user.setShowWorkRequired(rs.getInt("is_show_work_required")==0?false:true);
 			user.setPassPercentRequired(rs.getInt("pass_percent"));
+			user.setPassword(rs.getString("user_passcode"));
 			
 			user.setUserAccountType(rs.getString("type"));
 			
