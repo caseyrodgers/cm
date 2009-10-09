@@ -330,3 +330,20 @@ select count(*), item_type from HA_TEST_RUN_INMH_USE where run_id = ? group by r
 
 select distinct(lesson_name) from HA_TEST_RUN_LESSON where run_id = ? order by lesson_name asc
 
+##
+## Class: CmUserProgramDao
+##
+
+.key=ALL_USER_PROGRAM_SQL
+
+select c.id, c.user_id, c.pass_percent, u.admin_id, c.test_def_id, t.test_name, c.test_config_json, c.create_date
+from CM_USER_PROGRAM c
+JOIN HA_TEST_DEF t on c.test_def_id = t.test_def_id
+where c.user_id = ?
+
+.key=CURRENT_USER_PROGRAM_SQL
+
+select c.id, c.user_id, c.pass_percent, u.admin_id, c.test_def_id, t.test_name, c.test_config_json, c.create_date
+from CM_USER_PROGRAM c
+JOIN HA_USER u on c.id = u.user_prog_id
+JOIN HA_TEST_DEF t on c.test_def_id = t.test_def_id and u.uid = ?
