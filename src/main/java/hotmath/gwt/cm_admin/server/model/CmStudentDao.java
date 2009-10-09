@@ -1,6 +1,7 @@
 package hotmath.gwt.cm_admin.server.model;
 
 import hotmath.assessment.InmhItemData;
+import hotmath.cm.server.model.CmUserProgramDao;
 import hotmath.cm.util.CmMultiLinePropertyReader;
 import hotmath.gwt.cm_tools.client.model.ChapterModel;
 import hotmath.gwt.cm_tools.client.model.LessonItemModel;
@@ -1118,81 +1119,6 @@ public class CmStudentDao {
     }
 
     /**
-     * Return the currently configured user program for this user
-     * 
-     * Return null if no program has been defined or a defined program does not exist.
-     * 
-     * @param userId
-     * @return
-     * @throws Exception
-     */
-    public StudentUserProgramModel loadProgramInfoCurrent(final Connection conn, Integer userId) throws Exception {
-        PreparedStatement ps = null;
-        ResultSet rs = null;
-
-        String sql = "select c.id, c.user_id, c.pass_percent, u.admin_id, c.test_def_id, t.test_name, c.test_config_json " +
-                     "from CM_USER_PROGRAM c " +
-                     "JOIN HA_USER u on c.id = u.user_prog_id " +
-                     "JOIN HA_TEST_DEF t on c.test_def_id = t.test_def_id " +
-                     "and u.uid = ?";
-        try {
-            StudentUserProgramModel supm = new StudentUserProgramModel();
-
-            ps = conn.prepareStatement(sql);
-
-            ps.setInt(1, userId);
-            rs = ps.executeQuery();
-            if (rs.first()) {
-                supm.setId(rs.getInt("id"));
-                supm.setUserId(rs.getInt("user_id"));
-                supm.setAdminId(rs.getInt("admin_id"));
-                supm.setTestDefId(rs.getInt("test_def_id"));
-                supm.setTestName(rs.getString("test_name"));
-                int passPercent = rs.getInt("pass_percent");
-                supm.setConfig(new HaTestConfig(passPercent, rs.getString("test_config_json")));
-            }
-            return supm;
-        } finally {
-            SqlUtilities.releaseResources(rs, ps, null);
-        }
-    }
-
-    
-    /**
-     * Return the program information for the named test
-     * 
-     * 
-     * @param testId
-     * @return
-     * @throws Exception
-     */
-    public StudentUserProgramModel loadProgramInfoForTest(final Connection conn, Integer testId) throws Exception {
-        PreparedStatement ps = null;
-        ResultSet rs = null;
-
-        String sql = CmMultiLinePropertyReader.getInstance().getProperty("LOAD_PROGRAM_INFO_FOR_TEST"); 
-        try {
-            StudentUserProgramModel supm = new StudentUserProgramModel();
-
-            ps = conn.prepareStatement(sql);
-
-            ps.setInt(1, testId);
-            rs = ps.executeQuery();
-            if (rs.first()) {
-                supm.setId(rs.getInt("id"));
-                supm.setUserId(rs.getInt("user_id"));
-                supm.setAdminId(rs.getInt("admin_id"));
-                supm.setTestDefId(rs.getInt("test_def_id"));
-                supm.setTestName(rs.getString("test_name"));
-                int passPercent = rs.getInt("pass_percent");
-                supm.setConfig(new HaTestConfig(passPercent, rs.getString("test_config_json")));
-            }
-            return supm;
-        } finally {
-            SqlUtilities.releaseResources(rs, ps, null);
-        }
-    }
-    /**
      * Load this user's currently active state information. This shows the
      * current test/run and session the user is currently viewing.
      * 
@@ -1226,7 +1152,8 @@ public class CmStudentDao {
              *  is zero to always use the same slot
              */
             if(activeInfo.getActiveSegmentSlot() > 0) {
-                if(!loadProgramInfoCurrent(conn, userId).hasAlternateTests())
+            	CmUserProgramDao upDao = new CmUserProgramDao();
+                if(! upDao.loadProgramInfoCurrent(conn, userId).hasAlternateTests())
                    activeInfo.setActiveSegmentSlot(0);
             }
             
@@ -1350,6 +1277,5 @@ public class CmStudentDao {
             SqlUtilities.releaseResources(null, pstat, null);
         }
     }
-
 
 }
