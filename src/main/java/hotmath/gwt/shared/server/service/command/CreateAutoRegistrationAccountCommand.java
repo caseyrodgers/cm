@@ -1,5 +1,6 @@
 package hotmath.gwt.shared.server.service.command;
 
+import hotmath.cm.server.model.CmUserProgramDao;
 import hotmath.cm.util.CmMultiLinePropertyReader;
 import hotmath.gwt.cm_admin.server.model.CmAdminDao;
 import hotmath.gwt.cm_admin.server.model.CmStudentDao;
@@ -72,8 +73,9 @@ public class CreateAutoRegistrationAccountCommand implements ActionHandler<Creat
         studentModel.setName(action.getUser());
         studentModel = dao.addStudent(conn, studentModel);
 
-        
-        StudentUserProgramModel si = dao.loadProgramInfoCurrent(conn, studentModel.getUid());
+
+        CmUserProgramDao upDao = new CmUserProgramDao();
+        StudentUserProgramModel si = upDao.loadProgramInfoCurrent(conn, studentModel.getUid());
         StudentActiveInfo activeInfo = dao.loadActiveInfo(conn, studentModel.getUid());
         
         String subscriberId = new CmAdminDao().getAccountInfo(studentModel.getAdminUid()).getSubscriberId();
@@ -125,7 +127,7 @@ public class CreateAutoRegistrationAccountCommand implements ActionHandler<Creat
     }
     
     
-    @Override
+    //@Override
     public Class<? extends Action<? extends Response>> getActionType() {
         return CreateAutoRegistrationAccountAction.class;
     }

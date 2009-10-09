@@ -1,5 +1,6 @@
 package hotmath.testset.ha;
 
+import hotmath.cm.server.model.CmUserProgramDao;
 import hotmath.gwt.cm_admin.server.model.CmStudentDao;
 import hotmath.gwt.cm_tools.client.model.StudentModelI;
 import hotmath.util.HMConnectionPool;
@@ -46,9 +47,10 @@ public class EndOfProgramHandler {
      */
     public StudentUserProgramModel getNextProgram() throws Exception {
         Connection conn=null;
+        CmUserProgramDao upDao = new CmUserProgramDao();
         try {
             conn = HMConnectionPool.getConnection();
-            StudentUserProgramModel programCurr = dao.loadProgramInfoCurrent(conn,student.getUid());
+            StudentUserProgramModel programCurr = upDao.loadProgramInfoCurrent(conn,student.getUid());
             
             if(programCurr.getTestDefId() == CmProgram.PREALG_PROF.getDefId()) {
                 updateProgram(CmProgram.ALG1_PROF.getSubject(),CmProgram.ALG1_PROF.getProgramId(),null);                
@@ -91,9 +93,8 @@ public class EndOfProgramHandler {
                     throw new Exception("Unknown program: " + programCurr);
                 }
             }
-
             
-            StudentUserProgramModel programNext = dao.loadProgramInfoCurrent(conn,student.getUid());
+            StudentUserProgramModel programNext = upDao.loadProgramInfoCurrent(conn,student.getUid());
             return programNext;
         }
         finally {

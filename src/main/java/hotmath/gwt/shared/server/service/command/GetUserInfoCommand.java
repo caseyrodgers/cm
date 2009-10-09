@@ -1,5 +1,6 @@
 package hotmath.gwt.shared.server.service.command;
 
+import hotmath.cm.server.model.CmUserProgramDao;
 import hotmath.gwt.cm_admin.server.model.CmAdminDao;
 import hotmath.gwt.cm_admin.server.model.CmStudentDao;
 import hotmath.gwt.cm_tools.client.model.StudentActiveInfo;
@@ -28,7 +29,8 @@ public class GetUserInfoCommand implements ActionHandler<GetUserInfoAction, User
             CmStudentDao dao = new CmStudentDao();
             StudentModelI sm = dao.getStudentModelBasic(conn, action.getUserId());
             
-            StudentUserProgramModel si = dao.loadProgramInfoCurrent(conn, action.getUserId());
+            CmUserProgramDao upDao = new CmUserProgramDao();
+            StudentUserProgramModel si = upDao.loadProgramInfoCurrent(conn, action.getUserId());
             StudentActiveInfo activeInfo = dao.loadActiveInfo(conn, action.getUserId());
             String subscriberId = new CmAdminDao().getAccountInfo(sm.getAdminUid()).getSubscriberId();
             HotMathSubscriber sub = HotMathSubscriberManager.findSubscriber(subscriberId); 

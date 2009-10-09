@@ -3,6 +3,7 @@ package hotmath.testset.ha;
 import hotmath.HotMathException;
 import hotmath.assessment.AssessmentPrescription;
 import hotmath.assessment.AssessmentPrescriptionManager;
+import hotmath.cm.server.model.CmUserProgramDao;
 import hotmath.cm.util.CmCacheManager;
 import hotmath.cm.util.CmMultiLinePropertyReader;
 import hotmath.cm.util.CmCacheManager.CacheName;
@@ -192,9 +193,7 @@ public class HaTest {
 			while(rs.next()) {
 				HaTestRunResult res = new HaTestRunResult();
 				res.setPid(rs.getString("pid"));
-				String isCorrect = "";
 				String re = rs.getString("is_correct");
-				String responseNum = rs.getString("response_number");
 				if(re != null) {
 				    res.setResponseIndex(rs.getInt("response_number"));
 				    if(re.equals("1"))
@@ -269,7 +268,7 @@ public class HaTest {
 			
 			
 			// get the program info used to create this test
-			StudentUserProgramModel userProgram = new CmStudentDao().loadProgramInfoCurrent(conn, uid);
+			StudentUserProgramModel userProgram = new CmUserProgramDao().loadProgramInfoCurrent(conn, uid);
 			
 			
 			/** Determine the proper quiz zone to use
@@ -394,7 +393,7 @@ public class HaTest {
 			     */
                 __logger.debug("Loading test program info from current assigned program: " + testId);
                 
-			    programInfo = new CmStudentDao().loadProgramInfoCurrent(conn, test.getUser().getUid());
+			    programInfo = new CmUserProgramDao().loadProgramInfoCurrent(conn, test.getUser().getUid());
 			}
 			
 			test.setProgramInfo(programInfo);
@@ -450,7 +449,7 @@ public class HaTest {
 	         * quiz slot.
 	         * 
 	         */
-	        CmStudentDao dao = new CmStudentDao();
+	        CmUserProgramDao dao = new CmUserProgramDao();
 	        StudentUserProgramModel pinfo = dao.loadProgramInfoCurrent(conn, getUser().getUid());
 	        int passPercentRequired = pinfo.getConfig().getPassPercent();
 	        int testCorrectPercent = GetPrescriptionCommand.getTestPassPercent(answeredCorrect + answeredIncorrect + notAnswered, answeredCorrect);

@@ -1,5 +1,6 @@
 package hotmath.gwt.shared.server.service.command;
 
+import hotmath.cm.server.model.CmUserProgramDao;
 import hotmath.cm.util.CmCacheManager;
 import hotmath.cm.util.CmCacheManager.CacheName;
 import hotmath.gwt.cm_admin.server.model.CmAdminDao;
@@ -46,22 +47,18 @@ public class GetQuizHtmlCommand implements ActionHandler<GetQuizHtmlAction, RpcD
             String quizHtmlTemplate = readQuizHtmlTemplate();
             Map<String, Object> map = new HashMap<String, Object>();
 
-            
-            CmStudentDao dao = new CmStudentDao();
-            
             // StudentModel sm = dao.getStudentModel(uid);
             //HaUser user = HaUser.lookUser(conn, uid,null);
             
-            StudentUserProgramModel programInfo = dao.loadProgramInfoCurrent(conn, uid);
+            CmUserProgramDao upDao = new CmUserProgramDao();
+            StudentUserProgramModel programInfo = upDao.loadProgramInfoCurrent(conn, uid);
 
-            
             String testName = programInfo.getTestName();
 
             if (testSegment == 0)
                 testSegment = 1;
             
-
-            
+            CmStudentDao dao = new CmStudentDao();
             StudentActiveInfo activeInfo = dao.loadActiveInfo(conn, uid);
 
             int testSegmentSlot = activeInfo.getActiveSegmentSlot();
@@ -70,7 +67,7 @@ public class GetQuizHtmlCommand implements ActionHandler<GetQuizHtmlAction, RpcD
              * slot.
              */
             
-            /** how to know if this a retake?
+            /** TODO: how to know if this a retake?
              * 
              */
             
