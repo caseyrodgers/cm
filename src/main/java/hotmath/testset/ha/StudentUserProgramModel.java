@@ -13,6 +13,7 @@ public class StudentUserProgramModel {
     Integer id;
     Integer userId;
     Integer testDefId;
+    Integer passPercent;
     String testName;
     Integer adminId;
     Date createDate;
@@ -63,6 +64,14 @@ public class StudentUserProgramModel {
         this.createDate = createDate;
     }
     
+    public Integer getPassPercent() {
+    	return passPercent;
+    }
+    
+    public void setPassPercent(Integer passPercent) {
+    	this.passPercent = passPercent;
+    }
+    
     /** Return true if this program has alternate tests available
      * @return
      */
@@ -82,7 +91,8 @@ public class StudentUserProgramModel {
     @Override
     public String toString() {
         return "StudentUserProgramModel [adminId=" + adminId + ", config=" + config + ", createDate=" + createDate
-                + ", id=" + id + ", testDefId=" + testDefId + ", testName=" + testName + ", userId=" + userId + "]";
+                + ", id=" + id + ", testDefId=" + testDefId + ", testName=" + testName + ", userId=" + userId
+                + ", passPercent=" + passPercent + "]";
     }
     
 }
