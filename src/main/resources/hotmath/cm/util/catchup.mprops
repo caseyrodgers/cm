@@ -9,7 +9,7 @@
 
 .key=STUDENT_SUMMARY
 
-SELECT h.uid, h.user_name as name, h.user_passcode as passcode, h.user_email as email, h.admin_id as admin_uid,
+SELECT h.uid, upper(h.user_name) as name, h.user_passcode as passcode, h.user_email as email, h.admin_id as admin_uid,
        h.is_show_work_required, h.is_tutoring_available,  h.active_segment, p.test_config_json, h.user_prog_id,
        p.test_def_id, p.create_date, concat(p.pass_percent,'%') as pass_percent, t.total_segments, 
        lpad(concat(format((m.answered_correct*100)/(m.answered_correct+m.answered_incorrect+m.not_answered),0),'%'),4,' ') as last_quiz, 
