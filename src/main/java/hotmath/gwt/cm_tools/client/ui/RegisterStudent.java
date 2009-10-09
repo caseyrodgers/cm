@@ -415,7 +415,7 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
 		combo.setForceSelection(false);
 		combo.setDisplayField("chapter");
 		combo.setEditable(false);
-		combo.setMaxLength(60);
+		combo.setMaxLength(160);
 		combo.setAllowBlank(false);
 		combo.setTriggerAction(TriggerAction.ALL);
 		combo.setStore(store);
