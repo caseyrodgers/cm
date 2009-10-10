@@ -457,6 +457,7 @@ public class PrescriptionContext implements CmContext {
     }
 
     public void runAutoTest() {
+
         int timeToWait = 1;
         for (final PrescriptionSessionDataResource r : prescriptionData.getCurrSession().getInmhResources()) {
             try {
@@ -477,12 +478,16 @@ public class PrescriptionContext implements CmContext {
                             if (!r.getType().equals(resourceType))
                                     continue;
                             
-                            for(final InmhItemData iid: r.getItems() ) {
+                            for(int i=0,t=r.getItems().size();i<t;i++) {
+                                
+                                final InmhItemData iid = r.getItems().get(i);
+                                final String resourceNumber = Integer.toString(i);
+
                                 Timer timer1 = new Timer() {
                                     public void run() {
                                         AutoTestWindow.getInstance().addLogMessage("Testing: " + resourceType + ", " + iid.getFile());
 
-                                        CmHistoryManager.loadResourceIntoHistory(iid.getType(), iid.getFile());
+                                        CmHistoryManager.loadResourceIntoHistory(iid.getType(), resourceNumber);
                                     }
                                 };
                                 timer1.schedule(timeToWait1);

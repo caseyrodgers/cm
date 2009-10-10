@@ -1,10 +1,6 @@
 package hotmath.gwt.cm_tools.client.ui.viewer;
 
-import hotmath.gwt.cm_tools.client.data.InmhItemData;
-
 import com.allen_sauer.gwt.log.client.Log;
-import com.extjs.gxt.ui.client.widget.Html;
-import com.google.gwt.user.client.ui.Widget;
 
 
 /** Create the appropriate resource viewer
@@ -55,29 +51,4 @@ public class ResourceViewerFactory {
 		else
 			return new ResourceViewerImplDefault();
 	}
-}
-
-
-class ResourceViewerImplTest extends ResourceViewerContainer {
-    
-    
-    public ResourceViewerImplTest() {
-        setStyleName("resource-viewer-impl-test");
-    }
-
-    @Override
-    public Widget getResourcePanel(InmhItemData resource) {
-        String s = "This is a testjklasdflk;as df;l;sg asfdl;kasfdl;sdajfdjl;jasd ;asl sk;ljld;dlakfasldaksdja;lfajaskasdfasf" +
-        "This is a testjklasdflk;as df;l;sg asfdl;kasfdl;sdajfdjl;jasd ;asl sk;ljld;dlakfasldaksdja;lfajaskasdfasf" +
-        "This is a testjklasdflk;as df;l;sg asfdl;kasfdl;sdajfdjl;jasd ;asl sk;ljld;dlakfasldaksdja;lfajaskasdfasf" +
-        "This is a testjklasdflk;as df;l;sg asfdl;kasfdl;sdajfdjl;jasd ;asl sk;ljld;dlakfasldaksdja;lfajaskasdfasf" +
-        "This is a testjklasdflk;as df;l;sg asfdl;kasfdl;sdajfdjl;jasd ;asl sk;ljld;dlakfasldaksdja;lfajaskasdfasf";
-        Html html = new Html("<b>" + s + s + s + s + s + s + "</b>");
-        html.setStyleName("resource-viewer-impl-test-comp");
-        html.setHeight(600);
-        add(html);
-        addResource(html, "A Test");
-        return this;
-    }
-    
 }

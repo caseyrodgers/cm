@@ -6,7 +6,7 @@ import com.google.gwt.user.client.History;
 
 
 
-/** Manages the interface beween the GUI and the GWT History api
+/** Manages the interface between the GUI and the GWT History api
  * 
  * @author casey
  *
@@ -26,7 +26,9 @@ public class CmHistoryManager {
     
     static Integer __uniqer = 1;
     /** Cause a new history change to occur, this will
-     *  invoke the global changeListener
+     *  invoke the global changeListener.
+     *  
+     *  Adds a unique key to URL to force a refresh
      *  
      * @param location
      */

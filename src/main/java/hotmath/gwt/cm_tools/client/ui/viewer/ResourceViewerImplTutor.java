@@ -128,7 +128,7 @@ public class ResourceViewerImplTutor extends ResourceViewerContainer implements 
                    boolean shouldExpandSolution=false;
                    if(UserInfo.getInstance().isAutoTestMode()) {
                        shouldExpandSolution=true;
-                       showWorkDialog();
+                       //showWorkDialog();
                    }
                    ResourceViewerImplTutor.initializeTutor(resource.getFile(),resource.getTitle(),hasShowWork,shouldExpandSolution);
                    
