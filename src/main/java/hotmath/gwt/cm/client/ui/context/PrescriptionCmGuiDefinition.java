@@ -444,6 +444,6 @@ class PrescriptionResourcePanel extends LayoutContainer {
      */
     public void expandResourceType(String resourceType) {
         // show the menu for named resource
-        CatchupMathTools.showAlert("Show resource type: " + resourceType);
+        //CatchupMathTools.showAlert("Show resource type: " + resourceType);
     }
 }
