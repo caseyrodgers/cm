@@ -782,7 +782,7 @@ public class CmStudentDao {
         return getStudentModel(uid, false);  
     }
     
-    
+
     /** Return student model named by uid
      *  
      * @param uid
@@ -794,8 +794,33 @@ public class CmStudentDao {
      */
     public StudentModel getStudentModel(Integer uid, Boolean includeSelfRegTemplate) throws Exception {
         
-        long timeStart = System.currentTimeMillis();
         Connection conn = null;
+
+        try {
+            conn = HMConnectionPool.getConnection();
+            return getStudentModel(conn, uid, includeSelfRegTemplate);
+        }
+        catch (Exception e) {
+            logger.error(String.format("*** Error obtaining data for student UID: %d", uid), e);
+            throw new Exception(String.format("*** Error obtaining data for student with UID: %d", uid));
+        } finally {
+            SqlUtilities.releaseResources(null, null, conn);
+        }
+    }
+            
+    /** Return student model named by uid
+     *  
+     * @param conn
+     * @param uid
+     * @param includeSelfRegTemplate  If true, then is_auto_create_template will be considered
+     * @return
+     * 
+     * 
+     * @throws Exception
+     */
+    public StudentModel getStudentModel(Connection conn, Integer uid, Boolean includeSelfRegTemplate) throws Exception {
+        
+        long timeStart = System.currentTimeMillis();
         PreparedStatement ps = null;
         ResultSet rs = null;
 
@@ -820,7 +845,7 @@ public class CmStudentDao {
             logger.error(String.format("*** Error obtaining data for student UID: %d", uid), e);
             throw new Exception(String.format("*** Error obtaining data for student with UID: %d", uid));
         } finally {
-            SqlUtilities.releaseResources(rs, ps, conn);
+            SqlUtilities.releaseResources(rs, ps, null);
             logger.info(String.format("End getStudentModel(), UID: %d, elapsed seconds: %d", uid, ((System.currentTimeMillis() - timeStart)/1000)));
         }
     }
