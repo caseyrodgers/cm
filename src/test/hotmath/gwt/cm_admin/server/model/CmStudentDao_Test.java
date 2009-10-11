@@ -1,5 +1,6 @@
 package hotmath.gwt.cm_admin.server.model;
 
+import hotmath.cm.server.model.CmUserProgramDao;
 import hotmath.gwt.cm.server.CmDbTestCase;
 import hotmath.gwt.cm_tools.client.model.StudentActiveInfo;
 import hotmath.gwt.cm_tools.client.model.StudentModelI;
@@ -57,7 +58,7 @@ public class CmStudentDao_Test extends CmDbTestCase {
     }
     
     public void testGetStudentProgram() throws Exception {
-        StudentUserProgramModel pi = _dao.loadProgramInfoCurrent(conn, TEST_ID);
+        StudentUserProgramModel pi = new CmUserProgramDao().loadProgramInfoCurrent(conn, TEST_ID);
         assertNotNull(pi);
         assertTrue(pi.getTestDefId() > 0);
     }

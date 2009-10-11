@@ -1,5 +1,6 @@
 package hotmath.gwt.cm_admin.server.model;
 
+import hotmath.cm.server.model.CmUserProgramDao;
 import hotmath.gwt.cm.server.CmDbTestCase;
 import hotmath.gwt.cm_tools.client.model.ChapterModel;
 import hotmath.gwt.cm_tools.client.model.StudentActiveInfo;
@@ -72,7 +73,7 @@ public class CmAdminDao_Test extends CmDbTestCase {
         StudentModelI sm = _dao.getStudentModel(TEST_ID);
         _dao.assignProgramToStudent(conn, TEST_ID,CmProgram.PREALG_CHAP, "Integers");
         
-        StudentUserProgramModel pi = _dao.loadProgramInfoCurrent(conn, TEST_ID);
+        StudentUserProgramModel pi = new CmUserProgramDao().loadProgramInfoCurrent(conn, TEST_ID);
         assertNotNull(pi);
         assertTrue(pi.getConfig().getChapters().get(0).equals("Integers"));
     }
@@ -90,7 +91,7 @@ public class CmAdminDao_Test extends CmDbTestCase {
         sm.setProgramChanged(true);
         _dao.updateStudent(conn, sm, true, false, true, false);
 
-        StudentUserProgramModel progInfo = _dao.loadProgramInfoCurrent(conn, TEST_ID);
+        StudentUserProgramModel progInfo =new CmUserProgramDao().loadProgramInfoCurrent(conn, TEST_ID);
         assertTrue(progInfo.getTestName().equals("Algebra 2 Proficiency"));
 
         
@@ -104,7 +105,7 @@ public class CmAdminDao_Test extends CmDbTestCase {
         sm.setProgramChanged(true);
         _dao.updateStudent(conn, sm, true, false, true, false);
 
-        progInfo = _dao.loadProgramInfoCurrent(conn, TEST_ID);
+        progInfo = new CmUserProgramDao().loadProgramInfoCurrent(conn, TEST_ID);
         assertTrue(progInfo.getTestName().equals("Algebra 1 Proficiency"));
         
         
@@ -117,12 +118,12 @@ public class CmAdminDao_Test extends CmDbTestCase {
         sm.setProgramChanged(true);
         _dao.updateStudent(conn, sm, true, false, true, false);
 
-        progInfo = _dao.loadProgramInfoCurrent(conn, TEST_ID);
+        progInfo = new CmUserProgramDao().loadProgramInfoCurrent(conn, TEST_ID);
         assertTrue(progInfo.getTestName().equalsIgnoreCase("Pre-algebra Proficiency"));
     }
 
     public void testLoadStudentUserProgramModel() throws Exception {
-        StudentUserProgramModel up = _dao.loadProgramInfoCurrent(conn, TEST_ID);
+        StudentUserProgramModel up = new CmUserProgramDao().loadProgramInfoCurrent(conn, TEST_ID);
         assertNotNull(up);
 
         assertTrue(up.getTestDefId() > 0);

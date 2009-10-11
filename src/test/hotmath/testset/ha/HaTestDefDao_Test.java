@@ -1,5 +1,6 @@
 package hotmath.testset.ha;
 
+import hotmath.cm.server.model.CmUserProgramDao;
 import hotmath.gwt.cm.server.CmDbTestCase;
 import hotmath.gwt.cm_admin.server.model.CmStudentDao;
 
@@ -24,7 +25,7 @@ public class HaTestDefDao_Test extends CmDbTestCase {
         
         CmStudentDao dao = new CmStudentDao();
         dao.assignProgramToStudent(conn,uid, CmProgram.ALG2_CHAP,"Integers");
-        StudentUserProgramModel spi = dao.loadProgramInfoCurrent(conn,uid);
+        StudentUserProgramModel spi = new CmUserProgramDao().loadProgramInfoCurrent(conn,uid);
         
         HaTestDefDao testDefDao = new HaTestDefDao();
         ChapterInfo chapterInfo = testDefDao.getChapterInfo(conn,spi);
@@ -37,7 +38,7 @@ public class HaTestDefDao_Test extends CmDbTestCase {
         
         CmStudentDao dao = new CmStudentDao();
         dao.assignProgramToStudent(conn,uid, CmProgram.PREALG_CHAP,"Integers");
-        StudentUserProgramModel spi = dao.loadProgramInfoCurrent(conn,uid);
+        StudentUserProgramModel spi = new CmUserProgramDao().loadProgramInfoCurrent(conn,uid);
         
         HaTestDefDao testDefDao = new HaTestDefDao();
         ChapterInfo chapterInfo = testDefDao.getChapterInfo(conn,spi);
@@ -50,7 +51,7 @@ public class HaTestDefDao_Test extends CmDbTestCase {
         int uid = setupDemoAccount();
         
         CmStudentDao dao = new CmStudentDao();
-        StudentUserProgramModel spi = dao.loadProgramInfoCurrent(conn,uid);
+        StudentUserProgramModel spi = new CmUserProgramDao().loadProgramInfoCurrent(conn,uid);
         
         HaTestDefDao testDefDao = new HaTestDefDao();
         

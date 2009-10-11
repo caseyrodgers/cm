@@ -1,5 +1,6 @@
 package hotmath.testset.ha;
 
+import hotmath.cm.server.model.CmUserProgramDao;
 import hotmath.gwt.cm.server.CmDbTestCase;
 import hotmath.gwt.cm_admin.server.model.CmStudentDao;
 
@@ -120,7 +121,7 @@ public class EndOfProgramHander_Test extends CmDbTestCase {
         dao.assignProgramToStudent(conn,userId, CmProgram.PREALG_CHAP, "Integers");
 
         // read currently set program info
-        StudentUserProgramModel currProgram = dao.loadProgramInfoCurrent(conn,userId);
+        StudentUserProgramModel currProgram = new CmUserProgramDao().loadProgramInfoCurrent(conn,userId);
         
         EndOfProgramHandler eop = new EndOfProgramHandler(userId);
         StudentUserProgramModel nextProgram = eop.getNextProgram();
@@ -174,7 +175,7 @@ public class EndOfProgramHander_Test extends CmDbTestCase {
     public void testEndOfProgramAssignValid() throws Exception {
         
         // get curr
-        StudentUserProgramModel currProgram = dao.loadProgramInfoCurrent(conn,userId);
+        StudentUserProgramModel currProgram = new CmUserProgramDao().loadProgramInfoCurrent(conn,userId);
         
         // auto assign next
         EndOfProgramHandler eop = new EndOfProgramHandler(userId);

@@ -24,6 +24,7 @@ import hotmath.gwt.shared.client.rpc.action.GetPrescriptionAction;
 import hotmath.gwt.shared.client.util.RpcData;
 import hotmath.gwt.shared.client.util.UserInfo;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -358,6 +359,19 @@ class PrescriptionResourcePanel extends LayoutContainer {
     static PrescriptionResourcePanel __instance;
 
     PrescriptionData pdata;
+    List<PrescriptionSessionDataResource> registeredResources = new ArrayList<PrescriptionSessionDataResource>();
+    
+    public List<PrescriptionSessionDataResource> getRegisteredResources() {
+        return registeredResources;
+    }
+
+
+
+    public void setRegisteredResources(List<PrescriptionSessionDataResource> registeredResources) {
+        this.registeredResources = registeredResources;
+    }
+
+
     boolean isReady;
     public PrescriptionResourcePanel() {
         __instance = this;
@@ -389,6 +403,7 @@ class PrescriptionResourcePanel extends LayoutContainer {
         for (PrescriptionSessionDataResource resource : resources) {
         ResourceMenuButton btn = new ResourceMenuButton(resource);
             
+            registeredResources.add(resource);
             if(resource.getItems().size() == 0)
                 btn.setEnabled(false);
             
@@ -403,6 +418,7 @@ class PrescriptionResourcePanel extends LayoutContainer {
         * 
         */
        for(PrescriptionSessionDataResource type: new CmInmhStandardResources()) {
+           registeredResources.add(type);
            
            Button btn = new ResourceMenuButton(type);
            vp.add(btn);

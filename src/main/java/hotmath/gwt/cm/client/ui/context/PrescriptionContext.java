@@ -457,13 +457,18 @@ public class PrescriptionContext implements CmContext {
     }
 
     public void runAutoTest() {
+        
+        
+        
+            
+        
 
         int timeToWait = 1;
-        for (final PrescriptionSessionDataResource r : prescriptionData.getCurrSession().getInmhResources()) {
+        for(String rt: PrescriptionCmGuiDefinition._registeredResources.keySet()) {
+            final String resourceType = rt;
             try {
                 Timer timer = new Timer() {
                     public void run() {
-                        final String resourceType = r.getType();
 
                         AutoTestWindow.getInstance().addLogMessage("Testing resource: " + resourceType);
 
@@ -471,28 +476,22 @@ public class PrescriptionContext implements CmContext {
 
                         // now click on each resource
                         
-                        
-                        List<PrescriptionSessionDataResource> resources = prescriptionData.getCurrSession().getInmhResources();
+                        List<InmhItemData> resources = PrescriptionCmGuiDefinition._registeredResources.get(resourceType);
                         int timeToWait1 = 1;
-                        for(PrescriptionSessionDataResource r: resources) {
+                        int i=0;
+                        for(final InmhItemData r: resources) {
                             if (!r.getType().equals(resourceType))
                                     continue;
-                            
-                            for(int i=0,t=r.getItems().size();i<t;i++) {
-                                
-                                final InmhItemData iid = r.getItems().get(i);
-                                final String resourceNumber = Integer.toString(i);
+                             final String resourceNumber = Integer.toString(i);
+                            Timer timer1 = new Timer() {
+                                public void run() {
+                                    AutoTestWindow.getInstance().addLogMessage("Testing: " + resourceType + ", " + r.getFile());
 
-                                Timer timer1 = new Timer() {
-                                    public void run() {
-                                        AutoTestWindow.getInstance().addLogMessage("Testing: " + resourceType + ", " + iid.getFile());
-
-                                        CmHistoryManager.loadResourceIntoHistory(iid.getType(), resourceNumber);
-                                    }
-                                };
-                                timer1.schedule(timeToWait1);
-                                timeToWait1 += AutoTestWindow.getInstance().getTimeForSingleResource();
-                            }
+                                    CmHistoryManager.loadResourceIntoHistory(r.getType(), resourceNumber);
+                                }
+                            };
+                            timer1.schedule(timeToWait1);
+                            timeToWait1 += AutoTestWindow.getInstance().getTimeForSingleResource();
                         }
                     }
                 };
