@@ -16,6 +16,7 @@ public class StudentReportCardModel implements StudentReportCardModelI {
 	private Date lastActivityDate;
 	private List<String> prescribedLessonList;
 	// private List<StudentProgramReportModelI> programReportList;
+	private Integer quizAvgPassPercent;
 	private Integer quizCount;
 	private Integer quizPassCount;
 	private Date reportEndDate;
@@ -29,11 +30,11 @@ public class StudentReportCardModel implements StudentReportCardModelI {
 		return adminUid;
 	}
 
-	public String getCurrentProgramName() {
+	public String getLastProgramName() {
 		return currentProgramName;
 	}
 
-	public String getCurrentProgramStatus() {
+	public String getLastProgramStatus() {
 		return currentProgramStatus;
 	}
 
@@ -59,6 +60,10 @@ public class StudentReportCardModel implements StudentReportCardModelI {
 
 	public List<String> getPrescribedLessonList() {
 		return prescribedLessonList;
+	}
+
+	public Integer getQuizAvgPassPercent() {
+		return quizAvgPassPercent;
 	}
 
 	public Integer getQuizCount() {
@@ -97,11 +102,11 @@ public class StudentReportCardModel implements StudentReportCardModelI {
         adminUid = uid;
 	}
 
-	public void setCurrentProgramName(String name) {
+	public void setLastProgramName(String name) {
 		currentProgramName = name;
 	}
 
-	public void setCurrentProgramStatus(String status) {
+	public void setLastProgramStatus(String status) {
 		currentProgramStatus = status;
 	}
 
@@ -131,6 +136,10 @@ public class StudentReportCardModel implements StudentReportCardModelI {
 
 	public void setProgramReportList(List<StudentProgramReportModelI> list) throws Exception {
 		throw new UnsupportedOperationException();
+	}
+
+	public void setQuizAvgPassPercent(Integer percent) {
+		quizAvgPassPercent = percent;
 	}
 
 	public void setQuizCount(Integer count) {

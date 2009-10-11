@@ -38,14 +38,18 @@ public interface StudentReportCardModelI {
 
 	public void setInitialProgramStatus(String status);
 
-	public String getCurrentProgramName();
+	public String getLastProgramName();
 
-	public void setCurrentProgramName(String name);
+	public void setLastProgramName(String name);
 
-	public String getCurrentProgramStatus();
+	public String getLastProgramStatus();
 
-	public void setCurrentProgramStatus(String status);
+	public void setLastProgramStatus(String status);
 
+	public Integer getQuizAvgPassPercent();
+
+	public void setQuizAvgPassPercent(Integer percent);
+	
 	public Integer getQuizCount();
 
 	public void setQuizCount(Integer count);
