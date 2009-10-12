@@ -478,11 +478,11 @@ public class PrescriptionContext implements CmContext {
                         
                         List<InmhItemData> resources = PrescriptionCmGuiDefinition._registeredResources.get(resourceType);
                         int timeToWait1 = 1;
-                        int i=0;
+                        int which=0;
                         for(final InmhItemData r: resources) {
                             if (!r.getType().equals(resourceType))
                                     continue;
-                             final String resourceNumber = Integer.toString(i);
+                             final String resourceNumber = Integer.toString(which++);
                             Timer timer1 = new Timer() {
                                 public void run() {
                                     AutoTestWindow.getInstance().addLogMessage("Testing: " + resourceType + ", " + r.getFile());

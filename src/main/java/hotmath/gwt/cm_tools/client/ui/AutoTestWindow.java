@@ -95,10 +95,10 @@ public class AutoTestWindow extends Window {
         
         _waitTimeForSingleResourceSlider.setMaxValue(3000*2);
         _waitTimeForSingleResourceSlider.setValue(3000*2);
-        _waitTimeForSingleResourceTypeSlider.setMaxValue(10000*2);
-        _waitTimeForSingleResourceTypeSlider.setValue(10000*2);
-        _waitTimeForSingleLessonSlider.setMaxValue(60000*2);
-        _waitTimeForSingleLessonSlider.setValue(60000*2);
+        _waitTimeForSingleResourceTypeSlider.setMaxValue(5000*2);
+        _waitTimeForSingleResourceTypeSlider.setValue(5000*2);
+        _waitTimeForSingleLessonSlider.setMaxValue(30000*2);
+        _waitTimeForSingleLessonSlider.setValue(30000*2);
         
         
         Label l = new Label("Item: ");
