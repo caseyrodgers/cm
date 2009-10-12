@@ -73,7 +73,7 @@ public class CmUserProgramDao {
             rs = ps.executeQuery();
 
             List<StudentUserProgramModel> list = new ArrayList<StudentUserProgramModel>();
-            while (rs.first()) {
+            while (rs.next()) {
                 StudentUserProgramModel supm = new StudentUserProgramModel();
                 supm.setId(rs.getInt("id"));
                 supm.setUserId(rs.getInt("user_id"));
@@ -95,7 +95,6 @@ public class CmUserProgramDao {
     
     /**
      * Return the program information for the specified test
-     * 
      * 
      * @param testId
      * @return
