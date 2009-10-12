@@ -120,11 +120,11 @@ public class AutoStudentRegistrationPanel extends ResourceContainer {
         fsProfile.add(lastName);
         
         birthDate = new TextField<String>();  
-        birthDate.setFieldLabel("Birth date (ddmm)");
+        birthDate.setFieldLabel("Birth date (mmdd)");
         birthDate.setAllowBlank(false);
         birthDate.setValidator(new MyFieldValidator());
         birthDate.setId("birthDate");
-        birthDate.setEmptyText("-- birth day and month (ddmm) --");
+        birthDate.setEmptyText("-- birth day and month (mmdd) --");
         birthDate.setValidator(new Validator() {
             //@Override
             public String validate(Field<?> field, String value) {
