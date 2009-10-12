@@ -1,6 +1,7 @@
 package hotmath.cm.util.service;
 
 import hotmath.cm.util.report.StudentDetailReport;
+import hotmath.cm.util.report.StudentReportCard;
 import hotmath.cm.util.report.StudentSummaryReport;
 
 import java.io.ByteArrayOutputStream;
@@ -50,14 +51,18 @@ public class GeneratePDF extends HttpServlet {
 			
 			ByteArrayOutputStream baos = null;
 			if (type.equals("studentSummary")) {
-				StudentSummaryReport ssr = new StudentSummaryReport();
-				baos = ssr.makePdf(reportId, adminId);
+				StudentSummaryReport ss = new StudentSummaryReport();
+				baos = ss.makePdf(reportId, adminId);
 			}
 			else if (type.equals("studentDetail")) {
-				StudentDetailReport sdr = new StudentDetailReport();
-				baos = sdr.makePdf(reportId, adminId);
+				StudentDetailReport sd = new StudentDetailReport();
+				baos = sd.makePdf(reportId, adminId);
 			}
-			
+			else if (type.equals("reportCard")) {
+				StudentReportCard sr = new StudentReportCard();
+				baos = sr.makePdf(reportId, adminId);
+			}
+
 			// write PDF ByteArrayOutputStream to a ServletOutputStream
 			if (baos != null) {
 				// setting some response headers
