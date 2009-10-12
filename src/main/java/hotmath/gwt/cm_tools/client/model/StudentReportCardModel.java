@@ -7,13 +7,15 @@ import java.util.Map;
 public class StudentReportCardModel implements StudentReportCardModelI {
 
 	private Integer adminUid;
-	private String currentProgramName;
-	private String currentProgramStatus;
 	private Date firstActivityDate;
 	private String groupName;
+	private Date initialProgramDate;
 	private String initialProgramName;
 	private String initialProgramStatus;
 	private Date lastActivityDate;
+	private Date lastProgramDate;
+	private String lastProgramName;
+	private String lastProgramStatus;
 	private List<String> prescribedLessonList;
 	// private List<StudentProgramReportModelI> programReportList;
 	private Integer quizAvgPassPercent;
@@ -30,20 +32,16 @@ public class StudentReportCardModel implements StudentReportCardModelI {
 		return adminUid;
 	}
 
-	public String getLastProgramName() {
-		return currentProgramName;
-	}
-
-	public String getLastProgramStatus() {
-		return currentProgramStatus;
-	}
-
 	public Date getFirstActivityDate() {
 		return firstActivityDate;
 	}
 
 	public String getGroupName() {
 		return groupName;
+	}
+
+	public Date getInitialProgramDate() {
+		return initialProgramDate;
 	}
 
 	public String getInitialProgramName() {
@@ -56,6 +54,18 @@ public class StudentReportCardModel implements StudentReportCardModelI {
 
 	public Date getLastActivityDate() {
 		return lastActivityDate;
+	}
+
+	public Date getLastProgramDate() {
+		return lastProgramDate;
+	}
+
+	public String getLastProgramName() {
+		return lastProgramName;
+	}
+
+	public String getLastProgramStatus() {
+		return lastProgramStatus;
 	}
 
 	public List<String> getPrescribedLessonList() {
@@ -102,20 +112,16 @@ public class StudentReportCardModel implements StudentReportCardModelI {
         adminUid = uid;
 	}
 
-	public void setLastProgramName(String name) {
-		currentProgramName = name;
-	}
-
-	public void setLastProgramStatus(String status) {
-		currentProgramStatus = status;
-	}
-
 	public void setFirstActivityDate(Date date) {
 		firstActivityDate = date;
 	}
 
 	public void setGroupName(String name) {
 		groupName = name;
+	}
+
+	public void setInitialProgramDate(Date date) {
+		initialProgramDate = date;
 	}
 
 	public void setInitialProgramName(String name) {
@@ -128,6 +134,18 @@ public class StudentReportCardModel implements StudentReportCardModelI {
 
 	public void setLastActivityDate(Date date) {
 		lastActivityDate = date;
+	}
+
+	public void setLastProgramDate(Date date) {
+		lastProgramDate = date;
+	}
+
+	public void setLastProgramName(String name) {
+		lastProgramName = name;
+	}
+
+	public void setLastProgramStatus(String status) {
+		lastProgramStatus = status;
 	}
 
 	public void setPrescribedLessonList(List<String> list) {

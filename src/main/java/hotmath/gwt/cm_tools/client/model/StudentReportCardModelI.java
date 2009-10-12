@@ -30,6 +30,10 @@ public interface StudentReportCardModelI {
 	
 	public void setGroupName(String name);
 	
+	public Date getInitialProgramDate();
+
+	public void setInitialProgramDate(Date date);
+
 	public String getInitialProgramName();
 
 	public void setInitialProgramName(String name);
@@ -37,6 +41,10 @@ public interface StudentReportCardModelI {
 	public String getInitialProgramStatus();
 
 	public void setInitialProgramStatus(String status);
+
+	public Date getLastProgramDate();
+
+	public void setLastProgramDate(Date date);
 
 	public String getLastProgramName();
 
