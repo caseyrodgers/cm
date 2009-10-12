@@ -324,11 +324,23 @@ select count(*) from HA_USER_LOGIN ul where ul.user_id = ? and login_time >= ?
 
 .key=RESOURCE_USAGE_COUNT
 
-select count(*), item_type from HA_TEST_RUN_INMH_USE where run_id = ? group by run_id, item_type
+select count(*), item_type
+from HA_TEST_RUN_INMH_USE iu, HA_TEST_RUN tr, HA_TEST t, CM_USER_PROGRAM p
+where p.id in (XXX)
+    and t.user_prog_id = p.id
+    and tr.test_id = t.test_id
+    and iu.run_id = tr.run_id
+group by item_type
 
 .key=LESSONS_ASSIGNED
 
-select distinct(lesson_name) from HA_TEST_RUN_LESSON where run_id = ? order by lesson_name asc
+select distinct(lesson_name)
+from HA_TEST_RUN_LESSON rl, HA_TEST_RUN tr, HA_TEST t, CM_USER_PROGRAM p
+  where p.id in (XXX)
+    and t.user_prog_id = p.id
+    and tr.test_id = t.test_id
+    and rl.run_id = tr.run_id
+order by lesson_name asc
 
 ##
 ## Class: CmUserProgramDao
@@ -338,6 +350,7 @@ select distinct(lesson_name) from HA_TEST_RUN_LESSON where run_id = ? order by l
 
 select c.id, c.user_id, c.pass_percent, u.admin_id, c.test_def_id, t.test_name, c.test_config_json, c.create_date
 from CM_USER_PROGRAM c
+JOIN HA_USER u on c.user_id = u.uid
 JOIN HA_TEST_DEF t on c.test_def_id = t.test_def_id
 where c.user_id = ?
 
@@ -347,3 +360,38 @@ select c.id, c.user_id, c.pass_percent, u.admin_id, c.test_def_id, t.test_name, 
 from CM_USER_PROGRAM c
 JOIN HA_USER u on c.id = u.user_prog_id
 JOIN HA_TEST_DEF t on c.test_def_id = t.test_def_id and u.uid = ?
+
+.key=PROGRAM_QUIZ_COUNT
+
+select count(*)
+from (
+  select tr.run_id
+  from HA_TEST_RUN tr, HA_TEST t, CM_USER_PROGRAM p
+  where p.id in (XXX)
+    and t.user_prog_id = p.id
+    and tr.test_id = t.test_id
+) c
+
+.key=PROGRAM_PASSED_QUIZ_COUNT
+
+select count(*)
+from (
+  select tr.run_id
+  from HA_TEST_RUN tr, HA_TEST t, CM_USER_PROGRAM p
+  where p.id in (XXX)
+    and t.user_prog_id = p.id
+    and tr.test_id = t.test_id
+    and tr.is_passing > 0
+) c
+
+.key=PROGRAM_AGGREGATE_QUIZ_RESULTS
+
+select sum(c.answered_correct) as answered_correct, sum(c.answered_incorrect) as answered_incorrect, sum(c.not_answered) as not_answered
+from (
+  select tr.answered_correct, tr.answered_incorrect, tr.not_answered
+  from HA_TEST_RUN tr, HA_TEST t, CM_USER_PROGRAM p
+  where p.id in (XXX)
+    and t.user_prog_id = p.id
+    and tr.test_id = t.test_id
+    and tr.is_passing > 0
+) c
