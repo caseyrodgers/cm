@@ -103,6 +103,7 @@ public class StudentDetailsWindow extends CmWindow {
         toolBar.add(showWorkBtn());
         toolBar.add(showTopicsBtn());
         toolBar.add(new FillToolItem());
+        toolBar.add(displayReportCardToolItem(studentModel));
         toolBar.add(displayPrintableReportToolItem(studentModel));
 
         LayoutContainer lc = new LayoutContainer();
@@ -265,6 +266,21 @@ public class StudentDetailsWindow extends CmWindow {
         return ti;
     }
 
+    private Button displayReportCardToolItem(final StudentModel sm) {
+        Button ti = new Button();
+        ti.setIconStyle("printer-icon");
+        ti.setToolTip("Display a printable report card");
+        ti.setStyleName("student-details-panel-pr-btn");
+
+        ti.addSelectionListener(new SelectionListener<ButtonEvent>() {
+            @Override
+            public void componentSelected(ButtonEvent ce) {
+                displayReportCardRPC(sm);
+            }
+        });
+        return ti;
+    }
+
     private ColumnModel defineColumns() {
         List<ColumnConfig> configs = new ArrayList<ColumnConfig>();
 
@@ -377,4 +393,25 @@ public class StudentDetailsWindow extends CmWindow {
             }
         });
     }
+
+    protected void displayReportCardRPC(final StudentModel sm) {
+        List<Integer> studentUids = new ArrayList<Integer>();
+        studentUids.add(sm.getUid());
+
+        CmServiceAsync s = (CmServiceAsync) Registry.get("cmService");
+        s.execute(new GetReportDefAction(studentUids), new AsyncCallback<StringHolder>() {
+
+            public void onSuccess(StringHolder reportId) {
+                String url = "/cm_admin/genPDF?id=" + reportId.getResponse() + "&aid=" + sm.getAdminUid()
+                        + "&type=reportCard";
+                Window.open(url, "_blank", "location=0,menubar=0,resizable=1");
+            }
+
+            public void onFailure(Throwable caught) {
+                String msg = caught.getMessage();
+                CatchupMathTools.showAlert(msg);
+            }
+        });
+    }
+
 }
