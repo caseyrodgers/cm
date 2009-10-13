@@ -457,12 +457,6 @@ public class PrescriptionContext implements CmContext {
     }
 
     public void runAutoTest() {
-        
-        
-        
-            
-        
-
         int timeToWait = 1;
         for(String rt: PrescriptionCmGuiDefinition._registeredResources.keySet()) {
             final String resourceType = rt;
@@ -470,7 +464,7 @@ public class PrescriptionContext implements CmContext {
                 Timer timer = new Timer() {
                     public void run() {
 
-                        AutoTestWindow.getInstance().addLogMessage("Testing resource: " + resourceType);
+                        AutoTestWindow.getInstance().addLogMessage("Testing resource type: " + resourceType);
 
                         ((PrescriptionCmGuiDefinition) CmMainPanel.__lastInstance.cmGuiDef)._guiWidget.expandResourceType(resourceType);
 
