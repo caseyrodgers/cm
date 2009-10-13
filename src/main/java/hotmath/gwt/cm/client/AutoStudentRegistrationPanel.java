@@ -124,7 +124,7 @@ public class AutoStudentRegistrationPanel extends ResourceContainer {
         birthDate.setAllowBlank(false);
         birthDate.setValidator(new MyFieldValidator());
         birthDate.setId("birthDate");
-        birthDate.setEmptyText("-- birth day and month (mmdd) --");
+        birthDate.setEmptyText("-- birth month and day (mmdd) --");
         birthDate.setValidator(new Validator() {
             //@Override
             public String validate(Field<?> field, String value) {
