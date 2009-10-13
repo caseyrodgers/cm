@@ -156,7 +156,7 @@ public class StudentReportCard {
 
 	    		Phrase usage = buildLabelContent("Totals: ", "", false);
     			usageTbl.addCell(usage);
-    			usageTbl.addCell(" ");
+    			//usageTbl.addCell(" ");
     			
 	    		Map<String, Integer> map = rc.getResourceUsage();
 	    		for (String key : map.keySet()) {
@@ -166,6 +166,25 @@ public class StudentReportCard {
                 usageTbl.setWidthPercentage(100.0f);
                 usageTbl.setSpacingBefore(20.0f);
 		    	document.add(usageTbl);
+			    document.add(Chunk.NEWLINE);
+			}
+			
+			if (rc.getPrescribedLessonList().size() > 0) {
+    			PdfPTable lessonTbl = new PdfPTable(1);
+	    		lessonTbl.getDefaultCell().setBorder(PdfPCell.NO_BORDER);
+
+	    		Phrase lesson = buildLabelContent("Prescribed Lessons: ", "", false);
+    			lessonTbl.addCell(lesson);
+    			//usageTbl.addCell(" ");
+    			
+	    		List<String> list = rc.getPrescribedLessonList();
+	    		for (String lsn : list) {
+	    			lesson = buildLabelContent(lsn, "", false);
+	    		    lessonTbl.addCell(lesson);
+	    		}
+                lessonTbl.setWidthPercentage(100.0f);
+                lessonTbl.setSpacingBefore(20.0f);
+		    	document.add(lessonTbl);
 			    document.add(Chunk.NEWLINE);
 			}
 			

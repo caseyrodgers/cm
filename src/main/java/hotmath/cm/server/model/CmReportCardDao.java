@@ -151,7 +151,7 @@ import org.json.JSONObject;
         	Integer uid = list.get(0).getUserId();
 	        
 	        try { 
-    	    	// first login count
+    	    	// login count
 	        	String date = String.format("%1$tY-%1$tm-%1$td", list.get(0).getCreateDate());
 	        	String sql = CmMultiLinePropertyReader.getInstance().getProperty("LOGIN_COUNT");
 	            ps = conn.prepareStatement(sql);
@@ -166,6 +166,7 @@ import org.json.JSONObject;
 	            }
 	            SqlUtilities.releaseResources(rs, ps, null);
 	            
+	            // resource usage counts
 	            sql = CmMultiLinePropertyReader.getInstance().getProperty("RESOURCE_USAGE_COUNT");
 		        String progIds = getProgIdList(list);
 		        ps = conn.prepareStatement(sql.replaceFirst("XXX", progIds));
@@ -178,8 +179,8 @@ import org.json.JSONObject;
 	            
 	        }
 	        catch (Exception e) {
-                logger.error(String.format("*** Error obtaining quiz results for student UID: %d", uid), e);
-                throw new Exception(String.format("*** Error obtaining quiz results for student with UID: %d", uid));	        	
+                logger.error(String.format("*** Error obtaining usage results for student UID: %d", uid), e);
+                throw new Exception(String.format("*** Error obtaining usage results for student with UID: %d", uid));	        	
 	        }
 	        finally {
 	        	SqlUtilities.releaseResources(rs, ps, null);
@@ -188,8 +189,30 @@ import org.json.JSONObject;
 	    	
 	    }
 
-	    private void loadPrescribedLessons(List<StudentUserProgramModel> list, StudentReportCardModelI rc, Connection conn) {
-	    	
+	    private void loadPrescribedLessons(List<StudentUserProgramModel> list, StudentReportCardModelI rc, Connection conn) throws Exception {
+	        PreparedStatement ps = null;
+	        ResultSet rs = null;
+        	Integer uid = list.get(0).getUserId();
+	        
+	        try { 
+	            String sql = CmMultiLinePropertyReader.getInstance().getProperty("LESSONS_ASSIGNED");
+		        String progIds = getProgIdList(list);
+		        ps = conn.prepareStatement(sql.replaceFirst("XXX", progIds));
+		        rs = ps.executeQuery();
+		        List<String> lessons = new ArrayList<String>();
+		        while (rs.next()) {
+		        	String lesson = rs.getString(1);
+		        	lessons.add(lesson);
+		        }
+		        rc.setPrescribedLessonList(lessons);
+	        }
+	        catch (Exception e) {
+                logger.error(String.format("*** Error obtaining prescribed lessons for student UID: %d", uid), e);
+                throw new Exception(String.format("*** Error obtaining prescriobed lessons for student with UID: %d", uid));	        	
+	        }
+	        finally {
+	        	SqlUtilities.releaseResources(rs, ps, null);
+	        }
 	    }
 
 		private String getProgIdList(List<StudentUserProgramModel> list) {
