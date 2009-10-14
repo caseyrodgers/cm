@@ -13,6 +13,7 @@ import java.awt.Color;
 import java.io.ByteArrayOutputStream;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -33,6 +34,20 @@ import com.lowagie.text.pdf.PdfPageEvent;
 import com.lowagie.text.pdf.PdfWriter;
 
 public class StudentReportCard {
+
+	static Map<String, String> labelMap;
+	
+	static {
+		labelMap = new HashMap<String, String> ();
+
+        labelMap.put("login",     "Logins: ");
+        labelMap.put("activity",  "Learning Activities: ");
+        labelMap.put("cmextra",   "Extra Practice Problems: ");
+        labelMap.put("review",    "Prescribed Lessons: ");
+        labelMap.put("practice",  "Required Practice Problems: ");
+        labelMap.put("flashcard", "Flashcard Sessions: ");
+        labelMap.put("videos",    "Videos: ");
+	}
 	
 	@SuppressWarnings("unchecked")
 	public ByteArrayOutputStream makePdf(String reportId, Integer adminId) {
@@ -135,16 +150,18 @@ public class StudentReportCard {
             document.add(progTbl);
 			document.add(Chunk.NEWLINE);
 
-			PdfPTable quizTbl = new PdfPTable(numberOfColumns);
+			PdfPTable quizTbl = new PdfPTable(1);
 			quizTbl.getDefaultCell().setBorder(PdfPCell.NO_BORDER);
-			Phrase totalQuizzes = buildLabelContent("Quizzes: Attempted: ", rc.getQuizCount().toString());
+			Phrase quizLabel = buildSectionLabel("Quizzes");
+			Phrase totalQuizzes = buildLabelContent("Attempted: ", rc.getQuizCount().toString());
 			Phrase passedQuizzes = buildLabelContent("Passed: ", rc.getQuizPassCount().toString());
 			String average = (rc.getQuizAvgPassPercent() != null) ? rc.getQuizAvgPassPercent() + "%" : "n/a";
 			Phrase avgScore = buildLabelContent("Avg score of passed quizzes: ", average);
+			
+			quizTbl.addCell(quizLabel);
 			quizTbl.addCell(totalQuizzes);
 			quizTbl.addCell(passedQuizzes);
 			quizTbl.addCell(avgScore);
-			quizTbl.addCell(" ");
             quizTbl.setWidthPercentage(100.0f);
             quizTbl.setSpacingBefore(20.0f);
 			document.add(quizTbl);
@@ -154,13 +171,15 @@ public class StudentReportCard {
     			PdfPTable usageTbl = new PdfPTable(1);
 	    		usageTbl.getDefaultCell().setBorder(PdfPCell.NO_BORDER);
 
-	    		Phrase usage = buildLabelContent("Totals: ", "", false);
+	    		Phrase usage = buildSectionLabel("Totals");
     			usageTbl.addCell(usage);
-    			//usageTbl.addCell(" ");
     			
 	    		Map<String, Integer> map = rc.getResourceUsage();
+	    		
 	    		for (String key : map.keySet()) {
-	    			usage = buildLabelContent(key + ": ", String.valueOf(map.get(key)));
+	    			String label = labelMap.get(key);
+	    			if (label == null) continue;
+	    			usage = buildLabelContent(label, String.valueOf(map.get(key)));
 	    			usageTbl.addCell(usage);
 	    		}
                 usageTbl.setWidthPercentage(100.0f);
@@ -173,7 +192,7 @@ public class StudentReportCard {
     			PdfPTable lessonTbl = new PdfPTable(1);
 	    		lessonTbl.getDefaultCell().setBorder(PdfPCell.NO_BORDER);
 
-	    		Phrase lesson = buildLabelContent("Prescribed Lessons: ", "", false);
+	    		Phrase lesson = buildSectionLabel("Prescribed Lessons");
     			lessonTbl.addCell(lesson);
     			//usageTbl.addCell(" ");
     			
@@ -212,6 +231,11 @@ public class StudentReportCard {
 		Phrase phrase = new Phrase(new Chunk(label, FontFactory.getFont(FontFactory.HELVETICA, 9, Font.BOLD, new Color(0, 0, 0))));
 		Phrase content = new Phrase(new Chunk(value, FontFactory.getFont(FontFactory.HELVETICA, 9, Font.NORMAL, new Color(0, 0, 0))));
 		phrase.add(content);
+		return phrase;
+	}
+
+	private Phrase buildSectionLabel(String label) {
+		Phrase phrase = new Phrase(new Chunk(label, FontFactory.getFont(FontFactory.HELVETICA, 12, Font.BOLD, new Color(0, 0, 0))));
 		return phrase;
 	}
 
