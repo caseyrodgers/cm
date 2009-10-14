@@ -162,7 +162,7 @@ import org.json.JSONObject;
 	            rc.setResourceUsage(usageMap);
 	            if (rs.first()) {
 	            	Integer loginCount = rs.getInt(1);
-	            	usageMap.put("Login", loginCount);
+	            	usageMap.put("login", loginCount);
 	            }
 	            SqlUtilities.releaseResources(rs, ps, null);
 	            
