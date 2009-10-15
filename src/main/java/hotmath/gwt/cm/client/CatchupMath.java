@@ -1,6 +1,5 @@
 package hotmath.gwt.cm.client;
 
-import hotmath.gwt.cm.client.history.CatchupMathHistoryListener;
 import hotmath.gwt.cm.client.history.CmHistoryManager;
 import hotmath.gwt.cm.client.history.CmLocation;
 import hotmath.gwt.cm.client.history.CmLocation.LocationType;
@@ -8,7 +7,6 @@ import hotmath.gwt.cm.client.ui.HeaderPanel;
 import hotmath.gwt.cm.client.ui.context.PrescriptionCmGuiDefinition;
 import hotmath.gwt.cm.client.ui.context.QuizCmGuiDefinition;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
-import hotmath.gwt.cm_tools.client.data.InmhItemData;
 import hotmath.gwt.cm_tools.client.ui.CmMainPanel;
 import hotmath.gwt.cm_tools.client.ui.FooterPanel;
 import hotmath.gwt.shared.client.CmLoginAsync;
@@ -166,7 +164,6 @@ public class CatchupMath implements EntryPoint {
                 if(UserInfo.getInstance().isSingleUser())
                     Window.setTitle("Catchup Math: Student");
 
-
                 String ac=CmShared.getQueryParameter("type");
                 if(ac != null && ac.equals("ac")) {
                     
@@ -179,13 +176,7 @@ public class CatchupMath implements EntryPoint {
                     showAutoRegistration_gwt();
                 }                        
                 else {
-                    
-                    // ok, we are good to go
-                    /** Add a history listener to manage the state changes
-                     * 
-                     */
-                    History.addValueChangeHandler(new CatchupMathHistoryListener());
-                    History.fireCurrentHistoryState();    
+                   showWelcomePanel();
                 }
                 
             }
@@ -205,6 +196,7 @@ public class CatchupMath implements EntryPoint {
     public void showLoginPage() {
         History.newItem("login");
     }
+    
 
     /**
      * Helper page to create the Quiz page
@@ -223,6 +215,18 @@ public class CatchupMath implements EntryPoint {
         _mainContainer.removeAll();
         _mainContainer.setLayout(new FitLayout());
         _mainContainer.add(new CmMainPanel(new QuizCmGuiDefinition()));
+        _mainContainer.layout();
+    }
+    
+    
+    public void showWelcomePanel() {
+        HeaderPanel.__instance.enable();
+
+        _mainContainer.removeAll();
+        _mainContainer.setLayout(new FitLayout());
+        // _mainContainer.add(new CmMainPanel(new QuizCmGuiDefinition()));
+        _mainContainer.add(new WelcomePanel());
+        
         _mainContainer.layout();
     }
     

@@ -16,7 +16,7 @@ import java.util.List;
  *  activity_standard, /learning_activities/interactivities/diamond.swf, Diamond Problem Flash Cards
  *  activity_standard, /learning_activities/interactivities/quadratics.swf, Quadratics in Factored Form
  *  activity_standard, /learning_activities/interactivities/flashcard_addfrac_like.swf, Fraction Flash Cards: Like Denominators
- *  activity_standard, /learning_activities/interactivities/flashcard_addfrac_unlike.swf, Fraction Flash Cards: Unike Denominators
+ *  activity_standard, /learning_activities/interactivities/flashcard_addfrac_unlike.swf, Fraction Flash Cards: Unlike Denominators
  *  
  *  
  *  flashcard, /learning_activities/interactivities/flashcard_vocab.swf, Math Vocabulary
