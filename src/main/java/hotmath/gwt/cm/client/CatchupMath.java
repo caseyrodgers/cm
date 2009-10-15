@@ -97,17 +97,17 @@ public class CatchupMath implements EntryPoint {
 
 
         
+        /** Turn on debugging CSS */
+        if(CmShared.getQueryParameter("debug") != null) {
+            _mainPort.addStyleName("debug-on");
+        }
+        
+
+        
         if(CmShared.getQueryParameter("loaderror") != null)
             return;  
         
-        /** Call routine to acquire the users uid
-         * 
-         */
-        CmShared.handleLoginProcessAsync(new CmLoginAsync() {
-            public void loginSuccessful(Integer uid) {
-                processLoginComplete(uid);
-            }
-        });
+
   
         
         /** Install listener to track any changes to the main window 
@@ -142,50 +142,13 @@ public class CatchupMath implements EntryPoint {
                 return types;
             }
         });
+        
+        
+        showWelcomePanel();
     }
     
     
     
-    /** Call when successfully determined users uid
-     * 
-     * @param uid
-     */
-    private void processLoginComplete(final Integer uid) {
-        
-        
-        /** Turn on debugging CSS */
-        if(CmShared.getQueryParameter("debug") != null) {
-            _mainPort.addStyleName("debug-on");
-        }
-        
-        UserInfo.loadUser(uid,new CmAsyncRequest() {
-            public void requestComplete(String requestData) {
-                
-                if(UserInfo.getInstance().isSingleUser())
-                    Window.setTitle("Catchup Math: Student");
-
-                String ac=CmShared.getQueryParameter("type");
-                if(ac != null && ac.equals("ac")) {
-                    
-                    /** 
-                     * self registration
-                     * 
-                     * mark as not owner, since this is a
-                     */
-                    UserInfo.getInstance().setActiveUser(false);
-                    showAutoRegistration_gwt();
-                }                        
-                else {
-                   showWelcomePanel();
-                }
-                
-            }
-            public void requestFailed(int code, String text) {
-                CatchupMathTools.showAlert("There was a problem reading user information from server" );
-            }
-        });        
-    }
-
 
     /**
      * Helper page to create the Login page
@@ -258,7 +221,7 @@ public class CatchupMath implements EntryPoint {
      * Does not push onto history stack.
      * 
      */
-    private void showAutoRegistration_gwt() {
+    public void showAutoRegistration_gwt() {
         _mainContainer.removeAll();
         _mainContainer.setLayout(new FitLayout());
         _mainContainer.add(new AutoStudentRegistrationPanel());
