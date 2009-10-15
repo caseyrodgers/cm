@@ -373,11 +373,6 @@ public class UserInfo implements IsSerializable, Response {
                 CatchupMathTools.setBusy(false);     
                 callback.requestComplete(null);
                 
-                
-                if(user.isActiveUser() && user.isFirstView()) {
-                    ShowFirstTimeVisitorWindow.displayIfFirstTime(user);
-                }
-                
                 // fire an event on the event bus, passing new userinfo
                 EventBus.getInstance().fireEvent(new CmEvent(EventBus.EVENT_TYPE_USERCHANGED,user));
             }

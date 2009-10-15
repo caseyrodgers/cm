@@ -7,6 +7,7 @@ import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.data.CmAsyncRequest;
 import hotmath.gwt.shared.client.util.UserInfo;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.Style.LayoutRegion;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
@@ -21,20 +22,21 @@ import com.google.gwt.user.client.ui.Label;
 
 public class WelcomePanel extends LayoutContainer {
     
+    Button _goBtn;
     public WelcomePanel() {
         setLayout(new BorderLayout());
         Frame f = new Frame("/gwt-resources/first-time-visitor.html");
         add(f, new BorderLayoutData(LayoutRegion.CENTER,200));
         
         add(new Label("Welcome to Catchup Math"));
-        Button go = new Button("Begin Catchup Math");
-        go.addSelectionListener(new SelectionListener<ButtonEvent>() {
+        _goBtn = new Button("Begin Catchup Math");
+        _goBtn.addSelectionListener(new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent ce) {
                 startup();
             }
         });
         
-        add(go, new BorderLayoutData(LayoutRegion.SOUTH,30));
+        add(_goBtn, new BorderLayoutData(LayoutRegion.SOUTH,30));
         
         
         CmShared.handleLoginProcessAsync(new CmLoginAsync() {
@@ -42,6 +44,8 @@ public class WelcomePanel extends LayoutContainer {
                 processLoginComplete(uid);
             }
         });
+        
+        _goBtn.setEnabled(false);
     }
     
     private void startup() {
@@ -87,8 +91,9 @@ public class WelcomePanel extends LayoutContainer {
                     CatchupMath.__thisInstance.showAutoRegistration_gwt();
                 }
                 
-                CatchupMathTools.showAlert("Login complete!");
-                
+                Log.info("Login complete!");
+                _goBtn.setEnabled(true);
+                layout();
             }
             public void requestFailed(int code, String text) {
                 CatchupMathTools.showAlert("There was a problem reading user information from server" );
