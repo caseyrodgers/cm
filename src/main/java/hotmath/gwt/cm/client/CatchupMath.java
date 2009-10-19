@@ -1,5 +1,6 @@
 package hotmath.gwt.cm.client;
 
+import hotmath.gwt.cm.client.history.CatchupMathHistoryListener;
 import hotmath.gwt.cm.client.history.CmHistoryManager;
 import hotmath.gwt.cm.client.history.CmLocation;
 import hotmath.gwt.cm.client.history.CmLocation.LocationType;
@@ -144,10 +145,66 @@ public class CatchupMath implements EntryPoint {
         });
         
         
-        showWelcomePanel();
+
+
+        
+        /** Login to CM
+         * 
+         */
+        CmShared.handleLoginProcessAsync(new CmLoginAsync() {
+            public void loginSuccessful(Integer uid) {
+                processLoginComplete(uid);
+            }
+        });
+        
     }
     
+    /** Call when successfully determined users uid
+     * 
+     * @param uid
+     */
+    private void processLoginComplete(final Integer uid) {
+        UserInfo.loadUser(uid,new CmAsyncRequest() {
+            public void requestComplete(String requestData) {
+                
+                if(UserInfo.getInstance().isSingleUser())
+                    Window.setTitle("Catchup Math: Student");
+
+                String ac=CmShared.getQueryParameter("type");
+                if(ac != null && ac.equals("ac")) {
+                    /** 
+                     * self registration
+                     * 
+                     * mark as not owner, since this is a
+                     */
+                    UserInfo.getInstance().setActiveUser(false);
+                    CatchupMath.__thisInstance.showAutoRegistration_gwt();
+                }
+                else if(UserInfo.getInstance().getRunId() > 0) {
+                    // already has active session, just more to first screen
+                    __thisInstance.startNormalOperation();
+                }
+                else {
+                    showWelcomePanel();
+                }
+                
+            }
+            public void requestFailed(int code, String text) {
+                CatchupMathTools.showAlert("There was a problem reading user information from server" );
+            }
+        });        
+    }
     
+
+    /** Startup the history and initial history state check
+     *   
+     *   This should happen just once during program operation
+     *               
+     */
+    public void startNormalOperation() {
+        History.addValueChangeHandler(new CatchupMathHistoryListener());
+        History.fireCurrentHistoryState();
+    }
     
 
     /**

@@ -40,12 +40,23 @@ public class CmShared implements EntryPoint {
     /**
      * Return the parameter passed on query string
      * 
+     * returns null if parameter not set
+     * 
      * @param name
      * @return
      */
     static public String getQueryParameter(String name) {
         return _queryParameters.get(name);
-
+    }
+    
+    /** Return parameter for value or empty string if not set
+     * 
+     * @param name
+     * @return
+     */
+    static public String getQueryParameterValue(String name) {
+        String v = _queryParameters.get(name);
+        return (v != null)?v:"";
     }
 
     /** The URL to default to if cannot log in */

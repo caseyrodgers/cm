@@ -10,7 +10,7 @@ import com.extjs.gxt.ui.client.widget.LayoutContainer;
  * @author casey
  *
  */
-class ReportCardInfoPanel extends LayoutContainer {
+public class ReportCardInfoPanel extends LayoutContainer {
     UserInfo user;
     public ReportCardInfoPanel(UserInfo user) {
         this.user = user;

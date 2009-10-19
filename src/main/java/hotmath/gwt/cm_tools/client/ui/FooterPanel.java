@@ -1,10 +1,13 @@
 package hotmath.gwt.cm_tools.client.ui;
 
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
+import hotmath.gwt.cm_tools.client.service.CmServiceAsync;
 import hotmath.gwt.cm_tools.client.service.PrescriptionServiceAsync;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
 import hotmath.gwt.shared.client.eventbus.EventBus;
+import hotmath.gwt.shared.client.rpc.action.SaveFeedbackAction;
+import hotmath.gwt.shared.client.util.RpcData;
 import hotmath.gwt.shared.client.util.UserInfo;
 
 import com.allen_sauer.gwt.log.client.Log;
@@ -58,9 +61,9 @@ public class FooterPanel extends LayoutContainer {
                 if(value == null || value.length() == 0)
                     return;
                 
-                PrescriptionServiceAsync s = (PrescriptionServiceAsync) Registry.get("prescriptionService");
-                s.saveFeedback(value, "", getFeedbackStateInfo(),new AsyncCallback() {
-                    public void onSuccess(Object result) {
+                CmServiceAsync s = (CmServiceAsync) Registry.get("cmService");
+                s.execute(new SaveFeedbackAction(value, "", getFeedbackStateInfo()),new AsyncCallback<RpcData>() {
+                    public void onSuccess(RpcData result) {
                         Log.info("Feedback saved");
                     }
                     public void onFailure(Throwable caught) {

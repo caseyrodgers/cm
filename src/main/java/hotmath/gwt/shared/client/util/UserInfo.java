@@ -204,6 +204,10 @@ public class UserInfo implements IsSerializable, Response {
         this.activeUser = activeUser;
     }
 
+    /** The total number of resources (solutions) viewed
+     * 
+     * @return
+     */
     public int getViewCount() {
         return viewCount;
     }
