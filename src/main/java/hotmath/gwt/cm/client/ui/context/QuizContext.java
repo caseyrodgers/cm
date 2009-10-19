@@ -170,13 +170,15 @@ public class QuizContext implements CmContext {
     	    int correct = runInfo.getCorrect();
     	    int total = runInfo.getTotal();
     	    
+    	    int lessonCount = runInfo.getSessionCount();
+    	    String reviewLessons = "You have " + lessonCount + " review " + (lessonCount==1?"topic":"topics") + " to study before advancing to the next quiz.<br/>";
     	    
     	    String msg = "";
     	    if(runInfo.getPassed()) {
     	        if(correct != total) {
     	            msg += "Your quiz score: " + runInfo.getTestCorrectPercent() + "%</br>" +
         	                "Congratulations, you passed!</br>" +
-        	                "You have " + runInfo.getSessionCount() + " review topics to study before advancing to the next quiz.<br/>" +
+        	                reviewLessons + 
            	                "First topic: <b>" + runInfo.getSessionName() + "</b></br>";
     	        }
     	        else {
@@ -188,7 +190,7 @@ public class QuizContext implements CmContext {
     	        // did not pass
     	        msg += "Your quiz score: " + runInfo.getTestCorrectPercent() + "%</br>" +
     	                "You need " + UserInfo.getInstance().getPassPercentRequired() + "% to pass.</br>" +
-                        "You have " + runInfo.getSessionCount() + " review topics to study before advancing to the next quiz.<br/>" +
+                        reviewLessons +
                         "First topic: <b>" + runInfo.getSessionName() + "</b></br>";
     	    }
     	        
