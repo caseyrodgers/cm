@@ -3,10 +3,9 @@ package hotmath.assessment;
 import hotmath.gwt.cm.server.CmDbTestCase;
 import hotmath.inmh.INeedMoreHelpResourceType;
 import hotmath.testset.ha.HaTest;
+import hotmath.testset.ha.HaTestDao;
 import hotmath.testset.ha.HaTestDef;
 import hotmath.testset.ha.HaTestRun;
-import hotmath.testset.ha.HaTest_Test;
-import hotmath.testset.ha.HaUser;
 import hotmath.util.HMConnectionPool;
 
 import java.sql.Connection;
@@ -68,8 +67,8 @@ public class AssessmentPrescription_Test extends CmDbTestCase {
         
         testDef = new HaTestDef(conn, CA_STATE_TEST);
         
-        HaTest test = HaTest.createTest(conn, userId, testDef, 1);
-        testRun = test.createTestRun(conn, guids, 0, 1, 9);
+        HaTest test = HaTestDao.createTest(conn, userId, testDef, 1);
+        testRun = HaTestDao.createTestRun(conn, userId, test.getTestId(), guids, 0, 1, 9);
     }
     
     
@@ -78,7 +77,8 @@ public class AssessmentPrescription_Test extends CmDbTestCase {
         _testNumber = testRun.getHaTest().getTestId();
 
         String wrongGuids[] = { "test1", "test2", "test3" };
-        HaTestRun testRun2 = testRun.getHaTest().createTestRun(conn,wrongGuids, 1, 2,0);
+        HaTest test = testRun.getHaTest();
+        HaTestRun testRun2 = HaTestDao.createTestRun(conn,test.getUser().getUid(), test.getTestId(), wrongGuids, 1, 2,0);
         
         assertTrue(!testRun2.isPassing());
     }
@@ -88,7 +88,8 @@ public class AssessmentPrescription_Test extends CmDbTestCase {
         _testNumber = testRun.getHaTest().getTestId();
 
         String wrongGuids[] = { "test1", "test2", "test3" };
-        HaTestRun testRun2 = testRun.getHaTest().createTestRun(conn,wrongGuids, 1, 2,0);
+        HaTest test = testRun.getHaTest();
+        HaTestRun testRun2 = HaTestDao.createTestRun(conn,test.getUser().getUid(), test.getTestId(), wrongGuids, 1, 2,0);
         
         _runId = testRun.getRunId();
 
