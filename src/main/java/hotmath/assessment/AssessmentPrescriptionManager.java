@@ -3,6 +3,7 @@ package hotmath.assessment;
 import hotmath.cm.util.CmCacheManager;
 import hotmath.cm.util.CmCacheManager.CacheName;
 import hotmath.testset.ha.HaTest;
+import hotmath.testset.ha.HaTestDao;
 import hotmath.testset.ha.HaTestRun;
 
 import java.sql.Connection;
@@ -36,8 +37,9 @@ public class AssessmentPrescriptionManager {
 	 */
 	public AssessmentPrescription createPrescription(final Connection conn, int testId,String pids,int answeredCorrect, int answeredIncorrect, int notAnswered) throws Exception {
 		
-		HaTest test = HaTest.loadTest(conn,testId);
-		AssessmentPrescription pres = AssessmentPrescriptionFactory.create(conn, test.createTestRun(conn, pids.split(","),answeredCorrect, answeredIncorrect, notAnswered));
+		HaTest test = HaTestDao.loadTest(conn,testId);
+		AssessmentPrescription pres =
+			AssessmentPrescriptionFactory.create(conn, HaTestDao.createTestRun(conn, test.getUser().getUid(), testId, pids.split(","),answeredCorrect, answeredIncorrect, notAnswered));
 
 		CmCacheManager.getInstance().addToCache(CacheName.PRESCRIPTION, pres.getTestRun().getRunId().toString(), pres);
 		return pres;

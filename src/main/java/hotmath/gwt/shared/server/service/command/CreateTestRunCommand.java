@@ -12,6 +12,7 @@ import hotmath.gwt.shared.client.rpc.result.CreateTestRunResponse;
 import hotmath.gwt.shared.client.util.CmRpcException;
 import hotmath.gwt.shared.server.service.ActionHandler;
 import hotmath.testset.ha.HaTest;
+import hotmath.testset.ha.HaTestDao;
 import hotmath.testset.ha.HaTestRun;
 import hotmath.util.sql.SqlUtilities;
 
@@ -49,7 +50,7 @@ public class CreateTestRunCommand implements ActionHandler<CreateTestRunAction, 
 
             String sql = "select cs.pid, cs.is_correct, t.total_segments from v_HA_TEST_CURRENT_STATUS cs, HA_TEST t where cs.test_id = ? and t.test_id = cs.test_id";
 
-            HaTest test = HaTest.loadTest(conn, action.getTestId());
+            HaTest test = HaTestDao.loadTest(conn, action.getTestId());
             
             pstat = conn.prepareStatement(sql);
 
@@ -76,7 +77,7 @@ public class CreateTestRunCommand implements ActionHandler<CreateTestRunAction, 
                 }
             }
 
-            HaTestRun run = test.createTestRun(conn, incorrectPids.toArray(new String[incorrectPids.size()]), answeredCorrect, answeredIncorrect, notAnswered);
+            HaTestRun run = HaTestDao.createTestRun(conn, test.getUser().getUid(), test.getTestId(), incorrectPids.toArray(new String[incorrectPids.size()]), answeredCorrect, answeredIncorrect, notAnswered);
             
             /** 
              * if user DID NOT pass this quiz, we increment the zone used to retrieve quiz solutions
@@ -133,8 +134,6 @@ public class CreateTestRunCommand implements ActionHandler<CreateTestRunAction, 
         }
     }
     
-    
-
     @Override
     public Class<? extends Action<? extends Response>> getActionType() {
         // TODO Auto-generated method stub

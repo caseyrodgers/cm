@@ -110,7 +110,7 @@ public class HaTestRun {
     public void transferCurrentToTestRun(final Connection conn) throws Exception {
         removeAllQuizResponses(conn);
 
-        List<HaTestRunResult> currentSelections = getHaTest().getTestCurrentResponses(conn);
+        List<HaTestRunResult> currentSelections = HaTestDao.getTestCurrentResponses(conn, getHaTest().getTestId());
         for (HaTestRunResult tr : currentSelections) {
             addRunResult(conn, tr.getPid(), tr.getResult(),tr.getResponseIndex());
         }
@@ -227,7 +227,7 @@ public class HaTestRun {
             testRun.setAnsweredCorrect((rs.getInt("answered_correct")));
             testRun.setPassing(rs.getInt("is_passing")==0?false:true);
 
-            testRun.setHaTest(HaTest.loadTest(conn,rs.getInt("test_id")));
+            testRun.setHaTest(HaTestDao.loadTest(conn,rs.getInt("test_id")));
             do {
                 String pid = rs.getString("pid");
                 if (pid == null)

@@ -7,6 +7,7 @@ import hotmath.gwt.shared.client.util.CmRpcException;
 import hotmath.gwt.shared.client.util.RpcData;
 import hotmath.gwt.shared.server.service.ActionHandler;
 import hotmath.testset.ha.HaTest;
+import hotmath.testset.ha.HaTestDao;
 import hotmath.util.sql.SqlUtilities;
 
 import java.sql.Connection;
@@ -23,8 +24,8 @@ public class SaveQuizCurrentResultCommand implements ActionHandler<SaveQuizCurre
     @Override
     public RpcData execute(final Connection conn, SaveQuizCurrentResultAction action) throws CmRpcException {
         try {
-            HaTest test = HaTest.loadTest(conn,action.getTestId());
-            test.saveTestQuestionChange(action.getPid(), action.getAnswerIndex(),action.isCorrect());
+            HaTest test = HaTestDao.loadTest(conn,action.getTestId());
+            HaTestDao.saveTestQuestionChange(test.getTestId(), action.getPid(), action.getAnswerIndex(),action.isCorrect());
             
             RpcData rpcData = new RpcData();
             rpcData.putData("complete", "true");

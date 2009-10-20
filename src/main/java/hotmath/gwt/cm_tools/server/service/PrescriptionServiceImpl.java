@@ -40,6 +40,7 @@ import hotmath.gwt.shared.client.util.UserInfo;
 import hotmath.gwt.shared.server.service.ActionDispatcher;
 import hotmath.solution.Solution;
 import hotmath.testset.ha.HaTest;
+import hotmath.testset.ha.HaTestDao;
 import hotmath.testset.ha.HaTestRunResult;
 import hotmath.testset.ha.HaUser;
 import hotmath.util.HMConnectionPool;
@@ -186,7 +187,10 @@ public class PrescriptionServiceImpl extends RemoteServiceServlet implements Pre
             if(testId == 0)
                 return rpcData;
             
-            List<HaTestRunResult> testResults = HaTest.loadTest(conn,testId).getTestCurrentResponses(conn);
+            // TODO: following may not be needed...
+            HaTest test = HaTestDao.loadTest(conn,testId);
+            
+            List<HaTestRunResult> testResults = HaTestDao.getTestCurrentResponses(conn, testId);
             
             for (HaTestRunResult tr : testResults) {
                 if (tr.isAnswered()) {

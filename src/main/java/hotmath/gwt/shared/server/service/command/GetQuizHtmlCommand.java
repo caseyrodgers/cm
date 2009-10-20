@@ -14,6 +14,7 @@ import hotmath.gwt.shared.server.service.ActionHandler;
 import hotmath.testset.TestSet;
 import hotmath.testset.ha.ChapterInfo;
 import hotmath.testset.ha.HaTest;
+import hotmath.testset.ha.HaTestDao;
 import hotmath.testset.ha.HaTestDef;
 import hotmath.testset.ha.HaTestDefDao;
 import hotmath.testset.ha.HaTestDefFactory;
@@ -104,11 +105,11 @@ public class GetQuizHtmlCommand implements ActionHandler<GetQuizHtmlAction, RpcD
             HaTest haTest = null;
             if (false && isActiveTest && testSegment == activeInfo.getActiveSegment()) {
                 // reuse the existing test
-                haTest = HaTest.loadTest(conn,activeInfo.getActiveTestId());
+                haTest = HaTestDao.loadTest(conn, activeInfo.getActiveTestId());
             } else {
                 // register a new test
                 HaTestDef testDef = HaTestDefFactory.createTestDef(conn,testName);
-                haTest = HaTest.createTest(conn,uid, testDef, testSegment);
+                haTest = HaTestDao.createTest(conn, uid, testDef, testSegment);
             }
 
             String testTitle = haTest.getTitle();   

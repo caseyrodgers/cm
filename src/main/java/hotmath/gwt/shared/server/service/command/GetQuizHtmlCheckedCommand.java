@@ -11,6 +11,7 @@ import hotmath.gwt.shared.server.service.ActionHandler;
 import hotmath.gwt.shared.server.service.ActionHandlerManualConnectionManagement;
 import hotmath.testset.TestSet;
 import hotmath.testset.ha.HaTest;
+import hotmath.testset.ha.HaTestDao;
 import hotmath.util.HMConnectionPool;
 import hotmath.util.VelocityTemplateFromStringManager;
 import hotmath.util.sql.SqlUtilities;
@@ -41,7 +42,7 @@ public class GetQuizHtmlCheckedCommand implements ActionHandlerManualConnectionM
             String quizHtmlTemplate = GetQuizHtmlCommand.readQuizHtmlTemplate();
             Map<String, Object> map = new HashMap<String, Object>();
 
-            HaTest haTest = HaTest.loadTest(conn, action.getTestId());
+            HaTest haTest = HaTestDao.loadTest(conn, action.getTestId());
             String testTitle = haTest.getTitle();
 
             TestSet _testSet = new TestSet(haTest.getPids());
