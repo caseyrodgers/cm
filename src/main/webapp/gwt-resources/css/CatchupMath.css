@@ -1157,22 +1157,16 @@ a.x-menu-item { color:#222222;}
 	text-align: center;
 }
 
-.context-change-message {
-	text-align: center;
-}
+.context-change-message {text-align: center;}
+.context-change-message p {margin-top: 10px; margin-bottom: 10px;}
+.context-change-message b {font-size: 120%;}
+.context-change-message a:link,.context-change-message a:visited,.context-change-message a:active,.context-change-message a:hover {margin-left: 10px;text-decoration: none;}
+.context-change-message .suggest-anchor {margin: 5px 5px 5px 0px; text-align: right;}
 
-.context-change-message p {
-	margin-top: 10px;
-	margin-bottom: 10px;
-}
+.context-change-message-suggestions ul {margin: 10px;}
+.context-change-message-suggestions li {list-style: disc;list-style-position: inside;}
 
-.context-change-message b {
-	font-size: 120%;
-}
-
-.auto-student-registration-forgot-password p {
-	padding: 10px;
-}
+.auto-student-registration-forgot-password p {padding: 10px;}
 
 .cm-welcome-panel {background-image: url(/gwt-resources/images/bg/default.png);}
 .cm-welcome-panel h1 {padding: 0 0 0 10px; margin-top: 15px;}
@@ -1180,3 +1174,4 @@ a.x-menu-item { color:#222222;}
 .cm-welcome-panel ul {padding: 10px;}
 .cm-welcome-panel li {list-style: disc;list-style-position: inside;}
 .cm-welcome-panel a:link,.cm-welcome-panel a:visited,.cm-welcome-panel a:active,.cm-welcome-panel a:hover {margin-left: 10px;text-decoration: none;}
+
