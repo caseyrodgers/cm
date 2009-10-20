@@ -4,6 +4,7 @@ import hotmath.assessment.AssessmentPrescription;
 import hotmath.assessment.AssessmentPrescriptionManager;
 import hotmath.gwt.shared.server.service.CmTestUtils;
 import hotmath.testset.ha.HaTest;
+import hotmath.testset.ha.HaTestDao;
 import hotmath.testset.ha.HaTestDef;
 import hotmath.testset.ha.HaTestRun;
 import hotmath.testset.ha.HaUser;
@@ -43,16 +44,16 @@ public class CmDbTestCase extends DbTestCase {
         HaUser user = HaUser.lookUser(conn, setupDemoAccount(),null);
         
         HaTestDef testDef = new HaTestDef(conn, user.getAssignedTestName());
-        _test = HaTest.createTest(conn,user.getUid(), testDef, 1);
+        _test = HaTestDao.createTest(conn,user.getUid(), testDef, 1);
         
         return _test;
     }
     
     
     public HaTestRun setupDemoAccountTestRun() throws Exception {
-        HaTest test = HaTest.loadTest(conn, setupDemoAccountTest().getTestId());
+        HaTest test = HaTestDao.loadTest(conn, setupDemoAccountTest().getTestId());
         String pids[] = {"pid_1", "pid_2"};
-        _testRun = test.createTestRun(conn,pids,0,0,0);
+        _testRun = HaTestDao.createTestRun(conn, test.getUser().getUid(), test.getTestId(), pids,0,0,0);
         
         return _testRun;
     }
@@ -69,4 +70,9 @@ public class CmDbTestCase extends DbTestCase {
         
         return _prescription;
     }
+
+	protected void setUp() throws Exception {
+		// TODO Auto-generated method stub
+		return;
+	}
 }
