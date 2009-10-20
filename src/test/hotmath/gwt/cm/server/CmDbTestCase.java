@@ -71,8 +71,4 @@ public class CmDbTestCase extends DbTestCase {
         return _prescription;
     }
 
-	protected void setUp() throws Exception {
-		// TODO Auto-generated method stub
-		return;
-	}
 }
