@@ -12,6 +12,7 @@ public class DbTestCase extends TestCase {
     }
     
     public  Connection conn=null;
+    
     @Override
     protected void setUp() throws Exception {
         conn = HMConnectionPool.getConnection();
