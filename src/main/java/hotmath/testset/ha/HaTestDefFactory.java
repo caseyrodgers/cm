@@ -18,8 +18,8 @@ public class HaTestDefFactory {
 	
 	/** Create the appropriate HaTestDef depending on use
 	 * 
-	 * @TODO: use something other than the occurrence of placement
-	 *        as indicate of type.
+	 * @TODO: use something other than the occurrence of "Auto-Enrollment"
+	 *        as indicator of type.
 	 * @param name
 	 * @return
 	 * @throws Exception
