@@ -33,6 +33,12 @@ import com.lowagie.text.pdf.PdfPTable;
 import com.lowagie.text.pdf.PdfPageEvent;
 import com.lowagie.text.pdf.PdfWriter;
 
+/**
+ * 
+ * StudentReportCard generates a PDF that represents a student's status
+ *
+ */
+
 public class StudentReportCard {
 
 	static Map<String, String> labelMap;
