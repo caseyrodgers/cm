@@ -1,21 +1,5 @@
 package hotmath.testset.ha;
 
-import hotmath.HotMathException;
-import hotmath.assessment.AssessmentPrescription;
-import hotmath.assessment.AssessmentPrescriptionManager;
-import hotmath.cm.server.model.CmUserProgramDao;
-import hotmath.cm.util.CmCacheManager;
-import hotmath.cm.util.CmMultiLinePropertyReader;
-import hotmath.cm.util.CmCacheManager.CacheName;
-import hotmath.gwt.cm_admin.server.model.CmStudentDao;
-import hotmath.gwt.shared.server.service.command.GetPrescriptionCommand;
-import hotmath.util.HMConnectionPool;
-import hotmath.util.sql.SqlUtilities;
-
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.Statement;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
@@ -24,7 +8,7 @@ import org.apache.log4j.Logger;
 
 /** HaTest Class 
  *  
- *  Describes a single Hotmath Advance test.
+ *  Describes a single CM Test (quiz/segment)
  *  
  *  
  * @author Casey

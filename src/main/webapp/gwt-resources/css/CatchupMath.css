@@ -1152,10 +1152,7 @@ a.x-menu-item { color:#222222;}
 	font-weight: bold;
 }
 
-.report-card-info-panel {
-	padding: 10px;
-	text-align: center;
-}
+.report-card-info-panel {padding: 10px;	text-align: center;}
 
 .context-change-message {text-align: center;}
 .context-change-message p {margin-top: 10px; margin-bottom: 10px;}
@@ -1175,3 +1172,5 @@ a.x-menu-item { color:#222222;}
 .cm-welcome-panel li {list-style: disc;list-style-position: inside;}
 .cm-welcome-panel a:link,.cm-welcome-panel a:visited,.cm-welcome-panel a:active,.cm-welcome-panel a:hover {margin-left: 10px;text-decoration: none;}
 
+
+.printer-icon {background: url(/gwt-resources/images/icons/printer-icon.png) no-repeat center left !important;}
