@@ -164,11 +164,11 @@ JOIN SUBSCRIBERS s ON s.id = a.subscriber_id
        
 ##
 ##       
-## Class: HaTest
+## Class: HaTestDao
 ##
 ## load information about a given test
 ## NOTE: join to CM_USER_PROGRAM to pick
-##       up program info used to created test
+##       up program info used to create test
 ##       (is outer for backward compatibility)
 
 .key=HA_TEST_LOAD
@@ -188,6 +188,25 @@ from   HA_TEST t
        left join HA_TEST_DEF d
          on d.test_def_id = c.test_def_id
 where test_id = ?
+
+.key=HA_TEST_LOAD_FOR_PROGRAMS
+
+select t.*,
+       c.id          as prog_id,
+       u.admin_id    as admin_id,
+       c.create_date as prog_create_date,
+       c.test_def_id as prog_test_def_id,
+       c.test_config_json,
+       d.test_name   as prog_test_name
+from   HA_TEST t
+       join HA_USER u
+         on u.uid = t.user_id
+       join CM_USER_PROGRAM c
+         on c.id = t.user_prog_id
+       left join HA_TEST_DEF d
+         on d.test_def_id = c.test_def_id
+where t.user_prog_id in (XXX)
+
 
 
 
