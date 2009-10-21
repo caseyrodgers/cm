@@ -44,6 +44,7 @@ public class HaTest {
 	int segment;
 	int totalSegments;
 	int numTestQuestions;
+	Timestamp createTime;
 	
 	StudentUserProgramModel programInfo;
 
@@ -135,6 +136,14 @@ public class HaTest {
 
     public void setProgramInfo(StudentUserProgramModel programInfo) {
         this.programInfo = programInfo;
+    }
+    
+    public Timestamp getCreateTime() {
+    	return createTime;
+    }
+    
+    public void setCreateTime(Timestamp timestamp){
+    	this.createTime = timestamp;
     }
 
 	/** Return the test run (prescription) that is currently active
