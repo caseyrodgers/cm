@@ -414,3 +414,22 @@ from (
     and tr.test_id = t.test_id
     and tr.is_passing > 0
 ) c
+
+
+
+#######################
+#######################
+### HaUserProgramInfoDao
+#######################
+#######################
+
+
+.key=USER_PROGRAM_INFO_LOOKUP
+
+select p.*
+from   CM_USER_PROGRAM p
+where  p.user_id = ?
+
+
+
+

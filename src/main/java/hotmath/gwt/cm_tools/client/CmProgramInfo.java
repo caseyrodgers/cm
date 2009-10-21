@@ -9,7 +9,6 @@ class CmProgramInfo {
     
     private CmProgramInfo() {
         programName = "Pre-algebra Proficiency";
-        int segmentCount = 4;
         currentSegment = 1;
     }
     

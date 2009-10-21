@@ -35,22 +35,58 @@ public class CmUserProgramDao {
             ps.setInt(1, userId);
             rs = ps.executeQuery();
             if (rs.first()) {
-                supm.setId(rs.getInt("id"));
-                supm.setUserId(rs.getInt("user_id"));
-                supm.setAdminId(rs.getInt("admin_id"));
-                supm.setTestDefId(rs.getInt("test_def_id"));
-                supm.setTestName(rs.getString("test_name"));
-                int passPercent = rs.getInt("pass_percent");
-                supm.setPassPercent(passPercent);
-                java.sql.Date dt = rs.getDate("create_date");
-                supm.setCreateDate(new Date(dt.getTime()));
-                supm.setConfig(new HaTestConfig(passPercent, rs.getString("test_config_json")));
+                supm = readProgInfoRecordset(rs);
             }
             return supm;
         } finally {
             SqlUtilities.releaseResources(rs, ps, null);
         }
     }
+    
+    /** Create a StudentUserModel from ResultSet
+     * 
+     * @param rs
+     * @return
+     * @throws Exception
+     */
+    private StudentUserProgramModel readProgInfoRecordset(ResultSet rs) throws Exception {
+        
+        StudentUserProgramModel supm = new StudentUserProgramModel();
+        
+        supm.setId(rs.getInt("id"));
+        supm.setUserId(rs.getInt("user_id"));
+        supm.setAdminId(rs.getInt("admin_id"));
+        supm.setTestDefId(rs.getInt("test_def_id"));
+        supm.setTestName(rs.getString("test_name"));
+        int passPercent = rs.getInt("pass_percent");
+        supm.setPassPercent(passPercent);
+        java.sql.Date dt = rs.getDate("create_date");
+        supm.setCreateDate(new Date(dt.getTime()));
+        supm.setConfig(new HaTestConfig(passPercent, rs.getString("test_config_json")));
+        
+        return supm;
+    }
+    
+    public StudentUserProgramModel loadProgramInfo(final Connection conn, Integer userProgId) throws Exception {
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        String sql = CmMultiLinePropertyReader.getInstance().getProperty("LOAD_USER_PROGRAM_SQL");
+        try {
+            StudentUserProgramModel supm = new StudentUserProgramModel();
+
+            ps = conn.prepareStatement(sql);
+
+            ps.setInt(1, userProgId);
+            rs = ps.executeQuery();
+            if (rs.first()) {
+                supm = readProgInfoRecordset(rs);
+            }
+            return supm;
+        } finally {
+            SqlUtilities.releaseResources(rs, ps, null);
+        }        
+    }
+
 
     /**
      * Return all User Programs for the specified User
@@ -74,17 +110,7 @@ public class CmUserProgramDao {
 
             List<StudentUserProgramModel> list = new ArrayList<StudentUserProgramModel>();
             while (rs.next()) {
-                StudentUserProgramModel supm = new StudentUserProgramModel();
-                supm.setId(rs.getInt("id"));
-                supm.setUserId(rs.getInt("user_id"));
-                supm.setAdminId(rs.getInt("admin_id"));
-                supm.setTestDefId(rs.getInt("test_def_id"));
-                supm.setTestName(rs.getString("test_name"));
-                int passPercent = rs.getInt("pass_percent");
-                supm.setPassPercent(passPercent);
-                java.sql.Date dt = rs.getDate("create_date");
-                supm.setCreateDate(new Date(dt.getTime()));
-                supm.setConfig(new HaTestConfig(passPercent, rs.getString("test_config_json")));
+                StudentUserProgramModel supm = readProgInfoRecordset(rs);
                 list.add(supm);
             }
             return list;
@@ -113,13 +139,7 @@ public class CmUserProgramDao {
             ps.setInt(1, testId);
             rs = ps.executeQuery();
             if (rs.first()) {
-                supm.setId(rs.getInt("id"));
-                supm.setUserId(rs.getInt("user_id"));
-                supm.setAdminId(rs.getInt("admin_id"));
-                supm.setTestDefId(rs.getInt("test_def_id"));
-                supm.setTestName(rs.getString("test_name"));
-                int passPercent = rs.getInt("pass_percent");
-                supm.setConfig(new HaTestConfig(passPercent, rs.getString("test_config_json")));
+                supm = readProgInfoRecordset(rs);
             }
             return supm;
         } finally {

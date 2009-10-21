@@ -1161,10 +1161,10 @@ a.x-menu-item { color:#222222;}
 .context-change-message p {margin-top: 10px; margin-bottom: 10px;}
 .context-change-message b {font-size: 120%;}
 .context-change-message a:link,.context-change-message a:visited,.context-change-message a:active,.context-change-message a:hover {margin-left: 10px;text-decoration: none;}
-.context-change-message .suggest-anchor {margin: 5px 5px 5px 0px; text-align: right;}
-
-.context-change-message-suggestions ul {margin: 10px;}
-.context-change-message-suggestions li {list-style: disc;list-style-position: inside;}
+.context-change-message .suggest-div {text-align: left;}
+ 
+.context-change-message .suggest-div ul {margin: 10px;}
+.context-change-message .suggest-div li {list-style: disc;list-style-position: inside;}
 
 .auto-student-registration-forgot-password p {padding: 10px;}
 
