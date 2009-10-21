@@ -347,6 +347,7 @@ public class HaTestDao {
 				test.setSegment(rs.getInt("test_segment"));
 				test.setNumTestQuestions(rs.getInt("test_question_count"));
 				test.setTotalSegments(rs.getInt("total_segments"));
+				test.setCreateTime(rs.getTimestamp("create_time"));
 
 				/* 
 				 * Create program model and add to HaTest object
@@ -360,7 +361,7 @@ public class HaTestDao {
 				/*
 				 *  Get all ids defined for test and add to HaTest object
 				 */
-				List<String> testIds = getTestIdsForTest(conn,test.getTestId());
+				List<String> testIds = getTestIdsForTest(conn, test.getTestId());
 				for(String pid: testIds) {
 					test.addPid(pid);
 				}
