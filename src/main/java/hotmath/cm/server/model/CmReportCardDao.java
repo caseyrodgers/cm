@@ -1,39 +1,31 @@
 package hotmath.cm.server.model;
 
-import hotmath.assessment.InmhItemData;
 import hotmath.cm.util.CmMultiLinePropertyReader;
+import hotmath.gwt.cm_admin.server.model.CmStudentDao;
 import hotmath.gwt.cm_tools.client.model.StudentModel;
-import hotmath.gwt.cm_tools.client.model.StudentReportCardModelI;
 import hotmath.gwt.cm_tools.client.model.StudentReportCardModel;
-import hotmath.util.HMConnectionPool;
-import hotmath.util.sql.SqlUtilities;
+import hotmath.gwt.cm_tools.client.model.StudentReportCardModelI;
 import hotmath.testset.ha.HaTest;
 import hotmath.testset.ha.HaTestDao;
 import hotmath.testset.ha.StudentUserProgramModel;
-import hotmath.gwt.cm_admin.server.model.CmStudentDao;
+import hotmath.util.HMConnectionPool;
+import hotmath.util.sql.SqlUtilities;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.Statement;
-import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.apache.log4j.Logger;
-import org.json.JSONArray;
-import org.json.JSONObject;
 
 /**
  * Defines data access methods for a Catchup Math Report Card
+ * 
+ * @author bob
  * 
  */
 
@@ -125,18 +117,20 @@ public class CmReportCardDao {
 
 		 List<StudentUserProgramModel> l = new ArrayList<StudentUserProgramModel>();
 
-		 //TODO: apply date range
+		 //TODO: apply date range if requested
 		 l.addAll(list);
 
 		 return l;
 	 }
 
 	 private void setFirstLastActivityDate(StudentReportCardModelI rc, List<HaTest>testList) {
-		 Date date = testList.get(0).getCreateTime();
-		 rc.setFirstActivityDate(date);
+		 if (testList != null && testList.size() > 0) {
+			 Date date = testList.get(0).getCreateTime();
+			 rc.setFirstActivityDate(date);
 
-		 date = testList.get(testList.size() - 1).getCreateTime();
-	  	 rc.setLastActivityDate(date);
+			 date = testList.get(testList.size() - 1).getCreateTime();
+		  	 rc.setLastActivityDate(date);
+		 }
 	  	 
 	  	 //TODO: refine "last" activity date using HA_TEST_RUN.run_time
 	 }
