@@ -1,6 +1,7 @@
 package hotmath.cm.server.model;
 
 import hotmath.cm.util.CmMultiLinePropertyReader;
+import hotmath.flusher.HotmathFlusher;
 import hotmath.testset.ha.HaTestConfig;
 import hotmath.testset.ha.StudentUserProgramModel;
 import hotmath.util.sql.SqlUtilities;
@@ -26,6 +27,7 @@ public class CmUserProgramDao {
     public StudentUserProgramModel loadProgramInfoCurrent(final Connection conn, Integer userId) throws Exception {
         PreparedStatement ps = null;
         ResultSet rs = null;
+
         String sql = CmMultiLinePropertyReader.getInstance().getProperty("CURRENT_USER_PROGRAM_SQL");
         try {
             StudentUserProgramModel supm = new StudentUserProgramModel();
@@ -68,6 +70,7 @@ public class CmUserProgramDao {
     }
     
     public StudentUserProgramModel loadProgramInfo(final Connection conn, Integer userProgId) throws Exception {
+        
         PreparedStatement ps = null;
         ResultSet rs = null;
         String sql = CmMultiLinePropertyReader.getInstance().getProperty("LOAD_USER_PROGRAM_SQL");

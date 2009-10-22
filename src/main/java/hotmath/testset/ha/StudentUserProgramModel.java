@@ -2,6 +2,7 @@ package hotmath.testset.ha;
 
 
 import java.util.Date;
+import java.util.List;
 
 /** Identifies a complete Catchup Math program
  * 
@@ -18,6 +19,8 @@ public class StudentUserProgramModel {
     Integer adminId;
     Date createDate;
     HaTestConfig config;
+    
+    List<HaTest> tests;
     
     public HaTestConfig getConfig() {
         return config;
@@ -71,6 +74,14 @@ public class StudentUserProgramModel {
     public void setPassPercent(Integer passPercent) {
     	this.passPercent = passPercent;
     }
+    
+    public List<HaTest> getTests() {
+        return tests;
+    }
+    public void setTests(List<HaTest> tests) {
+        this.tests = tests;
+    }
+   
     
     /** Return true if this program has alternate tests available
      * @return

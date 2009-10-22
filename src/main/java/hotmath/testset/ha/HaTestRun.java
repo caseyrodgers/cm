@@ -250,4 +250,34 @@ public class HaTestRun {
             SqlUtilities.releaseResources(rs, pstat, null);
         }
     }
+    
+    
+    /** Return all test runs created against test_id
+     * 
+     * @param conn
+     * @param testId
+     * @return
+     * @throws Exception
+     */
+    static public List<HaTestRun> lookupTestRunsForTest(final Connection conn, int testId) throws Exception {
+        
+        PreparedStatement pstat = null;
+        ResultSet rs = null;
+        
+        List<HaTestRun> runs = new ArrayList<HaTestRun>();
+        try {
+            String sql = CmMultiLinePropertyReader.getInstance().getProperty("TEST_RUN_LOOK_FOR_TESTS");
+
+            pstat = conn.prepareStatement(sql);
+            pstat.setInt(1, testId);
+            rs = pstat.executeQuery();
+            while(rs.next()) {
+                runs.add( lookupTestRun( conn, rs.getInt("run_id")));
+            }
+            
+            return runs;
+        } finally {
+            SqlUtilities.releaseResources(rs, pstat, null);
+        }        
+    }
 }

@@ -30,7 +30,18 @@ public class HaTest {
 	int numTestQuestions;
 	Timestamp createTime;
 	
-	StudentUserProgramModel programInfo;
+    List<HaTestRun> testRuns;
+	
+
+    public List<HaTestRun> getTestRuns() {
+        return testRuns;
+    }
+
+    public void setTestRuns(List<HaTestRun> testRuns) {
+        this.testRuns = testRuns;
+    }
+
+    StudentUserProgramModel programInfo;
 
 	int TEST_SIZE=10;
 

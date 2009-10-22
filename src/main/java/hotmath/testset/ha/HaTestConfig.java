@@ -31,6 +31,7 @@ public class HaTestConfig {
         this.segmentCount = segmentCount;
     }
 
+    public HaTestConfig() {}
 
     public HaTestConfig(String json) throws HotMathException {
         this(null, json);

@@ -160,6 +160,13 @@ JOIN HA_USER u on u.uid = t.user_id
 JOIN  HA_ADMIN a ON a.aid = u.admin_id
 JOIN SUBSCRIBERS s ON s.id = a.subscriber_id
  
+ 
+ 
+.key=TEST_RUN_LOOK_FOR_TESTS
+##
+##  Return run_ids for a given run
+select run_id from HA_TEST_RUN where test_id = ? order by run_time
+ 
        
        
 ##
@@ -179,7 +186,8 @@ select t.*,
        c.create_date as prog_create_date,
        c.test_def_id as prog_test_def_id,
        c.test_config_json,
-       d.test_name   as prog_test_name
+       d.test_name   as prog_test_name,
+       r.run_id
 from   HA_TEST t
        join HA_USER u
          on u.uid = t.user_id
@@ -187,7 +195,9 @@ from   HA_TEST t
          on c.id = t.user_prog_id
        left join HA_TEST_DEF d
          on d.test_def_id = c.test_def_id
-where test_id = ?
+       left join HA_TEST_RUN r
+         on r.test_id = t.test_id
+where t.test_id = ?
 
 .key=HA_TEST_LOAD_FOR_PROGRAMS
 
@@ -259,17 +269,18 @@ select s.type,
        d.test_name as assigned_test_name,
        p.test_config_json,
        gui_background_style,
-       p.pass_percent
+       p.pass_percent,
+       a.aid
 from   HA_USER u
-       inner join HA_TEST_DEF d
-         on u.test_def_id = d.test_def_id
        join HA_ADMIN a
          on u.admin_id = a.aid
        join SUBSCRIBERS s
          on a.subscriber_id = s.id
-       join CM_USER_PROGRAM p
+       left join CM_USER_PROGRAM p
          on (p.user_id = u.uid
              and p.id = u.user_prog_id)
+        left join HA_TEST_DEF d
+           on d.test_def_id = p.test_def_id
              
              
              
@@ -380,6 +391,28 @@ from CM_USER_PROGRAM c
 JOIN HA_USER u on c.id = u.user_prog_id
 JOIN HA_TEST_DEF t on c.test_def_id = t.test_def_id and u.uid = ?
 
+
+.key=LOAD_USER_PROGRAM_SQL
+#
+#Load a named User Program record
+##
+
+select c.id,
+       c.user_id,
+       c.pass_percent,
+       u.admin_id,
+       c.test_def_id,
+       t.test_name,
+       c.test_config_json,
+       c.create_date
+from   CM_USER_PROGRAM c
+       join HA_USER u
+         on c.id = u.user_prog_id
+       join HA_TEST_DEF t
+         on c.test_def_id = t.test_def_id
+where c.id = ?
+
+
 .key=PROGRAM_QUIZ_COUNT
 
 select count(*)
@@ -431,5 +464,29 @@ from   CM_USER_PROGRAM p
 where  p.user_id = ?
 
 
+
+
+
+
+###########################
+###########################
+#### UserProgramInfo
+###########################
+###########################
+
+.key=USER_PROGRAM_INFO_ADMIN
+
+select *
+from   HA_USER
+where  admin_id = ?
+order by uid
+
+
+.key=USER_PROGRAM_INFO_FOR_USER
+
+select *
+from CM_USER_PROGRAM p
+where p.id = ?
+order by create_date
 
 

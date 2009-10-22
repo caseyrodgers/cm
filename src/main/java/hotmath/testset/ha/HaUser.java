@@ -19,7 +19,16 @@ import org.apache.log4j.Logger;
  */
 public class HaUser extends HaBasicUserImpl {
 
-	Integer uid;
+    Integer aid;
+	public Integer getAid() {
+        return aid;
+    }
+
+    public void setAid(Integer aid) {
+        this.aid = aid;
+    }
+
+    Integer uid;
 	String userName;
 	String category;
 	Integer gradeLevel;
@@ -33,6 +42,7 @@ public class HaUser extends HaBasicUserImpl {
     boolean isShowWorkRequired;
     String  userAccountType;
     int passPercentRequired;
+    
 
     public String getUserAccountType() {
         return userAccountType;
@@ -253,7 +263,7 @@ public class HaUser extends HaBasicUserImpl {
 			user.setShowWorkRequired(rs.getInt("is_show_work_required")==0?false:true);
 			user.setPassPercentRequired(rs.getInt("pass_percent"));
 			user.setPassword(rs.getString("user_passcode"));
-			
+			user.setAid(rs.getInt("aid"));
 			user.setUserAccountType(rs.getString("type"));
 			
 			return user;

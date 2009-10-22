@@ -252,7 +252,7 @@ public class HaUserFactory {
      * 
      * @throws Exception
      */
-    final public static int DEMO_UID = 547;
+    final public static int DEMO_UID = 7729;
 
     static public HaBasicUser createDemoUser() throws Exception {
 

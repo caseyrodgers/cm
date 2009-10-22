@@ -16,9 +16,9 @@ public class CmDbTestCase extends DbTestCase {
     }
     
     protected static HaUser _user;
-    protected HaTest _test;
-    protected HaTestRun _testRun;
-    protected AssessmentPrescription _prescription;
+    protected static HaTest _test;
+    protected static HaTestRun _testRun;
+    protected static AssessmentPrescription _prescription;
     
     /** Create a new test account to use for test/samples/demo
      * 

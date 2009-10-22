@@ -561,5 +561,30 @@ public class HaTestDao {
 		return sb.toString();
 	}
 
+	static public List<HaTest> getProgramTests(final Connection conn, Integer progId) throws Exception {
+	    
+	    PreparedStatement stmt=null;
+	    try {
+	        
+	        List<HaTest> tests = new ArrayList<HaTest>();
+	        
+	        stmt = conn.prepareStatement("select user_prog_id, test_id from HA_TEST where user_prog_id = ? order by create_time");
+	        stmt.setInt(1, progId);
+	        ResultSet rs = stmt.executeQuery();
+	        while(rs.next()) {
+	            HaTest test = HaTestDao.loadTest(conn, rs.getInt("user_prog_id"));
+	            
+	            List<HaTestRun> testRuns = HaTestRun.lookupTestRunsForTest(conn,rs.getInt("test_id"));
+	            test.setTestRuns(testRuns);
+	            
+	            tests.add(test);
+	        }
+	        
+	        return tests;
+	    }
+	    finally {
+	        SqlUtilities.releaseResources(null, stmt,null);
+	    }
+	}
 	
 }
