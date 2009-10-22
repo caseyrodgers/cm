@@ -20,6 +20,7 @@ import java.util.Map;
 import com.lowagie.text.Cell;
 import com.lowagie.text.Chunk;
 import com.lowagie.text.Document;
+import com.lowagie.text.DocumentException;
 import com.lowagie.text.Font;
 import com.lowagie.text.FontFactory;
 import com.lowagie.text.HeaderFooter;
@@ -127,90 +128,16 @@ public class StudentReportCard {
 			document.open();
 			document.add(Chunk.NEWLINE);
 
-			PdfPTable progTbl = new PdfPTable(numberOfColumns);
-			progTbl.getDefaultCell().setBorder(PdfPCell.NO_BORDER);
+			addProgramInfo(rc, document);
 
-			String initialProgDesc = rc.getInitialProgramName();
-			if (initialProgDesc != null) {
-				initialProgDesc += (rc.getInitialProgramStatus() != null) ? " " + rc.getInitialProgramStatus() : "";
-			}
-			Phrase initialProg = buildLabelContent("Initial program: ", initialProgDesc);			
-			Date assignedDate = rc.getInitialProgramDate();
-			String initialDate = (assignedDate != null) ? String.format("%1$tY-%1$tm-%1$td", assignedDate) : " ";
-			Phrase initialAssignedDate = buildLabelContent("Assigned: ", initialDate);
-			
-			String lastProgDesc = rc.getLastProgramName();
-			if (lastProgDesc != null) {
-				lastProgDesc += (rc.getLastProgramStatus() != null) ? " " + rc.getLastProgramStatus() : "";
-			}
-			Phrase lastProg = buildLabelContent("Last program: ", lastProgDesc);
-			assignedDate = rc.getLastProgramDate();
-			String lastDate = (assignedDate != null) ? String.format("%1$tY-%1$tm-%1$td", assignedDate) : " ";
-			Phrase lastAssignedDate = buildLabelContent("Assigned: ", lastDate);
-						
-            progTbl.addCell(initialProg);
-            progTbl.addCell(initialAssignedDate);
-            progTbl.addCell(lastProg);
-            progTbl.addCell(lastAssignedDate);
-            progTbl.setWidthPercentage(100.0f);
-            document.add(progTbl);
-			document.add(Chunk.NEWLINE);
-
-			PdfPTable quizTbl = new PdfPTable(1);
-			quizTbl.getDefaultCell().setBorder(PdfPCell.NO_BORDER);
-			Phrase quizLabel = buildSectionLabel("Quizzes");
-			Phrase totalQuizzes = buildLabelContent("Attempted: ", rc.getQuizCount().toString());
-			Phrase passedQuizzes = buildLabelContent("Passed: ", rc.getQuizPassCount().toString());
-			String average = (rc.getQuizAvgPassPercent() != null) ? rc.getQuizAvgPassPercent() + "%" : "n/a";
-			Phrase avgScore = buildLabelContent("Avg score of passed quizzes: ", average);
-			
-			quizTbl.addCell(quizLabel);
-			quizTbl.addCell(totalQuizzes);
-			quizTbl.addCell(passedQuizzes);
-			quizTbl.addCell(avgScore);
-            quizTbl.setWidthPercentage(100.0f);
-            quizTbl.setSpacingBefore(20.0f);
-			document.add(quizTbl);
-			document.add(Chunk.NEWLINE);
+			addQuizInfo(rc, document);
 
 			if (rc.getResourceUsage().size() > 0) {
-    			PdfPTable usageTbl = new PdfPTable(1);
-	    		usageTbl.getDefaultCell().setBorder(PdfPCell.NO_BORDER);
-
-	    		Phrase usage = buildSectionLabel("Totals");
-    			usageTbl.addCell(usage);
-    			
-	    		Map<String, Integer> map = rc.getResourceUsage();
-	    		
-	    		for (String key : map.keySet()) {
-	    			String label = labelMap.get(key);
-	    			if (label == null) continue;
-	    			usage = buildLabelContent(label, String.valueOf(map.get(key)));
-	    			usageTbl.addCell(usage);
-	    		}
-                usageTbl.setWidthPercentage(100.0f);
-                usageTbl.setSpacingBefore(20.0f);
-		    	document.add(usageTbl);
-			    document.add(Chunk.NEWLINE);
+    			addResourceUsage(rc, document);
 			}
 			
 			if (rc.getPrescribedLessonList().size() > 0) {
-    			PdfPTable lessonTbl = new PdfPTable(1);
-	    		lessonTbl.getDefaultCell().setBorder(PdfPCell.NO_BORDER);
-
-	    		Phrase lesson = buildSectionLabel("Prescribed Lessons");
-    			lessonTbl.addCell(lesson);
-    			//usageTbl.addCell(" ");
-    			
-	    		List<String> list = rc.getPrescribedLessonList();
-	    		for (String lsn : list) {
-	    			lesson = buildLabelContent(lsn, "", false);
-	    		    lessonTbl.addCell(lesson);
-	    		}
-                lessonTbl.setWidthPercentage(100.0f);
-                lessonTbl.setSpacingBefore(20.0f);
-		    	document.add(lessonTbl);
-			    document.add(Chunk.NEWLINE);
+    			addPrescribedLessons(rc, document);
 			}
 			
 			document.add(Chunk.NEWLINE);
@@ -224,6 +151,108 @@ public class StudentReportCard {
 			e.printStackTrace();
 		}
 		return baos;
+	}
+
+	private void addPrescribedLessons(StudentReportCardModelI rc,
+			Document document) throws DocumentException {
+		PdfPTable lessonTbl = new PdfPTable(1);
+		lessonTbl.getDefaultCell().setBorder(PdfPCell.NO_BORDER);
+
+		Phrase lesson = buildSectionLabel("Prescribed Lessons");
+		lessonTbl.addCell(lesson);
+		
+		StringBuilder sb = new StringBuilder();
+		List<String> list = rc.getPrescribedLessonList();
+		for (String lsn : list) {
+			sb.append(lsn).append(", ");
+		}
+		String allLessons = sb.toString().substring(0, sb.length()-2);
+		lessonTbl.addCell(allLessons);
+		lessonTbl.setWidthPercentage(100.0f);
+		lessonTbl.setSpacingBefore(20.0f);
+		document.add(lessonTbl);
+		document.add(Chunk.NEWLINE);
+	}
+
+	private void addResourceUsage(StudentReportCardModelI rc,
+			Document document) throws DocumentException {
+		PdfPTable usageTbl = new PdfPTable(1);
+		usageTbl.getDefaultCell().setBorder(PdfPCell.NO_BORDER);
+
+		Phrase usage = buildSectionLabel("Totals");
+		usageTbl.addCell(usage);
+		
+		Map<String, Integer> map = rc.getResourceUsage();
+		
+		for (String key : map.keySet()) {
+			String label = labelMap.get(key);
+			if (label == null) continue;
+			usage = buildLabelContent(label, String.valueOf(map.get(key)));
+			usageTbl.addCell(usage);
+		}
+		usageTbl.setWidthPercentage(100.0f);
+		usageTbl.setSpacingBefore(20.0f);
+		document.add(usageTbl);
+		document.add(Chunk.NEWLINE);
+	}
+
+	private void addQuizInfo(StudentReportCardModelI rc, Document document)
+			throws DocumentException {
+		PdfPTable quizTbl = new PdfPTable(1);
+		quizTbl.getDefaultCell().setBorder(PdfPCell.NO_BORDER);
+		Phrase quizLabel = buildSectionLabel("Quizzes");
+		Phrase totalQuizzes = buildLabelContent("Attempted: ", rc.getQuizCount().toString());
+		Phrase passedQuizzes = buildLabelContent("Passed: ", rc.getQuizPassCount().toString());
+		String average = (rc.getQuizAvgPassPercent() != null) ? rc.getQuizAvgPassPercent() + "%" : "n/a";
+		Phrase avgScore = buildLabelContent("Avg score of passed quizzes: ", average);
+		
+		quizTbl.addCell(quizLabel);
+		quizTbl.addCell(totalQuizzes);
+		quizTbl.addCell(passedQuizzes);
+		quizTbl.addCell(avgScore);
+		quizTbl.setWidthPercentage(100.0f);
+		quizTbl.setSpacingBefore(20.0f);
+		document.add(quizTbl);
+		document.add(Chunk.NEWLINE);
+	}
+
+	private void addProgramInfo(StudentReportCardModelI rc, Document document)
+			throws DocumentException {
+		PdfPTable progTbl = new PdfPTable(1);
+		progTbl.getDefaultCell().setBorder(PdfPCell.NO_BORDER);
+
+		String initialProgDesc = rc.getInitialProgramName();
+
+		/* don't include initial status for now
+		if (initialProgDesc != null) {
+			initialProgDesc += (rc.getInitialProgramStatus() != null) ? " " + rc.getInitialProgramStatus() : "";
+		}
+		*/
+
+		StringBuilder sb = new StringBuilder();
+		sb.append("Initial program");
+		Date assignedDate = rc.getInitialProgramDate();
+		if (assignedDate != null) {
+			sb.append(" assigned ").append(String.format("%1$tY-%1$tm-%1$td", assignedDate));
+		}
+		sb.append(": ");
+		Phrase initialProg = buildLabelContent(sb.toString(), initialProgDesc);			
+
+		String lastProgDesc = rc.getLastProgramName();
+		if (lastProgDesc != null) {
+			lastProgDesc += (rc.getLastProgramStatus() != null) ? " " + rc.getLastProgramStatus() : "";
+		}
+		Phrase lastProg = buildLabelContent("Current program & section: ", lastProgDesc);
+		assignedDate = rc.getLastProgramDate();
+		
+		// don't include assigned date for current (last) program
+		//String lastDate = (assignedDate != null) ? String.format("%1$tY-%1$tm-%1$td", assignedDate) : " ";
+
+		progTbl.addCell(initialProg);
+		progTbl.addCell(lastProg);
+		progTbl.setWidthPercentage(100.0f);
+		document.add(progTbl);
+		document.add(Chunk.NEWLINE);
 	}
 
 	private Phrase buildLabelContent(String label, String value) {
@@ -268,6 +297,12 @@ public class StudentReportCard {
 		public void onEndPage(PdfWriter writer, Document document) {
 			PdfContentByte cb = writer.getDirectContent();
 			header.writeSelectedRows(0, -1, document.left(), document.top() + 100, cb);
+			/*
+			cb.setLineWidth(0.2f);
+			cb.moveTo(10.0f, 95.0f);
+			cb.lineTo(100.0f, 95.0f);
+			cb.stroke();
+            */
     	}
 
 		public void onGenericTag(PdfWriter arg0, Document arg1, Rectangle arg2,
