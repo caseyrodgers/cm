@@ -167,7 +167,10 @@ public class StudentReportCard {
 			sb.append(lsn).append(", ");
 		}
 		String allLessons = sb.toString().substring(0, sb.length()-2);
-		lessonTbl.addCell(allLessons);
+		Paragraph p = new Paragraph();
+		p.setFont(FontFactory.getFont(FontFactory.HELVETICA, 10, Font.NORMAL, new Color(0, 0, 0)));
+		p.add(allLessons);
+		lessonTbl.addCell(p);
 		lessonTbl.setWidthPercentage(100.0f);
 		lessonTbl.setSpacingBefore(20.0f);
 		document.add(lessonTbl);
@@ -187,7 +190,7 @@ public class StudentReportCard {
 		for (String key : map.keySet()) {
 			String label = labelMap.get(key);
 			if (label == null) continue;
-			usage = buildLabelContent(label, String.valueOf(map.get(key)));
+			usage = buildSectionContent(label, String.valueOf(map.get(key)), true);
 			usageTbl.addCell(usage);
 		}
 		usageTbl.setWidthPercentage(100.0f);
@@ -201,10 +204,10 @@ public class StudentReportCard {
 		PdfPTable quizTbl = new PdfPTable(1);
 		quizTbl.getDefaultCell().setBorder(PdfPCell.NO_BORDER);
 		Phrase quizLabel = buildSectionLabel("Quizzes");
-		Phrase totalQuizzes = buildLabelContent("Attempted: ", rc.getQuizCount().toString());
-		Phrase passedQuizzes = buildLabelContent("Passed: ", rc.getQuizPassCount().toString());
+		Paragraph totalQuizzes = buildSectionContent("Attempted: ", rc.getQuizCount().toString(), true);
+		Paragraph passedQuizzes = buildSectionContent("Passed: ", rc.getQuizPassCount().toString(), true);
 		String average = (rc.getQuizAvgPassPercent() != null) ? rc.getQuizAvgPassPercent() + "%" : "n/a";
-		Phrase avgScore = buildLabelContent("Avg score of passed quizzes: ", average);
+		Paragraph avgScore = buildSectionContent("Avg score of passed quizzes: ", average, true);
 		
 		quizTbl.addCell(quizLabel);
 		quizTbl.addCell(totalQuizzes);
@@ -255,23 +258,41 @@ public class StudentReportCard {
 		document.add(Chunk.NEWLINE);
 	}
 
-	private Phrase buildLabelContent(String label, String value) {
+	private Paragraph buildLabelContent(String label, String value) {
 		return buildLabelContent(label, value, true);
 	}
 	
-	private Phrase buildLabelContent(String label, String value, Boolean useDefault) {
+	private Paragraph buildLabelContent(String label, String value, Boolean useDefault) {
+		if (value == null || value.trim().length() == 0) {
+			value = (useDefault) ? "n/a" : " ";
+		}
+		Phrase phrase = new Phrase(new Chunk(label, FontFactory.getFont(FontFactory.HELVETICA, 11, Font.BOLD, new Color(0, 0, 0))));
+		Phrase content = new Phrase(new Chunk(value, FontFactory.getFont(FontFactory.HELVETICA, 10, Font.NORMAL, new Color(0, 0, 0))));
+		phrase.add(content);
+		Paragraph p = new Paragraph();
+		p.add(phrase);
+		p.setIndentationLeft(30.0f);
+		return p;
+	}
+
+	private Phrase buildSectionLabel(String label) {
+		Chunk chunk = new Chunk(label, FontFactory.getFont(FontFactory.HELVETICA, 11, Font.BOLD, new Color(0, 0, 0)));
+		chunk.setUnderline(0.5f, -3f);
+		Phrase phrase = new Phrase(chunk);
+		return phrase;
+	}
+
+	private Paragraph buildSectionContent(String label, String value, Boolean useDefault) {
 		if (value == null || value.trim().length() == 0) {
 			value = (useDefault) ? "n/a" : " ";
 		}
 		Phrase phrase = new Phrase(new Chunk(label, FontFactory.getFont(FontFactory.HELVETICA, 9, Font.BOLD, new Color(0, 0, 0))));
 		Phrase content = new Phrase(new Chunk(value, FontFactory.getFont(FontFactory.HELVETICA, 9, Font.NORMAL, new Color(0, 0, 0))));
 		phrase.add(content);
-		return phrase;
-	}
-
-	private Phrase buildSectionLabel(String label) {
-		Phrase phrase = new Phrase(new Chunk(label, FontFactory.getFont(FontFactory.HELVETICA, 12, Font.BOLD, new Color(0, 0, 0))));
-		return phrase;
+		Paragraph p = new Paragraph();
+		p.add(phrase);
+		p.setIndentationLeft(30.0f);
+		return p;
 	}
 
     public class HeaderTable implements PdfPageEvent {
@@ -297,12 +318,6 @@ public class StudentReportCard {
 		public void onEndPage(PdfWriter writer, Document document) {
 			PdfContentByte cb = writer.getDirectContent();
 			header.writeSelectedRows(0, -1, document.left(), document.top() + 100, cb);
-			/*
-			cb.setLineWidth(0.2f);
-			cb.moveTo(10.0f, 95.0f);
-			cb.lineTo(100.0f, 95.0f);
-			cb.stroke();
-            */
     	}
 
 		public void onGenericTag(PdfWriter arg0, Document arg1, Rectangle arg2,
