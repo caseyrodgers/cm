@@ -344,7 +344,7 @@ public class AssessmentPrescription {
      * 
      * @return
      */
-    public NextAction getNextAction() {
+    public NextAction getNextAction() throws Exception {
         return new NextAction(NextActionName.PRESCRIPTION); 
     }
     

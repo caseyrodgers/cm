@@ -28,7 +28,7 @@ public class AssessmentPrescriptionPlacement extends AssessmentPrescription {
     }
 
     @Override
-    public NextAction getNextAction()  {
+    public NextAction getNextAction() throws Exception  {
         int correct = getTestRun().getAnsweredCorrect();
         int total = getTest().getNumTestQuestions();
 
@@ -77,33 +77,28 @@ public class AssessmentPrescriptionPlacement extends AssessmentPrescription {
              * 
              */
             nextAction.setNextAction(NextActionName.AUTO_ASSSIGNED);
+            CmStudentDao dao = new CmStudentDao();
+            StudentModelI sm = dao.getStudentModel(user.getUid());
+            
+            sm.setProgId(newProgId);
+            sm.setSubjId(newSubjId);
+            sm.setProgramChanged(true);
+            
+            // now update the ActiveInfo to empty
+            StudentActiveInfo active = new StudentActiveInfo();
+            
+            Connection conn=null;
             try {
-                CmStudentDao dao = new CmStudentDao();
-                StudentModelI sm = dao.getStudentModel(user.getUid());
+                conn = HMConnectionPool.getConnection();
                 
-                sm.setProgId(newProgId);
-                sm.setSubjId(newSubjId);
-                sm.setProgramChanged(true);
-                
-                // now update the ActiveInfo to empty
-                StudentActiveInfo active = new StudentActiveInfo();
-                
-                Connection conn=null;
-                try {
-                    conn = HMConnectionPool.getConnection();
-                    
-                    dao.updateStudent(conn, sm,true,false, true, false);
-                    dao.setActiveInfo(conn, user.getUid(), active);
-                }
-                finally {
-                    SqlUtilities.releaseResources(null,null,conn);
-                }
-                
-                nextAction.setAssignedTest(newTestName);
+                dao.updateStudent(conn, sm,true,false, true, false);
+                dao.setActiveInfo(conn, user.getUid(), active);
             }
-            catch(Exception e) {
-                logger.info("Error updating placement program", e);
+            finally {
+                SqlUtilities.releaseResources(null,null,conn);
             }
+            
+            nextAction.setAssignedTest(newTestName);
         }
         else {
             nextAction.setNextAction(NextActionName.QUIZ);

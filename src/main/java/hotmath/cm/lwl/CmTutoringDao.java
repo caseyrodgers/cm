@@ -70,6 +70,14 @@ public class CmTutoringDao {
         HotMathSubscriber sub = HotMathSubscriberManager.findSubscriber(studentTutoringInfo.getSubscriberId());
         if(sub.getSubscriberType().equals("ST")) {
             AccountInfoModel school = new CmAdminDao().getAccountInfo(student.getAdminUid());
+            
+            /** If this school does not have tutoring enabled, then throw exception  
+             * 
+             */
+            if(school.getHasTutoring() != null && !school.getHasTutoring().equals("Enabled") ) {
+                throw new CmException("School '" + school.getSchoolName() + "' does not have tutoring enabled");
+            }
+            
             LWLIntegrationManager.LwlAccountInfo schoolLwlInfo = LWLIntegrationManager.getInstance().getLwlIntegrationKey(school.getSubscriberId());
             
             Integer schoolNumber = schoolLwlInfo.getSchoolId();
