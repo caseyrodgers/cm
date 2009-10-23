@@ -14,7 +14,10 @@ public class CmTutoringDao_Test extends CmDbTestCase {
     @Override
     protected void setUp() throws Exception {
         super.setUp();
-        uid = setupDemoAccount(); // 4050; // 
+        
+        if(_user == null)
+            uid = setupDemoAccount(); // 4050; //
+        
         new CmTutoringDao().addTutoring(conn, uid);
     }
     

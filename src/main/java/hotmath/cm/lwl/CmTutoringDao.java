@@ -33,6 +33,9 @@ public class CmTutoringDao {
      * If a student does not have tutoring defined, we setup the minimal data
      * needed for this user to access LWL
      * 
+     * NOTE: called from cm_lwl_launch.jsp
+     * 
+     * 
      * @param conn
      * @param uid 
      * @return
@@ -46,56 +49,50 @@ public class CmTutoringDao {
         AccountInfoModel accountInfo = new CmAdminDao().getAccountInfo(adminId);
         
         StudentTutoringInfo studentTutoringInfo = null;
+        LwlAccountInfo studentLwlInfo= getUserLwlInfo(conn, uid); 
+            
+        /** Get both the admin and student LWL information.
+         * 
+         * 
+         */
+        LWLIntegrationManager.LwlAccountInfo adminLwlInfo = null;
         try {
-
-            LwlAccountInfo studentLwlInfo= getUserLwlInfo(conn, uid); 
-                
-            /** Get both the admin and student LWL information.
-             * 
-             * 
-             */
-            LWLIntegrationManager.LwlAccountInfo adminLwlInfo = null;
-            try {
-                adminLwlInfo = LWLIntegrationManager.getInstance().getLwlIntegrationKey(accountInfo.getSubscriberId());
-                studentTutoringInfo = new StudentTutoringInfo(accountInfo.getSubscriberId(), studentLwlInfo.getStudentId(), adminLwlInfo.getSchoolId(),adminLwlInfo.getAccountType());
-            }
-            catch(Exception e) {
-                studentTutoringInfo = new StudentTutoringInfo(accountInfo.getSubscriberId(), studentLwlInfo.getStudentId(), 0,0);
-            }
-            
-            
-            
-            // if a school account, then read the schoolNumber associated with the school
-            HotMathSubscriber sub = HotMathSubscriberManager.findSubscriber(studentTutoringInfo.getSubscriberId());
-            if(sub.getSubscriberType().equals("ST")) {
-                AccountInfoModel school = new CmAdminDao().getAccountInfo(student.getAdminUid());
-                LWLIntegrationManager.LwlAccountInfo schoolLwlInfo = LWLIntegrationManager.getInstance().getLwlIntegrationKey(school.getSubscriberId());
-                
-                Integer schoolNumber = schoolLwlInfo.getSchoolId();
-                
-                if(schoolNumber == 0) {
-                    throw new CmException("LWL student account error: No school_number found for '" + uid + "'. " +
-                                          " Could be the LWL_TUTORING record associated with the ");
-                }
-                studentTutoringInfo.setSchoolNumber(schoolNumber);
-            }
+            adminLwlInfo = LWLIntegrationManager.getInstance().getLwlIntegrationKey(accountInfo.getSubscriberId());
+            studentTutoringInfo = new StudentTutoringInfo(accountInfo.getSubscriberId(), studentLwlInfo.getStudentId(), adminLwlInfo.getSchoolId(),adminLwlInfo.getAccountType());
         }
         catch(Exception e) {
-            e.printStackTrace();
+            studentTutoringInfo = new StudentTutoringInfo(accountInfo.getSubscriberId(), studentLwlInfo.getStudentId(), 0,0);
+        }
+        
+        
+        
+        // if a school account, then read the schoolNumber associated with the school
+        HotMathSubscriber sub = HotMathSubscriberManager.findSubscriber(studentTutoringInfo.getSubscriberId());
+        if(sub.getSubscriberType().equals("ST")) {
+            AccountInfoModel school = new CmAdminDao().getAccountInfo(student.getAdminUid());
+            LWLIntegrationManager.LwlAccountInfo schoolLwlInfo = LWLIntegrationManager.getInstance().getLwlIntegrationKey(school.getSubscriberId());
+            
+            Integer schoolNumber = schoolLwlInfo.getSchoolId();
+            
+            if(schoolNumber == 0) {
+                throw new CmException("LWL student account error: No school_number found for '" + uid + "'. " +
+                                      " Could be the LWL_TUTORING record associated with the subscriber does not exist.");
+            }
+            studentTutoringInfo.setSchoolNumber(schoolNumber);
         }
         
         if(studentTutoringInfo.getStudentNumber() == 0) {
             /** Setup basic info needed for LWL integration
              * 
              */
-            HotMathSubscriber sub = HotMathSubscriberManager.findSubscriber(studentTutoringInfo.getSubscriberId());
+            HotMathSubscriber sub2 = HotMathSubscriberManager.findSubscriber(studentTutoringInfo.getSubscriberId());
             PurchasePlan plan = new PurchasePlan("TYPE_SERVICE_TUTORING_0");
             
             HotMathSubscriberSignupInfo signupInfo = HotMathSubscriberSignupInfo.createInfoForTestCard();
             signupInfo.setFirstName(student.getName());
             signupInfo.setLastName("");
             signupInfo.setStudentName(student.getName());
-            signupInfo.setBillingZip(sub.getZip());
+            signupInfo.setBillingZip(sub2.getZip());
             
             sub.setSignupInfo(signupInfo);
             List<PurchasePlan> plans = new ArrayList<PurchasePlan>();
