@@ -76,7 +76,7 @@ public class WelcomePanel extends LayoutContainer {
                           "<p>The button below begins a sample session with Catchup Math. " + 
                           "You will start with a 10-question quiz. Then, you will experience " +
                           " the review and practice of Catchup Math (be sure to get at least " + 
-                          " one quiz problem wrong!) " +
+                          " one quiz problem wrong!)." +
                           "</p>";
             
             setHtml(html);
