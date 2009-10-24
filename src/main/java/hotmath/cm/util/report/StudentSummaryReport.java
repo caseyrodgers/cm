@@ -2,7 +2,6 @@ package hotmath.cm.util.report;
 
 import static hotmath.cm.util.CmCacheManager.CacheName.REPORT_ID;
 import hotmath.cm.util.CmCacheManager;
-
 import hotmath.gwt.cm_admin.server.model.CmAdminDao;
 import hotmath.gwt.cm_admin.server.model.CmStudentDao;
 import hotmath.gwt.cm_tools.client.model.AccountInfoModel;
@@ -10,7 +9,6 @@ import hotmath.gwt.cm_tools.client.model.StudentModel;
 
 import java.awt.Color;
 import java.io.ByteArrayOutputStream;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -22,135 +20,134 @@ import com.lowagie.text.Document;
 import com.lowagie.text.Font;
 import com.lowagie.text.FontFactory;
 import com.lowagie.text.HeaderFooter;
-import com.lowagie.text.Jpeg;
 import com.lowagie.text.Phrase;
 import com.lowagie.text.Table;
 import com.lowagie.text.pdf.PdfWriter;
 
 public class StudentSummaryReport {
-	
-	@SuppressWarnings("unchecked")
-	public ByteArrayOutputStream makePdf(String reportId, Integer adminId) {
-		ByteArrayOutputStream baos = null;
 
-		try {
-			List<Integer> studentUids = (List<Integer>)CmCacheManager.getInstance().retrieveFromCache(REPORT_ID, reportId);
-			
-			CmAdminDao adminDao = new CmAdminDao();
+    @SuppressWarnings("unchecked")
+    public ByteArrayOutputStream makePdf(String reportId, Integer adminId) throws Exception {
+        ByteArrayOutputStream baos = null;
+        List<Integer> studentUids = (List<Integer>) CmCacheManager.getInstance().retrieveFromCache(REPORT_ID, reportId);
 
-			AccountInfoModel info = adminDao.getAccountInfo(adminId);
-			if (info == null) return null;
+        CmAdminDao adminDao = new CmAdminDao();
 
-			CmStudentDao studentDao = new CmStudentDao();
-			List <StudentModel> sList = studentDao.getSummariesForActiveStudents(adminId);
-			
-			Map<Integer,StudentModel> map = new HashMap<Integer,StudentModel>(sList.size());
-			for (StudentModel sm : sList) {
-				map.put(sm.getUid(), sm);
-			}
-			List <StudentModel> list = new ArrayList<StudentModel>(studentUids.size());
-			for (Integer uid : studentUids) {
-				list.add(map.get(uid));
-			}
-			
-			Document document = new Document();
-			baos = new ByteArrayOutputStream();
-			PdfWriter.getInstance(document, baos);
+        AccountInfoModel info = adminDao.getAccountInfo(adminId);
+        if (info == null)
+            return null;
 
-			Phrase heading = new Phrase();
-			Phrase school   = buildLabelContent("School: ", info.getSchoolName());
-			Phrase admin    = buildLabelContent("Administrator: ", info.getSchoolUserName());
-			Phrase expires  = buildLabelContent("Expires: ", info.getExpirationDate());
-			Phrase stuCount = buildLabelContent("Student Count: ", String.valueOf(list.size()));
+        CmStudentDao studentDao = new CmStudentDao();
+        List<StudentModel> sList = studentDao.getSummariesForActiveStudents(adminId);
 
-			heading.add(school);
-			//Chunk c = new Chunk(new Jpeg(new URL("http://localhost:8081/gwt-resources/images/logo_1.jpg")), 3.5f, 1.0f);
-			//heading.add(c);
-			heading.add(Chunk.NEWLINE);
-			heading.add(admin);
-			heading.add(Chunk.NEWLINE);
-			heading.add(expires);
-			heading.add(Chunk.NEWLINE);
-			heading.add(stuCount);
+        Map<Integer, StudentModel> map = new HashMap<Integer, StudentModel>(sList.size());
+        for (StudentModel sm : sList) {
+            map.put(sm.getUid(), sm);
+        }
+        List<StudentModel> list = new ArrayList<StudentModel>(studentUids.size());
+        for (Integer uid : studentUids) {
+            list.add(map.get(uid));
+        }
 
-			HeaderFooter header = new HeaderFooter(heading, false);
-			HeaderFooter footer = new HeaderFooter(new Phrase("Page "), new Phrase("."));
-			footer.setAlignment(HeaderFooter.ALIGN_RIGHT);
-			document.setHeader(header);
-			document.setFooter(footer);
+        Document document = new Document();
+        baos = new ByteArrayOutputStream();
+        PdfWriter.getInstance(document, baos);
 
-			document.open();
+        Phrase heading = new Phrase();
+        Phrase school = buildLabelContent("School: ", info.getSchoolName());
+        Phrase admin = buildLabelContent("Administrator: ", info.getSchoolUserName());
+        Phrase expires = buildLabelContent("Expires: ", info.getExpirationDate());
+        Phrase stuCount = buildLabelContent("Student Count: ", String.valueOf(list.size()));
 
-			Table tbl = new Table(7);
-			tbl.setWidth(100.0f);
-			tbl.setBorder(Table.BOTTOM);
+        heading.add(school);
+        // Chunk c = new Chunk(new Jpeg(new
+        // URL("http://localhost:8081/gwt-resources/images/logo_1.jpg")), 3.5f,
+        // 1.0f);
+        // heading.add(c);
+        heading.add(Chunk.NEWLINE);
+        heading.add(admin);
+        heading.add(Chunk.NEWLINE);
+        heading.add(expires);
+        heading.add(Chunk.NEWLINE);
+        heading.add(stuCount);
 
-			document.add(Chunk.NEWLINE);
-			document.add(Chunk.NEWLINE);			
+        HeaderFooter header = new HeaderFooter(heading, false);
+        HeaderFooter footer = new HeaderFooter(new Phrase("Page "), new Phrase("."));
+        footer.setAlignment(HeaderFooter.ALIGN_RIGHT);
+        document.setHeader(header);
+        document.setFooter(footer);
 
-			addHeader("Student", "15%", tbl);
-			addHeader("Group", "20%", tbl);
-			addHeader("Program", "15%", tbl);
-			addHeader("Status", "15%", tbl);
-			addHeader("Last Quiz", "10%", tbl);
-			addHeader("Last Login", "15%", tbl);
-			addHeader("Usage", "10%", tbl);
+        document.open();
 
-			tbl.endHeaders();
+        Table tbl = new Table(7);
+        tbl.setWidth(100.0f);
+        tbl.setBorder(Table.BOTTOM);
 
-			int i = 0;
-			for (StudentModel sm : list) {
-				addCell(sm.getName(), tbl, ++i);
-				addCell(sm.getGroup(), tbl, i);
-				addCell(sm.getProgramDescr(), tbl, i);
-				addCell(sm.getStatus(), tbl, i);
-				addCell(sm.getLastQuiz(), tbl, i);
-				addCell(sm.getLastLogin(), tbl, i);
-				addCell(String.valueOf(sm.getTotalUsage()), tbl, i);
-			}
+        document.add(Chunk.NEWLINE);
+        document.add(Chunk.NEWLINE);
 
-			document.add(tbl);
+        addHeader("Student", "15%", tbl);
+        addHeader("Group", "20%", tbl);
+        addHeader("Program", "15%", tbl);
+        addHeader("Status", "15%", tbl);
+        addHeader("Last Quiz", "10%", tbl);
+        addHeader("Last Login", "15%", tbl);
+        addHeader("Usage", "10%", tbl);
 
-			document.add(Chunk.NEWLINE);
-			document.add(Chunk.NEWLINE);
+        tbl.endHeaders();
 
-			document.close();
+        int i = 0;
+        for (StudentModel sm : list) {
+            addCell(sm.getName(), tbl, ++i);
+            addCell(sm.getGroup(), tbl, i);
+            addCell(sm.getProgramDescr(), tbl, i);
+            addCell(sm.getStatus(), tbl, i);
+            addCell(sm.getLastQuiz(), tbl, i);
+            addCell(sm.getLastLogin(), tbl, i);
+            addCell(String.valueOf(sm.getTotalUsage()), tbl, i);
+        }
 
-		} catch (Exception e) {
-			System.out.println(String.format("*** Error generating student summary for aid: %d", adminId));
-			e.printStackTrace();
-		}
-		return baos;
-	}
+        document.add(tbl);
 
-	private Phrase buildLabelContent(String label, String value) {
-		 Phrase phrase = new Phrase(new Chunk(label, FontFactory.getFont(FontFactory.HELVETICA, 10, Font.BOLD, new Color(0, 0, 0))));
-		 Phrase content = new Phrase(new Chunk(value, FontFactory.getFont(FontFactory.HELVETICA, 10, Font.NORMAL, new Color(0, 0, 0))));
-		 phrase.add(content);
-		 return phrase;
-	}
+        document.add(Chunk.NEWLINE);
+        document.add(Chunk.NEWLINE);
 
-	private void addHeader(String label, String percentWidth, Table tbl) throws Exception {
-		Chunk c = new Chunk(label, FontFactory.getFont(FontFactory.HELVETICA, 9, Font.BOLD, new Color(0, 0, 0)));
-		c.setTextRise(4.0f);
-		Cell cell = new Cell(c);
-		cell.setWidth(percentWidth);
-		cell.setHeader(true);
-		cell.setColspan(1);
-		cell.setBorder(Cell.BOTTOM);
-		tbl.addCell(cell);
-	}
-	private void addCell(String content, Table tbl, int rowNum) throws Exception {
-		if (content == null) content = "";
-		Chunk c = new Chunk(content, FontFactory.getFont(FontFactory.HELVETICA, 8, Font.NORMAL, new Color(0, 0, 0)));
-		c.setTextRise(3.0f);
-    	Cell cell = new Cell(c);
-		cell.setHeader(false);
-		cell.setColspan(1);
-		cell.setBorder(0);
-		if (rowNum%2 < 1) cell.setGrayFill(0.9f);
-		tbl.addCell(cell);
-	}
+        document.close();
+        return baos;
+    }
 
+    private Phrase buildLabelContent(String label, String value) {
+        Phrase phrase = new Phrase(new Chunk(label, FontFactory.getFont(FontFactory.HELVETICA, 10, Font.BOLD,
+                new Color(0, 0, 0))));
+        Phrase content = new Phrase(new Chunk(value, FontFactory.getFont(FontFactory.HELVETICA, 10, Font.NORMAL,
+                new Color(0, 0, 0))));
+        phrase.add(content);
+        return phrase;
+    }
+
+    private void addHeader(String label, String percentWidth, Table tbl) throws Exception {
+        Chunk c = new Chunk(label, FontFactory.getFont(FontFactory.HELVETICA, 9, Font.BOLD, new Color(0, 0, 0)));
+        c.setTextRise(4.0f);
+        Cell cell = new Cell(c);
+        cell.setWidth(percentWidth);
+        cell.setHeader(true);
+        cell.setColspan(1);
+        cell.setBorder(Cell.BOTTOM);
+        tbl.addCell(cell);
+    }
+
+    private void addCell(String content, Table tbl, int rowNum) throws Exception {
+        if (content == null)
+            content = "";
+        Chunk c = new Chunk(content, FontFactory.getFont(FontFactory.HELVETICA, 8, Font.NORMAL, new Color(0, 0, 0)));
+        c.setTextRise(3.0f);
+        Cell cell = new Cell(c);
+        cell.setHeader(false);
+        cell.setColspan(1);
+        cell.setBorder(0);
+        if (rowNum % 2 < 1)
+            cell.setGrayFill(0.9f);
+        tbl.addCell(cell);
+    }
 
 }

@@ -37,311 +37,305 @@ import com.lowagie.text.pdf.PdfWriter;
 /**
  * 
  * StudentReportCard generates a PDF that represents a student's status
- *
+ * 
  */
 
 public class StudentReportCard {
 
-	static Map<String, String> labelMap;
-	
-	static {
-		labelMap = new HashMap<String, String> ();
+    static Map<String, String> labelMap;
 
-        labelMap.put("login",     "Logins: ");
-        labelMap.put("activity",  "Learning Activities: ");
-        labelMap.put("cmextra",   "Extra Practice Problems: ");
-        labelMap.put("review",    "Prescribed Lessons: ");
-        labelMap.put("practice",  "Required Practice Problems: ");
+    static {
+        labelMap = new HashMap<String, String>();
+
+        labelMap.put("login", "Logins: ");
+        labelMap.put("activity", "Learning Activities: ");
+        labelMap.put("cmextra", "Extra Practice Problems: ");
+        labelMap.put("review", "Prescribed Lessons: ");
+        labelMap.put("practice", "Required Practice Problems: ");
         labelMap.put("flashcard", "Flashcard Sessions: ");
-        labelMap.put("videos",    "Videos: ");
-	}
-	
-	@SuppressWarnings("unchecked")
-	public ByteArrayOutputStream makePdf(String reportId, Integer adminId) {
-		ByteArrayOutputStream baos = null;
+        labelMap.put("videos", "Videos: ");
+    }
 
-		Integer stuUid = -1;
-		try {
-			List<Integer> studentUids =
-				(List<Integer>)CmCacheManager.getInstance().retrieveFromCache(REPORT_ID, reportId);
-			stuUid = studentUids.get(0);
-			
-			CmAdminDao adminDao = new CmAdminDao();
+    @SuppressWarnings("unchecked")
+    public ByteArrayOutputStream makePdf(String reportId, Integer adminId) throws Exception {
+        ByteArrayOutputStream baos = null;
 
-			AccountInfoModel info = adminDao.getAccountInfo(adminId);
-			if (info == null) return null;
+        Integer stuUid = -1;
+        List<Integer> studentUids = (List<Integer>) CmCacheManager.getInstance().retrieveFromCache(REPORT_ID, reportId);
+        stuUid = studentUids.get(0);
 
-			CmReportCardDao rcDao = new CmReportCardDao();
-			StudentReportCardModelI rc = rcDao.getStudentReportCard(stuUid, null, null);
+        CmAdminDao adminDao = new CmAdminDao();
 
-			CmStudentDao studentDao = new CmStudentDao();
-			StudentModel sm = studentDao.getStudentModel(stuUid);
-						
-			Document document = new Document();
-			baos = new ByteArrayOutputStream();
+        AccountInfoModel info = adminDao.getAccountInfo(adminId);
+        if (info == null)
+            return null;
 
-			PdfWriter writer = PdfWriter.getInstance(document, baos);
+        CmReportCardDao rcDao = new CmReportCardDao();
+        StudentReportCardModelI rc = rcDao.getStudentReportCard(stuUid, null, null);
 
-			Phrase school   = buildLabelContent("School: ", info.getSchoolName());
-			Phrase group    = buildLabelContent("Group: ", sm.getGroup());
-			String printDate = String.format("%1$tY-%1$tm-%1$td", Calendar.getInstance());
-			Phrase date     = buildLabelContent("Today's Date: ", printDate);
-			
-			Date actDate = rc.getFirstActivityDate();
-			String activityDate = (actDate != null) ? String.format("%1$tY-%1$tm-%1$td", actDate) : " ";
-			Phrase firstActivityDate = buildLabelContent("First activity: ", activityDate);
-			
-			actDate = rc.getLastActivityDate();
-			activityDate = (actDate != null) ? String.format("%1$tY-%1$tm-%1$td", actDate) : " ";
-			Phrase lastActivityDate = buildLabelContent("Last activity: ", activityDate);
-		    
-			Phrase student  = buildLabelContent("Student: ", String.valueOf(sm.getName()));
+        CmStudentDao studentDao = new CmStudentDao();
+        StudentModel sm = studentDao.getStudentModel(stuUid);
 
-			int numberOfColumns = 2;
-			PdfPTable pdfTbl = new PdfPTable(numberOfColumns);
-			pdfTbl.getDefaultCell().setBorder(PdfPCell.NO_BORDER);
+        Document document = new Document();
+        baos = new ByteArrayOutputStream();
 
-			pdfTbl.addCell(student);
-			pdfTbl.addCell(date);
+        PdfWriter writer = PdfWriter.getInstance(document, baos);
 
-			pdfTbl.addCell(group);
-			pdfTbl.addCell(" ");
-			
-			pdfTbl.addCell(school);
-			pdfTbl.addCell(" ");
-			
-			pdfTbl.addCell(" ");
-			pdfTbl.addCell(" ");
+        Phrase school = buildLabelContent("School: ", info.getSchoolName());
+        Phrase group = buildLabelContent("Group: ", sm.getGroup());
+        String printDate = String.format("%1$tY-%1$tm-%1$td", Calendar.getInstance());
+        Phrase date = buildLabelContent("Today's Date: ", printDate);
 
-			pdfTbl.addCell(firstActivityDate);
-			pdfTbl.addCell(lastActivityDate);
+        Date actDate = rc.getFirstActivityDate();
+        String activityDate = (actDate != null) ? String.format("%1$tY-%1$tm-%1$td", actDate) : " ";
+        Phrase firstActivityDate = buildLabelContent("First activity: ", activityDate);
 
-			pdfTbl.setTotalWidth(600.0f);
+        actDate = rc.getLastActivityDate();
+        activityDate = (actDate != null) ? String.format("%1$tY-%1$tm-%1$td", actDate) : " ";
+        Phrase lastActivityDate = buildLabelContent("Last activity: ", activityDate);
 
-			writer.setPageEvent(new HeaderTable(writer, pdfTbl));
+        Phrase student = buildLabelContent("Student: ", String.valueOf(sm.getName()));
 
-			HeaderFooter footer = new HeaderFooter(new Phrase("Page "), new Phrase("."));
-			footer.setAlignment(HeaderFooter.ALIGN_RIGHT);
-			document.setFooter(footer);
+        int numberOfColumns = 2;
+        PdfPTable pdfTbl = new PdfPTable(numberOfColumns);
+        pdfTbl.getDefaultCell().setBorder(PdfPCell.NO_BORDER);
 
-			document.setMargins(document.leftMargin(), document.rightMargin(), document.topMargin()+90, document.bottomMargin());
-			document.open();
-			document.add(Chunk.NEWLINE);
+        pdfTbl.addCell(student);
+        pdfTbl.addCell(date);
 
-			addProgramInfo(rc, document);
+        pdfTbl.addCell(group);
+        pdfTbl.addCell(" ");
 
-			addQuizInfo(rc, document);
+        pdfTbl.addCell(school);
+        pdfTbl.addCell(" ");
 
-			if (rc.getResourceUsage().size() > 0) {
-    			addResourceUsage(rc, document);
-			}
-			
-			if (rc.getPrescribedLessonList().size() > 0) {
-    			addPrescribedLessons(rc, document);
-			}
-			
-			document.add(Chunk.NEWLINE);
-			document.add(Chunk.NEWLINE);
+        pdfTbl.addCell(" ");
+        pdfTbl.addCell(" ");
 
-			document.close();
+        pdfTbl.addCell(firstActivityDate);
+        pdfTbl.addCell(lastActivityDate);
 
-		} catch (Exception e) {
-			System.out.println(String.format("*** Error generating student report card for aid: %d, uid: %d",
-				adminId, stuUid));
-			e.printStackTrace();
-		}
-		return baos;
-	}
+        pdfTbl.setTotalWidth(600.0f);
 
-	private void addPrescribedLessons(StudentReportCardModelI rc,
-			Document document) throws DocumentException {
-		PdfPTable lessonTbl = new PdfPTable(1);
-		lessonTbl.getDefaultCell().setBorder(PdfPCell.NO_BORDER);
+        writer.setPageEvent(new HeaderTable(writer, pdfTbl));
 
-		Phrase lesson = buildSectionLabel("Prescribed Lessons");
-		lessonTbl.addCell(lesson);
-		
-		StringBuilder sb = new StringBuilder();
-		List<String> list = rc.getPrescribedLessonList();
-		for (String lsn : list) {
-			sb.append(lsn).append(", ");
-		}
-		String allLessons = sb.toString().substring(0, sb.length()-2);
-		Paragraph p = new Paragraph();
-		p.setFont(FontFactory.getFont(FontFactory.HELVETICA, 10, Font.NORMAL, new Color(0, 0, 0)));
-		p.add(allLessons);
-		lessonTbl.addCell(p);
-		lessonTbl.setWidthPercentage(100.0f);
-		lessonTbl.setSpacingBefore(20.0f);
-		document.add(lessonTbl);
-		document.add(Chunk.NEWLINE);
-	}
+        HeaderFooter footer = new HeaderFooter(new Phrase("Page "), new Phrase("."));
+        footer.setAlignment(HeaderFooter.ALIGN_RIGHT);
+        document.setFooter(footer);
 
-	private void addResourceUsage(StudentReportCardModelI rc,
-			Document document) throws DocumentException {
-		PdfPTable usageTbl = new PdfPTable(1);
-		usageTbl.getDefaultCell().setBorder(PdfPCell.NO_BORDER);
+        document.setMargins(document.leftMargin(), document.rightMargin(), document.topMargin() + 90, document
+                .bottomMargin());
+        document.open();
+        document.add(Chunk.NEWLINE);
 
-		Phrase usage = buildSectionLabel("Totals");
-		usageTbl.addCell(usage);
-		
-		Map<String, Integer> map = rc.getResourceUsage();
-		
-		for (String key : map.keySet()) {
-			String label = labelMap.get(key);
-			if (label == null) continue;
-			usage = buildSectionContent(label, String.valueOf(map.get(key)), true);
-			usageTbl.addCell(usage);
-		}
-		usageTbl.setWidthPercentage(100.0f);
-		usageTbl.setSpacingBefore(20.0f);
-		document.add(usageTbl);
-		document.add(Chunk.NEWLINE);
-	}
+        addProgramInfo(rc, document);
 
-	private void addQuizInfo(StudentReportCardModelI rc, Document document)
-			throws DocumentException {
-		PdfPTable quizTbl = new PdfPTable(1);
-		quizTbl.getDefaultCell().setBorder(PdfPCell.NO_BORDER);
-		Phrase quizLabel = buildSectionLabel("Quizzes");
-		Paragraph totalQuizzes = buildSectionContent("Attempted: ", rc.getQuizCount().toString(), true);
-		Paragraph passedQuizzes = buildSectionContent("Passed: ", rc.getQuizPassCount().toString(), true);
-		String average = (rc.getQuizAvgPassPercent() != null) ? rc.getQuizAvgPassPercent() + "%" : "n/a";
-		Paragraph avgScore = buildSectionContent("Avg score of passed quizzes: ", average, true);
-		
-		quizTbl.addCell(quizLabel);
-		quizTbl.addCell(totalQuizzes);
-		quizTbl.addCell(passedQuizzes);
-		quizTbl.addCell(avgScore);
-		quizTbl.setWidthPercentage(100.0f);
-		quizTbl.setSpacingBefore(20.0f);
-		document.add(quizTbl);
-		document.add(Chunk.NEWLINE);
-	}
+        addQuizInfo(rc, document);
 
-	private void addProgramInfo(StudentReportCardModelI rc, Document document)
-			throws DocumentException {
-		PdfPTable progTbl = new PdfPTable(1);
-		progTbl.getDefaultCell().setBorder(PdfPCell.NO_BORDER);
+        if (rc.getResourceUsage().size() > 0) {
+            addResourceUsage(rc, document);
+        }
 
-		String initialProgDesc = rc.getInitialProgramName();
+        if (rc.getPrescribedLessonList().size() > 0) {
+            addPrescribedLessons(rc, document);
+        }
 
-		/* don't include initial status for now
-		if (initialProgDesc != null) {
-			initialProgDesc += (rc.getInitialProgramStatus() != null) ? " " + rc.getInitialProgramStatus() : "";
-		}
-		*/
+        document.add(Chunk.NEWLINE);
+        document.add(Chunk.NEWLINE);
 
-		StringBuilder sb = new StringBuilder();
-		sb.append("Initial program");
-		Date assignedDate = rc.getInitialProgramDate();
-		if (assignedDate != null) {
-			sb.append(" assigned ").append(String.format("%1$tY-%1$tm-%1$td", assignedDate));
-		}
-		sb.append(": ");
-		Phrase initialProg = buildLabelContent(sb.toString(), initialProgDesc);			
+        document.close();
 
-		String lastProgDesc = rc.getLastProgramName();
-		if (lastProgDesc != null) {
-			lastProgDesc += (rc.getLastProgramStatus() != null) ? " " + rc.getLastProgramStatus() : "";
-		}
-		Phrase lastProg = buildLabelContent("Current program & section: ", lastProgDesc);
-		assignedDate = rc.getLastProgramDate();
-		
-		// don't include assigned date for current (last) program
-		//String lastDate = (assignedDate != null) ? String.format("%1$tY-%1$tm-%1$td", assignedDate) : " ";
+        return baos;
+    }
 
-		progTbl.addCell(initialProg);
-		progTbl.addCell(lastProg);
-		progTbl.setWidthPercentage(100.0f);
-		document.add(progTbl);
-		document.add(Chunk.NEWLINE);
-	}
+    private void addPrescribedLessons(StudentReportCardModelI rc, Document document) throws DocumentException {
+        PdfPTable lessonTbl = new PdfPTable(1);
+        lessonTbl.getDefaultCell().setBorder(PdfPCell.NO_BORDER);
 
-	private Paragraph buildLabelContent(String label, String value) {
-		return buildLabelContent(label, value, true);
-	}
-	
-	private Paragraph buildLabelContent(String label, String value, Boolean useDefault) {
-		if (value == null || value.trim().length() == 0) {
-			value = (useDefault) ? "n/a" : " ";
-		}
-		Phrase phrase = new Phrase(new Chunk(label, FontFactory.getFont(FontFactory.HELVETICA, 11, Font.BOLD, new Color(0, 0, 0))));
-		Phrase content = new Phrase(new Chunk(value, FontFactory.getFont(FontFactory.HELVETICA, 10, Font.NORMAL, new Color(0, 0, 0))));
-		phrase.add(content);
-		Paragraph p = new Paragraph();
-		p.add(phrase);
-		p.setIndentationLeft(30.0f);
-		return p;
-	}
+        Phrase lesson = buildSectionLabel("Prescribed Lessons");
+        lessonTbl.addCell(lesson);
 
-	private Phrase buildSectionLabel(String label) {
-		Chunk chunk = new Chunk(label, FontFactory.getFont(FontFactory.HELVETICA, 11, Font.BOLD, new Color(0, 0, 0)));
-		chunk.setUnderline(0.5f, -3f);
-		Phrase phrase = new Phrase(chunk);
-		return phrase;
-	}
+        StringBuilder sb = new StringBuilder();
+        List<String> list = rc.getPrescribedLessonList();
+        for (String lsn : list) {
+            sb.append(lsn).append(", ");
+        }
+        String allLessons = sb.toString().substring(0, sb.length() - 2);
+        Paragraph p = new Paragraph();
+        p.setFont(FontFactory.getFont(FontFactory.HELVETICA, 10, Font.NORMAL, new Color(0, 0, 0)));
+        p.add(allLessons);
+        lessonTbl.addCell(p);
+        lessonTbl.setWidthPercentage(100.0f);
+        lessonTbl.setSpacingBefore(20.0f);
+        document.add(lessonTbl);
+        document.add(Chunk.NEWLINE);
+    }
 
-	private Paragraph buildSectionContent(String label, String value, Boolean useDefault) {
-		if (value == null || value.trim().length() == 0) {
-			value = (useDefault) ? "n/a" : " ";
-		}
-		Phrase phrase = new Phrase(new Chunk(label, FontFactory.getFont(FontFactory.HELVETICA, 9, Font.BOLD, new Color(0, 0, 0))));
-		Phrase content = new Phrase(new Chunk(value, FontFactory.getFont(FontFactory.HELVETICA, 9, Font.NORMAL, new Color(0, 0, 0))));
-		phrase.add(content);
-		Paragraph p = new Paragraph();
-		p.add(phrase);
-		p.setIndentationLeft(30.0f);
-		return p;
-	}
+    private void addResourceUsage(StudentReportCardModelI rc, Document document) throws DocumentException {
+        PdfPTable usageTbl = new PdfPTable(1);
+        usageTbl.getDefaultCell().setBorder(PdfPCell.NO_BORDER);
+
+        Phrase usage = buildSectionLabel("Totals");
+        usageTbl.addCell(usage);
+
+        Map<String, Integer> map = rc.getResourceUsage();
+
+        for (String key : map.keySet()) {
+            String label = labelMap.get(key);
+            if (label == null)
+                continue;
+            usage = buildSectionContent(label, String.valueOf(map.get(key)), true);
+            usageTbl.addCell(usage);
+        }
+        usageTbl.setWidthPercentage(100.0f);
+        usageTbl.setSpacingBefore(20.0f);
+        document.add(usageTbl);
+        document.add(Chunk.NEWLINE);
+    }
+
+    private void addQuizInfo(StudentReportCardModelI rc, Document document) throws DocumentException {
+        PdfPTable quizTbl = new PdfPTable(1);
+        quizTbl.getDefaultCell().setBorder(PdfPCell.NO_BORDER);
+        Phrase quizLabel = buildSectionLabel("Quizzes");
+        Paragraph totalQuizzes = buildSectionContent("Attempted: ", rc.getQuizCount().toString(), true);
+        Paragraph passedQuizzes = buildSectionContent("Passed: ", rc.getQuizPassCount().toString(), true);
+        String average = (rc.getQuizAvgPassPercent() != null) ? rc.getQuizAvgPassPercent() + "%" : "n/a";
+        Paragraph avgScore = buildSectionContent("Avg score of passed quizzes: ", average, true);
+
+        quizTbl.addCell(quizLabel);
+        quizTbl.addCell(totalQuizzes);
+        quizTbl.addCell(passedQuizzes);
+        quizTbl.addCell(avgScore);
+        quizTbl.setWidthPercentage(100.0f);
+        quizTbl.setSpacingBefore(20.0f);
+        document.add(quizTbl);
+        document.add(Chunk.NEWLINE);
+    }
+
+    private void addProgramInfo(StudentReportCardModelI rc, Document document) throws DocumentException {
+        PdfPTable progTbl = new PdfPTable(1);
+        progTbl.getDefaultCell().setBorder(PdfPCell.NO_BORDER);
+
+        String initialProgDesc = rc.getInitialProgramName();
+
+        /*
+         * don't include initial status for now if (initialProgDesc != null) {
+         * initialProgDesc += (rc.getInitialProgramStatus() != null) ? " " +
+         * rc.getInitialProgramStatus() : ""; }
+         */
+
+        StringBuilder sb = new StringBuilder();
+        sb.append("Initial program");
+        Date assignedDate = rc.getInitialProgramDate();
+        if (assignedDate != null) {
+            sb.append(" assigned ").append(String.format("%1$tY-%1$tm-%1$td", assignedDate));
+        }
+        sb.append(": ");
+        Phrase initialProg = buildLabelContent(sb.toString(), initialProgDesc);
+
+        String lastProgDesc = rc.getLastProgramName();
+        if (lastProgDesc != null) {
+            lastProgDesc += (rc.getLastProgramStatus() != null) ? " " + rc.getLastProgramStatus() : "";
+        }
+        Phrase lastProg = buildLabelContent("Current program & section: ", lastProgDesc);
+        assignedDate = rc.getLastProgramDate();
+
+        // don't include assigned date for current (last) program
+        // String lastDate = (assignedDate != null) ?
+        // String.format("%1$tY-%1$tm-%1$td", assignedDate) : " ";
+
+        progTbl.addCell(initialProg);
+        progTbl.addCell(lastProg);
+        progTbl.setWidthPercentage(100.0f);
+        document.add(progTbl);
+        document.add(Chunk.NEWLINE);
+    }
+
+    private Paragraph buildLabelContent(String label, String value) {
+        return buildLabelContent(label, value, true);
+    }
+
+    private Paragraph buildLabelContent(String label, String value, Boolean useDefault) {
+        if (value == null || value.trim().length() == 0) {
+            value = (useDefault) ? "n/a" : " ";
+        }
+        Phrase phrase = new Phrase(new Chunk(label, FontFactory.getFont(FontFactory.HELVETICA, 11, Font.BOLD,
+                new Color(0, 0, 0))));
+        Phrase content = new Phrase(new Chunk(value, FontFactory.getFont(FontFactory.HELVETICA, 10, Font.NORMAL,
+                new Color(0, 0, 0))));
+        phrase.add(content);
+        Paragraph p = new Paragraph();
+        p.add(phrase);
+        p.setIndentationLeft(30.0f);
+        return p;
+    }
+
+    private Phrase buildSectionLabel(String label) {
+        Chunk chunk = new Chunk(label, FontFactory.getFont(FontFactory.HELVETICA, 11, Font.BOLD, new Color(0, 0, 0)));
+        chunk.setUnderline(0.5f, -3f);
+        Phrase phrase = new Phrase(chunk);
+        return phrase;
+    }
+
+    private Paragraph buildSectionContent(String label, String value, Boolean useDefault) {
+        if (value == null || value.trim().length() == 0) {
+            value = (useDefault) ? "n/a" : " ";
+        }
+        Phrase phrase = new Phrase(new Chunk(label, FontFactory.getFont(FontFactory.HELVETICA, 9, Font.BOLD, new Color(
+                0, 0, 0))));
+        Phrase content = new Phrase(new Chunk(value, FontFactory.getFont(FontFactory.HELVETICA, 9, Font.NORMAL,
+                new Color(0, 0, 0))));
+        phrase.add(content);
+        Paragraph p = new Paragraph();
+        p.add(phrase);
+        p.setIndentationLeft(30.0f);
+        return p;
+    }
 
     public class HeaderTable implements PdfPageEvent {
-    	
-    	PdfPTable header;
-    	
-    	HeaderTable(PdfWriter writer, PdfPTable header) {
-    		//event = writer.getPageEvent();
-    		this.header = header;
-    		writer.setPageEvent(this);
-    	}
 
-		public void onChapter(PdfWriter arg0, Document arg1, float arg2,
-				Paragraph arg3) {
-		}
+        PdfPTable header;
 
-		public void onChapterEnd(PdfWriter arg0, Document arg1, float arg2) {
-		}
+        HeaderTable(PdfWriter writer, PdfPTable header) {
+            // event = writer.getPageEvent();
+            this.header = header;
+            writer.setPageEvent(this);
+        }
 
-		public void onCloseDocument(PdfWriter arg0, Document arg1) {
- 		}
+        public void onChapter(PdfWriter arg0, Document arg1, float arg2, Paragraph arg3) {
+        }
 
-		public void onEndPage(PdfWriter writer, Document document) {
-			PdfContentByte cb = writer.getDirectContent();
-			header.writeSelectedRows(0, -1, document.left(), document.top() + 100, cb);
-    	}
+        public void onChapterEnd(PdfWriter arg0, Document arg1, float arg2) {
+        }
 
-		public void onGenericTag(PdfWriter arg0, Document arg1, Rectangle arg2,
-				String arg3) {
-		}
+        public void onCloseDocument(PdfWriter arg0, Document arg1) {
+        }
 
-		public void onOpenDocument(PdfWriter arg0, Document arg1) {
-		}
+        public void onEndPage(PdfWriter writer, Document document) {
+            PdfContentByte cb = writer.getDirectContent();
+            header.writeSelectedRows(0, -1, document.left(), document.top() + 100, cb);
+        }
 
-		public void onParagraph(PdfWriter arg0, Document arg1, float arg2) {
-		}
+        public void onGenericTag(PdfWriter arg0, Document arg1, Rectangle arg2, String arg3) {
+        }
 
-		public void onParagraphEnd(PdfWriter arg0, Document arg1, float arg2) {
-		}
+        public void onOpenDocument(PdfWriter arg0, Document arg1) {
+        }
 
-		public void onSection(PdfWriter arg0, Document arg1, float arg2,
-				int arg3, Paragraph arg4) {
-		}
+        public void onParagraph(PdfWriter arg0, Document arg1, float arg2) {
+        }
 
-		public void onSectionEnd(PdfWriter arg0, Document arg1, float arg2) {
-		}
+        public void onParagraphEnd(PdfWriter arg0, Document arg1, float arg2) {
+        }
 
-		public void onStartPage(PdfWriter arg0, Document arg1) {
-		}
-    	
+        public void onSection(PdfWriter arg0, Document arg1, float arg2, int arg3, Paragraph arg4) {
+        }
+
+        public void onSectionEnd(PdfWriter arg0, Document arg1, float arg2) {
+        }
+
+        public void onStartPage(PdfWriter arg0, Document arg1) {
+        }
+
     }
 }

@@ -23,12 +23,23 @@ public class GeneratePDF extends HttpServlet {
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 	throws ServletException, IOException {
-		makePdf(request, response, "GET");
+        try {
+            makePdf(request, response, "GET");
+        } catch (Exception e) {
+            logger.info("Error generating report card", e);
+            request.getRequestDispatcher("/gwt-resources/report_card_fail.html").forward(request, response);
+        }	    
+		
 	}
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 	throws ServletException, IOException {
-		makePdf(request, response, "POST");
+        try {
+            makePdf(request, response, "POST");
+        } catch (Exception e) {
+            logger.info("Error generating report card", e);
+            request.getRequestDispatcher("/gwt-resources/report_card_fail.html").forward(request, response);
+        }       	    
 	}
 
 	/**
@@ -38,52 +49,46 @@ public class GeneratePDF extends HttpServlet {
 	 * @param response	the response object
 	 * @param methodGetPost	the method that was used in the form
 	 */
-	public void makePdf(HttpServletRequest request, HttpServletResponse response, String methodGetPost) {
+	public void makePdf(HttpServletRequest request, HttpServletResponse response, String methodGetPost) throws Exception {
 		
 		String type = "unknown";
 		String reportId = null;
 		Integer adminId = -1;
-		try {
+		reportId = request.getParameter("id");
+		adminId = Integer.parseInt(request.getParameter("aid"));
+		type = request.getParameter("type");
+		
+		ByteArrayOutputStream baos = null;
+		if (type.equals("studentSummary")) {
+			StudentSummaryReport ss = new StudentSummaryReport();
+			baos = ss.makePdf(reportId, adminId);
+		}
+		else if (type.equals("studentDetail")) {
+			StudentDetailReport sd = new StudentDetailReport();
+			baos = sd.makePdf(reportId, adminId);
+		}
+		else if (type.equals("reportCard")) {
+			StudentReportCard sr = new StudentReportCard();
+			baos = sr.makePdf(reportId, adminId);
+		}
 
-			reportId = request.getParameter("id");
-			adminId = Integer.parseInt(request.getParameter("aid"));
-			type = request.getParameter("type");
-			
-			ByteArrayOutputStream baos = null;
-			if (type.equals("studentSummary")) {
-				StudentSummaryReport ss = new StudentSummaryReport();
-				baos = ss.makePdf(reportId, adminId);
-			}
-			else if (type.equals("studentDetail")) {
-				StudentDetailReport sd = new StudentDetailReport();
-				baos = sd.makePdf(reportId, adminId);
-			}
-			else if (type.equals("reportCard")) {
-				StudentReportCard sr = new StudentReportCard();
-				baos = sr.makePdf(reportId, adminId);
-			}
-
-			// write PDF ByteArrayOutputStream to a ServletOutputStream
-			if (baos != null) {
-				// setting some response headers
-				response.setHeader("Expires", "0");
-				response.setHeader("Cache-Control", "must-revalidate, post-check=0, pre-check=0");
-				response.setHeader("Pragma", "public");
-				// setting the content type
-				response.setContentType("application/pdf");
-				// the content length is needed for MSIE @#%&!
-				response.setContentLength(baos.size());
-				// write ByteArrayOutputStream to the ServletOutputStream
-				ServletOutputStream out = response.getOutputStream();
-				baos.writeTo(out);
-				out.flush();
-			}
-			else {
-				// send to error page?
-			}
-
-		} catch (Exception e) {
-			logger.error(String.format("*** Error generating %s PDF for adminUID: %d", type, adminId), e);
+		// write PDF ByteArrayOutputStream to a ServletOutputStream
+		if (baos != null) {
+			// setting some response headers
+			response.setHeader("Expires", "0");
+			response.setHeader("Cache-Control", "must-revalidate, post-check=0, pre-check=0");
+			response.setHeader("Pragma", "public");
+			// setting the content type
+			response.setContentType("application/pdf");
+			// the content length is needed for MSIE @#%&!
+			response.setContentLength(baos.size());
+			// write ByteArrayOutputStream to the ServletOutputStream
+			ServletOutputStream out = response.getOutputStream();
+			baos.writeTo(out);
+			out.flush();
+		}
+		else {
+			// send to error page?
 		}
 	}
 
