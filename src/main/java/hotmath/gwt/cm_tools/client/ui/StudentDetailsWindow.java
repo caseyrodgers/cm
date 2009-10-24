@@ -102,8 +102,9 @@ public class StudentDetailsWindow extends CmWindow {
         toolBar.setStyleName("student-details-window-toolbar");
         toolBar.add(showWorkBtn());
         toolBar.add(showTopicsBtn());
-        toolBar.add(new FillToolItem());
         toolBar.add(displayReportCardToolItem(studentModel));
+        toolBar.add(new FillToolItem());
+        
         toolBar.add(displayPrintableReportToolItem(studentModel));
 
         LayoutContainer lc = new LayoutContainer();

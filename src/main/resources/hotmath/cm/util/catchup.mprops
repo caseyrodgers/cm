@@ -141,6 +141,55 @@ and td.prog_id = ? and sd.for_school = ?
 
         
         
+.key=ACCOUNT_INFO_SQL
+
+select s.id,
+       Ifnull(s.school_type,'NONE')                  as school_name,
+       s.responsible_name,
+       sc.date_expire                                as catchup_expire_date,
+       sc.service_name,
+       st.date_expire                                as tutoring_expire_date,
+       h.user_name,
+       t.student_count,
+       1000                                          as max_students,
+       l.login_time,
+       Date_format(l.login_time,'%Y-%m-%d %h:%i %p') as login_date_time
+from   SUBSCRIBERS s
+       inner join HA_ADMIN h
+         on h.subscriber_id = s.id
+       left join SUBSCRIBERS_SERVICES st
+         on st.subscriber_id = h.subscriber_id
+            and st.service_name = 'tutoring'
+       left join SUBSCRIBERS_SERVICES sc
+         on sc.subscriber_id = h.subscriber_id
+            and sc.service_name = 'catchup'
+       left join (select   admin_id,
+                           is_active,
+                           Count(* ) as student_count
+                  from     HA_USER
+                  where    is_active = 1
+                           and is_auto_create_template = 0
+                  group by admin_id) t
+         on t.admin_id = h.aid
+       left join (select   user_id,
+                           Max(login_time) as login_time
+                  from     HA_USER_LOGIN u
+                  where    u.login_time < (select   Max(login_time) as login_time
+                                           from     HA_USER_LOGIN
+                                           where    user_type = 'ADMIN'
+                                                    and user_id = ?
+                                           group by user_id)
+                           and u.user_id = ?
+                  group by u.user_id) l
+         on l.user_id = h.aid
+where  h.aid = ?
+
+
+
+
+        
+                
+        
 ## 
 ## Class: CreateAutoRegistrationAccountCommand
 ##

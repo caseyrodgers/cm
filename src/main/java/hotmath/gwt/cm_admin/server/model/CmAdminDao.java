@@ -225,25 +225,6 @@ public class CmAdminDao {
     	}
     }
 
-    //TODO: obtain max_students from DB (SUBSCRIBERS_SERVICES ?)
-    private static final String ACCOUNT_INFO_SQL =
-    	"select s.id, ifnull(s.school_type, 'NONE') as school_name, s.responsible_name, sc.date_expire as catchup_expire_date, " +
-    	"  sc.service_name, st.date_expire as tutoring_expire_date, h.user_name, t.student_count, 1000 as max_students, " +
-    	" l.login_time, date_format(l.login_time, '%Y-%m-%d %h:%i %p') as login_date_time " +
-        "from SUBSCRIBERS s " +
-        " inner join HA_ADMIN h on h.subscriber_id = s.id " +
-        " left join SUBSCRIBERS_SERVICES st on st.subscriber_id = h.subscriber_id and st.service_name = 'tutoring' " +
-        " left join SUBSCRIBERS_SERVICES sc on sc.subscriber_id = h.subscriber_id and sc.service_name = 'catchup' " +
-        " left join (select admin_id, is_active, count(*) as student_count from HA_USER where is_active = 1 and is_auto_create_template = 0 group by admin_id) t " +
-        "   on t.admin_id = h.aid " + 
-        " left join (" +
-        "   select user_id, max(login_time) as login_time from HA_USER_LOGIN u " +
-        "   where u.login_time < (select max(login_time) as login_time from HA_USER_LOGIN " +
-        "                         where user_type = 'ADMIN' and user_id = u.user_id group by user_id) " +
-        "   and u.user_id = ? group by u.user_id) l " +
-        "   on l.user_id = h.aid " +
-        "where h.aid = ?";
-
     public AccountInfoModel getAccountInfo(Integer adminUid) throws Exception {
     	AccountInfoModel ai = new AccountInfoModel();
 
@@ -253,12 +234,10 @@ public class CmAdminDao {
     	
     	try {
     		conn = HMConnectionPool.getConnection();
-    		ps = conn.prepareStatement(ACCOUNT_INFO_SQL);
+    		ps = conn.prepareStatement(CmMultiLinePropertyReader.getInstance().getProperty("ACCOUNT_INFO_SQL"));
     		ps.setInt(1, adminUid);
     		ps.setInt(2, adminUid);
-
-		System.out.println("!!TESTING: executing query: " + ps);
-
+    		ps.setInt(3, adminUid);
     		rs = ps.executeQuery();
     		if (rs.next()) {
     		    ai.setSubscriberId(rs.getString("id"));
@@ -268,7 +247,7 @@ public class CmAdminDao {
       	        ai.setMaxStudents(rs.getInt("max_students"));
       	        ai.setTotalStudents(rs.getInt("student_count"));
       	        java.sql.Date dt = rs.getDate("catchup_expire_date");
-      	        String cmDate = (dt != null) ? dt.toString() : "2009-07-31";
+      	        String cmDate = (dt != null) ? dt.toString() : "2009-07-31";  /** @TODO: remove hard-coded value */
       	        ai.setExpirationDate(cmDate);
       	        dt = rs.getDate("tutoring_expire_date");
       	        if (dt != null && dt.after(new java.sql.Date(System.currentTimeMillis()))) {
@@ -291,9 +270,6 @@ public class CmAdminDao {
     	}
     	finally {
     		SqlUtilities.releaseResources(rs, ps, conn);
-
-		System.out.println("!!TESTING: getAdminInfo complete");
-
     	}
     	return ai;
     }
