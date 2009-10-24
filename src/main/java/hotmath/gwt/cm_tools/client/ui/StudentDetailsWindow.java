@@ -272,7 +272,7 @@ public class StudentDetailsWindow extends CmWindow {
         // ti.setIconStyle("printer-icon");
         ti.setText("Report Card");
         ti.setToolTip("Display a printable report card");
-        ti.setStyleName("student-details-panel-pr-btn");
+        ti.setStyleName("student-details-panel-sw-btn");
 
         ti.addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
