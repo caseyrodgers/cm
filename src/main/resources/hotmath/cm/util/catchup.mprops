@@ -1,3 +1,13 @@
+#############
+## General properties
+#############
+
+### uid used as demo user template
+.key=DEMO_USER_ID
+
+727
+
+
 # 
 #  Contains all static text entries used by Catchup Math
 #

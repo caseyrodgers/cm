@@ -1,6 +1,7 @@
 package hotmath.testset.ha;
 
 import hotmath.HotMathException;
+import hotmath.cm.util.CmMultiLinePropertyReader;
 import hotmath.gwt.cm_admin.server.model.CmStudentDao;
 import hotmath.gwt.cm_tools.client.data.HaBasicUser;
 import hotmath.gwt.cm_tools.client.model.StudentModel;
@@ -252,8 +253,6 @@ public class HaUserFactory {
      * 
      * @throws Exception
      */
-    final public static int DEMO_UID = 7729;
-
     static public HaBasicUser createDemoUser() throws Exception {
 
         Connection conn = null;
@@ -264,7 +263,12 @@ public class HaUserFactory {
 
             conn = HMConnectionPool.getConnection();
             pstat = conn.prepareStatement(sql);
-            pstat.setInt(1, DEMO_UID);
+
+            int demoId = Integer.parseInt(CmMultiLinePropertyReader.getInstance().getProperty("DEMO_USER_ID").trim());
+            
+            __logger.debug("Creating demo user with DEMO_USER_ID = " + demoId);
+            
+            pstat.setInt(1, demoId);
             rs = pstat.executeQuery();
             if (!rs.first())
                 throw new HotMathException("Error reading demo template user");
