@@ -268,7 +268,8 @@ public class StudentDetailsWindow extends CmWindow {
 
     private Button displayReportCardToolItem(final StudentModel sm) {
         Button ti = new Button();
-        ti.setIconStyle("printer-icon");
+        // ti.setIconStyle("printer-icon");
+        ti.setText("Report Card");
         ti.setToolTip("Display a printable report card");
         ti.setStyleName("student-details-panel-pr-btn");
 
