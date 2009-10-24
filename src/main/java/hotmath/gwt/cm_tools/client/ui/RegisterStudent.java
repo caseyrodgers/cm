@@ -232,7 +232,12 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
         	isTutoringNotAvail.setValue(! stuMdl.getTutoringAvail());
         }
         else {
-        	// disable tutoring by default
+        	/** 
+        	 * disable tutoring by default
+        	 * 
+        	 * @TODO: could be enabled by default if school has tutoring enabled
+        	 *        also, why double negative?
+        	 */
         	isTutoringNotAvail.setValue(true);
         }
         CheckBoxGroup tutoringGrp = new CheckBoxGroup();  
