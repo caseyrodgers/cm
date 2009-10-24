@@ -256,6 +256,9 @@ public class CmAdminDao {
     		ps = conn.prepareStatement(ACCOUNT_INFO_SQL);
     		ps.setInt(1, adminUid);
     		ps.setInt(2, adminUid);
+
+		System.out.println("!!TESTING: executing query: " + ps);
+
     		rs = ps.executeQuery();
     		if (rs.next()) {
     		    ai.setSubscriberId(rs.getString("id"));
@@ -288,6 +291,9 @@ public class CmAdminDao {
     	}
     	finally {
     		SqlUtilities.releaseResources(rs, ps, conn);
+
+		System.out.println("!!TESTING: getAdminInfo complete");
+
     	}
     	return ai;
     }
