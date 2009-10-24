@@ -25,21 +25,20 @@
 
   </pluginRepositories>
 
+<!--
   <scm>  
     <connection>scm:cvs:pserver:casey@hotmath.kattare.com:/home/cvsroot/CVSBASE:cm</connection>  
     <developerConnection>scm:cvs:pserver:casey@hotmath.kattare.com:/home/cvsroot/CVSBASE:cm</developerConnection>  
     <tag>cm</tag>
   </scm>  
-
-<distributionManagement>  
-  <!-- Publish the versioned releases here -->  
+  <distributionManagement>  
   <repository>  
     <id>repo</id>  
     <name>The CVS Repository</name>  
     <url>scp://hotmath@hotmath.kattare.com:/home/hotmath/temp</url>  
   </repository>  
 </distributionManagement> 
-
+-->
 
   <repositories>
     <repository>
