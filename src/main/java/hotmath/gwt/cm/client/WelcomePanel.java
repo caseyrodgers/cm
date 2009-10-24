@@ -107,8 +107,8 @@ public class WelcomePanel extends LayoutContainer {
      */
     class FirstTimeInfo extends Html {
         public FirstTimeInfo() {
-            String html = "<p>You start with one or more quizzes.</br>" +
-                          "Then, you will begin your review and practice!</p>";
+            String html = "<p>Please use pencil and paper to work out your quiz answers.<br/>" +
+                           "Based on your answers we will assign your review and practice!</p>";
             
             setHtml(html);
         }
