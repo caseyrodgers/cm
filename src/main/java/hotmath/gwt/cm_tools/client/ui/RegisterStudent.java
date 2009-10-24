@@ -232,8 +232,8 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
         	isTutoringNotAvail.setValue(! stuMdl.getTutoringAvail());
         }
         else {
-        	// enable tutoring by default
-        	isTutoringNotAvail.setValue(false);
+        	// disable tutoring by default
+        	isTutoringNotAvail.setValue(true);
         }
         CheckBoxGroup tutoringGrp = new CheckBoxGroup();  
         tutoringGrp.setFieldLabel("Disallow Tutoring");
