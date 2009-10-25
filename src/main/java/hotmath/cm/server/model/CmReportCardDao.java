@@ -88,9 +88,15 @@ public class CmReportCardDao {
 		 return rval;
 	 }
 
-	private void setFirstLastProgramStatus(StudentReportCardModelI rval,
+	 private void setFirstLastProgramStatus(StudentReportCardModelI rval,
 			List<HaTest> testList) {
-		int section = testList.get(0).getSegment();
+		 // no HA_TEST data found... (should this be possible, data problem?)
+		 if (testList == null || testList.size() < 1) {
+			 rval.setInitialProgramStatus("Section 1");
+			 rval.setLastProgramStatus("Section 1");
+			 return;
+		 }
+		 int section = testList.get(0).getSegment();
 		 int totalSections = testList.get(0).getTotalSegments();
 		 StringBuilder sb = new StringBuilder();
 		 if (section < totalSections) {
