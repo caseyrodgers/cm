@@ -1,13 +1,20 @@
 <html>
     <head>
         <title>Catchup Math Report Card Problem</title>
-        <link rel="stylesheet" type="text/css" href="/resources/css/core.css">        
+        <style>
+            body {text-align: center;font-size: 12px;font-family:Arial,Helvetica,sans-serif;}
+			h2 {color: red;font-size: 1.8em;}
+			#error-box {text-align: center; width: 550px;margin: auto;margin-top: 25px;border: 1px solid blue;padding: 10px;}
+        </style>        
     </head>
     <body>
-        <h2>Report Card not available for this user at present.</h2>
-        <p>
-           We are improving the report card feature at present, thank you for
-          your patience.
-        </p>
+        <div id='error-box'>
+          <h2>Report Card not available for this user at present.</h2>
+            <p>
+               We are improving the report card feature at present, thank you for
+              your patience.
+            </p>
+            <p>Click <a href='#' onclick='window.close();return false;'>here</a> to close this window.</p>
+        </div>
     <body>
 </html>
