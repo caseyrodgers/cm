@@ -25,6 +25,13 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
+/**
+ * <code>CmAdminDao</dao> provides data access methods for CM Admin
+ * 
+ * @author bob
+ *
+ */
+
 public class CmAdminDao {
 	
 	private static final Logger logger = Logger.getLogger(CmAdminDao.class);
@@ -64,18 +71,6 @@ public class CmAdminDao {
     	return l;
     }
     
-    private static final String GET_GROUPS_SQL =
-    	"select id, name, description, is_active " +
-        "from  CM_GROUP g INNER JOIN HA_ADMIN a ON g.admin_id = a.aid " +
-        "where a.aid = ? " +
-        " and g.is_active = ? " +
-        "UNION " +
-        "select g.id, g.name, g.description, g.is_active " +
-        "from CM_GROUP g " +
-        "where  g.admin_id = 0 " +
-        " and g.is_active = ? " +
-        "order by name asc";
-
     public List <GroupModel> getActiveGroups(Integer adminUid) throws Exception {
     	List <GroupModel> l = null;
     	
@@ -85,7 +80,7 @@ public class CmAdminDao {
     	
     	try {
     		conn = HMConnectionPool.getConnection();
-    		ps = conn.prepareStatement(GET_GROUPS_SQL);
+    		ps = conn.prepareStatement(CmMultiLinePropertyReader.getInstance().getProperty("SELECT_GROUPS_SQL"));
     		ps.setInt(1, adminUid);
     		ps.setInt(2, 1);
     		ps.setInt(3, 1);

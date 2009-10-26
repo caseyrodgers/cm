@@ -126,10 +126,6 @@ where td.prog_id = ? and td.subj_id = ?
 and bt.textcode = td.textcode and bt.parent <> 0
 order by bt.title_number   
 
-
-
-
-
     
 .key=SELECT_SUBJECTS_SQL
 
@@ -139,8 +135,23 @@ where sd.id = td.subj_id and td.is_active = 1
 and td.prog_id = ? and sd.for_school = ?
 
 
-        
-        
+.key=SELECT_GROUPS_SQL
+# select Admin specific and default (admin_id=0) Groups
+
+SELECT id, name, description, is_active
+FROM  CM_GROUP g
+INNER JOIN HA_ADMIN a
+   ON g.admin_id = a.aid
+WHERE a.aid = ?
+  AND g.is_active = ?
+UNION
+SELECT g.id, g.name, g.description, g.is_active
+FROM CM_GROUP g
+WHERE g.admin_id = 0
+  AND g.is_active = ?
+ORDER by name asc
+
+
 .key=ACCOUNT_INFO_SQL
 
 select s.id,
@@ -183,11 +194,6 @@ from   SUBSCRIBERS s
                   group by u.user_id) l
          on l.user_id = h.aid
 where  h.aid = ?
-
-
-
-
-        
                 
         
 ## 
@@ -197,7 +203,6 @@ where  h.aid = ?
 ##
 
 .key=AUTO_CREATE_TEMPLATE_CHECK
-
 
 select  g.name as group_name 
 from  HA_USER u JOIN CM_GROUP g on u.group_id = g.id 
@@ -218,7 +223,6 @@ select r.run_id, u.uid
 JOIN HA_USER u on u.uid = t.user_id 
 JOIN  HA_ADMIN a ON a.aid = u.admin_id
 JOIN SUBSCRIBERS s ON s.id = a.subscriber_id
- 
  
  
 .key=TEST_RUN_LOOK_FOR_TESTS
@@ -279,9 +283,6 @@ where t.user_prog_id in (XXX)
 
 
 
-       
-       
-       
 ##
 ## Class: HaTestDefDescription
 ## 
@@ -407,9 +408,11 @@ left outer join (select count(*) as passed_quiz_count, test_id, is_passing from 
 left outer join (select sum(answered_correct) as correct, sum(answered_incorrect+not_answered) as incorrect, test_id from HA_TEST_RUN where is_passing>0 group by test_id) tr on tr.test_id = t.test_id
 where u.uid = ? 
 
+
 .key=LOGIN_COUNT
 
 select count(*) from HA_USER_LOGIN ul where ul.user_id = ? and login_time >= ?
+
 
 .key=RESOURCE_USAGE_COUNT
 
@@ -420,6 +423,7 @@ where p.id in (XXX)
     and tr.test_id = t.test_id
     and iu.run_id = tr.run_id
 group by item_type
+
 
 .key=LESSONS_ASSIGNED
 
@@ -442,6 +446,7 @@ from CM_USER_PROGRAM c
 JOIN HA_USER u on c.user_id = u.uid
 JOIN HA_TEST_DEF t on c.test_def_id = t.test_def_id
 where c.user_id = ?
+
 
 .key=CURRENT_USER_PROGRAM_SQL
 
@@ -482,6 +487,7 @@ from (
     and t.user_prog_id = p.id
     and tr.test_id = t.test_id
 ) c
+
 
 .key=PROGRAM_PASSED_QUIZ_COUNT
 
@@ -524,9 +530,6 @@ where  p.user_id = ?
 
 
 
-
-
-
 ###########################
 ###########################
 #### UserProgramInfo
@@ -547,5 +550,3 @@ select *
 from CM_USER_PROGRAM p
 where p.id = ?
 order by create_date
-
-
