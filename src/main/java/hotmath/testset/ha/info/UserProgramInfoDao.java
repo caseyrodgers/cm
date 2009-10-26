@@ -10,8 +10,14 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
+/** Provide data access to the ProgramInfo set of tables
+ * 
+ * @author casey
+ *
+ */
 public class UserProgramInfoDao {
 
     
@@ -90,4 +96,36 @@ public class UserProgramInfoDao {
             SqlUtilities.releaseResources(null, stmt,null);
         }
     }
+    
+    
+    /** Return the date of the first activity for this user.
+     * 
+     *  Where activity means any 'activity', not just viewing 
+     *  an INMH item.
+     *  
+     *  
+     * @param uid
+     * @return date of first activity, null if no activity has occurred.
+     * @throws Exception
+     */
+    public Date getUserFirstActivityDate(final Connection conn, Integer uid) throws Exception {
+        
+        PreparedStatement ps=null;
+        try {
+            String sql = "select * from v_HA_USER_ACTIVITY where user_id = ? order by activity_time desc limit 1";
+            ps = conn.prepareStatement(sql);
+            
+            ps.setInt(1, uid);
+            ResultSet rs = ps.executeQuery();
+            if(!rs.first()) {
+                return null;
+            }
+            
+            Date firstActivity = rs.getDate("activity_time");
+            return firstActivity;
+        }
+        finally {
+            SqlUtilities.releaseResources(null,ps, null);
+        }
+    }    
 }
