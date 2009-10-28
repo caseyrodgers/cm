@@ -690,8 +690,8 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
         s.execute(new GetReportDefAction(studentUids), new AsyncCallback<StringHolder>() {
 
             public void onSuccess(StringHolder reportId) {
-            	String url = "/cm_admin/genPDF?id=" + reportId.getResponse() + "&aid=" + _cmAdminMdl.getId() + "&type=studentSummary";
-                Window.open(url, "_blank", "location=0,menubar=0,resizable=1");
+            	String url = "/gwt-resources/cm-report-gen.html?id=" + reportId.getResponse() + "&aid=" + _cmAdminMdl.getId() + "&type=studentSummary";
+                Window.open(url, "_blank", "width=600,height=300,location=0,menubar=0,resizable=1");
             }
 
             public void onFailure(Throwable caught) {
