@@ -22,7 +22,6 @@
     <script type="text/javascript" src="/resources/js/yui/build/connection/connection.js"></script>
     <script type="text/javascript">
         var queryString;
-        generateReport();
     
         function generateReport() {
             var url = top.location.href;
@@ -67,7 +66,8 @@
             var url2 = '/cm_admin/genPDF?checkStatus=true&' + queryString;
             //alert('url2: ' + url2);
             YAHOO.util.Connect.asyncRequest('POST',url2, callback, null);
-
         }
+
+        generateReport();
     </script>
 </html>
