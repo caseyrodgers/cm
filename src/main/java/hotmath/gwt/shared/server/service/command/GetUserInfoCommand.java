@@ -10,9 +10,8 @@ import hotmath.gwt.shared.client.rpc.Response;
 import hotmath.gwt.shared.client.rpc.action.GetUserInfoAction;
 import hotmath.gwt.shared.client.util.CmRpcException;
 import hotmath.gwt.shared.client.util.UserInfo;
+import hotmath.gwt.shared.client.util.UserInfo.AccountType;
 import hotmath.gwt.shared.server.service.ActionHandler;
-import hotmath.subscriber.HotMathSubscriber;
-import hotmath.subscriber.HotMathSubscriberManager;
 import hotmath.testset.ha.ChapterInfo;
 import hotmath.testset.ha.HaTestDef;
 import hotmath.testset.ha.HaTestDefDao;
@@ -32,8 +31,9 @@ public class GetUserInfoCommand implements ActionHandler<GetUserInfoAction, User
             CmUserProgramDao upDao = new CmUserProgramDao();
             StudentUserProgramModel si = upDao.loadProgramInfoCurrent(conn, action.getUserId());
             StudentActiveInfo activeInfo = dao.loadActiveInfo(conn, action.getUserId());
-            String subscriberId = new CmAdminDao().getAccountInfo(sm.getAdminUid()).getSubscriberId();
-            HotMathSubscriber sub = HotMathSubscriberManager.findSubscriber(subscriberId); 
+            
+            
+            AccountType accountType = new CmAdminDao().getAccountType(conn, sm.getAdminUid());
             
             HaTestDefDao hdao = new HaTestDefDao();
             HaTestDef testDef = hdao.getTestDef(conn, si.getTestDefId());
@@ -70,7 +70,7 @@ public class GetUserInfoCommand implements ActionHandler<GetUserInfoAction, User
             if(userInfo.getRunId() > 0)
                 userInfo.setSessionCount(new HaTestRunDao().getTestRunLessons(conn,userInfo.getRunId()).size());
             
-            userInfo.setUserAccountType(sub.getSubscriberType());
+            userInfo.setUserAccountType(accountType);
             
             userInfo.setPassPercentRequired(si.getConfig().getPassPercent());
             userInfo.setTestSegmentCount(testDef.getTotalSegmentCount());

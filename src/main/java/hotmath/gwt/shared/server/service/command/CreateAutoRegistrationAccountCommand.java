@@ -12,9 +12,8 @@ import hotmath.gwt.shared.client.rpc.action.CreateAutoRegistrationAccountAction;
 import hotmath.gwt.shared.client.util.CmException;
 import hotmath.gwt.shared.client.util.RpcData;
 import hotmath.gwt.shared.client.util.UserInfo;
+import hotmath.gwt.shared.client.util.UserInfo.AccountType;
 import hotmath.gwt.shared.server.service.ActionHandler;
-import hotmath.subscriber.HotMathSubscriber;
-import hotmath.subscriber.HotMathSubscriberManager;
 import hotmath.testset.ha.ChapterInfo;
 import hotmath.testset.ha.HaLoginInfo;
 import hotmath.testset.ha.HaTestDef;
@@ -78,13 +77,13 @@ public class CreateAutoRegistrationAccountCommand implements ActionHandler<Creat
         StudentUserProgramModel si = upDao.loadProgramInfoCurrent(conn, studentModel.getUid());
         StudentActiveInfo activeInfo = dao.loadActiveInfo(conn, studentModel.getUid());
         
-        String subscriberId = new CmAdminDao().getAccountInfo(studentModel.getAdminUid()).getSubscriberId();
-        HotMathSubscriber sub = HotMathSubscriberManager.findSubscriber(subscriberId); 
         
         HaTestDefDao hdao = new HaTestDefDao();
         HaTestDef testDef = hdao.getTestDef(conn, si.getTestDefId());
         
         ChapterInfo chapterInfo = hdao.getChapterInfo(conn, si);
+        
+        AccountType accountType = new CmAdminDao().getAccountType(conn,studentModel.getAdminUid());
 
         /** Create title sections.  The main title
          *  will contain the chapter # (if any).  The
@@ -110,7 +109,7 @@ public class CreateAutoRegistrationAccountCommand implements ActionHandler<Creat
         userInfo.setShowWorkRequired(studentModel.getShowWorkRequired());
         userInfo.setTutoringAvail(studentModel.getTutoringAvail());
         
-        userInfo.setUserAccountType(sub.getSubscriberType());
+        userInfo.setUserAccountType(accountType);
         
         userInfo.setPassPercentRequired(si.getConfig().getPassPercent());
         userInfo.setTestSegmentCount(testDef.getTotalSegmentCount());

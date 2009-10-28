@@ -144,8 +144,8 @@ public class UserInfo implements IsSerializable, Response {
      * 
      * @param userType
      */
-    public void setUserAccountType(String userType) {
-        if(userType.equals("ST"))
+    public void setUserAccountType(AccountType accountType) {
+        if(accountType.getTag().equals("ST"))
             this.userAccountType = UserType.SCHOOL_USER;
         else 
             this.userAccountType = UserType.SINGLE_USER;
@@ -389,4 +389,19 @@ public class UserInfo implements IsSerializable, Response {
         });
     }    
 
+    
+    
+    
+    public enum AccountType{
+        SCHOOL_TEACHER("ST"),PARENT_STUDENT("PS"),OTHER("O");
+    
+        String tag;
+        private AccountType(String tag) {
+            this.tag = tag;
+        }
+        
+        public String getTag() {
+            return this.tag;
+        }
+    };
 }

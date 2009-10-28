@@ -194,6 +194,24 @@ from   SUBSCRIBERS s
                   group by u.user_id) l
          on l.user_id = h.aid
 where  h.aid = ?
+           
+           
+           
+           
+           
+           
+.key=ACCOUNT_TYPE_LOOKUP
+
+select s.type
+from   SUBSCRIBERS s
+  join  HA_ADMIN a
+    on a.subscriber_id = s.id
+where a.aid = ?
+
+
+
+
+
                 
         
 ## 

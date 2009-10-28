@@ -12,6 +12,7 @@ import hotmath.gwt.cm_tools.client.model.StudentModel;
 import hotmath.gwt.cm_tools.client.model.StudyProgramModel;
 import hotmath.gwt.cm_tools.client.model.SubjectModel;
 import hotmath.gwt.shared.client.util.CmException;
+import hotmath.gwt.shared.client.util.UserInfo.AccountType;
 import hotmath.testset.ha.HaAdmin;
 import hotmath.util.HMConnectionPool;
 import hotmath.util.sql.SqlUtilities;
@@ -633,4 +634,35 @@ public class CmAdminDao {
         }
     }
 
+    
+    
+    
+    /** Return the account type for this admin 
+     * 
+     * @throws Exception
+     */
+    public AccountType getAccountType(final Connection conn, Integer adminId) throws Exception {
+        PreparedStatement ps=null;
+        try {
+           String sql = CmMultiLinePropertyReader.getInstance().getProperty("ACCOUNT_TYPE_LOOKUP"); 
+           ps = conn.prepareStatement(sql);
+           ps.setInt(1, adminId);
+           
+           ResultSet rs = ps.executeQuery();
+           if(!rs.first())
+               throw new CmException("Admin record does not have an associated SUBCRIBER record");
+           
+           String type=rs.getString("type");
+           if(type.equals(AccountType.SCHOOL_TEACHER.getTag()))
+               return AccountType.SCHOOL_TEACHER;
+           else if(type.equals(AccountType.PARENT_STUDENT.getTag()))
+               return AccountType.PARENT_STUDENT;
+           else 
+               return AccountType.OTHER;
+           
+        }
+        finally {
+            SqlUtilities.releaseResources(null,ps,null);
+        }
+    }
 }
