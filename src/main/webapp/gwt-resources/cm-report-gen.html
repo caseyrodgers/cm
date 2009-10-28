@@ -1,0 +1,73 @@
+<html>
+    <head>
+        <title>Catchup Math Report</title>
+        <style>
+            body {text-align: center;font-size: 12px;font-family:Arial,Helvetica,sans-serif;}
+			h2 {color: blue;font-size: 1.8em;}
+			#info-box {text-align: center; width: 550px;margin: auto;margin-top: 25px;border: 1px solid blue;padding: 10px;}
+        </style>        
+    </head>
+    <body>
+        <div id='info-box'>
+            <h2>Your report is being generated...</h2>
+            <div>
+                <img src="/gwt-resources/gxt-2.0.2/images/default/shared/loading-balls.gif" />
+            </div>
+        </div>
+    <body>
+    <script type="text/javascript" src="/resources/js/yui/build/history/history.js"></script>
+    <script type="text/javascript" src="/resources/js/yui/build/yahoo-dom-event/yahoo-dom-event.js"></script> 
+    <script type="text/javascript" src="/resources/js/yui/build/dragdrop/dragdrop-min.js"></script> 
+    <script type="text/javascript" src="/resources/js/yui/build/container/container-min.js"></script>
+    <script type="text/javascript" src="/resources/js/yui/build/connection/connection.js"></script>
+    <script type="text/javascript">
+        var queryString;
+        generateReport();
+    
+        function generateReport() {
+            var url = top.location.href;
+            //alert('url: ' + url);
+            
+            var idx = url.indexOf("?");
+            queryString = idx >= 0 ? url.substr(idx + 1) : url;
+
+            // Remove the hash if present
+            idx = queryString.lastIndexOf("#");
+            queryString = idx >= 0 ? queryString.substr(0, idx) : queryString;
+
+        	document.location.href = '/cm_admin/genPDF?' + queryString;
+
+            window.setTimeout('checkProgress()', 2000);
+        }
+
+        function checkProgress() {
+            //alert('checkProgress(): queryString: ' + queryString);
+            
+            var callback = {
+              success:function(r) {
+                  try {
+                          var reportStatus = eval( "(" + r.responseText + ")" );
+                          
+                          // example result: {status:'done'}
+                          var done = (reportStatus.status == 'done');
+                          //alert('done: ' + done);
+                          if (done != true) {
+                        	  window.setTimeout('checkProgress()', 500);
+                          }
+                          else self.close();
+                  }
+                  catch(e) {
+                	  alert('Error talking with CM Server', 'Could not obtain Report Generation status');
+                  }
+              },
+              failure:function(e) {
+                  alert('Error talking with CM server: ' + e.statusText);
+              }
+            };
+            var url2 = '/cm_admin/genPDF?checkStatus=true&' + queryString;
+            //alert('url2: ' + url2);
+            YAHOO.util.Connect.asyncRequest('POST',url2, callback, null);
+
+        }
+    </script>
+</html>
