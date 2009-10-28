@@ -57,6 +57,12 @@ public class GeneratePDF extends HttpServlet {
 		reportId = request.getParameter("id");
 		adminId = Integer.parseInt(request.getParameter("aid"));
 		type = request.getParameter("type");
+		Boolean checkStatus = Boolean.valueOf(request.getParameter("checkStatus"));
+		
+		if (checkStatus) {
+			checkStatus(reportId, request, response);
+			return;
+		}
 		
 		ByteArrayOutputStream baos = null;
 		if (type.equals("studentSummary")) {
@@ -71,7 +77,10 @@ public class GeneratePDF extends HttpServlet {
 			StudentReportCard sr = new StudentReportCard();
 			baos = sr.makePdf(reportId, adminId);
 		}
-
+	    else {
+			throw new IllegalArgumentException("Unrecognized report type: " + type);
+		}
+		
 		// write PDF ByteArrayOutputStream to a ServletOutputStream
 		if (baos != null) {
 			// setting some response headers
@@ -88,10 +97,21 @@ public class GeneratePDF extends HttpServlet {
 			out.flush();
 		}
 		else {
-			// send to error page?
+			throw new Exception("PDF generation failed");
 		}
+
 	}
 
 	public void destroy() {
+	}
+	
+	private void checkStatus(String reportId, HttpServletRequest req, HttpServletResponse resp) throws Exception {
+        StringBuilder sb = new StringBuilder();
+        
+        //TODO: check actual status for specified reportId
+        
+        sb.append("{status:'").append("done");
+        sb.append("' }");
+        resp.getWriter().write(sb.toString());
 	}
 }
