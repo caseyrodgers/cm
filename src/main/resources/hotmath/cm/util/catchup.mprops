@@ -550,3 +550,37 @@ select *
 from CM_USER_PROGRAM p
 where p.id = ?
 order by create_date
+
+
+
+
+
+##########################
+##########################
+#### GroupManagement
+##########################
+##########################
+
+.key=GROUP_NAMES_AND_COUNTS
+
+## return groups and thier  counts, including all default groups
+
+select   g.admin_id,
+         g.id,
+         g.name,
+         Count(u.uid) as student_count
+from     HA_ADMIN a
+         join CM_GROUP g
+           on (g.admin_id = a.aid
+                or g.admin_id = 0)
+         left join HA_USER u
+           on (u.group_id = g.id
+               and u.admin_id = a.aid
+               and u.is_active = 1)
+where    a.aid = ?
+and (g.admin_id <> 0 or (g.admin_id = 0 and uid is not null) or g.name = 'none')
+group by g.id
+order by name;
+
+
+

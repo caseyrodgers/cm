@@ -16,6 +16,7 @@ import hotmath.gwt.shared.server.service.command.CreateAutoRegistrationAccountCo
 import hotmath.gwt.shared.server.service.command.CreateAutoRegistrationAccountsCommand;
 import hotmath.gwt.shared.server.service.command.CreateAutoRegistrationPreviewCommand;
 import hotmath.gwt.shared.server.service.command.CreateTestRunCommand;
+import hotmath.gwt.shared.server.service.command.GetGroupAggregateInfoCommand;
 import hotmath.gwt.shared.server.service.command.GetLessonItemsForTestRunCommand;
 import hotmath.gwt.shared.server.service.command.GetPrescriptionCommand;
 import hotmath.gwt.shared.server.service.command.GetProgramDefinitionsCommand;
@@ -29,6 +30,7 @@ import hotmath.gwt.shared.server.service.command.GetStateStandardsCommand;
 import hotmath.gwt.shared.server.service.command.GetSummariesForActiveStudentsCommand;
 import hotmath.gwt.shared.server.service.command.GetUserInfoCommand;
 import hotmath.gwt.shared.server.service.command.GetViewedInmhItemsCommand;
+import hotmath.gwt.shared.server.service.command.GroupManagerCommand;
 import hotmath.gwt.shared.server.service.command.LogUserInCommand;
 import hotmath.gwt.shared.server.service.command.MarkPrescriptionLessonAsViewedCommand;
 import hotmath.gwt.shared.server.service.command.ProcessLoginRequestCommand;
@@ -134,6 +136,8 @@ public class ActionDispatcher {
         addCommand(MarkPrescriptionLessonAsViewedCommand.class);
         addCommand(CheckUserAccountStatusCommand.class);
         addCommand(LogUserInCommand.class);
+        addCommand(GetGroupAggregateInfoCommand.class);
+        addCommand(GroupManagerCommand.class);
         
     }
     

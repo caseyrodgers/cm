@@ -135,6 +135,70 @@ public class CmAdminDao {
     	return gm;
     }
 
+    
+    /** Delete named group from CM_GROUP
+     * 
+     *  First clear any assigned students to null group, then 
+     *  remove from table.
+     *  
+     *  NOTE: will not delete default groups
+     *  
+     * @param conn
+     * @param groupId
+     * @throws Exception
+     */
+    public void deleteGroup(final Connection conn, Integer adminId, Integer groupId) throws Exception {
+        Statement ps=null;
+        try {
+            ps = conn.createStatement();
+            
+            /** set to group 'none' the existing students assigned to this group
+             * 
+             */
+            String sql = "update HA_USER set group_id = 1 where group_id = " + groupId; 
+            ps.executeUpdate(sql);
+            
+            
+            
+            /** Do not remove default groups
+             * 
+             */
+            
+            if(adminId != 0) {
+                /** Remove the group name
+                 * 
+                 */
+                sql = "delete from CM_GROUP where id = " + groupId ;
+                int cnt=ps.executeUpdate(sql);
+                if(cnt != 1)
+                    logger.warn("No group found to delete: " + groupId);
+            }
+                
+        }
+        finally {
+            SqlUtilities.releaseResources(null,ps,null);
+        }
+    }
+    
+    
+    public void updateGroup(final Connection conn, Integer groupId, String name) throws Exception {
+        PreparedStatement ps=null;
+        try {
+            String sql = "update CM_GROUP set name = ? where id = ?";
+            ps = conn.prepareStatement(sql);
+            ps.setString(1, name);
+            ps.setInt(2,groupId);
+            
+            int cnt = ps.executeUpdate();
+            if(cnt != 1)
+                logger.warn("could not update group: " + groupId + " to " + name);
+        }
+        finally {
+            SqlUtilities.releaseResources(null,ps,null);
+        }
+    }    
+
+    
     //TODO: assumes a single Admin per school
     private static final String CHECK_DUPLICATE_GROUP_SQL =
     	"select 1 from CM_GROUP where name = ? and admin_id in (?, 0)";

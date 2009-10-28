@@ -15,10 +15,8 @@ import hotmath.gwt.cm_tools.client.model.StudentShowWorkModel;
 import hotmath.gwt.shared.client.util.CmException;
 import hotmath.gwt.shared.client.util.CmRpcException;
 import hotmath.testset.ha.CmProgram;
-import hotmath.testset.ha.HaTestConfig;
 import hotmath.testset.ha.HaTestDefDescription;
 import hotmath.testset.ha.HaTestRun;
-import hotmath.testset.ha.StudentUserProgramModel;
 import hotmath.util.HMConnectionPool;
 import hotmath.util.sql.SqlUtilities;
 
@@ -517,7 +515,7 @@ public class CmStudentDao {
             // ps.setString(3, sm.getEmail());
             
             // if group Id has not been set default to GROUP_NONE_ID
-            ps.setInt(3, (sm.getGroup() != null) ? Integer.parseInt(sm.getGroupId()):GROUP_NONE_ID);
+            ps.setInt(3, (sm.getGroupId() != null) ? Integer.parseInt(sm.getGroupId()):GROUP_NONE_ID);
             
             /** @TODO: why is section needed here?  Should be in ActiveInfo
             //int sectionNum = (sm.getSectionNum() != null) ? sm.getSectionNum().intValue() : 0;
@@ -1260,19 +1258,19 @@ public class CmStudentDao {
      * @throws Exception
      */
     public void assignProgramToStudent(final Connection conn, Integer uid, CmProgram program, String chapter) throws Exception {
-        
-        StudentModelI sm = getStudentModelBasic(conn, uid);
-        sm.setProgId(program.getProgramId());
-        sm.setSubjId(program.getSubject());
-        sm.setProgramChanged(true);
-        
-        sm.setChapter(chapter);
-        
-        setTestConfig(conn, sm);
-        
-        updateStudent(conn, sm, true, false, true, false);        
+        assignProgramToStudent(conn, uid, program.getProgramId(),program.getSubject(), chapter);
     }
     
+    
+    public void assignProgramToStudent(final Connection conn, Integer uid, String progId, String subjId, String chapter) throws Exception {
+        StudentModelI sm = getStudentModelBasic(conn, uid);
+        sm.setProgId(progId);
+        sm.setSubjId(subjId);
+        sm.setProgramChanged(true);
+        sm.setChapter(chapter);
+        setTestConfig(conn, sm);
+        updateStudent(conn, sm, true, false, true, false);        
+    }    
     
     /** Return total count of INMH items by this user
      * 

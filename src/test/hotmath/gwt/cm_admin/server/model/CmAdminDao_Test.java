@@ -3,7 +3,9 @@ package hotmath.gwt.cm_admin.server.model;
 import hotmath.cm.server.model.CmUserProgramDao;
 import hotmath.gwt.cm.server.CmDbTestCase;
 import hotmath.gwt.cm_tools.client.model.ChapterModel;
+import hotmath.gwt.cm_tools.client.model.GroupModel;
 import hotmath.gwt.cm_tools.client.model.StudentActiveInfo;
+import hotmath.gwt.cm_tools.client.model.StudentModel;
 import hotmath.gwt.cm_tools.client.model.StudentModelI;
 import hotmath.gwt.cm_tools.client.model.SubjectModel;
 import hotmath.testset.ha.CmProgram;
@@ -21,9 +23,6 @@ public class CmAdminDao_Test extends CmDbTestCase {
 
     public CmAdminDao_Test(String name) throws Exception {
         super(name);
-        
-        if(TEST_ID == 0)
-            TEST_ID = setupDemoAccount();
     }
 
     CmStudentDao _dao;
@@ -31,6 +30,28 @@ public class CmAdminDao_Test extends CmDbTestCase {
     protected void setUp() throws Exception {
         super.setUp();
         _dao = new CmStudentDao();
+        
+        if(_user == null)
+            TEST_ID = setupDemoAccount();
+
+    }
+
+
+    
+    
+    public void testUpdateGroup() throws Exception {
+        GroupModel gm = setupDemoGroup();
+        String newGroupName = gm.getName() + "_updated";
+        new CmAdminDao().updateGroup(conn,Integer.parseInt(gm.getId()),newGroupName);
+        
+        // how to test?
+    }
+
+    
+    public void testDeleteGroup() throws Exception {
+        GroupModel gm = setupDemoGroup();
+        new CmAdminDao().deleteGroup(conn,_user.getUid(),Integer.parseInt(gm.getId()));
+        assertFalse(new CmAdminDao().checkForDuplicateGroup(conn, _user.getAid(), gm));
     }
 
     
@@ -62,7 +83,6 @@ public class CmAdminDao_Test extends CmDbTestCase {
         activeInfo.setActiveTestId(100);
         _dao.setActiveInfo(conn, TEST_ID, activeInfo);
     }
-    
 
     public void testSetStudentProgramChapter() throws Exception {
 

@@ -20,6 +20,7 @@ public class HaTestConfig {
 	List<String> chapters = new ArrayList<String>();
 	int passPercent=80;
 	int segmentCount=4;
+	String json;
 
 
     public int getSegmentCount() {
@@ -45,6 +46,7 @@ public class HaTestConfig {
      * @throws HotMathException
      */
     public HaTestConfig(Integer passPercent, String json) throws HotMathException {
+        this.json = json;
         if(passPercent != null)
            this.passPercent = passPercent;
         
@@ -72,7 +74,17 @@ public class HaTestConfig {
 	}
 	
 	
-	public List<String> getChapters() {
+	public String getJson() {
+        return json;
+    }
+
+
+    public void setJson(String json) {
+        this.json = json;
+    }
+
+
+    public List<String> getChapters() {
 		return chapters;
 	}
 	public void setChapters(List<String> chapters) {

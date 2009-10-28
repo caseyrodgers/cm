@@ -1,10 +1,12 @@
 package hotmath.gwt.cm_tools.client.ui;
 
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
+import hotmath.gwt.cm_tools.client.model.CmAdminDataReader;
 import hotmath.gwt.cm_tools.client.model.CmAdminModel;
 import hotmath.gwt.cm_tools.client.model.GroupModel;
 import hotmath.gwt.cm_tools.client.service.PrescriptionServiceAsync;
 import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
+import hotmath.gwt.shared.client.data.CmAsyncRequest;
 
 import com.extjs.gxt.ui.client.Registry;
 import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
@@ -25,6 +27,8 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 /**
  * Create Group UI
  * 
+ * @TODO: remove dependency on ComboBox
+ * 
  * @author bob
  *
  */
@@ -39,11 +43,15 @@ public class GroupWindow extends LayoutContainer {
 	private CmAdminModel cmAdminMdl;
 	private int formHeight = 90;
 	private int formWidth  = 350;
+	private CmAsyncRequest requestCallback;
+	private GroupModel editGroup;
 	
-	public GroupWindow(CmAdminModel cm, ComboBox <GroupModel> gc, boolean isNew) {
+	public GroupWindow(CmAsyncRequest callback, CmAdminModel cm, ComboBox <GroupModel> gc, boolean isNew, GroupModel editGroup) {
+	    this.requestCallback = callback;
 		cmAdminMdl = cm;
 		grpCombo = gc;
 		gw = new CmWindow();
+		this.editGroup = editGroup;
 		gw.add(createForm(isNew));
  		gw.show();
         name.focus();
@@ -68,6 +76,12 @@ public class GroupWindow extends LayoutContainer {
 		name.setAllowBlank(false);
 		name.setId(GroupModel.NAME_KEY);
 		name.setEmptyText("-- enter name --");
+		
+		
+		
+		if(!isNew && editGroup != null)
+		    name.setValue(editGroup.getName());
+		
 		fp.add(name);
 
         /** Seems like a bug with setting focus, so the only way to get it 
@@ -104,8 +118,9 @@ public class GroupWindow extends LayoutContainer {
 	private Button cancelButton() {
 		Button cancelBtn = new Button("Cancel", new SelectionListener<ButtonEvent>() {  
 	    	public void componentSelected(ButtonEvent ce) {
-                gw.close();	    	    
-	    		grpCombo.reset();
+                gw.close();
+                if(grpCombo != null)
+	    		   grpCombo.reset();
 	        }  
 	    });
 		return cancelBtn;
@@ -135,7 +150,9 @@ public class GroupWindow extends LayoutContainer {
 	        	    addGroupRPC(cmAdminMdl.getId(), gm);
 	        	}
 	        	else {
-	        		// TODO: handle Group update
+	        	    if(requestCallback != null)
+	        	        requestCallback.requestComplete(GroupWindow.this.name.getValue());
+	        	    gw.close();
 	        	}
 	        }
 	    });
@@ -143,16 +160,25 @@ public class GroupWindow extends LayoutContainer {
 	}
 	
 	protected void addGroupRPC(int adminUid, final GroupModel gm) {
+	    
 		PrescriptionServiceAsync s = (PrescriptionServiceAsync) Registry.get("prescriptionService");
 		
 		s.addGroup(adminUid, gm, new AsyncCallback <GroupModel> () {
 			
 			public void onSuccess(GroupModel g) {
-				grpCombo.getStore().add(g);
-				grpCombo.getStore().sort(GroupModel.NAME_KEY, SortDir.ASC);
-				grpCombo.setValue(g);
+			    if(grpCombo != null) {
+				    grpCombo.getStore().add(g);
+				    grpCombo.getStore().sort(GroupModel.NAME_KEY, SortDir.ASC);
+				    grpCombo.setValue(g);
+			    }
 				CatchupMathTools.showAlert("Create Group", "Group " + g.getName() + " created");
 				gw.close();
+				
+				if(requestCallback != null)
+				    requestCallback.requestComplete(gm.getName());
+				
+				
+				CmAdminDataReader.getInstance().fireRefreshData();
         	}
 
 			public void onFailure(Throwable caught) {
@@ -160,10 +186,6 @@ public class GroupWindow extends LayoutContainer {
         		CatchupMathTools.showAlert(msg);
         	}
         });
-	}
-
-	protected void updateGroupRPC(int adminUid, final GroupModel gm) {
-		//TODO
 	}
 
 }

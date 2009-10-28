@@ -195,9 +195,6 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
             ti.enable();
         }
     }
-
-    protected static final String NO_FILTERING = "--- No Filtering ---";
-    
     private FieldSet createGroupFilter() {
     	
 		ToolBar tb = new ToolBar();
@@ -213,14 +210,9 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
 		groupCombo = gsw.groupCombo();
 		groupCombo.setAllowBlank(true);
 
-		GroupModel gm = new GroupModel();
-		gm.setName(NO_FILTERING);
-		gm.setId(NO_FILTERING);
-		groupStore.insert(gm, 0);
 
-		final Button unregGrp = unregisterGroupButton(_grid);
-		unregGrp.disable();
 
+		final Button manageGrp = unregisterGroupButton(_grid);
 		groupCombo.addSelectionChangedListener(new SelectionChangedListener<GroupModel>() {
 			public void selectionChanged(SelectionChangedEvent<GroupModel> se) {
 
@@ -229,60 +221,27 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
 	        	String groupName = gm.getName();
 
 	        	StudentModelGroupFilter smgf = new StudentModelGroupFilter();
-
-	        	if (NO_FILTERING.equals(groupName))
-	        		unregGrp.disable();
-	        	else
-	        		unregGrp.enable();
-
 	        	_grid.getStore().addFilter(smgf);
 	        	_grid.getStore().applyFilters(groupName);
 	        }
 	    });
 
 		tb.add(groupCombo);
-		tb.add(unregGrp);
+		tb.add(manageGrp);
 
 		return fs;
     }
 
     private Button unregisterGroupButton(final Grid<StudentModel> grid) {
-        final Button btn = new StudenPanelButton("Unregister Group");
-        btn.setToolTip("Unregister all students in group.");
+        final Button btn = new StudenPanelButton("Manage Groups");
+        btn.setToolTip("Manage the group definitions.");
         btn.setStyleAttribute("padding-left", "10px");
         
         btn.addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent ce) {
-            	final ListStore<StudentModel> store = grid.getStore();
-
-            	if (store.getModels().size() > 0) {
-            		StringBuffer sb = new StringBuffer(store.getModels().size());
-            		sb.append("Unregister ").append(store.getModels().size());
-        			sb.append((store.getModels().size() > 1)?" students ?":" student ?");
-                    MessageBox.confirm("Unregister Group", sb.toString(), new Listener<MessageBoxEvent>() {
-                        public void handleEvent(MessageBoxEvent be) {
-                            String btnText = be.getButtonClicked().getText();
-                            if (btnText.equalsIgnoreCase("yes")) {
-                                List <StudentModel> list = store.getModels();
-                                for (StudentModel sm : list) {
-                                	store.remove(sm);
-                                }
-                                unregisterStudentsRPC(list);
-                            }
-                        }
-                    });
-            	}
-            	else {
-            		MessageBox.info("No Students", "No students to unregister", new Listener<MessageBoxEvent>() {
-                        public void handleEvent(MessageBoxEvent be) {
-            		        btn.disable();
-                        }
-            		});
-            	}
-            }
-
-        });
+                new ManageGroupsWindow(_cmAdminMdl).setVisible(true);
+            }});
         return btn;
     }
 
@@ -770,7 +729,7 @@ class StudentModelGroupFilter implements StoreFilter <StudentModel> {
 	//@Override
 	public boolean select(Store<StudentModel> store, StudentModel parent,
 			StudentModel item, String property) {
-		if (StudentGridPanel.NO_FILTERING.equals(property)) return true;
+		if (GroupSelectorWidget.NO_FILTERING.equals(property)) return true;
 		return (property.equals(item.getGroup()));
 	}
 

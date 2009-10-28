@@ -1,11 +1,14 @@
 package hotmath.gwt.cm_tools.client.ui;
 
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
+import hotmath.gwt.cm_tools.client.model.CmAdminDataReader;
+import hotmath.gwt.cm_tools.client.model.CmAdminDataRefresher;
 import hotmath.gwt.cm_tools.client.model.CmAdminModel;
 import hotmath.gwt.cm_tools.client.model.GroupModel;
 import hotmath.gwt.cm_tools.client.service.PrescriptionServiceAsync;
 import hotmath.gwt.cm_tools.client.util.ProcessTracker;
 
+import java.util.List;
 
 import com.extjs.gxt.ui.client.Registry;
 import com.extjs.gxt.ui.client.event.SelectionChangedEvent;
@@ -14,8 +17,6 @@ import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.form.ComboBox;
 import com.extjs.gxt.ui.client.widget.form.ComboBox.TriggerAction;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-
-import java.util.List;
 
 public class GroupSelectorWidget {
 	
@@ -26,14 +27,27 @@ public class GroupSelectorWidget {
 	private ProcessTracker pTracker;
 	private String id;
 
-	public GroupSelectorWidget(CmAdminModel cmAdminMdl, ListStore<GroupModel> groupStore, boolean includeCreate,
+
+    public static final String NO_FILTERING = "--- No Filtering ---";
+    
+
+	public GroupSelectorWidget(final CmAdminModel cmAdminMdl, final ListStore<GroupModel> groupStore, boolean includeCreate,
 		ProcessTracker pTracker, String id) {
 		this.cmAdminMdl= cmAdminMdl;
         this.groupStore = groupStore;
         this.includeCreate = includeCreate;
         this.pTracker = pTracker;
         this.id = id;
+        
+        
         getGroupListRPC(cmAdminMdl.getId(), groupStore);
+        
+        
+        CmAdminDataReader.getInstance().addReader(new CmAdminDataRefresher() {
+            public void refreshData() {
+                getGroupListRPC(cmAdminMdl.getId(), groupStore);
+            }
+        });
 	}
 	
 	public ComboBox<GroupModel> groupCombo() {
@@ -59,7 +73,7 @@ public class GroupSelectorWidget {
 
 	        	GroupModel gm = se.getSelectedItem();
 	        	if (includeCreate && gm.getName().equals(GroupModel.NEW_GROUP)) {
-	        		new GroupWindow(cmAdminMdl, combo, true);
+	        		new GroupWindow(null, cmAdminMdl, combo, true, null);
 	        	}
 	        }
 	    });
@@ -81,6 +95,11 @@ public class GroupSelectorWidget {
 		    		result.add(gm);
 				}
 				
+				groupStore.removeAll();
+		        GroupModel gm = new GroupModel();
+		        gm.setName(NO_FILTERING);
+		        gm.setId(NO_FILTERING);
+		        groupStore.insert(gm, 0);				
 				groupStore.add(result);
 				
 				pTracker.completeStep();

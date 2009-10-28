@@ -2,6 +2,10 @@ package hotmath.gwt.cm.server;
 
 import hotmath.assessment.AssessmentPrescription;
 import hotmath.assessment.AssessmentPrescriptionManager;
+import hotmath.gwt.cm_admin.server.model.CmAdminDao;
+import hotmath.gwt.cm_admin.server.model.CmStudentDao;
+import hotmath.gwt.cm_tools.client.model.CmAdminModel;
+import hotmath.gwt.cm_tools.client.model.GroupModel;
 import hotmath.gwt.shared.server.service.CmTestUtils;
 import hotmath.testset.ha.HaTest;
 import hotmath.testset.ha.HaTestDao;
@@ -19,6 +23,7 @@ public class CmDbTestCase extends DbTestCase {
     protected static HaTest _test;
     protected static HaTestRun _testRun;
     protected static AssessmentPrescription _prescription;
+    protected static GroupModel _groupModel;
     
     /** Create a new test account to use for test/samples/demo
      * 
@@ -70,5 +75,20 @@ public class CmDbTestCase extends DbTestCase {
         
         return _prescription;
     }
-
+    
+    /** Create demo group into demo user
+     * 
+     * @return
+     * @throws Exception
+     */
+    public GroupModel setupDemoGroup() throws Exception {
+        if(_user == null)
+            setupDemoAccount();
+        
+        GroupModel group = new GroupModel();
+        group.setName("demo_" + System.currentTimeMillis());
+        group.setDescription("Demo Group");
+        _groupModel = new CmAdminDao().addGroup(conn, _user.getAid(), group);
+        return _groupModel;
+    }
 }

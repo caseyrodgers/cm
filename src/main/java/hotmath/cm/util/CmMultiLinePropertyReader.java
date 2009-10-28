@@ -4,7 +4,6 @@ import hotmath.flusher.Flushable;
 import hotmath.flusher.HotmathFlusher;
 
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.Properties;
@@ -84,8 +83,7 @@ public class CmMultiLinePropertyReader extends Properties {
             InputStream is = getClass().getResourceAsStream(propFile);
             BufferedReader br = new BufferedReader(new InputStreamReader(is));
             String line = null;
-            StringBuilder sb = new StringBuilder();
-    
+
             String value = "";
             String name = null;
     
@@ -96,6 +94,14 @@ public class CmMultiLinePropertyReader extends Properties {
     
                 if (line.startsWith(".key=")) {
                     if (value.length() > 0) {
+                        
+                        /** Make sure this entry does not already exist
+                         * 
+                         */
+                        if(containsKey(name)) {
+                            __logger.warn("property already exists: " + name);
+                        }
+                        
                         put(name, value);
                         value = "";
                     }
