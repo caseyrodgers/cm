@@ -58,6 +58,7 @@ public class GeneratePDF extends HttpServlet {
 		adminId = Integer.parseInt(request.getParameter("aid"));
 		type = request.getParameter("type");
 		Boolean checkStatus = Boolean.valueOf(request.getParameter("checkStatus"));
+		String reportName;
 		
 		if (checkStatus) {
 			checkStatus(reportId, request, response);
@@ -68,14 +69,17 @@ public class GeneratePDF extends HttpServlet {
 		if (type.equals("studentSummary")) {
 			StudentSummaryReport ss = new StudentSummaryReport();
 			baos = ss.makePdf(reportId, adminId);
+			reportName = ss.getReportName();
 		}
 		else if (type.equals("studentDetail")) {
 			StudentDetailReport sd = new StudentDetailReport();
 			baos = sd.makePdf(reportId, adminId);
+			reportName = sd.getReportName();
 		}
 		else if (type.equals("reportCard")) {
 			StudentReportCard sr = new StudentReportCard();
 			baos = sr.makePdf(reportId, adminId);
+			reportName = sr.getReportName();
 		}
 	    else {
 			throw new IllegalArgumentException("Unrecognized report type: " + type);
@@ -87,6 +91,7 @@ public class GeneratePDF extends HttpServlet {
 			response.setHeader("Expires", "0");
 			response.setHeader("Cache-Control", "must-revalidate, post-check=0, pre-check=0");
 			response.setHeader("Pragma", "public");
+			response.setHeader("Content-Disposition", "attachment; filename=" + reportName + ".pdf");
 			// setting the content type
 			response.setContentType("application/pdf");
 			// the content length is needed for MSIE @#%&!
