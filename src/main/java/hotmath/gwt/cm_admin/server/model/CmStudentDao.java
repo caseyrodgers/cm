@@ -527,6 +527,43 @@ public class CmStudentDao {
         }
         return sm;
     }
+    
+    
+    /** Update the main properties for this user.  The main properties 
+     * are the ones that directly control the users current program.
+     * 
+     * @TODO: would be nice to have a way to update only the 'set' fields in a StudentModel
+     * 
+     * @param conn
+     * @param uid
+     * @param showWorkRequired
+     * @param tutoringAvailable
+     * @param passPercent
+     * @throws Exception
+     */
+    public void updateStudentMainProperties(final Connection conn, Integer uid, Boolean showWorkRequired, Boolean tutoringAvailable, Integer passPercent) throws Exception {
+        PreparedStatement ps=null;
+        try {
+            String sql = "update HA_USER set is_show_work_required = ?, is_tutoring_available = ? where uid = ?";
+            ps = conn.prepareStatement(sql);
+            ps.setBoolean(1, showWorkRequired);
+            ps.setBoolean(2, tutoringAvailable);
+            ps.setInt(3, uid);
+            int cnt = ps.executeUpdate();
+            if(cnt != 1)
+                logger.warn("user not found to update: " + uid);
+            
+            /** update the current program information with new pass percentages
+             * 
+             */
+            StudentModelI sm = getStudentModelBasic(conn, uid);
+            new CmUserProgramDao().setProgramPassPercent(conn, sm.getUserProgramId(),passPercent);
+
+        } finally {
+            SqlUtilities.releaseResources(null, ps, null);
+        }
+    }
+    
 
     private static final String UPDATE_STUDENT_PROGRAM_SQL =
             "update CM_USER_PROGRAM " +

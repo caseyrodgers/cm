@@ -6,13 +6,12 @@ import hotmath.gwt.cm_admin.server.model.CmAdminDao;
 import hotmath.gwt.cm_admin.server.model.CmStudentDao;
 import hotmath.gwt.cm_tools.client.model.StringHolder;
 import hotmath.gwt.cm_tools.client.model.StudentModel;
+import hotmath.gwt.cm_tools.client.model.StudentModelI;
 import hotmath.gwt.shared.client.rpc.Action;
 import hotmath.gwt.shared.client.rpc.Response;
 import hotmath.gwt.shared.client.rpc.action.GroupManagerAction;
 import hotmath.gwt.shared.client.util.RpcData;
 import hotmath.gwt.shared.server.service.ActionHandler;
-import hotmath.testset.ha.CmProgram;
-import hotmath.testset.ha.StudentUserProgramModel;
 import hotmath.util.sql.SqlUtilities;
 
 import java.sql.Connection;
@@ -158,13 +157,10 @@ public class GroupManagerCommand implements ActionHandler<GroupManagerAction, Rp
             while(rs.next()) {
                 
                 // update the basic information
-                StudentModel sm = dao.getStudentModel(rs.getInt("uid"));
+                StudentModelI sm = dao.getStudentModelBasic(conn,rs.getInt("uid"));
                 sm.setTutoringAvail(!disallowTutoring);
                 sm.setShowWorkRequired(showWorkRequired);
-                dao.updateStudent(sm);
-                
-                // update the current program information with new pass percentages
-                new CmUserProgramDao().setProgramPassPercent(conn, sm.getUserProgramId(),passPercent);
+                dao.updateStudentMainProperties(conn, rs.getInt("uid"), showWorkRequired,!disallowTutoring, passPercent);
             }
         }
         finally {

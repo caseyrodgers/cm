@@ -3,6 +3,7 @@ package hotmath.gwt.cm_admin.server.model;
 import hotmath.cm.server.model.CmUserProgramDao;
 import hotmath.gwt.cm.server.CmDbTestCase;
 import hotmath.gwt.cm_tools.client.model.StudentActiveInfo;
+import hotmath.gwt.cm_tools.client.model.StudentModel;
 import hotmath.gwt.cm_tools.client.model.StudentModelI;
 import hotmath.testset.ha.StudentUserProgramModel;
 
@@ -16,18 +17,31 @@ public class CmStudentDao_Test extends CmDbTestCase {
 
     public CmStudentDao_Test(String name) throws Exception {
         super(name);
-        
-        if(TEST_ID == 0)
-            TEST_ID = setupDemoAccount();
     }
 
     CmStudentDao _dao;
 
     protected void setUp() throws Exception {
         super.setUp();
+        
+        
+        try {
+            if(TEST_ID == 0)
+                TEST_ID = setupDemoAccount();
+        }
+        catch(Exception e) {
+            e.printStackTrace();
+        }        
         _dao = new CmStudentDao();
     }
 
+    
+    public void testupdateStudentMainProperties() throws Exception {
+        _dao.updateStudentMainProperties(conn, _user.getUid(), true,true,90);
+        
+        StudentModel sm = _dao.getStudentModel(_user.getUid());
+        assertTrue(sm.getTutoringAvail() == true);
+    }
     
     
     public void moveToNextQuizSegmentSlot() throws Exception {
