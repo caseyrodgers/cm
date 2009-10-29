@@ -91,7 +91,6 @@ group by s.test_run_id, s.is_quiz, s.use_date
 order by s.view_time asc, s.test_run_id asc, s.session_number asc
 
     
-### 
 .key=TEST_RESULTS
 
 select td.test_name, t.test_segment,im.file, rr.pid, rr.answer_status
@@ -101,15 +100,37 @@ and rr.run_id = tr.run_id
 and tr.test_id = t.test_id
 and t.test_def_id = td.test_def_id and im.guid = rr.pid
 
-###
+
+
 .key=CHECK_DUPLICATE_PASSCODE
 
 select 1 from HA_USER where user_passcode = ? and uid <> ? and admin_id = ?
 
-###
+
 .key=CHECK_DUPLICATE_NAME
 
 select 1 from HA_USER where user_name = ? and uid <> ? and admin_id = ? and is_active = 1    
+
+
+
+
+.key=UPDATE_STUDENT_SQL
+
+update HA_USER
+set    user_name = ?,
+       user_passcode = ?,
+       group_id = ?,
+       test_def_id = (select test_def_id
+                      from   HA_TEST_DEF
+                      where  prog_id = ?
+                             and subj_id = ?),
+       user_prog_id = ?,
+       is_tutoring_available = ?,
+       is_show_work_required = ?,
+       gui_background_style = ?
+where  uid = ?
+
+
     
         
 #############
@@ -453,9 +474,18 @@ from HA_TEST_RUN_LESSON rl, HA_TEST_RUN tr, HA_TEST t, CM_USER_PROGRAM p
     and rl.run_id = tr.run_id
 order by lesson_name asc
 
-##
+
+
+
+
+
+
+
+############################
+############################
 ## Class: CmUserProgramDao
-##
+############################
+############################
 
 .key=ALL_USER_PROGRAM_SQL
 
@@ -464,6 +494,9 @@ from CM_USER_PROGRAM c
 JOIN HA_USER u on c.user_id = u.uid
 JOIN HA_TEST_DEF t on c.test_def_id = t.test_def_id
 where c.user_id = ?
+
+
+
 
 
 .key=CURRENT_USER_PROGRAM_SQL
@@ -533,6 +566,18 @@ from (
 
 
 
+.key=UPDATE_PASS_PERCENT_SQL
+
+update CM_USER_PROGRAM 
+set pass_percent = ? 
+where id = ?
+
+
+
+
+
+
+
 #######################
 #######################
 ### HaUserProgramInfoDao
@@ -581,7 +626,7 @@ order by create_date
 
 .key=GROUP_NAMES_AND_COUNTS
 
-## return groups and thier  counts, including all default groups
+## return groups and their counts, including all default groups
 
 select   g.admin_id,
          g.id,
@@ -599,6 +644,26 @@ where    a.aid = ?
 and (g.admin_id <> 0 or (g.admin_id = 0 and uid is not null) or g.name = 'none')
 group by g.id
 order by name;
+
+
+
+
+
+
+
+
+
+#########################
+#########################
+### GroupManagerCommand
+#########################
+#########################
+
+
+.key=GroupManagerCommand-GROUP_USERS
+
+select uid from HA_USER where is_active = 1 and is_auto_create_template = 0 and admin_id = ? and group_id = ?
+
 
 
 

@@ -1,6 +1,7 @@
 package hotmath.gwt.shared.server.service.command;
 
 import hotmath.cm.server.model.CmUserProgramDao;
+import hotmath.cm.util.CmMultiLinePropertyReader;
 import hotmath.gwt.cm_admin.server.model.CmAdminDao;
 import hotmath.gwt.cm_admin.server.model.CmStudentDao;
 import hotmath.gwt.cm_tools.client.model.StringHolder;
@@ -38,6 +39,8 @@ public class GroupManagerCommand implements ActionHandler<GroupManagerAction, Rp
             doUnregister(conn, action.getAdminId(), action.getGroupId());
         else if(action.getActionType() == GroupManagerAction.ActionType.GROUP_PROGRAM_ASSIGNMENT)
             doGroupProgramAssignment(conn,action.getAdminId(),action.getGroupId(), action.getStudentModel());
+        else if(action.getActionType() == GroupManagerAction.ActionType.GROUP_PROPERTY_SET)
+            doGroupPropertySet(conn,action.getAdminId(),action.getGroupId(),action.getShowWorkRequired(),action.getDisallowTutoring(),action.getPassPercent());
         
         rpcData.putData("status","OK");
         return rpcData;
@@ -114,7 +117,7 @@ public class GroupManagerCommand implements ActionHandler<GroupManagerAction, Rp
     private void doGroupProgramAssignment(final Connection conn, Integer adminId, Integer groupId, StudentModel studentTemplate) throws Exception {
         PreparedStatement ps=null;
         try {
-            ps = conn.prepareStatement("select uid from HA_USER where is_active = 1 and is_auto_create_template = 0 and admin_id = ? and group_id = ?");
+            ps = conn.prepareStatement(CmMultiLinePropertyReader.getInstance().getProperty("GroupManagerCommand-GROUP_USERS"));
             ps.setInt(1,adminId);
             ps.setInt(2,groupId);
             
@@ -131,5 +134,41 @@ public class GroupManagerCommand implements ActionHandler<GroupManagerAction, Rp
             SqlUtilities.releaseResources(null,ps,null);
         }        
     }
-
+    
+    
+    /** 
+     * Apply properties to each student in group
+     * 
+     * @param conn
+     * @param adminId
+     * @param showWorkRequired
+     * @param disallowTutoring
+     * @param passPercent
+     * @throws Exception
+     */
+    private void doGroupPropertySet(final Connection conn,Integer adminId,Integer groupId,Boolean showWorkRequired,Boolean disallowTutoring,Integer passPercent) throws Exception {
+        PreparedStatement ps=null;
+        try {
+            ps = conn.prepareStatement(CmMultiLinePropertyReader.getInstance().getProperty("GroupManagerCommand-GROUP_USERS"));
+            ps.setInt(1,adminId);
+            ps.setInt(2,groupId);
+            
+            CmStudentDao dao = new CmStudentDao();
+            ResultSet rs = ps.executeQuery();
+            while(rs.next()) {
+                
+                // update the basic information
+                StudentModel sm = dao.getStudentModel(rs.getInt("uid"));
+                sm.setTutoringAvail(!disallowTutoring);
+                sm.setShowWorkRequired(showWorkRequired);
+                dao.updateStudent(sm);
+                
+                // update the current program information with new pass percentages
+                new CmUserProgramDao().setProgramPassPercent(conn, sm.getUserProgramId(),passPercent);
+            }
+        }
+        finally {
+            SqlUtilities.releaseResources(null,ps,null);
+        }                
+    }
 }

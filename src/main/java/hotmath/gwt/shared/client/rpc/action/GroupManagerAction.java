@@ -17,6 +17,9 @@ public class GroupManagerAction implements Action<RpcData>{
     Integer groupId;
     String groupName;
     StudentModel studentModel;
+    Boolean disallowTutoring;
+    Boolean showWorkRequired;
+    Integer passPercent;
 
     public GroupManagerAction(){}
 
@@ -25,6 +28,31 @@ public class GroupManagerAction implements Action<RpcData>{
         this.actionType = actionType;        
     }
     
+
+    public Boolean getDisallowTutoring() {
+        return disallowTutoring;
+    }
+
+    public void setDisallowTutoring(Boolean disallowTutoring) {
+        this.disallowTutoring = disallowTutoring;
+    }
+
+
+    public Boolean getShowWorkRequired() {
+        return showWorkRequired;
+    }
+
+    public void setShowWorkRequired(Boolean showWorkRequired) {
+        this.showWorkRequired = showWorkRequired;
+    }
+
+    public Integer getPassPercent() {
+        return passPercent;
+    }
+
+    public void setPassPercent(Integer passPercent) {
+        this.passPercent = passPercent;
+    }
 
     public StudentModel getStudentModel() {
         return studentModel;
@@ -70,5 +98,5 @@ public class GroupManagerAction implements Action<RpcData>{
     }
 
 
-    public enum ActionType{DELETE,CREATE,UNREGISTER_STUDENTS,UPDATE,GROUP_PROGRAM_ASSIGNMENT};    
+    public enum ActionType{DELETE,CREATE,UNREGISTER_STUDENTS,UPDATE,GROUP_PROGRAM_ASSIGNMENT,GROUP_PROPERTY_SET};    
 }

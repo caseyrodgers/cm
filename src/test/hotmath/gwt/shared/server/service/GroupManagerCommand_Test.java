@@ -34,6 +34,17 @@ public class GroupManagerCommand_Test extends CmDbTestCase {
         super.tearDown();
     }
     
+    
+    public void testUpdateGroupProperties() throws Exception {
+        GroupManagerAction action = new GroupManagerAction(ActionType.GROUP_PROPERTY_SET,_user.getAid());
+        action.setGroupId(Integer.parseInt(_groupModel.getId()));
+        action.setDisallowTutoring(true);
+        action.setShowWorkRequired(true);
+        
+        RpcData rdata = ActionDispatcher.getInstance().execute(action);
+        assertTrue(rdata.getDataAsString("status").equals("OK"));
+    }
+    
     public void testCreate() throws Exception {
         GroupManagerAction action = new GroupManagerAction(ActionType.DELETE,_user.getAid());
         action.setGroupId(Integer.parseInt(_groupModel.getId()));

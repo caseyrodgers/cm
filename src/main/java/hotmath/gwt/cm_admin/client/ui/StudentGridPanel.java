@@ -211,28 +211,26 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
 		groupCombo.setAllowBlank(true);
 
 
+        groupCombo.addSelectionChangedListener(new SelectionChangedListener<GroupModel>() {
+            public void selectionChanged(SelectionChangedEvent<GroupModel> se) {
 
-		final Button manageGrp = unregisterGroupButton(_grid);
-		groupCombo.addSelectionChangedListener(new SelectionChangedListener<GroupModel>() {
-			public void selectionChanged(SelectionChangedEvent<GroupModel> se) {
+                // filter grid based on current selection
+                GroupModel gm = se.getSelectedItem();
+                String groupName = gm.getName();
 
-				// filter grid based on current selection
-	        	GroupModel gm = se.getSelectedItem();
-	        	String groupName = gm.getName();
-
-	        	StudentModelGroupFilter smgf = new StudentModelGroupFilter();
-	        	_grid.getStore().addFilter(smgf);
-	        	_grid.getStore().applyFilters(groupName);
-	        }
-	    });
+                StudentModelGroupFilter smgf = new StudentModelGroupFilter();
+                _grid.getStore().addFilter(smgf);
+                _grid.getStore().applyFilters(groupName);
+            }
+        });
+        
 
 		tb.add(groupCombo);
-		tb.add(manageGrp);
 
 		return fs;
     }
 
-    private Button unregisterGroupButton(final Grid<StudentModel> grid) {
+    private Button manageGroupButton(final Grid<StudentModel> grid) {
         final Button btn = new StudenPanelButton("Manage Groups");
         btn.setToolTip("Manage the group definitions.");
         btn.setStyleAttribute("padding-left", "10px");
@@ -311,7 +309,8 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
         ti = unregisterStudentToolItem(_grid);
         toolbar.add(ti);
 
-        toolbar.add(new FillToolItem());
+        final Button manageGrp = manageGroupButton(_grid);
+        toolbar.add(manageGrp);
 
         Button btn = new Button("Bulk Registration");
         btn.addSelectionListener(new SelectionListener<ButtonEvent>() {

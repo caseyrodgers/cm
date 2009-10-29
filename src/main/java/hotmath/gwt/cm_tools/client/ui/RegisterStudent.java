@@ -65,7 +65,6 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
 	private ListStore <SubjectModel> subjStore;
 	private ComboBox<SubjectModel> subjCombo;
 	
-	private ListStore <PassPercent> passStore;
 	private ComboBox <PassPercent> passCombo;
 	
 	private ListStore <ChapterModel> chapStore;
@@ -125,7 +124,8 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
         return list;
 	}
 	
-	FieldSet _fsProfile, _fsProgram;
+	public FieldSet _fsProfile, _fsProgram;
+	public CheckBoxGroup _showWorkGrp;
 	protected FormPanel createForm() {
 		_formPanel = new CombinedFormPanel();
 		_formPanel.setStyleName("register-student-form-panel");
@@ -201,13 +201,10 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
 		chapCombo = chapterCombo(chapStore);
 		_fsProgram.add(chapCombo);        
 		
-		List<PassPercent> passList = getPassPercentList();
-		passStore = new ListStore <PassPercent> ();
-		passStore.add(passList);
-		passCombo = passPercentCombo(passStore);
+		passCombo = new PassPercentCombo();
 		_fsProgram.add(passCombo);
 		
-        CheckBox isShowWorkRequired = new CheckBox();
+		CheckBox isShowWorkRequired = new CheckBox();
         isShowWorkRequired.setBoxLabel("(recommended)");
         isShowWorkRequired.setId(StudentModel.SHOW_WORK_KEY);
         if (! isNew) {
@@ -218,11 +215,11 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
         	isShowWorkRequired.setValue(true);
         }
 
-        CheckBoxGroup showWorkGrp = new CheckBoxGroup(); 
-        showWorkGrp.setFieldLabel("Require Show Work");
-        showWorkGrp.setId(StudentModel.SHOW_WORK_KEY);
-        showWorkGrp.add(isShowWorkRequired);
-        _fsProgram.add(showWorkGrp);
+        _showWorkGrp = new CheckBoxGroup(); 
+        _showWorkGrp.setFieldLabel("Require Show Work");
+        _showWorkGrp.setId(StudentModel.SHOW_WORK_KEY);
+        _showWorkGrp.add(isShowWorkRequired);
+        _fsProgram.add(_showWorkGrp);
         
         CheckBox isTutoringNotAvail = new CheckBox();
         isTutoringNotAvail.setBoxLabel("(if/when enabled)");
@@ -434,7 +431,7 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
 		return combo;
 	}
 	
-	private ComboBox<PassPercent> passPercentCombo(ListStore<PassPercent> store) {
+	static public ComboBox<PassPercent> passPercentCombo(ListStore<PassPercent> store) {
 		ComboBox<PassPercent> combo = new ComboBox<PassPercent>();
 		combo.setValue(store.getAt(2));
 		combo.setFieldLabel("Pass Percent");
@@ -686,7 +683,7 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
 		String passPercent = stuMdl.getPassPercent();
 		
 		if (passPercent != null) {
-			List<PassPercent> list = passStore.getModels();
+			List<PassPercent> list = passCombo.getStore().getModels();
 			for (PassPercent p : list) {
 				if (passPercent.equals(p.getPassPercent())) {
 					passCombo.setOriginalValue(p);
@@ -943,18 +940,6 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
 	}
 	
 	
-	private List<PassPercent> getPassPercentList() {
-		List<PassPercent> list = new ArrayList<PassPercent> ();
-		list.add(new PassPercent("60%"));
-		list.add(new PassPercent("70%"));
-		list.add(new PassPercent("80%"));
-		list.add(new PassPercent("90%"));
-		list.add(new PassPercent("100%"));
-		return list;
-	}
-	
-	
-	
 	class StudyProgram extends BaseModelData {
 		private static final long serialVersionUID = 5574506049604177840L;
 
@@ -969,18 +954,6 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
 		}
 	}
 
-	class PassPercent extends BaseModelData {
-
-		private static final long serialVersionUID = 6852777405039991570L;
-
-		PassPercent(String percent) {
-			set("pass-percent", percent);
-		}
-		
-		String getPassPercent() {
-			return get("pass-percent");
-		}
-	}
 
 	//@Override
 	public void beginStep() {

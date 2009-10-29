@@ -487,12 +487,6 @@ public class CmStudentDao {
         
     }
     
-    private static final String UPDATE_STUDENT_SQL =
-            "update HA_USER set " +
-            " user_name = ?, user_passcode = ?, group_id = ?, active_segment = ?, " +
-            " test_def_id = (select test_def_id from HA_TEST_DEF where prog_id = ? and subj_id = ?), " +
-            " user_prog_id = ?, is_tutoring_available = ?, is_show_work_required = ?, gui_background_style = ? " +
-            "where uid = ?";
 
     /** Update the StudentModel
      * 
@@ -509,7 +503,7 @@ public class CmStudentDao {
 
         try {
             conn = HMConnectionPool.getConnection();
-            ps = conn.prepareStatement(UPDATE_STUDENT_SQL);
+            ps = conn.prepareStatement(CmMultiLinePropertyReader.getInstance().getProperty("UPDATE_STUDENT_SQL"));
             ps.setString(1, sm.getName());
             ps.setString(2, sm.getPasscode());
             // ps.setString(3, sm.getEmail());
@@ -517,19 +511,13 @@ public class CmStudentDao {
             // if group Id has not been set default to GROUP_NONE_ID
             ps.setInt(3, (sm.getGroupId() != null) ? Integer.parseInt(sm.getGroupId()):GROUP_NONE_ID);
             
-            /** @TODO: why is section needed here?  Should be in ActiveInfo
-            //int sectionNum = (sm.getSectionNum() != null) ? sm.getSectionNum().intValue() : 0;
-             * 
-             */
-            ps.setInt(4, 0);  // set constant zero, see if we can remove
-            
-            ps.setString(5, sm.getProgId());
-            ps.setString(6, sm.getSubjId());
-            ps.setInt(7, sm.getUserProgramId());
-            ps.setInt(8, sm.getTutoringAvail() ? 1 : 0);
-            ps.setInt(9, sm.getShowWorkRequired() ? 1 : 0);
-            ps.setString(10, sm.getBackgroundStyle());
-            ps.setInt(11, sm.getUid());
+            ps.setString(4, sm.getProgId());
+            ps.setString(5, sm.getSubjId());
+            ps.setInt(6, sm.getUserProgramId());
+            ps.setInt(7, sm.getTutoringAvail() ? 1 : 0);
+            ps.setInt(8, sm.getShowWorkRequired() ? 1 : 0);
+            ps.setString(9, sm.getBackgroundStyle());
+            ps.setInt(10, sm.getUid());
             int result = ps.executeUpdate();
         } catch (Exception e) {
             logger.error(String.format("*** Error updating student with uid: %d", sm.getUid()), e);

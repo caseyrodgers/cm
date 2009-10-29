@@ -1,7 +1,6 @@
 package hotmath.cm.server.model;
 
 import hotmath.cm.util.CmMultiLinePropertyReader;
-import hotmath.flusher.HotmathFlusher;
 import hotmath.testset.ha.HaTestConfig;
 import hotmath.testset.ha.StudentUserProgramModel;
 import hotmath.util.sql.SqlUtilities;
@@ -13,8 +12,13 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.log4j.Logger;
+
 public class CmUserProgramDao {
 
+    static Logger __logger = Logger.getLogger(CmUserProgramDao.class);
+    
+    
     /**
      * Return the currently configured user program for this user
      * 
@@ -148,5 +152,30 @@ public class CmUserProgramDao {
         } finally {
             SqlUtilities.releaseResources(rs, ps, null);
         }
+    }
+    
+    /** Set the user pass_percent to named value
+     * 
+     * @param conn
+     * @param programId
+     * @param passPercent
+     * @throws Exception
+     */
+    public void setProgramPassPercent(final Connection conn, Integer programId, Integer passPercent) throws Exception {
+        PreparedStatement ps=null;
+        try {
+            ps = conn.prepareStatement(CmMultiLinePropertyReader.getInstance().getProperty("UPDATE_PASS_PERCENT_SQL"));
+
+            ps.setInt(1, passPercent);
+            ps.setInt(2, programId);
+            
+            int cnt = ps.executeUpdate();
+            if(cnt != 1)
+                __logger.warn("no such program: " + programId);
+                
+        } finally {
+            SqlUtilities.releaseResources(null, ps, null);
+        }        
+        
     }
 }
