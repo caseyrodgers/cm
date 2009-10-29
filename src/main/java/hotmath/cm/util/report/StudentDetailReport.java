@@ -31,6 +31,8 @@ import com.lowagie.text.pdf.PdfWriter;
 
 public class StudentDetailReport {
 	
+	private String reportName;
+	
 	@SuppressWarnings("unchecked")
 	public ByteArrayOutputStream makePdf(String reportId, Integer adminId) {
 		ByteArrayOutputStream baos = null;
@@ -66,6 +68,12 @@ public class StudentDetailReport {
 			Phrase tutoring = buildLabelContent("Tutoring: ", String.valueOf(sm.getTutoringState()));
 			Phrase showWork = buildLabelContent("Show Work: ", String.valueOf(sm.getShowWorkState()));
 
+			StringBuilder sb = new StringBuilder();
+			sb.append("CM-DetailReport");
+			if (sm.getName() != null)
+				sb.append("-").append(sm.getName().replaceAll(" ", ""));
+			reportName = sb.toString();
+			
 			//Chunk c = new Chunk(new Jpeg(new URL("http://localhost:8081/gwt-resources/images/logo_1.jpg")), 3.5f, 1.0f);
 			//heading.add(c);
 
@@ -161,6 +169,10 @@ public class StudentDetailReport {
 		cell.setBorder(0);
 		if (rowNum%2 < 1) cell.setGrayFill(0.9f);
 		tbl.addCell(cell);
+	}
+	
+	public String getReportName() {
+		return reportName;
 	}
 
     public class HeaderTable implements PdfPageEvent {

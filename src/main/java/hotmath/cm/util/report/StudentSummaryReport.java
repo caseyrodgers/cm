@@ -9,6 +9,7 @@ import hotmath.gwt.cm_tools.client.model.StudentModel;
 
 import java.awt.Color;
 import java.io.ByteArrayOutputStream;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -20,11 +21,14 @@ import com.lowagie.text.Document;
 import com.lowagie.text.Font;
 import com.lowagie.text.FontFactory;
 import com.lowagie.text.HeaderFooter;
+import com.lowagie.text.Jpeg;
 import com.lowagie.text.Phrase;
 import com.lowagie.text.Table;
 import com.lowagie.text.pdf.PdfWriter;
 
 public class StudentSummaryReport {
+	
+	private String reportName;
 
     @SuppressWarnings("unchecked")
     public ByteArrayOutputStream makePdf(String reportId, Integer adminId) throws Exception {
@@ -58,6 +62,12 @@ public class StudentSummaryReport {
         Phrase admin = buildLabelContent("Administrator: ", info.getSchoolUserName());
         Phrase expires = buildLabelContent("Expires: ", info.getExpirationDate());
         Phrase stuCount = buildLabelContent("Student Count: ", String.valueOf(list.size()));
+        
+        StringBuilder sb = new StringBuilder();
+        sb.append("CM-SummaryReport");
+        if (info.getSchoolName() != null)
+        	sb.append("-").append(info.getSchoolName().replaceAll(" ", ""));
+        reportName = sb.toString();
 
         heading.add(school);
         // Chunk c = new Chunk(new Jpeg(new
@@ -114,6 +124,10 @@ public class StudentSummaryReport {
 
         document.close();
         return baos;
+    }
+    
+    public String getReportName() {
+    	return reportName;
     }
 
     private Phrase buildLabelContent(String label, String value) {

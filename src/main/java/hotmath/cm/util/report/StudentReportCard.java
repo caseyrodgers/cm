@@ -56,6 +56,8 @@ public class StudentReportCard {
         labelMap.put("videos", "Videos: ");
     }
 
+    private String reportName;
+    
     @SuppressWarnings("unchecked")
     public ByteArrayOutputStream makePdf(String reportId, Integer adminId) throws Exception {
         ByteArrayOutputStream baos = null;
@@ -96,6 +98,13 @@ public class StudentReportCard {
 
         Phrase student = buildLabelContent("Student: ", String.valueOf(sm.getName()));
 
+        StringBuilder sb = new StringBuilder();
+        sb.append("CM-ReportCard");
+        if (sm.getName() != null) {
+        	sb.append("-").append(sm.getName().replaceAll(" ", ""));
+        }
+        reportName = sb.toString();
+        
         int numberOfColumns = 2;
         PdfPTable pdfTbl = new PdfPTable(numberOfColumns);
         pdfTbl.getDefaultCell().setBorder(PdfPCell.NO_BORDER);
@@ -146,6 +155,10 @@ public class StudentReportCard {
         document.close();
 
         return baos;
+    }
+    
+    public String getReportName() {
+    	return reportName;
     }
 
     private void addPrescribedLessons(StudentReportCardModelI rc, Document document) throws DocumentException {
