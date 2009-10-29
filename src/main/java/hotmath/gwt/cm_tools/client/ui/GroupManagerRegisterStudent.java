@@ -29,7 +29,7 @@ public class GroupManagerRegisterStudent extends RegisterStudent {
 	
 	    this.gim = gim;
 	    
-	    _window.setHeading("Group Program Assignment");
+	    _window.setHeading("Program Reassignment");
 	    _fsProfile.removeAll();
 
 	    _window.setHeight(400);
@@ -46,7 +46,7 @@ public class GroupManagerRegisterStudent extends RegisterStudent {
 	protected List<Button> getActionButtons() {
 	    List<Button> list = new ArrayList<Button>();
         
-        Button autoCreate = new Button("Assign Program");
+        Button autoCreate = new Button("Reassign Program");
         autoCreate  .addSelectionListener(new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent ce) {
                 try {
@@ -91,7 +91,6 @@ public class GroupManagerRegisterStudent extends RegisterStudent {
         action.setGroupId(groupId);
         cmService.execute(action, new AsyncCallback<RpcData>() {
             public void onSuccess(RpcData result) {
-                CatchupMathTools.showAlert("Program successfully assigned");
                 CmAdminDataReader.getInstance().fireRefreshData();
                 _window.close();
             }
