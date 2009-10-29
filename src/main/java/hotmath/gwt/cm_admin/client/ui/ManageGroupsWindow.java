@@ -121,7 +121,7 @@ public class ManageGroupsWindow extends CmWindow {
                 final GroupInfoModel gim = getGroupInfo();
                 if(gim != null) {
                     if(gim.getAdminId() == 0) {
-                        CatchupMathTools.showAlert("This group is not editable");
+                        CatchupMathTools.showAlert("This group name cannot be renamed.");
                         return;
                     }
                     
@@ -139,30 +139,34 @@ public class ManageGroupsWindow extends CmWindow {
         }));
 
         
-        lc.add(new MyButton("Remove Group", "Remove selected group and move assigned students to group 'none'",new SelectionListener<ButtonEvent>() {
-            public void componentSelected(ButtonEvent ce) {
-                final GroupInfoModel gim = getGroupInfo();
-                if(gim != null) {
-                    if(gim.getName().equals("none")){
-                        CatchupMathTools.showAlert("This group cannot be removed");
-                        return;
-                    }
-                        
-                    MessageBox.confirm("Remove group", "Are you sure you want to remove this group '" + gim.getName() + "' (sets existing group students to group 'none')?  ", new Listener<MessageBoxEvent>() {
-                        public void handleEvent(MessageBoxEvent be) {
-                            if(be.getButtonClicked().getText().equalsIgnoreCase("yes"))
-                                deleteGroup(gim.getAdminId(), gim.getId());
-                        }
-                    });
-                }
-            }
-        }));
+//        lc.add(new MyButton("Remove Group", "Remove selected group and move assigned students to group 'none'",new SelectionListener<ButtonEvent>() {
+//            public void componentSelected(ButtonEvent ce) {
+//                final GroupInfoModel gim = getGroupInfo();
+//                if(gim != null) {
+//                    if(gim.getName().equals("none")){
+//                        CatchupMathTools.showAlert("This group cannot be removed");
+//                        return;
+//                    }
+//                        
+//                    MessageBox.confirm("Remove group", "Are you sure you want to remove this group '" + gim.getName() + "' (sets existing group students to group 'none')?  ", new Listener<MessageBoxEvent>() {
+//                        public void handleEvent(MessageBoxEvent be) {
+//                            if(be.getButtonClicked().getText().equalsIgnoreCase("yes"))
+//                                deleteGroup(gim.getAdminId(), gim.getId());
+//                        }
+//                    });
+//                }
+//            }
+//        }));
         
 
         lc.add(new MyButton("Unregister Students", "Unregister all students in selected group",new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent ce) {
                 final GroupInfoModel gim = getGroupInfo();
                 if(gim != null) {
+                    if(gim.getCount() == 0) {
+                        CatchupMathTools.showAlert("There are no students assigned to this group.");
+                        return;
+                    }
                     MessageBox.confirm("Unregister group", "Are you sure you want to unregister the " + gim.getCount() + " students assigned to group '" + gim.getName() + "'?", new Listener<MessageBoxEvent>() {
                         public void handleEvent(MessageBoxEvent be) {
                             if(be.getButtonClicked().getText().equalsIgnoreCase("yes"))
@@ -181,16 +185,25 @@ public class ManageGroupsWindow extends CmWindow {
             public void componentSelected(ButtonEvent ce) {
                 final GroupInfoModel gim = getGroupInfo();
                 if(gim != null) {
+                    if(gim.getCount() == 0) {
+                        CatchupMathTools.showAlert("There are no students assigned to this group.");
+                        return;
+                    }
                     new GroupManagerRegisterStudent(null, ManageGroupsWindow.this.adminModel,gim);
                 }
             }
         }));
         
         
-        lc.add(new MyButton("Group Wide Settings", "Settings affecting all students in group.",new SelectionListener<ButtonEvent>() {
+        lc.add(new MyButton("Group Settings", "Settings affecting all students in group.",new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent ce) {
                 final GroupInfoModel gim = getGroupInfo();
                 if(gim != null) {
+                    if(gim.getCount() == 0) {
+                        CatchupMathTools.showAlert("There are no students assigned to this group.");
+                        return;
+                    }
+
                     new GroupManagerGlobalSettings(adminModel,gim);
                 }
             }

@@ -38,7 +38,7 @@ public class AutoRegisterStudentSetup extends RegisterStudent {
         _groupTag.setFieldLabel("Group Name");
         _groupTag.setAllowBlank(false);
         _groupTag.setId("groupTag");
-        _groupTag.setEmptyText("-- enter group name --");
+        _groupTag.setEmptyText("-- Enter new group name --");
         _fsProfile.add(_groupTag);
         
         _fsProfile.add(new Html("<p>Student will Log In with your school Login Name, and use this Group name to self-register.</p>"));
