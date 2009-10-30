@@ -141,6 +141,13 @@ public class CmReportCardDao {
 	  	 //TODO: refine "last" activity date using HA_TEST_RUN.run_time
 	 }
 
+	 /** Load the quiz information, throws Exception if no quizzes loaded
+	  * 
+	  * @param conn
+	  * @param list
+	  * @return
+	  * @throws Exception
+	  */
 	 private List<HaTest> loadQuizData(final Connection conn, List<StudentUserProgramModel> list) throws Exception {
 		 return HaTestDao.loadTestsForProgramList(conn, list);
 	 }

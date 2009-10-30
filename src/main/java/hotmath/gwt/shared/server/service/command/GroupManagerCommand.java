@@ -97,6 +97,12 @@ public class GroupManagerCommand implements ActionHandler<GroupManagerAction, Rp
             }
             
             StringHolder result = dao.unregisterStudents(conn, cmList);
+            
+            /** Also delete the group when unregistering all students
+             *  (Chuck request...) Not sure I agree with it ..
+             */
+            new CmAdminDao().deleteGroup(conn, adminId, groupId);
+            
             __logger.debug(result.getResponse());
         }
         finally {

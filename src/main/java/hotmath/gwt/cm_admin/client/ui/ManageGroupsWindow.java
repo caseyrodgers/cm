@@ -163,10 +163,10 @@ public class ManageGroupsWindow extends CmWindow {
             public void componentSelected(ButtonEvent ce) {
                 final GroupInfoModel gim = getGroupInfo();
                 if(gim != null) {
-                    if(gim.getCount() == 0) {
-                        CatchupMathTools.showAlert("There are no students assigned to this group.");
-                        return;
-                    }
+//                    if(gim.getCount() == 0) {
+//                        CatchupMathTools.showAlert("There are no students assigned to this group.");
+//                        return;
+//                    }
                     MessageBox.confirm("Unregister group", "Are you sure you want to unregister the " + gim.getCount() + " students assigned to group '" + gim.getName() + "'?", new Listener<MessageBoxEvent>() {
                         public void handleEvent(MessageBoxEvent be) {
                             if(be.getButtonClicked().getText().equalsIgnoreCase("yes"))

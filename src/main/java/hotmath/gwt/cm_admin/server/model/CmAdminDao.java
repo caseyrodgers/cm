@@ -159,22 +159,13 @@ public class CmAdminDao {
             String sql = "update HA_USER set group_id = 1 where group_id = " + groupId; 
             ps.executeUpdate(sql);
             
-            
-            
             /** Do not remove default groups
              * 
              */
-            
-            if(adminId != 0) {
-                /** Remove the group name
-                 * 
-                 */
-                sql = "delete from CM_GROUP where id = " + groupId ;
-                int cnt=ps.executeUpdate(sql);
-                if(cnt != 1)
-                    logger.warn("No group found to delete: " + groupId);
-            }
-                
+            sql = "delete from CM_GROUP where admin_id != 1 and id = " + groupId ;
+            int cnt=ps.executeUpdate(sql);
+            if(cnt != 1)
+                logger.warn("No group found to delete: " + groupId);
         }
         finally {
             SqlUtilities.releaseResources(null,ps,null);

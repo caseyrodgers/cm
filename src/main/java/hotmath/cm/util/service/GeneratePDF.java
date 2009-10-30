@@ -104,7 +104,6 @@ public class GeneratePDF extends HttpServlet {
 		else {
 			throw new Exception("PDF generation failed");
 		}
-
 	}
 
 	public void destroy() {
