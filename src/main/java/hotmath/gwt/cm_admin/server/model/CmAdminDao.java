@@ -641,7 +641,7 @@ public class CmAdminDao {
            
            ResultSet rs = ps.executeQuery();
            if(!rs.first())
-               throw new CmException("Admin record does not have an associated SUBCRIBER record");
+               throw new CmException("Admin record does not have an associated SUBSCRIBER record");
            
            String type=rs.getString("type");
            if(type.equals(AccountType.SCHOOL_TEACHER.getTag()))
