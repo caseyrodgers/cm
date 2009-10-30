@@ -27,7 +27,7 @@ import java.util.List;
 import org.apache.log4j.Logger;
 
 /**
- * <code>CmAdminDao</dao> provides data access methods for CM Admin
+ * <code>CmAdminDao</code> provides data access methods for CM Admin
  * 
  * @author bob
  *
