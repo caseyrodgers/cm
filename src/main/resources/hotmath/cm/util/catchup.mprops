@@ -8,6 +8,18 @@
 727
 
 
+.key=CmWebResourceManager.base_directory
+
+
+## path on filesystem to match 
+## http://SERVER/temp
+
+/home/hotmath/work/cm/target/cm-1.0-SNAPSHOT/temp
+
+
+
+
+
 # 
 #  Contains all static text entries used by Catchup Math
 #

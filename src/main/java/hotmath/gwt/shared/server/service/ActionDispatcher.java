@@ -16,6 +16,7 @@ import hotmath.gwt.shared.server.service.command.CreateAutoRegistrationAccountCo
 import hotmath.gwt.shared.server.service.command.CreateAutoRegistrationAccountsCommand;
 import hotmath.gwt.shared.server.service.command.CreateAutoRegistrationPreviewCommand;
 import hotmath.gwt.shared.server.service.command.CreateTestRunCommand;
+import hotmath.gwt.shared.server.service.command.GeneratePdfCommand;
 import hotmath.gwt.shared.server.service.command.GetGroupAggregateInfoCommand;
 import hotmath.gwt.shared.server.service.command.GetLessonItemsForTestRunCommand;
 import hotmath.gwt.shared.server.service.command.GetPrescriptionCommand;
@@ -138,6 +139,7 @@ public class ActionDispatcher {
         addCommand(LogUserInCommand.class);
         addCommand(GetGroupAggregateInfoCommand.class);
         addCommand(GroupManagerCommand.class);
+        addCommand(GeneratePdfCommand.class);
         
     }
     

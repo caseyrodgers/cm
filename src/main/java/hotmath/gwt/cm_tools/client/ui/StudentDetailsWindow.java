@@ -8,7 +8,10 @@ import hotmath.gwt.cm_tools.client.service.CmServiceAsync;
 import hotmath.gwt.cm_tools.client.service.PrescriptionServiceAsync;
 import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
 import hotmath.gwt.shared.client.CmShared;
+import hotmath.gwt.shared.client.rpc.CmWebResource;
+import hotmath.gwt.shared.client.rpc.action.GeneratePdfAction;
 import hotmath.gwt.shared.client.rpc.action.GetReportDefAction;
+import hotmath.gwt.shared.client.rpc.action.GeneratePdfAction.PdfType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,10 +21,7 @@ import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
 import com.extjs.gxt.ui.client.Style.LayoutRegion;
 import com.extjs.gxt.ui.client.Style.SelectionMode;
 import com.extjs.gxt.ui.client.core.XTemplate;
-import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
-import com.extjs.gxt.ui.client.event.Events;
-import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.MenuEvent;
 import com.extjs.gxt.ui.client.event.SelectionChangedEvent;
 import com.extjs.gxt.ui.client.event.SelectionChangedListener;
@@ -277,7 +277,7 @@ public class StudentDetailsWindow extends CmWindow {
         ti.addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent ce) {
-                displayReportCardRPC(sm);
+                new ReportCardWindow(sm);
             }
         });
         return ti;
@@ -386,26 +386,6 @@ public class StudentDetailsWindow extends CmWindow {
             public void onSuccess(StringHolder reportId) {
                 String url = "/gwt-resources/cm-report-gen.html?id=" + reportId.getResponse() + "&aid=" + sm.getAdminUid()
                         + "&type=studentDetail";
-                Window.open(url, "_blank", "width=600,height=300,location=0,menubar=0,resizable=1");
-            }
-
-            public void onFailure(Throwable caught) {
-                String msg = caught.getMessage();
-                CatchupMathTools.showAlert(msg);
-            }
-        });
-    }
-
-    protected void displayReportCardRPC(final StudentModel sm) {
-        List<Integer> studentUids = new ArrayList<Integer>();
-        studentUids.add(sm.getUid());
-
-        CmServiceAsync s = (CmServiceAsync) Registry.get("cmService");
-        s.execute(new GetReportDefAction(studentUids), new AsyncCallback<StringHolder>() {
-
-            public void onSuccess(StringHolder reportId) {
-                String url = "/gwt-resources/cm-report-gen.html?id=" + reportId.getResponse() + "&aid=" + sm.getAdminUid()
-                        + "&type=reportCard";
                 Window.open(url, "_blank", "width=600,height=300,location=0,menubar=0,resizable=1");
             }
 
