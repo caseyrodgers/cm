@@ -167,7 +167,20 @@ public class ManageGroupsWindow extends CmWindow {
 //                        CatchupMathTools.showAlert("There are no students assigned to this group.");
 //                        return;
 //                    }
-                    MessageBox.confirm("Unregister group", "Are you sure you want to unregister the " + gim.getCount() + " students assigned to group '" + gim.getName() + "'?", new Listener<MessageBoxEvent>() {
+                    String msg = "Are you sure you want to unregister the " + gim.getCount() + " students assigned to group '" + gim.getName() + "'?";
+                    
+                    if(gim.getAdminId() == 0) {
+                        if(gim.getCount() == 0) {
+                            CatchupMathTools.showAlert("There are no students to unregister");
+                            return;
+                        }
+                    }
+                    else {
+                        /** Add message about deleting group name if not default */
+                        msg += "<p style='margin-top: 10px;'>This action also deletes the group name.</p>";
+                    }
+                    
+                    MessageBox.confirm("Unregister group", msg, new Listener<MessageBoxEvent>() {
                         public void handleEvent(MessageBoxEvent be) {
                             if(be.getButtonClicked().getText().equalsIgnoreCase("yes"))
                                 
@@ -295,9 +308,6 @@ public class ManageGroupsWindow extends CmWindow {
         action.setGroupId(groupId);
         cmService.execute(action, new AsyncCallback<RpcData>() {
             public void onSuccess(RpcData result) {
-                
-                CatchupMathTools.showAlert("Students were successfully unregistered");
-                
                 readRpcData(adminId);
                 CmAdminDataReader.getInstance().fireRefreshData();                
             }

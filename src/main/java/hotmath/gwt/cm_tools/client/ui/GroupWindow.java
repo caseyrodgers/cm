@@ -171,7 +171,11 @@ public class GroupWindow extends LayoutContainer {
 				    grpCombo.getStore().sort(GroupModel.NAME_KEY, SortDir.ASC);
 				    grpCombo.setValue(g);
 			    }
-				CatchupMathTools.showAlert("Create Group", "Group " + g.getName() + " created");
+				/** 
+				 * no message
+				 * 
+				 * CatchupMathTools.showAlert("Create Group", "Group " + g.getName() + " created");
+				 */
 				gw.close();
 				
 				if(requestCallback != null)
