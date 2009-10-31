@@ -2,6 +2,7 @@ package hotmath.gwt.cm_admin.client.ui;
 
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.model.CmAdminDataReader;
+import hotmath.gwt.cm_tools.client.model.CmAdminDataRefresher;
 import hotmath.gwt.cm_tools.client.model.CmAdminModel;
 import hotmath.gwt.cm_tools.client.model.GroupInfoModel;
 import hotmath.gwt.cm_tools.client.model.GroupModel;
@@ -105,7 +106,7 @@ public class ManageGroupsWindow extends CmWindow {
         LayoutContainer lc = new LayoutContainer();
         lc.setStyleName("manage-groups-window-buttons");
 
-        lc.add(new MyButton("New Group Name", "Create a new group",new SelectionListener<ButtonEvent>() {
+        lc.add(new MyButton("New Group Name", "Create a new group name.",new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent ce) {
                 CmAsyncRequest callback = new CmAsyncRequestImplDefault() {
                     public void requestComplete(String requestData) {
@@ -116,7 +117,7 @@ public class ManageGroupsWindow extends CmWindow {
             }
         }));
         
-        lc.add(new MyButton("Rename Group", "Rename group to a new name",new SelectionListener<ButtonEvent>() {
+        lc.add(new MyButton("Rename Group", "Rename group to a new name.",new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent ce) {
                 
                 final GroupInfoModel gim = getGroupInfo();
@@ -140,19 +141,19 @@ public class ManageGroupsWindow extends CmWindow {
         }));
 
         
-        lc.add(new MyButton("Remove Group Name", "Remove selected group name and move assigned students to group 'none'",new SelectionListener<ButtonEvent>() {
+        lc.add(new MyButton("Remove Group Name", "Remove selected group name and move assigned students to group 'none'.",new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent ce) {
                 final GroupInfoModel gim = getGroupInfo();
                 if(gim != null) {
-                    if(gim.getName().equals("none")){
-                        CatchupMathTools.showAlert("This group cannot be removed");
+                    if(gim.getName().equals("none") || gim.getName().equals("all")){
+                        CatchupMathTools.showAlert("This group cannot be removed.");
                         return;
                     }
                         
                     MessageBox.confirm("Remove group", "Are you sure you want to remove the group '" + gim.getName() + "' (sets existing group students to group 'none')?  ", new Listener<MessageBoxEvent>() {
                         public void handleEvent(MessageBoxEvent be) {
                             if(be.getButtonClicked().getText().equalsIgnoreCase("yes"))
-                                deleteGroup(gim.getAdminId(), gim.getId());
+                                deleteGroup(adminModel.getId(), gim.getId());
                         }
                     });
                 }
@@ -160,26 +161,15 @@ public class ManageGroupsWindow extends CmWindow {
         }));
         
 
-        lc.add(new MyButton("Unregister Students", "Unregister all students in selected group",new SelectionListener<ButtonEvent>() {
+        lc.add(new MyButton("Unregister Students", "Unregister all students in selected group.",new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent ce) {
                 final GroupInfoModel gim = getGroupInfo();
                 if(gim != null) {
-//                    if(gim.getCount() == 0) {
-//                        CatchupMathTools.showAlert("There are no students assigned to this group.");
-//                        return;
-//                    }
-                    String msg = "Are you sure you want to unregister the " + gim.getCount() + " students assigned to group '" + gim.getName() + "'?";
-                    
-                    if(gim.getAdminId() == 0) {
-                        if(gim.getCount() == 0) {
-                            CatchupMathTools.showAlert("There are no students to unregister");
-                            return;
-                        }
+                    if(gim.getCount() == 0) {
+                        CatchupMathTools.showAlert("There are no students to unregister.");
+                        return;
                     }
-                    else {
-                        /** Add message about deleting group name if not default */
-                        msg += "<p style='margin-top: 10px;'>This action also deletes the group name.</p>";
-                    }
+                    String msg = "Are you sure you want to unregister the " + getCountString(gim) + " assigned to group '" + gim.getName() + "'?";
                     
                     MessageBox.confirm("Unregister group", msg, new Listener<MessageBoxEvent>() {
                         public void handleEvent(MessageBoxEvent be) {
@@ -248,6 +238,15 @@ public class ManageGroupsWindow extends CmWindow {
         grid.setHeight("250px");
         return grid;
     }    
+    
+    /** Return string that deals with singular/plural of student count
+     * 
+     */
+    private String getCountString(GroupInfoModel gim) {
+        return gim.getCount() + " " + (gim.getCount() == 1?"student":"students");
+    }
+    
+    
     
     private ColumnModel defineColumns() {
         List<ColumnConfig> configs = new ArrayList<ColumnConfig>();
@@ -328,7 +327,7 @@ public class ManageGroupsWindow extends CmWindow {
         cmService.execute(action, new AsyncCallback<RpcData>() {
             public void onSuccess(RpcData result) {
                 readRpcData(adminUid);
-                EventBus.getInstance().fireEvent(new CmEvent(EventBus.EVENT_TYPE_REFRESH_STUDENT_DATA));                
+                CmAdminDataReader.getInstance().fireRefreshData();              
             }
             public void onFailure(Throwable caught) {
                 CatchupMathTools.showAlert(caught.getMessage());

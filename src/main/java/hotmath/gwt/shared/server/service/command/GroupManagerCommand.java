@@ -85,9 +85,17 @@ public class GroupManagerCommand implements ActionHandler<GroupManagerAction, Rp
 
         PreparedStatement ps=null;
         try {
-            ps = conn.prepareStatement("select uid from HA_USER where is_active = 1 and admin_id = ? and group_id = ?");
-            ps.setInt(1,adminId);
-            ps.setInt(2,groupId);
+            if(groupId == -1) {
+                String sql = "select uid from HA_USER where is_active = 1 and admin_id = ?";
+                ps = conn.prepareStatement(sql);
+                ps.setInt(1,adminId);
+            }
+            else {
+                String sql = "select uid from HA_USER where is_active = 1 and admin_id = ? and group_id = ?";
+                ps = conn.prepareStatement(sql);
+                ps.setInt(1,adminId);
+                ps.setInt(2,groupId);
+            }
             
             ResultSet rs = ps.executeQuery();
             while(rs.next()) {
@@ -97,12 +105,6 @@ public class GroupManagerCommand implements ActionHandler<GroupManagerAction, Rp
             }
             
             StringHolder result = dao.unregisterStudents(conn, cmList);
-            
-            /** Also delete the group when unregistering all students
-             *  (Chuck request...) Not sure I agree with it ..
-             */
-            new CmAdminDao().deleteGroup(conn, adminId, groupId);
-            
             __logger.debug(result.getResponse());
         }
         finally {
@@ -122,9 +124,17 @@ public class GroupManagerCommand implements ActionHandler<GroupManagerAction, Rp
     private void doGroupProgramAssignment(final Connection conn, Integer adminId, Integer groupId, StudentModel studentTemplate) throws Exception {
         PreparedStatement ps=null;
         try {
-            ps = conn.prepareStatement(CmMultiLinePropertyReader.getInstance().getProperty("GroupManagerCommand-GROUP_USERS"));
-            ps.setInt(1,adminId);
-            ps.setInt(2,groupId);
+            if(groupId == -1) {
+                String sql = "select uid from HA_USER where is_active = 1 and is_auto_create_template = 0 and admin_id = ?";
+                ps = conn.prepareStatement(sql);
+                ps.setInt(1,adminId);
+            }
+            else {
+                String sql = "select uid from HA_USER where is_active = 1 and is_auto_create_template = 0 and admin_id = ? and group_id = ?";
+                ps = conn.prepareStatement(sql);
+                ps.setInt(1,adminId);
+                ps.setInt(2,groupId);
+            }
             
             ResultSet rs = ps.executeQuery();
             while(rs.next()) {

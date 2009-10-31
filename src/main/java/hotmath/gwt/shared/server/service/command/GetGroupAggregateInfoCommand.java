@@ -26,6 +26,7 @@ public class GetGroupAggregateInfoCommand implements ActionHandler<GetGroupAggre
             ps = conn.prepareStatement(CmMultiLinePropertyReader.getInstance().getProperty("GROUP_NAMES_AND_COUNTS"));
             
             ps.setInt(1,action.getAdminId());
+            ps.setInt(2, action.getAdminId());
             ResultSet rs = ps.executeQuery();
             while(rs.next()) {
                 groupInfo.add(new GroupInfoModel(rs.getInt("admin_id"),rs.getInt("id"), rs.getString("name"), rs.getInt("student_count")));

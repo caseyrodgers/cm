@@ -143,6 +143,7 @@ public class CmAdminDao {
      *  remove from table.
      *  
      *  NOTE: will not delete default groups
+     *        also, the passed in adminId is the adminId of the user, not the group .. which could be different.
      *  
      * @param conn
      * @param groupId
@@ -162,7 +163,7 @@ public class CmAdminDao {
             /** Do not remove default groups
              * 
              */
-            sql = "delete from CM_GROUP where admin_id != 1 and id = " + groupId ;
+            sql = "delete from CM_GROUP where admin_id != 0 and id = " + groupId ;
             int cnt=ps.executeUpdate(sql);
             if(cnt != 1)
                 logger.warn("No group found to delete: " + groupId);

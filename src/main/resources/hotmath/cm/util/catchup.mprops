@@ -627,6 +627,8 @@ order by create_date
 
 .key=GROUP_NAMES_AND_COUNTS
 
+
+
 ## return groups and their counts, including all default groups
 
 select   g.admin_id,
@@ -643,9 +645,22 @@ from     HA_ADMIN a
                and u.is_active = 1
                and u.is_auto_create_template = 0)
 where    a.aid = ?
-and (g.admin_id <> 0 or (g.admin_id = 0 and uid is not null) or g.name = 'none')
+         and (g.admin_id <> 0
+               or (g.admin_id = 0
+                   and uid is not null)
+               or g.name = '__none')
 group by g.id
-order by name;
+union 
+select   0          as admin_id,
+         -1         as id,
+         'all'      as name,
+         Count(uid) as student_count
+from     HA_USER u
+where    u.admin_id = ?
+         and is_active = 1
+         and is_auto_create_template = 0
+group by id
+order by name
 
 
 
@@ -653,18 +668,6 @@ order by name;
 
 
 
-
-
-#########################
-#########################
-### GroupManagerCommand
-#########################
-#########################
-
-
-.key=GroupManagerCommand-GROUP_USERS
-
-select uid from HA_USER where is_active = 1 and is_auto_create_template = 0 and admin_id = ? and group_id = ?
 
 
 
