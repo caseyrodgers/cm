@@ -261,7 +261,7 @@ public class StudentDetailsWindow extends CmWindow {
         ti.addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent ce) {
-                displayPrintableReportRPC(sm);
+                new DetailsReportWindow(sm);
             }
         });
         return ti;
@@ -367,26 +367,6 @@ public class StudentDetailsWindow extends CmWindow {
                 if(list.size() > 0) {
                     enableDisableButtons();
                 }
-            }
-
-            public void onFailure(Throwable caught) {
-                String msg = caught.getMessage();
-                CatchupMathTools.showAlert(msg);
-            }
-        });
-    }
-
-    protected void displayPrintableReportRPC(final StudentModel sm) {
-        List<Integer> studentUids = new ArrayList<Integer>();
-        studentUids.add(sm.getUid());
-
-        CmServiceAsync s = (CmServiceAsync) Registry.get("cmService");
-        s.execute(new GetReportDefAction(studentUids), new AsyncCallback<StringHolder>() {
-
-            public void onSuccess(StringHolder reportId) {
-                String url = "/gwt-resources/cm-report-gen.html?id=" + reportId.getResponse() + "&aid=" + sm.getAdminUid()
-                        + "&type=studentDetail";
-                Window.open(url, "_blank", "width=600,height=300,location=0,menubar=0,resizable=1");
             }
 
             public void onFailure(Throwable caught) {
