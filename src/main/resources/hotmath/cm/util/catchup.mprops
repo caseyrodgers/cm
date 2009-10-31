@@ -640,7 +640,8 @@ from     HA_ADMIN a
          left join HA_USER u
            on (u.group_id = g.id
                and u.admin_id = a.aid
-               and u.is_active = 1)
+               and u.is_active = 1
+               and u.is_auto_create_template = 0)
 where    a.aid = ?
 and (g.admin_id <> 0 or (g.admin_id = 0 and uid is not null) or g.name = 'none')
 group by g.id

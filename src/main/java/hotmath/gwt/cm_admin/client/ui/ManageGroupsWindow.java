@@ -27,7 +27,6 @@ import java.util.List;
 import com.extjs.gxt.ui.client.Registry;
 import com.extjs.gxt.ui.client.Style.LayoutRegion;
 import com.extjs.gxt.ui.client.Style.SelectionMode;
-import com.extjs.gxt.ui.client.data.DataReader;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
@@ -43,6 +42,7 @@ import com.extjs.gxt.ui.client.widget.form.CheckBox;
 import com.extjs.gxt.ui.client.widget.form.ComboBox;
 import com.extjs.gxt.ui.client.widget.form.FieldSet;
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
+import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.extjs.gxt.ui.client.widget.form.ComboBox.TriggerAction;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
@@ -50,6 +50,7 @@ import com.extjs.gxt.ui.client.widget.grid.Grid;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
+import com.extjs.gxt.ui.client.widget.layout.FormLayout;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public class ManageGroupsWindow extends CmWindow {
@@ -104,7 +105,7 @@ public class ManageGroupsWindow extends CmWindow {
         LayoutContainer lc = new LayoutContainer();
         lc.setStyleName("manage-groups-window-buttons");
 
-        lc.add(new MyButton("New Group", "Create a new group",new SelectionListener<ButtonEvent>() {
+        lc.add(new MyButton("New Group Name", "Create a new group",new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent ce) {
                 CmAsyncRequest callback = new CmAsyncRequestImplDefault() {
                     public void requestComplete(String requestData) {
@@ -139,24 +140,24 @@ public class ManageGroupsWindow extends CmWindow {
         }));
 
         
-//        lc.add(new MyButton("Remove Group", "Remove selected group and move assigned students to group 'none'",new SelectionListener<ButtonEvent>() {
-//            public void componentSelected(ButtonEvent ce) {
-//                final GroupInfoModel gim = getGroupInfo();
-//                if(gim != null) {
-//                    if(gim.getName().equals("none")){
-//                        CatchupMathTools.showAlert("This group cannot be removed");
-//                        return;
-//                    }
-//                        
-//                    MessageBox.confirm("Remove group", "Are you sure you want to remove this group '" + gim.getName() + "' (sets existing group students to group 'none')?  ", new Listener<MessageBoxEvent>() {
-//                        public void handleEvent(MessageBoxEvent be) {
-//                            if(be.getButtonClicked().getText().equalsIgnoreCase("yes"))
-//                                deleteGroup(gim.getAdminId(), gim.getId());
-//                        }
-//                    });
-//                }
-//            }
-//        }));
+        lc.add(new MyButton("Remove Group Name", "Remove selected group name and move assigned students to group 'none'",new SelectionListener<ButtonEvent>() {
+            public void componentSelected(ButtonEvent ce) {
+                final GroupInfoModel gim = getGroupInfo();
+                if(gim != null) {
+                    if(gim.getName().equals("none")){
+                        CatchupMathTools.showAlert("This group cannot be removed");
+                        return;
+                    }
+                        
+                    MessageBox.confirm("Remove group", "Are you sure you want to remove the group '" + gim.getName() + "' (sets existing group students to group 'none')?  ", new Listener<MessageBoxEvent>() {
+                        public void handleEvent(MessageBoxEvent be) {
+                            if(be.getButtonClicked().getText().equalsIgnoreCase("yes"))
+                                deleteGroup(gim.getAdminId(), gim.getId());
+                        }
+                    });
+                }
+            }
+        }));
         
 
         lc.add(new MyButton("Unregister Students", "Unregister all students in selected group",new SelectionListener<ButtonEvent>() {
@@ -194,7 +195,7 @@ public class ManageGroupsWindow extends CmWindow {
         }));
         
         
-        lc.add(new MyButton("Reassign Program", "Assign a program to all students in group.",new SelectionListener<ButtonEvent>() {
+        lc.add(new MyButton("Reassign Program", "Reassign a program to all students in group.",new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent ce) {
                 final GroupInfoModel gim = getGroupInfo();
                 if(gim != null) {
@@ -364,7 +365,7 @@ class GroupManagerGlobalSettings extends CmWindow {
         this.cm = cm;
         this.gim = gim;
         setHeading("Group Settings for '" + gim.getName() + "'" );
-        setSize(300,250);
+        setSize(400,250);
         drawGui();
         setModal(true);
         setResizable(false);
@@ -378,27 +379,29 @@ class GroupManagerGlobalSettings extends CmWindow {
         form.setFrame(false);
         form.getHeader().setVisible(false);
         FieldSet fs = new FieldSet();
+        FormLayout fl = new FormLayout();
+        fl.setLabelWidth(130);
+        fs.setLayout(fl);
         fs.setHeading("Group Settings");
         showWorkRequired = new CheckBox();
-        showWorkRequired.setBoxLabel("Show Work Required");
+        showWorkRequired.setFieldLabel("Show Work Required");
+        showWorkRequired.setBoxLabel("");
         fs.add(showWorkRequired);
         
         disallowTutoring = new CheckBox();
         disallowTutoring.setValue(true);
-        disallowTutoring.setBoxLabel("Disallow Tutoring");
+        disallowTutoring.setBoxLabel("");
+        disallowTutoring.setFieldLabel("Disallow Tutoring");
         fs.add(disallowTutoring);
-
+        
         passPercent = new PassPercentCombo();
-        passPercent.setWidth(250);
         passPercent.enable();
         fs.add(passPercent);
-
-        
         
         form.add(fs);
 
 
-        Html html = new Html("<p style='font-style: italcs;'>Changes apply to all " + gim.getCount() + " students in the group '" + gim.getName() + "'.</p>");
+        Html html = new Html("<p style='font-style: italcs;'>Changes apply to all students in the group '" + gim.getName() + "'.</p>");
         
         FieldSet fsInfo = new FieldSet();
         fsInfo.setHeading("");
