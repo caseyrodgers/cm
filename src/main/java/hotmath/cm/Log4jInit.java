@@ -24,6 +24,9 @@ public class Log4jInit extends HttpServlet {
             PropertyConfigurator.configure(prefix + file);
             Logger.getLogger(this.getClass()) .info("Catchup Log4J intialized");
         }
+        
+        
+        CmWebResourceManager.setFileBase(getServletContext().getRealPath("temp"));
     }
 
     public void doGet(HttpServletRequest req, HttpServletResponse res) {

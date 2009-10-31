@@ -2,6 +2,7 @@ package hotmath.cm.util;
 
 import hotmath.flusher.Flushable;
 import hotmath.flusher.HotmathFlusher;
+import hotmath.gwt.shared.client.util.CmException;
 
 import java.io.File;
 
@@ -17,9 +18,11 @@ import org.apache.log4j.Logger;
  */
 public class CmWebResourceManager {
     final static Logger __logger = Logger.getLogger(CmWebResourceManager.class);
+
+    static String __fileBase;
     
     static private CmWebResourceManager __instance;
-    static public CmWebResourceManager getInstance() {
+    static public CmWebResourceManager getInstance() throws Exception {
         if(__instance == null)
             __instance = new CmWebResourceManager();
         return __instance;
@@ -27,24 +30,25 @@ public class CmWebResourceManager {
     }
     
     ResourceWatcherThread watcher;
-    String base;
     String webBase;
     
     int EXPIRE_TIME = 1000 * 60 * 60 * 24; // one day
-    private CmWebResourceManager() {
-
-        /** Where the output files should be written
-         * @TODO: could be set when servlet starts up,
-         * but that will create an needed dependency
-         */
-        this.base = CmMultiLinePropertyReader.getInstance().getProperty("CmWebResourceManager.baseDir", "/dev/local/cm/src/main/webapp/temp").trim();
+    
+    /** the __fileBase variable must be set to the location of the temp
+     *  directory.  This is usually set during servlet initialization,
+     *  but might need to be done manually when testing or standalone operation.
+     */
+    private CmWebResourceManager() throws Exception {
+        if(__fileBase == null)
+            throw new CmException("__fileBase variable must be set prior to initialization");
+        
         try {
-            if(!new File(base).exists()) {
-                __logger.warn("base directory does not exist: " + base);
-                new File(base).mkdir();
+            if(!new File(__fileBase).exists()) {
+                __logger.warn("base directory does not exist: " + __fileBase);
+                new File(__fileBase).mkdir();
             }
             else {
-                __logger.info("base directory exists: " + base);
+                __logger.info("base directory exists: " + __fileBase);
             }
         }
         catch(Exception e) {
@@ -57,9 +61,6 @@ public class CmWebResourceManager {
          *  
          */
         this.webBase = CmMultiLinePropertyReader.getInstance().getProperty("CmWebResourceManager.webBase", "/temp");
-        
-        watcher = new ResourceWatcherThread(base, EXPIRE_TIME);
-        watcher.start();
     }
     
     
@@ -87,12 +88,13 @@ public class CmWebResourceManager {
      * @return
      */
     public String getFileBase() {
-        return base;
+        return __fileBase;
     }
     
     
-    public void setFileBase(String base) {
-        this.base = base;
+    static public void setFileBase(String base) {
+        __logger.info("Setting base: " + base);
+        __fileBase = base;
     }
     
 
