@@ -6,8 +6,10 @@ import hotmath.gwt.shared.client.rpc.Action;
 import hotmath.gwt.shared.client.rpc.CmWebResource;
 
 public class GeneratePdfAction implements Action<CmWebResource>{
-    
-    PdfType pdfType;
+
+	private static final long serialVersionUID = 6104125833256395744L;
+	
+	PdfType pdfType;
     Integer adminId;
     List<Integer> studentUids;
     public GeneratePdfAction() {}
@@ -18,8 +20,6 @@ public class GeneratePdfAction implements Action<CmWebResource>{
         this.studentUids = studentUids;
     }
 
-    
-    
     public PdfType getPdfType() {
         return pdfType;
     }
@@ -43,8 +43,6 @@ public class GeneratePdfAction implements Action<CmWebResource>{
     public void setStudentUids(List<Integer> studentUids) {
         this.studentUids = studentUids;
     }
-
-
 
     public enum PdfType{REPORT_CARD, STUDENT_DETAIL, STUDENT_SUMMARY};
 }
