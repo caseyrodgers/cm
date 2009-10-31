@@ -51,10 +51,12 @@
                           var done = (reportStatus.status == 'done');
                           //alert('done: ' + done);
                           if (done != true) {
-                        	  window.setTimeout('checkProgress()', 500);
+                       	      window.setTimeout('checkProgress()', 500);
                           }
-                          else self.close();
-                  }
+                          else {
+                              window.setTimeout('self.close()', 25000);
+                          }
+                      }
                   catch(e) {
                 	  alert('Error talking with CM Server', 'Could not obtain Report Generation status');
                   }

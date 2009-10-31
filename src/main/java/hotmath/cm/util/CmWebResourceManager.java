@@ -37,9 +37,20 @@ public class CmWebResourceManager {
          * @TODO: could be set when servlet starts up,
          * but that will create an needed dependency
          */
-        this.base = CmMultiLinePropertyReader.getInstance().getProperty("CmWebResourceManager.baseDir", "/dev/local/cm/src/main/webapp/temp");
-        if(!new File(base).exists())
-            __logger.warn("base directory does not exist: " + base);
+        this.base = CmMultiLinePropertyReader.getInstance().getProperty("CmWebResourceManager.baseDir", "/dev/local/cm/src/main/webapp/temp").trim();
+        try {
+            if(!new File(base).exists()) {
+                __logger.warn("base directory does not exist: " + base);
+                new File(base).mkdir();
+            }
+            else {
+                __logger.info("base directory exists: " + base);
+            }
+        }
+        catch(Exception e) {
+            __logger.warn("user: " + System.getProperty("user.name"), e);
+            e.printStackTrace();
+        }
         
         /** The url base that combined with the filename will 
          *  constructed an absolute URL to the reource via HTTP
