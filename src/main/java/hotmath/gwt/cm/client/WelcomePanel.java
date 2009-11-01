@@ -42,6 +42,7 @@ public class WelcomePanel extends LayoutContainer {
         }
         
         _goBtn = new Button("Begin Catchup Math");
+        _goBtn.setId("welcome-panel-go");
         _goBtn.addSelectionListener(new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent ce) {
                 startup();
