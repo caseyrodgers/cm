@@ -163,9 +163,16 @@ public class GroupManagerCommand implements ActionHandler<GroupManagerAction, Rp
     private void doGroupPropertySet(final Connection conn,Integer adminId,Integer groupId,Boolean showWorkRequired,Boolean disallowTutoring,Integer passPercent) throws Exception {
         PreparedStatement ps=null;
         try {
-            ps = conn.prepareStatement(CmMultiLinePropertyReader.getInstance().getProperty("GroupManagerCommand-GROUP_USERS"));
-            ps.setInt(1,adminId);
-            ps.setInt(2,groupId);
+            if(groupId == -1) {
+                String sql = "select uid from HA_USER where is_active = 1 and admin_id = ?";
+                ps = conn.prepareStatement(sql);
+                ps.setInt(1,adminId);
+            }
+            else {
+                String sql = "select uid from HA_USER where is_active = 1 and group_id = ?";
+                ps = conn.prepareStatement(sql);
+                ps.setInt(1,groupId);
+            }
             
             CmStudentDao dao = new CmStudentDao();
             ResultSet rs = ps.executeQuery();

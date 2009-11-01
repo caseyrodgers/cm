@@ -35,7 +35,7 @@ public class GroupManagerCommand_Test extends CmDbTestCase {
     }
     
     
-    public void testUpdateGroupProperties() throws Exception {
+    public void testUpdateGroupPropertiesGroup() throws Exception {
         GroupManagerAction action = new GroupManagerAction(ActionType.GROUP_PROPERTY_SET,_user.getAid());
         action.setGroupId(Integer.parseInt(_groupModel.getId()));
         action.setDisallowTutoring(true);
@@ -44,6 +44,17 @@ public class GroupManagerCommand_Test extends CmDbTestCase {
         RpcData rdata = ActionDispatcher.getInstance().execute(action);
         assertTrue(rdata.getDataAsString("status").equals("OK"));
     }
+    
+    public void testUpdateGroupPropertiesAll() throws Exception {
+        GroupManagerAction action = new GroupManagerAction(ActionType.GROUP_PROPERTY_SET,_user.getAid());
+        action.setGroupId(-1);
+        action.setDisallowTutoring(true);
+        action.setShowWorkRequired(true);
+        action.setPassPercent(80);
+        RpcData rdata = ActionDispatcher.getInstance().execute(action);
+        assertTrue(rdata.getDataAsString("status").equals("OK"));
+    }
+
     
     public void testCreate() throws Exception {
         GroupManagerAction action = new GroupManagerAction(ActionType.DELETE,_user.getAid());
