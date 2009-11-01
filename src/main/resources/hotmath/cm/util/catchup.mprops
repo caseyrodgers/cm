@@ -653,7 +653,7 @@ group by g.id
 union 
 select   0          as admin_id,
          -1         as id,
-         'all'      as name,
+         'All Students'      as name,
          Count(uid) as student_count
 from     HA_USER u
 where    u.admin_id = ?

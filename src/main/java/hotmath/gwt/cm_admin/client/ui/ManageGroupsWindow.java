@@ -145,7 +145,7 @@ public class ManageGroupsWindow extends CmWindow {
             public void componentSelected(ButtonEvent ce) {
                 final GroupInfoModel gim = getGroupInfo();
                 if(gim != null) {
-                    if(gim.getName().equals("none") || gim.getName().equals("all")){
+                    if(gim.getName().equals("none") || gim.getName().equals("All Students")){
                         CatchupMathTools.showAlert("This group cannot be removed.");
                         return;
                     }

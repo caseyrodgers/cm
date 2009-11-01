@@ -107,6 +107,8 @@ public class CmAdminDao {
     	PreparedStatement ps = null;
     	ResultSet rs = null;
     	
+    	checkForReservedGroup(gm.getName());
+    	
 		Boolean isDuplicate = checkForDuplicateGroup(conn, adminUid, gm);
 		if (isDuplicate) {
 			throw new Exception("The group you entered already exists, please try again.");
@@ -175,6 +177,10 @@ public class CmAdminDao {
     
     
     public void updateGroup(final Connection conn, Integer groupId, String name) throws Exception {
+        
+
+        checkForReservedGroup(name);
+        
         PreparedStatement ps=null;
         try {
             String sql = "update CM_GROUP set name = ? where id = ?";
@@ -191,6 +197,17 @@ public class CmAdminDao {
         }
     }    
 
+
+    /** Do not allow groups to be named as already existing default names
+     * 
+     * @TODO: should be all default groups..?
+     *  
+     */
+    private void checkForReservedGroup(String name) throws Exception {
+        if(name.equals("none") || name.equals("All Students")) {
+            throw new Exception("The group name '" + name + "' is reserved.");
+        }
+    }
     
     //TODO: assumes a single Admin per school
     private static final String CHECK_DUPLICATE_GROUP_SQL =

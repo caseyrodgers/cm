@@ -65,7 +65,7 @@ public class GroupManagerCommand implements ActionHandler<GroupManagerAction, Rp
     
     
     
-    /** Update group name identiifed by groupId
+    /** Update group name identified by groupId
      * 
      * @param conn
      * @param groupId
