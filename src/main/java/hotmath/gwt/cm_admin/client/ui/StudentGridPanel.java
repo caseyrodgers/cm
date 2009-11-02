@@ -44,7 +44,6 @@ import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.store.Store;
 import com.extjs.gxt.ui.client.store.StoreFilter;
 import com.extjs.gxt.ui.client.util.Margins;
-import com.extjs.gxt.ui.client.util.Point;
 import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.MessageBox;
@@ -59,7 +58,6 @@ import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
 import com.extjs.gxt.ui.client.widget.menu.Menu;
 import com.extjs.gxt.ui.client.widget.menu.MenuItem;
-import com.extjs.gxt.ui.client.widget.toolbar.FillToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONParser;
@@ -122,15 +120,6 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
         
         final Menu contextMenu = new Menu();
         
-        MenuItem showWork = new MenuItem("Show Work");
-        showWork.addSelectionListener(new SelectionListener<MenuEvent>() {
-            public void componentSelected(MenuEvent ce) {
-                showWorkDialog();
-                contextMenu.hide();
-            }
-        });
-        contextMenu.add(showWork);
-
         MenuItem editUser = new MenuItem("Edit Student");
         editUser.addSelectionListener(new SelectionListener<MenuEvent>() {
             public void componentSelected(MenuEvent ce) {
@@ -273,15 +262,6 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
         Window.open(url, "_blank", "location=1,menubar=1,resizable=1");
     }
     
-
-    private void showWorkDialog() {
-        StudentModel sm = _grid.getSelectionModel().getSelectedItem();
-        if (sm == null)
-            return;
-        
-        new StudentShowWorkWindow(sm);
-    }
-
     private void showDebugInfo() {
         StudentModel sm = _grid.getSelectionModel().getSelectedItem();
         if (sm == null)
@@ -301,9 +281,6 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
         toolbar.add(ti);
 
         ti = studentDetailsToolItem(_grid);
-        toolbar.add(ti);
-
-        ti = showWorkToolItem(_grid,_cmAdminMdl);
         toolbar.add(ti);
 
         ti = unregisterStudentToolItem(_grid);
@@ -398,30 +375,6 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
             new RegisterStudent(sm, _cmAdminMdl);
         }
       
-    }
-    
-    private Button showWorkToolItem(final Grid<StudentModel> grid, final CmAdminModel cmAdminMdl) {
-        Button ti = new StudenPanelButton("Show Work");
-        ti.setToolTip("Show all student's show work effort.");
-
-        ti.addSelectionListener(new SelectionListener<ButtonEvent>() {
-            @Override
-            public void componentSelected(ButtonEvent ce) {
-                GridSelectionModel<StudentModel> sel = grid.getSelectionModel();
-                List<StudentModel> l = sel.getSelection();
-                if (l.size() == 0) {
-                    CatchupMathTools.showAlert("Please select a student.");
-                } else {
-                    StudentModel sm = l.get(0);
-                    new StudentShowWorkWindow(sm);
-                }
-                if (grid.getStore().getCount() > 0) {
-                    //ce.getComponent().enable();
-                }
-            }
-
-        });
-        return ti;
     }
 
     private Button studentDetailsToolItem(final Grid<StudentModel> grid) {
@@ -624,9 +577,8 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
             }
 
             public void onFailure(Throwable caught) {
-                String msg = caught.getMessage();
-                caught.printStackTrace();   // quiet
-                // CatchupMathTools.showAlert(msg);
+                caught.printStackTrace();
+                CatchupMathTools.showAlert(caught.getMessage());
             }
         });
     }
