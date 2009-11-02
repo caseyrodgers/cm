@@ -13,16 +13,17 @@ import hotmath.gwt.cm_tools.client.service.CmServiceAsync;
 import hotmath.gwt.cm_tools.client.ui.AutoRegisterStudentSetup;
 import hotmath.gwt.cm_tools.client.ui.BulkStudentRegistrationWindow;
 import hotmath.gwt.cm_tools.client.ui.GroupSelectorWidget;
+import hotmath.gwt.cm_tools.client.ui.PdfWindow;
 import hotmath.gwt.cm_tools.client.ui.RegisterStudent;
 import hotmath.gwt.cm_tools.client.ui.StudentDetailsWindow;
-import hotmath.gwt.cm_tools.client.ui.StudentShowWorkWindow;
 import hotmath.gwt.cm_tools.client.util.ProcessTracker;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
 import hotmath.gwt.shared.client.eventbus.CmEventListenerImplDefault;
 import hotmath.gwt.shared.client.eventbus.EventBus;
-import hotmath.gwt.shared.client.rpc.action.GetReportDefAction;
+import hotmath.gwt.shared.client.rpc.action.GeneratePdfAction;
 import hotmath.gwt.shared.client.rpc.action.UnregisterStudentsAction;
+import hotmath.gwt.shared.client.rpc.action.GeneratePdfAction.PdfType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -440,7 +441,16 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
             @Override
             public void componentSelected(ButtonEvent ce) {
                 ListStore<StudentModel> store = grid.getStore();
-                displayPrintableReportRPC(store);
+
+                List<Integer> studentUids = new ArrayList<Integer>();
+                for(int i=0;i<store.getCount();i++) {
+                    studentUids.add(store.getAt(i).getUid());
+                    
+                }
+                new PdfWindow(_cmAdminMdl.getId(), 
+                        "Catchup Math Student Summary Report",
+                        new GeneratePdfAction(PdfType.STUDENT_SUMMARY,_cmAdminMdl.getId(),studentUids));
+
             }
         });
         return ti;
@@ -619,29 +629,6 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
                 AccountInfoPanel aip = CatchupMathAdmin.getInstance().getAccountInfoPanel();
                 aip.refreshData();
 
-            }
-
-            public void onFailure(Throwable caught) {
-                String msg = caught.getMessage();
-                CatchupMathTools.showAlert(msg);
-            }
-        });
-    }
-
-    protected void displayPrintableReportRPC(ListStore<StudentModel> store) {
-        
-        List<Integer> studentUids = new ArrayList<Integer>(store.getCount());
-        for (int i=0; i < store.getCount(); i++) {
-        	StudentModel sm = store.getAt(i);
-            studentUids.add(sm.getUid()); 	
-        }
-
-        CmServiceAsync s = (CmServiceAsync) Registry.get("cmService");
-        s.execute(new GetReportDefAction(studentUids), new AsyncCallback<StringHolder>() {
-
-            public void onSuccess(StringHolder reportId) {
-            	String url = "/gwt-resources/cm-report-gen.html?id=" + reportId.getResponse() + "&aid=" + _cmAdminMdl.getId() + "&type=studentSummary";
-                Window.open(url, "_blank", "width=600,height=300,location=0,menubar=0,resizable=1");
             }
 
             public void onFailure(Throwable caught) {
