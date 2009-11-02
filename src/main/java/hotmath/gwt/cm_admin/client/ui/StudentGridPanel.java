@@ -15,7 +15,7 @@ import hotmath.gwt.cm_tools.client.ui.BulkStudentRegistrationWindow;
 import hotmath.gwt.cm_tools.client.ui.GroupSelectorWidget;
 import hotmath.gwt.cm_tools.client.ui.RegisterStudent;
 import hotmath.gwt.cm_tools.client.ui.StudentDetailsWindow;
-import hotmath.gwt.cm_tools.client.ui.StudentShowWorkWindow;
+import hotmath.gwt.cm_tools.client.ui.StudentSummaryReportWindow;
 import hotmath.gwt.cm_tools.client.util.ProcessTracker;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
@@ -636,20 +636,8 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
         	StudentModel sm = store.getAt(i);
             studentUids.add(sm.getUid()); 	
         }
-
-        CmServiceAsync s = (CmServiceAsync) Registry.get("cmService");
-        s.execute(new GetReportDefAction(studentUids), new AsyncCallback<StringHolder>() {
-
-            public void onSuccess(StringHolder reportId) {
-            	String url = "/gwt-resources/cm-report-gen.html?id=" + reportId.getResponse() + "&aid=" + _cmAdminMdl.getId() + "&type=studentSummary";
-                Window.open(url, "_blank", "width=600,height=300,location=0,menubar=0,resizable=1");
-            }
-
-            public void onFailure(Throwable caught) {
-                String msg = caught.getMessage();
-                CatchupMathTools.showAlert(msg);
-            }
-        });
+        AccountInfoPanel aip = CatchupMathAdmin.getInstance().getAccountInfoPanel();
+        new StudentSummaryReportWindow(aip.getAccountInfoModel(), _cmAdminMdl.getId(), studentUids);
     }
 
 	//@Override
