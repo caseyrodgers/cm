@@ -1,5 +1,7 @@
 package hotmath.gwt.shared.client.rpc;
 
+import hotmath.gwt.cm_tools.client.CatchupMathTools;
+
 
 
 /** A web resource is a resource that can be accessed
@@ -10,14 +12,17 @@ package hotmath.gwt.shared.client.rpc;
  *
  */
 public class CmWebResource implements Response {
-    String file;
+
+	String file;
+    String fileBase;
     String webBase;
     
     public CmWebResource() {}
     
-    public CmWebResource(String file, String webBase) {
+    public CmWebResource(String file, String fileBase, String webBase) {
         this.file = file;
         this.webBase = webBase;
+        this.fileBase = fileBase;
     }
 
     public String getFile() {
@@ -31,8 +36,14 @@ public class CmWebResource implements Response {
     public String getUrl() {
         
         // get the last component as the name
-        String p[] = file.split("/");
-        String name = p[p.length-1];
+    	String name;
+    	if (fileBase != null && file.startsWith(fileBase)) {
+    		name = file.substring(fileBase.length());
+    	}
+    	else {
+            String p[] = file.split("/");
+            name = p[p.length-1];
+    	}
         
         return webBase + "/" + name;
     }
