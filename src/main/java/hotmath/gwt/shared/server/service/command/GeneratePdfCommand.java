@@ -13,14 +13,13 @@ import hotmath.gwt.shared.client.rpc.action.GeneratePdfAction.PdfType;
 import hotmath.gwt.shared.server.service.ActionHandler;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.FileOutputStream;
 import java.sql.Connection;
 import java.util.List;
 
 public class GeneratePdfCommand implements ActionHandler<GeneratePdfAction, CmWebResource>{
 
-    
-    
     /** 
      * Performs the action: generate a PDF and return absolute file name to created PDF
      */
@@ -59,16 +58,20 @@ public class GeneratePdfCommand implements ActionHandler<GeneratePdfAction, CmWe
             
             // write out to temporary file to be clean up later
             String outputBase = CmWebResourceManager.getInstance().getFileBase();
-            String fileName = outputBase + "/rc_" + System.currentTimeMillis() + ".pdf";
+            
+            // if outputBase/adminId directory doesn't exist, create it
+            String outputDir = ensureOutputDir(outputBase, adminId);
+            
+            String filePath = outputDir + reportName + ".pdf";
             FileOutputStream fw = null;
             try {
-                fw = new FileOutputStream(fileName);
+                fw = new FileOutputStream(filePath);
                 baos.writeTo(fw);
                 
-                return new CmWebResource(fileName,CmWebResourceManager.getInstance().getWebBase());
+                return new CmWebResource(filePath, CmWebResourceManager.getInstance().getFileBase(), CmWebResourceManager.getInstance().getWebBase());
             }
             finally {
-                fw.close();
+                if (fw != null) fw.close();
             }
         }
         else {
@@ -82,4 +85,12 @@ public class GeneratePdfCommand implements ActionHandler<GeneratePdfAction, CmWe
         return GeneratePdfAction.class;
     }
   
+    private String ensureOutputDir(String outputBase, Integer adminId) {
+    	String outputDir = outputBase + "/" + adminId + "/";
+    	File dir = new File(outputDir);
+    	if (! dir.exists()) {
+    		dir.mkdirs();
+    	}
+    	return outputDir;
+    }
 } 
