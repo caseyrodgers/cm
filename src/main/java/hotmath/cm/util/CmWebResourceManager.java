@@ -57,7 +57,7 @@ public class CmWebResourceManager {
         }
         
         /** The url base that combined with the filename will 
-         *  constructed an absolute URL to the reource via HTTP
+         *  construct an absolute URL to the resource via HTTP
          *  
          */
         this.webBase = CmMultiLinePropertyReader.getInstance().getProperty("CmWebResourceManager.webBase", "/temp");
@@ -116,17 +116,9 @@ public class CmWebResourceManager {
             while(!cancelWatch) {
                 
                 File fileBase = new File(base);
-                File kids[] = fileBase.listFiles();
-                if(kids !=null ) {
-                    for(File kid:kids) {
-                        long kidMod = kid.lastModified();
-                        long et = (System.currentTimeMillis() - kidMod);
-                        if(et > expireTime) {
-                            __logger.info("Removing temp file: " + kid);
-                            kid.delete();
-                        }
-                    }
-                }
+                
+                cleanDir(fileBase);
+                
                 try {
                     Thread.sleep(1000 * 60 * 100);
                 }
@@ -136,6 +128,24 @@ public class CmWebResourceManager {
                 
             }
             __logger.info("Canceling resource watcher");
+        }
+
+        private void cleanDir(File dir) {
+            File kids[] = dir.listFiles();
+            if (kids !=null ) {
+                for(File kid:kids) {
+                    if (kid.isDirectory()) {
+                        cleanDir(kid);
+                        continue;
+                    }
+                    long kidMod = kid.lastModified();
+                    long et = (System.currentTimeMillis() - kidMod);
+                    if(et > expireTime) {
+                        __logger.info("Removing temp file: " + kid);
+                        kid.delete();
+                    }
+                }
+            }
         }
         
         public void cancelWatch() {
