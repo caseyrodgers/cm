@@ -80,6 +80,9 @@ public class AccountInfoPanel extends LayoutContainer implements CmAdminDataRefr
 		html.setVisible(true);
 	}
 	
+	public AccountInfoModel getAccountInfoModel() {
+		return this.model;
+	}
 
     protected void getAccountInfoRPC(Integer uid) {
         RegistrationServiceAsync s = (RegistrationServiceAsync) Registry.get("registrationService");
@@ -90,12 +93,10 @@ public class AccountInfoPanel extends LayoutContainer implements CmAdminDataRefr
             public void onSuccess(AccountInfoModel ai) {
                 StringBuilder sb = new StringBuilder();
                 sb.append("Manage ").append(ai.getSchoolName()).append(" Students");
-                
                 // _gridContainer.setHeading(sb.toString());
-                
+
                 setAccountInfoModel(ai);
-                
-                
+
                 Log.info("AccountInfoPanel: student info read succesfully");
             }
 
@@ -107,7 +108,7 @@ public class AccountInfoPanel extends LayoutContainer implements CmAdminDataRefr
         });
     }
 
-    @Override
+    //@Override
     public void refreshData() {
         getAccountInfoRPC(cmAdminModel.getId());
     }	
