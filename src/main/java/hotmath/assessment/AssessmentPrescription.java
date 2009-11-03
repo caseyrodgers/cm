@@ -103,7 +103,6 @@ public class AssessmentPrescription {
         _assessment = new InmhAssessment(testRun.getPidList());
         missed = _assessment.getPids().length;
 
-
         List<InmhItemData> itemsData = _assessment.getInmhItemUnion("review");
         int sumOfWeights = 0;
         for (InmhItemData id : itemsData) {

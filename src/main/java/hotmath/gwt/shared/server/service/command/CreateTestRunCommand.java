@@ -86,7 +86,6 @@ public class CreateTestRunCommand implements ActionHandler<CreateTestRunAction, 
                 new CmStudentDao().moveToNextQuizSegmentSlot(conn,test.getUser().getUid());
             }
 
-            
             AssessmentPrescription pres = AssessmentPrescriptionManager.getInstance().getPrescription(conn, run.getRunId());
 
             CreateTestRunResponse testRunInfo = new CreateTestRunResponse();

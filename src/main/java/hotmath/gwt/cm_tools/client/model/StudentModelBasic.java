@@ -19,6 +19,7 @@ public class StudentModelBasic implements StudentModelI, IsSerializable{
     String subjId;
     String chapter;
     String json;
+    String passPercent;
 
     
     @Override
@@ -95,8 +96,10 @@ public class StudentModelBasic implements StudentModelI, IsSerializable{
 
     @Override
     public String getPassPercent() {
-        return null;
+        return this.passPercent;
     }
+    
+    
 
     @Override
     public String getPasscode() {
@@ -225,6 +228,7 @@ public class StudentModelBasic implements StudentModelI, IsSerializable{
 
     @Override
     public void setPassPercent(String passPercent) {
+        this.passPercent = passPercent;
     }
 
     @Override

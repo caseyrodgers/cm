@@ -12,6 +12,7 @@ import hotmath.gwt.cm_tools.client.model.StudentModel;
 import hotmath.gwt.cm_tools.client.model.StudentModelBasic;
 import hotmath.gwt.cm_tools.client.model.StudentModelI;
 import hotmath.gwt.cm_tools.client.model.StudentShowWorkModel;
+import hotmath.gwt.cm_tools.client.ui.PassPercent;
 import hotmath.gwt.shared.client.util.CmException;
 import hotmath.gwt.shared.client.util.CmRpcException;
 import hotmath.testset.ha.CmProgram;
@@ -42,6 +43,7 @@ import org.json.JSONObject;
 
 public class CmStudentDao {
 
+  
     private static final Logger logger = Logger.getLogger(CmStudentDao.class);
     
     public static final int GROUP_NONE_ID = 1;
@@ -1283,16 +1285,19 @@ public class CmStudentDao {
      * @throws Exception
      */
     public void assignProgramToStudent(final Connection conn, Integer uid, CmProgram program, String chapter) throws Exception {
-        assignProgramToStudent(conn, uid, program.getProgramId(),program.getSubject(), chapter);
+        assignProgramToStudent(conn, uid, program.getProgramId(),program.getSubject(), chapter, null);
     }
     
     
-    public void assignProgramToStudent(final Connection conn, Integer uid, String progId, String subjId, String chapter) throws Exception {
+    public void assignProgramToStudent(final Connection conn, Integer uid, String progId, String subjId, String chapter, String passPercent) throws Exception {
+        
         StudentModelI sm = getStudentModelBasic(conn, uid);
         sm.setProgId(progId);
         sm.setSubjId(subjId);
         sm.setProgramChanged(true);
         sm.setChapter(chapter);
+        sm.setPassPercent(passPercent);
+        
         setTestConfig(conn, sm);
         updateStudent(conn, sm, true, false, true, false);        
     }    
@@ -1325,5 +1330,4 @@ public class CmStudentDao {
             SqlUtilities.releaseResources(null, pstat, null);
         }
     }
-
 }

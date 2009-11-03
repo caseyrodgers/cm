@@ -1,16 +1,18 @@
 package hotmath.gwt.shared.server.service.command;
 
-import hotmath.cm.util.CmMultiLinePropertyReader;
+import hotmath.cm.server.model.CmUserProgramDao;
 import hotmath.gwt.cm_admin.server.model.CmAdminDao;
 import hotmath.gwt.cm_admin.server.model.CmStudentDao;
 import hotmath.gwt.cm_tools.client.model.StringHolder;
 import hotmath.gwt.cm_tools.client.model.StudentModel;
 import hotmath.gwt.cm_tools.client.model.StudentModelI;
+import hotmath.gwt.cm_tools.client.model.StudentProgramReportModel;
 import hotmath.gwt.shared.client.rpc.Action;
 import hotmath.gwt.shared.client.rpc.Response;
 import hotmath.gwt.shared.client.rpc.action.GroupManagerAction;
 import hotmath.gwt.shared.client.util.RpcData;
 import hotmath.gwt.shared.server.service.ActionHandler;
+import hotmath.testset.ha.StudentUserProgramModel;
 import hotmath.util.sql.SqlUtilities;
 
 import java.sql.Connection;
@@ -135,13 +137,15 @@ public class GroupManagerCommand implements ActionHandler<GroupManagerAction, Rp
                 ps.setInt(2,groupId);
             }
             
+            String passPercent = studentTemplate.getPassPercent();
+            
             ResultSet rs = ps.executeQuery();
             while(rs.next()) {
                 
                 String pi = studentTemplate.getProgId();
                 String si = studentTemplate.getSubjId();
 
-                new CmStudentDao().assignProgramToStudent(conn, rs.getInt("uid"), pi, si, studentTemplate.getChapter());
+                new CmStudentDao().assignProgramToStudent(conn, rs.getInt("uid"), pi, si, studentTemplate.getChapter(),studentTemplate.getPassPercent());
             }
         }
         finally {
