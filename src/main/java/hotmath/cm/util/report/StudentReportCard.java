@@ -54,6 +54,7 @@ public class StudentReportCard {
         labelMap.put("practice", "Required Practice Problems: ");
         labelMap.put("flashcard", "Flashcard Sessions: ");
         labelMap.put("videos", "Videos: ");
+        labelMap.put("game", "Games: ");
     }
 
     private String reportName;
