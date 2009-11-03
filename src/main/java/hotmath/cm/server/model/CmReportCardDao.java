@@ -227,7 +227,7 @@ public class CmReportCardDao {
 			 // resource usage counts
 			 sql = CmMultiLinePropertyReader.getInstance().getProperty("RESOURCE_USAGE_COUNT");
 			 String progIds = getProgIdList(list);
-			 ps = conn.prepareStatement(sql.replaceFirst("XXX", progIds));
+			 ps = conn.prepareStatement(sql.replaceAll("XXX", progIds));
 			 rs = ps.executeQuery();
 			 while (rs.next()) {
 				 Integer count = rs.getInt(1);
