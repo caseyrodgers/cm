@@ -462,8 +462,17 @@ where p.id in (XXX)
     and t.user_prog_id = p.id
     and tr.test_id = t.test_id
     and iu.run_id = tr.run_id
+    and not (item_type = 'activity' and item_file like '%game%')
 group by item_type
-
+union
+select count(*), 'game'
+from HA_TEST_RUN_INMH_USE iu, HA_TEST_RUN tr, HA_TEST t, CM_USER_PROGRAM p
+where p.id in (XXX)
+    and t.user_prog_id = p.id
+    and tr.test_id = t.test_id
+    and iu.run_id = tr.run_id
+    and (item_type = 'activity' and item_file like '%game%')
+group by item_type
 
 .key=LESSONS_ASSIGNED
 
