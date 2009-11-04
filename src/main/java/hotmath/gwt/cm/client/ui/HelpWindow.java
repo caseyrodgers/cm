@@ -217,7 +217,7 @@ public class HelpWindow extends CmWindow {
             
             CmAdminModel adminModel = new CmAdminModel();
             adminModel.setId(student.getAdminUid());
-            new RegisterStudent(student, adminModel);
+            new RegisterStudent(student, adminModel).showWindow();
         }
 
         public void onFailure(Throwable caught) {

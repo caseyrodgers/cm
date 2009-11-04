@@ -341,7 +341,7 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
 
         ti.addSelectionListener(new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent ce) {
-                new RegisterStudent(null, cmAdminMdl);
+                new RegisterStudent(null, cmAdminMdl).showWindow();
             }
 
         });
@@ -372,7 +372,7 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
             CatchupMathTools.showAlert("Please select a student.");
         } else {
             StudentModel sm = l.get(0);
-            new RegisterStudent(sm, _cmAdminMdl);
+            new RegisterStudent(sm, _cmAdminMdl).showWindow();
         }
       
     }

@@ -100,16 +100,19 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
 		    }
 		});
 		_window.add(createForm());
-		_window.show();
- 		if (isNew) {
- 		   userName.focus();
- 		}
  	     
         skipComboSet = isNew;
 
 		setComboBoxSelections();
 	}
 	
+	
+	public void showWindow() {
+        _window.show();
+        if (isNew) {
+           userName.focus();
+        }
+	}
 
 	/** Return list of Buttons to add to the Button bar
 	 * 
@@ -254,13 +257,13 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
         _window.setModal(true);
 
 
-        /** Assign buttons to the button bar
+        /** Assign buttons to the button bar on the Window
          * 
          */
         _formPanel.setButtonAlign(HorizontalAlignment.RIGHT);
         for(Button btn: getActionButtons()) {
             btn.setStyleName("register-student-btn");
-            _formPanel.addButton(btn);
+            _window.addButton(btn);
         }
         
         /** Seems like a bug with setting focus, so the only way to 

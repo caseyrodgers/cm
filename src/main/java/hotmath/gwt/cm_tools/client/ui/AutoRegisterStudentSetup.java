@@ -46,7 +46,7 @@ public class AutoRegisterStudentSetup extends RegisterStudent {
         
         _fsProgram.setHeading("Assign Program for This Group");
 	    _formPanel.layout();
-	    setVisible(true);
+	    showWindow();
 	}
 	
 
