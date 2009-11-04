@@ -328,7 +328,8 @@ public class HaTestDao {
 			spmMap.put(m.getId(), m);
 		}
 
-		__logger.debug("Loading tests for prog ids: " + progIds);
+		if (__logger.isDebugEnabled())
+    		__logger.debug("loadTestsForProgramList(): progIds: " + progIds);
 
 		PreparedStatement pstat=null;
 		ResultSet rs = null;
@@ -336,11 +337,16 @@ public class HaTestDao {
 		try {
 			String sql = CmMultiLinePropertyReader.getInstance().getProperty("HA_TEST_LOAD_FOR_PROGRAMS");
 			pstat = conn.prepareStatement(sql.replaceFirst("XXX", progIds));
-			rs = pstat.executeQuery();
-			if(!rs.first())
-				throw new HotMathException("Could not load test(s)");
+			
+			if (__logger.isDebugEnabled())
+			    __logger.debug("loadTestsForProgramList(): pstat: " + pstat.toString());
 
-			while(rs.next()) {
+			rs = pstat.executeQuery();
+			if(!rs.first()) {
+				throw new HotMathException("Could not load test(s)");
+			}
+			
+			do {
 				HaTest test = new HaTest();
 				test.setTestId(rs.getInt("test_id"));
 				test.setUser(HaUser.lookUser(conn,rs.getInt("user_id"),null));
@@ -362,15 +368,17 @@ public class HaTestDao {
 				 *  Get all ids defined for test and add to HaTest object
 				 */
 				List<String> testIds = getTestIdsForTest(conn, test.getTestId());
+
 				for(String pid: testIds) {
 					test.addPid(pid);
 				}
 				list.add(test);
-			}
+			} while(rs.next());
 
 			return list;
 		}
 		catch(HotMathException hme) {
+			__logger.warn("*** no tests found for pstat: " + pstat.toString());
 			throw hme;
 		}
 		catch(Exception e) {
