@@ -53,7 +53,7 @@ public class StudentReportCard {
         labelMap.put("review", "Prescribed Lessons: ");
         labelMap.put("practice", "Required Practice Problems: ");
         labelMap.put("flashcard", "Flashcard Sessions: ");
-        labelMap.put("videos", "Videos: ");
+        labelMap.put("video", "Videos: ");
         labelMap.put("game", "Games: ");
     }
 
@@ -194,11 +194,10 @@ public class StudentReportCard {
 
         Map<String, Integer> map = rc.getResourceUsage();
 
-        for (String key : map.keySet()) {
+        for (String key : labelMap.keySet()) {
             String label = labelMap.get(key);
-            if (label == null)
-                continue;
-            usage = buildSectionContent(label, String.valueOf(map.get(key)), true);
+            Integer count = (map.get(key) == null) ? 0 : map.get(key);
+            usage = buildSectionContent(label, String.valueOf(count), true);
             usageTbl.addCell(usage);
         }
         usageTbl.setWidthPercentage(100.0f);
