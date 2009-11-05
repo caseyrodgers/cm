@@ -53,6 +53,12 @@ public class CmWebResource implements Response {
             String p[] = file.split("/");
             name = p[p.length-1];
     	}
-        return webBase + name;
+
+        /** hardcoded for now .. need way to be server independent
+            this is needed to cross from the hotmath domain into 
+            the catchupmath domain to aquire the resource.  Needs
+            to be a per-instanbce configuration parameter
+	*/
+        return "http://catchupmath.com/" + webBase + name;
     }
 }
