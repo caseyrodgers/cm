@@ -94,7 +94,6 @@ public class CmUploadForm extends FormPanel {
 
         add(fileUpload);
         
-        
         getButtonBar().setAlignment(HorizontalAlignment.RIGHT);
     }
 

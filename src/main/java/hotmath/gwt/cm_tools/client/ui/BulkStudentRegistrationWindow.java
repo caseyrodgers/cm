@@ -22,7 +22,7 @@ import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
 import com.extjs.gxt.ui.client.widget.layout.FormLayout;
 
 public class BulkStudentRegistrationWindow extends RegisterStudent {
-	
+        
     TextField<String> groupFld;
     String _uploadKey; //  = "upload_1250558647547";
     FileUploadField _fileUpload;
@@ -42,15 +42,15 @@ public class BulkStudentRegistrationWindow extends RegisterStudent {
      * @param sm
      * @param cm
      */
-	public BulkStudentRegistrationWindow(StudentModel sm, CmAdminModel cm) {
-	    super(sm, cm);
+    public BulkStudentRegistrationWindow(StudentModel sm, CmAdminModel cm) {
+        super(sm, cm);
         
         /** Reset the profile area
          * 
          */
-	    _fsProfile.remove(_fsProfile.getItemByItemId("name"));
-	    _fsProfile.remove(_fsProfile.getItemByItemId("passcode"));
-	    _fsProfile.setHeading("Assign Group");
+        _fsProfile.remove(_fsProfile.getItemByItemId("name"));
+        _fsProfile.remove(_fsProfile.getItemByItemId("passcode"));
+        _fsProfile.setHeading("Assign Group");
         _fsProgram.setHeading("Assign Program");
 
 
@@ -59,10 +59,10 @@ public class BulkStudentRegistrationWindow extends RegisterStudent {
          * 
          */
         _uploadForm = new CmUploadForm(cm.getId(),new CmAsyncRequestImplDefault() {
-            public void requestComplete(String uploadKey) {
-                new AutoRegistrationWindow(_student, uploadKey);
-            }
-        });
+                public void requestComplete(String uploadKey) {
+                    new AutoRegistrationWindow(_student, uploadKey);
+                }
+            });
         /** Create a new fieldset to hold the upload form
          * 
          */
@@ -73,9 +73,9 @@ public class BulkStudentRegistrationWindow extends RegisterStudent {
         fs.setHeading("Upload Students");
         fs.setWidth(_fsProfile.getWidth());
         fs.add(_uploadForm);
-	    fs.add(new Html("<p>Students will Log In with your school Login Name and the unique passwords you provide in the uploaded tab delimited text file.</p>"));
+        fs.add(new Html("<p>Students will Log In with your school Login Name and the unique passwords you provide in the uploaded tab delimited text file.</p>"));
 
-	      
+              
         _window.removeAll();
         _window.setLayout(new BorderLayout());
         _window.setHeight(525);
@@ -87,45 +87,45 @@ public class BulkStudentRegistrationWindow extends RegisterStudent {
         _window.add(_formPanel, new BorderLayoutData(LayoutRegion.CENTER,300));
         _window.add(fs, new BorderLayoutData(LayoutRegion.SOUTH, 150));
         
-		FormLayout fl = new FormLayout();
-		fl.setLabelWidth(_formPanel.getLabelWidth());
-		FormLayout fpL = (FormLayout) _fsProfile.getLayout();
-		fl.setDefaultWidth(fpL.getDefaultWidth());
+        FormLayout fl = new FormLayout();
+        fl.setLabelWidth(_formPanel.getLabelWidth());
+        FormLayout fpL = (FormLayout) _fsProfile.getLayout();
+        fl.setDefaultWidth(fpL.getDefaultWidth());
 
         _window.show();
-	}
+    }
 
-	protected List<Button> getActionButtons() {
-	    List<Button> list = new ArrayList<Button>();
+    protected List<Button> getActionButtons() {
+        List<Button> list = new ArrayList<Button>();
         
         Button autoCreate = new Button("Save");
         autoCreate.addSelectionListener(new SelectionListener<ButtonEvent>() {
             
-            @Override
-            public void componentSelected(ButtonEvent ce) {
-                CatchupMathTools.setBusy(true);
-                try {
-                    doSubmitAction(_fsProgram, _formPanel, new AfterValidation() {
-                        //@Override
-                        public void afterValidation(StudentModel student) {
-                            _student = student;
+                @Override
+                    public void componentSelected(ButtonEvent ce) {
+                    CatchupMathTools.setBusy(true);
+                    try {
+                        doSubmitAction(_fsProgram, _formPanel, new AfterValidation() {
+                                //@Override
+                                public void afterValidation(StudentModel student) {
+                                    _student = student;
                             
-                            if(!_uploadForm.isValid()) {
-                                CatchupMathTools.showAlert("Select a tab delimited file containing a list of names and passwords.");
-                                return;
-                            }
-                            _uploadForm.submit();
-                        }
-                    });
+                                    if(!_uploadForm.isValid()) {
+                                        CatchupMathTools.showAlert("Select a tab delimited file containing a list of names and passwords.");
+                                        return;
+                                    }
+                                    _uploadForm.submit();
+                                }
+                            });
+                    }
+                    catch(CmException cme) {
+                        cme.printStackTrace();
+                    }
+                    finally {
+                        CatchupMathTools.setBusy(false);
+                    }
                 }
-                catch(CmException cme) {
-                    cme.printStackTrace();
-                }
-                finally {
-                    CatchupMathTools.setBusy(false);
-                }
-            }
-        });
+            });
         
         list.add(autoCreate);
         
@@ -133,14 +133,14 @@ public class BulkStudentRegistrationWindow extends RegisterStudent {
         Button close = new Button("Close");
         close.addSelectionListener(new SelectionListener<ButtonEvent>() {
             
-            @Override
-            public void componentSelected(ButtonEvent ce) {
-                _window.close();
-            }
-        });
+                @Override
+                    public void componentSelected(ButtonEvent ce) {
+                    _window.close();
+                }
+            });
         
         list.add(close);        
         
         return list;
-	}
+    }
 }
