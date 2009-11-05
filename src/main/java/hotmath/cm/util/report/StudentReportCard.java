@@ -89,16 +89,15 @@ public class StudentReportCard {
         CmAdminDao adminDao = new CmAdminDao();
 
         AccountInfoModel info = adminDao.getAccountInfo(adminId);
-        logger.warn("*** info is " + ((info==null) ? "NULL" : "not null"));
         
-        if (info == null)
+        if (info == null) {
+            logger.warn("*** Account info is NULL for adminId: " + adminId);
             return null;
+        }
 
         CmReportCardDao rcDao = new CmReportCardDao();
         StudentReportCardModelI rc = rcDao.getStudentReportCard(stuUid, null, null);
         
-        logger.info("*** got rc ***");
-
         CmStudentDao studentDao = new CmStudentDao();
         StudentModel sm = studentDao.getStudentModel(stuUid);
 
