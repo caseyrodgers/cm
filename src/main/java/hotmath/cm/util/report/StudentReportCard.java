@@ -11,11 +11,14 @@ import hotmath.gwt.cm_tools.client.model.StudentReportCardModelI;
 
 import java.awt.Color;
 import java.io.ByteArrayOutputStream;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import org.apache.log4j.Logger;
 
 import com.lowagie.text.Cell;
 import com.lowagie.text.Chunk;
@@ -42,7 +45,11 @@ import com.lowagie.text.pdf.PdfWriter;
 
 public class StudentReportCard {
 
+	private static final Logger logger = Logger.getLogger(StudentReportCard.class);
+	
     static Map<String, String> labelMap;
+    
+    static List<String> orderList;
 
     static {
         labelMap = new HashMap<String, String>();
@@ -55,6 +62,18 @@ public class StudentReportCard {
         labelMap.put("flashcard", "Flashcard Sessions: ");
         labelMap.put("video", "Videos: ");
         labelMap.put("game", "Games: ");
+        
+        orderList = new ArrayList<String>();
+        
+        orderList.add("login");
+        orderList.add("review");
+        orderList.add("practice");
+        orderList.add("cmextra");
+        orderList.add("flashcard");
+        orderList.add("game");
+        orderList.add("activity");
+        orderList.add("video");
+        
     }
 
     private String reportName;
@@ -70,11 +89,15 @@ public class StudentReportCard {
         CmAdminDao adminDao = new CmAdminDao();
 
         AccountInfoModel info = adminDao.getAccountInfo(adminId);
+        logger.warn("*** info is " + ((info==null) ? "NULL" : "not null"));
+        
         if (info == null)
             return null;
 
         CmReportCardDao rcDao = new CmReportCardDao();
         StudentReportCardModelI rc = rcDao.getStudentReportCard(stuUid, null, null);
+        
+        logger.info("*** got rc ***");
 
         CmStudentDao studentDao = new CmStudentDao();
         StudentModel sm = studentDao.getStudentModel(stuUid);
@@ -194,8 +217,9 @@ public class StudentReportCard {
 
         Map<String, Integer> map = rc.getResourceUsage();
 
-        for (String key : labelMap.keySet()) {
+        for (String key : orderList) {
             String label = labelMap.get(key);
+            System.out.println("key: " + key + ", label: " + label);
             Integer count = (map.get(key) == null) ? 0 : map.get(key);
             usage = buildSectionContent(label, String.valueOf(count), true);
             usageTbl.addCell(usage);
