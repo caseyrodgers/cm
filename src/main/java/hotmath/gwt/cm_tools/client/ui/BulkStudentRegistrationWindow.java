@@ -45,6 +45,7 @@ public class BulkStudentRegistrationWindow extends RegisterStudent {
     public BulkStudentRegistrationWindow(StudentModel sm, CmAdminModel cm) {
         super(sm, cm);
         
+        
         /** Reset the profile area
          * 
          */
@@ -84,8 +85,10 @@ public class BulkStudentRegistrationWindow extends RegisterStudent {
 
 
         _formPanel.setHeight(305);
+        Html html = new Html("<div style='color: red;font-weight: bold;padding: 10px;'>The Bulk Upload feature currently does not work in Internet Explorer, please use Firefox.  We will have this feature working with IE soon.</div>");
+        _window.add(html, new BorderLayoutData(LayoutRegion.NORTH, 20));
         _window.add(_formPanel, new BorderLayoutData(LayoutRegion.CENTER,300));
-        _window.add(fs, new BorderLayoutData(LayoutRegion.SOUTH, 150));
+        _window.add(fs, new BorderLayoutData(LayoutRegion.SOUTH, 130));
         
         FormLayout fl = new FormLayout();
         fl.setLabelWidth(_formPanel.getLabelWidth());
