@@ -56,7 +56,7 @@ public class CmWebResource implements Response {
             name = p[p.length-1];
     	}
     	
-    	// include path to catchup server domain
+    	// return absolute URL
         String ret = CmShared.CM_HOME_URL + webBase + name;
         return ret;
     }
