@@ -55,7 +55,6 @@ public class CmUploadForm extends FormPanel {
             public void handleEvent(FormEvent be) {
 
                 String response = be.getResultHtml();
-CatchupMathTools.showAlert("Test: " + response);
 
                 Log.info("CmUploadForm: " + response);
                 

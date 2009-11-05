@@ -65,7 +65,8 @@ public class BulkRegLoader {
                 else {
                     /** if error is simply not enough tokens, eat it.
                      * 
-                     * This is to deal with filename added to input by IE.
+                     * @TODO: find better way to know lines to ignore
+                     * (This is to deal with filename added to input by IE.)
                      */
                 }
             }
