@@ -1,5 +1,7 @@
 package hotmath.gwt.shared.client.rpc;
 
+import hotmath.gwt.shared.client.CmShared;
+
 
 
 
@@ -53,12 +55,9 @@ public class CmWebResource implements Response {
             String p[] = file.split("/");
             name = p[p.length-1];
     	}
-
-        /** hardcoded for now .. need way to be server independent
-            this is needed to cross from the hotmath domain into 
-            the catchupmath domain to aquire the resource.  Needs
-            to be a per-instanbce configuration parameter
-	*/
-        return "http://catchupmath.com/" + webBase + name;
+    	
+    	// include path to catchup server domain
+        String ret = CmShared.CM_HOME_URL + webBase + name;
+        return ret;
     }
 }
