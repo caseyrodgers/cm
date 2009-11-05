@@ -40,6 +40,7 @@ public class CmUploadForm extends FormPanel {
         sb.append("?aid=").append(aid);
         setAction(sb.toString());
         setEncoding(Encoding.MULTIPART);  
+
         setMethod(Method.POST);
         setButtonAlign(HorizontalAlignment.CENTER);
         setWidth(500);
@@ -56,28 +57,32 @@ public class CmUploadForm extends FormPanel {
 
                 String response = be.getResultHtml();
 
-                Log.info("CmUploadForm: " + response);
+                Log.info("CmUploadForm: response=" + response);
                 
-                if(response.indexOf("<pre") != -1) {
+                if(response.toLowerCase().indexOf("<pre") != -1) {
+		    Log.info("CmUploadForm: removing pre");
                     int offset = response.indexOf(">") + 1;
                     response = response.substring(offset, response.length()-6);
+		    Log.info("CmUploadForm: done removing pre");
                 }
                 
                 try {
+		    Log.info("CmUploadForm: parsing JSON");
                     JSONValue rspValue = JSONParser.parse(response);
                     JSONObject rspObj  = rspValue.isObject();
-                    String status = rspObj.get("status").isString().stringValue();
                     String msg = rspObj.get("msg").isString().stringValue();
-                    String uploadKey = rspObj.get("key").isString().stringValue();
-                    
+                    String status = rspObj.get("status").isString().stringValue();
                     if(status.equals("Error")) {
+                        Log.info("CmUploadForm: Error while reading response");
                         CatchupMathTools.showAlert(msg);
                         return;
                     }
+                    String uploadKey = rspObj.get("key").isString().stringValue();
                     
                     CmUploadForm.this.callback.requestComplete(uploadKey);
                 }
                 catch(Exception e) {
+                    Log.error("CmUploadForm: Error parsing JSON", e);
                     e.printStackTrace();
                 }
             }
