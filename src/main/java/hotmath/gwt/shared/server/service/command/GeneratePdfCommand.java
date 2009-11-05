@@ -18,8 +18,11 @@ import java.io.FileOutputStream;
 import java.sql.Connection;
 import java.util.List;
 
+import org.apache.log4j.Logger;
+
 public class GeneratePdfCommand implements ActionHandler<GeneratePdfAction, CmWebResource>{
 
+    Logger logger = Logger.getLogger(GeneratePdfCommand.class);
     /** 
      * Performs the action: generate a PDF and return absolute file name to created PDF
      */
@@ -62,7 +65,10 @@ public class GeneratePdfCommand implements ActionHandler<GeneratePdfAction, CmWe
             // if outputBase/adminId directory doesn't exist, create it
             String outputDir = ensureOutputDir(outputBase, adminId);
             
+
+            
             File filePath = new File(outputDir,reportName + ".pdf");
+            logger.info("Writing PDF output: " + filePath);
             FileOutputStream fw = null;
             try {
                 fw = new FileOutputStream(filePath);

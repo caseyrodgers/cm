@@ -7,7 +7,12 @@ import hotmath.gwt.shared.client.rpc.CmWebResource;
 
 public class GeneratePdfAction implements Action<CmWebResource>{
 
-	private static final long serialVersionUID = 6104125833256395744L;
+	@Override
+    public String toString() {
+        return "GeneratePdfAction [adminId=" + adminId + ", pdfType=" + pdfType + ", studentUids=" + studentUids + "]";
+    }
+
+    private static final long serialVersionUID = 6104125833256395744L;
 	
 	PdfType pdfType;
     Integer adminId;
