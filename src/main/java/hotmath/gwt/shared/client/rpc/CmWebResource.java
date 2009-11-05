@@ -21,6 +21,11 @@ public class CmWebResource implements Response {
     public CmWebResource(String file, String fileBase, String webBase) {
         this.file = file;
         this.webBase = webBase;
+        
+        // make sure has trailing slash
+        if(!fileBase.endsWith("/"))
+            fileBase += "/";
+        
         this.fileBase = fileBase;
     }
 
@@ -31,9 +36,13 @@ public class CmWebResource implements Response {
     public void setFile(String file) {
         this.file = file;
     }
+
     
+    /** Return the web HTTP url that can be used to access this resource
+     * 
+     * @return
+     */
     public String getUrl() {
-        
         // get the last component as the name
     	String name;
     	if (fileBase != null && file.startsWith(fileBase)) {
@@ -43,7 +52,6 @@ public class CmWebResource implements Response {
             String p[] = file.split("/");
             name = p[p.length-1];
     	}
-        
-        return webBase + "/" + name;
+        return webBase + name;
     }
 }
