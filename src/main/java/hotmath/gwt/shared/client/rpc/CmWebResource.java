@@ -1,5 +1,7 @@
 package hotmath.gwt.shared.client.rpc;
 
+import com.allen_sauer.gwt.log.client.Log;
+
 import hotmath.gwt.shared.client.CmShared;
 
 
@@ -24,9 +26,6 @@ public class CmWebResource implements Response {
         this.file = file;
         this.fileBase = fileBase;
         
-        // make sure has trailing slash
-        if(!webBase.endsWith("/"))
-            webBase += "/";
         if(!webBase.startsWith("/") && !webBase.startsWith("http"))
             webBase = "/" + webBase;
         
@@ -43,6 +42,8 @@ public class CmWebResource implements Response {
 
     /** Return the web HTTP url that can be used to access this resource
      * 
+     * The URL returned should be an absolute URL.
+     * 
      * @return
      */
     public String getUrl() {
@@ -56,8 +57,14 @@ public class CmWebResource implements Response {
             name = p[p.length-1];
     	}
     	
-    	// return absolute URL
+    	
+    	/** remove any Windows nastiness with filenames
+    	 * 
+    	 */
+    	name = name.replaceAll("\\\\", "/");
+
         String ret = CmShared.CM_HOME_URL + webBase + name;
+        Log.info("CmWebResource: return URL: " + ret);
         return ret;
     }
 }
