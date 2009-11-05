@@ -31,7 +31,8 @@ public class BulkRegisterService extends HttpServlet {
 
 	private static final Logger logger = Logger.getLogger(BulkRegisterService.class);
 
-	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+	@SuppressWarnings("unchecked")
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         
         try {
             Integer aid = Integer.parseInt(req.getParameter("aid"));
@@ -42,7 +43,7 @@ public class BulkRegisterService extends HttpServlet {
         	    logger.debug("+++ aid: " + aid);
             }
 
-            StringBuilder sb = new StringBuilder();
+        	String returnJson=null;
             if (isMultipart) {
 
             	File tmpDir = new File("/tmp");
@@ -51,50 +52,60 @@ public class BulkRegisterService extends HttpServlet {
             	ServletFileUpload sfu = new ServletFileUpload(fiFactory);
             	List<FileItem> fileItems = sfu.parseRequest(req);
             	if (fileItems != null  && fileItems.size() > 0) {
+            	    
+            	    /** There might be multiple files, but there is only one upload.
+            	     * 
+            	     * We want to collect these into a single structure.
+            	     * 
+            	     * IE always has multiple parts, with the first part the filename.
+            	     * 
+            	     */
+            	    BulkRegLoader brLoader=new BulkRegLoader();
             		for (FileItem fi: fileItems) {
             		    
             			InputStream is = fi.getInputStream();
-            			BulkRegLoader brLoader=null;
             			try {
-            			    brLoader = new BulkRegLoader(is);
+            			    brLoader.readStream(is);
             			}
             			finally {
             			    is.close();
             			}
-            			
-            			String key = "upload_" + System.currentTimeMillis();
-            			
-                        boolean hasErrors = brLoader.hasErrors();
-                        boolean hasDuplicates = brLoader.hasDupNamePasswd();
-                        
-                        sb.append("{key:'" + key + "', status:'");
-                        sb.append((hasErrors) ? "Error" : "Successful");
-                        sb.append("',msg:'");
-                        if (hasErrors && !hasDuplicates) {
-                        	sb.append("Uploaded file contains errors, please review and correct.");
-                        }
-                        else if (hasDuplicates) {
-                        	sb.append("Uploaded file contains duplicate names and/or passwords, please review and correct.");
-                        }
-                        else {
-                        	sb.append("File uploaded successfully.");
-                        }
-                        sb.append("' }");
-                        
-                        CmCacheManager.getInstance().addToCache(CacheName.BULK_UPLOAD_FILE, key, brLoader);
             		}
+                    
+                    boolean hasErrors = brLoader.hasErrors();
+                    boolean hasDuplicates = brLoader.hasDupNamePasswd();
+
+                    returnJson = 
+                        "{" +
+                         "key:'" + brLoader.getKey() + "', " +
+                         "status:'" + ((hasErrors) ? "Error" : "Successful") + "', " +
+                         "msg:'";
+      
+                    if (hasErrors && !hasDuplicates) {
+                        returnJson += "Uploaded file contains errors, please review and correct.";
+                    }
+                    else if (hasDuplicates) {
+                        returnJson += "Uploaded file contains duplicate names and/or passwords, please review and correct.";
+                    }
+                    else {
+                        returnJson += "File uploaded successfully.";
+                    }
+                    
+                    returnJson += "' }";
+            		
+                    CmCacheManager.getInstance().addToCache(CacheName.BULK_UPLOAD_FILE, brLoader.getKey(), brLoader);
             	}
             	else {
                 	if (logger.isDebugEnabled())
             		    logger.debug("+++ No Files found!");
-                	sb.append("{status: 'Error', msg:'No files to upload' }");
+                	returnJson = "{status: 'Error', msg:'No files to upload' }";
             	}
 
             }
             else {
-            	sb.append("{status: 'Error', msg:'Must be a multi-part form' }");
+            	returnJson = "{status: 'Error', msg:'Must be a multi-part form' }";
             }
-            resp.getWriter().write(sb.toString());
+            resp.getWriter().write(returnJson);
         }
         catch(Exception e) {
         	logger.error("Exception uploading bulk reg file", e);

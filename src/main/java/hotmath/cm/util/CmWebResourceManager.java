@@ -113,24 +113,31 @@ public class CmWebResourceManager {
         @Override
         public void run() {
             __logger.info("Starting resource watcher on directory: " + base);
-            while(!cancelWatch) {
-                
-                File fileBase = new File(base);
-                
-                cleanDir(fileBase);
-                
-                try {
-                    Thread.sleep(1000 * 60 * 100);
+            try {
+                while(!cancelWatch) {
+                    
+                    File fileBase = new File(base);
+                    
+                    cleanDir(fileBase);
+                    
+                    try {
+                        Thread.sleep(1000 * 60 * 100);
+                    }
+                    catch(InterruptedException ie) {
+                        __logger.error("Error putting watcher to sleep", ie);
+                    }
                 }
-                catch(InterruptedException ie) {
-                    __logger.error("Error putting watcher to sleep", ie);
-                }
-                
+            }
+            catch(CmException ce) {
+                __logger.error("Error watching resource directory", ce);
             }
             __logger.info("Canceling resource watcher");
         }
 
-        private void cleanDir(File dir) {
+        private void cleanDir(File dir) throws CmException {
+            if(fileIsNotChildOfTemp(dir))
+                throw new CmException("Invalid resource directory: " + dir.getPath());
+            
             File kids[] = dir.listFiles();
             if (kids !=null ) {
                 for(File kid:kids) {
@@ -150,6 +157,22 @@ public class CmWebResourceManager {
         
         public void cancelWatch() {
             this.cancelWatch = true;
+        }
+        
+        
+        /** Make sure that file is either 'temp'
+         * or a child of temp.
+         * 
+         * @param f
+         * @return
+         */
+        private boolean fileIsNotChildOfTemp(File f) {
+            String p[] = f.getPath().split("/");
+            for(int i=0;i<p.length;i++) {
+                if(p[i].equals("temp"))
+                    return true;
+            }
+            return false;
         }
         
     }

@@ -21,15 +21,24 @@ public class BulkRegLoader {
 
     private int errorCount;
     private boolean dupNamePasswd;
+    String key;
 
     private List<AutoRegistrationEntry> entries = new ArrayList<AutoRegistrationEntry>(); 
 
-    public BulkRegLoader(InputStream is) throws IOException {
+    /** Read the input stream and extract entries
+     * 
+     * 
+     *  IE includes the filename in the data, which does not conform to our 
+     *  expectations.  We need to identify this problem and ignore the row.
+     *  
+     * @param is
+     * @throws IOException
+     */
+    public void readStream(InputStream is) throws IOException {
         BufferedReader isr = new BufferedReader(new InputStreamReader(is, "UTF-8"));
         String line;
         Set<String> nameSet = new HashSet<String>();
         Set<String> passwdSet = new HashSet<String>();
-
         while ((line = isr.readLine()) != null) {
 
             line = line.trim();
@@ -48,14 +57,36 @@ public class BulkRegLoader {
                 entries.add(entry);
             }
             else {
-            	if ((pair.length > 0 && nameSet.contains(pair[0])) ||
-            	    (pair.length > 1 && passwdSet.contains(pair[1]))) {
-            		dupNamePasswd = true;
-            	}
-                errorCount++;
+                if ((pair.length > 0 && nameSet.contains(pair[0])) ||
+                    (pair.length > 1 && passwdSet.contains(pair[1]))) {
+                    dupNamePasswd = true;
+                    errorCount++;
+                }
+                else {
+                    /** if error is simply not enough tokens, eat it.
+                     * 
+                     * This is to deal with filename added to input by IE.
+                     */
+                }
             }
         }
+        
+        this.key = "upload_" + System.currentTimeMillis();
+    }
 
+    public String getKey() {
+        return key;
+    }
+
+    public void setKey(String key) {
+        this.key = key;
+    }
+    
+
+    @Override
+    public String toString() {
+        return "BulkRegLoader [dupNamePasswd=" + dupNamePasswd + ", entries=" + entries + ", errorCount=" + errorCount
+                + ", key=" + key + "]";
     }
 
     public int getStudentCount() {

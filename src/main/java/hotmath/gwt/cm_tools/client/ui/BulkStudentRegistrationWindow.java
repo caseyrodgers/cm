@@ -58,7 +58,7 @@ public class BulkStudentRegistrationWindow extends RegisterStudent {
         /** Create the upload form, which will contain the upload field
          * 
          */
-        _uploadForm = new CmUploadForm(cm.getId(),_formPanel.getWidth(),new CmAsyncRequestImplDefault() {
+        _uploadForm = new CmUploadForm(cm.getId(),new CmAsyncRequestImplDefault() {
             public void requestComplete(String uploadKey) {
                 new AutoRegistrationWindow(_student, uploadKey);
             }
@@ -103,6 +103,7 @@ public class BulkStudentRegistrationWindow extends RegisterStudent {
             
             @Override
             public void componentSelected(ButtonEvent ce) {
+                CatchupMathTools.setBusy(true);
                 try {
                     doSubmitAction(_fsProgram, _formPanel, new AfterValidation() {
                         //@Override
@@ -119,6 +120,9 @@ public class BulkStudentRegistrationWindow extends RegisterStudent {
                 }
                 catch(CmException cme) {
                     cme.printStackTrace();
+                }
+                finally {
+                    CatchupMathTools.setBusy(false);
                 }
             }
         });
