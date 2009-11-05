@@ -30,9 +30,9 @@ public class CmWebResourceManager {
     }
     
     ResourceWatcherThread watcher;
-    String webBase;
+    final static String WEB_BASE = "cm_temp";
     
-    int EXPIRE_TIME = 1000 * 60 * 60 * 24; // one day
+    int EXPIRE_TIME = 1000; //  * 60 * 60 * 24; // one day
     
     /** the __fileBase variable must be set to the location of the temp
      *  directory.  This is usually set during servlet initialization,
@@ -56,11 +56,8 @@ public class CmWebResourceManager {
             e.printStackTrace();
         }
         
-        /** The url base that combined with the filename will 
-         *  construct an absolute URL to the resource via HTTP
-         *  
-         */
-        this.webBase = CmMultiLinePropertyReader.getInstance().getProperty("CmWebResourceManager.webBase", "/temp");
+        watcher = new ResourceWatcherThread(__fileBase, EXPIRE_TIME);
+        watcher.start();
     }
     
     
@@ -76,7 +73,7 @@ public class CmWebResourceManager {
      * @return
      */
     public String getWebBase() {
-       return "/temp"; 
+       return WEB_BASE;
     }
     
     
@@ -104,6 +101,11 @@ public class CmWebResourceManager {
         boolean cancelWatch;
         String base;
         
+        /** time between checks
+         * 
+         */
+        static final int SLEEP_TIME = 1000 * 60 * 60;
+
         public ResourceWatcherThread(String base, int expireTime) {
             super("Resource Watcher Thread");
             this.base = base;
@@ -112,7 +114,7 @@ public class CmWebResourceManager {
         
         @Override
         public void run() {
-            __logger.info("Starting resource watcher on directory: " + base);
+            __logger.info("Starting resource watcher on directory: " + base + ", intervals: " + SLEEP_TIME);
             try {
                 while(!cancelWatch) {
                     
@@ -121,7 +123,7 @@ public class CmWebResourceManager {
                     cleanDir(fileBase);
                     
                     try {
-                        Thread.sleep(1000 * 60 * 100);
+                        Thread.sleep(SLEEP_TIME);
                     }
                     catch(InterruptedException ie) {
                         __logger.error("Error putting watcher to sleep", ie);
@@ -135,8 +137,8 @@ public class CmWebResourceManager {
         }
 
         private void cleanDir(File dir) throws CmException {
-            if(fileIsNotChildOfTemp(dir))
-                throw new CmException("Invalid resource directory: " + dir.getPath());
+            if(!fileIsNotChildOfWebBase(dir))
+                throw new CmException("Cannot delete nvalid resource directory: " + dir.getPath());
             
             File kids[] = dir.listFiles();
             if (kids !=null ) {
@@ -148,7 +150,7 @@ public class CmWebResourceManager {
                     long kidMod = kid.lastModified();
                     long et = (System.currentTimeMillis() - kidMod);
                     if(et > expireTime) {
-                        __logger.info("Removing temp file: " + kid);
+                        __logger.info("Removing temp resource file: " + kid);
                         kid.delete();
                     }
                 }
@@ -166,13 +168,14 @@ public class CmWebResourceManager {
          * @param f
          * @return
          */
-        private boolean fileIsNotChildOfTemp(File f) {
-            String p[] = f.getPath().split("/");
-            for(int i=0;i<p.length;i++) {
-                if(p[i].equals("temp"))
-                    return true;
+        private boolean fileIsNotChildOfWebBase(File f) {
+            if(f.getName().equals(WEB_BASE))
+                return true;
+            else if(f.getParentFile() != null){
+                return fileIsNotChildOfWebBase(f.getParentFile());
             }
-            return false;
+            else
+                return false;
         }
         
     }

@@ -31,8 +31,7 @@ public class CmInitialzation extends HttpServlet {
             Logger.getLogger(this.getClass()) .info("Catchup Log4J intialized");
         }
         
-        
-        CmWebResourceManager.setFileBase(getServletContext().getRealPath("temp"));
+        CmWebResourceManager.setFileBase(getServletContext().getRealPath("cm_temp"));
     }
 
     public void doGet(HttpServletRequest req, HttpServletResponse res) {
