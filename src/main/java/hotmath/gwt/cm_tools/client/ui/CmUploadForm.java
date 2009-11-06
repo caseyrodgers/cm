@@ -15,19 +15,21 @@ import com.google.gwt.json.client.JSONParser;
 import com.google.gwt.json.client.JSONValue;
 
 public class CmUploadForm extends FormPanel {
-    
+
     FileUploadField fileUpload;
     CmAsyncRequest callback;
-    
-    /** Create Upload Field form that will call back with 
-     * the upload key after complete.
+
+    /**
+     * Create Upload Field form that will call back with the upload key after
+     * complete.
      * 
      * @param aid
      * @param formWidth
-     * @param callback  Called back with upload key after completion.
+     * @param callback
+     *            Called back with upload key after completion.
      */
-    public CmUploadForm(Integer aid,CmAsyncRequest callback) {
-        
+    public CmUploadForm(Integer aid, CmAsyncRequest callback) {
+
         this.callback = callback;
         setFrame(false);
         setStyleName("register-student-upload-form");
@@ -39,7 +41,7 @@ public class CmUploadForm extends FormPanel {
         StringBuffer sb = new StringBuffer("/cm_admin/bulkRegister");
         sb.append("?aid=").append(aid);
         setAction(sb.toString());
-        setEncoding(Encoding.MULTIPART);  
+        setEncoding(Encoding.MULTIPART);
 
         setMethod(Method.POST);
         setButtonAlign(HorizontalAlignment.CENTER);
@@ -58,39 +60,38 @@ public class CmUploadForm extends FormPanel {
                 String response = be.getResultHtml();
 
                 Log.info("CmUploadForm: response=" + response);
-                
-                if(response.toLowerCase().indexOf("<pre") != -1) {
-		    Log.info("CmUploadForm: removing pre");
+
+                if (response.toLowerCase().indexOf("<pre") != -1) {
+                    Log.info("CmUploadForm: removing pre");
                     int offset = response.indexOf(">") + 1;
-                    response = response.substring(offset, response.length()-6);
-		    Log.info("CmUploadForm: done removing pre");
+                    response = response.substring(offset, response.length() - 6);
+                    Log.info("CmUploadForm: done removing pre");
                 }
-                
+
                 try {
-		    Log.info("CmUploadForm: parsing JSON");
+                    Log.info("CmUploadForm: parsing JSON");
                     JSONValue rspValue = JSONParser.parse(response);
-                    JSONObject rspObj  = rspValue.isObject();
+                    JSONObject rspObj = rspValue.isObject();
                     String msg = rspObj.get("msg").isString().stringValue();
                     String status = rspObj.get("status").isString().stringValue();
-                    if(status.equals("Error")) {
+                    if (status.equals("Error")) {
                         Log.info("CmUploadForm: Error while reading response");
                         CatchupMathTools.showAlert(msg);
                         return;
                     }
                     String uploadKey = rspObj.get("key").isString().stringValue();
-                    
+
                     CmUploadForm.this.callback.requestComplete(uploadKey);
-                }
-                catch(Exception e) {
+                } catch (Exception e) {
                     Log.error("CmUploadForm: Error parsing JSON", e);
                     e.printStackTrace();
                 }
             }
-        }); 
+        });
 
-        fileUpload = new FileUploadField();  
-        fileUpload.setAllowBlank(false);  
-        fileUpload.setFieldLabel("File");  
+        fileUpload = new FileUploadField();
+        fileUpload.setAllowBlank(false);
+        fileUpload.setFieldLabel("File");
         fileUpload.setAllowBlank(false);
         fileUpload.setFieldLabel("File");
         fileUpload.setAllowBlank(false);
@@ -98,7 +99,7 @@ public class CmUploadForm extends FormPanel {
         fileUpload.setName("bulk.reg.field");
 
         add(fileUpload);
-        
+
         getButtonBar().setAlignment(HorizontalAlignment.RIGHT);
     }
 

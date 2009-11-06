@@ -96,6 +96,7 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
         _gridContainer.setStyleName("student-grid-panel-grid-container");
 
         LayoutContainer lc = new LayoutContainer();
+        lc.setHeight(500);
         lc.setLayout(new BorderLayout());
         lc.add(createToolbar(),new BorderLayoutData(LayoutRegion.NORTH,30));
 
@@ -116,7 +117,6 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
         });
         refreshBtn.setStyleAttribute("margin-left", "100px");
         add(refreshBtn);
-        
         add(_gridContainer);
         
         final Menu contextMenu = new Menu();
@@ -273,6 +273,7 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
     private ToolBar createToolbar() {
         ToolBar toolbar = new ToolBar();
         toolbar.setStyleName("student-grid-panel-toolbar");
+        toolbar.setMinButtonWidth(40);
 
         Button ti = registerStudentToolItem(_grid, _cmAdminMdl);
         toolbar.add(ti);
@@ -289,22 +290,21 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
         final Button manageGrp = manageGroupButton(_grid);
         toolbar.add(manageGrp);
 
-        Button btn = new Button("Bulk Registration");
-        btn.addSelectionListener(new SelectionListener<ButtonEvent>() {
+        Button btn = new Button("Registration");
+        Menu menu = new Menu();
+        menu.add(new MenuItem("Bulk Registration",new SelectionListener<MenuEvent>() {
             @Override
-            public void componentSelected(ButtonEvent ce) {
+            public void componentSelected(MenuEvent ce) {
                 new BulkStudentRegistrationWindow(null, _cmAdminMdl);
-            } 
-        });
-        toolbar.add(btn);
-
-        btn = new Button("Self Registration Setup");
-        btn.addSelectionListener(new SelectionListener<ButtonEvent>() {
+            }
+        }));
+        menu.add(new MenuItem("Self Registration",new SelectionListener<MenuEvent>() {
             @Override
-            public void componentSelected(ButtonEvent ce) {
+            public void componentSelected(MenuEvent ce) {
                 new AutoRegisterStudentSetup(null, _cmAdminMdl);
-            } 
-        });
+            }
+        }));
+        btn.setMenu(menu);
         toolbar.add(btn);
 
         ti = displayPrintableReportToolItem(_grid);
@@ -658,6 +658,7 @@ class StudenPanelButton extends Button {
     public StudenPanelButton(String name) {
         super(name);
         addStyleName("student-grid-panel-button");
+        setWidth(115);
     }
 }
 

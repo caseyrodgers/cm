@@ -124,6 +124,9 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
         cancelBtn.setStyleName("register-student-cancel");
         list.add(saveButton(_fsProgram, _formPanel));
         list.add(cancelButton());
+        for(int i=0;i<list.size();i++) {
+            list.get(i).setWidth(75);
+        }
         return list;
 	}
 	

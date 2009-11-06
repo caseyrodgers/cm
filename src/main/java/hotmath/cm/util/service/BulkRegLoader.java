@@ -45,6 +45,8 @@ public class BulkRegLoader {
             if(line.startsWith("#") || line.length() == 0)
                 continue;
 
+            line = removeSpecialCharacters(line);
+            
             String pair[] = line.split("\t");
             if(pair.length == 2 && !nameSet.contains(pair[0]) && !passwdSet.contains(pair[1]) ) {
                 AutoRegistrationEntry entry = new AutoRegistrationEntry();
@@ -81,6 +83,16 @@ public class BulkRegLoader {
 
     public void setKey(String key) {
         this.key = key;
+    }
+
+    /** remove any special characters such as quotes and double quotes
+     * 
+     */
+    private String removeSpecialCharacters(String s) {
+        
+        String r = s.replace("\"","");
+        r = r.replace("'","");
+        return r;
     }
     
 
