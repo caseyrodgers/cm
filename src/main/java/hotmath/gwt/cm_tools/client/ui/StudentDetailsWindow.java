@@ -69,7 +69,7 @@ public class StudentDetailsWindow extends CmWindow {
      * @param studentModel
      */
     public StudentDetailsWindow(final StudentModel studentModel) {
-        setStyleName("student-details-window");
+        addStyleName("student-details-window");
         this.studentModel = studentModel;
         setSize(580, 410);
         setModal(true);
@@ -95,7 +95,7 @@ public class StudentDetailsWindow extends CmWindow {
         });
 
         ToolBar toolBar = new ToolBar();
-        toolBar.setStyleName("student-details-window-toolbar");
+        toolBar.addStyleName("student-details-window-toolbar");
         toolBar.add(showWorkBtn());
         toolBar.add(showTopicsBtn());
         toolBar.add(displayReportCardToolItem(studentModel));
@@ -118,7 +118,7 @@ public class StudentDetailsWindow extends CmWindow {
         add(lc);
 
         _studentCount = new Label();
-        _studentCount.setStyleName("students-count");
+        _studentCount.addStyleName("students-count");
         // TODO: count not displaying correctly
         // add(_studentCount);
 
@@ -192,7 +192,7 @@ public class StudentDetailsWindow extends CmWindow {
         _showTopicsBtn = new Button("Show Standards");
         _showTopicsBtn.disable();
         _showTopicsBtn.addSelectionListener(stListener);
-        _showTopicsBtn.setStyleName("student-details-panel-sw-btn");
+        _showTopicsBtn.addStyleName("student-details-panel-sw-btn");
         return _showTopicsBtn;
     }
 
@@ -206,7 +206,7 @@ public class StudentDetailsWindow extends CmWindow {
         _showWorkButton = new Button("Show Work");
         _showWorkButton.disable();
         _showWorkButton.addSelectionListener(swListener);
-        _showWorkButton.setStyleName("student-details-panel-sw-btn");
+        _showWorkButton.addStyleName("student-details-panel-sw-btn");
         return _showWorkButton;
     }
 
@@ -252,7 +252,7 @@ public class StudentDetailsWindow extends CmWindow {
         Button ti = new Button();
         ti.setIconStyle("printer-icon");
         ti.setToolTip("Display a printable student detail report");
-        ti.setStyleName("student-details-panel-pr-btn");
+        ti.addStyleName("student-details-panel-pr-btn");
 
         ti.addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
@@ -271,7 +271,7 @@ public class StudentDetailsWindow extends CmWindow {
         // ti.setIconStyle("printer-icon");
         ti.setText("Report Card");
         ti.setToolTip("Display a printable report card");
-        ti.setStyleName("student-details-panel-sw-btn");
+        ti.addStyleName("student-details-panel-sw-btn");
 
         ti.addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override

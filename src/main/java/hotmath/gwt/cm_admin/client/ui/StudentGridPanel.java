@@ -73,10 +73,6 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
 
     private ToolBar toolBar;
 
-    // TODO: undo button?
-    // private Button undoButton;
-
-    FieldSet _gridContainer;
     Grid<StudentModel> _grid;
     CmAdminModel _cmAdminMdl;
     ListStore<StudentModel> smStore;
@@ -87,37 +83,23 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
     public StudentGridPanel(CmAdminModel cmAdminMdl) {
         this._cmAdminMdl = cmAdminMdl;
         final ListStore<StudentModel> store = new ListStore<StudentModel>();
-
+        
+        
+        setLayout(new BorderLayout());
+        
         ColumnModel cm = defineColumns();
         _grid = defineGrid(store, cm);
         _grid.setStyleName("student-grid-panel-grid");
 
-        _gridContainer = new FieldSet();
-        _gridContainer.setStyleName("student-grid-panel-grid-container");
-
-        LayoutContainer lc = new LayoutContainer();
-        lc.setHeight(500);
-        lc.setLayout(new BorderLayout());
-        lc.add(createToolbar(),new BorderLayoutData(LayoutRegion.NORTH,30));
-
-        lc.add(_grid,new BorderLayoutData(LayoutRegion.CENTER));
+      
         
-        BorderLayoutData bdl = new BorderLayoutData(LayoutRegion.SOUTH, 70);
-        bdl.setMargins(new Margins(10, 5, 0, 5));
-        lc.add(createGroupFilter(), bdl);
+        add(createToolbar(),new BorderLayoutData(LayoutRegion.NORTH,30));
         
-        _gridContainer.add(lc);
+        add(_grid,new BorderLayoutData(LayoutRegion.CENTER,400));
         
-        Button refreshBtn = new Button("Refresh Student List");
-        refreshBtn.setToolTip("Refresh the list of students");
-        refreshBtn.addSelectionListener(new SelectionListener<ButtonEvent>() {
-            public void componentSelected(ButtonEvent ce) {
-                CmAdminDataReader.getInstance().fireRefreshData();
-            }
-        });
-        refreshBtn.setStyleAttribute("margin-left", "100px");
-        add(refreshBtn);
-        add(_gridContainer);
+        BorderLayoutData borderLayout = new BorderLayoutData(LayoutRegion.SOUTH, 70);
+        borderLayout.setMargins(new Margins(10, 5, 0, 5));
+        add(createGroupFilter(), borderLayout);
         
         final Menu contextMenu = new Menu();
         
@@ -272,26 +254,29 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
 
     private ToolBar createToolbar() {
         ToolBar toolbar = new ToolBar();
-        toolbar.setStyleName("student-grid-panel-toolbar");
+        toolbar.addStyleName("student-grid-panel-toolbar");
         toolbar.setMinButtonWidth(40);
 
-        Button ti = registerStudentToolItem(_grid, _cmAdminMdl);
-        toolbar.add(ti);
-
-        ti = editStudentToolItem(_grid, _cmAdminMdl);
-        toolbar.add(ti);
-
-        ti = studentDetailsToolItem(_grid);
-        toolbar.add(ti);
-
-        ti = unregisterStudentToolItem(_grid);
-        toolbar.add(ti);
-
-        final Button manageGrp = manageGroupButton(_grid);
-        toolbar.add(manageGrp);
+        
+        Button refreshBtn = new Button("Refresh Student List");
+        refreshBtn.setToolTip("Refresh the list of students");
+        refreshBtn.addSelectionListener(new SelectionListener<ButtonEvent>() {
+            public void componentSelected(ButtonEvent ce) {
+                CmAdminDataReader.getInstance().fireRefreshData();
+            }
+        });
+ 
+        refreshBtn.setStyleAttribute("font-weight", "bold");
+        toolbar.add(refreshBtn);
 
         Button btn = new Button("Registration");
         Menu menu = new Menu();
+        menu.add(new MenuItem("New Student",new SelectionListener<MenuEvent>() {
+            @Override
+            public void componentSelected(MenuEvent ce) {
+                new RegisterStudent(null, _cmAdminMdl).showWindow();                
+            }
+        }));
         menu.add(new MenuItem("Bulk Registration",new SelectionListener<MenuEvent>() {
             @Override
             public void componentSelected(MenuEvent ce) {
@@ -306,6 +291,20 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
         }));
         btn.setMenu(menu);
         toolbar.add(btn);
+        
+        
+        Button ti = editStudentToolItem(_grid, _cmAdminMdl);
+        toolbar.add(ti);
+
+        ti = studentDetailsToolItem(_grid);
+        toolbar.add(ti);
+
+        ti = unregisterStudentToolItem(_grid);
+        toolbar.add(ti);
+
+        final Button manageGrp = manageGroupButton(_grid);
+        toolbar.add(manageGrp);
+
 
         ti = displayPrintableReportToolItem(_grid);
         toolbar.add(ti);
@@ -333,21 +332,7 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
         grid.setHeight("300px");
         return grid;
     }
-
-    private Button registerStudentToolItem(final Grid<StudentModel> grid, final CmAdminModel cmAdminMdl) {
-        Button ti = new StudenPanelButton("Register Student");
-        ti.setId("register-student-btn");
-        ti.setToolTip("Register a new student");
-
-        ti.addSelectionListener(new SelectionListener<ButtonEvent>() {
-            public void componentSelected(ButtonEvent ce) {
-                new RegisterStudent(null, cmAdminMdl).showWindow();
-            }
-
-        });
-        return ti;
-    }
-
+    
     private Button editStudentToolItem(final Grid<StudentModel> grid, final CmAdminModel cmAdminMdl) {
         Button ti = new StudenPanelButton("Edit Student");
         ti.setToolTip("Edit the profile for the selected student.");
@@ -670,5 +655,5 @@ class StudentModelGroupFilter implements StoreFilter <StudentModel> {
 		if (GroupSelectorWidget.NO_FILTERING.equals(property)) return true;
 		return (property.equals(item.getGroup()));
 	}
-
 }
+

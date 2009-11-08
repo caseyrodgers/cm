@@ -346,7 +346,7 @@ class MyButton extends Button {
     public MyButton(String name, String tooltip,SelectionListener<ButtonEvent> listener) {
         super(name);
         setWidth(150);
-        setStyleName("manage-groups-window-buttons-button");
+        addStyleName("manage-groups-window-buttons-button");
         setToolTip(tooltip);
         addSelectionListener(listener);
     }

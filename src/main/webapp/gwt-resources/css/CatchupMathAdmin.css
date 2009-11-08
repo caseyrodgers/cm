@@ -16,54 +16,16 @@
 	text-align: center;
 }
 
-.header-panel-logout-btn {
-	height: 34px;
-	width: 92px;
-	position: absolute;
-	right: 100px;
-	top: 2px;
-}
-.header-panel-logout-btn-icon {
-	background: url(/gwt-resources/images/logout.png) no-repeat center left !important;
-}
-.header-panel-logout-btn-icon-over {
-	background: url(/gwt-resources/images/logout-over.png) no-repeat center left !important
-		;
-}
+.header-panel-logout-btn {height: 34px;width: 92px;position: absolute;right: 100px;top: 2px;background: url(/gwt-resources/images/logout.png) no-repeat center left !important;}
+.header-panel-logout-btn-over {background: url(/gwt-resources/images/logout-over.png) no-repeat center left !important;}
 
 
-.header-panel-guide-btn {
-    position: absolute;
-    left: 400px;
-    top: 99px;
-    width: 192px;
-    height: 32px;
-}
+.header-panel-guide-btn {position: absolute;left: 400px;top: 110px;width: 192px;height: 32px;background: url(/gwt-resources/images/admin_getting_started.png) no-repeat center left !important;}
+.header-panel-guide-btn-over {background: url(/gwt-resources/images/admin_getting_started-over.png) no-repeat center left !important;}
 
-.header-panel-getting-started-btn-icon {
-    background: url(/gwt-resources/images/admin_getting_started.png) no-repeat center left !important;
-}
-.header-panel-getting-started-btn-icon-over {
-    background: url(/gwt-resources/images/admin_getting_started-over.png) no-repeat center left !important;
-}
+.header-panel-help-btn {height: 34px;width: 76px; position: absolute;right: 15px;top: 2px;background: url(/gwt-resources/images/help.png) no-repeat center left !important;}
+.header-panel-help-btn-over {background: url(/gwt-resources/images/help-over.png) no-repeat center left !important;}
 
-
-
-
-.header-panel-help-btn {
-    height: 34px;
-    width: 76px;
-    position: absolute;
-    right: 15px;
-    top: 2px;
-}
-
-.header-panel-help-btn-icon {
-	background: url(/gwt-resources/images/help.png) no-repeat center left !important;
-}
-.header-panel-help-btn-icon-over {
-	background: url(/gwt-resources/images/help-over.png) no-repeat center left !important;
-}
 
 .printer-icon {
 	background: url(/gwt-resources/images/icons/printer-icon.png) no-repeat center left !important;
@@ -73,6 +35,7 @@
 	overflow: auto;
 	position: relative;
 	height: 400px;
+	padding: 0 20px 20px 20px;
 }
 
 .student-grid {

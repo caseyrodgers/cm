@@ -104,10 +104,10 @@ public class GroupWindow extends LayoutContainer {
 		gw.setModal(true);
 
 		Button cancelBtn = cancelButton();
-        cancelBtn.setStyleName("cancel-button");
+        cancelBtn.addStyleName("cancel-button");
         
 		Button saveBtn = saveButton(fs, isNew, fp);
-		saveBtn.setStyleName("save-button");
+		saveBtn.addStyleName("save-button");
 		
 		fp.setButtonAlign(HorizontalAlignment.RIGHT);  
         fp.addButton(saveBtn);

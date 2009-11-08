@@ -121,7 +121,7 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
 	protected List<Button> getActionButtons() {
 	    List<Button> list = new ArrayList<Button>();
         Button cancelBtn = cancelButton();
-        cancelBtn.setStyleName("register-student-cancel");
+        cancelBtn.addStyleName("register-student-cancel");
         list.add(saveButton(_fsProgram, _formPanel));
         list.add(cancelButton());
         for(int i=0;i<list.size();i++) {
@@ -134,7 +134,7 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
 	public CheckBoxGroup _showWorkGrp;
 	protected FormPanel createForm() {
 		_formPanel = new CombinedFormPanel();
-		_formPanel.setStyleName("register-student-form-panel");
+		_formPanel.addStyleName("register-student-form-panel");
 		_formPanel.setLabelWidth(120);
 		_formPanel.setHeight(formHeight);
 		_formPanel.setFooter(true);
@@ -184,7 +184,7 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
 
         _fsProgram = new FieldSet();
         _fsProgram.setHeading("Assign Program");
-        _fsProgram.setStyleName("register-student-fieldset");
+        _fsProgram.addStyleName("register-student-fieldset");
 		
 		FormLayout fl = new FormLayout();
 		fl.setLabelWidth(_formPanel.getLabelWidth());
@@ -265,7 +265,7 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
          */
         _formPanel.setButtonAlign(HorizontalAlignment.RIGHT);
         for(Button btn: getActionButtons()) {
-            btn.setStyleName("register-student-btn");
+            btn.addStyleName("register-student-btn");
             _window.addButton(btn);
         }
         

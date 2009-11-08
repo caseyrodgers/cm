@@ -373,21 +373,15 @@
 					<extraJvmArgs>-Xmx256m -Xms256m</extraJvmArgs>
 					<outputDirectory>${basedir}/src/main/webapp/</outputDirectory>
 					<modules>
-<!--
 						<module>hotmath.gwt.cm.CatchupMath</module>
--->
 						<module>hotmath.gwt.cm_admin.CatchupMathAdmin</module>
 					</modules>
 					<!--
 						<runTarget>hotmath.gwt.cm.CatchupMath/CatchupMath.html</runTarget>
 					-->
-					<outputDirectory>${basedir}/src/main/webapp/</outputDirectory>
-					<modules>
-<!--
-						<module>hotmath.gwt.cm.CatchupMath</module>
--->
-						<module>hotmath.gwt.cm_admin.CatchupMathAdmin</module>
-					</modules>
+                                        <hostedWebapp>
+                                            ${project.build.directory}/${project.build.finalName}
+                                        </hostedWebapp>
 				</configuration>
 				<version>1.1-SNAPSHOT</version>
 				<executions>

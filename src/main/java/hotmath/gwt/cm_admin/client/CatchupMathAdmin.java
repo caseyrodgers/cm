@@ -31,6 +31,7 @@ import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.rpc.ServiceDefTarget;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RootPanel;
 
 /**
@@ -44,7 +45,7 @@ public class CatchupMathAdmin implements EntryPoint, ValueChangeHandler<String> 
     FooterPanel footerPanel;
     CmAdminModel cmAdminMdl;
     AccountInfoPanel infoPanel;
-    StudentGridPanel sgp;
+    StudentGridPanel studentGrid;
 
     static CatchupMathAdmin instance;
 
@@ -58,20 +59,19 @@ public class CatchupMathAdmin implements EntryPoint, ValueChangeHandler<String> 
 
         mainPort = new Viewport();
         mainPort.setLayout(new BorderLayout());
-        mainPort.setEnableScroll(false);
-
+        
         BorderLayoutData bdata = new BorderLayoutData(LayoutRegion.NORTH, 40);
         headerPanel = new HeaderPanel();
         mainPort.add(headerPanel, bdata);
 
+        
         mainContainer = new LayoutContainer();
         mainContainer.setStyleName("main-container");
         mainContainer.setLayout(new FitLayout());
-
+        
         mainPort.add(mainContainer, new BorderLayoutData(LayoutRegion.CENTER));
 
         RootPanel.get("main-content").add(mainPort);
-        
 
         CmShared.handleLoginProcessAsync(new CmLoginAsync() {
             @Override
@@ -82,12 +82,13 @@ public class CatchupMathAdmin implements EntryPoint, ValueChangeHandler<String> 
     }
 
     private void completeLoginProcess(int uid) {
+
         UserInfoBase user = UserInfoBase.getInstance();
         cmAdminMdl = new CmAdminModel();
         cmAdminMdl.setId(uid);
         
         infoPanel = new AccountInfoPanel(cmAdminMdl);
-        sgp = new StudentGridPanel(cmAdminMdl);
+        studentGrid = new StudentGridPanel(cmAdminMdl);
         CmAdminDataReader.getInstance().fireRefreshData();
 
         // If the application starts with no history token, redirect to a new
@@ -103,10 +104,8 @@ public class CatchupMathAdmin implements EntryPoint, ValueChangeHandler<String> 
     private void loadMainPage() {
         Log.info("Loading CMAdmin main page");
         mainContainer.removeAll();
-        mainContainer.setLayout(new BorderLayout());
 
-        IconButton guide = new IconButton("header-panel-getting-started-btn-icon");
-        guide.setStyleName("header-panel-guide-btn");
+        IconButton guide = new IconButton("header-panel-guide-btn");
         guide.setToolTip("Find out how to get started with Catchup Math");
         guide.addSelectionListener(new SelectionListener<IconButtonEvent>() {
             public void componentSelected(IconButtonEvent ce) {
@@ -114,10 +113,11 @@ public class CatchupMathAdmin implements EntryPoint, ValueChangeHandler<String> 
             }
         });
 
+        mainContainer.setLayout(new BorderLayout());
+        
         mainContainer.add(infoPanel, new BorderLayoutData(LayoutRegion.NORTH, 150));
-        mainContainer.add(guide);
-
-        mainContainer.add(sgp, new BorderLayoutData(LayoutRegion.CENTER));
+        mainContainer.add(guide, new BorderLayoutData(LayoutRegion.NORTH));
+        mainContainer.add(studentGrid, new BorderLayoutData(LayoutRegion.CENTER));
 
         mainContainer.layout();
     }
@@ -173,3 +173,30 @@ public class CatchupMathAdmin implements EntryPoint, ValueChangeHandler<String> 
         return infoPanel;
     }
 }
+
+
+
+
+
+
+
+
+class AdminTopComponent extends LayoutContainer {
+    public AdminTopComponent() {
+        add(new Label("Top"));
+    }
+}
+
+
+class AdminCenterComponent extends LayoutContainer {
+    public AdminCenterComponent() {
+        add(new Label("Center"));
+    }
+}
+
+class AdminBottomComponent extends LayoutContainer {
+    public AdminBottomComponent() {
+        add(new Label("Bottom"));
+    }
+}
+

@@ -1,11 +1,9 @@
 package hotmath.gwt.cm_admin.client.ui;
 
-import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.IconButtonEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.widget.Html;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
-import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.button.IconButton;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Window;
@@ -27,8 +25,7 @@ public class HeaderPanel extends LayoutContainer {
 		super.onRender(parent, index);
 
 		setStyleName("header-panel");
-		IconButton btn = new IconButton("header-panel-help-btn-icon");
-		btn.setStyleName("header-panel-help-btn");
+		IconButton btn = new IconButton("header-panel-help-btn");
 		btn.addSelectionListener(new SelectionListener<IconButtonEvent>() {
 			public void componentSelected(IconButtonEvent ce) {
 			   new HelpWindow();
@@ -36,8 +33,7 @@ public class HeaderPanel extends LayoutContainer {
 		});		
 		add(btn);
 		
-		btn = new IconButton("header-panel-logout-btn-icon");
-		btn.setStyleName("header-panel-logout-btn");
+		btn = new IconButton("header-panel-logout-btn");
 	    btn.addSelectionListener(new SelectionListener<IconButtonEvent>() {
 			public void componentSelected(IconButtonEvent ce) {
 				//CmShared.logout();
