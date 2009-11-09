@@ -4,6 +4,7 @@ import hotmath.gwt.cm.client.history.CmHistoryManager;
 import hotmath.gwt.cm_tools.client.data.InmhItemData;
 import hotmath.gwt.cm_tools.client.data.PrescriptionSessionDataResource;
 
+import com.extjs.gxt.ui.client.Style.ButtonArrowAlign;
 import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.Events;
@@ -70,6 +71,19 @@ class ResourceMenuButton extends Button {
         
         
         checkCompletion();
+    }
+    
+    
+    /** subtract the menu length from the menu.
+     * 
+     * This is to deal with GXT adding extra length
+     * to buttons with menu.
+     * 
+     */
+    public void setMenu(Menu menu) {
+        super.setMenu(menu);
+        
+        setWidth(175);
     }
     
     
