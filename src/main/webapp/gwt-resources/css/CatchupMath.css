@@ -254,39 +254,15 @@
 		!important;
 }
 
-.header-panel-logout-btn-icon {
-	background: url(../images/logout.png) no-repeat center left !important;
-}
 
-.header-panel-logout-btn-icon-over {
-	background: url(../images/logout-over.png) no-repeat center left
-		!important;
-}
 
-.header-panel-help-btn-icon {
-	background: url(../images/help.png) no-repeat center left !important;
-}
 
-.header-panel-help-btn-icon-over {
-	background: url(../images/help-over.png) no-repeat center left
-		!important;
-}
+.header-panel-logout-btn {height: 34px;width: 92px;position: absolute;right: 100px;top: 2px;background: url(../images/logout.png) no-repeat center left !important;}
+.header-panel-logout-btn-over {background: url(../images/logout-over.png) no-repeat center left !important;}
 
-.header-panel-logout-btn {
-	height: 34px;
-	width: 92px;
-	position: absolute;
-	right: 100px;
-	top: 2px;
-}
+.header-panel-help-btn {height: 34px;width: 76px;position: absolute;right: 20px;top: 2px; background: url(../images/help.png) no-repeat center left !important;}
+.header-panel-help-btn-over {background: url(../images/help-over.png) no-repeat center left!important;}
 
-.header-panel-help-btn {
-	height: 34px;
-	width: 76px;
-	position: absolute;
-	right: 20px;
-	top: 2px;
-}
 
 .header-panel-cmu-btn {
 	height: 34px;
