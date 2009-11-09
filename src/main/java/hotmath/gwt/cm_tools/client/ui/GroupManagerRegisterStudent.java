@@ -40,6 +40,7 @@ public class GroupManagerRegisterStudent extends RegisterStudent {
 
         _formPanel.layout();
 	    setVisible(true);
+	    _window.setVisible(true);
 	}
 	
 
