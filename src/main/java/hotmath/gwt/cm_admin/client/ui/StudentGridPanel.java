@@ -76,33 +76,29 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
     Grid<StudentModel> _grid;
     CmAdminModel _cmAdminMdl;
     ListStore<StudentModel> smStore;
-    
-	private ListStore <GroupModel> groupStore;
-	private ComboBox <GroupModel> groupCombo;
+
+    private ListStore<GroupModel> groupStore;
+    private ComboBox<GroupModel> groupCombo;
 
     public StudentGridPanel(CmAdminModel cmAdminMdl) {
         this._cmAdminMdl = cmAdminMdl;
         final ListStore<StudentModel> store = new ListStore<StudentModel>();
-        
-        
+
         setLayout(new BorderLayout());
-        
+
         ColumnModel cm = defineColumns();
         _grid = defineGrid(store, cm);
         _grid.setStyleName("student-grid-panel-grid");
 
-      
-        
-        add(createToolbar(),new BorderLayoutData(LayoutRegion.NORTH,30));
-        
-        add(_grid,new BorderLayoutData(LayoutRegion.CENTER,400));
-        
+        add(createToolbar(), new BorderLayoutData(LayoutRegion.NORTH, 30));
+        add(_grid, new BorderLayoutData(LayoutRegion.CENTER, 400));
+
         BorderLayoutData borderLayout = new BorderLayoutData(LayoutRegion.SOUTH, 70);
         borderLayout.setMargins(new Margins(10, 5, 0, 5));
         add(createGroupFilter(), borderLayout);
-        
+
         final Menu contextMenu = new Menu();
-        
+
         MenuItem editUser = new MenuItem("Edit Student");
         editUser.addSelectionListener(new SelectionListener<MenuEvent>() {
             public void componentSelected(MenuEvent ce) {
@@ -112,7 +108,7 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
         });
         contextMenu.add(editUser);
 
-        if(CmShared.getQueryParameter("debug") != null) {
+        if (CmShared.getQueryParameter("debug") != null) {
             MenuItem loginAsUser = new MenuItem("Login as User");
             loginAsUser.addSelectionListener(new SelectionListener<MenuEvent>() {
                 public void componentSelected(MenuEvent ce) {
@@ -121,7 +117,7 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
                 }
             });
             contextMenu.add(loginAsUser);
-            
+
             MenuItem debugUser = new MenuItem("Debug Info");
             debugUser.addSelectionListener(new SelectionListener<MenuEvent>() {
                 public void componentSelected(MenuEvent ce) {
@@ -140,7 +136,7 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
 
         EventBus.getInstance().addEventListener(new CmEventListenerImplDefault() {
             public void handleEvent(CmEvent event) {
-                if(event.getEventName().equals(EventBus.EVENT_TYPE_REFRESH_STUDENT_DATA)) {
+                if (event.getEventName().equals(EventBus.EVENT_TYPE_REFRESH_STUDENT_DATA)) {
                     refreshDataNow(null);
                 }
             }
@@ -151,11 +147,13 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
         getStudentsRPC(_cmAdminMdl.getId(), _grid.getStore(), null);
     }
 
-    /** Force a refresh
+    /**
+     * Force a refresh
      * 
      * @TODO: Combine these into one request
      * 
-     * @param uid  The uid to select, or null to select current row
+     * @param uid
+     *            The uid to select, or null to select current row
      * 
      */
     public void refreshDataNow(Integer uid2Select) {
@@ -167,21 +165,21 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
             ti.enable();
         }
     }
+
     private FieldSet createGroupFilter() {
-    	
-		ToolBar tb = new ToolBar();
+
+        ToolBar tb = new ToolBar();
         tb.setStyleName("student-grid-panel-toolbar");
 
-		FieldSet fs = new FieldSet();
-		fs.add(tb);
+        FieldSet fs = new FieldSet();
+        fs.add(tb);
         fs.addStyleName("student-grid-lower-toolbar-container");
         fs.setHeading("Filter");
 
-        groupStore = new ListStore <GroupModel> ();
-		GroupSelectorWidget gsw = new GroupSelectorWidget(_cmAdminMdl, groupStore, false, this, "group-filter");
-		groupCombo = gsw.groupCombo();
-		groupCombo.setAllowBlank(true);
-
+        groupStore = new ListStore<GroupModel>();
+        GroupSelectorWidget gsw = new GroupSelectorWidget(_cmAdminMdl, groupStore, false, this, "group-filter");
+        groupCombo = gsw.groupCombo();
+        groupCombo.setAllowBlank(true);
 
         groupCombo.addSelectionChangedListener(new SelectionChangedListener<GroupModel>() {
             public void selectionChanged(SelectionChangedEvent<GroupModel> se) {
@@ -195,38 +193,39 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
                 _grid.getStore().applyFilters(groupName);
             }
         });
-        
 
-		tb.add(groupCombo);
+        tb.add(groupCombo);
 
-		return fs;
+        return fs;
     }
 
     private Button manageGroupButton(final Grid<StudentModel> grid) {
         final Button btn = new StudenPanelButton("Manage Groups");
         btn.setToolTip("Manage the group definitions.");
-        
+
         btn.addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent ce) {
                 new ManageGroupsWindow(_cmAdminMdl).setVisible(true);
-            }});
+            }
+        });
         return btn;
     }
 
     /**
      * Log in as selected user (student)
      * 
-     * This is this is not the same thing as CM_HOME_URL
-     * for example, on the test server:
+     * This is this is not the same thing as CM_HOME_URL for example, on the
+     * test server:
      * 
-     * from hotmath.kattare.com:8081 (for admin) to hotmath.kattare.com (for student)
-     * and logout of student (at hotmath.kattare.com) and back to hotmath.kattare.com:8081
+     * from hotmath.kattare.com:8081 (for admin) to hotmath.kattare.com (for
+     * student) and logout of student (at hotmath.kattare.com) and back to
+     * hotmath.kattare.com:8081
      * 
      * for live server, it is:
      * 
-     * catchupmath.com (admin) -> hotmath.com (student)
-     * and logout of student must go back to catchupmath.comd
+     * catchupmath.com (admin) -> hotmath.com (student) and logout of student
+     * must go back to catchupmath.comd
      * 
      * I'm for generalizing this, we must deal with all cases.
      * 
@@ -237,53 +236,49 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
             return;
 
         String server = CmShared.getQueryParameter("host");
-        if(server == null || server.length() == 0)
+        if (server == null || server.length() == 0)
             server = "hotmath.com";
-        
-        String url = "http://" + server +"/cm_student/CatchupMath.html?uid=" + sm.getUid() + "&debug=true";
+
+        String url = "http://" + server + "/cm_student/CatchupMath.html?uid=" + sm.getUid() + "&debug=true";
         Window.open(url, "_blank", "location=1,menubar=1,resizable=1");
     }
-    
+
     private void showDebugInfo() {
         StudentModel sm = _grid.getSelectionModel().getSelectedItem();
         if (sm == null)
             return;
-        
+
         CatchupMathTools.showAlert("UID: " + sm.getUid());
     }
 
     private ToolBar createToolbar() {
         ToolBar toolbar = new ToolBar();
-        toolbar.addStyleName("student-grid-panel-toolbar");
-        toolbar.setMinButtonWidth(40);
+        //toolbar.addStyleName("student-grid-panel-toolbar");
 
-        
-        Button refreshBtn = new Button("Refresh Student List");
-        refreshBtn.setToolTip("Refresh the list of students");
-        refreshBtn.addSelectionListener(new SelectionListener<ButtonEvent>() {
+        Button refreshBtn = new MyButton("Refresh List", "Refresh Student List with latest information.", new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent ce) {
                 CmAdminDataReader.getInstance().fireRefreshData();
             }
         });
- 
+
         refreshBtn.setStyleAttribute("font-weight", "bold");
         toolbar.add(refreshBtn);
 
         Button btn = new Button("Registration");
         Menu menu = new Menu();
-        menu.add(new MenuItem("New Student",new SelectionListener<MenuEvent>() {
+        menu.add(new MenuItem("New Student", new SelectionListener<MenuEvent>() {
             @Override
             public void componentSelected(MenuEvent ce) {
-                new RegisterStudent(null, _cmAdminMdl).showWindow();                
+                new RegisterStudent(null, _cmAdminMdl).showWindow();
             }
         }));
-        menu.add(new MenuItem("Bulk Registration",new SelectionListener<MenuEvent>() {
+        menu.add(new MenuItem("Bulk Registration", new SelectionListener<MenuEvent>() {
             @Override
             public void componentSelected(MenuEvent ce) {
                 new BulkStudentRegistrationWindow(null, _cmAdminMdl);
             }
         }));
-        menu.add(new MenuItem("Self Registration",new SelectionListener<MenuEvent>() {
+        menu.add(new MenuItem("Self Registration", new SelectionListener<MenuEvent>() {
             @Override
             public void componentSelected(MenuEvent ce) {
                 new AutoRegisterStudentSetup(null, _cmAdminMdl);
@@ -291,8 +286,7 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
         }));
         btn.setMenu(menu);
         toolbar.add(btn);
-        
-        
+
         Button ti = editStudentToolItem(_grid, _cmAdminMdl);
         toolbar.add(ti);
 
@@ -304,7 +298,6 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
 
         final Button manageGrp = manageGroupButton(_grid);
         toolbar.add(manageGrp);
-
 
         ti = displayPrintableReportToolItem(_grid);
         toolbar.add(ti);
@@ -327,12 +320,12 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
                 }
             }
         });
-        
+
         grid.setWidth("500px");
         grid.setHeight("300px");
         return grid;
     }
-    
+
     private Button editStudentToolItem(final Grid<StudentModel> grid, final CmAdminModel cmAdminMdl) {
         Button ti = new StudenPanelButton("Edit Student");
         ti.setToolTip("Edit the profile for the selected student.");
@@ -342,14 +335,14 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
             public void componentSelected(ButtonEvent ce) {
                 editStudent();
                 if (grid.getStore().getCount() > 0) {
-                    //ce.getComponent().enable();
+                    // ce.getComponent().enable();
                 }
             }
 
         });
         return ti;
     }
-    
+
     private void editStudent() {
         GridSelectionModel<StudentModel> sel = _grid.getSelectionModel();
         List<StudentModel> l = sel.getSelection();
@@ -359,7 +352,7 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
             StudentModel sm = l.get(0);
             new RegisterStudent(sm, _cmAdminMdl).showWindow();
         }
-      
+
     }
 
     private Button studentDetailsToolItem(final Grid<StudentModel> grid) {
@@ -409,7 +402,7 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
                     });
                 }
                 if (grid.getStore().getCount() == 0) {
-                    //ce.getComponent().disable();
+                    // ce.getComponent().disable();
                 }
             }
 
@@ -428,13 +421,12 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
                 ListStore<StudentModel> store = grid.getStore();
 
                 List<Integer> studentUids = new ArrayList<Integer>();
-                for(int i=0;i<store.getCount();i++) {
+                for (int i = 0; i < store.getCount(); i++) {
                     studentUids.add(store.getAt(i).getUid());
-                    
+
                 }
-                new PdfWindow(_cmAdminMdl.getId(), 
-                        "Catchup Math Student Summary Report",
-                        new GeneratePdfAction(PdfType.STUDENT_SUMMARY,_cmAdminMdl.getId(),studentUids));
+                new PdfWindow(_cmAdminMdl.getId(), "Catchup Math Student Summary Report", new GeneratePdfAction(
+                        PdfType.STUDENT_SUMMARY, _cmAdminMdl.getId(), studentUids));
 
             }
         });
@@ -497,10 +489,10 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
         return cm;
     }
 
-    protected void getStudentsRPC(Integer uid, final ListStore<StudentModel> store,  final Integer uidToSelect) {
-        
+    protected void getStudentsRPC(Integer uid, final ListStore<StudentModel> store, final Integer uidToSelect) {
+
         Log.info("StudentGridPanel: reading students RPC");
-        
+
         RegistrationServiceAsync s = (RegistrationServiceAsync) Registry.get("registrationService");
 
         s.getSummariesForActiveStudents(uid, new AsyncCallback<List<StudentModel>>() {
@@ -508,52 +500,52 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
             public void onSuccess(List<StudentModel> result) {
 
                 /** save the current selection, if any */
-                int selectedUid=0;
-                if(uidToSelect != null) {
+                int selectedUid = 0;
+                if (uidToSelect != null) {
                     selectedUid = uidToSelect;
-                }
-                else {
+                } else {
                     // used current selection
                     StudentModel sm = _grid.getSelectionModel().getSelectedItem();
-                    selectedUid = (sm != null)?sm.getUid():0;
+                    selectedUid = (sm != null) ? sm.getUid() : 0;
                 }
-                
-                /** remove all existing records, and add new set
+
+                /**
+                 * remove all existing records, and add new set
                  * 
-                 * NOTE: changed this to add one by one due to bug with add(list)
-                 * when filter applied
+                 * NOTE: changed this to add one by one due to bug with
+                 * add(list) when filter applied
                  * 
-                 *  */
+                 * */
                 store.removeAll();
-                if(store.getFilters() != null) {
-                    /** if filter applied, then must do each one to avoid 
-                     *  GXT bug of throwning out of bounds
-                     *  @TODO: recheck this condition on next GXT build
+                if (store.getFilters() != null) {
+                    /**
+                     * if filter applied, then must do each one to avoid GXT bug
+                     * of throwning out of bounds
+                     * 
+                     * @TODO: recheck this condition on next GXT build
                      */
-                    for(StudentModel s: result) {
+                    for (StudentModel s : result) {
                         store.add(s);
                     }
-                }
-                else {
+                } else {
                     /** if not filter, this is much faster */
                     store.add(result);
                 }
-                
-                
+
                 /** Reselect selected row */
-                if(selectedUid > 0) {
-                    for(int i=0;i<store.getCount();i++) {
-                        if(store.getAt(i).getUid() == selectedUid) {
-                            _grid.getSelectionModel().select(store.getAt(i),false);    
-                            
-                
-                            /** Must set in separate thread for this to work due
-                             *  to GXT bug in setting the selected row on layout()
-                             *  which overrides this action.  This is the only 
-                             *  way I could get the currently selected row re-selected
-                             *  on refresh.
-                             *  
-                             *  @TODO: recheck this condition on next GXT build.
+                if (selectedUid > 0) {
+                    for (int i = 0; i < store.getCount(); i++) {
+                        if (store.getAt(i).getUid() == selectedUid) {
+                            _grid.getSelectionModel().select(store.getAt(i), false);
+
+                            /**
+                             * Must set in separate thread for this to work due
+                             * to GXT bug in setting the selected row on
+                             * layout() which overrides this action. This is the
+                             * only way I could get the currently selected row
+                             * re-selected on refresh.
+                             * 
+                             * @TODO: recheck this condition on next GXT build.
                              */
                             final int visRow = i;
                             new Timer() {
@@ -561,7 +553,7 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
                                     _grid.getView().ensureVisible(visRow, 0, true);
                                 }
                             }.schedule(1);
-                            
+
                             break;
                         }
                     }
@@ -582,11 +574,11 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
 
         cms.execute(new UnregisterStudentsAction(smList), new AsyncCallback<StringHolder>() {
             public void onSuccess(final StringHolder result) {
-            	String response = result.getResponse();
-            	StringBuffer sb = new StringBuffer();
+                String response = result.getResponse();
+                StringBuffer sb = new StringBuffer();
 
                 JSONValue rspValue = JSONParser.parse(response);
-                JSONObject rspObj  = rspValue.isObject();
+                JSONObject rspObj = rspValue.isObject();
 
                 String value = rspObj.get("deactivateCount").isString().stringValue();
                 int deactivateCount = Integer.valueOf(value);
@@ -601,13 +593,14 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
                 int unregisterErrorCount = deactivateErrorCount + removeErrorCount;
 
                 if (unregisterCount > 0) {
-                	sb.append("Unregistered ").append(unregisterCount);
-                	sb.append((unregisterCount > 1)?" students.":" student.");
-                	if (unregisterErrorCount > 0) sb.append(" <br/>");
+                    sb.append("Unregistered ").append(unregisterCount);
+                    sb.append((unregisterCount > 1) ? " students." : " student.");
+                    if (unregisterErrorCount > 0)
+                        sb.append(" <br/>");
                 }
-                if (unregisterErrorCount> 0) {
-                	sb.append("Unregister failed for ").append(unregisterErrorCount);
-                	sb.append((unregisterErrorCount > 1)?" students.":" student.");
+                if (unregisterErrorCount > 0) {
+                    sb.append("Unregister failed for ").append(unregisterErrorCount);
+                    sb.append((unregisterErrorCount > 1) ? " students." : " student.");
                 }
 
                 CatchupMathTools.showAlert(sb.toString());
@@ -623,20 +616,20 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
         });
     }
 
-	//@Override
-	public void beginStep() {
-		// empty impl
-	}
+    // @Override
+    public void beginStep() {
+        // empty impl
+    }
 
-	//@Override
-	public void completeStep() {
-		// empty impl
-	}
+    // @Override
+    public void completeStep() {
+        // empty impl
+    }
 
-	//@Override
-	public void finish() {
-		// empty impl
-	}
+    // @Override
+    public void finish() {
+        // empty impl
+    }
 }
 
 class StudenPanelButton extends Button {
@@ -647,13 +640,12 @@ class StudenPanelButton extends Button {
     }
 }
 
-class StudentModelGroupFilter implements StoreFilter <StudentModel> {
+class StudentModelGroupFilter implements StoreFilter<StudentModel> {
 
-	//@Override
-	public boolean select(Store<StudentModel> store, StudentModel parent,
-			StudentModel item, String property) {
-		if (GroupSelectorWidget.NO_FILTERING.equals(property)) return true;
-		return (property.equals(item.getGroup()));
-	}
+    // @Override
+    public boolean select(Store<StudentModel> store, StudentModel parent, StudentModel item, String property) {
+        if (GroupSelectorWidget.NO_FILTERING.equals(property))
+            return true;
+        return (property.equals(item.getGroup()));
+    }
 }
-

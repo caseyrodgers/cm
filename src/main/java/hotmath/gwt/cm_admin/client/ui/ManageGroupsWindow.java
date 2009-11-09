@@ -345,10 +345,10 @@ public class ManageGroupsWindow extends CmWindow {
 class MyButton extends Button {
     public MyButton(String name, String tooltip,SelectionListener<ButtonEvent> listener) {
         super(name);
-        setWidth(150);
         addStyleName("manage-groups-window-buttons-button");
         setToolTip(tooltip);
         addSelectionListener(listener);
+        setWidth("115px");
     }
 };
 
