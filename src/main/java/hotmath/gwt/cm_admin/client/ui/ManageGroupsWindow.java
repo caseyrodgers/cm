@@ -2,7 +2,6 @@ package hotmath.gwt.cm_admin.client.ui;
 
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.model.CmAdminDataReader;
-import hotmath.gwt.cm_tools.client.model.CmAdminDataRefresher;
 import hotmath.gwt.cm_tools.client.model.CmAdminModel;
 import hotmath.gwt.cm_tools.client.model.GroupInfoModel;
 import hotmath.gwt.cm_tools.client.model.GroupModel;
@@ -10,13 +9,10 @@ import hotmath.gwt.cm_tools.client.model.StudentModel;
 import hotmath.gwt.cm_tools.client.service.CmServiceAsync;
 import hotmath.gwt.cm_tools.client.ui.GroupManagerRegisterStudent;
 import hotmath.gwt.cm_tools.client.ui.GroupWindow;
-import hotmath.gwt.cm_tools.client.ui.PassPercent;
 import hotmath.gwt.cm_tools.client.ui.PassPercentCombo;
 import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
 import hotmath.gwt.shared.client.data.CmAsyncRequest;
 import hotmath.gwt.shared.client.data.CmAsyncRequestImplDefault;
-import hotmath.gwt.shared.client.eventbus.CmEvent;
-import hotmath.gwt.shared.client.eventbus.EventBus;
 import hotmath.gwt.shared.client.rpc.action.CmList;
 import hotmath.gwt.shared.client.rpc.action.GetGroupAggregateInfoAction;
 import hotmath.gwt.shared.client.rpc.action.GroupManagerAction;
@@ -40,11 +36,8 @@ import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.CheckBox;
-import com.extjs.gxt.ui.client.widget.form.ComboBox;
 import com.extjs.gxt.ui.client.widget.form.FieldSet;
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
-import com.extjs.gxt.ui.client.widget.form.TextField;
-import com.extjs.gxt.ui.client.widget.form.ComboBox.TriggerAction;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
 import com.extjs.gxt.ui.client.widget.grid.Grid;
@@ -451,28 +444,6 @@ class GroupManagerGlobalSettings extends CmWindow {
                 CatchupMathTools.showAlert(caught.getMessage());
             }
         });
-    }
-    
-    
-    private ComboBox<PassPercent> passPercentCombo(ListStore<PassPercent> store) {
-        ComboBox<PassPercent> combo = new ComboBox<PassPercent>();
-        combo.setValue(store.getAt(2));
-        combo.setFieldLabel("Pass Percent");
-        combo.setForceSelection(false);
-        combo.setDisplayField("pass-percent");
-        combo.setEditable(false);
-        combo.setMaxLength(30);
-        combo.setAllowBlank(false);
-        combo.setTriggerAction(TriggerAction.ALL);
-        combo.setStore(store);
-        combo.setTitle("Select a percentage");
-        combo.setId("pass-combo");
-        combo.setTypeAhead(true);
-        combo.setSelectOnFocus(true);
-        combo.setEmptyText("-- select a value --");
-        combo.disable();
-        combo.setWidth(280);
-        return combo;
     }
     
 }
