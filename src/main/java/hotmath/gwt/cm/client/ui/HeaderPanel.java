@@ -40,8 +40,7 @@ public class HeaderPanel extends LayoutContainer {
 		_helloInfo.setStyleName("hello-info");
 		add(_helloInfo);
 		
-		IconButton btn = new IconButton("header-panel-help-btn-icon");
-		btn.setStyleName("header-panel-help-btn");
+		IconButton btn = new IconButton("header-panel-help-btn");
 		btn.addSelectionListener(new SelectionListener<IconButtonEvent>() {
 			public void componentSelected(IconButtonEvent ce) {
 				new HelpWindow().setVisible(true);
@@ -49,8 +48,7 @@ public class HeaderPanel extends LayoutContainer {
 		});		
 		add(btn);
 		
-		btn = new IconButton("header-panel-logout-btn-icon");
-		btn.setStyleName("header-panel-logout-btn");
+		btn = new IconButton("header-panel-logout-btn");
 		btn.addSelectionListener(new SelectionListener<IconButtonEvent>() {
 			public void componentSelected(IconButtonEvent ce) {
 				Window.Location.assign(CmShared.CM_HOME_URL);
@@ -60,7 +58,7 @@ public class HeaderPanel extends LayoutContainer {
 		
 		
 		_headerText = new Label();
-		_headerText.setStyleName("header-panel-title");
+		_headerText.addStyleName("header-panel-title");
 		add(_headerText);
 		
 		
