@@ -130,6 +130,9 @@ public class StudentLessonTopicsStatusWindow extends CmWindow {
     }
 
     protected void getStudentLessonTopicsRPC(final ListStore<LessonItemModel> store) {
+        
+        CatchupMathTools.setBusy(true);
+        
         CmServiceAsync s = (CmServiceAsync) Registry.get("cmService");
         s.execute(new   GetLessonItemsForTestRunAction(runId), new AsyncCallback<CmList<LessonItemModel>>() {
 
@@ -137,12 +140,15 @@ public class StudentLessonTopicsStatusWindow extends CmWindow {
             public void onSuccess(CmList<LessonItemModel> list) {
                 store.add(list);
                 setVisible(true);
+                CatchupMathTools.setBusy(false);
             }
 
             public void onFailure(Throwable caught) {
+                CatchupMathTools.setBusy(false);
                 caught.toString();
                 String msg = caught.getMessage();
                 CatchupMathTools.showAlert(msg);
+                
             }
         });
     }

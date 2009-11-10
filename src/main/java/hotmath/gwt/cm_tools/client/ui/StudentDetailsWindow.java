@@ -95,27 +95,25 @@ public class StudentDetailsWindow extends CmWindow {
         });
 
         ToolBar toolBar = new ToolBar();
-        toolBar.addStyleName("student-details-window-toolbar");
         toolBar.add(showWorkBtn());
         toolBar.add(showTopicsBtn());
         toolBar.add(displayReportCardToolItem(studentModel));
         toolBar.add(new FillToolItem());
-        
         toolBar.add(displayPrintableReportToolItem(studentModel));
 
+        setLayout(new BorderLayout());
+        addStyleName("student-details-window-container");
+        
         LayoutContainer lc = new LayoutContainer();
-        lc.setLayout(new BorderLayout());
-        lc.setStyleName("student-details-window-container");
-
         lc.add(studentInfoPanel());
-        lc.add(toolBar, new BorderLayoutData(LayoutRegion.NORTH, 35));
+        lc.add(toolBar);
+        add(lc, new BorderLayoutData(LayoutRegion.NORTH,50));
 
         LayoutContainer gridContainer = new LayoutContainer();
         gridContainer.setLayout(new FitLayout());
-        gridContainer.setStyleName("student-details-panel-grid");
+        gridContainer.addStyleName("student-details-panel-grid");
         gridContainer.add(samGrid);
-        lc.add(gridContainer, new BorderLayoutData(LayoutRegion.CENTER));
-        add(lc);
+        add(gridContainer, new BorderLayoutData(LayoutRegion.CENTER));
 
         _studentCount = new Label();
         _studentCount.addStyleName("students-count");
