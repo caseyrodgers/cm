@@ -12,7 +12,6 @@ import hotmath.gwt.cm_tools.client.model.StudentModel;
 import hotmath.gwt.cm_tools.client.model.StudentModelBasic;
 import hotmath.gwt.cm_tools.client.model.StudentModelI;
 import hotmath.gwt.cm_tools.client.model.StudentShowWorkModel;
-import hotmath.gwt.cm_tools.client.ui.PassPercent;
 import hotmath.gwt.shared.client.util.CmException;
 import hotmath.gwt.shared.client.util.CmRpcException;
 import hotmath.testset.ha.CmProgram;
@@ -255,7 +254,7 @@ public class CmStudentDao {
     private static final String DEACTIVATE_STUDENT_SQL =
             "update HA_USER set is_active = 0, user_passcode = ? where uid = ?";
 
-    public StringHolder unregisterStudents(Connection conn, List<StudentModel> smList) {
+    public StringHolder unregisterStudents(final Connection conn, List<StudentModel> smList) {
     	int removeCount = 0;
     	int removeErrorCount = 0;
     	int deactivateCount = 0;
@@ -807,7 +806,7 @@ public class CmStudentDao {
         return getStudentModel(uid, false);  
     }
     
-
+    
     /** Return student model named by uid
      *  
      * @param uid
@@ -843,7 +842,7 @@ public class CmStudentDao {
      * 
      * @throws Exception
      */
-    public StudentModel getStudentModel(Connection conn, Integer uid, Boolean includeSelfRegTemplate) throws Exception {
+    public StudentModel getStudentModel(final Connection conn, Integer uid, Boolean includeSelfRegTemplate) throws Exception {
         
         long timeStart = System.currentTimeMillis();
         PreparedStatement ps = null;
@@ -873,6 +872,7 @@ public class CmStudentDao {
             logger.info(String.format("End getStudentModel(), UID: %d, elapsed seconds: %d", uid, ((System.currentTimeMillis() - timeStart)/1000)));
         }
     }
+    
     
     /**
      * Return a basic student object that only contains the most important data.
@@ -979,7 +979,7 @@ public class CmStudentDao {
         return l;
     }
 
-    private List<StudentActivityModel> loadStudentActivity(Connection conn, ResultSet rs) throws Exception {
+    private List<StudentActivityModel> loadStudentActivity(final Connection conn, ResultSet rs) throws Exception {
 
         List<StudentActivityModel> l = new ArrayList<StudentActivityModel>();
         int problemsViewed = 0;

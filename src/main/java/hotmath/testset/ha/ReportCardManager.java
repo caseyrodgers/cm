@@ -6,7 +6,6 @@ import hotmath.testset.ha.info.UserProgramInfo;
 import hotmath.testset.ha.info.UserProgramInfoDao;
 
 import java.sql.Connection;
-import java.util.Date;
 import java.util.List;
 
 /** Provide management/creation tools for creating
