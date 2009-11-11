@@ -850,7 +850,6 @@ public class CmStudentDao {
         ResultSet rs = null;
 
         try {
-            conn = HMConnectionPool.getConnection();
             ps = conn.prepareStatement(getStudentSql(StudentSqlType.SINGLE_STUDENT, includeSelfRegTemplate));
             ps.setInt(1, uid);
             ps.setInt(2, 1);
