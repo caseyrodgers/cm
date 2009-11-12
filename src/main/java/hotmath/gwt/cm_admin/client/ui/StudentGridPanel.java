@@ -60,6 +60,7 @@ import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
 import com.extjs.gxt.ui.client.widget.layout.FlowLayout;
 import com.extjs.gxt.ui.client.widget.menu.Menu;
 import com.extjs.gxt.ui.client.widget.menu.MenuItem;
+import com.extjs.gxt.ui.client.widget.toolbar.FillToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONParser;
@@ -95,7 +96,7 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
         add(createToolbar(), new BorderLayoutData(LayoutRegion.NORTH, 30));
         add(_grid, new BorderLayoutData(LayoutRegion.CENTER, 400));
 
-        BorderLayoutData borderLayout = new BorderLayoutData(LayoutRegion.SOUTH, 30);
+        BorderLayoutData borderLayout = new BorderLayoutData(LayoutRegion.SOUTH, 35);
         add(createGroupFilter(), borderLayout);
 
         final Menu contextMenu = new Menu();
@@ -198,13 +199,6 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
         
         fp.add(groupCombo);
         return fp;
-        
-//        LayoutContainer lc = new HorizontalPanel();
-//        lc.addStyleName("student-grid-panel-group-filter-panel");
-//        lc.add(new Label("Group: "));
-//        lc.add(groupCombo);
-        
-//        return lc;
     }
 
     private Button manageGroupButton(final Grid<StudentModel> grid) {
@@ -266,29 +260,59 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
         toolbar.add(createRegistrationButton());
         toolbar.add(editStudentToolItem(_grid, _cmAdminMdl));
         toolbar.add(studentDetailsToolItem(_grid));
-        toolbar.add(unregisterStudentToolItem(_grid));
         toolbar.add(manageGroupButton(_grid));
+        toolbar.add(new FillToolItem());
         toolbar.add(displayPrintableReportToolItem(_grid));
 
         return toolbar;
     }
     
     private Button createRegistrationButton() {
-        Button btn = new StudenPanelButton("Registration");
+        Button btn = new StudenPanelButton("Student Registration");
+        btn.setToolTip("Register students with Catchup Math");
         Menu menu = new Menu();
-        menu.add(new MenuItem("New Student", new SelectionListener<MenuEvent>() {
+        menu.add(new MyMenuItem("New Student", "Create a new single student registration.",new SelectionListener<MenuEvent>() {
             @Override
             public void componentSelected(MenuEvent ce) {
                 new RegisterStudent(null, _cmAdminMdl).showWindow();
             }
         }));
-        menu.add(new MenuItem("Bulk Registration", new SelectionListener<MenuEvent>() {
+        menu.add(new MyMenuItem("Unregister Student", "Unregister the selected student.",new SelectionListener<MenuEvent>() {
+            @Override
+            public void componentSelected(MenuEvent ce) {
+                GridSelectionModel<StudentModel> sel = _grid.getSelectionModel();
+                List<StudentModel> l = sel.getSelection();
+                if (l.size() == 0) {
+                    CatchupMathTools.showAlert("Please select a student.");
+                } else {
+                    final StudentModel sm = l.get(0);
+
+                    String s = "Unregister " + sm.getName() + " ?";
+                    MessageBox.confirm("Unregister Student", s, new Listener<MessageBoxEvent>() {
+                        public void handleEvent(MessageBoxEvent be) {
+                            String btnText = be.getButtonClicked().getText();
+                            if (btnText.equalsIgnoreCase("yes")) {
+                                _grid.getStore().remove(sm);
+                                List<StudentModel> list = new ArrayList<StudentModel>();
+                                list.add(sm);
+                                unregisterStudentsRPC(list);
+                            }
+                        }
+                    });
+                }
+                if (_grid.getStore().getCount() == 0) {
+                    // ce.getComponent().disable();
+                }                
+            }
+        }));
+        btn.setMenu(menu);
+        menu.add(new MyMenuItem("Bulk Registration", "Bulk student registration.",new SelectionListener<MenuEvent>() {
             @Override
             public void componentSelected(MenuEvent ce) {
                 new BulkStudentRegistrationWindow(null, _cmAdminMdl);
             }
         }));
-        menu.add(new MenuItem("Self Registration", new SelectionListener<MenuEvent>() {
+        menu.add(new MyMenuItem("Self Registration", "Define a Self Registration group.", new SelectionListener<MenuEvent>() {
             @Override
             public void componentSelected(MenuEvent ce) {
                 new AutoRegisterStudentSetup(null, _cmAdminMdl);
@@ -298,6 +322,14 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
         
         return btn;
     }
+    
+    static class MyMenuItem extends MenuItem {
+        public MyMenuItem(String test, String tip, SelectionListener listener) {
+            super(test, listener);
+            setToolTip(tip);
+        }
+    }
+    
     
     private Button createRefreshButton() {
         Button btn = new StudenPanelButton("Refresh List");

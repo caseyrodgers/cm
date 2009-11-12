@@ -74,7 +74,7 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
 	
 	private TextField<String> userName;
 	
-	private int formHeight = 410;
+	private int formHeight = 380;
 	protected int formWidth  = 475;
 	
 	protected CombinedFormPanel _formPanel;

@@ -78,7 +78,7 @@ public class BulkStudentRegistrationWindow extends RegisterStudent {
               
         _window.removeAll();
         _window.setLayout(new BorderLayout());
-        _window.setHeight(490);
+        _window.setHeight(470);
         _window.setWidth(550);
         _window.setHeading("Bulk Registration");
 
