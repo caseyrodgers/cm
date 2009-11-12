@@ -19,6 +19,7 @@ import org.apache.log4j.Logger;
  * Create the appropriate user type
  * 
  * @author casey
+ * @author bob
  * 
  */
 
@@ -58,23 +59,12 @@ public class HaUserFactory {
             // first see if user is an admin
             // We search the HA_ADMIN table looking
             // for a direct user/password match
-        	StringBuilder sb = new StringBuilder();
-        	sb.append("select a.*, max(ss.date_expire) as date_expire, ss.subscriber_id, s.type as account_type ");
-            sb.append("from HA_ADMIN a ");
-            sb.append("inner join SUBSCRIBERS s ");
-            sb.append("   on s.id = a.subscriber_id ");
-            sb.append("left outer join (");
-            sb.append("   select subscriber_id, max(date_expire) as date_expire from SUBSCRIBERS_SERVICES ");
-            sb.append("   where service_name = 'catchup' " );
-            sb.append("   group by subscriber_id ");
-            sb.append(") ss ");
-            sb.append("on a.subscriber_id = ss.subscriber_id ");
-            sb.append("where a.user_name = ? and a.passcode = ? ");
-            sb.append("group by date_expire");
+        	
+        	String adminLoginSQL = CmMultiLinePropertyReader.getInstance().getProperty("ADMIN_LOGIN");
 
             conn = HMConnectionPool.getConnection();
             try {
-                pstat = conn.prepareStatement(sb.toString());
+                pstat = conn.prepareStatement(adminLoginSQL);
 
                 pstat.setString(1, user);
                 pstat.setString(2, pwd);
@@ -105,22 +95,10 @@ public class HaUserFactory {
             // password associated with the SUBCRIBERS
             // record that the user's HA_ADMIN record is
             // linked to.
-            sb.delete(0, sb.toString().length());
-            
-            sb.append("select u.uid, u.user_name, s.type, ss.date_expire ");
-            sb.append("from HA_USER u INNER JOIN HA_ADMIN h on u.admin_id = h.aid ");
-            sb.append("INNER JOIN SUBSCRIBERS s on s.id = h.subscriber_id ");
-            sb.append("left outer join (");
-            sb.append("   select subscriber_id, max(date_expire) as date_expire from SUBSCRIBERS_SERVICES ");
-            sb.append("   where service_name = 'catchup' ");
-            sb.append("   group by subscriber_id ");
-            sb.append(") ss ");
-            sb.append("on h.subscriber_id = ss.subscriber_id ");
-            sb.append("where s.password = ? ");
-            sb.append("  and u.user_passcode = ? and u.is_active = 1");
+        	String userLoginSchoolSQL = CmMultiLinePropertyReader.getInstance().getProperty("USER_LOGIN_SCHOOL");
             
             try {
-                pstat = conn.prepareStatement(sb.toString());
+                pstat = conn.prepareStatement(userLoginSchoolSQL);
 
                 pstat.setString(1, user);
                 pstat.setString(2, pwd);
@@ -150,22 +128,11 @@ public class HaUserFactory {
             // Then we search for the SUBSCRIBER.student_email
             // associated with the SUBCRIBERS record that the 
             // user's HA_ADMIN record is linked to.
-            sb.delete(0, sb.toString().length());
-            
-            sb.append("select u.uid, u.user_name, s.type, ss.date_expire ");
-            sb.append("from HA_USER u INNER JOIN HA_ADMIN h on u.admin_id = h.aid ");
-            sb.append("INNER JOIN SUBSCRIBERS s on s.id = h.subscriber_id ");
-            sb.append("left outer join (");
-            sb.append("   select subscriber_id, max(date_expire) as date_expire from SUBSCRIBERS_SERVICES ");
-            sb.append("   where service_name = 'catchup' ");
-            sb.append("   group by subscriber_id ");
-            sb.append(") ss ");
-            sb.append("on h.subscriber_id = ss.subscriber_id ");
-            sb.append("where s.student_email = ? and s.type = 'PS' ");
-            sb.append("  and u.user_passcode = ? and u.is_active = 1");
-            
+
+        	String userLoginIndivSQL = CmMultiLinePropertyReader.getInstance().getProperty("USER_LOGIN_INDIV");
+
             try {
-                pstat = conn.prepareStatement(sb.toString());
+                pstat = conn.prepareStatement(userLoginIndivSQL);
 
                 pstat.setString(1, user);
                 pstat.setString(2, pwd);
@@ -189,9 +156,7 @@ public class HaUserFactory {
             } finally {
                 SqlUtilities.releaseResources(rs, pstat, null);
             }
-            
-            
-            
+
             // The final possibility is an Auto Registration match on the userName and passcode. 
             // If the passcode matches the GROUP_NAME of the HA_USER record that defines 
             // this Auto Registration Setup. The user must be taken on the 'Auto Registration Path' 
@@ -201,19 +166,10 @@ public class HaUserFactory {
             // Then we search for the SUBSCRIBER.student_email
             // associated with the SUBCRIBERS record that the 
             // user's HA_ADMIN record is linked to.
-            sb.delete(0, sb.toString().length());
-
-            sb.append("select u.uid ");
-            sb.append("from   HA_USER u JOIN CM_GROUP g ON u.group_id = g.id ");
-            sb.append("    JOIN HA_ADMIN a ON u.admin_id = a.aid ");
-            sb.append("    JOIN SUBSCRIBERS s ON a.subscriber_id = s.id ");
-            sb.append("where s.type = 'ST' ");
-            sb.append("  and s.password = ? ");
-            sb.append("  and g.name = ? ");
-            sb.append("  and is_auto_create_template = 1");
+        	String userLoginAutoRegSQL = CmMultiLinePropertyReader.getInstance().getProperty("USER_LOGIN_AUTOREG");
             
             try {
-                pstat = conn.prepareStatement(sb.toString());
+                pstat = conn.prepareStatement(userLoginAutoRegSQL);
 
                 pstat.setString(1, user);
                 pstat.setString(2, pwd);
