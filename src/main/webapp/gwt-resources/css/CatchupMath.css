@@ -1,1148 +1,941 @@
 .main-container p {
-	color: #AAC656;
+        color: #AAC656;
 }
-
 .pc-template-btn {
-	display: block;
-	font-size: 16pt
+        display: block;
+        font-size: 16pt;
 }
-
 #pc-template-img {
-	margin-top: 20px;
+        margin-top: 20px;
 }
-
 .header-panel {
-	background-image: url(../images/logo_1.gif);
-	background-repeat: no-repeat;
-	background-position: 5 5;
-	background-color: white;
-	text-align: left;
+        background-color: white;
+        background-image: url(../images/logo_1.gif);
+        background-position: 5 5;
+        background-repeat: no-repeat;
+        text-align: left;
 }
-
 .main-port {
-	border: 1px solid blue;
-	text-align: center;
-	width: 100%;
+        border: 1px solid blue;
+        text-align: center;
+        width: 100%;
 }
-
 .resource-accord-panel-list-view {
-	border: none;
-	text-align: left;
-	color: white;
-	background: #43464B;
+        background: #43464B;
+        border: none;
+        color: white;
+        text-align: left;
 }
-
 .resource-accord-panel-list-view-selected {
-	color: yellow;
+        color: yellow;
 }
-
 .accordian-resource-list-panel .x-view-item {
-	border: none;
+        border: none;
 }
-
 .accordian-resource-list-panel .x-panel-body {
-	background: #43464B;
+        background: #43464B;
 }
-
 .accordian-resource-list-panel .x-view-item-sel {
-	background: #43464B;
+        background: #43464B;
 }
-
 .accordian-resource-list-panel .x-view-item-over {
-	background: #43464B;
+        background: #43464B;
 }
-
 .resource-accord-panel-list-view x-view-item x-view-item-sel {
-	
 }
-
 .accordian-resource-list-panel-standard {
-	background: #191c1e;
+        background: #191c1e;
 }
-
 .accordian-resource-list-panel-standard .x-view-item {
-	border: #191c1e;
+        border: #191c1e;
 }
-
 .accordian-resource-list-panel-standard .x-panel-body {
-	background: #191c1e;
+        background: #191c1e;
 }
-
 .accordian-resource-list-panel-standard .x-view-item-sel {
-	background: #191c1e;
+        background: #191c1e;
 }
-
 .accordian-resource-list-panel-standard .x-view-item-over {
-	background: #191c1e;
+        background: #191c1e;
 }
-
-.accordian-resource-list-panel-standard .resource-accord-panel-list-view
-	{
-	background: #191c1e;
+.accordian-resource-list-panel-standard .resource-accord-panel-list-view {
+        background: #191c1e;
 }
-
 .footer-panel {
-	font-size: 10px;
-	background-color: white;
-	color: #929292;
+        background-color: white;
+        color: #929292;
+        font-size: 10px;
 }
-
 .footer-panel ul {
-	margin-left: 150px;
-	margin-top: 3px;
+        margin-left: 150px;
+        margin-top: 3px;
 }
-
 .footer-panel li {
-	float: left;
-	margin-right: 20px;
+        float: left;
+        margin-right: 20px;
 }
-
 .resource-accord-panel {
-	color: #5E8005;
-	font-weight: bold;
-	background: #34383B;
+        background: #34383B;
+        color: #5E8005;
+        font-weight: bold;
 }
-
 .topic-selector {
-	width: 400px;
+        width: 400px;
 }
-
 .login-panel {
-	text-align: center;
+        text-align: center;
 }
-
 #testset_div h1 {
-	margin-bottom: 15px;
+        margin-bottom: 15px;
 }
-
 #testset_div {
-	width: 500px;
-	margin-left: 10%;
+        margin-left: 10%;
+        width: 500px;
 }
-
 .quiz-panel {
-	margin-top: 20px;
+        margin-top: 20px;
 }
-
 .login-panel-container {
-	background: url(../images/login_bkg.png) no-repeat;
-	height: 120px;
-	width: 458px;
-	margin: auto;
-	position: absolute;
-	top: 50%;
-	left: 50%;
-	margin-left: -229px;
-	margin-top: -44px;
+        background: url(../images/login_bkg.png) no-repeat;
+        height: 120px;
+        left: 50%;
+        margin: auto;
+        margin-left: -229px;
+        margin-top: -44px;
+        position: absolute;
+        top: 50%;
+        width: 458px;
 }
-
 .login-panel-container .field {
-	width: 90px;
-	text-align: right;
-	margin-right: 10px;
+        margin-right: 10px;
+        text-align: right;
+        width: 90px;
 }
-
 .login-panel-form {
-	margin-top: 15px;
+        margin-top: 15px;
 }
-
 .login-panel-form .row {
-	margin-bottom: 5px;
+        margin-bottom: 5px;
 }
-
 .login-panel-container value {
-	
 }
-
 .login-panel-container {
-	
 }
-
 .login-panel-container-horizontal {
-	margin: 0 0 0 40px;
+        margin: 0 0 0 40px;
 }
-
 .login-panel-container-horizontal button {
-	margin-left: 20px;
+        margin-left: 20px;
 }
-
 .login-panel-form-title {
-	color: blue;
-	font-weight: bold;
-	margin-bottom: 10px;
+        color: blue;
+        font-weight: bold;
+        margin-bottom: 10px;
 }
-
 .login-panel-form-forgot {
-	font-size: 60%;
-	display: block;
-	float: left;
-	margin-left: 10px;
+        display: block;
+        float: left;
+        font-size: 60%;
+        margin-left: 10px;
 }
-
 .login-action-background {
-	background: url(../images/login_button.png) no-repeat;
-	center
-	left
-	!important;
+        background: url(../images/login_button.png) no-repeat;
 }
-
 .do-next-panel {
-	margin: 20px;
+        margin: 20px;
 }
-
 .topics-panel {
-	margin-top: 10px;
-	margin-bottom: 10px;
+        margin-bottom: 10px;
+        margin-top: 10px;
 }
-
 .current-topic {
-	text-align: center;
-	font-color: blue;
+        font-color: blue;
+        text-align: center;
 }
-
 .header-title {
-	position: absolute;
-	right: 20px;
-	top: 18px;
-	width: 200px;
-	text-align: left;
+        position: absolute;
+        right: 20px;
+        text-align: left;
+        top: 18px;
+        width: 200px;
 }
-
 .header-toolbar-title {
-	font-weight: bold;
-	color: red;
-	width: 200px;
-	text-align: right;
+        color: red;
+        font-weight: bold;
+        text-align: right;
+        width: 200px;
 }
-
 .percent-complete {
-	font-weight: bold;
-	background: green;
-	border: 1px solid red;
-	text-align: right;
+        background: green;
+        border: 1px solid red;
+        font-weight: bold;
+        text-align: right;
 }
-
 .percent-complete-wrapper {
-	background-color: red;
-	height: 4px;
-	width: 100%;
-	margin-top: 20px;
+        background-color: red;
+        height: 4px;
+        margin-top: 20px;
+        width: 100%;
 }
-
 .percent-complete-wrapper img {
-	height: 2px;
+        height: 2px;
 }
-
 .percent-complete-title {
-	display: block;
-	position: absolute;
-	right: 0;
-	width: 200px;
+        display: block;
+        position: absolute;
+        right: 0;
+        width: 200px;
 }
-
 #hm_content h1 {
-	color: blue;
+        color: blue;
 }
-
 .header-panel-cmu-btn-icon {
-	background: url(../images/catch_me_up.png) no-repeat center left
-		!important;
+        background: url(../images/catch_me_up.png) no-repeat center left
+                !important;
 }
-
 .header-panel-cmu-btn-icon-over {
-	background: url(../images/catch_me_up-over.png) no-repeat center left
-		!important;
+        background: url(../images/catch_me_up-over.png) no-repeat center left
+                !important;
 }
-
-
-
-
-.header-panel-logout-btn {height: 34px;width: 92px;position: absolute;right: 100px;top: 2px;background: url(../images/logout.png) no-repeat center left !important;}
-.header-panel-logout-btn-over {background: url(../images/logout-over.png) no-repeat center left !important;}
-
-.header-panel-help-btn {height: 34px;width: 76px;position: absolute;right: 20px;top: 2px; background: url(../images/help.png) no-repeat center left !important;}
-.header-panel-help-btn-over {background: url(../images/help-over.png) no-repeat center left!important;}
-
-
+.header-panel-logout-btn {
+        background: url(../images/logout.png) no-repeat center left !important;
+        height: 34px;
+        position: absolute;
+        right: 100px;
+        top: 2px;
+        width: 92px;
+}
+.header-panel-logout-btn-over {
+        background: url(../images/logout-over.png) no-repeat center left !important;
+}
+.header-panel-help-btn {
+        background: url(../images/help.png) no-repeat center left !important;
+        height: 34px;
+        position: absolute;
+        right: 20px;
+        top: 2px;
+        width: 76px;
+}
+.header-panel-help-btn-over {
+        background: url(../images/help-over.png) no-repeat center left!important;
+}
 .header-panel-cmu-btn {
-	height: 34px;
-	width: 154px;
-	position: absolute;
-	left: 44%;
-	top: 2px;
-	z-index: 2;
+        height: 34px;
+        left: 44%;
+        position: absolute;
+        top: 2px;
+        width: 154px;
+        z-index: 2;
 }
-
 .quiz-page-resource {
-	background: #34383B;
-	padding: 20px 10px;
+        background: #34383B;
+        padding: 20px 10px;
 }
-
 .quiz-page-resource p {
-	margin-bottom: 10px;
-	color: #D1D5D8;
-	text-align: middle;
+        color: #D1D5D8;
+        margin-bottom: 10px;
+        text-align: middle;
 }
-
-/** The Do Next Dialog */
 .next-dialg {
-	
 }
-
 .next-dialog-panel {
-	padding: 20px;
+        padding: 20px;
 }
-
 .quiz-next-panel div {
-	display: inline;
+        display: inline;
 }
-
 .prescription-next-panel ul {
-	margin-top: 2px;
+        margin-top: 2px;
 }
-
 .prescription-next-panel li {
-	list-style: none;
-	display: inline;
-	margin-left: 10px;
+        display: inline;
+        list-style: none;
+        margin-left: 10px;
 }
-
 .main-panel-west {
-	font-size: 12px;
-	background: #34383B;
+        background: #34383B;
+        font-size: 12px;
 }
-
 .header-panel-title {
-	position: absolute;
-	top: 15px;
-	left: 180px;
-	color: #85C652;
-	z-index: 10;
+        color: #85C652;
+        left: 180px;
+        position: absolute;
+        top: 15px;
+        z-index: 10;
 }
-
-/** Hide the INMH button on solutions */
 #inmh_goto {
-	display: none;
+        display: none;
 }
-
 .show-work-panel {
-	position: relative;
-	margin-left: 5px;
-	width: 300px;
-	background: transparent;
+        background: transparent;
+        margin-left: 5px;
+        position: relative;
+        width: 300px;
 }
-
 .show-work-panel-flash {
-	margin-top: 10px;
+        margin-top: 10px;
 }
-
 .show-work-panel-bg {
-	margin: 35px 15px 10px 60px;
-	background-color: gray;
-	width: 350px;
-	padding: 5px;
+        background-color: gray;
+        margin: 35px 15px 10px 60px;
+        padding: 5px;
+        width: 350px;
 }
-
 .show-work-button {
-	position: absolute;
-	top: 5px;
-	right: 80px;
-	width: 130px;
-	color: #E43C00;
+        color: #E43C00;
+        position: absolute;
+        right: 80px;
+        top: 5px;
+        width: 130px;
 }
-
 .hide-work-button {
-	position: absolute;
-	top: 5px;
-	right: 160px;
-	width: 130px;
-	color: #E43C00;
+        color: #E43C00;
+        position: absolute;
+        right: 160px;
+        top: 5px;
+        width: 130px;
 }
-
 .flvplayer-widget {
-	
 }
-
 #wrapper,#container {
-	height: 500px;
-	width: 600px;
+        height: 500px;
+        width: 600px;
 }
-
 #wrapper {
-	bottom: 50%;
-	right: 50%;
-	position: absolute;
+        bottom: 50%;
+        position: absolute;
+        right: 50%;
 }
-
 #container {
-	left: 50%;
-	position: relative;
-	top: 50%;
+        left: 50%;
+        position: relative;
+        top: 50%;
 }
-
 .cm-main-panel-button-panel {
-	height: 50px;
-	position: relative;
+        height: 50px;
+        position: relative;
 }
-
 .cm-main-panel-prev-icon {
-	background: url(/gwt-resources/images/prev_topic.png) no-repeat center
-		left !important;
-	width: 113px;
-	height: 46px;
-	position: absolute;
-	left: 0;
-	top: 2;
+        background: url(/gwt-resources/images/prev_topic.png) no-repeat center
+                left !important;
+        height: 46px;
+        left: 0;
+        position: absolute;
+        top: 2;
+        width: 113px;
 }
-
 .cm-main-panel-prev-icon-over {
-	background: url(/gwt-resources/images/prev_topic-over.png) no-repeat
-		center left !important;
+        background: url(/gwt-resources/images/prev_topic-over.png) no-repeat
+                center left !important;
 }
-
 .cm-main-panel-next-icon {
-	background: url(/gwt-resources/images/next_topic.png) no-repeat center
-		left !important;
-	width: 113px;
-	height: 46px;
-	position: absolute;
-	right: 0;
-	top: 2;
+        background: url(/gwt-resources/images/next_topic.png) no-repeat center
+                left !important;
+        height: 46px;
+        position: absolute;
+        right: 0;
+        top: 2;
+        width: 113px;
 }
-
 .cm-main-panel-next-icon-over {
-	background: url(/gwt-resources/images/next_topic-over.png) no-repeat
-		center left !important;
+        background: url(/gwt-resources/images/next_topic-over.png) no-repeat
+                center left !important;
 }
-
 .cm-main-panel-next-quiz {
-	background: url(/gwt-resources/images/check_quiz.png) no-repeat center
-		left !important;
-	width: 248px;
-	height: 51px;
-	position: absolute;
-	left: 0;
-	top: 0;
+        background: url(/gwt-resources/images/check_quiz.png) no-repeat center
+                left !important;
+        height: 51px;
+        left: 0;
+        position: absolute;
+        top: 0;
+        width: 248px;
 }
-
 .cm-main-panel-next-quiz-over {
-	background: url(/gwt-resources/images/check_quiz-over.png) no-repeat
-		center left !important;
+        background: url(/gwt-resources/images/check_quiz-over.png) no-repeat
+                center left !important;
 }
-
 .resource-wrapper {
-	
 }
-
 .prescription-info-panel {
-	padding: 20px;
-	background: #34383B;
-	color: #C0C662;
+        background: #34383B;
+        color: #C0C662;
+        padding: 20px;
 }
-
 .prescription-info-panel p {
-	margin-bottom: 10px;
+        margin-bottom: 10px;
 }
-
 .prescription-info-panel .form-field {
-	color: #C0C662;
-	width: 75px;
-	font-weight: bold;
-	margin-right: 10px;
+        color: #C0C662;
+        font-weight: bold;
+        margin-right: 10px;
+        width: 75px;
 }
-
 .prescription-info-panel .form-value {
-	color: #C0C662;
-	width: 200px;
+        color: #C0C662;
+        width: 200px;
 }
-
 .prescription-info-panel {
-	
 }
-
 .cm-main-panel-header {
-	background: #34383B;
-	color: #CBFF07;
-	height: 55px;
-	font-size: 1.2em;
-	text-align: center;
+        background: #34383B;
+        color: #CBFF07;
+        font-size: 1.2em;
+        height: 55px;
+        text-align: center;
 }
-
 .cm-main-panel-header h2 {
-	font-size: 1em;
-	color: white;
-	text-align: center;
+        color: white;
+        font-size: 1em;
+        text-align: center;
 }
-
 .accordian-resource-list-panel {
-	background: #34383B;
+        background: #34383B;
 }
-
 .accordian-resource-list-panel img.resource-type {
-	display: none;
+        display: none;
 }
-
 .accordian-resource-list-panel img.resource-item {
-	display: none;
+        display: none;
 }
-
 .resource-type-complete img.resource-type {
-	display: block;
+        display: block;
 }
-
 img.resource-item-complete {
-	display: inline;
+        display: inline;
 }
-
 .resource-item-complete img {
-	display: inline;
+        display: inline;
 }
-
 .login-background-img {
-	border: 1.2px solid #F0F0F0;
-	margin: 10px;
+        border: 1.2px solid #F0F0F0;
+        margin: 10px;
 }
-
 .question_solution_link {
-	display: none;
+        display: none;
 }
-
 .hello-info {
-	width: 200px;
-	font-size: .9em;
-	position: absolute;
-	right: 200px;
-	margin-top: 3px;
+        font-size: .9em;
+        margin-top: 3px;
+        position: absolute;
+        right: 200px;
+        width: 200px;
 }
-
 .resource-accord-panel-loading {
-	margin: 10px 15px;
-	color: #E2FFFF;
+        color: #E2FFFF;
+        margin: 10px 15px;
 }
-
 #tutoroutput p {
-	margin: 0 0 10px;
+        margin: 0 0 10px;
 }
-
-/** Override a few tutor layout styles */
 #tutor_embedded {
-	margin: 20px;
-	width: 500px;
+        margin: 20px;
+        width: 500px;
 }
-
-#tutor_embedded a.button:link,#tutor_embedded a.button:active,#tutor_embedded a.button:visited,#tutor_embedded a.button:hover
-	{
-	font-family: Tahoma, Arial;
-	font-weight: bold;
-	text-decoration: none;
-	color: #FFFF00;
-	margin-left: 15px;
-	font-size: 11px;
+#tutor_embedded a.button:link,#tutor_embedded a.button:active,#tutor_embedded a.button:visited,#tutor_embedded a.button:hover {
+        color: #FFFF00;
+        font-family: Tahoma, Arial;
+        font-size: 11px;
+        font-weight: bold;
+        margin-left: 15px;
+        text-decoration: none;
 }
-
 #tutor_embedded a.debug-off {
-	display: none;
+        display: none;
 }
-
-.debug-on #tutor_embedded  a.debug-off {
-	display: inline;
+.debug-on #tutor_embedded a.debug-off {
+        display: inline;
 }
-
 #steps_head {
-	background-image: url(/gwt-resources/images/steps_head-500x24.png);
+        background-image: url(/gwt-resources/images/steps_head-500x24.png);
 }
-
 #steps_tail {
-	background-image: url(/gwt-resources/images/steps_footer-500x24.png);
+        background-image: url(/gwt-resources/images/steps_footer-500x24.png);
 }
-
 #steps_info {
-	width: 200px;
+        width: 200px;
 }
-
-#tutor_embedded .cm-tutor-button-bar-bottom,#tutor_embedded .cm-tutor-button-bar-top
-	{
-	line-height: 17px;
-	width: 320px;
-	text-align: right;
+#tutor_embedded .cm-tutor-button-bar-bottom,#tutor_embedded .cm-tutor-button-bar-top {
+        line-height: 17px;
+        text-align: right;
+        width: 320px;
 }
-
-#tutor_embedded .cm-tutor-button-bar-top img,#tutor_embedded .cm-tutor-button-bar-bottom img
-	{
-	vertical-align: middle;
-	margin-left: 2px;
+#tutor_embedded .cm-tutor-button-bar-top img,#tutor_embedded .cm-tutor-button-bar-bottom img {
+        margin-left: 2px;
+        vertical-align: middle;
 }
-
-/** The main Resource Container */
 .resource-container-snowman {
-	background-image:
-		url(/gwt-resources/images/prescription_resource_background-1600x1050.jpg)
-		;
-	background-attachment: fixed;
-	background-position: center bottom;
-	background-repeat: no-repeat;
-	max-height: 1050px;
-	max-width: 1600px;
-	width: 540px;
+        background-attachment: fixed;
+        background-image: url(/gwt-resources/images/prescription_resource_background-1600x1050.jpg);
+        background-position: center bottom;
+        background-repeat: no-repeat;
+        max-height: 1050px;
+        max-width: 1600px;
+        width: 540px;
 }
-
 .resource-container {
-	background-image: url(/gwt-resources/images/bg/default.png);
-	background-repeat: repeat-x;
+        background-image: url(/gwt-resources/images/bg/default.png);
+        background-repeat: repeat-x;
 }
-
 .resource-container-forest {
-	background-image: url(/gwt-resources/images/bg/forest-1600x1065.jpg);
-	background-attachment: fixed;
-	background-position: center bottom;
-	background-repeat: no-repeat;
-	max-height: 1065px;
-	max-width: 1600px;
+        background-attachment: fixed;
+        background-image: url(/gwt-resources/images/bg/forest-1600x1065.jpg);
+        background-position: center bottom;
+        background-repeat: no-repeat;
+        max-height: 1065px;
+        max-width: 1600px;
 }
-
 .resource-container-bike1 {
-	background-image: url(/gwt-resources/images/bg/bike1-1600x1067.jpg);
-	background-attachment: fixed;
-	background-position: center bottom;
-	background-repeat: no-repeat;
-	max-height: 1067px;
-	max-width: 1600px;
+        background-attachment: fixed;
+        background-image: url(/gwt-resources/images/bg/bike1-1600x1067.jpg);
+        background-position: center bottom;
+        background-repeat: no-repeat;
+        max-height: 1067px;
+        max-width: 1600px;
 }
-
 .resource-container-tulips {
-	background-image: url(/gwt-resources/images/bg/roses-1600x1067.jpg);
-	background-attachment: fixed;
-	background-position: center bottom;
-	background-repeat: no-repeat;
-	max-height: 1067px;
-	max-width: 1600px;
+        background-attachment: fixed;
+        background-image: url(/gwt-resources/images/bg/roses-1600x1067.jpg);
+        background-position: center bottom;
+        background-repeat: no-repeat;
+        max-height: 1067px;
+        max-width: 1600px;
 }
-
 .resource-container-sunrise {
-	background-image: url(/gwt-resources/images/bg/sunrise-1600x1558.jpg);
-	background-attachment: fixed;
-	background-position: center bottom;
-	background-repeat: no-repeat;
-	max-height: 1558px;
-	max-width: 1600px;
+        background-attachment: fixed;
+        background-image: url(/gwt-resources/images/bg/sunrise-1600x1558.jpg);
+        background-position: center bottom;
+        background-repeat: no-repeat;
+        max-height: 1558px;
+        max-width: 1600px;
 }
-
 .resource-container-sunfield {
-	background-image: url(/gwt-resources/images/bg/sunfield-1600x1131.png);
-	background-attachment: fixed;
-	background-position: center bottom;
-	background-repeat: no-repeat;
-	max-height: 1600px;
-	max-width: 1131px;
+        background-attachment: fixed;
+        background-image: url(/gwt-resources/images/bg/sunfield-1600x1131.png);
+        background-position: center bottom;
+        background-repeat: no-repeat;
+        max-height: 1600px;
+        max-width: 1131px;
 }
-
 .resource-container-neutral {
-	background-image: none;
-	background-color: #34383b;
+        background-color: #34383b;
+        background-image: none;
 }
-
 .resource-container-redish {
-	background-image: none;
-	background-color: #933280;
+        background-color: #933280;
+        background-image: none;
 }
-
 .resource-container-none {
-	background-image: none;
+        background-image: none;
 }
-
 .resource-container-forest {
-	background-image: url(/gwt-resources/images/bg/forest-1600x1065.jpg);
-	background-attachment: fixed;
-	background-position: center bottom;
-	background-repeat: no-repeat;
-	max-height: 1065px;
-	max-width: 1600px;
+        background-attachment: fixed;
+        background-image: url(/gwt-resources/images/bg/forest-1600x1065.jpg);
+        background-position: center bottom;
+        background-repeat: no-repeat;
+        max-height: 1065px;
+        max-width: 1600px;
 }
-
 .resource-container-clouds {
-	background-image: url(/gwt-resources/images/bg/clouds-1600x1067.jpg);
-	background-attachment: fixed;
-	background-position: center bottom;
-	background-repeat: no-repeat;
-	max-height: 1067px;
-	max-width: 1600px;
+        background-attachment: fixed;
+        background-image: url(/gwt-resources/images/bg/clouds-1600x1067.jpg);
+        background-position: center bottom;
+        background-repeat: no-repeat;
+        max-height: 1067px;
+        max-width: 1600px;
 }
-
 .resource-container-sunfield {
-	background-image: url(/gwt-resources/images/bg/sunfield-1600x1131.png);
-	background-attachment: fixed;
-	background-position: center bottom;
-	background-repeat: no-repeat;
-	max-height: 1131px;
-	max-width: 1600px;
+        background-attachment: fixed;
+        background-image: url(/gwt-resources/images/bg/sunfield-1600x1131.png);
+        background-position: center bottom;
+        background-repeat: no-repeat;
+        max-height: 1131px;
+        max-width: 1600px;
 }
-
 .resource-close {
-	margin: 5px 0 5px 10px;
+        margin: 5px 0 5px 10px;
 }
-
-/** Resource Viewer Styles */
 .resource-viewer-close-button {
-	position: absolute;
-	top: 5px;
-	right: 10px;
-	color: #E43C00;
-	width: 100px;
-	text-align: right;
+        color: #E43C00;
+        position: absolute;
+        right: 10px;
+        text-align: right;
+        top: 5px;
+        width: 100px;
 }
-
-.x-tab-panel-body,.resource-viewer-container,.resource-viewer-impl-tutor,.x-tab-panel
-	{
-	border: none;
-	width: 550px;
-	background: url(/gwt-resources/images/resource-viewer-body.png) repeat-y
-		;
+.x-tab-panel-body,.resource-viewer-container,.resource-viewer-impl-tutor,.x-tab-panel {
+        background: url(/gwt-resources/images/resource-viewer-body.png) repeat-y;
+        border: none;
+        width: 550px;
 }
-
 .resource-viewer-impl-tutor {
-	background: transparent;
+        background: transparent;
 }
-
 #show-work-button {
-	position: absolute;
-	top: 8px;
-	left: 8px;
+        left: 8px;
+        position: absolute;
+        top: 8px;
 }
-
 .resource-viewer-header {
-	height: 25px;
-	width: 550px;
-	position: absolute;
-	background: url(/gwt-resources/images/resource-viewer-header.png)
-		no-repeat;
+        background: url(/gwt-resources/images/resource-viewer-header.png)
+                no-repeat;
+        height: 25px;
+        position: absolute;
+        width: 550px;
 }
-
 .resource-viewer-title {
-	font-size: 1.1em;
-	font-weight: bold;
-	color: #E43C00;
-	position: absolute;
-	left: 10px;
-	top: 5px;
-	width: 300px;
+        color: #E43C00;
+        font-size: 1.1em;
+        font-weight: bold;
+        left: 10px;
+        position: absolute;
+        top: 5px;
+        width: 300px;
 }
-
 .resource-viewer-footer {
-	position: absolute;
-	height: 24px;
-	width: 550px;
-	background: url(/gwt-resources/images/resource-viewer-footer.png)
-		no-repeat;
+        background: url(/gwt-resources/images/resource-viewer-footer.png)
+                no-repeat;
+        height: 24px;
+        position: absolute;
+        width: 550px;
 }
-
 .resource-viewer-header {
-	height: 25px;
-	width: 550px;
-	position: absolute;
+        height: 25px;
+        position: absolute;
+        width: 550px;
 }
-
 .resource-viewer-impl-tutor {
-	
 }
-
 .resource-viewer-impl-test {
-	width: 400px;
-	border: 5px solid blue;
+        border: 5px solid blue;
+        width: 400px;
 }
-
 .resource-viewer-impl-tutor {
-	
 }
-
-/** Resource video */
 .resource-viewer-impl-video {
-	left: 100px;
-	padding-top: 20px;
-	height: 300px;
-	text-align: center;
+        height: 300px;
+        left: 100px;
+        padding-top: 20px;
+        text-align: center;
 }
-
 .flvplayer-widget {
-	position: absolute;
-	left: 100px;
-	z-index: 0;
+        left: 100px;
+        position: absolute;
+        z-index: 0;
 }
-
 .resource-viewer-impl-video-footer {
-	height: 15px;
-	background: url(/gwt-resources/images/resource-viewer-footer-video.png)
-		no-repeat;
+        background: url(/gwt-resources/images/resource-viewer-footer-video.png)
+                no-repeat;
+        height: 15px;
 }
-
 .resource-viewer-impl-video-header {
-	height: 25px;
-	background: url(/gwt-resources/images/resource-viewer-header-video.png)
-		no-repeat;
+        background: url(/gwt-resources/images/resource-viewer-header-video.png)
+                no-repeat;
+        height: 25px;
 }
-
-/**********  END RESOURCE STYLES ***************/
-.resource-viewer-container  #hm_content {
-	padding: 10px;
-	font-size: 130%;
-	width: auto;
-	margin: 20px;
-	color: black;
-	background-color: white;
+.resource-viewer-container #hm_content {
+        background-color: white;
+        color: black;
+        font-size: 130%;
+        margin: 20px;
+        padding: 10px;
+        width: auto;
 }
-
 #hm_content p {
-	color: black;
+        color: black;
 }
-
 .resource-viewer-container #testset_div {
-	margin: 20px;
+        margin: 20px;
 }
-
 .resource-viewer-container #testset_div input {
-	
 }
-
 .resource-viewer-impl-results .questionResponseSelected {
-	
 }
-
-/** Quiz Results */
 .quiz-results-status-window .head {
-	background: transparent url(/images/trifco/design/quiz_head-500x24.gif)
-		no-repeat scroll 0 0;
-	height: 24px;
-	width: 500px;
+        background: transparent url(/images/trifco/design/quiz_head-500x24.gif)
+                no-repeat scroll 0 0;
+        height: 24px;
+        width: 500px;
 }
-
-/** Help Window */
 .help-window {
-	
 }
-
 .help-window-bg-combo {
-	width: 100%;
+        width: 100%;
 }
-
 .help-window-message-area {
-	font-color: blue;
-	margin-top: 5px;
-	margin-bottom: 10px;
+        font-color: blue;
+        margin-bottom: 10px;
+        margin-top: 5px;
 }
-
 .help-window li {
-	font-size: 1em;
+        font-size: 1em;
 }
-
 .help-window .button {
-	width: 250px;
+        width: 250px;
 }
-
 .bg-image-label {
-	color: blue;
-	margin-top: 5px;
-	margin-bottom: 10px;
+        color: blue;
+        margin-bottom: 10px;
+        margin-top: 5px;
 }
-
 .help-window fieldset {
-	color: blue;
+        color: blue;
 }
-
 .help-window .x-btn {
-	width: 200px;
+        width: 200px;
 }
-
 .help-window-additional-options table {
-	display: inline;
+        display: inline;
 }
-
 .activity-widget {
-	margin: 5px;
+        margin: 5px;
 }
-
 .auto-assignment-window p {
-	padding: 10px;
+        padding: 10px;
 }
-
 .auto-assignment-window p {
-	font-size: 1.2em;
-	margin-bottom: 5px;
-	padding: 10px;
+        font-size: 1.2em;
+        margin-bottom: 5px;
+        padding: 10px;
 }
-
 .auto-assignment-window b {
-	font-size: 1.3em;
-	font-weight: bold;
+        font-size: 1.3em;
+        font-weight: bold;
 }
-
 .debug-hide {
-	display: none;
-	color: white;
+        color: white;
+        display: none;
 }
-
 .debug-show {
-	display: block;
+        display: block;
 }
-
 .debug-mode .debug-hide {
-	display: none;
-	color: red;
-	font-size: .8em;
-	margin-left: 10px;
+        color: red;
+        display: none;
+        font-size: .8em;
+        margin-left: 10px;
 }
-
 .help-window .version {
-	font-size: .8em;
+        font-size: .8em;
 }
-
 .help-window {
-	z-index: 100;
+        z-index: 100;
 }
-
 .demo-complete-window p {
-	margin: 10px 15px;
-	font-size: 1.2em;
+        font-size: 1.2em;
+        margin: 10px 15px;
 }
-
 #testset_div {
-	position: relative;
+        position: relative;
 }
-
 #testset_head .check-quiz-link {
-	position: absolute;
-	right: 15px;
-	top: 2;
-	font-size: 1em;
+        font-size: 1em;
+        position: absolute;
+        right: 15px;
+        top: 2;
 }
-
 #testset_footer .check-quiz-link {
-	display: block;
-	text-align: center;
+        display: block;
+        text-align: center;
 }
-
 .bottom {
-	margin-top: 1px;
+        margin-top: 1px;
 }
-
 .resource-viewer-container .check-quiz-link {
-	display: none;
+        display: none;
 }
-
-#testset_div a.check-quiz-link:link,#testset_div a.check-quiz-link:active,#testset_div a.check-quiz-link:visited,#testset_div a.check-quiz-link:hover
-	{
-	color: white;
-	text-decoration: underline;;
+#testset_div a.check-quiz-link:link,#testset_div a.check-quiz-link:active,#testset_div a.check-quiz-link:visited,#testset_div a.check-quiz-link:hover {
+        color: white;
+        text-decoration: underline;
 }
-
 #testset_div {
-	background-color: transparent;
+        background-color: transparent;
 }
-
 #testset_div .question_wrapper {
-	background-color: #E2E2E2;
+        background-color: #E2E2E2;
 }
-
 #testset_head {
-	background: transparent url(/gwt-resources/images/quiz_head-500x24.png)
-		no-repeat scroll 0 0;
+        background: transparent url(/gwt-resources/images/quiz_head-500x24.png)
+                no-repeat scroll 0 0;
 }
-
 #testset_footer {
-	background: transparent
-		url(/gwt-resources/images/quiz_footer-500x24.png) no-repeat scroll 0 0
-		;
-	backgrou nd-color: transparent;
+        background: transparent
+                url(/gwt-resources/images/quiz_footer-500x24.png) no-repeat scroll 0 0;
+        nd-color: transparent;
 }
-
 #testset_div .question_head {
-	font-size: 12px;
+        font-size: 12px;
 }
-
 .show-work-window {
-	position: absolute;
-	top: 10px;
-	left: 10px;
+        left: 10px;
+        position: absolute;
+        top: 10px;
 }
-
-.student-show-work-window #tutor_embedded #steps_head_title,.student-show-work-window #tutor_embedded .button
-	{
-	display: none;
+.student-show-work-window #tutor_embedded #steps_head_title,.student-show-work-window #tutor_embedded .button {
+        display: none;
 }
-
 .tutor_solution_wrapper {
-	
 }
-
 #show-work-force {
-	text-align: center;
-	display: block;
-	height: 18px;
-	width: 140px;
-	position: absolute;
-	top: 3px;
-	left: 9px;
+        display: block;
+        height: 18px;
+        left: 9px;
+        position: absolute;
+        text-align: center;
+        top: 3px;
+        width: 140px;
 }
-
 .student-details-panel {
-	
 }
-
 .student-details-window {
-	
 }
-
-
-
 .student-details-window-container {
-	width: 570px;
-	height: 300px;
+        height: 300px;
+        width: 570px;
 }
-
 .student-details-panel-grid {
-	margin-top: 45px;
+        margin-top: 45px;
 }
-
 .student-details-panel-sw-btn {
-	padding-left: 10px;
-	padding-bottom: 10px;
+        padding-bottom: 10px;
+        padding-left: 10px;
 }
-
 .student-details-panel-pr-btn {
-	padding-right: 10px;
-	padding-bottom: 10px;
+        padding-bottom: 10px;
+        padding-right: 10px;
 }
-
 .student-details-window .students-count {
-	float: left;
-	margin-top: 8px;
-	margin-right: 10px;
+        float: left;
+        margin-right: 10px;
+        margin-top: 8px;
 }
-
-/** Student Detail Info */
 .student-detail-info {
-	height: 65px;
-	font-size: 12px;
-	position: relative;
+        font-size: 12px;
+        height: 65px;
+        position: relative;
 }
-
 .detail-info .form {
-	width: 250px;
-	/*border: 1px solid red;*/
+        width: 250px;
 }
-
 .detail-info .fld {
-	width: 245px;
-	/*border: 1px solid blue;*/
+        width: 245px;
 }
-
 .detail-info .fld label {
-	display: block;
-	float: left;
-	width: 90px;
-	text-align: right;
-	margin-right: 5px;
-	font-weight: bold;
-	/*border: 1px solid green;*/
+        display: block;
+        float: left;
+        font-weight: bold;
+        margin-right: 5px;
+        text-align: right;
+        width: 90px;
 }
-
 .detail-info .fld div {
-	float: right;
-	width: 148px;
-	/*border: 1px solid yellow;*/
+        float: right;
+        width: 148px;
 }
-
-.detail-info  .left {
-	position: absolute;
-	top: 10px;
-	left: 20px;
+.detail-info .left {
+        left: 20px;
+        position: absolute;
+        top: 10px;
 }
-
-.detail-info  .right {
-	position: absolute;
-	top: 10px;
-	left: 265px;
+.detail-info .right {
+        left: 265px;
+        position: absolute;
+        top: 10px;
 }
-
-/** End Student Detail Info */
 #flash-alt-content {
-	width: 300px;
-	margin: auto;
-	margin-top: 20px;
-	text-align: center;
+        margin: auto;
+        margin-top: 20px;
+        text-align: center;
+        width: 300px;
 }
-
 .auto-advance-window {
-	font-size: 1.5em;
+        font-size: 1.5em;
 }
-
 .auto-advance-window .completed {
-	
 }
-
 .auto-advance-window p {
-	padding: 5px;
+        padding: 5px;
 }
-
 .auto-advance-window .advanced-to {
-	margin-top: 10px;
+        margin-top: 10px;
 }
-
 .auto-advance-window .plan {
-	font-size: 1.3em;
-	font-weight: bold;
-	text-align: center;
-	padding: 10px;
+        font-size: 1.3em;
+        font-weight: bold;
+        padding: 10px;
+        text-align: center;
 }
-
 .show-work-example-window {
-	
 }
-
 .prescription-cm-gui-definition-resource-panel {
-	padding: 10px 15px 15px 15px;
-	background: #43464B;
+        background: #43464B;
+        padding: 10px 15px 15px 15px;
 }
-
 .prescription-cm-gui-definition-resource-panel .resource-button {
-	margin-top: 10px;
+        margin-top: 10px;
 }
-
 .resource-menu-button-complete-icon {
-	background: url(/gwt-resources/images/check_black.png) no-repeat center
-		left !important;
+        background: url(/gwt-resources/images/check_black.png) no-repeat center
+                left !important;
 }
-
 .prescription-resource-panel {
-	background: #43464B;
+        background: #43464B;
 }
-
-/** The GXT Menu Buttons */
-	/** .x-menu-item-active a.x-menu-item { background-color: #E3F6AA;}
-.x-menu-item-active a.x-menu-item:hover,.x-menu-item-active a.x-menu-item:active {background-color: #E3F6AA;}
-a.x-menu-item { color:#222222;}
-*/
 #loading-error {
-	font-weight: bold;
+        font-weight: bold;
 }
-
-.report-card-info-panel {padding: 10px;	text-align: center;}
-
-.context-change-message {text-align: center;}
-.context-change-message p {margin-top: 10px; margin-bottom: 10px;}
-.context-change-message b {font-size: 120%;}
-.context-change-message a:link,.context-change-message a:visited,.context-change-message a:active,.context-change-message a:hover {margin-left: 10px;text-decoration: none;}
-.context-change-message .suggest-div {text-align: left;}
- 
-.context-change-message .suggest-div ul {margin: 10px;}
-.context-change-message .suggest-div li {list-style: disc;list-style-position: inside;}
-
-.auto-student-registration-forgot-password p {padding: 10px;}
-
-.cm-welcome-panel {background-image: url(/gwt-resources/images/bg/default.png);}
-.cm-welcome-panel h1 {padding: 0 0 0 10px; margin-top: 15px;}
-.cm-welcome-panel p {padding: 10px; color: black;}
-.cm-welcome-panel ul {padding: 10px;}
-.cm-welcome-panel li {list-style: disc;list-style-position: inside;}
-.cm-welcome-panel a:link,.cm-welcome-panel a:visited,.cm-welcome-panel a:active,.cm-welcome-panel a:hover {margin-left: 10px;text-decoration: none;}
-
-
-.printer-icon {background: url(/gwt-resources/images/icons/printer-icon.png) no-repeat center left !important;}
+.report-card-info-panel {
+        padding: 10px;
+        text-align: center;
+}
+.context-change-message {
+        text-align: center;
+}
+.context-change-message p {
+        margin-bottom: 10px;
+        margin-top: 10px;
+}
+.context-change-message b {
+        font-size: 120%;
+}
+.context-change-message a:link,.context-change-message a:visited,.context-change-message a:active,.context-change-message a:hover {
+        margin-left: 10px;
+        text-decoration: none;
+}
+.context-change-message .suggest-div {
+        text-align: left;
+}
+.context-change-message .suggest-div ul {
+        margin: 10px;
+}
+.context-change-message .suggest-div li {
+        list-style: disc;
+        list-style-position: inside;
+}
+.auto-student-registration-forgot-password p {
+        padding: 10px;
+}
+.cm-welcome-panel {
+        background-image: url(/gwt-resources/images/bg/default.png);
+}
+.cm-welcome-panel h1 {
+        margin-top: 15px;
+        padding: 0 0 0 10px;
+}
+.cm-welcome-panel p {
+        color: black;
+        padding: 10px;
+}
+.cm-welcome-panel ul {
+        padding: 10px;
+}
+.cm-welcome-panel li {
+        list-style: disc;
+        list-style-position: inside;
+}
+.cm-welcome-panel a:link,.cm-welcome-panel a:visited,.cm-welcome-panel a:active,.cm-welcome-panel a:hover {
+        margin-left: 10px;
+        text-decoration: none;
+}
+.printer-icon {
+        background: url(/gwt-resources/images/icons/printer-icon.png) no-repeat center left !important;
+}

@@ -105,18 +105,10 @@ public class CatchupMathAdmin implements EntryPoint, ValueChangeHandler<String> 
         Log.info("Loading CMAdmin main page");
         mainContainer.removeAll();
 
-        IconButton guide = new IconButton("header-panel-guide-btn");
-        guide.setToolTip("Find out how to get started with Catchup Math");
-        guide.addSelectionListener(new SelectionListener<IconButtonEvent>() {
-            public void componentSelected(IconButtonEvent ce) {
-                new GettingStartedGuideWindow();
-            }
-        });
 
         mainContainer.setLayout(new BorderLayout());
         
-        mainContainer.add(infoPanel, new BorderLayoutData(LayoutRegion.NORTH, 150));
-        mainContainer.add(guide, new BorderLayoutData(LayoutRegion.NORTH));
+        mainContainer.add(infoPanel, new BorderLayoutData(LayoutRegion.NORTH, 120));
         mainContainer.add(studentGrid, new BorderLayoutData(LayoutRegion.CENTER));
 
         mainContainer.layout();

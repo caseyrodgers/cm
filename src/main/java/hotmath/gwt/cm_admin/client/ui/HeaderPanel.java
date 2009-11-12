@@ -50,6 +50,15 @@ public class HeaderPanel extends LayoutContainer {
 		headerText = new Label();
 		headerText.setStyleName("header-panel-title");
 		add(headerText);
+		
+        IconButton guide = new IconButton("header-panel-guide-btn");
+        guide.setToolTip("Find out how to get started with Catchup Math");
+        guide.addSelectionListener(new SelectionListener<IconButtonEvent>() {
+            public void componentSelected(IconButtonEvent ce) {
+                new GettingStartedGuideWindow();
+            }
+        });
+        add(guide);
 	}
 
 	/**

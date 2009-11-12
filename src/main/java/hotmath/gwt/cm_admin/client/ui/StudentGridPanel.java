@@ -44,19 +44,20 @@ import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.store.Store;
 import com.extjs.gxt.ui.client.store.StoreFilter;
-import com.extjs.gxt.ui.client.util.Margins;
 import com.extjs.gxt.ui.client.widget.Component;
+import com.extjs.gxt.ui.client.widget.HorizontalPanel;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.ComboBox;
-import com.extjs.gxt.ui.client.widget.form.FieldSet;
+import com.extjs.gxt.ui.client.widget.form.FormPanel;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
 import com.extjs.gxt.ui.client.widget.grid.Grid;
 import com.extjs.gxt.ui.client.widget.grid.GridSelectionModel;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
+import com.extjs.gxt.ui.client.widget.layout.FlowLayout;
 import com.extjs.gxt.ui.client.widget.menu.Menu;
 import com.extjs.gxt.ui.client.widget.menu.MenuItem;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
@@ -66,6 +67,7 @@ import com.google.gwt.json.client.JSONValue;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.Label;
 
 public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefresher, ProcessTracker {
 
@@ -93,8 +95,7 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
         add(createToolbar(), new BorderLayoutData(LayoutRegion.NORTH, 30));
         add(_grid, new BorderLayoutData(LayoutRegion.CENTER, 400));
 
-        BorderLayoutData borderLayout = new BorderLayoutData(LayoutRegion.SOUTH, 70);
-        borderLayout.setMargins(new Margins(10, 5, 0, 5));
+        BorderLayoutData borderLayout = new BorderLayoutData(LayoutRegion.SOUTH, 30);
         add(createGroupFilter(), borderLayout);
 
         final Menu contextMenu = new Menu();
@@ -166,15 +167,7 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
         }
     }
 
-    private FieldSet createGroupFilter() {
-
-        ToolBar tb = new ToolBar();
-        tb.setStyleName("student-grid-panel-toolbar");
-
-        FieldSet fs = new FieldSet();
-        fs.add(tb);
-        fs.addStyleName("student-grid-lower-toolbar-container");
-        fs.setHeading("Filter");
+    private Component createGroupFilter() {
 
         groupStore = new ListStore<GroupModel>();
         GroupSelectorWidget gsw = new GroupSelectorWidget(_cmAdminMdl, groupStore, false, this, "group-filter");
@@ -194,9 +187,24 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
             }
         });
 
-        tb.add(groupCombo);
-
-        return fs;
+        
+        FormPanel fp = new FormPanel();
+        fp.setHeaderVisible(false); 
+        fp.setLabelWidth(40);
+        fp.setBorders(false);
+        fp.setFrame(false);
+        fp.setFooter(false);
+        fp.setBodyBorder(false);
+        
+        fp.add(groupCombo);
+        return fp;
+        
+//        LayoutContainer lc = new HorizontalPanel();
+//        lc.addStyleName("student-grid-panel-group-filter-panel");
+//        lc.add(new Label("Group: "));
+//        lc.add(groupCombo);
+        
+//        return lc;
     }
 
     private Button manageGroupButton(final Grid<StudentModel> grid) {
