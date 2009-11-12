@@ -672,6 +672,66 @@ group by id
 order by name
 
 
+########################
+### HaUserFactory
+########################
+
+.key=ADMIN_LOGIN
+
+select a.*, max(ss.date_expire) as date_expire, ss.subscriber_id, s.type as account_type
+from HA_ADMIN a
+inner join SUBSCRIBERS s
+   on s.id = a.subscriber_id
+left outer join (
+   select subscriber_id, max(date_expire) as date_expire from SUBSCRIBERS_SERVICES
+   where service_name = 'catchup'
+   group by subscriber_id
+) ss
+on a.subscriber_id = ss.subscriber_id
+where a.user_name = ? and a.passcode = ?
+group by date_expire
+
+.key=USER_LOGIN_SCHOOL
+
+select u.uid, u.user_name, s.type, ss.date_expire
+from HA_USER u
+INNER JOIN HA_ADMIN h on u.admin_id = h.aid
+INNER JOIN SUBSCRIBERS s on s.id = h.subscriber_id
+left outer join (
+   select subscriber_id, max(date_expire) as date_expire from SUBSCRIBERS_SERVICES
+   where service_name = 'catchup'
+   group by subscriber_id
+) ss
+on h.subscriber_id = ss.subscriber_id
+where s.password = ?
+  and u.user_passcode = ? and u.is_active = 1
+
+.key=USER_LOGIN_INDIV
+
+select u.uid, u.user_name, s.type, ss.date_expire
+from HA_USER u
+INNER JOIN HA_ADMIN h on u.admin_id = h.aid
+INNER JOIN SUBSCRIBERS s on s.id = h.subscriber_id
+left outer join (
+   select subscriber_id, max(date_expire) as date_expire from SUBSCRIBERS_SERVICES
+   where service_name = 'catchup'
+   group by subscriber_id
+) ss
+on h.subscriber_id = ss.subscriber_id
+where s.student_email = ? and s.type = 'PS'
+  and u.user_passcode = ? and u.is_active = 1
+  
+.key=USER_LOGIN_AUTOREG
+
+select u.uid
+from   HA_USER u
+JOIN CM_GROUP g ON u.group_id = g.id
+JOIN HA_ADMIN a ON u.admin_id = a.aid
+JOIN SUBSCRIBERS s ON a.subscriber_id = s.id
+where s.type = 'ST'
+  and s.password = ?
+  and g.name = ?
+  and is_auto_create_template = 1
 
 
 
