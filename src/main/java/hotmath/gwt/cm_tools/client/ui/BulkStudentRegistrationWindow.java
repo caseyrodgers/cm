@@ -75,11 +75,10 @@ public class BulkStudentRegistrationWindow extends RegisterStudent {
         fs.setWidth(_fsProfile.getWidth());
         fs.add(_uploadForm);
         fs.add(new Html("<p>Students will Log In with your school Login Name and the unique passwords you provide in the uploaded tab delimited text file.</p>"));
-
               
         _window.removeAll();
         _window.setLayout(new BorderLayout());
-        _window.setHeight(525);
+        _window.setHeight(490);
         _window.setWidth(550);
         _window.setHeading("Bulk Registration");
 

@@ -65,7 +65,6 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
 	private ListStore <SubjectModel> subjStore;
 	private ComboBox<SubjectModel> subjCombo;
 	
-	private ComboBox <PassPercent> passCombo;
 	
 	private ListStore <ChapterModel> chapStore;
 	private ComboBox <ChapterModel> chapCombo;
@@ -207,9 +206,6 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
 		chapCombo = chapterCombo(chapStore);
 		_fsProgram.add(chapCombo);        
 		
-		passCombo = new PassPercentCombo();
-		_fsProgram.add(passCombo);
-		
 		CheckBox isShowWorkRequired = new CheckBox();
         isShowWorkRequired.setBoxLabel("(recommended)");
         isShowWorkRequired.setId(StudentModel.SHOW_WORK_KEY);
@@ -226,28 +222,6 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
         _showWorkGrp.setId(StudentModel.SHOW_WORK_KEY);
         _showWorkGrp.add(isShowWorkRequired);
         _fsProgram.add(_showWorkGrp);
-        
-        CheckBox isTutoringNotAvail = new CheckBox();
-        isTutoringNotAvail.setBoxLabel("(if/when enabled)");
-        isTutoringNotAvail.setId(StudentModel.TUTORING_AVAIL_KEY);
-        if (! isNew) {
-        	// we save is_tutoring_available; form displays 'Disable tutoring'; hence, value is negated
-        	isTutoringNotAvail.setValue(! stuMdl.getTutoringAvail());
-        }
-        else {
-        	/** 
-        	 * disable tutoring by default
-        	 * 
-        	 * @TODO: could be enabled by default if school has tutoring enabled
-        	 *        also, why double negative?
-        	 */
-        	isTutoringNotAvail.setValue(true);
-        }
-        CheckBoxGroup tutoringGrp = new CheckBoxGroup();  
-        tutoringGrp.setFieldLabel("Disallow Tutoring");
-        tutoringGrp.setId(StudentModel.TUTORING_AVAIL_KEY);
-        tutoringGrp.add(isTutoringNotAvail);
-        _fsProgram.add(tutoringGrp);
 		
         _formPanel.add(_fsProgram);
 
@@ -314,7 +288,7 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
 	            StudyProgram sp = se.getSelectedItem();
 				int needsSubject = ((Integer)sp.get("needsSubject")).intValue();
 				int needsChapters = ((Integer)sp.get("needsChapters")).intValue();
-				int needsPassPercent = ((Integer)sp.get("needsPassPercent")).intValue();
+
 				
 	        	ComboBox <SubjectModel> cb = (ComboBox<SubjectModel>) fs.getItemByItemId("subj-combo");
 	        	
@@ -345,18 +319,6 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
 	        		cc.clearSelections();
 	        		cc.disable();
 	        		cc.setForceSelection(false);
-	        	}
-	        	ComboBox <PassPercent> cp = (ComboBox<PassPercent>) fs.getItemByItemId("pass-combo");
-	        	if (needsPassPercent > 0) {
-	        		cp.clearSelections();
-	        		cp.enable();
-	        		cp.setForceSelection(true);
-	        	}
-	        	else {
-	        		cp.clearInvalid();
-	        		cp.clearSelections();
-	        		cp.disable();
-	        		cp.setForceSelection(false);
 	        	}
 	        }
 	    });
@@ -437,27 +399,6 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
 		return combo;
 	}
 	
-	static public ComboBox<PassPercent> passPercentCombo(ListStore<PassPercent> store) {
-		ComboBox<PassPercent> combo = new ComboBox<PassPercent>();
-		combo.setValue(store.getAt(2));
-		combo.setFieldLabel("Pass Percent");
-		combo.setForceSelection(false);
-		combo.setDisplayField("pass-percent");
-		combo.setEditable(false);
-		combo.setMaxLength(30);
-		combo.setAllowBlank(false);
-		combo.setTriggerAction(TriggerAction.ALL);
-		combo.setStore(store);
-		combo.setTitle("Select a percentage");
-		combo.setId("pass-combo");
-		combo.setTypeAhead(true);
-		combo.setSelectOnFocus(true);
-		combo.setEmptyText("-- select a value --");
-		combo.disable();
-		combo.setWidth(280);
-		return combo;
-	}
-
 	private Button cancelButton() {
 		Button cancelBtn = new Button("Cancel", new SelectionListener<ButtonEvent>() {  
 	    	public void componentSelected(ButtonEvent ce) {
@@ -611,9 +552,6 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
     		int needsChapters = ((Integer)sp.get("needsChapters")).intValue();
     		if (needsChapters != 0) setChapterSelection();
 
-    		int needsPassPercent = ((Integer)sp.get("needsPassPercent")).intValue();
-    		if (needsPassPercent != 0) setPassPercentSelection();
-
             loading = false;
 		}
 	}
@@ -685,22 +623,7 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
     	}
 	}
 
-	private void setPassPercentSelection() {
-		String passPercent = stuMdl.getPassPercent();
-		
-		if (passPercent != null) {
-			List<PassPercent> list = passCombo.getStore().getModels();
-			for (PassPercent p : list) {
-				if (passPercent.equals(p.getPassPercent())) {
-					passCombo.setOriginalValue(p);
-					passCombo.setValue(p);
-					passCombo.enable();
-					break;
-				}
-			}
-		}
-	}
-
+	
 	private void getChapterListRPC(String progId, String subjId, final Boolean chapOnly, final ListStore <ChapterModel> chapStore) {
 
 		if (progId == null || !progId.equalsIgnoreCase("chap")) return;
@@ -797,9 +720,6 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
         CheckBox cbv = cbg.getValue();
         Boolean showWork = new Boolean(cbv != null);
         
-        cbg = (CheckBoxGroup) fp.getItemByItemId(StudentModel.TUTORING_AVAIL_KEY);
-        cbv = cbg.getValue();
-        Boolean tutoring = new Boolean(cbv == null);
         
         ComboBox<StudyProgram> cb = (ComboBox<StudyProgram>) fs.getItemByItemId("prog-combo");
         StudyProgram sp = cb.getValue();
@@ -838,16 +758,6 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
             throw new CmExceptionValidationFailed();
         }
 
-        ComboBox<PassPercent> cp = (ComboBox<PassPercent>) fs.getItemByItemId("pass-combo");
-        PassPercent pass = cp.getValue();
-        cp.clearInvalid();
-        if (((Integer)sp.get("needsPassPercent")).intValue() > 0 && pass == null) {
-            cp.focus();
-            cp.forceInvalid(ENTRY_REQUIRED_MSG);
-            cp.expand();
-            throw new CmExceptionValidationFailed();
-        }
-
         
         /** Collect all the values and create a new StudentModel
          *  to hold validated values.
@@ -859,12 +769,11 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
         //sm.setEmail(email);
         sm.setProgramDescr(prog);
         sm.setGroupId(groupId);
-        sm.setTutoringAvail(tutoring);
+        sm.setTutoringAvail(false);
         sm.setShowWorkRequired(showWork);
         sm.setGroup(group);
         sm.setAdminUid(cmAdminMdl.getId());
-        String passVal = (pass != null) ? pass.getPassPercent() : null;
-        sm.setPassPercent(passVal);
+        sm.setPassPercent("70%"); // static default
         String progId = (sp != null) ? (String)sp.get("shortTitle") : null;
         sm.setProgId(progId);
         String subjId = (sub != null) ? sub.getAbbrev() : "";
@@ -907,7 +816,6 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
             sm.setSectionNum(stuMdl.getSectionNum());
             
             if (! name.equals(stuMdl.getName()) ||
-                ! tutoring.equals(stuMdl.getTutoringAvail()) ||
                 ! showWork.equals(stuMdl.getShowWorkRequired()) ||
                 ! groupId.equals(stuMdl.getGroupId())) {
                 stuChanged = true;
@@ -918,7 +826,7 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
             }
             
             String oldPassVal = stuMdl.getPassPercent();
-            String newPassVal = (pass != null) ? pass.getPassPercent() : null;
+            String newPassVal = sm.getPassPercent();
             
             if (! (newPassVal == null && oldPassVal == null)) {
                 if (newPassVal == null && oldPassVal != null ||

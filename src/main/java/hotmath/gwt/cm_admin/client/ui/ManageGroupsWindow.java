@@ -340,7 +340,8 @@ class MyButton extends Button {
         super(name);
         addStyleName("manage-groups-window-buttons-button");
         setToolTip(tooltip);
-        addSelectionListener(listener);
+        if(listener != null)
+            addSelectionListener(listener);
         setWidth("115px");
     }
 };

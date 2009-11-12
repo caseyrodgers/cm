@@ -253,18 +253,20 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
 
     private ToolBar createToolbar() {
         ToolBar toolbar = new ToolBar();
-        //toolbar.addStyleName("student-grid-panel-toolbar");
+        toolbar.addStyleName("student-grid-panel-toolbar");
+        toolbar.add(createRefreshButton());
+        toolbar.add(createRegistrationButton());
+        toolbar.add(editStudentToolItem(_grid, _cmAdminMdl));
+        toolbar.add(studentDetailsToolItem(_grid));
+        toolbar.add(unregisterStudentToolItem(_grid));
+        toolbar.add(manageGroupButton(_grid));
+        toolbar.add(displayPrintableReportToolItem(_grid));
 
-        Button refreshBtn = new MyButton("Refresh List", "Refresh Student List with latest information.", new SelectionListener<ButtonEvent>() {
-            public void componentSelected(ButtonEvent ce) {
-                CmAdminDataReader.getInstance().fireRefreshData();
-            }
-        });
-
-        refreshBtn.setStyleAttribute("font-weight", "bold");
-        toolbar.add(refreshBtn);
-
-        Button btn = new Button("Registration");
+        return toolbar;
+    }
+    
+    private Button createRegistrationButton() {
+        Button btn = new StudenPanelButton("Registration");
         Menu menu = new Menu();
         menu.add(new MenuItem("New Student", new SelectionListener<MenuEvent>() {
             @Override
@@ -285,24 +287,19 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
             }
         }));
         btn.setMenu(menu);
-        toolbar.add(btn);
-
-        Button ti = editStudentToolItem(_grid, _cmAdminMdl);
-        toolbar.add(ti);
-
-        ti = studentDetailsToolItem(_grid);
-        toolbar.add(ti);
-
-        ti = unregisterStudentToolItem(_grid);
-        toolbar.add(ti);
-
-        final Button manageGrp = manageGroupButton(_grid);
-        toolbar.add(manageGrp);
-
-        ti = displayPrintableReportToolItem(_grid);
-        toolbar.add(ti);
-
-        return toolbar;
+        
+        return btn;
+    }
+    
+    private Button createRefreshButton() {
+        Button btn = new StudenPanelButton("Refresh List");
+        btn.setToolTip("Refresh Student List with latest information.");
+        btn.addSelectionListener(new SelectionListener<ButtonEvent>() {
+            public void componentSelected(ButtonEvent ce) {
+                CmAdminDataReader.getInstance().fireRefreshData();
+            }
+        });
+        return btn;
     }
 
     private Grid<StudentModel> defineGrid(final ListStore<StudentModel> store, ColumnModel cm) {
