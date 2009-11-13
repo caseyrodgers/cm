@@ -271,7 +271,7 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
         Button btn = new StudenPanelButton("Student Registration");
         btn.setToolTip("Register students with Catchup Math");
         Menu menu = new Menu();
-        menu.add(new MyMenuItem("New Student", "Create a new single student registration.",new SelectionListener<MenuEvent>() {
+        menu.add(new MyMenuItem("Register One Student", "Create a new single student registration.",new SelectionListener<MenuEvent>() {
             @Override
             public void componentSelected(MenuEvent ce) {
                 new RegisterStudent(null, _cmAdminMdl).showWindow();
