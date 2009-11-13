@@ -80,8 +80,8 @@ public class HeaderPanel extends LayoutContainer {
 		             */
 		            if(UserInfo.getInstance().isAutoTestMode())
 		                InfoPopupBox.display(new CmInfoConfig("Current Topic", "Current topic is: " + event.getEventData()));
-		            else
- 		                new ContextChangeMessage((String)event.getEventData());
+//		            else
+// 		                new ContextChangeMessage((String)event.getEventData());
 		        }
 		    }
 		});
