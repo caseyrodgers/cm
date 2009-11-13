@@ -423,6 +423,7 @@ class PrescriptionResourcePanel extends LayoutContainer {
         List<PrescriptionSessionDataResource> resources = pdata.getCurrSession().getInmhResources();
 
         removeAll();
+        registeredResources.clear();
         
         setScrollMode(Scroll.AUTO);
         VerticalPanel vp = new VerticalPanel();
@@ -481,7 +482,7 @@ class PrescriptionResourcePanel extends LayoutContainer {
     
     /** Display item data as prescription resource */
     private void showResource(InmhItemData itemData) {
-        CmMainPanel.__lastInstance._mainContent.showResource(registeredResources.get(0).getItems().get(0));        
+        CmMainPanel.__lastInstance._mainContent.showResource(itemData);        
     }
 
     
