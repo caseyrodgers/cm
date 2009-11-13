@@ -342,7 +342,7 @@ class MyButton extends Button {
         setToolTip(tooltip);
         if(listener != null)
             addSelectionListener(listener);
-        setWidth("115px");
+        setWidth("150px");
     }
 };
 

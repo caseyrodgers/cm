@@ -227,6 +227,7 @@ public class PrescriptionCmGuiDefinition implements CmGuiDefinition {
         cp.setWidth(400);
         cp.add(new Html(html));
         
+        CmMainPanel.__lastInstance._mainContent.removeAll();
         CmMainPanel.__lastInstance._mainContent.add(cp);
         CmMainPanel.__lastInstance._mainContent.layout();
         cp.el().fadeIn(FxConfig.NONE);
