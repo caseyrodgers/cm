@@ -456,6 +456,13 @@ public class PrescriptionContext implements CmContext {
         return html1;
     }
 
+    
+    /** Run auto testing for prescription
+     * 
+     * 
+     * @TODO: move to external interface
+     * 
+     */
     public void runAutoTest() {
         int timeToWait = 1;
         for(String rt: PrescriptionCmGuiDefinition._registeredResources.keySet()) {

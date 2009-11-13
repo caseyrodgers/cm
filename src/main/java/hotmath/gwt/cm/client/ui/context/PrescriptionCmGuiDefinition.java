@@ -1,6 +1,7 @@
 package hotmath.gwt.cm.client.ui.context;
 
 import hotmath.gwt.cm.client.CatchupMath;
+import hotmath.gwt.cm.client.history.CmHistoryManager;
 import hotmath.gwt.cm.client.history.CmHistoryQueue;
 import hotmath.gwt.cm.client.history.CmLocation;
 import hotmath.gwt.cm.client.history.CmLocation.LocationType;
@@ -14,6 +15,8 @@ import hotmath.gwt.cm_tools.client.service.PrescriptionServiceAsync;
 import hotmath.gwt.cm_tools.client.ui.CmGuiDefinition;
 import hotmath.gwt.cm_tools.client.ui.CmMainPanel;
 import hotmath.gwt.cm_tools.client.ui.ContextController;
+import hotmath.gwt.cm_tools.client.ui.InfoPopupBox;
+import hotmath.gwt.cm_tools.client.ui.ShowResultsPanel;
 import hotmath.gwt.cm_tools.client.ui.context.CmContext;
 import hotmath.gwt.cm_tools.client.ui.viewer.ResourceViewer;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
@@ -21,6 +24,7 @@ import hotmath.gwt.shared.client.eventbus.CmEventListener;
 import hotmath.gwt.shared.client.eventbus.CmEventListenerImplDefault;
 import hotmath.gwt.shared.client.eventbus.EventBus;
 import hotmath.gwt.shared.client.rpc.action.GetPrescriptionAction;
+import hotmath.gwt.shared.client.util.CmInfoConfig;
 import hotmath.gwt.shared.client.util.RpcData;
 import hotmath.gwt.shared.client.util.UserInfo;
 
@@ -121,10 +125,7 @@ public class PrescriptionCmGuiDefinition implements CmGuiDefinition {
         EventBus.getInstance().addEventListener(new CmEventListenerImplDefault() {
             @Override
             public void handleEvent(CmEvent event) {
-                if(event.getEventName().equals(EventBus.EVENT_TYPE_RESOURCE_VIEWER_CLOSE)) {
-                    //
-                }
-                else if(event.getEventName().equals(EventBus.EVENT_TYPE_SOLUTIONS_COMPLETE)) {
+                if(event.getEventName().equals(EventBus.EVENT_TYPE_SOLUTIONS_COMPLETE)) {
                     // update the InmhItemData associated with the currently active solution
                     
                     InmhItemData id = ((InmhItemData)event.getEventData());
@@ -142,7 +143,9 @@ public class PrescriptionCmGuiDefinition implements CmGuiDefinition {
                     if(!viewer.getResourceItem().getType().equals("practice"))
                         markResourceAsViewed(viewer.getResourceItem());
                 }
-                
+                else if(event.getEventName().equals(EventBus.EVENT_TYPE_RESOURCE_VIEWER_CLOSE)) {
+                    //
+                }
             }
         });        
         
@@ -382,7 +385,7 @@ class PrescriptionResourcePanel extends LayoutContainer {
     /** The menu button that corresponds to the practice problems
      * 
      */
-    ResourceMenuButton _practiceProblemButton;
+    ResourceMenuButton _practiceProblemButton, _lessonResource;
     
     
     /**
@@ -410,6 +413,8 @@ class PrescriptionResourcePanel extends LayoutContainer {
             
             if(resource.getType().equals("practice"))
                 _practiceProblemButton = btn;
+            else if(resource.getType().equals("review"))
+                _lessonResource = btn;
             
             vp.add(btn);
         }
@@ -428,6 +433,12 @@ class PrescriptionResourcePanel extends LayoutContainer {
         layout();
         
         
+        /** display Lesson resource
+         *
+         * First item, in first resource
+         */
+        showResource(registeredResources.get(0).getItems().get(0));
+        
         
         /** Setup a listen for solution view completions to
          * all the updating of GUI accordingly.
@@ -441,6 +452,11 @@ class PrescriptionResourcePanel extends LayoutContainer {
         });
     }
     
+    
+    /** Display item data as prescription resource */
+    private void showResource(InmhItemData itemData) {
+        CmMainPanel.__lastInstance._mainContent.showResource(registeredResources.get(0).getItems().get(0));        
+    }
 
     
     public void expandResourcePracticeProblems() {
