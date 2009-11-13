@@ -939,3 +939,17 @@ img.resource-item-complete {
 .printer-icon {
         background: url(/gwt-resources/images/icons/printer-icon.png) no-repeat center left !important;
 }
+.prescription-help-panel .info{
+	padding: 20px;
+}
+
+.prescription-help-panel ul {
+		margin-top: 10px;
+		list-style-position: outside;
+		margin-left: 20px;
+}
+
+.prescription-help-panel li {
+	list-style-type: disc;;
+	
+}

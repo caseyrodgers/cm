@@ -145,7 +145,7 @@ public class EventBus {
     static public final String EVENT_TYPE_RESOURCE_VIEWER_OPEN="RESOURCE_VIEWER_OPEN";
     
     
-    /** Fired everytime a resource viewer is closed/removed
+    /** Fired when a resource viewer is manually closed/removed
      * 
      */
     static public final String EVENT_TYPE_RESOURCE_VIEWER_CLOSE="RESOURCE_VIEWER_CLOSE";

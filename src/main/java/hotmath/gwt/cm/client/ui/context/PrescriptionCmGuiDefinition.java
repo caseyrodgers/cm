@@ -1,7 +1,6 @@
 package hotmath.gwt.cm.client.ui.context;
 
 import hotmath.gwt.cm.client.CatchupMath;
-import hotmath.gwt.cm.client.history.CmHistoryManager;
 import hotmath.gwt.cm.client.history.CmHistoryQueue;
 import hotmath.gwt.cm.client.history.CmLocation;
 import hotmath.gwt.cm.client.history.CmLocation.LocationType;
@@ -15,8 +14,6 @@ import hotmath.gwt.cm_tools.client.service.PrescriptionServiceAsync;
 import hotmath.gwt.cm_tools.client.ui.CmGuiDefinition;
 import hotmath.gwt.cm_tools.client.ui.CmMainPanel;
 import hotmath.gwt.cm_tools.client.ui.ContextController;
-import hotmath.gwt.cm_tools.client.ui.InfoPopupBox;
-import hotmath.gwt.cm_tools.client.ui.ShowResultsPanel;
 import hotmath.gwt.cm_tools.client.ui.context.CmContext;
 import hotmath.gwt.cm_tools.client.ui.viewer.ResourceViewer;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
@@ -24,7 +21,6 @@ import hotmath.gwt.shared.client.eventbus.CmEventListener;
 import hotmath.gwt.shared.client.eventbus.CmEventListenerImplDefault;
 import hotmath.gwt.shared.client.eventbus.EventBus;
 import hotmath.gwt.shared.client.rpc.action.GetPrescriptionAction;
-import hotmath.gwt.shared.client.util.CmInfoConfig;
 import hotmath.gwt.shared.client.util.RpcData;
 import hotmath.gwt.shared.client.util.UserInfo;
 
@@ -35,14 +31,20 @@ import java.util.Map;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.Registry;
+import com.extjs.gxt.ui.client.Style.Direction;
 import com.extjs.gxt.ui.client.Style.LayoutRegion;
 import com.extjs.gxt.ui.client.Style.Scroll;
+import com.extjs.gxt.ui.client.fx.FxConfig;
+import com.extjs.gxt.ui.client.widget.ContentPanel;
+import com.extjs.gxt.ui.client.widget.Html;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.VerticalPanel;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
+import com.extjs.gxt.ui.client.widget.layout.CenterLayout;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 
 public class PrescriptionCmGuiDefinition implements CmGuiDefinition {
@@ -144,7 +146,7 @@ public class PrescriptionCmGuiDefinition implements CmGuiDefinition {
                         markResourceAsViewed(viewer.getResourceItem());
                 }
                 else if(event.getEventName().equals(EventBus.EVENT_TYPE_RESOURCE_VIEWER_CLOSE)) {
-                    //
+                    showHelpPanel();
                 }
             }
         });        
@@ -205,6 +207,30 @@ public class PrescriptionCmGuiDefinition implements CmGuiDefinition {
         return context;
     }
 
+    private void showHelpPanel() {
+        
+        String html = "<b>" + __instance.context.getContextSubTitle() + "</b>";
+        
+
+        html += html = "<ul>" + 
+               "<li>Choose any resource from the left-side menu</li> " +
+               "<li>The Help button has neat features</li> " + 
+               "<li>Check for new Flash Cards and Games</li> " + 
+               "<li>Use our whiteboard to work the problems</li>" + "</ul>";
+
+        html = "<div class='info'>" + html + "</html>";
+        CmMainPanel.__lastInstance._mainContent.setLayout(new CenterLayout());
+        
+        ContentPanel cp = new ContentPanel();
+        cp.setHeading("Your topic for review and practice is:");
+        cp.addStyleName("prescription-help-panel");
+        cp.setWidth(400);
+        cp.add(new Html(html));
+        
+        CmMainPanel.__lastInstance._mainContent.add(cp);
+        CmMainPanel.__lastInstance._mainContent.layout();
+        cp.el().fadeIn(FxConfig.NONE);
+    }
 
     LayoutContainer _main;
     public Widget getWestWidget() {

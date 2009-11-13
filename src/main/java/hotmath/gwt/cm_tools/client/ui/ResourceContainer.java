@@ -157,6 +157,12 @@ public class ResourceContainer extends LayoutContainer {
         closeAnchor.addClickHandler(new ClickHandler() {
             public void onClick(ClickEvent arg0) {
                 CmMainPanel.__lastInstance.removeResource();
+                
+
+                /** Fire event only when the resource is manually closed
+                 * 
+                 */
+                EventBus.getInstance().fireEvent(new CmEvent(EventBus.EVENT_TYPE_RESOURCE_VIEWER_CLOSE));
             }
         });
 
@@ -205,8 +211,6 @@ public class ResourceContainer extends LayoutContainer {
    
    public void removeResource() {
        removeAll();
-       
-       EventBus.getInstance().fireEvent(new CmEvent(EventBus.EVENT_TYPE_RESOURCE_VIEWER_CLOSE));
    }
 
    
