@@ -222,7 +222,7 @@ public class PrescriptionCmGuiDefinition implements CmGuiDefinition {
         CmMainPanel.__lastInstance._mainContent.setLayout(new CenterLayout());
         
         ContentPanel cp = new ContentPanel();
-        cp.setHeading("Your topic for review and practice is:");
+        cp.setHeading("Catchup Math: the more you do, the more you learn!");
         cp.addStyleName("prescription-help-panel");
         cp.setWidth(400);
         cp.add(new Html(html));
@@ -459,14 +459,6 @@ class PrescriptionResourcePanel extends LayoutContainer {
 
         add(vp);
         layout();
-        
-        
-        /** display Lesson resource
-         *
-         * First item, in first resource
-         */
-        showResource(registeredResources.get(0).getItems().get(0));
-        
         
         /** Setup a listen for solution view completions to
          * all the updating of GUI accordingly.

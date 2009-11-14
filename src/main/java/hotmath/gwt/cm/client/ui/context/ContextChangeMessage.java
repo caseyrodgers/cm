@@ -1,5 +1,7 @@
 package hotmath.gwt.cm.client.ui.context;
 
+import hotmath.gwt.cm_tools.client.data.InmhItemData;
+import hotmath.gwt.cm_tools.client.ui.CmMainPanel;
 import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
 
 import com.extjs.gxt.ui.client.event.ButtonEvent;
@@ -42,6 +44,12 @@ public class ContextChangeMessage extends CmWindow {
 
             @Override
             public void componentSelected(ButtonEvent ce) {
+                
+                InmhItemData itemData = PrescriptionCmGuiDefinition.__instance._guiWidget.registeredResources.get(0).getItems().get(0);
+                
+                if(CmMainPanel.__lastInstance._mainContent.getItemCount() == 0)
+                   CmMainPanel.__lastInstance._mainContent.showResource(itemData);   
+                
                 setVisible(false);
                 close();
             }
