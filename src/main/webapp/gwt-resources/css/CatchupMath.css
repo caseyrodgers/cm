@@ -940,7 +940,7 @@ img.resource-item-complete {
         background: url(/gwt-resources/images/icons/printer-icon.png) no-repeat center left !important;
 }
 .prescription-help-panel .info{
-	padding: 20px;
+	padding: 0px 10px 10px 10px;
 }
 
 .prescription-help-panel ul {

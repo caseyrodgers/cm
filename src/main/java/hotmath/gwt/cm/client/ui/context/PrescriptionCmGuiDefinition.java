@@ -209,22 +209,19 @@ public class PrescriptionCmGuiDefinition implements CmGuiDefinition {
 
     private void showHelpPanel() {
         
-        String html = "<b>" + __instance.context.getContextSubTitle() + "</b>";
-        
-
-        html += html = "<ul>" + 
+        String html = "<ul>" + 
                "<li>Choose any resource from the left-side menu</li> " +
                "<li>The Help button has neat features</li> " + 
                "<li>Check for new Flash Cards and Games</li> " + 
                "<li>Use our whiteboard to work the problems</li>" + "</ul>";
 
-        html = "<div class='info'>" + html + "</html>";
+        html = "<div class='info'>" + html + "</div>";
         CmMainPanel.__lastInstance._mainContent.setLayout(new CenterLayout());
         
         ContentPanel cp = new ContentPanel();
         cp.setHeading("Catchup Math: the more you do, the more you learn!");
         cp.addStyleName("prescription-help-panel");
-        cp.setWidth(400);
+        cp.setWidth(390);
         cp.add(new Html(html));
         
         CmMainPanel.__lastInstance._mainContent.removeAll();

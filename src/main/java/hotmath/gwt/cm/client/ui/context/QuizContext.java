@@ -183,7 +183,7 @@ public class QuizContext implements CmContext {
     	        }
     	        else {
     	            msg += "Your quiz score: " + runInfo.getTestCorrectPercent() + "%</br>" +
-                    "Congratulations, you passed!</br>";
+                    "<br/>You will now be given a quiz for the next section!</br>";
     	        }
     	    }
     	    else {
