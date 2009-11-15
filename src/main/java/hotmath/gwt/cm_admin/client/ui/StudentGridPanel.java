@@ -504,7 +504,7 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
         ColumnConfig status = new ColumnConfig();
         status.setId("status");
         status.setHeader("Status");
-        status.setWidth(140);
+        status.setWidth(120);
         status.setSortable(true);
         configs.add(status);
 
