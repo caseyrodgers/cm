@@ -3,6 +3,7 @@ package hotmath.gwt.cm.client.ui;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.model.CmAdminModel;
 import hotmath.gwt.cm_tools.client.model.StudentModel;
+import hotmath.gwt.cm_tools.client.service.CmServiceAsync;
 import hotmath.gwt.cm_tools.client.service.PrescriptionServiceAsync;
 import hotmath.gwt.cm_tools.client.ui.CmMainPanel;
 import hotmath.gwt.cm_tools.client.ui.ContextController;
@@ -12,6 +13,8 @@ import hotmath.gwt.cm_tools.client.ui.StudentDetailsWindow;
 import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
 import hotmath.gwt.shared.client.eventbus.EventBus;
+import hotmath.gwt.shared.client.rpc.action.SetBackgroundStyleAction;
+import hotmath.gwt.shared.client.util.RpcData;
 import hotmath.gwt.shared.client.util.UserInfo;
 
 import com.allen_sauer.gwt.log.client.Log;
@@ -91,10 +94,10 @@ public class HelpWindow extends CmWindow {
                     return;
                 }
 
-                PrescriptionServiceAsync s = (PrescriptionServiceAsync) Registry.get("prescriptionService");
-                s.setUserBackground(UserInfo.getInstance().getUid(), se.getSelectedItem().getBackgroundStyle(),
-                        new AsyncCallback() {
-                            public void onSuccess(Object result) {
+                CmServiceAsync s = (CmServiceAsync) Registry.get("cmService");
+                s.execute(new SetBackgroundStyleAction(UserInfo.getInstance().getUid(), se.getSelectedItem().getBackgroundStyle()),
+                        new AsyncCallback<RpcData>() {
+                            public void onSuccess(RpcData result) {
                                 try {
                                     /** Remove any previous wallpaper styles, and make sure thie one
                                      *  just selected is the only one.
@@ -120,6 +123,7 @@ public class HelpWindow extends CmWindow {
                         });
             }
         });
+                
 
         fs = new FieldSet();
         fs.setHeading("Wallpaper");

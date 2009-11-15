@@ -1329,4 +1329,21 @@ public class CmStudentDao {
             SqlUtilities.releaseResources(null, pstat, null);
         }
     }
+    
+    public void setBackgroundStyle(final Connection conn, int uid, String style) throws Exception {
+        PreparedStatement ps=null;
+        try {
+            String sql = "update HA_USER set gui_background_style = ? where uid = ?";
+            ps = conn.prepareStatement(sql);
+            ps.setString(1, style);
+            ps.setInt(2, uid);
+            int c = ps.executeUpdate();
+            if(c != 1)
+                logger.warn("Could not update background style for user: " + uid);
+        }
+        finally {
+            SqlUtilities.releaseResources(null,ps,null);
+        }
+        
+    }
 }

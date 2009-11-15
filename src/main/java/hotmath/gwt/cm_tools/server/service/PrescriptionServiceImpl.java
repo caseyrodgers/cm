@@ -310,18 +310,7 @@ public class PrescriptionServiceImpl extends RemoteServiceServlet implements Pre
     }    
 
     public void setUserBackground(int userId, String backgroundStyle) throws CmRpcException {
-        Connection conn=null;
-        try {
-            conn = HMConnectionPool.getConnection();
-            HaUser user = HaUser.lookUser(conn, userId,null);
-            user.setBackgroundStyle(backgroundStyle);
-            user.update(conn);
-        } catch (Exception e) {
-            throw new CmRpcException(e);
-        }
-        finally {
-            SqlUtilities.releaseResources(null,null,conn);
-        }
+        throw new CmRpcException("Use the action");
     }
 
 
