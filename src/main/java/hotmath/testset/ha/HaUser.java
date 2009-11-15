@@ -194,7 +194,7 @@ public class HaUser extends HaBasicUserImpl {
 	    	HaTestDef def = HaTestDefFactory.createTestDef(conn, getAssignedTestName());			
 			
 		    String sql = "update HA_USER set active_test_id = ?, active_run_id = ?, active_segment = ?, active_run_session = ?, " +
-		       "test_def_id = ?, gui_background_style = ? " +
+		       "test_def_id = ? " +
 	          " where uid = ?";
    	        pstat = conn.prepareStatement(sql);
 	        pstat.setInt(1,getActiveTest());
@@ -202,8 +202,7 @@ public class HaUser extends HaBasicUserImpl {
 	        pstat.setInt(3,getActiveTestSegment());
 	        pstat.setInt(4,getActiveTestRunSession());
 	        pstat.setInt(5,def.getTestDefId());
-	        pstat.setString(6,getBackgroundStyle());
-	        pstat.setInt(7,getUid());
+	        pstat.setInt(6,getUid());
 	        
 	        Logger.getLogger(HaUser.class.getName()).debug("Updating HA_USER: " + pstat.toString());
             
