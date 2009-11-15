@@ -9,7 +9,6 @@ import hotmath.gwt.shared.server.service.ActionHandler;
 import hotmath.gwt.shared.server.service.ActionHandlerManualConnectionManagement;
 import hotmath.util.HmContentExtractor;
 
-import java.io.File;
 import java.sql.Connection;
 
 import sb.util.SbFile;

@@ -476,9 +476,16 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
         ColumnConfig column = new ColumnConfig();
         column.setId("name");
         column.setHeader("Student");
-        column.setWidth(120);
+        column.setWidth(140);
         column.setSortable(true);
         configs.add(column);
+        
+        ColumnConfig pass = new ColumnConfig();
+        pass.setId("passcode");
+        pass.setHeader("Password");
+        pass.setWidth(120);
+        pass.setSortable(true);
+        configs.add(pass);
 
         ColumnConfig group = new ColumnConfig();
         group.setId(StudentModel.GROUP_KEY);
@@ -497,7 +504,7 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
         ColumnConfig status = new ColumnConfig();
         status.setId("status");
         status.setHeader("Status");
-        status.setWidth(150);
+        status.setWidth(140);
         status.setSortable(true);
         configs.add(status);
 

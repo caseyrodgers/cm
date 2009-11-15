@@ -1,7 +1,8 @@
 package hotmath.gwt.cm_tools.client.ui.viewer;
 
 import hotmath.gwt.cm_tools.client.data.InmhItemData;
-import hotmath.gwt.cm_tools.client.service.PrescriptionServiceAsync;
+import hotmath.gwt.cm_tools.client.service.CmServiceAsync;
+import hotmath.gwt.shared.client.rpc.action.GetReviewHtmlAction;
 import hotmath.gwt.shared.client.util.RpcData;
 
 import com.extjs.gxt.ui.client.Registry;
@@ -17,8 +18,9 @@ public class ResourceViewerImplReview extends ResourceViewerImplDefault implemen
         
         String file = "/hotmath_help/" + resource.getFile();
              
-        PrescriptionServiceAsync s = (PrescriptionServiceAsync) Registry.get("prescriptionService");
-        s.getHmContent(file,  "/hotmath_help/topics", new AsyncCallback<RpcData>() {
+        CmServiceAsync s = (CmServiceAsync) Registry.get("cmService");
+        GetReviewHtmlAction action = new GetReviewHtmlAction(file, "/hotmath_help/topics");
+        s.execute(action, new AsyncCallback<RpcData>() {
             public void onFailure(Throwable caught) {
                 caught.printStackTrace();
             }

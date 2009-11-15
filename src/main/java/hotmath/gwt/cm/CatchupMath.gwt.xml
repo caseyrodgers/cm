@@ -12,10 +12,16 @@
       <inherits name='com.extjs.gxt.ui.GXT'/>
       <inherits name='com.extjs.gxt.themes.Themes' />
       <inherits name='com.google.gwt.json.JSON' />
+      
+      <!-- 
       <inherits name="com.google.gwt.http.HTTP" />
-
+      -->
+      
+      <!-- 
       <inherits name='pl.rmalinowski.gwt2swf.GWT2SWF' />
-
+      -->
+      
+      
       <inherits name='hotmath.gwt.cm_tools.CatchupMathTools'/>
             
           
