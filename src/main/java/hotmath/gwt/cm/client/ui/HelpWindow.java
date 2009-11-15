@@ -99,6 +99,7 @@ public class HelpWindow extends CmWindow {
                         new AsyncCallback<RpcData>() {
                             public void onSuccess(RpcData result) {
                                 try {
+                                    String newStyle = se.getSelectedItem().getBackgroundStyle();
                                     /** Remove any previous wallpaper styles, and make sure thie one
                                      *  just selected is the only one.
                                      *  
@@ -110,7 +111,9 @@ public class HelpWindow extends CmWindow {
                                             CmMainPanel.__lastInstance._mainContent.removeStyleName(names[i]);
                                                 
                                     }
-                                    CmMainPanel.__lastInstance._mainContent.addStyleName(se.getSelectedItem().getBackgroundStyle());
+                                    CmMainPanel.__lastInstance._mainContent.addStyleName(newStyle);
+                                    
+                                    UserInfo.getInstance().setBackgroundStyle(newStyle);
                                     
                                 } finally {
                                     CatchupMathTools.setBusy(false);
