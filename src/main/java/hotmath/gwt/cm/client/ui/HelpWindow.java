@@ -96,8 +96,19 @@ public class HelpWindow extends CmWindow {
                         new AsyncCallback() {
                             public void onSuccess(Object result) {
                                 try {
-                                    CmMainPanel.__lastInstance._mainContent.setStyleName(se.getSelectedItem()
-                                            .getBackgroundStyle());
+                                    /** Remove any previous wallpaper styles, and make sure thie one
+                                     *  just selected is the only one.
+                                     *  
+                                     *  NOTE: all wallpaper styles start with 'resource-container-'
+                                     */
+                                    String names[] = CmMainPanel.__lastInstance._mainContent.getStyleName().split(" ");
+                                    for(int i=0;i<names.length;i++) {
+                                        if(names[i].startsWith("resource-container-"))
+                                            CmMainPanel.__lastInstance._mainContent.removeStyleName(names[i]);
+                                                
+                                    }
+                                    CmMainPanel.__lastInstance._mainContent.addStyleName(se.getSelectedItem().getBackgroundStyle());
+                                    
                                 } finally {
                                     CatchupMathTools.setBusy(false);
                                 }
