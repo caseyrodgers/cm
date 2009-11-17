@@ -187,6 +187,13 @@ public class ResourceViewerImplTutor extends ResourceViewerContainer implements 
 
     static ShowWorkPanel showWorkPanel;
     public void showWork(final String pidIn) {
+        
+        /** Bug with reuse, force recreate
+         * 
+         * @TODO: find out why reuse of panel display blank Show WOrk panel
+         * 
+         */
+        showWorkWin = null;
         if(showWorkWin == null) {
             showWorkWin = new CmWindow();
             showWorkWin.setClosable(false);
@@ -270,12 +277,12 @@ public class ResourceViewerImplTutor extends ResourceViewerContainer implements 
         }
         else {
             showWorkWin.remove(showWorkPanel);
+            showWorkWin.layout();
         }
         
         showWorkPanel = new ShowWorkPanel();
         showWorkPanel.setupForPid(pid);
         showWorkWin.add(showWorkPanel);
-
         showWorkWin.setVisible(true);
         // get the position of the 'show work' button
         // and move to it, then expand ...
