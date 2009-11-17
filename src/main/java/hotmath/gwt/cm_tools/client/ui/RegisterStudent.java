@@ -207,14 +207,13 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
 		_fsProgram.add(chapCombo);        
 		
 		CheckBox isShowWorkRequired = new CheckBox();
-        isShowWorkRequired.setBoxLabel("(recommended)");
         isShowWorkRequired.setId(StudentModel.SHOW_WORK_KEY);
         if (! isNew) {
         	isShowWorkRequired.setValue(stuMdl.getShowWorkRequired());
         }
         else {
-        	// require 'Show Work' by default
-        	isShowWorkRequired.setValue(true);
+        	// require 'Show Work' OFF by default
+        	isShowWorkRequired.setValue(false);
         }
 
         _showWorkGrp = new CheckBoxGroup(); 
