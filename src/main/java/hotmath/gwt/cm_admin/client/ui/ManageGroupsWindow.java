@@ -351,14 +351,13 @@ class MyButton extends Button {
 class GroupManagerGlobalSettings extends CmWindow {
     
     GroupInfoModel gim;
-    CheckBox showWorkRequired, disallowTutoring;
-    PassPercentCombo passPercent;
+    CheckBox showWorkRequired;
     CmAdminModel cm;
     public GroupManagerGlobalSettings(CmAdminModel cm, GroupInfoModel gim) {
         this.cm = cm;
         this.gim = gim;
         setHeading("Group Settings for '" + gim.getName() + "'" );
-        setSize(400,250);
+        setSize(400,230);
         drawGui();
         setModal(true);
         setResizable(false);
@@ -380,16 +379,6 @@ class GroupManagerGlobalSettings extends CmWindow {
         showWorkRequired.setFieldLabel("Show Work Required");
         showWorkRequired.setBoxLabel("");
         fs.add(showWorkRequired);
-        
-        disallowTutoring = new CheckBox();
-        disallowTutoring.setValue(true);
-        disallowTutoring.setBoxLabel("");
-        disallowTutoring.setFieldLabel("Disallow Tutoring");
-        fs.add(disallowTutoring);
-        
-        passPercent = new PassPercentCombo();
-        passPercent.enable();
-        fs.add(passPercent);
         
         form.add(fs);
 
@@ -430,9 +419,9 @@ class GroupManagerGlobalSettings extends CmWindow {
         
         GroupManagerAction action = new GroupManagerAction(GroupManagerAction.ActionType.GROUP_PROPERTY_SET,cm.getId());
         action.setGroupId(gim.getId());
-        action.setDisallowTutoring(disallowTutoring.getValue());
+        action.setDisallowTutoring(true);
         action.setShowWorkRequired(showWorkRequired.getValue());
-        action.setPassPercent(passPercent.getPassPercent());
+        action.setPassPercent(70);
         cmService.execute(action, new AsyncCallback<RpcData>() {
             public void onSuccess(RpcData result) {
                 CmAdminDataReader.getInstance().fireRefreshData();
