@@ -243,7 +243,7 @@ public class HaUserFactory {
             student.setGroupId("1");
             student.setProgId("Prof");
             student.setSubjId("Pre-Alg");
-            student.setPassPercent("80%");
+            student.setPassPercent("70%");
             student.setTutoringAvail(false);
             student.setShowWorkRequired(false);
 
