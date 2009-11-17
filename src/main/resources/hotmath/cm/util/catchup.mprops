@@ -184,7 +184,7 @@ select s.id,
        st.date_expire                                as tutoring_expire_date,
        h.user_name,
        t.student_count,
-       1000                                          as max_students,
+       Ifnull(cc.max_students,200)                   as max_students,
        l.login_time,
        Date_format(l.login_time,'%Y-%m-%d %h:%i %p') as login_date_time
 from   SUBSCRIBERS s
@@ -196,6 +196,8 @@ from   SUBSCRIBERS s
        left join SUBSCRIBERS_SERVICES sc
          on sc.subscriber_id = h.subscriber_id
             and sc.service_name = 'catchup'
+       left join SUBSCRIBERS_SERVICES_CONFIG_CATCHUP cc
+         on cc.subscriber_svc_id = sc.ssid
        left join (select   admin_id,
                            is_active,
                            Count(* ) as student_count
