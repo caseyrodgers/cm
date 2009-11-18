@@ -2,8 +2,10 @@ package hotmath.testset.ha;
 
 import hotmath.HotMathException;
 import hotmath.cm.util.CmMultiLinePropertyReader;
+import hotmath.gwt.cm_admin.server.model.CmAdminDao;
 import hotmath.gwt.cm_admin.server.model.CmStudentDao;
 import hotmath.gwt.cm_tools.client.data.HaBasicUser;
+import hotmath.gwt.cm_tools.client.model.AccountInfoModel;
 import hotmath.gwt.cm_tools.client.model.StudentModel;
 import hotmath.util.HMConnectionPool;
 import hotmath.util.sql.SqlUtilities;
@@ -83,7 +85,18 @@ public class HaUserFactory {
                     
                     __logger.info(String.format("+++ date_expire: %s, isExpired: ", date, admin.isExpired()));
 
-                    __logger.info("Logging in user (CM Admin): " + user); 
+                    __logger.info("Logging in user (CM Admin): " + user);
+                    
+                    // now get Account Info to determine if student count is over limit
+                    CmAdminDao dao = new CmAdminDao();
+                    AccountInfoModel model = dao.getAccountInfo(conn, admin.getAdminId());
+                    if (model.getMaxStudents() < model.getTotalStudents()) {
+                    	String msg = String.format("Your account has too many registered students.  Please unregister at least %d student(s)",
+                    			model.getTotalStudents() - model.getMaxStudents());
+                    	admin.setLoginMessage(msg);
+                    	__logger.info("loginToCatchup(): loginMessage: " + msg);
+                    }
+                    
                     return admin;
                 }
             } finally {
