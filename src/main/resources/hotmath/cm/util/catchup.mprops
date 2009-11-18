@@ -680,7 +680,7 @@ order by name
 
 .key=ADMIN_LOGIN
 
-select a.*, max(ss.date_expire) as date_expire, ss.subscriber_id, s.type as account_type
+select a.*, ss.date_expire, ss.subscriber_id, s.type as account_type
 from HA_ADMIN a
 inner join SUBSCRIBERS s
    on s.id = a.subscriber_id
@@ -689,9 +689,8 @@ left outer join (
    where service_name = 'catchup'
    group by subscriber_id
 ) ss
-on a.subscriber_id = ss.subscriber_id
+   on a.subscriber_id = ss.subscriber_id
 where a.user_name = ? and a.passcode = ?
-group by date_expire
 
 .key=USER_LOGIN_SCHOOL
 
