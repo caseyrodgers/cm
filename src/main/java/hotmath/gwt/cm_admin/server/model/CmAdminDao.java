@@ -295,14 +295,25 @@ public class CmAdminDao {
     }
 
     public AccountInfoModel getAccountInfo(Integer adminUid) throws Exception {
+    	Connection conn = null;
+    	
+    	try {
+    		conn = HMConnectionPool.getConnection();
+    		return getAccountInfo(conn, adminUid);
+    	}
+    	finally {
+    		SqlUtilities.releaseResources(null, null, conn);
+    	}
+    }
+    	
+    
+    public AccountInfoModel getAccountInfo(final Connection conn, Integer adminUid) throws Exception {
     	AccountInfoModel ai = new AccountInfoModel();
 
-    	Connection conn = null;
     	PreparedStatement ps = null;
     	ResultSet rs = null;
     	
     	try {
-    		conn = HMConnectionPool.getConnection();
     		ps = conn.prepareStatement(CmMultiLinePropertyReader.getInstance().getProperty("ACCOUNT_INFO_SQL"));
     		ps.setInt(1, adminUid);
     		ps.setInt(2, adminUid);
@@ -316,7 +327,7 @@ public class CmAdminDao {
       	        ai.setMaxStudents(rs.getInt("max_students"));
       	        ai.setTotalStudents(rs.getInt("student_count"));
       	        java.sql.Date dt = rs.getDate("catchup_expire_date");
-      	        String cmDate = (dt != null) ? dt.toString() : "2009-07-31";  /** @TODO: remove hard-coded value */
+      	        String cmDate = (dt != null) ? dt.toString() : "2009-12-31";  /** @TODO: remove hard-coded value */
       	        ai.setExpirationDate(cmDate);
       	        dt = rs.getDate("tutoring_expire_date");
       	        if (dt != null && dt.after(new java.sql.Date(System.currentTimeMillis()))) {
@@ -338,7 +349,7 @@ public class CmAdminDao {
     		throw new Exception("*** Error getting Account data ***");
     	}
     	finally {
-    		SqlUtilities.releaseResources(rs, ps, conn);
+    		SqlUtilities.releaseResources(rs, ps, null);
     	}
     	return ai;
     }
