@@ -198,15 +198,14 @@ from   SUBSCRIBERS s
             and sc.service_name = 'catchup'
        left join SUBSCRIBERS_SERVICES_CONFIG_CATCHUP cc
          on cc.subscriber_svc_id = sc.ssid
-       left join (select   ha.subscriber_id,
-                           hu.is_active,
+       left join (select   admin_id,
+                           is_active,
                            Count(* ) as student_count
-                  from     HA_USER hu, HA_ADMIN ha
-                  where    hu.is_active = 1
-                           and hu.is_auto_create_template = 0
-                           and hu.admin_id = ha.aid
-                  group by subscriber_id) t
-         on t.subscriber_id = h.subscriber_id
+                  from     HA_USER
+                  where    is_active = 1
+                           and is_auto_create_template = 0
+                  group by admin_id) t
+         on t.admin_id = h.aid
        left join (select   user_id,
                            Max(login_time) as login_time
                   from     HA_USER_LOGIN u
@@ -219,7 +218,11 @@ from   SUBSCRIBERS s
                   group by u.user_id) l
          on l.user_id = h.aid
 where  h.aid = ?
-                      
+           
+           
+           
+           
+           
            
 .key=ACCOUNT_TYPE_LOOKUP
 
