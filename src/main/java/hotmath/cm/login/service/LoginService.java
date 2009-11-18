@@ -48,6 +48,7 @@ public class LoginService extends HttpServlet {
             sb.append("', userId:").append(loginInfo.getUserId());
             String dateStr = (cmUser.getExpireDate() != null) ? dateFormat.format((cmUser.getExpireDate())) : "n/a";
             sb.append(", expireDate: '").append(dateStr);
+            sb.append("', loginMsg: '").append((cmUser.getLoginMessage() != null)?cmUser.getLoginMessage():"NONE");
             sb.append("' }");
             resp.getWriter().write(sb.toString());
         }
