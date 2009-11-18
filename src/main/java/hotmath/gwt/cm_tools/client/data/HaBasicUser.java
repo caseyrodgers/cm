@@ -16,6 +16,9 @@ public interface HaBasicUser {
     String getPassword();
     String getLoginName();
     
+    String getLoginMessage();
+    void setLoginMessage(String msg);
+    
     Date getExpireDate();
     void setExpireDate(Date expireDate);
     boolean isExpired();

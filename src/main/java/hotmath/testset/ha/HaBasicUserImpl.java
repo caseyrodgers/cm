@@ -8,7 +8,7 @@ abstract public class HaBasicUserImpl implements HaBasicUser {
     
 	Date expireDate;
 	String accountType;
-	
+    String loginMessage;
 
 	public void setPassword(String password) {
         this.password = password;
@@ -57,6 +57,14 @@ abstract public class HaBasicUserImpl implements HaBasicUser {
 	public void setAccountType(String accountType) {
 		this.accountType = accountType;
 	}
+	
+    public String getLoginMessage() {
+    	return loginMessage;
+    }
+
+    public void setLoginMessage(String msg) {
+        this.loginMessage = msg;
+    }
     
     abstract public Object getUserObject();
     abstract public UserType getUserType();
