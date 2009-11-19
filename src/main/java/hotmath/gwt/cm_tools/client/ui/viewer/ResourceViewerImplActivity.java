@@ -27,7 +27,7 @@ public class ResourceViewerImplActivity extends ResourceViewerImplFlash {
 	    else {
     	    SWFSettings s = new SWFSettings();
     	    s.setMinPlayerVersion(new PlayerVersion(CmShared.FLASH_MIN_VERSION));
-    	    SWFWidget swfWidget = new SWFWidget(getResourceItem().getFile(),"530px","450px",s);
+    	    SWFWidget swfWidget = new SWFWidget(getResourceItem().getFile(),"100%","100%",s);
     	    swfWidget.setStyleName("activity-widget");
     	    addResource(swfWidget,getResourceItem().getTitle());
 	    }

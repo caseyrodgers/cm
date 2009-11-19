@@ -28,12 +28,13 @@ public class CmMainResourceContainer extends LayoutContainer {
 	
 	CmResourcePanelContainer currentContainer;
 	CmResourcePanel currentPanel;
-	
-	public CmMainResourceContainer() {
+
+    public CmMainResourceContainer() {
 		addStyleName("main-resource-panel");
 		addStyleName("resource-container-bike1");
 	}
-	
+
+    
 	
 	/** Add a new resource panel to the main resource container.
 	 * 
@@ -92,6 +93,18 @@ public class CmMainResourceContainer extends LayoutContainer {
             CatchupMathTools.showAlert("Error: " + hme.getMessage());
         }
     }
+
+    
+    
+    public CmResourcePanel getCurrentPanel() {
+        return currentPanel;
+    }
+
+
+    public void setCurrentPanel(CmResourcePanel currentPanel) {
+        this.currentPanel = currentPanel;
+    }
+
     
     
 	/** Remove this resource from display
@@ -146,6 +159,8 @@ public class CmMainResourceContainer extends LayoutContainer {
     	}
     }
     
+    
+    
 	
     /** Calculate the proper height for this widget.  
      * 
@@ -170,8 +185,6 @@ public class CmMainResourceContainer extends LayoutContainer {
 			return panel.getOptimalHeight();
 		}
 	}    
-
-	
 }
 
 
