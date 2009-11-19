@@ -121,6 +121,23 @@
         float: right;
         width: 180px;
 }
+.account-info .fld-warn {
+	    color: red;
+        width: 360px;
+}
+.account-info .fld-warn label {
+        display: block;
+        float: left;
+        font-weight: bold;
+        margin-right: 5px;
+        text-align: right;
+        width: 170px;
+}
+.account-info .fld-warn div {
+        float: right;
+        width: 180px;
+}
+
 .account-info .left {
         left: 20px;
         position: absolute;
