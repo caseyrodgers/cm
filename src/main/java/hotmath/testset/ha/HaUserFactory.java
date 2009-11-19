@@ -87,16 +87,6 @@ public class HaUserFactory {
 
                     __logger.info("Logging in user (CM Admin): " + user);
                     
-                    // now get Account Info to determine if student count is over limit
-                    CmAdminDao dao = new CmAdminDao();
-                    AccountInfoModel model = dao.getAccountInfo(conn, admin.getAdminId());
-                    if (model.getMaxStudents() < model.getTotalStudents()) {
-                    	String msg = String.format("Your account has too many registered students.  Please unregister at least %d student(s)",
-                    			model.getTotalStudents() - model.getMaxStudents());
-                    	admin.setLoginMessage(msg);
-                    	__logger.info("loginToCatchup(): loginMessage: " + msg);
-                    }
-                    
                     return admin;
                 }
             } finally {
