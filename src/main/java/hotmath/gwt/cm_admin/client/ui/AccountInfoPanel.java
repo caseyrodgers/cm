@@ -5,6 +5,7 @@ import hotmath.gwt.cm_tools.client.model.AccountInfoModel;
 import hotmath.gwt.cm_tools.client.model.CmAdminDataReader;
 import hotmath.gwt.cm_tools.client.model.CmAdminDataRefresher;
 import hotmath.gwt.cm_tools.client.model.CmAdminModel;
+import hotmath.gwt.cm_tools.client.CatchupMathTools;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.Registry;
@@ -22,6 +23,7 @@ public class AccountInfoPanel extends LayoutContainer implements CmAdminDataRefr
 	private HTML html;
 	private AccountInfoModel model;
 	private CmAdminModel cmAdminModel;
+	private Boolean haveDisplayedOverLimitMsg = false;
 
 	public AccountInfoPanel(CmAdminModel cmAdminMdl) {
 		
@@ -47,7 +49,7 @@ public class AccountInfoPanel extends LayoutContainer implements CmAdminDataRefr
         sb.append("<div class='form right'>");
         sb.append("  <div class='fld'><label>Account login name:</label><div>{admin-user-name}&nbsp;</div></div>");
         sb.append("  <div class='fld'><label>Previous admin login:</label><div>{last-login}&nbsp;</div></div>");
-        sb.append("  <div class='fld'><label>Student count:</label><div>{total-students}&nbsp;</div></div>");
+        sb.append("  <div class='{student-count-style}'><label>Student count:</label><div>{total-students}&nbsp;</div></div>");
         sb.append("</div>");		
 		sb.append("</div>");
 		
@@ -96,15 +98,27 @@ public class AccountInfoPanel extends LayoutContainer implements CmAdminDataRefr
                 sb.append("Manage ").append(ai.getSchoolName()).append(" Students");
                 // _gridContainer.setHeading(sb.toString());
 
+                if(ai.getTotalStudents() > ai.getMaxStudents()) {
+                    if(!haveDisplayedOverLimitMsg) {
+                    	String msg = "Your account has too many students.  Please unregister " +
+                    	        String.valueOf(ai.getTotalStudents() - ai.getMaxStudents()) +  " student(s).";
+                        CatchupMathTools.showAlert(msg);
+                        haveDisplayedOverLimitMsg = true;
+                    }
+                    ai.setStudentCountStyle("fld-warn");
+                }
+                else {
+                    ai.setStudentCountStyle("fld");
+                }
+
                 setAccountInfoModel(ai);
 
                 Log.info("AccountInfoPanel: student info read succesfully");
             }
 
             public void onFailure(Throwable caught) {
-                String msg = caught.getMessage();
-                caught.printStackTrace();  // quite
-                //CatchupMathAdmin.showAlert(msg);
+            	Log.info("Error loading account info", caught);
+                //CatchupMathTools.showAlert(caught.getMessage());
             }
         });
     }
