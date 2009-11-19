@@ -1,7 +1,6 @@
 package hotmath.gwt.cm_tools.client.ui.viewer;
 
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
-import hotmath.gwt.cm_tools.client.data.InmhItemData;
 import hotmath.gwt.cm_tools.client.service.CmServiceAsync;
 import hotmath.gwt.cm_tools.client.ui.CmMainPanel;
 import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
@@ -13,14 +12,18 @@ import hotmath.gwt.shared.client.rpc.action.GetSolutionAction;
 import hotmath.gwt.shared.client.util.RpcData;
 import hotmath.gwt.shared.client.util.UserInfo;
 
+import java.util.List;
+
 import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.Registry;
 import com.extjs.gxt.ui.client.Style.Scroll;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
+import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.Html;
 import com.extjs.gxt.ui.client.widget.Window;
 import com.extjs.gxt.ui.client.widget.button.Button;
+import com.extjs.gxt.ui.client.widget.button.IconButton;
 import com.extjs.gxt.ui.client.widget.layout.FillLayout;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.google.gwt.user.client.DOM;
@@ -51,7 +54,7 @@ public class ResourceViewerImplTutor extends CmResourcePanelImplDefault {
 
     @Override
     public Integer getOptimalWidth() {
-        return 540;
+        return 500;
     }
     
     @Override
@@ -62,9 +65,21 @@ public class ResourceViewerImplTutor extends CmResourcePanelImplDefault {
 
     @Override
     public Boolean allowMaximize() {
-        return true;
+        return false;
     }
    
+    
+    public List<Component> getContainerTools() {
+        Component[] btn = {new Button("Enter Your Answer",new SelectionListener<ButtonEvent>() {
+            @Override
+            public void componentSelected(ButtonEvent ce) {
+                showWorkDialog();
+            }
+        })};
+        return java.util.Arrays.asList(btn);
+    }
+    
+    
     Button showWorkBtn, hideWorkBtn;
     String pid;
     boolean hasShowWork;

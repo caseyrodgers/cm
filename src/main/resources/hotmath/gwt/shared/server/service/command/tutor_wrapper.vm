@@ -3,9 +3,7 @@
     <!-- HOTMATH BODY START -->
     
     <div id="tutoroutput" style='display: block;position: relative;'>
-        <div class='cm-tutor-button-bar-top' style='position: absolute; top:3px;right: 15px;'>
-         <a class='button' href='javascript:void(0)' onclick='showWorkDialog_Gwt();return false;'>Enter Your Answer<img  src='/gwt-resources/images/icon_show_work.png'/></a>
-        </div>
+        
         <div id='tutor_raw_steps_wrapper'>
             $solution_html
         </div>
@@ -25,8 +23,8 @@
                     <img id='steps_next_img' src="/images/tutor5/steps_next-disabled.gif">
                 </a>
                 <div class='cm-tutor-button-bar-bottom' style='float: right;'>
-                   <a class='button debug-off' href='javascript:void(0)' onclick='expandAllSteps();return false;'>Expand</a>
-                   <a class='button' href='javascript:void(0)' onmouseover='showAskATutorTooltip_Cm()' onmouseout='nd()' onclick='showTutoringDialog_Gwt();return false;'>Ask a Tutor<img src='/gwt-resources/images/icon_ask_a_tutor.png'/></a>
+                   <a class='button debug-off' href='javascript:void(0)' onclick='expandAllSteps();return false;'><img src='/gwt-resources/images/tutor/expand-61x18.png'/></a>
+                   <a class='button' href='javascript:void(0)' onmouseover='showAskATutorTooltip_Cm()' onmouseout='nd()' onclick='showTutoringDialog_Gwt();return false;'><img src='/gwt-resources/images/tutor/ask_a_tutor-94x18.png'/></a>
                </div>
         </div>
         <img id='scrollTo-button' src='/images/tutor5/spacer.gif'>

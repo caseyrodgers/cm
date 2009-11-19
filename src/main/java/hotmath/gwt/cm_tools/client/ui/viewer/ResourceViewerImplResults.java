@@ -32,6 +32,11 @@ public class ResourceViewerImplResults extends CmResourcePanelImplDefault {
         return 550;
     }
     
+    @Override
+    public Boolean allowMaximize() {
+        return false;
+    }
+    
     /** Select the correct question response for question for pid
      * 
      * @param pid  The solution which question response to set

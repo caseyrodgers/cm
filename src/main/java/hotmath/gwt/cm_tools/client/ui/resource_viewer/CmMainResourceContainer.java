@@ -68,8 +68,6 @@ public class CmMainResourceContainer extends LayoutContainer {
             removeAll();
             
             CmResourcePanel viewer = ResourceViewerFactory.create(resourceItem);
-            
-            setScrollMode(Scroll.AUTO);
             setLayout(new MyCenterLayout());
             
             /** create a new resource container to encapsulate the resource

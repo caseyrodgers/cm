@@ -101,6 +101,11 @@
 }
 
 
+.resource-viewer-container #testset_div {
+	margin: 0;
+}
+
+
 .quiz-panel {
         margin-top: 20px;
 }
@@ -208,6 +213,7 @@
         background: url(../images/catch_me_up-over.png) no-repeat center left
                 !important;
 }
+
 .header-panel-logout-btn {
         background: url(../images/logout.png) no-repeat center left !important;
         height: 34px;
@@ -439,9 +445,9 @@ img.resource-item-complete {
         margin: 0 0 10px;
 }
 #tutor_embedded {
-        padding: 10px;
         width: 500px;
 }
+
 #tutor_embedded a.button:link,#tutor_embedded a.button:active,#tutor_embedded a.button:visited,#tutor_embedded a.button:hover {
         color: #FFFF00;
         font-family: Tahoma, Arial;
@@ -457,23 +463,18 @@ img.resource-item-complete {
         display: inline;
 }
 #steps_head {
-        background-image: url(/gwt-resources/images/steps_head-500x24.png);
+        background-image: none;
+        display:none;
 }
 #steps_tail {
-        background-image: url(/gwt-resources/images/steps_footer-500x24.png);
+        background: #DEDEDE;
+        height: 30px;
 }
+
 #steps_info {
         width: 200px;
 }
-#tutor_embedded .cm-tutor-button-bar-bottom,#tutor_embedded .cm-tutor-button-bar-top {
-        line-height: 17px;
-        text-align: right;
-        width: 320px;
-}
-#tutor_embedded .cm-tutor-button-bar-top img,#tutor_embedded .cm-tutor-button-bar-bottom img {
-        margin-left: 2px;
-        vertical-align: middle;
-}
+
 .resource-container-snowman {
         background-attachment: fixed;
         background-image: url(/gwt-resources/images/prescription_resource_background-1600x1050.jpg);

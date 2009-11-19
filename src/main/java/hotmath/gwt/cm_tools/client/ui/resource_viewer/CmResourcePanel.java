@@ -2,6 +2,8 @@ package hotmath.gwt.cm_tools.client.ui.resource_viewer;
 
 import hotmath.gwt.cm_tools.client.data.InmhItemData;
 
+import java.util.List;
+
 import com.extjs.gxt.ui.client.widget.Component;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -80,4 +82,13 @@ public interface CmResourcePanel {
      * 
      */
     public void setResourceItem(InmhItemData item);
+    
+ 
+    
+    /** Return any tools that should be available to users of this resource.
+     * 
+     * 
+     * @return
+     */
+    public List<Component> getContainerTools();
 }

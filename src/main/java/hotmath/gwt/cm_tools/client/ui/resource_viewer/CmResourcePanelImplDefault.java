@@ -2,6 +2,10 @@ package hotmath.gwt.cm_tools.client.ui.resource_viewer;
 
 import hotmath.gwt.cm_tools.client.data.InmhItemData;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.Html;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
@@ -92,5 +96,10 @@ public class CmResourcePanelImplDefault extends LayoutContainer implements CmRes
     @Override
     public void setResourceItem(InmhItemData item) {
         this.item = item;
+    }
+    
+    @Override
+    public List<Component> getContainerTools() {
+        return null;
     }
 }

@@ -1,10 +1,10 @@
 package hotmath.gwt.cm_tools.client.ui.resource_viewer;
 
-import hotmath.gwt.cm_tools.client.ui.viewer.ResourceViewerImplFlash;
-import hotmath.gwt.cm_tools.client.ui.viewer.ResourceViewerImplTutor;
+import java.util.List;
 
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
+import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.layout.CenterLayout;
@@ -28,6 +28,22 @@ class CmResourcePanelContainer extends ContentPanel {
 		setWidth(panel.getOptimalWidth());
 		setLayout(new FitLayout());
 		add(panel.getResourcePanel());
+		
+		
+		/** add any resource specific tools to resource container header 
+		 * 
+		 */
+		List<Component> tools = panel.getContainerTools();
+		if(tools != null) {
+		    for(int i=0,t=tools.size();i<t;i++) {
+		        getHeader().addTool(tools.get(i));
+		    }
+		}
+		
+		
+		/** Maximize is an optional feature
+		 * 
+		 */
 		if(panel.allowMaximize()) {
 			Button maximize = new Button("Maximize", new SelectionListener<ButtonEvent>() {
 				public void componentSelected(ButtonEvent ce) {
