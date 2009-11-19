@@ -15,7 +15,7 @@ import hotmath.gwt.cm_tools.client.ui.CmGuiDefinition;
 import hotmath.gwt.cm_tools.client.ui.CmMainPanel;
 import hotmath.gwt.cm_tools.client.ui.ContextController;
 import hotmath.gwt.cm_tools.client.ui.context.CmContext;
-import hotmath.gwt.cm_tools.client.ui.viewer.ResourceViewer;
+import hotmath.gwt.cm_tools.client.ui.resource_viewer.CmResourcePanel;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
 import hotmath.gwt.shared.client.eventbus.CmEventListener;
 import hotmath.gwt.shared.client.eventbus.CmEventListenerImplDefault;
@@ -31,7 +31,6 @@ import java.util.Map;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.Registry;
-import com.extjs.gxt.ui.client.Style.Direction;
 import com.extjs.gxt.ui.client.Style.LayoutRegion;
 import com.extjs.gxt.ui.client.Style.Scroll;
 import com.extjs.gxt.ui.client.fx.FxConfig;
@@ -44,7 +43,6 @@ import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
 import com.extjs.gxt.ui.client.widget.layout.CenterLayout;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 
 public class PrescriptionCmGuiDefinition implements CmGuiDefinition {
@@ -135,7 +133,7 @@ public class PrescriptionCmGuiDefinition implements CmGuiDefinition {
                 }
                 else if(event.getEventName().equals(EventBus.EVENT_TYPE_RESOURCE_VIEWER_OPEN)) {
                     // if not a required problem, then set as viewed
-                    ResourceViewer viewer = (ResourceViewer)event.getEventData();
+                    CmResourcePanel viewer = (CmResourcePanel)event.getEventData();
                     
                     /** practice problems only get marked viewed, 
                      *  once they are fully complete (event EVENT_TYPE_SOLUTIONS_COMPLETE)

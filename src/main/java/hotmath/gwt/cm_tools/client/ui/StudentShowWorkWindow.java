@@ -7,7 +7,7 @@ import hotmath.gwt.cm_tools.client.model.StudentModel;
 import hotmath.gwt.cm_tools.client.model.StudentShowWorkModel;
 import hotmath.gwt.cm_tools.client.service.PrescriptionServiceAsync;
 import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
-import hotmath.gwt.cm_tools.client.ui.viewer.ResourceViewer;
+import hotmath.gwt.cm_tools.client.ui.resource_viewer.CmResourcePanel;
 import hotmath.gwt.cm_tools.client.ui.viewer.ResourceViewerFactory;
 import hotmath.gwt.cm_tools.client.ui.viewer.ShowWorkPanel;
 import hotmath.gwt.shared.client.util.UserInfo;
@@ -109,6 +109,8 @@ public class StudentShowWorkWindow extends CmWindow {
         centerContainer.add(new Html(html));
         return centerContainer;
     }
+    
+    
 
     /**
      * Create the center, main container with the show work and solution loaded
@@ -136,9 +138,9 @@ public class StudentShowWorkWindow extends CmWindow {
             InmhItemData solItem = new InmhItemData();
             solItem.setType("practice");
             solItem.setFile(pid);
-            ResourceViewer viewer = ResourceViewerFactory.create(solItem.getType());
+            CmResourcePanel viewer = ResourceViewerFactory.create(solItem);
 
-            lc.add(viewer.getResourcePanel(solItem), new BorderLayoutData(LayoutRegion.CENTER));
+            lc.add(viewer.getResourcePanel(), new BorderLayoutData(LayoutRegion.CENTER));
             centerContainer.removeAll();
             centerContainer.setLayout(new FitLayout());
             centerContainer.add(lc);

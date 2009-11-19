@@ -1,6 +1,7 @@
 package hotmath.gwt.cm_tools.client.ui;
 
-import hotmath.gwt.cm_tools.client.ui.viewer.ResourceViewer;
+import hotmath.gwt.cm_tools.client.ui.resource_viewer.CmMainResourceContainer;
+import hotmath.gwt.cm_tools.client.ui.resource_viewer.CmResourcePanel;
 import hotmath.gwt.cm_tools.client.ui.viewer.ResourceViewerImplFlash;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
 import hotmath.gwt.shared.client.eventbus.CmEventListener;
@@ -21,7 +22,7 @@ public class CmMainPanel extends LayoutContainer {
 
     public static CmMainPanel __lastInstance;
 
-    public ResourceContainer _mainContent;
+    public CmMainResourceContainer _mainContent;
 
     // @TODO: setup event/listener to manager
     // state change
@@ -30,7 +31,7 @@ public class CmMainPanel extends LayoutContainer {
     // to the title.
     public ContentPanel _westPanel;
     
-    ResourceViewer _lastResourceViewer;
+    CmResourcePanel _lastResourceViewer;
 
     /**
      * Main Catchup Math application area.
@@ -55,9 +56,7 @@ public class CmMainPanel extends LayoutContainer {
         setScrollMode(Scroll.AUTO);
         this.cmGuiDef = cmGuiDef;
         setLayout(new BorderLayout());
-        _mainContent = new ResourceContainer();
-        
-        
+        _mainContent = new CmMainResourceContainer();
         
         _westPanel = new ContentPanel();
         _westPanel.setStyleName("main-panel-west");
@@ -103,14 +102,17 @@ public class CmMainPanel extends LayoutContainer {
                     }
                 }
                 else if(event.getEventName().equals(EventBus.EVENT_TYPE_RESOURCE_VIEWER_OPEN)) {
-                    _lastResourceViewer = (ResourceViewer)event.getEventData();
+                    _lastResourceViewer = (CmResourcePanel)event.getEventData();
+                }
+                else if(event.getEventName().equals(EventBus.EVENT_TYPE_WINDOW_RESIZED)) {
+                    _mainContent.fireWindowResized();
                 }
             }
             
             @Override
             public String[] getEventsOfInterest() {
                 // TODO Auto-generated method stub
-                String types[] = {EventBus.EVENT_TYPE_MODAL_WINDOW_OPEN, EventBus.EVENT_TYPE_RESOURCE_VIEWER_OPEN};
+                String types[] = {EventBus.EVENT_TYPE_MODAL_WINDOW_OPEN, EventBus.EVENT_TYPE_RESOURCE_VIEWER_OPEN, EventBus.EVENT_TYPE_WINDOW_RESIZED};
                 return types;
             }
         });

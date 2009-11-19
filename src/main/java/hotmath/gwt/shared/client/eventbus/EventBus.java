@@ -162,6 +162,12 @@ public class EventBus {
      * 
      */
     static public final String EVENT_TYPE_SOLUTION_SHOW="EVENT_TYPE_SOLUTION_SHOW";
+    
+    
+    /** Fired when the browser window is resized
+     * 
+     */
+    static public final String EVENT_TYPE_WINDOW_RESIZED="EVENT_TYPE_WINDOW_RESIZED";
 }
 
 

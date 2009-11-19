@@ -2,7 +2,7 @@ package hotmath.gwt.cm_admin.client.ui;
 
 import hotmath.gwt.cm_tools.client.data.InmhItemData;
 import hotmath.gwt.cm_tools.client.model.StudentModel;
-import hotmath.gwt.cm_tools.client.ui.viewer.ResourceViewer;
+import hotmath.gwt.cm_tools.client.ui.resource_viewer.CmResourcePanel;
 import hotmath.gwt.cm_tools.client.ui.viewer.ResourceViewerFactory;
 import hotmath.gwt.cm_tools.client.ui.viewer.ShowWorkPanel;
 import hotmath.gwt.shared.client.util.UserInfo;
@@ -33,8 +33,8 @@ public class StudentShowWorkDisplayWindow extends Window {
         solItem.setType("practice");
         solItem.setFile(pid);
         try {
-            ResourceViewer viewer = ResourceViewerFactory.create(solItem.getType());
-            add(viewer.getResourcePanel(solItem), new BorderLayoutData(LayoutRegion.CENTER));
+           CmResourcePanel resourcePanel = ResourceViewerFactory.create(solItem);
+           add(resourcePanel.getResourcePanel(), new BorderLayoutData(LayoutRegion.CENTER));
         }
         catch(Exception e) {
             e.printStackTrace();

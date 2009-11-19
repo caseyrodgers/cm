@@ -4,9 +4,9 @@ import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.service.CmServiceAsync;
 import hotmath.gwt.cm_tools.client.ui.ContextController;
 import hotmath.gwt.cm_tools.client.ui.InfoPopupBox;
-import hotmath.gwt.cm_tools.client.ui.ResourceContainer;
 import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
 import hotmath.gwt.cm_tools.client.ui.context.CmContext;
+import hotmath.gwt.cm_tools.client.ui.resource_viewer.CmMainResourceContainer;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.data.CmAsyncRequestImplDefault;
 import hotmath.gwt.shared.client.rpc.action.CheckUserAccountStatusAction;
@@ -46,7 +46,7 @@ import com.google.gwt.user.client.ui.Label;
  * @author casey
  *
  */
-public class AutoStudentRegistrationPanel extends ResourceContainer {
+public class AutoStudentRegistrationPanel extends CmMainResourceContainer {
 
     FormPanel _formPanel;
     

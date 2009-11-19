@@ -1,12 +1,13 @@
 package hotmath.gwt.cm_tools.client.ui.viewer;
 
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
-import hotmath.gwt.cm_tools.client.data.InmhItemData;
 import hotmath.gwt.cm_tools.client.service.PrescriptionServiceAsync;
+import hotmath.gwt.cm_tools.client.ui.resource_viewer.CmResourcePanelImplDefault;
 import hotmath.gwt.shared.client.util.RpcData;
 import hotmath.gwt.shared.client.util.UserInfo;
 
 import com.extjs.gxt.ui.client.Registry;
+import com.extjs.gxt.ui.client.Style.Scroll;
 import com.extjs.gxt.ui.client.widget.Html;
 import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONObject;
@@ -15,13 +16,21 @@ import com.google.gwt.json.client.JSONValue;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Widget;
 
-public class ResourceViewerImplResults extends ResourceViewerContainer implements ResourceViewer {
+public class ResourceViewerImplResults extends CmResourcePanelImplDefault {
     String _title;
     
     public ResourceViewerImplResults() {
         addStyleName("resource-viewer-impl-results");
+        
+        
+        setScrollMode(Scroll.AUTOY);
     }
 
+    @Override
+    public Integer getOptimalWidth() {
+        // TODO Auto-generated method stub
+        return 550;
+    }
     
     /** Select the correct question response for question for pid
      * 
@@ -33,24 +42,22 @@ public class ResourceViewerImplResults extends ResourceViewerContainer implement
         $wnd.setSolutionQuestionAnswerIndex(pid,which,disabled);
     }-*/;
 
-    public Widget getResourcePanel(final InmhItemData resource) {
-
-        this.item = resource;
+    public Widget getResourcePanel() {
         
         CatchupMathTools.setBusy(true);
             
             PrescriptionServiceAsync s = (PrescriptionServiceAsync) Registry.get("prescriptionService");
-            s.getQuizResultsHtml(UserInfo.getInstance().getRunId(),new AsyncCallback() {
-                public void onSuccess(Object result) {
+            s.getQuizResultsHtml(UserInfo.getInstance().getRunId(),new AsyncCallback<RpcData>() {
+                public void onSuccess(RpcData result) {
                     try {
-                        RpcData rdata = (RpcData)result;
+                        RpcData rdata = result;
                         String html = rdata.getDataAsString("quiz_html");
                         String resultJson = rdata.getDataAsString("quiz_result_json");
                         int total = rdata.getDataAsInt("quiz_question_count");
                         int correct = rdata.getDataAsInt("quiz_correct_count");
                         _title = rdata.getDataAsString("title");
     
-                        addResource(new Html(html),resource.getTitle() + ": " + correct + " out of " + total);
+                        addResource(new Html(html),getResourceItem().getTitle() + ": " + correct + " out of " + total);
                         layout();
                         
                         markAnswers(resultJson);

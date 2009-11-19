@@ -2,19 +2,26 @@ package hotmath.gwt.cm_tools.client.ui.viewer;
 
 import hotmath.gwt.cm_tools.client.data.InmhItemData;
 import hotmath.gwt.cm_tools.client.service.CmServiceAsync;
+import hotmath.gwt.cm_tools.client.ui.resource_viewer.CmResourcePanelImplDefault;
 import hotmath.gwt.shared.client.rpc.action.GetReviewHtmlAction;
 import hotmath.gwt.shared.client.util.RpcData;
 
 import com.extjs.gxt.ui.client.Registry;
+import com.extjs.gxt.ui.client.Style.Scroll;
 import com.extjs.gxt.ui.client.widget.Html;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Widget;
 
-public class ResourceViewerImplReview extends ResourceViewerImplDefault implements ResourceViewer {
+public class ResourceViewerImplReview extends CmResourcePanelImplDefault {
     
-    public Widget getResourcePanel(final InmhItemData resource) {
+    public ResourceViewerImplReview() {
+        addStyleName("resource-viewer-impl-review");
+    }
+    
+    public Widget getResourcePanel() {
 
-        this.item = resource;
+        setScrollMode(Scroll.AUTOY);
+        final InmhItemData resource=getResourceItem();
         
         String file = "/hotmath_help/" + resource.getFile();
              
@@ -32,10 +39,8 @@ public class ResourceViewerImplReview extends ResourceViewerImplDefault implemen
         });
         return this;
     }
-
- 
-    public double getAllowedVerticalSpace() {
-        return .90;
+    
+    public Integer getOptimalWidth() {
+        return 550;
     }
-
 }

@@ -117,7 +117,7 @@ public class CatchupMath implements EntryPoint {
         _mainPort.addListener(Events.Resize, new Listener<BaseEvent>() {
             public void handleEvent(BaseEvent be) {
                 if(CmMainPanel.__lastInstance != null && CmMainPanel.__lastInstance._mainContent != null) {
-                    CmMainPanel.__lastInstance._mainContent.resetChildSize();
+                    EventBus.getInstance().fireEvent(new CmEvent(EventBus.EVENT_TYPE_WINDOW_RESIZED));
                 }
             }
         });

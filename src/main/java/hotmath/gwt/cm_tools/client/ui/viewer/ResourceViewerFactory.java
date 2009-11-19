@@ -1,5 +1,9 @@
 package hotmath.gwt.cm_tools.client.ui.viewer;
 
+import hotmath.gwt.cm_tools.client.data.InmhItemData;
+import hotmath.gwt.cm_tools.client.ui.resource_viewer.CmResourcePanel;
+import hotmath.gwt.cm_tools.client.ui.resource_viewer.CmResourcePanelImplDefault;
+
 import com.allen_sauer.gwt.log.client.Log;
 
 
@@ -17,38 +21,45 @@ public class ResourceViewerFactory {
      * @return
      * @throws Exception
      */
-	static public  ResourceViewer create(String type) throws Exception {
+	static public  CmResourcePanel create(InmhItemData item) throws Exception {
+	    
+	    String type = item.getType();
 	    
 	    Log.debug("ResourceViewerFactory: creating new resource viewer: " + type);
 	    
+	    CmResourcePanel rp=null;
 		if(type.equals("practice")) {
-			return new ResourceViewerImplTutor();
+			rp = new ResourceViewerImplTutor();
 		}
 		else if(type.equals("video")) { 
-	        return new ResourceViewerImplVideo();
+		    rp = new ResourceViewerImplVideo();
 	    }
 		else if(type.startsWith("activity")) {
-			return new ResourceViewerImplActivity();
+		    rp = new ResourceViewerImplActivity();
 		}
 		else if(type.equals("workbook")) {
-			return new ResourceViewerImplWorkbook();
+		    rp =  new ResourceViewerImplWorkbook();
 		}
 		else if(type.equals("review")) {
-			return new ResourceViewerImplReview();
+		    rp =  new ResourceViewerImplReview();
 		}
 		else if(type.equals("testset")) {
-			return new ResourceViewerImplQuiz();
+		    rp =  new ResourceViewerImplQuiz();
 		}
 		else if(type.equals("results")) {
-		    return new ResourceViewerImplResults();
+		    rp =  new ResourceViewerImplResults();
 		}
 		else if(type.equals("cmextra")) {
-		    return new ResourceViewerImplTutor();
+		    rp =  new ResourceViewerImplTutor();
 		}
 		else if(type.equals("flashcard")) {
-		    return new ResourceViewerImplFlashCard();
+		    rp =  new ResourceViewerImplFlashCard();
 		}
 		else
-			return new ResourceViewerImplDefault();
+		    rp =  new CmResourcePanelImplDefault();
+		
+		rp.setResourceItem(item);
+		
+		return rp;
 	}
 }

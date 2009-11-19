@@ -1,6 +1,5 @@
 package hotmath.gwt.cm_tools.client.ui.viewer;
 
-import hotmath.gwt.cm_tools.client.data.InmhItemData;
 import hotmath.gwt.shared.client.CmShared;
 import pl.rmalinowski.gwt2swf.client.ui.SWFSettings;
 import pl.rmalinowski.gwt2swf.client.ui.SWFWidget;
@@ -19,27 +18,21 @@ public class ResourceViewerImplActivity extends ResourceViewerImplFlash {
     }
 	
 	
-	public Widget getResourcePanel(InmhItemData resource) {
-	    
-	    this.item = resource;
+	public Widget getResourcePanel() {
 	    
 	    if(!SWFObjectUtil.isVersionIsValid(new PlayerVersion(CmShared.FLASH_MIN_VERSION))) {
              Html html = new Html(CmShared.FLASH_ALT_CONTENT);
-             addResource(html,resource.getTitle());
+             addResource(html,getResourceItem().getTitle());
 	    }
 	    else {
     	    SWFSettings s = new SWFSettings();
     	    s.setMinPlayerVersion(new PlayerVersion(CmShared.FLASH_MIN_VERSION));
-    	    SWFWidget swfWidget = new SWFWidget(resource.getFile(),"530px","450px",s);
+    	    SWFWidget swfWidget = new SWFWidget(getResourceItem().getFile(),"530px","450px",s);
     	    swfWidget.setStyleName("activity-widget");
-    	    addResource(swfWidget,resource.getTitle());
+    	    addResource(swfWidget,getResourceItem().getTitle());
 	    }
  	   
 	    return this;
 	}
-	
-	public double getAllowedVerticalSpace() {
-        return .90;
-    }
 }
 
