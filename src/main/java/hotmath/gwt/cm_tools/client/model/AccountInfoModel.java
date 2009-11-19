@@ -12,6 +12,7 @@ public class AccountInfoModel extends BaseModelData  {
 	public static final String HAS_TUTORING_KEY = "has-tutoring";
 	public static final String ADMIN_USER_NAME_KEY = "admin-user-name";
 	public static final String ADMIN_SUBSCRIBER_ID = "subscriber-id";
+	public static final String STUDENT_COUNT_STYLE_KEY = "student-count-style";
 	
 	public String getSchoolName() {
 		return get(SCHOOL_NAME_KEY);
@@ -93,6 +94,15 @@ public class AccountInfoModel extends BaseModelData  {
 	    return get(ADMIN_SUBSCRIBER_ID);
 	}
 	
+	public void setStudentCountStyle(String style) {
+	    set(STUDENT_COUNT_STYLE_KEY, style);
+	}
+	
+	public String getStudentCountStyle() {
+	    return get(STUDENT_COUNT_STYLE_KEY);
+	}
+	
+
 	public AccountInfoModel() {
 	}
 }
