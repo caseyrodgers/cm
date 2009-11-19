@@ -32,6 +32,9 @@ public class CmMainResourceContainer extends LayoutContainer {
     public CmMainResourceContainer() {
 		addStyleName("main-resource-panel");
 		addStyleName("resource-container-bike1");
+		
+        
+        setScrollMode(Scroll.AUTO);
 	}
 
     

@@ -15,6 +15,7 @@ import java.util.ArrayList;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.Registry;
+import com.extjs.gxt.ui.client.Style.Scroll;
 import com.extjs.gxt.ui.client.widget.Html;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -34,6 +35,10 @@ public class QuizPage extends LayoutContainer {
 	
 	CmAsyncRequest callbackWhenComplete;
 	public QuizPage(CmAsyncRequest callbackWhenComplete) {
+	    
+	    
+	    setScrollMode(Scroll.AUTOY);
+	    
 		this.callbackWhenComplete = callbackWhenComplete;
 		setStyleName("quiz-panel");
 		//setLayout(new FitLayout());
@@ -208,12 +213,15 @@ public class QuizPage extends LayoutContainer {
                 UserInfo.getInstance().setTestId(testId);
                 UserInfo.getInstance().setTestSegmentCount(testSegmentCount);
                 displayQuizHtml(html);
+                
+                CatchupMathTools.setBusy(false);
 		    }
 		    
 		    @Override
 		    public void onFailure(Throwable caught) {
                 Log.error("Getting Quiz HTML", caught);
                 CatchupMathTools.showAlert("<p>Sorry, but there has been a server error: </p><b>" + caught.getMessage() + "</b><p>Please, tell your administrator or teacher.</p>");
+                CatchupMathTools.setBusy(false);
 		    }
         });
 	}

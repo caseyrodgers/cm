@@ -88,13 +88,24 @@
 #testset_div h1 {
         margin-bottom: 15px;
 }
+
 #testset_div {
 	    padding: 17px;
         width: 500px;
 }
+
+
+#testset_div {
+    margin-left:10%;
+    width:500px;
+}
+
+
 .quiz-panel {
         margin-top: 20px;
 }
+
+
 .login-panel-container {
         background: url(../images/login_bkg.png) no-repeat;
         height: 120px;
@@ -662,8 +673,8 @@ img.resource-item-complete {
 #testset_head .check-quiz-link {
         font-size: 1em;
         position: absolute;
-        right: 15px;
-        top: 2;
+        right: 27px;
+        top: 20px;
 }
 #testset_footer .check-quiz-link {
         display: block;

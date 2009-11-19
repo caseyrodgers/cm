@@ -53,7 +53,7 @@ public class CmMainPanel extends LayoutContainer {
 
         __lastInstance = this;
 
-        setScrollMode(Scroll.AUTO);
+        setScrollMode(Scroll.NONE);
         this.cmGuiDef = cmGuiDef;
         setLayout(new BorderLayout());
         _mainContent = new CmMainResourceContainer();
