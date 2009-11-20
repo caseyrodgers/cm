@@ -2,7 +2,6 @@ package hotmath.gwt.cm_tools.client.ui.resource_viewer;
 
 import java.util.List;
 
-import com.extjs.gxt.ui.client.Style.Direction;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.fx.FxConfig;
@@ -12,7 +11,6 @@ import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.layout.CenterLayout;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
-import com.google.gwt.user.client.ui.Widget;
 
 /** Class to define a standard container for all resources.
  * 
@@ -84,7 +82,7 @@ class CmResourcePanelContainer extends ContentPanel {
 		getHeader().addTool(new Button("Close", new SelectionListener<ButtonEvent>() {
 			public void componentSelected(ButtonEvent ce) {
 			    
-			    CmResourcePanelContainer.this.el().slideOut(Direction.LEFT, FxConfig.NONE);
+			    CmResourcePanelContainer.this.el().fadeOut(FxConfig.NONE);
 			    
 				CmResourcePanelContainer.this.container.layout();
 			}
@@ -111,8 +109,6 @@ class CmResourcePanelContainer extends ContentPanel {
         
         CmResourcePanelContainer.this.add(lc);
         CmResourcePanelContainer.this.container.layout();
-        
-        lc.el().fadeIn(FxConfig.NONE);
 	}
 	
 	
