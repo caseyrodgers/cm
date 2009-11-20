@@ -1,22 +1,27 @@
 package hotmath.gwt.cm_admin.client.ui;
 
 import hotmath.gwt.cm_admin.client.service.RegistrationServiceAsync;
+import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.model.AccountInfoModel;
 import hotmath.gwt.cm_tools.client.model.CmAdminDataReader;
 import hotmath.gwt.cm_tools.client.model.CmAdminDataRefresher;
 import hotmath.gwt.cm_tools.client.model.CmAdminModel;
-import hotmath.gwt.cm_tools.client.CatchupMathTools;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.Registry;
 import com.extjs.gxt.ui.client.core.XTemplate;
 import com.extjs.gxt.ui.client.util.Util;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
-import com.extjs.gxt.ui.client.widget.layout.CenterLayout;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HTML;
 
+/**
+ * <code>AccountInfoPanel</code> displays account info in a read-only panel
+ *
+ * @author bob
+ *
+ */
 public class AccountInfoPanel extends LayoutContainer implements CmAdminDataRefresher {
 	
 	private XTemplate template;
@@ -100,9 +105,11 @@ public class AccountInfoPanel extends LayoutContainer implements CmAdminDataRefr
 
                 if(ai.getTotalStudents() > ai.getMaxStudents()) {
                     if(!haveDisplayedOverLimitMsg) {
-                    	String msg = "Your account has too many students.  Please unregister " +
-                    	        String.valueOf(ai.getTotalStudents() - ai.getMaxStudents()) +  " student(s).";
-                        CatchupMathTools.showAlert(msg);
+                    	String msg = "Your student registration now exceeds the licensed total. " +
+                    	             "We will contact you soon about upgrading your license, or you " +
+                    	             "may wish to unregister students no longer active.  Thank you " +
+                    	             "for using Catchup Math!";
+                        CatchupMathTools.showAlert("Number of Students Exceeds License", msg);
                         haveDisplayedOverLimitMsg = true;
                     }
                     ai.setStudentCountStyle("fld-warn");
