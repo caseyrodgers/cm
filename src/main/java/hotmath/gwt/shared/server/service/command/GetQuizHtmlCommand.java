@@ -1,9 +1,6 @@
 package hotmath.gwt.shared.server.service.command;
 
 import hotmath.cm.server.model.CmUserProgramDao;
-import hotmath.cm.util.CmCacheManager;
-import hotmath.cm.util.CmCacheManager.CacheName;
-import hotmath.gwt.cm_admin.server.model.CmAdminDao;
 import hotmath.gwt.cm_admin.server.model.CmStudentDao;
 import hotmath.gwt.cm_tools.client.model.StudentActiveInfo;
 import hotmath.gwt.shared.client.rpc.Action;
@@ -19,9 +16,7 @@ import hotmath.testset.ha.HaTestDef;
 import hotmath.testset.ha.HaTestDefDao;
 import hotmath.testset.ha.HaTestDefFactory;
 import hotmath.testset.ha.StudentUserProgramModel;
-import hotmath.util.HMConnectionPool;
 import hotmath.util.VelocityTemplateFromStringManager;
-import hotmath.util.sql.SqlUtilities;
 
 import java.io.BufferedReader;
 import java.io.IOException;

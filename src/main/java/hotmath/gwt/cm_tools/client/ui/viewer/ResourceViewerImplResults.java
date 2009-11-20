@@ -21,15 +21,13 @@ public class ResourceViewerImplResults extends CmResourcePanelImplDefault {
     
     public ResourceViewerImplResults() {
         addStyleName("resource-viewer-impl-results");
-        
-        
         setScrollMode(Scroll.AUTOY);
     }
 
     @Override
     public Integer getOptimalWidth() {
         // TODO Auto-generated method stub
-        return 550;
+        return 520;
     }
     
     @Override
