@@ -86,16 +86,6 @@
         text-align: center;
 }
 
-
-
-
-
-
-.quiz-panel {
-        margin-top: 20px;
-}
-
-
 .login-panel-container {
         background: url(../images/login_bkg.png) no-repeat;
         height: 120px;
@@ -426,11 +416,11 @@ img.resource-item-complete {
         color: #E2FFFF;
         margin: 10px 15px;
 }
-#tutoroutput p {
+#	output p {
         margin: 0 0 10px;
 }
-#tutor_embedded {
-        width: 500px;
+#tutor_embedded, #tutoroutput, #tutoroutput .step, #tutoroutput .hint, #steps_tail  {
+        width: auto;
 }
 
 #tutor_embedded a.button:link,#tutor_embedded a.button:active,#tutor_embedded a.button:visited,#tutor_embedded a.button:hover {
@@ -857,13 +847,8 @@ img.resource-item-complete {
 
 #testset_div {
         position: relative;
-}
-
-#testset_head .check-quiz-link {
-        font-size: 1em;
-        position: absolute;
-        right: 27px;
-        top: 20px;
+        margin: 0;
+        padding: 0;
 }
 
 #testset_footer .check-quiz-link {
@@ -871,13 +856,14 @@ img.resource-item-complete {
         text-align: center;
 }
 
+
 /** do not display the check quiz link on the results panel */
 .resource-viewer-impl-results #testset_footer .check-quiz-link {
 	display: none;
 }
 	
 #testset_div a.check-quiz-link:link,#testset_div a.check-quiz-link:active,#testset_div a.check-quiz-link:visited,#testset_div a.check-quiz-link:hover {
-        color: white;
+        color: black;
         text-decoration: underline;
 }
 #testset_div {
@@ -894,6 +880,7 @@ img.resource-item-complete {
 #testset_footer {
     display: block;
     background: #F1F1F1;
+    width: auto;
 }
 
 #testset_div .question_head {
@@ -905,16 +892,13 @@ img.resource-item-complete {
 }
 
 #testset_div {
-        width: 500px;
+        width: auto;
 }
 
-
-#testset_div {
-    margin-left:10%;
-    width:500px;
+#testset_div .question_head {
+   width: auto;
 }
 
-/** quiz shown in the resource viewer */
-.resource-viewer-container #testset_div {
-	margin: 0;
+.response_div {
+   margin-right: 15px;
 }

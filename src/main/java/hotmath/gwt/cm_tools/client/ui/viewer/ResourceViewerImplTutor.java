@@ -65,7 +65,7 @@ public class ResourceViewerImplTutor extends CmResourcePanelImplDefault {
 
     @Override
     public Boolean allowMaximize() {
-        return false;
+        return true;
     }
    
     

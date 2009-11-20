@@ -15,6 +15,11 @@ public interface CmResourcePanel {
 	Boolean allowMaximize();
 	
 	
+	/** Can the user close this viewer ?
+	 * 
+	 * @return
+	 */
+	Boolean allowClose();
 	
 	/** Return the width that the content
 	 * has been optimized for.

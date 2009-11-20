@@ -47,61 +47,6 @@ import com.google.gwt.user.client.ui.Widget;
 
 public class PrescriptionCmGuiDefinition implements CmGuiDefinition {
     
-    
-    /** Mark the pid as being viewed called from external JS
-     * 
-     * called from CatchupMath.js 
-     * 
-     * 
-     * @TODO: remove access to globals
-     * 
-     * @param pid
-     */
-    static public void solutionHasBeenViewed_Gwt(String eventName) {
-        __last_solution_item.setViewed(true);
-        EventBus.getInstance().fireEvent(new CmEvent(EventBus.EVENT_TYPE_SOLUTIONS_COMPLETE,__last_solution_item));
-    }
-    
-    /** This solution is being viewed. 
-     *  The first step of solution has been requested
-     *  
-     *  Show info message about show work on first solution view per session
-     *  
-     * @param pid
-     */
-    static public void solutionIsBeingViewed_Gwt(String pid) {
-        if(!CatchupMath.__hasBeenInformedAboutShowWork) {
-            CatchupMathTools.showAlert("First try your best to answer this problem, showing the steps, by pressing the Show-Work link.");
-            CatchupMath.__hasBeenInformedAboutShowWork=true;
-        }
-    }
-    
-    static private native void publishNative() /*-{
-        $wnd.solutionHasBeenViewed_Gwt = @hotmath.gwt.cm.client.ui.context.PrescriptionCmGuiDefinition::solutionHasBeenViewed_Gwt(Ljava/lang/String;);
-        $wnd.solutionIsBeingViewed_Gwt = @hotmath.gwt.cm.client.ui.context.PrescriptionCmGuiDefinition::solutionIsBeingViewed_Gwt(Ljava/lang/String;);
-    }-*/;    
-    
-    static {
-        publishNative();
-        
-        EventBus.getInstance().addEventListener(new CmEventListener() {
-            
-            @Override
-            public void handleEvent(CmEvent event) {
-                __last_solution_item = (InmhItemData)event.getEventData();
-            }
-            
-            @Override
-            public String[] getEventsOfInterest() {
-                // TODO Auto-generated method stub
-                String types[] = {EventBus.EVENT_TYPE_SOLUTION_SHOW};
-                return types;
-            }
-        });
-    }
-    
-    
-    
 
     PrescriptionContext context;
     boolean isReady;
@@ -371,6 +316,59 @@ public class PrescriptionCmGuiDefinition implements CmGuiDefinition {
         return "Prescription Resource";
     }
     
+    
+    
+    /** Mark the pid as being viewed called from external JS
+     * 
+     * called from CatchupMath.js 
+     * 
+     * 
+     * @TODO: remove access to globals
+     * 
+     * @param pid
+     */
+    static public void solutionHasBeenViewed_Gwt(String eventName) {
+        __last_solution_item.setViewed(true);
+        EventBus.getInstance().fireEvent(new CmEvent(EventBus.EVENT_TYPE_SOLUTIONS_COMPLETE,__last_solution_item));
+    }
+    
+    /** This solution is being viewed. 
+     *  The first step of solution has been requested
+     *  
+     *  Show info message about show work on first solution view per session
+     *  
+     * @param pid
+     */
+    static public void solutionIsBeingViewed_Gwt(String pid) {
+        if(!CatchupMath.__hasBeenInformedAboutShowWork) {
+            CatchupMathTools.showAlert("First try your best to answer this problem, showing the steps, by pressing the Show-Work link.");
+            CatchupMath.__hasBeenInformedAboutShowWork=true;
+        }
+    }
+    
+    static private native void publishNative() /*-{
+        $wnd.solutionHasBeenViewed_Gwt = @hotmath.gwt.cm.client.ui.context.PrescriptionCmGuiDefinition::solutionHasBeenViewed_Gwt(Ljava/lang/String;);
+        $wnd.solutionIsBeingViewed_Gwt = @hotmath.gwt.cm.client.ui.context.PrescriptionCmGuiDefinition::solutionIsBeingViewed_Gwt(Ljava/lang/String;);
+    }-*/;    
+    
+    static {
+        publishNative();
+        
+        EventBus.getInstance().addEventListener(new CmEventListener() {
+            
+            @Override
+            public void handleEvent(CmEvent event) {
+                __last_solution_item = (InmhItemData)event.getEventData();
+            }
+            
+            @Override
+            public String[] getEventsOfInterest() {
+                // TODO Auto-generated method stub
+                String types[] = {EventBus.EVENT_TYPE_SOLUTION_SHOW};
+                return types;
+            }
+        });
+    }
 }
 
 

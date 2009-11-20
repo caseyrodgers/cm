@@ -17,7 +17,7 @@ import com.extjs.gxt.ui.client.widget.layout.FitLayout;
  * Will provide basic services, such as removing/minimizing,etc.
  *  
  */
-class CmResourcePanelContainer extends ContentPanel {
+public class CmResourcePanelContainer extends ContentPanel {
 	ResourceViewerState viewerState = ResourceViewerState.OPTIMIZED;
 	
 	CmMainResourceContainer container;
@@ -79,14 +79,16 @@ class CmResourcePanelContainer extends ContentPanel {
 			getHeader().addTool(maximize);
 		}
 		
-		getHeader().addTool(new Button("Close", new SelectionListener<ButtonEvent>() {
-			public void componentSelected(ButtonEvent ce) {
-			    
-			    CmResourcePanelContainer.this.el().fadeOut(FxConfig.NONE);
-			    
-				CmResourcePanelContainer.this.container.layout();
-			}
-		}));
+		if(panel.allowClose()) {
+    		getHeader().addTool(new Button("Close", new SelectionListener<ButtonEvent>() {
+    			public void componentSelected(ButtonEvent ce) {
+    			    
+    			    CmResourcePanelContainer.this.el().fadeOut(FxConfig.NONE);
+    			    
+    				CmResourcePanelContainer.this.container.layout();
+    			}
+    		}));
+		}
 		
 		
 		if(!panel.showContainer()) {

@@ -2,6 +2,7 @@ package hotmath.gwt.cm_tools.client.ui;
 
 import hotmath.gwt.cm_tools.client.ui.resource_viewer.CmMainResourceContainer;
 import hotmath.gwt.cm_tools.client.ui.resource_viewer.CmResourcePanel;
+import hotmath.gwt.cm_tools.client.ui.resource_viewer.CmResourcePanelContainer;
 import hotmath.gwt.cm_tools.client.ui.viewer.ResourceViewerImplFlash;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
 import hotmath.gwt.shared.client.eventbus.CmEventListener;
@@ -16,6 +17,7 @@ import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
+import com.extjs.gxt.ui.client.widget.layout.CenterLayout;
 import com.google.gwt.user.client.ui.Widget;
 
 public class CmMainPanel extends LayoutContainer {
@@ -79,9 +81,12 @@ public class CmMainPanel extends LayoutContainer {
         centerData.setSplit(false);
         add(_mainContent, centerData);
 
+        layout();
+        
         Widget w = cmGuiDef.getCenterWidget();
-        if (w != null)
-            _mainContent.add(w);
+        if (w != null) {
+                _mainContent.add(w);
+        }
         
         
         

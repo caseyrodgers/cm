@@ -29,11 +29,7 @@ public class ResourceViewerImplResults extends CmResourcePanelImplDefault {
         // TODO Auto-generated method stub
         return 520;
     }
-    
-    @Override
-    public Boolean allowMaximize() {
-        return false;
-    }
+
     
     /** Select the correct question response for question for pid
      * 

@@ -2,7 +2,6 @@ package hotmath.gwt.cm_tools.client.ui.resource_viewer;
 
 import hotmath.gwt.cm_tools.client.data.InmhItemData;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import com.extjs.gxt.ui.client.widget.Component;
@@ -75,6 +74,13 @@ public class CmResourcePanelImplDefault extends LayoutContainer implements CmRes
     public InmhItemData getResourceItem() {
         return item;
     }
+    
+    @Override
+    public Boolean allowClose() {
+        return true;
+    }
+
+
 
     @Override
     

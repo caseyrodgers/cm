@@ -16,6 +16,9 @@ import java.util.ArrayList;
 import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.Registry;
 import com.extjs.gxt.ui.client.Style.Scroll;
+import com.extjs.gxt.ui.client.event.BaseEvent;
+import com.extjs.gxt.ui.client.event.Events;
+import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.widget.Html;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -43,6 +46,14 @@ public class QuizPage extends LayoutContainer {
 		setStyleName("quiz-panel");
 		//setLayout(new FitLayout());
 		getQuizHtmlFromServer();
+		
+		
+		addListener(Events.OnKeyDown, new Listener<BaseEvent>() {
+		    public void handleEvent(BaseEvent be) {
+		        System.out.println("EVENT:!!!");
+		    }
+        });
+		
 	}
 	
 	
@@ -76,18 +87,16 @@ public class QuizPage extends LayoutContainer {
          $wnd.setSolutionQuestionAnswerIndex(pid,which);
     }-*/;
 
+    
+    
     /** JSNI call to mark all correct answers on test
      * 
      */
-    private native void markAllCorrectAnswers() /*-{
+    static public native void markAllCorrectAnswers() /*-{
          $wnd.markAllCorrectAnswers();
     }-*/;
     
 
-    
-    private native void markAllCorrectAnswers2() /*-{
-    $wnd.markAllCorrectAnswers();
-}-*/;
     
     /**
      * Expose the following method into JavaScript.
@@ -138,16 +147,6 @@ public class QuizPage extends LayoutContainer {
 		    html.addStyleName("debug-mode");
 		}
 		add(html);
-		if(UserInfo.getInstance().isActiveUser()) {
-            Anchor markCorrect = new Anchor("_");
-            markCorrect.addClickHandler(new ClickHandler() {
-                public void onClick(ClickEvent arg0) {
-                    markAllCorrectAnswers();
-                }
-            });
-            markCorrect.setStyleName("debug-quiz-mark-all-correct");		
-    		add(markCorrect);
-		}
 		
 		CatchupMathTools.setBusy(true);
 		

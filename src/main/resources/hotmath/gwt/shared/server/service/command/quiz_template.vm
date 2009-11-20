@@ -20,7 +20,7 @@
        <div class='debug-hide'>$question.problemIndex</div>
    </div>
    #end
-   <div id='testset_footer'> <a href='#' class='check-quiz-link' onclick='checkQuiz_Gwt();return false;'>click to check quiz</a></div>
+   <div id='testset_footer'> <a href='#' class='check-quiz-link' title='Check Quiz' onclick='checkQuiz_Gwt();return false;'>click to check quiz</a></div>
    <!-- end-of-template -->
 </div>
     

@@ -7,10 +7,8 @@ import hotmath.gwt.cm_tools.client.ui.viewer.ResourceViewerFactory;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
 import hotmath.gwt.shared.client.eventbus.EventBus;
 
-import com.extjs.gxt.ui.client.Style.Direction;
 import com.extjs.gxt.ui.client.Style.Scroll;
 import com.extjs.gxt.ui.client.core.El;
-import com.extjs.gxt.ui.client.fx.FxConfig;
 import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.Container;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
@@ -70,33 +68,39 @@ public class CmMainResourceContainer extends LayoutContainer {
             removeAll();
             
             CmResourcePanel viewer = ResourceViewerFactory.create(resourceItem);
-            setLayout(new MyCenterLayout());
-            
-            /** create a new resource container to encapsulate the resource
-             * 
-             */
-            if(viewer.showContainer()) {
-                currentContainer = new CmResourcePanelContainer(this,viewer);
-                currentContainer.setHeading(resourceItem.getTitle());
-                add(currentContainer);
-            }
-            else {
-                currentContainer = new CmResourcePanelContainer(this,viewer);
-                currentContainer.setHeading(resourceItem.getTitle());
-                add(currentContainer);
-            }
-            
-            layout();
-            
-            currentPanel = viewer;
-            
-            EventBus.getInstance().fireEvent(new CmEvent(EventBus.EVENT_TYPE_RESOURCE_VIEWER_OPEN, viewer));     
+
+            showResource(viewer,resourceItem.getTitle());
         } catch (Exception hme) {
             hme.printStackTrace();
             CatchupMathTools.showAlert("Error: " + hme.getMessage());
         }
     }
 
+    
+    public void showResource(CmResourcePanel viewer, String title) {
+        
+        setLayout(new MyCenterLayout());
+        
+        /** create a new resource container to encapsulate the resource
+         * 
+         */
+        if(viewer.showContainer()) {
+            currentContainer = new CmResourcePanelContainer(this,viewer);
+            currentContainer.setHeading(title);
+            add(currentContainer);
+        }
+        else {
+            currentContainer = new CmResourcePanelContainer(this,viewer);
+            currentContainer.setHeading(title);
+            add(currentContainer);
+        }
+        
+        layout();
+        
+        currentPanel = viewer;
+        
+        EventBus.getInstance().fireEvent(new CmEvent(EventBus.EVENT_TYPE_RESOURCE_VIEWER_OPEN, viewer));     
+    }
     
     
     public CmResourcePanel getCurrentPanel() {
