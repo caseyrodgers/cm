@@ -335,12 +335,12 @@ public class StudentDetailsWindow extends CmWindow {
         StringBuilder sb = new StringBuilder();
         sb.append("<div class='detail-info'>");
         sb.append("<div class='form left'>");
-        sb.append("  <div class='fld'><label>Pass %:</label><div>{pass-percent}&nbsp;</div></div>");
+        sb.append("  <div class='fld'><label>Passcode:</label><div>{passcode}&nbsp;</div></div>");
         sb.append("  <div class='fld'><label>Tutoring:</label><div>{");
         sb.append(StudentModel.TUTORING_STATE_KEY).append("}&nbsp;</div></div>");
         sb.append("</div>");
         sb.append("<div class='form right'>");
-        sb.append("  <div class='fld'><label>Passcode:</label><div>{passcode}&nbsp;</div></div>");
+        sb.append("  <div class='fld'><label>&nbsp;</label><div>&nbsp;</div></div>");
         sb.append("  <div class='fld'><label>Show Work:</label><div>{");
         sb.append(StudentModel.SHOW_WORK_STATE_KEY).append("}&nbsp;</div></div>");
         sb.append("</div>");
