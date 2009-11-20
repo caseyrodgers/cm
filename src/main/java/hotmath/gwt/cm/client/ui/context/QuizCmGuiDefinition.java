@@ -7,6 +7,7 @@ import hotmath.gwt.cm_tools.client.ui.ContextController;
 import hotmath.gwt.cm_tools.client.ui.QuizPage;
 import hotmath.gwt.cm_tools.client.ui.context.CmContext;
 import hotmath.gwt.cm_tools.client.ui.resource_viewer.CmResourcePanelImplDefault;
+import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.data.CmAsyncRequest;
 import hotmath.gwt.shared.client.util.UserInfo;
 
@@ -82,7 +83,7 @@ public class QuizCmGuiDefinition implements CmGuiDefinition {
                     @Override
                     public List<Component> getContainerTools() {
                         List<Component> list = new ArrayList<Component>();
-                        if(UserInfo.getInstance().isActiveUser()) {
+                        if(CmShared.getQueryParameter("debug") != null) {
                             list.add(new Button("Mark Correct", new SelectionListener<ButtonEvent>() {
                                 @Override
                                 public void componentSelected(ButtonEvent ce) {
