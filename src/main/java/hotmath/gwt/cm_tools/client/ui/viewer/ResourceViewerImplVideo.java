@@ -17,6 +17,11 @@ public class ResourceViewerImplVideo extends ResourceViewerImplFlash {
         addStyleName(STYLE_NAME);
     }
 
+    @Override
+    public String getContainerStyleName() {
+        return STYLE_NAME;
+    }
+    
     public Widget getResourcePanel() {
         
         if(!SWFObjectUtil.isVersionIsValid(new PlayerVersion(CmShared.FLASH_MIN_VERSION))) {

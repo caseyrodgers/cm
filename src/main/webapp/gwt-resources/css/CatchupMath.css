@@ -910,6 +910,14 @@ img.resource-item-complete {
     background: transparent;
 }
 
-.resource-viewer-impl-activity, .resource-viewer-impl-review,.resource-viewer-impl-results {
+.resource-viewer-impl-activity,
+.resource-viewer-impl-review,
+.resource-viewer-impl-results,
+.resource-viewer-impl-video,
+.quiz-cm-gui-definition-resource {
    background: white;
+}
+
+.quiz-cm-gui-definition-resource {
+  padding-bottom: 10px;
 }

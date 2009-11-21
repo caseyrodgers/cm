@@ -20,11 +20,17 @@ import com.google.gwt.user.client.ui.Widget;
 public class ResourceViewerImplResults extends CmResourcePanelImplDefault {
     String _title;
     
+    static final String STYLE_NAME = "resource-viewer-impl-results";
     public ResourceViewerImplResults() {
-        addStyleName("resource-viewer-impl-results");
+        addStyleName(STYLE_NAME);
         setScrollMode(Scroll.AUTOY);
     }
 
+    @Override
+    public String getContainerStyleName() {
+        return STYLE_NAME;
+    }
+    
     @Override
     public Integer getOptimalWidth() {
         // TODO Auto-generated method stub

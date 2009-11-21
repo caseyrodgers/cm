@@ -7,6 +7,8 @@ import java.util.List;
 
 import com.extjs.gxt.ui.client.Style.Direction;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
+import com.extjs.gxt.ui.client.event.FxEvent;
+import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.fx.FxConfig;
 import com.extjs.gxt.ui.client.widget.Component;
@@ -66,45 +68,28 @@ public class CmResourcePanelContainer extends ContentPanel {
 		if(panel.allowMaximize()) {
 			Button maximize = new Button(modeButton, new SelectionListener<ButtonEvent>() {
 				public void componentSelected(ButtonEvent ce) {
-					boolean isMax = ce.getButton().getText().equals("Maximize");
-					if(isMax) {
-						// maximize the resource area
-						//
-					    CmResourcePanelContainer.this.container.setLayout(new FitLayout());
-					    ce.getButton().setText("Minimal");
-					    viewerState = ResourceViewerState.MAXIMIZED;
-					}
-					else {
-						// minimize the resource area
-					    CmResourcePanelContainer.this.container.setLayout(new CenterLayout());
-					    CmResourcePanelContainer.this.setWidth(panel.getOptimalWidth());
-					    CmResourcePanelContainer.this.setHeight(CmMainResourceContainer.getCalculatedHeight(CmResourcePanelContainer.this.container, panel));
-					    
-					    ce.getButton().setText("Maximize");
-					    viewerState = ResourceViewerState.OPTIMIZED;
-					}
-					
-                    
-                    /** Reset the panel widget
-                     * 
-                     */
-					resetPanelWidget(panel);
-					
-					CmResourcePanelContainer.this.layout();
+				    closeResource(ce, panel);
 				}
 			});
 			getHeader().addTool(maximize);
 		}
 		
+		/** Close is optional
+		 * 
+		 */
 	    if(panel.allowClose()) {
             getHeader().addTool(new Button("Close", new SelectionListener<ButtonEvent>() {
                 public void componentSelected(ButtonEvent ce) {
                     
-                    CmResourcePanelContainer.this.el().slideOut(Direction.LEFT, FxConfig.NONE);
-                    
+                    FxConfig fx = new FxConfig(1000,new Listener<FxEvent>() {
+                        @Override
+                        public void handleEvent(FxEvent be) {
+                            EventBus.getInstance().fireEvent(new CmEvent(EventBus.EVENT_TYPE_RESOURCE_VIEWER_CLOSE, panel));        
+                        }
+                    }) {
+                    };
+                    CmResourcePanelContainer.this.el().slideOut(Direction.LEFT, fx);
                     CmResourcePanelContainer.this.container.layout();
-                    
-                    EventBus.getInstance().fireEvent(new CmEvent(EventBus.EVENT_TYPE_RESOURCE_VIEWER_CLOSE, panel));
                 }
             }));
         }		
@@ -119,6 +104,34 @@ public class CmResourcePanelContainer extends ContentPanel {
 		
 	}
 	
+	
+	private void closeResource(ButtonEvent ce, CmResourcePanel panel) {
+        boolean isMax = ce.getButton().getText().equals("Maximize");
+        if(isMax) {
+            // maximize the resource area
+            //
+            CmResourcePanelContainer.this.container.setLayout(new FitLayout());
+            ce.getButton().setText("Minimal");
+            viewerState = ResourceViewerState.MAXIMIZED;
+        }
+        else {
+            // minimize the resource area
+            CmResourcePanelContainer.this.container.setLayout(new CenterLayout());
+            CmResourcePanelContainer.this.setWidth(panel.getOptimalWidth());
+            CmResourcePanelContainer.this.setHeight(CmMainResourceContainer.getCalculatedHeight(CmResourcePanelContainer.this.container, panel));
+            
+            ce.getButton().setText("Maximize");
+            viewerState = ResourceViewerState.OPTIMIZED;
+        }
+        
+        
+        /** Reset the panel widget
+         * 
+         */
+        resetPanelWidget(panel);
+        
+        CmResourcePanelContainer.this.layout();
+	}
 	
 	/** Clean and add the resource panel, forcing a new layout
 	 * 

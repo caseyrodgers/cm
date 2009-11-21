@@ -7,6 +7,7 @@ import hotmath.gwt.cm_tools.client.ui.ContextController;
 import hotmath.gwt.cm_tools.client.ui.QuizPage;
 import hotmath.gwt.cm_tools.client.ui.context.CmContext;
 import hotmath.gwt.cm_tools.client.ui.resource_viewer.CmResourcePanelImplDefault;
+import hotmath.gwt.cm_tools.client.ui.resource_viewer.CmResourcePanelContainer.ResourceViewerState;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.data.CmAsyncRequest;
 import hotmath.gwt.shared.client.util.UserInfo;
@@ -80,6 +81,14 @@ public class QuizCmGuiDefinition implements CmGuiDefinition {
                         return false;
                     }
                     
+                    public ResourceViewerState getInitialMode() {
+                        return ResourceViewerState.OPTIMIZED;
+                    }
+                    
+                    public String getContainerStyleName() {
+                        return "quiz-cm-gui-definition-resource";
+                        
+                    }
                     @Override
                     public List<Component> getContainerTools() {
                         List<Component> list = new ArrayList<Component>();

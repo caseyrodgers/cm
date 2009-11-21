@@ -15,9 +15,16 @@ import com.google.gwt.user.client.ui.Widget;
 
 public class ResourceViewerImplReview extends CmResourcePanelImplDefault {
     
+    static final String STYLE_NAME = "resource-viewer-impl-review"; 
     public ResourceViewerImplReview() {
-        addStyleName("resource-viewer-impl-review");
+        addStyleName(STYLE_NAME);
     }
+    
+    @Override
+    public String getContainerStyleName() {
+        return STYLE_NAME;
+    }
+    
     
     public Widget getResourcePanel() {
 
