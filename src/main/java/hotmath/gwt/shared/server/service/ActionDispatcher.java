@@ -17,6 +17,7 @@ import hotmath.gwt.shared.server.service.command.CreateAutoRegistrationAccountsC
 import hotmath.gwt.shared.server.service.command.CreateAutoRegistrationPreviewCommand;
 import hotmath.gwt.shared.server.service.command.CreateTestRunCommand;
 import hotmath.gwt.shared.server.service.command.GeneratePdfCommand;
+import hotmath.gwt.shared.server.service.command.GetCmVersionInfoCommand;
 import hotmath.gwt.shared.server.service.command.GetGroupAggregateInfoCommand;
 import hotmath.gwt.shared.server.service.command.GetLessonItemsForTestRunCommand;
 import hotmath.gwt.shared.server.service.command.GetPrescriptionCommand;
@@ -142,6 +143,7 @@ public class ActionDispatcher {
         addCommand(GroupManagerCommand.class);
         addCommand(GeneratePdfCommand.class);
         addCommand(SetBackgroundStyleCommand.class);
+        addCommand(GetCmVersionInfoCommand.class);
         
     }
     
@@ -172,6 +174,9 @@ public class ActionDispatcher {
      * 
      * Each command is given a preallocated Connection option that it
      * will utilize for any DB access.  
+     * 
+     * You can disable the automatic creation of the Connection by having
+     * your Command object implement the ActionHandlerManualConnectionManagement interface.
      * 
      * 
      * @param <T>

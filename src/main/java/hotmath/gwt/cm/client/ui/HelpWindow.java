@@ -11,9 +11,12 @@ import hotmath.gwt.cm_tools.client.ui.FooterPanel;
 import hotmath.gwt.cm_tools.client.ui.RegisterStudent;
 import hotmath.gwt.cm_tools.client.ui.StudentDetailsWindow;
 import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
+import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
 import hotmath.gwt.shared.client.eventbus.EventBus;
+import hotmath.gwt.shared.client.rpc.action.GetCmVersionInfoAction;
 import hotmath.gwt.shared.client.rpc.action.SetBackgroundStyleAction;
+import hotmath.gwt.shared.client.rpc.result.CmVersionInfo;
 import hotmath.gwt.shared.client.util.RpcData;
 import hotmath.gwt.shared.client.util.UserInfo;
 
@@ -45,7 +48,7 @@ public class HelpWindow extends CmWindow {
         setWidth(490);
         setModal(true);
         setResizable(false);
-        setStyleName("help-window");
+        addStyleName("help-window");
         setHeading("Catchup-Math Help Window");
 
         EventBus.getInstance().fireEvent(new CmEvent(EventBus.EVENT_TYPE_MODAL_WINDOW_OPEN, this));
@@ -95,38 +98,39 @@ public class HelpWindow extends CmWindow {
                 }
 
                 CmServiceAsync s = (CmServiceAsync) Registry.get("cmService");
-                s.execute(new SetBackgroundStyleAction(UserInfo.getInstance().getUid(), se.getSelectedItem().getBackgroundStyle()),
-                        new AsyncCallback<RpcData>() {
-                            public void onSuccess(RpcData result) {
-                                try {
-                                    String newStyle = se.getSelectedItem().getBackgroundStyle();
-                                    /** Remove any previous wallpaper styles, and make sure thie one
-                                     *  just selected is the only one.
-                                     *  
-                                     *  NOTE: all wallpaper styles start with 'resource-container-'
-                                     */
-                                    String names[] = CmMainPanel.__lastInstance._mainContent.getStyleName().split(" ");
-                                    for(int i=0;i<names.length;i++) {
-                                        if(names[i].startsWith("resource-container-"))
-                                            CmMainPanel.__lastInstance._mainContent.removeStyleName(names[i]);
-                                                
-                                    }
-                                    CmMainPanel.__lastInstance._mainContent.addStyleName(newStyle);
-                                    
-                                    UserInfo.getInstance().setBackgroundStyle(newStyle);
-                                    
-                                } finally {
-                                    CatchupMathTools.setBusy(false);
-                                }
-                            }
+                s.execute(new SetBackgroundStyleAction(UserInfo.getInstance().getUid(), se.getSelectedItem()
+                        .getBackgroundStyle()), new AsyncCallback<RpcData>() {
+                    public void onSuccess(RpcData result) {
+                        try {
+                            String newStyle = se.getSelectedItem().getBackgroundStyle();
+                            /**
+                             * Remove any previous wallpaper styles, and make
+                             * sure thie one just selected is the only one.
+                             * 
+                             * NOTE: all wallpaper styles start with
+                             * 'resource-container-'
+                             */
+                            String names[] = CmMainPanel.__lastInstance._mainContent.getStyleName().split(" ");
+                            for (int i = 0; i < names.length; i++) {
+                                if (names[i].startsWith("resource-container-"))
+                                    CmMainPanel.__lastInstance._mainContent.removeStyleName(names[i]);
 
-                            public void onFailure(Throwable caught) {
-                                caught.printStackTrace();
                             }
-                        });
+                            CmMainPanel.__lastInstance._mainContent.addStyleName(newStyle);
+
+                            UserInfo.getInstance().setBackgroundStyle(newStyle);
+
+                        } finally {
+                            CatchupMathTools.setBusy(false);
+                        }
+                    }
+
+                    public void onFailure(Throwable caught) {
+                        caught.printStackTrace();
+                    }
+                });
             }
         });
-                
 
         fs = new FieldSet();
         fs.setHeading("Wallpaper");
@@ -218,7 +222,20 @@ public class HelpWindow extends CmWindow {
         vp.add(fs);
 
         add(vp);
+        
+        
+        
+        if(CmShared.getQueryParameter("debug") != null) {
+            getHeader().addTool(new Button("Version", new SelectionListener<ButtonEvent>() {
+                @Override
+                public void componentSelected(ButtonEvent ce) {
+                    CatchupMathTools.showVersionInfo();
+                }
+            }));
+        }
+        
     }
+
 
     /**
      * Provide method for single user to configure programs and settings

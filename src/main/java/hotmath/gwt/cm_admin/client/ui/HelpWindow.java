@@ -1,6 +1,8 @@
 package hotmath.gwt.cm_admin.client.ui;
 
+import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
+import hotmath.gwt.shared.client.CmShared;
 
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
@@ -36,6 +38,16 @@ public class HelpWindow extends CmWindow {
         add(frame);
         
         setVisible(true);
+        
+        
+        if(CmShared.getQueryParameter("debug") != null) {
+            getHeader().addTool(new Button("Version", new SelectionListener<ButtonEvent>() {
+                @Override
+                public void componentSelected(ButtonEvent ce) {
+                    CatchupMathTools.showVersionInfo();
+                }
+            }));
+        }        
     }
 
     public void onClick(ClickEvent event) {

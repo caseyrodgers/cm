@@ -4,7 +4,10 @@ import hotmath.gwt.cm_tools.client.service.CmService;
 import hotmath.gwt.cm_tools.client.service.CmServiceAsync;
 import hotmath.gwt.cm_tools.client.service.PrescriptionService;
 import hotmath.gwt.cm_tools.client.service.PrescriptionServiceAsync;
+import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.data.CmAsyncRequest;
+import hotmath.gwt.shared.client.rpc.action.GetCmVersionInfoAction;
+import hotmath.gwt.shared.client.rpc.result.CmVersionInfo;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.Registry;
@@ -15,6 +18,7 @@ import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.DeferredCommand;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.rpc.ServiceDefTarget;
 import com.google.gwt.user.client.ui.RootPanel;
 
@@ -105,5 +109,30 @@ public class CatchupMathTools implements EntryPoint {
         Registry.register("cmService", cmService);        
     }
     
-    static public String FEEDBACK_MESSAGE="<p>Please send us feedback, by using Feedback at the bottom of the page.</p>";    
+    static public String FEEDBACK_MESSAGE="<p>Please send us feedback, by using Feedback at the bottom of the page.</p>";
+    
+    
+    
+    
+
+    /** Call server to get version information, send the URL
+     *  that serves this app.
+     *  
+     */
+    static public void showVersionInfo() {
+
+        CmServiceAsync s = (CmServiceAsync) Registry.get("cmService");
+        GetCmVersionInfoAction action = new GetCmVersionInfoAction(CmShared.CM_HOME_URL);
+        s.execute(action, new AsyncCallback<CmVersionInfo>() {
+
+            public void onSuccess(CmVersionInfo version) {
+                CatchupMathTools.showAlert(version.toString());
+            }
+
+            public void onFailure(Throwable caught) {
+                String msg = caught.getMessage();
+                CatchupMathTools.showAlert(msg);
+            }
+        });
+    }    
 }

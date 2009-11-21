@@ -407,7 +407,7 @@
               <tasks>
 
                 <buildnumber file='cm-build-gwt-info.txt'/>
-                <copy file='cm-build-gwt-info.txt' todir="target/cm-1.0-SNAPSHOT"/>
+                <copy file='cm-build-gwt-info.txt' todir="target/cm-1.0-SNAPSHOT/gwt-resources/build_info"/>
 
               </tasks>
             </configuration>
@@ -423,7 +423,7 @@
               <tasks>
 
                 <buildnumber file='cm-build-webapp-info.txt'/>
-                <copy file='cm-build-webapp-info.txt' todir="target/cm-1.0-SNAPSHOT"/>
+                <copy file='cm-build-webapp-info.txt' todir="target/cm-1.0-SNAPSHOT/gwt-resources/build_info"/>
 
               </tasks>
             </configuration>

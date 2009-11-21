@@ -36,7 +36,9 @@ public class CmResourcePanelImplDefault extends LayoutContainer implements CmRes
         
         setLayout(new FitLayout());
         add(w);
-        setTitle(title);
+        
+        
+        // setTitle(title);
         
         layout();
     }
