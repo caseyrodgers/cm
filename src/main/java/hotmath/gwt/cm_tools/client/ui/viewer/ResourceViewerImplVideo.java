@@ -22,23 +22,26 @@ public class ResourceViewerImplVideo extends ResourceViewerImplFlash {
         return STYLE_NAME;
     }
     
+    Widget panel=null;
     public Widget getResourcePanel() {
         
-        if(!SWFObjectUtil.isVersionIsValid(new PlayerVersion(CmShared.FLASH_MIN_VERSION))) {
-            Html html = new Html(CmShared.FLASH_ALT_CONTENT);
-            addResource(html,getResourceItem().getTitle());
+        if(panel == null) {
+            if(!SWFObjectUtil.isVersionIsValid(new PlayerVersion(CmShared.FLASH_MIN_VERSION))) {
+                Html html = new Html(CmShared.FLASH_ALT_CONTENT);
+                addResource(html,getResourceItem().getTitle());
+            }
+            else {
+                String videoPath = "/help/flvs/tw/" + getResourceItem().getFile() + ".flv";
+                SWFSettings s = new SWFSettings();
+                s.setMinPlayerVersion(new PlayerVersion(9));
+        
+                SWFWidget swfWidget = new SWFWidget("flvplayer.swf?file=" + videoPath, "100%", "100%", s);
+                swfWidget.addParam("file", videoPath);
+                addResource(swfWidget, getResourceItem().getTitle(),null);
+            }
+            panel = this;
         }
-        else {
-            String videoPath = "/help/flvs/tw/" + getResourceItem().getFile() + ".flv";
-            SWFSettings s = new SWFSettings();
-            s.setMinPlayerVersion(new PlayerVersion(9));
-    
-            SWFWidget swfWidget = new SWFWidget("flvplayer.swf?file=" + videoPath, "100%", "100%", s);
-            swfWidget.addParam("file", videoPath);
-            addResource(swfWidget, getResourceItem().getTitle(),null);
-        }
-
-        return this;
+        return panel;
     }
     
     

@@ -18,21 +18,26 @@ public class ResourceViewerImplActivity extends ResourceViewerImplFlash {
     }
 	
 	
+    Widget panel=null;
 	public Widget getResourcePanel() {
 	    
-	    if(!SWFObjectUtil.isVersionIsValid(new PlayerVersion(CmShared.FLASH_MIN_VERSION))) {
-             Html html = new Html(CmShared.FLASH_ALT_CONTENT);
-             addResource(html,getResourceItem().getTitle());
+	    if(panel == null) {
+    	    if(!SWFObjectUtil.isVersionIsValid(new PlayerVersion(CmShared.FLASH_MIN_VERSION))) {
+                 Html html = new Html(CmShared.FLASH_ALT_CONTENT);
+                 addResource(html,getResourceItem().getTitle());
+    	    }
+    	    else {
+        	    SWFSettings s = new SWFSettings();
+        	    s.setMinPlayerVersion(new PlayerVersion(CmShared.FLASH_MIN_VERSION));
+        	    SWFWidget swfWidget = new SWFWidget(getResourceItem().getFile(),"100%","100%",s);
+        	    swfWidget.setStyleName("activity-widget");
+        	    addResource(swfWidget,getResourceItem().getTitle());
+    	    }
+    	    
+    	    panel = this;
 	    }
-	    else {
-    	    SWFSettings s = new SWFSettings();
-    	    s.setMinPlayerVersion(new PlayerVersion(CmShared.FLASH_MIN_VERSION));
-    	    SWFWidget swfWidget = new SWFWidget(getResourceItem().getFile(),"100%","100%",s);
-    	    swfWidget.setStyleName("activity-widget");
-    	    addResource(swfWidget,getResourceItem().getTitle());
-	    }
- 	   
-	    return this;
+	    
+	    return panel;
 	}
 }
 
