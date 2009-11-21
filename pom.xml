@@ -393,17 +393,21 @@
         </executions>
       </plugin>
 
-      <!-- Use ANT to update version information file -->
+      <!-- Use ANT to update version information file
+      -->
+
+      <!-- update the GWT build version info after successful compile -->
       <plugin>
         <artifactId>maven-antrun-plugin</artifactId>
         <executions>
           <execution>
+           <id>gwt-version</id>
             <phase> compile </phase>
             <configuration>
               <tasks>
 
-                <buildnumber file='cm-build-info.txt'/>
-                <copy file='cm-build-info.txt' todir="target/cm-1.0-SNAPSHOT"/>
+                <buildnumber file='cm-build-gwt-info.txt'/>
+                <copy file='cm-build-gwt-info.txt' todir="target/cm-1.0-SNAPSHOT"/>
 
               </tasks>
             </configuration>
@@ -411,6 +415,25 @@
               <goal>run</goal>
             </goals>
           </execution>
+
+          <execution> 
+            <id>web-version</id>
+            <phase> package </phase>
+            <configuration>
+              <tasks>
+
+                <buildnumber file='cm-build-webapp-info.txt'/>
+                <copy file='cm-build-webapp-info.txt' todir="target/cm-1.0-SNAPSHOT"/>
+
+              </tasks>
+            </configuration>
+            <goals>
+              <goal>run</goal>
+            </goals>
+          </execution>
+
+
+
         </executions>
       </plugin>
 
