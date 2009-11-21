@@ -1,6 +1,7 @@
 package hotmath.gwt.cm_tools.client.ui.resource_viewer;
 
 import hotmath.gwt.cm_tools.client.data.InmhItemData;
+import hotmath.gwt.cm_tools.client.ui.resource_viewer.CmResourcePanelContainer.ResourceViewerState;
 
 import java.util.List;
 
@@ -96,4 +97,13 @@ public interface CmResourcePanel {
      * @return
      */
     public List<Component> getContainerTools();
+    
+    
+    
+    /** Return the intial mode of the resource container for this
+     * type of resource.  Either OPTIMIZED or MAXIMIZED
+     * 
+     * @return
+     */
+    public ResourceViewerState getInitialMode();
 }

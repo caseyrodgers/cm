@@ -28,13 +28,23 @@ public class CmResourcePanelContainer extends ContentPanel {
 	public CmResourcePanelContainer(CmMainResourceContainer container, final CmResourcePanel panel) {
 		this.container = container;
 		
+		
 		addStyleName("cm-resource-viewer-container");
 		addStyleName(panel.getContainerStyleName());
 		
-		viewerState = ResourceViewerState.OPTIMIZED;
+		String modeButton=null;
+		if(panel.getInitialMode() == ResourceViewerState.OPTIMIZED) {
+    		viewerState = ResourceViewerState.OPTIMIZED;
+    		setHeight( CmMainResourceContainer.getCalculatedHeight(container, panel));
+    		setWidth(panel.getOptimalWidth());
+    		modeButton = "Maximize";
+		}
+		else {
+            viewerState = ResourceViewerState.MAXIMIZED;
+            CmResourcePanelContainer.this.container.setLayout(new FitLayout());
+            modeButton = "Minimal";
+		}
 		
-		setHeight( CmMainResourceContainer.getCalculatedHeight(container, panel));
-		setWidth(panel.getOptimalWidth());
 		setLayout(new FitLayout());
 		add(panel.getResourcePanel());
 		
@@ -54,14 +64,14 @@ public class CmResourcePanelContainer extends ContentPanel {
 		 * 
 		 */
 		if(panel.allowMaximize()) {
-			Button maximize = new Button("Maximize", new SelectionListener<ButtonEvent>() {
+			Button maximize = new Button(modeButton, new SelectionListener<ButtonEvent>() {
 				public void componentSelected(ButtonEvent ce) {
 					boolean isMax = ce.getButton().getText().equals("Maximize");
 					if(isMax) {
 						// maximize the resource area
 						//
 					    CmResourcePanelContainer.this.container.setLayout(new FitLayout());
-					    ce.getButton().setText("Restore");
+					    ce.getButton().setText("Minimal");
 					    viewerState = ResourceViewerState.MAXIMIZED;
 					}
 					else {
@@ -86,18 +96,18 @@ public class CmResourcePanelContainer extends ContentPanel {
 			getHeader().addTool(maximize);
 		}
 		
-		if(panel.allowClose()) {
-    		getHeader().addTool(new Button("Close", new SelectionListener<ButtonEvent>() {
-    			public void componentSelected(ButtonEvent ce) {
-    			    
-    			    CmResourcePanelContainer.this.el().slideOut(Direction.LEFT, FxConfig.NONE);
-    			    
-    				CmResourcePanelContainer.this.container.layout();
-    				
-    				EventBus.getInstance().fireEvent(new CmEvent(EventBus.EVENT_TYPE_RESOURCE_VIEWER_CLOSE, panel));
-    			}
-    		}));
-		}
+	    if(panel.allowClose()) {
+            getHeader().addTool(new Button("Close", new SelectionListener<ButtonEvent>() {
+                public void componentSelected(ButtonEvent ce) {
+                    
+                    CmResourcePanelContainer.this.el().slideOut(Direction.LEFT, FxConfig.NONE);
+                    
+                    CmResourcePanelContainer.this.container.layout();
+                    
+                    EventBus.getInstance().fireEvent(new CmEvent(EventBus.EVENT_TYPE_RESOURCE_VIEWER_CLOSE, panel));
+                }
+            }));
+        }		
 		
 		
 		if(!panel.showContainer()) {
@@ -131,5 +141,5 @@ public class CmResourcePanelContainer extends ContentPanel {
 		this.viewerState = viewerState;
 	}
 
-	enum ResourceViewerState{OPTIMIZED,MAXIMIZED};
+	public enum ResourceViewerState{OPTIMIZED,MAXIMIZED};
 }

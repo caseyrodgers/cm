@@ -1,6 +1,7 @@
 package hotmath.gwt.cm_tools.client.ui.resource_viewer;
 
 import hotmath.gwt.cm_tools.client.data.InmhItemData;
+import hotmath.gwt.cm_tools.client.ui.resource_viewer.CmResourcePanelContainer.ResourceViewerState;
 
 import java.util.List;
 
@@ -80,10 +81,13 @@ public class CmResourcePanelImplDefault extends LayoutContainer implements CmRes
         return true;
     }
 
+    @Override
+    public ResourceViewerState getInitialMode() {
+        return ResourceViewerState.MAXIMIZED;
+    }
 
 
     @Override
-    
     public Widget getResourcePanel() {
         String url = item.getFile();
         String html = "<iframe frameborder='no' width='100%' height='400px' src='" + url + "'></iframe>";

@@ -3,6 +3,7 @@ package hotmath.gwt.cm_tools.client.ui.viewer;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.service.PrescriptionServiceAsync;
 import hotmath.gwt.cm_tools.client.ui.resource_viewer.CmResourcePanelImplDefault;
+import hotmath.gwt.cm_tools.client.ui.resource_viewer.CmResourcePanelContainer.ResourceViewerState;
 import hotmath.gwt.shared.client.util.RpcData;
 import hotmath.gwt.shared.client.util.UserInfo;
 
@@ -30,6 +31,11 @@ public class ResourceViewerImplResults extends CmResourcePanelImplDefault {
         return 520;
     }
 
+    @Override
+    public ResourceViewerState getInitialMode() {
+        // TODO Auto-generated method stub
+        return ResourceViewerState.OPTIMIZED;
+    }
     
     /** Select the correct question response for question for pid
      * 

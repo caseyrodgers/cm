@@ -3,6 +3,7 @@ package hotmath.gwt.cm_tools.client.ui.viewer;
 import hotmath.gwt.cm_tools.client.data.InmhItemData;
 import hotmath.gwt.cm_tools.client.service.CmServiceAsync;
 import hotmath.gwt.cm_tools.client.ui.resource_viewer.CmResourcePanelImplDefault;
+import hotmath.gwt.cm_tools.client.ui.resource_viewer.CmResourcePanelContainer.ResourceViewerState;
 import hotmath.gwt.shared.client.rpc.action.GetReviewHtmlAction;
 import hotmath.gwt.shared.client.util.RpcData;
 
@@ -42,5 +43,10 @@ public class ResourceViewerImplReview extends CmResourcePanelImplDefault {
     
     public Integer getOptimalWidth() {
         return 550;
+    }
+    
+    @Override
+    public ResourceViewerState getInitialMode() {
+        return ResourceViewerState.OPTIMIZED;
     }
 }

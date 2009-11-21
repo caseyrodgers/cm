@@ -5,6 +5,7 @@ import hotmath.gwt.cm_tools.client.service.CmServiceAsync;
 import hotmath.gwt.cm_tools.client.ui.CmMainPanel;
 import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
 import hotmath.gwt.cm_tools.client.ui.resource_viewer.CmResourcePanelImplDefault;
+import hotmath.gwt.cm_tools.client.ui.resource_viewer.CmResourcePanelContainer.ResourceViewerState;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
 import hotmath.gwt.shared.client.eventbus.CmEventListenerImplDefault;
 import hotmath.gwt.shared.client.eventbus.EventBus;
@@ -69,9 +70,16 @@ public class ResourceViewerImplTutor extends CmResourcePanelImplDefault {
         return true;
     }
    
+    
     @Override
     public String getContainerStyleName() {
         return STYLE_NAME;
+    }
+    
+    @Override
+    public ResourceViewerState getInitialMode() {
+        // TODO Auto-generated method stub
+        return ResourceViewerState.OPTIMIZED;
     }
     
     public List<Component> getContainerTools() {
