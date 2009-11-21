@@ -23,7 +23,6 @@ import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.Html;
 import com.extjs.gxt.ui.client.widget.Window;
 import com.extjs.gxt.ui.client.widget.button.Button;
-import com.extjs.gxt.ui.client.widget.button.IconButton;
 import com.extjs.gxt.ui.client.widget.layout.FillLayout;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.google.gwt.user.client.DOM;
@@ -46,9 +45,11 @@ public class ResourceViewerImplTutor extends CmResourcePanelImplDefault {
         });
     }
 
+    static public final String STYLE_NAME="resource-viewer-impl-tutor";
+    
     public ResourceViewerImplTutor() {
         _instance = this;
-        addStyleName("resource-viewer-impl-tutor");
+        addStyleName(STYLE_NAME);
         setScrollMode(Scroll.AUTOY);
     }
 
@@ -68,6 +69,10 @@ public class ResourceViewerImplTutor extends CmResourcePanelImplDefault {
         return true;
     }
    
+    @Override
+    public String getContainerStyleName() {
+        return STYLE_NAME;
+    }
     
     public List<Component> getContainerTools() {
         Component[] btn = {new Button("Enter Your Answer",new SelectionListener<ButtonEvent>() {

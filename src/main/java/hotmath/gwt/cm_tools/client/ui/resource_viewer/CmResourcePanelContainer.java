@@ -1,7 +1,11 @@
 package hotmath.gwt.cm_tools.client.ui.resource_viewer;
 
+import hotmath.gwt.shared.client.eventbus.CmEvent;
+import hotmath.gwt.shared.client.eventbus.EventBus;
+
 import java.util.List;
 
+import com.extjs.gxt.ui.client.Style.Direction;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.fx.FxConfig;
@@ -23,6 +27,9 @@ public class CmResourcePanelContainer extends ContentPanel {
 	CmMainResourceContainer container;
 	public CmResourcePanelContainer(CmMainResourceContainer container, final CmResourcePanel panel) {
 		this.container = container;
+		
+		addStyleName("cm-resource-viewer-container");
+		addStyleName(panel.getContainerStyleName());
 		
 		viewerState = ResourceViewerState.OPTIMIZED;
 		
@@ -54,7 +61,7 @@ public class CmResourcePanelContainer extends ContentPanel {
 						// maximize the resource area
 						//
 					    CmResourcePanelContainer.this.container.setLayout(new FitLayout());
-					    ce.getButton().setText("Minimize");
+					    ce.getButton().setText("Restore");
 					    viewerState = ResourceViewerState.MAXIMIZED;
 					}
 					else {
@@ -83,9 +90,11 @@ public class CmResourcePanelContainer extends ContentPanel {
     		getHeader().addTool(new Button("Close", new SelectionListener<ButtonEvent>() {
     			public void componentSelected(ButtonEvent ce) {
     			    
-    			    CmResourcePanelContainer.this.el().fadeOut(FxConfig.NONE);
+    			    CmResourcePanelContainer.this.el().slideOut(Direction.LEFT, FxConfig.NONE);
     			    
     				CmResourcePanelContainer.this.container.layout();
+    				
+    				EventBus.getInstance().fireEvent(new CmEvent(EventBus.EVENT_TYPE_RESOURCE_VIEWER_CLOSE, panel));
     			}
     		}));
 		}

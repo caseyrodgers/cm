@@ -6,6 +6,7 @@ import hotmath.gwt.cm_tools.client.ui.resource_viewer.CmResourcePanelContainer.R
 import hotmath.gwt.cm_tools.client.ui.viewer.ResourceViewerFactory;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
 import hotmath.gwt.shared.client.eventbus.EventBus;
+import hotmath.gwt.shared.client.util.UserInfo;
 
 import com.extjs.gxt.ui.client.Style.Scroll;
 import com.extjs.gxt.ui.client.core.El;
@@ -31,9 +32,10 @@ public class CmMainResourceContainer extends LayoutContainer {
 
     public CmMainResourceContainer() {
 		addStyleName("main-resource-panel");
-		addStyleName("resource-container-bike1");
 		
-        
+		if(UserInfo.getInstance().getBackgroundStyle() != null)
+		    addStyleName(UserInfo.getInstance().getBackgroundStyle());
+		
         setScrollMode(Scroll.AUTO);
 	}
 

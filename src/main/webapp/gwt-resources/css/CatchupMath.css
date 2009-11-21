@@ -902,3 +902,14 @@ img.resource-item-complete {
 .response_div {
    margin-right: 15px;
 }
+
+/** Target the background of the resource container for the tutor*/
+/** .cm-resource-viewer-container .resource-viewer-impl-tutor .x-panel-body */
+ 
+.cm-resource-viewer-container .x-panel-body {
+    background: transparent;
+}
+
+.resource-viewer-impl-activity, .resource-viewer-impl-review,.resource-viewer-impl-results {
+   background: white;
+}

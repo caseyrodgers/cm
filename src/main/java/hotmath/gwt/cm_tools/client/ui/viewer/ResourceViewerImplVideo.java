@@ -39,11 +39,11 @@ public class ResourceViewerImplVideo extends ResourceViewerImplFlash {
     
     @Override
     public Integer getOptimalHeight() {
-        return 260;
+        return 240;
     }
     
     @Override
     public Integer getOptimalWidth() {
-        return 340;
+        return 320;
     }
 }
