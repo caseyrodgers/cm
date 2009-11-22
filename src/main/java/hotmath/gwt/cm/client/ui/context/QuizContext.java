@@ -234,7 +234,7 @@ public class QuizContext implements CmContext {
 	}
 
 	public void doNext() {
-	    String msg = "Are you sure you are ready to have the quiz scored?";
+	    String msg = "Did you double-check all your answers with paper and pencil?";
 	    MessageBox.confirm("Ready to Check Quiz?", msg, new Listener<MessageBoxEvent>() {
             public void handleEvent(MessageBoxEvent be) {
                 if (be.getButtonClicked().getText().equals("Yes")) {
