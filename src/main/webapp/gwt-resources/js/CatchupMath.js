@@ -319,3 +319,41 @@ function doLoadResource(type, file) {
 function log() {
 	//
 }
+
+
+
+/** FlowPlayer (Flash video player) configuration
+ *  
+ *  called via JSNI
+ *  
+ *  
+ */
+function flowPlayer_Gwt(divId, videoPath) {
+
+	alert("Called flowplayer_Gwt with " + divId + ", " + videoPath);
+	
+	var d = document.getElementById(divId);
+	
+	alert(d);
+	
+	
+	alert("here we go");
+	flowplayer(divId, {
+	    // our Flash component
+	    src: "/gwt-resources/flowplayer-3.1.5.swf",
+
+ 	    // we need at least this version
+	    version: [9, 115],
+
+	    // older versions will see a custom message
+	    onFail: function()  {
+		    document.getElementById("info").innerHTML =
+			    "You need the latest Flash version to view MP4 movies. " +
+			    "Your version is " + this.getVersion();
+	    }
+  	    // here is our third argument which is the Flowplayer configuration
+        }, {
+    	    clip: videoPath
+       }
+    );
+}

@@ -20,7 +20,6 @@ public class ResourceViewerImplActivity extends ResourceViewerImplFlash {
 	
     Widget panel=null;
 	public Widget getResourcePanel() {
-	    
 	    if(panel == null) {
     	    if(!SWFObjectUtil.isVersionIsValid(new PlayerVersion(CmShared.FLASH_MIN_VERSION))) {
                  Html html = new Html(CmShared.FLASH_ALT_CONTENT);

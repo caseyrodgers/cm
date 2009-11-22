@@ -26,7 +26,7 @@
             
           
       <servlet path="/services/prescriptionService" class="hotmath.gwt.cm.server.service.PrescriptionServiceImpl" />
-      
+
       <entry-point class='hotmath.gwt.cm.client.CatchupMath'/>
 
       <!--
