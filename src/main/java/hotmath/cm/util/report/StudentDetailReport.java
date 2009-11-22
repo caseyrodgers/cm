@@ -64,7 +64,7 @@ public class StudentDetailReport {
 		    
 			Phrase expires  = buildLabelContent("Expires: ", info.getExpirationDate());
 			Phrase student  = buildLabelContent("Student: ", String.valueOf(sm.getName()));
-			Phrase tutoring = buildLabelContent("Tutoring: ", String.valueOf(sm.getTutoringState()));
+			//Phrase tutoring = buildLabelContent("Tutoring: ", String.valueOf(sm.getTutoringState()));
 			Phrase showWork = buildLabelContent("Show Work: ", String.valueOf(sm.getShowWorkState()));
 
 			StringBuilder sb = new StringBuilder();
@@ -84,11 +84,7 @@ public class StudentDetailReport {
 			pdfTbl.addCell(expires);
 			
 			pdfTbl.addCell(student);
-			pdfTbl.addCell(tutoring);
 			pdfTbl.addCell(showWork);
-			
-			pdfTbl.addCell(new Phrase(" "));
-			pdfTbl.addCell(new Phrase(" "));
 			pdfTbl.addCell(new Phrase(" "));
 
 			pdfTbl.addCell(new Phrase(" "));
