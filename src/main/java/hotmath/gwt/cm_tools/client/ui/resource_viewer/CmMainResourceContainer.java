@@ -31,6 +31,7 @@ public class CmMainResourceContainer extends LayoutContainer {
 	CmResourcePanel currentPanel;
 
     public CmMainResourceContainer() {
+        addStyleName("resource-container");
 		addStyleName("main-resource-panel");
 		
 		if(UserInfo.getInstance().getBackgroundStyle() != null)
