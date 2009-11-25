@@ -13,6 +13,8 @@
       <inherits name='com.extjs.gxt.themes.Themes' />
       <inherits name='com.google.gwt.json.JSON' />
       
+      <inherits name="org.argunet.gwt.fabridge.FABridge"/>
+      
       <!-- 
       <inherits name="com.google.gwt.http.HTTP" />
       -->
@@ -21,6 +23,8 @@
       <inherits name='pl.rmalinowski.gwt2swf.GWT2SWF' />
       -->
       
+      
+      <inherits name='hotmath.gwt.cm_tools.CatchupMathTools'/>
       
       <inherits name='hotmath.gwt.cm_tools.CatchupMathTools'/>
             

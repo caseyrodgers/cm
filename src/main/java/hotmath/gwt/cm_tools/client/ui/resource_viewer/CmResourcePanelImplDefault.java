@@ -11,6 +11,15 @@ import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.google.gwt.user.client.ui.Widget;
 
+
+/** 
+ *   Default resource container
+ *   
+ *   panels call addResource to insert component
+ *   
+ * @author casey
+ *
+ */
 public class CmResourcePanelImplDefault extends LayoutContainer implements CmResourcePanel {
     
     InmhItemData item;

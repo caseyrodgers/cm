@@ -1,6 +1,11 @@
-.main-container p {
+.main-container p .gold {
         color: #AAC656;
 }
+
+.main-container p {
+        color: black;
+}
+
 .pc-template-btn {
         display: block;
         font-size: 16pt;
@@ -920,4 +925,31 @@ img.resource-item-complete {
 
 .quiz-cm-gui-definition-resource {
   padding-bottom: 10px;
+}
+
+
+/** Show Work Panel Full screen / maximized */
+
+.show-work-panel-full {
+  background: white;
+}  
+
+
+#problem-statement-panel .tutoroutput {
+    font-family:"Times New Roman",Times,serif;
+    font-size:12pt;
+}
+
+#problem-statement-panel p {
+        margin: 0 0 10px;
+        font-size: 12pt;
+}
+
+#problem-statement-panel .problem_statement {
+	font-size: 20px;
+	color: black;
+    background:#F1F1F1;
+    padding:10pt;
+    vertical-align:middle;
+    border-bottom: 1px solid black;
 }

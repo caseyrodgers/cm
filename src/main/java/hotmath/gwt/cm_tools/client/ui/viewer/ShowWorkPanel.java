@@ -37,7 +37,7 @@ public class ShowWorkPanel extends Frame {
 	 * 
 	 */
 	public ShowWorkPanel() {
-		super("show_work_panel.html");
+		super("show_work_panel_student.html");
 	    setWidth("530px");
 	    setHeight("530px");
 	    

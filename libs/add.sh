@@ -11,3 +11,4 @@ mvn install:install-file -DgroupId=gwt-debug-panel -DartifactId=gwt-debug-panel 
 mvn install:install-file -DgroupId=xmlrpc -DartifactId=xmlrpc -Dversion=3.1.2 -Dpackaging=jar -Dfile=xmlrpc-client-3.1.2.jar -DgeneratePom=true
 mvn install:install-file -DgroupId=paypal -DartifactId=paypal_api_combined -Dversion=1.0 -Dpackaging=jar -Dfile=paypal_api_combined.jar -DgeneratePom=true
 mvn install:install-file -DgroupId=hotmath -DartifactId=hotmath -Dversion=2.0 -Dpackaging=jar -Dfile=hotmath2.jar -DgeneratePom=true
+mvn install:install-file -DgroupId=fabridge -DartifactId=fabridge -Dversion=1.2.1 -Dpackaging=jar -Dfile=gwt-fabridge.jar

@@ -80,15 +80,10 @@ public class CmResourcePanelContainer extends ContentPanel {
 	    if(panel.allowClose()) {
             getHeader().addTool(new Button("Close", new SelectionListener<ButtonEvent>() {
                 public void componentSelected(ButtonEvent ce) {
+                    panel.removeResourcePanel();
+                    EventBus.getInstance().fireEvent(new CmEvent(EventBus.EVENT_TYPE_RESOURCE_VIEWER_CLOSE, panel));
                     
-                    FxConfig fx = new FxConfig(1000,new Listener<FxEvent>() {
-                        @Override
-                        public void handleEvent(FxEvent be) {
-                            EventBus.getInstance().fireEvent(new CmEvent(EventBus.EVENT_TYPE_RESOURCE_VIEWER_CLOSE, panel));        
-                        }
-                    }) {
-                    };
-                    CmResourcePanelContainer.this.el().slideOut(Direction.LEFT, fx);
+                    CmResourcePanelContainer.this.container.removeAll();
                     CmResourcePanelContainer.this.container.layout();
                 }
             }));

@@ -27,7 +27,7 @@ import com.google.gwt.user.client.Timer;
  */
 public class CmMainResourceContainer extends LayoutContainer {
 	
-	CmResourcePanelContainer currentContainer;
+	public CmResourcePanelContainer currentContainer;
 	CmResourcePanel currentPanel;
 
     public CmMainResourceContainer() {

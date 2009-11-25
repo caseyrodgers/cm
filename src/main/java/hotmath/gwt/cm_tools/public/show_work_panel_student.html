@@ -1,0 +1,33 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Catchup Math Show Work</title>
+    <link rel="stylesheet" href="/gwt-resources/css/show_work_panel.css"
+	  type="text/css" />
+    <link rel="stylesheet" href="/css/tutor5.css" type="text/css" />
+  </head>
+  <body>
+    <script src='/gwt-resources/js/swfobject/swfobject.js'></script>
+    <div style="display: block;">
+      <div id='whiteboard-object'></div>
+      <div id='no-flash' style='display:none'>
+        <div id='flash-alt-content'>
+          <p>Flash version 8 or higher is required.  Either download Flash now, try a different browser, or try a different computer.</p> 
+          <p>
+            <a href='http://www.adobe.com/go/getflashplayer'><img src='http://www.adobe.com/images/shared/download_buttons/get_flash_player.gif' alt='Get Adobe Flash player' /></a>
+          </p>
+        </div>
+      </div>
+    </div>
+    <img src="/images/tutor5/spacer.gif" id="scrollTo-button" /></div>
+    <script src='/gwt-resources/js/show_work_panel.js'></script>
+    <script>
+    function checkFailure(o) {
+        if(!o.success) {
+           document.getElementById("no-flash").style.display = "block";
+        }
+    }
+    swfobject.embedSWF('/gwt-resources/whiteboard.swf', 'whiteboard-object', '99%', '96%','8',null , null, null, null, checkFailure);
+    </script>
+  </body>
+</html>
