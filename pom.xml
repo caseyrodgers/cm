@@ -302,12 +302,6 @@
       <version>1.8.0</version>
     </dependency>
 
-    <dependency>
-      <groupId>fabridge</groupId>
-      <artifactId>fabridge</artifactId>
-      <version>1.2.1</version>
-    </dependency>
-
   </dependencies>
 
   <build>
