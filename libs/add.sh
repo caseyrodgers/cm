@@ -1,4 +1,4 @@
-mvn install:install-file -DgroupId=com.extjs.gxt -DartifactId=gxt -Dversion=2.0.4 -Dpackaging=jar -Dfile=gxt-2.0.4.jar -DgeneratePom=true
+mvn install:install-file -DgroupId=com.extjs.gxt -DartifactId=gxt -Dversion=2.1.0 -Dpackaging=jar -Dfile=gxt-2.1.0.jar -DgeneratePom=true
 mvn install:install-file -DgroupId=sb -DartifactId=sblib -Dversion=2.0 -Dpackaging=jar -Dfile=sblib.jar -DgeneratePom=true
 mvn install:install-file -DgroupId=htmlparser -DartifactId=htmlparser -Dversion=1.6 -Dpackaging=jar -Dfile=htmlparser.jar -DgeneratePom=true
 mvn install:install-file -DgroupId=org.json -DartifactId=json -Dversion=1.0 -Dpackaging=jar -Dfile=json-1.0.jar -DgeneratePom=true

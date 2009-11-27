@@ -53,6 +53,11 @@ public class HelpWindow extends CmWindow {
 
         EventBus.getInstance().fireEvent(new CmEvent(EventBus.EVENT_TYPE_MODAL_WINDOW_OPEN, this));
 
+        
+        CmMainPanel.__lastInstance._mainContent.removeResource();
+        CmMainPanel.__lastInstance.expandResourceButtons();
+        
+        
         Button closeBtn = new Button("Close");
         closeBtn.addSelectionListener(new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent ce) {

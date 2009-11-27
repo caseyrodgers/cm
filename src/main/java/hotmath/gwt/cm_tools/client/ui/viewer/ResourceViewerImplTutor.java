@@ -91,17 +91,22 @@ public class ResourceViewerImplTutor extends CmResourcePanelImplDefault {
     Button _showWorkBtn;
     public List<Component> getContainerTools() {
         
-        _showWorkBtn = new Button("Enter Your Answer",new SelectionListener<ButtonEvent>() {
+        _showWorkBtn = new Button("Show Whiteboard",new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent ce) {
                 
-                if(_showWorkBtn.getText().indexOf("Answer") > -1) {
+                if(_showWorkBtn.getText().indexOf("Show") > -1) {
                     setDisplayMode(DisplayMode.WHITEBOARD);
-                    _showWorkBtn.setText("View Solution");
                 }
                 else {
+                    if(_wasMaxBeforeWhiteboard) {
+                        CmMainPanel.__lastInstance._mainContent.currentContainer.setMaximize(ResourceViewerImplTutor.this);
+                    }
+                    else {
+                        CmMainPanel.__lastInstance._mainContent.currentContainer.setOptimized(ResourceViewerImplTutor.this);
+                    }
+                    
                     setDisplayMode(DisplayMode.TUTOR);
-                    _showWorkBtn.setText("Enter Your Answer");                    
                 }
             }
         });
@@ -114,6 +119,7 @@ public class ResourceViewerImplTutor extends CmResourcePanelImplDefault {
 
 
     
+    boolean _wasMaxBeforeWhiteboard;
     /** Central method to setup either tutor or whiteboard 
      * 
      * @param displayMode
@@ -121,23 +127,40 @@ public class ResourceViewerImplTutor extends CmResourcePanelImplDefault {
     private void setDisplayMode(DisplayMode displayMode) {
         
         removeAll();
+        
         if(displayMode == DisplayMode.TUTOR) {
+            _showWorkBtn.setText("Show Whiteboard");
             add(tutorPanel);
         }
         else {
             
-            ProblemStatementPanel problemStatementPanel = new ProblemStatementPanel(pid);            
+            _wasMaxBeforeWhiteboard = CmMainPanel.__lastInstance._mainContent.currentContainer.isMaximized();
+            CmMainPanel.__lastInstance._mainContent.currentContainer.setMaximize(this);
+            
             ShowWorkPanel swp = new ShowWorkPanel();
             swp.setupForPid(this.pid);
 
-            LayoutContainer lc = new LayoutContainer(new BorderLayout());
-            BorderLayoutData ld = new BorderLayoutData(LayoutRegion.NORTH,100);
-            ld.setSplit(true);
-            lc.add(problemStatementPanel,ld);
+            LayoutContainer lcTutor = new LayoutContainer();
+            lcTutor.setScrollMode(Scroll.AUTO);
+            lcTutor.add(tutorPanel);
+            lcTutor.setStyleAttribute("background", "#EEEEEE");
             
-            lc.add(swp,new BorderLayoutData(LayoutRegion.CENTER));
+
+            LayoutContainer lcMain = new LayoutContainer(new BorderLayout());
+            lcMain.setScrollMode(Scroll.NONE);
+            lcMain.setStyleAttribute("background", "white");
+
+            BorderLayoutData bld = new BorderLayoutData(LayoutRegion.EAST, .50f);
+            bld.setSplit(true);
+            lcMain.add(lcTutor,bld);
             
-            add(lc);
+
+            bld = new BorderLayoutData(LayoutRegion.WEST, .50f);
+            bld.setSplit(true);
+            lcMain.add(swp, bld);
+
+            _showWorkBtn.setText("Hide Whiteboard");
+            add(lcMain);
         }
         _displayMode = displayMode;
         

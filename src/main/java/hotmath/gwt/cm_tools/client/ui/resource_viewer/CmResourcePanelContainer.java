@@ -5,12 +5,8 @@ import hotmath.gwt.shared.client.eventbus.EventBus;
 
 import java.util.List;
 
-import com.extjs.gxt.ui.client.Style.Direction;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
-import com.extjs.gxt.ui.client.event.FxEvent;
-import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.SelectionListener;
-import com.extjs.gxt.ui.client.fx.FxConfig;
 import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
@@ -27,6 +23,8 @@ public class CmResourcePanelContainer extends ContentPanel {
 	ResourceViewerState viewerState = ResourceViewerState.OPTIMIZED;
 	
 	CmMainResourceContainer container;
+	Button _maximize;
+	
 	public CmResourcePanelContainer(CmMainResourceContainer container, final CmResourcePanel panel) {
 		this.container = container;
 		
@@ -66,12 +64,12 @@ public class CmResourcePanelContainer extends ContentPanel {
 		 * 
 		 */
 		if(panel.allowMaximize()) {
-			Button maximize = new Button(modeButton, new SelectionListener<ButtonEvent>() {
+			_maximize = new Button(modeButton, new SelectionListener<ButtonEvent>() {
 				public void componentSelected(ButtonEvent ce) {
 				    closeResource(ce, panel);
 				}
 			});
-			getHeader().addTool(maximize);
+			getHeader().addTool(_maximize);
 		}
 		
 		/** Close is optional
@@ -100,24 +98,22 @@ public class CmResourcePanelContainer extends ContentPanel {
 	}
 	
 	
-	private void closeResource(ButtonEvent ce, CmResourcePanel panel) {
-        boolean isMax = ce.getButton().getText().equals("Maximize");
-        if(isMax) {
-            // maximize the resource area
-            //
-            CmResourcePanelContainer.this.container.setLayout(new FitLayout());
-            ce.getButton().setText("Minimal");
-            viewerState = ResourceViewerState.MAXIMIZED;
-        }
-        else {
-            // minimize the resource area
-            CmResourcePanelContainer.this.container.setLayout(new CenterLayout());
-            CmResourcePanelContainer.this.setWidth(panel.getOptimalWidth());
-            CmResourcePanelContainer.this.setHeight(CmMainResourceContainer.getCalculatedHeight(CmResourcePanelContainer.this.container, panel));
-            
-            ce.getButton().setText("Maximize");
-            viewerState = ResourceViewerState.OPTIMIZED;
-        }
+	public void setOptimized(CmResourcePanel panel) {
+	    
+       if(viewerState == ResourceViewerState.OPTIMIZED)
+            return;
+
+	    
+        // minimize the resource area
+        CmResourcePanelContainer.this.container.setLayout(new CenterLayout());
+        CmResourcePanelContainer.this.setWidth(panel.getOptimalWidth());
+        CmResourcePanelContainer.this.setHeight(CmMainResourceContainer.getCalculatedHeight(CmResourcePanelContainer.this.container, panel));
+        
+
+        viewerState = ResourceViewerState.OPTIMIZED;
+        
+        
+        _maximize.setText("Maximize");
         
         
         /** Reset the panel widget
@@ -128,11 +124,47 @@ public class CmResourcePanelContainer extends ContentPanel {
         CmResourcePanelContainer.this.layout();
 	}
 	
+	public boolean isMaximized() {
+	    return CmResourcePanelContainer.this.container.getLayout() instanceof FitLayout;
+	}
+	
+	public void setMaximize(CmResourcePanel panel) {
+	    
+	    if(viewerState == ResourceViewerState.MAXIMIZED)
+	        return;
+	    
+	    
+	    // maximize the resource area
+        //
+        CmResourcePanelContainer.this.container.setLayout(new FitLayout());
+        viewerState = ResourceViewerState.MAXIMIZED;	    
+        
+        _maximize.setText("Minimal");
+        
+        
+        /** Reset the panel widget
+         * 
+         */
+        resetPanelWidget(panel);
+        
+        CmResourcePanelContainer.this.layout();        
+	}
+	
+	private void closeResource(ButtonEvent ce, CmResourcePanel panel) {
+        boolean isMax = ce.getButton().getText().equals("Maximize");
+        if(isMax) {
+           setMaximize(panel);
+        }
+        else {
+            setOptimized(panel);
+        }
+	}
+	
 	/** Clean and add the resource panel, forcing a new layout
 	 * 
 	 * @param panel
 	 */
-	private void resetPanelWidget(CmResourcePanel panel) {
+	public void resetPanelWidget(CmResourcePanel panel) {
         CmResourcePanelContainer.this.removeAll();
         LayoutContainer lc =(LayoutContainer) panel.getResourcePanel();
         

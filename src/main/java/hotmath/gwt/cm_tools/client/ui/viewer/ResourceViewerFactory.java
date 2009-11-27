@@ -3,6 +3,7 @@ package hotmath.gwt.cm_tools.client.ui.viewer;
 import hotmath.gwt.cm_tools.client.data.InmhItemData;
 import hotmath.gwt.cm_tools.client.ui.resource_viewer.CmResourcePanel;
 import hotmath.gwt.cm_tools.client.ui.resource_viewer.CmResourcePanelImplDefault;
+import hotmath.gwt.shared.client.CmShared;
 
 import com.allen_sauer.gwt.log.client.Log;
 
@@ -29,7 +30,11 @@ public class ResourceViewerFactory {
 	    
 	    CmResourcePanel rp=null;
 		if(type.equals("practice")) {
-			rp = new ResourceViewerImplTutor();
+		    
+		    if(CmShared.getQueryParameter("tutor_view_sidebyside") != null)
+		        rp = new ResourceViewerImplTutorSideBySide();
+		    else 
+			    rp = new ResourceViewerImplTutor();
 		}
 		else if(type.equals("video")) { 
 		    rp = new ResourceViewerImplVideo();

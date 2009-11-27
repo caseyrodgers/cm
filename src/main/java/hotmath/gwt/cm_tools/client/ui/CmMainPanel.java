@@ -5,6 +5,7 @@ import hotmath.gwt.cm_tools.client.ui.resource_viewer.CmResourcePanel;
 import hotmath.gwt.cm_tools.client.ui.viewer.ResourceViewerImplFlash;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
 import hotmath.gwt.shared.client.eventbus.CmEventListener;
+import hotmath.gwt.shared.client.eventbus.CmEventListenerImplDefault;
 import hotmath.gwt.shared.client.eventbus.EventBus;
 
 import java.util.List;
@@ -61,7 +62,7 @@ public class CmMainPanel extends LayoutContainer {
         _westPanel = new ContentPanel();
         _westPanel.setStyleName("main-panel-west");
         _westPanel.setLayout(new BorderLayout());
-        
+        _westPanel.setAnimCollapse(true);
         _westPanel.getHeader().addStyleName("cm-main-panel-header");
 
         addTools();
@@ -69,7 +70,7 @@ public class CmMainPanel extends LayoutContainer {
         _westPanel.setBorders(false);
         BorderLayoutData westData = new BorderLayoutData(LayoutRegion.WEST, 226);
         westData.setSplit(false);
-        westData.setCollapsible(false);
+        westData.setCollapsible(true);
         _westPanel.add(cmGuiDef.getWestWidget(), new BorderLayoutData(LayoutRegion.CENTER));
         
         add(_westPanel, westData);
@@ -122,6 +123,10 @@ public class CmMainPanel extends LayoutContainer {
     }
 
     
+    public void expandResourceButtons() {
+        _westPanel.expand();
+    }
+    
     /** Request controls from Context
      * 
      */
@@ -146,5 +151,17 @@ public class CmMainPanel extends LayoutContainer {
     public void removeResource() {
         CmMainPanel.__lastInstance._mainContent.removeResource();
     }
-
+    
+    
+    static {
+        EventBus.getInstance().addEventListener(new CmEventListenerImplDefault() {
+            
+            @Override
+            public void handleEvent(CmEvent event) {
+                if(event.getEventName().equals(EventBus.EVENT_TYPE_RESOURCE_VIEWER_CLOSE)) {
+                    __lastInstance.expandResourceButtons();
+                }
+            }
+        });
+    }
 }
