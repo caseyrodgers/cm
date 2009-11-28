@@ -17,33 +17,36 @@ import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 /** Class to define a standard container for all resources.
  * 
  * Will provide basic services, such as removing/minimizing,etc.
+ * 
+ * Restore current setting when new resource is added, unless resource
+ * does not allow said state.  In this case, set to OPTIMAL.
  *  
  */
 public class CmResourcePanelContainer extends ContentPanel {
-	ResourceViewerState viewerState = ResourceViewerState.OPTIMIZED;
+	ResourceViewerState viewerState = null;
 	
 	CmMainResourceContainer container;
 	Button _maximize;
 	
+	
+	/** Keep a static representation of the current display state
+	 * 
+	 */
+	static ResourceViewerState __currentDisplayState = ResourceViewerState.OPTIMIZED;
+	
+	
+	/** Create a new Resource Container with named container as the outer container and panel
+	 *  as the child.
+	 *  
+	 * @param container
+	 * @param panel
+	 */
 	public CmResourcePanelContainer(CmMainResourceContainer container, final CmResourcePanel panel) {
 		this.container = container;
 		
 		
 		addStyleName("cm-resource-viewer-container");
 		addStyleName(panel.getContainerStyleName());
-		
-		String modeButton=null;
-		if(panel.getInitialMode() == ResourceViewerState.OPTIMIZED) {
-    		viewerState = ResourceViewerState.OPTIMIZED;
-    		setHeight( CmMainResourceContainer.getCalculatedHeight(container, panel));
-    		setWidth(panel.getOptimalWidth());
-    		modeButton = "Maximize";
-		}
-		else {
-            viewerState = ResourceViewerState.MAXIMIZED;
-            CmResourcePanelContainer.this.container.setLayout(new FitLayout());
-            modeButton = "Minimal";
-		}
 		
 		setLayout(new FitLayout());
 		add(panel.getResourcePanel());
@@ -64,7 +67,7 @@ public class CmResourcePanelContainer extends ContentPanel {
 		 * 
 		 */
 		if(panel.allowMaximize()) {
-			_maximize = new Button(modeButton, new SelectionListener<ButtonEvent>() {
+			_maximize = new Button("Maximize", new SelectionListener<ButtonEvent>() {
 				public void componentSelected(ButtonEvent ce) {
 				    closeResource(ce, panel);
 				}
@@ -94,7 +97,20 @@ public class CmResourcePanelContainer extends ContentPanel {
 			CmResourcePanelContainer.this.setBodyBorder(false);
 			CmResourcePanelContainer.this.layout();
 		}
-		
+
+		/** If user has already maximized resource viewer, try to open all resources maximized
+		 * 
+		 */
+		if(__currentDisplayState != null && (__currentDisplayState == ResourceViewerState.MAXIMIZED) && panel.allowMaximize()) {
+		    setMaximize(panel);
+		}
+		else if(panel.getInitialMode() == ResourceViewerState.OPTIMIZED) {
+            setOptimized(panel);
+        }
+        else {          
+            setMaximize(panel);
+        }
+
 	}
 	
 	
@@ -102,7 +118,6 @@ public class CmResourcePanelContainer extends ContentPanel {
 	    
        if(viewerState == ResourceViewerState.OPTIMIZED)
             return;
-
 	    
         // minimize the resource area
         CmResourcePanelContainer.this.container.setLayout(new CenterLayout());
@@ -112,8 +127,8 @@ public class CmResourcePanelContainer extends ContentPanel {
 
         viewerState = ResourceViewerState.OPTIMIZED;
         
-        
-        _maximize.setText("Maximize");
+        if(_maximize != null)
+            _maximize.setText("Maximize");
         
         
         /** Reset the panel widget
@@ -139,7 +154,8 @@ public class CmResourcePanelContainer extends ContentPanel {
         CmResourcePanelContainer.this.container.setLayout(new FitLayout());
         viewerState = ResourceViewerState.MAXIMIZED;	    
         
-        _maximize.setText("Minimal");
+        if(_maximize != null)
+            _maximize.setText("Minimal");
         
         
         /** Reset the panel widget
@@ -147,7 +163,8 @@ public class CmResourcePanelContainer extends ContentPanel {
          */
         resetPanelWidget(panel);
         
-        CmResourcePanelContainer.this.layout();        
+        CmResourcePanelContainer.this.layout();
+        
 	}
 	
 	private void closeResource(ButtonEvent ce, CmResourcePanel panel) {
@@ -170,6 +187,24 @@ public class CmResourcePanelContainer extends ContentPanel {
         
         CmResourcePanelContainer.this.add(lc);
         CmResourcePanelContainer.this.container.layout();
+        
+        
+        
+        /** If resource is 'forced' to open maximum, do not allow it affect
+         *  the viewer for other resources.
+         */
+        if(panel.getInitialMode() == ResourceViewerState.MAXIMIZED && viewerState == ResourceViewerState.MAXIMIZED) {
+            // skip tracking it
+        }
+        /** IF resource is 'forced' to open optimized, do not allow it affect ..
+         * 
+         */
+        else if(panel.getInitialMode() == ResourceViewerState.OPTIMIZED && panel.allowMaximize() == false) {
+   	        // skip
+        }
+        else {
+            __currentDisplayState = viewerState;
+        }
 	}
 	
 	
