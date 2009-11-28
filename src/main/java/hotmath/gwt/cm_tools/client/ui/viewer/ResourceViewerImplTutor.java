@@ -28,7 +28,6 @@ import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
-import com.extjs.gxt.ui.client.widget.layout.FlowLayout;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Frame;
@@ -50,7 +49,7 @@ public class ResourceViewerImplTutor extends CmResourcePanelImplDefault {
     }
 
     static public final String STYLE_NAME="resource-viewer-impl-tutor";
-
+    
     enum DisplayMode{TUTOR,WHITEBOARD};
     
     DisplayMode _displayMode = DisplayMode.TUTOR;
@@ -267,7 +266,7 @@ public class ResourceViewerImplTutor extends CmResourcePanelImplDefault {
      * @param pid
      */
     protected void whiteBoardHasBeenUpdated(String pid) {
-        if (!this.hasShowWork && this.pid.equals(pid)) {
+        if (UserInfo.getInstance().isShowWorkRequired() && !this.hasShowWork && this.pid.equals(pid)) {
             // this solution's whiteboard has been updated, so
             // we must make sure the ForceShowWork button is removed
             initializeTutor(pid, this.getResourceItem().getTitle(), true, false);

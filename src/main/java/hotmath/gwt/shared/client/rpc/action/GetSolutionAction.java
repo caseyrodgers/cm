@@ -3,6 +3,11 @@ package hotmath.gwt.shared.client.rpc.action;
 import hotmath.gwt.shared.client.rpc.Action;
 import hotmath.gwt.shared.client.util.RpcData;
 
+/** Return solution information for a given user and pid
+ * 
+ * @author casey
+ *
+ */
 public class GetSolutionAction implements Action<RpcData> {
     
     String pid;

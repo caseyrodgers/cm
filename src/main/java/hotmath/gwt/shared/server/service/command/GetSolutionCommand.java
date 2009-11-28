@@ -75,7 +75,7 @@ public class GetSolutionCommand implements ActionHandler<GetSolutionAction, RpcD
 
             RpcData rpcData = new RpcData();
             rpcData.putData("solutionHtml", solutionHtml);
-            rpcData.putData("hasShowWork", getHasShowWork(uid, pid) ? 1 : 0);
+            rpcData.putData("hasShowWork", getHasShowWork(conn,uid, pid) ? 1 : 0);
             // solutionHtml = "<b><img src='images/logo_1.gif'/>TEST 1</b>";
             return rpcData;
         } catch (Exception e) {
@@ -103,13 +103,10 @@ public class GetSolutionCommand implements ActionHandler<GetSolutionAction, RpcD
      * @return
      * @throws Exception
      */
-    private boolean getHasShowWork(int uid, String pid) throws Exception {
-        Connection conn = null;
+    private boolean getHasShowWork(final Connection conn, int uid, String pid) throws Exception {
         PreparedStatement pstat = null;
         try {
             String sql = "select count(*) as cnt from HA_TEST_RUN_WHITEBOARD " + " where user_id = ? and pid = ?";
-
-            conn = HMConnectionPool.getConnection();
             pstat = conn.prepareStatement(sql);
 
             pstat.setInt(1, uid);
@@ -120,7 +117,7 @@ public class GetSolutionCommand implements ActionHandler<GetSolutionAction, RpcD
             int cnt = rs.getInt("cnt");
             return cnt > 0;
         } finally {
-            SqlUtilities.releaseResources(null, pstat, conn);
+            SqlUtilities.releaseResources(null, pstat, null);
         }
     }    
 
