@@ -28,6 +28,7 @@ import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
+import com.extjs.gxt.ui.client.widget.layout.FlowLayout;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Frame;
@@ -140,7 +141,7 @@ public class ResourceViewerImplTutor extends CmResourcePanelImplDefault {
             ShowWorkPanel swp = new ShowWorkPanel();
             swp.setupForPid(this.pid);
 
-            LayoutContainer lcTutor = new LayoutContainer();
+            LayoutContainer lcTutor = new LayoutContainer(new FitLayout());
             lcTutor.setScrollMode(Scroll.AUTO);
             lcTutor.add(tutorPanel);
             lcTutor.setStyleAttribute("background", "#EEEEEE");
