@@ -150,12 +150,12 @@ public class ResourceViewerImplTutor extends CmResourcePanelImplDefault {
             lcMain.setScrollMode(Scroll.NONE);
             lcMain.setStyleAttribute("background", "white");
 
-            BorderLayoutData bld = new BorderLayoutData(LayoutRegion.EAST, .50f);
+            BorderLayoutData bld = new BorderLayoutData(LayoutRegion.WEST, .50f);
             bld.setSplit(true);
             lcMain.add(lcTutor,bld);
             
 
-            bld = new BorderLayoutData(LayoutRegion.WEST, .50f);
+            bld = new BorderLayoutData(LayoutRegion.EAST, .50f);
             bld.setSplit(true);
             lcMain.add(swp, bld);
 
