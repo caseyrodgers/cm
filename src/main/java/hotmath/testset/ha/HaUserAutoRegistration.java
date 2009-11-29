@@ -31,7 +31,7 @@ public class HaUserAutoRegistration extends HaBasicUserImpl {
         this.uid = key;
     }
 
-    //@Override
+    @Override
     public int getUserKey() {
         return uid;
     }
