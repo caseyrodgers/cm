@@ -5,7 +5,7 @@ import java.io.Serializable;
 public class StudentModel extends BaseModel implements Serializable, StudentModelI {
 
     private static final long serialVersionUID = 2950521146425989628L;
-
+	
 	public static final String GROUP_KEY = "group";
 	public static final String GROUP_ID_KEY = "groupId";
 	public static final String SECTION_NUM_KEY = "sectionNum";
@@ -28,8 +28,8 @@ public class StudentModel extends BaseModel implements Serializable, StudentMode
 	public static final String NAME_KEY = "name";
 	public static final String PASSCODE_KEY = "passcode";
 	public static final String BACKGROUND_STYLE="background_style";
-	public static final String DEMO_USER_KEY="demo_user";
-
+	
+	
 	public String getName() {
 		return get(NAME_KEY);
 	}
@@ -243,15 +243,7 @@ public class StudentModel extends BaseModel implements Serializable, StudentMode
 	    set(BACKGROUND_STYLE, style);
 	}
 	
-	public void setIsDemoUser(Boolean isDemo) {
-		set(DEMO_USER_KEY, isDemo);
-	}
-	
-	public Boolean getIsDemoUser() {
-		return get(DEMO_USER_KEY);
-	}
-	
 	public StudentModel() {
 	}
-
+	
 }

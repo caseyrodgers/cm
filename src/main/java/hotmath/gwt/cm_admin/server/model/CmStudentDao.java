@@ -210,8 +210,8 @@ public class CmStudentDao {
     }
 
     private static final String ADD_STUDENT_SQL =
-            "insert into HA_USER (user_name, user_passcode, active_segment, group_id, test_def_id, admin_id, is_active, is_demo, date_created) " +
-            "values(?, ?, ?, ?, (select test_def_id from HA_TEST_DEF where prog_id = ? and subj_id = ?), ?, 1, ?, now())";
+            "insert into HA_USER (user_name, user_passcode, active_segment, group_id, test_def_id, admin_id, is_active, date_created) " +
+            "values(?, ?, ?, ?, (select test_def_id from HA_TEST_DEF where prog_id = ? and subj_id = ?), ?, 1, now())";
 
     public StudentModel addStudent(final Connection conn, StudentModel sm) throws Exception {
         PreparedStatement ps = null;
@@ -235,7 +235,6 @@ public class CmStudentDao {
             ps.setString(5, sm.getProgId());
             ps.setString(6, sm.getSubjId());
             ps.setInt(7, sm.getAdminUid());
-            ps.setInt(8, (sm.getIsDemoUser() != null && sm.getIsDemoUser()) ? 1 : 0);
 
             int count = ps.executeUpdate();
             if (count == 1) {
@@ -911,7 +910,6 @@ public class CmStudentDao {
             sm.setBackgroundStyle(rs.getString("gui_background_style"));
             sm.setShowWorkRequired(rs.getInt("is_show_work_required")==0?false:true);
             sm.setTutoringAvail(rs.getInt("is_tutoring_available")==0?false:true);
-            sm.setIsDemoUser(rs.getInt("is_demo")==0?false:true);
 
             return sm;
             

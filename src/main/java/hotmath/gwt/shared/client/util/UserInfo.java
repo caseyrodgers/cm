@@ -22,8 +22,6 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  */
 public class UserInfo implements IsSerializable, Response {
 	
-	private static final long serialVersionUID = -3704985207550273686L;
-	
 	int uid;
 	int testId;
 	// int runId=563;
@@ -40,7 +38,6 @@ public class UserInfo implements IsSerializable, Response {
 	boolean isShowWorkRequired;
 	boolean isTutoringAvail;
 	boolean isFirstView=true;
-	boolean isDemoUser;
 	Integer sessionCount;
 	String password;
 	String loginName;
@@ -230,6 +227,7 @@ public class UserInfo implements IsSerializable, Response {
         this.userName = userName;
     }
 
+
     public String getTestName() {
 		return testName;
 	}
@@ -246,6 +244,7 @@ public class UserInfo implements IsSerializable, Response {
 		this.testSegmentCount = testSegmentCount;
 	}
 
+	
 	public int getTestSegment() {
 		return testSegment;
 	}
@@ -282,17 +281,18 @@ public class UserInfo implements IsSerializable, Response {
 	public void setTestId(int testId) {
 		this.testId = testId;
 	}
-
+	
+	
 	String DEMO_USER_NAME="Student";
-
-    public boolean isDemoUser() {
-	    return(this.isDemoUser);
+	/** Return true if this is a demo user
+	 * 
+	 * @return
+	 */
+	public boolean isDemoUser() {
+	    return(this.getUserName().equals(DEMO_USER_NAME));
 	}
-   
-	public void setDemoUser(boolean isDemoUser) {
-		this.isDemoUser = isDemoUser;
-	}
-
+	
+	   
     public int getPassPercentRequired() {
         return passPercentRequired;
     }
@@ -311,7 +311,7 @@ public class UserInfo implements IsSerializable, Response {
                 + sessionCount + ", sessionNumber=" + sessionNumber + ", subTitle=" + subTitle + ", testId=" + testId
                 + ", testName=" + testName + ", testSegment=" + testSegment + ", testSegmentCount=" + testSegmentCount
                 + ", uid=" + uid + ", userAccountType=" + userAccountType + ", userName=" + userName + ", viewCount="
-                + viewCount + ", isDemoUser=" + isDemoUser + "]";
+                + viewCount + "]";
     }
     
     
@@ -356,7 +356,7 @@ public class UserInfo implements IsSerializable, Response {
 
         CmServiceAsync ca = (CmServiceAsync) Registry.get("cmService");
         ca.execute(new GetUserInfoAction(uid), new AsyncCallback<UserInfo>() {
-            //@Override
+            @Override
             public void onSuccess(UserInfo user) {
 
                 __instance = user;
@@ -381,7 +381,7 @@ public class UserInfo implements IsSerializable, Response {
                 EventBus.getInstance().fireEvent(new CmEvent(EventBus.EVENT_TYPE_USERCHANGED,user));
             }
             
-            //@Override
+            @Override
             public void onFailure(Throwable caught) {
                 String msg = caught.getMessage();
                 CatchupMathTools.showAlert(msg);

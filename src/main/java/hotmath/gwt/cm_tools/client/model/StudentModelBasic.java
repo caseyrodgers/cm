@@ -20,303 +20,295 @@ public class StudentModelBasic implements StudentModelI, IsSerializable{
     String chapter;
     String json;
     String passPercent;
-    Boolean isDemoUser;
 
+    
     @Override
     public String toString() {
         return "StudentModelBasic [adminUid=" + adminUid + ", backgroundStyle=" + backgroundStyle + ", chapter="
                 + chapter + ", email=" + email + ", group=" + group + ", groupId=" + groupId + ", json=" + json
                 + ", name=" + name + ", passcode=" + passcode + ", progId=" + progId + ", showWorkRequired="
                 + showWorkRequired + ", subjId=" + subjId + ", tutorAvailable=" + tutorAvailable + ", uid=" + uid
-                + ", userProgramId=" + userProgramId + ", isDemoUser=" + isDemoUser + "]";
+                + ", userProgramId=" + userProgramId + "]";
     }
 
 
-    //@Override
+    @Override
     public Integer getUid() {
         // TODO Auto-generated method stub
         return uid;
     }
 
     
-    //@Override
+    @Override
     public Integer getAdminUid() {
         return adminUid; 
     
     }
 
-    //@Override
+    @Override
     public String getBackgroundStyle() {
         return backgroundStyle;
     }
 
-    //@Override
+    @Override
     public String getChapter() {
         return this.chapter;
     }
 
-    //@Override
+    @Override
     public String getEmail() {
         // TODO Auto-generated method stub
         return email;
     }
 
-    //@Override
+    @Override
     public String getGroup() {
         // TODO Auto-generated method stub
         return null;
     }
 
-    //@Override
+    @Override
     public String getGroupId() {
         return this.groupId;
     }
 
-    //@Override
+    @Override
     public String getJson() {
         return json;
     }
 
-    //@Override
+    @Override
     public String getLastLogin() {
         // TODO Auto-generated method stub
         return null;
     }
 
-    //@Override
+    @Override
     public String getLastQuiz() {
         // TODO Auto-generated method stub
         return null;
     }
 
-    //@Override
+    @Override
     public String getName() {
         return this.name;
     }
 
-    //@Override
+    @Override
     public String getPassPercent() {
         return this.passPercent;
     }
     
     
 
-    //@Override
+    @Override
     public String getPasscode() {
         return this.passcode;
     }
 
-    //@Override
+    @Override
     public String getProgId() {
         return this.progId;
     }
 
-    //@Override
+    @Override
     public Boolean getProgramChanged() {
         // TODO Auto-generated method stub
         return null;
     }
 
-    //@Override
+    @Override
     public String getProgramDescr() {
         // TODO Auto-generated method stub
         return null;
     }
 
-    //@Override
+    @Override
     public Integer getSectionNum() {
         // TODO Auto-generated method stub
         return null;
     }
 
-    //@Override
+    @Override
     public Boolean getShowWorkRequired() {
         return this.showWorkRequired;
     }
 
-    //@Override
+    @Override
     public String getShowWorkState() {
         // TODO Auto-generated method stub
         return null;
     }
 
-    //@Override
+    @Override
     public String getStatus() {
         // TODO Auto-generated method stub
         return null;
     }
 
-    //@Override
+    @Override
     public String getSubjId() {
         return this.subjId;
     }
 
-    //@Override
+    @Override
     public Integer getTotalUsage() {
         // TODO Auto-generated method stub
         return null;
     }
 
-    //@Override
+    @Override
     public Boolean getTutoringAvail() {
         return this.tutorAvailable;
     }
 
-    //@Override
+    @Override
     public String getTutoringState() {
         // TODO Auto-generated method stub
         return null;
     }
 
 
-    //@Override
+    @Override
     public Integer getUserProgramId() {
         return this.userProgramId;
     }
 
-	public Boolean getIsDemoUser() {
-		return this.isDemoUser;
-	}
-
-    //@Override
+    @Override
     public void setAdminUid(Integer adminUid) {
         this.adminUid = adminUid;
     }
 
-    //@Override
+    @Override
     public void setBackgroundStyle(String style) {
         this.backgroundStyle = style;
     }
 
-    //@Override
+    @Override
     public void setChapter(String chapter) {
         this.chapter = chapter;
     }
 
-    //@Override
+    @Override
     public void setEmail(String emailAddr) {
         this.email = email;
     }
 
-    //@Override
+    @Override
     public void setGroup(String group) {
         this.group = group;
     }
 
-    //@Override
+    @Override
     public void setGroupId(String groupId) {
         this.groupId = groupId;
     }
 
-    //@Override
+    @Override
     public void setJson(String json) {
         this.json = json;
     }
 
-    //@Override
+    @Override
     public void setLastLogin(String lastLogin) {
         // TODO Auto-generated method stub
         
     }
 
-    //@Override
+    @Override
     public void setLastQuiz(String lastQuiz) {
         // TODO Auto-generated method stub
         
     }
 
-    //@Override
+    @Override
     public void setName(String name) {
         this.name = name;
     }
 
-    //@Override
+    @Override
     public void setPassPercent(String passPercent) {
         this.passPercent = passPercent;
     }
 
-    //@Override
+    @Override
     public void setPasscode(String passcode) {
         this.passcode = passcode;
     }
 
-    //@Override
+    @Override
     public void setProgId(String progId) {
         this.progId = progId;
     }
 
-    //@Override
+    @Override
     public void setProgramChanged(Boolean changed) {
         // TODO Auto-generated method stub
         
     }
 
-    //@Override
+    @Override
     public void setProgramDescr(String progDescr) {
         // TODO Auto-generated method stub
         
     }
 
-    //@Override
+    @Override
     public void setSectionNum(Integer sectionNum) {
         // TODO Auto-generated method stub
         
     }
 
-    //@Override
+    @Override
     public void setShowWorkRequired(Boolean val) {
         this.showWorkRequired = val;
     }
     
 
-    //@Override
+    @Override
     public void setShowWorkState(String swState) {
         // TODO Auto-generated method stub
         
     }
 
-    //@Override
+    @Override
     public void setStatus(String status) {
         // TODO Auto-generated method stub
         
     }
 
-    //@Override
+    @Override
     public void setSubjId(String subjId) {
         this.subjId = subjId;
     }
 
-    //@Override
+    @Override
     public void setTotalUsage(Integer totalUsage) {
         // TODO Auto-generated method stub
         
     }
 
-    //@Override
+    @Override
     public void setTutoringAvail(Boolean val) {
         this.tutorAvailable = val;
         
     }
 
-    //@Override
+    @Override
     public void setTutoringState(String tutoringState) {
         // TODO Auto-generated method stub
         
     }
 
-    //@Override
+    @Override
     public void setUid(Integer uid) {
         this.uid = uid;
         
     }
 
-    //@Override
+    @Override
     public void setUserProgramId(Integer userProgId) {
         this.userProgramId = userProgId;
     }
-
-	public void setIsDemoUser(Boolean isDemo) {
-		this.isDemoUser = isDemo;
-	}
 
 }
