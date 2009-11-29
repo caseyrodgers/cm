@@ -40,7 +40,9 @@ public class HaUser extends HaBasicUserImpl {
 	String backgroundStyle;
     String testConfigJson;
     boolean isShowWorkRequired;
-    String  userAccountType;
+    boolean isDemoUser;
+
+	String  userAccountType;
     int passPercentRequired;
     
 
@@ -180,8 +182,15 @@ public class HaUser extends HaBasicUserImpl {
     public void setPassPercentRequired(int passPercentRequired) {
         this.passPercentRequired = passPercentRequired;
     }
-	
-	
+
+    public boolean isDemoUser() {
+		return isDemoUser;
+	}
+
+	public void setDemoUser(boolean isDemoUser) {
+		this.isDemoUser = isDemoUser;
+	}
+
 	/** Update this user record in db
 	 * 
 	 *   (only select fields ...)
@@ -264,13 +273,15 @@ public class HaUser extends HaBasicUserImpl {
 			user.setPassword(rs.getString("user_passcode"));
 			user.setAid(rs.getInt("aid"));
 			user.setUserAccountType(rs.getString("type"));
-			
+			user.setDemoUser((rs.getInt("is_demo")!=0));
+
 			return user;
 		}
 		catch(HotMathException hme) {
 			throw hme;
 		}
 		catch(Exception e) {
+			Logger.getLogger(HaUser.class).error("*** Error looking up Catchup Math user: uid: " + uid, e);
 			throw new HotMathException(e,"Error looking up Catchup Math user");
 		}
 		finally {

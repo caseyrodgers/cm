@@ -22,7 +22,7 @@ import java.sql.Connection;
 
 public class GetUserInfoCommand implements ActionHandler<GetUserInfoAction, UserInfo> {
 
-    @Override
+    //@Override
     public UserInfo execute(final Connection conn, GetUserInfoAction action) throws Exception {
         try {
             CmStudentDao dao = new CmStudentDao();
@@ -65,6 +65,7 @@ public class GetUserInfoCommand implements ActionHandler<GetUserInfoAction, User
             userInfo.setTutoringAvail(sm.getTutoringAvail());
             userInfo.setPassword(sm.getPasscode());
             userInfo.setLoginName(null);
+            userInfo.setDemoUser(sm.getIsDemoUser());
 
             /** Set number of sessions in current prescription */
             if(userInfo.getRunId() > 0)
@@ -83,7 +84,7 @@ public class GetUserInfoCommand implements ActionHandler<GetUserInfoAction, User
         }
     }
 
-    @Override
+    //@Override
     public Class<? extends Action<? extends Response>> getActionType() {
         return GetUserInfoAction.class;
     }
