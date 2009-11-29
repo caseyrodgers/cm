@@ -22,7 +22,7 @@ import java.sql.Connection;
 
 public class GetUserInfoCommand implements ActionHandler<GetUserInfoAction, UserInfo> {
 
-    //@Override
+    @Override
     public UserInfo execute(final Connection conn, GetUserInfoAction action) throws Exception {
         try {
             CmStudentDao dao = new CmStudentDao();
@@ -83,8 +83,8 @@ public class GetUserInfoCommand implements ActionHandler<GetUserInfoAction, User
             throw new CmRpcException(e);
         }
     }
-
-    //@Override
+    
+    @Override
     public Class<? extends Action<? extends Response>> getActionType() {
         return GetUserInfoAction.class;
     }
