@@ -56,24 +56,36 @@ public class CmMainPanel extends LayoutContainer {
 
         setScrollMode(Scroll.NONE);
         this.cmGuiDef = cmGuiDef;
-        setLayout(new BorderLayout());
+        BorderLayout bl = new BorderLayout() {
+            public void layout() {
+                super.layout();
+                if(_westPanel.getHeader().getToolCount() > 0) {
+                    _westPanel.getHeader().getTool(0).setToolTip("Hide the available resources.");
+                }                
+            }
+        };
+        setLayout(bl);
         _mainContent = new CmMainResourceContainer();
         
         _westPanel = new ContentPanel();
+        
+        
         _westPanel.setStyleName("main-panel-west");
         _westPanel.setLayout(new BorderLayout());
         _westPanel.setAnimCollapse(true);
         _westPanel.getHeader().addStyleName("cm-main-panel-header");
-
-        addTools();
-
         _westPanel.setBorders(false);
+        
         BorderLayoutData westData = new BorderLayoutData(LayoutRegion.WEST, 226);
         westData.setSplit(false);
         westData.setCollapsible(true);
+        
         _westPanel.add(cmGuiDef.getWestWidget(), new BorderLayoutData(LayoutRegion.CENTER));
         
         add(_westPanel, westData);
+        
+        addTools();
+
         
         BorderLayoutData centerData = new BorderLayoutData(LayoutRegion.CENTER);
         //centerData.setMargins(new Margins(1, 0,1, 1));

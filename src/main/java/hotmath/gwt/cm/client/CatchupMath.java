@@ -92,10 +92,11 @@ public class CatchupMath implements EntryPoint {
         bdata = new BorderLayoutData(LayoutRegion.CENTER);
         _mainPort.add(_mainContainer, bdata);
 
-        bdata = new BorderLayoutData(LayoutRegion.SOUTH, 20);
-        FooterPanel footer = new FooterPanel();
-        _mainPort.add(footer, bdata);
-
+        
+        if(CmShared.getQueryParameter("debug") != null) {
+            FooterPanel footer = new FooterPanel();
+            _mainPort.add(footer, new BorderLayoutData(LayoutRegion.SOUTH, 20));
+        }
 
         
         /** Turn on debugging CSS */

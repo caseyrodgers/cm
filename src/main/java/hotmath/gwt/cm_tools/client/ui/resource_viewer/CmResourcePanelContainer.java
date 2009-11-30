@@ -155,7 +155,7 @@ public class CmResourcePanelContainer extends ContentPanel {
         viewerState = ResourceViewerState.MAXIMIZED;	    
         
         if(_maximize != null)
-            _maximize.setText("Minimal");
+            _maximize.setText("Shrink");
         
         
         /** Reset the panel widget

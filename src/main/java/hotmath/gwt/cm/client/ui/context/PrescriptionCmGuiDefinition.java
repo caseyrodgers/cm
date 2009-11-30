@@ -152,7 +152,8 @@ public class PrescriptionCmGuiDefinition implements CmGuiDefinition {
 
     private void showHelpPanel() {
         
-        String html = "<ul>" + 
+        String html = "<h2>Catchup Math: the more you do, the more you learn!</h2>" + 
+               "<ul>" + 
                "<li>Choose any resource from the left-side menu</li> " +
                "<li>The Help button has neat features</li> " + 
                "<li>Check for new Flash Cards and Games</li> " + 
@@ -161,16 +162,19 @@ public class PrescriptionCmGuiDefinition implements CmGuiDefinition {
         html = "<div class='info'>" + html + "</div>";
         CmMainPanel.__lastInstance._mainContent.setLayout(new CenterLayout());
         
-        ContentPanel cp = new ContentPanel();
-        cp.setHeading("Catchup Math: the more you do, the more you learn!");
-        cp.addStyleName("prescription-help-panel");
-        cp.setWidth(390);
-        cp.add(new Html(html));
+        Html ohtml = new Html(html);
+        ohtml.setStyleName("prescription-help-panel");
         
         CmMainPanel.__lastInstance._mainContent.removeAll();
-        CmMainPanel.__lastInstance._mainContent.add(cp);
+        CmMainPanel.__lastInstance._mainContent.add(ohtml);
         CmMainPanel.__lastInstance._mainContent.layout();
-        cp.el().fadeIn(FxConfig.NONE);
+        
+        /** BUG, BUG .. to only way to get the above to render is to force exception 
+         * 
+         */
+        ContentPanel cp = new ContentPanel();
+        cp.el();  /** not rendered, throws exception .. causes the above to be drawn */
+        
     }
 
     LayoutContainer _main;
