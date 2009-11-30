@@ -16,6 +16,7 @@ import hotmath.gwt.cm_tools.client.ui.CmMainPanel;
 import hotmath.gwt.cm_tools.client.ui.ContextController;
 import hotmath.gwt.cm_tools.client.ui.context.CmContext;
 import hotmath.gwt.cm_tools.client.ui.resource_viewer.CmResourcePanel;
+import hotmath.gwt.cm_tools.client.ui.viewer.ResourceViewerFactory;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
 import hotmath.gwt.shared.client.eventbus.CmEventListener;
 import hotmath.gwt.shared.client.eventbus.CmEventListenerImplDefault;
@@ -42,6 +43,7 @@ import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
 import com.extjs.gxt.ui.client.widget.layout.CenterLayout;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -150,31 +152,38 @@ public class PrescriptionCmGuiDefinition implements CmGuiDefinition {
         return context;
     }
 
+    /** Display the central help message in the main
+     *  resource area.
+     *  
+     *  
+     *  @TODO: This has to be done in a Timer due to bug in GXT.  Seems like 
+     *  this is getting called during a 'layout' and we cannot change things in 
+     *  this thread.  But, by creating a new thread (Timer) the write works.
+     */
     private void showHelpPanel() {
-        
-        String html = "<h2>Catchup Math: the more you do, the more you learn!</h2>" + 
-               "<ul>" + 
-               "<li>Choose any resource from the left-side menu</li> " +
-               "<li>The Help button has neat features</li> " + 
-               "<li>Check for new Flash Cards and Games</li> " + 
-               "<li>Use our whiteboard to work the problems</li>" + "</ul>";
 
-        html = "<div class='info'>" + html + "</div>";
-        CmMainPanel.__lastInstance._mainContent.setLayout(new CenterLayout());
-        
-        Html ohtml = new Html(html);
-        ohtml.setStyleName("prescription-help-panel");
-        
-        CmMainPanel.__lastInstance._mainContent.removeAll();
-        CmMainPanel.__lastInstance._mainContent.add(ohtml);
-        CmMainPanel.__lastInstance._mainContent.layout();
-        
-        /** BUG, BUG .. to only way to get the above to render is to force exception 
-         * 
-         */
-        ContentPanel cp = new ContentPanel();
-        cp.el();  /** not rendered, throws exception .. causes the above to be drawn */
-        
+        Timer t = new Timer() {
+            @Override
+            public void run() {
+                    String html = "<h2>Catchup Math: the more you do, the more you learn!</h2>" + 
+                    "<ul>" + 
+                    "<li>Choose any resource from the left-side menu</li> " +
+                    "<li>The Help button has neat features</li> " + 
+                    "<li>Check for new Flash Cards and Games</li> " + 
+                    "<li>Use our whiteboard to work the problems</li>" + "</ul>";
+    
+                     html = "<div class='info'>" + html + "</div>";
+
+                     Html ohtml = new Html(html);
+                     ohtml.addStyleName("prescription-help-panel");
+                     
+                     CmMainPanel.__lastInstance._mainContent.add(ohtml);
+                     CmMainPanel.__lastInstance._mainContent.layout();
+                     
+                     ohtml.el().fadeIn(FxConfig.NONE);
+                }
+        };
+        t.schedule(1);
     }
 
     LayoutContainer _main;
