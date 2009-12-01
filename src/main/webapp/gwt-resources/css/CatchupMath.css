@@ -848,6 +848,14 @@ img.resource-item-complete {
 }
 
 
+.prescription-help-panel {
+   background: blue;
+}
+
+.prescription-help-panel h2 {
+   color: #E42400;
+}
+
 
 /** teset_div (quiz) */
 
@@ -952,4 +960,17 @@ img.resource-item-complete {
     background:#F1F1F1;
     padding:10pt;
     vertical-align:middle;
+}
+
+
+
+
+.resource-viewer-impl-review table td {
+    font-family:"Times New Roman",Times,serif;
+    font-size:12pt;
+}
+
+
+.resource-viewer-impl-review em {
+    font-style: italic;
 }
