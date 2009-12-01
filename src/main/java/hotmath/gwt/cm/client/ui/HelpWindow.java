@@ -110,7 +110,7 @@ public class HelpWindow extends CmWindow {
                             String newStyle = se.getSelectedItem().getBackgroundStyle();
                             /**
                              * Remove any previous wallpaper styles, and make
-                             * sure thie one just selected is the only one.
+                             * sure this is the only one active.
                              * 
                              * NOTE: all wallpaper styles start with
                              * 'resource-container-'

@@ -181,6 +181,8 @@ public class PrescriptionCmGuiDefinition implements CmGuiDefinition {
                      CmMainPanel.__lastInstance._mainContent.setLayout(new CenterLayout());
                      CmMainPanel.__lastInstance._mainContent.add(ohtml);
                      CmMainPanel.__lastInstance._mainContent.layout();
+                     
+                    ohtml.el().fadeIn(FxConfig.NONE);
                 }
         };
         t.schedule(1);
