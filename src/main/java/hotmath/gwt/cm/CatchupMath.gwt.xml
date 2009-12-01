@@ -23,8 +23,6 @@
       
       
       <inherits name='hotmath.gwt.cm_tools.CatchupMathTools'/>
-      
-      <inherits name='hotmath.gwt.cm_tools.CatchupMathTools'/>
             
           
       <servlet path="/services/prescriptionService" class="hotmath.gwt.cm.server.service.PrescriptionServiceImpl" />
