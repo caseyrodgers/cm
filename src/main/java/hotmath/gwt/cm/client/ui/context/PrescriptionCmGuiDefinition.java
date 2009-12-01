@@ -165,7 +165,7 @@ public class PrescriptionCmGuiDefinition implements CmGuiDefinition {
         Timer t = new Timer() {
             @Override
             public void run() {
-                    String html = "<h2>Catchup Math: the more you do, the more you learn!</h2>" + 
+                    String html = "<b>Catchup Math: the more you do, the more you learn!</b>" + 
                     "<ul>" + 
                     "<li>Choose any resource from the left-side menu</li> " +
                     "<li>The Help button has neat features</li> " + 
@@ -176,11 +176,11 @@ public class PrescriptionCmGuiDefinition implements CmGuiDefinition {
 
                      Html ohtml = new Html(html);
                      ohtml.addStyleName("prescription-help-panel");
-                     
+
+                     CmMainPanel.__lastInstance._mainContent.removeAll();
+                     CmMainPanel.__lastInstance._mainContent.setLayout(new CenterLayout());
                      CmMainPanel.__lastInstance._mainContent.add(ohtml);
                      CmMainPanel.__lastInstance._mainContent.layout();
-                     
-                     ohtml.el().fadeIn(FxConfig.NONE);
                 }
         };
         t.schedule(1);
