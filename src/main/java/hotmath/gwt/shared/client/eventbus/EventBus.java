@@ -9,7 +9,7 @@ import com.google.gwt.user.client.Window;
 /** Manages the global eventbus for registering/firing events
  * 
  * Also, there is a main loop that fires once every minute
- * that allows any arbitary stuff to executed on a recurring
+ * that allows any arbitrary stuff to executed on a recurring
  * basis instead of having multiple timers.
  * 
  * 
