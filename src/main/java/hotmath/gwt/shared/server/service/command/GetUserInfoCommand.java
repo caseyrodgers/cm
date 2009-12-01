@@ -65,6 +65,7 @@ public class GetUserInfoCommand implements ActionHandler<GetUserInfoAction, User
             userInfo.setTutoringAvail(sm.getTutoringAvail());
             userInfo.setPassword(sm.getPasscode());
             userInfo.setLoginName(null);
+            userInfo.setDemoUser(sm.getIsDemoUser());
 
             /** Set number of sessions in current prescription */
             if(userInfo.getRunId() > 0)

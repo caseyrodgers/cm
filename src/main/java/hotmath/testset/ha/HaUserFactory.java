@@ -109,7 +109,7 @@ public class HaUserFactory {
                 rs = pstat.executeQuery();
                 if (rs.first()) { 
                     int userId = rs.getInt("uid");
-                    HaUser student = HaUser.lookUser(conn, userId,null);
+                    HaUser student = HaUser.lookUser(conn, userId, null);
                     student.setUserName(rs.getString("user_name"));
                     student.setPassword(pwd);
                     student.setLoginName(user);
@@ -249,6 +249,7 @@ public class HaUserFactory {
             student.setPassPercent("70%");
             student.setTutoringAvail(false);
             student.setShowWorkRequired(false);
+            student.setIsDemoUser(true);
 
             cmDao.addStudent(conn, student);
 

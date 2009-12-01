@@ -106,4 +106,8 @@ public interface StudentModelI extends Response, IsSerializable {
 	public String getBackgroundStyle();
 	
 	public void setBackgroundStyle(String style);
+	
+	public Boolean getIsDemoUser();
+	
+	public void setIsDemoUser(Boolean isDemo);
 }
