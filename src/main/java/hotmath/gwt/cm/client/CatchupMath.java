@@ -66,6 +66,8 @@ public class CatchupMath implements EntryPoint {
      */
     public static boolean __hasBeenInformedAboutShowWork;
     
+    
+    
     /**
      * This is the entry point method.
      */
@@ -104,14 +106,6 @@ public class CatchupMath implements EntryPoint {
             _mainPort.addStyleName("debug-on");
         }
         
-
-        
-        if(CmShared.getQueryParameter("loaderror") != null)
-            return;  
-        
-
-  
-        
         /** Install listener to track any changes to the main window 
          * 
          */
@@ -146,10 +140,8 @@ public class CatchupMath implements EntryPoint {
         });
         
         
-
-
-        
-        /** Login to CM
+        /** Login to CM asynchronously passing a callback that will be 
+         *  notified when the login process is complete.
          * 
          */
         CmShared.handleLoginProcessAsync(new CmLoginAsync() {

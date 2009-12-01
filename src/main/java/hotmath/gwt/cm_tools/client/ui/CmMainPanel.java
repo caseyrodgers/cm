@@ -70,9 +70,9 @@ public class CmMainPanel extends LayoutContainer {
         _westPanel = new ContentPanel();
         
         
-        _westPanel.setStyleName("main-panel-west");
+        _westPanel.addStyleName("main-panel-west");
         _westPanel.setLayout(new BorderLayout());
-        _westPanel.setAnimCollapse(true);
+        //_westPanel.setAnimCollapse(true);
         _westPanel.getHeader().addStyleName("cm-main-panel-header");
         _westPanel.setBorders(false);
         
@@ -91,15 +91,11 @@ public class CmMainPanel extends LayoutContainer {
         //centerData.setMargins(new Margins(1, 0,1, 1));
         centerData.setSplit(false);
         add(_mainContent, centerData);
-
-        layout();
         
         Widget w = cmGuiDef.getCenterWidget();
         if (w != null) {
                 _mainContent.add(w);
         }
-        
-        
         
         /** Any modal window, should hide the resource window to allow
          *  for Flash widgets to be hidden
@@ -123,12 +119,16 @@ public class CmMainPanel extends LayoutContainer {
                 else if(event.getEventName().equals(EventBus.EVENT_TYPE_WINDOW_RESIZED)) {
                     _mainContent.fireWindowResized();
                 }
+                else if(event.getEventName().equals(EventBus.EVENT_TYPE_RESOURCE_VIEWER_CLOSE)) {
+                    _lastResourceViewer = (CmResourcePanel)event.getEventData();
+                }
             }
             
             @Override
             public String[] getEventsOfInterest() {
                 // TODO Auto-generated method stub
-                String types[] = {EventBus.EVENT_TYPE_MODAL_WINDOW_OPEN, EventBus.EVENT_TYPE_RESOURCE_VIEWER_OPEN, EventBus.EVENT_TYPE_WINDOW_RESIZED};
+                String types[] = {EventBus.EVENT_TYPE_MODAL_WINDOW_OPEN, EventBus.EVENT_TYPE_RESOURCE_VIEWER_OPEN, 
+                        EventBus.EVENT_TYPE_RESOURCE_VIEWER_CLOSE,EventBus.EVENT_TYPE_WINDOW_RESIZED};
                 return types;
             }
         });
@@ -136,7 +136,7 @@ public class CmMainPanel extends LayoutContainer {
 
     
     public void expandResourceButtons() {
-        _westPanel.expand();
+        ((BorderLayout)getLayout()).expand(LayoutRegion.WEST);
     }
     
     /** Request controls from Context

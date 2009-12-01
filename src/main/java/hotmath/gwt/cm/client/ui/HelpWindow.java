@@ -14,9 +14,7 @@ import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
 import hotmath.gwt.shared.client.eventbus.EventBus;
-import hotmath.gwt.shared.client.rpc.action.GetCmVersionInfoAction;
 import hotmath.gwt.shared.client.rpc.action.SetBackgroundStyleAction;
-import hotmath.gwt.shared.client.rpc.result.CmVersionInfo;
 import hotmath.gwt.shared.client.util.RpcData;
 import hotmath.gwt.shared.client.util.UserInfo;
 
@@ -53,9 +51,9 @@ public class HelpWindow extends CmWindow {
 
         EventBus.getInstance().fireEvent(new CmEvent(EventBus.EVENT_TYPE_MODAL_WINDOW_OPEN, this));
 
-        
-        CmMainPanel.__lastInstance._mainContent.removeResource();
-        CmMainPanel.__lastInstance.expandResourceButtons();
+        if(CmMainPanel.__lastInstance != null) {
+            CmMainPanel.__lastInstance.expandResourceButtons();
+        }
         
         
         Button closeBtn = new Button("Close");
