@@ -87,7 +87,7 @@ public class PrescriptionCmGuiDefinition implements CmGuiDefinition {
                      *  
                      *  practice problems are tracked elsewhere. (where?)
                      */
-                    if(!viewer.getResourceItem().getType().equals("practice"))
+                    if(viewer.getResourceItem() != null && viewer.getResourceItem().getType().equals("practice"))
                         markResourceAsViewed(viewer.getResourceItem());
                 }
                 else if(event.getEventName().equals(EventBus.EVENT_TYPE_RESOURCE_VIEWER_CLOSE)) {

@@ -80,7 +80,7 @@ public class HeaderPanel extends LayoutContainer {
 		            /** Only show modal popup if not in auto test mode 
 		             * 
 		             */
-		            if(UserInfo.getInstance().isAutoTestMode() || CmHistoryQueue.getInstance().isInitializingToNonStandard())
+		            if(CmShared.getQueryParameter("debug") != null || UserInfo.getInstance().isAutoTestMode() || CmHistoryQueue.getInstance().isInitializingToNonStandard())
 		                InfoPopupBox.display(new CmInfoConfig("Current Topic", "Current topic is: " + event.getEventData()));
 		            else
  		                new ContextChangeMessage((String)event.getEventData());

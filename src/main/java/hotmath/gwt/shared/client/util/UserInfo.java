@@ -26,7 +26,6 @@ public class UserInfo implements IsSerializable, Response {
 	
 	int uid;
 	int testId;
-	// int runId=563;
 	int runId;
 	int sessionNumber=0;
 	int testSegment=1;
@@ -67,8 +66,6 @@ public class UserInfo implements IsSerializable, Response {
     public void setLoginName(String loginName) {
         this.loginName = loginName;
     }
-    
-    
     
 	public String getPassword() {
         return password;
@@ -125,6 +122,7 @@ public class UserInfo implements IsSerializable, Response {
         this.autoTestMode = autoTestMode;
     }
 
+    
     /** Define the type of user, either a student
 	 *  at a single school, or a single user purchase.
 	 */

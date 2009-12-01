@@ -119,12 +119,7 @@ public class QuizCmGuiDefinition implements CmGuiDefinition {
 				
 				
 				ContextController.getInstance().setCurrentContext(qc);
-
-		        
-
-				
-				
-				
+			
 				if(UserInfo.getInstance().isAutoTestMode()) {
 				    qc.doCheckTest();
 				}

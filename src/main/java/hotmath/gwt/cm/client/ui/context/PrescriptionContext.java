@@ -172,6 +172,7 @@ public class PrescriptionContext implements CmContext {
 
     private void doMoveNextAux(boolean hasPrescription) {
         
+        boolean isDemoUser = UserInfo.getInstance().isDemoUser();
         
         /**
          * The current session number
@@ -207,7 +208,7 @@ public class PrescriptionContext implements CmContext {
                 
                 // User has passed this section, and is ready to move to next quiz/autoAdvance
                 if (UserInfo.getInstance().isDemoUser()) {
-                    showDemoCompleteMessage();
+                    new SampleDemoMessageWindow();
                     return;
                 }
 
@@ -329,21 +330,6 @@ public class PrescriptionContext implements CmContext {
                 CatchupMathTools.showAlert(msg);
             }
         });
-    }
-
-    private void showDemoCompleteMessage() {
-        String msg = "<p>Thank you for trying Catchup Math for a Pre-algebra Session.</p>  "
-                + "<p>Please visit our <a href='http://catchupmath.com/schools.html'>Schools</a>, <a href='http://catchupmath.com/colleges.html'>Colleges</a>, or <a href='http://catchupmath.com/students.html'>Students</a> pages.</p>";
-
-        Window w = new Window();
-        w.setClosable(false);
-        w.setStyleName("demo-complete-window");
-        w.setHeight(200);
-        w.setWidth(350);
-        w.setHeading("Thank You");
-        Html html = new Html(msg);
-        w.add(html);
-        w.setVisible(true);
     }
 
     public void gotoPreviousTopic() {

@@ -182,8 +182,15 @@ public class QuizContext implements CmContext {
            	                "First topic: <b>" + runInfo.getSessionName() + "</b></br>";
     	        }
     	        else {
-    	            msg += "Your quiz score: " + runInfo.getTestCorrectPercent() + "%</br>" +
-                    "<br/>You will now be given a quiz for the next section!</br>";
+    	            
+    	            if(UserInfo.getInstance().isDemoUser()) {
+    	                new SampleDemoMessageWindow();
+    	                return;
+    	            }
+    	            else {
+    	                msg += "Your quiz score: " + runInfo.getTestCorrectPercent() + "%</br>" +
+                        "<br/>You will now be given a quiz for the next section!</br>";
+    	            }
     	        }
     	    }
     	    else {
