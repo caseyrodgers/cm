@@ -64,7 +64,7 @@ public class CmResourcePanelContainer extends ContentPanel {
 		 * 
 		 */
 		if(panel.allowMaximize()) {
-			_maximize = new Button("Maximize", new SelectionListener<ButtonEvent>() {
+			_maximize = new Button("Expand", new SelectionListener<ButtonEvent>() {
 				public void componentSelected(ButtonEvent ce) {
 				    closeResource(ce, panel);
 				}
@@ -132,7 +132,7 @@ public class CmResourcePanelContainer extends ContentPanel {
         viewerState = ResourceViewerState.OPTIMIZED;
         
         if(_maximize != null)
-            _maximize.setText("Maximize");
+            _maximize.setText("Expand");
         
         
         /** Reset the panel widget
@@ -172,7 +172,7 @@ public class CmResourcePanelContainer extends ContentPanel {
 	}
 	
 	private void closeResource(ButtonEvent ce, CmResourcePanel panel) {
-        boolean isMax = ce.getButton().getText().equals("Maximize");
+        boolean isMax = ce.getButton().getText().equals("Expand");
         if(isMax) {
            setMaximize(panel);
         }

@@ -92,41 +92,25 @@ public class AutoTestWindow extends ContentPanel {
     
     
     Slider _waitTimeForSingleResourceSlider = new Slider();
-    Slider _waitTimeForSingleLessonSlider = new Slider();
     private LayoutContainer createTopForm() {
         
         LayoutContainer lc = new HorizontalPanel();
         
         _waitTimeForSingleResourceSlider.setWidth(50);
-        _waitTimeForSingleLessonSlider.setWidth(50);
-        
         _waitTimeForSingleResourceSlider.setMaxValue(3000*2);
         _waitTimeForSingleResourceSlider.setValue(3000*2);
-        _waitTimeForSingleLessonSlider.setMaxValue(30000*2);
-        _waitTimeForSingleLessonSlider.setValue(30000*2);
+        _waitTimeForSingleResourceSlider.setToolTip("Time between resource item loads");
         
-        
-        Label l = new Label("Item: ");
+        Label l = new Label("Interval time: ");
         lc.add(l);
         lc.add(_waitTimeForSingleResourceSlider);
         
-        l = new Label("Resource: ");
-        lc.add(l);
-        
-        l = new Label("Lesson: ");
-        lc.add(l);
-        lc.add(_waitTimeForSingleLessonSlider);
-
         return lc;
     }
     
     
     public int getTimeForSingleResource() {
         return _waitTimeForSingleResourceSlider.getValue();
-    }
-    
-    public int getTimeForSingleLesson() {
-        return _waitTimeForSingleLessonSlider.getValue();
     }
 }
 

@@ -4,6 +4,7 @@ import hotmath.gwt.cm.client.CatchupMath;
 import hotmath.gwt.cm.client.history.CmHistoryManager;
 import hotmath.gwt.cm.client.history.CmLocation;
 import hotmath.gwt.cm.client.history.CmLocation.LocationType;
+import hotmath.gwt.cm.client.ui.context.CmAutoTest.ResourceObject;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.data.InmhItemData;
 import hotmath.gwt.cm_tools.client.data.PrescriptionData;
@@ -450,68 +451,57 @@ public class PrescriptionContext implements CmContext {
      * 
      */
     public void runAutoTest() {
-        int timeToWait = 1;
+        
+        String topic = prescriptionData.getCurrSession().getTopic();
+        String msg = "Testing lesson: " + topic;
+        AutoTestWindow.getInstance().addLogMessage(msg);
+
+        
+        /** prepare a stack of resources to run, then run them one by one
+         * 
+         */
+        List<ResourceObject> resourcesToRun = new ArrayList<ResourceObject>();
+        
+        
         for(String rt: PrescriptionCmGuiDefinition._registeredResources.keySet()) {
             final String resourceType = rt;
-            try {
-                Timer timer = new Timer() {
-                    public void run() {
-
-                        AutoTestWindow.getInstance().addLogMessage("Testing resource type: " + resourceType);
-
-                        ((PrescriptionCmGuiDefinition) CmMainPanel.__lastInstance.cmGuiDef)._guiWidget.expandResourceType(resourceType);
-
-                        // now click on each resource
-                        
-                        List<InmhItemData> resources = PrescriptionCmGuiDefinition._registeredResources.get(resourceType);
-                        int timeToWait1 = 1;
-                        int which=0;
-                        for(final InmhItemData r: resources) {
-                            if (!r.getType().equals(resourceType))
-                                    continue;
-                             final String resourceNumber = Integer.toString(which++);
-                            Timer timer1 = new Timer() {
-                                public void run() {
-                                    AutoTestWindow.getInstance().addLogMessage("Testing: " + resourceType + ", " + r.getFile());
-
-                                    CmHistoryManager.loadResourceIntoHistory(r.getType(), resourceNumber);
-                                }
-                            };
-                            timer1.schedule(timeToWait1);
-                            timeToWait1 += AutoTestWindow.getInstance().getTimeForSingleResource();
-                        }
-                    }
-                };
-                timer.schedule(timeToWait);
-                timeToWait += AutoTestWindow.getInstance().getTimeForSingleResourceType();
-            } catch (Exception e) {
-                e.printStackTrace();
+            List<InmhItemData> resources = PrescriptionCmGuiDefinition._registeredResources.get(resourceType);
+            int which=0;
+            for(final InmhItemData r: resources) {
+                if (!r.getType().equals(resourceType))
+                    continue;
+                
+                CmAutoTest.ResourceObject ro = new CmAutoTest.ResourceObject(r, which++);
+                resourcesToRun.add(ro);
             }
         }
+        
+        new CmAutoTest(resourcesToRun, new CmAsyncRequestImplDefault() {
+            
+            @Override
+            public void requestComplete(String requestData) {
+                /**
+                 * Move to next test, prescription or completion
+                 */
 
-        /**
-         * Move to next test, prescription or completion
-         */
-        Timer timer = new Timer() {
-            public void run() {
-                int cs = prescriptionData.getCurrSession().getSessionNumber();
-                int ts = prescriptionData.getSessionTopics().size();
-                if ((cs + 1) < ts) {
-                    AutoTestWindow.getInstance().addLogMessage("Moving to Lesson: " + cs + 1);
-                    prescriptionCm.getAsyncDataFromServer(cs + 1);
-                } else {
-                    int nextSegment = UserInfo.getInstance().getTestSegment();
-                    if (nextSegment < UserInfo.getInstance().getTestSegmentCount()) {
-                        nextSegment += 1;
-                        AutoTestWindow.getInstance().addLogMessage("Testing Quiz: " + nextSegment);
-                        UserInfo.getInstance().setTestSegment(nextSegment);
-                        CatchupMath.getThisInstance().showQuizPanel();
+                    int cs = prescriptionData.getCurrSession().getSessionNumber();
+                    int ts = prescriptionData.getSessionTopics().size();
+                    if ((cs + 1) < ts) {
+                        prescriptionCm.getAsyncDataFromServer(cs + 1);
                     } else {
-                        AutoTestWindow.getInstance().addLogMessage("Auto Test has completed at " + nextSegment + "!");
+                        int nextSegment = UserInfo.getInstance().getTestSegment();
+                        if (nextSegment < UserInfo.getInstance().getTestSegmentCount()) {
+                            nextSegment += 1;
+                            AutoTestWindow.getInstance().addLogMessage("Testing Quiz: " + nextSegment);
+                            UserInfo.getInstance().setTestSegment(nextSegment);
+                            CatchupMath.getThisInstance().showQuizPanel();
+                        } else {
+                            AutoTestWindow.getInstance().addLogMessage("Auto Test has completed at " + nextSegment + "!");
+                        }
                     }
-                }
             }
-        };
-        timer.schedule(AutoTestWindow.getInstance().getTimeForSingleLesson());
+        });
+        
+
     }
 }

@@ -16,15 +16,9 @@ import java.util.ArrayList;
 import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.Registry;
 import com.extjs.gxt.ui.client.Style.Scroll;
-import com.extjs.gxt.ui.client.event.BaseEvent;
-import com.extjs.gxt.ui.client.event.Events;
-import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.widget.Html;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.Anchor;
 
 public class QuizPage extends LayoutContainer {
 	
@@ -39,21 +33,11 @@ public class QuizPage extends LayoutContainer {
 	CmAsyncRequest callbackWhenComplete;
 	public QuizPage(CmAsyncRequest callbackWhenComplete) {
 	    
-	    
 	    setScrollMode(Scroll.AUTOY);
 	    
 		this.callbackWhenComplete = callbackWhenComplete;
 		setStyleName("quiz-panel");
-		//setLayout(new FitLayout());
 		getQuizHtmlFromServer();
-		
-		
-		addListener(Events.OnKeyDown, new Listener<BaseEvent>() {
-		    public void handleEvent(BaseEvent be) {
-		        System.out.println("EVENT:!!!");
-		    }
-        });
-		
 	}
 	
 	

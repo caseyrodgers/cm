@@ -55,8 +55,7 @@ public class CmHistoryManager {
      */
     static public void loadResourceIntoHistory(String type, String resourceId) {
         
-        String locationStr = "p:" + UserInfo.getInstance().getSessionNumber() + ":" + 
-                             type + ":" +  resourceId;
+        String locationStr = "p:" + UserInfo.getInstance().getSessionNumber() + ":" +  type + ":" +  resourceId;
         CmLocation location = new CmLocation(locationStr);
         CmHistoryManager.getInstance().addHistoryLocation(location);
     }    
