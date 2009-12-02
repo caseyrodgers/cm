@@ -21,7 +21,7 @@ public class SampleDemoMessageWindow extends Window {
         setClosable(false);
         setStyleName("demo-complete-window");
         setHeight(140);
-        setWidth(380);
+        setWidth(400);
         setHeading("Thank You");
         setModal(true);
         add(new Html(msg));
