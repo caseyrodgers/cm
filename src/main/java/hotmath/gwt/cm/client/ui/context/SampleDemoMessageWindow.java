@@ -13,12 +13,15 @@ import com.extjs.gxt.ui.client.widget.Window;
 public class SampleDemoMessageWindow extends Window {
 
     public SampleDemoMessageWindow() {
-        String msg = "<p>Thank you for trying Catchup Math for a Pre-algebra Session.</p>  "
-                + "<p>Please visit our <a href='http://catchupmath.com/schools.html'>Schools</a>, <a href='http://catchupmath.com/colleges.html'>Colleges</a>, or <a href='http://catchupmath.com/students.html'>Students</a> pages.</p>";
+        String msg = "<p>Thank you for trying a Catchup Math Pre-algebra Session.</p>  "
+                + "<p>Please visit our <a href='http://catchupmath.com/schools.html'>Schools</a>, "
+                + "<a href='http://catchupmath.com/colleges.html'>Colleges</a>, "
+                + "and <a href='http://catchupmath.com/students.html'>Students</a> pages "
+                + "for more information.</p>";
         setClosable(false);
         setStyleName("demo-complete-window");
-        setHeight(200);
-        setWidth(350);
+        setHeight(120);
+        setWidth(380);
         setHeading("Thank You");
         setModal(true);
         add(new Html(msg));
