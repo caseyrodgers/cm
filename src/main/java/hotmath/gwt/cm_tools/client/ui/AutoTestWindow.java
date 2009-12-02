@@ -97,10 +97,11 @@ public class AutoTestWindow extends ContentPanel {
         LayoutContainer lc = new HorizontalPanel();
         
         _waitTimeForSingleResourceSlider.setWidth(50);
-        _waitTimeForSingleResourceSlider.setMaxValue(3000*2);
+        _waitTimeForSingleResourceSlider.setMaxValue(3000*4);
         _waitTimeForSingleResourceSlider.setValue(3000*2);
+        _waitTimeForSingleResourceSlider.setToolTip("Time between resource item loads");
         
-        Label l = new Label("Item: ");
+        Label l = new Label("Interval time: ");
         lc.add(l);
         lc.add(_waitTimeForSingleResourceSlider);
         
