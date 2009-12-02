@@ -452,10 +452,10 @@ public class PrescriptionContext implements CmContext {
      */
     public void runAutoTest() {
         
-        String topic = prescriptionData.getCurrSession().getTopic();
-        String msg = "Testing lesson: " + topic;
+        String msg = "Testing lesson: " + prescriptionData.getCurrSession().getTopic();
         AutoTestWindow.getInstance().addLogMessage(msg);
 
+        AutoTestWindow.getInstance().addLogMessage("User Status: " + UserInfo.getInstance().getUserStatus());
         
         /** prepare a stack of resources to run, then run them one by one
          * 
@@ -496,7 +496,7 @@ public class PrescriptionContext implements CmContext {
                             UserInfo.getInstance().setTestSegment(nextSegment);
                             CatchupMath.getThisInstance().showQuizPanel();
                         } else {
-                            AutoTestWindow.getInstance().addLogMessage("Auto Test has completed at " + nextSegment + "!");
+                            CatchupMathTools.showAlert("Auto Test has completed at " + nextSegment + "!");
                         }
                     }
             }

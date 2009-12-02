@@ -4,7 +4,6 @@ import hotmath.gwt.cm.client.history.CmHistoryManager;
 import hotmath.gwt.cm_tools.client.data.InmhItemData;
 import hotmath.gwt.cm_tools.client.ui.AutoTestWindow;
 import hotmath.gwt.shared.client.data.CmAsyncRequest;
-import hotmath.gwt.shared.client.data.CmAsyncRequestImplDefault;
 import hotmath.gwt.shared.client.util.UserInfo;
 
 import java.util.ArrayList;
@@ -30,7 +29,7 @@ public class CmAutoTest {
         
         public TestTimer(int runNext) {
             this.runNext = runNext;
-            schedule(runNext);
+            schedule(runNext>0?runNext:1);
         }
         
         @Override
@@ -41,7 +40,7 @@ public class CmAutoTest {
                 new TestTimer(AutoTestWindow.getInstance().getTimeForSingleResource());
             }
             else {
-                AutoTestWindow.getInstance().addLogMessage("Testing complete");
+                AutoTestWindow.getInstance().addLogMessage("Resource complete");
                 
                 callback.requestComplete("ok");
             }

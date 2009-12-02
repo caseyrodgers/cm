@@ -6,6 +6,8 @@ import hotmath.gwt.cm_tools.client.service.PrescriptionService;
 import hotmath.gwt.cm_tools.client.service.PrescriptionServiceAsync;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.data.CmAsyncRequest;
+import hotmath.gwt.shared.client.eventbus.CmEvent;
+import hotmath.gwt.shared.client.eventbus.EventBus;
 import hotmath.gwt.shared.client.rpc.action.GetCmVersionInfoAction;
 import hotmath.gwt.shared.client.rpc.result.CmVersionInfo;
 
@@ -64,6 +66,7 @@ public class CatchupMathTools implements EntryPoint {
 
     static public void showAlert(String title, String msg) {
         setBusy(false);
+        EventBus.getInstance().fireEvent(new CmEvent(EventBus.EVENT_TYPE_MODAL_WINDOW_OPEN));
         MessageBox.alert(title, msg, new Listener<MessageBoxEvent>() {
             public void handleEvent(MessageBoxEvent be) {
             }

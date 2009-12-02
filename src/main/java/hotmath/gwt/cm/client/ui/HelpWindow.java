@@ -235,6 +235,9 @@ public class HelpWindow extends CmWindow {
                     CatchupMathTools.showVersionInfo();
                 }
             }));
+            
+            
+            add(new Label("User Location: " + UserInfo.getInstance().getUserStatus()));
         }
         
     }

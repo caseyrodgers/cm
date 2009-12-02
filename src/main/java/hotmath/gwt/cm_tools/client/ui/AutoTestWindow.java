@@ -33,6 +33,7 @@ public class AutoTestWindow extends ContentPanel {
     ListView<LogModel> _listView = new ListView<LogModel>();
 
     private AutoTestWindow() {
+        
         setSize(500,200);
         setTitle("Catchup Student Auto Test");
 

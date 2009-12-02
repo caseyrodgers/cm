@@ -298,6 +298,15 @@ public class UserInfo implements IsSerializable, Response {
     public void setPassPercentRequired(int passPercentToMoveOn) {
         this.passPercentRequired = passPercentToMoveOn;
     }
+    
+    /** Return string indicating current user status in program
+     * 
+     * @return
+     */
+    public String getUserStatus() {
+       String status = "uid: " + uid + ", quiz: " + getTestSegment() + "/" + getTestSegmentCount() + ", prescription: " + getSessionNumber() + "/" + getSessionCount();
+       return status;
+    }
 
     @Override
     public String toString() {
