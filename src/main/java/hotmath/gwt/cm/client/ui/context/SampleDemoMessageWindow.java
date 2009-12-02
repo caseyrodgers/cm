@@ -20,7 +20,7 @@ public class SampleDemoMessageWindow extends Window {
                 + "for more information.</p>";
         setClosable(false);
         setStyleName("demo-complete-window");
-        setHeight(120);
+        setHeight(140);
         setWidth(380);
         setHeading("Thank You");
         setModal(true);
