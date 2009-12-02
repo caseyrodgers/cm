@@ -1,14 +1,17 @@
 package hotmath.gwt.cm_tools.client.ui.viewer;
 
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
+import hotmath.gwt.cm_tools.client.service.CmServiceAsync;
 import hotmath.gwt.cm_tools.client.service.PrescriptionServiceAsync;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
 import hotmath.gwt.shared.client.eventbus.EventBus;
+import hotmath.gwt.shared.client.rpc.action.SaveWhiteboardDataAction;
 import hotmath.gwt.shared.client.util.RpcData;
 import hotmath.gwt.shared.client.util.UserInfo;
 
 import java.util.ArrayList;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.Registry;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -59,19 +62,31 @@ public class ShowWorkPanel extends Frame {
 	 * @param json
 	 */
 	public void handleFlashWhiteboardOut(String json) {
-		PrescriptionServiceAsync s = (PrescriptionServiceAsync) Registry.get("prescriptionService");
+        if(UserInfo.getInstance().isShowWorkRequired())
+            EventBus.getInstance().fireEvent(new CmEvent(EventBus.EVENT_TYPE_WHITEBOARDUPDATED, this.pid));
+
+        
+		CmServiceAsync s = (CmServiceAsync) Registry.get("cmService");
 		int uid = UserInfo.getInstance().getUid();
 		int runId = UserInfo.getInstance().getRunId();
+
+		/** If json is simple string 'clear', then force a full clear and
+		 *  remove all chart data for this user/pid.  Otherwise, it is a 
+		 *  normal draw command.
+		 */
+		SaveWhiteboardDataAction.CommandType commandType= json.equals("clear")?
+		               SaveWhiteboardDataAction.CommandType.CLEAR
+		               :SaveWhiteboardDataAction.CommandType.DRAW;
 		
-		EventBus.getInstance().fireEvent(new CmEvent(EventBus.EVENT_TYPE_WHITEBOARDUPDATED, this.pid));
-		s.saveWhiteboardData(uid,runId,pid,"draw",json, new AsyncCallback() {
+		SaveWhiteboardDataAction action = new SaveWhiteboardDataAction(uid,runId,pid,commandType,json);
+		s.execute(action, new AsyncCallback<RpcData>() {
 			public void onFailure(Throwable caught) {
 				caught.printStackTrace();
 				// CatchupMathTools.showAlert("Whiteboard save failed: " + caught);
 			}
 
-			public void onSuccess(Object result) {
-				// CatchupMathTools.showAlert("Whiteboard save success");
+			public void onSuccess(RpcData result) {
+			    Log.debug("ShowWorkPanel: Log message written: " + result);
 			}
 		});
 	}

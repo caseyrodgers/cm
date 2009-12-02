@@ -47,11 +47,8 @@ public class CmResourcePanelContainer extends ContentPanel {
 		
 		addStyleName("cm-resource-viewer-container");
 		addStyleName(panel.getContainerStyleName());
-		
+
 		setLayout(new FitLayout());
-		add(panel.getResourcePanel());
-		
-		
 		/** add any resource specific tools to resource container header 
 		 * 
 		 */
@@ -113,7 +110,14 @@ public class CmResourcePanelContainer extends ContentPanel {
 
 	}
 	
+	public Button getMaximizeButton() {
+	    return _maximize;
+	}
 	
+	/** Configure container in OPTIMIZED configuration
+	 * 
+	 * @param panel
+	 */
 	public void setOptimized(CmResourcePanel panel) {
 	    
        if(viewerState == ResourceViewerState.OPTIMIZED)

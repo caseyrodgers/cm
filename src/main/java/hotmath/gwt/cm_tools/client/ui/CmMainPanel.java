@@ -60,7 +60,7 @@ public class CmMainPanel extends LayoutContainer {
             public void layout() {
                 super.layout();
                 if(_westPanel.getHeader().getToolCount() > 0) {
-                    _westPanel.getHeader().getTool(0).setToolTip("Hide the available resources.");
+                    _westPanel.getHeader().getTool(0).setToolTip("Hide");
                 }                
             }
         };

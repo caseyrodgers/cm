@@ -2,11 +2,12 @@ package hotmath.gwt.shared.server.service.command;
 
 import hotmath.gwt.shared.client.rpc.Action;
 import hotmath.gwt.shared.client.rpc.Response;
+import hotmath.gwt.shared.client.rpc.action.ClearWhiteboardDataAction;
 import hotmath.gwt.shared.client.rpc.action.SaveWhiteboardDataAction;
+import hotmath.gwt.shared.client.rpc.action.SaveWhiteboardDataAction.CommandType;
 import hotmath.gwt.shared.client.util.CmRpcException;
 import hotmath.gwt.shared.client.util.RpcData;
 import hotmath.gwt.shared.server.service.ActionHandler;
-import hotmath.util.HMConnectionPool;
 import hotmath.util.sql.SqlUtilities;
 
 import java.sql.Connection;
@@ -27,32 +28,41 @@ public class SaveWhiteboardDataCommand implements ActionHandler<SaveWhiteboardDa
     
     @Override
     public RpcData execute(Connection conn, SaveWhiteboardDataAction action) throws Exception {
+        RpcData rData = new RpcData();
         
-        PreparedStatement pstat = null;
-        try {
-            String sql = "insert into HA_TEST_RUN_WHITEBOARD(user_id, pid, command, command_data, insert_time_mills, run_id) "
-                    + " values(?,?,?,?,?,?) ";
-            pstat = conn.prepareStatement(sql);
+        if(action.getCommandType() == CommandType.CLEAR) {
+            rData = new ClearWhiteboardDataCommand().execute(conn,new ClearWhiteboardDataAction(action.getUid(), action.getRid(),action.getPid()));
+        }
+        else {
+            PreparedStatement pstat = null;
+            try {
+                String sql = "insert into HA_TEST_RUN_WHITEBOARD(user_id, pid, command, command_data, insert_time_mills, run_id) "
+                        + " values(?,?,?,?,?,?) ";
+                pstat = conn.prepareStatement(sql);
+    
+                pstat.setInt(1, action.getUid());
+                pstat.setString(2, action.getPid());
+                pstat.setString(3, "draw");
+                pstat.setString(4, action.getCommandData());
+                pstat.setLong(5, System.currentTimeMillis());
+                pstat.setInt(6, action.getRid());
+    
+                if (pstat.executeUpdate() != 1)
+                    throw new Exception("Could not save whiteboard data (why?)");
+                
+                rData.putData("status", "OK");
+            } catch (Exception e) {
+                throw new CmRpcException(e);
+            } finally {
+                SqlUtilities.releaseResources(null, pstat, null);
+            }
+        }
+        
+        return rData;
+    }
+    
+    private void clearWhiteBoard(final Connection conn) throws Exception {
 
-            pstat.setInt(1, action.getUid());
-            pstat.setString(2, action.getPid());
-            pstat.setString(3, action.getCommand());
-            pstat.setString(4, action.getCommandData());
-            pstat.setLong(5, System.currentTimeMillis());
-            pstat.setInt(6, action.getRid());
-
-            if (pstat.executeUpdate() != 1)
-                throw new Exception("Could not save whiteboard data (why?)");
-            
-            RpcData rData = new RpcData();
-            rData.putData("status", "OK");
-            return rData;
-            
-        } catch (Exception e) {
-            throw new CmRpcException(e);
-        } finally {
-            SqlUtilities.releaseResources(null, pstat, null);
-        }        
     }
 
     @Override

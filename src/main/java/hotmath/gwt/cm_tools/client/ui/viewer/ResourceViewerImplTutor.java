@@ -52,10 +52,19 @@ public class ResourceViewerImplTutor extends CmResourcePanelImplDefault {
     
     enum DisplayMode{TUTOR,WHITEBOARD};
     
-    DisplayMode _displayMode = DisplayMode.TUTOR;
+    DisplayMode _displayMode;
+    static DisplayMode __lastDisplayMode = null;
     
     public ResourceViewerImplTutor() {
         _instance = this;
+    
+        if(__lastDisplayMode == DisplayMode.WHITEBOARD) {
+            _displayMode = DisplayMode.WHITEBOARD;
+        }
+        else {
+            _displayMode = DisplayMode.TUTOR;
+        }
+            
         addStyleName(STYLE_NAME);
         setScrollMode(Scroll.AUTOY);
     }
@@ -85,13 +94,14 @@ public class ResourceViewerImplTutor extends CmResourcePanelImplDefault {
     @Override
     public ResourceViewerState getInitialMode() {
         // TODO Auto-generated method stub
-        return ResourceViewerState.OPTIMIZED;
+        return (_displayMode == DisplayMode.WHITEBOARD)?ResourceViewerState.MAXIMIZED:ResourceViewerState.OPTIMIZED;
     }
     
     Button _showWorkBtn;
     public List<Component> getContainerTools() {
         
-        _showWorkBtn = new Button("Show Whiteboard",new SelectionListener<ButtonEvent>() {
+        String btnText = _displayMode == DisplayMode.WHITEBOARD?"Hide Whiteboard":"Show Whiteboard";
+        _showWorkBtn = new Button(btnText,new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent ce) {
                 
@@ -131,11 +141,14 @@ public class ResourceViewerImplTutor extends CmResourcePanelImplDefault {
         if(displayMode == DisplayMode.TUTOR) {
             _showWorkBtn.setText("Show Whiteboard");
             add(tutorPanel);
+            
+            CmMainPanel.__lastInstance._mainContent.currentContainer.getMaximizeButton().setEnabled(true);
         }
         else {
-            
             _wasMaxBeforeWhiteboard = CmMainPanel.__lastInstance._mainContent.currentContainer.isMaximized();
             CmMainPanel.__lastInstance._mainContent.currentContainer.setMaximize(this);
+            
+            CmMainPanel.__lastInstance._mainContent.currentContainer.getMaximizeButton().setEnabled(false);
             
             ShowWorkPanel swp = new ShowWorkPanel();
             swp.setupForPid(this.pid);
@@ -163,6 +176,7 @@ public class ResourceViewerImplTutor extends CmResourcePanelImplDefault {
             add(lcMain);
         }
         _displayMode = displayMode;
+        __lastDisplayMode = _displayMode;
         
         layout();
     }
@@ -170,7 +184,12 @@ public class ResourceViewerImplTutor extends CmResourcePanelImplDefault {
     
     @Override
     public void addResource(Widget w, String title) {
-        super.addResource(w, title);
+        if(_displayMode == DisplayMode.WHITEBOARD) {
+            setLayout(new FitLayout());
+            setDisplayMode(DisplayMode.WHITEBOARD);
+        }
+        else 
+            super.addResource(w,title);
     }
     
     Button showWorkBtn, hideWorkBtn;
@@ -225,6 +244,7 @@ public class ResourceViewerImplTutor extends CmResourcePanelImplDefault {
 
                 addResource(tutorPanel, getResourceItem().getTitle());
 
+                
                 // CmMainPanel.__lastInstance._mainContent.addControl(showWorkBtn);
                 if (CmMainPanel.__lastInstance != null)
                     CmMainPanel.__lastInstance._mainContent.layout();
@@ -238,9 +258,6 @@ public class ResourceViewerImplTutor extends CmResourcePanelImplDefault {
                      */
                     if (!UserInfo.getInstance().isShowWorkRequired())
                         hasShowWork = true;
-
-                    layout();
-
                     boolean shouldExpandSolution = false;
                     if (UserInfo.getInstance().isAutoTestMode()) {
                         shouldExpandSolution = true;
@@ -267,8 +284,10 @@ public class ResourceViewerImplTutor extends CmResourcePanelImplDefault {
      */
     protected void whiteBoardHasBeenUpdated(String pid) {
         if (UserInfo.getInstance().isShowWorkRequired() && !this.hasShowWork && this.pid.equals(pid)) {
-            // this solution's whiteboard has been updated, so
-            // we must make sure the ForceShowWork button is removed
+            /** 
+             * this solution's whiteboard has been updated, so
+             * we must make sure the ForceShowWork button is removed
+             */
             initializeTutor(pid, this.getResourceItem().getTitle(), true, false);
 
             hasShowWork = true;

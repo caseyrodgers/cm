@@ -13,24 +13,20 @@ public class SaveWhiteboardDataAction implements Action<RpcData> {
     Integer uid;
     Integer rid;
     String pid;
-    String command;
     String commandData;
     
+    static public enum CommandType{DRAW,CLEAR};
+    CommandType commandType;
     
     public SaveWhiteboardDataAction() {}
+     
     
-    public SaveWhiteboardDataAction(int uid, int runId, String pid, String command, String commandData) {
+    public SaveWhiteboardDataAction(int uid, int runId, String pid, CommandType commandType, String commandData) {
         this.uid = uid;
         this.rid = runId;
         this.pid = pid;
-        this.command = command;
+        this.commandType = commandType;
         this.commandData = commandData;
-    }
-
-    @Override
-    public String toString() {
-        return "SaveWhiteboardDataAction [command=" + command + ", commandData=" + commandData + ", pid=" + pid
-                + ", rid=" + rid + ", uid=" + uid + "]";
     }
 
     public Integer getUid() {
@@ -57,13 +53,16 @@ public class SaveWhiteboardDataAction implements Action<RpcData> {
         this.pid = pid;
     }
 
-    public String getCommand() {
-        return command;
+
+    public CommandType getCommandType() {
+        return commandType;
     }
 
-    public void setCommand(String command) {
-        this.command = command;
+    
+    public void setCommandType(CommandType commandType) {
+        this.commandType = commandType;
     }
+
 
     public String getCommandData() {
         return commandData;
