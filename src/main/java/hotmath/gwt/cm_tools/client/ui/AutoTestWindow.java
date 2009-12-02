@@ -5,20 +5,22 @@ import hotmath.gwt.shared.client.util.UserInfo;
 
 import java.util.Date;
 
+import com.extjs.gxt.ui.client.Style.LayoutRegion;
 import com.extjs.gxt.ui.client.data.BaseModel;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.store.ListStore;
+import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.HorizontalPanel;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.ListView;
 import com.extjs.gxt.ui.client.widget.Slider;
-import com.extjs.gxt.ui.client.widget.Window;
 import com.extjs.gxt.ui.client.widget.button.Button;
+import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.google.gwt.user.client.ui.Label;
 
-public class AutoTestWindow extends Window {
+public class AutoTestWindow extends ContentPanel {
     
     private static AutoTestWindow __instance;
     public static AutoTestWindow getInstance() {
@@ -34,7 +36,6 @@ public class AutoTestWindow extends Window {
         setSize(500,200);
         setTitle("Catchup Student Auto Test");
 
-        setClosable(false);
         setHeading("Auto Test Log");
         
         setTopComponent(createTopForm());
@@ -49,7 +50,8 @@ public class AutoTestWindow extends Window {
             
             public void componentSelected(ButtonEvent ce) {
                 UserInfo.getInstance().setAutoTestMode(false);
-                __instance.hide();
+                CmMainPanel.__lastInstance.remove(AutoTestWindow.this);
+                CmMainPanel.__lastInstance.layout();
                 __instance = null;
             }
         });
@@ -68,9 +70,16 @@ public class AutoTestWindow extends Window {
         add(_listView);
         
         _listView.getStore().setMonitorChanges(true);
+
     }
     
     public void addLogMessage(String msg) {
+        
+        if(!(getParent() == CmMainPanel.__lastInstance)) {
+            CmMainPanel.__lastInstance.add(this, new BorderLayoutData(LayoutRegion.SOUTH));
+            CmMainPanel.__lastInstance.layout();
+        }
+        
         LogModel lm = new LogModel(msg);
         _listView.getStore().add(lm);
         int scrollTop = _listView.el().getScrollTop();
@@ -83,20 +92,16 @@ public class AutoTestWindow extends Window {
     
     
     Slider _waitTimeForSingleResourceSlider = new Slider();
-    Slider _waitTimeForSingleResourceTypeSlider = new Slider();
     Slider _waitTimeForSingleLessonSlider = new Slider();
     private LayoutContainer createTopForm() {
         
         LayoutContainer lc = new HorizontalPanel();
         
         _waitTimeForSingleResourceSlider.setWidth(50);
-        _waitTimeForSingleResourceTypeSlider.setWidth(50);
         _waitTimeForSingleLessonSlider.setWidth(50);
         
         _waitTimeForSingleResourceSlider.setMaxValue(3000*2);
         _waitTimeForSingleResourceSlider.setValue(3000*2);
-        _waitTimeForSingleResourceTypeSlider.setMaxValue(5000*2);
-        _waitTimeForSingleResourceTypeSlider.setValue(5000*2);
         _waitTimeForSingleLessonSlider.setMaxValue(30000*2);
         _waitTimeForSingleLessonSlider.setValue(30000*2);
         
@@ -107,7 +112,6 @@ public class AutoTestWindow extends Window {
         
         l = new Label("Resource: ");
         lc.add(l);
-        lc.add(_waitTimeForSingleResourceTypeSlider);
         
         l = new Label("Lesson: ");
         lc.add(l);
@@ -119,10 +123,6 @@ public class AutoTestWindow extends Window {
     
     public int getTimeForSingleResource() {
         return _waitTimeForSingleResourceSlider.getValue();
-    }
-    
-    public int getTimeForSingleResourceType() {
-        return _waitTimeForSingleResourceTypeSlider.getValue();
     }
     
     public int getTimeForSingleLesson() {
