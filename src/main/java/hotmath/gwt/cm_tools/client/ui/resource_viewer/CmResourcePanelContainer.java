@@ -5,6 +5,7 @@ import hotmath.gwt.shared.client.eventbus.EventBus;
 
 import java.util.List;
 
+import com.extjs.gxt.ui.client.Style.Scroll;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.widget.Component;
@@ -45,7 +46,6 @@ public class CmResourcePanelContainer extends ContentPanel {
 	 */
 	public CmResourcePanelContainer(CmMainResourceContainer container, final CmResourcePanel panel) {
 		this.container = container;
-		
 		
 		addStyleName("cm-resource-viewer-container");
 		addStyleName(panel.getContainerStyleName());
@@ -109,7 +109,6 @@ public class CmResourcePanelContainer extends ContentPanel {
         else {          
             setMaximize(panel);
         }
-
 	}
 	
 	public Button getMaximizeButton() {

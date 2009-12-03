@@ -58,7 +58,10 @@ public class ResourceViewerImplTutor extends CmResourcePanelImplDefault {
     public ResourceViewerImplTutor() {
         _instance = this;
     
-        if(__lastDisplayMode == DisplayMode.WHITEBOARD) {
+        /** If user has showwork enabled or system is currently in whiteboard mode
+         *  The show whiteboard on startup.
+         */
+        if(UserInfo.getInstance().isShowWorkRequired() || __lastDisplayMode == DisplayMode.WHITEBOARD) {
             _displayMode = DisplayMode.WHITEBOARD;
         }
         else {
@@ -93,8 +96,12 @@ public class ResourceViewerImplTutor extends CmResourcePanelImplDefault {
     
     @Override
     public ResourceViewerState getInitialMode() {
-        // TODO Auto-generated method stub
-        return (_displayMode == DisplayMode.WHITEBOARD)?ResourceViewerState.MAXIMIZED:ResourceViewerState.OPTIMIZED;
+        if(_displayMode == DisplayMode.WHITEBOARD) {
+            return ResourceViewerState.MAXIMIZED;
+        }
+        else {
+            return ResourceViewerState.OPTIMIZED;
+        }
     }
     
     Button _showWorkBtn;
@@ -135,7 +142,7 @@ public class ResourceViewerImplTutor extends CmResourcePanelImplDefault {
      * @param displayMode
      */
     private void setDisplayMode(DisplayMode displayMode) {
-        
+
         removeAll();
         
         if(displayMode == DisplayMode.TUTOR) {

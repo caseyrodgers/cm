@@ -434,9 +434,9 @@ class PrescriptionResourcePanel extends LayoutContainer {
         removeAll();
         registeredResources.clear();
         
-        setScrollMode(Scroll.AUTO);
+        setScrollMode(Scroll.NONE);
         VerticalPanel vp = new VerticalPanel();
-        setStyleName("prescription-cm-gui-definition-resource-panel");
+        addStyleName("prescription-cm-gui-definition-resource-panel");
 
         // setTitle("Choose a resource type, then click one of its items.");
         for (PrescriptionSessionDataResource resource : resources) {
