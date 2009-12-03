@@ -140,9 +140,8 @@ public class QuizPage extends LayoutContainer {
 		 * 
 		 */
 		PrescriptionServiceAsync s = (PrescriptionServiceAsync) Registry.get("prescriptionService");
-        s.getQuizCurrentResults(UserInfo.getInstance().getUid(), new AsyncCallback() {
-			public void onSuccess(Object result) {
-        		ArrayList<RpcData> al = (ArrayList<RpcData>)result;
+        s.getQuizCurrentResults(UserInfo.getInstance().getUid(), new AsyncCallback<ArrayList<RpcData>>() {
+			public void onSuccess(ArrayList<RpcData> al) {
         		for(RpcData rd: al) {
         			setSolutionQuestionAnswerIndex(rd.getDataAsString("pid"),rd.getDataAsString("answer"));
         		}
@@ -180,8 +179,7 @@ public class QuizPage extends LayoutContainer {
 		CmServiceAsync s = (CmServiceAsync) Registry.get("cmService");
 		s.execute(quizAction, new AsyncCallback<RpcData>() {
 		    @Override
-		    public void onSuccess(RpcData result) {
-                RpcData rdata = (RpcData)result;
+		    public void onSuccess(RpcData rdata) {
                 String html = rdata.getDataAsString("quiz_html");
                 String title = rdata.getDataAsString("title");
                 int testId = rdata.getDataAsInt("test_id");
