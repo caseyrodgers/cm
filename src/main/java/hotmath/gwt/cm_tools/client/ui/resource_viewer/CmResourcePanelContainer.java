@@ -28,6 +28,8 @@ public class CmResourcePanelContainer extends ContentPanel {
 	CmMainResourceContainer container;
 	Button _maximize;
 	
+	static String EXPAND_TEXT = "Expand";
+	static String SHRINK_TEXT = "Shrink";
 	
 	/** Keep a static representation of the current display state
 	 * 
@@ -64,7 +66,7 @@ public class CmResourcePanelContainer extends ContentPanel {
 		 * 
 		 */
 		if(panel.allowMaximize()) {
-			_maximize = new Button("Expand", new SelectionListener<ButtonEvent>() {
+			_maximize = new Button(EXPAND_TEXT, new SelectionListener<ButtonEvent>() {
 				public void componentSelected(ButtonEvent ce) {
 				    closeResource(ce, panel);
 				}
@@ -132,7 +134,7 @@ public class CmResourcePanelContainer extends ContentPanel {
         viewerState = ResourceViewerState.OPTIMIZED;
         
         if(_maximize != null)
-            _maximize.setText("Expand");
+            _maximize.setText(EXPAND_TEXT);
         
         
         /** Reset the panel widget
@@ -159,7 +161,7 @@ public class CmResourcePanelContainer extends ContentPanel {
         viewerState = ResourceViewerState.MAXIMIZED;	    
         
         if(_maximize != null)
-            _maximize.setText("Shrink");
+            _maximize.setText(SHRINK_TEXT);
         
         
         /** Reset the panel widget
@@ -172,7 +174,7 @@ public class CmResourcePanelContainer extends ContentPanel {
 	}
 	
 	private void closeResource(ButtonEvent ce, CmResourcePanel panel) {
-        boolean isMax = ce.getButton().getText().equals("Expand");
+        boolean isMax = ce.getButton().getText().equals(EXPAND_TEXT);
         if(isMax) {
            setMaximize(panel);
         }
