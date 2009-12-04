@@ -41,6 +41,8 @@ import com.google.gwt.user.client.ui.Label;
 
 public class HelpWindow extends CmWindow {
 
+	ComboBox<BackgroundModel> bgCombo;
+	
     public HelpWindow() {
         setAutoHeight(true);
         setWidth(490);
@@ -54,8 +56,7 @@ public class HelpWindow extends CmWindow {
         if(CmMainPanel.__lastInstance != null) {
             CmMainPanel.__lastInstance.expandResourceButtons();
         }
-        
-        
+
         Button closeBtn = new Button("Close");
         closeBtn.addSelectionListener(new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent ce) {
@@ -81,7 +82,7 @@ public class HelpWindow extends CmWindow {
         fs.add(messageArea);
         vp.add(fs);
 
-        ComboBox<BackgroundModel> bgCombo = new ComboBox<BackgroundModel>();
+        bgCombo = new ComboBox<BackgroundModel>();
         bgCombo.setStore(getBackgrounds());
         bgCombo.setEditable(false);
         bgCombo.addStyleName("help-window-bg-combo");
@@ -113,15 +114,18 @@ public class HelpWindow extends CmWindow {
                              * NOTE: all wallpaper styles start with
                              * 'resource-container-'
                              */
-                            String names[] = CmMainPanel.__lastInstance._mainContent.getStyleName().split(" ");
-                            for (int i = 0; i < names.length; i++) {
-                                if (names[i].startsWith("resource-container-"))
-                                    CmMainPanel.__lastInstance._mainContent.removeStyleName(names[i]);
-
+                            String styleName = CmMainPanel.__lastInstance._mainContent.getStyleName();
+                            if (styleName != null) {
+                                String names[] = styleName.split(" ");
+                                for (int i = 0; i < names.length; i++) {
+                                    if (names[i].startsWith("resource-container-"))
+                                        CmMainPanel.__lastInstance._mainContent.removeStyleName(names[i]);
+                                }
                             }
                             CmMainPanel.__lastInstance._mainContent.addStyleName(newStyle);
 
                             UserInfo.getInstance().setBackgroundStyle(newStyle);
+                            bgCombo.setStore(getBackgrounds());
 
                         } finally {
                             CatchupMathTools.setBusy(false);
