@@ -33,6 +33,7 @@ import hotmath.gwt.shared.client.rpc.action.MarkPrescriptionLessonAsViewedAction
 import hotmath.gwt.shared.client.rpc.action.ProcessLoginRequestAction;
 import hotmath.gwt.shared.client.rpc.action.SaveQuizCurrentResultAction;
 import hotmath.gwt.shared.client.rpc.action.SaveWhiteboardDataAction;
+import hotmath.gwt.shared.client.rpc.action.SaveWhiteboardDataAction.CommandType;
 import hotmath.gwt.shared.client.rpc.result.AutoRegistrationEntry;
 import hotmath.gwt.shared.client.rpc.result.AutoRegistrationSetup;
 import hotmath.gwt.shared.client.rpc.result.CreateTestRunResponse;
@@ -195,7 +196,7 @@ public class ActionDispatcher_Test extends CmDbTestCase {
     }
     
     public void testSaveWhiteboardDataCommand() throws Exception {
-        SaveWhiteboardDataAction action = new SaveWhiteboardDataAction(uid, TEST_RUN_ID, TEST_PID, "draw", "123");
+        SaveWhiteboardDataAction action = new SaveWhiteboardDataAction(uid, TEST_RUN_ID, TEST_PID, CommandType.DRAW, "123");
         RpcData rd = ActionDispatcher.getInstance().execute(action);
         assertNotNull(rd);
     }

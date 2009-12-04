@@ -12,6 +12,8 @@ import hotmath.gwt.cm_tools.client.model.StudentModel;
 import hotmath.gwt.cm_tools.client.model.StudentModelBasic;
 import hotmath.gwt.cm_tools.client.model.StudentModelI;
 import hotmath.gwt.cm_tools.client.model.StudentShowWorkModel;
+import hotmath.gwt.shared.client.rpc.action.CmArrayList;
+import hotmath.gwt.shared.client.rpc.action.CmList;
 import hotmath.gwt.shared.client.util.CmException;
 import hotmath.gwt.shared.client.util.CmRpcException;
 import hotmath.testset.ha.CmProgram;
@@ -730,38 +732,26 @@ public class CmStudentDao {
      * @return
      * @throws Exception
      */
-    public List<StudentShowWorkModel> getStudentShowWork(int uid, Integer runId) throws Exception {
+    public CmList<StudentShowWorkModel> getStudentShowWork(final Connection conn, int uid, Integer runId) throws Exception {
 
-        List<StudentShowWorkModel> swModels = new ArrayList<StudentShowWorkModel>();
-
-        Connection conn = null;
+        CmList<StudentShowWorkModel> swModels = new CmArrayList<StudentShowWorkModel>();
         PreparedStatement ps = null;
         ResultSet rs = null;
 
-        String sql = "select distinct a.pid,a.run_id, b.* " +
-                "from   HA_TEST_RUN_WHITEBOARD a, " +
-                "( " +
-                "select  user_id, pid, max(insert_time_mills) as insert_time_mills  " +
-                " from HA_TEST_RUN_WHITEBOARD b " +
-                " group by user_id, pid " +
-                " ) b " +
-                " where a.user_id = ?  " +
-                " and   b.pid = a.pid " +
-                " and   b.user_id = a.user_id " +
-                " order by insert_time_mills desc";
+        String sql = CmMultiLinePropertyReader.getInstance().getProperty("WHITEBOARD_STUDENT_LIST");
 
         try {
-            conn = HMConnectionPool.getConnection();
             ps = conn.prepareStatement(sql);
             ps.setInt(1, uid);
             rs = ps.executeQuery();
 
             SimpleDateFormat dteForat = new SimpleDateFormat("yyyy-MM-dd hh:mm a");
-            // int prob = 1;
             while (rs.next()) {
 
                 /**
                  * Quick hack to restrict to runId if specified
+                 * 
+                 * If runId is not set, then all records are returned.
                  * 
                  */
                 if (runId != null) {
@@ -786,7 +776,7 @@ public class CmStudentDao {
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            SqlUtilities.releaseResources(rs, ps, conn);
+            SqlUtilities.releaseResources(rs, ps, null);
         }
 
         return swModels;

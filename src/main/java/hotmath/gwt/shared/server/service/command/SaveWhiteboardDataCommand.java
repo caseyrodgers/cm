@@ -45,6 +45,10 @@ public class SaveWhiteboardDataCommand implements ActionHandler<SaveWhiteboardDa
                 pstat.setString(3, "draw");
                 pstat.setString(4, action.getCommandData());
                 pstat.setLong(5, System.currentTimeMillis());
+                
+                if(action.getRid() == 0)
+                    logger.warn("run_id is null ... should never happen!");
+                
                 pstat.setInt(6, action.getRid());
     
                 if (pstat.executeUpdate() != 1)

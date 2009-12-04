@@ -3,15 +3,18 @@ package hotmath.gwt.cm.server;
 import hotmath.assessment.AssessmentPrescription;
 import hotmath.assessment.AssessmentPrescriptionManager;
 import hotmath.gwt.cm_admin.server.model.CmAdminDao;
-import hotmath.gwt.cm_admin.server.model.CmStudentDao;
-import hotmath.gwt.cm_tools.client.model.CmAdminModel;
 import hotmath.gwt.cm_tools.client.model.GroupModel;
+import hotmath.gwt.shared.client.rpc.action.SaveWhiteboardDataAction;
+import hotmath.gwt.shared.client.rpc.action.SaveWhiteboardDataAction.CommandType;
 import hotmath.gwt.shared.server.service.CmTestUtils;
+import hotmath.gwt.shared.server.service.command.SaveWhiteboardDataCommand;
 import hotmath.testset.ha.HaTest;
 import hotmath.testset.ha.HaTestDao;
 import hotmath.testset.ha.HaTestDef;
 import hotmath.testset.ha.HaTestRun;
 import hotmath.testset.ha.HaUser;
+
+import java.util.List;
 
 public class CmDbTestCase extends DbTestCase {
     
@@ -57,8 +60,15 @@ public class CmDbTestCase extends DbTestCase {
     
     public HaTestRun setupDemoAccountTestRun() throws Exception {
         HaTest test = HaTestDao.loadTest(conn, setupDemoAccountTest().getTestId());
-        String pids[] = {"pid_1", "pid_2"};
+        String pids[] = test.getPids().toArray(new String[test.getPids().size()]);
         _testRun = HaTestDao.createTestRun(conn, test.getUser().getUid(), test.getTestId(), pids,0,0,0);
+        
+        
+        /** Write a single record to the whiteboard for this testrun
+         * 
+         */
+        SaveWhiteboardDataAction saveAction = new SaveWhiteboardDataAction(test.getUser().getUid(), _testRun.getRunId(), pids[0], CommandType.DRAW, "{}");
+        new SaveWhiteboardDataCommand().execute(conn,saveAction);
         
         return _testRun;
     }

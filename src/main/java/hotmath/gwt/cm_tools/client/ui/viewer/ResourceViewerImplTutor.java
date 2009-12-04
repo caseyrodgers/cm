@@ -163,7 +163,7 @@ public class ResourceViewerImplTutor extends CmResourcePanelImplDefault {
             LayoutContainer lcTutor = new LayoutContainer(new FitLayout());
             lcTutor.setScrollMode(Scroll.AUTO);
             lcTutor.add(tutorPanel);
-            lcTutor.setStyleAttribute("background", "#EEEEEE");
+            lcTutor.setStyleAttribute("background", "#DEDEDE");
             
 
             LayoutContainer lcMain = new LayoutContainer(new BorderLayout());
@@ -171,12 +171,12 @@ public class ResourceViewerImplTutor extends CmResourcePanelImplDefault {
             lcMain.setStyleAttribute("background", "white");
 
             BorderLayoutData bld = new BorderLayoutData(LayoutRegion.WEST, .50f);
-            bld.setSplit(true);
+            bld.setSplit(false);
             lcMain.add(lcTutor,bld);
             
 
             bld = new BorderLayoutData(LayoutRegion.EAST, .50f);
-            bld.setSplit(true);
+            bld.setSplit(false);
             lcMain.add(swp, bld);
 
             _showWorkBtn.setText("Hide Whiteboard");

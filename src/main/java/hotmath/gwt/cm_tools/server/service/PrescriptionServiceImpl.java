@@ -19,7 +19,6 @@ import hotmath.gwt.cm_tools.client.service.PrescriptionService;
 import hotmath.gwt.shared.client.rpc.action.AddGroupAction;
 import hotmath.gwt.shared.client.rpc.action.AddStudentAction;
 import hotmath.gwt.shared.client.rpc.action.AutoAdvanceUserAction;
-import hotmath.gwt.shared.client.rpc.action.CreateTestRunAction;
 import hotmath.gwt.shared.client.rpc.action.GetLessonItemsForTestRunAction;
 import hotmath.gwt.shared.client.rpc.action.GetPrescriptionAction;
 import hotmath.gwt.shared.client.rpc.action.GetProgramDefinitionsAction;
@@ -216,61 +215,15 @@ public class PrescriptionServiceImpl extends RemoteServiceServlet implements Pre
      */
     public void saveWhiteboardData(int uid, int runId, String pid, String command, String commandData)
             throws CmRpcException {
-        Connection conn = null;
-        PreparedStatement pstat = null;
-        try {
-            String sql = "insert into HA_TEST_RUN_WHITEBOARD(user_id, pid, command, command_data, insert_time_mills, run_id) "
-                    + " values(?,?,?,?,?,?) ";
-            conn = HMConnectionPool.getConnection();
-            pstat = conn.prepareStatement(sql);
-
-            pstat.setInt(1, uid);
-            pstat.setString(2, pid);
-            pstat.setString(3, command);
-            pstat.setString(4, commandData);
-            pstat.setLong(5, System.currentTimeMillis());
-            pstat.setInt(6, runId);
-
-            if (pstat.executeUpdate() != 1)
-                throw new Exception("Could not save whiteboard data (why?)");
-        } catch (Exception e) {
-            throw new CmRpcException(e);
-        } finally {
-            SqlUtilities.releaseResources(null, pstat, conn);
-        }
+        throw new CmRpcException("use the action");
+    
     }
 
+    /** @deprecated use GetWhiteboardDataAction
+     * 
+     */
     public ArrayList<RpcData> getWhiteboardData(int uid, String pid) throws CmRpcException {
-        
-        ArrayList<RpcData> data = new ArrayList<RpcData>();
-        Connection conn = null;
-        PreparedStatement pstat = null;
-        try {
-            String sql = "select * from HA_TEST_RUN_WHITEBOARD "
-                    + " where user_id = ? and pid = ? order by insert_time_mills";
-
-            conn = HMConnectionPool.getConnection();
-            pstat = conn.prepareStatement(sql);
-
-            pstat.setInt(1, uid);
-            pstat.setString(2, pid);
-
-            ResultSet rs = pstat.executeQuery();
-            while (rs.next()) {
-                List<String> ln = new ArrayList<String>();
-                RpcData rd = new RpcData(ln);
-                rd.putData("command", rs.getString("command"));
-                rd.putData("command_data", rs.getString("command_data"));
-
-                data.add(rd);
-            }
-
-            return data;
-        } catch (Exception e) {
-            throw new CmRpcException(e);
-        } finally {
-            SqlUtilities.releaseResources(null, pstat, conn);
-        }
+        throw new CmRpcException("Use the GetWhiteboardDataCommand");
     }
 
     public void saveQuizCurrentResult(int testId, boolean correct, int answerIndex, String pid) throws CmRpcException {
@@ -317,13 +270,11 @@ public class PrescriptionServiceImpl extends RemoteServiceServlet implements Pre
     }
 
 
+    /** @deprecated use GetStudentShowWorkAction
+     * 
+     */
     public List<StudentShowWorkModel> getStudentShowWork(Integer uid, Integer runId) throws CmRpcException {
-        try {
-            CmStudentDao dao = new CmStudentDao();
-            return dao.getStudentShowWork(uid, runId);
-        } catch (Exception e) {
-            throw new CmRpcException(e);
-        }
+        throw new CmRpcException("Use the action");
     }
 
     public List<StudentActivityModel> getStudentActivity(StudentModel sm) throws CmRpcException {

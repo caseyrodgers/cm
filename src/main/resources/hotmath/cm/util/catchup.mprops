@@ -132,7 +132,26 @@ set    user_name = ?,
 where  uid = ?
 
 
-    
+.key=WHITEBOARD_STUDENT_LIST
+
+## whiteboard data returned to CM Admin for a given user
+select   distinct a.pid,
+                  a.run_id,
+                  b.*
+from     HA_TEST_RUN_WHITEBOARD a,
+         (select   user_id,
+                   pid,
+                   Max(insert_time_mills) as insert_time_mills
+          from     HA_TEST_RUN_WHITEBOARD b
+          group by user_id, pid) b
+where    a.user_id = ?
+         and b.pid = a.pid
+         and b.user_id = a.user_id
+order by insert_time_mills desc
+
+
+
+
         
 #############
 ##

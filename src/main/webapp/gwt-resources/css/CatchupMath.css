@@ -263,21 +263,6 @@
 #inmh_goto {
         display: none;
 }
-.show-work-panel {
-        background: transparent;
-        margin-left: 5px;
-        position: relative;
-        width: 300px;
-}
-.show-work-panel-flash {
-        margin-top: 10px;
-}
-.show-work-panel-bg {
-        background-color: gray;
-        margin: 35px 15px 10px 60px;
-        padding: 5px;
-        width: 350px;
-}
 .show-work-button {
         color: #E43C00;
         position: absolute;

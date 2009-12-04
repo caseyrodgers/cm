@@ -14,6 +14,11 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+/** Return current version information for CM  system
+ * 
+ * @author casey
+ *
+ */
 public class GetCmVersionInfoCommand implements ActionHandler<GetCmVersionInfoAction, CmVersionInfo>{
     
     @Override

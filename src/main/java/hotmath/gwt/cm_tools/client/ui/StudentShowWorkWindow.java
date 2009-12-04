@@ -5,11 +5,13 @@ import hotmath.gwt.cm_tools.client.data.InmhItemData;
 import hotmath.gwt.cm_tools.client.model.StudentActivityModel;
 import hotmath.gwt.cm_tools.client.model.StudentModel;
 import hotmath.gwt.cm_tools.client.model.StudentShowWorkModel;
-import hotmath.gwt.cm_tools.client.service.PrescriptionServiceAsync;
+import hotmath.gwt.cm_tools.client.service.CmServiceAsync;
 import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
 import hotmath.gwt.cm_tools.client.ui.resource_viewer.CmResourcePanel;
 import hotmath.gwt.cm_tools.client.ui.viewer.ResourceViewerFactory;
 import hotmath.gwt.cm_tools.client.ui.viewer.ShowWorkPanel;
+import hotmath.gwt.shared.client.rpc.action.CmList;
+import hotmath.gwt.shared.client.rpc.action.GetStudentShowWorkAction;
 import hotmath.gwt.shared.client.util.UserInfo;
 
 import java.util.List;
@@ -188,10 +190,11 @@ public class StudentShowWorkWindow extends CmWindow {
     protected void getStudentShowWorkRPC() {
 
         Log.debug("StudentShowWorkWindow: reading student show work list");
-        PrescriptionServiceAsync s = (PrescriptionServiceAsync) Registry.get("prescriptionService");
-        s.getStudentShowWork(student.getUid(), runId,new AsyncCallback<List<StudentShowWorkModel>>() {
+        CmServiceAsync s = (CmServiceAsync) Registry.get("cmService");
+        GetStudentShowWorkAction action = new GetStudentShowWorkAction(student.getUid(), activityModel.getRunId());
+        s.execute(action,new AsyncCallback<CmList<StudentShowWorkModel>>() {
 
-            public void onSuccess(List<StudentShowWorkModel> list) {
+            public void onSuccess(CmList<StudentShowWorkModel> list) {
                 createDataList(list);
 
                 Log.debug("StudentShowWorkWindow: student show work read successfully");
@@ -204,3 +207,6 @@ public class StudentShowWorkWindow extends CmWindow {
         });
     }
 }
+
+
+

@@ -29,9 +29,11 @@ import hotmath.gwt.shared.server.service.command.GetReportDefCommand;
 import hotmath.gwt.shared.server.service.command.GetReviewHtmlCommand;
 import hotmath.gwt.shared.server.service.command.GetSolutionCommand;
 import hotmath.gwt.shared.server.service.command.GetStateStandardsCommand;
+import hotmath.gwt.shared.server.service.command.GetStudentShowWorkCommand;
 import hotmath.gwt.shared.server.service.command.GetSummariesForActiveStudentsCommand;
 import hotmath.gwt.shared.server.service.command.GetUserInfoCommand;
 import hotmath.gwt.shared.server.service.command.GetViewedInmhItemsCommand;
+import hotmath.gwt.shared.server.service.command.GetWhiteboardDataCommand;
 import hotmath.gwt.shared.server.service.command.GroupManagerCommand;
 import hotmath.gwt.shared.server.service.command.LogUserInCommand;
 import hotmath.gwt.shared.server.service.command.MarkPrescriptionLessonAsViewedCommand;
@@ -103,48 +105,7 @@ public class ActionDispatcher {
     private ActionDispatcher() {
         logger.info("Creating new ActionDispatcher");
         
-        /** All commands should be injected, hard coded for now
-         * 
-         * Register each command available to RPC
-         */
-        addCommand(GetPrescriptionCommand.class);
-        addCommand(GetViewedInmhItemsCommand.class);
-        addCommand(GetSolutionCommand.class);
-        addCommand(SetInmhItemAsViewedCommand.class);
-        addCommand(GetUserInfoCommand.class);
-        addCommand(CreateTestRunCommand.class);
-        addCommand(GetQuizHtmlCommand.class);
-        addCommand(GetQuizHtmlCheckedCommand.class);
-        addCommand(SaveQuizCurrentResultCommand.class);
-        addCommand(GetQuizResultsHtmlCommand.class);
-        addCommand(SaveFeedbackCommand.class);
-        addCommand(AutoAdvanceUserCommand.class);
-        addCommand(GetProgramDefinitionsCommand.class);
-        addCommand(AddStudentCommand.class);
-        addCommand(UpdateStudentCommand.class);
-        addCommand(SaveWhiteboardDataCommand.class);
-        addCommand(ClearWhiteboardDataCommand.class);
-        addCommand(CreateAutoRegistrationPreviewCommand.class);
-        addCommand(CreateAutoRegistrationAccountsCommand.class);
-        addCommand(AddGroupCommand.class);
-        addCommand(SaveAutoRegistrationCommand.class);
-        addCommand(GetReportDefCommand.class);
-        addCommand(CreateAutoRegistrationAccountCommand.class);
-        addCommand(GetStateStandardsCommand.class);
-        addCommand(GetLessonItemsForTestRunCommand.class);
-        addCommand(UnregisterStudentsCommand.class);
-        addCommand(ProcessLoginRequestCommand.class);
-        addCommand(GetSummariesForActiveStudentsCommand.class);
-        addCommand(GetReviewHtmlCommand.class);
-        addCommand(MarkPrescriptionLessonAsViewedCommand.class);
-        addCommand(CheckUserAccountStatusCommand.class);
-        addCommand(LogUserInCommand.class);
-        addCommand(GetGroupAggregateInfoCommand.class);
-        addCommand(GroupManagerCommand.class);
-        addCommand(GeneratePdfCommand.class);
-        addCommand(SetBackgroundStyleCommand.class);
-        addCommand(GetCmVersionInfoCommand.class);
-        
+       registerAllCommands();
     }
     
     
@@ -227,5 +188,52 @@ public class ActionDispatcher {
                 SqlUtilities.releaseResources(null,null,conn);
             logger.debug("RPC Action " + action.getClass().getName() + " complete: elapsed time: " + (System.currentTimeMillis() - timeStart)/ 1000);
         }
+    }
+    
+
+    /** Register all available commands.
+     * 
+     * note: All commands should be injected, hard coded for now
+     */
+    private void registerAllCommands() {
+        addCommand(GetPrescriptionCommand.class);
+        addCommand(GetViewedInmhItemsCommand.class);
+        addCommand(GetSolutionCommand.class);
+        addCommand(SetInmhItemAsViewedCommand.class);
+        addCommand(GetUserInfoCommand.class);
+        addCommand(CreateTestRunCommand.class);
+        addCommand(GetQuizHtmlCommand.class);
+        addCommand(GetQuizHtmlCheckedCommand.class);
+        addCommand(SaveQuizCurrentResultCommand.class);
+        addCommand(GetQuizResultsHtmlCommand.class);
+        addCommand(SaveFeedbackCommand.class);
+        addCommand(AutoAdvanceUserCommand.class);
+        addCommand(GetProgramDefinitionsCommand.class);
+        addCommand(AddStudentCommand.class);
+        addCommand(UpdateStudentCommand.class);
+        addCommand(SaveWhiteboardDataCommand.class);
+        addCommand(ClearWhiteboardDataCommand.class);
+        addCommand(CreateAutoRegistrationPreviewCommand.class);
+        addCommand(CreateAutoRegistrationAccountsCommand.class);
+        addCommand(AddGroupCommand.class);
+        addCommand(SaveAutoRegistrationCommand.class);
+        addCommand(GetReportDefCommand.class);
+        addCommand(CreateAutoRegistrationAccountCommand.class);
+        addCommand(GetStateStandardsCommand.class);
+        addCommand(GetLessonItemsForTestRunCommand.class);
+        addCommand(UnregisterStudentsCommand.class);
+        addCommand(ProcessLoginRequestCommand.class);
+        addCommand(GetSummariesForActiveStudentsCommand.class);
+        addCommand(GetReviewHtmlCommand.class);
+        addCommand(MarkPrescriptionLessonAsViewedCommand.class);
+        addCommand(CheckUserAccountStatusCommand.class);
+        addCommand(LogUserInCommand.class);
+        addCommand(GetGroupAggregateInfoCommand.class);
+        addCommand(GroupManagerCommand.class);
+        addCommand(GeneratePdfCommand.class);
+        addCommand(SetBackgroundStyleCommand.class);
+        addCommand(GetCmVersionInfoCommand.class);
+        addCommand(GetWhiteboardDataCommand.class);
+        addCommand(GetStudentShowWorkCommand.class);
     }
 }
