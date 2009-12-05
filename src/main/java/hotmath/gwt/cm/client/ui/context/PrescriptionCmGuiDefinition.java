@@ -85,9 +85,11 @@ public class PrescriptionCmGuiDefinition implements CmGuiDefinition {
                      *  
                      *  practice problems are tracked elsewhere. (where?)
                      */
-                    String type = viewer.getResourceItem().getType();
-                    if(viewer.getResourceItem() != null && !(type.equals("practice") || type.equals("cmextra")))
-                        markResourceAsViewed(viewer.getResourceItem());
+                    if(viewer.getResourceItem() != null) {
+                        String type = viewer.getResourceItem().getType();
+                        if(!(type.equals("practice") || type.equals("cmextra")))
+                            markResourceAsViewed(viewer.getResourceItem());
+                    }
                 }
                 else if(event.getEventName().equals(EventBus.EVENT_TYPE_RESOURCE_VIEWER_CLOSE)) {
                     showHelpPanel();
@@ -112,7 +114,7 @@ public class PrescriptionCmGuiDefinition implements CmGuiDefinition {
          * 
          */
         CmServiceAsync s = (CmServiceAsync) Registry.get("cmService");
-        SetInmhItemAsViewedAction action = new SetInmhItemAsViewedAction(UserInfo.getInstance().getRunId(), resourceItem.getTitle(), resourceItem.getFile());
+        SetInmhItemAsViewedAction action = new SetInmhItemAsViewedAction(UserInfo.getInstance().getRunId(), resourceItem.getType(), resourceItem.getFile());
         s.execute(action, new AsyncCallback<RpcData>() {
 
                     public void onSuccess(RpcData result) {
