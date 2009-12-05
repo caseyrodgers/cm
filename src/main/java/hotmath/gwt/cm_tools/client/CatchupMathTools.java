@@ -112,7 +112,7 @@ public class CatchupMathTools implements EntryPoint {
         Registry.register("cmService", cmService);        
     }
     
-    static public String FEEDBACK_MESSAGE="<p>Please send us feedback, by using Feedback at the bottom of the page.</p>";
+    static public String FEEDBACK_MESSAGE="<p>Please use the Help button to send us feedback.</p>";
     
     
     

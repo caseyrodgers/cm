@@ -14,6 +14,7 @@ import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
 import hotmath.gwt.shared.client.eventbus.EventBus;
+import hotmath.gwt.shared.client.rpc.action.SaveFeedbackAction;
 import hotmath.gwt.shared.client.rpc.action.SetBackgroundStyleAction;
 import hotmath.gwt.shared.client.util.RpcData;
 import hotmath.gwt.shared.client.util.UserInfo;
@@ -228,6 +229,16 @@ public class HelpWindow extends CmWindow {
                 showStudentHistory();
             }
         });
+        
+        Button btnFeedback = new Button("Feedback");
+        btnFeedback.setWidth(120);
+        btnFeedback.addStyleName("button");
+        btnFeedback.addSelectionListener(new SelectionListener<ButtonEvent>() {
+            public void componentSelected(ButtonEvent ce) {
+                showFeedbackPanel_Gwt();
+            }
+        });
+        fs.add(btnFeedback);
 
         /** Only the owner of the account has access to history */
         if (!UserInfo.getInstance().isActiveUser())
@@ -369,7 +380,41 @@ public class HelpWindow extends CmWindow {
     private String getVersion() {
         return "1.2b";
     }
+    
+
+    static public void showFeedbackPanel_Gwt() {
+        
+        EventBus.getInstance().fireEvent(new CmEvent(EventBus.EVENT_TYPE_MODAL_WINDOW_OPEN));
+        
+        MessageBox.prompt("Feedback","Enter Catchup-Math feedback.",true,new Listener<MessageBoxEvent> () {
+            public void handleEvent(MessageBoxEvent be) {
+                String value = be.getValue();
+                if(value == null || value.length() == 0)
+                    return;
+                
+                CmServiceAsync s = (CmServiceAsync) Registry.get("cmService");
+                s.execute(new SaveFeedbackAction(value, "", getFeedbackStateInfo()),new AsyncCallback<RpcData>() {
+                    public void onSuccess(RpcData result) {
+                        Log.info("Feedback saved");
+                    }
+                    public void onFailure(Throwable caught) {
+                        caught.printStackTrace();
+                    }
+                });
+                        
+            }
+        });
+    }
+    
+
+    /** Return string that represents current state of CM
+     * 
+     */
+    static private String getFeedbackStateInfo() {
+       return ContextController.getInstance().toString(); 
+    }
 }
+        
 
 class BackgroundModel extends BaseModelData {
 

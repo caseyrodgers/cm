@@ -31,12 +31,7 @@ public class FooterPanel extends LayoutContainer {
     protected void onRender(Element parent, int index) {
         super.onRender(parent, index);
 
-        String html = "<ul class='h-menu'>" + 
-                      "<li><a href='javascript:void(0)' onclick='showFeedbackPanel_Gwt();return false;'>Feedback</a></li>" +
-                      "<li>About Us</li>" + 
-                      "<li>Privacy</li>" + 
-                      "<li>Press</li>" + 
-                      "<li>Contact</li>";
+        String html = "<ul class='h-menu'>";
         
         if(CmShared.getQueryParameter("debug") != null) {
             html +=   "<li><a href='javascript:void(0)' onclick='resetProgram_Gwt();return false;'>Reset</a></li>";
@@ -51,37 +46,6 @@ public class FooterPanel extends LayoutContainer {
         add(new Html(html));
     }
 
-    static public void showFeedbackPanel_Gwt() {
-        
-        EventBus.getInstance().fireEvent(new CmEvent(EventBus.EVENT_TYPE_MODAL_WINDOW_OPEN));
-        
-        MessageBox.prompt("Feedback","Enter Catchup-Math feedback.",true,new Listener<MessageBoxEvent> () {
-            public void handleEvent(MessageBoxEvent be) {
-                String value = be.getValue();
-                if(value == null || value.length() == 0)
-                    return;
-                
-                CmServiceAsync s = (CmServiceAsync) Registry.get("cmService");
-                s.execute(new SaveFeedbackAction(value, "", getFeedbackStateInfo()),new AsyncCallback<RpcData>() {
-                    public void onSuccess(RpcData result) {
-                        Log.info("Feedback saved");
-                    }
-                    public void onFailure(Throwable caught) {
-                        caught.printStackTrace();
-                    }
-                });
-                        
-            }
-        });
-    }
-
-    /** Return string that represents current state of CM
-     * 
-     */
-    static private String getFeedbackStateInfo() {
-       return ContextController.getInstance().toString(); 
-    }
-    
     /** Reset the current user's path through CM
      * 
      */
@@ -134,7 +98,6 @@ public class FooterPanel extends LayoutContainer {
      * 
      */
     static private native void publishNative() /*-{
-       $wnd.showFeedbackPanel_Gwt = @hotmath.gwt.cm_tools.client.ui.FooterPanel::showFeedbackPanel_Gwt();
        $wnd.resetProgram_Gwt = @hotmath.gwt.cm_tools.client.ui.FooterPanel::resetProgram_Gwt();
        $wnd.showPrescriptionData_Gwt = @hotmath.gwt.cm_tools.client.ui.FooterPanel::showPrescriptionData_Gwt();
        $wnd.showPrescriptionSession_Gwt = @hotmath.gwt.cm_tools.client.ui.FooterPanel::showPrescriptionSession_Gwt();
