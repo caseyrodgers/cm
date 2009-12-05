@@ -46,6 +46,14 @@ import com.extjs.gxt.ui.client.widget.layout.FormLayout;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
+/**
+ * Provides UI for registering new students and modifying the registration of
+ * existing students.
+ * 
+ * @author bob
+ *
+ */
+
 public class RegisterStudent extends LayoutContainer implements ProcessTracker {
 	
 	protected CmWindow _window;
@@ -666,6 +674,7 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
 	 * @param fs
 	 * @param fp
 	 */
+	@SuppressWarnings("unchecked")
 	protected void doSubmitAction(final FieldSet fs, final CombinedFormPanel fp, AfterValidation callback) throws CmException {
 	    
 	    TextField<String> tf = (TextField<String>)fp.getItemByItemId("name");
