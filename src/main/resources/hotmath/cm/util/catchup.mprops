@@ -478,23 +478,25 @@ select count(*) from HA_USER_LOGIN ul where ul.user_id = ? and login_time >= ?
 
 .key=RESOURCE_USAGE_COUNT
 
-select count(*), item_type
-from HA_TEST_RUN_INMH_USE iu, HA_TEST_RUN tr, HA_TEST t, CM_USER_PROGRAM p
-where p.id in (XXX)
+select count(*), s.item_type
+from (
+  select iu.item_file, iu.item_type
+  from HA_TEST_RUN_INMH_USE iu, HA_TEST_RUN tr, HA_TEST t, CM_USER_PROGRAM p
+  where p.id in (XXX)
     and t.user_prog_id = p.id
     and tr.test_id = t.test_id
     and iu.run_id = tr.run_id
-    and not (item_type = 'activity' and item_file like '%game%')
-group by item_type
-union
-select count(*), 'game'
-from HA_TEST_RUN_INMH_USE iu, HA_TEST_RUN tr, HA_TEST t, CM_USER_PROGRAM p
-where p.id in (XXX)
+    and not (iu.item_type = 'activity' and iu.item_file like '%game%')
+  union
+  select iu.item_file, 'game'
+  from HA_TEST_RUN_INMH_USE iu, HA_TEST_RUN tr, HA_TEST t, CM_USER_PROGRAM p
+  where p.id in (XXX)
     and t.user_prog_id = p.id
     and tr.test_id = t.test_id
     and iu.run_id = tr.run_id
-    and (item_type = 'activity' and item_file like '%game%')
-group by item_type
+    and (iu.item_type = 'activity' and iu.item_file like '%game%')
+  ) s
+group by s.item_type
 
 .key=LESSONS_ASSIGNED
 
