@@ -51,7 +51,7 @@ public class ResourceViewerImplVideo extends ResourceViewerImplFlash {
              */
             SWFWidget swfWidget = new SWFWidget("flowplayer-3.1.5.swf?id=" + id, "100%", "100%", s);
 
-            String flashVars = "{'clip':{'url':'THE_VIDEO'},'playerId':'PLAYER_ID','playlist':[{'url':'THE_VIDEO'}]}";
+            String flashVars = "{'key':'$852288f15c37539e229','clip':{'url':'THE_VIDEO'},'playerId':'PLAYER_ID','playlist':[{'url':'THE_VIDEO'}]}";
             
             flashVars = flashVars.replaceAll("THE_VIDEO", videoPath);
             flashVars = flashVars.replaceAll("PLAYER_ID", id);
