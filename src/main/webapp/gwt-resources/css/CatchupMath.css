@@ -923,6 +923,10 @@ img.resource-item-complete {
 
 
 /** Show Work Panel Full screen / maximized */
+.show-work-panel {
+  border: none;
+  padding: 0;
+}
 
 .show-work-panel-full {
   background: white;
