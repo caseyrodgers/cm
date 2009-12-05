@@ -10,18 +10,17 @@ import hotmath.gwt.cm_tools.client.data.InmhItemData;
 import hotmath.gwt.cm_tools.client.data.PrescriptionData;
 import hotmath.gwt.cm_tools.client.data.PrescriptionSessionDataResource;
 import hotmath.gwt.cm_tools.client.service.CmServiceAsync;
-import hotmath.gwt.cm_tools.client.service.PrescriptionServiceAsync;
 import hotmath.gwt.cm_tools.client.ui.CmGuiDefinition;
 import hotmath.gwt.cm_tools.client.ui.CmMainPanel;
 import hotmath.gwt.cm_tools.client.ui.ContextController;
 import hotmath.gwt.cm_tools.client.ui.context.CmContext;
 import hotmath.gwt.cm_tools.client.ui.resource_viewer.CmResourcePanel;
-import hotmath.gwt.cm_tools.client.ui.viewer.ResourceViewerFactory;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
 import hotmath.gwt.shared.client.eventbus.CmEventListener;
 import hotmath.gwt.shared.client.eventbus.CmEventListenerImplDefault;
 import hotmath.gwt.shared.client.eventbus.EventBus;
 import hotmath.gwt.shared.client.rpc.action.GetPrescriptionAction;
+import hotmath.gwt.shared.client.rpc.action.SetInmhItemAsViewedAction;
 import hotmath.gwt.shared.client.util.RpcData;
 import hotmath.gwt.shared.client.util.UserInfo;
 
@@ -35,7 +34,6 @@ import com.extjs.gxt.ui.client.Registry;
 import com.extjs.gxt.ui.client.Style.LayoutRegion;
 import com.extjs.gxt.ui.client.Style.Scroll;
 import com.extjs.gxt.ui.client.fx.FxConfig;
-import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.Html;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.VerticalPanel;
@@ -87,7 +85,8 @@ public class PrescriptionCmGuiDefinition implements CmGuiDefinition {
                      *  
                      *  practice problems are tracked elsewhere. (where?)
                      */
-                    if(viewer.getResourceItem() != null && viewer.getResourceItem().getType().equals("practice"))
+                    String type = viewer.getResourceItem().getType();
+                    if(viewer.getResourceItem() != null && !(type.equals("practice") || type.equals("cmextra")))
                         markResourceAsViewed(viewer.getResourceItem());
                 }
                 else if(event.getEventName().equals(EventBus.EVENT_TYPE_RESOURCE_VIEWER_CLOSE)) {
@@ -112,11 +111,11 @@ public class PrescriptionCmGuiDefinition implements CmGuiDefinition {
          * mark this INMH resource item as being viewed
          * 
          */
-        PrescriptionServiceAsync s = (PrescriptionServiceAsync) Registry.get("prescriptionService");
-        s.setInmhItemAsViewed(UserInfo.getInstance().getRunId(), resourceItem.getType(), resourceItem.getFile(),
-                new AsyncCallback() {
+        CmServiceAsync s = (CmServiceAsync) Registry.get("cmService");
+        SetInmhItemAsViewedAction action = new SetInmhItemAsViewedAction(UserInfo.getInstance().getRunId(), resourceItem.getTitle(), resourceItem.getFile());
+        s.execute(action, new AsyncCallback<RpcData>() {
 
-                    public void onSuccess(Object result) {
+                    public void onSuccess(RpcData result) {
                         
                         Log.debug("PrescriptionResourceAccord: setItemAsViewed: " + resourceItem);
                         

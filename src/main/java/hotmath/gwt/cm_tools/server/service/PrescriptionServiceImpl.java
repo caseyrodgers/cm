@@ -84,9 +84,11 @@ public class PrescriptionServiceImpl extends RemoteServiceServlet implements Pre
         return ActionDispatcher.getInstance().execute(getViewedAction);
     }
 
+    /** @deprecated use SetInmhItemAsViewedCommand
+     * 
+     */
     public void setInmhItemAsViewed(int runId, String type, String file) throws CmRpcException {
-        SetInmhItemAsViewedAction getViewedAction = new SetInmhItemAsViewedAction(runId,type,file);
-        ActionDispatcher.getInstance().execute(getViewedAction);
+       throw new CmRpcException("Use the action");
     }
 
     public UserInfo getUserInfo(int uid) throws CmRpcException {

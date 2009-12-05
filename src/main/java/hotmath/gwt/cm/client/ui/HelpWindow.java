@@ -43,7 +43,7 @@ import com.google.gwt.user.client.ui.Label;
 public class HelpWindow extends CmWindow {
 
     ComboBox<BackgroundModel> bgCombo;
-        
+
     public HelpWindow() {
         setAutoHeight(true);
         setWidth(490);
@@ -54,26 +54,40 @@ public class HelpWindow extends CmWindow {
 
         EventBus.getInstance().fireEvent(new CmEvent(EventBus.EVENT_TYPE_MODAL_WINDOW_OPEN, this));
 
-        if(CmMainPanel.__lastInstance != null) {
+        if (CmMainPanel.__lastInstance != null) {
             CmMainPanel.__lastInstance.expandResourceButtons();
         }
 
         Button closeBtn = new Button("Close");
         closeBtn.addSelectionListener(new SelectionListener<ButtonEvent>() {
-                public void componentSelected(ButtonEvent ce) {
-                    HelpWindow.this.close();
-                }
-            });
+            public void componentSelected(ButtonEvent ce) {
+                HelpWindow.this.close();
+            }
+        });
         addButton(closeBtn);
 
         Html messageArea = new Html();
         try {
-            messageArea.setHtml(ContextController.getInstance().getTheContext().getStatusMessage());
+            String html = ContextController.getInstance().getTheContext().getStatusMessage();
+            if (CmShared.getQueryParameter("debug") != null) {
+                getHeader().addTool(new Button("Version", new SelectionListener<ButtonEvent>() {
+                    @Override
+                    public void componentSelected(ButtonEvent ce) {
+                        CatchupMathTools.showVersionInfo();
+                    }
+                }));
+
+                html += "<div style='margin-top: 25px;'>User Location: " + UserInfo.getInstance().getUserStatus() + "</div>";
+            }
+            messageArea = new Html(html);
+            
         } catch (Exception e) {
             Log.info("Error getting context help", e);
             messageArea.setHtml("Catchup Math makes learning fun!");
         }
         messageArea.addStyleName("help-window-message-area");
+
+        
 
         VerticalPanel vp = new VerticalPanel();
 
@@ -90,54 +104,54 @@ public class HelpWindow extends CmWindow {
         bgCombo.setEmptyText("-- Select Wallpaper --");
         bgCombo.setTriggerAction(TriggerAction.ALL);
         bgCombo.addSelectionChangedListener(new SelectionChangedListener<BackgroundModel>() {
-                public void selectionChanged(final SelectionChangedEvent<BackgroundModel> se) {
+            public void selectionChanged(final SelectionChangedEvent<BackgroundModel> se) {
 
-                    /**
-                     * @TODO: use better check
-                     * 
-                     */
-                    if (!UserInfo.getInstance().isActiveUser()) {
-                        // creating new account, do not allow changing wallpaper
-                        CatchupMathTools
+                /**
+                 * @TODO: use better check
+                 * 
+                 */
+                if (!UserInfo.getInstance().isActiveUser()) {
+                    // creating new account, do not allow changing wallpaper
+                    CatchupMathTools
                             .showAlert("You will be able to change your wallpaper once you create your own account");
-                        return;
+                    return;
+                }
+
+                CmServiceAsync s = (CmServiceAsync) Registry.get("cmService");
+                s.execute(new SetBackgroundStyleAction(UserInfo.getInstance().getUid(), se.getSelectedItem()
+                        .getBackgroundStyle()), new AsyncCallback<RpcData>() {
+                    public void onSuccess(RpcData result) {
+                        try {
+                            String newStyle = se.getSelectedItem().getBackgroundStyle();
+                            /**
+                             * Remove any previous wallpaper styles, and make
+                             * sure this is the only one active.
+                             * 
+                             * NOTE: all wallpaper styles start with
+                             * 'resource-container-'
+                             */
+                            String styleName = CmMainPanel.__lastInstance._mainContent.getStyleName();
+                            if (styleName != null) {
+                                String names[] = styleName.split(" ");
+                                for (int i = 0; i < names.length; i++) {
+                                    if (names[i].startsWith("resource-container-"))
+                                        CmMainPanel.__lastInstance._mainContent.removeStyleName(names[i]);
+                                }
+                            }
+                            CmMainPanel.__lastInstance._mainContent.addStyleName(newStyle);
+
+                            UserInfo.getInstance().setBackgroundStyle(newStyle);
+                        } finally {
+                            CatchupMathTools.setBusy(false);
+                        }
                     }
 
-                    CmServiceAsync s = (CmServiceAsync) Registry.get("cmService");
-                    s.execute(new SetBackgroundStyleAction(UserInfo.getInstance().getUid(), se.getSelectedItem()
-                                                           .getBackgroundStyle()), new AsyncCallback<RpcData>() {
-                                  public void onSuccess(RpcData result) {
-                                      try {
-                                          String newStyle = se.getSelectedItem().getBackgroundStyle();
-                                          /**
-                                           * Remove any previous wallpaper styles, and make
-                                           * sure this is the only one active.
-                                           * 
-                                           * NOTE: all wallpaper styles start with
-                                           * 'resource-container-'
-                                           */
-                                          String styleName = CmMainPanel.__lastInstance._mainContent.getStyleName();
-                                          if (styleName != null) {
-                                              String names[] = styleName.split(" ");
-                                              for (int i = 0; i < names.length; i++) {
-                                                  if (names[i].startsWith("resource-container-"))
-                                                      CmMainPanel.__lastInstance._mainContent.removeStyleName(names[i]);
-                                              }
-                                          }
-                                          CmMainPanel.__lastInstance._mainContent.addStyleName(newStyle);
-
-                                          UserInfo.getInstance().setBackgroundStyle(newStyle);
-                                      } finally {
-                                          CatchupMathTools.setBusy(false);
-                                      }
-                                  }
-
-                                  public void onFailure(Throwable caught) {
-                                      caught.printStackTrace();
-                                  }
-                              });
-                }
-            });
+                    public void onFailure(Throwable caught) {
+                        caught.printStackTrace();
+                    }
+                });
+            }
+        });
 
         fs = new FieldSet();
         fs.setHeading("Wallpaper");
@@ -157,10 +171,10 @@ public class HelpWindow extends CmWindow {
             btn.setWidth(120);
             btn.setToolTip("Modify your Catchup Math settings.");
             btn.addSelectionListener(new SelectionListener<ButtonEvent>() {
-                    public void componentSelected(ButtonEvent ce) {
-                        showStudentConfiguration();
-                    }
-                });
+                public void componentSelected(ButtonEvent ce) {
+                    showStudentConfiguration();
+                }
+            });
             btn.addStyleName("button");
             fs.add(btn);
 
@@ -169,18 +183,18 @@ public class HelpWindow extends CmWindow {
             btn.addStyleName("button");
             btn.setWidth(120);
             btn.addSelectionListener(new SelectionListener<ButtonEvent>() {
-                    public void componentSelected(ButtonEvent ce) {
-                        MessageBox.confirm("Restart Program",
-                                           "Are you sure you would like to restart your current program?",
-                                           new Listener<MessageBoxEvent>() {
-                                               public void handleEvent(MessageBoxEvent be) {
-                                                   if (be.getButtonClicked().getText().equals("Yes")) {
-                                                       FooterPanel.resetProgram_Gwt();
-                                                   }
-                                               }
-                                           });
-                    }
-                });
+                public void componentSelected(ButtonEvent ce) {
+                    MessageBox.confirm("Restart Program",
+                            "Are you sure you would like to restart your current program?",
+                            new Listener<MessageBoxEvent>() {
+                                public void handleEvent(MessageBoxEvent be) {
+                                    if (be.getButtonClicked().getText().equals("Yes")) {
+                                        FooterPanel.resetProgram_Gwt();
+                                    }
+                                }
+                            });
+                }
+            });
             fs.add(btn);
 
             vp.add(fs);
@@ -201,19 +215,19 @@ public class HelpWindow extends CmWindow {
         btn.setWidth(120);
         btn.addStyleName("button");
         btn.addSelectionListener(new SelectionListener<ButtonEvent>() {
-                public void componentSelected(ButtonEvent ce) {
-                    CatchupMathTools.showAlert("Please email support@hotmath.com for support.");
-                }
-            });
+            public void componentSelected(ButtonEvent ce) {
+                CatchupMathTools.showAlert("Please email support@hotmath.com for support.");
+            }
+        });
         fs.add(btn);
         btn = new Button("Student History");
         btn.setToolTip("View your history of quizzes, reviews and show work efforts.");
         btn.setWidth(120);
         btn.addSelectionListener(new SelectionListener<ButtonEvent>() {
-                public void componentSelected(ButtonEvent ce) {
-                    showStudentHistory();
-                }
-            });
+            public void componentSelected(ButtonEvent ce) {
+                showStudentHistory();
+            }
+        });
 
         /** Only the owner of the account has access to history */
         if (!UserInfo.getInstance().isActiveUser())
@@ -229,23 +243,9 @@ public class HelpWindow extends CmWindow {
         vp.add(fs);
 
         add(vp);
-        
-        
-        
-        if(CmShared.getQueryParameter("debug") != null) {
-            getHeader().addTool(new Button("Version", new SelectionListener<ButtonEvent>() {
-                        @Override
-                            public void componentSelected(ButtonEvent ce) {
-                            CatchupMathTools.showVersionInfo();
-                        }
-            }));
-            
-            
-            add(new Label("User Location: " + UserInfo.getInstance().getUserStatus()));
-        }
-        
-    }
 
+
+    }
 
     /**
      * Provide method for single user to configure programs and settings
@@ -255,18 +255,18 @@ public class HelpWindow extends CmWindow {
         PrescriptionServiceAsync s = (PrescriptionServiceAsync) Registry.get("prescriptionService");
         s.getStudentModel(UserInfo.getInstance().getUid(), new AsyncCallback<StudentModel>() {
 
-                public void onSuccess(StudentModel student) {
+            public void onSuccess(StudentModel student) {
 
-                    CmAdminModel adminModel = new CmAdminModel();
-                    adminModel.setId(student.getAdminUid());
-                    new RegisterStudent(student, adminModel).showWindow();
-                }
+                CmAdminModel adminModel = new CmAdminModel();
+                adminModel.setId(student.getAdminUid());
+                new RegisterStudent(student, adminModel).showWindow();
+            }
 
-                public void onFailure(Throwable caught) {
-                    String msg = caught.getMessage();
-                    CatchupMathTools.showAlert(msg);
-                }
-            });
+            public void onFailure(Throwable caught) {
+                String msg = caught.getMessage();
+                CatchupMathTools.showAlert(msg);
+            }
+        });
     }
 
     /**
@@ -282,15 +282,15 @@ public class HelpWindow extends CmWindow {
         PrescriptionServiceAsync s = (PrescriptionServiceAsync) Registry.get("prescriptionService");
         s.getStudentModel(UserInfo.getInstance().getUid(), new AsyncCallback<StudentModel>() {
 
-                public void onSuccess(StudentModel student) {
-                    new StudentDetailsWindow(student);
-                }
+            public void onSuccess(StudentModel student) {
+                new StudentDetailsWindow(student);
+            }
 
-                public void onFailure(Throwable caught) {
-                    String msg = caught.getMessage();
-                    CatchupMathTools.showAlert(msg);
-                }
-            });
+            public void onFailure(Throwable caught) {
+                String msg = caught.getMessage();
+                CatchupMathTools.showAlert(msg);
+            }
+        });
     }
 
     public void onClick(ClickEvent event) {
