@@ -4,7 +4,6 @@ import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.service.CmServiceAsync;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
 import hotmath.gwt.shared.client.eventbus.EventBus;
-import hotmath.gwt.shared.client.rpc.action.CmArrayList;
 import hotmath.gwt.shared.client.rpc.action.CmList;
 import hotmath.gwt.shared.client.rpc.action.GetWhiteboardDataAction;
 import hotmath.gwt.shared.client.rpc.action.SaveWhiteboardDataAction;
@@ -68,10 +67,14 @@ public class ShowWorkPanel extends Frame {
         if(UserInfo.getInstance().isShowWorkRequired())
             EventBus.getInstance().fireEvent(new CmEvent(EventBus.EVENT_TYPE_WHITEBOARDUPDATED, this.pid));
 
-        
-		CmServiceAsync s = (CmServiceAsync) Registry.get("cmService");
+        CmServiceAsync s = (CmServiceAsync) Registry.get("cmService");
 		int uid = UserInfo.getInstance().getUid();
 		int runId = UserInfo.getInstance().getRunId();
+
+		if(runId == 0) {
+		   CatchupMathTools.showAlert("Whiteboard write: run id is null");
+		   return;
+		}
 		
 		/** If json is simple string 'clear', then force a full clear and
 		 *  remove all chart data for this user/pid.  Otherwise, it is a 
@@ -94,20 +97,25 @@ public class ShowWorkPanel extends Frame {
 		});
 	}
 
+	/** Called by flash once it has been initialized.
+	 * 
+	 *  After flash is loaded and JS communication hooks established,
+	 *  we get data from server and send whiteboard commands to create
+	 *  the whiteboard image.
+	 */
 	public void handleFlashWhiteboardIsReady() {
 		CmServiceAsync s = (CmServiceAsync) Registry.get("cmService");
 		GetWhiteboardDataAction action = new GetWhiteboardDataAction(UserInfo.getInstance().getUid(),pid);
 		s.execute(action,new AsyncCallback<CmList<WhiteboardCommand>>() {
-			public void onFailure(Throwable caught) {
-				caught.printStackTrace();
-				CatchupMathTools.showAlert("Whiteboard read failed: " + caught);
-			}
-
 			public void onSuccess(CmList<WhiteboardCommand> commands) {
 				for(int i=0, t=commands.size();i<t;i++) {
 					updateFlashWhiteboard(flashId, commands.get(i).getCommand(),commands.get(i).getData());
 				}
 			}
+            public void onFailure(Throwable caught) {
+                caught.printStackTrace();
+                Log.error("Whiteboard read failed: " + caught);
+            }
 		});		
 	}
 
@@ -144,6 +152,13 @@ public class ShowWorkPanel extends Frame {
     	__lastInstance.handleFlashWhiteboardOut(json);
     }
     
+    /** Calls Javascript hook that will lookup Flash object and make call
+     *  via the ExternalInterface.
+     *  
+     * @param flashId
+     * @param command
+     * @param commandData
+     */
     static public native void updateFlashWhiteboard(String flashId, String command, String commandData) /*-{
         $wnd.updateWhiteboard(flashId, command, commandData);
     }-*/;

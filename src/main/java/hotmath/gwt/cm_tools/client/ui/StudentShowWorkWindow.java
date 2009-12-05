@@ -126,7 +126,8 @@ public class StudentShowWorkWindow extends CmWindow {
         lc.setLayout(new BorderLayout());
         try {
             // create temp user object to identify this student
-            UserInfo user = new UserInfo(student.getUid(), 0);
+            UserInfo user = new UserInfo(student.getUid(),activityModel.getTestId());
+            user.setRunId(activityModel.getRunId());
             UserInfo.setInstance(user);
 
             
