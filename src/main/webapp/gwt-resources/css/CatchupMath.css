@@ -539,9 +539,12 @@ img.resource-item-complete {
         top: 5px;
         width: 100px;
 }
-.resource-viewer-impl-tutor {
+.resource-viewer-impl-tutor,
+.resource-viewer-impl-tutor .whiteboard-container {
         background: transparent;
 }
+
+
 #show-work-button {
         left: 8px;
         position: absolute;

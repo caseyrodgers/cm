@@ -44,6 +44,11 @@ public class ResourceViewerImplTutor extends CmResourcePanelImplDefault {
                 if (event.getEventName().equals(EventBus.EVENT_TYPE_WHITEBOARDUPDATED)) {
                     _instance.whiteBoardHasBeenUpdated((String) event.getEventData());
                 }
+                else if(event.getEventName().equals(EventBus.EVENT_TYPE_MODAL_WINDOW_OPEN)) {
+                    if(__lastDisplayMode == DisplayMode.WHITEBOARD) {
+                        _instance.removeResourcePanel();
+                    }
+                }
             }
         });
     }
@@ -163,12 +168,12 @@ public class ResourceViewerImplTutor extends CmResourcePanelImplDefault {
             LayoutContainer lcTutor = new LayoutContainer(new FitLayout());
             lcTutor.setScrollMode(Scroll.AUTO);
             lcTutor.add(tutorPanel);
-            lcTutor.setStyleAttribute("background", "#DEDEDE");
             
 
             LayoutContainer lcMain = new LayoutContainer(new BorderLayout());
+            lcMain.addStyleName("whiteboard-container");
+            lcMain.setStyleAttribute("background", "transparent");
             lcMain.setScrollMode(Scroll.NONE);
-            lcMain.setStyleAttribute("background", "white");
 
             BorderLayoutData bld = new BorderLayoutData(LayoutRegion.WEST, .50f);
             bld.setSplit(false);
