@@ -32,6 +32,7 @@ public class CmResourcePanelContainer extends ContentPanel {
 	static String EXPAND_TEXT = "Expand";
 	static String SHRINK_TEXT = "Shrink";
 	
+	
 	/** Keep a static representation of the current display state
 	 * 
 	 */
@@ -139,7 +140,7 @@ public class CmResourcePanelContainer extends ContentPanel {
         /** Reset the panel widget
          * 
          */
-        resetPanelWidget(panel);
+        resetPanelWidget(panel, true);
         
         CmResourcePanelContainer.this.layout();
 	}
@@ -149,6 +150,10 @@ public class CmResourcePanelContainer extends ContentPanel {
 	}
 	
 	public void setMaximize(CmResourcePanel panel) {
+	    setMaximize(panel, true);
+	}
+	
+	public void setMaximize(CmResourcePanel panel, boolean trackChange) {
 	    
 	    if(viewerState == ResourceViewerState.MAXIMIZED)
 	        return;
@@ -166,10 +171,9 @@ public class CmResourcePanelContainer extends ContentPanel {
         /** Reset the panel widget
          * 
          */
-        resetPanelWidget(panel);
+        resetPanelWidget(panel,trackChange);
         
         CmResourcePanelContainer.this.layout();
-        
 	}
 	
 	private void closeResource(ButtonEvent ce, CmResourcePanel panel) {
@@ -186,7 +190,7 @@ public class CmResourcePanelContainer extends ContentPanel {
 	 * 
 	 * @param panel
 	 */
-	public void resetPanelWidget(CmResourcePanel panel) {
+	public void resetPanelWidget(CmResourcePanel panel, boolean trackChange) {
         CmResourcePanelContainer.this.removeAll();
         LayoutContainer lc =(LayoutContainer) panel.getResourcePanel();
         
@@ -195,20 +199,25 @@ public class CmResourcePanelContainer extends ContentPanel {
         
         
         
-        /** If resource is 'forced' to open maximum, do not allow it affect
-         *  the viewer for other resources.
-         */
-        if(panel.getInitialMode() == ResourceViewerState.MAXIMIZED && viewerState == ResourceViewerState.MAXIMIZED) {
-            // skip tracking it
-        }
-        /** IF resource is 'forced' to open optimized, do not allow it affect ..
-         * 
-         */
-        else if(panel.getInitialMode() == ResourceViewerState.OPTIMIZED && panel.allowMaximize() == false) {
-   	        // skip
-        }
-        else {
-            __currentDisplayState = viewerState;
+        if(trackChange) {
+            /** If resource is 'forced' to open maximum, do not allow it affect
+             *  the viewer for other resources.
+             */
+            if(panel.getInitialMode() == ResourceViewerState.MAXIMIZED && viewerState == ResourceViewerState.MAXIMIZED) {
+                /** don't track change */
+            }
+            /** IF resource is 'forced' to open optimized, do not allow it affect ..
+             * 
+             */
+            else if(panel.getInitialMode() == ResourceViewerState.OPTIMIZED && panel.allowMaximize() == false) {
+                /** don't track change */
+            }
+            else if(panel.getInitialMode() == ResourceViewerState.OPTIMIZED && panel.allowMaximize() == false) {
+                
+            }
+            else {
+                __currentDisplayState = viewerState;
+            }
         }
 	}
 	

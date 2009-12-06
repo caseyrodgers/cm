@@ -158,7 +158,7 @@ public class ResourceViewerImplTutor extends CmResourcePanelImplDefault {
         }
         else {
             _wasMaxBeforeWhiteboard = CmMainPanel.__lastInstance._mainContent.currentContainer.isMaximized();
-            CmMainPanel.__lastInstance._mainContent.currentContainer.setMaximize(this);
+            CmMainPanel.__lastInstance._mainContent.currentContainer.setMaximize(this,_wasMaxBeforeWhiteboard);
             
             CmMainPanel.__lastInstance._mainContent.currentContainer.getMaximizeButton().setEnabled(false);
             
