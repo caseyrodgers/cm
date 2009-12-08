@@ -3,8 +3,6 @@ package hotmath.cm.util.service;
 import hotmath.cm.util.report.StudentDetailReport;
 import hotmath.cm.util.report.StudentReportCard;
 import hotmath.cm.util.report.StudentSummaryReport;
-import hotmath.gwt.cm.server.CmDbTestCase;
-import hotmath.gwt.cm_tools.client.ui.context.CmContext;
 import hotmath.util.HMConnectionPool;
 import hotmath.util.sql.SqlUtilities;
 
