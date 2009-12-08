@@ -5,10 +5,10 @@ import hotmath.gwt.cm_tools.client.model.CmAdminDataReader;
 import hotmath.gwt.cm_tools.client.model.CmAdminDataRefresher;
 import hotmath.gwt.cm_tools.client.model.CmAdminModel;
 import hotmath.gwt.cm_tools.client.model.GroupModel;
-import hotmath.gwt.cm_tools.client.service.PrescriptionServiceAsync;
+import hotmath.gwt.cm_tools.client.service.CmServiceAsync;
 import hotmath.gwt.cm_tools.client.util.ProcessTracker;
-
-import java.util.List;
+import hotmath.gwt.shared.client.rpc.action.CmList;
+import hotmath.gwt.shared.client.rpc.action.GetActiveGroupsAction;
 
 import com.extjs.gxt.ui.client.Registry;
 import com.extjs.gxt.ui.client.event.SelectionChangedEvent;
@@ -83,10 +83,14 @@ public class GroupSelectorWidget {
 	private void getGroupListRPC(Integer uid, final ListStore <GroupModel> store) {
 
 		pTracker.beginStep();
-		PrescriptionServiceAsync s = (PrescriptionServiceAsync) Registry.get("prescriptionService");
-		s.getActiveGroups(uid, new AsyncCallback <List<GroupModel>>() {
+		
+		CatchupMathTools.setBusy(true);
+		
+		CmServiceAsync s = (CmServiceAsync) Registry.get("cmService");
+		GetActiveGroupsAction action = new GetActiveGroupsAction(uid);
+		s.execute(action, new AsyncCallback <CmList<GroupModel>>() {
 
-			public void onSuccess(List<GroupModel> result) {
+			public void onSuccess(CmList<GroupModel> result) {
 				// append 'New Group' to end of List
 				if (includeCreate) {
 					GroupModel gm = new GroupModel();
@@ -104,9 +108,12 @@ public class GroupSelectorWidget {
 				
 				pTracker.completeStep();
 				pTracker.finish();
+				
+				CatchupMathTools.setBusy(false);
         	}
 
 			public void onFailure(Throwable caught) {
+			    CatchupMathTools.setBusy(false);
         		String msg = caught.getMessage();
         		CatchupMathTools.showAlert(msg);
         	}

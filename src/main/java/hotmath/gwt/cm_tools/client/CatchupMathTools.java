@@ -46,13 +46,26 @@ public class CatchupMathTools implements EntryPoint {
         Log.info("Catchup Math Tools library loaded successfully");
     }
 
+    static int _busyDepth;
     /**
      * Display or hide the modal busy dialog
+     * 
+     * Provides stack like functionality such that 
+     * the 'busy' icon is only removed after the last
+     * busy start.
      * 
      * @param trueFalse
      */
     static public void setBusy(boolean trueFalse) {
-        RootPanel.get("loading").setVisible(trueFalse);
+        
+        if(trueFalse) {
+            _busyDepth++;
+            RootPanel.get("loading").setVisible(true);
+        }
+        else if(--_busyDepth == 0){
+            RootPanel.get("loading").setVisible(false);
+        }
+        
     }
 
     /**

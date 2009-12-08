@@ -536,6 +536,8 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
 
         Log.info("StudentGridPanel: reading students RPC");
 
+        CatchupMathTools.setBusy(true);
+        
         CmServiceAsync s = (CmServiceAsync) Registry.get("cmService");
 
         GetSummariesForActiveStudentsAction action = new GetSummariesForActiveStudentsAction(uid);
@@ -616,10 +618,11 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
                 }
 
                 Log.info("StudentGridPanel: students RPC successfully read");
-                
+                CatchupMathTools.setBusy(false);        
             }
             
             public void onFailure(Throwable caught) {
+                CatchupMathTools.setBusy(false);
                 caught.printStackTrace();
                 CatchupMathTools.showAlert(caught.getMessage());
             }
