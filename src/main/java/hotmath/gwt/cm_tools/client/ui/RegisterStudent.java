@@ -140,7 +140,7 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
 	}
 	
 	public FieldSet _fsProfile, _fsProgram;
-	public CheckBoxGroup _showWorkGrp;
+	public CheckBoxGroup _showWorkGrp, _tutoringEnabled;
 	protected FormPanel createForm() {
 		_formPanel = new CombinedFormPanel();
 		_formPanel.addStyleName("register-student-form-panel");
@@ -231,6 +231,25 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
         _showWorkGrp.setId(StudentModelExt.SHOW_WORK_KEY);
         _showWorkGrp.add(isShowWorkRequired);
         _fsProgram.add(_showWorkGrp);
+        
+        
+        
+        CheckBox isTutoringEnabled = new CheckBox();
+        isTutoringEnabled.setId(StudentModelExt.TUTORING_AVAIL_KEY);
+        if (! isNew) {
+            isTutoringEnabled.setValue(stuMdl.getTutoringAvail());
+        }
+        else {
+            // require 'Show Work' OFF by default
+            isTutoringEnabled.setValue(false);
+        }        
+        
+        _tutoringEnabled = new CheckBoxGroup();
+        _tutoringEnabled.setFieldLabel("Tutoring Enabled");
+        _tutoringEnabled.setId(StudentModelExt.TUTORING_AVAIL_KEY);
+		_tutoringEnabled.add(isTutoringEnabled);
+		_fsProgram.add(_tutoringEnabled);
+		
 		
         _formPanel.add(_fsProgram);
 
@@ -779,7 +798,7 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
         //sm.setEmail(email);
         sm.setProgramDescr(prog);
         sm.setGroupId(groupId);
-        sm.setTutoringAvail(false);
+        sm.setTutoringAvail(_tutoringEnabled.getValue().getValue());
         sm.setShowWorkRequired(showWork);
         sm.setGroup(group);
         sm.setAdminUid(cmAdminMdl.getId());
@@ -802,9 +821,10 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
             return;
         }
         
-        
-        
         /** If callback not provided, then perform default operation
+         * 
+         * @TODO: all this logic about what is updated should be on the server
+         *        the client should only have to update the POJO and say go.
          * 
          */
         if (isNew) {                    
@@ -824,7 +844,6 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
             sm.setJson(stuMdl.getJson());
             sm.setStatus(stuMdl.getStatus());
             sm.setSectionNum(stuMdl.getSectionNum());
-            
             if (! name.equals(stuMdl.getName()) ||
                 ! showWork.equals(stuMdl.getShowWorkRequired()) ||
                 ! groupId.equals(stuMdl.getGroupId())) {
@@ -854,6 +873,14 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
                 progChanged = false;
                 stuChanged = true;
             }
+            
+
+            
+            if(_tutoringEnabled.getValue().getValue() != stuMdl.getTutoringAvail()) {
+                stuChanged = true;
+            }
+            
+            
             if (stuChanged || progChanged || progIsNew) {
                 updateUserRPC(sm, stuChanged, progChanged, progIsNew, passcodeChanged);
             }
