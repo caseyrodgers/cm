@@ -46,7 +46,7 @@ public class ResourceViewerImplTutor extends CmResourcePanelImplDefault {
                 }
                 else if(event.getEventName().equals(EventBus.EVENT_TYPE_MODAL_WINDOW_OPEN)) {
                     if(__lastDisplayMode == DisplayMode.WHITEBOARD) {
-                        _instance.removeResourcePanel();
+                        CmMainPanel.__lastInstance.removeResource();
                     }
                 }
             }
