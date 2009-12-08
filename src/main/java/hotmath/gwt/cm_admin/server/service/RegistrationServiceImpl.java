@@ -1,7 +1,6 @@
 package hotmath.gwt.cm_admin.server.service;
 
 import hotmath.gwt.cm_admin.client.service.RegistrationService;
-import hotmath.gwt.cm_admin.server.model.CmAdminDao;
 import hotmath.gwt.cm_admin.server.model.CmStudentDao;
 import hotmath.gwt.cm_tools.client.model.AccountInfoModel;
 import hotmath.gwt.cm_tools.client.model.StudentModel;
@@ -28,7 +27,6 @@ public class RegistrationServiceImpl extends RemoteServiceServlet implements Reg
 	}
 
 	public AccountInfoModel getAccountInfoForAdminUid(Integer uid) throws Exception {
-		CmAdminDao dao = new CmAdminDao();
-		return dao.getAccountInfo(uid);
+	    throw new CmRpcExceptionUseAction();
 	}
 }

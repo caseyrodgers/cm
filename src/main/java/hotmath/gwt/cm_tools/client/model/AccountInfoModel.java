@@ -1,8 +1,10 @@
 package hotmath.gwt.cm_tools.client.model;
 
+import hotmath.gwt.shared.client.rpc.Response;
+
 import com.extjs.gxt.ui.client.data.BaseModelData;
 
-public class AccountInfoModel extends BaseModelData  {
+public class AccountInfoModel extends BaseModelData  implements Response {
 
 	private static final long serialVersionUID = 5273566482319153369L;
 

@@ -29,6 +29,7 @@ public class StudentModelExt extends BaseModel implements Serializable, StudentM
 	public static final String PASSCODE_KEY = "passcode";
 	public static final String BACKGROUND_STYLE="background_style";
 	public static final String DEMO_USER_KEY="demo_user";
+	public static final String PROGRAM_DESCR_KEY="program";
 
 	
 	public StudentModelExt() {}
@@ -61,7 +62,8 @@ public class StudentModelExt extends BaseModel implements Serializable, StudentM
 	        set(NAME_KEY,student.getName());
 	        set(PASSCODE_KEY,student.getPasscode());
 	        set(BACKGROUND_STYLE,student.getBackgroundStyle());
-	        set(DEMO_USER_KEY,student.getIsDemoUser());     
+	        set(DEMO_USER_KEY,student.getIsDemoUser());
+	        set(PROGRAM_DESCR_KEY, student.getProgramDescr());
 	}
 	
 	public String getName() {

@@ -11,6 +11,8 @@ import hotmath.gwt.cm_tools.client.model.GroupModel;
 import hotmath.gwt.cm_tools.client.model.StudentModel;
 import hotmath.gwt.cm_tools.client.model.StudyProgramModel;
 import hotmath.gwt.cm_tools.client.model.SubjectModel;
+import hotmath.gwt.shared.client.rpc.action.CmArrayList;
+import hotmath.gwt.shared.client.rpc.action.CmList;
 import hotmath.gwt.shared.client.util.CmException;
 import hotmath.gwt.shared.client.util.UserInfo.AccountType;
 import hotmath.testset.ha.HaAdmin;
@@ -72,15 +74,13 @@ public class CmAdminDao {
     	return l;
     }
     
-    public List <GroupModel> getActiveGroups(Integer adminUid) throws Exception {
-    	List <GroupModel> l = null;
+    public CmList <GroupModel> getActiveGroups(final Connection conn, Integer adminUid) throws Exception {
+    	CmList <GroupModel> l = null;
     	
-    	Connection conn = null;
     	PreparedStatement ps = null;
     	ResultSet rs = null;
     	
     	try {
-    		conn = HMConnectionPool.getConnection();
     		ps = conn.prepareStatement(CmMultiLinePropertyReader.getInstance().getProperty("SELECT_GROUPS_SQL"));
     		ps.setInt(1, adminUid);
     		ps.setInt(2, 1);
@@ -94,7 +94,7 @@ public class CmAdminDao {
     		throw new Exception("*** Error getting Group data ***");
     	}
     	finally {
-    		SqlUtilities.releaseResources(rs, ps, conn);
+    		SqlUtilities.releaseResources(rs, ps, null);
     	}
     	return l;
     }
@@ -557,8 +557,8 @@ public class CmAdminDao {
     	return l;
     }
     
-    private List <GroupModel> loadGroups(ResultSet rs) throws Exception {
-    	List <GroupModel> l = new ArrayList<GroupModel>();
+    private CmList <GroupModel> loadGroups(ResultSet rs) throws Exception {
+    	CmList <GroupModel> l = new CmArrayList<GroupModel>();
     	
     	while (rs.next()) {
     		GroupModel m = new GroupModel();

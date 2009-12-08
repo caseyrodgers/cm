@@ -1,11 +1,12 @@
 package hotmath.gwt.cm_admin.client.ui;
 
-import hotmath.gwt.cm_admin.client.service.RegistrationServiceAsync;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.model.AccountInfoModel;
 import hotmath.gwt.cm_tools.client.model.CmAdminDataReader;
 import hotmath.gwt.cm_tools.client.model.CmAdminDataRefresher;
 import hotmath.gwt.cm_tools.client.model.CmAdminModel;
+import hotmath.gwt.cm_tools.client.service.CmServiceAsync;
+import hotmath.gwt.shared.client.rpc.action.GetAccountInfoForAdminUidAction;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.Registry;
@@ -93,10 +94,13 @@ public class AccountInfoPanel extends LayoutContainer implements CmAdminDataRefr
 	}
 
     protected void getAccountInfoRPC(Integer uid) {
-        RegistrationServiceAsync s = (RegistrationServiceAsync) Registry.get("registrationService");
+        CmServiceAsync s = (CmServiceAsync) Registry.get("cmService");
+        GetAccountInfoForAdminUidAction action = new GetAccountInfoForAdminUidAction(uid);
 
+        CatchupMathTools.setBusy(true);
+        
         Log.info("AccountInfoPanel: reading student info RPC");
-        s.getAccountInfoForAdminUid(uid, new AsyncCallback<AccountInfoModel>() {
+        s.execute(action, new AsyncCallback<AccountInfoModel>() {
 
             public void onSuccess(AccountInfoModel ai) {
                 StringBuilder sb = new StringBuilder();
@@ -121,11 +125,13 @@ public class AccountInfoPanel extends LayoutContainer implements CmAdminDataRefr
                 setAccountInfoModel(ai);
 
                 Log.info("AccountInfoPanel: student info read succesfully");
+                
+                CatchupMathTools.setBusy(false);
             }
 
             public void onFailure(Throwable caught) {
             	Log.info("Error loading account info", caught);
-                //CatchupMathTools.showAlert(caught.getMessage());
+            	CatchupMathTools.setBusy(false);
             }
         });
     }

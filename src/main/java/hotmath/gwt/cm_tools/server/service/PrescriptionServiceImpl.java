@@ -301,13 +301,12 @@ public class PrescriptionServiceImpl extends RemoteServiceServlet implements Pre
         }
     }
 
+    /** 
+     * @deprecated
+     * 
+     */
     public List<GroupModel> getActiveGroups(Integer adminUid) throws CmRpcException {
-        try {
-            CmAdminDao cma = new CmAdminDao();
-            return cma.getActiveGroups(adminUid);
-        } catch (Exception e) {
-            throw new CmRpcException(e);
-        }
+        throw new CmRpcExceptionUseAction();
     }
 
     public List<ChapterModel> getChaptersForProgramSubject(String progId, String subjId) throws CmRpcException {

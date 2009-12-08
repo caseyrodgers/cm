@@ -4,8 +4,6 @@ import hotmath.gwt.cm_admin.server.model.CmAdminDao;
 import hotmath.gwt.cm_admin.server.model.CmStudentDao;
 import hotmath.gwt.cm_tools.client.model.GroupModel;
 import hotmath.gwt.cm_tools.client.model.StudentModel;
-import hotmath.gwt.cm_tools.client.model.StudentModelBasic;
-import hotmath.gwt.cm_tools.client.model.StudentModelI;
 import hotmath.gwt.shared.client.rpc.Action;
 import hotmath.gwt.shared.client.rpc.Response;
 import hotmath.gwt.shared.client.rpc.action.SaveAutoRegistrationAction;
@@ -50,7 +48,7 @@ public class SaveAutoRegistrationCommand implements ActionHandler<SaveAutoRegist
         // first make sure this group exists
         // If the group already exists the use it, but first
         // remove any existing auto_create_template account based on this group.
-        List<GroupModel> groups = daoa.getActiveGroups(student.getAdminUid());
+        List<GroupModel> groups = daoa.getActiveGroups(conn, student.getAdminUid());
         for(GroupModel gm: groups) {
             String gname = gm.getName();  // contains null for default (NONE) user 
             if(gname != null && gname.equals(groupName)) {
