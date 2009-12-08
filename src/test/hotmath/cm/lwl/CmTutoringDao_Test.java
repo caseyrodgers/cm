@@ -1,33 +1,24 @@
 package hotmath.cm.lwl;
 
 import hotmath.gwt.cm.server.CmDbTestCase;
-import hotmath.gwt.cm_admin.server.model.CmStudentDao;
-import hotmath.gwt.cm_tools.client.model.StudentModel;
 
 public class CmTutoringDao_Test extends CmDbTestCase {
     public CmTutoringDao_Test(String name) {
         super(name);
     }
     
-    int uid=0;
-    StudentModel student;
     @Override
     protected void setUp() throws Exception {
         super.setUp();
         
         if(_user == null)
-            uid = setupDemoAccount(); // 4050; //
+            setupDemoAccount();
         
-        new CmTutoringDao().addTutoring(conn, uid);
-    }
-    
-    @Override
-    protected void tearDown() throws Exception {
-       new CmStudentDao().removeUser(conn, new CmStudentDao().getStudentModel(uid));
+        new CmTutoringDao().addTutoring(conn, _user.getUid());
     }
     
     public void testGetTutoringInfo() throws Exception {
-        StudentTutoringInfo tutoring = new CmTutoringDao().getStudentTutoringInfo(conn, uid);
+        StudentTutoringInfo tutoring = new CmTutoringDao().getStudentTutoringInfo(conn, _user.getUid());
         assertNotNull(tutoring);
         
         assertNotNull(tutoring.getSubscriberId());

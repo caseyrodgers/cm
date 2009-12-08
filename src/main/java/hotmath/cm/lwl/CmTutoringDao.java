@@ -44,6 +44,8 @@ public class CmTutoringDao {
     public StudentTutoringInfo getStudentTutoringInfo(final Connection conn, Integer uid) throws Exception {
         
         
+        logger.info("Getting tutor information for: " + uid);
+        
         StudentModelI student = new CmStudentDao().getStudentModelBasic(conn, uid);
         Integer adminId = student.getAdminUid();
         AccountInfoModel accountInfo = new CmAdminDao().getAccountInfo(adminId);
@@ -77,10 +79,7 @@ public class CmTutoringDao {
             if(school.getHasTutoring() != null && !school.getHasTutoring().equals("Enabled") ) {
                 throw new CmException("School '" + school.getSchoolName() + "' does not have tutoring enabled");
             }
-            
-            LWLIntegrationManager.LwlAccountInfo schoolLwlInfo = LWLIntegrationManager.getInstance().getLwlIntegrationKey(school.getSubscriberId());
-            
-            Integer schoolNumber = schoolLwlInfo.getSchoolId();
+            Integer schoolNumber = adminLwlInfo.getSchoolId();
             
             if(schoolNumber == 0) {
                 throw new CmException("LWL student account error: No school_number found for '" + uid + "'. " +
@@ -91,6 +90,8 @@ public class CmTutoringDao {
         
         if(studentTutoringInfo.getStudentNumber() == 0) {
             /** Setup basic info needed for LWL integration
+             * 
+             * @TODO: single subscriber user
              * 
              */
             HotMathSubscriber sub2 = HotMathSubscriberManager.findSubscriber(studentTutoringInfo.getSubscriberId());
@@ -111,6 +112,9 @@ public class CmTutoringDao {
         return studentTutoringInfo;
     }
     
+    
+    
+    
     /** Return LWL info by named uid, attempt to create registration
      *  if no current info found.
      *  
@@ -125,6 +129,10 @@ public class CmTutoringDao {
             lwlInfo = LWLIntegrationManager.getInstance().getLwlIntegrationKey(uid.toString());
         }
         catch(Exception e) {
+            /** If no registration information for user, then create one
+             * 
+             * @TODO: catch specific exception.
+             */
             lwlInfo = registerStudentWithLwl(conn, uid);
         }
         
@@ -134,30 +142,54 @@ public class CmTutoringDao {
     
     /** Registered user with uid as LWL user
      * 
+     *  Use uid as the subcriber_id as the key into 
+     *  LWL_TUTORING.  
+     *  
+     *  @TODO: do not use uid as the subscriber_id!
+     *  
      * @param conn
      * @param uid
      * @return
      * @throws Exception
      */
     public LwlAccountInfo registerStudentWithLwl(final Connection conn, Integer uid) throws Exception {
-        
+       
+        /** Setup a subscriber with the subscriber_id
+         *  set to the user's UID.
+         */
         HotMathSubscriber sub = new HotMathSubscriber();
         sub.setId(uid.toString());
+
+        StudentModelI sm = new CmStudentDao().getStudentModelBasic(conn, uid);
         
+        
+        /** Setup a default LWL account to act as placeholder
+         *  within LWL's database.
+         */
         HotMathSubscriberSignupInfo info = HotMathSubscriberSignupInfo.createInfoForTestCard();
-        info.setFirstName("Hotmath");
-        info.setLastName("Student");
+        info.setFirstName(sm.getName());
+        info.setLastName("");
+        
+        
+
+        
+        /** What email should be used?
+         * 
+         */
+        sub.setEmail("cm_student_" + uid + "@hotmath.com");
+        sub.setResponsibleName(sm.getName());
         sub.setSignupInfo(info);
         
+        /** Create a new Tutoring service add add to temp subscriber record
+         * 
+         */
         HotMathSubscriberServiceTutoring service = new HotMathSubscriberServiceTutoring();
         service.installService(sub, null);
         
-        if(!LWLIntegrationManager.getInstance().registerUserWithLwl(sub)) {
-            throw new CmException("Could not create LWL registration for '" + uid + "'");
-        }
-        
         return LWLIntegrationManager.getInstance().getLwlIntegrationKey(uid.toString());
     }
+    
+    
     
     /** Add basic tutoring capabilities for this user
      * 
@@ -174,6 +206,6 @@ public class CmTutoringDao {
         
         StudentTutoringInfo sti = getStudentTutoringInfo(conn, uid);
         
-        logger.debug("Got StudentTutoringInfo for " + uid + "': " + sti);
+        logger.debug("Read StudentTutoringInfo for " + uid + "': " + sti);
     }
 }

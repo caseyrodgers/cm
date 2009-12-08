@@ -57,9 +57,6 @@ public class CatchupMathTools implements EntryPoint {
      * @param trueFalse
      */
     static public void setBusy(boolean trueFalse) {
-        
-        System.out.println("SetBusy: " + trueFalse + ", " + _busyDepth);
-        
         if(trueFalse) {
             _busyDepth++;
             RootPanel.get("loading").setVisible(true);
