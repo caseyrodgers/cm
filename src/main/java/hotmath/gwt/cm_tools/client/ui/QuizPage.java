@@ -145,12 +145,12 @@ public class QuizPage extends LayoutContainer {
         		for(RpcData rd: al) {
         			setSolutionQuestionAnswerIndex(rd.getDataAsString("pid"),rd.getDataAsString("answer"));
         		}
-        		CatchupMathTools.setBusy(false);		
-
+        		CatchupMathTools.setBusy(false);
         		callbackWhenComplete.requestComplete(_title);
         	}
         	public void onFailure(Throwable caught) {
-        		String msg;
+                String msg;        	    
+        	    CatchupMathTools.setBusy(false);
         		if(caught instanceof CmRpcException) {
         			msg = ((CmRpcException)caught).getMessage();
         		}
@@ -200,9 +200,9 @@ public class QuizPage extends LayoutContainer {
 		    
 		    @Override
 		    public void onFailure(Throwable caught) {
+                CatchupMathTools.setBusy(false);		        
                 Log.error("Getting Quiz HTML", caught);
                 CatchupMathTools.showAlert("<p>Sorry, but there has been a server error: </p><b>" + caught.getMessage() + "</b><p>Please, tell your administrator or teacher.</p>");
-                CatchupMathTools.setBusy(false);
 		    }
         });
 	}

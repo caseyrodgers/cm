@@ -358,8 +358,8 @@ public class UserInfo implements IsSerializable, Response {
      * @return
      */
     static public void loadUser(int uid, final CmAsyncRequest callback) {
-        CatchupMathTools.setBusy(true);
         
+        CatchupMathTools.setBusy(true);
 
         CmServiceAsync ca = (CmServiceAsync) Registry.get("cmService");
         ca.execute(new GetUserInfoAction(uid), new AsyncCallback<UserInfo>() {
@@ -390,6 +390,8 @@ public class UserInfo implements IsSerializable, Response {
             
             //@Override
             public void onFailure(Throwable caught) {
+                CatchupMathTools.setBusy(true);
+                
                 String msg = caught.getMessage();
                 CatchupMathTools.showAlert(msg);
             }

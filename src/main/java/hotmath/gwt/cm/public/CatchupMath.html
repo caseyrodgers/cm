@@ -42,7 +42,7 @@
      */
      function checkForCompletion() {
          var d = document.getElementById("loading");
-         if(d.style.display != 'none') {
+         if(!__cmInitialized) {
              d.innerHTML = "<div id='loading-error'><h2>Catchup Math loading delayed.</h2>Please click <a href='http://hotmath.com/resources/util/loading-error.jsp'>here</a> to proceed.</div>";
          }
      }

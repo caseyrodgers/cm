@@ -191,8 +191,6 @@ public class PrescriptionCmGuiDefinition implements CmGuiDefinition {
 
     LayoutContainer _main;
     public Widget getWestWidget() {
-        CatchupMathTools.setBusy(true);
-
         _main = new LayoutContainer();
         _main.setLayout(new FitLayout());
         
@@ -239,6 +237,8 @@ public class PrescriptionCmGuiDefinition implements CmGuiDefinition {
         CmMainPanel.__lastInstance._mainContent.layout();
 
         
+        CatchupMathTools.setBusy(true);
+        
         Log.info("PrescriptionCmGuiDefinition.getAsyncDataFromServer:" + sessionNumber + ", " + location);
         // call server process to get session data as JSON string
         CmServiceAsync s = (CmServiceAsync) Registry.get("cmService");
@@ -246,49 +246,50 @@ public class PrescriptionCmGuiDefinition implements CmGuiDefinition {
         s.execute(new GetPrescriptionAction(UserInfo.getInstance().getRunId(), sessionNumber, updateActive),new AsyncCallback<RpcData>() {
             @Override
             public void onSuccess(RpcData rdata) {
-                if(rdata == null) {
-                    CatchupMathTools.showAlert("There was a problem reading this prescription data");
-                    return;
-                }
-                try {
-                    
-                    UserInfo.getInstance().setSessionNumber(sessionNumber2);
-                    
-                    int correctPercent = rdata.getDataAsInt("correct_percent");
-                    UserInfo.getInstance().setCorrectPercent(correctPercent);
-                    if(correctPercent == 100) {
-                        getContext().doNext();
-                        return;
+                    try {
+                        if(rdata != null) {
+                            UserInfo.getInstance().setSessionNumber(sessionNumber2);
+                            
+                            int correctPercent = rdata.getDataAsInt("correct_percent");
+                            UserInfo.getInstance().setCorrectPercent(correctPercent);
+                            if(correctPercent == 100) {
+                                getContext().doNext();
+                                return;
+                            }
+        
+                            String json = rdata.getDataAsString("json");
+                            context.setPrescriptionData(new PrescriptionData(json));                    
+                            
+                            isReady = true; // signal data is ready
+        
+                            _guiWidget.buildUi(context.prescriptionData);
+        
+                            ContextController.getInstance().setCurrentContext(context);
+                            
+        
+                            if(UserInfo.getInstance().isAutoTestMode()) {
+                                context.runAutoTest();
+                            }
+        
+                            setLocation(location);
+                        }
+                        else {
+                            CatchupMathTools.showAlert("There was a problem reading this prescription data");
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        Log.error("Error reading data from server", e);
+                    } finally {
+                        CatchupMathTools.setBusy(false);
                     }
 
-                    String json = rdata.getDataAsString("json");
-                    context.setPrescriptionData(new PrescriptionData(json));                    
-                    
-                    isReady = true; // signal data is ready
-
-                    _guiWidget.buildUi(context.prescriptionData);
-
-                    ContextController.getInstance().setCurrentContext(context);
-                    
-
-                    if(UserInfo.getInstance().isAutoTestMode()) {
-                        context.runAutoTest();
-                    }
-
-                    setLocation(location);
-                    
-                } catch (Exception e) {
-                    e.printStackTrace();
-                } finally {
-                    CatchupMathTools.setBusy(false);
-                }
             }
             @Override
             public void onFailure(Throwable caught) {
                 caught.printStackTrace();
+                CatchupMathTools.setBusy(false);
             }
         });
-        CatchupMathTools.setBusy(true);
     }
     
     

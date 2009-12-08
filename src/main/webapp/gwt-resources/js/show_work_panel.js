@@ -57,7 +57,7 @@ function updateWhiteboard(id, command, commandData) {
 
 
 function setWhiteboardIsReadonly() {
-	alert('setting whiteboard as readonly');
+	//
 }
 
 // register callback in the parent GWT to allow
