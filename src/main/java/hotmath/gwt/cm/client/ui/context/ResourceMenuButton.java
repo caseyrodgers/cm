@@ -1,6 +1,7 @@
 package hotmath.gwt.cm.client.ui.context;
 
 import hotmath.gwt.cm.client.history.CmHistoryManager;
+import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.data.InmhItemData;
 import hotmath.gwt.cm_tools.client.data.PrescriptionSessionDataResource;
 
@@ -26,7 +27,6 @@ import com.extjs.gxt.ui.client.widget.menu.MenuItem;
  *
  */
 class ResourceMenuButton extends Button {
-    
     PrescriptionSessionDataResource resource;
     
     String initialValue;
@@ -37,9 +37,16 @@ class ResourceMenuButton extends Button {
         addStyleName("resource-button");
         setWidth(185);
         
-        setToolTip("For many (but not all) lesson topics we have interactivities to explore the concepts.  Please try them!");
+        setToolTip(resource.getDescription());
         
-        if(resource.getItems().size() > 1) {
+        
+        
+        
+        if(resource.getItems().size() == 0) {
+          setToolTip("For many (but not all) lesson topics we have interactivities to explore the concepts.  Please try them!");
+          addSelectionListener(new EmptyListener(resource));
+        }
+        else if(resource.getItems().size() > 1) {
             setMenu(createNewResourceMenu(resource));
         }
         else {
@@ -223,5 +230,19 @@ class ResourceMenuButton extends Button {
         if(vp != null) {
            vp.layout(true);
         }
+    }
+}
+
+
+class EmptyListener extends SelectionListener<ButtonEvent> {
+    
+    PrescriptionSessionDataResource resource;
+    public EmptyListener(PrescriptionSessionDataResource resource) {
+        this.resource = resource;
+    }
+
+    @Override
+    public void componentSelected(ButtonEvent ce) {
+        CatchupMathTools.showAlert("There are no " + resource.getLabel() + " available for the current lesson."); 
     }
 }

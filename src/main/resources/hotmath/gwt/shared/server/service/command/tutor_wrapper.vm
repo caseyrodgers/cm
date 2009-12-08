@@ -24,7 +24,10 @@
                 </a>
                 <div class='cm-tutor-button-bar-bottom' style='float: right;'>
                    <a class='button debug-off' href='javascript:void(0)' onclick='expandAllSteps();return false;'><img src='/gwt-resources/images/tutor/expand-61x18.png'/></a>
-                   <a class='button' href='javascript:void(0)' onmouseover='showAskATutorTooltip_Cm()' onmouseout='nd()' onclick='showTutoringDialog_Gwt();return false;'><img src='/gwt-resources/images/tutor/ask_a_tutor-94x18.png'/></a>
+                   <a class='button'
+                      id='tutoring_button'
+                      href='javascript:void(0)' 
+                      onclick='showTutoringDialog_Gwt();return false;'><img src='/gwt-resources/images/tutor/ask_a_tutor-94x18.png'/></a>
                </div>
         </div>
         <img id='scrollTo-button' src='/images/tutor5/spacer.gif'>

@@ -136,13 +136,12 @@ public class ResourceViewerImplTutor extends CmResourcePanelImplDefault {
         return java.util.Arrays.asList(btn);
     }
     
-    
-    
-
 
     
     boolean _wasMaxBeforeWhiteboard;
-    /** Central method to setup either tutor or whiteboard 
+    
+    /** Central method to setup either tutor or whiteboard
+     *  display modes. 
      * 
      * @param displayMode
      */
@@ -235,15 +234,24 @@ public class ResourceViewerImplTutor extends CmResourcePanelImplDefault {
     Widget tutorPanel;
     public void showSolution() {
 
-        if(tutorPanel != null)
-            return;  
         
         Log.debug("ResourceViewerImplTutor: loading solution '" + pid + "'");
 
+        
+        /** If panel has already been initialized, then 
+         *  use existing panel.
+         */
+        if(tutorPanel != null)
+            return;  
+
         // call for the solution HTML
         CmServiceAsync s = (CmServiceAsync) Registry.get("cmService");
+        
+        CatchupMathTools.setBusy(true);
+        
         s.execute(new GetSolutionAction(UserInfo.getInstance().getUid(), pid), new AsyncCallback<RpcData>() {
             public void onFailure(Throwable caught) {
+                CatchupMathTools.setBusy(false);
                 CatchupMathTools.showAlert(caught.getMessage());
             }
 
@@ -275,10 +283,11 @@ public class ResourceViewerImplTutor extends CmResourcePanelImplDefault {
                         shouldExpandSolution = true;
                         // showWorkDialog();
                     }
-                    ResourceViewerImplTutor.initializeTutor(getResourceItem().getFile(), getResourceItem().getTitle(), hasShowWork,
-                            shouldExpandSolution);
+                    ResourceViewerImplTutor.initializeTutor(getResourceItem().getFile(), getResourceItem().getTitle(), hasShowWork,shouldExpandSolution);
 
                     EventBus.getInstance().fireEvent(new CmEvent(EventBus.EVENT_TYPE_SOLUTION_SHOW, getResourceItem()));
+                    
+                    CatchupMathTools.setBusy(false);                    
                 } catch (Exception e) {
                     e.printStackTrace();
                     CatchupMathTools.showAlert(e.getMessage());
@@ -305,6 +314,7 @@ public class ResourceViewerImplTutor extends CmResourcePanelImplDefault {
             hasShowWork = true;
         }
     }
+    
 
     /**
      * publish native method to allow for opening of Show Window from external

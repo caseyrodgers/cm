@@ -29,8 +29,8 @@ function questionGuessChanged(o) {
 	} catch (e) {
 		alert('Error answering question in external JS: ' + e);
 	}
-
 }
+
 
 /** Return count of correct questions */
 function getQuizResults_Correct() {

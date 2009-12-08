@@ -445,10 +445,6 @@ class PrescriptionResourcePanel extends LayoutContainer {
         ResourceMenuButton btn = new ResourceMenuButton(resource);
             
             registeredResources.add(resource);
-            if(resource.getItems().size() == 0)
-                btn.setEnabled(false);
-            
-            
             if(resource.getType().equals("practice"))
                 _practiceProblemButton = btn;
             else if(resource.getType().equals("review"))

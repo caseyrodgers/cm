@@ -58,7 +58,7 @@ public class CatchupMathTools implements EntryPoint {
      */
     static public void setBusy(boolean trueFalse) {
         
-        System.out.println("SetBusy: " + trueFalse);
+        System.out.println("SetBusy: " + trueFalse + ", " + _busyDepth);
         
         if(trueFalse) {
             _busyDepth++;
@@ -67,6 +67,19 @@ public class CatchupMathTools implements EntryPoint {
         else if(--_busyDepth == 0){
             RootPanel.get("loading").setVisible(false);
         }
+        
+        if(_busyDepth < 0) {
+            Log.error("isBusy depth is out of whack");
+        }
+    }
+    
+    /** Force reset of the isBusy stack allowing 
+     *  for an exception to happen and display
+     *  an alert message.
+     */
+    static public void resetBusy() {
+        RootPanel.get("loading").setVisible(false);
+        _busyDepth = 0;
     }
 
     /**
@@ -79,7 +92,7 @@ public class CatchupMathTools implements EntryPoint {
     }
 
     static public void showAlert(String title, String msg) {
-        setBusy(false);
+        resetBusy();
         EventBus.getInstance().fireEvent(new CmEvent(EventBus.EVENT_TYPE_MODAL_WINDOW_OPEN));
         MessageBox.alert(title, msg, new Listener<MessageBoxEvent>() {
             public void handleEvent(MessageBoxEvent be) {
@@ -88,7 +101,7 @@ public class CatchupMathTools implements EntryPoint {
     }
 
     static public void showAlert(String title, String msg, final CmAsyncRequest callback) {
-        setBusy(false);
+        resetBusy();
         MessageBox.alert(title, msg, new Listener<MessageBoxEvent>() {
             public void handleEvent(MessageBoxEvent be) {
                 if (callback != null)
