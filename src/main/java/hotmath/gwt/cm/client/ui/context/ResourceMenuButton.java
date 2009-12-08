@@ -4,7 +4,6 @@ import hotmath.gwt.cm.client.history.CmHistoryManager;
 import hotmath.gwt.cm_tools.client.data.InmhItemData;
 import hotmath.gwt.cm_tools.client.data.PrescriptionSessionDataResource;
 
-import com.extjs.gxt.ui.client.Style.ButtonArrowAlign;
 import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.Events;
@@ -37,6 +36,8 @@ class ResourceMenuButton extends Button {
         this.resource = resource;            
         addStyleName("resource-button");
         setWidth(185);
+        
+        setToolTip("For many (but not all) lesson topics we have interactivities to explore the concepts.  Please try them!");
         
         if(resource.getItems().size() > 1) {
             setMenu(createNewResourceMenu(resource));

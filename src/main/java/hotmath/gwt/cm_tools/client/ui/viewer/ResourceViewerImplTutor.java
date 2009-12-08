@@ -312,7 +312,7 @@ public class ResourceViewerImplTutor extends CmResourcePanelImplDefault {
      * 
      */
     static private native void publishNative() /*-{
-                                               $wnd.showWorkDialog_Gwt = @hotmath.gwt.cm_tools.client.ui.viewer.ResourceViewerImplTutor::showWorkDialog();
+                                               $wnd.showWorkDialog_Gwt =     @hotmath.gwt.cm_tools.client.ui.viewer.ResourceViewerImplTutor::showWorkDialog();
                                                $wnd.showTutoringDialog_Gwt = @hotmath.gwt.cm_tools.client.ui.viewer.ResourceViewerImplTutor::showTutoringDialog();
                                                }-*/;
 
@@ -329,7 +329,7 @@ public class ResourceViewerImplTutor extends CmResourcePanelImplDefault {
     }
 
     static public void showTutoringDialog() {
-        _instance.setDisplayMode(DisplayMode.TUTOR);
+        _instance.showTutoring(_instance.getPid());
     }
     
     public Widget createShowWork(final String pidIn) {
