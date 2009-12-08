@@ -681,6 +681,14 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
 	}
 	
 	
+	/** helper to simplify determing if user has tutoring enabled
+	 * 
+	 * @return
+	 */
+	private boolean getTutoringEnabled() {
+        boolean tta = _tutoringEnabled.getValue()!=null?_tutoringEnabled.getValue().getValue():false;
+        return tta;
+	}
 
 	/** Perform the form save operation and display any required validation.
 	 * 
@@ -798,7 +806,7 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
         //sm.setEmail(email);
         sm.setProgramDescr(prog);
         sm.setGroupId(groupId);
-        sm.setTutoringAvail(_tutoringEnabled.getValue().getValue());
+        sm.setTutoringAvail(getTutoringEnabled());
         sm.setShowWorkRequired(showWork);
         sm.setGroup(group);
         sm.setAdminUid(cmAdminMdl.getId());
@@ -854,16 +862,6 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
                 stuChanged = true;
             }
             
-            String oldPassVal = stuMdl.getPassPercent();
-            String newPassVal = sm.getPassPercent();
-            
-            if (! (newPassVal == null && oldPassVal == null)) {
-                if (newPassVal == null && oldPassVal != null ||
-                    newPassVal != null && oldPassVal == null ||
-                    ! newPassVal.equals(oldPassVal)) {
-                    progChanged = true;
-                }
-            }
             if (stuMdl.getProgramDescr() == null || !stuMdl.getProgramDescr().equals(prog)) {
                 sm.setStatus("Not started");
                 sm.setSectionNum(0);
@@ -876,7 +874,7 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
             
 
             
-            if(_tutoringEnabled.getValue().getValue() != stuMdl.getTutoringAvail()) {
+            if(getTutoringEnabled() != stuMdl.getTutoringAvail()) {
                 stuChanged = true;
             }
             
