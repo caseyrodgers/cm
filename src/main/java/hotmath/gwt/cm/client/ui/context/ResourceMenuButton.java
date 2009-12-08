@@ -150,10 +150,8 @@ class ResourceMenuButton extends Button {
     
     private Menu createNewResourceMenu(final PrescriptionSessionDataResource resource) {
 
-        
         fixupResourceItems(resource);
 
-        
         /** all resources are viewed by default
          * 
          */
@@ -186,7 +184,7 @@ class ResourceMenuButton extends Button {
                 item = new MenuItem(id.getTitle());
             }
             
-            item.setHideOnClick(false);
+            item.setHideOnClick(true);
             
             menu.add(item);
             item.addSelectionListener(new SelectionListener<MenuEvent>() {
