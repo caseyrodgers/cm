@@ -1,9 +1,9 @@
 package hotmath.gwt.shared.client.rpc.action;
 
-import hotmath.gwt.cm_tools.client.model.StudentModel;
+import hotmath.gwt.cm_tools.client.model.StudentModelI;
 import hotmath.gwt.shared.client.rpc.Action;
 
-public class GetSummariesForActiveStudentsAction implements Action<CmList<StudentModel>>{
+public class GetSummariesForActiveStudentsAction implements Action<CmList<StudentModelI>>{
     
     int adminId;
 

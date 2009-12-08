@@ -10,6 +10,7 @@ import hotmath.gwt.cm_tools.client.model.StudentModel;
 
 import java.awt.Color;
 import java.io.ByteArrayOutputStream;
+import java.sql.Connection;
 import java.util.Calendar;
 import java.util.List;
 
@@ -29,12 +30,13 @@ import com.lowagie.text.pdf.PdfPTable;
 import com.lowagie.text.pdf.PdfPageEvent;
 import com.lowagie.text.pdf.PdfWriter;
 
+
 public class StudentDetailReport {
 	
 	private String reportName;
 	
 	@SuppressWarnings("unchecked")
-	public ByteArrayOutputStream makePdf(String reportId, Integer adminId) {
+	public ByteArrayOutputStream makePdf(final Connection conn, String reportId, Integer adminId) {
 		ByteArrayOutputStream baos = null;
 
 		Integer stuUid = -1;
@@ -49,7 +51,7 @@ public class StudentDetailReport {
 			if (info == null) return null;
 
 			CmStudentDao studentDao = new CmStudentDao();
-			List<StudentActivityModel> sList = studentDao.getStudentActivity(stuUid);
+			List<StudentActivityModel> sList = studentDao.getStudentActivity(conn, stuUid);
 			StudentModel sm = studentDao.getStudentModel(stuUid);
 						
 			Document document = new Document();

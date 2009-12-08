@@ -5,7 +5,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 import hotmath.gwt.shared.client.rpc.Response;
 
 
-public interface StudentModelI extends Response, IsSerializable {
+public interface StudentModelI extends Response {
 
     public String getName();
 

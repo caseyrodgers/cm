@@ -104,6 +104,11 @@ public class ShowWorkPanel extends Frame {
 	 *  the whiteboard image.
 	 */
 	public void handleFlashWhiteboardIsReady() {
+	    
+	    
+	    setWhiteboardIsReadonly();
+	    
+	    
 		CmServiceAsync s = (CmServiceAsync) Registry.get("cmService");
 		GetWhiteboardDataAction action = new GetWhiteboardDataAction(UserInfo.getInstance().getUid(),pid);
 		s.execute(action,new AsyncCallback<CmList<WhiteboardCommand>>() {
@@ -162,6 +167,14 @@ public class ShowWorkPanel extends Frame {
     static public native void updateFlashWhiteboard(String flashId, String command, String commandData) /*-{
         $wnd.updateWhiteboard(flashId, command, commandData);
     }-*/;
+    
+    /** Tell the current whiteboard that it is in readonly mode
+     * 
+     */
+    static public native void setWhiteboardIsReadonly() /*-{
+        $wnd.setWhiteboardIsReadonly
+    }-*/;
+    
     
     static public native void setWhiteboardBackground(String html) /*-{
         $wnd.setWhiteboardBackground(html);

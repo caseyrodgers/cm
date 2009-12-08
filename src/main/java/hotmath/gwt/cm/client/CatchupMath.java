@@ -116,6 +116,10 @@ public class CatchupMath implements EntryPoint {
                 }
             }
         });
+        
+        /** Add the main panel to the "hm_content" div on the CatchupMath.html
+         * 
+         */
         RootPanel.get("main-content").add(_mainPort);
         
         
@@ -149,7 +153,6 @@ public class CatchupMath implements EntryPoint {
                 processLoginComplete(uid);
             }
         });
-        
     }
     
     /** Call when successfully determined users uid
@@ -299,11 +302,10 @@ public class CatchupMath implements EntryPoint {
      */
     static private native void publishNative() /*-{
                                     $wnd.doLoadResource_Gwt = @hotmath.gwt.cm.client.CatchupMath::doResourceLoad(Ljava/lang/String;Ljava/lang/String;);
+                                    
+                                    // Set global variable to signal that Cm system has been initialized.
+                                    // This is checked in CatchupMath.html to indicate that a loading error occurred.
+                                    $wnd.__cmInitialized = true;
                                     }-*/;
-
-    
-    
-    
-    
     
 }

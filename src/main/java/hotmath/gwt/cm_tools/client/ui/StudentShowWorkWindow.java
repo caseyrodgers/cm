@@ -4,6 +4,7 @@ import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.data.InmhItemData;
 import hotmath.gwt.cm_tools.client.model.StudentActivityModel;
 import hotmath.gwt.cm_tools.client.model.StudentModel;
+import hotmath.gwt.cm_tools.client.model.StudentModelExt;
 import hotmath.gwt.cm_tools.client.model.StudentShowWorkModel;
 import hotmath.gwt.cm_tools.client.service.CmServiceAsync;
 import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
@@ -47,16 +48,16 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class StudentShowWorkWindow extends CmWindow {
 
-    StudentModel student;
+    StudentModelExt student;
     Integer runId;
     String programName;
     StudentActivityModel activityModel;
 
-    public StudentShowWorkWindow(StudentModel student) {
+    public StudentShowWorkWindow(StudentModelExt student) {
         this(student, null);
     }
     
-    public StudentShowWorkWindow(StudentModel student, StudentActivityModel activityModel) {
+    public StudentShowWorkWindow(StudentModelExt student, StudentActivityModel activityModel) {
         setStyleName("student-show-work-window");
         this.student = student;
         this.activityModel = activityModel;

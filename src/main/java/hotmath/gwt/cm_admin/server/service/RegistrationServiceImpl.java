@@ -5,8 +5,7 @@ import hotmath.gwt.cm_admin.server.model.CmAdminDao;
 import hotmath.gwt.cm_admin.server.model.CmStudentDao;
 import hotmath.gwt.cm_tools.client.model.AccountInfoModel;
 import hotmath.gwt.cm_tools.client.model.StudentModel;
-import hotmath.gwt.shared.client.rpc.action.GetSummariesForActiveStudentsAction;
-import hotmath.gwt.shared.server.service.ActionDispatcher;
+import hotmath.gwt.shared.client.util.CmRpcExceptionUseAction;
 
 import java.util.List;
 
@@ -20,7 +19,7 @@ public class RegistrationServiceImpl extends RemoteServiceServlet implements Reg
 	}
 
 	public List<StudentModel> getSummariesForActiveStudents(Integer adminUid) throws Exception {
-		return ActionDispatcher.getInstance().execute(new GetSummariesForActiveStudentsAction(adminUid));
+		throw new CmRpcExceptionUseAction();
 	}
 	
 	public List<StudentModel> getSummariesForInactiveStudents(Integer adminUid) throws Exception {

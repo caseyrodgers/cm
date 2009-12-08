@@ -31,9 +31,9 @@ import hotmath.gwt.shared.client.rpc.action.GetUserInfoAction;
 import hotmath.gwt.shared.client.rpc.action.GetViewedInmhItemsAction;
 import hotmath.gwt.shared.client.rpc.action.SaveFeedbackAction;
 import hotmath.gwt.shared.client.rpc.action.SaveQuizCurrentResultAction;
-import hotmath.gwt.shared.client.rpc.action.SetInmhItemAsViewedAction;
 import hotmath.gwt.shared.client.rpc.action.UpdateStudentAction;
 import hotmath.gwt.shared.client.util.CmRpcException;
+import hotmath.gwt.shared.client.util.CmRpcExceptionUseAction;
 import hotmath.gwt.shared.client.util.RpcData;
 import hotmath.gwt.shared.client.util.UserInfo;
 import hotmath.gwt.shared.server.service.ActionDispatcher;
@@ -57,45 +57,46 @@ import org.apache.log4j.Logger;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
 public class PrescriptionServiceImpl extends RemoteServiceServlet implements PrescriptionService {
-    
+
     private static final long serialVersionUID = 1034624620689798799L;
-    
+
     Logger logger = Logger.getLogger(PrescriptionServiceImpl.class);
 
     public PrescriptionServiceImpl() {
         logger.info("PrescriptionServiceImpl Created");
     }
 
-    public RpcData getPrescriptionSessionJson(int runId, int sessionNumber, boolean updateActiveInfo) throws CmRpcException {
-        GetPrescriptionAction getPresAction = new GetPrescriptionAction(runId,sessionNumber, updateActiveInfo);
+    public RpcData getPrescriptionSessionJson(int runId, int sessionNumber, boolean updateActiveInfo)
+            throws CmRpcException {
+        GetPrescriptionAction getPresAction = new GetPrescriptionAction(runId, sessionNumber, updateActiveInfo);
         return ActionDispatcher.getInstance().execute(getPresAction);
     }
 
     public ArrayList<RpcData> getViewedInmhItems(int runId) throws CmRpcException {
         GetViewedInmhItemsAction getViewedAction = new GetViewedInmhItemsAction(runId);
         List<RpcData> rdata = ActionDispatcher.getInstance().execute(getViewedAction).getRpcData();
-        
-        return (ArrayList<RpcData>)rdata;
+
+        return (ArrayList<RpcData>) rdata;
     }
-    
-    
+
     public RpcData getSolutionHtml(int userId, String pid) throws CmRpcException {
         GetSolutionAction getViewedAction = new GetSolutionAction(userId, pid);
         return ActionDispatcher.getInstance().execute(getViewedAction);
     }
 
-    /** @deprecated use SetInmhItemAsViewedCommand
+    /**
+     * @deprecated use SetInmhItemAsViewedCommand
      * 
      */
     public void setInmhItemAsViewed(int runId, String type, String file) throws CmRpcException {
-       throw new CmRpcException("Use the action");
+        throw new CmRpcExceptionUseAction();
     }
 
     public UserInfo getUserInfo(int uid) throws CmRpcException {
         GetUserInfoAction action = new GetUserInfoAction(uid);
         return ActionDispatcher.getInstance().execute(action);
     }
-    
+
     public RpcData getQuizHtml(int uid, int testSegment) throws CmRpcException {
         GetQuizHtmlAction action = new GetQuizHtmlAction(uid, testSegment);
         return ActionDispatcher.getInstance().execute(action);
@@ -105,23 +106,24 @@ public class PrescriptionServiceImpl extends RemoteServiceServlet implements Pre
         GetQuizHtmlCheckedAction action = new GetQuizHtmlCheckedAction(testId);
         return ActionDispatcher.getInstance().execute(action);
     }
-    
+
     public void saveFeedback(String comments, String commentsUrl, String stateInfo) throws CmRpcException {
         SaveFeedbackAction action = new SaveFeedbackAction(comments, commentsUrl, stateInfo);
         ActionDispatcher.getInstance().execute(action);
-    }   
-    
+    }
+
     public AutoUserAdvanced autoAdvanceUser(Integer userId) throws CmRpcException {
         AutoAdvanceUserAction action = new AutoAdvanceUserAction(userId);
         return ActionDispatcher.getInstance().execute(action);
     }
-    
+
     public List<SubjectModel> getSubjectDefinitions(String progId) throws CmRpcException {
         GetProgramDefinitionsAction action = new GetProgramDefinitionsAction(progId);
-        return (List<SubjectModel>)ActionDispatcher.getInstance().execute(action);
+        return (List<SubjectModel>) ActionDispatcher.getInstance().execute(action);
     }
-    
-    public StudentModel updateUser(StudentModel sm, Boolean stuChanged, Boolean progChanged, Boolean progIsNew, Boolean passcodeChanged) throws CmRpcException {
+
+    public StudentModel updateUser(StudentModel sm, Boolean stuChanged, Boolean progChanged, Boolean progIsNew,
+            Boolean passcodeChanged) throws CmRpcException {
         UpdateStudentAction action = new UpdateStudentAction(sm, stuChanged, progChanged, progIsNew, passcodeChanged);
         return ActionDispatcher.getInstance().execute(action);
     }
@@ -135,8 +137,6 @@ public class PrescriptionServiceImpl extends RemoteServiceServlet implements Pre
         GetLessonItemsForTestRunAction action = new GetLessonItemsForTestRunAction(runId);
         return ActionDispatcher.getInstance().execute(action);
     }
-    
-    
 
     @Override
     public String getSolutionProblemStatementHtml(String pid) {
@@ -154,8 +154,6 @@ public class PrescriptionServiceImpl extends RemoteServiceServlet implements Pre
             return "ERROR: " + e.getMessage();
         }
     }
-
-   
 
     /**
      * Return the HTML content in the hm_content of the named file in the
@@ -181,19 +179,19 @@ public class PrescriptionServiceImpl extends RemoteServiceServlet implements Pre
      *         __gwt.typeArgs <hotmath.gwt.cm.client.util.RpcData>
      */
     public ArrayList<RpcData> getQuizCurrentResults(int userId) throws CmRpcException {
-        Connection conn=null;
+        Connection conn = null;
         try {
             conn = HMConnectionPool.getConnection();
             ArrayList<RpcData> rpcData = new ArrayList<RpcData>();
-            int testId = HaUser.lookUser(conn, userId,null).getActiveTest();
-            if(testId == 0)
+            int testId = HaUser.lookUser(conn, userId, null).getActiveTest();
+            if (testId == 0)
                 return rpcData;
-            
+
             // TODO: following may not be needed...
-            HaTest test = HaTestDao.loadTest(conn,testId);
-            
+            HaTest test = HaTestDao.loadTest(conn, testId);
+
             List<HaTestRunResult> testResults = HaTestDao.getTestCurrentResponses(conn, testId);
-            
+
             for (HaTestRunResult tr : testResults) {
                 if (tr.isAnswered()) {
                     RpcData rd = new RpcData(Arrays.asList("pid=" + tr.getPid(), "answer=" + tr.getResponseIndex()));
@@ -203,13 +201,10 @@ public class PrescriptionServiceImpl extends RemoteServiceServlet implements Pre
             return rpcData;
         } catch (Exception e) {
             throw new CmRpcException(e);
-        }
-        finally {
-            SqlUtilities.releaseResources(null,null,conn);
+        } finally {
+            SqlUtilities.releaseResources(null, null, conn);
         }
     }
-    
-    
 
     /**
      * @deprecated (use Command of same name)
@@ -217,15 +212,15 @@ public class PrescriptionServiceImpl extends RemoteServiceServlet implements Pre
      */
     public void saveWhiteboardData(int uid, int runId, String pid, String command, String commandData)
             throws CmRpcException {
-        throw new CmRpcException("use the action");
-    
+        throw new CmRpcExceptionUseAction();
     }
 
-    /** @deprecated use GetWhiteboardDataAction
+    /**
+     * @deprecated use GetWhiteboardDataAction
      * 
      */
     public ArrayList<RpcData> getWhiteboardData(int uid, String pid) throws CmRpcException {
-        throw new CmRpcException("Use the GetWhiteboardDataCommand");
+        throw new CmRpcExceptionUseAction();
     }
 
     public void saveQuizCurrentResult(int testId, boolean correct, int answerIndex, String pid) throws CmRpcException {
@@ -233,12 +228,11 @@ public class PrescriptionServiceImpl extends RemoteServiceServlet implements Pre
         ActionDispatcher.getInstance().execute(action);
     }
 
-
     public void resetUser(int userId) throws CmRpcException {
-        Connection conn=null;
+        Connection conn = null;
         try {
             conn = HMConnectionPool.getConnection();
-            HaUser user = HaUser.lookUser(conn, userId,null);
+            HaUser user = HaUser.lookUser(conn, userId, null);
             user.setActiveTest(0);
             user.setActiveTestRunId(0);
             user.setActiveTestSegment(0);
@@ -251,9 +245,8 @@ public class PrescriptionServiceImpl extends RemoteServiceServlet implements Pre
             user.update(conn);
         } catch (Exception e) {
             throw new CmRpcException(e);
-        }
-        finally {
-            SqlUtilities.releaseResources(null,null,conn);
+        } finally {
+            SqlUtilities.releaseResources(null, null, conn);
         }
     }
 
@@ -261,42 +254,42 @@ public class PrescriptionServiceImpl extends RemoteServiceServlet implements Pre
         GetQuizResultsHtmlAction action = new GetQuizResultsHtmlAction(runId);
         return ActionDispatcher.getInstance().execute(action);
     }
-    
+
     public StudentModel addUser(StudentModel sm) throws CmRpcException {
         AddStudentAction action = new AddStudentAction(sm);
         return ActionDispatcher.getInstance().execute(action);
-    }    
-
-    public void setUserBackground(int userId, String backgroundStyle) throws CmRpcException {
-        throw new CmRpcException("Use the action");
     }
 
+    /**
+     * @deprecated (use Command of same name)
+     * 
+     */
+    public void setUserBackground(int userId, String backgroundStyle) throws CmRpcException {
+        throw new CmRpcExceptionUseAction();
+    }
 
-    /** @deprecated use GetStudentShowWorkAction
+    /**
+     * @deprecated use GetStudentShowWorkAction
      * 
      */
     public List<StudentShowWorkModel> getStudentShowWork(Integer uid, Integer runId) throws CmRpcException {
-        throw new CmRpcException("Use the action");
+        throw new CmRpcExceptionUseAction();
     }
 
+    /**
+     * @deprecated (use Command of same name)
+     * 
+     */
     public List<StudentActivityModel> getStudentActivity(StudentModel sm) throws CmRpcException {
-        try {
-            CmStudentDao dao = new CmStudentDao();
-            return dao.getStudentActivity(sm.getUid());
-        } catch (Exception e) {
-            throw new CmRpcException(e);
-        }
+        throw new CmRpcExceptionUseAction();
     }
 
-
-
+    /**
+     * @deprecated
+     * 
+     */
     public StudentModel getStudentModel(Integer uid) throws CmRpcException {
-        try {
-            CmStudentDao dao = new CmStudentDao();
-            return dao.getStudentModel(uid);
-        } catch (Exception e) {
-            throw new CmRpcException(e);
-        }
+        throw new CmRpcExceptionUseAction();
     }
 
     public List<StudyProgramModel> getProgramDefinitions() throws CmRpcException {
@@ -307,7 +300,6 @@ public class PrescriptionServiceImpl extends RemoteServiceServlet implements Pre
             throw new CmRpcException(e);
         }
     }
-
 
     public List<GroupModel> getActiveGroups(Integer adminUid) throws CmRpcException {
         try {
@@ -326,10 +318,6 @@ public class PrescriptionServiceImpl extends RemoteServiceServlet implements Pre
             throw new CmRpcException(e);
         }
     }
-
-
-    
-    
 
     /**
      * Simple test to pound the getting of solution html to see if it is

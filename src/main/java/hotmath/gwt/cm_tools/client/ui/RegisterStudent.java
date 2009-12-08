@@ -5,6 +5,8 @@ import hotmath.gwt.cm_tools.client.model.ChapterModel;
 import hotmath.gwt.cm_tools.client.model.CmAdminModel;
 import hotmath.gwt.cm_tools.client.model.GroupModel;
 import hotmath.gwt.cm_tools.client.model.StudentModel;
+import hotmath.gwt.cm_tools.client.model.StudentModelExt;
+import hotmath.gwt.cm_tools.client.model.StudentModelI;
 import hotmath.gwt.cm_tools.client.model.StudyProgramModel;
 import hotmath.gwt.cm_tools.client.model.SubjectModel;
 import hotmath.gwt.cm_tools.client.service.PrescriptionServiceAsync;
@@ -62,7 +64,7 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
 	private boolean skipComboSet;
 	private boolean loading;
 	
-	private StudentModel stuMdl;
+	private StudentModelI stuMdl;
 	protected CmAdminModel cmAdminMdl;
 	private int inProcessCount;
 	private String subjectId;
@@ -89,7 +91,7 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
 	
 	private static final String ENTRY_REQUIRED_MSG = "This field is required";
 	
-	public RegisterStudent(StudentModel sm, CmAdminModel cm) {
+	public RegisterStudent(StudentModelI sm, CmAdminModel cm) {
 	    
 	    EventBus.getInstance().fireEvent(new CmEvent(EventBus.EVENT_TYPE_MODAL_WINDOW_OPEN));
 	    
@@ -215,7 +217,7 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
 		_fsProgram.add(chapCombo);        
 		
 		CheckBox isShowWorkRequired = new CheckBox();
-        isShowWorkRequired.setId(StudentModel.SHOW_WORK_KEY);
+        isShowWorkRequired.setId(StudentModelExt.SHOW_WORK_KEY);
         if (! isNew) {
         	isShowWorkRequired.setValue(stuMdl.getShowWorkRequired());
         }
@@ -226,7 +228,7 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
 
         _showWorkGrp = new CheckBoxGroup(); 
         _showWorkGrp.setFieldLabel("Require Show Work");
-        _showWorkGrp.setId(StudentModel.SHOW_WORK_KEY);
+        _showWorkGrp.setId(StudentModelExt.SHOW_WORK_KEY);
         _showWorkGrp.add(isShowWorkRequired);
         _fsProgram.add(_showWorkGrp);
 		
@@ -724,7 +726,7 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
             }
         }
         
-        CheckBoxGroup cbg = (CheckBoxGroup) fp.getItemByItemId(StudentModel.SHOW_WORK_KEY);
+        CheckBoxGroup cbg = (CheckBoxGroup) fp.getItemByItemId(StudentModelExt.SHOW_WORK_KEY);
         CheckBox cbv = cbg.getValue();
         Boolean showWork = new Boolean(cbv != null);
         

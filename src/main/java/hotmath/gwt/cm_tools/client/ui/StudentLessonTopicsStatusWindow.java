@@ -4,6 +4,7 @@ import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.model.LessonItemModel;
 import hotmath.gwt.cm_tools.client.model.StudentActivityModel;
 import hotmath.gwt.cm_tools.client.model.StudentModel;
+import hotmath.gwt.cm_tools.client.model.StudentModelExt;
 import hotmath.gwt.cm_tools.client.service.CmServiceAsync;
 import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
 import hotmath.gwt.shared.client.rpc.action.CmList;
@@ -34,7 +35,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  */
 public class StudentLessonTopicsStatusWindow extends CmWindow {
 
-    private StudentModel student;
+    private StudentModelExt student;
     private Integer runId;
     private String programName;
     private StudentActivityModel activityModel;
@@ -42,7 +43,7 @@ public class StudentLessonTopicsStatusWindow extends CmWindow {
     private int width = 400;
     private int height = 300;
 
-    public StudentLessonTopicsStatusWindow(StudentModel student, final StudentActivityModel activityModel) {
+    public StudentLessonTopicsStatusWindow(StudentModelExt student, final StudentActivityModel activityModel) {
 
         setStyleName("student-lesson-topic-status-window");
         this.student = student;

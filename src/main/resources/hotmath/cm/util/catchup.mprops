@@ -203,7 +203,7 @@ select s.id,
        st.date_expire                                as tutoring_expire_date,
        h.user_name,
        t.student_count,
-       Ifnull(cc.max_students,200)                   as max_students,
+       Ifnull(cc.max_students,1000)                   as max_students,
        l.login_time,
        Date_format(l.login_time,'%Y-%m-%d %h:%i %p') as login_date_time
 from   SUBSCRIBERS s

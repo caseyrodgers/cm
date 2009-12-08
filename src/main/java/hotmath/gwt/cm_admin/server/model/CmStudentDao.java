@@ -151,15 +151,12 @@ public class CmStudentDao {
 	 * @return
 	 * @throws Exception
 	 */
-    public List<StudentActivityModel> getStudentActivity(int uid) throws Exception {
+    public List<StudentActivityModel> getStudentActivity(final Connection conn, int uid) throws Exception {
         List<StudentActivityModel> l = null;
 
-        Connection conn = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
-
         try {
-            conn = HMConnectionPool.getConnection();
             ps = conn.prepareStatement(CmMultiLinePropertyReader.getInstance().getProperty("STUDENT_ACTIVITY"));
             ps.setInt(1, uid);
             ps.setInt(2, uid);
@@ -170,7 +167,7 @@ public class CmStudentDao {
             logger.error(String.format("*** Error getting student details for student uid: %d", uid), e);
             throw new Exception("*** Error getting student details ***");
         } finally {
-            SqlUtilities.releaseResources(rs, ps, conn);
+            SqlUtilities.releaseResources(rs, ps, null);
         }
         return l;
     }
@@ -257,14 +254,14 @@ public class CmStudentDao {
     private static final String DEACTIVATE_STUDENT_SQL =
             "update HA_USER set is_active = 0, user_passcode = ? where uid = ?";
 
-    public StringHolder unregisterStudents(final Connection conn, List<StudentModel> smList) {
+    public StringHolder unregisterStudents(final Connection conn, List<StudentModelI> smList) {
     	int removeCount = 0;
     	int removeErrorCount = 0;
     	int deactivateCount = 0;
     	int deactivateErrorCount = 0;
         PreparedStatement ps = null;
         
-    	for (StudentModel sm : smList) {
+    	for (StudentModelI sm : smList) {
             Statement stmt = null;
             ResultSet rsCheck = null;
             try {

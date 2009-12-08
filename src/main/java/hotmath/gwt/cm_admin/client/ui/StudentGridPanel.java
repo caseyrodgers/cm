@@ -1,14 +1,14 @@
 package hotmath.gwt.cm_admin.client.ui;
 
 import hotmath.gwt.cm_admin.client.CatchupMathAdmin;
-import hotmath.gwt.cm_admin.client.service.RegistrationServiceAsync;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.model.CmAdminDataReader;
 import hotmath.gwt.cm_tools.client.model.CmAdminDataRefresher;
 import hotmath.gwt.cm_tools.client.model.CmAdminModel;
 import hotmath.gwt.cm_tools.client.model.GroupModel;
 import hotmath.gwt.cm_tools.client.model.StringHolder;
-import hotmath.gwt.cm_tools.client.model.StudentModel;
+import hotmath.gwt.cm_tools.client.model.StudentModelExt;
+import hotmath.gwt.cm_tools.client.model.StudentModelI;
 import hotmath.gwt.cm_tools.client.service.CmServiceAsync;
 import hotmath.gwt.cm_tools.client.ui.AutoRegisterStudentSetup;
 import hotmath.gwt.cm_tools.client.ui.BulkStudentRegistrationWindow;
@@ -21,7 +21,9 @@ import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
 import hotmath.gwt.shared.client.eventbus.CmEventListenerImplDefault;
 import hotmath.gwt.shared.client.eventbus.EventBus;
+import hotmath.gwt.shared.client.rpc.action.CmList;
 import hotmath.gwt.shared.client.rpc.action.GeneratePdfAction;
+import hotmath.gwt.shared.client.rpc.action.GetSummariesForActiveStudentsAction;
 import hotmath.gwt.shared.client.rpc.action.UnregisterStudentsAction;
 import hotmath.gwt.shared.client.rpc.action.GeneratePdfAction.PdfType;
 
@@ -45,7 +47,6 @@ import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.store.Store;
 import com.extjs.gxt.ui.client.store.StoreFilter;
 import com.extjs.gxt.ui.client.widget.Component;
-import com.extjs.gxt.ui.client.widget.HorizontalPanel;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.button.Button;
@@ -57,7 +58,6 @@ import com.extjs.gxt.ui.client.widget.grid.Grid;
 import com.extjs.gxt.ui.client.widget.grid.GridSelectionModel;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
-import com.extjs.gxt.ui.client.widget.layout.FlowLayout;
 import com.extjs.gxt.ui.client.widget.menu.Menu;
 import com.extjs.gxt.ui.client.widget.menu.MenuItem;
 import com.extjs.gxt.ui.client.widget.toolbar.FillToolItem;
@@ -68,7 +68,6 @@ import com.google.gwt.json.client.JSONValue;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.Label;
 
 public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefresher, ProcessTracker {
 
@@ -76,16 +75,16 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
 
     private ToolBar toolBar;
 
-    Grid<StudentModel> _grid;
+    Grid<StudentModelExt> _grid;
     CmAdminModel _cmAdminMdl;
-    ListStore<StudentModel> smStore;
+    ListStore<StudentModelExt> smStore;
 
     private ListStore<GroupModel> groupStore;
     private ComboBox<GroupModel> groupCombo;
 
     public StudentGridPanel(CmAdminModel cmAdminMdl) {
         this._cmAdminMdl = cmAdminMdl;
-        final ListStore<StudentModel> store = new ListStore<StudentModel>();
+        final ListStore<StudentModelExt> store = new ListStore<StudentModelExt>();
 
         setLayout(new BorderLayout());
 
@@ -201,7 +200,7 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
         return fp;
     }
 
-    private Button manageGroupButton(final Grid<StudentModel> grid) {
+    private Button manageGroupButton(final Grid<StudentModelExt> grid) {
         final Button btn = new StudenPanelButton("Manage Groups");
         btn.setToolTip("Manage the group definitions.");
 
@@ -233,7 +232,7 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
      * 
      */
     private void loginAsSelectedUser() {
-        StudentModel sm = _grid.getSelectionModel().getSelectedItem();
+        StudentModelExt sm = _grid.getSelectionModel().getSelectedItem();
         if (sm == null)
             return;
 
@@ -246,7 +245,7 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
     }
 
     private void showDebugInfo() {
-        StudentModel sm = _grid.getSelectionModel().getSelectedItem();
+        StudentModelExt sm = _grid.getSelectionModel().getSelectedItem();
         if (sm == null)
             return;
 
@@ -280,12 +279,12 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
         menu.add(new MyMenuItem("Unregister Student", "Unregister the selected student.",new SelectionListener<MenuEvent>() {
             @Override
             public void componentSelected(MenuEvent ce) {
-                GridSelectionModel<StudentModel> sel = _grid.getSelectionModel();
-                List<StudentModel> l = sel.getSelection();
+                GridSelectionModel<StudentModelExt> sel = _grid.getSelectionModel();
+                List<StudentModelExt> l = sel.getSelection();
                 if (l.size() == 0) {
                     CatchupMathTools.showAlert("Please select a student.");
                 } else {
-                    final StudentModel sm = l.get(0);
+                    final StudentModelExt sm = l.get(0);
 
                     String s = "Unregister " + sm.getName() + " ?";
                     MessageBox.confirm("Unregister Student", s, new Listener<MessageBoxEvent>() {
@@ -293,7 +292,7 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
                             String btnText = be.getButtonClicked().getText();
                             if (btnText.equalsIgnoreCase("yes")) {
                                 _grid.getStore().remove(sm);
-                                List<StudentModel> list = new ArrayList<StudentModel>();
+                                List<StudentModelI> list = new ArrayList<StudentModelI>();
                                 list.add(sm);
                                 unregisterStudentsRPC(list);
                             }
@@ -342,15 +341,15 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
         return btn;
     }
 
-    private Grid<StudentModel> defineGrid(final ListStore<StudentModel> store, ColumnModel cm) {
-        final Grid<StudentModel> grid = new Grid<StudentModel>(store, cm);
+    private Grid<StudentModelExt> defineGrid(final ListStore<StudentModelExt> store, ColumnModel cm) {
+        final Grid<StudentModelExt> grid = new Grid<StudentModelExt>(store, cm);
         grid.setAutoExpandColumn("name");
         grid.setBorders(true);
         grid.setStripeRows(true);
         grid.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
         grid.getSelectionModel().setFiresEvents(true);
-        grid.getSelectionModel().addListener(Events.RowDoubleClick, new Listener<SelectionEvent<StudentModel>>() {
-            public void handleEvent(SelectionEvent<StudentModel> se) {
+        grid.getSelectionModel().addListener(Events.RowDoubleClick, new Listener<SelectionEvent<StudentModelExt>>() {
+            public void handleEvent(SelectionEvent<StudentModelExt> se) {
 
                 if (grid.getSelectionModel().getSelectedItems().size() > 0) {
                     new StudentDetailsWindow(se.getModel());
@@ -363,7 +362,7 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
         return grid;
     }
 
-    private Button editStudentToolItem(final Grid<StudentModel> grid, final CmAdminModel cmAdminMdl) {
+    private Button editStudentToolItem(final Grid<StudentModelExt> grid, final CmAdminModel cmAdminMdl) {
         Button ti = new StudenPanelButton("Edit Student");
         ti.setToolTip("Edit the profile for the selected student.");
 
@@ -381,25 +380,25 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
     }
 
     private void editStudent() {
-        GridSelectionModel<StudentModel> sel = _grid.getSelectionModel();
-        List<StudentModel> l = sel.getSelection();
+        GridSelectionModel<StudentModelExt> sel = _grid.getSelectionModel();
+        List<StudentModelExt> l = sel.getSelection();
         if (l.size() == 0) {
             CatchupMathTools.showAlert("Please select a student.");
         } else {
-            StudentModel sm = l.get(0);
+            StudentModelExt sm = l.get(0);
             new RegisterStudent(sm, _cmAdminMdl).showWindow();
         }
 
     }
 
-    private Button studentDetailsToolItem(final Grid<StudentModel> grid) {
+    private Button studentDetailsToolItem(final Grid<StudentModelExt> grid) {
         Button ti = new StudenPanelButton("Student Detail History");
         ti.setToolTip("View details for the selected student.");
 
         ti.addSelectionListener(new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent ce) {
-                GridSelectionModel<StudentModel> sel = grid.getSelectionModel();
-                List<StudentModel> l = sel.getSelection();
+                GridSelectionModel<StudentModelExt> sel = grid.getSelectionModel();
+                List<StudentModelExt> l = sel.getSelection();
                 if (l.size() == 0) {
                     CatchupMathTools.showAlert("Please select a student.");
                 } else {
@@ -411,19 +410,19 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
         return ti;
     }
 
-    private Button unregisterStudentToolItem(final Grid<StudentModel> grid) {
+    private Button unregisterStudentToolItem(final Grid<StudentModelExt> grid) {
         Button ti = new StudenPanelButton("Unregister Student");
         ti.setToolTip("Unregister the selected student");
 
         ti.addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent ce) {
-                GridSelectionModel<StudentModel> sel = grid.getSelectionModel();
-                List<StudentModel> l = sel.getSelection();
+                GridSelectionModel<StudentModelExt> sel = grid.getSelectionModel();
+                List<StudentModelExt> l = sel.getSelection();
                 if (l.size() == 0) {
                     CatchupMathTools.showAlert("Please select a student.");
                 } else {
-                    final StudentModel sm = l.get(0);
+                    final StudentModelExt sm = l.get(0);
 
                     String s = "Unregister " + sm.getName() + " ?";
                     MessageBox.confirm("Unregister Student", s, new Listener<MessageBoxEvent>() {
@@ -431,7 +430,7 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
                             String btnText = be.getButtonClicked().getText();
                             if (btnText.equalsIgnoreCase("yes")) {
                                 grid.getStore().remove(sm);
-                                List<StudentModel> list = new ArrayList<StudentModel>();
+                                List<StudentModelI> list = new ArrayList<StudentModelI>();
                                 list.add(sm);
                                 unregisterStudentsRPC(list);
                             }
@@ -447,7 +446,7 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
         return ti;
     }
 
-    private Button displayPrintableReportToolItem(final Grid<StudentModel> grid) {
+    private Button displayPrintableReportToolItem(final Grid<StudentModelExt> grid) {
         Button ti = new Button();
         ti.setIconStyle("printer-icon");
         ti.setToolTip("Display a printable student summary report");
@@ -455,7 +454,7 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
         ti.addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent ce) {
-                ListStore<StudentModel> store = grid.getStore();
+                ListStore<StudentModelExt> store = grid.getStore();
 
                 List<Integer> studentUids = new ArrayList<Integer>();
                 for (int i = 0; i < store.getCount(); i++) {
@@ -488,7 +487,7 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
         configs.add(pass);
 
         ColumnConfig group = new ColumnConfig();
-        group.setId(StudentModel.GROUP_KEY);
+        group.setId(StudentModelExt.GROUP_KEY);
         group.setHeader("Group");
         group.setWidth(100);
         group.setSortable(true);
@@ -533,26 +532,39 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
         return cm;
     }
 
-    protected void getStudentsRPC(Integer uid, final ListStore<StudentModel> store, final Integer uidToSelect) {
+    protected void getStudentsRPC(Integer uid, final ListStore<StudentModelExt> store, final Integer uidToSelect) {
 
         Log.info("StudentGridPanel: reading students RPC");
 
-        RegistrationServiceAsync s = (RegistrationServiceAsync) Registry.get("registrationService");
+        CmServiceAsync s = (CmServiceAsync) Registry.get("cmService");
 
-        s.getSummariesForActiveStudents(uid, new AsyncCallback<List<StudentModel>>() {
-
-            public void onSuccess(List<StudentModel> result) {
-
+        GetSummariesForActiveStudentsAction action = new GetSummariesForActiveStudentsAction(uid);
+        
+        s.execute(action, new AsyncCallback<CmList<StudentModelI>>() {
+            
+            public void onSuccess(CmList<StudentModelI> result) {
                 /** save the current selection, if any */
                 int selectedUid = 0;
                 if (uidToSelect != null) {
                     selectedUid = uidToSelect;
                 } else {
                     // used current selection
-                    StudentModel sm = _grid.getSelectionModel().getSelectedItem();
+                    StudentModelExt sm = _grid.getSelectionModel().getSelectedItem();
                     selectedUid = (sm != null) ? sm.getUid() : 0;
                 }
 
+
+                /** Map into the Ext model
+                 * 
+                 *  NOTE: perhaps this is the CON part .. perhaps we need to keep this 
+                 *  as a StudentModelExt without having to remapp ... 
+                 *  
+                 */
+                List<StudentModelExt> students = new ArrayList<StudentModelExt>(result.size());
+                for(int i=0,t=result.size();i<t;i++) {
+                    students.add(new StudentModelExt(result.get(i)));
+                }
+                
                 /**
                  * remove all existing records, and add new set
                  * 
@@ -568,12 +580,12 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
                      * 
                      * @TODO: recheck this condition on next GXT build
                      */
-                    for (StudentModel s : result) {
+                    for (StudentModelExt s : students) {
                         store.add(s);
                     }
                 } else {
                     /** if not filter, this is much faster */
-                    store.add(result);
+                    store.add(students);
                 }
 
                 /** Reselect selected row */
@@ -604,8 +616,9 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
                 }
 
                 Log.info("StudentGridPanel: students RPC successfully read");
+                
             }
-
+            
             public void onFailure(Throwable caught) {
                 caught.printStackTrace();
                 CatchupMathTools.showAlert(caught.getMessage());
@@ -613,7 +626,7 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
         });
     }
 
-    protected void unregisterStudentsRPC(List<StudentModel> smList) {
+    protected void unregisterStudentsRPC(List<StudentModelI> smList) {
         CmServiceAsync cms = (CmServiceAsync) Registry.get("cmService");
 
         cms.execute(new UnregisterStudentsAction(smList), new AsyncCallback<StringHolder>() {
@@ -684,10 +697,10 @@ class StudenPanelButton extends Button {
     }
 }
 
-class StudentModelGroupFilter implements StoreFilter<StudentModel> {
+class StudentModelGroupFilter implements StoreFilter<StudentModelExt> {
 
     // @Override
-    public boolean select(Store<StudentModel> store, StudentModel parent, StudentModel item, String property) {
+    public boolean select(Store<StudentModelExt> store, StudentModelExt parent, StudentModelExt item, String property) {
         if (GroupSelectorWidget.NO_FILTERING.equals(property))
             return true;
         return (property.equals(item.getGroup()));

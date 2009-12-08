@@ -3,10 +3,13 @@ package hotmath.gwt.cm_tools.client.ui;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.model.StudentActivityModel;
 import hotmath.gwt.cm_tools.client.model.StudentModel;
-import hotmath.gwt.cm_tools.client.service.PrescriptionServiceAsync;
+import hotmath.gwt.cm_tools.client.model.StudentModelExt;
+import hotmath.gwt.cm_tools.client.service.CmServiceAsync;
 import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
 import hotmath.gwt.shared.client.CmShared;
+import hotmath.gwt.shared.client.rpc.action.CmList;
 import hotmath.gwt.shared.client.rpc.action.GeneratePdfAction;
+import hotmath.gwt.shared.client.rpc.action.GetStudentActivityAction;
 import hotmath.gwt.shared.client.rpc.action.GeneratePdfAction.PdfType;
 
 import java.util.ArrayList;
@@ -54,7 +57,7 @@ import com.google.gwt.user.client.ui.Widget;
 
 public class StudentDetailsWindow extends CmWindow {
 
-    StudentModel studentModel;
+    StudentModelExt studentModel;
     private HTML html;
     private XTemplate template;
     private Grid<StudentActivityModel> samGrid;
@@ -68,7 +71,7 @@ public class StudentDetailsWindow extends CmWindow {
      * 
      * @param studentModel
      */
-    public StudentDetailsWindow(final StudentModel studentModel) {
+    public StudentDetailsWindow(final StudentModelExt studentModel) {
         addStyleName("student-details-window");
         this.studentModel = studentModel;
         setSize(580, 410);
@@ -246,7 +249,7 @@ public class StudentDetailsWindow extends CmWindow {
         return btn;
     }
 
-    private Button displayPrintableReportToolItem(final StudentModel sm) {
+    private Button displayPrintableReportToolItem(final StudentModelExt sm) {
         Button ti = new Button();
         ti.setIconStyle("printer-icon");
         ti.setToolTip("Display a printable student detail report");
@@ -264,7 +267,7 @@ public class StudentDetailsWindow extends CmWindow {
         return ti;
     }
 
-    private Button displayReportCardToolItem(final StudentModel sm) {
+    private Button displayReportCardToolItem(final StudentModelExt sm) {
         Button ti = new Button();
         // ti.setIconStyle("printer-icon");
         ti.setText("Report Card");
@@ -339,7 +342,7 @@ public class StudentDetailsWindow extends CmWindow {
         sb.append("</div>");
         sb.append("<div class='form right'>");
         sb.append("  <div class='fld'><label>Show Work:</label><div>{");
-        sb.append(StudentModel.SHOW_WORK_STATE_KEY).append("}&nbsp;</div></div>");
+        sb.append(StudentModelExt.SHOW_WORK_STATE_KEY).append("}&nbsp;</div></div>");
         sb.append("</div>");
         sb.append("</div>");
 
@@ -349,11 +352,14 @@ public class StudentDetailsWindow extends CmWindow {
         html.setHeight("35px"); // to eliminate the jump when setting values in template
     }
 
-    protected void getStudentActivityRPC(final ListStore<StudentActivityModel> store, StudentModel sm) {
-        PrescriptionServiceAsync s = (PrescriptionServiceAsync) Registry.get("prescriptionService");
-        s.getStudentActivity(sm, new AsyncCallback<List<StudentActivityModel>>() {
+    protected void getStudentActivityRPC(final ListStore<StudentActivityModel> store, StudentModelExt sm) {
+        
+        
+        CmServiceAsync s = (CmServiceAsync) Registry.get("cmService");
+        GetStudentActivityAction action = new GetStudentActivityAction(sm);
+        s.execute(action, new AsyncCallback<CmList<StudentActivityModel>>() {
 
-            public void onSuccess(List<StudentActivityModel> list) {
+            public void onSuccess(CmList<StudentActivityModel> list) {
                 store.add(list);
 
                 _studentCount.setText("count: " + list.size());

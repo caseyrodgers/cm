@@ -3,9 +3,14 @@ package hotmath.cm.util.service;
 import hotmath.cm.util.report.StudentDetailReport;
 import hotmath.cm.util.report.StudentReportCard;
 import hotmath.cm.util.report.StudentSummaryReport;
+import hotmath.gwt.cm.server.CmDbTestCase;
+import hotmath.gwt.cm_tools.client.ui.context.CmContext;
+import hotmath.util.HMConnectionPool;
+import hotmath.util.sql.SqlUtilities;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.sql.Connection;
 
 import javax.servlet.ServletException;
 import javax.servlet.ServletOutputStream;
@@ -73,7 +78,14 @@ public class GeneratePDF extends HttpServlet {
 		}
 		else if (type.equals("studentDetail")) {
 			StudentDetailReport sd = new StudentDetailReport();
-			baos = sd.makePdf(reportId, adminId);
+			Connection conn = null;
+			try {
+			    conn = HMConnectionPool.getConnection();
+			    baos = sd.makePdf(conn, reportId, adminId);
+			}
+			finally {
+			    SqlUtilities.releaseResources(null,null,conn);
+			}
 			reportName = sd.getReportName();
 		}
 		else if (type.equals("reportCard")) {

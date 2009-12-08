@@ -1,6 +1,8 @@
 package hotmath.gwt.cm_tools.client.model;
 
-public class StudentActivityModel extends BaseModel {
+import hotmath.gwt.shared.client.rpc.Response;
+
+public class StudentActivityModel extends BaseModel implements Response {
 
 	private static final long serialVersionUID = 6939494404062103623L;
 	

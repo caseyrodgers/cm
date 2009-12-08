@@ -6,6 +6,7 @@ import hotmath.gwt.cm_tools.client.model.AutoUserAdvanced;
 import hotmath.gwt.cm_tools.client.model.GroupModel;
 import hotmath.gwt.cm_tools.client.model.LessonItemModel;
 import hotmath.gwt.cm_tools.client.model.StudentModel;
+import hotmath.gwt.cm_tools.client.model.StudentModelI;
 import hotmath.gwt.shared.client.rpc.action.AddGroupAction;
 import hotmath.gwt.shared.client.rpc.action.AutoAdvanceUserAction;
 import hotmath.gwt.shared.client.rpc.action.CheckUserAccountStatusAction;
@@ -109,7 +110,7 @@ public class ActionDispatcher_Test extends CmDbTestCase {
 
     public void testGetSummariesForActiveStudentsTest() throws Exception {
         GetSummariesForActiveStudentsAction action = new GetSummariesForActiveStudentsAction(2);
-        CmList<StudentModel> students = ActionDispatcher.getInstance().execute(action);
+        CmList<StudentModelI> students = ActionDispatcher.getInstance().execute(action);
         assertNotNull(students);
         assertTrue(students.size() > 0);
     }

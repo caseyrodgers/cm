@@ -1,257 +1,256 @@
 package hotmath.gwt.cm_tools.client.model;
 
-import java.io.Serializable;
 
-public class StudentModel extends BaseModel implements Serializable, StudentModelI {
+public class StudentModel implements StudentModelI {
 
-    private static final long serialVersionUID = 2950521146425989628L;
+    String group;
+    String groupId;
+    Integer sectionNum;
+    Integer userProgramId;
+    String progId;
+    String subjId;
+    String chapter;
+    String lastQuiz;
+    String lastLogin;
+    String json;
+    String status;
+    Integer uid;
+    String email;
+    Integer adminUid;
+    String showWork;
+    String showWorkState;
+    Integer totalUsage;
+    Boolean tutoringAvail;
+    String tutoringState;
+    String name;
+    String passcode;
+    String backgroundStyle;
+    Boolean isDemoUser;
+    String passPercent;
+    Boolean programChanged;
+    String progDescr;
+    Boolean showWorkRequired;
 
-	public static final String GROUP_KEY = "group";
-	public static final String GROUP_ID_KEY = "groupId";
-	public static final String SECTION_NUM_KEY = "sectionNum";
-	public static final String USER_PROGRAM_KEY = "userProgramId";
-	public static final String PROG_ID_KEY = "progId";
-	public static final String SUBJ_ID_KEY = "subjId";
-	public static final String CHAPTER_KEY = "chapter";
-	public static final String LAST_QUIZ_KEY = "last-quiz";
-	public static final String LAST_LOGIN_KEY = "last-login";
-	public static final String JSON_KEY = "json";
-	public static final String STATUS_KEY = "status";	
-	public static final String UID_KEY = "uid";
-	public static final String EMAIL_KEY = "email";
-	public static final String ADMIN_UID_KEY = "admin_uid";
-	public static final String SHOW_WORK_KEY = "show-work";
-	public static final String SHOW_WORK_STATE_KEY = "show-work-state";
-	public static final String TOTAL_USAGE_KEY = "total-usage";
-	public static final String TUTORING_AVAIL_KEY = "tutoring-avail";
-	public static final String TUTORING_STATE_KEY = "tutoring-state";
-	public static final String NAME_KEY = "name";
-	public static final String PASSCODE_KEY = "passcode";
-	public static final String BACKGROUND_STYLE="background_style";
-	public static final String DEMO_USER_KEY="demo_user";
 
-	public String getName() {
-		return get(NAME_KEY);
-	}
+    public StudentModel() {
+    }
 
-	public void setName(String name) {
-		set(NAME_KEY, name);
-	}
 
-	public String getPasscode() {
-		return get(PASSCODE_KEY);
-	}
+    public String getGroup() {
+        return group;
+    }
 
-	public void setPasscode(String passcode) {
-		set(PASSCODE_KEY, passcode);
-	}
-    
-	public String getProgramDescr() {
-		return get("program");
-	}
+    public void setGroup(String group) {
+        this.group = group;
+    }
 
-	public void setProgramDescr(String progDescr) {
-		set("program", progDescr);
-	}
+    public String getGroupId() {
+        return groupId;
+    }
 
-	public String getGroup() {
-		return get(GROUP_KEY);
-	}
+    public void setGroupId(String groupId) {
+        this.groupId = groupId;
+    }
 
-	public void setGroup(String group) {
-		set(GROUP_KEY, group);
-	}
-	
-	public String getGroupId() {
-		return get(GROUP_ID_KEY);
-	}
-	
-	public void setGroupId(String groupId) {
-		set(GROUP_ID_KEY, groupId);
-	}
+    public Integer getSectionNum() {
+        return sectionNum;
+    }
 
-	public Integer getUserProgramId() {
-		return get(USER_PROGRAM_KEY);
-	}
-	
-	public void setUserProgramId(Integer userProgId) {
-		set(USER_PROGRAM_KEY, userProgId);
-	}
-	
-	public void setSectionNum(Integer sectionNum) {
-		set(SECTION_NUM_KEY, sectionNum);
-	}
-	
-	public Integer getSectionNum() {
-		return get(SECTION_NUM_KEY);
-	}
+    public void setSectionNum(Integer sectionNum) {
+        this.sectionNum = sectionNum;
+    }
 
-	public String getLastLogin() {
-		return get(LAST_LOGIN_KEY);
-	}
-	
-	public void setLastLogin(String lastLogin) {
-		set(LAST_LOGIN_KEY, lastLogin);
-	}
+    public Integer getUserProgramId() {
+        return userProgramId;
+    }
 
-	public void setStatus(String status) {
-		set(STATUS_KEY, status);
-	}
+    public void setUserProgramId(Integer userProgramId) {
+        this.userProgramId = userProgramId;
+    }
 
-	public String getStatus() {
-		return get(STATUS_KEY);
-	}
+    public String getProgId() {
+        return progId;
+    }
 
-	public void setTotalUsage(Integer totalUsage) {
-		set(TOTAL_USAGE_KEY, totalUsage);
-	}
+    public void setProgId(String progId) {
+        this.progId = progId;
+    }
 
-	public Integer getTotalUsage() {
-		return get(TOTAL_USAGE_KEY);
-	}
+    public String getSubjId() {
+        return subjId;
+    }
 
-	public String getPassPercent() {
-		return get("pass-percent");
-	}
+    public void setSubjId(String subjId) {
+        this.subjId = subjId;
+    }
 
-	public void setPassPercent(String passPercent) {
-		set("pass-percent", passPercent);
-	}
+    public String getChapter() {
+        return chapter;
+    }
 
-	public void setTutoringState(String tutoringState) {
-		set(TUTORING_STATE_KEY, tutoringState);
-	}
-	
-	public String getTutoringState() {
-		return get(TUTORING_STATE_KEY);
-	}
+    public void setChapter(String chapter) {
+        this.chapter = chapter;
+    }
 
-	public void setShowWorkState(String swState) {
-		set(SHOW_WORK_STATE_KEY, swState);
-	}
-	
-	public String getShowWorkState() {
-		return get(SHOW_WORK_STATE_KEY);
-	}
+    public String getLastQuiz() {
+        return lastQuiz;
+    }
 
-	public void setUid(Integer uid) {
-		set(UID_KEY, uid);
-	}
-	
-	public Integer getUid() {
-		return get(UID_KEY);
-	}
+    public void setLastQuiz(String lastQuiz) {
+        this.lastQuiz = lastQuiz;
+    }
 
-	public void setEmail(String emailAddr) {
-		set(EMAIL_KEY, emailAddr);
-	}
-	
-	public String getEmail() {
-		return get(EMAIL_KEY);
-	}
+    public String getLastLogin() {
+        return lastLogin;
+    }
 
-	public void setAdminUid(Integer adminUid) {
-		set(ADMIN_UID_KEY, adminUid);
-	}
-	
-	public Integer getAdminUid() {
-		return get(ADMIN_UID_KEY);
-	}
-	
-	public void setProgramChanged(Boolean changed) {
-		set("programChanged", changed);
-	}
-	
-	/** return true if program has been changed, or false if
-	 *  program was not changed.  
-	 *  
-	 *  If value is null, return false
-	 *  
-	 * @return
-	 */
-	public Boolean getProgramChanged() {
-	    Boolean pc = get("programChanged");
-	    if(pc != null) {
-	        return get("programChanged");
-	    }
-	    else {
-	        return false;
-	    }
-	}
+    public void setLastLogin(String lastLogin) {
+        this.lastLogin = lastLogin;
+    }
 
-	public String getProgId() {
-		return get(PROG_ID_KEY);
-	}
-	
-	public void setProgId(String progId) {
-		set(PROG_ID_KEY, progId);
-	}
+    public String getJson() {
+        return json;
+    }
 
-	public String getSubjId() {
-		return get(SUBJ_ID_KEY);
-	}
-	
-	public void setSubjId(String progId) {
-		set(SUBJ_ID_KEY, progId);
-	}
+    public void setJson(String json) {
+        this.json = json;
+    }
 
-	public String getChapter() {
-		return get(CHAPTER_KEY);
-	}
-	
-	public void setChapter(String chapter) {
-		set(CHAPTER_KEY, chapter);
-	}
+    public String getStatus() {
+        return status;
+    }
 
-	public String getLastQuiz() {
-		return get(LAST_QUIZ_KEY);
-	}
-	
-	public void setLastQuiz(String lastQuiz) {
-		set(LAST_QUIZ_KEY, lastQuiz);
-	}
+    public void setStatus(String status) {
+        this.status = status;
+    }
 
-	public String getJson() {
-		return get(JSON_KEY);
-	}
-	
-	public void setJson(String json) {
-		set(JSON_KEY, json);
-	}
+    public Integer getUid() {
+        return uid;
+    }
 
-	public Boolean getShowWorkRequired() {
-		return get(SHOW_WORK_KEY);
-	}
-	
-	public void setShowWorkRequired(Boolean val) {
-		set(SHOW_WORK_KEY, val);
-	}
+    public void setUid(Integer uid) {
+        this.uid = uid;
+    }
 
-	public Boolean getTutoringAvail() {
-		return get(TUTORING_AVAIL_KEY);
-	}
-	
-	public void setTutoringAvail(Boolean val) {
-		set(TUTORING_AVAIL_KEY, val);
-	}
+    public String getEmail() {
+        return email;
+    }
 
-	public String getBackgroundStyle() {
-	    return get(BACKGROUND_STYLE);
-	}
-	
-	public void setBackgroundStyle(String style) {
-	    set(BACKGROUND_STYLE, style);
-	}
-	
-	public void setIsDemoUser(Boolean isDemo) {
-		set(DEMO_USER_KEY, isDemo);
-	}
-	
-	public Boolean getIsDemoUser() {
-		return get(DEMO_USER_KEY);
-	}
-	
-	public StudentModel() {
-	}
+    public void setEmail(String email) {
+        this.email = email;
+    }
 
+    public Integer getAdminUid() {
+        return adminUid;
+    }
+
+    public void setAdminUid(Integer adminUid) {
+        this.adminUid = adminUid;
+    }
+
+    public String getShowWorkState() {
+        return showWorkState;
+    }
+
+    public void setShowWorkState(String showWorkState) {
+        this.showWorkState = showWorkState;
+    }
+
+    public Integer getTotalUsage() {
+        return totalUsage;
+    }
+
+    public void setTotalUsage(Integer totalUsage) {
+        this.totalUsage = totalUsage;
+    }
+
+    public Boolean getTutoringAvail() {
+        return tutoringAvail;
+    }
+
+    public void setTutoringAvail(Boolean tutoringAvail) {
+        this.tutoringAvail = tutoringAvail;
+    }
+
+    public String getTutoringState() {
+        return tutoringState;
+    }
+
+    public void setTutoringState(String tutoringState) {
+        this.tutoringState = tutoringState;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getPasscode() {
+        return passcode;
+    }
+
+    public void setPasscode(String passcode) {
+        this.passcode = passcode;
+    }
+
+    public String getBackgroundStyle() {
+        return backgroundStyle;
+    }
+
+    public void setBackgroundStyle(String backgroundStyle) {
+        this.backgroundStyle = backgroundStyle;
+    }
+
+    @Override
+    public Boolean getIsDemoUser() {
+        return isDemoUser;
+    }
+
+    @Override
+    public String getPassPercent() {
+        return passPercent;
+    }
+
+    @Override
+    public Boolean getProgramChanged() {
+        return programChanged;
+    }
+
+    @Override
+    public String getProgramDescr() {
+        return this.progDescr;
+    }
+
+    @Override
+    public Boolean getShowWorkRequired() {
+        return showWorkRequired;
+    }
+
+    @Override
+    public void setIsDemoUser(Boolean isDemo) {
+        this.isDemoUser = isDemo;
+    }
+
+    @Override
+    public void setPassPercent(String passPercent) {
+        this.passPercent = passPercent;
+    }
+
+    @Override
+    public void setProgramChanged(Boolean changed) {
+        programChanged = changed;
+    }
+
+    @Override
+    public void setProgramDescr(String progDescr) {
+        this.progDescr = progDescr;
+    }
+
+    @Override
+    public void setShowWorkRequired(Boolean val) {
+        showWorkRequired = val;
+    }
 }

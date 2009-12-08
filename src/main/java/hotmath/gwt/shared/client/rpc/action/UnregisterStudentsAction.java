@@ -1,7 +1,7 @@
 package hotmath.gwt.shared.client.rpc.action;
 
 import hotmath.gwt.cm_tools.client.model.StringHolder;
-import hotmath.gwt.cm_tools.client.model.StudentModel;
+import hotmath.gwt.cm_tools.client.model.StudentModelI;
 import hotmath.gwt.shared.client.rpc.Action;
 
 import java.util.List;
@@ -10,11 +10,11 @@ public class UnregisterStudentsAction implements Action<StringHolder> {
 
 	private static final long serialVersionUID = 7989547375482529977L;
 
-	List<StudentModel> smList;
+	List<StudentModelI> smList;
 
     public UnregisterStudentsAction() {}
 
-    public UnregisterStudentsAction(List<StudentModel> smList) {
+    public UnregisterStudentsAction(List<StudentModelI> smList) {
     	System.out.println("+++ UnregisterStudentsAction(): smList.size(): " + smList.size());
         this.smList = smList;
     }
@@ -24,11 +24,11 @@ public class UnregisterStudentsAction implements Action<StringHolder> {
         return "UnregsterStudentsAction: smList: " + smList;
     }
 
-    public List<StudentModel> getStudentList() {
+    public List<StudentModelI> getStudentList() {
         return smList;
     }
 
-    public void setStudentList(List<StudentModel> smList) {
+    public void setStudentList(List<StudentModelI> smList) {
         this.smList = smList;
     }
 

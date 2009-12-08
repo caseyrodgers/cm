@@ -6,10 +6,10 @@ import hotmath.gwt.cm_tools.client.model.CmAdminModel;
 import hotmath.gwt.cm_tools.client.model.GroupInfoModel;
 import hotmath.gwt.cm_tools.client.model.GroupModel;
 import hotmath.gwt.cm_tools.client.model.StudentModel;
+import hotmath.gwt.cm_tools.client.model.StudentModelExt;
 import hotmath.gwt.cm_tools.client.service.CmServiceAsync;
 import hotmath.gwt.cm_tools.client.ui.GroupManagerRegisterStudent;
 import hotmath.gwt.cm_tools.client.ui.GroupWindow;
-import hotmath.gwt.cm_tools.client.ui.PassPercentCombo;
 import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
 import hotmath.gwt.shared.client.data.CmAsyncRequest;
 import hotmath.gwt.shared.client.data.CmAsyncRequestImplDefault;
@@ -218,8 +218,8 @@ public class ManageGroupsWindow extends CmWindow {
         grid.setStripeRows(true);
         grid.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
         grid.getSelectionModel().setFiresEvents(true);
-        grid.getSelectionModel().addListener(Events.RowDoubleClick, new Listener<SelectionEvent<StudentModel>>() {
-            public void handleEvent(SelectionEvent<StudentModel> se) {
+        grid.getSelectionModel().addListener(Events.RowDoubleClick, new Listener<SelectionEvent<StudentModelExt>>() {
+            public void handleEvent(SelectionEvent<StudentModelExt> se) {
 
                 if (grid.getSelectionModel().getSelectedItems().size() > 0) {
                     CatchupMathTools.showAlert("On click");

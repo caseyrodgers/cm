@@ -44,7 +44,7 @@ public class GeneratePdfCommand implements ActionHandler<GeneratePdfAction, CmWe
         }
         else if (pdfType == PdfType.STUDENT_DETAIL) {
             StudentDetailReport sd = new StudentDetailReport();
-            baos = sd.makePdf(reportId, adminId);
+            baos = sd.makePdf(conn,reportId, adminId);
             reportName = sd.getReportName();
         }
         else if (pdfType == PdfType.REPORT_CARD) {

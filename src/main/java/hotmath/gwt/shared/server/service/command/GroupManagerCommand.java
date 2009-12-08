@@ -79,7 +79,7 @@ public class GroupManagerCommand implements ActionHandler<GroupManagerAction, Rp
     
     private void doUnregister(final Connection conn, Integer adminId,Integer groupId) throws Exception {
         CmStudentDao dao = new CmStudentDao();
-        List<StudentModel> cmList = new ArrayList<StudentModel>();
+        List<StudentModelI> cmList = new ArrayList<StudentModelI>();
 
         PreparedStatement ps=null;
         try {

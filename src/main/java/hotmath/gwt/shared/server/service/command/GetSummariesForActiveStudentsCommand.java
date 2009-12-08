@@ -1,7 +1,7 @@
 package hotmath.gwt.shared.server.service.command;
 
 import hotmath.gwt.cm_admin.server.model.CmStudentDao;
-import hotmath.gwt.cm_tools.client.model.StudentModel;
+import hotmath.gwt.cm_tools.client.model.StudentModelI;
 import hotmath.gwt.shared.client.rpc.Action;
 import hotmath.gwt.shared.client.rpc.Response;
 import hotmath.gwt.shared.client.rpc.action.CmArrayList;
@@ -19,16 +19,16 @@ import java.sql.Connection;
  * @author casey
  *
  */
-public class GetSummariesForActiveStudentsCommand implements ActionHandler<GetSummariesForActiveStudentsAction, CmList<StudentModel>>,ActionHandlerManualConnectionManagement{
+public class GetSummariesForActiveStudentsCommand implements ActionHandler<GetSummariesForActiveStudentsAction, CmList<StudentModelI>>,ActionHandlerManualConnectionManagement{
 
     
-    public CmList<StudentModel> execute(Connection conn, GetSummariesForActiveStudentsAction action) throws Exception {
+    public CmList<StudentModelI> execute(Connection conn, GetSummariesForActiveStudentsAction action) throws Exception {
         CmStudentDao dao = new CmStudentDao();
         
         /** @TODO: do not create CmList as holder, why not base object?
          * 
          */
-        CmList<StudentModel> cmList = new CmArrayList<StudentModel>();
+        CmList<StudentModelI> cmList = new CmArrayList<StudentModelI>();
         cmList.addAll(dao.getSummariesForActiveStudents(action.getAdminId()));
         
         return cmList;
