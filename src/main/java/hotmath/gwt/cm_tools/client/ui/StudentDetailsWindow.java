@@ -169,6 +169,7 @@ public class StudentDetailsWindow extends CmWindow {
         }
         else {
             _showWorkButton.enable();
+            _showTopicsBtn.enable();
             StudentActivityModel sam = samGrid.getSelectionModel().getSelectedItem();
             if (sam != null) {
                 String desc = sam.getProgramDescr();
