@@ -439,16 +439,6 @@ img.resource-item-complete {
 #steps_info {
         width: 200px;
 }
-
-.resource-container-snowman {
-        background-attachment: fixed;
-        background-image: url(/gwt-resources/images/prescription_resource_background-1600x1050.jpg);
-        background-position: center bottom;
-        background-repeat: no-repeat;
-        max-height: 1050px;
-        max-width: 1600px;
-        width: 540px;
-}
 .resource-container {
         background-image: url(/gwt-resources/images/bg/default.png);
         background-repeat: repeat-x;
@@ -520,6 +510,16 @@ img.resource-item-complete {
         max-height: 1067px;
         max-width: 1600px;
 }
+
+.resource-container-snowman {
+        background-attachment: fixed;
+        background-image: url(/gwt-resources/images/bg/snowman-1600x1050.jpg);
+        background-position: center bottom;
+        background-repeat: no-repeat;
+        max-height: 1050px;
+        max-width: 1600px;
+}
+
 .resource-container-sunfield {
         background-attachment: fixed;
         background-image: url(/gwt-resources/images/bg/sunfield-1600x1131.png);
