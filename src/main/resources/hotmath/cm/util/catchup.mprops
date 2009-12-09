@@ -764,5 +764,19 @@ where s.type = 'ST'
 
 
 
+# return the LWL school_id associated
+# with this user's admin record
+
+.key=LWL_STUDENT_SCHOOL_ID
+
+select a.subscriber_id,
+       t.school_id
+from   HA_ADMIN a
+       join HA_USER u
+         on a.aid = u.admin_id
+       join LWL_TUTORING t
+         on t.subscriber_id = a.subscriber_id
+where  u.uid = ?
+
 
 

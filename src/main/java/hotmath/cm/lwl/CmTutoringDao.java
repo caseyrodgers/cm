@@ -1,5 +1,6 @@
 package hotmath.cm.lwl;
 
+import hotmath.cm.signup.HotmathSubscriberServiceTutoringSchoolStudent;
 import hotmath.gwt.cm_admin.server.model.CmAdminDao;
 import hotmath.gwt.cm_admin.server.model.CmStudentDao;
 import hotmath.gwt.cm_tools.client.model.AccountInfoModel;
@@ -11,7 +12,6 @@ import hotmath.subscriber.HotMathSubscriber;
 import hotmath.subscriber.HotMathSubscriberManager;
 import hotmath.subscriber.HotMathSubscriberSignupInfo;
 import hotmath.subscriber.PurchasePlan;
-import hotmath.subscriber.service.HotMathSubscriberServiceTutoring;
 
 import java.sql.Connection;
 import java.util.ArrayList;
@@ -183,10 +183,13 @@ public class CmTutoringDao {
         /** Create a new Tutoring service add add to temp subscriber record
          * 
          */
-        HotMathSubscriberServiceTutoring service = new HotMathSubscriberServiceTutoring();
+        HotmathSubscriberServiceTutoringSchoolStudent service = new HotmathSubscriberServiceTutoringSchoolStudent();
         service.installService(sub, null);
         
-        return LWLIntegrationManager.getInstance().getLwlIntegrationKey(uid.toString());
+        LwlAccountInfo acinfo = LWLIntegrationManager.getInstance().getLwlIntegrationKey(uid.toString());
+        LWLIntegrationManager.getInstance().registerUserWithLwl(sub,acinfo);
+        
+        return acinfo; 
     }
     
     
