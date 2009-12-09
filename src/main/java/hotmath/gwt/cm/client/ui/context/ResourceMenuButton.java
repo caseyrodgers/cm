@@ -37,13 +37,9 @@ class ResourceMenuButton extends Button {
         addStyleName("resource-button");
         setWidth(185);
         
-        setToolTip(resource.getDescription());
-        
-        
-        
         
         if(resource.getItems().size() == 0) {
-          setToolTip("For many (but not all) lesson topics we have interactivities to explore the concepts.  Please try them!");
+          
           addSelectionListener(new EmptyListener(resource));
         }
         else if(resource.getItems().size() > 1) {
@@ -165,8 +161,6 @@ class ResourceMenuButton extends Button {
         boolean isComplete=true;
         
         Menu menu = new Menu();
-
-        menu.setToolTip(resource.getDescription());
 
         for (final InmhItemData id : resource.getItems()) {
             /** complete only if all items are viewed

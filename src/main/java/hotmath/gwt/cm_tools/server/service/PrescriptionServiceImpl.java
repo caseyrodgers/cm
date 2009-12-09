@@ -169,41 +169,10 @@ public class PrescriptionServiceImpl extends RemoteServiceServlet implements Pre
         GetReviewHtmlAction action = new GetReviewHtmlAction(file, baseDirectory);
         return ActionDispatcher.getInstance().execute(action);
     }
-
-    /**
-     * Method used to get a list of RcpData objects defining test results for
-     * the current test.
-     * 
-     * @return ArrayList of RpcData objects
-     * 
-     *         __gwt.typeArgs <hotmath.gwt.cm.client.util.RpcData>
-     */
+    
     public ArrayList<RpcData> getQuizCurrentResults(int userId) throws CmRpcException {
-        Connection conn = null;
-        try {
-            conn = HMConnectionPool.getConnection();
-            ArrayList<RpcData> rpcData = new ArrayList<RpcData>();
-            int testId = HaUser.lookUser(conn, userId, null).getActiveTest();
-            if (testId == 0)
-                return rpcData;
-
-            // TODO: following may not be needed...
-            HaTest test = HaTestDao.loadTest(conn, testId);
-
-            List<HaTestRunResult> testResults = HaTestDao.getTestCurrentResponses(conn, testId);
-
-            for (HaTestRunResult tr : testResults) {
-                if (tr.isAnswered()) {
-                    RpcData rd = new RpcData(Arrays.asList("pid=" + tr.getPid(), "answer=" + tr.getResponseIndex()));
-                    rpcData.add(rd);
-                }
-            }
-            return rpcData;
-        } catch (Exception e) {
-            throw new CmRpcException(e);
-        } finally {
-            SqlUtilities.releaseResources(null, null, conn);
-        }
+        throw new CmRpcExceptionUseAction();
+        
     }
 
     /**

@@ -2,16 +2,15 @@ package hotmath.gwt.cm_tools.client.ui;
 
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.service.CmServiceAsync;
-import hotmath.gwt.cm_tools.client.service.PrescriptionServiceAsync;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.data.CmAsyncRequest;
+import hotmath.gwt.shared.client.rpc.action.CmList;
+import hotmath.gwt.shared.client.rpc.action.GetQuizCurrentResultsAction;
 import hotmath.gwt.shared.client.rpc.action.GetQuizHtmlAction;
 import hotmath.gwt.shared.client.rpc.action.SaveQuizCurrentResultAction;
 import hotmath.gwt.shared.client.util.CmRpcException;
 import hotmath.gwt.shared.client.util.RpcData;
 import hotmath.gwt.shared.client.util.UserInfo;
-
-import java.util.ArrayList;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.Registry;
@@ -126,22 +125,22 @@ public class QuizPage extends LayoutContainer {
 	@SuppressWarnings("unchecked")
 	private void displayQuizHtml(String quizHtml) {
 	    
+	    CatchupMathTools.setBusy(true);
+	    
 		Html html = new Html(quizHtml);
 		if(CmShared.getQueryParameter("debug") != "") {
 		    html.addStyleName("debug-mode");
 		}
 		add(html);
-		
-		CatchupMathTools.setBusy(true);
-		
 		layout();
 
 		/** @TODO: move to cmService
 		 * 
 		 */
-		PrescriptionServiceAsync s = (PrescriptionServiceAsync) Registry.get("prescriptionService");
-        s.getQuizCurrentResults(UserInfo.getInstance().getUid(), new AsyncCallback<ArrayList<RpcData>>() {
-			public void onSuccess(ArrayList<RpcData> al) {
+		CmServiceAsync s = (CmServiceAsync) Registry.get("cmService");
+		GetQuizCurrentResultsAction action = new GetQuizCurrentResultsAction(UserInfo.getInstance().getUid());
+        s.execute(action, new AsyncCallback<CmList<RpcData>>() {
+			public void onSuccess(CmList<RpcData> al) {
         		for(RpcData rd: al) {
         			setSolutionQuestionAnswerIndex(rd.getDataAsString("pid"),rd.getDataAsString("answer"));
         		}

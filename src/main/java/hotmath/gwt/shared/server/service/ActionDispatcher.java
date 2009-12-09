@@ -24,6 +24,7 @@ import hotmath.gwt.shared.server.service.command.GetGroupAggregateInfoCommand;
 import hotmath.gwt.shared.server.service.command.GetLessonItemsForTestRunCommand;
 import hotmath.gwt.shared.server.service.command.GetPrescriptionCommand;
 import hotmath.gwt.shared.server.service.command.GetProgramDefinitionsCommand;
+import hotmath.gwt.shared.server.service.command.GetQuizCurrentResultsCommand;
 import hotmath.gwt.shared.server.service.command.GetQuizHtmlCheckedCommand;
 import hotmath.gwt.shared.server.service.command.GetQuizHtmlCommand;
 import hotmath.gwt.shared.server.service.command.GetQuizResultsHtmlCommand;
@@ -241,5 +242,6 @@ public class ActionDispatcher {
         addCommand(GetStudentActivityCommand.class);
         addCommand(GetAccountInfoForAdminUidCommand.class);
         addCommand(GetActiveGroupsCommand.class);
+        addCommand(GetQuizCurrentResultsCommand.class);
     }
 }

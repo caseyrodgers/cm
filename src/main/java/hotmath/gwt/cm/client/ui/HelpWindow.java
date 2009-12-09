@@ -121,6 +121,8 @@ public class HelpWindow extends CmWindow {
                     return;
                 }
 
+                CatchupMathTools.setBusy(true);
+                
                 CmServiceAsync s = (CmServiceAsync) Registry.get("cmService");
                 s.execute(new SetBackgroundStyleAction(UserInfo.getInstance().getUid(), se.getSelectedItem()
                         .getBackgroundStyle()), new AsyncCallback<RpcData>() {
@@ -151,6 +153,7 @@ public class HelpWindow extends CmWindow {
                     }
 
                     public void onFailure(Throwable caught) {
+                        CatchupMathTools.setBusy(false);
                         caught.printStackTrace();
                     }
                 });
