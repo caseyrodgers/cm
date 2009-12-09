@@ -33,6 +33,7 @@ import hotmath.gwt.shared.server.service.command.GetReviewHtmlCommand;
 import hotmath.gwt.shared.server.service.command.GetSolutionCommand;
 import hotmath.gwt.shared.server.service.command.GetStateStandardsCommand;
 import hotmath.gwt.shared.server.service.command.GetStudentActivityCommand;
+import hotmath.gwt.shared.server.service.command.GetStudentModelCommand;
 import hotmath.gwt.shared.server.service.command.GetStudentShowWorkCommand;
 import hotmath.gwt.shared.server.service.command.GetSummariesForActiveStudentsCommand;
 import hotmath.gwt.shared.server.service.command.GetUserInfoCommand;
@@ -243,5 +244,6 @@ public class ActionDispatcher {
         addCommand(GetAccountInfoForAdminUidCommand.class);
         addCommand(GetActiveGroupsCommand.class);
         addCommand(GetQuizCurrentResultsCommand.class);
+        addCommand(GetStudentModelCommand.class);
     }
 }
