@@ -318,33 +318,8 @@ public class HelpWindow extends CmWindow {
         ListStore<BackgroundModel> backgrounds = new ListStore<BackgroundModel>();
 
         BackgroundModel m = new BackgroundModel();
-        m.set("text", "Snow Man");
-        m.set("bg_style", "resource-container-snowman");
-        backgrounds.add(m);
-
-        m = new BackgroundModel();
         m.set("text", "Catchup Math");
         m.set("bg_style", "resource-container");
-        backgrounds.add(m);
-
-        m = new BackgroundModel();
-        m.set("text", "Mountain Bike");
-        m.set("bg_style", "resource-container-bike1");
-        backgrounds.add(m);
-
-        m = new BackgroundModel();
-        m.set("text", "Tulips");
-        m.set("bg_style", "resource-container-tulips");
-        backgrounds.add(m);
-
-        m = new BackgroundModel();
-        m.set("text", "Meadow");
-        m.set("bg_style", "resource-container-sunrise");
-        backgrounds.add(m);
-
-        m = new BackgroundModel();
-        m.set("text", "Forest");
-        m.set("bg_style", "resource-container-forest");
         backgrounds.add(m);
 
         m = new BackgroundModel();
@@ -353,8 +328,33 @@ public class HelpWindow extends CmWindow {
         backgrounds.add(m);
 
         m = new BackgroundModel();
+        m.set("text", "Forest");
+        m.set("bg_style", "resource-container-forest");
+        backgrounds.add(m);
+
+        m = new BackgroundModel();
+        m.set("text", "Meadow");
+        m.set("bg_style", "resource-container-sunrise");
+        backgrounds.add(m);
+
+        m = new BackgroundModel();
+        m.set("text", "Mountain Bike");
+        m.set("bg_style", "resource-container-bike1");
+        backgrounds.add(m);
+
+        m = new BackgroundModel();
+        m.set("text", "Snowman");
+        m.set("bg_style", "resource-container-snowman");
+        backgrounds.add(m);
+
+        m = new BackgroundModel();
         m.set("text", "Sunfield");
         m.set("bg_style", "resource-container-sunfield");
+        backgrounds.add(m);
+
+        m = new BackgroundModel();
+        m.set("text", "Tulips");
+        m.set("bg_style", "resource-container-tulips");
         backgrounds.add(m);
 
         m = new BackgroundModel();
