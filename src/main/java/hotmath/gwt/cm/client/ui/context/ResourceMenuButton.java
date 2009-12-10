@@ -39,8 +39,7 @@ class ResourceMenuButton extends Button {
         
         
         if(resource.getItems().size() == 0) {
-          
-          addSelectionListener(new EmptyListener(resource));
+           setEnabled(false);
         }
         else if(resource.getItems().size() > 1) {
             setMenu(createNewResourceMenu(resource));
