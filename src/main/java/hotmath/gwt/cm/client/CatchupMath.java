@@ -73,7 +73,7 @@ public class CatchupMath implements EntryPoint {
      */
     public void onModuleLoad() {
         
-        Log.info("Catchup Math Startup: " + version);
+        Log.info("Catchup Math Startup");
         
         __thisInstance = this;
 
