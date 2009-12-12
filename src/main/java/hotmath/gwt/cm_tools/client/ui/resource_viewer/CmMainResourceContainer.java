@@ -70,9 +70,25 @@ public class CmMainResourceContainer extends LayoutContainer {
         try {
             removeAll();
             
-            CmResourcePanel viewer = ResourceViewerFactory.create(resourceItem);
-
-            showResource(viewer,resourceItem.getTitle());
+            ResourceViewerFactory.ResourceViewerFactory_Client client = new ResourceViewerFactory.ResourceViewerFactory_Client() {
+				
+				@Override
+				public void onUnavailable() {
+					CatchupMathTools.showAlert("Resource not available");
+				}
+				
+				@Override
+				public void onSuccess(ResourceViewerFactory instance) {
+					try {
+		                CmResourcePanel viewer = instance.create(resourceItem);
+		                showResource(viewer,resourceItem.getTitle());
+					}
+					catch(Exception e) {
+						CatchupMathTools.showAlert("Could not load resource: " + e.getLocalizedMessage());
+					}
+				}
+			};
+			ResourceViewerFactory.createAsync(client);
         } catch (Exception hme) {
             hme.printStackTrace();
             CatchupMathTools.showAlert("Error: " + hme.getMessage());

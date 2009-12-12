@@ -3,55 +3,88 @@ package hotmath.gwt.cm_tools.client.ui.viewer;
 import hotmath.gwt.cm_tools.client.data.InmhItemData;
 import hotmath.gwt.cm_tools.client.ui.resource_viewer.CmResourcePanel;
 import hotmath.gwt.cm_tools.client.ui.resource_viewer.CmResourcePanelImplDefault;
-import hotmath.gwt.shared.client.CmShared;
 
 import com.allen_sauer.gwt.log.client.Log;
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.RunAsyncCallback;
 
 /**
  * Create the appropriate resource viewer
  * 
+ * Follows GwtRunAsync pattern
+ *   
  * @author Casey
  * 
  */
 public class ResourceViewerFactory {
 
-    /**
-     * Create the appropriate resource viewer type
-     * 
-     * @param type
-     * @return
-     * @throws Exception
-     */
-    static public CmResourcePanel create(InmhItemData item) throws Exception {
+	private static ResourceViewerFactory instance;
 
-        String type = item.getType();
+	public interface ResourceViewerFactory_Client {
+		void onSuccess(ResourceViewerFactory instance);
 
-        Log.debug("ResourceViewerFactory: creating new resource viewer: " + type);
+		void onUnavailable();
+	}
 
-        CmResourcePanel rp = null;
-        if (type.equals("practice")) {
-            rp = new ResourceViewerImplTutor();
-        } else if (type.equals("video")) {
-            rp = new ResourceViewerImplVideo();
-        } else if (type.startsWith("activity")) {
-            rp = new ResourceViewerImplActivity();
-        } else if (type.equals("workbook")) {
-            rp = new ResourceViewerImplWorkbook();
-        } else if (type.equals("review")) {
-            rp = new ResourceViewerImplReview();
-        } else if (type.equals("testset")) {
-            rp = new ResourceViewerImplQuiz();
-        } else if (type.equals("results")) {
-            rp = new ResourceViewerImplResults();
-        } else if (type.equals("cmextra")) {
-            rp = new ResourceViewerImplTutor();
-        } else if (type.equals("flashcard")) {
-            rp = new ResourceViewerImplFlashCard();
-        } else
-            rp = new CmResourcePanelImplDefault();
+	/**
+	 * Access the module's instance. The callback runs asynchronously, once the
+	 * necessary code has downloaded.
+	 */
+	public static void createAsync(final ResourceViewerFactory_Client client) {
 
-        rp.setResourceItem(item);
+		GWT.runAsync(new RunAsyncCallback() {
+			public void onFailure(Throwable err) {
+				client.onUnavailable();
+			}
 
-        return rp;
-    }
+			public void onSuccess() {
+				if (instance == null) {
+					instance = new ResourceViewerFactory();
+				}
+				client.onSuccess(instance);
+			}
+		});
+
+	}
+
+	/**
+	 * Create the appropriate resource viewer type
+	 * 
+	 * @param type
+	 * @return
+	 * @throws Exception
+	 */
+	public CmResourcePanel create(InmhItemData item) throws Exception {
+
+		String type = item.getType();
+
+		Log.debug("ResourceViewerFactory: creating new resource viewer: "
+				+ type);
+
+		CmResourcePanel rp = null;
+		if (type.equals("practice")) {
+			rp = new ResourceViewerImplTutor();
+		} else if (type.equals("video")) {
+			rp = new ResourceViewerImplVideo();
+		} else if (type.startsWith("activity")) {
+			rp = new ResourceViewerImplActivity();
+		} else if (type.equals("workbook")) {
+			rp = new ResourceViewerImplWorkbook();
+		} else if (type.equals("review")) {
+			rp = new ResourceViewerImplReview();
+		} else if (type.equals("testset")) {
+			rp = new ResourceViewerImplQuiz();
+		} else if (type.equals("results")) {
+			rp = new ResourceViewerImplResults();
+		} else if (type.equals("cmextra")) {
+			rp = new ResourceViewerImplTutor();
+		} else if (type.equals("flashcard")) {
+			rp = new ResourceViewerImplFlashCard();
+		} else
+			rp = new CmResourcePanelImplDefault();
+
+		rp.setResourceItem(item);
+
+		return rp;
+	}
 }

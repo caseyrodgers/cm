@@ -1,7 +1,7 @@
 package hotmath.gwt.cm_tools.client.ui.viewer;
 
-import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.service.CmServiceAsync;
+import hotmath.gwt.shared.client.data.CmAsyncRequest;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
 import hotmath.gwt.shared.client.eventbus.EventBus;
 import hotmath.gwt.shared.client.rpc.action.CmList;
@@ -25,6 +25,8 @@ public class ShowWorkPanel extends Frame {
 		publishNative();
 	}
 	
+	CmAsyncRequest callbackAfterWhiteboardInitialized;
+	
 	static ShowWorkPanel __lastInstance;
 	String pid;
 	
@@ -38,9 +40,12 @@ public class ShowWorkPanel extends Frame {
 
     /** Display the Show Work Flash component in an IFRAME
 	 * 
+	 * @param callbackAfterWhiteboardInitialized  If non null, then called after WB has been initialized.
 	 */
-	public ShowWorkPanel() {
+	public ShowWorkPanel(CmAsyncRequest callbackAfterWhiteboardInitialized) {
 		super("show_work_panel_student.html");
+		
+		this.callbackAfterWhiteboardInitialized = callbackAfterWhiteboardInitialized;
         setStyleName("show-work-panel");
 
 		DOM.setElementProperty(this.getElement(), "frameBorder", "no"); // disable border
@@ -70,11 +75,6 @@ public class ShowWorkPanel extends Frame {
         CmServiceAsync s = (CmServiceAsync) Registry.get("cmService");
 		int uid = UserInfo.getInstance().getUid();
 		int runId = UserInfo.getInstance().getRunId();
-
-		if(runId == 0) {
-		   CatchupMathTools.showAlert("Whiteboard write: run id is null");
-		   return;
-		}
 		
 		/** If json is simple string 'clear', then force a full clear and
 		 *  remove all chart data for this user/pid.  Otherwise, it is a 
@@ -104,11 +104,11 @@ public class ShowWorkPanel extends Frame {
 	 *  the whiteboard image.
 	 */
 	public void handleFlashWhiteboardIsReady() {
-	    
-	    
-	    setWhiteboardIsReadonly();
-	    
-	    
+		
+		if(this.callbackAfterWhiteboardInitialized!=null)
+			callbackAfterWhiteboardInitialized.requestComplete(null);
+		
+		
 		CmServiceAsync s = (CmServiceAsync) Registry.get("cmService");
 		GetWhiteboardDataAction action = new GetWhiteboardDataAction(UserInfo.getInstance().getUid(),pid);
 		s.execute(action,new AsyncCallback<CmList<WhiteboardCommand>>() {
@@ -172,7 +172,7 @@ public class ShowWorkPanel extends Frame {
      * 
      */
     static public native void setWhiteboardIsReadonly() /*-{
-        $wnd.setWhiteboardIsReadonly
+        $wnd.setWhiteboardIsReadonly();
     }-*/;
     
     

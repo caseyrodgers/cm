@@ -118,7 +118,6 @@ public class AutoRegisterStudent extends RegisterStudent {
         
         Button close = new Button("Close");
         close.addSelectionListener(new SelectionListener<ButtonEvent>() {
-            
             @Override
             public void componentSelected(ButtonEvent ce) {
                 _window.close();

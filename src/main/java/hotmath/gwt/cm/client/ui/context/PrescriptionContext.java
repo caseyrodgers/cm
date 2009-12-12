@@ -15,7 +15,6 @@ import hotmath.gwt.cm_tools.client.ui.AutoTestWindow;
 import hotmath.gwt.cm_tools.client.ui.CmMainPanel;
 import hotmath.gwt.cm_tools.client.ui.ContextChangeListener;
 import hotmath.gwt.cm_tools.client.ui.ContextController;
-import hotmath.gwt.cm_tools.client.ui.NextDialog;
 import hotmath.gwt.cm_tools.client.ui.context.CmContext;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.data.CmAsyncRequestImplDefault;
@@ -44,7 +43,8 @@ import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.Window;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.button.IconButton;
-import com.google.gwt.user.client.Timer;
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.RunAsyncCallback;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
@@ -119,7 +119,6 @@ public class PrescriptionContext implements CmContext {
     public void gotoNextTopic() {
 
         CmMainPanel.__lastInstance._mainContent.removeAll();
-        NextDialog.destroyCurrentDialog();
 
         // deal with anomaly of no missed questions .. move to the next quiz
         // section
@@ -334,9 +333,6 @@ public class PrescriptionContext implements CmContext {
     }
 
     public void gotoPreviousTopic() {
-
-        NextDialog.destroyCurrentDialog();
-
         final int cs = prescriptionData.getCurrSession().getSessionNumber();
         if (cs < 1) {
             MessageBox.alert("On First", "No previous topics.", new Listener<MessageBoxEvent>() {
@@ -451,6 +447,22 @@ public class PrescriptionContext implements CmContext {
      * 
      */
     public void runAutoTest() {
+    	GWT.runAsync(new RunAsyncCallback() {
+			
+			@Override
+			public void onSuccess() {
+				runAutoTestAux();
+			}
+			
+			@Override
+			public void onFailure(Throwable reason) {
+				reason.printStackTrace();
+			}
+		});
+    }
+    
+    public void runAutoTestAux() {
+        int timeToWait = 1;
         
         String msg = "Testing lesson: " + prescriptionData.getCurrSession().getTopic();
         AutoTestWindow.getInstance().addLogMessage(msg);
@@ -501,7 +513,5 @@ public class PrescriptionContext implements CmContext {
                     }
             }
         });
-        
-
     }
 }

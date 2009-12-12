@@ -5,7 +5,7 @@ import hotmath.gwt.cm_tools.client.ui.context.CmContext;
 import com.extjs.gxt.ui.client.widget.Dialog;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 
-public class NextDialog extends Dialog {
+class NextDialog extends Dialog {
 
 	static NextDialog _lastDialog;
 	

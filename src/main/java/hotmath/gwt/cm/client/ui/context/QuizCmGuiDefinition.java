@@ -8,6 +8,8 @@ import hotmath.gwt.cm_tools.client.ui.QuizPage;
 import hotmath.gwt.cm_tools.client.ui.context.CmContext;
 import hotmath.gwt.cm_tools.client.ui.resource_viewer.CmResourcePanelImplDefault;
 import hotmath.gwt.cm_tools.client.ui.resource_viewer.CmResourcePanelContainer.ResourceViewerState;
+import hotmath.gwt.cm_tools.client.ui.viewer.CmResourcePanelImplWithWhiteboard;
+import hotmath.gwt.cm_tools.client.ui.viewer.ShowWorkPanel;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.data.CmAsyncRequest;
 import hotmath.gwt.shared.client.util.UserInfo;
@@ -69,7 +71,7 @@ public class QuizCmGuiDefinition implements CmGuiDefinition {
 		    qp = new QuizPage(new CmAsyncRequest() {
 			public void requestComplete(String quizTitle) {
 			    
-                CmResourcePanelImplDefault resourcePanel = new CmResourcePanelImplDefault() {
+                CmResourcePanelImplDefault resourcePanel = new CmResourcePanelImplWithWhiteboard() {
                     public Widget getResourcePanel() {
                         return this;
                     }
@@ -91,23 +93,32 @@ public class QuizCmGuiDefinition implements CmGuiDefinition {
                     }
                     @Override
                     public List<Component> getContainerTools() {
-                        List<Component> list = new ArrayList<Component>();
+                    	ArrayList<Component> list2 = new ArrayList<Component>();
                         if(CmShared.getQueryParameter("debug") != null) {
-                            list.add(new Button("Mark Correct", new SelectionListener<ButtonEvent>() {
+                            list2.add(new Button("Mark Correct", new SelectionListener<ButtonEvent>() {
                                 @Override
                                 public void componentSelected(ButtonEvent ce) {
                                     QuizPage.markAllCorrectAnswers();
                                 }
                             }));
                         }
-                        list.add(new Button("Check Quiz", new SelectionListener<ButtonEvent>() {
+                        list2.add(new Button("Check Quiz", new SelectionListener<ButtonEvent>() {
                             public void componentSelected(ButtonEvent ce) {
                                 ContextController.getInstance().doNext();
                             }
                         }));
-                            
-                        return list;
+                    	List<Component> list = super.getContainerTools();
+                    	list2.addAll(list);
+                        return list2;
                     }
+					@Override
+					public Widget getTutorDisplay() {
+						return qp;
+					}
+					@Override
+					public void setupShowWorkPanel(ShowWorkPanel whiteboardPanel) {
+						whiteboardPanel.setPid("quiz:" + UserInfo.getInstance().getTestId());
+					}
                 };
                 resourcePanel.addResource(qp, "Quiz");
 
@@ -115,10 +126,8 @@ public class QuizCmGuiDefinition implements CmGuiDefinition {
                 qc.setTitle(quizTitle);
 
                 CmMainPanel.__lastInstance._mainContent.showResource(resourcePanel, quizTitle);
-			    
-				
-				
-				ContextController.getInstance().setCurrentContext(qc);
+
+                ContextController.getInstance().setCurrentContext(qc);
 			
 				if(UserInfo.getInstance().isAutoTestMode()) {
 				    qc.doCheckTest();

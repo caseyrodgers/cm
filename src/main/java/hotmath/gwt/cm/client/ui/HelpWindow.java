@@ -80,7 +80,6 @@ public class HelpWindow extends CmWindow {
                         CatchupMathTools.showVersionInfo();
                     }
                 }));
-
                 html += "<div style='margin-top: 25px;'>User Location: " + UserInfo.getInstance().getUserStatus() + "</div>";
             }
             messageArea = new Html(html);
@@ -89,9 +88,9 @@ public class HelpWindow extends CmWindow {
             Log.info("Error getting context help", e);
             messageArea.setHtml("Catchup Math makes learning fun!");
         }
-        messageArea.addStyleName("help-window-message-area");
-
         
+        
+        messageArea.addStyleName("help-window-message-area");
 
         VerticalPanel vp = new VerticalPanel();
 

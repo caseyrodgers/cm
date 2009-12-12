@@ -2,7 +2,6 @@ package hotmath.gwt.cm_tools.client.ui.viewer;
 
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.service.PrescriptionServiceAsync;
-import hotmath.gwt.cm_tools.client.ui.resource_viewer.CmResourcePanelImplDefault;
 import hotmath.gwt.cm_tools.client.ui.resource_viewer.CmResourcePanelContainer.ResourceViewerState;
 import hotmath.gwt.shared.client.util.RpcData;
 import hotmath.gwt.shared.client.util.UserInfo;
@@ -17,8 +16,10 @@ import com.google.gwt.json.client.JSONValue;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Widget;
 
-public class ResourceViewerImplResults extends CmResourcePanelImplDefault {
+public class ResourceViewerImplResults extends CmResourcePanelImplWithWhiteboard  {
     String _title;
+    Widget _quizPanel;
+    
     
     static final String STYLE_NAME = "resource-viewer-impl-results";
     public ResourceViewerImplResults() {
@@ -41,6 +42,11 @@ public class ResourceViewerImplResults extends CmResourcePanelImplDefault {
     public ResourceViewerState getInitialMode() {
         // TODO Auto-generated method stub
         return ResourceViewerState.OPTIMIZED;
+    }
+    
+    @Override
+    public void whiteboardIsReady() {
+        ShowWorkPanel.setWhiteboardIsReadonly();	
     }
     
     /** Select the correct question response for question for pid
@@ -68,8 +74,9 @@ public class ResourceViewerImplResults extends CmResourcePanelImplDefault {
                         int correct = rdata.getDataAsInt("quiz_correct_count");
                         _title = rdata.getDataAsString("title");
     
-                        addResource(new Html(html),getResourceItem().getTitle() + ": " + correct + " out of " + total);
-                        layout();
+                        _quizPanel = new Html(html);
+                        
+                        addResource(_quizPanel,getResourceItem().getTitle() + ": " + correct + " out of " + total);
                         
                         markAnswers(resultJson);
                     }
@@ -119,4 +126,14 @@ public class ResourceViewerImplResults extends CmResourcePanelImplDefault {
     private native void setQuizQuestionResult(String pid, String result) /*-{
         $wnd.setQuizQuestionResult(pid, result);
     }-*/;
+
+	@Override
+	public Widget getTutorDisplay() {
+		return _quizPanel;
+	}
+
+	@Override
+	public void setupShowWorkPanel(ShowWorkPanel whiteboardPanel) {
+		whiteboardPanel.setPid("quiz:" + UserInfo.getInstance().getTestId());
+	}
 }

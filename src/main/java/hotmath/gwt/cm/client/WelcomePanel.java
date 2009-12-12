@@ -14,6 +14,9 @@ import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
 import com.extjs.gxt.ui.client.widget.layout.CenterLayout;
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.RunAsyncCallback;
+import com.google.gwt.user.client.Window;
 
 public class WelcomePanel extends LayoutContainer {
     
@@ -57,7 +60,19 @@ public class WelcomePanel extends LayoutContainer {
     private void startup() {
         try {
             CatchupMathTools.setBusy(true);
-            CatchupMath.getThisInstance().startNormalOperation();
+            
+            GWT.runAsync(new RunAsyncCallback() {
+				
+				@Override
+				public void onSuccess() {
+					CatchupMath.getThisInstance().startNormalOperation();					
+				}
+				
+				@Override
+				public void onFailure(Throwable reason) {
+					Window.alert("Error starting CM normal operations: " + reason.getLocalizedMessage());
+				}
+			});
         }
         finally {
             CatchupMathTools.setBusy(false);

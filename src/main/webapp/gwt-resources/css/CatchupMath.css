@@ -910,6 +910,7 @@ img.resource-item-complete {
  
 .cm-resource-viewer-container .x-panel-body {
     background: transparent;
+    border: none;
 }
 
 .resource-viewer-impl-activity,

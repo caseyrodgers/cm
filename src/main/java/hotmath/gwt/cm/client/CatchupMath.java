@@ -16,6 +16,7 @@ import hotmath.gwt.shared.client.data.CmAsyncRequest;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
 import hotmath.gwt.shared.client.eventbus.CmEventListener;
 import hotmath.gwt.shared.client.eventbus.EventBus;
+import hotmath.gwt.shared.client.util.CmRunAsyncCallback;
 import hotmath.gwt.shared.client.util.UserInfo;
 
 import com.allen_sauer.gwt.log.client.Log;
@@ -29,6 +30,8 @@ import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.google.gwt.core.client.EntryPoint;
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.RunAsyncCallback;
 import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.RootPanel;
@@ -94,26 +97,32 @@ public class CatchupMath implements EntryPoint {
         bdata = new BorderLayoutData(LayoutRegion.CENTER);
         _mainPort.add(_mainContainer, bdata);
 
-        
+
+        bdata = new BorderLayoutData(LayoutRegion.SOUTH, 20);
         if(CmShared.getQueryParameter("debug") != null) {
             FooterPanel footer = new FooterPanel();
             _mainPort.add(footer, new BorderLayoutData(LayoutRegion.SOUTH, 20));
         }
-
         
         /** Turn on debugging CSS */
         if(CmShared.getQueryParameter("debug") != null) {
             _mainPort.addStyleName("debug-on");
         }
         
+        
         /** Install listener to track any changes to the main window 
          * 
          */
         _mainPort.addListener(Events.Resize, new Listener<BaseEvent>() {
             public void handleEvent(BaseEvent be) {
-                if(CmMainPanel.__lastInstance != null && CmMainPanel.__lastInstance._mainContent != null) {
-                    EventBus.getInstance().fireEvent(new CmEvent(EventBus.EVENT_TYPE_WINDOW_RESIZED));
-                }
+            	GWT.runAsync(new CmRunAsyncCallback() {
+					@Override
+					public void onSuccess() {
+		                if(CmMainPanel.__lastInstance != null && CmMainPanel.__lastInstance._mainContent != null) {
+		                    EventBus.getInstance().fireEvent(new CmEvent(EventBus.EVENT_TYPE_WINDOW_RESIZED));
+		                }
+					}
+				});
             }
         });
         
@@ -121,38 +130,24 @@ public class CatchupMath implements EntryPoint {
          * 
          */
         RootPanel.get("main-content").add(_mainPort);
+
         
+        GWT.runAsync(new CmRunAsyncCallback() {
+			@Override
+			public void onSuccess() {
+		        /** Login to CM asynchronously passing a callback that will be 
+		         *  notified when the login process is complete.
+		         * 
+		         */
+		        CmShared.handleLoginProcessAsync(new CmLoginAsync() {
+		        	
+		            public void loginSuccessful(Integer uid) {
+		                processLoginComplete(uid);								
+		            }
+		        });
+			}
+		});
         
-        /** Register an event lister waiting to see if user's data change.
-         *  If it does, we must reset this user
-         * 
-         */
-        EventBus.getInstance().addEventListener(new CmEventListener() {
-            public void handleEvent(CmEvent event) {
-                if(((Boolean)event.getEventData()) == true) {
-                    FooterPanel.resetProgram_Gwt();
-                }
-                else {
-                    // just refresh page
-                    FooterPanel.refreshPage();
-                }
-            }
-            public String[] getEventsOfInterest() {
-                String types[] = {EventBus.EVENT_TYPE_USER_PROGRAM_CHANGED};
-                return types;
-            }
-        });
-        
-        
-        /** Login to CM asynchronously passing a callback that will be 
-         *  notified when the login process is complete.
-         * 
-         */
-        CmShared.handleLoginProcessAsync(new CmLoginAsync() {
-            public void loginSuccessful(Integer uid) {
-                processLoginComplete(uid);
-            }
-        });
     }
     
     /** Call when successfully determined users uid
@@ -194,12 +189,33 @@ public class CatchupMath implements EntryPoint {
 
     /** Startup the history and initial history state check
      *   
-     *   This should happen just once during program operation
+     *   This should happen just once during program operation	
      *               
      */
     public void startNormalOperation() {
         History.addValueChangeHandler(new CatchupMathHistoryListener());
         History.fireCurrentHistoryState();
+        
+    	
+        /** Register an event lister waiting to see if user's data change.
+         *  If it does, we must reset this user
+         * 
+         */
+        EventBus.getInstance().addEventListener(new CmEventListener() {
+            public void handleEvent(CmEvent event) {
+                if(((Boolean)event.getEventData()) == true) {
+                    FooterPanel.resetProgram_Gwt();
+                }
+                else {
+                    // just refresh page
+                    FooterPanel.refreshPage();
+                }
+            }
+            public String[] getEventsOfInterest() {
+                String types[] = {EventBus.EVENT_TYPE_USER_PROGRAM_CHANGED};
+                return types;
+            }
+        });
     }
     
 
@@ -226,12 +242,19 @@ public class CatchupMath implements EntryPoint {
     }
 
     public void showQuizPanel_gwt() {
-        HeaderPanel.__instance.enable();
+    	
+    	GWT.runAsync(new CmRunAsyncCallback() {
+			
+			@Override
+			public void onSuccess() {
+		        HeaderPanel.__instance.enable();
 
-        _mainContainer.removeAll();
-        _mainContainer.setLayout(new FitLayout());
-        _mainContainer.add(new CmMainPanel(new QuizCmGuiDefinition()));
-        _mainContainer.layout();
+		        _mainContainer.removeAll();
+		        _mainContainer.setLayout(new FitLayout());
+		        _mainContainer.add(new CmMainPanel(new QuizCmGuiDefinition()));
+		        _mainContainer.layout();
+			}
+		});
     }
     
     
@@ -260,12 +283,23 @@ public class CatchupMath implements EntryPoint {
     
     
     public void showPrescriptionPanel_gwt() {
-        HeaderPanel.__instance.enable();
+    	
+    	GWT.runAsync(new RunAsyncCallback() {
+			@Override
+			public void onSuccess() {
+		        HeaderPanel.__instance.enable();
 
-        _mainContainer.removeAll();
-        _mainContainer.setLayout(new FitLayout());
-        _mainContainer.add(new CmMainPanel(new PrescriptionCmGuiDefinition()));
-        _mainContainer.layout();
+		        _mainContainer.removeAll();
+		        _mainContainer.setLayout(new FitLayout());
+		        _mainContainer.add(new CmMainPanel(new PrescriptionCmGuiDefinition()));
+		        _mainContainer.layout();
+			}
+			
+			@Override
+			public void onFailure(Throwable reason) {
+				reason.printStackTrace();
+			}
+		});
     }
     
     
@@ -275,10 +309,16 @@ public class CatchupMath implements EntryPoint {
      * 
      */
     public void showAutoRegistration_gwt() {
-        _mainContainer.removeAll();
-        _mainContainer.setLayout(new FitLayout());
-        _mainContainer.add(new AutoStudentRegistrationPanel());
-        _mainContainer.layout();
+    	GWT.runAsync(new CmRunAsyncCallback() {
+			
+			@Override
+			public void onSuccess() {
+		        _mainContainer.removeAll();
+		        _mainContainer.setLayout(new FitLayout());
+		        _mainContainer.add(new AutoStudentRegistrationPanel());
+		        _mainContainer.layout();
+			}
+		});
     }
     
 
@@ -288,11 +328,15 @@ public class CatchupMath implements EntryPoint {
      * @param type
      * @param file
      */
-    static private void doResourceLoad(String type, String file) {
-        CmLocation location = new CmLocation("p:" + UserInfo.getInstance().getSessionNumber() + ":" + type + ":" + file);
-        CmHistoryManager.getInstance().addHistoryLocation(location);
-        
-        // CmMainPanel.__lastInstance._mainContent.showResource(resourceItem);
+    static private void doResourceLoad(final String type, final String file) {
+    	GWT.runAsync(new CmRunAsyncCallback() {
+			
+			@Override
+			public void onSuccess() {
+		        CmLocation location = new CmLocation("p:" + UserInfo.getInstance().getSessionNumber() + ":" + type + ":" + file);
+		        CmHistoryManager.getInstance().addHistoryLocation(location);
+			}
+		});
     }
     
     /** Push a GWT method onto the global space for the app window

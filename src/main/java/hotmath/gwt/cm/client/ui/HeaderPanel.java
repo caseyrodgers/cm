@@ -4,7 +4,6 @@ import hotmath.gwt.cm.client.history.CmHistoryQueue;
 import hotmath.gwt.cm.client.ui.context.ContextChangeMessage;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.ui.CmMainPanel;
-import hotmath.gwt.cm_tools.client.ui.ContextController;
 import hotmath.gwt.cm_tools.client.ui.InfoPopupBox;
 import hotmath.gwt.cm_tools.client.ui.context.CmContext;
 import hotmath.gwt.shared.client.CmShared;
@@ -19,6 +18,8 @@ import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.widget.Html;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.button.IconButton;
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.RunAsyncCallback;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Label;
@@ -45,7 +46,18 @@ public class HeaderPanel extends LayoutContainer {
 		IconButton btn = new IconButton("header-panel-help-btn");
 		btn.addSelectionListener(new SelectionListener<IconButtonEvent>() {
 			public void componentSelected(IconButtonEvent ce) {
-				new HelpWindow().setVisible(true);
+				GWT.runAsync(new RunAsyncCallback() {
+					
+					@Override
+					public void onSuccess() {
+						new HelpWindow().setVisible(true);					}
+					
+					@Override
+					public void onFailure(Throwable reason) {
+						Window.alert("Error loading help window fragment: " + reason.getLocalizedMessage());
+					}
+				});
+				
 			};
 		});		
 		add(btn);
@@ -65,7 +77,7 @@ public class HeaderPanel extends LayoutContainer {
 		
 		
 		EventBus.getInstance().addEventListener(new CmEventListenerImplDefault() {
-		    public void handleEvent(CmEvent event) {
+		    public void handleEvent(final CmEvent event) {
 		        if(event.getEventName().equals(EventBus.EVENT_TYPE_USERCHANGED)) {
 		            setLoginInfo();
 		        }
@@ -80,8 +92,18 @@ public class HeaderPanel extends LayoutContainer {
 		            /** Only show modal popup if not in auto test mode 
 		             * 
 		             */
-		            if(CmShared.getQueryParameter("debug") != null || UserInfo.getInstance().isAutoTestMode() || CmHistoryQueue.getInstance().isInitializingToNonStandard())
-		                InfoPopupBox.display(new CmInfoConfig("Current Topic", "Current topic is: " + event.getEventData()));
+                    if(CmShared.getQueryParameter("debug") != null || UserInfo.getInstance().isAutoTestMode() || CmHistoryQueue.getInstance().isInitializingToNonStandard())
+		            	GWT.runAsync(new RunAsyncCallback() {
+							@Override
+							public void onSuccess() {
+				                InfoPopupBox.display(new CmInfoConfig("Current Topic", "Current topic is: " + event.getEventData()));
+							}
+							
+							@Override
+							public void onFailure(Throwable reason) {
+								reason.printStackTrace();
+							}
+						});
 		            else
  		                new ContextChangeMessage((String)event.getEventData());
 		        }

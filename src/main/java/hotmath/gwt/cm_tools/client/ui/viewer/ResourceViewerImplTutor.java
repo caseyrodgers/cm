@@ -3,8 +3,6 @@ package hotmath.gwt.cm_tools.client.ui.viewer;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.service.CmServiceAsync;
 import hotmath.gwt.cm_tools.client.ui.CmMainPanel;
-import hotmath.gwt.cm_tools.client.ui.resource_viewer.CmResourcePanelImplDefault;
-import hotmath.gwt.cm_tools.client.ui.resource_viewer.CmResourcePanelContainer.ResourceViewerState;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
 import hotmath.gwt.shared.client.eventbus.CmEventListenerImplDefault;
 import hotmath.gwt.shared.client.eventbus.EventBus;
@@ -12,28 +10,18 @@ import hotmath.gwt.shared.client.rpc.action.GetSolutionAction;
 import hotmath.gwt.shared.client.util.RpcData;
 import hotmath.gwt.shared.client.util.UserInfo;
 
-import java.util.List;
-
 import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.Registry;
-import com.extjs.gxt.ui.client.Style.LayoutRegion;
 import com.extjs.gxt.ui.client.Style.Scroll;
-import com.extjs.gxt.ui.client.event.ButtonEvent;
-import com.extjs.gxt.ui.client.event.SelectionListener;
-import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.Html;
-import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.Window;
-import com.extjs.gxt.ui.client.widget.button.Button;
-import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
-import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Frame;
 import com.google.gwt.user.client.ui.Widget;
 
-public class ResourceViewerImplTutor extends CmResourcePanelImplDefault {
+public class ResourceViewerImplTutor extends CmResourcePanelImplWithWhiteboard {
 
     static ResourceViewerImplTutor _instance;
     static {
@@ -55,38 +43,28 @@ public class ResourceViewerImplTutor extends CmResourcePanelImplDefault {
 
     static public final String STYLE_NAME="resource-viewer-impl-tutor";
     
-    enum DisplayMode{TUTOR,WHITEBOARD};
-    
-    DisplayMode _displayMode;
-    static DisplayMode __lastDisplayMode = null;
-    
     public ResourceViewerImplTutor() {
         _instance = this;
-    
-        /** If user has showwork enabled or system is currently in whiteboard mode
-         *  The show whiteboard on startup.
-         */
-        if(UserInfo.getInstance().isShowWorkRequired() || __lastDisplayMode == DisplayMode.WHITEBOARD) {
-            _displayMode = DisplayMode.WHITEBOARD;
-        }
-        else {
-            _displayMode = DisplayMode.TUTOR;
-        }
-            
+
         addStyleName(STYLE_NAME);
         setScrollMode(Scroll.AUTOY);
     }
+    
+    @Override
+    public Widget getTutorDisplay() {
+    	return tutorPanel;
+    }
 
+    @Override
+    public void setupShowWorkPanel(ShowWorkPanel whiteboardPanel) {
+    	whiteboardPanel.setupForPid(getPid());
+    }
+    
+    
     @Override
     public Integer getOptimalWidth() {
         return 500;
     }
-    
-    @Override
-    public Boolean showContainer() {
-        return false;
-    };
-
 
     @Override
     public Boolean allowMaximize() {
@@ -99,111 +77,7 @@ public class ResourceViewerImplTutor extends CmResourcePanelImplDefault {
         return STYLE_NAME;
     }
     
-    @Override
-    public ResourceViewerState getInitialMode() {
-        if(_displayMode == DisplayMode.WHITEBOARD) {
-            return ResourceViewerState.MAXIMIZED;
-        }
-        else {
-            return ResourceViewerState.OPTIMIZED;
-        }
-    }
     
-    Button _showWorkBtn;
-    public List<Component> getContainerTools() {
-        
-        String btnText = _displayMode == DisplayMode.WHITEBOARD?"Hide Whiteboard":"Show Whiteboard";
-        _showWorkBtn = new Button(btnText,new SelectionListener<ButtonEvent>() {
-            @Override
-            public void componentSelected(ButtonEvent ce) {
-                
-                if(_showWorkBtn.getText().indexOf("Show") > -1) {
-                    setDisplayMode(DisplayMode.WHITEBOARD);
-                }
-                else {
-                    if(_wasMaxBeforeWhiteboard) {
-                        CmMainPanel.__lastInstance._mainContent.currentContainer.setMaximize(ResourceViewerImplTutor.this);
-                    }
-                    else {
-                        CmMainPanel.__lastInstance._mainContent.currentContainer.setOptimized(ResourceViewerImplTutor.this);
-                    }
-                    
-                    setDisplayMode(DisplayMode.TUTOR);
-                }
-            }
-        });
-        Component[] btn = {_showWorkBtn};
-        return java.util.Arrays.asList(btn);
-    }
-    
-
-    
-    boolean _wasMaxBeforeWhiteboard;
-    
-    /** Central method to setup either tutor or whiteboard
-     *  display modes. 
-     * 
-     * @param displayMode
-     */
-    private void setDisplayMode(DisplayMode displayMode) {
-
-        removeAll();
-        
-        if(displayMode == DisplayMode.TUTOR) {
-            _showWorkBtn.setText("Show Whiteboard");
-            add(tutorPanel);
-            
-            CmMainPanel.__lastInstance._mainContent.currentContainer.getMaximizeButton().setEnabled(true);
-        }
-        else {
-            _wasMaxBeforeWhiteboard = CmMainPanel.__lastInstance._mainContent.currentContainer.isMaximized();
-            CmMainPanel.__lastInstance._mainContent.currentContainer.setMaximize(this,_wasMaxBeforeWhiteboard);
-            
-            CmMainPanel.__lastInstance._mainContent.currentContainer.getMaximizeButton().setEnabled(false);
-            
-            ShowWorkPanel swp = new ShowWorkPanel();
-            swp.setupForPid(this.pid);
-
-            LayoutContainer lcTutor = new LayoutContainer(new FitLayout());
-            lcTutor.setScrollMode(Scroll.AUTO);
-            lcTutor.add(tutorPanel);
-            
-
-            LayoutContainer lcMain = new LayoutContainer(new BorderLayout());
-            lcMain.addStyleName("whiteboard-container");
-            lcMain.setStyleAttribute("background", "transparent");
-            lcMain.setScrollMode(Scroll.NONE);
-
-            BorderLayoutData bld = new BorderLayoutData(LayoutRegion.WEST, .50f);
-            bld.setSplit(false);
-            lcMain.add(lcTutor,bld);
-            
-
-            bld = new BorderLayoutData(LayoutRegion.EAST, .50f);
-            bld.setSplit(false);
-            lcMain.add(swp, bld);
-
-            _showWorkBtn.setText("Hide Whiteboard");
-            add(lcMain);
-        }
-        _displayMode = displayMode;
-        __lastDisplayMode = _displayMode;
-        
-        layout();
-    }
-    
-    
-    @Override
-    public void addResource(Widget w, String title) {
-        if(_displayMode == DisplayMode.WHITEBOARD) {
-            setLayout(new FitLayout());
-            setDisplayMode(DisplayMode.WHITEBOARD);
-        }
-        else 
-            super.addResource(w,title);
-    }
-    
-    Button showWorkBtn, hideWorkBtn;
     String pid;
     boolean hasShowWork;
 
@@ -340,44 +214,6 @@ public class ResourceViewerImplTutor extends CmResourcePanelImplDefault {
 
     static public void showTutoringDialog() {
         _instance.showTutoring(_instance.getPid());
-    }
-    
-    public Widget createShowWork(final String pidIn) {
-        Button viewSolution = new Button("View solution");
-        viewSolution.setToolTip("View the tutorial to check your answer");
-        viewSolution.addSelectionListener(new SelectionListener<ButtonEvent>() {
-            public void componentSelected(ButtonEvent ce) {
-                // CatchupMathTools.showAlert("Pid: " + _pid);
-                initializeTutor(pidIn, getResourceItem().getTitle(), hasShowWork, true);
-                setDisplayMode(DisplayMode.TUTOR);
-            }
-        });
-
-        Button back = new Button("Back");
-        back.setToolTip("Return back to the solution");
-        back.addSelectionListener(new SelectionListener<ButtonEvent>() {
-            @Override
-            public void componentSelected(ButtonEvent ce) {
-                setDisplayMode(DisplayMode.TUTOR);
-            }
-        });
-
-        Button examples = new Button("Examples");
-        examples.setToolTip("View sample uses of Show Work");
-        examples.addSelectionListener(new SelectionListener<ButtonEvent>() {
-
-            @Override
-            public void componentSelected(ButtonEvent ce) {
-                // must remove whiteboard to show popup
-                setDisplayMode(DisplayMode.TUTOR);
-                new ShowWorkExampleWindow();
-            }
-        });
-
-        ShowWorkPanel showWorkPanel = new ShowWorkPanel();
-        showWorkPanel.setupForPid(pidIn);
-        
-        return showWorkPanel;
     }
 
     /**

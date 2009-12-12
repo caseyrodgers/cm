@@ -156,6 +156,7 @@ public class QuizPage extends LayoutContainer {
         		else {
         			msg = caught.getMessage();
         		}
+        		CatchupMathTools.setBusy(false);
         		CatchupMathTools.showAlert(msg);
         	}
         });

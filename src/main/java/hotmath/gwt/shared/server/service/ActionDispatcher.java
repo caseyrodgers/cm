@@ -43,6 +43,7 @@ import hotmath.gwt.shared.server.service.command.GroupManagerCommand;
 import hotmath.gwt.shared.server.service.command.LogUserInCommand;
 import hotmath.gwt.shared.server.service.command.MarkPrescriptionLessonAsViewedCommand;
 import hotmath.gwt.shared.server.service.command.ProcessLoginRequestCommand;
+import hotmath.gwt.shared.server.service.command.ResetUserCommand;
 import hotmath.gwt.shared.server.service.command.SaveAutoRegistrationCommand;
 import hotmath.gwt.shared.server.service.command.SaveFeedbackCommand;
 import hotmath.gwt.shared.server.service.command.SaveQuizCurrentResultCommand;
@@ -245,5 +246,6 @@ public class ActionDispatcher {
         addCommand(GetActiveGroupsCommand.class);
         addCommand(GetQuizCurrentResultsCommand.class);
         addCommand(GetStudentModelCommand.class);
+        addCommand(ResetUserCommand.class);
     }
 }

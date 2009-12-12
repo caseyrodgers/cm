@@ -123,7 +123,7 @@ public class StudentShowWorkWindow extends CmWindow {
      * @return
      */
     private Widget createCenterPanelForPid(String pid) {
-        LayoutContainer lc = new LayoutContainer();
+        final LayoutContainer lc = new LayoutContainer();
         lc.setLayout(new BorderLayout());
         try {
             // create temp user object to identify this student
@@ -132,24 +132,43 @@ public class StudentShowWorkWindow extends CmWindow {
             UserInfo.setInstance(user);
 
             
-            ShowWorkPanel workPanel = new ShowWorkPanel();
+            ShowWorkPanel workPanel = new ShowWorkPanel(null);
             BorderLayoutData ld = new BorderLayoutData(LayoutRegion.NORTH, 290);
             ld.setSplit(false);            
             lc.add(workPanel, ld);
             
             workPanel.setupForPid(pid);
 
-            InmhItemData solItem = new InmhItemData();
+            final InmhItemData solItem = new InmhItemData();
             solItem.setType("practice");
             solItem.setFile(pid);
-            CmResourcePanel viewer = ResourceViewerFactory.create(solItem);
-
-            lc.add(viewer.getResourcePanel(), new BorderLayoutData(LayoutRegion.CENTER));
-            centerContainer.removeAll();
-            centerContainer.setLayout(new FitLayout());
-            centerContainer.add(lc);
             
-            layout();
+            ResourceViewerFactory.ResourceViewerFactory_Client client = new ResourceViewerFactory.ResourceViewerFactory_Client() {
+            	@Override
+            	public void onSuccess(ResourceViewerFactory instance) {
+            	    
+            		try {
+	                    CmResourcePanel viewer = instance.create(solItem);
+	
+	                    lc.add(viewer.getResourcePanel(), new BorderLayoutData(LayoutRegion.CENTER));
+	                    centerContainer.removeAll();
+	                    centerContainer.setLayout(new FitLayout());
+	                    centerContainer.add(lc);
+	                    
+	                    layout();
+            		}
+            		catch(Exception e) {
+            			CatchupMathTools.showAlert("Error loading resource: " + e.getLocalizedMessage());
+            		}
+            	}
+            	
+            	@Override
+            	public void onUnavailable() {
+            		
+            	}
+            };
+            
+        
             
         } catch (Exception e) {
             Log.error("Error creating Show Work panel for student: " + pid + "," + student.getUid(), e);

@@ -55,9 +55,22 @@ function updateWhiteboard(id, command, commandData) {
    }
 }
 
-
 function setWhiteboardIsReadonly() {
-	//
+   //  only works if single object on page
+   // @TODO: get browser depend object
+   var fo = swfobject.getObjectById("whiteboard-object");
+   
+   //alert(fo + ', ' + fo.name + ', ' + fo.updateWhiteboard);
+   if(!fo) {
+       alert('Could not find whiteboard flash object');
+   }
+   
+   if(fo.setWhiteboardIsReadonly) {
+       fo.setWhiteboardIsReadonly(true);
+   }
+   else {
+      alert('could not find setWhiteboardIsReadonly: ' + id);
+   }
 }
 
 // register callback in the parent GWT to allow
@@ -70,3 +83,4 @@ function setWhiteboardBackground(html) {
 // setup hooks for GWT to call from the app window.
 parent.setWhiteboardBackground = setWhiteboardBackground;
 parent.updateWhiteboard = updateWhiteboard;
+parent.setWhiteboardIsReadonly = setWhiteboardIsReadonly;

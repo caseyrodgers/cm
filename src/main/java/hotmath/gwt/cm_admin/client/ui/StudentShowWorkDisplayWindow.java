@@ -1,5 +1,6 @@
 package hotmath.gwt.cm_admin.client.ui;
 
+import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.data.InmhItemData;
 import hotmath.gwt.cm_tools.client.model.StudentModel;
 import hotmath.gwt.cm_tools.client.ui.resource_viewer.CmResourcePanel;
@@ -24,17 +25,35 @@ public class StudentShowWorkDisplayWindow extends Window {
         
         UserInfo user = new UserInfo(student.getUid(), 0);
         UserInfo.setInstance(user);
-        ShowWorkPanel workPanel = new ShowWorkPanel();
+        ShowWorkPanel workPanel = new ShowWorkPanel(null);
         add(workPanel,ld);
         workPanel.setupForPid(pid);
         
         
-        InmhItemData solItem = new InmhItemData();
+        final InmhItemData solItem = new InmhItemData();
         solItem.setType("practice");
         solItem.setFile(pid);
         try {
-           CmResourcePanel resourcePanel = ResourceViewerFactory.create(solItem);
-           add(resourcePanel.getResourcePanel(), new BorderLayoutData(LayoutRegion.CENTER));
+        	
+        	ResourceViewerFactory.ResourceViewerFactory_Client client = new ResourceViewerFactory.ResourceViewerFactory_Client() {
+				
+				@Override
+				public void onUnavailable() {
+					CatchupMathTools.showAlert("Error creating resource: " + solItem);
+				}
+				
+				@Override
+				public void onSuccess(ResourceViewerFactory instance) {
+				    try {
+		                 CmResourcePanel resourcePanel = instance.create(solItem);
+		                 add(resourcePanel.getResourcePanel(), new BorderLayoutData(LayoutRegion.CENTER));
+		                 layout();
+				    }
+				    catch(Exception e) {
+				    	CatchupMathTools.showAlert("Error creating resource: " + e.getLocalizedMessage());
+				    }
+				}
+			};
         }
         catch(Exception e) {
             e.printStackTrace();

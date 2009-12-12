@@ -198,25 +198,7 @@ public class PrescriptionServiceImpl extends RemoteServiceServlet implements Pre
     }
 
     public void resetUser(int userId) throws CmRpcException {
-        Connection conn = null;
-        try {
-            conn = HMConnectionPool.getConnection();
-            HaUser user = HaUser.lookUser(conn, userId, null);
-            user.setActiveTest(0);
-            user.setActiveTestRunId(0);
-            user.setActiveTestSegment(0);
-            user.setActiveTestRunSession(0);
-
-            StudentActiveInfo activeInfo = new StudentActiveInfo();
-            activeInfo.setActiveSegmentSlot(0);
-            new CmStudentDao().setActiveInfo(conn, userId, activeInfo);
-
-            user.update(conn);
-        } catch (Exception e) {
-            throw new CmRpcException(e);
-        } finally {
-            SqlUtilities.releaseResources(null, null, conn);
-        }
+    	throw new CmRpcExceptionUseAction();
     }
 
     public RpcData getQuizResultsHtml(int runId) throws CmRpcException {
