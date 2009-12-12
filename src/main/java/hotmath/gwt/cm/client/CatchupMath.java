@@ -40,9 +40,6 @@ import com.google.gwt.user.client.ui.RootPanel;
  * Entry point classes define <code>onModuleLoad()</code>.
  */
 public class CatchupMath implements EntryPoint {
-    
-    final static String version = "1.0";
-    
     static {
         publishNative();
     }
