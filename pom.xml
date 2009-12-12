@@ -372,13 +372,14 @@
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>gwt-maven-plugin</artifactId>
+        <version>1.2-SNAPSHOT</version>
         <configuration>
   	  <gwtHome>${gwtHome}</gwtHome>
           <extraJvmArgs>-Xmx256m -Xms256m</extraJvmArgs>
   	  <inplace>true</inplace>
   	  <disableCastChecking>true</disableCastChecking>
 	  <disableClassMetadata>true</disableClassMetadata>
-          <soyc>true</soyc>
+          <soyc>false</soyc>
           <outputDirectory>${basedir}/src/main/webapp/</outputDirectory>
           <modules>
             <module>hotmath.gwt.cm.CatchupMath</module>
