@@ -11,5 +11,5 @@ mvn install:install-file -DgroupId=gwt-debug-panel -DartifactId=gwt-debug-panel 
 mvn install:install-file -DgroupId=xmlrpc -DartifactId=xmlrpc -Dversion=3.1.2 -Dpackaging=jar -Dfile=xmlrpc-client-3.1.2.jar -DgeneratePom=true
 mvn install:install-file -DgroupId=paypal -DartifactId=paypal_api_combined -Dversion=1.0 -Dpackaging=jar -Dfile=paypal_api_combined.jar -DgeneratePom=true
 mvn install:install-file -DgroupId=hotmath -DartifactId=hotmath -Dversion=2.0 -Dpackaging=jar -Dfile=hotmath2.jar -DgeneratePom=true
-mvn install:install-file -DgroupId=com.google.gwt -DartifactId=gwt-user -Dversion=2.0.0 -Dpackaging=jar -Dfile=gwt-2.0.0/gwt-user.jar 
-mvn install:install-file -DgroupId=com.google.gwt -DartifactId=gwt-servlet -Dversion=2.0.0 -Dpackaging=jar -Dfile=gwt-2.0.0/gwt-servlet.jar 
+mvn install:install-file -DgroupId=com.google.gwt -DartifactId=gwt-user -Dversion=2.0.0 -Dpackaging=jar -Dfile=gwt-2.0.0/gwt-user.jar -generatePom=true
+mvn install:install-file -DgroupId=com.google.gwt -DartifactId=gwt-servlet -Dversion=2.0.0 -Dpackaging=jar -Dfile=gwt-2.0.0/gwt-servlet.jar -generatePom=true
