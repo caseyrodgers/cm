@@ -967,3 +967,9 @@ img.resource-item-complete {
 .resource-viewer-impl-review em {
     font-style: italic;
 }
+
+
+
+#testset_div li {
+	line-height: 2em;
+}
