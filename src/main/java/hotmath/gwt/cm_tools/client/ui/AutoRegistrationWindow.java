@@ -155,6 +155,7 @@ public class AutoRegistrationWindow extends CmWindow {
     }
 
     private void createPreview() {
+        CatchupMathTools.setBusy(true);
         CmServiceAsync s = (CmServiceAsync) Registry.get("cmService");
         s.execute(new CreateAutoRegistrationPreviewAction(student, uploadFileKey),
                 new AsyncCallback<AutoRegistrationSetup>() {

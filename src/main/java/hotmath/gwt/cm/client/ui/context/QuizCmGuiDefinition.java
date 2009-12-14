@@ -49,9 +49,7 @@ public class QuizCmGuiDefinition implements CmGuiDefinition {
 	            "<p>Afterwards, you may get one or two more" +
 	            "   quizzes before starting your review and practice. " +
 	            "</p>" +
-	            "<p>Most of the quiz questions require pencil " +
-	            "   and paper. Please don't guess." +
-	            "</p>" +
+	            "<p>Work out your answers carefully on our whiteboard or on paper.</p>" +
 	            "<p>If you log out, your answers will be saved." +
 	            "</p> ";
 	    }
@@ -59,7 +57,7 @@ public class QuizCmGuiDefinition implements CmGuiDefinition {
             html = "<h1>HOW TO USE CATCHUP MATH</h1>" +
                    "<p>Take the 10-question quiz to the right.</p>" +
                    "<p>Then, we will provide you with personalized review and practice.</p>" +
-                   "<p>Most of the quiz questions require pencil and paper. Please don't guess.</p> ";
+   	               "<p>Work out your answers carefully on our whiteboard or on paper.</p>";
 	    }
 	    cp.add(new Html(html));
 	    cp.add(new Html(CatchupMathTools.FEEDBACK_MESSAGE));
@@ -75,6 +73,7 @@ public class QuizCmGuiDefinition implements CmGuiDefinition {
                     public Widget getResourcePanel() {
                         return this;
                     }
+                    
                     public Integer getOptimalHeight() {
                         return -1;
                     }
@@ -82,15 +81,7 @@ public class QuizCmGuiDefinition implements CmGuiDefinition {
                     public Boolean allowClose() {
                         return false;
                     }
-                    
-                    public ResourceViewerState getInitialMode() {
-                        return ResourceViewerState.OPTIMIZED;
-                    }
-                    
-                    public String getContainerStyleName() {
-                        return "quiz-cm-gui-definition-resource";
-                        
-                    }
+
                     @Override
                     public List<Component> getContainerTools() {
                     	ArrayList<Component> list2 = new ArrayList<Component>();

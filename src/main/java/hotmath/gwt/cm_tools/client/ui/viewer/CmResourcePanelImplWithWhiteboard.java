@@ -52,6 +52,10 @@ public abstract class CmResourcePanelImplWithWhiteboard extends CmResourcePanelI
         return true;
     }
     
+    /** If display is in WHITEBOARD mode then
+     * make sure to expand display.  If in 
+     * TUTOR mode, then initially show in OPTIMIZED mode.
+     */
     @Override
     public ResourceViewerState getInitialMode() {
         if(_displayMode == DisplayMode.WHITEBOARD) {

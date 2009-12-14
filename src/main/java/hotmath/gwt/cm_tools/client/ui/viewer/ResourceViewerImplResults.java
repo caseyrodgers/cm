@@ -2,7 +2,6 @@ package hotmath.gwt.cm_tools.client.ui.viewer;
 
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.service.PrescriptionServiceAsync;
-import hotmath.gwt.cm_tools.client.ui.resource_viewer.CmResourcePanelContainer.ResourceViewerState;
 import hotmath.gwt.shared.client.util.RpcData;
 import hotmath.gwt.shared.client.util.UserInfo;
 
@@ -38,11 +37,6 @@ public class ResourceViewerImplResults extends CmResourcePanelImplWithWhiteboard
         return 520;
     }
 
-    @Override
-    public ResourceViewerState getInitialMode() {
-        // TODO Auto-generated method stub
-        return ResourceViewerState.OPTIMIZED;
-    }
     
     @Override
     public void whiteboardIsReady() {

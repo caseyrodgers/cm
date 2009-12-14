@@ -21,6 +21,7 @@ import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
 import com.extjs.gxt.ui.client.widget.layout.FormLayout;
 
+
 public class BulkStudentRegistrationWindow extends RegisterStudent {
         
     TextField<String> groupFld;
@@ -32,7 +33,7 @@ public class BulkStudentRegistrationWindow extends RegisterStudent {
     /** Create a Bulk Registration Window
      * 
      * There is a bug with IE that you cannot have a form embedded in another form.  Which 
-     * is what happens when we embedd the UploadField into the formPanel.  This causes errors
+     * is what happens when we embed the UploadField into the formPanel.  This causes errors
      * in IE on Windows (not macs?).
      * 
      * To deal with this we have to recreate the window, and add the formPanel, then the upload panel
@@ -64,6 +65,8 @@ public class BulkStudentRegistrationWindow extends RegisterStudent {
                     new AutoRegistrationWindow(_student, uploadKey);
                 }
             });
+        
+        
         /** Create a new fieldset to hold the upload form
          * 
          */

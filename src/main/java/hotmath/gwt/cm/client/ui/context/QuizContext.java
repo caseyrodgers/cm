@@ -239,7 +239,7 @@ public class QuizContext implements CmContext {
 	}
 
 	public void doNext() {
-	    String msg = "Did you double-check all your answers with paper and pencil?";
+	    String msg = "The more answers you get right, the fewer lessons you will receive. Did you work out your answers carefully?";
 	    MessageBox.confirm("Ready to Check Quiz?", msg, new Listener<MessageBoxEvent>() {
             public void handleEvent(MessageBoxEvent be) {
                 if (be.getButtonClicked().getText().equals("Yes")) {
@@ -299,8 +299,7 @@ public class QuizContext implements CmContext {
     
     /** Return the count of correct answers
      * 
-     * @return
-     */
+     * @return     */
     private native int getQuizResultsCorrect() /*-{
         return $wnd.getQuizResultsCorrect();
     }-*/;
