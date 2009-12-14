@@ -176,8 +176,7 @@ public class QuizContext implements CmContext {
     	        if(correct != total) {
     	            msg += "Your quiz score: " + runInfo.getTestCorrectPercent() + "%</br>" +
         	                "Congratulations, you passed!</br>" +
-        	                reviewLessons + 
-           	                "First topic: <b>" + runInfo.getSessionName() + "</b></br>";
+        	                reviewLessons + "</br>";
     	        }
     	        else {
     	            
@@ -195,8 +194,7 @@ public class QuizContext implements CmContext {
     	        // did not pass
     	        msg += "Your quiz score: " + runInfo.getTestCorrectPercent() + "%</br>" +
     	                "You need " + UserInfo.getInstance().getPassPercentRequired() + "% to pass.</br>" +
-                        reviewLessons +
-                        "First topic: <b>" + runInfo.getSessionName() + "</b></br>";
+                        reviewLessons + "</br>";
     	    }
     	        
     	    Html html = new Html("<p>" + msg + "</p>");

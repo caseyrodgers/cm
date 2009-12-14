@@ -62,10 +62,8 @@ public class CmUploadForm extends FormPanel {
                 Log.info("CmUploadForm: response=" + response);
 
                 if (response.toLowerCase().indexOf("<pre") != -1) {
-                    Log.info("CmUploadForm: removing pre");
-                    int offset = response.indexOf(">") + 1;
-                    response = response.substring(offset, response.length() - 6);
-                    Log.info("CmUploadForm: done removing pre");
+                    response = extractJson(response);
+                    Log.info("CmUploadForm: done extracting JSON: " + response);
                 }
 
                 try {
@@ -102,5 +100,18 @@ public class CmUploadForm extends FormPanel {
 
         getButtonBar().setAlignment(HorizontalAlignment.RIGHT);
     }
-
+    
+    
+	/** Return first set of {JSON} construct
+	 *  
+	 * @TODO: provide safer extraction routine.
+	 * 
+	 * @param html
+	 * @return
+	 */
+    static public String extractJson(String html) {
+    	String json = html.substring(html.indexOf("{"));
+    	json = json.substring(0,json.indexOf("}")+1);
+    	return json;
+    }
 }
