@@ -150,7 +150,7 @@ public class AutoRegistrationWindow extends CmWindow {
                 + "     </div>"
                 + " </div>"
                 + "<h1 style='text-align: center;color:red;'>" +
-                "Problems (listed below): " + error + "" +
+                "Bulk Upload Problems" + 
                 "</h1>";
         return new Html(html);
     }
@@ -230,30 +230,28 @@ public class AutoRegistrationWindow extends CmWindow {
                     	CatchupMathTools.setBusy(false);
 
                     	int cnt = result.getEntries().size() - result.getErrorCount();
-                    	String msgSuccess = cnt + " Bulk Student " + (cnt==1?"Record":"Records") + " created successfully!";
+                    	String msgSuccess = cnt + " bulk student " + (cnt==1?"record":"records") + " created successfully!";
 
                         if (result.getErrorCount() > 0) {
+                        	
                             _buttonCancel.setText("Close");
                             _buttonCreate.setEnabled(false);
 
                             _previewGrid.getStore().removeAll();
                             _previewGrid.getStore().add(createGxtModelFromEntries(result.getEntries()));
                         	
-                            String errorStr = (result.getErrorCount()==1?"error":"errors");
-                            String cntStr = ((result.getEntries().size() - result.getErrorCount()) == 1?"student":"students");
-                            
                             int ok = result.getEntries().size() - result.getErrorCount();
                             
                             String msg = "";
                             if(ok > 0) {
-                            	String msgErr = "However, there were errors while creating the new student accounts.";
+                            	String msgErr = "However, there were errors while creating the other student accounts.";
                             	msg = msgSuccess + " " + msgErr;
                             }
                             else {
                             	// none successful
-                            	String msgErr = "There were errors while creating the new student accounts.";
+                            	msg = "There were errors while creating the new student accounts.";
                             }
-                            msg += " Please see associated error messages";
+                            msg += " Please see associated error messages.";
                             
                             CatchupMathTools.showAlert(msg);
                         } else {
