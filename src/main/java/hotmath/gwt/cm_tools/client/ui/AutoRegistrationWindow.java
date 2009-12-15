@@ -229,7 +229,8 @@ public class AutoRegistrationWindow extends CmWindow {
                     	
                     	CatchupMathTools.setBusy(false);
 
-                        
+                    	int cnt = result.getEntries().size() - result.getErrorCount();
+                    	String msgSuccess = cnt + " Bulk Student " + (cnt==1?"Record":"Records") + " created successfully!";
 
                         if (result.getErrorCount() > 0) {
                             _buttonCancel.setText("Close");
@@ -238,10 +239,26 @@ public class AutoRegistrationWindow extends CmWindow {
                             _previewGrid.getStore().removeAll();
                             _previewGrid.getStore().add(createGxtModelFromEntries(result.getEntries()));
                         	
-                            CatchupMathTools.showAlert("There were errors while creating the new student accounts.  Please see associated error messages");
+                            String errorStr = (result.getErrorCount()==1?"error":"errors");
+                            String cntStr = ((result.getEntries().size() - result.getErrorCount()) == 1?"student":"students");
+                            
+                            int ok = result.getEntries().size() - result.getErrorCount();
+                            
+                            String msg = "";
+                            if(ok > 0) {
+                            	String msgErr = "However, there were errors while creating the new student accounts.";
+                            	msg = msgSuccess + " " + msgErr;
+                            }
+                            else {
+                            	// none successful
+                            	String msgErr = "There were errors while creating the new student accounts.";
+                            }
+                            msg += " Please see associated error messages";
+                            
+                            CatchupMathTools.showAlert(msg);
                         } else {
-                        	int cnt = result.getEntries().size() - result.getErrorCount();
-                            CatchupMathTools.showAlert(cnt + " Bulk Student " + (cnt==1?"Record":"Records") + " created successfully!",
+                        	
+                            CatchupMathTools.showAlert(msgSuccess,
                                     new CmAsyncRequestImplDefault() {
                                         @Override
                                         public void requestComplete(String requestData) {

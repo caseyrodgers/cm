@@ -138,7 +138,7 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
         EventBus.getInstance().addEventListener(new CmEventListenerImplDefault() {
             public void handleEvent(CmEvent event) {
                 if (event.getEventName().equals(EventBus.EVENT_TYPE_REFRESH_STUDENT_DATA)) {
-                    refreshDataNow(null);
+                	CmAdminDataReader.getInstance().fireRefreshData();
                 }
             }
         });
@@ -158,7 +158,7 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
      * 
      */
     public void refreshDataNow(Integer uid2Select) {
-        getStudentsRPC(this._cmAdminMdl.getId(), _grid.getStore(), uid2Select);
+    	getStudentsRPC(this._cmAdminMdl.getId(), _grid.getStore(), uid2Select);
     }
 
     public void enableToolBar() {
