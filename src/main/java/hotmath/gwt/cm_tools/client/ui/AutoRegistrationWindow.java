@@ -17,7 +17,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.extjs.gxt.ui.client.Registry;
-import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
 import com.extjs.gxt.ui.client.Style.LayoutRegion;
 import com.extjs.gxt.ui.client.Style.SelectionMode;
 import com.extjs.gxt.ui.client.data.BaseModelData;
@@ -69,17 +68,19 @@ public class AutoRegistrationWindow extends CmWindow {
         add(l);
         setSize(580, 410);
         setResizable(false);
+        drawGui();
         setModal(true);
         createPreview();
+        
         setVisible(false);
     }
 
     Button _buttonCreate;
     Button _buttonCancel;
 
-    private void drawGui(int total) {
-
-        _buttonCreate = new Button("Create " + total + " Students");
+    private void drawGui() {
+    	
+        _buttonCreate = new Button("Create Students");
         
         _buttonCreate.addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
@@ -98,20 +99,19 @@ public class AutoRegistrationWindow extends CmWindow {
                 close();
             }
         });
-        getButtonBar().setAlignment(HorizontalAlignment.RIGHT);
+        //getButtonBar().setAlignment(HorizontalAlignment.RIGHT);
         addButton(_buttonCancel);
-
     }
 
     private FormData formData = new FormData("-20");
     Grid<AutoRegistrationEntryGxt> _previewGrid;
 
-    private void createForm(int total, int error, List<AutoRegistrationEntryGxt> gridModel) {
+    private void createForm(int total, int errors, List<AutoRegistrationEntryGxt> gridModel) {
         removeAll();
 
         setLayout(new BorderLayout());
 
-        add(createInfoPanel(total, error), new BorderLayoutData(LayoutRegion.NORTH, 85));
+        add(createInfoPanel(total,errors), new BorderLayoutData(LayoutRegion.NORTH, 85));
 
         ListStore<AutoRegistrationEntryGxt> store = new ListStore<AutoRegistrationEntryGxt>();
         store.add(gridModel);
@@ -149,10 +149,9 @@ public class AutoRegistrationWindow extends CmWindow {
                 + "&nbsp;</div></div>"
                 + "     </div>"
                 + " </div>"
-                + "<ul style='margin-left:150px;color:red;'>" +
-                "<li style='display: inline;margin-right: 20px;'>Students to create: " + (total - error) + "</li>" +  
-                "<li style='display: inline'>Problems (listed below): " + error + "</li>" +
-                "</ul>";
+                + "<h1 style='text-align: center;color:red;'>" +
+                "Problems (listed below): " + error + "" +
+                "</h1>";
         return new Html(html);
     }
 
@@ -182,14 +181,11 @@ public class AutoRegistrationWindow extends CmWindow {
                     		createStudentAccounts();
                     	}
                     	else {
-                    		
-                            drawGui(result.getEntries().size() - errorCount);
-	                        // transfer from local model into Gxt model
-	                        createForm(result.getEntries().size(), errorCount, createGxtModelFromEntries(result.getEntries()));
-	                        
 	                        /** There are records to create
 	                         * 
 	                         */
+                    		createForm(result.getEntries().size(), errorCount, createGxtModelFromEntries(result.getEntries()));
+                    		
 	                        if(result.getEntries().size() - errorCount > 0)
 	                        	_buttonCreate.setEnabled(true);
 	                        
@@ -215,7 +211,8 @@ public class AutoRegistrationWindow extends CmWindow {
     private List<AutoRegistrationEntryGxt> createGxtModelFromEntries(List<AutoRegistrationEntry> entries) {
         List<AutoRegistrationEntryGxt> gridModel = new ArrayList<AutoRegistrationEntryGxt>();
         for (AutoRegistrationEntry e : entries) {
-            gridModel.add(new AutoRegistrationEntryGxt(e));
+        	if(e.getIsError())
+                gridModel.add(new AutoRegistrationEntryGxt(e));
         }
         return gridModel;
     }
@@ -227,21 +224,24 @@ public class AutoRegistrationWindow extends CmWindow {
                 new AsyncCallback<AutoRegistrationSetup>() {
                     @Override
                     public void onSuccess(AutoRegistrationSetup result) {
-                    	CatchupMathTools.setBusy(false);
+                    	EventBus.getInstance().fireEvent(new CmEvent(EventBus.EVENT_TYPE_REFRESH_STUDENT_DATA));
                     	
-                        _buttonCancel.setText("Close");
-                        _buttonCreate.setEnabled(false);
+                    	
+                    	CatchupMathTools.setBusy(false);
 
-                        _previewGrid.getStore().removeAll();
-                        _previewGrid.getStore().add(createGxtModelFromEntries(result.getEntries()));
-
-                        EventBus.getInstance().fireEvent(new CmEvent(EventBus.EVENT_TYPE_REFRESH_STUDENT_DATA));
+                        
 
                         if (result.getErrorCount() > 0) {
-                            CatchupMathTools
-                                    .showAlert("There were errors while creating the new student accounts.  Please see associated error messages");
+                            _buttonCancel.setText("Close");
+                            _buttonCreate.setEnabled(false);
+
+                            _previewGrid.getStore().removeAll();
+                            _previewGrid.getStore().add(createGxtModelFromEntries(result.getEntries()));
+                        	
+                            CatchupMathTools.showAlert("There were errors while creating the new student accounts.  Please see associated error messages");
                         } else {
-                            CatchupMathTools.showAlert("Bulk Student Records created successfully!",
+                        	int cnt = result.getEntries().size() - result.getErrorCount();
+                            CatchupMathTools.showAlert(cnt + " Bulk Student " + (cnt==1?"Record":"Records") + " created successfully!",
                                     new CmAsyncRequestImplDefault() {
                                         @Override
                                         public void requestComplete(String requestData) {

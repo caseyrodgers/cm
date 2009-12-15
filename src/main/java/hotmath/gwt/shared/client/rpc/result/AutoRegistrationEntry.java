@@ -12,7 +12,7 @@ public class AutoRegistrationEntry implements Serializable {
     String name;
     String password;
     String message;
-    Boolean isError;
+    boolean isError;
     
     
 

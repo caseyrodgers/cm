@@ -58,7 +58,7 @@ public class CatchupMathTools implements EntryPoint {
      */
     static public void setBusy(boolean trueFalse) {
     	
-    	System.out.println("SETBUSY: " + trueFalse);
+    	//System.out.println("SETBUSY: " + trueFalse);
     	
         if(trueFalse) {
             _busyDepth++;
