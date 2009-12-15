@@ -4,12 +4,10 @@ import hotmath.HotMathUtilities;
 import hotmath.ProblemID;
 import hotmath.SolutionManager;
 import hotmath.gwt.cm_admin.server.model.CmAdminDao;
-import hotmath.gwt.cm_admin.server.model.CmStudentDao;
 import hotmath.gwt.cm_tools.client.model.AutoUserAdvanced;
 import hotmath.gwt.cm_tools.client.model.ChapterModel;
 import hotmath.gwt.cm_tools.client.model.GroupModel;
 import hotmath.gwt.cm_tools.client.model.LessonItemModel;
-import hotmath.gwt.cm_tools.client.model.StudentActiveInfo;
 import hotmath.gwt.cm_tools.client.model.StudentActivityModel;
 import hotmath.gwt.cm_tools.client.model.StudentModel;
 import hotmath.gwt.cm_tools.client.model.StudentShowWorkModel;
@@ -21,7 +19,6 @@ import hotmath.gwt.shared.client.rpc.action.AddStudentAction;
 import hotmath.gwt.shared.client.rpc.action.AutoAdvanceUserAction;
 import hotmath.gwt.shared.client.rpc.action.GetLessonItemsForTestRunAction;
 import hotmath.gwt.shared.client.rpc.action.GetPrescriptionAction;
-import hotmath.gwt.shared.client.rpc.action.GetProgramDefinitionsAction;
 import hotmath.gwt.shared.client.rpc.action.GetQuizHtmlAction;
 import hotmath.gwt.shared.client.rpc.action.GetQuizHtmlCheckedAction;
 import hotmath.gwt.shared.client.rpc.action.GetQuizResultsHtmlAction;
@@ -38,10 +35,6 @@ import hotmath.gwt.shared.client.util.RpcData;
 import hotmath.gwt.shared.client.util.UserInfo;
 import hotmath.gwt.shared.server.service.ActionDispatcher;
 import hotmath.solution.Solution;
-import hotmath.testset.ha.HaTest;
-import hotmath.testset.ha.HaTestDao;
-import hotmath.testset.ha.HaTestRunResult;
-import hotmath.testset.ha.HaUser;
 import hotmath.util.HMConnectionPool;
 import hotmath.util.sql.SqlUtilities;
 
@@ -49,7 +42,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -118,8 +110,7 @@ public class PrescriptionServiceImpl extends RemoteServiceServlet implements Pre
     }
 
     public List<SubjectModel> getSubjectDefinitions(String progId) throws CmRpcException {
-        GetProgramDefinitionsAction action = new GetProgramDefinitionsAction(progId);
-        return (List<SubjectModel>) ActionDispatcher.getInstance().execute(action);
+    	throw new CmRpcExceptionUseAction();
     }
 
     public StudentModel updateUser(StudentModel sm, Boolean stuChanged, Boolean progChanged, Boolean progIsNew,
@@ -243,13 +234,12 @@ public class PrescriptionServiceImpl extends RemoteServiceServlet implements Pre
         throw new CmRpcExceptionUseAction();
     }
 
+    /**
+     * @deprecated
+     * 
+     */
     public List<StudyProgramModel> getProgramDefinitions() throws CmRpcException {
-        try {
-            CmAdminDao cma = new CmAdminDao();
-            return cma.getProgramDefinitions();
-        } catch (Exception e) {
-            throw new CmRpcException(e);
-        }
+    	throw new CmRpcExceptionUseAction();
     }
 
     /** 
@@ -261,12 +251,7 @@ public class PrescriptionServiceImpl extends RemoteServiceServlet implements Pre
     }
 
     public List<ChapterModel> getChaptersForProgramSubject(String progId, String subjId) throws CmRpcException {
-        try {
-            CmAdminDao cma = new CmAdminDao();
-            return cma.getChaptersForProgramSubject(progId, subjId);
-        } catch (Exception e) {
-            throw new CmRpcException(e);
-        }
+    	throw new CmRpcExceptionUseAction();
     }
 
     /**

@@ -1,7 +1,7 @@
 package hotmath.gwt.shared.server.service.command;
 
 import hotmath.gwt.cm_admin.server.model.CmAdminDao;
-import hotmath.gwt.cm_tools.client.model.SubjectModel;
+import hotmath.gwt.cm_tools.client.model.StudyProgramModel;
 import hotmath.gwt.shared.client.rpc.Action;
 import hotmath.gwt.shared.client.rpc.Response;
 import hotmath.gwt.shared.client.rpc.action.CmArrayList;
@@ -15,16 +15,16 @@ import java.sql.Connection;
 import org.apache.log4j.Logger;
 
 
-public class GetProgramDefinitionsCommand implements ActionHandlerManualConnectionManagement, ActionHandler<GetProgramDefinitionsAction,  CmList<SubjectModel>> {
+public class GetProgramDefinitionsCommand implements ActionHandlerManualConnectionManagement, ActionHandler<GetProgramDefinitionsAction,  CmList<StudyProgramModel>> {
 
     
     Logger logger = Logger.getLogger(GetProgramDefinitionsCommand.class);
 
     @Override
-    public CmList<SubjectModel> execute(final Connection conn, GetProgramDefinitionsAction action) throws Exception {
-        CmList<SubjectModel> cml = new CmArrayList<SubjectModel>();
+    public CmList<StudyProgramModel> execute(final Connection conn, GetProgramDefinitionsAction action) throws Exception {
+        CmList<StudyProgramModel> cml = new CmArrayList<StudyProgramModel>();
         CmAdminDao dao = new CmAdminDao();
-        cml.addAll(dao.getSubjectDefinitions(action.getProgId()));
+        cml.addAll(dao.getProgramDefinitions());
         return cml;
     }
     

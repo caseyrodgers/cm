@@ -578,9 +578,9 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
                 if (store.getFilters() != null) {
                     /**
                      * if filter applied, then must do each one to avoid GXT bug
-                     * of throwning out of bounds
+                     * of throwing out of bounds
                      * 
-                     * @TODO: recheck this condition on next GXT build
+                     * @TODO: re-check this condition on next GXT build
                      */
                     for (StudentModelExt s : students) {
                         store.add(s);

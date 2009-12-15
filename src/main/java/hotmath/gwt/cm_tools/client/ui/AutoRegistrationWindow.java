@@ -70,18 +70,17 @@ public class AutoRegistrationWindow extends CmWindow {
         setSize(580, 410);
         setResizable(false);
         setModal(true);
-
-        drawGui();
         createPreview();
-        setVisible(true);
+        setVisible(false);
     }
 
     Button _buttonCreate;
     Button _buttonCancel;
 
-    private void drawGui() {
+    private void drawGui(int total) {
 
-        _buttonCreate = new Button("Create Students");
+        _buttonCreate = new Button("Create " + total + " Students");
+        
         _buttonCreate.addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent ce) {
@@ -107,12 +106,12 @@ public class AutoRegistrationWindow extends CmWindow {
     private FormData formData = new FormData("-20");
     Grid<AutoRegistrationEntryGxt> _previewGrid;
 
-    private void createForm(List<AutoRegistrationEntryGxt> gridModel) {
+    private void createForm(int total, int error, List<AutoRegistrationEntryGxt> gridModel) {
         removeAll();
 
         setLayout(new BorderLayout());
 
-        add(createInfoPanel(), new BorderLayoutData(LayoutRegion.NORTH, 85));
+        add(createInfoPanel(total, error), new BorderLayoutData(LayoutRegion.NORTH, 85));
 
         ListStore<AutoRegistrationEntryGxt> store = new ListStore<AutoRegistrationEntryGxt>();
         store.add(gridModel);
@@ -128,7 +127,7 @@ public class AutoRegistrationWindow extends CmWindow {
         layout();
     }
 
-    private Widget createInfoPanel() {
+    private Widget createInfoPanel(int total, int error) {
         String html = " <div class='detail-info' style='height: 55px;' >"
                 + "     <div class='form left'>"
                 + "        <div class='fld'><label>Program:</label><div>"
@@ -150,10 +149,19 @@ public class AutoRegistrationWindow extends CmWindow {
                 + "&nbsp;</div></div>"
                 + "     </div>"
                 + " </div>"
-                + "<h2 style='margin-left:50px;'>The students listed below will be created using the values shown above.</h2>";
+                + "<ul style='margin-left:150px;color:red;'>" +
+                "<li style='display: inline;margin-right: 20px;'>Students to create: " + (total - error) + "</li>" +  
+                "<li style='display: inline'>Problems (listed below): " + error + "</li>" +
+                "</ul>";
         return new Html(html);
     }
 
+    /** Create the preview first.  If there are any errors
+     *  diplay the messages and stop .. if there are zero errors
+     *  The begin the process of creating the users and skip showing
+     *  the preview panel.
+     *  
+     */
     private void createPreview() {
         CatchupMathTools.setBusy(true);
         CmServiceAsync s = (CmServiceAsync) Registry.get("cmService");
@@ -161,17 +169,38 @@ public class AutoRegistrationWindow extends CmWindow {
                 new AsyncCallback<AutoRegistrationSetup>() {
                     @Override
                     public void onSuccess(AutoRegistrationSetup result) {
-
                         _preview = result;
-
-                        // transfer from local model into Gxt model
-                        createForm(createGxtModelFromEntries(result.getEntries()));
-                        _buttonCreate.setEnabled(true);
+                    	
+                        int errorCount=0;
+                        for(int i=0,t=result.getEntries().size();i<t;i++) {
+                        	if(result.getEntries().get(i).getIsError()) {
+                        		errorCount++;
+                        	}
+                        }
+                        
+                    	if(errorCount == 0) {
+                    		createStudentAccounts();
+                    	}
+                    	else {
+                    		
+                            drawGui(result.getEntries().size() - errorCount);
+	                        // transfer from local model into Gxt model
+	                        createForm(result.getEntries().size(), errorCount, createGxtModelFromEntries(result.getEntries()));
+	                        
+	                        /** There are records to create
+	                         * 
+	                         */
+	                        if(result.getEntries().size() - errorCount > 0)
+	                        	_buttonCreate.setEnabled(true);
+	                        
+	                        setVisible(true);
+                    	}
                         CatchupMathTools.setBusy(false);
                     }
 
                     @Override
                     public void onFailure(Throwable caught) {
+                    	CatchupMathTools.setBusy(false);
                         caught.printStackTrace();
                         CatchupMathTools.showAlert("Problem occurred while creating preview: " + caught.getMessage());
                         close();
@@ -192,12 +221,14 @@ public class AutoRegistrationWindow extends CmWindow {
     }
 
     private void createStudentAccounts() {
+    	CatchupMathTools.setBusy(true);
         CmServiceAsync s = (CmServiceAsync) Registry.get("cmService");
         s.execute(new CreateAutoRegistrationAccountsAction(adminId, student, _preview.getEntries()),
                 new AsyncCallback<AutoRegistrationSetup>() {
                     @Override
                     public void onSuccess(AutoRegistrationSetup result) {
-
+                    	CatchupMathTools.setBusy(false);
+                    	
                         _buttonCancel.setText("Close");
                         _buttonCreate.setEnabled(false);
 
@@ -223,6 +254,7 @@ public class AutoRegistrationWindow extends CmWindow {
 
                     @Override
                     public void onFailure(Throwable caught) {
+                    	CatchupMathTools.setBusy(false);
                         caught.printStackTrace();
                         CatchupMathTools.showAlert("Bulk Student Records FAILED: " + caught.getMessage());
                     }

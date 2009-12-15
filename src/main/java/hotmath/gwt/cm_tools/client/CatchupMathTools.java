@@ -57,17 +57,26 @@ public class CatchupMathTools implements EntryPoint {
      * @param trueFalse
      */
     static public void setBusy(boolean trueFalse) {
+    	
+    	System.out.println("SETBUSY: " + trueFalse);
+    	
         if(trueFalse) {
             _busyDepth++;
             RootPanel.get("loading").setVisible(true);
         }
         else if(--_busyDepth == 0){
-            RootPanel.get("loading").setVisible(false);
+            hideBusy();
         }
         
         if(_busyDepth < 0) {
+        	_busyDepth = 0;
             Log.error("isBusy depth is out of whack");
         }
+    }
+    
+    /** Make the busy window disappear, no matter the state */
+    static private void hideBusy() {
+    	RootPanel.get("loading").setVisible(false);
     }
     
     /** Force reset of the isBusy stack allowing 
@@ -75,7 +84,7 @@ public class CatchupMathTools implements EntryPoint {
      *  an alert message.
      */
     static public void resetBusy() {
-        RootPanel.get("loading").setVisible(false);
+        hideBusy();
         _busyDepth = 0;
     }
 
@@ -89,7 +98,7 @@ public class CatchupMathTools implements EntryPoint {
     }
 
     static public void showAlert(String title, String msg) {
-        resetBusy();
+        hideBusy();
         EventBus.getInstance().fireEvent(new CmEvent(EventBus.EVENT_TYPE_MODAL_WINDOW_OPEN));
         MessageBox.alert(title, msg, new Listener<MessageBoxEvent>() {
             public void handleEvent(MessageBoxEvent be) {
@@ -98,7 +107,7 @@ public class CatchupMathTools implements EntryPoint {
     }
 
     static public void showAlert(String title, String msg, final CmAsyncRequest callback) {
-        resetBusy();
+        hideBusy();
         MessageBox.alert(title, msg, new Listener<MessageBoxEvent>() {
             public void handleEvent(MessageBoxEvent be) {
                 if (callback != null)

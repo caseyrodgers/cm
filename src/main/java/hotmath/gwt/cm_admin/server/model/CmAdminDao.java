@@ -234,35 +234,11 @@ public class CmAdminDao {
     	}
     }
 
-    
-    /** Get Chapter titles for given progId/subID
-     * 
-     *  NOTE: This is duplicated in HaTestDefDao.getProgramChapters(testDef)
-     *  
-     *  
-     * @param progId
-     * @param subjId
-     * @return
-     * @throws Exception
-     */
-    public List<ChapterModel> getChaptersForProgramSubject(String progId, String subjId) throws Exception {
-    	
-    	Connection conn = null;
-    	
-    	try {
-    		conn = HMConnectionPool.getConnection();
-    		return getChaptersForProgramSubject(conn, progId, subjId);
-    	}
-    	finally {
-    		SqlUtilities.releaseResources(null, null, conn);
-    	}
-    }
-
     @SuppressWarnings("unchecked")
-	public List<ChapterModel> getChaptersForProgramSubject(final Connection conn, String progId, String subjId) throws Exception {
+	public CmList<ChapterModel> getChaptersForProgramSubject(final Connection conn, String progId, String subjId) throws Exception {
     	
     	String key = new StringBuilder(progId).append(".").append(subjId).toString();
-    	List <ChapterModel> l = (List<ChapterModel>)CmCacheManager.getInstance().retrieveFromCache(SUBJECT_CHAPTERS, key);
+    	CmList <ChapterModel> l = (CmList<ChapterModel>)CmCacheManager.getInstance().retrieveFromCache(SUBJECT_CHAPTERS, key);
     	
     	if (logger.isDebugEnabled()) {
     		logger.debug(String.format("+++ getChaptersForProgramSubject(): key: %s, retrieved: %s", key, ((l == null)?"NULL":l.size())));
@@ -571,8 +547,8 @@ public class CmAdminDao {
     	return l;
     }
 
-    private List <ChapterModel> loadChapters(ResultSet rs) throws Exception {
-    	List <ChapterModel> l = new ArrayList<ChapterModel>();
+    private CmList <ChapterModel> loadChapters(ResultSet rs) throws Exception {
+    	CmList <ChapterModel> l = new CmArrayList<ChapterModel>();
     	
     	while (rs.next()) {
     		ChapterModel m = new ChapterModel(String.valueOf(rs.getInt("title_number")), rs.getString("title"));

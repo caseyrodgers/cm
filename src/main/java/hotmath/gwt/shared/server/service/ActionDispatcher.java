@@ -19,6 +19,7 @@ import hotmath.gwt.shared.server.service.command.CreateTestRunCommand;
 import hotmath.gwt.shared.server.service.command.GeneratePdfCommand;
 import hotmath.gwt.shared.server.service.command.GetAccountInfoForAdminUidCommand;
 import hotmath.gwt.shared.server.service.command.GetActiveGroupsCommand;
+import hotmath.gwt.shared.server.service.command.GetChaptersForProgramSubjectCommand;
 import hotmath.gwt.shared.server.service.command.GetCmVersionInfoCommand;
 import hotmath.gwt.shared.server.service.command.GetGroupAggregateInfoCommand;
 import hotmath.gwt.shared.server.service.command.GetLessonItemsForTestRunCommand;
@@ -35,6 +36,7 @@ import hotmath.gwt.shared.server.service.command.GetStateStandardsCommand;
 import hotmath.gwt.shared.server.service.command.GetStudentActivityCommand;
 import hotmath.gwt.shared.server.service.command.GetStudentModelCommand;
 import hotmath.gwt.shared.server.service.command.GetStudentShowWorkCommand;
+import hotmath.gwt.shared.server.service.command.GetSubjectDefinitionsCommand;
 import hotmath.gwt.shared.server.service.command.GetSummariesForActiveStudentsCommand;
 import hotmath.gwt.shared.server.service.command.GetUserInfoCommand;
 import hotmath.gwt.shared.server.service.command.GetViewedInmhItemsCommand;
@@ -247,5 +249,7 @@ public class ActionDispatcher {
         addCommand(GetQuizCurrentResultsCommand.class);
         addCommand(GetStudentModelCommand.class);
         addCommand(ResetUserCommand.class);
+        addCommand(GetSubjectDefinitionsCommand.class);
+        addCommand(GetChaptersForProgramSubjectCommand.class);
     }
 }

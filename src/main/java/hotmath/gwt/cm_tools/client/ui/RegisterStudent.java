@@ -9,11 +9,16 @@ import hotmath.gwt.cm_tools.client.model.StudentModelExt;
 import hotmath.gwt.cm_tools.client.model.StudentModelI;
 import hotmath.gwt.cm_tools.client.model.StudyProgramModel;
 import hotmath.gwt.cm_tools.client.model.SubjectModel;
+import hotmath.gwt.cm_tools.client.service.CmServiceAsync;
 import hotmath.gwt.cm_tools.client.service.PrescriptionServiceAsync;
 import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
 import hotmath.gwt.cm_tools.client.util.ProcessTracker;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
 import hotmath.gwt.shared.client.eventbus.EventBus;
+import hotmath.gwt.shared.client.rpc.action.CmList;
+import hotmath.gwt.shared.client.rpc.action.GetChaptersForProgramSubjectAction;
+import hotmath.gwt.shared.client.rpc.action.GetProgramDefinitionsAction;
+import hotmath.gwt.shared.client.rpc.action.GetSubjectDefinitionsAction;
 import hotmath.gwt.shared.client.util.CmException;
 import hotmath.gwt.shared.client.util.UserInfo;
 
@@ -454,10 +459,11 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
 	private void getStudyProgramListRPC(final ListStore <StudyProgram> progStore) {
 
 		inProcessCount++;
-		PrescriptionServiceAsync s = (PrescriptionServiceAsync) Registry.get("prescriptionService");
-		s.getProgramDefinitions(new AsyncCallback<List<StudyProgramModel>>() {
+        CmServiceAsync s = (CmServiceAsync) Registry.get("cmService");
+		GetProgramDefinitionsAction action = new GetProgramDefinitionsAction(); 
+		s.execute(action, new AsyncCallback<CmList<StudyProgramModel>>() {
 
-			public void onSuccess(List<StudyProgramModel> spmList) {
+			public void onSuccess(CmList<StudyProgramModel> spmList) {
 				List<StudyProgram> progList = new ArrayList <StudyProgram> ();
 				for (StudyProgramModel spm : spmList) {
 					progList.add(new StudyProgram(spm.getTitle(), spm.getShortTitle(), spm.getDescr(), spm.getNeedsSubject(),
@@ -495,10 +501,12 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
 	private void getSubjectListRPC(final String progId, final ListStore <SubjectModel> subjStore) {
 
 		inProcessCount++;
-		PrescriptionServiceAsync s = (PrescriptionServiceAsync) Registry.get("prescriptionService");
-		s.getSubjectDefinitions(progId, new AsyncCallback <List<SubjectModel>>() {
+		CmServiceAsync s = (CmServiceAsync) Registry.get("cmService");
+		
+		GetSubjectDefinitionsAction action = new GetSubjectDefinitionsAction(progId);
+		s.execute(action, new AsyncCallback <CmList<SubjectModel>>() {
 
-			public void onSuccess(List<SubjectModel> result) {
+			public void onSuccess(CmList<SubjectModel> result) {
 				subjStore.removeAll();
 				subjStore.add(result);
 				inProcessCount--;
@@ -657,10 +665,12 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
 		if (progId == null || !progId.equalsIgnoreCase("chap")) return;
 		
 		inProcessCount++;
-		PrescriptionServiceAsync s = (PrescriptionServiceAsync) Registry.get("prescriptionService");
-		s.getChaptersForProgramSubject(progId, subjId, new AsyncCallback <List<ChapterModel>> () {
+		CmServiceAsync s = (CmServiceAsync) Registry.get("cmService");
+		GetChaptersForProgramSubjectAction action = new GetChaptersForProgramSubjectAction(progId, subjId);
+		
+		s.execute(action, new AsyncCallback <CmList<ChapterModel>> () {
 
-			public void onSuccess(List<ChapterModel> result) {
+			public void onSuccess(CmList<ChapterModel> result) {
 				chapStore.add(result);
 				inProcessCount--;
 				if (! chapOnly)

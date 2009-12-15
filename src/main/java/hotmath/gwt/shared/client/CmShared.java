@@ -150,9 +150,14 @@ public class CmShared implements EntryPoint {
                     user.setUid(userId);
                     callback.loginSuccessful(userId);
                 } else {
+                	
+                	CatchupMathTools.setBusy(true);
+                	
                     CmServiceAsync s = (CmServiceAsync) Registry.get("cmService");
                     s.execute(new ProcessLoginRequestAction(key2), new AsyncCallback<UserInfo>() {
                         public void onSuccess(UserInfo userInfo) {
+                        	
+                        	CatchupMathTools.setBusy(false);
 
                             __loginName = userInfo.getLoginName();
                             /**

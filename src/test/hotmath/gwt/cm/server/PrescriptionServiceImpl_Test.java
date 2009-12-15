@@ -3,11 +3,8 @@ package hotmath.gwt.cm.server;
 import hotmath.gwt.cm_admin.server.model.CmStudentDao;
 import hotmath.gwt.cm_tools.client.model.AutoUserAdvanced;
 import hotmath.gwt.cm_tools.client.model.StudentModel;
-import hotmath.gwt.cm_tools.client.model.SubjectModel;
 import hotmath.gwt.shared.client.rpc.action.AddStudentAction;
 import hotmath.gwt.shared.client.rpc.action.AutoAdvanceUserAction;
-import hotmath.gwt.shared.client.rpc.action.CmList;
-import hotmath.gwt.shared.client.rpc.action.GetProgramDefinitionsAction;
 import hotmath.gwt.shared.client.rpc.action.GetQuizHtmlAction;
 import hotmath.gwt.shared.client.rpc.action.UpdateStudentAction;
 import hotmath.gwt.shared.client.util.RpcData;
@@ -81,13 +78,4 @@ public class PrescriptionServiceImpl_Test extends CmDbTestCase {
         
         assertNotNull(advanced);
 	}
-	
-	
-	public void testGetSubjectDefinitions() throws Exception {
-	    GetProgramDefinitionsAction action = new GetProgramDefinitionsAction("Chap");
-	    CmList<SubjectModel> sml = ActionDispatcher.getInstance().execute(action);
-        assertNotNull(sml);
-       // assertTrue(sml.size() > 0);
-	}
-
 }
