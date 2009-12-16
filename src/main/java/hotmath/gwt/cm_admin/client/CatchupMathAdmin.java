@@ -72,7 +72,7 @@ public class CatchupMathAdmin implements EntryPoint, ValueChangeHandler<String> 
         mainPort.add(mainContainer, new BorderLayoutData(LayoutRegion.CENTER));
 
         RootPanel.get("main-content").add(mainPort);
-
+        
         CmShared.handleLoginProcessAsync(new CmLoginAsync() {
             @Override
             public void loginSuccessful(Integer uid) {

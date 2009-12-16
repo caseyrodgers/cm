@@ -240,7 +240,7 @@ public class CmStudentDao {
             if (count == 1) {
                 int stuUid = SqlUtilities.getLastInsertId(conn);
                 sm.setUid(stuUid);
-                addStudentProgram(sm);
+                addStudentProgram(conn,sm);
                 updateStudent(sm);
             }
         } catch (Exception e) {
@@ -409,7 +409,7 @@ public class CmStudentDao {
             }
         }
         if (progIsNew)
-            addStudentProgram(sm);
+            addStudentProgram(conn, sm);
         if (studentChanged)
             updateStudent(sm);
         if (programChanged)
@@ -615,13 +615,10 @@ public class CmStudentDao {
             "insert CM_USER_PROGRAM (user_id, admin_id, test_def_id, create_date,test_config_json) " +
             "values (?, ?, (select test_def_id from HA_TEST_DEF where prog_id = ? and subj_id = ?), ?, ?)";
 
-    public StudentModelI addStudentProgram(StudentModelI sm) throws Exception {
-        Connection conn = null;
+    public StudentModelI addStudentProgram(final Connection conn, StudentModelI sm) throws Exception {
         PreparedStatement ps = null;
 
         try {
-            conn = HMConnectionPool.getConnection();
-
             setTestConfig(conn, sm);
 
             String pp = sm.getPassPercent();
@@ -658,7 +655,7 @@ public class CmStudentDao {
             logger.error(m, e);
             throw new Exception(m, e);
         } finally {
-            SqlUtilities.releaseResources(null, ps, conn);
+            SqlUtilities.releaseResources(null, ps, null);
         }
         return sm;
     }

@@ -4,9 +4,10 @@ import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.model.CmAdminDataReader;
 import hotmath.gwt.cm_tools.client.model.CmAdminModel;
 import hotmath.gwt.cm_tools.client.model.GroupModel;
-import hotmath.gwt.cm_tools.client.service.PrescriptionServiceAsync;
+import hotmath.gwt.cm_tools.client.service.CmServiceAsync;
 import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
 import hotmath.gwt.shared.client.data.CmAsyncRequest;
+import hotmath.gwt.shared.client.rpc.action.AddGroupAction;
 
 import com.extjs.gxt.ui.client.Registry;
 import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
@@ -161,9 +162,9 @@ public class GroupWindow extends LayoutContainer {
 	
 	protected void addGroupRPC(int adminUid, final GroupModel gm) {
 	    
-		PrescriptionServiceAsync s = (PrescriptionServiceAsync) Registry.get("prescriptionService");
-		
-		s.addGroup(adminUid, gm, new AsyncCallback <GroupModel> () {
+		CmServiceAsync s = (CmServiceAsync) Registry.get("cmService");
+        AddGroupAction action = new AddGroupAction(adminUid, gm);
+        s.execute(action, new AsyncCallback <GroupModel> () {
 			
 			public void onSuccess(GroupModel g) {
 			    if(grpCombo != null) {

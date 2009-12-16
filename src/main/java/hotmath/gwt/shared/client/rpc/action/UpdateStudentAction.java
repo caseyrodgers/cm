@@ -1,13 +1,14 @@
 package hotmath.gwt.shared.client.rpc.action;
 
 import hotmath.gwt.cm_tools.client.model.StudentModel;
+import hotmath.gwt.cm_tools.client.model.StudentModelI;
 import hotmath.gwt.shared.client.rpc.Action;
 
-public class UpdateStudentAction implements Action<StudentModel> {
+public class UpdateStudentAction implements Action<StudentModelI> {
     
 	private static final long serialVersionUID = 728083490224703003L;
 	
-	StudentModel student;
+	StudentModelI student;
     Boolean stuChanged;
     Boolean progChanged;
     Boolean progIsNew;
@@ -29,11 +30,11 @@ public class UpdateStudentAction implements Action<StudentModel> {
                 + ", progIsNew=" + progIsNew + ", stuChanged=" + stuChanged + ", student=" + student + "]";
     }
 
-    public StudentModel getStudent() {
+    public StudentModelI getStudent() {
         return student;
     }
 
-    public void setStudent(StudentModel student) {
+    public void setStudent(StudentModelI student) {
         this.student = student;
     }
 

@@ -10,7 +10,6 @@ import hotmath.gwt.cm_tools.client.model.StudentModelI;
 import hotmath.gwt.cm_tools.client.model.StudyProgramModel;
 import hotmath.gwt.cm_tools.client.model.SubjectModel;
 import hotmath.gwt.cm_tools.client.service.CmServiceAsync;
-import hotmath.gwt.cm_tools.client.service.PrescriptionServiceAsync;
 import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
 import hotmath.gwt.cm_tools.client.util.ProcessTracker;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
@@ -20,6 +19,7 @@ import hotmath.gwt.shared.client.rpc.action.CmList;
 import hotmath.gwt.shared.client.rpc.action.GetChaptersForProgramSubjectAction;
 import hotmath.gwt.shared.client.rpc.action.GetProgramDefinitionsAction;
 import hotmath.gwt.shared.client.rpc.action.GetSubjectDefinitionsAction;
+import hotmath.gwt.shared.client.rpc.action.UpdateStudentAction;
 import hotmath.gwt.shared.client.util.CmException;
 import hotmath.gwt.shared.client.util.UserInfo;
 
@@ -542,16 +542,21 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
 
 	protected void updateUserRPC(final StudentModel sm, Boolean stuChanged, Boolean progChanged, Boolean progIsNew,
 			Boolean passcodeChanged) {
-	    PrescriptionServiceAsync s = (PrescriptionServiceAsync) Registry.get("prescriptionService");
+		CmServiceAsync s = (CmServiceAsync) Registry.get("cmService");
 		
-		s.updateUser(sm, stuChanged, progChanged, progIsNew, passcodeChanged, new AsyncCallback <StudentModel> () {
+		CatchupMathTools.setBusy(true);
+		
+		UpdateStudentAction action = new UpdateStudentAction(sm,stuChanged,progChanged,progIsNew,passcodeChanged);
+		s.execute(action, new AsyncCallback <StudentModelI> () {
 			
-			public void onSuccess(StudentModel ai) {
+			public void onSuccess(StudentModelI ai) {
 		        EventBus.getInstance().fireEvent(new CmEvent(EventBus.EVENT_TYPE_USER_PROGRAM_CHANGED,ai.getProgramChanged()));
 		        _window.close();
+		        CatchupMathTools.setBusy(false);
         	}
 
 			public void onFailure(Throwable caught) {
+				CatchupMathTools.setBusy(false);
         		String msg = caught.getMessage();
         		CatchupMathTools.showAlert(msg);
         	}

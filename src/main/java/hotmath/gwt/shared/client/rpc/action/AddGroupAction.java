@@ -2,7 +2,6 @@ package hotmath.gwt.shared.client.rpc.action;
 
 import hotmath.gwt.cm_tools.client.model.GroupModel;
 import hotmath.gwt.shared.client.rpc.Action;
-import hotmath.gwt.shared.client.util.CmRpcException;
 
 /** Add a new Group to an admin account
  * 
@@ -19,7 +18,7 @@ import hotmath.gwt.shared.client.util.CmRpcException;
     public AddGroupAction() {
     }
     
-    public  AddGroupAction(Integer adminId, GroupModel gm) throws CmRpcException {
+    public  AddGroupAction(Integer adminId, GroupModel gm) {
         this.adminId = adminId;
         this.group = gm;
     }
