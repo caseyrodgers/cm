@@ -4,20 +4,11 @@ import hotmath.BookInfo;
 import hotmath.BookInfoManager;
 import hotmath.HotMathException;
 import hotmath.HotMathLogger;
-import hotmath.cm.util.CmCacheManager;
-import hotmath.util.HMConnectionPool;
-import hotmath.util.sql.SqlUtilities;
 
 import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.log4j.Logger;
-
-import static hotmath.cm.util.CmCacheManager.CacheName.TEST_DEF;
 
 /**
  * A single Hotmath Advance test definition.
@@ -53,55 +44,38 @@ public class HaTestDef {
     String textCode;
     String chapter;
     int testDefId;
+	String subjectId;
+    String progId;
+    String stateId;
     HaTestConfig config;
+    HaTestDefDao tdDao = new HaTestDefDao();
     
+    public HaTestDef() { ; }
     
     public HaTestDef(final Connection conn, String name) throws Exception {
         
-        // try cache first
-        HaTestDef td = (HaTestDef)CmCacheManager.getInstance().retrieveFromCache(TEST_DEF, name);
-        if (td != null) {
-            this.name = td.getName();
-            this.chapter = td.getChapter();
-            this.testDefId = td.getTestDefId();
-            this.textCode = td.getTextCode();
-            this.config = td.getTestConfig();
-            return;
-        }
-        
-        
-        PreparedStatement pstat = null;
-        ResultSet rs = null;
-        try {
-            String sql = "select * " + " from HA_TEST_DEF d " + " where test_name = ? ";
-
-            pstat = conn.prepareStatement(sql);
-
-            pstat.setString(1, name);
-            rs = pstat.executeQuery();
-            if (!rs.first())
-                throw new Exception("Test definition not found");
-
-            HaTestDef testDef = this;             
-            testDef.name = name;
-            testDef.textCode = rs.getString("textcode");
-            testDef.chapter = rs.getString("chapter");
-            testDef.testDefId = rs.getInt("test_def_id");
-            testDef.config = new HaTestConfig(rs.getString("test_config_json"));
-            
-            CmCacheManager.getInstance().addToCache(CmCacheManager.CacheName.TEST_DEF, testDef.getName(), testDef);
-            
-        } catch (HotMathException hme) {
-            throw hme;
-        } catch (Exception e) {
-            throw new HotMathException(e, "Error getting test definition: " + e.getMessage());
-        } finally {
-            SqlUtilities.releaseResources(rs, pstat, null);
-        }        
-        
+    	HaTestDef td = tdDao.getTestDef(conn, name);
+    	init(td);
         this.indexRelatedPool = getRelatedPoolIndex();
     }
 
+    public HaTestDef(final Connection conn, Integer id) throws Exception {
+    	
+    	HaTestDef td = tdDao.getTestDef(conn, id);
+    	init(td);
+        this.indexRelatedPool = getRelatedPoolIndex();
+    }
+
+	private void init(HaTestDef td) {
+		this.name = td.getName();
+		this.chapter = td.getChapter();
+		this.testDefId = td.getTestDefId();
+		this.textCode = td.getTextCode();
+		this.config = td.getTestConfig();
+		this.subjectId = td.getSubjectId();
+		this.progId = td.getProgId();
+		this.stateId = td.getStateId();
+	}
     
     /** Return the default test configuration for this test def
      * 
@@ -152,6 +126,31 @@ public class HaTestDef {
     public void setChapter(String chapter) {
         this.chapter = chapter;
     }
+    
+    public String getSubjectId() {
+		return subjectId;
+	}
+
+	public void setSubjectId(String subjectId) {
+		this.subjectId = subjectId;
+	}
+
+	public String getProgId() {
+		return progId;
+	}
+
+	public void setProgId(String progId) {
+		this.progId = progId;
+	}
+
+	public String getStateId() {
+		return stateId;
+	}
+
+	public void setStateId(String stateId) {
+		this.stateId = stateId;
+	}
+
 
     int gradeLevel = 0;
 
@@ -213,8 +212,7 @@ public class HaTestDef {
     public List<String> getTestIdsForSegment(final Connection conn, int segment, HaTestConfig config, int segmentSlot) throws Exception {
         _lastSegment = segment;
 
-        HaTestDefDao dao = new HaTestDefDao();
-        return dao.getTestIdsForSegment(conn, segment, textCode, chapter, config, segmentSlot);
+        return tdDao.getTestIdsForSegment(conn, segment, textCode, chapter, config, segmentSlot);
     }
 
 

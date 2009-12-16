@@ -1,6 +1,8 @@
 package hotmath.testset.ha;
 
+import static hotmath.cm.util.CmCacheManager.CacheName.TEST_DEF;
 import hotmath.HotMathException;
+import hotmath.cm.util.CmCacheManager;
 import hotmath.gwt.shared.client.util.CmException;
 import hotmath.util.HMConnectionPool;
 import hotmath.util.sql.SqlUtilities;
@@ -50,8 +52,7 @@ public class HaTestDefDao {
     }
     
     
-    /** Look up existing HaTestDef based on either the name, or the testDefId
-     * 
+    /** Look up existing HaTestDef based on the name
      * 
      * @param conn  The connection to use
      * @param name the name of the test def
@@ -59,32 +60,71 @@ public class HaTestDefDao {
      * @throws HotMathException
      */
      public HaTestDef getTestDef(final Connection conn, String name) throws Exception {
-         return new HaTestDef(conn, name);
+         // try cache first
+         HaTestDef td = (HaTestDef)CmCacheManager.getInstance().retrieveFromCache(TEST_DEF, name);
+         if (td != null) {
+             return td;
+         }
+         
+         PreparedStatement pstat = null;
+         ResultSet rs = null;
+         try {
+             String sql = "select * from HA_TEST_DEF where test_name = ? ";
+
+             pstat = conn.prepareStatement(sql);
+
+             pstat.setString(1, name);
+             rs = pstat.executeQuery();
+             if (!rs.first())
+                 throw new Exception("Test definition not found");
+
+             return loadRecord(rs);
+             
+         } catch (HotMathException hme) {
+             throw hme;
+         } catch (Exception e) {
+             throw new HotMathException(e, "Error getting test definition for name: " + name + ", " + e.getMessage());
+         } finally {
+             SqlUtilities.releaseResources(rs, pstat, null);
+         }
     }
      
      
+     /** Look up HaTestDef based on the testDefId
+      *
+      * @param conn  The connection to use
+      * @param name the id of the test def
+      *  
+      * @throws HotMathException
+      */
      public HaTestDef getTestDef(final Connection conn, int testDefId) throws Exception {
-         PreparedStatement ps = null;
+         // try cache first
+         HaTestDef td = (HaTestDef)CmCacheManager.getInstance().retrieveFromCache(TEST_DEF, String.valueOf(testDefId));
+         if (td != null) {
+        	 return td;
+         }
+         
+         PreparedStatement pstat = null;
          ResultSet rs = null;
          try {
-             String sql = "select test_name from HA_TEST_DEF where test_def_id = ?";
-             ps = conn.prepareStatement(sql);
-             ps.setInt(1,testDefId);
-             rs = ps.executeQuery();
-             if(!rs.first())
-                 throw new Exception("No such test_def_id: " + testDefId);
+             String sql = "select * from HA_TEST_DEF where test_def_id = ? ";
 
-             return getTestDef(conn, rs.getString("test_name"));
+             pstat = conn.prepareStatement(sql);
+
+             pstat.setInt(1, testDefId);
+             rs = pstat.executeQuery();
+             if (!rs.first())
+                 throw new Exception("Test definition not found");
+
+             return loadRecord(rs);            
              
+         } catch (HotMathException hme) {
+             throw hme;
+         } catch (Exception e) {
+             throw new HotMathException(e, "Error getting test definition for id: " + testDefId + ", " + e.getMessage());
+         } finally {
+             SqlUtilities.releaseResources(rs, pstat, null);
          }
-         catch (Exception e) {
-             logger.error(e);
-             throw new CmException(e);
-         }
-         finally {
-             SqlUtilities.releaseResources(rs, ps, null);
-         }         
-         
      }
      
      
@@ -264,6 +304,23 @@ public class HaTestDefDao {
          }
          return null;
      }
+
+	private HaTestDef loadRecord(ResultSet rs) throws SQLException, HotMathException {
+		HaTestDef testDef = new HaTestDef();
+		testDef.name = rs.getString("test_name");
+		testDef.textCode = rs.getString("textcode");
+		testDef.chapter = rs.getString("chapter");
+		testDef.testDefId = rs.getInt("test_def_id");
+		testDef.config = new HaTestConfig(rs.getString("test_config_json"));
+		testDef.subjectId = rs.getString("subj_id");
+		testDef.progId = rs.getString("prog_id");
+		testDef.stateId = rs.getString("state_id");
+		
+		CmCacheManager.getInstance().addToCache(CmCacheManager.CacheName.TEST_DEF, testDef.getName(), testDef);
+		CmCacheManager.getInstance().addToCache(CmCacheManager.CacheName.TEST_DEF, String.valueOf(testDef.getTestDefId()), testDef);
+		
+		return testDef;
+	}
 }
 
 
