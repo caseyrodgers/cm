@@ -65,6 +65,11 @@ public class HaTestDefDao_Test extends CmDbTestCase {
         assertNotNull(testDef);
     }
 
+    public void testGetTestDefByName() throws Exception {
+        HaTestDef testDef = dao.getTestDef(conn, "Algebra 1 Proficiency");
+        assertNotNull(testDef);
+    }
+
     public void testCountDistinctTests() throws Exception {
         List<String> names = dao.getTestNames();
         assertTrue(names.size() > 0);
