@@ -1,6 +1,7 @@
 package hotmath.gwt.cm_tools.client.ui.viewer;
 
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
+import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.service.CmServiceAsync;
 import hotmath.gwt.cm_tools.client.ui.CmMainPanel;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
@@ -108,9 +109,7 @@ public class ResourceViewerImplTutor extends CmResourcePanelImplWithWhiteboard {
     Widget tutorPanel;
     public void showSolution() {
 
-        
-        Log.debug("ResourceViewerImplTutor: loading solution '" + pid + "'");
-
+    	Log.debug("ResourceViewerImplTutor: loading solution '" + pid + "'");
         
         /** If panel has already been initialized, then 
          *  use existing panel.
@@ -120,9 +119,7 @@ public class ResourceViewerImplTutor extends CmResourcePanelImplWithWhiteboard {
 
         // call for the solution HTML
         CmServiceAsync s = (CmServiceAsync) Registry.get("cmService");
-        
-        CatchupMathTools.setBusy(true);
-        
+        CmBusyManager.setBusy(true, false);
         s.execute(new GetSolutionAction(UserInfo.getInstance().getUid(), pid), new AsyncCallback<RpcData>() {
             public void onFailure(Throwable caught) {
                 CatchupMathTools.setBusy(false);
@@ -161,12 +158,14 @@ public class ResourceViewerImplTutor extends CmResourcePanelImplWithWhiteboard {
 
                     EventBus.getInstance().fireEvent(new CmEvent(EventBus.EVENT_TYPE_SOLUTION_SHOW, getResourceItem()));
                     
-                    CatchupMathTools.setBusy(false);                    
+                    
                 } catch (Exception e) {
                     e.printStackTrace();
                     CatchupMathTools.showAlert(e.getMessage());
                 }
-
+                finally {
+                    CmBusyManager.setBusy(false);
+                }
                 layout();
             }
         });

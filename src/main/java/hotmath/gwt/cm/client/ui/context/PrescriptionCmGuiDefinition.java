@@ -6,6 +6,7 @@ import hotmath.gwt.cm.client.history.CmLocation;
 import hotmath.gwt.cm.client.history.CmLocation.LocationType;
 import hotmath.gwt.cm.client.ui.HeaderPanel;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
+import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.data.InmhItemData;
 import hotmath.gwt.cm_tools.client.data.PrescriptionData;
 import hotmath.gwt.cm_tools.client.data.PrescriptionSessionDataResource;
@@ -237,7 +238,7 @@ public class PrescriptionCmGuiDefinition implements CmGuiDefinition {
         CmMainPanel.__lastInstance._mainContent.layout();
 
         
-        CatchupMathTools.setBusy(true);
+        CmBusyManager.setBusy(true,false);
         
         Log.info("PrescriptionCmGuiDefinition.getAsyncDataFromServer:" + sessionNumber + ", " + location);
         // call server process to get session data as JSON string
@@ -258,7 +259,10 @@ public class PrescriptionCmGuiDefinition implements CmGuiDefinition {
                             }
         
                             String json = rdata.getDataAsString("json");
-                            context.setPrescriptionData(new PrescriptionData(json));                    
+                            context.setPrescriptionData(new PrescriptionData(json));
+                            
+                            UserInfo.getInstance().setSessionCount(context.prescriptionData.getSessionTopics().size());
+
                             
                             isReady = true; // signal data is ready
         
@@ -280,14 +284,14 @@ public class PrescriptionCmGuiDefinition implements CmGuiDefinition {
                         e.printStackTrace();
                         Log.error("Error reading data from server", e);
                     } finally {
-                        CatchupMathTools.setBusy(false);
+                        CmBusyManager.setBusy(false);
                     }
 
             }
             @Override
             public void onFailure(Throwable caught) {
                 caught.printStackTrace();
-                CatchupMathTools.setBusy(false);
+                CmBusyManager.setBusy(false);
             }
         });
     }

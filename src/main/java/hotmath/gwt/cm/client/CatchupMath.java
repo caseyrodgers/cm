@@ -8,6 +8,7 @@ import hotmath.gwt.cm.client.ui.HeaderPanel;
 import hotmath.gwt.cm.client.ui.context.PrescriptionCmGuiDefinition;
 import hotmath.gwt.cm.client.ui.context.QuizCmGuiDefinition;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
+import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.ui.CmMainPanel;
 import hotmath.gwt.cm_tools.client.ui.FooterPanel;
 import hotmath.gwt.shared.client.CmLoginAsync;
@@ -82,6 +83,8 @@ public class CatchupMath implements EntryPoint {
         __hasBeenInformedAboutShowWork=false;
         
         _mainPort = new Viewport();
+        CmBusyManager.setViewPort(_mainPort);
+
         _mainPort.setLayout(new BorderLayout());
         BorderLayoutData bdata = new BorderLayoutData(LayoutRegion.NORTH, 38);
         _headerPanel = new HeaderPanel();
