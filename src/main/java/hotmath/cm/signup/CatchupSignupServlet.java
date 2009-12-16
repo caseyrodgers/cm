@@ -4,6 +4,7 @@ import hotmath.cm.dao.CmUserDao;
 import hotmath.gwt.cm_admin.server.model.CmAdminDao;
 import hotmath.gwt.cm_admin.server.model.CmStudentDao;
 import hotmath.gwt.cm_tools.client.model.StudentModel;
+import hotmath.gwt.cm_tools.client.model.StudentModelI;
 import hotmath.servlet.Registration;
 import hotmath.subscriber.HotMathExceptionPurcaseException;
 import hotmath.subscriber.HotMathSubscriber;
@@ -121,7 +122,7 @@ public class CatchupSignupServlet extends HttpServlet {
              
              if(user == null) {
                  // create new user
-                 StudentModel student = new StudentModel();
+                 StudentModelI student = new StudentModel();
                  student.setName(sifo.getFirstName() + " " + sifo.getLastName());
                  
                  student.setPasscode(uniquePassword);

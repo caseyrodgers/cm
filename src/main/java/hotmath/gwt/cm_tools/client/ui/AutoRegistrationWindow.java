@@ -43,7 +43,7 @@ import com.google.gwt.user.client.ui.Widget;
  * Provides quick and easy method of creating bulk users while using default
  * values/auto increment.
  * 
- * Also, provides hookds to upload external configuration file
+ * Also, provides hooks to upload external configuration file
  * 
  * @author casey
  * 

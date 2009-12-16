@@ -212,7 +212,7 @@ public class CmStudentDao {
             "insert into HA_USER (user_name, user_passcode, active_segment, group_id, test_def_id, admin_id, is_active, is_demo, date_created) " +
             "values(?, ?, ?, ?, (select test_def_id from HA_TEST_DEF where prog_id = ? and subj_id = ?), ?, 1, ?, now())";
 
-    public StudentModel addStudent(final Connection conn, StudentModel sm) throws Exception {
+    public StudentModelI addStudent(final Connection conn, StudentModelI sm) throws Exception {
         PreparedStatement ps = null;
         ResultSet rs = null;
 

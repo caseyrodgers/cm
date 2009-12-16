@@ -2,11 +2,9 @@ package hotmath.gwt.cm.client.ui;
 
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.model.CmAdminModel;
-import hotmath.gwt.cm_tools.client.model.StudentModel;
 import hotmath.gwt.cm_tools.client.model.StudentModelExt;
 import hotmath.gwt.cm_tools.client.model.StudentModelI;
 import hotmath.gwt.cm_tools.client.service.CmServiceAsync;
-import hotmath.gwt.cm_tools.client.service.PrescriptionServiceAsync;
 import hotmath.gwt.cm_tools.client.ui.CmMainPanel;
 import hotmath.gwt.cm_tools.client.ui.ContextController;
 import hotmath.gwt.cm_tools.client.ui.FooterPanel;
@@ -268,10 +266,11 @@ public class HelpWindow extends CmWindow {
      * 
      */
     private void showStudentConfiguration() {
-        PrescriptionServiceAsync s = (PrescriptionServiceAsync) Registry.get("prescriptionService");
-        s.getStudentModel(UserInfo.getInstance().getUid(), new AsyncCallback<StudentModel>() {
+    	CmServiceAsync s = (CmServiceAsync) Registry.get("cmService");
+        GetStudentModelAction action = new GetStudentModelAction(UserInfo.getInstance().getUid());
+        s.execute(action, new AsyncCallback<StudentModelI>() {
 
-            public void onSuccess(StudentModel student) {
+            public void onSuccess(StudentModelI student) {
 
                 CmAdminModel adminModel = new CmAdminModel();
                 adminModel.setId(student.getAdminUid());

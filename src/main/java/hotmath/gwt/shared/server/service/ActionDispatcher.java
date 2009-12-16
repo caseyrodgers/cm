@@ -9,6 +9,7 @@ import hotmath.gwt.shared.client.rpc.Response;
 import hotmath.gwt.shared.client.util.CmRpcException;
 import hotmath.gwt.shared.server.service.command.AddGroupCommand;
 import hotmath.gwt.shared.server.service.command.AddStudentCommand;
+import hotmath.gwt.shared.server.service.command.AddUserCommand;
 import hotmath.gwt.shared.server.service.command.AutoAdvanceUserCommand;
 import hotmath.gwt.shared.server.service.command.CheckUserAccountStatusCommand;
 import hotmath.gwt.shared.server.service.command.ClearWhiteboardDataCommand;

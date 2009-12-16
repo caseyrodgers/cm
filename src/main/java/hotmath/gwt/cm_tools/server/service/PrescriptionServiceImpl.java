@@ -198,8 +198,7 @@ public class PrescriptionServiceImpl extends RemoteServiceServlet implements Pre
     }
 
     public StudentModel addUser(StudentModel sm) throws CmRpcException {
-        AddStudentAction action = new AddStudentAction(sm);
-        return ActionDispatcher.getInstance().execute(action);
+    	throw new CmRpcExceptionUseAction();
     }
 
     /**

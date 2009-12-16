@@ -1,6 +1,5 @@
 package hotmath.gwt.cm_tools.client.model;
 
-import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
 import hotmath.gwt.shared.client.eventbus.CmEventListenerImplDefault;
 import hotmath.gwt.shared.client.eventbus.EventBus;

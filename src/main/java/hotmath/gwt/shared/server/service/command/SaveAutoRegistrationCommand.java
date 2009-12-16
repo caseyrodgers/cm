@@ -4,6 +4,7 @@ import hotmath.gwt.cm_admin.server.model.CmAdminDao;
 import hotmath.gwt.cm_admin.server.model.CmStudentDao;
 import hotmath.gwt.cm_tools.client.model.GroupModel;
 import hotmath.gwt.cm_tools.client.model.StudentModel;
+import hotmath.gwt.cm_tools.client.model.StudentModelI;
 import hotmath.gwt.shared.client.rpc.Action;
 import hotmath.gwt.shared.client.rpc.Response;
 import hotmath.gwt.shared.client.rpc.action.SaveAutoRegistrationAction;
@@ -69,7 +70,7 @@ public class SaveAutoRegistrationCommand implements ActionHandler<SaveAutoRegist
         
         student.setPasscode(student.getGroup() + "_" + System.currentTimeMillis());  // make unique
         
-        StudentModel sm = dao.addStudent(conn, student);
+        StudentModelI sm = dao.addStudent(conn, student);
         
         
         daoa.markAccountAsAutoRegistrationSetup(conn, sm.getUid());

@@ -1,23 +1,23 @@
 package hotmath.gwt.shared.client.rpc.action;
 
-import hotmath.gwt.cm_tools.client.model.StudentModel;
+import hotmath.gwt.cm_tools.client.model.StudentModelI;
 import hotmath.gwt.shared.client.rpc.Action;
 
-public class AddStudentAction implements Action<StudentModel> {
+public class AddStudentAction implements Action<StudentModelI> {
 
-    StudentModel student;
+    StudentModelI student;
     
     public AddStudentAction() {
     }
     
-    public AddStudentAction(StudentModel sm) {
+    public AddStudentAction(StudentModelI sm) {
         this.student = sm;
     }
     
-    public StudentModel getStudent() {
+    public StudentModelI getStudent() {
         return student;
     }
-    public void setStudent(StudentModel student) {
+    public void setStudent(StudentModelI student) {
         this.student = student;
     }
 

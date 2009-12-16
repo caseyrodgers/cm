@@ -15,6 +15,7 @@ import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
 import hotmath.gwt.cm_tools.client.util.ProcessTracker;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
 import hotmath.gwt.shared.client.eventbus.EventBus;
+import hotmath.gwt.shared.client.rpc.action.AddStudentAction;
 import hotmath.gwt.shared.client.rpc.action.CmList;
 import hotmath.gwt.shared.client.rpc.action.GetChaptersForProgramSubjectAction;
 import hotmath.gwt.shared.client.rpc.action.GetProgramDefinitionsAction;
@@ -523,11 +524,11 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
 	}
 		
 	protected void addUserRPC(final StudentModel sm) {
-	    PrescriptionServiceAsync s = (PrescriptionServiceAsync) Registry.get("prescriptionService");
-		
-		s.addUser(sm, new AsyncCallback <StudentModel> () {
+	    CmServiceAsync s = (CmServiceAsync) Registry.get("cmService");
+	    AddStudentAction action = new AddStudentAction(sm);
+		s.execute(action, new AsyncCallback <StudentModelI> () {
 			
-			public void onSuccess(StudentModel ai) {
+			public void onSuccess(StudentModelI ai) {
 			    EventBus.getInstance().fireEvent(new CmEvent(EventBus.EVENT_TYPE_USER_PROGRAM_CHANGED,ai.getProgramChanged()));
 			    _window.close();
         	}

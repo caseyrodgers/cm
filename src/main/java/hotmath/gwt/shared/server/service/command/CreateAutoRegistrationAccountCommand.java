@@ -5,7 +5,7 @@ import hotmath.cm.util.CmMultiLinePropertyReader;
 import hotmath.gwt.cm_admin.server.model.CmAdminDao;
 import hotmath.gwt.cm_admin.server.model.CmStudentDao;
 import hotmath.gwt.cm_tools.client.model.StudentActiveInfo;
-import hotmath.gwt.cm_tools.client.model.StudentModel;
+import hotmath.gwt.cm_tools.client.model.StudentModelI;
 import hotmath.gwt.shared.client.rpc.Action;
 import hotmath.gwt.shared.client.rpc.Response;
 import hotmath.gwt.shared.client.rpc.action.CreateAutoRegistrationAccountAction;
@@ -66,7 +66,7 @@ public class CreateAutoRegistrationAccountCommand implements ActionHandler<Creat
         
         
         CmStudentDao dao = new CmStudentDao();
-        StudentModel studentModel = dao.getStudentModel(action.getUserId(), true);
+        StudentModelI studentModel = dao.getStudentModel(action.getUserId(), true);
 
         studentModel.setPasscode(action.getPassword());
         studentModel.setName(action.getUser());

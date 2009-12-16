@@ -265,13 +265,17 @@ public class ManageGroupsWindow extends CmWindow {
     
     
     private void readRpcData(final Integer adminId) {
+    	CatchupMathTools.setBusy(true);
+    	
         CmServiceAsync cmService = (CmServiceAsync)Registry.get("cmService");
         cmService.execute(new GetGroupAggregateInfoAction(adminId), new AsyncCallback<CmList<GroupInfoModel>>() {
             public void onSuccess(CmList<GroupInfoModel> result) {
                 store.removeAll();
                 store.add(result);
+                CatchupMathTools.setBusy(false);                
             }
             public void onFailure(Throwable caught) {
+            	CatchupMathTools.setBusy(false);            	
                 CatchupMathTools.showAlert(caught.getMessage());
             }
         });
@@ -279,16 +283,21 @@ public class ManageGroupsWindow extends CmWindow {
 
     
     private void deleteGroup(final Integer adminId, final Integer groupId) {
+    	
+    	CatchupMathTools.setBusy(true);
+    	
         CmServiceAsync cmService = (CmServiceAsync)Registry.get("cmService");
         
         GroupManagerAction action = new GroupManagerAction(GroupManagerAction.ActionType.DELETE,adminId);
         action.setGroupId(groupId);
         cmService.execute(action, new AsyncCallback<RpcData>() {
             public void onSuccess(RpcData result) {
+            	CatchupMathTools.setBusy(false);
                 readRpcData(adminId);
                 CmAdminDataReader.getInstance().fireRefreshData();
             }
             public void onFailure(Throwable caught) {
+            	CatchupMathTools.setBusy(false);
                 CatchupMathTools.showAlert(caught.getMessage());
             }
         });
@@ -296,15 +305,19 @@ public class ManageGroupsWindow extends CmWindow {
 
     
     private void unregisterGroup(final Integer adminId, final Integer groupId) {
+    	CatchupMathTools.setBusy(true);
+    	
         CmServiceAsync cmService = (CmServiceAsync)Registry.get("cmService");
         GroupManagerAction action = new GroupManagerAction(GroupManagerAction.ActionType.UNREGISTER_STUDENTS,adminId);
         action.setGroupId(groupId);
         cmService.execute(action, new AsyncCallback<RpcData>() {
             public void onSuccess(RpcData result) {
                 readRpcData(adminId);
-                CmAdminDataReader.getInstance().fireRefreshData();                
+                CmAdminDataReader.getInstance().fireRefreshData();
+            	CatchupMathTools.setBusy(false);
             }
             public void onFailure(Throwable caught) {
+            	CatchupMathTools.setBusy(false);
                 CatchupMathTools.showAlert(caught.getMessage());
             }
         });     
@@ -313,6 +326,9 @@ public class ManageGroupsWindow extends CmWindow {
     
 
     protected void updateGroupRPC(final int adminUid, Integer groupId, String groupName) {
+    	
+    	CatchupMathTools.setBusy(true);
+
         CmServiceAsync cmService = (CmServiceAsync)Registry.get("cmService");
         GroupManagerAction action = new GroupManagerAction(GroupManagerAction.ActionType.UPDATE,adminUid);
         action.setGroupId(groupId);
@@ -320,9 +336,11 @@ public class ManageGroupsWindow extends CmWindow {
         cmService.execute(action, new AsyncCallback<RpcData>() {
             public void onSuccess(RpcData result) {
                 readRpcData(adminUid);
-                CmAdminDataReader.getInstance().fireRefreshData();              
+                CmAdminDataReader.getInstance().fireRefreshData();
+            	CatchupMathTools.setBusy(false);
             }
             public void onFailure(Throwable caught) {
+            	CatchupMathTools.setBusy(false);
                 CatchupMathTools.showAlert(caught.getMessage());
             }
         });     
@@ -415,8 +433,8 @@ class GroupManagerGlobalSettings extends CmWindow {
     private void applyChanges() {
         
         CatchupMathTools.setBusy(true);
-        CmServiceAsync cmService = (CmServiceAsync)Registry.get("cmService");
         
+        CmServiceAsync cmService = (CmServiceAsync)Registry.get("cmService");
         GroupManagerAction action = new GroupManagerAction(GroupManagerAction.ActionType.GROUP_PROPERTY_SET,cm.getId());
         action.setGroupId(gim.getId());
         action.setDisallowTutoring(true);

@@ -3,6 +3,7 @@ package hotmath.gwt.cm.server;
 import hotmath.gwt.cm_admin.server.model.CmStudentDao;
 import hotmath.gwt.cm_tools.client.model.AutoUserAdvanced;
 import hotmath.gwt.cm_tools.client.model.StudentModel;
+import hotmath.gwt.cm_tools.client.model.StudentModelI;
 import hotmath.gwt.shared.client.rpc.action.AddStudentAction;
 import hotmath.gwt.shared.client.rpc.action.AutoAdvanceUserAction;
 import hotmath.gwt.shared.client.rpc.action.GetQuizHtmlAction;
@@ -61,7 +62,7 @@ public class PrescriptionServiceImpl_Test extends CmDbTestCase {
         student.setShowWorkRequired(false);
         
         AddStudentAction action = new AddStudentAction(student);
-        StudentModel sm = ActionDispatcher.getInstance().execute(action);
+        StudentModelI sm = ActionDispatcher.getInstance().execute(action);
         
         assertNotNull(sm);
         assertTrue(sm.getUid() > 0);

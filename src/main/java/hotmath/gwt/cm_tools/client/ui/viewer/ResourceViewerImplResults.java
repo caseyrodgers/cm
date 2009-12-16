@@ -1,7 +1,8 @@
 package hotmath.gwt.cm_tools.client.ui.viewer;
 
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
-import hotmath.gwt.cm_tools.client.service.PrescriptionServiceAsync;
+import hotmath.gwt.cm_tools.client.service.CmServiceAsync;
+import hotmath.gwt.shared.client.rpc.action.GetQuizResultsHtmlAction;
 import hotmath.gwt.shared.client.util.RpcData;
 import hotmath.gwt.shared.client.util.UserInfo;
 
@@ -57,8 +58,9 @@ public class ResourceViewerImplResults extends CmResourcePanelImplWithWhiteboard
         
         CatchupMathTools.setBusy(true);
             
-            PrescriptionServiceAsync s = (PrescriptionServiceAsync) Registry.get("prescriptionService");
-            s.getQuizResultsHtml(UserInfo.getInstance().getRunId(),new AsyncCallback<RpcData>() {
+            CmServiceAsync s = (CmServiceAsync) Registry.get("cmService");
+            GetQuizResultsHtmlAction action = new GetQuizResultsHtmlAction(UserInfo.getInstance().getRunId());
+            s.execute(action,new AsyncCallback<RpcData>() {
                 public void onSuccess(RpcData result) {
                     try {
                         RpcData rdata = result;
@@ -79,6 +81,7 @@ public class ResourceViewerImplResults extends CmResourcePanelImplWithWhiteboard
                     }
                 }
                 public void onFailure(Throwable caught) {
+                    CatchupMathTools.setBusy(false);
                     caught.printStackTrace();
                 }
             });
