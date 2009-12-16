@@ -13,12 +13,5 @@
 
   
      <script src="/gwt-resources/js/shared.js"/>
-     
-  <define-property name="cm.agent" values="default"/>
-  <property-provider name="cm.agent"><![CDATA[
-      return "TEST_PROPERTY_FROM_CM";
-  ]]></property-provider>
-
-     
 </module>
 
