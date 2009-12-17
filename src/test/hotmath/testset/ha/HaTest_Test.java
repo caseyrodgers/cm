@@ -27,12 +27,12 @@ public class HaTest_Test extends CmDbTestCase{
 
 
 	   public void testCreateTestDef() throws Exception {
-	        HaTestDef htd = new HaTestDef(conn, PROF_TEST);
+	        HaTestDef htd = new HaTestDefDao().getTestDef(conn, PROF_TEST);
 	        assertTrue(htd.getTestIdsForSegment(conn,2,new HaTestConfig(null),0).size() == 10);
 	    }
 	    
 	    public void testCreateTestDef4() throws Exception {
-	        HaTestDef htd = new HaTestDef(conn, PROF_TEST);
+	        HaTestDef htd = new HaTestDefDao().getTestDef(conn, PROF_TEST);
 	        assertTrue(htd.getTestIdsForSegment(conn,4,new HaTestConfig(null),0).size() == 10);
 	    }
 
@@ -51,21 +51,15 @@ public class HaTest_Test extends CmDbTestCase{
     }   
 
     public void testLookupTestRun1() throws Exception {
-        HaTest test = HaTestDao.loadTest(conn, _test.getUser().getUid());
+        HaTest test = HaTestDao.loadTest(conn, _test.getTestId());
         HaTestConfig config = test.getProgramInfo().getConfig();
         assertNotNull(config);
     }	
     
-
-    	
-
-
-
-	
 	
 	public void testGetHaTestDefChapters() throws Exception {
 	    HaTestDefDao dao = new HaTestDefDao();
-		List<String> chapters = dao.getProgramChapters(new HaTestDef(conn,CHAP_TEST));
+		List<String> chapters = dao.getProgramChapters(dao.getTestDef(conn,CHAP_TEST));
 		assertTrue(chapters.size() > 0);
 	}
 
@@ -82,7 +76,7 @@ public class HaTest_Test extends CmDbTestCase{
 	
     public void testGetChapterTest() throws Exception {
 
-        HaTest test = HaTestDao.createTest(conn,_test.getUser().getUid(), new HaTestDef(conn,CHAP_TEST), 1);
+        HaTest test = HaTestDao.createTest(conn,_test.getUser().getUid(), new HaTestDefDao().getTestDef(conn,CHAP_TEST), 1);
         assertNotNull(test);
     }
     
@@ -92,7 +86,7 @@ public class HaTest_Test extends CmDbTestCase{
 	 * @throws Exception
 	 */
 	public void testCreateTestDefOrder() throws Exception {
-		HaTestDef htd1 = new HaTestDef(conn, CHAP_TEST);
+		HaTestDef htd1 = new HaTestDefDao().getTestDef(conn, CHAP_TEST);
 		
 		List<String> list1 = htd1.getTestIdsForSegment(conn,1,null,0);
 		List<String> list2 = htd1.getTestIdsForSegment(conn,1,null,0);
@@ -101,7 +95,7 @@ public class HaTest_Test extends CmDbTestCase{
 	}
 	
 	public void testCreate() throws Exception {
-		HaTest test = HaTestDao.createTest(conn,_test.getUser().getUid(),new HaTestDef(conn, CHAP_TEST),1);
+		HaTest test = HaTestDao.createTest(conn,_test.getUser().getUid(),new HaTestDefDao().getTestDef(conn, CHAP_TEST),1);
 		assertTrue(test != null);
 	}
 
