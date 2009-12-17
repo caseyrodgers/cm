@@ -23,13 +23,8 @@ import org.apache.log4j.Logger;
  * 
  * Each question is one from a set of related questions
  * 
- * 
  * each question's related question is taken using the same number (1-n, where
  * is total in related pool).
- * 
- * 
- * 
- * 
  * 
  * @author Casey
  * 
@@ -48,25 +43,10 @@ public class HaTestDef {
     String progId;
     String stateId;
     HaTestConfig config;
-    HaTestDefDao tdDao = new HaTestDefDao();
     
     public HaTestDef() { ; }
     
-    public HaTestDef(final Connection conn, String name) throws Exception {
-        
-    	HaTestDef td = tdDao.getTestDef(conn, name);
-    	init(td);
-        this.indexRelatedPool = getRelatedPoolIndex();
-    }
-
-    public HaTestDef(final Connection conn, Integer id) throws Exception {
-    	
-    	HaTestDef td = tdDao.getTestDef(conn, id);
-    	init(td);
-        this.indexRelatedPool = getRelatedPoolIndex();
-    }
-
-	private void init(HaTestDef td) {
+	protected void init(HaTestDef td) {
 		this.name = td.getName();
 		this.chapter = td.getChapter();
 		this.testDefId = td.getTestDefId();
@@ -84,8 +64,7 @@ public class HaTestDef {
     public HaTestConfig getTestConfig() {
         return config;
     }
-    
-    
+
     public String getName() {
         return name;
     }
@@ -94,7 +73,6 @@ public class HaTestDef {
         this.name = name;
     }
 
-   
     // used as internal heading for title
     // subclasses can override and provide a
     // per segment title
@@ -126,7 +104,7 @@ public class HaTestDef {
     public void setChapter(String chapter) {
         this.chapter = chapter;
     }
-    
+
     public String getSubjectId() {
 		return subjectId;
 	}
@@ -211,8 +189,7 @@ public class HaTestDef {
 
     public List<String> getTestIdsForSegment(final Connection conn, int segment, HaTestConfig config, int segmentSlot) throws Exception {
         _lastSegment = segment;
-
-        return tdDao.getTestIdsForSegment(conn, segment, textCode, chapter, config, segmentSlot);
+        return new HaTestDefDao().getTestIdsForSegment(conn, segment, textCode, chapter, config, segmentSlot);
     }
 
 
