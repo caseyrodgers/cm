@@ -28,7 +28,9 @@ public class HaTestDefFactory {
 		if(name.indexOf("Auto-Enrollment") > -1) {
 			return new HaTestDefPlacement(conn, name);
 		}
-		else return new HaTestDef(conn, name);
+		else {
+			return new HaTestDefDao().getTestDef(conn, name);
+		}
 	}
 	
 	public static HaTestDef createTestDef(final Connection conn, int testDefId) throws Exception {

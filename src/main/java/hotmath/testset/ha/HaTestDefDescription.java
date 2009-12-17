@@ -156,7 +156,7 @@ public class HaTestDefDescription {
         try {
             conn = HMConnectionPool.getConnection();
 
-            HaTestDef def = new HaTestDef(conn, testName);
+            HaTestDef def = new HaTestDefDao().getTestDef(conn, testName);
             if (config == null)
                 config = def.getTestConfig();
 
