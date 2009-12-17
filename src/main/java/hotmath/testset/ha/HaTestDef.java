@@ -44,7 +44,9 @@ public class HaTestDef {
     String stateId;
     HaTestConfig config;
     
-    public HaTestDef() { ; }
+    public HaTestDef() {
+        this.indexRelatedPool = getRelatedPoolIndex();
+    }
     
 	protected void init(HaTestDef td) {
 		this.name = td.getName();
