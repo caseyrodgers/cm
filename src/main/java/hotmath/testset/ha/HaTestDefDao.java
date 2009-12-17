@@ -195,7 +195,7 @@ public class HaTestDefDao {
          int cnt = problemIds.size();
          
          // how does the total test break into segments?
-         int solsPerSeg = cnt / config.getSegmentCount();
+         int solsPerSeg = (config != null) ? solsPerSeg = cnt / config.getSegmentCount() : 0;
          solsPerSeg = (solsPerSeg < 5) ? cnt : solsPerSeg;
 
          int segPnEnd = (segment * solsPerSeg);
