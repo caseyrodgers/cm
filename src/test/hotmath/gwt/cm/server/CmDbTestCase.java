@@ -11,10 +11,9 @@ import hotmath.gwt.shared.server.service.command.SaveWhiteboardDataCommand;
 import hotmath.testset.ha.HaTest;
 import hotmath.testset.ha.HaTestDao;
 import hotmath.testset.ha.HaTestDef;
+import hotmath.testset.ha.HaTestDefDao;
 import hotmath.testset.ha.HaTestRun;
 import hotmath.testset.ha.HaUser;
-
-import java.util.List;
 
 public class CmDbTestCase extends DbTestCase {
     
@@ -51,7 +50,7 @@ public class CmDbTestCase extends DbTestCase {
         
         HaUser user = HaUser.lookUser(conn, setupDemoAccount(),null);
         
-        HaTestDef testDef = new HaTestDef(conn, user.getAssignedTestName());
+        HaTestDef testDef = new HaTestDefDao().getTestDef(conn, user.getAssignedTestName());
         _test = HaTestDao.createTest(conn,user.getUid(), testDef, 1);
         
         return _test;
