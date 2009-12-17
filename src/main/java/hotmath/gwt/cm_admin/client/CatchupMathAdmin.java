@@ -1,10 +1,7 @@
 package hotmath.gwt.cm_admin.client;
 
-import hotmath.gwt.cm_admin.client.service.RegistrationService;
-import hotmath.gwt.cm_admin.client.service.RegistrationServiceAsync;
 import hotmath.gwt.cm_admin.client.ui.AccountInfoPanel;
 import hotmath.gwt.cm_admin.client.ui.FooterPanel;
-import hotmath.gwt.cm_admin.client.ui.GettingStartedGuideWindow;
 import hotmath.gwt.cm_admin.client.ui.HeaderPanel;
 import hotmath.gwt.cm_admin.client.ui.StudentGridPanel;
 import hotmath.gwt.cm_admin.client.ui.StudentShowWorkPanel;
@@ -16,22 +13,16 @@ import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.model.UserInfoBase;
 
 import com.allen_sauer.gwt.log.client.Log;
-import com.extjs.gxt.ui.client.Registry;
 import com.extjs.gxt.ui.client.Style.LayoutRegion;
-import com.extjs.gxt.ui.client.event.IconButtonEvent;
-import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.Viewport;
-import com.extjs.gxt.ui.client.widget.button.IconButton;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.google.gwt.core.client.EntryPoint;
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.History;
-import com.google.gwt.user.client.rpc.ServiceDefTarget;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RootPanel;
 
@@ -53,8 +44,6 @@ public class CatchupMathAdmin implements EntryPoint, ValueChangeHandler<String> 
     public void onModuleLoad() {
 
         Log.info("CatchupMathAdmin is starting");
-        
-        registerRpcServices();
 
         instance = this;
 
@@ -128,21 +117,6 @@ public class CatchupMathAdmin implements EntryPoint, ValueChangeHandler<String> 
         mainContainer.layout();
     }
 
-    /**
-     * Register RPC services
-     */
-    private void registerRpcServices() {
-
-        final RegistrationServiceAsync regService = (RegistrationServiceAsync) GWT.create(RegistrationService.class);
-
-        String point = GWT.getModuleBaseURL();
-        if (!point.endsWith("/"))
-            point += "/";
-        point += "services/registrationService";
-
-        ((ServiceDefTarget) regService).setServiceEntryPoint(point);
-        Registry.register("registrationService", regService);
-    }
 
     public void showMe() {
         ;
@@ -170,13 +144,6 @@ public class CatchupMathAdmin implements EntryPoint, ValueChangeHandler<String> 
         return infoPanel;
     }
 }
-
-
-
-
-
-
-
 
 class AdminTopComponent extends LayoutContainer {
     public AdminTopComponent() {
