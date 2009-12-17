@@ -5,6 +5,7 @@ import hotmath.inmh.INeedMoreHelpResourceType;
 import hotmath.testset.ha.HaTest;
 import hotmath.testset.ha.HaTestDao;
 import hotmath.testset.ha.HaTestDef;
+import hotmath.testset.ha.HaTestDefDao;
 import hotmath.testset.ha.HaTestRun;
 import hotmath.util.HMConnectionPool;
 
@@ -65,7 +66,7 @@ public class AssessmentPrescription_Test extends CmDbTestCase {
         
         userId = setupDemoAccount();
         
-        testDef = new HaTestDef(conn, CA_STATE_TEST);
+        testDef = new HaTestDefDao().getTestDef(conn, CA_STATE_TEST);
         
         HaTest test = HaTestDao.createTest(conn, userId, testDef, 1);
         testRun = HaTestDao.createTestRun(conn, userId, test.getTestId(), guids, 0, 1, 9);
