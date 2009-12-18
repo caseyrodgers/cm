@@ -3,7 +3,6 @@ package hotmath.gwt.cm_tools.client.ui;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.model.LessonItemModel;
 import hotmath.gwt.cm_tools.client.model.StudentActivityModel;
-import hotmath.gwt.cm_tools.client.model.StudentModel;
 import hotmath.gwt.cm_tools.client.model.StudentModelExt;
 import hotmath.gwt.cm_tools.client.service.CmServiceAsync;
 import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
@@ -30,15 +29,13 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 /**
  * Display Student's Lesson Topic (Prescribed Standards) Status
  * 
- * @author bob
+ * @author Bob
  * 
  */
 public class StudentLessonTopicsStatusWindow extends CmWindow {
 
-    private StudentModelExt student;
     private Integer runId;
     private String programName;
-    private StudentActivityModel activityModel;
     private Grid<LessonItemModel> limGrid;
     private int width = 400;
     private int height = 300;
@@ -46,8 +43,6 @@ public class StudentLessonTopicsStatusWindow extends CmWindow {
     public StudentLessonTopicsStatusWindow(StudentModelExt student, final StudentActivityModel activityModel) {
 
         setStyleName("student-lesson-topic-status-window");
-        this.student = student;
-        this.activityModel = activityModel;
         runId = activityModel.getRunId();
         setSize(width, height);
         setResizable(false);
@@ -137,7 +132,7 @@ public class StudentLessonTopicsStatusWindow extends CmWindow {
         CmServiceAsync s = (CmServiceAsync) Registry.get("cmService");
         s.execute(new   GetLessonItemsForTestRunAction(runId), new AsyncCallback<CmList<LessonItemModel>>() {
 
-            @Override
+            //@Override
             public void onSuccess(CmList<LessonItemModel> list) {
                 store.add(list);
                 setVisible(true);
