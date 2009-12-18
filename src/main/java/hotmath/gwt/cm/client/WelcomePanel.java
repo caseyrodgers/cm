@@ -1,6 +1,7 @@
 package hotmath.gwt.cm.client;
 
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
+import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.util.UserInfo;
 
@@ -59,7 +60,7 @@ public class WelcomePanel extends LayoutContainer {
     
     private void startup() {
         try {
-            CatchupMathTools.setBusy(true);
+            CmBusyManager.setBusy(true,false);
             
             GWT.runAsync(new RunAsyncCallback() {
 				
@@ -75,7 +76,7 @@ public class WelcomePanel extends LayoutContainer {
 			});
         }
         finally {
-            CatchupMathTools.setBusy(false);
+        	CmBusyManager.setBusy(false);
         }
     }
 
