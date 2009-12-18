@@ -19,11 +19,19 @@ import com.extjs.gxt.ui.client.widget.form.ComboBox;
 import com.extjs.gxt.ui.client.widget.form.ComboBox.TriggerAction;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
-public class GroupSelectorWidget {
+/** Provide central control of the group selection box
+ * 
+ * NOTE: important!  We register with CmAdminDataReader on construction, so
+ * we must unregister this listener when closed.  Otherwise, this listener
+ * will get called each time the data is refreshed.
+ * 
+ * @author casey
+ *
+ */
+public class GroupSelectorWidget implements CmAdminDataRefresher {
 	
 	CmAdminModel cmAdminMdl;
 	private ListStore <GroupModel> groupStore;
-	private ComboBox <GroupModel> groupCombo;
 	private boolean includeCreate;
 	private ProcessTracker pTracker;
 	private String id;
@@ -32,24 +40,24 @@ public class GroupSelectorWidget {
     public static final String NO_FILTERING = "--- No Filtering ---";
     
 
-	public GroupSelectorWidget(final CmAdminModel cmAdminMdl, final ListStore<GroupModel> groupStore, boolean includeCreate,
-		ProcessTracker pTracker, String id) {
+	public GroupSelectorWidget(final CmAdminModel cmAdminMdl, final ListStore<GroupModel> groupStore, boolean includeCreate,ProcessTracker pTracker, String id, Boolean loadRpc) {
 		this.cmAdminMdl= cmAdminMdl;
         this.groupStore = groupStore;
         this.includeCreate = includeCreate;
         this.pTracker = pTracker;
         this.id = id;
         
+        /** Only refresh on startup if requested.  This is to prevent loading twice on 
+         * startup of StudentGridPanel ... once in constructure and once with CmAdminDataReader is fired.
+         * 
+         */
+        if(loadRpc)
+        	refreshData();
         
-        getGroupListRPC(cmAdminMdl.getId(), groupStore);
-        
-        
-        CmAdminDataReader.getInstance().addReader(new CmAdminDataRefresher() {
-            public void refreshData() {
-                getGroupListRPC(cmAdminMdl.getId(), groupStore);
-            }
-        });
+        CmAdminDataReader.getInstance().addReader(this);
 	}
+	
+	
 	
 	public ComboBox<GroupModel> groupCombo() {
 		final ComboBox<GroupModel> combo = new ComboBox<GroupModel>();
@@ -120,5 +128,17 @@ public class GroupSelectorWidget {
         	}
         });
 		
+	}
+
+	@Override
+	public void refreshData() {
+	     getGroupListRPC(cmAdminMdl.getId(), groupStore);
+	}
+	
+	/** Must remove the reader from the main data refresher once no longer needed.
+	 * 
+	 */
+	public void release() {
+		CmAdminDataReader.getInstance().removeReader(this);
 	}
 }

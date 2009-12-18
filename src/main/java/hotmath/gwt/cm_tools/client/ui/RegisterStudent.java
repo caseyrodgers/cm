@@ -85,7 +85,7 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
 	private ListStore <ChapterModel> chapStore;
 	private ComboBox <ChapterModel> chapCombo;
 	
-	private ListStore <GroupModel> groupStore;
+	static private ListStore <GroupModel> __groupStore;
 	private ComboBox <GroupModel> groupCombo;
 	
 	private TextField<String> userName;
@@ -112,6 +112,9 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
 		_window.addListener(Events.Hide, new Listener<BaseEvent>() {
 		    public void handleEvent(BaseEvent be) {
 		        EventBus.getInstance().fireEvent(new CmEvent(EventBus.EVENT_TYPE_MODAL_WINDOW_CLOSED));
+		        
+		        
+		        _groupSelector.release();
 		    }
 		});
 		_window.add(createForm());
@@ -147,6 +150,7 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
 	
 	public FieldSet _fsProfile, _fsProgram;
 	public CheckBoxGroup _showWorkGrp, _tutoringEnabled;
+	GroupSelectorWidget _groupSelector;
 	protected FormPanel createForm() {
 		_formPanel = new CombinedFormPanel();
 		_formPanel.addStyleName("register-student-form-panel");
@@ -188,9 +192,12 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
 		}
 		_fsProfile.add(passCode);
 		
-        groupStore = new ListStore <GroupModel> ();
-		GroupSelectorWidget gsw = new GroupSelectorWidget(cmAdminMdl, groupStore, true, this, "group-combo");
-		groupCombo = gsw.groupCombo();
+		if(__groupStore == null) {
+            __groupStore = new ListStore <GroupModel> ();
+		}
+		
+		_groupSelector = new GroupSelectorWidget(cmAdminMdl, __groupStore, true, this, "group-combo", true);
+		groupCombo = _groupSelector.groupCombo();
 		if(UserInfo.getInstance() == null || !UserInfo.getInstance().isSingleUser()) {
 		    _fsProfile.add(groupCombo);
 		}
@@ -606,7 +613,7 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
 	    
 		String groupId = stuMdl.getGroupId();
 		if (groupId != null) {
-			List<GroupModel> l = groupStore.getModels();
+			List<GroupModel> l = __groupStore.getModels();
 			for (GroupModel g : l) {
 				if (groupId.equals(g.getId())) {
 					groupCombo.setOriginalValue(g);

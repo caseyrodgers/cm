@@ -69,6 +69,10 @@ public class CmAdminDataReader extends Timer {
     public void addReader(CmAdminDataRefresher dataReader) {
         this.dataReaders.add(dataReader);
     }
+    
+    public void removeReader(CmAdminDataRefresher dataReader) {
+    	this.dataReaders.remove(dataReader);
+    }
 
     @Override
     public void run() {

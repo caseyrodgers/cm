@@ -170,7 +170,7 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
     private Component createGroupFilter() {
 
         groupStore = new ListStore<GroupModel>();
-        GroupSelectorWidget gsw = new GroupSelectorWidget(_cmAdminMdl, groupStore, false, this, "group-filter");
+        GroupSelectorWidget gsw = new GroupSelectorWidget(_cmAdminMdl, groupStore, false, this, "group-filter", false);
         groupCombo = gsw.groupCombo();
         groupCombo.setAllowBlank(true);
 

@@ -3,6 +3,7 @@ package hotmath.gwt.cm_tools.client;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.widget.Viewport;
 import com.google.gwt.user.client.ui.RootPanel;
 
@@ -49,6 +50,7 @@ public class CmBusyManager {
      * @param showMask
      */
     static public void setBusy(boolean trueFalse, boolean showMask) {
+    	
         if(trueFalse) {
         	// push it
             BusyState bs = new BusyState(showMask);
@@ -59,7 +61,7 @@ public class CmBusyManager {
         	// pop it
             BusyState bs = __busyStates.get(__busyStates.size()-1);
             __busyStates.remove(__busyStates.size()-1);
-
+            
             hideBusy(bs);
         }
     }
@@ -69,6 +71,8 @@ public class CmBusyManager {
     
     
     static private void showBusy(BusyState state) {
+    	System.out.println("showBusy " + __busyStates.size() + ": " + state.useMask);
+    	
     	if(state.useMask) {
     		__viewPort.mask();
     	}
@@ -78,6 +82,7 @@ public class CmBusyManager {
     
     /** Make the busy window disappear, no matter the state */
     static private void hideBusy(BusyState bs) {
+    	System.out.println("hideBusy " + (__busyStates.size()+1) + ": " + bs.useMask);
     	if(bs.useMask) {
     		/** only unmask, if there are no deeper masks
     		 * applied.  We do this to reduce flickering.
@@ -90,11 +95,15 @@ public class CmBusyManager {
     					break;
     				}
     		}
-    		if(!hasDeeperMask)
+    		if(!hasDeeperMask) {
+    			System.out.println("Removing mask");
     	        __viewPort.unmask();
+    		}
     	}
-    	if(__busyStates.size() == 0)
+    	if(__busyStates.size() == 0) {
+    		System.out.println("Removing busy indicator");
     	    RootPanel.get("loading").setVisible(false);
+    	}
     }
     
     /** Force reset of the isBusy stack allowing 
