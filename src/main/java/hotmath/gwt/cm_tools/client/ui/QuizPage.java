@@ -1,6 +1,7 @@
 package hotmath.gwt.cm_tools.client.ui;
 
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
+import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.service.CmServiceAsync;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.data.CmAsyncRequest;
@@ -125,7 +126,7 @@ public class QuizPage extends LayoutContainer {
 	@SuppressWarnings("unchecked")
 	private void displayQuizHtml(String quizHtml) {
 	    
-	    CatchupMathTools.setBusy(true);
+	    CmBusyManager.setBusy(true, false);
 	    
 		Html html = new Html(quizHtml);
 		if(CmShared.getQueryParameter("debug") != "") {
@@ -144,7 +145,7 @@ public class QuizPage extends LayoutContainer {
         		for(RpcData rd: al) {
         			setSolutionQuestionAnswerIndex(rd.getDataAsString("pid"),rd.getDataAsString("answer"));
         		}
-        		CatchupMathTools.setBusy(false);
+        		CmBusyManager.setBusy(false);
         		callbackWhenComplete.requestComplete(_title);
         	}
         	public void onFailure(Throwable caught) {

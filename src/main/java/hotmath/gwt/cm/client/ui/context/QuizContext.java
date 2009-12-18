@@ -5,6 +5,7 @@ import hotmath.gwt.cm.client.history.CmHistoryManager;
 import hotmath.gwt.cm.client.history.CmLocation;
 import hotmath.gwt.cm.client.history.CmLocation.LocationType;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
+import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.service.CmServiceAsync;
 import hotmath.gwt.cm_tools.client.ui.NextPanelInfo;
 import hotmath.gwt.cm_tools.client.ui.NextPanelInfoImplDefault;
@@ -251,7 +252,7 @@ public class QuizContext implements CmContext {
 	
 	
 	public void doCheckTest() {
-        CatchupMathTools.setBusy(true);
+        CmBusyManager.setBusy(true, false);
         CmServiceAsync s = (CmServiceAsync) Registry.get("cmService");
         s.execute(new CreateTestRunAction(UserInfo.getInstance().getTestId()), new AsyncCallback<CreateTestRunResponse>() {
             public void onSuccess(CreateTestRunResponse testRunInfo) {
@@ -285,7 +286,7 @@ public class QuizContext implements CmContext {
                     showPrescriptionPanel(testRunInfo);
                 }
                 finally {
-                    CatchupMathTools.setBusy(false);
+                	CmBusyManager.setBusy(false);
                 }
             }
             public void onFailure(Throwable caught) {

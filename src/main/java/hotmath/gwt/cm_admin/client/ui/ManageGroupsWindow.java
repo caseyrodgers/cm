@@ -1,6 +1,7 @@
 package hotmath.gwt.cm_admin.client.ui;
 
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
+import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.model.CmAdminDataReader;
 import hotmath.gwt.cm_tools.client.model.CmAdminModel;
 import hotmath.gwt.cm_tools.client.model.GroupInfoModel;
@@ -265,17 +266,17 @@ public class ManageGroupsWindow extends CmWindow {
     
     
     private void readRpcData(final Integer adminId) {
-    	CatchupMathTools.setBusy(true);
+    	CmBusyManager.setBusy(true,false);
     	
         CmServiceAsync cmService = (CmServiceAsync)Registry.get("cmService");
         cmService.execute(new GetGroupAggregateInfoAction(adminId), new AsyncCallback<CmList<GroupInfoModel>>() {
             public void onSuccess(CmList<GroupInfoModel> result) {
                 store.removeAll();
                 store.add(result);
-                CatchupMathTools.setBusy(false);                
+                CmBusyManager.setBusy(false);                
             }
             public void onFailure(Throwable caught) {
-            	CatchupMathTools.setBusy(false);            	
+            	CmBusyManager.setBusy(false);            	
                 CatchupMathTools.showAlert(caught.getMessage());
             }
         });
@@ -284,7 +285,7 @@ public class ManageGroupsWindow extends CmWindow {
     
     private void deleteGroup(final Integer adminId, final Integer groupId) {
     	
-    	CatchupMathTools.setBusy(true);
+    	CmBusyManager.setBusy(true, false);
     	
         CmServiceAsync cmService = (CmServiceAsync)Registry.get("cmService");
         
@@ -292,12 +293,12 @@ public class ManageGroupsWindow extends CmWindow {
         action.setGroupId(groupId);
         cmService.execute(action, new AsyncCallback<RpcData>() {
             public void onSuccess(RpcData result) {
-            	CatchupMathTools.setBusy(false);
+            	CmBusyManager.setBusy(false);
                 readRpcData(adminId);
                 CmAdminDataReader.getInstance().fireRefreshData();
             }
             public void onFailure(Throwable caught) {
-            	CatchupMathTools.setBusy(false);
+            	CmBusyManager.setBusy(false);
                 CatchupMathTools.showAlert(caught.getMessage());
             }
         });
@@ -305,7 +306,7 @@ public class ManageGroupsWindow extends CmWindow {
 
     
     private void unregisterGroup(final Integer adminId, final Integer groupId) {
-    	CatchupMathTools.setBusy(true);
+    	CmBusyManager.setBusy(true, false);
     	
         CmServiceAsync cmService = (CmServiceAsync)Registry.get("cmService");
         GroupManagerAction action = new GroupManagerAction(GroupManagerAction.ActionType.UNREGISTER_STUDENTS,adminId);
@@ -314,10 +315,10 @@ public class ManageGroupsWindow extends CmWindow {
             public void onSuccess(RpcData result) {
                 readRpcData(adminId);
                 CmAdminDataReader.getInstance().fireRefreshData();
-            	CatchupMathTools.setBusy(false);
+                CmBusyManager.setBusy(false);
             }
             public void onFailure(Throwable caught) {
-            	CatchupMathTools.setBusy(false);
+            	CmBusyManager.setBusy(false);
                 CatchupMathTools.showAlert(caught.getMessage());
             }
         });     
@@ -340,7 +341,7 @@ public class ManageGroupsWindow extends CmWindow {
             	CatchupMathTools.setBusy(false);
             }
             public void onFailure(Throwable caught) {
-            	CatchupMathTools.setBusy(false);
+            	CmBusyManager.setBusy(false);
                 CatchupMathTools.showAlert(caught.getMessage());
             }
         });     
@@ -432,7 +433,7 @@ class GroupManagerGlobalSettings extends CmWindow {
     
     private void applyChanges() {
         
-        CatchupMathTools.setBusy(true);
+    	CmBusyManager.setBusy(true);
         
         CmServiceAsync cmService = (CmServiceAsync)Registry.get("cmService");
         GroupManagerAction action = new GroupManagerAction(GroupManagerAction.ActionType.GROUP_PROPERTY_SET,cm.getId());
@@ -445,10 +446,10 @@ class GroupManagerGlobalSettings extends CmWindow {
                 CmAdminDataReader.getInstance().fireRefreshData();
                 close();
                 
-                CatchupMathTools.setBusy(false);
+                CmBusyManager.setBusy(false);
             }
             public void onFailure(Throwable caught) {
-                CatchupMathTools.setBusy(false);
+            	CmBusyManager.setBusy(false);
                 CatchupMathTools.showAlert(caught.getMessage());
             }
         });

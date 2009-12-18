@@ -65,6 +65,13 @@ public class CmBusyManager {
             hideBusy(bs);
         }
     }
+    
+    /** Push a new busy state.
+     * 
+     *   Will display the mask and the busy indicator
+     * 
+     * @param trueFalse True to start new busystate, false to complete a corresponding one
+     */
     static public void setBusy(boolean trueFalse) {
     	setBusy(trueFalse,true);
     }
