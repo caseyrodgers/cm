@@ -1,7 +1,6 @@
 package hotmath.gwt.cm.client.ui;
 
 import hotmath.gwt.cm.client.history.CmHistoryQueue;
-import hotmath.gwt.cm.client.ui.context.ContextChangeMessage;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.ui.CmMainPanel;
 import hotmath.gwt.cm_tools.client.ui.InfoPopupBox;
@@ -104,8 +103,6 @@ public class HeaderPanel extends LayoutContainer {
 								reason.printStackTrace();
 							}
 						});
-		            else
- 		                new ContextChangeMessage((String)event.getEventData());
 		        }
 		    }
 		});

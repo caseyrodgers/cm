@@ -1,6 +1,7 @@
 package hotmath.gwt.cm_tools.client.ui;
 
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
+import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.model.CmAdminDataReader;
 import hotmath.gwt.cm_tools.client.model.CmAdminDataRefresher;
 import hotmath.gwt.cm_tools.client.model.CmAdminModel;
@@ -84,7 +85,7 @@ public class GroupSelectorWidget {
 
 		pTracker.beginStep();
 		
-		CatchupMathTools.setBusy(true);
+		CmBusyManager.setBusy(true, false);
 		
 		CmServiceAsync s = (CmServiceAsync) Registry.get("cmService");
 		GetActiveGroupsAction action = new GetActiveGroupsAction(uid);
@@ -109,11 +110,11 @@ public class GroupSelectorWidget {
 				pTracker.completeStep();
 				pTracker.finish();
 				
-				CatchupMathTools.setBusy(false);
+				CmBusyManager.setBusy(false);
         	}
 
 			public void onFailure(Throwable caught) {
-			    CatchupMathTools.setBusy(false);
+				CmBusyManager.setBusy(false);
         		String msg = caught.getMessage();
         		CatchupMathTools.showAlert(msg);
         	}

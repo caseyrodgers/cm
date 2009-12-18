@@ -79,9 +79,22 @@ public class CmBusyManager {
     /** Make the busy window disappear, no matter the state */
     static private void hideBusy(BusyState bs) {
     	if(bs.useMask) {
-    	    __viewPort.unmask();
+    		/** only unmask, if there are no deeper masks
+    		 * applied.  We do this to reduce flickering.
+    		 */
+    		boolean hasDeeperMask=false;
+    		for(int i=0,t=__busyStates.size();i<t;i++) {
+    			if(__busyStates.get(i) != bs)
+    				if(__busyStates.get(i).useMask) {
+    					hasDeeperMask = true;
+    					break;
+    				}
+    		}
+    		if(!hasDeeperMask)
+    	        __viewPort.unmask();
     	}
-    	RootPanel.get("loading").setVisible(false);
+    	if(__busyStates.size() == 0)
+    	    RootPanel.get("loading").setVisible(false);
     }
     
     /** Force reset of the isBusy stack allowing 

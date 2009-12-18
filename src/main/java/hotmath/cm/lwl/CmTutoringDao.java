@@ -8,6 +8,7 @@ import hotmath.gwt.cm_tools.client.model.StudentModelI;
 import hotmath.gwt.shared.client.util.CmException;
 import hotmath.lwl.LWLIntegrationManager;
 import hotmath.lwl.LWLIntegrationManager.LwlAccountInfo;
+import hotmath.lwl.LWLIntegrationManager.LwlSourceApplication;
 import hotmath.subscriber.HotMathSubscriber;
 import hotmath.subscriber.HotMathSubscriberManager;
 import hotmath.subscriber.HotMathSubscriberSignupInfo;
@@ -187,7 +188,7 @@ public class CmTutoringDao {
         service.installService(sub, null);
         
         LwlAccountInfo acinfo = LWLIntegrationManager.getInstance().getLwlIntegrationKey(uid.toString());
-        LWLIntegrationManager.getInstance().registerUserWithLwl(sub,acinfo);
+        LWLIntegrationManager.getInstance().registerUserWithLwl(sub,acinfo, LwlSourceApplication.CATCHUP);
         
         return acinfo; 
     }
