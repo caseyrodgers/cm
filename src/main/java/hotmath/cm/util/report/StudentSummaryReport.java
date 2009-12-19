@@ -5,11 +5,13 @@ import hotmath.cm.util.CmCacheManager;
 import hotmath.gwt.cm_admin.server.model.CmAdminDao;
 import hotmath.gwt.cm_admin.server.model.CmStudentDao;
 import hotmath.gwt.cm_tools.client.model.AccountInfoModel;
-import hotmath.gwt.cm_tools.client.model.StudentModel;
+import hotmath.gwt.cm_tools.client.model.StudentModelI;
+import hotmath.util.HMConnectionPool;
+import hotmath.util.sql.SqlUtilities;
 
 import java.awt.Color;
 import java.io.ByteArrayOutputStream;
-import java.net.URL;
+import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -21,7 +23,6 @@ import com.lowagie.text.Document;
 import com.lowagie.text.Font;
 import com.lowagie.text.FontFactory;
 import com.lowagie.text.HeaderFooter;
-import com.lowagie.text.Jpeg;
 import com.lowagie.text.Phrase;
 import com.lowagie.text.Table;
 import com.lowagie.text.pdf.PdfWriter;
@@ -42,13 +43,21 @@ public class StudentSummaryReport {
             return null;
 
         CmStudentDao studentDao = new CmStudentDao();
-        List<StudentModel> sList = studentDao.getSummariesForActiveStudents(adminId);
+        List<StudentModelI> sList=null;
+        Connection conn=null;
+        try {
+            conn = HMConnectionPool.getConnection();
+            sList = studentDao.getSummariesForActiveStudents(conn, adminId);
+        }
+        finally {
+            SqlUtilities.releaseResources(null,null,conn);
+        }
 
-        Map<Integer, StudentModel> map = new HashMap<Integer, StudentModel>(sList.size());
-        for (StudentModel sm : sList) {
+        Map<Integer, StudentModelI> map = new HashMap<Integer, StudentModelI>(sList.size());
+        for (StudentModelI sm : sList) {
             map.put(sm.getUid(), sm);
         }
-        List<StudentModel> list = new ArrayList<StudentModel>(studentUids.size());
+        List<StudentModelI> list = new ArrayList<StudentModelI>(studentUids.size());
         for (Integer uid : studentUids) {
             list.add(map.get(uid));
         }
@@ -107,7 +116,7 @@ public class StudentSummaryReport {
         tbl.endHeaders();
 
         int i = 0;
-        for (StudentModel sm : list) {
+        for (StudentModelI sm : list) {
             addCell(sm.getName(), tbl, ++i);
             addCell(sm.getGroup(), tbl, i);
             addCell(sm.getProgramDescr(), tbl, i);

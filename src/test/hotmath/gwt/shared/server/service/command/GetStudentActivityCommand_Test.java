@@ -2,7 +2,7 @@ package hotmath.gwt.shared.server.service.command;
 
 import hotmath.gwt.cm.server.CmDbTestCase;
 import hotmath.gwt.cm_admin.server.model.CmStudentDao;
-import hotmath.gwt.cm_tools.client.model.StudentModel;
+import hotmath.gwt.cm_tools.client.model.StudentModelI;
 import hotmath.gwt.shared.client.rpc.action.GetStudentActivityAction;
 
 public class GetStudentActivityCommand_Test extends CmDbTestCase {
@@ -18,7 +18,7 @@ public class GetStudentActivityCommand_Test extends CmDbTestCase {
     }
     
     public void testCreate() throws Exception  {
-        StudentModel sm = new CmStudentDao().getStudentModel(_user.getUid());
+        StudentModelI sm = new CmStudentDao().getStudentModel(_user.getUid());
         GetStudentActivityAction action = new GetStudentActivityAction(sm);
         
         new GetStudentActivityCommand().execute(conn,action);

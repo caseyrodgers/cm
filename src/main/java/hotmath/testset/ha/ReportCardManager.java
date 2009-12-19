@@ -1,7 +1,7 @@
 package hotmath.testset.ha;
 
 import hotmath.gwt.cm_admin.server.model.CmStudentDao;
-import hotmath.gwt.cm_tools.client.model.StudentModel;
+import hotmath.gwt.cm_tools.client.model.StudentModelI;
 import hotmath.testset.ha.info.UserProgramInfo;
 import hotmath.testset.ha.info.UserProgramInfoDao;
 
@@ -21,7 +21,7 @@ public class ReportCardManager {
     static public StudentReportCardModel2 createModel(final Connection conn, Integer userId) throws Exception {
         StudentReportCardModel2 rmodel = new StudentReportCardModel2();
 
-        StudentModel student = new CmStudentDao().getStudentModel(conn, userId, false);
+        StudentModelI student = new CmStudentDao().getStudentModel(conn, userId, false);
         List<UserProgramInfo> userInfos = new UserProgramInfoDao().getUserProgramInfoForUser(conn, userId);
         
         UserProgramInfoDao upid = new UserProgramInfoDao();

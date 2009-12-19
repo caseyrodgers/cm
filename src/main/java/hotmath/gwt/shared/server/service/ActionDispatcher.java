@@ -34,6 +34,7 @@ import hotmath.gwt.shared.server.service.command.GetReviewHtmlCommand;
 import hotmath.gwt.shared.server.service.command.GetSolutionCommand;
 import hotmath.gwt.shared.server.service.command.GetStateStandardsCommand;
 import hotmath.gwt.shared.server.service.command.GetStudentActivityCommand;
+import hotmath.gwt.shared.server.service.command.GetStudentGridPageCommand;
 import hotmath.gwt.shared.server.service.command.GetStudentModelCommand;
 import hotmath.gwt.shared.server.service.command.GetStudentShowWorkCommand;
 import hotmath.gwt.shared.server.service.command.GetSubjectDefinitionsCommand;
@@ -251,5 +252,6 @@ public class ActionDispatcher {
         addCommand(ResetUserCommand.class);
         addCommand(GetSubjectDefinitionsCommand.class);
         addCommand(GetChaptersForProgramSubjectCommand.class);
+        addCommand(GetStudentGridPageCommand.class);
     }
 }

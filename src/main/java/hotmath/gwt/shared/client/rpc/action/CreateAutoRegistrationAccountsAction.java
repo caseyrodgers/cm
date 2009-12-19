@@ -1,6 +1,7 @@
 package hotmath.gwt.shared.client.rpc.action;
 
 import hotmath.gwt.cm_tools.client.model.StudentModel;
+import hotmath.gwt.cm_tools.client.model.StudentModelI;
 import hotmath.gwt.shared.client.rpc.Action;
 import hotmath.gwt.shared.client.rpc.result.AutoRegistrationEntry;
 import hotmath.gwt.shared.client.rpc.result.AutoRegistrationSetup;
@@ -17,14 +18,14 @@ import java.util.List;
  public class CreateAutoRegistrationAccountsAction implements Action<AutoRegistrationSetup> {
  
     Integer adminId;
-    StudentModel studentTemplate;
+    StudentModelI studentTemplate;
     List<AutoRegistrationEntry> accountsToCreate;
     
     public CreateAutoRegistrationAccountsAction() {
     }
     
     
-    public CreateAutoRegistrationAccountsAction(Integer adminId, StudentModel studentTemplate, List<AutoRegistrationEntry> accountsToCreate) {
+    public CreateAutoRegistrationAccountsAction(Integer adminId, StudentModelI studentTemplate, List<AutoRegistrationEntry> accountsToCreate) {
         this.adminId = adminId;
         this.studentTemplate = studentTemplate;
         this.accountsToCreate = accountsToCreate;
@@ -39,7 +40,7 @@ import java.util.List;
     }
 
 
-    public StudentModel getStudentTemplate() {
+    public StudentModelI getStudentTemplate() {
         return studentTemplate;
     }
 

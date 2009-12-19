@@ -89,23 +89,21 @@ public class CmStudentDao {
         return studentSql;
     }
 
-    public List<StudentModel> getSummariesForActiveStudents(Integer adminUid) throws Exception {
-        return getStudentSummaries(adminUid, true);
+    public List<StudentModelI> getSummariesForActiveStudents(final Connection conn, Integer adminUid) throws Exception {
+        return getStudentSummaries(conn, adminUid, true);
     }
 
-    public List<StudentModel> getSummariesForInactiveStudents(Integer adminUid) throws Exception {
-        return getStudentSummaries(adminUid, false);
+    public List<StudentModelI> getSummariesForInactiveStudents(final Connection conn, Integer adminUid) throws Exception {
+        return getStudentSummaries(conn, adminUid, false);
     }
 
-    public List<StudentModel> getStudentSummaries(Integer adminUid, Boolean isActive) throws Exception {
-        List<StudentModel> l = null;
+    public List<StudentModelI> getStudentSummaries(final Connection conn, Integer adminUid, Boolean isActive) throws Exception {
+        List<StudentModelI> l = null;
 
-        Connection conn = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
 
         try {
-            conn = HMConnectionPool.getConnection();
             ps = conn.prepareStatement(getStudentSql(StudentSqlType.ALL_STUDENTS_FOR_ADMIN, false));
             ps.setInt(1, adminUid);
             ps.setInt(2, (isActive) ? 1 : 0);
@@ -118,16 +116,16 @@ public class CmStudentDao {
             logger.error(String.format("*** Error getting student summaries for Admin uid: %d", adminUid), e);
             throw new Exception("*** Error getting student summary data ***");
         } finally {
-            SqlUtilities.releaseResources(rs, ps, conn);
+            SqlUtilities.releaseResources(rs, ps, null);
         }
         return l;
     }
 
-	private void loadChapterInfo(final Connection conn, List<StudentModel> l) throws Exception {
+	private void loadChapterInfo(final Connection conn, List<StudentModelI> l) throws Exception {
 
 		CmAdminDao dao = new CmAdminDao();
 		
-		for (StudentModel sm : l) {
+		for (StudentModelI sm : l) {
 			String chapter = sm.getChapter();
 			if (chapter != null) {
 				String subjId = sm.getSubjId();
@@ -786,7 +784,7 @@ public class CmStudentDao {
      * @throws Exception
      *             if student not found
      */
-    public StudentModel getStudentModel(Integer uid) throws Exception {
+    public StudentModelI getStudentModel(Integer uid) throws Exception {
         // default is without templates
         return getStudentModel(uid, false);  
     }
@@ -801,7 +799,7 @@ public class CmStudentDao {
      * 
      * @throws Exception
      */
-    public StudentModel getStudentModel(Integer uid, Boolean includeSelfRegTemplate) throws Exception {
+    public StudentModelI getStudentModel(Integer uid, Boolean includeSelfRegTemplate) throws Exception {
         
         Connection conn = null;
 
@@ -827,7 +825,7 @@ public class CmStudentDao {
      * 
      * @throws Exception
      */
-    public StudentModel getStudentModel(final Connection conn, Integer uid, Boolean includeSelfRegTemplate) throws Exception {
+    public StudentModelI getStudentModel(final Connection conn, Integer uid, Boolean includeSelfRegTemplate) throws Exception {
         
         long timeStart = System.currentTimeMillis();
         PreparedStatement ps = null;
@@ -839,7 +837,7 @@ public class CmStudentDao {
             ps.setInt(2, 1);
             rs = ps.executeQuery();
 
-            List<StudentModel> l = null;
+            List<StudentModelI> l = null;
             l = loadStudentSummaries(rs);
             if (l.size() == 0)
                 throw new Exception(String.format("Student with UID: %d was not found", uid));
@@ -908,9 +906,9 @@ public class CmStudentDao {
         }
     }
 
-    private List<StudentModel> loadStudentSummaries(ResultSet rs) throws Exception {
+    private List<StudentModelI> loadStudentSummaries(ResultSet rs) throws Exception {
 
-        List<StudentModel> l = new ArrayList<StudentModel>();
+        List<StudentModelI> l = new ArrayList<StudentModelI>();
 
         while (rs.next()) {
             StudentModel sm = new StudentModel();

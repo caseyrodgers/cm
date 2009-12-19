@@ -3,6 +3,7 @@ package hotmath.gwt.shared.server.service.command;
 import hotmath.gwt.cm_admin.server.model.CmStudentDao;
 import hotmath.gwt.cm_tools.client.model.GroupModel;
 import hotmath.gwt.cm_tools.client.model.StudentModel;
+import hotmath.gwt.cm_tools.client.model.StudentModelI;
 import hotmath.gwt.shared.client.rpc.Action;
 import hotmath.gwt.shared.client.rpc.Response;
 import hotmath.gwt.shared.client.rpc.action.CreateAutoRegistrationAccountsAction;
@@ -23,7 +24,7 @@ public class CreateAutoRegistrationAccountsCommand implements ActionHandler<Crea
     @Override
     public AutoRegistrationSetup execute(Connection conn, CreateAutoRegistrationAccountsAction action) throws Exception {
         
-        StudentModel studentTemplate = action.getStudentTemplate();
+        StudentModelI studentTemplate = action.getStudentTemplate();
         AutoRegistrationSetup preview = new AutoRegistrationSetup();
 
         // first, create the unique group
@@ -44,7 +45,7 @@ public class CreateAutoRegistrationAccountsCommand implements ActionHandler<Crea
              * 
              */
             try {
-                StudentModel studentToCreate = createStudentFromTemplate(entry, studentTemplate);
+                StudentModelI studentToCreate = createStudentFromTemplate(entry, studentTemplate);
                 dao.addStudent(conn, studentToCreate);
                 entry.setMessage("Created successfully");
                 entry.setIsError(false);
@@ -61,7 +62,7 @@ public class CreateAutoRegistrationAccountsCommand implements ActionHandler<Crea
         return preview;
     }
     
-    private StudentModel createStudentFromTemplate(AutoRegistrationEntry entry, StudentModel t) {
+    private StudentModelI createStudentFromTemplate(AutoRegistrationEntry entry, StudentModelI t) {
         StudentModel sm = new StudentModel();
         sm.setAdminUid(t.getAdminUid());
         sm.setName(entry.getName());

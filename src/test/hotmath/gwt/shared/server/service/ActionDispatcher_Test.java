@@ -5,7 +5,6 @@ import hotmath.gwt.cm_admin.server.model.CmStudentDao;
 import hotmath.gwt.cm_tools.client.model.AutoUserAdvanced;
 import hotmath.gwt.cm_tools.client.model.GroupModel;
 import hotmath.gwt.cm_tools.client.model.LessonItemModel;
-import hotmath.gwt.cm_tools.client.model.StudentModel;
 import hotmath.gwt.cm_tools.client.model.StudentModelI;
 import hotmath.gwt.shared.client.rpc.action.AddGroupAction;
 import hotmath.gwt.shared.client.rpc.action.AutoAdvanceUserAction;
@@ -158,7 +157,7 @@ public class ActionDispatcher_Test extends CmDbTestCase {
     
     public void testCreateAutoRegistrationAccountsCommand() throws Exception {
         
-        StudentModel student = new CmStudentDao().getStudentModel(uid);
+        StudentModelI student = new CmStudentDao().getStudentModel(uid);
         AutoRegistrationSetup preview = new AutoRegistrationSetup();
         
         CmList<AutoRegistrationEntry> entries = new CmArrayList<AutoRegistrationEntry>();
@@ -179,7 +178,7 @@ public class ActionDispatcher_Test extends CmDbTestCase {
     
     public void testCreateAutoRegistrationPreviewCommand() throws Exception {
         
-        StudentModel student = new CmStudentDao().getStudentModel(uid);
+        StudentModelI student = new CmStudentDao().getStudentModel(uid);
         
         CreateAutoRegistrationPreviewAction action = new CreateAutoRegistrationPreviewAction(student,"key");
         AutoRegistrationSetup autoSetup = ActionDispatcher.getInstance().execute(action);

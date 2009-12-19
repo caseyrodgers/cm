@@ -1,6 +1,6 @@
 package hotmath.gwt.shared.client.rpc.action;
 
-import hotmath.gwt.cm_tools.client.model.StudentModel;
+import hotmath.gwt.cm_tools.client.model.StudentModelI;
 import hotmath.gwt.shared.client.rpc.Action;
 import hotmath.gwt.shared.client.rpc.result.AutoRegistrationSetup;
 
@@ -14,25 +14,25 @@ import hotmath.gwt.shared.client.rpc.result.AutoRegistrationSetup;
  *
  */
 public class CreateAutoRegistrationPreviewAction implements Action<AutoRegistrationSetup> {
-    StudentModel studentTemplate;
+    StudentModelI studentTemplate;
     String uploadKey;
 
     public CreateAutoRegistrationPreviewAction() {
     }
     
     
-    public CreateAutoRegistrationPreviewAction(StudentModel studentTemplate, String uploadKey) {
+    public CreateAutoRegistrationPreviewAction(StudentModelI studentTemplate, String uploadKey) {
         this.studentTemplate = studentTemplate;
         this.uploadKey = uploadKey;
     }
 
 
-    public StudentModel getStudentTemplate() {
+    public StudentModelI getStudentTemplate() {
         return studentTemplate;
     }
 
 
-    public void setStudentTemplate(StudentModel studentTemplate) {
+    public void setStudentTemplate(StudentModelI studentTemplate) {
         this.studentTemplate = studentTemplate;
     }
 

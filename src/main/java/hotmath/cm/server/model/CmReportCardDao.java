@@ -4,7 +4,7 @@ import hotmath.cm.util.CmMultiLinePropertyReader;
 import hotmath.gwt.cm_tools.client.model.ChapterModel;
 import hotmath.gwt.cm_admin.server.model.CmAdminDao;
 import hotmath.gwt.cm_admin.server.model.CmStudentDao;
-import hotmath.gwt.cm_tools.client.model.StudentModel;
+import hotmath.gwt.cm_tools.client.model.StudentModelI;
 import hotmath.gwt.cm_tools.client.model.StudentReportCardModel;
 import hotmath.gwt.cm_tools.client.model.StudentReportCardModelI;
 import hotmath.gwt.shared.client.rpc.action.CmList;
@@ -51,7 +51,7 @@ public class CmReportCardDao {
 
 			 // load student info
 			 CmStudentDao stuDao = new CmStudentDao();
-			 StudentModel sm = stuDao.getStudentModel(conn, studentUid, false);
+			 StudentModelI sm = stuDao.getStudentModel(conn, studentUid, false);
 			 rval.setAdminUid(sm.getAdminUid());
 			 rval.setGroupName(sm.getGroup());
 

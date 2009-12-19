@@ -15,8 +15,9 @@ public class CmServiceImpl extends RemoteServiceServlet implements CmService {
      */
     private static final long serialVersionUID = -3449687645592040570L;
 
-    /** Central processing of RPC calls.  All RPC calls are one-to-one
-     * with a 'command' following the Command Pattern.
+    /**
+     * Central processing of RPC calls. All RPC calls are one-to-one with a
+     * 'command' following the Command Pattern.
      * 
      * @see hotmath.gwt.shared.client.rpc.Action
      */

@@ -4,7 +4,7 @@ import hotmath.cm.util.CmCacheManager;
 import hotmath.cm.util.CmCacheManager.CacheName;
 import hotmath.cm.util.service.BulkRegLoader;
 import hotmath.gwt.cm_admin.server.model.CmStudentDao;
-import hotmath.gwt.cm_tools.client.model.StudentModel;
+import hotmath.gwt.cm_tools.client.model.StudentModelI;
 import hotmath.gwt.shared.client.rpc.Action;
 import hotmath.gwt.shared.client.rpc.Response;
 import hotmath.gwt.shared.client.rpc.action.CreateAutoRegistrationPreviewAction;
@@ -32,7 +32,7 @@ public class CreateAutoRegistrationPreviewCommand implements ActionHandler<Creat
     @Override
     public AutoRegistrationSetup execute(Connection conn, CreateAutoRegistrationPreviewAction action) throws Exception {
         
-        StudentModel studentTemplate = action.getStudentTemplate();
+        StudentModelI studentTemplate = action.getStudentTemplate();
         AutoRegistrationSetup preview = new AutoRegistrationSetup();
         
 

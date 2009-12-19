@@ -6,7 +6,7 @@ import hotmath.gwt.cm_admin.server.model.CmAdminDao;
 import hotmath.gwt.cm_admin.server.model.CmStudentDao;
 import hotmath.gwt.cm_tools.client.model.AccountInfoModel;
 import hotmath.gwt.cm_tools.client.model.StudentActivityModel;
-import hotmath.gwt.cm_tools.client.model.StudentModel;
+import hotmath.gwt.cm_tools.client.model.StudentModelI;
 
 import java.awt.Color;
 import java.io.ByteArrayOutputStream;
@@ -52,7 +52,7 @@ public class StudentDetailReport {
 
 			CmStudentDao studentDao = new CmStudentDao();
 			List<StudentActivityModel> sList = studentDao.getStudentActivity(conn, stuUid);
-			StudentModel sm = studentDao.getStudentModel(stuUid);
+			StudentModelI sm = studentDao.getStudentModel(stuUid);
 						
 			Document document = new Document();
 			baos = new ByteArrayOutputStream();

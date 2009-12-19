@@ -8,7 +8,6 @@ import hotmath.gwt.shared.client.rpc.action.CmArrayList;
 import hotmath.gwt.shared.client.rpc.action.CmList;
 import hotmath.gwt.shared.client.rpc.action.GetSummariesForActiveStudentsAction;
 import hotmath.gwt.shared.server.service.ActionHandler;
-import hotmath.gwt.shared.server.service.ActionHandlerManualConnectionManagement;
 
 import java.sql.Connection;
 
@@ -19,7 +18,7 @@ import java.sql.Connection;
  * @author casey
  *
  */
-public class GetSummariesForActiveStudentsCommand implements ActionHandler<GetSummariesForActiveStudentsAction, CmList<StudentModelI>>,ActionHandlerManualConnectionManagement{
+public class GetSummariesForActiveStudentsCommand implements ActionHandler<GetSummariesForActiveStudentsAction, CmList<StudentModelI>>{
 
     
     public CmList<StudentModelI> execute(Connection conn, GetSummariesForActiveStudentsAction action) throws Exception {
@@ -29,7 +28,7 @@ public class GetSummariesForActiveStudentsCommand implements ActionHandler<GetSu
          * 
          */
         CmList<StudentModelI> cmList = new CmArrayList<StudentModelI>();
-        cmList.addAll(dao.getSummariesForActiveStudents(action.getAdminId()));
+        cmList.addAll(dao.getSummariesForActiveStudents(conn, action.getAdminId()));
         
         return cmList;
     }

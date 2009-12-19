@@ -1,6 +1,5 @@
 package hotmath.gwt.shared.client.rpc.action;
 
-import hotmath.gwt.cm_tools.client.model.StudentModel;
 import hotmath.gwt.cm_tools.client.model.StudentModelI;
 import hotmath.gwt.shared.client.rpc.Action;
 
@@ -16,7 +15,7 @@ public class UpdateStudentAction implements Action<StudentModelI> {
     
     public UpdateStudentAction() {}
     
-    public UpdateStudentAction(StudentModel sm, Boolean stuChanged, Boolean progChanged, Boolean progIsNew, Boolean passcodeChanged) {
+    public UpdateStudentAction(StudentModelI sm, Boolean stuChanged, Boolean progChanged, Boolean progIsNew, Boolean passcodeChanged) {
         this.student = sm;
         this.stuChanged = stuChanged;
         this.progChanged = progChanged;

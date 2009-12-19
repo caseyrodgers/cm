@@ -99,4 +99,13 @@
 </cache>
 
 
+
+
+<!-- StudentSummaryGrid paged datasets -->
+<cache name="STUDENT_PAGED_DATA"
+       maxElementsInMemory="30"
+       eternal="false"
+       timeToLiveSeconds="2400"
+       overflowToDisk="false">
+</cache>
 </ehcache>
