@@ -89,7 +89,7 @@ public class CmBusyManager {
     
     /** Make the busy window disappear, no matter the state */
     static private void hideBusy(BusyState bs) {
-    	System.out.println("hideBusy " + (__busyStates.size()+1) + ": " + bs.useMask);
+    	//System.out.println("hideBusy " + (__busyStates.size()+1) + ": " + bs.useMask);
     	if(bs.useMask) {
     		/** only unmask, if there are no deeper masks
     		 * applied.  We do this to reduce flickering.

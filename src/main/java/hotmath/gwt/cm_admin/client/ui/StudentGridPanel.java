@@ -268,7 +268,13 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
                 // filter grid based on current selection
                 GroupModel gm = se.getSelectedItem();
                 _groupFilterId = gm.getId().startsWith("---")?null:gm.getId();
-                _loader.load();
+                
+                if(_pagingToolBar.getActivePage() == 1) {
+                    _loader.load();
+                }
+                else {
+                    _pagingToolBar.setActivePage(1);
+                }
             }
         });
 
