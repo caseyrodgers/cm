@@ -6,7 +6,7 @@ import hotmath.cm.util.CmCacheManager;
 import hotmath.gwt.cm_admin.server.model.CmAdminDao;
 import hotmath.gwt.cm_admin.server.model.CmStudentDao;
 import hotmath.gwt.cm_tools.client.model.AccountInfoModel;
-import hotmath.gwt.cm_tools.client.model.StudentModel;
+import hotmath.gwt.cm_tools.client.model.StudentModelI;
 import hotmath.gwt.cm_tools.client.model.StudentReportCardModelI;
 
 import java.awt.Color;
@@ -97,7 +97,7 @@ public class StudentReportCard {
         StudentReportCardModelI rc = rcDao.getStudentReportCard(stuUid, null, null);
         
         CmStudentDao studentDao = new CmStudentDao();
-        StudentModel sm = studentDao.getStudentModel(stuUid);
+        StudentModelI sm = studentDao.getStudentModel(stuUid);
 
         Document document = new Document();
         baos = new ByteArrayOutputStream();
