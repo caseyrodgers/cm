@@ -1,10 +1,13 @@
 package hotmath.cm.server.model;
 
 import hotmath.cm.util.CmMultiLinePropertyReader;
+import hotmath.gwt.cm_tools.client.model.ChapterModel;
+import hotmath.gwt.cm_admin.server.model.CmAdminDao;
 import hotmath.gwt.cm_admin.server.model.CmStudentDao;
 import hotmath.gwt.cm_tools.client.model.StudentModel;
 import hotmath.gwt.cm_tools.client.model.StudentReportCardModel;
 import hotmath.gwt.cm_tools.client.model.StudentReportCardModelI;
+import hotmath.gwt.shared.client.rpc.action.CmList;
 import hotmath.testset.ha.HaTest;
 import hotmath.testset.ha.HaTestDao;
 import hotmath.testset.ha.StudentUserProgramModel;
@@ -58,10 +61,33 @@ public class CmReportCardDao {
 
 			 if (filteredList.size() < 1) return rval;
 
-			 rval.setInitialProgramName(filteredList.get(0).getTestName());
-			 rval.setInitialProgramDate(filteredList.get(0).getCreateDate());
-			 rval.setLastProgramName(filteredList.get(filteredList.size() - 1).getTestName());
-			 rval.setLastProgramDate(filteredList.get(filteredList.size() - 1).getCreateDate());
+			 StudentUserProgramModel pm = filteredList.get(0);
+			 String testName = pm.getTestName();
+			 List<String> chapList = pm.getConfig().getChapters();
+			 if (chapList != null) {
+				 // getChapters() returns a List - using only the first one
+				 String chapter = chapList.get(0).trim();
+				 String progLongName = buildProgramName(conn, pm, chapter, testName);
+    			 rval.setInitialProgramName(progLongName);
+			 }
+			 else {
+    			 rval.setInitialProgramName(testName);
+			 }
+			 rval.setInitialProgramDate(pm.getCreateDate());
+			 
+			 pm = filteredList.get(filteredList.size() - 1);
+			 testName = pm.getTestName();
+			 chapList = pm.getConfig().getChapters();
+			 if (chapList != null) {
+				 // getChapters() returns a List - using only the first one
+				 String chapter = chapList.get(0).trim();
+				 String progLongName = buildProgramName(conn, pm, chapter, testName);
+    			 rval.setLastProgramName(progLongName);
+			 }
+			 else {
+			     rval.setLastProgramName(testName);
+			 }
+			 rval.setLastProgramDate(pm.getCreateDate());
 
 			 // load HaTest and HaTestRun
 			 List<HaTest> testList = loadQuizData(conn, filteredList);
@@ -86,6 +112,24 @@ public class CmReportCardDao {
 			 SqlUtilities.releaseResources(null, null, conn);
 		 }
 		 return rval;
+	 }
+
+	 private String buildProgramName(final Connection conn, StudentUserProgramModel pm, String chapter, String testName) throws Exception {
+
+		 CmAdminDao adminDao = new CmAdminDao();
+		 String subjectId = pm.getTestDef().getSubjectId();
+		 String progId = pm.getTestDef().getProgId();
+		 
+		 CmList<ChapterModel> cmList = adminDao.getChaptersForProgramSubject(conn, progId, subjectId);
+		 String chapNumb = null;
+		 for (ChapterModel cm : cmList) {
+		     if (chapter.equalsIgnoreCase(cm.getTitle().trim())) {
+                 chapNumb = cm.getNumber().trim();
+			 }
+		 }
+		 return (chapNumb != null) ?
+				 String.format("%s, [%s] %s", testName, chapNumb, chapter) :
+                 String.format("%s, %s", testName, chapter);
 	 }
 
 	 private void setFirstLastProgramStatus(StudentReportCardModelI rval,
