@@ -19,6 +19,7 @@ public class StudentUserProgramModel {
     Integer adminId;
     Date createDate;
     HaTestConfig config;
+    HaTestDef testDef;
     
     List<HaTest> tests;
     
@@ -81,9 +82,15 @@ public class StudentUserProgramModel {
     public void setTests(List<HaTest> tests) {
         this.tests = tests;
     }
-   
-    
-    /** Return true if this program has alternate tests available
+
+    public HaTestDef getTestDef() {
+		return testDef;
+	}
+	public void setTestDef(HaTestDef testDef) {
+		this.testDef = testDef;
+	}
+
+	/** Return true if this program has alternate tests available
      * @return
      */
     public Boolean hasAlternateTests() {
