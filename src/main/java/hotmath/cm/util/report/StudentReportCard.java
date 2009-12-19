@@ -269,7 +269,7 @@ public class StudentReportCard {
 
         String lastProgDesc = rc.getLastProgramName();
         if (lastProgDesc != null) {
-            lastProgDesc += (rc.getLastProgramStatus() != null) ? " " + rc.getLastProgramStatus() : "";
+            lastProgDesc += (rc.getLastProgramStatus() != null) ? ", " + rc.getLastProgramStatus() : "";
         }
         Phrase lastProg = buildLabelContent("Current program & section: ", lastProgDesc);
         assignedDate = rc.getLastProgramDate();
