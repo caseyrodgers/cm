@@ -6,7 +6,6 @@ import hotmath.gwt.cm_tools.client.model.CmAdminDataReader;
 import hotmath.gwt.cm_tools.client.model.CmAdminModel;
 import hotmath.gwt.cm_tools.client.model.GroupInfoModel;
 import hotmath.gwt.cm_tools.client.model.GroupModel;
-import hotmath.gwt.cm_tools.client.model.StudentModel;
 import hotmath.gwt.cm_tools.client.model.StudentModelExt;
 import hotmath.gwt.cm_tools.client.service.CmServiceAsync;
 import hotmath.gwt.cm_tools.client.ui.GroupManagerRegisterStudent;
@@ -17,6 +16,7 @@ import hotmath.gwt.shared.client.data.CmAsyncRequestImplDefault;
 import hotmath.gwt.shared.client.rpc.action.CmList;
 import hotmath.gwt.shared.client.rpc.action.GetGroupAggregateInfoAction;
 import hotmath.gwt.shared.client.rpc.action.GroupManagerAction;
+import hotmath.gwt.shared.client.util.CmAsyncCallback;
 import hotmath.gwt.shared.client.util.RpcData;
 
 import java.util.ArrayList;
@@ -46,7 +46,6 @@ import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.layout.FormLayout;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public class ManageGroupsWindow extends CmWindow {
     
@@ -95,10 +94,10 @@ public class ManageGroupsWindow extends CmWindow {
         setLayout(new BorderLayout());
         
         _grid = defineGrid(store, defineColumns());
-        add(_grid, new BorderLayoutData(LayoutRegion.WEST,200));
+        add(_grid, new BorderLayoutData(LayoutRegion.WEST,190));
         
         LayoutContainer lc = new LayoutContainer();
-        lc.setStyleName("manage-groups-window-buttons");
+        lc.addStyleName("manage-groups-window-buttons");
 
         lc.add(new MyButton("New Group Name", "Create a new group name.",new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent ce) {
@@ -248,7 +247,7 @@ public class ManageGroupsWindow extends CmWindow {
         ColumnConfig group = new ColumnConfig();
         group.setId("group_name");
         group.setHeader("Group");
-        group.setWidth(145);
+        group.setWidth(120);
         group.setSortable(true);
         configs.add(group);
         
@@ -256,7 +255,7 @@ public class ManageGroupsWindow extends CmWindow {
         usage.setId("student_count");
         usage.setHeader("Count");
         usage.setToolTip("Students in group");
-        usage.setWidth(50);
+        usage.setWidth(48);
         usage.setSortable(true);
         configs.add(usage);
 
@@ -269,15 +268,15 @@ public class ManageGroupsWindow extends CmWindow {
     	CmBusyManager.setBusy(true,false);
     	
         CmServiceAsync cmService = (CmServiceAsync)Registry.get("cmService");
-        cmService.execute(new GetGroupAggregateInfoAction(adminId), new AsyncCallback<CmList<GroupInfoModel>>() {
+        cmService.execute(new GetGroupAggregateInfoAction(adminId), new CmAsyncCallback<CmList<GroupInfoModel>>() {
             public void onSuccess(CmList<GroupInfoModel> result) {
                 store.removeAll();
                 store.add(result);
                 CmBusyManager.setBusy(false);                
             }
             public void onFailure(Throwable caught) {
-            	CmBusyManager.setBusy(false);            	
-                CatchupMathTools.showAlert(caught.getMessage());
+            	CmBusyManager.setBusy(false);
+            	super.onFailure(caught);
             }
         });
     }
@@ -291,7 +290,7 @@ public class ManageGroupsWindow extends CmWindow {
         
         GroupManagerAction action = new GroupManagerAction(GroupManagerAction.ActionType.DELETE,adminId);
         action.setGroupId(groupId);
-        cmService.execute(action, new AsyncCallback<RpcData>() {
+        cmService.execute(action, new CmAsyncCallback<RpcData>() {
             public void onSuccess(RpcData result) {
             	CmBusyManager.setBusy(false);
                 readRpcData(adminId);
@@ -299,7 +298,7 @@ public class ManageGroupsWindow extends CmWindow {
             }
             public void onFailure(Throwable caught) {
             	CmBusyManager.setBusy(false);
-                CatchupMathTools.showAlert(caught.getMessage());
+            	super.onFailure(caught);
             }
         });
     }
@@ -311,7 +310,7 @@ public class ManageGroupsWindow extends CmWindow {
         CmServiceAsync cmService = (CmServiceAsync)Registry.get("cmService");
         GroupManagerAction action = new GroupManagerAction(GroupManagerAction.ActionType.UNREGISTER_STUDENTS,adminId);
         action.setGroupId(groupId);
-        cmService.execute(action, new AsyncCallback<RpcData>() {
+        cmService.execute(action, new CmAsyncCallback<RpcData>() {
             public void onSuccess(RpcData result) {
                 readRpcData(adminId);
                 CmAdminDataReader.getInstance().fireRefreshData();
@@ -319,7 +318,7 @@ public class ManageGroupsWindow extends CmWindow {
             }
             public void onFailure(Throwable caught) {
             	CmBusyManager.setBusy(false);
-                CatchupMathTools.showAlert(caught.getMessage());
+            	super.onFailure(caught);
             }
         });     
     }
@@ -328,28 +327,28 @@ public class ManageGroupsWindow extends CmWindow {
 
     protected void updateGroupRPC(final int adminUid, Integer groupId, String groupName) {
     	
-    	CatchupMathTools.setBusy(true);
+    	CmBusyManager.setBusy(true,false);
 
         CmServiceAsync cmService = (CmServiceAsync)Registry.get("cmService");
         GroupManagerAction action = new GroupManagerAction(GroupManagerAction.ActionType.UPDATE,adminUid);
         action.setGroupId(groupId);
         action.setGroupName(groupName);
-        cmService.execute(action, new AsyncCallback<RpcData>() {
+        cmService.execute(action, new CmAsyncCallback<RpcData>() {
             public void onSuccess(RpcData result) {
                 readRpcData(adminUid);
                 CmAdminDataReader.getInstance().fireRefreshData();
-            	CatchupMathTools.setBusy(false);
+            	CmBusyManager.setBusy(false);
             }
             public void onFailure(Throwable caught) {
             	CmBusyManager.setBusy(false);
-                CatchupMathTools.showAlert(caught.getMessage());
+            	super.onFailure(caught);
             }
-        });     
+       });     
     }
 
 }
 
-/** Provide custom button sizes and configuration
+/** Provide standard button sizes and configuration
  * 
  * @author casey
  *
@@ -367,6 +366,12 @@ class MyButton extends Button {
 
 
 
+/** Display window showing potential group
+ *  wide settings.
+ *  
+ * @author casey
+ *
+ */
 class GroupManagerGlobalSettings extends CmWindow {
     
     GroupInfoModel gim;
@@ -433,7 +438,7 @@ class GroupManagerGlobalSettings extends CmWindow {
     
     private void applyChanges() {
         
-    	CmBusyManager.setBusy(true);
+    	CmBusyManager.setBusy(true,false);
         
         CmServiceAsync cmService = (CmServiceAsync)Registry.get("cmService");
         GroupManagerAction action = new GroupManagerAction(GroupManagerAction.ActionType.GROUP_PROPERTY_SET,cm.getId());
@@ -441,7 +446,7 @@ class GroupManagerGlobalSettings extends CmWindow {
         action.setDisallowTutoring(true);
         action.setShowWorkRequired(showWorkRequired.getValue());
         action.setPassPercent(70);
-        cmService.execute(action, new AsyncCallback<RpcData>() {
+        cmService.execute(action, new CmAsyncCallback<RpcData>() {
             public void onSuccess(RpcData result) {
                 CmAdminDataReader.getInstance().fireRefreshData();
                 close();
@@ -450,7 +455,7 @@ class GroupManagerGlobalSettings extends CmWindow {
             }
             public void onFailure(Throwable caught) {
             	CmBusyManager.setBusy(false);
-                CatchupMathTools.showAlert(caught.getMessage());
+            	super.onFailure(caught);
             }
         });
     }

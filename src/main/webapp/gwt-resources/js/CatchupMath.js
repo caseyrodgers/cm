@@ -376,3 +376,10 @@ function setWhiteboardBackground(html) {
  //var wbg = document.getElementById('whiteboard-bg');
  //wbg.innerHTML = html;        
 }
+
+
+
+/** provide replacement for missing login_info.js */
+var LoginInfo = {
+		isValid:function() {return true;}
+}

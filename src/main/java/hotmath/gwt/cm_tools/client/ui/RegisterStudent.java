@@ -1,6 +1,7 @@
 package hotmath.gwt.cm_tools.client.ui;
 
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
+import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.model.ChapterModel;
 import hotmath.gwt.cm_tools.client.model.CmAdminModel;
 import hotmath.gwt.cm_tools.client.model.GroupModel;
@@ -20,6 +21,7 @@ import hotmath.gwt.shared.client.rpc.action.GetChaptersForProgramSubjectAction;
 import hotmath.gwt.shared.client.rpc.action.GetProgramDefinitionsAction;
 import hotmath.gwt.shared.client.rpc.action.GetSubjectDefinitionsAction;
 import hotmath.gwt.shared.client.rpc.action.UpdateStudentAction;
+import hotmath.gwt.shared.client.util.CmAsyncCallback;
 import hotmath.gwt.shared.client.util.CmException;
 import hotmath.gwt.shared.client.util.UserInfo;
 
@@ -52,7 +54,6 @@ import com.extjs.gxt.ui.client.widget.form.ComboBox.TriggerAction;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.layout.FormLayout;
 import com.google.gwt.user.client.Timer;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 
 /**
  * Provides UI for registering new students and modifying the registration of
@@ -469,8 +470,7 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
 		inProcessCount++;
         CmServiceAsync s = (CmServiceAsync) Registry.get("cmService");
 		GetProgramDefinitionsAction action = new GetProgramDefinitionsAction(); 
-		s.execute(action, new AsyncCallback<CmList<StudyProgramModel>>() {
-
+		s.execute(action, new CmAsyncCallback<CmList<StudyProgramModel>>() {
 			public void onSuccess(CmList<StudyProgramModel> spmList) {
 				List<StudyProgram> progList = new ArrayList <StudyProgram> ();
 				for (StudyProgramModel spm : spmList) {
@@ -480,11 +480,6 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
 				progStore.add(progList);
 				inProcessCount--;
 				setComboBoxSelections();
-        	}
-
-			public void onFailure(Throwable caught) {
-        		String msg = caught.getMessage();
-        		CatchupMathTools.showAlert(msg);
         	}
         });
 	}
@@ -512,7 +507,7 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
 		CmServiceAsync s = (CmServiceAsync) Registry.get("cmService");
 		
 		GetSubjectDefinitionsAction action = new GetSubjectDefinitionsAction(progId);
-		s.execute(action, new AsyncCallback <CmList<SubjectModel>>() {
+		s.execute(action, new CmAsyncCallback <CmList<SubjectModel>>() {
 
 			public void onSuccess(CmList<SubjectModel> result) {
 				subjStore.removeAll();
@@ -521,11 +516,6 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
 				programSubjectMap.put(progId, result);
 				setComboBoxSelections();
         	}
-
-			public void onFailure(Throwable caught) {
-        		String msg = caught.getMessage();
-        		CatchupMathTools.showAlert(msg);
-        	}
         });
 		
 	}
@@ -533,16 +523,10 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
 	protected void addUserRPC(final StudentModel sm) {
 	    CmServiceAsync s = (CmServiceAsync) Registry.get("cmService");
 	    AddStudentAction action = new AddStudentAction(sm);
-		s.execute(action, new AsyncCallback <StudentModelI> () {
-			
+		s.execute(action, new CmAsyncCallback <StudentModelI> () {
 			public void onSuccess(StudentModelI ai) {
 			    EventBus.getInstance().fireEvent(new CmEvent(EventBus.EVENT_TYPE_USER_PROGRAM_CHANGED,ai.getProgramChanged()));
 			    _window.close();
-        	}
-
-			public void onFailure(Throwable caught) {
-        		String msg = caught.getMessage();
-        		CatchupMathTools.showAlert(msg);
         	}
         });
 	}
@@ -551,21 +535,17 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
 			Boolean passcodeChanged) {
 		CmServiceAsync s = (CmServiceAsync) Registry.get("cmService");
 		
-		CatchupMathTools.setBusy(true);
-		
+		CmBusyManager.setBusy(true, false);
 		UpdateStudentAction action = new UpdateStudentAction(sm,stuChanged,progChanged,progIsNew,passcodeChanged);
-		s.execute(action, new AsyncCallback <StudentModelI> () {
-			
+		s.execute(action, new CmAsyncCallback <StudentModelI> () {
 			public void onSuccess(StudentModelI ai) {
 		        EventBus.getInstance().fireEvent(new CmEvent(EventBus.EVENT_TYPE_USER_PROGRAM_CHANGED,ai.getProgramChanged()));
 		        _window.close();
-		        CatchupMathTools.setBusy(false);
+		        CmBusyManager.setBusy(false);
         	}
-
 			public void onFailure(Throwable caught) {
-				CatchupMathTools.setBusy(false);
-        		String msg = caught.getMessage();
-        		CatchupMathTools.showAlert(msg);
+		        CmBusyManager.setBusy(false);
+				super.onFailure(caught);
         	}
         });
 	}
@@ -681,7 +661,7 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
 		CmServiceAsync s = (CmServiceAsync) Registry.get("cmService");
 		GetChaptersForProgramSubjectAction action = new GetChaptersForProgramSubjectAction(progId, subjId);
 		
-		s.execute(action, new AsyncCallback <CmList<ChapterModel>> () {
+		s.execute(action, new CmAsyncCallback <CmList<ChapterModel>> () {
 
 			public void onSuccess(CmList<ChapterModel> result) {
 				chapStore.add(result);
@@ -693,11 +673,6 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
 					chapCombo.setValue(null);
 					chapCombo.clearSelections();
 				}
-        	}
-
-			public void onFailure(Throwable caught) {
-        		String msg = caught.getMessage();
-        		CatchupMathTools.showAlert(msg);
         	}
         });
 	
