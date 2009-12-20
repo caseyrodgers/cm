@@ -41,13 +41,10 @@ public class CmReportCardDao {
 
 	/**
 	 */
-	 public StudentReportCardModelI getStudentReportCard(Integer studentUid, Date beginDate, Date endDate) throws Exception {
+	 public StudentReportCardModelI getStudentReportCard(final Connection conn, Integer studentUid, Date beginDate, Date endDate) throws Exception {
 
-		 Connection conn = null;
 		 StudentReportCardModelI rval = new StudentReportCardModel();
-
 		 try {
-			 conn = HMConnectionPool.getConnection();
 
 			 // load student info
 			 CmStudentDao stuDao = new CmStudentDao();
@@ -64,7 +61,7 @@ public class CmReportCardDao {
 			 StudentUserProgramModel pm = filteredList.get(0);
 			 String testName = pm.getTestName();
 			 List<String> chapList = pm.getConfig().getChapters();
-			 if (chapList != null) {
+			 if (chapList != null && chapList.size() > 0) {
 				 // getChapters() returns a List - using only the first one
 				 String chapter = chapList.get(0).trim();
 				 String progLongName = buildProgramName(conn, pm, chapter, testName);
@@ -78,7 +75,7 @@ public class CmReportCardDao {
 			 pm = filteredList.get(filteredList.size() - 1);
 			 testName = pm.getTestName();
 			 chapList = pm.getConfig().getChapters();
-			 if (chapList != null) {
+			 if (chapList != null && chapList.size() > 0) {
 				 // getChapters() returns a List - using only the first one
 				 String chapter = chapList.get(0).trim();
 				 String progLongName = buildProgramName(conn, pm, chapter, testName);
@@ -109,7 +106,7 @@ public class CmReportCardDao {
 			 logger.error(String.format("*** Error getting report card for Student uid: %d", studentUid), e);
 			 throw new Exception("*** Error getting student report card data ***");
 		 } finally {
-			 SqlUtilities.releaseResources(null, null, conn);
+			 SqlUtilities.releaseResources(null, null, null);
 		 }
 		 return rval;
 	 }

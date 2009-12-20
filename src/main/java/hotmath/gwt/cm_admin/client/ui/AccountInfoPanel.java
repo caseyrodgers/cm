@@ -1,12 +1,14 @@
 package hotmath.gwt.cm_admin.client.ui;
 
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
+import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.model.AccountInfoModel;
 import hotmath.gwt.cm_tools.client.model.CmAdminDataReader;
 import hotmath.gwt.cm_tools.client.model.CmAdminDataRefresher;
 import hotmath.gwt.cm_tools.client.model.CmAdminModel;
 import hotmath.gwt.cm_tools.client.service.CmServiceAsync;
 import hotmath.gwt.shared.client.rpc.action.GetAccountInfoForAdminUidAction;
+import hotmath.gwt.shared.client.util.CmAsyncCallback;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.Registry;
@@ -14,7 +16,6 @@ import com.extjs.gxt.ui.client.core.XTemplate;
 import com.extjs.gxt.ui.client.util.Util;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.google.gwt.user.client.Element;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HTML;
 
 /**
@@ -97,10 +98,10 @@ public class AccountInfoPanel extends LayoutContainer implements CmAdminDataRefr
         CmServiceAsync s = (CmServiceAsync) Registry.get("cmService");
         GetAccountInfoForAdminUidAction action = new GetAccountInfoForAdminUidAction(uid);
 
-        CatchupMathTools.setBusy(true);
+        CmBusyManager.setBusy(true,false);
         
         Log.info("AccountInfoPanel: reading student info RPC");
-        s.execute(action, new AsyncCallback<AccountInfoModel>() {
+        s.execute(action, new CmAsyncCallback<AccountInfoModel>() {
 
             public void onSuccess(AccountInfoModel ai) {
                 StringBuilder sb = new StringBuilder();
@@ -126,12 +127,12 @@ public class AccountInfoPanel extends LayoutContainer implements CmAdminDataRefr
 
                 Log.info("AccountInfoPanel: student info read succesfully");
                 
-                CatchupMathTools.setBusy(false);
+                CmBusyManager.setBusy(false);
             }
 
             public void onFailure(Throwable caught) {
-            	Log.info("Error loading account info", caught);
-            	CatchupMathTools.setBusy(false);
+            	CmBusyManager.setBusy(false);
+            	super.onFailure(caught);
             }
         });
     }

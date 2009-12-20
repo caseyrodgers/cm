@@ -319,6 +319,15 @@ public class HaTestDao {
 		}
 	}
 	
+	
+	/** Return list of HaTest records for given program, or empty list
+	 *  if no such tests exist.
+	 *  
+	 * @param conn
+	 * @param progList
+	 * @return
+	 * @throws HotMathException
+	 */
 	static public List<HaTest> loadTestsForProgramList(final Connection conn, List<StudentUserProgramModel>progList) throws HotMathException {	    
 
 		String progIds = getProgIdList(progList);
@@ -342,11 +351,7 @@ public class HaTestDao {
 			    __logger.debug("loadTestsForProgramList(): pstat: " + pstat.toString());
 
 			rs = pstat.executeQuery();
-			if(!rs.first()) {
-				throw new HotMathException("Could not load test(s)");
-			}
-			
-			do {
+			while(rs.next()) {
 				HaTest test = new HaTest();
 				test.setTestId(rs.getInt("test_id"));
 				test.setUser(HaUser.lookUser(conn,rs.getInt("user_id"),null));
@@ -373,7 +378,7 @@ public class HaTestDao {
 					test.addPid(pid);
 				}
 				list.add(test);
-			} while(rs.next());
+			};
 
 			return list;
 		}

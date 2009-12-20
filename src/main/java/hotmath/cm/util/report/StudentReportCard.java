@@ -11,6 +11,7 @@ import hotmath.gwt.cm_tools.client.model.StudentReportCardModelI;
 
 import java.awt.Color;
 import java.io.ByteArrayOutputStream;
+import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -77,7 +78,7 @@ public class StudentReportCard {
     private String reportName;
     
     @SuppressWarnings("unchecked")
-    public ByteArrayOutputStream makePdf(String reportId, Integer adminId) throws Exception {
+    public ByteArrayOutputStream makePdf(final Connection conn, String reportId, Integer adminId) throws Exception {
         ByteArrayOutputStream baos = null;
 
         Integer stuUid = -1;
@@ -86,7 +87,7 @@ public class StudentReportCard {
 
         CmAdminDao adminDao = new CmAdminDao();
 
-        AccountInfoModel info = adminDao.getAccountInfo(adminId);
+        AccountInfoModel info = adminDao.getAccountInfo(conn,adminId);
         
         if (info == null) {
             logger.warn("*** Account info is NULL for adminId: " + adminId);
@@ -94,10 +95,10 @@ public class StudentReportCard {
         }
 
         CmReportCardDao rcDao = new CmReportCardDao();
-        StudentReportCardModelI rc = rcDao.getStudentReportCard(stuUid, null, null);
+        StudentReportCardModelI rc = rcDao.getStudentReportCard(conn, stuUid, null, null);
         
         CmStudentDao studentDao = new CmStudentDao();
-        StudentModelI sm = studentDao.getStudentModel(stuUid);
+        StudentModelI sm = studentDao.getStudentModel(conn,stuUid,false);
 
         Document document = new Document();
         baos = new ByteArrayOutputStream();

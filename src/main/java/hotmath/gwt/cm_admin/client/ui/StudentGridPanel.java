@@ -1,6 +1,5 @@
 package hotmath.gwt.cm_admin.client.ui;
 
-import hotmath.gwt.cm_admin.client.CatchupMathAdmin;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.model.CmAdminDataReader;
@@ -32,6 +31,7 @@ import hotmath.gwt.shared.client.rpc.action.GeneratePdfAction.PdfType;
 import hotmath.gwt.shared.client.util.CmAsyncCallback;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -215,6 +215,16 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
                 }
             });
             contextMenu.add(debugUser);
+            
+            MenuItem removeUser = new MenuItem("Unregister Student");
+            removeUser.addSelectionListener(new SelectionListener<MenuEvent>() {
+                public void componentSelected(MenuEvent ce) {
+                    unregisterStudentsRPC(Arrays.asList((StudentModelI)getSelectedStudent()));
+                    contextMenu.hide();
+                }
+            });
+            contextMenu.add(removeUser);
+            
         }
 
         _grid.setContextMenu(contextMenu);
@@ -322,7 +332,7 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
      * 
      */
     private void loginAsSelectedUser() {
-        StudentModelExt sm = _grid.getSelectionModel().getSelectedItem();
+        StudentModelExt sm = getSelectedStudent();
         if (sm == null)
             return;
 
@@ -334,8 +344,17 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
         Window.open(url, "_blank", "location=1,menubar=1,resizable=1");
     }
 
-    private void showDebugInfo() {
+    /** Return the selected student model, or null if none selected
+     * 
+     * @return
+     */
+    private StudentModelExt getSelectedStudent() {
         StudentModelExt sm = _grid.getSelectionModel().getSelectedItem();
+        return sm;
+    }
+    
+    private void showDebugInfo() {
+        StudentModelExt sm = getSelectedStudent();
         if (sm == null)
             return;
 
@@ -661,7 +680,7 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
                     selectedUid = uidToSelect;
                 } else {
                     // used current selection
-                    StudentModelExt sm = _grid.getSelectionModel().getSelectedItem();
+                    StudentModelExt sm = getSelectedStudent();
                     selectedUid = (sm != null) ? sm.getUid() : 0;
                 }
 
@@ -739,9 +758,9 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
     }
 
     protected void unregisterStudentsRPC(List<StudentModelI> smList) {
+        CmBusyManager.setBusy(true, false);
         CmServiceAsync cms = (CmServiceAsync) Registry.get("cmService");
-
-        cms.execute(new UnregisterStudentsAction(smList), new AsyncCallback<StringHolder>() {
+        cms.execute(new UnregisterStudentsAction(smList), new CmAsyncCallback<StringHolder>() {
             public void onSuccess(final StringHolder result) {
                 String response = result.getResponse();
                 StringBuffer sb = new StringBuffer();
@@ -773,14 +792,16 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
                 }
 
                 CatchupMathTools.showAlert(sb.toString());
-                AccountInfoPanel aip = CatchupMathAdmin.getInstance().getAccountInfoPanel();
-                aip.refreshData();
-
+                
+                CmAdminDataReader.getInstance().fireRefreshData();
+                
+                CmBusyManager.setBusy(false);
             }
-
+            
+            @Override
             public void onFailure(Throwable caught) {
-                String msg = caught.getMessage();
-                CatchupMathTools.showAlert(msg);
+                CmBusyManager.setBusy(false);
+                super.onFailure(caught);
             }
         });
     }

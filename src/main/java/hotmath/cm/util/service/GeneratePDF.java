@@ -88,7 +88,14 @@ public class GeneratePDF extends HttpServlet {
 		}
 		else if (type.equals("reportCard")) {
 			StudentReportCard sr = new StudentReportCard();
-			baos = sr.makePdf(reportId, adminId);
+			Connection conn=null;
+			try {
+			    conn = HMConnectionPool.getConnection();
+			    baos = sr.makePdf(conn, reportId, adminId);
+			}
+			finally {
+			    SqlUtilities.releaseResources(null,null,conn);
+			}
 			reportName = sr.getReportName();
 		}
 	    else {
