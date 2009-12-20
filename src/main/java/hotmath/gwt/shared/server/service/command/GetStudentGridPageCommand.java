@@ -20,8 +20,14 @@ import java.util.List;
 import com.extjs.gxt.ui.client.data.PagingLoadConfig;
 
 /**
- * Provide paged access to a given admin's list of students
+ * Provide GXT paged access to a given admin's list of students
  * 
+ * 
+ *  1. maintaining a shared list of all students for a given uid.
+ *  2. creates a subset that might have been filtered.
+ *  3. sort the subset
+ *  4. return the proper page from subset.
+ *  
  * @author casey
  * 
  */
@@ -61,7 +67,7 @@ public class GetStudentGridPageCommand implements
 
         if (action.getGroupFilter() != null) {
             /**
-             * filtered values
+             * filtered values only matching filtered group
              * 
              */
             studentPool = new ArrayList<StudentModelExt>();
@@ -71,7 +77,7 @@ public class GetStudentGridPageCommand implements
             }
         } else {
             /**
-             * unfiltered
+             * unfiltered uses the entire set
              * 
              */
             studentPool = _allStudents;
@@ -103,11 +109,10 @@ public class GetStudentGridPageCommand implements
     public Class<? extends Action<? extends Response>> getActionType() {
         return GetStudentGridPageAction.class;
     }
-
 }
 
 /**
- * Provide soring control the student grid
+ * Provide sorting control for the student grid
  * 
  * @author casey
  * 

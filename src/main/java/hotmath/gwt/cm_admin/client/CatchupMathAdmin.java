@@ -11,6 +11,7 @@ import hotmath.gwt.cm_tools.client.model.CmAdminModel;
 import hotmath.gwt.shared.client.CmLoginAsync;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.model.UserInfoBase;
+import hotmath.gwt.shared.client.util.CmRunAsyncCallback;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.Style.LayoutRegion;
@@ -20,6 +21,7 @@ import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.google.gwt.core.client.EntryPoint;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.History;
@@ -65,12 +67,18 @@ public class CatchupMathAdmin implements EntryPoint, ValueChangeHandler<String> 
 
         RootPanel.get("main-content").add(mainPort);
         
-        CmShared.handleLoginProcessAsync(new CmLoginAsync() {
+        
+        GWT.runAsync(new CmRunAsyncCallback() {
             @Override
-            public void loginSuccessful(Integer uid) {
-                completeLoginProcess(uid);
+            public void onSuccess() {
+                CmShared.handleLoginProcessAsync(new CmLoginAsync() {
+                    @Override
+                    public void loginSuccessful(Integer uid) {
+                        completeLoginProcess(uid);
+                    }
+                });        
             }
-        });        
+        });
     }
 
     private void completeLoginProcess(int uid) {

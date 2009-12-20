@@ -23,7 +23,7 @@ public class WelcomePanel extends LayoutContainer {
     
     Button _goBtn;
     public WelcomePanel() {
-        
+
         setStyleName("cm-welcome-panel");
         setLayout(new CenterLayout());
 
