@@ -73,7 +73,7 @@ public class CmBusyManager {
      * @param trueFalse True to start new busystate, false to complete a corresponding one
      */
     static public void setBusy(boolean trueFalse) {
-    	setBusy(trueFalse,true);
+    	setBusy(trueFalse,false);
     }
     
     
