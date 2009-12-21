@@ -139,6 +139,25 @@ public class GetStudentGridPageCommand implements
         if(checkMatch(sme.getPasscode(), search))
             return true;
         
+        if(checkMatch(sme.getGroup(), search))
+            return true;
+        
+        if(checkMatch(sme.getProgramDescr(), search))
+            return true;
+        
+        if(checkMatch(sme.getStatus(), search))
+            return true;
+        
+        if(checkMatch(sme.getLastQuiz(), search))
+            return true;
+
+        if(checkMatch(sme.getLastLogin(), search))
+            return true;
+
+        if(checkMatch(sme.getTotalUsage(), search))
+            return true;
+
+        
         return false;
     }
     
@@ -149,8 +168,17 @@ public class GetStudentGridPageCommand implements
      * @return
      */
     private boolean checkMatch(String value, String search) {
+        if(value == null)
+            return false;
         return value.toLowerCase().contains(search.toLowerCase());        
     }
+    
+    private boolean checkMatch(Integer value, String search) {
+        if(value == null)
+            return false;
+        return checkMatch(value.toString(), search); 
+    }
+
 
     @Override
     public Class<? extends Action<? extends Response>> getActionType() {
