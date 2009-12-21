@@ -48,7 +48,8 @@ public class GroupSelectorWidget implements CmAdminDataRefresher {
         this.id = id;
         
         /** Only refresh on startup if requested.  This is to prevent loading twice on 
-         * startup of StudentGridPanel ... once in constructure and once with CmAdminDataReader is fired.
+         *  startup of StudentGridPanel ... once in constructor and once when
+         *  CmAdminDataReader is fired.
          * 
          */
         if(loadRpc)

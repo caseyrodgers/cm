@@ -379,7 +379,7 @@
   	  <inplace>true</inplace>
   	  <disableCastChecking>true</disableCastChecking>
 	  <disableClassMetadata>true</disableClassMetadata>
-          <soyc>true</soyc>
+          <soyc>false</soyc>
           <outputDirectory>${basedir}/src/main/webapp/</outputDirectory>
           <modules>
             <module>hotmath.gwt.cm.CatchupMath</module>

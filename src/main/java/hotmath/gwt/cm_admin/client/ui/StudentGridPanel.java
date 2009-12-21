@@ -298,6 +298,7 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
         
         final TextField<String> quickFilter = new TextField<String>();
         quickFilter.setEmptyText("--- Quick Search ---");
+        quickFilter.setToolTip("Enter a text string and press ENTER to search for a given name");
         quickFilter.setFieldLabel("Quick Search");
         quickFilter.addListener(Events.KeyUp, new Listener<FieldEvent>() {
             public void handleEvent(FieldEvent be) {

@@ -82,6 +82,20 @@ public class GetStudentGridPageCommand implements
              */
             studentPool = _allStudents;
         }
+        
+
+        
+        /** Apply quick search if specified */
+        if(action.getQuickSearch() != null) {
+            List<StudentModelExt> qsStudentPool = new ArrayList<StudentModelExt>();
+            for (StudentModelExt sme : studentPool) {
+                if (sme.getName().toLowerCase().contains(action.getQuickSearch().toLowerCase())) {
+                    qsStudentPool.add(sme);
+                }
+            }
+            studentPool = qsStudentPool;
+        }
+        
 
         /**
          * Should the student pool be sorted?

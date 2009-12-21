@@ -12,6 +12,7 @@ public class GetStudentGridPageAction implements Action<CmStudentPagingLoadResul
 	PagingLoadConfig loadConfig;
 	String groupFilter;
 	boolean forceRefresh;
+	String quickSearch;
 	
 	public GetStudentGridPageAction() {}
 	
@@ -50,5 +51,13 @@ public class GetStudentGridPageAction implements Action<CmStudentPagingLoadResul
 
     public void setGroupFilter(String groupFilter) {
         this.groupFilter = groupFilter;
+    }
+
+    public String getQuickSearch() {
+        return quickSearch;
+    }
+
+    public void setQuickSearch(String quickSearch) {
+        this.quickSearch = quickSearch;
     }
 }
