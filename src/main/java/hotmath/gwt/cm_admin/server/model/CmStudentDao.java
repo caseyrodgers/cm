@@ -1000,7 +1000,7 @@ public class CmStudentDao {
             sb.append(rs.getString("activity"));
 
             boolean isQuiz = (rs.getInt("is_quiz") > 0);
-            m.setIsQuiz(isQuiz);
+            m.setIsQuiz(isQuiz);    
             if (isQuiz) {
                 sb.append(sectionNum);
             }
@@ -1017,6 +1017,8 @@ public class CmStudentDao {
                 problemsViewed = 0;
             } else {
                 problemsViewed += rs.getInt("problems_viewed");
+                
+                
                 // TODO: are there always 3 problems per session/lesson?
                 int problemsPerLesson = 3;
                 int completed = problemsViewed / problemsPerLesson;

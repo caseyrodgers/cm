@@ -84,12 +84,14 @@ public class GetStudentGridPageCommand implements
         }
         
 
-        
-        /** Apply quick search if specified */
+        /** apply the quick search algorithm
+         * 
+         */
         if(action.getQuickSearch() != null) {
+            String search = action.getQuickSearch();
             List<StudentModelExt> qsStudentPool = new ArrayList<StudentModelExt>();
             for (StudentModelExt sme : studentPool) {
-                if (sme.getName().toLowerCase().contains(action.getQuickSearch().toLowerCase())) {
+                if (quickSearchMatch(sme,search)) {
                     qsStudentPool.add(sme);
                 }
             }
@@ -109,6 +111,9 @@ public class GetStudentGridPageCommand implements
             }
         }
 
+        /** Extract the page from the entire pool
+         * 
+         */
         int limit = studentPool.size();
         if (config.getLimit() > 0) {
             limit = Math.min(start + action.getLoadConfig().getLimit(), limit);
@@ -117,6 +122,34 @@ public class GetStudentGridPageCommand implements
             sublist.add(studentPool.get(i));
         }
         return new CmStudentPagingLoadResult<StudentModelExt>(sublist, config.getOffset(), studentPool.size());
+
+    }
+    
+    
+    /** run through specialized field searches looking for matches
+     * 
+     * @param sme
+     * @param search
+     * @return
+     */
+    private boolean quickSearchMatch(StudentModelI sme, String search) {
+        if(checkMatch(sme.getName(), search))
+            return true;
+        
+        if(checkMatch(sme.getPasscode(), search))
+            return true;
+        
+        return false;
+    }
+    
+    /** return true if search 'string' is in value 'string'
+     * 
+     * @param value
+     * @param search
+     * @return
+     */
+    private boolean checkMatch(String value, String search) {
+        return value.toLowerCase().contains(search.toLowerCase());        
     }
 
     @Override

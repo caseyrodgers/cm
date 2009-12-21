@@ -61,6 +61,7 @@ import com.extjs.gxt.ui.client.event.SelectionEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.Component;
+import com.extjs.gxt.ui.client.widget.ComponentPlugin;
 import com.extjs.gxt.ui.client.widget.HorizontalPanel;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.MessageBox;
@@ -103,7 +104,7 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
     private String _quickSearch;
     private boolean _forceServerRefresh;
 
-    final PagingLoader<PagingLoadResult<StudentModelExt>> _loader;
+    final PagingLoader<PagingLoadResult<StudentModelExt>> _studentLoader;
     final PagingToolBar _pagingToolBar;
 
     
@@ -125,11 +126,11 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
          * 
          */
         // loader
-        _loader = new BasePagingLoader<PagingLoadResult<StudentModelExt>>(rpcProxy);
-        _loader.setRemoteSort(true);
+        _studentLoader = new BasePagingLoader<PagingLoadResult<StudentModelExt>>(rpcProxy);
+        _studentLoader.setRemoteSort(true);
 
 
-        final ListStore<StudentModelExt> store = new ListStore<StudentModelExt>(_loader);
+        final ListStore<StudentModelExt> store = new ListStore<StudentModelExt>(_studentLoader);
 
         _grid = defineGrid(store, cm);
         _grid.addListener(Events.Attach, new Listener<GridEvent<StudentModelExt>>() {
@@ -153,7 +154,7 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
                     config.setSortField((String) state.get("sortField"));
                     config.setSortDir(SortDir.valueOf((String) state.get("sortDir")));
                 }
-                _loader.load(config);
+                _studentLoader.load(config);
             }
         });
         
@@ -163,7 +164,7 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
 
         LayoutContainer lc = new LayoutContainer(new BorderLayout());
         _pagingToolBar = new PagingToolBar(50);
-        _pagingToolBar.bind(_loader);  
+        _pagingToolBar.bind(_studentLoader);  
         lc.add(_pagingToolBar, new BorderLayoutData(LayoutRegion.SOUTH,30));
         lc.add(_grid, new BorderLayoutData(LayoutRegion.CENTER, 400));
 
@@ -266,7 +267,7 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
                 _groupFilterId = gm.getId().startsWith("---")?null:gm.getId();
                 
                 if(_pagingToolBar.getActivePage() == 1) {
-                    _loader.load();
+                    _studentLoader.load();
                 }
                 else {
                     _pagingToolBar.setActivePage(1);
@@ -294,23 +295,9 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
         lc.add(fp);
         
         fp = new MyFormPanel();
+        fp.setWidth(200);
         fp.setLabelWidth(80);
-        
-        final TextField<String> quickFilter = new TextField<String>();
-        quickFilter.setEmptyText("--- Quick Search ---");
-        quickFilter.setToolTip("Enter a text string and press ENTER to search for a given name");
-        quickFilter.setFieldLabel("Quick Search");
-        quickFilter.addListener(Events.KeyUp, new Listener<FieldEvent>() {
-            public void handleEvent(FieldEvent be) {
-                if(be.getKeyCode() == 13) {
-                    Log.debug("GroupFilter: setting quick search: " + quickFilter.getValue());
-                    _quickSearch = quickFilter.getValue();
-                    _loader.load();
-                }
-            }
-        });
-        
-        fp.add(quickFilter);
+        fp.add(new QuickSearchPanel());
         
         lc.add(fp);
         
@@ -710,7 +697,7 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
         }
         else {
             _forceServerRefresh = true;
-            _loader.load();
+            _studentLoader.load();
         }
         
         if (true)
@@ -910,7 +897,43 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
             /** always reset request options */
             _forceServerRefresh=false;
         }
-    };    
+    };   
+    
+ 
+    /** Create panel to show a quick search text field and clear button
+     * 
+     * @author casey
+     *
+     */
+    class QuickSearchPanel extends HorizontalPanel {
+        public QuickSearchPanel() {
+            final TextField<String> quickFilter = new TextField<String>();
+            quickFilter.setEmptyText("--- Text Search ---");
+            quickFilter.setToolTip("Enter text to match any field");
+            quickFilter.setFieldLabel("Text Search");
+            quickFilter.addListener(Events.KeyUp, new Listener<FieldEvent>() {
+                public void handleEvent(FieldEvent be) {
+                    if(be.getKeyCode() == 13) {
+                         Log.debug("GroupFilter: setting quick search: " + quickFilter.getValue());
+                        _quickSearch = quickFilter.getValue();
+                        _studentLoader.load();
+                    }
+                }
+            });
+            add(quickFilter);
+            Button clear = new Button("clear",new SelectionListener<ButtonEvent>() {
+                public void componentSelected(ButtonEvent ce) {
+                    quickFilter.setValue("");
+                    boolean shouldRefresh = (_quickSearch != null && _quickSearch.length() > 0);
+                    _quickSearch = null;
+                    if(shouldRefresh)
+                        _studentLoader.load();
+                }
+            });
+            clear.setToolTip("Clear text");
+            add(clear);            
+        }
+    }
 }
 
 /** Provides standard button sizing
