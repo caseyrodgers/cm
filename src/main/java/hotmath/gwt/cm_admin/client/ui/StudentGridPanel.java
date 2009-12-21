@@ -58,8 +58,6 @@ import com.extjs.gxt.ui.client.event.SelectionChangedListener;
 import com.extjs.gxt.ui.client.event.SelectionEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.store.ListStore;
-import com.extjs.gxt.ui.client.store.Store;
-import com.extjs.gxt.ui.client.store.StoreFilter;
 import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.MessageBox;
@@ -86,7 +84,6 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefresher, ProcessTracker {
-
     static public StudentGridPanel instance;
 
     private ToolBar toolBar;
@@ -124,6 +121,7 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
         _loader = new BasePagingLoader<PagingLoadResult<StudentModelExt>>(rpcProxy);
         _loader.setRemoteSort(true);
 
+
         final ListStore<StudentModelExt> store = new ListStore<StudentModelExt>(_loader);
 
         _grid = defineGrid(store, cm);
@@ -132,7 +130,9 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
 
                 PagingLoadConfig config = new BasePagingLoadConfig();
                 config.setOffset(0);
-                config.setLimit(50);
+                
+                /** set rows per page */
+                config.setLimit(50); 
 
                 Map<String, Object> state = getState();
                 if (state.containsKey("offset")) {
@@ -287,7 +287,6 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
             @Override
             public void componentSelected(ButtonEvent ce) {
                 GWT.runAsync(new CmRunAsyncCallback() {
-                    
                     @Override
                     public void onSuccess() {
                         new ManageGroupsWindow(_cmAdminMdl).setVisible(true);                    }

@@ -265,7 +265,7 @@ public class ManageGroupsWindow extends CmWindow {
     
     
     private void readRpcData(final Integer adminId) {
-    	CmBusyManager.setBusy(true,false);
+    	CmBusyManager.setBusy(true);
     	
         CmServiceAsync cmService = (CmServiceAsync)Registry.get("cmService");
         cmService.execute(new GetGroupAggregateInfoAction(adminId), new CmAsyncCallback<CmList<GroupInfoModel>>() {
@@ -284,7 +284,7 @@ public class ManageGroupsWindow extends CmWindow {
     
     private void deleteGroup(final Integer adminId, final Integer groupId) {
     	
-    	CmBusyManager.setBusy(true, false);
+    	CmBusyManager.setBusy(true);
     	
         CmServiceAsync cmService = (CmServiceAsync)Registry.get("cmService");
         

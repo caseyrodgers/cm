@@ -1,6 +1,7 @@
 package hotmath.gwt.shared.client.util;
 
-import com.google.gwt.user.client.Window;
+import hotmath.gwt.cm_tools.client.CatchupMathTools;
+
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 abstract public class CmAsyncCallback<T> implements AsyncCallback<T>{
@@ -8,7 +9,7 @@ abstract public class CmAsyncCallback<T> implements AsyncCallback<T>{
 	@Override
 	public void onFailure(Throwable caught) {
 		caught.printStackTrace();
-		Window.alert(caught.getLocalizedMessage());
+		CatchupMathTools.showAlert(caught.getLocalizedMessage());
 	}
 
 	@Override

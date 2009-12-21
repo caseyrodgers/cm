@@ -1,9 +1,9 @@
 package hotmath.gwt.cm_tools.client.ui;
 
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
+import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.data.InmhItemData;
 import hotmath.gwt.cm_tools.client.model.StudentActivityModel;
-import hotmath.gwt.cm_tools.client.model.StudentModel;
 import hotmath.gwt.cm_tools.client.model.StudentModelExt;
 import hotmath.gwt.cm_tools.client.model.StudentShowWorkModel;
 import hotmath.gwt.cm_tools.client.service.CmServiceAsync;
@@ -13,6 +13,7 @@ import hotmath.gwt.cm_tools.client.ui.viewer.ResourceViewerFactory;
 import hotmath.gwt.cm_tools.client.ui.viewer.ShowWorkPanel;
 import hotmath.gwt.shared.client.rpc.action.CmList;
 import hotmath.gwt.shared.client.rpc.action.GetStudentShowWorkAction;
+import hotmath.gwt.shared.client.util.CmAsyncCallback;
 import hotmath.gwt.shared.client.util.UserInfo;
 
 import java.util.List;
@@ -34,7 +35,7 @@ import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
 import com.extjs.gxt.ui.client.widget.layout.CenterLayout;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
-import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -82,7 +83,7 @@ public class StudentShowWorkWindow extends CmWindow {
 
         addButton(closeBtn);
 
-        setVisible(true);
+        setVisible(false);
     }
 
     LayoutContainer westContainer;
@@ -164,11 +165,10 @@ public class StudentShowWorkWindow extends CmWindow {
             	
             	@Override
             	public void onUnavailable() {
-            		
+            	    Window.alert("Resource unavailable");
             	}
             };
-            
-        
+            ResourceViewerFactory.createAsync(client);
             
         } catch (Exception e) {
             Log.error("Error creating Show Work panel for student: " + pid + "," + student.getUid(), e);
@@ -206,24 +206,37 @@ public class StudentShowWorkWindow extends CmWindow {
         
         westContainer.add(lv, new BorderLayoutData(LayoutRegion.CENTER));
         westContainer.layout();
+        
+        setVisible(true);
     }
 
     protected void getStudentShowWorkRPC() {
 
+        CmBusyManager.setBusy(true);
+        
         Log.debug("StudentShowWorkWindow: reading student show work list");
         CmServiceAsync s = (CmServiceAsync) Registry.get("cmService");
         GetStudentShowWorkAction action = new GetStudentShowWorkAction(student.getUid(), activityModel.getRunId());
-        s.execute(action,new AsyncCallback<CmList<StudentShowWorkModel>>() {
+        s.execute(action,new CmAsyncCallback<CmList<StudentShowWorkModel>>() {
 
             public void onSuccess(CmList<StudentShowWorkModel> list) {
-                createDataList(list);
+                
+                if(list.size() == 0) {
+                    CatchupMathTools.showAlert("No show work effort found for this quiz.");
+                    close();
+                }
+                else {
+                    createDataList(list);
+                }
 
                 Log.debug("StudentShowWorkWindow: student show work read successfully");
+                
+                CmBusyManager.setBusy(false);
             }
 
             public void onFailure(Throwable caught) {
-                String msg = caught.getMessage();
-                CatchupMathTools.showAlert(msg);
+                CmBusyManager.setBusy(false);
+                super.onFailure(caught);
             }
         });
     }
