@@ -109,7 +109,7 @@ public class StudentShowWorkWindow extends CmWindow {
 
     private Widget createCenterPanel() {
         centerContainer.setLayout(new CenterLayout());
-        String html = "<h1 style='color: blue;width: 200;margin-'>No problem to show</h1>";
+        String html = "<h1 style='color: blue;width: 200;'>Select an item from the list at left.</h1>";
         centerContainer.add(new Html(html));
         return centerContainer;
     }
@@ -222,7 +222,7 @@ public class StudentShowWorkWindow extends CmWindow {
             public void onSuccess(CmList<StudentShowWorkModel> list) {
                 
                 if(list.size() == 0) {
-                    CatchupMathTools.showAlert("No show work effort found for this quiz.");
+                    CatchupMathTools.showAlert("Student has not entered any answers.");
                     close();
                 }
                 else {
