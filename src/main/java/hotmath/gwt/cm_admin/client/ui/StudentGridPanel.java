@@ -47,8 +47,10 @@ import com.extjs.gxt.ui.client.data.PagingLoadConfig;
 import com.extjs.gxt.ui.client.data.PagingLoadResult;
 import com.extjs.gxt.ui.client.data.PagingLoader;
 import com.extjs.gxt.ui.client.data.RpcProxy;
+import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.Events;
+import com.extjs.gxt.ui.client.event.FieldEvent;
 import com.extjs.gxt.ui.client.event.GridEvent;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.MenuEvent;
@@ -59,11 +61,13 @@ import com.extjs.gxt.ui.client.event.SelectionEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.Component;
+import com.extjs.gxt.ui.client.widget.HorizontalPanel;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.ComboBox;
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
+import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
 import com.extjs.gxt.ui.client.widget.grid.Grid;
@@ -94,11 +98,14 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
 
     private ListStore<GroupModel> groupStore;
     private ComboBox<GroupModel> groupCombo;
+    
+    private String _groupFilterId;
+    private String _quickSearch;
     private boolean _forceServerRefresh;
 
     final PagingLoader<PagingLoadResult<StudentModelExt>> _loader;
     final PagingToolBar _pagingToolBar;
-    private String _groupFilterId;
+
     
     public StudentGridPanel(CmAdminModel cmAdminMdl) {
         this._cmAdminMdl = cmAdminMdl;
@@ -267,16 +274,46 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
             }
         });
 
-        FormPanel fp = new FormPanel();
-        fp.setHeaderVisible(false);
-        fp.setLabelWidth(40);
-        fp.setBorders(false);
-        fp.setFrame(false);
-        fp.setFooter(false);
-        fp.setBodyBorder(false);
-
+        LayoutContainer lc = new HorizontalPanel();
+        
+        class MyFormPanel extends FormPanel {
+            MyFormPanel() {
+                setHeaderVisible(false);
+                setLabelWidth(40);
+                setBorders(false);
+                setFrame(false);
+                setFooter(false);
+                setBodyBorder(false);
+                setBorders(false);
+                setWidth(300);
+            }
+        };
+        
+        FormPanel fp = new MyFormPanel();
         fp.add(groupCombo);
-        return fp;
+        lc.add(fp);
+        
+        fp = new MyFormPanel();
+        fp.setLabelWidth(80);
+        
+        final TextField<String> quickFilter = new TextField<String>();
+        quickFilter.setEmptyText("--- Quick Search ---");
+        quickFilter.setFieldLabel("Quick Search");
+        quickFilter.addListener(Events.KeyUp, new Listener<FieldEvent>() {
+            public void handleEvent(FieldEvent be) {
+                if(be.getKeyCode() == 13) {
+                    Log.debug("GroupFilter: setting quick search: " + quickFilter.getValue());
+                    _quickSearch = quickFilter.getValue();
+                    _loader.load();
+                }
+            }
+        });
+        
+        fp.add(quickFilter);
+        
+        lc.add(fp);
+        
+        return lc;
     }
 
     private Button manageGroupButton(final Grid<StudentModelExt> grid) {
@@ -865,6 +902,7 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
              */
             pageAction.setForceRefresh(_forceServerRefresh);
             pageAction.setGroupFilter(_groupFilterId);
+            pageAction.setQuickSearch(_quickSearch);
             
             s.execute(pageAction, callback);
 
