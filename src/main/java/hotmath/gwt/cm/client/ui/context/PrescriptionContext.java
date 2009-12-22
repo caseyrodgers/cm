@@ -430,10 +430,9 @@ public class PrescriptionContext implements CmContext {
                 + "the last step.  Please use a pencil and paper or our Show-Work feature to try the "
                 + "problems on your own first - that is how you really learn!"
                 + "</li>"
-                + "<li>"
-                + "<b>Enter Your Answer</b> You can type on the keyboard as well as draw with your mouse. "
-                + " The whiteboard saves your attempts at solving the practice problems so you can discuss later "
-                + " with your teacher or tutor or review on your own.  Your teacher may prefer that you show your work in a notebook. "
+                + "<li style='margin-top: 10px'>"
+                + "<b>Using the Whiteboard</b> Use the keyboard or draw with your mouse to enter answers or work out "
+                + "problems. Your work is saved in your account. "
                 + "</li>" + "</ul>";
 
         return html1;
