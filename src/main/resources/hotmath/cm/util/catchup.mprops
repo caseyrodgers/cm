@@ -780,3 +780,26 @@ where  u.uid = ?
 
 
 
+
+
+
+#######################
+#### CmTestRunDao #####
+#######################
+
+
+.key=TEST_RUN_ASSIGNED_LESSON_COMPLETE_COUNT
+
+select count(*) as cnt
+from   HA_TEST_RUN_LESSON 
+where  run_id = ?
+and    date_completed is not null
+
+
+
+.key=TEST_RUN_ASSIGNED_LESSONS_VIEWED_COUNT
+
+select count(*) as cnt
+from   HA_TEST_RUN_LESSON 
+where  run_id = ?
+and    lesson_viewed is not null

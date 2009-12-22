@@ -265,13 +265,8 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
                 // filter grid based on current selection
                 GroupModel gm = se.getSelectedItem();
                 _groupFilterId = gm.getId().startsWith("---")?null:gm.getId();
-                
-                if(_pagingToolBar.getActivePage() == 1) {
-                    _studentLoader.load();
-                }
-                else {
-                    _pagingToolBar.setActivePage(1);
-                }
+
+                loadAndResetStudentLoader();
             }
         });
 
@@ -295,13 +290,24 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
         lc.add(fp);
         
         fp = new MyFormPanel();
-        fp.setWidth(200);
+        fp.setWidth(300);
         fp.setLabelWidth(80);
         fp.add(new QuickSearchPanel());
-        
         lc.add(fp);
         
         return lc;
+    }
+    
+    /** reloads the current page and sets page to 1
+     * 
+     */
+    private void loadAndResetStudentLoader() {
+        if(_pagingToolBar.getActivePage() == 1) {
+            _studentLoader.load();
+        }
+        else {
+            _pagingToolBar.setActivePage(1);
+        }
     }
 
     private Button manageGroupButton(final Grid<StudentModelExt> grid) {
@@ -906,33 +912,55 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
      *
      */
     class QuickSearchPanel extends HorizontalPanel {
+        TextField<String> quickFilter; 
         public QuickSearchPanel() {
-            final TextField<String> quickFilter = new TextField<String>();
+            quickFilter = new TextField<String>();
             quickFilter.setEmptyText("--- Text Search ---");
             quickFilter.setToolTip("Enter text to match any field");
             quickFilter.setFieldLabel("Text Search");
             quickFilter.addListener(Events.KeyUp, new Listener<FieldEvent>() {
                 public void handleEvent(FieldEvent be) {
                     if(be.getKeyCode() == 13) {
-                         Log.debug("GroupFilter: setting quick search: " + quickFilter.getValue());
-                        _quickSearch = quickFilter.getValue();
-                        _studentLoader.load();
+                        applyQuickSearch();
                     }
                 }
             });
             add(quickFilter);
+            
+
+
+            Button submit = new Button("submit",new SelectionListener<ButtonEvent>() {
+                public void componentSelected(ButtonEvent ce) {
+                    applyQuickSearch();
+                }
+            });
+            submit.setToolTip("Apply text search");
+            add(submit);             
             Button clear = new Button("clear",new SelectionListener<ButtonEvent>() {
                 public void componentSelected(ButtonEvent ce) {
                     quickFilter.setValue("");
                     boolean shouldRefresh = (_quickSearch != null && _quickSearch.length() > 0);
                     _quickSearch = null;
                     if(shouldRefresh)
-                        _studentLoader.load();
+                        loadAndResetStudentLoader();
                 }
             });
             clear.setToolTip("Clear text");
-            add(clear);            
+            add(clear);
         }
+        
+        
+        private void applyQuickSearch() {
+            Log.debug("GroupFilter: setting quick search: " + quickFilter.getValue());
+            boolean shouldRefresh = true;
+            if(_quickSearch != null && _quickSearch.equals(quickFilter.getValue()))
+                shouldRefresh = false;
+            
+            if(shouldRefresh) {
+                _quickSearch = quickFilter.getValue();
+                loadAndResetStudentLoader();
+            }
+        }        
     }
 }
 

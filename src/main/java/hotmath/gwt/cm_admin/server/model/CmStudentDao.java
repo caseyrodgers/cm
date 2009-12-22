@@ -1020,8 +1020,9 @@ public class CmStudentDao {
                 
                 
                 // TODO: are there always 3 problems per session/lesson?
+                // programInfo) / problemsPerLesson;
                 int problemsPerLesson = 3;
-                int completed = problemsViewed / problemsPerLesson;
+                int completed =  problemsViewed / problemsPerLesson;  //  new HaTestRunDao().getLessonCompletedCount(conn,runId);
                 int inProgress = 0; // lessonsViewed % problemsPerLesson;
                 int totalSessions = rs.getInt("total_sessions");
 

@@ -138,6 +138,31 @@ public class HaTestRunDao {
         }        
     }
     
+
+    /** return the acount of assigned lessons for this one test run
+     * 
+     * @param conn
+     * @param runId
+     * @return
+     * @throws Exception
+     */
+    public int getLessonsViewedCount(final Connection conn, Integer runId) throws Exception {
+        PreparedStatement pstat=null;
+        try {
+            String sql = CmMultiLinePropertyReader.getInstance().getProperty("TEST_RUN_ASSIGNED_LESSONS_VIEWED_COUNT");
+            pstat = conn.prepareStatement(sql);
+            pstat.setInt(1, runId);
+            
+            String currLesson=null;
+            ResultSet rs = pstat.executeQuery();
+            rs.first();
+            return rs.getInt(1);
+        }
+        finally {
+            SqlUtilities.releaseResources(null,pstat,null);
+        }        
+    }
+    
     
     /** Mark this lesson as being viewed.
      * 
