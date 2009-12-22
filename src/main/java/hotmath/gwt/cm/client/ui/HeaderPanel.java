@@ -1,6 +1,7 @@
 package hotmath.gwt.cm.client.ui;
 
 import hotmath.gwt.cm.client.history.CmHistoryQueue;
+import hotmath.gwt.cm.client.ui.context.ContextChangeMessage;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.ui.CmMainPanel;
 import hotmath.gwt.cm_tools.client.ui.InfoPopupBox;
@@ -87,15 +88,16 @@ public class HeaderPanel extends LayoutContainer {
 		                CmMainPanel.__lastInstance._westPanel.setHeading(context.getContextSubTitle());
 		        }
 		        else if(event.getEventName().equals(EventBus.EVENT_TYPE_TOPIC_CHANGED)) {
-		            
-		            /** Only show modal popup if not in auto test mode 
-		             * 
-		             */
-                    if(CmShared.getQueryParameter("debug") != null || UserInfo.getInstance().isAutoTestMode() || CmHistoryQueue.getInstance().isInitializingToNonStandard())
 		            	GWT.runAsync(new RunAsyncCallback() {
 							@Override
 							public void onSuccess() {
-				                InfoPopupBox.display(new CmInfoConfig("Current Topic", "Current topic is: " + event.getEventData()));
+			                    /** Only show modal popup if not in auto test mode 
+			                     * 
+			                     */
+			                    if(CmShared.getQueryParameter("debug") != null || UserInfo.getInstance().isAutoTestMode() || CmHistoryQueue.getInstance().isInitializingToNonStandard())
+			                        InfoPopupBox.display(new CmInfoConfig("Current Topic", "Current topic is: " + event.getEventData()));
+			                    else
+			                        new ContextChangeMessage((String)event.getEventData());
 							}
 							
 							@Override
