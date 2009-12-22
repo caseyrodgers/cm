@@ -273,8 +273,7 @@ and   g.name = ?
 
 
 ##
-## Class: HaTestRun
-##
+## Class: NONE
 ##
 
 .key=VALID_TEST_RUNS
@@ -285,11 +284,7 @@ JOIN HA_USER u on u.uid = t.user_id
 JOIN  HA_ADMIN a ON a.aid = u.admin_id
 JOIN SUBSCRIBERS s ON s.id = a.subscriber_id
  
- 
-.key=TEST_RUN_LOOK_FOR_TESTS
-##
-##  Return run_ids for a given run
-select run_id from HA_TEST_RUN where test_id = ? order by run_time
+
  
        
        
@@ -404,17 +399,12 @@ from   HA_USER u
         left join HA_TEST_DEF d
            on d.test_def_id = p.test_def_id
              
-             
-             
-             
 ##
-##  Class: HaTestRun 
+## Class: HaTestRunDao
 ##
 ##
-
 
 .key=TEST_RUN_LOOKUP
-
 
 select t.*,
        r.*,
@@ -431,15 +421,13 @@ from   HA_TEST_RUN r
 where  r.run_id = ?
 
 
+.key=TEST_RUN_LOOK_FOR_TESTS
+##
+##  Return run_ids for a given test
+select run_id from HA_TEST_RUN where test_id = ? order by run_time
 
-
-##
-## Class: HaTestRunDao
-##
-##
 
 .key=TEST_RUN_LESSONS
-
 
 select lesson_name, lesson_file,lesson_viewed,date_completed,pid
 from   HA_TEST_RUN_LESSON_PID p
@@ -447,6 +435,53 @@ from   HA_TEST_RUN_LESSON_PID p
     on p.lid = l.id
 where l.run_id = ?
 order by lesson_name, pid
+
+
+.key=TEST_RUN_ASSIGNED_LESSON_COMPLETE_COUNT
+
+select count(*) as cnt
+from   HA_TEST_RUN_LESSON 
+where  run_id = ?
+and    date_completed is not null
+
+
+.key=TEST_RUN_ASSIGNED_LESSONS_VIEWED_COUNT
+
+select count(*) as cnt
+from   HA_TEST_RUN_LESSON 
+where  run_id = ?
+and    lesson_viewed is not null
+
+
+.key=TEST_RUN_LESSON_SET_DATE_COMPLETED
+
+update HA_TEST_RUN_LESSON
+SET    date_completed = now()
+where  run_id = ?
+  and  lesson_name = ?
+  and  date_completed is null
+  
+.key=TEST_RUN_LESSON_SET_LESSON_VIEWED
+  
+update HA_TEST_RUN_LESSON
+set    lesson_viewed = now()
+where  run_id = ? 
+  and  lesson_number = ?
+
+
+.key=TEST_RUN_RESULT_INSERT
+
+insert into HA_TEST_RUN_RESULTS
+(run_id, pid, answer_status, answer_index)
+values(?,?,?,?)
+
+
+.key=TEST_RUN_SET_SESSION_NUMBER
+
+update HA_TEST_RUN
+set    run_session = ?
+where  run_id = ?
+
 
 ##
 ## Class: CmReportCardDao
@@ -778,28 +813,3 @@ from   HA_ADMIN a
          on t.subscriber_id = a.subscriber_id
 where  u.uid = ?
 
-
-
-
-
-
-#######################
-#### CmTestRunDao #####
-#######################
-
-
-.key=TEST_RUN_ASSIGNED_LESSON_COMPLETE_COUNT
-
-select count(*) as cnt
-from   HA_TEST_RUN_LESSON 
-where  run_id = ?
-and    date_completed is not null
-
-
-
-.key=TEST_RUN_ASSIGNED_LESSONS_VIEWED_COUNT
-
-select count(*) as cnt
-from   HA_TEST_RUN_LESSON 
-where  run_id = ?
-and    lesson_viewed is not null
