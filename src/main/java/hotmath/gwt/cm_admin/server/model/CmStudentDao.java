@@ -19,6 +19,7 @@ import hotmath.gwt.shared.client.util.CmRpcException;
 import hotmath.testset.ha.CmProgram;
 import hotmath.testset.ha.HaTestDefDescription;
 import hotmath.testset.ha.HaTestRun;
+import hotmath.testset.ha.HaTestRunDao;
 import hotmath.util.HMConnectionPool;
 import hotmath.util.sql.SqlUtilities;
 
@@ -1022,7 +1023,7 @@ public class CmStudentDao {
                 // TODO: are there always 3 problems per session/lesson?
                 // programInfo) / problemsPerLesson;
                 int problemsPerLesson = 3;
-                int completed =  problemsViewed / problemsPerLesson;  //  new HaTestRunDao().getLessonCompletedCount(conn,runId);
+                int completed =  new HaTestRunDao().getLessonsViewedCount(conn, runId);// problemsViewed / problemsPerLesson;  //  new HaTestRunDao().getLessonCompletedCount(conn,runId);
                 int inProgress = 0; // lessonsViewed % problemsPerLesson;
                 int totalSessions = rs.getInt("total_sessions");
 

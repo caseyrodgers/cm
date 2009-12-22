@@ -43,16 +43,17 @@ import com.extjs.gxt.ui.client.Style.SelectionMode;
 import com.extjs.gxt.ui.client.Style.SortDir;
 import com.extjs.gxt.ui.client.data.BasePagingLoadConfig;
 import com.extjs.gxt.ui.client.data.BasePagingLoader;
+import com.extjs.gxt.ui.client.data.LoadEvent;
 import com.extjs.gxt.ui.client.data.PagingLoadConfig;
 import com.extjs.gxt.ui.client.data.PagingLoadResult;
 import com.extjs.gxt.ui.client.data.PagingLoader;
 import com.extjs.gxt.ui.client.data.RpcProxy;
-import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.FieldEvent;
 import com.extjs.gxt.ui.client.event.GridEvent;
 import com.extjs.gxt.ui.client.event.Listener;
+import com.extjs.gxt.ui.client.event.LoadListener;
 import com.extjs.gxt.ui.client.event.MenuEvent;
 import com.extjs.gxt.ui.client.event.MessageBoxEvent;
 import com.extjs.gxt.ui.client.event.SelectionChangedEvent;
@@ -61,7 +62,6 @@ import com.extjs.gxt.ui.client.event.SelectionEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.Component;
-import com.extjs.gxt.ui.client.widget.ComponentPlugin;
 import com.extjs.gxt.ui.client.widget.HorizontalPanel;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.MessageBox;
@@ -99,7 +99,7 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
 
     private ListStore<GroupModel> groupStore;
     private ComboBox<GroupModel> groupCombo;
-    
+
     private String _groupFilterId;
     private String _quickSearch;
     private boolean _forceServerRefresh;
@@ -107,7 +107,6 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
     final PagingLoader<PagingLoadResult<StudentModelExt>> _studentLoader;
     final PagingToolBar _pagingToolBar;
 
-    
     public StudentGridPanel(CmAdminModel cmAdminMdl) {
         this._cmAdminMdl = cmAdminMdl;
 
@@ -120,7 +119,7 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
          * 
          */
         StudentGridRpcProxy rpcProxy = new StudentGridRpcProxy();
-        
+
         /**
          * Create a load to do the actual loading
          * 
@@ -129,6 +128,7 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
         _studentLoader = new BasePagingLoader<PagingLoadResult<StudentModelExt>>(rpcProxy);
         _studentLoader.setRemoteSort(true);
 
+        _studentLoader.addLoadListener(new StudentLoadListener());
 
         final ListStore<StudentModelExt> store = new ListStore<StudentModelExt>(_studentLoader);
 
@@ -138,9 +138,9 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
 
                 PagingLoadConfig config = new BasePagingLoadConfig();
                 config.setOffset(0);
-                
+
                 /** set rows per page */
-                config.setLimit(50); 
+                config.setLimit(50);
 
                 Map<String, Object> state = getState();
                 if (state.containsKey("offset")) {
@@ -157,15 +157,15 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
                 _studentLoader.load(config);
             }
         });
-        
+
         _grid.setStyleName("student-grid-panel-grid");
 
         add(createToolbar(), new BorderLayoutData(LayoutRegion.NORTH, 30));
 
         LayoutContainer lc = new LayoutContainer(new BorderLayout());
         _pagingToolBar = new PagingToolBar(50);
-        _pagingToolBar.bind(_studentLoader);  
-        lc.add(_pagingToolBar, new BorderLayoutData(LayoutRegion.SOUTH,30));
+        _pagingToolBar.bind(_studentLoader);
+        lc.add(_pagingToolBar, new BorderLayoutData(LayoutRegion.SOUTH, 30));
         lc.add(_grid, new BorderLayoutData(LayoutRegion.CENTER, 400));
 
         add(lc, new BorderLayoutData(LayoutRegion.CENTER));
@@ -202,16 +202,16 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
                 }
             });
             contextMenu.add(debugUser);
-            
+
             MenuItem removeUser = new MenuItem("Unregister Student");
             removeUser.addSelectionListener(new SelectionListener<MenuEvent>() {
                 public void componentSelected(MenuEvent ce) {
-                    unregisterStudentsRPC(Arrays.asList((StudentModelI)getSelectedStudent()));
+                    unregisterStudentsRPC(Arrays.asList((StudentModelI) getSelectedStudent()));
                     contextMenu.hide();
                 }
             });
             contextMenu.add(removeUser);
-            
+
         }
 
         _grid.setContextMenu(contextMenu);
@@ -264,14 +264,14 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
 
                 // filter grid based on current selection
                 GroupModel gm = se.getSelectedItem();
-                _groupFilterId = gm.getId().startsWith("---")?null:gm.getId();
+                _groupFilterId = gm.getId().startsWith("---") ? null : gm.getId();
 
                 loadAndResetStudentLoader();
             }
         });
 
         LayoutContainer lc = new HorizontalPanel();
-        
+
         class MyFormPanel extends FormPanel {
             MyFormPanel() {
                 setHeaderVisible(false);
@@ -283,29 +283,30 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
                 setBorders(false);
                 setWidth(300);
             }
-        };
-        
+        }
+        ;
+
         FormPanel fp = new MyFormPanel();
         fp.add(groupCombo);
         lc.add(fp);
-        
+
         fp = new MyFormPanel();
         fp.setWidth(300);
         fp.setLabelWidth(80);
         fp.add(new QuickSearchPanel());
         lc.add(fp);
-        
+
         return lc;
     }
-    
-    /** reloads the current page and sets page to 1
+
+    /**
+     * reloads the current page and sets page to 1
      * 
      */
     private void loadAndResetStudentLoader() {
-        if(_pagingToolBar.getActivePage() == 1) {
+        if (_pagingToolBar.getActivePage() == 1) {
             _studentLoader.load();
-        }
-        else {
+        } else {
             _pagingToolBar.setActivePage(1);
         }
     }
@@ -320,7 +321,8 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
                 GWT.runAsync(new CmRunAsyncCallback() {
                     @Override
                     public void onSuccess() {
-                        new ManageGroupsWindow(_cmAdminMdl).setVisible(true);                    }
+                        new ManageGroupsWindow(_cmAdminMdl).setVisible(true);
+                    }
                 });
             }
         });
@@ -358,7 +360,8 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
         Window.open(url, "_blank", "location=1,menubar=1,resizable=1");
     }
 
-    /** Return the selected student model, or null if none selected
+    /**
+     * Return the selected student model, or null if none selected
      * 
      * @return
      */
@@ -366,7 +369,7 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
         StudentModelExt sm = _grid.getSelectionModel().getSelectedItem();
         return sm;
     }
-    
+
     private void showDebugInfo() {
         StudentModelExt sm = getSelectedStudent();
         if (sm == null)
@@ -398,7 +401,7 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
                     @Override
                     public void componentSelected(MenuEvent ce) {
                         GWT.runAsync(new CmRunAsyncCallback() {
-                            
+
                             @Override
                             public void onSuccess() {
                                 new RegisterStudent(null, _cmAdminMdl).showWindow();
@@ -440,10 +443,11 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
             @Override
             public void componentSelected(MenuEvent ce) {
                 GWT.runAsync(new CmRunAsyncCallback() {
-                    
+
                     @Override
                     public void onSuccess() {
-                        new BulkStudentRegistrationWindow(null, _cmAdminMdl);                    }
+                        new BulkStudentRegistrationWindow(null, _cmAdminMdl);
+                    }
                 });
             }
         }));
@@ -454,7 +458,7 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
                         GWT.runAsync(new CmRunAsyncCallback() {
                             @Override
                             public void onSuccess() {
-                                new AutoRegisterStudentSetup(null, _cmAdminMdl);                                
+                                new AutoRegisterStudentSetup(null, _cmAdminMdl);
                             }
                         });
                     }
@@ -496,13 +500,13 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
                     GWT.runAsync(new CmRunAsyncCallback() {
                         @Override
                         public void onSuccess() {
-                            new StudentDetailsWindow(se.getModel());                        }
+                            new StudentDetailsWindow(se.getModel());
+                        }
                     });
                 }
             }
         });
 
-        
         grid.setWidth("500px");
         grid.setHeight("300px");
         grid.setStateful(true);
@@ -537,7 +541,7 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
             GWT.runAsync(new CmRunAsyncCallback() {
                 @Override
                 public void onSuccess() {
-                    new RegisterStudent(sm, _cmAdminMdl).showWindow();                    
+                    new RegisterStudent(sm, _cmAdminMdl).showWindow();
                 }
             });
         }
@@ -557,10 +561,10 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
                     GWT.runAsync(new CmRunAsyncCallback() {
                         @Override
                         public void onSuccess() {
-                            new StudentDetailsWindow(l.get(0));                            
+                            new StudentDetailsWindow(l.get(0));
                         }
                     });
-                    
+
                 }
             }
         });
@@ -618,10 +622,11 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
                     studentUids.add(store.getAt(i).getUid());
                 }
                 GWT.runAsync(new CmRunAsyncCallback() {
-                    
+
                     @Override
                     public void onSuccess() {
-                        new PdfWindow(_cmAdminMdl.getId(), "Catchup Math Student Summary Report", new GeneratePdfAction(PdfType.STUDENT_SUMMARY, _cmAdminMdl.getId(), studentUids));                        
+                        new PdfWindow(_cmAdminMdl.getId(), "Catchup Math Student Summary Report",
+                                new GeneratePdfAction(PdfType.STUDENT_SUMMARY, _cmAdminMdl.getId(), studentUids));
                     }
                 });
             }
@@ -692,20 +697,21 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
         return cm;
     }
 
-    boolean hasBeenInitialized=false;
+    boolean hasBeenInitialized = false;
+
     protected void getStudentsRPC(Integer uid, final ListStore<StudentModelExt> store, final Integer uidToSelect) {
 
-        /** do not do this the first time, because the paging loader will initialize the data set, we will use
-         * this call to refresh its view.
+        /**
+         * do not do this the first time, because the paging loader will
+         * initialize the data set, we will use this call to refresh its view.
          */
-        if(!hasBeenInitialized) {
-            hasBeenInitialized=true;
-        }
-        else {
+        if (!hasBeenInitialized) {
+            hasBeenInitialized = true;
+        } else {
             _forceServerRefresh = true;
             _studentLoader.load();
         }
-        
+
         if (true)
             return;
 
@@ -803,7 +809,8 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
         });
     }
 
-    /** Unregister named students
+    /**
+     * Unregister named students
      * 
      * @TODO: rewrite using appropriate result object instead of JSON.
      * 
@@ -844,12 +851,12 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
                 }
 
                 CatchupMathTools.showAlert(sb.toString());
-                
+
                 CmAdminDataReader.getInstance().fireRefreshData();
-                
+
                 CmBusyManager.setBusy(false);
             }
-            
+
             @Override
             public void onFailure(Throwable caught) {
                 CmBusyManager.setBusy(false);
@@ -872,15 +879,13 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
     public void finish() {
         // empty impl
     }
-    
-    
 
     /**
      * Create proxy to handle the paged student grid RPC calls
      * 
      */
     class StudentGridRpcProxy extends RpcProxy<CmStudentPagingLoadResult<StudentModelExt>> {
-        
+
         @Override
         public void load(Object loadConfig, AsyncCallback<CmStudentPagingLoadResult<StudentModelExt>> callback) {
             /**
@@ -888,31 +893,34 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
              * 
              */
             CmServiceAsync s = (CmServiceAsync) Registry.get("cmService");
-            GetStudentGridPageAction pageAction = new GetStudentGridPageAction(_cmAdminMdl.getId(),(PagingLoadConfig)loadConfig);
-            
-            /** setup request for special handling
-             *  
-             *  use module vars to hold request options
+            GetStudentGridPageAction pageAction = new GetStudentGridPageAction(_cmAdminMdl.getId(),
+                    (PagingLoadConfig) loadConfig);
+
+            /**
+             * setup request for special handling
+             * 
+             * use module vars to hold request options
              */
             pageAction.setForceRefresh(_forceServerRefresh);
             pageAction.setGroupFilter(_groupFilterId);
             pageAction.setQuickSearch(_quickSearch);
-            
+
             s.execute(pageAction, callback);
 
             /** always reset request options */
-            _forceServerRefresh=false;
+            _forceServerRefresh = false;
         }
-    };   
-    
- 
-    /** Create panel to show a quick search text field and clear button
+    };
+
+    /**
+     * Create panel to show a quick search text field and clear button
      * 
      * @author casey
-     *
+     * 
      */
     class QuickSearchPanel extends HorizontalPanel {
-        TextField<String> quickFilter; 
+        TextField<String> quickFilter;
+
         public QuickSearchPanel() {
             quickFilter = new TextField<String>();
             quickFilter.setEmptyText("--- Text Search ---");
@@ -920,54 +928,99 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
             quickFilter.setFieldLabel("Text Search");
             quickFilter.addListener(Events.KeyUp, new Listener<FieldEvent>() {
                 public void handleEvent(FieldEvent be) {
-                    if(be.getKeyCode() == 13) {
+                    if (be.getKeyCode() == 13) {
                         applyQuickSearch();
                     }
                 }
             });
             add(quickFilter);
-            
 
-
-            Button submit = new Button("submit",new SelectionListener<ButtonEvent>() {
+            Button submit = new Button("submit", new SelectionListener<ButtonEvent>() {
                 public void componentSelected(ButtonEvent ce) {
                     applyQuickSearch();
                 }
             });
             submit.setToolTip("Apply text search");
-            add(submit);             
-            Button clear = new Button("clear",new SelectionListener<ButtonEvent>() {
+            add(submit);
+            Button clear = new Button("clear", new SelectionListener<ButtonEvent>() {
                 public void componentSelected(ButtonEvent ce) {
                     quickFilter.setValue("");
                     boolean shouldRefresh = (_quickSearch != null && _quickSearch.length() > 0);
                     _quickSearch = null;
-                    if(shouldRefresh)
+                    if (shouldRefresh)
                         loadAndResetStudentLoader();
                 }
             });
             clear.setToolTip("Clear text");
             add(clear);
         }
-        
-        
+
         private void applyQuickSearch() {
             Log.debug("GroupFilter: setting quick search: " + quickFilter.getValue());
             boolean shouldRefresh = true;
-            if(_quickSearch != null && _quickSearch.equals(quickFilter.getValue()))
+            if (_quickSearch != null && _quickSearch.equals(quickFilter.getValue()))
                 shouldRefresh = false;
-            
-            if(shouldRefresh) {
+
+            if (shouldRefresh) {
                 _quickSearch = quickFilter.getValue();
                 loadAndResetStudentLoader();
             }
-        }        
+        }
+    }
+
+    /** monitor selected row and reset after reload
+     * 
+     * @author casey
+     *
+     */
+    class StudentLoadListener extends LoadListener {
+        StudentModelExt selected;
+
+        public StudentLoadListener() {
+        }
+
+        @Override
+        public void loaderBeforeLoad(LoadEvent le) {
+            /** capture selected row */
+            selected = _grid.getSelectionModel().getSelectedItem();
+        }
+
+        @Override
+        public void loaderLoad(LoadEvent le) {
+            if (selected != null) {
+                Integer uid = selected.getUid();
+                for (int i = 0, t = _grid.getStore().getModels().size(); i < t; i++) {
+                    if (_grid.getStore().getAt(i).getUid() == uid) {
+                        _grid.getSelectionModel().select(_grid.getStore().getAt(i), false);
+
+                        /**
+                         * Must set in separate thread for this to work due to
+                         * GXT bug in setting the selected row on layout() which
+                         * overrides this action. This is the only way I could
+                         * get the currently selected row re-selected on
+                         * refresh.
+                         * 
+                         * @TODO: recheck this condition on next GXT build.
+                         */
+                        final int visRow = i;
+                        new Timer() {
+                            public void run() {
+                                _grid.getView().ensureVisible(visRow, 0, true);
+                            }
+                        }.schedule(1);
+                        break;
+                    }
+                }
+            }
+        }
     }
 }
 
-/** Provides standard button sizing
+/**
+ * Provides standard button sizing
  * 
  * @author casey
- *
+ * 
  */
 class StudenPanelButton extends Button {
     public StudenPanelButton(String name) {
