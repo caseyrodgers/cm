@@ -1019,11 +1019,9 @@ public class CmStudentDao {
             } else {
                 problemsViewed += rs.getInt("problems_viewed");
                 
+                // was: problemsViewed / problemsPerLesson;
+                int completed =  new HaTestRunDao().getLessonsViewedCount(conn, runId);
                 
-                // TODO: are there always 3 problems per session/lesson?
-                // programInfo) / problemsPerLesson;
-                int problemsPerLesson = 3;
-                int completed =  new HaTestRunDao().getLessonsViewedCount(conn, runId);// problemsViewed / problemsPerLesson;  //  new HaTestRunDao().getLessonCompletedCount(conn,runId);
                 int inProgress = 0; // lessonsViewed % problemsPerLesson;
                 int totalSessions = rs.getInt("total_sessions");
 
