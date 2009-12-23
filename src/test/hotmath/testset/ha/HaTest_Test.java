@@ -45,7 +45,7 @@ public class HaTest_Test extends CmDbTestCase{
         
         assertTrue(testRun.getTestRunResults().size() > 0);
         
-        HaTestRun run = HaTestRun.lookupTestRun(conn,testRun.getRunId());
+        HaTestRun run = new HaTestRunDao().lookupTestRun(conn,testRun.getRunId());
         String pidss = run.getPidList();
         assertNotNull(pidss);        
     }   

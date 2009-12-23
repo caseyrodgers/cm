@@ -13,7 +13,9 @@ import hotmath.testset.ha.HaTestDao;
 import hotmath.testset.ha.HaTestDef;
 import hotmath.testset.ha.HaTestDefDao;
 import hotmath.testset.ha.HaTestRun;
+import hotmath.testset.ha.HaTestRunDao;
 import hotmath.testset.ha.HaUser;
+import hotmath.gwt.cm.server.DbTestCase;
 
 public class CmDbTestCase extends DbTestCase {
     
@@ -75,7 +77,7 @@ public class CmDbTestCase extends DbTestCase {
     
     public AssessmentPrescription setupDemoAccountPrescription() throws Exception {
 
-        HaTestRun testRun = HaTestRun.lookupTestRun(conn, setupDemoAccountTestRun().getRunId());
+        HaTestRun testRun = new HaTestRunDao().lookupTestRun(conn, setupDemoAccountTestRun().getRunId());
         
         int c =  testRun.getAnsweredCorrect();
         int i = testRun.getAnsweredIncorrect();
