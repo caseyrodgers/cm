@@ -6,7 +6,7 @@ import hotmath.gwt.shared.client.rpc.action.SetInmhItemAsViewedAction;
 import hotmath.gwt.shared.client.util.CmRpcException;
 import hotmath.gwt.shared.client.util.RpcData;
 import hotmath.gwt.shared.server.service.ActionHandler;
-import hotmath.testset.ha.HaTestRun;
+import hotmath.testset.ha.HaTestRunDao;
 import hotmath.util.sql.SqlUtilities;
 
 import java.sql.Connection;
@@ -33,7 +33,7 @@ public class SetInmhItemAsViewedCommand implements ActionHandler<SetInmhItemAsVi
             pstat.setString(2, action.getType());
             pstat.setString(3, action.getFile());
             pstat.setTimestamp(4, new Timestamp(System.currentTimeMillis()));
-            pstat.setInt(5, HaTestRun.lookupTestRun(conn, action.getRunId()).getHaTest().getUser().getActiveTestRunSession());
+            pstat.setInt(5, new HaTestRunDao().lookupTestRun(conn, action.getRunId()).getHaTest().getUser().getActiveTestRunSession());
 
             int cnt = pstat.executeUpdate();
             if (cnt != 1)

@@ -9,8 +9,8 @@ import hotmath.gwt.shared.client.util.RpcData;
 import hotmath.gwt.shared.server.service.ActionDispatcher;
 import hotmath.gwt.shared.server.service.ActionHandler;
 import hotmath.testset.ha.HaTestRun;
+import hotmath.testset.ha.HaTestRunDao;
 import hotmath.testset.ha.HaTestRunResult;
-import hotmath.util.HMConnectionPool;
 import hotmath.util.Jsonizer;
 import hotmath.util.sql.SqlUtilities;
 
@@ -30,7 +30,7 @@ public class GetQuizResultsHtmlCommand implements ActionHandler<GetQuizResultsHt
     @Override
     public RpcData execute(final Connection conn, GetQuizResultsHtmlAction action) throws CmRpcException {
         try {
-            HaTestRun testRun = HaTestRun.lookupTestRun(conn, action.getRunId());
+            HaTestRun testRun = new HaTestRunDao().lookupTestRun(conn, action.getRunId());
             
             List<HaTestRunResult> results = testRun.getTestRunResults();
             String resultJson = "";
