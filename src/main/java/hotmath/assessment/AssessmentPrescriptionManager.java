@@ -5,6 +5,7 @@ import hotmath.cm.util.CmCacheManager.CacheName;
 import hotmath.testset.ha.HaTest;
 import hotmath.testset.ha.HaTestDao;
 import hotmath.testset.ha.HaTestRun;
+import hotmath.testset.ha.HaTestRunDao;
 
 import java.sql.Connection;
 
@@ -54,7 +55,7 @@ public class AssessmentPrescriptionManager {
 			// create new one and store in map
 			
 			// first need to lookup the test for this run
-			HaTestRun testRun = HaTestRun.lookupTestRun(conn, runId);
+			HaTestRun testRun = new HaTestRunDao().lookupTestRun(conn, runId);
 			
 			pres = AssessmentPrescriptionFactory.create(conn, testRun);
 			pres.setTestRun(testRun);
