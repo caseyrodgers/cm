@@ -20,16 +20,15 @@ public class HaTestRunDao_Test extends CmDbTestCase {
         
         assertTrue(lessons.get(1).getViewed());
     } 
-    
-    
+
+
     public void testAddLessons() throws Exception {
         AssessmentPrescription p = setupDemoAccountPrescription();
         
         new HaTestRunDao().addLessonsToTestRun(conn,_testRun, p.getSessions());
     }
-    
 
-    
+
     public void testGetTestRunLessons() throws Exception  {
         HaTestRun testRun = (_testRun != null?_testRun:setupDemoAccountTestRun());
         
