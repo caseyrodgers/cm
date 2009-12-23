@@ -27,7 +27,7 @@ import org.apache.log4j.Logger;
 /**
  * defines data access methods for HaTest
  * 
- * @author bob
+ * @author Bob
  *
  */
 
@@ -250,8 +250,10 @@ public class HaTestDao {
 			pstat = conn.prepareStatement(sql);
 			pstat.setInt(1,testId);
 			rs = pstat.executeQuery();
-			if(!rs.first())
+			if(!rs.first()) {
+				__logger.warn("Could not load test for testId: " + testId);
 				throw new HotMathException("Could not load test");
+			}
 
 			HaTest test = new HaTest();
 			test.setTestId(rs.getInt("test_id"));
@@ -587,7 +589,7 @@ public class HaTestDao {
 	        while(rs.next()) {
 	            HaTest test = HaTestDao.loadTest(conn, rs.getInt("user_prog_id"));
 	            
-	            List<HaTestRun> testRuns = HaTestRun.lookupTestRunsForTest(conn,rs.getInt("test_id"));
+	            List<HaTestRun> testRuns = new HaTestRunDao().lookupTestRunsForTest(conn,rs.getInt("test_id"));
 	            test.setTestRuns(testRuns);
 	            
 	            tests.add(test);
