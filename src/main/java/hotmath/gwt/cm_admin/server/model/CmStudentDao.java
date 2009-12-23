@@ -193,7 +193,7 @@ public class CmStudentDao {
     		rs = ps.executeQuery();
     		
     		if (rs.next()) {
-    			l = loadLessonItems(runId, rs);
+    			l = loadLessonItems(conn, runId, rs);
     			sortLessonItems(l);
     		}
     	}
@@ -969,7 +969,8 @@ public class CmStudentDao {
         List<StudentActivityModel> l = new ArrayList<StudentActivityModel>();
         int problemsViewed = 0;
         
-        CmAdminDao dao = null;
+        CmAdminDao cmaDao = new CmAdminDao();
+        HaTestRunDao trDao = new HaTestRunDao();
 
         while (rs.next()) {
             StudentActivityModel m = new StudentActivityModel();
@@ -982,10 +983,9 @@ public class CmStudentDao {
             String progId = rs.getString("prog_id");
 
             if (progId.equalsIgnoreCase("chap")) {
-            	if (dao == null) dao = new CmAdminDao();
             	String subjId = rs.getString("subj_id");
                 String chapter = getChapter(rs.getString("test_config_json"));
-		        List <ChapterModel> cmList = dao.getChaptersForProgramSubject(conn, "Chap", subjId);
+		        List <ChapterModel> cmList = cmaDao.getChaptersForProgramSubject(conn, "Chap", subjId);
 		        for (ChapterModel cm : cmList) {
 		        	if (cm.getTitle().equals(chapter)) {
 		        		m.setProgramDescr(new StringBuilder(m.getProgramDescr()).append(" ").append(cm.getNumber()).toString());
@@ -1019,8 +1019,8 @@ public class CmStudentDao {
             } else {
                 problemsViewed += rs.getInt("problems_viewed");
                 
-                // was: problemsViewed / problemsPerLesson;
-                int completed =  new HaTestRunDao().getLessonsViewedCount(conn, runId);
+                // was: problemsViewed / problemsPerLesson; // where problemsPerLesson assumed to be always equal to 3
+                int completed =  trDao.getLessonsViewedCount(conn, runId);
                 
                 int inProgress = 0; // lessonsViewed % problemsPerLesson;
                 int totalSessions = rs.getInt("total_sessions");
@@ -1092,21 +1092,13 @@ public class CmStudentDao {
      * @return
      * @throws Exception
      */
-    private List<LessonItemModel> loadLessonItems(Integer runId, ResultSet rs) throws Exception {
+    private List<LessonItemModel> loadLessonItems(final Connection conn, Integer runId, ResultSet rs) throws Exception {
         
     	List<LessonItemModel> l = new ArrayList<LessonItemModel>();
 
 	    HaTestDefDescription tdDesc = null;
-	    Connection conn = null;
-	    try {
-	        conn = HMConnectionPool.getConnection();
-	        
-	        HaTestRun testRun = HaTestRun.lookupTestRun(conn, runId);	        
-	        tdDesc = HaTestDefDescription.getHaTestDefDescription(testRun);
-	    }
-	    finally {
-	        SqlUtilities.releaseResources(null,null,conn);
-	    }
+	    HaTestRun testRun = new HaTestRunDao().lookupTestRun(conn, runId);	        
+	    tdDesc = HaTestDefDescription.getHaTestDefDescription(testRun);
 
 		// identify incomplete topics
 		Set <String> assignedTopics = new HashSet<String>();
