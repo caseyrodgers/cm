@@ -1,14 +1,6 @@
 package hotmath.testset.ha;
 
-import hotmath.HotMathException;
-import hotmath.cm.util.CmMultiLinePropertyReader;
-import hotmath.util.HMConnectionPool;
-import hotmath.util.sql.SqlUtilities;
-
 import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,19 +30,9 @@ public class HaTestRun {
     }
 
     public void setSessionNumber(final Connection conn, int sn) throws Exception {
-        this.sessionNumber = sn;
-        PreparedStatement pstat = null;
-        try {
-            String sql = "update HA_TEST_RUN set run_session = ? where run_id = ?";
-            pstat = conn.prepareStatement(sql);
-            pstat.setInt(1, sn);
-            pstat.setInt(2, this.runId);
-            int cnt = pstat.executeUpdate();
-            if (cnt != 1)
-                throw new HotMathException("Could not update session_number for run_id = " + this.runId);
-        } finally {
-            SqlUtilities.releaseResources(null, pstat, null);
-        }
+    	HaTestRunDao dao = new HaTestRunDao();
+    	dao.setSessionNumber(conn, runId, sn);
+    	this.sessionNumber = sn;
     }
 
     public int getAnsweredCorrect() {
@@ -108,70 +90,15 @@ public class HaTestRun {
      * @throws Exception
      */
     public void transferCurrentToTestRun(final Connection conn) throws Exception {
-        removeAllQuizResponses(conn);
+        HaTestRunDao dao = new HaTestRunDao();
+
+        // @TODO: why is this needed?  Is this not a new (empty) run?
+        dao.removeAllQuizResponses(conn, this.runId);
 
         List<HaTestRunResult> currentSelections = HaTestDao.getTestCurrentResponses(conn, getHaTest().getTestId());
+ 
         for (HaTestRunResult tr : currentSelections) {
-            addRunResult(conn, tr.getPid(), tr.getResult(),tr.getResponseIndex());
-        }
-    }
-
-    /** Remove any current results for this test run
-     * 
-     * @TODO: why is this needed?  Is this not a new (empty) run?
-     * 
-     * @param conn
-     * @throws Exception
-     */
-    private void removeAllQuizResponses(Connection conn) throws Exception {
-        Statement stmt = null;
-        try {
-            stmt = conn.createStatement();
-            stmt.execute("delete from HA_TEST_RUN_RESULTS where run_id = " + getRunId());
-        } finally {
-            SqlUtilities.releaseResources(null, stmt,null);
-        }
-    }
-
-    public HaTestRunResult addRunResult(final Connection conn, String pid, String answerStatus, int answerIndex) throws HotMathException {
-        PreparedStatement pstat = null;
-        ResultSet rs = null;
-        try {
-            String sql = "insert into HA_TEST_RUN_RESULTS(run_id, pid, answer_status, answer_index)values(?,?,?,?)";
-            pstat = conn.prepareStatement(sql);
-            HaTestRunResult testRun = new HaTestRunResult();
-
-            pstat.setInt(1, this.runId);
-            pstat.setString(2, pid);
-            pstat.setString(3, answerStatus);
-            pstat.setInt(4, answerIndex);
-
-            int cnt = pstat.executeUpdate();
-            if (cnt != 1)
-                throw new HotMathException("Could not create new test run result for: " + runId);
-
-            int autoIncKeyFromApi = -1;
-
-            rs = pstat.getGeneratedKeys();
-            if (rs.next()) {
-                autoIncKeyFromApi = rs.getInt(1);
-            } else {
-                throw new HotMathException("Error creating PK for test");
-            }
-
-            testRun.setResultId(autoIncKeyFromApi);
-            testRun.setResult(answerStatus);
-            testRun.setPid(pid);
-
-            this.results.add(testRun);
-
-            return testRun;
-        } catch (HotMathException hme) {
-            throw hme;
-        } catch (Exception e) {
-            throw new HotMathException(e, "Error adding run result: " + e.getMessage());
-        } finally {
-            SqlUtilities.releaseResources(rs, pstat, null);
+            this.results.add(dao.addRunResult(conn, this.runId, tr.getPid(), tr.getResult(), tr.getResponseIndex()));
         }
     }
 
@@ -182,102 +109,19 @@ public class HaTestRun {
      * @return
      */
     public String getPidList() {
-        String pids = "";
+    	StringBuilder sb = new StringBuilder();
         for (HaTestRunResult r : results) {
             if(r.isCorrect())
                 continue;
             
-            if (pids.length() > 0)
-                pids += ",";
-            pids += r.getPid();
+            if (sb.length() > 0)
+                sb.append(",");
+            sb.append(r.getPid());
         }
-        return pids;
+        return sb.toString();
     }
 
     public String toString() {
         return runId + "," + runTime + ", " + haTest;
-    }
-
-    
-    /** Look up and load existing test run named by runId
-     * 
-     * @param conn
-     * @param runId
-     * @return
-     * @throws HotMathException
-     */
-    static public HaTestRun lookupTestRun(final Connection conn, int runId) throws HotMathException {
-        PreparedStatement pstat = null;
-        ResultSet rs = null;
-        try {
-            String sql = CmMultiLinePropertyReader.getInstance().getProperty("TEST_RUN_LOOKUP");
-
-            pstat = conn.prepareStatement(sql);
-
-            pstat.setInt(1, runId);
-
-            rs = pstat.executeQuery();
-            if (!rs.first())
-                throw new Exception("No such test run: " + runId);
-
-            HaTestRun testRun = new HaTestRun();
-            testRun.setRunId(runId);
-            testRun.setRunTime(rs.getTimestamp("run_time").getTime());
-            testRun.setSessionNumber(conn, rs.getInt("run_session"));
-            testRun.setAnsweredCorrect((rs.getInt("answered_correct")));
-            testRun.setPassing(rs.getInt("is_passing")==0?false:true);
-
-            testRun.setHaTest(HaTestDao.loadTest(conn,rs.getInt("test_id")));
-            do {
-                String pid = rs.getString("pid");
-                if (pid == null)
-                    continue;
-
-                HaTestRunResult result = new HaTestRunResult();
-                result.setPid(pid);
-                result.setResult(rs.getString("answer_status"));
-                result.setResultId(rs.getInt("rid"));
-                result.setResponseIndex(rs.getInt("answer_index"));
-
-                testRun.results.add(result);
-            } while (rs.next());
-            return testRun;
-        } catch (HotMathException hme) {
-            throw hme;
-        } catch (Exception e) {
-            throw new HotMathException(e, "Error adding run result: " + e.getMessage());
-        } finally {
-            SqlUtilities.releaseResources(rs, pstat, null);
-        }
-    }
-    
-    
-    /** Return all test runs created against test_id
-     * 
-     * @param conn
-     * @param testId
-     * @return
-     * @throws Exception
-     */
-    static public List<HaTestRun> lookupTestRunsForTest(final Connection conn, int testId) throws Exception {
-        
-        PreparedStatement pstat = null;
-        ResultSet rs = null;
-        
-        List<HaTestRun> runs = new ArrayList<HaTestRun>();
-        try {
-            String sql = CmMultiLinePropertyReader.getInstance().getProperty("TEST_RUN_LOOK_FOR_TESTS");
-
-            pstat = conn.prepareStatement(sql);
-            pstat.setInt(1, testId);
-            rs = pstat.executeQuery();
-            while(rs.next()) {
-                runs.add( lookupTestRun( conn, rs.getInt("run_id")));
-            }
-            
-            return runs;
-        } finally {
-            SqlUtilities.releaseResources(rs, pstat, null);
-        }        
     }
 }

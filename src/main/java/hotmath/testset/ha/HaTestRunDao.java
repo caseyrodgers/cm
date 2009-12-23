@@ -1,5 +1,6 @@
 package hotmath.testset.ha;
 
+import hotmath.HotMathException;
 import hotmath.assessment.AssessmentPrescriptionSession;
 import hotmath.assessment.AssessmentPrescription.SessionData;
 import hotmath.cm.util.CmMultiLinePropertyReader;
@@ -8,6 +9,7 @@ import hotmath.util.sql.SqlUtilities;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -81,8 +83,8 @@ public class HaTestRunDao {
         
         PreparedStatement pstat=null;
         try {
+            String sql = CmMultiLinePropertyReader.getInstance().getProperty("TEST_RUN_LESSON_SET_LESSON_VIEWED");
             
-            String sql = "update HA_TEST_RUN_LESSON set lesson_viewed = now() where run_id = ? and lesson_number = ?";
             pstat = conn.prepareStatement(sql);
             
             pstat.setInt(1,runId);
@@ -139,7 +141,7 @@ public class HaTestRunDao {
     }
     
 
-    /** return the acount of assigned lessons for this one test run
+    /** return the count of viewed lessons for the specified test run
      * 
      * @param conn
      * @param runId
@@ -152,8 +154,6 @@ public class HaTestRunDao {
             String sql = CmMultiLinePropertyReader.getInstance().getProperty("TEST_RUN_ASSIGNED_LESSONS_VIEWED_COUNT");
             pstat = conn.prepareStatement(sql);
             pstat.setInt(1, runId);
-            
-            String currLesson=null;
             ResultSet rs = pstat.executeQuery();
             rs.first();
             return rs.getInt(1);
@@ -166,7 +166,7 @@ public class HaTestRunDao {
     
     /** Mark this lesson as being viewed.
      * 
-     *  set the date completion, but only set
+     *  set the date completed, but only set
      *  if currently unset.
      *  
      * @param conn
@@ -178,11 +178,11 @@ public class HaTestRunDao {
         
         PreparedStatement pstat = null;
         try {
-            String sql = "update HA_TEST_RUN_LESSON SET date_completed = now() where run_id = ? and lesson_name = ? and date_completed is null";
+            String sql = CmMultiLinePropertyReader.getInstance().getProperty("TEST_RUN_LESSON_SET_DATE_COMPLETED");
             pstat = conn.prepareStatement(sql);
             
             pstat.setInt(1, runId);
-            pstat.setString(2,lesson);
+            pstat.setString(2, lesson);
             
             pstat.executeUpdate();
         }
@@ -190,5 +190,160 @@ public class HaTestRunDao {
             SqlUtilities.releaseResources(null, pstat, null);
         }
     }
+
+
+	/** Look up and load existing test run named by runId
+	 * 
+	 * @param conn
+	 * @param runId
+	 * @return
+	 * @throws HotMathException
+	 */
+	public HaTestRun lookupTestRun(final Connection conn, int runId) throws HotMathException {
+	    PreparedStatement pstat = null;
+	    ResultSet rs = null;
+	    try {
+	        String sql = CmMultiLinePropertyReader.getInstance().getProperty("TEST_RUN_LOOKUP");
+	
+	        pstat = conn.prepareStatement(sql);
+	
+	        pstat.setInt(1, runId);
+	
+	        rs = pstat.executeQuery();
+	        if (!rs.first())
+	            throw new Exception("No such test run: " + runId);
+	
+	        HaTestRun testRun = new HaTestRun();
+	        testRun.setRunId(runId);
+	        testRun.setRunTime(rs.getTimestamp("run_time").getTime());
+	        testRun.setSessionNumber(conn, rs.getInt("run_session"));
+	        testRun.setAnsweredCorrect((rs.getInt("answered_correct")));
+	        testRun.setPassing(rs.getInt("is_passing")==0?false:true);
+	
+	        testRun.setHaTest(HaTestDao.loadTest(conn,rs.getInt("test_id")));
+	        do {
+	            String pid = rs.getString("pid");
+	            if (pid == null)
+	                continue;
+	
+	            HaTestRunResult result = new HaTestRunResult();
+	            result.setPid(pid);
+	            result.setResult(rs.getString("answer_status"));
+	            result.setResultId(rs.getInt("rid"));
+	            result.setResponseIndex(rs.getInt("answer_index"));
+	
+	            testRun.results.add(result);
+	        } while (rs.next());
+	        return testRun;
+	    } catch (HotMathException hme) {
+	        throw hme;
+	    } catch (Exception e) {
+	        throw new HotMathException(e, "Error adding run result: " + e.getMessage());
+	    } finally {
+	        SqlUtilities.releaseResources(rs, pstat, null);
+	    }
+	}
+
+
+	/** Return all test runs created against test_id
+	 * 
+	 * @param conn
+	 * @param testId
+	 * @return
+	 * @throws Exception
+	 */
+	public List<HaTestRun> lookupTestRunsForTest(final Connection conn, int testId) throws Exception {
+	    
+	    PreparedStatement pstat = null;
+	    ResultSet rs = null;
+	    
+	    List<HaTestRun> runs = new ArrayList<HaTestRun>();
+	    try {
+	        String sql = CmMultiLinePropertyReader.getInstance().getProperty("TEST_RUN_LOOK_FOR_TESTS");
+	
+	        pstat = conn.prepareStatement(sql);
+	        pstat.setInt(1, testId);
+	        rs = pstat.executeQuery();
+	        while(rs.next()) {
+	            runs.add(lookupTestRun(conn, rs.getInt("run_id")));
+	        }
+	        
+	        return runs;
+	    } finally {
+	        SqlUtilities.releaseResources(rs, pstat, null);
+	    }        
+	}
+
+    /** Remove any current results for the specified test run
+     * 
+     * @param conn
+     * @param runId
+     * @throws Exception
+     */
+    public void removeAllQuizResponses(final Connection conn, int runId) throws Exception {
+        Statement stmt = null;
+        try {
+            stmt = conn.createStatement();
+            stmt.execute("delete from HA_TEST_RUN_RESULTS where run_id = " + runId);
+        } finally {
+            SqlUtilities.releaseResources(null, stmt,null);
+        }
+    }
+
+    public HaTestRunResult addRunResult(final Connection conn, int runId, String pid, String answerStatus, int answerIndex) throws HotMathException {
+        PreparedStatement pstat = null;
+        ResultSet rs = null;
+        try {
+            String sql = CmMultiLinePropertyReader.getInstance().getProperty("TEST_RUN_RESULT_INSERT");
+            pstat = conn.prepareStatement(sql);
+            HaTestRunResult testRunResult = new HaTestRunResult();
+
+            pstat.setInt(1, runId);
+            pstat.setString(2, pid);
+            pstat.setString(3, answerStatus);
+            pstat.setInt(4, answerIndex);
+
+            int cnt = pstat.executeUpdate();
+            if (cnt != 1)
+                throw new HotMathException("Could not create new test run result for: " + runId);
+
+            int autoIncKeyFromApi = -1;
+
+            rs = pstat.getGeneratedKeys();
+            if (rs.next()) {
+                autoIncKeyFromApi = rs.getInt(1);
+            } else {
+                throw new HotMathException("Error creating PK for test");
+            }
+
+            testRunResult.setResultId(autoIncKeyFromApi);
+            testRunResult.setResult(answerStatus);
+            testRunResult.setPid(pid);
+
+            return testRunResult;
+        } catch (HotMathException hme) {
+            throw hme;
+        } catch (Exception e) {
+            throw new HotMathException(e, "Error adding run result: " + e.getMessage());
+        } finally {
+            SqlUtilities.releaseResources(rs, pstat, null);
+        }
+    }
+    
+    public void setSessionNumber(final Connection conn, int runId, int sn) throws Exception {
+        PreparedStatement pstat = null;
+        try {
+            String sql = CmMultiLinePropertyReader.getInstance().getProperty("TEST_RUN_SET_SESSION_NUMBER");
+            pstat = conn.prepareStatement(sql);
+            pstat.setInt(1, sn);
+            pstat.setInt(2, runId);
+            int cnt = pstat.executeUpdate();
+            if (cnt != 1)
+                throw new HotMathException("Could not update session_number for run_id = " + runId);
+        } finally {
+            SqlUtilities.releaseResources(null, pstat, null);
+        }
+    }
+
     
 }
