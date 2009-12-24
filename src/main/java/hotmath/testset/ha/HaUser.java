@@ -231,7 +231,7 @@ public class HaUser extends HaBasicUserImpl {
 	 * @param userName The user name to use for lookup.
 	 * 
 	 * 
-	 * If uid is non null it used and userName is ignored.
+	 * If uid is non null it is used and userName is ignored.
 	 * If uid is null, then userName is used for lookup
 	 * 
 	 * @return
