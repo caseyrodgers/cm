@@ -45,7 +45,7 @@ public class CmDebugReport {
                     new CmStudentDao().assignProgramToStudent(conn,_user.getUid(),progDef,null);
                 }
                 catch(Exception e) {
-                    __logger.error("error assigning program to user: " + progDef);
+                   logMessage("error assigning program to user: " + progDef);
                     continue;
                 }
             
@@ -67,7 +67,7 @@ public class CmDebugReport {
                         test = HaTestDao.createTest(conn, _user.getUid(),testDef,segment);
                     }
                     catch(Exception e) {
-                        __logger.error("Error creating test: " + progDef,e);
+                       logMessage("Error creating test: " + progDef,e);
                         continue;
                     }
                    
@@ -78,7 +78,7 @@ public class CmDebugReport {
                     
                     for(String pid: pids) {
                         
-                        __logger.info("Testing pid: " + pid);
+                        logMessage("Testing pid: " + pid);
                         /** create a prescription marking this question as incorrect
                          *  in order to create a related prescription.
                          * 
@@ -101,19 +101,28 @@ public class CmDebugReport {
                          * 
                          */
                         if(prescription.getSessions().size() == 0) {
-                            __logger.error("Program prescription has zero lessons: " + testRun);
+                           logMessage("Program prescription has zero lessons: " + testRun);
                         }
                     }
                 }
             }
-            
-            __logger.info("Prescription Check Complete");
+            logMessage("Prescription Check Complete");
         }
         finally {
             SqlUtilities.releaseResources(null,null,conn);
         }
     }
+
     
+    private void logMessage(String msg) {
+        System.out.println(msg);
+    }
+    
+    private void logMessage(String msg, Throwable t) {
+        t.printStackTrace();
+        logMessage(msg + ", " + t.getMessage());
+    }
+
     public static void main(String[] args) {
         try {
             new CmDebugReport();
