@@ -119,7 +119,8 @@ public class CmDebugReport {
 
     
     private void logMessage(String msg) throws Exception  {
-        _fileOut.write(msg);
+        _fileOut.write(msg + "\n");
+        _fileOut.flush();
     }
     
     private void logMessage(String msg, Throwable t) throws Exception  {
