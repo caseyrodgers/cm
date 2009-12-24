@@ -15,6 +15,7 @@ import hotmath.testset.ha.StudentUserProgramModel;
 import hotmath.util.HMConnectionPool;
 import hotmath.util.sql.SqlUtilities;
 
+import java.io.FileWriter;
 import java.sql.Connection;
 import java.util.List;
 
@@ -26,9 +27,11 @@ public class CmDebugReport {
     
     HaUser _user;
     List<StudentUserProgramModel>  _allPossiblePrograms;
+    FileWriter _fileOut;
     
     public CmDebugReport() throws Exception {
         Connection conn=null;
+        _fileOut = new FileWriter(CmDebugReport.class.getName() + ".log");
         try {
             conn = HMConnectionPool.getConnection();
             int uid = CmTestUtils.setupDemoAccount();
@@ -110,15 +113,16 @@ public class CmDebugReport {
         }
         finally {
             SqlUtilities.releaseResources(null,null,conn);
+            _fileOut.close();
         }
     }
 
     
-    private void logMessage(String msg) {
-        System.out.println(msg);
+    private void logMessage(String msg) throws Exception  {
+        _fileOut.write(msg);
     }
     
-    private void logMessage(String msg, Throwable t) {
+    private void logMessage(String msg, Throwable t) throws Exception  {
         t.printStackTrace();
         logMessage(msg + ", " + t.getMessage());
     }
