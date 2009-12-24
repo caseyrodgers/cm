@@ -21,6 +21,7 @@ public class GetStudentActivityCommand implements ActionHandler<GetStudentActivi
 
        CmList<StudentActivityModel> list = new CmArrayList<StudentActivityModel>();
        list.addAll(activity);
+       
        return list;
     }
 

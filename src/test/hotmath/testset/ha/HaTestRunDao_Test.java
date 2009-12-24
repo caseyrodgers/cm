@@ -11,6 +11,7 @@ public class HaTestRunDao_Test extends CmDbTestCase {
         super(name);
     }
 
+    
     public void testMarkLessonAsViewed() throws Exception  {
         HaTestRun testRun = (_testRun != null?_testRun:setupDemoAccountTestRun());
         
