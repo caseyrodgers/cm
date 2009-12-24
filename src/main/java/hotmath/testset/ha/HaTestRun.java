@@ -122,6 +122,6 @@ public class HaTestRun {
     }
 
     public String toString() {
-        return runId + "," + runTime + ", " + haTest;
+        return runId + "," + runTime + ", " + haTest + ", pidList: " + getPidList();
     }
 }
