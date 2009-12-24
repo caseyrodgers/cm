@@ -40,7 +40,14 @@ public class CmDebugReport {
              * 
              */
             for(CmProgram progDef: CmProgram.values()) {
-                new CmStudentDao().assignProgramToStudent(conn,_user.getUid(),progDef,null);
+                
+                try {
+                    new CmStudentDao().assignProgramToStudent(conn,_user.getUid(),progDef,null);
+                }
+                catch(Exception e) {
+                    __logger.error("error assigning program to user: " + progDef);
+                    continue;
+                }
             
                 __logger.info("Testing program: " + progDef);
                 
@@ -100,6 +107,7 @@ public class CmDebugReport {
                 }
             }
             
+            __logger.info("Prescription Check Complete");
         }
         finally {
             SqlUtilities.releaseResources(null,null,conn);
