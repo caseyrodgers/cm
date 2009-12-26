@@ -32,7 +32,7 @@ public class GroupSelectorWidget implements CmAdminDataRefresher {
 	
 	CmAdminModel cmAdminMdl;
 	private ListStore <GroupModel> groupStore;
-	private boolean includeCreate;
+	private boolean inRegistrationMode;
 	private ProcessTracker pTracker;
 	private String id;
 
@@ -40,10 +40,11 @@ public class GroupSelectorWidget implements CmAdminDataRefresher {
     public static final String NO_FILTERING = "--- No Filtering ---";
     
 
-	public GroupSelectorWidget(final CmAdminModel cmAdminMdl, final ListStore<GroupModel> groupStore, boolean includeCreate,ProcessTracker pTracker, String id, Boolean loadRpc) {
+	public GroupSelectorWidget(final CmAdminModel cmAdminMdl, final ListStore<GroupModel> groupStore,
+		boolean includeCreate, ProcessTracker pTracker, String id, Boolean loadRpc) {
 		this.cmAdminMdl= cmAdminMdl;
         this.groupStore = groupStore;
-        this.includeCreate = includeCreate;
+        this.inRegistrationMode = includeCreate;
         this.pTracker = pTracker;
         this.id = id;
         
@@ -82,7 +83,7 @@ public class GroupSelectorWidget implements CmAdminDataRefresher {
 			public void selectionChanged(SelectionChangedEvent<GroupModel> se) {
 
 	        	GroupModel gm = se.getSelectedItem();
-	        	if (includeCreate && gm.getName().equals(GroupModel.NEW_GROUP)) {
+	        	if (inRegistrationMode && gm.getName().equals(GroupModel.NEW_GROUP)) {
 	        		new GroupWindow(null, cmAdminMdl, combo, true, null);
 	        	}
 	        }
@@ -101,19 +102,24 @@ public class GroupSelectorWidget implements CmAdminDataRefresher {
 		s.execute(action, new AsyncCallback <CmList<GroupModel>>() {
 
 			public void onSuccess(CmList<GroupModel> result) {
-				// append 'New Group' to end of List
-				if (includeCreate) {
+
+				groupStore.removeAll();
+
+				// append 'New Group' to end of List if in Reg mode
+				if (inRegistrationMode) {
 					GroupModel gm = new GroupModel();
     				gm.setName(GroupModel.NEW_GROUP);
 	    			gm.setId(GroupModel.NEW_GROUP);
 		    		result.add(gm);
 				}
-				
-				groupStore.removeAll();
-		        GroupModel gm = new GroupModel();
-		        gm.setName(NO_FILTERING);
-		        gm.setId(NO_FILTERING);
-		        groupStore.insert(gm, 0);				
+				// only include NO_FILTERING if NOT in Reg mode
+				else {
+			        GroupModel gm = new GroupModel();
+			        gm.setName(NO_FILTERING);
+			        gm.setId(NO_FILTERING);
+			        groupStore.insert(gm, 0);
+				}
+
 				groupStore.add(result);
 				
 				pTracker.completeStep();
