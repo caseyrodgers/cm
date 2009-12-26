@@ -46,9 +46,9 @@ public class CmDebugReport {
          * 
          */
         try {
-            _rgui = new ReportGui();
+            //_rgui = new ReportGui();
         }
-        catch(Throwable th) {
+        catch(Error th) {
            th.printStackTrace();   
         }
 
@@ -225,7 +225,7 @@ public class CmDebugReport {
 
     
     private void logMessage(String msg) throws Exception {
-        _fileOut.write(msg);
+        _fileOut.write(msg + "\n");
         
         if(_rgui != null)
             _rgui.logMessage(msg);
