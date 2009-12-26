@@ -6,6 +6,7 @@ import hotmath.assessment.AssessmentPrescriptionSession;
 import hotmath.assessment.AssessmentPrescription.SessionData;
 import hotmath.cm.server.model.CmUserProgramDao;
 import hotmath.gwt.cm_admin.server.model.CmStudentDao;
+import hotmath.gwt.cm_tools.client.model.StudentModel;
 import hotmath.gwt.shared.server.service.CmTestUtils;
 import hotmath.testset.ha.CmProgram;
 import hotmath.testset.ha.HaTest;
@@ -13,7 +14,6 @@ import hotmath.testset.ha.HaTestDao;
 import hotmath.testset.ha.HaTestDef;
 import hotmath.testset.ha.HaTestDefDao;
 import hotmath.testset.ha.HaTestRun;
-import hotmath.testset.ha.HaUser;
 import hotmath.testset.ha.StudentUserProgramModel;
 import hotmath.util.HMConnectionPool;
 import hotmath.util.sql.SqlUtilities;
@@ -35,18 +35,19 @@ import org.apache.log4j.Logger;
 public class CmDebugReport {
 
     static Logger __logger = Logger.getLogger(CmDebugReport.class);
-
-    HaUser _user;
-    List<StudentUserProgramModel> _allPossiblePrograms;
     FileWriter _fileOut;
     ReportGui _rgui=null;
+    Integer _uid;
+    
     public CmDebugReport(String logFile) throws Exception {
         
         /** first try to init gui, if fails move on...
          * 
          */
         try {
-            //_rgui = new ReportGui();
+            String os = (String)System.getProperties().get("os.name");
+            if(os.toLowerCase().contains("windows"))
+                _rgui = new ReportGui();
         }
         catch(Error th) {
            th.printStackTrace();   
@@ -60,10 +61,6 @@ public class CmDebugReport {
         _fileOut = new FileWriter(logFile);
         try {
             conn = HMConnectionPool.getConnection();
-            int uid = CmTestUtils.setupDemoAccount();
-
-            _user = HaUser.lookUser(conn, uid, null);
-
             /**
              * assign every program to user and check for anomalies
              * 
@@ -92,7 +89,7 @@ public class CmDebugReport {
     
     
     private void testProgramProfTests(final Connection conn, CmProgram progDef) throws Exception {
-        updateProgram(conn, progDef,null);
+        setupNewUserAndProgram(conn, progDef,null);
         testCurrentlyAssignedProgram(conn);
     }
         
@@ -104,12 +101,11 @@ public class CmDebugReport {
      * @throws Exception
      */
     private void testProgramChapterTests(final Connection conn, CmProgram progDef) throws Exception {
-        
         HaTestDefDao dao = new HaTestDefDao(); 
         List<String> chapters = dao.getProgramChapters(dao.getTestDef(conn, progDef.getDefId()));
 
         for(String chapter: chapters) {
-            updateProgram(conn, progDef, chapter);
+            setupNewUserAndProgram(conn, progDef, chapter);
             testCurrentlyAssignedProgram(conn);
         }
     }
@@ -124,8 +120,9 @@ public class CmDebugReport {
      */
     private void testCurrentlyAssignedProgram(final Connection conn) throws Exception {
         
+        _errorCount=0;
     
-        StudentUserProgramModel userProgram = new CmUserProgramDao().loadProgramInfoCurrent(conn, _user.getUid());
+        StudentUserProgramModel userProgram = new CmUserProgramDao().loadProgramInfoCurrent(conn, _uid);
         
         logMessage("Testing program: " + userProgram);
         
@@ -140,7 +137,7 @@ public class CmDebugReport {
 
             HaTest test = null;
             try {
-                test = HaTestDao.createTest(conn, _user.getUid(), testDef, segment);
+                test = HaTestDao.createTest(conn, _uid, testDef, segment);
             } catch (Exception e) {
                 logMessage("Error creating test: " + userProgram, e);
                 continue;
@@ -166,8 +163,7 @@ public class CmDebugReport {
                  * 
                  */
                 String wrongPids[] = { pid };
-                HaTestRun testRun = HaTestDao.createTestRun(conn, _user.getUid(), test.getTestId(), wrongPids, 0,
-                        1, 0);
+                HaTestRun testRun = HaTestDao.createTestRun(conn, _uid, test.getTestId(), wrongPids, 0,1, 0);
 
                 /**
                  * then the prescription by missing the ONE pid
@@ -183,8 +179,18 @@ public class CmDebugReport {
                 checkPrescription(prescription);
             }
         }
+        
+        if(_errorCount == 0) {
+            StudentModel sm = new StudentModel();
+            sm.setUid(_uid);
+            new CmStudentDao().removeUser(conn, sm);
+        }
+        else {
+            logMessage("!ERRORS OCCURRED: check user: " + _uid);
+        }
     }
     
+    Integer _errorCount;
     /** Perform checks for prescription to make sure it is valid
      * 
      * @param prescription
@@ -197,6 +203,7 @@ public class CmDebugReport {
          */
         if (prescription.getSessions().size() == 0) {
             logMessage("Program prescription has zero lessons: " + prescription);
+            _errorCount++;
         }
         else {
             /** there are sessions, make search the RPP for each equals three
@@ -206,21 +213,28 @@ public class CmDebugReport {
                 AssessmentPrescriptionSession session = prescription.getSessions().get(i);
                 List<SessionData> rpp = session.getSessionItems();
                 if(rpp.size() != 3) {
-                    logMessage("Session " + i + ": incorrect number of RPP (" + rpp.size() + ")" );
+                    logMessage("ERROR: Session " + i + ": incorrect number of RPP (" + rpp.size() + ")" );
+                    _errorCount++;
                 }
             }
         }
     }
 
-    /** Assign this program to user
+    /** Create a new user and assigned named program to it.
+     * 
+     *  Having a user for each test allows for easier debugging
+     *  when problems arise.
+     *  
+     *  The user should be deleted if no anomalies are found.
      * 
      * @param conn
      * @param progDef
      * @param chapter
      * @throws Exception
      */
-    private void updateProgram(final Connection conn,CmProgram progDef, String chapter) throws Exception {
-        new CmStudentDao().assignProgramToStudent(conn, _user.getUid(), progDef, chapter);
+    private void setupNewUserAndProgram(final Connection conn,CmProgram progDef, String chapter) throws Exception {
+        _uid = CmTestUtils.setupDemoAccount();
+        new CmStudentDao().assignProgramToStudent(conn, _uid, progDef, chapter);
     }
 
     
