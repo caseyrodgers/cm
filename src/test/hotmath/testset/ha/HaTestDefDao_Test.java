@@ -24,7 +24,7 @@ public class HaTestDefDao_Test extends CmDbTestCase {
         int uid = setupDemoAccount();
         
         CmStudentDao dao = new CmStudentDao();
-        dao.assignProgramToStudent(conn,uid, CmProgram.ALG2_CHAP,"Integers");
+        dao.assignProgramToStudent(conn,uid, CmProgram.ALG2_CHAP, "Quadratic Equations");
         StudentUserProgramModel spi = new CmUserProgramDao().loadProgramInfoCurrent(conn,uid);
         
         HaTestDefDao testDefDao = new HaTestDefDao();
@@ -37,7 +37,7 @@ public class HaTestDefDao_Test extends CmDbTestCase {
         int uid = setupDemoAccount();
         
         CmStudentDao dao = new CmStudentDao();
-        dao.assignProgramToStudent(conn,uid, CmProgram.PREALG_CHAP,"Integers");
+        dao.assignProgramToStudent(conn,uid, CmProgram.PREALG_CHAP, "Integers");
         StudentUserProgramModel spi = new CmUserProgramDao().loadProgramInfoCurrent(conn,uid);
         
         HaTestDefDao testDefDao = new HaTestDefDao();
@@ -71,12 +71,12 @@ public class HaTestDefDao_Test extends CmDbTestCase {
     }
 
     public void testCountDistinctTests() throws Exception {
-        List<String> names = dao.getTestNames();
+        List<String> names = dao.getTestNames(conn);
         assertTrue(names.size() > 0);
     }
 
     public void testGetTestIdsForFirstDef() throws Exception {
-        List<String> names = dao.getTestNames();
+        List<String> names = dao.getTestNames(conn);
         HaTestDef def = dao.getTestDef(conn, names.get(0));
         HaTestConfig config = new HaTestConfig(null);
         List<String> pids = dao.getTestIdsForSegment(conn, 1, def.getTextCode(), def.chapter, config,0);
@@ -85,9 +85,9 @@ public class HaTestDefDao_Test extends CmDbTestCase {
     }
 
     public void testGetProgramChapters() throws Exception {
-        List<String> names = dao.getTestNames();
+        List<String> names = dao.getTestNames(conn);
         HaTestDef def = dao.getTestDef(conn, names.get(0));
-        List<String> chapters = dao.getProgramChapters(def);
+        List<String> chapters = dao.getProgramChapters(conn, def);
         assertTrue(chapters.size() > 0);
     }
 }
