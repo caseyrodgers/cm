@@ -3,6 +3,7 @@ package hotmath.testset.ha;
 import static hotmath.cm.util.CmCacheManager.CacheName.TEST_DEF;
 import hotmath.HotMathException;
 import hotmath.cm.util.CmCacheManager;
+import hotmath.cm.util.CmMultiLinePropertyReader;
 import hotmath.gwt.shared.client.util.CmException;
 import hotmath.util.HMConnectionPool;
 import hotmath.util.sql.SqlUtilities;
@@ -25,15 +26,13 @@ public class HaTestDefDao {
     
     static Logger logger = Logger.getLogger(HaTestDefDao.class);
     
-    public List<String> getTestNames() throws CmException {
-        Connection conn = null;
+    public List<String> getTestNames(final Connection conn) throws CmException {
         PreparedStatement ps = null;
         ResultSet rs = null;
         
         List<String> names = new ArrayList<String>();
         try {
             String sql = "select test_name from HA_TEST_DEF order by test_def_id";
-            conn = HMConnectionPool.getConnection();
             ps = conn.prepareStatement(sql);
             rs = ps.executeQuery();
             while(rs.next()) {
@@ -47,7 +46,7 @@ public class HaTestDefDao {
             throw new CmException(e);
         }
         finally {
-            SqlUtilities.releaseResources(rs, ps, conn);
+            SqlUtilities.releaseResources(rs, ps, null);
         }
     }
     
@@ -135,9 +134,8 @@ public class HaTestDefDao {
       * @return
       * @throws Exception
       */
-     public List<String> getProgramChapters(HaTestDef def) throws Exception {
+     public List<String> getProgramChapters(final Connection conn, HaTestDef def) throws Exception {
          
-         Connection conn = null;
          PreparedStatement pstat = null;
          ResultSet rs = null;
          List<String> chapters = new ArrayList<String>();
@@ -145,7 +143,6 @@ public class HaTestDefDao {
              String sql = "select title " + " from BOOK_TOC t " + " where level = 2 " + " and textcode = ?"
                      + " order by cast(title_number as unsigned) ";
 
-             conn = HMConnectionPool.getConnection();
              pstat = conn.prepareStatement(sql);
 
              pstat.setString(1, def.textCode);
@@ -155,12 +152,10 @@ public class HaTestDefDao {
                  chapters.add(rs.getString("title"));
              }
              return chapters;
-         } catch (HotMathException hme) {
-             throw hme;
          } catch (Exception e) {
              throw new HotMathException(e, "Error getting program chapters: " + e.getMessage());
          } finally {
-             SqlUtilities.releaseResources(rs, pstat, conn);
+             SqlUtilities.releaseResources(rs, pstat, null);
          }
      }
      
@@ -207,7 +202,39 @@ public class HaTestDefDao {
          }
          return problemIds;
      }
-     
+
+ 	public List<String> getTestIdsForPlacementSegment(final Connection conn, int segment, String textcode, String chapter, HaTestConfig config, int segmentSlot) throws Exception {
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+
+		try {
+			
+			String sql = CmMultiLinePropertyReader.getInstance().getProperty("TEST_IDS_FOR_PLACEMENT_SEGMENT");
+
+			// TODO: Create list of 7 random solutions from
+			//       each text group that is listed in the
+			//       placement test.
+			List<String> list = new ArrayList<String>();
+
+			ps = conn.prepareStatement(sql);
+
+			ps.setString(1, textcode);
+			ps.setString(2, chapter);
+			ps.setInt(3, segmentSlot);
+
+			rs = ps.executeQuery();
+			if(!rs.first())
+				throw new Exception("could not initialize HaTestDefPlacement: no rows found to initialize");
+			do {
+				list.add(rs.getString("problemindex"));
+			} while(rs.next());
+
+			return list;
+		}
+		finally {
+			SqlUtilities.releaseResources(rs, ps, null);
+		}		
+	}
      
      /** Return list of problem ids that match this set
       * 
@@ -233,32 +260,21 @@ public class HaTestDefDao {
                   */
                  chapter = config.getChapters().get(0);
                  
-                 sql = "SELECT problemindex " + " FROM   SOLUTIONS s "
-                         + "  INNER JOIN BOOK_TOC b on b.textcode = s.booktitle " + " WHERE s.BOOKTITLE = ? "
-                         + " and   b.title = ? " + " and   b.level = 2 "
-                         + " and   (s.chaptertitle = b.title_number AND s.SECTIONTITLE = ?) "
-                         + " and  problemnumber between ? and ? ";
+                 sql = CmMultiLinePropertyReader.getInstance().getProperty("TEST_IDS_FOR_CHAPTER_PROGRAM");
              } else {
-                 
-                 
-                 sql = "SELECT problemindex " + 
-                       " FROM   SOLUTIONS " + 
-                       " WHERE (SOLUTIONS.BOOKTITLE = ? " + 
-                       " and  (SOLUTIONS.CHAPTERTITLE = ? AND SOLUTIONS.SECTIONTITLE = ?)) " +
-                       " and  problemnumber between ? and ? ";
+            	 sql = CmMultiLinePropertyReader.getInstance().getProperty("TEST_IDS_FOR_PROGRAM");
              }
-             
+
              ps = conn.prepareStatement(sql);
-             
+
              ps.setString(1, textcode);
              ps.setString(2, chapter);
              ps.setInt(3, (section+1));  // test_segment_slots are zero based
              ps.setInt(4, startProblemNumber);
              ps.setInt(5, endProblemNumber);
-             
+
              logger.info(ps);
-             
-             
+
              rs = ps.executeQuery();
              
              List<String> pids = new ArrayList<String>();
@@ -293,9 +309,9 @@ public class HaTestDefDao {
               */
              ci.setChapterTitle(chapter);
              HaTestDefDao tdo = new HaTestDefDao();
-             List<String> chapters = tdo.getProgramChapters(tdo.getTestDef(conn,programInfo.getTestDefId()));
+             List<String> chapters = tdo.getProgramChapters(conn, tdo.getTestDef(conn,programInfo.getTestDefId()));
              for(int i=0, t=chapters.size();i<t;i++) {
-                 if(chapters.get(i).equals(chapter)) {
+                 if(chapters.get(i).trim().equals(chapter.trim())) {
                      ci.setChapterNumber(i+1);
                      return ci;
                  }
