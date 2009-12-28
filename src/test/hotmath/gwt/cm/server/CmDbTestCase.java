@@ -61,7 +61,7 @@ public class CmDbTestCase extends DbTestCase {
     public HaTestRun setupDemoAccountTestRun() throws Exception {
         HaTest test = HaTestDao.loadTest(conn, setupDemoAccountTest().getTestId());
         String pids[] = test.getPids().toArray(new String[test.getPids().size()]);
-        _testRun = HaTestDao.createTestRun(conn, test.getUser().getUid(), test.getTestId(), pids,0,0,0);
+        _testRun = HaTestDao.createTestRun(conn, test.getUser().getUid(), test.getTestId(), 0,0,0);
         
         
         /** Write a single record to the whiteboard for this testrun

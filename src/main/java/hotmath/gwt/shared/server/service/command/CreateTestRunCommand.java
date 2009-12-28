@@ -77,7 +77,7 @@ public class CreateTestRunCommand implements ActionHandler<CreateTestRunAction, 
                 }
             }
 
-            HaTestRun run = HaTestDao.createTestRun(conn, test.getUser().getUid(), test.getTestId(), incorrectPids.toArray(new String[incorrectPids.size()]), answeredCorrect, answeredIncorrect, notAnswered);
+            HaTestRun run = HaTestDao.createTestRun(conn, test.getUser().getUid(), test.getTestId(), answeredCorrect, answeredIncorrect, notAnswered);
             
             /** 
              * if user DID NOT pass this quiz, we increment the zone used to retrieve quiz solutions

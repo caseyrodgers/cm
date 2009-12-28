@@ -25,7 +25,7 @@ public class SaveQuizCurrentResultCommand implements ActionHandler<SaveQuizCurre
     public RpcData execute(final Connection conn, SaveQuizCurrentResultAction action) throws CmRpcException {
         try {
             HaTest test = HaTestDao.loadTest(conn,action.getTestId());
-            HaTestDao.saveTestQuestionChange(test.getTestId(), action.getPid(), action.getAnswerIndex(),action.isCorrect());
+            HaTestDao.saveTestQuestionChange(conn,test.getTestId(), action.getPid(), action.getAnswerIndex(),action.isCorrect());
             
             RpcData rpcData = new RpcData();
             rpcData.putData("complete", "true");

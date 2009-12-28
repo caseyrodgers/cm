@@ -87,6 +87,8 @@ public class HaTestRun {
      * each question, otherwise we only have the number of correct/wrong.
      * 
      * @param conn
+     * @param ignoreUnanswered is true, then only actually answered questions are used 
+     *        to create the prescription.
      * @throws Exception
      */
     public void transferCurrentToTestRun(final Connection conn) throws Exception {

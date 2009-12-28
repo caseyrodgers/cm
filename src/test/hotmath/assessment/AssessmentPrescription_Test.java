@@ -69,7 +69,7 @@ public class AssessmentPrescription_Test extends CmDbTestCase {
         testDef = new HaTestDefDao().getTestDef(conn, CA_STATE_TEST);
         
         HaTest test = HaTestDao.createTest(conn, userId, testDef, 1);
-        testRun = HaTestDao.createTestRun(conn, userId, test.getTestId(), guids, 0, 1, 9);
+        testRun = HaTestDao.createTestRun(conn, userId, test.getTestId(),0, 1, 9);
     }
     
     
@@ -79,7 +79,7 @@ public class AssessmentPrescription_Test extends CmDbTestCase {
 
         String wrongGuids[] = { "test1", "test2", "test3" };
         HaTest test = testRun.getHaTest();
-        HaTestRun testRun2 = HaTestDao.createTestRun(conn,test.getUser().getUid(), test.getTestId(), wrongGuids, 1, 2,0);
+        HaTestRun testRun2 = HaTestDao.createTestRun(conn,test.getUser().getUid(), test.getTestId(), 1, 2,0);
         
         assertTrue(!testRun2.isPassing());
     }
@@ -90,7 +90,7 @@ public class AssessmentPrescription_Test extends CmDbTestCase {
 
         String wrongGuids[] = { "test1", "test2", "test3" };
         HaTest test = testRun.getHaTest();
-        HaTestRun testRun2 = HaTestDao.createTestRun(conn,test.getUser().getUid(), test.getTestId(), wrongGuids, 1, 2,0);
+        HaTestRun testRun2 = HaTestDao.createTestRun(conn,test.getUser().getUid(), test.getTestId(), 1, 2,0);
         
         _runId = testRun.getRunId();
 
