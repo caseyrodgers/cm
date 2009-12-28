@@ -350,7 +350,7 @@ WHERE  s.BOOKTITLE = ?
   and  b.title = ?
   and  b.level = 2
   and  (s.chaptertitle = b.title_number AND s.SECTIONTITLE = ?)
-  and  problemnumber between ? and ? ";
+  and  problemnumber between ? and ?
                          
                          
 .key=TEST_IDS_FOR_PLACEMENT_SEGMENT

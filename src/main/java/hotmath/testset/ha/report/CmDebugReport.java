@@ -79,14 +79,17 @@ public class CmDebugReport {
             /**
              * assign every program to user and check for anomalies
              * 
+             * Do not process Auto Enroll tests
+             * 
              */
             for (CmProgram progDef : CmProgram.values()) {
                 try {
                     if (progDef.getProgramId().equals("Chap")) {
                         testProgramChapterTests(progDef);
-                    } else if (progDef.getProgramId().equals("Prof")) {
+                    } else if (!progDef.getProgramId().equals("Auto Enroll")) {
                         testProgramProfTests(progDef);
                     }
+                    
                 } catch (Exception e) {
                     e.printStackTrace();
                     logMessage(-1, "Error testing: " + progDef + ", " + e.getMessage());
@@ -238,8 +241,6 @@ public class CmDebugReport {
      * 
      * Having a user for each test allows for easier debugging when problems
      * arise.
-     * 
-     * The user should be deleted if no anomalies are found.
      * 
      * @param conn
      * @param progDef
