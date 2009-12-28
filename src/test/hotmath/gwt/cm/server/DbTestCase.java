@@ -11,7 +11,7 @@ public class DbTestCase extends TestCase {
         super(name);
     }
     
-    public  Connection conn=null;
+    public  Connection conn = null;
     
     @Override
     protected void setUp() throws Exception {
