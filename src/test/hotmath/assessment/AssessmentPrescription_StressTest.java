@@ -16,7 +16,7 @@ public class AssessmentPrescription_StressTest extends CmDbTestCase {
     
     
     public void testStressAllTests() throws Exception {
-        List<String> testNames = new HaTestDefDao().getTestNames();
+        List<String> testNames = new HaTestDefDao().getTestNames(conn);
         for(String tn: testNames) {
 
             HaTestDef testDef = new HaTestDefDao().getTestDef(conn, tn);
