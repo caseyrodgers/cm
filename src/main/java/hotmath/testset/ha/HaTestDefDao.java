@@ -284,7 +284,7 @@ public class HaTestDefDao {
              return pids;
          }
          finally {
-             SqlUtilities.releaseResources(null,ps,null);
+             SqlUtilities.releaseResources(rs, ps, null);
          }
      }
      
