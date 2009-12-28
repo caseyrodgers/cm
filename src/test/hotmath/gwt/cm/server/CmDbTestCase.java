@@ -15,7 +15,6 @@ import hotmath.testset.ha.HaTestDefDao;
 import hotmath.testset.ha.HaTestRun;
 import hotmath.testset.ha.HaTestRunDao;
 import hotmath.testset.ha.HaUser;
-import hotmath.gwt.cm.server.DbTestCase;
 
 public class CmDbTestCase extends DbTestCase {
     
