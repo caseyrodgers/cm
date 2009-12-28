@@ -36,18 +36,17 @@ public class GroupSelectorWidget implements CmAdminDataRefresher {
 	private ProcessTracker pTracker;
 	private String id;
 
-
     public static final String NO_FILTERING = "--- No Filtering ---";
     
 
 	public GroupSelectorWidget(final CmAdminModel cmAdminMdl, final ListStore<GroupModel> groupStore,
-		boolean includeCreate, ProcessTracker pTracker, String id, Boolean loadRpc) {
+		boolean inRegistrationMode, ProcessTracker pTracker, String id, Boolean loadRpc) {
 		this.cmAdminMdl= cmAdminMdl;
         this.groupStore = groupStore;
-        this.inRegistrationMode = includeCreate;
+        this.inRegistrationMode = inRegistrationMode;
         this.pTracker = pTracker;
         this.id = id;
-        
+
         /** Only refresh on startup if requested.  This is to prevent loading twice on 
          *  startup of StudentGridPanel ... once in constructor and once when
          *  CmAdminDataReader is fired.
@@ -55,16 +54,13 @@ public class GroupSelectorWidget implements CmAdminDataRefresher {
          */
         if(loadRpc)
         	refreshData();
-        
+
         CmAdminDataReader.getInstance().addReader(this);
 	}
-	
-	
-	
+
 	public ComboBox<GroupModel> groupCombo() {
 		final ComboBox<GroupModel> combo = new ComboBox<GroupModel>();
 		combo.setFieldLabel("Group");
-		combo.setValue(groupStore.getAt(0));	
 		combo.setForceSelection(false);
 		combo.setDisplayField(GroupModel.NAME_KEY);
 		combo.setEditable(false);
@@ -78,7 +74,7 @@ public class GroupSelectorWidget implements CmAdminDataRefresher {
 		combo.setSelectOnFocus(true);
 		combo.setEmptyText("-- select a group --");
 		combo.setWidth(280);
-		
+
 	    combo.addSelectionChangedListener(new SelectionChangedListener<GroupModel>() {
 			public void selectionChanged(SelectionChangedEvent<GroupModel> se) {
 
@@ -94,9 +90,9 @@ public class GroupSelectorWidget implements CmAdminDataRefresher {
 	private void getGroupListRPC(Integer uid, final ListStore <GroupModel> store) {
 
 		pTracker.beginStep();
-		
+
 		CmBusyManager.setBusy(true, false);
-		
+
 		CmServiceAsync s = (CmServiceAsync) Registry.get("cmService");
 		GetActiveGroupsAction action = new GetActiveGroupsAction(uid);
 		s.execute(action, new AsyncCallback <CmList<GroupModel>>() {
@@ -124,7 +120,7 @@ public class GroupSelectorWidget implements CmAdminDataRefresher {
 				
 				pTracker.completeStep();
 				pTracker.finish();
-				
+
 				CmBusyManager.setBusy(false);
         	}
 
@@ -134,14 +130,14 @@ public class GroupSelectorWidget implements CmAdminDataRefresher {
         		CatchupMathTools.showAlert(msg);
         	}
         });
-		
+
 	}
 
 	@Override
 	public void refreshData() {
 	     getGroupListRPC(cmAdminMdl.getId(), groupStore);
 	}
-	
+
 	/** Must remove the reader from the main data refresher once no longer needed.
 	 * 
 	 */
