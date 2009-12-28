@@ -1,17 +1,12 @@
 package hotmath.testset.ha;
 
-import hotmath.util.sql.SqlUtilities;
-
 import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.util.ArrayList;
 import java.util.List;
 
 public class HaTestDefPlacement extends HaTestDef {
 	String TEXTCODE = "placement";
-	String PLACEMENT_CHAPTERS[] = {"prealg","alg1", "geo", "alg2"};
-	
+	String PLACEMENT_CHAPTERS[] = {"prealg", "alg1", "geo", "alg2"};
+
 	public HaTestDefPlacement(final Connection conn, String name) throws Exception {
 		HaTestDef td = new HaTestDefDao().getTestDef(conn, name);
 		super.init(td);
@@ -23,46 +18,19 @@ public class HaTestDefPlacement extends HaTestDef {
 	 * There will be 4 tests with 7 questions each (prealgptests, alg1, gcgeopractice, alg2).
 	 * 
 	 */
-	
+
 	@Override
-	public List<String> getTestIdsForSegment(Connection conn, int segment, HaTestConfig config, int testSegmentSlot) throws Exception {
+	public List<String> getTestIdsForSegment(final Connection conn, int segment, HaTestConfig config, int testSegmentSlot) throws Exception {
 		_lastSegment = segment;
-		PreparedStatement ps=null;
-		ResultSet rs = null;
-		
+
 		if(testSegmentSlot == 0)
 		    testSegmentSlot++;
 
-		try {
-			// Create list of 7 random solutions from
-			// each text group that is listed in the
-			// placement test.
-			List<String> list = new ArrayList<String>();
-			String sql = "select problemindex " +
-					     " from SOLUTIONS " + 
-			             " where booktitle = ? " +
-			             "  and chaptertitle = ? " +
-			             "  and sectiontitle = ? " + 
-			             "  order by problemnumber";
-			ps = conn.prepareStatement(sql);
-			
-			ps.setString(1,TEXTCODE);
-			ps.setString(2, this.PLACEMENT_CHAPTERS[segment-1]);
-			ps.setInt(3, testSegmentSlot);
-			
-			rs = ps.executeQuery();
-			if(!rs.first())
-				throw new Exception("could not initialize HaTestDefPlacement: no rows found to initialize");
-			do {
-				list.add(rs.getString("problemindex"));
-			}while(rs.next());
-			return list;
-		}
-		finally {
-			SqlUtilities.releaseResources(rs,ps,null);
-		}		
-	}
-	
+		HaTestDefDao dao = new HaTestDefDao();
+		return dao.getTestIdsForPlacementSegment(conn, segment, this.TEXTCODE, this.PLACEMENT_CHAPTERS[segment-1], config, testSegmentSlot);
+    }
+
+	@Override
 	public String getSubTitle(int segment) {
 		String t = "Auto-Enrollment";
 		switch(segment) {
@@ -82,16 +50,11 @@ public class HaTestDefPlacement extends HaTestDef {
 		}
 		return t;
 	}
-	
+
+	@Override
 	public int getTotalSegmentCount() {
 		return 4;
 	}
-	
-	
-	public String getTestPage() {
-		return super.getTestPage();
-	}
-	
 	
 	/** Return JSON string used to initialize this test
 	 *  
