@@ -115,7 +115,7 @@ public class EndOfProgramHandler {
         HaTestConfig config = program.getConfig();
         String chapter = config.getChapters().get(0);
         HaTestDefDao dao = new HaTestDefDao(); 
-        List<String> chapters = dao.getProgramChapters(dao.getTestDef(conn, program.getTestDefId()));
+        List<String> chapters = dao.getProgramChapters(conn, dao.getTestDef(conn, program.getTestDefId()));
         
         String nextChapter = getNextChapter(chapters, chapter);
         if(nextChapter != null) {

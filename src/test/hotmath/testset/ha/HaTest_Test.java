@@ -59,7 +59,7 @@ public class HaTest_Test extends CmDbTestCase{
 	
 	public void testGetHaTestDefChapters() throws Exception {
 	    HaTestDefDao dao = new HaTestDefDao();
-		List<String> chapters = dao.getProgramChapters(dao.getTestDef(conn,CHAP_TEST));
+		List<String> chapters = dao.getProgramChapters(conn, dao.getTestDef(conn,CHAP_TEST));
 		assertTrue(chapters.size() > 0);
 	}
 
@@ -70,13 +70,13 @@ public class HaTest_Test extends CmDbTestCase{
 
 	
 	public void testQuestionAnswerChanged() throws Exception {
-		HaTest htd = HaTestDao.loadTest(conn,_test.getTestId());
+		HaTest htd = HaTestDao.loadTest(conn, _test.getTestId());
 		HaTestDao.saveTestQuestionChange(_test.getTestId(),"TEST", 1, true);
 	}
 	
     public void testGetChapterTest() throws Exception {
 
-        HaTest test = HaTestDao.createTest(conn,_test.getUser().getUid(), new HaTestDefDao().getTestDef(conn,CHAP_TEST), 1);
+        HaTest test = HaTestDao.createTest(conn, _test.getUser().getUid(), new HaTestDefDao().getTestDef(conn,CHAP_TEST), 1);
         assertNotNull(test);
     }
     

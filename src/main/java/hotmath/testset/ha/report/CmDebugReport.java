@@ -102,7 +102,7 @@ public class CmDebugReport {
      */
     private void testProgramChapterTests(final Connection conn, CmProgram progDef) throws Exception {
         HaTestDefDao dao = new HaTestDefDao(); 
-        List<String> chapters = dao.getProgramChapters(dao.getTestDef(conn, progDef.getDefId()));
+        List<String> chapters = dao.getProgramChapters(conn, dao.getTestDef(conn, progDef.getDefId()));
 
         for(String chapter: chapters) {
             setupNewUserAndProgram(conn, progDef, chapter);
@@ -112,7 +112,7 @@ public class CmDebugReport {
 
     
     /** test the currently assigned program by create a prescription for 
-     * every solution assigned and looking for anomolies.
+     * every solution assigned and looking for anomalies.
      * 
      * 
      * @param conn
