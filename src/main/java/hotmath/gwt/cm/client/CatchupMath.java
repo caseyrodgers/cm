@@ -32,7 +32,6 @@ import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.core.client.RunAsyncCallback;
 import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.RootPanel;
@@ -284,7 +283,7 @@ public class CatchupMath implements EntryPoint {
     
     public void showPrescriptionPanel_gwt() {
     	
-    	GWT.runAsync(new RunAsyncCallback() {
+    	GWT.runAsync(new CmRunAsyncCallback() {
 			@Override
 			public void onSuccess() {
 		        HeaderPanel.__instance.enable();
@@ -293,11 +292,6 @@ public class CatchupMath implements EntryPoint {
 		        _mainContainer.setLayout(new FitLayout());
 		        _mainContainer.add(new CmMainPanel(new PrescriptionCmGuiDefinition()));
 		        _mainContainer.layout();
-			}
-			
-			@Override
-			public void onFailure(Throwable reason) {
-				reason.printStackTrace();
 			}
 		});
     }

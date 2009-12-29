@@ -101,7 +101,7 @@ public class HaTestRunDao {
     }
     
     
-    /** Return all lessons assignged to this run
+    /** Return all lessons assigned to this run
      * 
      * @param conn
      * @param runId

@@ -17,11 +17,11 @@ import hotmath.gwt.cm_tools.client.ui.ContextController;
 import hotmath.gwt.cm_tools.client.ui.context.CmContext;
 import hotmath.gwt.cm_tools.client.ui.resource_viewer.CmResourcePanel;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
-import hotmath.gwt.shared.client.eventbus.CmEventListener;
 import hotmath.gwt.shared.client.eventbus.CmEventListenerImplDefault;
 import hotmath.gwt.shared.client.eventbus.EventBus;
 import hotmath.gwt.shared.client.rpc.action.GetPrescriptionAction;
 import hotmath.gwt.shared.client.rpc.action.SetInmhItemAsViewedAction;
+import hotmath.gwt.shared.client.util.CmAsyncCallback;
 import hotmath.gwt.shared.client.util.RpcData;
 import hotmath.gwt.shared.client.util.UserInfo;
 
@@ -43,17 +43,16 @@ import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
 import com.extjs.gxt.ui.client.widget.layout.CenterLayout;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.google.gwt.user.client.Timer;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Widget;
 
 public class PrescriptionCmGuiDefinition implements CmGuiDefinition {
-    
 
     PrescriptionContext context;
     boolean isReady;
     static public PrescriptionCmGuiDefinition __instance;
     static public InmhItemData __last_solution_item;
     PrescriptionResourcePanel _guiWidget;
+
 
     /**
      * Create and read Prescription data for the current user.
@@ -62,151 +61,112 @@ public class PrescriptionCmGuiDefinition implements CmGuiDefinition {
     public PrescriptionCmGuiDefinition() {
         __instance = this;
         context = new PrescriptionContext(this);
-        
- 
-        
-        /** Listen for Resource Viewer closing events and make 
-         *  sure the accordion resource lists are unselected.
-         */
-        EventBus.getInstance().addEventListener(new CmEventListenerImplDefault() {
-            @Override
-            public void handleEvent(CmEvent event) {
-                if(event.getEventName().equals(EventBus.EVENT_TYPE_SOLUTIONS_COMPLETE)) {
-                    // update the InmhItemData associated with the currently active solution
-                    
-                    InmhItemData id = ((InmhItemData)event.getEventData());
-                    markResourceAsViewed(id);
-                }
-                else if(event.getEventName().equals(EventBus.EVENT_TYPE_RESOURCE_VIEWER_OPEN)) {
-                    // if not a required problem, then set as viewed
-                    CmResourcePanel viewer = (CmResourcePanel)event.getEventData();
-                    
-                    /** practice problems only get marked viewed, 
-                     *  once they are fully complete (event EVENT_TYPE_SOLUTIONS_COMPLETE)
-                     *  
-                     *  practice problems are tracked elsewhere. (where?)
-                     */
-                    if(viewer.getResourceItem() != null) {
-                        String type = viewer.getResourceItem().getType();
-                        if(!(type.equals("practice") || type.equals("cmextra")))
-                            markResourceAsViewed(viewer.getResourceItem());
-                    }
-                }
-                else if(event.getEventName().equals(EventBus.EVENT_TYPE_RESOURCE_VIEWER_CLOSE)) {
-                    showHelpPanel();
-                }
-            }
-        });        
-        
+
     }
 
-
-    /** Mark resource as viewed
+    /**
+     * Mark resource as viewed
      * 
      * @param resourceItem
      */
-  public void markResourceAsViewed(final InmhItemData resourceItem) {
-        if(UserInfo.getInstance().getRunId() == 0)
+    public void markResourceAsViewed(final InmhItemData resourceItem) {
+        if (UserInfo.getInstance().getRunId() == 0)
             Log.error("PrescriptionCmGuiDefinition: run_id is null!");
-        
+
         /**
          * 
          * mark this INMH resource item as being viewed
          * 
          */
         CmServiceAsync s = (CmServiceAsync) Registry.get("cmService");
-        SetInmhItemAsViewedAction action = new SetInmhItemAsViewedAction(UserInfo.getInstance().getRunId(), resourceItem.getType(), resourceItem.getFile());
-        s.execute(action, new AsyncCallback<RpcData>() {
+        SetInmhItemAsViewedAction action = new SetInmhItemAsViewedAction(UserInfo.getInstance().getRunId(),
+                resourceItem.getType(), resourceItem.getFile());
+        s.execute(action, new CmAsyncCallback<RpcData>() {
 
-                    public void onSuccess(RpcData result) {
-                        
-                        Log.debug("PrescriptionResourceAccord: setItemAsViewed: " + resourceItem);
-                        
-                        boolean isSolutionResource = (resourceItem.getType().equals("practice") || resourceItem.getType().equals("cmextra"));
-                        
-                        // update the total count in the Header
-                        // only if a practice or cmextra type
-                        int vc = UserInfo.getInstance().getViewCount();
-                        if(isSolutionResource)
-                            vc++;
-                        
-                        UserInfo.getInstance().setViewCount(vc);
-                        HeaderPanel.__instance.setLoginInfo();
-                        
-                        
-                        // only mark practice problems
-                        // 
-                        if(!isSolutionResource)
-                            return;
-                        
-                        resourceItem.setViewed(true);
-                    }
+            public void onSuccess(RpcData result) {
 
-                    public void onFailure(Throwable caught) {
-                        caught.printStackTrace();
-                    }
+                Log.debug("PrescriptionResourceAccord: setItemAsViewed: " + resourceItem);
 
-                });
+                boolean isSolutionResource = (resourceItem.getType().equals("practice") || resourceItem.getType()
+                        .equals("cmextra"));
+
+                // update the total count in the Header
+                // only if a practice or cmextra type
+                int vc = UserInfo.getInstance().getViewCount();
+                if (isSolutionResource)
+                    vc++;
+
+                UserInfo.getInstance().setViewCount(vc);
+                HeaderPanel.__instance.setLoginInfo();
+
+                // only mark practice problems
+                // 
+                if (!isSolutionResource)
+                    return;
+
+                resourceItem.setViewed(true);
+            }
+        });
     }
-  
-    
+
     public CmContext getContext() {
         return context;
     }
 
-    /** Display the central help message in the main
-     *  resource area.
-     *  
-     *  
-     *  @TODO: This has to be done in a Timer due to bug in GXT.  Seems like 
-     *  this is getting called during a 'layout' and we cannot change things in 
-     *  this thread.  But, by creating a new thread (Timer) the write works.
+    /**
+     * Display the central help message in the main resource area.
+     * 
+     * 
+     * @TODO: This has to be done in a Timer due to bug in GXT. Seems like this
+     *        is getting called during a 'layout' and we cannot change things in
+     *        this thread. But, by creating a new thread (Timer) the write
+     *        works.
      */
     private void showHelpPanel() {
 
         Timer t = new Timer() {
             @Override
             public void run() {
-                    String html = "<b>Catchup Math: the more you do, the more you learn!</b>" + 
-                    "<ul>" + 
-                    "<li>Choose any resource from the left-side menu</li> " +
-                    "<li>The Help button has neat features</li> " + 
-                    "<li>Check for new Flash Cards and Games</li> " + 
-                    "<li>Use our whiteboard to work the problems</li>" + "</ul>";
-    
-                     html = "<div class='info'>" + html + "</div>";
+                String html = "<b>Catchup Math: the more you do, the more you learn!</b>" + "<ul>"
+                        + "<li>Choose any resource from the left-side menu</li> "
+                        + "<li>The Help button has neat features</li> "
+                        + "<li>Check for new Flash Cards and Games</li> "
+                        + "<li>Use our whiteboard to work the problems</li>" + "</ul>";
 
-                     Html ohtml = new Html(html);
-                     ohtml.addStyleName("prescription-help-panel");
+                html = "<div class='info'>" + html + "</div>";
 
-                     CmMainPanel.__lastInstance._mainContent.removeAll();
-                     CmMainPanel.__lastInstance._mainContent.setLayout(new CenterLayout());
-                     CmMainPanel.__lastInstance._mainContent.add(ohtml);
-                     CmMainPanel.__lastInstance._mainContent.layout();
-                     
-                    ohtml.el().fadeIn(FxConfig.NONE);
-                }
+                Html ohtml = new Html(html);
+                ohtml.addStyleName("prescription-help-panel");
+
+                CmMainPanel.__lastInstance._mainContent.removeAll();
+                CmMainPanel.__lastInstance._mainContent.setLayout(new CenterLayout());
+                CmMainPanel.__lastInstance._mainContent.add(ohtml);
+                CmMainPanel.__lastInstance._mainContent.layout();
+
+                ohtml.el().fadeIn(FxConfig.NONE);
+            }
         };
         t.schedule(1);
     }
 
     LayoutContainer _main;
+
     public Widget getWestWidget() {
         _main = new LayoutContainer();
         _main.setLayout(new FitLayout());
-        
+
         _guiWidget = new PrescriptionResourcePanel();
-        _main.add(_guiWidget, new BorderLayoutData(LayoutRegion.CENTER,.75f));
+        _main.add(_guiWidget, new BorderLayoutData(LayoutRegion.CENTER, .75f));
         // get the data for the prescription from the database
 
         getAsyncDataFromServer(UserInfo.getInstance().getSessionNumber());
-        
-        _main.add(new PrescriptionInfoPanel(PrescriptionCmGuiDefinition.__instance), new BorderLayoutData(LayoutRegion.SOUTH, .30f));
+
+        _main.add(new PrescriptionInfoPanel(PrescriptionCmGuiDefinition.__instance), new BorderLayoutData(
+                LayoutRegion.SOUTH, .30f));
 
         _main.layout();
         return _main;
     }
-
 
     /**
      * Read data from server and build UI when complete
@@ -214,110 +174,104 @@ public class PrescriptionCmGuiDefinition implements CmGuiDefinition {
      */
     public void getAsyncDataFromServer(int sessionNumber) {
 
-        
         // check for a pending History CmLocation change
         final CmLocation location = CmHistoryQueue.getInstance().popLocation();
-        if(location != null) {
-            if(location.getLocationType() == LocationType.PRESCRIPTION)
+        if (location != null) {
+            if (location.getLocationType() == LocationType.PRESCRIPTION)
                 sessionNumber = location.getLocationNumber();
         }
-        
-        
+
         // If we are currently on requested session, no need for server call
-        if(isReady && UserInfo.getInstance().getSessionNumber() == sessionNumber) {
+        if (isReady && UserInfo.getInstance().getSessionNumber() == sessionNumber) {
             // update the request resource viewed
             setLocation(location);
             return;
         }
-        
-        
-        final int sessionNumber2 = sessionNumber;
-        
+
+        final int sessionNumberF = sessionNumber;
+
         // clear any existing resource
         CmMainPanel.__lastInstance._mainContent.removeResource();
         CmMainPanel.__lastInstance._mainContent.layout();
 
-        
-        CmBusyManager.setBusy(true,false);
-        
+        CmBusyManager.setBusy(true);
+
         Log.info("PrescriptionCmGuiDefinition.getAsyncDataFromServer:" + sessionNumber + ", " + location);
         // call server process to get session data as JSON string
         CmServiceAsync s = (CmServiceAsync) Registry.get("cmService");
-        boolean updateActive = UserInfo.getInstance().isActiveUser();        
-        s.execute(new GetPrescriptionAction(UserInfo.getInstance().getRunId(), sessionNumber, updateActive),new AsyncCallback<RpcData>() {
-            @Override
-            public void onSuccess(RpcData rdata) {
-                    try {
-                        if(rdata != null) {
-                            UserInfo.getInstance().setSessionNumber(sessionNumber2);
-                            
-                            int correctPercent = rdata.getDataAsInt("correct_percent");
-                            UserInfo.getInstance().setCorrectPercent(correctPercent);
-                            if(correctPercent == 100) {
-                                getContext().doNext();
-                                return;
-                            }
-        
-                            String json = rdata.getDataAsString("json");
-                            context.setPrescriptionData(new PrescriptionData(json));
-                            
-                            UserInfo.getInstance().setSessionCount(context.prescriptionData.getSessionTopics().size());
+        boolean updateActive = UserInfo.getInstance().isActiveUser();
+        s.execute(new GetPrescriptionAction(UserInfo.getInstance().getRunId(), sessionNumber, updateActive),
+                new CmAsyncCallback<RpcData>() {
+                    @Override
+                    public void onSuccess(RpcData rdata) {
+                        try {
+                            if (rdata != null) {
+                                UserInfo.getInstance().setSessionNumber(sessionNumberF);
 
-                            
-                            isReady = true; // signal data is ready
-        
-                            _guiWidget.buildUi(context.prescriptionData);
-        
-                            ContextController.getInstance().setCurrentContext(context);
-                            
-        
-                            if(UserInfo.getInstance().isAutoTestMode()) {
-                                context.runAutoTest();
+                                int correctPercent = rdata.getDataAsInt("correct_percent");
+                                UserInfo.getInstance().setCorrectPercent(correctPercent);
+                                if (correctPercent == 100) {
+                                    getContext().doNext();
+                                    return;
+                                }
+
+                                String json = rdata.getDataAsString("json");
+                                context.setPrescriptionData(new PrescriptionData(json));
+
+                                UserInfo.getInstance().setSessionCount(
+                                        context.prescriptionData.getSessionTopics().size());
+
+                                isReady = true; // signal data is ready
+
+                                _guiWidget.buildUi(context.prescriptionData);
+
+                                ContextController.getInstance().setCurrentContext(context);
+
+                                if (UserInfo.getInstance().isAutoTestMode()) {
+                                    context.runAutoTest();
+                                }
+
+                                setLocation(location);
+                            } else {
+                                CatchupMathTools.showAlert("There was a problem reading this prescription data");
                             }
-        
-                            setLocation(location);
+                        } catch (Exception e) {
+                            Log.error("Error reading data from server", e);
+                        } finally {
+                            CmBusyManager.setBusy(false);
                         }
-                        else {
-                            CatchupMathTools.showAlert("There was a problem reading this prescription data");
-                        }
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                        Log.error("Error reading data from server", e);
-                    } finally {
-                        CmBusyManager.setBusy(false);
+
                     }
 
-            }
-            @Override
-            public void onFailure(Throwable caught) {
-                caught.printStackTrace();
-                CmBusyManager.setBusy(false);
-            }
-        });
+                    @Override
+                    public void onFailure(Throwable caught) {
+                        super.onFailure(caught);
+                        CmBusyManager.setBusy(false);
+                    }
+                });
     }
-    
-    
-    static Map<String, List<InmhItemData>> _registeredResources = new HashMap<String, List<InmhItemData>>(); 
-    
-    /** Update the current resource loaded
+
+    static Map<String, List<InmhItemData>> _registeredResources = new HashMap<String, List<InmhItemData>>();
+
+    /**
+     * Update the current resource loaded
      * 
      * @param location
      */
     private void setLocation(CmLocation location) {
-        if(location != null) {
+        if (location != null) {
             String resourceTypeToView = location.getResourceType();
-            if(resourceTypeToView != null) {
-                
+            if (resourceTypeToView != null) {
+
                 List<InmhItemData> resourceList = _registeredResources.get(resourceTypeToView);
-                if(resourceList != null) {
+                if (resourceList != null) {
                     // select the Nth item
-                    if(location.getResourceNumber() > -1) {
-                        
+                    if (location.getResourceNumber() > -1) {
+
                         InmhItemData itemData = resourceList.get(location.getResourceNumber());
                         CmMainPanel.__lastInstance._mainContent.showResource(itemData);
-                        
-                    }
-                    else {
+
+                    } else {
                         String resourceId = location.getResourceId();
                         InmhItemData item = new InmhItemData();
                         item.setType(resourceTypeToView);
@@ -336,12 +290,11 @@ public class PrescriptionCmGuiDefinition implements CmGuiDefinition {
     public String getTitle() {
         return "Prescription Resource";
     }
-    
-    
-    
-    /** Mark the pid as being viewed called from external JS
+
+    /**
+     * Mark the pid as being viewed called from external JS
      * 
-     * called from CatchupMath.js 
+     * called from CatchupMath.js
      * 
      * 
      * @TODO: remove access to globals
@@ -350,53 +303,74 @@ public class PrescriptionCmGuiDefinition implements CmGuiDefinition {
      */
     static public void solutionHasBeenViewed_Gwt(String eventName) {
         __last_solution_item.setViewed(true);
-        EventBus.getInstance().fireEvent(new CmEvent(EventBus.EVENT_TYPE_SOLUTIONS_COMPLETE,__last_solution_item));
+        EventBus.getInstance().fireEvent(new CmEvent(EventBus.EVENT_TYPE_SOLUTIONS_COMPLETE, __last_solution_item));
     }
-    
-    /** This solution is being viewed. 
-     *  The first step of solution has been requested
-     *  
-     *  Show info message about show work on first solution view per session
-     *  
+
+    /**
+     * This solution is being viewed. The first step of solution has been
+     * requested
+     * 
+     * Show info message about show work on first solution view per session
+     * 
      * @param pid
      */
     static public void solutionIsBeingViewed_Gwt(String pid) {
-        if(!CatchupMath.__hasBeenInformedAboutShowWork) {
-            CatchupMathTools.showAlert("First try your best to answer this problem, showing the steps, by pressing the Show-Work link.");
-            CatchupMath.__hasBeenInformedAboutShowWork=true;
+        if (!CatchupMath.__hasBeenInformedAboutShowWork) {
+            CatchupMathTools
+                    .showAlert("First try your best to answer this problem, showing the steps, by pressing the Show-Work link.");
+            CatchupMath.__hasBeenInformedAboutShowWork = true;
         }
     }
-    
+
     static private native void publishNative() /*-{
-        $wnd.solutionHasBeenViewed_Gwt = @hotmath.gwt.cm.client.ui.context.PrescriptionCmGuiDefinition::solutionHasBeenViewed_Gwt(Ljava/lang/String;);
-        $wnd.solutionIsBeingViewed_Gwt = @hotmath.gwt.cm.client.ui.context.PrescriptionCmGuiDefinition::solutionIsBeingViewed_Gwt(Ljava/lang/String;);
-    }-*/;    
-    
+                                               $wnd.solutionHasBeenViewed_Gwt = @hotmath.gwt.cm.client.ui.context.PrescriptionCmGuiDefinition::solutionHasBeenViewed_Gwt(Ljava/lang/String;);
+                                               $wnd.solutionIsBeingViewed_Gwt = @hotmath.gwt.cm.client.ui.context.PrescriptionCmGuiDefinition::solutionIsBeingViewed_Gwt(Ljava/lang/String;);
+                                               }-*/;
+
     static {
         publishNative();
-        
-        EventBus.getInstance().addEventListener(new CmEventListener() {
-            
+
+        EventBus.getInstance().addEventListener(new CmEventListenerImplDefault() {
             @Override
             public void handleEvent(CmEvent event) {
-                __last_solution_item = (InmhItemData)event.getEventData();
-            }
-            
-            @Override
-            public String[] getEventsOfInterest() {
-                // TODO Auto-generated method stub
-                String types[] = {EventBus.EVENT_TYPE_SOLUTION_SHOW};
-                return types;
+                if(event.getEventName().equals(EventBus.EVENT_TYPE_SOLUTION_SHOW)) {
+                    __last_solution_item = (InmhItemData) event.getEventData();
+                }
+                else if (event.getEventName().equals(EventBus.EVENT_TYPE_SOLUTIONS_COMPLETE)) {
+                    // update the InmhItemData associated with the currently
+                    // active solution
+
+                    InmhItemData id = ((InmhItemData) event.getEventData());
+                    __instance.markResourceAsViewed(id);
+                } else if (event.getEventName().equals(EventBus.EVENT_TYPE_RESOURCE_VIEWER_OPEN)) {
+                    // if not a required problem, then set as viewed
+                    CmResourcePanel viewer = (CmResourcePanel) event.getEventData();
+
+                    /**
+                     * practice problems only get marked viewed, once they are
+                     * fully complete (event EVENT_TYPE_SOLUTIONS_COMPLETE)
+                     * 
+                     * practice problems are tracked elsewhere. (where?)
+                     */
+                    if (viewer.getResourceItem() != null) {
+                        String type = viewer.getResourceItem().getType();
+                        if (!(type.equals("practice") || type.equals("cmextra")))
+                            __instance.markResourceAsViewed(viewer.getResourceItem());
+                    }
+                } else if (event.getEventName().equals(EventBus.EVENT_TYPE_RESOURCE_VIEWER_CLOSE)) {
+                    __instance.showHelpPanel();
+                }
+                
             }
         });
     }
 }
 
-
-/** Defines the main accordion widget containing the resources
+/**
+ * Defines the main accordion widget containing the resources
  * 
  * @author casey
- *
+ * 
  */
 class PrescriptionResourcePanel extends LayoutContainer {
 
@@ -404,31 +378,28 @@ class PrescriptionResourcePanel extends LayoutContainer {
 
     PrescriptionData pdata;
     List<PrescriptionSessionDataResource> registeredResources = new ArrayList<PrescriptionSessionDataResource>();
-    
+
     public List<PrescriptionSessionDataResource> getRegisteredResources() {
         return registeredResources;
     }
-
-
 
     public void setRegisteredResources(List<PrescriptionSessionDataResource> registeredResources) {
         this.registeredResources = registeredResources;
     }
 
-
     boolean isReady;
+
     public PrescriptionResourcePanel() {
         __instance = this;
         setStyleName("prescription-resource-panel");
     }
 
-    
-    /** The menu button that corresponds to the practice problems
+    /**
+     * The menu button that corresponds to the practice problems
      * 
      */
     ResourceMenuButton _practiceProblemButton, _lessonResource;
-    
-    
+
     /**
      * Build or rebuild the GUI from list of resource objects
      * 
@@ -439,73 +410,79 @@ class PrescriptionResourcePanel extends LayoutContainer {
 
         removeAll();
         registeredResources.clear();
-        
+
         setScrollMode(Scroll.NONE);
         VerticalPanel vp = new VerticalPanel();
         addStyleName("prescription-cm-gui-definition-resource-panel");
 
         // setTitle("Choose a resource type, then click one of its items.");
         for (PrescriptionSessionDataResource resource : resources) {
-        ResourceMenuButton btn = new ResourceMenuButton(resource);
-            
+            ResourceMenuButton btn = new ResourceMenuButton(resource);
+
             registeredResources.add(resource);
-            if(resource.getType().equals("practice"))
+            if (resource.getType().equals("practice"))
                 _practiceProblemButton = btn;
-            else if(resource.getType().equals("review"))
+            else if (resource.getType().equals("review"))
                 _lessonResource = btn;
-            
+
             vp.add(btn);
         }
-       
-       /** Add the standard resources
-        * 
-        */
-       for(PrescriptionSessionDataResource type: new CmInmhStandardResources()) {
-           registeredResources.add(type);
-           
-           Button btn = new ResourceMenuButton(type);
-           vp.add(btn);
-        }        
+
+        /**
+         * Add the standard resources
+         * 
+         */
+        for (PrescriptionSessionDataResource type : new CmInmhStandardResources()) {
+            registeredResources.add(type);
+
+            Button btn = new ResourceMenuButton(type);
+            vp.add(btn);
+        }
 
         add(vp);
         layout();
-        
-        /** Setup a listen for solution view completions to
-         * all the updating of GUI accordingly.
-         */
-        EventBus.getInstance().addEventListener(new CmEventListenerImplDefault() {
-            public void handleEvent(CmEvent event) {
-                if(event.getEventName().equals(EventBus.EVENT_TYPE_SOLUTIONS_COMPLETE)) {
-                    _practiceProblemButton.checkCompletion();
-                }
-            }
-        });
-    }
-    
-    
-    /** Display item data as prescription resource */
-    private void showResource(InmhItemData itemData) {
-        CmMainPanel.__lastInstance._mainContent.showResource(itemData);        
+
+
     }
 
-    
+    /** Display item data as prescription resource */
+    private void showResource(InmhItemData itemData) {
+        CmMainPanel.__lastInstance._mainContent.showResource(itemData);
+    }
+
     public void expandResourcePracticeProblems() {
         _practiceProblemButton.updateCheckMarks();
         _practiceProblemButton.showMenu();
     }
-    
-    /** Expand the resource node exposing resource items
+
+    /**
+     * Expand the resource node exposing resource items
      * 
      * Just matches with 'startsWith'
      * 
      * Return the ResourceList expanded, or null if no match
      * 
      * 
-     * @param resourceType The table of the resource type
+     * @param resourceType
+     *            The table of the resource type
      * 
      */
     public void expandResourceType(String resourceType) {
         // show the menu for named resource
-        //CatchupMathTools.showAlert("Show resource type: " + resourceType);
+        // CatchupMathTools.showAlert("Show resource type: " + resourceType);
+    }
+    
+    static {
+        /**
+         * Setup a listen for solution view completions to all the updating of
+         * GUI accordingly.
+         */
+        EventBus.getInstance().addEventListener(new CmEventListenerImplDefault() {
+            public void handleEvent(CmEvent event) {
+                if (event.getEventName().equals(EventBus.EVENT_TYPE_SOLUTIONS_COMPLETE)) {
+                    __instance._practiceProblemButton.checkCompletion();
+                }
+            }
+        });        
     }
 }
