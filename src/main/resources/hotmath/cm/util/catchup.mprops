@@ -68,7 +68,7 @@ from (
  from  HA_TEST l INNER JOIN HA_USER u ON l.user_id = u.uid
  join HA_TEST_RUN r on r.test_id = l.test_id
  join HA_TEST_DEF td on td.test_def_id = l.test_def_id
- join CM_USER_PROGRAM p on p.user_id = u.uid and p.test_def_id = td.test_def_id
+ join CM_USER_PROGRAM p on p.user_id = u.uid and p.id = l.user_prog_id
  where u.uid = ?
 
  union
@@ -85,7 +85,7 @@ from (
  join HA_TEST_RUN r on r.test_id = l.test_id
  join v_HA_TEST_RUN_INMH_USE_REQ_PROBS iu on iu.run_id = r.run_id
  join HA_TEST_DEF td on td.test_def_id = l.test_def_id
- join CM_USER_PROGRAM p on p.user_id = u.uid and p.test_def_id = td.test_def_id
+ join CM_USER_PROGRAM p on p.user_id = u.uid and p.id = l.user_prog_id
  where u.uid = ?
 ) s
 group by s.test_run_id, s.is_quiz, s.use_date
@@ -341,26 +341,47 @@ where t.user_prog_id in (XXX)
 ## Class: HaTestDefDao
 ##
 
+.key=ALL_TEST_NAMES
+
+SELECT test_name
+FROM   HA_TEST_DEF
+ORDER BY test_def_id
+
+
 .key=TEST_IDS_FOR_CHAPTER_PROGRAM
 
 SELECT problemindex
 FROM   SOLUTIONS s
 INNER  JOIN BOOK_TOC b on b.textcode = s.booktitle
 WHERE  s.BOOKTITLE = ?
-  and  b.title = ?
-  and  b.level = 2
-  and  (s.chaptertitle = b.title_number AND s.SECTIONTITLE = ?)
-  and  problemnumber between ? and ?
-                         
-                         
+  AND  b.title = ?
+  AND  b.level = 2
+  AND  (s.chaptertitle = b.title_number AND s.SECTIONTITLE = ?)
+  AND  problemnumber between ? and ?
+
+
+.key=TEST_FOR_TEST_NAME
+
+SELECT *
+FROM   HA_TEST_DEF
+WHERE  test_name = ? 
+
+
+.key=TEST_FOR_TEST_DEF_ID
+
+SELECT *
+FROM   HA_TEST_DEF
+WHERE  test_def_id = ?
+
+
 .key=TEST_IDS_FOR_PLACEMENT_SEGMENT
 
-select problemindex
-from   SOLUTIONS
-where  booktitle = ?
-  and  chaptertitle = ?
-  and  sectiontitle = ?
-order  by problemnumber
+SELECT problemindex
+FROM   SOLUTIONS
+WHERE  booktitle = ?
+  AND  chaptertitle = ?
+  AND  sectiontitle = ?
+ORDER BY problemnumber
 
 
 .key=TEST_IDS_FOR_PROGRAM
@@ -369,6 +390,22 @@ SELECT problemindex
 FROM   SOLUTIONS
 WHERE  (SOLUTIONS.BOOKTITLE = ? and (SOLUTIONS.CHAPTERTITLE = ? AND SOLUTIONS.SECTIONTITLE = ?))
  and   problemnumber between ? and ?
+ 
+#SELECT problemindex
+#FROM   SOLUTIONS
+#WHERE  booktitle = ? 
+#  AND  chaptertitle = ?
+#  AND  sectiontitle = ?
+#  AND  problemnumber between ? and ?
+
+
+.key=PROGRAM_CHAPTERS_FOR_TEST_DEF
+
+SELECT title
+FROM   BOOK_TOC t
+WHERE  level = 2
+  AND  textcode = ?
+ORDER BY cast(title_number as unsigned) 
 
 ##
 ## Class: HaTestDefDescription
