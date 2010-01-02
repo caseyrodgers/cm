@@ -11,7 +11,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.log4j.Logger;
 
@@ -33,7 +35,9 @@ public class HaTestRunDao {
         
         PreparedStatement pstat=null;
         try {
-            
+        	// check sessions match (do we need to compare PIDs too?)
+        	if (sessionsMatch(conn, testRun, sessions)) return;
+        	
             conn.createStatement().executeUpdate("delete from HA_TEST_RUN_LESSON where run_id = " + testRun.getRunId());
             
             String sql = "insert into HA_TEST_RUN_LESSON(run_id, lesson_name, lesson_number, lesson_file) values(?, ?, ?, ?)";
@@ -345,5 +349,50 @@ public class HaTestRunDao {
         }
     }
 
-    
+    private boolean sessionsMatch(final Connection conn, HaTestRun testRun, List<AssessmentPrescriptionSession> sessions) throws Exception {
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        boolean mismatch = false;
+        int matchCount = 0;
+       
+        try {
+        	ps = conn.prepareStatement("select run_id, lesson_name, lesson_number, lesson_file from HA_TEST_RUN_LESSON where run_id = ?");
+        	rs = ps.executeQuery();
+
+        	if (rs.first()) {
+        		rs.beforeFirst();
+
+        		// load sessions into Map
+        		Map<String, Boolean> foundMap = new HashMap<String, Boolean>();
+        		for (AssessmentPrescriptionSession s : sessions) {
+        			foundMap.put(s.getName().trim() + s.getSessionCategories().get(0).getFile().trim(), false);
+        		}
+
+        		// compare sessions with HA_TEST_RUN_LESSON
+        		while(rs.next() && ! mismatch) {
+        			String lessonName = rs.getString(2).trim();
+        			String file = rs.getString(4);
+        			if (lessonName != null)
+        				lessonName.trim();
+        			else
+        				mismatch = true;
+        			if (file != null)
+        				file.trim();
+        			else
+        				mismatch = true;
+        			if (foundMap.containsKey(lessonName+file)) {
+        				foundMap.put(lessonName+file, true);
+        				matchCount++;
+        			}
+        			else
+        				mismatch = true;
+        		}
+
+        	}
+        }
+        finally {
+        	SqlUtilities.releaseResources(rs, ps, null);
+        }
+    	return (! mismatch && matchCount == sessions.size());
+    }
 }
