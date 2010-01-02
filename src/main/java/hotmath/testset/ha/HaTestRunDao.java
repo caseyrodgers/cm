@@ -357,6 +357,7 @@ public class HaTestRunDao {
        
         try {
         	ps = conn.prepareStatement("select run_id, lesson_name, lesson_number, lesson_file from HA_TEST_RUN_LESSON where run_id = ?");
+        	ps.setInt(1, testRun.getRunId());
         	rs = ps.executeQuery();
 
         	if (rs.first()) {
