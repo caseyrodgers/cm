@@ -366,8 +366,9 @@ public class HaTestRunDao {
         		// load sessions into Map
         		Map<String, Boolean> foundMap = new HashMap<String, Boolean>();
         		for (AssessmentPrescriptionSession s : sessions) {
-        			foundMap.put(s.getName().trim() + s.getSessionCategories().get(0).getFile().trim(), false);
+        			foundMap.put(s.getTopic().trim() + s.getSessionCategories().get(0).getFile().trim(), false);
         		}
+        		//System.out.println("+++ map: " + foundMap);
 
         		// compare sessions with HA_TEST_RUN_LESSON
         		while(rs.next() && ! mismatch) {
@@ -388,6 +389,7 @@ public class HaTestRunDao {
         			else
         				mismatch = true;
         		}
+        		//System.out.println("+++ map: " + foundMap);
 
         	}
         }
