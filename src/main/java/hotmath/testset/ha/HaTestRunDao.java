@@ -11,6 +11,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -353,9 +354,15 @@ public class HaTestRunDao {
         PreparedStatement ps = null;
         ResultSet rs = null;
         boolean mismatch = false;
-        int matchCount = 0;
        
         try {
+
+    		// load sessions into Map
+    		Map<String, Boolean> foundMap = new HashMap<String, Boolean>();
+    		for (AssessmentPrescriptionSession s : sessions) {
+    			foundMap.put(s.getTopic().trim() + s.getSessionCategories().get(0).getFile().trim(), false);
+    		}
+        	
         	ps = conn.prepareStatement("select run_id, lesson_name, lesson_number, lesson_file from HA_TEST_RUN_LESSON where run_id = ?");
         	ps.setInt(1, testRun.getRunId());
         	rs = ps.executeQuery();
@@ -363,39 +370,29 @@ public class HaTestRunDao {
         	if (rs.first()) {
         		rs.beforeFirst();
 
-        		// load sessions into Map
-        		Map<String, Boolean> foundMap = new HashMap<String, Boolean>();
-        		for (AssessmentPrescriptionSession s : sessions) {
-        			foundMap.put(s.getTopic().trim() + s.getSessionCategories().get(0).getFile().trim(), false);
-        		}
-        		//System.out.println("+++ map: " + foundMap);
-
         		// compare sessions with HA_TEST_RUN_LESSON
-        		while(rs.next() && ! mismatch) {
-        			String lessonName = rs.getString(2).trim();
-        			String file = rs.getString(4);
-        			if (lessonName != null)
-        				lessonName.trim();
-        			else
-        				mismatch = true;
-        			if (file != null)
-        				file.trim();
-        			else
-        				mismatch = true;
-        			if (foundMap.containsKey(lessonName+file)) {
-        				foundMap.put(lessonName+file, true);
-        				matchCount++;
-        			}
-        			else
-        				mismatch = true;
-        		}
-        		//System.out.println("+++ map: " + foundMap);
+        		while(rs.next()) {
+        			String lessonName = (rs.getString(2) != null) ? rs.getString(2).trim() : "";
+                    String file = (rs.getString(4) != null) ? rs.getString(4).trim() : "";
 
+                    if (foundMap.containsKey(lessonName+file))
+                    	foundMap.put(lessonName+file, true);
+        			else
+        				break;
+        		}
         	}
+
+    		for (Boolean val : foundMap.values()) {
+    			if (val == false) {
+    				mismatch = true;
+    				break;
+    			}
+    		}
+
+        	return (! mismatch);
         }
         finally {
         	SqlUtilities.releaseResources(rs, ps, null);
         }
-    	return (! mismatch && matchCount == sessions.size());
     }
 }
