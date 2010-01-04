@@ -1,7 +1,9 @@
 package hotmath.testset.ha;
 
 import hotmath.assessment.AssessmentPrescription;
+import hotmath.assessment.AssessmentPrescriptionManager;
 import hotmath.gwt.cm.server.CmDbTestCase;
+import hotmath.testset.ha.HaTestRunDao.TestRunLesson;
 
 import java.util.List;
 
@@ -11,6 +13,24 @@ public class HaTestRunDao_Test extends CmDbTestCase {
         super(name);
     }
 
+    public void testLoadExistingPrescription() throws Exception {
+        HaTestRun testRun = (_testRun != null?_testRun:setupDemoAccountTestRun());
+        
+        /** this will get original from cache 
+         * 
+         */
+        AssessmentPrescription apOrignal = AssessmentPrescriptionManager.getInstance().getPrescription(conn,testRun.getRunId());
+        
+        /** create from persistent state
+         * 
+         */
+        List<TestRunLesson> lessons = new HaTestRunDao().loadTestRunLessonsAndPids(conn, testRun.getRunId());
+
+        AssessmentPrescription apLoaded = new AssessmentPrescription(lessons,testRun);
+        
+        assertTrue(apOrignal.equals(apLoaded));
+    }
+    
     
     public void testMarkLessonAsViewed() throws Exception  {
         HaTestRun testRun = (_testRun != null?_testRun:setupDemoAccountTestRun());
@@ -21,7 +41,6 @@ public class HaTestRunDao_Test extends CmDbTestCase {
         
         assertTrue(lessons.get(1).getViewed());
     } 
-
 
     public void testAddLessons() throws Exception {
         AssessmentPrescription p = setupDemoAccountPrescription();
@@ -48,7 +67,4 @@ public class HaTestRunDao_Test extends CmDbTestCase {
         
         dao.markLessonAsCompleted(conn, _testRun.getRunId(), lessons.get(0).getLesson());
     }
-    
-   
-
 }

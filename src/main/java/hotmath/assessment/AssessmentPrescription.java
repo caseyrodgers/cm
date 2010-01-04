@@ -5,11 +5,13 @@ import hotmath.HotMathException;
 import hotmath.ProblemID;
 import hotmath.gwt.cm_tools.client.ui.NextAction;
 import hotmath.gwt.cm_tools.client.ui.NextAction.NextActionName;
+import hotmath.gwt.shared.client.util.CmException;
 import hotmath.inmh.INeedMoreHelpItem;
 import hotmath.inmh.INeedMoreHelpManager;
 import hotmath.testset.ha.HaTest;
 import hotmath.testset.ha.HaTestRun;
 import hotmath.testset.ha.HaTestRunDao;
+import hotmath.testset.ha.HaTestRunDao.TestRunLesson;
 import hotmath.util.HMConnectionPool;
 import hotmath.util.sql.SqlUtilities;
 
@@ -165,6 +167,30 @@ public class AssessmentPrescription {
         
 
         new HaTestRunDao().addLessonsToTestRun(conn,testRun, _sessions);
+    }
+    
+    
+    public AssessmentPrescription(List<TestRunLesson> lessons, HaTestRun testRun) throws CmException {
+        this.testRun = testRun;
+        _assessment = new InmhAssessment(testRun.getPidList());
+        missed = _assessment.getPids().length;
+
+        // create sessions from persistent data
+        int sessNum = 0;
+        for(TestRunLesson lesson: lessons) {
+            AssessmentPrescriptionSession session = new AssessmentPrescriptionSession(this,"Session: " + (sessNum + 1));
+            for(String pid: lesson.getPids()) {
+                List<SessionData> si = session.getSessionItems();
+
+                /** @TODO: need to get item (lesson name?)
+                 * 
+                 */
+                INeedMoreHelpItem item= new INeedMoreHelpItem("review",lesson.getFile(),lesson.getLesson());
+                si.add(new SessionData(item, pid, 3, 1));
+            }
+            _sessions.add(session);    
+            sessNum++;            
+        }
     }
 
     /** Return all INMH items that are referenced by session data
@@ -347,6 +373,33 @@ public class AssessmentPrescription {
         return new NextAction(NextActionName.PRESCRIPTION); 
     }
     
+    
+    
+    /** Check to see if this prescription is equaled to requested
+     * 
+     */
+    @Override
+    public boolean equals(Object obj) {
+        if(obj instanceof AssessmentPrescription) {
+            AssessmentPrescription ap1 = (AssessmentPrescription)obj;
+            
+            boolean isMatch=false;
+            if(ap1.getSessions().size() == getSessions().size()) {
+                for(int i=0,t=ap1.getSessions().size();i<t;i++){
+                    AssessmentPrescriptionSession s1 = ap1.getSessions().get(i);
+                    AssessmentPrescriptionSession s2 = getSessions().get(i);
+                    if(!s1.getTopic().equals(s2.getTopic())) {
+                        return false;
+                    }
+                }
+                isMatch=true;
+            }
+            return isMatch;
+        }
+        else 
+            return equals(obj);
+    }    
+    
     /** Represents a single item in a given session */
     static public class SessionData {
         String pid;
@@ -413,5 +466,5 @@ public class AssessmentPrescription {
                 return super.equals(obj);
         }
     }
-    
+
 }

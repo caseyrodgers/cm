@@ -50,15 +50,21 @@ public class AssessmentPrescriptionManager {
 	
 	public AssessmentPrescription getPrescription(final Connection conn, Integer runId) throws Exception {
 	    
+	    /** First check memory cache
+	     * 
+	     */
 	    AssessmentPrescription pres = (AssessmentPrescription)CmCacheManager.getInstance().retrieveFromCache(CacheName.PRESCRIPTION, runId.toString());
 		if(pres == null) {
-			// create new one and store in map
-			
-			// first need to lookup the test for this run
+			/**
+			 * first need to lookup the test for this run
+			 */
 			HaTestRun testRun = new HaTestRunDao().lookupTestRun(conn, runId);
-			
-			pres = AssessmentPrescriptionFactory.create(conn, testRun);
-			pres.setTestRun(testRun);
+
+			/** read from persistent lesson data created when creating test run
+			 * 
+			 */
+			// pres = AssessmentPrescriptionFactory.create(conn, testRun);
+			pres = new AssessmentPrescription(new HaTestRunDao().loadTestRunLessonsAndPids(conn, runId), testRun);
 			
 			CmCacheManager.getInstance().addToCache(CacheName.PRESCRIPTION, pres.getTestRun().getRunId().toString(), pres);
 		}

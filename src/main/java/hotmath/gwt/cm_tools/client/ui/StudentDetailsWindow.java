@@ -1,8 +1,8 @@
 package hotmath.gwt.cm_tools.client.ui;
 
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
+import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.model.StudentActivityModel;
-import hotmath.gwt.cm_tools.client.model.StudentModel;
 import hotmath.gwt.cm_tools.client.model.StudentModelExt;
 import hotmath.gwt.cm_tools.client.service.CmServiceAsync;
 import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
@@ -11,6 +11,7 @@ import hotmath.gwt.shared.client.rpc.action.CmList;
 import hotmath.gwt.shared.client.rpc.action.GeneratePdfAction;
 import hotmath.gwt.shared.client.rpc.action.GetStudentActivityAction;
 import hotmath.gwt.shared.client.rpc.action.GeneratePdfAction.PdfType;
+import hotmath.gwt.shared.client.util.CmAsyncCallback;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -40,7 +41,6 @@ import com.extjs.gxt.ui.client.widget.menu.Menu;
 import com.extjs.gxt.ui.client.widget.menu.MenuItem;
 import com.extjs.gxt.ui.client.widget.toolbar.FillToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
@@ -106,11 +106,11 @@ public class StudentDetailsWindow extends CmWindow {
 
         setLayout(new BorderLayout());
         addStyleName("student-details-window-container");
-        
+
         LayoutContainer lc = new LayoutContainer();
         lc.add(studentInfoPanel());
         lc.add(toolBar);
-        add(lc, new BorderLayoutData(LayoutRegion.NORTH,50));
+        add(lc, new BorderLayoutData(LayoutRegion.NORTH, 50));
 
         LayoutContainer gridContainer = new LayoutContainer();
         gridContainer.setLayout(new FitLayout());
@@ -131,8 +131,7 @@ public class StudentDetailsWindow extends CmWindow {
 
         getStudentActivityRPC(store, studentModel);
 
-        
-        if(CmShared.getQueryParameter("debug") != null) {
+        if (CmShared.getQueryParameter("debug") != null) {
             MenuItem detailDebug = new MenuItem("Debug Info");
             detailDebug.addSelectionListener(new SelectionListener<MenuEvent>() {
                 public void componentSelected(MenuEvent ce) {
@@ -145,29 +144,24 @@ public class StudentDetailsWindow extends CmWindow {
             samGrid.setContextMenu(contextMenu);
         }
 
-        
-        
-        
         setVisible(true);
     }
 
     /**
      * Enable or disable buttons depending on user state.
      * 
-     * If grid id empty disable all buttons.  If any rows
-     * exist enable the showWork, and only enable the 
-     * standards button is program supports tracking standards,
-     * ie. Not Auto-enroll or Chapter tests.
+     * If grid id empty disable all buttons. If any rows exist enable the
+     * showWork, and only enable the standards button is program supports
+     * tracking standards, ie. Not Auto-enroll or Chapter tests.
      * 
      * 
      */
     private void enableDisableButtons() {
-        
-        if(this.samGrid.getStore().getCount() == 0) {
+
+        if (this.samGrid.getStore().getCount() == 0) {
             _showTopicsBtn.disable();
             _showWorkButton.disable();
-        }
-        else {
+        } else {
             _showWorkButton.enable();
             _showTopicsBtn.enable();
             StudentActivityModel sam = samGrid.getSelectionModel().getSelectedItem();
@@ -259,9 +253,8 @@ public class StudentDetailsWindow extends CmWindow {
         ti.addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent ce) {
-                
-                new PdfWindow(sm.getAdminUid(), 
-                        "Catchup Math Details Report for: " + sm.getName(),
+
+                new PdfWindow(sm.getAdminUid(), "Catchup Math Details Report for: " + sm.getName(),
                         new GeneratePdfAction(PdfType.STUDENT_DETAIL, sm.getAdminUid(), Arrays.asList(sm.getUid())));
             }
         });
@@ -278,8 +271,8 @@ public class StudentDetailsWindow extends CmWindow {
         ti.addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent ce) {
-                new PdfWindow(sm.getAdminUid(), "Catchup Math Report Card for: " + sm.getName(), 
-                        new GeneratePdfAction(PdfType.REPORT_CARD,sm.getAdminUid(),Arrays.asList(sm.getUid())));
+                new PdfWindow(sm.getAdminUid(), "Catchup Math Report Card for: " + sm.getName(), new GeneratePdfAction(
+                        PdfType.REPORT_CARD, sm.getAdminUid(), Arrays.asList(sm.getUid())));
             }
         });
         return ti;
@@ -350,29 +343,35 @@ public class StudentDetailsWindow extends CmWindow {
         template = XTemplate.create(sb.toString());
         html = new HTML();
 
-        html.setHeight("35px"); // to eliminate the jump when setting values in template
+        html.setHeight("35px"); // to eliminate the jump when setting values in
+                                // template
     }
 
     protected void getStudentActivityRPC(final ListStore<StudentActivityModel> store, StudentModelExt sm) {
-        
-        
+
+        CmBusyManager.setBusy(true);
+
         CmServiceAsync s = (CmServiceAsync) Registry.get("cmService");
         GetStudentActivityAction action = new GetStudentActivityAction(sm);
-        s.execute(action, new AsyncCallback<CmList<StudentActivityModel>>() {
+        s.execute(action, new CmAsyncCallback<CmList<StudentActivityModel>>() {
 
             public void onSuccess(CmList<StudentActivityModel> list) {
-                store.add(list);
+                try {
+                    store.add(list);
 
-                _studentCount.setText("count: " + list.size());
-                
-                if(list.size() > 0) {
-                    enableDisableButtons();
+                    _studentCount.setText("count: " + list.size());
+
+                    if (list.size() > 0) {
+                        enableDisableButtons();
+                    }
+                } finally {
+                    CmBusyManager.setBusy(false);
                 }
             }
 
             public void onFailure(Throwable caught) {
-                String msg = caught.getMessage();
-                CatchupMathTools.showAlert(msg);
+                super.onFailure(caught);
+                CmBusyManager.setBusy(false);
             }
         });
     }

@@ -4,9 +4,8 @@ import hotmath.gwt.shared.client.rpc.Action;
 import hotmath.gwt.shared.client.rpc.result.CreateTestRunResponse;
 
 public class CreateTestRunAction implements Action<CreateTestRunResponse> {
-    
+
     int testId;
-    
 
     public CreateTestRunAction() {}
     
@@ -22,5 +21,9 @@ public class CreateTestRunAction implements Action<CreateTestRunResponse> {
         this.testId = testId;
     }
 
-
+    
+    @Override
+    public String toString() {
+        return "CreateTestRunAction [testId=" + testId + "]";
+    }
 }

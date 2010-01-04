@@ -19,7 +19,6 @@ public class MarkPrescriptionLessonAsViewedAction implements Action<RpcData>{
         
     }
     
-    
     public String getLesson() {
         return lesson;
     }
@@ -27,12 +26,6 @@ public class MarkPrescriptionLessonAsViewedAction implements Action<RpcData>{
     public void setLesson(String lesson) {
         this.lesson = lesson;
     }
-
-    @Override
-    public String toString() {
-        return "MarkPrescriptionLessonAsViewedAction [Session=" + session + ", runId=" + runId + ", lesson=" + lesson + "]";
-    }
-
 
     public Integer getRunId() {
         return runId;
@@ -50,5 +43,8 @@ public class MarkPrescriptionLessonAsViewedAction implements Action<RpcData>{
         this.session = session;
     }
 
-
+    @Override
+    public String toString() {
+        return "MarkPrescriptionLessonAsViewedAction [Session=" + session + ", runId=" + runId + ", lesson=" + lesson + "]";
+    }
 }

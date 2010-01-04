@@ -50,12 +50,12 @@ import org.apache.log4j.Logger;
  */
 public class GetPrescriptionCommand implements ActionHandler<GetPrescriptionAction, RpcData> {
 
-    Logger logger = Logger.getLogger(GetPrescriptionCommand.class);
+    static Logger __logger = Logger.getLogger(GetPrescriptionCommand.class);
 
     @Override
     public RpcData execute(final Connection conn, GetPrescriptionAction action) throws Exception {
 
-        logger.info("getting prescription: " + action);
+        __logger.info("getting prescription: " + action);
         
         int runId = action.getRunId();
         int sessionNumber = action.getSessionNumber();
@@ -71,7 +71,7 @@ public class GetPrescriptionCommand implements ActionHandler<GetPrescriptionActi
             }
             // which session
             if (sessionNumber > (totalSessions - 1)) {
-                logger.warn(String.format("WARNING: session request for %d is outside bounds of prescription: %d, %d",
+                __logger.warn(String.format("WARNING: session request for %d is outside bounds of prescription: %d, %d",
                 		runId, sessionNumber, totalSessions));
                 sessionNumber = 0;
             }
@@ -203,7 +203,6 @@ public class GetPrescriptionCommand implements ActionHandler<GetPrescriptionActi
     
     @Override
     public Class<? extends Action<? extends Response>> getActionType() {
-        // TODO Auto-generated method stub
         return GetPrescriptionAction.class;
     }
 

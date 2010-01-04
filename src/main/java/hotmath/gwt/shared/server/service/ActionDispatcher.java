@@ -195,7 +195,7 @@ public class ActionDispatcher {
         finally {
             if(conn != null)
                 SqlUtilities.releaseResources(null,null,conn);
-            logger.info("RPC Action " + action.getClass().getName() + " complete: elapsed time: " + (System.currentTimeMillis() - timeStart)/ 1000);
+            logger.info("RPC Action " + action.getClass().getName() + " toString: " + action.toString() + " complete: elapsed time: " + (System.currentTimeMillis() - timeStart)/ 1000);
         }
     }
     

@@ -4,6 +4,7 @@ import hotmath.HotMathException;
 import hotmath.assessment.AssessmentPrescriptionSession;
 import hotmath.assessment.AssessmentPrescription.SessionData;
 import hotmath.cm.util.CmMultiLinePropertyReader;
+import hotmath.gwt.shared.client.util.CmException;
 import hotmath.util.sql.SqlUtilities;
 
 import java.sql.Connection;
@@ -11,9 +12,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.log4j.Logger;
 
@@ -35,9 +34,6 @@ public class HaTestRunDao {
         
         PreparedStatement pstat=null;
         try {
-        	// check sessions match (do we need to compare PIDs too?)
-        	if (sessionsMatch(conn, testRun, sessions)) return;
-        	
             conn.createStatement().executeUpdate("delete from HA_TEST_RUN_LESSON where run_id = " + testRun.getRunId());
             
             String sql = "insert into HA_TEST_RUN_LESSON(run_id, lesson_name, lesson_number, lesson_file) values(?, ?, ?, ?)";
@@ -76,6 +72,50 @@ public class HaTestRunDao {
                 }
                 
             }
+        }
+        finally {
+            SqlUtilities.releaseResources(null,pstat,null);
+        }
+    }
+    
+    
+    /** Return the complete currently definition of this test run
+     * 
+     * @return
+     * @throws Exception if prescription has not been defined.
+     * 
+     */
+    public List<TestRunLesson> loadTestRunLessonsAndPids(final Connection conn, Integer runId) throws Exception {
+        
+        List<TestRunLesson> lessons = new ArrayList<TestRunLesson>();
+        PreparedStatement pstat=null;
+        try {
+            String sql = "select lesson_name,lesson_file,pid from HA_TEST_RUN_LESSON l JOIN HA_TEST_RUN_LESSON_PID p on p.lid = l.id where l.run_id = ? order by lesson_number";
+            
+            pstat = conn.prepareStatement(sql);
+            
+            pstat.setInt(1,runId);
+            ResultSet rs = pstat.executeQuery();
+            if(!rs.first()) {
+                throw new CmException("Prescription definition has not been defined: " + runId);
+            }
+            
+            TestRunLesson trl=null;
+            String lastLesson="";
+            do {
+                String lesson = rs.getString("lesson_name");
+                String pid = rs.getString("pid");
+                
+                if(!lastLesson.equals(lesson)) {
+                    String file = rs.getString("lesson_file");
+                    trl = new TestRunLesson(lesson,file);
+                    lessons.add(trl);
+                    lastLesson = lesson;
+                }
+                trl.getPids().add(pid);
+            }while(rs.next());
+            
+            return lessons;
         }
         finally {
             SqlUtilities.releaseResources(null,pstat,null);
@@ -349,51 +389,44 @@ public class HaTestRunDao {
         }
     }
 
-    private boolean sessionsMatch(final Connection conn, HaTestRun testRun, List<AssessmentPrescriptionSession> sessions) throws Exception {
-        PreparedStatement ps = null;
-        ResultSet rs = null;
-        boolean match = true;
-       
-        try {
-
-    		// load sessions into Map
-    		Map<String, Boolean> foundMap = new HashMap<String, Boolean>();
-    		for (AssessmentPrescriptionSession s : sessions) {
-    			foundMap.put(s.getTopic().trim() + s.getSessionCategories().get(0).getFile().trim(), false);
-    		}
-        	
-        	ps = conn.prepareStatement("select run_id, lesson_name, lesson_number, lesson_file from HA_TEST_RUN_LESSON where run_id = ?");
-        	ps.setInt(1, testRun.getRunId());
-        	rs = ps.executeQuery();
-
-        	if (rs.first()) {
-        		rs.beforeFirst();
-
-        		// compare sessions with HA_TEST_RUN_LESSON
-        		while(rs.next()) {
-        			String lessonName = (rs.getString(2) != null) ? rs.getString(2).trim() : "";
-                    String file = (rs.getString(4) != null) ? rs.getString(4).trim() : "";
-
-                    if (foundMap.containsKey(lessonName+file))
-                    	foundMap.put(lessonName+file, true);
-        			else {
-        				match = false;
-        				break;
-        			}
-        		}
-        	}
-
-    		for (Boolean val : foundMap.values()) {
-    			if (val == false || match == false) {
-    				match = false;
-    				break;
-    			}
-    		}
-
-        	return match;
+    
+    /** holds a single lesson and the associated pids
+     * 
+     * @author casey
+     *
+     */
+    public class TestRunLesson {
+        String lesson;
+        String file;
+        List<String> pids = new ArrayList<String>();
+        
+        public TestRunLesson(String lesson, String file) {
+            this.lesson = lesson;
+            this.file = file;
         }
-        finally {
-        	SqlUtilities.releaseResources(rs, ps, null);
+
+        public String getLesson() {
+            return lesson;
+        }
+
+        public void setLesson(String lesson) {
+            this.lesson = lesson;
+        }
+
+        public List<String> getPids() {
+            return pids;
+        }
+
+        public void setPids(List<String> pids) {
+            this.pids = pids;
+        }
+
+        public String getFile() {
+            return file;
+        }
+
+        public void setFile(String file) {
+            this.file = file;
         }
     }
 }

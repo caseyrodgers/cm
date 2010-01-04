@@ -20,4 +20,9 @@ public class AutoAdvanceUserAction implements Action<AutoUserAdvanced>{
     public void setUserId(Integer userId) {
         this.userId = userId;
     }
+
+    @Override
+    public String toString() {
+        return "AutoAdvanceUserAction [userId=" + userId + "]";
+    }
 }

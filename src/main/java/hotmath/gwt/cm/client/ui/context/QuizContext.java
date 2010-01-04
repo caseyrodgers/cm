@@ -16,7 +16,6 @@ import hotmath.gwt.shared.client.rpc.action.CreateTestRunAction;
 import hotmath.gwt.shared.client.rpc.result.CreateTestRunResponse;
 import hotmath.gwt.shared.client.util.CmAsyncCallback;
 import hotmath.gwt.shared.client.util.UserInfo;
-import hotmath.testset.ha.CmProgram;
 
 import java.util.ArrayList;
 import java.util.List;

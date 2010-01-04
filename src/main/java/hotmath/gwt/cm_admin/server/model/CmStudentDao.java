@@ -967,8 +967,6 @@ public class CmStudentDao {
     private List<StudentActivityModel> loadStudentActivity(final Connection conn, ResultSet rs) throws Exception {
 
         List<StudentActivityModel> l = new ArrayList<StudentActivityModel>();
-        int problemsViewed = 0;
-        
         CmAdminDao cmaDao = new CmAdminDao();
         HaTestRunDao trDao = new HaTestRunDao();
 
@@ -1015,10 +1013,7 @@ public class CmStudentDao {
                 int notAnswered = rs.getInt("not_answered");
                 double percent = (double) (numCorrect * 100) / (double) (numCorrect + numIncorrect + notAnswered);
                 sb.append(java.lang.Math.round(percent)).append("% correct");
-                problemsViewed = 0;
             } else {
-                problemsViewed += rs.getInt("problems_viewed");
-                
                 // was: problemsViewed / problemsPerLesson; // where problemsPerLesson assumed to be always equal to 3
                 int completed =  trDao.getLessonsViewedCount(conn, runId);
                 
