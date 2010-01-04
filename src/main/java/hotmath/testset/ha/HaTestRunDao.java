@@ -11,7 +11,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -353,7 +352,7 @@ public class HaTestRunDao {
     private boolean sessionsMatch(final Connection conn, HaTestRun testRun, List<AssessmentPrescriptionSession> sessions) throws Exception {
         PreparedStatement ps = null;
         ResultSet rs = null;
-        boolean mismatch = false;
+        boolean match = true;
        
         try {
 
@@ -377,19 +376,21 @@ public class HaTestRunDao {
 
                     if (foundMap.containsKey(lessonName+file))
                     	foundMap.put(lessonName+file, true);
-        			else
+        			else {
+        				match = false;
         				break;
+        			}
         		}
         	}
 
     		for (Boolean val : foundMap.values()) {
-    			if (val == false) {
-    				mismatch = true;
+    			if (val == false || match == false) {
+    				match = false;
     				break;
     			}
     		}
 
-        	return (! mismatch);
+        	return match;
         }
         finally {
         	SqlUtilities.releaseResources(rs, ps, null);
