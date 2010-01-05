@@ -12,7 +12,7 @@ public class AssessmentPrescriptionFactory {
 	private AssessmentPrescriptionFactory() {}
 	
 	
-	/** Create the appropiate type of assessment prescription object
+	/** Create the appropriate type of assessment prescription object
 	 * 
 	 * @param testRun
 	 * @return

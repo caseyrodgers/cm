@@ -216,7 +216,8 @@ public class CmDebugReport {
          * 
          */
         if (prescription.getSessions().size() == 0) {
-            logMessage(prescription.getTestRun().getRunId(), "WARNING: Program prescription has zero lessons");
+            String pidList = prescription.getTestRun().getPidList();
+            logMessage(prescription.getTestRun().getRunId(), "WARNING: Program prescription has zero lessons (" + pidList + ")");
             isError = true;
         } else {
             /**
