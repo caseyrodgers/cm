@@ -150,9 +150,9 @@ public class StudentDetailsWindow extends CmWindow {
     /**
      * Enable or disable buttons depending on user state.
      * 
-     * If grid id empty disable all buttons. If any rows exist enable the
-     * showWork, and only enable the standards button is program supports
-     * tracking standards, ie. Not Auto-enroll or Chapter tests.
+     * If grid is empty disable all buttons. If any rows exist, enable the
+     * showWork button and only enable the standards button if program supports
+     * tracking standards; ie - Not Auto-enroll or Chapter tests.
      * 
      * 
      */
