@@ -60,11 +60,8 @@ public class AssessmentPrescriptionManager {
 			 */
 			HaTestRun testRun = new HaTestRunDao().lookupTestRun(conn, runId);
 
-			/** read from persistent lesson data created when creating test run
-			 * 
-			 */
-			// pres = AssessmentPrescriptionFactory.create(conn, testRun);
-			pres = new AssessmentPrescription(new HaTestRunDao().loadTestRunLessonsAndPids(conn, runId), testRun);
+			
+			pres = AssessmentPrescriptionFactory.createOrLoadExisting(conn, testRun);
 			
 			CmCacheManager.getInstance().addToCache(CacheName.PRESCRIPTION, pres.getTestRun().getRunId().toString(), pres);
 		}

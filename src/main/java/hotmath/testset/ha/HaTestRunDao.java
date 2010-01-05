@@ -82,7 +82,7 @@ public class HaTestRunDao {
     /** Return the complete currently definition of this test run
      * 
      * @return
-     * @throws Exception if prescription has not been defined.
+     * @throws Exception 
      * 
      */
     public List<TestRunLesson> loadTestRunLessonsAndPids(final Connection conn, Integer runId) throws Exception {
@@ -96,13 +96,10 @@ public class HaTestRunDao {
             
             pstat.setInt(1,runId);
             ResultSet rs = pstat.executeQuery();
-            if(!rs.first()) {
-                throw new CmException("Prescription definition has not been defined: " + runId);
-            }
             
             TestRunLesson trl=null;
             String lastLesson="";
-            do {
+            while(rs.next()) {
                 String lesson = rs.getString("lesson_name");
                 String pid = rs.getString("pid");
                 
@@ -113,7 +110,7 @@ public class HaTestRunDao {
                     lastLesson = lesson;
                 }
                 trl.getPids().add(pid);
-            }while(rs.next());
+            }
             
             return lessons;
         }
