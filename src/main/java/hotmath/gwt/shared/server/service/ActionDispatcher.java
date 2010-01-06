@@ -158,7 +158,7 @@ public class ActionDispatcher {
     public <T extends Response> T execute(Action<T> action) throws CmRpcException {
  
         long timeStart = System.currentTimeMillis();
-        String c[] = action.getClass().getName().split(".");
+        String c[] = action.getClass().getName().split("\\.");
         String clazzName = c[c.length-1];
         logger.info("RPC Action executing: " + clazzName + "  toString: " + action.toString());
         Connection conn = null;
