@@ -7,6 +7,7 @@ import hotmath.gwt.cm_tools.client.ui.CmMainPanel;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
 import hotmath.gwt.shared.client.eventbus.CmEventListenerImplDefault;
 import hotmath.gwt.shared.client.eventbus.EventBus;
+import hotmath.gwt.shared.client.eventbus.EventType;
 import hotmath.gwt.shared.client.rpc.action.GetSolutionAction;
 import hotmath.gwt.shared.client.util.RpcData;
 import hotmath.gwt.shared.client.util.UserInfo;
@@ -30,10 +31,10 @@ public class ResourceViewerImplTutor extends CmResourcePanelImplWithWhiteboard {
 
         EventBus.getInstance().addEventListener(new CmEventListenerImplDefault() {
             public void handleEvent(CmEvent event) {
-                if (event.getEventName().equals(EventBus.EVENT_TYPE_WHITEBOARDUPDATED)) {
+                if (event.getEventType() == EventType.EVENT_TYPE_WHITEBOARDUPDATED) {
                     _instance.whiteBoardHasBeenUpdated((String) event.getEventData());
                 }
-                else if(event.getEventName().equals(EventBus.EVENT_TYPE_MODAL_WINDOW_OPEN)) {
+                else if(event.getEventType() == EventType.EVENT_TYPE_MODAL_WINDOW_OPEN) {
                     if(__lastDisplayMode == DisplayMode.WHITEBOARD) {
                         CmMainPanel.__lastInstance.removeResource();
                     }
@@ -156,7 +157,7 @@ public class ResourceViewerImplTutor extends CmResourcePanelImplWithWhiteboard {
                     }
                     ResourceViewerImplTutor.initializeTutor(getResourceItem().getFile(), getResourceItem().getTitle(), hasShowWork,shouldExpandSolution);
 
-                    EventBus.getInstance().fireEvent(new CmEvent(EventBus.EVENT_TYPE_SOLUTION_SHOW, getResourceItem()));
+                    EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_SOLUTION_SHOW, getResourceItem()));
                     
                     
                 } catch (Exception e) {
@@ -220,7 +221,7 @@ public class ResourceViewerImplTutor extends CmResourcePanelImplWithWhiteboard {
     static public void flashInputField_Gwt(String result, String input, String answer, String id) {
         Log.info("FIF: result: " + result + ",input: " + input + ", answer:  " + answer + ",id: " + id);
         if(result.equals("correct")) {
-            EventBus.getInstance().fireEvent(new CmEvent(EventBus.EventType.EVENT_TYPE_SOLUTION_FIF_CORRECT,_instance.getPid()));
+            EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_SOLUTION_FIF_CORRECT,_instance.getPid()));
         }
         else {
             // do nothing if incorrect

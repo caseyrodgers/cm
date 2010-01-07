@@ -20,6 +20,7 @@ import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.data.CmAsyncRequestImplDefault;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
 import hotmath.gwt.shared.client.eventbus.EventBus;
+import hotmath.gwt.shared.client.eventbus.EventType;
 import hotmath.gwt.shared.client.rpc.action.AutoAdvanceUserAction;
 import hotmath.gwt.shared.client.rpc.action.MarkPrescriptionLessonAsViewedAction;
 import hotmath.gwt.shared.client.util.RpcData;
@@ -67,7 +68,7 @@ public class PrescriptionContext implements CmContext {
     public void setPrescriptionData(PrescriptionData prescriptionData) {
         this.prescriptionData = prescriptionData;
         EventBus.getInstance().fireEvent(
-                new CmEvent(EventBus.EVENT_TYPE_TOPIC_CHANGED, prescriptionData.getCurrSession().getTopic()));
+                new CmEvent(EventType.EVENT_TYPE_TOPIC_CHANGED, prescriptionData.getCurrSession().getTopic()));
     }
 
     public void setCorrectPercent(int correctPercent) {

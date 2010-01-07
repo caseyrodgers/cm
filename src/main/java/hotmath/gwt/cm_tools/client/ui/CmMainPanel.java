@@ -4,9 +4,9 @@ import hotmath.gwt.cm_tools.client.ui.resource_viewer.CmMainResourceContainer;
 import hotmath.gwt.cm_tools.client.ui.resource_viewer.CmResourcePanel;
 import hotmath.gwt.cm_tools.client.ui.viewer.ResourceViewerImplFlash;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
-import hotmath.gwt.shared.client.eventbus.CmEventListener;
 import hotmath.gwt.shared.client.eventbus.CmEventListenerImplDefault;
 import hotmath.gwt.shared.client.eventbus.EventBus;
+import hotmath.gwt.shared.client.eventbus.EventType;
 
 import java.util.List;
 
@@ -101,11 +101,11 @@ public class CmMainPanel extends LayoutContainer {
          *  for Flash widgets to be hidden
          *  
          */
-        EventBus.getInstance().addEventListener(new CmEventListener() {
+        EventBus.getInstance().addEventListener(new CmEventListenerImplDefault() {
             
             @Override
             public void handleEvent(CmEvent event) {
-                if(event.getEventName().equals(EventBus.EVENT_TYPE_MODAL_WINDOW_OPEN)) {
+                if(event.getEventType() == EventType.EVENT_TYPE_MODAL_WINDOW_OPEN) {
                     // we must remove any resource viewer that contains
                     // flash, otherwise the z-order gets screwed up and
                     // the dialog will bleed through the flash.
@@ -113,23 +113,15 @@ public class CmMainPanel extends LayoutContainer {
                         CmMainPanel.__lastInstance._mainContent.removeResource();
                     }
                 }
-                else if(event.getEventName().equals(EventBus.EVENT_TYPE_RESOURCE_VIEWER_OPEN)) {
+                else if(event.getEventType() == EventType.EVENT_TYPE_RESOURCE_VIEWER_OPEN) {
                     _lastResourceViewer = (CmResourcePanel)event.getEventData();
                 }
-                else if(event.getEventName().equals(EventBus.EVENT_TYPE_WINDOW_RESIZED)) {
+                else if(event.getEventType() == EventType.EVENT_TYPE_WINDOW_RESIZED) {
                     _mainContent.fireWindowResized();
                 }
-                else if(event.getEventName().equals(EventBus.EVENT_TYPE_RESOURCE_VIEWER_CLOSE)) {
+                else if(event.getEventType() == EventType.EVENT_TYPE_RESOURCE_VIEWER_CLOSE) {
                     _lastResourceViewer = (CmResourcePanel)event.getEventData();
                 }
-            }
-            
-            @Override
-            public String[] getEventsOfInterest() {
-                // TODO Auto-generated method stub
-                String types[] = {EventBus.EVENT_TYPE_MODAL_WINDOW_OPEN, EventBus.EVENT_TYPE_RESOURCE_VIEWER_OPEN, 
-                        EventBus.EVENT_TYPE_RESOURCE_VIEWER_CLOSE,EventBus.EVENT_TYPE_WINDOW_RESIZED};
-                return types;
             }
         });
     }
@@ -170,7 +162,7 @@ public class CmMainPanel extends LayoutContainer {
             
             @Override
             public void handleEvent(CmEvent event) {
-                if(event.getEventName().equals(EventBus.EVENT_TYPE_RESOURCE_VIEWER_CLOSE)) {
+                if(event.getEventType() == EventType.EVENT_TYPE_RESOURCE_VIEWER_CLOSE) {
                     __lastInstance.expandResourceButtons();
                 }
             }

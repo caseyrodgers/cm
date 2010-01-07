@@ -1,12 +1,16 @@
 package hotmath.gwt.shared.client.eventbus;
 
+/** Represents a single EventBus listener 
+ * 
+ * @author casey
+ *
+ */
 public interface CmEventListener {
     
-    /** The name of event that we are interested
-     *  Null if interested in all 
-     *  
-     * @return
+    /** Called when an event is fired, the listener can
+     * inspect the event and do what is needed.
+     * 
+     * @param event
      */
-    String[] getEventsOfInterest();
     void handleEvent(CmEvent event);
 }

@@ -8,6 +8,7 @@ import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
 import hotmath.gwt.shared.client.data.CmAsyncRequestImplDefault;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
 import hotmath.gwt.shared.client.eventbus.EventBus;
+import hotmath.gwt.shared.client.eventbus.EventType;
 import hotmath.gwt.shared.client.rpc.action.CreateAutoRegistrationAccountsAction;
 import hotmath.gwt.shared.client.rpc.action.CreateAutoRegistrationPreviewAction;
 import hotmath.gwt.shared.client.rpc.result.AutoRegistrationEntry;
@@ -224,7 +225,7 @@ public class AutoRegistrationWindow extends CmWindow {
                 new AsyncCallback<AutoRegistrationSetup>() {
                     @Override
                     public void onSuccess(AutoRegistrationSetup result) {
-                    	EventBus.getInstance().fireEvent(new CmEvent(EventBus.EVENT_TYPE_REFRESH_STUDENT_DATA));
+                    	EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_REFRESH_STUDENT_DATA));
                     	
                     	
                     	CatchupMathTools.setBusy(false);

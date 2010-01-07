@@ -1,6 +1,5 @@
 package hotmath.gwt.shared.client.eventbus;
 
-import hotmath.gwt.shared.client.eventbus.EventBus.EventType;
 
 /** Represents a single event to be fired
  * 
@@ -16,25 +15,29 @@ public class CmEvent {
     public CmEvent(String name) {
         this(name, null);
     }
+    
     @Deprecated
-    public CmEvent(EventBus.EventType eventType) {
-        this.eventType = eventType;
-    }
-    
-    public CmEvent(EventBus.EventType eventType,Object eventData) {
-        this.eventType = eventType;
-        this.eventName = eventType.toString();
-        this.eventData = eventData;
-    }
-    
     public CmEvent(String name, Object data) {
         this.eventName = name;
         this.eventData = data;
     }
+
+    public CmEvent(EventType eventType) {
+        this.eventType = eventType;
+    }
     
+    public CmEvent(EventType eventType,Object eventData) {
+        this.eventType = eventType;
+        this.eventName = eventType.toString();
+        this.eventData = eventData;
+    }
+
+    @Deprecated
     public String getEventName() {
         return eventName;
     }
+    
+    @Deprecated
     public void setEventName(String eventName) {
         this.eventName = eventName;
     }
@@ -51,3 +54,4 @@ public class CmEvent {
         this.eventType = eventType;
     }
 }
+

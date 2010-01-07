@@ -3,6 +3,7 @@ package hotmath.gwt.cm_tools.client.model;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
 import hotmath.gwt.shared.client.eventbus.CmEventListenerImplDefault;
 import hotmath.gwt.shared.client.eventbus.EventBus;
+import hotmath.gwt.shared.client.eventbus.EventType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,16 +51,16 @@ public class CmAdminDataReader extends Timer {
         
         EventBus.getInstance().addEventListener(new CmEventListenerImplDefault() {
             public void handleEvent(CmEvent event) {
-                if(event.getEventName().equals(EventBus.EVENT_TYPE_MODAL_WINDOW_OPEN)) {
+                if(event.getEventType() == EventType.EVENT_TYPE_MODAL_WINDOW_OPEN) {
                     skipRefresh=true;
                 }
-                else if(event.getEventName().equals(EventBus.EVENT_TYPE_MODAL_WINDOW_CLOSED)) {
+                else if(event.getEventType() == EventType.EVENT_TYPE_MODAL_WINDOW_CLOSED) {
                     skipRefresh=false;
                 }
-                else if(event.getEventName().equals(EventBus.EVENT_TYPE_USERCHANGED)) {
+                else if(event.getEventType() == EventType.EVENT_TYPE_USERCHANGED) {
                     fireRefreshData();
                 }
-                else if(event.getEventName().equals(EventBus.EVENT_TYPE_USER_PROGRAM_CHANGED)) {
+                else if(event.getEventType() == EventType.EVENT_TYPE_USER_PROGRAM_CHANGED) {
                     fireRefreshData();
                 }
             }

@@ -19,6 +19,7 @@ import hotmath.gwt.cm_tools.client.ui.resource_viewer.CmResourcePanel;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
 import hotmath.gwt.shared.client.eventbus.CmEventListenerImplDefault;
 import hotmath.gwt.shared.client.eventbus.EventBus;
+import hotmath.gwt.shared.client.eventbus.EventType;
 import hotmath.gwt.shared.client.rpc.action.GetPrescriptionAction;
 import hotmath.gwt.shared.client.rpc.action.SetInmhItemAsViewedAction;
 import hotmath.gwt.shared.client.util.CmAsyncCallback;
@@ -307,7 +308,7 @@ public class PrescriptionCmGuiDefinition implements CmGuiDefinition {
      */
     static public void solutionHasBeenViewed_Gwt(String eventName) {
         __last_solution_item.setViewed(true);
-        EventBus.getInstance().fireEvent(new CmEvent(EventBus.EVENT_TYPE_SOLUTIONS_COMPLETE, __last_solution_item));
+        EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_SOLUTIONS_COMPLETE, __last_solution_item));
     }
 
     /**
@@ -337,16 +338,16 @@ public class PrescriptionCmGuiDefinition implements CmGuiDefinition {
         EventBus.getInstance().addEventListener(new CmEventListenerImplDefault() {
             @Override
             public void handleEvent(CmEvent event) {
-                if(event.getEventName().equals(EventBus.EVENT_TYPE_SOLUTION_SHOW)) {
+                if(event.getEventType() == EventType.EVENT_TYPE_SOLUTION_SHOW) {
                     __last_solution_item = (InmhItemData) event.getEventData();
                 }
-                else if (event.getEventName().equals(EventBus.EVENT_TYPE_SOLUTIONS_COMPLETE)) {
+                else if (event.getEventType() == EventType.EVENT_TYPE_SOLUTIONS_COMPLETE) {
                     // update the InmhItemData associated with the currently
                     // active solution
 
                     InmhItemData id = ((InmhItemData) event.getEventData());
                     __instance.markResourceAsViewed(id);
-                } else if (event.getEventName().equals(EventBus.EVENT_TYPE_RESOURCE_VIEWER_OPEN)) {
+                } else if (event.getEventType() == EventType.EVENT_TYPE_RESOURCE_VIEWER_OPEN) {
                     // if not a required problem, then set as viewed
                     CmResourcePanel viewer = (CmResourcePanel) event.getEventData();
 
@@ -361,12 +362,12 @@ public class PrescriptionCmGuiDefinition implements CmGuiDefinition {
                         if (!(type.equals("practice") || type.equals("cmextra")))
                             __instance.markResourceAsViewed(viewer.getResourceItem());
                     }
-                } else if (event.getEventName().equals(EventBus.EVENT_TYPE_RESOURCE_VIEWER_CLOSE)) {
+                } else if (event.getEventType() == EventType.EVENT_TYPE_RESOURCE_VIEWER_CLOSE) {
                     __instance.showHelpPanel();
                 }
-                else if(event.getEventType() == EventBus.EventType.EVENT_TYPE_SOLUTION_FIF_CORRECT) {
+                else if(event.getEventType() == EventType.EVENT_TYPE_SOLUTION_FIF_CORRECT) {
                     /** an Solution FIF was entered correct, so we want to mark this (current) solution
-                     * as having been complated
+                     * as having been complicated
                      */
                     solutionHasBeenViewed_Gwt(null);
                 }
@@ -488,7 +489,7 @@ class PrescriptionResourcePanel extends LayoutContainer {
          */
         EventBus.getInstance().addEventListener(new CmEventListenerImplDefault() {
             public void handleEvent(CmEvent event) {
-                if (event.getEventName().equals(EventBus.EVENT_TYPE_SOLUTIONS_COMPLETE)) {
+                if (event.getEventType() == EventType.EVENT_TYPE_SOLUTIONS_COMPLETE) {
                     __instance._practiceProblemButton.checkCompletion();
                 }
             }

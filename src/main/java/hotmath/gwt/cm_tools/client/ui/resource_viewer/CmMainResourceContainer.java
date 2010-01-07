@@ -6,6 +6,7 @@ import hotmath.gwt.cm_tools.client.ui.resource_viewer.CmResourcePanelContainer.R
 import hotmath.gwt.cm_tools.client.ui.viewer.ResourceViewerFactory;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
 import hotmath.gwt.shared.client.eventbus.EventBus;
+import hotmath.gwt.shared.client.eventbus.EventType;
 import hotmath.gwt.shared.client.util.UserInfo;
 
 import com.extjs.gxt.ui.client.Style.Scroll;
@@ -118,7 +119,7 @@ public class CmMainResourceContainer extends LayoutContainer {
         
         currentPanel = viewer;
         
-        EventBus.getInstance().fireEvent(new CmEvent(EventBus.EVENT_TYPE_RESOURCE_VIEWER_OPEN, viewer));     
+        EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_RESOURCE_VIEWER_OPEN, viewer));     
     }
     
     

@@ -10,6 +10,7 @@ import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
 import hotmath.gwt.shared.client.eventbus.CmEventListenerImplDefault;
 import hotmath.gwt.shared.client.eventbus.EventBus;
+import hotmath.gwt.shared.client.eventbus.EventType;
 import hotmath.gwt.shared.client.util.CmInfoConfig;
 import hotmath.gwt.shared.client.util.UserInfo;
 
@@ -78,16 +79,16 @@ public class HeaderPanel extends LayoutContainer {
 		
 		EventBus.getInstance().addEventListener(new CmEventListenerImplDefault() {
 		    public void handleEvent(final CmEvent event) {
-		        if(event.getEventName().equals(EventBus.EVENT_TYPE_USERCHANGED)) {
+		        if(event.getEventType() == EventType.EVENT_TYPE_USERCHANGED) {
 		            setLoginInfo();
 		        }
-		        else if(event.getEventName().equals(EventBus.EVENT_TYPE_CONTEXTCHANGED)) {
+		        else if(event.getEventType() == EventType.EVENT_TYPE_CONTEXTCHANGED) {
 		            CmContext context = (CmContext)event.getEventData();
   		            HeaderPanel.__instance.setHeaderTitle();
   		            if(CmMainPanel.__lastInstance != null)
 		                CmMainPanel.__lastInstance._westPanel.setHeading(context.getContextSubTitle());
 		        }
-		        else if(event.getEventName().equals(EventBus.EVENT_TYPE_TOPIC_CHANGED)) {
+		        else if(event.getEventType() == EventType.EVENT_TYPE_TOPIC_CHANGED) {
 		            	GWT.runAsync(new RunAsyncCallback() {
 							@Override
 							public void onSuccess() {

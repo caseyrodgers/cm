@@ -4,6 +4,7 @@ import hotmath.gwt.cm_tools.client.service.CmServiceAsync;
 import hotmath.gwt.shared.client.data.CmAsyncRequest;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
 import hotmath.gwt.shared.client.eventbus.EventBus;
+import hotmath.gwt.shared.client.eventbus.EventType;
 import hotmath.gwt.shared.client.rpc.action.CmList;
 import hotmath.gwt.shared.client.rpc.action.GetWhiteboardDataAction;
 import hotmath.gwt.shared.client.rpc.action.SaveWhiteboardDataAction;
@@ -70,7 +71,7 @@ public class ShowWorkPanel extends Frame {
 	 */
 	public void handleFlashWhiteboardOut(String json) {
         if(UserInfo.getInstance().isShowWorkRequired())
-            EventBus.getInstance().fireEvent(new CmEvent(EventBus.EVENT_TYPE_WHITEBOARDUPDATED, this.pid));
+            EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_WHITEBOARDUPDATED, this.pid));
 
         CmServiceAsync s = (CmServiceAsync) Registry.get("cmService");
 		int uid = UserInfo.getInstance().getUid();

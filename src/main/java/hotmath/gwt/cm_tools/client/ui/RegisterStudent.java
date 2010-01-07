@@ -15,6 +15,7 @@ import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
 import hotmath.gwt.cm_tools.client.util.ProcessTracker;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
 import hotmath.gwt.shared.client.eventbus.EventBus;
+import hotmath.gwt.shared.client.eventbus.EventType;
 import hotmath.gwt.shared.client.rpc.action.AddStudentAction;
 import hotmath.gwt.shared.client.rpc.action.CmList;
 import hotmath.gwt.shared.client.rpc.action.GetChaptersForProgramSubjectAction;
@@ -100,7 +101,7 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
 	
 	public RegisterStudent(StudentModelI sm, CmAdminModel cm) {
 	    
-	    EventBus.getInstance().fireEvent(new CmEvent(EventBus.EVENT_TYPE_MODAL_WINDOW_OPEN));
+	    EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_MODAL_WINDOW_OPEN));
 	    
 		inProcessCount = 0;
 		isNew = (sm == null);
@@ -112,7 +113,7 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
 		_window = new CmWindow();
 		_window.addListener(Events.Hide, new Listener<BaseEvent>() {
 		    public void handleEvent(BaseEvent be) {
-		        EventBus.getInstance().fireEvent(new CmEvent(EventBus.EVENT_TYPE_MODAL_WINDOW_CLOSED));
+		        EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_MODAL_WINDOW_CLOSED));
 		        
 		        
 		        _groupSelector.release();
@@ -525,7 +526,7 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
 	    AddStudentAction action = new AddStudentAction(sm);
 		s.execute(action, new CmAsyncCallback <StudentModelI> () {
 			public void onSuccess(StudentModelI ai) {
-			    EventBus.getInstance().fireEvent(new CmEvent(EventBus.EVENT_TYPE_USER_PROGRAM_CHANGED,ai.getProgramChanged()));
+			    EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_USER_PROGRAM_CHANGED,ai.getProgramChanged()));
 			    _window.close();
         	}
         });
@@ -539,7 +540,7 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
 		UpdateStudentAction action = new UpdateStudentAction(sm,stuChanged,progChanged,progIsNew,passcodeChanged);
 		s.execute(action, new CmAsyncCallback <StudentModelI> () {
 			public void onSuccess(StudentModelI ai) {
-		        EventBus.getInstance().fireEvent(new CmEvent(EventBus.EVENT_TYPE_USER_PROGRAM_CHANGED,ai.getProgramChanged()));
+		        EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_USER_PROGRAM_CHANGED,ai.getProgramChanged()));
 		        _window.close();
 		        CmBusyManager.setBusy(false);
         	}

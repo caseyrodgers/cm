@@ -2,6 +2,7 @@ package hotmath.gwt.cm_tools.client.ui.resource_viewer;
 
 import hotmath.gwt.shared.client.eventbus.CmEvent;
 import hotmath.gwt.shared.client.eventbus.EventBus;
+import hotmath.gwt.shared.client.eventbus.EventType;
 
 import java.util.List;
 
@@ -81,7 +82,7 @@ public class CmResourcePanelContainer extends ContentPanel {
             getHeader().addTool(new Button("Close", new SelectionListener<ButtonEvent>() {
                 public void componentSelected(ButtonEvent ce) {
                     panel.removeResourcePanel();
-                    EventBus.getInstance().fireEvent(new CmEvent(EventBus.EVENT_TYPE_RESOURCE_VIEWER_CLOSE, panel));
+                    EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_RESOURCE_VIEWER_CLOSE, panel));
                     
                     CmResourcePanelContainer.this.container.removeAll();
                     CmResourcePanelContainer.this.container.layout();

@@ -15,8 +15,9 @@ import hotmath.gwt.shared.client.CmLoginAsync;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.data.CmAsyncRequest;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
-import hotmath.gwt.shared.client.eventbus.CmEventListener;
+import hotmath.gwt.shared.client.eventbus.CmEventListenerImplDefault;
 import hotmath.gwt.shared.client.eventbus.EventBus;
+import hotmath.gwt.shared.client.eventbus.EventType;
 import hotmath.gwt.shared.client.util.CmRunAsyncCallback;
 import hotmath.gwt.shared.client.util.UserInfo;
 
@@ -118,7 +119,7 @@ public class CatchupMath implements EntryPoint {
 					@Override
 					public void onSuccess() {
 		                if(CmMainPanel.__lastInstance != null && CmMainPanel.__lastInstance._mainContent != null) {
-		                    EventBus.getInstance().fireEvent(new CmEvent(EventBus.EVENT_TYPE_WINDOW_RESIZED));
+		                    EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_WINDOW_RESIZED));
 		                }
 					}
 				});
@@ -200,19 +201,17 @@ public class CatchupMath implements EntryPoint {
          *  If it does, we must reset this user
          * 
          */
-        EventBus.getInstance().addEventListener(new CmEventListener() {
+        EventBus.getInstance().addEventListener(new CmEventListenerImplDefault() {
             public void handleEvent(CmEvent event) {
-                if(((Boolean)event.getEventData()) == true) {
-                    FooterPanel.resetProgram_Gwt();
+                if(event.getEventType() == EventType.EVENT_TYPE_USER_PROGRAM_CHANGED) {
+                    if(((Boolean)event.getEventData()) == true) {
+                        FooterPanel.resetProgram_Gwt();
+                    }
+                    else {
+                        // just refresh page
+                        FooterPanel.refreshPage();
+                    }
                 }
-                else {
-                    // just refresh page
-                    FooterPanel.refreshPage();
-                }
-            }
-            public String[] getEventsOfInterest() {
-                String types[] = {EventBus.EVENT_TYPE_USER_PROGRAM_CHANGED};
-                return types;
             }
         });
     }

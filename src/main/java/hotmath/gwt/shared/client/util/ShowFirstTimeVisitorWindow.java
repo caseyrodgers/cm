@@ -3,6 +3,7 @@ package hotmath.gwt.shared.client.util;
 import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
 import hotmath.gwt.shared.client.eventbus.EventBus;
+import hotmath.gwt.shared.client.eventbus.EventType;
 
 import java.util.Date;
 
@@ -39,7 +40,7 @@ public class ShowFirstTimeVisitorWindow extends CmWindow {
         drawGui();
         
         
-        EventBus.getInstance().fireEvent(new CmEvent(EventBus.EVENT_TYPE_MODAL_WINDOW_OPEN));
+        EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_MODAL_WINDOW_OPEN));
         
         setVisible(true);
     }

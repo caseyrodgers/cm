@@ -21,6 +21,7 @@ import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
 import hotmath.gwt.shared.client.eventbus.CmEventListenerImplDefault;
 import hotmath.gwt.shared.client.eventbus.EventBus;
+import hotmath.gwt.shared.client.eventbus.EventType;
 import hotmath.gwt.shared.client.model.CmStudentPagingLoadResult;
 import hotmath.gwt.shared.client.rpc.action.CmList;
 import hotmath.gwt.shared.client.rpc.action.GeneratePdfAction;
@@ -222,7 +223,7 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
 
         EventBus.getInstance().addEventListener(new CmEventListenerImplDefault() {
             public void handleEvent(CmEvent event) {
-                if (event.getEventName().equals(EventBus.EVENT_TYPE_REFRESH_STUDENT_DATA)) {
+                if (event.getEventType() == EventType.EVENT_TYPE_REFRESH_STUDENT_DATA) {
                     CmAdminDataReader.getInstance().fireRefreshData();
                 }
             }
