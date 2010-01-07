@@ -1,10 +1,10 @@
 package hotmath.testset.ha;
 
 import hotmath.HotMathException;
+import hotmath.assessment.AssessmentPrescription;
 import hotmath.assessment.AssessmentPrescriptionSession;
 import hotmath.assessment.AssessmentPrescription.SessionData;
 import hotmath.cm.util.CmMultiLinePropertyReader;
-import hotmath.gwt.shared.client.util.CmException;
 import hotmath.util.sql.SqlUtilities;
 
 import java.sql.Connection;
@@ -17,8 +17,6 @@ import java.util.List;
 import org.apache.log4j.Logger;
 
 public class HaTestRunDao {
-
-    
 
     final static Logger __logger = Logger.getLogger(AssessmentPrescriptionSession.class);
     
@@ -79,7 +77,13 @@ public class HaTestRunDao {
     }
     
     
-    /** Return the complete currently definition of this test run
+    /** Return the complete current definition of this test run
+     * 
+     * This is created and stored during the prescription creation.
+     * 
+     * Can be used to recreate the prescription.
+     *  
+     * @see AssessmentPrescription
      * 
      * @return
      * @throws Exception 
@@ -90,7 +94,7 @@ public class HaTestRunDao {
         List<TestRunLesson> lessons = new ArrayList<TestRunLesson>();
         PreparedStatement pstat=null;
         try {
-            String sql = "select lesson_name,lesson_file,pid from HA_TEST_RUN_LESSON l JOIN HA_TEST_RUN_LESSON_PID p on p.lid = l.id where l.run_id = ? order by lesson_number";
+            String sql = CmMultiLinePropertyReader.getInstance().getProperty("TEST_RUN_LOAD_PRESCRIPTION");
             
             pstat = conn.prepareStatement(sql);
             

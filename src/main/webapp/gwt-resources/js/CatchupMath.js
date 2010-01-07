@@ -286,10 +286,14 @@ HmEvents.eventTutorLastStep.subscribe( function(x) {
  *  
  */
 HmEvents.eventTutorInitialized.subscribe( function(x) {
-	if(_shouldExpandSteps)
+	if(_shouldExpandSteps) {
 	    expandAllSteps();
+	}
+    // how to know if widget is installed?
+    if(document.getElementById('problem_statement').innerHTML.indexOf('hm_flash_widget') > -1) {
+	    setState('step',false);
+    }
 });
-
 
 /** Register a listener with Tutor to 
  *  be notified when first step is accessed
@@ -382,4 +386,42 @@ function setWhiteboardBackground(html) {
 /** provide replacement for missing login_info.js */
 var LoginInfo = {
 		isValid:function() {return true;}
+}
+
+
+/** called from Flash Input Widget
+ * 
+ * result is JSON string defined as:
+ * 
+ * {
+ *     result:'CORRECT/INCORRECT', 
+ *     input:'THE_INPUT_VALUE',
+ *     answer: 'The correct answer',
+ *     id: 'pkey'
+ *     
+ * }
+ * 
+ *  */
+function flash_quizResult(result) {
+	try {
+	    var resO = eval('(' + result + ')');
+  	    // alert("flash result: " + resO.result + ', input: ' + resO.input, ', answer: ' + resO.answer + ', id: ' + resO.id);
+	    flashInputField_Gwt(resO.result, resO.input, resO.answer, resO.id);
+	}
+	catch(e) {
+		alert('There was a problem processing Flash Input Field: ' + e);
+	}
+}
+
+
+function isSolutionIsAvailable() {
+	return true;
+}
+
+
+/** overridden from tutor6
+ * 
+ * @return
+ */
+function showNeedToSignup() {
 }

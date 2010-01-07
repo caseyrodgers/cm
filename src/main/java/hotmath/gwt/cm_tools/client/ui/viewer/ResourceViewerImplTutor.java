@@ -1,5 +1,6 @@
 package hotmath.gwt.cm_tools.client.ui.viewer;
 
+import hotmath.gwt.cm.client.ui.context.PrescriptionCmGuiDefinition;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.service.CmServiceAsync;
@@ -197,6 +198,8 @@ public class ResourceViewerImplTutor extends CmResourcePanelImplWithWhiteboard {
     static private native void publishNative() /*-{
                                                $wnd.showWorkDialog_Gwt =     @hotmath.gwt.cm_tools.client.ui.viewer.ResourceViewerImplTutor::showWorkDialog();
                                                $wnd.showTutoringDialog_Gwt = @hotmath.gwt.cm_tools.client.ui.viewer.ResourceViewerImplTutor::showTutoringDialog();
+                                               $wnd.flashInputField_Gwt = 
+                                                  @hotmath.gwt.cm_tools.client.ui.viewer.ResourceViewerImplTutor::flashInputField_Gwt(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;);
                                                }-*/;
 
     /**
@@ -215,6 +218,22 @@ public class ResourceViewerImplTutor extends CmResourcePanelImplWithWhiteboard {
         _instance.showTutoring(_instance.getPid());
     }
 
+    static public void flashInputField_Gwt(String result, String input, String answer, String id) {
+        Log.info("FIF: result: " + result + ",input: " + input + ", answer:  " + answer + ",id: " + id);
+        if(result.equals("correct")) {
+            CatchupMathTools.showAlert("Correct!  That is the right answer.  You can now move on to the next problem or lesson");
+            PrescriptionCmGuiDefinition.solutionHasBeenViewed_Gwt("yes");
+        }
+        else {
+            //expandAllSteps();
+            CatchupMathTools.showAlert("That is not the correct answer.  Please, work through the solution and try again.");
+        }
+        
+        
+        setTutorState(true);
+    }
+    
+    
     /**
      * Display LWL tutoring in separate browser window.
      * 
@@ -252,6 +271,13 @@ public class ResourceViewerImplTutor extends CmResourcePanelImplWithWhiteboard {
                                           $wnd.doLoad_Gwt(pid, title,hasShowWork,shouldExpandSolution);
                                           }-*/;
 
+    static private native void expandAllSteps() /*-{
+                                          $wnd.expandAllSteps();
+                                          }-*/;
+    
+    static private native void setTutorState(Boolean yesNo) /*-{
+        $wnd.setState('step',yesNo);
+    }-*/;
 }
 
 /**

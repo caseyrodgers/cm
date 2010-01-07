@@ -108,6 +108,10 @@ public class PrescriptionCmGuiDefinition implements CmGuiDefinition {
             }
         });
     }
+    
+    public void updateCheckMarks() {
+        _guiWidget.expandResourcePracticeProblems();
+    }
 
     public CmContext getContext() {
         return context;

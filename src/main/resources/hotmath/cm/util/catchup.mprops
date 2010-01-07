@@ -551,6 +551,17 @@ set    run_session = ?
 where  run_id = ?
 
 
+
+.key=TEST_RUN_LOAD_PRESCRIPTION
+
+select lesson_name,lesson_file,pid 
+from HA_TEST_RUN_LESSON l JOIN HA_TEST_RUN_LESSON_PID p 
+  on p.lid = l.id 
+where l.run_id = ? order by lesson_number
+
+
+
+
 ##
 ## Class: CmReportCardDao
 ##
