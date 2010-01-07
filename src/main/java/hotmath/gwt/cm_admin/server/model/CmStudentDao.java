@@ -716,7 +716,6 @@ public class CmStudentDao {
         } finally {
             SqlUtilities.releaseResources(rs, ps2, null);
         }            
-        
     }
 
     
@@ -858,7 +857,15 @@ public class CmStudentDao {
 
             loadChapterInfo(conn, l);
             
-            return l.get(0);
+            StudentModelI sm = l.get(0);
+            
+            if(sm.getTutoringAvail()) {
+                /** make sure the admin has tutoring enabled too
+                 * 
+                 */
+                sm.setTutoringAvail(isTutoringEnabledForAdmin(conn, sm.getAdminUid()));
+            }
+            return sm; 
         } catch (Exception e) {
             logger.error(String.format("*** Error obtaining data for student UID: %d", uid), e);
             throw new Exception(String.format("*** Error obtaining data for student with UID: %d", uid));

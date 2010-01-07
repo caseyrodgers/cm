@@ -5,7 +5,6 @@ import hotmath.HotMathException;
 import hotmath.cm.util.CmCacheManager;
 import hotmath.cm.util.CmMultiLinePropertyReader;
 import hotmath.gwt.shared.client.util.CmException;
-import hotmath.util.HMConnectionPool;
 import hotmath.util.sql.SqlUtilities;
 
 import java.sql.Connection;
@@ -272,8 +271,6 @@ public class HaTestDefDao {
              ps.setInt(3, (section+1));  // test_segment_slots are zero based
              ps.setInt(4, startProblemNumber);
              ps.setInt(5, endProblemNumber);
-
-             logger.info(ps);
 
              rs = ps.executeQuery();
              
