@@ -289,10 +289,6 @@ HmEvents.eventTutorInitialized.subscribe( function(x) {
 	if(_shouldExpandSteps) {
 	    expandAllSteps();
 	}
-    // how to know if widget is installed?
-    if(document.getElementById('problem_statement').innerHTML.indexOf('hm_flash_widget') > -1) {
-	    setState('step',false);
-    }
 });
 
 /** Register a listener with Tutor to 
@@ -414,6 +410,10 @@ function flash_quizResult(result) {
 }
 
 
+/** overridden from tutor6
+ * 
+ * @return
+ */
 function isSolutionIsAvailable() {
 	return true;
 }

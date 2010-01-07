@@ -220,14 +220,11 @@ public class ResourceViewerImplTutor extends CmResourcePanelImplWithWhiteboard {
     static public void flashInputField_Gwt(String result, String input, String answer, String id) {
         Log.info("FIF: result: " + result + ",input: " + input + ", answer:  " + answer + ",id: " + id);
         if(result.equals("correct")) {
-            CatchupMathTools.showAlert("Correct!  That is the right answer.  You can now move on to the next problem or lesson");
             EventBus.getInstance().fireEvent(new CmEvent(EventBus.EventType.EVENT_TYPE_SOLUTION_FIF_CORRECT,_instance.getPid()));
         }
         else {
-            //expandAllSteps();
-            CatchupMathTools.showAlert("That is not the correct answer.  Please, work through the solution and try again.");
+            // do nothing if incorrect
         }
-        setTutorState(true);
     }
     
     
