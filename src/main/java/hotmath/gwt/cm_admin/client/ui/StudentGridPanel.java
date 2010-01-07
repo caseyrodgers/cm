@@ -13,6 +13,7 @@ import hotmath.gwt.cm_tools.client.service.CmServiceAsync;
 import hotmath.gwt.cm_tools.client.ui.AutoRegisterStudentSetup;
 import hotmath.gwt.cm_tools.client.ui.BulkStudentRegistrationWindow;
 import hotmath.gwt.cm_tools.client.ui.GroupSelectorWidget;
+import hotmath.gwt.cm_tools.client.ui.InfoPopupBox;
 import hotmath.gwt.cm_tools.client.ui.PdfWindow;
 import hotmath.gwt.cm_tools.client.ui.RegisterStudent;
 import hotmath.gwt.cm_tools.client.ui.StudentDetailsWindow;
@@ -30,6 +31,7 @@ import hotmath.gwt.shared.client.rpc.action.GetSummariesForActiveStudentsAction;
 import hotmath.gwt.shared.client.rpc.action.UnregisterStudentsAction;
 import hotmath.gwt.shared.client.rpc.action.GeneratePdfAction.PdfType;
 import hotmath.gwt.shared.client.util.CmAsyncCallback;
+import hotmath.gwt.shared.client.util.CmInfoConfig;
 import hotmath.gwt.shared.client.util.CmRunAsyncCallback;
 
 import java.util.ArrayList;
@@ -989,11 +991,9 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
         @Override
         public void loaderLoad(LoadEvent le) {
             if (selected != null) {
-                Integer uid = selected.getUid();
+                final Integer uid = selected.getUid();
                 for (int i = 0, t = _grid.getStore().getModels().size(); i < t; i++) {
                     if (_grid.getStore().getAt(i).getUid() == uid) {
-                        _grid.getSelectionModel().select(_grid.getStore().getAt(i), false);
-
                         /**
                          * Must set in separate thread for this to work due to
                          * GXT bug in setting the selected row on layout() which
@@ -1006,7 +1006,8 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
                         final int visRow = i;
                         new Timer() {
                             public void run() {
-                                _grid.getView().ensureVisible(visRow, 0, true);
+                                _grid.getSelectionModel().select(_grid.getStore().getAt(visRow), false);
+                                _grid.getView().ensureVisible(visRow, 1, true);
                             }
                         }.schedule(1);
                         break;
