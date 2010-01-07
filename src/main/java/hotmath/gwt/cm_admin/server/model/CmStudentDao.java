@@ -3,6 +3,7 @@ package hotmath.gwt.cm_admin.server.model;
 import hotmath.assessment.InmhItemData;
 import hotmath.cm.server.model.CmUserProgramDao;
 import hotmath.cm.util.CmMultiLinePropertyReader;
+import hotmath.gwt.cm_tools.client.model.AccountInfoModel;
 import hotmath.gwt.cm_tools.client.model.ChapterModel;
 import hotmath.gwt.cm_tools.client.model.LessonItemModel;
 import hotmath.gwt.cm_tools.client.model.StringHolder;
@@ -143,6 +144,16 @@ public class CmStudentDao {
 	}
 
 
+	public Boolean isTutoringEnabledForAdmin(final Connection conn, Integer aid) throws Exception {
+	    AccountInfoModel aim = new CmAdminDao().getAccountInfo(conn, aid);
+	    String hasTutoring = aim.getHasTutoring();
+	    if(hasTutoring != null && hasTutoring.equals("Enabled")) {
+	        return true;
+	    }
+	    else {
+	        return false;
+	    }
+	}
 
 	/** Return list of activity records for student detail
 	 * 
@@ -893,7 +904,18 @@ public class CmStudentDao {
             sm.setUserProgramId(rs.getInt("user_prog_id"));
             sm.setBackgroundStyle(rs.getString("gui_background_style"));
             sm.setShowWorkRequired(rs.getInt("is_show_work_required")==0?false:true);
-            sm.setTutoringAvail(rs.getInt("is_tutoring_available")==0?false:true);
+
+            /** Check for tutoring available.
+             * 
+             * If the student has been enabled, make sure the admin has it 
+             * enabled.  This is to allow for tighter messaging and not send
+             * the user to LWL if the admin has not registered.
+             */
+            boolean isTutoringAvailable = rs.getInt("is_tutoring_available")==0?false:true;
+            if(isTutoringAvailable) {
+                isTutoringAvailable = isTutoringEnabledForAdmin(conn, sm.getAdminUid());
+            }
+            sm.setTutoringAvail(isTutoringAvailable);
             sm.setIsDemoUser(rs.getInt("is_demo")==0?false:true);
 
             return sm;
