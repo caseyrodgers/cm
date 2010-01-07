@@ -88,8 +88,6 @@ public class EventBus {
         }
     }
     
-    
-    
     /** Whenever a user is set or changed
      * 
      */
@@ -168,6 +166,21 @@ public class EventBus {
      * 
      */
     static public final String EVENT_TYPE_WINDOW_RESIZED="EVENT_TYPE_WINDOW_RESIZED";
+    
+    
+    static public final String EVENT_TYPE_SOLUTION_FIF_CORRECT="EVENT_TYPE_SOLUTION_FIF_CORRECT";
+    
+    public enum EventType{
+        /** Solution's FIF has been entered as correct
+         * 
+         */
+        EVENT_TYPE_SOLUTION_FIF_CORRECT,
+        
+        /** The solution has been completed
+         * (ie, viewed to last step)
+         * 
+         */
+        EVENT_TYPE_SOLUTIONS_COMPLETE};
 }
 
 

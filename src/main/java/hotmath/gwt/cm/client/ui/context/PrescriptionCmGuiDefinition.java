@@ -364,7 +364,12 @@ public class PrescriptionCmGuiDefinition implements CmGuiDefinition {
                 } else if (event.getEventName().equals(EventBus.EVENT_TYPE_RESOURCE_VIEWER_CLOSE)) {
                     __instance.showHelpPanel();
                 }
-                
+                else if(event.getEventType() == EventBus.EventType.EVENT_TYPE_SOLUTION_FIF_CORRECT) {
+                    /** an Solution FIF was entered correct, so we want to mark this (current) solution
+                     * as having been complated
+                     */
+                    solutionHasBeenViewed_Gwt(null);
+                }
             }
         });
     }
