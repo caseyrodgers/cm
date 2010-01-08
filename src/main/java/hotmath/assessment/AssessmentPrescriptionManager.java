@@ -60,8 +60,10 @@ public class AssessmentPrescriptionManager {
 			 */
 			HaTestRun testRun = new HaTestRunDao().lookupTestRun(conn, runId);
 
-			
-			pres = AssessmentPrescriptionFactory.createOrLoadExisting(conn, testRun);
+			if(testRun.getHaTest().getTestDef().getName().indexOf("Auto-Enrollment") > -1)
+			    pres = AssessmentPrescriptionFactory.create(conn, testRun);
+			else 
+			    pres = AssessmentPrescriptionFactory.createOrLoadExisting(conn, testRun);
 			
 			CmCacheManager.getInstance().addToCache(CacheName.PRESCRIPTION, pres.getTestRun().getRunId().toString(), pres);
 		}
