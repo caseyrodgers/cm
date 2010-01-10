@@ -98,7 +98,7 @@ public class AutoRegisterStudentSetup extends RegisterStudent {
 	private void saveAutoRegistrationSetup(StudentModel student) {
 	    CmServiceAsync s = (CmServiceAsync) Registry.get("cmService");
         s.execute(new SaveAutoRegistrationAction(student.getAdminUid(), student), new AsyncCallback<RpcData>() {
-                @Override
+            @Override
             public void onSuccess(RpcData result) {
                     _window.hide();
                     EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_REFRESH_STUDENT_DATA));
@@ -110,6 +110,5 @@ public class AutoRegisterStudentSetup extends RegisterStudent {
                 CatchupMathTools.showAlert("Problem occurred while saving setup information: " + caught.getMessage());
             }
         });	    
-	    
 	}
 }

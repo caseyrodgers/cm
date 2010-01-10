@@ -15,8 +15,10 @@ import hotmath.gwt.cm_tools.client.model.StudentModelI;
 import hotmath.gwt.cm_tools.client.model.StudentShowWorkModel;
 import hotmath.gwt.shared.client.rpc.action.CmArrayList;
 import hotmath.gwt.shared.client.rpc.action.CmList;
+import hotmath.gwt.shared.client.rpc.action.SaveAutoRegistrationAction;
 import hotmath.gwt.shared.client.util.CmException;
 import hotmath.gwt.shared.client.util.CmRpcException;
+import hotmath.gwt.shared.server.service.command.SaveAutoRegistrationCommand;
 import hotmath.testset.ha.CmProgram;
 import hotmath.testset.ha.HaTestDefDescription;
 import hotmath.testset.ha.HaTestRun;
@@ -876,6 +878,45 @@ public class CmStudentDao {
     }
     
     
+    /** Return list of students assigned to the named Admin 
+     * 
+     * @param conn
+     * @param aid
+     * @param password
+     * @return
+     * @throws Exception
+     */
+    public List<StudentModelI> getStudentModelByPassword(final Connection conn, Integer aid, String password) throws Exception {
+        List<StudentModelI> students = new ArrayList<StudentModelI>();
+        
+        ResultSet rs = null;
+        try {
+            rs = conn.createStatement().executeQuery("select uid from HA_USER where admin_id = " + aid + " and user_passcode = '" + password + "'");
+            while(rs.next()) {
+                students.add( getStudentModel(rs.getInt(1)));
+            }
+            return students;
+        } finally {
+            SqlUtilities.releaseResources(rs, null, null);
+        }
+    }
+    
+    public List<StudentModelI> getStudentModelByUserName(final Connection conn, Integer aid, String userName) throws Exception {
+        List<StudentModelI> students = new ArrayList<StudentModelI>();
+        
+        ResultSet rs = null;
+        try {
+            rs = conn.createStatement().executeQuery("select uid from HA_USER where admin_id = " + aid + " and user_name = '" + userName + "'");
+            while(rs.next()) {
+                students.add( getStudentModel(conn, rs.getInt(1), true));
+            }
+            return students;
+        } finally {
+            SqlUtilities.releaseResources(rs, null, null);
+        }
+    }
+
+    
     /**
      * Return a basic student object that only contains the most important data.
      * 
@@ -1346,6 +1387,6 @@ public class CmStudentDao {
         finally {
             SqlUtilities.releaseResources(null,ps,null);
         }
-        
     }
+
 }

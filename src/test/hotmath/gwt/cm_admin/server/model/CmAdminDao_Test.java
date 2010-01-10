@@ -3,6 +3,7 @@ package hotmath.gwt.cm_admin.server.model;
 import hotmath.cm.server.model.CmUserProgramDao;
 import hotmath.gwt.cm.server.CmDbTestCase;
 import hotmath.gwt.cm_tools.client.model.ChapterModel;
+import hotmath.gwt.cm_tools.client.model.CmAdminModel;
 import hotmath.gwt.cm_tools.client.model.GroupModel;
 import hotmath.gwt.cm_tools.client.model.StudentActiveInfo;
 import hotmath.gwt.cm_tools.client.model.StudentModelI;
@@ -34,6 +35,40 @@ public class CmAdminDao_Test extends CmDbTestCase {
         if(_user == null)
             TEST_ID = setupDemoAccount();
 
+    }
+
+
+    public void testCreateSelfRegistrationGroup() throws Exception {
+        List<GroupModel> groups = new CmAdminDao().getActiveGroups(conn, _user.getAid());
+        
+        /** remove all groups
+         * 
+         */
+        for(GroupModel g: groups) {
+            new CmAdminDao().deleteGroup(conn, _user.getAid(), Integer.parseInt(g.getId()));
+        }
+        
+        String testGroup = "TEST_SELF_REG";
+        
+        conn.createStatement().executeUpdate("delete from HA_USER where admin_id = " + _user.getAid() + " and user_name = '" + testGroup + "'");
+
+        
+        new CmAdminDao().createSelfRegistrationGroup(conn, _user.getAid(), testGroup, CmProgram.ALG1_PROF, false, true);
+        
+        groups = new CmAdminDao().getActiveGroups(conn, _user.getAid());
+        
+        boolean found=false;
+        for(GroupModel g: groups) {
+            if(g.getName().equals(testGroup)) {
+                found=true;
+                List<StudentModelI> students = new CmStudentDao().getStudentModelByUserName(conn, _user.getAid(), testGroup);
+                assertTrue(students.size() > 0);
+                
+                assertTrue(students.get(0).getProgId().equals(CmProgram.ALG1_PROF.getProgramId()));
+            }
+        }
+        
+        assertTrue(found);
     }
 
 
@@ -94,7 +129,7 @@ public class CmAdminDao_Test extends CmDbTestCase {
          * change it once to Pre-Alg Integers
          * 
          */
-        StudentModelI sm = _dao.getStudentModel(TEST_ID);
+        StudentModelI sm = _dao.getStudentModel(conn, TEST_ID, false);
         _dao.assignProgramToStudent(conn, TEST_ID,CmProgram.PREALG_CHAP, "Integers");
         
         StudentUserProgramModel pi = new CmUserProgramDao().loadProgramInfoCurrent(conn, TEST_ID);

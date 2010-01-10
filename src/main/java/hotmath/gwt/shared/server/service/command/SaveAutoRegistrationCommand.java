@@ -26,8 +26,7 @@ import java.util.List;
  *  from the admin user.
  *  
  *  
- *  To implement this, for the first pass we will create a special Student 
- *  named '
+ *  To implement this, for the first pass we will create a special template Student 
  *  
  *  
  * @author casey
@@ -35,14 +34,13 @@ import java.util.List;
  */
 public class SaveAutoRegistrationCommand implements ActionHandler<SaveAutoRegistrationAction, RpcData> {
 
-
     CmAdminDao daoa = new CmAdminDao();
     CmStudentDao dao = new CmStudentDao();
     
     @Override
     public RpcData execute(Connection conn, SaveAutoRegistrationAction action) throws Exception {
     
-        StudentModel student = action.getStudent();
+        StudentModelI student = action.getStudent();
         String groupName = student.getGroup();
         GroupModel groupModel=null;
         

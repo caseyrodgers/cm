@@ -64,7 +64,6 @@ public class CreateAutoRegistrationAccountCommand implements ActionHandler<Creat
             SqlUtilities.releaseResources(null, stmt, null);
         }
         
-        
         CmStudentDao dao = new CmStudentDao();
         StudentModelI studentModel = dao.getStudentModel(action.getUserId(), true);
 

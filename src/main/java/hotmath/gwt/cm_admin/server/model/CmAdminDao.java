@@ -9,12 +9,17 @@ import hotmath.gwt.cm_tools.client.model.AccountInfoModel;
 import hotmath.gwt.cm_tools.client.model.ChapterModel;
 import hotmath.gwt.cm_tools.client.model.GroupModel;
 import hotmath.gwt.cm_tools.client.model.StudentModel;
+import hotmath.gwt.cm_tools.client.model.StudentModelBasic;
+import hotmath.gwt.cm_tools.client.model.StudentModelI;
 import hotmath.gwt.cm_tools.client.model.StudyProgramModel;
 import hotmath.gwt.cm_tools.client.model.SubjectModel;
 import hotmath.gwt.shared.client.rpc.action.CmArrayList;
 import hotmath.gwt.shared.client.rpc.action.CmList;
+import hotmath.gwt.shared.client.rpc.action.SaveAutoRegistrationAction;
 import hotmath.gwt.shared.client.util.CmException;
 import hotmath.gwt.shared.client.util.UserInfo.AccountType;
+import hotmath.gwt.shared.server.service.command.SaveAutoRegistrationCommand;
+import hotmath.testset.ha.CmProgram;
 import hotmath.testset.ha.HaAdmin;
 import hotmath.util.HMConnectionPool;
 import hotmath.util.sql.SqlUtilities;
@@ -661,4 +666,23 @@ public class CmAdminDao {
             SqlUtilities.releaseResources(null,ps,null);
         }
     }
+    
+    public void createSelfRegistrationGroup(final Connection conn, Integer aid, String groupName, CmProgram program, Boolean tutoringEnabled, Boolean showWorkRequired) throws Exception {
+        try {
+            StudentModelI sm = new StudentModelBasic();
+            sm.setName(groupName);
+            sm.setGroup(groupName);
+            sm.setAdminUid(aid);
+            sm.setGroupId("1");
+            sm.setProgId(program.getProgramId());
+            sm.setSubjId(program.getSubject());
+            sm.setPassPercent("70%");
+            sm.setTutoringAvail(tutoringEnabled);
+            sm.setShowWorkRequired(showWorkRequired);
+            new SaveAutoRegistrationCommand().execute(conn,new SaveAutoRegistrationAction(aid, sm));
+        }
+        catch(Exception e) {
+            throw new CmException("The self-registration group could not be created", e);
+        }
+    }    
 }

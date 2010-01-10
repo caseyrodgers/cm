@@ -23,7 +23,6 @@ public class CmStudentDao_Test extends CmDbTestCase {
         
         _dao = new CmStudentDao();
     }
-
     
     public void testupdateStudentMainProperties() throws Exception {
         _dao.updateStudentMainProperties(conn, _user.getUid(), true,true,90);

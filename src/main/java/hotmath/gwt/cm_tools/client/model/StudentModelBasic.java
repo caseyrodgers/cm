@@ -64,7 +64,7 @@ public class StudentModelBasic implements StudentModelI, IsSerializable{
     //@Override
     public String getGroup() {
         // TODO Auto-generated method stub
-        return null;
+        return this.group;
     }
 
     //@Override
