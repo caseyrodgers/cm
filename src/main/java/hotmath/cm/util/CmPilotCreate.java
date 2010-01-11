@@ -44,6 +44,9 @@ public class CmPilotCreate {
         
         HotMathSubscriber sub = HotMathSubscriberManager.findSubscriber(subscriberId);
         
+        if(!sub.getSubscriberType().equals("ST"))
+            throw new Exception("Subscriber account must be 'ST'");
+        
         Connection conn = null;
         PreparedStatement pstmt = null;
         try {

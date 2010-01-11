@@ -7,13 +7,18 @@
 String _subscriberId = request.getParameter("id");
 if(_subscriberId == null)
     throw new Exception("'id' must be specified");
+
+  HotMathSubscriber sub = HotMathSubscriberManager.findSubscriber(_subscriberId);
+
+  if(!sub.getSubscriberType().equals("ST"))
+    throw new Exception("Subscriber account must be type 'School/Teacher'");
 %>
 <head>
     <link rel="stylesheet" href="cm_setup_pilot.css" type="text/css"/>
 </head>
 <body>
-<h1>Catchup Pilot Setup</h1>
-<p>This will create or recreate a Catchup Math Pilot for the Hotmath subscriber with the id: <b><%= _subscriberId %></b>.</p>
+<h1>Catchup Service Setup/Edit</h1>
+<p>This will create or recreate the Catchup Math service with password <b><%= sub.getPassword() %></b>.</p>
 <p>The Admin user, if it does not currently exist, will be setup with password 'admin123'</p>
 <p>The expiration date will be for 30 days from today.  If an existing account exists, then an additional 30 days is added.</p>
 <p>The user John Doe, if it does not currently exist, will be created with the password jd12345 and the following additional groups:
@@ -33,17 +38,6 @@ if(_subscriberId == null)
 				<legend> 
 					Define Pilot Setup
 				</legend> 
-				<label class="first" for="tutoring_enabled"> 
-					Tutoring Enabled
-					<select id="tutoring_enabled" name="tutoring_enabled"> 
-						<option selected="selected" value="0">Disabled</option> 
-						<option value="1">Enabled</option> 
-					</select> 
-				</label> 
-				<label for="tutoring_hours"> 
-					Tutoring Hours
-					<input id="tutoring_hours" name="tutoring_hours" type="text" value="0" /> 
-				</label> 
 				<label for="show_work_required"> 
 					Show Work Required
    			        <select id="show_work_required" name="show_work_required">

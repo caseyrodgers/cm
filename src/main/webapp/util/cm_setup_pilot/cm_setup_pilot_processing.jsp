@@ -11,15 +11,13 @@ String _subscriberId = request.getParameter("id");
 if(_subscriberId == null)
     throw new Exception("'id' must be specified");
 
-String te = request.getParameter("tutoring_enabled");
+String te = request.getParameter("show_work_required");
 Integer aid=null;
 if(te != null) {
-    Boolean tutoringEnabled = SbUtilities.getBoolean(te);
-    Integer tutoringHours = SbUtilities.getInt(request.getParameter("tutoring_hours"));
     Boolean showWorkRequired = SbUtilities.getBoolean(request.getParameter("show_work_required"));
     Integer maxStudentCount = SbUtilities.getInt(request.getParameter("max_student_count"));
     
-    aid=new CmPilotCreate(_subscriberId,tutoringEnabled, tutoringHours, showWorkRequired, maxStudentCount).getAid();
+    aid=new CmPilotCreate(_subscriberId,false, 0, showWorkRequired, maxStudentCount).getAid();
 }
 else {
     throw new Exception("Pilot configuration information was not found");
