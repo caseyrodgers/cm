@@ -14,9 +14,9 @@ if(_subscriberId == null)
 <body>
 <h1>Catchup Pilot Setup</h1>
 <p>This will create or recreate a Catchup Math Pilot for the Hotmath subscriber with the id: <b><%= _subscriberId %></b>.</p>
-<p>The Admin user will be setup with password 'admin123'</p>
+<p>The Admin user, if it does not currently exist, will be setup with password 'admin123'</p>
 <p>The expiration date will be for 30 days from today.  If an existing account exists, then an additional 30 days is added.</p>
-<p>The user John Doe with password jd12345 will be created with the additional groups:
+<p>The user John Doe, if it does not currently exist, will be created with the password jd12345 and the following additional groups:
     <ul>
     <li>quizme - a selfreg group with show work required and auto-enroll prog</li>
     <li>prealgebra - a selfreg group with show work req and Prealgebra prof prog</li>
