@@ -18,9 +18,9 @@ if(_subscriberId == null)
 </head>
 <body>
 <h1>Catchup Service Setup/Edit</h1>
-<p>This will create or recreate the Catchup Math service with password <b><%= sub.getPassword() %></b>.</p>
+<p>This will create or update the Catchup Math service with login name <b><%= sub.getPassword() %></b>.</p>
 <p>The Admin user, if it does not currently exist, will be setup with password 'admin123'</p>
-<p>The expiration date will be for 30 days from today.  If an existing account exists, then an additional 30 days is added.</p>
+<p>For newly created accounts the expiration will be set for 30 days from today.</p>
 <p>The user John Doe, if it does not currently exist, will be created with the password jd12345 and the following additional groups:
     <ul>
     <li>quizme - a selfreg group with show work required and auto-enroll prog</li>
@@ -30,6 +30,7 @@ if(_subscriberId == null)
     <li>algebra2 - a selfreg group with show work req and algebra2 prof prog</li>
     <li>gradprep - a self-reg group with show work req and cashee program</li>
     </ul>
+    Teacher-1, -2, and -3, and none are created for all CM accounts    
 </p>
 <p>You can modify the following attributes for the pilot:</p>
 <form id="verticalForm" action="cm_setup_pilot_processing.jsp"> 
