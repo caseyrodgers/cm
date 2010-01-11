@@ -45,7 +45,7 @@ public class CmInmhStandardResources extends ArrayList<PrescriptionSessionDataRe
         t = "flashcard";
         resourceType = new PrescriptionSessionDataResource();
         resourceType.setType(t);
-        resourceType.setLabel("Flash Cards");
+        resourceType.setLabel("Flash Cards and Skill Builders");
         resourceType.setDescription("Flash Card resources that might help you");
         
         items = new ArrayList<InmhItemData>();

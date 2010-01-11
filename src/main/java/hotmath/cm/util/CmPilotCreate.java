@@ -53,8 +53,9 @@ public class CmPilotCreate {
 
             
             HotMathSubscriber subscriber = HotMathSubscriberManager.findSubscriber(subscriberId);
-
-            subscriber.addService(HotMathSubscriberServiceFactory.create("catchup"),new PurchasePlan("TYPE_SERVICE_CATCHUP_MONTH"));
+            if(subscriber.getService("catchup") == null)
+                subscriber.addService(HotMathSubscriberServiceFactory.create("catchup"),new PurchasePlan("TYPE_SERVICE_CATCHUP_MONTH"));
+            
             setMaxStudents(conn, subscriber,maxStudentCount);
             
             /** 
