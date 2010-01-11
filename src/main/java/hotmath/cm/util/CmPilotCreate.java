@@ -87,7 +87,7 @@ public class CmPilotCreate {
             /** add new HA_USER attached to 
              * 
              */
-            addJohnDoeUser(conn, aid,"John Doe","jd12345");
+            addJohnDoeUser(conn, aid,"John Doe","jd12345", showWorkRequired, tutoringEnabled,tutoringHours);
             
             /** setup default groups for user
              * 
@@ -143,7 +143,7 @@ public class CmPilotCreate {
     }
 
 
-    private StudentModelI addJohnDoeUser(final Connection conn, Integer aid, String name, String password) throws Exception {
+    private StudentModelI addJohnDoeUser(final Connection conn, Integer aid, String name, String password, boolean showWorkEnabled, boolean tutoringEnabled, int tutoringHours) throws Exception {
         
         CmStudentDao cmDao = new CmStudentDao();
         
@@ -154,14 +154,14 @@ public class CmPilotCreate {
         /** create new */
         StudentModel student = new StudentModel();
         student.setName(name);
-        student.setPasscode("student");
+        student.setPasscode(password);
         student.setAdminUid(aid);
         student.setGroupId("1");
         student.setProgId("Prof");
         student.setSubjId("Pre-Alg");
         student.setPassPercent("70%");
-        student.setTutoringAvail(false);
-        student.setShowWorkRequired(false);
+        student.setTutoringAvail(tutoringEnabled);
+        student.setShowWorkRequired(showWorkEnabled);
         student.setIsDemoUser(false);
 
         cmDao.addStudent(conn, student);
