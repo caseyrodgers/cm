@@ -7,7 +7,6 @@ import hotmath.gwt.cm_tools.client.ui.ContextController;
 import hotmath.gwt.cm_tools.client.ui.QuizPage;
 import hotmath.gwt.cm_tools.client.ui.context.CmContext;
 import hotmath.gwt.cm_tools.client.ui.resource_viewer.CmResourcePanelImplDefault;
-import hotmath.gwt.cm_tools.client.ui.resource_viewer.CmResourcePanelContainer.ResourceViewerState;
 import hotmath.gwt.cm_tools.client.ui.viewer.CmResourcePanelImplWithWhiteboard;
 import hotmath.gwt.cm_tools.client.ui.viewer.ShowWorkPanel;
 import hotmath.gwt.shared.client.CmShared;
@@ -70,6 +69,10 @@ public class QuizCmGuiDefinition implements CmGuiDefinition {
 			public void requestComplete(String quizTitle) {
 			    
                 CmResourcePanelImplDefault resourcePanel = new CmResourcePanelImplWithWhiteboard() {
+                    @Override
+                    protected DisplayMode getInitialWhiteboardDisplay() {
+                        return DisplayMode.TUTOR;
+                    }
                     public Widget getResourcePanel() {
                         return this;
                     }

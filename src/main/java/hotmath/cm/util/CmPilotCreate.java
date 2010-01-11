@@ -1,11 +1,16 @@
 package hotmath.cm.util;
 
+import hotmath.cm.signup.HotmathSubscriberServiceCatchup;
 import hotmath.gwt.cm_admin.server.model.CmAdminDao;
 import hotmath.gwt.cm_admin.server.model.CmStudentDao;
 import hotmath.gwt.cm_tools.client.model.StudentModel;
 import hotmath.gwt.cm_tools.client.model.StudentModelI;
 import hotmath.subscriber.HotMathSubscriber;
 import hotmath.subscriber.HotMathSubscriberManager;
+import hotmath.subscriber.PurchasePlan;
+import hotmath.subscriber.PurchasePlanDef;
+import hotmath.subscriber.service.HotMathSubscriberServiceFactory;
+import hotmath.subscriber.service.HotMathSubscriberServiceTutoring;
 import hotmath.testset.ha.CmProgram;
 import hotmath.util.HMConnectionPool;
 import hotmath.util.sql.SqlUtilities;
@@ -26,6 +31,10 @@ import java.util.List;
     - geometry - a selfreg group with show work req and geometry prof prog
     - algebra2 - a selfreg group with show work req and algebra2 prof prog
     - gradprep - a self-reg group with show work req and cashee program
+    
+    
+    Make sure there is a Catchup service
+    
 */
 public class CmPilotCreate {
     
@@ -42,6 +51,11 @@ public class CmPilotCreate {
             
             String password = sub.getPassword();
 
+            
+            HotMathSubscriber subscriber = HotMathSubscriberManager.findSubscriber(subscriberId);
+
+            subscriber.addService(HotMathSubscriberServiceFactory.create("catchup"),new PurchasePlan("TYPE_SERVICE_CATCHUP"));
+            
             /** 
              * add new HA_ADMIN account
              */

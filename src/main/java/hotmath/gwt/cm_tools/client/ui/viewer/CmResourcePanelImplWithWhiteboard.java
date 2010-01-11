@@ -17,7 +17,6 @@ import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
-import com.extjs.gxt.ui.client.widget.layout.CenterLayout;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -29,21 +28,25 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public abstract class CmResourcePanelImplWithWhiteboard extends CmResourcePanelImplDefault {
     
-    enum DisplayMode{TUTOR,WHITEBOARD};
+    public enum DisplayMode{TUTOR,WHITEBOARD};
     
     DisplayMode _displayMode;
     static DisplayMode __lastDisplayMode = null;
     
     public CmResourcePanelImplWithWhiteboard() {
-        /** If user has showwork enabled or system is currently in whiteboard mode
-         *  The show whiteboard on startup.
-         */
+
+        _displayMode = getInitialWhiteboardDisplay();
+    }
+
+    /** Should the whiteboard be shown
+     */
+    protected DisplayMode getInitialWhiteboardDisplay() {
         if(UserInfo.getInstance().isShowWorkRequired() || __lastDisplayMode == DisplayMode.WHITEBOARD) {
-            _displayMode = DisplayMode.WHITEBOARD;
+            return DisplayMode.WHITEBOARD;
         }
         else {
-            _displayMode = DisplayMode.TUTOR;
-        }
+            return DisplayMode.TUTOR;
+        }        
     }
 
 
