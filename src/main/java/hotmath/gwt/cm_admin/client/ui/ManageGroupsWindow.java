@@ -53,17 +53,33 @@ public class ManageGroupsWindow extends CmWindow {
     Grid<GroupInfoModel> _grid;
     ListStore<GroupInfoModel> store = new ListStore<GroupInfoModel>();
     CmAdminModel adminModel;
+    int width = 400;
     
     public ManageGroupsWindow(CmAdminModel adminModel) {
         this.adminModel = adminModel;
-        setSize(400,300);
+        setSize(width,300);
         setHeading("Manage Student Groups");    
         
         readRpcData(adminModel.getId());
         
         drawGui();
-        
-        Button close = new Button("Close");
+
+        getButtonBar().setWidth(width-20);
+        addCloseButton();
+
+        LayoutContainer lc = new LayoutContainer();
+        lc.add(new Html("(*) Self Registration Group"), new BorderLayoutData(LayoutRegion.WEST));
+        lc.setStyleAttribute("padding-right", String.valueOf(width-230));
+        getButtonBar().insert(lc, 0);
+
+        setModal(true);
+        setResizable(false);
+        setVisible(true);
+    }
+
+
+	private void addCloseButton() {
+		Button close = new Button("Close");
         close.addSelectionListener(new SelectionListener<ButtonEvent>() {
             
             @Override
@@ -71,13 +87,8 @@ public class ManageGroupsWindow extends CmWindow {
                 close();
             }
         });
-        
-        
         addButton(close);
-        setModal(true);
-        setResizable(false);
-        setVisible(true);
-    }
+	}
     
     
     private GroupInfoModel getGroupInfo() {
@@ -94,8 +105,9 @@ public class ManageGroupsWindow extends CmWindow {
         setLayout(new BorderLayout());
         
         _grid = defineGrid(store, defineColumns());
-        add(_grid, new BorderLayoutData(LayoutRegion.WEST,190));
-        
+        BorderLayoutData bld = new BorderLayoutData(LayoutRegion.WEST,190);
+        add(_grid, bld);
+
         LayoutContainer lc = new LayoutContainer();
         lc.addStyleName("manage-groups-window-buttons");
 
@@ -245,14 +257,14 @@ public class ManageGroupsWindow extends CmWindow {
         List<ColumnConfig> configs = new ArrayList<ColumnConfig>();
 
         ColumnConfig group = new ColumnConfig();
-        group.setId("group_name");
+        group.setId(GroupInfoModel.GROUP_NAME);
         group.setHeader("Group");
         group.setWidth(120);
         group.setSortable(true);
         configs.add(group);
         
         ColumnConfig usage = new ColumnConfig();
-        usage.setId("student_count");
+        usage.setId(GroupInfoModel.STUDENT_COUNT);
         usage.setHeader("Count");
         usage.setToolTip("Students in group");
         usage.setWidth(48);
@@ -271,6 +283,11 @@ public class ManageGroupsWindow extends CmWindow {
         cmService.execute(new GetGroupAggregateInfoAction(adminId), new CmAsyncCallback<CmList<GroupInfoModel>>() {
             public void onSuccess(CmList<GroupInfoModel> result) {
                 store.removeAll();
+                for(GroupInfoModel gim : result) {
+                	if (gim.getIsSelfReg()) {
+                		gim.setGroupName("* " + gim.getName());
+                	}
+                }
                 store.add(result);
                 CmBusyManager.setBusy(false);                
             }
