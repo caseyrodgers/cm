@@ -54,7 +54,7 @@ public class CmPilotCreate {
             
             HotMathSubscriber subscriber = HotMathSubscriberManager.findSubscriber(subscriberId);
 
-            subscriber.addService(HotMathSubscriberServiceFactory.create("catchup"),new PurchasePlan("TYPE_SERVICE_CATCHUP"));
+            subscriber.addService(HotMathSubscriberServiceFactory.create("catchup"),new PurchasePlan("TYPE_SERVICE_CATCHUP_MONTH"));
             
             /** 
              * add new HA_ADMIN account
@@ -62,7 +62,7 @@ public class CmPilotCreate {
             String sql = "insert into HA_ADMIN(subscriber_id, passcode, user_name, create_date)values(?,?,?,now())";
             pstmt = conn.prepareStatement(sql);
             pstmt.setString(1,subscriberId);
-            pstmt.setString(2,"jd12345");
+            pstmt.setString(2,"admin123");
             pstmt.setString(3,password);  // use subs password as username
             
             try {
@@ -86,7 +86,7 @@ public class CmPilotCreate {
             /** add new HA_USER attached to 
              * 
              */
-            addJohnDoeUser(conn, aid,"John Doe","student");
+            addJohnDoeUser(conn, aid,"John Doe","jd12345");
             
             /** setup default groups for user
              * 
