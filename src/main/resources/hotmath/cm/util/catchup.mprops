@@ -776,41 +776,54 @@ order by create_date
 
 .key=GROUP_NAMES_AND_COUNTS
 
-
-
 ## return groups and their counts, including all default groups
 
-select   g.admin_id,
-         g.id,
-         g.name,
-         Count(u.uid) as student_count
-from     HA_ADMIN a
-         join CM_GROUP g
-           on (g.admin_id = a.aid
-                or g.admin_id = 0)
-         left join HA_USER u
-           on (u.group_id = g.id
-               and u.admin_id = a.aid
-               and u.is_active = 1
-               and u.is_auto_create_template = 0)
-where    a.aid = ?
-         and (g.admin_id <> 0
-               or (g.admin_id = 0
-                   and uid is not null)
-               or g.name = '__none')
+select    g.admin_id,
+          g.id,
+          g.name,
+          1 as is_self_reg, 
+          count(u.uid) as student_count
+from      CM_GROUP g
+left join HA_USER u
+  on      u.group_id = g.id
+ and      u.admin_id = g.admin_id
+ and      u.is_active = 1
+ and      u.is_auto_create_template = 0
+where     g.admin_id = ?
+  and     g.id in (select distinct group_id from HA_USER where admin_id = ? and is_auto_create_template = 1)
 group by g.id
-union 
-select   0          as admin_id,
-         -1         as id,
-         'All Students'      as name,
-         Count(uid) as student_count
-from     HA_USER u
-where    u.admin_id = ?
-         and is_active = 1
-         and is_auto_create_template = 0
-group by id
-order by name
 
+union 
+
+select    g.admin_id,
+          g.id,
+          g.name,
+          0 as is_self_reg,
+          Count(u.uid) as student_count
+from      CM_GROUP g
+left join HA_USER u
+  on      u.group_id = g.id
+ and      u.admin_id = g.admin_id
+ and      u.is_active = 1
+ and      u.is_auto_create_template = 0
+where     g.admin_id = ?
+  and     g.id not in (select distinct group_id from HA_USER where admin_id = ? and is_auto_create_template = 1)
+group by  g.id
+
+union 
+
+select    0          as admin_id,
+          -1         as id,
+          'All Students'      as name,
+          0          as is_self_reg,
+          Count(uid) as student_count
+from      HA_USER u
+where     u.admin_id = ?
+  and     u.is_active = 1
+  and     u.is_auto_create_template = 0
+group by  id
+
+order by  name
 
 ########################
 ### HaUserFactory
