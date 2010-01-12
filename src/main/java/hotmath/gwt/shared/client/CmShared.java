@@ -89,7 +89,7 @@ public class CmShared implements EntryPoint {
     
     /**
      * Verify login attempt by reading security key and making sure it
-     * validiated only once ..
+     * Validated only once ..
      * 
      * If cookie contains current key, assume already verified.
      * 
@@ -102,6 +102,13 @@ public class CmShared implements EntryPoint {
     static public void handleLoginProcessAsync(final CmLoginAsync callback) {
 
         try {
+            
+            /** Provide shortcut, single argument entry for debugging a user
+             */
+            if(_queryParameters.get("debug_uid") != null) {
+                _queryParameters.put("debgug", "true");
+                _queryParameters.put("uid",_queryParameters.get("debug_uid"));
+            }
             // first see if run_id is passed, if so
             // the user is in 'view' mode and we must
             // inform the server not to update the
