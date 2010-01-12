@@ -106,7 +106,7 @@ public class CmShared implements EntryPoint {
             /** Provide shortcut, single argument entry for debugging a user
              */
             if(_queryParameters.get("debug_uid") != null) {
-                _queryParameters.put("debgug", "true");
+                _queryParameters.put("debug", "true");
                 _queryParameters.put("uid",_queryParameters.get("debug_uid"));
             }
             // first see if run_id is passed, if so
