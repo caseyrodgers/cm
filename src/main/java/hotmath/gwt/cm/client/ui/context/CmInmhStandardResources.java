@@ -56,6 +56,10 @@ public class CmInmhStandardResources extends ArrayList<PrescriptionSessionDataRe
         items.add(new InmhItemData(t,"/learning_activities/interactivities/flashcard_multi.swf", "Multiplication Facts"));
         items.add(new InmhItemData(t,"/learning_activities/interactivities/flashcard_oops.swf", "Order of Operations"));
         items.add(new InmhItemData(t,"/learning_activities/interactivities/flashcard_reducingfractions.swf", "Reducing Fractions"));
+        items.add(new InmhItemData(t,"/learning_activities/interactivities/inequality_one_variable.swf", "Inequalities on a Number Line"));
+        items.add(new InmhItemData(t,"/learning_activities/interactivities/prime_factorization.swf", "Prime Factorization"));
+        items.add(new InmhItemData(t,"/learning_activities/interactivities/flashcard_comparing_quantities.swf", "Comparing Quantities"));
+        
         resourceType.setItems(items);        
         add(resourceType);
     }
