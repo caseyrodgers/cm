@@ -889,6 +889,7 @@ public class CmStudentDao {
     public List<StudentModelI> getStudentModelByPassword(final Connection conn, Integer aid, String password) throws Exception {
         List<StudentModelI> students = new ArrayList<StudentModelI>();
         
+        PreparedStatement ps = null;
         ResultSet rs = null;
         try {
             rs = conn.createStatement().executeQuery("select uid from HA_USER where admin_id = " + aid + " and user_passcode = '" + password + "'");
@@ -1208,6 +1209,29 @@ public class CmStudentDao {
         }
 
         return chap;
+    }
+
+    public StudentModelI getTemplateForSelfRegGroup(final Connection conn, Integer groupId) throws Exception {
+    	PreparedStatement ps = null;
+    	ResultSet rs = null;
+    	
+    	String sql = "select uid from HA_USER where group_id = ? and is_auto_reg_template = 1";
+    	
+    	try {
+    		ps = conn.prepareStatement(sql);
+    		ps.setInt(1, groupId);
+    		rs = ps.executeQuery();
+    		if (rs.first()) {
+    			int uid = rs.getInt(1);
+    			return getStudentModel(conn, uid, true); 
+    		}
+    		else {
+                throw new Exception(String.format("Auto Reg Template for Group ID: %d was not found", groupId));
+    		}
+    	}
+    	finally {
+    		SqlUtilities.releaseResources(rs, ps, null);
+    	}
     }
 
     /**
