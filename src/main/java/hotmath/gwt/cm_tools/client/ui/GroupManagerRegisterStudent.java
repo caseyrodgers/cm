@@ -5,6 +5,7 @@ import hotmath.gwt.cm_tools.client.model.CmAdminDataReader;
 import hotmath.gwt.cm_tools.client.model.CmAdminModel;
 import hotmath.gwt.cm_tools.client.model.GroupInfoModel;
 import hotmath.gwt.cm_tools.client.model.StudentModel;
+import hotmath.gwt.cm_tools.client.model.StudentModelI;
 import hotmath.gwt.cm_tools.client.service.CmServiceAsync;
 import hotmath.gwt.shared.client.rpc.action.GroupManagerAction;
 import hotmath.gwt.shared.client.util.CmException;
@@ -24,7 +25,7 @@ public class GroupManagerRegisterStudent extends RegisterStudent {
 	
     GroupInfoModel gim;
     
-	public GroupManagerRegisterStudent(StudentModel sm, CmAdminModel cm, GroupInfoModel gim) {
+	public GroupManagerRegisterStudent(StudentModelI sm, CmAdminModel cm, GroupInfoModel gim) {
 	    super(sm, cm);
 	
 	    this.gim = gim;
