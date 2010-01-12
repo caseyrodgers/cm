@@ -13,7 +13,6 @@ import hotmath.gwt.cm_tools.client.service.CmServiceAsync;
 import hotmath.gwt.cm_tools.client.ui.AutoRegisterStudentSetup;
 import hotmath.gwt.cm_tools.client.ui.BulkStudentRegistrationWindow;
 import hotmath.gwt.cm_tools.client.ui.GroupSelectorWidget;
-import hotmath.gwt.cm_tools.client.ui.InfoPopupBox;
 import hotmath.gwt.cm_tools.client.ui.PdfWindow;
 import hotmath.gwt.cm_tools.client.ui.RegisterStudent;
 import hotmath.gwt.cm_tools.client.ui.StudentDetailsWindow;
@@ -31,7 +30,6 @@ import hotmath.gwt.shared.client.rpc.action.GetSummariesForActiveStudentsAction;
 import hotmath.gwt.shared.client.rpc.action.UnregisterStudentsAction;
 import hotmath.gwt.shared.client.rpc.action.GeneratePdfAction.PdfType;
 import hotmath.gwt.shared.client.util.CmAsyncCallback;
-import hotmath.gwt.shared.client.util.CmInfoConfig;
 import hotmath.gwt.shared.client.util.CmRunAsyncCallback;
 
 import java.util.ArrayList;
@@ -355,11 +353,9 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
         if (sm == null)
             return;
 
-        String server = CmShared.getQueryParameter("host");
-        if (server == null || server.length() == 0)
-            server = "hotmath.com";
+        String server = CmShared.CM_HOME_URL;
 
-        String url = "http://" + server + "/cm_student/CatchupMath.html?uid=" + sm.getUid() + "&debug=true";
+        String url = server + "/cm_student/CatchupMath.html?uid=" + sm.getUid() + "&debug=true";
         Window.open(url, "_blank", "location=1,menubar=1,resizable=1");
     }
 
