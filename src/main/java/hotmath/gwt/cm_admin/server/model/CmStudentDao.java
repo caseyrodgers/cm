@@ -1211,11 +1211,19 @@ public class CmStudentDao {
         return chap;
     }
 
+    /**
+     * get auto-create template for specified Group ID
+     * 
+     * @param conn
+     * @param groupId
+     * @return
+     * @throws Exception
+     */
     public StudentModelI getTemplateForSelfRegGroup(final Connection conn, Integer groupId) throws Exception {
     	PreparedStatement ps = null;
     	ResultSet rs = null;
     	
-    	String sql = "select uid from HA_USER where group_id = ? and is_auto_reg_template = 1";
+    	String sql = "select uid from HA_USER where group_id = ? and is_auto_create_template = 1";
     	
     	try {
     		ps = conn.prepareStatement(sql);
