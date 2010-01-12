@@ -39,6 +39,7 @@ import hotmath.gwt.shared.server.service.command.GetStudentModelCommand;
 import hotmath.gwt.shared.server.service.command.GetStudentShowWorkCommand;
 import hotmath.gwt.shared.server.service.command.GetSubjectDefinitionsCommand;
 import hotmath.gwt.shared.server.service.command.GetSummariesForActiveStudentsCommand;
+import hotmath.gwt.shared.server.service.command.GetTemplateForSelfRegGroupCommand;
 import hotmath.gwt.shared.server.service.command.GetUserInfoCommand;
 import hotmath.gwt.shared.server.service.command.GetViewedInmhItemsCommand;
 import hotmath.gwt.shared.server.service.command.GetWhiteboardDataCommand;
@@ -255,5 +256,6 @@ public class ActionDispatcher {
         addCommand(GetSubjectDefinitionsCommand.class);
         addCommand(GetChaptersForProgramSubjectCommand.class);
         addCommand(GetStudentGridPageCommand.class);
+        addCommand(GetTemplateForSelfRegGroupCommand.class);
     }
 }
