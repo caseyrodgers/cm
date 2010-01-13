@@ -20,14 +20,14 @@ public class GroupManagerAction implements Action<RpcData>{
     Boolean disallowTutoring;
     Boolean showWorkRequired;
     Integer passPercent;
+    Integer isSelfReg;
 
-    public GroupManagerAction(){}
+	public GroupManagerAction(){}
 
     public GroupManagerAction(ActionType actionType,Integer adminId) {
         this.adminId = adminId;
         this.actionType = actionType;        
     }
-    
 
     public Boolean getDisallowTutoring() {
         return disallowTutoring;
@@ -36,7 +36,6 @@ public class GroupManagerAction implements Action<RpcData>{
     public void setDisallowTutoring(Boolean disallowTutoring) {
         this.disallowTutoring = disallowTutoring;
     }
-
 
     public Boolean getShowWorkRequired() {
         return showWorkRequired;
@@ -96,6 +95,14 @@ public class GroupManagerAction implements Action<RpcData>{
     public void setGroupName(String groupName) {
         this.groupName = groupName;
     }
+
+    public Integer getIsSelfReg() {
+		return isSelfReg;
+	}
+
+	public void setIsSelfReg(Integer isSelfReg) {
+		this.isSelfReg = isSelfReg;
+	}
 
 
     public enum ActionType{DELETE,CREATE,UNREGISTER_STUDENTS,UPDATE,GROUP_PROGRAM_ASSIGNMENT,GROUP_PROPERTY_SET};    

@@ -91,6 +91,7 @@ public class GroupManagerRegisterStudent extends RegisterStudent {
         GroupManagerAction action = new GroupManagerAction(GroupManagerAction.ActionType.GROUP_PROGRAM_ASSIGNMENT,adminId);
         action.setStudentModel(studentTemplate);
         action.setGroupId(groupId);
+        action.setIsSelfReg(gim.getIsSelfReg()?1:0);
         cmService.execute(action, new AsyncCallback<RpcData>() {
             public void onSuccess(RpcData result) {
                 CmAdminDataReader.getInstance().fireRefreshData();
