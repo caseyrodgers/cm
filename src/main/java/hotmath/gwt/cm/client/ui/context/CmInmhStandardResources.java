@@ -37,8 +37,6 @@ public class CmInmhStandardResources extends ArrayList<PrescriptionSessionDataRe
         resourceType.setItems(items);
         add(resourceType);
 
-        
-        
         /** Add the Standard Flash Cards
          * 
          */
