@@ -30,6 +30,7 @@ public class GetGroupAggregateInfoCommand implements ActionHandler<GetGroupAggre
             ps.setInt(3, action.getAdminId());
             ps.setInt(4, action.getAdminId());
             ps.setInt(5, action.getAdminId());
+            ps.setInt(6, action.getAdminId());
             
             ResultSet rs = ps.executeQuery();
             while(rs.next()) {
