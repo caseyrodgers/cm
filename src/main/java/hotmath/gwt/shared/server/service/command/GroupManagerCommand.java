@@ -35,7 +35,7 @@ public class GroupManagerCommand implements ActionHandler<GroupManagerAction, Rp
         else if(action.getActionType() == GroupManagerAction.ActionType.UNREGISTER_STUDENTS)
             doUnregister(conn, action.getAdminId(), action.getGroupId());
         else if(action.getActionType() == GroupManagerAction.ActionType.GROUP_PROGRAM_ASSIGNMENT)
-            doGroupProgramAssignment(conn,action.getAdminId(),action.getGroupId(), action.getStudentModel());
+            doGroupProgramAssignment(conn,action.getAdminId(),action.getGroupId(), action.getStudentModel(), action.getIsSelfReg());
         else if(action.getActionType() == GroupManagerAction.ActionType.GROUP_PROPERTY_SET)
             doGroupPropertySet(conn,action.getAdminId(),action.getGroupId(),action.getShowWorkRequired(),action.getDisallowTutoring(),action.getPassPercent());
         
@@ -119,7 +119,7 @@ public class GroupManagerCommand implements ActionHandler<GroupManagerAction, Rp
      * @param studentTemplate
      * @throws Exception
      */
-    private void doGroupProgramAssignment(final Connection conn, Integer adminId, Integer groupId, StudentModel studentTemplate) throws Exception {
+    private void doGroupProgramAssignment(final Connection conn, Integer adminId, Integer groupId, StudentModel studentTemplate, Integer isSelfReg) throws Exception {
         PreparedStatement ps=null;
         try {
             if(groupId == -1) {
@@ -127,11 +127,17 @@ public class GroupManagerCommand implements ActionHandler<GroupManagerAction, Rp
                 ps = conn.prepareStatement(sql);
                 ps.setInt(1,adminId);
             }
-            else {
+            else if (isSelfReg < 1){
                 String sql = "select uid from HA_USER where is_active = 1 and is_auto_create_template = 0 and admin_id = ? and group_id = ?";
                 ps = conn.prepareStatement(sql);
                 ps.setInt(1,adminId);
                 ps.setInt(2,groupId);
+            }
+            else {
+                String sql = "select uid from HA_USER where is_active = 1 and admin_id = ? and group_id = ?";
+                ps = conn.prepareStatement(sql);
+                ps.setInt(1,adminId);
+                ps.setInt(2,groupId);            	
             }
             
             String passPercent = studentTemplate.getPassPercent();
