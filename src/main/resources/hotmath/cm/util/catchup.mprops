@@ -812,6 +812,22 @@ group by  g.id
 
 union 
 
+select    g.admin_id,
+          g.id,
+          g.name,
+          0 as is_self_reg,
+          Count(u.uid) as student_count
+from      CM_GROUP g
+left join HA_USER u
+  on      u.group_id = g.id
+ and      u.admin_id = ?
+ and      u.is_active = 1
+ and      u.is_auto_create_template = 0
+where     g.admin_id = 0
+group by  g.id
+
+union
+
 select    0          as admin_id,
           -1         as id,
           'All Students'      as name,
