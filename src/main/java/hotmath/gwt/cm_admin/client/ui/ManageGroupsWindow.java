@@ -25,7 +25,6 @@ import java.util.List;
 import com.extjs.gxt.ui.client.Registry;
 import com.extjs.gxt.ui.client.Style.LayoutRegion;
 import com.extjs.gxt.ui.client.Style.SelectionMode;
-import com.extjs.gxt.ui.client.data.ModelData;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
@@ -41,10 +40,8 @@ import com.extjs.gxt.ui.client.widget.form.CheckBox;
 import com.extjs.gxt.ui.client.widget.form.FieldSet;
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
-import com.extjs.gxt.ui.client.widget.grid.ColumnData;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
 import com.extjs.gxt.ui.client.widget.grid.Grid;
-import com.extjs.gxt.ui.client.widget.grid.GridCellRenderer;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
@@ -264,17 +261,6 @@ public class ManageGroupsWindow extends CmWindow {
         group.setHeader("Group");
         group.setWidth(120);
         group.setSortable(true);
-        group.setRenderer(new GridCellRenderer<GroupInfoModel>() {
-            @Override
-            public Object render(GroupInfoModel model, String property, ColumnData config, int rowIndex, int colIndex,
-                    ListStore<GroupInfoModel> store, Grid<GroupInfoModel> grid) {
-                // TODO Auto-generated method stub
-                if(model.getIsSelfReg())
-                    return "<span style='color: red'>" + model.getName() + "</span>";
-                else
-                    return model.getName();
-            }
-        });
         configs.add(group);
         
         ColumnConfig usage = new ColumnConfig();
