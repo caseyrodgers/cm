@@ -81,8 +81,8 @@ public class ManageGroupsWindow extends CmWindow {
 
 	private void addSelfRegGroupLegend() {
 		LayoutContainer lc = new LayoutContainer();
-        lc.add(new Html("<span style='color:red'>Self Registration Group</span>"));
-        lc.setStyleAttribute("padding-right", String.valueOf(width-240));
+        lc.add(new Html("<img style='background:red;' width='8' height='8' src='/gwt-resources/images/spacer.gif'>&nbsp;Self Registration Group"));
+        lc.setStyleAttribute("padding-right", String.valueOf(width-230));
         getButtonBar().add(lc);
 	}
 
@@ -100,7 +100,7 @@ public class ManageGroupsWindow extends CmWindow {
 
     private GroupInfoModel getGroupInfo() {
         GroupInfoModel gim =_grid.getSelectionModel().getSelectedItem();
-        if(gim == null) {
+        if (gim == null) {
             CatchupMathTools.showAlert("Please select a group first");
         }
         return gim;
@@ -132,9 +132,9 @@ public class ManageGroupsWindow extends CmWindow {
             public void componentSelected(ButtonEvent ce) {
                 
                 final GroupInfoModel gim = getGroupInfo();
-                if(gim != null) {
-                    if(gim.getAdminId() == 0) {
-                        CatchupMathTools.showAlert("This group name cannot be renamed.");
+                if (gim != null) {
+                    if (gim.getAdminId() == 0) {
+                        CatchupMathTools.showAlert("This group cannot be renamed.");
                         return;
                     }
                     
@@ -154,15 +154,15 @@ public class ManageGroupsWindow extends CmWindow {
         lc.add(new MyButton("Remove Group Name", "Remove selected group name and move assigned students to group 'none'.",new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent ce) {
                 final GroupInfoModel gim = getGroupInfo();
-                if(gim != null) {
-                    if(gim.getName().equals("none") || gim.getName().equals("All Students")){
+                if (gim != null) {
+                    if (gim.getAdminId() == 0) {
                         CatchupMathTools.showAlert("This group cannot be removed.");
                         return;
                     }
                         
                     MessageBox.confirm("Remove group", "Are you sure you want to remove the group '" + gim.getName() + "' (sets existing group students to group 'none')?  ", new Listener<MessageBoxEvent>() {
                         public void handleEvent(MessageBoxEvent be) {
-                            if(be.getButtonClicked().getText().equalsIgnoreCase("yes"))
+                            if (be.getButtonClicked().getText().equalsIgnoreCase("yes"))
                                 deleteGroup(adminModel.getId(), gim.getId());
                         }
                     });
@@ -173,8 +173,8 @@ public class ManageGroupsWindow extends CmWindow {
         lc.add(new MyButton("Unregister Students", "Unregister all students in selected group.",new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent ce) {
                 final GroupInfoModel gim = getGroupInfo();
-                if(gim != null) {
-                    if(gim.getCount() == 0) {
+                if (gim != null) {
+                    if (gim.getCount() == 0) {
                         CatchupMathTools.showAlert("There are no students to unregister.");
                         return;
                     }
@@ -182,7 +182,7 @@ public class ManageGroupsWindow extends CmWindow {
 
                     MessageBox.confirm("Unregister group", msg, new Listener<MessageBoxEvent>() {
                         public void handleEvent(MessageBoxEvent be) {
-                            if(be.getButtonClicked().getText().equalsIgnoreCase("yes"))
+                            if (be.getButtonClicked().getText().equalsIgnoreCase("yes"))
 
                                 /** Use the actual adminId for this user, not the group
                                  */
@@ -196,8 +196,8 @@ public class ManageGroupsWindow extends CmWindow {
         lc.add(new MyButton("Reassign Program", "Reassign a program to all students in group.",new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent ce) {
                 final GroupInfoModel gim = getGroupInfo();
-                if(gim != null) {
-                    if(gim.getCount() > 0 || gim.getIsSelfReg()) {
+                if (gim != null) {
+                    if (gim.getCount() > 0 || gim.getIsSelfReg()) {
 
                         if (gim.getIsSelfReg()) {
                         	handleSelfRegGroup(gim);
@@ -216,8 +216,8 @@ public class ManageGroupsWindow extends CmWindow {
         lc.add(new MyButton("Group Settings", "Settings affecting all students in group.",new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent ce) {
                 final GroupInfoModel gim = getGroupInfo();
-                if(gim != null) {
-                    if(gim.getCount() == 0) {
+                if (gim != null) {
+                    if (gim.getCount() == 0) {
                         CatchupMathTools.showAlert("There are no students assigned to this group.");
                         return;
                     }
@@ -270,20 +270,10 @@ public class ManageGroupsWindow extends CmWindow {
 			public Object render(GroupInfoModel gim, String property,
 					ColumnData config, int rowIndex, int colIndex,
 					ListStore<GroupInfoModel> store, Grid<GroupInfoModel> grid) {
-                if(gim.getIsSelfReg())
+                if (gim.getIsSelfReg())
                     return "<span style='color: red'>" + gim.getName() + "</span>";
                 else {
-                    // TODO remove after testing
-                	if ((rowIndex % 4) == 0) {
-                		return "<span style='font-style: italic;'>" + gim.getName() + "</span>";
-                	}
-                	// TODO remove after testing
-                	else if ((rowIndex % 3) == 0) {
-                		return "<span style='text-decoration:underline;'>" + gim.getName() + "</span>";
-                	}
-                	else {
-                		return gim.getName();
-                	}
+                	return gim.getName();
                 }
 			}
         });
@@ -411,7 +401,7 @@ class MyButton extends Button {
         super(name);
         addStyleName("manage-groups-window-buttons-button");
         setToolTip(tooltip);
-        if(listener != null)
+        if (listener != null)
             addSelectionListener(listener);
         setWidth("150px");
     }
