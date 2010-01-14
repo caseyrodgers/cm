@@ -65,7 +65,7 @@ public class GroupManagerRegisterStudent extends RegisterStudent {
                 }
             }
         });
-        
+        autoCreate.setToolTip("Re-enrolls all students in the group to the beginning of the specified program.");
         list.add(autoCreate);
         
         
