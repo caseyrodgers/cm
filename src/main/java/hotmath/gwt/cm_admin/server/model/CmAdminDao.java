@@ -7,7 +7,7 @@ import hotmath.cm.util.CmCacheManager;
 import hotmath.cm.util.CmMultiLinePropertyReader;
 import hotmath.gwt.cm_tools.client.model.AccountInfoModel;
 import hotmath.gwt.cm_tools.client.model.ChapterModel;
-import hotmath.gwt.cm_tools.client.model.GroupModel;
+import hotmath.gwt.cm_tools.client.model.GroupInfoModel;
 import hotmath.gwt.cm_tools.client.model.StudentModel;
 import hotmath.gwt.cm_tools.client.model.StudentModelBasic;
 import hotmath.gwt.cm_tools.client.model.StudentModelI;
@@ -79,8 +79,8 @@ public class CmAdminDao {
     	return l;
     }
     
-    public CmList <GroupModel> getActiveGroups(final Connection conn, Integer adminUid) throws Exception {
-    	CmList <GroupModel> l = null;
+    public CmList <GroupInfoModel> getActiveGroups(final Connection conn, Integer adminUid) throws Exception {
+    	CmList <GroupInfoModel> l = null;
     	
     	PreparedStatement ps = null;
     	ResultSet rs = null;
@@ -108,7 +108,7 @@ public class CmAdminDao {
     	"insert into CM_GROUP (name, description, is_active, admin_id) " +
     	"values( ?, ?, ?, ?)";
 
-    public GroupModel addGroup(final Connection conn, Integer adminUid, GroupModel gm) throws Exception {
+    public GroupInfoModel addGroup(final Connection conn, Integer adminUid, GroupInfoModel gm) throws Exception {
     	PreparedStatement ps = null;
     	ResultSet rs = null;
     	
@@ -129,7 +129,7 @@ public class CmAdminDao {
     		int count = ps.executeUpdate();
     		if (count == 1) {
         	    int grpId = this.getLastInsertId(conn);
-        	    gm.setId(String.valueOf(grpId));
+        	    gm.setId(grpId);
     		}
     	}
     	catch (Exception e) {
@@ -218,7 +218,7 @@ public class CmAdminDao {
     private static final String CHECK_DUPLICATE_GROUP_SQL =
     	"select 1 from CM_GROUP where name = ? and admin_id in (?, 0)";
     
-    public Boolean checkForDuplicateGroup(final Connection conn, Integer adminUid, GroupModel gm) throws Exception {
+    public Boolean checkForDuplicateGroup(final Connection conn, Integer adminUid, GroupInfoModel gm) throws Exception {
     	PreparedStatement ps = null;
     	ResultSet rs = null;
     	
@@ -538,15 +538,15 @@ public class CmAdminDao {
     	return l;
     }
     
-    private CmList <GroupModel> loadGroups(ResultSet rs) throws Exception {
-    	CmList <GroupModel> l = new CmArrayList<GroupModel>();
+    private CmList <GroupInfoModel> loadGroups(ResultSet rs) throws Exception {
+    	CmList <GroupInfoModel> l = new CmArrayList<GroupInfoModel>();
     	
     	while (rs.next()) {
-    		GroupModel m = new GroupModel();
-    		m.setId(String.valueOf(rs.getInt("id")));
-    		m.setName(rs.getString("name"));
-    		m.setDescription(rs.getString("description"));
-    		m.setIsActive(String.valueOf(rs.getInt("is_active")));
+    	    GroupInfoModel m = new GroupInfoModel();
+    		m.setId(rs.getInt("id"));
+    		m.setGroupName(rs.getString("name"));
+    		m.setIsActive(rs.getInt("is_active")!=0);
+    		m.setIsSelfReg(rs.getInt("is_auto_create_template")!=0);
     		l.add(m);
     	}
     	return l;

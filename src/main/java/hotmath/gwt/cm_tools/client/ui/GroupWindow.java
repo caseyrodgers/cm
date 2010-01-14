@@ -3,11 +3,12 @@ package hotmath.gwt.cm_tools.client.ui;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.model.CmAdminDataReader;
 import hotmath.gwt.cm_tools.client.model.CmAdminModel;
-import hotmath.gwt.cm_tools.client.model.GroupModel;
+import hotmath.gwt.cm_tools.client.model.GroupInfoModel;
 import hotmath.gwt.cm_tools.client.service.CmServiceAsync;
 import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
 import hotmath.gwt.shared.client.data.CmAsyncRequest;
 import hotmath.gwt.shared.client.rpc.action.AddGroupAction;
+import hotmath.gwt.shared.client.util.CmAsyncCallback;
 
 import com.extjs.gxt.ui.client.Registry;
 import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
@@ -23,7 +24,6 @@ import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.layout.FormLayout;
 import com.google.gwt.user.client.Timer;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 
 /**
  * Create Group UI
@@ -36,8 +36,8 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 public class GroupWindow extends LayoutContainer {
 	
 	private CmWindow gw;
-	private GroupModel gm;
-	private ComboBox <GroupModel> grpCombo;
+	private GroupInfoModel gm;
+	private ComboBox <GroupInfoModel> grpCombo;
 	private TextField<String> name; 
 	
 	private FieldSet fs;
@@ -45,9 +45,9 @@ public class GroupWindow extends LayoutContainer {
 	private int formHeight = 90;
 	private int formWidth  = 350;
 	private CmAsyncRequest requestCallback;
-	private GroupModel editGroup;
+	private GroupInfoModel editGroup;
 	
-	public GroupWindow(CmAsyncRequest callback, CmAdminModel cm, ComboBox <GroupModel> gc, boolean isNew, GroupModel editGroup) {
+	public GroupWindow(CmAsyncRequest callback, CmAdminModel cm, ComboBox <GroupInfoModel> gc, boolean isNew, GroupInfoModel editGroup) {
 	    this.requestCallback = callback;
 		cmAdminMdl = cm;
 		grpCombo = gc;
@@ -75,7 +75,7 @@ public class GroupWindow extends LayoutContainer {
 		name.setFieldLabel("Group name");
 		name.setMaxLength(30);  // matches length in Register student form and DB
 		name.setAllowBlank(false);
-		name.setId(GroupModel.NAME_KEY);
+		name.setId(GroupInfoModel.GROUP_NAME);
 		name.setEmptyText("-- enter name --");
 		
 		
@@ -131,14 +131,14 @@ public class GroupWindow extends LayoutContainer {
 		Button saveBtn = new Button("Save", new SelectionListener<ButtonEvent>() {  
 	        @SuppressWarnings("unchecked")
 	    	public void componentSelected(ButtonEvent ce) {
-	        	TextField<String> tf = (TextField<String>)fp.getItemByItemId(GroupModel.NAME_KEY);
+	        	TextField<String> tf = (TextField<String>)fp.getItemByItemId(GroupInfoModel.GROUP_NAME);
 	        	String name = tf.getValue();
 	        	if (name == null || name.trim().length() == 0) {
 	        		tf.focus();
 	        		return;
 	        	}
 	        	
-	        	if (name.trim().equals(GroupModel.NEW_GROUP)) {
+	        	if (name.trim().equals(GroupInfoModel.NEW_GROUP)) {
 	        	    tf.focus();
 	        	    String msg = "Invalid Group name, please re-enter";
 	        	    CatchupMathTools.showAlert(msg);
@@ -146,8 +146,8 @@ public class GroupWindow extends LayoutContainer {
 	        	}
 	        	
 		        if (isNew) {
-		        	gm = new GroupModel();
-		        	gm.setName(name);
+		        	gm = new GroupInfoModel();
+		        	gm.setGroupName(name);
 	        	    addGroupRPC(cmAdminMdl.getId(), gm);
 	        	}
 	        	else {
@@ -160,16 +160,17 @@ public class GroupWindow extends LayoutContainer {
 		return saveBtn;
 	}
 	
-	protected void addGroupRPC(int adminUid, final GroupModel gm) {
+	protected void addGroupRPC(int adminUid, final GroupInfoModel gm) {
 	    
 		CmServiceAsync s = (CmServiceAsync) Registry.get("cmService");
         AddGroupAction action = new AddGroupAction(adminUid, gm);
-        s.execute(action, new AsyncCallback <GroupModel> () {
+        s.execute(action, new CmAsyncCallback <GroupInfoModel> () {
 			
-			public void onSuccess(GroupModel g) {
+			public void onSuccess(GroupInfoModel g) {
+			    
 			    if(grpCombo != null) {
 				    grpCombo.getStore().add(g);
-				    grpCombo.getStore().sort(GroupModel.NAME_KEY, SortDir.ASC);
+				    grpCombo.getStore().sort(GroupInfoModel.GROUP_NAME, SortDir.ASC);
 				    grpCombo.setValue(g);
 			    }
 				/** 
@@ -180,15 +181,10 @@ public class GroupWindow extends LayoutContainer {
 				gw.close();
 				
 				if(requestCallback != null)
-				    requestCallback.requestComplete(gm.getName());
+				    requestCallback.requestComplete(g.getName());
 				
 				
-				CmAdminDataReader.getInstance().fireRefreshData();
-        	}
-
-			public void onFailure(Throwable caught) {
-        		String msg = caught.getMessage();
-        		CatchupMathTools.showAlert(msg);
+				//CmAdminDataReader.getInstance().fireRefreshData();
         	}
         });
 	}

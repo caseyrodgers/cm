@@ -1,15 +1,15 @@
 package hotmath.gwt.cm_tools.client.ui;
 
-import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.model.CmAdminDataReader;
 import hotmath.gwt.cm_tools.client.model.CmAdminDataRefresher;
 import hotmath.gwt.cm_tools.client.model.CmAdminModel;
-import hotmath.gwt.cm_tools.client.model.GroupModel;
+import hotmath.gwt.cm_tools.client.model.GroupInfoModel;
 import hotmath.gwt.cm_tools.client.service.CmServiceAsync;
 import hotmath.gwt.cm_tools.client.util.ProcessTracker;
 import hotmath.gwt.shared.client.rpc.action.CmList;
 import hotmath.gwt.shared.client.rpc.action.GetActiveGroupsAction;
+import hotmath.gwt.shared.client.util.CmAsyncCallback;
 
 import com.extjs.gxt.ui.client.Registry;
 import com.extjs.gxt.ui.client.event.SelectionChangedEvent;
@@ -17,7 +17,6 @@ import com.extjs.gxt.ui.client.event.SelectionChangedListener;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.form.ComboBox;
 import com.extjs.gxt.ui.client.widget.form.ComboBox.TriggerAction;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 
 /** Provide central control of the group selection box
  * 
@@ -31,7 +30,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 public class GroupSelectorWidget implements CmAdminDataRefresher {
 	
 	CmAdminModel cmAdminMdl;
-	private ListStore <GroupModel> groupStore;
+	private ListStore <GroupInfoModel> groupStore;
 	private boolean inRegistrationMode;
 	private ProcessTracker pTracker;
 	private String id;
@@ -39,7 +38,7 @@ public class GroupSelectorWidget implements CmAdminDataRefresher {
     public static final String NO_FILTERING = "--- No Filtering ---";
     
 
-	public GroupSelectorWidget(final CmAdminModel cmAdminMdl, final ListStore<GroupModel> groupStore,
+	public GroupSelectorWidget(final CmAdminModel cmAdminMdl, final ListStore<GroupInfoModel> groupStore,
 		boolean inRegistrationMode, ProcessTracker pTracker, String id, Boolean loadRpc) {
 		this.cmAdminMdl= cmAdminMdl;
         this.groupStore = groupStore;
@@ -58,11 +57,11 @@ public class GroupSelectorWidget implements CmAdminDataRefresher {
         CmAdminDataReader.getInstance().addReader(this);
 	}
 
-	public ComboBox<GroupModel> groupCombo() {
-		final ComboBox<GroupModel> combo = new ComboBox<GroupModel>();
+	public ComboBox<GroupInfoModel> groupCombo() {
+		final ComboBox<GroupInfoModel> combo = new ComboBox<GroupInfoModel>();
 		combo.setFieldLabel("Group");
 		combo.setForceSelection(false);
-		combo.setDisplayField(GroupModel.NAME_KEY);
+		combo.setDisplayField(GroupInfoModel.GROUP_NAME);
 		combo.setEditable(false);
 		combo.setMaxLength(30);
 		combo.setAllowBlank(false);
@@ -75,11 +74,10 @@ public class GroupSelectorWidget implements CmAdminDataRefresher {
 		combo.setEmptyText("-- select a group --");
 		combo.setWidth(280);
 
-	    combo.addSelectionChangedListener(new SelectionChangedListener<GroupModel>() {
-			public void selectionChanged(SelectionChangedEvent<GroupModel> se) {
-
-	        	GroupModel gm = se.getSelectedItem();
-	        	if (inRegistrationMode && gm.getName().equals(GroupModel.NEW_GROUP)) {
+	    combo.addSelectionChangedListener(new SelectionChangedListener<GroupInfoModel>() {
+			public void selectionChanged(SelectionChangedEvent<GroupInfoModel> se) {
+			    GroupInfoModel gm = se.getSelectedItem();
+	        	if (gm != null && inRegistrationMode && gm.getName().equals(GroupInfoModel.NEW_GROUP)) {
 	        		new GroupWindow(null, cmAdminMdl, combo, true, null);
 	        	}
 	        }
@@ -87,7 +85,7 @@ public class GroupSelectorWidget implements CmAdminDataRefresher {
 		return combo;
 	}
 
-	private void getGroupListRPC(Integer uid, final ListStore <GroupModel> store) {
+	private void getGroupListRPC(Integer uid, final ListStore <GroupInfoModel> store) {
 
 		pTracker.beginStep();
 
@@ -95,28 +93,39 @@ public class GroupSelectorWidget implements CmAdminDataRefresher {
 
 		CmServiceAsync s = (CmServiceAsync) Registry.get("cmService");
 		GetActiveGroupsAction action = new GetActiveGroupsAction(uid);
-		s.execute(action, new AsyncCallback <CmList<GroupModel>>() {
-
-			public void onSuccess(CmList<GroupModel> result) {
+		s.execute(action, new CmAsyncCallback <CmList<GroupInfoModel>>() {
+			public void onSuccess(CmList<GroupInfoModel> result) {
 
 				groupStore.removeAll();
 
 				// append 'New Group' to end of List if in Reg mode
 				if (inRegistrationMode) {
-					GroupModel gm = new GroupModel();
-    				gm.setName(GroupModel.NEW_GROUP);
-	    			gm.setId(GroupModel.NEW_GROUP);
+				    GroupInfoModel gm = new GroupInfoModel();
+    				gm.setGroupName(GroupInfoModel.NEW_GROUP);
+	    			gm.setId(GroupInfoModel.CREATE_GROUP);
 		    		result.add(gm);
 				}
 				// only include NO_FILTERING if NOT in Reg mode
 				else {
-			        GroupModel gm = new GroupModel();
-			        gm.setName(NO_FILTERING);
-			        gm.setId(NO_FILTERING);
+				    GroupInfoModel gm = new GroupInfoModel();
+			        gm.setGroupName(NO_FILTERING);
+			        gm.setId(GroupInfoModel.NO_FILTERING);
 			        groupStore.insert(gm, 0);
 				}
 
 				groupStore.add(result);
+				
+//				for(int i=0,t=result.size();i<t;i++) {
+//				    GroupInfoModel gm = result.get(i);
+//				    if(gm.getIsSelfReg() != null && gm.getIsSelfReg()) {
+//				        gm.set("group-name-display", "* " + gm.getName());
+//				    }
+//				    else {
+//				        gm.set("group-name-display", gm.getName());
+//				    }
+//				    groupStore.add(gm);    
+//				}
+				
 				
 				pTracker.completeStep();
 				pTracker.finish();
@@ -126,8 +135,7 @@ public class GroupSelectorWidget implements CmAdminDataRefresher {
 
 			public void onFailure(Throwable caught) {
 				CmBusyManager.setBusy(false);
-        		String msg = caught.getMessage();
-        		CatchupMathTools.showAlert(msg);
+				super.onFailure(caught);
         	}
         });
 

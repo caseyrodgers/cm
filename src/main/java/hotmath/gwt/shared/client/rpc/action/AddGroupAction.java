@@ -1,6 +1,6 @@
 package hotmath.gwt.shared.client.rpc.action;
 
-import hotmath.gwt.cm_tools.client.model.GroupModel;
+import hotmath.gwt.cm_tools.client.model.GroupInfoModel;
 import hotmath.gwt.shared.client.rpc.Action;
 
 /** Add a new Group to an admin account
@@ -8,17 +8,17 @@ import hotmath.gwt.shared.client.rpc.Action;
  * @author casey
  *
  */
- public class AddGroupAction implements Action<GroupModel> {
+ public class AddGroupAction implements Action<GroupInfoModel> {
  
 	private static final long serialVersionUID = -8115618945074554354L;
 	
 	Integer adminId;
-    GroupModel group;
+	GroupInfoModel group;
     
     public AddGroupAction() {
     }
     
-    public  AddGroupAction(Integer adminId, GroupModel gm) {
+    public  AddGroupAction(Integer adminId, GroupInfoModel gm) {
         this.adminId = adminId;
         this.group = gm;
     }
@@ -31,11 +31,11 @@ import hotmath.gwt.shared.client.rpc.Action;
         this.adminId = adminId;
     }
 
-    public GroupModel getGroup() {
+    public GroupInfoModel getGroup() {
         return group;
     }
 
-    public void setGroup(GroupModel group) {
+    public void setGroup(GroupInfoModel group) {
         this.group = group;
     }
 }

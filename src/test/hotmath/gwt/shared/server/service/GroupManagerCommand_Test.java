@@ -2,7 +2,7 @@ package hotmath.gwt.shared.server.service;
 
 import hotmath.gwt.cm.server.CmDbTestCase;
 import hotmath.gwt.cm_admin.server.model.CmAdminDao;
-import hotmath.gwt.cm_tools.client.model.GroupModel;
+import hotmath.gwt.cm_tools.client.model.GroupInfoModel;
 import hotmath.gwt.shared.client.rpc.action.GroupManagerAction;
 import hotmath.gwt.shared.client.rpc.action.GroupManagerAction.ActionType;
 import hotmath.gwt.shared.client.util.RpcData;
@@ -18,8 +18,8 @@ public class GroupManagerCommand_Test extends CmDbTestCase {
     protected void setUp() throws Exception {
         super.setUp();
         
-        GroupModel group = new GroupModel();
-        group.setName("demo_" + System.currentTimeMillis());
+        GroupInfoModel group = new GroupInfoModel();
+        group.setGroupName("demo_" + System.currentTimeMillis());
         group.setDescription("Demo Group");
         
         if(_user == null)
@@ -30,14 +30,14 @@ public class GroupManagerCommand_Test extends CmDbTestCase {
     
     @Override
     protected void tearDown() throws Exception {
-        new CmAdminDao().deleteGroup(conn,_user.getAid(), Integer.parseInt(_groupModel.getId()));
+        new CmAdminDao().deleteGroup(conn,_user.getAid(), _groupModel.getId());
         super.tearDown();
     }
     
     
     public void testUpdateGroupPropertiesGroup() throws Exception {
         GroupManagerAction action = new GroupManagerAction(ActionType.GROUP_PROPERTY_SET,_user.getAid());
-        action.setGroupId(Integer.parseInt(_groupModel.getId()));
+        action.setGroupId(_groupModel.getId());
         action.setDisallowTutoring(true);
         action.setShowWorkRequired(true);
         
@@ -58,14 +58,14 @@ public class GroupManagerCommand_Test extends CmDbTestCase {
     
     public void testCreate() throws Exception {
         GroupManagerAction action = new GroupManagerAction(ActionType.DELETE,_user.getAid());
-        action.setGroupId(Integer.parseInt(_groupModel.getId()));
+        action.setGroupId(_groupModel.getId());
         RpcData rdata = ActionDispatcher.getInstance().execute(action);
         assertTrue(rdata.getDataAsString("status").equals("OK"));
     }
     
     public void testUnregister() throws Exception {
         GroupManagerAction action = new GroupManagerAction(ActionType.UNREGISTER_STUDENTS,_user.getAid());
-        action.setGroupId(Integer.parseInt(_groupModel.getId()));
+        action.setGroupId(_groupModel.getId());
         RpcData rdata = ActionDispatcher.getInstance().execute(action);
         assertTrue(rdata.getDataAsString("status").equals("OK"));
     }

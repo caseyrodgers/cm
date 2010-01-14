@@ -4,7 +4,7 @@ import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.model.ChapterModel;
 import hotmath.gwt.cm_tools.client.model.CmAdminModel;
-import hotmath.gwt.cm_tools.client.model.GroupModel;
+import hotmath.gwt.cm_tools.client.model.GroupInfoModel;
 import hotmath.gwt.cm_tools.client.model.StudentModel;
 import hotmath.gwt.cm_tools.client.model.StudentModelExt;
 import hotmath.gwt.cm_tools.client.model.StudentModelI;
@@ -87,8 +87,8 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
 	private ListStore <ChapterModel> chapStore;
 	private ComboBox <ChapterModel> chapCombo;
 	
-	static private ListStore <GroupModel> __groupStore;
-	private ComboBox <GroupModel> groupCombo;
+	static private ListStore <GroupInfoModel> __groupStore;
+	private ComboBox <GroupInfoModel> groupCombo;
 	
 	private TextField<String> userName;
 	
@@ -114,8 +114,6 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
 		_window.addListener(Events.Hide, new Listener<BaseEvent>() {
 		    public void handleEvent(BaseEvent be) {
 		        EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_MODAL_WINDOW_CLOSED));
-		        
-		        
 		        _groupSelector.release();
 		    }
 		});
@@ -195,7 +193,7 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
 		_fsProfile.add(passCode);
 		
 		if(__groupStore == null) {
-            __groupStore = new ListStore <GroupModel> ();
+            __groupStore = new ListStore <GroupInfoModel> ();
 		}
 		
 		_groupSelector = new GroupSelectorWidget(cmAdminMdl, __groupStore, true, this, "group-combo", true);
@@ -592,11 +590,12 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
 	        return;
 	    }
 	    
-		String groupId = stuMdl.getGroupId();
+		Integer groupId = Integer.parseInt(stuMdl.getGroupId());
 		if (groupId != null) {
-			List<GroupModel> l = __groupStore.getModels();
-			for (GroupModel g : l) {
-				if (groupId.equals(g.getId())) {
+			List<GroupInfoModel> l = __groupStore.getModels();
+			for (GroupInfoModel g : l) {
+			    Integer gi = g.getId();
+				if (groupId.equals(gi)) {
 					groupCombo.setOriginalValue(g);
 					groupCombo.setValue(g);
 				}
@@ -732,18 +731,18 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
         
         String groupId=null;
         String group=null;
-        ComboBox<GroupModel> cg = (ComboBox<GroupModel>) fp.getItemByItemId("group-combo");
+        ComboBox<GroupInfoModel> cg = (ComboBox<GroupInfoModel>) fp.getItemByItemId("group-combo");
         if(cg != null) {
             cg.clearInvalid();
             if(cg != null) {
-                GroupModel g = cg.getValue();
+                GroupInfoModel g = cg.getValue();
                 if (g == null) {
                     cg.focus();
                     cg.forceInvalid(ENTRY_REQUIRED_MSG);
                     cg.expand();
                     throw new CmExceptionValidationFailed();
                 }
-                groupId = g.getId();
+                groupId = g.getId().toString();
                 group = g.getName();
             }
             else {

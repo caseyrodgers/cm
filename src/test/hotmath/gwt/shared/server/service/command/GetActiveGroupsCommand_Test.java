@@ -1,7 +1,7 @@
 package hotmath.gwt.shared.server.service.command;
 
 import hotmath.gwt.cm.server.CmDbTestCase;
-import hotmath.gwt.cm_tools.client.model.GroupModel;
+import hotmath.gwt.cm_tools.client.model.GroupInfoModel;
 import hotmath.gwt.shared.client.rpc.action.CmList;
 import hotmath.gwt.shared.client.rpc.action.GetActiveGroupsAction;
 
@@ -20,7 +20,7 @@ public class GetActiveGroupsCommand_Test extends CmDbTestCase {
     
     public void testRead() throws Exception {
         GetActiveGroupsAction a = new GetActiveGroupsAction(_user.getAid());
-        CmList<GroupModel> groups = new GetActiveGroupsCommand().execute(conn, a);
+        CmList<GroupInfoModel> groups = new GetActiveGroupsCommand().execute(conn, a);
         assertTrue(groups.size() > 0);
     }
 }

@@ -5,7 +5,7 @@ import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.model.CmAdminDataReader;
 import hotmath.gwt.cm_tools.client.model.CmAdminDataRefresher;
 import hotmath.gwt.cm_tools.client.model.CmAdminModel;
-import hotmath.gwt.cm_tools.client.model.GroupModel;
+import hotmath.gwt.cm_tools.client.model.GroupInfoModel;
 import hotmath.gwt.cm_tools.client.model.StringHolder;
 import hotmath.gwt.cm_tools.client.model.StudentModelExt;
 import hotmath.gwt.cm_tools.client.model.StudentModelI;
@@ -98,10 +98,10 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
     CmAdminModel _cmAdminMdl;
     ListStore<StudentModelExt> smStore;
 
-    private ListStore<GroupModel> groupStore;
-    private ComboBox<GroupModel> groupCombo;
+    private ListStore<GroupInfoModel> groupStore;
+    private ComboBox<GroupInfoModel> groupCombo;
 
-    private String _groupFilterId;
+    private Integer _groupFilterId;
     private String _quickSearch;
     private boolean _forceServerRefresh;
 
@@ -255,17 +255,17 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
 
     private Component createGroupFilter() {
 
-        groupStore = new ListStore<GroupModel>();
+        groupStore = new ListStore<GroupInfoModel>();
         GroupSelectorWidget gsw = new GroupSelectorWidget(_cmAdminMdl, groupStore, false, this, "group-filter", false);
         groupCombo = gsw.groupCombo();
         groupCombo.setAllowBlank(true);
 
-        groupCombo.addSelectionChangedListener(new SelectionChangedListener<GroupModel>() {
-            public void selectionChanged(SelectionChangedEvent<GroupModel> se) {
+        groupCombo.addSelectionChangedListener(new SelectionChangedListener<GroupInfoModel>() {
+            public void selectionChanged(SelectionChangedEvent<GroupInfoModel> se) {
 
                 // filter grid based on current selection
-                GroupModel gm = se.getSelectedItem();
-                _groupFilterId = gm.getId().startsWith("---") ? null : gm.getId();
+                GroupInfoModel gm = se.getSelectedItem();
+                _groupFilterId = gm.getId();
 
                 loadAndResetStudentLoader();
             }
@@ -901,7 +901,7 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
              * use module vars to hold request options
              */
             pageAction.setForceRefresh(_forceServerRefresh);
-            pageAction.setGroupFilter(_groupFilterId);
+            pageAction.setGroupFilter(_groupFilterId != null?_groupFilterId.toString():null);
             pageAction.setQuickSearch(_quickSearch);
 
             s.execute(pageAction, callback);

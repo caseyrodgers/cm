@@ -179,18 +179,21 @@ and td.prog_id = ? and sd.for_school = ?
 .key=SELECT_GROUPS_SQL
 # select Admin specific and default (admin_id=0) Groups
 
-SELECT id, name, description, is_active
+SELECT id, name, description, g.is_active,is_auto_create_template
 FROM  CM_GROUP g
 INNER JOIN HA_ADMIN a
    ON g.admin_id = a.aid
+LEFT JOIN HA_USER u
+   on u.group_id = g.id
 WHERE a.aid = ?
   AND g.is_active = ?
 UNION
-SELECT g.id, g.name, g.description, g.is_active
+SELECT g.id, g.name, g.description, g.is_active,0 as is_auto_create_template
 FROM CM_GROUP g
 WHERE g.admin_id = 0
   AND g.is_active = ?
 ORDER by name asc
+
 
 
 .key=ACCOUNT_INFO_SQL

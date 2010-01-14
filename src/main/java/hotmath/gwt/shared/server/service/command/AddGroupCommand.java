@@ -1,7 +1,7 @@
 package hotmath.gwt.shared.server.service.command;
 
 import hotmath.gwt.cm_admin.server.model.CmAdminDao;
-import hotmath.gwt.cm_tools.client.model.GroupModel;
+import hotmath.gwt.cm_tools.client.model.GroupInfoModel;
 import hotmath.gwt.shared.client.rpc.Action;
 import hotmath.gwt.shared.client.rpc.Response;
 import hotmath.gwt.shared.client.rpc.action.AddGroupAction;
@@ -15,10 +15,10 @@ import java.sql.Connection;
  * @author casey
  *
  */
-public class AddGroupCommand implements ActionHandler<AddGroupAction, GroupModel> {
+public class AddGroupCommand implements ActionHandler<AddGroupAction, GroupInfoModel> {
 
     @Override
-    public GroupModel execute(Connection conn, AddGroupAction action) throws Exception {
+    public GroupInfoModel execute(Connection conn, AddGroupAction action) throws Exception {
         CmAdminDao cma = new CmAdminDao();
         return cma.addGroup(conn, action.getAdminId(), action.getGroup());
     }

@@ -3,6 +3,8 @@ package hotmath.gwt.shared.server.service.command;
 import hotmath.cm.util.CmCacheManager;
 import hotmath.cm.util.CmCacheManager.CacheName;
 import hotmath.gwt.cm_admin.server.model.CmStudentDao;
+import hotmath.gwt.cm_tools.client.model.GroupInfoModel;
+import hotmath.gwt.cm_tools.client.model.GroupInfoModelI;
 import hotmath.gwt.cm_tools.client.model.StudentModelExt;
 import hotmath.gwt.cm_tools.client.model.StudentModelI;
 import hotmath.gwt.shared.client.model.CmStudentPagingLoadResult;
@@ -65,7 +67,12 @@ public class GetStudentGridPageCommand implements
         int start = config.getOffset();
         List<StudentModelExt> studentPool = null;
 
-        if (action.getGroupFilter() != null) {
+        /** if group not null and does math either group NONE or is set to NO_FILTERING
+         * 
+         */
+        if (action.getGroupFilter() != null && 
+                !action.getGroupFilter().equals(GroupInfoModel.NO_FILTERING.toString()) &&
+                !action.getGroupFilter().equals(GroupInfoModel.NONE_GROUP.toString())) {
             /**
              * filtered values only matching filtered group
              * 
@@ -77,7 +84,7 @@ public class GetStudentGridPageCommand implements
             }
         } else {
             /**
-             * unfiltered uses the entire set
+             * un-filtered uses the entire set
              * 
              */
             studentPool = _allStudents;

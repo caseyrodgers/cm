@@ -3,8 +3,7 @@ package hotmath.gwt.cm_admin.server.model;
 import hotmath.cm.server.model.CmUserProgramDao;
 import hotmath.gwt.cm.server.CmDbTestCase;
 import hotmath.gwt.cm_tools.client.model.ChapterModel;
-import hotmath.gwt.cm_tools.client.model.CmAdminModel;
-import hotmath.gwt.cm_tools.client.model.GroupModel;
+import hotmath.gwt.cm_tools.client.model.GroupInfoModel;
 import hotmath.gwt.cm_tools.client.model.StudentActiveInfo;
 import hotmath.gwt.cm_tools.client.model.StudentModelI;
 import hotmath.gwt.cm_tools.client.model.SubjectModel;
@@ -39,13 +38,13 @@ public class CmAdminDao_Test extends CmDbTestCase {
 
 
     public void testCreateSelfRegistrationGroup() throws Exception {
-        List<GroupModel> groups = new CmAdminDao().getActiveGroups(conn, _user.getAid());
+        List<GroupInfoModel> groups = new CmAdminDao().getActiveGroups(conn, _user.getAid());
         
         /** remove all groups
          * 
          */
-        for(GroupModel g: groups) {
-            new CmAdminDao().deleteGroup(conn, _user.getAid(), Integer.parseInt(g.getId()));
+        for(GroupInfoModel g: groups) {
+            new CmAdminDao().deleteGroup(conn, _user.getAid(),g.getId());
         }
         
         String testGroup = "TEST_SELF_REG";
@@ -58,7 +57,7 @@ public class CmAdminDao_Test extends CmDbTestCase {
         groups = new CmAdminDao().getActiveGroups(conn, _user.getAid());
         
         boolean found=false;
-        for(GroupModel g: groups) {
+        for(GroupInfoModel g: groups) {
             if(g.getName().equals(testGroup)) {
                 found=true;
                 List<StudentModelI> students = new CmStudentDao().getStudentModelByUserName(conn, _user.getAid(), testGroup);
@@ -79,17 +78,17 @@ public class CmAdminDao_Test extends CmDbTestCase {
     
     
     public void testUpdateGroup() throws Exception {
-        GroupModel gm = setupDemoGroup();
+        GroupInfoModel gm = setupDemoGroup();
         String newGroupName = gm.getName() + "_updated";
-        new CmAdminDao().updateGroup(conn,Integer.parseInt(gm.getId()),newGroupName);
+        new CmAdminDao().updateGroup(conn,gm.getId(),newGroupName);
         
         // how to test?
     }
 
     
     public void testDeleteGroup() throws Exception {
-        GroupModel gm = setupDemoGroup();
-        new CmAdminDao().deleteGroup(conn,_user.getUid(),Integer.parseInt(gm.getId()));
+        GroupInfoModel gm = setupDemoGroup();
+        new CmAdminDao().deleteGroup(conn,_user.getUid(),gm.getId());
         assertFalse(new CmAdminDao().checkForDuplicateGroup(conn, _user.getAid(), gm));
     }
 

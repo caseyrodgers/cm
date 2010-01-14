@@ -2,8 +2,7 @@ package hotmath.gwt.shared.server.service.command;
 
 import hotmath.gwt.cm_admin.server.model.CmAdminDao;
 import hotmath.gwt.cm_admin.server.model.CmStudentDao;
-import hotmath.gwt.cm_tools.client.model.GroupModel;
-import hotmath.gwt.cm_tools.client.model.StudentModel;
+import hotmath.gwt.cm_tools.client.model.GroupInfoModel;
 import hotmath.gwt.cm_tools.client.model.StudentModelI;
 import hotmath.gwt.shared.client.rpc.Action;
 import hotmath.gwt.shared.client.rpc.Response;
@@ -42,13 +41,13 @@ public class SaveAutoRegistrationCommand implements ActionHandler<SaveAutoRegist
     
         StudentModelI student = action.getStudent();
         String groupName = student.getGroup();
-        GroupModel groupModel=null;
+        GroupInfoModel groupModel=null;
         
         // first make sure this group exists
         // If the group already exists the use it, but first
         // remove any existing auto_create_template account based on this group.
-        List<GroupModel> groups = daoa.getActiveGroups(conn, student.getAdminUid());
-        for(GroupModel gm: groups) {
+        List<GroupInfoModel> groups = daoa.getActiveGroups(conn, student.getAdminUid());
+        for(GroupInfoModel gm: groups) {
             String gname = gm.getName();  // contains null for default (NONE) user 
             if(gname != null && gname.equals(groupName)) {
                 groupModel = gm;
@@ -59,12 +58,12 @@ public class SaveAutoRegistrationCommand implements ActionHandler<SaveAutoRegist
             }
         }
         if(groupModel == null) {
-            groupModel = new GroupModel();
-            groupModel.setName(student.getGroup());
+            groupModel = new GroupInfoModel();
+            groupModel.setGroupName(student.getGroup());
             groupModel = daoa.addGroup(conn, action.getAdminId(),groupModel);
         }
         
-        student.setGroupId(groupModel.getId());
+        student.setGroupId(groupModel.getId().toString());
         
         student.setPasscode(student.getGroup() + "_" + System.currentTimeMillis());  // make unique
         

@@ -1,9 +1,9 @@
 package hotmath.gwt.shared.client.rpc.action;
 
-import hotmath.gwt.cm_tools.client.model.GroupModel;
+import hotmath.gwt.cm_tools.client.model.GroupInfoModel;
 import hotmath.gwt.shared.client.rpc.Action;
 
-public class GetActiveGroupsAction implements Action<CmList<GroupModel>> {
+public class GetActiveGroupsAction implements Action<CmList<GroupInfoModel>> {
     
     Integer uid;
     

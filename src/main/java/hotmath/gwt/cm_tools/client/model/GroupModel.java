@@ -2,7 +2,8 @@ package hotmath.gwt.cm_tools.client.model;
 
 import hotmath.gwt.shared.client.rpc.Response;
 
-public class GroupModel extends BaseModel implements Response {
+@Deprecated
+class GroupModel extends BaseModel implements Response {
 	
 	private static final long serialVersionUID = 2783538975661520681L;
 	
@@ -11,6 +12,7 @@ public class GroupModel extends BaseModel implements Response {
 	public static final String DESC_KEY = "description";
 	public static final String IS_ACTIVE_KEY = "is-active";
 	public static final String NEW_GROUP = "--- Create Group ---";
+	
 	
 	private String id;
 	private String name;

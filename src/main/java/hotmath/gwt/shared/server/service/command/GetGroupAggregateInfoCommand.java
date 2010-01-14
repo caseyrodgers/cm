@@ -35,7 +35,7 @@ public class GetGroupAggregateInfoCommand implements ActionHandler<GetGroupAggre
             ResultSet rs = ps.executeQuery();
             while(rs.next()) {
                 groupInfo.add(new GroupInfoModel(rs.getInt("admin_id"),rs.getInt("id"), rs.getString("name"),
-                	rs.getInt("student_count"), (rs.getInt("is_self_reg") > 0)));
+                	rs.getInt("student_count"), true,(rs.getInt("is_self_reg") > 0)));
             }
             
             return groupInfo;

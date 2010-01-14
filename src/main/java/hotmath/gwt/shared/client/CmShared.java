@@ -199,6 +199,7 @@ public class CmShared implements EntryPoint {
     }
 
     static private void displayLoginError(Exception exception) {
+        exception.printStackTrace();
         Log.info("Login error: " + exception.getMessage());
         
         String msg = "You could not be logged in, please try again.";

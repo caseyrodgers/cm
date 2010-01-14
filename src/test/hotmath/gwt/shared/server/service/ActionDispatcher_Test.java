@@ -3,7 +3,7 @@ package hotmath.gwt.shared.server.service;
 import hotmath.gwt.cm.server.CmDbTestCase;
 import hotmath.gwt.cm_admin.server.model.CmStudentDao;
 import hotmath.gwt.cm_tools.client.model.AutoUserAdvanced;
-import hotmath.gwt.cm_tools.client.model.GroupModel;
+import hotmath.gwt.cm_tools.client.model.GroupInfoModel;
 import hotmath.gwt.cm_tools.client.model.LessonItemModel;
 import hotmath.gwt.cm_tools.client.model.StudentModelI;
 import hotmath.gwt.shared.client.rpc.action.AddGroupAction;
@@ -149,8 +149,8 @@ public class ActionDispatcher_Test extends CmDbTestCase {
     }
     
     public void testAddGroupCommand() throws Exception {
-        AddGroupAction action = new AddGroupAction(2, new GroupModel());
-        GroupModel group = ActionDispatcher.getInstance().execute(action);
+        AddGroupAction action = new AddGroupAction(2, new GroupInfoModel());
+        GroupInfoModel group = ActionDispatcher.getInstance().execute(action);
         assertNotNull(group);
     }
     

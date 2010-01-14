@@ -1,7 +1,7 @@
 package hotmath.gwt.shared.server.service.command;
 
 import hotmath.gwt.cm_admin.server.model.CmStudentDao;
-import hotmath.gwt.cm_tools.client.model.GroupModel;
+import hotmath.gwt.cm_tools.client.model.GroupInfoModel;
 import hotmath.gwt.cm_tools.client.model.StudentModel;
 import hotmath.gwt.cm_tools.client.model.StudentModelI;
 import hotmath.gwt.shared.client.rpc.Action;
@@ -28,8 +28,8 @@ public class CreateAutoRegistrationAccountsCommand implements ActionHandler<Crea
         AutoRegistrationSetup preview = new AutoRegistrationSetup();
 
         // first, create the unique group
-        GroupModel groupModel = new GroupModel();
-        groupModel.setName(studentTemplate.getGroup());
+        GroupInfoModel groupModel = new GroupInfoModel();
+        groupModel.setGroupName(studentTemplate.getGroup());
         
         //groupModel = new CmAdminDao().addGroup(conn, action.getAdminId(),groupModel);
         //studentTemplate.setGroupId(groupModel.getId());
