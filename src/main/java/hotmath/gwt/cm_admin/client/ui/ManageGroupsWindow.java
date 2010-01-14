@@ -5,7 +5,6 @@ import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.model.CmAdminDataReader;
 import hotmath.gwt.cm_tools.client.model.CmAdminModel;
 import hotmath.gwt.cm_tools.client.model.GroupInfoModel;
-import hotmath.gwt.cm_tools.client.model.GroupModel;
 import hotmath.gwt.cm_tools.client.model.StudentModelExt;
 import hotmath.gwt.cm_tools.client.model.StudentModelI;
 import hotmath.gwt.cm_tools.client.service.CmServiceAsync;
@@ -143,9 +142,9 @@ public class ManageGroupsWindow extends CmWindow {
                             updateGroupRPC(gim.getAdminId(),gim.getId(), requestData);
                         }
                     };
-                    GroupModel gm = new GroupModel();
-                    gm.setId(Integer.toString(gim.getId()));
-                    gm.setName(gim.getName());
+                    GroupInfoModel gm = new GroupInfoModel();
+                    gm.setId(gim.getId());
+                    gm.setGroupName(gim.getName());
                     new GroupWindow(callback, adminModel,null,false,gm).setVisible(true);
                 }
             }
