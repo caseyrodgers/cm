@@ -685,7 +685,7 @@ public class CmStudentDao {
 
         ResultSet rs = null;
         PreparedStatement ps2 = null;
-        String sql = "select test_config_json from HA_TEST_DEF where subj_id = ? and prog_id = ?";
+        String sql = "select test_config_json from HA_TEST_DEF where subj_id = ? and prog_id = ? and is_active = 1";
         String json = "";
         try {
             ps2 = conn.prepareStatement(sql);
