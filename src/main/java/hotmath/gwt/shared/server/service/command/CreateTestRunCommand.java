@@ -95,7 +95,7 @@ public class CreateTestRunCommand implements ActionHandler<CreateTestRunAction, 
             NextAction nextAction = pres.getNextAction();
             
             testRunInfo.setCorrect(answeredCorrect);
-            testRunInfo.setTotal(totalAnswered);
+            testRunInfo.setTotal(pres.getTest().getTestQuestionCount());
             testRunInfo.setPassed(run.isPassing());
 
             if (!nextAction.getNextAction().equals(NextActionName.PRESCRIPTION)) {
