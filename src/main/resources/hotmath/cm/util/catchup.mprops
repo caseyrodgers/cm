@@ -124,7 +124,8 @@ set    user_name = ?,
        test_def_id = (select test_def_id
                       from   HA_TEST_DEF
                       where  prog_id = ?
-                             and subj_id = ?),
+                             and subj_id = ?
+                             and is_active = 1),
        user_prog_id = ?,
        is_tutoring_available = ?,
        is_show_work_required = ?,
@@ -149,6 +150,27 @@ where    a.user_id = ?
          and b.user_id = a.user_id
 order by insert_time_mills desc
 
+
+
+
+.key=ADD_STUDENT_SQL
+
+
+insert into HA_USER (user_name, user_passcode, active_segment, group_id, test_def_id, admin_id, is_active, is_demo, date_created)
+values(?, ?, ?, ?, (select test_def_id from HA_TEST_DEF where prog_id = ? and subj_id = ? and is_active = 1), ?, 1, ?, now())
+
+
+
+
+.key=INSERT_STUDENT_PROGRAM_SQL
+
+insert CM_USER_PROGRAM (user_id, admin_id, test_def_id, pass_percent, create_date, test_config_json)
+values (?, ?, (select test_def_id from HA_TEST_DEF where prog_id = ? and subj_id = ? and is_active = 1), ?, ?,?)
+
+
+.key=INSERT_STUDENT_PROGRAM_NULL_PASS_PERCENT_SQL
+insert CM_USER_PROGRAM (user_id, admin_id, test_def_id, create_date,test_config_json)
+values (?, ?, (select test_def_id from HA_TEST_DEF where prog_id = ? and subj_id = ? and is_active = 1), ?, ?)
 
 
 

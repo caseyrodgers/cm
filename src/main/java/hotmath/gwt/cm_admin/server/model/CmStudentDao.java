@@ -3,6 +3,7 @@ package hotmath.gwt.cm_admin.server.model;
 import hotmath.assessment.InmhItemData;
 import hotmath.cm.server.model.CmUserProgramDao;
 import hotmath.cm.util.CmMultiLinePropertyReader;
+import hotmath.flusher.HotmathFlusher;
 import hotmath.gwt.cm_tools.client.model.AccountInfoModel;
 import hotmath.gwt.cm_tools.client.model.ChapterModel;
 import hotmath.gwt.cm_tools.client.model.LessonItemModel;
@@ -220,9 +221,6 @@ public class CmStudentDao {
     	return l;
     }
 
-    private static final String ADD_STUDENT_SQL =
-            "insert into HA_USER (user_name, user_passcode, active_segment, group_id, test_def_id, admin_id, is_active, is_demo, date_created) " +
-            "values(?, ?, ?, ?, (select test_def_id from HA_TEST_DEF where prog_id = ? and subj_id = ?), ?, 1, ?, now())";
 
     public StudentModelI addStudent(final Connection conn, StudentModelI sm) throws Exception {
         PreparedStatement ps = null;
@@ -238,7 +236,7 @@ public class CmStudentDao {
         }
 
         try {
-            ps = conn.prepareStatement(ADD_STUDENT_SQL);
+            ps = conn.prepareStatement(CmMultiLinePropertyReader.getInstance().getProperty("ADD_STUDENT_SQL"));
             ps.setString(1, sm.getName());
             ps.setString(2, sm.getPasscode());
             ps.setInt(3, 0);
@@ -619,13 +617,7 @@ public class CmStudentDao {
         return sm;
     }
 
-    private static final String INSERT_STUDENT_PROGRAM_SQL =
-            "insert CM_USER_PROGRAM (user_id, admin_id, test_def_id, pass_percent, create_date, test_config_json) " +
-            "values (?, ?, (select test_def_id from HA_TEST_DEF where prog_id = ? and subj_id = ?), ?, ?,?)";
 
-    private static final String INSERT_STUDENT_PROGRAM_NULL_PASS_PERCENT_SQL =
-            "insert CM_USER_PROGRAM (user_id, admin_id, test_def_id, create_date,test_config_json) " +
-            "values (?, ?, (select test_def_id from HA_TEST_DEF where prog_id = ? and subj_id = ?), ?, ?)";
 
     public StudentModelI addStudentProgram(final Connection conn, StudentModelI sm) throws Exception {
         PreparedStatement ps = null;
@@ -636,7 +628,7 @@ public class CmStudentDao {
             String pp = sm.getPassPercent();
             if (pp != null) {
                 int passPcnt = Integer.parseInt(pp.substring(0, pp.indexOf("%")));
-                ps = conn.prepareStatement(INSERT_STUDENT_PROGRAM_SQL);
+                ps = conn.prepareStatement(CmMultiLinePropertyReader.getInstance().getProperty("INSERT_STUDENT_PROGRAM_SQL"));
                 ps.setInt(1, sm.getUid());
                 ps.setInt(2, sm.getAdminUid());
                 ps.setString(3, sm.getProgId());
@@ -645,7 +637,7 @@ public class CmStudentDao {
                 ps.setTimestamp(6, new Timestamp(System.currentTimeMillis()));
                 ps.setString(7, sm.getJson());
             } else {
-                ps = conn.prepareStatement(INSERT_STUDENT_PROGRAM_NULL_PASS_PERCENT_SQL);
+                ps = conn.prepareStatement(CmMultiLinePropertyReader.getInstance().getProperty("INSERT_STUDENT_PROGRAM_NULL_PASS_PERCENT_SQL"));
                 ps.setInt(1, sm.getUid());
                 ps.setInt(2, sm.getAdminUid());
                 ps.setString(3, sm.getProgId());

@@ -520,13 +520,22 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
 	}
 		
 	protected void addUserRPC(final StudentModel sm) {
+	    CmBusyManager.setBusy(true);
 	    CmServiceAsync s = (CmServiceAsync) Registry.get("cmService");
 	    AddStudentAction action = new AddStudentAction(sm);
 		s.execute(action, new CmAsyncCallback <StudentModelI> () {
 			public void onSuccess(StudentModelI ai) {
 			    EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_USER_PROGRAM_CHANGED,ai.getProgramChanged()));
 			    _window.close();
+			    
+			    CmBusyManager.setBusy(false);
         	}
+			
+			@Override
+			public void onFailure(Throwable caught) {
+	            CmBusyManager.setBusy(false);
+			    super.onFailure(caught);
+			}
         });
 	}
 
@@ -534,7 +543,7 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
 			Boolean passcodeChanged) {
 		CmServiceAsync s = (CmServiceAsync) Registry.get("cmService");
 		
-		CmBusyManager.setBusy(true, false);
+		CmBusyManager.setBusy(true);
 		UpdateStudentAction action = new UpdateStudentAction(sm,stuChanged,progChanged,progIsNew,passcodeChanged);
 		s.execute(action, new CmAsyncCallback <StudentModelI> () {
 			public void onSuccess(StudentModelI ai) {
