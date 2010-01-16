@@ -103,7 +103,7 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
 
     private Integer _groupFilterId;
     private String _quickSearch;
-    private boolean _forceServerRefresh;
+    private boolean _forceServerRefresh=true;
 
     final PagingLoader<PagingLoadResult<StudentModelExt>> _studentLoader;
     final PagingToolBar _pagingToolBar;
@@ -896,9 +896,8 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
              * 
              */
             CmServiceAsync s = (CmServiceAsync) Registry.get("cmService");
-            GetStudentGridPageAction pageAction = new GetStudentGridPageAction(_cmAdminMdl.getId(),
-                    (PagingLoadConfig) loadConfig);
-
+            GetStudentGridPageAction pageAction = new GetStudentGridPageAction(_cmAdminMdl.getId(),(PagingLoadConfig) loadConfig);
+            
             /**
              * setup request for special handling
              * 
