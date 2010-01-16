@@ -41,7 +41,7 @@ public class ResourceViewerImplVideo extends ResourceViewerImplFlash {
             addResource(html,getResourceItem().getTitle());
         }
         else {
-            String videoPath = "http://hotmath.kattare.com/help/flvs/tw/" + getResourceItem().getFile() + ".flv";
+            String videoPath = "http://hotmath.com/help/flvs/tw/" + getResourceItem().getFile() + ".flv";
             
             SWFSettings s = new SWFSettings();
             s.setMinPlayerVersion(new PlayerVersion(9));

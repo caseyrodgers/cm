@@ -928,7 +928,8 @@ img.resource-item-complete {
 
 /** Show Work Panel Full screen / maximized */
 .show-work-panel {
-  border: none;
+  border: #E0E0E0 1px solid;
+  border-top: none;
   padding: 0;
 }
 
