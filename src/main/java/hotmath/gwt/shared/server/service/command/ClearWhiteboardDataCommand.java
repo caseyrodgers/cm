@@ -30,11 +30,13 @@ public class ClearWhiteboardDataCommand implements ActionHandler<ClearWhiteboard
         
         PreparedStatement pstat = null;
         try {
-            String sql = "delete from HA_TEST_RUN_WHITEBOARD where user_id = ? and pid = ?";
+            String sql = "delete from HA_TEST_RUN_WHITEBOARD where user_id = ? and pid = ? and run_id = ?";
             pstat = conn.prepareStatement(sql);
 
             pstat.setInt(1, action.getUid());
             pstat.setString(2, action.getPid());
+            pstat.setInt(3, action.getRid());
+            
             int cntDel = pstat.executeUpdate();
             
             RpcData rData = new RpcData();
