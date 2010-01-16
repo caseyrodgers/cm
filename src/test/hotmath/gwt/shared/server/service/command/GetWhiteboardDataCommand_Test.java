@@ -22,7 +22,7 @@ public class GetWhiteboardDataCommand_Test extends CmDbTestCase {
     
     public void testGetData() throws Exception {
         String testPid = _testRun.getTestRunResults().get(0).getPid();
-        GetWhiteboardDataAction action = new GetWhiteboardDataAction(_user.getUid(),testPid);
+        GetWhiteboardDataAction action = new GetWhiteboardDataAction(_user.getUid(),testPid, _testRun.getRunId());
         CmList<WhiteboardCommand> whiteboard = new GetWhiteboardDataCommand().execute(conn, action);
         assertNotNull(whiteboard);
         
@@ -31,7 +31,7 @@ public class GetWhiteboardDataCommand_Test extends CmDbTestCase {
 
     public void testGetDataThroughActionDispatcher() throws Exception {
         String testPid = _testRun.getTestRunResults().get(0).getPid();
-        GetWhiteboardDataAction action = new GetWhiteboardDataAction(_user.getUid(),testPid);
+        GetWhiteboardDataAction action = new GetWhiteboardDataAction(_user.getUid(),testPid, _testRun.getRunId());
         CmList<WhiteboardCommand> whiteboard =  ActionDispatcher.getInstance().execute(action);
         assertNotNull(whiteboard);
         

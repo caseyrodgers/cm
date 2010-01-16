@@ -943,3 +943,14 @@ from   HA_ADMIN a
          on t.subscriber_id = a.subscriber_id
 where  u.uid = ?
 
+
+
+
+
+.key=GET_WHITEBOARD_SQL
+
+select * from HA_TEST_RUN_WHITEBOARD
+where user_id = ? and pid = ?
+and run_id = ?
+order by insert_time_mills
+

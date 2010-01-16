@@ -1,5 +1,6 @@
 package hotmath.gwt.shared.server.service.command;
 
+import hotmath.cm.util.CmMultiLinePropertyReader;
 import hotmath.gwt.shared.client.rpc.Action;
 import hotmath.gwt.shared.client.rpc.Response;
 import hotmath.gwt.shared.client.rpc.action.CmArrayList;
@@ -28,13 +29,12 @@ public class GetWhiteboardDataCommand implements ActionHandler<GetWhiteboardData
         CmList<WhiteboardCommand> data = new CmArrayList<WhiteboardCommand>();
         PreparedStatement pstat = null;
         try {
-            String sql = "select * from HA_TEST_RUN_WHITEBOARD "
-                    + " where user_id = ? and pid = ? order by insert_time_mills";
-
-            pstat = conn.prepareStatement(sql);
+            
+            pstat = conn.prepareStatement(CmMultiLinePropertyReader.getInstance().getProperty("GET_WHITEBOARD_SQL"));
 
             pstat.setInt(1,action.getUid());
             pstat.setString(2, action.getPid());
+            pstat.setInt(3,action.getRunId());
 
             ResultSet rs = pstat.executeQuery();
             while (rs.next()) {

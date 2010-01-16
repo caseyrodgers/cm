@@ -111,7 +111,8 @@ public class ShowWorkPanel extends Frame {
 		
 		
 		CmServiceAsync s = (CmServiceAsync) Registry.get("cmService");
-		GetWhiteboardDataAction action = new GetWhiteboardDataAction(UserInfo.getInstance().getUid(),pid);
+	    int runId = UserInfo.getInstance().getRunId();
+		GetWhiteboardDataAction action = new GetWhiteboardDataAction(UserInfo.getInstance().getUid(),pid,runId);
 		s.execute(action,new AsyncCallback<CmList<WhiteboardCommand>>() {
 			public void onSuccess(CmList<WhiteboardCommand> commands) {
 				for(int i=0, t=commands.size();i<t;i++) {
