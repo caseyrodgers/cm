@@ -417,6 +417,8 @@ class GroupManagerGlobalSettings extends CmWindow {
     
     GroupInfoModel gim;
     CheckBox showWorkRequired;
+    CheckBox tutoringAllowed;
+    
     CmAdminModel cm;
     public GroupManagerGlobalSettings(CmAdminModel cm, GroupInfoModel gim) {
         this.cm = cm;
@@ -443,6 +445,11 @@ class GroupManagerGlobalSettings extends CmWindow {
         showWorkRequired.setFieldLabel("Show Work Required");
         showWorkRequired.setBoxLabel("");
         fs.add(showWorkRequired);
+        
+        tutoringAllowed = new CheckBox();
+        tutoringAllowed.setFieldLabel("Tutoring Allowed");
+        tutoringAllowed.setBoxLabel("");
+        fs.add(tutoringAllowed);
 
         form.add(fs);
 
@@ -483,6 +490,7 @@ class GroupManagerGlobalSettings extends CmWindow {
         action.setGroupId(gim.getId());
         action.setDisallowTutoring(true);
         action.setShowWorkRequired(showWorkRequired.getValue());
+        action.setDisallowTutoring( !tutoringAllowed.getValue());
         action.setPassPercent(70);
         cmService.execute(action, new CmAsyncCallback<RpcData>() {
             public void onSuccess(RpcData result) {
