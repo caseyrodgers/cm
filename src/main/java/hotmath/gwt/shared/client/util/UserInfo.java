@@ -352,7 +352,9 @@ public class UserInfo implements IsSerializable, Response {
     static public void setInstanceBase(UserInfoBase user) {
         
     }
-    /** Lookup this user and callback when complete 
+    /** Lookup this user and callback when complete.
+     * 
+     *  The UserInfo has been set before callback.
      * 
      * @param uid
      * @param callback

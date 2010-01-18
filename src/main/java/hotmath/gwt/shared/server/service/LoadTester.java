@@ -7,6 +7,7 @@ import hotmath.gwt.shared.client.rpc.action.GetPrescriptionAction;
 import hotmath.gwt.shared.client.rpc.action.GetQuizHtmlAction;
 import hotmath.gwt.shared.client.rpc.action.GetUserInfoAction;
 import hotmath.gwt.shared.client.rpc.result.CreateTestRunResponse;
+import hotmath.gwt.shared.client.rpc.result.QuizHtmlResult;
 import hotmath.gwt.shared.client.util.RpcData;
 import hotmath.gwt.shared.client.util.UserInfo;
 import hotmath.gwt.shared.server.service.command.GeneratePdfCommand;
@@ -49,8 +50,8 @@ public class LoadTester {
             _dao.assignProgramToStudent(conn, user.getUid(), CmProgram.CAHSEEHM, null);
             
 
-            RpcData quizRpcData = dispatcher.execute(new GetQuizHtmlAction(user.getUid(), 1));
-            int testId = quizRpcData.getDataAsInt("test_id");
+            QuizHtmlResult result = dispatcher.execute(new GetQuizHtmlAction(user.getUid(), 1));
+            int testId = result.getTestId();
 
             CreateTestRunResponse userInfo = dispatcher.execute(new CreateTestRunAction(testId));
 

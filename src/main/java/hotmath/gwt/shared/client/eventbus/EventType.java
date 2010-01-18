@@ -35,7 +35,7 @@ public enum EventType{
     EVENT_TYPE_RESOURCE_VIEWER_CLOSE,
     
     
-    /** Fired everytime a new resource is viewed
+    /** Fired every time a new resource is viewed
      * 
      */
     EVENT_TYPE_RESOURCE_VIEWER_OPEN,

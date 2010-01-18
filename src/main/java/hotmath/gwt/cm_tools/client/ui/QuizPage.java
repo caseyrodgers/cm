@@ -5,11 +5,15 @@ import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.service.CmServiceAsync;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.data.CmAsyncRequest;
+import hotmath.gwt.shared.client.eventbus.CmEvent;
+import hotmath.gwt.shared.client.eventbus.EventBus;
+import hotmath.gwt.shared.client.eventbus.EventType;
 import hotmath.gwt.shared.client.rpc.action.CmList;
 import hotmath.gwt.shared.client.rpc.action.GetQuizCurrentResultsAction;
 import hotmath.gwt.shared.client.rpc.action.GetQuizHtmlAction;
 import hotmath.gwt.shared.client.rpc.action.SaveQuizCurrentResultAction;
-import hotmath.gwt.shared.client.util.CmRpcException;
+import hotmath.gwt.shared.client.rpc.result.QuizHtmlResult;
+import hotmath.gwt.shared.client.util.CmAsyncCallback;
 import hotmath.gwt.shared.client.util.RpcData;
 import hotmath.gwt.shared.client.util.UserInfo;
 
@@ -140,7 +144,7 @@ public class QuizPage extends LayoutContainer {
 		 */
 		CmServiceAsync s = (CmServiceAsync) Registry.get("cmService");
 		GetQuizCurrentResultsAction action = new GetQuizCurrentResultsAction(UserInfo.getInstance().getUid());
-        s.execute(action, new AsyncCallback<CmList<RpcData>>() {
+        s.execute(action, new CmAsyncCallback<CmList<RpcData>>() {
 			public void onSuccess(CmList<RpcData> al) {
         		for(RpcData rd: al) {
         			setSolutionQuestionAnswerIndex(rd.getDataAsString("pid"),rd.getDataAsString("answer"));
@@ -149,16 +153,8 @@ public class QuizPage extends LayoutContainer {
         		callbackWhenComplete.requestComplete(_title);
         	}
         	public void onFailure(Throwable caught) {
-                String msg;        	    
         	    CatchupMathTools.setBusy(false);
-        		if(caught instanceof CmRpcException) {
-        			msg = ((CmRpcException)caught).getMessage();
-        		}
-        		else {
-        			msg = caught.getMessage();
-        		}
-        		CatchupMathTools.setBusy(false);
-        		CatchupMathTools.showAlert(msg);
+        	    super.onFailure(caught);
         	}
         });
 	}
@@ -175,36 +171,36 @@ public class QuizPage extends LayoutContainer {
 	    CatchupMathTools.setBusy(true);
 		
 	    GetQuizHtmlAction quizAction = new GetQuizHtmlAction(UserInfo.getInstance().getUid(), UserInfo.getInstance().getTestSegment());
+	    quizAction.setTestId(UserInfo.getInstance().getTestId());
 	    Log.info("QuizPage.getQuizHtmlFromServer: " + quizAction);
-	    
 		CmServiceAsync s = (CmServiceAsync) Registry.get("cmService");
-		s.execute(quizAction, new AsyncCallback<RpcData>() {
+		
+		s.execute(quizAction, new CmAsyncCallback<QuizHtmlResult>() {
 		    @Override
-		    public void onSuccess(RpcData rdata) {
-                String html = rdata.getDataAsString("quiz_html");
-                String title = rdata.getDataAsString("title");
-                int testId = rdata.getDataAsInt("test_id");
-                int testSegment = rdata.getDataAsInt("quiz_segment");
-                int testSegmentCount = rdata.getDataAsInt("quiz_segment_count");
-                UserInfo.getInstance().setTestSegment(testSegment);
+		    public void onSuccess(QuizHtmlResult rdata) {
+                UserInfo.getInstance().setTestSegment(rdata.getQuizSegment());
                 
-                _title = title;
-                // update the user info with the title name
-                // @TODO: this is a hack ... temp 
-                // UserInfo.getInstance().setTestName(_title);
-                UserInfo.getInstance().setTestId(testId);
-                UserInfo.getInstance().setTestSegmentCount(testSegmentCount);
-                displayQuizHtml(html);
+                _title = rdata.getTitle();
+
+                UserInfo.getInstance().setTestId(rdata.getTestId());
+                UserInfo.getInstance().setTestSegmentCount(rdata.getQuizSegmentCount());
+                
+                if(rdata.getUserId() != UserInfo.getInstance().getUid()) {
+                    UserInfo.getInstance().setActiveUser(false);
+                    UserInfo.getInstance().setUserName("Guest user on account: " + rdata.getUserId());
+                    EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_USERCHANGED));
+                }
+                
+                displayQuizHtml(rdata.getQuizHtml());
                 
                 CatchupMathTools.setBusy(false);
 		    }
-		    
 		    @Override
 		    public void onFailure(Throwable caught) {
-                CatchupMathTools.setBusy(false);		        
-                Log.error("Getting Quiz HTML", caught);
-                CatchupMathTools.showAlert("<p>Sorry, but there has been a server error: </p><b>" + caught.getMessage() + "</b><p>Please, tell your administrator or teacher.</p>");
+                CatchupMathTools.setBusy(false);
+                super.onFailure(caught);
 		    }
         });
+		
 	}
 }

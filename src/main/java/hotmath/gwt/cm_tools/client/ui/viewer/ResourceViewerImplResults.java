@@ -3,6 +3,7 @@ package hotmath.gwt.cm_tools.client.ui.viewer;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.service.CmServiceAsync;
 import hotmath.gwt.shared.client.rpc.action.GetQuizResultsHtmlAction;
+import hotmath.gwt.shared.client.util.CmAsyncCallback;
 import hotmath.gwt.shared.client.util.RpcData;
 import hotmath.gwt.shared.client.util.UserInfo;
 
@@ -13,7 +14,6 @@ import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONParser;
 import com.google.gwt.json.client.JSONValue;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Widget;
 
 public class ResourceViewerImplResults extends
@@ -67,7 +67,7 @@ public class ResourceViewerImplResults extends
 		CmServiceAsync s = (CmServiceAsync) Registry.get("cmService");
 		GetQuizResultsHtmlAction action = new GetQuizResultsHtmlAction(UserInfo
 				.getInstance().getRunId());
-		s.execute(action, new AsyncCallback<RpcData>() {
+		s.execute(action, new CmAsyncCallback<RpcData>() {
 			public void onSuccess(RpcData result) {
 				try {
 					RpcData rdata = result;
@@ -91,7 +91,7 @@ public class ResourceViewerImplResults extends
 
 			public void onFailure(Throwable caught) {
 				CmBusyManager.setBusy(false);
-				caught.printStackTrace();
+				super.onFailure(caught);
 			}
 		});
 

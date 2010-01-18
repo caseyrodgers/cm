@@ -140,7 +140,6 @@ public class CatchupMath implements EntryPoint {
 		         * 
 		         */
 		        CmShared.handleLoginProcessAsync(new CmLoginAsync() {
-		        	
 		            public void loginSuccessful(Integer uid) {
 		                processLoginComplete(uid);								
 		            }
@@ -157,7 +156,7 @@ public class CatchupMath implements EntryPoint {
     private void processLoginComplete(final Integer uid) {
         UserInfo.loadUser(uid,new CmAsyncRequest() {
             public void requestComplete(String requestData) {
-                
+
                 if(UserInfo.getInstance().isSingleUser())
                     Window.setTitle("Catchup Math: Student");
 
@@ -166,16 +165,25 @@ public class CatchupMath implements EntryPoint {
                     /** 
                      * self registration
                      * 
-                     * mark as not owner, since this is a
+                     * mark as not owner, since this is templated.
                      */
                     UserInfo.getInstance().setActiveUser(false);
                     CatchupMath.__thisInstance.showAutoRegistration_gwt();
                 }
+                else if(CmShared.getQueryParameter("debug_info") != null) {
+                    setDebugOverrideInformation(CmShared.getQueryParameter("debug_info"));
+                    __thisInstance.startNormalOperation();
+                }
                 else if(UserInfo.getInstance().getRunId() > 0) {
-                    // already has active session, just more to first screen
+                    /** 
+                     * already has active session, just move to current position.
+                     */
                     __thisInstance.startNormalOperation();
                 }
                 else {
+                    /** Otherwise, show the welcome screen to new visits
+                     * 
+                     */
                     showWelcomePanel();
                 }
                 
@@ -186,6 +194,25 @@ public class CatchupMath implements EntryPoint {
         });        
     }
     
+    
+    /** read token containing the uid, test and run ids:
+     * 
+     *  uid:tid:runid
+     *  
+     *  
+     * @param di
+     */
+    private void setDebugOverrideInformation(String di) {
+        UserInfo ui = UserInfo.getInstance();
+        String p[] = di.split(":");
+        int uid = Integer.parseInt(p[0]);
+        if(uid > 0)
+            ui.setUid(uid);
+        if(p.length > 1)
+            ui.setTestId(Integer.parseInt(p[1]));
+        if(p.length > 2)
+            ui.setRunId(Integer.parseInt(p[2]));
+    }
 
     /** Startup the history and initial history state check
      *   
@@ -257,6 +284,9 @@ public class CatchupMath implements EntryPoint {
     
     
     public void showWelcomePanel() {
+        /** 
+         * @TODO: why not event driven?
+         */
         HeaderPanel.__instance.enable();
 
         _mainContainer.removeAll();
@@ -344,5 +374,5 @@ public class CatchupMath implements EntryPoint {
                                     // This is checked in CatchupMath.html to indicate that a loading error occurred.
                                     $wnd.__cmInitialized = true;
                                     }-*/;
-    
+
 }

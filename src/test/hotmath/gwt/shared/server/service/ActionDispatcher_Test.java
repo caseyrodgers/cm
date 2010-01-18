@@ -37,6 +37,7 @@ import hotmath.gwt.shared.client.rpc.action.SaveWhiteboardDataAction.CommandType
 import hotmath.gwt.shared.client.rpc.result.AutoRegistrationEntry;
 import hotmath.gwt.shared.client.rpc.result.AutoRegistrationSetup;
 import hotmath.gwt.shared.client.rpc.result.CreateTestRunResponse;
+import hotmath.gwt.shared.client.rpc.result.QuizHtmlResult;
 import hotmath.gwt.shared.client.util.RpcData;
 import hotmath.gwt.shared.client.util.UserInfo;
 import hotmath.testset.ha.HaTestRunDao;
@@ -261,10 +262,10 @@ public class ActionDispatcher_Test extends CmDbTestCase {
     
     public void testGetQuizHtml() throws Exception {
         GetQuizHtmlAction action = new GetQuizHtmlAction(uid,1);
-        RpcData rpcData = ActionDispatcher.getInstance().execute(action);
+        QuizHtmlResult result = ActionDispatcher.getInstance().execute(action);
         
-        assertNotNull(rpcData);
-        assertTrue(rpcData.getDataAsInt("test_id") > 0);
+        assertNotNull(result);
+        assertTrue(result.getTestId() > 0);
     }
 
     

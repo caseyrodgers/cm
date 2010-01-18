@@ -6,6 +6,7 @@ import hotmath.gwt.cm_tools.client.model.StudentActiveInfo;
 import hotmath.gwt.shared.client.rpc.Action;
 import hotmath.gwt.shared.client.rpc.Response;
 import hotmath.gwt.shared.client.rpc.action.GetQuizHtmlAction;
+import hotmath.gwt.shared.client.rpc.result.QuizHtmlResult;
 import hotmath.gwt.shared.client.util.RpcData;
 import hotmath.gwt.shared.server.service.ActionHandler;
 import hotmath.testset.TestSet;
@@ -29,15 +30,41 @@ import java.util.Map;
 import org.apache.log4j.Logger;
 
 
-public class GetQuizHtmlCommand implements ActionHandler<GetQuizHtmlAction, RpcData> {
+public class GetQuizHtmlCommand implements ActionHandler<GetQuizHtmlAction, QuizHtmlResult> {
 
     static final Logger logger = Logger.getLogger(GetQuizHtmlCommand.class);
     
+    
+    /** If user is re-taking the current segment, then move to next
+     * slot.
+     */
+    
+    /** TODO: how to know if this a retake?
+     * 
+     */
+    
+    /** determine the quiz slot to use.  
+     * 
+     * We reuse the slot if:
+     * 
+     * 1. user has never seen this quiz.
+     * 2. user has never seen this quiz segment.
+     * 3. user passed last quiz segment.
+     * 
+     * 
+     * We increment the slot if:
+     * 
+     * 1. user failed current segment
+     * 2. user is re-taking same segment
+     * 
+     * 
+     */    
     @Override
-    public RpcData execute(final Connection conn, GetQuizHtmlAction action) throws Exception {
+    public QuizHtmlResult execute(final Connection conn, GetQuizHtmlAction action) throws Exception {
         
         int testSegment = action.getTestSegment();
         int uid = action.getUid();
+        int testId = action.getTestId();
 
         try {
             String quizHtmlTemplate = readQuizHtmlTemplate();
@@ -45,6 +72,7 @@ public class GetQuizHtmlCommand implements ActionHandler<GetQuizHtmlAction, RpcD
 
             // StudentModel sm = dao.getStudentModel(uid);
             //HaUser user = HaUser.lookUser(conn, uid,null);
+            
             
             CmUserProgramDao upDao = new CmUserProgramDao();
             StudentUserProgramModel programInfo = upDao.loadProgramInfoCurrent(conn, uid);
@@ -59,55 +87,22 @@ public class GetQuizHtmlCommand implements ActionHandler<GetQuizHtmlAction, RpcD
 
             int testSegmentSlot = activeInfo.getActiveSegmentSlot();
             
-            /** If user is re-taking the current segment, then move to next
-             * slot.
-             */
-            
-            /** TODO: how to know if this a retake?
-             * 
-             */
-            
-            /** determine the quiz slot to use.  
-             * 
-             * We reuse the slot if:
-             * 
-             * 1. user has never seen this quiz.
-             * 2. user has never seen this quiz segment.
-             * 3. user passed last quiz segment.
-             * 
-             * 
-             * We increment the slot if:
-             * 
-             * 1. user failed current segment
-             * 2. user is re-taking same segment
-             * 
-             * 
-             */
-            
-            /** Check Cache for this exact test HTML.  Make sure it is unique
-             * in case program changes slightly.
-             *  
-             */
-            
-            //String testKey = programInfo.toString() + " Segment=" + testSegment + "_" + testSegmentSlot;
-            //RpcData rpcDataCached = (RpcData)CmCacheManager.getInstance().retrieveFromCache(CacheName.TEST_HTML,testKey);
-            //if(rpcDataCached != null) {
-            //    return rpcDataCached;
-            //}
-
             boolean isActiveTest = activeInfo.getActiveTestId() > 0;
+
             
-            HaTest haTest = null;
-            if (false && isActiveTest && testSegment == activeInfo.getActiveSegment()) {
-                // reuse the existing test
-                haTest = HaTestDao.loadTest(conn, activeInfo.getActiveTestId());
-            } else {
-                // register a new test
+            HaTest haTest=null;
+            if(action.getTestId() > 0) {
+                haTest = HaTestDao.loadTest(conn, action.getTestId());
+                uid = haTest.getUser().getUserKey();
+                testSegment = haTest.getSegment();
+            }
+            else {
+                /** register a new test
+                 */
                 HaTestDef testDef = HaTestDefFactory.createTestDef(conn,testName);
                 haTest = HaTestDao.createTest(conn, uid, testDef, testSegment);
             }
-
-            String testTitle = haTest.getTitle();   
+            String testTitle = haTest.getTitle();            
 
             TestSet _testSet = new TestSet(haTest.getPids());
 
@@ -129,54 +124,22 @@ public class GetQuizHtmlCommand implements ActionHandler<GetQuizHtmlAction, RpcD
 
             String quizHtml = VelocityTemplateFromStringManager.getInstance().processTemplate(quizHtmlTemplate, map);
 
-            RpcData rpcData = new RpcData();
-            rpcData.putData("quiz_html", quizHtml);
-            rpcData.putData("test_id", haTest.getTestId());
-            rpcData.putData("quiz_segment", testSegment);
-            rpcData.putData("quiz_segment_count", haTest.getTotalSegments());
-            rpcData.putData("title", testTitle);
-            rpcData.putData("sub_title", subTitle);
+            QuizHtmlResult result = new QuizHtmlResult();
+            result.setUserId(uid);
+            result.setQuizHtml(quizHtml);
+            result.setTestId(haTest.getTestId());
+            result.setQuizSegment(testSegment);
+            result.setQuizSegmentCount(haTest.getTotalSegments());
+            result.setTitle(testTitle);
+            result.setSubTitle(subTitle);
             
-            // CmCacheManager.getInstance().addToCache(CacheName.TEST_HTML,testKey, rpcData);
-
-            return rpcData;
+            return result;
         } catch (Exception e) {
             throw e;
         }
     }
     
-//    public RpcData getQuizHtml(int testId) throws CmRpcException {
-//        try {
-//
-//            String quizHtmlTemplate = GetQuizHtmlCommand.readQuizHtmlTemplate();
-//            Map<String, Object> map = new HashMap<String, Object>();
-//
-//            HaTest haTest = HaTest.loadTest(testId);
-//            String testTitle = haTest.getTitle();
-//
-//            TestSet _testSet = new TestSet(haTest.getPids());
-//
-//            int testSegment = haTest.getSegment();
-//            map.put("haTest", haTest);
-//            map.put("testTitle", testTitle);
-//            map.put("testSet", _testSet);
-//            map.put("subTitle", testSegment);
-//
-//            String quizHtml = VelocityTemplateFromStringManager.getInstance().processTemplate(quizHtmlTemplate, map);
-//
-//            RpcData rpcData = new RpcData();
-//            rpcData.putData("quiz_html", quizHtml);
-//            rpcData.putData("test_id", haTest.getTestId());
-//            rpcData.putData("quiz_segment", testSegment);
-//            rpcData.putData("title", testTitle);
-//
-//            return rpcData;
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            throw new CmRpcException(e.getMessage());
-//        }
-//    }    
-
+    
     @Override
     public Class<? extends Action<? extends Response>> getActionType() {
         return GetQuizHtmlAction.class;
