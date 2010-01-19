@@ -272,7 +272,7 @@ public class GetPrescriptionCommand implements ActionHandler<GetPrescriptionActi
 
         double percent = ((double) correct / (double) total) * 100.0d;
 
-        int ipercent = (int) Math.floor(percent);
+        int ipercent = (int) Math.round(percent);
         return ipercent;
     }    
 
