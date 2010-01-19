@@ -12,6 +12,7 @@ import hotmath.gwt.shared.client.rpc.action.GeneratePdfAction;
 import hotmath.gwt.shared.client.rpc.action.GetStudentActivityAction;
 import hotmath.gwt.shared.client.rpc.action.GeneratePdfAction.PdfType;
 import hotmath.gwt.shared.client.util.CmAsyncCallback;
+import hotmath.gwt.shared.client.util.UserInfo;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -41,6 +42,7 @@ import com.extjs.gxt.ui.client.widget.menu.Menu;
 import com.extjs.gxt.ui.client.widget.menu.MenuItem;
 import com.extjs.gxt.ui.client.widget.toolbar.FillToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
@@ -141,10 +143,33 @@ public class StudentDetailsWindow extends CmWindow {
             });
             final Menu contextMenu = new Menu();
             contextMenu.add(detailDebug);
+            
+            MenuItem detailLogin = new MenuItem("Login/View");
+            detailLogin.addSelectionListener(new SelectionListener<MenuEvent>() {
+                public void componentSelected(MenuEvent ce) {
+                    StudentActivityModel sm = samGrid.getSelectionModel().getSelectedItem();
+                    loginAsSelectedUser(sm);
+                }
+            });  
+            contextMenu.add(detailLogin);
+            
             samGrid.setContextMenu(contextMenu);
         }
 
         setVisible(true);
+    }
+
+    /** Logon as selected user, connecting to selected test/run
+     * 
+     */
+    private void loginAsSelectedUser(StudentActivityModel sm) {
+
+        String server = CmShared.getServerForCmStudent();
+        
+        String url = server + "/cm_student/CatchupMath.html?debug=true&uid=" + studentModel.getUid() + 
+                     "&debug_info=" + studentModel.getUid() + ":" + sm.getTestId() + ":" + sm.getRunId();
+        
+        Window.open(url, "_blank", "location=1,menubar=1,resizable=1,scrollbars=1");
     }
 
     /**

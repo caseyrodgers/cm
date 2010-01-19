@@ -186,6 +186,15 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
         contextMenu.add(editUser);
 
         if (CmShared.getQueryParameter("debug") != null) {
+            MenuItem studentDetails = new MenuItem("Student Details");
+            studentDetails.addSelectionListener(new SelectionListener<MenuEvent>() {
+                @Override
+                public void componentSelected(MenuEvent ce) {
+                    showStudentDetails(getSelectedStudent());
+                }
+            });
+            
+            contextMenu.add(studentDetails);
             MenuItem loginAsUser = new MenuItem("Login as User");
             loginAsUser.addSelectionListener(new SelectionListener<MenuEvent>() {
                 public void componentSelected(MenuEvent ce) {
@@ -352,15 +361,9 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
         StudentModelExt sm = getSelectedStudent();
         if (sm == null)
             return;
-
-        String server = CmShared.CM_HOME_URL;
-        if(server.indexOf("kattare") > -1)
-            server = "http://hotmath.kattare.com";
-        else if(server.indexOf("catchup") > -1)
-            server = "http://hotmath.com";
-
+        String server = CmShared.getServerForCmStudent();
         String url = server + "/cm_student/CatchupMath.html?uid=" + sm.getUid() + "&debug=true";
-        Window.open(url, "_blank", "location=1,menubar=1,resizable=1");
+        Window.open(url, "_blank", "location=1,menubar=1,resizable=1,scrollbars=yes");
     }
 
     /**
@@ -561,17 +564,20 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
                 if (l.size() == 0) {
                     CatchupMathTools.showAlert("Please select a student.");
                 } else {
-                    GWT.runAsync(new CmRunAsyncCallback() {
-                        @Override
-                        public void onSuccess() {
-                            new StudentDetailsWindow(l.get(0));
-                        }
-                    });
-
+                  showStudentDetails(l.get(0));
                 }
             }
         });
         return ti;
+    }
+    
+    private void showStudentDetails(final StudentModelExt sm) {
+        GWT.runAsync(new CmRunAsyncCallback() {
+            @Override
+            public void onSuccess() {
+                new StudentDetailsWindow(sm);
+            }
+        });        
     }
 
     private Button unregisterStudentToolItem(final Grid<StudentModelExt> grid) {

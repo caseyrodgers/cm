@@ -59,6 +59,21 @@ public class CmShared implements EntryPoint {
         return (v != null)?v:"";
     }
 
+    /** return string used to launch cm_student.
+     * 
+     * This is complicated due to various deployment arrangements.
+     * 
+     * @return
+     */
+    static public String getServerForCmStudent() {
+        String server = CmShared.CM_HOME_URL;
+        if(server.indexOf("kattare") > -1)
+            server = "http://hotmath.kattare.com";
+        else if(server.indexOf("catchup") > -1)
+            server = "http://hotmath.com";
+        return server;
+    }
+
     /** The URL to default to if cannot log in */
     // final public static String CM_HOME_URL = "http://catchupmath.com";
 
