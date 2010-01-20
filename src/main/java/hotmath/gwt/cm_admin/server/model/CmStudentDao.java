@@ -1075,7 +1075,7 @@ public class CmStudentDao {
                 int numIncorrect = rs.getInt("answered_incorrect");
                 int notAnswered = rs.getInt("not_answered");
                 double percent = (double) (numCorrect * 100) / (double) (numCorrect + numIncorrect + notAnswered);
-                sb.append(java.lang.Math.round(percent)).append("% correct");
+                sb.append(Math.round(percent)).append("% correct");
             } else {
                 // was: problemsViewed / problemsPerLesson; // where problemsPerLesson assumed to be always equal to 3
                 int completed =  trDao.getLessonsViewedCount(conn, runId);
