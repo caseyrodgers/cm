@@ -10,13 +10,17 @@ import hotmath.gwt.shared.client.eventbus.EventType;
 
 import java.util.List;
 
+import com.extjs.gxt.ui.client.Style.Direction;
 import com.extjs.gxt.ui.client.Style.LayoutRegion;
 import com.extjs.gxt.ui.client.Style.Scroll;
+import com.extjs.gxt.ui.client.fx.FxConfig;
 import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
+import com.extjs.gxt.ui.client.widget.Html;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.Widget;
 
 public class CmMainPanel extends LayoutContainer {
@@ -53,7 +57,7 @@ public class CmMainPanel extends LayoutContainer {
     public CmMainPanel(final CmGuiDefinition cmGuiDef) {
 
         __lastInstance = this;
-
+        setStyleAttribute("position", "relative");
         setScrollMode(Scroll.NONE);
         this.cmGuiDef = cmGuiDef;
         BorderLayout bl = new BorderLayout() {
@@ -97,33 +101,6 @@ public class CmMainPanel extends LayoutContainer {
                 _mainContent.add(w);
         }
         
-        /** Any modal window, should hide the resource window to allow
-         *  for Flash widgets to be hidden
-         *  
-         */
-        EventBus.getInstance().addEventListener(new CmEventListenerImplDefault() {
-            
-            @Override
-            public void handleEvent(CmEvent event) {
-                if(event.getEventType() == EventType.EVENT_TYPE_MODAL_WINDOW_OPEN) {
-                    // we must remove any resource viewer that contains
-                    // flash, otherwise the z-order gets screwed up and
-                    // the dialog will bleed through the flash.
-                    if(_lastResourceViewer instanceof ResourceViewerImplFlash) {
-                        CmMainPanel.__lastInstance._mainContent.removeResource();
-                    }
-                }
-                else if(event.getEventType() == EventType.EVENT_TYPE_RESOURCE_VIEWER_OPEN) {
-                    _lastResourceViewer = (CmResourcePanel)event.getEventData();
-                }
-                else if(event.getEventType() == EventType.EVENT_TYPE_WINDOW_RESIZED) {
-                    _mainContent.fireWindowResized();
-                }
-                else if(event.getEventType() == EventType.EVENT_TYPE_RESOURCE_VIEWER_CLOSE) {
-                    _lastResourceViewer = (CmResourcePanel)event.getEventData();
-                }
-            }
-        });
     }
 
     
@@ -133,8 +110,12 @@ public class CmMainPanel extends LayoutContainer {
     
     /** Request controls from Context
      * 
+     * Provide holder for the main buttons for context
+     *  
+     * Usually either next/prev or the quiz button.
+     * 
+     * 
      */
-
     private void addTools() {
         List<Component> comps = this.cmGuiDef.getContext().getTools();
 
@@ -153,19 +134,111 @@ public class CmMainPanel extends LayoutContainer {
      * 
      */
     public void removeResource() {
-        CmMainPanel.__lastInstance._mainContent.removeResource();
+        __lastInstance._mainContent.removeResource();
     }
     
     
     static {
         EventBus.getInstance().addEventListener(new CmEventListenerImplDefault() {
-            
             @Override
             public void handleEvent(CmEvent event) {
-                if(event.getEventType() == EventType.EVENT_TYPE_RESOURCE_VIEWER_CLOSE) {
-                    __lastInstance.expandResourceButtons();
+                if(event.getEventType() == EventType.EVENT_TYPE_RESOURCE_VIEWER_OPEN) {
+                    __lastInstance._lastResourceViewer = (CmResourcePanel)event.getEventData();
                 }
+                else if(event.getEventType() == EventType.EVENT_TYPE_RESOURCE_VIEWER_CLOSE) {
+                    __lastInstance.expandResourceButtons();
+                    __lastInstance._lastResourceViewer = (CmResourcePanel)event.getEventData();
+                }
+                /** Any modal window, should hide the resource window to allow
+                 *  for Flash widgets to be hidden
+                 *  
+                 */
+                else if(event.getEventType() == EventType.EVENT_TYPE_MODAL_WINDOW_OPEN) {
+                    // we must remove any resource viewer that contains
+                    // flash, otherwise the z-order gets screwed up and
+                    // the dialog will bleed through the flash.
+                    if(__lastInstance._lastResourceViewer instanceof ResourceViewerImplFlash) {
+                        __lastInstance._mainContent.removeResource();
+                    }
+                }
+                  else if(event.getEventType() == EventType.EVENT_TYPE_WINDOW_RESIZED) {
+                    __lastInstance._mainContent.fireWindowResized();
+                }
+                  else if(event.getEventType() == EventType.EVENT_TYPE_CONTEXT_TOOLTIP_SHOW) {
+                      ContextTooltipPanel.getInstance().setContextTooltip((String)event.getEventData());
+                  }
             }
         });
+    }
+}
+
+/** Display a dropdown tooltip below the main context buttons
+ * 
+ * @author casey
+ *
+ */
+class ContextTooltipPanel extends LayoutContainer {
+
+    static private ContextTooltipPanel __instance;
+    static public ContextTooltipPanel getInstance() {
+        if(__instance == null)
+            __instance = new ContextTooltipPanel();
+        return __instance;
+    }
+    
+    static final int TIP_SHOW_MILLS=4000;
+    Timer tipTimer;
+    private ContextTooltipPanel() {
+        addStyleName("context-tooltip-panel");
+        setStyleAttribute("position", "absolute");
+        setStyleAttribute("top", "50px");
+        setStyleAttribute("left", "0");
+        setStyleAttribute("width", "100%");
+    }
+    
+    /** Display tooltip in drop down area
+     * 
+     * If tip is already being displayed and is different
+     * then we want to cancel curent display and show new one.
+     * 
+     * @param tooltip
+     */
+    public void setContextTooltip(String tooltip) {
+        
+        if(tipTimer != null) {
+            tipTimer.cancel();
+            tipTimer = null;
+        }
+        
+        String html="<p style='padding: 10px;background: yellow;'>" + tooltip + "</p>";
+        
+        removeAll();
+        setStyleAttribute("top", "50px");
+        setStyleAttribute("left", "0");
+        add(new Html(html));
+        
+        CmMainPanel.__lastInstance._westPanel.add(this);
+        CmMainPanel.__lastInstance._westPanel.layout();
+        el().slideIn(Direction.DOWN, new FxConfig(500));
+        
+        tipTimer = new Timer() {
+            @Override
+            public void run() {
+                /** remove this widget from parent
+                 * @TODO: remove variable access, use event?
+                 */
+                //CmMainPanel.__lastInstance._westPanel.remove(TooltipContentPanel.this); 
+                //CmMainPanel.__lastInstance.layout();
+                try {
+                    el().fadeOut(FxConfig.NONE);
+                    CmMainPanel.__lastInstance._westPanel.remove(ContextTooltipPanel.this);
+                    CmMainPanel.__lastInstance.layout();
+                }
+                finally {
+                    tipTimer = null;
+                }
+            }
+        };
+        tipTimer.schedule(TIP_SHOW_MILLS);
     }
 }

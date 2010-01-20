@@ -187,19 +187,30 @@ public class ResourceViewerImplTutor extends CmResourcePanelImplWithWhiteboard {
 
             hasShowWork = true;
         }
+        
+        //createWhiteboardSnapshot_Jsni();
     }
     
 
+    static private native void createWhiteboardSnapshot_Jsni() /*-{
+        parent.createWhiteboardSnapshot_Jsni();
+    }-*/;
+    
+    
     /**
      * publish native method to allow for opening of Show Window from external
      * JS using current instance
      * 
      */
     static private native void publishNative() /*-{
-                                               $wnd.showWorkDialog_Gwt =     @hotmath.gwt.cm_tools.client.ui.viewer.ResourceViewerImplTutor::showWorkDialog();
-                                               $wnd.showTutoringDialog_Gwt = @hotmath.gwt.cm_tools.client.ui.viewer.ResourceViewerImplTutor::showTutoringDialog();
-                                               $wnd.flashInputField_Gwt = 
-                                                  @hotmath.gwt.cm_tools.client.ui.viewer.ResourceViewerImplTutor::flashInputField_Gwt(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;);
+                                               $wnd.showWorkDialog_Gwt     
+                                                 = @hotmath.gwt.cm_tools.client.ui.viewer.ResourceViewerImplTutor::showWorkDialog();
+                                               $wnd.showTutoringDialog_Gwt 
+                                                 = @hotmath.gwt.cm_tools.client.ui.viewer.ResourceViewerImplTutor::showTutoringDialog();
+                                               $wnd.flashInputField_Gwt   
+                                                 = @hotmath.gwt.cm_tools.client.ui.viewer.ResourceViewerImplTutor::flashInputField_Gwt(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;);
+                                               $wnd.saveWhiteboardSnapshot_Gwt
+                                                 = @hotmath.gwt.cm_tools.client.ui.viewer.ResourceViewerImplTutor::saveWhiteboardSnapshot_Gwt(Ljava/lang/String;);
                                                }-*/;
 
     /**
@@ -216,6 +227,10 @@ public class ResourceViewerImplTutor extends CmResourcePanelImplWithWhiteboard {
 
     static public void showTutoringDialog() {
         _instance.showTutoring(_instance.getPid());
+    }
+    
+    static public void saveWhiteboardSnapshot_Gwt(String o) {
+        CatchupMathTools.showAlert("Whiteboard snapshot: " + o);
     }
 
     static public void flashInputField_Gwt(String result, String input, String answer, String id) {

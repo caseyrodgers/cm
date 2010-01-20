@@ -250,12 +250,16 @@ public class PrescriptionCmGuiDefinition implements CmGuiDefinition {
 
                     @Override
                     public void onFailure(Throwable caught) {
+                        CmBusyManager.setBusy(false);                        
                         super.onFailure(caught);
-                        CmBusyManager.setBusy(false);
                     }
                 });
     }
 
+    /** Maintain a shared list of registered resources to 
+     *  allow for easy access to individual resource items.
+     * 
+     */
     static Map<String, List<InmhItemData>> _registeredResources = new HashMap<String, List<InmhItemData>>();
 
     /**

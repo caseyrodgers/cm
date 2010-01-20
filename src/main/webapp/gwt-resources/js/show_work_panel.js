@@ -17,8 +17,6 @@ function flashWhiteboardOut(jsonOut) {
 // commands.  Funnel it back to parent
 // JSNI defined method in ShowWorkPanel.class
 function flashWhiteboardIsReady() {
-   // alert('flashWhiteboardIsReady in test');
-   var fo = document.getElementById("whiteboard");
    parent.flashWhiteboardIsReady();   // call back to GWT JSNI
 }
 
@@ -30,15 +28,8 @@ function flashWhiteboardIsReady() {
 // something. Such as 'draw', 'clear', or 'load'
 // commandData, if used, is JSON.
 function updateWhiteboard(id, command, commandData) {
-   
-   //  only works if single object on page
-   // @TODO: get browser depend object
-   var fo = swfobject.getObjectById("whiteboard-object");
-   
-   //alert(fo + ', ' + fo.name + ', ' + fo.updateWhiteboard);
-   if(!fo) {
-       alert('Could not find whiteboard flash object');
-   }
+
+   var fo = getWhiteboardObject();
    if(fo.updateWhiteboard) {
        // send an array of commands.  Each element in array
        // is a command and an array of data.  For example, one
@@ -53,6 +44,18 @@ function updateWhiteboard(id, command, commandData) {
    else {
       alert('could not find updateWhiteboard: ' + id);
    }
+}
+
+
+/** return the whiteboard object DOM element
+ * 
+ */
+function getWhiteboardObject() {
+   var fo = swfobject.getObjectById("whiteboard-object");
+   if(!fo) {
+       alert('Could not find whiteboard flash object');
+   }
+   return fo;
 }
 
 function setWhiteboardIsReadonly() {
@@ -80,7 +83,19 @@ function setWhiteboardBackground(html) {
     //wbg.innerHTML = html;        
 }
 
+
+
+function whiteboardSnapshotData(snapshot) {
+	alert('Whiteboard Snapshot created: ');
+}
+
+function createWhiteboardSnapshot_Jsni() {
+	var fo = swfobject.getObjectById("whiteboard-object");
+	fo.flashWhiteboardSnapshot();
+}
+
 // setup hooks for GWT to call from the app window.
 parent.setWhiteboardBackground = setWhiteboardBackground;
 parent.updateWhiteboard = updateWhiteboard;
 parent.setWhiteboardIsReadonly = setWhiteboardIsReadonly;
+parent.createWhiteboardSnapshot_Jsni = createWhiteboardSnapshot_Jsni;

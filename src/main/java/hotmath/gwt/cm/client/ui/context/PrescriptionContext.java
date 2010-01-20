@@ -13,7 +13,6 @@ import hotmath.gwt.cm_tools.client.model.AutoUserAdvanced;
 import hotmath.gwt.cm_tools.client.service.CmServiceAsync;
 import hotmath.gwt.cm_tools.client.ui.AutoTestWindow;
 import hotmath.gwt.cm_tools.client.ui.CmMainPanel;
-import hotmath.gwt.cm_tools.client.ui.ContextChangeListener;
 import hotmath.gwt.cm_tools.client.ui.ContextController;
 import hotmath.gwt.cm_tools.client.ui.context.CmContext;
 import hotmath.gwt.shared.client.CmShared;
@@ -86,35 +85,24 @@ public class PrescriptionContext implements CmContext {
     IconButton _nextButton;
 
     public List<Component> getTools() {
-        ContextController.getInstance().addContextChangeListener(new ContextChangeListener() {
-            public void contextChanged(CmContext context) {
-                setHeaderButtons(_previousButton, _nextButton);
-            }
-        });
+
         List<Component> list = new ArrayList<Component>();
-        _previousButton = new IconButton("cm-main-panel-prev-icon");
-        _previousButton.setToolTip("Move to the previous step");
+        _previousButton = new IconButtonWithDropDownTooltip("cm-main-panel-prev-icon");
         _previousButton.addListener(Events.Select, new Listener<BaseEvent>() {
             public void handleEvent(BaseEvent be) {
-                // _previousButton.setEnabled(false);
-                // _nextButton.setEnabled(false);
                 ContextController.getInstance().doPrevious();
             }
         });
 
         list.add(_previousButton);
-        _nextButton = new IconButton("cm-main-panel-next-icon");
-        _nextButton.setToolTip("Move to the next step");
+        _nextButton = new IconButtonWithDropDownTooltip("cm-main-panel-next-icon");
         _nextButton.addListener(Events.Select, new Listener<BaseEvent>() {
             public void handleEvent(BaseEvent be) {
                 ContextController.getInstance().doNext();
-                // _nextButton.setEnabled(false);
-                // _previousButton.setEnabled(false);
             }
         });
         list.add(_nextButton);
         return list;
-
     }
 
     public void gotoNextTopic() {
@@ -391,38 +379,7 @@ public class PrescriptionContext implements CmContext {
         gotoPreviousTopic();
     }
 
-    /**
-     * Called with prev/next buttons that should have their tooltips set to the
-     * next/prev options.
-     * 
-     * Move to next topic (<n> more to go)”; or, if zero topics left: “Move to
-     * next quiz”
-     * 
-     */
-    public void setHeaderButtons(IconButton prevBtn, IconButton nextBtn) {
 
-        assert prescriptionData != null;
-
-        prevBtn.setEnabled(true);
-        nextBtn.setEnabled(true);
-        int pn = prescriptionData.getCurrSession().getSessionNumber();
-        if (pn > 0)
-            prevBtn.setToolTip("Move to the previous topic ("
-                    + prescriptionData.getSessionTopics().get(prescriptionData.getCurrSession().getSessionNumber() - 1)
-                    + ")");
-        else {
-            prevBtn.setToolTip("No previous topics");
-        }
-
-        if (pn > prescriptionData.getSessionTopics().size() - 2)
-            nextBtn.setToolTip("Move to next quiz");
-
-        else {
-            int sn = prescriptionData.getCurrSession().getSessionNumber();
-            int ts = prescriptionData.getSessionTopics().size();
-            nextBtn.setToolTip("Move to the next topic (" + (ts - sn - 1) + " more to go)");
-        }
-    }
 
     public String getStatusMessage() {
         String html1 = "<ul>"
@@ -514,4 +471,62 @@ public class PrescriptionContext implements CmContext {
             }
         });
     }
+    
+    /**
+     * Called with prev/next buttons that should have their tooltips set to the
+     * next/prev options.
+     * 
+     * Move to next topic (<n> more to go)”; or, if zero topics left: “Move to
+     * next quiz”
+     * 
+     */
+    public String getTooltipText(Direction direction, PrescriptionData prescriptionData) {
+
+        assert prescriptionData != null;
+        
+        int pn = prescriptionData.getCurrSession().getSessionNumber();
+        if(direction == Direction.PREVIOUS) {
+            if (pn > 0) {
+                return "Move to the previous topic (" + prescriptionData.getSessionTopics().get(prescriptionData.getCurrSession().getSessionNumber() - 1) + ")";
+            }
+            else {
+               return "No previous topics";
+            }
+        }
+        else {
+            if (pn > prescriptionData.getSessionTopics().size() - 2)
+                return "Move to next quiz";
+    
+            else {
+                int sn = prescriptionData.getCurrSession().getSessionNumber();
+                int ts = prescriptionData.getSessionTopics().size();
+                return "Move to the next topic (" + (ts - sn - 1) + " more to go)";
+            }
+        }
+    }    
+    enum Direction{PREVIOUS,NEXT};
+    
+    /** IconButton that has drop down tooltip that allows fully contained
+     * tooltips that do not have z-order issues with flash components.
+     * 
+     * @author casey
+     *
+     */
+    class IconButtonWithDropDownTooltip extends IconButton {
+        public IconButtonWithDropDownTooltip(String style) {
+            super(style);
+            
+            addListener(Events.OnMouseOver, new Listener<BaseEvent>() {
+                @Override
+                public void handleEvent(BaseEvent be) {
+                    System.out.println("Mouse over event");
+                    Direction dir = (IconButtonWithDropDownTooltip.this == _previousButton)?Direction.PREVIOUS:Direction.NEXT;
+                    String tip = getTooltipText(dir,prescriptionData);
+                    EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_CONTEXT_TOOLTIP_SHOW,tip));
+                }
+            });
+        }
+    }    
 }
+
+

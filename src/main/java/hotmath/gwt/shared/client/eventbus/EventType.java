@@ -61,8 +61,6 @@ public enum EventType{
      */
     EVENT_TYPE_USER_PROGRAM_CHANGED,
     
-    
-    
     /** Whenever a whiteboard is edited.
      * 
      */
@@ -90,6 +88,10 @@ public enum EventType{
     /** Whenever a user is set or changed
      * 
      */
-    EVENT_TYPE_USERCHANGED
-
+    EVENT_TYPE_USERCHANGED,
+    
+    /** Fired when a new context tooltip needs to be shown
+     * 
+     */
+    EVENT_TYPE_CONTEXT_TOOLTIP_SHOW
 }
