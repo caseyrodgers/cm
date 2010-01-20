@@ -98,15 +98,16 @@ public class CreateTestRunCommand implements ActionHandler<CreateTestRunAction, 
             testRunInfo.setTotal(pres.getTest().getTestQuestionCount());
             testRunInfo.setPassed(run.isPassing());
 
-            if (!nextAction.getNextAction().equals(NextActionName.PRESCRIPTION)) {
-                // need to inform caller it needs to show the quiz ...
-                // Caught in QuizContent
-
+            testRunInfo.setAction(nextAction.getNextAction());
+            if (nextAction.getNextAction() != NextActionName.PRESCRIPTION) {
+                /** 
+                 * need to inform caller it needs to show the quiz ...
+                 * Caught in QuizContent
+                 */
+                testRunInfo.setTestId(nextAction.getAssignedTestId());
                 if (nextAction.getNextAction().equals(NextActionName.AUTO_ASSSIGNED)) {
-                    testRunInfo.setAction("AUTO_ASSIGNED");
                     testRunInfo.setAssignedTest(nextAction.getAssignedTest());
                 } else {
-                    testRunInfo.setAction("QUIZ");
                     testRunInfo.setTestSegment(test.getUser().getActiveTestSegment());
                 }
                 
@@ -135,8 +136,6 @@ public class CreateTestRunCommand implements ActionHandler<CreateTestRunAction, 
     
     @Override
     public Class<? extends Action<? extends Response>> getActionType() {
-        // TODO Auto-generated method stub
         return CreateTestRunAction.class;
     }
-
 }

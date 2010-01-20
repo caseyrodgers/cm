@@ -99,6 +99,7 @@ public class AssessmentPrescriptionPlacement extends AssessmentPrescription {
             }
             
             nextAction.setAssignedTest(newTestName);
+            nextAction.setAssignedTestId(active.getActiveTestId());
         }
         else {
             nextAction.setNextAction(NextActionName.QUIZ);

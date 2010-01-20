@@ -1,5 +1,6 @@
 package hotmath.gwt.shared.client.rpc.result;
 
+import hotmath.gwt.cm_tools.client.ui.NextAction.NextActionName;
 import hotmath.gwt.shared.client.rpc.Response;
 
 
@@ -10,13 +11,14 @@ import hotmath.gwt.shared.client.rpc.Response;
  */
 public class CreateTestRunResponse implements Response {
     
-    String action;
+    NextActionName action;
     Integer runId;
     Integer correct;
     Integer total;
     Boolean passed;
 
     String assignedTest;
+    Integer testId;
     Integer testSegment;
     Integer testCorrectPercent;
     
@@ -24,6 +26,16 @@ public class CreateTestRunResponse implements Response {
     String sessionName;
 
 
+    public CreateTestRunResponse() {}
+    
+    public CreateTestRunResponse(NextActionName action, Integer runId, Integer correct, Integer total, Boolean passed) {
+        this.action = action;
+        this.runId = runId;
+        this.correct = correct;
+        this.total = total;
+        this.passed = passed;
+    }
+    
     public Integer getSessionCount() {
         return sessionCount;
     }
@@ -39,17 +51,6 @@ public class CreateTestRunResponse implements Response {
     public void setSessionName(String sessionName) {
         this.sessionName = sessionName;
     }
-
-    public CreateTestRunResponse() {}
-    
-    public CreateTestRunResponse(String action, Integer runId, Integer correct, Integer total, Boolean passed) {
-        this.action = action;
-        this.runId = runId;
-        this.correct = correct;
-        this.total = total;
-        this.passed = passed;
-    }
-    
     
     public Integer getTestCorrectPercent() {
         return testCorrectPercent;
@@ -68,10 +69,10 @@ public class CreateTestRunResponse implements Response {
     }
 
 
-    public String getAction() {
+    public NextActionName getAction() {
         return action;
     }
-    public void setAction(String action) {
+    public void setAction(NextActionName action) {
         this.action = action;
     }
     public Integer getRunId() {
@@ -112,11 +113,19 @@ public class CreateTestRunResponse implements Response {
     }
 
 
+    public Integer getTestId() {
+        return testId;
+    }
+
+    public void setTestId(Integer testId) {
+        this.testId = testId;
+    }
+
     @Override
     public String toString() {
-        return "TestRunUserStatus [action=" + action + ", assignedTest=" + assignedTest + ", correct=" + correct
+        return "CreateTestRunResponse [action=" + action + ", assignedTest=" + assignedTest + ", correct=" + correct
                 + ", passed=" + passed + ", runId=" + runId + ", sessionCount=" + sessionCount + ", sessionName="
-                + sessionName + ", testCorrectPercent=" + testCorrectPercent + ", testSegment=" + testSegment
-                + ", total=" + total + "]";
+                + sessionName + ", testCorrectPercent=" + testCorrectPercent + ", testId=" + testId + ", testSegment="
+                + testSegment + ", total=" + total + "]";
     }
 }

@@ -519,7 +519,6 @@ public class PrescriptionContext implements CmContext {
             addListener(Events.OnMouseOver, new Listener<BaseEvent>() {
                 @Override
                 public void handleEvent(BaseEvent be) {
-                    System.out.println("Mouse over event");
                     Direction dir = (IconButtonWithDropDownTooltip.this == _previousButton)?Direction.PREVIOUS:Direction.NEXT;
                     String tip = getTooltipText(dir,prescriptionData);
                     EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_CONTEXT_TOOLTIP_SHOW,tip));

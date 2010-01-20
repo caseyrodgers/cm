@@ -171,7 +171,8 @@ public class QuizPage extends LayoutContainer {
 	    CatchupMathTools.setBusy(true);
 		
 	    GetQuizHtmlAction quizAction = new GetQuizHtmlAction(UserInfo.getInstance().getUid(), UserInfo.getInstance().getTestSegment());
-	    quizAction.setTestId(UserInfo.getInstance().getTestId());
+	    UserInfo.getInstance().setTestId(0);
+	    
 	    Log.info("QuizPage.getQuizHtmlFromServer: " + quizAction);
 		CmServiceAsync s = (CmServiceAsync) Registry.get("cmService");
 		

@@ -10,6 +10,7 @@ import hotmath.gwt.cm_tools.client.service.CmServiceAsync;
 import hotmath.gwt.cm_tools.client.ui.NextPanelInfo;
 import hotmath.gwt.cm_tools.client.ui.NextPanelInfoImplDefault;
 import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
+import hotmath.gwt.cm_tools.client.ui.NextAction.NextActionName;
 import hotmath.gwt.cm_tools.client.ui.context.CmContext;
 import hotmath.gwt.shared.client.data.CmAsyncRequestImplDefault;
 import hotmath.gwt.shared.client.rpc.action.CreateTestRunAction;
@@ -246,14 +247,14 @@ public class QuizContext implements CmContext {
                 new CmAsyncCallback<CreateTestRunResponse>() {
                     public void onSuccess(CreateTestRunResponse testRunInfo) {
                         try {
-                            String na = testRunInfo.getAction();
-                            if (na != null) {
-                                if (na.equals("AUTO_ASSIGNED")) {
+                            if (testRunInfo.getAction() != null) {
+                                if (testRunInfo.getAction() == NextActionName.AUTO_ASSSIGNED) {
                                     UserInfo.getInstance().setTestSegment(0); // reset
+                                    UserInfo.getInstance().setTestId(testRunInfo.getTestId()); // reset
                                     String testName = testRunInfo.getAssignedTest();
                                     UserInfo.getInstance().setTestName(testName);
                                     showAutoAssignedProgram(testName);
-                                } else if (na.equals("QUIZ")) {
+                                } else if (testRunInfo.getAction() == NextActionName.QUIZ) {
                                     int testSegment = UserInfo.getInstance().getTestSegment();
                                     int totalSegments = UserInfo.getInstance().getTestSegmentCount();
                                     if ((testSegment + 1) > totalSegments) {
@@ -262,17 +263,18 @@ public class QuizContext implements CmContext {
                                         UserInfo.getInstance().setTestSegment(testSegment + 1);
                                         showNextPlacmentQuiz();
                                     }
+                                } else if(testRunInfo.getAction() == NextActionName.PRESCRIPTION) {
+                                    int runId = testRunInfo.getRunId();
+                                    UserInfo.getInstance().setRunId(runId);
+                                    UserInfo.getInstance().setSessionNumber(0); // start
+
+                                    showPrescriptionPanel(testRunInfo);
                                 }
-
-                                return;
                             }
-                            int runId = testRunInfo.getRunId();
-                            UserInfo.getInstance().setRunId(runId);
-                            UserInfo.getInstance().setSessionNumber(0); // start
-                                                                        // over
-
-                            showPrescriptionPanel(testRunInfo);
-                        } finally {
+                        }catch(Exception e) {
+                            e.printStackTrace();
+                        }
+                        finally {
                             CmBusyManager.setBusy(false);
                         }
                     }
