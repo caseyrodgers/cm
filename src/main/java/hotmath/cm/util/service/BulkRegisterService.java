@@ -113,8 +113,6 @@ public class BulkRegisterService extends HttpServlet {
             	returnJson = "{status: 'Error', msg:'Must be a multi-part form' }";
             }
 
-            System.out.println("+++ JSON: " + returnJson);
-
             resp.getWriter().write(returnJson);
         }
         catch(Exception e) {
