@@ -83,9 +83,6 @@ public class BulkRegLoader {
             }
         }
         
-        System.out.println("+++ br loader: dup names: " + dupNames);
-        System.out.println("+++ br loader: dup pswds: " + dupPasswords);
-        
         this.key = "upload_" + System.currentTimeMillis();
     }
 
