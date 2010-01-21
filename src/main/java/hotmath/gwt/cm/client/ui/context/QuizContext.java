@@ -250,7 +250,6 @@ public class QuizContext implements CmContext {
                             if (testRunInfo.getAction() != null) {
                                 if (testRunInfo.getAction() == NextActionName.AUTO_ASSSIGNED) {
                                     UserInfo.getInstance().setTestSegment(0); // reset
-                                    UserInfo.getInstance().setTestId(testRunInfo.getTestId()); // reset
                                     String testName = testRunInfo.getAssignedTest();
                                     UserInfo.getInstance().setTestName(testName);
                                     showAutoAssignedProgram(testName);

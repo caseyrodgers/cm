@@ -10,7 +10,7 @@ public class ResourceViewerImplQuiz extends CmResourcePanelImplDefault {
 
     public Widget getResourcePanel() {
         
-        return new QuizPage(new CmAsyncRequest() {
+        return new QuizPage(true,new CmAsyncRequest() {
             public void requestComplete(String requestData) {
             }
 

@@ -64,16 +64,11 @@ public class GetQuizHtmlCommand implements ActionHandler<GetQuizHtmlAction, Quiz
         
         int testSegment = action.getTestSegment();
         int uid = action.getUid();
-        int testId = action.getTestId();
 
         try {
             String quizHtmlTemplate = readQuizHtmlTemplate();
             Map<String, Object> map = new HashMap<String, Object>();
 
-            // StudentModel sm = dao.getStudentModel(uid);
-            //HaUser user = HaUser.lookUser(conn, uid,null);
-            
-            
             CmUserProgramDao upDao = new CmUserProgramDao();
             StudentUserProgramModel programInfo = upDao.loadProgramInfoCurrent(conn, uid);
 
@@ -85,19 +80,17 @@ public class GetQuizHtmlCommand implements ActionHandler<GetQuizHtmlAction, Quiz
             CmStudentDao dao = new CmStudentDao();
             StudentActiveInfo activeInfo = dao.loadActiveInfo(conn, uid);
 
-            int testSegmentSlot = activeInfo.getActiveSegmentSlot();
-            
-            boolean isActiveTest = activeInfo.getActiveTestId() > 0;
-
-            
             HaTest haTest=null;
-            if(action.getTestId() > 0) {
-                haTest = HaTestDao.loadTest(conn, action.getTestId());
+            if(false) {
+                /** load an existing test
+                 * 
+                 */
+                haTest = HaTestDao.loadTest(conn, activeInfo.getActiveTestId());
                 uid = haTest.getUser().getUserKey();
                 testSegment = haTest.getSegment();
             }
             else {
-                /** register a new test
+                /** create and register a new test
                  */
                 HaTestDef testDef = HaTestDefFactory.createTestDef(conn,testName);
                 haTest = HaTestDao.createTest(conn, uid, testDef, testSegment);
@@ -132,6 +125,7 @@ public class GetQuizHtmlCommand implements ActionHandler<GetQuizHtmlAction, Quiz
             result.setQuizSegmentCount(haTest.getTotalSegments());
             result.setTitle(testTitle);
             result.setSubTitle(subTitle);
+            result.setTestId(haTest.getTestId());
             
             return result;
         } catch (Exception e) {

@@ -10,7 +10,7 @@ import hotmath.gwt.cm_tools.client.ui.resource_viewer.CmResourcePanelImplDefault
 import hotmath.gwt.cm_tools.client.ui.viewer.CmResourcePanelImplWithWhiteboard;
 import hotmath.gwt.cm_tools.client.ui.viewer.ShowWorkPanel;
 import hotmath.gwt.shared.client.CmShared;
-import hotmath.gwt.shared.client.data.CmAsyncRequest;
+import hotmath.gwt.shared.client.data.CmAsyncRequestImplDefault;
 import hotmath.gwt.shared.client.util.UserInfo;
 
 import java.util.ArrayList;
@@ -65,7 +65,8 @@ public class QuizCmGuiDefinition implements CmGuiDefinition {
 	
 	QuizPage qp;
 	public Widget getCenterWidget() {
-		    qp = new QuizPage(new CmAsyncRequest() {
+		    qp = new QuizPage(false, new CmAsyncRequestImplDefault() {
+		        
 			public void requestComplete(String quizTitle) {
 			    
                 CmResourcePanelImplDefault resourcePanel = new CmResourcePanelImplWithWhiteboard() {
@@ -126,8 +127,6 @@ public class QuizCmGuiDefinition implements CmGuiDefinition {
 				if(UserInfo.getInstance().isAutoTestMode()) {
 				    qc.doCheckTest();
 				}
-			}
-			public void requestFailed(int code, String text) {
 			}
 		});
 		

@@ -3,11 +3,18 @@ package hotmath.gwt.shared.client.rpc.action;
 import hotmath.gwt.shared.client.rpc.Action;
 import hotmath.gwt.shared.client.rpc.result.QuizHtmlResult;
 
+/** Defines the movement of the active test by specifing
+ * the segment of the current program.
+ * 
+ * Maybe a better name is GetUserProgramSegmentAction(uid, testSegment);
+ * @author casey
+ *
+ */
 public class GetQuizHtmlAction implements Action<QuizHtmlResult> {
 
     int uid;
     int testSegment;
-    int testId;
+    boolean loadActive;
 
     public GetQuizHtmlAction() {}
     
@@ -22,12 +29,13 @@ public class GetQuizHtmlAction implements Action<QuizHtmlResult> {
         this.testSegment = testSegment;
     }
     
-    public int getTestId() {
-        return testId;
+
+    public boolean isLoadActive() {
+        return loadActive;
     }
 
-    public void setTestId(int testId) {
-        this.testId = testId;
+    public void setLoadActive(boolean loadActive) {
+        this.loadActive = loadActive;
     }
 
     public int getUid() {
@@ -49,6 +57,6 @@ public class GetQuizHtmlAction implements Action<QuizHtmlResult> {
     
     @Override
     public String toString() {
-        return "GetQuizHtmlAction [testId=" + testId + ", testSegment=" + testSegment + ", uid=" + uid + "]";
+        return "GetQuizHtmlAction [testSegment=" + testSegment + ", uid=" + uid + "]";
     }
 }

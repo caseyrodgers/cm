@@ -35,13 +35,13 @@ public class QuizPage extends LayoutContainer {
 	
 	
 	CmAsyncRequest callbackWhenComplete;
-	public QuizPage(CmAsyncRequest callbackWhenComplete) {
+	public QuizPage(boolean loadActive, CmAsyncRequest callbackWhenComplete) {
 	    
 	    setScrollMode(Scroll.AUTOY);
 	    
 		this.callbackWhenComplete = callbackWhenComplete;
 		setStyleName("quiz-panel");
-		getQuizHtmlFromServer();
+		getQuizHtmlFromServer(loadActive);
 	}
 	
 	
@@ -72,7 +72,8 @@ public class QuizPage extends LayoutContainer {
      * @param which
      */
     private native void setSolutionQuestionAnswerIndex(String pid, String which) /*-{
-         $wnd.setSolutionQuestionAnswerIndex(pid,which);
+    alert('sending: ' + pid + ', ' + which);
+         //$wnd.setSolutionQuestionAnswerIndex(pid,which);
     }-*/;
 
     
@@ -166,12 +167,12 @@ public class QuizPage extends LayoutContainer {
 	 * 
 	 * @TODO: find a better way to accommodate a single request combining JSON/XML 
 	 */
-	private void getQuizHtmlFromServer() {
+	private void getQuizHtmlFromServer(boolean loadActive) {
 		
 	    CatchupMathTools.setBusy(true);
 		
 	    GetQuizHtmlAction quizAction = new GetQuizHtmlAction(UserInfo.getInstance().getUid(), UserInfo.getInstance().getTestSegment());
-	    UserInfo.getInstance().setTestId(0);
+	    quizAction.setLoadActive(loadActive);
 	    
 	    Log.info("QuizPage.getQuizHtmlFromServer: " + quizAction);
 		CmServiceAsync s = (CmServiceAsync) Registry.get("cmService");
@@ -180,12 +181,9 @@ public class QuizPage extends LayoutContainer {
 		    @Override
 		    public void onSuccess(QuizHtmlResult rdata) {
                 UserInfo.getInstance().setTestSegment(rdata.getQuizSegment());
-                
-                _title = rdata.getTitle();
-
                 UserInfo.getInstance().setTestId(rdata.getTestId());
+                _title = rdata.getTitle();
                 UserInfo.getInstance().setTestSegmentCount(rdata.getQuizSegmentCount());
-                
                 if(rdata.getUserId() != UserInfo.getInstance().getUid()) {
                     UserInfo.getInstance().setActiveUser(false);
                     UserInfo.getInstance().setUserName("Guest user on account: " + rdata.getUserId());
