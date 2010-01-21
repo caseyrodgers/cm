@@ -20,7 +20,8 @@ import java.util.Set;
 public class BulkRegLoader {
 
     private int errorCount;
-    private boolean dupNamePasswd;
+    private List<String> dupNames;
+    private List<String> dupPasswords;
     String key;
 
     private List<AutoRegistrationEntry> entries = new ArrayList<AutoRegistrationEntry>(); 
@@ -39,6 +40,9 @@ public class BulkRegLoader {
         String line;
         Set<String> nameSet = new HashSet<String>();
         Set<String> passwdSet = new HashSet<String>();
+        dupNames = new ArrayList<String> ();
+        dupPasswords = new ArrayList<String> ();
+        
         while ((line = isr.readLine()) != null) {
 
             line = line.trim();
@@ -61,8 +65,13 @@ public class BulkRegLoader {
             else {
                 if ((pair.length > 0 && nameSet.contains(pair[0])) ||
                     (pair.length > 1 && passwdSet.contains(pair[1]))) {
-                    dupNamePasswd = true;
                     errorCount++;
+                    if (nameSet.contains(pair[0])) {
+                    	dupNames.add(pair[0]);
+                    }
+                    if (pair.length > 1 && passwdSet.contains(pair[1])) {
+                    	dupPasswords.add(pair[1]);
+                    }
                 }
                 else {
                     /** if error is simply not enough tokens, eat it.
@@ -73,6 +82,9 @@ public class BulkRegLoader {
                 }
             }
         }
+        
+        System.out.println("+++ br loader: dup names: " + dupNames);
+        System.out.println("+++ br loader: dup pswds: " + dupPasswords);
         
         this.key = "upload_" + System.currentTimeMillis();
     }
@@ -98,7 +110,8 @@ public class BulkRegLoader {
 
     @Override
     public String toString() {
-        return "BulkRegLoader [dupNamePasswd=" + dupNamePasswd + ", entries=" + entries + ", errorCount=" + errorCount
+        return "BulkRegLoader [duplicateNames=" + dupNames + ", duplicatePasswords="
+                + dupPasswords + ", entries=" + entries + ", errorCount=" + errorCount
                 + ", key=" + key + "]";
     }
 
@@ -114,8 +127,12 @@ public class BulkRegLoader {
         return (errorCount != 0);
     }
 
-    public boolean hasDupNamePasswd() {
-    	return dupNamePasswd;
+    public boolean hasDuplicateNames() {
+    	return (dupNames.size() > 0);
+    }
+    
+    public boolean hasDuplicatePasswords() {
+    	return (dupPasswords.size() > 0);
     }
 
     public List<AutoRegistrationEntry> getEntries() {
@@ -124,5 +141,13 @@ public class BulkRegLoader {
 
     public void setEntries(List<AutoRegistrationEntry> entries) {
         this.entries = entries;
+    }
+    
+    public List<String> getDuplicateNames() {
+    	return dupNames;
+    }
+    
+    public List<String> getDuplicatePasswords() {
+    	return dupPasswords;
     }
 }
