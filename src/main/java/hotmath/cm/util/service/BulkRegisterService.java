@@ -73,7 +73,7 @@ public class BulkRegisterService extends HttpServlet {
             		}
                     
                     boolean hasErrors = brLoader.hasErrors();
-                    boolean hasDuplicates = brLoader.hasDupNamePasswd();
+                    boolean hasDuplicates = brLoader.hasDuplicateNames() || brLoader.hasDuplicatePasswords();
 
                     returnJson = 
                         "{" +
@@ -85,7 +85,14 @@ public class BulkRegisterService extends HttpServlet {
                         returnJson += "Uploaded file contains errors, please review and correct.";
                     }
                     else if (hasDuplicates) {
-                        returnJson += "Uploaded file contains duplicate names and/or passwords, please review and correct.";
+                        returnJson += "Uploaded file contains duplicates, please review and correct;";
+                        if (brLoader.hasDuplicateNames()) {
+                         	returnJson += " duplicate names: " + brLoader.getDuplicateNames();
+                        }
+                        if (brLoader.hasDuplicatePasswords()) {
+                        	if (brLoader.hasDuplicateNames()) returnJson += ", ";
+                        	returnJson += " duplicate passwords: " + brLoader.getDuplicatePasswords();
+                        }
                     }
                     else {
                         returnJson += "File uploaded successfully.";
@@ -105,6 +112,9 @@ public class BulkRegisterService extends HttpServlet {
             else {
             	returnJson = "{status: 'Error', msg:'Must be a multi-part form' }";
             }
+
+            System.out.println("+++ JSON: " + returnJson);
+
             resp.getWriter().write(returnJson);
         }
         catch(Exception e) {
