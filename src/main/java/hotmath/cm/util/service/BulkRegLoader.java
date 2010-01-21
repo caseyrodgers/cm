@@ -67,10 +67,12 @@ public class BulkRegLoader {
                     (pair.length > 1 && passwdSet.contains(pair[1]))) {
                     errorCount++;
                     if (nameSet.contains(pair[0])) {
-                    	dupNames.add(pair[0]);
+                    	if (! dupNames.contains(pair[0]))
+                        	dupNames.add(pair[0]);
                     }
                     if (pair.length > 1 && passwdSet.contains(pair[1])) {
-                    	dupPasswords.add(pair[1]);
+                    	if (! dupPasswords.contains(pair[1]))
+                        	dupPasswords.add(pair[1]);
                     }
                 }
                 else {
