@@ -344,20 +344,6 @@ public class CatchupMath implements EntryPoint {
 		});
     }
     
-    
-    public void showGamesOnly_gwt() {
-        GWT.runAsync(new CmRunAsyncCallback() {
-            @Override
-            public void onSuccess() {
-                _mainContainer.removeAll();
-                _mainContainer.setLayout(new FitLayout());
-                _mainContainer.add(new FlashCardsOnlyGui());
-                _mainContainer.layout();
-            }
-        });
-    }
-
-    
 
     /** Provides helper method to load a resource into the current 
      *  PrespccriptionContext
