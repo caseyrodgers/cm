@@ -12,6 +12,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import sb.util.SbUtilities;
+
 /**
  * Exposed as servlet that is called from Login Handler js in (core.js) of CM module
  * 
@@ -39,6 +41,7 @@ public class LoginService extends HttpServlet {
             else {
                 cmUser = HaUserFactory.loginToCatchup(user, pwd);
             }
+            
             HaLoginInfo loginInfo = new HaLoginInfo(cmUser);
             StringBuilder sb = new StringBuilder();
             sb.append("{status:'").append((cmUser.isExpired())?"Expired":"OK");
