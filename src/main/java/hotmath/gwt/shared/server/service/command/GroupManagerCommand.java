@@ -54,6 +54,8 @@ public class GroupManagerCommand implements ActionHandler<GroupManagerAction, Rp
      *  Does not delete the actual students, just the group name.
      *  Sets to null the group for existing group members.
      *  
+     *  If group is a self-reg-group, then it also remove the group template
+     *  
      * @param conn
      * @param groupId
      * @throws Exception
