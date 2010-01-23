@@ -12,8 +12,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import sb.util.SbUtilities;
-
 /**
  * Exposed as servlet that is called from Login Handler js in (core.js) of CM module
  * 
@@ -30,6 +28,16 @@ public class LoginService extends HttpServlet {
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String user = req.getParameter("user");
         String pwd = req.getParameter("pwd");
+        String action = req.getParameter("action");
+
+        
+        if(action == null)
+            action = "";
+        
+        if(action.equals("sample")) {
+            user = "catchup_demo";
+            action = "login";
+        }
         
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         
@@ -43,23 +51,59 @@ public class LoginService extends HttpServlet {
             }
             
             HaLoginInfo loginInfo = new HaLoginInfo(cmUser);
-            StringBuilder sb = new StringBuilder();
-            sb.append("{status:'").append((cmUser.isExpired())?"Expired":"OK");
-            sb.append("', key:'").append(loginInfo.getKey());
-            sb.append("', type:'").append(loginInfo.getType());
-            sb.append("', accountType: '").append(cmUser.getAccountType());
-            sb.append("', userId:").append(loginInfo.getUserId());
-            String dateStr = (cmUser.getExpireDate() != null) ? dateFormat.format((cmUser.getExpireDate())) : "n/a";
-            sb.append(", expireDate: '").append(dateStr);
-            sb.append("', loginMsg: '").append((cmUser.getLoginMessage() != null)?cmUser.getLoginMessage():"NONE");
-            sb.append("' }");
-            resp.getWriter().write(sb.toString());
+            
+            /** either redirect this user to CM using current information
+             * or return JSON describing login info.
+             */
+            if(action.equals("login")) {
+                /** redirect and connect to the CM student  
+                 * 
+                 */
+                String urlWithSessionID = "http://" + getCmServer(req) + "/cm_student/CatchupMath.html?key=" + loginInfo.getKey();
+                resp.sendRedirect(urlWithSessionID);
+            }
+            else {
+                /** create JSON that can be used to connect to this account
+                 * 
+                 */
+                StringBuilder sb = new StringBuilder();
+                sb.append("{status:'").append((cmUser.isExpired())?"Expired":"OK");
+                sb.append("', key:'").append(loginInfo.getKey());
+                sb.append("', type:'").append(loginInfo.getType());
+                sb.append("', accountType: '").append(cmUser.getAccountType());
+                sb.append("', userId:").append(loginInfo.getUserId());
+                String dateStr = (cmUser.getExpireDate() != null) ? dateFormat.format((cmUser.getExpireDate())) : "n/a";
+                sb.append(", expireDate: '").append(dateStr);
+                sb.append("', loginMsg: '").append((cmUser.getLoginMessage() != null)?cmUser.getLoginMessage():"NONE");
+                sb.append("' }");
+                resp.getWriter().write(sb.toString());
+            }
         }
         catch(Exception e) {
             resp.getWriter().write(e.getMessage());
             e.printStackTrace();
         }
     }
+	
+	/** return the server name to use for the CM Student
+	 * app.  This is complicated due to different deployment
+	 * configurations.
+	 * 
+	 * @param req
+	 * @return
+	 */
+	private String getCmServer(HttpServletRequest req) {
+	    String sn = req.getServerName();
+	    int port = req.getServerPort();
+	    
+	    if(sn.indexOf("kattare") > -1)
+	        port = 80;
+	    else if(sn.indexOf("catchup") > -1) {
+	        sn = "hotmath.com";
+	    }
+	    
+	    return sn + (port != 80?":" + port:"");
+	}
 
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         doPost(req, resp);
