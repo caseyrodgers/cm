@@ -260,7 +260,7 @@ public class ResourceViewerImplTutor extends CmResourcePanelImplWithWhiteboard {
         }
 
         String contentUrl = "pid=" + pid;
-        String url = "/collab/lwl/cm_lwl_launch.jsp?uid=" + UserInfo.getInstance().getUid() + "&contentUrl="
+        String url = "/collab/lwl/cm_lwl_launch.jsp?pid=" + pid + "&uid=" + UserInfo.getInstance().getUid() + "&contentUrl="
                 + contentUrl;
 
         int w = 800;

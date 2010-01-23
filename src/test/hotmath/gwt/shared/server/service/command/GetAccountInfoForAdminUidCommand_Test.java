@@ -22,4 +22,10 @@ public class GetAccountInfoForAdminUidCommand_Test extends CmDbTestCase {
         AccountInfoModel aim = new GetAccountInfoForAdminUidCommand().execute(conn, a);
         assertTrue(aim.getAdminUserName() != null);
     }
+    
+    public void testGetLwlMinutes() throws Exception {
+        GetAccountInfoForAdminUidAction a = new GetAccountInfoForAdminUidAction(126);
+        AccountInfoModel aim = new GetAccountInfoForAdminUidCommand().execute(conn, a);
+        assertTrue(aim.getTutoringMinutes() > 0);
+    }
 }

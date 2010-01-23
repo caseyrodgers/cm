@@ -12,10 +12,11 @@ public class AccountInfoModel extends BaseModelData  implements Response {
 	public static final String SCHOOL_USER_NAME_KEY = "school-user-name";
 	public static final String EXPIRATION_DATE_KEY = "expiration-date";
 	public static final String HAS_TUTORING_KEY = "has-tutoring";
+	public static final String TUTORING_MINUTES_KEY = "tutoring-minutes";
 	public static final String ADMIN_USER_NAME_KEY = "admin-user-name";
 	public static final String ADMIN_SUBSCRIBER_ID = "subscriber-id";
 	public static final String STUDENT_COUNT_STYLE_KEY = "student-count-style";
-	
+	public static final String TUTORING_MINUTES_LABEL = "tutoring-minutes-label";
 	public String getSchoolName() {
 		return get(SCHOOL_NAME_KEY);
 	}
@@ -86,6 +87,26 @@ public class AccountInfoModel extends BaseModelData  implements Response {
 
 	public void setHasTutoring(String hasTutoring) {
 		set (HAS_TUTORING_KEY, hasTutoring);
+	}
+	
+	public void setTutoringMinutes(int min) {
+	    set(TUTORING_MINUTES_KEY, min);
+	}
+	
+	public int getTutoringMinutes() {
+	    return get(TUTORING_MINUTES_KEY);
+	}
+	
+	/** helper method to tell if tutoring enabled
+	 * 
+	 * @return
+	 */
+	public boolean getIsTutoringEnabled() {
+	    String go = getHasTutoring();
+	    if(go != null && go.equalsIgnoreCase("enabled"))
+	        return true;
+	    else
+	        return false;
 	}
 	
 	public void setSubscriberId(String id) {

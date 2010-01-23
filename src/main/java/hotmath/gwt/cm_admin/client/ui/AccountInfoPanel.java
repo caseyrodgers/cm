@@ -51,7 +51,7 @@ public class AccountInfoPanel extends LayoutContainer implements CmAdminDataRefr
 		sb.append("  <div class='fld'><label>Administrator:</label><div>{school-user-name}&nbsp;</div></div>");
 		sb.append("  <div class='fld'><label>Maximum Students:</label><div> {max-students}&nbsp;</div></div>");
 		sb.append("  <div class='fld'><label>Expires:</label><div> {expiration-date}&nbsp;</div></div>");
-		sb.append("  <div class='fld'><label>Live Tutoring:</label><div>{has-tutoring}&nbsp;</div></div>");
+		sb.append("  <div class='fld'><label>Live Tutoring:</label><div>{has-tutoring}&nbsp;{tutoring-minutes-label}</div></div>");
 		sb.append("</div>");
         sb.append("<div class='form right'>");
         sb.append("  <div class='fld'><label>Account login name:</label><div>{admin-user-name}&nbsp;</div></div>");
@@ -95,11 +95,11 @@ public class AccountInfoPanel extends LayoutContainer implements CmAdminDataRefr
 	}
 
     protected void getAccountInfoRPC(Integer uid) {
+        
+        CmBusyManager.setBusy(true);
+        
         CmServiceAsync s = (CmServiceAsync) Registry.get("cmService");
         GetAccountInfoForAdminUidAction action = new GetAccountInfoForAdminUidAction(uid);
-
-        CmBusyManager.setBusy(true,false);
-        
         Log.info("AccountInfoPanel: reading student info RPC");
         s.execute(action, new CmAsyncCallback<AccountInfoModel>() {
 
@@ -121,10 +121,16 @@ public class AccountInfoPanel extends LayoutContainer implements CmAdminDataRefr
                 }
                 else {
                     ai.setStudentCountStyle("fld");
-                }
 
+                }
+                
+                if(ai.getIsTutoringEnabled()) {
+                    ai.set(AccountInfoModel.TUTORING_MINUTES_LABEL, "(remaining: " + ai.getTutoringMinutes() + " mins)");
+                }
+                
                 setAccountInfoModel(ai);
 
+                
                 Log.info("AccountInfoPanel: student info read succesfully");
                 
                 CmBusyManager.setBusy(false);

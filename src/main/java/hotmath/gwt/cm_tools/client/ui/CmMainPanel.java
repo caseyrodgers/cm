@@ -157,7 +157,7 @@ public class CmMainPanel extends LayoutContainer {
                     // we must remove any resource viewer that contains
                     // flash, otherwise the z-order gets screwed up and
                     // the dialog will bleed through the flash.
-                    if(__lastInstance._lastResourceViewer instanceof ResourceViewerImplFlash) {
+                    if(__lastInstance != null && __lastInstance._lastResourceViewer instanceof ResourceViewerImplFlash) {
                         __lastInstance._mainContent.removeResource();
                     }
                 }

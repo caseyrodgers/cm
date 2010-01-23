@@ -17,12 +17,12 @@ public class CmTutoringDao_Test extends CmDbTestCase {
         new CmTutoringDao().addTutoring(conn, _user.getUid());
     }
     
-    public void testGetTutoringInfo() throws Exception {
-        StudentTutoringInfo tutoring = new CmTutoringDao().getStudentTutoringInfo(conn, _user.getUid());
-        assertNotNull(tutoring);
+    public void testGetTutoringSessionCount() throws Exception {
         
-        assertNotNull(tutoring.getSubscriberId());
-        assertTrue(tutoring.getStudentNumber() > 0);
-        assertTrue(tutoring.getSchoolNumber() > 0);
+    }
+    
+    public void testGetTutoringInfo() throws Exception {
+        int availMins = new CmTutoringDao().getTutoringSessionCount(conn, _user.getUid());
+        assertTrue(availMins > 0);
     }
 }

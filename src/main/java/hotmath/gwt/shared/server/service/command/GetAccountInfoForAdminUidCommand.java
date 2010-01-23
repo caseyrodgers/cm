@@ -6,6 +6,7 @@ import hotmath.gwt.shared.client.rpc.Action;
 import hotmath.gwt.shared.client.rpc.Response;
 import hotmath.gwt.shared.client.rpc.action.GetAccountInfoForAdminUidAction;
 import hotmath.gwt.shared.server.service.ActionHandler;
+import hotmath.lwl.LWLIntegrationManager;
 
 import java.sql.Connection;
 
@@ -14,7 +15,12 @@ public class GetAccountInfoForAdminUidCommand implements ActionHandler<GetAccoun
     @Override
     public AccountInfoModel execute(Connection conn, GetAccountInfoForAdminUidAction action) throws Exception {
         CmAdminDao dao = new CmAdminDao();
-        return dao.getAccountInfo(conn, action.getUid());
+        AccountInfoModel aInfo = dao.getAccountInfo(conn, action.getUid());
+        if(aInfo.getIsTutoringEnabled()) {
+            int minutes = LWLIntegrationManager.getInstance().getRemainingMinute(aInfo.getSubscriberId());
+            aInfo.setTutoringMinutes(minutes);
+        }
+        return aInfo;
     }
 
     @Override

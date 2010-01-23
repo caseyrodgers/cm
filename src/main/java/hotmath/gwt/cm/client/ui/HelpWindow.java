@@ -1,5 +1,6 @@
 package hotmath.gwt.cm.client.ui;
 
+import hotmath.gwt.cm.client.CatchupMath;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.model.CmAdminModel;
 import hotmath.gwt.cm_tools.client.model.StudentModelExt;
@@ -172,8 +173,7 @@ public class HelpWindow extends CmWindow {
             fs.setLayout(new FlowLayout());
             fs.setHeading("Configuration");
             fs.addStyleName("help-window-additional-options");
-            Button btn = new Button("Setup Catchup Math");
-            btn.setWidth(120);
+            Button btn = new MyOptionButton("Setup Catchup Math");
             btn.setToolTip("Modify your Catchup Math settings.");
             btn.addSelectionListener(new SelectionListener<ButtonEvent>() {
                 public void componentSelected(ButtonEvent ce) {
@@ -183,10 +183,9 @@ public class HelpWindow extends CmWindow {
             btn.addStyleName("button");
             fs.add(btn);
 
-            btn = new Button("Restart Program");
+            btn = new MyOptionButton("Restart");
             btn.setToolTip("Restart the current program.");
             btn.addStyleName("button");
-            btn.setWidth(120);
             btn.addSelectionListener(new SelectionListener<ButtonEvent>() {
                 public void componentSelected(ButtonEvent ce) {
                     MessageBox.confirm("Restart Program",
@@ -216,8 +215,7 @@ public class HelpWindow extends CmWindow {
             }
         };
 
-        Button btn = new Button("Technical Support");
-        btn.setWidth(120);
+        Button btn = new MyOptionButton("Support");
         btn.addStyleName("button");
         btn.addSelectionListener(new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent ce) {
@@ -225,17 +223,15 @@ public class HelpWindow extends CmWindow {
             }
         });
         fs.add(btn);
-        btn = new Button("Student History");
+        btn = new MyOptionButton("Student History");
         btn.setToolTip("View your history of quizzes, reviews and show work efforts.");
-        btn.setWidth(120);
         btn.addSelectionListener(new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent ce) {
                 showStudentHistory();
             }
         });
         
-        Button btnFeedback = new Button("Feedback");
-        btnFeedback.setWidth(120);
+        Button btnFeedback = new MyOptionButton("Feedback");
         btnFeedback.addStyleName("button");
         btnFeedback.addSelectionListener(new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent ce) {
@@ -243,6 +239,7 @@ public class HelpWindow extends CmWindow {
             }
         });
         fs.add(btnFeedback);
+   
 
         /** Only the owner of the account has access to history */
         if (!UserInfo.getInstance().isActiveUser())
@@ -258,8 +255,6 @@ public class HelpWindow extends CmWindow {
         vp.add(fs);
 
         add(vp);
-
-
     }
 
     /**
@@ -430,5 +425,13 @@ class BackgroundModel extends BaseModelData {
 
     public String getBackgroundStyle() {
         return get("bg_style");
+    }
+}
+
+class MyOptionButton extends Button {
+    
+    public MyOptionButton(String name) {
+        super(name);
+        setWidth(115);        
     }
 }

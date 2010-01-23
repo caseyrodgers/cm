@@ -13,12 +13,18 @@ import hotmath.subscriber.HotMathSubscriber;
 import hotmath.subscriber.HotMathSubscriberManager;
 import hotmath.subscriber.HotMathSubscriberSignupInfo;
 import hotmath.subscriber.PurchasePlan;
+import hotmath.util.sql.SqlUtilities;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.log4j.Logger;
+
+
+
 
 
 public class CmTutoringDao {
@@ -212,4 +218,57 @@ public class CmTutoringDao {
         
         logger.debug("Read StudentTutoringInfo for " + uid + "': " + sti);
     }
+     
+    /** Add a record to track when each LWL tutoring session is started.
+     * 
+     * NOTE: THis only tracks when the session is started it does not show 
+     * if the sessions was successful.
+     * 
+     * @param conn
+     * @param uid
+     * @param pid
+     * @throws Exception
+     */
+    public void trackTutoringSession(final Connection conn, Integer uid, String pid) throws Exception {
+        PreparedStatement pstat=null;
+        try {
+            String sql = "insert into HA_USER_TUTORING_SESSION(uid, pid, session_time)value(?,?,now())";
+            pstat = conn.prepareStatement(sql);
+            pstat.setInt(1, uid);
+            pstat.setString(2, pid);
+            if(pstat.executeUpdate() != 1)
+                logger.info("Error saving HA_USER_TUTORING_SESSION record (count == 0)");
+        }
+        finally {
+            SqlUtilities.releaseResources(null,pstat,null);
+            
+        }
+    }
+    
+    /** Return the count of the tutoring sessions created by named user
+     * 
+     * @param conn
+     * @param uid
+     * @return
+     * @throws Exception
+     */
+    public int getTutoringSessionCount(final Connection conn, Integer uid) throws Exception {
+        PreparedStatement pstat=null;
+        try {
+            String sql = "select count(*) as cnt from HA_USER_TUTORING_SESSION where uid = ?";
+            pstat = conn.prepareStatement(sql);
+            pstat.setInt(1, uid);
+            ResultSet rs = pstat.executeQuery();
+            if(!rs.first())
+                return 0;
+            else {
+                return rs.getInt(1);
+            }
+        }
+        finally {
+            SqlUtilities.releaseResources(null,pstat,null);
+            
+        }
+    }
+    
 }
