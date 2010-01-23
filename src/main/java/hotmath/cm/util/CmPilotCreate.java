@@ -31,6 +31,8 @@ import java.util.List;
     - geometry - a selfreg group with show work req and geometry prof prog
     - algebra2 - a selfreg group with show work req and algebra2 prof prog
     - gradprep - a self-reg group with show work req and cashee program
+    - gradprep - a self-reg group with show work req and cashee program
+    - gradprepTX - a self-reg group with show work req and our TAKS (Texas grad prep) program
     
     
     Make sure there is a Catchup service
@@ -125,6 +127,9 @@ public class CmPilotCreate {
         
         //- gradprep - a self-reg group with show work req and cashee program
         new CmAdminDao().createSelfRegistrationGroup(conn, aid, "gradprep", CmProgram.CAHSEEHM, false, true);
+        
+        //- gradprepTX - a self-reg group with show work req and our TAKS (Texas grad prep) program
+        new CmAdminDao().createSelfRegistrationGroup(conn, aid, "gradprepTX", CmProgram.TAKS, false, true);
     }
     
     public List<String> getMessages() {
