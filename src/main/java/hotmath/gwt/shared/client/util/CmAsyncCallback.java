@@ -6,6 +6,9 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 
 abstract public class CmAsyncCallback<T> implements AsyncCallback<T>{
 
+    /** Provide standard exception processing and display
+     * 
+     */
 	@Override
 	public void onFailure(Throwable caught) {
 		caught.printStackTrace();
