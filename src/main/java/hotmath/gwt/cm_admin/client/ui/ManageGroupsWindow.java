@@ -312,7 +312,6 @@ public class ManageGroupsWindow extends CmWindow {
     	CmBusyManager.setBusy(true);
 
         CmServiceAsync cmService = (CmServiceAsync)Registry.get("cmService");
-
         GroupManagerAction action = new GroupManagerAction(GroupManagerAction.ActionType.DELETE, adminId);
         action.setGroupId(groupId);
         cmService.execute(action, new CmAsyncCallback<RpcData>() {
