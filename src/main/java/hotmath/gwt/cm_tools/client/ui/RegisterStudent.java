@@ -618,7 +618,8 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
 		if (shortName != null) {
 			List<StudyProgram> list = progStore.getModels();
 			for (StudyProgram sp : list) {
-				if (shortName.indexOf((String) sp.get("shortTitle")) > -1) {
+			    String st=(String) sp.get("shortTitle");
+				if (shortName.equals(st)) {
 					progCombo.setOriginalValue(sp);
 					progCombo.setValue(sp);
 					return sp;
