@@ -618,8 +618,7 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
 		if (shortName != null) {
 			List<StudyProgram> list = progStore.getModels();
 			for (StudyProgram sp : list) {
-			    String st=(String) sp.get("shortTitle");
-				if (shortName.equals(st)) {
+				if (progNameCheckHack(shortName, sp)) {
 					progCombo.setOriginalValue(sp);
 					progCombo.setValue(sp);
 					return sp;
@@ -627,6 +626,26 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
 			}
 		}
 		return null;
+	}
+	
+	/** perform hack to determine correct program.
+	 * 
+	 * @NOTE: add a way to identify programs correctly.
+	 * 
+	 * @param shortName
+	 * @param sp
+	 * @return
+	 */
+	private boolean progNameCheckHack(String shortName, StudyProgram sp) {
+        String st=((String) sp.get("shortTitle")).toLowerCase();
+        if(st.equals("chap") && shortName.toLowerCase().indexOf(" chap") > -1) {
+            return true;
+        }
+        else if(st.equals("prof") && shortName.toLowerCase().indexOf(" prof") > -1)
+            return true;
+        else {
+            return shortName.equalsIgnoreCase(st);
+        }
 	}
 	
 	private void setSubjectSelection() {
@@ -907,7 +926,6 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
 			set("needsSubject", needsSubject);
 			set("needsChapters", needsChapters);
 			set("needsPassPercent", needsPassPercent);
-			
 		}
 	}
 
