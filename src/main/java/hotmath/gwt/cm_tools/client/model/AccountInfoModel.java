@@ -89,11 +89,11 @@ public class AccountInfoModel extends BaseModelData  implements Response {
 		set (HAS_TUTORING_KEY, hasTutoring);
 	}
 	
-	public void setTutoringMinutes(int min) {
+	public void setTutoringMinutes(Integer min) {
 	    set(TUTORING_MINUTES_KEY, min);
 	}
 	
-	public int getTutoringMinutes() {
+	public Integer getTutoringMinutes() {
 	    return get(TUTORING_MINUTES_KEY);
 	}
 	
