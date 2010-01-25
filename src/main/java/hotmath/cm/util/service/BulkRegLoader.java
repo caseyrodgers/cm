@@ -2,12 +2,21 @@ package hotmath.cm.util.service;
 
 import hotmath.gwt.shared.client.rpc.result.AutoRegistrationEntry;
 
+import org.apache.commons.fileupload.FileItem;
+import org.apache.poi.hssf.usermodel.HSSFCell;
+import org.apache.poi.hssf.usermodel.HSSFRow;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.poifs.filesystem.POIFSFileSystem;
+
 import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -22,9 +31,41 @@ public class BulkRegLoader {
     private int errorCount;
     private List<String> dupNames;
     private List<String> dupPasswords;
+    private boolean contentIsAcceptable;
     String key;
 
-    private List<AutoRegistrationEntry> entries = new ArrayList<AutoRegistrationEntry>(); 
+    private List<AutoRegistrationEntry> entries = new ArrayList<AutoRegistrationEntry>();
+    
+    public void processUpload(List<FileItem> fileItems) throws IOException {
+	    /** 
+	     * There might be multiple files, but there is only one upload.
+	     * 
+	     * We want to collect these into a single structure.
+	     * 
+	     * IE always has multiple parts, with the first part the filename.
+	     * 
+	     */
+		for (FileItem fi: fileItems) {
+		    
+			InputStream is = null;
+			try {
+				if (isExcel(fi)) {
+					contentIsAcceptable = true;
+					is = getTSVInputStream();
+				}
+				else {
+					contentIsAcceptable = isTextOnly(fi);
+					if (contentIsAcceptable)
+						is = fi.getInputStream();
+				}
+			    if (is != null) readStream(is);
+			}
+			finally {
+			    is.close();
+			}
+		}
+	
+    }
 
     /** Read the input stream and extract entries
      * 
@@ -84,8 +125,24 @@ public class BulkRegLoader {
                 }
             }
         }
-            
+
         this.key = "upload_" + System.currentTimeMillis();
+    }
+    
+    private boolean isTextOnly(FileItem fi) {
+
+        int b;
+        try {
+        	InputStream is = fi.getInputStream();        	
+            while ((b = is.read()) > -1) {
+               if (b < 0x00 || b > 0x7f)
+                   return false;
+            }
+        }
+        catch (IOException e) {
+            return false;
+        }
+        return true;	
     }
 
     public String getKey() {
@@ -127,11 +184,15 @@ public class BulkRegLoader {
     }
 
     public boolean hasDuplicateNames() {
-    	return (dupNames.size() > 0);
+    	return (dupNames != null && dupNames.size() > 0);
     }
     
     public boolean hasDuplicatePasswords() {
-    	return (dupPasswords.size() > 0);
+    	return (dupPasswords != null && dupPasswords.size() > 0);
+    }
+
+    public boolean contentIsAcceptable() {
+    	return contentIsAcceptable;
     }
 
     public List<AutoRegistrationEntry> getEntries() {
@@ -148,5 +209,69 @@ public class BulkRegLoader {
     
     public List<String> getDuplicatePasswords() {
     	return dupPasswords;
+    }
+    
+    private StringBuilder tsvContents;
+    
+    @SuppressWarnings("unchecked")
+	private boolean isExcel(FileItem fi) throws IOException {
+		InputStream is = null;
+    	try {
+    		is = fi.getInputStream();
+    		POIFSFileSystem fs = new POIFSFileSystem(is);
+    		HSSFWorkbook wb = new HSSFWorkbook(fs);
+    		HSSFSheet sheet = wb.getSheetAt(0);
+
+    		// Iterate over each row in the sheet
+    		Iterator rows = sheet.rowIterator(); 
+    		tsvContents = new StringBuilder();
+    		
+    		while( rows.hasNext() ) {           
+    			HSSFRow row = (HSSFRow) rows.next();
+
+    			// Iterate over each cell in the row
+    			Iterator cells = row.cellIterator();
+    			int cellCount = 0;
+    			while (cells.hasNext()) {
+    				HSSFCell cell = (HSSFCell) cells.next();
+
+    				switch (cell.getCellType()) {
+    				case HSSFCell.CELL_TYPE_NUMERIC:
+    					tsvContents.append(cell.getNumericCellValue());
+    					cellCount++;
+    					break;
+    				case HSSFCell.CELL_TYPE_STRING: 
+    					tsvContents.append(cell.getStringCellValue());
+    					cellCount++;
+    					break;
+    				default:
+    					//System.out.println( "unsupported cell type" );
+    				break;
+    				}
+    				if (cellCount < 2) {
+    					tsvContents.append("\t");
+    				}
+    				else {
+    					tsvContents.append("\n");
+    					break;
+    				}
+    			}
+
+    		}
+    		return true;
+
+    	} catch ( Exception ex ) {
+    		ex.printStackTrace();
+    	}
+    	finally {
+    		if (is != null) {
+				is.close();
+    		}
+    	}
+    	return false;
+    }
+    
+    private InputStream getTSVInputStream() {
+    	return new ByteArrayInputStream(tsvContents.toString().getBytes());
     }
 }

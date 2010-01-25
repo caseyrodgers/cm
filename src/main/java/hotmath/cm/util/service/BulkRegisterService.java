@@ -5,7 +5,6 @@ import hotmath.cm.util.CmCacheManager.CacheName;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.List;
 
 import javax.servlet.ServletException;
@@ -53,27 +52,13 @@ public class BulkRegisterService extends HttpServlet {
             	List<FileItem> fileItems = sfu.parseRequest(req);
             	if (fileItems != null  && fileItems.size() > 0) {
             	    
-            	    /** There might be multiple files, but there is only one upload.
-            	     * 
-            	     * We want to collect these into a single structure.
-            	     * 
-            	     * IE always has multiple parts, with the first part the filename.
-            	     * 
-            	     */
+
             	    BulkRegLoader brLoader=new BulkRegLoader();
-            		for (FileItem fi: fileItems) {
-            		    
-            			InputStream is = fi.getInputStream();
-            			try {
-            			    brLoader.readStream(is);
-            			}
-            			finally {
-            			    is.close();
-            			}
-            		}
+            	    brLoader.processUpload(fileItems);
                     
                     boolean hasErrors = brLoader.hasErrors();
                     boolean hasDuplicates = brLoader.hasDuplicateNames() || brLoader.hasDuplicatePasswords();
+                    boolean contentIsAcceptable = brLoader.contentIsAcceptable();
 
                     returnJson = 
                         "{" +
@@ -81,7 +66,7 @@ public class BulkRegisterService extends HttpServlet {
                          "status:'" + ((hasErrors) ? "Error" : "Successful") + "', " +
                          "msg:'";
       
-                    if (hasErrors && !hasDuplicates) {
+                    if (hasErrors && !hasDuplicates && contentIsAcceptable) {
                         returnJson += "Uploaded file contains errors, please review and correct.";
                     }
                     else if (hasDuplicates) {
@@ -93,6 +78,9 @@ public class BulkRegisterService extends HttpServlet {
                         	if (brLoader.hasDuplicateNames()) returnJson += ", ";
                         	returnJson += " duplicate passwords: " + brLoader.getDuplicatePasswords();
                         }
+                    }
+                    else if (! contentIsAcceptable) {
+                    	returnJson += "Uploaded file must be a tab-delimited text file or Excel (XLS) file.";
                     }
                     else {
                         returnJson += "File uploaded successfully.";
