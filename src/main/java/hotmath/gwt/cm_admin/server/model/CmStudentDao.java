@@ -983,6 +983,7 @@ public class CmStudentDao {
             sm.setEmail(rs.getString("email"));
             sm.setShowWorkRequired(rs.getInt("is_show_work_required") > 0);
             sm.setTutoringAvail(rs.getInt("is_tutoring_available") > 0);
+            sm.setTutoringUse(rs.getInt("tutoring_use"));
 
             int groupId = rs.getInt("group_id");
             sm.setGroupId(String.valueOf(groupId));

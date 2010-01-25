@@ -103,6 +103,7 @@ public class StudentDetailsWindow extends CmWindow {
         toolBar.add(showWorkBtn());
         toolBar.add(showTopicsBtn());
         toolBar.add(displayReportCardToolItem(studentModel));
+        toolBar.add(showTutoringUseBtn());
         toolBar.add(new FillToolItem());
         toolBar.add(displayPrintableReportToolItem(studentModel));
 
@@ -217,6 +218,33 @@ public class StudentDetailsWindow extends CmWindow {
         return _showTopicsBtn;
     }
 
+    private Button showTutoringUseBtn() {
+        
+        Button btn = new Button("Tutoring Sessions");
+        btn.addStyleName("student-details-panel-sw-btn");
+        
+        if(true) {
+            btn.setEnabled(false);
+            return btn;
+        }
+        
+        
+        if(!studentModel.getTutoringAvail())
+            btn.setEnabled(false);
+        else {
+            btn.setToolTip("Display any tutoring sessions created by this user");
+            btn.addSelectionListener(new SelectionListener<ButtonEvent>() {
+                
+                @Override
+                public void componentSelected(ButtonEvent ce) {
+                    
+                }
+            });
+        }
+        return btn;
+    }
+    
+    
     private Button showWorkBtn() {
         SelectionListener<ButtonEvent> swListener = new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent ce) {
@@ -358,6 +386,7 @@ public class StudentDetailsWindow extends CmWindow {
         sb.append("<div class='detail-info'>");
         sb.append("<div class='form left'>");
         sb.append("  <div class='fld'><label>Password:</label><div>{passcode}&nbsp;</div></div>");
+        sb.append("  <div class='fld'><label>Tutoring Use:</label><div>{tutoring-use}&nbsp;</div></div>");        
         sb.append("</div>");
         sb.append("<div class='form right'>");
         sb.append("  <div class='fld'><label>Show Work:</label><div>{");
@@ -368,7 +397,7 @@ public class StudentDetailsWindow extends CmWindow {
         template = XTemplate.create(sb.toString());
         html = new HTML();
 
-        html.setHeight("35px"); // to eliminate the jump when setting values in
+        html.setHeight("50px"); // to eliminate the jump when setting values in
                                 // template
     }
 

@@ -15,6 +15,8 @@ public class StudentModelBasic implements StudentModelI, IsSerializable{
     String passcode;
     Boolean showWorkRequired;
     Boolean tutorAvailable;
+    Integer tutoringUse;
+
     String progId;
     String subjId;
     String chapter;
@@ -29,6 +31,26 @@ public class StudentModelBasic implements StudentModelI, IsSerializable{
                 + ", name=" + name + ", passcode=" + passcode + ", progId=" + progId + ", showWorkRequired="
                 + showWorkRequired + ", subjId=" + subjId + ", tutorAvailable=" + tutorAvailable + ", uid=" + uid
                 + ", userProgramId=" + userProgramId + ", isDemoUser=" + isDemoUser + "]";
+    }
+
+    
+    public Boolean getTutorAvailable() {
+        return tutorAvailable;
+    }
+
+
+    public void setTutorAvailable(Boolean tutorAvailable) {
+        this.tutorAvailable = tutorAvailable;
+    }
+
+
+    public Integer getTutoringUse() {
+        return tutoringUse;
+    }
+
+
+    public void setTutoringUse(Integer tutoringUse) {
+        this.tutoringUse = tutoringUse;
     }
 
 

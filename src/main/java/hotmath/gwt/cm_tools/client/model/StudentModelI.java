@@ -100,6 +100,10 @@ public interface StudentModelI extends Response {
 	public Boolean getTutoringAvail();
 	
 	public void setTutoringAvail(Boolean val);
+	
+	public void setTutoringUse(Integer x);
+	
+	public Integer getTutoringUse();
 
 	public String getBackgroundStyle();
 	

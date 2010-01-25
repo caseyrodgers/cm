@@ -2,6 +2,7 @@ package hotmath.gwt.cm_admin.client.ui;
 
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
+import hotmath.gwt.cm_tools.client.model.AccountInfoModel;
 import hotmath.gwt.cm_tools.client.model.CmAdminDataReader;
 import hotmath.gwt.cm_tools.client.model.CmAdminDataRefresher;
 import hotmath.gwt.cm_tools.client.model.CmAdminModel;
@@ -694,6 +695,14 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
         lastLogin.setWidth(70);
         lastLogin.setSortable(true);
         configs.add(lastLogin);
+        
+        ColumnConfig tutoring = new ColumnConfig();
+        tutoring.setId(StudentModelExt.TUTORING_USE_KEY);
+        tutoring.setHeader("Tutoring");
+        tutoring.setToolTip("Number of tutor requests");
+        tutoring.setWidth(55);
+        tutoring.setSortable(true);
+        configs.add(tutoring);
 
         ColumnConfig usage = new ColumnConfig();
         usage.setId("total-usage");

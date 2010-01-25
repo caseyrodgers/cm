@@ -31,6 +31,7 @@ public class AccountInfoPanel extends LayoutContainer implements CmAdminDataRefr
 	private AccountInfoModel model;
 	private CmAdminModel cmAdminModel;
 	private Boolean haveDisplayedOverLimitMsg = false;
+	private Boolean isTutoringEnabled = false;
 
 	public AccountInfoPanel(CmAdminModel cmAdminMdl) {
 		
@@ -70,6 +71,11 @@ public class AccountInfoPanel extends LayoutContainer implements CmAdminDataRefr
 		add(hp);
 		
 		CmAdminDataReader.getInstance().addReader(this);
+	}
+	
+	
+	public AccountInfoModel getModel() {
+	    return this.model;
 	}
 	
 	protected void onRender(Element parent, int index) {
@@ -125,7 +131,7 @@ public class AccountInfoPanel extends LayoutContainer implements CmAdminDataRefr
                 }
                 
                 if(ai.getIsTutoringEnabled()) {
-                    ai.set(AccountInfoModel.TUTORING_MINUTES_LABEL, "(remaining: " + ai.getTutoringMinutes() + " mins)");
+                    ai.set(AccountInfoModel.TUTORING_MINUTES_LABEL, "(minutes left: " + ai.getTutoringMinutes() + ")");
                 }
                 
                 setAccountInfoModel(ai);

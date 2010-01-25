@@ -21,6 +21,8 @@ public class StudentModel implements StudentModelI {
     String showWorkState;
     Integer totalUsage;
     Boolean tutoringAvail;
+    Integer tutoringUse;
+
     String tutoringState;
     String name;
     String passcode;
@@ -35,7 +37,15 @@ public class StudentModel implements StudentModelI {
     public StudentModel() {
     }
 
+    public Integer getTutoringUse() {
+        return tutoringUse;
+    }
 
+
+    public void setTutoringUse(Integer tutoringUse) {
+        this.tutoringUse = tutoringUse;
+    }
+    
     public String getGroup() {
         return group;
     }
