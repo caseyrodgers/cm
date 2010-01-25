@@ -90,7 +90,6 @@ public class CatchupMathAdmin implements EntryPoint, ValueChangeHandler<String> 
         infoPanel = new AccountInfoPanel(cmAdminMdl);
         studentGrid = new StudentGridPanel(cmAdminMdl);
         
-        
         CmAdminDataReader.getInstance().fireRefreshData();
 
         // If the application starts with no history token, redirect to a new
