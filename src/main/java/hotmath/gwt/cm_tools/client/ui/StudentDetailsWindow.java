@@ -6,6 +6,7 @@ import hotmath.gwt.cm_tools.client.model.StudentActivityModel;
 import hotmath.gwt.cm_tools.client.model.StudentModelExt;
 import hotmath.gwt.cm_tools.client.service.CmServiceAsync;
 import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
+import hotmath.gwt.cm_tools.client.ui.viewer.ShowWorkPanel;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.rpc.action.CmList;
 import hotmath.gwt.shared.client.rpc.action.GeneratePdfAction;
@@ -144,32 +145,33 @@ public class StudentDetailsWindow extends CmWindow {
             });
             final Menu contextMenu = new Menu();
             contextMenu.add(detailDebug);
-            
+
             MenuItem detailLogin = new MenuItem("Login/View");
             detailLogin.addSelectionListener(new SelectionListener<MenuEvent>() {
                 public void componentSelected(MenuEvent ce) {
                     StudentActivityModel sm = samGrid.getSelectionModel().getSelectedItem();
                     loginAsSelectedUser(sm);
                 }
-            });  
+            });
             contextMenu.add(detailLogin);
-            
+
             samGrid.setContextMenu(contextMenu);
         }
 
         setVisible(true);
     }
 
-    /** Logon as selected user, connecting to selected test/run
+    /**
+     * Logon as selected user, connecting to selected test/run
      * 
      */
     private void loginAsSelectedUser(StudentActivityModel sm) {
 
         String server = CmShared.getServerForCmStudent();
-        
-        String url = server + "/cm_student/CatchupMath.html?debug=true&uid=" + studentModel.getUid() + 
-                     "&debug_info=" + studentModel.getUid() + ":" + sm.getTestId() + ":" + sm.getRunId();
-        
+
+        String url = server + "/cm_student/CatchupMath.html?debug=true&uid=" + studentModel.getUid() + "&debug_info="
+                + studentModel.getUid() + ":" + sm.getTestId() + ":" + sm.getRunId();
+
         Window.open(url, "_blank", "location=1,menubar=1,resizable=1,scrollbars=1");
     }
 
@@ -219,32 +221,39 @@ public class StudentDetailsWindow extends CmWindow {
     }
 
     private Button showTutoringUseBtn() {
-        
+
         Button btn = new Button("Tutoring Sessions");
         btn.addStyleName("student-details-panel-sw-btn");
-        
-        if(true) {
-            btn.setEnabled(false);
-            return btn;
-        }
-        
-        
-        if(!studentModel.getTutoringAvail())
+
+        if (!studentModel.getTutoringAvail())
             btn.setEnabled(false);
         else {
             btn.setToolTip("Display any tutoring sessions created by this user");
             btn.addSelectionListener(new SelectionListener<ButtonEvent>() {
-                
+
                 @Override
                 public void componentSelected(ButtonEvent ce) {
-                    
+                    showTutoringForUser();
                 }
             });
         }
         return btn;
     }
-    
-    
+
+    private void showTutoringForUser() {
+
+        String contentUrl = "pid=ADMIN_VIEW";
+        String url = "/collab/lwl/cm_lwl_launch.jsp?admin=true&pid=ADMIN_VIEW&uid=" + studentModel.getUid()
+                + "&contentUrl=" + contentUrl;
+
+        int w = 800;
+        int h = 560;
+        String windowProps = "toolbar=0, titlebar=0, status=0, menubar=0, resizable=0, width=" + w + ", height=" + h
+                + ", directories=0, location=0,scrollbars=0,directories=0,location=0";
+
+        com.google.gwt.user.client.Window.open(url, "_blank", windowProps);
+    }
+
     private Button showWorkBtn() {
         SelectionListener<ButtonEvent> swListener = new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent ce) {
@@ -386,7 +395,7 @@ public class StudentDetailsWindow extends CmWindow {
         sb.append("<div class='detail-info'>");
         sb.append("<div class='form left'>");
         sb.append("  <div class='fld'><label>Password:</label><div>{passcode}&nbsp;</div></div>");
-        sb.append("  <div class='fld'><label>Tutoring Use:</label><div>{tutoring-use}&nbsp;</div></div>");        
+        sb.append("  <div class='fld'><label>Tutor Requests:</label><div>{tutoring-use}&nbsp;</div></div>");
         sb.append("</div>");
         sb.append("<div class='form right'>");
         sb.append("  <div class='fld'><label>Show Work:</label><div>{");
@@ -398,7 +407,7 @@ public class StudentDetailsWindow extends CmWindow {
         html = new HTML();
 
         html.setHeight("50px"); // to eliminate the jump when setting values in
-                                // template
+        // template
     }
 
     protected void getStudentActivityRPC(final ListStore<StudentActivityModel> store, StudentModelExt sm) {
