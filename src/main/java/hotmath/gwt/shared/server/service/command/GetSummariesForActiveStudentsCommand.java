@@ -24,9 +24,6 @@ public class GetSummariesForActiveStudentsCommand implements ActionHandler<GetSu
     public CmList<StudentModelI> execute(Connection conn, GetSummariesForActiveStudentsAction action) throws Exception {
         CmStudentDao dao = new CmStudentDao();
         
-        /** @TODO: do not create CmList as holder, why not base object?
-         * 
-         */
         CmList<StudentModelI> cmList = new CmArrayList<StudentModelI>();
         cmList.addAll(dao.getSummariesForActiveStudents(conn, action.getAdminId()));
         
