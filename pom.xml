@@ -311,6 +311,13 @@
       <version>1.8.0</version>
     </dependency>
 
+    <!--  Apache POI -->
+    <dependency>
+      <groupId>org.apache</groupId>
+      <artifactId>poi</artifactId>
+      <version>3.6</version>
+    </dependency>
+
   </dependencies>
 
   <build>
