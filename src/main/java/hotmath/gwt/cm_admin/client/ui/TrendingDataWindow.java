@@ -21,6 +21,7 @@ import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
 import com.extjs.gxt.ui.client.widget.grid.Grid;
+import com.extjs.gxt.ui.client.widget.layout.FillLayout;
 
 /** Provide a window to display trending data
  * 
@@ -33,11 +34,14 @@ public class TrendingDataWindow extends CmWindow {
 
     public TrendingDataWindow(Integer adminId) {
         this.adminId = adminId;
-        setWidth(450);
+        setHeading("Top Five Assigned Lessons");
+        setWidth(410);
         setHeight(300);
 
         final ListStore<TrendingDataExt> store = new ListStore<TrendingDataExt>();
         _grid = defineGrid(store, defineColumns());
+        
+        setLayout(new FillLayout());
         add(_grid);
         loadTrendDataAsync();
         
@@ -56,12 +60,10 @@ public class TrendingDataWindow extends CmWindow {
         CmServiceAsync service = (CmServiceAsync) Registry.get("cmService");
         service.execute(new GetAdminTrendingDataAction(adminId), new CmAsyncCallback<CmAdminTrendingDataI>() {
             public void onSuccess(CmAdminTrendingDataI arg0) {
-                
                 List<TrendingDataExt> ltde = new ArrayList<TrendingDataExt>();
                 for(int i=0,t=arg0.getTrendingData().size();i<t;i++) {
                     ltde.add(new TrendingDataExt(arg0.getTrendingData().get(i)));
                 }
-                
                 _grid.getStore().add(ltde);
                layout();
             }
@@ -74,7 +76,7 @@ public class TrendingDataWindow extends CmWindow {
         grid.setStripeRows(true);
         grid.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
         grid.getSelectionModel().setFiresEvents(true);
-        grid.setWidth("450px");
+        grid.setWidth("410px");
         grid.setHeight("300px");
         grid.setStateful(true);
         grid.setLoadMask(true);
@@ -87,7 +89,7 @@ public class TrendingDataWindow extends CmWindow {
         ColumnConfig column = new ColumnConfig();
         column.setId(TrendingDataExt.LESSON_NAME_KEY);
         column.setHeader("Lesson Name");
-        column.setWidth(300);
+        column.setWidth(235);
         column.setSortable(true);
         configs.add(column);
 

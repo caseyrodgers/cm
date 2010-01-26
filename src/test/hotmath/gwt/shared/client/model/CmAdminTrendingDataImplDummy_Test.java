@@ -23,8 +23,5 @@ public class CmAdminTrendingDataImplDummy_Test extends TestCase{
             assertTrue(td.lessonName != null);
             assertTrue(td.getCountAssigned() > 0);
         }
-        
-        assertTrue(tdi.getAdminModel() != null);
-        assertTrue(tdi.getAdminModel().getSchoolName() != null);
     }
 }

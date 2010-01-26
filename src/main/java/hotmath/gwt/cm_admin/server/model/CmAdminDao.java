@@ -3,8 +3,10 @@ package hotmath.gwt.cm_admin.server.model;
 import static hotmath.cm.util.CmCacheManager.CacheName.PROG_DEF;
 import static hotmath.cm.util.CmCacheManager.CacheName.REPORT_ID;
 import static hotmath.cm.util.CmCacheManager.CacheName.SUBJECT_CHAPTERS;
+import hotmath.action.HotMath_FlushServer;
 import hotmath.cm.util.CmCacheManager;
 import hotmath.cm.util.CmMultiLinePropertyReader;
+import hotmath.flusher.HotmathFlusher;
 import hotmath.gwt.cm_tools.client.model.AccountInfoModel;
 import hotmath.gwt.cm_tools.client.model.ChapterModel;
 import hotmath.gwt.cm_tools.client.model.GroupInfoModel;
@@ -13,6 +15,7 @@ import hotmath.gwt.cm_tools.client.model.StudentModelBasic;
 import hotmath.gwt.cm_tools.client.model.StudentModelI;
 import hotmath.gwt.cm_tools.client.model.StudyProgramModel;
 import hotmath.gwt.cm_tools.client.model.SubjectModel;
+import hotmath.gwt.shared.client.model.TrendingData;
 import hotmath.gwt.shared.client.rpc.action.CmArrayList;
 import hotmath.gwt.shared.client.rpc.action.CmList;
 import hotmath.gwt.shared.client.rpc.action.SaveAutoRegistrationAction;
@@ -32,6 +35,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.log4j.Logger;
+
+import sb.util.SbUtilities;
 
 /**
  * <code>CmAdminDao</code> provides data access methods for CM Admin
@@ -663,4 +668,23 @@ public class CmAdminDao {
             throw new CmException("The self-registration group could not be created", e);
         }
     }
+    
+    
+    
+    public CmList<TrendingData> getTrendingData(final Connection conn, Integer aid) throws Exception {
+        CmList<TrendingData> tdata = new CmArrayList<TrendingData>();
+        PreparedStatement ps=null;
+        try {
+            ps = conn.prepareStatement(CmMultiLinePropertyReader.getInstance().getProperty("TRENDING_DATA_SQL"));
+            ps.setInt(1, aid);
+            ResultSet rs = ps.executeQuery();
+            while(rs.next()) {
+                tdata.add(new TrendingData(rs.getString("lesson_name"), rs.getInt("count_assigned")));
+            }
+            return tdata;
+        }
+        finally {
+            SqlUtilities.releaseResources(null, ps,null);
+        }
+    }    
 }

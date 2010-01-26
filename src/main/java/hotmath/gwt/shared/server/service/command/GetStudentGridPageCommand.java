@@ -48,8 +48,7 @@ public class GetStudentGridPageCommand implements
          * Get all student data for this one admin from cache
          * 
          */
-        List<StudentModelExt> _allStudents = (List<StudentModelExt>) CmCacheManager.getInstance().retrieveFromCache(
-                CacheName.STUDENT_PAGED_DATA, cacheKey);
+        List<StudentModelExt> _allStudents = (List<StudentModelExt>) CmCacheManager.getInstance().retrieveFromCache(CacheName.STUDENT_PAGED_DATA, cacheKey);
         if (action.isForceRefresh() || _allStudents == null) {
             _allStudents = new ArrayList<StudentModelExt>();
             for (StudentModelI smi : new CmStudentDao().getStudentSummaries(conn, action.getAdminId(), true)) {
@@ -67,7 +66,7 @@ public class GetStudentGridPageCommand implements
         int start = config.getOffset();
         List<StudentModelExt> studentPool = null;
 
-        /** if group not null and does math either group NONE or is set to NO_FILTERING
+        /** if group not null and matches either group NONE or is set to NO_FILTERING
          * 
          */
         if (action.getGroupFilter() != null && 
@@ -129,7 +128,6 @@ public class GetStudentGridPageCommand implements
             sublist.add(studentPool.get(i));
         }
         return new CmStudentPagingLoadResult<StudentModelExt>(sublist, config.getOffset(), studentPool.size());
-
     }
     
     

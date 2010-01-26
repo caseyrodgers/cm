@@ -1,6 +1,5 @@
 package hotmath.gwt.shared.client.model;
 
-import hotmath.gwt.cm_tools.client.model.AccountInfoModel;
 import hotmath.gwt.shared.client.rpc.Response;
 import hotmath.gwt.shared.client.rpc.action.CmList;
 
@@ -10,6 +9,5 @@ import hotmath.gwt.shared.client.rpc.action.CmList;
  *
  */
 public interface CmAdminTrendingDataI extends Response {
-    AccountInfoModel getAdminModel();
     CmList<TrendingData> getTrendingData();
 }

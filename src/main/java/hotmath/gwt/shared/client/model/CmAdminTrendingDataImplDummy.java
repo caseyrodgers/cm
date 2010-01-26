@@ -17,12 +17,6 @@ public class CmAdminTrendingDataImplDummy implements CmAdminTrendingDataI {
     AccountInfoModel adminModel;
 
     public CmAdminTrendingDataImplDummy() throws Exception {
-        this(null);
-    }
-
-    public CmAdminTrendingDataImplDummy(AccountInfoModel aim) throws Exception {
-
-        adminModel = aim;
         int maxLessons = 5;
         for (int i = 0; i < maxLessons; i++) {
             trendingData.add(getRandom());
@@ -35,7 +29,7 @@ public class CmAdminTrendingDataImplDummy implements CmAdminTrendingDataI {
     }
 
     private TrendingData getRandom() throws CmException {
-        for (int tries = 5; tries > 0; tries--) {
+        for (int tries=5; tries > 0; tries--) {
             String ln = __sampleData[getRandNumber(__sampleData.length - 1)];
             for (TrendingData td : trendingData) {
                 if (td.getLessonName().equals(ln))
@@ -49,11 +43,6 @@ public class CmAdminTrendingDataImplDummy implements CmAdminTrendingDataI {
     private int getRandNumber(int max) {
         double dbl = (Math.random() * max);
         return (int) dbl;
-    }
-
-    @Override
-    public AccountInfoModel getAdminModel() {
-        return adminModel;
     }
 
     static final String __sampleData[] = { "lesson_name", "Inverse Trigonometric Functions", "Law of Cosines",
