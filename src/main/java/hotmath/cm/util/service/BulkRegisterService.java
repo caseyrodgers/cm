@@ -63,7 +63,7 @@ public class BulkRegisterService extends HttpServlet {
                     returnJson = 
                         "{" +
                          "key:'" + brLoader.getKey() + "', " +
-                         "status:'" + ((hasErrors) ? "Error" : "Successful") + "', " +
+                         "status:'" + ((hasErrors || !contentIsAcceptable) ? "Error" : "Successful") + "', " +
                          "msg:'";
       
                     if (hasErrors && !hasDuplicates && contentIsAcceptable) {
@@ -80,7 +80,7 @@ public class BulkRegisterService extends HttpServlet {
                         }
                     }
                     else if (! contentIsAcceptable) {
-                    	returnJson += "Uploaded file must be a tab-delimited text file or Excel (XLS) file.";
+                    	returnJson += "Uploaded file must be a tab-delimited text file (.txt) or Excel (.xls) file.";
                     }
                     else {
                         returnJson += "File uploaded successfully.";
