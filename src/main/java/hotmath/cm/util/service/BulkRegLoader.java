@@ -60,7 +60,7 @@ public class BulkRegLoader {
 			    contentIsAcceptable = (entries.size() > 0);
 			}
 			finally {
-			    is.close();
+			    if (is != null) is.close();
 			}
 		}
 	
