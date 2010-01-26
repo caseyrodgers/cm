@@ -6,9 +6,12 @@ import hotmath.flusher.HotmathFlusher;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.Map;
 import java.util.Properties;
 
 import org.apache.log4j.Logger;
+
+import sb.util.SbUtilities;
 
 /**
  * Provides a means of reading in mulit-line property files without having to
@@ -121,6 +124,10 @@ public class CmMultiLinePropertyReader extends Properties {
         catch(Exception e) {
             __logger.error("Error reading multi line property file: " + propFile, e);
         }
-
+    }
+    
+    public String getProperty(String key, Map<String,String> replacements) {
+        String val = getProperty(key);
+        return SbUtilities.replaceTokens(val, replacements);
     }
 }

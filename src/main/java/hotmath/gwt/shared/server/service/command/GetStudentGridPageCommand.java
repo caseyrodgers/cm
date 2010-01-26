@@ -4,7 +4,6 @@ import hotmath.cm.util.CmCacheManager;
 import hotmath.cm.util.CmCacheManager.CacheName;
 import hotmath.gwt.cm_admin.server.model.CmStudentDao;
 import hotmath.gwt.cm_tools.client.model.GroupInfoModel;
-import hotmath.gwt.cm_tools.client.model.GroupInfoModelI;
 import hotmath.gwt.cm_tools.client.model.StudentModelExt;
 import hotmath.gwt.cm_tools.client.model.StudentModelI;
 import hotmath.gwt.shared.client.model.CmStudentPagingLoadResult;
@@ -42,7 +41,7 @@ public class GetStudentGridPageCommand implements
 
         PagingLoadConfig config = action.getLoadConfig();
 
-        String cacheKey = "paged_" + action.getAdminId();
+        String cacheKey = getCacheKey(action.getAdminId());
 
         /**
          * Get all student data for this one admin from cache
@@ -116,6 +115,13 @@ public class GetStudentGridPageCommand implements
                         new StudentGridComparator(sortField)));
             }
         }
+        
+
+        /** add current pool to cache for possible use by other commands
+         * @See GetAdminTrendingDataCommand
+         */
+        CmCacheManager.getInstance().addToCache(CacheName.STUDENT_PAGED_DATA, getPoolCacheKey(action.getAdminId()), studentPool);
+        
 
         /** Extract the page from the entire pool
          * 
@@ -130,6 +136,24 @@ public class GetStudentGridPageCommand implements
         return new CmStudentPagingLoadResult<StudentModelExt>(sublist, config.getOffset(), studentPool.size());
     }
     
+    /** key used to specify the full pool (filtered)
+     * 
+     * @param aid
+     * @return
+     */
+    static public String getPoolCacheKey(int aid) {
+        return "paged_" + aid + "_pool";
+    }
+    
+    /** key used to specify all data for this admin
+     * 
+     * @param aid
+     * @return
+     */
+    static public String getCacheKey(int aid) {
+        return "paged_" + aid;
+    }
+
     
     /** run through specialized field searches looking for matches
      * 

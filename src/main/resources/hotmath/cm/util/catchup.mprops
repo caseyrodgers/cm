@@ -296,7 +296,20 @@ order by count_assigned desc
 limit 5
 
                 
-        
+.key=TRENDING_DATA_SQL_FROM_UIDS
+
+
+select lesson_name,count(*) as count_assigned
+from   HA_TEST_RUN_LESSON l
+  JOIN HA_TEST_RUN r on l.run_id = r.run_id
+  JOIN HA_TEST t on   t.test_id = r.test_id
+  JOIN HA_USER u on u.uid = t.user_id
+  JOIN HA_ADMIN a on a.aid = u.admin_id
+where a.aid = ?
+and   u.uid in($$UID_LIST$$)
+group by lesson_name 
+order by count_assigned desc
+limit 5        
 ## 
 ## Class: CreateAutoRegistrationAccountCommand
 ##
