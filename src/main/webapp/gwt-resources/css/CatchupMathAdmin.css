@@ -120,7 +120,6 @@
 .account-info .fld div {
         float: right;
         width: 230px;
-        border: 1px solid red;
 }
 .account-info .fld-warn {
 	    color: red;
