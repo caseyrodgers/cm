@@ -1,8 +1,9 @@
-package hotmath.gwt.shared.client.model;
+package hotmath.cm.util;
 
 import hotmath.gwt.cm_admin.server.model.CmAdminDao;
 import hotmath.gwt.cm_tools.client.model.AccountInfoModel;
-import hotmath.gwt.cm_tools.client.model.CmAdminModel;
+import hotmath.gwt.shared.client.model.CmAdminTrendingDataI;
+import hotmath.gwt.shared.client.model.TrendingData;
 import hotmath.gwt.shared.client.rpc.action.CmArrayList;
 import hotmath.gwt.shared.client.rpc.action.CmList;
 import hotmath.gwt.shared.client.util.CmException;
@@ -35,7 +36,7 @@ public class CmAdminTrendingDataImplDummy implements CmAdminTrendingDataI {
         for(int tries=5;tries>0;tries--) {
             String ln = __sampleData[SbUtilities.getRandomNumber(__sampleData.length-1)];
             for(TrendingData td: trendingData) {
-                if(td.lessonName.equals(ln))
+                if(td.getLessonName().equals(ln))
                     continue;
             }
             return new TrendingData(ln, SbUtilities.getRandomNumber(1000));

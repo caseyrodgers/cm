@@ -1,5 +1,6 @@
 package hotmath.gwt.shared.client.model;
 
+import hotmath.cm.util.CmAdminTrendingDataImplDummy;
 import junit.framework.TestCase;
 
 public class CmAdminTrendingDataImplDummy_Test extends TestCase{
