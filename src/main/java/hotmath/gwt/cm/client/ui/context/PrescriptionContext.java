@@ -160,9 +160,7 @@ public class PrescriptionContext implements CmContext {
     }
 
     private void doMoveNextAux(boolean hasPrescription) {
-        
-        boolean isDemoUser = UserInfo.getInstance().isDemoUser();
-        
+       
         /**
          * The current session number
          * 
@@ -181,6 +179,14 @@ public class PrescriptionContext implements CmContext {
         correctPercent = UserInfo.getInstance().getCorrectPercent();
         if (!hasPrescription || thereAreNoMoreSessions) {
 
+            /** hard exit after completion of prescription for any demo 
+             * 
+             */
+            if (UserInfo.getInstance().isDemoUser()) {
+                new SampleDemoMessageWindow();
+                return;
+            }
+            
             // there are no more sessions, so need to move to the 'next'.
             // Next might be the same Quiz, the next Quiz or AutoAdvance.
 

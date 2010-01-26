@@ -16,18 +16,15 @@ import hotmath.gwt.cm_tools.client.ui.GroupSelectorWidget;
 import hotmath.gwt.cm_tools.client.ui.PdfWindow;
 import hotmath.gwt.cm_tools.client.ui.RegisterStudent;
 import hotmath.gwt.cm_tools.client.ui.StudentDetailsWindow;
-import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
 import hotmath.gwt.cm_tools.client.util.ProcessTracker;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
 import hotmath.gwt.shared.client.eventbus.CmEventListenerImplDefault;
 import hotmath.gwt.shared.client.eventbus.EventBus;
 import hotmath.gwt.shared.client.eventbus.EventType;
-import hotmath.gwt.shared.client.model.CmAdminTrendingDataI;
 import hotmath.gwt.shared.client.model.CmStudentPagingLoadResult;
 import hotmath.gwt.shared.client.rpc.action.CmList;
 import hotmath.gwt.shared.client.rpc.action.GeneratePdfAction;
-import hotmath.gwt.shared.client.rpc.action.GetAdminTrendingDataAction;
 import hotmath.gwt.shared.client.rpc.action.GetStudentGridPageAction;
 import hotmath.gwt.shared.client.rpc.action.GetSummariesForActiveStudentsAction;
 import hotmath.gwt.shared.client.rpc.action.UnregisterStudentsAction;
@@ -48,7 +45,6 @@ import com.extjs.gxt.ui.client.Style.SortDir;
 import com.extjs.gxt.ui.client.data.BasePagingLoadConfig;
 import com.extjs.gxt.ui.client.data.BasePagingLoader;
 import com.extjs.gxt.ui.client.data.LoadEvent;
-import com.extjs.gxt.ui.client.data.ModelData;
 import com.extjs.gxt.ui.client.data.PagingLoadConfig;
 import com.extjs.gxt.ui.client.data.PagingLoadResult;
 import com.extjs.gxt.ui.client.data.PagingLoader;
@@ -68,7 +64,6 @@ import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.HorizontalPanel;
-import com.extjs.gxt.ui.client.widget.Label;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.button.Button;
@@ -78,7 +73,6 @@ import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
 import com.extjs.gxt.ui.client.widget.grid.Grid;
-import com.extjs.gxt.ui.client.widget.grid.GridCellRenderer;
 import com.extjs.gxt.ui.client.widget.grid.GridSelectionModel;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
@@ -398,7 +392,8 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
         toolbar.add(editStudentToolItem(_grid, _cmAdminMdl));
         toolbar.add(studentDetailsToolItem(_grid));
         toolbar.add(manageGroupButton(_grid));
-        //toolbar.add(trendingReportButton());
+        if(CmShared.getQueryParameter("debug") != null)
+            toolbar.add(trendingReportButton());
         toolbar.add(new FillToolItem());
         toolbar.add(displayPrintableReportToolItem(_grid));
 
@@ -507,7 +502,7 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
                 GWT.runAsync(new CmRunAsyncCallback() {
                     @Override
                     public void onSuccess() {
-                        new StudentTrendingWindow(_cmAdminMdl.getId());
+                        new TrendingDataWindow(_cmAdminMdl.getId());
                     }
                 });
             }
@@ -1071,22 +1066,3 @@ class StudenPanelButton extends Button {
 
 
 
-class StudentTrendingWindow extends CmWindow {
-    Integer adminId;
-    public StudentTrendingWindow(Integer adminId) {
-        this.adminId = adminId;
-        setWidth(400);
-        setHeight(500);
-        add(new Label("Loading trend information ..."));
-        setVisible(true);
-        
-        loadTrendDataAsync();
-    }
-    
-    private void loadTrendDataAsync() {
-        CmServiceAsync service = (CmServiceAsync)Registry.get("cmService");
-        service.execute(new GetAdminTrendingDataAction(adminId),new CmAsyncCallback<CmAdminTrendingDataI>() {
-            public void onSuccess(CmAdminTrendingDataI arg0) {};
-        });
-    }
-}

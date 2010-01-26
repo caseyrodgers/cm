@@ -112,10 +112,9 @@ public class QuizContext implements CmContext {
         window.setClosable(false);
         window.setResizable(false);
         window.setStyleName("auto-assignment-window");
-        String msg = "<p>You are now enrolled in: <br/><b>" +  assignedName + "</b><br/> " +
-                     "You will be able to move ahead quickly to more advanced " +
-                     "programs as you pass the quizzes.</p>";
-                     
+        String msg = "<p>You are now enrolled in: <br/><b>" + assignedName + "</b><br/> "
+                + "You will be able to move ahead quickly to more advanced " + "programs as you pass the quizzes.</p>";
+
         Html html = new Html(msg);
 
         window.setHeading("Quiz results");
@@ -170,14 +169,8 @@ public class QuizContext implements CmContext {
                     msg += "Your quiz score: " + runInfo.getTestCorrectPercent() + "%</br>"
                             + "Congratulations, you passed!</br>" + reviewLessons + "</br>";
                 } else {
-
-                    if (UserInfo.getInstance().isDemoUser()) {
-                        new SampleDemoMessageWindow();
-                        return;
-                    } else {
-                        msg += "Your quiz score: " + runInfo.getTestCorrectPercent() + "%</br>"
-                                + "<br/>You will now be given a quiz for the next section!</br>";
-                    }
+                    msg += "Your quiz score: " + runInfo.getTestCorrectPercent() + "%</br>"
+                            + "<br/>You will now be given a quiz for the next section!</br>";
                 }
             } else {
                 // did not pass
@@ -198,8 +191,8 @@ public class QuizContext implements CmContext {
                         // is there any prescription to view?
                         if (runInfo.getSessionCount() > 0) {
                             UserInfo.getInstance().setSessionNumber(0); // beginning
-                                                                        // of
-                                                                        // prescription
+                            // of
+                            // prescription
                             CatchupMath.getThisInstance().showPrescriptionPanel();
                         } else {
                             // are there more Quizzes in this program?
@@ -215,8 +208,8 @@ public class QuizContext implements CmContext {
                         }
                     } else {
                         UserInfo.getInstance().setSessionNumber(0); // beginning
-                                                                    // of
-                                                                    // prescription
+                        // of
+                        // prescription
                         CatchupMath.getThisInstance().showPrescriptionPanel();
                     }
                     window.close();
@@ -262,7 +255,7 @@ public class QuizContext implements CmContext {
                                         UserInfo.getInstance().setTestSegment(testSegment + 1);
                                         showNextPlacmentQuiz();
                                     }
-                                } else if(testRunInfo.getAction() == NextActionName.PRESCRIPTION) {
+                                } else if (testRunInfo.getAction() == NextActionName.PRESCRIPTION) {
                                     int runId = testRunInfo.getRunId();
                                     UserInfo.getInstance().setRunId(runId);
                                     UserInfo.getInstance().setSessionNumber(0); // start
@@ -270,10 +263,9 @@ public class QuizContext implements CmContext {
                                     showPrescriptionPanel(testRunInfo);
                                 }
                             }
-                        }catch(Exception e) {
+                        } catch (Exception e) {
                             e.printStackTrace();
-                        }
-                        finally {
+                        } finally {
                             CmBusyManager.setBusy(false);
                         }
                     }
@@ -287,8 +279,8 @@ public class QuizContext implements CmContext {
     public String getStatusMessage() {
         if (UserInfo.getInstance().getTestName().toLowerCase().indexOf("auto-enroll") > -1) {
             return "<ul><li><b>Auto-Enroll Quiz</b> You will receive one or more quizzes to place you in a program for review "
-            + "and practice. Work out your answers carefully using our whiteboard or pencil and paper, then press "
-            + "Check Quiz.</li></ul>";
+                    + "and practice. Work out your answers carefully using our whiteboard or pencil and paper, then press "
+                    + "Check Quiz.</li></ul>";
         } else {
             return "<ul><li><b>Relax!</b> Work out each quiz answer at your own pace using our whiteboard or pencil and paper. "
                     + "Press Check Quiz when you are ready to receive review and practice. "
