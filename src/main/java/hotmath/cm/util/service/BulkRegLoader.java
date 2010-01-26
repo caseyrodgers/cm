@@ -50,15 +50,14 @@ public class BulkRegLoader {
 			InputStream is = null;
 			try {
 				if (isExcel(fi)) {
-					contentIsAcceptable = true;
 					is = getTSVInputStream();
 				}
 				else {
-					contentIsAcceptable = isTextOnly(fi);
-					if (contentIsAcceptable)
+					if (isTextOnly(fi))
 						is = fi.getInputStream();
 				}
 			    if (is != null) readStream(is);
+			    contentIsAcceptable = (entries.size() > 0);
 			}
 			finally {
 			    is.close();
