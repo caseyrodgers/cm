@@ -398,7 +398,7 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
         toolbar.add(editStudentToolItem(_grid, _cmAdminMdl));
         toolbar.add(studentDetailsToolItem(_grid));
         toolbar.add(manageGroupButton(_grid));
-        //toolbar.add(trendingReportButton());
+        toolbar.add(trendingReportButton());
         toolbar.add(new FillToolItem());
         toolbar.add(displayPrintableReportToolItem(_grid));
 
@@ -500,8 +500,8 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
     }
 
     private Button trendingReportButton() {
-        Button btn = new StudenPanelButton("Trends");
-        btn.setToolTip("Display lessongs being assigned the most.");
+        Button btn = new StudenPanelButton("Lesson Trends");
+        btn.setToolTip("Display lessons being assigned the most.");
         btn.addSelectionListener(new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent ce) {
                 GWT.runAsync(new CmRunAsyncCallback() {
