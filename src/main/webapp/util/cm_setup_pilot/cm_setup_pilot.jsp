@@ -29,6 +29,7 @@ if(_subscriberId == null)
     <li>geometry - a selfreg group with show work req and geometry prof prog</li>
     <li>algebra2 - a selfreg group with show work req and algebra2 prof prog</li>
     <li>gradprep - a self-reg group with show work req and cashee program</li>
+    <li>gradprepTX - a self-reg group with show work req and TAKS program</li>
     </ul>
     Teacher-1, -2, and -3, and none are created for all CM accounts    
 </p>
