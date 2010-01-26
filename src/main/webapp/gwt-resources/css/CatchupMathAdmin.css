@@ -104,10 +104,10 @@
         height: 120px;
 }
 .account-info .form {
-        width: 370px;
+        width: 420px;
 }
 .account-info .fld {
-        width: 360px;
+        width: 410px;
 }
 .account-info .fld label {
         display: block;
@@ -119,7 +119,8 @@
 }
 .account-info .fld div {
         float: right;
-        width: 180px;
+        width: 230px;
+        border: 1px solid red;
 }
 .account-info .fld-warn {
 	    color: red;
@@ -144,7 +145,7 @@
         top: 30px;
 }
 .account-info .right {
-        left: 385px;
+        left: 450px;
         position: absolute;
         top: 30px;
 }

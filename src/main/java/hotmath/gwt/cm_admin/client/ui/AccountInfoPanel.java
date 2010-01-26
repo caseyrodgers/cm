@@ -131,7 +131,7 @@ public class AccountInfoPanel extends LayoutContainer implements CmAdminDataRefr
                 }
                 
                 if(ai.getIsTutoringEnabled()) {
-                    ai.set(AccountInfoModel.TUTORING_MINUTES_LABEL, "(minutes left: " + ai.getTutoringMinutes() + ")");
+                    ai.set(AccountInfoModel.TUTORING_MINUTES_LABEL, "(" + getTutoringRemaingLabel(ai.getTutoringMinutes()) + " remaining)");
                 }
                 
                 setAccountInfoModel(ai);
@@ -148,6 +148,22 @@ public class AccountInfoPanel extends LayoutContainer implements CmAdminDataRefr
             }
         });
     }
+    
+    private String getTutoringRemaingLabel(int mins) {
+        String label="";
+        if(mins == 0) {
+            label="zero minutes";
+        }
+        else if(mins < 60) {
+            label = mins + (mins==1?" min":" mins");
+        }
+        else {
+            int h = (mins / 60);
+            label = h + (h==1?" hour":" hours");
+        }
+        return label;
+    }
+    
 
     //@Override
     public void refreshData() {
