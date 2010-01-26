@@ -395,7 +395,6 @@ public class StudentDetailsWindow extends CmWindow {
         sb.append("<div class='detail-info'>");
         sb.append("<div class='form left'>");
         sb.append("  <div class='fld'><label>Password:</label><div>{passcode}&nbsp;</div></div>");
-        sb.append("  <div class='fld'><label>Tutor Requests:</label><div>{tutoring-use}&nbsp;</div></div>");
         sb.append("</div>");
         sb.append("<div class='form right'>");
         sb.append("  <div class='fld'><label>Show Work:</label><div>{");
@@ -406,7 +405,7 @@ public class StudentDetailsWindow extends CmWindow {
         template = XTemplate.create(sb.toString());
         html = new HTML();
 
-        html.setHeight("50px"); // to eliminate the jump when setting values in
+        html.setHeight("35px"); // to eliminate the jump when setting values in
         // template
     }
 

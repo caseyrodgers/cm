@@ -23,9 +23,12 @@ import hotmath.gwt.shared.client.eventbus.CmEvent;
 import hotmath.gwt.shared.client.eventbus.CmEventListenerImplDefault;
 import hotmath.gwt.shared.client.eventbus.EventBus;
 import hotmath.gwt.shared.client.eventbus.EventType;
+import hotmath.gwt.shared.client.model.CmAdminTrendingDataI;
 import hotmath.gwt.shared.client.model.CmStudentPagingLoadResult;
+import hotmath.gwt.shared.client.model.TrendingData;
 import hotmath.gwt.shared.client.rpc.action.CmList;
 import hotmath.gwt.shared.client.rpc.action.GeneratePdfAction;
+import hotmath.gwt.shared.client.rpc.action.GetAdminTrendingDataAction;
 import hotmath.gwt.shared.client.rpc.action.GetStudentGridPageAction;
 import hotmath.gwt.shared.client.rpc.action.GetSummariesForActiveStudentsAction;
 import hotmath.gwt.shared.client.rpc.action.UnregisterStudentsAction;
@@ -503,7 +506,7 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
                 GWT.runAsync(new CmRunAsyncCallback() {
                     @Override
                     public void onSuccess() {
-                        new StudentTrendingWindow();
+                        new StudentTrendingWindow(_cmAdminMdl.getId());
                     }
                 });
             }
@@ -1068,13 +1071,21 @@ class StudenPanelButton extends Button {
 
 
 class StudentTrendingWindow extends CmWindow {
-    
-    public StudentTrendingWindow() {
+    Integer adminId;
+    public StudentTrendingWindow(Integer adminId) {
+        this.adminId = adminId;
         setWidth(400);
         setHeight(500);
-        
-        add(new Label("Trending"));
+        add(new Label("Loading trend information ..."));
         setVisible(true);
+        
+        loadTrendDataAsync();
     }
     
+    private void loadTrendDataAsync() {
+        CmServiceAsync service = (CmServiceAsync)Registry.get("cmService");
+        service.execute(new GetAdminTrendingDataAction(adminId),new CmAsyncCallback<CmAdminTrendingDataI>() {
+            public void onSuccess(CmAdminTrendingDataI arg0) {};
+        });
+    }
 }
