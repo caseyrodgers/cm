@@ -2,7 +2,6 @@ package hotmath.gwt.cm_admin.client.ui;
 
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
-import hotmath.gwt.cm_tools.client.model.AccountInfoModel;
 import hotmath.gwt.cm_tools.client.model.CmAdminDataReader;
 import hotmath.gwt.cm_tools.client.model.CmAdminDataRefresher;
 import hotmath.gwt.cm_tools.client.model.CmAdminModel;
@@ -17,6 +16,7 @@ import hotmath.gwt.cm_tools.client.ui.GroupSelectorWidget;
 import hotmath.gwt.cm_tools.client.ui.PdfWindow;
 import hotmath.gwt.cm_tools.client.ui.RegisterStudent;
 import hotmath.gwt.cm_tools.client.ui.StudentDetailsWindow;
+import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
 import hotmath.gwt.cm_tools.client.util.ProcessTracker;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
@@ -65,6 +65,7 @@ import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.HorizontalPanel;
+import com.extjs.gxt.ui.client.widget.Label;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.button.Button;
@@ -499,7 +500,12 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
         btn.setToolTip("Display lessongs being assigned the most.");
         btn.addSelectionListener(new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent ce) {
-                CatchupMathTools.showAlert("Here are the trends");
+                GWT.runAsync(new CmRunAsyncCallback() {
+                    @Override
+                    public void onSuccess() {
+                        new StudentTrendingWindow();
+                    }
+                });
             }
         });
         return btn;
@@ -708,13 +714,6 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
         lastLogin.setSortable(true);
         configs.add(lastLogin);
         
-        ColumnConfig tutoring = new ColumnConfig();
-        tutoring.setId(StudentModelExt.TUTORING_USE_KEY);
-        tutoring.setHeader("Tutoring");
-        tutoring.setToolTip("Number of tutor requests");
-        tutoring.setWidth(55);
-        tutoring.setSortable(true);
-        configs.add(tutoring);
 
         ColumnConfig usage = new ColumnConfig();
         usage.setId("total-usage");
@@ -722,6 +721,14 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
         usage.setWidth(70);
         usage.setSortable(true);
         configs.add(usage);
+        
+        ColumnConfig tutoring = new ColumnConfig();
+        tutoring.setId(StudentModelExt.TUTORING_USE_KEY);
+        tutoring.setHeader("Tutoring");
+        tutoring.setToolTip("Number of tutor requests");
+        tutoring.setWidth(55);
+        tutoring.setSortable(true);
+        configs.add(tutoring);
 
         ColumnModel cm = new ColumnModel(configs);
         return cm;
@@ -1056,4 +1063,18 @@ class StudenPanelButton extends Button {
         addStyleName("student-grid-panel-button");
         setWidth(115);
     }
+}
+
+
+
+class StudentTrendingWindow extends CmWindow {
+    
+    public StudentTrendingWindow() {
+        setWidth(400);
+        setHeight(500);
+        
+        add(new Label("Trending"));
+        setVisible(true);
+    }
+    
 }
