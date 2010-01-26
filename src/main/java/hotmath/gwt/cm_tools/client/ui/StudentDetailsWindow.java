@@ -225,18 +225,14 @@ public class StudentDetailsWindow extends CmWindow {
         Button btn = new Button("Tutoring Sessions");
         btn.addStyleName("student-details-panel-sw-btn");
 
-        if (!studentModel.getTutoringAvail())
-            btn.setEnabled(false);
-        else {
-            btn.setToolTip("Display any tutoring sessions created by this user");
-            btn.addSelectionListener(new SelectionListener<ButtonEvent>() {
+        btn.setToolTip("Display any tutoring sessions created by this user");
+        btn.addSelectionListener(new SelectionListener<ButtonEvent>() {
 
-                @Override
-                public void componentSelected(ButtonEvent ce) {
-                    showTutoringForUser();
-                }
-            });
-        }
+            @Override
+            public void componentSelected(ButtonEvent ce) {
+                showTutoringForUser();
+            }
+        });
         return btn;
     }
 
