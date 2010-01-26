@@ -1,7 +1,7 @@
 package hotmath.gwt.shared.server.service.command;
 
-import hotmath.cm.util.CmAdminTrendingDataImplDummy;
 import hotmath.gwt.shared.client.model.CmAdminTrendingDataI;
+import hotmath.gwt.shared.client.model.CmAdminTrendingDataImplDummy;
 import hotmath.gwt.shared.client.rpc.Action;
 import hotmath.gwt.shared.client.rpc.Response;
 import hotmath.gwt.shared.client.rpc.action.GetAdminTrendingDataAction;
