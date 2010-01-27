@@ -17,6 +17,8 @@ import com.extjs.gxt.ui.client.Style.SelectionMode;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.store.ListStore;
+import com.extjs.gxt.ui.client.widget.TabItem;
+import com.extjs.gxt.ui.client.widget.TabPanel;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
@@ -31,28 +33,44 @@ import com.extjs.gxt.ui.client.widget.layout.FillLayout;
 public class TrendingDataWindow extends CmWindow {
     Integer adminId;
     Grid<TrendingDataExt> _grid;
-
+    TrendingDataWindowChart _chart;
+    
     public TrendingDataWindow(Integer adminId) {
         this.adminId = adminId;
         setHeading("Top Five Assigned Lessons");
-        setWidth(410);
-        setHeight(300);
+        setWidth(600);
+        setHeight(500);
 
+        setLayout(new FillLayout());
+        
+        TabPanel tabPanel = new TabPanel();
+
+        _chart = new TrendingDataWindowChart();
+        TabItem ti = new TabItem("Chart");
+        ti.add(_chart);
+        
+        tabPanel.add(ti);
+        
         final ListStore<TrendingDataExt> store = new ListStore<TrendingDataExt>();
         _grid = defineGrid(store, defineColumns());
         
-        setLayout(new FillLayout());
-        add(_grid);
-        loadTrendDataAsync();
+        ti = new TabItem("Text");
+        ti.add(_grid);
+        
+        tabPanel.add(ti);
         
         
+        add(tabPanel);
         addButton(new Button("Close",new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent ce) {
                 close();
             }
         }));
+
         
+        // add(_grid);
+        loadTrendDataAsync();
         setVisible(true);
     }
 
@@ -65,6 +83,7 @@ public class TrendingDataWindow extends CmWindow {
                     ltde.add(new TrendingDataExt(arg0.getTrendingData().get(i)));
                 }
                 _grid.getStore().add(ltde);
+                _chart.setModelData(arg0.getTrendingData());
                layout();
             }
         });
