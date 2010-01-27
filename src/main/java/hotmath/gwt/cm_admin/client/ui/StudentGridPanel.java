@@ -495,7 +495,7 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
     }
 
     private Button trendingReportButton() {
-        Button btn = new StudenPanelButton("Lesson Trends");
+        Button btn = new StudenPanelButton("Assessment");
         btn.setToolTip("Display lessons being assigned the most.");
         btn.addSelectionListener(new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent ce) {

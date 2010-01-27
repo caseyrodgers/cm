@@ -159,7 +159,7 @@ public class AccountInfoPanel extends LayoutContainer implements CmAdminDataRefr
         }
         else {
             int h = (mins / 60);
-            label = h + (h==1?" hour":" hours");
+            label = "" + h + (h==1?" hour":" hours");
         }
         return label;
     }
