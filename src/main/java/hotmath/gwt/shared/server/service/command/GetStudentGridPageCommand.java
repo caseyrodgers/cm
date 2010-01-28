@@ -236,7 +236,10 @@ class StudentGridComparator implements Comparator<StudentModelExt> {
             return nz(p1.getLastLogin()).compareToIgnoreCase(nz(p2.getLastLogin()));
         } else if (sortField.equals(StudentModelExt.TOTAL_USAGE_KEY)) {
             return p1.getTotalUsage() - p2.getTotalUsage();
+        } else if (sortField.equals(StudentModelExt.TUTORING_USE_KEY)) {
+            return p1.getTutoringUse() - p2.getTutoringUse();
         }
+
         return 0;
     }
 
