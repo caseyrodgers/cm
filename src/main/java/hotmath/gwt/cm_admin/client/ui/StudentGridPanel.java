@@ -916,6 +916,8 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
         // empty impl
     }
 
+    GetStudentGridPageAction _pageAction = null;
+    
     /**
      * Create proxy to handle the paged student grid RPC calls
      * 
@@ -929,18 +931,18 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
              * 
              */
             CmServiceAsync s = (CmServiceAsync) Registry.get("cmService");
-            GetStudentGridPageAction pageAction = new GetStudentGridPageAction(_cmAdminMdl.getId(),(PagingLoadConfig) loadConfig);
+            _pageAction = new GetStudentGridPageAction(_cmAdminMdl.getId(),(PagingLoadConfig) loadConfig);
             
             /**
              * setup request for special handling
              * 
              * use module vars to hold request options
              */
-            pageAction.setForceRefresh(_forceServerRefresh);
-            pageAction.setGroupFilter(_groupFilterId != null?_groupFilterId.toString():null);
-            pageAction.setQuickSearch(_quickSearch);
+            _pageAction.setForceRefresh(_forceServerRefresh);
+            _pageAction.setGroupFilter(_groupFilterId != null?_groupFilterId.toString():null);
+            _pageAction.setQuickSearch(_quickSearch);
 
-            s.execute(pageAction, callback);
+            s.execute(_pageAction, callback);
 
             /** always reset request options */
             _forceServerRefresh = false;

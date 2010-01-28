@@ -27,7 +27,7 @@ public class TrendingDataWindowChart extends Chart {
         super("/gwt-resources/gxt/chart/open-flash-chart.swf");
     }
 
-    protected void setModelData(List<TrendingData> data) {
+    protected void setModelData(String title, List<TrendingData> data) {
 
         ContentPanel cp = new ContentPanel();
         cp.setHeading("Pie chart");
@@ -36,11 +36,11 @@ public class TrendingDataWindowChart extends Chart {
         cp.setLayout(new FitLayout());
 
         setBorders(true);
-        setChartModel(getPieChartData(data));
+        setChartModel(getPieChartData(title, data));
     }
 
-    private ChartModel getPieChartData(List<TrendingData> data) {
-        ChartModel cm = new ChartModel("Lessons Assigned", "font-size: 14px; font-family: Verdana; text-align: center;");
+    private ChartModel getPieChartData(String title, List<TrendingData> data) {
+        ChartModel cm = new ChartModel(title, "font-size: 14px; font-family: Verdana; text-align: center;");
         cm.setBackgroundColour("#fffff5");
         Legend lg = new Legend(Position.RIGHT, true);
         lg.setPadding(10);

@@ -34,10 +34,32 @@ import com.extjs.gxt.ui.client.data.PagingLoadConfig;
  */
 public class GetStudentGridPageCommand implements
         ActionHandler<GetStudentGridPageAction, CmStudentPagingLoadResult<StudentModelExt>> {
-    @SuppressWarnings("unchecked")
     @Override
     public CmStudentPagingLoadResult<StudentModelExt> execute(Connection conn, GetStudentGridPageAction action)
             throws Exception {
+
+        List<StudentModelExt> studentPool = getStudentPool(conn, action);
+
+        /**
+         * Prepare a holder for the page of data to return
+         * 
+         */
+        ArrayList<StudentModelExt> sublist = new ArrayList<StudentModelExt>();
+        /** Extract the page from the entire pool
+         * 
+         */
+        int limit = studentPool.size();
+        if (action.getLoadConfig().getLimit() > 0) {
+            limit = Math.min(action.getLoadConfig().getOffset() + action.getLoadConfig().getLimit(), limit);
+        }
+        for (int i = action.getLoadConfig().getOffset(); i < limit; i++) {
+            sublist.add(studentPool.get(i));
+        }
+        return new CmStudentPagingLoadResult<StudentModelExt>(sublist, action.getLoadConfig().getOffset(), studentPool.size());
+    }
+    
+    @SuppressWarnings("unchecked")
+    public List<StudentModelExt> getStudentPool(final Connection conn, GetStudentGridPageAction action) throws Exception {
 
         PagingLoadConfig config = action.getLoadConfig();
 
@@ -56,13 +78,7 @@ public class GetStudentGridPageCommand implements
             CmCacheManager.getInstance().addToCache(CacheName.STUDENT_PAGED_DATA, cacheKey, _allStudents);
         }
 
-        /**
-         * Prepare a holder for the page of data to return
-         * 
-         */
-        ArrayList<StudentModelExt> sublist = new ArrayList<StudentModelExt>();
 
-        int start = config.getOffset();
         List<StudentModelExt> studentPool = null;
 
         /** if group not null and matches either group NONE or is set to NO_FILTERING
@@ -88,7 +104,7 @@ public class GetStudentGridPageCommand implements
             studentPool = _allStudents;
         }
         
-
+        
         /** apply the quick search algorithm
          * 
          */
@@ -114,35 +130,9 @@ public class GetStudentGridPageCommand implements
                 Collections.sort(studentPool, config.getSortInfo().getSortDir().comparator(
                         new StudentGridComparator(sortField)));
             }
-        }
+        }   
         
-
-        /** add current pool to cache for possible use by other commands
-         * @See GetAdminTrendingDataCommand
-         */
-        CmCacheManager.getInstance().addToCache(CacheName.STUDENT_PAGED_DATA, getPoolCacheKey(action.getAdminId()), studentPool);
-        
-
-        /** Extract the page from the entire pool
-         * 
-         */
-        int limit = studentPool.size();
-        if (config.getLimit() > 0) {
-            limit = Math.min(start + action.getLoadConfig().getLimit(), limit);
-        }
-        for (int i = config.getOffset(); i < limit; i++) {
-            sublist.add(studentPool.get(i));
-        }
-        return new CmStudentPagingLoadResult<StudentModelExt>(sublist, config.getOffset(), studentPool.size());
-    }
-    
-    /** key used to specify the full pool (filtered)
-     * 
-     * @param aid
-     * @return
-     */
-    static public String getPoolCacheKey(int aid) {
-        return "paged_" + aid + "_pool";
+        return studentPool;
     }
     
     /** key used to specify all data for this admin

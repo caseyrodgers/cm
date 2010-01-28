@@ -1,7 +1,5 @@
 package hotmath.gwt.shared.server.service.command;
 
-import hotmath.cm.util.CmCacheManager;
-import hotmath.cm.util.CmCacheManager.CacheName;
 import hotmath.gwt.cm_admin.server.model.CmAdminDao;
 import hotmath.gwt.cm_tools.client.model.StudentModelExt;
 import hotmath.gwt.shared.client.model.CmAdminTrendingDataI;
@@ -19,9 +17,7 @@ public class GetAdminTrendingDataCommand implements ActionHandler<GetAdminTrendi
     @Override
     public CmAdminTrendingDataI execute(Connection conn, GetAdminTrendingDataAction action) throws Exception {
         
-        /** get filtered dataset from cache */
-        List<StudentModelExt> studentPool = (List<StudentModelExt>) CmCacheManager.getInstance().retrieveFromCache(CacheName.STUDENT_PAGED_DATA, 
-                GetStudentGridPageCommand.getPoolCacheKey(action.getAdminId()));
+        List<StudentModelExt> studentPool = new GetStudentGridPageCommand().getStudentPool(conn, action.getDataAction());
         
         return new CmAdminTrendingDataImplDefault(new CmAdminDao().getTrendingData(conn, action.getAdminId(), studentPool));
     }

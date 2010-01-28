@@ -12,12 +12,12 @@ public class GetAdminTrendingDataCommand_Test extends CmDbTestCase{
     }
 
     public void testCreate() throws Exception {
-        CmAdminTrendingDataI td = new GetAdminTrendingDataCommand().execute(conn,new GetAdminTrendingDataAction(2));
+        CmAdminTrendingDataI td = new GetAdminTrendingDataCommand().execute(conn,new GetAdminTrendingDataAction(2,null));
         assertTrue(td.getTrendingData().size() > 0);
     }
     
     public void testCreateActionDispatcher() throws Exception {
-        CmAdminTrendingDataI td = ActionDispatcher.getInstance().execute(new GetAdminTrendingDataAction(2));
+        CmAdminTrendingDataI td = ActionDispatcher.getInstance().execute(new GetAdminTrendingDataAction(2,null));
         assertTrue(td.getTrendingData().size() > 0);
     }
 }
