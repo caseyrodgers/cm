@@ -131,7 +131,8 @@ public class AccountInfoPanel extends LayoutContainer implements CmAdminDataRefr
                 }
                 
                 if(ai.getIsTutoringEnabled()) {
-                    ai.set(AccountInfoModel.TUTORING_MINUTES_LABEL, "(" + getTutoringRemaingLabel(ai.getTutoringMinutes()) + " remaining)");
+                    //ai.set(AccountInfoModel.TUTORING_MINUTES_LABEL, "(" + getTutoringRemaingLabel(ai.getTutoringMinutes()) + " remaining)");
+                    ai.set(AccountInfoModel.TUTORING_MINUTES_LABEL, "");
                 }
                 
                 setAccountInfoModel(ai);
