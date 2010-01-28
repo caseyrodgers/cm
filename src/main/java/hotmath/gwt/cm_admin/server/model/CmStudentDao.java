@@ -25,6 +25,7 @@ import hotmath.testset.ha.HaTestDefDescription;
 import hotmath.testset.ha.HaTestRun;
 import hotmath.testset.ha.HaTestRunDao;
 import hotmath.util.HMConnectionPool;
+import hotmath.util.Jsonizer;
 import hotmath.util.sql.SqlUtilities;
 
 import java.sql.Connection;
@@ -46,6 +47,8 @@ import java.util.Set;
 import org.apache.log4j.Logger;
 import org.json.JSONArray;
 import org.json.JSONObject;
+
+import com.sdicons.json.helper.JSONMap;
 
 public class CmStudentDao {
 
@@ -1005,12 +1008,19 @@ public class CmStudentDao {
                 int segmentCount = rs.getInt("total_segments");
 
                 /**
-                 * If not set, then guess
+                 * If not set, then take extract config json on test_def
                  * 
-                 * @TODO: this should never happen
                  */
-                if (segmentCount == 0)
-                    segmentCount = 4;
+                if (segmentCount == 0) {
+                    try {
+                        String json = rs.getString("test_config_json");
+                        JSONObject jo = new JSONObject(json);
+                        segmentCount = jo.getInt("segments");
+                    }
+                    catch(Exception e) {
+                        e.printStackTrace();
+                    }
+                }
 
                 String status = new StringBuilder("Section ").append(activeSegment).append(" of ").append(segmentCount)
                         .toString();
