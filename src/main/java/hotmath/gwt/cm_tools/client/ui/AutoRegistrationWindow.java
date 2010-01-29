@@ -157,8 +157,8 @@ public class AutoRegistrationWindow extends CmWindow {
     }
 
     /** Create the preview first.  If there are any errors
-     *  diplay the messages and stop .. if there are zero errors
-     *  The begin the process of creating the users and skip showing
+     *  display the messages and stop .. if there are zero errors
+     *  then begin the process of creating the users and skip showing
      *  the preview panel.
      *  
      */
