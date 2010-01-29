@@ -392,8 +392,10 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
         toolbar.add(editStudentToolItem(_grid, _cmAdminMdl));
         toolbar.add(studentDetailsToolItem(_grid));
         toolbar.add(manageGroupButton(_grid));
-        if(CmShared.getQueryParameter("debug") != null)
+        if(CmShared.getQueryParameter("debug") != null) {
             toolbar.add(trendingReportButton());
+            toolbar.add(assessmentReportButton());
+        }
         toolbar.add(new FillToolItem());
         toolbar.add(displayPrintableReportToolItem(_grid));
 
@@ -477,7 +479,7 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
     }
 
     static class MyMenuItem extends MenuItem {
-        public MyMenuItem(String test, String tip, SelectionListener listener) {
+        public MyMenuItem(String test, String tip, SelectionListener<MenuEvent> listener) {
             super(test, listener);
             setToolTip(tip);
         }
@@ -589,6 +591,32 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
         return ti;
     }
     
+    private Button assessmentReportButton() {
+        Button bti = new StudenPanelButton("Group Assessment");
+        bti.setToolTip("Display a printable Group Assessment report.");
+
+        bti.addSelectionListener(new SelectionListener<ButtonEvent>() {
+            @Override
+            public void componentSelected(ButtonEvent ce) {
+                ListStore<StudentModelExt> store = _grid.getStore();
+
+                final List<Integer> studentUids = new ArrayList<Integer>();
+                for (int i = 0; i < store.getCount(); i++) {
+                    studentUids.add(store.getAt(i).getUid());
+                }
+                GWT.runAsync(new CmRunAsyncCallback() {
+
+                    @Override
+                    public void onSuccess() {
+                        new PdfWindow(_cmAdminMdl.getId(), "Catchup Math Group Assessment Report",
+                                new GeneratePdfAction(PdfType.GROUP_ASSESSMENT, _cmAdminMdl.getId(), studentUids));
+                    }
+                });
+            }
+        });
+        return bti;
+    }
+    
     private void showStudentDetails(final StudentModelExt sm) {
         GWT.runAsync(new CmRunAsyncCallback() {
             @Override
@@ -597,7 +625,7 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
             }
         });        
     }
-
+/*
     private Button unregisterStudentToolItem(final Grid<StudentModelExt> grid) {
         Button ti = new StudenPanelButton("Unregister Student");
         ti.setToolTip("Unregister the selected student");
@@ -633,7 +661,7 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
         });
         return ti;
     }
-
+*/
     private Button displayPrintableReportToolItem(final Grid<StudentModelExt> grid) {
         Button ti = new Button();
         ti.setIconStyle("printer-icon");
@@ -820,7 +848,7 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
                              * only way I could get the currently selected row
                              * re-selected on refresh.
                              * 
-                             * @TODO: recheck this condition on next GXT build.
+                             * @TODO: re-check this condition on next GXT build.
                              */
                             final int visRow = i;
                             new Timer() {
@@ -901,17 +929,17 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
         });
     }
 
-    // @Override
+    @Override
     public void beginStep() {
         // empty impl
     }
 
-    // @Override
+    @Override
     public void completeStep() {
         // empty impl
     }
 
-    // @Override
+    @Override
     public void finish() {
         // empty impl
     }
