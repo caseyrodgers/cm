@@ -30,7 +30,6 @@ import com.lowagie.text.pdf.PdfPTable;
 import com.lowagie.text.pdf.PdfPageEvent;
 import com.lowagie.text.pdf.PdfWriter;
 
-
 public class StudentDetailReport {
 	
 	private String reportName;
@@ -45,18 +44,15 @@ public class StudentDetailReport {
 				(List<Integer>)CmCacheManager.getInstance().retrieveFromCache(REPORT_ID, reportId);
 			stuUid = studentUids.get(0);
 			
-			CmAdminDao adminDao = new CmAdminDao();
+	        AccountInfoModel info = new CmAdminDao().getAccountInfo(conn, adminId);
+            if (info == null) return null;
 
-			AccountInfoModel info = adminDao.getAccountInfo(adminId);
-			if (info == null) return null;
-
-			CmStudentDao studentDao = new CmStudentDao();
-			List<StudentActivityModel> sList = studentDao.getStudentActivity(conn, stuUid);
-			StudentModelI sm = studentDao.getStudentModel(stuUid);
+        	CmStudentDao studentDao = new CmStudentDao();
+        	List<StudentActivityModel> sList = studentDao.getStudentActivity(conn, stuUid);
+        	StudentModelI sm = studentDao.getStudentModel(conn, stuUid);
 						
 			Document document = new Document();
 			baos = new ByteArrayOutputStream();
-
 			PdfWriter writer = PdfWriter.getInstance(document, baos);
 
 			Phrase school   = buildLabelContent("School: ", info.getSchoolName());
