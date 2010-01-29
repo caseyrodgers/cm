@@ -42,6 +42,8 @@ public class StudentSummaryReport {
         if (info == null)
             return null;
 
+        setReportName(info);
+        
         CmStudentDao studentDao = new CmStudentDao();
         List<StudentModelI> sList=null;
         Connection conn=null;
@@ -66,33 +68,9 @@ public class StudentSummaryReport {
         baos = new ByteArrayOutputStream();
         PdfWriter.getInstance(document, baos);
 
-        Phrase heading = new Phrase();
-        Phrase school = buildLabelContent("School: ", info.getSchoolName());
-        Phrase admin = buildLabelContent("Administrator: ", info.getSchoolUserName());
-        Phrase expires = buildLabelContent("Expires: ", info.getExpirationDate());
-        Phrase stuCount = buildLabelContent("Student Count: ", String.valueOf(list.size()));
-        
-        StringBuilder sb = new StringBuilder();
-        sb.append("CM-SummaryReport");
-        if (info.getSchoolName() != null)
-        	sb.append("-").append(info.getSchoolName().replaceAll("/| ", ""));
-        reportName = sb.toString();
+        HeaderFooter header = ReportUtils.getGroupReportHeader(info, list.size());
+        HeaderFooter footer = ReportUtils.getFooter();
 
-        heading.add(school);
-        // Chunk c = new Chunk(new Jpeg(new
-        // URL("http://localhost:8081/gwt-resources/images/logo_1.jpg")), 3.5f,
-        // 1.0f);
-        // heading.add(c);
-        heading.add(Chunk.NEWLINE);
-        heading.add(admin);
-        heading.add(Chunk.NEWLINE);
-        heading.add(expires);
-        heading.add(Chunk.NEWLINE);
-        heading.add(stuCount);
-
-        HeaderFooter header = new HeaderFooter(heading, false);
-        HeaderFooter footer = new HeaderFooter(new Phrase("Page "), new Phrase("."));
-        footer.setAlignment(HeaderFooter.ALIGN_RIGHT);
         document.setHeader(header);
         document.setFooter(footer);
 
@@ -135,17 +113,16 @@ public class StudentSummaryReport {
         return baos;
     }
     
-    public String getReportName() {
-    	return reportName;
+    private void setReportName(AccountInfoModel info) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("CM-SummaryReport");
+        if (info.getSchoolName() != null)
+        	sb.append("-").append(info.getSchoolName().replaceAll("/| ", ""));
+        reportName = sb.toString();
     }
 
-    private Phrase buildLabelContent(String label, String value) {
-        Phrase phrase = new Phrase(new Chunk(label, FontFactory.getFont(FontFactory.HELVETICA, 10, Font.BOLD,
-                new Color(0, 0, 0))));
-        Phrase content = new Phrase(new Chunk(value, FontFactory.getFont(FontFactory.HELVETICA, 10, Font.NORMAL,
-                new Color(0, 0, 0))));
-        phrase.add(content);
-        return phrase;
+    public String getReportName() {
+    	return reportName;
     }
 
     private void addHeader(String label, String percentWidth, Table tbl) throws Exception {
