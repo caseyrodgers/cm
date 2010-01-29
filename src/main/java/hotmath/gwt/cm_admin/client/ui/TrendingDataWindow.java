@@ -1,12 +1,13 @@
 package hotmath.gwt.cm_admin.client.ui;
 
+import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.model.BaseModel;
 import hotmath.gwt.cm_tools.client.service.CmServiceAsync;
 import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
+import hotmath.gwt.shared.client.data.CmAsyncRequestImplDefault;
 import hotmath.gwt.shared.client.model.CmAdminTrendingDataI;
 import hotmath.gwt.shared.client.model.TrendingData;
 import hotmath.gwt.shared.client.rpc.action.GetAdminTrendingDataAction;
-import hotmath.gwt.shared.client.rpc.action.GetStudentGridPageAction;
 import hotmath.gwt.shared.client.util.CmAsyncCallback;
 
 import java.io.Serializable;
@@ -34,8 +35,9 @@ import com.extjs.gxt.ui.client.widget.layout.FillLayout;
 public class TrendingDataWindow extends CmWindow {
     Integer adminId;
     Grid<TrendingDataExt> _grid;
-    TrendingDataWindowChart _chart;
+    TrendingDataWindowChart _chartPie;
     
+    TabPanel _tabPanel;
     public TrendingDataWindow(Integer adminId) {
         this.adminId = adminId;
         
@@ -45,13 +47,18 @@ public class TrendingDataWindow extends CmWindow {
 
         setLayout(new FillLayout());
         
-        TabPanel tabPanel = new TabPanel();
+        _tabPanel = new TabPanel();
 
-        _chart = new TrendingDataWindowChart();
+        _chartPie = new TrendingDataWindowChart(new CmAsyncRequestImplDefault() {
+            @Override
+            public void requestComplete(String requestData) {
+                createNewBarChart();
+            }
+        });
         TabItem ti = new TabItem("Assigned Lessons");
-        ti.add(_chart);
+        ti.add(_chartPie);
         
-        tabPanel.add(ti);
+        _tabPanel.add(ti);
         
         final ListStore<TrendingDataExt> store = new ListStore<TrendingDataExt>();
         _grid = defineGrid(store, defineColumns());
@@ -59,10 +66,12 @@ public class TrendingDataWindow extends CmWindow {
         ti = new TabItem("Text");
         ti.add(_grid);
         
-        tabPanel.add(ti);
+        _tabPanel.add(ti);
+
         
+        _tabPanel.add(ti);
         
-        add(tabPanel);
+        add(_tabPanel);
         addButton(new Button("Close",new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent ce) {
@@ -82,23 +91,48 @@ public class TrendingDataWindow extends CmWindow {
         setVisible(true);
     }
 
+    private void createNewBarChart() {
+        TabItem ti = new TabItem("Bar Chart");
+        TrendingDataWindowChartBar barChart = new TrendingDataWindowChartBar(new CmAsyncRequestImplDefault() {
+            
+            @Override
+            public void requestComplete(String requestData) {
+            }
+        });;
+        
+        barChart.setModelData("Bar Chart", _trendingData.getTrendingData());
+        ti.add(barChart);
+        _tabPanel.add(ti);
+        layout();
+    }
     
+    CmAdminTrendingDataI _trendingData;
     private void loadTrendDataAsync() {
+        CmBusyManager.setBusy(true);
+        
         CmServiceAsync service = (CmServiceAsync) Registry.get("cmService");
         service.execute(new GetAdminTrendingDataAction(adminId,StudentGridPanel.instance._pageAction), new CmAsyncCallback<CmAdminTrendingDataI>() {
-            public void onSuccess(CmAdminTrendingDataI arg0) {
-                List<TrendingDataExt> ltde = new ArrayList<TrendingDataExt>();
-                for(int i=0,t=arg0.getTrendingData().size();i<t;i++) {
-                    ltde.add(new TrendingDataExt(arg0.getTrendingData().get(i)));
+            public void onSuccess(CmAdminTrendingDataI trendingData) {
+                _trendingData = trendingData;
+                List<TrendingDataExt> dataExt = new ArrayList<TrendingDataExt>();
+                for(int i=0,t=trendingData.getTrendingData().size();i<t;i++) {
+                    dataExt.add(new TrendingDataExt(trendingData.getTrendingData().get(i)));
                 }
                 _grid.getStore().removeAll();
-                _grid.getStore().add(ltde);
+                _grid.getStore().add(dataExt);
                 
                 String t = "Top Five Lessons Assigned (count: " + StudentGridPanel.instance._grid.getStore().getCount() + ")";
-                _chart.setModelData(t, arg0.getTrendingData());
-                
+                _chartPie.setModelData(t, trendingData.getTrendingData());
                 
                layout();
+               
+               CmBusyManager.setBusy(false);
+            }
+            
+            @Override
+            public void onFailure(Throwable caught) {
+                CmBusyManager.setBusy(false);
+                super.onFailure(caught);
             }
         });
     }

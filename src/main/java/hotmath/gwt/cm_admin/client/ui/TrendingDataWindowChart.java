@@ -1,5 +1,6 @@
 package hotmath.gwt.cm_admin.client.ui;
 
+import hotmath.gwt.shared.client.data.CmAsyncRequest;
 import hotmath.gwt.shared.client.model.TrendingData;
 
 import java.util.List;
@@ -12,23 +13,29 @@ import com.extjs.gxt.charts.client.model.Legend;
 import com.extjs.gxt.charts.client.model.Legend.Position;
 import com.extjs.gxt.charts.client.model.charts.PieChart;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
-import com.extjs.gxt.ui.client.widget.Info;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 
 public class TrendingDataWindowChart extends Chart {
 
     private ChartListener listener = new ChartListener() {
         public void chartClick(ChartEvent ce) {
-            Info.display("Chart Clicked", "You selected {0}.", "" + ce.getValue());
+            _callback.requestComplete(ce.getValue().toString());
         }
     };
+    
+    CmAsyncRequest _callback;
 
-    public TrendingDataWindowChart() {
-        super("/gwt-resources/gxt/chart/open-flash-chart.swf");
+    public TrendingDataWindowChart(CmAsyncRequest callback) {
+        this("/gwt-resources/gxt/chart/open-flash-chart.swf",callback);
+        setVisible(false);
+    }
+    
+    public TrendingDataWindowChart(String path,CmAsyncRequest callback) {
+        super(path);
+        _callback = callback;
     }
 
     protected void setModelData(String title, List<TrendingData> data) {
-
         ContentPanel cp = new ContentPanel();
         cp.setHeading("Pie chart");
         cp.setFrame(true);
@@ -37,6 +44,7 @@ public class TrendingDataWindowChart extends Chart {
 
         setBorders(true);
         setChartModel(getPieChartData(title, data));
+        setVisible(true);
     }
 
     private ChartModel getPieChartData(String title, List<TrendingData> data) {
