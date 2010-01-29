@@ -29,7 +29,7 @@ public class GeneratePDF extends HttpServlet {
         try {
             makePdf(request, response, "GET");
         } catch (Exception e) {
-            logger.info("Error generating report card", e);
+            logger.info("Error generating PDF", e);
             request.getRequestDispatcher("/gwt-resources/report_card_fail.html").forward(request, response);
         }	    
 		
@@ -40,7 +40,7 @@ public class GeneratePDF extends HttpServlet {
         try {
             makePdf(request, response, "POST");
         } catch (Exception e) {
-            logger.info("Error generating report card", e);
+            logger.info("Error generating PDF", e);
             request.getRequestDispatcher("/gwt-resources/report_card_fail.html").forward(request, response);
         }       	    
 	}
@@ -135,4 +135,5 @@ public class GeneratePDF extends HttpServlet {
         sb.append("' }");
         resp.getWriter().write(sb.toString());
 	}
+
 }
