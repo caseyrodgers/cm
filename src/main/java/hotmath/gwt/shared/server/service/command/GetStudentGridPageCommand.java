@@ -83,10 +83,12 @@ public class GetStudentGridPageCommand implements
 
         /** if group not null and matches either group NONE or is set to NO_FILTERING
          * 
+         * @TODO: why group NONE is used.
+         * 
+         *  && !action.getGroupFilter().equals(GroupInfoModel.NONE_GROUP.toString())
          */
         if (action.getGroupFilter() != null && 
-                !action.getGroupFilter().equals(GroupInfoModel.NO_FILTERING.toString()) &&
-                !action.getGroupFilter().equals(GroupInfoModel.NONE_GROUP.toString())) {
+                !action.getGroupFilter().equals(GroupInfoModel.NO_FILTERING.toString())) {
             /**
              * filtered values only matching filtered group
              * 
