@@ -19,12 +19,15 @@ public class TrendingDataWindowChart extends Chart {
 
     private ChartListener listener = new ChartListener() {
         public void chartClick(ChartEvent ce) {
-            _callback.requestComplete(ce.getValue().toString());
+            if(_callback != null)
+               _callback.requestComplete(ce.getValue().toString());
         }
     };
     
     CmAsyncRequest _callback;
 
+    String colors[] = {"#ff0000", "#00aa00", "#0000ff", "#ff9900", "#ff00ff"};
+    
     public TrendingDataWindowChart(CmAsyncRequest callback) {
         this("/gwt-resources/gxt/chart/open-flash-chart.swf",callback);
         setVisible(false);
@@ -60,7 +63,7 @@ public class TrendingDataWindowChart extends Chart {
         
         
         pie.setTooltip("#label# #val#");
-        pie.setColours("#ff0000", "#00aa00", "#0000ff", "#ff9900", "#ff00ff");
+        pie.setColours(colors);
         
         for(int i=0,t=data.size();i<t;i++) {
             TrendingData td = data.get(i);

@@ -19,6 +19,7 @@ import com.extjs.gxt.ui.client.Style.SelectionMode;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.store.ListStore;
+import com.extjs.gxt.ui.client.widget.Info;
 import com.extjs.gxt.ui.client.widget.TabItem;
 import com.extjs.gxt.ui.client.widget.TabPanel;
 import com.extjs.gxt.ui.client.widget.button.Button;
@@ -36,6 +37,7 @@ public class TrendingDataWindow extends CmWindow {
     Integer adminId;
     Grid<TrendingDataExt> _grid;
     TrendingDataWindowChart _chartPie;
+    TrendingDataWindowChart _chartBar;
     
     TabPanel _tabPanel;
     public TrendingDataWindow(Integer adminId) {
@@ -52,25 +54,25 @@ public class TrendingDataWindow extends CmWindow {
         _chartPie = new TrendingDataWindowChart(new CmAsyncRequestImplDefault() {
             @Override
             public void requestComplete(String requestData) {
-                createNewBarChart();
+                Info.display("Chart Selected", "Selected: " + requestData);
             }
         });
-        TabItem ti = new TabItem("Assigned Lessons");
-        ti.add(_chartPie);
         
+        _chartBar = new TrendingDataWindowChartBar(null);
+        TabItem ti = new TabItem("Assigned Lessons (bar");
+        ti.add(_chartBar);
+        _tabPanel.add(ti);
+        
+        ti = new TabItem("Assigned Lessons");
+        ti.add(_chartPie);
         _tabPanel.add(ti);
         
         final ListStore<TrendingDataExt> store = new ListStore<TrendingDataExt>();
         _grid = defineGrid(store, defineColumns());
-        
         ti = new TabItem("Text");
         ti.add(_grid);
-        
         _tabPanel.add(ti);
 
-        
-        _tabPanel.add(ti);
-        
         add(_tabPanel);
         addButton(new Button("Close",new SelectionListener<ButtonEvent>() {
             @Override
@@ -123,6 +125,7 @@ public class TrendingDataWindow extends CmWindow {
                 
                 String t = "Top Five Lessons Assigned (count: " + StudentGridPanel.instance._grid.getStore().getCount() + ")";
                 _chartPie.setModelData(t, trendingData.getTrendingData());
+                _chartBar.setModelData(t, trendingData.getTrendingData());
                 
                layout();
                
