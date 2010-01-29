@@ -170,7 +170,7 @@ public class HaTestDefDescription {
             int start = end - pidsInASegment;
 
             /**
-             * Get list of all pids that are in this individal quiz in this
+             * Get list of all pids that are in this individual quiz in this
              * program
              * 
              */
