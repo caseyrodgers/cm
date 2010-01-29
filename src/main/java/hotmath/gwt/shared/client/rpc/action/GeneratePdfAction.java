@@ -49,5 +49,5 @@ public class GeneratePdfAction implements Action<CmWebResource>{
         this.studentUids = studentUids;
     }
 
-    public enum PdfType{REPORT_CARD, STUDENT_DETAIL, STUDENT_SUMMARY};
+    public enum PdfType{REPORT_CARD, STUDENT_DETAIL, STUDENT_SUMMARY, GROUP_ASSESSMENT};
 }
