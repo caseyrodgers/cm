@@ -126,8 +126,8 @@ public class CmDebugReport {
     }
 
     /**
-     * test the currently assigned program by create a prescription for every
-     * solution assigned and looking for anomolies.
+     * test the currently assigned program by creating a prescription
+     * for every assigned solution and looking for anomalies.
      * 
      * 
      * @param conn
