@@ -796,6 +796,20 @@ public class CmStudentDao {
         // default is without templates
         return getStudentModel(uid, false);  
     }
+
+    /**
+     * Return a StudentModel identified by uid.
+     * 
+     * @param conn
+     * @param uid
+     * @return
+     * 
+     * @throws Exception
+     */
+    public StudentModelI getStudentModel(final Connection conn, Integer uid) throws Exception {
+        // default is without templates
+        return getStudentModel(conn, uid, false);  
+    }
     
     
     /** Return student model named by uid
