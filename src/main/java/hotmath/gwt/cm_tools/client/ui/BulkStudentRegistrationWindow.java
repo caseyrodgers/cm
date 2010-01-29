@@ -111,7 +111,7 @@ public class BulkStudentRegistrationWindow extends RegisterStudent {
 				try {
 					doSubmitAction(_fsProgram, _formPanel,
 							new AfterValidation() {
-								// @Override
+								@Override
 								public void afterValidation(StudentModel student) {
 									_student = student;
 
