@@ -61,7 +61,7 @@ public class GetStudentGridPageCommand implements
     @SuppressWarnings("unchecked")
     public List<StudentModelExt> getStudentPool(final Connection conn, GetStudentGridPageAction action) throws Exception {
 
-        PagingLoadConfig config = action.getLoadConfig();
+        PagingLoadConfig config = action!=null?action.getLoadConfig():null;
 
         String cacheKey = getCacheKey(action.getAdminId());
 
@@ -126,7 +126,7 @@ public class GetStudentGridPageCommand implements
          * Should the student pool be sorted?
          * 
          */
-        if (config.getSortInfo().getSortField() != null) {
+        if (config != null && config.getSortInfo().getSortField() != null) {
             final String sortField = config.getSortInfo().getSortField();
             if (sortField != null) {
                 Collections.sort(studentPool, config.getSortInfo().getSortDir().comparator(
