@@ -74,9 +74,9 @@ public class ReportUtils {
     
     public static HeaderFooter getGroupReportHeader(AccountInfoModel info, int studentCount) {
         Phrase heading = new Phrase();
-        Phrase school = ReportUtils.buildPhraseLabel("School: ", info.getSchoolName());
-        Phrase admin = ReportUtils.buildPhraseLabel("Administrator: ", info.getSchoolUserName());
-        Phrase expires = ReportUtils.buildPhraseLabel("Expires: ", info.getExpirationDate());
+        Phrase school = ReportUtils.buildPhraseLabel("School: ", nz(info.getSchoolName()));
+        Phrase admin = ReportUtils.buildPhraseLabel("Administrator: ", nz(info.getSchoolUserName()));
+        Phrase expires = ReportUtils.buildPhraseLabel("Expires: ", nz(info.getExpirationDate()));
         Phrase stuCount = ReportUtils.buildPhraseLabel("Student Count: ", String.valueOf(studentCount));
         
         heading.add(school);
@@ -94,6 +94,10 @@ public class ReportUtils {
         HeaderFooter header = new HeaderFooter(heading, false);
 
         return header;
+    }
+    
+    static private String nz(String s) {
+        return s == null?"":s;
     }
     
     public static PdfPTable getStudentReportHeader(StudentModelI sm, AccountInfoModel info) {

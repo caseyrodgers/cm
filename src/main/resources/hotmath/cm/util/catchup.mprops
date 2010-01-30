@@ -334,10 +334,8 @@ from    HA_TEST_DEF d
     ON t.test_def_id = d.test_def_id
   JOIN HA_USER u 
     ON u.uid = t.user_id
-    JOIN HA_TEST_DEF td 
-      ON td.test_def_id = d.test_def_id
 where u.uid in ($$UID_LIST$$)
-and td.prog_id in ('Prof', 'Auto-Enroll','Grad Prep', 'Grad Prep Tx')
+and d.prog_id in ('Prof', 'Auto-Enroll','Grad Prep', 'Grad Prep Tx')
 order by d.test_name
 
 

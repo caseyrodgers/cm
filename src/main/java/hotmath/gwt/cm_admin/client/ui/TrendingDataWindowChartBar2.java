@@ -13,6 +13,7 @@ import com.extjs.gxt.charts.client.model.axis.Label;
 import com.extjs.gxt.charts.client.model.axis.XAxis;
 import com.extjs.gxt.charts.client.model.axis.YAxis;
 import com.extjs.gxt.charts.client.model.charts.BarChart;
+import com.extjs.gxt.charts.client.model.charts.BarChart.BarStyle;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 
@@ -42,7 +43,7 @@ public class TrendingDataWindowChartBar2 extends TrendingDataWindowChart {
         Legend lg = new Legend(Position.RIGHT, true);
         lg.setPadding(10);
         cm.setLegend(lg);
-
+        
         int max=0;
         XAxis xa = new XAxis();  
         for (int i=0,t=segmentData.size();i<t;i++) {
@@ -59,12 +60,12 @@ public class TrendingDataWindowChartBar2 extends TrendingDataWindowChart {
         YAxis yz = new YAxis();
         
         /** move to next even multiple depending on count */
-        max = getMaxRange(max);
-        
+        max = getChartMaxRange(max);
+        yz.setSteps(getChartSteps(max));
         yz.setMax(max);
         cm.setYAxis(yz);
         
-        BarChart chart = new BarChart();
+        BarChart chart = new BarChart(BarStyle.GLASS);
 
         chart.setTooltip("#val#");
         for(int i=0,t=segmentData.size();i<t;i++) {

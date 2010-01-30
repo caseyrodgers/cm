@@ -75,7 +75,29 @@ public class TrendingDataWindowChart extends Chart {
         return cm;
     }
     
-    protected int getMaxRange(int max) {
+    /** determine the interval on YAxis
+     * 
+     * @param max
+     * @return
+     */
+    protected int getChartSteps(int max) {
+       if(max< 10) {
+           return 1;
+       }
+       else if(max < 100)
+           return 10;
+       else if(max < 1000)
+           return 100;
+       else 
+           return 1000;
+    }
+    
+    /** determine the max value shown by chart.
+     * 
+     * @param max
+     * @return
+     */
+    protected int getChartMaxRange(int max) {
         int fudge=0;
         double fudgeP=.01;
         if(max < 10) {

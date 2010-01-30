@@ -394,7 +394,6 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
         toolbar.add(manageGroupButton(_grid));
         if(CmShared.getQueryParameter("debug") != null) {
             toolbar.add(trendingReportButton());
-            toolbar.add(assessmentReportButton());
         }
         toolbar.add(new FillToolItem());
         toolbar.add(displayPrintableReportToolItem(_grid));
@@ -591,32 +590,7 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
         return ti;
     }
     
-    private Button assessmentReportButton() {
-        Button bti = new StudenPanelButton("Group Assessment");
-        bti.setToolTip("Display a printable Group Assessment report.");
-
-        bti.addSelectionListener(new SelectionListener<ButtonEvent>() {
-            @Override
-            public void componentSelected(ButtonEvent ce) {
-                ListStore<StudentModelExt> store = _grid.getStore();
-
-                final List<Integer> studentUids = new ArrayList<Integer>();
-                for (int i = 0; i < store.getCount(); i++) {
-                    studentUids.add(store.getAt(i).getUid());
-                }
-                GWT.runAsync(new CmRunAsyncCallback() {
-
-                    @Override
-                    public void onSuccess() {
-                        new PdfWindow(_cmAdminMdl.getId(), "Catchup Math Group Assessment Report",
-                                new GeneratePdfAction(PdfType.GROUP_ASSESSMENT, _cmAdminMdl.getId(), studentUids));
-                    }
-                });
-            }
-        });
-        return bti;
-    }
-    
+   
     private void showStudentDetails(final StudentModelExt sm) {
         GWT.runAsync(new CmRunAsyncCallback() {
             @Override

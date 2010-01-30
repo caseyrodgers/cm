@@ -12,6 +12,7 @@ import com.extjs.gxt.charts.client.model.axis.Label;
 import com.extjs.gxt.charts.client.model.axis.XAxis;
 import com.extjs.gxt.charts.client.model.axis.YAxis;
 import com.extjs.gxt.charts.client.model.charts.BarChart;
+import com.extjs.gxt.charts.client.model.charts.BarChart.BarStyle;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 
@@ -56,12 +57,13 @@ public class TrendingDataWindowChartBar extends TrendingDataWindowChart {
         YAxis yz = new YAxis();
         
         /** move to next height multiple of 100 */
-        max = getMaxRange(max);
+        max = getChartMaxRange(max);
+        yz.setSteps(getChartSteps(max));
         
         yz.setMax(max);
         cm.setYAxis(yz);
         
-        BarChart chart = new BarChart();
+        BarChart chart = new BarChart(BarStyle.THREED);
 
         chart.setTooltip("#val#");
         for(int i=0,t=data.size();i<t;i++) {

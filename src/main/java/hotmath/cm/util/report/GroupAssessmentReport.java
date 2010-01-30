@@ -1,18 +1,17 @@
 package hotmath.cm.util.report;
 
 import static hotmath.cm.util.CmCacheManager.CacheName.REPORT_ID;
-import hotmath.cm.util.CmAdminTrendingDataFactory;
 import hotmath.cm.util.CmCacheManager;
-import hotmath.cm.util.CmAdminTrendingDataFactory.TYPE;
 import hotmath.gwt.cm_admin.server.model.CmAdminDao;
 import hotmath.gwt.cm_tools.client.model.AccountInfoModel;
-import hotmath.gwt.shared.client.model.CmAdminTrendingDataI;
+import hotmath.gwt.cm_tools.client.model.StudentModelExt;
 import hotmath.gwt.shared.client.model.TrendingData;
 import hotmath.gwt.shared.client.rpc.action.CmList;
 
 import java.awt.Color;
 import java.io.ByteArrayOutputStream;
 import java.sql.Connection;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -43,8 +42,13 @@ public class GroupAssessmentReport {
         if (info == null)
             return null;
 
-        CmAdminTrendingDataI td = CmAdminTrendingDataFactory.create(TYPE.DUMMY);
-        CmList<TrendingData> tdList = td.getTrendingData();
+        List<StudentModelExt> studentPool = new ArrayList<StudentModelExt>();
+        for(Integer uid: studentUids) {
+            StudentModelExt st = new StudentModelExt();
+            st.setUid(uid);
+            studentPool.add(st);
+        }
+        CmList<TrendingData> trendingData = new CmAdminDao().getTrendingData(conn, adminId, studentPool);
 
         setReportName(info);
 
@@ -74,7 +78,7 @@ public class GroupAssessmentReport {
         tbl.endHeaders();
 
         int i = 0;
-        for (TrendingData d : tdList) {
+        for (TrendingData d : trendingData) {
             addCell(d.getLessonName(), tbl, ++i);
             addCell(String.valueOf(d.getCountAssigned()), tbl, i);
         }
