@@ -1,23 +1,21 @@
 package hotmath.cm.util.report;
 
 import static hotmath.cm.util.CmCacheManager.CacheName.REPORT_ID;
-import hotmath.cm.util.CmCacheManager;
 import hotmath.cm.util.CmAdminTrendingDataFactory;
+import hotmath.cm.util.CmCacheManager;
+import hotmath.cm.util.CmAdminTrendingDataFactory.TYPE;
 import hotmath.gwt.cm_admin.server.model.CmAdminDao;
-import hotmath.gwt.cm_admin.server.model.CmStudentDao;
 import hotmath.gwt.cm_tools.client.model.AccountInfoModel;
 import hotmath.gwt.shared.client.model.CmAdminTrendingDataI;
 import hotmath.gwt.shared.client.model.TrendingData;
 import hotmath.gwt.shared.client.rpc.action.CmList;
-import hotmath.gwt.cm_tools.client.model.StudentModelI;
 
 import java.awt.Color;
 import java.io.ByteArrayOutputStream;
 import java.sql.Connection;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+
+import org.apache.log4j.Logger;
 
 import com.lowagie.text.Cell;
 import com.lowagie.text.Chunk;
@@ -27,10 +25,6 @@ import com.lowagie.text.FontFactory;
 import com.lowagie.text.HeaderFooter;
 import com.lowagie.text.Table;
 import com.lowagie.text.pdf.PdfWriter;
-
-import org.apache.log4j.Logger;
-
-import static hotmath.cm.util.CmAdminTrendingDataFactory.TYPE;
 
 public class GroupAssessmentReport {
 	

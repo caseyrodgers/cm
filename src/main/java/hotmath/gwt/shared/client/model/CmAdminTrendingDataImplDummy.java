@@ -63,4 +63,10 @@ public class CmAdminTrendingDataImplDummy implements CmAdminTrendingDataI {
             "Corresponding Angles Postulate", "Congruent Angles", "GCF", "Root", "Quadratic Formula", "Rectangle",
             "Reducing Fractions", "Divisibility Tests", "Proportions", "Square", "Parallelogram", "Quadrilaterals",
             "Kite", "Simplifying Rational Expressions" };
+
+    @Override
+    public CmList<ProgramData> getProgramData() {
+        // TODO Auto-generated method stub
+        return null;
+    }
 }

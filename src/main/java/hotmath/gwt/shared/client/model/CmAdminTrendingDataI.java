@@ -9,5 +9,6 @@ import hotmath.gwt.shared.client.rpc.action.CmList;
  *
  */
 public interface CmAdminTrendingDataI extends Response {
+    CmList<ProgramData>  getProgramData();
     CmList<TrendingData> getTrendingData();
 }

@@ -310,6 +310,38 @@ and   u.uid in($$UID_LIST$$)
 group by lesson_name 
 order by count_assigned desc
 limit 5        
+
+
+.key=TRENDING_DATA_FOR_TEST_SEGMENTS_SQL_FROM_UIDS
+
+SELECT count(*) as count_users
+FROM   HA_TEST_DEF d
+  JOIN HA_TEST t
+    ON t.test_def_id = d.test_def_id
+  JOIN HA_USER u
+     ON u.uid = t.user_id
+WHERE (d.test_def_id = ?)
+and t.test_segment = ?
+and u.uid in ($$UID_LIST$$)
+
+
+
+.key=TRENDING_DATA_FOR_PROGRAMS_SQL_FROM_UIDS
+
+select distinct d.test_name, d.test_def_id
+from    HA_TEST_DEF d
+  JOIN HA_TEST t
+    ON t.test_def_id = d.test_def_id
+  JOIN HA_USER u 
+    ON u.uid = t.user_id
+    JOIN HA_TEST_DEF td 
+      ON td.test_def_id = d.test_def_id
+where u.uid in ($$UID_LIST$$)
+and td.prog_id in ('Prof', 'Auto-Enroll','Grad Prep', 'Grad Prep Tx')
+order by d.test_name
+
+
+
 ## 
 ## Class: CreateAutoRegistrationAccountCommand
 ##
@@ -322,7 +354,6 @@ select  g.name as group_name
 from  HA_USER u JOIN CM_GROUP g on u.group_id = g.id 
 where is_auto_create_template = 1  
 and   g.name = ?   
-
 
 
 ##

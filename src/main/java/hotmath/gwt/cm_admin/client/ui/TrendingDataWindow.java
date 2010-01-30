@@ -6,7 +6,9 @@ import hotmath.gwt.cm_tools.client.service.CmServiceAsync;
 import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
 import hotmath.gwt.shared.client.data.CmAsyncRequestImplDefault;
 import hotmath.gwt.shared.client.model.CmAdminTrendingDataI;
+import hotmath.gwt.shared.client.model.ProgramData;
 import hotmath.gwt.shared.client.model.TrendingData;
+import hotmath.gwt.shared.client.rpc.action.CmList;
 import hotmath.gwt.shared.client.rpc.action.GetAdminTrendingDataAction;
 import hotmath.gwt.shared.client.util.CmAsyncCallback;
 
@@ -19,7 +21,6 @@ import com.extjs.gxt.ui.client.Style.SelectionMode;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.store.ListStore;
-import com.extjs.gxt.ui.client.widget.Info;
 import com.extjs.gxt.ui.client.widget.TabItem;
 import com.extjs.gxt.ui.client.widget.TabPanel;
 import com.extjs.gxt.ui.client.widget.button.Button;
@@ -36,8 +37,7 @@ import com.extjs.gxt.ui.client.widget.layout.FillLayout;
 public class TrendingDataWindow extends CmWindow {
     Integer adminId;
     Grid<TrendingDataExt> _grid;
-    TrendingDataWindowChart _chartPie;
-    TrendingDataWindowChart _chartBar;
+    TrendingDataWindowChartBar2 _chartBar2;
     
     TabPanel _tabPanel;
     public TrendingDataWindow(Integer adminId) {
@@ -50,28 +50,14 @@ public class TrendingDataWindow extends CmWindow {
         setLayout(new FillLayout());
         
         _tabPanel = new TabPanel();
-
-        _chartPie = new TrendingDataWindowChart(new CmAsyncRequestImplDefault() {
-            @Override
-            public void requestComplete(String requestData) {
-                Info.display("Chart Selected", "Selected: " + requestData);
-            }
-        });
-        
-        _chartBar = new TrendingDataWindowChartBar(null);
-        TabItem ti = new TabItem("Assigned Lessons (bar");
-        ti.add(_chartBar);
-        _tabPanel.add(ti);
-        
-        ti = new TabItem("Assigned Lessons");
-        ti.add(_chartPie);
-        _tabPanel.add(ti);
+        _tabPanel.setAnimScroll(true);  
+        _tabPanel.setTabScroll(true);  
         
         final ListStore<TrendingDataExt> store = new ListStore<TrendingDataExt>();
         _grid = defineGrid(store, defineColumns());
-        ti = new TabItem("Text");
-        ti.add(_grid);
-        _tabPanel.add(ti);
+//        TabItem ti = new TabItem("Text");
+//        ti.add(_grid);
+//        _tabPanel.add(ti);
 
         add(_tabPanel);
         addButton(new Button("Close",new SelectionListener<ButtonEvent>() {
@@ -88,9 +74,12 @@ public class TrendingDataWindow extends CmWindow {
                 loadTrendDataAsync();  
             }
         }));
-        
         loadTrendDataAsync();
-        setVisible(true);
+        
+        /** turn on after data retieved
+         * 
+         */
+        setVisible(false);
     }
 
     private void createNewBarChart() {
@@ -122,22 +111,46 @@ public class TrendingDataWindow extends CmWindow {
                 }
                 _grid.getStore().removeAll();
                 _grid.getStore().add(dataExt);
-                
-                String t = "Top Five Lessons Assigned (count: " + StudentGridPanel.instance._grid.getStore().getCount() + ")";
-                _chartPie.setModelData(t, trendingData.getTrendingData());
-                _chartBar.setModelData(t, trendingData.getTrendingData());
+
+
+                addTrendingChart(trendingData);
+                addProgramCharts(trendingData.getProgramData());
                 
                layout();
-               
+               setVisible(true);
                CmBusyManager.setBusy(false);
             }
             
             @Override
             public void onFailure(Throwable caught) {
+                close();
                 CmBusyManager.setBusy(false);
                 super.onFailure(caught);
             }
         });
+    }
+    
+    private void addTrendingChart(CmAdminTrendingDataI trendingData) {
+        TabItem ti = new TabItem("Most Prescribed Lessons");
+        TrendingDataWindowChartBar chart = new TrendingDataWindowChartBar(null);
+        ti.add(chart);
+        chart.setModelData("Most Prescribed Lessons", trendingData.getTrendingData());
+        _tabPanel.add(ti);
+    }
+    
+    
+    private void addProgramCharts(CmList<ProgramData> programData) {
+        for(int i=0,t=programData.size();i<t;i++) {
+            ProgramData pd = programData.get(i);
+            TabItem ti = new TabItem(pd.getProgramName());
+            
+            TrendingDataWindowChartBar2 bar = new TrendingDataWindowChartBar2(null);
+            bar.setBarModelData(pd.getProgramName(),pd);
+            ti.add(bar);
+            
+            _tabPanel.add(ti);
+        }
+        layout();
     }
     
     private Grid<TrendingDataExt> defineGrid(final ListStore<TrendingDataExt> store, ColumnModel cm) {

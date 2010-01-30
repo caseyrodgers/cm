@@ -14,6 +14,8 @@ import hotmath.gwt.cm_tools.client.model.StudentModelExt;
 import hotmath.gwt.cm_tools.client.model.StudentModelI;
 import hotmath.gwt.cm_tools.client.model.StudyProgramModel;
 import hotmath.gwt.cm_tools.client.model.SubjectModel;
+import hotmath.gwt.shared.client.model.ProgramData;
+import hotmath.gwt.shared.client.model.ProgramSegmentData;
 import hotmath.gwt.shared.client.model.TrendingData;
 import hotmath.gwt.shared.client.rpc.action.CmArrayList;
 import hotmath.gwt.shared.client.rpc.action.CmList;
@@ -23,6 +25,8 @@ import hotmath.gwt.shared.client.util.UserInfo.AccountType;
 import hotmath.gwt.shared.server.service.command.SaveAutoRegistrationCommand;
 import hotmath.testset.ha.CmProgram;
 import hotmath.testset.ha.HaAdmin;
+import hotmath.testset.ha.HaTestDef;
+import hotmath.testset.ha.HaTestDefDao;
 import hotmath.util.HMConnectionPool;
 import hotmath.util.sql.SqlUtilities;
 
@@ -669,21 +673,35 @@ public class CmAdminDao {
     }
     
     
+    /** return a valid SQL inlist of uids based on students
+     * 
+     * @param students
+     * @return
+     */
+    private String createInListOfUids(List<StudentModelExt> students) {
+        String inList="";
+        for(int i=0,t=students.size();i<t;i++) {
+            if(i > 0)
+                inList += ",";
+            inList += students.get(i).getUid();
+        }
+        
+        /** default to empty list
+         * 
+         */
+        if(inList.length() == 0)
+            inList = "''";
+        
+        return inList;
+    }
     
     public CmList<TrendingData> getTrendingData(final Connection conn, Integer aid, List<StudentModelExt> studentPool) throws Exception {
         CmList<TrendingData> tdata = new CmArrayList<TrendingData>();
         PreparedStatement ps=null;
-        
-        String inList="";
-        for(int i=0,t=studentPool.size();i<t;i++) {
-            if(i > 0)
-                inList += ",";
-            inList += studentPool.get(i).getUid();
-        }   
-        
+
         try {
             Map<String,String> replacements = new HashMap<String,String>();
-            replacements.put("UID_LIST", inList);
+            replacements.put("UID_LIST", createInListOfUids(studentPool));
             ps = conn.prepareStatement(CmMultiLinePropertyReader.getInstance().getProperty("TRENDING_DATA_SQL_FROM_UIDS", replacements));
             ps.setInt(1, aid);
             ResultSet rs = ps.executeQuery();
@@ -695,5 +713,76 @@ public class CmAdminDao {
         finally {
             SqlUtilities.releaseResources(null, ps,null);
         }
+    }
+    
+    
+    /** return assessment/trending data for the given admin_id
+     *  limiting data to uids found in studentPool
+     *  
+     * @param conn
+     * @param aid
+     * @param studentPool
+     * @return
+     * @throws Exception
+     */
+    public CmList<ProgramData> getTrendingData_ForProgram(final Connection conn, Integer aid, List<StudentModelExt> studentPool) throws Exception {
+        CmList<ProgramData> tdata = new CmArrayList<ProgramData>();
+        PreparedStatement ps=null;
+        
+        try {
+            Map<String,String> replacements = new HashMap<String,String>();
+            replacements.put("UID_LIST", createInListOfUids(studentPool));
+            ps = conn.prepareStatement(CmMultiLinePropertyReader.getInstance().getProperty("TRENDING_DATA_FOR_PROGRAMS_SQL_FROM_UIDS", replacements));
+            ResultSet rs = ps.executeQuery();
+            while(rs.next()) {
+                ProgramData pd = createProgramData(conn, replacements, rs.getInt("test_def_id"));
+                tdata.add(pd);
+            }
+            return tdata;
+        }
+        catch(Exception e) {
+            throw e;
+        }
+        finally {
+            SqlUtilities.releaseResources(null, ps,null);
+        }
     }    
+    
+    private Integer getCountUsersWhoHaveBeenInQuizSegment(final Connection conn, Map<String,String> replacements, HaTestDef testDef,  Integer segment) throws Exception {
+        PreparedStatement ps=null;
+        try {
+            ps = conn.prepareStatement(CmMultiLinePropertyReader.getInstance().getProperty("TRENDING_DATA_FOR_TEST_SEGMENTS_SQL_FROM_UIDS", replacements));
+            ps.setInt(1, testDef.getTestDefId());
+            ps.setInt(2, segment);
+            ResultSet rs = ps.executeQuery();
+            if(!rs.first())
+                return 0;
+            return rs.getInt("count_users");
+        }
+        finally {
+            SqlUtilities.releaseResources(null, ps,null);
+        }        
+    }
+    
+    private ProgramData createProgramData(final Connection conn, Map<String,String> replacements, int testDefId) throws Exception {
+        PreparedStatement ps=null;
+        try {
+            HaTestDef testDef = new HaTestDefDao().getTestDef(conn, testDefId);
+            
+            ProgramData pd = new ProgramData(testDef.getName(), testDef.getTestDefId());
+            
+            /** for number of segments defined for this test
+             * 
+             */
+            int totSegs = testDef.getTestConfig().getSegmentCount();
+            for(int i=0;i<totSegs;i++) {
+                int countUsers=getCountUsersWhoHaveBeenInQuizSegment(conn, replacements, testDef, (i+1));
+                pd.getSegments().add(new ProgramSegmentData(i,countUsers ));
+            }
+            return pd;
+        }
+        finally {
+            SqlUtilities.releaseResources(null, ps,null);
+        }
+    }
 }

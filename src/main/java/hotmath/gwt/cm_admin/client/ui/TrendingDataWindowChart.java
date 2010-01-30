@@ -26,7 +26,7 @@ public class TrendingDataWindowChart extends Chart {
     
     CmAsyncRequest _callback;
 
-    String colors[] = {"#ff0000", "#00aa00", "#0000ff", "#ff9900", "#ff00ff"};
+    String colors[] = {"#ff0000", "#00aa00", "#0000ff", "#ff9900", "#ff00ff","#ff0000", "#00aa00", "#aa00ff", "#bb9900", "#ee00ff"};
     
     public TrendingDataWindowChart(CmAsyncRequest callback) {
         this("/gwt-resources/gxt/chart/open-flash-chart.swf",callback);
@@ -73,5 +73,27 @@ public class TrendingDataWindowChart extends Chart {
 
         cm.addChartConfig(pie);
         return cm;
+    }
+    
+    protected int getMaxRange(int max) {
+        int fudge=0;
+        double fudgeP=.01;
+        if(max < 10) {
+            fudge = 10;
+        }
+        else if(max < 50) {
+            fudge = 50;
+        }
+        else if(max < 100) {
+            fudge = 100;
+        }
+        else { 
+            fudge = 1000;
+        }
+        
+        //max += (max * fudgeP );
+        int add = (max % fudge);
+        max += (fudge - add);
+        return max;
     }
 }

@@ -1028,8 +1028,10 @@ public class CmStudentDao {
                 if (segmentCount == 0) {
                     try {
                         String json = rs.getString("test_config_json");
-                        JSONObject jo = new JSONObject(json);
-                        segmentCount = jo.getInt("segments");
+                        if(json != null) {
+                            JSONObject jo = new JSONObject(json);
+                            segmentCount = jo.getInt("segments");
+                        }
                     }
                     catch(Exception e) {
                         e.printStackTrace();
