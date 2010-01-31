@@ -948,6 +948,8 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
 
             /** always reset request options */
             _forceServerRefresh = false;
+            
+            EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_STUDENT_GRID_FILTERED,_pageAction));
         }
     };
 

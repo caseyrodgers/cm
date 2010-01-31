@@ -2,19 +2,20 @@ package hotmath.gwt.cm_admin.client.ui;
 
 import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.model.BaseModel;
-import hotmath.gwt.cm_tools.client.model.StudentModelExt;
 import hotmath.gwt.cm_tools.client.service.CmServiceAsync;
 import hotmath.gwt.cm_tools.client.ui.PdfWindow;
 import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
 import hotmath.gwt.shared.client.data.CmAsyncRequestImplDefault;
+import hotmath.gwt.shared.client.eventbus.CmEvent;
+import hotmath.gwt.shared.client.eventbus.CmEventListenerImplDefault;
+import hotmath.gwt.shared.client.eventbus.EventBus;
+import hotmath.gwt.shared.client.eventbus.EventType;
 import hotmath.gwt.shared.client.model.CmAdminTrendingDataI;
 import hotmath.gwt.shared.client.model.ProgramData;
 import hotmath.gwt.shared.client.model.TrendingData;
 import hotmath.gwt.shared.client.rpc.action.CmList;
-import hotmath.gwt.shared.client.rpc.action.GeneratePdfAction;
 import hotmath.gwt.shared.client.rpc.action.GeneratePdfAssessmentReportAction;
 import hotmath.gwt.shared.client.rpc.action.GetAdminTrendingDataAction;
-import hotmath.gwt.shared.client.rpc.action.GeneratePdfAction.PdfType;
 import hotmath.gwt.shared.client.util.CmAsyncCallback;
 import hotmath.gwt.shared.client.util.CmRunAsyncCallback;
 
@@ -27,12 +28,15 @@ import com.extjs.gxt.ui.client.Style.SelectionMode;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.store.ListStore;
+import com.extjs.gxt.ui.client.widget.Label;
 import com.extjs.gxt.ui.client.widget.TabItem;
 import com.extjs.gxt.ui.client.widget.TabPanel;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
 import com.extjs.gxt.ui.client.widget.grid.Grid;
+import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
+import com.extjs.gxt.ui.client.widget.layout.CenterLayout;
 import com.extjs.gxt.ui.client.widget.layout.FillLayout;
 import com.google.gwt.core.client.GWT;
 
@@ -43,13 +47,17 @@ import com.google.gwt.core.client.GWT;
  * 
  */
 public class TrendingDataWindow extends CmWindow {
+    
+    static TrendingDataWindow __instance;
+    
     Integer adminId;
-    Grid<TrendingDataExt> _grid;
     TrendingDataWindowChartBar2 _chartBar2;
 
     TabPanel _tabPanel;
 
     public TrendingDataWindow(Integer adminId) {
+        __instance = this;
+        
         this.adminId = adminId;
 
         setHeading("Student Assessment");
@@ -58,17 +66,6 @@ public class TrendingDataWindow extends CmWindow {
 
         setLayout(new FillLayout());
 
-        _tabPanel = new TabPanel();
-        _tabPanel.setAnimScroll(true);
-        _tabPanel.setTabScroll(true);
-
-        final ListStore<TrendingDataExt> store = new ListStore<TrendingDataExt>();
-        _grid = defineGrid(store, defineColumns());
-        // TabItem ti = new TabItem("Text");
-        // ti.add(_grid);
-        // _tabPanel.add(ti);
-
-        add(_tabPanel);
         addButton(new Button("Close", new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent ce) {
@@ -96,7 +93,17 @@ public class TrendingDataWindow extends CmWindow {
          * turn on after data retieved
          * 
          */
-        setVisible(false);
+        setVisible(true);
+    }
+    
+    private void drawGui() {
+        removeAll();
+        setLayout(new FillLayout());
+        _tabPanel = new TabPanel();
+        _tabPanel.setAnimScroll(true);
+        _tabPanel.setTabScroll(true);
+
+        add(_tabPanel);
     }
 
     private void assessmentReportButton() {
@@ -141,24 +148,27 @@ public class TrendingDataWindow extends CmWindow {
                         for (int i = 0, t = trendingData.getTrendingData().size(); i < t; i++) {
                             dataExt.add(new TrendingDataExt(trendingData.getTrendingData().get(i)));
                         }
-                        _grid.getStore().removeAll();
-                        _grid.getStore().add(dataExt);
 
-                        _tabPanel.removeAll();
+
+                        drawGui();
                         
                         addTrendingChart(trendingData);
                         addProgramCharts(trendingData.getProgramData());
-
-                        layout();
                         setVisible(true);
+                        layout(true);
                         CmBusyManager.setBusy(false);
                     }
 
                     @Override
                     public void onFailure(Throwable caught) {
-                        close();
+                        
+                        removeAll();
+                        setLayout(new CenterLayout());
+                        caught.printStackTrace();
+                        add(new Label(caught.getMessage()));
+                        layout();
+                        
                         CmBusyManager.setBusy(false);
-                        super.onFailure(caught);
                     }
                 });
     }
@@ -217,6 +227,18 @@ public class TrendingDataWindow extends CmWindow {
 
         ColumnModel cm = new ColumnModel(configs);
         return cm;
+    }
+    
+    static {
+        EventBus.getInstance().addEventListener(new CmEventListenerImplDefault() {
+            @Override
+            public void handleEvent(CmEvent event) {
+                if(event.getEventType() == EventType.EVENT_TYPE_STUDENT_GRID_FILTERED) {
+                if(__instance != null && __instance.isVisible()) {
+                    __instance.loadTrendDataAsync();
+                }
+            }
+        }});
     }
 }
 

@@ -93,5 +93,10 @@ public enum EventType{
     /** Fired when a new context tooltip needs to be shown
      * 
      */
-    EVENT_TYPE_CONTEXT_TOOLTIP_SHOW
+    EVENT_TYPE_CONTEXT_TOOLTIP_SHOW,
+
+    /** Fired when the Student Grid is filtered, used to keep 
+     * a child window in sync with the student's current filtered set.
+     */
+    EVENT_TYPE_STUDENT_GRID_FILTERED
 }
