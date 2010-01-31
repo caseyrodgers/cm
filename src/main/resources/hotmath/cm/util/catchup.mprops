@@ -314,7 +314,7 @@ limit 5
 
 .key=TRENDING_DATA_FOR_TEST_SEGMENTS_SQL_FROM_UIDS
 
-SELECT count(*) as count_users
+SELECT count(distinct u.uid) as count_users
 FROM   HA_TEST_DEF d
   JOIN HA_TEST t
     ON t.test_def_id = d.test_def_id
