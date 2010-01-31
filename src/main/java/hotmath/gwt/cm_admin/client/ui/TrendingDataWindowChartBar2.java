@@ -1,8 +1,16 @@
 package hotmath.gwt.cm_admin.client.ui;
 
-import hotmath.gwt.shared.client.data.CmAsyncRequest;
+import hotmath.gwt.cm_tools.client.CatchupMathTools;
+import hotmath.gwt.cm_tools.client.CmBusyManager;
+import hotmath.gwt.cm_tools.client.model.StudentModelExt;
+import hotmath.gwt.cm_tools.client.model.StudentModelI;
+import hotmath.gwt.cm_tools.client.service.CmServiceAsync;
+import hotmath.gwt.shared.client.data.CmAsyncRequestImplDefault;
 import hotmath.gwt.shared.client.model.ProgramData;
 import hotmath.gwt.shared.client.model.ProgramSegmentData;
+import hotmath.gwt.shared.client.rpc.action.CmList;
+import hotmath.gwt.shared.client.rpc.action.GetAdminTrendingDataDetailAction;
+import hotmath.gwt.shared.client.util.CmAsyncCallback;
 
 import java.util.List;
 
@@ -14,27 +22,68 @@ import com.extjs.gxt.charts.client.model.axis.XAxis;
 import com.extjs.gxt.charts.client.model.axis.YAxis;
 import com.extjs.gxt.charts.client.model.charts.BarChart;
 import com.extjs.gxt.charts.client.model.charts.BarChart.BarStyle;
+import com.extjs.gxt.ui.client.Registry;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 
 public class TrendingDataWindowChartBar2 extends TrendingDataWindowChart {
 
-    public TrendingDataWindowChartBar2(CmAsyncRequest callback) {
-        super("/gwt-resources/gxt/chart/open-flash-chart.swf", callback);
-        setVisible(false);
+    ProgramData programData;
+
+    public TrendingDataWindowChartBar2() {
+        _callback = new CmAsyncRequestImplDefault() {
+            @Override
+            public void requestComplete(String requestData) {
+                showUsersWhoHaveGoneThroughProgramSegment(new Integer(requestData));
+            }
+        };
+    }
+
+    private void showUsersWhoHaveGoneThroughProgramSegment(final int segment) {
+
+        CmBusyManager.setBusy(true);
+
+        CmServiceAsync service = (CmServiceAsync) Registry.get("cmService");
+        service.execute(new GetAdminTrendingDataDetailAction(StudentGridPanel.instance._cmAdminMdl.getId(),
+                StudentGridPanel.instance._pageAction, programData.getTestDefId(), segment),
+                new CmAsyncCallback<CmList<StudentModelExt>>() {
+                    public void onSuccess(CmList<StudentModelExt> students) {
+                        new TrendingDataStudentListDialog("Students in " + programData.getProgramName() + " Segment " + (segment+1),students);
+                        CmBusyManager.setBusy(false);
+                    }
+
+                    @Override
+                    public void onFailure(Throwable caught) {
+                        CmBusyManager.setBusy(false);
+                        super.onFailure(caught);
+                    }
+                });
+
     }
 
     protected void setBarModelData(String title, ProgramData programData) {
+        this.programData = programData;
         ContentPanel cp = new ContentPanel();
         cp.setHeading(title);
-        
+
         cp.setFrame(true);
         cp.setSize(400, 400);
         cp.setLayout(new FitLayout());
 
         setBorders(true);
         setChartModel(getBarChartData(title, programData.getSegments()));
+        addChartListener(listener);
+        enableEvents(true);
+
         setVisible(true);
+    }
+
+    public ProgramData getProgramData() {
+        return programData;
+    }
+
+    public void setProgramData(ProgramData programData) {
+        this.programData = programData;
     }
 
     private ChartModel getBarChartData(String title, List<ProgramSegmentData> segmentData) {
@@ -43,39 +92,40 @@ public class TrendingDataWindowChartBar2 extends TrendingDataWindowChart {
         Legend lg = new Legend(Position.RIGHT, true);
         lg.setPadding(10);
         cm.setLegend(lg);
-        
-        int max=0;
-        XAxis xa = new XAxis();  
-        for (int i=0,t=segmentData.size();i<t;i++) {
+
+        int max = 0;
+        XAxis xa = new XAxis();
+        for (int i = 0, t = segmentData.size(); i < t; i++) {
             ProgramSegmentData psd = segmentData.get(i);
-            Label l = new Label("Quiz " + (i+1), 45);  
+            Label l = new Label("Section-" + (i + 1), 45);
             l.setSize(10);
             xa.addLabels(l);
-            
-            if(psd.getCountCompleted() > max)
-              max = psd.getCountCompleted();
+
+            if (psd.getCountCompleted() > max)
+                max = psd.getCountCompleted();
         }
         cm.setXAxis(xa);
-        
+
         YAxis yz = new YAxis();
-        
+
         /** move to next even multiple depending on count */
         max = getChartMaxRange(max);
         yz.setSteps(getChartSteps(max));
         yz.setMax(max);
         cm.setYAxis(yz);
-        
+
         BarChart chart = new BarChart(BarStyle.GLASS);
+        chart.setEnableEvents(true);
 
         chart.setTooltip("#val#");
-        for(int i=0,t=segmentData.size();i<t;i++) {
+        for (int i = 0, t = segmentData.size(); i < t; i++) {
             ProgramSegmentData td = segmentData.get(i);
-            
+
             BarChart.Bar bar = new BarChart.Bar(td.getCountCompleted());
             bar.setColour(colors[i]);
-            chart.addBars(bar);  
+            chart.addBars(bar);
         }
-        
+
         cm.addChartConfig(chart);
         return cm;
     }

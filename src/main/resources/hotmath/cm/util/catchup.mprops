@@ -340,6 +340,18 @@ order by d.test_name
 
 
 
+.key=TRENDING_DATA_DETAIL_FOR_PROGRAM_SEGMENT_FROM_UIDS
+
+SELECT distinct u.user_name,u.uid
+FROM   HA_TEST_DEF d
+  JOIN HA_TEST t
+    ON t.test_def_id = d.test_def_id
+  JOIN HA_USER u
+     ON u.uid = t.user_id
+WHERE (d.test_def_id = ?)
+and t.test_segment = ?
+and u.uid in ($$UID_LIST$$)
+
 ## 
 ## Class: CreateAutoRegistrationAccountCommand
 ##

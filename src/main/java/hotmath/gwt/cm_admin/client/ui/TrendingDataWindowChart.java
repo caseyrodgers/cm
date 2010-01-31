@@ -17,10 +17,11 @@ import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 
 public class TrendingDataWindowChart extends Chart {
 
-    private ChartListener listener = new ChartListener() {
+    protected ChartListener listener = new ChartListener() {
         public void chartClick(ChartEvent ce) {
-            if(_callback != null)
-               _callback.requestComplete(ce.getValue().toString());
+            if(_callback != null) {
+               _callback.requestComplete(Integer.toString(clickedSegment));
+            }
         }
     };
     
@@ -28,14 +29,21 @@ public class TrendingDataWindowChart extends Chart {
 
     String colors[] = {"#ff0000", "#00aa00", "#0000ff", "#ff9900", "#ff00ff","#ff0000", "#00aa00", "#aa00ff", "#bb9900", "#ee00ff"};
     
-    public TrendingDataWindowChart(CmAsyncRequest callback) {
-        this("/gwt-resources/gxt/chart/open-flash-chart.swf",callback);
-        setVisible(false);
+    public TrendingDataWindowChart() {
+        super("/gwt-resources/gxt/chart/open-flash-chart.swf");
     }
     
-    public TrendingDataWindowChart(String path,CmAsyncRequest callback) {
-        super(path);
+    public TrendingDataWindowChart(CmAsyncRequest callback) {
+        this();
         _callback = callback;
+    }
+
+    protected int clickedSegment;
+    
+    @Override
+    protected void onClick(int configIndex, int dataIndex) {
+        clickedSegment = dataIndex;
+        super.onClick(configIndex, dataIndex);
     }
 
     protected void setModelData(String title, List<TrendingData> data) {

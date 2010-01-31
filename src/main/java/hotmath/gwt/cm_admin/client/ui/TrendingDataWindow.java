@@ -1,10 +1,12 @@
 package hotmath.gwt.cm_admin.client.ui;
 
+import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.model.BaseModel;
 import hotmath.gwt.cm_tools.client.service.CmServiceAsync;
 import hotmath.gwt.cm_tools.client.ui.PdfWindow;
 import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
+import hotmath.gwt.shared.client.data.CmAsyncRequest;
 import hotmath.gwt.shared.client.data.CmAsyncRequestImplDefault;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
 import hotmath.gwt.shared.client.eventbus.CmEventListenerImplDefault;
@@ -35,7 +37,6 @@ import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
 import com.extjs.gxt.ui.client.widget.grid.Grid;
-import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
 import com.extjs.gxt.ui.client.widget.layout.CenterLayout;
 import com.extjs.gxt.ui.client.widget.layout.FillLayout;
 import com.google.gwt.core.client.GWT;
@@ -118,22 +119,6 @@ public class TrendingDataWindow extends CmWindow {
 
     }
 
-    private void createNewBarChart() {
-        TabItem ti = new TabItem("Bar Chart");
-        TrendingDataWindowChartBar barChart = new TrendingDataWindowChartBar(new CmAsyncRequestImplDefault() {
-
-            @Override
-            public void requestComplete(String requestData) {
-            }
-        });
-        ;
-
-        barChart.setModelData("Bar Chart", _trendingData.getTrendingData());
-        ti.add(barChart);
-        _tabPanel.add(ti);
-        layout();
-    }
-
     CmAdminTrendingDataI _trendingData;
 
     private void loadTrendDataAsync() {
@@ -154,6 +139,7 @@ public class TrendingDataWindow extends CmWindow {
                         
                         addTrendingChart(trendingData);
                         addProgramCharts(trendingData.getProgramData());
+                        
                         setVisible(true);
                         layout(true);
                         CmBusyManager.setBusy(false);
@@ -175,7 +161,7 @@ public class TrendingDataWindow extends CmWindow {
 
     private void addTrendingChart(CmAdminTrendingDataI trendingData) {
         TabItem ti = new TabItem("Most Prescribed Lessons");
-        TrendingDataWindowChartBar chart = new TrendingDataWindowChartBar(null);
+        TrendingDataWindowChartBar chart = new TrendingDataWindowChartBar();
         ti.add(chart);
         chart.setModelData("Most Prescribed Lessons", trendingData.getTrendingData());
         _tabPanel.add(ti);
@@ -186,7 +172,7 @@ public class TrendingDataWindow extends CmWindow {
             ProgramData pd = programData.get(i);
             TabItem ti = new TabItem(pd.getProgramName());
 
-            TrendingDataWindowChartBar2 bar = new TrendingDataWindowChartBar2(null);
+            final TrendingDataWindowChartBar2 bar = new TrendingDataWindowChartBar2();
             bar.setBarModelData(pd.getProgramName(), pd);
             ti.add(bar);
 
@@ -227,6 +213,10 @@ public class TrendingDataWindow extends CmWindow {
 
         ColumnModel cm = new ColumnModel(configs);
         return cm;
+    }
+    
+    private void showUsersWhoHaveGoneThroughProgram(String data) {
+        CatchupMathTools.showAlert("Gone through program: " + data);
     }
     
     static {

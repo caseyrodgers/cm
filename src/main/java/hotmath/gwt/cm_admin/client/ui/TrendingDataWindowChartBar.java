@@ -1,6 +1,5 @@
 package hotmath.gwt.cm_admin.client.ui;
 
-import hotmath.gwt.shared.client.data.CmAsyncRequest;
 import hotmath.gwt.shared.client.model.TrendingData;
 
 import java.util.List;
@@ -18,9 +17,7 @@ import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 
 public class TrendingDataWindowChartBar extends TrendingDataWindowChart {
 
-    public TrendingDataWindowChartBar(CmAsyncRequest callback) {
-        super("/gwt-resources/gxt/chart/open-flash-chart.swf", callback);
-        setVisible(false);
+    public TrendingDataWindowChartBar() {
     }
 
     protected void setModelData(String title, List<TrendingData> data) {

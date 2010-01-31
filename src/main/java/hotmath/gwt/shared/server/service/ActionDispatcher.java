@@ -21,6 +21,7 @@ import hotmath.gwt.shared.server.service.command.GeneratePdfCommand;
 import hotmath.gwt.shared.server.service.command.GetAccountInfoForAdminUidCommand;
 import hotmath.gwt.shared.server.service.command.GetActiveGroupsCommand;
 import hotmath.gwt.shared.server.service.command.GetAdminTrendingDataCommand;
+import hotmath.gwt.shared.server.service.command.GetAdminTrendingDataDetailCommand;
 import hotmath.gwt.shared.server.service.command.GetChaptersForProgramSubjectCommand;
 import hotmath.gwt.shared.server.service.command.GetCmVersionInfoCommand;
 import hotmath.gwt.shared.server.service.command.GetGroupAggregateInfoCommand;
@@ -261,5 +262,6 @@ public class ActionDispatcher {
         addCommand(GetTemplateForSelfRegGroupCommand.class);
         addCommand(GetAdminTrendingDataCommand.class);
         addCommand(GeneratePdfAssessmentReportCommand.class);
+        addCommand(GetAdminTrendingDataDetailCommand.class);
     }
 }

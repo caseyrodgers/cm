@@ -207,3 +207,11 @@
 .x-grid3-hd-row td span {
    font-weight: bold;
 }
+
+
+.trending-data-student-list {
+}
+
+trending-data-student-list-item {
+  font-size: 110%;
+}

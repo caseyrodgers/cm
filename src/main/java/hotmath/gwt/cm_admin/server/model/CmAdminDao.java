@@ -673,12 +673,12 @@ public class CmAdminDao {
     }
     
     
-    /** return a valid SQL inlist of uids based on students
+    /** return a Map that can be used to replace UID_LIST in properties
      * 
      * @param students
      * @return
      */
-    private String createInListOfUids(List<StudentModelExt> students) {
+    private Map<String,String> createInListReplacements(List<StudentModelExt> students) {
         String inList="";
         for(int i=0,t=students.size();i<t;i++) {
             if(i > 0)
@@ -692,7 +692,10 @@ public class CmAdminDao {
         if(inList.length() == 0)
             inList = "''";
         
-        return inList;
+        Map<String,String> replacements = new HashMap<String,String>();
+        replacements.put("UID_LIST", inList);
+        
+        return replacements;
     }
     
     public CmList<TrendingData> getTrendingData(final Connection conn, Integer aid, List<StudentModelExt> studentPool) throws Exception {
@@ -700,9 +703,7 @@ public class CmAdminDao {
         PreparedStatement ps=null;
 
         try {
-            Map<String,String> replacements = new HashMap<String,String>();
-            replacements.put("UID_LIST", createInListOfUids(studentPool));
-            ps = conn.prepareStatement(CmMultiLinePropertyReader.getInstance().getProperty("TRENDING_DATA_SQL_FROM_UIDS", replacements));
+            ps = conn.prepareStatement(CmMultiLinePropertyReader.getInstance().getProperty("TRENDING_DATA_SQL_FROM_UIDS", createInListReplacements(studentPool)));
             ps.setInt(1, aid);
             ResultSet rs = ps.executeQuery();
             while(rs.next()) {
@@ -730,12 +731,10 @@ public class CmAdminDao {
         PreparedStatement ps=null;
         
         try {
-            Map<String,String> replacements = new HashMap<String,String>();
-            replacements.put("UID_LIST", createInListOfUids(studentPool));
-            ps = conn.prepareStatement(CmMultiLinePropertyReader.getInstance().getProperty("TRENDING_DATA_FOR_PROGRAMS_SQL_FROM_UIDS", replacements));
+            ps = conn.prepareStatement(CmMultiLinePropertyReader.getInstance().getProperty("TRENDING_DATA_FOR_PROGRAMS_SQL_FROM_UIDS", createInListReplacements(studentPool)));
             ResultSet rs = ps.executeQuery();
             while(rs.next()) {
-                ProgramData pd = createProgramData(conn, replacements, rs.getInt("test_def_id"));
+                ProgramData pd = createProgramData(conn, createInListReplacements(studentPool), rs.getInt("test_def_id"));
                 tdata.add(pd);
             }
             return tdata;
@@ -747,6 +746,38 @@ public class CmAdminDao {
             SqlUtilities.releaseResources(null, ps,null);
         }
     }    
+    
+    
+    /** return students who have been assigned to the given program/quiz
+     *  at some time.
+     *  
+     * @param conn
+     * @param aid
+     * @param studentPool
+     * @return
+     * @throws Exception
+     */
+    public CmList<StudentModelExt> getStudentsWhoHaveBeenAssignedProgramSegment(final Connection conn,List<StudentModelExt> studentPool, Integer testDefId, Integer quizSegment) throws Exception {
+        CmList<StudentModelExt> students = new CmArrayList<StudentModelExt>();
+        PreparedStatement ps=null;
+        try {
+            
+            ps = conn.prepareStatement(CmMultiLinePropertyReader.getInstance().getProperty("TRENDING_DATA_DETAIL_FOR_PROGRAM_SEGMENT_FROM_UIDS",createInListReplacements(studentPool)));
+            ps.setInt(1,testDefId);
+            ps.setInt(2,(quizSegment+1));
+            ResultSet rs = ps.executeQuery();
+            while(rs.next()) {
+                StudentModelExt parialStudent = new StudentModelExt();
+                parialStudent.setName(rs.getString("user_name"));
+                parialStudent.setUid(rs.getInt("uid"));
+                students.add(parialStudent);
+            }
+            return students;
+        }
+        finally {
+            SqlUtilities.releaseResources(null, ps, null);
+        }
+    }
     
     private Integer getCountUsersWhoHaveBeenInQuizSegment(final Connection conn, Map<String,String> replacements, HaTestDef testDef,  Integer segment) throws Exception {
         PreparedStatement ps=null;
@@ -769,7 +800,8 @@ public class CmAdminDao {
         try {
             HaTestDef testDef = new HaTestDefDao().getTestDef(conn, testDefId);
             
-            ProgramData pd = new ProgramData(testDef.getName(), testDef.getTestDefId());
+            String name =  testDef.getName() + " (" + testDef.getTestConfig().getSegmentCount() + " Sections)";
+            ProgramData pd = new ProgramData(name, testDef.getTestDefId());
             
             /** for number of segments defined for this test
              * 
