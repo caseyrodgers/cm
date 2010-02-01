@@ -18,15 +18,12 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
-import com.lowagie.text.Cell;
 import com.lowagie.text.Chunk;
 import com.lowagie.text.Document;
 import com.lowagie.text.Font;
 import com.lowagie.text.FontFactory;
 import com.lowagie.text.HeaderFooter;
 import com.lowagie.text.Phrase;
-import com.lowagie.text.SimpleTable;
-import com.lowagie.text.Table;
 import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPTable;
 import com.lowagie.text.pdf.PdfWriter;
@@ -168,8 +165,7 @@ public class GroupAssessmentReport {
         tbl.addCell(cell);
     }
 
-    private void disableBorders(PdfPCell cell)
-    {
+    private void disableBorders(PdfPCell cell) {
       cell.disableBorderSide(PdfPCell.LEFT);
       cell.disableBorderSide(PdfPCell.RIGHT);
       cell.disableBorderSide(PdfPCell.TOP);
