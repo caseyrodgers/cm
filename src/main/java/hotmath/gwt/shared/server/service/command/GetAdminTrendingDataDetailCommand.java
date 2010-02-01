@@ -17,11 +17,20 @@ public class GetAdminTrendingDataDetailCommand implements ActionHandler<GetAdmin
     List<StudentModelExt> studentPool;
     @Override
     public CmList<StudentModelExt> execute(Connection conn, GetAdminTrendingDataDetailAction action) throws Exception {
+        
         studentPool = new GetStudentGridPageCommand().getStudentPool(conn, action.getDataAction());
         if(studentPool.size() == 0)
             throw new CmRpcException("No students found");
         
-        return new CmAdminDao().getStudentsWhoHaveBeenAssignedProgramSegment(conn, studentPool,action.getTestDefId(), action.getQuizSegment());
+        if(action.getDataType() == GetAdminTrendingDataDetailAction.DataType.PROGRAM_USERS) {
+            return new CmAdminDao().getStudentsWhoHaveBeenAssignedProgramSegment(conn, studentPool,action.getTestDefId(), action.getQuizSegment());
+        }
+        else if(action.getDataType() == GetAdminTrendingDataDetailAction.DataType.LESSON_USERS) {
+            return new CmAdminDao().getStudentsWhoHaveBeenAssignedLesson(conn, studentPool,action.getLessonName());
+        }
+        else {
+            throw new CmRpcException("Unknown DataType request: " + action.getDataType());
+        }
     }
 
     public List<StudentModelExt> getStudentPool() {

@@ -25,6 +25,9 @@ public class GetAdminTrendingDataDetailCommand_Test extends CmDbTestCase{
     public void testCreate() throws Exception {
         CmList<StudentModelExt> students = new GetAdminTrendingDataDetailCommand().execute(conn,new GetAdminTrendingDataDetailAction(2,pageAction,CmProgram.GEOM_PROF.getDefId(),0));
         assertTrue(students.size() > 0);
+        
+        students = new GetAdminTrendingDataDetailCommand().execute(conn,new GetAdminTrendingDataDetailAction(pageAction,"Vectors"));
+        assertTrue(students.size() > 0);
     }
     
     public void testCreateActionDispatcher() throws Exception {

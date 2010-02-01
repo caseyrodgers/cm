@@ -671,150 +671,186 @@ public class CmAdminDao {
             throw new CmException("The self-registration group could not be created", e);
         }
     }
-    
-    
-    /** return a Map that can be used to replace UID_LIST in properties
+
+    /**
+     * return a Map that can be used to replace UID_LIST in properties
      * 
      * @param students
      * @return
      */
-    private Map<String,String> createInListReplacements(List<StudentModelExt> students) {
-        String inList="";
-        for(int i=0,t=students.size();i<t;i++) {
-            if(i > 0)
+    private Map<String, String> createInListReplacements(List<StudentModelExt> students) {
+        String inList = "";
+        for (int i = 0, t = students.size(); i < t; i++) {
+            if (i > 0)
                 inList += ",";
             inList += students.get(i).getUid();
         }
-        
-        /** default to empty list
+
+        /**
+         * default to empty list
          * 
          */
-        if(inList.length() == 0)
+        if (inList.length() == 0)
             inList = "''";
-        
-        Map<String,String> replacements = new HashMap<String,String>();
+
+        Map<String, String> replacements = new HashMap<String, String>();
         replacements.put("UID_LIST", inList);
-        
+
         return replacements;
     }
-    
-    public CmList<TrendingData> getTrendingData(final Connection conn, Integer aid, List<StudentModelExt> studentPool) throws Exception {
+
+    public CmList<TrendingData> getTrendingData(final Connection conn, Integer aid, List<StudentModelExt> studentPool)
+            throws Exception {
         CmList<TrendingData> tdata = new CmArrayList<TrendingData>();
-        PreparedStatement ps=null;
+        PreparedStatement ps = null;
 
         try {
-            ps = conn.prepareStatement(CmMultiLinePropertyReader.getInstance().getProperty("TRENDING_DATA_SQL_FROM_UIDS", createInListReplacements(studentPool)));
+            ps = conn.prepareStatement(CmMultiLinePropertyReader.getInstance().getProperty(
+                    "TRENDING_DATA_SQL_FROM_UIDS", createInListReplacements(studentPool)));
             ps.setInt(1, aid);
             ResultSet rs = ps.executeQuery();
-            while(rs.next()) {
+            while (rs.next()) {
                 tdata.add(new TrendingData(rs.getString("lesson_name"), rs.getInt("count_assigned")));
             }
             return tdata;
-        }
-        finally {
-            SqlUtilities.releaseResources(null, ps,null);
+        } finally {
+            SqlUtilities.releaseResources(null, ps, null);
         }
     }
-    
-    
-    /** return assessment/trending data for the given admin_id
-     *  limiting data to uids found in studentPool
-     *  
+
+    /**
+     * return assessment/trending data for the given admin_id limiting data to
+     * uids found in studentPool
+     * 
      * @param conn
      * @param aid
      * @param studentPool
      * @return
      * @throws Exception
      */
-    public CmList<ProgramData> getTrendingData_ForProgram(final Connection conn, Integer aid, List<StudentModelExt> studentPool) throws Exception {
+    public CmList<ProgramData> getTrendingData_ForProgram(final Connection conn, Integer aid,
+            List<StudentModelExt> studentPool) throws Exception {
         CmList<ProgramData> tdata = new CmArrayList<ProgramData>();
-        PreparedStatement ps=null;
-        
+        PreparedStatement ps = null;
+
         try {
-            ps = conn.prepareStatement(CmMultiLinePropertyReader.getInstance().getProperty("TRENDING_DATA_FOR_PROGRAMS_SQL_FROM_UIDS", createInListReplacements(studentPool)));
+            ps = conn.prepareStatement(CmMultiLinePropertyReader.getInstance().getProperty(
+                    "TRENDING_DATA_FOR_PROGRAMS_SQL_FROM_UIDS", createInListReplacements(studentPool)));
             ResultSet rs = ps.executeQuery();
-            while(rs.next()) {
-                ProgramData pd = createProgramData(conn, createInListReplacements(studentPool), rs.getInt("test_def_id"));
+            while (rs.next()) {
+                ProgramData pd = createProgramData(conn, createInListReplacements(studentPool), rs
+                        .getInt("test_def_id"));
                 tdata.add(pd);
             }
             return tdata;
-        }
-        catch(Exception e) {
+        } catch (Exception e) {
             throw e;
+        } finally {
+            SqlUtilities.releaseResources(null, ps, null);
         }
-        finally {
-            SqlUtilities.releaseResources(null, ps,null);
-        }
-    }    
-    
-    
-    /** return students who have been assigned to the given program/quiz
-     *  at some time.
-     *  
+    }
+
+    /**
+     * return students who have been assigned to the given program/quiz at some
+     * time.
+     * 
      * @param conn
      * @param aid
      * @param studentPool
      * @return
      * @throws Exception
      */
-    public CmList<StudentModelExt> getStudentsWhoHaveBeenAssignedProgramSegment(final Connection conn,List<StudentModelExt> studentPool, Integer testDefId, Integer quizSegment) throws Exception {
+    public CmList<StudentModelExt> getStudentsWhoHaveBeenAssignedProgramSegment(final Connection conn,
+            List<StudentModelExt> studentPool, Integer testDefId, Integer quizSegment) throws Exception {
         CmList<StudentModelExt> students = new CmArrayList<StudentModelExt>();
-        PreparedStatement ps=null;
+        PreparedStatement ps = null;
         try {
-            
-            ps = conn.prepareStatement(CmMultiLinePropertyReader.getInstance().getProperty("TRENDING_DATA_DETAIL_FOR_PROGRAM_SEGMENT_FROM_UIDS",createInListReplacements(studentPool)));
-            ps.setInt(1,testDefId);
-            ps.setInt(2,(quizSegment+1));
+
+            ps = conn.prepareStatement(CmMultiLinePropertyReader.getInstance().getProperty(
+                    "TRENDING_DATA_DETAIL_FOR_PROGRAM_SEGMENT_FROM_UIDS", createInListReplacements(studentPool)));
+            ps.setInt(1, testDefId);
+            ps.setInt(2, (quizSegment + 1));
             ResultSet rs = ps.executeQuery();
-            while(rs.next()) {
+            while (rs.next()) {
                 StudentModelExt parialStudent = new StudentModelExt();
                 parialStudent.setName(rs.getString("user_name"));
                 parialStudent.setUid(rs.getInt("uid"));
                 students.add(parialStudent);
             }
             return students;
-        }
-        finally {
+        } finally {
             SqlUtilities.releaseResources(null, ps, null);
         }
     }
-    
-    private Integer getCountUsersWhoHaveBeenInQuizSegment(final Connection conn, Map<String,String> replacements, HaTestDef testDef,  Integer segment) throws Exception {
-        PreparedStatement ps=null;
+
+    /** Return list of studens who have been assigned the name lesson 
+     * 
+     * @param conn
+     * @param studentPool
+     * @param lessonName
+     * @return
+     * @throws Exception
+     */
+    public CmList<StudentModelExt> getStudentsWhoHaveBeenAssignedLesson(final Connection conn,
+            List<StudentModelExt> studentPool, String lessonName) throws Exception {
+        CmList<StudentModelExt> students = new CmArrayList<StudentModelExt>();
+        PreparedStatement ps = null;
         try {
-            ps = conn.prepareStatement(CmMultiLinePropertyReader.getInstance().getProperty("TRENDING_DATA_FOR_TEST_SEGMENTS_SQL_FROM_UIDS", replacements));
+
+            ps = conn.prepareStatement(CmMultiLinePropertyReader.getInstance().getProperty(
+                    "TRENDING_DATA_DETAIL_FOR_LESSON_FROM_UIDS", createInListReplacements(studentPool)));
+            ps.setString(1, lessonName);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                StudentModelExt parialStudent = new StudentModelExt();
+                parialStudent.setName(rs.getString("user_name"));
+                parialStudent.setUid(rs.getInt("uid"));
+                students.add(parialStudent);
+            }
+            return students;
+        } finally {
+            SqlUtilities.releaseResources(null, ps, null);
+        }
+    }
+
+    private Integer getCountUsersWhoHaveBeenInQuizSegment(final Connection conn, Map<String, String> replacements,
+            HaTestDef testDef, Integer segment) throws Exception {
+        PreparedStatement ps = null;
+        try {
+            ps = conn.prepareStatement(CmMultiLinePropertyReader.getInstance().getProperty(
+                    "TRENDING_DATA_FOR_TEST_SEGMENTS_SQL_FROM_UIDS", replacements));
             ps.setInt(1, testDef.getTestDefId());
             ps.setInt(2, segment);
             ResultSet rs = ps.executeQuery();
-            if(!rs.first())
+            if (!rs.first())
                 return 0;
             return rs.getInt("count_users");
+        } finally {
+            SqlUtilities.releaseResources(null, ps, null);
         }
-        finally {
-            SqlUtilities.releaseResources(null, ps,null);
-        }        
     }
-    
-    private ProgramData createProgramData(final Connection conn, Map<String,String> replacements, int testDefId) throws Exception {
-        PreparedStatement ps=null;
+
+    private ProgramData createProgramData(final Connection conn, Map<String, String> replacements, int testDefId)
+            throws Exception {
+        PreparedStatement ps = null;
         try {
             HaTestDef testDef = new HaTestDefDao().getTestDef(conn, testDefId);
-            
-            String name =  testDef.getName() + " (" + testDef.getTestConfig().getSegmentCount() + " Sections)";
+
+            String name = testDef.getName() + " (" + testDef.getTestConfig().getSegmentCount() + " Sections)";
             ProgramData pd = new ProgramData(name, testDef.getTestDefId());
-            
-            /** for number of segments defined for this test
+
+            /**
+             * for number of segments defined for this test
              * 
              */
             int totSegs = testDef.getTestConfig().getSegmentCount();
-            for(int i=0;i<totSegs;i++) {
-                int countUsers=getCountUsersWhoHaveBeenInQuizSegment(conn, replacements, testDef, (i+1));
-                pd.getSegments().add(new ProgramSegmentData(i,countUsers ));
+            for (int i = 0; i < totSegs; i++) {
+                int countUsers = getCountUsersWhoHaveBeenInQuizSegment(conn, replacements, testDef, (i + 1));
+                pd.getSegments().add(new ProgramSegmentData(i, countUsers));
             }
             return pd;
-        }
-        finally {
-            SqlUtilities.releaseResources(null, ps,null);
+        } finally {
+            SqlUtilities.releaseResources(null, ps, null);
         }
     }
 }

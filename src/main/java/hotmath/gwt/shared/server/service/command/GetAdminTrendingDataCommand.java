@@ -24,7 +24,7 @@ public class GetAdminTrendingDataCommand implements ActionHandler<GetAdminTrendi
         studentPool = new GetStudentGridPageCommand().getStudentPool(conn, action.getDataAction());
         if(studentPool.size() == 0)
             throw new CmRpcException("No students found");
-
+        
         CmList<ProgramData> pd = new CmAdminDao().getTrendingData_ForProgram(conn, action.getAdminId(), studentPool);
         CmList<TrendingData> td = new CmAdminDao().getTrendingData(conn, action.getAdminId(), studentPool);
         return new CmAdminTrendingDataImplDefault(td, pd);

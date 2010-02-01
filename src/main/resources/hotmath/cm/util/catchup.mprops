@@ -352,6 +352,28 @@ WHERE (d.test_def_id = ?)
 and t.test_segment = ?
 and u.uid in ($$UID_LIST$$)
 
+
+
+.key=TRENDING_DATA_DETAIL_FOR_LESSON_FROM_UIDS
+
+select distinct  u.uid, u.user_name
+from  HA_TEST_RUN_LESSON l
+  JOIN HA_TEST_RUN r
+    ON r.run_id = l.run_id
+   JOIN HA_TEST t
+     ON t.test_id = r.test_id
+   JOIN HA_USER u
+     ON u.uid = t.user_id
+where u.uid in ($$UID_LIST$$)
+and     l.lesson_name = ?
+order by user_name
+
+
+
+
+
+
+
 ## 
 ## Class: CreateAutoRegistrationAccountCommand
 ##

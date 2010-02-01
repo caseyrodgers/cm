@@ -31,6 +31,7 @@ public class TrendingDataWindowChart extends Chart {
     
     public TrendingDataWindowChart() {
         super("/gwt-resources/gxt/chart/open-flash-chart.swf");
+        addChartListener(listener);
     }
     
     public TrendingDataWindowChart(CmAsyncRequest callback) {
