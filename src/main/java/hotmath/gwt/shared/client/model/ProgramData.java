@@ -24,10 +24,6 @@ public class ProgramData implements Response{
         this.programName = programName;
         this.testDefId = testDefId;
     }
-    
-    public List<ProgramSegmentData> getSegments() {
-        return segments;
-    }
 
     public String getProgramName() {
         return programName;
@@ -44,8 +40,13 @@ public class ProgramData implements Response{
     public void setTestDefId(Integer testDefId) {
         this.testDefId = testDefId;
     }
+    
+    public List<ProgramSegmentData> getSegments() {
+        return segments;
+    }
 
     public void setSegments(List<ProgramSegmentData> segments) {
         this.segments = segments;
     }
+
 }
