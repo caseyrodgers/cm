@@ -33,7 +33,7 @@ public class TrendingDataStudentListDialog extends CmWindow {
     
     public TrendingDataStudentListDialog(String title, List<StudentModelExt> students) {
 
-        setSize(350, 400);
+        setSize(275, 400);
         setHeading(title);
         addStyleName("trending-data-student-list");
         setLayout(new FillLayout());
@@ -45,21 +45,21 @@ public class TrendingDataStudentListDialog extends CmWindow {
         add(_grid);
         
         
-        addButton(new Button("Edit", new SelectionListener<ButtonEvent>() {
+        addButton(new MyButton("Edit", new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent ce) {
                 StudentModelExt sm = _grid.getSelectionModel().getSelectedItem();
                 showStudentInfo(StudentEventType.REGISTER, sm);
             }
-        }));
+        },"Edit selected student's registration."));
         
-        addButton(new Button("Details", new SelectionListener<ButtonEvent>() {
+        addButton(new MyButton("Details", new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent ce) {
                 StudentModelExt sm = _grid.getSelectionModel().getSelectedItem();
                 showStudentInfo(StudentEventType.DETAILS, sm);
             }
-        }));
+        },"Show selected student's history detail."));
 
         addButton(new Button("Close", new SelectionListener<ButtonEvent>() {
             @Override
@@ -123,19 +123,19 @@ public class TrendingDataStudentListDialog extends CmWindow {
 
         ColumnConfig column = new ColumnConfig();
         column.setId(StudentModelExt.NAME_KEY);
-        column.setHeader("Lesson Name");
+        column.setHeader("Student Name");
         column.setWidth(235);
         column.setSortable(true);
         configs.add(column);
 
-        ColumnConfig pass = new ColumnConfig();
-        pass.setId(StudentModelExt.UID_KEY);
-        pass.setHeader("User ID");
-        pass.setWidth(150);
-        pass.setSortable(true);
-        configs.add(pass);
-
         ColumnModel cm = new ColumnModel(configs);
         return cm;
     }
+ 
+    class MyButton extends Button {
+        public MyButton(String name, SelectionListener<ButtonEvent> listener, String tip) {
+            super(name, listener);
+            setToolTip(tip);
+        }
+    }    
 }
