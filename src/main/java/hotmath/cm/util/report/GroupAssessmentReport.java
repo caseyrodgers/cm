@@ -70,9 +70,6 @@ public class GroupAssessmentReport {
 
         document.open();
 
-        document.add(Chunk.NEWLINE);
-        document.add(Chunk.NEWLINE);
-
         PdfPTable tbl = new PdfPTable(2);
        
         tbl.setWidthPercentage(100);
@@ -90,9 +87,6 @@ public class GroupAssessmentReport {
         }
         document.add(tbl);
 
-        document.add(Chunk.NEWLINE);
-        document.add(Chunk.NEWLINE);
-
         for (ProgramData d : programData) {
         	List<ProgramSegmentData> psDataList = d.getSegments();
             tbl = new PdfPTable(2);
@@ -102,7 +96,7 @@ public class GroupAssessmentReport {
             tbl.setKeepTogether(true);
             addTitle(d.getProgramName(), tbl);
             addHeader("Section", "25%", tbl);
-            addHeader("Completed Count", "20%", tbl);
+            addHeader("Student Count", "20%", tbl);
             i = 0;
             for (ProgramSegmentData psData : psDataList) {
                 addCell("Section " + (psData.getSegment() + 1), tbl, ++i);
@@ -112,8 +106,8 @@ public class GroupAssessmentReport {
             document.add(Chunk.NEWLINE);
             document.add(tbl);
         }
-        
         document.close();
+
         return baos;
     }
     
