@@ -20,7 +20,7 @@ public class GeneratePdfAssessmentReportCommand implements ActionHandler<Generat
     @Override
     public CmWebResource execute(Connection conn, GeneratePdfAssessmentReportAction action) throws Exception {
         GetAdminTrendingDataCommand tdCmd = new GetAdminTrendingDataCommand();
-        CmAdminTrendingDataI tData = tdCmd.execute(conn, new GetAdminTrendingDataAction(action.getAdminId(), action.getPageAction()));
+        CmAdminTrendingDataI tData = tdCmd.execute(conn, new GetAdminTrendingDataAction(GetAdminTrendingDataAction.DataType.FULL_HISTORY,action.getAdminId(), action.getPageAction()));
         
         
         List<Integer> studentIds = new ArrayList<Integer>();

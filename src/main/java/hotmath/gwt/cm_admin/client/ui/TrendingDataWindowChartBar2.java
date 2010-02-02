@@ -117,7 +117,7 @@ public class TrendingDataWindowChartBar2 extends TrendingDataWindowChart {
         BarChart chart = new BarChart(BarStyle.GLASS);
         chart.setEnableEvents(true);
 
-        chart.setTooltip("#val#");
+        chart.setTooltip("#val# (click to see student list)");
         for (int i = 0, t = segmentData.size(); i < t; i++) {
             ProgramSegmentData td = segmentData.get(i);
 

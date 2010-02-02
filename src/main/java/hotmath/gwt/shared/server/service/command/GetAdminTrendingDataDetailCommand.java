@@ -23,10 +23,10 @@ public class GetAdminTrendingDataDetailCommand implements ActionHandler<GetAdmin
             throw new CmRpcException("No students found");
         
         if(action.getDataType() == GetAdminTrendingDataDetailAction.DataType.PROGRAM_USERS) {
-            return new CmAdminDao().getStudentsWhoHaveBeenAssignedProgramSegment(conn, studentPool,action.getTestDefId(), action.getQuizSegment());
+            return new CmAdminDao().getStudentsWhoHaveBeenAssignedProgramSegment(conn, studentPool,action.getTestDefId(), action.getQuizSegment(),false);
         }
         else if(action.getDataType() == GetAdminTrendingDataDetailAction.DataType.LESSON_USERS) {
-            return new CmAdminDao().getStudentsWhoHaveBeenAssignedLesson(conn, studentPool,action.getLessonName());
+            return new CmAdminDao().getStudentsWhoHaveBeenAssignedLesson(conn, studentPool,action.getLessonName(),false);
         }
         else {
             throw new CmRpcException("Unknown DataType request: " + action.getDataType());

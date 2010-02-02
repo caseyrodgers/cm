@@ -296,7 +296,7 @@ order by count_assigned desc
 limit 5
 
                 
-.key=TRENDING_DATA_SQL_FROM_UIDS
+.key=TRENDING_DATA_SQL_FROM_UIDS_FULL_HISTORY
 
 
 select lesson_name,count(*) as count_assigned
@@ -312,7 +312,25 @@ order by count_assigned desc
 limit 5        
 
 
-.key=TRENDING_DATA_FOR_TEST_SEGMENTS_SQL_FROM_UIDS
+.key=TRENDING_DATA_SQL_FROM_UIDS_ACTIVE_ONLY
+
+select lesson_name,count(*) as count_assigned
+from   HA_TEST_RUN_LESSON l
+  JOIN HA_TEST_RUN r on l.run_id = r.run_id
+  JOIN HA_TEST t on   t.test_id = r.test_id
+  JOIN CM_USER_PROGRAM p on p.id = t.user_prog_id
+  JOIN HA_USER u on u.user_prog_id = p.id
+  JOIN HA_ADMIN a on a.aid = u.admin_id
+where a.aid = ?
+and   u.uid in($$UID_LIST$$)
+group by lesson_name 
+order by count_assigned desc
+limit 5        
+
+
+
+.key=TRENDING_DATA_FOR_TEST_SEGMENTS_SQL_FROM_UIDS_FULL_HISTORY
+
 
 SELECT count(distinct u.uid) as count_users
 FROM   HA_TEST_DEF d
@@ -320,13 +338,29 @@ FROM   HA_TEST_DEF d
     ON t.test_def_id = d.test_def_id
   JOIN HA_USER u
      ON u.uid = t.user_id
-WHERE (d.test_def_id = ?)
+   JOIN CM_USER_PROGRAM p1
+     ON p1.user_id = u.uid
+WHERE (p1.test_def_id = ?)
 and t.test_segment = ?
 and u.uid in ($$UID_LIST$$)
 
 
+.key=TRENDING_DATA_FOR_TEST_SEGMENTS_SQL_FROM_UIDS_ACTIVE_ONLY
 
-.key=TRENDING_DATA_FOR_PROGRAMS_SQL_FROM_UIDS
+
+SELECT count(distinct u.uid) as count_users
+FROM  HA_USER u
+   JOIN CM_USER_PROGRAM p
+     ON p.id = u.user_prog_id
+     JOIN HA_TEST t
+       ON t.user_prog_id = p.id
+WHERE (p.test_def_id = ?)
+and t.test_segment = ?
+and u.uid in ($$UID_LIST$$);
+
+
+
+.key=TRENDING_DATA_FOR_PROGRAMS_SQL_FROM_UIDS_FULL_HISTORY
 
 select distinct d.test_name, d.test_def_id
 from    HA_TEST_DEF d
@@ -334,6 +368,19 @@ from    HA_TEST_DEF d
     ON t.test_def_id = d.test_def_id
   JOIN HA_USER u 
     ON u.uid = t.user_id
+where u.uid in ($$UID_LIST$$)
+and d.prog_id in ('Prof', 'Auto-Enroll','Grad Prep', 'Grad Prep Tx')
+order by d.test_name
+
+
+.key=TRENDING_DATA_FOR_PROGRAMS_SQL_FROM_UIDS_ACTIVE_ONLY
+
+select distinct d.test_name, d.test_def_id
+from    HA_TEST_DEF d
+  JOIN CM_USER_PROGRAM p
+     on p.test_def_id = d.test_def_id
+  JOIN HA_USER u 
+    ON u.user_prog_id = p.id
 where u.uid in ($$UID_LIST$$)
 and d.prog_id in ('Prof', 'Auto-Enroll','Grad Prep', 'Grad Prep Tx')
 order by d.test_name

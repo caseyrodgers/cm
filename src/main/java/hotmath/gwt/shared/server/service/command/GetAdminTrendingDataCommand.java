@@ -25,8 +25,10 @@ public class GetAdminTrendingDataCommand implements ActionHandler<GetAdminTrendi
         if(studentPool.size() == 0)
             throw new CmRpcException("No students found");
         
-        CmList<ProgramData> pd = new CmAdminDao().getTrendingData_ForProgram(conn, action.getAdminId(), studentPool);
-        CmList<TrendingData> td = new CmAdminDao().getTrendingData(conn, action.getAdminId(), studentPool);
+        boolean useOnlyActiveProgram = action.getDataType() == GetAdminTrendingDataAction.DataType.ONLY_ACTIVE;
+        
+        CmList<ProgramData> pd = new CmAdminDao().getTrendingData_ForProgram(conn, action.getAdminId(), studentPool,useOnlyActiveProgram);
+        CmList<TrendingData> td = new CmAdminDao().getTrendingData(conn, action.getAdminId(), studentPool,useOnlyActiveProgram);
         return new CmAdminTrendingDataImplDefault(td, pd);
     }
 

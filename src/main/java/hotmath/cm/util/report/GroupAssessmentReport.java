@@ -51,9 +51,8 @@ public class GroupAssessmentReport {
             st.setUid(uid);
             studentPool.add(st);
         }
-        CmList<TrendingData> trendingData = adminDao.getTrendingData(conn, adminId, studentPool);
-        
-        CmList<ProgramData> programData = adminDao.getTrendingData_ForProgram(conn, adminId, studentPool);
+        CmList<TrendingData> trendingData = new CmAdminDao().getTrendingData(conn, adminId, studentPool, false);
+        CmList<ProgramData> programData = adminDao.getTrendingData_ForProgram(conn, adminId, studentPool,false);
 
         setReportName(info);
 

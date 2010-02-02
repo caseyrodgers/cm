@@ -7,10 +7,12 @@ public class GetAdminTrendingDataAction implements Action<CmAdminTrendingDataI>{
     
     Integer adminId;
     GetStudentGridPageAction dataAction;
+    DataType dataType;
     
     public GetAdminTrendingDataAction() {}
     
-    public GetAdminTrendingDataAction(Integer adminId, GetStudentGridPageAction action) {
+    public GetAdminTrendingDataAction(DataType dataType, Integer adminId, GetStudentGridPageAction action) {
+        this.dataType = dataType;    
         this.adminId = adminId;
         this.dataAction = action;
     }
@@ -30,4 +32,25 @@ public class GetAdminTrendingDataAction implements Action<CmAdminTrendingDataI>{
     public void setAdminId(Integer adminId) {
         this.adminId = adminId;
     }
+    
+    public DataType getDataType() {
+        return dataType;
+    }
+
+    public void setDataType(DataType dataType) {
+        this.dataType = dataType;
+    }
+
+    public enum DataType{
+        /** Use the full history for each user
+         * 
+         */
+        FULL_HISTORY,
+        
+        
+        /** use only the active program assigned
+         * to each user.
+         * 
+         */
+        ONLY_ACTIVE};
 }

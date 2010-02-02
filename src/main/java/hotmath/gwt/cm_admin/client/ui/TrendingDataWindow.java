@@ -1,6 +1,5 @@
 package hotmath.gwt.cm_admin.client.ui;
 
-import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.service.CmServiceAsync;
 import hotmath.gwt.cm_tools.client.ui.PdfWindow;
@@ -17,16 +16,18 @@ import hotmath.gwt.shared.client.rpc.action.GetAdminTrendingDataAction;
 import hotmath.gwt.shared.client.util.CmAsyncCallback;
 import hotmath.gwt.shared.client.util.CmRunAsyncCallback;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.extjs.gxt.ui.client.Registry;
+import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
+import com.extjs.gxt.ui.client.event.Events;
+import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.SelectionListener;
+import com.extjs.gxt.ui.client.widget.Html;
 import com.extjs.gxt.ui.client.widget.Label;
 import com.extjs.gxt.ui.client.widget.TabItem;
 import com.extjs.gxt.ui.client.widget.TabPanel;
 import com.extjs.gxt.ui.client.widget.button.Button;
+import com.extjs.gxt.ui.client.widget.form.CheckBox;
 import com.extjs.gxt.ui.client.widget.layout.CenterLayout;
 import com.extjs.gxt.ui.client.widget.layout.FillLayout;
 import com.google.gwt.core.client.GWT;
@@ -45,6 +46,7 @@ public class TrendingDataWindow extends CmWindow {
     TrendingDataWindowChartBar2 _chartBar2;
 
     TabPanel _tabPanel;
+    CheckBox _onlyActiveCheckBox;
 
     public TrendingDataWindow(Integer adminId) {
         __instance = this;
@@ -80,8 +82,25 @@ public class TrendingDataWindow extends CmWindow {
 
         loadTrendDataAsync();
 
+        
+        getButtonBar().setStyleAttribute("position", "relative");
+        _onlyActiveCheckBox = new CheckBox();
+        _onlyActiveCheckBox.setStyleAttribute("position", "absolute");
+        _onlyActiveCheckBox.setStyleAttribute("left", "0");
+        _onlyActiveCheckBox.setStyleAttribute("top", "0");
+        _onlyActiveCheckBox.setBoxLabel("Restrict data to current programs.");
+        _onlyActiveCheckBox.addListener(Events.OnClick, new Listener<BaseEvent>() {
+            public void handleEvent(BaseEvent be) {
+                loadTrendDataAsync();
+            }
+        });
+        
+        
+        getButtonBar().add(_onlyActiveCheckBox);
+        
+        
         /**
-         * turn on after data retieved
+         * turn on after data retrieved
          * 
          */
         setVisible(true);
@@ -102,7 +121,6 @@ public class TrendingDataWindow extends CmWindow {
 
             @Override
             public void onSuccess() {
-                List<Integer> studentUids = new ArrayList<Integer>();
                 new PdfWindow(adminId, "Catchup Math Group Assessment Report", new GeneratePdfAssessmentReportAction(adminId,StudentGridPanel.instance._pageAction));
             }
         });
@@ -115,7 +133,7 @@ public class TrendingDataWindow extends CmWindow {
         CmBusyManager.setBusy(true);
 
         CmServiceAsync service = (CmServiceAsync) Registry.get("cmService");
-        service.execute(new GetAdminTrendingDataAction(adminId, StudentGridPanel.instance._pageAction),
+        service.execute(new GetAdminTrendingDataAction(onlyActiveOrFullHistory(), adminId, StudentGridPanel.instance._pageAction),
                 new CmAsyncCallback<CmAdminTrendingDataI>() {
                     public void onSuccess(CmAdminTrendingDataI trendingData) {
                         _trendingData = trendingData;
@@ -144,6 +162,14 @@ public class TrendingDataWindow extends CmWindow {
                 });
     }
 
+    private GetAdminTrendingDataAction.DataType onlyActiveOrFullHistory() {
+        if(_onlyActiveCheckBox != null && _onlyActiveCheckBox.getValue())
+          return GetAdminTrendingDataAction.DataType.ONLY_ACTIVE;
+        else 
+            return GetAdminTrendingDataAction.DataType.FULL_HISTORY;
+    }
+
+    
     private void addTrendingChart(CmAdminTrendingDataI trendingData) {
         TabItem ti = new TabItem("Most Prescribed Lessons");
         TrendingDataWindowChartBar chart = new TrendingDataWindowChartBar();
@@ -166,11 +192,6 @@ public class TrendingDataWindow extends CmWindow {
         layout();
     }
 
-    
-    private void showUsersWhoHaveGoneThroughProgram(String data) {
-        CatchupMathTools.showAlert("Gone through program: " + data);
-    }
-    
     static {
         EventBus.getInstance().addEventListener(new CmEventListenerImplDefault() {
             @Override

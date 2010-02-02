@@ -20,8 +20,6 @@ import com.extjs.gxt.charts.client.model.axis.YAxis;
 import com.extjs.gxt.charts.client.model.charts.BarChart;
 import com.extjs.gxt.charts.client.model.charts.BarChart.BarStyle;
 import com.extjs.gxt.ui.client.Registry;
-import com.extjs.gxt.ui.client.widget.ContentPanel;
-import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 
 public class TrendingDataWindowChartBar extends TrendingDataWindowChart {
 
@@ -59,12 +57,6 @@ public class TrendingDataWindowChartBar extends TrendingDataWindowChart {
 
     protected void setModelData(String title, List<TrendingData> data) {
         this.trendingData = data;
-        ContentPanel cp = new ContentPanel();
-        cp.setHeading("Bar chart");
-        cp.setFrame(true);
-        cp.setSize(400, 400);
-        cp.setLayout(new FitLayout());
-
         setBorders(true);
         setChartModel(getBarChartData(title, data));
         setVisible(true);
@@ -100,7 +92,7 @@ public class TrendingDataWindowChartBar extends TrendingDataWindowChart {
         
         BarChart chart = new BarChart(BarStyle.THREED);
         chart.setEnableEvents(true);
-        chart.setTooltip("#val#");
+        chart.setTooltip("#val# (click to see student list)");
         for(int i=0,t=data.size();i<t;i++) {
             TrendingData td = data.get(i);
             

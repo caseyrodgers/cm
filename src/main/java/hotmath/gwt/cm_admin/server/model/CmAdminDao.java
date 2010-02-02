@@ -678,7 +678,7 @@ public class CmAdminDao {
      * @param students
      * @return
      */
-    private Map<String, String> createInListReplacements(List<StudentModelExt> students) {
+    private Map<String, String> createInListReplacements(List<StudentModelExt> students, boolean useActiveOnly) {
         String inList = "";
         for (int i = 0, t = students.size(); i < t; i++) {
             if (i > 0)
@@ -695,18 +695,29 @@ public class CmAdminDao {
 
         Map<String, String> replacements = new HashMap<String, String>();
         replacements.put("UID_LIST", inList);
-
+        
         return replacements;
     }
 
-    public CmList<TrendingData> getTrendingData(final Connection conn, Integer aid, List<StudentModelExt> studentPool)
+    /** Return list of TrendingData objects that represent distinct
+     *  program assigned to group.
+     *  
+     * @param conn
+     * @param aid
+     * @param studentPool
+     * @param useActiveOnly  If true, then limit programs to active only.
+     * @return
+     * @throws Exception
+     */
+    public CmList<TrendingData> getTrendingData(final Connection conn, Integer aid, List<StudentModelExt> studentPool, boolean useActiveOnly)
             throws Exception {
         CmList<TrendingData> tdata = new CmArrayList<TrendingData>();
         PreparedStatement ps = null;
-
+        
         try {
+            String sqlToken = (useActiveOnly?"TRENDING_DATA_SQL_FROM_UIDS_ACTIVE_ONLY":"TRENDING_DATA_SQL_FROM_UIDS_FULL_HISTORY");
             ps = conn.prepareStatement(CmMultiLinePropertyReader.getInstance().getProperty(
-                    "TRENDING_DATA_SQL_FROM_UIDS", createInListReplacements(studentPool)));
+                    sqlToken, createInListReplacements(studentPool,useActiveOnly)));
             ps.setInt(1, aid);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
@@ -729,17 +740,19 @@ public class CmAdminDao {
      * @throws Exception
      */
     public CmList<ProgramData> getTrendingData_ForProgram(final Connection conn, Integer aid,
-            List<StudentModelExt> studentPool) throws Exception {
+            List<StudentModelExt> studentPool,boolean useActiveOnly) throws Exception {
+       
         CmList<ProgramData> tdata = new CmArrayList<ProgramData>();
         PreparedStatement ps = null;
-
         try {
-            ps = conn.prepareStatement(CmMultiLinePropertyReader.getInstance().getProperty(
-                    "TRENDING_DATA_FOR_PROGRAMS_SQL_FROM_UIDS", createInListReplacements(studentPool)));
+            Map<String,String> replacements = createInListReplacements(studentPool, useActiveOnly);
+            
+            String sqlToken = (useActiveOnly?"TRENDING_DATA_FOR_PROGRAMS_SQL_FROM_UIDS_ACTIVE_ONLY":"TRENDING_DATA_FOR_PROGRAMS_SQL_FROM_UIDS_FULL_HISTORY");
+            ps = conn.prepareStatement(CmMultiLinePropertyReader.getInstance().getProperty(sqlToken, replacements));
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
-                ProgramData pd = createProgramData(conn, createInListReplacements(studentPool), rs
-                        .getInt("test_def_id"));
+                ProgramData pd = createProgramData(conn, createInListReplacements(studentPool,useActiveOnly), rs
+                        .getInt("test_def_id"),useActiveOnly);
                 tdata.add(pd);
             }
             return tdata;
@@ -761,13 +774,13 @@ public class CmAdminDao {
      * @throws Exception
      */
     public CmList<StudentModelExt> getStudentsWhoHaveBeenAssignedProgramSegment(final Connection conn,
-            List<StudentModelExt> studentPool, Integer testDefId, Integer quizSegment) throws Exception {
+            List<StudentModelExt> studentPool, Integer testDefId, Integer quizSegment,Boolean useActiveOnly) throws Exception {
         CmList<StudentModelExt> students = new CmArrayList<StudentModelExt>();
         PreparedStatement ps = null;
         try {
 
             ps = conn.prepareStatement(CmMultiLinePropertyReader.getInstance().getProperty(
-                    "TRENDING_DATA_DETAIL_FOR_PROGRAM_SEGMENT_FROM_UIDS", createInListReplacements(studentPool)));
+                    "TRENDING_DATA_DETAIL_FOR_PROGRAM_SEGMENT_FROM_UIDS", createInListReplacements(studentPool,useActiveOnly)));
             ps.setInt(1, testDefId);
             ps.setInt(2, (quizSegment + 1));
             ResultSet rs = ps.executeQuery();
@@ -792,13 +805,13 @@ public class CmAdminDao {
      * @throws Exception
      */
     public CmList<StudentModelExt> getStudentsWhoHaveBeenAssignedLesson(final Connection conn,
-            List<StudentModelExt> studentPool, String lessonName) throws Exception {
+            List<StudentModelExt> studentPool, String lessonName,boolean useActiveOnly) throws Exception {
         CmList<StudentModelExt> students = new CmArrayList<StudentModelExt>();
         PreparedStatement ps = null;
         try {
 
             ps = conn.prepareStatement(CmMultiLinePropertyReader.getInstance().getProperty(
-                    "TRENDING_DATA_DETAIL_FOR_LESSON_FROM_UIDS", createInListReplacements(studentPool)));
+                    "TRENDING_DATA_DETAIL_FOR_LESSON_FROM_UIDS", createInListReplacements(studentPool,useActiveOnly)));
             ps.setString(1, lessonName);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
@@ -814,11 +827,13 @@ public class CmAdminDao {
     }
 
     private Integer getCountUsersWhoHaveBeenInQuizSegment(final Connection conn, Map<String, String> replacements,
-            HaTestDef testDef, Integer segment) throws Exception {
+            HaTestDef testDef, Integer segment,boolean useActiveOnly) throws Exception {
         PreparedStatement ps = null;
         try {
+            
+            String sqlToken = (useActiveOnly?"TRENDING_DATA_FOR_TEST_SEGMENTS_SQL_FROM_UIDS_ACTIVE_ONLY":"TRENDING_DATA_FOR_TEST_SEGMENTS_SQL_FROM_UIDS_FULL_HISTORY");
             ps = conn.prepareStatement(CmMultiLinePropertyReader.getInstance().getProperty(
-                    "TRENDING_DATA_FOR_TEST_SEGMENTS_SQL_FROM_UIDS", replacements));
+                    sqlToken, replacements));
             ps.setInt(1, testDef.getTestDefId());
             ps.setInt(2, segment);
             ResultSet rs = ps.executeQuery();
@@ -830,7 +845,7 @@ public class CmAdminDao {
         }
     }
 
-    private ProgramData createProgramData(final Connection conn, Map<String, String> replacements, int testDefId)
+    private ProgramData createProgramData(final Connection conn, Map<String, String> replacements, int testDefId,boolean useActiveOnly)
             throws Exception {
         PreparedStatement ps = null;
         try {
@@ -845,7 +860,7 @@ public class CmAdminDao {
              */
             int totSegs = testDef.getTestConfig().getSegmentCount();
             for (int i = 0; i < totSegs; i++) {
-                int countUsers = getCountUsersWhoHaveBeenInQuizSegment(conn, replacements, testDef, (i + 1));
+                int countUsers = getCountUsersWhoHaveBeenInQuizSegment(conn, replacements, testDef, (i + 1),useActiveOnly);
                 pd.getSegments().add(new ProgramSegmentData(i, countUsers));
             }
             return pd;
