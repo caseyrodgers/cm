@@ -9,6 +9,7 @@ import hotmath.gwt.shared.client.util.CmException;
 import hotmath.lwl.LWLIntegrationManager;
 import hotmath.lwl.LWLIntegrationManager.LwlAccountInfo;
 import hotmath.lwl.LWLIntegrationManager.LwlSourceApplication;
+import hotmath.lwl.LWLIntegrationManager.LwlAccountInfo.SchoolType;
 import hotmath.subscriber.HotMathSubscriber;
 import hotmath.subscriber.HotMathSubscriberManager;
 import hotmath.subscriber.HotMathSubscriberSignupInfo;
@@ -70,7 +71,7 @@ public class CmTutoringDao {
             studentTutoringInfo = new StudentTutoringInfo(accountInfo.getSubscriberId(), studentLwlInfo.getStudentId(), adminLwlInfo.getSchoolId(),adminLwlInfo.getAccountType());
         }
         catch(Exception e) {
-            studentTutoringInfo = new StudentTutoringInfo(accountInfo.getSubscriberId(), studentLwlInfo.getStudentId(), 0,0);
+            studentTutoringInfo = new StudentTutoringInfo(accountInfo.getSubscriberId(), studentLwlInfo.getStudentId(), 0,SchoolType.TYPE_NOT_SCHOOL);
         }
         
         

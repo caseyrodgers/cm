@@ -1,5 +1,7 @@
 package hotmath.cm.lwl;
 
+import hotmath.lwl.LWLIntegrationManager.LwlAccountInfo.SchoolType;
+
 /** Represents the tutoring information about this student
  * 
  *  Contains information used to hook up the student with the 
@@ -12,9 +14,9 @@ public class StudentTutoringInfo {
     String subscriberId;
     Integer schoolNumber;
     Integer studentNumber;
-    Integer accountType;
+    SchoolType accountType;
 
-    public StudentTutoringInfo(String subId, Integer studentNumber, Integer schoolNumber, Integer accountType) {
+    public StudentTutoringInfo(String subId, Integer studentNumber, Integer schoolNumber, SchoolType accountType) {
         this.subscriberId = subId;
         this.studentNumber = studentNumber;
         this.schoolNumber = schoolNumber;
@@ -44,11 +46,11 @@ public class StudentTutoringInfo {
         this.studentNumber = studentNumber;
     }
 
-    public Integer getAccountType() {
+    public SchoolType getAccountType() {
         return accountType;
     }
 
-    public void setAccountType(Integer accountType) {
+    public void setAccountType(SchoolType accountType) {
         this.accountType = accountType;
     }
 }
