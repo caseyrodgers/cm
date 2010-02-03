@@ -851,7 +851,7 @@ public class CmAdminDao {
         try {
             HaTestDef testDef = new HaTestDefDao().getTestDef(conn, testDefId);
 
-            String name = testDef.getName() + " (" + testDef.getTestConfig().getSegmentCount() + " Sections)";
+            String name = testDef.getName();
             ProgramData pd = new ProgramData(name, testDef.getTestDefId());
 
             /**

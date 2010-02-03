@@ -375,12 +375,15 @@ order by d.test_name
 
 .key=TRENDING_DATA_FOR_PROGRAMS_SQL_FROM_UIDS_ACTIVE_ONLY
 
-select distinct d.test_name, d.test_def_id
-from    HA_TEST_DEF d
-  JOIN CM_USER_PROGRAM p
-     on p.test_def_id = d.test_def_id
-  JOIN HA_USER u 
-    ON u.user_prog_id = p.id
+select   distinct d.test_name,
+                  d.test_def_id
+from     HA_TEST_DEF d
+         join CM_USER_PROGRAM p
+           on p.test_def_id = d.test_def_id
+         join HA_USER u
+           on u.user_prog_id = p.id
+          join HA_TEST t 
+            on t.user_prog_id = p.id
 where u.uid in ($$UID_LIST$$)
 and d.prog_id in ('Prof', 'Auto-Enroll','Grad Prep', 'Grad Prep Tx')
 order by d.test_name

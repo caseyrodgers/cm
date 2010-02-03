@@ -53,7 +53,7 @@ public class TrendingDataWindow extends CmWindow {
         
         this.adminId = adminId;
 
-        setHeading("Student Assessment");
+        setHeading("Overview of Student Progress");
         setWidth(600);
         setHeight(500);
 
