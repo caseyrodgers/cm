@@ -80,6 +80,10 @@ public class TrendingDataStudentListDialog extends CmWindow {
      * @param sm
      */
     private void showStudentInfo(final StudentEventType type, StudentModelExt sm) {
+        if(sm == null)
+            return;
+        
+        
         CmBusyManager.setBusy(true);
 
         CmServiceAsync service = (CmServiceAsync) Registry.get("cmService");
