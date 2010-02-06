@@ -121,7 +121,9 @@ public class TrendingDataWindow extends CmWindow {
 
             @Override
             public void onSuccess() {
-                new PdfWindow(adminId, "Catchup Math Group Assessment Report", new GeneratePdfAssessmentReportAction(adminId,StudentGridPanel.instance._pageAction));
+            	GeneratePdfAssessmentReportAction action = new GeneratePdfAssessmentReportAction(adminId,StudentGridPanel.instance._pageAction);
+            	action.setFilterMap(StudentGridPanel.instance._pageAction.getFilterMap());
+                new PdfWindow(adminId, "Catchup Math Group Assessment Report", action);
             }
         });
 

@@ -1,9 +1,11 @@
 package hotmath.gwt.shared.client.rpc.action;
 
 import java.util.List;
+import java.util.Map;
 
 import hotmath.gwt.shared.client.rpc.Action;
 import hotmath.gwt.shared.client.rpc.CmWebResource;
+import hotmath.gwt.shared.client.rpc.action.GetStudentGridPageAction.FilterType;
 
 public class GeneratePdfAction implements Action<CmWebResource>{
 
@@ -17,6 +19,8 @@ public class GeneratePdfAction implements Action<CmWebResource>{
 	PdfType pdfType;
     Integer adminId;
     List<Integer> studentUids;
+    Map<FilterType,String> filterMap;
+    
     public GeneratePdfAction() {}
     
     public GeneratePdfAction(PdfType pdfType, Integer adminId, List<Integer> studentUids) {
@@ -47,6 +51,14 @@ public class GeneratePdfAction implements Action<CmWebResource>{
 
     public void setStudentUids(List<Integer> studentUids) {
         this.studentUids = studentUids;
+    }
+
+    public Map<FilterType,String> getFilterMap() {
+    	return this.filterMap;
+    }
+
+    public void setFilterMap(Map<FilterType,String> filterMap) {
+    	this.filterMap = filterMap;
     }
 
     public enum PdfType{REPORT_CARD, STUDENT_DETAIL, STUDENT_SUMMARY, GROUP_ASSESSMENT};
