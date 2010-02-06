@@ -56,6 +56,7 @@ public class GeneratePdfCommand implements ActionHandler<GeneratePdfAction, CmWe
         }
         else if (pdfType == PdfType.GROUP_ASSESSMENT) {
             GroupAssessmentReport gr = new GroupAssessmentReport();
+            gr.setFilterMap(action.getFilterMap());
             baos = gr.makePdf(conn, reportId, adminId);
             reportName = gr.getReportName();
         }        

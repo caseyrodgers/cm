@@ -4,17 +4,21 @@ import static hotmath.cm.util.CmCacheManager.CacheName.REPORT_ID;
 import hotmath.cm.util.CmCacheManager;
 import hotmath.gwt.cm_admin.server.model.CmAdminDao;
 import hotmath.gwt.cm_tools.client.model.AccountInfoModel;
+import hotmath.gwt.cm_tools.client.model.GroupInfoModel;
 import hotmath.gwt.cm_tools.client.model.StudentModelExt;
 import hotmath.gwt.shared.client.model.ProgramData;
 import hotmath.gwt.shared.client.model.ProgramSegmentData;
 import hotmath.gwt.shared.client.model.TrendingData;
 import hotmath.gwt.shared.client.rpc.action.CmList;
+import hotmath.gwt.shared.client.rpc.action.GetStudentGridPageAction.FilterType;
+
 
 import java.awt.Color;
 import java.io.ByteArrayOutputStream;
 import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.log4j.Logger;
 
@@ -31,6 +35,8 @@ import com.lowagie.text.pdf.PdfWriter;
 public class GroupAssessmentReport {
 	
 	private String reportName;
+	private String filterDescription;
+	private Map<FilterType,String> filterMap;
 	
     private static final Logger LOG = Logger.getLogger(GroupAssessmentReport.class);	
 
@@ -55,13 +61,15 @@ public class GroupAssessmentReport {
         CmList<ProgramData> programData = adminDao.getTrendingData_ForProgram(conn, adminId, studentPool,false);
 
         setReportName(info);
+        
+        setFilterDescription(conn, adminId, adminDao);
 
         Document document = new Document();
         baos = new ByteArrayOutputStream();
         PdfWriter.getInstance(document, baos);
 
         int count = (studentUids != null) ? studentUids.size() : 0;
-        HeaderFooter header = ReportUtils.getGroupReportHeader(info, count);
+        HeaderFooter header = ReportUtils.getGroupReportHeader(info, count, filterDescription);
         HeaderFooter footer = ReportUtils.getFooter();
 
         document.setHeader(header);
@@ -110,6 +118,35 @@ public class GroupAssessmentReport {
         return baos;
     }
     
+    private void setFilterDescription(final Connection conn, Integer adminId, CmAdminDao dao) throws Exception {
+    	if (filterMap != null && filterMap.size() > 0) {
+    		StringBuilder sb = new StringBuilder();
+    		
+    		if (filterMap.containsKey(FilterType.GROUP)) {
+           		Integer groupId = Integer.valueOf(filterMap.get(FilterType.GROUP));
+    			CmList<GroupInfoModel> groups = dao.getActiveGroups(conn, adminId);
+    			for(GroupInfoModel group : groups) {
+    				if (group.getId().equals(groupId)) {
+    					sb.append("Group: ").append(group.getName());
+    					break;
+    				}
+    			}
+    		}
+    		
+    		if (filterMap.containsKey(FilterType.QUICKTEXT)) {
+    			if (sb.length() > 0) sb.append(", ");
+    			sb.append("Quick search: ");
+    			sb.append(filterMap.get(FilterType.QUICKTEXT).trim());
+    		}
+    	    
+    	    if (sb.length() > 0) this.filterDescription = sb.toString();
+    	}
+    }
+
+    public void setFilterMap(Map<FilterType,String> filterMap) {
+    	this.filterMap = filterMap;
+    }
+
     private void setReportName(AccountInfoModel info) {
         StringBuilder sb = new StringBuilder();
         sb.append("CM-GroupAssessmentReport");
