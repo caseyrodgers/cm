@@ -940,9 +940,17 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
              * use module vars to hold request options
              */
             _pageAction.setForceRefresh(_forceServerRefresh);
-            _pageAction.setGroupFilter(_groupFilterId != null?_groupFilterId.toString():null);
+            if (_groupFilterId != null) {
+            	_pageAction.setGroupFilter(_groupFilterId.toString());
+            	_pageAction.addFilter(GetStudentGridPageAction.FilterType.GROUP, _groupFilterId.toString());
+            }
+            else
+            	_pageAction.setGroupFilter(null);
             _pageAction.setQuickSearch(_quickSearch);
-
+            if (_quickSearch != null && _quickSearch.trim().length() > 0) {
+            	_pageAction.addFilter(GetStudentGridPageAction.FilterType.QUICKTEXT, _quickSearch.trim());
+            }
+            
             s.execute(_pageAction, callback);
 
             /** always reset request options */
