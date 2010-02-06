@@ -72,12 +72,12 @@ public class ReportUtils {
         return p;
     }
     
-    public static HeaderFooter getGroupReportHeader(AccountInfoModel info, int studentCount) {
+    public static HeaderFooter getGroupReportHeader(AccountInfoModel info, int studentCount, String filterDescription) {
         Phrase heading = new Phrase();
-        Phrase school = ReportUtils.buildPhraseLabel("School: ", nz(info.getSchoolName()));
-        Phrase admin = ReportUtils.buildPhraseLabel("Administrator: ", nz(info.getSchoolUserName()));
-        Phrase expires = ReportUtils.buildPhraseLabel("Expires: ", nz(info.getExpirationDate()));
-        Phrase stuCount = ReportUtils.buildPhraseLabel("Student Count: ", String.valueOf(studentCount));
+        Phrase school = buildPhraseLabel("School: ", nz(info.getSchoolName()));
+        Phrase admin = buildPhraseLabel("Administrator: ", nz(info.getSchoolUserName()));
+        Phrase expires = buildPhraseLabel("Expires: ", nz(info.getExpirationDate()));
+        Phrase stuCount = buildPhraseLabel("Student Count: ", String.valueOf(studentCount));
         
         heading.add(school);
         // Chunk c = new Chunk(new Jpeg(new
@@ -90,7 +90,12 @@ public class ReportUtils {
         heading.add(expires);
         heading.add(Chunk.NEWLINE);
         heading.add(stuCount);
-        
+        if (filterDescription != null && filterDescription.length() > 0) {
+            Phrase filterDescr = buildPhraseLabel("Filter: ", filterDescription);
+            heading.add(Chunk.NEWLINE);
+            heading.add(filterDescr);
+        }
+
         HeaderFooter header = new HeaderFooter(heading, false);
 
         return header;
