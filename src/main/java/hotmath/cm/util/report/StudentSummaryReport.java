@@ -68,7 +68,7 @@ public class StudentSummaryReport {
         baos = new ByteArrayOutputStream();
         PdfWriter.getInstance(document, baos);
 
-        HeaderFooter header = ReportUtils.getGroupReportHeader(info, list.size());
+        HeaderFooter header = ReportUtils.getGroupReportHeader(info, list.size(), null);
         HeaderFooter footer = ReportUtils.getFooter();
 
         document.setHeader(header);
