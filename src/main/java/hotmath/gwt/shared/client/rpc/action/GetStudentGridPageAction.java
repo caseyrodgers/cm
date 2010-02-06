@@ -6,6 +6,9 @@ import hotmath.gwt.shared.client.rpc.Action;
 
 import com.extjs.gxt.ui.client.data.PagingLoadConfig;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class GetStudentGridPageAction implements Action<CmStudentPagingLoadResult<StudentModelExt>>{
     
     Integer adminId;
@@ -13,6 +16,7 @@ public class GetStudentGridPageAction implements Action<CmStudentPagingLoadResul
 	String groupFilter;
 	boolean forceRefresh;
 	String quickSearch;
+	Map<FilterType,String> filterMap;
 	
 	public GetStudentGridPageAction() {}
 	
@@ -60,4 +64,15 @@ public class GetStudentGridPageAction implements Action<CmStudentPagingLoadResul
     public void setQuickSearch(String quickSearch) {
         this.quickSearch = quickSearch;
     }
+    
+    public void addFilter(FilterType key, String value) {
+    	if (filterMap == null) filterMap = new HashMap<FilterType,String>();
+    	filterMap.put(key, value);
+    }
+    
+    public Map<FilterType,String> getFilterMap() {
+    	return this.filterMap;
+    }
+    
+    public enum FilterType {GROUP, QUICKTEXT};
 }
