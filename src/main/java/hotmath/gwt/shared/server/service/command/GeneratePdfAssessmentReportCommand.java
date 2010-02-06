@@ -36,6 +36,4 @@ public class GeneratePdfAssessmentReportCommand implements ActionHandler<Generat
     public Class<? extends Action<? extends Response>> getActionType() {
         return GeneratePdfAssessmentReportAction.class;
     }
-    
-
 }
