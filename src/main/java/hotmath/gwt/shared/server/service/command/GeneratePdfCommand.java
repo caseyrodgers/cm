@@ -41,6 +41,7 @@ public class GeneratePdfCommand implements ActionHandler<GeneratePdfAction, CmWe
         ByteArrayOutputStream baos = null;
         if (pdfType == PdfType.STUDENT_SUMMARY) {
             StudentSummaryReport ss = new StudentSummaryReport();
+            ss.setFilterMap(action.getFilterMap());
             baos = ss.makePdf(reportId, adminId);
             reportName = ss.getReportName();
         }
