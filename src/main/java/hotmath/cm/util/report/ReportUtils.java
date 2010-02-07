@@ -1,6 +1,8 @@
 package hotmath.cm.util.report;
 
 import java.awt.Color;
+import java.sql.Connection;
+import java.util.Map;
 
 import com.lowagie.text.Chunk;
 import com.lowagie.text.Font;
@@ -10,8 +12,12 @@ import com.lowagie.text.Paragraph;
 import com.lowagie.text.Phrase;
 import com.lowagie.text.pdf.PdfPTable;
 
+import hotmath.gwt.cm_admin.server.model.CmAdminDao;
 import hotmath.gwt.cm_tools.client.model.AccountInfoModel;
+import hotmath.gwt.cm_tools.client.model.GroupInfoModel;
 import hotmath.gwt.cm_tools.client.model.StudentModelI;
+import hotmath.gwt.shared.client.rpc.action.CmList;
+import hotmath.gwt.shared.client.rpc.action.GetStudentGridPageAction.FilterType;
 
 
 public class ReportUtils {
@@ -107,5 +113,32 @@ public class ReportUtils {
     
     public static PdfPTable getStudentReportHeader(StudentModelI sm, AccountInfoModel info) {
     	return null;
+    }
+
+    public static String getFilterDescription(final Connection conn, Integer adminId, CmAdminDao dao,
+    		Map<FilterType, String> filterMap) throws Exception {
+    	if (filterMap != null && filterMap.size() > 0) {
+    		StringBuilder sb = new StringBuilder();
+    		
+    		if (filterMap.containsKey(FilterType.GROUP)) {
+           		Integer groupId = Integer.valueOf(filterMap.get(FilterType.GROUP));
+    			CmList<GroupInfoModel> groups = dao.getActiveGroups(conn, adminId);
+    			for(GroupInfoModel group : groups) {
+    				if (group.getId().equals(groupId)) {
+    					sb.append("Group: ").append(group.getName());
+    					break;
+    				}
+    			}
+    		}
+    		
+    		if (filterMap.containsKey(FilterType.QUICKTEXT)) {
+    			if (sb.length() > 0) sb.append(", ");
+    			sb.append("Quick search: ");
+    			sb.append(filterMap.get(FilterType.QUICKTEXT).trim());
+    		}
+    	    
+    	    return sb.toString();
+    	}
+    	return "";
     }
 }
