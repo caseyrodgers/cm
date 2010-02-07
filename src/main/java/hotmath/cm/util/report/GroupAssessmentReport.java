@@ -62,7 +62,7 @@ public class GroupAssessmentReport {
 
         setReportName(info);
         
-        setFilterDescription(conn, adminId, adminDao);
+        filterDescription = ReportUtils.getFilterDescription(conn, adminId, adminDao, filterMap);
 
         Document document = new Document();
         baos = new ByteArrayOutputStream();
@@ -116,31 +116,6 @@ public class GroupAssessmentReport {
         document.close();
 
         return baos;
-    }
-    
-    private void setFilterDescription(final Connection conn, Integer adminId, CmAdminDao dao) throws Exception {
-    	if (filterMap != null && filterMap.size() > 0) {
-    		StringBuilder sb = new StringBuilder();
-    		
-    		if (filterMap.containsKey(FilterType.GROUP)) {
-           		Integer groupId = Integer.valueOf(filterMap.get(FilterType.GROUP));
-    			CmList<GroupInfoModel> groups = dao.getActiveGroups(conn, adminId);
-    			for(GroupInfoModel group : groups) {
-    				if (group.getId().equals(groupId)) {
-    					sb.append("Group: ").append(group.getName());
-    					break;
-    				}
-    			}
-    		}
-    		
-    		if (filterMap.containsKey(FilterType.QUICKTEXT)) {
-    			if (sb.length() > 0) sb.append(", ");
-    			sb.append("Quick search: ");
-    			sb.append(filterMap.get(FilterType.QUICKTEXT).trim());
-    		}
-    	    
-    	    if (sb.length() > 0) this.filterDescription = sb.toString();
-    	}
     }
 
     public void setFilterMap(Map<FilterType,String> filterMap) {
