@@ -656,8 +656,9 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
 
                     @Override
                     public void onSuccess() {
-                        new PdfWindow(_cmAdminMdl.getId(), "Catchup Math Student Summary Report",
-                                new GeneratePdfAction(PdfType.STUDENT_SUMMARY, _cmAdminMdl.getId(), studentUids));
+                    	GeneratePdfAction pdfAction = new GeneratePdfAction(PdfType.STUDENT_SUMMARY, _cmAdminMdl.getId(), studentUids);
+                    	pdfAction.setFilterMap(instance._pageAction.getFilterMap());
+                        new PdfWindow(_cmAdminMdl.getId(), "Catchup Math Student Summary Report", pdfAction);
                     }
                 });
             }
