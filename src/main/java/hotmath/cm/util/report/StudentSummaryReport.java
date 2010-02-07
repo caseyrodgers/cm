@@ -6,6 +6,7 @@ import hotmath.gwt.cm_admin.server.model.CmAdminDao;
 import hotmath.gwt.cm_admin.server.model.CmStudentDao;
 import hotmath.gwt.cm_tools.client.model.AccountInfoModel;
 import hotmath.gwt.cm_tools.client.model.StudentModelI;
+import hotmath.gwt.shared.client.rpc.action.GetStudentGridPageAction.FilterType;
 import hotmath.util.HMConnectionPool;
 import hotmath.util.sql.SqlUtilities;
 
@@ -23,33 +24,36 @@ import com.lowagie.text.Document;
 import com.lowagie.text.Font;
 import com.lowagie.text.FontFactory;
 import com.lowagie.text.HeaderFooter;
-import com.lowagie.text.Phrase;
 import com.lowagie.text.Table;
 import com.lowagie.text.pdf.PdfWriter;
 
 public class StudentSummaryReport {
 	
 	private String reportName;
+	private Map<FilterType,String> filterMap;
 
     @SuppressWarnings("unchecked")
     public ByteArrayOutputStream makePdf(String reportId, Integer adminId) throws Exception {
         ByteArrayOutputStream baos = null;
         List<Integer> studentUids = (List<Integer>) CmCacheManager.getInstance().retrieveFromCache(REPORT_ID, reportId);
 
-        CmAdminDao adminDao = new CmAdminDao();
-
-        AccountInfoModel info = adminDao.getAccountInfo(adminId);
-        if (info == null)
-            return null;
-
-        setReportName(info);
-        
-        CmStudentDao studentDao = new CmStudentDao();
         List<StudentModelI> sList=null;
         Connection conn=null;
+        String filterDescription;
+        AccountInfoModel info = null;
         try {
             conn = HMConnectionPool.getConnection();
+
+            CmAdminDao adminDao = new CmAdminDao();
+            CmStudentDao studentDao = new CmStudentDao();
+            info = adminDao.getAccountInfo(adminId);
+            if (info == null)
+                return null;
+
+            setReportName(info);
+            
             sList = studentDao.getSummariesForActiveStudents(conn, adminId);
+            filterDescription = ReportUtils.getFilterDescription(conn, adminId, adminDao, filterMap);
         }
         finally {
             SqlUtilities.releaseResources(null,null,conn);
@@ -68,7 +72,7 @@ public class StudentSummaryReport {
         baos = new ByteArrayOutputStream();
         PdfWriter.getInstance(document, baos);
 
-        HeaderFooter header = ReportUtils.getGroupReportHeader(info, list.size(), null);
+        HeaderFooter header = ReportUtils.getGroupReportHeader(info, list.size(), filterDescription);
         HeaderFooter footer = ReportUtils.getFooter();
 
         document.setHeader(header);
@@ -112,7 +116,11 @@ public class StudentSummaryReport {
         document.close();
         return baos;
     }
-    
+
+    public void setFilterMap(Map<FilterType,String> filterMap) {
+    	this.filterMap = filterMap;
+    }
+
     private void setReportName(AccountInfoModel info) {
         StringBuilder sb = new StringBuilder();
         sb.append("CM-SummaryReport");
