@@ -51,8 +51,9 @@ public class EndOfProgramHandler {
         try {
             conn = HMConnectionPool.getConnection();
             StudentUserProgramModel programCurr = upDao.loadProgramInfoCurrent(conn,student.getUid());
-            
-            if(programCurr.getTestDefId() == CmProgram.PREALG_PROF.getDefId()) {
+
+            if(programCurr.getTestDefId() == CmProgram.PREALG_PROF.getDefId() 
+                    || programCurr.getTestDefId() == CmProgram.PREALG_PROF_V1.getDefId()) {
                 updateProgram(CmProgram.ALG1_PROF.getSubject(),CmProgram.ALG1_PROF.getProgramId(),null);                
             }
             else if(programCurr.getTestDefId() == CmProgram.ALG1_PROF.getDefId()) {
@@ -90,7 +91,8 @@ public class EndOfProgramHandler {
                     setupChapterTest(conn, programCurr,CmProgram.GEOM_CHAP.getSubject());
                 }                
                 else {
-                    throw new Exception("Unknown program: " + programCurr);
+                    throw new Exception("Unknown program: " + 
+                            programCurr);
                 }
             }
             
