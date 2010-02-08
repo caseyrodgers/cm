@@ -393,9 +393,7 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
         toolbar.add(studentDetailsToolItem(_grid));
         toolbar.add(manageGroupButton(_grid));
         
-        if(CmShared.getQueryParameter("debug") != null) {
-            toolbar.add(trendingReportButton());
-        }
+        toolbar.add(trendingReportButton());
 
         toolbar.add(new FillToolItem());
         toolbar.add(displayPrintableReportToolItem(_grid));
