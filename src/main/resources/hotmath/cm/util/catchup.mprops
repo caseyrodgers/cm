@@ -396,7 +396,7 @@ SELECT distinct u.user_name,u.uid
 FROM   HA_TEST_DEF d
   JOIN HA_TEST t
     ON t.test_def_id = d.test_def_id
-  JOIN HA_USER u
+  JOIN v_HA_USER_ACTIVE u
      ON u.uid = t.user_id
 WHERE (d.test_def_id = ?)
 and t.test_segment = ?
@@ -412,7 +412,7 @@ from  HA_TEST_RUN_LESSON l
     ON r.run_id = l.run_id
    JOIN HA_TEST t
      ON t.test_id = r.test_id
-   JOIN HA_USER u
+   JOIN v_HA_USER_ACTIVE u
      ON u.uid = t.user_id
 where u.uid in ($$UID_LIST$$)
 and     l.lesson_name = ?

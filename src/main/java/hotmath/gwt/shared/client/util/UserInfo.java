@@ -9,11 +9,11 @@ import hotmath.gwt.shared.client.eventbus.EventBus;
 import hotmath.gwt.shared.client.eventbus.EventType;
 import hotmath.gwt.shared.client.model.UserInfoBase;
 import hotmath.gwt.shared.client.rpc.Response;
+import hotmath.gwt.shared.client.rpc.RetryAction;
 import hotmath.gwt.shared.client.rpc.action.GetUserInfoAction;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.Registry;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.rpc.IsSerializable;
 
 /** Class to encapsulate all user information
@@ -360,14 +360,10 @@ public class UserInfo implements IsSerializable, Response {
      * @param callback
      * @return
      */
-    static public void loadUser(int uid, final CmAsyncRequest callback) {
-        
-        CatchupMathTools.setBusy(true);
-
-        CmServiceAsync ca = (CmServiceAsync) Registry.get("cmService");
-        ca.execute(new GetUserInfoAction(uid), new AsyncCallback<UserInfo>() {
-            //@Override
-            public void onSuccess(UserInfo user) {
+    static public void loadUser(final int uid, final CmAsyncRequest callback) {
+        new RetryAction<UserInfo>() {
+            @Override
+            public void oncapture(UserInfo user) {
 
                 __instance = user;
                 
@@ -390,15 +386,13 @@ public class UserInfo implements IsSerializable, Response {
                 // fire an event on the event bus, passing new userinfo
                 EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_USERCHANGED,user));
             }
-            
-            //@Override
-            public void onFailure(Throwable caught) {
+
+            @Override
+            public void attempt() {
                 CatchupMathTools.setBusy(true);
-                
-                String msg = caught.getMessage();
-                CatchupMathTools.showAlert(msg);
+                CmShared.getCmService().execute(new GetUserInfoAction(uid), this);
             }
-        });
+        }.attempt();
     }    
 
     

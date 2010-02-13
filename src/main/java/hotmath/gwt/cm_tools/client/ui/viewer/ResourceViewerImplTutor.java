@@ -4,10 +4,12 @@ import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.service.CmServiceAsync;
 import hotmath.gwt.cm_tools.client.ui.CmMainPanel;
+import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
 import hotmath.gwt.shared.client.eventbus.CmEventListenerImplDefault;
 import hotmath.gwt.shared.client.eventbus.EventBus;
 import hotmath.gwt.shared.client.eventbus.EventType;
+import hotmath.gwt.shared.client.rpc.RetryAction;
 import hotmath.gwt.shared.client.rpc.action.GetSolutionAction;
 import hotmath.gwt.shared.client.util.RpcData;
 import hotmath.gwt.shared.client.util.UserInfo;
@@ -19,7 +21,6 @@ import com.extjs.gxt.ui.client.widget.Html;
 import com.extjs.gxt.ui.client.widget.Window;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.google.gwt.user.client.DOM;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Frame;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -118,16 +119,16 @@ public class ResourceViewerImplTutor extends CmResourcePanelImplWithWhiteboard {
         if(tutorPanel != null)
             return;  
 
-        // call for the solution HTML
-        CmServiceAsync s = (CmServiceAsync) Registry.get("cmService");
-        CmBusyManager.setBusy(true, false);
-        s.execute(new GetSolutionAction(UserInfo.getInstance().getUid(), pid), new AsyncCallback<RpcData>() {
-            public void onFailure(Throwable caught) {
-                CatchupMathTools.setBusy(false);
-                CatchupMathTools.showAlert(caught.getMessage());
+        
+        new RetryAction<RpcData>() {
+            @Override
+            public void attempt() {
+                CmBusyManager.setBusy(true);
+                CmShared.getCmService().execute(new GetSolutionAction(UserInfo.getInstance().getUid(), pid),this);
             }
-
-            public void onSuccess(RpcData result) {
+            
+            @Override
+            public void oncapture(RpcData result) {
                 String html = result.getDataAsString("solutionHtml");
                 boolean hasShowWork = result.getDataAsInt("hasShowWork") > 0;
 
@@ -142,7 +143,6 @@ public class ResourceViewerImplTutor extends CmResourcePanelImplWithWhiteboard {
                     CmMainPanel.__lastInstance._mainContent.layout();
 
                 try {
-
                     /**
                      * Show Work is not required, then do not show the
                      * ShowWorkRequired
@@ -169,7 +169,7 @@ public class ResourceViewerImplTutor extends CmResourcePanelImplWithWhiteboard {
                 }
                 layout();
             }
-        });
+        }.attempt();
     }
 
     /**

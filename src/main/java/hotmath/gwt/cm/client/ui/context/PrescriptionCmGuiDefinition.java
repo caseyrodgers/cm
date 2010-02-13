@@ -16,13 +16,14 @@ import hotmath.gwt.cm_tools.client.ui.CmMainPanel;
 import hotmath.gwt.cm_tools.client.ui.ContextController;
 import hotmath.gwt.cm_tools.client.ui.context.CmContext;
 import hotmath.gwt.cm_tools.client.ui.resource_viewer.CmResourcePanel;
+import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
 import hotmath.gwt.shared.client.eventbus.CmEventListenerImplDefault;
 import hotmath.gwt.shared.client.eventbus.EventBus;
 import hotmath.gwt.shared.client.eventbus.EventType;
+import hotmath.gwt.shared.client.rpc.RetryAction;
 import hotmath.gwt.shared.client.rpc.action.GetPrescriptionAction;
 import hotmath.gwt.shared.client.rpc.action.SetInmhItemAsViewedAction;
-import hotmath.gwt.shared.client.util.CmAsyncCallback;
 import hotmath.gwt.shared.client.util.RpcData;
 import hotmath.gwt.shared.client.util.UserInfo;
 
@@ -54,7 +55,6 @@ public class PrescriptionCmGuiDefinition implements CmGuiDefinition {
     static public InmhItemData __last_solution_item;
     PrescriptionResourcePanel _guiWidget;
 
-
     /**
      * Create and read Prescription data for the current user.
      * 
@@ -79,12 +79,8 @@ public class PrescriptionCmGuiDefinition implements CmGuiDefinition {
          * mark this INMH resource item as being viewed
          * 
          */
-        CmServiceAsync s = (CmServiceAsync) Registry.get("cmService");
-        SetInmhItemAsViewedAction action = new SetInmhItemAsViewedAction(UserInfo.getInstance().getRunId(),
-                resourceItem.getType(), resourceItem.getFile());
-        s.execute(action, new CmAsyncCallback<RpcData>() {
-
-            public void onSuccess(RpcData result) {
+        new RetryAction<RpcData>() {
+            public void oncapture(RpcData result) {
 
                 Log.debug("PrescriptionResourceAccord: setItemAsViewed: " + resourceItem);
 
@@ -107,9 +103,17 @@ public class PrescriptionCmGuiDefinition implements CmGuiDefinition {
 
                 resourceItem.setViewed(true);
             }
-        });
+
+            @Override
+            public void attempt() {
+                CmShared.getCmService().execute(
+                        new SetInmhItemAsViewedAction(UserInfo.getInstance().getRunId(), resourceItem.getType(),
+                                resourceItem.getFile()), this);
+            }
+
+        }.attempt();
     }
-    
+
     public void updateCheckMarks() {
         _guiWidget.expandResourcePracticeProblems();
     }
@@ -202,62 +206,62 @@ public class PrescriptionCmGuiDefinition implements CmGuiDefinition {
         CmBusyManager.setBusy(true);
 
         Log.info("PrescriptionCmGuiDefinition.getAsyncDataFromServer:" + sessionNumber + ", " + location);
-        // call server process to get session data as JSON string
-        CmServiceAsync s = (CmServiceAsync) Registry.get("cmService");
-        boolean updateActive = UserInfo.getInstance().isActiveUser();
-        s.execute(new GetPrescriptionAction(UserInfo.getInstance().getRunId(), sessionNumber, updateActive),
-                new CmAsyncCallback<RpcData>() {
-                    @Override
-                    public void onSuccess(RpcData rdata) {
-                        try {
-                            if (rdata != null) {
-                                UserInfo.getInstance().setSessionNumber(sessionNumberF);
 
-                                int correctPercent = rdata.getDataAsInt("correct_percent");
-                                UserInfo.getInstance().setCorrectPercent(correctPercent);
-                                if (correctPercent == 100) {
-                                    getContext().doNext();
-                                    return;
-                                }
+        new RetryAction<RpcData>() {
+            @Override
+            public void oncapture(RpcData rdata) {
+                try {
+                    if (rdata != null) {
+                        UserInfo.getInstance().setSessionNumber(sessionNumberF);
 
-                                String json = rdata.getDataAsString("json");
-                                context.setPrescriptionData(new PrescriptionData(json));
-
-                                UserInfo.getInstance().setSessionCount(
-                                        context.prescriptionData.getSessionTopics().size());
-
-                                isReady = true; // signal data is ready
-
-                                _guiWidget.buildUi(context.prescriptionData);
-
-                                ContextController.getInstance().setCurrentContext(context);
-
-                                if (UserInfo.getInstance().isAutoTestMode()) {
-                                    context.runAutoTest();
-                                }
-
-                                setLocation(location);
-                            } else {
-                                CatchupMathTools.showAlert("There was a problem reading this prescription data");
-                            }
-                        } catch (Exception e) {
-                            Log.error("Error reading data from server", e);
-                        } finally {
-                            CmBusyManager.setBusy(false);
+                        int correctPercent = rdata.getDataAsInt("correct_percent");
+                        UserInfo.getInstance().setCorrectPercent(correctPercent);
+                        if (correctPercent == 100) {
+                            getContext().doNext();
+                            return;
                         }
 
-                    }
+                        String json = rdata.getDataAsString("json");
+                        context.setPrescriptionData(new PrescriptionData(json));
 
-                    @Override
-                    public void onFailure(Throwable caught) {
-                        CmBusyManager.setBusy(false);                        
-                        super.onFailure(caught);
+                        UserInfo.getInstance().setSessionCount(context.prescriptionData.getSessionTopics().size());
+
+                        isReady = true; // signal data is ready
+
+                        _guiWidget.buildUi(context.prescriptionData);
+
+                        ContextController.getInstance().setCurrentContext(context);
+
+                        if (UserInfo.getInstance().isAutoTestMode()) {
+                            context.runAutoTest();
+                        }
+
+                        setLocation(location);
+                    } else {
+                        CatchupMathTools.showAlert("There was a problem reading this prescription data");
                     }
-                });
+                } catch (Exception e) {
+                    Log.error("Error reading data from server", e);
+                } finally {
+                    CmBusyManager.setBusy(false);
+                }
+
+            }
+
+            @Override
+            public void attempt() {
+                boolean updateActive = UserInfo.getInstance().isActiveUser();
+                CmShared.getCmService().execute(new GetPrescriptionAction(UserInfo.getInstance().getRunId(), sessionNumberF, updateActive),
+                        this);
+            }
+
+        }.attempt();
+
     }
 
-    /** Maintain a shared list of registered resources to 
-     *  allow for easy access to individual resource items.
+    /**
+     * Maintain a shared list of registered resources to allow for easy access
+     * to individual resource items.
      * 
      */
     static Map<String, List<InmhItemData>> _registeredResources = new HashMap<String, List<InmhItemData>>();
@@ -342,10 +346,9 @@ public class PrescriptionCmGuiDefinition implements CmGuiDefinition {
         EventBus.getInstance().addEventListener(new CmEventListenerImplDefault() {
             @Override
             public void handleEvent(CmEvent event) {
-                if(event.getEventType() == EventType.EVENT_TYPE_SOLUTION_SHOW) {
+                if (event.getEventType() == EventType.EVENT_TYPE_SOLUTION_SHOW) {
                     __last_solution_item = (InmhItemData) event.getEventData();
-                }
-                else if (event.getEventType() == EventType.EVENT_TYPE_SOLUTIONS_COMPLETE) {
+                } else if (event.getEventType() == EventType.EVENT_TYPE_SOLUTIONS_COMPLETE) {
                     // update the InmhItemData associated with the currently
                     // active solution
 
@@ -368,10 +371,10 @@ public class PrescriptionCmGuiDefinition implements CmGuiDefinition {
                     }
                 } else if (event.getEventType() == EventType.EVENT_TYPE_RESOURCE_VIEWER_CLOSE) {
                     __instance.showHelpPanel();
-                }
-                else if(event.getEventType() == EventType.EVENT_TYPE_SOLUTION_FIF_CORRECT) {
-                    /** an Solution FIF was entered correct, so we want to mark this (current) solution
-                     * as having been complicated
+                } else if (event.getEventType() == EventType.EVENT_TYPE_SOLUTION_FIF_CORRECT) {
+                    /**
+                     * an Solution FIF was entered correct, so we want to mark
+                     * this (current) solution as having been complicated
                      */
                     solutionHasBeenViewed_Gwt(null);
                 }
@@ -456,7 +459,6 @@ class PrescriptionResourcePanel extends LayoutContainer {
         add(vp);
         layout();
 
-
     }
 
     /** Display item data as prescription resource */
@@ -485,7 +487,7 @@ class PrescriptionResourcePanel extends LayoutContainer {
         // show the menu for named resource
         // CatchupMathTools.showAlert("Show resource type: " + resourceType);
     }
-    
+
     static {
         /**
          * Setup a listen for solution view completions to all the updating of
@@ -497,6 +499,6 @@ class PrescriptionResourcePanel extends LayoutContainer {
                     __instance._practiceProblemButton.checkCompletion();
                 }
             }
-        });        
+        });
     }
 }

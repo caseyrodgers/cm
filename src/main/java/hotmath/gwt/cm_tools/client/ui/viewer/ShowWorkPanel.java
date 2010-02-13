@@ -1,13 +1,16 @@
 package hotmath.gwt.cm_tools.client.ui.viewer;
 
 import hotmath.gwt.cm_tools.client.service.CmServiceAsync;
+import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.data.CmAsyncRequest;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
 import hotmath.gwt.shared.client.eventbus.EventBus;
 import hotmath.gwt.shared.client.eventbus.EventType;
+import hotmath.gwt.shared.client.rpc.RetryAction;
 import hotmath.gwt.shared.client.rpc.action.CmList;
 import hotmath.gwt.shared.client.rpc.action.GetWhiteboardDataAction;
 import hotmath.gwt.shared.client.rpc.action.SaveWhiteboardDataAction;
+import hotmath.gwt.shared.client.rpc.action.SaveWhiteboardDataAction.CommandType;
 import hotmath.gwt.shared.client.rpc.result.WhiteboardCommand;
 import hotmath.gwt.shared.client.util.RpcData;
 import hotmath.gwt.shared.client.util.UserInfo;
@@ -69,33 +72,27 @@ public class ShowWorkPanel extends Frame {
 	 *  
 	 * @param json
 	 */
-	public void handleFlashWhiteboardOut(String json) {
+	public void handleFlashWhiteboardOut(final String json) {
         if(UserInfo.getInstance().isShowWorkRequired())
             EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_WHITEBOARDUPDATED, this.pid));
-
-        CmServiceAsync s = (CmServiceAsync) Registry.get("cmService");
-		int uid = UserInfo.getInstance().getUid();
-		int runId = UserInfo.getInstance().getRunId();
-		
-		/** If json is simple string 'clear', then force a full clear and
-		 *  remove all chart data for this user/pid.  Otherwise, it is a 
-		 *  normal draw command.
-		 */
-		SaveWhiteboardDataAction.CommandType commandType= json.equals("clear")?
-		               SaveWhiteboardDataAction.CommandType.CLEAR
-		               :SaveWhiteboardDataAction.CommandType.DRAW;
-		
-		SaveWhiteboardDataAction action = new SaveWhiteboardDataAction(uid,runId,pid,commandType,json);
-		s.execute(action, new AsyncCallback<RpcData>() {
-			public void onFailure(Throwable caught) {
-				caught.printStackTrace();
-				// CatchupMathTools.showAlert("Whiteboard save failed: " + caught);
-			}
-
-			public void onSuccess(RpcData result) {
-			    Log.debug("ShowWorkPanel: Log message written: " + result);
-			}
-		});
+        
+		new RetryAction<RpcData>() {
+		    @Override
+		    public void attempt() {
+		        /** If json is simple string 'clear', then force a full clear and
+		         *  remove all chart data for this user/pid.  Otherwise, it is a 
+		         *  normal draw command.
+		         */
+		        CommandType commandType= json.equals("clear")? CommandType.CLEAR:CommandType.DRAW;
+		        
+		        SaveWhiteboardDataAction action = new SaveWhiteboardDataAction(UserInfo.getInstance().getUid(),UserInfo.getInstance().getRunId(),pid,commandType,json);
+		        CmShared.getCmService().execute(action,this);
+		        
+		    }
+            public void oncapture(RpcData result) {
+                Log.debug("ShowWorkPanel: Log message written: " + result);
+            }
+        }.attempt();		
 	}
 
 	/** Called by flash once it has been initialized.

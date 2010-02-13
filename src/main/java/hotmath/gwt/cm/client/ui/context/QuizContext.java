@@ -13,9 +13,9 @@ import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
 import hotmath.gwt.cm_tools.client.ui.NextAction.NextActionName;
 import hotmath.gwt.cm_tools.client.ui.context.CmContext;
 import hotmath.gwt.shared.client.data.CmAsyncRequestImplDefault;
+import hotmath.gwt.shared.client.rpc.RetryAction;
 import hotmath.gwt.shared.client.rpc.action.CreateTestRunAction;
 import hotmath.gwt.shared.client.rpc.result.CreateTestRunResponse;
-import hotmath.gwt.shared.client.util.CmAsyncCallback;
 import hotmath.gwt.shared.client.util.UserInfo;
 
 import java.util.ArrayList;
@@ -234,42 +234,46 @@ public class QuizContext implements CmContext {
     }
 
     public void doCheckTest() {
-        CmBusyManager.setBusy(true, false);
-        CmServiceAsync s = (CmServiceAsync) Registry.get("cmService");
-        s.execute(new CreateTestRunAction(UserInfo.getInstance().getTestId()),
-                new CmAsyncCallback<CreateTestRunResponse>() {
-                    public void onSuccess(CreateTestRunResponse testRunInfo) {
-                        try {
-                            if (testRunInfo.getAction() != null) {
-                                if (testRunInfo.getAction() == NextActionName.AUTO_ASSSIGNED) {
-                                    UserInfo.getInstance().setTestSegment(0); // reset
-                                    String testName = testRunInfo.getAssignedTest();
-                                    UserInfo.getInstance().setTestName(testName);
-                                    showAutoAssignedProgram(testName);
-                                } else if (testRunInfo.getAction() == NextActionName.QUIZ) {
-                                    int testSegment = UserInfo.getInstance().getTestSegment();
-                                    int totalSegments = UserInfo.getInstance().getTestSegmentCount();
-                                    if ((testSegment + 1) > totalSegments) {
-                                        CatchupMathTools.showAlert("redirect_action QUIZ: No More Sessions");
-                                    } else {
-                                        UserInfo.getInstance().setTestSegment(testSegment + 1);
-                                        showNextPlacmentQuiz();
-                                    }
-                                } else if (testRunInfo.getAction() == NextActionName.PRESCRIPTION) {
-                                    int runId = testRunInfo.getRunId();
-                                    UserInfo.getInstance().setRunId(runId);
-                                    UserInfo.getInstance().setSessionNumber(0); // start
-
-                                    showPrescriptionPanel(testRunInfo);
-                                }
+        
+        new RetryAction<CreateTestRunResponse>() {
+            @Override
+            public void attempt() {
+                CmBusyManager.setBusy(true, false);
+                CmServiceAsync s = (CmServiceAsync) Registry.get("cmService");
+                s.execute(new CreateTestRunAction(UserInfo.getInstance().getTestId()),this);
+            }
+            public void oncapture(CreateTestRunResponse testRunInfo) {
+                try {
+                    if (testRunInfo.getAction() != null) {
+                        if (testRunInfo.getAction() == NextActionName.AUTO_ASSSIGNED) {
+                            UserInfo.getInstance().setTestSegment(0); // reset
+                            String testName = testRunInfo.getAssignedTest();
+                            UserInfo.getInstance().setTestName(testName);
+                            showAutoAssignedProgram(testName);
+                        } else if (testRunInfo.getAction() == NextActionName.QUIZ) {
+                            int testSegment = UserInfo.getInstance().getTestSegment();
+                            int totalSegments = UserInfo.getInstance().getTestSegmentCount();
+                            if ((testSegment + 1) > totalSegments) {
+                                CatchupMathTools.showAlert("redirect_action QUIZ: No More Sessions");
+                            } else {
+                                UserInfo.getInstance().setTestSegment(testSegment + 1);
+                                showNextPlacmentQuiz();
                             }
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        } finally {
-                            CmBusyManager.setBusy(false);
+                        } else if (testRunInfo.getAction() == NextActionName.PRESCRIPTION) {
+                            int runId = testRunInfo.getRunId();
+                            UserInfo.getInstance().setRunId(runId);
+                            UserInfo.getInstance().setSessionNumber(0); // start
+
+                            showPrescriptionPanel(testRunInfo);
                         }
                     }
-                });
+                } catch (Exception e) {
+                    e.printStackTrace();
+                } finally {
+                    CmBusyManager.setBusy(false);
+                }
+            }
+        }.attempt();        
     }
 
     public void doPrevious() {

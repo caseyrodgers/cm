@@ -8,12 +8,12 @@ import hotmath.gwt.shared.client.data.CmAsyncRequest;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
 import hotmath.gwt.shared.client.eventbus.EventBus;
 import hotmath.gwt.shared.client.eventbus.EventType;
+import hotmath.gwt.shared.client.rpc.RetryAction;
 import hotmath.gwt.shared.client.rpc.action.CmList;
 import hotmath.gwt.shared.client.rpc.action.GetQuizCurrentResultsAction;
 import hotmath.gwt.shared.client.rpc.action.GetQuizHtmlAction;
 import hotmath.gwt.shared.client.rpc.action.SaveQuizCurrentResultAction;
 import hotmath.gwt.shared.client.rpc.result.QuizHtmlResult;
-import hotmath.gwt.shared.client.util.CmAsyncCallback;
 import hotmath.gwt.shared.client.util.RpcData;
 import hotmath.gwt.shared.client.util.UserInfo;
 
@@ -22,7 +22,6 @@ import com.extjs.gxt.ui.client.Registry;
 import com.extjs.gxt.ui.client.Style.Scroll;
 import com.extjs.gxt.ui.client.widget.Html;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public class QuizPage extends LayoutContainer {
 	
@@ -97,26 +96,32 @@ public class QuizPage extends LayoutContainer {
      * @param answerIndex the index into array of options
      * @param the pid of this test question.
      */
-    static public String questionGuessChanged_Gwt(String correct, String answerIndex, String pid) {
+    static public String questionGuessChanged_Gwt(final String correct, final String answerIndex, final String pid) {
 
         if(!UserInfo.getInstance().isActiveUser()) {
             CatchupMathTools.showAlert("You are just a visitor here, please do not change any selections");
             return "OK";
         }
         
-        // Boolean isCorrect = (o != null && o.equals("Correct")) ? true : false;
-    	Boolean isCorrect = (correct != null && correct.equals("Correct")) ? true : false;
-    	int testId = UserInfo.getInstance().getTestId();
-    	
-    	CmServiceAsync s = (CmServiceAsync) Registry.get("cmService");
-    	s.execute(new SaveQuizCurrentResultAction(UserInfo.getInstance().getTestId(), isCorrect, Integer.parseInt(answerIndex), pid), new AsyncCallback<RpcData>() {
-			public void onSuccess(RpcData result) {
-				// CatchupMathTools.showAlert("Question change saved");
-        	}
-        	public void onFailure(Throwable caught) {
-        		CatchupMathTools.showAlert(caught.getMessage());
-        	}
-        });
+        new RetryAction<RpcData>() {
+            public void onSuccess(RpcData result) {
+                // CatchupMathTools.showAlert("Question change saved");
+            }
+            public void onFailure(Throwable caught) {
+                CatchupMathTools.showAlert(caught.getMessage());
+            }
+            @Override
+            public void attempt() {
+                Boolean isCorrect = (correct != null && correct.equals("Correct")) ? true : false;
+                CmServiceAsync s = (CmServiceAsync) Registry.get("cmService");
+                s.execute(new SaveQuizCurrentResultAction(UserInfo.getInstance().getTestId(), isCorrect, Integer.parseInt(answerIndex), pid),this);
+            }
+            @Override
+            public void oncapture(RpcData value) {
+                /** do nothing */
+            }
+        }.attempt();
+        
         return "OK";
     }
     
@@ -131,8 +136,6 @@ public class QuizPage extends LayoutContainer {
 	@SuppressWarnings("unchecked")
 	private void displayQuizHtml(String quizHtml) {
 	    
-	    CmBusyManager.setBusy(true, false);
-	    
 		Html html = new Html(quizHtml);
 		if(CmShared.getQueryParameter("debug") != "") {
 		    html.addStyleName("debug-mode");
@@ -140,24 +143,26 @@ public class QuizPage extends LayoutContainer {
 		add(html);
 		layout();
 
-		/** @TODO: move to cmService
-		 * 
-		 */
-		CmServiceAsync s = (CmServiceAsync) Registry.get("cmService");
-		GetQuizCurrentResultsAction action = new GetQuizCurrentResultsAction(UserInfo.getInstance().getUid());
-        s.execute(action, new CmAsyncCallback<CmList<RpcData>>() {
-			public void onSuccess(CmList<RpcData> al) {
-        		for(RpcData rd: al) {
-        			setSolutionQuestionAnswerIndex(rd.getDataAsString("pid"),rd.getDataAsString("answer"));
-        		}
-        		CmBusyManager.setBusy(false);
-        		callbackWhenComplete.requestComplete(_title);
-        	}
-        	public void onFailure(Throwable caught) {
-        	    CatchupMathTools.setBusy(false);
-        	    super.onFailure(caught);
-        	}
-        });
+		new RetryAction<CmList<RpcData>>() {
+            @Override
+            public void attempt() {
+                CmBusyManager.setBusy(true);
+                GetQuizCurrentResultsAction action = new GetQuizCurrentResultsAction(UserInfo.getInstance().getUid());
+                CmShared.getCmService().execute(action,this);
+            }
+            
+            public void oncapture(CmList<RpcData> al) {
+                for(RpcData rd: al) {
+                    setSolutionQuestionAnswerIndex(rd.getDataAsString("pid"),rd.getDataAsString("answer"));
+                }
+                CmBusyManager.setBusy(false);
+                callbackWhenComplete.requestComplete(_title);
+            }
+            public void onFailure(Throwable caught) {
+                CatchupMathTools.setBusy(false);
+                super.onFailure(caught);
+            }
+        }.attempt();
 	}
 
 	/** Read the raw HTML from server and inserts into DOM node
@@ -167,19 +172,24 @@ public class QuizPage extends LayoutContainer {
 	 * 
 	 * @TODO: find a better way to accommodate a single request combining JSON/XML 
 	 */
-	private void getQuizHtmlFromServer(boolean loadActive) {
-		
-	    CatchupMathTools.setBusy(true);
-		
-	    GetQuizHtmlAction quizAction = new GetQuizHtmlAction(UserInfo.getInstance().getUid(), UserInfo.getInstance().getTestSegment());
-	    quizAction.setLoadActive(loadActive);
-	    
-	    Log.info("QuizPage.getQuizHtmlFromServer: " + quizAction);
-		CmServiceAsync s = (CmServiceAsync) Registry.get("cmService");
-		
-		s.execute(quizAction, new CmAsyncCallback<QuizHtmlResult>() {
-		    @Override
-		    public void onSuccess(QuizHtmlResult rdata) {
+	private void getQuizHtmlFromServer(final boolean loadActive) {
+
+	    new RetryAction<QuizHtmlResult>() {
+	        
+	        @Override
+	        public void attempt() {
+	            CatchupMathTools.setBusy(true);
+	            GetQuizHtmlAction quizAction = new GetQuizHtmlAction(UserInfo.getInstance().getUid(), UserInfo.getInstance().getTestSegment());
+	            quizAction.setLoadActive(loadActive);
+
+	            Log.info("QuizPage.getQuizHtmlFromServer: " + quizAction);
+	            CmServiceAsync s = (CmServiceAsync) Registry.get("cmService");
+	            
+	            CmShared.getCmService().execute(quizAction, this);
+	        }
+	        
+            @Override
+            public void oncapture(QuizHtmlResult rdata) {
                 UserInfo.getInstance().setTestSegment(rdata.getQuizSegment());
                 UserInfo.getInstance().setTestId(rdata.getTestId());
                 _title = rdata.getTitle();
@@ -193,13 +203,7 @@ public class QuizPage extends LayoutContainer {
                 displayQuizHtml(rdata.getQuizHtml());
                 
                 CatchupMathTools.setBusy(false);
-		    }
-		    @Override
-		    public void onFailure(Throwable caught) {
-                CatchupMathTools.setBusy(false);
-                super.onFailure(caught);
-		    }
-        });
-		
+            }
+        }.attempt();	    
 	}
 }

@@ -4,6 +4,7 @@ import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.service.CmServiceAsync;
 import hotmath.gwt.shared.client.data.CmAsyncRequestImplDefault;
 import hotmath.gwt.shared.client.model.UserInfoBase;
+import hotmath.gwt.shared.client.rpc.RetryAction;
 import hotmath.gwt.shared.client.rpc.action.ProcessLoginRequestAction;
 import hotmath.gwt.shared.client.util.CmException;
 import hotmath.gwt.shared.client.util.CmUserException;
@@ -24,7 +25,6 @@ import com.google.gwt.json.client.JSONParser;
 import com.google.gwt.json.client.JSONValue;
 import com.google.gwt.user.client.Cookies;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public class CmShared implements EntryPoint {
     
@@ -172,14 +172,14 @@ public class CmShared implements EntryPoint {
                     user.setUid(userId);
                     callback.loginSuccessful(userId);
                 } else {
-                	
-                	CatchupMathTools.setBusy(true);
-                	
-                    CmServiceAsync s = (CmServiceAsync) Registry.get("cmService");
-                    s.execute(new ProcessLoginRequestAction(key2), new AsyncCallback<UserInfo>() {
-                        public void onSuccess(UserInfo userInfo) {
-                        	
-                        	CatchupMathTools.setBusy(false);
+                    new RetryAction<UserInfo>() {
+                        @Override
+                        public void attempt() {
+                            CmShared.getCmService().execute(new ProcessLoginRequestAction(key2),this);
+                        }
+                        public void oncapture(UserInfo userInfo) {
+                            
+                            CatchupMathTools.setBusy(false);
 
                             __loginName = userInfo.getLoginName();
                             /**
@@ -204,7 +204,7 @@ public class CmShared implements EntryPoint {
                         public void onFailure(Throwable caught) {
                             displayLoginError((Exception) caught);
                         }
-                    });
+                    }.attempt();
                 }
             }
 
@@ -385,6 +385,17 @@ public class CmShared implements EntryPoint {
         
         String url = "http://" + hostName;
         return url;
+    }
+    
+    
+    /** 
+     *  Get the single CmServiceAsync instance to all
+     *  for sending RPC commands.
+     *  
+     * @return
+     */
+    static public CmServiceAsync getCmService() {
+        return (CmServiceAsync)Registry.get("cmService");
     }
 
     static private native String getHostName() /*-{

@@ -3,7 +3,6 @@ package hotmath.gwt.cm_admin.server.model;
 import hotmath.assessment.InmhItemData;
 import hotmath.cm.server.model.CmUserProgramDao;
 import hotmath.cm.util.CmMultiLinePropertyReader;
-import hotmath.flusher.HotmathFlusher;
 import hotmath.gwt.cm_tools.client.model.AccountInfoModel;
 import hotmath.gwt.cm_tools.client.model.ChapterModel;
 import hotmath.gwt.cm_tools.client.model.LessonItemModel;
@@ -16,16 +15,13 @@ import hotmath.gwt.cm_tools.client.model.StudentModelI;
 import hotmath.gwt.cm_tools.client.model.StudentShowWorkModel;
 import hotmath.gwt.shared.client.rpc.action.CmArrayList;
 import hotmath.gwt.shared.client.rpc.action.CmList;
-import hotmath.gwt.shared.client.rpc.action.SaveAutoRegistrationAction;
 import hotmath.gwt.shared.client.util.CmException;
 import hotmath.gwt.shared.client.util.CmRpcException;
-import hotmath.gwt.shared.server.service.command.SaveAutoRegistrationCommand;
 import hotmath.testset.ha.CmProgram;
 import hotmath.testset.ha.HaTestDefDescription;
 import hotmath.testset.ha.HaTestRun;
 import hotmath.testset.ha.HaTestRunDao;
 import hotmath.util.HMConnectionPool;
-import hotmath.util.Jsonizer;
 import hotmath.util.sql.SqlUtilities;
 
 import java.sql.Connection;
@@ -47,8 +43,6 @@ import java.util.Set;
 import org.apache.log4j.Logger;
 import org.json.JSONArray;
 import org.json.JSONObject;
-
-import com.sdicons.json.helper.JSONMap;
 
 public class CmStudentDao {
 

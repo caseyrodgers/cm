@@ -104,8 +104,7 @@ public class GroupManagerCommand implements ActionHandler<GroupManagerAction, Rp
                 cmList.add(sm);
             }
             
-            StringHolder result = dao.unregisterStudents(conn, cmList);
-            __logger.debug(result.getResponse());
+            dao.unregisterStudents(conn, cmList);
         }
         finally {
             SqlUtilities.releaseResources(null,ps,null);
