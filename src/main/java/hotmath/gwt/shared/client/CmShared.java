@@ -177,6 +177,7 @@ public class CmShared implements EntryPoint {
                         public void attempt() {
                             CmShared.getCmService().execute(new ProcessLoginRequestAction(key2),this);
                         }
+                        
                         public void oncapture(UserInfo userInfo) {
                             
                             CatchupMathTools.setBusy(false);
@@ -200,10 +201,6 @@ public class CmShared implements EntryPoint {
                             callback.loginSuccessful(userInfo.getUid());
 
                         }
-
-                        public void onFailure(Throwable caught) {
-                            displayLoginError((Exception) caught);
-                        }
                     }.attempt();
                 }
             }
@@ -218,11 +215,11 @@ public class CmShared implements EntryPoint {
         Log.info("Login error: " + exception.getMessage());
         
         
-        String msg = "Catchup Math has been updated and so we request that you press the F5 function key.";
+        String msg = "Login Error. We suggest you refresh this page by pressing the F5 function key.";
         if (_queryParameters.get("debug") != null)
             msg += "<br/>" + exception.getMessage() + "";
 
-        CatchupMathTools.showAlert("Browser Refresh Required", msg, new CmAsyncRequestImplDefault() {
+        CatchupMathTools.showAlert("Login Error", msg, new CmAsyncRequestImplDefault() {
             @Override
             public void requestComplete(String requestData) {
                 Window.Location.assign(CmShared.CM_HOME_URL); // goto home
