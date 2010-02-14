@@ -1,5 +1,8 @@
 package hotmath.cm.util;
 
+import hotmath.flusher.Flushable;
+import hotmath.flusher.HotmathFlusher;
+
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
@@ -7,6 +10,19 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class LogMonitor {
+    
+    static {
+        HotmathFlusher.getInstance().addFlushable(new Flushable() {
+            @Override
+            public void flush() {
+                if(__instance != null) {
+                    __instance.stopTailing();
+                    __instance = null;
+                }
+            }
+        });
+    }
+    
     
     static private LogMonitor __instance;
     static public LogMonitor getInstance() {
@@ -17,14 +33,20 @@ public class LogMonitor {
     }
     
     
+    LogTailer _tailer;
+    
     private LogMonitor() {
         this("~/tomcat2/logs/catalina.out");
     }
     
+    private void stopTailing() {
+        _tailer.stopTailing();
+    }
+    
     private LogMonitor(String file) {
         
-        LogTailer tailer = new LogTailer(new File(file),2000,true);
-        tailer.addLogFileTailerListener(new LogFileTailerListener() {
+        _tailer = new LogTailer(new File(file),2000,true);
+        _tailer.addLogFileTailerListener(new LogFileTailerListener() {
             @Override
             public void newLogFileLine(String line) {
                 if(line.indexOf("service.ActionDispatcher") > -1)
@@ -32,7 +54,7 @@ public class LogMonitor {
             }
         });
         
-        tailer.start();
+        _tailer.start();
     }
     
     public Map<String,ActionInfo> getActionInfo() {
