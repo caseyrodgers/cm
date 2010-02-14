@@ -36,7 +36,7 @@ public class LogMonitor {
     LogTailer _tailer;
     
     private LogMonitor() {
-        this("~/tomcat2/logs/catalina.out");
+        this("/home/hotmath/tomcat2/logs/catalina.out");
     }
     
     private void stopTailing() {
