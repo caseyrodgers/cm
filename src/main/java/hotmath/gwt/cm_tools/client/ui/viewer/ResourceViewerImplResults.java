@@ -2,12 +2,12 @@ package hotmath.gwt.cm_tools.client.ui.viewer;
 
 import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.service.CmServiceAsync;
+import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.rpc.action.GetQuizResultsHtmlAction;
 import hotmath.gwt.shared.client.util.CmAsyncCallback;
 import hotmath.gwt.shared.client.util.RpcData;
 import hotmath.gwt.shared.client.util.UserInfo;
 
-import com.extjs.gxt.ui.client.Registry;
 import com.extjs.gxt.ui.client.Style.Scroll;
 import com.extjs.gxt.ui.client.widget.Html;
 import com.google.gwt.json.client.JSONArray;
@@ -64,7 +64,7 @@ public class ResourceViewerImplResults extends
 
 		CmBusyManager.setBusy(true, false);
 
-		CmServiceAsync s = (CmServiceAsync) Registry.get("cmService");
+		CmServiceAsync s = CmShared.getCmService();
 		GetQuizResultsHtmlAction action = new GetQuizResultsHtmlAction(UserInfo
 				.getInstance().getRunId());
 		s.execute(action, new CmAsyncCallback<RpcData>() {

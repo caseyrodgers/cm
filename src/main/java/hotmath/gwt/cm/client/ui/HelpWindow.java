@@ -1,6 +1,5 @@
 package hotmath.gwt.cm.client.ui;
 
-import hotmath.gwt.cm.client.CatchupMath;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.model.CmAdminModel;
 import hotmath.gwt.cm_tools.client.model.StudentModelExt;
@@ -122,7 +121,7 @@ public class HelpWindow extends CmWindow {
 
                 CatchupMathTools.setBusy(true);
                 
-                CmServiceAsync s = (CmServiceAsync) Registry.get("cmService");
+                CmServiceAsync s = CmShared.getCmService();
                 s.execute(new SetBackgroundStyleAction(UserInfo.getInstance().getUid(), se.getSelectedItem()
                         .getBackgroundStyle()), new AsyncCallback<RpcData>() {
                     public void onSuccess(RpcData result) {

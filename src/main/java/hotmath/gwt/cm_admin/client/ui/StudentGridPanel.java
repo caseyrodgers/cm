@@ -38,7 +38,6 @@ import java.util.List;
 import java.util.Map;
 
 import com.allen_sauer.gwt.log.client.Log;
-import com.extjs.gxt.ui.client.Registry;
 import com.extjs.gxt.ui.client.Style.LayoutRegion;
 import com.extjs.gxt.ui.client.Style.SelectionMode;
 import com.extjs.gxt.ui.client.Style.SortDir;
@@ -758,7 +757,7 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
 
         CmBusyManager.setBusy(true);
 
-        CmServiceAsync s = (CmServiceAsync) Registry.get("cmService");
+        CmServiceAsync s = CmShared.getCmService();
 
         GetSummariesForActiveStudentsAction action = new GetSummariesForActiveStudentsAction(uid);
 
@@ -857,7 +856,7 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
      */
     protected void unregisterStudentsRPC(List<StudentModelI> smList) {
         CmBusyManager.setBusy(true, false);
-        CmServiceAsync cms = (CmServiceAsync) Registry.get("cmService");
+        CmServiceAsync cms = CmShared.getCmService();
         cms.execute(new UnregisterStudentsAction(smList), new CmAsyncCallback<StringHolder>() {
             public void onSuccess(final StringHolder result) {
                 String response = result.getResponse();
@@ -933,7 +932,7 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
              * Call service and have it read the next StudentRecords to load
              * 
              */
-            CmServiceAsync s = (CmServiceAsync) Registry.get("cmService");
+            CmServiceAsync s = CmShared.getCmService();
             _pageAction = new GetStudentGridPageAction(_cmAdminMdl.getId(),(PagingLoadConfig) loadConfig);
             
             /**

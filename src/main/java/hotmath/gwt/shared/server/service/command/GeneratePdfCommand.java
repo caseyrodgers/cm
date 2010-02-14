@@ -3,6 +3,7 @@ package hotmath.gwt.shared.server.service.command;
 import hotmath.cm.util.CmWebResourceManager;
 import hotmath.cm.util.report.GroupAssessmentReport;
 import hotmath.cm.util.report.StudentDetailReport;
+import hotmath.cm.util.report.StudentListReport;
 import hotmath.cm.util.report.StudentReportCard;
 import hotmath.cm.util.report.StudentSummaryReport;
 import hotmath.gwt.cm_admin.server.model.CmAdminDao;
@@ -60,12 +61,20 @@ public class GeneratePdfCommand implements ActionHandler<GeneratePdfAction, CmWe
             gr.setFilterMap(action.getFilterMap());
             baos = gr.makePdf(conn, reportId, adminId);
             reportName = gr.getReportName();
-        }        
+        }    
+        else if(pdfType == PdfType.STUDENT_LIST) {
+            StudentListReport slr = new StudentListReport(action.getTitle());
+            slr.setFilterMap(action.getFilterMap());
+            baos = slr.makePdf(conn, reportId, adminId, action.getStudentUids());
+            reportName = slr.getReportName();
+        }
         else {
             throw new IllegalArgumentException("Unrecognized report type: " + pdfType);
         }
 
-        // write PDF ByteArrayOutputStream to a ServletOutputStream
+        /** 
+         * write PDF ByteArrayOutputStream to a ServletOutputStream
+         */
         if (baos != null) {
 
         	// write to temporary file to be cleaned up later

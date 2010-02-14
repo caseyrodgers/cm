@@ -2,16 +2,15 @@ package hotmath.gwt.cm_tools.client.ui;
 
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.model.AccountInfoModel;
-import hotmath.gwt.cm_tools.client.model.StudentModel;
 import hotmath.gwt.cm_tools.client.service.CmServiceAsync;
 import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
+import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.rpc.CmWebResource;
 import hotmath.gwt.shared.client.rpc.action.GeneratePdfAction;
 import hotmath.gwt.shared.client.rpc.action.GeneratePdfAction.PdfType;
 
 import java.util.List;
 
-import com.extjs.gxt.ui.client.Registry;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.widget.button.Button;
@@ -48,7 +47,7 @@ public class StudentSummaryReportWindow extends CmWindow {
 
         CatchupMathTools.setBusy(true);
 
-        CmServiceAsync s = (CmServiceAsync) Registry.get("cmService");
+        CmServiceAsync s = CmShared.getCmService();
         s.execute(new GeneratePdfAction(PdfType.STUDENT_SUMMARY, adminUid, studentUids), new AsyncCallback<CmWebResource>() {
 
             public void onSuccess(CmWebResource webResource) {

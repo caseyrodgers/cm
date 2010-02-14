@@ -20,6 +20,7 @@ public class GeneratePdfAction implements Action<CmWebResource>{
     Integer adminId;
     List<Integer> studentUids;
     Map<FilterType,String> filterMap;
+    String title;
     
     public GeneratePdfAction() {}
     
@@ -49,6 +50,14 @@ public class GeneratePdfAction implements Action<CmWebResource>{
         return studentUids;
     }
 
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
     public void setStudentUids(List<Integer> studentUids) {
         this.studentUids = studentUids;
     }
@@ -61,5 +70,31 @@ public class GeneratePdfAction implements Action<CmWebResource>{
     	this.filterMap = filterMap;
     }
 
-    public enum PdfType{REPORT_CARD, STUDENT_DETAIL, STUDENT_SUMMARY, GROUP_ASSESSMENT};
+    public enum PdfType{
+        /** student report card report
+         * 
+         */
+        REPORT_CARD, 
+        
+        /** student detail report
+         * 
+         */
+        STUDENT_DETAIL, 
+        
+        /** student summary report for admins
+         * 
+         */
+        STUDENT_SUMMARY, 
+        
+        
+        /** Assessment report from the Assessment window
+         * 
+         */
+        GROUP_ASSESSMENT,
+        
+        
+        /** Student list report
+         * 
+         */
+        STUDENT_LIST};
 }

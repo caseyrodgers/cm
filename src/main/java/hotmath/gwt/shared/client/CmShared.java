@@ -1,8 +1,6 @@
 package hotmath.gwt.shared.client;
 
-import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.service.CmServiceAsync;
-import hotmath.gwt.shared.client.data.CmAsyncRequestImplDefault;
 import hotmath.gwt.shared.client.model.UserInfoBase;
 import hotmath.gwt.shared.client.rpc.RetryAction;
 import hotmath.gwt.shared.client.rpc.action.ProcessLoginRequestAction;
@@ -179,8 +177,6 @@ public class CmShared implements EntryPoint {
                         }
                         
                         public void oncapture(UserInfo userInfo) {
-                            
-                            CatchupMathTools.setBusy(false);
 
                             __loginName = userInfo.getLoginName();
                             /**
@@ -219,12 +215,9 @@ public class CmShared implements EntryPoint {
         if (_queryParameters.get("debug") != null)
             msg += "<br/>" + exception.getMessage() + "";
 
-        CatchupMathTools.showAlert("Login Error", msg, new CmAsyncRequestImplDefault() {
-            @Override
-            public void requestComplete(String requestData) {
+        if(Window.confirm(msg)) {
                 Window.Location.assign(CmShared.CM_HOME_URL); // goto home
-            }
-        });
+        }
     }
 
     /**

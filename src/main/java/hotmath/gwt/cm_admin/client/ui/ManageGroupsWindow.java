@@ -11,6 +11,7 @@ import hotmath.gwt.cm_tools.client.service.CmServiceAsync;
 import hotmath.gwt.cm_tools.client.ui.GroupManagerRegisterStudent;
 import hotmath.gwt.cm_tools.client.ui.GroupWindow;
 import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
+import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.data.CmAsyncRequest;
 import hotmath.gwt.shared.client.data.CmAsyncRequestImplDefault;
 import hotmath.gwt.shared.client.rpc.action.CmList;
@@ -293,7 +294,7 @@ public class ManageGroupsWindow extends CmWindow {
     private void readRpcData(final Integer adminId) {
     	CmBusyManager.setBusy(true);
 
-        CmServiceAsync cmService = (CmServiceAsync)Registry.get("cmService");
+        CmServiceAsync cmService = CmShared.getCmService();
         cmService.execute(new GetGroupAggregateInfoAction(adminId), new CmAsyncCallback<CmList<GroupInfoModel>>() {
             public void onSuccess(CmList<GroupInfoModel> result) {
                 store.removeAll();
@@ -311,7 +312,7 @@ public class ManageGroupsWindow extends CmWindow {
 
     	CmBusyManager.setBusy(true);
 
-        CmServiceAsync cmService = (CmServiceAsync)Registry.get("cmService");
+        CmServiceAsync cmService = CmShared.getCmService();
         GroupManagerAction action = new GroupManagerAction(GroupManagerAction.ActionType.DELETE, adminId);
         action.setGroupId(groupId);
         cmService.execute(action, new CmAsyncCallback<RpcData>() {
@@ -330,7 +331,7 @@ public class ManageGroupsWindow extends CmWindow {
     private void unregisterGroup(final Integer adminId, final Integer groupId) {
     	CmBusyManager.setBusy(true, false);
 
-        CmServiceAsync cmService = (CmServiceAsync)Registry.get("cmService");
+        CmServiceAsync cmService = CmShared.getCmService();
         GroupManagerAction action = new GroupManagerAction(GroupManagerAction.ActionType.UNREGISTER_STUDENTS, adminId);
         action.setGroupId(groupId);
         cmService.execute(action, new CmAsyncCallback<RpcData>() {
@@ -350,7 +351,7 @@ public class ManageGroupsWindow extends CmWindow {
 
     	CmBusyManager.setBusy(true,false);
 
-        CmServiceAsync cmService = (CmServiceAsync)Registry.get("cmService");
+        CmServiceAsync cmService = CmShared.getCmService();
         GroupManagerAction action = new GroupManagerAction(GroupManagerAction.ActionType.UPDATE,adminUid);
         action.setGroupId(groupId);
         action.setGroupName(groupName);
@@ -484,7 +485,7 @@ class GroupManagerGlobalSettings extends CmWindow {
 
     	CmBusyManager.setBusy(true,false);
 
-        CmServiceAsync cmService = (CmServiceAsync)Registry.get("cmService");
+        CmServiceAsync cmService = CmShared.getCmService();
         GroupManagerAction action = new GroupManagerAction(GroupManagerAction.ActionType.GROUP_PROPERTY_SET,cm.getId());
         action.setGroupId(gim.getId());
         action.setDisallowTutoring(true);

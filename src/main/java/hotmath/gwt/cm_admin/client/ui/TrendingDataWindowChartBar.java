@@ -3,6 +3,7 @@ package hotmath.gwt.cm_admin.client.ui;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.model.StudentModelExt;
 import hotmath.gwt.cm_tools.client.service.CmServiceAsync;
+import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.data.CmAsyncRequestImplDefault;
 import hotmath.gwt.shared.client.model.TrendingData;
 import hotmath.gwt.shared.client.rpc.action.CmList;
@@ -19,7 +20,6 @@ import com.extjs.gxt.charts.client.model.axis.XAxis;
 import com.extjs.gxt.charts.client.model.axis.YAxis;
 import com.extjs.gxt.charts.client.model.charts.BarChart;
 import com.extjs.gxt.charts.client.model.charts.BarChart.BarStyle;
-import com.extjs.gxt.ui.client.Registry;
 
 public class TrendingDataWindowChartBar extends TrendingDataWindowChart {
 
@@ -38,7 +38,7 @@ public class TrendingDataWindowChartBar extends TrendingDataWindowChart {
         CmBusyManager.setBusy(true);
 
         final String lessonName = trendingData.get(lessonNumber).getLessonName();
-        CmServiceAsync service = (CmServiceAsync) Registry.get("cmService");
+        CmServiceAsync service = CmShared.getCmService();
         GetAdminTrendingDataDetailAction action = new GetAdminTrendingDataDetailAction(StudentGridPanel.instance._pageAction, lessonName);
         service.execute(action,
                 new CmAsyncCallback<CmList<StudentModelExt>>() {

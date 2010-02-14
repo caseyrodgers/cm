@@ -4,6 +4,7 @@ import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.service.CmServiceAsync;
 import hotmath.gwt.cm_tools.client.ui.PdfWindow;
 import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
+import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
 import hotmath.gwt.shared.client.eventbus.CmEventListenerImplDefault;
 import hotmath.gwt.shared.client.eventbus.EventBus;
@@ -16,13 +17,11 @@ import hotmath.gwt.shared.client.rpc.action.GetAdminTrendingDataAction;
 import hotmath.gwt.shared.client.util.CmAsyncCallback;
 import hotmath.gwt.shared.client.util.CmRunAsyncCallback;
 
-import com.extjs.gxt.ui.client.Registry;
 import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.SelectionListener;
-import com.extjs.gxt.ui.client.widget.Html;
 import com.extjs.gxt.ui.client.widget.Label;
 import com.extjs.gxt.ui.client.widget.TabItem;
 import com.extjs.gxt.ui.client.widget.TabPanel;
@@ -83,6 +82,9 @@ public class TrendingDataWindow extends CmWindow {
         loadTrendDataAsync();
 
         
+        /** Position button at left margin on button bar
+         * 
+         */
         getButtonBar().setStyleAttribute("position", "relative");
         _onlyActiveCheckBox = new CheckBox();
         _onlyActiveCheckBox.setStyleAttribute("position", "absolute");
@@ -134,7 +136,7 @@ public class TrendingDataWindow extends CmWindow {
     private void loadTrendDataAsync() {
         CmBusyManager.setBusy(true);
 
-        CmServiceAsync service = (CmServiceAsync) Registry.get("cmService");
+        CmServiceAsync service = CmShared.getCmService();
         service.execute(new GetAdminTrendingDataAction(onlyActiveOrFullHistory(), adminId, StudentGridPanel.instance._pageAction),
                 new CmAsyncCallback<CmAdminTrendingDataI>() {
                     public void onSuccess(CmAdminTrendingDataI trendingData) {

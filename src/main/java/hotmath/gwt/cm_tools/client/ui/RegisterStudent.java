@@ -13,6 +13,7 @@ import hotmath.gwt.cm_tools.client.model.SubjectModel;
 import hotmath.gwt.cm_tools.client.service.CmServiceAsync;
 import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
 import hotmath.gwt.cm_tools.client.util.ProcessTracker;
+import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
 import hotmath.gwt.shared.client.eventbus.EventBus;
 import hotmath.gwt.shared.client.eventbus.EventType;
@@ -467,7 +468,7 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
 	private void getStudyProgramListRPC(final ListStore <StudyProgram> progStore) {
 
 		inProcessCount++;
-        CmServiceAsync s = (CmServiceAsync) Registry.get("cmService");
+        CmServiceAsync s = CmShared.getCmService();
 		GetProgramDefinitionsAction action = new GetProgramDefinitionsAction(); 
 		s.execute(action, new CmAsyncCallback<CmList<StudyProgramModel>>() {
 			public void onSuccess(CmList<StudyProgramModel> spmList) {

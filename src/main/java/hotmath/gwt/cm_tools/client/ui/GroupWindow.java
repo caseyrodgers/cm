@@ -1,16 +1,15 @@
 package hotmath.gwt.cm_tools.client.ui;
 
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
-import hotmath.gwt.cm_tools.client.model.CmAdminDataReader;
 import hotmath.gwt.cm_tools.client.model.CmAdminModel;
 import hotmath.gwt.cm_tools.client.model.GroupInfoModel;
 import hotmath.gwt.cm_tools.client.service.CmServiceAsync;
 import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
+import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.data.CmAsyncRequest;
 import hotmath.gwt.shared.client.rpc.action.AddGroupAction;
 import hotmath.gwt.shared.client.util.CmAsyncCallback;
 
-import com.extjs.gxt.ui.client.Registry;
 import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
 import com.extjs.gxt.ui.client.Style.SortDir;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
@@ -162,7 +161,7 @@ public class GroupWindow extends LayoutContainer {
 	
 	protected void addGroupRPC(int adminUid, final GroupInfoModel gm) {
 	    
-		CmServiceAsync s = (CmServiceAsync) Registry.get("cmService");
+		CmServiceAsync s = CmShared.getCmService();
         AddGroupAction action = new AddGroupAction(adminUid, gm);
         s.execute(action, new CmAsyncCallback <GroupInfoModel> () {
 			

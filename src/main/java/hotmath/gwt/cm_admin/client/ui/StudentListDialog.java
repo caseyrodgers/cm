@@ -4,16 +4,20 @@ import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.model.StudentModelExt;
 import hotmath.gwt.cm_tools.client.model.StudentModelI;
 import hotmath.gwt.cm_tools.client.service.CmServiceAsync;
+import hotmath.gwt.cm_tools.client.ui.PdfWindow;
 import hotmath.gwt.cm_tools.client.ui.RegisterStudent;
 import hotmath.gwt.cm_tools.client.ui.StudentDetailsWindow;
 import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
+import hotmath.gwt.shared.client.CmShared;
+import hotmath.gwt.shared.client.rpc.action.GeneratePdfAction;
 import hotmath.gwt.shared.client.rpc.action.GetStudentModelAction;
+import hotmath.gwt.shared.client.rpc.action.GeneratePdfAction.PdfType;
 import hotmath.gwt.shared.client.util.CmAsyncCallback;
+import hotmath.gwt.shared.client.util.CmRunAsyncCallback;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import com.extjs.gxt.ui.client.Registry;
 import com.extjs.gxt.ui.client.Style.SelectionMode;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
@@ -23,6 +27,7 @@ import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
 import com.extjs.gxt.ui.client.widget.grid.Grid;
 import com.extjs.gxt.ui.client.widget.layout.FillLayout;
+import com.google.gwt.core.client.GWT;
 
 /* Provide standard display of student lists
  * 
@@ -33,7 +38,7 @@ public class TrendingDataStudentListDialog extends CmWindow {
     
     public TrendingDataStudentListDialog(String title, List<StudentModelExt> students) {
 
-        setSize(275, 400);
+        setSize(300, 400);
         setHeading(title);
         addStyleName("trending-data-student-list");
         setLayout(new FillLayout());
@@ -67,6 +72,27 @@ public class TrendingDataStudentListDialog extends CmWindow {
                 close();
             }
         }));
+        
+        
+        getHeader().addTool(new Button("Print List",new SelectionListener<ButtonEvent>() {
+            public void componentSelected(ButtonEvent ce) {
+                GWT.runAsync(new CmRunAsyncCallback() {
+                    @Override
+                    public void onSuccess() {
+                        List<Integer> uids = new ArrayList<Integer>();
+                        List<StudentModelExt> students = _grid.getStore().getModels();
+                        int adminId = StudentGridPanel.instance._cmAdminMdl.getId();
+                        for(int i=0,t=students.size();i<t;i++) {
+                            uids.add(students.get(i).getUid());
+                        }
+                        GeneratePdfAction action = new GeneratePdfAction(PdfType.STUDENT_LIST,adminId,uids);
+                        action.setTitle(getHeading());
+                        action.setFilterMap(StudentGridPanel.instance._pageAction.getFilterMap());
+                        new PdfWindow(0, "Catchup Math Student List", action);
+                    }
+                });                
+            }
+        }));
 
         setModal(true);
         setVisible(true);
@@ -86,7 +112,7 @@ public class TrendingDataStudentListDialog extends CmWindow {
         
         CmBusyManager.setBusy(true);
 
-        CmServiceAsync service = (CmServiceAsync) Registry.get("cmService");
+        CmServiceAsync service = CmShared.getCmService();
         service.execute(new GetStudentModelAction(sm.getUid()),new CmAsyncCallback<StudentModelI>() {
             @Override
             public void onSuccess(StudentModelI result) {

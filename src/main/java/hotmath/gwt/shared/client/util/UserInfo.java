@@ -1,7 +1,6 @@
 package hotmath.gwt.shared.client.util;
 
-import hotmath.gwt.cm_tools.client.CatchupMathTools;
-import hotmath.gwt.cm_tools.client.service.CmServiceAsync;
+import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.data.CmAsyncRequest;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
@@ -13,7 +12,6 @@ import hotmath.gwt.shared.client.rpc.RetryAction;
 import hotmath.gwt.shared.client.rpc.action.GetUserInfoAction;
 
 import com.allen_sauer.gwt.log.client.Log;
-import com.extjs.gxt.ui.client.Registry;
 import com.google.gwt.user.client.rpc.IsSerializable;
 
 /** Class to encapsulate all user information
@@ -363,6 +361,11 @@ public class UserInfo implements IsSerializable, Response {
     static public void loadUser(final int uid, final CmAsyncRequest callback) {
         new RetryAction<UserInfo>() {
             @Override
+            public void attempt() {
+                CmBusyManager.setBusy(true);
+                CmShared.getCmService().execute(new GetUserInfoAction(uid), this);
+            }
+            @Override
             public void oncapture(UserInfo user) {
 
                 __instance = user;
@@ -380,17 +383,11 @@ public class UserInfo implements IsSerializable, Response {
                 
                 Log.info("UserInfo object set to: " + user);
                 
-                CatchupMathTools.setBusy(false);     
+                CmBusyManager.setBusy(false);     
                 callback.requestComplete(null);
                 
                 // fire an event on the event bus, passing new userinfo
                 EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_USERCHANGED,user));
-            }
-
-            @Override
-            public void attempt() {
-                CatchupMathTools.setBusy(true);
-                CmShared.getCmService().execute(new GetUserInfoAction(uid), this);
             }
         }.attempt();
     }    

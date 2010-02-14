@@ -7,6 +7,7 @@ import hotmath.gwt.cm_tools.client.model.GroupInfoModel;
 import hotmath.gwt.cm_tools.client.model.StudentModel;
 import hotmath.gwt.cm_tools.client.model.StudentModelI;
 import hotmath.gwt.cm_tools.client.service.CmServiceAsync;
+import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.rpc.action.GroupManagerAction;
 import hotmath.gwt.shared.client.util.CmException;
 import hotmath.gwt.shared.client.util.RpcData;
@@ -14,7 +15,6 @@ import hotmath.gwt.shared.client.util.RpcData;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.extjs.gxt.ui.client.Registry;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.widget.button.Button;
@@ -86,7 +86,7 @@ public class GroupManagerRegisterStudent extends RegisterStudent {
 	
 	
     private void assignProgram(final Integer adminId, final Integer groupId, final StudentModel studentTemplate) {
-        CmServiceAsync cmService = (CmServiceAsync)Registry.get("cmService");
+        CmServiceAsync cmService = CmShared.getCmService();
         
         GroupManagerAction action = new GroupManagerAction(GroupManagerAction.ActionType.GROUP_PROGRAM_ASSIGNMENT,adminId);
         action.setStudentModel(studentTemplate);

@@ -16,7 +16,6 @@ import hotmath.gwt.shared.client.util.RpcData;
 import hotmath.gwt.shared.client.util.UserInfo;
 
 import com.allen_sauer.gwt.log.client.Log;
-import com.extjs.gxt.ui.client.Registry;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Frame;
@@ -107,7 +106,7 @@ public class ShowWorkPanel extends Frame {
 			callbackAfterWhiteboardInitialized.requestComplete(null);
 		
 		
-		CmServiceAsync s = (CmServiceAsync) Registry.get("cmService");
+		CmServiceAsync s = CmShared.getCmService();
 	    int runId = UserInfo.getInstance().getRunId();
 		GetWhiteboardDataAction action = new GetWhiteboardDataAction(UserInfo.getInstance().getUid(),pid,runId);
 		s.execute(action,new AsyncCallback<CmList<WhiteboardCommand>>() {

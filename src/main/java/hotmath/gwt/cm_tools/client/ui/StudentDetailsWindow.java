@@ -17,7 +17,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import com.extjs.gxt.ui.client.Registry;
 import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
 import com.extjs.gxt.ui.client.Style.LayoutRegion;
 import com.extjs.gxt.ui.client.Style.SelectionMode;
@@ -412,7 +411,7 @@ public class StudentDetailsWindow extends CmWindow {
 
         CmBusyManager.setBusy(true);
 
-        CmServiceAsync s = (CmServiceAsync) Registry.get("cmService");
+        CmServiceAsync s = CmShared.getCmService();
         GetStudentActivityAction action = new GetStudentActivityAction(sm);
         s.execute(action, new CmAsyncCallback<CmList<StudentActivityModel>>() {
 

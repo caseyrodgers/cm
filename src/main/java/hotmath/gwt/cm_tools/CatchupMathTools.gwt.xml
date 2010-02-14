@@ -18,7 +18,6 @@
       
       <inherits name='pl.rmalinowski.gwt2swf.GWT2SWF' />
       
-      
        <!-- Add gwt-log support, default level `OFF` -->
        <inherits name="com.allen_sauer.gwt.log.gwt-log-OFF" />
        <!-- Also compile at `INFO` level
@@ -26,8 +25,6 @@
        -->
       
       <servlet path="/services/prescriptionService" class="hotmath.gwt.cm.server.service.PrescriptionServiceImpl" />
-      
-      <inherits name='hotmath.gwt.shared.CmShared'/>
       
       <entry-point class='hotmath.gwt.cm_tools.client.CatchupMathTools'/>
 

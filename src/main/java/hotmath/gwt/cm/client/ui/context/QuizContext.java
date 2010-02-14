@@ -12,6 +12,7 @@ import hotmath.gwt.cm_tools.client.ui.NextPanelInfoImplDefault;
 import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
 import hotmath.gwt.cm_tools.client.ui.NextAction.NextActionName;
 import hotmath.gwt.cm_tools.client.ui.context.CmContext;
+import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.data.CmAsyncRequestImplDefault;
 import hotmath.gwt.shared.client.rpc.RetryAction;
 import hotmath.gwt.shared.client.rpc.action.CreateTestRunAction;
@@ -21,7 +22,6 @@ import hotmath.gwt.shared.client.util.UserInfo;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.extjs.gxt.ui.client.Registry;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.IconButtonEvent;
 import com.extjs.gxt.ui.client.event.Listener;
@@ -239,7 +239,7 @@ public class QuizContext implements CmContext {
             @Override
             public void attempt() {
                 CmBusyManager.setBusy(true, false);
-                CmServiceAsync s = (CmServiceAsync) Registry.get("cmService");
+                CmServiceAsync s = CmShared.getCmService();
                 s.execute(new CreateTestRunAction(UserInfo.getInstance().getTestId()),this);
             }
             public void oncapture(CreateTestRunResponse testRunInfo) {

@@ -246,7 +246,7 @@ public class AutoStudentRegistrationPanel extends CmMainResourceContainer {
         }
 
         final String password = (lastName.getValue() + "-" + firstName.getValue() + "-" + birthDate.getValue()).toLowerCase();
-        CmServiceAsync s = (CmServiceAsync) Registry.get("cmService");
+        CmServiceAsync s = CmShared.getCmService();
         s.execute(new CreateAutoRegistrationAccountAction(UserInfo.getInstance().getUid(), lastName.getValue() + ", " + firstName.getValue().trim(), password), new AsyncCallback<RpcData>() {
             //@Override
             public void onSuccess(final RpcData rdata) {

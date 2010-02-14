@@ -3,11 +3,11 @@ package hotmath.gwt.cm_tools.client.ui;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.model.LessonItemModel;
 import hotmath.gwt.cm_tools.client.service.CmServiceAsync;
+import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.rpc.action.CmList;
 import hotmath.gwt.shared.client.rpc.action.GetStateStandardsAction;
 
 import com.allen_sauer.gwt.log.client.Log;
-import com.extjs.gxt.ui.client.Registry;
 import com.extjs.gxt.ui.client.data.BaseModel;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
@@ -71,7 +71,7 @@ public class StudentLessTopicsStateStandardsWindow extends Window {
     private void readCaliStateStandards(final String topic) {
         CatchupMathTools.setBusy(true);
         
-        CmServiceAsync s = (CmServiceAsync) Registry.get("cmService");
+        CmServiceAsync s = CmShared.getCmService();
         s.execute(new GetStateStandardsAction(topic), new AsyncCallback<CmList<String>>() {
             public void onSuccess(CmList<String> result) {
                 loadStandards(result);

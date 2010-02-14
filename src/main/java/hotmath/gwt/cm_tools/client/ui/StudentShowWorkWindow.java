@@ -11,6 +11,7 @@ import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
 import hotmath.gwt.cm_tools.client.ui.resource_viewer.CmResourcePanel;
 import hotmath.gwt.cm_tools.client.ui.viewer.ResourceViewerFactory;
 import hotmath.gwt.cm_tools.client.ui.viewer.ShowWorkPanel;
+import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.rpc.action.CmList;
 import hotmath.gwt.shared.client.rpc.action.GetStudentShowWorkAction;
 import hotmath.gwt.shared.client.util.CmAsyncCallback;
@@ -19,7 +20,6 @@ import hotmath.gwt.shared.client.util.UserInfo;
 import java.util.List;
 
 import com.allen_sauer.gwt.log.client.Log;
-import com.extjs.gxt.ui.client.Registry;
 import com.extjs.gxt.ui.client.Style.LayoutRegion;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.ComponentEvent;
@@ -215,7 +215,7 @@ public class StudentShowWorkWindow extends CmWindow {
         CmBusyManager.setBusy(true);
         
         Log.debug("StudentShowWorkWindow: reading student show work list");
-        CmServiceAsync s = (CmServiceAsync) Registry.get("cmService");
+        CmServiceAsync s = CmShared.getCmService();
         GetStudentShowWorkAction action = new GetStudentShowWorkAction(student.getUid(), activityModel.getRunId());
         s.execute(action,new CmAsyncCallback<CmList<StudentShowWorkModel>>() {
 

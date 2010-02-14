@@ -264,7 +264,7 @@ public class PrescriptionContext implements CmContext {
      * @param session
      */
     private void markLessonAsComplete(final int runId, final int session) {
-        CmServiceAsync s = (CmServiceAsync) Registry.get("cmService");
+        CmServiceAsync s = CmShared.getCmService();
         s.execute(new MarkPrescriptionLessonAsViewedAction(prescriptionData.getCurrSession().getTopic(), runId, session), new AsyncCallback<RpcData>() {
             @Override
             public void onSuccess(RpcData userAdvance) {
@@ -288,7 +288,7 @@ public class PrescriptionContext implements CmContext {
 
         CatchupMathTools.setBusy(true);
 
-        CmServiceAsync s = (CmServiceAsync) Registry.get("cmService");
+        CmServiceAsync s = CmShared.getCmService();
         s.execute(new AutoAdvanceUserAction(UserInfo.getInstance().getUid()), new AsyncCallback<AutoUserAdvanced>() {
             @Override
             public void onSuccess(AutoUserAdvanced userAdvance) {

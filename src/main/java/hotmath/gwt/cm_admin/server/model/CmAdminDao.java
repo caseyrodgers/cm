@@ -782,7 +782,7 @@ public class CmAdminDao {
             ps = conn.prepareStatement(CmMultiLinePropertyReader.getInstance().getProperty(
                     "TRENDING_DATA_DETAIL_FOR_PROGRAM_SEGMENT_FROM_UIDS", createInListReplacements(studentPool,useActiveOnly)));
             ps.setInt(1, testDefId);
-            ps.setInt(2, (quizSegment + 1));
+            ps.setInt(2, quizSegment);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
                 StudentModelExt parialStudent = new StudentModelExt();

@@ -790,6 +790,21 @@ public class CmStudentDao {
         // default is without templates
         return getStudentModel(uid, false);  
     }
+    
+    /** return list of StudentModelI objects matching list of uids.
+     * 
+     * @param conn
+     * @param uids
+     * @return
+     * @throws Exception
+     */
+    public List<StudentModelI> getStudentModels(final Connection conn, List<Integer> uids) throws Exception {
+       List<StudentModelI> students = new ArrayList<StudentModelI>();
+       for(Integer uid: uids) {
+           students.add(getStudentModelBasic(conn, uid));
+       }
+       return students;
+    }
 
     /**
      * Return a StudentModel identified by uid.

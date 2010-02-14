@@ -1,16 +1,14 @@
 package hotmath.gwt.cm_admin.client.ui;
 
-import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.model.StudentModelExt;
-import hotmath.gwt.cm_tools.client.model.StudentModelI;
-import hotmath.gwt.cm_tools.client.service.CmServiceAsync;
+import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.data.CmAsyncRequestImplDefault;
 import hotmath.gwt.shared.client.model.ProgramData;
 import hotmath.gwt.shared.client.model.ProgramSegmentData;
+import hotmath.gwt.shared.client.rpc.RetryAction;
 import hotmath.gwt.shared.client.rpc.action.CmList;
 import hotmath.gwt.shared.client.rpc.action.GetAdminTrendingDataDetailAction;
-import hotmath.gwt.shared.client.util.CmAsyncCallback;
 
 import java.util.List;
 
@@ -22,7 +20,6 @@ import com.extjs.gxt.charts.client.model.axis.XAxis;
 import com.extjs.gxt.charts.client.model.axis.YAxis;
 import com.extjs.gxt.charts.client.model.charts.BarChart;
 import com.extjs.gxt.charts.client.model.charts.BarChart.BarStyle;
-import com.extjs.gxt.ui.client.Registry;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 
@@ -34,31 +31,30 @@ public class TrendingDataWindowChartBar2 extends TrendingDataWindowChart {
         _callback = new CmAsyncRequestImplDefault() {
             @Override
             public void requestComplete(String requestData) {
-                showUsersWhoHaveGoneThroughProgramSegment(new Integer(requestData));
+                showUsersWhoHaveGoneThroughProgramSegment(new Integer(requestData)+1);
             }
         };
     }
 
     private void showUsersWhoHaveGoneThroughProgramSegment(final int segment) {
+        new RetryAction<CmList<StudentModelExt>>() {
+            @Override
+            public void attempt() {
+                CmBusyManager.setBusy(true);
+                CmShared.getCmService().execute(new GetAdminTrendingDataDetailAction(StudentGridPanel.instance._cmAdminMdl.getId(),
+                        StudentGridPanel.instance._pageAction, programData.getTestDefId(), segment),this);
+            }
+            public void oncapture(CmList<StudentModelExt> students) {
+                new TrendingDataStudentListDialog("Students in " + programData.getProgramName() + " Segment " + segment,students);
+                CmBusyManager.setBusy(false);
+            }
 
-        CmBusyManager.setBusy(true);
-
-        CmServiceAsync service = (CmServiceAsync) Registry.get("cmService");
-        service.execute(new GetAdminTrendingDataDetailAction(StudentGridPanel.instance._cmAdminMdl.getId(),
-                StudentGridPanel.instance._pageAction, programData.getTestDefId(), segment),
-                new CmAsyncCallback<CmList<StudentModelExt>>() {
-                    public void onSuccess(CmList<StudentModelExt> students) {
-                        new TrendingDataStudentListDialog("Students in " + programData.getProgramName() + " Segment " + (segment+1),students);
-                        CmBusyManager.setBusy(false);
-                    }
-
-                    @Override
-                    public void onFailure(Throwable caught) {
-                        CmBusyManager.setBusy(false);
-                        super.onFailure(caught);
-                    }
-                });
-
+            @Override
+            public void onFailure(Throwable caught) {
+                CmBusyManager.setBusy(false);
+                super.onFailure(caught);
+            }
+        }.attempt();    
     }
 
     protected void setBarModelData(String title, ProgramData programData) {

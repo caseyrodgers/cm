@@ -8,7 +8,6 @@ import hotmath.gwt.shared.client.util.CmRunAsyncCallback;
 import hotmath.gwt.shared.client.util.RpcData;
 import hotmath.gwt.shared.client.util.UserInfo;
 
-import com.extjs.gxt.ui.client.Registry;
 import com.extjs.gxt.ui.client.widget.Html;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.google.gwt.core.client.GWT;
@@ -49,7 +48,7 @@ public class FooterPanel extends LayoutContainer {
 		GWT.runAsync(new CmRunAsyncCallback() {
 			@Override
 			public void onSuccess() {
-				CmServiceAsync s = (CmServiceAsync) Registry.get("cmService");
+				CmServiceAsync s = CmShared.getCmService();
 
 				s.execute(new ResetUserAction(UserInfo.getInstance().getUid()),
 						new AsyncCallback<RpcData>() {

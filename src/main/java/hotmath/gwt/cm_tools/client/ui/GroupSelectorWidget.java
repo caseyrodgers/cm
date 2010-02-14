@@ -7,11 +7,11 @@ import hotmath.gwt.cm_tools.client.model.CmAdminModel;
 import hotmath.gwt.cm_tools.client.model.GroupInfoModel;
 import hotmath.gwt.cm_tools.client.service.CmServiceAsync;
 import hotmath.gwt.cm_tools.client.util.ProcessTracker;
+import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.rpc.action.CmList;
 import hotmath.gwt.shared.client.rpc.action.GetActiveGroupsAction;
 import hotmath.gwt.shared.client.util.CmAsyncCallback;
 
-import com.extjs.gxt.ui.client.Registry;
 import com.extjs.gxt.ui.client.event.SelectionChangedEvent;
 import com.extjs.gxt.ui.client.event.SelectionChangedListener;
 import com.extjs.gxt.ui.client.store.ListStore;
@@ -91,7 +91,7 @@ public class GroupSelectorWidget implements CmAdminDataRefresher {
 
 		CmBusyManager.setBusy(true, false);
 
-		CmServiceAsync s = (CmServiceAsync) Registry.get("cmService");
+		CmServiceAsync s = CmShared.getCmService();
 		GetActiveGroupsAction action = new GetActiveGroupsAction(uid);
 		s.execute(action, new CmAsyncCallback <CmList<GroupInfoModel>>() {
 			public void onSuccess(CmList<GroupInfoModel> result) {

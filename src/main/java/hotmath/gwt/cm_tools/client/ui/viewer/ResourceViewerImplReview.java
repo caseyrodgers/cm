@@ -4,10 +4,10 @@ import hotmath.gwt.cm_tools.client.data.InmhItemData;
 import hotmath.gwt.cm_tools.client.service.CmServiceAsync;
 import hotmath.gwt.cm_tools.client.ui.resource_viewer.CmResourcePanelImplDefault;
 import hotmath.gwt.cm_tools.client.ui.resource_viewer.CmResourcePanelContainer.ResourceViewerState;
+import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.rpc.action.GetReviewHtmlAction;
 import hotmath.gwt.shared.client.util.RpcData;
 
-import com.extjs.gxt.ui.client.Registry;
 import com.extjs.gxt.ui.client.Style.Scroll;
 import com.extjs.gxt.ui.client.widget.Html;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -33,7 +33,7 @@ public class ResourceViewerImplReview extends CmResourcePanelImplDefault {
         
         String file = "/hotmath_help/" + resource.getFile();
              
-        CmServiceAsync s = (CmServiceAsync) Registry.get("cmService");
+        CmServiceAsync s = CmShared.getCmService();
         GetReviewHtmlAction action = new GetReviewHtmlAction(file, "/hotmath_help/topics");
         s.execute(action, new AsyncCallback<RpcData>() {
             public void onFailure(Throwable caught) {

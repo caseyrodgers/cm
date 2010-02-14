@@ -113,7 +113,7 @@ public class QuizPage extends LayoutContainer {
             @Override
             public void attempt() {
                 Boolean isCorrect = (correct != null && correct.equals("Correct")) ? true : false;
-                CmServiceAsync s = (CmServiceAsync) Registry.get("cmService");
+                CmServiceAsync s = CmShared.getCmService();
                 s.execute(new SaveQuizCurrentResultAction(UserInfo.getInstance().getTestId(), isCorrect, Integer.parseInt(answerIndex), pid),this);
             }
             @Override

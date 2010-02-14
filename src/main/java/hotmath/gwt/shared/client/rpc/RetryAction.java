@@ -15,16 +15,17 @@ import com.google.gwt.user.client.rpc.SerializationException;
  *  retry the operation (resulting in another call to attempt).
  *  
  *   Example usage:
- * 
-    public class DoItAction extends RetryAction<MyData> {
+ *  <pre>
+    new RetryAction<MyData> {
         public void attempt() {
             cmServer.execute(action);
         }
         public void oncapture(MyData data) {
            processMyData(data) 
        }
-    }
- 
+    }.attempt();
+    
+ </pre>
  * @author casey
  *
  * @param <T>
