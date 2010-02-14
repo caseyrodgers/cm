@@ -18,7 +18,7 @@ public class LogMonitor {
     
     
     private LogMonitor() {
-        this("/temp/test.log");
+        this("~/tomcat2/logs/catalina.out");
     }
     
     private LogMonitor(String file) {
