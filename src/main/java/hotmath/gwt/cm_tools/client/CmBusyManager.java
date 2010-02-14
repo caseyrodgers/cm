@@ -58,11 +58,13 @@ public class CmBusyManager {
             showBusy(bs);
         }
         else {
-        	// pop it
-            BusyState bs = __busyStates.get(__busyStates.size()-1);
-            __busyStates.remove(__busyStates.size()-1);
-            
-            hideBusy(bs);
+            if(__busyStates.size()>0) {
+            	// pop it
+                BusyState bs = __busyStates.get(__busyStates.size()-1);
+                __busyStates.remove(__busyStates.size()-1);
+                
+                hideBusy(bs);
+            }
         }
     }
     
