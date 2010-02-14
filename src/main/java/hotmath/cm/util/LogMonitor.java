@@ -15,30 +15,27 @@ public class LogMonitor {
         HotmathFlusher.getInstance().addFlushable(new Flushable() {
             @Override
             public void flush() {
-                if(__instance != null) {
-                    __instance.stopTailing();
-                    __instance = null;
+                if(__instances != null) {
+                    for(LogMonitor lm: __instances.values()) {
+                        lm.stopTailing();
+                    }
+                    __instances.clear();
                 }
             }
         });
     }
     
     
-    static private LogMonitor __instance;
-    static public LogMonitor getInstance() {
-        if(__instance == null) {
-            __instance = new LogMonitor();
+    static private Map<String, LogMonitor> __instances = new HashMap<String,LogMonitor>();
+    static public LogMonitor getInstance(String log) {
+        if(__instances.get(log) == null) {
+            __instances.put(log, new LogMonitor(log));
         }
-        return __instance;
+        return __instances.get(log);
     }
-    
-    
+
     LogTailer _tailer;
-    
-    private LogMonitor() {
-        this("/home/hotmath/tomcat2/logs/catalina.out");
-    }
-    
+
     private void stopTailing() {
         _tailer.stopTailing();
     }
@@ -77,10 +74,10 @@ public class LogMonitor {
         Pattern startPattern = Pattern.compile(start);
         Matcher matcher = startPattern.matcher(line);
         if (matcher.find()) {
-            /** is start of action
+            /** is start of action, make sure it exists
              * 
              */
-            ActionInfo ai = getActionInfo(matcher.group(1).trim());
+            getActionInfo(matcher.group(1).trim());
          }
         else {
             /** is end of action
@@ -110,6 +107,14 @@ public class LogMonitor {
     }
     
     static public void main(String as[]) {
-        new LogMonitor("/temp/test.log");
+        try {
+            if(as.length != 1)
+                throw new Exception("usage: ... logfile");
+            
+            new LogMonitor(as[1]);
+        }
+        catch(Exception e) {
+            e.printStackTrace();
+        }
     }
 }
