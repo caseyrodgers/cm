@@ -95,7 +95,6 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
 
     Grid<StudentModelExt> _grid;
     CmAdminModel _cmAdminMdl;
-    ListStore<StudentModelExt> smStore;
 
     private ListStore<GroupInfoModel> groupStore;
     private ComboBox<GroupInfoModel> groupCombo;
@@ -688,41 +687,40 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
         configs.add(group);
 
         ColumnConfig prog = new ColumnConfig();
-        prog.setId("program");
+        prog.setId(StudentModelExt.PROGRAM_DESCR_KEY);
         prog.setHeader("Program");
         prog.setWidth(100);
         prog.setSortable(true);
         configs.add(prog);
 
         ColumnConfig status = new ColumnConfig();
-        status.setId("status");
+        status.setId(StudentModelExt.STATUS_KEY);
         status.setHeader("Status");
         status.setWidth(120);
         status.setSortable(true);
         configs.add(status);
 
+        ColumnConfig quizzes = new ColumnConfig();
+        quizzes.setId(StudentModelExt.PASSING_RATIO_KEY);
+        quizzes.setHeader("Quizzes");
+        quizzes.setWidth(100);
+        //quizzes.setSortable(true);
+        configs.add(quizzes);
+        
         ColumnConfig lastQuiz = new ColumnConfig();
-        lastQuiz.setId("last-quiz");
+        lastQuiz.setId(StudentModelExt.LAST_QUIZ_KEY);
         lastQuiz.setHeader("Last Quiz");
         lastQuiz.setWidth(70);
         lastQuiz.setSortable(true);
         configs.add(lastQuiz);
 
         ColumnConfig lastLogin = new ColumnConfig();
-        lastLogin.setId("last-login");
+        lastLogin.setId(StudentModelExt.LAST_LOGIN_KEY);
         lastLogin.setHeader("Last Login");
         lastLogin.setWidth(70);
         lastLogin.setSortable(true);
         configs.add(lastLogin);
-        
 
-        ColumnConfig usage = new ColumnConfig();
-        usage.setId("total-usage");
-        usage.setHeader("Usage");
-        usage.setWidth(70);
-        usage.setSortable(true);
-        configs.add(usage);
-        
         ColumnConfig tutoring = new ColumnConfig();
         tutoring.setId(StudentModelExt.TUTORING_USE_KEY);
         tutoring.setHeader("Tutoring");
