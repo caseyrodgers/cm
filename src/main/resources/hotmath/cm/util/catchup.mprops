@@ -42,7 +42,7 @@ LEFT JOIN HA_TEST_RUN m
 LEFT JOIN (select user_id, max(login_time) as login_time from HA_USER_LOGIN GROUP BY user_id) l on l.user_id = h.uid 
 LEFT JOIN HA_TEST t 
   on t.user_id = h.uid and t.test_id = m.test_id 
-LEFT JOIN v_HA_TEST_RUN_pnp_totals q
+LEFT JOIN v_HA_TEST_RUN_PNP_TOTALS q
   on q.user_id = h.uid
 LEFT JOIN CM_GROUP g 
    on g.id = h.group_id
