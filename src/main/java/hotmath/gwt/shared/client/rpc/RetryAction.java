@@ -1,6 +1,9 @@
 package hotmath.gwt.shared.client.rpc;
 
+import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
+import hotmath.gwt.shared.client.CmShared;
+import hotmath.gwt.shared.client.data.CmAsyncRequestImplDefault;
 
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -59,12 +62,25 @@ public abstract class RetryAction<T> implements AsyncCallback<T> {
                 message = throwable.getClass().getName();
             }
 
-            String msg = "An error occured:\n" + message + "\n"
-            + "You may retry this operation by clicking 'OK'.\n"
-            + "However if the error persists, contact Technical Support.";
-            
-            if(Window.confirm(msg)) {
-                attempt();
+            /** 
+             *   No such Catchup Math login key
+             */
+            if(message.indexOf("login key") > -1) {
+                CatchupMathTools.showAlert("Login Problem", "You could not be logged in.  Please try again", new CmAsyncRequestImplDefault() {
+                    @Override
+                    public void requestComplete(String requestData) {
+                        Window.Location.assign(CmShared.CM_HOME_URL);
+                    }
+                });
+            }
+            else {
+                String msg = "An error occured:\n" + message + "\n"
+                + "You may retry this operation by clicking 'OK'.\n"
+                + "However if the error persists, contact Technical Support.";
+                
+                if(Window.confirm(msg)) {
+                    attempt();
+                }
             }
         }
     }
