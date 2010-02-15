@@ -66,9 +66,12 @@ public abstract class RetryAction<T> implements AsyncCallback<T> {
             }
 
             /** 
-             *   No such Catchup Math login key
+             *   atchup Math login problems cannot be retried 
+             *   @TODO: maybe a 'ActionRetryable' interface?
              */
-            if(message.indexOf("CmExceptionLogin") > -1 || message.indexOf("Security") > -1) {
+            if(message.indexOf("CmExceptionLogin") > -1 
+                    || message.indexOf("Security") > -1
+                    || message.indexOf("login key") > -1) {
                 CatchupMathTools.showAlert("Login Problem", "You could not be logged in.  Please try again", new CmAsyncRequestImplDefault() {
                     @Override
                     public void requestComplete(String requestData) {
