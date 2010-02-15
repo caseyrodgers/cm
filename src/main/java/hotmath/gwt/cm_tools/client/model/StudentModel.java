@@ -20,6 +20,8 @@ public class StudentModel implements StudentModelI {
     String showWork;
     String showWorkState;
     Integer totalUsage;
+    Integer passingCount;
+	Integer notPassingCount;
     Boolean tutoringAvail;
     Integer tutoringUse;
 
@@ -173,6 +175,22 @@ public class StudentModel implements StudentModelI {
     public void setTotalUsage(Integer totalUsage) {
         this.totalUsage = totalUsage;
     }
+
+    public Integer getPassingCount() {
+		return passingCount;
+	}
+
+	public void setPassingCount(Integer passingCount) {
+		this.passingCount = passingCount;
+	}
+
+	public Integer getNotPassingCount() {
+		return notPassingCount;
+	}
+
+	public void setNotPassingCount(Integer notPassingCount) {
+		this.notPassingCount = notPassingCount;
+	}
 
     public Boolean getTutoringAvail() {
         return tutoringAvail;

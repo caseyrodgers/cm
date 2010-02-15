@@ -44,6 +44,14 @@ public interface StudentModelI extends Response {
 	public void setTotalUsage(Integer totalUsage);
 
 	public Integer getTotalUsage();
+	
+	public void setPassingCount(Integer count);
+	
+	public Integer getPassingCount();
+
+	public void setNotPassingCount(Integer count);
+	
+	public Integer getNotPassingCount();
 
 	public String getPassPercent();
 
