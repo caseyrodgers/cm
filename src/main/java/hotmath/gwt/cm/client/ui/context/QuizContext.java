@@ -238,9 +238,8 @@ public class QuizContext implements CmContext {
         new RetryAction<CreateTestRunResponse>() {
             @Override
             public void attempt() {
-                CmBusyManager.setBusy(true, false);
-                CmServiceAsync s = CmShared.getCmService();
-                s.execute(new CreateTestRunAction(UserInfo.getInstance().getTestId()),this);
+                CmBusyManager.setBusy(true);
+                CmShared.getCmService().execute(new CreateTestRunAction(UserInfo.getInstance().getTestId()),this);
             }
             public void oncapture(CreateTestRunResponse testRunInfo) {
                 try {

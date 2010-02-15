@@ -4,6 +4,7 @@ import hotmath.flusher.Flushable;
 import hotmath.flusher.HotmathFlusher;
 
 import java.io.File;
+import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -81,6 +82,7 @@ public class LogMonitor {
             ActionInfo ai = getActionInfo(matcher.group(2).trim());
             String args = matcher.group(3);
             ai.getArgs().add(timeStamp += " " + args);
+            ai.setTimeStamp(timeStamp);
          }
         else {
             /** is end of action

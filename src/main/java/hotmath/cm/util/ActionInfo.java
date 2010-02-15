@@ -1,6 +1,9 @@
 package hotmath.cm.util;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 
@@ -8,6 +11,8 @@ public class ActionInfo {
     String name;
     int max;
     int avg;
+    Date lastUse;
+    
     List<String> args = new ArrayList<String>();
     public List<String> getArgs() {
         return args;
@@ -62,6 +67,31 @@ public class ActionInfo {
 
     public void setTotal(int total) {
         this.total = total;
+    }
+    
+    public long getLastUseSeconds() {
+        if(lastUse != null) {
+            return (System.currentTimeMillis() - lastUse.getTime()) / 1000;
+        }
+        else 
+            return -1;
+    }
+    
+    public Date getLastUse() {
+        return lastUse;
+    }
+    
+    DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    public void setTimeStamp(String timeStamp) {
+        Date dte=null;
+        try {
+             dte = format.parse(timeStamp);
+             if(lastUse == null || dte.getTime() > lastUse.getTime())
+                 lastUse = dte;
+        }
+        catch(Exception e) {
+            e.printStackTrace();
+        }
     }
 
     int min;
