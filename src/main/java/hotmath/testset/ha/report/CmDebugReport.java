@@ -253,7 +253,7 @@ public class CmDebugReport {
                 }
                 
                 Collection<INeedMoreHelpResourceType> epp = session.getPrescriptionInmhTypes(_conn, "cmextra");
-                if (epp.size() != 3) {
+                if (epp.size() > 0 && epp.size() != 3) {
                     logMessage(prescription.getTestRun().getRunId(), "WARNING: Session " + i + ": incorrect number of EPP (" + epp.size() + ")");
                     isError = true;
                 }
