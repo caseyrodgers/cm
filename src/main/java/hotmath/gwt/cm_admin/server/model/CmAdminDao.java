@@ -796,7 +796,7 @@ public class CmAdminDao {
         }
     }
 
-    /** Return list of studens who have been assigned the name lesson 
+    /** Return list of students who have been assigned the name lesson 
      * 
      * @param conn
      * @param studentPool
