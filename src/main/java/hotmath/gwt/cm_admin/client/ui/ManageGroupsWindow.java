@@ -146,7 +146,7 @@ public class ManageGroupsWindow extends CmWindow {
                     GroupInfoModel gm = new GroupInfoModel();
                     gm.setId(gim.getId());
                     gm.setGroupName(gim.getName());
-                    new GroupWindow(callback, adminModel,null,false,gm).setVisible(true);
+                    new GroupWindow(callback, adminModel, null, false, gm).setVisible(true);
                 }
             }
         }));
@@ -488,7 +488,6 @@ class GroupManagerGlobalSettings extends CmWindow {
         CmServiceAsync cmService = CmShared.getCmService();
         GroupManagerAction action = new GroupManagerAction(GroupManagerAction.ActionType.GROUP_PROPERTY_SET,cm.getId());
         action.setGroupId(gim.getId());
-        action.setDisallowTutoring(true);
         action.setShowWorkRequired(showWorkRequired.getValue());
         action.setDisallowTutoring( !tutoringAllowed.getValue());
         action.setPassPercent(70);
