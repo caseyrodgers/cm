@@ -70,14 +70,17 @@ public class LogMonitor {
      */
     private void processActionLog(String line) {
         
-        String start = ".*\\:\\ (.*)\\ .*toString";
+        String start = "^(.*)\\ \\[.*\\:\\ (.*)\\ .*toString.*\\[(.*)\\]";
         Pattern startPattern = Pattern.compile(start);
         Matcher matcher = startPattern.matcher(line);
         if (matcher.find()) {
             /** is start of action, make sure it exists
              * 
              */
-            getActionInfo(matcher.group(1).trim());
+            String timeStamp=matcher.group(1).trim();
+            ActionInfo ai = getActionInfo(matcher.group(2).trim());
+            String args = matcher.group(3);
+            ai.getArgs().add(timeStamp += " " + args);
          }
         else {
             /** is end of action

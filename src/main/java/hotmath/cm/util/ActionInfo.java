@@ -1,20 +1,25 @@
 package hotmath.cm.util;
 
+import java.util.ArrayList;
+import java.util.List;
+
 
 public class ActionInfo {
     String name;
     int max;
     int avg;
+    List<String> args = new ArrayList<String>();
+    public List<String> getArgs() {
+        return args;
+    }
+
+    public void setArgs(List<String> args) {
+        this.args = args;
+    }
+
     public String getName() {
         return name;
     }
-
-    @Override
-    public String toString() {
-        return "ActionInfo [avg=" + avg + ", count=" + count + ", max=" + max + ", min=" + min + ", name=" + name
-                + ", total=" + total + "]";
-    }
-
     public void setName(String name) {
         this.name = name;
     }
@@ -77,4 +82,13 @@ public class ActionInfo {
         if(time < min )
             min = time;
     }
+    
+
+    @Override
+    public String toString() {
+        return "ActionInfo [args=" + args + ", avg=" + avg + ", count=" + count + ", max=" + max + ", min=" + min
+                + ", name=" + name + ", total=" + total + "]";
+    }
+
+
 }
