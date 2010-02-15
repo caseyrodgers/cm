@@ -1,6 +1,7 @@
 package hotmath.gwt.cm.client.ui;
 
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
+import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.model.CmAdminModel;
 import hotmath.gwt.cm_tools.client.model.StudentModelExt;
 import hotmath.gwt.cm_tools.client.model.StudentModelI;
@@ -15,9 +16,11 @@ import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
 import hotmath.gwt.shared.client.eventbus.EventBus;
 import hotmath.gwt.shared.client.eventbus.EventType;
+import hotmath.gwt.shared.client.rpc.RetryAction;
 import hotmath.gwt.shared.client.rpc.action.GetStudentModelAction;
 import hotmath.gwt.shared.client.rpc.action.SaveFeedbackAction;
 import hotmath.gwt.shared.client.rpc.action.SetBackgroundStyleAction;
+import hotmath.gwt.shared.client.util.CmRunAsyncCallback;
 import hotmath.gwt.shared.client.util.RpcData;
 import hotmath.gwt.shared.client.util.UserInfo;
 
@@ -39,8 +42,7 @@ import com.extjs.gxt.ui.client.widget.form.ComboBox;
 import com.extjs.gxt.ui.client.widget.form.FieldSet;
 import com.extjs.gxt.ui.client.widget.form.ComboBox.TriggerAction;
 import com.extjs.gxt.ui.client.widget.layout.FlowLayout;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.ui.Label;
 
 public class HelpWindow extends CmWindow {
@@ -119,12 +121,15 @@ public class HelpWindow extends CmWindow {
                     return;
                 }
 
-                CatchupMathTools.setBusy(true);
                 
-                CmServiceAsync s = CmShared.getCmService();
-                s.execute(new SetBackgroundStyleAction(UserInfo.getInstance().getUid(), se.getSelectedItem()
-                        .getBackgroundStyle()), new AsyncCallback<RpcData>() {
-                    public void onSuccess(RpcData result) {
+                new RetryAction<RpcData>() {
+                    @Override
+                    public void attempt() {
+                        CatchupMathTools.setBusy(true);
+                        CmServiceAsync s = CmShared.getCmService();
+                        s.execute(new SetBackgroundStyleAction(UserInfo.getInstance().getUid(), se.getSelectedItem().getBackgroundStyle()),this);
+                    }
+                    public void oncapture(RpcData result) {
                         try {
                             String newStyle = se.getSelectedItem().getBackgroundStyle();
                             /**
@@ -149,12 +154,7 @@ public class HelpWindow extends CmWindow {
                             CatchupMathTools.setBusy(false);
                         }
                     }
-
-                    public void onFailure(Throwable caught) {
-                        CatchupMathTools.setBusy(false);
-                        caught.printStackTrace();
-                    }
-                });
+                }.attempt();
             }
         });
 
@@ -261,20 +261,28 @@ public class HelpWindow extends CmWindow {
      * 
      */
     private void showStudentConfiguration() {
-    	CmServiceAsync s = (CmServiceAsync) Registry.get("cmService");
-        GetStudentModelAction action = new GetStudentModelAction(UserInfo.getInstance().getUid());
-        s.execute(action, new AsyncCallback<StudentModelI>() {
-
-            public void onSuccess(StudentModelI student) {
-
-                CmAdminModel adminModel = new CmAdminModel();
-                adminModel.setId(student.getAdminUid());
-                new RegisterStudent(student, adminModel).showWindow();
-            }
-
-            public void onFailure(Throwable caught) {
-                String msg = caught.getMessage();
-                CatchupMathTools.showAlert(msg);
+        GWT.runAsync(new CmRunAsyncCallback() {
+            @Override
+            public void onSuccess() {
+            new RetryAction<StudentModelI>() {
+    
+                @Override
+                public void attempt() {
+                    CmBusyManager.setBusy(true);
+                    GetStudentModelAction action = new GetStudentModelAction(UserInfo.getInstance().getUid());
+                    CmShared.getCmService().execute(action,this);
+                }
+                public void oncapture(StudentModelI student) {
+                    try {
+                        CmAdminModel adminModel = new CmAdminModel();
+                        adminModel.setId(student.getAdminUid());
+                        new RegisterStudent(student, adminModel).showWindow();
+                    }
+                    finally {
+                        CmBusyManager.setBusy(false);
+                    }
+                }
+            }.attempt();
             }
         });
     }
@@ -288,23 +296,25 @@ public class HelpWindow extends CmWindow {
      * information is current and not what it was on login.
      */
     private void showStudentHistory() {
-
-        CmServiceAsync s = (CmServiceAsync) Registry.get("cmService");
-        GetStudentModelAction action = new GetStudentModelAction(UserInfo.getInstance().getUid());
-        s.execute(action, new AsyncCallback<StudentModelI>() {
-
-            public void onSuccess(StudentModelI student) {
-                new StudentDetailsWindow(new StudentModelExt(student));
-            }
-
-            public void onFailure(Throwable caught) {
-                String msg = caught.getMessage();
-                CatchupMathTools.showAlert(msg);
+        
+        GWT.runAsync(new CmRunAsyncCallback() {
+            
+            @Override
+            public void onSuccess() {
+                new RetryAction<StudentModelI>() {
+                    @Override
+                    public void attempt() {
+                        CmBusyManager.setBusy(true);
+                        GetStudentModelAction action = new GetStudentModelAction(UserInfo.getInstance().getUid());
+                        CmShared.getCmService().execute(action, this);
+                    }
+                    public void oncapture(StudentModelI student) {
+                        CmBusyManager.setBusy(false);
+                        new StudentDetailsWindow(new StudentModelExt(student));
+                    }
+                }.attempt();
             }
         });
-    }
-
-    public void onClick(ClickEvent event) {
     }
 
     private ListStore<BackgroundModel> getBackgrounds() {
@@ -369,39 +379,28 @@ public class HelpWindow extends CmWindow {
 
     }
 
-    /**
-     * Return the current version number
-     * 
-     * @todo: externalize this parameter
-     * 
-     * 
-     * @return
-     */
-    private String getVersion() {
-        return "1.2b";
-    }
-    
-
     static public void showFeedbackPanel_Gwt() {
         
         EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_MODAL_WINDOW_OPEN));
         
         MessageBox.prompt("Feedback","Enter Catchup-Math feedback.",true,new Listener<MessageBoxEvent> () {
             public void handleEvent(MessageBoxEvent be) {
-                String value = be.getValue();
+                final String value = be.getValue();
                 if(value == null || value.length() == 0)
                     return;
                 
-                CmServiceAsync s = (CmServiceAsync) Registry.get("cmService");
-                s.execute(new SaveFeedbackAction(value, "", getFeedbackStateInfo()),new AsyncCallback<RpcData>() {
-                    public void onSuccess(RpcData result) {
+                new RetryAction<RpcData>() {
+                    @Override
+                    public void attempt() {
+                        CmBusyManager.setBusy(true);
+                        CmServiceAsync s = (CmServiceAsync) Registry.get("cmService");
+                        s.execute(new SaveFeedbackAction(value, "", getFeedbackStateInfo()),this);
+                    }
+                    public void oncapture(RpcData result) {
                         Log.info("Feedback saved");
+                        CmBusyManager.setBusy(false);
                     }
-                    public void onFailure(Throwable caught) {
-                        caught.printStackTrace();
-                    }
-                });
-                        
+                }.attempt();
             }
         });
     }

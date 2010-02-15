@@ -1,6 +1,7 @@
 package hotmath.gwt.cm.client;
 
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
+import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.service.CmServiceAsync;
 import hotmath.gwt.cm_tools.client.ui.ContextController;
 import hotmath.gwt.cm_tools.client.ui.InfoPopupBox;
@@ -9,6 +10,7 @@ import hotmath.gwt.cm_tools.client.ui.context.CmContext;
 import hotmath.gwt.cm_tools.client.ui.resource_viewer.CmMainResourceContainer;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.data.CmAsyncRequestImplDefault;
+import hotmath.gwt.shared.client.rpc.RetryAction;
 import hotmath.gwt.shared.client.rpc.action.CheckUserAccountStatusAction;
 import hotmath.gwt.shared.client.rpc.action.CreateAutoRegistrationAccountAction;
 import hotmath.gwt.shared.client.rpc.action.LogUserInAction;
@@ -246,10 +248,16 @@ public class AutoStudentRegistrationPanel extends CmMainResourceContainer {
         }
 
         final String password = (lastName.getValue() + "-" + firstName.getValue() + "-" + birthDate.getValue()).toLowerCase();
-        CmServiceAsync s = CmShared.getCmService();
-        s.execute(new CreateAutoRegistrationAccountAction(UserInfo.getInstance().getUid(), lastName.getValue() + ", " + firstName.getValue().trim(), password), new AsyncCallback<RpcData>() {
+        new RetryAction<RpcData>() {
+            @Override
+            public void attempt() {
+                CmBusyManager.setBusy(true);
+                CmShared.getCmService().execute(
+                        new CreateAutoRegistrationAccountAction(UserInfo.getInstance().getUid(), lastName.getValue() + ", " + firstName.getValue().trim(), password),this );
+            }
             //@Override
-            public void onSuccess(final RpcData rdata) {
+            public void oncapture(final RpcData rdata) {
+                CmBusyManager.setBusy(false);
                 String key = rdata.getDataAsString("key");
                 showPasswordAssignment(password,key);
             }
@@ -264,8 +272,10 @@ public class AutoStudentRegistrationPanel extends CmMainResourceContainer {
                 else if(msg.indexOf("name you entered") > -1) {
                     checkIfPasswordMatches(password);
                 }
+                else
+                    super.onFailure(caught);
             }
-        });        
+        }.attempt();
     }
     
     private void showPasswordAssignment(String password, final String key) {
@@ -305,22 +315,21 @@ public class AutoStudentRegistrationPanel extends CmMainResourceContainer {
         String msg = "You are already registered with this name.";
         CatchupMathTools.showAlert("Already Registered", msg,new CmAsyncRequestImplDefault() {
             public void requestComplete(String requestData) {
-                
                 /** create a login key for this user
                  * 
                  */
-                CmServiceAsync s = (CmServiceAsync) Registry.get("cmService");
-                s.execute(new LogUserInAction(null,password), new AsyncCallback<RpcData>() {
-                    public void onSuccess(RpcData result) {
+                new RetryAction<RpcData>() {
+                    @Override
+                    public void attempt() {
+                        CmBusyManager.setBusy(true);
+                        CmShared.getCmService().execute(new LogUserInAction(null,password),this);
+                    }
+                    public void oncapture(RpcData result) {
+                        CmBusyManager.setBusy(false);
                         String key = result.getDataAsString("key");
                         showPasswordAssignment(password, key);
                     }
-                    
-                    public void onFailure(Throwable caught) {
-                        CatchupMathTools.showAlert(caught.getMessage());
-                    }
-                });
-
+                }.attempt();
             }
         });
     }
@@ -332,10 +341,16 @@ public class AutoStudentRegistrationPanel extends CmMainResourceContainer {
      * 
      */
     private void checkIfPasswordMatches(final String password) {
-        CmServiceAsync s = (CmServiceAsync) Registry.get("cmService");
-        s.execute(new CheckUserAccountStatusAction(password), new AsyncCallback<RpcData>() {
+        new RetryAction<RpcData>() {
+            @Override
+            public void attempt() {
+                CmBusyManager.setBusy(true);
+                CmServiceAsync s = (CmServiceAsync) Registry.get("cmService");
+                s.execute(new CheckUserAccountStatusAction(password), this);
+            }
             //@Override
-            public void onSuccess(final RpcData rdata) {
+            public void oncapture(final RpcData rdata) {
+                CmBusyManager.setBusy(false);
                 String msg = rdata.getDataAsString("message");
                 if(msg.indexOf("duplicate") > -1) {
                     showAlreadyMsg(password);
@@ -346,11 +361,7 @@ public class AutoStudentRegistrationPanel extends CmMainResourceContainer {
                     CatchupMathTools.showAlert("Already Registered", msg);
                 }
             }
-            
-            public void onFailure(Throwable caught) {
-                caught.printStackTrace();
-            };
-        });
+        }.attempt();
     }
     
     

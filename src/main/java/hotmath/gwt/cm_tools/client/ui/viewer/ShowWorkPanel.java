@@ -17,7 +17,6 @@ import hotmath.gwt.shared.client.util.UserInfo;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.user.client.DOM;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Frame;
 
 public class ShowWorkPanel extends Frame {
@@ -104,22 +103,21 @@ public class ShowWorkPanel extends Frame {
 		
 		if(this.callbackAfterWhiteboardInitialized!=null)
 			callbackAfterWhiteboardInitialized.requestComplete(null);
-		
-		
-		CmServiceAsync s = CmShared.getCmService();
-	    int runId = UserInfo.getInstance().getRunId();
-		GetWhiteboardDataAction action = new GetWhiteboardDataAction(UserInfo.getInstance().getUid(),pid,runId);
-		s.execute(action,new AsyncCallback<CmList<WhiteboardCommand>>() {
-			public void onSuccess(CmList<WhiteboardCommand> commands) {
-				for(int i=0, t=commands.size();i<t;i++) {
-					updateFlashWhiteboard(flashId, commands.get(i).getCommand(),commands.get(i).getData());
-				}
-			}
-            public void onFailure(Throwable caught) {
-                caught.printStackTrace();
-                Log.error("Whiteboard read failed: " + caught);
+
+		new RetryAction<CmList<WhiteboardCommand>>() {
+		    @Override
+		    public void attempt() {
+		        CmServiceAsync s = CmShared.getCmService();
+		        int runId = UserInfo.getInstance().getRunId();
+		        GetWhiteboardDataAction action = new GetWhiteboardDataAction(UserInfo.getInstance().getUid(),pid,runId);
+		        s.execute(action,this);
             }
-		});		
+            public void oncapture(CmList<WhiteboardCommand> commands) {
+                for(int i=0, t=commands.size();i<t;i++) {
+                    updateFlashWhiteboard(flashId, commands.get(i).getCommand(),commands.get(i).getData());
+                }
+            }
+        }.attempt();
 	}
 
 	String backgroundHtml;
