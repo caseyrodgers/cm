@@ -248,7 +248,7 @@ public class CmStudentDao {
                 int stuUid = SqlUtilities.getLastInsertId(conn);
                 sm.setUid(stuUid);
                 addStudentProgram(conn,sm);
-                updateStudent(sm);
+                updateStudent(conn,sm);
             }
         } catch (Exception e) {
             throw new Exception(String.format("Error adding Student: %s, Passcode: %s ***", sm.getName(), sm.getPasscode()),e);
@@ -418,7 +418,7 @@ public class CmStudentDao {
         if (progIsNew)
             addStudentProgram(conn, sm);
         if (studentChanged)
-            updateStudent(sm);
+            updateStudent(conn, sm);
         if (programChanged)
             updateStudentProgram(sm);
         return sm;
@@ -504,13 +504,11 @@ public class CmStudentDao {
      * @return
      * @throws Exception
      */
-    public StudentModelI updateStudent(StudentModelI sm) throws Exception {
-        Connection conn = null;
+    public StudentModelI updateStudent(final Connection conn, StudentModelI sm) throws Exception {
         PreparedStatement ps = null;
         ResultSet rs = null;
 
         try {
-            conn = HMConnectionPool.getConnection();
             ps = conn.prepareStatement(CmMultiLinePropertyReader.getInstance().getProperty("UPDATE_STUDENT_SQL"));
             ps.setString(1, sm.getName());
             ps.setString(2, sm.getPasscode());
@@ -531,7 +529,7 @@ public class CmStudentDao {
             logger.error(String.format("*** Error updating student with uid: %d", sm.getUid()), e);
             throw new Exception(String.format("*** Error occurred while updating student: %s ***", sm.getName()));
         } finally {
-            SqlUtilities.releaseResources(rs, ps, conn);
+            SqlUtilities.releaseResources(rs, ps, null);
         }
         return sm;
     }
