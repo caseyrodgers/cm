@@ -31,6 +31,9 @@ public class StudentModelExt extends BaseModel implements Serializable, StudentM
     public static final String BACKGROUND_STYLE = "background_style";
     public static final String DEMO_USER_KEY = "demo_user";
     public static final String PROGRAM_DESCR_KEY = "program";
+    public static final String PASSING_COUNT_KEY = "passing-count";
+    public static final String NOT_PASSING_COUNT_KEY = "not-passing-count";
+    public static final String PASSING_RATIO_KEY = "passing-ratio";
 
     public StudentModelExt() {
     }
@@ -66,6 +69,12 @@ public class StudentModelExt extends BaseModel implements Serializable, StudentM
         set(DEMO_USER_KEY, student.getIsDemoUser());
         set(PROGRAM_DESCR_KEY, student.getProgramDescr());
         set(TUTORING_USE_KEY, student.getTutoringUse());
+        set(PASSING_COUNT_KEY, student.getPassingCount());
+        set(NOT_PASSING_COUNT_KEY, student.getPassingCount());
+        StringBuffer sb = new StringBuffer();
+        sb.append(student.getPassingCount()).append(" passed out of ");
+        sb.append(student.getPassingCount() + student.getNotPassingCount());
+        set(PASSING_RATIO_KEY, sb.toString());
     }
 
     public Integer getTutoringUse() {
@@ -298,4 +307,31 @@ public class StudentModelExt extends BaseModel implements Serializable, StudentM
         return get(DEMO_USER_KEY);
     }
 
+	@Override
+	public Integer getNotPassingCount() {
+		return get(NOT_PASSING_COUNT_KEY);
+	}
+
+	@Override
+	public void setNotPassingCount(Integer count) {
+		set(NOT_PASSING_COUNT_KEY, count);
+	}
+
+	@Override
+	public Integer getPassingCount() {
+		return get(PASSING_COUNT_KEY);
+	}
+
+	@Override
+	public void setPassingCount(Integer count) {
+		set(PASSING_COUNT_KEY, count);
+	}
+	
+	public String getPassingRatio() {
+		return get(PASSING_RATIO_KEY);
+	}
+
+	public void setPassingRatio(String passingRatio) {
+		set(PASSING_RATIO_KEY, passingRatio);
+	}
 }
