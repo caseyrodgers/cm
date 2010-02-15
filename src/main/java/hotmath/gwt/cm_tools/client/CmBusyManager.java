@@ -115,9 +115,9 @@ public class CmBusyManager {
     	}
     }
     
-    /** Force reset of the isBusy stack allowing 
-     *  for an exception to happen and display
-     *  an alert message.
+    /** Force reset of the isBusy stack and
+     *  making sure the Loading dialog is removed.
+     *  
      */
     static public void resetBusy() {
         __busyStates.clear();
