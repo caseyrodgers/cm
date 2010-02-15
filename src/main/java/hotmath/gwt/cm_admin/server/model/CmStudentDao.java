@@ -896,7 +896,7 @@ public class CmStudentDao {
     }
     
     
-    /** Return list of students assigned to the named Admin 
+    /** Return list of students with specified admin_id and password 
      * 
      * @param conn
      * @param aid
@@ -907,7 +907,6 @@ public class CmStudentDao {
     public List<StudentModelI> getStudentModelByPassword(final Connection conn, Integer aid, String password) throws Exception {
         List<StudentModelI> students = new ArrayList<StudentModelI>();
         
-        PreparedStatement ps = null;
         ResultSet rs = null;
         try {
             rs = conn.createStatement().executeQuery("select uid from HA_USER where admin_id = " + aid + " and user_passcode = '" + password + "'");
@@ -920,6 +919,14 @@ public class CmStudentDao {
         }
     }
     
+    /** Return list of students with specified admin_id and user name 
+     * 
+     * @param conn
+     * @param aid
+     * @param userName
+     * @return
+     * @throws Exception
+     */
     public List<StudentModelI> getStudentModelByUserName(final Connection conn, Integer aid, String userName) throws Exception {
         List<StudentModelI> students = new ArrayList<StudentModelI>();
         
@@ -1021,7 +1028,9 @@ public class CmStudentDao {
             sm.setLastQuiz(rs.getString("last_quiz"));
             sm.setChapter(getChapter(rs.getString("test_config_json")));
             sm.setLastLogin(rs.getString("last_use_date"));
-            sm.setTotalUsage(rs.getInt("usage_count"));
+            sm.setTotalUsage(0);
+            sm.setNotPassingCount(rs.getInt("not_passing_count"));
+            sm.setPassingCount(rs.getInt("passing_count"));
             String passPercent = rs.getString("pass_percent");
             sm.setPassPercent(passPercent);
             sm.setBackgroundStyle(rs.getString("gui_background_style"));
@@ -1297,8 +1306,7 @@ public class CmStudentDao {
                 activeInfo.setActiveTestId(rs.getInt("active_test_id"));
                 activeInfo.setActiveSegmentSlot(rs.getInt("active_segment_slot"));
             }
-            
-            
+
             /** Check to see if this program supports alternate tests, if so
              *  pass along the segment_slot to use .. otherwise, make sure it 
              *  is zero to always use the same slot
@@ -1308,8 +1316,6 @@ public class CmStudentDao {
                 if(! upDao.loadProgramInfoCurrent(conn, userId).hasAlternateTests())
                    activeInfo.setActiveSegmentSlot(0);
             }
-            
-            
             return activeInfo;
         } finally {
             SqlUtilities.releaseResources(rs, ps, null);
