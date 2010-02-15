@@ -132,7 +132,7 @@ public class StudentLessonTopicsStatusWindow extends CmWindow {
         CmServiceAsync s = CmShared.getCmService();
         s.execute(new   GetLessonItemsForTestRunAction(runId), new AsyncCallback<CmList<LessonItemModel>>() {
 
-            //@Override
+            @Override
             public void onSuccess(CmList<LessonItemModel> list) {
                 store.add(list);
                 setVisible(true);
