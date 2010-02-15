@@ -81,6 +81,10 @@ public class ActionInfo {
         return lastUse;
     }
     
+    public String getLastUseString() {
+        return (lastUse != null)?format.format(lastUse):"";
+    }
+        
     DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     public void setTimeStamp(String timeStamp) {
         Date dte=null;
