@@ -10,16 +10,17 @@ import hotmath.gwt.cm_tools.client.data.InmhItemData;
 import hotmath.gwt.cm_tools.client.data.PrescriptionData;
 import hotmath.gwt.cm_tools.client.data.PrescriptionSessionDataResource;
 import hotmath.gwt.cm_tools.client.model.AutoUserAdvanced;
-import hotmath.gwt.cm_tools.client.service.CmServiceAsync;
 import hotmath.gwt.cm_tools.client.ui.AutoTestWindow;
 import hotmath.gwt.cm_tools.client.ui.CmMainPanel;
 import hotmath.gwt.cm_tools.client.ui.ContextController;
+import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
 import hotmath.gwt.cm_tools.client.ui.context.CmContext;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.data.CmAsyncRequestImplDefault;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
 import hotmath.gwt.shared.client.eventbus.EventBus;
 import hotmath.gwt.shared.client.eventbus.EventType;
+import hotmath.gwt.shared.client.rpc.RetryAction;
 import hotmath.gwt.shared.client.rpc.action.AutoAdvanceUserAction;
 import hotmath.gwt.shared.client.rpc.action.MarkPrescriptionLessonAsViewedAction;
 import hotmath.gwt.shared.client.util.RpcData;
@@ -29,7 +30,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.allen_sauer.gwt.log.client.Log;
-import com.extjs.gxt.ui.client.Registry;
 import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
 import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
@@ -45,7 +45,6 @@ import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.button.IconButton;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.RunAsyncCallback;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -264,20 +263,17 @@ public class PrescriptionContext implements CmContext {
      * @param session
      */
     private void markLessonAsComplete(final int runId, final int session) {
-        CmServiceAsync s = CmShared.getCmService();
-        s.execute(new MarkPrescriptionLessonAsViewedAction(prescriptionData.getCurrSession().getTopic(), runId, session), new AsyncCallback<RpcData>() {
+        new RetryAction<RpcData>() {
             @Override
-            public void onSuccess(RpcData userAdvance) {
+            public void attempt() {
+                CmShared.getCmService().execute(
+                        new MarkPrescriptionLessonAsViewedAction(prescriptionData.getCurrSession().getTopic(), runId, session),this);
+            }
+            @Override
+            public void oncapture(RpcData userAdvance) {
                 Log.info("MarkPrescriptionLessonAsViewedAction complete: " + userAdvance);
             }
-
-            @Override
-            public void onFailure(Throwable caught) {
-                CatchupMathTools.setBusy(false);
-                String msg = caught.getMessage();
-                CatchupMathTools.showAlert(msg);
-            }
-        });
+        }.attempt();
     }
 
     /**
@@ -286,20 +282,23 @@ public class PrescriptionContext implements CmContext {
      */
     static public void autoAdvanceUser() {
 
-        CatchupMathTools.setBusy(true);
-
-        CmServiceAsync s = CmShared.getCmService();
-        s.execute(new AutoAdvanceUserAction(UserInfo.getInstance().getUid()), new AsyncCallback<AutoUserAdvanced>() {
+        
+        
+        new RetryAction<AutoUserAdvanced>() {
             @Override
-            public void onSuccess(AutoUserAdvanced userAdvance) {
-
+            public void attempt() {
+                CatchupMathTools.setBusy(true);
+                CmShared.getCmService().execute(new AutoAdvanceUserAction(UserInfo.getInstance().getUid()),this);
+            }
+            @Override
+            public void oncapture(AutoUserAdvanced userAdvance) {
                 CatchupMathTools.setBusy(false);
 
                 String msg = "<p class='completed'>You have completed this program!</p>"
                         + "<p class='advanced-to'>You will now be advanced to:" + "<div class='plan'><b>"
                         + userAdvance.getProgramTitle() + "</div>" + "</p>";
 
-                Window w = new Window();
+                Window w = new CmWindow();
                 w.setClosable(false);
                 w.setStyleName("auto-advance-window");
                 w.setHeight(200);
@@ -313,18 +312,10 @@ public class PrescriptionContext implements CmContext {
                         com.google.gwt.user.client.Window.Location.reload();
                     }
                 });
-                w.getButtonBar().setAlignment(HorizontalAlignment.RIGHT);
                 w.addButton(btnOk);
                 w.setVisible(true);
             }
-
-            @Override
-            public void onFailure(Throwable caught) {
-                CatchupMathTools.setBusy(false);
-                String msg = caught.getMessage();
-                CatchupMathTools.showAlert(msg);
-            }
-        });
+        }.attempt();
     }
 
     public void gotoPreviousTopic() {

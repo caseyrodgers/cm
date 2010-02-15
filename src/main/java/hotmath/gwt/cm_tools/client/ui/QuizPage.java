@@ -104,12 +104,6 @@ public class QuizPage extends LayoutContainer {
         }
         
         new RetryAction<RpcData>() {
-            public void onSuccess(RpcData result) {
-                // CatchupMathTools.showAlert("Question change saved");
-            }
-            public void onFailure(Throwable caught) {
-                CatchupMathTools.showAlert(caught.getMessage());
-            }
             @Override
             public void attempt() {
                 Boolean isCorrect = (correct != null && correct.equals("Correct")) ? true : false;
@@ -121,7 +115,6 @@ public class QuizPage extends LayoutContainer {
                 /** do nothing */
             }
         }.attempt();
-        
         return "OK";
     }
     
@@ -133,7 +126,6 @@ public class QuizPage extends LayoutContainer {
      * 
      * @param quizHtml
      */
-	@SuppressWarnings("unchecked")
 	private void displayQuizHtml(String quizHtml) {
 	    
 		Html html = new Html(quizHtml);
@@ -158,10 +150,6 @@ public class QuizPage extends LayoutContainer {
                 CmBusyManager.setBusy(false);
                 callbackWhenComplete.requestComplete(_title);
             }
-            public void onFailure(Throwable caught) {
-                CatchupMathTools.setBusy(false);
-                super.onFailure(caught);
-            }
         }.attempt();
 	}
 
@@ -181,10 +169,7 @@ public class QuizPage extends LayoutContainer {
 	            CatchupMathTools.setBusy(true);
 	            GetQuizHtmlAction quizAction = new GetQuizHtmlAction(UserInfo.getInstance().getUid(), UserInfo.getInstance().getTestSegment());
 	            quizAction.setLoadActive(loadActive);
-
 	            Log.info("QuizPage.getQuizHtmlFromServer: " + quizAction);
-	            CmServiceAsync s = (CmServiceAsync) Registry.get("cmService");
-	            
 	            CmShared.getCmService().execute(quizAction, this);
 	        }
 	        

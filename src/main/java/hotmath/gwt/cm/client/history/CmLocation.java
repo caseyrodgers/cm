@@ -1,5 +1,7 @@
 package hotmath.gwt.cm.client.history;
 
+import com.allen_sauer.gwt.log.client.Log;
+
 
 
 /** Represents a single, distinct location 
@@ -77,7 +79,7 @@ public class CmLocation {
     }
     
     private void warn(String msg) {
-        System.out.println("Warning: " + msg);
+        Log.warn("Warning: " + msg);
     }
 
     public String getResourceType() {

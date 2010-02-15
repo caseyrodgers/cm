@@ -24,8 +24,12 @@ import com.google.gwt.user.client.rpc.SerializationException;
            processMyData(data) 
        }
     }.attempt();
-    
  </pre>
+ * 
+ *  NOTE: We are using Window.confirm instead of a GXT window to handle 
+ *  zorder issues and make sure the process is Synchronous and stops
+ *  queueing errors.
+ 
  * @author casey
  *
  * @param <T>
@@ -58,7 +62,6 @@ public abstract class RetryAction<T> implements AsyncCallback<T> {
             String msg = "An error occured:\n" + message + "\n"
             + "You may retry this operation by clicking 'OK'.\n"
             + "However if the error persists, contact Technical Support.";
-            
             
             if(Window.confirm(msg)) {
                 attempt();

@@ -1,5 +1,6 @@
 package hotmath.testset.ha.report;
 
+import hotmath.SolutionManager;
 import hotmath.assessment.AssessmentPrescription;
 import hotmath.assessment.AssessmentPrescriptionManager;
 import hotmath.assessment.AssessmentPrescriptionSession;
@@ -7,6 +8,8 @@ import hotmath.assessment.AssessmentPrescription.SessionData;
 import hotmath.cm.server.model.CmUserProgramDao;
 import hotmath.gwt.cm_admin.server.model.CmStudentDao;
 import hotmath.gwt.shared.server.service.CmTestUtils;
+import hotmath.inmh.INeedMoreHelpItem;
+import hotmath.inmh.INeedMoreHelpResourceType;
 import hotmath.testset.ha.CmProgram;
 import hotmath.testset.ha.HaTest;
 import hotmath.testset.ha.HaTestDao;
@@ -23,6 +26,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
@@ -84,6 +88,9 @@ public class CmDebugReport {
              */
             for (CmProgram progDef : CmProgram.values()) {
                 try {
+                    if(!progDef.isActive())
+                        continue;
+                    
                     if (progDef.getProgramId().equals("Chap")) {
                         testProgramChapterTests(progDef);
                     } else if (!progDef.getProgramId().equals("Auto Enroll")) {
@@ -105,7 +112,7 @@ public class CmDebugReport {
 
     private void testProgramProfTests(CmProgram progDef) throws Exception {
         setupNewUserAndProgram(progDef, null);
-        testCurrentlyAssignedProgram();
+        testCurrentlyAssignedProgram(_conn);
     }
 
     /**
@@ -121,7 +128,7 @@ public class CmDebugReport {
 
         for (String chapter : chapters) {
             setupNewUserAndProgram(progDef, chapter);
-            testCurrentlyAssignedProgram();
+            testCurrentlyAssignedProgram(_conn);
         }
     }
 
@@ -133,7 +140,7 @@ public class CmDebugReport {
      * @param conn
      * @throws Exception
      */
-    private void testCurrentlyAssignedProgram() throws Exception {
+    private void testCurrentlyAssignedProgram(final Connection conn) throws Exception {
 
         StudentUserProgramModel userProgram = new CmUserProgramDao().loadProgramInfoCurrent(_conn, _uid);
 
@@ -197,7 +204,7 @@ public class CmDebugReport {
                  */
                 AssessmentPrescription prescription = AssessmentPrescriptionManager.getInstance().getPrescription(_conn,
                         testRun.getRunId());
-                checkPrescription(prescription);
+                checkPrescription(_conn,prescription);
             }
         }
     }
@@ -205,14 +212,21 @@ public class CmDebugReport {
     /**
      * Perform checks for prescription to make sure it is valid
      * 
+     * Test:
+     * 
+     * 1. 3 RPP per session
+     * 2. each RPP exists
+     * 3. 3 EPP per session
+     * 4. each EPP exists
+     * 
      * @param prescription
      * @throws Exception
      */
-    private Boolean checkPrescription(AssessmentPrescription prescription) throws Exception {
+    private Boolean checkPrescription(final Connection conn, AssessmentPrescription prescription) throws Exception {
 
         boolean isError = false;
         /**
-         * make sure their is at least one session created
+         * make sure there is at least one session created
          * 
          */
         if (prescription.getSessions().size() == 0) {
@@ -230,6 +244,26 @@ public class CmDebugReport {
                 if (rpp.size() != 3) {
                     logMessage(prescription.getTestRun().getRunId(), "WARNING: Session " + i + ": incorrect number of RPP (" + rpp.size() + ")");
                     isError = true;
+                }
+                for(SessionData p: rpp) {
+                    if(!SolutionManager.getInstance().doesSolutionExist(conn, p.getPid())) {
+                        logMessage(prescription.getTestRun().getRunId(), "WARNING: Session " + i + ": RPP does not exist '" + p.getPid() + "'");
+                    }
+                    
+                }
+                
+                Collection<INeedMoreHelpResourceType> epp = session.getPrescriptionInmhTypes(_conn, "cmextra");
+                if (epp.size() != 3) {
+                    logMessage(prescription.getTestRun().getRunId(), "WARNING: Session " + i + ": incorrect number of EPP (" + epp.size() + ")");
+                    isError = true;
+                }
+                for(INeedMoreHelpResourceType p: epp) {
+                    for(INeedMoreHelpItem pid: p.getResources()) {
+                        if(!SolutionManager.getInstance().doesSolutionExist(conn, pid.getFile())) {
+                            logMessage(prescription.getTestRun().getRunId(), "WARNING: Session " + i + ": RPP does not exist '" + pid.getFile() + "'");
+                        }
+                    }
+                    
                 }
             }
         }

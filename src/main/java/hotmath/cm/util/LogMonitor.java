@@ -4,7 +4,6 @@ import hotmath.flusher.Flushable;
 import hotmath.flusher.HotmathFlusher;
 
 import java.io.File;
-import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
