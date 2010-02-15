@@ -130,7 +130,7 @@ public class HaLoginInfo {
      *  
      * @param key
      * @return
-     * @throws Exception
+     * @throws CmExceptionLoginInvalid
      */
     static public HaLoginInfo getLoginInfo(final Connection conn, String key) throws Exception {
         PreparedStatement pstat = null;
@@ -145,7 +145,7 @@ public class HaLoginInfo {
             pstat.setString(1, key);
             ResultSet rs = pstat.executeQuery();
             if(!rs.first())
-                throw new CmException("No such Catchup Math login key: " + key);
+                throw new CmExceptionLoginAlreadyConsumed("No such Catchup Math login key: " + key);
             
             if(rs.getInt("is_consumed") == 1) {
                 throw new CmExceptionLoginAlreadyConsumed("Security key is invalid: " + key);
@@ -174,7 +174,8 @@ public class HaLoginInfo {
             login.setLoginName(rs.getString("login_name"));
             
             return login;
-        } finally {
+        }
+        finally {
             SqlUtilities.releaseResources(null, pstat,null);
         }
     }

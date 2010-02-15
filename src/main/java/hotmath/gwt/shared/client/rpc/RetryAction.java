@@ -4,6 +4,9 @@ import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.data.CmAsyncRequestImplDefault;
+import hotmath.gwt.shared.client.eventbus.CmEvent;
+import hotmath.gwt.shared.client.eventbus.EventBus;
+import hotmath.gwt.shared.client.eventbus.EventType;
 
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -65,7 +68,7 @@ public abstract class RetryAction<T> implements AsyncCallback<T> {
             /** 
              *   No such Catchup Math login key
              */
-            if(message.indexOf("login key") > -1) {
+            if(message.indexOf("CmExceptionLogin") > -1 || message.indexOf("Security") > -1) {
                 CatchupMathTools.showAlert("Login Problem", "You could not be logged in.  Please try again", new CmAsyncRequestImplDefault() {
                     @Override
                     public void requestComplete(String requestData) {
@@ -78,9 +81,13 @@ public abstract class RetryAction<T> implements AsyncCallback<T> {
                 + "You may retry this operation by clicking 'OK'.\n"
                 + "However if the error persists, contact Technical Support.";
                 
-                if(Window.confirm(msg)) {
-                    attempt();
-                }
+                EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_MODAL_WINDOW_OPEN));
+                CatchupMathTools.showAlert("Retryable Operation", msg, new CmAsyncRequestImplDefault() {
+                    @Override
+                    public void requestComplete(String requestData) {
+                        attempt();                        
+                    }
+                });                
             }
         }
     }

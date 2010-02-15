@@ -1,11 +1,15 @@
 package hotmath.gwt.shared.client;
 
+import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.service.CmServiceAsync;
+import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
+import hotmath.gwt.shared.client.data.CmAsyncRequest;
+import hotmath.gwt.shared.client.data.CmAsyncRequestImplDefault;
 import hotmath.gwt.shared.client.model.UserInfoBase;
 import hotmath.gwt.shared.client.rpc.RetryAction;
 import hotmath.gwt.shared.client.rpc.action.ProcessLoginRequestAction;
 import hotmath.gwt.shared.client.util.CmException;
-import hotmath.gwt.shared.client.util.CmUserException;
+import hotmath.gwt.shared.client.util.CmExceptionLoginInvalid;
 import hotmath.gwt.shared.client.util.UserInfo;
 
 import java.util.HashMap;
@@ -17,6 +21,7 @@ import pl.rmalinowski.gwt2swf.client.utils.SWFObjectUtil;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.Registry;
+import com.extjs.gxt.ui.client.widget.Html;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONParser;
@@ -147,7 +152,7 @@ public class CmShared implements EntryPoint {
             } else {
                 final String key2 = _queryParameters.get("key");
                 if (key2 == null || key2.length() == 0) {
-                    throw new CmException("Invalid login: no security key found on URL");
+                    throw new CmExceptionLoginInvalid("Invalid login: no security key found on URL");
                 }
 
                 boolean needToValidate = true;
@@ -210,128 +215,36 @@ public class CmShared implements EntryPoint {
         exception.printStackTrace();
         Log.info("Login error: " + exception.getMessage());
         
-        
-        String msg = "Login Error. We suggest you refresh this page by pressing the F5 function key.";
+
+        String msg = "We suggest you refresh this page by pressing the F5 function key.";
         if (_queryParameters.get("debug") != null)
             msg += "<br/>" + exception.getMessage() + "";
 
-        if(Window.confirm(msg)) {
-                Window.Location.assign(CmShared.CM_HOME_URL); // goto home
+        if(exception instanceof CmExceptionLoginInvalid) {
+            /** provide message, but force back to home page
+             * 
+             */
+            CatchupMathTools.showAlert("Login Error", msg, new CmAsyncRequestImplDefault() {
+                @Override
+                public void requestComplete(String requestData) {
+                    Window.Location.assign(CmShared.CM_HOME_URL);                    
+                }
+            });
+        }
+        else {
+            /** show window that cannot be dismissed .. END OF LINE */
+            CmWindow cm = new CmWindow();
+            cm.setModal(true);
+            cm.setHeading("Login Error");
+            cm.setClosable(false);
+            cm.setResizable(false);
+            cm.add(new Html("<div style='padding: 10px;font-weight: bold'>" + msg + "</div>"));
+            cm.setSize(250,100);
+            cm.setVisible(true);
         }
     }
 
-    /**
-     * Check the query string and process log in.
-     * 
-     * Normal process is this is called with a single 'key' param that contains
-     * a 'login' key has been placed in the HA_USER_LOGIN table.
-     * 
-     * The login is either an 'ADMIN' or a 'STUDENT'. In either case, we return
-     * the user_id representing the validated user login.
-     * 
-     * If the record is located and validated (is_active == true), then this
-     * user is allowed to continue. Otherwise, we display a standardized login
-     * failed display and return user to the CM home page.
-     * 
-     * 
-     * @TODO: rewrite as asynchronous
-     * 
-     * 
-     * @return
-     * @throws CmUserException
-     */
-    static public int handleLoginProcessXXX() throws CmUserException {
-
-        Log.info("CM Home URL: " + CM_HOME_URL);
-
-        _queryParameters = readQueryString();
-
-        // first see if run_id is passed, if so
-        // the user is in 'view' mode and we must
-        // inform the server not to update the
-        // current state as the user moves around system.
-        int userId = 0;
-        String key2 = "";
-        try {
-
-            if (_queryParameters.get("uid") != null) {
-                // for debugging .. perhaps this should not be allowed
-                // during normal processing.
-
-                // check for special case demo user
-                if (_queryParameters.get("uid").equals("demo")) {
-                    userId = DEMO_UID;
-                } else {
-                    userId = Integer.parseInt(_queryParameters.get("uid"));
-                }
-            }
-
-            // for testing, if uid is passed allow it override cookie
-            if (userId == 0) {
-                String cmKey = Cookies.getCookie("cm_key");
-                if (cmKey == null) {
-                    throw new Exception("No login key found");
-                }
-                cmKey = cmKey.substring(1, cmKey.length() - 1);
-
-                JSONValue jsonValue = JSONParser.parse(cmKey);
-                JSONObject o = jsonValue.isObject();
-                String keyVal = o.get("key").isString().stringValue();
-                if (keyVal == null) {
-                    throw new Exception("Invalid security key found");
-                }
-                if (_queryParameters.get("key") != null) {
-                    key2 = _queryParameters.get("key");
-                }
-
-                if (key2 == null) {
-                    throw new Exception("No key parameter found");
-                }
-                if (!key2.equals(keyVal)) {
-                    throw new Exception("Security exception: key values do not match");
-                }
-
-                // we are valid ...
-                //
-                boolean isAdmin = false;
-                try {
-                    userId = (int) o.get("uid").isNumber().doubleValue();
-                } catch (Exception e) {
-                    Log.warn("Ignoring Exception", e);
-                }
-
-                if (userId == 0) {
-                    try {
-                        userId = (int) o.get("aid").isNumber().doubleValue();
-                    } catch (Exception e) {
-                        Log.warn("Ignoring Exception", e);
-                    }
-                    if (userId != 0) {
-                        isAdmin = true;
-                    }
-                }
-
-                if (userId == 0) {
-                    throw new Exception("'uid' is not valid");
-                }
-                UserInfoBase user = UserInfoBase.getInstance();
-                user.setUid(userId);
-                user.setIsAdmin(isAdmin);
-
-                /**
-                 * Check Flash, if not supported show error .. but allow system
-                 * to continue and initialize.
-                 */
-                if (!SWFObjectUtil.isVersionIsValid(new PlayerVersion(CmShared.FLASH_MIN_VERSION))) {
-                    new FlashVersionNotSupportedWindow();
-                }
-            }
-
-            return userId;
-        } catch (Exception e) {
-            throw new CmUserException(e.getMessage());
-        }
-    }
+   
 
     /**
      * Convert string+list to string+string of all URL parameters
