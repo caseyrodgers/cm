@@ -10,7 +10,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class GetStudentGridPageAction implements Action<CmStudentPagingLoadResult<StudentModelExt>>{
-    
+
     Integer adminId;
 	PagingLoadConfig loadConfig;
 	String groupFilter;
@@ -73,6 +73,15 @@ public class GetStudentGridPageAction implements Action<CmStudentPagingLoadResul
     public Map<FilterType,String> getFilterMap() {
     	return this.filterMap;
     }
+    
+    
+    @Override
+    public String toString() {
+        return "GetStudentGridPageAction [adminId=" + adminId + ", filterMap=" + filterMap + ", forceRefresh="
+                + forceRefresh + ", groupFilter=" + groupFilter + ", loadConfig=" + loadConfig + ", quickSearch="
+                + quickSearch + "]";
+    }
+    
     
     public enum FilterType {GROUP, QUICKTEXT};
 }
