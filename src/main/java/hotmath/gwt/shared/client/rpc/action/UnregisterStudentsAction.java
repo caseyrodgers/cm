@@ -15,14 +15,9 @@ public class UnregisterStudentsAction implements Action<StringHolder> {
     public UnregisterStudentsAction() {}
 
     public UnregisterStudentsAction(List<StudentModelI> smList) {
-    	System.out.println("+++ UnregisterStudentsAction(): smList.size(): " + smList.size());
         this.smList = smList;
     }
 
-    @Override
-    public String toString() {
-        return "UnregsterStudentsAction: smList: " + smList;
-    }
 
     public List<StudentModelI> getStudentList() {
         return smList;
@@ -32,4 +27,8 @@ public class UnregisterStudentsAction implements Action<StringHolder> {
         this.smList = smList;
     }
 
+    @Override
+    public String toString() {
+        return "UnregisterStudentsAction [smList=" + smList + "]";
+    }    
 }

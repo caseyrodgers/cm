@@ -1,6 +1,5 @@
 package hotmath.cm.util;
 
-import hotmath.cm.signup.HotmathSubscriberServiceCatchup;
 import hotmath.gwt.cm_admin.server.model.CmAdminDao;
 import hotmath.gwt.cm_admin.server.model.CmStudentDao;
 import hotmath.gwt.cm_tools.client.model.StudentModel;
@@ -8,9 +7,7 @@ import hotmath.gwt.cm_tools.client.model.StudentModelI;
 import hotmath.subscriber.HotMathSubscriber;
 import hotmath.subscriber.HotMathSubscriberManager;
 import hotmath.subscriber.PurchasePlan;
-import hotmath.subscriber.PurchasePlanDef;
 import hotmath.subscriber.service.HotMathSubscriberServiceFactory;
-import hotmath.subscriber.service.HotMathSubscriberServiceTutoring;
 import hotmath.testset.ha.CmProgram;
 import hotmath.util.HMConnectionPool;
 import hotmath.util.sql.SqlUtilities;
@@ -20,6 +17,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
+
+import sb.mail.SbMailManager;
 
 /** 
  * create user John Doe / jd12345
@@ -223,6 +222,38 @@ public class CmPilotCreate {
         }
         finally {
             SqlUtilities.releaseResources(null, ps, null);
+        }
+    }
+ 
+    /** Add a record to HA_ADMIN_PILOT_REQUEST table and send email to sales manager
+     * 
+     */
+    static public void addPilotRequest(String title, String name, String school, String zip, String email, String phone) throws Exception {
+        Connection conn=null;
+        PreparedStatement ps=null;
+        try {
+            String sql = "insert into HA_ADMIN_PILOT_REQUEST(title,name,school,zip,email,phone,request_date)values(?,?,?,?,?,?,now())";
+            conn = HMConnectionPool.getConnection();
+            ps = conn.prepareStatement(sql);
+            ps.setString(1,title);
+            ps.setString(2,name);
+            ps.setString(3,school);
+            ps.setString(4,zip);
+            ps.setString(5,email);
+            ps.setString(6,phone);
+            
+            int rows = ps.executeUpdate();
+            if(rows == 1) {
+                String txt="A request for a Catchup Math Pilot was created by:\n"
+                          +"Title: " + title + "\nName: " + name + "\nSchool: " + school + "\nZip: " + zip + "\nEmail: " + email + "\nPhone: " + phone;
+                SbMailManager.getInstance().sendMessage("Catchup Math Pilot Request", txt, email, "casey@hotmath.com","text/plain");
+            }
+        }
+        catch(Exception e) {
+            e.printStackTrace();
+        }
+        finally {
+            SqlUtilities.releaseResources(null,ps,conn);
         }
     }
 }

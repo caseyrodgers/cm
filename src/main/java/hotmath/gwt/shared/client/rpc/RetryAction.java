@@ -4,9 +4,6 @@ import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.data.CmAsyncRequestImplDefault;
-import hotmath.gwt.shared.client.eventbus.CmEvent;
-import hotmath.gwt.shared.client.eventbus.EventBus;
-import hotmath.gwt.shared.client.eventbus.EventType;
 
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -80,17 +77,17 @@ public abstract class RetryAction<T> implements AsyncCallback<T> {
                 });
             }
             else {
+                
+                /** Perform as synchronous call in Window.confirm to stop
+                 *  the flow of new requests until this one is taken care of.
+                 */
                 String msg = "An error occured:\n" + message + "\n"
                 + "You may retry this operation by clicking 'OK'.\n"
                 + "However if the error persists, contact Technical Support.";
-                
-                EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_MODAL_WINDOW_OPEN));
-                CatchupMathTools.showAlert("Retryable Operation", msg, new CmAsyncRequestImplDefault() {
-                    @Override
-                    public void requestComplete(String requestData) {
-                        attempt();                        
-                    }
-                });                
+
+                if(Window.confirm(msg)) {
+                    attempt();
+                }
             }
         }
     }

@@ -765,48 +765,45 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
         new RetryAction<StringHolder>() {
             @Override
             public void attempt() {
-                //CmBusyManager.setBusy(true);
+                CmBusyManager.setBusy(true);
                 CmShared.getCmService().execute(new UnregisterStudentsAction(smList), this);
             }
 
             public void oncapture(StringHolder result) {
-            	try {
-            		String response = result.getResponse();
-            		StringBuffer sb = new StringBuffer();
+                CmBusyManager.setBusy(false);
+                
+        		String response = result.getResponse();
+        		StringBuffer sb = new StringBuffer();
 
-            		JSONValue rspValue = JSONParser.parse(response);
-            		JSONObject rspObj = rspValue.isObject();
+        		JSONValue rspValue = JSONParser.parse(response);
+        		JSONObject rspObj = rspValue.isObject();
 
-            		String value = rspObj.get("deactivateCount").isString().stringValue();
-            		int deactivateCount = Integer.valueOf(value);
-            		value = rspObj.get("deactivateErrorCount").isString().stringValue();
-            		int deactivateErrorCount = Integer.valueOf(value);
-            		value = rspObj.get("removeCount").isString().stringValue();
-            		int removeCount = Integer.valueOf(value);
-            		value = rspObj.get("removeErrorCount").isString().stringValue();
-            		int removeErrorCount = Integer.valueOf(value);
+        		String value = rspObj.get("deactivateCount").isString().stringValue();
+        		int deactivateCount = Integer.valueOf(value);
+        		value = rspObj.get("deactivateErrorCount").isString().stringValue();
+        		int deactivateErrorCount = Integer.valueOf(value);
+        		value = rspObj.get("removeCount").isString().stringValue();
+        		int removeCount = Integer.valueOf(value);
+        		value = rspObj.get("removeErrorCount").isString().stringValue();
+        		int removeErrorCount = Integer.valueOf(value);
 
-            		int unregisterCount = deactivateCount + removeCount;
-            		int unregisterErrorCount = deactivateErrorCount + removeErrorCount;
+        		int unregisterCount = deactivateCount + removeCount;
+        		int unregisterErrorCount = deactivateErrorCount + removeErrorCount;
 
-            		if (unregisterCount > 0) {
-            			sb.append("Unregistered ").append(unregisterCount);
-            			sb.append((unregisterCount > 1) ? " students." : " student.");
-            			if (unregisterErrorCount > 0)
-            				sb.append(" <br/>");
-            		}
-            		if (unregisterErrorCount > 0) {
-            			sb.append("Unregister failed for ").append(unregisterErrorCount);
-            			sb.append((unregisterErrorCount > 1) ? " students." : " student.");
-            		}
+        		if (unregisterCount > 0) {
+        			sb.append("Unregistered ").append(unregisterCount);
+        			sb.append((unregisterCount > 1) ? " students." : " student.");
+        			if (unregisterErrorCount > 0)
+        				sb.append(" <br/>");
+        		}
+        		if (unregisterErrorCount > 0) {
+        			sb.append("Unregister failed for ").append(unregisterErrorCount);
+        			sb.append((unregisterErrorCount > 1) ? " students." : " student.");
+        		}
 
-            		CatchupMathTools.showAlert(sb.toString());
+        		CatchupMathTools.showAlert(sb.toString());
 
-            		CmAdminDataReader.getInstance().fireRefreshData();
-            	}
-            	finally {
-                    //CmBusyManager.setBusy(false);
-            	}
+        		CmAdminDataReader.getInstance().fireRefreshData();
             }
         }.attempt();
         
