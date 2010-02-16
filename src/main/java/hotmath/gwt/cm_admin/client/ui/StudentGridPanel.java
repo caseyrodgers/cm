@@ -834,11 +834,9 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
         
         @Override
         public void load(final Object loadConfig, final AsyncCallback<CmStudentPagingLoadResult<StudentModelExt>> callback) {
-        	
             new RetryAction<CmStudentPagingLoadResult<StudentModelExt>>() {
                 @Override
                 public void attempt() {
-                    //CmBusyManager.setBusy(true);
                     _pageAction = new GetStudentGridPageAction(_cmAdminMdl.getId(), (PagingLoadConfig) loadConfig);
                     
                     /**
@@ -859,17 +857,19 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
                     	_pageAction.addFilter(GetStudentGridPageAction.FilterType.QUICKTEXT, _quickSearch.trim());
                     }
 
-                    CmShared.getCmService().execute(_pageAction, callback);
+                    CmShared.getCmService().execute(_pageAction, this);
                 }
                 
                 @Override
                 public void oncapture(CmStudentPagingLoadResult<StudentModelExt> value) {
-                    //CmBusyManager.setBusy(false);
-
                     /** always reset request options */
                     _forceServerRefresh = false;
-
                     EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_STUDENT_GRID_FILTERED, _pageAction));
+
+                    /** callback the proxy listener
+                     * 
+                     */
+                    callback.onSuccess(value);
                 }
             }.attempt();
         }
