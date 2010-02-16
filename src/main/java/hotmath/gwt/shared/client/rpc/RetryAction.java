@@ -66,8 +66,8 @@ public abstract class RetryAction<T> implements AsyncCallback<T> {
             }
 
             /** 
-             *   atchup Math login problems cannot be retried 
-             *   @TODO: maybe a 'ActionRetryable' interface?
+             *   Catchup Math login problems cannot be retried 
+             *   @TODO: maybe a 'ActionRetryable' or 'RetryableAction' interface?
              */
             if(message.indexOf("CmExceptionLogin") > -1 
                     || message.indexOf("Security") > -1
