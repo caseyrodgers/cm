@@ -407,7 +407,7 @@ and u.uid in ($$UID_LIST$$)
 
 .key=TRENDING_DATA_DETAIL_FOR_LESSON_FROM_UIDS
 
-select distinct  u.uid, u.user_name
+select distinct  u.uid, u.user_name, count(*) as times_assigned
 from  HA_TEST_RUN_LESSON l
   JOIN HA_TEST_RUN r
     ON r.run_id = l.run_id
@@ -417,6 +417,7 @@ from  HA_TEST_RUN_LESSON l
      ON u.uid = t.user_id
 where u.uid in ($$UID_LIST$$)
 and     l.lesson_name = ?
+group by uid
 order by user_name
 
 

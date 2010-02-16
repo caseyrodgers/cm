@@ -816,7 +816,11 @@ public class CmAdminDao {
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
                 StudentModelExt parialStudent = new StudentModelExt();
-                parialStudent.setName(rs.getString("user_name"));
+                String name=rs.getString("user_name");
+                int timesAssigned = rs.getInt("times_assigned");
+                if(timesAssigned > 1)
+                    name = name + " (" + timesAssigned + " times)";
+                parialStudent.setName(name);
                 parialStudent.setUid(rs.getInt("uid"));
                 students.add(parialStudent);
             }
