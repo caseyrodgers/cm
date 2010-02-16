@@ -9,7 +9,6 @@ import hotmath.gwt.cm_tools.client.model.GroupInfoModel;
 import hotmath.gwt.cm_tools.client.model.StringHolder;
 import hotmath.gwt.cm_tools.client.model.StudentModelExt;
 import hotmath.gwt.cm_tools.client.model.StudentModelI;
-import hotmath.gwt.cm_tools.client.service.CmServiceAsync;
 import hotmath.gwt.cm_tools.client.ui.AutoRegisterStudentSetup;
 import hotmath.gwt.cm_tools.client.ui.BulkStudentRegistrationWindow;
 import hotmath.gwt.cm_tools.client.ui.GroupSelectorWidget;
@@ -23,15 +22,12 @@ import hotmath.gwt.shared.client.eventbus.CmEventListenerImplDefault;
 import hotmath.gwt.shared.client.eventbus.EventBus;
 import hotmath.gwt.shared.client.eventbus.EventType;
 import hotmath.gwt.shared.client.model.CmStudentPagingLoadResult;
-import hotmath.gwt.shared.client.rpc.action.CmList;
+import hotmath.gwt.shared.client.rpc.RetryAction;
 import hotmath.gwt.shared.client.rpc.action.GeneratePdfAction;
 import hotmath.gwt.shared.client.rpc.action.GetStudentGridPageAction;
-import hotmath.gwt.shared.client.rpc.action.GetSummariesForActiveStudentsAction;
 import hotmath.gwt.shared.client.rpc.action.UnregisterStudentsAction;
 import hotmath.gwt.shared.client.rpc.action.GeneratePdfAction.PdfType;
-import hotmath.gwt.shared.client.util.CmAsyncCallback;
 import hotmath.gwt.shared.client.util.CmRunAsyncCallback;
-import hotmath.gwt.shared.client.rpc.RetryAction;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -764,53 +760,56 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
      * 
      * @param smList
      */
-    protected void unregisterStudentsRPC(List<StudentModelI> smList) {
-        CmBusyManager.setBusy(true, false);
-        CmServiceAsync cms = CmShared.getCmService();
-        cms.execute(new UnregisterStudentsAction(smList), new CmAsyncCallback<StringHolder>() {
-            public void onSuccess(final StringHolder result) {
-                String response = result.getResponse();
-                StringBuffer sb = new StringBuffer();
-
-                JSONValue rspValue = JSONParser.parse(response);
-                JSONObject rspObj = rspValue.isObject();
-
-                String value = rspObj.get("deactivateCount").isString().stringValue();
-                int deactivateCount = Integer.valueOf(value);
-                value = rspObj.get("deactivateErrorCount").isString().stringValue();
-                int deactivateErrorCount = Integer.valueOf(value);
-                value = rspObj.get("removeCount").isString().stringValue();
-                int removeCount = Integer.valueOf(value);
-                value = rspObj.get("removeErrorCount").isString().stringValue();
-                int removeErrorCount = Integer.valueOf(value);
-
-                int unregisterCount = deactivateCount + removeCount;
-                int unregisterErrorCount = deactivateErrorCount + removeErrorCount;
-
-                if (unregisterCount > 0) {
-                    sb.append("Unregistered ").append(unregisterCount);
-                    sb.append((unregisterCount > 1) ? " students." : " student.");
-                    if (unregisterErrorCount > 0)
-                        sb.append(" <br/>");
-                }
-                if (unregisterErrorCount > 0) {
-                    sb.append("Unregister failed for ").append(unregisterErrorCount);
-                    sb.append((unregisterErrorCount > 1) ? " students." : " student.");
-                }
-
-                CatchupMathTools.showAlert(sb.toString());
-
-                CmAdminDataReader.getInstance().fireRefreshData();
-
-                CmBusyManager.setBusy(false);
-            }
-
+    protected void unregisterStudentsRPC(final List<StudentModelI> smList) {
+    	
+        new RetryAction<StringHolder>() {
             @Override
-            public void onFailure(Throwable caught) {
-                CmBusyManager.setBusy(false);
-                super.onFailure(caught);
+            public void attempt() {
+                //CmBusyManager.setBusy(true);
+                CmShared.getCmService().execute(new UnregisterStudentsAction(smList), this);
             }
-        });
+
+            public void oncapture(StringHolder result) {
+            	try {
+            		String response = result.getResponse();
+            		StringBuffer sb = new StringBuffer();
+
+            		JSONValue rspValue = JSONParser.parse(response);
+            		JSONObject rspObj = rspValue.isObject();
+
+            		String value = rspObj.get("deactivateCount").isString().stringValue();
+            		int deactivateCount = Integer.valueOf(value);
+            		value = rspObj.get("deactivateErrorCount").isString().stringValue();
+            		int deactivateErrorCount = Integer.valueOf(value);
+            		value = rspObj.get("removeCount").isString().stringValue();
+            		int removeCount = Integer.valueOf(value);
+            		value = rspObj.get("removeErrorCount").isString().stringValue();
+            		int removeErrorCount = Integer.valueOf(value);
+
+            		int unregisterCount = deactivateCount + removeCount;
+            		int unregisterErrorCount = deactivateErrorCount + removeErrorCount;
+
+            		if (unregisterCount > 0) {
+            			sb.append("Unregistered ").append(unregisterCount);
+            			sb.append((unregisterCount > 1) ? " students." : " student.");
+            			if (unregisterErrorCount > 0)
+            				sb.append(" <br/>");
+            		}
+            		if (unregisterErrorCount > 0) {
+            			sb.append("Unregister failed for ").append(unregisterErrorCount);
+            			sb.append((unregisterErrorCount > 1) ? " students." : " student.");
+            		}
+
+            		CatchupMathTools.showAlert(sb.toString());
+
+            		CmAdminDataReader.getInstance().fireRefreshData();
+            	}
+            	finally {
+                    //CmBusyManager.setBusy(false);
+            	}
+            }
+        }.attempt();
+        
     }
 
     @Override
@@ -842,7 +841,7 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
             new RetryAction<CmStudentPagingLoadResult<StudentModelExt>>() {
                 @Override
                 public void attempt() {
-                    CmBusyManager.setBusy(true);
+                    //CmBusyManager.setBusy(true);
                     _pageAction = new GetStudentGridPageAction(_cmAdminMdl.getId(), (PagingLoadConfig) loadConfig);
                     
                     /**
@@ -868,9 +867,11 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
                 
                 @Override
                 public void oncapture(CmStudentPagingLoadResult<StudentModelExt> value) {
+                    //CmBusyManager.setBusy(false);
+
                     /** always reset request options */
                     _forceServerRefresh = false;
-                    
+
                     EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_STUDENT_GRID_FILTERED, _pageAction));
                 }
             }.attempt();
