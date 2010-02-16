@@ -69,7 +69,7 @@ public class StudentModelExt extends BaseModel implements Serializable, StudentM
         set(PROGRAM_DESCR_KEY, student.getProgramDescr());
         set(TUTORING_USE_KEY, student.getTutoringUse());
         set(PASSING_COUNT_KEY, student.getPassingCount());
-        set(NOT_PASSING_COUNT_KEY, student.getPassingCount());
+        set(NOT_PASSING_COUNT_KEY, student.getNotPassingCount());
     }
 
     public Integer getTutoringUse() {
