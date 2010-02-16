@@ -70,7 +70,7 @@ public class LogMonitor {
      */
     private void processActionLog(String line) {
         
-        String start = "^(.*)\\ \\[.*\\:\\ (.*)\\ .*toString.*\\[(.*)\\]";
+        String start = "^(.*)\\ \\[.*\\:\\ (.*)\\ toString.*";
         Pattern startPattern = Pattern.compile(start);
         Matcher matcher = startPattern.matcher(line);
         if (matcher.find()) {
@@ -79,9 +79,17 @@ public class LogMonitor {
              */
             String timeStamp=matcher.group(1).trim();
             ActionInfo ai = getActionInfo(matcher.group(2).trim());
-            String args = matcher.group(3);
-            ai.getArgs().add(timeStamp += " " + args);
             ai.setTimeStamp(timeStamp);
+
+            
+            // see if there are args
+            String argString = "toString.*\\[(.*)\\]";
+            Pattern argPattern = Pattern.compile(argString);
+            Matcher argMatcher = argPattern.matcher(line);
+            if(argMatcher.find()) {
+                String args = argMatcher.group(0);
+                ai.getArgs().add(timeStamp += " " + args);
+            }
          }
         else {
             /** is end of action
