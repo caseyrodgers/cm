@@ -8,9 +8,9 @@ import hotmath.gwt.cm_tools.client.model.GroupInfoModel;
 import hotmath.gwt.cm_tools.client.service.CmServiceAsync;
 import hotmath.gwt.cm_tools.client.util.ProcessTracker;
 import hotmath.gwt.shared.client.CmShared;
+import hotmath.gwt.shared.client.rpc.RetryAction;
 import hotmath.gwt.shared.client.rpc.action.CmList;
 import hotmath.gwt.shared.client.rpc.action.GetActiveGroupsAction;
-import hotmath.gwt.shared.client.util.CmAsyncCallback;
 
 import com.extjs.gxt.ui.client.event.SelectionChangedEvent;
 import com.extjs.gxt.ui.client.event.SelectionChangedListener;
@@ -85,60 +85,45 @@ public class GroupSelectorWidget implements CmAdminDataRefresher {
 		return combo;
 	}
 
-	private void getGroupListRPC(Integer uid, final ListStore <GroupInfoModel> store) {
+	private void getGroupListRPC(final Integer uid, final ListStore <GroupInfoModel> store) {
 
 		pTracker.beginStep();
+		
+		new RetryAction <CmList<GroupInfoModel>>() {
+		    @Override
+		    public void attempt() {
+		        CmBusyManager.setBusy(true, false);
+		        CmServiceAsync s = CmShared.getCmService();
+		        GetActiveGroupsAction action = new GetActiveGroupsAction(uid);
+		        s.execute(action,this);
+		    }
+            public void oncapture(CmList<GroupInfoModel> result) {
 
-		CmBusyManager.setBusy(true, false);
+                groupStore.removeAll();
 
-		CmServiceAsync s = CmShared.getCmService();
-		GetActiveGroupsAction action = new GetActiveGroupsAction(uid);
-		s.execute(action, new CmAsyncCallback <CmList<GroupInfoModel>>() {
-			public void onSuccess(CmList<GroupInfoModel> result) {
+                // append 'New Group' to end of List if in Reg mode
+                if (inRegistrationMode) {
+                    GroupInfoModel gm = new GroupInfoModel();
+                    gm.setGroupName(GroupInfoModel.NEW_GROUP);
+                    gm.setId(GroupInfoModel.CREATE_GROUP);
+                    result.add(gm);
+                }
+                // only include NO_FILTERING if NOT in Reg mode
+                else {
+                    GroupInfoModel gm = new GroupInfoModel();
+                    gm.setGroupName(NO_FILTERING);
+                    gm.setId(GroupInfoModel.NO_FILTERING);
+                    groupStore.insert(gm, 0);
+                }
 
-				groupStore.removeAll();
+                groupStore.add(result);
+                
+                pTracker.completeStep();
+                pTracker.finish();
 
-				// append 'New Group' to end of List if in Reg mode
-				if (inRegistrationMode) {
-				    GroupInfoModel gm = new GroupInfoModel();
-    				gm.setGroupName(GroupInfoModel.NEW_GROUP);
-	    			gm.setId(GroupInfoModel.CREATE_GROUP);
-		    		result.add(gm);
-				}
-				// only include NO_FILTERING if NOT in Reg mode
-				else {
-				    GroupInfoModel gm = new GroupInfoModel();
-			        gm.setGroupName(NO_FILTERING);
-			        gm.setId(GroupInfoModel.NO_FILTERING);
-			        groupStore.insert(gm, 0);
-				}
-
-				groupStore.add(result);
-				
-//				for(int i=0,t=result.size();i<t;i++) {
-//				    GroupInfoModel gm = result.get(i);
-//				    if(gm.getIsSelfReg() != null && gm.getIsSelfReg()) {
-//				        gm.set("group-name-display", "* " + gm.getName());
-//				    }
-//				    else {
-//				        gm.set("group-name-display", gm.getName());
-//				    }
-//				    groupStore.add(gm);    
-//				}
-				
-				
-				pTracker.completeStep();
-				pTracker.finish();
-
-				CmBusyManager.setBusy(false);
-        	}
-
-			public void onFailure(Throwable caught) {
-				CmBusyManager.setBusy(false);
-				super.onFailure(caught);
-        	}
-        });
-
+                CmBusyManager.setBusy(false);
+            }
+        }.attempt();
 	}
 
 	@Override

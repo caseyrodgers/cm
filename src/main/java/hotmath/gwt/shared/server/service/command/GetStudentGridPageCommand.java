@@ -241,6 +241,10 @@ class StudentGridComparator implements Comparator<StudentModelExt> {
         } else if (sortField.equals(StudentModelExt.TUTORING_USE_KEY)) {
             return p1.getTutoringUse() - p2.getTutoringUse();
         }
+        else if(sortField.equals(StudentModelExt.PASSING_COUNT_KEY)) {
+            /** sort on total number of tests taken */
+            return (p1.getNotPassingCount() + p1.getPassingCount()) - (p2.getNotPassingCount() + p2.getPassingCount());
+        }
 
         return 0;
     }
