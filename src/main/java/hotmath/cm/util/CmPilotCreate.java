@@ -246,7 +246,7 @@ public class CmPilotCreate {
             if(rows == 1) {
                 String txt="A request for a Catchup Math Pilot was created by:\n"
                           +"Title: " + title + "\nName: " + name + "\nSchool: " + school + "\nZip: " + zip + "\nEmail: " + email + "\nPhone: " + phone;
-                SbMailManager.getInstance().sendMessage("Catchup Math Pilot Request", txt, email, "casey@hotmath.com","text/plain");
+                SbMailManager.getInstance().sendMessage("Catchup Math Pilot Request", txt, "casey@hotmath.com", "registration@hotmath.com", "text/plain");
             }
         }
         catch(Exception e) {
