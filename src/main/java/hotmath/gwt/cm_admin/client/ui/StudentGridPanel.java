@@ -70,8 +70,10 @@ import com.extjs.gxt.ui.client.widget.form.ComboBox;
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
 import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
+import com.extjs.gxt.ui.client.widget.grid.ColumnData;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
 import com.extjs.gxt.ui.client.widget.grid.Grid;
+import com.extjs.gxt.ui.client.widget.grid.GridCellRenderer;
 import com.extjs.gxt.ui.client.widget.grid.GridSelectionModel;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
@@ -403,7 +405,23 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
         Button btn = new StudenPanelButton("Student Registration");
         btn.setToolTip("Register students with Catchup Math");
         Menu menu = new Menu();
-        menu.add(new MyMenuItem("Register One Student", "Create a new single student registration.",
+
+        menu.add(defineRegisterItem());
+
+        menu.add(defineUnregisterItem());
+        //btn.setMenu(menu);
+        
+        menu.add(defineBulkRegItem());
+        
+        menu.add(defineSelfRegItem());
+        
+        btn.setMenu(menu);
+
+        return btn;
+    }
+
+	private MyMenuItem defineRegisterItem() {
+		return new MyMenuItem("Register One Student", "Create a new single student registration.",
                 new SelectionListener<MenuEvent>() {
                     @Override
                     public void componentSelected(MenuEvent ce) {
@@ -415,8 +433,11 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
                             }
                         });
                     }
-                }));
-        menu.add(new MyMenuItem("Unregister Student", "Unregister the selected student.",
+                });
+	}
+
+	private MyMenuItem defineUnregisterItem() {
+		return new MyMenuItem("Unregister Student", "Unregister the selected student.",
                 new SelectionListener<MenuEvent>() {
                     @Override
                     public void componentSelected(MenuEvent ce) {
@@ -444,21 +465,11 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
                             // ce.getComponent().disable();
                         }
                     }
-                }));
-        btn.setMenu(menu);
-        menu.add(new MyMenuItem("Bulk Registration", "Bulk student registration.", new SelectionListener<MenuEvent>() {
-            @Override
-            public void componentSelected(MenuEvent ce) {
-                GWT.runAsync(new CmRunAsyncCallback() {
-
-                    @Override
-                    public void onSuccess() {
-                        new BulkStudentRegistrationWindow(null, _cmAdminMdl);
-                    }
                 });
-            }
-        }));
-        menu.add(new MyMenuItem("Self Registration", "Define a Self Registration group.",
+	}
+
+	private MyMenuItem defineSelfRegItem() {
+		return new MyMenuItem("Self Registration", "Define a Self Registration group.",
                 new SelectionListener<MenuEvent>() {
                     @Override
                     public void componentSelected(MenuEvent ce) {
@@ -469,11 +480,23 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
                             }
                         });
                     }
-                }));
-        btn.setMenu(menu);
+                });
+	}
 
-        return btn;
-    }
+	private MyMenuItem defineBulkRegItem() {
+		return new MyMenuItem("Bulk Registration", "Bulk student registration.", new SelectionListener<MenuEvent>() {
+            @Override
+            public void componentSelected(MenuEvent ce) {
+                GWT.runAsync(new CmRunAsyncCallback() {
+
+                    @Override
+                    public void onSuccess() {
+                        new BulkStudentRegistrationWindow(null, _cmAdminMdl);
+                    }
+                });
+            }
+        });
+	}
 
     static class MyMenuItem extends MenuItem {
         public MyMenuItem(String test, String tip, SelectionListener<MenuEvent> listener) {
@@ -508,7 +531,7 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
         });
         return btn;
     }
-    
+
     private Grid<StudentModelExt> defineGrid(final ListStore<StudentModelExt> store, ColumnModel cm) {
         final Grid<StudentModelExt> grid = new Grid<StudentModelExt>(store, cm);
         grid.setAutoExpandColumn("name");
@@ -587,8 +610,7 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
         });
         return ti;
     }
-    
-   
+
     private void showStudentDetails(final StudentModelExt sm) {
         GWT.runAsync(new CmRunAsyncCallback() {
             @Override
@@ -597,43 +619,7 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
             }
         });        
     }
-/*
-    private Button unregisterStudentToolItem(final Grid<StudentModelExt> grid) {
-        Button ti = new StudenPanelButton("Unregister Student");
-        ti.setToolTip("Unregister the selected student");
 
-        ti.addSelectionListener(new SelectionListener<ButtonEvent>() {
-            @Override
-            public void componentSelected(ButtonEvent ce) {
-                GridSelectionModel<StudentModelExt> sel = grid.getSelectionModel();
-                List<StudentModelExt> l = sel.getSelection();
-                if (l.size() == 0) {
-                    CatchupMathTools.showAlert("Please select a student.");
-                } else {
-                    final StudentModelExt sm = l.get(0);
-
-                    String s = "Unregister " + sm.getName() + " ?";
-                    MessageBox.confirm("Unregister Student", s, new Listener<MessageBoxEvent>() {
-                        public void handleEvent(MessageBoxEvent be) {
-                            String btnText = be.getButtonClicked().getText();
-                            if (btnText.equalsIgnoreCase("yes")) {
-                                grid.getStore().remove(sm);
-                                List<StudentModelI> list = new ArrayList<StudentModelI>();
-                                list.add(sm);
-                                unregisterStudentsRPC(list);
-                            }
-                        }
-                    });
-                }
-                if (grid.getStore().getCount() == 0) {
-                    // ce.getComponent().disable();
-                }
-            }
-
-        });
-        return ti;
-    }
-*/
     private Button displayPrintableReportToolItem(final Grid<StudentModelExt> grid) {
         Button ti = new Button();
         ti.setIconStyle("printer-icon");
@@ -700,11 +686,7 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
         status.setSortable(true);
         configs.add(status);
 
-        ColumnConfig quizzes = new ColumnConfig();
-        quizzes.setId(StudentModelExt.PASSING_RATIO_KEY);
-        quizzes.setHeader("Quizzes");
-        quizzes.setWidth(100);
-        //quizzes.setSortable(true);
+        ColumnConfig quizzes = defineQuizzesColumn();
         configs.add(quizzes);
         
         ColumnConfig lastQuiz = new ColumnConfig();
@@ -732,6 +714,31 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
         ColumnModel cm = new ColumnModel(configs);
         return cm;
     }
+
+	private ColumnConfig defineQuizzesColumn() {
+		ColumnConfig quizzes = new ColumnConfig();
+        quizzes.setId(StudentModelExt.PASSING_COUNT_KEY);
+        quizzes.setHeader("Quizzes");
+        quizzes.setWidth(100);
+        quizzes.setSortable(false);
+        quizzes.setRenderer(new GridCellRenderer<StudentModelExt>() {
+			@Override
+			public Object render(StudentModelExt sm, String property,
+					ColumnData config, int rowIndex, int colIndex,
+					ListStore<StudentModelExt> store, Grid<StudentModelExt> grid) {
+                if (sm.getPassingCount() > 0 || sm.getNotPassingCount() > 0) {
+                	StringBuffer sb = new StringBuffer();
+                	sb.append(sm.getPassingCount()).append(" passed out of ");
+                	sb.append(sm.getPassingCount() + sm.getNotPassingCount());
+                    return sb.toString();
+                }
+                else {
+                	return "";
+                }
+			}
+        });
+		return quizzes;
+	}
 
     boolean hasBeenInitialized = false;
 
