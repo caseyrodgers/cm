@@ -31,6 +31,7 @@ import hotmath.gwt.shared.client.rpc.action.UnregisterStudentsAction;
 import hotmath.gwt.shared.client.rpc.action.GeneratePdfAction.PdfType;
 import hotmath.gwt.shared.client.util.CmAsyncCallback;
 import hotmath.gwt.shared.client.util.CmRunAsyncCallback;
+import hotmath.gwt.shared.client.rpc.RetryAction;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -748,108 +749,12 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
          * do not do this the first time, because the paging loader will
          * initialize the data set, we will use this call to refresh its view.
          */
-        if (!hasBeenInitialized) {
-            hasBeenInitialized = true;
-        } else {
+        if (hasBeenInitialized) {
             _forceServerRefresh = true;
             _studentLoader.load();
+        } else {
+            hasBeenInitialized = true;
         }
-
-        if (true)
-            return;
-
-        Log.info("StudentGridPanel: reading students RPC");
-
-        CmBusyManager.setBusy(true);
-
-        CmServiceAsync s = CmShared.getCmService();
-
-        GetSummariesForActiveStudentsAction action = new GetSummariesForActiveStudentsAction(uid);
-
-        s.execute(action, new CmAsyncCallback<CmList<StudentModelI>>() {
-
-            public void onSuccess(CmList<StudentModelI> result) {
-                /** save the current selection, if any */
-                int selectedUid = 0;
-                if (uidToSelect != null) {
-                    selectedUid = uidToSelect;
-                } else {
-                    // used current selection
-                    StudentModelExt sm = getSelectedStudent();
-                    selectedUid = (sm != null) ? sm.getUid() : 0;
-                }
-
-                /**
-                 * Map into the Ext model
-                 * 
-                 * NOTE: perhaps this is the CON part .. perhaps we need to keep
-                 * this as a StudentModelExt without having to remapp ...
-                 * 
-                 */
-                List<StudentModelExt> students = new ArrayList<StudentModelExt>(result.size());
-                for (int i = 0, t = result.size(); i < t; i++) {
-                    students.add(new StudentModelExt(result.get(i)));
-                }
-
-                /**
-                 * remove all existing records, and add new set
-                 * 
-                 * NOTE: changed this to add one by one due to bug with
-                 * add(list) when filter applied
-                 * 
-                 * */
-                store.removeAll();
-                if (store.getFilters() != null) {
-                    /**
-                     * if filter applied, then must do each one to avoid GXT bug
-                     * of throwing out of bounds
-                     * 
-                     * @TODO: re-check this condition on next GXT build
-                     */
-                    for (StudentModelExt s : students) {
-                        store.add(s);
-                    }
-                } else {
-                    /** if not filter, this is much faster */
-                    store.add(students);
-                }
-
-                /** Reselect selected row */
-                if (selectedUid > 0) {
-                    for (int i = 0; i < store.getCount(); i++) {
-                        if (store.getAt(i).getUid() == selectedUid) {
-                            _grid.getSelectionModel().select(store.getAt(i), false);
-
-                            /**
-                             * Must set in separate thread for this to work due
-                             * to GXT bug in setting the selected row on
-                             * layout() which overrides this action. This is the
-                             * only way I could get the currently selected row
-                             * re-selected on refresh.
-                             * 
-                             * @TODO: re-check this condition on next GXT build.
-                             */
-                            final int visRow = i;
-                            new Timer() {
-                                public void run() {
-                                    _grid.getView().ensureVisible(visRow, 0, true);
-                                }
-                            }.schedule(1);
-
-                            break;
-                        }
-                    }
-                }
-
-                Log.info("StudentGridPanel: students RPC successfully read");
-                CmBusyManager.setBusy(false);
-            }
-
-            public void onFailure(Throwable caught) {
-                CmBusyManager.setBusy(true);
-                super.onFailure(caught);
-            }
-        });
     }
 
     /**
@@ -930,41 +835,47 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
      * 
      */
     class StudentGridRpcProxy extends RpcProxy<CmStudentPagingLoadResult<StudentModelExt>> {
-
+        
         @Override
-        public void load(Object loadConfig, AsyncCallback<CmStudentPagingLoadResult<StudentModelExt>> callback) {
-            /**
-             * Call service and have it read the next StudentRecords to load
-             * 
-             */
-            CmServiceAsync s = CmShared.getCmService();
-            _pageAction = new GetStudentGridPageAction(_cmAdminMdl.getId(),(PagingLoadConfig) loadConfig);
-            
-            /**
-             * setup request for special handling
-             * 
-             * use module vars to hold request options
-             */
-            _pageAction.setForceRefresh(_forceServerRefresh);
-            if (_groupFilterId != null) {
-            	_pageAction.setGroupFilter(_groupFilterId.toString());
-            	_pageAction.addFilter(GetStudentGridPageAction.FilterType.GROUP, _groupFilterId.toString());
-            }
-            else
-            	_pageAction.setGroupFilter(null);
-            _pageAction.setQuickSearch(_quickSearch);
-            if (_quickSearch != null && _quickSearch.trim().length() > 0) {
-            	_pageAction.addFilter(GetStudentGridPageAction.FilterType.QUICKTEXT, _quickSearch.trim());
-            }
-            
-            s.execute(_pageAction, callback);
+        public void load(final Object loadConfig, final AsyncCallback<CmStudentPagingLoadResult<StudentModelExt>> callback) {
+        	
+            new RetryAction<CmStudentPagingLoadResult<StudentModelExt>>() {
+                @Override
+                public void attempt() {
+                    CmBusyManager.setBusy(true);
+                    _pageAction = new GetStudentGridPageAction(_cmAdminMdl.getId(), (PagingLoadConfig) loadConfig);
+                    
+                    /**
+                     * setup request for special handling
+                     * 
+                     * use module vars to hold request options
+                     */
+                    _pageAction.setForceRefresh(_forceServerRefresh);
+                    if (_groupFilterId != null) {
+                    	_pageAction.setGroupFilter(_groupFilterId.toString());
+                    	_pageAction.addFilter(GetStudentGridPageAction.FilterType.GROUP, _groupFilterId.toString());
+                    }
+                    else
+                    	_pageAction.setGroupFilter(null);
 
-            /** always reset request options */
-            _forceServerRefresh = false;
-            
-            EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_STUDENT_GRID_FILTERED,_pageAction));
+                    _pageAction.setQuickSearch(_quickSearch);
+                    if (_quickSearch != null && _quickSearch.trim().length() > 0) {
+                    	_pageAction.addFilter(GetStudentGridPageAction.FilterType.QUICKTEXT, _quickSearch.trim());
+                    }
+
+                    CmShared.getCmService().execute(_pageAction, callback);
+                }
+                
+                @Override
+                public void oncapture(CmStudentPagingLoadResult<StudentModelExt> value) {
+                    /** always reset request options */
+                    _forceServerRefresh = false;
+                    
+                    EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_STUDENT_GRID_FILTERED, _pageAction));
+                }
+            }.attempt();
         }
-    };
+    }
 
     /**
      * Create panel to show a quick search text field and clear button
