@@ -269,7 +269,7 @@ public class CmPilotCreate {
                 String txt="A request for a Catchup Math Pilot was created by:\n"
                           +"Subscriber ID: " + idToUse + "\n"
                           +"\nTitle: " + title + "\nName: " + name + "\nSchool: " + school + "\nZip: " + zip + "\nEmail: " + email + "\nPhone: " + phone
-                          + "Phone Type: " + phoneType + "\nPhone When: " + phoneWhen
+                          + "\nPhone Type: " + phoneType + "\nPhone When: " + phoneWhen
                           +"\nComments: " + userComments;
                        txt += "\n\n" + SERVER_NAME + "/cm_admin/CatchupMathAdmin.html?debug_uid=" + adminId; 
                        
