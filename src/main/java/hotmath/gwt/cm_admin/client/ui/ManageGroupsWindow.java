@@ -7,24 +7,22 @@ import hotmath.gwt.cm_tools.client.model.CmAdminModel;
 import hotmath.gwt.cm_tools.client.model.GroupInfoModel;
 import hotmath.gwt.cm_tools.client.model.StudentModelExt;
 import hotmath.gwt.cm_tools.client.model.StudentModelI;
-import hotmath.gwt.cm_tools.client.service.CmServiceAsync;
 import hotmath.gwt.cm_tools.client.ui.GroupManagerRegisterStudent;
 import hotmath.gwt.cm_tools.client.ui.GroupWindow;
 import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.data.CmAsyncRequest;
 import hotmath.gwt.shared.client.data.CmAsyncRequestImplDefault;
+import hotmath.gwt.shared.client.rpc.RetryAction;
 import hotmath.gwt.shared.client.rpc.action.CmList;
 import hotmath.gwt.shared.client.rpc.action.GetGroupAggregateInfoAction;
 import hotmath.gwt.shared.client.rpc.action.GetTemplateForSelfRegGroupAction;
 import hotmath.gwt.shared.client.rpc.action.GroupManagerAction;
-import hotmath.gwt.shared.client.util.CmAsyncCallback;
 import hotmath.gwt.shared.client.util.RpcData;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import com.extjs.gxt.ui.client.Registry;
 import com.extjs.gxt.ui.client.Style.LayoutRegion;
 import com.extjs.gxt.ui.client.Style.SelectionMode;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
@@ -292,100 +290,74 @@ public class ManageGroupsWindow extends CmWindow {
     }
 
     private void readRpcData(final Integer adminId) {
-    	CmBusyManager.setBusy(true);
+    	
+        new RetryAction<CmList<GroupInfoModel>>() {
+            @Override
+            public void attempt() {
+                CmBusyManager.setBusy(true);
+                CmShared.getCmService().execute(new GetGroupAggregateInfoAction(adminId), this);
+            }
 
-        CmServiceAsync cmService = CmShared.getCmService();
-        cmService.execute(new GetGroupAggregateInfoAction(adminId), new CmAsyncCallback<CmList<GroupInfoModel>>() {
-            public void onSuccess(CmList<GroupInfoModel> result) {
+            public void oncapture(CmList<GroupInfoModel> result) {
                 store.removeAll();
                 store.add(result);
                 CmBusyManager.setBusy(false);
             }
-            public void onFailure(Throwable caught) {
-            	CmBusyManager.setBusy(false);
-            	super.onFailure(caught);
-            }
-        });
+        }.attempt();
     }
 
     private void deleteGroup(final Integer adminId, final Integer groupId) {
-
-    	CmBusyManager.setBusy(true);
-
-        CmServiceAsync cmService = CmShared.getCmService();
-        GroupManagerAction action = new GroupManagerAction(GroupManagerAction.ActionType.DELETE, adminId);
-        action.setGroupId(groupId);
-        cmService.execute(action, new CmAsyncCallback<RpcData>() {
-            public void onSuccess(RpcData result) {
-            	CmBusyManager.setBusy(false);
-                readRpcData(adminId);
-                CmAdminDataReader.getInstance().fireRefreshData();
-            }
-            public void onFailure(Throwable caught) {
-            	CmBusyManager.setBusy(false);
-            	super.onFailure(caught);
-            }
-        });
+    	groupActionRPC(adminId, groupId, null, GroupManagerAction.ActionType.DELETE);
     }
 
     private void unregisterGroup(final Integer adminId, final Integer groupId) {
-    	CmBusyManager.setBusy(true, false);
-
-        CmServiceAsync cmService = CmShared.getCmService();
-        GroupManagerAction action = new GroupManagerAction(GroupManagerAction.ActionType.UNREGISTER_STUDENTS, adminId);
-        action.setGroupId(groupId);
-        cmService.execute(action, new CmAsyncCallback<RpcData>() {
-            public void onSuccess(RpcData result) {
-                readRpcData(adminId);
-                CmAdminDataReader.getInstance().fireRefreshData();
-                CmBusyManager.setBusy(false);
-            }
-            public void onFailure(Throwable caught) {
-            	CmBusyManager.setBusy(false);
-            	super.onFailure(caught);
-            }
-        });
+    	groupActionRPC(adminId, groupId, null, GroupManagerAction.ActionType.UNREGISTER_STUDENTS);
     }
 
     protected void updateGroupRPC(final int adminUid, Integer groupId, String groupName) {
+    	groupActionRPC(adminUid, groupId, groupName, GroupManagerAction.ActionType.UPDATE);
+    }
 
-    	CmBusyManager.setBusy(true,false);
+    private void groupActionRPC(final Integer adminId, final Integer groupId, final String groupName, final GroupManagerAction.ActionType actionType) {
 
-        CmServiceAsync cmService = CmShared.getCmService();
-        GroupManagerAction action = new GroupManagerAction(GroupManagerAction.ActionType.UPDATE,adminUid);
-        action.setGroupId(groupId);
-        action.setGroupName(groupName);
-        cmService.execute(action, new CmAsyncCallback<RpcData>() {
-            public void onSuccess(RpcData result) {
-                readRpcData(adminUid);
+        new RetryAction<RpcData>() {
+            @Override
+            public void attempt() {
+                CmBusyManager.setBusy(true);
+                GroupManagerAction action = new GroupManagerAction(actionType, adminId);
+                action.setGroupId(groupId);
+                action.setGroupName(groupName);
+                CmShared.getCmService().execute(action, this);
+            }
+
+            public void oncapture(RpcData result) {
+                readRpcData(adminId);
                 CmAdminDataReader.getInstance().fireRefreshData();
             	CmBusyManager.setBusy(false);
             }
-            public void onFailure(Throwable caught) {
-            	CmBusyManager.setBusy(false);
-            	super.onFailure(caught);
-            }
-       });     
+        }.attempt();
+
     }
 
     private void handleSelfRegGroup(final GroupInfoModel gim) {
-        CmBusyManager.setBusy(true);
 
-        CmServiceAsync s = (CmServiceAsync) Registry.get("cmService");
-        GetTemplateForSelfRegGroupAction action = new GetTemplateForSelfRegGroupAction(gim.getId());
-        s.execute(action, new CmAsyncCallback<StudentModelI>() {
-            public void onSuccess(StudentModelI sm) {
+        new RetryAction<StudentModelI>() {
+            @Override
+            public void attempt() {
+                CmBusyManager.setBusy(true);
+                GetTemplateForSelfRegGroupAction action = new GetTemplateForSelfRegGroupAction(gim.getId());
+                CmShared.getCmService().execute(action, this);
+            }
+
+            public void oncapture(StudentModelI sm) {
                 try {
                 	new GroupManagerRegisterStudent(sm, ManageGroupsWindow.this.adminModel, gim);
                 } finally {
                     CmBusyManager.setBusy(false);
                 }
             }
-            public void onFailure(Throwable caught) {
-                super.onFailure(caught);
-                CmBusyManager.setBusy(false);
-            }
-        });
+        }.attempt();
+
     }
 
 }
@@ -483,25 +455,24 @@ class GroupManagerGlobalSettings extends CmWindow {
 
     private void applyChanges() {
 
-    	CmBusyManager.setBusy(true,false);
+        new RetryAction<RpcData>() {
+            @Override
+            public void attempt() {
+                CmBusyManager.setBusy(true);
+                GroupManagerAction action = new GroupManagerAction(GroupManagerAction.ActionType.GROUP_PROPERTY_SET,cm.getId());
+                action.setGroupId(gim.getId());
+                action.setShowWorkRequired(showWorkRequired.getValue());
+                action.setDisallowTutoring( !tutoringAllowed.getValue());
+                action.setPassPercent(70);
+                CmShared.getCmService().execute(action, this);
+            }
 
-        CmServiceAsync cmService = CmShared.getCmService();
-        GroupManagerAction action = new GroupManagerAction(GroupManagerAction.ActionType.GROUP_PROPERTY_SET,cm.getId());
-        action.setGroupId(gim.getId());
-        action.setShowWorkRequired(showWorkRequired.getValue());
-        action.setDisallowTutoring( !tutoringAllowed.getValue());
-        action.setPassPercent(70);
-        cmService.execute(action, new CmAsyncCallback<RpcData>() {
-            public void onSuccess(RpcData result) {
+            public void oncapture(RpcData result) {
                 CmAdminDataReader.getInstance().fireRefreshData();
                 close();
-
-                CmBusyManager.setBusy(false);
-            }
-            public void onFailure(Throwable caught) {
             	CmBusyManager.setBusy(false);
-            	super.onFailure(caught);
             }
-        });
+        }.attempt();
+        
     }
 }
