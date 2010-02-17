@@ -242,8 +242,21 @@ class StudentGridComparator implements Comparator<StudentModelExt> {
             return p1.getTutoringUse() - p2.getTutoringUse();
         }
         else if(sortField.equals(StudentModelExt.PASSING_COUNT_KEY)) {
-            /** sort on total number of tests taken */
-            return (p1.getNotPassingCount() + p1.getPassingCount()) - (p2.getNotPassingCount() + p2.getPassingCount());
+        	
+        	int t1 = p1.getNotPassingCount() + p1.getPassingCount();
+        	int t2 = p2.getNotPassingCount() + p2.getPassingCount();
+        	
+        	if (t1 > 0 && t2 > 0) {
+            	// sort on ratio of passed quizzes
+            	float f1 = (float) p1.getPassingCount() / (float) t1;
+            	float f2 = (float) p2.getPassingCount() / (float) t2;
+            	if (f1 != f2) {
+        	    	return (f1 < f2) ? -1 : 1;
+        	    }
+        	}
+
+            // passed ratios the same or not available, sort on total number of tests taken
+            return t1 - t2;
         }
 
         return 0;
