@@ -1,5 +1,6 @@
 package hotmath.cm.util;
 
+import hotmath.cm.signup.HotmathSubscriberServiceCatchup;
 import hotmath.gwt.cm_admin.server.model.CmAdminDao;
 import hotmath.gwt.cm_admin.server.model.CmStudentDao;
 import hotmath.gwt.cm_tools.client.model.StudentModel;
@@ -7,6 +8,7 @@ import hotmath.gwt.cm_tools.client.model.StudentModelI;
 import hotmath.subscriber.HotMathSubscriber;
 import hotmath.subscriber.HotMathSubscriberManager;
 import hotmath.subscriber.PurchasePlan;
+import hotmath.subscriber.PurchasePlanDef;
 import hotmath.subscriber.service.HotMathSubscriberServiceFactory;
 import hotmath.testset.ha.CmProgram;
 import hotmath.util.HMConnectionPool;
@@ -16,6 +18,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import sb.mail.SbMailManager;
@@ -228,7 +231,12 @@ public class CmPilotCreate {
     /** Add a record to HA_ADMIN_PILOT_REQUEST table and send email to sales manager
      * 
      */
-    static public void addPilotRequest(String title, String name, String school, String zip, String email, String phone) throws Exception {
+    static public void addPilotRequest(String title, String name, String school, String zip,
+            String email, String phone,String userComments,String phoneType, String phoneWhen) throws Exception {
+        
+        String sendTo = "casey@hotmath.com";
+        String SERVER_NAME="http://hotmath.kattare.com:8081";
+        
         Connection conn=null;
         PreparedStatement ps=null;
         try {
@@ -243,10 +251,29 @@ public class CmPilotCreate {
             ps.setString(6,phone);
             
             int rows = ps.executeUpdate();
+
+            // create a new Subscriber record based on this email
+            String idToUse = HotMathSubscriber.createUniqueID(null);
+            String comments = "Catchup Math online pilot setup\n" + userComments + " phone_type=" + phoneType + ", phone_when: " + phoneWhen;
+            HotMathSubscriber sub = HotMathSubscriberManager.createBasicAccount(idToUse,school, "ST", email, userComments, new Date());
+            sub.setResponsibleName(name);
+            sub.saveChanges();
+            List<PurchasePlan> plans = new ArrayList<PurchasePlan>();
+            plans.add(new PurchasePlan("TYPE_SERVICE_CATCHUP_PILOT"));
+            sub.purchaseHotmath(null, plans, "","","", "", "",
+                    "", "", "", "", "",
+                    "", "");            
+            int adminId = new CmPilotCreate(idToUse,false, 0, false, 1000).getAid();
+            
             if(rows == 1) {
                 String txt="A request for a Catchup Math Pilot was created by:\n"
-                          +"Title: " + title + "\nName: " + name + "\nSchool: " + school + "\nZip: " + zip + "\nEmail: " + email + "\nPhone: " + phone;
-                SbMailManager.getInstance().sendMessage("Catchup Math Pilot Request", txt, "casey@hotmath.com", "registration@hotmath.com", "text/plain");
+                          +"Subscriber ID: " + idToUse + "\n"
+                          +"\nTitle: " + title + "\nName: " + name + "\nSchool: " + school + "\nZip: " + zip + "\nEmail: " + email + "\nPhone: " + phone
+                          + "Phone Type: " + phoneType + "\nPhone When: " + phoneWhen
+                          +"\nComments: " + userComments;
+                       txt += "\n\n" + SERVER_NAME + "/cm_admin/CatchupMathAdmin.html?debug_uid=" + adminId; 
+                       
+                SbMailManager.getInstance().sendMessage("Catchup Math Pilot Request", txt, sendTo, "registration@hotmath.com", "text/plain");
             }
         }
         catch(Exception e) {

@@ -10,13 +10,17 @@ public class CmMultiLinePropertyReader_Test extends TestCase {
     public CmMultiLinePropertyReader_Test(String name) {
         super(name);
     }
-    
+
     @Override
     protected void setUp() throws Exception {
         CmMultiLinePropertyReader.getInstance().put("PROP_1", "PROPERTY_1");
         CmMultiLinePropertyReader.getInstance().put("PROP_2", "PROPERTY_1 WITH REPLACMENT: $$THIS$$");
     }
     
+    public void testDefaultFile() throws Exception {
+        assertTrue(CmMultiLinePropertyReader.getInstance().size() > 0);
+    }
+
     public void testSingleProperty() throws Exception {
         String p = CmMultiLinePropertyReader.getInstance().getProperty("PROP_1").trim();
         assertNotNull(p);
