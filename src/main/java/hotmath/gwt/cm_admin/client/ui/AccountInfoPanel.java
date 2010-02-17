@@ -7,8 +7,8 @@ import hotmath.gwt.cm_tools.client.model.CmAdminDataReader;
 import hotmath.gwt.cm_tools.client.model.CmAdminDataRefresher;
 import hotmath.gwt.cm_tools.client.model.CmAdminModel;
 import hotmath.gwt.cm_tools.client.service.CmServiceAsync;
+import hotmath.gwt.shared.client.rpc.RetryAction;
 import hotmath.gwt.shared.client.rpc.action.GetAccountInfoForAdminUidAction;
-import hotmath.gwt.shared.client.util.CmAsyncCallback;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.Registry;
@@ -100,26 +100,33 @@ public class AccountInfoPanel extends LayoutContainer implements CmAdminDataRefr
 		return this.model;
 	}
 
-    protected void getAccountInfoRPC(Integer uid) {
+    protected void getAccountInfoRPC(final Integer uid) {
         
-        CmBusyManager.setBusy(true);
         
-        CmServiceAsync s = (CmServiceAsync) Registry.get("cmService");
-        GetAccountInfoForAdminUidAction action = new GetAccountInfoForAdminUidAction(uid);
-        Log.info("AccountInfoPanel: reading student info RPC");
-        s.execute(action, new CmAsyncCallback<AccountInfoModel>() {
+        new RetryAction<AccountInfoModel>() {
+            @Override
+            public void attempt() {
+                CmBusyManager.setBusy(true);
+                
+                CmServiceAsync s = (CmServiceAsync) Registry.get("cmService");
+                GetAccountInfoForAdminUidAction action = new GetAccountInfoForAdminUidAction(uid);
+                Log.info("AccountInfoPanel: reading student info RPC");
+                s.execute(action,this);
+            }
 
-            public void onSuccess(AccountInfoModel ai) {
+            public void oncapture(AccountInfoModel ai) {
+                CmBusyManager.setBusy(false);
+                
                 StringBuilder sb = new StringBuilder();
                 sb.append("Manage ").append(ai.getSchoolName()).append(" Students");
                 // _gridContainer.setHeading(sb.toString());
 
                 if(ai.getTotalStudents() > ai.getMaxStudents()) {
                     if(!haveDisplayedOverLimitMsg) {
-                    	String msg = "Your student registration now exceeds the licensed total. " +
-                    	             "We will contact you soon about upgrading your license, or you " +
-                    	             "may wish to unregister students no longer active.  Thank you " +
-                    	             "for using Catchup Math!";
+                        String msg = "Your student registration now exceeds the licensed total. " +
+                                     "We will contact you soon about upgrading your license, or you " +
+                                     "may wish to unregister students no longer active.  Thank you " +
+                                     "for using Catchup Math!";
                         CatchupMathTools.showAlert("Number of Students Exceeds License", msg);
                         haveDisplayedOverLimitMsg = true;
                     }
@@ -139,15 +146,9 @@ public class AccountInfoPanel extends LayoutContainer implements CmAdminDataRefr
 
                 
                 Log.info("AccountInfoPanel: student info read succesfully");
-                
-                CmBusyManager.setBusy(false);
-            }
 
-            public void onFailure(Throwable caught) {
-            	CmBusyManager.setBusy(false);
-            	super.onFailure(caught);
             }
-        });
+        }.attempt();        
     }
     
     private String getTutoringRemaingLabel(int mins) {
