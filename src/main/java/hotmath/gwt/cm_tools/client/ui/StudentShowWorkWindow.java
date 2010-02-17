@@ -12,9 +12,9 @@ import hotmath.gwt.cm_tools.client.ui.resource_viewer.CmResourcePanel;
 import hotmath.gwt.cm_tools.client.ui.viewer.ResourceViewerFactory;
 import hotmath.gwt.cm_tools.client.ui.viewer.ShowWorkPanel;
 import hotmath.gwt.shared.client.CmShared;
+import hotmath.gwt.shared.client.rpc.RetryAction;
 import hotmath.gwt.shared.client.rpc.action.CmList;
 import hotmath.gwt.shared.client.rpc.action.GetStudentShowWorkAction;
-import hotmath.gwt.shared.client.util.CmAsyncCallback;
 import hotmath.gwt.shared.client.util.UserInfo;
 
 import java.util.List;
@@ -212,15 +212,17 @@ public class StudentShowWorkWindow extends CmWindow {
 
     protected void getStudentShowWorkRPC() {
 
-        CmBusyManager.setBusy(true);
-        
-        Log.debug("StudentShowWorkWindow: reading student show work list");
-        CmServiceAsync s = CmShared.getCmService();
-        GetStudentShowWorkAction action = new GetStudentShowWorkAction(student.getUid(), activityModel.getRunId());
-        s.execute(action,new CmAsyncCallback<CmList<StudentShowWorkModel>>() {
-
-            public void onSuccess(CmList<StudentShowWorkModel> list) {
-                
+        new RetryAction<CmList<StudentShowWorkModel>>() {
+            @Override
+            public void attempt() {
+                CmBusyManager.setBusy(true);
+                Log.debug("StudentShowWorkWindow: reading student show work list");
+                CmServiceAsync s = CmShared.getCmService();
+                GetStudentShowWorkAction action = new GetStudentShowWorkAction(student.getUid(), activityModel.getRunId());
+                s.execute(action,this);
+            }
+            public void oncapture(CmList<StudentShowWorkModel> list) {
+                CmBusyManager.setBusy(false);
                 if(list.size() == 0) {
                     CatchupMathTools.showAlert("Student has not entered any answers.");
                     close();
@@ -228,17 +230,14 @@ public class StudentShowWorkWindow extends CmWindow {
                 else {
                     createDataList(list);
                 }
-
                 Log.debug("StudentShowWorkWindow: student show work read successfully");
-                
-                CmBusyManager.setBusy(false);
             }
 
             public void onFailure(Throwable caught) {
                 CmBusyManager.setBusy(false);
                 super.onFailure(caught);
             }
-        });
+        }.attempt();
     }
 }
 
