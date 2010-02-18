@@ -51,6 +51,7 @@ import hotmath.gwt.shared.server.service.command.LogUserInCommand;
 import hotmath.gwt.shared.server.service.command.MarkPrescriptionLessonAsViewedCommand;
 import hotmath.gwt.shared.server.service.command.ProcessLoginRequestCommand;
 import hotmath.gwt.shared.server.service.command.ResetUserCommand;
+import hotmath.gwt.shared.server.service.command.RunNetTestCommand;
 import hotmath.gwt.shared.server.service.command.SaveAutoRegistrationCommand;
 import hotmath.gwt.shared.server.service.command.SaveFeedbackCommand;
 import hotmath.gwt.shared.server.service.command.SaveQuizCurrentResultCommand;
@@ -263,5 +264,6 @@ public class ActionDispatcher {
         addCommand(GetAdminTrendingDataCommand.class);
         addCommand(GeneratePdfAssessmentReportCommand.class);
         addCommand(GetAdminTrendingDataDetailCommand.class);
+        addCommand(RunNetTestCommand.class);
     }
 }

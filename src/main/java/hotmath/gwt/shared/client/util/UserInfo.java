@@ -125,7 +125,7 @@ public class UserInfo implements IsSerializable, Response {
     /** Define the type of user, either a student
 	 *  at a single school, or a single user purchase.
 	 */
-	static enum UserType {SCHOOL_USER, SINGLE_USER};
+	public static enum UserType {SCHOOL_USER, SINGLE_USER};
 
 
 	/** Set the type of user, either single or student

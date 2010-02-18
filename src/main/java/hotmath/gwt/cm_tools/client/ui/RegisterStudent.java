@@ -882,7 +882,7 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
             sm.setSectionNum(stuMdl.getSectionNum());
             if (! name.equals(stuMdl.getName()) ||
                 ! showWork.equals(stuMdl.getShowWorkRequired()) ||
-                ! groupId.equals(stuMdl.getGroupId())) {
+                ! (groupId != null && groupId.equals(stuMdl.getGroupId()))) {
                 stuChanged = true;
             }
             if (! passcode.equals(stuMdl.getPasscode())) {

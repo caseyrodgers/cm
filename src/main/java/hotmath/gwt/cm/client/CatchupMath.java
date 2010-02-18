@@ -9,6 +9,7 @@ import hotmath.gwt.cm.client.ui.context.PrescriptionCmGuiDefinition;
 import hotmath.gwt.cm.client.ui.context.QuizCmGuiDefinition;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
+import hotmath.gwt.cm_tools.client.data.HaBasicUser.UserType;
 import hotmath.gwt.cm_tools.client.ui.CmMainPanel;
 import hotmath.gwt.cm_tools.client.ui.FooterPanel;
 import hotmath.gwt.shared.client.CmLoginAsync;
@@ -157,6 +158,11 @@ public class CatchupMath implements EntryPoint {
         UserInfo.loadUser(uid,new CmAsyncRequest() {
             public void requestComplete(String requestData) {
 
+                
+                if(CmShared.getQueryParameterValue("type").equals("su")) {
+                    UserInfo.getInstance().setUserAccountType(UserInfo.UserType.SINGLE_USER);
+                }
+                
                 if(UserInfo.getInstance().isSingleUser())
                     Window.setTitle("Catchup Math: Student");
 

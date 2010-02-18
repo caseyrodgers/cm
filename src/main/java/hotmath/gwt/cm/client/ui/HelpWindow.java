@@ -21,6 +21,7 @@ import hotmath.gwt.shared.client.rpc.action.GetStudentModelAction;
 import hotmath.gwt.shared.client.rpc.action.SaveFeedbackAction;
 import hotmath.gwt.shared.client.rpc.action.SetBackgroundStyleAction;
 import hotmath.gwt.shared.client.util.CmRunAsyncCallback;
+import hotmath.gwt.shared.client.util.NetTestWindow;
 import hotmath.gwt.shared.client.util.RpcData;
 import hotmath.gwt.shared.client.util.UserInfo;
 
@@ -238,7 +239,21 @@ public class HelpWindow extends CmWindow {
             }
         });
         fs.add(btnFeedback);
-   
+
+
+        Button btnNetTest = new MyOptionButton("Network Test");
+        btnNetTest.addStyleName("button");
+        btnNetTest.addSelectionListener(new SelectionListener<ButtonEvent>() {
+            public void componentSelected(ButtonEvent ce) {
+                GWT.runAsync(new CmRunAsyncCallback() {
+                    @Override
+                    public void onSuccess() {
+                        new NetTestWindow().setVisible(true);
+                    }
+                });
+            }
+        });
+        fs.add(btnNetTest);
 
         /** Only the owner of the account has access to history */
         if (!UserInfo.getInstance().isActiveUser())
