@@ -5,6 +5,7 @@ import hotmath.gwt.shared.client.rpc.Response;
 
 
 public class NetTestModel extends BaseModel implements Response {
+    
     public NetTestModel() {}
     
     public NetTestModel(String testName, String testResults) {
@@ -20,27 +21,27 @@ public class NetTestModel extends BaseModel implements Response {
         return get("results");
     }
     
-    public long getTime() {
+    public Long  getTime() {
         return get("time");
     }
     
-    public void setTime(long time) {
+    public void setTime(Long time) {
         set("time", time);
     }
     
-    public long getSize() {
+    public Long getSize() {
         return get("size");
     }
     
-    public void setSize(long time) {
+    public void setSize(Long time) {
         set("size", time);
     }    
     
-    public int getNumber() {
+    public Integer getNumber() {
         return get("number");
     }
     
-    public void setNumber(int num) {
+    public void setNumber(Integer num) {
         set("number", num);
     }
 }
