@@ -6,12 +6,12 @@ import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.rpc.Action;
 import hotmath.gwt.shared.client.rpc.CmWebResource;
+import hotmath.gwt.shared.client.rpc.RetryAction;
 
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Frame;
 
 public class PdfWindow extends CmWindow {
@@ -37,13 +37,16 @@ public class PdfWindow extends CmWindow {
 
 
     private void createPdfRpc() {
-        
-        CatchupMathTools.setBusy(true);
-
-        CmServiceAsync s = CmShared.getCmService();
-        s.execute(action, new AsyncCallback<CmWebResource>() {
-
-            public void onSuccess(CmWebResource webResource) {
+        new RetryAction<CmWebResource>() {
+            @Override
+            public void attempt() {
+                CatchupMathTools.setBusy(true);
+                CmServiceAsync s = CmShared.getCmService();
+                s.execute(action,this);                
+            }
+            public void oncapture(CmWebResource webResource) {
+                CatchupMathTools.setBusy(false);
+                
                 Frame frame = new Frame();
                 frame.setWidth("100%");
                 frame.setHeight("480px");
@@ -54,15 +57,7 @@ public class PdfWindow extends CmWindow {
                 add(frame);
                 
                 setVisible(true);
-                
-                CatchupMathTools.setBusy(false);
             }
-
-            public void onFailure(Throwable caught) {
-                CatchupMathTools.setBusy(false);
-                String msg = caught.getMessage();
-                CatchupMathTools.showAlert(msg);
-            }
-        });
+        }.attempt();
     }
 }

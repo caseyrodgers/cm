@@ -3,16 +3,15 @@ package hotmath.gwt.cm_admin.client.ui;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.model.StudentModelExt;
 import hotmath.gwt.cm_tools.client.model.StudentModelI;
-import hotmath.gwt.cm_tools.client.service.CmServiceAsync;
 import hotmath.gwt.cm_tools.client.ui.PdfWindow;
 import hotmath.gwt.cm_tools.client.ui.RegisterStudent;
 import hotmath.gwt.cm_tools.client.ui.StudentDetailsWindow;
 import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
 import hotmath.gwt.shared.client.CmShared;
+import hotmath.gwt.shared.client.rpc.RetryAction;
 import hotmath.gwt.shared.client.rpc.action.GeneratePdfAction;
 import hotmath.gwt.shared.client.rpc.action.GetStudentModelAction;
 import hotmath.gwt.shared.client.rpc.action.GeneratePdfAction.PdfType;
-import hotmath.gwt.shared.client.util.CmAsyncCallback;
 import hotmath.gwt.shared.client.util.CmRunAsyncCallback;
 
 import java.util.ArrayList;
@@ -105,17 +104,19 @@ public class TrendingDataStudentListDialog extends CmWindow {
      * @param type
      * @param sm
      */
-    private void showStudentInfo(final StudentEventType type, StudentModelExt sm) {
+    private void showStudentInfo(final StudentEventType type, final StudentModelExt sm) {
         if(sm == null)
             return;
         
-        
-        CmBusyManager.setBusy(true);
-
-        CmServiceAsync service = CmShared.getCmService();
-        service.execute(new GetStudentModelAction(sm.getUid()),new CmAsyncCallback<StudentModelI>() {
+        new RetryAction<StudentModelI>() {
             @Override
-            public void onSuccess(StudentModelI result) {
+            public void attempt() {
+                CmBusyManager.setBusy(true);
+                CmShared.getCmService().execute(new GetStudentModelAction(sm.getUid()),this);
+            }            
+            @Override
+            public void oncapture(StudentModelI result) {
+                CmBusyManager.setBusy(false);
                 StudentModelExt sm = new StudentModelExt(result);
                 if(type==StudentEventType.REGISTER) {
                     new RegisterStudent(sm, StudentGridPanel.instance._cmAdminMdl).showWindow();
@@ -123,15 +124,8 @@ public class TrendingDataStudentListDialog extends CmWindow {
                 else if(type == StudentEventType.DETAILS) {
                     new StudentDetailsWindow(sm);
                 }
-                CmBusyManager.setBusy(false);
             }
-            
-            @Override
-            public void onFailure(Throwable caught) {
-                CmBusyManager.setBusy(false);
-                super.onFailure(caught);
-            }
-        });
+        }.attempt();
     }
 
     

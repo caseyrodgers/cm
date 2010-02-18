@@ -234,7 +234,7 @@ public class CmPilotCreate {
     static public void addPilotRequest(String title, String name, String school, String zip,
             String email, String phone,String userComments,String phoneType, String phoneWhen) throws Exception {
         
-        String sendTo = "casey@hotmath.com";
+        String sendTo[] = {"casey@hotmath.com"};
         String SERVER_NAME="http://hotmath.kattare.com:8081";
         
         Connection conn=null;
