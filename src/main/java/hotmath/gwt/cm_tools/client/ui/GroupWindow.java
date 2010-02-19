@@ -1,14 +1,14 @@
 package hotmath.gwt.cm_tools.client.ui;
 
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
+import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.model.CmAdminModel;
 import hotmath.gwt.cm_tools.client.model.GroupInfoModel;
-import hotmath.gwt.cm_tools.client.service.CmServiceAsync;
 import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.data.CmAsyncRequest;
+import hotmath.gwt.shared.client.rpc.RetryAction;
 import hotmath.gwt.shared.client.rpc.action.AddGroupAction;
-import hotmath.gwt.shared.client.util.CmAsyncCallback;
 
 import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
 import com.extjs.gxt.ui.client.Style.SortDir;
@@ -159,33 +159,40 @@ public class GroupWindow extends LayoutContainer {
 		return saveBtn;
 	}
 	
-	protected void addGroupRPC(int adminUid, final GroupInfoModel gm) {
-	    
-		CmServiceAsync s = CmShared.getCmService();
-        AddGroupAction action = new AddGroupAction(adminUid, gm);
-        s.execute(action, new CmAsyncCallback <GroupInfoModel> () {
-			
-			public void onSuccess(GroupInfoModel g) {
-			    
-			    if(grpCombo != null) {
-				    grpCombo.getStore().add(g);
-				    grpCombo.getStore().sort(GroupInfoModel.GROUP_NAME, SortDir.ASC);
-				    grpCombo.setValue(g);
-			    }
-				/** 
-				 * no message
-				 * 
-				 * CatchupMathTools.showAlert("Create Group", "Group " + g.getName() + " created");
-				 */
-				gw.close();
-				
-				if(requestCallback != null)
-				    requestCallback.requestComplete(g.getName());
-				
-				
-				//CmAdminDataReader.getInstance().fireRefreshData();
-        	}
-        });
+	protected void addGroupRPC(final int adminUid, final GroupInfoModel gm) {
+
+        new RetryAction<GroupInfoModel>() {
+            @Override
+            public void attempt() {
+                CmBusyManager.setBusy(true);
+                AddGroupAction action = new AddGroupAction(adminUid, gm);
+                setAction(action);
+                CmShared.getCmService().execute(action, this);
+            }
+
+            @Override
+            public void oncapture(GroupInfoModel g) {
+
+            	if(grpCombo != null) {
+            		grpCombo.getStore().add(g);
+            		grpCombo.getStore().sort(GroupInfoModel.GROUP_NAME, SortDir.ASC);
+            		grpCombo.setValue(g);
+            	}
+            	/**
+            	 * no message
+            	 *
+            	 * CatchupMathTools.showAlert("Create Group", "Group " + g.getName() + " created");
+            	 */
+            	gw.close();
+
+            	if(requestCallback != null)
+            		requestCallback.requestComplete(g.getName());
+
+            	//CmAdminDataReader.getInstance().fireRefreshData();
+            	CmBusyManager.setBusy(false);
+            }
+        }.attempt();
+
 	}
 
 }
