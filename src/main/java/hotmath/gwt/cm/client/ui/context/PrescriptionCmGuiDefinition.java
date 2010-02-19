@@ -78,6 +78,14 @@ public class PrescriptionCmGuiDefinition implements CmGuiDefinition {
          * 
          */
         new RetryAction<RpcData>() {
+
+            @Override
+            public void attempt() {
+                SetInmhItemAsViewedAction action = new SetInmhItemAsViewedAction(UserInfo.getInstance().getRunId(), resourceItem.getType(),resourceItem.getFile());
+                setAction(action);
+                CmShared.getCmService().execute(action, this);
+            }
+            
             public void oncapture(RpcData result) {
 
                 Log.debug("PrescriptionResourceAccord: setItemAsViewed: " + resourceItem);
@@ -100,13 +108,6 @@ public class PrescriptionCmGuiDefinition implements CmGuiDefinition {
                     return;
 
                 resourceItem.setViewed(true);
-            }
-
-            @Override
-            public void attempt() {
-                CmShared.getCmService().execute(
-                        new SetInmhItemAsViewedAction(UserInfo.getInstance().getRunId(), resourceItem.getType(),
-                                resourceItem.getFile()), this);
             }
 
         }.attempt();

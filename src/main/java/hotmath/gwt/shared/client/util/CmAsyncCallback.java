@@ -5,7 +5,7 @@ import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 abstract public class CmAsyncCallback<T> implements AsyncCallback<T>{
-    
+
     
     /** Provide standard exception processing and display
      * 

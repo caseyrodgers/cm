@@ -47,6 +47,7 @@ import hotmath.gwt.shared.server.service.command.GetUserInfoCommand;
 import hotmath.gwt.shared.server.service.command.GetViewedInmhItemsCommand;
 import hotmath.gwt.shared.server.service.command.GetWhiteboardDataCommand;
 import hotmath.gwt.shared.server.service.command.GroupManagerCommand;
+import hotmath.gwt.shared.server.service.command.LogRetryActionFailedCommand;
 import hotmath.gwt.shared.server.service.command.LogUserInCommand;
 import hotmath.gwt.shared.server.service.command.MarkPrescriptionLessonAsViewedCommand;
 import hotmath.gwt.shared.server.service.command.ProcessLoginRequestCommand;
@@ -265,5 +266,6 @@ public class ActionDispatcher {
         addCommand(GeneratePdfAssessmentReportCommand.class);
         addCommand(GetAdminTrendingDataDetailCommand.class);
         addCommand(RunNetTestCommand.class);
+        addCommand(LogRetryActionFailedCommand.class);
     }
 }

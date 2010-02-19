@@ -12,6 +12,7 @@ import hotmath.gwt.shared.client.CmLoginAsync;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.model.UserInfoBase;
 import hotmath.gwt.shared.client.util.CmRunAsyncCallback;
+import hotmath.gwt.shared.client.util.UserInfo;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.Style.LayoutRegion;
@@ -82,8 +83,6 @@ public class CatchupMathAdmin implements EntryPoint, ValueChangeHandler<String> 
     }
 
     private void completeLoginProcess(int uid) {
-
-        UserInfoBase user = UserInfoBase.getInstance();
         cmAdminMdl = new CmAdminModel();
         cmAdminMdl.setId(uid);
         

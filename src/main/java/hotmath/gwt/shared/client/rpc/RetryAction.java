@@ -4,7 +4,11 @@ import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.data.CmAsyncRequestImplDefault;
+import hotmath.gwt.shared.client.util.CmAsyncCallback;
+import hotmath.gwt.shared.client.util.RpcData;
+import hotmath.gwt.shared.client.util.UserInfo;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.rpc.IncompatibleRemoteServiceException;
@@ -28,6 +32,12 @@ import com.google.gwt.user.client.rpc.SerializationException;
        }
     }.attempt();
  </pre>
+ *
+ * 
+ * 
+ * Caller should set the action by calling setAction to allow for automatic
+ * server reporting of failed action.
+ * 
  * 
  *  NOTE: We are using Window.confirm instead of a GXT window to handle 
  *  zorder issues and make sure the process is Synchronous and stops
@@ -87,6 +97,8 @@ public abstract class RetryAction<T> implements AsyncCallback<T> {
 
                 if(Window.confirm(msg)) {
                     attempt();
+                    
+                    sendInfoAboutRetriedCommand();
                 }
             }
         }
@@ -99,4 +111,46 @@ public abstract class RetryAction<T> implements AsyncCallback<T> {
             onFailure(error);
         }
     }
+    
+    
+    public Action<? extends Response> activeAction;
+    
+    public Action<? extends Response> getAction() {
+        return activeAction;
+    }
+    
+    /** Set the actino that is reported when a retry operation fails
+     * 
+     * @param action
+     */
+    public void setAction(Action<? extends Response> action) {
+        this.activeAction = action;
+    }    
+
+    
+    /** send a server request to track the fact
+     *  this command failed.  Make sure this command
+     *  does not start of chain-reaction of failures by
+     *  not executing in RetryAction and fail silently.
+     *  
+     */
+    private void sendInfoAboutRetriedCommand() {
+        try {
+            CmShared.getCmService().execute(new LogRetryActionFailedAction(UserInfo.getInstance().getUid(),getClass().getName(),getAction()),new AsyncCallback<RpcData>() {
+                @Override
+                public void onSuccess(RpcData result) {
+                    Log.info("Retry operation logged");
+                }
+
+                @Override
+                public void onFailure(Throwable arg0) {
+                    Log.error("Error sending info about retry action",arg0);
+                }
+            });
+        }
+        catch(Exception e) {
+            e.printStackTrace();
+        }
+    }
+    
 }

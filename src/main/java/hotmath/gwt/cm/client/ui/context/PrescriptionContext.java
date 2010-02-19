@@ -30,7 +30,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.allen_sauer.gwt.log.client.Log;
-import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
 import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.Events;
@@ -288,7 +287,9 @@ public class PrescriptionContext implements CmContext {
             @Override
             public void attempt() {
                 CatchupMathTools.setBusy(true);
-                CmShared.getCmService().execute(new AutoAdvanceUserAction(UserInfo.getInstance().getUid()),this);
+                AutoAdvanceUserAction action = new AutoAdvanceUserAction(UserInfo.getInstance().getUid());
+                setAction(action);
+                CmShared.getCmService().execute(action,this);
             }
             @Override
             public void oncapture(AutoUserAdvanced userAdvance) {

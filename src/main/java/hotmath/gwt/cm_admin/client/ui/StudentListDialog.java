@@ -8,7 +8,7 @@ import hotmath.gwt.cm_tools.client.ui.RegisterStudent;
 import hotmath.gwt.cm_tools.client.ui.StudentDetailsWindow;
 import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
 import hotmath.gwt.shared.client.CmShared;
-import hotmath.gwt.shared.client.rpc.RetryActionImplDefault;
+import hotmath.gwt.shared.client.rpc.RetryAction;
 import hotmath.gwt.shared.client.rpc.action.GeneratePdfAction;
 import hotmath.gwt.shared.client.rpc.action.GetStudentModelAction;
 import hotmath.gwt.shared.client.rpc.action.GeneratePdfAction.PdfType;
@@ -108,7 +108,7 @@ public class TrendingDataStudentListDialog extends CmWindow {
         if(sm == null)
             return;
         
-        new RetryActionImplDefault<StudentModelI>() {
+        new RetryAction<StudentModelI>() {
             @Override
             public void attempt() {
                 CmBusyManager.setBusy(true);

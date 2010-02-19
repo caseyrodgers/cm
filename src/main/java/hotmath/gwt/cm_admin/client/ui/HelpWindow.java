@@ -3,10 +3,13 @@ package hotmath.gwt.cm_admin.client.ui;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
 import hotmath.gwt.shared.client.CmShared;
+import hotmath.gwt.shared.client.util.CmRunAsyncCallback;
+import hotmath.gwt.shared.client.util.NetTestWindow;
 
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.widget.button.Button;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.user.client.ui.Frame;
 
@@ -33,7 +36,6 @@ public class HelpWindow extends CmWindow {
             }
         });
         addButton(closeBtn);
-
         
         add(frame);
         
@@ -50,7 +52,7 @@ public class HelpWindow extends CmWindow {
         }        
     }
 
-    public void onClick(ClickEvent event) {
+    public void nClick(ClickEvent event) {
     }
 
     

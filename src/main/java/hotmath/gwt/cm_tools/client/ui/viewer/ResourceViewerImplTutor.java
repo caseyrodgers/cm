@@ -122,7 +122,9 @@ public class ResourceViewerImplTutor extends CmResourcePanelImplWithWhiteboard {
             @Override
             public void attempt() {
                 CmBusyManager.setBusy(true);
-                CmShared.getCmService().execute(new GetSolutionAction(UserInfo.getInstance().getUid(), pid),this);
+                GetSolutionAction action = new GetSolutionAction(UserInfo.getInstance().getUid(), pid);
+                setAction(action);
+                CmShared.getCmService().execute(action,this);
             }
             
             @Override
