@@ -7,7 +7,7 @@ import hotmath.gwt.cm_tools.client.model.CmAdminDataReader;
 import hotmath.gwt.cm_tools.client.model.CmAdminDataRefresher;
 import hotmath.gwt.cm_tools.client.model.CmAdminModel;
 import hotmath.gwt.cm_tools.client.service.CmServiceAsync;
-import hotmath.gwt.shared.client.rpc.RetryAction;
+import hotmath.gwt.shared.client.rpc.RetryActionImplDefault;
 import hotmath.gwt.shared.client.rpc.action.GetAccountInfoForAdminUidAction;
 
 import com.allen_sauer.gwt.log.client.Log;
@@ -103,13 +103,14 @@ public class AccountInfoPanel extends LayoutContainer implements CmAdminDataRefr
     protected void getAccountInfoRPC(final Integer uid) {
         
         
-        new RetryAction<AccountInfoModel>() {
+        new RetryActionImplDefault<AccountInfoModel>() {
             @Override
             public void attempt() {
                 CmBusyManager.setBusy(true);
                 
                 CmServiceAsync s = (CmServiceAsync) Registry.get("cmService");
                 GetAccountInfoForAdminUidAction action = new GetAccountInfoForAdminUidAction(uid);
+                setAction(action);
                 Log.info("AccountInfoPanel: reading student info RPC");
                 s.execute(action,this);
             }
