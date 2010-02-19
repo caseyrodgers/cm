@@ -51,7 +51,7 @@ import com.extjs.gxt.ui.client.widget.layout.FormLayout;
 
 public class ManageGroupsWindow extends CmWindow {
     
-
+    boolean cancelled;
     Grid<GroupInfoModel> _grid;
     ListStore<GroupInfoModel> store = new ListStore<GroupInfoModel>();
     CmAdminModel adminModel;
@@ -62,19 +62,21 @@ public class ManageGroupsWindow extends CmWindow {
         setSize(width,300);
         setHeading("Manage Student Groups");    
         
-        readRpcData(adminModel.getId());
+        readRpcData(adminModel.getId(), true);
         
-        drawGui();
+        if (! cancelled) {
+            drawGui();
 
-        getButtonBar().setWidth(width-20);
+            getButtonBar().setWidth(width-20);
 
-        addSelfRegGroupLegend();
+            addSelfRegGroupLegend();
 
-        addCloseButton();
+            addCloseButton();
 
-        setModal(true);
-        setResizable(false);
-        setVisible(true);
+            setModal(true);
+            setResizable(false);
+            setVisible(true);
+        }
     }
 
 	private void addSelfRegGroupLegend() {
@@ -119,7 +121,7 @@ public class ManageGroupsWindow extends CmWindow {
             public void componentSelected(ButtonEvent ce) {
                 CmAsyncRequest callback = new CmAsyncRequestImplDefault() {
                     public void requestComplete(String requestData) {
-                        readRpcData(adminModel.getId());
+                        readRpcData(adminModel.getId(), false);
                     }
                 };
                 new GroupWindow(callback, adminModel,null,true,null).setVisible(true);              
@@ -289,19 +291,30 @@ public class ManageGroupsWindow extends CmWindow {
         return cm;
     }
 
-    private void readRpcData(final Integer adminId) {
+    private void readRpcData(final Integer adminId, final boolean closeOnCancel) {
+    	
+    	final CmWindow cmw = this;
     	
         new RetryAction<CmList<GroupInfoModel>>() {
             @Override
             public void attempt() {
                 CmBusyManager.setBusy(true);
-                CmShared.getCmService().execute(new GetGroupAggregateInfoAction(adminId), this);
+                GetGroupAggregateInfoAction action = new GetGroupAggregateInfoAction(adminId);
+                setAction(action);
+                CmShared.getCmService().execute(action, this);
             }
 
+            @Override
             public void oncapture(CmList<GroupInfoModel> result) {
                 store.removeAll();
                 store.add(result);
                 CmBusyManager.setBusy(false);
+            }
+
+            @Override
+            public void onCancel() {
+            	if (closeOnCancel)
+            		cmw.close();
             }
         }.attempt();
     }
@@ -320,18 +333,20 @@ public class ManageGroupsWindow extends CmWindow {
 
     private void groupActionRPC(final Integer adminId, final Integer groupId, final String groupName, final GroupManagerAction.ActionType actionType) {
 
-        new RetryAction<RpcData>() {
+    	new RetryAction<RpcData>() {
             @Override
             public void attempt() {
                 CmBusyManager.setBusy(true);
                 GroupManagerAction action = new GroupManagerAction(actionType, adminId);
+                setAction(action);
                 action.setGroupId(groupId);
                 action.setGroupName(groupName);
                 CmShared.getCmService().execute(action, this);
             }
 
+            @Override
             public void oncapture(RpcData result) {
-                readRpcData(adminId);
+                readRpcData(adminId, false);
                 CmAdminDataReader.getInstance().fireRefreshData();
             	CmBusyManager.setBusy(false);
             }
@@ -346,9 +361,11 @@ public class ManageGroupsWindow extends CmWindow {
             public void attempt() {
                 CmBusyManager.setBusy(true);
                 GetTemplateForSelfRegGroupAction action = new GetTemplateForSelfRegGroupAction(gim.getId());
+                setAction(action);
                 CmShared.getCmService().execute(action, this);
             }
 
+            @Override
             public void oncapture(StudentModelI sm) {
                 try {
                 	new GroupManagerRegisterStudent(sm, ManageGroupsWindow.this.adminModel, gim);
@@ -460,6 +477,7 @@ class GroupManagerGlobalSettings extends CmWindow {
             public void attempt() {
                 CmBusyManager.setBusy(true);
                 GroupManagerAction action = new GroupManagerAction(GroupManagerAction.ActionType.GROUP_PROPERTY_SET,cm.getId());
+                setAction(action);
                 action.setGroupId(gim.getId());
                 action.setShowWorkRequired(showWorkRequired.getValue());
                 action.setDisallowTutoring( !tutoringAllowed.getValue());
@@ -467,6 +485,7 @@ class GroupManagerGlobalSettings extends CmWindow {
                 CmShared.getCmService().execute(action, this);
             }
 
+            @Override
             public void oncapture(RpcData result) {
                 CmAdminDataReader.getInstance().fireRefreshData();
                 close();
