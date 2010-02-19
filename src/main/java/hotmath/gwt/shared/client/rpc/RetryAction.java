@@ -100,6 +100,9 @@ public abstract class RetryAction<T> implements AsyncCallback<T> {
                     
                     sendInfoAboutRetriedCommand();
                 }
+                else {
+                	onCancel();
+                }
             }
         }
     }
@@ -112,6 +115,11 @@ public abstract class RetryAction<T> implements AsyncCallback<T> {
         }
     }
     
+    /*
+     * possible usage: close a window that is not functional when an action fails
+     */
+    public void onCancel() {
+    }
     
     public Action<? extends Response> activeAction;
     
@@ -119,7 +127,7 @@ public abstract class RetryAction<T> implements AsyncCallback<T> {
         return activeAction;
     }
     
-    /** Set the actino that is reported when a retry operation fails
+    /** Set the action that is reported when a retry operation fails
      * 
      * @param action
      */
