@@ -766,7 +766,9 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
             @Override
             public void attempt() {
                 CmBusyManager.setBusy(true);
-                CmShared.getCmService().execute(new UnregisterStudentsAction(smList), this);
+                UnregisterStudentsAction action = new UnregisterStudentsAction(smList);
+                setAction(action);
+                CmShared.getCmService().execute(action, this);
             }
 
             public void oncapture(StringHolder result) {
@@ -838,6 +840,7 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
                 @Override
                 public void attempt() {
                     _pageAction = new GetStudentGridPageAction(_cmAdminMdl.getId(), (PagingLoadConfig) loadConfig);
+                    setAction(_pageAction);
                     
                     /**
                      * setup request for special handling
