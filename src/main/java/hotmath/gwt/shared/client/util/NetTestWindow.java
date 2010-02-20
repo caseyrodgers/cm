@@ -41,14 +41,14 @@ public class NetTestWindow extends CmWindow {
         setLayout(new BorderLayout());
         
         setHeight(300);
-        setHeading("Network Tester");
+        setHeading("Connection Check");
         setModal(true);
         setResizable(false);
-        String html = "<p style='padding: 10px;'>This dialog will issue a set of network tests and record the results on our server.</p>";
+        String html = "<p style='padding: 10px;'>Press Check to inform Catchup Math about your connection to the Internet.</p>";
         add(new Html(html), new BorderLayoutData(LayoutRegion.NORTH,40));
         add(_grid, new BorderLayoutData(LayoutRegion.CENTER));
      
-        addButton(new Button("Run Tests",new SelectionListener<ButtonEvent>() {
+        addButton(new Button("Check",new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent ce) {
                 runTests();
@@ -152,7 +152,7 @@ public class NetTestWindow extends CmWindow {
             @Override
             public void oncapture(NetTestModel value) {
                 CmBusyManager.setBusy(false);
-                CatchupMathTools.showAlert("Test results saved on server");
+                CatchupMathTools.showAlert("Thank you", "Thank you.  The results have been saved on our server.");
             }
         }.attempt();
     }
@@ -162,15 +162,6 @@ public class NetTestWindow extends CmWindow {
         grid.setBorders(true);
         grid.setStripeRows(true);
         grid.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
-        grid.getSelectionModel().setFiresEvents(true);
-        grid.getSelectionModel().addListener(Events.RowDoubleClick, new Listener<SelectionEvent<StudentModelExt>>() {
-            public void handleEvent(SelectionEvent<StudentModelExt> se) {
-
-                if (grid.getSelectionModel().getSelectedItems().size() > 0) {
-                    CatchupMathTools.showAlert("On click");
-                }
-            }
-        });
 
         grid.setWidth("200px");
         grid.setHeight("250px");
