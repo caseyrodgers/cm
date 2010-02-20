@@ -269,8 +269,7 @@ public class CmPilotCreate {
             List<PurchasePlan> plans = new ArrayList<PurchasePlan>();
             plans.add(new PurchasePlan("TYPE_SERVICE_CATCHUP_PILOT"));
             sub.purchaseHotmath(null, plans, "", "", "", "", "", "", "", "", "", "", "", "");
-            int adminId = new CmPilotCreate(idToUse, false, 0, false, 1000).getAid();
-
+            
             if (rows == 1) {
                 
                 /** send tracking email to pilot requester
@@ -292,7 +291,6 @@ public class CmPilotCreate {
                         + "\n" + "\nTitle: " + title + "\nName: " + name + "\nSchool: " + school + "\nZip: " + zip
                         + "\nEmail: " + email + "\nPhone: " + phone + "\nPhone Type: " + phoneType + "\nPhone When: "
                         + phoneWhen + "\nComments: " + userComments;
-                txt += "\n\n" + SERVER_NAME + "/cm_admin/CatchupMathAdmin.html?debug_uid=" + adminId;
                 try {
                     SbMailManager.getInstance().sendMessage("Catchup Math Pilot Request", txt, sendTo,
                             "registration@hotmath.com", "text/plain");
