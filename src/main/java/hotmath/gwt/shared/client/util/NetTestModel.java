@@ -5,7 +5,6 @@ import hotmath.gwt.shared.client.rpc.Response;
 
 
 public class NetTestModel extends BaseModel implements Response {
-    
     public NetTestModel() {}
     
     public NetTestModel(String testName, String testResults) {
