@@ -99,8 +99,6 @@ public class CmAdminDataReader extends Timer {
     public void fireRefreshData() {
         isRefreshing=true;
         try {
-            
-            // InfoPopupBox.display(new CmInfoConfig("Updating Student List", "Updating student list"));
             Log.debug("CmAdminDataReader: refreshing data");
             for (CmAdminDataRefresher reader : dataReaders) {
                 reader.refreshData();
