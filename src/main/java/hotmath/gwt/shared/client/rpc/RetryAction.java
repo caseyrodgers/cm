@@ -2,13 +2,18 @@ package hotmath.gwt.shared.client.rpc;
 
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
+import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.data.CmAsyncRequestImplDefault;
-import hotmath.gwt.shared.client.util.CmAsyncCallback;
 import hotmath.gwt.shared.client.util.RpcData;
 import hotmath.gwt.shared.client.util.UserInfo;
 
 import com.allen_sauer.gwt.log.client.Log;
+import com.extjs.gxt.ui.client.event.ButtonEvent;
+import com.extjs.gxt.ui.client.event.SelectionListener;
+import com.extjs.gxt.ui.client.widget.Html;
+import com.extjs.gxt.ui.client.widget.button.Button;
+import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.rpc.IncompatibleRemoteServiceException;
@@ -119,6 +124,27 @@ public abstract class RetryAction<T> implements AsyncCallback<T> {
      * possible usage: close a window that is not functional when an action fails
      */
     public void onCancel() {
+        final CmWindow win = new CmWindow();
+        win.setHeading("Server Warning");
+        win.setSize(350,200);
+        win.setModal(true);
+        win.setResizable(false);
+        
+        String msg = "<p style='padding: 15px;font-size: 105%'>There has been a server error.  " +
+                    "You can continue, but be aware of possible side effects.  " +
+                    "If you continue to have errors we suggest you refresh this page " +
+                    "by pressing the F5 key.</p>";
+        
+        win.setLayout(new FitLayout());
+        win.add(new Html(msg));
+        
+        win.addButton(new Button("Continue",new SelectionListener<ButtonEvent>() {
+            public void componentSelected(ButtonEvent ce) {
+                win.close();
+            }
+        }));
+        
+        win.setVisible(true);
     }
     
     public Action<? extends Response> activeAction;
@@ -151,14 +177,13 @@ public abstract class RetryAction<T> implements AsyncCallback<T> {
                 }
 
                 @Override
-                public void onFailure(Throwable arg0) {
-                    Log.error("Error sending info about retry action",arg0);
+                public void onFailure(Throwable exe) {
+                    Log.error("Error sending info about retry action",exe);
                 }
             });
         }
         catch(Exception e) {
-            e.printStackTrace();
+            Log.error("Error calling LogRetryActinoFailedAction", e);
         }
     }
-    
 }

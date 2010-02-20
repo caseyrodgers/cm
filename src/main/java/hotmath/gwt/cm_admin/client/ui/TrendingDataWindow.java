@@ -11,10 +11,10 @@ import hotmath.gwt.shared.client.eventbus.EventBus;
 import hotmath.gwt.shared.client.eventbus.EventType;
 import hotmath.gwt.shared.client.model.CmAdminTrendingDataI;
 import hotmath.gwt.shared.client.model.ProgramData;
+import hotmath.gwt.shared.client.rpc.RetryAction;
 import hotmath.gwt.shared.client.rpc.action.CmList;
 import hotmath.gwt.shared.client.rpc.action.GeneratePdfAssessmentReportAction;
 import hotmath.gwt.shared.client.rpc.action.GetAdminTrendingDataAction;
-import hotmath.gwt.shared.client.util.CmAsyncCallback;
 import hotmath.gwt.shared.client.util.CmRunAsyncCallback;
 
 import com.extjs.gxt.ui.client.event.BaseEvent;
@@ -22,12 +22,10 @@ import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.SelectionListener;
-import com.extjs.gxt.ui.client.widget.Label;
 import com.extjs.gxt.ui.client.widget.TabItem;
 import com.extjs.gxt.ui.client.widget.TabPanel;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.CheckBox;
-import com.extjs.gxt.ui.client.widget.layout.CenterLayout;
 import com.extjs.gxt.ui.client.widget.layout.FillLayout;
 import com.google.gwt.core.client.GWT;
 
@@ -134,36 +132,27 @@ public class TrendingDataWindow extends CmWindow {
     CmAdminTrendingDataI _trendingData;
 
     private void loadTrendDataAsync() {
-        CmBusyManager.setBusy(true);
+        new RetryAction<CmAdminTrendingDataI>() {
+            @Override
+            public void attempt() {
+                CmBusyManager.setBusy(true);
+                GetAdminTrendingDataAction action = new GetAdminTrendingDataAction(onlyActiveOrFullHistory(), adminId, StudentGridPanel.instance._pageAction);
+                setAction(action);
+                CmShared.getCmService().execute(action,this);
+            }
+            
+            public void oncapture(CmAdminTrendingDataI trendingData) {
+                _trendingData = trendingData;
 
-        CmServiceAsync service = CmShared.getCmService();
-        service.execute(new GetAdminTrendingDataAction(onlyActiveOrFullHistory(), adminId, StudentGridPanel.instance._pageAction),
-                new CmAsyncCallback<CmAdminTrendingDataI>() {
-                    public void onSuccess(CmAdminTrendingDataI trendingData) {
-                        _trendingData = trendingData;
-
-                        drawGui();
-                        
-                        addTrendingChart(trendingData);
-                        addProgramCharts(trendingData.getProgramData());
-                        
-                        setVisible(true);
-                        layout(true);
-                        CmBusyManager.setBusy(false);
-                    }
-
-                    @Override
-                    public void onFailure(Throwable caught) {
-                        
-                        removeAll();
-                        setLayout(new CenterLayout());
-                        caught.printStackTrace();
-                        add(new Label(caught.getMessage()));
-                        layout();
-                        
-                        CmBusyManager.setBusy(false);
-                    }
-                });
+                CmBusyManager.setBusy(false);
+                
+                drawGui();
+                addTrendingChart(trendingData);
+                addProgramCharts(trendingData.getProgramData());
+                setVisible(true);
+                layout(true);
+            }
+        }.attempt();
     }
 
     private GetAdminTrendingDataAction.DataType onlyActiveOrFullHistory() {

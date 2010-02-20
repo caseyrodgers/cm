@@ -31,7 +31,6 @@ public class AccountInfoPanel extends LayoutContainer implements CmAdminDataRefr
 	private AccountInfoModel model;
 	private CmAdminModel cmAdminModel;
 	private Boolean haveDisplayedOverLimitMsg = false;
-	private Boolean isTutoringEnabled = false;
 
 	public AccountInfoPanel(CmAdminModel cmAdminMdl) {
 		
@@ -107,7 +106,6 @@ public class AccountInfoPanel extends LayoutContainer implements CmAdminDataRefr
             @Override
             public void attempt() {
                 CmBusyManager.setBusy(true);
-                
                 CmServiceAsync s = (CmServiceAsync) Registry.get("cmService");
                 GetAccountInfoForAdminUidAction action = new GetAccountInfoForAdminUidAction(uid);
                 setAction(action);
@@ -144,30 +142,11 @@ public class AccountInfoPanel extends LayoutContainer implements CmAdminDataRefr
                 }
                 
                 setAccountInfoModel(ai);
-
                 
                 Log.info("AccountInfoPanel: student info read succesfully");
-
             }
         }.attempt();        
     }
-    
-    private String getTutoringRemaingLabel(int mins) {
-        String label="";
-        if(mins == 0) {
-            label="zero minutes";
-        }
-        else if(mins < 60) {
-            label = mins + (mins==1?" min":" mins");
-        }
-        else {
-            int h = (mins / 60);
-            label = "" + h + (h==1?" hour":" hours");
-        }
-        return label;
-    }
-    
-
     //@Override
     public void refreshData() {
         getAccountInfoRPC(cmAdminModel.getId());

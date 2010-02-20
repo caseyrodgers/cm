@@ -17,13 +17,13 @@ import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
 import hotmath.gwt.shared.client.eventbus.EventBus;
 import hotmath.gwt.shared.client.eventbus.EventType;
+import hotmath.gwt.shared.client.rpc.RetryAction;
 import hotmath.gwt.shared.client.rpc.action.AddStudentAction;
 import hotmath.gwt.shared.client.rpc.action.CmList;
 import hotmath.gwt.shared.client.rpc.action.GetChaptersForProgramSubjectAction;
 import hotmath.gwt.shared.client.rpc.action.GetProgramDefinitionsAction;
 import hotmath.gwt.shared.client.rpc.action.GetSubjectDefinitionsAction;
 import hotmath.gwt.shared.client.rpc.action.UpdateStudentAction;
-import hotmath.gwt.shared.client.util.CmAsyncCallback;
 import hotmath.gwt.shared.client.util.CmException;
 import hotmath.gwt.shared.client.util.UserInfo;
 
@@ -468,20 +468,26 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
 	private void getStudyProgramListRPC(final ListStore <StudyProgram> progStore) {
 
 		inProcessCount++;
-        CmServiceAsync s = CmShared.getCmService();
-		GetProgramDefinitionsAction action = new GetProgramDefinitionsAction(); 
-		s.execute(action, new CmAsyncCallback<CmList<StudyProgramModel>>() {
-			public void onSuccess(CmList<StudyProgramModel> spmList) {
-				List<StudyProgram> progList = new ArrayList <StudyProgram> ();
-				for (StudyProgramModel spm : spmList) {
-					progList.add(new StudyProgram(spm.getTitle(), spm.getShortTitle(), spm.getDescr(), spm.getNeedsSubject(),
-							spm.getNeedsChapters(), spm.getNeedsPassPercent()));
-				}
-				progStore.add(progList);
-				inProcessCount--;
-				setComboBoxSelections();
-        	}
-        });
+
+		
+		new RetryAction<CmList<StudyProgramModel>>() {
+		    @Override
+		    public void attempt() {
+		        GetProgramDefinitionsAction action = new GetProgramDefinitionsAction();
+		        setAction(action);
+		        CmShared.getCmService().execute(action, this);
+		    }
+            public void oncapture(CmList<StudyProgramModel> spmList) {
+                List<StudyProgram> progList = new ArrayList <StudyProgram> ();
+                for (StudyProgramModel spm : spmList) {
+                    progList.add(new StudyProgram(spm.getTitle(), spm.getShortTitle(), spm.getDescr(), spm.getNeedsSubject(),
+                            spm.getNeedsChapters(), spm.getNeedsPassPercent()));
+                }
+                progStore.add(progList);
+                inProcessCount--;
+                setComboBoxSelections();
+            }
+        }.attempt();
 	}
 
 	private Map<String, List<SubjectModel>> programSubjectMap = new HashMap<String, List<SubjectModel>>();
@@ -504,59 +510,66 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
 	private void getSubjectListRPC(final String progId, final ListStore <SubjectModel> subjStore) {
 
 		inProcessCount++;
-		CmServiceAsync s = (CmServiceAsync) Registry.get("cmService");
 		
-		GetSubjectDefinitionsAction action = new GetSubjectDefinitionsAction(progId);
-		s.execute(action, new CmAsyncCallback <CmList<SubjectModel>>() {
+		
+		new RetryAction <CmList<SubjectModel>>() {
 
-			public void onSuccess(CmList<SubjectModel> result) {
-				subjStore.removeAll();
-				subjStore.add(result);
-				inProcessCount--;
-				programSubjectMap.put(progId, result);
-				setComboBoxSelections();
-        	}
-        });
+		    @Override
+		    public void attempt() {
+		        GetSubjectDefinitionsAction action = new GetSubjectDefinitionsAction(progId);
+		        setAction(action);
+		        CmShared.getCmService().execute(action,this);		        
+		    }
+            public void oncapture(CmList<SubjectModel> result) {
+                subjStore.removeAll();
+                subjStore.add(result);
+                inProcessCount--;
+                programSubjectMap.put(progId, result);
+                setComboBoxSelections();
+            }
+        }.attempt();
 		
 	}
 		
 	protected void addUserRPC(final StudentModel sm) {
-	    CmBusyManager.setBusy(true);
-	    CmServiceAsync s = (CmServiceAsync) Registry.get("cmService");
-	    AddStudentAction action = new AddStudentAction(sm);
-		s.execute(action, new CmAsyncCallback <StudentModelI> () {
-			public void onSuccess(StudentModelI ai) {
-			    EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_USER_PROGRAM_CHANGED,ai.getProgramChanged()));
-			    _window.close();
-			    
-			    CmBusyManager.setBusy(false);
-        	}
-			
-			@Override
-			public void onFailure(Throwable caught) {
-	            CmBusyManager.setBusy(false);
-			    super.onFailure(caught);
-			}
-        });
+		new RetryAction <StudentModelI> () {
+		    @Override
+		    public void attempt() {
+		        CmBusyManager.setBusy(true);
+		        AddStudentAction action = new AddStudentAction(sm);
+		        setAction(action);
+		        CmShared.getCmService().execute(action,this);
+		    }
+            public void oncapture(StudentModelI ai) {
+                CmBusyManager.setBusy(false);
+                EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_USER_PROGRAM_CHANGED,ai.getProgramChanged()));
+                _window.close();
+            }
+            
+            @Override
+            public void onFailure(Throwable caught) {
+                CmBusyManager.setBusy(false);
+                super.onFailure(caught);
+            }
+        }.attempt();
 	}
 
-	protected void updateUserRPC(final StudentModel sm, Boolean stuChanged, Boolean progChanged, Boolean progIsNew,
-			Boolean passcodeChanged) {
-		CmServiceAsync s = (CmServiceAsync) Registry.get("cmService");
-		
-		CmBusyManager.setBusy(true);
-		UpdateStudentAction action = new UpdateStudentAction(sm,stuChanged,progChanged,progIsNew,passcodeChanged);
-		s.execute(action, new CmAsyncCallback <StudentModelI> () {
-			public void onSuccess(StudentModelI ai) {
-		        EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_USER_PROGRAM_CHANGED,ai.getProgramChanged()));
-		        _window.close();
-		        CmBusyManager.setBusy(false);
-        	}
-			public void onFailure(Throwable caught) {
-		        CmBusyManager.setBusy(false);
-				super.onFailure(caught);
-        	}
-        });
+	protected void updateUserRPC(final StudentModel sm, final Boolean stuChanged, final Boolean progChanged, final Boolean progIsNew,
+	        final Boolean passcodeChanged) {
+		new RetryAction<StudentModelI> () {
+		    @Override
+		    public void attempt() {
+		        CmBusyManager.setBusy(true);
+		        UpdateStudentAction action = new UpdateStudentAction(sm,stuChanged,progChanged,progIsNew,passcodeChanged);
+		        setAction(action);
+		        CmShared.getCmService().execute(action,this);
+		    }
+            public void oncapture(StudentModelI ai) {
+                CmBusyManager.setBusy(false);
+                _window.close();
+                EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_USER_PROGRAM_CHANGED,ai.getProgramChanged()));
+            }
+        }.attempt();
 	}
 
 	private void copyStudent(StudentModel from, StudentModel to) {
@@ -683,33 +696,37 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
 	}
 
 	
-	private void getChapterListRPC(String progId, String subjId, final Boolean chapOnly, final ListStore <ChapterModel> chapStore) {
+	private void getChapterListRPC(final String progId, final String subjId, final Boolean chapOnly, final ListStore <ChapterModel> chapStore) {
 
 		if (progId == null || !progId.equalsIgnoreCase("chap")) return;
 		
 		inProcessCount++;
-		CmServiceAsync s = (CmServiceAsync) Registry.get("cmService");
-		GetChaptersForProgramSubjectAction action = new GetChaptersForProgramSubjectAction(progId, subjId);
-		
-		s.execute(action, new CmAsyncCallback <CmList<ChapterModel>> () {
+		new RetryAction <CmList<ChapterModel>> () {
+		    
+		    @Override
+		    public void attempt() {
+		        CmServiceAsync s = (CmServiceAsync) Registry.get("cmService");
+		        GetChaptersForProgramSubjectAction action = new GetChaptersForProgramSubjectAction(progId, subjId);
+		        setAction(action);
+		        s.execute(action, this);
+		    }
 
-			public void onSuccess(CmList<ChapterModel> result) {
-				chapStore.add(result);
-				inProcessCount--;
-				if (! chapOnly)
-				    setComboBoxSelections();
-				else {
-					chapCombo.setOriginalValue(null);
-					chapCombo.setValue(null);
-					chapCombo.clearSelections();
-				}
-        	}
-        });
-	
+            public void oncapture(CmList<ChapterModel> result) {
+                chapStore.add(result);
+                inProcessCount--;
+                if (! chapOnly)
+                    setComboBoxSelections();
+                else {
+                    chapCombo.setOriginalValue(null);
+                    chapCombo.setValue(null);
+                    chapCombo.clearSelections();
+                }
+            }
+        }.attempt();
 	}
 	
 	
-	/** helper to simplify determing if user has tutoring enabled
+	/** helper to simplify determine if user has tutoring enabled
 	 * 
 	 * @return
 	 */
