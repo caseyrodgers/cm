@@ -4,7 +4,7 @@ import hotmath.gwt.shared.client.rpc.Action;
 import hotmath.gwt.shared.client.util.UserInfo;
 
 public class ProcessLoginRequestAction implements Action<UserInfo> {
-    
+
     String key;
     
     public ProcessLoginRequestAction() {}
@@ -19,5 +19,10 @@ public class ProcessLoginRequestAction implements Action<UserInfo> {
 
     public void setKey(String key) {
         this.key = key;
+    }
+    
+    @Override
+    public String toString() {
+        return "ProcessLoginRequestAction [key=" + key + "]";
     }
 }
