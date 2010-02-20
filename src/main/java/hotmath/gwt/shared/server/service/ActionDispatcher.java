@@ -50,7 +50,6 @@ import hotmath.gwt.shared.server.service.command.GroupManagerCommand;
 import hotmath.gwt.shared.server.service.command.LogRetryActionFailedCommand;
 import hotmath.gwt.shared.server.service.command.LogUserInCommand;
 import hotmath.gwt.shared.server.service.command.MarkPrescriptionLessonAsViewedCommand;
-import hotmath.gwt.shared.server.service.command.MultiActionRequestCommand;
 import hotmath.gwt.shared.server.service.command.ProcessLoginRequestCommand;
 import hotmath.gwt.shared.server.service.command.ResetUserCommand;
 import hotmath.gwt.shared.server.service.command.RunNetTestCommand;
