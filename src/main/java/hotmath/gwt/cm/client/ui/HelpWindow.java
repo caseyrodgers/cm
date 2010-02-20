@@ -241,7 +241,7 @@ public class HelpWindow extends CmWindow {
         fs.add(btnFeedback);
 
 
-        Button btnNetTest = new MyOptionButton("Network Test");
+        Button btnNetTest = new MyOptionButton("Connection Check");
         btnNetTest.addStyleName("button");
         btnNetTest.addSelectionListener(new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent ce) {
