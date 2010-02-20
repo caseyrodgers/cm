@@ -148,9 +148,12 @@ public class NetTestWindow extends CmWindow {
             @Override
             public void oncapture(NetTestModel value) {
                 CmBusyManager.setBusy(false);
-                CatchupMathTools.showAlert("Thank you", "Thank you.  The results have been saved on our server.");
-                
-                close();
+                CatchupMathTools.showAlert("Thank you", "Thank you.  The results have been saved on our server.",new CmAsyncRequestImplDefault() {
+                    @Override
+                    public void requestComplete(String requestData) {
+                        close();
+                    }
+                });
             }
         }.attempt();
     }
