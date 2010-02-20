@@ -269,6 +269,5 @@ public class ActionDispatcher {
         addCommand(GetAdminTrendingDataDetailCommand.class);
         addCommand(RunNetTestCommand.class);
         addCommand(LogRetryActionFailedCommand.class);
-        addCommand(MultiActionRequestCommand.class);
     }
 }
