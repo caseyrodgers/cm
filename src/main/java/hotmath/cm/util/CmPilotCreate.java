@@ -262,41 +262,37 @@ public class CmPilotCreate {
             String idToUse = HotMathSubscriber.createUniqueID(null);
             String comments = "Catchup Math online pilot setup\n" + userComments + " phone_type=" + phoneType
                     + ", phone_when: " + phoneWhen;
-            HotMathSubscriber sub = HotMathSubscriberManager.createBasicAccount(idToUse, school, "ST", email, comments,
-                    new Date());
+            HotMathSubscriber sub = HotMathSubscriberManager.createBasicAccount(idToUse, school, "ST", email, comments,new Date());
             sub.setResponsibleName(name);
+            sub.setStatus("N");
             sub.saveChanges();
             List<PurchasePlan> plans = new ArrayList<PurchasePlan>();
             plans.add(new PurchasePlan("TYPE_SERVICE_CATCHUP_PILOT"));
             sub.purchaseHotmath(null, plans, "", "", "", "", "", "", "", "", "", "", "", "");
+            /** send tracking email to pilot requester
+             * 
+             */
+            try {
+                SbMailManager.getInstance().sendMessage(emailSubject, emailText, email,
+                        "registration@hotmath.com", "text/plain");
+            }
+            catch(Exception e) {
+                e.printStackTrace();
+            }
             
-            if (rows == 1) {
-                
-                /** send tracking email to pilot requester
-                 * 
-                 */
-                try {
-                    SbMailManager.getInstance().sendMessage(emailSubject, emailText, email,
-                            "registration@hotmath.com", "text/plain");
-                }
-                catch(Exception e) {
-                    e.printStackTrace();
-                }
-                
-                
-                /** send tracking email to admin people
-                 * 
-                 */
-                String txt = "A request for a Catchup Math Pilot was created by:\n" + "Subscriber ID: " + idToUse
-                        + "\n" + "\nTitle: " + title + "\nName: " + name + "\nSchool: " + school + "\nZip: " + zip
-                        + "\nEmail: " + email + "\nPhone: " + phone + "\nPhone Type: " + phoneType + "\nPhone When: "
-                        + phoneWhen + "\nComments: " + userComments;
-                try {
-                    SbMailManager.getInstance().sendMessage("Catchup Math Pilot Request", txt, sendTo,
-                            "registration@hotmath.com", "text/plain");
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+            
+            /** send tracking email to admin people
+             * 
+             */
+            String txt = "A request for a Catchup Math Pilot was created by:\n" + "Subscriber ID: " + idToUse
+                    + "\n" + "\nTitle: " + title + "\nName: " + name + "\nSchool: " + school + "\nZip: " + zip
+                    + "\nEmail: " + email + "\nPhone: " + phone + "\nPhone Type: " + phoneType + "\nPhone When: "
+                    + phoneWhen + "\nComments: " + userComments;
+            try {
+                SbMailManager.getInstance().sendMessage("Catchup Math Pilot Request", txt, sendTo,
+                        "registration@hotmath.com", "text/plain");
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         } catch (Exception e) {
             e.printStackTrace();
