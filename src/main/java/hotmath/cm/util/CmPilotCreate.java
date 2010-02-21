@@ -271,7 +271,7 @@ public class CmPilotCreate {
             
             /** concatenate phone to end of zip */
             if(phone != null && phone.length() > 0)
-                zip += " " + phone;
+                zip += " / " + phone;
             sub.setZip(zip);
             
             sub.saveChanges();
