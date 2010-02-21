@@ -58,6 +58,8 @@ public abstract class RetryAction<T> implements AsyncCallback<T> {
 
     public void onFailure(Throwable error) {
         
+        Log.info("RetryAction failed", error);
+        
         CmBusyManager.resetBusy();
         
         try {
@@ -96,7 +98,7 @@ public abstract class RetryAction<T> implements AsyncCallback<T> {
                 /** Perform as synchronous call in Window.confirm to stop
                  *  the flow of new requests until this one is taken care of.
                  */
-                String msg = "An error occured:\n" + message + "\n"
+                String msg = "A server error has occured.\n" 
                 + "You may retry this operation by clicking 'OK'.\n"
                 + "However if the error persists, contact Technical Support.";
 
