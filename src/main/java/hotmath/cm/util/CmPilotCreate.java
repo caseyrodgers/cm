@@ -268,7 +268,12 @@ public class CmPilotCreate {
             HotMathSubscriber sub = HotMathSubscriberManager.createBasicAccount(idToUse, school, "ST", email, comments,new Date());
             sub.setResponsibleName(name);
             sub.setStatus("N");
+            
+            /** concatenate phone to end of zip */
+            if(phone != null && phone.length() > 0)
+                zip += " " + phone;
             sub.setZip(zip);
+            
             sub.saveChanges();
             List<PurchasePlan> plans = new ArrayList<PurchasePlan>();
             plans.add(new PurchasePlan("TYPE_SERVICE_CATCHUP_PILOT"));
