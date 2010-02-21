@@ -260,11 +260,15 @@ public class CmPilotCreate {
 
             // create a new Subscriber record based on this email
             String idToUse = HotMathSubscriber.createUniqueID(null);
-            String comments = "Catchup Math online pilot setup\n" + userComments + " phone_type=" + phoneType
-                    + ", phone_when: " + phoneWhen;
+            String comments = "Catchup Math online pilot setup"
+                           + "\nComments: " + userComments
+                           + "\nphone: " + phone
+                           + "\nphone_type: " + phoneType
+                           + "\nphone_when: " + phoneWhen;
             HotMathSubscriber sub = HotMathSubscriberManager.createBasicAccount(idToUse, school, "ST", email, comments,new Date());
             sub.setResponsibleName(name);
             sub.setStatus("N");
+            sub.setZip(zip);
             sub.saveChanges();
             List<PurchasePlan> plans = new ArrayList<PurchasePlan>();
             plans.add(new PurchasePlan("TYPE_SERVICE_CATCHUP_PILOT"));
