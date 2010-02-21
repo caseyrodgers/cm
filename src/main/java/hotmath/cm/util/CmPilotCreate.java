@@ -256,7 +256,7 @@ public class CmPilotCreate {
             ps.setString(5, email);
             ps.setString(6, phone);
 
-            int rows = ps.executeUpdate();
+            ps.executeUpdate();
 
             // create a new Subscriber record based on this email
             String idToUse = HotMathSubscriber.createUniqueID(null);
