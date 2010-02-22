@@ -444,11 +444,11 @@ function setQuizQuestionDisplayAsActive(pid) {
 		var d = questions[i];
 		if(d.className == 'question_div') {
 			if(d.getAttribute('guid') == pid || (pid == null && c == 0)) {
-				d.setAttribute('style','background: #EAEAEA');
+				d.style.background = '#EAEAEA';
 				setQuizQuestionActive_Gwt(d.getAttribute('guid'));
 			}
 			else {
-				d.setAttribute('style','background: inherit');
+				d.style.background = '';
 			}
 			c++;
 		}

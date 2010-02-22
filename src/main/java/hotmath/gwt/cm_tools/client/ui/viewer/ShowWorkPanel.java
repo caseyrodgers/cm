@@ -30,6 +30,9 @@ public class ShowWorkPanel extends Frame {
 	static {
 		publishNative();
 		
+		/** add a listener to keep the whiteboard updated when 
+		 * the quiz question changes.
+		 */
 		EventBus.getInstance().addEventListener(new CmEventListenerImplDefault() {
             @Override
             public void handleEvent(CmEvent event) {

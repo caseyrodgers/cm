@@ -173,6 +173,12 @@ public class CmMainPanel extends LayoutContainer {
     }
     
     
+    /** This block of code is used for global testset communication between
+     * external testset HTML/JS and GWT. 
+     * 
+     * @TODO: create a separate abstraction that exposes a global listener.
+     * 
+     */
     /** define global method to allow for setting the active quiz pid
      * 
      */
@@ -181,6 +187,11 @@ public class CmMainPanel extends LayoutContainer {
     }-*/;
     
     static private String __lastQuestionPid;
+    /** called by external JS when a testset question
+     * has been made current.
+     * 
+     * @param pid
+     */
     @SuppressWarnings("unused")
     static private void setQuizQuestionActive_Gwt(String pid) {
         if(__lastQuestionPid == null || !__lastQuestionPid.equals(pid)) {
@@ -188,9 +199,21 @@ public class CmMainPanel extends LayoutContainer {
             __lastQuestionPid=pid;
         }
     }
+    
+    /** return the last active question's pid.  Return null
+     * if no question has been displayed.
+     * 
+     * @return
+     */
     static public String getLastQuestionPid() {
         return __lastQuestionPid;
     }
+    /** Call external method to set a given question as active.
+     *  The guid is matched with passed pid.  If null, then the
+     *  first question is marked as current.
+     *  
+     * @param pid
+     */
     static public native void setQuizQuestionDisplayAsActive(String pid) /*-{
         $wnd.setQuizQuestionDisplayAsActive(pid);
    }-*/;    

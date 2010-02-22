@@ -82,10 +82,7 @@ public class ResourceViewerImplResults extends CmResourcePanelImplWithWhiteboard
 
                     markAnswers(resultJson);
 
-                    if(CmMainPanel.getLastQuestionPid() != null) {
-                        CmMainPanel.setQuizQuestionDisplayAsActive(CmMainPanel.getLastQuestionPid());
-                    }
-
+                    CmMainPanel.setQuizQuestionDisplayAsActive(CmMainPanel.getLastQuestionPid());
                 } finally {
                     CmBusyManager.setBusy(false);
                 }

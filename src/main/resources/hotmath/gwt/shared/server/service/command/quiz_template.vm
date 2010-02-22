@@ -5,8 +5,7 @@
     #foreach( $question in $testSet.questions )
     #set( $probNum = $velocityCount + 1 )
     <div class='question_wrapper' onclick='setQuizQuestionActive("$question.problemIndex")'>
-        <a name='$question.questionTag' id='$question.questionTag'>&nbsp;
-        </a>
+        <a name='$question.questionTag' id='$question.questionTag'>&nbsp;</a>
         <div class='question_head'>
             <div class='question_head_text'> Problem $probNum </div>
             <div class='response_div' style='display: none;'>
