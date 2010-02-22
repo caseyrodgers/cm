@@ -169,6 +169,27 @@ public class CmMainPanel extends LayoutContainer {
                   }
             }
         });
+        publishNative();
+    }
+    
+    
+    /** define global method to allow for setting the active quiz pid
+     * 
+     */
+    static private native void publishNative() /*-{
+        $wnd.setQuizQuestionActive_Gwt = @hotmath.gwt.cm_tools.client.ui.CmMainPanel::setQuizQuestionActive_Gwt(Ljava/lang/String;);
+    }-*/;
+    
+    static private String __lastQuestionPid;
+    @SuppressWarnings("unused")
+    static private void setQuizQuestionActive_Gwt(String pid) {
+        if(__lastQuestionPid == null || !__lastQuestionPid.equals(pid)) {
+            EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_QUIZ_QUESTION_FOCUS_CHANGED,pid));
+            __lastQuestionPid=pid;
+        }
+    }
+    static public String getLastQuestionPid() {
+        return __lastQuestionPid;
     }
 }
 
@@ -241,4 +262,6 @@ class ContextTooltipPanel extends LayoutContainer {
         };
         tipTimer.schedule(TIP_SHOW_MILLS);
     }
+  
+ 
 }

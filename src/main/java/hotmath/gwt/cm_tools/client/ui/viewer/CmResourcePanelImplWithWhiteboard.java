@@ -180,12 +180,12 @@ public abstract class CmResourcePanelImplWithWhiteboard extends CmResourcePanelI
             
             add(lcMain);
         }
+        
         _displayMode = displayMode;
         __lastDisplayMode = _displayMode;
         
         layout();
     }
-    
     
     @Override
     public void addResource(Widget w, String title) {

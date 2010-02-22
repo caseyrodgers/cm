@@ -31,6 +31,7 @@ public class NetTestWindow extends CmWindow {
     
     Grid<NetTestModel> _grid;
     ListStore<NetTestModel> store = new ListStore<NetTestModel>();
+    Button _btnCheck;
 
     public NetTestWindow() {
         _grid = defineGrid(store,defineColumns());
@@ -39,17 +40,18 @@ public class NetTestWindow extends CmWindow {
         setHeight(300);
         setHeading("Connection Check");
         setModal(true);
-        setResizable(false);
+        setResizable(true);
         String html = "<p style='padding: 10px;'>Press Check to inform Catchup Math about your connection to the Internet.</p>";
         add(new Html(html), new BorderLayoutData(LayoutRegion.NORTH,40));
         add(_grid, new BorderLayoutData(LayoutRegion.CENTER));
      
-        addButton(new Button("Check",new SelectionListener<ButtonEvent>() {
+        _btnCheck = new Button("Check",new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent ce) {
                 runTests();
             }
-        }));
+        });
+        addButton(_btnCheck);
         addButton(new Button("Close",new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent ce) {
@@ -110,7 +112,8 @@ public class NetTestWindow extends CmWindow {
     }
     
     private void runTest(final int testNum, final long dataSize) {
-        
+        _btnCheck.setEnabled(false);
+
         new RetryAction<NetTestModel>() {
             long timeStart;
             @Override
@@ -151,7 +154,7 @@ public class NetTestWindow extends CmWindow {
                 CatchupMathTools.showAlert("Thank you", "Thank you.  The results have been saved on our server.",new CmAsyncRequestImplDefault() {
                     @Override
                     public void requestComplete(String requestData) {
-                        close();
+                        //
                     }
                 });
             }

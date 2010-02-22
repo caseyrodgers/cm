@@ -1,6 +1,7 @@
 package hotmath.gwt.cm_tools.client.ui.viewer;
 
 import hotmath.gwt.cm_tools.client.CmBusyManager;
+import hotmath.gwt.cm_tools.client.ui.CmMainPanel;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.rpc.RetryAction;
 import hotmath.gwt.shared.client.rpc.action.GetQuizResultsHtmlAction;
@@ -80,6 +81,11 @@ public class ResourceViewerImplResults extends CmResourcePanelImplWithWhiteboard
                     addResource(_quizPanel, getResourceItem().getTitle() + ": " + correct + " out of " + total);
 
                     markAnswers(resultJson);
+
+                    if(CmMainPanel.getLastQuestionPid() != null) {
+                        setQuizQuestionDisplayAsActive(CmMainPanel.getLastQuestionPid());
+                    }
+
                 } finally {
                     CmBusyManager.setBusy(false);
                 }
@@ -123,6 +129,9 @@ public class ResourceViewerImplResults extends CmResourcePanelImplWithWhiteboard
                                                                          $wnd.setQuizQuestionResult(pid, result);
                                                                          }-*/;
 
+    private native void setQuizQuestionDisplayAsActive(String pid) /*-{
+                                                               $wnd.setQuizQuestionDisplayAsActive(pid);
+                                                              }-*/;
     @Override
     public Widget getTutorDisplay() {
         return _quizPanel;
@@ -130,6 +139,15 @@ public class ResourceViewerImplResults extends CmResourcePanelImplWithWhiteboard
 
     @Override
     public void setupShowWorkPanel(ShowWorkPanel whiteboardPanel) {
-        whiteboardPanel.setPid("quiz:" + UserInfo.getInstance().getTestId());
+        String pid = "";
+        if(CmMainPanel.getLastQuestionPid() != null) {
+            /** use the currently active quiz */
+            pid = "quiz:" + CmMainPanel.getLastQuestionPid();
+        }
+        else {
+            /** use the default for the quiz */
+            pid = "quiz:" + UserInfo.getInstance().getTestId();
+        }
+        whiteboardPanel.setPid(pid);
     }
 }

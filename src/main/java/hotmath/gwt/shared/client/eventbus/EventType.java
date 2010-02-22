@@ -98,5 +98,12 @@ public enum EventType{
     /** Fired when the Student Grid is filtered, used to keep 
      * a child window in sync with the student's current filtered set.
      */
-    EVENT_TYPE_STUDENT_GRID_FILTERED
+    EVENT_TYPE_STUDENT_GRID_FILTERED,
+    
+    /** When the active/focused question in a Quiz changes.  Can be used
+     *  to keep windows that are connected to the current scope valid, such 
+     *  as the whiteboard.
+     *  
+     */
+    EVENT_TYPE_QUIZ_QUESTION_FOCUS_CHANGED
 }

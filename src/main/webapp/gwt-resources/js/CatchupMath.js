@@ -425,3 +425,32 @@ function isSolutionIsAvailable() {
  */
 function showNeedToSignup() {
 }
+
+
+function setQuizQuestionActive(pid) {
+	setQuizQuestionDisplayAsActive(pid);
+	
+	setQuizQuestionActive_Gwt(pid);
+}
+
+
+/** mark the question with guid of pid as being active 
+ * 
+ * @param pid
+ * @return
+ */
+function setQuizQuestionDisplayAsActive(pid) {
+	var testset = document.getElementById("testset_div");
+	var questions = testset.getElementsByTagName("div");
+	for ( var i = 0, t = questions.length; i < t; i++) {
+		var d = questions[i];
+		if(d.className == 'question_div') {
+			if(d.getAttribute('guid') == pid) {
+				d.setAttribute('style','background: #EAEAEA');
+			}
+			else {
+				d.setAttribute('style','background: inherit');
+			}
+		}
+	}
+}

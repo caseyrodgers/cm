@@ -4,6 +4,7 @@ import hotmath.gwt.cm_tools.client.service.CmServiceAsync;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.data.CmAsyncRequest;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
+import hotmath.gwt.shared.client.eventbus.CmEventListenerImplDefault;
 import hotmath.gwt.shared.client.eventbus.EventBus;
 import hotmath.gwt.shared.client.eventbus.EventType;
 import hotmath.gwt.shared.client.rpc.RetryAction;
@@ -23,8 +24,21 @@ public class ShowWorkPanel extends Frame {
 
 	String id;
 	String flashId;
+	boolean eatNextWhiteboardOut;
+	
 	static {
 		publishNative();
+		
+		EventBus.getInstance().addEventListener(new CmEventListenerImplDefault() {
+            @Override
+            public void handleEvent(CmEvent event) {
+                if(event.getEventType() == EventType.EVENT_TYPE_QUIZ_QUESTION_FOCUS_CHANGED) {
+                    __lastInstance.setPid("quiz:" + event.getEventData().toString());
+                    __lastInstance.clearWhiteBoard(true);
+                    __lastInstance.handleFlashWhiteboardIsReady();
+                }
+            }
+        });
 	}
 	
 	CmAsyncRequest callbackAfterWhiteboardInitialized;
@@ -46,6 +60,7 @@ public class ShowWorkPanel extends Frame {
 	 */
 	public ShowWorkPanel(CmAsyncRequest callbackAfterWhiteboardInitialized) {
 		super("show_work_panel_student.html");
+		__lastInstance = this;
 		
 		this.callbackAfterWhiteboardInitialized = callbackAfterWhiteboardInitialized;
         setStyleName("show-work-panel");
@@ -54,14 +69,21 @@ public class ShowWorkPanel extends Frame {
 		DOM.setElementPropertyInt(this.getElement(), "border", 0); // disable border
 		DOM.setElementPropertyInt(this.getElement(), "frameSpacing", 0); // disable border
 	    DOM.setElementProperty(this.getElement(), "scrolling", "no"); // disable border
-		__lastInstance = this;
+		
 		id = "show_work_" + System.currentTimeMillis();
 		flashId = id + "_flash";
 		
 		// CmMainPanel.__lastInstance._mainContent.setScrollMode(Scroll.NONE);
 	}
 	
-	public void clearWhiteBoard() {
+	/** clear whiteboard, and optionally do not issue server clear.
+	 * 
+	 * This is to allow reusing already loaded whiteboard
+	 * 
+	 * @param doNotSendToServer
+	 */
+	public void clearWhiteBoard(boolean doNotSendToServer) {
+	    eatNextWhiteboardOut=doNotSendToServer;
 	    updateFlashWhiteboard(flashId, "clear","{}");
 	}
 	
@@ -71,6 +93,12 @@ public class ShowWorkPanel extends Frame {
 	 * @param json
 	 */
 	public void handleFlashWhiteboardOut(final String json) {
+	    
+	    if(eatNextWhiteboardOut) {
+	        eatNextWhiteboardOut=false;
+	        return;
+	    }
+	    
         if(UserInfo.getInstance().isShowWorkRequired())
             EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_WHITEBOARDUPDATED, this.pid));
         
@@ -82,8 +110,8 @@ public class ShowWorkPanel extends Frame {
 		         *  normal draw command.
 		         */
 		        CommandType commandType= json.equals("clear")? CommandType.CLEAR:CommandType.DRAW;
-		        
 		        SaveWhiteboardDataAction action = new SaveWhiteboardDataAction(UserInfo.getInstance().getUid(),UserInfo.getInstance().getRunId(),pid,commandType,json);
+		        setAction(action);
 		        CmShared.getCmService().execute(action,this);
 		        
 		    }
@@ -108,8 +136,9 @@ public class ShowWorkPanel extends Frame {
 		    @Override
 		    public void attempt() {
 		        CmServiceAsync s = CmShared.getCmService();
-		        int runId = UserInfo.getInstance().getRunId();
+		        int runId = pid.startsWith("quiz")?0:UserInfo.getInstance().getRunId();
 		        GetWhiteboardDataAction action = new GetWhiteboardDataAction(UserInfo.getInstance().getUid(),pid,runId);
+		        setAction(action);
 		        s.execute(action,this);
             }
             public void oncapture(CmList<WhiteboardCommand> commands) {
