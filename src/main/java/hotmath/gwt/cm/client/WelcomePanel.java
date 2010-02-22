@@ -87,10 +87,7 @@ public class WelcomePanel extends LayoutContainer {
         public SampleSessionInfo() {
 
             String html = "<h1>Try a Pre-algebra Session Right Now</h1>"
-                    + "<p>The button below begins a sample session with Catchup Math. "
-                    + "You will start with a 10-question quiz. Then, you will experience "
-                    + " the review and practice of Catchup Math (be sure to get at least "
-                    + " one quiz problem wrong!)." + "</p>";
+                    + "<p>Please <b>mark at least one quiz problem wrong</b> so you experience the review and practice.</p>";
 
             setHtml(html);
         }
