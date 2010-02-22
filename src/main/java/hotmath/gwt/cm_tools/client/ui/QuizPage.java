@@ -148,6 +148,9 @@ public class QuizPage extends LayoutContainer {
                 }
                 CmBusyManager.setBusy(false);
                 callbackWhenComplete.requestComplete(_title);
+                
+                
+                CmMainPanel.setQuizQuestionDisplayAsActive(CmMainPanel.getLastQuestionPid());
             }
         }.attempt();
 	}

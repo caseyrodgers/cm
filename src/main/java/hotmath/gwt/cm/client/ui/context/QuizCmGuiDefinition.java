@@ -69,6 +69,9 @@ public class QuizCmGuiDefinition implements CmGuiDefinition {
 		        
 			public void requestComplete(String quizTitle) {
 			    
+			    /** Create resource container to display the tutor/whiteboard combination 
+			     * 
+			     */
                 CmResourcePanelImplDefault resourcePanel = new CmResourcePanelImplWithWhiteboard() {
                     @Override
                     protected DisplayMode getInitialWhiteboardDisplay() {
@@ -112,7 +115,7 @@ public class QuizCmGuiDefinition implements CmGuiDefinition {
 					}
 					@Override
 					public void setupShowWorkPanel(ShowWorkPanel whiteboardPanel) {
-						whiteboardPanel.setPid("quiz:" + UserInfo.getInstance().getTestId());
+						whiteboardPanel.setPid("quiz:" + CmMainPanel.getLastQuestionPid());
 					}
                 };
                 resourcePanel.addResource(qp, "Quiz");

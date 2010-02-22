@@ -429,28 +429,28 @@ function showNeedToSignup() {
 
 function setQuizQuestionActive(pid) {
 	setQuizQuestionDisplayAsActive(pid);
-	
-	setQuizQuestionActive_Gwt(pid);
 }
 
 
 /** mark the question with guid of pid as being active 
  * 
- * @param pid
+ * @param pid  guid of row to select (null selects first)
  * @return
  */
 function setQuizQuestionDisplayAsActive(pid) {
 	var testset = document.getElementById("testset_div");
 	var questions = testset.getElementsByTagName("div");
-	for ( var i = 0, t = questions.length; i < t; i++) {
+	for ( var i = 0, t = questions.length, c = 0; i < t; i++) {
 		var d = questions[i];
 		if(d.className == 'question_div') {
-			if(d.getAttribute('guid') == pid) {
+			if(d.getAttribute('guid') == pid || (pid == null && c == 0)) {
 				d.setAttribute('style','background: #EAEAEA');
+				setQuizQuestionActive_Gwt(d.getAttribute('guid'));
 			}
 			else {
 				d.setAttribute('style','background: inherit');
 			}
+			c++;
 		}
 	}
 }

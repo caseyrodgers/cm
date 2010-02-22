@@ -184,6 +184,7 @@ public abstract class CmResourcePanelImplWithWhiteboard extends CmResourcePanelI
         _displayMode = displayMode;
         __lastDisplayMode = _displayMode;
         
+        
         layout();
     }
     

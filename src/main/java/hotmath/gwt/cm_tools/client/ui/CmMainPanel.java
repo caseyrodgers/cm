@@ -191,6 +191,9 @@ public class CmMainPanel extends LayoutContainer {
     static public String getLastQuestionPid() {
         return __lastQuestionPid;
     }
+    static public native void setQuizQuestionDisplayAsActive(String pid) /*-{
+        $wnd.setQuizQuestionDisplayAsActive(pid);
+   }-*/;    
 }
 
 /** Display a dropdown tooltip below the main context buttons

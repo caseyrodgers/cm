@@ -33,7 +33,7 @@ public class LogRetryActionFailedCommand implements ActionHandler<LogRetryAction
         finally {
             SqlUtilities.releaseResources(null,pstat,null);
         }
-        return new RpcData("OK");
+        return new RpcData("status=OK");
     }
     
     private String getActionInfo(Action<? extends Response> a) {

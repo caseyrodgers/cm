@@ -83,7 +83,7 @@ public class ResourceViewerImplResults extends CmResourcePanelImplWithWhiteboard
                     markAnswers(resultJson);
 
                     if(CmMainPanel.getLastQuestionPid() != null) {
-                        setQuizQuestionDisplayAsActive(CmMainPanel.getLastQuestionPid());
+                        CmMainPanel.setQuizQuestionDisplayAsActive(CmMainPanel.getLastQuestionPid());
                     }
 
                 } finally {
@@ -129,9 +129,7 @@ public class ResourceViewerImplResults extends CmResourcePanelImplWithWhiteboard
                                                                          $wnd.setQuizQuestionResult(pid, result);
                                                                          }-*/;
 
-    private native void setQuizQuestionDisplayAsActive(String pid) /*-{
-                                                               $wnd.setQuizQuestionDisplayAsActive(pid);
-                                                              }-*/;
+   
     @Override
     public Widget getTutorDisplay() {
         return _quizPanel;
