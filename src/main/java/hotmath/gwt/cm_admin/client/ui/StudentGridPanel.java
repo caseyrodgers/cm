@@ -718,6 +718,7 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
         quizzes.setHeader("Quizzes");
         quizzes.setWidth(100);
         quizzes.setSortable(true);
+        quizzes.setToolTip("Passed quizzes vs the number taken.");
         quizzes.setRenderer(new GridCellRenderer<StudentModelExt>() {
 			@Override
 			public Object render(StudentModelExt sm, String property,
