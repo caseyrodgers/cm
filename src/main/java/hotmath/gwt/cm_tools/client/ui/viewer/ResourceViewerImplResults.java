@@ -64,6 +64,7 @@ public class ResourceViewerImplResults extends CmResourcePanelImplWithWhiteboard
             public void attempt() {
                 CmBusyManager.setBusy(true);
                 GetQuizResultsHtmlAction action = new GetQuizResultsHtmlAction(UserInfo.getInstance().getRunId());
+                setAction(action);
                 CmShared.getCmService().execute(action, this);
             }
 

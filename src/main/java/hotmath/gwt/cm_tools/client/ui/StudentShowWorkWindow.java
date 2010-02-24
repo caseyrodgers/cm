@@ -217,9 +217,9 @@ public class StudentShowWorkWindow extends CmWindow {
             public void attempt() {
                 CmBusyManager.setBusy(true);
                 Log.debug("StudentShowWorkWindow: reading student show work list");
-                CmServiceAsync s = CmShared.getCmService();
                 GetStudentShowWorkAction action = new GetStudentShowWorkAction(student.getUid(), activityModel.getRunId());
-                s.execute(action,this);
+                setAction(action);
+                CmShared.getCmService().execute(action,this);
             }
             public void oncapture(CmList<StudentShowWorkModel> list) {
                 CmBusyManager.setBusy(false);

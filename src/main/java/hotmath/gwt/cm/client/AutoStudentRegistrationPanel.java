@@ -252,8 +252,9 @@ public class AutoStudentRegistrationPanel extends CmMainResourceContainer {
             @Override
             public void attempt() {
                 CmBusyManager.setBusy(true);
-                CmShared.getCmService().execute(
-                        new CreateAutoRegistrationAccountAction(UserInfo.getInstance().getUid(), lastName.getValue() + ", " + firstName.getValue().trim(), password),this );
+                CreateAutoRegistrationAccountAction action = new CreateAutoRegistrationAccountAction(UserInfo.getInstance().getUid(), lastName.getValue() + ", " + firstName.getValue().trim(), password);
+                setAction(action);
+                CmShared.getCmService().execute(action,this );
             }
             //@Override
             public void oncapture(final RpcData rdata) {
@@ -322,7 +323,9 @@ public class AutoStudentRegistrationPanel extends CmMainResourceContainer {
                     @Override
                     public void attempt() {
                         CmBusyManager.setBusy(true);
-                        CmShared.getCmService().execute(new LogUserInAction(null,password),this);
+                        LogUserInAction action = new LogUserInAction(null,password);
+                        setAction(action);
+                        CmShared.getCmService().execute(action,this);
                     }
                     public void oncapture(RpcData result) {
                         CmBusyManager.setBusy(false);
@@ -345,8 +348,9 @@ public class AutoStudentRegistrationPanel extends CmMainResourceContainer {
             @Override
             public void attempt() {
                 CmBusyManager.setBusy(true);
-                CmServiceAsync s = (CmServiceAsync) Registry.get("cmService");
-                s.execute(new CheckUserAccountStatusAction(password), this);
+                CheckUserAccountStatusAction action = new CheckUserAccountStatusAction(password);
+                setAction(action);
+                CmShared.getCmService().execute(action, this);
             }
             //@Override
             public void oncapture(final RpcData rdata) {

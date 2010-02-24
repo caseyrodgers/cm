@@ -121,16 +121,18 @@ public class NetTestWindow extends CmWindow {
                 pTrac.beginStep();
                 CmBusyManager.setBusy(true);
                 timeStart=System.currentTimeMillis();
-                CmShared.getCmService().execute(new RunNetTestAction(TestAction.RUN_TEST, UserInfo.getInstance().getUid(), testNum, dataSize), this);
+                RunNetTestAction action = new RunNetTestAction(TestAction.RUN_TEST, UserInfo.getInstance().getUid(), testNum, dataSize);
+                setAction(action);
+                CmShared.getCmService().execute(action, this);
             }
             
             @Override
             public void oncapture(NetTestModel testResults) {
+                CmBusyManager.setBusy(false);
                 long timeEnd=System.currentTimeMillis();
                 testResults.setNumber(testNum);
                 testResults.setTime(timeEnd - timeStart);
                 testResults.setSize(dataSize);
-                CmBusyManager.setBusy(false);
                 _grid.getStore().add(testResults);
                 pTrac.completeStep();
             }
@@ -145,7 +147,9 @@ public class NetTestWindow extends CmWindow {
             @Override
             public void attempt() {
                 CmBusyManager.setBusy(true);
-                CmShared.getCmService().execute(new RunNetTestAction(TestAction.SAVE_RESULTS, UserInfo.getInstance().getUid(), _grid.getStore().getModels()), this);
+                RunNetTestAction action = new RunNetTestAction(TestAction.SAVE_RESULTS, UserInfo.getInstance().getUid(), _grid.getStore().getModels());
+                setAction(action);
+                CmShared.getCmService().execute(action, this);
             }
             
             @Override

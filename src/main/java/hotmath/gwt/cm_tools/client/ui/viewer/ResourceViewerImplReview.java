@@ -35,6 +35,7 @@ public class ResourceViewerImplReview extends CmResourcePanelImplDefault {
             @Override
             public void attempt() {
                 GetReviewHtmlAction action = new GetReviewHtmlAction(file, "/hotmath_help/topics");
+                setAction(action);
                 CmShared.getCmService().execute(action,this);
             }
             public void oncapture(RpcData result) {

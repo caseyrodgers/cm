@@ -95,6 +95,7 @@ public class GroupSelectorWidget implements CmAdminDataRefresher {
 		        CmBusyManager.setBusy(true, false);
 		        CmServiceAsync s = CmShared.getCmService();
 		        GetActiveGroupsAction action = new GetActiveGroupsAction(uid);
+		        setAction(action);
 		        s.execute(action,this);
 		    }
             public void oncapture(CmList<GroupInfoModel> result) {

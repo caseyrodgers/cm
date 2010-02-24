@@ -178,7 +178,9 @@ public class CmShared implements EntryPoint {
                     new RetryAction<UserInfo>() {
                         @Override
                         public void attempt() {
-                            CmShared.getCmService().execute(new ProcessLoginRequestAction(key2),this);
+                            ProcessLoginRequestAction action = new ProcessLoginRequestAction(key2);
+                            setAction(action);
+                            CmShared.getCmService().execute(action,this);
                         }
                         
                         public void oncapture(UserInfo userInfo) {

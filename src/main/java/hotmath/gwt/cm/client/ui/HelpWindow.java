@@ -126,11 +126,14 @@ public class HelpWindow extends CmWindow {
                 new RetryAction<RpcData>() {
                     @Override
                     public void attempt() {
-                        CatchupMathTools.setBusy(true);
+                        CmBusyManager.setBusy(true);
                         CmServiceAsync s = CmShared.getCmService();
-                        s.execute(new SetBackgroundStyleAction(UserInfo.getInstance().getUid(), se.getSelectedItem().getBackgroundStyle()),this);
+                        SetBackgroundStyleAction action = new SetBackgroundStyleAction(UserInfo.getInstance().getUid(), se.getSelectedItem().getBackgroundStyle());
+                        setAction(action);
+                        s.execute(action,this);
                     }
                     public void oncapture(RpcData result) {
+                        CmBusyManager.setBusy(false);
                         try {
                             String newStyle = se.getSelectedItem().getBackgroundStyle();
                             /**
@@ -285,6 +288,7 @@ public class HelpWindow extends CmWindow {
                 public void attempt() {
                     CmBusyManager.setBusy(true);
                     GetStudentModelAction action = new GetStudentModelAction(UserInfo.getInstance().getUid());
+                    setAction(action);
                     CmShared.getCmService().execute(action,this);
                 }
                 public void oncapture(StudentModelI student) {
@@ -321,6 +325,7 @@ public class HelpWindow extends CmWindow {
                     public void attempt() {
                         CmBusyManager.setBusy(true);
                         GetStudentModelAction action = new GetStudentModelAction(UserInfo.getInstance().getUid());
+                        setAction(action);
                         CmShared.getCmService().execute(action, this);
                     }
                     public void oncapture(StudentModelI student) {
@@ -409,7 +414,9 @@ public class HelpWindow extends CmWindow {
                     public void attempt() {
                         CmBusyManager.setBusy(true);
                         CmServiceAsync s = (CmServiceAsync) Registry.get("cmService");
-                        s.execute(new SaveFeedbackAction(value, "", getFeedbackStateInfo()),this);
+                        SaveFeedbackAction action = new SaveFeedbackAction(value, "", getFeedbackStateInfo());
+                        setAction(action);
+                        s.execute(action,this);
                     }
                     public void oncapture(RpcData result) {
                         Log.info("Feedback saved");

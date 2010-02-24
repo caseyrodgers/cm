@@ -207,6 +207,14 @@ public class PrescriptionCmGuiDefinition implements CmGuiDefinition {
         Log.info("PrescriptionCmGuiDefinition.getAsyncDataFromServer:" + sessionNumber + ", " + location);
 
         new RetryAction<RpcData>() {
+
+            @Override
+            public void attempt() {
+                boolean updateActive = UserInfo.getInstance().isActiveUser();
+                GetPrescriptionAction action = new GetPrescriptionAction(UserInfo.getInstance().getRunId(), sessionNumberF, updateActive);
+                setAction(action);
+                CmShared.getCmService().execute(action,this);
+            }            
             @Override
             public void oncapture(RpcData rdata) {
                 try {
@@ -246,14 +254,6 @@ public class PrescriptionCmGuiDefinition implements CmGuiDefinition {
                 }
 
             }
-
-            @Override
-            public void attempt() {
-                boolean updateActive = UserInfo.getInstance().isActiveUser();
-                CmShared.getCmService().execute(new GetPrescriptionAction(UserInfo.getInstance().getRunId(), sessionNumberF, updateActive),
-                        this);
-            }
-
         }.attempt();
 
     }

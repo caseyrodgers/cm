@@ -238,7 +238,9 @@ public class QuizContext implements CmContext {
             @Override
             public void attempt() {
                 CmBusyManager.setBusy(true);
-                CmShared.getCmService().execute(new CreateTestRunAction(UserInfo.getInstance().getTestId()),this);
+                CreateTestRunAction action = new CreateTestRunAction(UserInfo.getInstance().getTestId());
+                setAction(action);
+                CmShared.getCmService().execute(action,this);
             }
             public void oncapture(CreateTestRunResponse testRunInfo) {
                 try {

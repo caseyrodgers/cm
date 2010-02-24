@@ -363,7 +363,9 @@ public class UserInfo implements IsSerializable, Response {
             @Override
             public void attempt() {
                 CmBusyManager.setBusy(true);
-                CmShared.getCmService().execute(new GetUserInfoAction(uid), this);
+                GetUserInfoAction action = new GetUserInfoAction(uid);
+                setAction(action);
+                CmShared.getCmService().execute(action, this);
             }
             @Override
             public void oncapture(UserInfo user) {

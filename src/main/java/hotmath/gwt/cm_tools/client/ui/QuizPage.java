@@ -107,7 +107,9 @@ public class QuizPage extends LayoutContainer {
             public void attempt() {
                 Boolean isCorrect = (correct != null && correct.equals("Correct")) ? true : false;
                 CmServiceAsync s = CmShared.getCmService();
-                s.execute(new SaveQuizCurrentResultAction(UserInfo.getInstance().getTestId(), isCorrect, Integer.parseInt(answerIndex), pid),this);
+                SaveQuizCurrentResultAction action = new SaveQuizCurrentResultAction(UserInfo.getInstance().getTestId(), isCorrect, Integer.parseInt(answerIndex), pid);
+                setAction(action);
+                s.execute(action,this);
             }
             @Override
             public void oncapture(RpcData value) {
@@ -139,6 +141,7 @@ public class QuizPage extends LayoutContainer {
             public void attempt() {
                 CmBusyManager.setBusy(true);
                 GetQuizCurrentResultsAction action = new GetQuizCurrentResultsAction(UserInfo.getInstance().getUid());
+                setAction(action);
                 CmShared.getCmService().execute(action,this);
             }
             
@@ -170,6 +173,7 @@ public class QuizPage extends LayoutContainer {
 	        public void attempt() {
 	            CatchupMathTools.setBusy(true);
 	            GetQuizHtmlAction quizAction = new GetQuizHtmlAction(UserInfo.getInstance().getUid(), UserInfo.getInstance().getTestSegment());
+	            setAction(quizAction);
 	            quizAction.setLoadActive(loadActive);
 	            Log.info("QuizPage.getQuizHtmlFromServer: " + quizAction);
 	            CmShared.getCmService().execute(quizAction, this);

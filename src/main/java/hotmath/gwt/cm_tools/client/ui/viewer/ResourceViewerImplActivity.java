@@ -32,10 +32,8 @@ public class ResourceViewerImplActivity extends ResourceViewerImplFlash {
         	    swfWidget.setStyleName("activity-widget");
         	    addResource(swfWidget,getResourceItem().getTitle());
     	    }
-    	    
     	    panel = this;
 	    }
-	    
 	    return panel;
 	}
 }

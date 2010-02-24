@@ -42,6 +42,7 @@ public class PdfWindow extends CmWindow {
             public void attempt() {
                 CatchupMathTools.setBusy(true);
                 CmServiceAsync s = CmShared.getCmService();
+                setAction(action);
                 s.execute(action,this);                
             }
             public void oncapture(CmWebResource webResource) {

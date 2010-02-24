@@ -265,8 +265,9 @@ public class PrescriptionContext implements CmContext {
         new RetryAction<RpcData>() {
             @Override
             public void attempt() {
-                CmShared.getCmService().execute(
-                        new MarkPrescriptionLessonAsViewedAction(prescriptionData.getCurrSession().getTopic(), runId, session),this);
+                MarkPrescriptionLessonAsViewedAction action = new MarkPrescriptionLessonAsViewedAction(prescriptionData.getCurrSession().getTopic(), runId, session);
+                setAction(action);
+                CmShared.getCmService().execute(action,this);
             }
             @Override
             public void oncapture(RpcData userAdvance) {

@@ -41,18 +41,13 @@ public class TrendingDataWindowChartBar2 extends TrendingDataWindowChart {
             @Override
             public void attempt() {
                 CmBusyManager.setBusy(true);
-                CmShared.getCmService().execute(new GetAdminTrendingDataDetailAction(StudentGridPanel.instance._cmAdminMdl.getId(),
-                        StudentGridPanel.instance._pageAction, programData.getTestDefId(), segment),this);
+                GetAdminTrendingDataDetailAction action = new GetAdminTrendingDataDetailAction(StudentGridPanel.instance._cmAdminMdl.getId(),
+                        StudentGridPanel.instance._pageAction, programData.getTestDefId(), segment);
+                CmShared.getCmService().execute(action,this);
             }
             public void oncapture(CmList<StudentModelExt> students) {
+                CmBusyManager.setBusy(false);                
                 new TrendingDataStudentListDialog("Students in " + programData.getProgramName() + " Segment " + segment,students);
-                CmBusyManager.setBusy(false);
-            }
-
-            @Override
-            public void onFailure(Throwable caught) {
-                CmBusyManager.setBusy(false);
-                super.onFailure(caught);
             }
         }.attempt();    
     }

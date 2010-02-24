@@ -1,7 +1,5 @@
 package hotmath.gwt.cm_tools.client.ui.viewer;
 
-import hotmath.gwt.cm_tools.client.service.CmServiceAsync;
-import hotmath.gwt.cm_tools.client.ui.CmMainPanel;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.data.CmAsyncRequest;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
@@ -139,11 +137,10 @@ public class ShowWorkPanel extends Frame {
 		new RetryAction<CmList<WhiteboardCommand>>() {
 		    @Override
 		    public void attempt() {
-		        CmServiceAsync s = CmShared.getCmService();
 		        int runId = pid.startsWith("quiz")?0:UserInfo.getInstance().getRunId();
 		        GetWhiteboardDataAction action = new GetWhiteboardDataAction(UserInfo.getInstance().getUid(),pid,runId);
 		        setAction(action);
-		        s.execute(action,this);
+		        CmShared.getCmService().execute(action,this);
             }
             public void oncapture(CmList<WhiteboardCommand> commands) {
                 for(int i=0, t=commands.size();i<t;i++) {
