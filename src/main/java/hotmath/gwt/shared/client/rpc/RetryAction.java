@@ -96,19 +96,22 @@ public abstract class RetryAction<T> implements AsyncCallback<T> {
             }
             else {
                 
+                sendInfoAboutRetriedCommand("failed");
+                
                 /** Perform as synchronous call in Window.confirm to stop
                  *  the flow of new requests until this one is taken care of.
                  */
                 String msg = "A server error has occured.\n" 
                 + "You may retry this operation by clicking 'OK'.\n"
                 + "However if the error persists, contact Technical Support.";
-
+                
+                
                 if(Window.confirm(msg)) {
+                    sendInfoAboutRetriedCommand("retried");
                     attempt();
-                    
-                    sendInfoAboutRetriedCommand();
                 }
                 else {
+                    sendInfoAboutRetriedCommand("canceled");
                 	onCancel();
                 }
             }
@@ -171,9 +174,10 @@ public abstract class RetryAction<T> implements AsyncCallback<T> {
      *  not executing in RetryAction and fail silently.
      *  
      */
-    private void sendInfoAboutRetriedCommand() {
+    private void sendInfoAboutRetriedCommand(String status) {
         try {
-            CmShared.getCmService().execute(new LogRetryActionFailedAction(UserInfo.getInstance().getUid(),getClass().getName(),getAction()),new AsyncCallback<RpcData>() {
+            String classNameTag = getClass().getName() + "=" + status;
+            CmShared.getCmService().execute(new LogRetryActionFailedAction(UserInfo.getInstance().getUid(),classNameTag,getAction()),new AsyncCallback<RpcData>() {
                 @Override
                 public void onSuccess(RpcData result) {
                     Log.info("Retry operation logged");

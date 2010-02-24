@@ -25,7 +25,7 @@ public class GetWhiteboardDataCommand implements ActionHandler<GetWhiteboardData
 
     @Override
     public CmList<WhiteboardCommand> execute(final Connection conn, GetWhiteboardDataAction action) throws Exception {
-        
+
         CmList<WhiteboardCommand> data = new CmArrayList<WhiteboardCommand>();
         PreparedStatement pstat = null;
         try {

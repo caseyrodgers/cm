@@ -27,7 +27,7 @@ public class ClearWhiteboardDataCommand implements ActionHandler<ClearWhiteboard
     
     @Override
     public RpcData execute(Connection conn, ClearWhiteboardDataAction action) throws Exception {
-        
+
         PreparedStatement pstat = null;
         try {
             String sql = "delete from HA_TEST_RUN_WHITEBOARD where user_id = ? and pid = ? and run_id = ?";
