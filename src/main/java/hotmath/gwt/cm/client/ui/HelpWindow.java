@@ -18,6 +18,7 @@ import hotmath.gwt.shared.client.eventbus.EventBus;
 import hotmath.gwt.shared.client.eventbus.EventType;
 import hotmath.gwt.shared.client.rpc.RetryAction;
 import hotmath.gwt.shared.client.rpc.action.GetStudentModelAction;
+import hotmath.gwt.shared.client.rpc.action.ProcessLoginRequestAction;
 import hotmath.gwt.shared.client.rpc.action.SaveFeedbackAction;
 import hotmath.gwt.shared.client.rpc.action.SetBackgroundStyleAction;
 import hotmath.gwt.shared.client.util.CmRunAsyncCallback;
@@ -83,6 +84,7 @@ public class HelpWindow extends CmWindow {
                     }
                 }));
                 html += "<div style='margin-top: 25px;'>User Location: " + UserInfo.getInstance().getUserStatus() + "</div>";
+                
             }
             messageArea = new Html(html);
             
@@ -270,8 +272,29 @@ public class HelpWindow extends CmWindow {
         fs.add(btn);
 
         vp.add(fs);
-
         add(vp);
+        
+        
+        if(CmShared.getQueryParameter("debug") != null) {
+            add(new Button("Force Action Failure",new SelectionListener<ButtonEvent>() {
+                @Override
+                public void componentSelected(ButtonEvent ce) {
+                    new RetryAction<UserInfo>() {
+                        @Override
+                        public void attempt() {
+                            ProcessLoginRequestAction action = new ProcessLoginRequestAction("FORCE_FAILURE");
+                            setAction(action);
+                            CmShared.getCmService().execute(action, this);
+                        }
+                        
+                        @Override
+                        public void oncapture(UserInfo value) {
+                            CatchupMathTools.showAlert("Test RetryAction success: " + value);
+                        }
+                    }.attempt();
+                }
+            }));
+        }
     }
 
     /**
