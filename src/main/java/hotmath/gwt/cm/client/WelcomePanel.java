@@ -34,15 +34,21 @@ public class WelcomePanel extends LayoutContainer {
 
         main.setHeading("Welcome to Catchup Math");
 
+        boolean addMotivationalButton=false;
         if (CmShared.getQueryParameterValue("type").equals("1")) {
             main.setSize(370,180);
             main.add(new SampleSessionInfo(), new BorderLayoutData(LayoutRegion.CENTER));
         } else if (CmShared.getQueryParameterValue("type").equals("2") || UserInfo.getInstance().getViewCount() == 0) {
             main.setSize(330, 180);
             main.add(new StandardInfo(), new BorderLayoutData(LayoutRegion.CENTER));
+            addMotivationalButton=true;
         } else {
             main.setSize(350, 180);
             main.add(new StandardInfo(), new BorderLayoutData(LayoutRegion.CENTER, 200));
+            addMotivationalButton=true;
+        }
+        
+        if(addMotivationalButton) {
             main.addButton(new Button("Motivational Video", new SelectionListener<ButtonEvent>() {
                 @Override
                 public void componentSelected(ButtonEvent ce) {
