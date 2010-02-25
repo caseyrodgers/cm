@@ -439,6 +439,9 @@ var _whiteboardActive=false;
  */
 function setQuizQuestionDisplayAsActive(pid) {
 	var testset = document.getElementById("testset_div");
+	if(testset == null)
+		return;
+	
 	var questions = testset.getElementsByTagName("div");
 	var activeGuid=null;
 	for ( var i = 0, t = questions.length, c = 0; i < t; i++) {
