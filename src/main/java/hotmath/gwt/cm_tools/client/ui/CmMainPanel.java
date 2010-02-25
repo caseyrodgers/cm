@@ -3,6 +3,7 @@ package hotmath.gwt.cm_tools.client.ui;
 import hotmath.gwt.cm_tools.client.ui.resource_viewer.CmMainResourceContainer;
 import hotmath.gwt.cm_tools.client.ui.resource_viewer.CmResourcePanel;
 import hotmath.gwt.cm_tools.client.ui.viewer.ResourceViewerImplFlash;
+import hotmath.gwt.cm_tools.client.ui.viewer.CmResourcePanelImplWithWhiteboard.DisplayMode;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
 import hotmath.gwt.shared.client.eventbus.CmEventListenerImplDefault;
 import hotmath.gwt.shared.client.eventbus.EventBus;
@@ -35,7 +36,7 @@ public class CmMainPanel extends LayoutContainer {
     // west panel is static to allow access
     // to the title.
     public ContentPanel _westPanel;
-    
+
     CmResourcePanel _lastResourceViewer;
 
     /**
@@ -63,55 +64,53 @@ public class CmMainPanel extends LayoutContainer {
         BorderLayout bl = new BorderLayout() {
             public void layout() {
                 super.layout();
-                if(_westPanel.getHeader().getToolCount() > 0) {
+                if (_westPanel.getHeader().getToolCount() > 0) {
                     _westPanel.getHeader().getTool(0).setToolTip("Hide");
-                }                
+                }
             }
         };
         setLayout(bl);
         _mainContent = new CmMainResourceContainer();
-        
+
         _westPanel = new ContentPanel();
-        
-        
+
         _westPanel.addStyleName("main-panel-west");
         _westPanel.setLayout(new BorderLayout());
-        //_westPanel.setAnimCollapse(true);
+        // _westPanel.setAnimCollapse(true);
         _westPanel.getHeader().addStyleName("cm-main-panel-header");
         _westPanel.setBorders(false);
-        
+
         BorderLayoutData westData = new BorderLayoutData(LayoutRegion.WEST, 226);
         westData.setSplit(false);
         westData.setCollapsible(true);
-        
+
         _westPanel.add(cmGuiDef.getWestWidget(), new BorderLayoutData(LayoutRegion.CENTER));
-        
+
         add(_westPanel, westData);
-        
+
         addTools();
 
-        
         BorderLayoutData centerData = new BorderLayoutData(LayoutRegion.CENTER);
-        //centerData.setMargins(new Margins(1, 0,1, 1));
+        // centerData.setMargins(new Margins(1, 0,1, 1));
         centerData.setSplit(false);
         add(_mainContent, centerData);
-        
+
         Widget w = cmGuiDef.getCenterWidget();
         if (w != null) {
-                _mainContent.add(w);
+            _mainContent.add(w);
         }
-        
+
     }
 
-    
     public void expandResourceButtons() {
-        ((BorderLayout)getLayout()).expand(LayoutRegion.WEST);
+        ((BorderLayout) getLayout()).expand(LayoutRegion.WEST);
     }
-    
-    /** Request controls from Context
+
+    /**
+     * Request controls from Context
      * 
      * Provide holder for the main buttons for context
-     *  
+     * 
      * Usually either next/prev or the quiz button.
      * 
      * 
@@ -123,7 +122,7 @@ public class CmMainPanel extends LayoutContainer {
         LayoutContainer lc = new LayoutContainer();
         lc.setStyleName("cm-main-panel-button-panel");
 
-        for(Component c:comps) {
+        for (Component c : comps) {
             lc.add(c);
         }
         _westPanel.add(lc, new BorderLayoutData(LayoutRegion.NORTH, 50));
@@ -136,105 +135,118 @@ public class CmMainPanel extends LayoutContainer {
     public void removeResource() {
         __lastInstance._mainContent.removeResource();
     }
-    
-    
+
     static {
         EventBus.getInstance().addEventListener(new CmEventListenerImplDefault() {
             @Override
             public void handleEvent(CmEvent event) {
-                if(event.getEventType() == EventType.EVENT_TYPE_RESOURCE_VIEWER_OPEN) {
-                    __lastInstance._lastResourceViewer = (CmResourcePanel)event.getEventData();
-                }
-                else if(event.getEventType() == EventType.EVENT_TYPE_RESOURCE_VIEWER_CLOSE) {
+                if (event.getEventType() == EventType.EVENT_TYPE_RESOURCE_VIEWER_OPEN) {
+                    __lastInstance._lastResourceViewer = (CmResourcePanel) event.getEventData();
+                } else if (event.getEventType() == EventType.EVENT_TYPE_RESOURCE_VIEWER_CLOSE) {
                     __lastInstance.expandResourceButtons();
-                    __lastInstance._lastResourceViewer = (CmResourcePanel)event.getEventData();
+                    __lastInstance._lastResourceViewer = (CmResourcePanel) event.getEventData();
                 }
-                /** Any modal window, should hide the resource window to allow
-                 *  for Flash widgets to be hidden
-                 *  
+                /**
+                 * Any modal window, should hide the resource window to allow
+                 * for Flash widgets to be hidden
+                 * 
                  */
-                else if(event.getEventType() == EventType.EVENT_TYPE_MODAL_WINDOW_OPEN) {
+                else if (event.getEventType() == EventType.EVENT_TYPE_MODAL_WINDOW_OPEN) {
                     // we must remove any resource viewer that contains
                     // flash, otherwise the z-order gets screwed up and
                     // the dialog will bleed through the flash.
-                    if(__lastInstance != null && __lastInstance._lastResourceViewer instanceof ResourceViewerImplFlash) {
+                    if (__lastInstance != null && __lastInstance._lastResourceViewer instanceof ResourceViewerImplFlash) {
                         __lastInstance._mainContent.removeResource();
                     }
-                }
-                  else if(event.getEventType() == EventType.EVENT_TYPE_WINDOW_RESIZED) {
+                } else if (event.getEventType() == EventType.EVENT_TYPE_WINDOW_RESIZED) {
                     __lastInstance._mainContent.fireWindowResized();
+                } else if (event.getEventType() == EventType.EVENT_TYPE_CONTEXT_TOOLTIP_SHOW) {
+                    ContextTooltipPanel.getInstance().setContextTooltip((String) event.getEventData());
                 }
-                  else if(event.getEventType() == EventType.EVENT_TYPE_CONTEXT_TOOLTIP_SHOW) {
-                      ContextTooltipPanel.getInstance().setContextTooltip((String)event.getEventData());
-                  }
+                else if(event.getEventType() == EventType.EVENT_TYPE_WHITEBOARD_DISPLAY_MODE_CHANGED) {
+                    //setWhiteboardIsVisible(((DisplayMode)event.getEventData()) == DisplayMode.WHITEBOARD);
+                    //setQuizQuestionDisplayAsActive(getLastQuestionPid());
+                }
             }
         });
         publishNative();
     }
-    
-    
-    /** This block of code is used for global testset communication between
-     * external testset HTML/JS and GWT. 
+
+    /**
+     * This block of code is used for global testset communication between
+     * external testset HTML/JS and GWT.
      * 
      * @TODO: create a separate abstraction that exposes a global listener.
      * 
      */
-    /** define global method to allow for setting the active quiz pid
+    /**
+     * define global method to allow for setting the active quiz pid
      * 
      */
     static private native void publishNative() /*-{
-        $wnd.setQuizQuestionActive_Gwt = @hotmath.gwt.cm_tools.client.ui.CmMainPanel::setQuizQuestionActive_Gwt(Ljava/lang/String;);
-    }-*/;
-    
+                                               $wnd.setQuizQuestionActive_Gwt = @hotmath.gwt.cm_tools.client.ui.CmMainPanel::setQuizQuestionActive_Gwt(Ljava/lang/String;);
+                                               }-*/;
+
     static private String __lastQuestionPid;
-    /** called by external JS when a testset question
-     * has been made current.
+
+    /**
+     * called by external JS when a testset question has been made current.
      * 
      * @param pid
      */
     @SuppressWarnings("unused")
     static private void setQuizQuestionActive_Gwt(String pid) {
-        if(__lastQuestionPid == null || !__lastQuestionPid.equals(pid)) {
-            EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_QUIZ_QUESTION_FOCUS_CHANGED,pid));
-            __lastQuestionPid=pid;
+        if (__lastQuestionPid == null || !__lastQuestionPid.equals(pid)) {
+            EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_QUIZ_QUESTION_FOCUS_CHANGED, pid));
+            __lastQuestionPid = pid;
         }
     }
-    
-    /** return the last active question's pid.  Return null
-     * if no question has been displayed.
+
+    /**
+     * return the last active question's pid. Return null if no question has
+     * been displayed.
      * 
      * @return
      */
     static public String getLastQuestionPid() {
         return __lastQuestionPid;
     }
-    /** Call external method to set a given question as active.
-     *  The guid is matched with passed pid.  If null, then the
-     *  first question is marked as current.
-     *  
+
+    /**
+     * Call external method to set a given question as active. The guid is
+     * matched with passed pid. If null, then the first question is marked as
+     * current.
+     * 
      * @param pid
      */
     static public native void setQuizQuestionDisplayAsActive(String pid) /*-{
-        $wnd.setQuizQuestionDisplayAsActive(pid);
-   }-*/;    
+                                                                         $wnd.setQuizQuestionDisplayAsActive(pid);
+                                                                         }-*/;
+
+    static public native void setWhiteboardIsVisible(Boolean whiteboardVisible) /*-{
+                                                                                   $wnd.setWhiteboardIsVisible(whiteboardVisible);
+                                                                                   }-*/;
 }
 
-/** Display a dropdown tooltip below the main context buttons
+/**
+ * Display a dropdown tooltip below the main context buttons
  * 
  * @author casey
- *
+ * 
  */
 class ContextTooltipPanel extends LayoutContainer {
 
     static private ContextTooltipPanel __instance;
+
     static public ContextTooltipPanel getInstance() {
-        if(__instance == null)
+        if (__instance == null)
             __instance = new ContextTooltipPanel();
         return __instance;
     }
-    
-    static final int TIP_SHOW_MILLS=4000;
+
+    static final int TIP_SHOW_MILLS = 4000;
     Timer tipTimer;
+
     private ContextTooltipPanel() {
         addStyleName("context-tooltip-panel");
         setStyleAttribute("position", "absolute");
@@ -242,52 +254,53 @@ class ContextTooltipPanel extends LayoutContainer {
         setStyleAttribute("left", "0");
         setStyleAttribute("width", "100%");
     }
-    
-    /** Display tooltip in drop down area
+
+    /**
+     * Display tooltip in drop down area
      * 
-     * If tip is already being displayed and is different
-     * then we want to cancel curent display and show new one.
+     * If tip is already being displayed and is different then we want to cancel
+     * curent display and show new one.
      * 
      * @param tooltip
      */
     public void setContextTooltip(String tooltip) {
-        
-        if(tipTimer != null) {
+
+        if (tipTimer != null) {
             tipTimer.cancel();
             tipTimer = null;
         }
-        
-        String html="<p style='padding: 10px;background: yellow;'>" + tooltip + "</p>";
-        
+
+        String html = "<p style='padding: 10px;background: yellow;'>" + tooltip + "</p>";
+
         removeAll();
         setStyleAttribute("top", "50px");
         setStyleAttribute("left", "0");
         add(new Html(html));
-        
+
         CmMainPanel.__lastInstance._westPanel.add(this);
         CmMainPanel.__lastInstance._westPanel.layout();
         el().slideIn(Direction.DOWN, new FxConfig(500));
-        
+
         tipTimer = new Timer() {
             @Override
             public void run() {
-                /** remove this widget from parent
+                /**
+                 * remove this widget from parent
+                 * 
                  * @TODO: remove variable access, use event?
                  */
-                //CmMainPanel.__lastInstance._westPanel.remove(TooltipContentPanel.this); 
-                //CmMainPanel.__lastInstance.layout();
+                // CmMainPanel.__lastInstance._westPanel.remove(TooltipContentPanel.this);
+                // CmMainPanel.__lastInstance.layout();
                 try {
                     el().fadeOut(FxConfig.NONE);
                     CmMainPanel.__lastInstance._westPanel.remove(ContextTooltipPanel.this);
                     CmMainPanel.__lastInstance.layout();
-                }
-                finally {
+                } finally {
                     tipTimer = null;
                 }
             }
         };
         tipTimer.schedule(TIP_SHOW_MILLS);
     }
-  
- 
+
 }

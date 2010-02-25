@@ -18,7 +18,7 @@ import hotmath.gwt.shared.client.eventbus.EventBus;
 import hotmath.gwt.shared.client.eventbus.EventType;
 import hotmath.gwt.shared.client.rpc.RetryAction;
 import hotmath.gwt.shared.client.rpc.action.GetStudentModelAction;
-import hotmath.gwt.shared.client.rpc.action.ProcessLoginRequestAction;
+import hotmath.gwt.shared.client.rpc.action.ResetUserAction;
 import hotmath.gwt.shared.client.rpc.action.SaveFeedbackAction;
 import hotmath.gwt.shared.client.rpc.action.SetBackgroundStyleAction;
 import hotmath.gwt.shared.client.util.CmRunAsyncCallback;
@@ -279,16 +279,17 @@ public class HelpWindow extends CmWindow {
             add(new Button("Force Action Failure",new SelectionListener<ButtonEvent>() {
                 @Override
                 public void componentSelected(ButtonEvent ce) {
-                    new RetryAction<UserInfo>() {
+                    new RetryAction<RpcData>() {
                         @Override
                         public void attempt() {
-                            ProcessLoginRequestAction action = new ProcessLoginRequestAction("FORCE_FAILURE");
+                            /** will fail with null uid */
+                            ResetUserAction action = new ResetUserAction();
                             setAction(action);
                             CmShared.getCmService().execute(action, this);
                         }
                         
                         @Override
-                        public void oncapture(UserInfo value) {
+                        public void oncapture(RpcData value) {
                             CatchupMathTools.showAlert("Test RetryAction success: " + value);
                         }
                     }.attempt();

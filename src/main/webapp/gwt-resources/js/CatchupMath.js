@@ -431,7 +431,7 @@ function setQuizQuestionActive(pid) {
 	setQuizQuestionDisplayAsActive(pid);
 }
 
-
+var _whiteboardActive=false;
 /** mark the question with guid of pid as being active 
  * 
  * @param pid  guid of row to select (null selects first)
@@ -439,12 +439,14 @@ function setQuizQuestionActive(pid) {
  */
 function setQuizQuestionDisplayAsActive(pid) {
 	var testset = document.getElementById("testset_div");
+	_whiteboardActive=true;
 	var questions = testset.getElementsByTagName("div");
 	for ( var i = 0, t = questions.length, c = 0; i < t; i++) {
 		var d = questions[i];
 		if(d.className == 'question_div') {
-			if(d.getAttribute('guid') == pid || (pid == null && c == 0)) {
-				d.style.background = '#EAEAEA';
+			if(_whiteboardActive && (d.getAttribute('guid') == pid || (pid == null && c == 0))) {
+				// d.style.background = '#EAEAEA';
+				d.style.background = 'url(/gwt-resources/whiteboard_pointer.png) no-repeat top right';
 				setQuizQuestionActive_Gwt(d.getAttribute('guid'));
 			}
 			else {
@@ -453,4 +455,9 @@ function setQuizQuestionDisplayAsActive(pid) {
 			c++;
 		}
 	}
+}
+
+/** called by GWT when the status of the whiteboard changes */
+function setWhiteboardIsVisible(wbIsVisible) {
+	_whiteboardActive = wbIsVisible;
 }

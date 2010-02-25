@@ -4,6 +4,9 @@ import hotmath.gwt.cm_tools.client.ui.CmMainPanel;
 import hotmath.gwt.cm_tools.client.ui.resource_viewer.CmResourcePanelImplDefault;
 import hotmath.gwt.cm_tools.client.ui.resource_viewer.CmResourcePanelContainer.ResourceViewerState;
 import hotmath.gwt.shared.client.data.CmAsyncRequestImplDefault;
+import hotmath.gwt.shared.client.eventbus.CmEvent;
+import hotmath.gwt.shared.client.eventbus.EventBus;
+import hotmath.gwt.shared.client.eventbus.EventType;
 import hotmath.gwt.shared.client.util.UserInfo;
 
 import java.util.List;
@@ -184,6 +187,8 @@ public abstract class CmResourcePanelImplWithWhiteboard extends CmResourcePanelI
         _displayMode = displayMode;
         __lastDisplayMode = _displayMode;
         
+        
+        EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_WHITEBOARD_DISPLAY_MODE_CHANGED,displayMode));
         
         layout();
     }
