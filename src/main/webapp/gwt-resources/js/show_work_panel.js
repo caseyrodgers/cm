@@ -28,7 +28,6 @@ function flashWhiteboardIsReady() {
 // something. Such as 'draw', 'clear', or 'load'
 // commandData, if used, is JSON.
 function updateWhiteboard(id, command, commandData) {
-
    var fo = getWhiteboardObject();
    if(fo.updateWhiteboard) {
        // send an array of commands.  Each element in array

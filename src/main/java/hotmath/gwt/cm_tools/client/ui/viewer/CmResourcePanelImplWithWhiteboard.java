@@ -21,6 +21,7 @@ import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 
 
@@ -92,6 +93,8 @@ public abstract class CmResourcePanelImplWithWhiteboard extends CmResourcePanelI
                     }
                     
                     setDisplayMode(DisplayMode.TUTOR);
+                    
+                    EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_WHITEBOARD_CLOSED));
                 }
             }
         });
@@ -161,8 +164,6 @@ public abstract class CmResourcePanelImplWithWhiteboard extends CmResourcePanelI
             lcTutor.setScrollMode(Scroll.AUTO);
             lcTutor.add(getTutorDisplay());
             
-            Object o = getTutorDisplay();
-            
             LayoutContainer lcMain = new LayoutContainer(new BorderLayout());
             lcMain.addStyleName("whiteboard-container");
             lcMain.setStyleAttribute("background", "transparent");
@@ -186,9 +187,6 @@ public abstract class CmResourcePanelImplWithWhiteboard extends CmResourcePanelI
         
         _displayMode = displayMode;
         __lastDisplayMode = _displayMode;
-        
-        
-        EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_WHITEBOARD_DISPLAY_MODE_CHANGED,displayMode));
         
         layout();
     }

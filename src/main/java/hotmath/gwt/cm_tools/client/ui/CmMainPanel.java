@@ -135,8 +135,14 @@ public class CmMainPanel extends LayoutContainer {
     public void removeResource() {
         __lastInstance._mainContent.removeResource();
     }
-
+    
+    
+    static private boolean _isWhiteboardVisible;
+    static public boolean  isWhiteboardVisible() {
+        return _isWhiteboardVisible;
+    }
     static {
+        
         EventBus.getInstance().addEventListener(new CmEventListenerImplDefault() {
             @Override
             public void handleEvent(CmEvent event) {
@@ -163,9 +169,13 @@ public class CmMainPanel extends LayoutContainer {
                 } else if (event.getEventType() == EventType.EVENT_TYPE_CONTEXT_TOOLTIP_SHOW) {
                     ContextTooltipPanel.getInstance().setContextTooltip((String) event.getEventData());
                 }
-                else if(event.getEventType() == EventType.EVENT_TYPE_WHITEBOARD_DISPLAY_MODE_CHANGED) {
-                    //setWhiteboardIsVisible(((DisplayMode)event.getEventData()) == DisplayMode.WHITEBOARD);
-                    //setQuizQuestionDisplayAsActive(getLastQuestionPid());
+                else if(event.getEventType() == EventType.EVENT_TYPE_WHITEBOARD_READY) {
+                    setWhiteboardIsVisible(true);
+                    setQuizQuestionDisplayAsActive(getLastQuestionPid());
+                }
+                else if(event.getEventType() == EventType.EVENT_TYPE_WHITEBOARD_CLOSED) {
+                    setWhiteboardIsVisible(false);
+                    setQuizQuestionDisplayAsActive(null);
                 }
             }
         });
@@ -184,21 +194,21 @@ public class CmMainPanel extends LayoutContainer {
      * 
      */
     static private native void publishNative() /*-{
-                                               $wnd.setQuizQuestionActive_Gwt = @hotmath.gwt.cm_tools.client.ui.CmMainPanel::setQuizQuestionActive_Gwt(Ljava/lang/String;);
+                                               $wnd.setQuizActiveQuestion_Gwt = @hotmath.gwt.cm_tools.client.ui.CmMainPanel::setQuizQuestionActive_Gwt(Ljava/lang/String;);
                                                }-*/;
 
     static private String __lastQuestionPid;
 
     /**
-     * called by external JS when a testset question has been made current.
+     * called by external JS each time a testset question has been made current.
      * 
      * @param pid
      */
     @SuppressWarnings("unused")
     static private void setQuizQuestionActive_Gwt(String pid) {
         if (__lastQuestionPid == null || !__lastQuestionPid.equals(pid)) {
-            EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_QUIZ_QUESTION_FOCUS_CHANGED, pid));
             __lastQuestionPid = pid;
+            EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_QUIZ_QUESTION_FOCUS_CHANGED, pid));
         }
     }
 
@@ -223,7 +233,8 @@ public class CmMainPanel extends LayoutContainer {
                                                                          $wnd.setQuizQuestionDisplayAsActive(pid);
                                                                          }-*/;
 
-    static public native void setWhiteboardIsVisible(Boolean whiteboardVisible) /*-{
+
+    static public native void setWhiteboardIsVisible(boolean whiteboardVisible) /*-{
                                                                                    $wnd.setWhiteboardIsVisible(whiteboardVisible);
                                                                                    }-*/;
 }

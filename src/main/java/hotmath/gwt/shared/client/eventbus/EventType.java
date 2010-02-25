@@ -107,9 +107,17 @@ public enum EventType{
      */
     EVENT_TYPE_QUIZ_QUESTION_FOCUS_CHANGED,
     
-    
-    /** When the display mode of the whiteboard changes.  For example
-     *  when it is shown or hidden.
+
+    /** fired when the whiteboard is removed
+     * 
      */
-    EVENT_TYPE_WHITEBOARD_DISPLAY_MODE_CHANGED
+    EVENT_TYPE_WHITEBOARD_CLOSED,
+    
+    
+    /** Fired when whiteboard is ready
+     * 
+     */
+    EVENT_TYPE_WHITEBOARD_READY
+    
+    
 }

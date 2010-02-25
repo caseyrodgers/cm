@@ -439,15 +439,15 @@ var _whiteboardActive=false;
  */
 function setQuizQuestionDisplayAsActive(pid) {
 	var testset = document.getElementById("testset_div");
-	_whiteboardActive=true;
 	var questions = testset.getElementsByTagName("div");
+	var activeGuid=null;
 	for ( var i = 0, t = questions.length, c = 0; i < t; i++) {
 		var d = questions[i];
 		if(d.className == 'question_div') {
-			if(_whiteboardActive && (d.getAttribute('guid') == pid || (pid == null && c == 0))) {
+			if(_whiteboardActive==true && (d.getAttribute('guid') == pid || (pid == null && c == 0))) {
 				// d.style.background = '#EAEAEA';
 				d.style.background = 'url(/gwt-resources/whiteboard_pointer.png) no-repeat top right';
-				setQuizQuestionActive_Gwt(d.getAttribute('guid'));
+				activeGuid=d.getAttribute('guid');
 			}
 			else {
 				d.style.background = '';
@@ -455,6 +455,7 @@ function setQuizQuestionDisplayAsActive(pid) {
 			c++;
 		}
 	}
+	setQuizActiveQuestion_Gwt(activeGuid);
 }
 
 /** called by GWT when the status of the whiteboard changes */
