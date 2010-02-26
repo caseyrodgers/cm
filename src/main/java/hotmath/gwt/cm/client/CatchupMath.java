@@ -12,6 +12,7 @@ import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.data.HaBasicUser.UserType;
 import hotmath.gwt.cm_tools.client.ui.CmMainPanel;
 import hotmath.gwt.cm_tools.client.ui.FooterPanel;
+import hotmath.gwt.cm_tools.client.util.GenericVideoPlayerForMona;
 import hotmath.gwt.shared.client.CmLoginAsync;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.data.CmAsyncRequest;
@@ -19,6 +20,7 @@ import hotmath.gwt.shared.client.eventbus.CmEvent;
 import hotmath.gwt.shared.client.eventbus.CmEventListenerImplDefault;
 import hotmath.gwt.shared.client.eventbus.EventBus;
 import hotmath.gwt.shared.client.eventbus.EventType;
+import hotmath.gwt.shared.client.util.CmAsyncCallback;
 import hotmath.gwt.shared.client.util.CmRunAsyncCallback;
 import hotmath.gwt.shared.client.util.UserInfo;
 
@@ -359,13 +361,21 @@ public class CatchupMath implements EntryPoint {
      */
     static private void doResourceLoad(final String type, final String file) {
     	GWT.runAsync(new CmRunAsyncCallback() {
-			
 			@Override
 			public void onSuccess() {
 		        CmLocation location = new CmLocation("p:" + UserInfo.getInstance().getSessionNumber() + ":" + type + ":" + file);
 		        CmHistoryManager.getInstance().addHistoryLocation(location);
 			}
 		});
+    }
+    
+    static public void showMotivationalVideo_Gwt() {
+        GWT.runAsync(new CmRunAsyncCallback() {
+            @Override
+            public void onSuccess() {
+                new GenericVideoPlayerForMona();
+            }
+        });
     }
     
     /** Push a GWT method onto the global space for the app window
@@ -375,6 +385,9 @@ public class CatchupMath implements EntryPoint {
      */
     static private native void publishNative() /*-{
                                     $wnd.doLoadResource_Gwt = @hotmath.gwt.cm.client.CatchupMath::doResourceLoad(Ljava/lang/String;Ljava/lang/String;);
+                                    
+                                    $wnd.showMotivationalVideo_Gwt = @hotmath.gwt.cm.client.CatchupMath::showMotivationalVideo_Gwt();
+
                                     
                                     // Set global variable to signal that Cm system has been initialized.
                                     // This is checked in CatchupMath.html to indicate that a loading error occurred.

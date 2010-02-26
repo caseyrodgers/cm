@@ -49,6 +49,5 @@ public class GenericVideoPlayer extends CmWindow {
                 close();
             }
         }));
-        setVisible(true);
     }    
 }

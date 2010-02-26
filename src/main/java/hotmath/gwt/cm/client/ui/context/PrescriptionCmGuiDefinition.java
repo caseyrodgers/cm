@@ -15,6 +15,7 @@ import hotmath.gwt.cm_tools.client.ui.CmMainPanel;
 import hotmath.gwt.cm_tools.client.ui.ContextController;
 import hotmath.gwt.cm_tools.client.ui.context.CmContext;
 import hotmath.gwt.cm_tools.client.ui.resource_viewer.CmResourcePanel;
+import hotmath.gwt.cm_tools.client.util.GenericVideoPlayerForMona;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
 import hotmath.gwt.shared.client.eventbus.CmEventListenerImplDefault;
@@ -34,6 +35,8 @@ import java.util.Map;
 import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.Style.LayoutRegion;
 import com.extjs.gxt.ui.client.Style.Scroll;
+import com.extjs.gxt.ui.client.event.ButtonEvent;
+import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.fx.FxConfig;
 import com.extjs.gxt.ui.client.widget.Html;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
@@ -43,6 +46,7 @@ import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
 import com.extjs.gxt.ui.client.widget.layout.CenterLayout;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.google.gwt.user.client.Timer;
+import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Widget;
 
 public class PrescriptionCmGuiDefinition implements CmGuiDefinition {
@@ -135,17 +139,18 @@ public class PrescriptionCmGuiDefinition implements CmGuiDefinition {
         Timer t = new Timer() {
             @Override
             public void run() {
-                String html = "<b>Catchup Math: the more you do, the more you learn!</b>" + "<ul>"
+                String html = 
+                          "<div class='info'>" 
+                        + "<b>Catchup Math: the more you do, the more you learn!</b>" + "<ul>"
                         + "<li>Choose any resource from the left-side menu</li> "
                         + "<li>The Help button has neat features</li> "
                         + "<li>Check for new Flash Cards and Games</li> "
-                        + "<li>Use our whiteboard to work the problems</li>" + "</ul>";
-
-                html = "<div class='info'>" + html + "</div>";
-
+                        + "<li>Use our whiteboard to work the problems</li>"
+                        + "<li><a style='color: white' href='#' onclick='showMotivationalVideo_Gwt();return false;'>Professor Musa Video</li>"
+                        + "</ul></div>";
+                
                 Html ohtml = new Html(html);
                 ohtml.addStyleName("prescription-help-panel");
-
                 CmMainPanel.__lastInstance._mainContent.removeAll();
                 CmMainPanel.__lastInstance._mainContent.setLayout(new CenterLayout());
                 CmMainPanel.__lastInstance._mainContent.add(ohtml);

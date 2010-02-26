@@ -1,7 +1,7 @@
 package hotmath.gwt.cm.client;
 
 import hotmath.gwt.cm_tools.client.CmBusyManager;
-import hotmath.gwt.cm_tools.client.util.GenericVideoPlayer;
+import hotmath.gwt.cm_tools.client.util.GenericVideoPlayerForMona;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.util.CmRunAsyncCallback;
 import hotmath.gwt.shared.client.util.UserInfo;
@@ -34,32 +34,15 @@ public class WelcomePanel extends LayoutContainer {
 
         main.setHeading("Welcome to Catchup Math");
 
-        boolean addMotivationalButton=false;
         if (CmShared.getQueryParameterValue("type").equals("1")) {
             main.setSize(370,180);
             main.add(new SampleSessionInfo(), new BorderLayoutData(LayoutRegion.CENTER));
         } else if (CmShared.getQueryParameterValue("type").equals("2") || UserInfo.getInstance().getViewCount() == 0) {
             main.setSize(330, 180);
             main.add(new StandardInfo(), new BorderLayoutData(LayoutRegion.CENTER));
-            addMotivationalButton=true;
         } else {
             main.setSize(350, 180);
             main.add(new StandardInfo(), new BorderLayoutData(LayoutRegion.CENTER, 200));
-            addMotivationalButton=true;
-        }
-        
-        if(addMotivationalButton) {
-            main.addButton(new Button("Motivational Video", new SelectionListener<ButtonEvent>() {
-                @Override
-                public void componentSelected(ButtonEvent ce) {
-                    GWT.runAsync(new CmRunAsyncCallback() {
-                        @Override
-                        public void onSuccess() {
-                            new GenericVideoPlayer("/resources/videos/mona_motivational_video.flv", "Motivational Video");                        
-                        }
-                    });
-                }
-            })); 
         }
 
         _goBtn = new Button("Begin Catchup Math");
@@ -121,7 +104,9 @@ public class WelcomePanel extends LayoutContainer {
     class StandardInfo extends Html {
         public StandardInfo() {
             String html = "<p>You will start this session with a quiz.</p>"
-                        + "<p>Please work out your answers carefully using our whiteboard or pencil and paper.</p>";
+                        + "<p>Please work out your answers carefully using our whiteboard or pencil and paper.</p>"
+                        + "<p><a style='margin: 0;' href='#' onclick='showMotivationalVideo_Gwt();return false;'>Watch motivational video</a></p>";
+            
             setHtml(html);
         }
     }
