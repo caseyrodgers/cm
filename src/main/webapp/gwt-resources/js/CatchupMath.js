@@ -449,7 +449,7 @@ function setQuizQuestionDisplayAsActive(pid) {
 		if(d.className == 'question_div') {
 			if(_whiteboardActive==true && (d.getAttribute('guid') == pid || (pid == null && c == 0))) {
 				// d.style.background = '#EAEAEA';
-				d.style.background = 'url(/gwt-resources/whiteboard_pointer.png) no-repeat top right';
+				d.style.background = '#EAEAEA url(/gwt-resources/whiteboard_pointer.png) no-repeat top right';
 				activeGuid=d.getAttribute('guid');
 			}
 			else {

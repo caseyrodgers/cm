@@ -96,7 +96,7 @@ public abstract class RetryAction<T> implements AsyncCallback<T> {
             }
             else {
                 
-                sendInfoAboutRetriedCommand("failed");
+                sendInfoAboutRetriedCommand("failed", throwable);
                 
                 /** Perform as synchronous call in Window.confirm to stop
                  *  the flow of new requests until this one is taken care of.
@@ -107,11 +107,11 @@ public abstract class RetryAction<T> implements AsyncCallback<T> {
                 
                 
                 if(Window.confirm(msg)) {
-                    sendInfoAboutRetriedCommand("retried");
+                    sendInfoAboutRetriedCommand("retried", null);
                     attempt();
                 }
                 else {
-                    sendInfoAboutRetriedCommand("canceled");
+                    sendInfoAboutRetriedCommand("canceled",null);
                 	onCancel();
                 }
             }
@@ -174,10 +174,12 @@ public abstract class RetryAction<T> implements AsyncCallback<T> {
      *  not executing in RetryAction and fail silently.
      *  
      */
-    private void sendInfoAboutRetriedCommand(String status) {
+    private void sendInfoAboutRetriedCommand(String status, Throwable throwable) {
         try {
             String classNameTag = getClass().getName() + "=" + status;
-            CmShared.getCmService().execute(new LogRetryActionFailedAction(UserInfo.getInstance().getUid(),classNameTag,getAction()),new AsyncCallback<RpcData>() {
+            CmShared.getCmService().execute(
+                    new LogRetryActionFailedAction(UserInfo.getInstance().getUid(),classNameTag,getAction(),getStackTraceAsString(throwable)),
+                    new AsyncCallback<RpcData>() {
                 @Override
                 public void onSuccess(RpcData result) {
                     Log.info("Retry operation logged");
@@ -185,12 +187,34 @@ public abstract class RetryAction<T> implements AsyncCallback<T> {
 
                 @Override
                 public void onFailure(Throwable exe) {
-                    Log.error("Error sending info about retry action",exe);
+                    if(CmShared.getQueryParameter("debug") != null)
+                        Window.alert("Error sending info about retry action: " + exe);
                 }
             });
         }
         catch(Exception e) {
             Log.error("Error calling LogRetryActinoFailedAction", e);
         }
+    }
+    
+    /** Return stack trace as string, or null if 
+     * throwable is null.
+     * 
+     * @param th
+     * @return
+     */
+    private String getStackTraceAsString(Throwable th) {
+        if(th == null)
+            return null;
+        
+        final StringBuilder result = new StringBuilder();
+        result.append(th.toString());
+        result.append("/n");
+
+        for (StackTraceElement element : th.getStackTrace() ){
+            result.append( element );
+            result.append( "\n" );
+        }
+        return result.toString();
     }
 }
