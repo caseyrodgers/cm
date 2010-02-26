@@ -105,7 +105,7 @@ public class WelcomePanel extends LayoutContainer {
         public StandardInfo() {
             String html = "<p>You will start this session with a quiz.</p>"
                         + "<p>Please work out your answers carefully using our whiteboard or pencil and paper.</p>"
-                        + "<p><a style='margin: 0;' href='#' onclick='showMotivationalVideo_Gwt();return false;'>Watch motivational video</a></p>";
+                        + "<p><a style='text-decoration: underline;margin: 0;' href='#' onclick='showMotivationalVideo_Gwt();return false;'>Watch motivational video</a></p>";
             
             setHtml(html);
         }
