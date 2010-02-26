@@ -7,13 +7,23 @@ public class LogRetryActionFailedAction implements Action<RpcData> {
     Action<? extends Response> action;
     Integer uid;
     String className;
+    String stackTrace;
     
+    public String getStackTrace() {
+        return stackTrace;
+    }
+
+    public void setStackTrace(String stackTrace) {
+        this.stackTrace = stackTrace;
+    }
+
     public LogRetryActionFailedAction() {}
     
-    public LogRetryActionFailedAction(Integer uid, String className, Action<? extends Response> action) {
+    public LogRetryActionFailedAction(Integer uid, String className, Action<? extends Response> action, String stackTrace) {
         this.uid = uid;
         this.className = className;
         this.action = action;
+        this.stackTrace = stackTrace;
     }
 
     public String getClassName() {
@@ -42,6 +52,7 @@ public class LogRetryActionFailedAction implements Action<RpcData> {
 
     @Override
     public String toString() {
-        return "LogRetryActionFailedAction [action=" + action + ", className=" + className + ", uid=" + uid + "]";
+        return "LogRetryActionFailedAction [action=" + action + ", className=" + className + ", stackTrace="
+                + stackTrace + ", uid=" + uid + "]";
     }
 }
