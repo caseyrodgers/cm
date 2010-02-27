@@ -17,6 +17,9 @@ import javax.servlet.http.HttpServletResponse;
  * 
  * NOTE: this creates the CatchupMath Demo user.  
  * 
+ * parameters: action=sample will create a new sample user in non-debug mode.
+ *             action=auto_test will launch a new sample user auto test and debug mode. 
+ * 
  * @TODO: move this closer to HaUser abstraction  
  * 
  * 
@@ -37,6 +40,9 @@ public class LoginService extends HttpServlet {
         if(action.equals("sample")) {
             user = "catchup_demo";
             action = "login";
+        }
+        else if(action.equals("auto_test")) {
+            user="catchup_demo";
         }
         
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
@@ -60,6 +66,13 @@ public class LoginService extends HttpServlet {
                  * 
                  */
                 String urlWithSessionID = "http://" + getCmServer(req) + "/cm_student/CatchupMath.html?key=" + loginInfo.getKey();
+                resp.sendRedirect(urlWithSessionID);
+            }
+            else if(action.equals("auto_test")) {
+                /** redirect and connect to the CM student,passing auto_test parameter  
+                 * 
+                 */
+                String urlWithSessionID = "http://" + getCmServer(req) + "/cm_student/CatchupMath.html?type=auto_test&debug=true&key=" + loginInfo.getKey();
                 resp.sendRedirect(urlWithSessionID);
             }
             else {

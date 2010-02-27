@@ -9,7 +9,6 @@ import hotmath.gwt.cm.client.ui.context.PrescriptionCmGuiDefinition;
 import hotmath.gwt.cm.client.ui.context.QuizCmGuiDefinition;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
-import hotmath.gwt.cm_tools.client.data.HaBasicUser.UserType;
 import hotmath.gwt.cm_tools.client.ui.CmMainPanel;
 import hotmath.gwt.cm_tools.client.ui.FooterPanel;
 import hotmath.gwt.cm_tools.client.util.GenericVideoPlayerForMona;
@@ -20,7 +19,6 @@ import hotmath.gwt.shared.client.eventbus.CmEvent;
 import hotmath.gwt.shared.client.eventbus.CmEventListenerImplDefault;
 import hotmath.gwt.shared.client.eventbus.EventBus;
 import hotmath.gwt.shared.client.eventbus.EventType;
-import hotmath.gwt.shared.client.util.CmAsyncCallback;
 import hotmath.gwt.shared.client.util.CmRunAsyncCallback;
 import hotmath.gwt.shared.client.util.UserInfo;
 
@@ -168,8 +166,8 @@ public class CatchupMath implements EntryPoint {
                 if(UserInfo.getInstance().isSingleUser())
                     Window.setTitle("Catchup Math: Student");
 
-                String ac=CmShared.getQueryParameter("type");
-                if(ac != null && ac.equals("ac")) {
+                String ac=CmShared.getQueryParameterValue("type");
+                if(ac.equals("ac")) {
                     /** 
                      * self registration
                      * 
@@ -177,6 +175,9 @@ public class CatchupMath implements EntryPoint {
                      */
                     UserInfo.getInstance().setActiveUser(false);
                     CatchupMath.__thisInstance.showAutoRegistration_gwt();
+                }
+                else if(ac.equals("auto_test")) {
+                    __thisInstance.startNormalOperation();
                 }
                 else if(CmShared.getQueryParameter("debug_info") != null) {
                     setDebugOverrideInformation(CmShared.getQueryParameter("debug_info"));
@@ -249,6 +250,10 @@ public class CatchupMath implements EntryPoint {
                 }
             }
         });
+        
+        
+        if(CmShared.getQueryParameterValue("type").equals("auto_test"))
+            FooterPanel.startAutoTest_Gwt();
     }
     
 

@@ -2,6 +2,7 @@ package hotmath.gwt.cm_tools.client.ui;
 
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.service.CmServiceAsync;
+import hotmath.gwt.cm_tools.client.ui.context.CmContext;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.rpc.action.ResetUserAction;
 import hotmath.gwt.shared.client.util.CmRunAsyncCallback;
@@ -99,7 +100,7 @@ public class FooterPanel extends LayoutContainer {
 		Window.open(url, "_blank", "height=480,width=640,status=yes,scrollbars=1");
 	}
 
-	private static void startAutoTest_Gwt() {
+	public static void startAutoTest_Gwt() {
 
 		GWT.runAsync(new RunAsyncCallback() {
 
@@ -107,7 +108,9 @@ public class FooterPanel extends LayoutContainer {
 			public void onSuccess() {
 				AutoTestWindow.getInstance().setVisible(true);
 				UserInfo.getInstance().setAutoTestMode(true);
-				ContextController.getInstance().getTheContext().runAutoTest();
+				CmContext context = ContextController.getInstance().getTheContext();
+				if(context != null)
+				    context.runAutoTest();
 			}
 
 			@Override
