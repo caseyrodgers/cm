@@ -215,11 +215,12 @@ public class CmMainPanel extends LayoutContainer {
     /**
      * return the last active question's pid. Return null if no question has
      * been displayed.
-     * 
+     *
+     * NOTE: quiz question/whiteboard is disabled .. so only the one whiteboard per question.
      * @return
      */
     static public String getLastQuestionPid() {
-        return __lastQuestionPid;
+        return "quiz"; // __lastQuestionPid;
     }
 
     /**

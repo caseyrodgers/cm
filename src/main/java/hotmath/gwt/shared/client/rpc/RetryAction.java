@@ -18,6 +18,7 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.rpc.IncompatibleRemoteServiceException;
 import com.google.gwt.user.client.rpc.SerializationException;
+import com.google.gwt.user.client.rpc.StatusCodeException;
 
 /** Provide retry operation for GWT RPC 
  * 
@@ -174,11 +175,11 @@ public abstract class RetryAction<T> implements AsyncCallback<T> {
      *  not executing in RetryAction and fail silently.
      *  
      */
-    private void sendInfoAboutRetriedCommand(String status, Throwable throwable) {
+    private void sendInfoAboutRetriedCommand(String logType, Throwable throwable) {
+
         try {
-            String classNameTag = getClass().getName() + "=" + status;
             CmShared.getCmService().execute(
-                    new LogRetryActionFailedAction(UserInfo.getInstance().getUid(),classNameTag,getAction(),getStackTraceAsString(throwable)),
+                    new LogRetryActionFailedAction(logType, UserInfo.getInstance().getUid(),getClass().getName(),getAction(),getStackTraceAsString(throwable)),
                     new AsyncCallback<RpcData>() {
                 @Override
                 public void onSuccess(RpcData result) {
@@ -207,7 +208,12 @@ public abstract class RetryAction<T> implements AsyncCallback<T> {
         if(th == null)
             return null;
         
+        
         final StringBuilder result = new StringBuilder();
+        if(th instanceof StatusCodeException)
+            result.append("HTTP ERROR CODE: " + ((StatusCodeException)th).getStatusCode());
+                
+
         result.append(th.toString());
         result.append("/n");
 

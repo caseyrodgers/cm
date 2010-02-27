@@ -20,13 +20,14 @@ public class LogRetryActionFailedCommand implements ActionHandler<LogRetryAction
     public RpcData execute(Connection conn, LogRetryActionFailedAction action) throws Exception {
         PreparedStatement pstat=null;
         try {
-            String sql = "insert into HA_ACTION_FAIL_LOG(uid, class_name, action_info,stack_trace, fail_date)values(?,?,?,?,now())";
+            String sql = "insert into HA_ACTION_FAIL_LOG(uid, class_name, action_info,stack_trace, log_type, fail_date)values(?,?,?,?,?,now())";
             pstat = conn.prepareStatement(sql);
             
             pstat.setInt(1, action.getUid());
             pstat.setString(2, action.getClassName());
             pstat.setString(3, getActionInfo(action.getAction()));
             pstat.setString(4,action.getStackTrace());
+            pstat.setString(5, action.getLogType());
             
             if(pstat.executeUpdate()!= 1)
                 logger.info("Could not save failed action request: " + action);

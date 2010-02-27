@@ -438,6 +438,11 @@ var _whiteboardActive=false;
  * @return
  */
 function setQuizQuestionDisplayAsActive(pid) {
+	
+	if(true)
+		return;
+	
+	
 	var testset = document.getElementById("testset_div");
 	if(testset == null)
 		return;
