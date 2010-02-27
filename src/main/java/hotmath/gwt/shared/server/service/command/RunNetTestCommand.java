@@ -19,7 +19,7 @@ public class RunNetTestCommand implements ActionHandler<RunNetTestAction, NetTes
     @Override
     public NetTestModel execute(Connection conn, RunNetTestAction action) throws Exception {
         
-        String BLOCK_STRING="1234567890abcdefghijklmnopqrstuvwxyz";
+        String BLOCK_STRING="1234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
         if(action.getAction() == TestAction.RUN_TEST) {
             StringBuffer sb = new StringBuffer();
             for(int i=0;i<action.getDataSize();i++) {

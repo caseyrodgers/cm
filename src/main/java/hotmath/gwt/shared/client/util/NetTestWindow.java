@@ -46,6 +46,14 @@ public class NetTestWindow extends CmWindow {
         add(new Html(html), new BorderLayoutData(LayoutRegion.NORTH,40));
         add(_grid, new BorderLayoutData(LayoutRegion.CENTER));
      
+        if(CmShared.getQueryParameter("debug")!=null) {
+            addButton(new Button("Stop Tests", new SelectionListener<ButtonEvent>() {
+                @Override
+                public void componentSelected(ButtonEvent ce) {
+                    stopTimer();
+                }
+            }));
+        }
         _btnCheck = new Button("Check",new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent ce) {
@@ -56,23 +64,34 @@ public class NetTestWindow extends CmWindow {
         addButton(new Button("Close",new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent ce) {
+                stopTimer();
                 close();
             }
         }));
         setVisible(true);
     }
     
-    /** repeatailly call test each interval of mills
+    Timer _timer;
+
+    /** repeat call for test on each interval of mills
      * 
      * @param testEveryMills
      */
     public void repeatTestEvery(int testEveryMills) {
-        new Timer() {
+        _timer = new Timer() {
             @Override
             public void run() {
                 runTests();
             }
-        }.scheduleRepeating(testEveryMills);
+        };
+        _timer.scheduleRepeating(testEveryMills);
+    }
+    
+    private void stopTimer() {
+        if(_timer != null) {
+            _timer.cancel();
+            _timer = null;
+        }        
     }
     
     private ColumnModel defineColumns() {
@@ -111,12 +130,12 @@ public class NetTestWindow extends CmWindow {
      */
     ProcessTracker pTrac;
     public void runTests() {
-        int NUM_TESTS=40;
+        int NUM_TESTS=5;
         String numNetTests = CmShared.getQueryParameter("net_test_count");
         if(numNetTests != null) {
             NUM_TESTS = Integer.parseInt(numNetTests);
         }
-        double TEST_MULTIPLIER=4;
+        double TEST_MULTIPLIER=500;
         pTrac = new TestProcessTracker(NUM_TESTS, new CmAsyncRequestImplDefault() {
             @Override
             public void requestComplete(String requestData) {
@@ -126,9 +145,10 @@ public class NetTestWindow extends CmWindow {
         
         _grid.getStore().removeAll();
         for(int i=0;i<NUM_TESTS;i++) {
-            runTest(i, Math.round((i+1)*TEST_MULTIPLIER));
+            runTest(i, Math.round((i+1)* (TEST_MULTIPLIER * (i+1))));
         }
     }
+    
     
     private void runTest(final int testNum, final long dataSize) {
         
@@ -156,6 +176,11 @@ public class NetTestWindow extends CmWindow {
                 testResults.setSize(dataSize);
                 _grid.getStore().add(testResults);
                 pTrac.completeStep();
+            }
+            
+            public void onFailure(Throwable error) {
+                stopTimer();
+                super.onFailure(error);
             }
         }.attempt();
     }
