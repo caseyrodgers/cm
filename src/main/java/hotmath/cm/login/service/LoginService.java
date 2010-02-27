@@ -37,7 +37,7 @@ public class LoginService extends HttpServlet {
         if(action == null)
             action = "";
         
-        if(action.equals("sample")) {
+        else if(action.equals("sample")) {
             user = "catchup_demo";
             action = "login";
         }
