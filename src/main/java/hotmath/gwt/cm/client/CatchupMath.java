@@ -253,7 +253,7 @@ public class CatchupMath implements EntryPoint {
         String ac = CmShared.getQueryParameterValue("type");
         if (ac.equals("auto_test_net")) {
             /** should we only run net test? */
-            new NetTestWindow();
+            new NetTestWindow().repeatTestEvery(10000);
         } else if (ac.equals("auto_test")) {
             /** or, run the full test? */
             FooterPanel.startAutoTest_Gwt();

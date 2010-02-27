@@ -26,6 +26,7 @@ import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
 import com.extjs.gxt.ui.client.widget.grid.Grid;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
+import com.google.gwt.user.client.Timer;
 
 public class NetTestWindow extends CmWindow {
     
@@ -59,8 +60,19 @@ public class NetTestWindow extends CmWindow {
             }
         }));
         setVisible(true);
-        
-        runTests();
+    }
+    
+    /** repeatailly call test each interval of mills
+     * 
+     * @param testEveryMills
+     */
+    public void repeatTestEvery(int testEveryMills) {
+        new Timer() {
+            @Override
+            public void run() {
+                runTests();
+            }
+        }.scheduleRepeating(testEveryMills);
     }
     
     private ColumnModel defineColumns() {
@@ -98,7 +110,7 @@ public class NetTestWindow extends CmWindow {
      * 
      */
     ProcessTracker pTrac;
-    private void runTests() {
+    public void runTests() {
         int NUM_TESTS=40;
         String numNetTests = CmShared.getQueryParameter("net_test_count");
         if(numNetTests != null) {
@@ -164,12 +176,14 @@ public class NetTestWindow extends CmWindow {
             @Override
             public void oncapture(NetTestModel value) {
                 CmBusyManager.setBusy(false);
-                CatchupMathTools.showAlert("Thank you", "Thank you.  The results have been saved on our server.",new CmAsyncRequestImplDefault() {
-                    @Override
-                    public void requestComplete(String requestData) {
-                        //
-                    }
-                });
+                if(CmShared.getQueryParameter("debug")==null) {
+                    CatchupMathTools.showAlert("Thank you", "Thank you.  The results have been saved on our server.",new CmAsyncRequestImplDefault() {
+                        @Override
+                        public void requestComplete(String requestData) {
+                            //
+                        }
+                    });
+                }
             }
         }.attempt();
     }
