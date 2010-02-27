@@ -211,9 +211,8 @@ public abstract class RetryAction<T> implements AsyncCallback<T> {
         
         final StringBuilder result = new StringBuilder();
         if(th instanceof StatusCodeException)
-            result.append("HTTP ERROR CODE: " + ((StatusCodeException)th).getStatusCode());
+            result.append("HTTP ERROR CODE: " + ((StatusCodeException)th).getStatusCode() + "\n");
                 
-
         result.append(th.toString());
         result.append("/n");
 

@@ -57,7 +57,10 @@ public class NetTestWindow extends CmWindow {
             public void componentSelected(ButtonEvent ce) {
                 close();
             }
-        }));           
+        }));
+        setVisible(true);
+        
+        runTests();
     }
     
     private ColumnModel defineColumns() {
@@ -96,7 +99,11 @@ public class NetTestWindow extends CmWindow {
      */
     ProcessTracker pTrac;
     private void runTests() {
-        int NUM_TESTS=20;
+        int NUM_TESTS=40;
+        String numNetTests = CmShared.getQueryParameter("net_test_count");
+        if(numNetTests != null) {
+            NUM_TESTS = Integer.parseInt(numNetTests);
+        }
         double TEST_MULTIPLIER=4;
         pTrac = new TestProcessTracker(NUM_TESTS, new CmAsyncRequestImplDefault() {
             @Override
@@ -112,7 +119,9 @@ public class NetTestWindow extends CmWindow {
     }
     
     private void runTest(final int testNum, final long dataSize) {
-        _btnCheck.setEnabled(false);
+        
+        if(CmShared.getQueryParameter("debug")==null)
+            _btnCheck.setEnabled(false);
 
         new RetryAction<NetTestModel>() {
             long timeStart;

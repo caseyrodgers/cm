@@ -253,7 +253,7 @@ public class HelpWindow extends CmWindow {
                 GWT.runAsync(new CmRunAsyncCallback() {
                     @Override
                     public void onSuccess() {
-                        new NetTestWindow().setVisible(true);
+                        new NetTestWindow();
                     }
                 });
             }

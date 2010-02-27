@@ -41,7 +41,7 @@ public class LoginService extends HttpServlet {
             user = "catchup_demo";
             action = "login";
         }
-        else if(action.equals("auto_test")) {
+        else if(action.startsWith("auto_test")) {
             user="catchup_demo";
         }
         
@@ -75,6 +75,14 @@ public class LoginService extends HttpServlet {
                 String urlWithSessionID = "http://" + getCmServer(req) + "/cm_student/CatchupMath.html?type=auto_test&debug=true&key=" + loginInfo.getKey();
                 resp.sendRedirect(urlWithSessionID);
             }
+            else if(action.equals("auto_test_net")) {
+                /** redirect and connect to the CM student,passing auto_test parameter  
+                 * 
+                 */
+                String urlWithSessionID = "http://" + getCmServer(req) + "/cm_student/CatchupMath.html?type=auto_test_net&debug=true&key=" + loginInfo.getKey();
+                resp.sendRedirect(urlWithSessionID);
+            }
+
             else {
                 /** create JSON that can be used to connect to this account
                  * 
