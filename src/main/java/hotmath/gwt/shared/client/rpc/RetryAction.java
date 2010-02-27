@@ -211,14 +211,12 @@ public abstract class RetryAction<T> implements AsyncCallback<T> {
         
         final StringBuilder result = new StringBuilder();
         if(th instanceof StatusCodeException)
-            result.append("HTTP ERROR CODE: " + ((StatusCodeException)th).getStatusCode() + "\n");
+            result.append("HTTP ERROR CODE: ").append(((StatusCodeException)th).getStatusCode()).append("\n");
                 
-        result.append(th.toString());
-        result.append("/n");
+        result.append(th.toString()).append("\n");
 
         for (StackTraceElement element : th.getStackTrace() ){
-            result.append( element );
-            result.append( "\n" );
+            result.append( element ).append("\n");
         }
         return result.toString();
     }
