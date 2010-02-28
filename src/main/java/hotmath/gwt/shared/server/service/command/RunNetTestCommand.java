@@ -4,6 +4,7 @@ import hotmath.gwt.shared.client.rpc.Action;
 import hotmath.gwt.shared.client.rpc.Response;
 import hotmath.gwt.shared.client.rpc.action.RunNetTestAction;
 import hotmath.gwt.shared.client.rpc.action.RunNetTestAction.TestAction;
+import hotmath.gwt.shared.client.rpc.action.RunNetTestAction.TestApplication;
 import hotmath.gwt.shared.client.util.CmException;
 import hotmath.gwt.shared.client.util.NetTestModel;
 import hotmath.gwt.shared.server.service.ActionHandler;
@@ -31,7 +32,15 @@ public class RunNetTestCommand implements ActionHandler<RunNetTestAction, NetTes
             
             PreparedStatement pstat=null;
             try {
-                String sql = "insert into HA_USER_NET_TEST(uid, test_num, test_size, test_time,run_date)values(?,?,?,?,now())";
+                String sql = null;
+                if(action.getTestApp() == TestApplication.CM_ADMIN) {
+                    sql = "insert into HA_USER_NET_TEST(aid, test_num, test_size, test_time,run_date)values(?,?,?,?,now())";
+                }
+                else {
+                    sql = "insert into HA_USER_NET_TEST(uid, test_num, test_size, test_time,run_date)values(?,?,?,?,now())";
+                }
+                
+                try {
                 pstat = conn.prepareStatement(sql);
                 
                 for(NetTestModel test: action.getTestResults()) {
@@ -41,6 +50,10 @@ public class RunNetTestCommand implements ActionHandler<RunNetTestAction, NetTes
                     pstat.setLong(4,test.getTime());
                     
                     pstat.executeUpdate();
+                }
+                }
+                catch(Exception e) {
+                    e.printStackTrace();
                 }
             }
             finally {

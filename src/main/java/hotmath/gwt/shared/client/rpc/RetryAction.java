@@ -106,6 +106,11 @@ public abstract class RetryAction<T> implements AsyncCallback<T> {
                 + "You may retry this operation by clicking 'OK'.\n"
                 + "However if the error persists, contact Technical Support.";
                 
+                if(CmShared.getQueryParameter("debug") != null) {
+                    msg += "\n\n" + throwable.getMessage();
+                }
+                
+                
                 
                 if(Window.confirm(msg)) {
                     sendInfoAboutRetriedCommand("retried", null);

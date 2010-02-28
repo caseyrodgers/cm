@@ -10,6 +10,7 @@ import hotmath.gwt.shared.client.data.CmAsyncRequestImplDefault;
 import hotmath.gwt.shared.client.rpc.RetryAction;
 import hotmath.gwt.shared.client.rpc.action.RunNetTestAction;
 import hotmath.gwt.shared.client.rpc.action.RunNetTestAction.TestAction;
+import hotmath.gwt.shared.client.rpc.action.RunNetTestAction.TestApplication;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,8 +34,12 @@ public class NetTestWindow extends CmWindow {
     Grid<NetTestModel> _grid;
     ListStore<NetTestModel> store = new ListStore<NetTestModel>();
     Button _btnCheck;
+    TestApplication testApplication;
+    Integer uid;
 
-    public NetTestWindow() {
+    public NetTestWindow(TestApplication testApp, Integer uid) {
+        this.testApplication = testApp;
+        this.uid = uid;
         _grid = defineGrid(store,defineColumns());
         setLayout(new BorderLayout());
         
@@ -130,12 +135,12 @@ public class NetTestWindow extends CmWindow {
      */
     ProcessTracker pTrac;
     public void runTests() {
-        int NUM_TESTS=5;
+        int NUM_TESTS=40;
         String numNetTests = CmShared.getQueryParameter("net_test_count");
         if(numNetTests != null) {
             NUM_TESTS = Integer.parseInt(numNetTests);
         }
-        double TEST_MULTIPLIER=500;
+        double TEST_MULTIPLIER=10;
         pTrac = new TestProcessTracker(NUM_TESTS, new CmAsyncRequestImplDefault() {
             @Override
             public void requestComplete(String requestData) {
@@ -162,8 +167,10 @@ public class NetTestWindow extends CmWindow {
                 pTrac.beginStep();
                 CmBusyManager.setBusy(true);
                 timeStart=System.currentTimeMillis();
-                RunNetTestAction action = new RunNetTestAction(TestAction.RUN_TEST, UserInfo.getInstance().getUid(), testNum, dataSize);
+                
+                RunNetTestAction action = new RunNetTestAction(testApplication, TestAction.RUN_TEST, NetTestWindow.this.uid, testNum, dataSize);
                 setAction(action);
+                
                 CmShared.getCmService().execute(action, this);
             }
             
@@ -193,7 +200,7 @@ public class NetTestWindow extends CmWindow {
             @Override
             public void attempt() {
                 CmBusyManager.setBusy(true);
-                RunNetTestAction action = new RunNetTestAction(TestAction.SAVE_RESULTS, UserInfo.getInstance().getUid(), _grid.getStore().getModels());
+                RunNetTestAction action = new RunNetTestAction(testApplication, TestAction.SAVE_RESULTS, NetTestWindow.this.uid, _grid.getStore().getModels());
                 setAction(action);
                 CmShared.getCmService().execute(action, this);
             }

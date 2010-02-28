@@ -10,6 +10,9 @@ public class NetTestModel extends BaseModel implements Response {
     public NetTestModel(String testName, String testResults) {
         set("name", testName);
         set("results", testResults);
+        set("number", -1);
+        set("size", (long)-1);
+        set("time", (long)-1);
     }
     
     public String getName() {
@@ -32,8 +35,8 @@ public class NetTestModel extends BaseModel implements Response {
         return get("size");
     }
     
-    public void setSize(Long time) {
-        set("size", time);
+    public void setSize(Long size) {
+        set("size", size);
     }    
     
     public Integer getNumber() {

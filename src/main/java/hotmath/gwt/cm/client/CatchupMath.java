@@ -19,6 +19,7 @@ import hotmath.gwt.shared.client.eventbus.CmEvent;
 import hotmath.gwt.shared.client.eventbus.CmEventListenerImplDefault;
 import hotmath.gwt.shared.client.eventbus.EventBus;
 import hotmath.gwt.shared.client.eventbus.EventType;
+import hotmath.gwt.shared.client.rpc.action.RunNetTestAction.TestApplication;
 import hotmath.gwt.shared.client.util.CmRunAsyncCallback;
 import hotmath.gwt.shared.client.util.NetTestWindow;
 import hotmath.gwt.shared.client.util.UserInfo;
@@ -253,7 +254,7 @@ public class CatchupMath implements EntryPoint {
         String ac = CmShared.getQueryParameterValue("type");
         if (ac.equals("auto_test_net")) {
             /** should we only run net test? */
-            new NetTestWindow().repeatTestEvery(10000);
+            new NetTestWindow(TestApplication.CM_STUDENT,UserInfo.getInstance().getUid()).repeatTestEvery(10000);
         } else if (ac.equals("auto_test")) {
             /** or, run the full test? */
             FooterPanel.startAutoTest_Gwt();

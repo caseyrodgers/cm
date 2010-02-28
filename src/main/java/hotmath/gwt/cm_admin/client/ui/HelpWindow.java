@@ -1,8 +1,10 @@
 package hotmath.gwt.cm_admin.client.ui;
 
+import hotmath.gwt.cm_admin.client.CatchupMathAdmin;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
 import hotmath.gwt.shared.client.CmShared;
+import hotmath.gwt.shared.client.rpc.action.RunNetTestAction.TestApplication;
 import hotmath.gwt.shared.client.util.CmRunAsyncCallback;
 import hotmath.gwt.shared.client.util.NetTestWindow;
 
@@ -54,7 +56,7 @@ public class HelpWindow extends CmWindow {
                     getHeader().addTool(new Button("Net Test", new SelectionListener<ButtonEvent>() {
                         @Override
                         public void componentSelected(ButtonEvent ce) {
-                            new NetTestWindow().runTests();
+                            new NetTestWindow(TestApplication.CM_ADMIN,StudentGridPanel.instance._cmAdminMdl.getId()).runTests();
                         }
                     }));
                 }

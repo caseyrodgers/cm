@@ -21,6 +21,7 @@ import hotmath.gwt.shared.client.rpc.action.GetStudentModelAction;
 import hotmath.gwt.shared.client.rpc.action.ResetUserAction;
 import hotmath.gwt.shared.client.rpc.action.SaveFeedbackAction;
 import hotmath.gwt.shared.client.rpc.action.SetBackgroundStyleAction;
+import hotmath.gwt.shared.client.rpc.action.RunNetTestAction.TestApplication;
 import hotmath.gwt.shared.client.util.CmRunAsyncCallback;
 import hotmath.gwt.shared.client.util.NetTestWindow;
 import hotmath.gwt.shared.client.util.RpcData;
@@ -253,7 +254,7 @@ public class HelpWindow extends CmWindow {
                 GWT.runAsync(new CmRunAsyncCallback() {
                     @Override
                     public void onSuccess() {
-                        new NetTestWindow().runTests();
+                        new NetTestWindow(TestApplication.CM_STUDENT,UserInfo.getInstance().getUid()).runTests();
                     }
                 });
             }
