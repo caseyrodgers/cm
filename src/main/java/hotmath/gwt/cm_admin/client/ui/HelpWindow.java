@@ -10,7 +10,6 @@ import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.user.client.ui.Frame;
 
 
@@ -43,28 +42,24 @@ public class HelpWindow extends CmWindow {
         
         
         if(CmShared.getQueryParameter("debug") != null) {
-            getHeader().addTool(new Button("Version", new SelectionListener<ButtonEvent>() {
+            GWT.runAsync(new CmRunAsyncCallback() {
                 @Override
-                public void componentSelected(ButtonEvent ce) {
-                    CatchupMathTools.showVersionInfo();
+                public void onSuccess() {
+                    getHeader().addTool(new Button("Version", new SelectionListener<ButtonEvent>() {
+                        @Override
+                        public void componentSelected(ButtonEvent ce) {
+                            CatchupMathTools.showVersionInfo();
+                        }
+                    }));
+                    getHeader().addTool(new Button("Net Test", new SelectionListener<ButtonEvent>() {
+                        @Override
+                        public void componentSelected(ButtonEvent ce) {
+                            new NetTestWindow().runTests();
+                        }
+                    }));
                 }
-            }));
+            });
         }        
-    }
-
-    public void nClick(ClickEvent event) {
-    }
-
-    
-    /** Return the current version number
-     * 
-     * @todo: externalize this parameter 
-     * 
-     * 
-     * @return
-     */
-    private String getVersion() {
-        return "1.2b";
     }
 }
 
