@@ -134,14 +134,19 @@ public class NetTestWindow extends CmWindow {
      * 
      */
     ProcessTracker pTrac;
+    int _numTestsToRun;
+    final double TEST_MULTIPLIER=10;
     public void runTests() {
-        int NUM_TESTS=40;
+        
         String numNetTests = CmShared.getQueryParameter("net_test_count");
         if(numNetTests != null) {
-            NUM_TESTS = Integer.parseInt(numNetTests);
+            _numTestsToRun = Integer.parseInt(numNetTests);
         }
-        double TEST_MULTIPLIER=10;
-        pTrac = new TestProcessTracker(NUM_TESTS, new CmAsyncRequestImplDefault() {
+        else {
+            _numTestsToRun = 5;
+        }
+        
+        pTrac = new TestProcessTracker(_numTestsToRun, new CmAsyncRequestImplDefault() {
             @Override
             public void requestComplete(String requestData) {
                 sendResultsToServer();
@@ -149,9 +154,8 @@ public class NetTestWindow extends CmWindow {
         });
         
         _grid.getStore().removeAll();
-        for(int i=0;i<NUM_TESTS;i++) {
-            runTest(i, Math.round((i+1)* (TEST_MULTIPLIER * (i+1))));
-        }
+        
+        runTest(0, Math.round(TEST_MULTIPLIER));
     }
     
     
@@ -183,6 +187,10 @@ public class NetTestWindow extends CmWindow {
                 testResults.setSize(dataSize);
                 _grid.getStore().add(testResults);
                 pTrac.completeStep();
+                
+                /** run next test on completion */
+                if((testNum+1) < _numTestsToRun)
+                    runTest(testNum+1, Math.round(TEST_MULTIPLIER * (testNum+2)));
             }
             
             public void onFailure(Throwable error) {
