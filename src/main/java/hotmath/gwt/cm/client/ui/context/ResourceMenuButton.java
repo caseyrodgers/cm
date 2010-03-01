@@ -101,7 +101,6 @@ class ResourceMenuButton extends Button {
      * 
      */
     public void updateCheckMarks() {
-        
         if(!resource.getType().equals("practice"))
             return;
         
@@ -115,10 +114,11 @@ class ResourceMenuButton extends Button {
                 isComplete=false;
             else 
                 viewed++;
-            
-            MenuItem mi = (MenuItem)getMenu().getItem(i);
-            if(mi instanceof CheckMenuItem) {
-                ((CheckMenuItem)mi).setChecked( id.isViewed() );
+            if(getMenu() != null) {
+                MenuItem mi = (MenuItem)getMenu().getItem(i);
+                if(mi instanceof CheckMenuItem) {
+                    ((CheckMenuItem)mi).setChecked( id.isViewed() );
+                }
             }
         }   
         
