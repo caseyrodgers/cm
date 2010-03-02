@@ -56,9 +56,10 @@ import com.google.gwt.user.client.rpc.StatusCodeException;
 public abstract class RetryAction<T> implements AsyncCallback<T> {
     public abstract void attempt();
     public abstract void oncapture(T value);
+    
+    long _timeStart = System.currentTimeMillis();
 
     public void onFailure(Throwable error) {
-        
         error.printStackTrace();
         Log.info("RetryAction failed", error);
         
@@ -109,8 +110,6 @@ public abstract class RetryAction<T> implements AsyncCallback<T> {
                 if(CmShared.getQueryParameter("debug") != null) {
                     msg += "\n\n" + throwable.getMessage();
                 }
-                
-                
                 
                 if(Window.confirm(msg)) {
                     sendInfoAboutRetriedCommand("retried", null);
@@ -183,8 +182,10 @@ public abstract class RetryAction<T> implements AsyncCallback<T> {
     private void sendInfoAboutRetriedCommand(String logType, Throwable throwable) {
 
         try {
+            long requestTime = System.currentTimeMillis() - _timeStart;
+            String nameAndTime = getClass().getName() + ": " + requestTime + " mills";
             CmShared.getCmService().execute(
-                    new LogRetryActionFailedAction(logType, UserInfo.getInstance().getUid(),getClass().getName(),getAction(),getStackTraceAsString(throwable)),
+                    new LogRetryActionFailedAction(logType, UserInfo.getInstance().getUid(),nameAndTime,getAction(),getStackTraceAsString(throwable)),
                     new AsyncCallback<RpcData>() {
                 @Override
                 public void onSuccess(RpcData result) {
