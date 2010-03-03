@@ -48,6 +48,10 @@ import com.google.gwt.user.client.rpc.StatusCodeException;
  *  NOTE: We are using Window.confirm instead of a GXT window to handle 
  *  zorder issues and make sure the process is Synchronous and stops
  *  queueing errors.
+ *  
+ *  Provides automatic retry of operations.  After auto retry the user
+ *  is presented with a server error dialog in which they can choose to 
+ *  either continue or cancel.
  
  * @author casey
  *
@@ -56,8 +60,11 @@ import com.google.gwt.user.client.rpc.StatusCodeException;
 public abstract class RetryAction<T> implements AsyncCallback<T> {
     public abstract void attempt();
     public abstract void oncapture(T value);
-    
+
+    int MAX_RETRY=3;
+    int _retryNumber=1;
     long _timeStart;
+    
     public RetryAction() {
         _timeStart = System.currentTimeMillis();
         Log.info("RetryRequest created: " + getClass().getName());
@@ -76,6 +83,17 @@ public abstract class RetryAction<T> implements AsyncCallback<T> {
     }
 
     public void onFailure(Throwable error) {
+        
+        /** provide auto retry of operation
+         * 
+         */
+        if(_retryNumber<MAX_RETRY) {
+            _retryNumber++;
+            Log.info("RetryAction failure (auto retry #" + _retryNumber + ")");
+            attempt();
+            return;
+        }
+        
         error.printStackTrace();
         Log.info("RetryAction failure [" + getRequestTime() + "] (" + activeAction + ") : " 
                 + getClass().getName());
