@@ -75,7 +75,8 @@ public abstract class RetryAction<T> implements AsyncCallback<T> {
 
     public void onFailure(Throwable error) {
         error.printStackTrace();
-        Log.info("RetryAction failed", error);
+        Log.info("RetryAction (" + activeAction + ") failed: " 
+                + getClass().getName() + ", " + getRequestTime(), error);
         
         CmBusyManager.resetBusy();
         
