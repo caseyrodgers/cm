@@ -65,8 +65,8 @@ public abstract class RetryAction<T> implements AsyncCallback<T> {
 
 
     public void onSuccess(T value) {
-        Log.info("RetryAction (" + activeAction + ") success: " 
-                + getClass().getName() + ", " + getRequestTime());
+        Log.info("RetryAction success [" + getRequestTime() + "] (" + activeAction + ") : " 
+                + getClass().getName());
 
         try {
             oncapture(value);
@@ -77,8 +77,8 @@ public abstract class RetryAction<T> implements AsyncCallback<T> {
 
     public void onFailure(Throwable error) {
         error.printStackTrace();
-        Log.info("RetryAction (" + activeAction + ") failed: " 
-                + getClass().getName() + ", " + getRequestTime(), error);
+        Log.info("RetryAction failure [" + getRequestTime() + "] (" + activeAction + ") : " 
+                + getClass().getName());
         
         CmBusyManager.resetBusy();
         
@@ -145,7 +145,9 @@ public abstract class RetryAction<T> implements AsyncCallback<T> {
      * possible usage: close a window that is not functional when an action fails
      */
     public void onCancel() {
-        Log.info("RetryAction canceled: " + getRequestTime());
+        Log.info("RetryAction cancel [" + getRequestTime() + "] (" + activeAction + ") : " 
+                + getClass().getName());
+
         
         final CmWindow win = new CmWindow();
         win.setHeading("Server Warning");
