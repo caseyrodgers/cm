@@ -57,7 +57,21 @@ public abstract class RetryAction<T> implements AsyncCallback<T> {
     public abstract void attempt();
     public abstract void oncapture(T value);
     
-    long _timeStart = System.currentTimeMillis();
+    long _timeStart;
+    public RetryAction() {
+        _timeStart = System.currentTimeMillis();
+        Log.info("RetryRequest created: " + getClass().getName());
+    }
+
+
+    public void onSuccess(T value) {
+        Log.info("RetryAction succesful: " + getClass().getName() + ", " + getRequestTime());
+        try {
+            oncapture(value);
+        } catch (RuntimeException error) {
+            onFailure(error);
+        }
+    }
 
     public void onFailure(Throwable error) {
         error.printStackTrace();
@@ -123,18 +137,13 @@ public abstract class RetryAction<T> implements AsyncCallback<T> {
         }
     }
 
-    public void onSuccess(T value) {
-        try {
-            oncapture(value);
-        } catch (RuntimeException error) {
-            onFailure(error);
-        }
-    }
     
     /*
      * possible usage: close a window that is not functional when an action fails
      */
     public void onCancel() {
+        Log.info("RetryAction canceled: " + getRequestTime());
+        
         final CmWindow win = new CmWindow();
         win.setHeading("Server Warning");
         win.setSize(350,200);
@@ -172,6 +181,9 @@ public abstract class RetryAction<T> implements AsyncCallback<T> {
         this.activeAction = action;
     }    
 
+    private long getRequestTime() {
+        return System.currentTimeMillis() - _timeStart;
+    }
     
     /** send a server request to track the fact
      *  this command failed.  Make sure this command
@@ -182,8 +194,7 @@ public abstract class RetryAction<T> implements AsyncCallback<T> {
     private void sendInfoAboutRetriedCommand(String logType, Throwable throwable) {
 
         try {
-            long requestTime = System.currentTimeMillis() - _timeStart;
-            String nameAndTime = getClass().getName() + ": " + requestTime + " mills";
+            String nameAndTime = getClass().getName() + ": " + getRequestTime() + " mills";
             CmShared.getCmService().execute(
                     new LogRetryActionFailedAction(logType, UserInfo.getInstance().getUid(),nameAndTime,getAction(),getStackTraceAsString(throwable)),
                     new AsyncCallback<RpcData>() {
