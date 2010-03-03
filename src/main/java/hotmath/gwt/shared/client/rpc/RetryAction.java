@@ -65,7 +65,9 @@ public abstract class RetryAction<T> implements AsyncCallback<T> {
 
 
     public void onSuccess(T value) {
-        Log.info("RetryAction succesful: " + getClass().getName() + ", " + getRequestTime());
+        Log.info("RetryAction (" + activeAction + ") success: " 
+                + getClass().getName() + ", " + getRequestTime());
+
         try {
             oncapture(value);
         } catch (RuntimeException error) {
