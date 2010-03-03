@@ -89,7 +89,7 @@ public abstract class RetryAction<T> implements AsyncCallback<T> {
          */
         if(_retryNumber<MAX_RETRY) {
             _retryNumber++;
-            Log.info("RetryAction failure (auto retry #" + _retryNumber + ")");
+            Log.info("RetryAction failure [" + getRequestTime() + "] (auto retry #" + _retryNumber + "): " + getClass().getName());
             attempt();
             return;
         }
