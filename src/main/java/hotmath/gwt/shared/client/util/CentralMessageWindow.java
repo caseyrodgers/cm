@@ -24,10 +24,11 @@ import com.google.gwt.user.client.Timer;
 public class CentralMessageWindow extends CmWindow {
 
     static final int CHECK_FOR_MESSAGES_EVERY = 1000 * 60; //  * 15;
+    static CentralMessageWindow _theWindow;
     CmList<CentralMessage> _messages;
     private CentralMessageWindow(CmList<CentralMessage> messages) {
         this._messages = messages;
-        
+        _theWindow = this;
         EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_MODAL_WINDOW_OPEN));
         
         setSize(300,200);
@@ -53,6 +54,7 @@ public class CentralMessageWindow extends CmWindow {
             @Override
             public void componentSelected(ButtonEvent ce) {
                 setMessagesAsRead();
+                _theWindow = null;
                 close();
             }
         }));
@@ -92,7 +94,14 @@ public class CentralMessageWindow extends CmWindow {
     }
     
     
+    /** Call server and look for new messages.
+     * 
+     * Only call server if window is not currently being displayed.
+     */
     static private void checkForMessages() {
+        if(_theWindow != null)
+            return;
+        
         new RetryAction<CmList<CentralMessage>>() {
             @Override
             public void attempt() {
