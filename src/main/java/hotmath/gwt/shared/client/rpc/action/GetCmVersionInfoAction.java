@@ -19,6 +19,4 @@ public class GetCmVersionInfoAction implements Action<CmVersionInfo> {
     public void setBaseUrl(String baseUrl) {
         this.baseUrl = baseUrl;
     }
-
-    
 }

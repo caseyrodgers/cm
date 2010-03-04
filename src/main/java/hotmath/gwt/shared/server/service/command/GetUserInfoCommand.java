@@ -1,6 +1,7 @@
 package hotmath.gwt.shared.server.service.command;
 
 import hotmath.cm.server.model.CmUserProgramDao;
+import hotmath.cm.util.CatchupMathProperties;
 import hotmath.gwt.cm_admin.server.model.CmAdminDao;
 import hotmath.gwt.cm_admin.server.model.CmStudentDao;
 import hotmath.gwt.cm_tools.client.model.StudentActiveInfo;
@@ -13,6 +14,7 @@ import hotmath.gwt.shared.client.util.UserInfo;
 import hotmath.gwt.shared.client.util.UserInfo.AccountType;
 import hotmath.gwt.shared.server.service.ActionHandler;
 import hotmath.testset.ha.ChapterInfo;
+import hotmath.testset.ha.CmProgram;
 import hotmath.testset.ha.HaTestDef;
 import hotmath.testset.ha.HaTestDefDao;
 import hotmath.testset.ha.HaTestRunDao;

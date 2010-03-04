@@ -23,6 +23,7 @@ import hotmath.gwt.shared.server.service.command.GetAccountInfoForAdminUidComman
 import hotmath.gwt.shared.server.service.command.GetActiveGroupsCommand;
 import hotmath.gwt.shared.server.service.command.GetAdminTrendingDataCommand;
 import hotmath.gwt.shared.server.service.command.GetAdminTrendingDataDetailCommand;
+import hotmath.gwt.shared.server.service.command.GetCatchupMathVersionCommand;
 import hotmath.gwt.shared.server.service.command.GetChaptersForProgramSubjectCommand;
 import hotmath.gwt.shared.server.service.command.GetCmVersionInfoCommand;
 import hotmath.gwt.shared.server.service.command.GetGroupAggregateInfoCommand;
@@ -270,5 +271,6 @@ public class ActionDispatcher {
         addCommand(RunNetTestCommand.class);
         addCommand(LogRetryActionFailedCommand.class);
         addCommand(CheckForCentralMessagesCommand.class);
+        addCommand(GetCatchupMathVersionCommand.class);
     }
 }

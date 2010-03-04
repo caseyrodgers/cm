@@ -12,6 +12,7 @@ import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.ui.CmMainPanel;
 import hotmath.gwt.cm_tools.client.ui.FooterPanel;
 import hotmath.gwt.cm_tools.client.util.GenericVideoPlayerForMona;
+import hotmath.gwt.shared.client.CatchupMathVersionInfo;
 import hotmath.gwt.shared.client.CmLoginAsync;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.data.CmAsyncRequest;
@@ -20,9 +21,9 @@ import hotmath.gwt.shared.client.eventbus.CmEventListenerImplDefault;
 import hotmath.gwt.shared.client.eventbus.EventBus;
 import hotmath.gwt.shared.client.eventbus.EventType;
 import hotmath.gwt.shared.client.rpc.action.RunNetTestAction.TestApplication;
-import hotmath.gwt.shared.client.util.CentralMessageWindow;
 import hotmath.gwt.shared.client.util.CmRunAsyncCallback;
 import hotmath.gwt.shared.client.util.NetTestWindow;
+import hotmath.gwt.shared.client.util.SystemVersionUpdateChecker;
 import hotmath.gwt.shared.client.util.UserInfo;
 
 import com.allen_sauer.gwt.log.client.Log;
@@ -149,7 +150,8 @@ public class CatchupMath implements EntryPoint {
                 });
             }
         });
-
+        
+        SystemVersionUpdateChecker.monitorVersionChanges();        
     }
 
     /**
@@ -260,12 +262,6 @@ public class CatchupMath implements EntryPoint {
             /** or, run the full test? */
             FooterPanel.startAutoTest_Gwt();
         }
-        
-        
-        /** start up central messaging checking loop
-         * 
-         */
-        CentralMessageWindow.monitorMessages();
     }
 
     /**

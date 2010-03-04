@@ -2,6 +2,7 @@ package hotmath.gwt.cm_tools.client;
 
 import hotmath.gwt.cm_tools.client.service.CmService;
 import hotmath.gwt.cm_tools.client.service.CmServiceAsync;
+import hotmath.gwt.shared.client.CatchupMathVersionInfo;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.data.CmAsyncRequest;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
@@ -129,6 +130,7 @@ public class CatchupMathTools implements EntryPoint {
 
             public void onFailure(Throwable caught) {
                 String msg = caught.getMessage();
+                msg += " Build version: " + CatchupMathVersionInfo.getBuildVersion();
                 CatchupMathTools.showAlert(msg);
             }
         });

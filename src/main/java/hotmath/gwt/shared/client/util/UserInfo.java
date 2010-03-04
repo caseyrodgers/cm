@@ -11,7 +11,10 @@ import hotmath.gwt.shared.client.rpc.Response;
 import hotmath.gwt.shared.client.rpc.RetryAction;
 import hotmath.gwt.shared.client.rpc.action.GetUserInfoAction;
 
+import java.util.Date;
+
 import com.allen_sauer.gwt.log.client.Log;
+import com.google.gwt.user.client.Cookies;
 import com.google.gwt.user.client.rpc.IsSerializable;
 
 /** Class to encapsulate all user information
@@ -42,7 +45,6 @@ public class UserInfo implements IsSerializable, Response {
 	Integer sessionCount;
 	String password;
 	String loginName;
-
 	
 
     public UserInfo() {}
@@ -306,18 +308,20 @@ public class UserInfo implements IsSerializable, Response {
        String status = "uid: " + uid + ", test_id: " + getTestId() + ", run_id: " + getRunId() + ", quiz: " + getTestSegment() + "/" + getTestSegmentCount() + ", prescription: " + getSessionNumber() + "/" + getSessionCount();
        return status;
     }
+    
 
     @Override
     public String toString() {
         return "UserInfo [DEMO_USER_NAME=" + DEMO_USER_NAME + ", activeUser=" + activeUser + ", autoTestMode="
                 + autoTestMode + ", backgroundStyle=" + backgroundStyle + ", correctAnswers=" + correctAnswers
-                + ", correctPercent=" + correctPercent + ", isFirstView=" + isFirstView + ", isShowWorkRequired="
-                + isShowWorkRequired + ", isTutoringAvail=" + isTutoringAvail + ", passPercentRequired="
-                + passPercentRequired + ", password=" + password + ", runId=" + runId + ", sessionCount="
-                + sessionCount + ", sessionNumber=" + sessionNumber + ", subTitle=" + subTitle + ", testId=" + testId
-                + ", testName=" + testName + ", testSegment=" + testSegment + ", testSegmentCount=" + testSegmentCount
-                + ", uid=" + uid + ", userAccountType=" + userAccountType + ", userName=" + userName + ", viewCount="
-                + viewCount + ", isDemoUser=" + isDemoUser + "]";
+                + ", correctPercent=" + correctPercent + ", isDemoUser=" + isDemoUser + ", isFirstView=" 
+                + isFirstView + ", isShowWorkRequired="
+                + isShowWorkRequired + ", isTutoringAvail=" + isTutoringAvail + ", loginName=" + loginName
+                + ", passPercentRequired=" + passPercentRequired + ", password=" + password + ", runId=" + runId
+                + ", sessionCount=" + sessionCount + ", sessionNumber=" + sessionNumber + ", subTitle=" + subTitle
+                + ", testId=" + testId + ", testName=" + testName + ", testSegment=" + testSegment
+                + ", testSegmentCount=" + testSegmentCount + ", uid=" + uid + ", userAccountType=" + userAccountType
+                + ", userName=" + userName + ", viewCount=" + viewCount + "]";
     }
     
     
@@ -387,7 +391,7 @@ public class UserInfo implements IsSerializable, Response {
                 
                 CmBusyManager.setBusy(false);     
                 callback.requestComplete(null);
-                
+
                 // fire an event on the event bus, passing new userinfo
                 EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_USERCHANGED,user));
             }
