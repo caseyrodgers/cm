@@ -23,7 +23,7 @@ import com.google.gwt.user.client.Timer;
  */
 public class CentralMessageWindow extends CmWindow {
 
-    static final int CHECK_FOR_MESSAGES_EVERY = 1000 * 60; //  * 15;
+    static final int CHECK_FOR_MESSAGES_EVERY = 1000 * 60 * 15;
     static CentralMessageWindow _theWindow;
     CmList<CentralMessage> _messages;
     private CentralMessageWindow(CmList<CentralMessage> messages) {
