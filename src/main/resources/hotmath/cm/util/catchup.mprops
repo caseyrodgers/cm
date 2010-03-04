@@ -1100,3 +1100,33 @@ where user_id = ? and pid = ?
 and run_id = ?
 order by insert_time_mills
 
+
+
+
+
+
+########################
+### Class CheckForCentralMessagesCommand 
+########################
+########################
+
+
+.key=GET_USER_MESSAGES
+
+select m.id, m.message_text, m.message_type
+from  HA_MESSAGE m 
+where m.id not in (
+  select mid
+  from   HA_USER_MESSAGE um
+  where  um.uid = ?
+  and    mid = m.id
+)
+
+.key=MARK_USER_MESSAGE_AS_RETRIEVED
+
+insert into HA_USER_MESSAGE(uid,mid,date_seen)
+values(?,?,now());
+
+
+ 
+

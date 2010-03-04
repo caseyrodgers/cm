@@ -10,6 +10,7 @@ import hotmath.gwt.shared.client.util.CmRpcException;
 import hotmath.gwt.shared.server.service.command.AddGroupCommand;
 import hotmath.gwt.shared.server.service.command.AddStudentCommand;
 import hotmath.gwt.shared.server.service.command.AutoAdvanceUserCommand;
+import hotmath.gwt.shared.server.service.command.CheckForCentralMessagesCommand;
 import hotmath.gwt.shared.server.service.command.CheckUserAccountStatusCommand;
 import hotmath.gwt.shared.server.service.command.ClearWhiteboardDataCommand;
 import hotmath.gwt.shared.server.service.command.CreateAutoRegistrationAccountCommand;
@@ -268,5 +269,6 @@ public class ActionDispatcher {
         addCommand(GetAdminTrendingDataDetailCommand.class);
         addCommand(RunNetTestCommand.class);
         addCommand(LogRetryActionFailedCommand.class);
+        addCommand(CheckForCentralMessagesCommand.class);
     }
 }

@@ -73,7 +73,10 @@ public enum EventType{
     EVENT_TYPE_MODAL_WINDOW_CLOSED,
     
     
-    /** When a Modal window is opened
+    /** When a Modal window is opened.
+     * 
+     * Allows other windows that have control of z-order,
+     * such as Flash or other plugins should hide.
      * 
      */
     EVENT_TYPE_MODAL_WINDOW_OPEN,

@@ -20,6 +20,7 @@ import hotmath.gwt.shared.client.eventbus.CmEventListenerImplDefault;
 import hotmath.gwt.shared.client.eventbus.EventBus;
 import hotmath.gwt.shared.client.eventbus.EventType;
 import hotmath.gwt.shared.client.rpc.action.RunNetTestAction.TestApplication;
+import hotmath.gwt.shared.client.util.CentralMessageWindow;
 import hotmath.gwt.shared.client.util.CmRunAsyncCallback;
 import hotmath.gwt.shared.client.util.NetTestWindow;
 import hotmath.gwt.shared.client.util.UserInfo;
@@ -152,7 +153,7 @@ public class CatchupMath implements EntryPoint {
     }
 
     /**
-     * Call when successfully determined users uid
+     * Called when successfully logged into CM server
      * 
      * @param uid
      */
@@ -259,6 +260,12 @@ public class CatchupMath implements EntryPoint {
             /** or, run the full test? */
             FooterPanel.startAutoTest_Gwt();
         }
+        
+        
+        /** start up central messaging checking loop
+         * 
+         */
+        CentralMessageWindow.monitorMessages();
     }
 
     /**
