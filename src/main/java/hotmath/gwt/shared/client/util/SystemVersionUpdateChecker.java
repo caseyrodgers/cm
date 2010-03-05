@@ -11,6 +11,7 @@ import hotmath.gwt.shared.client.rpc.RetryAction;
 import hotmath.gwt.shared.client.rpc.action.GetCatchupMathVersionAction;
 import hotmath.gwt.shared.client.rpc.result.CatchupMathVersion;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.widget.Html;
@@ -92,6 +93,7 @@ public class SystemVersionUpdateChecker extends CmWindow {
             }
             @Override
             public void oncapture(CatchupMathVersion version) {
+                Log.debug("GetCatchupMathVersionAction: " + version.getVersion());
                 if(version.getVersion() != CatchupMathVersionInfo.getBuildVersion()) {
                     new SystemVersionUpdateChecker();
                 }
