@@ -974,3 +974,9 @@ img.resource-item-complete {
 #testset_div li {
 	line-height: 2em;
 }
+
+
+/** gwt-log z-order */
+ .log-panel {
+    z-index: 2000 !important;
+  }
