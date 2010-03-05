@@ -93,7 +93,7 @@ public class SystemVersionUpdateChecker extends CmWindow {
             }
             @Override
             public void oncapture(CatchupMathVersion version) {
-                Log.debug("GetCatchupMathVersionAction: " + version.getVersion());
+                Log.debug("GetCatchupMathVersionAction: " + version.getVersion() + " current: " + CatchupMathVersionInfo.getBuildVersion());
                 if(version.getVersion() != CatchupMathVersionInfo.getBuildVersion()) {
                     new SystemVersionUpdateChecker();
                 }
