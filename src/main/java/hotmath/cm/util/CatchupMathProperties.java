@@ -1,5 +1,8 @@
 package hotmath.cm.util;
 
+import hotmath.flusher.Flushable;
+import hotmath.flusher.HotmathFlusher;
+
 import java.io.File;
 import java.io.FileReader;
 import java.util.Properties;
@@ -14,6 +17,16 @@ import sb.util.SbUtilities;
  *
  */
 public class CatchupMathProperties extends Properties {
+    
+    static {
+        HotmathFlusher.getInstance().addFlushable(new Flushable() {
+            @Override
+            public void flush() {
+                __instance = null;
+            }
+        });
+    }
+    
     static Logger __log = Logger.getLogger(CatchupMathProperties.class);
     static private CatchupMathProperties __instance;
     static public CatchupMathProperties getInstance() throws Exception {

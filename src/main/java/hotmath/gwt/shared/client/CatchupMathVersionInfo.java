@@ -10,6 +10,9 @@ package hotmath.gwt.shared.client;
  *  is out date and a message is shown to request client to 
  *  refresh.
  *  
+ *  NOTE: This much match the client.version property
+ *  in ~/cm.properties.
+ *  
  *  @SEE SystemVersionUpdateChecker.
  *  
  * @author casey
@@ -17,6 +20,6 @@ package hotmath.gwt.shared.client;
  */
 public class CatchupMathVersionInfo {
     static public int getBuildVersion() {
-        return 7;
+        return 3;
     }
 }
