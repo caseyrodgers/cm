@@ -17,6 +17,6 @@ package hotmath.gwt.shared.client;
  */
 public class CatchupMathVersionInfo {
     static public int getBuildVersion() {
-        return 2;
+        return 6;
     }
 }

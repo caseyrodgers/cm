@@ -1,5 +1,6 @@
 package hotmath.gwt.shared.client.util;
 
+import hotmath.gwt.cm_tools.client.ui.FooterPanel;
 import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
 import hotmath.gwt.shared.client.CatchupMathVersionInfo;
 import hotmath.gwt.shared.client.CmShared;
@@ -10,7 +11,6 @@ import hotmath.gwt.shared.client.rpc.RetryAction;
 import hotmath.gwt.shared.client.rpc.action.GetCatchupMathVersionAction;
 import hotmath.gwt.shared.client.rpc.result.CatchupMathVersion;
 
-import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.widget.Html;
@@ -24,7 +24,7 @@ import com.google.gwt.user.client.Timer;
  */
 public class SystemVersionUpdateChecker extends CmWindow {
 
-    static final int CHECK_FOR_MESSAGES_EVERY = 1000 * 60 * 15;
+    static final int CHECK_EVERY = 1000 * 60 * 15;
     static SystemVersionUpdateChecker _theWindow;
     
     private SystemVersionUpdateChecker() {
@@ -39,7 +39,7 @@ public class SystemVersionUpdateChecker extends CmWindow {
         setHeading("Catchup Math Update");
 
         String html = "We have recently updated Catchup Math.  " + 
-                      "Please Refresh your browser by pressing the F5 key. " +
+                      "Please Refresh your browser by pressing the F5 key or click the button below. " +
                       "Thank you for using Catchup Math!";
         
         setStyleName("server-update-window");
@@ -48,11 +48,11 @@ public class SystemVersionUpdateChecker extends CmWindow {
             + html 
             + "</div>";
         add(new Html(msg));
-        addButton(new Button("Close", new SelectionListener<ButtonEvent>() {
+        addButton(new Button("Refresh Page", new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent ce) {
                 _theWindow = null;
-                close();
+                FooterPanel.refreshPage();
             }
         }));
         setVisible(true);
@@ -69,7 +69,7 @@ public class SystemVersionUpdateChecker extends CmWindow {
                 checkForUpdate();
             }
         };
-        timer.scheduleRepeating(CHECK_FOR_MESSAGES_EVERY);
+        timer.scheduleRepeating(CHECK_EVERY);
         
         /** check now */
         checkForUpdate();
