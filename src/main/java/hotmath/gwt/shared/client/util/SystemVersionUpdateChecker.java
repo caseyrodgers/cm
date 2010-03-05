@@ -28,7 +28,12 @@ public class SystemVersionUpdateChecker extends CmWindow {
     static final int CHECK_EVERY = 1000 *  60 * 15;
     static SystemVersionUpdateChecker _theWindow;
     
-    private SystemVersionUpdateChecker() {
+    public SystemVersionUpdateChecker() {
+        
+        /** only show one */
+        if(_theWindow != null)
+            return;
+        
         _theWindow = this;
         EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_MODAL_WINDOW_OPEN));
         
@@ -58,10 +63,11 @@ public class SystemVersionUpdateChecker extends CmWindow {
         }));
         setVisible(true);
     }
-    
-    /** Monitor messages by calling server every N seconds and looks
-     *  for messages this user has not already seen
-     *  
+
+    /** Monitor server for version changes.
+     * 
+     * Checks every 15 minutes.
+     * 
      */
     static public void monitorVersionChanges() {
         Timer timer = new Timer() {
@@ -84,6 +90,7 @@ public class SystemVersionUpdateChecker extends CmWindow {
     static private void checkForUpdate() {
         if(_theWindow != null)
             return;
+        
         new RetryAction<CatchupMathVersion>() {
             @Override
             public void attempt() {

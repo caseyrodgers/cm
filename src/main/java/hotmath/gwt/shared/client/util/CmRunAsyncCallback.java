@@ -1,7 +1,7 @@
 package hotmath.gwt.shared.client.util;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.RunAsyncCallback;
-import com.google.gwt.user.client.Window;
 
 /** Provide standard RunAsync behavior for failure
  * 
@@ -15,6 +15,7 @@ public abstract class CmRunAsyncCallback implements RunAsyncCallback {
 
 	@Override
 	public void onFailure(Throwable reason) {
-			Window.alert("Error loading GWT fragment: " + reason.getLocalizedMessage());
+	    Log.info("Error loading fragment", reason);
+	    new SystemVersionUpdateChecker();
 	}
 }

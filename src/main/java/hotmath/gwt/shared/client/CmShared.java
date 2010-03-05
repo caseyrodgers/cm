@@ -3,13 +3,13 @@ package hotmath.gwt.shared.client;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.service.CmServiceAsync;
 import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
-import hotmath.gwt.shared.client.data.CmAsyncRequest;
 import hotmath.gwt.shared.client.data.CmAsyncRequestImplDefault;
 import hotmath.gwt.shared.client.model.UserInfoBase;
 import hotmath.gwt.shared.client.rpc.RetryAction;
 import hotmath.gwt.shared.client.rpc.action.ProcessLoginRequestAction;
 import hotmath.gwt.shared.client.util.CmException;
 import hotmath.gwt.shared.client.util.CmExceptionLoginInvalid;
+import hotmath.gwt.shared.client.util.SystemVersionUpdateChecker;
 import hotmath.gwt.shared.client.util.UserInfo;
 
 import java.util.HashMap;
@@ -118,8 +118,9 @@ public class CmShared implements EntryPoint {
      * @throws CmException
      */
     static public void handleLoginProcessAsync(final CmLoginAsync callback) {
-
         try {
+            
+            SystemVersionUpdateChecker.monitorVersionChanges();        
             
             /** Provide shortcut, single argument entry for debugging a user
              */
