@@ -25,7 +25,7 @@ import com.google.gwt.user.client.Timer;
  */
 public class SystemVersionUpdateChecker extends CmWindow {
 
-    static final int CHECK_EVERY = 1000 *  15;// 60 * 15;
+    static final int CHECK_EVERY = 1000 *  60 * 15;
     static SystemVersionUpdateChecker _theWindow;
     
     private SystemVersionUpdateChecker() {
