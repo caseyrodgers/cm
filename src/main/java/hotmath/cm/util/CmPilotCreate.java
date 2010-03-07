@@ -15,6 +15,8 @@ import hotmath.util.sql.SqlUtilities;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -232,6 +234,8 @@ public class CmPilotCreate {
         }
     }
 
+    
+    static DateFormat _dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm");
     /**
      * Add a record to HA_ADMIN_PILOT_REQUEST table and send email to sales
      * manager
@@ -258,13 +262,10 @@ public class CmPilotCreate {
 
             ps.executeUpdate();
 
+            
             // create a new Subscriber record based on this email
             String idToUse = HotMathSubscriber.createUniqueID(null);
-            String comments = "Catchup Math online pilot setup"
-                           + "\nComments: " + userComments
-                           + "\nphone: " + phone
-                           + "\nphone_type: " + phoneType
-                           + "\nphone_when: " + phoneWhen;
+            String comments = _dateFormat.format(new Date()) + " Catchup Math online pilot setup";
             HotMathSubscriber sub = HotMathSubscriberManager.createBasicAccount(idToUse, school, "ST", email, comments,new Date());
             sub.setResponsibleName(name);
             sub.setStatus("N");
