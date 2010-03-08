@@ -830,20 +830,42 @@ public class CmAdminDao {
         }
     }
 
-    private Integer getCountUsersWhoHaveBeenInQuizSegment(final Connection conn, Map<String, String> replacements,
-            HaTestDef testDef, Integer segment,boolean useActiveOnly) throws Exception {
+    
+    /** Return array of counts indicating the count of users in each segment.
+     * 
+     * The array is sequential from 1, and only contains values
+     * for seqments that have data.  So, if checking test with no users
+     * the array would be zero lenght.
+     * 
+     * 
+     * @param conn
+     * @param replacements
+     * @param testDef
+     * @param useActiveOnly
+     * @return
+     * @throws Exception
+     */
+    private int[] getCountsOfUsersWhoHaveVisitedQuizSegment(final Connection conn, Map<String, String> replacements,HaTestDef testDef,boolean useActiveOnly) throws Exception {
         PreparedStatement ps = null;
         try {
             
+            int counts[] = new int[testDef.getTestConfig().getSegmentCount()];
+            
             String sqlToken = (useActiveOnly?"TRENDING_DATA_FOR_TEST_SEGMENTS_SQL_FROM_UIDS_ACTIVE_ONLY":"TRENDING_DATA_FOR_TEST_SEGMENTS_SQL_FROM_UIDS_FULL_HISTORY");
-            ps = conn.prepareStatement(CmMultiLinePropertyReader.getInstance().getProperty(
-                    sqlToken, replacements));
+            ps = conn.prepareStatement(CmMultiLinePropertyReader.getInstance().getProperty(sqlToken, replacements));
             ps.setInt(1, testDef.getTestDefId());
-            ps.setInt(2, segment);
             ResultSet rs = ps.executeQuery();
-            if (!rs.first())
-                return 0;
-            return rs.getInt("count_users");
+            while(rs.next()) {
+                int segNum = rs.getInt("test_segment");
+                try {
+                    counts[segNum-1] = rs.getInt("count_users");
+                }
+                catch(Exception e) {
+                    e.printStackTrace();
+                }
+            }
+            
+            return counts;
         } finally {
             SqlUtilities.releaseResources(null, ps, null);
         }
@@ -862,10 +884,11 @@ public class CmAdminDao {
              * for number of segments defined for this test
              * 
              */
-            int totSegs = testDef.getTestConfig().getSegmentCount();
-            for (int i = 0; i < totSegs; i++) {
-                int countUsers = getCountUsersWhoHaveBeenInQuizSegment(conn, replacements, testDef, (i + 1),useActiveOnly);
-                pd.getSegments().add(new ProgramSegmentData(i, countUsers));
+            int segmentCount = testDef.getTestConfig().getSegmentCount();
+            int segUserCount[] = getCountsOfUsersWhoHaveVisitedQuizSegment(conn,replacements,testDef,useActiveOnly);
+            for (int i = 0; i < segmentCount; i++) {
+                ProgramSegmentData psd = new ProgramSegmentData(i, segUserCount[i]);                 
+                pd.getSegments().add(psd);
             }
             return pd;
         } finally {

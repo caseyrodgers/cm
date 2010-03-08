@@ -234,14 +234,18 @@ public class CmPilotCreate {
         }
     }
 
-    
     static DateFormat _dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm");
     /**
      * Add a record to HA_ADMIN_PILOT_REQUEST table and send email to sales
      * manager
      * 
      */
-    static public void addPilotRequest(String title, String name, String school, String zip, String email,
+    
+    static public void test() throws Exception {
+        HotMathSubscriber sub = HotMathSubscriberManager.createBasicAccount(null,null,null,null,null,null);        
+    }
+    
+    static public void addPilotRequest2(String title, String name, String school, String zip, String email,
             String phone, String userComments, String phoneType, String phoneWhen,String emailSubject, String emailText) throws Exception {
 
         String sendTo[] = { "lincoln@hotmath.com", "sales@hotmath.com", "casey@hotmath.com" };
@@ -262,10 +266,10 @@ public class CmPilotCreate {
 
             ps.executeUpdate();
 
-            
             // create a new Subscriber record based on this email
             String idToUse = HotMathSubscriber.createUniqueID(null);
-            String comments = _dateFormat.format(new Date()) + " Catchup Math online pilot setup";
+
+            String comments = _dateFormat.format(new Date()) + " Catchup Math online pilot request\n";
             HotMathSubscriber sub = HotMathSubscriberManager.createBasicAccount(idToUse, school, "ST", email, comments,new Date());
             sub.setResponsibleName(name);
             sub.setStatus("N");
@@ -290,7 +294,12 @@ public class CmPilotCreate {
                 e.printStackTrace();
             }
             
-            
+            String emailComments = "Catchup Math online pilot setup"
+                + "\nComments: " + userComments
+                + "\nphone: " + phone
+                + "\nphone_type: " + phoneType
+                + "\nphone_when: " + phoneWhen;
+
             /** send tracking email to admin people
              * 
              */

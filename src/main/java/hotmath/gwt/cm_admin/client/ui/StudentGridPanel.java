@@ -862,6 +862,13 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
                     }
 
                     CmShared.getCmService().execute(_pageAction, this);
+                    
+                    
+                    
+                    /** always turn off */
+                    
+                    _forceServerRefresh=false;
+                    _pageAction.setForceRefresh(_forceServerRefresh);
                 }
                 
                 @Override
