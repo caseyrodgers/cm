@@ -138,7 +138,7 @@ public class CmWebResourceManager {
 
         private void cleanDir(File dir) throws CmException {
             if(!fileIsNotChildOfWebBase(dir))
-                throw new CmException("Cannot delete nvalid resource directory: " + dir.getPath());
+                throw new CmException("Cannot delete invalid resource directory: " + dir.getPath());
             
             File kids[] = dir.listFiles();
             if (kids !=null ) {

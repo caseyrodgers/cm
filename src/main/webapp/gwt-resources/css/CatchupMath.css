@@ -25,12 +25,6 @@
         text-align: center;
         width: 100%;
 }
-.resource-accord-panel-list-view {
-        background: #43464B;
-        border: none;
-        color: white;
-        text-align: left;
-}
 .resource-accord-panel-list-view-selected {
         color: yellow;
 }
@@ -80,7 +74,7 @@
         margin-right: 20px;
 }
 .resource-accord-panel {
-        background: #34383B;
+        background: #43464B;
         color: #5E8005;
         font-weight: bold;
 }
@@ -225,7 +219,7 @@
         z-index: 2;
 }
 .quiz-page-resource {
-        background: #34383B;
+        background: #43464B;
         padding: 20px 10px;
 }
 .quiz-page-resource p {
@@ -250,7 +244,7 @@
         margin-left: 10px;
 }
 .main-panel-west {
-        background: #34383B;
+        background: #43464B;
         font-size: 12px;
 }
 .header-panel-title {
@@ -339,7 +333,7 @@
 .resource-wrapper {
 }
 .prescription-info-panel {
-        background: #34383B;
+        background: #43464B;
         color: #C0C662;
         padding: 20px;
 }
@@ -359,7 +353,7 @@
 .prescription-info-panel {
 }
 .cm-main-panel-header {
-        background: #34383B;
+        background: #43464B;
         color: #CBFF07;
         font-size: 1.2em;
         height: 55px;
@@ -371,7 +365,7 @@
         text-align: center;
 }
 .accordian-resource-list-panel {
-        background: #34383B;
+        background: #43464B;
 }
 .accordian-resource-list-panel img.resource-type {
         display: none;
@@ -484,7 +478,7 @@ img.resource-item-complete {
         max-width: 1131px;
 }
 .resource-container-neutral {
-        background-color: #34383b;
+        background-color: #43464B;
         background-image: none;
 }
 .resource-container-redish {

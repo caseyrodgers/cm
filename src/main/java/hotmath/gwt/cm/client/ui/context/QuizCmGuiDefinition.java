@@ -11,6 +11,7 @@ import hotmath.gwt.cm_tools.client.ui.viewer.CmResourcePanelImplWithWhiteboard;
 import hotmath.gwt.cm_tools.client.ui.viewer.ShowWorkPanel;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.data.CmAsyncRequestImplDefault;
+import hotmath.gwt.shared.client.util.StatusImagePanel;
 import hotmath.gwt.shared.client.util.UserInfo;
 
 import java.util.ArrayList;
@@ -22,6 +23,7 @@ import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.Html;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.button.Button;
+import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Widget;
 
 
@@ -60,6 +62,19 @@ public class QuizCmGuiDefinition implements CmGuiDefinition {
 	    }
 	    cp.add(new Html(html));
 	    cp.add(new Html(CatchupMathTools.FEEDBACK_MESSAGE));
+
+	    int currentQuiz = UserInfo.getInstance().getTestSegment();
+	    
+	    /** this seems like a bug .. maybe switching
+	     *  between 1 and 0 base.
+	     */
+	    if(currentQuiz == 0)
+	        currentQuiz = 1;
+	    
+	    int totalQuizInProgram = UserInfo.getInstance().getTestSegmentCount();
+	    String statusMsg = "Quiz " + currentQuiz + " of " + totalQuizInProgram;
+	    cp.add(new StatusImagePanel(totalQuizInProgram,currentQuiz,"Program Status",statusMsg));
+	    
 		return cp;
 	}
 	

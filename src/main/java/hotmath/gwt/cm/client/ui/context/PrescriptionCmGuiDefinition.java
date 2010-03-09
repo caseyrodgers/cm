@@ -25,6 +25,7 @@ import hotmath.gwt.shared.client.rpc.RetryAction;
 import hotmath.gwt.shared.client.rpc.action.GetPrescriptionAction;
 import hotmath.gwt.shared.client.rpc.action.SetInmhItemAsViewedAction;
 import hotmath.gwt.shared.client.util.RpcData;
+import hotmath.gwt.shared.client.util.StatusImagePanel;
 import hotmath.gwt.shared.client.util.UserInfo;
 
 import java.util.ArrayList;
@@ -461,8 +462,13 @@ class PrescriptionResourcePanel extends LayoutContainer {
         }
 
         add(vp);
+        
+        
+        int currentSession = UserInfo.getInstance().getSessionNumber();
+        int  totalSessions = UserInfo.getInstance().getSessionCount();
+        String  statusMsg = "Lesson " + currentSession + " of " + totalSessions;
+        add(new StatusImagePanel(totalSessions, currentSession+1,"Lesson Status", statusMsg));
         layout();
-
     }
 
     /** Display item data as prescription resource */

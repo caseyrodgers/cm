@@ -320,6 +320,20 @@
       <version>3.6</version>
     </dependency>
 
+    <dependency>
+    	<groupId>jfree</groupId>
+    	<artifactId>jfreechart</artifactId>
+    	<version>1.0.13</version>
+    	<type>jar</type>
+    	<scope>compile</scope>
+    </dependency>
+    <dependency>
+    	<groupId>jfree</groupId>
+    	<artifactId>jcommon</artifactId>
+    	<version>1.0.15</version>
+    	<type>jar</type>
+    	<scope>compile</scope>
+    </dependency>
   </dependencies>
 
   <build>
