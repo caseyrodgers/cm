@@ -2,9 +2,13 @@ package hotmath.gwt.cm_admin.server.model;
 
 import hotmath.cm.server.model.CmUserProgramDao;
 import hotmath.gwt.cm.server.CmDbTestCase;
+import hotmath.gwt.cm_admin.server.model.CmStudentDao;
 import hotmath.gwt.cm_tools.client.model.StudentActiveInfo;
 import hotmath.gwt.cm_tools.client.model.StudentModelI;
 import hotmath.testset.ha.StudentUserProgramModel;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class CmStudentDao_Test extends CmDbTestCase {
 
@@ -54,9 +58,26 @@ public class CmStudentDao_Test extends CmDbTestCase {
         assertTrue(sm.getUid() > 0);
     }
     
+    public void testGetStudentModelBase() throws Exception {
+        StudentModelI sm = _dao.getStudentModelBase(conn, _user.getUid(), false);
+        assertNotNull(sm);
+        assertTrue(sm.getUid() > 0);    	
+    }
+    
     public void testGetStudentActive() throws Exception {
         StudentActiveInfo active = _dao.loadActiveInfo(conn, _user.getUid());
         assertNotNull(active);
+    }
+    
+    public void testGetStudentExtendedSummaries() throws Exception {
+    	List<Integer> studentUids = new ArrayList<Integer>();
+    	
+    	studentUids.add(_user.getUid());
+    	studentUids.add(_user.getUid());
+    	studentUids.add(_user.getUid());
+
+    	List<StudentModelI> l = _dao.getStudentExtendedSummaries(conn, studentUids);
+    	assertTrue(l.size() > 0);
     }
     
     public void testGetStudentProgram() throws Exception {
