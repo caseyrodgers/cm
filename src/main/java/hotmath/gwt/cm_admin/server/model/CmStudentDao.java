@@ -10,6 +10,7 @@ import hotmath.gwt.cm_tools.client.model.StringHolder;
 import hotmath.gwt.cm_tools.client.model.StudentActiveInfo;
 import hotmath.gwt.cm_tools.client.model.StudentActivityModel;
 import hotmath.gwt.cm_tools.client.model.StudentModel;
+import hotmath.gwt.cm_tools.client.model.StudentModelBase;
 import hotmath.gwt.cm_tools.client.model.StudentModelBasic;
 import hotmath.gwt.cm_tools.client.model.StudentModelI;
 import hotmath.gwt.cm_tools.client.model.StudentShowWorkModel;
@@ -44,6 +45,12 @@ import org.apache.log4j.Logger;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import static hotmath.gwt.cm_tools.client.model.StudentModelExt.HAS_LAST_LOGIN_KEY;
+import static hotmath.gwt.cm_tools.client.model.StudentModelExt.HAS_LAST_QUIZ_KEY;
+import static hotmath.gwt.cm_tools.client.model.StudentModelExt.HAS_PASSING_COUNT_KEY;
+import static hotmath.gwt.cm_tools.client.model.StudentModelExt.HAS_STATUS_KEY;
+import static hotmath.gwt.cm_tools.client.model.StudentModelExt.HAS_TUTORING_USE_KEY;
+
 public class CmStudentDao {
 
   
@@ -71,6 +78,39 @@ public class CmStudentDao {
      */
     private String getStudentSql(StudentSqlType sqlType, Boolean includeSelfRegistrationTemplates) {
         String studentSql = CmMultiLinePropertyReader.getInstance().getProperty("STUDENT_SUMMARY");
+
+        if (sqlType.equals(StudentSqlType.ALL_STUDENTS_FOR_ADMIN)) {
+            studentSql += " WHERE a.aid = ? ";
+        } else {
+            // single student
+            studentSql += " WHERE h.uid = ? ";
+        }
+        
+        
+        // to filter the Self Registration Setup records
+        if(!includeSelfRegistrationTemplates)
+            studentSql += " AND h.is_auto_create_template = 0 ";
+        
+
+        studentSql += " and h.is_active = ? " +
+                "ORDER by h.user_name asc";
+
+        return studentSql;
+    }
+
+    /**
+     * Return the StudentSummary sql for either a single student or all Students
+     * under a given Admin.
+     * 
+     * @TODO: move this to a view to allow easy reuse.
+     * 
+     * @param sqlType
+     * @param includeSelfRegistrationTemplates  If true, then is_auto_create_template records are included
+     * 
+     * @return
+     */
+    private String getStudentSummarySql(StudentSqlType sqlType, Boolean includeSelfRegistrationTemplates) {
+        String studentSql = CmMultiLinePropertyReader.getInstance().getProperty("STUDENT_SUMMARY_BASE");
 
         if (sqlType.equals(StudentSqlType.ALL_STUDENTS_FOR_ADMIN)) {
             studentSql += " WHERE a.aid = ? ";
@@ -123,6 +163,132 @@ public class CmStudentDao {
         return l;
     }
 
+    public List<StudentModelI> getBaseSummariesForActiveStudents(final Connection conn, Integer adminUid) throws Exception {
+        return getStudentBaseSummaries(conn, adminUid, true);
+    }
+
+    public List<StudentModelI> getBaseSummariesForInactiveStudents(final Connection conn, Integer adminUid) throws Exception {
+        return getStudentBaseSummaries(conn, adminUid, false);
+    }
+
+    public List<StudentModelI> getStudentBaseSummaries(final Connection conn, Integer adminUid, Boolean isActive) throws Exception {
+        List<StudentModelI> l = null;
+
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+
+        try {
+        	Boolean tutoringEnabledForAdmin = isTutoringEnabledForAdmin(conn, adminUid);
+        	
+            ps = conn.prepareStatement(getStudentSummarySql(StudentSqlType.ALL_STUDENTS_FOR_ADMIN, false));
+            ps.setInt(1, adminUid);
+            ps.setInt(2, (isActive) ? 1 : 0);
+            rs = ps.executeQuery();
+
+            l = loadStudentBaseSummaries(rs, tutoringEnabledForAdmin);
+            
+            loadChapterInfo(conn, l);
+        } catch (Exception e) {
+            logger.error(String.format("*** Error getting student base summaries for Admin uid: %d", adminUid), e);
+            throw new Exception("*** Error getting student base summary data ***");
+        } finally {
+            SqlUtilities.releaseResources(rs, ps, null);
+        }
+        return l;
+    }
+    
+    public List<StudentModelI> getStudentExtendedSummaries(final Connection conn, List<Integer> studentUids) throws Exception {
+    	
+    	List<StudentModelI> l = null;
+    	
+    	String sql = CmMultiLinePropertyReader.getInstance().getProperty("STUDENT_SUMMARY_EXTENDED");
+    	
+    	String uidStr = getUidString(studentUids);
+    			
+    	String sqlWithUids = sql.replaceFirst("XXX", uidStr);
+
+    	PreparedStatement ps = null;
+    	ResultSet rs = null;
+    	
+    	try {
+    		ps = conn.prepareStatement(sqlWithUids);
+    		rs = ps.executeQuery();
+    		l = loadStudentExtendedSummaries(rs);
+    	} catch (Exception e) {
+            logger.error(String.format("*** Error getting student extended summary data for uids: %s", uidStr), e);
+			throw new Exception("*** Error getting student extended summary data ***");
+        } finally {
+            SqlUtilities.releaseResources(rs, ps, null);
+        }
+        return l;
+    }
+
+	private String getUidString(List<Integer> studentUids) {
+		String uidStr = studentUids.toString().substring(1);
+    	uidStr = uidStr.substring(0, uidStr.length()-1);
+		return uidStr;
+	}
+    
+    private static Map<String, String> queryKeyMap = new HashMap<String, String>();
+    
+    static {
+    	queryKeyMap.put(HAS_LAST_LOGIN_KEY,    "STUDENT_LAST_LOGIN");
+    	queryKeyMap.put(HAS_LAST_QUIZ_KEY,     "STUDENT_LAST_QUIZ");
+    	queryKeyMap.put(HAS_PASSING_COUNT_KEY, "STUDENT_PASSING_COUNT");
+    	queryKeyMap.put(HAS_STATUS_KEY,        "STUDENT_STATUS");
+    	queryKeyMap.put(HAS_TUTORING_USE_KEY,  "STUDENT_TUTORING_USE");    	
+    }
+    
+    public List<StudentModelI> getStudentExtendedData(final Connection conn, String hasFieldKey, List<Integer>uids) throws Exception {
+    	
+    	List<StudentModelI> l = null;
+    	
+    	String queryKey = queryKeyMap.get(hasFieldKey);
+    	
+    	if (queryKey == null) throw new IllegalStateException("extended data requested for: " + hasFieldKey);
+    	
+    	String sql = CmMultiLinePropertyReader.getInstance().getProperty(queryKey);
+    	
+    	String uidStr = getUidString(uids);
+    	
+    	String sqlWithUids = sql.replaceFirst("XXX", uidStr);
+    	
+    	PreparedStatement ps = null;
+    	ResultSet rs = null;
+    	
+    	try {
+    		ps = conn.prepareStatement(sqlWithUids);
+    		rs = ps.executeQuery();
+    		l = loadStudentExtendedData(hasFieldKey, rs);
+    	} catch (Exception e) {
+            logger.error(String.format("*** Error getting student extended data for uids: %s, sql: ", uidStr, sqlWithUids), e);
+			throw new Exception("*** Error getting student extended data ***");
+        } finally {
+            SqlUtilities.releaseResources(rs, ps, null);
+        }
+        return l;
+    }
+/*
+	private void loadChapInfo(final Connection conn, List<StudentModelBaseI> l) throws Exception {
+
+		CmAdminDao dao = CmAdminDao.getInstance();
+		
+		for (StudentModelBaseI sm : l) {
+			StudentUserProgramModelBase upm = sm.getUserProgramModel();
+			String chapter = upm.getChapter();
+			if (chapter != null) {
+				String subjId = upm.getTestDefBase().getSubjId();
+		        List <ChapterModel> cmList = dao.getChaptersForProgramSubject(conn, "Chap", subjId);
+		        for (ChapterModel cm : cmList) {
+		        	if (cm.getTitle().equals(chapter)) {
+		        		upm.setChapterNumber(Integer.valueOf(cm.getNumber()));
+		        		break;
+		        	}
+		        }
+			}
+		}
+	}
+*/
 	private void loadChapterInfo(final Connection conn, List<StudentModelI> l) throws Exception {
 
 		CmAdminDao dao = new CmAdminDao();
@@ -143,6 +309,69 @@ public class CmStudentDao {
 		}
 	}
 
+	private List<StudentModelI> loadStudentExtendedData(String hasFieldKey, ResultSet rs) throws Exception {
+		List<StudentModelI> l = new ArrayList<StudentModelI>();
+		
+        while (rs.next()) {
+            StudentModelI sm = new StudentModel();
+
+            sm.setUid(rs.getInt("uid"));
+            sm.setAdminUid(rs.getInt("admin_uid"));
+
+            sm.setTotalUsage(0);
+            
+            if (HAS_LAST_LOGIN_KEY.equals(hasFieldKey)) {
+                sm.setLastLogin(rs.getString("last_use_date"));
+            }
+            
+            else if (HAS_LAST_QUIZ_KEY.equals(hasFieldKey)) {
+                sm.setLastQuiz(rs.getString("last_quiz"));
+            }
+
+            else if (HAS_PASSING_COUNT_KEY.equals(hasFieldKey)) {
+                sm.setNotPassingCount(rs.getInt("not_passing_count"));
+                sm.setPassingCount(rs.getInt("passing_count"));
+            }
+
+            else if (HAS_STATUS_KEY.equals(hasFieldKey)) {
+                int activeSegment = rs.getInt("active_segment");
+                sm.setSectionNum(activeSegment);
+                if (activeSegment > 0) {
+                    int segmentCount = rs.getInt("total_segments");
+
+                    /**
+                     * If segmentCount not set, then extract from test config json
+                     * TODO: should we use test config json by default?
+                     */
+                    if (segmentCount == 0) {
+                        try {
+                            String json = rs.getString("test_config_json");
+                            if(json != null) {
+                                JSONObject jo = new JSONObject(json);
+                                segmentCount = jo.getInt("segments");
+                            }
+                        }
+                        catch(Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    String status = new StringBuilder("Section ").append(activeSegment).append(" of ").append(segmentCount)
+                            .toString();
+                    sm.setStatus(status);
+                } else {
+                    sm.setStatus("Not started");
+                }
+            }
+
+            else if (HAS_TUTORING_USE_KEY.equals(hasFieldKey)) {
+                sm.setTutoringUse(rs.getInt("tutoring_use"));
+            }
+
+            l.add(sm);
+        }
+		
+		return l;
+	}
 
 	public Boolean isTutoringEnabledForAdmin(final Connection conn, Integer aid) throws Exception {
 	    AccountInfoModel aim = new CmAdminDao().getAccountInfo(conn, aid);
@@ -356,9 +585,7 @@ public class CmStudentDao {
             finally {
                 SqlUtilities.releaseResources(null,stmt,null);
             }
-            
-            
-            
+
             ps = conn.prepareStatement(DEACTIVATE_STUDENT_SQL);
             StringBuilder sb = new StringBuilder();
             sb.append(sm.getUid()).append(".").append(System.currentTimeMillis());
@@ -1001,6 +1228,55 @@ public class CmStudentDao {
         }
     }
 
+    /** Return student model named by uid
+     *  
+     * @param conn
+     * @param uid
+     * @param includeSelfRegTemplate  If true, then is_auto_create_template will be considered
+     * @return
+     * 
+     * 
+     * @throws Exception
+     */
+    public StudentModelI getStudentModelBase(final Connection conn, Integer uid, Boolean includeSelfRegTemplate) throws Exception {
+        
+        long timeStart = System.currentTimeMillis();
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+
+        try {
+            ps = conn.prepareStatement(getStudentSummarySql(StudentSqlType.SINGLE_STUDENT, includeSelfRegTemplate));
+            ps.setInt(1, uid);
+            ps.setInt(2, 1);
+            rs = ps.executeQuery();
+
+            List<StudentModelI> l = null;
+            l = loadStudentBaseSummaries(rs, null);
+            if (l.size() == 0)
+                throw new Exception(String.format("Student with UID: %d was not found", uid));
+            if (l.size() > 1)
+                throw new Exception(String.format("Student with UID: %d matches more than one row", uid));
+
+            loadChapterInfo(conn, l);
+            
+            StudentModelI sm = l.get(0);
+            
+            if(sm.getTutoringAvail()) {
+                /**
+                 * make sure the admin has tutoring enabled
+                 */
+                sm.setTutoringAvail(isTutoringEnabledForAdmin(conn, sm.getAdminUid()));
+            }
+            return sm; 
+        } catch (Exception e) {
+            logger.error(String.format("*** Error obtaining data for student UID: %d", uid), e);
+            throw new Exception(String.format("*** Error obtaining data for student with UID: %d", uid));
+        } finally {
+            SqlUtilities.releaseResources(rs, ps, null);
+            logger.info(String.format("End getStudentModel(), UID: %d, elapsed seconds: %d", uid, ((System.currentTimeMillis() - timeStart)/1000)));
+        }
+    }
+    
     private List<StudentModelI> loadStudentSummaries(ResultSet rs) throws Exception {
 
         List<StudentModelI> l = new ArrayList<StudentModelI>();
@@ -1069,7 +1345,104 @@ public class CmStudentDao {
         }
         return l;
     }
+    
+    private List<StudentModelI> loadStudentBaseSummaries(ResultSet rs, Boolean tutoringEnabledForAdmin) throws Exception {
 
+        List<StudentModelI> l = new ArrayList<StudentModelI>();
+
+        while (rs.next()) {
+            //StudentModelBaseI sm = new StudentModelBase();
+            StudentModelI sm = new StudentModelBase();
+
+            sm.setUid(rs.getInt("uid"));
+            sm.setAdminUid(rs.getInt("admin_uid"));
+            sm.setName(rs.getString("name"));
+            sm.setPasscode(rs.getString("passcode"));
+            sm.setEmail(rs.getString("email"));
+            sm.setShowWorkRequired(rs.getInt("is_show_work_required") > 0);
+            sm.setTutoringAvail(rs.getInt("is_tutoring_available") > 0 && ((tutoringEnabledForAdmin == null) || tutoringEnabledForAdmin));
+            sm.setBackgroundStyle(rs.getString("gui_background_style"));
+
+            sm.setGroupId(String.valueOf(rs.getInt("group_id")));
+            sm.setGroup(rs.getString("group_name"));
+
+            sm.setSectionNum(rs.getInt("active_segment"));
+            sm.setChapter(getChapter(rs.getString("test_config_json")));
+            sm.setJson(rs.getString("test_config_json"));
+
+            sm.setUserProgramId(rs.getInt("user_prog_id"));
+/*
+            StudentUserProgramModelBase upm = new StudentUserProgramModelBase();
+            upm.setAdminId(sm.getAdminUid());
+            upm.setId(sm.getUserProgramId());
+            upm.setPassPercent(rs.getInt("pass_percent"));
+            upm.setTestConfigJson(rs.getString("test_config_json"));
+            
+            HaTestDefBase tdm = new HaTestDefBase();
+            tdm.setProgId(rs.getString("prog_id"));
+            tdm.setSubjId(rs.getString("subj_id"));
+            tdm.setStateId(null);
+            
+            upm.setTestDefBase(tdm);
+            sm.setUserProgramModel(upm);
+*/
+            l.add(sm);
+        }
+        return l;
+    }
+
+    private List<StudentModelI> loadStudentExtendedSummaries(ResultSet rs) throws Exception {
+
+        List<StudentModelI> l = new ArrayList<StudentModelI>();
+
+        while (rs.next()) {
+            StudentModelI sm = new StudentModel();
+
+            sm.setUid(rs.getInt("uid"));
+            sm.setAdminUid(rs.getInt("admin_uid"));
+
+            sm.setTotalUsage(0);
+
+            sm.setLastQuiz(rs.getString("last_quiz"));
+            sm.setLastLogin(rs.getString("last_use_date"));
+            sm.setNotPassingCount(rs.getInt("not_passing_count"));
+            sm.setPassingCount(rs.getInt("passing_count"));
+            sm.setTutoringUse(rs.getInt("tutoring_use"));
+
+            int activeSegment = rs.getInt("active_segment");
+            sm.setSectionNum(activeSegment);
+            if (activeSegment > 0) {
+                int segmentCount = rs.getInt("total_segments");
+
+                /**
+                 * If segmentCount not set, then extract from test config json
+                 * 
+                 */
+                if (segmentCount == 0) {
+                    try {
+                        String json = rs.getString("test_config_json");
+                        if(json != null) {
+                            JSONObject jo = new JSONObject(json);
+                            segmentCount = jo.getInt("segments");
+                        }
+                    }
+                    catch(Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                String status = new StringBuilder("Section ").append(activeSegment).append(" of ").append(segmentCount)
+                        .toString();
+                sm.setStatus(status);
+            } else {
+                sm.setStatus("Not started");
+            }
+
+            l.add(sm);
+        }
+        return l;
+    }
+    
     private List<StudentActivityModel> loadStudentActivity(final Connection conn, ResultSet rs) throws Exception {
 
         List<StudentActivityModel> l = new ArrayList<StudentActivityModel>();

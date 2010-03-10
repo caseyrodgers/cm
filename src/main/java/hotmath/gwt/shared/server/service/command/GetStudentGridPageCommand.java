@@ -11,6 +11,7 @@ import hotmath.gwt.shared.client.rpc.Action;
 import hotmath.gwt.shared.client.rpc.Response;
 import hotmath.gwt.shared.client.rpc.action.GetStudentGridPageAction;
 import hotmath.gwt.shared.server.service.ActionHandler;
+import hotmath.gwt.shared.server.service.command.helper.GetStudentGridPageHelper;
 
 import java.sql.Connection;
 import java.util.ArrayList;
@@ -34,6 +35,13 @@ import com.extjs.gxt.ui.client.data.PagingLoadConfig;
  */
 public class GetStudentGridPageCommand implements
         ActionHandler<GetStudentGridPageAction, CmStudentPagingLoadResult<StudentModelExt>> {
+	
+	GetStudentGridPageHelper pageHelper;
+	
+	public GetStudentGridPageCommand() {
+		pageHelper = new GetStudentGridPageHelper();
+	}
+	
     @Override
     public CmStudentPagingLoadResult<StudentModelExt> execute(Connection conn, GetStudentGridPageAction action)
             throws Exception {
@@ -44,7 +52,7 @@ public class GetStudentGridPageCommand implements
          * Prepare a holder for the page of data to return
          * 
          */
-        ArrayList<StudentModelExt> sublist = new ArrayList<StudentModelExt>();
+        List<StudentModelExt> sublist = new ArrayList<StudentModelExt>();
         /** Extract the page from the entire pool
          * 
          */
@@ -55,6 +63,12 @@ public class GetStudentGridPageCommand implements
         for (int i = action.getLoadConfig().getOffset(); i < limit; i++) {
             sublist.add(studentPool.get(i));
         }
+        
+        /**
+         *  Ensure sublist has all fields populated, also add to studentPool
+         */
+        pageHelper.getAnyMissingData(conn, action, sublist, studentPool);
+        
         return new CmStudentPagingLoadResult<StudentModelExt>(sublist, action.getLoadConfig().getOffset(), studentPool.size());
     }
     
@@ -72,12 +86,11 @@ public class GetStudentGridPageCommand implements
         List<StudentModelExt> _allStudents = (List<StudentModelExt>) CmCacheManager.getInstance().retrieveFromCache(CacheName.STUDENT_PAGED_DATA, cacheKey);
         if (action.isForceRefresh() || _allStudents == null) {
             _allStudents = new ArrayList<StudentModelExt>();
-            for (StudentModelI smi : new CmStudentDao().getStudentSummaries(conn, action.getAdminId(), true)) {
+            for (StudentModelI smi : new CmStudentDao().getStudentBaseSummaries(conn, action.getAdminId(), true)) {
                 _allStudents.add(new StudentModelExt(smi));
             }
             CmCacheManager.getInstance().addToCache(CacheName.STUDENT_PAGED_DATA, cacheKey, _allStudents);
         }
-
 
         List<StudentModelExt> studentPool = null;
 
@@ -109,6 +122,7 @@ public class GetStudentGridPageCommand implements
         
         /** apply the quick search algorithm
          * 
+         * TODO: limit quick search to 'base' attributes?
          */
         if(action.getQuickSearch() != null) {
             String search = action.getQuickSearch();
@@ -121,7 +135,6 @@ public class GetStudentGridPageCommand implements
             studentPool = qsStudentPool;
         }
         
-
         /**
          * Should the student pool be sorted?
          * 
@@ -129,6 +142,12 @@ public class GetStudentGridPageCommand implements
         if (config != null && config.getSortInfo().getSortField() != null) {
             final String sortField = config.getSortInfo().getSortField();
             if (sortField != null) {
+            	
+            	/**
+            	 * fill the sort field as needed in both studentPool and _allStudents
+            	 */
+            	pageHelper.fillSortField(conn, sortField, studentPool, _allStudents, action.getAdminId());
+            	
                 Collections.sort(studentPool, config.getSortInfo().getSortDir().comparator(
                         new StudentGridComparator(sortField)));
             }
@@ -200,11 +219,11 @@ public class GetStudentGridPageCommand implements
         return checkMatch(value.toString(), search); 
     }
 
-
     @Override
     public Class<? extends Action<? extends Response>> getActionType() {
         return GetStudentGridPageAction.class;
     }
+
 }
 
 /**

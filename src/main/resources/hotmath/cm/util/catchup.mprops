@@ -48,6 +48,103 @@ LEFT JOIN CM_GROUP g
    on g.id = h.group_id
 LEFT JOIN (select uid, count(*) as tutoring_use from HA_USER_TUTORING_SESSION ts group by uid) ut on ut.uid = h.uid   
 
+
+.key=STUDENT_SUMMARY_BASE
+
+SELECT h.uid, upper(h.user_name) as name, h.user_passcode as passcode, h.user_email as email, h.admin_id as admin_uid,
+       h.user_prog_id, h.is_show_work_required, h.is_tutoring_available, h.active_segment, h.gui_background_style,
+       p.test_def_id, p.create_date, p.pass_percent, p.test_config_json,
+       d.prog_id, d.subj_id,
+       ifnull(g.id, 0) as group_id, ifnull(g.name, 'none') as group_name, g.is_active, g.is_self_reg
+FROM  HA_ADMIN a 
+INNER JOIN HA_USER h 
+   on a.aid = h.admin_id  
+INNER JOIN CM_USER_PROGRAM p 
+   on p.user_id = h.uid and p.id = h.user_prog_id 
+LEFT JOIN HA_TEST_DEF d 
+   on d.test_def_id = p.test_def_id 
+LEFT JOIN CM_GROUP g 
+   on g.id = h.group_id
+
+
+.key=STUDENT_SUMMARY_EXTENDED
+
+SELECT h.uid, h.admin_id as admin_uid, h.active_segment, p.test_config_json, h.user_prog_id,
+       p.test_def_id, p.create_date, p.pass_percent, t.total_segments, 
+       lpad(concat(format((m.answered_correct*100)/(m.answered_correct+m.answered_incorrect+m.not_answered),0),'%'),4,' ') as last_quiz, 
+       trim(concat(ifnull(d.subj_id,''), ' ', d.prog_id)) as program, d.prog_id, d.subj_id,
+       date_format(l.login_time,'%Y-%m-%d') as last_use_date, 
+       ifnull(q.passing_count, 0) as passing_count, ifnull(q.not_passing_count, 0) as not_passing_count,
+       h.gui_background_style,
+       ifnull(ut.tutoring_use, 0) as tutoring_use
+FROM  HA_USER h 
+INNER JOIN CM_USER_PROGRAM p 
+   on p.user_id = h.uid and p.id = h.user_prog_id 
+LEFT JOIN HA_TEST_DEF d 
+   on d.test_def_id = p.test_def_id 
+LEFT JOIN (select user_id, max(run_id) as run_id from HA_TEST_RUN r JOIN HA_TEST t on r.test_id = t.test_id GROUP BY user_id) x ON x.user_id = h.uid 
+LEFT JOIN HA_TEST_RUN m 
+  on m.run_id =  x.run_id
+LEFT JOIN (select user_id, max(login_time) as login_time from HA_USER_LOGIN GROUP BY user_id) l on l.user_id = h.uid 
+LEFT JOIN HA_TEST t 
+  on t.user_id = h.uid and t.test_id = m.test_id 
+LEFT JOIN v_HA_TEST_RUN_PNP_TOTALS q
+  on q.user_id = h.uid
+LEFT JOIN (select uid, count(*) as tutoring_use from HA_USER_TUTORING_SESSION ts group by uid) ut on ut.uid = h.uid
+WHERE h.uid in (XXX) 
+
+
+.key=STUDENT_LAST_LOGIN
+
+SELECT h.uid, h.admin_id as admin_uid,
+       date_format(l.login_time,'%Y-%m-%d') as last_use_date
+FROM  HA_USER h
+LEFT JOIN (select user_id, max(login_time) as login_time from HA_USER_LOGIN GROUP BY user_id) l on l.user_id = h.uid
+WHERE h.uid in (XXX)
+
+
+.key=STUDENT_LAST_QUIZ
+
+SELECT h.uid, h.admin_id as admin_uid,
+       lpad(concat(format((m.answered_correct*100)/(m.answered_correct+m.answered_incorrect+m.not_answered),0),'%'),4,' ') as last_quiz
+FROM  HA_USER h
+LEFT JOIN (select user_id, max(run_id) as run_id from HA_TEST_RUN r
+           JOIN HA_TEST t on r.test_id = t.test_id GROUP BY user_id) x ON x.user_id = h.uid
+LEFT JOIN HA_TEST_RUN m  on m.run_id =  x.run_id
+LEFT JOIN HA_TEST t  on t.user_id = h.uid and t.test_id = m.test_id
+WHERE h.uid in (XXX)
+
+
+.key=STUDENT_PASSING_COUNT
+
+SELECT h.uid, h.admin_id as admin_uid,
+       ifnull(q.passing_count, 0) as passing_count, ifnull(q.not_passing_count, 0) as not_passing_count
+FROM  HA_USER h
+LEFT JOIN v_HA_TEST_RUN_PNP_TOTALS q  on q.user_id = h.uid
+WHERE h.uid in (XXX)
+
+
+.key=STUDENT_STATUS
+
+SELECT h.uid, h.admin_id as admin_uid, h.active_segment, p.test_config_json, t.total_segments
+FROM  HA_USER h
+INNER JOIN CM_USER_PROGRAM p   on p.user_id = h.uid and p.id = h.user_prog_id
+LEFT JOIN (select user_id, max(run_id) as run_id from HA_TEST_RUN r
+           JOIN HA_TEST t on r.test_id = t.test_id GROUP BY user_id) x ON x.user_id = h.uid
+LEFT JOIN HA_TEST_RUN m  on m.run_id =  x.run_id
+LEFT JOIN HA_TEST t  on t.user_id = h.uid and t.test_id = m.test_id
+WHERE h.uid in (XXX)
+
+
+.key=STUDENT_TUTORING_USE
+
+SELECT h.uid, h.admin_id as admin_uid,
+       ifnull(ut.tutoring_use, 0) as tutoring_use
+FROM  HA_USER h
+LEFT JOIN (select uid, count(*) as tutoring_use from HA_USER_TUTORING_SESSION ts group by uid) ut on ut.uid = h.uid
+WHERE h.uid in (XXX)
+
+
 ###
 .key=STUDENT_ACTIVITY
 
