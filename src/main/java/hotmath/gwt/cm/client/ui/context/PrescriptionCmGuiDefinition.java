@@ -466,7 +466,7 @@ class PrescriptionResourcePanel extends LayoutContainer {
         
         int currentSession = UserInfo.getInstance().getSessionNumber();
         int  totalSessions = UserInfo.getInstance().getSessionCount();
-        String  statusMsg = "Lesson " + currentSession + " of " + totalSessions;
+        String  statusMsg = "Lesson " + (currentSession+1) + " of " + totalSessions;
         add(new StatusImagePanel(totalSessions, currentSession+1,"Lesson Status", statusMsg));
         layout();
     }

@@ -974,3 +974,28 @@ img.resource-item-complete {
  .log-panel {
     z-index: 2000 !important;
   }
+  
+  
+  
+  
+ 
+/** status bar styles */
+
+.status_bar {
+    height: 12px;width: 100%;
+}
+
+#status_bar div {
+   float: right;
+}
+#status_bar .done { 
+    background: blue;
+}
+
+#status_bar .active {
+    background: yellow;
+}
+
+#status_bar .todo {
+    background: red;
+}
