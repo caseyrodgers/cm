@@ -48,7 +48,7 @@ public class CmLogger extends CmWindow {
     public CmLogger() {
         setHeading("Catchup Logger");
         setSize(500,300);
-        setPosition(0, 450);
+        setPosition(0, 350);
         setLayout(new FitLayout());
         setScrollMode(Scroll.AUTO);
         setStyleAttribute("z-index", "100");
