@@ -101,7 +101,7 @@ public class CmLogger extends CmWindow {
                 String msgs = "";
                 for(int i=0,t=_grid.getStore().getCount();i<t;i++) {
                     QueueMessage msg = _grid.getStore().getAt(i);
-                    msgs += msg.toString();
+                    msgs += msg.toString() + "\n\n";
                 }
                 SaveCmLoggerTextAction action = new SaveCmLoggerTextAction(UserInfo.getInstance().getUid(),msgs);
                 CmShared.getCmService().execute(action,new CmAsyncCallback<RpcData>() {

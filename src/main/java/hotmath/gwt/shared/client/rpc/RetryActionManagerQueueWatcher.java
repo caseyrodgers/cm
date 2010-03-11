@@ -26,7 +26,7 @@ public class RetryActionManagerQueueWatcher extends CmWindow {
         
     public RetryActionManagerQueueWatcher() {
         setHeading("CM Request Queue Watcher");
-        setSize(300,300);
+        setSize(300,250);
         setPosition(0, 200);
         setLayout(new BorderLayout());
         ListStore<QueueMessage> store = new ListStore<QueueMessage>();
