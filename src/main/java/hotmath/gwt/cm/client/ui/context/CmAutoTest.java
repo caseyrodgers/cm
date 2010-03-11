@@ -36,12 +36,6 @@ public class CmAutoTest {
         @Override
         public void run() {
             
-            /** only start new test if Retry queue is empty
-             * 
-             */
-            if(RetryActionManager.getInstance().getQueue().size() > 0)
-                return;
-            
             loadNextResource();
     
             if(!finished && UserInfo.getInstance().isAutoTestMode()) {

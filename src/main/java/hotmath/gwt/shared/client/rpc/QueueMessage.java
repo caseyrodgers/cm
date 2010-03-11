@@ -10,9 +10,13 @@ public class QueueMessage extends BaseModel {
         set("time_stamp", getDateStart_TimeStamp());
     }
 
-private String getDateStart_TimeStamp() {
-    Date date = new Date();
-    return date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds();
-}
-    
+    private String getDateStart_TimeStamp() {
+        Date date = new Date();
+        return td(date.getHours()) + ":" + td(date.getMinutes()) + ":" + td(date.getSeconds());
+    }
+
+    private String td(int num) {
+        return num < 10 ? "0" + num : Integer.toString(num);
+    }
+
 }
