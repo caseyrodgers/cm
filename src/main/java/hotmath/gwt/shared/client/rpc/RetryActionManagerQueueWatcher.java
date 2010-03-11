@@ -63,7 +63,7 @@ public class RetryActionManagerQueueWatcher extends CmWindow {
     public void updateDisplay() {
         _grid.getStore().removeAll();
         for(RetryAction ra: RetryActionManager.getInstance().getQueue()) {
-            _grid.getStore().add(new QueueMessage(ra.toString()));
+            _grid.getStore().add(new QueueMessage(ra.getAction().toString()));
         }
         _countLab.setText(("Count: " + _grid.getStore().getCount()));
     }
