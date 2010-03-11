@@ -88,7 +88,7 @@ public class ResourceViewerImplResults extends CmResourcePanelImplWithWhiteboard
                     CmBusyManager.setBusy(false);
                 }
             }
-        }.attempt();
+        }.register();
 
         return this;
     }

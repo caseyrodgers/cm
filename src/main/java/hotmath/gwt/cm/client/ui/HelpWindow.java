@@ -161,7 +161,7 @@ public class HelpWindow extends CmWindow {
                             CatchupMathTools.setBusy(false);
                         }
                     }
-                }.attempt();
+                }.register();
             }
         });
 
@@ -293,7 +293,7 @@ public class HelpWindow extends CmWindow {
                         public void oncapture(RpcData value) {
                             CatchupMathTools.showAlert("Test RetryAction success: " + value);
                         }
-                    }.attempt();
+                    }.register();
                 }
             }));
         }
@@ -326,7 +326,7 @@ public class HelpWindow extends CmWindow {
                         CmBusyManager.setBusy(false);
                     }
                 }
-            }.attempt();
+            }.register();
             }
         });
     }
@@ -357,7 +357,7 @@ public class HelpWindow extends CmWindow {
                         CmBusyManager.setBusy(false);
                         new StudentDetailsWindow(new StudentModelExt(student));
                     }
-                }.attempt();
+                }.register();
             }
         });
     }
@@ -447,7 +447,7 @@ public class HelpWindow extends CmWindow {
                         Log.info("Feedback saved");
                         CmBusyManager.setBusy(false);
                     }
-                }.attempt();
+                }.register();
             }
         });
     }

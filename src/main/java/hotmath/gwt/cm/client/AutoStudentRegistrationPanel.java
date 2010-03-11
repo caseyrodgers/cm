@@ -276,7 +276,7 @@ public class AutoStudentRegistrationPanel extends CmMainResourceContainer {
                 else
                     super.onFailure(caught);
             }
-        }.attempt();
+        }.register();
     }
     
     private void showPasswordAssignment(String password, final String key) {
@@ -332,7 +332,7 @@ public class AutoStudentRegistrationPanel extends CmMainResourceContainer {
                         String key = result.getDataAsString("key");
                         showPasswordAssignment(password, key);
                     }
-                }.attempt();
+                }.register();
             }
         });
     }
@@ -365,7 +365,7 @@ public class AutoStudentRegistrationPanel extends CmMainResourceContainer {
                     CatchupMathTools.showAlert("Already Registered", msg);
                 }
             }
-        }.attempt();
+        }.register();
     }
     
     

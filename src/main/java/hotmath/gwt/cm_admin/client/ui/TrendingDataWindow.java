@@ -152,7 +152,7 @@ public class TrendingDataWindow extends CmWindow {
                 setVisible(true);
                 layout(true);
             }
-        }.attempt();
+        }.register();
     }
 
     private GetAdminTrendingDataAction.DataType onlyActiveOrFullHistory() {

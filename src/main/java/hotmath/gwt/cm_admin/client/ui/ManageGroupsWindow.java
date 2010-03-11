@@ -316,7 +316,7 @@ public class ManageGroupsWindow extends CmWindow {
             	if (closeOnCancel)
             		cmw.close();
             }
-        }.attempt();
+        }.register();
     }
 
     private void deleteGroup(final Integer adminId, final Integer groupId) {
@@ -350,7 +350,7 @@ public class ManageGroupsWindow extends CmWindow {
                 CmAdminDataReader.getInstance().fireRefreshData();
             	CmBusyManager.setBusy(false);
             }
-        }.attempt();
+        }.register();
 
     }
 
@@ -373,7 +373,7 @@ public class ManageGroupsWindow extends CmWindow {
                     CmBusyManager.setBusy(false);
                 }
             }
-        }.attempt();
+        }.register();
 
     }
 
@@ -491,7 +491,7 @@ class GroupManagerGlobalSettings extends CmWindow {
                 close();
             	CmBusyManager.setBusy(false);
             }
-        }.attempt();
+        }.register();
         
     }
 }

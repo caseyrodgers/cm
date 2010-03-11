@@ -141,7 +141,7 @@ public class ShowWorkPanel extends Frame {
             public void oncapture(RpcData result) {
                 Log.debug("ShowWorkPanel: Log message written: " + result);
             }
-        }.attempt();
+        }.register();
     }
 
     boolean initialized = false;
@@ -181,7 +181,7 @@ public class ShowWorkPanel extends Frame {
                     updateFlashWhiteboard(flashId, commands.get(i).getCommand(), commands.get(i).getData());
                 }
             }
-        }.attempt();
+        }.register();
     }
 
     String backgroundHtml;

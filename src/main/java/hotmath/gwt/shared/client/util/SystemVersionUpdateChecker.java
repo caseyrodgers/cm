@@ -105,6 +105,6 @@ public class SystemVersionUpdateChecker extends CmWindow {
                     new SystemVersionUpdateChecker();
                 }
             }
-        }.attempt();
+        }.register();
     }
 }

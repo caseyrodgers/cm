@@ -395,7 +395,7 @@ public class UserInfo implements IsSerializable, Response {
                 // fire an event on the event bus, passing new userinfo
                 EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_USERCHANGED,user));
             }
-        }.attempt();
+        }.register();
     }    
 
     

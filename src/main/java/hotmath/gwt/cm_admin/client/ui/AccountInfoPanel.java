@@ -145,7 +145,7 @@ public class AccountInfoPanel extends LayoutContainer implements CmAdminDataRefr
                 
                 Log.info("AccountInfoPanel: student info read succesfully");
             }
-        }.attempt();        
+        }.register();        
     }
     //@Override
     public void refreshData() {

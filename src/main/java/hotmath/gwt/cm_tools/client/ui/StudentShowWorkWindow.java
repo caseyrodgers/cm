@@ -237,7 +237,7 @@ public class StudentShowWorkWindow extends CmWindow {
                 CmBusyManager.setBusy(false);
                 super.onFailure(caught);
             }
-        }.attempt();
+        }.register();
     }
 }
 

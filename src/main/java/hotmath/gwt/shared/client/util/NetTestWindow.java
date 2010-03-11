@@ -197,7 +197,7 @@ public class NetTestWindow extends CmWindow {
                 stopTimer();
                 super.onFailure(error);
             }
-        }.attempt();
+        }.register();
     }
     
     /** send results to server to analysis
@@ -225,7 +225,7 @@ public class NetTestWindow extends CmWindow {
                     });
                 }
             }
-        }.attempt();
+        }.register();
     }
     
     private Grid<NetTestModel> defineGrid(final ListStore<NetTestModel> store, ColumnModel cm) {

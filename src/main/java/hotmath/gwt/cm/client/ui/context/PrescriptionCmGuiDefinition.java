@@ -115,7 +115,7 @@ public class PrescriptionCmGuiDefinition implements CmGuiDefinition {
                 resourceItem.setViewed(true);
             }
 
-        }.attempt();
+        }.register();
     }
 
     public void updateCheckMarks() {
@@ -260,7 +260,7 @@ public class PrescriptionCmGuiDefinition implements CmGuiDefinition {
                 }
 
             }
-        }.attempt();
+        }.register();
 
     }
 

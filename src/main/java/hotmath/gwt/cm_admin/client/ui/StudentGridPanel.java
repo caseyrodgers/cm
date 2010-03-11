@@ -808,7 +808,7 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
 
         		CmAdminDataReader.getInstance().fireRefreshData();
             }
-        }.attempt();
+        }.register();
         
     }
 
@@ -882,7 +882,7 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
                      */
                     callback.onSuccess(value);
                 }
-            }.attempt();
+            }.register();
         }
     }
 

@@ -59,6 +59,6 @@ public class PdfWindow extends CmWindow {
                 
                 setVisible(true);
             }
-        }.attempt();
+        }.register();
     }
 }

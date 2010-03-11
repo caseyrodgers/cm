@@ -191,7 +191,7 @@ public class GroupWindow extends LayoutContainer {
             	//CmAdminDataReader.getInstance().fireRefreshData();
             	CmBusyManager.setBusy(false);
             }
-        }.attempt();
+        }.register();
 
 	}
 

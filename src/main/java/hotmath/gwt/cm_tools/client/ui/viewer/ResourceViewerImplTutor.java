@@ -169,7 +169,7 @@ public class ResourceViewerImplTutor extends CmResourcePanelImplWithWhiteboard {
                 }
                 layout();
             }
-        }.attempt();
+        }.register();
     }
 
     /**

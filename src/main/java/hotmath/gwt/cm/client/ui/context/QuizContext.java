@@ -273,7 +273,7 @@ public class QuizContext implements CmContext {
                     CmBusyManager.setBusy(false);
                 }
             }
-        }.attempt();        
+        }.register();        
     }
 
     public void doPrevious() {

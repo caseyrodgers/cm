@@ -124,7 +124,7 @@ public class GroupSelectorWidget implements CmAdminDataRefresher {
 
                 CmBusyManager.setBusy(false);
             }
-        }.attempt();
+        }.register();
 	}
 
 	@Override

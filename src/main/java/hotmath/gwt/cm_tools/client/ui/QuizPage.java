@@ -115,7 +115,7 @@ public class QuizPage extends LayoutContainer {
             public void oncapture(RpcData value) {
                 /** do nothing */
             }
-        }.attempt();
+        }.register();
         return "OK";
     }
     
@@ -155,7 +155,7 @@ public class QuizPage extends LayoutContainer {
                 
                 CmMainPanel.setQuizQuestionDisplayAsActive(CmMainPanel.getLastQuestionPid());
             }
-        }.attempt();
+        }.register();
 	}
 
 	/** Read the raw HTML from server and inserts into DOM node
@@ -195,6 +195,6 @@ public class QuizPage extends LayoutContainer {
                 
                 CatchupMathTools.setBusy(false);
             }
-        }.attempt();	    
+        }.register();	    
 	}
 }

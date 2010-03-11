@@ -273,7 +273,7 @@ public class PrescriptionContext implements CmContext {
             public void oncapture(RpcData userAdvance) {
                 Log.info("MarkPrescriptionLessonAsViewedAction complete: " + userAdvance);
             }
-        }.attempt();
+        }.register();
     }
 
     /**
@@ -317,7 +317,7 @@ public class PrescriptionContext implements CmContext {
                 w.addButton(btnOk);
                 w.setVisible(true);
             }
-        }.attempt();
+        }.register();
     }
 
     public void gotoPreviousTopic() {

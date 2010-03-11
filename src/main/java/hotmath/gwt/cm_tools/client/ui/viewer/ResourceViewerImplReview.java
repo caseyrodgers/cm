@@ -43,7 +43,7 @@ public class ResourceViewerImplReview extends CmResourcePanelImplDefault {
                 
                 addResource(new Html(html),resource.getTitle());
             }
-        }.attempt();
+        }.register();
         
         return this;
     }

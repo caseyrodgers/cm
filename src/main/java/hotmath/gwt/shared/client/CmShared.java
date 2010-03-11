@@ -205,7 +205,7 @@ public class CmShared implements EntryPoint {
                             callback.loginSuccessful(userInfo.getUid());
 
                         }
-                    }.attempt();
+                    }.register();
                 }
             }
 

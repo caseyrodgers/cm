@@ -128,7 +128,7 @@ public class TrendingDataStudentListDialog extends CmWindow {
                     new StudentDetailsWindow(sm);
                 }
             }
-        }.attempt();
+        }.register();
     }
 
     

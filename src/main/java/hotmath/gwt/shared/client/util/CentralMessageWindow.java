@@ -73,7 +73,7 @@ public class CentralMessageWindow extends CmWindow {
             public void oncapture(CmList<CentralMessage> messages) {
                 /* empty */
             }
-        }.attempt();
+        }.register();
     }
     
     /** Monitor messages by calling server every N seconds and looks
@@ -115,7 +115,7 @@ public class CentralMessageWindow extends CmWindow {
                     new CentralMessageWindow(messages);
                 }
             }
-        }.attempt();
+        }.register();
     }
     
 }

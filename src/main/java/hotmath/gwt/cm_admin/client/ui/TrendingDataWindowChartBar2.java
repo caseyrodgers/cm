@@ -50,7 +50,7 @@ public class TrendingDataWindowChartBar2 extends TrendingDataWindowChart {
                 CmBusyManager.setBusy(false);                
                 new TrendingDataStudentListDialog("Students in " + programData.getProgramName() + " Segment " + segment,students);
             }
-        }.attempt();    
+        }.register();    
     }
 
     protected void setBarModelData(String title, ProgramData programData) {

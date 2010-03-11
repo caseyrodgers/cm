@@ -487,7 +487,7 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
                 inProcessCount--;
                 setComboBoxSelections();
             }
-        }.attempt();
+        }.register();
 	}
 
 	private Map<String, List<SubjectModel>> programSubjectMap = new HashMap<String, List<SubjectModel>>();
@@ -527,7 +527,7 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
                 programSubjectMap.put(progId, result);
                 setComboBoxSelections();
             }
-        }.attempt();
+        }.register();
 		
 	}
 		
@@ -551,7 +551,7 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
                 CmBusyManager.setBusy(false);
                 super.onFailure(caught);
             }
-        }.attempt();
+        }.register();
 	}
 
 	protected void updateUserRPC(final StudentModel sm, final Boolean stuChanged, final Boolean progChanged, final Boolean progIsNew,
@@ -569,7 +569,7 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
                 _window.close();
                 EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_USER_PROGRAM_CHANGED,ai.getProgramChanged()));
             }
-        }.attempt();
+        }.register();
 	}
 
 	private void copyStudent(StudentModel from, StudentModel to) {
@@ -722,7 +722,7 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
                     chapCombo.clearSelections();
                 }
             }
-        }.attempt();
+        }.register();
 	}
 	
 	

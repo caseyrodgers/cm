@@ -36,7 +36,7 @@ import com.google.gwt.user.client.rpc.StatusCodeException;
         public void oncapture(MyData data) {
            processMyData(data) 
        }
-    }.attempt();
+    }.register();
  </pre>
  *
  * 
@@ -47,7 +47,7 @@ import com.google.gwt.user.client.rpc.StatusCodeException;
  * 
  *  NOTE: We are using Window.confirm instead of a GXT window to handle 
  *  zorder issues and make sure the process is Synchronous and stops
- *  queueing errors.
+ *  Queuing errors.
  *  
  *  Provides automatic retry of operations.  After auto retry the user
  *  is presented with a server error dialog in which they can choose to 
@@ -58,23 +58,40 @@ import com.google.gwt.user.client.rpc.StatusCodeException;
  * @param <T>
  */
 public abstract class RetryAction<T> implements AsyncCallback<T> {
+    
+    
+    /** keep a conunt of RetryActions created
+     * 
+     */
+    static int __counter;
+    
     public abstract void attempt();
     public abstract void oncapture(T value);
 
     int MAX_RETRY=3;
     int _retryNumber=1;
     long _timeStart;
+    int instanceCount;
     
     public RetryAction() {
+        instanceCount = __counter++;
         _timeStart = System.currentTimeMillis();
-        Log.info("RetryRequest created: " + getClass().getName());
+        Log.info("RetryRequest " + instanceCount + " created: " + getClass().getName());
     }
 
+    /** add this action to the RetryActionManager 
+     * for queuedexecution 
+     */
+    public void register() {
+        RetryActionManager.getInstance().registerAction(this);
+    }
 
     public void onSuccess(T value) {
-        Log.info("RetryAction success [" + getRequestTime() + "] (" + activeAction + ") : " 
+        Log.info("RetryAction " + instanceCount + " success [" + getRequestTime() + "] (" + activeAction + ") : " 
                 + getClass().getName());
-
+        
+        RetryActionManager.getInstance().requestComplete(this);
+        
         try {
             oncapture(value);
         } catch (RuntimeException error) {
@@ -83,19 +100,21 @@ public abstract class RetryAction<T> implements AsyncCallback<T> {
     }
 
     public void onFailure(Throwable error) {
+        RetryActionManager.getInstance().requestComplete(this);
+        
         
         /** provide auto retry of operation
          * 
          */
         if(_retryNumber<MAX_RETRY) {
             _retryNumber++;
-            Log.info("RetryAction retry #" + _retryNumber + " [" + getRequestTime() + "] (" + activeAction + "): " + getClass().getName());
+            Log.info("RetryAction " + instanceCount + " retry #" + _retryNumber + " [" + getRequestTime() + "] (" + activeAction + "): " + getClass().getName());
             attempt();
             return;
         }
         
         error.printStackTrace();
-        Log.info("RetryAction failure [" + getRequestTime() + "] (" + activeAction + ") : " + getClass().getName());
+        Log.info("RetryAction " + instanceCount + " failure [" + getRequestTime() + "] (" + activeAction + ") : " + getClass().getName());
         
         CmBusyManager.resetBusy();
         
@@ -162,7 +181,7 @@ public abstract class RetryAction<T> implements AsyncCallback<T> {
      * possible usage: close a window that is not functional when an action fails
      */
     public void onCancel() {
-        Log.info("RetryAction cancel [" + getRequestTime() + "] (" + activeAction + ") : " 
+        Log.info("RetryAction " + instanceCount + " cancel [" + getRequestTime() + "] (" + activeAction + ") : " 
                 + getClass().getName());
 
         
@@ -216,7 +235,7 @@ public abstract class RetryAction<T> implements AsyncCallback<T> {
     private void sendInfoAboutRetriedCommand(String logType, Throwable throwable) {
 
         try {
-            String nameAndTime = getClass().getName() + ": " + getRequestTime() + " mills";
+            String nameAndTime = getClass().getName() + ": " + getRequestTime() + " mills, counter; " + instanceCount ;
             CmShared.getCmService().execute(
                     new LogRetryActionFailedAction(logType, UserInfo.getInstance().getUid(),nameAndTime,getAction(),getStackTraceAsString(throwable)),
                     new AsyncCallback<RpcData>() {
@@ -233,7 +252,7 @@ public abstract class RetryAction<T> implements AsyncCallback<T> {
             });
         }
         catch(Exception e) {
-            Log.error("Error calling LogRetryActinoFailedAction", e);
+            Log.error("RetryAction " + instanceCount + " Error calling LogRetryActinoFailedAction", e);
         }
     }
     
