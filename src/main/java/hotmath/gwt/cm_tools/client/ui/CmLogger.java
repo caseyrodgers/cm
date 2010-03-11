@@ -115,6 +115,7 @@ public class CmLogger extends CmWindow {
            msg.indexOf(fv) > -1) {
             _logArea.setValue(la + msg + "\n\n");
         }
+        
     }
     
     private void _error(String msg, Throwable th) {
