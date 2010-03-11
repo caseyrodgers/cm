@@ -20,6 +20,8 @@ import com.extjs.gxt.ui.client.widget.Label;
 import com.extjs.gxt.ui.client.widget.TabItem;
 import com.extjs.gxt.ui.client.widget.TabPanel;
 import com.extjs.gxt.ui.client.widget.button.Button;
+import com.extjs.gxt.ui.client.widget.button.ToggleButton;
+import com.extjs.gxt.ui.client.widget.form.CheckBox;
 import com.extjs.gxt.ui.client.widget.form.TextArea;
 import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
@@ -41,6 +43,7 @@ public class CmLogger extends CmWindow {
     
     TextField<String> _filter = new TextField<String>();
     List<String> _messages = new ArrayList<String>();
+    boolean _follow;
     
     Grid<QueueMessage> _grid;
     TextArea _textArea = new TextArea();
@@ -79,7 +82,17 @@ public class CmLogger extends CmWindow {
         ti.add(_textArea);
         tp.add(ti);
         
+        final ToggleButton btn = new ToggleButton("Follow");
+        btn.addSelectionListener(new SelectionListener<ButtonEvent>() {
+            @Override
+            public void componentSelected(ButtonEvent ce) {
+                _follow = btn.isPressed();
+            }
+        });
+        addButton(btn);
         
+                
+        add(new Label("filter: "));
         add(tp);
         _filter.setWidth(150);
         _filter.setToolTip("Filter text");
@@ -190,7 +203,8 @@ public class CmLogger extends CmWindow {
            _grid.getStore().add(new QueueMessage(msg));
         }
         
-        _grid.getView().focusRow(_grid.getStore().getCount()-1);
+        if(_follow)
+            _grid.getView().focusRow(_grid.getStore().getCount()-1);
     }
     
     private void _error(String msg, Throwable th) {

@@ -6,29 +6,32 @@ import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.extjs.gxt.ui.client.Style.LayoutRegion;
 import com.extjs.gxt.ui.client.Style.SelectionMode;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.store.ListStore;
+import com.extjs.gxt.ui.client.widget.Label;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
 import com.extjs.gxt.ui.client.widget.grid.Grid;
-import com.extjs.gxt.ui.client.widget.layout.FitLayout;
+import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
+import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
 
 public class RetryActionManagerQueueWatcher extends CmWindow {
 
     Grid<QueueMessage> _grid;
+    Label _countLab = new Label();
         
     public RetryActionManagerQueueWatcher() {
         setHeading("CM Request Queue Watcher");
         setSize(200,300);
         setPosition(0, 400);
-    
-        setLayout(new FitLayout());
+        setLayout(new BorderLayout());
         ListStore<QueueMessage> store = new ListStore<QueueMessage>();
         _grid = defineGrid(store, defineColumns());
-        add(_grid);
+        add(_grid,new BorderLayoutData(LayoutRegion.CENTER));
         addButton(new Button("Close", new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent ce) {
@@ -44,6 +47,8 @@ public class RetryActionManagerQueueWatcher extends CmWindow {
         }));
 
 
+        add(_countLab,new BorderLayoutData(LayoutRegion.SOUTH,20));
+        
         new com.google.gwt.user.client.Timer() {
             @Override
             public void run() {
@@ -60,6 +65,7 @@ public class RetryActionManagerQueueWatcher extends CmWindow {
         for(RetryAction ra: RetryActionManager.getInstance().getQueue()) {
             _grid.getStore().add(new QueueMessage(ra.toString()));
         }
+        _countLab.setText(("Count: " + _grid.getStore().getCount()));
     }
     
     private Grid<QueueMessage> defineGrid(final ListStore<QueueMessage> store, ColumnModel cm) {
