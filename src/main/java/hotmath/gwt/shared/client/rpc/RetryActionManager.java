@@ -1,9 +1,9 @@
 package hotmath.gwt.shared.client.rpc;
 
+import hotmath.gwt.cm_tools.client.ui.CmLogger;
+
 import java.util.ArrayList;
 import java.util.List;
-
-import com.allen_sauer.gwt.log.client.Log;
 
 /** Manages a queue of action requests making
  *  sure only one request executes at a time.
@@ -30,25 +30,30 @@ public class RetryActionManager {
     @SuppressWarnings("unchecked")
     List<RetryAction> _actions = new ArrayList<RetryAction>();
     private RetryActionManager() {
+        /** start up action queue watcher */
+        new RetryActionManagerQueueWatcher();
     }
     
     @SuppressWarnings("unchecked")
     public void registerAction(RetryAction action) {
         _actions.add(action);
 
-        Log.debug("RetryActionManager: registerAction (" + _actions.size() + "): " + action);
+        CmLogger.debug("RetryActionManager: registerAction (" + _actions.size() + "): " + action);
         
         checkQueue();
     }
     
-    
     @SuppressWarnings("unchecked")
     public void requestComplete(RetryAction action) {
-        Log.debug("RetryActionManager: requestComplete: " + action);
+        CmLogger.debug("RetryActionManager: requestComplete: " + action);
         _busy = false;
         checkQueue();
     }
     
+    
+    public List<RetryAction> getQueue() {
+        return _actions;
+    }
     
     /** look in the queue for new actions to execute
      * 
@@ -61,7 +66,7 @@ public class RetryActionManager {
     @SuppressWarnings("unchecked")    
     public void checkQueue() {
         if(_busy) {
-            Log.debug("RetryActionManager: checkQueue (" + _actions.size() + "): isBusy");
+            CmLogger.debug("RetryActionManager: checkQueue (" + _actions.size() + "): isBusy");
             return;
         }
         
@@ -70,9 +75,17 @@ public class RetryActionManager {
             RetryAction action = _actions.get(s);
             _actions.remove(s);
             
-            Log.debug("RetryActionManager: checkQueue attempt: " + action);            
+            CmLogger.debug("RetryActionManager: checkQueue attempt: " + action);            
             _busy = true;
             action.attempt();
         }
+    }
+    
+    /** Return information about the Retry queue
+     * 
+     */
+    public String toString() {
+        String msg = "Request Queue: " + _actions;
+        return msg;
     }
 }

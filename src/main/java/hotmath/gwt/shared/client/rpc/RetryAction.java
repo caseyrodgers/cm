@@ -2,13 +2,13 @@ package hotmath.gwt.shared.client.rpc;
 
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
+import hotmath.gwt.cm_tools.client.ui.CmLogger;
 import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.data.CmAsyncRequestImplDefault;
 import hotmath.gwt.shared.client.util.RpcData;
 import hotmath.gwt.shared.client.util.UserInfo;
 
-import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.widget.Html;
@@ -76,7 +76,7 @@ public abstract class RetryAction<T> implements AsyncCallback<T> {
     public RetryAction() {
         instanceCount = __counter++;
         _timeStart = System.currentTimeMillis();
-        Log.info("RetryRequest " + instanceCount + " created: " + getClass().getName());
+        CmLogger.info("RetryAction " + instanceCount + " created: " + getClass().getName());
     }
 
     /** add this action to the RetryActionManager 
@@ -87,7 +87,7 @@ public abstract class RetryAction<T> implements AsyncCallback<T> {
     }
 
     public void onSuccess(T value) {
-        Log.info("RetryAction " + instanceCount + " success [" + getRequestTime() + "] (" + activeAction + ") : " 
+        CmLogger.info("RetryAction " + instanceCount + " success [" + getRequestTime() + "] (" + activeAction + ") : " 
                 + getClass().getName());
         
         RetryActionManager.getInstance().requestComplete(this);
@@ -108,13 +108,13 @@ public abstract class RetryAction<T> implements AsyncCallback<T> {
          */
         if(_retryNumber<MAX_RETRY) {
             _retryNumber++;
-            Log.info("RetryAction " + instanceCount + " retry #" + _retryNumber + " [" + getRequestTime() + "] (" + activeAction + "): " + getClass().getName());
+            CmLogger.info("RetryAction " + instanceCount + " retry #" + _retryNumber + " [" + getRequestTime() + "] (" + activeAction + "): " + getClass().getName());
             attempt();
             return;
         }
         
         error.printStackTrace();
-        Log.info("RetryAction " + instanceCount + " failure [" + getRequestTime() + "] (" + activeAction + ") : " + getClass().getName());
+        CmLogger.info("RetryAction " + instanceCount + " failure [" + getRequestTime() + "] (" + activeAction + ") : " + getClass().getName());
         
         CmBusyManager.resetBusy();
         
@@ -181,7 +181,7 @@ public abstract class RetryAction<T> implements AsyncCallback<T> {
      * possible usage: close a window that is not functional when an action fails
      */
     public void onCancel() {
-        Log.info("RetryAction " + instanceCount + " cancel [" + getRequestTime() + "] (" + activeAction + ") : " 
+        CmLogger.info("RetryAction " + instanceCount + " cancel [" + getRequestTime() + "] (" + activeAction + ") : " 
                 + getClass().getName());
 
         
@@ -241,7 +241,7 @@ public abstract class RetryAction<T> implements AsyncCallback<T> {
                     new AsyncCallback<RpcData>() {
                 @Override
                 public void onSuccess(RpcData result) {
-                    Log.info("Retry operation logged");
+                    CmLogger.info("Retry operation logged");
                 }
 
                 @Override
@@ -252,7 +252,7 @@ public abstract class RetryAction<T> implements AsyncCallback<T> {
             });
         }
         catch(Exception e) {
-            Log.error("RetryAction " + instanceCount + " Error calling LogRetryActinoFailedAction", e);
+            CmLogger.error("RetryAction " + instanceCount + " Error calling LogRetryActinoFailedAction", e);
         }
     }
     

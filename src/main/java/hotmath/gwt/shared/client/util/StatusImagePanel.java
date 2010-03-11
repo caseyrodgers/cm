@@ -21,13 +21,9 @@ public class StatusImagePanel extends VerticalPanel {
     public StatusImagePanel(int total, int current, String title, String toolTip) {
         this.total = total;
         this.current = current;
-        setStyleAttribute("position", "relative"); // so we can absolute position title
         setStyleAttribute("margin-top", "25px");
-        
         setToolTip(toolTip);
-        
         String html = 
-            "<h2 style='color: #2097D1;position: absolute;top: 10px;left: 55px;'>" + title + "</h2>" +
             "<img style='margin-left: 20px;' src='/gwt-resources/images/status/status-" + total + "_" + current + ".png'/>";
         add(new Html(html));
 
