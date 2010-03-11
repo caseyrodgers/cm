@@ -26,7 +26,7 @@ public class RetryActionManagerQueueWatcher extends CmWindow {
         
     public RetryActionManagerQueueWatcher() {
         setHeading("CM Request Queue Watcher");
-        setSize(200,300);
+        setSize(400,300);
         setPosition(0, 400);
         setLayout(new BorderLayout());
         ListStore<QueueMessage> store = new ListStore<QueueMessage>();
@@ -63,7 +63,10 @@ public class RetryActionManagerQueueWatcher extends CmWindow {
     public void updateDisplay() {
         _grid.getStore().removeAll();
         for(RetryAction ra: RetryActionManager.getInstance().getQueue()) {
-            _grid.getStore().add(new QueueMessage(ra.getAction().toString()));
+            String msg = (String)(ra.getAction() != null?ra.getAction().toString():ra.toString());
+            
+            
+            _grid.getStore().add(new QueueMessage(msg));
         }
         _countLab.setText(("Count: " + _grid.getStore().getCount()));
     }
@@ -74,7 +77,7 @@ public class RetryActionManagerQueueWatcher extends CmWindow {
         grid.setStripeRows(true);
         grid.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
         grid.getSelectionModel().setFiresEvents(true);
-        grid.setWidth("300px");
+        grid.setWidth("400px");
         grid.setHeight("100%");
         grid.setStateful(true);
         grid.setLoadMask(true);
@@ -94,7 +97,7 @@ public class RetryActionManagerQueueWatcher extends CmWindow {
         column = new ColumnConfig();
         column.setId("log_message");
         column.setHeader("Log Message");
-        column.setWidth(235);
+        column.setWidth(350);
         column.setSortable(true);
         configs.add(column);
 
