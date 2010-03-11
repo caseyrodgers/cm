@@ -19,4 +19,7 @@ public class QueueMessage extends BaseModel {
         return num < 10 ? "0" + num : Integer.toString(num);
     }
 
+    public String toString() {
+        return get("time_stamp") + " " + get("log_message");
+    }
 }

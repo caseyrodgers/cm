@@ -56,6 +56,7 @@ import hotmath.gwt.shared.server.service.command.ProcessLoginRequestCommand;
 import hotmath.gwt.shared.server.service.command.ResetUserCommand;
 import hotmath.gwt.shared.server.service.command.RunNetTestCommand;
 import hotmath.gwt.shared.server.service.command.SaveAutoRegistrationCommand;
+import hotmath.gwt.shared.server.service.command.SaveCmLoggerTextCommand;
 import hotmath.gwt.shared.server.service.command.SaveFeedbackCommand;
 import hotmath.gwt.shared.server.service.command.SaveQuizCurrentResultCommand;
 import hotmath.gwt.shared.server.service.command.SaveWhiteboardDataCommand;
@@ -272,5 +273,6 @@ public class ActionDispatcher {
         addCommand(LogRetryActionFailedCommand.class);
         addCommand(CheckForCentralMessagesCommand.class);
         addCommand(GetCatchupMathVersionCommand.class);
+        addCommand(SaveCmLoggerTextCommand.class);
     }
 }

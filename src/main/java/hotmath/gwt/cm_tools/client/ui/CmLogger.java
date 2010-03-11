@@ -1,28 +1,27 @@
 package hotmath.gwt.cm_tools.client.ui;
 
+import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
+import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.rpc.QueueMessage;
+import hotmath.gwt.shared.client.rpc.action.SaveCmLoggerTextAction;
+import hotmath.gwt.shared.client.util.CmAsyncCallback;
+import hotmath.gwt.shared.client.util.RpcData;
+import hotmath.gwt.shared.client.util.UserInfo;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import com.extjs.gxt.ui.client.Style.Scroll;
 import com.extjs.gxt.ui.client.Style.SelectionMode;
-import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.ComponentEvent;
-import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.KeyListener;
-import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.Label;
-import com.extjs.gxt.ui.client.widget.TabItem;
-import com.extjs.gxt.ui.client.widget.TabPanel;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.button.ToggleButton;
-import com.extjs.gxt.ui.client.widget.form.CheckBox;
-import com.extjs.gxt.ui.client.widget.form.TextArea;
 import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 import com.extjs.gxt.ui.client.widget.grid.ColumnData;
@@ -46,7 +45,6 @@ public class CmLogger extends CmWindow {
     boolean _follow;
     
     Grid<QueueMessage> _grid;
-    TextArea _textArea = new TextArea();
     public CmLogger() {
         setHeading("Catchup Logger");
         setSize(500,300);
@@ -59,30 +57,10 @@ public class CmLogger extends CmWindow {
         ListStore<QueueMessage> store = new ListStore<QueueMessage>();
         _grid = defineGrid(store, defineColumns());
 
-        TabPanel tp = new TabPanel();
-        TabItem ti = new TabItem("Grid");
-        ti.setLayout(new FitLayout());
-        ti.add(_grid);
-        tp.add(ti);
-        
-        
-        
-        ti = new TabItem("Text");
-        ti.addListener(Events.Select, new Listener<BaseEvent>() {
-            public void handleEvent(BaseEvent be) {
-                String msgs = "";
-                for(int i=0,t=_messages.size();i<t;i++) {
-                    msgs += _messages + "\n";
-                }
-                _textArea.setValue(msgs);
-                
-            }
-        });
-        ti.setLayout(new FitLayout());
-        ti.add(_textArea);
-        tp.add(ti);
+        add(_grid);
         
         final ToggleButton btn = new ToggleButton("Follow");
+        btn.setToolTip("Should the focus follow new log message?");
         btn.addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent ce) {
@@ -91,9 +69,6 @@ public class CmLogger extends CmWindow {
         });
         addButton(btn);
         
-                
-        add(new Label("filter: "));
-        add(tp);
         _filter.setWidth(150);
         _filter.setToolTip("Filter text");
         _filter.addKeyListener(new KeyListener() {
@@ -107,9 +82,7 @@ public class CmLogger extends CmWindow {
         getHeader().addTool(new Button("Clear", new SelectionListener<ButtonEvent>() {
            @Override
             public void componentSelected(ButtonEvent ce) {
-               _messages.clear();
-               _textArea.clear();
-               _grid.getStore().removeAll();
+               clearLog();
             } 
         }));
         setTopComponent(tb);
@@ -120,6 +93,30 @@ public class CmLogger extends CmWindow {
                 close();
             }
         }));
+        
+        
+        getHeader().addTool(new Button("Save", new SelectionListener<ButtonEvent>() {
+            @Override
+            public void componentSelected(ButtonEvent ce) {
+                String msgs = "";
+                for(int i=0,t=_grid.getStore().getCount();i<t;i++) {
+                    QueueMessage msg = _grid.getStore().getAt(i);
+                    msgs += msg.toString();
+                }
+                SaveCmLoggerTextAction action = new SaveCmLoggerTextAction(UserInfo.getInstance().getUid(),msgs);
+                CmShared.getCmService().execute(action,new CmAsyncCallback<RpcData>() {
+                    public void onSuccess(RpcData result) {
+                        clearLog();
+                        CatchupMathTools.showAlert("Log messages saved on server");
+                    }
+                });
+            }
+        }));
+    }
+    
+    private void clearLog() {
+        _messages.clear();
+        _grid.getStore().removeAll();
     }
     
     private Grid<QueueMessage> defineGrid(final ListStore<QueueMessage> store, ColumnModel cm) {
