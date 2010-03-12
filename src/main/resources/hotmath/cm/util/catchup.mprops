@@ -54,7 +54,7 @@ LEFT JOIN (select uid, count(*) as tutoring_use from HA_USER_TUTORING_SESSION ts
 SELECT h.uid, upper(h.user_name) as name, h.user_passcode as passcode, h.user_email as email, h.admin_id as admin_uid,
        h.user_prog_id, h.is_show_work_required, h.is_tutoring_available, h.active_segment, h.gui_background_style,
        p.test_def_id, p.create_date, p.pass_percent, p.test_config_json,
-       d.prog_id, d.subj_id,
+       trim(concat(ifnull(d.subj_id,''), ' ', d.prog_id)) as program, d.prog_id, d.subj_id,
        ifnull(g.id, 0) as group_id, ifnull(g.name, 'none') as group_name, g.is_active, g.is_self_reg
 FROM  HA_ADMIN a 
 INNER JOIN HA_USER h 
