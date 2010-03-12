@@ -1367,6 +1367,9 @@ public class CmStudentDao {
             sm.setGroup(rs.getString("group_name"));
 
             sm.setSectionNum(rs.getInt("active_segment"));
+            sm.setProgramDescr(rs.getString("program"));
+            sm.setProgId(rs.getString("prog_id"));
+            sm.setSubjId(rs.getString("subj_id"));
             sm.setChapter(getChapter(rs.getString("test_config_json")));
             sm.setJson(rs.getString("test_config_json"));
 
