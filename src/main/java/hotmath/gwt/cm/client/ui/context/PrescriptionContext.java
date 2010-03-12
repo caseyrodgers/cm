@@ -436,7 +436,11 @@ public class PrescriptionContext implements CmContext {
             List<InmhItemData> resources = PrescriptionCmGuiDefinition._registeredResources.get(resourceType);
             int which=0;
             for(final InmhItemData r: resources) {
+                
                 if (!r.getType().equals(resourceType))
+                    continue;
+                
+                if(r.getType().indexOf("practice") == -1)
                     continue;
                 
                 CmAutoTest.ResourceObject ro = new CmAutoTest.ResourceObject(r, which++);

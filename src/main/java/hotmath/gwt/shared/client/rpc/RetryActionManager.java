@@ -77,6 +77,8 @@ public class RetryActionManager {
             
             CmLogger.debug("RetryActionManager: checkQueue attempt: " + action);            
             _busy = true;
+            
+            action.setStartTime();
             action.attempt();
         }
     }

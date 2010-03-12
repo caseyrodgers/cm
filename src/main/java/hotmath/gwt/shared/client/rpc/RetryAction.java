@@ -75,8 +75,11 @@ public abstract class RetryAction<T> implements AsyncCallback<T> {
     
     public RetryAction() {
         instanceCount = __counter++;
-        _timeStart = System.currentTimeMillis();
         CmLogger.info("RetryAction " + instanceCount + " created: " + getClass().getName());
+    }
+    
+    public void setStartTime() {
+        _timeStart = System.currentTimeMillis();
     }
 
     /** add this action to the RetryActionManager 

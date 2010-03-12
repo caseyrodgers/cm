@@ -4,7 +4,6 @@ import hotmath.gwt.cm.client.history.CmHistoryManager;
 import hotmath.gwt.cm_tools.client.data.InmhItemData;
 import hotmath.gwt.cm_tools.client.ui.AutoTestWindow;
 import hotmath.gwt.shared.client.data.CmAsyncRequest;
-import hotmath.gwt.shared.client.rpc.RetryActionManager;
 import hotmath.gwt.shared.client.util.UserInfo;
 
 import java.util.ArrayList;
