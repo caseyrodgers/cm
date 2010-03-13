@@ -106,14 +106,11 @@ function findQuestionByPid(pid) {
 // called by GWT, which setups the context for the pid
 var _shouldExpandSteps;
 function doLoad_Gwt(pid, title, hasShowWork,shouldExpandSteps) {
-	
 	// store in var, registered listener will be notified
 	// after solution has been fully initialized
 	_shouldExpandSteps = shouldExpandSteps;
-	
 	var mc = createNewSolutionMessageContext(pid);
 	gotoGUID(mc, title);
-	
     if(hasShowWork) {
     	// turn off/hide the ShowWorkFirst button
     	var swf = document.getElementById("show-work-force");
