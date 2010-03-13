@@ -1,6 +1,5 @@
 package hotmath.gwt.shared.client.rpc;
 
-import hotmath.gwt.cm_tools.client.ui.CmLogger;
 import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
 
 import java.util.ArrayList;
@@ -46,14 +45,6 @@ public class RetryActionManagerQueueWatcher extends CmWindow {
                 close();
             }
         }));
-        
-        getHeader().addTool(new Button("Show Log", new SelectionListener<ButtonEvent>() {
-            @Override
-            public void componentSelected(ButtonEvent ce) {
-                CmLogger.getInstance().filterAllMessages();
-            }
-        }));
-
 
         add(_countLab,new BorderLayoutData(LayoutRegion.SOUTH,20));
         

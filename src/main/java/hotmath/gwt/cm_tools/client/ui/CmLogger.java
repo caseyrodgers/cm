@@ -4,6 +4,7 @@ import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.rpc.QueueMessage;
+import hotmath.gwt.shared.client.rpc.RetryActionManagerQueueWatcher;
 import hotmath.gwt.shared.client.rpc.action.SaveCmLoggerTextAction;
 import hotmath.gwt.shared.client.util.CmAsyncCallback;
 import hotmath.gwt.shared.client.util.RpcData;
@@ -43,6 +44,7 @@ public class CmLogger extends CmWindow {
     TextField<String> _filter = new TextField<String>();
     List<String> _messages = new ArrayList<String>();
     boolean _follow;
+    RetryActionManagerQueueWatcher _watcher;
     
     Grid<QueueMessage> _grid;
     public CmLogger() {
@@ -110,6 +112,15 @@ public class CmLogger extends CmWindow {
                         CatchupMathTools.showAlert("Log messages saved on server");
                     }
                 });
+            }
+        }));
+        
+        getHeader().addTool(new Button("Queue Watcher", new SelectionListener<ButtonEvent>() {
+            @Override
+            public void componentSelected(ButtonEvent ce) {
+                if(_watcher == null)
+                    _watcher = new RetryActionManagerQueueWatcher();
+                _watcher.setVisible(true);
             }
         }));
     }
