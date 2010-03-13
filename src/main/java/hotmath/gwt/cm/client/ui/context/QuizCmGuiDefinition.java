@@ -70,12 +70,8 @@ public class QuizCmGuiDefinition implements CmGuiDefinition {
 	     */
 	    if(currentQuiz == 0)
 	        currentQuiz = 1;
-	    
-	    int totalQuizInProgram = UserInfo.getInstance().getTestSegmentCount();
-	    String statusMsg = "Quiz " + currentQuiz + " of " + totalQuizInProgram;
-	    cp.add(new StatusImagePanel(totalQuizInProgram,currentQuiz,"Program Status",statusMsg));
-	    
-		return cp;
+
+	    return cp;
 	}
 	
 	QuizPage qp;

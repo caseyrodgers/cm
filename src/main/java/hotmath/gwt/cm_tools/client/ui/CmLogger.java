@@ -189,10 +189,10 @@ public class CmLogger extends CmWindow {
     
     
     private void _info(String msg) {
-        _messages.add(msg);
-        
         if(!isVisible())
             return;
+        
+        _messages.add(msg);
         
         String fv = _filter.getValue();
         if((fv == null || fv.length() == 0) ||
