@@ -1,10 +1,9 @@
 mvn install:install-file -DgroupId=hotmath -DartifactId=hotmath -Dversion=2.0 -Dpackaging=jar -Dfile=hotmath2.jar -DgeneratePom=true
-mvn install:install-file -DgroupId=com.extjs.gxt -DartifactId=gxt -Dversion=2.1.1 -Dpackaging=jar -Dfile=gxt-2.1.1.jar -DgeneratePom=true
+mvn install:install-file -DgroupId=com.extjs.gxt -DartifactId=gxt -Dversion=2.1.2 -Dpackaging=jar -Dfile=gxt-2.1.2.jar -DgeneratePom=true
 mvn install:install-file -DgroupId=sb -DartifactId=sblib -Dversion=2.0 -Dpackaging=jar -Dfile=sblib.jar -DgeneratePom=true
 
-mvn install:install-file -DgroupId=com.google.gwt -DartifactId=gwt-servlet -Dversion=2.0.2 -Dpackaging=jar -Dfile=gwt-2.0.2/gwt-servlet.jar 
-mvn install:install-file -DgroupId=com.google.gwt -DartifactId=gwt-user -Dversion=2.0.2 -Dpackaging=jar -Dfile=gwt-user.jar 
-mvn install:install-file -DgroupId=com.google.gwt -DartifactId=gwt-user -Dversion=2.0.2 -Dpackaging=jar -Dfile=gwt-2.0.2/gwt-user.jar 
+mvn install:install-file -DgroupId=com.google.gwt -DartifactId=gwt-servlet -Dversion=2.0.3 -Dpackaging=jar -Dfile=gwt-2.0.3/gwt-servlet.jar 
+mvn install:install-file -DgroupId=com.google.gwt -DartifactId=gwt-user -Dversion=2.0.3 -Dpackaging=jar -Dfile=gwt-2.0.3/gwt-user.jar
 
 mvn install:install-file -DgroupId=htmlparser -DartifactId=htmlparser -Dversion=1.6 -Dpackaging=jar -Dfile=htmlparser.jar -DgeneratePom=true
 mvn install:install-file -DgroupId=org.json -DartifactId=json -Dversion=1.0 -Dpackaging=jar -Dfile=json-1.0.jar -DgeneratePom=true
