@@ -19,6 +19,14 @@ import com.extjs.gxt.ui.client.widget.grid.Grid;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
 
+/** Watches the RetryRequestMananagers queue of 
+ * RetryActions.   Is the pool is backed up, then
+ * something is running too long and might crash
+ * the entire app.
+ * 
+ * @author casey
+ *
+ */
 public class RetryActionManagerQueueWatcher extends CmWindow {
 
     Grid<QueueMessage> _grid;

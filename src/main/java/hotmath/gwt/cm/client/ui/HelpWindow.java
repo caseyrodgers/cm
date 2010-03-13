@@ -6,6 +6,7 @@ import hotmath.gwt.cm_tools.client.model.CmAdminModel;
 import hotmath.gwt.cm_tools.client.model.StudentModelExt;
 import hotmath.gwt.cm_tools.client.model.StudentModelI;
 import hotmath.gwt.cm_tools.client.service.CmServiceAsync;
+import hotmath.gwt.cm_tools.client.ui.CmLogger;
 import hotmath.gwt.cm_tools.client.ui.CmMainPanel;
 import hotmath.gwt.cm_tools.client.ui.ContextController;
 import hotmath.gwt.cm_tools.client.ui.FooterPanel;
@@ -18,7 +19,6 @@ import hotmath.gwt.shared.client.eventbus.EventBus;
 import hotmath.gwt.shared.client.eventbus.EventType;
 import hotmath.gwt.shared.client.rpc.RetryAction;
 import hotmath.gwt.shared.client.rpc.action.GetStudentModelAction;
-import hotmath.gwt.shared.client.rpc.action.ResetUserAction;
 import hotmath.gwt.shared.client.rpc.action.SaveFeedbackAction;
 import hotmath.gwt.shared.client.rpc.action.SetBackgroundStyleAction;
 import hotmath.gwt.shared.client.rpc.action.RunNetTestAction.TestApplication;
@@ -277,23 +277,15 @@ public class HelpWindow extends CmWindow {
         
         
         if(CmShared.getQueryParameter("debug") != null) {
-            add(new Button("Force Action Failure",new SelectionListener<ButtonEvent>() {
+            add(new Button("Show CmLogger",new SelectionListener<ButtonEvent>() {
                 @Override
                 public void componentSelected(ButtonEvent ce) {
-                    new RetryAction<RpcData>() {
+                    GWT.runAsync(new CmRunAsyncCallback() {
                         @Override
-                        public void attempt() {
-                            /** will fail with null uid */
-                            ResetUserAction action = new ResetUserAction();
-                            setAction(action);
-                            CmShared.getCmService().execute(action, this);
+                        public void onSuccess() {
+                            CmLogger.getInstance().setVisible(true);                        
                         }
-                        
-                        @Override
-                        public void oncapture(RpcData value) {
-                            CatchupMathTools.showAlert("Test RetryAction success: " + value);
-                        }
-                    }.register();
+                    });
                 }
             }));
         }

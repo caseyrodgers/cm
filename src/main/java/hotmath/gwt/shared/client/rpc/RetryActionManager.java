@@ -30,8 +30,9 @@ public class RetryActionManager {
     @SuppressWarnings("unchecked")
     List<RetryAction> _actions = new ArrayList<RetryAction>();
     private RetryActionManager() {
-        /** start up action queue watcher */
+        /** start up action queue watcher
         new RetryActionManagerQueueWatcher();
+        */
     }
     
     @SuppressWarnings("unchecked")
