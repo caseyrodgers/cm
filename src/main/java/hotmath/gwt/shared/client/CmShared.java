@@ -72,8 +72,6 @@ public class CmShared implements EntryPoint {
         String server = CmShared.CM_HOME_URL;
         if(server.indexOf("kattare") > -1)
             server = "http://hotmath.kattare.com";
-        else if(server.indexOf("catchup") > -1)
-            server = "http://hotmath.com";
         return server;
     }
 
@@ -274,10 +272,6 @@ public class CmShared implements EntryPoint {
      */
     static private String getHostURL() {
         String hostName = Window.Location.getHostName();
-        if (hostName.indexOf("hotmath.com") > -1) {
-            hostName = "catchupmath.com";
-        }
-
         if (hostName.indexOf("hotmath.com") > -1) {
             hostName = "catchupmath.com";
         } else if (hostName.equals("hotmath.kattare.com"))

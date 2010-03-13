@@ -119,9 +119,6 @@ public class LoginService extends HttpServlet {
 	    
 	    if(sn.indexOf("kattare") > -1)
 	        port = 80;
-	    else if(sn.indexOf("catchup") > -1) {
-	        sn = "hotmath.com";
-	    }
 	    
 	    return sn + (port != 80?":" + port:"");
 	}
