@@ -13,6 +13,7 @@ import hotmath.gwt.cm_tools.client.ui.FooterPanel;
 import hotmath.gwt.cm_tools.client.ui.RegisterStudent;
 import hotmath.gwt.cm_tools.client.ui.StudentDetailsWindow;
 import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
+import hotmath.gwt.shared.client.CatchupMathVersionInfo;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
 import hotmath.gwt.shared.client.eventbus.EventBus;
@@ -58,7 +59,7 @@ public class HelpWindow extends CmWindow {
         setModal(true);
         setResizable(false);
         addStyleName("help-window");
-        setHeading("Catchup-Math Help Window");
+        setHeading("Catchup-Math Help Window, version: " + CatchupMathVersionInfo.getBuildVersion());
 
         EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_MODAL_WINDOW_OPEN, this));
 
@@ -77,16 +78,6 @@ public class HelpWindow extends CmWindow {
         Html messageArea = new Html();
         try {
             String html = ContextController.getInstance().getTheContext().getStatusMessage();
-            if (CmShared.getQueryParameter("debug") != null) {
-                getHeader().addTool(new Button("Version", new SelectionListener<ButtonEvent>() {
-                    @Override
-                    public void componentSelected(ButtonEvent ce) {
-                        CatchupMathTools.showVersionInfo();
-                    }
-                }));
-                html += "<div style='margin-top: 25px;'>User Location: " + UserInfo.getInstance().getUserStatus() + "</div>";
-                
-            }
             messageArea = new Html(html);
             
         } catch (Exception e) {
@@ -98,13 +89,13 @@ public class HelpWindow extends CmWindow {
         messageArea.addStyleName("help-window-message-area");
 
         VerticalPanel vp = new VerticalPanel();
-
+        
         FieldSet fs = new FieldSet();
         fs.setHeading("Using Catchup Math");
 
         fs.add(messageArea);
         vp.add(fs);
-
+        
         bgCombo = new ComboBox<BackgroundModel>();
         bgCombo.setStore(getBackgrounds());
         bgCombo.setEditable(false);

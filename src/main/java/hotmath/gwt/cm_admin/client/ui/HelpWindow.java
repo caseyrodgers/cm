@@ -1,8 +1,8 @@
 package hotmath.gwt.cm_admin.client.ui;
 
-import hotmath.gwt.cm_admin.client.CatchupMathAdmin;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
+import hotmath.gwt.shared.client.CatchupMathVersionInfo;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.rpc.action.RunNetTestAction.TestApplication;
 import hotmath.gwt.shared.client.util.CmRunAsyncCallback;
@@ -24,8 +24,7 @@ public class HelpWindow extends CmWindow {
         setModal(true);
         setResizable(false);
         setStyleName("help-window");
-        setHeading("Catchup Math Administration Help Window");
-        
+        setHeading("Catchup Math Administration Help Window, version: " + CatchupMathVersionInfo.getBuildVersion());
         
         Frame frame = new Frame("/gwt-resources/cm-admin-help.html");
         frame.setSize("100%", "450px");
