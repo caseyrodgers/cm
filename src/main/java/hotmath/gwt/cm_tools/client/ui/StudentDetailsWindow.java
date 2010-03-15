@@ -7,11 +7,11 @@ import hotmath.gwt.cm_tools.client.model.StudentModelExt;
 import hotmath.gwt.cm_tools.client.service.CmServiceAsync;
 import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
 import hotmath.gwt.shared.client.CmShared;
+import hotmath.gwt.shared.client.rpc.RetryAction;
 import hotmath.gwt.shared.client.rpc.action.CmList;
 import hotmath.gwt.shared.client.rpc.action.GeneratePdfAction;
 import hotmath.gwt.shared.client.rpc.action.GetStudentActivityAction;
 import hotmath.gwt.shared.client.rpc.action.GeneratePdfAction.PdfType;
-import hotmath.gwt.shared.client.util.CmAsyncCallback;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -407,15 +407,12 @@ public class StudentDetailsWindow extends CmWindow {
         // template
     }
 
-    protected void getStudentActivityRPC(final ListStore<StudentActivityModel> store, StudentModelExt sm) {
+    protected void getStudentActivityRPC(final ListStore<StudentActivityModel> store, final StudentModelExt sm) {
 
         CmBusyManager.setBusy(true);
 
-        CmServiceAsync s = CmShared.getCmService();
-        GetStudentActivityAction action = new GetStudentActivityAction(sm);
-        s.execute(action, new CmAsyncCallback<CmList<StudentActivityModel>>() {
-
-            public void onSuccess(CmList<StudentActivityModel> list) {
+        new RetryAction<CmList<StudentActivityModel>>() {
+            public void oncapture(CmList<StudentActivityModel> list) {
                 try {
                     store.add(list);
 
@@ -429,11 +426,13 @@ public class StudentDetailsWindow extends CmWindow {
                 }
             }
 
-            public void onFailure(Throwable caught) {
-                super.onFailure(caught);
-                CmBusyManager.setBusy(false);
+            @Override
+            public void attempt() {
+                CmServiceAsync s = CmShared.getCmService();
+                GetStudentActivityAction action = new GetStudentActivityAction(sm);
+                setAction(action);
+                s.execute(action, this);
             }
-        });
+        }.register();
     }
-
 }

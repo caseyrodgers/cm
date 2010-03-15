@@ -1,6 +1,7 @@
 package hotmath.gwt.cm_admin.client.ui;
 
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
+import hotmath.gwt.cm_tools.client.ui.CmLogger;
 import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
 import hotmath.gwt.shared.client.CatchupMathVersionInfo;
 import hotmath.gwt.shared.client.CmShared;
@@ -55,9 +56,26 @@ public class HelpWindow extends CmWindow {
                     getHeader().addTool(new Button("Net Test", new SelectionListener<ButtonEvent>() {
                         @Override
                         public void componentSelected(ButtonEvent ce) {
-                            new NetTestWindow(TestApplication.CM_ADMIN,StudentGridPanel.instance._cmAdminMdl.getId()).runTests();
+                            GWT.runAsync(new CmRunAsyncCallback() {
+                                @Override
+                                public void onSuccess() {
+                                    new NetTestWindow(TestApplication.CM_ADMIN,StudentGridPanel.instance._cmAdminMdl.getId()).runTests();
+                                }
+                            });
                         }
                     }));
+                    getHeader().addTool(new Button("CmLogger", new SelectionListener<ButtonEvent>() {
+                        @Override
+                        public void componentSelected(ButtonEvent ce) {
+                            GWT.runAsync(new CmRunAsyncCallback() {
+                                @Override
+                                public void onSuccess() {
+                                    CmLogger.getInstance().setVisible(true);
+                                }
+                            });
+                        }
+                    }));
+                    
                 }
             });
         }        

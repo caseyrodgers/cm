@@ -587,7 +587,7 @@ img.resource-item-complete {
         color: blue;
 }
 .help-window .x-btn {
-        width: 200px;
+        #width: 200px;
 }
 .help-window-additional-options table {
         display: inline;
