@@ -7,7 +7,6 @@ import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
 import hotmath.gwt.shared.client.eventbus.EventBus;
 import hotmath.gwt.shared.client.eventbus.EventType;
-import hotmath.gwt.shared.client.rpc.RetryAction;
 import hotmath.gwt.shared.client.rpc.action.GetCatchupMathVersionAction;
 import hotmath.gwt.shared.client.rpc.result.CatchupMathVersion;
 
@@ -17,6 +16,7 @@ import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.widget.Html;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.google.gwt.user.client.Timer;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 
 /** Display a message from central server
  * 
@@ -91,20 +91,22 @@ public class SystemVersionUpdateChecker extends CmWindow {
         if(_theWindow != null)
             return;
         
-        new RetryAction<CatchupMathVersion>() {
-            @Override
-            public void attempt() {
-                GetCatchupMathVersionAction action = new GetCatchupMathVersionAction();
-                setAction(action);
-                CmShared.getCmService().execute(action, this);
+        /** handle as separate request to keep errors silent in case of temp offline
+         * 
+         */
+         GetCatchupMathVersionAction action = new GetCatchupMathVersionAction();
+         CmShared.getCmService().execute(action, new AsyncCallback<CatchupMathVersion>() {
+             @Override
+            public void onSuccess(CatchupMathVersion version) {
+                 Log.debug("GetCatchupMathVersionAction: " + version.getVersion() + " current: " + CatchupMathVersionInfo.getBuildVersion());
+                 if(version.getVersion() != CatchupMathVersionInfo.getBuildVersion()) {
+                     new SystemVersionUpdateChecker();
+                 }
             }
-            @Override
-            public void oncapture(CatchupMathVersion version) {
-                Log.debug("GetCatchupMathVersionAction: " + version.getVersion() + " current: " + CatchupMathVersionInfo.getBuildVersion());
-                if(version.getVersion() != CatchupMathVersionInfo.getBuildVersion()) {
-                    new SystemVersionUpdateChecker();
-                }
+             @Override
+            public void onFailure(Throwable arg0) {
+                 /** fail quietly */
             }
-        }.register();
+        });
     }
 }
