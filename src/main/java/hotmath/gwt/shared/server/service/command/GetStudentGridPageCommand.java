@@ -17,7 +17,9 @@ import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.extjs.gxt.ui.client.data.PagingLoadConfig;
 
@@ -122,7 +124,6 @@ public class GetStudentGridPageCommand implements
         
         /** apply the quick search algorithm
          * 
-         * TODO: limit quick search to 'base' attributes?
          */
         if(action.getQuickSearch() != null) {
             String search = action.getQuickSearch();
@@ -133,6 +134,27 @@ public class GetStudentGridPageCommand implements
                 }
             }
             studentPool = qsStudentPool;
+            
+            /*
+             * if all student models are fully populated we are done,
+             * otherwise check unmatched and not fully populated
+             * student models for possible matches and add to QS student pool. 
+             */
+            Map<Integer, StudentModelExt> nfpMap = collectNotFullyPopulated(_allStudents);
+            removeOverlap(nfpMap, studentPool);
+
+            if (nfpMap.size() > 0) {
+            	List<Integer> uidMatchList = new CmStudentDao().getQuickSearchUids(conn, nfpMap.keySet(), search);
+            	
+            	/*
+            	 * add any matches to student pool
+            	 */
+            	for (Integer uid : uidMatchList) {
+            		studentPool.add(nfpMap.get(uid));
+            	}
+            	
+            }
+            
         }
         
         /**
@@ -196,8 +218,10 @@ public class GetStudentGridPageCommand implements
 
         if(checkMatch(sme.getTotalUsage(), search))
             return true;
-
         
+        if (checkMatch(String.format("%d passed out of %d", sme.getPassingCount(), (sme.getPassingCount()+sme.getNotPassingCount())), search))
+        	return true;
+
         return false;
     }
     
@@ -222,6 +246,24 @@ public class GetStudentGridPageCommand implements
     @Override
     public Class<? extends Action<? extends Response>> getActionType() {
         return GetStudentGridPageAction.class;
+    }
+    
+    private Map <Integer, StudentModelExt> collectNotFullyPopulated(List<StudentModelExt> list) {
+    	Map<Integer, StudentModelExt> rMap = new HashMap<Integer, StudentModelExt> ();
+    	for (StudentModelExt sme : list) {
+    		if (sme.getHasExtendedData() == false) {
+    			rMap.put(sme.getUid(), sme);
+    		}
+    	}
+    	return rMap;
+    }
+    
+    private void removeOverlap(Map<Integer, StudentModelExt> smMap, List<StudentModelExt> smList) {
+    	for (StudentModelExt sme : smList) {
+    		if (smMap.containsKey(sme.getUid())) {
+    			smMap.remove(sme.getUid());
+    		}
+    	}
     }
 
 }
