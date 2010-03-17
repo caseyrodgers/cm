@@ -81,7 +81,7 @@ public class GetQuizHtmlCommand implements ActionHandler<GetQuizHtmlAction, Quiz
 
             HaTest haTest=null;
             int activeTest = activeInfo.getActiveTestId();
-            if(activeTest > 0) {
+            if(activeTest > 0 && activeInfo.getActiveSegment() == testSegment) {
                 /** load an existing test
                  * 
                  */
