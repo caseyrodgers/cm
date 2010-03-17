@@ -468,6 +468,7 @@ public class HaTestDao {
              * update this User's row to indicate new action test run
              */
             test.getUser().setActiveTestRunId(testRun.getRunId());
+            test.getUser().setActiveTest(0); // if test_run is active, test is not
             test.getUser().update(conn);
 
             updateTestRunSessions(conn, runId);
