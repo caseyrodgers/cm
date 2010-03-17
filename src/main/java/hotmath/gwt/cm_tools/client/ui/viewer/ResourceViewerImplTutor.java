@@ -35,7 +35,7 @@ public class ResourceViewerImplTutor extends CmResourcePanelImplWithWhiteboard {
                 }
                 else if(event.getEventType() == EventType.EVENT_TYPE_MODAL_WINDOW_OPEN) {
                     if(__lastDisplayMode == DisplayMode.WHITEBOARD) {
-                        CmMainPanel.__lastInstance.removeResource();
+                        //CmMainPanel.__lastInstance.removeResource();
                     }
                 }
             }

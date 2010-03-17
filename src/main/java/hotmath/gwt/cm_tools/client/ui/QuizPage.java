@@ -70,8 +70,7 @@ public class QuizPage extends LayoutContainer {
      * @param which
      */
     private native void setSolutionQuestionAnswerIndex(String pid, String which) /*-{
-    alert('sending: ' + pid + ', ' + which);
-         //$wnd.setSolutionQuestionAnswerIndex(pid,which);
+         $wnd.setSolutionQuestionAnswerIndex(pid,which);
     }-*/;
 
     
@@ -146,13 +145,11 @@ public class QuizPage extends LayoutContainer {
             }
             
             public void oncapture(CmList<RpcData> al) {
+                CmBusyManager.setBusy(false);
+                callbackWhenComplete.requestComplete(_title);
                 for(RpcData rd: al) {
                     setSolutionQuestionAnswerIndex(rd.getDataAsString("pid"),rd.getDataAsString("answer"));
                 }
-                CmBusyManager.setBusy(false);
-                callbackWhenComplete.requestComplete(_title);
-                
-                
                 CmMainPanel.setQuizQuestionDisplayAsActive(CmMainPanel.getLastQuestionPid());
             }
         }.register();

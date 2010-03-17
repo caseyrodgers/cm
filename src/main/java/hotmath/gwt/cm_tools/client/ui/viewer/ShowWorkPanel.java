@@ -1,6 +1,5 @@
 package hotmath.gwt.cm_tools.client.ui.viewer;
 
-import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.data.CmAsyncRequest;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
@@ -76,6 +75,7 @@ public class ShowWorkPanel extends Frame {
      */
     public ShowWorkPanel(CmAsyncRequest callbackAfterWhiteboardInitialized) {
         super("show_work_panel_student.html");
+        
         __lastInstance = this;
 
         this.callbackAfterWhiteboardInitialized = callbackAfterWhiteboardInitialized;
@@ -84,7 +84,6 @@ public class ShowWorkPanel extends Frame {
         DOM.setElementPropertyInt(this.getElement(), "border", 0); // disable
         DOM.setElementPropertyInt(this.getElement(), "frameSpacing", 0); // disable
         DOM.setElementProperty(this.getElement(), "scrolling", "no"); // disable
-
         id = "show_work_" + System.currentTimeMillis();
         flashId = id + "_flash";
 

@@ -1,7 +1,6 @@
 package hotmath.gwt.shared.server.service.command;
 
 import hotmath.cm.server.model.CmUserProgramDao;
-import hotmath.cm.status.StatusPie;
 import hotmath.gwt.cm_admin.server.model.CmStudentDao;
 import hotmath.gwt.cm_tools.client.model.StudentActiveInfo;
 import hotmath.gwt.shared.client.rpc.Action;
@@ -81,11 +80,12 @@ public class GetQuizHtmlCommand implements ActionHandler<GetQuizHtmlAction, Quiz
             StudentActiveInfo activeInfo = dao.loadActiveInfo(conn, uid);
 
             HaTest haTest=null;
-            if(false) {
+            int activeTest = activeInfo.getActiveTestId();
+            if(activeTest > 0) {
                 /** load an existing test
                  * 
                  */
-                haTest = HaTestDao.loadTest(conn, activeInfo.getActiveTestId());
+                haTest = HaTestDao.loadTest(conn, activeTest);
                 uid = haTest.getUser().getUserKey();
                 testSegment = haTest.getSegment();
             }

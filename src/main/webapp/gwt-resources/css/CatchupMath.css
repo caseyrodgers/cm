@@ -562,8 +562,13 @@ img.resource-item-complete {
         height: 24px;
         width: 500px;
 }
+
+.auto-assignment-window, 
+.x-window-dlg,
 .help-window {
+/** 	overflow: auto; *//** to stop bleed through Flash */
 }
+
 .help-window-bg-combo {
         width: 100%;
 }
@@ -925,6 +930,8 @@ img.resource-item-complete {
   border: #E0E0E0 1px solid;
   border-top: none;
   padding: 0;
+  position: relative;
+  z-index: 10;
 }
 
 .show-work-panel-full {
@@ -998,4 +1005,9 @@ img.resource-item-complete {
 
 #status_bar .todo {
     background: red;
+}
+
+.hm_flash_widget {
+	position: relative;
+	z-index: 1;
 }

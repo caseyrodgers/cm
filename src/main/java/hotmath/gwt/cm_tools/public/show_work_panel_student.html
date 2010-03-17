@@ -25,7 +25,9 @@
            document.getElementById("no-flash").style.display = "block";
         }
     }
-    swfobject.embedSWF('/gwt-resources/sw_wb.swf', 'whiteboard-object', '100%', '100%','8',null , null, null, null, checkFailure);
+    var params = {}; 
+    params.wmode = "transparent"; 
+    swfobject.embedSWF('/gwt-resources/sw_wb.swf', 'whiteboard-object', '100%', '100%','8.0.0',params);
     </script>
   </body>
 </html>
