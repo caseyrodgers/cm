@@ -41,7 +41,7 @@ public class ResourceViewerImplVideo extends ResourceViewerImplFlash {
             addResource(html,getResourceItem().getTitle());
         }
         else {
-            String videoPath = "http://hotmath.com/help/flvs/tw/" + getResourceItem().getFile() + ".flv";
+            String videoPath = "/help/flvs/tw/" + getResourceItem().getFile() + ".flv";
             
             SWFSettings s = new SWFSettings();
             s.setMinPlayerVersion(new PlayerVersion(9));
@@ -71,39 +71,6 @@ public class ResourceViewerImplVideo extends ResourceViewerImplFlash {
         
         return this;
     }
-    
-    
-    /** for debugging IE
-     * 
-     * @return
-     */
-    private String getFlashObject() {
-        String html = "" +
-        "   <OBJECT id=swfID_" + id + " style='VISIBILITY: visible' height=206 width=318 classid=clsid:D27CDB6E-AE6D-11cf-96B8-444553540000>" +
-        "     <PARAM NAME='FlashVars' VALUE=\"config={'clip':{'url':'http://hotmath.kattare.com:8080/help/flvs/tw/10008.flv'},'playerId':'" + id + "','playlist':[{'url':'http://hotmath.kattare.com/help/flvs/tw/10008.flv?a=1'}]}\">" +
-        "     <PARAM NAME='Src' VALUE='flowplayer-3.1.5.swf?id=" + id + "'>" +
-        "     <PARAM NAME='Scale' VALUE='Scale'>" +
-        "     <PARAM NAME='AllowFullScreen' VALUE='true'>" +
-        "   </OBJECT>";        
-        
-        return html;
-    }
-    
-    /** Initialize the FlowPlayer flash video player. 
-     *  
-     *  flowPlayer_Gwt lives in CatchupMath.js
-     *  
-     * @param video
-     * @return
-     */
-    private native String initializeVideoPlayer(String el, String video) /*-{
-    
-        var d = $doc.getElementById(el);
-        alert('element: ' + d);
-        return;
-        
-        $wnd.flowPlayer_Gwt(el, video);
-    }-*/;    
     
     @Override
     public Integer getOptimalHeight() {
