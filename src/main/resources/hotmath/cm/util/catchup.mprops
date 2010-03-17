@@ -213,7 +213,6 @@ from (
      from    HA_TEST_RUN_LESSON l
          JOIN HA_TEST_RUN_LESSON_PID p on p.lid = l.id
      where l.lesson_viewed is not null
-     and l.run_id = ?
      group by l.run_id, l.lesson_file
  ) iu on iu.run_id = r.run_id
  join HA_TEST_DEF td on td.test_def_id = l.test_def_id
