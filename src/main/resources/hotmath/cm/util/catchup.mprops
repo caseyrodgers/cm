@@ -152,7 +152,8 @@ select s.uid from (
          lpad(concat(format((m.answered_correct*100)/(m.answered_correct+m.answered_incorrect+m.not_answered),0),'%'),4,' ') as last_quiz,
          trim(concat(ifnull(d.subj_id,''), ' ', d.prog_id)) as program, d.prog_id, d.subj_id,
          date_format(l.login_time,'%Y-%m-%d') as last_use_date,
-         concat(ifnull(q.passing_count, 0), ' passed out of ', (ifnull(q.not_passing_count, 0) + ifnull(q.passing_count, 0))) as quizzes,
+         if ( (ifnull(q.passing_count, 0)!=0 or ifnull(q.not_passing_count, 0)!=0),
+              concat(ifnull(q.passing_count, 0), ' passed out of ', (ifnull(q.not_passing_count, 0) + ifnull(q.passing_count, 0))), ' ') as quizzes,
          h.gui_background_style,
          ifnull(ut.tutoring_use, 0) as tutoring_use
   FROM  HA_USER h
