@@ -219,7 +219,7 @@ public class GetStudentGridPageCommand implements
         if(checkMatch(sme.getTotalUsage(), search))
             return true;
         
-        if (checkMatch(String.format("%d passed out of %d", sme.getPassingCount(), (sme.getPassingCount()+sme.getNotPassingCount())), search))
+        if (checkMatch(formatQuizzes(sme), search))
         	return true;
 
         return false;
@@ -247,7 +247,17 @@ public class GetStudentGridPageCommand implements
     public Class<? extends Action<? extends Response>> getActionType() {
         return GetStudentGridPageAction.class;
     }
-    
+
+    private String formatQuizzes(StudentModelI sm) {
+        if (sm.getPassingCount() > 0 || sm.getNotPassingCount() > 0) {
+        	System.out.println("+++ formatQuizzes: " + String.format("%d passed out of %d", sm.getPassingCount(), (sm.getPassingCount()+sm.getNotPassingCount())));
+            return String.format("%d passed out of %d", sm.getPassingCount(), (sm.getPassingCount()+sm.getNotPassingCount()));
+        }
+        else {
+        	return "";
+        }
+    }
+
     private Map <Integer, StudentModelExt> collectNotFullyPopulated(List<StudentModelExt> list) {
     	Map<Integer, StudentModelExt> rMap = new HashMap<Integer, StudentModelExt> ();
     	for (StudentModelExt sme : list) {
