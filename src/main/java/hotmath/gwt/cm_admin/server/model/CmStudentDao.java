@@ -48,7 +48,6 @@ import org.json.JSONObject;
 import static hotmath.gwt.cm_tools.client.model.StudentModelExt.HAS_LAST_LOGIN_KEY;
 import static hotmath.gwt.cm_tools.client.model.StudentModelExt.HAS_LAST_QUIZ_KEY;
 import static hotmath.gwt.cm_tools.client.model.StudentModelExt.HAS_PASSING_COUNT_KEY;
-import static hotmath.gwt.cm_tools.client.model.StudentModelExt.HAS_STATUS_KEY;
 import static hotmath.gwt.cm_tools.client.model.StudentModelExt.HAS_TUTORING_USE_KEY;
 
 public class CmStudentDao {
@@ -241,7 +240,6 @@ public class CmStudentDao {
     	queryKeyMap.put(HAS_LAST_LOGIN_KEY,    "STUDENT_LAST_LOGIN");
     	queryKeyMap.put(HAS_LAST_QUIZ_KEY,     "STUDENT_LAST_QUIZ");
     	queryKeyMap.put(HAS_PASSING_COUNT_KEY, "STUDENT_PASSING_COUNT");
-    	queryKeyMap.put(HAS_STATUS_KEY,        "STUDENT_STATUS");
     	queryKeyMap.put(HAS_TUTORING_USE_KEY,  "STUDENT_TUTORING_USE");    	
     }
     
@@ -301,7 +299,7 @@ public class CmStudentDao {
         }
     	return qsUids;
     }
-    
+
 /*
 	private void loadChapInfo(final Connection conn, List<StudentModelBaseI> l) throws Exception {
 
@@ -365,36 +363,6 @@ public class CmStudentDao {
             else if (HAS_PASSING_COUNT_KEY.equals(hasFieldKey)) {
                 sm.setNotPassingCount(rs.getInt("not_passing_count"));
                 sm.setPassingCount(rs.getInt("passing_count"));
-            }
-
-            else if (HAS_STATUS_KEY.equals(hasFieldKey)) {
-                int activeSegment = rs.getInt("active_segment");
-                sm.setSectionNum(activeSegment);
-                if (activeSegment > 0) {
-                    int segmentCount = rs.getInt("total_segments");
-
-                    /**
-                     * If segmentCount not set, then extract from test config json
-                     * TODO: should we use test config json by default?
-                     */
-                    if (segmentCount == 0) {
-                        try {
-                            String json = rs.getString("test_config_json");
-                            if(json != null) {
-                                JSONObject jo = new JSONObject(json);
-                                segmentCount = jo.getInt("segments");
-                            }
-                        }
-                        catch(Exception e) {
-                            e.printStackTrace();
-                        }
-                    }
-                    String status = new StringBuilder("Section ").append(activeSegment).append(" of ").append(segmentCount)
-                            .toString();
-                    sm.setStatus(status);
-                } else {
-                    sm.setStatus("Not started");
-                }
             }
 
             else if (HAS_TUTORING_USE_KEY.equals(hasFieldKey)) {
@@ -1342,34 +1310,9 @@ public class CmStudentDao {
             String passPercent = rs.getString("pass_percent");
             sm.setPassPercent(passPercent);
             sm.setBackgroundStyle(rs.getString("gui_background_style"));
-            int activeSegment = rs.getInt("active_segment");
-            sm.setSectionNum(activeSegment);
-            if (activeSegment > 0) {
-                int segmentCount = rs.getInt("total_segments");
+            sm.setSectionNum(rs.getInt("active_segment"));
+            sm.setStatus(getStatus(sm.getUserProgramId(), sm.getSectionNum(), rs.getString("test_config_json")));
 
-                /**
-                 * If not set, then take extract config json on test_def
-                 * 
-                 */
-                if (segmentCount == 0) {
-                    try {
-                        String json = rs.getString("test_config_json");
-                        if(json != null) {
-                            JSONObject jo = new JSONObject(json);
-                            segmentCount = jo.getInt("segments");
-                        }
-                    }
-                    catch(Exception e) {
-                        e.printStackTrace();
-                    }
-                }
-
-                String status = new StringBuilder("Section ").append(activeSegment).append(" of ").append(segmentCount)
-                        .toString();
-                sm.setStatus(status);
-            } else {
-                sm.setStatus("Not started");
-            }
             String tutoringState = (sm.getTutoringAvail()) ? "ON" : "OFF";
             sm.setTutoringState(tutoringState);
             String showWorkState = (sm.getShowWorkRequired()) ? "REQUIRED" : "OPTIONAL";
@@ -1406,8 +1349,9 @@ public class CmStudentDao {
             sm.setSubjId(rs.getString("subj_id"));
             sm.setChapter(getChapter(rs.getString("test_config_json")));
             sm.setJson(rs.getString("test_config_json"));
-
             sm.setUserProgramId(rs.getInt("user_prog_id"));
+            sm.setSectionNum(rs.getInt("active_segment"));
+            sm.setStatus(getStatus(sm.getUserProgramId(), sm.getSectionNum(), rs.getString("test_config_json")));
 /*
             StudentUserProgramModelBase upm = new StudentUserProgramModelBase();
             upm.setAdminId(sm.getAdminUid());
@@ -1428,6 +1372,22 @@ public class CmStudentDao {
         return l;
     }
 
+    private String getStatus(Integer userProgId, Integer activeSegment, String testConfigJson) {
+        if (activeSegment > 0) {
+            if (testConfigJson != null) {
+            	try {
+                    JSONObject jo = new JSONObject(testConfigJson);
+                    StringBuilder sb = new StringBuilder("Section ").append(activeSegment).append(" of ").append(jo.getInt("segments"));
+                    return sb.toString();
+                }
+                catch(Exception e) {
+                    logger.error(String.format("*** Error getting status for user_prog_id: %d, test_config_json: %s", userProgId, testConfigJson), e);
+                }
+            }
+        }
+        return "Not started";
+    }
+    
     private List<StudentModelI> loadStudentExtendedSummaries(ResultSet rs) throws Exception {
 
         List<StudentModelI> l = new ArrayList<StudentModelI>();
@@ -1445,35 +1405,6 @@ public class CmStudentDao {
             sm.setNotPassingCount(rs.getInt("not_passing_count"));
             sm.setPassingCount(rs.getInt("passing_count"));
             sm.setTutoringUse(rs.getInt("tutoring_use"));
-
-            int activeSegment = rs.getInt("active_segment");
-            sm.setSectionNum(activeSegment);
-            if (activeSegment > 0) {
-                int segmentCount = rs.getInt("total_segments");
-
-                /**
-                 * If segmentCount not set, then extract from test config json
-                 * 
-                 */
-                if (segmentCount == 0) {
-                    try {
-                        String json = rs.getString("test_config_json");
-                        if(json != null) {
-                            JSONObject jo = new JSONObject(json);
-                            segmentCount = jo.getInt("segments");
-                        }
-                    }
-                    catch(Exception e) {
-                        e.printStackTrace();
-                    }
-                }
-
-                String status = new StringBuilder("Section ").append(activeSegment).append(" of ").append(segmentCount)
-                        .toString();
-                sm.setStatus(status);
-            } else {
-                sm.setStatus("Not started");
-            }
 
             l.add(sm);
         }
