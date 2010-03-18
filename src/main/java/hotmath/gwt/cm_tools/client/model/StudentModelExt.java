@@ -20,7 +20,6 @@ public class StudentModelExt extends BaseModel implements Serializable, StudentM
     public static final String HAS_LAST_LOGIN_KEY = "has-last-login";
     public static final String JSON_KEY = "json";
     public static final String STATUS_KEY = "status";
-    public static final String HAS_STATUS_KEY = "has-status";
     public static final String UID_KEY = "uid";
     public static final String EMAIL_KEY = "email";
     public static final String ADMIN_UID_KEY = "admin_uid";
@@ -88,7 +87,6 @@ public class StudentModelExt extends BaseModel implements Serializable, StudentM
     	setHasExtendedData(true);
     	setLastQuiz(sm.getLastQuiz());
     	setLastLogin(sm.getLastLogin());
-    	setStatus(sm.getStatus());
     	setTutoringUse(sm.getTutoringUse());
     	setPassingCount(sm.getPassingCount());
     	setNotPassingCount(sm.getNotPassingCount());
@@ -408,14 +406,6 @@ public class StudentModelExt extends BaseModel implements Serializable, StudentM
 
 	public void setHasLastLogin(Boolean val) {
 		set(HAS_LAST_LOGIN_KEY, val);
-	}
-
-	public Boolean getHasStatus() {
-		return get(HAS_STATUS_KEY);
-	}
-
-	public void setHasStatus(Boolean val) {
-		set(HAS_STATUS_KEY, val);
 	}
 
 	public Boolean getHasTutoringUse() {
