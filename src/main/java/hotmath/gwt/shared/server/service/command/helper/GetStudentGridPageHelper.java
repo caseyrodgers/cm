@@ -8,6 +8,8 @@ import hotmath.gwt.cm_tools.client.model.StudentModelI;
 import hotmath.gwt.shared.client.rpc.action.GetStudentGridPageAction;
 import hotmath.gwt.shared.server.service.command.GetStudentGridPageCommand;
 
+import org.apache.log4j.Logger;
+
 import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -24,6 +26,8 @@ import java.util.Map;
  */
 
 public class GetStudentGridPageHelper {
+
+	private static final Logger LOGGER = Logger.getLogger(GetStudentGridPageHelper.class);
 	
     /**
      *  Ensure sublist has all fields populated, also add to studentPool if indicated
@@ -73,7 +77,6 @@ public class GetStudentGridPageHelper {
     	extendedFieldMap.put(StudentModelExt.LAST_LOGIN_KEY,    StudentModelExt.HAS_LAST_LOGIN_KEY);
     	extendedFieldMap.put(StudentModelExt.LAST_QUIZ_KEY,     StudentModelExt.HAS_LAST_QUIZ_KEY);
     	extendedFieldMap.put(StudentModelExt.PASSING_COUNT_KEY, StudentModelExt.HAS_PASSING_COUNT_KEY);
-    	extendedFieldMap.put(StudentModelExt.STATUS_KEY,        StudentModelExt.HAS_STATUS_KEY);    	
     	extendedFieldMap.put(StudentModelExt.TUTORING_USE_KEY,  StudentModelExt.HAS_TUTORING_USE_KEY);
     }
     
@@ -92,14 +95,16 @@ public class GetStudentGridPageHelper {
     		}
     	}
     	
-    	System.out.println("+++ fillSortField(): uids.size(): " + uids.size());
+    	if (LOGGER.isDebugEnabled())
+    		LOGGER.debug("+++ fillSortField(): uids.size(): " + uids.size());
     	
     	if (uids.size() < 1) return;
     	
     	CmStudentDao dao = new CmStudentDao();
     	List<StudentModelI> extendedData = dao.getStudentExtendedData(conn, hasFieldKey, uids);
     	
-    	System.out.println("+++ fillSortField(): extendedData.size(): " + extendedData.size());
+    	if (LOGGER.isDebugEnabled())
+    		LOGGER.debug("+++ fillSortField(): extendedData.size(): " + extendedData.size());
     	
 		// load extended data into a Map
 		Map<Integer, StudentModelI> map = new HashMap<Integer, StudentModelI>();
@@ -119,26 +124,27 @@ public class GetStudentGridPageHelper {
 	private void assignExtendedData(String sortField,
 			List<StudentModelExt> studentPool, Map<Integer, StudentModelI> map) {
 		
-		System.out.println("+++ assignExtendedData(): sortField: " + sortField);
-		
 		// assign extended data to studentPool
 		for (StudentModelExt sme : studentPool ) {
 			Integer uid = sme.getUid();
 			if (map.containsKey(uid)) {
 				
-				System.out.println("+++ assignExtendedData(): uid: " + uid);
+		    	if (LOGGER.isDebugEnabled())
+		    		LOGGER.debug("+++ assignExtendedData(): uid: " + uid);
 
 	            if (StudentModelExt.LAST_LOGIN_KEY.equals(sortField)) {
 	                sme.setLastLogin(map.get(uid).getLastLogin());
 	                sme.setHasLastLogin(true);
-					System.out.println("+++ assignExtendedData(): lastLogin: " +map.get(uid).getLastLogin());
+			    	if (LOGGER.isDebugEnabled())
+			    		LOGGER.debug("+++ assignExtendedData(): lastLogin: " +map.get(uid).getLastLogin());
 
 	            	continue;
 	            }
 	            if (StudentModelExt.LAST_QUIZ_KEY.equals(sortField)) {
 	                sme.setLastQuiz(map.get(uid).getLastQuiz());
 	                sme.setHasLastQuiz(true);
-					System.out.println("+++ assignExtendedData(): lastQuiz: " + map.get(uid).getLastQuiz());
+			    	if (LOGGER.isDebugEnabled())
+			    		LOGGER.debug("+++ assignExtendedData(): lastQuiz: " + map.get(uid).getLastQuiz());
 
 	            	continue;
 	            }
@@ -147,24 +153,18 @@ public class GetStudentGridPageHelper {
     				sme.setNotPassingCount(map.get(sme.getUid()).getNotPassingCount());
     				sme.setPassingCount(map.get(uid).getPassingCount());
     				sme.setHasPassingCount(true);
-    				System.out.println("+++ assignExtendedData(): passingCount, notPassingCount" +
-    						map.get(sme.getUid()).getPassingCount() + ", " + map.get(sme.getUid()).getNotPassingCount());
+			    	if (LOGGER.isDebugEnabled())
+			    		LOGGER.debug("+++ assignExtendedData(): passingCount, notPassingCount" +
+            						 map.get(sme.getUid()).getPassingCount() + ", " + map.get(sme.getUid()).getNotPassingCount());
 
     				continue;
 				}
 
-				if (StudentModelExt.STATUS_KEY.equals(sortField)) {
-	                sme.setStatus(map.get(uid).getStatus());
-	                sme.setHasStatus(true);
-					System.out.println("+++ assignExtendedData(): status: " + map.get(uid).getStatus());
-
-	            	continue;
-	            }
-
 				if (StudentModelExt.TUTORING_USE_KEY.equals(sortField)) {
 	                sme.setTutoringUse(map.get(uid).getTutoringUse());
 					sme.setHasTutoringUse(true);
-					System.out.println("+++ assignExtendedData(): tutoring use: " + map.get(uid).getTutoringUse());
+			    	if (LOGGER.isDebugEnabled())
+			    		LOGGER.debug("+++ assignExtendedData(): tutoring use: " + map.get(uid).getTutoringUse());
 
 	            	continue;
 	            }
