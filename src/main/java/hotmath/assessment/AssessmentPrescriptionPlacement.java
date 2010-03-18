@@ -5,6 +5,7 @@ import hotmath.gwt.cm_tools.client.model.StudentActiveInfo;
 import hotmath.gwt.cm_tools.client.model.StudentModelI;
 import hotmath.gwt.cm_tools.client.ui.NextAction;
 import hotmath.gwt.cm_tools.client.ui.NextAction.NextActionName;
+import hotmath.testset.ha.CmProgram;
 import hotmath.testset.ha.HaTestRun;
 import hotmath.testset.ha.HaUser;
 import hotmath.util.HMConnectionPool;
@@ -33,10 +34,9 @@ public class AssessmentPrescriptionPlacement extends AssessmentPrescription {
         int total = getTest().getNumTestQuestions();
 
         String thisTest = getTestRun().getHaTest().getSubTitle(getTest().getSegment()).toLowerCase();
-        String newTestName = null;
-        String newProgId=null;
-        String newSubjId=null;
 
+        CmProgram program=null;
+        
         NextAction nextAction = new NextAction();
         // some trigger, in this case > 1 wrong answers.
         if ((total - correct) > 1) {
@@ -46,32 +46,22 @@ public class AssessmentPrescriptionPlacement extends AssessmentPrescription {
             // map to real Program name
             // @TODO: we need single mapping api for test names.
             if (thisTest.indexOf("pre-algebra") > -1) {
-                newTestName = "Pre-algebra Proficiency";
-                newProgId="Prof";
-                newSubjId="Pre-Alg";
+                program = CmProgram.PREALG_PROF;
             } else if (thisTest.indexOf("algebra 1") > -1) {
-                newTestName = "Beginning Algebra Proficiency";
-                newProgId="Prof";
-                newSubjId="Beg Alg";
+                program = CmProgram.ALG1_PROF;
             } else if (thisTest.indexOf("geometry") > -1) {
-                newTestName = "Geometry Proficiency";
-                newProgId="Prof";
-                newSubjId="Geom";
+                program = CmProgram.GEOM_PROF;
             } else if (thisTest.indexOf("algebra 2") > -1) {
-                newTestName = "Intermediate Algebra Proficiency";
-                newProgId="Prof";
-                newSubjId="Alg 2";
+                program = CmProgram.ALG2_PROF;
             }
         } else if (thisTest.indexOf("algebra 2") > -1) {
             // this means user passed the last test
-            // assign to casshe
-            newTestName = "California State Exit Exam";
-            newProgId="Grad Prep";
-            newSubjId="";
+            // assign to casshe as default
+            program = CmProgram.CAHSEEHM;
         }
 
         HaUser user = getTestRun().getHaTest().getUser();        
-        if (newTestName != null) {
+        if (program != null) {
             // next action is another quiz
             /** @TODO: Need to set test config json when assigning test
              * 
@@ -80,8 +70,8 @@ public class AssessmentPrescriptionPlacement extends AssessmentPrescription {
             CmStudentDao dao = new CmStudentDao();
             StudentModelI sm = dao.getStudentModel(user.getUid());
             
-            sm.setProgId(newProgId);
-            sm.setSubjId(newSubjId);
+            sm.setProgId(program.getProgramId());
+            sm.setSubjId(program.getSubject());
             sm.setProgramChanged(true);
             
             // now update the ActiveInfo to empty
@@ -97,8 +87,7 @@ public class AssessmentPrescriptionPlacement extends AssessmentPrescription {
             finally {
                 SqlUtilities.releaseResources(null,null,conn);
             }
-            
-            nextAction.setAssignedTest(newTestName);
+            nextAction.setAssignedTest(program.getTitle());
             nextAction.setAssignedTestId(active.getActiveTestId());
         }
         else {
