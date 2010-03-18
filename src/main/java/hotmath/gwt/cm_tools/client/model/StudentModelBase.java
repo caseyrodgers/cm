@@ -27,12 +27,14 @@ public class StudentModelBase implements IsSerializable, StudentModelI {
 	Boolean isDemoUser;
 	String  groupId;
 	String  group;
+	Integer sectionNum;
 	Integer userProgramId;
 	
 	String chapter;
 	String passPercent;
 	String progId;
 	String programDescr;
+	String status;
 	String subjId;
 	String testConfigJson;
 
@@ -217,8 +219,7 @@ public class StudentModelBase implements IsSerializable, StudentModelI {
 
 	@Override
 	public Integer getSectionNum() {
-		// not implemented
-		return null;
+		return sectionNum;
 	}
 
 	@Override
@@ -234,8 +235,7 @@ public class StudentModelBase implements IsSerializable, StudentModelI {
 
 	@Override
 	public String getStatus() {
-		// not implemented here
-		return null;
+		return status;
 	}
 
 	@Override
@@ -323,7 +323,7 @@ public class StudentModelBase implements IsSerializable, StudentModelI {
 
 	@Override
 	public void setSectionNum(Integer sectionNum) {
-		// not implemented
+		this.sectionNum = sectionNum;
 	}
 
 	@Override
@@ -338,7 +338,7 @@ public class StudentModelBase implements IsSerializable, StudentModelI {
 
 	@Override
 	public void setStatus(String status) {
-		// TODO Auto-generated method stub
+		this.status = status;
 	}
 
 	@Override
