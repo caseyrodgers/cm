@@ -150,7 +150,23 @@ public class GetStudentGridPageCommand implements
             	 * add any matches to student pool
             	 */
             	for (Integer uid : uidMatchList) {
-            		studentPool.add(nfpMap.get(uid));
+            	    
+            	    /** HACK:
+            	     *  only add to pool if either group filter not set, or matches Group
+            	     *  
+            	     * @TODO: need to rethink this process ...
+            	     */
+                    StudentModelExt sme = nfpMap.get(uid);
+            	    boolean include=false;
+            	    if (action.getGroupFilter() != null && !action.getGroupFilter().equals(GroupInfoModel.NO_FILTERING.toString())) {
+            	        if (sme.getGroupId().equals(action.getGroupFilter()))
+            	            include = true;
+            	    }
+            	    else {
+            	        include = true;  // no filter applied
+            	    }
+            	    if(include)
+            	        studentPool.add(sme);
             	}
             	
             }
