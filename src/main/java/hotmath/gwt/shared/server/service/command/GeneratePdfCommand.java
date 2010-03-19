@@ -81,7 +81,11 @@ public class GeneratePdfCommand implements ActionHandler<GeneratePdfAction, CmWe
             String outputBase = CmWebResourceManager.getInstance().getFileBase();
 
             // if outputBase/adminId directory doesn't exist, create it
-            String outputDir = ensureOutputDir(outputBase, adminId);
+            
+            String unique = Long.toString(System.currentTimeMillis());
+
+            outputBase = outputBase + "/" + adminId;
+            String outputDir = ensureOutputDir(outputBase, unique);
             
             File filePath = new File(outputDir, reportName + ".pdf");
             logger.info("Writing PDF output: " + filePath);
@@ -107,9 +111,9 @@ public class GeneratePdfCommand implements ActionHandler<GeneratePdfAction, CmWe
         return GeneratePdfAction.class;
     }
 
-    private String ensureOutputDir(String outputBase, Integer adminId) {
+    private String ensureOutputDir(String outputBase, String unique) {
 
-        File file = new File(outputBase,Integer.toString(adminId));
+        File file = new File(outputBase, unique);
     	if (! file.exists()) {
     		file.mkdirs();
     	}
