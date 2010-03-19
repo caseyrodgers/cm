@@ -1,20 +1,17 @@
 package hotmath.gwt.shared.server.service.command.helper;
 
-import hotmath.cm.util.CmCacheManager;
-import hotmath.cm.util.CmCacheManager.CacheName;
 import hotmath.gwt.cm_admin.server.model.CmStudentDao;
 import hotmath.gwt.cm_tools.client.model.StudentModelExt;
 import hotmath.gwt.cm_tools.client.model.StudentModelI;
 import hotmath.gwt.shared.client.rpc.action.GetStudentGridPageAction;
-import hotmath.gwt.shared.server.service.command.GetStudentGridPageCommand;
-
-import org.apache.log4j.Logger;
 
 import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import org.apache.log4j.Logger;
 
 /**
  * <code>GetStudentGridPageHelper</code> supports the retrieval of extended student data on
@@ -38,7 +35,6 @@ public class GetStudentGridPageHelper {
      * @param studentPool
      * @throws Exception
      */
-    @SuppressWarnings("unchecked")
     public void getAnyMissingData(final Connection conn, final GetStudentGridPageAction action, List<StudentModelExt> subList) throws Exception {
 
     	List<Integer> studentUids = getStudentUidsWithMissingData(subList);
@@ -60,19 +56,6 @@ public class GetStudentGridPageHelper {
     			sme.assignExtendedData(map.get(sme.getUid()));
     		}
     	}
-
-    	// assign extended summary data to cached student pool
-    	String cacheKey = GetStudentGridPageCommand.getCacheKey(action.getAdminId());
-    	List<StudentModelExt> _allStudents = (List<StudentModelExt>) CmCacheManager.getInstance().retrieveFromCache(CacheName.STUDENT_PAGED_DATA, cacheKey);
-
-    	for (StudentModelExt sme : _allStudents ) {
-    		if (map.containsKey(sme.getUid())) {
-    			sme.assignExtendedData(map.get(sme.getUid()));
-    		}
-    	}
-
-    	// refresh cache
-    	CmCacheManager.getInstance().addToCache(CacheName.STUDENT_PAGED_DATA, cacheKey, _allStudents);
     }
 
     private static Map<String, String> extendedFieldMap = new HashMap<String,String>();
@@ -115,14 +98,9 @@ public class GetStudentGridPageHelper {
 		for (StudentModelI sm : extendedData) {
 			map.put(sm.getUid(), sm);
 		}
-		
+
+		/** only need to do to pool (all will inherit changes to SMs) */
 		assignExtendedData(sortField, studentPool, map);
-		
-		assignExtendedData(sortField, allStudents, map);
-		
-		// refresh cache
-        String cacheKey = GetStudentGridPageCommand.getCacheKey(adminUid);
-        CmCacheManager.getInstance().addToCache(CacheName.STUDENT_PAGED_DATA, cacheKey, allStudents);		
     }
 
 	private void assignExtendedData(String sortField,

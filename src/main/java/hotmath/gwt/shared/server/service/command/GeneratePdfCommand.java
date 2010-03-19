@@ -7,6 +7,8 @@ import hotmath.cm.util.report.StudentListReport;
 import hotmath.cm.util.report.StudentReportCard;
 import hotmath.cm.util.report.StudentSummaryReport;
 import hotmath.gwt.cm_admin.server.model.CmAdminDao;
+import hotmath.gwt.cm_tools.client.model.StudentModelExt;
+import hotmath.gwt.cm_tools.client.model.StudentModelI;
 import hotmath.gwt.shared.client.rpc.Action;
 import hotmath.gwt.shared.client.rpc.CmWebResource;
 import hotmath.gwt.shared.client.rpc.Response;
@@ -18,6 +20,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.sql.Connection;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -33,10 +36,27 @@ public class GeneratePdfCommand implements ActionHandler<GeneratePdfAction, CmWe
     public CmWebResource execute(Connection conn, GeneratePdfAction action) throws Exception {
         String reportName=null;
 
+        /** Either the pageAction is set, in which we retrieve
+         * from cache.  Or a List of UIDS is sent.
+         * 
+         * @TODO: Combine into one?
+         */
         Integer adminId = action.getAdminId();
-        List<Integer> studentUids = action.getStudentUids();
+        List<Integer> studentUids = null;
+        if(action.getPageAction() != null) {
+            List<StudentModelExt> studentPool = new GetStudentGridPageCommand().getStudentPool(conn, action.getPageAction());
+            studentUids = new ArrayList<Integer>();
+            for(StudentModelI sm: studentPool) {
+                studentUids.add(sm.getUid());
+            }
+        }
+        else {
+            studentUids = action.getStudentUids();
+        }
         PdfType pdfType = action.getPdfType();
 
+        
+        
         String reportId = new CmAdminDao().getPrintableStudentReportId(studentUids);
 
         ByteArrayOutputStream baos = null;

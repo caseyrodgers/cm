@@ -274,7 +274,7 @@ public class CmStudentDao {
     }
     
     /** Return a list UIDs that represent the students 
-     *  that match the requested quicksearch 'search'.
+     *  that match the requested quick search 'search'.
      *  
      *  
      * @param conn

@@ -22,6 +22,10 @@ public class GeneratePdfAction implements Action<CmWebResource>{
     Map<FilterType,String> filterMap;
     String title;
     
+    
+    GetStudentGridPageAction pageAction;
+
+
     public GeneratePdfAction() {}
     
     public GeneratePdfAction(PdfType pdfType, Integer adminId, List<Integer> studentUids) {
@@ -29,9 +33,24 @@ public class GeneratePdfAction implements Action<CmWebResource>{
         this.adminId = adminId;
         this.studentUids = studentUids;
     }
+    
+    public GeneratePdfAction(PdfType pdfType, Integer adminId, GetStudentGridPageAction pageAction) {
+        this.pdfType = pdfType;
+        this.adminId = adminId;
+        this.pageAction = pageAction;
+    }
+
 
     public PdfType getPdfType() {
         return pdfType;
+    }
+
+    public GetStudentGridPageAction getPageAction() {
+        return pageAction;
+    }
+
+    public void setPageAction(GetStudentGridPageAction pageAction) {
+        this.pageAction = pageAction;
     }
 
     public void setPdfType(PdfType pdfType) {
@@ -63,7 +82,12 @@ public class GeneratePdfAction implements Action<CmWebResource>{
     }
 
     public Map<FilterType,String> getFilterMap() {
-    	return this.filterMap;
+    	if(this.filterMap != null)
+    	    return this.filterMap;
+    	else if(this.pageAction != null)
+    	    return this.pageAction.getFilterMap();
+    	else 
+    	    return null;
     }
 
     public void setFilterMap(Map<FilterType,String> filterMap) {

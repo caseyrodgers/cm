@@ -631,15 +631,20 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
                 for (int i = 0; i < store.getCount(); i++) {
                     studentUids.add(store.getAt(i).getUid());
                 }
-                GWT.runAsync(new CmRunAsyncCallback() {
-
-                    @Override
-                    public void onSuccess() {
-                    	GeneratePdfAction pdfAction = new GeneratePdfAction(PdfType.STUDENT_SUMMARY, _cmAdminMdl.getId(), studentUids);
-                    	pdfAction.setFilterMap(instance._pageAction.getFilterMap());
-                        new PdfWindow(_cmAdminMdl.getId(), "Catchup Math Student Summary Report", pdfAction);
-                    }
-                });
+                if(studentUids.size() > 0) {
+                    GWT.runAsync(new CmRunAsyncCallback() {
+    
+                        @Override
+                        public void onSuccess() {
+                        	GeneratePdfAction pdfAction = new GeneratePdfAction(PdfType.STUDENT_SUMMARY, _cmAdminMdl.getId(), studentUids);
+                        	pdfAction.setPageAction(StudentGridPanel.instance._pageAction);
+                            new PdfWindow(_cmAdminMdl.getId(), "Catchup Math Student Summary Report", pdfAction);
+                        }
+                    });
+                }
+                else {
+                    CatchupMathTools.showAlert("No students currently displayed.");
+                }
             }
         });
         return ti;
