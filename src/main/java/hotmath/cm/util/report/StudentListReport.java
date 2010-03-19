@@ -92,7 +92,7 @@ public class StudentListReport {
     }
 
     private void setReportName(String reportName) {
-        reportName = reportName;
+        this.reportName = reportName;
     }
 
     public String getReportName() {
