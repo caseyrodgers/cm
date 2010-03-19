@@ -38,37 +38,41 @@ public class GetStudentGridPageHelper {
      * @param studentPool
      * @throws Exception
      */
-    public void getAnyMissingData(final Connection conn, final GetStudentGridPageAction action, List<StudentModelExt> subList,
-        List<StudentModelExt> studentPool) throws Exception {
-    	List<Integer> studentUids = getStudentUidsWithMissingData(subList);
-    	if (studentUids.size() > 0) {
-    		// get missing data
-    		List<StudentModelI> extendedSummaries = new CmStudentDao().getStudentExtendedSummaries(conn, studentUids);
-    		
-    		// load extended summaries into a Map
-    		Map<Integer, StudentModelI> map = new HashMap<Integer, StudentModelI>();
-    		for (StudentModelI sm : extendedSummaries) {
-    			map.put(sm.getUid(), sm);
-    		}
-    		
-    		// assign extended summary data to sub list
-    		for (StudentModelExt sme : subList ) {
-    			if (map.containsKey(sme.getUid())) {
-    				sme.assignExtendedData(map.get(sme.getUid()));
-    			}
-    		}
-    		
-       		// assign extended summary data to student pool
-    		for (StudentModelExt sme : studentPool ) {
-    			if (map.containsKey(sme.getUid())) {
-    				sme.assignExtendedData(map.get(sme.getUid()));
-    			}
-    		}
+    @SuppressWarnings("unchecked")
+    public void getAnyMissingData(final Connection conn, final GetStudentGridPageAction action, List<StudentModelExt> subList) throws Exception {
 
-    		// refresh cache
-            String cacheKey = GetStudentGridPageCommand.getCacheKey(action.getAdminId());
-            CmCacheManager.getInstance().addToCache(CacheName.STUDENT_PAGED_DATA, cacheKey, studentPool);
+    	List<Integer> studentUids = getStudentUidsWithMissingData(subList);
+
+    	if (studentUids.size() < 1) return;
+
+    	// get missing data
+    	List<StudentModelI> extendedSummaries = new CmStudentDao().getStudentExtendedSummaries(conn, studentUids);
+
+    	// load extended summaries into a Map
+    	Map<Integer, StudentModelI> map = new HashMap<Integer, StudentModelI>();
+    	for (StudentModelI sm : extendedSummaries) {
+    		map.put(sm.getUid(), sm);
     	}
+
+    	// assign extended summary data to sub list
+    	for (StudentModelExt sme : subList ) {
+    		if (map.containsKey(sme.getUid())) {
+    			sme.assignExtendedData(map.get(sme.getUid()));
+    		}
+    	}
+
+    	// assign extended summary data to cached student pool
+    	String cacheKey = GetStudentGridPageCommand.getCacheKey(action.getAdminId());
+    	List<StudentModelExt> _allStudents = (List<StudentModelExt>) CmCacheManager.getInstance().retrieveFromCache(CacheName.STUDENT_PAGED_DATA, cacheKey);
+
+    	for (StudentModelExt sme : _allStudents ) {
+    		if (map.containsKey(sme.getUid())) {
+    			sme.assignExtendedData(map.get(sme.getUid()));
+    		}
+    	}
+
+    	// refresh cache
+    	CmCacheManager.getInstance().addToCache(CacheName.STUDENT_PAGED_DATA, cacheKey, _allStudents);
     }
 
     private static Map<String, String> extendedFieldMap = new HashMap<String,String>();
