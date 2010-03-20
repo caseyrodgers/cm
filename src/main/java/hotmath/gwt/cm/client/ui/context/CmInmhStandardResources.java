@@ -71,18 +71,30 @@ public class CmInmhStandardResources extends ArrayList<PrescriptionSessionDataRe
         resourceType.setDescription("Spanish Flash Card and Skill Builder resources that might help you");
         
         
+        /* 
+         * Vocabulario Matemático (Math Vocabulary)
+           Sumando Fracciones Semejantes (Adding Like Fractions)
+           Sumando Fracciones no Semejantes (Adding Unlike Fractions)
+           Hechos de la Multiplicación (Multiplication Facts)
+           Orden de las Operaciones (Order of Operations)
+           Reduciendo Fracciones (Reducing Fractions)
+           Desigualdades en una Recta Numérica (Inequalities on a Number Line)
+           Factorización Prima (Prima Factorizacion)
+           Comparando Cantidades (Comparing Quantities)
+           Multiplicando Fracciones (Multiplying Fractions)
+       */
         
         
         items = new ArrayList<InmhItemData>();
         t = resourceType.getType();
-        items.add(new InmhItemData(t,"/learning_activities/interactivities/flashcard_vocab.swf?lang=es", "Vocabulario de matem&aacute;ticas"));
-        items.add(new InmhItemData(t,"/learning_activities/interactivities/flashcard_addfrac_like.swf?lang=es", "Suma de fracciones"));
-        items.add(new InmhItemData(t,"/learning_activities/interactivities/flashcard_addfrac_unlike.swf?lang=es", "A diferencia de la adici&oacute;n de fracciones"));
-        items.add(new InmhItemData(t,"/learning_activities/interactivities/flashcard_multi.swf?lang=es", "Las tablas de multiplicaci&oacute; n"));
-        items.add(new InmhItemData(t,"/learning_activities/interactivities/flashcard_reducingfractions.swf?lang=es", "La reducci&oacute;n de fracciones"));
+        items.add(new InmhItemData(t,"/learning_activities/interactivities/flashcard_vocab.swf?lang=es", "Vocabulario Matemático"));
+        items.add(new InmhItemData(t,"/learning_activities/interactivities/flashcard_addfrac_like.swf?lang=es", "Sumando Fracciones Semejantes"));
+        items.add(new InmhItemData(t,"/learning_activities/interactivities/flashcard_addfrac_unlike.swf?lang=es", "Sumando Fracciones no Semejantes"));
+        items.add(new InmhItemData(t,"/learning_activities/interactivities/flashcard_multi.swf?lang=es", "Hechos de la Multiplicación"));
+        items.add(new InmhItemData(t,"/learning_activities/interactivities/flashcard_reducingfractions.swf?lang=es", "Reduciendo Fracciones"));
         items.add(new InmhItemData(t,"/learning_activities/interactivities/flashcard_comparing_quantities.swf?lang=es", "La comparaci&oacute;n de las cantidades"));
-        items.add(new InmhItemData(t,"/learning_activities/interactivities/flashcard_oops_level1.swf?lang=es", "Orden de operaciones: Nivel 1"));
-        items.add(new InmhItemData(t,"/learning_activities/interactivities/flashcard_oops_level2.swf?lang=es", "Orden de operaciones: Nivel 2"));
+        items.add(new InmhItemData(t,"/learning_activities/interactivities/flashcard_oops_level1.swf?lang=es", "Orden de las Operaciones: Nivel 1"));
+        items.add(new InmhItemData(t,"/learning_activities/interactivities/flashcard_oops_level2.swf?lang=es", "Orden de las Operaciones: Nivel 2"));
         items.add(new InmhItemData(t,"/learning_activities/interactivities/flashcard_convert_improper.swf?lang=es", "Conversi&oacute;n de fracciones incorrecta"));
         items.add(new InmhItemData(t,"/learning_activities/interactivities/flashcard_convert_mixed.swf?lang=es", "Conversi&oacute;n de n&uacute; meros mixtos"));
         
