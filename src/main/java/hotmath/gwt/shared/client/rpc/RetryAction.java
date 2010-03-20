@@ -6,6 +6,9 @@ import hotmath.gwt.cm_tools.client.ui.CmLogger;
 import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.data.CmAsyncRequestImplDefault;
+import hotmath.gwt.shared.client.eventbus.CmEvent;
+import hotmath.gwt.shared.client.eventbus.EventBus;
+import hotmath.gwt.shared.client.eventbus.EventType;
 import hotmath.gwt.shared.client.util.RpcData;
 import hotmath.gwt.shared.client.util.UserInfo;
 
@@ -184,6 +187,10 @@ public abstract class RetryAction<T> implements AsyncCallback<T> {
      * possible usage: close a window that is not functional when an action fails
      */
     public void onCancel() {
+        
+        
+        EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_MODAL_WINDOW_OPEN));
+        
         CmLogger.info("RetryAction " + instanceCount + " cancel [" + getRequestTime() + "] (" + activeAction + ") : " 
                 + getClass().getName());
 
