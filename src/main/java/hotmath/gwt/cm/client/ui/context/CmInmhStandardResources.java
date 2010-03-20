@@ -75,16 +75,16 @@ public class CmInmhStandardResources extends ArrayList<PrescriptionSessionDataRe
         
         items = new ArrayList<InmhItemData>();
         t = resourceType.getType();
-        items.add(new InmhItemData(t,"/learning_activities/interactivities/flashcard_vocab.swf?lang=es", "Vocabulario de matemáticas"));
+        items.add(new InmhItemData(t,"/learning_activities/interactivities/flashcard_vocab.swf?lang=es", "Vocabulario de matem&aacute;ticas"));
         items.add(new InmhItemData(t,"/learning_activities/interactivities/flashcard_addfrac_like.swf?lang=es", "Suma de fracciones"));
-        items.add(new InmhItemData(t,"/learning_activities/interactivities/flashcard_addfrac_unlike.swf?lang=es", "A diferencia de la adición de fracciones"));
-        items.add(new InmhItemData(t,"/learning_activities/interactivities/flashcard_multi.swf?lang=es", "Las tablas de multiplicación"));
-        items.add(new InmhItemData(t,"/learning_activities/interactivities/flashcard_reducingfractions.swf?lang=es", "La reducción de fracciones"));
-        items.add(new InmhItemData(t,"/learning_activities/interactivities/flashcard_comparing_quantities.swf?lang=es", "La comparación de las cantidades"));
+        items.add(new InmhItemData(t,"/learning_activities/interactivities/flashcard_addfrac_unlike.swf?lang=es", "A diferencia de la adici&oacute;n de fracciones"));
+        items.add(new InmhItemData(t,"/learning_activities/interactivities/flashcard_multi.swf?lang=es", "Las tablas de multiplicaci&oacute; n"));
+        items.add(new InmhItemData(t,"/learning_activities/interactivities/flashcard_reducingfractions.swf?lang=es", "La reducci&oacute;n de fracciones"));
+        items.add(new InmhItemData(t,"/learning_activities/interactivities/flashcard_comparing_quantities.swf?lang=es", "La comparaci&oacute;n de las cantidades"));
         items.add(new InmhItemData(t,"/learning_activities/interactivities/flashcard_oops_level1.swf?lang=es", "Orden de operaciones: Nivel 1"));
         items.add(new InmhItemData(t,"/learning_activities/interactivities/flashcard_oops_level2.swf?lang=es", "Orden de operaciones: Nivel 2"));
-        items.add(new InmhItemData(t,"/learning_activities/interactivities/flashcard_convert_improper.swf?lang=es", "Conversión de fracciones incorrecta"));
-        items.add(new InmhItemData(t,"/learning_activities/interactivities/flashcard_convert_mixed.swf?lang=es", "Conversión de números mixtos"));
+        items.add(new InmhItemData(t,"/learning_activities/interactivities/flashcard_convert_improper.swf?lang=es", "Conversi&oacute;n de fracciones incorrecta"));
+        items.add(new InmhItemData(t,"/learning_activities/interactivities/flashcard_convert_mixed.swf?lang=es", "Conversi&oacute;n de n&uacute; meros mixtos"));
         
         resourceType.setItems(items);        
         add(resourceType);
