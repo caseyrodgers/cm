@@ -67,7 +67,7 @@ public class CmInmhStandardResources extends ArrayList<PrescriptionSessionDataRe
         t = "flashcard_spanish";
         resourceType = new PrescriptionSessionDataResource();
         resourceType.setType(t);
-        resourceType.setLabel("Spanish Flash Cards  ");
+        resourceType.setLabel("Tarjetas Flash español");
         resourceType.setDescription("Spanish Flash Card and Skill Builder resources that might help you");
         
         
