@@ -194,10 +194,12 @@ public abstract class RetryAction<T> implements AsyncCallback<T> {
         win.setModal(true);
         win.setResizable(false);
         
-        String msg = "<p style='padding: 15px;font-size: 105%'>There has been a server error.  " +
-                    "You can continue, but be aware of possible side effects.  " +
-                    "If you continue to have errors we suggest you refresh this page " +
-                    "by pressing the F5 key.</p>";
+        
+        String msg = "<p style='padding: 15px;font-size: 105%'>" +
+                    "Catchup Math has encountered an exception. " +
+                    "Please press the F5 key on your keyboard to continue. " +
+                    "Sorry for the inconvenience!" +
+                    "</p>";
         
         win.setLayout(new FitLayout());
         win.add(new Html(msg));
