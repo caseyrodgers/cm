@@ -124,9 +124,9 @@ public abstract class RetryAction<T> implements AsyncCallback<T> {
         try {
             throw error;
         } catch (IncompatibleRemoteServiceException remoteServiceException) {
-            Window.alert("A fatal error occurred, you should refresh this page and try again");
+            onCancel();
         } catch (SerializationException serializationException) {
-            Window.alert("A fatal error occurred, you should refresh this page and try again");
+            onCancel();
         } catch (Throwable throwable) {
             String message = throwable.getLocalizedMessage();
 
