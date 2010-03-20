@@ -67,7 +67,7 @@ public class CmInmhStandardResources extends ArrayList<PrescriptionSessionDataRe
         t = "flashcard_spanish";
         resourceType = new PrescriptionSessionDataResource();
         resourceType.setType(t);
-        resourceType.setLabel("Tarjetas Flash español");
+        resourceType.setLabel("Tarjetas Flash espa&ntilde;ol");
         resourceType.setDescription("Spanish Flash Card and Skill Builder resources that might help you");
         
         
@@ -87,10 +87,10 @@ public class CmInmhStandardResources extends ArrayList<PrescriptionSessionDataRe
         
         items = new ArrayList<InmhItemData>();
         t = resourceType.getType();
-        items.add(new InmhItemData(t,"/learning_activities/interactivities/flashcard_vocab.swf?lang=es", "Vocabulario Matemático"));
+        items.add(new InmhItemData(t,"/learning_activities/interactivities/flashcard_vocab.swf?lang=es", "Vocabulario Matem&aacute;tico"));
         items.add(new InmhItemData(t,"/learning_activities/interactivities/flashcard_addfrac_like.swf?lang=es", "Sumando Fracciones Semejantes"));
         items.add(new InmhItemData(t,"/learning_activities/interactivities/flashcard_addfrac_unlike.swf?lang=es", "Sumando Fracciones no Semejantes"));
-        items.add(new InmhItemData(t,"/learning_activities/interactivities/flashcard_multi.swf?lang=es", "Hechos de la Multiplicación"));
+        items.add(new InmhItemData(t,"/learning_activities/interactivities/flashcard_multi.swf?lang=es", "Hechos de la Multiplicaci&iacute;n"));
         items.add(new InmhItemData(t,"/learning_activities/interactivities/flashcard_reducingfractions.swf?lang=es", "Reduciendo Fracciones"));
         items.add(new InmhItemData(t,"/learning_activities/interactivities/flashcard_comparing_quantities.swf?lang=es", "La comparaci&oacute;n de las cantidades"));
         items.add(new InmhItemData(t,"/learning_activities/interactivities/flashcard_oops_level1.swf?lang=es", "Orden de las Operaciones: Nivel 1"));
