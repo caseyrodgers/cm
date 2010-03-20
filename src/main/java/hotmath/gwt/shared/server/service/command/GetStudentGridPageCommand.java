@@ -133,44 +133,25 @@ public class GetStudentGridPageCommand implements
                     qsStudentPool.add(sme);
                 }
             }
-            studentPool = qsStudentPool;
             
             /*
-             * if all student models are fully populated we are done,
-             * otherwise check unmatched and not fully populated
-             * student models for possible matches and add to QS student pool. 
+             * if searched student models (studentPool) are fully populated we are done,
+             * otherwise check unmatched and not fully populated student models for
+             * possible matches and add to QS student pool. 
              */
-            Map<Integer, StudentModelExt> nfpMap = collectNotFullyPopulated(_allStudents);
-            removeOverlap(nfpMap, studentPool);
+            Map<Integer, StudentModelExt> nfpMap = collectNotFullyPopulated(studentPool);
+            removeOverlap(nfpMap, qsStudentPool);
 
             if (nfpMap.size() > 0) {
             	List<Integer> uidMatchList = new CmStudentDao().getQuickSearchUids(conn, nfpMap.keySet(), search);
-            	
             	/*
-            	 * add any matches to student pool
+            	 * add any matches to QS student pool
             	 */
             	for (Integer uid : uidMatchList) {
-            	    
-            	    /** HACK:
-            	     *  only add to pool if either group filter not set, or matches Group
-            	     *  
-            	     * @TODO: need to rethink this process ...
-            	     */
-                    StudentModelExt sme = nfpMap.get(uid);
-            	    boolean include=false;
-            	    if (action.getGroupFilter() != null && !action.getGroupFilter().equals(GroupInfoModel.NO_FILTERING.toString())) {
-            	        if (sme.getGroupId().equals(action.getGroupFilter()))
-            	            include = true;
-            	    }
-            	    else {
-            	        include = true;  // no filter applied
-            	    }
-            	    if(include)
-            	        studentPool.add(sme);
+            	    qsStudentPool.add(nfpMap.get(uid));
             	}
-            	
             }
-            
+            studentPool = qsStudentPool;            
         }
         
         /**
