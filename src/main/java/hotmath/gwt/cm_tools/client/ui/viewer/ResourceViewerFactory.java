@@ -80,6 +80,9 @@ public class ResourceViewerFactory {
 			rp = new ResourceViewerImplTutor();
 		} else if (type.equals("flashcard")) {
 			rp = new ResourceViewerImplFlashCard();
+        } else if (type.equals("flashcard_spanish")) {
+            rp = new ResourceViewerImplFlashCard();
+			
 		} else
 			rp = new CmResourcePanelImplDefault();
 

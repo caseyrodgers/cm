@@ -60,5 +60,29 @@ public class CmInmhStandardResources extends ArrayList<PrescriptionSessionDataRe
         
         resourceType.setItems(items);        
         add(resourceType);
+        
+        /** Add the Standard Flash Cards
+         * 
+         */
+        t = "flashcard_spanish";
+        resourceType = new PrescriptionSessionDataResource();
+        resourceType.setType(t);
+        resourceType.setLabel("Spanish Flash Cards  ");
+        resourceType.setDescription("Spanish Flash Card and Skill Builder resources that might help you");
+        
+        items = new ArrayList<InmhItemData>();
+        t = resourceType.getType();
+        items.add(new InmhItemData(t,"/learning_activities/interactivities/flashcard_vocab.swf?lang=es", "Vocabulario de matemáticas"));
+        items.add(new InmhItemData(t,"/learning_activities/interactivities/flashcard_addfrac_like.swf?lang=es", "Suma de fracciones"));
+        items.add(new InmhItemData(t,"/learning_activities/interactivities/flashcard_addfrac_unlike.swf?lang=es", "A diferencia de la adición de fracciones"));
+        items.add(new InmhItemData(t,"/learning_activities/interactivities/flashcard_multi.swf?lang=es", "Las tablas de multiplicación"));
+        // items.add(new InmhItemData(t,"/learning_activities/interactivities/flashcard_oops.swf?lang=es", "Order of Operations"));
+        items.add(new InmhItemData(t,"/learning_activities/interactivities/flashcard_reducingfractions.swf?lang=es", "La reducción de fracciones"));
+        // items.add(new InmhItemData(t,"/learning_activities/interactivities/inequality_one_variable.swf?lang=es", "Inequalities on a Number Line"));
+        // items.add(new InmhItemData(t,"/learning_activities/interactivities/prime_factorization.swf?lang=es", "Prime Factorization"));
+        items.add(new InmhItemData(t,"/learning_activities/interactivities/flashcard_comparing_quantities.swf?lang=es", "La comparación de las cantidades"));
+        
+        resourceType.setItems(items);        
+        add(resourceType);
     }
 }
