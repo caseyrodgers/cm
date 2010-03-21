@@ -90,8 +90,10 @@ public class CreateTestRunCommand implements ActionHandler<CreateTestRunAction, 
 
             CreateTestRunResponse testRunInfo = new CreateTestRunResponse();
             
-            // Let the prescription instruct the next action depending on
-            // type of test, status, etc.
+            /** 
+             * Let the prescription direct the next action depending on
+             * type of test, status, etc.
+             */
             NextAction nextAction = pres.getNextAction();
             
             testRunInfo.setCorrect(answeredCorrect);

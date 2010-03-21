@@ -6,6 +6,9 @@ import java.util.Date;
 import java.util.List;
 
 /** Identifies a complete Catchup Math program
+ * which defines all aspects of a problem.  
+ * 
+ * Includes the test_def and the custom configuration info.
  * 
  * @author casey
  *
@@ -91,7 +94,9 @@ public class StudentUserProgramModel {
 		this.testDef = testDef;
 	}
 
+	
 	/** Return true if this program has alternate tests available
+	 * 
      * @return
      */
     public Boolean hasAlternateTests() {
@@ -99,7 +104,8 @@ public class StudentUserProgramModel {
         if(testDefId == CmProgram.ALG1_PROF.getDefId()
            || testDefId == CmProgram.PREALG_PROF.getDefId()
            || testDefId == CmProgram.ALG2_PROF.getDefId()
-           || testDefId == CmProgram.GEOM_PROF.getDefId()) {
+           || testDefId == CmProgram.GEOM_PROF.getDefId()
+           || testDefId == CmProgram.ALG1_PROF.getDefId()) {
             
             return true;
         }
