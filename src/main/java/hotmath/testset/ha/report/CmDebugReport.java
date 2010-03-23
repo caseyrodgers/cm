@@ -90,13 +90,11 @@ public class CmDebugReport {
                 try {
                     if(!progDef.isActive())
                         continue;
-                    
                     if (progDef.getProgramId().equals("Chap")) {
                         testProgramChapterTests(progDef);
                     } else if (!progDef.getProgramId().equals("Auto Enroll")) {
                         testProgramProfTests(progDef);
                     }
-                    
                 } catch (Exception e) {
                     e.printStackTrace();
                     logMessage(-1, "Error testing: " + progDef + ", " + e.getMessage());
@@ -234,39 +232,59 @@ public class CmDebugReport {
             logMessage(prescription.getTestRun().getRunId(), "WARNING: Program prescription has zero lessons (" + pidList + ")");
             isError = true;
         } else {
-            /**
-             * there are sessions, make search the RPP for each equals three
-             * 
+            
+            
+            /** store the name of this lesson as being 'active', meaning it is referenced by
+             *  at least one RPP.
              */
-            for (int i = 0, t = prescription.getSessions().size(); i < t; i++) {
-                AssessmentPrescriptionSession session = prescription.getSessions().get(i);
-                List<SessionData> rpp = session.getSessionItems();
-                if (rpp.size() != 3) {
-                    logMessage(prescription.getTestRun().getRunId(), "WARNING: Session " + i + ": incorrect number of RPP (" + rpp.size() + ")");
-                    isError = true;
-                }
-                for(SessionData p: rpp) {
-                    if(!SolutionManager.getInstance().doesSolutionExist(conn, p.getPid())) {
-                        logMessage(prescription.getTestRun().getRunId(), "WARNING: Session " + i + ": RPP does not exist '" + p.getPid() + "'");
+            PreparedStatement ps=null;
+            try {
+                ps = conn.prepareStatement("insert into HA_PROGRAM_LESSONS(lesson,subject)values(?,?)");
+                
+                /**
+                 * there are sessions, make search the RPP for each equals three
+                 * 
+                 */
+                for (int i = 0, t = prescription.getSessions().size(); i < t; i++) {
+                    AssessmentPrescriptionSession session = prescription.getSessions().get(i);
+                    List<SessionData> rpp = session.getSessionItems();
+                    if (rpp.size() != 3) {
+                        logMessage(prescription.getTestRun().getRunId(), "WARNING: Session " + i + ": incorrect number of RPP (" + rpp.size() + ")");
+                        isError = true;
+                    }
+                    for(SessionData p: rpp) {
+                        if(!SolutionManager.getInstance().doesSolutionExist(conn, p.getPid())) {
+                            logMessage(prescription.getTestRun().getRunId(), "WARNING: Session " + i + ": RPP does not exist '" + p.getPid() + "'");
+                        }
+                        
                     }
                     
-                }
-                
-                Collection<INeedMoreHelpResourceType> epp = session.getPrescriptionInmhTypes(_conn, "cmextra");
-                /**
-                if (epp.size() > 0 && epp.size() != 3) {
-                    logMessage(prescription.getTestRun().getRunId(), "WARNING: Session " + i + ": incorrect number of EPP (" + epp.size() + ")");
-                    isError = true;
-                }
-                */
-                for(INeedMoreHelpResourceType p: epp) {
-                    for(INeedMoreHelpItem pid: p.getResources()) {
-                        if(!SolutionManager.getInstance().doesSolutionExist(conn, pid.getFile())) {
-                            logMessage(prescription.getTestRun().getRunId(), "WARNING: Session " + i + ": RPP does not exist '" + pid.getFile() + "'");
+                    Collection<INeedMoreHelpResourceType> epp = session.getPrescriptionInmhTypes(_conn, "cmextra");
+                    /**
+                    if (epp.size() > 0 && epp.size() != 3) {
+                        logMessage(prescription.getTestRun().getRunId(), "WARNING: Session " + i + ": incorrect number of EPP (" + epp.size() + ")");
+                        isError = true;
+                    }
+                    */
+                    for(INeedMoreHelpResourceType p: epp) {
+                        for(INeedMoreHelpItem pid: p.getResources()) {
+                            if(!SolutionManager.getInstance().doesSolutionExist(conn, pid.getFile())) {
+                                logMessage(prescription.getTestRun().getRunId(), "WARNING: Session " + i + ": RPP does not exist '" + pid.getFile() + "'");
+                            }
                         }
                     }
                     
+                    
+                    /** save the name of this lesson as being active
+                     */
+                    ps.setString(1, session.getTopic());
+                    ps.setString(2, prescription.getTest().getTestDef().getSubjectId());
+                    if(ps.executeUpdate() != 1)
+                        throw new Exception("Could not save new active lesson name: " + prescription);
                 }
+            }
+            finally {
+                SqlUtilities.releaseResources(null,ps,null);
             }
         }
 
