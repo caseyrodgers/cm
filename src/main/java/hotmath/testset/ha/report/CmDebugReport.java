@@ -24,6 +24,7 @@ import java.awt.BorderLayout;
 import java.io.FileWriter;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.Statement;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Collection;
@@ -41,6 +42,10 @@ import org.apache.log4j.Logger;
 /** Checks all CM Programs for anomalies.  
  * 
  * Writes to table HA_PRESCRIPTION_LOG
+ * 
+ * Also populates the HA_PROGRAM_LESSON table which 
+ * contains all the ACTIVE lessons current in play.
+ * 
  * 
  * @author casey
  *
@@ -239,7 +244,7 @@ public class CmDebugReport {
              */
             PreparedStatement ps=null;
             try {
-                ps = conn.prepareStatement("insert into HA_PROGRAM_LESSONS(lesson,subject)values(?,?)");
+                ps = conn.prepareStatement("insert into HA_PROGRAM_LESSONS(lesson,subject,file)values(?,?,?)");
                 
                 /**
                  * there are sessions, make search the RPP for each equals three
@@ -277,8 +282,10 @@ public class CmDebugReport {
                     
                     /** save the name of this lesson as being active
                      */
-                    ps.setString(1, session.getTopic());
+                    String title = session.getTopic();
+                    ps.setString(1, title);
                     ps.setString(2, prescription.getTest().getTestDef().getSubjectId());
+                    ps.setString(3,session.getInmhItemsFor(title).get(0).getFile());
                     if(ps.executeUpdate() != 1)
                         throw new Exception("Could not save new active lesson name: " + prescription);
                 }
@@ -313,7 +320,7 @@ public class CmDebugReport {
          */
         if(_fileOut != null)
             _fileOut.write(msg + "\n");
-
+        
         
         /** log to gui if available
          * 
@@ -342,19 +349,43 @@ public class CmDebugReport {
         logMessage(runId, msg + ", " + t.getMessage());
     }
 
-    /** create/recreate the HA_PRESCRIPTION_LOG table 
+    /** create/recreate the HA_PRESCRIPTION_LOG table
+     *  and the HA_PROGRAM_LESSON table 
      * 
      * @throws Exception
      */
     private void setupDatabaseForTest() throws Exception {
-        try {
-            _conn.createStatement().executeUpdate("drop table HA_PRESCRIPTION_LOG");
-        } catch (Exception e) {
+        Statement ps=null;
+        try {   
+            ps = _conn.createStatement();
+            
+            try {
+                ps.executeUpdate("drop table HA_PRESCRIPTION_LOG");
+            } catch (Exception e) {
+                /** silent */
+            }
+            try {
+                ps.executeUpdate("drop table HA_PROGRAM_LESSONS");
+                
+            } catch (Exception e) {
+                /** silent */
+            }            
+            
+            String sql = "create table HA_PRESCRIPTION_LOG " + 
+                         "(id integer auto_increment not null primary key," + 
+                         " run_id integer, message text,message_time datetime)";
+            ps.executeUpdate(sql);
+            
+            sql = "create table HA_PROGRAM_LESSONS( " +
+                  "id integer auto_increment not null primary key, " + 
+                  "lesson varchar(100) not null, " +
+                  " file varchar(100) not null, " +
+                  " subject varchar(100) not null)";
+            ps.executeUpdate(sql);
         }
-        _conn
-                .createStatement()
-                .executeUpdate(
-                        "create table HA_PRESCRIPTION_LOG(id integer auto_increment not null primary key,run_id integer, message text,message_time datetime)");
+        finally {
+            SqlUtilities.releaseResources(null,ps,null);
+        }
     }
 
     public static void main(String[] args) {
