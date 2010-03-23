@@ -207,7 +207,8 @@ public class CmDebugReport {
                  */
                 AssessmentPrescription prescription = AssessmentPrescriptionManager.getInstance().getPrescription(_conn,
                         testRun.getRunId());
-                checkPrescription(_conn,prescription);
+                
+                checkPrescription(_conn,prescription,pid);
             }
         }
     }
@@ -225,7 +226,7 @@ public class CmDebugReport {
      * @param prescription
      * @throws Exception
      */
-    private Boolean checkPrescription(final Connection conn, AssessmentPrescription prescription) throws Exception {
+    private Boolean checkPrescription(final Connection conn, AssessmentPrescription prescription,String quizQuestionPid) throws Exception {
 
         boolean isError = false;
         /**
@@ -244,7 +245,7 @@ public class CmDebugReport {
              */
             PreparedStatement ps=null;
             try {
-                ps = conn.prepareStatement("insert into HA_PROGRAM_LESSONS(lesson,subject,file)values(?,?,?)");
+                ps = conn.prepareStatement("insert into HA_PROGRAM_LESSONS(lesson,subject,file,pid)values(?,?,?,?)");
                 
                 /**
                  * there are sessions, make search the RPP for each equals three
@@ -279,13 +280,13 @@ public class CmDebugReport {
                         }
                     }
                     
-                    
                     /** save the name of this lesson as being active
                      */
                     String title = session.getTopic();
                     ps.setString(1, title);
                     ps.setString(2, prescription.getTest().getTestDef().getSubjectId());
                     ps.setString(3,session.getInmhItemsFor(title).get(0).getFile());
+                    ps.setString(4, quizQuestionPid);
                     if(ps.executeUpdate() != 1)
                         throw new Exception("Could not save new active lesson name: " + prescription);
                 }
@@ -380,6 +381,7 @@ public class CmDebugReport {
                   "id integer auto_increment not null primary key, " + 
                   "lesson varchar(100) not null, " +
                   " file varchar(100) not null, " +
+                  " pid varchar(100) not null, " +
                   " subject varchar(100) not null)";
             ps.executeUpdate(sql);
         }
