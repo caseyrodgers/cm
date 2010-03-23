@@ -70,7 +70,9 @@ LEFT JOIN CM_GROUP g
 .key=STUDENT_SUMMARY_EXTENDED
 
 SELECT h.uid, h.admin_id as admin_uid, h.user_prog_id,
-       lpad(concat(format((m.answered_correct*100)/(m.answered_correct+m.answered_incorrect+m.not_answered),0),'%'),4,' ') as last_quiz,
+       if ((h.active_run_id > 0),
+           lpad(concat(format((m.answered_correct*100)/(m.answered_correct+m.answered_incorrect+m.not_answered),0),'%'),4,' '),
+           if((h.active_test_id > 0), 'Started', ' ') ) as last_quiz,
        date_format(l.login_time,'%Y-%m-%d') as last_use_date, 
        ifnull(q.passing_count, 0) as passing_count, ifnull(q.not_passing_count, 0) as not_passing_count,
        ifnull(ut.tutoring_use, 0) as tutoring_use
@@ -101,7 +103,9 @@ WHERE h.uid in (XXX)
 .key=STUDENT_LAST_QUIZ
 
 SELECT h.uid, h.admin_id as admin_uid,
-       lpad(concat(format((m.answered_correct*100)/(m.answered_correct+m.answered_incorrect+m.not_answered),0),'%'),4,' ') as last_quiz
+       if ((h.active_run_id > 0),
+           lpad(concat(format((m.answered_correct*100)/(m.answered_correct+m.answered_incorrect+m.not_answered),0),'%'),4,' '),
+           if ((h.active_test_id > 0), 'Started', ' ') ) as last_quiz
 FROM  HA_USER h
 LEFT JOIN (select user_id, max(run_id) as run_id from HA_TEST_RUN r
            JOIN HA_TEST t on r.test_id = t.test_id GROUP BY user_id) x ON x.user_id = h.uid
@@ -133,7 +137,9 @@ WHERE h.uid in (XXX)
 
 select s.uid from (
   SELECT h.uid, h.admin_id as admin_uid, h.active_segment, p.test_config_json, h.user_prog_id, p.test_def_id, p.create_date, p.pass_percent,
-         lpad(concat(format((m.answered_correct*100)/(m.answered_correct+m.answered_incorrect+m.not_answered),0),'%'),4,' ') as last_quiz,
+         if ((h.active_run_id > 0),
+             lpad(concat(format((m.answered_correct*100)/(m.answered_correct+m.answered_incorrect+m.not_answered),0),'%'),4,' '),
+             if((h.active_test_id > 0), 'Started', ' ') ) as last_quiz,
          trim(concat(ifnull(d.subj_id,''), ' ', d.prog_id)) as program, d.prog_id, d.subj_id,
          date_format(l.login_time,'%Y-%m-%d') as last_use_date,
          if ( (ifnull(q.passing_count, 0)!=0 or ifnull(q.not_passing_count, 0)!=0),
