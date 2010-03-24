@@ -411,6 +411,7 @@ public class CmStudentDao {
             ps = conn.prepareStatement(CmMultiLinePropertyReader.getInstance().getProperty("STUDENT_ACTIVITY"));
             ps.setInt(1, uid);
             ps.setInt(2, uid);
+            ps.setInt(3, uid);            
             rs = ps.executeQuery();
 
             l = loadStudentActivity(conn, rs);
@@ -1468,8 +1469,13 @@ public class CmStudentDao {
                 int numCorrect = rs.getInt("answered_correct");
                 int numIncorrect = rs.getInt("answered_incorrect");
                 int notAnswered = rs.getInt("not_answered");
-                double percent = (double) (numCorrect * 100) / (double) (numCorrect + numIncorrect + notAnswered);
-                sb.append(Math.round(percent)).append("% correct");
+                if ((numCorrect + numIncorrect + notAnswered) > 0) {
+                    double percent = (double) (numCorrect * 100) / (double) (numCorrect + numIncorrect + notAnswered);
+                    sb.append(Math.round(percent)).append("% correct");
+                }
+                else {
+                	sb.append("Started");
+                }
             } else {
                 // was: problemsViewed / problemsPerLesson; // where problemsPerLesson assumed to be always equal to 3
                 int completed =  trDao.getLessonsViewedCount(conn, runId);
