@@ -21,15 +21,12 @@ public class GetQuizHtmlCommand_Test extends CmDbTestCase {
 			setupDemoAccount();
 	}
 	
-	
     public void testGetQuizHtmChapterTitleNumber() throws Exception {
         CmStudentDao dao = new CmStudentDao();
         dao.assignProgramToStudent(conn,_user.getUid(),CmProgram.PREALG_CHAP,"Integers");
-        GetQuizHtmlAction  action = new GetQuizHtmlAction(_user.getUid(), 1);
+        GetQuizHtmlAction  action = new GetQuizHtmlAction(_user.getUid(),0, 1);
         QuizHtmlResult result = ActionDispatcher.getInstance().execute(action);
-        
         String chapter = result.getSubTitle();
         assertTrue(chapter.indexOf("Integers") > -1);
     }
-
 }

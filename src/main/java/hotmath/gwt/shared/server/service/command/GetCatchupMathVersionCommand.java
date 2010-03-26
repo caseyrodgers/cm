@@ -1,6 +1,8 @@
 package hotmath.gwt.shared.server.service.command;
 
 import hotmath.cm.util.CatchupMathProperties;
+import hotmath.gwt.cm_admin.server.model.CmStudentDao;
+import hotmath.gwt.cm_tools.client.model.CmAdminModel;
 import hotmath.gwt.shared.client.rpc.Action;
 import hotmath.gwt.shared.client.rpc.Response;
 import hotmath.gwt.shared.client.rpc.action.GetCatchupMathVersionAction;
@@ -19,6 +21,9 @@ import java.sql.Connection;
 public class GetCatchupMathVersionCommand implements ActionHandler<GetCatchupMathVersionAction, CatchupMathVersion>{
     @Override
     public CatchupMathVersion execute(Connection conn, GetCatchupMathVersionAction action) throws Exception {
+        
+        new CmStudentDao().verifyActiveProgram(conn,action.getCurrentTestId());
+        
         return new CatchupMathVersion(CatchupMathProperties.getInstance().getClientVersionNumber());
     }
     

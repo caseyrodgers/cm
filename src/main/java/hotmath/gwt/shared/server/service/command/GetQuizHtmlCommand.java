@@ -60,7 +60,12 @@ public class GetQuizHtmlCommand implements ActionHandler<GetQuizHtmlAction, Quiz
      */    
     @Override
     public QuizHtmlResult execute(final Connection conn, GetQuizHtmlAction action) throws Exception {
+
         
+        
+        new CmStudentDao().verifyActiveProgram(conn, action.getTestId());
+        
+
         int testSegment = action.getTestSegment();
         int uid = action.getUid();
 

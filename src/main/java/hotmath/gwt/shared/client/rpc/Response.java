@@ -4,7 +4,7 @@ import java.io.Serializable;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 
-/** Marks class as a possible Action Response
+/** Marks class as a possible RPC Action Response
  * 
  * @author casey
  *

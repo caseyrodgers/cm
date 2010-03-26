@@ -169,7 +169,7 @@ public class QuizPage extends LayoutContainer {
 	        @Override
 	        public void attempt() {
 	            CatchupMathTools.setBusy(true);
-	            GetQuizHtmlAction quizAction = new GetQuizHtmlAction(UserInfo.getInstance().getUid(), UserInfo.getInstance().getTestSegment());
+	            GetQuizHtmlAction quizAction = new GetQuizHtmlAction(UserInfo.getInstance().getUid(), UserInfo.getInstance().getTestId(), UserInfo.getInstance().getTestSegment());
 	            setAction(quizAction);
 	            quizAction.setLoadActive(loadActive);
 	            Log.info("QuizPage.getQuizHtmlFromServer: " + quizAction);

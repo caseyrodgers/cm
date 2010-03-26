@@ -261,7 +261,7 @@ public class ActionDispatcher_Test extends CmDbTestCase {
     
     
     public void testGetQuizHtml() throws Exception {
-        GetQuizHtmlAction action = new GetQuizHtmlAction(uid,1);
+        GetQuizHtmlAction action = new GetQuizHtmlAction(uid,_test.getTestId(),1);
         QuizHtmlResult result = ActionDispatcher.getInstance().execute(action);
         
         assertNotNull(result);

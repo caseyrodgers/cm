@@ -215,3 +215,29 @@
 trending-data-student-list-item {
   font-size: 110%;
 }
+
+
+
+
+
+/** Custom Program Lessons */
+
+.custom-prescription-dialog .pre-alg {
+	padding: 2px;
+    background-color: #FF0000;	
+}
+
+.custom-prescription-dialog .alg1 {
+	padding: 2px;
+	background-color: #FFC263;
+}
+
+.custom-prescription-dialog .alg2 {
+	padding: 2px;
+	background-color: #FD61EC;
+}
+
+.custom-prescription-dialog .geom {
+	padding: 2px;
+    background-color: #00AA00;	
+}

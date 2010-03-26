@@ -312,6 +312,20 @@ values (?, ?, (select test_def_id from HA_TEST_DEF where prog_id = ? and subj_id
 
 
 
+.key=VERIFY_IS_ACTIVE_PROGRAM
+
+# verify that the test_id was created from the active
+# program assigned to user.  This is to check if a 
+# program has been assigned while user is currently
+# using a program.
+
+
+select count(*)
+from HA_TEST t
+  JOIN HA_USER u on u.user_prog_id = t.user_prog_id
+  JOIN CM_USER_PROGRAM p  ON p.id = u.user_prog_id
+where t.test_id = ?
+
         
 #############
 ##

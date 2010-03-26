@@ -1,5 +1,9 @@
 package hotmath.gwt.cm_admin.server.model;
 
+import static hotmath.gwt.cm_tools.client.model.StudentModelExt.HAS_LAST_LOGIN_KEY;
+import static hotmath.gwt.cm_tools.client.model.StudentModelExt.HAS_LAST_QUIZ_KEY;
+import static hotmath.gwt.cm_tools.client.model.StudentModelExt.HAS_PASSING_COUNT_KEY;
+import static hotmath.gwt.cm_tools.client.model.StudentModelExt.HAS_TUTORING_USE_KEY;
 import hotmath.assessment.InmhItemData;
 import hotmath.cm.server.model.CmUserProgramDao;
 import hotmath.cm.util.CmMultiLinePropertyReader;
@@ -14,11 +18,14 @@ import hotmath.gwt.cm_tools.client.model.StudentModelBase;
 import hotmath.gwt.cm_tools.client.model.StudentModelBasic;
 import hotmath.gwt.cm_tools.client.model.StudentModelI;
 import hotmath.gwt.cm_tools.client.model.StudentShowWorkModel;
+import hotmath.gwt.shared.client.model.UserProgramIsNotActiveException;
 import hotmath.gwt.shared.client.rpc.action.CmArrayList;
 import hotmath.gwt.shared.client.rpc.action.CmList;
 import hotmath.gwt.shared.client.util.CmException;
 import hotmath.gwt.shared.client.util.CmRpcException;
 import hotmath.testset.ha.CmProgram;
+import hotmath.testset.ha.HaTest;
+import hotmath.testset.ha.HaTestDao;
 import hotmath.testset.ha.HaTestDefDescription;
 import hotmath.testset.ha.HaTestRun;
 import hotmath.testset.ha.HaTestRunDao;
@@ -44,11 +51,6 @@ import java.util.Set;
 import org.apache.log4j.Logger;
 import org.json.JSONArray;
 import org.json.JSONObject;
-
-import static hotmath.gwt.cm_tools.client.model.StudentModelExt.HAS_LAST_LOGIN_KEY;
-import static hotmath.gwt.cm_tools.client.model.StudentModelExt.HAS_LAST_QUIZ_KEY;
-import static hotmath.gwt.cm_tools.client.model.StudentModelExt.HAS_PASSING_COUNT_KEY;
-import static hotmath.gwt.cm_tools.client.model.StudentModelExt.HAS_TUTORING_USE_KEY;
 
 public class CmStudentDao {
 
@@ -1809,5 +1811,49 @@ public class CmStudentDao {
             SqlUtilities.releaseResources(null,ps,null);
         }
     }
-
+    
+    
+    /** 
+     * Verify that this is the currently active
+     * program for this user. This is to make sure
+     * we do not update any state information after it
+     * has been set while this program has been loaded.
+     * 
+     *  
+     * Given a testId, make sure that its CM_PROGRAM
+     * is the currently active CM_PROGRAM for this user.
+     * 
+     * If this testId is not from the currently active
+     * program for the test's user, then an exception is
+     * thrown.
+     * 
+     * 
+     * If not throw exception.
+     * @param testId
+     */
+    public void verifyActiveProgram(final Connection conn, int testId) throws Exception {
+        
+        if(testId == 0)
+            return ;
+        
+        PreparedStatement ps=null;
+        try {
+            String sql = CmMultiLinePropertyReader.getInstance().getProperty("VERIFY_IS_ACTIVE_PROGRAM");
+            ps = conn.prepareStatement(sql);
+            ps.setInt(1, testId);
+            ResultSet rs = ps.executeQuery();
+            if(rs.next()) {
+                /** value will equal 1 if program is active
+                 *  otherwise, testId is not 
+                 *  created from the active program.   
+                 */
+                if(rs.getInt(1) != 1) {
+                    throw new UserProgramIsNotActiveException();
+                }
+            }
+        }
+        finally {
+            SqlUtilities.releaseResources(null,ps,null);
+        }
+    }
 }

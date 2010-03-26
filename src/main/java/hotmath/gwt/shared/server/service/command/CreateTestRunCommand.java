@@ -39,8 +39,11 @@ public class CreateTestRunCommand implements ActionHandler<CreateTestRunAction, 
     @Override
     public CreateTestRunResponse execute(Connection conn, CreateTestRunAction action) throws Exception {
         PreparedStatement pstat = null;
-        try {
+        
+        
+        new CmStudentDao().verifyActiveProgram(conn, action.getTestId());
 
+        try {
             // get list of all correct answers
             List<String> incorrectPids = new ArrayList<String>();
             int totalAnswered = 0;

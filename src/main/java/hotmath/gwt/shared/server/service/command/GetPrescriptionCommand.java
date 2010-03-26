@@ -3,6 +3,7 @@ package hotmath.gwt.shared.server.service.command;
 import hotmath.assessment.AssessmentPrescription;
 import hotmath.assessment.AssessmentPrescriptionManager;
 import hotmath.assessment.AssessmentPrescriptionSession;
+import hotmath.gwt.cm_admin.server.model.CmStudentDao;
 import hotmath.gwt.cm_tools.client.data.InmhItemData;
 import hotmath.gwt.cm_tools.client.data.PrescriptionData;
 import hotmath.gwt.cm_tools.client.data.PrescriptionSessionData;
@@ -56,11 +57,13 @@ public class GetPrescriptionCommand implements ActionHandler<GetPrescriptionActi
     public RpcData execute(final Connection conn, GetPrescriptionAction action) throws Exception {
 
         __logger.info("getting prescription: " + action);
-        
         int runId = action.getRunId();
         int sessionNumber = action.getSessionNumber();
         try {
             AssessmentPrescription pres = AssessmentPrescriptionManager.getInstance().getPrescription(conn, runId);
+            
+            new CmStudentDao().verifyActiveProgram(conn, pres.getTest().getTestId());
+
 
             int totalSessions = pres.getSessions().size();
             if (totalSessions == 0) {

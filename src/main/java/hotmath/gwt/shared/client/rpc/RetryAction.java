@@ -9,6 +9,8 @@ import hotmath.gwt.shared.client.data.CmAsyncRequestImplDefault;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
 import hotmath.gwt.shared.client.eventbus.EventBus;
 import hotmath.gwt.shared.client.eventbus.EventType;
+import hotmath.gwt.shared.client.model.UserProgramIsNotActiveException;
+import hotmath.gwt.shared.client.util.NotActiveProgramWindow;
 import hotmath.gwt.shared.client.util.RpcData;
 import hotmath.gwt.shared.client.util.UserInfo;
 
@@ -86,7 +88,7 @@ public abstract class RetryAction<T> implements AsyncCallback<T> {
     }
 
     /** add this action to the RetryActionManager 
-     * for queuedexecution 
+     * for queued execution 
      */
     public void register() {
         RetryActionManager.getInstance().registerAction(this);
@@ -154,6 +156,10 @@ public abstract class RetryAction<T> implements AsyncCallback<T> {
                         Window.Location.assign(CmShared.CM_HOME_URL);
                     }
                 });
+            }
+            else if(message.indexOf("UserProgramIsNotActiveException") > -1) {
+                /** Exception is thrown if Program has been changed */
+                new NotActiveProgramWindow();                
             }
             else {
                 

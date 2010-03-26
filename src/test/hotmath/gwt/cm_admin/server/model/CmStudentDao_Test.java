@@ -5,6 +5,7 @@ import hotmath.gwt.cm.server.CmDbTestCase;
 import hotmath.gwt.cm_admin.server.model.CmStudentDao;
 import hotmath.gwt.cm_tools.client.model.StudentActiveInfo;
 import hotmath.gwt.cm_tools.client.model.StudentModelI;
+import hotmath.gwt.shared.client.model.UserProgramIsNotActiveException;
 import hotmath.testset.ha.StudentUserProgramModel;
 
 import java.util.ArrayList;
@@ -27,6 +28,24 @@ public class CmStudentDao_Test extends CmDbTestCase {
         
         _dao = new CmStudentDao();
     }
+    
+    
+    public void testVerifyActiveProgram() throws Exception {
+       try {
+           _dao.verifyActiveProgram(conn, _test.getTestId());
+       }
+       catch(UserProgramIsNotActiveException up) {
+           assertTrue(true);
+       }
+       try {
+           _dao.verifyActiveProgram(conn, -11);
+           assertTrue(true);
+       }
+       catch(UserProgramIsNotActiveException up) {
+          /** expected */
+       }       
+    }
+    
     
     public void testupdateStudentMainProperties() throws Exception {
         _dao.updateStudentMainProperties(conn, _user.getUid(), true,true,90);

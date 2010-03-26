@@ -32,7 +32,6 @@ public class StudentUserProgramModel {
     }
     public void setConfig(HaTestConfig config) {
         this.config = config;
-
     }
     public Integer getId() {
         return id;
@@ -106,7 +105,6 @@ public class StudentUserProgramModel {
            || testDefId == CmProgram.ALG2_PROF.getDefId()
            || testDefId == CmProgram.GEOM_PROF.getDefId()
            || testDefId == CmProgram.ALG1_PROF.getDefId()) {
-            
             return true;
         }
         else

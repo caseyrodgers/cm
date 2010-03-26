@@ -50,7 +50,7 @@ public class LoadTester {
             _dao.assignProgramToStudent(conn, user.getUid(), CmProgram.CAHSEEHM, null);
             
 
-            QuizHtmlResult result = dispatcher.execute(new GetQuizHtmlAction(user.getUid(), 1));
+            QuizHtmlResult result = dispatcher.execute(new GetQuizHtmlAction(user.getUid(),0, 1));
             int testId = result.getTestId();
 
             CreateTestRunResponse userInfo = dispatcher.execute(new CreateTestRunAction(testId));

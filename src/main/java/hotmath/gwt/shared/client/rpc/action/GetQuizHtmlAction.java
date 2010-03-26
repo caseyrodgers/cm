@@ -3,7 +3,7 @@ package hotmath.gwt.shared.client.rpc.action;
 import hotmath.gwt.shared.client.rpc.Action;
 import hotmath.gwt.shared.client.rpc.result.QuizHtmlResult;
 
-/** Defines the movement of the active test by specifing
+/** Defines the movement of the active test by specifying
  * the segment of the current program.
  * 
  * Maybe a better name is GetUserProgramSegmentAction(uid, testSegment);
@@ -14,6 +14,7 @@ public class GetQuizHtmlAction implements Action<QuizHtmlResult> {
 
     int uid;
     int testSegment;
+    int testId;
     boolean loadActive;
 
     public GetQuizHtmlAction() {}
@@ -24,11 +25,11 @@ public class GetQuizHtmlAction implements Action<QuizHtmlResult> {
      * @param testId
      * @param testSegment
      */
-    public GetQuizHtmlAction(int uid, int testSegment) {
+    public GetQuizHtmlAction(int uid, int testId, int testSegment) {
         this.uid = uid;
+        this.testId = testId;
         this.testSegment = testSegment;
     }
-    
 
     public boolean isLoadActive() {
         return loadActive;
@@ -40,6 +41,14 @@ public class GetQuizHtmlAction implements Action<QuizHtmlResult> {
 
     public int getUid() {
         return uid;
+    }
+
+    public int getTestId() {
+        return testId;
+    }
+
+    public void setTestId(int testId) {
+        this.testId = testId;
     }
 
     public void setUid(int uid) {
@@ -54,9 +63,9 @@ public class GetQuizHtmlAction implements Action<QuizHtmlResult> {
         this.testSegment = testSegment;
     }
 
-    
     @Override
     public String toString() {
-        return "GetQuizHtmlAction [testSegment=" + testSegment + ", uid=" + uid + "]";
+        return "GetQuizHtmlAction [loadActive=" + loadActive + ", testId=" + testId + ", testSegment=" + testSegment
+                + ", uid=" + uid + "]";
     }
 }

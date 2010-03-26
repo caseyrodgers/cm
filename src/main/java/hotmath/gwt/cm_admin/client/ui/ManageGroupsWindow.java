@@ -86,18 +86,6 @@ public class ManageGroupsWindow extends CmWindow {
         getButtonBar().add(lc);
 	}
 
-	private void addCloseButton() {
-		Button close = new Button("Close");
-        close.addSelectionListener(new SelectionListener<ButtonEvent>() {
-            
-            @Override
-            public void componentSelected(ButtonEvent ce) {
-                close();
-            }
-        });
-        addButton(close);
-	}
-
     private GroupInfoModel getGroupInfo() {
         GroupInfoModel gim =_grid.getSelectionModel().getSelectedItem();
         if (gim == null) {

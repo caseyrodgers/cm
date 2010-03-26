@@ -48,7 +48,20 @@ public class CmCacheManager  {
      * 
      */
 	public static enum CacheName {
-		PROG_DEF, TEST_DEF, TEST, TEST_HTML, TEST_HTML_CHECKED, TEST_DEF_DESCRIPTION,REPORT_ID, SUBJECT_CHAPTERS,BULK_UPLOAD_FILE,PRESCRIPTION,STUDENT_PAGED_DATA
+		PROG_DEF, 
+		TEST_DEF, 
+		TEST, 
+		TEST_HTML, 
+		TEST_HTML_CHECKED, 
+		TEST_DEF_DESCRIPTION,
+		REPORT_ID, 
+		SUBJECT_CHAPTERS,
+		BULK_UPLOAD_FILE,
+		PRESCRIPTION,
+		STUDENT_PAGED_DATA,
+		/** List of lessons available to create custom programs 
+		 */
+		CUSTOM_PROGRAM_LESSONS		
 	};
 
 	private void flushCache() {
