@@ -14,7 +14,9 @@ import hotmath.gwt.shared.client.rpc.action.CustomProgramDefinitionAction.Action
 
 import com.extjs.gxt.ui.client.Style.LayoutRegion;
 import com.extjs.gxt.ui.client.Style.SelectionMode;
+import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
+import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.MessageBoxEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
@@ -55,6 +57,11 @@ public class CustomProgramDialog extends CmWindow {
         ListStore<CustomProgramModel> store = new ListStore<CustomProgramModel>();
         _listView.setStore(store);
         _listView.setDisplayProperty("programName");
+        _listView.addListener(Events.DoubleClick, new Listener<BaseEvent>() {
+            public void handleEvent(BaseEvent be) {
+                editProgram();
+            }
+        });
 
         add(_listView, new BorderLayoutData(LayoutRegion.CENTER));
 
