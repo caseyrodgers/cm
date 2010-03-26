@@ -221,23 +221,22 @@ trending-data-student-list-item {
 
 
 /** Custom Program Lessons */
-
 .custom-prescription-dialog .pre-alg {
-	padding: 2px;
-    background-color: #FF0000;	
+        padding: 2px;
+    background-color: #8dc63f;
 }
 
 .custom-prescription-dialog .alg1 {
-	padding: 2px;
-	background-color: #FFC263;
+        padding: 2px;
+        background-color: #f7941d;
 }
 
 .custom-prescription-dialog .alg2 {
-	padding: 2px;
-	background-color: #FD61EC;
+        padding: 2px;
+        background-color: #ed1c24;
 }
 
 .custom-prescription-dialog .geom {
-	padding: 2px;
-    background-color: #00AA00;	
+        padding: 2px;
+    background-color: #00aeef
 }
