@@ -1,20 +1,12 @@
 package hotmath.gwt.shared.client.util;
 
-import hotmath.gwt.cm_tools.client.ui.FooterPanel;
-import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
+import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.shared.client.CatchupMathVersionInfo;
 import hotmath.gwt.shared.client.CmShared;
-import hotmath.gwt.shared.client.eventbus.CmEvent;
-import hotmath.gwt.shared.client.eventbus.EventBus;
-import hotmath.gwt.shared.client.eventbus.EventType;
 import hotmath.gwt.shared.client.rpc.action.GetCatchupMathVersionAction;
 import hotmath.gwt.shared.client.rpc.result.CatchupMathVersion;
 
 import com.allen_sauer.gwt.log.client.Log;
-import com.extjs.gxt.ui.client.event.ButtonEvent;
-import com.extjs.gxt.ui.client.event.SelectionListener;
-import com.extjs.gxt.ui.client.widget.Html;
-import com.extjs.gxt.ui.client.widget.button.Button;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
@@ -23,44 +15,21 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  * @author casey
  *
  */
-public class SystemVersionUpdateChecker extends CmWindow {
+public class SystemVersionUpdateChecker extends StandardSystemRefreshWindow {
 
     static final int CHECK_EVERY = 1000 *  60 * 15;
     static SystemVersionUpdateChecker _theWindow;
-    
+
     public SystemVersionUpdateChecker() {
+        super("Catchup Math Update", 
+                "We have recently updated Catchup Math.  " + 
+                "Please Refresh your browser by pressing the F5 key or click the button below. " +
+                "Thank you for using Catchup Math!");
         
         /** only show one */
         if(_theWindow != null)
             return;
         
-        _theWindow = this;
-        EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_MODAL_WINDOW_OPEN));
-        
-        setSize(300,200);
-        setResizable(true);
-        setClosable(true);
-        setModal(true);
-        setClosable(false);
-        setHeading("Catchup Math Update");
-
-        String html = "We have recently updated Catchup Math.  " + 
-                      "Please Refresh your browser by pressing the F5 key or click the button below. " +
-                      "Thank you for using Catchup Math!";
-        
-        setStyleName("server-update-window");
-        
-        String msg = "<div style='font-size: 110%;padding: 10px;'>" 
-            + html 
-            + "</div>";
-        add(new Html(msg));
-        addButton(new Button("Refresh Page", new SelectionListener<ButtonEvent>() {
-            @Override
-            public void componentSelected(ButtonEvent ce) {
-                _theWindow = null;
-                FooterPanel.refreshPage();
-            }
-        }));
         setVisible(true);
     }
 
@@ -105,7 +74,7 @@ public class SystemVersionUpdateChecker extends CmWindow {
             }
              @Override
             public void onFailure(Throwable arg0) {
-                 /** fail quietly */
+                 CatchupMathTools.showAlert(arg0.getMessage());
             }
         });
     }
