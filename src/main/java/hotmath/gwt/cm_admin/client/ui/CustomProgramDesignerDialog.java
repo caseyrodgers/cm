@@ -75,8 +75,7 @@ public class CustomProgramDesignerDialog extends CmWindow {
     private void buildGui() {
         setLayout(new BorderLayout());
         
-        String template = "<tpl for=\".\"><div class='x-view-item {subjectStyleClass}'>{"
-                          + "lesson" + "}</div></tpl>";
+        String template = "<tpl for=\".\"><div class='x-view-item'><span style='width: 5px;' class='{subjectStyleClass}'>&nbsp;</span>&nbsp;{" + "lesson" + "}</div></tpl>";
 
         
         LayoutContainer lc = new LayoutContainer();
