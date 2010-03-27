@@ -133,13 +133,20 @@ public class HaTestDef {
 
 
     int gradeLevel = 0;
+    final static int HEIGHEST_LEVEL=99;  /* can include any problem */
 
     /**
      * Return the grade level for this program or return -1 on error.
      */
     public int getGradeLevel() {
         try {
-            return BookInfoManager.getInstance().getBookInfo(this.getTextCode()).getGradeLevel();
+            String textCode = this.getTextCode();
+            if(textCode == null || textCode.length() == 0) {
+                return HEIGHEST_LEVEL;
+            }
+            else {
+                return BookInfoManager.getInstance().getBookInfo(textCode).getGradeLevel();
+            }
         } catch (HotMathException hme) {
             HotMathLogger.logMessage(hme, "Error getting grade level");
         }
