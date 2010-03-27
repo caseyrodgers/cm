@@ -182,8 +182,6 @@ public class HaTestDefDao {
 
          // Use chapter from config if available, otherwise
          // use the default chapter defined for this test_def
-
-                 
          List<String> problemIds = getTestIds(conn, textcode, chapter, segmentSlot,0,99999,config);
 
          int cnt = problemIds.size();
@@ -235,7 +233,10 @@ public class HaTestDefDao {
 		}		
 	}
      
-     /** Return list of problem ids that match this set
+     /** Return list of problem ids that match this program quiz.
+      * 
+      *  Check to see if is a custom program and process
+      *  
       * 
       * @param conn
       * @param textcode
@@ -248,7 +249,58 @@ public class HaTestDefDao {
       * @throws Exception
       */
      public List<String> getTestIds(final Connection conn, String textcode, String chapter, int section, int startProblemNumber, int endProblemNumber, HaTestConfig config) throws Exception {
-         
+         if(config.getCustomProgramId() > 0) {
+             return getTestIdsCustom(conn, section, startProblemNumber, endProblemNumber, config);
+         }
+         else {
+             return getTestIdsBasic(conn, textcode, chapter, section, startProblemNumber, endProblemNumber, config);
+         }
+     }
+     
+     
+     private List<String> getTestIdsCustom(final Connection conn, int section, int startProblemNumber, int endProblemNumber, HaTestConfig config) throws Exception  {
+         PreparedStatement ps=null;
+         ResultSet rs=null;
+         try {
+             String sql = "" +
+             "select  pid " +
+             "from  HA_PROGRAM_LESSONS p " +
+             "  JOIN HA_CUSTOM_PROGRAM_LESSON l " +
+             "    ON p.file = l.file " +
+             " where l.program_id = ?" +
+             " order by pid";
+             
+             ps = conn.prepareStatement(sql);
+
+             ps.setInt(1, config.getCustomProgramId());
+             rs = ps.executeQuery();
+             
+             List<String> pids = new ArrayList<String>();
+             while (rs.next()) {
+                 pids.add(rs.getString(1));
+             }
+             return pids;
+         }
+         finally {
+             SqlUtilities.releaseResources(null,ps,null);
+         }
+     }
+     
+     
+     
+     /** Return the normal default test ids
+      *  
+      * @param conn
+      * @param textcode
+      * @param chapter
+      * @param section
+      * @param startProblemNumber
+      * @param endProblemNumber
+      * @param config
+      * @return
+      * @throws Exception
+      */
+     private List<String> getTestIdsBasic(final Connection conn, String textcode, String chapter, int section, int startProblemNumber, int endProblemNumber, HaTestConfig config) throws Exception {
          PreparedStatement ps=null;
          ResultSet rs=null;
          try {
@@ -261,7 +313,7 @@ public class HaTestDefDao {
                  
                  sql = CmMultiLinePropertyReader.getInstance().getProperty("TEST_IDS_FOR_CHAPTER_PROGRAM");
              } else {
-            	 sql = CmMultiLinePropertyReader.getInstance().getProperty("TEST_IDS_FOR_PROGRAM");
+                 sql = CmMultiLinePropertyReader.getInstance().getProperty("TEST_IDS_FOR_PROGRAM");
              }
 
              ps = conn.prepareStatement(sql);
@@ -282,10 +334,10 @@ public class HaTestDefDao {
          }
          finally {
              SqlUtilities.releaseResources(rs, ps, null);
-         }
+         }         
      }
      
-
+     
      /** Return the Chapter info for named program or null
       * 
       * @param conn

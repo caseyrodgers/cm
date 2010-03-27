@@ -127,6 +127,7 @@ public class CustomProgramDesignerDialog extends CmWindow {
         addButton(new Button("Clear All", new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent ce) {
+                getAllLessonData();
                 _listSelected.getStore().removeAll();
             }
         }));        

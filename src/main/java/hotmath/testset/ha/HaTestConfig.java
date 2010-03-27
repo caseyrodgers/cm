@@ -12,6 +12,16 @@ import org.json.JSONObject;
 /** Custom configuration settings for individual 
  *   test definitions.
  *   
+ *   Example:
+ *   
+ *   {segments:4,chapters:['test','test2']}
+ *   or
+ *   {segments:5,custom_program_id:3000}
+ *   where custom_program_id is a PK into
+ *   HA_CUSTOM_PROGRAM that defines a custom
+ *   program's list of topics in which to build
+ *   the program's pid source.
+ *   
  *   
  * @author Casey
  *
@@ -20,6 +30,7 @@ public class HaTestConfig {
 	List<String> chapters = new ArrayList<String>();
 	int passPercent=80;
 	int segmentCount=4;
+	int customProgramId;
 	String json;
 
 
@@ -66,6 +77,10 @@ public class HaTestConfig {
 				 */
 		        if(jo.has("pass_percent"))
 		            passPercent = jo.getInt("pass_percent");
+		        
+		        
+		        if(jo.has("custom_program_id"))
+		            customProgramId = jo.getInt("custom_program_id");
 			}
 		}
 		catch(Exception e) {
@@ -73,6 +88,9 @@ public class HaTestConfig {
 		}
 	}
 	
+    public int getCustomProgramId() {
+        return customProgramId;
+    }
 	
 	public String getJson() {
         return json;
