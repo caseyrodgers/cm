@@ -180,6 +180,9 @@ public class HaTestDefDao {
       */
      public List<String> getTestIdsForSegment(final Connection conn, int segment, String textcode, String chapter, HaTestConfig config, int segmentSlot)  throws Exception {
 
+         if(segment == -1)
+             return new ArrayList<String>();
+         
          // Use chapter from config if available, otherwise
          // use the default chapter defined for this test_def
          List<String> problemIds = getTestIds(conn, textcode, chapter, segmentSlot,0,99999,config);

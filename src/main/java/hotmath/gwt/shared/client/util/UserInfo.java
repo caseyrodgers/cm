@@ -11,10 +11,7 @@ import hotmath.gwt.shared.client.rpc.Response;
 import hotmath.gwt.shared.client.rpc.RetryAction;
 import hotmath.gwt.shared.client.rpc.action.GetUserInfoAction;
 
-import java.util.Date;
-
 import com.allen_sauer.gwt.log.client.Log;
-import com.google.gwt.user.client.Cookies;
 import com.google.gwt.user.client.rpc.IsSerializable;
 
 /** Class to encapsulate all user information
@@ -45,6 +42,7 @@ public class UserInfo implements IsSerializable, Response {
 	Integer sessionCount;
 	String password;
 	String loginName;
+	boolean customProgram;
 	
 
     public UserInfo() {}
@@ -292,6 +290,14 @@ public class UserInfo implements IsSerializable, Response {
 		this.isDemoUser = isDemoUser;
 	}
 
+    public boolean isCustomProgram() {
+        return customProgram;
+    }
+
+    public void setCustomProgram(boolean customProgram) {
+        this.customProgram = customProgram;
+    }
+
     public int getPassPercentRequired() {
         return passPercentRequired;
     }
@@ -314,14 +320,14 @@ public class UserInfo implements IsSerializable, Response {
     public String toString() {
         return "UserInfo [DEMO_USER_NAME=" + DEMO_USER_NAME + ", activeUser=" + activeUser + ", autoTestMode="
                 + autoTestMode + ", backgroundStyle=" + backgroundStyle + ", correctAnswers=" + correctAnswers
-                + ", correctPercent=" + correctPercent + ", isDemoUser=" + isDemoUser + ", isFirstView=" 
-                + isFirstView + ", isShowWorkRequired="
-                + isShowWorkRequired + ", isTutoringAvail=" + isTutoringAvail + ", loginName=" + loginName
-                + ", passPercentRequired=" + passPercentRequired + ", password=" + password + ", runId=" + runId
-                + ", sessionCount=" + sessionCount + ", sessionNumber=" + sessionNumber + ", subTitle=" + subTitle
-                + ", testId=" + testId + ", testName=" + testName + ", testSegment=" + testSegment
-                + ", testSegmentCount=" + testSegmentCount + ", uid=" + uid + ", userAccountType=" + userAccountType
-                + ", userName=" + userName + ", viewCount=" + viewCount + "]";
+                + ", correctPercent=" + correctPercent + ", customProgram=" + customProgram + ", isDemoUser="
+                + isDemoUser + ", isFirstView=" + isFirstView + ", isShowWorkRequired=" + isShowWorkRequired
+                + ", isTutoringAvail=" + isTutoringAvail + ", loginName=" + loginName + ", passPercentRequired="
+                + passPercentRequired + ", password=" + password + ", runId=" + runId + ", sessionCount="
+                + sessionCount + ", sessionNumber=" + sessionNumber + ", subTitle=" + subTitle + ", testId=" + testId
+                + ", testName=" + testName + ", testSegment=" + testSegment + ", testSegmentCount=" + testSegmentCount
+                + ", uid=" + uid + ", userAccountType=" + userAccountType + ", userName=" + userName + ", viewCount="
+                + viewCount + "]";
     }
     
     

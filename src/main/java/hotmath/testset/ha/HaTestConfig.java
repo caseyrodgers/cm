@@ -64,7 +64,10 @@ public class HaTestConfig {
 		try {
 			if(json != null && json.length() > 0) {
 				JSONObject jo = new JSONObject(json);
-				segmentCount = jo.getInt("segments");
+				segmentCount = 1;
+				if(jo.has("segments"))
+				    segmentCount = jo.getInt("segments");
+				
 				if(!jo.isNull("chapters")) {
 				    JSONArray ja = jo.getJSONArray("chapters");
 			        for(int i=0;i<ja.length();i++) {
@@ -88,6 +91,10 @@ public class HaTestConfig {
 		}
 	}
 	
+    /** Return the custom program id if this is a custom program. 
+     *  Otherwise, return 0;
+     * @return
+     */
     public int getCustomProgramId() {
         return customProgramId;
     }

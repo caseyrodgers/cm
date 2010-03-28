@@ -22,9 +22,8 @@ public enum CmProgram {
     CAHSEEHM(28, "California State Exit Exam", "", "Grad Prep",true), 
     TAKS(33,"TAKS Exit Level Practice Test","","Grad Prep Tx",true),
     GEOM_CHAP(24,"Geometry - Chapters", "Geom", "Chap",true),
-    AUTO_ENROLL(15,"Auto-Enrollment","","Auto-Enroll",true);
-
-
+    AUTO_ENROLL(15,"Auto-Enrollment","","Auto-Enroll",true),
+    CUSTOM_PROGRAM(36,"Custom Program","Custom","Custom",false);
 
     private final int defId;
     private final String subject;

@@ -185,6 +185,11 @@ public class PrescriptionContext implements CmContext {
                 return;
             }
             
+            if(UserInfo.getInstance().isCustomProgram()) {
+                CatchupMathTools.showAlert("You have completed this Custom Program.");
+                return;
+            }
+           
             // there are no more sessions, so need to move to the 'next'.
             // Next might be the same Quiz, the next Quiz or AutoAdvance.
 
@@ -497,8 +502,14 @@ public class PrescriptionContext implements CmContext {
             }
         }
         else {
-            if (pn > prescriptionData.getSessionTopics().size() - 2)
-                return "Move to next quiz";
+            if (pn > prescriptionData.getSessionTopics().size() - 2) {
+                if(UserInfo.getInstance().isCustomProgram()) {
+                    return "No more lessons";
+                }
+                else {
+                    return "Move to next quiz";
+                }
+            }
     
             else {
                 int sn = prescriptionData.getCurrSession().getSessionNumber();

@@ -177,7 +177,7 @@ public class CmUserProgramDao {
     private StudentUserProgramModel defineUserProgram(ResultSet rs) throws Exception {
 
         StudentUserProgramModel supm = new StudentUserProgramModel();
-
+        
         supm.setId(rs.getInt("id"));
         supm.setUserId(rs.getInt("user_id"));
         supm.setAdminId(rs.getInt("admin_id"));
@@ -188,6 +188,7 @@ public class CmUserProgramDao {
         java.sql.Date dt = rs.getDate("create_date");
         supm.setCreateDate(new Date(dt.getTime()));
         supm.setConfig(new HaTestConfig(passPercent, rs.getString("test_config_json")));
+        
 
         return supm;
     }

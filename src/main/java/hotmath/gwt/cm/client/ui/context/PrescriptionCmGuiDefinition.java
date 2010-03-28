@@ -15,7 +15,6 @@ import hotmath.gwt.cm_tools.client.ui.CmMainPanel;
 import hotmath.gwt.cm_tools.client.ui.ContextController;
 import hotmath.gwt.cm_tools.client.ui.context.CmContext;
 import hotmath.gwt.cm_tools.client.ui.resource_viewer.CmResourcePanel;
-import hotmath.gwt.cm_tools.client.util.GenericVideoPlayerForMona;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
 import hotmath.gwt.shared.client.eventbus.CmEventListenerImplDefault;
@@ -36,8 +35,6 @@ import java.util.Map;
 import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.Style.LayoutRegion;
 import com.extjs.gxt.ui.client.Style.Scroll;
-import com.extjs.gxt.ui.client.event.ButtonEvent;
-import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.fx.FxConfig;
 import com.extjs.gxt.ui.client.widget.Html;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
@@ -47,7 +44,6 @@ import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
 import com.extjs.gxt.ui.client.widget.layout.CenterLayout;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.google.gwt.user.client.Timer;
-import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Widget;
 
 public class PrescriptionCmGuiDefinition implements CmGuiDefinition {
@@ -437,6 +433,8 @@ class PrescriptionResourcePanel extends LayoutContainer {
         VerticalPanel vp = new VerticalPanel();
         addStyleName("prescription-cm-gui-definition-resource-panel");
 
+        boolean isCustomProgram = UserInfo.getInstance().isCustomProgram();
+        
         // setTitle("Choose a resource type, then click one of its items.");
         for (PrescriptionSessionDataResource resource : resources) {
             ResourceMenuButton btn = new ResourceMenuButton(resource);
@@ -447,6 +445,12 @@ class PrescriptionResourcePanel extends LayoutContainer {
             else if (resource.getType().equals("review"))
                 _lessonResource = btn;
 
+            /** if a Custom Program, then make sure the results
+             * button is disabled .. there are no quizzes.
+             */
+            if(isCustomProgram && resource.getType().equals("results"))
+                btn.setEnabled(false);
+                
             vp.add(btn);
         }
 
@@ -469,11 +473,6 @@ class PrescriptionResourcePanel extends LayoutContainer {
         String  statusMsg = "Lesson " + (currentSession+1) + " of " + totalSessions;
         add(new StatusImagePanel(totalSessions, currentSession+1,"Lesson Status", statusMsg));
         layout();
-    }
-
-    /** Display item data as prescription resource */
-    private void showResource(InmhItemData itemData) {
-        CmMainPanel.__lastInstance._mainContent.showResource(itemData);
     }
 
     public void expandResourcePracticeProblems() {

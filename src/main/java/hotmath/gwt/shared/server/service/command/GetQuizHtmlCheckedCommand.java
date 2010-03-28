@@ -26,6 +26,9 @@ import java.util.Map;
 
 public class GetQuizHtmlCheckedCommand implements ActionHandlerManualConnectionManagement, ActionHandler<GetQuizHtmlCheckedAction, RpcData> {
 
+    /** Get the quiz HTML with the answers in place
+     * 
+     */
     @Override
     public RpcData execute(final Connection autoConn, GetQuizHtmlCheckedAction action) throws Exception {
         

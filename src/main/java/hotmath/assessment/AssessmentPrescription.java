@@ -9,6 +9,7 @@ import hotmath.gwt.shared.client.util.CmException;
 import hotmath.inmh.INeedMoreHelpItem;
 import hotmath.inmh.INeedMoreHelpManager;
 import hotmath.testset.ha.HaTest;
+import hotmath.testset.ha.HaTestDef;
 import hotmath.testset.ha.HaTestRun;
 import hotmath.testset.ha.HaTestRunDao;
 import hotmath.testset.ha.HaTestRunDao.TestRunLesson;
@@ -64,6 +65,9 @@ public class AssessmentPrescription {
      * @return
      */
     public int getGradeLevel() {
+        if(testRun == null)
+            return 99;
+        
         return getTestRun().getHaTest().getTestDef().getGradeLevel();
     }
 
@@ -74,6 +78,9 @@ public class AssessmentPrescription {
     public void setTestRun(HaTestRun testRun) {
         this.testRun = testRun;
     }
+    
+    protected AssessmentPrescription() {}
+    
 
     /**
      * Create an assessment prescription based on comma separated list of
