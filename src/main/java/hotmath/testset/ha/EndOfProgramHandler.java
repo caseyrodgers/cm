@@ -168,7 +168,7 @@ public class EndOfProgramHandler {
         Connection conn=null;
         try {
             conn = HMConnectionPool.getConnection();
-            dao.updateStudent(conn,student, true, false, true, false);
+            dao.updateStudent(conn,student, true, false, true, false, false);
         }
         finally {
             SqlUtilities.releaseResources(null,null,conn);
