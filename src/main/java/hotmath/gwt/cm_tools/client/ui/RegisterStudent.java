@@ -72,6 +72,7 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
 	private boolean isNew;
 	private boolean skipComboSet;
 	private boolean loading;
+	private boolean passPercentReqd;
 	
 	private StudentModelI stuMdl;
 	protected CmAdminModel cmAdminMdl;
@@ -84,8 +85,6 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
 	private ListStore <SubjectModel> subjStore;
 	private ComboBox<SubjectModel> subjCombo;
 	
-	private ComboBox <PassPercent> passCombo;
-	
 	private ListStore <ChapterModel> chapStore;
 	private ComboBox <ChapterModel> chapCombo;
 	
@@ -94,12 +93,14 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
 	
 	private TextField<String> userName;
 	
+	private Map<String, Object> advOptionsMap;
+	
 	private int formHeight = 410;
 	protected int formWidth  = 475;
 	
 	protected CombinedFormPanel _formPanel;
 	
-	private static final String ENTRY_REQUIRED_MSG = "This field is required";
+	public static final String ENTRY_REQUIRED_MSG = "This field is required";
 	
 	public RegisterStudent(StudentModelI sm, CmAdminModel cm) {
 	    
@@ -110,7 +111,11 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
 		stuMdl = sm;
 		if (stuMdl != null) {
 			subjectId = stuMdl.getSubjId();
+			passPercent = stuMdl.getPassPercent();
+			showWorkRequired = stuMdl.getShowWorkRequired();
+			tutoringEnabled = stuMdl.getTutoringAvail();
 		}
+
 		cmAdminMdl = cm;
 		_window = new CmWindow();
 		_window.addListener(Events.Hide, new Listener<BaseEvent>() {
@@ -125,8 +130,7 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
 
 		setComboBoxSelections();
 	}
-	
-	
+
 	public void showWindow() {
         _window.show();
         if (isNew) {
@@ -151,8 +155,9 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
 	}
 	
 	public FieldSet _fsProfile, _fsProgram;
-	public CheckBoxGroup _showWorkGrp, _tutoringEnabled;
+
 	GroupSelectorWidget _groupSelector;
+
 	protected FormPanel createForm() {
 		_formPanel = new CombinedFormPanel();
 		_formPanel.addStyleName("register-student-form-panel");
@@ -231,44 +236,9 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
 		chapCombo = chapterCombo(chapStore);
 		_fsProgram.add(chapCombo);        
 
-		passCombo = new PassPercentCombo();
-		_fsProgram.add(passCombo);
-
-		CheckBox isShowWorkRequired = new CheckBox();
-        isShowWorkRequired.setId(StudentModelExt.SHOW_WORK_KEY);
-        if (! isNew) {
-        	isShowWorkRequired.setValue(stuMdl.getShowWorkRequired());
-        }
-        else {
-        	// require 'Show Work' OFF by default
-        	isShowWorkRequired.setValue(false);
-        }
-
-        _showWorkGrp = new CheckBoxGroup(); 
-        _showWorkGrp.setFieldLabel("Require Show Work");
-        _showWorkGrp.setId(StudentModelExt.SHOW_WORK_KEY);
-        _showWorkGrp.add(isShowWorkRequired);
-        _fsProgram.add(_showWorkGrp);
-        
-        
-        
-        CheckBox isTutoringEnabled = new CheckBox();
-        isTutoringEnabled.setId(StudentModelExt.TUTORING_AVAIL_KEY);
-        if (! isNew) {
-            isTutoringEnabled.setValue(stuMdl.getTutoringAvail());
-        }
-        else {
-            // require 'Show Work' OFF by default
-            isTutoringEnabled.setValue(false);
-        }        
-        
-        _tutoringEnabled = new CheckBoxGroup();
-        _tutoringEnabled.setFieldLabel("Tutoring Enabled");
-        _tutoringEnabled.setId(StudentModelExt.TUTORING_AVAIL_KEY);
-		_tutoringEnabled.add(isTutoringEnabled);
-		_fsProgram.add(_tutoringEnabled);
-		
-		
+		Button advOptionsBtn = advancedOptionsBtn();
+	    _fsProgram.add(advOptionsBtn);
+	    
         _formPanel.add(_fsProgram);
 
         _window.setHeading((isNew)?"Register a New Student":"Edit Student");
@@ -278,7 +248,6 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
         _window.setResizable(false);
         _window.setDraggable(true);
         _window.setModal(true);
-
 
         /** Assign buttons to the button bar on the Window
          * 
@@ -305,6 +274,37 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
             }.schedule(2000);
         }
         return _formPanel;
+	}
+
+	private String  passPercent;
+	private boolean showWorkRequired;
+	private boolean tutoringEnabled;
+
+	private Button advancedOptionsBtn() {
+		Button btn = new Button("Advanced Options");
+		btn.setToolTip("Set Pass Percent, Require Show Work, Enable Tutoring");
+		btn.setWidth("110px");
+        btn.addSelectionListener(new SelectionListener<ButtonEvent>() {
+            public void componentSelected(ButtonEvent ce) {
+                AdvOptCallback callback = new AdvOptCallback() {
+					@Override
+					void setAdvancedOptions(Map<String, Object> optionMap) {
+
+						tutoringEnabled = (Boolean) optionMap.get(StudentModelExt.TUTORING_AVAIL_KEY);
+						showWorkRequired = (Boolean) optionMap.get(StudentModelExt.SHOW_WORK_KEY);
+						passPercent = (String) optionMap.get(StudentModelExt.PASS_PERCENT_KEY);
+						
+					}
+                };
+                advOptionsMap = new HashMap <String,Object> ();
+                advOptionsMap.put(StudentModelExt.PASS_PERCENT_KEY, passPercent);
+                advOptionsMap.put(StudentModelExt.SHOW_WORK_KEY, showWorkRequired);
+                advOptionsMap.put(StudentModelExt.TUTORING_AVAIL_KEY, tutoringEnabled);
+
+                new RegisterStudentAdvancedOptions(callback, cmAdminMdl, advOptionsMap, isNew, passPercentReqd).setVisible(true);              
+            }
+        });
+		return btn;
 	}
 
 	private ComboBox<StudyProgram> programCombo(ListStore<StudyProgram> store, final FieldSet fs) {
@@ -334,7 +334,7 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
 	            StudyProgram sp = se.getSelectedItem();
 				int needsSubject = ((Integer)sp.get("needsSubject")).intValue();
 				int needsChapters = ((Integer)sp.get("needsChapters")).intValue();
-				int needsPassPercent = ((Integer)sp.get("needsPassPercent")).intValue();
+				passPercentReqd = ((Integer)sp.get("needsPassPercent")).intValue() > 0;
 				
 	        	ComboBox <SubjectModel> cb = (ComboBox<SubjectModel>) fs.getItemByItemId("subj-combo");
 	        	
@@ -365,18 +365,6 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
 	        		cc.clearSelections();
 	        		cc.disable();
 	        		cc.setForceSelection(false);
-	        	}
-	        	ComboBox <PassPercent> cp = (ComboBox<PassPercent>) fs.getItemByItemId("pass-combo");
-	        	if (needsPassPercent > 0) {
-	        		cp.clearSelections();
-	        		cp.enable();
-	        		cp.setForceSelection(true);
-	        	}
-	        	else {
-	        		cp.clearInvalid();
-	        		cp.clearSelections();
-	        		cp.disable();
-	        		cp.setForceSelection(false);
 	        	}
 	        }
 	    });
@@ -452,27 +440,6 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
 		combo.setTypeAhead(true);
 		combo.setSelectOnFocus(true);
 		combo.setEmptyText("-- select a chapter --");
-		combo.disable();
-		combo.setWidth(280);
-		return combo;
-	}
-	
-	static public ComboBox<PassPercent> passPercentCombo(ListStore<PassPercent> store) {
-		ComboBox<PassPercent> combo = new ComboBox<PassPercent>();
-		combo.setValue(store.getAt(2));
-		combo.setFieldLabel("Pass Percent");
-		combo.setForceSelection(false);
-		combo.setDisplayField("pass-percent");
-		combo.setEditable(false);
-		combo.setMaxLength(30);
-		combo.setAllowBlank(false);
-		combo.setTriggerAction(TriggerAction.ALL);
-		combo.setStore(store);
-		combo.setTitle("Select a percentage");
-		combo.setId("pass-combo");
-		combo.setTypeAhead(true);
-		combo.setSelectOnFocus(true);
-		combo.setEmptyText("-- select a value --");
 		combo.disable();
 		combo.setWidth(280);
 		return combo;
@@ -592,12 +559,12 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
 	}
 
 	protected void updateUserRPC(final StudentModel sm, final Boolean stuChanged, final Boolean progChanged, final Boolean progIsNew,
-	        final Boolean passcodeChanged) {
+	        final Boolean passcodeChanged, final Boolean passPercentChanged) {
 		new RetryAction<StudentModelI> () {
 		    @Override
 		    public void attempt() {
 		        CmBusyManager.setBusy(true);
-		        UpdateStudentAction action = new UpdateStudentAction(sm,stuChanged,progChanged,progIsNew,passcodeChanged);
+		        UpdateStudentAction action = new UpdateStudentAction(sm,stuChanged,progChanged,progIsNew,passcodeChanged,passPercentChanged);
 		        setAction(action);
 		        CmShared.getCmService().execute(action,this);
 		    }
@@ -607,18 +574,6 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
                 EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_USER_PROGRAM_CHANGED,ai.getProgramChanged()));
             }
         }.register();
-	}
-
-	private void copyStudent(StudentModel from, StudentModel to) {
-		to.setChapter(from.getChapter());
-		to.setGroup(from.getGroup());
-		to.setGroupId(from.getGroupId());
-		to.setJson(from.getJson());
-		to.setName(from.getName());
-		to.setPasscode(from.getPasscode());
-		to.setPassPercent(from.getPassPercent());
-		to.setProgId(from.getProgId());
-		to.setProgramDescr(from.getProgramDescr());		
 	}
 	
 	private void setComboBoxSelections() {
@@ -640,8 +595,7 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
     		int needsChapters = ((Integer)sp.get("needsChapters")).intValue();
     		if (needsChapters != 0) setChapterSelection();
 
-    		int needsPassPercent = ((Integer)sp.get("needsPassPercent")).intValue();
-    		if (needsPassPercent != 0) setPassPercentSelection();
+    		passPercentReqd = ((Integer)sp.get("needsPassPercent")).intValue() > 0;
 
             loading = false;
 		}
@@ -734,22 +688,6 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
 			}
     	}
 	}
-
-	private void setPassPercentSelection() {
-		String passPercent = stuMdl.getPassPercent();
-		
-		if (passPercent != null) {
-			List<PassPercent> list = passCombo.getStore().getModels();
-			for (PassPercent p : list) {
-				if (passPercent.equals(p.getPassPercent())) {
-					passCombo.setOriginalValue(p);
-					passCombo.setValue(p);
-					passCombo.enable();
-					break;
-				}
-			}
-		}
-	}
 	
 	private void getChapterListRPC(final String progId, final String subjId, final Boolean chapOnly, final ListStore <ChapterModel> chapStore) {
 
@@ -778,16 +716,6 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
                 }
             }
         }.register();
-	}
-	
-	
-	/** helper to simplify determine if user has tutoring enabled
-	 * 
-	 * @return
-	 */
-	private boolean getTutoringEnabled() {
-        boolean tta = _tutoringEnabled.getValue()!=null?_tutoringEnabled.getValue().getValue():false;
-        return tta;
 	}
 
 	/** Perform the form save operation and display any required validation.
@@ -853,11 +781,6 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
             }
         }
         
-        CheckBoxGroup cbg = (CheckBoxGroup) fp.getItemByItemId(StudentModelExt.SHOW_WORK_KEY);
-        CheckBox cbv = cbg.getValue();
-        Boolean showWork = new Boolean(cbv != null);
-        
-        
         ComboBox<StudyProgram> cb = (ComboBox<StudyProgram>) fs.getItemByItemId("prog-combo");
         StudyProgram sp = cb.getValue();
         cb.clearInvalid();
@@ -895,16 +818,26 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
             throw new CmExceptionValidationFailed();
         }
 
-        ComboBox<PassPercent> cp = (ComboBox<PassPercent>) fs.getItemByItemId("pass-combo");
-        PassPercent pass = cp.getValue();
-        cp.clearInvalid();
-        if (((Integer)sp.get("needsPassPercent")).intValue() > 0 && pass == null) {
-            cp.focus();
-            cp.forceInvalid(ENTRY_REQUIRED_MSG);
-            cp.expand();
+        if (passPercentReqd && passPercent == null) {
+
+            AdvOptCallback aoCallback = new AdvOptCallback() {
+				@Override
+				void setAdvancedOptions(Map<String, Object> optionMap) {
+
+					tutoringEnabled = (Boolean) optionMap.get(StudentModelExt.TUTORING_AVAIL_KEY);
+					showWorkRequired = (Boolean) optionMap.get(StudentModelExt.SHOW_WORK_KEY);
+					passPercent = (String) optionMap.get(StudentModelExt.PASS_PERCENT_KEY);
+
+			    }
+            };
+            advOptionsMap = new HashMap <String,Object> ();
+            advOptionsMap.put(StudentModelExt.PASS_PERCENT_KEY, passPercent);
+            advOptionsMap.put(StudentModelExt.SHOW_WORK_KEY, showWorkRequired);
+            advOptionsMap.put(StudentModelExt.TUTORING_AVAIL_KEY, tutoringEnabled);
+
+            new RegisterStudentAdvancedOptions(aoCallback, cmAdminMdl, advOptionsMap, isNew, true).setVisible(true);
             throw new CmExceptionValidationFailed();
         }
-
         
         /** Collect all the values and create a new StudentModel
          *  to hold validated values.
@@ -916,12 +849,11 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
         //sm.setEmail(email);
         sm.setProgramDescr(prog);
         sm.setGroupId(groupId);
-        sm.setTutoringAvail(getTutoringEnabled());
-        sm.setShowWorkRequired(showWork);
+        sm.setTutoringAvail(tutoringEnabled);
+        sm.setShowWorkRequired(showWorkRequired);
         sm.setGroup(group);
         sm.setAdminUid(cmAdminMdl.getId());
-        String passVal = (pass != null) ? pass.getPassPercent() : null;
-        sm.setPassPercent(passVal);
+        sm.setPassPercent(passPercent);
         String progId = (sp != null) ? (String)sp.get("shortTitle") : null;
         sm.setProgId(progId);
         String subjId = (sub != null) ? sub.getAbbrev() : "";
@@ -955,6 +887,7 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
         else {
             Boolean stuChanged = false;
             Boolean passcodeChanged = false;
+            Boolean passPercentChanged = false;
             Boolean progChanged = false;
             Boolean progIsNew = false;
             
@@ -964,7 +897,6 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
             sm.setStatus(stuMdl.getStatus());
             sm.setSectionNum(stuMdl.getSectionNum());
             if (! name.equals(stuMdl.getName()) ||
-                ! showWork.equals(stuMdl.getShowWorkRequired()) ||
                 ! (groupId != null && groupId.equals(stuMdl.getGroupId()))) {
                 stuChanged = true;
             }
@@ -982,24 +914,45 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
                 progChanged = false;
                 stuChanged = true;
             }
-            
 
+            if (valueChanged(stuMdl.getTutoringAvail(), tutoringEnabled))
+            	stuChanged = true;
             
-            if(getTutoringEnabled() != stuMdl.getTutoringAvail()) {
-                stuChanged = true;
-            }
-            
-            
-            if (stuChanged || progChanged || progIsNew) {
-                updateUserRPC(sm, stuChanged, progChanged, progIsNew, passcodeChanged);
+            if (valueChanged(stuMdl.getShowWorkRequired(), showWorkRequired))
+            	stuChanged = true;
+
+            if (valueChanged(stuMdl.getPassPercent(), passPercent))
+            	passPercentChanged = ! progChanged;
+
+            if (stuChanged || progChanged || progIsNew || passPercentChanged) {
+                updateUserRPC(sm, stuChanged, progChanged, progIsNew, passcodeChanged, passPercentChanged);
             }
             else {
                 _window.close();
             }
         }	    
 	}
-	
-	
+
+	private boolean valueChanged(Boolean origValue, Boolean newValue) {
+        if (origValue == null && newValue != null) return true;
+        
+        if (origValue != null && ! origValue.equals(newValue)) return true;
+        
+        if (origValue != null && origValue.equals(newValue)) return false;
+        
+        return false;
+	}
+
+	private boolean valueChanged(String origValue, String newValue) {
+        if (origValue == null && newValue != null) return true;
+        
+        if (origValue != null && ! origValue.equals(newValue)) return true;
+        
+        if (origValue != null && origValue.equals(newValue)) return false;
+        
+        return false;
+	}
+
 	class StudyProgram extends BaseModelData {
 		private static final long serialVersionUID = 5574506049604177840L;
 
@@ -1056,5 +1009,9 @@ class CombinedFormPanel extends FormPanel {
 
 class CmExceptionValidationFailed extends CmException {
     
+}
+
+abstract class AdvOptCallback {
+	abstract void setAdvancedOptions(Map<String,Object> optionMap);
 }
 
