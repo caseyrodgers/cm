@@ -8,8 +8,10 @@ import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.form.ComboBox;
 
 public class PassPercentCombo extends ComboBox<PassPercent> {
+	
+	public static final int DEFAULT_PERCENT_IDX = 2;
 
-    public PassPercentCombo() {
+    public PassPercentCombo(boolean passPercentReqd) {
 
         ListStore<PassPercent> passStore = new ListStore<PassPercent>();
         passStore.add(getPassPercentList());
@@ -28,8 +30,16 @@ public class PassPercentCombo extends ComboBox<PassPercent> {
         setTypeAhead(true);
         setSelectOnFocus(true);
         setEmptyText("-- select a value --");
-        disable();
-        setWidth(280);
+        setWidth(100);
+        
+    	if (passPercentReqd) {
+    		enable();
+    		setForceSelection(true);
+    	}
+    	else {
+    		disable();
+    		setForceSelection(false);
+    	}
     }
 
     private List<PassPercent> getPassPercentList() {
