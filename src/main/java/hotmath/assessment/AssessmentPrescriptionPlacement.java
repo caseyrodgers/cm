@@ -81,7 +81,7 @@ public class AssessmentPrescriptionPlacement extends AssessmentPrescription {
             try {
                 conn = HMConnectionPool.getConnection();
                 
-                dao.updateStudent(conn, sm,true,false, true, false);
+                dao.updateStudent(conn, sm,true,false, true, false, false);
                 dao.setActiveInfo(conn, user.getUid(), active);
             }
             finally {
