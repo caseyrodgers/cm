@@ -649,8 +649,7 @@ public class CmStudentDao {
     }
 
     public StudentModelI updateStudent(final Connection conn, StudentModelI sm, Boolean studentChanged, Boolean programChanged,
-            Boolean progIsNew,
-            Boolean passcodeChanged) throws Exception {
+            Boolean progIsNew, Boolean passcodeChanged, Boolean passPercentChanged) throws Exception {
         if (passcodeChanged) {
             Boolean isDuplicate = checkForDuplicatePasscode(conn, sm);
             if (isDuplicate) {
@@ -663,6 +662,13 @@ public class CmStudentDao {
             updateStudent(conn, sm);
         if (programChanged)
             updateStudentProgram(sm);
+
+        if (passPercentChanged) {
+        	String passPcnt = sm.getPassPercent();
+        	Integer passPercent = (passPcnt != null) ? Integer.parseInt(passPcnt.substring(0, passPcnt.length() - 1)) : 0;
+        	
+            new CmUserProgramDao().setProgramPassPercent(conn, sm.getUserProgramId(), passPercent);
+        }
         return sm;
     }
 
@@ -749,6 +755,8 @@ public class CmStudentDao {
     public StudentModelI updateStudent(final Connection conn, StudentModelI sm) throws Exception {
         PreparedStatement ps = null;
         ResultSet rs = null;
+        
+        logger.info("+++ in updateStudent(): tutoringAvail: " + sm.getTutoringAvail() + ", showWorkReqd: " + sm.getShowWorkRequired());
 
         try {
             ps = conn.prepareStatement(CmMultiLinePropertyReader.getInstance().getProperty("UPDATE_STUDENT_SQL"));
@@ -1365,6 +1373,7 @@ public class CmStudentDao {
             sm.setUserProgramId(rs.getInt("user_prog_id"));
             sm.setSectionNum(rs.getInt("active_segment"));
             sm.setStatus(getStatus(sm.getUserProgramId(), sm.getSectionNum(), rs.getString("test_config_json")));
+            sm.setPassPercent(rs.getInt("pass_percent") + "%");
 /*
             StudentUserProgramModelBase upm = new StudentUserProgramModelBase();
             upm.setAdminId(sm.getAdminUid());
@@ -1764,7 +1773,7 @@ public class CmStudentDao {
         sm.setPassPercent(passPercent);
         
         setTestConfig(conn, sm);
-        updateStudent(conn, sm, true, false, true, false);        
+        updateStudent(conn, sm, true, false, true, false, false);        
     }    
     
     /** Return total count of INMH items by this user
