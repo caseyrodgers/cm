@@ -12,21 +12,25 @@ public class UpdateStudentAction implements Action<StudentModelI> {
     Boolean progChanged;
     Boolean progIsNew;
     Boolean passcodeChanged;
+    Boolean passPercentChanged;
     
     public UpdateStudentAction() {}
     
-    public UpdateStudentAction(StudentModelI sm, Boolean stuChanged, Boolean progChanged, Boolean progIsNew, Boolean passcodeChanged) {
+    public UpdateStudentAction(StudentModelI sm, Boolean stuChanged, Boolean progChanged, Boolean progIsNew, Boolean passcodeChanged,
+    		Boolean passPercentChanged) {
         this.student = sm;
         this.stuChanged = stuChanged;
         this.progChanged = progChanged;
         this.progIsNew = progIsNew;
         this.passcodeChanged = passcodeChanged;
+        this.passPercentChanged = passPercentChanged;
     }
 
     @Override
     public String toString() {
         return "UpdateStudentAction [passcodeChanged=" + passcodeChanged + ", progChanged=" + progChanged
-                + ", progIsNew=" + progIsNew + ", stuChanged=" + stuChanged + ", student=" + student + "]";
+                + ", progIsNew=" + progIsNew + ", stuChanged=" + stuChanged + ", passPercent=" + passPercentChanged 
+                + ", student=" + student + "]";
     }
 
     public StudentModelI getStudent() {
@@ -67,6 +71,14 @@ public class UpdateStudentAction implements Action<StudentModelI> {
 
     public void setPasscodeChanged(Boolean passcodeChanged) {
         this.passcodeChanged = passcodeChanged;
+    }
+
+    public Boolean getPassPercentChanged() {
+        return passPercentChanged;
+    }
+
+    public void setPassPercentChanged(Boolean passPercentChanged) {
+        this.passPercentChanged = passPercentChanged;
     }
 
 }
