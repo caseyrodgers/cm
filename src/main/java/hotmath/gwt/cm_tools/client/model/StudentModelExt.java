@@ -32,6 +32,7 @@ public class StudentModelExt extends BaseModel implements Serializable, StudentM
     public static final String HAS_TUTORING_USE_KEY = "has-tutoring-use";
     public static final String NAME_KEY = "name";
     public static final String PASSCODE_KEY = "passcode";
+    public static final String PASS_PERCENT_KEY = "pass-percent";
     public static final String BACKGROUND_STYLE = "background_style";
     public static final String DEMO_USER_KEY = "demo_user";
     public static final String PROGRAM_DESCR_KEY = "program";
@@ -201,12 +202,12 @@ public class StudentModelExt extends BaseModel implements Serializable, StudentM
 
     @Override
     public String getPassPercent() {
-        return get("pass-percent");
+        return get(PASS_PERCENT_KEY);
     }
 
     @Override
     public void setPassPercent(String passPercent) {
-        set("pass-percent", passPercent);
+        set(PASS_PERCENT_KEY, passPercent);
     }
 
     @Override
