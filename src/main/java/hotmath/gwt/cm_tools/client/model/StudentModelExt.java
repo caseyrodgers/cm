@@ -70,6 +70,9 @@ public class StudentModelExt extends BaseModel implements Serializable, StudentM
         set(UID_KEY, student.getUid());
         set(EMAIL_KEY, student.getEmail());
         set(ADMIN_UID_KEY, student.getAdminUid());
+
+        set(PASS_PERCENT_KEY, student.getPassPercent());
+
         set(SHOW_WORK_KEY, student.getShowWorkRequired());
         set(SHOW_WORK_STATE_KEY, (student.getShowWorkRequired())?"REQUIRED":"OPTIONAL");
 
