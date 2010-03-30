@@ -339,7 +339,7 @@ public class CustomProgramDesignerDialog extends CmWindow {
         MyFilterBox(final ListView<CustomLessonModel>  listView) {
             setWidth(80);
             setEmptyText("--find--");
-            setToolTip("Filter the list of available lessons");
+            setToolTip("Search for a lesson containing text");
             enableEvents(true);
             addListener(Events.KeyUp,new Listener<BaseEvent>() {
                 public void handleEvent(BaseEvent be) {
