@@ -19,10 +19,14 @@ import com.extjs.gxt.ui.client.Style.Orientation;
 import com.extjs.gxt.ui.client.dnd.ListViewDragSource;
 import com.extjs.gxt.ui.client.dnd.ListViewDropTarget;
 import com.extjs.gxt.ui.client.dnd.DND.Feedback;
+import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
+import com.extjs.gxt.ui.client.event.Events;
+import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.store.Store;
+import com.extjs.gxt.ui.client.store.StoreFilter;
 import com.extjs.gxt.ui.client.store.StoreSorter;
 import com.extjs.gxt.ui.client.util.Margins;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
@@ -119,8 +123,8 @@ public class CustomProgramDesignerDialog extends CmWindow {
         RowData data = new RowData(.5, 1);
         data.setMargins(new Margins(5));
         
-        lc.add(new MyListContainer(_listAll,"All Available Lessons"), data);
-        lc.add(new MyListContainer(_listSelected,"Lessons in Program"), data);
+        lc.add(new MyListContainer(_listAll,"All Available Lessons",true), data);
+        lc.add(new MyListContainer(_listSelected,"Lessons in Program",false), data);
 
         add(createInfoSection(), new BorderLayoutData(LayoutRegion.NORTH,45));
         add(lc, new BorderLayoutData(LayoutRegion.CENTER));
@@ -319,12 +323,39 @@ public class CustomProgramDesignerDialog extends CmWindow {
     }
     
     static class MyListContainer extends ContentPanel {
-        public MyListContainer(ListView<CustomLessonModel> listView, String title) {
+         MyListContainer(ListView<CustomLessonModel> listView, String title, boolean showFilter) {
             super();
             
             setHeading(title);
             setLayout(new FitLayout());
             add(listView);
+            
+            if(showFilter)
+                getHeader().addTool(new MyFilterBox(listView));
+        }
+    }
+    
+    static class MyFilterBox extends TextField<String> {
+        MyFilterBox(final ListView<CustomLessonModel>  listView) {
+            setWidth(80);
+            setEmptyText("--find--");
+            setToolTip("Filter the list of available lessons");
+            enableEvents(true);
+            addListener(Events.KeyUp,new Listener<BaseEvent>() {
+                public void handleEvent(BaseEvent be) {
+                    CustomLessonModel lesson = listView.getSelectionModel().getSelectedItem();
+                    for(int i=0,t=listView.getStore().getCount();i<t;i++) {
+                        if(listView.getStore().getAt(i).getLesson().toLowerCase().indexOf(getValue().toLowerCase()) > -1) {
+                            
+                            if(lesson != null && lesson.getLesson().equals(listView.getStore().getAt(i).getLesson()))
+                                continue;
+                            
+                            listView.getSelectionModel().select(listView.getStore().getAt(i),false);
+                            return;
+                        }
+                    }
+                }
+            });
         }
     }
 }
