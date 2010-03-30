@@ -1472,15 +1472,14 @@ public class CmStudentDao {
             sm.setSectionNum(rs.getInt("active_segment"));
             sm.setPassPercent(rs.getInt("pass_percent") + "%");
 
-            StudentProgramModel program = new StudentProgramModel(rs.getInt("user_prog_id"), rs.getString("subj_id"),rs.getString("prog_id"));
+            StudentProgramModel program = new StudentProgramModel(rs.getInt("user_prog_id"), rs.getString("subj_id"), rs.getString("prog_id"));
             program.setCustomProgramId(rs.getInt("custom_program_id"));
             program.setCustomProgramName(rs.getString("custom_program_name"));
             
             sm.setProgram(program);
 
             sm.setStatus(getStatus(sm.getProgram().getProgramId(), sm.getSectionNum(), rs.getString("test_config_json")));
-            
-            
+
             if(program.isCustomProgram()) {
                 sm.setProgramDescr("Custom: " + program.getCustomProgramName());
             }
