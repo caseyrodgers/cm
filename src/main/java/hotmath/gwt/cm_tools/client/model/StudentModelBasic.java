@@ -26,14 +26,7 @@ public class StudentModelBasic implements StudentModelI, IsSerializable{
     String passPercent;
     Boolean isDemoUser;
 
-    @Override
-    public String toString() {
-        return "StudentModelBasic [adminUid=" + adminUid + ", backgroundStyle=" + backgroundStyle + ", chapter="
-                + chapter + ", email=" + email + ", group=" + group + ", groupId=" + groupId + ", json=" + json
-                + ", name=" + name + ", passcode=" + passcode + ", progId=" + progId + ", showWorkRequired="
-                + showWorkRequired + ", subjId=" + subjId + ", tutorAvailable=" + tutorAvailable + ", uid=" + uid
-                + ", userProgramId=" + userProgramId + ", isDemoUser=" + isDemoUser + "]";
-    }
+    StudentProgramModel program = new StudentProgramModel();
 
     
     public Boolean getTutorAvailable() {
@@ -127,11 +120,6 @@ public class StudentModelBasic implements StudentModelI, IsSerializable{
     }
 
     @Override
-    public String getProgId() {
-        return this.progId;
-    }
-
-    @Override
     public Boolean getProgramChanged() {
         // TODO Auto-generated method stub
         return null;
@@ -166,10 +154,6 @@ public class StudentModelBasic implements StudentModelI, IsSerializable{
         return null;
     }
 
-    @Override
-    public String getSubjId() {
-        return this.subjId;
-    }
 
     @Override
     public Integer getTotalUsage() {
@@ -189,10 +173,6 @@ public class StudentModelBasic implements StudentModelI, IsSerializable{
     }
 
 
-    @Override
-    public Integer getUserProgramId() {
-        return this.userProgramId;
-    }
 
 	public Boolean getIsDemoUser() {
 		return this.isDemoUser;
@@ -261,11 +241,6 @@ public class StudentModelBasic implements StudentModelI, IsSerializable{
     }
 
     @Override
-    public void setProgId(String progId) {
-        this.progId = progId;
-    }
-
-    @Override
     public void setProgramChanged(Boolean changed) {
         // TODO Auto-generated method stub
         
@@ -301,11 +276,6 @@ public class StudentModelBasic implements StudentModelI, IsSerializable{
     }
 
     @Override
-    public void setSubjId(String subjId) {
-        this.subjId = subjId;
-    }
-
-    @Override
     public void setTotalUsage(Integer totalUsage) {
         // TODO Auto-generated method stub
         
@@ -326,11 +296,6 @@ public class StudentModelBasic implements StudentModelI, IsSerializable{
     @Override
     public void setUid(Integer uid) {
         this.uid = uid;    
-    }
-
-    @Override
-    public void setUserProgramId(Integer userProgId) {
-        this.userProgramId = userProgId;
     }
 
     @Override
@@ -357,5 +322,29 @@ public class StudentModelBasic implements StudentModelI, IsSerializable{
 	public void setPassingCount(Integer count) {
 		this.passingCount = count;
 	}
+	
 
+
+    @Override
+    public String toString() {
+        return "StudentModelBasic [adminUid=" + adminUid + ", backgroundStyle=" + backgroundStyle + ", chapter="
+                + chapter + ", email=" + email + ", group=" + group + ", groupId=" + groupId + ", isDemoUser="
+                + isDemoUser + ", json=" + json + ", name=" + name + ", notPassingCount=" + notPassingCount
+                + ", passPercent=" + passPercent + ", passcode=" + passcode + ", passingCount=" + passingCount
+                + ", progId=" + progId + ", showWorkRequired=" + showWorkRequired + ", program=" + program
+                + ", subjId=" + subjId + ", tutorAvailable=" + tutorAvailable + ", tutoringUse=" + tutoringUse
+                + ", uid=" + uid + ", userProgramId=" + userProgramId + "]";
+    }
+
+
+    @Override
+    public StudentProgramModel getProgram() {
+        return program;
+    }
+
+
+    @Override
+    public void setProgram(StudentProgramModel studyProgram) {
+        program = studyProgram;
+    }	
 }

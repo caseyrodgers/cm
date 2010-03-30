@@ -162,7 +162,7 @@ public class HaTestDefDescription {
 
             HaTestDefDao dao = new HaTestDefDao();
             
-            int totalPidsInProgram = dao.getTestIds(conn, def.getTextCode(), def.getChapter(), 0, 0, 99999, config)
+            int totalPidsInProgram = dao.getTestIds(conn, testRun.getHaTest().getProgramInfo(), def.getTextCode(), def.getChapter(), 0, 0, 99999, config)
                     .size();
             int pidsInASegment = totalPidsInProgram / def.getTotalSegmentCount();
 
@@ -174,7 +174,7 @@ public class HaTestDefDescription {
              * program
              * 
              */
-            List<String> pids = dao.getTestIds(conn, def.getTextCode(), def.getChapter(), 0, start, end, config);
+            List<String> pids = dao.getTestIds(conn, testRun.getHaTest().getProgramInfo(), def.getTextCode(), def.getChapter(), 0, start, end, config);
 
             /**
              * Create a dummy TestRun

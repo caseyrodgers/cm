@@ -29,13 +29,6 @@
        overflowToDisk="false">
 </cache>
 
-<!-- For HA_PROG_DEF -->
-<cache name="PROG_DEF"
-       maxElementsInMemory="50"
-       eternal="true"
-       overflowToDisk="false">
-</cache>
-
 <!--  For Test HTML -->
 <cache name="TEST_HTML"
        maxElementsInMemory="50"

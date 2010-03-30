@@ -21,7 +21,7 @@ public class AssessmentPrescriptionCustom extends AssessmentPrescription {
         super();
         
         this.testRun = testRun;
-        int custProgId = testRun.getHaTest().getProgramInfo().getConfig().getCustomProgramId();
+        int custProgId = testRun.getHaTest().getProgramInfo().getCustomProgramId();
         
         CmList<CustomLessonModel> progLessons = new CmCustomProgramDao().getCustomProgramDefinition(conn, custProgId);
         

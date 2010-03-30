@@ -34,6 +34,8 @@ public class StudentModel implements StudentModelI {
     Boolean programChanged;
     String progDescr;
     Boolean showWorkRequired;
+    
+    StudentProgramModel program;
 
 
     public StudentModel() {
@@ -280,5 +282,15 @@ public class StudentModel implements StudentModelI {
     @Override
     public void setShowWorkRequired(Boolean val) {
         showWorkRequired = val;
+    }
+
+    @Override
+    public StudentProgramModel getProgram() {
+        return program;
+    }
+
+    @Override
+    public void setProgram(StudentProgramModel program) {
+        this.program = program;
     }
 }

@@ -70,8 +70,8 @@ public class AssessmentPrescriptionPlacement extends AssessmentPrescription {
             CmStudentDao dao = new CmStudentDao();
             StudentModelI sm = dao.getStudentModel(user.getUid());
             
-            sm.setProgId(program.getProgramId());
-            sm.setSubjId(program.getSubject());
+            sm.getProgram().setProgramType(program.getProgramId());
+            sm.getProgram().setSubjectId(program.getSubject());
             sm.setProgramChanged(true);
             
             // now update the ActiveInfo to empty

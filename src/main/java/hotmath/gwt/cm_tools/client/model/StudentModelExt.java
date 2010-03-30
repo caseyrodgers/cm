@@ -11,8 +11,6 @@ public class StudentModelExt extends BaseModel implements Serializable, StudentM
     public static final String GROUP_ID_KEY = "groupId";
     public static final String SECTION_NUM_KEY = "sectionNum";
     public static final String USER_PROGRAM_KEY = "userProgramId";
-    public static final String PROG_ID_KEY = "progId";
-    public static final String SUBJ_ID_KEY = "subjId";
     public static final String CHAPTER_KEY = "chapter";
     public static final String LAST_QUIZ_KEY = "last-quiz";
     public static final String HAS_LAST_QUIZ_KEY = "has-last-quiz";
@@ -39,6 +37,8 @@ public class StudentModelExt extends BaseModel implements Serializable, StudentM
     public static final String PASSING_COUNT_KEY = "passing-count";
     public static final String HAS_PASSING_COUNT_KEY = "has-passing-count";
     public static final String NOT_PASSING_COUNT_KEY = "not-passing-count";
+    public static final String PROGRAM_KEY = "studyProgram";
+    
     
     private Boolean hasExtendedData = false;
 
@@ -53,9 +53,7 @@ public class StudentModelExt extends BaseModel implements Serializable, StudentM
         set(GROUP_KEY, student.getGroup());
         set(GROUP_ID_KEY, student.getGroupId());
         set(SECTION_NUM_KEY, student.getSectionNum());
-        set(USER_PROGRAM_KEY, student.getUserProgramId());
-        set(PROG_ID_KEY, student.getProgId());
-        set(SUBJ_ID_KEY, student.getSubjId());
+        set(USER_PROGRAM_KEY, student.getProgram().getProgramId());
         set(CHAPTER_KEY, student.getChapter());
 
         setLastQuiz(student.getLastQuiz());
@@ -85,6 +83,8 @@ public class StudentModelExt extends BaseModel implements Serializable, StudentM
         set(BACKGROUND_STYLE, student.getBackgroundStyle());
         set(DEMO_USER_KEY, student.getIsDemoUser());
         set(PROGRAM_DESCR_KEY, student.getProgramDescr());
+        
+        set(PROGRAM_KEY, student.getProgram());
     }
 
     public void assignExtendedData(StudentModelI sm) {
@@ -151,16 +151,6 @@ public class StudentModelExt extends BaseModel implements Serializable, StudentM
     @Override
     public void setGroupId(String groupId) {
         set(GROUP_ID_KEY, groupId);
-    }
-
-    @Override
-    public Integer getUserProgramId() {
-        return get(USER_PROGRAM_KEY);
-    }
-
-    @Override
-    public void setUserProgramId(Integer userProgId) {
-        set(USER_PROGRAM_KEY, userProgId);
     }
 
     @Override
@@ -285,27 +275,6 @@ public class StudentModelExt extends BaseModel implements Serializable, StudentM
             return false;
         }
     }
-
-    @Override
-    public String getProgId() {
-        return get(PROG_ID_KEY);
-    }
-
-    @Override
-    public void setProgId(String progId) {
-        set(PROG_ID_KEY, progId);
-    }
-
-    @Override
-    public String getSubjId() {
-        return get(SUBJ_ID_KEY);
-    }
-
-    @Override
-    public void setSubjId(String progId) {
-        set(SUBJ_ID_KEY, progId);
-    }
-
     @Override
     public String getChapter() {
         return get(CHAPTER_KEY);
@@ -435,5 +404,13 @@ public class StudentModelExt extends BaseModel implements Serializable, StudentM
 	public void setHasExtendedData(Boolean val) {
 		this.hasExtendedData = val;
 	}
+	
+	
+	public StudentProgramModel getProgram() {
+	    return get(PROGRAM_KEY);
+	}
 
+	public void setProgram(StudentProgramModel studyProgram) {
+	    set(PROGRAM_KEY, studyProgram);
+	}
 }

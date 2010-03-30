@@ -188,6 +188,8 @@ public class CmUserProgramDao {
         java.sql.Date dt = rs.getDate("create_date");
         supm.setCreateDate(new Date(dt.getTime()));
         supm.setConfig(new HaTestConfig(passPercent, rs.getString("test_config_json")));
+        supm.setCustomProgramId(rs.getInt("custom_program_id"));
+        supm.setCustomProgramName(rs.getString("custom_program_name"));
         
 
         return supm;

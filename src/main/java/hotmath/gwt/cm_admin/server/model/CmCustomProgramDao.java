@@ -105,6 +105,24 @@ public class CmCustomProgramDao {
         }
     }
     
+    public CustomProgramModel getCustomProgram(final Connection conn, Integer adminId, String customProgramName) throws Exception {
+        PreparedStatement stmt=null;
+        try {
+            String sql = "select id, name from HA_CUSTOM_PROGRAM where admin_id = ? and name = ?";
+            stmt = conn.prepareStatement(sql);
+            stmt.setInt(1, adminId);
+            stmt.setString(2, customProgramName);
+            ResultSet rs = stmt.executeQuery();
+            if(!rs.next())
+                throw new CmException("Custom Program not found for: " + adminId + ", " + customProgramName);
+            
+            return new CustomProgramModel(rs.getString("name"), rs.getInt("id"));
+        }
+        finally {
+            SqlUtilities.releaseResources(null,stmt, null);
+        }
+    }
+    
     public CmList<CustomProgramModel> deleteCustomProgram(final Connection conn, Integer programId) throws Exception {
         Statement stmt=null;
         try {

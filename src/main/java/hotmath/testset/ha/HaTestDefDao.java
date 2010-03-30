@@ -178,14 +178,14 @@ public class HaTestDefDao {
       * @return
       * @throws SQLException
       */
-     public List<String> getTestIdsForSegment(final Connection conn, int segment, String textcode, String chapter, HaTestConfig config, int segmentSlot)  throws Exception {
+     public List<String> getTestIdsForSegment(final Connection conn, StudentUserProgramModel userProgram, int segment, String textcode, String chapter, HaTestConfig config, int segmentSlot)  throws Exception {
 
          if(segment == -1)
              return new ArrayList<String>();
          
          // Use chapter from config if available, otherwise
          // use the default chapter defined for this test_def
-         List<String> problemIds = getTestIds(conn, textcode, chapter, segmentSlot,0,99999,config);
+         List<String> problemIds = getTestIds(conn, userProgram,textcode, chapter, segmentSlot,0,99999,config);
 
          int cnt = problemIds.size();
          
@@ -196,7 +196,7 @@ public class HaTestDefDao {
          int segPnEnd = (segment * solsPerSeg);
          int segPnStart = (segPnEnd - (solsPerSeg - 1));
 
-         problemIds = getTestIds(conn, textcode, chapter, segmentSlot,segPnStart,segPnEnd,config);
+         problemIds = getTestIds(conn, userProgram,textcode, chapter, segmentSlot,segPnStart,segPnEnd,config);
          if (problemIds.size() == 0) {
              throw new HotMathException(String.format("No problems for test segment: %s, %s, %n, %n, %n", textcode, chapter,segPnStart, segPnEnd, segmentSlot));
          }
@@ -251,9 +251,9 @@ public class HaTestDefDao {
       * @return
       * @throws Exception
       */
-     public List<String> getTestIds(final Connection conn, String textcode, String chapter, int section, int startProblemNumber, int endProblemNumber, HaTestConfig config) throws Exception {
-         if(config.getCustomProgramId() > 0) {
-             return getTestIdsCustom(conn, section, startProblemNumber, endProblemNumber, config);
+     public List<String> getTestIds(final Connection conn, StudentUserProgramModel userProgram, String textcode, String chapter, int section, int startProblemNumber, int endProblemNumber, HaTestConfig config) throws Exception {
+         if(userProgram.getCustomProgramId() > 0) {
+             return getTestIdsCustom(conn, userProgram, section, startProblemNumber, endProblemNumber, config);
          }
          else {
              return getTestIdsBasic(conn, textcode, chapter, section, startProblemNumber, endProblemNumber, config);
@@ -261,7 +261,7 @@ public class HaTestDefDao {
      }
      
      
-     private List<String> getTestIdsCustom(final Connection conn, int section, int startProblemNumber, int endProblemNumber, HaTestConfig config) throws Exception  {
+     private List<String> getTestIdsCustom(final Connection conn, StudentUserProgramModel userProgram, int section, int startProblemNumber, int endProblemNumber, HaTestConfig config) throws Exception  {
          PreparedStatement ps=null;
          ResultSet rs=null;
          try {
@@ -275,7 +275,7 @@ public class HaTestDefDao {
              
              ps = conn.prepareStatement(sql);
 
-             ps.setInt(1, config.getCustomProgramId());
+             ps.setInt(1, userProgram.getCustomProgramId());
              rs = ps.executeQuery();
              
              List<String> pids = new ArrayList<String>();

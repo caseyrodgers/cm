@@ -30,7 +30,6 @@ public class HaTestConfig {
 	List<String> chapters = new ArrayList<String>();
 	int passPercent=80;
 	int segmentCount=4;
-	int customProgramId;
 	String json;
 
 
@@ -81,23 +80,12 @@ public class HaTestConfig {
 		        if(jo.has("pass_percent"))
 		            passPercent = jo.getInt("pass_percent");
 		        
-		        
-		        if(jo.has("custom_program_id"))
-		            customProgramId = jo.getInt("custom_program_id");
 			}
 		}
 		catch(Exception e) {
 		    Logger.getLogger(this.getClass()).info("Error creating test config object (using default)", e);
 		}
 	}
-	
-    /** Return the custom program id if this is a custom program. 
-     *  Otherwise, return 0;
-     * @return
-     */
-    public int getCustomProgramId() {
-        return customProgramId;
-    }
 	
 	public String getJson() {
         return json;

@@ -63,7 +63,7 @@ public class CmAdminDao_Test extends CmDbTestCase {
                 List<StudentModelI> students = new CmStudentDao().getStudentModelByUserName(conn, _user.getAid(), testGroup);
                 assertTrue(students.size() > 0);
                 
-                assertTrue(students.get(0).getProgId().equals(CmProgram.ALG1_PROF.getProgramId()));
+                assertTrue(students.get(0).getProgram().getProgramType().equals(CmProgram.ALG1_PROF.getProgramId()));
             }
         }
         
@@ -144,10 +144,10 @@ public class CmAdminDao_Test extends CmDbTestCase {
          * 
          */
         StudentModelI sm = _dao.getStudentModel(TEST_ID);
-        sm.setProgId("Prof");
-        sm.setSubjId("Alg 2");
+        sm.getProgram().setProgramType("Prof");
+        sm.getProgram().setSubjectId("Alg 2");
         sm.setProgramChanged(true);
-        _dao.updateStudent(conn, sm, true, false, true, false);
+        _dao.updateStudent(conn, sm, true, false, true, false,false);
 
         StudentUserProgramModel progInfo =new CmUserProgramDao().loadProgramInfoCurrent(conn, TEST_ID);
         assertTrue(progInfo.getTestName().equals("Algebra 2 Proficiency"));
@@ -158,10 +158,10 @@ public class CmAdminDao_Test extends CmDbTestCase {
          * 
          */
         sm = _dao.getStudentModel(TEST_ID);
-        sm.setProgId("Prof");
-        sm.setSubjId("Alg 1");
+        sm.getProgram().setProgramType("Prof");
+        sm.getProgram().setSubjectId("Alg 1");
         sm.setProgramChanged(true);
-        _dao.updateStudent(conn, sm, true, false, true, false);
+        _dao.updateStudent(conn, sm, true, false, true, false,false);
 
         progInfo = new CmUserProgramDao().loadProgramInfoCurrent(conn, TEST_ID);
         assertTrue(progInfo.getTestName().equals("Algebra 1 Proficiency"));
@@ -171,10 +171,10 @@ public class CmAdminDao_Test extends CmDbTestCase {
          * 
          */
         sm = _dao.getStudentModel(TEST_ID);
-        sm.setProgId("Prof");
-        sm.setSubjId("Pre-Alg");
+        sm.getProgram().setProgramType("Prof");
+        sm.getProgram().setSubjectId("Pre-Alg");
         sm.setProgramChanged(true);
-        _dao.updateStudent(conn, sm, true, false, true, false);
+        _dao.updateStudent(conn, sm, true, false, true, false,false);
 
         progInfo = new CmUserProgramDao().loadProgramInfoCurrent(conn, TEST_ID);
         assertTrue(progInfo.getTestName().equalsIgnoreCase("Pre-algebra Proficiency"));
@@ -187,6 +187,4 @@ public class CmAdminDao_Test extends CmDbTestCase {
         assertTrue(up.getTestDefId() > 0);
         assertNotNull(up.getTestName());
     }
-
-
 }

@@ -4,20 +4,39 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 
 public class StudyProgramModel implements IsSerializable {
 	
-	private String title;
+    private Integer programId;
+    private String title;
 	private String shortTitle;
 	private String descr;
-	private Integer needsSubject;
+	private String subjectId;
+
+
+    private Integer needsSubject;
 	private Integer needsChapters;
 	private Integer needsPassPercent;
 	private Integer needsState;
+	
+	private Integer customProgramId;
+	private String customProgramName;
 
-	public StudyProgramModel() {
+
+    public StudyProgramModel() {
 	}
 	
-	public StudyProgramModel(String title, String shortTitle, String descr,
-			Integer needsSubject, Integer needsChapters,
-			Integer needsPassPercent, Integer needsState) {
+	public StudyProgramModel(
+	        Integer programId, 
+	        String title, 
+	        String shortTitle, 
+	        String descr,
+	        Integer customProgramId,
+	        String customProgramName,
+			Integer needsSubject, 
+			Integer needsChapters,
+			Integer needsPassPercent, 
+			Integer needsState) {
+	    this.programId = programId;
+	    this.customProgramId = customProgramId;
+	    this.customProgramName = customProgramName;
 		this.title = title;
 		this.shortTitle = shortTitle;
 		this.descr = descr;
@@ -26,6 +45,34 @@ public class StudyProgramModel implements IsSerializable {
 		this.needsPassPercent = needsPassPercent;
 		this.needsState = needsState;
 	}
+	
+	public String getCustomProgramName() {
+        return customProgramName;
+    }
+
+    public void setCustomProgramName(String customProgramName) {
+        this.customProgramName = customProgramName;
+    }
+
+    public boolean isCustomProgram() {
+	    return customProgramId != null && customProgramId > 0;
+	}
+
+    public Integer getProgramId() {
+        return programId;
+    }
+
+    public void setProgramId(Integer programId) {
+        this.programId = programId;
+    }
+
+    public Integer getCustomProgramId() {
+        return customProgramId;
+    }
+
+    public void setCustomProgramId(Integer customProgramId) {
+        this.customProgramId = customProgramId;
+    }	
 
 	public String getTitle() {
 		return title;
@@ -82,4 +129,12 @@ public class StudyProgramModel implements IsSerializable {
 	public void setNeedsState(Integer needsState) {
 		this.needsState = needsState;
 	}
+	
+    public String getSubjectId() {
+        return subjectId;
+    }
+
+    public void setSubjectId(String subjectId) {
+        this.subjectId = subjectId;
+    }	
 }

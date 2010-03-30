@@ -5,6 +5,7 @@ import hotmath.gwt.cm_admin.server.model.CmAdminDao;
 import hotmath.gwt.cm_admin.server.model.CmStudentDao;
 import hotmath.gwt.cm_tools.client.model.StudentModel;
 import hotmath.gwt.cm_tools.client.model.StudentModelI;
+import hotmath.gwt.cm_tools.client.model.StudentProgramModel;
 import hotmath.servlet.Registration;
 import hotmath.subscriber.HotMathExceptionPurcaseException;
 import hotmath.subscriber.HotMathSubscriber;
@@ -129,8 +130,12 @@ public class CatchupSignupServlet extends HttpServlet {
                  
                  student.setAdminUid(haAdmin.getAdminId());
                  student.setGroupId("1");
-                 student.setProgId("Auto-Enroll");
-                 student.setSubjId("");
+                 
+                 StudentProgramModel stdProgram = new StudentProgramModel();
+                 stdProgram.setProgramType("Auto-Enroll");
+                 stdProgram.setSubjectId("");
+                 student.setProgram(stdProgram);
+                 
                  student.setTutoringAvail(true);
                  student.setShowWorkRequired(false);
                  

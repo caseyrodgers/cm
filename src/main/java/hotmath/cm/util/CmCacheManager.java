@@ -48,7 +48,6 @@ public class CmCacheManager  {
      * 
      */
 	public static enum CacheName {
-		PROG_DEF, 
 		TEST_DEF, 
 		TEST, 
 		TEST_HTML, 

@@ -196,9 +196,9 @@ public class HaTestDef {
     List<String> list;
     int _lastSegment;
 
-    public List<String> getTestIdsForSegment(final Connection conn, int segment, HaTestConfig config, int segmentSlot) throws Exception {
+    public List<String> getTestIdsForSegment(final Connection conn, StudentUserProgramModel userProgram, int segment, HaTestConfig config, int segmentSlot) throws Exception {
         _lastSegment = segment;
-        return new HaTestDefDao().getTestIdsForSegment(conn, segment, textCode, chapter, config, segmentSlot);
+        return new HaTestDefDao().getTestIdsForSegment(conn, userProgram,segment, textCode, chapter, config, segmentSlot);
     }
 
 

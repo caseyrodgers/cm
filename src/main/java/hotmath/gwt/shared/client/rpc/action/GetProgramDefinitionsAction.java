@@ -7,25 +7,26 @@ public class GetProgramDefinitionsAction implements Action<CmList<StudyProgramMo
 
 	private static final long serialVersionUID = -4872888321062722916L;
 
-	String progId;
-    
+	Integer adminId;
+
     public GetProgramDefinitionsAction() {}
     
-    public GetProgramDefinitionsAction(String progId) {
-        this.progId = progId;
+    public GetProgramDefinitionsAction(Integer adminId) {
+        this.adminId = adminId;
     }
 
-    public String getProgId() {
-        return progId;
+    
+    public Integer getAdminId() {
+        return adminId;
     }
 
-    public void setProgId(String progId) {
-        this.progId = progId;
-    }
+    public void setAdminId(Integer adminId) {
+        this.adminId = adminId;
+    }    
 
     @Override
     public String toString() {
-        return "GetProgramDefinitionsAction [progId=" + progId + "]";
+        return "GetProgramDefinitionsAction [adminId=" + adminId + "]";
     }
 }
 

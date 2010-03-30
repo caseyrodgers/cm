@@ -23,7 +23,7 @@ public class GetProgramDefinitionsCommand implements ActionHandler<GetProgramDef
     public CmList<StudyProgramModel> execute(final Connection conn, GetProgramDefinitionsAction action) throws Exception {
         CmList<StudyProgramModel> cml = new CmArrayList<StudyProgramModel>();
         CmAdminDao dao = new CmAdminDao();
-        cml.addAll(dao.getProgramDefinitions(conn));
+        cml.addAll(dao.getProgramDefinitions(conn,action.getAdminId()));
         return cml;
     }
     

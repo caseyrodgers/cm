@@ -897,7 +897,7 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
                 }
                 
                 @Override
-                public void oncapture(CmStudentPagingLoadResult<StudentModelExt> value) {
+                public void oncapture(CmStudentPagingLoadResult<StudentModelExt> students) {
                     /** always reset request options */
                     _forceServerRefresh = false;
                     EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_STUDENT_GRID_FILTERED, _pageAction));
@@ -905,7 +905,7 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
                     /** callback the proxy listener
                      * 
                      */
-                    callback.onSuccess(value);
+                    callback.onSuccess(students);
                 }
             }.register();
         }

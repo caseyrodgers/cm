@@ -160,8 +160,8 @@ public class EndOfProgramHandler {
     }
 
     private void updateProgram(String subId,String progId, String chapter) throws Exception {
-        student.setProgId(progId);
-        student.setSubjId(subId);
+        student.getProgram().setProgramType(progId);
+        student.getProgram().setSubjectId(subId);
         student.setChapter(chapter);
         student.setProgramChanged(true);
         

@@ -25,10 +25,6 @@ public interface StudentModelI extends Response {
 	
 	public void setGroupId(String groupId);
 
-	public Integer getUserProgramId();
-	
-	public void setUserProgramId(Integer userProgId);
-	
 	public void setSectionNum(Integer sectionNum);
 	
 	public Integer getSectionNum();
@@ -81,14 +77,6 @@ public interface StudentModelI extends Response {
 
 	public Boolean getProgramChanged();
 
-	public String getProgId();
-	
-	public void setProgId(String progId);
-
-	public String getSubjId();
-	
-	public void setSubjId(String progId);
-
 	public String getChapter();
 	
 	public void setChapter(String chapter);
@@ -120,4 +108,8 @@ public interface StudentModelI extends Response {
 	public Boolean getIsDemoUser();
 	
 	public void setIsDemoUser(Boolean isDemo);
+	
+	public StudentProgramModel getProgram();
+	
+	public void setProgram(StudentProgramModel studyProgram);
 }

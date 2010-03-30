@@ -9,6 +9,7 @@ import hotmath.cm.server.model.CmUserProgramDao;
 import hotmath.cm.util.CmMultiLinePropertyReader;
 import hotmath.gwt.cm_tools.client.model.AccountInfoModel;
 import hotmath.gwt.cm_tools.client.model.ChapterModel;
+import hotmath.gwt.cm_tools.client.model.CustomProgramModel;
 import hotmath.gwt.cm_tools.client.model.LessonItemModel;
 import hotmath.gwt.cm_tools.client.model.StringHolder;
 import hotmath.gwt.cm_tools.client.model.StudentActiveInfo;
@@ -17,15 +18,15 @@ import hotmath.gwt.cm_tools.client.model.StudentModel;
 import hotmath.gwt.cm_tools.client.model.StudentModelBase;
 import hotmath.gwt.cm_tools.client.model.StudentModelBasic;
 import hotmath.gwt.cm_tools.client.model.StudentModelI;
+import hotmath.gwt.cm_tools.client.model.StudentProgramModel;
 import hotmath.gwt.cm_tools.client.model.StudentShowWorkModel;
+import hotmath.gwt.cm_tools.client.model.StudyProgramModel;
 import hotmath.gwt.shared.client.model.UserProgramIsNotActiveException;
 import hotmath.gwt.shared.client.rpc.action.CmArrayList;
 import hotmath.gwt.shared.client.rpc.action.CmList;
 import hotmath.gwt.shared.client.util.CmException;
 import hotmath.gwt.shared.client.util.CmRpcException;
 import hotmath.testset.ha.CmProgram;
-import hotmath.testset.ha.HaTest;
-import hotmath.testset.ha.HaTestDao;
 import hotmath.testset.ha.HaTestDefDescription;
 import hotmath.testset.ha.HaTestRun;
 import hotmath.testset.ha.HaTestRunDao;
@@ -340,7 +341,7 @@ public class CmStudentDao {
 		for (StudentModelI sm : l) {
 			String chapter = sm.getChapter();
 			if (chapter != null) {
-				String subjId = sm.getSubjId();
+				String subjId = sm.getProgram().getSubjectId();
 		        List <ChapterModel> cmList = dao.getChaptersForProgramSubject(conn, "Chap", subjId);
 		        for (ChapterModel cm : cmList) {
 		        	if (cm.getTitle().equals(chapter)) {
@@ -482,8 +483,8 @@ public class CmStudentDao {
             ps.setString(2, sm.getPasscode());
             ps.setInt(3, 0);
             ps.setInt(4, Integer.parseInt(sm.getGroupId()));
-            ps.setString(5, sm.getProgId());
-            ps.setString(6, sm.getSubjId());
+            ps.setString(5, sm.getProgram().getProgramType());
+            ps.setString(6, sm.getProgram().getSubjectId());
             ps.setInt(7, sm.getAdminUid());
             ps.setInt(8, (sm.getIsDemoUser() != null && sm.getIsDemoUser()) ? 1 : 0);
 
@@ -667,7 +668,7 @@ public class CmStudentDao {
         	String passPcnt = sm.getPassPercent();
         	Integer passPercent = (passPcnt != null) ? Integer.parseInt(passPcnt.substring(0, passPcnt.length() - 1)) : 0;
         	
-            new CmUserProgramDao().setProgramPassPercent(conn, sm.getUserProgramId(), passPercent);
+            new CmUserProgramDao().setProgramPassPercent(conn, sm.getProgram().getProgramId(), passPercent);
         }
         return sm;
     }
@@ -759,6 +760,8 @@ public class CmStudentDao {
         logger.info("+++ in updateStudent(): tutoringAvail: " + sm.getTutoringAvail() + ", showWorkReqd: " + sm.getShowWorkRequired());
 
         try {
+            StudentProgramModel spm = sm.getProgram();
+            
             ps = conn.prepareStatement(CmMultiLinePropertyReader.getInstance().getProperty("UPDATE_STUDENT_SQL"));
             ps.setString(1, sm.getName());
             ps.setString(2, sm.getPasscode());
@@ -767,9 +770,9 @@ public class CmStudentDao {
             // if group Id has not been set default to GROUP_NONE_ID
             ps.setInt(3, (sm.getGroupId() != null) ? Integer.parseInt(sm.getGroupId()):GROUP_NONE_ID);
             
-            ps.setString(4, sm.getProgId());
-            ps.setString(5, sm.getSubjId());
-            ps.setInt(6, sm.getUserProgramId());
+            ps.setString(4, spm.getProgramType());
+            ps.setString(5, spm.getSubjectId());
+            ps.setInt(6, spm.getProgramId());
             ps.setInt(7, sm.getTutoringAvail() ? 1 : 0);
             ps.setInt(8, sm.getShowWorkRequired() ? 1 : 0);
             ps.setString(9, sm.getBackgroundStyle());
@@ -813,7 +816,7 @@ public class CmStudentDao {
              * 
              */
             StudentModelI sm = getStudentModelBasic(conn, uid);
-            new CmUserProgramDao().setProgramPassPercent(conn, sm.getUserProgramId(),passPercent);
+            new CmUserProgramDao().setProgramPassPercent(conn, sm.getProgram().getProgramId(),passPercent);
 
         } finally {
             SqlUtilities.releaseResources(null, ps, null);
@@ -843,10 +846,10 @@ public class CmStudentDao {
                 int passPcnt = Integer.parseInt(s.substring(0, s.indexOf("%")));
                 ps = conn.prepareStatement(UPDATE_STUDENT_PROGRAM_SQL);
                 ps.setInt(1, passPcnt);
-                ps.setInt(2, sm.getUserProgramId());
+                ps.setInt(2, sm.getProgram().getProgramId());
             } else {
                 ps = conn.prepareStatement(UPDATE_STUDENT_PROGRAM_NULL_PASS_PERCENT_SQL);
-                ps.setInt(1, sm.getUserProgramId());
+                ps.setInt(1, sm.getProgram().getProgramId());
             }
 
             int result = ps.executeUpdate();
@@ -864,37 +867,122 @@ public class CmStudentDao {
 
 
 
+    /**
+     * 
+     * @param conn
+     * @param sm
+     * @return
+     * @throws Exception
+     */
     public StudentModelI addStudentProgram(final Connection conn, StudentModelI sm) throws Exception {
+        
+        /** check for setting of StudyProgram, and implement override
+         *  We should depreciate using instance vars to identify the program
+         */
+        if(sm.getProgram().isCustomProgram()) {
+            return addStudentProgramCustom(conn, sm);
+        }
+        
         PreparedStatement ps = null;
-
         try {
+            
+            StudentProgramModel sp = sm.getProgram();
+            
             setTestConfig(conn, sm);
-
             String pp = sm.getPassPercent();
             if (pp != null) {
                 int passPcnt = Integer.parseInt(pp.substring(0, pp.indexOf("%")));
                 ps = conn.prepareStatement(CmMultiLinePropertyReader.getInstance().getProperty("INSERT_STUDENT_PROGRAM_SQL"));
                 ps.setInt(1, sm.getUid());
                 ps.setInt(2, sm.getAdminUid());
-                ps.setString(3, sm.getProgId());
-                ps.setString(4, sm.getSubjId());
+                ps.setString(3, sp.getProgramType());
+                ps.setString(4, sp.getSubjectId());
                 ps.setInt(5, passPcnt);
                 ps.setTimestamp(6, new Timestamp(System.currentTimeMillis()));
                 ps.setString(7, sm.getJson());
+                ps.setInt(8, sm.getProgram().getCustomProgramId());
             } else {
                 ps = conn.prepareStatement(CmMultiLinePropertyReader.getInstance().getProperty("INSERT_STUDENT_PROGRAM_NULL_PASS_PERCENT_SQL"));
                 ps.setInt(1, sm.getUid());
                 ps.setInt(2, sm.getAdminUid());
-                ps.setString(3, sm.getProgId());
-                ps.setString(4, sm.getSubjId());
+                ps.setString(3, sp.getProgramType());
+                ps.setString(4, sp.getSubjectId());
                 ps.setTimestamp(5, new Timestamp(System.currentTimeMillis()));
                 ps.setString(6, sm.getJson());
+                ps.setInt(7, sm.getProgram().getCustomProgramId());
             }
             int result = ps.executeUpdate();
             if (result == 1) {
                 // now get value of auto-increment id from CM_USER_PROGRAM
-                int val = SqlUtilities.getLastInsertId(conn);
-                sm.setUserProgramId(val);
+                int newKey = SqlUtilities.getLastInsertId(conn);
+                sp.setProgramId(newKey);
+           }
+            
+            sm.setSectionNum(0);
+            setActiveInfo(conn, sm.getUid(), new StudentActiveInfo());
+        } catch (Exception e) {
+            String m = String.format("*** Error adding student program for student with uid: %d", sm.getUid());
+            logger.error(m, e);
+            throw new Exception(m, e);
+        } finally {
+            SqlUtilities.releaseResources(null, ps, null);
+        }
+        return sm;
+    }
+    
+    /** add a new custom program based on contents of StudyProgram in StudentModel
+     * 
+     * 
+     * A custom program is defined in HA_CUSTOM_PROGRAM with a 'id' that represents 
+     * a distinct custom program.  The test_config_json points to this id via its configuration:
+     * 
+     * {custom_program_id:XXX}
+     * 
+     * Where XXX is the actual custom program id.
+     * 
+     * 
+     * 
+     * @param conn
+     * @param sm
+     * @return
+     * @throws Exception
+     */
+    public StudentModelI addStudentProgramCustom(final Connection conn, StudentModelI sm) throws Exception {
+
+        StudentProgramModel studyProgram = sm.getProgram();
+        if(studyProgram == null)
+            throw new CmException("StudentProgramModel cannot be null: " + sm);
+
+        PreparedStatement ps = null;
+        try {
+            setTestCustomConfig(conn, sm, studyProgram.getCustomProgramId());
+            String pp = sm.getPassPercent();
+            if (pp != null) {
+                int passPcnt = Integer.parseInt(pp.substring(0, pp.indexOf("%")));
+                ps = conn.prepareStatement(CmMultiLinePropertyReader.getInstance().getProperty("INSERT_STUDENT_PROGRAM_SQL"));
+                ps.setInt(1, sm.getUid());
+                ps.setInt(2, sm.getAdminUid());
+                ps.setString(3, studyProgram.getProgramType());
+                ps.setString(4, studyProgram.getSubjectId());
+                ps.setInt(5, passPcnt);
+                ps.setTimestamp(6, new Timestamp(System.currentTimeMillis()));
+                ps.setString(7, sm.getJson());
+                ps.setInt(8, sm.getProgram().getCustomProgramId());
+            } else {
+                ps = conn.prepareStatement(CmMultiLinePropertyReader.getInstance().getProperty("INSERT_STUDENT_PROGRAM_NULL_PASS_PERCENT_SQL"));
+                ps.setInt(1, sm.getUid());
+                ps.setInt(2, sm.getAdminUid());
+                ps.setString(3, studyProgram.getProgramType());
+                ps.setString(4, studyProgram.getSubjectId());
+                ps.setTimestamp(5, new Timestamp(System.currentTimeMillis()));
+                ps.setString(6, sm.getJson());
+                ps.setInt(7, sm.getProgram().getCustomProgramId());
+            }
+            int result = ps.executeUpdate();
+            if (result == 1) {
+                // now get value of auto-increment id from CM_USER_PROGRAM
+                int newKey = SqlUtilities.getLastInsertId(conn);
+                studyProgram.setProgramId(newKey);
             }
             
             sm.setSectionNum(0);
@@ -908,6 +996,7 @@ public class CmStudentDao {
         }
         return sm;
     }
+
     
     
     /** Set the test config json for this student by reading
@@ -934,8 +1023,8 @@ public class CmStudentDao {
         String json = "";
         try {
             ps2 = conn.prepareStatement(sql);
-            ps2.setString(1, sm.getSubjId());
-            String progId = sm.getProgId();
+            ps2.setString(1, sm.getProgram().getSubjectId());
+            String progId = sm.getProgram().getProgramType();
             ps2.setString(2, progId);
             rs = ps2.executeQuery();
             if (rs.next()) {
@@ -956,6 +1045,13 @@ public class CmStudentDao {
             SqlUtilities.releaseResources(rs, ps2, null);
         }            
     }
+    
+    private void setTestCustomConfig(final Connection conn, StudentModelI sm, Integer customProgramId) throws Exception {
+        CustomProgramModel customProgram = new CmCustomProgramDao().getCustomProgram(conn, customProgramId);
+        String testConfigJson = "{custom_program_id:" + customProgramId + "}";
+        sm.setJson(testConfigJson);
+    }
+
 
     
     /**
@@ -1223,7 +1319,7 @@ public class CmStudentDao {
             sm.setPasscode(rs.getString("user_passcode"));
             sm.setEmail(rs.getString("user_email"));
             sm.setGroupId(rs.getString("group_id"));
-            sm.setUserProgramId(rs.getInt("user_prog_id"));
+            sm.getProgram().setProgramId(rs.getInt("user_prog_id"));
             sm.setBackgroundStyle(rs.getString("gui_background_style"));
             sm.setShowWorkRequired(rs.getInt("is_show_work_required")==0?false:true);
 
@@ -1332,7 +1428,7 @@ public class CmStudentDao {
             sm.setPassPercent(passPercent);
             sm.setBackgroundStyle(rs.getString("gui_background_style"));
             sm.setSectionNum(rs.getInt("active_segment"));
-            sm.setStatus(getStatus(sm.getUserProgramId(), sm.getSectionNum(), rs.getString("test_config_json")));
+            sm.setStatus(getStatus(sm.getProgram().getProgramId(), sm.getSectionNum(), rs.getString("test_config_json")));
 
             String tutoringState = (sm.getTutoringAvail()) ? "ON" : "OFF";
             sm.setTutoringState(tutoringState);
@@ -1366,29 +1462,24 @@ public class CmStudentDao {
 
             sm.setSectionNum(rs.getInt("active_segment"));
             sm.setProgramDescr(rs.getString("program"));
-            sm.setProgId(rs.getString("prog_id"));
-            sm.setSubjId(rs.getString("subj_id"));
             sm.setChapter(getChapter(rs.getString("test_config_json")));
             sm.setJson(rs.getString("test_config_json"));
-            sm.setUserProgramId(rs.getInt("user_prog_id"));
             sm.setSectionNum(rs.getInt("active_segment"));
-            sm.setStatus(getStatus(sm.getUserProgramId(), sm.getSectionNum(), rs.getString("test_config_json")));
             sm.setPassPercent(rs.getInt("pass_percent") + "%");
-/*
-            StudentUserProgramModelBase upm = new StudentUserProgramModelBase();
-            upm.setAdminId(sm.getAdminUid());
-            upm.setId(sm.getUserProgramId());
-            upm.setPassPercent(rs.getInt("pass_percent"));
-            upm.setTestConfigJson(rs.getString("test_config_json"));
+
+            StudentProgramModel program = new StudentProgramModel(rs.getInt("user_prog_id"), rs.getString("subj_id"),rs.getString("prog_id"));
+            program.setCustomProgramId(rs.getInt("custom_program_id"));
+            program.setCustomProgramName(rs.getString("custom_program_name"));
             
-            HaTestDefBase tdm = new HaTestDefBase();
-            tdm.setProgId(rs.getString("prog_id"));
-            tdm.setSubjId(rs.getString("subj_id"));
-            tdm.setStateId(null);
+            sm.setProgram(program);
+
+            sm.setStatus(getStatus(sm.getProgram().getProgramId(), sm.getSectionNum(), rs.getString("test_config_json")));
             
-            upm.setTestDefBase(tdm);
-            sm.setUserProgramModel(upm);
-*/
+            
+            if(program.isCustomProgram()) {
+                sm.setProgramDescr("Custom: " + program.getCustomProgramName());
+            }
+
             l.add(sm);
         }
         return l;
@@ -1763,11 +1854,12 @@ public class CmStudentDao {
     }
     
     
-    public void assignProgramToStudent(final Connection conn, Integer uid, String progId, String subjId, String chapter, String passPercent) throws Exception {
+    public void assignProgramToStudent(final Connection conn, Integer uid, String programType, String subjId, String chapter, String passPercent) throws Exception {
         
         StudentModelI sm = getStudentModelBasic(conn, uid);
-        sm.setProgId(progId);
-        sm.setSubjId(subjId);
+        
+        sm.getProgram().setProgramType(programType);
+        sm.getProgram().setSubjectId(subjId);
         sm.setProgramChanged(true);
         sm.setChapter(chapter);
         sm.setPassPercent(passPercent);

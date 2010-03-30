@@ -8,6 +8,7 @@ import hotmath.gwt.cm_tools.client.model.GroupInfoModel;
 import hotmath.gwt.cm_tools.client.model.StudentModel;
 import hotmath.gwt.cm_tools.client.model.StudentModelExt;
 import hotmath.gwt.cm_tools.client.model.StudentModelI;
+import hotmath.gwt.cm_tools.client.model.StudentProgramModel;
 import hotmath.gwt.cm_tools.client.model.StudyProgramModel;
 import hotmath.gwt.cm_tools.client.model.SubjectModel;
 import hotmath.gwt.cm_tools.client.service.CmServiceAsync;
@@ -110,7 +111,7 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
 		isNew = (sm == null);
 		stuMdl = sm;
 		if (stuMdl != null) {
-			subjectId = stuMdl.getSubjId();
+			subjectId = stuMdl.getProgram().getSubjectId();
 			passPercent = stuMdl.getPassPercent();
 			showWorkRequired = stuMdl.getShowWorkRequired();
 			tutoringEnabled = stuMdl.getTutoringAvail();
@@ -227,12 +228,12 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
 		_fsProgram.add(progCombo);
 		
 		subjStore = new ListStore <SubjectModel> ();
-		getSubjectList((stuMdl != null)?stuMdl.getProgId():null, subjStore);
+		getSubjectList((stuMdl != null)?stuMdl.getProgram().getProgramType():null, subjStore);
 		subjCombo = subjectCombo(subjStore);
 		_fsProgram.add(subjCombo);
 
 		chapStore = new ListStore <ChapterModel> ();
-        getChapterListRPC((stuMdl != null)?stuMdl.getProgId():null, subjectId, false, chapStore);
+        getChapterListRPC((stuMdl != null)?stuMdl.getProgram().getProgramType():null, subjectId, false, chapStore);
 		chapCombo = chapterCombo(chapStore);
 		_fsProgram.add(chapCombo);        
 
@@ -477,15 +478,16 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
 		new RetryAction<CmList<StudyProgramModel>>() {
 		    @Override
 		    public void attempt() {
-		        GetProgramDefinitionsAction action = new GetProgramDefinitionsAction();
+		        GetProgramDefinitionsAction action = new GetProgramDefinitionsAction(cmAdminMdl.getId());
 		        setAction(action);
 		        CmShared.getCmService().execute(action, this);
 		    }
             public void oncapture(CmList<StudyProgramModel> spmList) {
                 List<StudyProgram> progList = new ArrayList <StudyProgram> ();
                 for (StudyProgramModel spm : spmList) {
-                    progList.add(new StudyProgram(spm.getTitle(), spm.getShortTitle(), spm.getDescr(), spm.getNeedsSubject(),
-                            spm.getNeedsChapters(), spm.getNeedsPassPercent()));
+                    progList.add(new StudyProgram(spm.getTitle(), spm.getShortTitle(), spm.getDescr(), 
+                                                  spm.getNeedsSubject(),spm.getNeedsChapters(), spm.getNeedsPassPercent(),
+                                                  spm.getCustomProgramId(), spm.getCustomProgramName()));
                 }
                 progStore.add(progList);
                 inProcessCount--;
@@ -621,7 +623,12 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
 	}
 	
 	private StudyProgram setProgramSelection() {
-		String shortName = stuMdl.getProgramDescr();
+	    StudentProgramModel program = stuMdl.getProgram();
+		String shortName = program.getProgramType();
+		
+		if(program.isCustomProgram()) {
+		    shortName = program.getCustomProgramName();
+		}
 		
 		if (shortName != null) {
 			List<StudyProgram> list = progStore.getModels();
@@ -646,6 +653,10 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
 	 */
 	private boolean progNameCheckHack(String shortName, StudyProgram sp) {
         String st=((String) sp.get("shortTitle")).toLowerCase();
+        
+        if(sp.get("customProgramName") != null && sp.get("customProgramName").equals(shortName)) {
+            return true;
+        }
         if(st.equals("chap") && shortName.toLowerCase().indexOf(" chap") > -1) {
             return true;
         }
@@ -861,6 +872,13 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
         String chapTitle = (chap != null) ? chap.getTitle() : null;
         sm.setChapter(chapTitle);
 
+        StudentProgramModel program = new StudentProgramModel();
+        program.setProgramType(progId);
+        program.setSubjectId(subjId);
+        program.setCustomProgramId((Integer)sp.get("customProgramId"));
+        program.setCustomProgramName((String)sp.get("customProgramName"));
+        
+        sm.setProgram(program);
 
         /** Validation complete 
          * 
@@ -892,7 +910,7 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
             Boolean progIsNew = false;
             
             sm.setUid(stuMdl.getUid());
-            sm.setUserProgramId(stuMdl.getUserProgramId());
+            sm.setUserProgramId(stuMdl.getProgram().getProgramId());
             sm.setJson(stuMdl.getJson());
             sm.setStatus(stuMdl.getStatus());
             sm.setSectionNum(stuMdl.getSectionNum());
@@ -905,7 +923,7 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
                 stuChanged = true;
             }
             
-            if (stuMdl.getProgramDescr() == null || !stuMdl.getProgramDescr().equals(prog)) {
+            if (stuMdl.getProgramDescr() == null || isDifferentProgram(stuMdl,prog)) {
                 sm.setStatus("Not started");
                 sm.setSectionNum(0);
                 sm.setProgramChanged(true);
@@ -932,6 +950,20 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
             }
         }	    
 	}
+	
+	   private boolean isDifferentProgram(StudentModelI stuMdl, String prog) {
+	        if(prog.equals("Custom")) {
+	            
+	            /** compare the name, maybe ... 
+	             * for now always update
+	             * 
+	             */
+	            return true;
+	        }
+	        else {
+	            return !stuMdl.getProgramDescr().equals(prog);
+	        }
+	    }
 
 	private boolean valueChanged(Boolean origValue, Boolean newValue) {
         if (origValue == null && newValue != null) return true;
@@ -956,13 +988,15 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
 	class StudyProgram extends BaseModelData {
 		private static final long serialVersionUID = 5574506049604177840L;
 
-		StudyProgram(String title, String shortTitle, String descr, Integer needsSubject, Integer needsChapters, Integer needsPassPercent) {
+		StudyProgram(String title, String shortTitle, String descr, Integer needsSubject,Integer needsChapters, Integer needsPassPercent,Integer customProgramId, String customProgramName) {
 			set("title", title);
 			set("shortTitle", shortTitle);
 			set("descr", descr);
 			set("needsSubject", needsSubject);
 			set("needsChapters", needsChapters);
 			set("needsPassPercent", needsPassPercent);
+			set("customProgramName", customProgramName);
+			set("customProgramId", customProgramId);
 		}
 	}
 

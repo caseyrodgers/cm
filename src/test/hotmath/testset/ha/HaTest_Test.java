@@ -21,6 +21,8 @@ public class HaTest_Test extends CmDbTestCase{
         PROF_TEST = new HaTestDefDao().getTestDef(conn, CmProgram.ALG1_PROF.getDefId()).getName();
 	}
 	
+	StudentUserProgramModel userProgram = new StudentUserProgramModel();
+	
 	public HaTest_Test(String name) throws Exception {
 		super(name);
 	}
@@ -28,12 +30,12 @@ public class HaTest_Test extends CmDbTestCase{
 
 	   public void testCreateTestDef() throws Exception {
 	        HaTestDef htd = new HaTestDefDao().getTestDef(conn, PROF_TEST);
-	        assertTrue(htd.getTestIdsForSegment(conn,2,new HaTestConfig(null),0).size() == 10);
+	        assertTrue(htd.getTestIdsForSegment(conn,userProgram,2,new HaTestConfig(null),0).size() == 10);
 	    }
 	    
 	    public void testCreateTestDef4() throws Exception {
 	        HaTestDef htd = new HaTestDefDao().getTestDef(conn, PROF_TEST);
-	        assertTrue(htd.getTestIdsForSegment(conn,4,new HaTestConfig(null),0).size() == 10);
+	        assertTrue(htd.getTestIdsForSegment(conn,userProgram,4,new HaTestConfig(null),0).size() == 10);
 	    }
 
     
@@ -88,8 +90,8 @@ public class HaTest_Test extends CmDbTestCase{
 	public void testCreateTestDefOrder() throws Exception {
 		HaTestDef htd1 = new HaTestDefDao().getTestDef(conn, CHAP_TEST);
 		
-		List<String> list1 = htd1.getTestIdsForSegment(conn,1,null,0);
-		List<String> list2 = htd1.getTestIdsForSegment(conn,1,null,0);
+		List<String> list1 = htd1.getTestIdsForSegment(conn,userProgram,1,null,0);
+		List<String> list2 = htd1.getTestIdsForSegment(conn,userProgram,1,null,0);
 		
 		assertTrue(list1.get(5).equals(list2.get(5)));
 	}

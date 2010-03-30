@@ -1,6 +1,5 @@
 package hotmath.gwt.cm_admin.server.model;
 
-import static hotmath.cm.util.CmCacheManager.CacheName.PROG_DEF;
 import static hotmath.cm.util.CmCacheManager.CacheName.REPORT_ID;
 import static hotmath.cm.util.CmCacheManager.CacheName.SUBJECT_CHAPTERS;
 import hotmath.cm.util.CmCacheManager;
@@ -12,6 +11,7 @@ import hotmath.gwt.cm_tools.client.model.StudentModel;
 import hotmath.gwt.cm_tools.client.model.StudentModelBasic;
 import hotmath.gwt.cm_tools.client.model.StudentModelExt;
 import hotmath.gwt.cm_tools.client.model.StudentModelI;
+import hotmath.gwt.cm_tools.client.model.StudentProgramModel;
 import hotmath.gwt.cm_tools.client.model.StudyProgramModel;
 import hotmath.gwt.cm_tools.client.model.SubjectModel;
 import hotmath.gwt.shared.client.model.ProgramData;
@@ -388,28 +388,20 @@ public class CmAdminDao {
         }
     }
 
-    private static final String PROGRAM_SQL = "select d.id, d.title, d.description, d.needs_subject, d.needs_chapter, d.needs_pass_percent, d.needs_state "
-            + "from  HA_PROG_DEF d where d.is_active = 1 "
-            + "and exists (select 1 from HA_TEST_DEF td where d.id = td.prog_id and td.is_active = 1) " + "order by id";
+    public List<StudyProgramModel> getProgramDefinitions(final Connection conn, int uid) throws Exception {
 
-    @SuppressWarnings("unchecked")
-    public List<StudyProgramModel> getProgramDefinitions(final Connection conn) throws Exception {
+        List<StudyProgramModel> rval = null;
 
-        List<StudyProgramModel> rval = (List<StudyProgramModel>) CmCacheManager.getInstance().retrieveFromCache(
-                PROG_DEF, PROG_DEF.toString());
-        if (rval != null)
-            return rval;
-        Statement stmt = null;
+        PreparedStatement pstmt = null;
         ResultSet rs = null;
         try {
-            stmt = conn.createStatement();
-            rs = stmt.executeQuery(PROGRAM_SQL);
+            pstmt = conn.prepareStatement(CmMultiLinePropertyReader.getInstance().getProperty("ADMIN_PROGRAM_DEFINITIONS"));
+            pstmt.setInt(1, uid);
+            rs = pstmt.executeQuery();
             rval = loadProgramDefinitions(rs);
-
-            CmCacheManager.getInstance().addToCache(PROG_DEF, PROG_DEF.toString(), rval);
             return rval;
         } finally {
-            SqlUtilities.releaseResources(rs, stmt, null);
+            SqlUtilities.releaseResources(rs, pstmt, null);
         }
     }
 
@@ -518,6 +510,8 @@ public class CmAdminDao {
         List<StudyProgramModel> l = new ArrayList<StudyProgramModel>();
         while (rs.next()) {
             StudyProgramModel m = new StudyProgramModel();
+            m.setCustomProgramId(rs.getInt("custom_program_id"));
+            m.setCustomProgramName(rs.getString("custom_program_name"));
             m.setShortTitle(rs.getString("id"));
             m.setTitle(rs.getString("title"));
             m.setDescr(rs.getString("description"));
@@ -661,8 +655,11 @@ public class CmAdminDao {
             sm.setGroup(groupName);
             sm.setAdminUid(aid);
             sm.setGroupId("1");
-            sm.setProgId(program.getProgramId());
-            sm.setSubjId(program.getSubject());
+            StudentProgramModel studentProgram = new StudentProgramModel();
+            studentProgram.setProgramType(program.getProgramId());
+            studentProgram.setSubjectId(program.getSubject());
+            sm.setProgram(studentProgram);
+            
             sm.setPassPercent("70%");
             sm.setTutoringAvail(tutoringEnabled);
             sm.setShowWorkRequired(showWorkRequired);

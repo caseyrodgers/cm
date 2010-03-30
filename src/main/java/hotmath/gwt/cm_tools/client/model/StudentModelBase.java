@@ -37,6 +37,9 @@ public class StudentModelBase implements IsSerializable, StudentModelI {
 	String status;
 	String subjId;
 	String testConfigJson;
+	
+	StudentProgramModel program;
+
 
     GroupInfoModelI groupModel;
 
@@ -76,16 +79,6 @@ public class StudentModelBase implements IsSerializable, StudentModelI {
 	public void setIsTutorAvailable(Boolean isTutorAvailable) {
 		this.isTutorAvailable = isTutorAvailable;
 	}
-
-	@Override
-    public Integer getUserProgramId() {
-        return userProgramId;
-    }
-
-	@Override
-    public void setUserProgramId(Integer userProgramId) {
-        this.userProgramId = userProgramId;
-    }
 
 	@Override
     public Integer getUid() {
@@ -202,11 +195,6 @@ public class StudentModelBase implements IsSerializable, StudentModelI {
 	}
 
 	@Override
-	public String getProgId() {
-		return progId;
-	}
-
-	@Override
 	public Boolean getProgramChanged() {
 		// not implemented
 		return null;
@@ -238,10 +226,6 @@ public class StudentModelBase implements IsSerializable, StudentModelI {
 		return status;
 	}
 
-	@Override
-	public String getSubjId() {
-		return subjId;
-	}
 
 	@Override
 	public Integer getTotalUsage() {
@@ -306,10 +290,6 @@ public class StudentModelBase implements IsSerializable, StudentModelI {
 		// not implemented here
 	}
 
-	@Override
-	public void setProgId(String progId) {
-		this.progId = progId;
-	}
 
 	@Override
 	public void setProgramChanged(Boolean changed) {
@@ -342,11 +322,6 @@ public class StudentModelBase implements IsSerializable, StudentModelI {
 	}
 
 	@Override
-	public void setSubjId(String subjId) {
-		this.subjId = subjId;
-	}
-
-	@Override
 	public void setTotalUsage(Integer totalUsage) {
 		// not implemented
 	}
@@ -366,4 +341,13 @@ public class StudentModelBase implements IsSerializable, StudentModelI {
 		// not implemented
 	}
 
+    @Override
+    public StudentProgramModel getProgram() {
+        return this.program; 
+    }
+
+    @Override
+    public void setProgram(StudentProgramModel studyProgram) {
+        this.program = studyProgram;
+    }
 }

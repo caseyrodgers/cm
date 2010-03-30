@@ -13,6 +13,8 @@ public class HaTestDefDao_Test extends CmDbTestCase {
     }
 
     HaTestDefDao dao;
+    
+    StudentUserProgramModel userProgram = new StudentUserProgramModel();
 
     protected void setUp() throws Exception {
         super.setUp();
@@ -79,7 +81,7 @@ public class HaTestDefDao_Test extends CmDbTestCase {
         List<String> names = dao.getTestNames(conn);
         HaTestDef def = dao.getTestDef(conn, names.get(0));
         HaTestConfig config = new HaTestConfig(null);
-        List<String> pids = dao.getTestIdsForSegment(conn, 1, def.getTextCode(), def.chapter, config,0);
+        List<String> pids = dao.getTestIdsForSegment(conn, userProgram,1, def.getTextCode(), def.chapter, config,0);
         assertTrue(pids.size() > 0);
 
     }

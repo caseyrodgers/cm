@@ -24,7 +24,23 @@ public class StudentUserProgramModel {
     Date createDate;
     HaTestConfig config;
     HaTestDef testDef;
+    Integer customProgramId;
+    String customProgramName;
     
+    
+    public String getCustomProgramName() {
+        return customProgramName;
+    }
+    public void setCustomProgramName(String customProgramName) {
+        this.customProgramName = customProgramName;
+    }
+    public Integer getCustomProgramId() {
+        return customProgramId;
+    }
+    public void setCustomProgramId(Integer customProgramId) {
+        this.customProgramId = customProgramId;
+    }
+
     List<HaTest> tests;
     
     public HaTestConfig getConfig() {
@@ -114,8 +130,9 @@ public class StudentUserProgramModel {
     @Override
     public String toString() {
         return "StudentUserProgramModel [adminId=" + adminId + ", config=" + config + ", createDate=" + createDate
-                + ", id=" + id + ", testDefId=" + testDefId + ", testName=" + testName + ", userId=" + userId
-                + ", passPercent=" + passPercent + "]";
+                + ", customProgramId=" + customProgramId + ", id=" + id + ", passPercent=" + passPercent + ", testDef="
+                + testDef + ", testDefId=" + testDefId + ", testName=" + testName + ", tests=" + tests + ", userId="
+                + userId + "]";
     }
     
 }

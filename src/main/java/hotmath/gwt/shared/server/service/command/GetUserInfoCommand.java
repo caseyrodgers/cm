@@ -95,7 +95,7 @@ public class GetUserInfoCommand implements ActionHandler<GetUserInfoAction, User
                 /** Get the Custom Program's test title assigned by user
                  * 
                  */
-                CustomProgramModel customProgram = new CmCustomProgramDao().getCustomProgram(conn, userProgram.getConfig().getCustomProgramId());
+                CustomProgramModel customProgram = new CmCustomProgramDao().getCustomProgram(conn, userProgram.getCustomProgramId());
                 testTitle = customProgram.getProgramName();
             }
             
