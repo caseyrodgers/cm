@@ -4,6 +4,7 @@ import hotmath.gwt.cm.server.CmDbTestCase;
 import hotmath.gwt.cm_admin.server.model.CmStudentDao;
 import hotmath.gwt.cm_tools.client.model.StudentModel;
 import hotmath.gwt.cm_tools.client.model.StudentModelI;
+import hotmath.gwt.cm_tools.client.model.StudentProgramModel;
 import hotmath.gwt.shared.client.rpc.action.AddStudentAction;
 import hotmath.gwt.shared.server.service.ActionDispatcher;
 import hotmath.testset.ha.CmProgram;
@@ -37,8 +38,12 @@ public class AddStudentCommand_Test extends CmDbTestCase {
         student.setPasscode("pwd_" + System.currentTimeMillis());
         student.setAdminUid(0);
         student.setGroupId("1");
-        student.setProgId(CmProgram.PREALG_PROF.getProgramId());
-        student.setSubjId(CmProgram.PREALG_PROF.getSubject());
+        
+        StudentProgramModel program = new StudentProgramModel();
+        program.setProgramType(CmProgram.PREALG_PROF.getProgramId());
+        program.setSubjectId(CmProgram.PREALG_PROF.getSubject());
+        student.setProgram(program);
+        
         student.setTutoringAvail(false);
         student.setShowWorkRequired(false);
         

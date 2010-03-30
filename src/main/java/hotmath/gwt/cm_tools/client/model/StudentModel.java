@@ -35,7 +35,7 @@ public class StudentModel implements StudentModelI {
     String progDescr;
     Boolean showWorkRequired;
     
-    StudentProgramModel program;
+    StudentProgramModel program = new StudentProgramModel();
 
 
     public StudentModel() {
@@ -80,22 +80,6 @@ public class StudentModel implements StudentModelI {
 
     public void setUserProgramId(Integer userProgramId) {
         this.userProgramId = userProgramId;
-    }
-
-    public String getProgId() {
-        return progId;
-    }
-
-    public void setProgId(String progId) {
-        this.progId = progId;
-    }
-
-    public String getSubjId() {
-        return subjId;
-    }
-
-    public void setSubjId(String subjId) {
-        this.subjId = subjId;
     }
 
     public String getChapter() {

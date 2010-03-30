@@ -866,9 +866,9 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
         sm.setAdminUid(cmAdminMdl.getId());
         sm.setPassPercent(passPercent);
         String progId = (sp != null) ? (String)sp.get("shortTitle") : null;
-        sm.setProgId(progId);
+        sm.getProgram().setProgramType(progId);
         String subjId = (sub != null) ? sub.getAbbrev() : "";
-        sm.setSubjId(subjId);
+        sm.getProgram().setSubjectId(subjId);
         String chapTitle = (chap != null) ? chap.getTitle() : null;
         sm.setChapter(chapTitle);
 

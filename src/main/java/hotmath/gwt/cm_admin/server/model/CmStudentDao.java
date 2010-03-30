@@ -1413,11 +1413,16 @@ public class CmStudentDao {
 
             int groupId = rs.getInt("group_id");
             sm.setGroupId(String.valueOf(groupId));
-            sm.setUserProgramId(rs.getInt("user_prog_id"));
             sm.setGroup(rs.getString("group_name"));
             sm.setProgramDescr(rs.getString("program"));
-            sm.setProgId(rs.getString("prog_id"));
-            sm.setSubjId(rs.getString("subj_id"));
+            
+            sm.getProgram().setProgramId(rs.getInt("user_prog_id"));
+            sm.getProgram().setProgramType(rs.getString("prog_id"));
+            sm.getProgram().setSubjectId(rs.getString("subj_id"));
+            sm.getProgram().setCustomProgramId(rs.getInt("custom_program_id"));
+            sm.getProgram().setCustomProgramName(rs.getString("custom_program_name"));
+            
+            
             sm.setLastQuiz(rs.getString("last_quiz"));
             sm.setChapter(getChapter(rs.getString("test_config_json")));
             sm.setLastLogin(rs.getString("last_use_date"));

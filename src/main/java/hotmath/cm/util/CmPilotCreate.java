@@ -4,6 +4,7 @@ import hotmath.gwt.cm_admin.server.model.CmAdminDao;
 import hotmath.gwt.cm_admin.server.model.CmStudentDao;
 import hotmath.gwt.cm_tools.client.model.StudentModel;
 import hotmath.gwt.cm_tools.client.model.StudentModelI;
+import hotmath.gwt.cm_tools.client.model.StudentProgramModel;
 import hotmath.subscriber.HotMathSubscriber;
 import hotmath.subscriber.HotMathSubscriberManager;
 import hotmath.subscriber.PurchasePlan;
@@ -172,8 +173,9 @@ public class CmPilotCreate {
         student.setPasscode(password);
         student.setAdminUid(aid);
         student.setGroupId("1");
-        student.setProgId("Prof");
-        student.setSubjId("Pre-Alg");
+        
+        student.getProgram().setProgramType("Prof");
+        student.getProgram().setSubjectId("Pre-Alg");
         student.setPassPercent("70%");
         student.setTutoringAvail(tutoringEnabled);
         student.setShowWorkRequired(showWorkEnabled);
