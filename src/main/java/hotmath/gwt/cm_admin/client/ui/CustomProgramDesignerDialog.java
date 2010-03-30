@@ -343,14 +343,19 @@ public class CustomProgramDesignerDialog extends CmWindow {
             enableEvents(true);
             addListener(Events.KeyUp,new Listener<BaseEvent>() {
                 public void handleEvent(BaseEvent be) {
+                    String value = getValue();
+                    if(value == null || value.length() == 0)
+                        return;
+                    
                     CustomLessonModel lesson = listView.getSelectionModel().getSelectedItem();
                     for(int i=0,t=listView.getStore().getCount();i<t;i++) {
-                        if(listView.getStore().getAt(i).getLesson().toLowerCase().indexOf(getValue().toLowerCase()) > -1) {
-                            
-                            if(lesson != null && lesson.getLesson().equals(listView.getStore().getAt(i).getLesson()))
+                        CustomLessonModel model = listView.getStore().getAt(i);
+                        if(model.getLesson().toLowerCase().indexOf(value.toLowerCase()) > -1) {
+                            if(lesson != null && lesson.getLesson().equals(model.getLesson()))
                                 continue;
                             
                             listView.getSelectionModel().select(listView.getStore().getAt(i),false);
+                            listView.getElement(i).scrollIntoView();
                             return;
                         }
                     }
