@@ -161,8 +161,7 @@ public class RegisterStudentAdvancedOptions extends LayoutContainer {
 	private void setPassPercentSelection(boolean isNew) {
 		String passPercent = (String) advOptionsMap.get(StudentModelExt.PASS_PERCENT_KEY);
 		
-		if (passPercent == null &&
-			isNew && passPercentReqd) {
+		if (passPercent == null && passPercentReqd) {
 			PassPercent p = passCombo.getStore().getAt(PassPercentCombo.DEFAULT_PERCENT_IDX);
 			passCombo.setOriginalValue(p);
 			passCombo.setValue(p);
@@ -204,17 +203,9 @@ public class RegisterStudentAdvancedOptions extends LayoutContainer {
 	private Button saveButton(final FieldSet fs, final boolean isNew, final FormPanel fp) {
 		Button saveBtn = new Button("Save", new SelectionListener<ButtonEvent>() {  
 	    	public void componentSelected(ButtonEvent ce) {
-	        	PassPercent pp = passCombo.getValue();
-	        	String passPercent = pp.getPassPercent();
-	        	passCombo.clearInvalid();
 
-	        	if (passPercentReqd && passPercent == null) {
-	                passCombo.focus();
-	                passCombo.forceInvalid(RegisterStudent.ENTRY_REQUIRED_MSG);
-	                passCombo.expand();
-	                //throw new CmExceptionValidationFailed();
-	                return;
-	            }
+	    		PassPercent pp = passCombo.getValue();
+	        	String passPercent = (pp != null) ? pp.getPassPercent() : null;
 
 	        	Boolean showWorkRequired = isShowWorkRequired.getValue();
 	        	
