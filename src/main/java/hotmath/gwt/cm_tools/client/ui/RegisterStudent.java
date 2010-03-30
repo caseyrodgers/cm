@@ -858,7 +858,7 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
         String subjId = (sub != null) ? sub.getAbbrev() : "";
 
         StudentProgramModel program = sm.getProgram();
-        program.setProgramId(stuMdl.getProgram().getProgramId());
+        program.setProgramId((isNew == false)?stuMdl.getProgram().getProgramId():null);
         program.setProgramType(progId);
         program.setSubjectId(subjId);
         program.setCustomProgramId((Integer)sp.get("customProgramId"));
