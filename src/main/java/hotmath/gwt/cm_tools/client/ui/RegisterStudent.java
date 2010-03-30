@@ -47,8 +47,6 @@ import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.button.Button;
-import com.extjs.gxt.ui.client.widget.form.CheckBox;
-import com.extjs.gxt.ui.client.widget.form.CheckBoxGroup;
 import com.extjs.gxt.ui.client.widget.form.ComboBox;
 import com.extjs.gxt.ui.client.widget.form.FieldSet;
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
@@ -829,25 +827,12 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
             throw new CmExceptionValidationFailed();
         }
 
-        if (passPercentReqd && passPercent == null) {
-
-            AdvOptCallback aoCallback = new AdvOptCallback() {
-				@Override
-				void setAdvancedOptions(Map<String, Object> optionMap) {
-
-					tutoringEnabled = (Boolean) optionMap.get(StudentModelExt.TUTORING_AVAIL_KEY);
-					showWorkRequired = (Boolean) optionMap.get(StudentModelExt.SHOW_WORK_KEY);
-					passPercent = (String) optionMap.get(StudentModelExt.PASS_PERCENT_KEY);
-
-			    }
-            };
-            advOptionsMap = new HashMap <String,Object> ();
-            advOptionsMap.put(StudentModelExt.PASS_PERCENT_KEY, passPercent);
-            advOptionsMap.put(StudentModelExt.SHOW_WORK_KEY, showWorkRequired);
-            advOptionsMap.put(StudentModelExt.TUTORING_AVAIL_KEY, tutoringEnabled);
-
-            new RegisterStudentAdvancedOptions(aoCallback, cmAdminMdl, advOptionsMap, isNew, true).setVisible(true);
-            throw new CmExceptionValidationFailed();
+        if (passPercentReqd &&
+        	(passPercent == null || Integer.parseInt(passPercent.substring(0,passPercent.length()-1)) == 0)) {
+        	// set pass percent to default value
+        	// TODO: (?) allow Admin to specify default pass percent (account, group, program)
+            ComboBox <PassPercent> passCombo = new PassPercentCombo(passPercentReqd);
+        	passPercent = passCombo.getStore().getAt(PassPercentCombo.DEFAULT_PERCENT_IDX).getPassPercent();
         }
         
         /** Collect all the values and create a new StudentModel
@@ -865,27 +850,26 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
         sm.setGroup(group);
         sm.setAdminUid(cmAdminMdl.getId());
         sm.setPassPercent(passPercent);
-        String progId = (sp != null) ? (String)sp.get("shortTitle") : null;
-        sm.getProgram().setProgramType(progId);
-        String subjId = (sub != null) ? sub.getAbbrev() : "";
-        sm.getProgram().setSubjectId(subjId);
+
         String chapTitle = (chap != null) ? chap.getTitle() : null;
         sm.setChapter(chapTitle);
 
-        StudentProgramModel program = new StudentProgramModel();
+        String progId = (sp != null) ? (String)sp.get("shortTitle") : null;        
+        String subjId = (sub != null) ? sub.getAbbrev() : "";
+
+        StudentProgramModel program = sm.getProgram();
+        program.setProgramId(stuMdl.getProgram().getProgramId());
         program.setProgramType(progId);
         program.setSubjectId(subjId);
         program.setCustomProgramId((Integer)sp.get("customProgramId"));
         program.setCustomProgramName((String)sp.get("customProgramName"));
-        
-        sm.setProgram(program);
 
         /** Validation complete 
          * 
          * if callback has been provided, then jump to call back
          * 
          */
-        if(callback != null) {
+        if (callback != null) {
             callback.afterValidation(sm);
             return;
         }
@@ -914,6 +898,7 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
             sm.setJson(stuMdl.getJson());
             sm.setStatus(stuMdl.getStatus());
             sm.setSectionNum(stuMdl.getSectionNum());
+            sm.setProgramChanged(false);
             if (! name.equals(stuMdl.getName()) ||
                 ! (groupId != null && groupId.equals(stuMdl.getGroupId()))) {
                 stuChanged = true;
@@ -927,6 +912,8 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
                 sm.setStatus("Not started");
                 sm.setSectionNum(0);
                 sm.setProgramChanged(true);
+                // don't know what the program Id will be so set to null
+                sm.getProgram().setProgramId(null);
 
                 progIsNew = true;
                 progChanged = false;
@@ -940,7 +927,7 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
             	stuChanged = true;
 
             if (valueChanged(stuMdl.getPassPercent(), passPercent))
-            	passPercentChanged = ! progChanged;
+            	passPercentChanged = ! sm.getProgramChanged();
 
             if (stuChanged || progChanged || progIsNew || passPercentChanged) {
                 updateUserRPC(sm, stuChanged, progChanged, progIsNew, passcodeChanged, passPercentChanged);
