@@ -25,6 +25,7 @@ import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.store.Store;
 import com.extjs.gxt.ui.client.store.StoreSorter;
 import com.extjs.gxt.ui.client.util.Margins;
+import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.Html;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.ListView;
@@ -33,6 +34,7 @@ import com.extjs.gxt.ui.client.widget.form.FormPanel;
 import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
+import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.layout.RowData;
 import com.extjs.gxt.ui.client.widget.layout.RowLayout;
 
@@ -116,9 +118,9 @@ public class CustomProgramDesignerDialog extends CmWindow {
         
         RowData data = new RowData(.5, 1);
         data.setMargins(new Margins(5));
-
-        lc.add(_listAll, data);
-        lc.add(_listSelected, data);
+        
+        lc.add(new MyListContainer(_listAll,"All Available Lessons"), data);
+        lc.add(new MyListContainer(_listSelected,"Lessons in Program"), data);
 
         add(createInfoSection(), new BorderLayoutData(LayoutRegion.NORTH,45));
         add(lc, new BorderLayoutData(LayoutRegion.CENTER));
@@ -147,7 +149,7 @@ public class CustomProgramDesignerDialog extends CmWindow {
         }));
 
 
-        String ledgend = "<div style='position: absolute; top: 2px; left: 0;'>"
+        String ledgend = "<div style='position: absolute; top: 2px; left: 0;width: 260px;'>"
                 + "<div style='margin-right: 3px;float: left;' class='pre-alg'>Pre-Algebra</div>"
                 + "<div style='margin-right: 3px;float: left;' class='alg1'>Algebra 1</div>"
                 + "<div style='margin-right: 3px;float: left;' class='alg2'>Algebra 2</div>"
@@ -313,6 +315,16 @@ public class CustomProgramDesignerDialog extends CmWindow {
                 return comparator.compare(v1, v2);
             }            
             return super.compare(store, m1, m2, property);
+        }
+    }
+    
+    static class MyListContainer extends ContentPanel {
+        public MyListContainer(ListView<CustomLessonModel> listView, String title) {
+            super();
+            
+            setHeading(title);
+            setLayout(new FitLayout());
+            add(listView);
         }
     }
 }

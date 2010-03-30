@@ -7,6 +7,9 @@ import hotmath.gwt.cm_tools.client.model.CustomProgramModel;
 import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.data.CmAsyncRequestImplDefault;
+import hotmath.gwt.shared.client.eventbus.CmEvent;
+import hotmath.gwt.shared.client.eventbus.EventBus;
+import hotmath.gwt.shared.client.eventbus.EventType;
 import hotmath.gwt.shared.client.rpc.RetryAction;
 import hotmath.gwt.shared.client.rpc.action.CmList;
 import hotmath.gwt.shared.client.rpc.action.CustomProgramDefinitionAction;
@@ -72,6 +75,8 @@ public class CustomProgramDialog extends CmWindow {
                     @Override
                     public void requestComplete(String requestData) {
                         getCustomProgramDefinitions();
+                        
+                        EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_REFRESH_STUDENT_DATA));
                     }
                 });
             }
@@ -93,16 +98,20 @@ public class CustomProgramDialog extends CmWindow {
     }
 
     private void editProgram() {
-        CustomProgramModel sel = _listView.getSelectionModel().getSelectedItem();
+        final CustomProgramModel sel = _listView.getSelectionModel().getSelectedItem();
         if (sel == null) {
             CatchupMathTools.showAlert("Select a custom program first");
             return;
         }
 
+        final String oldProgramName = sel.getProgramName();
         new CustomProgramDesignerDialog(adminModel, new CmAsyncRequestImplDefault() {
             @Override
             public void requestComplete(String requestData) {
                 getCustomProgramDefinitions();
+                
+                if(!oldProgramName.equals(sel.getProgramName()))
+                    EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_REFRESH_STUDENT_DATA));
             }
         }, sel);
     }

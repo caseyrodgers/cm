@@ -86,7 +86,7 @@ public class CmInmhStandardResources extends ArrayList<PrescriptionSessionDataRe
         items.add(new InmhItemData(t,"/learning_activities/interactivities/flashcard_reducingfractions.swf?lang=es", "Reduciendo Fracciones"));
         items.add(new InmhItemData(t,"/learning_activities/interactivities/flashcard_comparing_quantities.swf?lang=es", "Comparando Cantidades"));
         items.add(new InmhItemData(t,"/learning_activities/interactivities/flashcard_convert_improper.swf?lang=es", "Convirtiendo Fracciones Improprias"));
-        items.add(new InmhItemData(t,"/learning_activities/interactivities/flashcard_convert_mixed.swf?lang=es", "Convirtiendo Números Mixtos"));
+        items.add(new InmhItemData(t,"/learning_activities/interactivities/flashcard_convert_mixed.swf?lang=es", "Convirtiendo N&uacute;meros Mixtos"));
         // items.add(new InmhItemData(t,"/learning_activities/interactivities/flashcard_mixed_improper.swf?lang=es", "Nuacute;meros Mixtos y Fracciones Improprias"));
         items.add(new InmhItemData(t,"/learning_activities/interactivities/flashcard_muti_frac.swf?lang=es", "Multiplicando Fracciones"));
         
