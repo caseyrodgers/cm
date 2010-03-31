@@ -402,7 +402,7 @@ public class CmDebugReport {
             if (args.length > 0)
                 logFile = args[0];
             
-            CmProgram prog = CmProgram.GEOM_PROF;
+            CmProgram prog = null; // CmProgram.GEOM_PROF;
             
             new CmDebugReport(logFile,prog);
         } catch (Exception e) {
