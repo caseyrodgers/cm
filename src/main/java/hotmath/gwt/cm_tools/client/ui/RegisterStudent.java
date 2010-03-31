@@ -98,6 +98,7 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
 	protected int formWidth  = 475;
 	
 	protected CombinedFormPanel _formPanel;
+	private Button advOptionsBtn;
 	
 	public static final String ENTRY_REQUIRED_MSG = "This field is required";
 	
@@ -235,7 +236,8 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
 		chapCombo = chapterCombo(chapStore);
 		_fsProgram.add(chapCombo);        
 
-		Button advOptionsBtn = advancedOptionsBtn();
+		advOptionsBtn = advancedOptionsBtn();
+		advOptionsBtn.disable();
 	    _fsProgram.add(advOptionsBtn);
 	    
         _formPanel.add(_fsProgram);
@@ -334,6 +336,8 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
 				int needsSubject = ((Integer)sp.get("needsSubject")).intValue();
 				int needsChapters = ((Integer)sp.get("needsChapters")).intValue();
 				passPercentReqd = ((Integer)sp.get("needsPassPercent")).intValue() > 0;
+				
+				advOptionsBtn.enable();
 				
 	        	ComboBox <SubjectModel> cb = (ComboBox<SubjectModel>) fs.getItemByItemId("subj-combo");
 	        	
@@ -587,6 +591,7 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
 
     		if (sp == null) {
     			CatchupMathTools.showAlert("Program not found!");
+    			loading = false;
     			return;
     		}
     		int needsSubject = ((Integer)sp.get("needsSubject")).intValue();
@@ -596,6 +601,8 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
     		if (needsChapters != 0) setChapterSelection();
 
     		passPercentReqd = ((Integer)sp.get("needsPassPercent")).intValue() > 0;
+
+            advOptionsBtn.enable();
 
             loading = false;
 		}
