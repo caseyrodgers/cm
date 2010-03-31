@@ -58,13 +58,15 @@ public class GetUserInfoCommand implements ActionHandler<GetUserInfoAction, User
             
             
             
-            /** if Custom Program, the force user to prescription .. there are no
-             *  quizzes.
+            /** if Custom Program, then force user to prescription .. there are no
+             *  quizzes.  However, we still create a Test and a Test Run in order
+             *  to facilitate using the existing infrastructure.
+             *  
              */
             boolean isCustomProgram = testDef.getTestDefId() == CmProgram.CUSTOM_PROGRAM.getDefId();
             if(isCustomProgram) {
                 if(activeInfo.getActiveRunId() == 0) {
-                    /** create prescription 
+                    /** create custom prescription 
                      * 
                      *  This is done here because we do not want the user
                      *  to be directed to a quiz because no active information
@@ -73,13 +75,10 @@ public class GetUserInfoCommand implements ActionHandler<GetUserInfoAction, User
                      *  Alternatively: ... I see no alternate because the flow is:
                      *  
                      *  1. The user logs in (this is called)
-                     *  2. This passed back the UserInfo object that defines
+                     *  2. This passes back the UserInfo object that defines
                      *     the user's current active state.
                      *  3. The client will use this information and choose
                      *     where to send the user.
-                     *     
-                     *  (question: does the client know it is a custom program?)
-                     *  @TODO: send the Program Name as the custom name
                      * 
                      */
                     HaTest custTest = HaTestDao.createTest(conn, action.getUserId(),new HaTestDefDao().getTestDef(conn, CmProgram.CUSTOM_PROGRAM.getDefId()), -1);

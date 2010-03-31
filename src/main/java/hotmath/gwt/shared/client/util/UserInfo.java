@@ -317,6 +317,11 @@ public class UserInfo implements IsSerializable, Response {
     
     
 
+    /** Return action indicating what to do once the active
+     *  program has been completed.
+     *  
+     * @return
+     */
     public ProgramCompletionAction getOnCompletion() {
         return onCompletion;
     }
