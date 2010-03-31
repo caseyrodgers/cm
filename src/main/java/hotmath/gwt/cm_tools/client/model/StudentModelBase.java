@@ -38,7 +38,7 @@ public class StudentModelBase implements IsSerializable, StudentModelI {
 	String subjId;
 	String testConfigJson;
 	
-	StudentProgramModel program;
+	StudentProgramModel program = new StudentProgramModel();
 
 
     GroupInfoModelI groupModel;
@@ -201,11 +201,6 @@ public class StudentModelBase implements IsSerializable, StudentModelI {
 	}
 
 	@Override
-	public String getProgramDescr() {
-		return programDescr;
-	}
-
-	@Override
 	public Integer getSectionNum() {
 		return sectionNum;
 	}
@@ -294,11 +289,6 @@ public class StudentModelBase implements IsSerializable, StudentModelI {
 	@Override
 	public void setProgramChanged(Boolean changed) {
 		// not implemented
-	}
-
-	@Override
-	public void setProgramDescr(String progDescr) {
-		programDescr = progDescr;
 	}
 
 	@Override

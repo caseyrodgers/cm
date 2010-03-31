@@ -374,7 +374,7 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
 	private native String getProgramTemplate() /*-{ 
 	    return  [ 
 	   '<tpl for=".">', 
-	   '<div class="x-combo-list-item" qtip="{descr}">{title}</div>', 
+	   '<div class="x-combo-list-item {styleIsCustomProgram}" qtip="{descr}"><span class="customProgramDot">CP:</span>&nbsp;{title}</div>', 
 	   '</tpl>' 
 	   ].join(""); 
 	   }-*/;  
@@ -666,7 +666,7 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
 	}
 	
 	private void setSubjectSelection() {
-		String shortName = stuMdl.getProgramDescr();
+		String shortName = stuMdl.getProgram().getProgramDescription();
 
 		if (shortName != null) {
 			List<SubjectModel> list = subjStore.getModels();
@@ -843,7 +843,7 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
         sm.setName(name);
         sm.setPasscode(passcode);
         //sm.setEmail(email);
-        sm.setProgramDescr(prog);
+        sm.getProgram().setProgramDescription(prog);
         sm.setGroupId(groupId);
         sm.setTutoringAvail(tutoringEnabled);
         sm.setShowWorkRequired(showWorkRequired);
@@ -894,7 +894,7 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
             Boolean progIsNew = false;
             
             sm.setUid(stuMdl.getUid());
-            sm.setUserProgramId(stuMdl.getProgram().getProgramId());
+            sm.getProgram().setProgramId(stuMdl.getProgram().getProgramId());
             sm.setJson(stuMdl.getJson());
             sm.setStatus(stuMdl.getStatus());
             sm.setSectionNum(stuMdl.getSectionNum());
@@ -908,7 +908,7 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
                 stuChanged = true;
             }
             
-            if (stuMdl.getProgramDescr() == null || isDifferentProgram(stuMdl,prog)) {
+            if (stuMdl.getProgram().getProgramDescription() == null || isDifferentProgram(stuMdl,prog)) {
                 sm.setStatus("Not started");
                 sm.setSectionNum(0);
                 sm.setProgramChanged(true);
@@ -948,7 +948,7 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
 	            return true;
 	        }
 	        else {
-	            return !stuMdl.getProgramDescr().equals(prog);
+	            return !stuMdl.getProgram().getProgramDescription().equals(prog);
 	        }
 	    }
 
@@ -984,6 +984,15 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
 			set("needsPassPercent", needsPassPercent);
 			set("customProgramName", customProgramName);
 			set("customProgramId", customProgramId);
+			
+			/** set css style to indentify as custom program
+			 * 
+			 */
+			String customStyle="";
+			if(customProgramId != null & customProgramId > 0) {
+			    customStyle = "customProgram";
+			}
+			set("styleIsCustomProgram",customStyle);
 		}
 	}
 

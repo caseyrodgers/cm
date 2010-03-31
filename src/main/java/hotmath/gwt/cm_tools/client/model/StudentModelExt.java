@@ -82,7 +82,7 @@ public class StudentModelExt extends BaseModel implements Serializable, StudentM
         set(PASSCODE_KEY, student.getPasscode());
         set(BACKGROUND_STYLE, student.getBackgroundStyle());
         set(DEMO_USER_KEY, student.getIsDemoUser());
-        set(PROGRAM_DESCR_KEY, student.getProgramDescr());
+        set(PROGRAM_DESCR_KEY, student.getProgram().getProgramDescription());
         
         set(PROGRAM_KEY, student.getProgram());
     }
@@ -123,16 +123,6 @@ public class StudentModelExt extends BaseModel implements Serializable, StudentM
     @Override
     public void setPasscode(String passcode) {
         set(PASSCODE_KEY, passcode);
-    }
-
-    @Override
-    public String getProgramDescr() {
-        return get("program");
-    }
-
-    @Override
-    public void setProgramDescr(String progDescr) {
-        set("program", progDescr);
     }
 
     @Override

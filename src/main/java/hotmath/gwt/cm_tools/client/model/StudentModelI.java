@@ -12,10 +12,6 @@ public interface StudentModelI extends Response {
 	public String getPasscode();
 
 	public void setPasscode(String passcode);
-    
-	public String getProgramDescr();
-
-	public void setProgramDescr(String progDescr);
 
 	public String getGroup();
 

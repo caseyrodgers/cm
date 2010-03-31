@@ -126,12 +126,6 @@ public class StudentModelBasic implements StudentModelI, IsSerializable{
     }
 
     @Override
-    public String getProgramDescr() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
     public Integer getSectionNum() {
         // TODO Auto-generated method stub
         return null;
@@ -242,12 +236,6 @@ public class StudentModelBasic implements StudentModelI, IsSerializable{
 
     @Override
     public void setProgramChanged(Boolean changed) {
-        // TODO Auto-generated method stub
-        
-    }
-
-    @Override
-    public void setProgramDescr(String progDescr) {
         // TODO Auto-generated method stub
         
     }

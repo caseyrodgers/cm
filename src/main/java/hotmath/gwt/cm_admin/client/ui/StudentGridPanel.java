@@ -218,13 +218,6 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
                 }
             });
             contextMenu.add(removeUser);
-            
-            MenuItem custom = new MenuItem("Custom Program");
-            custom.addSelectionListener(new SelectionListener<MenuEvent>() {
-                public void componentSelected(MenuEvent ce) {
-                    new CustomProgramDialog(_cmAdminMdl);                }
-            });
-            contextMenu.add(custom);            
         }
 
         _grid.setContextMenu(contextMenu);
@@ -399,7 +392,7 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
         toolbar.add(trendingReportButton());
         
         if(CmShared.getQueryParameter("debug") != null) {
-            toolbar.add(new Button("Custom Program", new SelectionListener<ButtonEvent>() {
+            toolbar.add(new Button("Custom Programs", new SelectionListener<ButtonEvent>() {
                 @Override
                 public void componentSelected(ButtonEvent ce) {
                     GWT.runAsync(new CmRunAsyncCallback() {

@@ -101,7 +101,7 @@ public class StudentSummaryReport {
         for (StudentModelI sm : list) {
             addCell(sm.getName(), tbl, ++i);
             addCell(sm.getGroup(), tbl, i);
-            addCell(sm.getProgramDescr(), tbl, i);
+            addCell(sm.getProgram().getProgramDescription(), tbl, i);
             addCell(sm.getStatus(), tbl, i);
             addCell(sm.getLastQuiz(), tbl, i);
             addCell(sm.getLastLogin(), tbl, i);

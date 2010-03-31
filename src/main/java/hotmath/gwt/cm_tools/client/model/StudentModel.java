@@ -6,9 +6,6 @@ public class StudentModel implements StudentModelI {
     String group;
     String groupId;
     Integer sectionNum;
-    Integer userProgramId;
-    String progId;
-    String subjId;
     String chapter;
     String lastQuiz;
     String lastLogin;
@@ -32,7 +29,6 @@ public class StudentModel implements StudentModelI {
     Boolean isDemoUser;
     String passPercent;
     Boolean programChanged;
-    String progDescr;
     Boolean showWorkRequired;
     
     StudentProgramModel program = new StudentProgramModel();
@@ -72,14 +68,6 @@ public class StudentModel implements StudentModelI {
 
     public void setSectionNum(Integer sectionNum) {
         this.sectionNum = sectionNum;
-    }
-
-    public Integer getUserProgramId() {
-        return userProgramId;
-    }
-
-    public void setUserProgramId(Integer userProgramId) {
-        this.userProgramId = userProgramId;
     }
 
     public String getChapter() {
@@ -234,11 +222,6 @@ public class StudentModel implements StudentModelI {
     }
 
     @Override
-    public String getProgramDescr() {
-        return this.progDescr;
-    }
-
-    @Override
     public Boolean getShowWorkRequired() {
         return showWorkRequired;
     }
@@ -256,11 +239,6 @@ public class StudentModel implements StudentModelI {
     @Override
     public void setProgramChanged(Boolean changed) {
         programChanged = changed;
-    }
-
-    @Override
-    public void setProgramDescr(String progDescr) {
-        this.progDescr = progDescr;
     }
 
     @Override

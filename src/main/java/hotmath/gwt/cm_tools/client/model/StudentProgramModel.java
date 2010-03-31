@@ -14,6 +14,28 @@ public class StudentProgramModel implements IsSerializable{
     String programType;
     Integer customProgramId;
     String customProgramName;
+    String programDescription;
+
+
+    /** 
+     * 
+     * @param programId The PK for the CM_USER_PROGRAM
+     * @param subjectId The subject id
+     * @param programType The type of program (Prof, Chap ,etc..)
+     */
+    public StudentProgramModel(Integer programId, String subjectId, String programType) {
+        this.programId = programId;
+        this.programType = programType;        
+        this.subjectId = subjectId;
+    }
+
+    public String getProgramDescription() {
+        return programDescription;
+    }
+
+    public void setProgramDescription(String programDescription) {
+        this.programDescription = programDescription;
+    }
 
     public String getCustomProgramName() {
         return customProgramName;
@@ -31,12 +53,6 @@ public class StudentProgramModel implements IsSerializable{
 
     public void setCustomProgramId(Integer customProgramId) {
         this.customProgramId = customProgramId;
-    }
-
-    public StudentProgramModel(Integer programId, String subjectId, String programType) {
-        this.programId = programId;
-        this.programType = programType;        
-        this.subjectId = subjectId;
     }
 
     
@@ -71,6 +87,7 @@ public class StudentProgramModel implements IsSerializable{
     @Override
     public String toString() {
         return "StudentProgramModel [customProgramId=" + customProgramId + ", customProgramName=" + customProgramName
-                + ", programId=" + programId + ", programType=" + programType + ", subjectId=" + subjectId + "]";
+                + ", programDescription=" + programDescription + ", programId=" + programId + ", programType="
+                + programType + ", subjectId=" + subjectId + "]";
     }    
 }

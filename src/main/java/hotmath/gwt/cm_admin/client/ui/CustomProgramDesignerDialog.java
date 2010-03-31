@@ -16,6 +16,7 @@ import hotmath.gwt.shared.client.rpc.action.CustomProgramAction.ActionType;
 import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.Style.LayoutRegion;
 import com.extjs.gxt.ui.client.Style.Orientation;
+import com.extjs.gxt.ui.client.Style.Scroll;
 import com.extjs.gxt.ui.client.dnd.ListViewDragSource;
 import com.extjs.gxt.ui.client.dnd.ListViewDropTarget;
 import com.extjs.gxt.ui.client.dnd.DND.Feedback;
@@ -160,7 +161,9 @@ public class CustomProgramDesignerDialog extends CmWindow {
                 + "<div style='margin-right: 3px;float: left;' class='geom'>Geometry</div>" + "</div>";
 
         getButtonBar().setStyleAttribute("position", "relative");
-        getButtonBar().add(new Html(ledgend));
+        Html html = new Html(ledgend);
+        html.setToolTip("This color indicates highest appropriate level for the lesson.");
+        getButtonBar().add(html);
         
 
         getAllLessonData();
@@ -168,16 +171,26 @@ public class CustomProgramDesignerDialog extends CmWindow {
 
     TextField<String> _programName;
     private LayoutContainer createInfoSection() {
+        LayoutContainer lc = new LayoutContainer(new RowLayout(Orientation.HORIZONTAL));
+        
         FormPanel fp = new FormPanel();
         fp.setLabelWidth(90);
+        fp.setWidth(340);
         fp.setHeaderVisible(false);
         fp.setBorders(false);
         fp.setFooter(false);
+        fp.setFrame(false);
+        fp.setBodyBorder(false);
         _programName = new TextField<String>();
         _programName.setFieldLabel("Program Name");
         _programName.setValue("My Custom Program");
         fp.add(_programName);
-        return fp;
+        
+        lc.add(fp);
+        Html html = new Html("<p style='padding: 7px 0; width: 220px;'>Drag and drop lessons from left side to create and reorder the custom program</p>");
+        lc.add(html);
+        lc.setScrollMode(Scroll.AUTOX);
+        return lc;
     }
     
     /** Create a new empty custom program 
@@ -336,6 +349,8 @@ public class CustomProgramDesignerDialog extends CmWindow {
     }
     
     static class MyFilterBox extends TextField<String> {
+        
+        int lastChecked=0;
         MyFilterBox(final ListView<CustomLessonModel>  listView) {
             setWidth(80);
             setEmptyText("--find--");
@@ -344,12 +359,19 @@ public class CustomProgramDesignerDialog extends CmWindow {
             addListener(Events.KeyUp,new Listener<BaseEvent>() {
                 public void handleEvent(BaseEvent be) {
                     String value = getValue();
-                    if(value == null || value.length() == 0)
+                    if(value == null || value.length() == 0) {
+                        lastChecked=0; // reset
                         return;
+                    }
                     
+                    int cnt = listView.getStore().getCount();
                     CustomLessonModel lesson = listView.getSelectionModel().getSelectedItem();
-                    for(int i=0,t=listView.getStore().getCount();i<t;i++) {
+                    if(lastChecked+1 > cnt)
+                        lastChecked = 0;
+                    
+                    for(int i=lastChecked;i<cnt;i++) {
                         CustomLessonModel model = listView.getStore().getAt(i);
+                        lastChecked=i;
                         if(model.getLesson().toLowerCase().indexOf(value.toLowerCase()) > -1) {
                             if(lesson != null && lesson.getLesson().equals(model.getLesson()))
                                 continue;

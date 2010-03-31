@@ -132,7 +132,7 @@ public class AutoRegistrationWindow extends CmWindow {
         String html = " <div class='detail-info' style='height: 55px;' >"
                 + "     <div class='form left'>"
                 + "        <div class='fld'><label>Program:</label><div>"
-                + student.getProgramDescr()
+                + student.getProgram().getProgramDescription()
                 + "&nbsp;</div></div>"
                 + "        <div class='fld'><label>Pass %:</label><div>"
                 + student.getPassPercent()

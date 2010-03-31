@@ -334,6 +334,15 @@ public class CmStudentDao {
 		}
 	}
 */
+    
+    
+    /** Load chapter information in the the program description and 
+     *  set a value on the Studen Model?
+     * 
+     *  Question: should the model be immutable?  Why would'nt the 
+     *  program model be responsible for the program?
+     * 
+     */
 	private void loadChapterInfo(final Connection conn, List<StudentModelI> l) throws Exception {
 
 		CmAdminDao dao = new CmAdminDao();
@@ -345,7 +354,7 @@ public class CmStudentDao {
 		        List <ChapterModel> cmList = dao.getChaptersForProgramSubject(conn, "Chap", subjId);
 		        for (ChapterModel cm : cmList) {
 		        	if (cm.getTitle().equals(chapter)) {
-		        		sm.setProgramDescr(new StringBuilder(sm.getProgramDescr()).append(" ").append(cm.getNumber()).toString());
+		        		sm.getProgram().setProgramDescription(new StringBuilder(sm.getProgram().getProgramDescription()).append(" ").append(cm.getNumber()).toString());
 		        		break;
 		        	}
 		        }
@@ -1414,8 +1423,8 @@ public class CmStudentDao {
             int groupId = rs.getInt("group_id");
             sm.setGroupId(String.valueOf(groupId));
             sm.setGroup(rs.getString("group_name"));
-            sm.setProgramDescr(rs.getString("program"));
             
+            sm.getProgram().setProgramDescription(rs.getString("program"));
             sm.getProgram().setProgramId(rs.getInt("user_prog_id"));
             sm.getProgram().setProgramType(rs.getString("prog_id"));
             sm.getProgram().setSubjectId(rs.getString("subj_id"));
@@ -1466,22 +1475,25 @@ public class CmStudentDao {
             sm.setGroup(rs.getString("group_name"));
 
             sm.setSectionNum(rs.getInt("active_segment"));
-            sm.setProgramDescr(rs.getString("program"));
             sm.setChapter(getChapter(rs.getString("test_config_json")));
             sm.setJson(rs.getString("test_config_json"));
             sm.setSectionNum(rs.getInt("active_segment"));
             sm.setPassPercent(rs.getInt("pass_percent") + "%");
 
-            StudentProgramModel program = new StudentProgramModel(rs.getInt("user_prog_id"), rs.getString("subj_id"), rs.getString("prog_id"));
+            StudentProgramModel program = sm.getProgram();
+            program.setProgramId(rs.getInt("user_prog_id"));
+            program.setSubjectId(rs.getString("subj_id"));
+            program.setProgramType(rs.getString("prog_id"));
             program.setCustomProgramId(rs.getInt("custom_program_id"));
             program.setCustomProgramName(rs.getString("custom_program_name"));
+            program.setProgramDescription(rs.getString("program"));
             
             sm.setProgram(program);
 
             sm.setStatus(getStatus(sm.getProgram().getProgramId(), sm.getSectionNum(), rs.getString("test_config_json")));
 
             if(program.isCustomProgram()) {
-                sm.setProgramDescr("Custom: " + program.getCustomProgramName());
+                program.setProgramDescription("CP: " + program.getCustomProgramName());
             }
 
             l.add(sm);

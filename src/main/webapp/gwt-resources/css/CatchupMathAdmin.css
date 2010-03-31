@@ -240,3 +240,18 @@ trending-data-student-list-item {
     padding: 4px;
     background-color: #00aeef
 }
+
+
+/** On RegisterStudent program combo box place
+    a small square at first position of each 
+    custom program.
+     
+    Each line has the dot defined, but turned off by default.
+*/
+.customProgramDot {
+	display: none;
+}
+/** turn on by setting */
+.customProgram .customProgramDot {
+	  display: inline;
+} 

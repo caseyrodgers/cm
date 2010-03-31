@@ -201,7 +201,7 @@ public class GetStudentGridPageCommand implements
         if(checkMatch(sme.getGroup(), search))
             return true;
         
-        if(checkMatch(sme.getProgramDescr(), search))
+        if(checkMatch(sme.getProgram().getProgramDescription(), search))
             return true;
         
         if(checkMatch(sme.getStatus(), search))
@@ -297,7 +297,7 @@ class StudentGridComparator implements Comparator<StudentModelExt> {
         } else if (sortField.equals(StudentModelExt.GROUP_KEY)) {
             return p1.getGroup().compareToIgnoreCase(p2.getGroup());
         } else if (sortField.equals(StudentModelExt.PROGRAM_DESCR_KEY)) {
-            return p1.getProgramDescr().compareToIgnoreCase(p2.getProgramDescr());
+            return p1.getProgram().getProgramDescription().compareToIgnoreCase(p2.getProgram().getProgramDescription());
         } else if (sortField.equals(StudentModelExt.STATUS_KEY)) {
             return p1.getStatus().compareToIgnoreCase(p2.getStatus());
         } else if (sortField.equals(StudentModelExt.LAST_QUIZ_KEY)) {

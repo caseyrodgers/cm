@@ -75,18 +75,22 @@ public class CreateAutoRegistrationAccountsCommand implements ActionHandler<Crea
         sm.setLastLogin(t.getLastLogin());
         sm.setLastQuiz(t.getLastQuiz());
         sm.setPassPercent(t.getPassPercent());
-        sm.getProgram().setProgramType(t.getProgram().getProgramType());
         sm.setProgramChanged(t.getProgramChanged());
-        sm.setProgramDescr(t.getProgramDescr());
+        
+        sm.getProgram().setProgramType(t.getProgram().getProgramType());
+        sm.getProgram().setProgramDescription(t.getProgram().getProgramDescription());
+        sm.getProgram().setProgramId(t.getProgram().getProgramId());
+        sm.getProgram().setSubjectId(t.getProgram().getSubjectId());
+        
         sm.setSectionNum(t.getSectionNum());
         sm.setShowWorkRequired(t.getShowWorkRequired());
         sm.setShowWorkState(t.getShowWorkState());
         sm.setStatus(t.getStatus());
-        sm.getProgram().setSubjectId(t.getProgram().getSubjectId());
+        
         sm.setTotalUsage(t.getTotalUsage());
         sm.setTutoringAvail(t.getTutoringAvail());
         sm.setTutoringState(t.getTutoringState());
-        sm.setUserProgramId(t.getProgram().getProgramId());
+        
         
         return sm;
     }
