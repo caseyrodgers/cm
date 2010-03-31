@@ -1,20 +1,12 @@
 package hotmath.gwt.cm_tools.client.ui;
 
+import hotmath.gwt.cm_tools.client.model.CmAdminModel;
+import hotmath.gwt.cm_tools.client.model.StudentModelExt;
+import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import hotmath.gwt.cm_tools.client.CatchupMathTools;
-import hotmath.gwt.cm_tools.client.CmBusyManager;
-import hotmath.gwt.cm_tools.client.model.CmAdminModel;
-import hotmath.gwt.cm_tools.client.model.GroupInfoModel;
-import hotmath.gwt.cm_tools.client.model.StudentModelExt;
-import hotmath.gwt.cm_tools.client.model.StudentModelI;
-import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
-import hotmath.gwt.shared.client.CmShared;
-import hotmath.gwt.shared.client.data.CmAsyncRequest;
-import hotmath.gwt.shared.client.rpc.RetryAction;
-import hotmath.gwt.shared.client.rpc.action.AddGroupAction;
 
 import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
@@ -26,11 +18,8 @@ import com.extjs.gxt.ui.client.widget.form.CheckBoxGroup;
 import com.extjs.gxt.ui.client.widget.form.ComboBox;
 import com.extjs.gxt.ui.client.widget.form.FieldSet;
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
-import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.layout.FormLayout;
-
-import com.google.gwt.user.client.Timer;
 
 /**
  * Register Student Advanced Options UI
@@ -57,14 +46,12 @@ public class RegisterStudentAdvancedOptions extends LayoutContainer {
 	private int formHeight = 190;
 	private int formWidth  = 270;
 	private AdvOptCallback callback;
-	//private StudentModelI  stuMdl;
 	private boolean passPercentReqd;
 	private Map<String,Object> advOptionsMap;
 	
 	public RegisterStudentAdvancedOptions(AdvOptCallback callback, CmAdminModel cm, Map <String,Object> optionMap, boolean isNew,
 		boolean passPercentReqd) {
 	    this.callback = callback;
-	    //this.stuMdl = sm;
 		this.cmAdminMdl = cm;
 		this.advOptionsMap = optionMap;
 		this.passPercentReqd = passPercentReqd;
@@ -72,7 +59,11 @@ public class RegisterStudentAdvancedOptions extends LayoutContainer {
 		advOptWindow = new CmWindow();
 		advOptWindow.add(optionsForm(isNew, passPercentReqd));
  		advOptWindow.show();
- 		if (passPercentReqd) passCombo.focus();
+
+ 		if (passPercentReqd)
+ 			passCombo.focus();
+ 		else
+ 			passCombo.disable();
 	}
 	
 	private FormPanel optionsForm(boolean isNew, boolean passPercentReqd) {
