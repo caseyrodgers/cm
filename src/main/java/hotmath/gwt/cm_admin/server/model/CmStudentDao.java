@@ -187,7 +187,7 @@ public class CmStudentDao {
             ps.setInt(2, (isActive) ? 1 : 0);
             rs = ps.executeQuery();
 
-            l = loadStudentBaseSummaries(rs, tutoringEnabledForAdmin);
+            l = loadStudentBaseSummaries(conn, rs, tutoringEnabledForAdmin);
             
             loadChapterInfo(conn, l);
         } catch (Exception e) {
@@ -1379,7 +1379,7 @@ public class CmStudentDao {
             rs = ps.executeQuery();
 
             List<StudentModelI> l = null;
-            l = loadStudentBaseSummaries(rs, null);
+            l = loadStudentBaseSummaries(conn, rs, null);
             if (l.size() == 0)
                 throw new Exception(String.format("Student with UID: %d was not found", uid));
             if (l.size() > 1)
@@ -1423,15 +1423,14 @@ public class CmStudentDao {
             int groupId = rs.getInt("group_id");
             sm.setGroupId(String.valueOf(groupId));
             sm.setGroup(rs.getString("group_name"));
-            
+
             sm.getProgram().setProgramDescription(rs.getString("program"));
             sm.getProgram().setProgramId(rs.getInt("user_prog_id"));
             sm.getProgram().setProgramType(rs.getString("prog_id"));
             sm.getProgram().setSubjectId(rs.getString("subj_id"));
             sm.getProgram().setCustomProgramId(rs.getInt("custom_program_id"));
             sm.getProgram().setCustomProgramName(rs.getString("custom_program_name"));
-            
-            
+
             sm.setLastQuiz(rs.getString("last_quiz"));
             sm.setChapter(getChapter(rs.getString("test_config_json")));
             sm.setLastLogin(rs.getString("last_use_date"));
@@ -1453,8 +1452,8 @@ public class CmStudentDao {
         }
         return l;
     }
-    
-    private List<StudentModelI> loadStudentBaseSummaries(ResultSet rs, Boolean tutoringEnabledForAdmin) throws Exception {
+
+    private List<StudentModelI> loadStudentBaseSummaries(final Connection conn, ResultSet rs, Boolean tutoringEnabledForAdmin) throws Exception {
 
         List<StudentModelI> l = new ArrayList<StudentModelI>();
 
@@ -1486,14 +1485,16 @@ public class CmStudentDao {
             program.setProgramType(rs.getString("prog_id"));
             program.setCustomProgramId(rs.getInt("custom_program_id"));
             program.setCustomProgramName(rs.getString("custom_program_name"));
-            program.setProgramDescription(rs.getString("program"));
             
             sm.setProgram(program);
 
-            sm.setStatus(getStatus(sm.getProgram().getProgramId(), sm.getSectionNum(), rs.getString("test_config_json")));
-
-            if(program.isCustomProgram()) {
+            if (program.isCustomProgram() == false) {
+                program.setProgramDescription(rs.getString("program"));
+                sm.setStatus(getStatus(program.getProgramId(), sm.getSectionNum(), rs.getString("test_config_json")));
+            }
+            else {
                 program.setProgramDescription("CP: " + program.getCustomProgramName());
+                sm.setStatus(getCustomProgramStatus(conn, program.getCustomProgramId(), sm.getUid()));            	
             }
 
             l.add(sm);
@@ -1513,6 +1514,50 @@ public class CmStudentDao {
                     logger.error(String.format("*** Error getting status for user_prog_id: %d, test_config_json: %s", userProgId, testConfigJson), e);
                 }
             }
+        }
+        return "Not started";
+    }
+
+	static final String CUSTOM_PROG_STATUS_SQL =
+		"select rl.lesson_viewed, rl.date_completed " +
+        " from HA_USER h " +
+        " LEFT JOIN CM_USER_PROGRAM p       on p.id = h.user_prog_id " +
+        " LEFT JOIN HA_TEST t               on t.user_prog_id = p.id " +
+        " LEFT JOIN HA_TEST_RUN r           on r.test_id = t.test_id " +
+        " LEFT JOIN HA_TEST_RUN_LESSON rl   on rl.run_id = r.run_id " +
+        " where h.uid = ?";
+
+    private String getCustomProgramStatus(final Connection conn, Integer customProgId, Integer uid) {
+    	
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+
+        try {
+            ps = conn.prepareStatement(CUSTOM_PROG_STATUS_SQL);
+            ps.setInt(1, uid);
+            rs = ps.executeQuery();
+
+            int viewedCount = 0;
+            int completedCount = 0;
+            int lessonCount = 0;
+            while (rs.next()) {
+            	if (rs.getDate("lesson_viewed") != null) viewedCount++;
+            	if (rs.getDate("date_completed") != null) completedCount++;
+            	lessonCount++;
+            }
+            if (viewedCount > 0) {
+                if (completedCount < lessonCount) {
+                    StringBuilder sb = new StringBuilder();
+                	return sb.append("In Lesson ").append(viewedCount).toString();
+                }
+                return "Completed";
+            }
+        }
+        catch(Exception e) {
+            logger.error(String.format("*** Error getting status for uid: %d, custom_prog_id: %d", uid, customProgId), e);
+        }
+        finally {
+        	SqlUtilities.releaseResources(rs, ps, null);
         }
         return "Not started";
     }
