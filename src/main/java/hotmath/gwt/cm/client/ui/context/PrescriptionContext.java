@@ -4,6 +4,7 @@ import hotmath.gwt.cm.client.CatchupMath;
 import hotmath.gwt.cm.client.history.CmHistoryManager;
 import hotmath.gwt.cm.client.history.CmLocation;
 import hotmath.gwt.cm.client.history.CmLocation.LocationType;
+import hotmath.gwt.cm.client.ui.EndOfProgramWindow;
 import hotmath.gwt.cm.client.ui.context.CmAutoTest.ResourceObject;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.data.InmhItemData;
@@ -25,6 +26,7 @@ import hotmath.gwt.shared.client.rpc.action.AutoAdvanceUserAction;
 import hotmath.gwt.shared.client.rpc.action.MarkPrescriptionLessonAsViewedAction;
 import hotmath.gwt.shared.client.util.RpcData;
 import hotmath.gwt.shared.client.util.UserInfo;
+import hotmath.gwt.shared.client.util.UserInfo.ProgramCompletionAction;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -185,8 +187,8 @@ public class PrescriptionContext implements CmContext {
                 return;
             }
             
-            if(UserInfo.getInstance().isCustomProgram()) {
-                CatchupMathTools.showAlert("You have completed this Custom Program.");
+            if(UserInfo.getInstance().getOnCompletion() == ProgramCompletionAction.STOP) {
+                new EndOfProgramWindow();
                 return;
             }
            
@@ -541,5 +543,4 @@ public class PrescriptionContext implements CmContext {
         }
     }    
 }
-
 

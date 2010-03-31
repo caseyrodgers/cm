@@ -43,7 +43,7 @@ public class UserInfo implements IsSerializable, Response {
 	String password;
 	String loginName;
 	boolean customProgram;
-	
+	ProgramCompletionAction onCompletion= ProgramCompletionAction.AUTO_ADVANCE;
 
     public UserInfo() {}
     
@@ -315,6 +315,15 @@ public class UserInfo implements IsSerializable, Response {
        return status;
     }
     
+    
+
+    public ProgramCompletionAction getOnCompletion() {
+        return onCompletion;
+    }
+
+    public void setOnCompletion(ProgramCompletionAction onCompletion) {
+        this.onCompletion = onCompletion;
+    }
 
     @Override
     public String toString() {
@@ -322,12 +331,12 @@ public class UserInfo implements IsSerializable, Response {
                 + autoTestMode + ", backgroundStyle=" + backgroundStyle + ", correctAnswers=" + correctAnswers
                 + ", correctPercent=" + correctPercent + ", customProgram=" + customProgram + ", isDemoUser="
                 + isDemoUser + ", isFirstView=" + isFirstView + ", isShowWorkRequired=" + isShowWorkRequired
-                + ", isTutoringAvail=" + isTutoringAvail + ", loginName=" + loginName + ", passPercentRequired="
-                + passPercentRequired + ", password=" + password + ", runId=" + runId + ", sessionCount="
-                + sessionCount + ", sessionNumber=" + sessionNumber + ", subTitle=" + subTitle + ", testId=" + testId
-                + ", testName=" + testName + ", testSegment=" + testSegment + ", testSegmentCount=" + testSegmentCount
-                + ", uid=" + uid + ", userAccountType=" + userAccountType + ", userName=" + userName + ", viewCount="
-                + viewCount + "]";
+                + ", isTutoringAvail=" + isTutoringAvail + ", loginName=" + loginName + ", onCompletion="
+                + onCompletion + ", passPercentRequired=" + passPercentRequired + ", password=" + password + ", runId="
+                + runId + ", sessionCount=" + sessionCount + ", sessionNumber=" + sessionNumber + ", subTitle="
+                + subTitle + ", testId=" + testId + ", testName=" + testName + ", testSegment=" + testSegment
+                + ", testSegmentCount=" + testSegmentCount + ", uid=" + uid + ", userAccountType=" + userAccountType
+                + ", userName=" + userName + ", viewCount=" + viewCount + "]";
     }
     
     
@@ -419,4 +428,21 @@ public class UserInfo implements IsSerializable, Response {
             return this.tag;
         }
     };
+
+    /** Define what should happen when a program is completed 
+     * 
+     * @author casey
+     *
+     */
+    public enum ProgramCompletionAction {
+        /** Stop when program is completed
+         * 
+         */
+        STOP,
+        
+        /** The user should be auto advanced when completed
+         * 
+         */
+        AUTO_ADVANCE
+    }
 }

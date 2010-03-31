@@ -13,6 +13,7 @@ import hotmath.gwt.shared.client.rpc.action.GetUserInfoAction;
 import hotmath.gwt.shared.client.util.CmRpcException;
 import hotmath.gwt.shared.client.util.UserInfo;
 import hotmath.gwt.shared.client.util.UserInfo.AccountType;
+import hotmath.gwt.shared.client.util.UserInfo.ProgramCompletionAction;
 import hotmath.gwt.shared.server.service.ActionHandler;
 import hotmath.testset.ha.ChapterInfo;
 import hotmath.testset.ha.CmProgram;
@@ -115,6 +116,9 @@ public class GetUserInfoCommand implements ActionHandler<GetUserInfoAction, User
             userInfo.setLoginName(null);
             userInfo.setDemoUser(sm.getIsDemoUser());
             userInfo.setCustomProgram(isCustomProgram);
+            if(isCustomProgram) {
+                userInfo.setOnCompletion(ProgramCompletionAction.STOP);
+            }
 
             /** Set number of sessions in current prescription */
             if(userInfo.getRunId() > 0)
