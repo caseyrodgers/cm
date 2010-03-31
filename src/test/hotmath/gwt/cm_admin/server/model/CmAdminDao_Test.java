@@ -63,7 +63,7 @@ public class CmAdminDao_Test extends CmDbTestCase {
                 List<StudentModelI> students = new CmStudentDao().getStudentModelByUserName(conn, _user.getAid(), testGroup);
                 assertTrue(students.size() > 0);
                 
-                assertTrue(students.get(0).getProgram().getProgramType().equals(CmProgram.ALG1_PROF.getProgramId()));
+                assertTrue(students.get(0).getProgram().getProgramType().equals(CmProgram.ALG1_PROF.getProgramType()));
             }
         }
         
@@ -94,7 +94,7 @@ public class CmAdminDao_Test extends CmDbTestCase {
 
     
     public void testGetSubjectDefinitions() throws Exception {
-        List<SubjectModel> sm = new CmAdminDao().getSubjectDefinitions(CmProgram.ALG1_PROF.getProgramId());
+        List<SubjectModel> sm = new CmAdminDao().getSubjectDefinitions(CmProgram.ALG1_PROF.getProgramType());
         assertNotNull(sm);
         assertTrue(sm.size() > 0);
     }
@@ -102,7 +102,7 @@ public class CmAdminDao_Test extends CmDbTestCase {
     public void testGetChaptersForProgramSubject() throws Exception {
         CmAdminDao dao = new CmAdminDao();
         CmProgram p = CmProgram.GEOM_CHAP;
-        List<ChapterModel> chaps = dao.getChaptersForProgramSubject(conn,p.getProgramId(), p.getSubject());
+        List<ChapterModel> chaps = dao.getChaptersForProgramSubject(conn,p.getProgramType(), p.getSubject());
         assertNotNull(chaps);
         assertTrue(chaps.size() > 0);
         

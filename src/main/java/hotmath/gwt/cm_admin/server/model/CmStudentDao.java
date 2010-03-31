@@ -909,7 +909,7 @@ public class CmStudentDao {
                 ps.setInt(5, passPcnt);
                 ps.setTimestamp(6, new Timestamp(System.currentTimeMillis()));
                 ps.setString(7, sm.getJson());
-                ps.setInt(8, sm.getProgram().getCustomProgramId());
+                ps.setInt(8, sp.getCustomProgramId());
             } else {
                 ps = conn.prepareStatement(CmMultiLinePropertyReader.getInstance().getProperty("INSERT_STUDENT_PROGRAM_NULL_PASS_PERCENT_SQL"));
                 ps.setInt(1, sm.getUid());
@@ -918,7 +918,7 @@ public class CmStudentDao {
                 ps.setString(4, sp.getSubjectId());
                 ps.setTimestamp(5, new Timestamp(System.currentTimeMillis()));
                 ps.setString(6, sm.getJson());
-                ps.setInt(7, sm.getProgram().getCustomProgramId());
+                ps.setInt(7, sp.getCustomProgramId());
             }
             int result = ps.executeUpdate();
             if (result == 1) {
@@ -1911,7 +1911,7 @@ public class CmStudentDao {
      * @throws Exception
      */
     public void assignProgramToStudent(final Connection conn, Integer uid, CmProgram program, String chapter) throws Exception {
-        assignProgramToStudent(conn, uid, program.getProgramId(),program.getSubject(), chapter, null);
+        assignProgramToStudent(conn, uid, program.getProgramType(),program.getSubject(), chapter, null);
     }
     
     

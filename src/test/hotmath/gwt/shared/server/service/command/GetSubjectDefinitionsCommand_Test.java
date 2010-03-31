@@ -15,13 +15,13 @@ public class GetSubjectDefinitionsCommand_Test extends CmDbTestCase {
 	
 	
 	public void testGet() throws Exception {
-		GetSubjectDefinitionsAction action = new GetSubjectDefinitionsAction(CmProgram.ALG1_CHAP.getProgramId());
+		GetSubjectDefinitionsAction action = new GetSubjectDefinitionsAction(CmProgram.ALG1_CHAP.getProgramType());
 		CmList<SubjectModel> spm = new GetSubjectDefinitionsCommand().execute(conn, action);
 		assertTrue(spm.size() > 0);
 	}
 
 	public void testDispatch() throws Exception {
-		GetSubjectDefinitionsAction action = new GetSubjectDefinitionsAction(CmProgram.ALG1_CHAP.getProgramId());
+		GetSubjectDefinitionsAction action = new GetSubjectDefinitionsAction(CmProgram.ALG1_CHAP.getProgramType());
 		CmList<SubjectModel> spm = ActionDispatcher.getInstance().execute(action);
 		assertTrue(spm.size() > 0);
 	}

@@ -27,15 +27,15 @@ public enum CmProgram {
 
     private final int defId;
     private final String subject;
-    private final String programId;
+    private final String programType;
     private final boolean isActive;
     private final String title;
 
-    CmProgram(int defId, String title, String subject, String programId,boolean isActive) {
+    CmProgram(int defId, String title, String subject, String programType,boolean isActive) {
         this.defId = defId;
         this.title = title;
         this.subject = subject;
-        this.programId = programId;
+        this.programType = programType;
         this.isActive = isActive;
     }
 
@@ -47,8 +47,8 @@ public enum CmProgram {
         return subject;
     }
 
-    public String getProgramId() {
-        return programId;
+    public String getProgramType() {
+        return programType;
     }
     
     public boolean isActive() {

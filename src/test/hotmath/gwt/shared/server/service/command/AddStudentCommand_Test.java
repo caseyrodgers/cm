@@ -40,7 +40,7 @@ public class AddStudentCommand_Test extends CmDbTestCase {
         student.setGroupId("1");
         
         StudentProgramModel program = new StudentProgramModel();
-        program.setProgramType(CmProgram.PREALG_PROF.getProgramId());
+        program.setProgramType(CmProgram.PREALG_PROF.getProgramType());
         program.setSubjectId(CmProgram.PREALG_PROF.getSubject());
         student.setProgram(program);
         

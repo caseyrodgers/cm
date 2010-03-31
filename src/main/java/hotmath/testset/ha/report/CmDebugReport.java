@@ -58,7 +58,7 @@ public class CmDebugReport {
     Integer _uid;
     Connection _conn;
 
-    public CmDebugReport(String logFile) throws Exception {
+    public CmDebugReport(String logFile, CmProgram programToTest) throws Exception {
 
         /**
          * first try to init gui, if fails move on...
@@ -85,24 +85,30 @@ public class CmDebugReport {
 
             setupDatabaseForTest();
 
-            /**
-             * assign every program to user and check for anomalies
-             * 
-             * Do not process Auto Enroll tests
-             * 
-             */
-            for (CmProgram progDef : CmProgram.values()) {
-                try {
-                    if(!progDef.isActive())
-                        continue;
-                    if (progDef.getProgramId().equals("Chap")) {
-                        testProgramChapterTests(progDef);
-                    } else if (!progDef.getProgramId().equals("Auto Enroll")) {
-                        testProgramProfTests(progDef);
+            
+            if(programToTest != null) {
+                testProgramProfTests(programToTest);    
+            }
+            else {
+                /**
+                 * assign every program to user and check for anomalies
+                 * 
+                 * Do not process Auto Enroll tests
+                 * 
+                 */
+                for (CmProgram progDef : CmProgram.values()) {
+                    try {
+                        if(!progDef.isActive())
+                            continue;
+                        if (progDef.getProgramType().equals("Chap")) {
+                            testProgramChapterTests(progDef);
+                        } else if (!progDef.getProgramType().equals("Auto Enroll")) {
+                            testProgramProfTests(progDef);
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        logMessage(-1, "Error testing: " + progDef + ", " + e.getMessage());
                     }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    logMessage(-1, "Error testing: " + progDef + ", " + e.getMessage());
                 }
             }
             logMessage(-1, "Prescription Check Complete");
@@ -190,7 +196,7 @@ public class CmDebugReport {
                 }
 
                 /**
-                 * mark the one pid as INcorrect
+                 * mark the one pid as Incorrect
                  * 
                  */
                 HaTestDao.saveTestQuestionChange(_conn, test.getTestId(), pid, 0, false);
@@ -245,7 +251,7 @@ public class CmDebugReport {
              */
             PreparedStatement ps=null;
             try {
-                ps = conn.prepareStatement("insert into HA_PROGRAM_LESSONS(lesson,subject,file,pid)values(?,?,?,?)");
+                ps = conn.prepareStatement("insert into HA_PROGRAM_LESSONS_JUNK(lesson,subject,file,pid)values(?,?,?,?)");
                 
                 /**
                  * there are sessions, make search the RPP for each equals three
@@ -366,7 +372,7 @@ public class CmDebugReport {
                 /** silent */
             }
             try {
-                ps.executeUpdate("drop table HA_PROGRAM_LESSONS");
+                ps.executeUpdate("drop table HA_PROGRAM_LESSONS_JUNK");
                 
             } catch (Exception e) {
                 /** silent */
@@ -377,7 +383,7 @@ public class CmDebugReport {
                          " run_id integer, message text,message_time datetime)";
             ps.executeUpdate(sql);
             
-            sql = "create table HA_PROGRAM_LESSONS( " +
+            sql = "create table HA_PROGRAM_LESSONS_JUNK( " +
                   "id integer auto_increment not null primary key, " + 
                   "lesson varchar(100) not null, " +
                   " file varchar(100) not null, " +
@@ -395,7 +401,10 @@ public class CmDebugReport {
             String logFile = null;
             if (args.length > 0)
                 logFile = args[0];
-            new CmDebugReport(logFile);
+            
+            CmProgram prog = CmProgram.GEOM_PROF;
+            
+            new CmDebugReport(logFile,prog);
         } catch (Exception e) {
             e.printStackTrace();
         }

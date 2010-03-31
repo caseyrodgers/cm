@@ -12,7 +12,7 @@ public class StudentProgramModel implements IsSerializable{
     Integer programId;
     String subjectId;
     String programType;
-    Integer customProgramId;
+    int customProgramId;  /** is int to make sure not null */
     String customProgramName;
     String programDescription;
 
@@ -57,7 +57,7 @@ public class StudentProgramModel implements IsSerializable{
 
     
     public boolean isCustomProgram() {
-        return this.customProgramId != null && this.customProgramId > 0?true:false;
+        return this.customProgramId > 0?true:false;
     }
     
     public Integer getProgramId() {

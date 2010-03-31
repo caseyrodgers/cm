@@ -54,26 +54,26 @@ public class EndOfProgramHandler {
 
             if(programCurr.getTestDefId() == CmProgram.PREALG_PROF.getDefId() 
                     || programCurr.getTestDefId() == CmProgram.PREALG_PROF_V1.getDefId()) {
-                updateProgram(CmProgram.ALG1_PROF.getSubject(),CmProgram.ALG1_PROF.getProgramId(),null);                
+                updateProgram(CmProgram.ALG1_PROF.getSubject(),CmProgram.ALG1_PROF.getProgramType(),null);                
             }
             else if(programCurr.getTestDefId() == CmProgram.ALG1_PROF.getDefId() 
                     || programCurr.getTestDefId() == CmProgram.ALG1_PROF_V1.getDefId() 
                     || programCurr.getTestDefId() == CmProgram.ALG1_PROF_V2.getDefId() ) {
-                updateProgram(CmProgram.GEOM_PROF.getSubject(),CmProgram.GEOM_PROF.getProgramId(),null);                
+                updateProgram(CmProgram.GEOM_PROF.getSubject(),CmProgram.GEOM_PROF.getProgramType(),null);                
             }
             else if(programCurr.getTestDefId() == CmProgram.GEOM_PROF.getDefId()) {
-                updateProgram(CmProgram.ALG2_PROF.getSubject(), CmProgram.ALG2_PROF.getProgramId(),null);
+                updateProgram(CmProgram.ALG2_PROF.getSubject(), CmProgram.ALG2_PROF.getProgramType(),null);
             }
             else if(programCurr.getTestDefId() == CmProgram.ALG2_PROF.getDefId() ) {
-                updateProgram(CmProgram.CAHSEEHM.getSubject(),CmProgram.CAHSEEHM.getProgramId(),null);
+                updateProgram(CmProgram.CAHSEEHM.getSubject(),CmProgram.CAHSEEHM.getProgramType(),null);
             }
             else if(programCurr.getTestDefId() == CmProgram.CAHSEEHM.getDefId()) {
                 // reset/repeat
-                updateProgram(CmProgram.CAHSEEHM.getSubject(), CmProgram.CAHSEEHM.getProgramId(),null);
+                updateProgram(CmProgram.CAHSEEHM.getSubject(), CmProgram.CAHSEEHM.getProgramType(),null);
             }
             else if(programCurr.getTestDefId() == CmProgram.TAKS.getDefId()) {
                 // reset/repeat
-                updateProgram(CmProgram.TAKS.getSubject(), CmProgram.TAKS.getProgramId(),null);
+                updateProgram(CmProgram.TAKS.getSubject(), CmProgram.TAKS.getProgramType(),null);
             }            
             else {
                 // if is a chapter test, then we must find the currently assigned

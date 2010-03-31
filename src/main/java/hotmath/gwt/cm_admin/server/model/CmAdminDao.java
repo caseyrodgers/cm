@@ -656,7 +656,7 @@ public class CmAdminDao {
             sm.setAdminUid(aid);
             sm.setGroupId("1");
             StudentProgramModel studentProgram = new StudentProgramModel();
-            studentProgram.setProgramType(program.getProgramId());
+            studentProgram.setProgramType(program.getProgramType());
             studentProgram.setSubjectId(program.getSubject());
             sm.setProgram(studentProgram);
             

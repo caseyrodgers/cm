@@ -70,7 +70,7 @@ public class AssessmentPrescriptionPlacement extends AssessmentPrescription {
             CmStudentDao dao = new CmStudentDao();
             StudentModelI sm = dao.getStudentModel(user.getUid());
             
-            sm.getProgram().setProgramType(program.getProgramId());
+            sm.getProgram().setProgramType(program.getProgramType());
             sm.getProgram().setSubjectId(program.getSubject());
             sm.setProgramChanged(true);
             
