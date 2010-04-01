@@ -1548,7 +1548,7 @@ public class CmStudentDao {
             if (viewedCount > 0) {
                 if (completedCount < lessonCount) {
                     StringBuilder sb = new StringBuilder();
-                	return sb.append("In Lesson ").append(viewedCount).toString();
+                	return sb.append("Lesson ").append(viewedCount).append(" of " ).append(lessonCount).toString();
                 }
                 return "Completed";
             }
@@ -1579,6 +1579,8 @@ public class CmStudentDao {
             sm.setNotPassingCount(rs.getInt("not_passing_count"));
             sm.setPassingCount(rs.getInt("passing_count"));
             sm.setTutoringUse(rs.getInt("tutoring_use"));
+            
+            logger.info("+++ passing count: " + sm.getPassingCount() + ", not passing count: " + sm.getNotPassingCount());
 
             l.add(sm);
         }
