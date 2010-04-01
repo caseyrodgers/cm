@@ -24,7 +24,7 @@ public class StudentUserProgramModel {
     Date createDate;
     HaTestConfig config;
     HaTestDef testDef;
-    Integer customProgramId;
+    int customProgramId;
     String customProgramName;
     
     
@@ -34,7 +34,7 @@ public class StudentUserProgramModel {
     public void setCustomProgramName(String customProgramName) {
         this.customProgramName = customProgramName;
     }
-    public Integer getCustomProgramId() {
+    public int getCustomProgramId() {
         return customProgramId;
     }
     public void setCustomProgramId(Integer customProgramId) {
