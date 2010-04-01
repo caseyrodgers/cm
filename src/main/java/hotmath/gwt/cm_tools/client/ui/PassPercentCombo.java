@@ -47,8 +47,8 @@ public class PassPercentCombo extends ComboBox<PassPercent> {
         list.add(new PassPercent("60%"));
         list.add(new PassPercent("70%"));
         list.add(new PassPercent("80%"));
-        list.add(new PassPercent("90%"));
-        list.add(new PassPercent("100%"));
+        //list.add(new PassPercent("90%"));
+        //list.add(new PassPercent("100%"));
         return list;
     }
     
