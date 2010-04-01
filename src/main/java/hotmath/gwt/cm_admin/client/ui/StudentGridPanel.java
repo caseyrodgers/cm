@@ -391,19 +391,17 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
         
         toolbar.add(trendingReportButton());
         
-        if(CmShared.getQueryParameter("debug") != null) {
-            toolbar.add(new Button("Custom Programs", new SelectionListener<ButtonEvent>() {
-                @Override
-                public void componentSelected(ButtonEvent ce) {
-                    GWT.runAsync(new CmRunAsyncCallback() {
-                        @Override
-                        public void onSuccess() {
-                            new CustomProgramDialog(_cmAdminMdl);                            
-                        }
-                    });
-                }
-            }));
-        }
+        toolbar.add(new Button("Custom Programs", new SelectionListener<ButtonEvent>() {
+            @Override
+            public void componentSelected(ButtonEvent ce) {
+                GWT.runAsync(new CmRunAsyncCallback() {
+                    @Override
+                    public void onSuccess() {
+                        new CustomProgramDialog(_cmAdminMdl);                            
+                    }
+                });
+            }
+        }));
 
         toolbar.add(new FillToolItem());
         toolbar.add(displayPrintableReportToolItem(_grid));
