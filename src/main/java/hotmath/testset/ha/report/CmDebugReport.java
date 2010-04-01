@@ -251,7 +251,7 @@ public class CmDebugReport {
              */
             PreparedStatement ps=null;
             try {
-                ps = conn.prepareStatement("insert into HA_PROGRAM_LESSONS_JUNK(lesson,subject,file,pid)values(?,?,?,?)");
+                ps = conn.prepareStatement("insert into HA_PROGRAM_LESSONS(lesson,subject,file,pid)values(?,?,?,?)");
                 
                 /**
                  * there are sessions, make search the RPP for each equals three
@@ -268,7 +268,6 @@ public class CmDebugReport {
                         if(!SolutionManager.getInstance().doesSolutionExist(conn, p.getPid())) {
                             logMessage(prescription.getTestRun().getRunId(), "WARNING: Session " + i + ": RPP does not exist '" + p.getPid() + "'");
                         }
-                        
                     }
                     
                     Collection<INeedMoreHelpResourceType> epp = session.getPrescriptionInmhTypes(_conn, "cmextra");
@@ -372,7 +371,7 @@ public class CmDebugReport {
                 /** silent */
             }
             try {
-                ps.executeUpdate("drop table HA_PROGRAM_LESSONS_JUNK");
+                ps.executeUpdate("drop table HA_PROGRAM_LESSONS");
                 
             } catch (Exception e) {
                 /** silent */
@@ -383,7 +382,7 @@ public class CmDebugReport {
                          " run_id integer, message text,message_time datetime)";
             ps.executeUpdate(sql);
             
-            sql = "create table HA_PROGRAM_LESSONS_JUNK( " +
+            sql = "create table HA_PROGRAM_LESSONS( " +
                   "id integer auto_increment not null primary key, " + 
                   "lesson varchar(100) not null, " +
                   " file varchar(100) not null, " +

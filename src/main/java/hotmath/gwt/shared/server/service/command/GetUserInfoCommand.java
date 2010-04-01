@@ -76,7 +76,7 @@ public class GetUserInfoCommand implements ActionHandler<GetUserInfoAction, User
                      *  
                      *  1. The user logs in (this is called)
                      *  2. This passes back the UserInfo object that defines
-                     *     the user's current active state.
+                     *     the user's 'current active state'.
                      *  3. The client will use this information and choose
                      *     where to send the user.
                      * 

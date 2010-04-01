@@ -2,6 +2,11 @@ package hotmath.gwt.cm_tools.client.model;
 
 import hotmath.gwt.shared.client.rpc.Response;
 
+/** An EXT model for representing a single Lesson
+ * 
+ * @author casey
+ *
+ */
 public class CustomLessonModel extends BaseModel implements Response {
     public CustomLessonModel(){
         /** empty */

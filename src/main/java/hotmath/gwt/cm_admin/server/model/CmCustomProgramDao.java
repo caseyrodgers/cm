@@ -21,6 +21,10 @@ public class CmCustomProgramDao {
     
     /** Return list of lessons that can be used to create a custom program
      * 
+     * NOTE: HA_PROGRAM_LESSONS is created in CmDebugReport while creating the HA_PRESCRIPTION_LOG
+     * 
+     * Mark each lesson with the lowest level applicable for the lesson.
+     * 
      */
     public CmList<CustomLessonModel> getAllLessons(final Connection conn) throws Exception {
         HashMap<String, List<CustomLessonModel>> map = new  HashMap<String, List<CustomLessonModel>>();
@@ -46,7 +50,9 @@ public class CmCustomProgramDao {
                 List<CustomLessonModel> ls = map.get(lesson);
                 CustomLessonModel use = null;
                 for(CustomLessonModel clm: ls) {
-                    if(use == null || sl(clm.getSubject()) > sl(use.getSubject())) {
+                    
+                    /** use the lowest level */
+                    if(use == null || getSubjectLevel(clm.getSubject()) < getSubjectLevel(use.getSubject())) {
                         use = clm;
                     }
                 }
@@ -213,9 +219,9 @@ public class CmCustomProgramDao {
      * @param subject
      * @return
      */
-    private int sl(String subject) {
+    private int getSubjectLevel(String subject) throws Exception {
        if(subject == null || subject.length() == 0)
-           return 0;
+           return 99;
        else if(subject.equals("Pre-Alg"))
            return 1;
        else if(subject.equals("Alg 1"))
@@ -225,6 +231,6 @@ public class CmCustomProgramDao {
        else if(subject.equals("Geom"))
            return 4;
        else
-           return -1;
+           throw new Exception("Unknown subject: " + subject);
     }
 }
