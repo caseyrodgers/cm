@@ -37,7 +37,8 @@ public class StudentSummaryReport {
         ByteArrayOutputStream baos = null;
         List<Integer> studentUids = (List<Integer>) CmCacheManager.getInstance().retrieveFromCache(REPORT_ID, reportId);
 
-        List<StudentModelI> sList=null;
+        List<StudentModelI> sList = null;
+        List<StudentModelI> extList = null;
         Connection conn=null;
         String filterDescription;
         AccountInfoModel info = null;
@@ -52,7 +53,8 @@ public class StudentSummaryReport {
 
             setReportName(info);
             
-            sList = studentDao.getSummariesForActiveStudents(conn, adminId);
+            sList = studentDao.getBaseSummariesForActiveStudents(conn, adminId);
+            extList = studentDao.getStudentExtendedSummaries(conn, studentUids);
             filterDescription = ReportUtils.getFilterDescription(conn, adminId, adminDao, filterMap);
         }
         finally {
@@ -63,9 +65,16 @@ public class StudentSummaryReport {
         for (StudentModelI sm : sList) {
             map.put(sm.getUid(), sm);
         }
+
+        Map<Integer, StudentModelI> extMap = new HashMap<Integer, StudentModelI>(extList.size());
+        for (StudentModelI sm : extList) {
+            extMap.put(sm.getUid(), sm);
+        }
+        
         List<StudentModelI> list = new ArrayList<StudentModelI>(studentUids.size());
         for (Integer uid : studentUids) {
-            list.add(map.get(uid));
+            setBaseData(map.get(uid), extMap.get(uid));
+            list.add(extMap.get(uid));
         }
 
         Document document = new Document();
@@ -88,12 +97,13 @@ public class StudentSummaryReport {
         document.add(Chunk.NEWLINE);
 
         addHeader("Student", "15%", tbl);
-        addHeader("Group", "20%", tbl);
+        addHeader("Group", "15%", tbl);
         addHeader("Program", "15%", tbl);
         addHeader("Status", "15%", tbl);
+        addHeader("Quizzes", "15%", tbl);
         addHeader("Last Quiz", "10%", tbl);
         addHeader("Last Login", "15%", tbl);
-        addHeader("Usage", "10%", tbl);
+        //addHeader("Tutoring", "6%", tbl);
 
         tbl.endHeaders();
 
@@ -103,9 +113,10 @@ public class StudentSummaryReport {
             addCell(sm.getGroup(), tbl, i);
             addCell(sm.getProgram().getProgramDescription(), tbl, i);
             addCell(sm.getStatus(), tbl, i);
+            addCell(getQuizzesResult(sm), tbl, i);
             addCell(sm.getLastQuiz(), tbl, i);
             addCell(sm.getLastLogin(), tbl, i);
-            addCell(String.valueOf(sm.getTotalUsage()), tbl, i);
+            //addCell(String.valueOf(sm.getTutoringUse()), tbl, i);
         }
 
         document.add(tbl);
@@ -158,4 +169,34 @@ public class StudentSummaryReport {
         tbl.addCell(cell);
     }
 
+    private void setBaseData(StudentModelI smBase, StudentModelI smExt) {
+    	
+        smExt.setName(smBase.getName());
+        smExt.setPasscode(smBase.getPasscode());
+        smExt.setShowWorkRequired(smBase.getShowWorkRequired());
+        smExt.setTutoringAvail(smBase.getTutoringAvail());
+        smExt.setGroupId(smBase.getGroupId());
+        smExt.setGroup(smBase.getGroup());
+        smExt.setSectionNum(smBase.getSectionNum());
+        smExt.setChapter(smBase.getChapter());
+        smExt.setSectionNum(smBase.getSectionNum());
+        smExt.setPassPercent(smBase.getPassPercent());
+        smExt.setProgram(smBase.getProgram());
+        smExt.setStatus(smBase.getStatus());
+    }
+    
+    private String getQuizzesResult(StudentModelI sm) {
+    	
+        if (sm.getPassingCount() != null && sm.getNotPassingCount() != null &&
+        	(sm.getPassingCount() > 0 || sm.getNotPassingCount() > 0)) {
+        	StringBuilder sb = new StringBuilder();
+        	sb.append(sm.getPassingCount()).append(" passed out of ");
+        	sb.append(sm.getPassingCount() + sm.getNotPassingCount());
+            return sb.toString();
+        }
+        else {
+        	return "";
+        }
+
+    }
 }
