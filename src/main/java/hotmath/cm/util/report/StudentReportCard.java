@@ -95,30 +95,37 @@ public class StudentReportCard {
         }
 
         CmReportCardDao rcDao = new CmReportCardDao();
-        StudentReportCardModelI rc = rcDao.getStudentReportCard(conn, stuUid, null, null);
-        
         CmStudentDao studentDao = new CmStudentDao();
-        StudentModelI sm = studentDao.getStudentModel(conn,stuUid,false);
 
         Document document = new Document();
         baos = new ByteArrayOutputStream();
-
         PdfWriter writer = PdfWriter.getInstance(document, baos);
+        
+        StudentReportCardModelI rc = rcDao.getStudentReportCard(conn, stuUid, null, null);
+        
+        List<Integer> uidList = new ArrayList<Integer>();
+        uidList.add(stuUid);
+        
+        StudentModelI smBase = studentDao.getStudentBaseSummaries(conn, adminId, uidList, true).get(0);
+        StudentModelI sm     = studentDao.getStudentExtendedSummaries(conn, uidList).get(0);
+        StudentSummaryReport.setBaseData(smBase, sm);
+        
+        //StudentModelI sm = studentDao.getStudentModel(conn,stuUid,false);
 
-        Phrase school = buildLabelContent("School: ", info.getSchoolName());
-        Phrase group = buildLabelContent("Group: ", sm.getGroup());
+        Phrase school = ReportUtils.buildParagraphLabel("School: ", info.getSchoolName());
+        Phrase group = ReportUtils.buildParagraphLabel("Group: ", sm.getGroup());
         String printDate = String.format("%1$tY-%1$tm-%1$td", Calendar.getInstance());
-        Phrase date = buildLabelContent("Today's Date: ", printDate);
+        Phrase date = ReportUtils.buildParagraphLabel("Today's Date: ", printDate);
 
         Date actDate = rc.getFirstActivityDate();
         String activityDate = (actDate != null) ? String.format("%1$tY-%1$tm-%1$td", actDate) : " ";
-        Phrase firstActivityDate = buildLabelContent("First activity: ", activityDate);
+        Phrase firstActivityDate = ReportUtils.buildParagraphLabel("First activity: ", activityDate);
 
         actDate = rc.getLastActivityDate();
         activityDate = (actDate != null) ? String.format("%1$tY-%1$tm-%1$td", actDate) : " ";
-        Phrase lastActivityDate = buildLabelContent("Last activity: ", activityDate);
+        Phrase lastActivityDate = ReportUtils.buildParagraphLabel("Last activity: ", activityDate);
 
-        Phrase student = buildLabelContent("Student: ", String.valueOf(sm.getName()));
+        Phrase student = ReportUtils.buildParagraphLabel("Student: ", String.valueOf(sm.getName()));
 
         StringBuilder sb = new StringBuilder();
         sb.append("CM-ReportCard");
@@ -159,7 +166,7 @@ public class StudentReportCard {
         document.open();
         document.add(Chunk.NEWLINE);
 
-        addProgramInfo(rc, document);
+        addProgramInfo(rc, sm, document);
 
         addQuizInfo(rc, document);
 
@@ -247,7 +254,7 @@ public class StudentReportCard {
         document.add(Chunk.NEWLINE);
     }
 
-    private void addProgramInfo(StudentReportCardModelI rc, Document document) throws DocumentException {
+    private void addProgramInfo(StudentReportCardModelI rc, StudentModelI sm, Document document) throws DocumentException {
         PdfPTable progTbl = new PdfPTable(1);
         progTbl.getDefaultCell().setBorder(PdfPCell.NO_BORDER);
 
@@ -266,13 +273,19 @@ public class StudentReportCard {
             sb.append(" assigned ").append(String.format("%1$tY-%1$tm-%1$td", assignedDate));
         }
         sb.append(": ");
-        Phrase initialProg = buildLabelContent(sb.toString(), initialProgDesc);
+        Phrase initialProg = ReportUtils.buildParagraphLabel(sb.toString(), initialProgDesc);
 
+        Boolean isCurrentProgCustom = sm.getProgram().isCustomProgram();
+        
         String lastProgDesc = rc.getLastProgramName();
-        if (lastProgDesc != null) {
-            lastProgDesc += (rc.getLastProgramStatus() != null) ? ", " + rc.getLastProgramStatus() : "";
+        
+        if (isCurrentProgCustom == false) {
+            if (lastProgDesc != null) {
+                lastProgDesc += (rc.getLastProgramStatus() != null) ? ", " + rc.getLastProgramStatus() : "";
+            }
         }
-        Phrase lastProg = buildLabelContent("Current program & section: ", lastProgDesc);
+        String currentProgLbl = (isCurrentProgCustom) ? "Current program: " : "Current program & section: ";
+        Phrase lastProg = ReportUtils.buildParagraphLabel(currentProgLbl, lastProgDesc);
         assignedDate = rc.getLastProgramDate();
 
         // don't include assigned date for current (last) program
@@ -284,25 +297,6 @@ public class StudentReportCard {
         progTbl.setWidthPercentage(100.0f);
         document.add(progTbl);
         document.add(Chunk.NEWLINE);
-    }
-
-    private Paragraph buildLabelContent(String label, String value) {
-        return buildLabelContent(label, value, true);
-    }
-
-    private Paragraph buildLabelContent(String label, String value, Boolean useDefault) {
-        if (value == null || value.trim().length() == 0) {
-            value = (useDefault) ? "n/a" : " ";
-        }
-        Phrase phrase = new Phrase(new Chunk(label, FontFactory.getFont(FontFactory.HELVETICA, 11, Font.BOLD,
-                new Color(0, 0, 0))));
-        Phrase content = new Phrase(new Chunk(value, FontFactory.getFont(FontFactory.HELVETICA, 10, Font.NORMAL,
-                new Color(0, 0, 0))));
-        phrase.add(content);
-        Paragraph p = new Paragraph();
-        p.add(phrase);
-        p.setIndentationLeft(30.0f);
-        return p;
     }
 
     private Phrase buildSectionLabel(String label) {
