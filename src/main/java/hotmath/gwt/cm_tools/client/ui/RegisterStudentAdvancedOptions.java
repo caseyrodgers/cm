@@ -79,7 +79,7 @@ public class RegisterStudentAdvancedOptions extends LayoutContainer {
 		fp.setLayout(new FormLayout());
 
 		passCombo = new PassPercentCombo(passPercentReqd);
-        setPassPercentSelection(isNew);
+        setPassPercentSelection();
 
         advOptions = new FieldSet();
         
@@ -149,7 +149,7 @@ public class RegisterStudentAdvancedOptions extends LayoutContainer {
         return fp;
 	}
 
-	private void setPassPercentSelection(boolean isNew) {
+	private void setPassPercentSelection() {
 		String passPercent = (String) advOptionsMap.get(StudentModelExt.PASS_PERCENT_KEY);
 		
 		if (passPercent == null && passPercentReqd) {
@@ -176,9 +176,16 @@ public class RegisterStudentAdvancedOptions extends LayoutContainer {
 	private Button resetButton(final FormPanel fp) {
 		Button cancelBtn = new Button("Reset", new SelectionListener<ButtonEvent>() {  
 	    	public void componentSelected(ButtonEvent ce) {
-                fp.reset();
+	    		
+				PassPercent p = passCombo.getStore().getAt(PassPercentCombo.DEFAULT_PERCENT_IDX);
+				passCombo.setOriginalValue(p);
+				passCombo.setValue(p);
+	    		
+	        	isShowWorkRequired.setValue(false);
+	            isTutoringEnabled.setValue(false);
 	        }  
 	    });
+		cancelBtn.setToolTip("Reset to default values");
 		return cancelBtn;
 	}
 	
