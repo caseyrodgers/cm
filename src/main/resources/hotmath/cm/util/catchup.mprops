@@ -1004,44 +1004,38 @@ order by lesson_name asc
 
 .key=ALL_USER_PROGRAM_SQL
 
-select c.id, c.user_id, c.pass_percent, u.admin_id, c.test_def_id, t.test_name, c.test_config_json, c.create_date
-from CM_USER_PROGRAM c
-JOIN HA_USER u on c.user_id = u.uid
-JOIN HA_TEST_DEF t on c.test_def_id = t.test_def_id
-where c.user_id = ?
+SELECT c.id, c.user_id, c.pass_percent, u.admin_id, c.test_def_id, t.test_name, c.test_config_json, c.create_date,
+       cp.id as custom_program_id,cp.name as custom_program_name
+FROM      CM_USER_PROGRAM c
+JOIN      HA_USER u             on c.user_id = u.uid
+JOIN      HA_TEST_DEF t         on c.test_def_id = t.test_def_id
+LEFT JOIN HA_CUSTOM_PROGRAM cp  on c.custom_program_id = cp.id
+WHERE c.user_id = ?
 
-
-
-
-
+####
 .key=CURRENT_USER_PROGRAM_SQL
 
-select c.id, c.user_id, c.pass_percent, u.admin_id, c.test_def_id, t.test_name, c.test_config_json, c.create_date,cp.id as custom_program_id,cp.name as custom_program_name
-from CM_USER_PROGRAM c
-JOIN HA_USER u on c.id = u.user_prog_id
-JOIN HA_TEST_DEF t on c.test_def_id = t.test_def_id
+SELECT c.id, c.user_id, c.pass_percent, u.admin_id, c.test_def_id, t.test_name, c.test_config_json, c.create_date,
+       cp.id as custom_program_id,cp.name as custom_program_name
+FROM      CM_USER_PROGRAM c
+JOIN      HA_USER u             on c.id = u.user_prog_id
+JOIN      HA_TEST_DEF t         on c.test_def_id = t.test_def_id
 LEFT JOIN HA_CUSTOM_PROGRAM cp  on c.custom_program_id = cp.id 
-where u.uid = ?
+WHERE u.uid = ?
 
+####
 .key=LOAD_USER_PROGRAM_SQL
 #
 #Load a named User Program record
 ##
 
-select c.id,
-       c.user_id,
-       c.pass_percent,
-       u.admin_id,
-       c.test_def_id,
-       t.test_name,
-       c.test_config_json,
-       c.create_date
-from   CM_USER_PROGRAM c
-       join HA_USER u
-         on c.id = u.user_prog_id
-       join HA_TEST_DEF t
-         on c.test_def_id = t.test_def_id
-where c.id = ?
+SELECT c.id, c.user_id, c.pass_percent, u.admin_id, c.test_def_id, t.test_name, c.test_config_json, c.create_date,
+       cp.id as custom_program_id,cp.name as custom_program_name
+FROM      CM_USER_PROGRAM c
+JOIN      HA_USER u             on c.id = u.user_prog_id
+JOIN      HA_TEST_DEF t         on c.test_def_id = t.test_def_id
+LEFT JOIN HA_CUSTOM_PROGRAM cp  on c.custom_program_id = cp.id
+WHERE c.id = ?
 
 
 .key=PROGRAM_QUIZ_COUNT
