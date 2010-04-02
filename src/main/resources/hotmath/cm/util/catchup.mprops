@@ -91,7 +91,7 @@ LEFT JOIN HA_TEST_RUN m
   on m.run_id =  x.run_id
 LEFT JOIN (select user_id, max(login_time) as login_time from HA_USER_LOGIN GROUP BY user_id) l on l.user_id = h.uid 
 LEFT JOIN v_HA_TEST_RUN_PNP_TOTALS q
-  on q.user_id = h.uid
+  on q.user_id = h.uid and p.custom_program_id is null
 LEFT JOIN (select uid, count(*) as tutoring_use from HA_USER_TUTORING_SESSION ts group by uid) ut on ut.uid = h.uid
 WHERE h.uid in (XXX) 
 
