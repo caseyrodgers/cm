@@ -997,7 +997,6 @@ public class CmStudentDao {
 
         PreparedStatement ps = null;
         try {
-            setTestCustomConfig(conn, sm, studyProgram.getCustomProgramId());
             String pp = sm.getPassPercent();
             if (pp != null) {
                 int passPcnt = Integer.parseInt(pp.substring(0, pp.indexOf("%")));
@@ -1086,12 +1085,6 @@ public class CmStudentDao {
         } finally {
             SqlUtilities.releaseResources(rs, ps2, null);
         }            
-    }
-    
-    private void setTestCustomConfig(final Connection conn, StudentModelI sm, Integer customProgramId) throws Exception {
-        CustomProgramModel customProgram = new CmCustomProgramDao().getCustomProgram(conn, customProgramId);
-        String testConfigJson = "{custom_program_id:" + customProgramId + "}";
-        sm.setJson(testConfigJson);
     }
 
 

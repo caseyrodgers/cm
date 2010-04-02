@@ -103,6 +103,7 @@ public class CmCustomProgramDao {
         PreparedStatement stmt=null;
         try {
             stmt = conn.prepareStatement(CmMultiLinePropertyReader.getInstance().getProperty("CUSTOM_PROGRAM_DEFINITION_BYID"));
+            stmt.setInt(1, progId);
             ResultSet rs = stmt.executeQuery();
             if(!rs.next())
                 throw new CmException("Custom Program not found: " + progId);

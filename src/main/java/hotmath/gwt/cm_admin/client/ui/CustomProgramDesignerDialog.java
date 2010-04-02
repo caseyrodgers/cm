@@ -66,7 +66,7 @@ public class CustomProgramDesignerDialog extends CmWindow {
 
 
         buildGui();
-
+        
         if(customProgram != null) {
             loadCustomProgramDefinition(customProgram);
             _isEditable = customProgram.getInUseCount() == 0; 
@@ -76,13 +76,14 @@ public class CustomProgramDesignerDialog extends CmWindow {
             _programName.setValue(customProgram.getProgramName());
             _isEditable=true;
         }
-        add(createInfoSection(_isEditable), new BorderLayoutData(LayoutRegion.NORTH,50));
+        
         enableForm(_isEditable);
         
         setVisible(true);
     }
 
-    ListView<CustomLessonModel> _listAll, _listSelected;
+    ListView<CustomLessonModel> _listAll = new ListView<CustomLessonModel>();
+    ListView<CustomLessonModel> _listSelected = new ListView<CustomLessonModel>();
     Button _btnClearAll, _btnSave;
     TextField<String> _programName = new TextField<String>();
     private void buildGui() {
@@ -93,8 +94,6 @@ public class CustomProgramDesignerDialog extends CmWindow {
         
         LayoutContainer lc = new LayoutContainer();
         lc.setLayout(new RowLayout(Orientation.HORIZONTAL));
-        
-        _listAll = new ListView<CustomLessonModel>();
        
         ListStore<CustomLessonModel> storeAll = new ListStore<CustomLessonModel>();
         storeAll.setStoreSorter(new StoreSorter<CustomLessonModel>() {
@@ -113,7 +112,6 @@ public class CustomProgramDesignerDialog extends CmWindow {
         _listAll.setStore(storeAll);
         _listAll.setTemplate(template);
 
-        _listSelected = new ListView<CustomLessonModel>();
         ListStore<CustomLessonModel> store = new ListStore<CustomLessonModel>();
         _listSelected.setStore(store);
         _listSelected.setTemplate(template);
@@ -131,6 +129,8 @@ public class CustomProgramDesignerDialog extends CmWindow {
         lc.add(new MyListContainer(_listSelected,"Lessons in Program",false), data);
 
         add(lc, new BorderLayoutData(LayoutRegion.CENTER));
+        add(createInfoSection(_isEditable), new BorderLayoutData(LayoutRegion.NORTH,50));
+        
 
         _btnClearAll = new Button("Clear All", new SelectionListener<ButtonEvent>() {
             @Override
