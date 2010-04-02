@@ -199,6 +199,39 @@ public class CmStudentDao {
         return l;
     }
     
+    public List<StudentModelI> getStudentBaseSummaries(final Connection conn, Integer adminUid, List<Integer> uids, Boolean isActive) throws Exception {
+        List<StudentModelI> l = null;
+
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+
+        try {
+        	Boolean tutoringEnabledForAdmin = isTutoringEnabledForAdmin(conn, adminUid);
+        	
+        	String sql = CmMultiLinePropertyReader.getInstance().getProperty("STUDENT_SUMMARY_BASE");
+        	StringBuilder sb = new StringBuilder(sql);
+        	sb.append(" WHERE a.aid = ? ");
+        	sb.append(" AND h.uid in (").append(getUidString(uids)).append(")");
+            sb.append(" AND h.is_active = ? ");
+            sb.append(" ORDER by h.user_name asc");
+        	
+            ps = conn.prepareStatement(sb.toString());
+            ps.setInt(1, adminUid);
+            ps.setInt(2, (isActive) ? 1 : 0);
+            rs = ps.executeQuery();
+
+            l = loadStudentBaseSummaries(conn, rs, tutoringEnabledForAdmin);
+            
+            loadChapterInfo(conn, l);
+        } catch (Exception e) {
+            logger.error(String.format("*** Error getting student base summaries for Admin uid: %d", adminUid), e);
+            throw new Exception("*** Error getting student base summary data ***");
+        } finally {
+            SqlUtilities.releaseResources(rs, ps, null);
+        }
+        return l;
+    }
+
     public List<StudentModelI> getStudentExtendedSummaries(final Connection conn, List<Integer> studentUids) throws Exception {
     	
     	List<StudentModelI> l = null;
