@@ -1,5 +1,6 @@
 package hotmath.gwt.cm_admin.server.model;
 
+import hotmath.cm.util.CmMultiLinePropertyReader;
 import hotmath.gwt.cm_tools.client.model.CustomLessonModel;
 import hotmath.gwt.cm_tools.client.model.CustomProgramModel;
 import hotmath.gwt.shared.client.rpc.action.CmArrayList;
@@ -74,13 +75,14 @@ public class CmCustomProgramDao {
      * @throws Exception
      */
     public CmList<CustomProgramModel> getCustomPrograms(final Connection conn, Integer adminId) throws Exception {
-        Statement stmt=null;
+        PreparedStatement stmt=null;
         try {
             CmList<CustomProgramModel> programs = new CmArrayList<CustomProgramModel>();
-            stmt = conn.createStatement();
-            ResultSet rs = stmt.executeQuery("select id, name from HA_CUSTOM_PROGRAM where admin_id = " + adminId  + " order by name");
+            stmt = conn.prepareStatement(CmMultiLinePropertyReader.getInstance().getProperty("CUSTOM_PROGRAM_DEFINITIONS_ALL"));
+            stmt.setInt(1, adminId);
+            ResultSet rs = stmt.executeQuery();
             while(rs.next()) {
-                CustomProgramModel prog = new CustomProgramModel(rs.getString("name"), rs.getInt("id"));
+                CustomProgramModel prog = new CustomProgramModel(rs.getString("name"), rs.getInt("id"), rs.getInt("assigned_count"), rs.getInt("inuse_count"));
                 programs.add(prog);
             }
             return programs;
@@ -98,13 +100,13 @@ public class CmCustomProgramDao {
      * @throws Exception
      */
     public CustomProgramModel getCustomProgram(final Connection conn, Integer progId) throws Exception {
-        Statement stmt=null;
+        PreparedStatement stmt=null;
         try {
-            stmt = conn.createStatement();
-            ResultSet rs = stmt.executeQuery("select id, name from HA_CUSTOM_PROGRAM where id = " + progId);
+            stmt = conn.prepareStatement(CmMultiLinePropertyReader.getInstance().getProperty("CUSTOM_PROGRAM_DEFINITION_BYID"));
+            ResultSet rs = stmt.executeQuery();
             if(!rs.next())
                 throw new CmException("Custom Program not found: " + progId);
-            return new CustomProgramModel(rs.getString("name"), rs.getInt("id"));
+            return new CustomProgramModel(rs.getString("name"), rs.getInt("id"), rs.getInt("assigned_count"), rs.getInt("inuse_count"));
         }
         finally {
             SqlUtilities.releaseResources(null,stmt, null);
@@ -114,15 +116,14 @@ public class CmCustomProgramDao {
     public CustomProgramModel getCustomProgram(final Connection conn, Integer adminId, String customProgramName) throws Exception {
         PreparedStatement stmt=null;
         try {
-            String sql = "select id, name from HA_CUSTOM_PROGRAM where admin_id = ? and name = ?";
-            stmt = conn.prepareStatement(sql);
+            stmt = conn.prepareStatement(CmMultiLinePropertyReader.getInstance().getProperty("CUSTOM_PROGRAM_DEFINITION_BYNAME"));
             stmt.setInt(1, adminId);
             stmt.setString(2, customProgramName);
             ResultSet rs = stmt.executeQuery();
             if(!rs.next())
                 throw new CmException("Custom Program not found for: " + adminId + ", " + customProgramName);
             
-            return new CustomProgramModel(rs.getString("name"), rs.getInt("id"));
+            return new CustomProgramModel(rs.getString("name"), rs.getInt("id"),rs.getInt("assigned_count"), rs.getInt("inuse_count"));
         }
         finally {
             SqlUtilities.releaseResources(null,stmt, null);
@@ -206,7 +207,7 @@ public class CmCustomProgramDao {
             
             saveChanges(conn, newProgId, name,lessons);
             
-            return new CustomProgramModel(name, newProgId);
+            return new CustomProgramModel(name, newProgId, 0, 0);
         }
         finally {
             SqlUtilities.releaseResources(null,stmt, null);

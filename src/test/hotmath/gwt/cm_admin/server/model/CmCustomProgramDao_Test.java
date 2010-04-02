@@ -18,6 +18,13 @@ public class CmCustomProgramDao_Test extends CmDbTestCase {
         if(_user == null)
             setupDemoAccount();
     }
+    
+    
+    public void testCustProgs() throws Exception {
+        /** requires row for samples HA_CUSTOM_PROGRAM */
+        assertTrue(new CmCustomProgramDao().getCustomPrograms(conn, 2).size() > 0);
+    }
+    
     public void testCreateNew() throws Exception {
         List<CustomLessonModel> lessons = new ArrayList<CustomLessonModel>();
         lessons.add(new CustomLessonModel("test lesson", "test file", "test subject"));
@@ -38,11 +45,6 @@ public class CmCustomProgramDao_Test extends CmDbTestCase {
 
     public void testGetAll() throws Exception {
         assertTrue(new CmCustomProgramDao().getAllLessons(conn).size() > 0);
-    }
-    
-    public void testCustProgs() throws Exception {
-        /** requires row for samples HA_CUSTOM_PROGRAM */
-        assertTrue(new CmCustomProgramDao().getCustomPrograms(conn, 12).size() > 0);
     }
 
 }

@@ -27,7 +27,6 @@ import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.store.Store;
-import com.extjs.gxt.ui.client.store.StoreFilter;
 import com.extjs.gxt.ui.client.store.StoreSorter;
 import com.extjs.gxt.ui.client.util.Margins;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
@@ -48,6 +47,7 @@ public class CustomProgramDesignerDialog extends CmWindow {
     CmAdminModel adminModel;
     CustomProgramModel customProgram;
     CmAsyncRequest callback;
+    boolean _isEditable;
 
     public CustomProgramDesignerDialog(CmAdminModel adminModel,CmAsyncRequest callback) {
         this(adminModel,callback, null);
@@ -66,19 +66,25 @@ public class CustomProgramDesignerDialog extends CmWindow {
 
 
         buildGui();
-        
+
         if(customProgram != null) {
             loadCustomProgramDefinition(customProgram);
+            _isEditable = customProgram.getInUseCount() == 0; 
         }
         else {
             createNewProgram();
             _programName.setValue(customProgram.getProgramName());
+            _isEditable=true;
         }
+        add(createInfoSection(_isEditable), new BorderLayoutData(LayoutRegion.NORTH,50));
+        enableForm(_isEditable);
+        
         setVisible(true);
     }
 
     ListView<CustomLessonModel> _listAll, _listSelected;
-
+    Button _btnClearAll, _btnSave;
+    TextField<String> _programName = new TextField<String>();
     private void buildGui() {
         setLayout(new BorderLayout());
         
@@ -112,9 +118,6 @@ public class CustomProgramDesignerDialog extends CmWindow {
         _listSelected.setStore(store);
         _listSelected.setTemplate(template);
 
-        new ListViewDragSource(_listAll);
-        new ListViewDragSource(_listSelected);
-
          
         new ListViewDropTarget(_listAll);
         ListViewDropTarget target = new ListViewDropTarget(_listSelected);
@@ -127,24 +130,26 @@ public class CustomProgramDesignerDialog extends CmWindow {
         lc.add(new MyListContainer(_listAll,"All Available Lessons",true), data);
         lc.add(new MyListContainer(_listSelected,"Lessons in Program",false), data);
 
-        add(createInfoSection(), new BorderLayoutData(LayoutRegion.NORTH,45));
         add(lc, new BorderLayoutData(LayoutRegion.CENTER));
 
-        
-        addButton(new Button("Clear All", new SelectionListener<ButtonEvent>() {
+        _btnClearAll = new Button("Clear All", new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent ce) {
                 getAllLessonData();
                 _listSelected.getStore().removeAll();
             }
-        }));        
+        });
+        _btnClearAll.setEnabled(false);
+        addButton(_btnClearAll);        
 
-        addButton(new Button("Save", new SelectionListener<ButtonEvent>() {
+        _btnSave = new Button("Save", new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent ce) {
                 saveChanges(customProgram);
             }
-        }));
+        });
+        _btnSave.setEnabled(false);
+        addButton(_btnSave);
         
         addButton(new Button("Cancel", new SelectionListener<ButtonEvent>() {
             @Override
@@ -152,7 +157,6 @@ public class CustomProgramDesignerDialog extends CmWindow {
                 close();
             }
         }));
-
 
         String ledgend = "<div style='position: absolute; top: 2px; left: 0;width: 260px;'>"
                 + "<div style='margin-right: 3px;float: left;' class='pre-alg'>Pre-Algebra</div>"
@@ -164,13 +168,30 @@ public class CustomProgramDesignerDialog extends CmWindow {
         Html html = new Html(ledgend);
         html.setToolTip("This color indicates highest appropriate level for the lesson.");
         getButtonBar().add(html);
-        
 
         getAllLessonData();
     }
+    
+    /** Enable form and prepare for editing.
+     * 
+     *  initially form is read-only, only after
+     *  checking that the program is not 'in-use'
+     *  is it enabled.
+     */
+    private void enableForm(boolean yn) {
+        if(yn) {
+            new ListViewDragSource(_listAll);
+            new ListViewDragSource(_listSelected);
+            _btnSave.setEnabled(true);
+            _btnClearAll.setEnabled(true);
+            _programName.setEnabled(true);
+        }
+        else {
+            
+        }
+    }
 
-    TextField<String> _programName;
-    private LayoutContainer createInfoSection() {
+    private LayoutContainer createInfoSection(boolean isEditable) {
         LayoutContainer lc = new LayoutContainer(new RowLayout(Orientation.HORIZONTAL));
         
         FormPanel fp = new FormPanel();
@@ -181,13 +202,15 @@ public class CustomProgramDesignerDialog extends CmWindow {
         fp.setFooter(false);
         fp.setFrame(false);
         fp.setBodyBorder(false);
-        _programName = new TextField<String>();
         _programName.setFieldLabel("Program Name");
         _programName.setValue("My Custom Program");
+        _programName.setEnabled(false);
         fp.add(_programName);
-        
         lc.add(fp);
-        Html html = new Html("<p style='padding: 7px 0; width: 220px;'>Drag and drop lessons from left side to create and reorder the custom program</p>");
+
+        
+        String msg = isEditable?"Drag and drop lessons from left side to create and reorder the custom program":"This program is in use and cannot be edited";
+        Html html = new Html("<p style='padding: 7px 0; width: 220px;'>" + msg + "</p>");
         lc.add(html);
         lc.setScrollMode(Scroll.AUTOX);
         return lc;
@@ -249,7 +272,7 @@ public class CustomProgramDesignerDialog extends CmWindow {
             @Override
             public void oncapture(CmList<CustomLessonModel> lessons) {
                 
-                /** make sure all values in selected are NOT in all
+                /** make sure lessons selected are NOT in all
                  * 
                  */
                 ListStore<CustomLessonModel> s = _listAll.getStore();
@@ -267,6 +290,7 @@ public class CustomProgramDesignerDialog extends CmWindow {
                 }
                 _listSelected.getStore().removeAll();
                 _listSelected.getStore().add(lessons);
+
                 CmBusyManager.setBusy(false);
             }
         }.register();

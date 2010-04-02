@@ -3,14 +3,15 @@ package hotmath.gwt.cm_tools.client.model;
 import hotmath.gwt.shared.client.rpc.Response;
 
 public class CustomProgramModel extends BaseModel implements Response {
-    
     public CustomProgramModel(){
         /** empty */
     }
     
-    public CustomProgramModel(String programName, Integer programId) {
+    public CustomProgramModel(String programName, Integer programId, Integer assignedCount, Integer inUseCount) {
         setProgramName(programName);
         setProgramId(programId);
+        setAssignedCount(assignedCount);
+        setInUseCount(inUseCount);
     }
     
     public void setProgramName(String programName) {
@@ -28,4 +29,22 @@ public class CustomProgramModel extends BaseModel implements Response {
     public Integer getProgramId() {
         return get("programId");
     }
+    
+    public void setAssignedCount(int ac) {
+        set("assignedCount", ac);
+    }
+    
+    public Integer getAssignedCount() {
+        return get("assignedCount");
+    }
+    
+    
+    public void setInUseCount(int ic) {
+        set("inUseCount", ic);
+    }
+    
+    public Integer getInUseCount() {
+        return get("inUseCount");
+    }
+    
 }
