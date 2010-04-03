@@ -60,7 +60,7 @@ public class CmReportCardDao {
 
 			 StudentUserProgramModel pm = filteredList.get(0);
 			
-			 String testName = (pm.getCustomProgramId() == 0) ? pm.getTestName() : pm.getCustomProgramName();
+			 String testName = (pm.getCustomProgramId() == 0) ? pm.getTestName() : "CP: " + pm.getCustomProgramName();
 
 			 List<String> chapList = pm.getConfig().getChapters();
 			 if (chapList != null && chapList.size() > 0) {
@@ -75,7 +75,7 @@ public class CmReportCardDao {
 			 rval.setInitialProgramDate(pm.getCreateDate());
 			 
 			 pm = filteredList.get(filteredList.size() - 1);
-			 testName = (pm.getCustomProgramId() == 0) ? pm.getTestName() : pm.getCustomProgramName();
+			 testName = (pm.getCustomProgramId() == 0) ? pm.getTestName() : "CP: " + pm.getCustomProgramName();
 			 chapList = pm.getConfig().getChapters();
 			 if (chapList != null && chapList.size() > 0) {
 				 // getChapters() returns a List - using only the first one
