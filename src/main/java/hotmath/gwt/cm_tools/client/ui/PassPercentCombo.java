@@ -9,7 +9,7 @@ import com.extjs.gxt.ui.client.widget.form.ComboBox;
 
 public class PassPercentCombo extends ComboBox<PassPercent> {
 	
-	public static final int DEFAULT_PERCENT_IDX = 2;
+	public static final int DEFAULT_PERCENT_IDX = 1;
 
     public PassPercentCombo(boolean passPercentReqd) {
 
