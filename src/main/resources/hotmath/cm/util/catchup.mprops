@@ -947,7 +947,7 @@ left outer join (select user_id, min(login_time) as first_login from HA_USER_LOG
 left outer join (select count(*) as quiz_count, test_id, run_id from HA_TEST_RUN group by test_id) q on q.test_id = t.test_id
 left outer join (select count(*) as passed_quiz_count, test_id, is_passing from HA_TEST_RUN group by test_id) pq on pq.test_id = t.test_id and pq.is_passing > 0
 left outer join (select sum(answered_correct) as correct, sum(answered_incorrect+not_answered) as incorrect, test_id from HA_TEST_RUN where is_passing>0 group by test_id) tr on tr.test_id = t.test_id
-where u.uid = ? 
+where u.uid = ?
 
 
 .key=LOGIN_COUNT
@@ -1005,7 +1005,7 @@ order by lesson_name asc
 .key=ALL_USER_PROGRAM_SQL
 
 SELECT c.id, c.user_id, c.pass_percent, u.admin_id, c.test_def_id, t.test_name, c.test_config_json, c.create_date,
-       cp.id as custom_program_id,cp.name as custom_program_name
+       cp.id as custom_program_id, cp.name as custom_program_name
 FROM      CM_USER_PROGRAM c
 JOIN      HA_USER u             on c.user_id = u.uid
 JOIN      HA_TEST_DEF t         on c.test_def_id = t.test_def_id
@@ -1016,7 +1016,7 @@ WHERE c.user_id = ?
 .key=CURRENT_USER_PROGRAM_SQL
 
 SELECT c.id, c.user_id, c.pass_percent, u.admin_id, c.test_def_id, t.test_name, c.test_config_json, c.create_date,
-       cp.id as custom_program_id,cp.name as custom_program_name
+       cp.id as custom_program_id, cp.name as custom_program_name
 FROM      CM_USER_PROGRAM c
 JOIN      HA_USER u             on c.id = u.user_prog_id
 JOIN      HA_TEST_DEF t         on c.test_def_id = t.test_def_id
@@ -1030,7 +1030,7 @@ WHERE u.uid = ?
 ##
 
 SELECT c.id, c.user_id, c.pass_percent, u.admin_id, c.test_def_id, t.test_name, c.test_config_json, c.create_date,
-       cp.id as custom_program_id,cp.name as custom_program_name
+       cp.id as custom_program_id, cp.name as custom_program_name
 FROM      CM_USER_PROGRAM c
 JOIN      HA_USER u             on c.id = u.user_prog_id
 JOIN      HA_TEST_DEF t         on c.test_def_id = t.test_def_id
@@ -1047,6 +1047,7 @@ from (
   where p.id in (XXX)
     and t.user_prog_id = p.id
     and tr.test_id = t.test_id
+    and p.custom_program_id is null
 ) c
 
 
@@ -1060,6 +1061,7 @@ from (
     and t.user_prog_id = p.id
     and tr.test_id = t.test_id
     and tr.is_passing > 0
+    and p.custom_program_id is null
 ) c
 
 .key=PROGRAM_AGGREGATE_QUIZ_RESULTS
@@ -1072,6 +1074,7 @@ from (
     and t.user_prog_id = p.id
     and tr.test_id = t.test_id
     and tr.is_passing > 0
+    and p.custom_program_id is null
 ) c
 
 
