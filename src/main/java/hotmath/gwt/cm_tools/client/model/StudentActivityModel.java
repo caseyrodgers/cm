@@ -24,8 +24,12 @@ public class StudentActivityModel extends BaseModel implements Response {
 		set(ACTIVITY_KEY, activity);
 	}
 
+	/** catch null program name to avoid nullexception 
+	 * 
+	 * @return
+	 */
 	public String getProgramDescr() {
-		return get(PROGRAM_KEY);
+		return get(PROGRAM_KEY)!=null?(String)get(PROGRAM_KEY):"Unknown Program";
 	}
 
 	public void setProgramDescr(String program) {
