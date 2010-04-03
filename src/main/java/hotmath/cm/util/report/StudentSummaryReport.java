@@ -169,8 +169,7 @@ public class StudentSummaryReport {
         tbl.addCell(cell);
     }
 
-    private void setBaseData(StudentModelI smBase, StudentModelI smExt) {
-    	
+    static public void setBaseData(StudentModelI smBase, StudentModelI smExt) {
         smExt.setName(smBase.getName());
         smExt.setPasscode(smBase.getPasscode());
         smExt.setShowWorkRequired(smBase.getShowWorkRequired());
@@ -186,7 +185,6 @@ public class StudentSummaryReport {
     }
     
     private String getQuizzesResult(StudentModelI sm) {
-    	
         if (sm.getPassingCount() != null && sm.getNotPassingCount() != null &&
         	(sm.getPassingCount() > 0 || sm.getNotPassingCount() > 0)) {
         	StringBuilder sb = new StringBuilder();
@@ -197,6 +195,5 @@ public class StudentSummaryReport {
         else {
         	return "";
         }
-
     }
 }
