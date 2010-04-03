@@ -69,7 +69,7 @@ public class CustomProgramDesignerDialog extends CmWindow {
         String programName="";
         if(customProgram != null) {
             loadCustomProgramDefinition(customProgram);
-            _isEditable = customProgram.getInUseCount() == 0;
+            _isEditable = customProgram.getAssignedCount() == 0;
             programName = customProgram.getProgramName();
         }
         else {
@@ -211,8 +211,8 @@ public class CustomProgramDesignerDialog extends CmWindow {
         lc.add(fp);
 
         
-        String msg = isEditable?"Drag and drop lessons from left side to create and reorder the custom program":"This program is in use and cannot be edited";
-        Html html = new Html("<p style='padding: 7px 0; width: 220px;'>" + msg + "</p>");
+        String msg = isEditable?"Drag and drop lessons from left side to create and reorder the custom program":"<span style='color: red;font-weight: bold'>This program is in use and cannot be edited</span>";
+        Html html = new Html("<p style='padding: 7px 0; width: 250px;'>" + msg + "</p>");
         lc.add(html);
         lc.setScrollMode(Scroll.AUTOX);
         return lc;

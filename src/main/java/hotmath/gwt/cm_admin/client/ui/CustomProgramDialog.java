@@ -122,6 +122,11 @@ public class CustomProgramDialog extends CmWindow {
             CatchupMathTools.showAlert("Select a custom program first");
             return;
         }
+        
+        if(sel.getAssignedCount() > 0) {
+            CatchupMathTools.showAlert("This program cannot be deleted because it is currently assigned to students.");
+            return;
+        }
 
         MessageBox.confirm("Delete Custom Program", "Are you sure you want to delete custom program '"
                 + sel.getProgramName() + "'?", new Listener<MessageBoxEvent>() {
