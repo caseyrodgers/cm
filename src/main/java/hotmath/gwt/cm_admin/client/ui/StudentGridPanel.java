@@ -218,6 +218,16 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
                 }
             });
             contextMenu.add(removeUser);
+
+            MenuItem clientTests = new MenuItem("Launch Client Tests");
+            clientTests.addSelectionListener(new SelectionListener<MenuEvent>() {
+                public void componentSelected(MenuEvent ce) {
+                    launchClientTests();
+                    contextMenu.hide();
+                }
+            });
+            contextMenu.add(clientTests);            
+            
         }
 
         _grid.setContextMenu(contextMenu);
@@ -237,6 +247,28 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
 
     public void refreshData() {
         getStudentsRPC(_cmAdminMdl.getId(), _grid.getStore(), null);
+    }
+    
+    
+    /** Launch each client into auto-test. At most launch
+     *  one page.
+     *  
+     */
+    private void launchClientTests() {
+        GWT.runAsync(new CmRunAsyncCallback() {
+            
+            @Override
+            public void onSuccess() {
+                if(Window.confirm("This will launch all clients in current page in auto-test model.  Are you sure?")) {
+                    List<StudentModelExt> students = _grid.getStore().getModels();
+                    for(int i=0,t=students.size();i<t;i++) {
+                        StudentModelExt student = students.get(i);
+                        String url = "/cm_student/CatchupMath.html?debug=true&type=auto_test&uid=" + student.getUid();
+                        Window.open(url, "_blank", "height=480,width=640,status=yes,scrollbars=1");
+                    }
+                }
+            }
+        });
     }
 
     /**
