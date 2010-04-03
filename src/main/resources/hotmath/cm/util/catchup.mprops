@@ -91,7 +91,7 @@ LEFT JOIN HA_TEST_RUN m
   on m.run_id =  x.run_id
 LEFT JOIN (select user_id, max(login_time) as login_time from HA_USER_LOGIN GROUP BY user_id) l on l.user_id = h.uid 
 LEFT JOIN v_HA_TEST_RUN_PNP_TOTALS q
-  on q.user_id = h.uid and p.custom_program_id is null
+  on q.user_id = h.uid
 LEFT JOIN (select uid, count(*) as tutoring_use from HA_USER_TUTORING_SESSION ts group by uid) ut on ut.uid = h.uid
 WHERE h.uid in (XXX) 
 
@@ -1321,33 +1321,4 @@ values(?,?,now());
 
 
  
-
-
-
-##################
-### CmCustomProgramDao
-#####################
-
-
-.key=CUSTOM_PROGRAM_DEFINITIONS_ALL
-
-select *
-from v_HA_CUSTOM_PROGRAM_INFO
-where admin_id = ?  
-order by name
-
-
-.key=CUSTOM_PROGRAM_DEFINITION_BYID
-
-select *
-from v_HA_CUSTOM_PROGRAM_INFO
-where id = ?  
-
-
-.key=CUSTOM_PROGRAM_DEFINITION_BYNAME
-
-select *
-from v_HA_CUSTOM_PROGRAM_INFO
-where admin_id = ? and name = ?
-
 
