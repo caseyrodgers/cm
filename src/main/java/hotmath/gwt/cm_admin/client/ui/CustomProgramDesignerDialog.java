@@ -76,7 +76,7 @@ public class CustomProgramDesignerDialog extends CmWindow {
             _programName.setValue(customProgram.getProgramName());
             _isEditable=true;
         }
-        
+        add(createInfoSection(_isEditable), new BorderLayoutData(LayoutRegion.NORTH,50));        
         enableForm(_isEditable);
         
         setVisible(true);
@@ -129,7 +129,7 @@ public class CustomProgramDesignerDialog extends CmWindow {
         lc.add(new MyListContainer(_listSelected,"Lessons in Program",false), data);
 
         add(lc, new BorderLayoutData(LayoutRegion.CENTER));
-        add(createInfoSection(_isEditable), new BorderLayoutData(LayoutRegion.NORTH,50));
+
         
 
         _btnClearAll = new Button("Clear All", new SelectionListener<ButtonEvent>() {
