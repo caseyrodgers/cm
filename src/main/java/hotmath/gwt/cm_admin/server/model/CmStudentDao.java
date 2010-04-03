@@ -38,6 +38,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.sql.Timestamp;
+import java.sql.Types;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -942,7 +943,7 @@ public class CmStudentDao {
                 ps.setInt(5, passPcnt);
                 ps.setTimestamp(6, new Timestamp(System.currentTimeMillis()));
                 ps.setString(7, sm.getJson());
-                ps.setInt(8, sp.getCustomProgramId());
+                ps.setNull(8, Types.INTEGER);  /** custom program is null */
             } else {
                 ps = conn.prepareStatement(CmMultiLinePropertyReader.getInstance().getProperty("INSERT_STUDENT_PROGRAM_NULL_PASS_PERCENT_SQL"));
                 ps.setInt(1, sm.getUid());
@@ -951,7 +952,7 @@ public class CmStudentDao {
                 ps.setString(4, sp.getSubjectId());
                 ps.setTimestamp(5, new Timestamp(System.currentTimeMillis()));
                 ps.setString(6, sm.getJson());
-                ps.setInt(7, sp.getCustomProgramId());
+                ps.setNull(7, Types.INTEGER);  /** custom program is null */
             }
             int result = ps.executeUpdate();
             if (result == 1) {
