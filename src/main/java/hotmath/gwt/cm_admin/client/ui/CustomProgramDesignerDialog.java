@@ -66,17 +66,19 @@ public class CustomProgramDesignerDialog extends CmWindow {
 
 
         buildGui();
-        
+        String programName="";
         if(customProgram != null) {
             loadCustomProgramDefinition(customProgram);
-            _isEditable = customProgram.getInUseCount() == 0; 
+            _isEditable = customProgram.getInUseCount() == 0;
+            programName = customProgram.getProgramName();
         }
         else {
             createNewProgram();
             _programName.setValue(customProgram.getProgramName());
             _isEditable=true;
+            programName = "My Custom Program";
         }
-        add(createInfoSection(_isEditable), new BorderLayoutData(LayoutRegion.NORTH,50));        
+        add(createInfoSection(_isEditable, programName), new BorderLayoutData(LayoutRegion.NORTH,50));        
         enableForm(_isEditable);
         
         setVisible(true);
@@ -191,7 +193,7 @@ public class CustomProgramDesignerDialog extends CmWindow {
         }
     }
 
-    private LayoutContainer createInfoSection(boolean isEditable) {
+    private LayoutContainer createInfoSection(boolean isEditable, String programName) {
         LayoutContainer lc = new LayoutContainer(new RowLayout(Orientation.HORIZONTAL));
         
         FormPanel fp = new FormPanel();
@@ -203,7 +205,7 @@ public class CustomProgramDesignerDialog extends CmWindow {
         fp.setFrame(false);
         fp.setBodyBorder(false);
         _programName.setFieldLabel("Program Name");
-        _programName.setValue("My Custom Program");
+        _programName.setValue(programName);
         _programName.setEnabled(false);
         fp.add(_programName);
         lc.add(fp);
