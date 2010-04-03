@@ -1325,3 +1325,29 @@ values(?,?,now());
 
  
 
+##################
+### CmCustomProgramDao
+#####################
+
+
+.key=CUSTOM_PROGRAM_DEFINITIONS_ALL
+
+select *
+from v_HA_CUSTOM_PROGRAM_INFO
+where admin_id = ?  
+order by name
+
+
+.key=CUSTOM_PROGRAM_DEFINITION_BYID
+
+select *
+from v_HA_CUSTOM_PROGRAM_INFO
+where id = ?  
+
+
+.key=CUSTOM_PROGRAM_DEFINITION_BYNAME
+
+select *
+from v_HA_CUSTOM_PROGRAM_INFO
+where admin_id = ? and name = ?
+
