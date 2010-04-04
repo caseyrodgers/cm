@@ -29,7 +29,7 @@ public class GenericVideoPlayer extends CmWindow {
          */
         SWFWidget swfWidget = new SWFWidget("flowplayer-3.1.5.swf?id=" + videoPlayerId, "100%", "100%", s);
 
-        String flashVars = "{'key':'$852288f15c37539e229','clip':{'url':'THE_VIDEO'},'playerId':'PLAYER_ID','playlist':[{'url':'THE_VIDEO'}]}";
+        String flashVars = "{'key':'$a12fd4b15a588479e9e','clip':{'url':'THE_VIDEO'},'playerId':'PLAYER_ID','playlist':[{'url':'THE_VIDEO'}]}";
         
         flashVars = flashVars.replaceAll("THE_VIDEO", videoToPlay);
         flashVars = flashVars.replaceAll("PLAYER_ID", videoPlayerId);
