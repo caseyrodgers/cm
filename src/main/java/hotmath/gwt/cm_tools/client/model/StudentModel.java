@@ -19,7 +19,6 @@ public class StudentModel implements StudentModelI {
     Integer totalUsage;
     Integer passingCount;
 	Integer notPassingCount;
-    Boolean tutoringAvail;
     Integer tutoringUse;
 
     String tutoringState;
@@ -29,10 +28,12 @@ public class StudentModel implements StudentModelI {
     Boolean isDemoUser;
     String passPercent;
     Boolean programChanged;
-    Boolean showWorkRequired;
     
     StudentProgramModel program = new StudentProgramModel();
 
+    Boolean showWorkRequired;
+    Boolean tutoringAvail;
+    StudentSettingsModel settings = new StudentSettingsModel();
 
     public StudentModel() {
     }
@@ -255,4 +256,14 @@ public class StudentModel implements StudentModelI {
     public void setProgram(StudentProgramModel program) {
         this.program = program;
     }
+
+	@Override
+	public StudentSettingsModel getSettings() {
+		return settings;
+	}
+
+	@Override
+	public void setSettings(StudentSettingsModel settings) {
+		this.settings = settings;
+	}
 }

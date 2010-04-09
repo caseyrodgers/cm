@@ -13,8 +13,6 @@ public class StudentModelBasic implements StudentModelI, IsSerializable{
     Integer uid;
     String name;
     String passcode;
-    Boolean showWorkRequired;
-    Boolean tutorAvailable;
     Integer notPassingCount;
     Integer passingCount;
     Integer tutoringUse;
@@ -23,11 +21,15 @@ public class StudentModelBasic implements StudentModelI, IsSerializable{
     String subjId;
     String chapter;
     String json;
-    String passPercent;
     Boolean isDemoUser;
 
     StudentProgramModel program = new StudentProgramModel();
+    
+    Boolean showWorkRequired;
+    Boolean tutorAvailable;
+    String passPercent;
 
+    StudentSettingsModel settings = new StudentSettingsModel();
     
     public Boolean getTutorAvailable() {
         return tutorAvailable;
@@ -334,5 +336,15 @@ public class StudentModelBasic implements StudentModelI, IsSerializable{
     @Override
     public void setProgram(StudentProgramModel studyProgram) {
         program = studyProgram;
-    }	
+    }
+
+    @Override
+	public StudentSettingsModel getSettings() {
+		return settings;
+	}
+
+    @Override
+	public void setSettings(StudentSettingsModel settings) {
+		this.settings = settings;
+	}	
 }

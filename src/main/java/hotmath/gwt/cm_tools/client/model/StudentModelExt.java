@@ -24,21 +24,24 @@ public class StudentModelExt extends BaseModel implements Serializable, StudentM
     public static final String SHOW_WORK_KEY = "show-work";
     public static final String SHOW_WORK_STATE_KEY = "show-work-state";
     public static final String TOTAL_USAGE_KEY = "total-usage";
-    public static final String TUTORING_AVAIL_KEY = "tutoring-avail";
     public static final String TUTORING_STATE_KEY = "tutoring-state";
     public static final String TUTORING_USE_KEY = "tutoring-use";
     public static final String HAS_TUTORING_USE_KEY = "has-tutoring-use";
     public static final String NAME_KEY = "name";
     public static final String PASSCODE_KEY = "passcode";
-    public static final String PASS_PERCENT_KEY = "pass-percent";
     public static final String BACKGROUND_STYLE = "background_style";
     public static final String DEMO_USER_KEY = "demo_user";
     public static final String PROGRAM_DESCR_KEY = "program";
     public static final String PASSING_COUNT_KEY = "passing-count";
     public static final String HAS_PASSING_COUNT_KEY = "has-passing-count";
     public static final String NOT_PASSING_COUNT_KEY = "not-passing-count";
+
     public static final String PROGRAM_KEY = "studyProgram";
-    
+    public static final String SETTINGS_KEY = "optionSettings";
+    public static final String PASS_PERCENT_KEY = "pass-percent";
+    public static final String TUTORING_AVAIL_KEY = "tutoring-avail";
+    public static final String LIMIT_GAMES_KEY = "limit-games";
+    public static final String STOP_AT_PROGRAM_END_KEY = "stop-at-program-end";
     
     private Boolean hasExtendedData = false;
 
@@ -85,6 +88,7 @@ public class StudentModelExt extends BaseModel implements Serializable, StudentM
         set(PROGRAM_DESCR_KEY, student.getProgram().getProgramDescription());
         
         set(PROGRAM_KEY, student.getProgram());
+        set(SETTINGS_KEY, student.getSettings());
     }
 
     public void assignExtendedData(StudentModelI sm) {
@@ -394,13 +398,22 @@ public class StudentModelExt extends BaseModel implements Serializable, StudentM
 	public void setHasExtendedData(Boolean val) {
 		this.hasExtendedData = val;
 	}
-	
-	
+
 	public StudentProgramModel getProgram() {
 	    return get(PROGRAM_KEY);
 	}
 
 	public void setProgram(StudentProgramModel studyProgram) {
 	    set(PROGRAM_KEY, studyProgram);
+	}
+
+	@Override
+	public StudentSettingsModel getSettings() {
+		return get(SETTINGS_KEY);
+	}
+
+	@Override
+	public void setSettings(StudentSettingsModel optionSettings) {
+		set(SETTINGS_KEY, optionSettings);
 	}
 }

@@ -21,9 +21,7 @@ public class StudentModelBase implements IsSerializable, StudentModelI {
     String  name;
     String  passcode;
     String  email;
-    Boolean isTutorAvailable;
 	String  backgroundStyle;
-    Boolean isShowWorkRequired;
 	Boolean isDemoUser;
 	String  groupId;
 	String  group;
@@ -31,7 +29,6 @@ public class StudentModelBase implements IsSerializable, StudentModelI {
 	Integer userProgramId;
 	
 	String chapter;
-	String passPercent;
 	String progId;
 	String programDescr;
 	String status;
@@ -39,7 +36,12 @@ public class StudentModelBase implements IsSerializable, StudentModelI {
 	String testConfigJson;
 	
 	StudentProgramModel program = new StudentProgramModel();
+	
+    Boolean isShowWorkRequired;
+    Boolean isTutorAvailable;
+	String passPercent;
 
+	StudentSettingsModel settings = new StudentSettingsModel();
 
     GroupInfoModelI groupModel;
 
@@ -340,4 +342,14 @@ public class StudentModelBase implements IsSerializable, StudentModelI {
     public void setProgram(StudentProgramModel studyProgram) {
         this.program = studyProgram;
     }
+
+    @Override
+	public StudentSettingsModel getSettings() {
+		return settings;
+	}
+
+    @Override
+	public void setSettings(StudentSettingsModel settings) {
+		this.settings = settings;
+	}
 }

@@ -108,4 +108,8 @@ public interface StudentModelI extends Response {
 	public StudentProgramModel getProgram();
 	
 	public void setProgram(StudentProgramModel studyProgram);
+	
+	public StudentSettingsModel getSettings();
+	
+	public void setSettings(StudentSettingsModel optionSettings);
 }
