@@ -343,7 +343,6 @@ public class ManageGroupsWindow extends CmWindow {
     }
 
     private void handleSelfRegGroup(final GroupInfoModel gim) {
-
         new RetryAction<StudentModelI>() {
             @Override
             public void attempt() {
@@ -362,9 +361,7 @@ public class ManageGroupsWindow extends CmWindow {
                 }
             }
         }.register();
-
     }
-
 }
 
 /** Provide standard button sizes and configuration
@@ -466,12 +463,10 @@ class GroupManagerGlobalSettings extends CmWindow {
                 close();
             }
         });
-
         addButton(close);
     }
 
     private void applyChanges() {
-
         new RetryAction<RpcData>() {
             @Override
             public void attempt() {
@@ -494,6 +489,5 @@ class GroupManagerGlobalSettings extends CmWindow {
             	CmBusyManager.setBusy(false);
             }
         }.register();
-        
     }
 }
