@@ -9,6 +9,7 @@ import hotmath.gwt.cm_tools.client.model.StudentModel;
 import hotmath.gwt.cm_tools.client.model.StudentModelExt;
 import hotmath.gwt.cm_tools.client.model.StudentModelI;
 import hotmath.gwt.cm_tools.client.model.StudentProgramModel;
+import hotmath.gwt.cm_tools.client.model.StudentSettingsModel;
 import hotmath.gwt.cm_tools.client.model.StudyProgramModel;
 import hotmath.gwt.cm_tools.client.model.SubjectModel;
 import hotmath.gwt.cm_tools.client.service.CmServiceAsync;
@@ -74,6 +75,7 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
 	private boolean passPercentReqd;
 	
 	private StudentModelI stuMdl;
+	private StudentSettingsModel stuSettingsMdl;
 	protected CmAdminModel cmAdminMdl;
 	private int inProcessCount;
 	private String subjectId;
@@ -92,7 +94,7 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
 	
 	private TextField<String> userName;
 	
-	private Map<String, Object> advOptionsMap;
+	//private Map<String, Object> advOptionsMap;
 	
 	private int formHeight = 410;
 	protected int formWidth  = 475;
@@ -112,8 +114,7 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
 		if (stuMdl != null) {
 			subjectId = stuMdl.getProgram().getSubjectId();
 			passPercent = stuMdl.getPassPercent();
-			showWorkRequired = stuMdl.getShowWorkRequired();
-			tutoringEnabled = stuMdl.getTutoringAvail();
+			stuSettingsMdl = stuMdl.getSettings();
 		}
 
 		cmAdminMdl = cm;
@@ -278,8 +279,6 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
 	}
 
 	private String  passPercent;
-	private boolean showWorkRequired;
-	private boolean tutoringEnabled;
 
 	private Button advancedOptionsBtn() {
 		Button btn = new Button("Advanced Options");
@@ -291,16 +290,21 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
 					@Override
 					void setAdvancedOptions(Map<String, Object> optionMap) {
 
-						tutoringEnabled = (Boolean) optionMap.get(StudentModelExt.TUTORING_AVAIL_KEY);
-						showWorkRequired = (Boolean) optionMap.get(StudentModelExt.SHOW_WORK_KEY);
+						stuSettingsMdl = (StudentSettingsModel) optionMap.get(StudentModelExt.SETTINGS_KEY);
 						passPercent = (String) optionMap.get(StudentModelExt.PASS_PERCENT_KEY);
 						
 					}
                 };
-                advOptionsMap = new HashMap <String,Object> ();
+                final Map<String,Object>advOptionsMap = new HashMap <String,Object> ();
+                final StudentSettingsModel ssm = new StudentSettingsModel();
+
+                ssm.setLimitGames(stuSettingsMdl.getLimitGames());
+                ssm.setShowWorkRequired(stuSettingsMdl.getShowWorkRequired());
+                ssm.setStopAtProgramEnd(stuSettingsMdl.getStopAtProgramEnd());
+                ssm.setTutoringAvailable(stuSettingsMdl.getTutoringAvailable());
+                
                 advOptionsMap.put(StudentModelExt.PASS_PERCENT_KEY, passPercent);
-                advOptionsMap.put(StudentModelExt.SHOW_WORK_KEY, showWorkRequired);
-                advOptionsMap.put(StudentModelExt.TUTORING_AVAIL_KEY, tutoringEnabled);
+                advOptionsMap.put(StudentModelExt.SETTINGS_KEY, ssm);
 
                 new RegisterStudentAdvancedOptions(callback, cmAdminMdl, advOptionsMap, isNew, passPercentReqd).setVisible(true);              
             }
@@ -852,8 +856,7 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
         //sm.setEmail(email);
         sm.getProgram().setProgramDescription(prog);
         sm.setGroupId(groupId);
-        sm.setTutoringAvail(tutoringEnabled);
-        sm.setShowWorkRequired(showWorkRequired);
+        sm.setSettings(stuSettingsMdl);
         sm.setGroup(group);
         sm.setAdminUid(cmAdminMdl.getId());
         sm.setPassPercent(passPercent);
@@ -927,11 +930,9 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
                 stuChanged = true;
             }
 
-            if (valueChanged(stuMdl.getTutoringAvail(), tutoringEnabled))
+            if (! stuChanged && settingsChanged(stuMdl.getSettings(), stuSettingsMdl)) {
             	stuChanged = true;
-            
-            if (valueChanged(stuMdl.getShowWorkRequired(), showWorkRequired))
-            	stuChanged = true;
+            }
 
             if (valueChanged(stuMdl.getPassPercent(), passPercent))
             	passPercentChanged = ! sm.getProgramChanged();
@@ -945,28 +946,31 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
         }	    
 	}
 	
-	   private boolean isDifferentProgram(StudentModelI stuMdl, String prog) {
-	        if(prog.equals("Custom")) {
+	private boolean isDifferentProgram(StudentModelI stuMdl, String prog) {
+	    if (prog.equals("Custom")) {
 	            
-	            /** compare the name, maybe ... 
-	             * for now always update
-	             * 
-	             */
-	            return true;
-	        }
-	        else {
-	            return !stuMdl.getProgram().getProgramDescription().equals(prog);
-	        }
+	        /** compare the name, maybe ... 
+	         * for now always update
+	         * 
+	         */
+	        return true;
 	    }
+	    else {
+	        return !stuMdl.getProgram().getProgramDescription().equals(prog);
+	    }
+	}
 
-	private boolean valueChanged(Boolean origValue, Boolean newValue) {
+	private boolean settingsChanged(StudentSettingsModel origValue, StudentSettingsModel newValue) {
         if (origValue == null && newValue != null) return true;
-        
-        if (origValue != null && ! origValue.equals(newValue)) return true;
-        
-        if (origValue != null && origValue.equals(newValue)) return false;
-        
-        return false;
+
+        if (origValue != null && newValue == null) return true;
+
+        if (origValue == null && newValue == null) return false;
+
+        return ( ! origValue.getLimitGames().equals(newValue.getLimitGames()) ||
+        		 ! origValue.getShowWorkRequired().equals(newValue.getShowWorkRequired()) ||
+        		 ! origValue.getStopAtProgramEnd().equals(newValue.getStopAtProgramEnd()) ||
+        		 ! origValue.getTutoringAvailable().equals(newValue.getTutoringAvailable()));
 	}
 
 	private boolean valueChanged(String origValue, String newValue) {

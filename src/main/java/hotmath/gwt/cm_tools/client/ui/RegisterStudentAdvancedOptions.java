@@ -2,6 +2,7 @@ package hotmath.gwt.cm_tools.client.ui;
 
 import hotmath.gwt.cm_tools.client.model.CmAdminModel;
 import hotmath.gwt.cm_tools.client.model.StudentModelExt;
+import hotmath.gwt.cm_tools.client.model.StudentSettingsModel;
 import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
 
 import java.util.HashMap;
@@ -36,15 +37,19 @@ public class RegisterStudentAdvancedOptions extends LayoutContainer {
 	private FieldSet advOptions;
 	private CheckBox isShowWorkRequired;
 	private CheckBox isTutoringEnabled;
+	private CheckBox isGamesLimited;
+	private CheckBox isStopAtProgramEnd;
 	private CheckBoxGroup requireShowWork;
 	private CheckBoxGroup enableTutoring;
+	private CheckBoxGroup limitGames;
+	private CheckBoxGroup stopAtProgramEnd;
 
 	private ComboBox <PassPercent> passCombo;
 
 	private FieldSet fs;
 	private CmAdminModel cmAdminMdl;
-	private int formHeight = 190;
-	private int formWidth  = 270;
+	private int formHeight = 240;
+	private int formWidth  = 330;
 	private AdvOptCallback callback;
 	private boolean passPercentReqd;
 	private Map<String,Object> advOptionsMap;
@@ -68,7 +73,7 @@ public class RegisterStudentAdvancedOptions extends LayoutContainer {
 	
 	private FormPanel optionsForm(boolean isNew, boolean passPercentReqd) {
 		FormPanel fp = new FormPanel();
-		fp.setLabelWidth(120);
+		fp.setLabelWidth(180);
 		fp.setHeight(formHeight);
 		fp.setFooter(true);
 		fp.setFrame(false);
@@ -93,8 +98,9 @@ public class RegisterStudentAdvancedOptions extends LayoutContainer {
 
 		isShowWorkRequired = new CheckBox();
         isShowWorkRequired.setId(StudentModelExt.SHOW_WORK_KEY);
+        Boolean value = ((StudentSettingsModel) advOptionsMap.get(StudentModelExt.SETTINGS_KEY)).getShowWorkRequired();
         if (! isNew) {
-        	isShowWorkRequired.setValue((Boolean) advOptionsMap.get(StudentModelExt.SHOW_WORK_KEY));
+        	isShowWorkRequired.setValue(((StudentSettingsModel) advOptionsMap.get(StudentModelExt.SETTINGS_KEY)).getShowWorkRequired());
         }
         else {
         	// require 'Show Work' OFF by default
@@ -107,10 +113,42 @@ public class RegisterStudentAdvancedOptions extends LayoutContainer {
         requireShowWork.add(isShowWorkRequired);
         advOptions.add(requireShowWork);
 
+        isGamesLimited = new CheckBox();
+        isGamesLimited.setId(StudentModelExt.LIMIT_GAMES_KEY);
+        if (! isNew) {
+            isGamesLimited.setValue(((StudentSettingsModel) advOptionsMap.get(StudentModelExt.SETTINGS_KEY)).getLimitGames());
+        }
+        else {
+            // enable tutoring OFF by default
+            isGamesLimited.setValue(false);
+        }        
+
+        limitGames = new CheckBoxGroup();
+        limitGames.setFieldLabel("Limit Games to One per Lesson");
+        limitGames.setId(StudentModelExt.LIMIT_GAMES_KEY);
+		limitGames.add(isGamesLimited);
+		advOptions.add(limitGames);
+
+        isStopAtProgramEnd = new CheckBox();
+        isStopAtProgramEnd.setId(StudentModelExt.STOP_AT_PROGRAM_END_KEY);
+        if (! isNew) {
+            isStopAtProgramEnd.setValue(((StudentSettingsModel) advOptionsMap.get(StudentModelExt.SETTINGS_KEY)).getStopAtProgramEnd());
+        }
+        else {
+            // enable tutoring OFF by default
+            isStopAtProgramEnd.setValue(false);
+        }        
+
+        stopAtProgramEnd = new CheckBoxGroup();
+        stopAtProgramEnd.setFieldLabel("Stop at End of Program");
+        stopAtProgramEnd.setId(StudentModelExt.STOP_AT_PROGRAM_END_KEY);
+		stopAtProgramEnd.add(isStopAtProgramEnd);
+		advOptions.add(stopAtProgramEnd);
+
         isTutoringEnabled = new CheckBox();
         isTutoringEnabled.setId(StudentModelExt.TUTORING_AVAIL_KEY);
         if (! isNew) {
-            isTutoringEnabled.setValue((Boolean) advOptionsMap.get(StudentModelExt.TUTORING_AVAIL_KEY));
+            isTutoringEnabled.setValue(((StudentSettingsModel) advOptionsMap.get(StudentModelExt.SETTINGS_KEY)).getTutoringAvailable());
         }
         else {
             // enable tutoring OFF by default
@@ -122,7 +160,7 @@ public class RegisterStudentAdvancedOptions extends LayoutContainer {
         enableTutoring.setId(StudentModelExt.TUTORING_AVAIL_KEY);
 		enableTutoring.add(isTutoringEnabled);
 		advOptions.add(enableTutoring);
-		
+
 		advOptWindow.setHeading((isNew)?"Set Options":"Edit Options");
 		advOptWindow.setWidth(formWidth+10);
 		advOptWindow.setHeight(formHeight+20);
@@ -183,6 +221,8 @@ public class RegisterStudentAdvancedOptions extends LayoutContainer {
 	    		
 	        	isShowWorkRequired.setValue(false);
 	            isTutoringEnabled.setValue(false);
+	            isGamesLimited.setValue(false);
+	            isStopAtProgramEnd.setValue(false);
 	        }  
 	    });
 		cancelBtn.setToolTip("Reset to default values");
@@ -205,15 +245,17 @@ public class RegisterStudentAdvancedOptions extends LayoutContainer {
 	    		PassPercent pp = passCombo.getValue();
 	        	String passPercent = (pp != null) ? pp.getPassPercent() : null;
 
-	        	Boolean showWorkRequired = isShowWorkRequired.getValue();
-	        	
-                Boolean tutoringEnabled = isTutoringEnabled.getValue();
+                StudentSettingsModel ssm = new StudentSettingsModel();
+                
+                ssm.setShowWorkRequired(isShowWorkRequired.getValue());
+                ssm.setTutoringAvailable(isTutoringEnabled.getValue());
+                ssm.setStopAtProgramEnd(isStopAtProgramEnd.getValue());
+                ssm.setLimitGames(isGamesLimited.getValue());
                 
                 Map<String, Object> optionMap = new HashMap<String, Object>();
                 
                 optionMap.put(StudentModelExt.PASS_PERCENT_KEY, passPercent);
-                optionMap.put(StudentModelExt.SHOW_WORK_KEY, showWorkRequired);
-                optionMap.put(StudentModelExt.TUTORING_AVAIL_KEY, tutoringEnabled);
+                optionMap.put(StudentModelExt.SETTINGS_KEY, ssm);
                 
                 callback.setAdvancedOptions(optionMap);
 
