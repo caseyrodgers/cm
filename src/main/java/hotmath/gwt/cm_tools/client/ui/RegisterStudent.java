@@ -860,7 +860,8 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
         //sm.setEmail(email);
         sm.getProgram().setProgramDescription(prog);
         sm.setGroupId(groupId);
-        sm.setSettings(stuSettingsMdl);
+        if(stuSettingsMdl != null)
+            sm.setSettings(stuSettingsMdl);
         sm.setGroup(group);
         sm.setAdminUid(cmAdminMdl.getId());
         sm.setPassPercent(passPercent);

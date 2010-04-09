@@ -4,6 +4,7 @@ import hotmath.cm.server.model.CmUserProgramDao;
 import hotmath.gwt.cm.server.CmDbTestCase;
 import hotmath.gwt.cm_admin.server.model.CmStudentDao;
 import hotmath.gwt.cm_tools.client.model.StudentActiveInfo;
+import hotmath.gwt.cm_tools.client.model.StudentModelBasic;
 import hotmath.gwt.cm_tools.client.model.StudentModelI;
 import hotmath.gwt.cm_tools.client.model.StudentProgramModel;
 import hotmath.gwt.shared.client.model.UserProgramIsNotActiveException;
@@ -31,6 +32,18 @@ public class CmStudentDao_Test extends CmDbTestCase {
         _dao = new CmStudentDao();
     }
     
+    
+    public void testAddStudent() throws Exception  {
+        StudentModelI sm = new StudentModelBasic();
+        sm.setName("name_" + System.currentTimeMillis());
+        sm.setAdminUid(_user.getAid());
+        sm.getProgram().setProgramType(CmProgram.PREALG_PROF.getProgramType());
+        sm.getProgram().setSubjectId(CmProgram.PREALG_PROF.getSubject());
+        sm.setGroupId("1");
+        sm.setPasscode("pass_" + System.currentTimeMillis());
+        StudentModelI sm2 = _dao.addStudent(conn,sm);
+        assertNotNull(sm2);
+    }
     
     public void testAssignCustomProgram() throws Exception {
         StudentProgramModel spm = new StudentProgramModel();
