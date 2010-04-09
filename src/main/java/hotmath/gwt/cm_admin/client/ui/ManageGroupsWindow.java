@@ -395,13 +395,15 @@ class GroupManagerGlobalSettings extends CmWindow {
     GroupInfoModel gim;
     CheckBox showWorkRequired;
     CheckBox tutoringAllowed;
+    CheckBox limitGames;
+    CheckBox stopAtProgramEnd;
     
     CmAdminModel cm;
     public GroupManagerGlobalSettings(CmAdminModel cm, GroupInfoModel gim) {
         this.cm = cm;
         this.gim = gim;
         setHeading("Group Settings for '" + gim.getName() + "'" );
-        setSize(400,230);
+        setSize(400,290);
         drawGui();
         setModal(true);
         setResizable(false);
@@ -415,16 +417,26 @@ class GroupManagerGlobalSettings extends CmWindow {
         form.getHeader().setVisible(false);
         FieldSet fs = new FieldSet();
         FormLayout fl = new FormLayout();
-        fl.setLabelWidth(130);
+        fl.setLabelWidth(175);
         fs.setLayout(fl);
         fs.setHeading("Group Settings");
         showWorkRequired = new CheckBox();
-        showWorkRequired.setFieldLabel("Show Work Required");
+        showWorkRequired.setFieldLabel("Require Show Work");
         showWorkRequired.setBoxLabel("");
         fs.add(showWorkRequired);
         
+        limitGames = new CheckBox();
+        limitGames.      setFieldLabel("Limit Games to One Per Lesson");
+        limitGames.setBoxLabel("");
+        fs.add(limitGames);
+
+        stopAtProgramEnd = new CheckBox();
+        stopAtProgramEnd.setFieldLabel("Stop at End of Program");
+        stopAtProgramEnd.setBoxLabel("");
+        fs.add(stopAtProgramEnd);
+
         tutoringAllowed = new CheckBox();
-        tutoringAllowed.setFieldLabel("Tutoring Allowed");
+        tutoringAllowed. setFieldLabel("Tutoring Enabled");
         tutoringAllowed.setBoxLabel("");
         fs.add(tutoringAllowed);
 
@@ -469,7 +481,9 @@ class GroupManagerGlobalSettings extends CmWindow {
                 action.setGroupId(gim.getId());
                 action.setShowWorkRequired(showWorkRequired.getValue());
                 action.setDisallowTutoring( !tutoringAllowed.getValue());
-                action.setPassPercent(70);
+                action.setStopAtProgramEnd(stopAtProgramEnd.getValue());
+                action.setLimitGames(limitGames.getValue());                
+                action.setPassPercent(null);
                 CmShared.getCmService().execute(action, this);
             }
 
