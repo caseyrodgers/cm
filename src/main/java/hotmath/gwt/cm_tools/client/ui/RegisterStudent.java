@@ -289,20 +289,20 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
                 AdvOptCallback callback = new AdvOptCallback() {
 					@Override
 					void setAdvancedOptions(Map<String, Object> optionMap) {
-
 						stuSettingsMdl = (StudentSettingsModel) optionMap.get(StudentModelExt.SETTINGS_KEY);
 						passPercent = (String) optionMap.get(StudentModelExt.PASS_PERCENT_KEY);
-						
 					}
                 };
                 final Map<String,Object>advOptionsMap = new HashMap <String,Object> ();
                 final StudentSettingsModel ssm = new StudentSettingsModel();
 
-                ssm.setLimitGames(stuSettingsMdl.getLimitGames());
-                ssm.setShowWorkRequired(stuSettingsMdl.getShowWorkRequired());
-                ssm.setStopAtProgramEnd(stuSettingsMdl.getStopAtProgramEnd());
-                ssm.setTutoringAvailable(stuSettingsMdl.getTutoringAvailable());
-                
+                /** only set options if not null */
+                if(stuSettingsMdl != null) {
+                    ssm.setLimitGames(stuSettingsMdl.getLimitGames());
+                    ssm.setShowWorkRequired(stuSettingsMdl.getShowWorkRequired());
+                    ssm.setStopAtProgramEnd(stuSettingsMdl.getStopAtProgramEnd());
+                    ssm.setTutoringAvailable(stuSettingsMdl.getTutoringAvailable());
+                }
                 advOptionsMap.put(StudentModelExt.PASS_PERCENT_KEY, passPercent);
                 advOptionsMap.put(StudentModelExt.SETTINGS_KEY, ssm);
 
@@ -561,6 +561,10 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
             @Override
             public void onFailure(Throwable caught) {
                 CmBusyManager.setBusy(false);
+                if(caught.getMessage().indexOf("already in use") > -1) {
+                    CatchupMathTools.showAlert("Password In Use", "This password is currently in use");
+                    return;
+                }
                 super.onFailure(caught);
             }
         }.register();
