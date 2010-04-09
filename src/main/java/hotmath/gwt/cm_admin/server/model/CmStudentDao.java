@@ -19,6 +19,7 @@ import hotmath.gwt.cm_tools.client.model.StudentModelBase;
 import hotmath.gwt.cm_tools.client.model.StudentModelBasic;
 import hotmath.gwt.cm_tools.client.model.StudentModelI;
 import hotmath.gwt.cm_tools.client.model.StudentProgramModel;
+import hotmath.gwt.cm_tools.client.model.StudentSettingsModel;
 import hotmath.gwt.cm_tools.client.model.StudentShowWorkModel;
 import hotmath.gwt.cm_tools.client.model.StudyProgramModel;
 import hotmath.gwt.shared.client.model.UserProgramIsNotActiveException;
@@ -800,8 +801,6 @@ public class CmStudentDao {
         PreparedStatement ps = null;
         ResultSet rs = null;
         
-        logger.info("+++ in updateStudent(): tutoringAvail: " + sm.getTutoringAvail() + ", showWorkReqd: " + sm.getShowWorkRequired());
-
         try {
             StudentProgramModel spm = sm.getProgram();
             
@@ -816,11 +815,12 @@ public class CmStudentDao {
             ps.setString(4, spm.getProgramType());
             ps.setString(5, spm.getSubjectId());
             ps.setInt(6, spm.getProgramId());
-            ps.setInt(7, sm.getTutoringAvail() ? 1 : 0);
-            ps.setInt(8, sm.getShowWorkRequired() ? 1 : 0);
-            ps.setString(9, sm.getBackgroundStyle());
-            ps.setInt(10, sm.getUid());
+            ps.setString(7, sm.getBackgroundStyle());
+            ps.setInt(8, sm.getUid());
             int result = ps.executeUpdate();
+
+            updateStudentSettings(conn, sm, null);
+
         } catch (Exception e) {
             logger.error(String.format("*** Error updating student with uid: %d", sm.getUid()), e);
             throw new Exception(String.format("*** Error occurred while updating student: %s ***", sm.getName()));
@@ -866,6 +866,97 @@ public class CmStudentDao {
         }
     }
     
+    /** Update settings for the specified user.
+     * 
+     * @param conn
+     * @param uid
+     * @param showWorkRequired
+     * @param tutoringAvailable
+     * @param limitGames
+     * @param stopAtProgramEnd
+     * @param passPercent
+     * @throws Exception
+     */
+
+    static final String SETTINGS_SELECT_SQL = "select limit_games, show_work_required, stop_at_program_end, tutoring_available from HA_USER_SETTINGS where user_id = ?";
+
+    public StudentSettingsModel getStudentSettings(final Connection conn, Integer uid) throws Exception {
+    	
+    	PreparedStatement ps = null;
+    	ResultSet rs = null;
+    	
+    	StudentSettingsModel mdl = new StudentSettingsModel();
+    	
+    	try {
+       	    ps = conn.prepareStatement(SETTINGS_SELECT_SQL);
+    	    ps.setInt(1, uid);
+    	    rs = ps.executeQuery();
+     	    if (rs.next()) {
+    		    mdl.setLimitGames(rs.getInt("limit_games") > 0);
+    		    mdl.setShowWorkRequired(rs.getInt("show_work_required") > 0);
+    		    mdl.setStopAtProgramEnd(rs.getInt("stop_at_program_end") > 0);
+    		    mdl.setTutoringAvailable(rs.getInt("tutoring_available") > 0);
+    	    }
+    	}
+    	finally {
+        	SqlUtilities.releaseResources(rs, ps, null);    		
+    	}
+    	return mdl;
+    }
+
+    public void updateStudentSettings(final Connection conn, StudentModelI sm, Integer passPercent) throws Exception {
+    	StudentSettingsModel ssm = sm.getSettings();
+        updateStudentSettings(conn, sm.getUid(), ssm.getShowWorkRequired(), ssm.getTutoringAvailable(),
+        		ssm.getLimitGames(), ssm.getStopAtProgramEnd(), passPercent);
+    }
+
+    public void updateStudentSettings(final Connection conn, Integer uid, Boolean showWorkRequired, Boolean tutoringAvailable,
+    	Boolean limitGames, Boolean stopAtProgramEnd, Integer passPercent) throws Exception {
+
+    	PreparedStatement ps = null;
+        ResultSet rs = null;
+
+        try {
+
+        	String insertSql = "insert into HA_USER_SETTINGS (limit_games, show_work_required, stop_at_program_end, tutoring_available, user_id) values (?, ?, ?, ?, ?)";
+        	String updateSql = "update HA_USER_SETTINGS set limit_games=?, show_work_required=?, stop_at_program_end=?, tutoring_available=? where user_id=?";
+
+        	ps = conn.prepareStatement(SETTINGS_SELECT_SQL);
+        	ps.setInt(1, uid);
+        	rs = ps.executeQuery();
+
+        	if (rs.next()) {
+        		// perform update
+            	ps = conn.prepareStatement(updateSql);
+        	}
+        	else {
+        		// perform insert
+            	ps = conn.prepareStatement(insertSql);
+        	}
+        	ps.setInt(1, (limitGames)?1:0);
+        	ps.setInt(2, (showWorkRequired)?1:0);
+        	ps.setInt(3, (stopAtProgramEnd)?1:0);
+        	ps.setInt(4, (tutoringAvailable)?1:0);
+        	ps.setInt(5, uid);
+
+            int cnt = ps.executeUpdate();
+
+            if (cnt != 1) {
+                logger.warn(String.format("updateStudentOptions(): update failed for uid: %d, sql: %s", uid, ps.toString()));
+            }
+
+            /**
+             *  update the current program information with new pass percentage (if not null)
+             */
+            if (passPercent != null) {
+                StudentModelI sm = getStudentModelBasic(conn, uid);
+                new CmUserProgramDao().setProgramPassPercent(conn, sm.getProgram().getProgramId(), passPercent);
+            }
+
+        } finally {
+            SqlUtilities.releaseResources(null, ps, null);
+        }
+    }
 
     private static final String UPDATE_STUDENT_PROGRAM_SQL =
             "update CM_USER_PROGRAM " +
@@ -1515,6 +1606,8 @@ public class CmStudentDao {
             
             sm.setProgram(program);
 
+            sm.setSettings(getStudentSettings(conn, sm.getUid()));
+            
             if (program.isCustomProgram() == false) {
                 program.setProgramDescription(rs.getString("program"));
                 sm.setStatus(getStatus(program.getProgramId(), sm.getSectionNum(), rs.getString("test_config_json")));
