@@ -271,8 +271,6 @@ set    user_name = ?,
                              and subj_id = ?
                              and is_active = 1),
        user_prog_id = ?,
-       is_tutoring_available = ?,
-       is_show_work_required = ?,
        gui_background_style = ?
 where  uid = ?
 
