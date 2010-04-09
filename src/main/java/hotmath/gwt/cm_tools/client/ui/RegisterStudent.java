@@ -971,10 +971,10 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
 
         if (origValue == null && newValue == null) return false;
 
-        return ( ! origValue.getLimitGames().equals(newValue.getLimitGames()) ||
-        		 ! origValue.getShowWorkRequired().equals(newValue.getShowWorkRequired()) ||
-        		 ! origValue.getStopAtProgramEnd().equals(newValue.getStopAtProgramEnd()) ||
-        		 ! origValue.getTutoringAvailable().equals(newValue.getTutoringAvailable()));
+        return ( ! origValue.getLimitGames() == newValue.getLimitGames() ||
+        		 ! origValue.getShowWorkRequired() == newValue.getShowWorkRequired() ||
+        		 ! origValue.getStopAtProgramEnd() == newValue.getStopAtProgramEnd() ||
+        		 ! origValue.getTutoringAvailable() == newValue.getTutoringAvailable());
 	}
 
 	private boolean valueChanged(String origValue, String newValue) {
@@ -1000,7 +1000,7 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
 			set("customProgramName", customProgramName);
 			set("customProgramId", customProgramId);
 			
-			/** set css style to indentify as custom program
+			/** set css style to identify as custom program
 			 * 
 			 */
 			String customStyle="";

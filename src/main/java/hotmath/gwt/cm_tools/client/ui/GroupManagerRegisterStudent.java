@@ -1,6 +1,7 @@
 package hotmath.gwt.cm_tools.client.ui;
 
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
+import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.model.CmAdminDataReader;
 import hotmath.gwt.cm_tools.client.model.CmAdminModel;
 import hotmath.gwt.cm_tools.client.model.GroupInfoModel;
@@ -8,6 +9,7 @@ import hotmath.gwt.cm_tools.client.model.StudentModel;
 import hotmath.gwt.cm_tools.client.model.StudentModelI;
 import hotmath.gwt.cm_tools.client.service.CmServiceAsync;
 import hotmath.gwt.shared.client.CmShared;
+import hotmath.gwt.shared.client.rpc.RetryAction;
 import hotmath.gwt.shared.client.rpc.action.GroupManagerAction;
 import hotmath.gwt.shared.client.util.CmException;
 import hotmath.gwt.shared.client.util.RpcData;
@@ -18,7 +20,6 @@ import java.util.List;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.widget.button.Button;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Label;
 
 public class GroupManagerRegisterStudent extends RegisterStudent {
@@ -86,21 +87,24 @@ public class GroupManagerRegisterStudent extends RegisterStudent {
 	
 	
     private void assignProgram(final Integer adminId, final Integer groupId, final StudentModel studentTemplate) {
-        CmServiceAsync cmService = CmShared.getCmService();
-        
-        GroupManagerAction action = new GroupManagerAction(GroupManagerAction.ActionType.GROUP_PROGRAM_ASSIGNMENT,adminId);
-        action.setStudentModel(studentTemplate);
-        action.setGroupId(groupId);
-        action.setIsSelfReg(gim.getIsSelfReg()?1:0);
-        cmService.execute(action, new AsyncCallback<RpcData>() {
-            public void onSuccess(RpcData result) {
+        new RetryAction<RpcData>() {
+            @Override
+            public void attempt() {
+                CmBusyManager.setBusy(true);
+                
+                GroupManagerAction action = new GroupManagerAction(GroupManagerAction.ActionType.GROUP_PROGRAM_ASSIGNMENT,adminId);                
+                action.setStudentModel(studentTemplate);
+                action.setGroupId(groupId);
+                action.setIsSelfReg(gim.getIsSelfReg()?1:0);
+                CmShared.getCmService().execute(action, this);
+            }
+            
+            public void oncapture(RpcData value) {
+                CmBusyManager.setBusy(false);
                 CmAdminDataReader.getInstance().fireRefreshData();
                 _window.close();
             }
-            public void onFailure(Throwable caught) {
-                CatchupMathTools.showAlert(caught.getMessage());
-            }
-        });
+        }.register();
     }
 	
 }

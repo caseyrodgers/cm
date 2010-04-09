@@ -9,7 +9,6 @@ import hotmath.cm.server.model.CmUserProgramDao;
 import hotmath.cm.util.CmMultiLinePropertyReader;
 import hotmath.gwt.cm_tools.client.model.AccountInfoModel;
 import hotmath.gwt.cm_tools.client.model.ChapterModel;
-import hotmath.gwt.cm_tools.client.model.CustomProgramModel;
 import hotmath.gwt.cm_tools.client.model.LessonItemModel;
 import hotmath.gwt.cm_tools.client.model.StringHolder;
 import hotmath.gwt.cm_tools.client.model.StudentActiveInfo;
@@ -21,7 +20,6 @@ import hotmath.gwt.cm_tools.client.model.StudentModelI;
 import hotmath.gwt.cm_tools.client.model.StudentProgramModel;
 import hotmath.gwt.cm_tools.client.model.StudentSettingsModel;
 import hotmath.gwt.cm_tools.client.model.StudentShowWorkModel;
-import hotmath.gwt.cm_tools.client.model.StudyProgramModel;
 import hotmath.gwt.shared.client.model.UserProgramIsNotActiveException;
 import hotmath.gwt.shared.client.rpc.action.CmArrayList;
 import hotmath.gwt.shared.client.rpc.action.CmList;
@@ -2033,16 +2031,21 @@ public class CmStudentDao {
      * @throws Exception
      */
     public void assignProgramToStudent(final Connection conn, Integer uid, CmProgram program, String chapter) throws Exception {
-        assignProgramToStudent(conn, uid, program.getProgramType(),program.getSubject(), chapter, null);
+        StudentProgramModel progToAssign = new StudentProgramModel();
+        progToAssign.setProgramType(program.getProgramType());
+        progToAssign.setSubjectId(program.getSubject());
+        assignProgramToStudent(conn, uid,progToAssign, chapter, null);
     }
     
     
-    public void assignProgramToStudent(final Connection conn, Integer uid, String programType, String subjId, String chapter, String passPercent) throws Exception {
+    public void assignProgramToStudent(final Connection conn, Integer uid, StudentProgramModel program, String chapter, String passPercent) throws Exception {
         
         StudentModelI sm = getStudentModelBasic(conn, uid);
         
-        sm.getProgram().setProgramType(programType);
-        sm.getProgram().setSubjectId(subjId);
+        sm.getProgram().setProgramType(program.getProgramType());
+        sm.getProgram().setSubjectId(program.getSubjectId());
+        sm.getProgram().setCustomProgramId(program.getCustomProgramId());
+        sm.getProgram().setCustomProgramName(program.getCustomProgramName());
         sm.setProgramChanged(true);
         sm.setChapter(chapter);
         sm.setPassPercent(passPercent);
