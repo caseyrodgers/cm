@@ -19,6 +19,8 @@ public class GroupManagerAction implements Action<RpcData>{
     StudentModel studentModel;
     Boolean disallowTutoring;
     Boolean showWorkRequired;
+    Boolean limitGames;
+    Boolean stopAtProgramEnd;
     Integer passPercent;
     Integer isSelfReg;
 
@@ -45,7 +47,23 @@ public class GroupManagerAction implements Action<RpcData>{
         this.showWorkRequired = showWorkRequired;
     }
 
-    public Integer getPassPercent() {
+    public Boolean getLimitGames() {
+		return limitGames;
+	}
+
+	public void setLimitGames(Boolean limitGames) {
+		this.limitGames = limitGames;
+	}
+
+	public Boolean getStopAtProgramEnd() {
+		return stopAtProgramEnd;
+	}
+
+	public void setStopAtProgramEnd(Boolean stopAtProgramEnd) {
+		this.stopAtProgramEnd = stopAtProgramEnd;
+	}
+
+	public Integer getPassPercent() {
         return passPercent;
     }
 

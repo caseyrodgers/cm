@@ -37,7 +37,8 @@ public class GroupManagerCommand implements ActionHandler<GroupManagerAction, Rp
         else if(action.getActionType() == GroupManagerAction.ActionType.GROUP_PROGRAM_ASSIGNMENT)
             doGroupProgramAssignment(conn,action.getAdminId(),action.getGroupId(), action.getStudentModel(), action.getIsSelfReg());
         else if(action.getActionType() == GroupManagerAction.ActionType.GROUP_PROPERTY_SET)
-            doGroupPropertySet(conn,action.getAdminId(),action.getGroupId(),action.getShowWorkRequired(),action.getDisallowTutoring(),action.getPassPercent());
+            doGroupPropertySet(conn,action.getAdminId(),action.getGroupId(),action.getShowWorkRequired(),action.getDisallowTutoring(),
+            		action.getLimitGames(), action.getStopAtProgramEnd(), action.getPassPercent());
         
         rpcData.putData("status","OK");
         return rpcData;
@@ -141,7 +142,7 @@ public class GroupManagerCommand implements ActionHandler<GroupManagerAction, Rp
                 ps.setInt(2,groupId);            	
             }
             
-            String passPercent = studentTemplate.getPassPercent();
+            //String passPercent = studentTemplate.getPassPercent();
             
             ResultSet rs = ps.executeQuery();
             while(rs.next()) {
@@ -168,7 +169,8 @@ public class GroupManagerCommand implements ActionHandler<GroupManagerAction, Rp
      * @param passPercent
      * @throws Exception
      */
-    private void doGroupPropertySet(final Connection conn,Integer adminId,Integer groupId,Boolean showWorkRequired,Boolean disallowTutoring,Integer passPercent) throws Exception {
+    private void doGroupPropertySet(final Connection conn,Integer adminId,Integer groupId,Boolean showWorkRequired,Boolean disallowTutoring,
+    	Boolean limitGames, Boolean stopAtProgramEnd, Integer passPercent) throws Exception {
         PreparedStatement ps=null;
         try {
             if(groupId == -1) {
@@ -187,10 +189,10 @@ public class GroupManagerCommand implements ActionHandler<GroupManagerAction, Rp
             while(rs.next()) {
                 
                 // update the basic information
-                StudentModelI sm = dao.getStudentModelBasic(conn,rs.getInt("uid"));
-                sm.setTutoringAvail(!disallowTutoring);
-                sm.setShowWorkRequired(showWorkRequired);
-                dao.updateStudentMainProperties(conn, rs.getInt("uid"), showWorkRequired,!disallowTutoring, passPercent);
+                //StudentModelI sm = dao.getStudentModelBasic(conn,rs.getInt("uid"));
+                //sm.setTutoringAvail(!disallowTutoring);
+                //sm.setShowWorkRequired(showWorkRequired);
+                dao.updateStudentSettings(conn, rs.getInt("uid"), showWorkRequired, !disallowTutoring, limitGames, stopAtProgramEnd, passPercent);
             }
         }
         finally {
