@@ -98,15 +98,7 @@ public class RegisterStudentAdvancedOptions extends LayoutContainer {
 
 		isShowWorkRequired = new CheckBox();
         isShowWorkRequired.setId(StudentModelExt.SHOW_WORK_KEY);
-        Boolean value = ((StudentSettingsModel) advOptionsMap.get(StudentModelExt.SETTINGS_KEY)).getShowWorkRequired();
-        if (! isNew) {
-        	isShowWorkRequired.setValue(((StudentSettingsModel) advOptionsMap.get(StudentModelExt.SETTINGS_KEY)).getShowWorkRequired());
-        }
-        else {
-        	// require 'Show Work' OFF by default
-        	isShowWorkRequired.setValue(false);
-        }
-
+        isShowWorkRequired.setValue(((StudentSettingsModel) advOptionsMap.get(StudentModelExt.SETTINGS_KEY)).getShowWorkRequired());
         requireShowWork = new CheckBoxGroup(); 
         requireShowWork.setFieldLabel("Require Show Work");
         requireShowWork.setId(StudentModelExt.SHOW_WORK_KEY);
@@ -115,14 +107,7 @@ public class RegisterStudentAdvancedOptions extends LayoutContainer {
 
         isGamesLimited = new CheckBox();
         isGamesLimited.setId(StudentModelExt.LIMIT_GAMES_KEY);
-        if (! isNew) {
-            isGamesLimited.setValue(((StudentSettingsModel) advOptionsMap.get(StudentModelExt.SETTINGS_KEY)).getLimitGames());
-        }
-        else {
-            // enable tutoring OFF by default
-            isGamesLimited.setValue(false);
-        }        
-
+        isGamesLimited.setValue(((StudentSettingsModel) advOptionsMap.get(StudentModelExt.SETTINGS_KEY)).getLimitGames());
         limitGames = new CheckBoxGroup();
         limitGames.setFieldLabel("Limit Games to One per Lesson");
         limitGames.setId(StudentModelExt.LIMIT_GAMES_KEY);
@@ -131,14 +116,7 @@ public class RegisterStudentAdvancedOptions extends LayoutContainer {
 
         isStopAtProgramEnd = new CheckBox();
         isStopAtProgramEnd.setId(StudentModelExt.STOP_AT_PROGRAM_END_KEY);
-        if (! isNew) {
-            isStopAtProgramEnd.setValue(((StudentSettingsModel) advOptionsMap.get(StudentModelExt.SETTINGS_KEY)).getStopAtProgramEnd());
-        }
-        else {
-            // enable tutoring OFF by default
-            isStopAtProgramEnd.setValue(false);
-        }        
-
+        isStopAtProgramEnd.setValue(((StudentSettingsModel) advOptionsMap.get(StudentModelExt.SETTINGS_KEY)).getStopAtProgramEnd());
         stopAtProgramEnd = new CheckBoxGroup();
         stopAtProgramEnd.setFieldLabel("Stop at End of Program");
         stopAtProgramEnd.setId(StudentModelExt.STOP_AT_PROGRAM_END_KEY);
@@ -147,14 +125,7 @@ public class RegisterStudentAdvancedOptions extends LayoutContainer {
 
         isTutoringEnabled = new CheckBox();
         isTutoringEnabled.setId(StudentModelExt.TUTORING_AVAIL_KEY);
-        if (! isNew) {
-            isTutoringEnabled.setValue(((StudentSettingsModel) advOptionsMap.get(StudentModelExt.SETTINGS_KEY)).getTutoringAvailable());
-        }
-        else {
-            // enable tutoring OFF by default
-            isTutoringEnabled.setValue(false);
-        }        
-
+        isTutoringEnabled.setValue(((StudentSettingsModel) advOptionsMap.get(StudentModelExt.SETTINGS_KEY)).getTutoringAvailable());
         enableTutoring = new CheckBoxGroup();
         enableTutoring.setFieldLabel("Tutoring Enabled");
         enableTutoring.setId(StudentModelExt.TUTORING_AVAIL_KEY);
@@ -177,7 +148,7 @@ public class RegisterStudentAdvancedOptions extends LayoutContainer {
 		Button cancelBtn = cancelButton();
         cancelBtn.addStyleName("cancel-button");
         
-		Button saveBtn = saveButton(fs, isNew, fp);
+		Button saveBtn = saveButton(fs, fp);
 		saveBtn.addStyleName("save-button");
 		
 		fp.setButtonAlign(HorizontalAlignment.RIGHT);
@@ -238,7 +209,7 @@ public class RegisterStudentAdvancedOptions extends LayoutContainer {
 		return cancelBtn;
 	}
 
-	private Button saveButton(final FieldSet fs, final boolean isNew, final FormPanel fp) {
+	private Button saveButton(final FieldSet fs, final FormPanel fp) {
 		Button saveBtn = new Button("Save", new SelectionListener<ButtonEvent>() {  
 	    	public void componentSelected(ButtonEvent ce) {
 
