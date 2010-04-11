@@ -7,6 +7,7 @@ import hotmath.gwt.cm_admin.server.model.CmStudentDao;
 import hotmath.gwt.cm_tools.client.model.CustomProgramModel;
 import hotmath.gwt.cm_tools.client.model.StudentActiveInfo;
 import hotmath.gwt.cm_tools.client.model.StudentModelI;
+import hotmath.gwt.cm_tools.client.model.StudentSettingsModel;
 import hotmath.gwt.shared.client.rpc.Action;
 import hotmath.gwt.shared.client.rpc.Response;
 import hotmath.gwt.shared.client.rpc.action.GetUserInfoAction;
@@ -115,6 +116,17 @@ public class GetUserInfoCommand implements ActionHandler<GetUserInfoAction, User
             userInfo.setLoginName(null);
             userInfo.setDemoUser(sm.getIsDemoUser());
             userInfo.setCustomProgram(isCustomProgram);
+            
+            
+            StudentSettingsModel settings = sm.getSettings();
+            ProgramCompletionAction onComplete = settings.getStopAtProgramEnd()?ProgramCompletionAction.STOP:ProgramCompletionAction.AUTO_ADVANCE;
+            userInfo.setOnCompletion(onComplete);
+            //userInfo.setLimitGames
+            
+            /**if is custom program, then override the default EndOfProgram
+             * action to force a stop.
+             * 
+             */
             if(isCustomProgram) {
                 userInfo.setOnCompletion(ProgramCompletionAction.STOP);
             }
