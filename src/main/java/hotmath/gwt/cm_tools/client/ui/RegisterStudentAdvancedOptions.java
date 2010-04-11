@@ -108,10 +108,14 @@ public class RegisterStudentAdvancedOptions extends LayoutContainer {
         isGamesLimited = new CheckBox();
         isGamesLimited.setId(StudentModelExt.LIMIT_GAMES_KEY);
         isGamesLimited.setValue(((StudentSettingsModel) advOptionsMap.get(StudentModelExt.SETTINGS_KEY)).getLimitGames());
+        isGamesLimited.setEnabled(false);
+        
         limitGames = new CheckBoxGroup();
         limitGames.setFieldLabel("Limit Games to One per Lesson");
         limitGames.setId(StudentModelExt.LIMIT_GAMES_KEY);
 		limitGames.add(isGamesLimited);
+		limitGames.setEnabled(false);
+		
 		advOptions.add(limitGames);
 
         isStopAtProgramEnd = new CheckBox();
