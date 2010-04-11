@@ -544,6 +544,10 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
 	}
 		
 	protected void addUserRPC(final StudentModel sm) {
+	    
+	    /** execute outside the RetryManager
+	     *  to allow processing exceptions.
+	     */
 		new RetryAction <StudentModelI> () {
 		    @Override
 		    public void attempt() {
@@ -567,7 +571,7 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
                 }
                 super.onFailure(caught);
             }
-        }.register();
+        }.attempt();
 	}
 
 	protected void updateUserRPC(final StudentModel sm, final Boolean stuChanged, final Boolean progChanged, final Boolean progIsNew,
