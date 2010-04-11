@@ -35,6 +35,7 @@ public class GetUserInfoCommand implements ActionHandler<GetUserInfoAction, User
         try {
             CmStudentDao dao = new CmStudentDao();
             StudentModelI sm = dao.getStudentModelBasic(conn, action.getUserId());
+            StudentSettingsModel settings = dao.getStudentSettings(conn, action.getUserId());
             
             CmUserProgramDao upDao = new CmUserProgramDao();
             StudentUserProgramModel userProgram = upDao.loadProgramInfoCurrent(conn, action.getUserId());
@@ -118,7 +119,6 @@ public class GetUserInfoCommand implements ActionHandler<GetUserInfoAction, User
             userInfo.setCustomProgram(isCustomProgram);
             
             
-            StudentSettingsModel settings = sm.getSettings();
             ProgramCompletionAction onComplete = settings.getStopAtProgramEnd()?ProgramCompletionAction.STOP:ProgramCompletionAction.AUTO_ADVANCE;
             userInfo.setOnCompletion(onComplete);
             //userInfo.setLimitGames
