@@ -106,6 +106,7 @@ public class RegisterStudentAdvancedOptions extends LayoutContainer {
         advOptions.add(requireShowWork);
 
         isGamesLimited = new CheckBox();
+        isGamesLimited.setEnabled(false);
         isGamesLimited.setId(StudentModelExt.LIMIT_GAMES_KEY);
         isGamesLimited.setValue(((StudentSettingsModel) advOptionsMap.get(StudentModelExt.SETTINGS_KEY)).getLimitGames());
         isGamesLimited.setEnabled(false);
@@ -119,6 +120,7 @@ public class RegisterStudentAdvancedOptions extends LayoutContainer {
 		advOptions.add(limitGames);
 
         isStopAtProgramEnd = new CheckBox();
+        isStopAtProgramEnd.setEnabled(false);
         isStopAtProgramEnd.setId(StudentModelExt.STOP_AT_PROGRAM_END_KEY);
         isStopAtProgramEnd.setValue(((StudentSettingsModel) advOptionsMap.get(StudentModelExt.SETTINGS_KEY)).getStopAtProgramEnd());
         stopAtProgramEnd = new CheckBoxGroup();
