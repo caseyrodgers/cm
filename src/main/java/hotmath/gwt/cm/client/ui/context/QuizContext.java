@@ -4,6 +4,7 @@ import hotmath.gwt.cm.client.CatchupMath;
 import hotmath.gwt.cm.client.history.CmHistoryManager;
 import hotmath.gwt.cm.client.history.CmLocation;
 import hotmath.gwt.cm.client.history.CmLocation.LocationType;
+import hotmath.gwt.cm.client.ui.EndOfProgramWindow;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.ui.NextPanelInfo;
@@ -202,7 +203,22 @@ public class QuizContext implements CmContext {
                                 
                                 CmHistoryManager.getInstance().addHistoryLocation(new CmLocation(LocationType.QUIZ, UserInfo.getInstance().getTestSegment()));
                             } else {
-                                PrescriptionContext.autoAdvanceUser();
+                                switch(UserInfo.getInstance().getOnCompletion()) {
+                                        
+                                    case STOP:
+                                        new EndOfProgramWindow();
+                                        break;
+                                        
+                                    case AUTO_ADVANCE:
+                                        PrescriptionContext.autoAdvanceUser();
+                                        break;
+                                        
+                                    default:
+                                        CatchupMathTools.showAlert("Unknown onCompletion value: " + UserInfo.getInstance().getOnCompletion());
+                                        break;
+                                        
+                                }
+                                
                             }
                         }
                     } else {
