@@ -76,7 +76,7 @@ public class CustomProgramDesignerDialog extends CmWindow {
             createNewProgram();
             _programName.setValue(customProgram.getProgramName());
             _isEditable=true;
-            programName = "My Custom Program";
+            programName = "";
         }
         add(createInfoSection(_isEditable, programName), new BorderLayoutData(LayoutRegion.NORTH,50));        
         enableForm(_isEditable);
