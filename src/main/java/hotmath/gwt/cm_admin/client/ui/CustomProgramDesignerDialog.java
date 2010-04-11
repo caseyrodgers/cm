@@ -209,7 +209,8 @@ public class CustomProgramDesignerDialog extends CmWindow {
         _programName.setEnabled(false);
         fp.add(_programName);
         lc.add(fp);
-
+        
+        _programName.focus();
         
         String msg = isEditable?"Drag and drop lessons from left side to create and reorder the custom program":"<span style='color: red;font-weight: bold'>This program is in use and cannot be edited</span>";
         Html html = new Html("<p style='padding: 7px 0; width: 250px;'>" + msg + "</p>");
