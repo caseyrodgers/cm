@@ -423,7 +423,7 @@ class GroupManagerGlobalSettings extends CmWindow {
         fs.add(showWorkRequired);
         
         limitGames = new CheckBox();
-        limitGames.      setFieldLabel("Limit Games to One Per Lesson");
+        limitGames.setFieldLabel("Limit Games to One Per Lesson");
         limitGames.setBoxLabel("");
         limitGames.disable();  // TODO: remove disable()
         fs.add(limitGames);
