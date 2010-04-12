@@ -219,10 +219,10 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
             });
             contextMenu.add(removeUser);
 
-            MenuItem clientTests = new MenuItem("Launch Client Tests");
+            MenuItem clientTests = new MenuItem("Launch Client Test");
             clientTests.addSelectionListener(new SelectionListener<MenuEvent>() {
                 public void componentSelected(MenuEvent ce) {
-                    launchClientTests();
+                    launchClientTest();
                     contextMenu.hide();
                 }
             });
@@ -254,18 +254,17 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
      *  one page.
      *  
      */
-    private void launchClientTests() {
+    private void launchClientTest() {
         GWT.runAsync(new CmRunAsyncCallback() {
             
             @Override
             public void onSuccess() {
-                if(Window.confirm("This will launch all clients in current page in auto-test model.  Are you sure?")) {
-                    List<StudentModelExt> students = _grid.getStore().getModels();
-                    for(int i=0,t=students.size();i<t;i++) {
-                        StudentModelExt student = students.get(i);
-                        String url = "/cm_student/CatchupMath.html?debug=true&type=auto_test&uid=" + student.getUid();
-                        Window.open(url, "_blank", "height=480,width=640,status=yes,scrollbars=1");
-                    }
+                StudentModelExt student = _grid.getSelectionModel().getSelectedItem();
+                if(student==null)
+                    return;                
+                if(Window.confirm("This will launch the selected client in auto-test model.  Are you sure?")) {
+                    String url = "/cm_student/CatchupMath.html?debug=true&type=auto_test&uid=" + student.getUid();
+                    Window.open(url, "_blank", "height=480,width=640,status=yes,scrollbars=1");
                 }
             }
         });
