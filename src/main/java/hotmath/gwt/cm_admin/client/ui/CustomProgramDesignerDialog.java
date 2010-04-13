@@ -67,7 +67,8 @@ public class CustomProgramDesignerDialog extends CmWindow {
 
         buildGui();
         String programName="";
-        loadCustomProgramDefinition(customProgram);
+        if(customProgram != null)
+            loadCustomProgramDefinition(customProgram);
         if(customProgram != null) {
             programName = customProgram.getProgramName();
             if(customProgram.getIsTemplate()) {
@@ -276,7 +277,8 @@ public class CustomProgramDesignerDialog extends CmWindow {
     
     private void loadCustomProgramDefinition(final CustomProgramModel program) {
         
-        _programName.setValue(program.getProgramName());
+        if(_programName != null)
+            _programName.setValue(program.getProgramName());
         
         new RetryAction<CmList<CustomLessonModel>>() {
             @Override
