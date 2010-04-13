@@ -314,7 +314,8 @@ class StudentGridComparator implements Comparator<StudentModelExt> {
         	int t1 = p1.getNotPassingCount() + p1.getPassingCount();
         	int t2 = p2.getNotPassingCount() + p2.getPassingCount();
         	
-        	if (t1 > 0 && t2 > 0) {
+        	// remove "false &&" to reactivate sorting by ratio of passed quizzes
+        	if (false && t1 > 0 && t2 > 0) {
             	// sort on ratio of passed quizzes
             	float f1 = (float) p1.getPassingCount() / (float) t1;
             	float f2 = (float) p2.getPassingCount() / (float) t2;
