@@ -421,6 +421,8 @@ where  h.aid = ?
            
 .key=ADMIN_PROGRAM_DEFINITIONS
 
+## NOTE: Include the system template as well.
+##
 select   d.id,
          d.title,
          d.description,
@@ -430,7 +432,8 @@ select   d.id,
          d.needs_state,
          null as custom_program_id,
          null as custom_program_name,
-         0 as load_order
+         0 as load_order,
+         0 as is_template
 from     HA_PROG_DEF d
 where    d.is_active = 1
          and exists (select 1
@@ -438,7 +441,6 @@ where    d.is_active = 1
                      where  d.id = td.prog_id
                             and td.is_active = 1)
                             
-
 union
                             
 select      'Custom' as id,
@@ -450,12 +452,13 @@ select      'Custom' as id,
             0 as needs_state,
             cp.id as custom_program_id,
             cp.name as custom_program_name,
-            1 as load_order
+            1 as load_order,
+            is_template
 from   HA_ADMIN a join HA_CUSTOM_PROGRAM cp on cp.admin_id = a.aid
-where    a.aid = ?
+where    a.aid = ? 
+or is_template = 1
                             
-order by load_order, id,title           
-           
+order by load_order, id,title                      
            
            
            
