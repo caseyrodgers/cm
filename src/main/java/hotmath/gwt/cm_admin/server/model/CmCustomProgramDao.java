@@ -168,6 +168,9 @@ public class CmCustomProgramDao {
 
     public CmList<CustomLessonModel> saveChanges(final Connection conn, Integer progId, String name, List<CustomLessonModel> lessons) throws Exception {
         
+        
+        makeSureNameIsValid(conn, name);
+
         PreparedStatement stmt1=null, stmt2=null;
         try {
             stmt1 = conn.prepareStatement("update HA_CUSTOM_PROGRAM set name = ? where id = ?");
@@ -197,8 +200,28 @@ public class CmCustomProgramDao {
         }
     }
     
+    /** Make sure the name can be used ... it is not a system template name */
+    private void makeSureNameIsValid(final Connection conn, String name) throws Exception {
+        PreparedStatement stmt1=null;
+        try {
+            String sql = "select 1 from HA_CUSTOM_PROGRAM where is_template = 1 and name = ?";
+            stmt1 = conn.prepareStatement(sql);
+            stmt1.setString(1, name);
+            ResultSet rs = stmt1.executeQuery();
+            if(rs.first())
+                throw new CmException("Name is invalid.  Custom program name '" + name + "' is a template name.");
+        }
+        finally {
+            SqlUtilities.releaseResources(null,stmt1, null);
+        }        
+    }
+    
     public CustomProgramModel createNewCustomProgram(final Connection conn, Integer adminId, String name, List<CustomLessonModel> lessons) throws Exception {
         PreparedStatement stmt=null;
+        
+        
+        makeSureNameIsValid(conn, name);
+
         try {
             String sql = "insert into HA_CUSTOM_PROGRAM(admin_id,name)values(?,?)";
             stmt = conn.prepareStatement(sql);

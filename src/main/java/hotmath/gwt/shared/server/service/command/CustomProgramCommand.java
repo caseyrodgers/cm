@@ -43,6 +43,7 @@ public class CustomProgramCommand implements ActionHandler<CustomProgramAction, 
             case CREATE:                
                 CustomProgramModel newProgram = new CmCustomProgramDao().createNewCustomProgram(conn, action.getAdminId(), action.getProgramName(), action.getLessons());
                 return null;
+                
             default:
                 throw new IllegalArgumentException("Unknown ActionType: "  + action);
         }

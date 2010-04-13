@@ -196,7 +196,7 @@ public class StatusPie {
     
             StatusPie statusPie = new StatusPie(base.getCanonicalPath());
             
-            int MAX_SIZES=25;  /** total possible number of sessions */
+            int MAX_SIZES=36;  /** total possible number of sessions */
             /** create a status for each permutation
              * 
              */

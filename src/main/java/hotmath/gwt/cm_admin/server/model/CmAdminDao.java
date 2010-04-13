@@ -519,6 +519,7 @@ public class CmAdminDao {
             m.setNeedsSubject(rs.getInt("needs_subject"));
             m.setNeedsPassPercent(rs.getInt("needs_pass_percent"));
             m.setNeedsState(rs.getInt("needs_state"));
+            m.setIsTemplate(rs.getInt("is_template") != 0);
             l.add(m);
         }
         return l;

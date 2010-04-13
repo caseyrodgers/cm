@@ -50,10 +50,10 @@ public class CustomProgramDesignerDialog extends CmWindow {
     boolean _isEditable;
 
     public CustomProgramDesignerDialog(CmAdminModel adminModel,CmAsyncRequest callback) {
-        this(adminModel,callback, null);
+        this(adminModel,callback, null,false);
     }
     
-    public CustomProgramDesignerDialog(CmAdminModel adminModel, CmAsyncRequest callback, CustomProgramModel program) {
+    public CustomProgramDesignerDialog(CmAdminModel adminModel, CmAsyncRequest callback, CustomProgramModel program,boolean asCopy) {
         this.adminModel = adminModel;
         this.callback = callback;
         this.customProgram = program;
@@ -67,14 +67,22 @@ public class CustomProgramDesignerDialog extends CmWindow {
 
         buildGui();
         String programName="";
-        if(customProgram != null)
-            loadCustomProgramDefinition(customProgram);
+
         if(customProgram != null) {
+            loadCustomProgramDefinition(customProgram);
             programName = customProgram.getProgramName();
-            if(customProgram.getIsTemplate()) {
+            
+            if(asCopy) {
                 _isEditable = true;
                 customProgram = new CustomProgramModel();
-                programName = "";
+                customProgram.setIsTemplate(false);
+                customProgram.setInUseCount(0);
+                customProgram.setAssignedCount(0);
+                programName = "Copy of " + program.getProgramName();
+                customProgram.setProgramName(programName);
+            }
+            else if(customProgram.getIsTemplate()) {
+                _isEditable = false;
             }
             else if(customProgram.getAssignedCount() == 0) {
                 _isEditable = true;
@@ -354,6 +362,8 @@ public class CustomProgramDesignerDialog extends CmWindow {
                 if(msg.indexOf("Duplicate") > -1) {
                     CatchupMathTools.showAlert("Could not save Custom Program: duplicate program name");
                 }
+                else if(msg.indexOf("invalid") > -1)
+                    CatchupMathTools.showAlert(msg);
                 else
                     super.onFailure(error);
             }

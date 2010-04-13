@@ -33,7 +33,6 @@ import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
-import com.extjs.gxt.ui.client.widget.menu.Menu;
 import com.extjs.gxt.ui.client.widget.menu.MenuItem;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 
@@ -42,7 +41,6 @@ public class CustomProgramDialog extends CmWindow {
     CmAdminModel adminModel;
 
     ListView<CustomProgramModel> _listView;
-    NewProgramButtonWithTooltip _newProgramButton;
     
     public CustomProgramDialog(CmAdminModel adminModel) {
         this.adminModel = adminModel;
@@ -69,7 +67,7 @@ public class CustomProgramDialog extends CmWindow {
         _listView.setDisplayProperty("programName");
         _listView.addListener(Events.DoubleClick, new Listener<BaseEvent>() {
             public void handleEvent(BaseEvent be) {
-                editProgram();
+                editProgram(false);
             }
         });
 
@@ -77,18 +75,23 @@ public class CustomProgramDialog extends CmWindow {
 
         ToolBar tb = new ToolBar();
         
-        _newProgramButton = new NewProgramButtonWithTooltip(this,"Create New", new SelectionListener<ButtonEvent>() {
+        tb.add(new MyButtonWithTooltip("New", new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent ce) {
                 addNewCustomProgram();
             }
-        }, "Create new custom program");
-        tb.add(_newProgramButton);
+        }, "Create a new blank custom program."));
+        
+        tb.add(new MyButtonWithTooltip("Copy", new SelectionListener<ButtonEvent>() {
+            public void componentSelected(ButtonEvent ce) {
+                editProgram(true);
+            }
+        }, "Create new custom program by copying an existing one."));
 
         tb.add(new MyButtonWithTooltip("Edit", new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent ce) {
-                editProgram();
+                editProgram(false);
             }
-        }, "Edit selected custom program"));
+        }, "Edit the selected custom program."));
 
         tb.add(new MyButtonWithTooltip("Delete", new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent ce) {
@@ -109,17 +112,16 @@ public class CustomProgramDialog extends CmWindow {
         });        
     }
     
-    private void editProgram() {
+    private void editProgram(boolean asCopy) {
         final CustomProgramModel sel = _listView.getSelectionModel().getSelectedItem();
         if (sel == null) {
             CatchupMathTools.showAlert("Select a custom program first");
             return;
         }
-        
-        editProgram(sel);
+        editProgram(sel,asCopy);
     }
     
-    protected void editProgram(final CustomProgramModel sel) {
+    protected void editProgram(final CustomProgramModel sel,boolean asCopy) {
         final String oldProgramName = sel.getProgramName();
         new CustomProgramDesignerDialog(adminModel, new CmAsyncRequestImplDefault() {
             @Override
@@ -129,7 +131,7 @@ public class CustomProgramDialog extends CmWindow {
                 if(!oldProgramName.equals(sel.getProgramName()))
                     EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_REFRESH_STUDENT_DATA));
             }
-        }, sel);
+        }, sel,asCopy);
     }
 
     private void deleteProgram() {
@@ -193,7 +195,7 @@ public class CustomProgramDialog extends CmWindow {
             }
 
             @Override
-            public void oncapture(CmList<CustomProgramModel> value) {
+            public void oncapture(CmList<CustomProgramModel> programs) {
                 CmBusyManager.setBusy(false);
                 
                 /** collect templates and non templates in separate lists
@@ -201,16 +203,15 @@ public class CustomProgramDialog extends CmWindow {
                  */
                 List<CustomProgramModel> templates = new ArrayList<CustomProgramModel>();
                 List<CustomProgramModel> nonTemplates = new ArrayList<CustomProgramModel>();
-                for(int i=0,t=value.size();i<t;i++) {
-                    CustomProgramModel program = value.get(i);
+                for(int i=0,t=programs.size();i<t;i++) {
+                    CustomProgramModel program = programs.get(i);
                     if(program.getIsTemplate())
                         templates.add(program);
                     else
                         nonTemplates.add(program);
                 }
                 _listView.getStore().removeAll();
-                _listView.getStore().add(nonTemplates);
-                _newProgramButton.setTemplates(templates);
+                _listView.getStore().add(programs);
             }
         }.register();
     }
@@ -219,47 +220,6 @@ public class CustomProgramDialog extends CmWindow {
         public MyButtonWithTooltip(String name, SelectionListener<ButtonEvent> listener, String toolTip) {
             super(name, listener);
             setToolTip(toolTip);
-        }
-    }
-    
-    static class NewProgramButtonWithTooltip extends Button {
-        Menu _availTemplates;
-        SelectionListener<MenuEvent> templateListener;
-        CustomProgramDialog customProgramDialog;
-        
-        public NewProgramButtonWithTooltip(CustomProgramDialog cpd, String name, final SelectionListener<ButtonEvent> listener, String toolTip) {
-            super(name);
-            this.customProgramDialog = cpd;
-            Menu menu = new Menu();
-            menu.add(new MyMenuItem("Blank Program", "Create a new blank custom program", new SelectionListener<MenuEvent>() {
-                @Override
-                public void componentSelected(MenuEvent ce) {
-                    listener.componentSelected(null);
-                }
-            }));
-            
-            templateListener = new SelectionListener<MenuEvent>() {
-                @Override
-                public void componentSelected(MenuEvent ce) {
-                    int index = ce.getIndex();
-                    customProgramDialog.editProgram((CustomProgramModel)ce.getItem().getData("program"));
-                }
-            };
-            MenuItem fromTemplate = new MenuItem("From Template");
-            _availTemplates = new Menu();
-            fromTemplate.setSubMenu(_availTemplates);
-            menu.add(fromTemplate);
-            
-            setMenu(menu);
-            setToolTip(toolTip);
-        }
-        
-        public void setTemplates(List<CustomProgramModel> templates) {
-            _availTemplates.removeAll();
-            for(int i=0,t=templates.size();i<t;i++) {
-                CustomProgramModel cp = templates.get(i);
-                _availTemplates.add(new MyMenuItem(cp,"Create new custom program based on this template", templateListener));
-            }
         }
     }
     

@@ -14,7 +14,7 @@ public class CustomProgramModel extends BaseModel implements Response {
         setInUseCount(inUseCount);
         setIsTemplate(isTemplate);
     }
-    
+
     public void setProgramName(String programName) {
         set("programName", programName);
     }
