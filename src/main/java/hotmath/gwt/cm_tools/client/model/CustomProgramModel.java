@@ -7,11 +7,12 @@ public class CustomProgramModel extends BaseModel implements Response {
         /** empty */
     }
     
-    public CustomProgramModel(String programName, Integer programId, Integer assignedCount, Integer inUseCount) {
+    public CustomProgramModel(String programName, Integer programId, Integer assignedCount, Integer inUseCount, Boolean isTemplate) {
         setProgramName(programName);
         setProgramId(programId);
         setAssignedCount(assignedCount);
         setInUseCount(inUseCount);
+        setIsTemplate(isTemplate);
     }
     
     public void setProgramName(String programName) {
@@ -47,4 +48,11 @@ public class CustomProgramModel extends BaseModel implements Response {
         return get("inUseCount");
     }
     
+    public void setIsTemplate(Boolean isTemplate) {
+        set("isTemplate",isTemplate);
+    }
+    
+    public Boolean getIsTemplate() {
+        return get("isTemplate");
+    }
 }

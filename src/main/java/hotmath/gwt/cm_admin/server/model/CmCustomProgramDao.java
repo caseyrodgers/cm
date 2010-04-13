@@ -82,7 +82,9 @@ public class CmCustomProgramDao {
             stmt.setInt(1, adminId);
             ResultSet rs = stmt.executeQuery();
             while(rs.next()) {
-                CustomProgramModel prog = new CustomProgramModel(rs.getString("name"), rs.getInt("id"), rs.getInt("assigned_count"), rs.getInt("inuse_count"));
+                CustomProgramModel prog = new CustomProgramModel(rs.getString("name"), rs.getInt("id"), 
+                                                                 rs.getInt("assigned_count"), rs.getInt("inuse_count"),
+                                                                 rs.getInt("is_template")!=0);
                 programs.add(prog);
             }
             return programs;
@@ -92,7 +94,7 @@ public class CmCustomProgramDao {
         }
     }
     
-    /** Get a singel Custom Program by progId
+    /** Get a single Custom Program by progId
      * 
      * @param conn
      * @param progId
@@ -107,7 +109,9 @@ public class CmCustomProgramDao {
             ResultSet rs = stmt.executeQuery();
             if(!rs.next())
                 throw new CmException("Custom Program not found: " + progId);
-            return new CustomProgramModel(rs.getString("name"), rs.getInt("id"), rs.getInt("assigned_count"), rs.getInt("inuse_count"));
+            return new CustomProgramModel(rs.getString("name"), rs.getInt("id"), 
+                                          rs.getInt("assigned_count"), rs.getInt("inuse_count"),
+                                          rs.getInt("is_template")!=0);
         }
         finally {
             SqlUtilities.releaseResources(null,stmt, null);
@@ -124,7 +128,9 @@ public class CmCustomProgramDao {
             if(!rs.next())
                 throw new CmException("Custom Program not found for: " + adminId + ", " + customProgramName);
             
-            return new CustomProgramModel(rs.getString("name"), rs.getInt("id"),rs.getInt("assigned_count"), rs.getInt("inuse_count"));
+            return new CustomProgramModel(rs.getString("name"), rs.getInt("id"),
+                                          rs.getInt("assigned_count"), rs.getInt("inuse_count"),
+                                          rs.getInt("is_template")!=0);
         }
         finally {
             SqlUtilities.releaseResources(null,stmt, null);
@@ -208,7 +214,7 @@ public class CmCustomProgramDao {
             
             saveChanges(conn, newProgId, name,lessons);
             
-            return new CustomProgramModel(name, newProgId, 0, 0);
+            return new CustomProgramModel(name, newProgId, 0, 0,false);
         }
         finally {
             SqlUtilities.releaseResources(null,stmt, null);

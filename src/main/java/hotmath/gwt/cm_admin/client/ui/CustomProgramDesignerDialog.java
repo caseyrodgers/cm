@@ -67,10 +67,17 @@ public class CustomProgramDesignerDialog extends CmWindow {
 
         buildGui();
         String programName="";
+        loadCustomProgramDefinition(customProgram);
         if(customProgram != null) {
-            loadCustomProgramDefinition(customProgram);
-            _isEditable = customProgram.getAssignedCount() == 0;
             programName = customProgram.getProgramName();
+            if(customProgram.getIsTemplate()) {
+                _isEditable = true;
+                customProgram = new CustomProgramModel();
+                programName = "";
+            }
+            else if(customProgram.getAssignedCount() == 0) {
+                _isEditable = true;
+            }
         }
         else {
             createNewProgram();
@@ -212,7 +219,15 @@ public class CustomProgramDesignerDialog extends CmWindow {
         
         _programName.focus();
         
-        String msg = isEditable?"Drag and drop lessons from left side to create and reorder the custom program":"<span style='color: red;font-weight: bold'>This program is in use and cannot be edited</span>";
+        String msg = null;
+        if(isEditable)
+            msg = "Drag and drop lessons from left side to create and reorder the custom program";
+        else {
+            if(customProgram.getIsTemplate())
+                msg = "<span style='color: red;font-weight: bold'>This program is a system template and cannot be edited.</span>";
+            else 
+                msg = "<span style='color: red;font-weight: bold'>This program is in use and cannot be edited.</span>";
+        }
         Html html = new Html("<p style='padding: 7px 0; width: 250px;'>" + msg + "</p>");
         lc.add(html);
         lc.setScrollMode(Scroll.AUTOX);
@@ -226,8 +241,9 @@ public class CustomProgramDesignerDialog extends CmWindow {
         _programName.setValue("");
         _listSelected.getStore().removeAll();
         this.customProgram = new CustomProgramModel();
-        this.customProgram.setProgramName("New Custom Program");
+        this.customProgram.setProgramName("");
     }
+
     
     
     static CmList<CustomLessonModel> __allLessons;

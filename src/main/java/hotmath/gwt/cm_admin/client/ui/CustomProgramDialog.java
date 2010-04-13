@@ -15,12 +15,16 @@ import hotmath.gwt.shared.client.rpc.action.CmList;
 import hotmath.gwt.shared.client.rpc.action.CustomProgramDefinitionAction;
 import hotmath.gwt.shared.client.rpc.action.CustomProgramDefinitionAction.ActionType;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.extjs.gxt.ui.client.Style.LayoutRegion;
 import com.extjs.gxt.ui.client.Style.SelectionMode;
 import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
+import com.extjs.gxt.ui.client.event.MenuEvent;
 import com.extjs.gxt.ui.client.event.MessageBoxEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.store.ListStore;
@@ -29,6 +33,8 @@ import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
+import com.extjs.gxt.ui.client.widget.menu.Menu;
+import com.extjs.gxt.ui.client.widget.menu.MenuItem;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 
 public class CustomProgramDialog extends CmWindow {
@@ -36,7 +42,8 @@ public class CustomProgramDialog extends CmWindow {
     CmAdminModel adminModel;
 
     ListView<CustomProgramModel> _listView;
-
+    NewProgramButtonWithTooltip _newProgramButton;
+    
     public CustomProgramDialog(CmAdminModel adminModel) {
         this.adminModel = adminModel;
         setStyleName("custom-prescription-dialog");
@@ -69,18 +76,13 @@ public class CustomProgramDialog extends CmWindow {
         add(_listView, new BorderLayoutData(LayoutRegion.CENTER));
 
         ToolBar tb = new ToolBar();
-        tb.add(new MyButtonWithTooltip("New", new SelectionListener<ButtonEvent>() {
+        
+        _newProgramButton = new NewProgramButtonWithTooltip(this,"Create New", new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent ce) {
-                new CustomProgramDesignerDialog(adminModel, new CmAsyncRequestImplDefault() {
-                    @Override
-                    public void requestComplete(String requestData) {
-                        getCustomProgramDefinitions();
-                        
-                        EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_REFRESH_STUDENT_DATA));
-                    }
-                });
+                addNewCustomProgram();
             }
-        }, "Create new custom program"));
+        }, "Create new custom program");
+        tb.add(_newProgramButton);
 
         tb.add(new MyButtonWithTooltip("Edit", new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent ce) {
@@ -97,13 +99,27 @@ public class CustomProgramDialog extends CmWindow {
         addCloseButton();
     }
 
+    public void addNewCustomProgram() {
+        new CustomProgramDesignerDialog(adminModel, new CmAsyncRequestImplDefault() {
+            @Override
+            public void requestComplete(String requestData) {
+                getCustomProgramDefinitions();
+                EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_REFRESH_STUDENT_DATA));
+            }
+        });        
+    }
+    
     private void editProgram() {
         final CustomProgramModel sel = _listView.getSelectionModel().getSelectedItem();
         if (sel == null) {
             CatchupMathTools.showAlert("Select a custom program first");
             return;
         }
-
+        
+        editProgram(sel);
+    }
+    
+    protected void editProgram(final CustomProgramModel sel) {
         final String oldProgramName = sel.getProgramName();
         new CustomProgramDesignerDialog(adminModel, new CmAsyncRequestImplDefault() {
             @Override
@@ -124,7 +140,13 @@ public class CustomProgramDialog extends CmWindow {
         }
         
         if(sel.getAssignedCount() > 0) {
-            CatchupMathTools.showAlert("This program cannot be deleted because it is currently assigned to students.");
+            CatchupMathTools.showAlert("This program cannot be deleted because it is currently assigned to " + 
+                    (sel.getAssignedCount()==1?"1 student":sel.getAssignedCount() + " students") + ".");
+            return;
+        }
+        
+        if(sel.getIsTemplate()) {
+            CatchupMathTools.showAlert("This program is a system template and cannot be deleted.");
             return;
         }
 
@@ -174,8 +196,22 @@ public class CustomProgramDialog extends CmWindow {
             @Override
             public void oncapture(CmList<CustomProgramModel> value) {
                 CmBusyManager.setBusy(false);
+                
+                /** collect templates and non templates in separate lists
+                 * 
+                 */
+                List<CustomProgramModel> templates = new ArrayList<CustomProgramModel>();
+                List<CustomProgramModel> nonTemplates = new ArrayList<CustomProgramModel>();
+                for(int i=0,t=value.size();i<t;i++) {
+                    CustomProgramModel program = value.get(i);
+                    if(program.getIsTemplate())
+                        templates.add(program);
+                    else
+                        nonTemplates.add(program);
+                }
                 _listView.getStore().removeAll();
-                _listView.getStore().add(value);
+                _listView.getStore().add(nonTemplates);
+                _newProgramButton.setTemplates(templates);
             }
         }.register();
     }
@@ -186,5 +222,56 @@ public class CustomProgramDialog extends CmWindow {
             setToolTip(toolTip);
         }
     }
-
+    
+    static class NewProgramButtonWithTooltip extends Button {
+        Menu _availTemplates;
+        SelectionListener<MenuEvent> templateListener;
+        CustomProgramDialog customProgramDialog;
+        
+        public NewProgramButtonWithTooltip(CustomProgramDialog cpd, String name, final SelectionListener<ButtonEvent> listener, String toolTip) {
+            super(name);
+            this.customProgramDialog = cpd;
+            Menu menu = new Menu();
+            menu.add(new MyMenuItem("Blank Program", "Create a new blank custom program", new SelectionListener<MenuEvent>() {
+                @Override
+                public void componentSelected(MenuEvent ce) {
+                    listener.componentSelected(null);
+                }
+            }));
+            
+            templateListener = new SelectionListener<MenuEvent>() {
+                @Override
+                public void componentSelected(MenuEvent ce) {
+                    int index = ce.getIndex();
+                    customProgramDialog.editProgram((CustomProgramModel)ce.getItem().getData("program"));
+                }
+            };
+            MenuItem fromTemplate = new MenuItem("From Template");
+            _availTemplates = new Menu();
+            fromTemplate.setSubMenu(_availTemplates);
+            menu.add(fromTemplate);
+            
+            setMenu(menu);
+            setToolTip(toolTip);
+        }
+        
+        public void setTemplates(List<CustomProgramModel> templates) {
+            _availTemplates.removeAll();
+            for(int i=0,t=templates.size();i<t;i++) {
+                CustomProgramModel cp = templates.get(i);
+                _availTemplates.add(new MyMenuItem(cp,"Create new custom program based on this template", templateListener));
+            }
+        }
+    }
+    
+    static class MyMenuItem extends MenuItem {
+        public MyMenuItem(CustomProgramModel program,String tip, SelectionListener<MenuEvent> listener) {
+            this(program.getProgramName(),tip,listener);
+            setData("program", program);
+        }
+        public MyMenuItem(String text,String tip, SelectionListener<MenuEvent> listener) {
+            super(text,listener);
+            setToolTip(tip);
+        }        
+    }
 }

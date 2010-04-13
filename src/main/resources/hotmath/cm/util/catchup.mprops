@@ -1327,13 +1327,15 @@ values(?,?,now());
 ### CmCustomProgramDao
 #####################
 
+## remove all custom progrma defintions, including any templates defined
 
 .key=CUSTOM_PROGRAM_DEFINITIONS_ALL
 
 select *
 from v_HA_CUSTOM_PROGRAM_INFO
-where admin_id = ?  
-order by name
+where admin_id = ? 
+or (is_template = 1 and admin_id is null)
+
 
 
 .key=CUSTOM_PROGRAM_DEFINITION_BYID
