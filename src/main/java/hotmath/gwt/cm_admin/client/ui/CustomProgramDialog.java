@@ -140,8 +140,7 @@ public class CustomProgramDialog extends CmWindow {
         }
         
         if(sel.getAssignedCount() > 0) {
-            CatchupMathTools.showAlert("This program cannot be deleted because it is currently assigned to " + 
-                    (sel.getAssignedCount()==1?"1 student":sel.getAssignedCount() + " students") + ".");
+            CatchupMathTools.showAlert("This program cannot be deleted because it is currently assigned to students.");
             return;
         }
         
