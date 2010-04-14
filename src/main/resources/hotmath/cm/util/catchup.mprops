@@ -1355,6 +1355,15 @@ from v_HA_CUSTOM_PROGRAM_INFO
 where admin_id = ? and name = ?
 
 
+.key=CUSTOM_PROGRAM_INFO_INUSE
+
+select u.uid, u.user_name
+from   HA_CUSTOM_PROGRAM cp
+  JOIN CM_USER_PROGRAM up on up.custom_program_id = cp.id
+  JOIN HA_USER u on u.uid = up.user_id
+where u.admin_id = ?
+and  cp.id = ?;
+
 
 .key=CUSTOM_PROGRAM_INFO_ASSIGNED
 

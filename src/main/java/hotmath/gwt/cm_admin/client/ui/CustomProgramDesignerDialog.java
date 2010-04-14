@@ -71,7 +71,6 @@ public class CustomProgramDesignerDialog extends CmWindow {
         if(customProgram != null) {
             loadCustomProgramDefinition(customProgram);
             programName = customProgram.getProgramName();
-            
             if(asCopy) {
                 _isEditable = true;
                 customProgram = new CustomProgramModel();
@@ -147,8 +146,6 @@ public class CustomProgramDesignerDialog extends CmWindow {
         lc.add(new MyListContainer(_listSelected,"Lessons in Program",false), data);
 
         add(lc, new BorderLayoutData(LayoutRegion.CENTER));
-
-        
 
         _btnClearAll = new Button("Clear All", new SelectionListener<ButtonEvent>() {
             @Override

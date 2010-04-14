@@ -1,7 +1,6 @@
 package hotmath.gwt.cm_admin.server.model;
 
 import hotmath.cm.util.CmMultiLinePropertyReader;
-import hotmath.flusher.HotmathFlusher;
 import hotmath.gwt.cm_tools.client.model.CustomLessonModel;
 import hotmath.gwt.cm_tools.client.model.CustomProgramModel;
 import hotmath.gwt.cm_tools.client.model.StudentModelExt;
@@ -153,6 +152,13 @@ public class CmCustomProgramDao {
         }
     }
     
+    /** return list of all lessons assigned to custom program 
+     * 
+     * @param conn
+     * @param programId
+     * @return
+     * @throws Exception
+     */
     public CmList<CustomLessonModel> getCustomProgramDefinition(final Connection conn, Integer programId) throws Exception {
         Statement stmt=null;
         try {
@@ -170,8 +176,6 @@ public class CmCustomProgramDao {
     }
 
     public CmList<CustomLessonModel> saveChanges(final Connection conn, Integer progId, String name, List<CustomLessonModel> lessons) throws Exception {
-        
-        
         makeSureNameIsValid(conn, name);
 
         PreparedStatement stmt1=null, stmt2=null;
@@ -260,10 +264,9 @@ public class CmCustomProgramDao {
         PreparedStatement stmt=null;
         try {
             CustomProgramInfoModel info = new CustomProgramInfoModel();
-
-            String sql = CmMultiLinePropertyReader.getInstance().getProperty("CUSTOM_PROGRAM_INFO_ASSIGNED");
             info.setProgram(program);
-            stmt = conn.prepareStatement(sql);
+
+            stmt = conn.prepareStatement(CmMultiLinePropertyReader.getInstance().getProperty("CUSTOM_PROGRAM_INFO_INUSE"));
             stmt.setInt(1, adminId);
             stmt.setInt(2, program.getProgramId());
             

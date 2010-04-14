@@ -70,7 +70,7 @@ public class CustomProgramDialog extends CmWindow {
                 editProgram(false);
             }
         });
-
+        _listView.setTemplate(getTemplateHtml());
         add(_listView, new BorderLayoutData(LayoutRegion.CENTER));
 
         ToolBar tb = new ToolBar();
@@ -106,6 +106,11 @@ public class CustomProgramDialog extends CmWindow {
 
         add(tb, new BorderLayoutData(LayoutRegion.NORTH, 35));
         addCloseButton();
+    }
+    
+    private String getTemplateHtml() {
+        String template = "<tpl for=\".\"><div class='x-view-item'><span class='{styleName}'>{programName}</span></div></tpl>";
+        return template;
     }
 
     public void addNewCustomProgram() {

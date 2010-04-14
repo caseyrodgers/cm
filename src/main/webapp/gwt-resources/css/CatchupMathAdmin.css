@@ -252,3 +252,9 @@ trending-data-student-list-item {
 .customProgram .customProgramDot {
 	  display: inline;
 } 
+
+	
+.program-read-only {
+	color: red;
+}
+

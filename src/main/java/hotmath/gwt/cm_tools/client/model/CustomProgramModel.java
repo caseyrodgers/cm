@@ -13,6 +13,10 @@ public class CustomProgramModel extends BaseModel implements Response {
         setAssignedCount(assignedCount);
         setInUseCount(inUseCount);
         setIsTemplate(isTemplate);
+
+        if(isTemplate || inUseCount > 0)
+            setStyleName("program-read-only");
+        
     }
 
     public void setProgramName(String programName) {
@@ -54,5 +58,13 @@ public class CustomProgramModel extends BaseModel implements Response {
     
     public Boolean getIsTemplate() {
         return get("isTemplate");
+    }
+    
+    public String getStyleName() {
+        return get("styleName");
+    }
+    
+    public void setStyleName(String style) {
+        set("styleName", style);
     }
 }
