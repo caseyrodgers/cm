@@ -1354,3 +1354,14 @@ select *
 from v_HA_CUSTOM_PROGRAM_INFO
 where admin_id = ? and name = ?
 
+
+
+.key=CUSTOM_PROGRAM_INFO_ASSIGNED
+
+select distinct u.uid, u.user_name
+from HA_USER u
+  JOIN CM_USER_PROGRAM up on up.id = u.user_prog_id
+  JOIN HA_CUSTOM_PROGRAM cp on cp.id = up.custom_program_id
+where u.admin_id = ?
+and cp.id = ?
+

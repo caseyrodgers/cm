@@ -19,6 +19,7 @@ import hotmath.gwt.shared.server.service.command.CreateAutoRegistrationPreviewCo
 import hotmath.gwt.shared.server.service.command.CreateTestRunCommand;
 import hotmath.gwt.shared.server.service.command.CustomProgramCommand;
 import hotmath.gwt.shared.server.service.command.CustomProgramDefinitionCommand;
+import hotmath.gwt.shared.server.service.command.CustomProgramInfoCommand;
 import hotmath.gwt.shared.server.service.command.GeneratePdfAssessmentReportCommand;
 import hotmath.gwt.shared.server.service.command.GeneratePdfCommand;
 import hotmath.gwt.shared.server.service.command.GetAccountInfoForAdminUidCommand;
@@ -278,5 +279,6 @@ public class ActionDispatcher {
         addCommand(SaveCmLoggerTextCommand.class);
         addCommand(CustomProgramCommand.class);
         addCommand(CustomProgramDefinitionCommand.class);
+        addCommand(CustomProgramInfoCommand.class);
     }
 }

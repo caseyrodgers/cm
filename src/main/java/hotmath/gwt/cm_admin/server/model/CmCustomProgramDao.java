@@ -1,8 +1,11 @@
 package hotmath.gwt.cm_admin.server.model;
 
 import hotmath.cm.util.CmMultiLinePropertyReader;
+import hotmath.flusher.HotmathFlusher;
 import hotmath.gwt.cm_tools.client.model.CustomLessonModel;
 import hotmath.gwt.cm_tools.client.model.CustomProgramModel;
+import hotmath.gwt.cm_tools.client.model.StudentModelExt;
+import hotmath.gwt.shared.client.model.CustomProgramInfoModel;
 import hotmath.gwt.shared.client.rpc.action.CmArrayList;
 import hotmath.gwt.shared.client.rpc.action.CmList;
 import hotmath.gwt.shared.client.util.CmException;
@@ -241,6 +244,42 @@ public class CmCustomProgramDao {
         }
         finally {
             SqlUtilities.releaseResources(null,stmt, null);
+        }
+    }
+    
+    
+    /** Get list of students that have this program assigned 
+     * 
+     * @param conn
+     * @param adminId
+     * @param program
+     * @return
+     * @throws Exception
+     */
+    public CustomProgramInfoModel getCustomProgramInfo(final Connection conn, Integer adminId, CustomProgramModel program) throws Exception {
+        PreparedStatement stmt=null;
+        try {
+            CustomProgramInfoModel info = new CustomProgramInfoModel();
+
+            String sql = CmMultiLinePropertyReader.getInstance().getProperty("CUSTOM_PROGRAM_INFO_ASSIGNED");
+            info.setProgram(program);
+            stmt = conn.prepareStatement(sql);
+            stmt.setInt(1, adminId);
+            stmt.setInt(2, program.getProgramId());
+            
+            ResultSet rs = stmt.executeQuery();
+            while(rs.next()) {
+                StudentModelExt sm = new StudentModelExt();
+                sm.setAdminUid(adminId);
+                sm.setName(rs.getString("user_name"));
+                sm.setUid(rs.getInt("uid"));
+                info.getAssignedStudents().add(sm);
+            }
+            info.setLessons(getCustomProgramDefinition(conn, program.getProgramId()));
+            return info;
+        }
+        finally {
+            SqlUtilities.releaseResources(null,stmt,null);
         }
     }
     

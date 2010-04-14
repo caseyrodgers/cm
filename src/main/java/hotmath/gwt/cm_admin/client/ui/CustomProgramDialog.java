@@ -98,6 +98,12 @@ public class CustomProgramDialog extends CmWindow {
                 deleteProgram();
             }
         }, "Delete selected custom program"));
+        tb.add(new MyButtonWithTooltip("Info", new SelectionListener<ButtonEvent>() {
+            public void componentSelected(ButtonEvent ce) {
+                infoForProgram();
+            }
+        }, "Get information about selected custom program."));
+
         add(tb, new BorderLayoutData(LayoutRegion.NORTH, 35));
         addCloseButton();
     }
@@ -112,6 +118,15 @@ public class CustomProgramDialog extends CmWindow {
         });        
     }
     
+    private void infoForProgram() {
+        final CustomProgramModel sel = _listView.getSelectionModel().getSelectedItem();
+        if (sel == null) {
+            CatchupMathTools.showAlert("Select a custom program first");
+            return;
+        }
+        
+        new CustomProgramInfoSubDialog(sel).setVisible(true);
+    }
     private void editProgram(boolean asCopy) {
         final CustomProgramModel sel = _listView.getSelectionModel().getSelectedItem();
         if (sel == null) {
@@ -142,7 +157,7 @@ public class CustomProgramDialog extends CmWindow {
         }
         
         if(sel.getAssignedCount() > 0) {
-            CatchupMathTools.showAlert("This program cannot be deleted because it is currently assigned to students.");
+            CatchupMathTools.showAlert("This program cannot be deleted because it is currently in use.");
             return;
         }
         
