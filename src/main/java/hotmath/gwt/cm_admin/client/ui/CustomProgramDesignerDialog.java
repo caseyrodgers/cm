@@ -230,7 +230,7 @@ public class CustomProgramDesignerDialog extends CmWindow {
             msg = "Drag and drop lessons from left side to create and reorder the custom program";
         else {
             if(customProgram.getIsTemplate())
-                msg = "<span style='color: red;font-weight: bold'>This program is a system template and cannot be edited.</span>";
+                msg = "<span style='color: red;font-weight: bold'>This program is a Built-in Custom Program.  You can make a copy to customize.</span>";
             else 
                 msg = "<span style='color: red;font-weight: bold'>This program is in use and cannot be edited.</span>";
         }

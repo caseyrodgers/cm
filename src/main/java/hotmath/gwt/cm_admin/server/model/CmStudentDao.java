@@ -456,7 +456,8 @@ public class CmStudentDao {
             ps = conn.prepareStatement(CmMultiLinePropertyReader.getInstance().getProperty("STUDENT_ACTIVITY"));
             ps.setInt(1, uid);
             ps.setInt(2, uid);
-            ps.setInt(3, uid);            
+            ps.setInt(3, uid);
+            ps.setInt(4,uid);
             rs = ps.executeQuery();
 
             l = loadStudentActivity(conn, rs);

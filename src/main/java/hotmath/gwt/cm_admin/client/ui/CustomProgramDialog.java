@@ -167,7 +167,7 @@ public class CustomProgramDialog extends CmWindow {
         }
         
         if(sel.getIsTemplate()) {
-            CatchupMathTools.showAlert("This program is a system template and cannot be deleted.");
+            CatchupMathTools.showAlert("This program is a built-in and cannot be deleted.");
             return;
         }
 

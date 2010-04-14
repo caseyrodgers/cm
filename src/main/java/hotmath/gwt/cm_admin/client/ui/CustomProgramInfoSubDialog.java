@@ -1,6 +1,5 @@
 package hotmath.gwt.cm_admin.client.ui;
 
-import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.model.CustomLessonModel;
 import hotmath.gwt.cm_tools.client.model.CustomProgramModel;
@@ -12,9 +11,6 @@ import hotmath.gwt.shared.client.rpc.RetryAction;
 import hotmath.gwt.shared.client.rpc.action.CustomProgramInfoAction;
 
 import com.extjs.gxt.ui.client.Style.SelectionMode;
-import com.extjs.gxt.ui.client.event.BaseEvent;
-import com.extjs.gxt.ui.client.event.Events;
-import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.Html;
 import com.extjs.gxt.ui.client.widget.ListView;
@@ -45,7 +41,12 @@ public class CustomProgramInfoSubDialog extends CmWindow {
         FormPanel form = new FormPanel();
         form.setHeaderVisible(false);
         
-        form.add(new Html("<h1 style='margin-bottom: 10px;'>Program Name: " + program.getProgramName() + "</h1>"));
+        String html = "<div style='margin-bottom: 10px;'>" +
+                      "<h1>Program Name: " + program.getProgramName() + 
+                      (program.getIsTemplate()?" (is a built-in)":"") +
+                      "</h1>" +
+                      "</div>";
+        form.add(new Html(html));
 
         FieldSet fsLessons = new FieldSet();
         fsLessons.setHeading("Lessons in Program");
@@ -99,11 +100,6 @@ public class CustomProgramInfoSubDialog extends CmWindow {
             ListStore<StudentModelExt> store = new ListStore<StudentModelExt>();
             setStore(store);
             setDisplayProperty("name");
-            addListener(Events.DoubleClick, new Listener<BaseEvent>() {
-                public void handleEvent(BaseEvent be) {
-                    CatchupMathTools.showAlert("Selected: " + be);
-                }
-            });
         }
         public void setProgramInfo(CustomProgramInfoModel info) {
             getStore().add(info.getAssignedStudents());
@@ -118,11 +114,6 @@ public class CustomProgramInfoSubDialog extends CmWindow {
             ListStore<CustomLessonModel> store = new ListStore<CustomLessonModel>();
             setStore(store);
             setDisplayProperty("lesson");
-            addListener(Events.DoubleClick, new Listener<BaseEvent>() {
-                public void handleEvent(BaseEvent be) {
-                    CatchupMathTools.showAlert("Selected: " + be);
-                }
-            });
         }
         public void setProgramInfo(CustomProgramInfoModel info) {
             getStore().add(info.getLessons());
