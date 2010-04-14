@@ -190,7 +190,8 @@ from (
  from  HA_TEST l INNER JOIN HA_USER u ON l.user_id = u.uid
  join HA_TEST_DEF td on td.test_def_id = l.test_def_id
  join CM_USER_PROGRAM p on p.user_id = u.uid and p.id = l.user_prog_id and p.custom_program_id is null
- where u.uid = ? and u.active_test_id = l.test_id
+ where u.uid = ?
+  and u.active_test_id = l.test_id
 
  union
  
@@ -210,7 +211,7 @@ from (
  
  union
  
- select date_format(iu.view_time,'%Y-%m-%d') as use_date, date_format(iu.view_time,'%h:%i %p') as start_time,
+select date_format(iu.view_time,'%Y-%m-%d') as use_date, date_format(iu.view_time,'%h:%i %p') as start_time,
   date_format(iu.view_time,'%h:%i %p') as stop_time, iu.view_time as view_time,
   date_format(iu.view_time,'%Y-%m-%d') as run_date,
   0 as answered_correct, 0 as answered_incorrect, 0 as not_answered,
@@ -224,16 +225,21 @@ from (
      select l.run_id,max(l.lesson_number) as session_number,max(lesson_viewed) as view_time
      from    HA_TEST_RUN_LESSON l
          JOIN HA_TEST_RUN_LESSON_PID p on p.lid = l.id
-     where l.lesson_viewed is not null
+         JOIN HA_TEST_RUN r on r.run_id = l.run_id
+         JOIN HA_TEST t on t.test_id = r.test_id
+     where t.user_id = ?
+     and l.lesson_viewed is not null
      group by l.run_id, l.lesson_file
  ) iu on iu.run_id = r.run_id
  join HA_TEST_DEF td on td.test_def_id = l.test_def_id
  join CM_USER_PROGRAM p on p.user_id = u.uid and p.id = l.user_prog_id
  left join HA_CUSTOM_PROGRAM cp on cp.id = p.custom_program_id and p.custom_program_id is not null
  where u.uid = ?
+ 
 ) s
 group by s.test_run_id, s.is_quiz, s.use_date
 order by s.view_time asc, s.test_run_id asc, s.session_number asc
+
 
     
 .key=TEST_RESULTS
