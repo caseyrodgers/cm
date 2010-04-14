@@ -4,7 +4,6 @@ import hotmath.gwt.cm_admin.server.model.CmAdminDao;
 import hotmath.gwt.cm_admin.server.model.CmStudentDao;
 import hotmath.gwt.cm_tools.client.model.StudentModel;
 import hotmath.gwt.cm_tools.client.model.StudentModelI;
-import hotmath.gwt.cm_tools.client.model.StudentProgramModel;
 import hotmath.subscriber.HotMathSubscriber;
 import hotmath.subscriber.HotMathSubscriberManager;
 import hotmath.subscriber.PurchasePlan;
@@ -67,44 +66,73 @@ public class CmPilotCreate {
 
             setMaxStudents(conn, subscriber, maxStudentCount);
 
-            /**
-             * add new HA_ADMIN account
+            
+            /** if admin already exists, then use its admin id
+             * otherwise create new admin record.
              */
-            String sql = "insert into HA_ADMIN(subscriber_id, passcode, user_name, create_date)values(?,?,?,now())";
-            pstmt = conn.prepareStatement(sql);
-            pstmt.setString(1, subscriberId);
-            pstmt.setString(2, "admin123");
-            pstmt.setString(3, password); // use subs password as username
-
+            boolean adminExists=false;
+            PreparedStatement s1=null;
             try {
-                pstmt.executeUpdate();
-
-                ResultSet rs = pstmt.getGeneratedKeys();
-                rs.first();
-                aid = rs.getInt(1);
-                pstmt.close();
-
-            } catch (Exception e) {
-                ResultSet rs = conn.createStatement().executeQuery(
-                        "select aid from HA_ADMIN where subscriber_id = '" + subscriberId + "'");
-                if (!rs.first())
-                    throw new Exception("Could not find existing HA_ADMIN record for '" + subscriberId + "'");
-
-                aid = rs.getInt(1);
-                messages.add("New HA_ADMIN record not created, using existing.");
+                s1 = conn.prepareStatement("select aid from HA_ADMIN where subscriber_id = ?");
+                s1.setString(1, subscriberId);
+                ResultSet rs = s1.executeQuery();
+                if(rs.first()) {
+                    adminExists = true;
+                    aid = rs.getInt("aid");
+                }
             }
-
-            /**
-             * add new HA_USER attached to
-             * 
-             */
-            addJohnDoeUser(conn, aid, "John Doe", "jd12345", showWorkRequired, tutoringEnabled, tutoringHours);
+            finally {
+                SqlUtilities.releaseResources(null, s1, null);
+            }
+            
+            
+            if(!adminExists) {
+                /**
+                 * add new HA_ADMIN account
+                 */
+                String sql = "insert into HA_ADMIN(subscriber_id, passcode, user_name, create_date)values(?,?,?,now())";
+                pstmt = conn.prepareStatement(sql);
+                pstmt.setString(1, subscriberId);
+                pstmt.setString(2, "admin123");
+                pstmt.setString(3, password); // use subs password as username
+    
+                try {
+                    pstmt.executeUpdate();
+    
+                    ResultSet rs = pstmt.getGeneratedKeys();
+                    rs.first();
+                    aid = rs.getInt(1);
+                    pstmt.close();
+    
+                } catch (Exception e) {
+                    ResultSet rs = conn.createStatement().executeQuery(
+                            "select aid from HA_ADMIN where subscriber_id = '" + subscriberId + "'");
+                    if (!rs.first())
+                        throw new Exception("Could not find existing HA_ADMIN record for '" + subscriberId + "'");
+    
+                    aid = rs.getInt(1);
+                    messages.add("New HA_ADMIN record not created, using existing.");
+                }
+            }
 
             /**
              * setup default groups for user
              * 
              */
             setupPilotGroups(conn, aid);
+            
+            /**
+             * add new HA_USER attached to
+             * 
+             */
+            try {
+                addJohnDoeUser(conn, aid, "John Doe", "jd12345", showWorkRequired, tutoringEnabled, tutoringHours);
+            }
+            catch(Exception e) {
+                // fail silent
+            }
+
+
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
