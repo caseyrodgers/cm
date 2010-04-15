@@ -233,7 +233,7 @@ class ResourceMenuButton extends Button {
             String lesson = PrescriptionCmGuiDefinition.__instance.context.getPrescriptionData().getCurrSession().getTopic();
             String cookie = Cookies.getCookie("cm_lesson_viewed");
             if(cookie != null && cookie.equals(lesson)) {
-                CatchupMathTools.showAlert("Games Are Limited", "Only one game use is allowed per lesson.");
+                CatchupMathTools.showAlert("Games Are Limited", "Please advance to the next lesson or quiz before playing another game");
                 return false;
             }
             else {
