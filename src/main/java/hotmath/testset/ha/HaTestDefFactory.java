@@ -1,5 +1,7 @@
 package hotmath.testset.ha;
 
+import static hotmath.cm.util.CmCacheManager.CacheName.TEST_DEF;
+import hotmath.cm.util.CmCacheManager;
 import hotmath.util.sql.SqlUtilities;
 
 import java.sql.Connection;
@@ -37,6 +39,12 @@ public class HaTestDefFactory {
 	    PreparedStatement pstat=null;
 	    ResultSet rs = null;
 	    try {
+	    	
+	        HaTestDef td = (HaTestDef)CmCacheManager.getInstance().retrieveFromCache(TEST_DEF, String.valueOf(testDefId));
+	        if (td != null) {
+	       	    return td;
+	        }
+
 	        String sql = "select test_name  " +
 	                     " from HA_TEST_DEF d " +
 	                     " where test_def_id = ? ";
