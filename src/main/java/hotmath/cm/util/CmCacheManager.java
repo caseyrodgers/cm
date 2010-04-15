@@ -60,7 +60,8 @@ public class CmCacheManager  {
 		STUDENT_PAGED_DATA,
 		/** List of lessons available to create custom programs 
 		 */
-		CUSTOM_PROGRAM_LESSONS		
+		CUSTOM_PROGRAM_LESSONS,
+		HA_USER
 	};
 
 	private void flushCache() {

@@ -81,7 +81,7 @@
    We want to cache this for a long time to enable the 
    reuse of the information as the user move back/forward.
    
-   So, I'm guessing 40 minute sessions.
+   So, I'm guessing 40 minute sessions. [Casey]
 
 -->
 <cache name="PRESCRIPTION"
@@ -105,6 +105,14 @@
        maxElementsInMemory="30"
        eternal="false"
        timeToLiveSeconds="2400"
+       overflowToDisk="false">
+</cache>
+
+
+<cache name="HA_USER"
+       maxElementsInMemory="100"
+       eternal="false"
+       timeToLiveSeconds="300"
        overflowToDisk="false">
 </cache>
 
