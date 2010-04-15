@@ -1,13 +1,20 @@
 package hotmath.testset.ha;
 
 import hotmath.HotMathException;
+import hotmath.cm.util.CmCacheManager;
 import hotmath.cm.util.CmMultiLinePropertyReader;
+import hotmath.cm.util.CmCacheManager.CacheName;
+import hotmath.gwt.cm_admin.server.model.CmStudentDao;
+import hotmath.gwt.cm_tools.client.model.StudentModelExt;
+import hotmath.gwt.cm_tools.client.model.StudentModelI;
 import hotmath.util.HMConnectionPool;
 import hotmath.util.sql.SqlUtilities;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.log4j.Logger;
 
@@ -241,6 +248,12 @@ public class HaUser extends HaBasicUserImpl {
 		PreparedStatement pstat=null;
 		ResultSet rs = null;
 		try {
+			
+			String cacheKey = (uid != null)?String.valueOf(uid) : userName;
+			
+	        HaUser user  = (HaUser) CmCacheManager.getInstance().retrieveFromCache(CacheName.HA_USER, cacheKey);
+	        if (user != null) return user;
+	        
 			String sql = CmMultiLinePropertyReader.getInstance().getProperty("HA_USER_LOOKUP_USER");
 			if(uid != null)
 				sql += " where u.uid = ?";
@@ -248,7 +261,7 @@ public class HaUser extends HaBasicUserImpl {
 				sql += " where u.user_name = ?";
 			
 			pstat = conn.prepareStatement(sql);
-			HaUser user = new HaUser();
+			user = new HaUser();
 			
 			if(uid != null)
 				pstat.setInt(1,uid);
@@ -274,6 +287,8 @@ public class HaUser extends HaBasicUserImpl {
 			user.setUserAccountType(rs.getString("type"));
 			user.setDemoUser((rs.getInt("is_demo")!=0));
 
+			CmCacheManager.getInstance().addToCache(CacheName.HA_USER, cacheKey, user);
+	        
 			return user;
 		}
 		catch(HotMathException hme) {
