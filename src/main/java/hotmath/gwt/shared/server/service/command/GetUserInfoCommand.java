@@ -121,7 +121,7 @@ public class GetUserInfoCommand implements ActionHandler<GetUserInfoAction, User
             
             ProgramCompletionAction onComplete = settings.getStopAtProgramEnd()?ProgramCompletionAction.STOP:ProgramCompletionAction.AUTO_ADVANCE;
             userInfo.setOnCompletion(onComplete);
-            //userInfo.setLimitGames
+            userInfo.setLimitGames(settings.getLimitGames());
             
             /**if is custom program, then override the default EndOfProgram
              * action to force a stop.

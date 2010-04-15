@@ -114,8 +114,7 @@ public class RegisterStudentAdvancedOptions extends LayoutContainer {
         limitGames.setId(StudentModelExt.LIMIT_GAMES_KEY);
 		limitGames.add(isGamesLimited);
 		
-		// TODO: add to options when implemented.
-		// advOptions.add(limitGames); 
+		advOptions.add(limitGames); 
 
         isStopAtProgramEnd = new CheckBox();
         isStopAtProgramEnd.setId(StudentModelExt.STOP_AT_PROGRAM_END_KEY);

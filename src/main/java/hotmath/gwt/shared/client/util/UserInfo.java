@@ -43,7 +43,7 @@ public class UserInfo implements IsSerializable, Response {
 	String password;
 	String loginName;
 	boolean customProgram;
-	ProgramCompletionAction onCompletion= ProgramCompletionAction.AUTO_ADVANCE;
+	boolean limitGames;
 
     public UserInfo() {}
     
@@ -315,7 +315,18 @@ public class UserInfo implements IsSerializable, Response {
        return status;
     }
     
+
     
+    public boolean isLimitGames() {
+        return limitGames;
+    }
+
+    public void setLimitGames(boolean limitGames) {
+        this.limitGames = limitGames;
+    }
+
+    ProgramCompletionAction onCompletion= ProgramCompletionAction.AUTO_ADVANCE;
+
 
     /** Return action indicating what to do once the active
      *  program has been completed.
@@ -336,12 +347,12 @@ public class UserInfo implements IsSerializable, Response {
                 + autoTestMode + ", backgroundStyle=" + backgroundStyle + ", correctAnswers=" + correctAnswers
                 + ", correctPercent=" + correctPercent + ", customProgram=" + customProgram + ", isDemoUser="
                 + isDemoUser + ", isFirstView=" + isFirstView + ", isShowWorkRequired=" + isShowWorkRequired
-                + ", isTutoringAvail=" + isTutoringAvail + ", loginName=" + loginName + ", onCompletion="
-                + onCompletion + ", passPercentRequired=" + passPercentRequired + ", password=" + password + ", runId="
-                + runId + ", sessionCount=" + sessionCount + ", sessionNumber=" + sessionNumber + ", subTitle="
-                + subTitle + ", testId=" + testId + ", testName=" + testName + ", testSegment=" + testSegment
-                + ", testSegmentCount=" + testSegmentCount + ", uid=" + uid + ", userAccountType=" + userAccountType
-                + ", userName=" + userName + ", viewCount=" + viewCount + "]";
+                + ", isTutoringAvail=" + isTutoringAvail + ", lmitGames=" + limitGames + ", loginName=" + loginName
+                + ", onCompletion=" + onCompletion + ", passPercentRequired=" + passPercentRequired + ", password="
+                + password + ", runId=" + runId + ", sessionCount=" + sessionCount + ", sessionNumber=" + sessionNumber
+                + ", subTitle=" + subTitle + ", testId=" + testId + ", testName=" + testName + ", testSegment="
+                + testSegment + ", testSegmentCount=" + testSegmentCount + ", uid=" + uid + ", userAccountType="
+                + userAccountType + ", userName=" + userName + ", viewCount=" + viewCount + "]";
     }
     
     

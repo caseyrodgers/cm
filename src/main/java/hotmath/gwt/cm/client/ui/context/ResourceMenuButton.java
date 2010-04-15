@@ -4,6 +4,7 @@ import hotmath.gwt.cm.client.history.CmHistoryManager;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.data.InmhItemData;
 import hotmath.gwt.cm_tools.client.data.PrescriptionSessionDataResource;
+import hotmath.gwt.shared.client.util.UserInfo;
 
 import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
@@ -16,6 +17,7 @@ import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.menu.CheckMenuItem;
 import com.extjs.gxt.ui.client.widget.menu.Menu;
 import com.extjs.gxt.ui.client.widget.menu.MenuItem;
+import com.google.gwt.user.client.Cookies;
 
 
 /** Create a button with an optional attached menu
@@ -97,7 +99,7 @@ class ResourceMenuButton extends Button {
         updateCheckMarks();
     }
 
-    /** Update all the checkmarks to on/off
+    /** Update all the check marks to on/off
      * 
      */
     public void updateCheckMarks() {
@@ -202,7 +204,9 @@ class ResourceMenuButton extends Button {
                         }
                     }
                     
-                    CmHistoryManager.loadResourceIntoHistory(resource.getType(),ordinalPosition.toString());
+                    if(isResourceAvailable(resource)) {
+                        CmHistoryManager.loadResourceIntoHistory(resource.getType(),ordinalPosition.toString());
+                    }
                 }
             });
         }
@@ -213,6 +217,32 @@ class ResourceMenuButton extends Button {
         
         return menu;
     } 
+    
+
+    /** implement limits on resources.
+     * 
+     *  if limitGames is true, then only allow one game to be viewed per lesson.
+     *  
+     * @param resource
+     * @return
+     */
+    private boolean isResourceAvailable(PrescriptionSessionDataResource resource) {
+        if(UserInfo.getInstance().isLimitGames() &&
+                (resource.getType().indexOf("activity") > -1|| resource.getType().indexOf("flashcard") > -1)) {
+            /** if user has already viewed a game on this lesson, disallow */
+            String lesson = PrescriptionCmGuiDefinition.__instance.context.getPrescriptionData().getCurrSession().getTopic();
+            String cookie = Cookies.getCookie("cm_lesson_viewed");
+            if(cookie != null && cookie.equals(lesson)) {
+                CatchupMathTools.showAlert("Games Are Limited", "Only one game use is allowed per lesson.");
+                return false;
+            }
+            else {
+                Cookies.setCookie("cm_lesson_viewed",lesson);
+            }
+        }
+        return true;
+    }
+    
     
     /** Make button indicate that this resource is complete
      * 

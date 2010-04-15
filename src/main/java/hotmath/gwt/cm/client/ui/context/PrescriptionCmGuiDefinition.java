@@ -52,7 +52,7 @@ public class PrescriptionCmGuiDefinition implements CmGuiDefinition {
     boolean isReady;
     static public PrescriptionCmGuiDefinition __instance;
     static public InmhItemData __last_solution_item;
-    PrescriptionResourcePanel _guiWidget;
+    public PrescriptionResourcePanel _guiWidget;
 
     /**
      * Create and read Prescription data for the current user.
@@ -304,6 +304,11 @@ public class PrescriptionCmGuiDefinition implements CmGuiDefinition {
     public String getTitle() {
         return "Prescription Resource";
     }
+    
+    
+    public void disableGameResources() {
+        _guiWidget.disableGames();
+    }
 
     /**
      * Mark the pid as being viewed called from external JS
@@ -396,6 +401,9 @@ class PrescriptionResourcePanel extends LayoutContainer {
 
     PrescriptionData pdata;
     List<PrescriptionSessionDataResource> registeredResources = new ArrayList<PrescriptionSessionDataResource>();
+    
+    Map<String, ResourceMenuButton> resourceButtons = new HashMap<String, ResourceMenuButton>();
+    
 
     public List<PrescriptionSessionDataResource> getRegisteredResources() {
         return registeredResources;
@@ -412,11 +420,6 @@ class PrescriptionResourcePanel extends LayoutContainer {
         setStyleName("prescription-resource-panel");
     }
 
-    /**
-     * The menu button that corresponds to the practice problems
-     * 
-     */
-    ResourceMenuButton _practiceProblemButton, _lessonResource;
 
     /**
      * Build or rebuild the GUI from list of resource objects
@@ -440,11 +443,9 @@ class PrescriptionResourcePanel extends LayoutContainer {
             ResourceMenuButton btn = new ResourceMenuButton(resource);
 
             registeredResources.add(resource);
-            if (resource.getType().equals("practice"))
-                _practiceProblemButton = btn;
-            else if (resource.getType().equals("review"))
-                _lessonResource = btn;
 
+            resourceButtons.put(resource.getType(), btn);
+            
             /** if a Custom Program, then make sure the results
              * button is disabled .. there are no quizzes.
              */
@@ -461,8 +462,10 @@ class PrescriptionResourcePanel extends LayoutContainer {
         for (PrescriptionSessionDataResource type : new CmInmhStandardResources()) {
             registeredResources.add(type);
 
-            Button btn = new ResourceMenuButton(type);
+            ResourceMenuButton btn = new ResourceMenuButton(type);
             vp.add(btn);
+            
+            resourceButtons.put(type.getType(), btn);
         }
 
         add(vp);
@@ -476,8 +479,15 @@ class PrescriptionResourcePanel extends LayoutContainer {
     }
 
     public void expandResourcePracticeProblems() {
-        _practiceProblemButton.updateCheckMarks();
-        _practiceProblemButton.showMenu();
+        resourceButtons.get("practice").updateCheckMarks();
+        resourceButtons.get("practice").showMenu();
+    }
+    
+    public void disableGames() {
+        
+        resourceButtons.get("activity_standard").disable();
+        resourceButtons.get("flashcard").disable();
+        resourceButtons.get("flashcard_spanish").disable();
     }
 
     /**
@@ -505,7 +515,7 @@ class PrescriptionResourcePanel extends LayoutContainer {
         EventBus.getInstance().addEventListener(new CmEventListenerImplDefault() {
             public void handleEvent(CmEvent event) {
                 if (event.getEventType() == EventType.EVENT_TYPE_SOLUTIONS_COMPLETE) {
-                    __instance._practiceProblemButton.checkCompletion();
+                    __instance.resourceButtons.get("practice").checkCompletion();
                 }
             }
         });

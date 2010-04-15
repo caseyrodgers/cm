@@ -12,6 +12,7 @@ import hotmath.gwt.shared.client.eventbus.CmEventListenerImplDefault;
 import hotmath.gwt.shared.client.eventbus.EventBus;
 import hotmath.gwt.shared.client.eventbus.EventType;
 import hotmath.gwt.shared.client.util.CmInfoConfig;
+import hotmath.gwt.shared.client.util.CmRunAsyncCallback;
 import hotmath.gwt.shared.client.util.UserInfo;
 
 import com.extjs.gxt.ui.client.event.IconButtonEvent;
@@ -91,7 +92,7 @@ public class HeaderPanel extends LayoutContainer {
 		                CmMainPanel.__lastInstance._westPanel.setHeading(context.getContextSubTitle());
 		        }
 		        else if(event.getEventType() == EventType.EVENT_TYPE_TOPIC_CHANGED) {
-		            	GWT.runAsync(new RunAsyncCallback() {
+		            	GWT.runAsync(new CmRunAsyncCallback() {
 							@Override
 							public void onSuccess() {
 			                    /** Only show modal popup if not in auto test mode 
@@ -101,11 +102,6 @@ public class HeaderPanel extends LayoutContainer {
 			                        InfoPopupBox.display(new CmInfoConfig("Current Topic", "Current topic is: " + event.getEventData()));
 			                    else
 			                        new ContextChangeMessage((String)event.getEventData());
-							}
-							
-							@Override
-							public void onFailure(Throwable reason) {
-								reason.printStackTrace();
 							}
 						});
 		        }
