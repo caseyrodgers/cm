@@ -16,6 +16,7 @@ import sb.logger.SbLogger;
 
 
 public class AssessmentPrescriptionCustom extends AssessmentPrescription {
+    int _customProgramSubjectLevel;
     
     public AssessmentPrescriptionCustom(final Connection conn,HaTestRun testRun) throws Exception {
         super();
@@ -24,6 +25,14 @@ public class AssessmentPrescriptionCustom extends AssessmentPrescription {
         int custProgId = testRun.getHaTest().getProgramInfo().getCustomProgramId();
         
         CmList<CustomLessonModel> progLessons = new CmCustomProgramDao().getCustomProgramDefinition(conn, custProgId);
+        CmCustomProgramDao cmdao = new CmCustomProgramDao();
+        for(CustomLessonModel lesson: progLessons) {
+            int lev = cmdao.getSubjectLevel(lesson.getSubject());
+            if(lev > _customProgramSubjectLevel) {
+                _customProgramSubjectLevel = lev;
+            }
+        }
+        
         
         List<InmhItemData> itemsData = new ArrayList<InmhItemData>();
         for(CustomLessonModel clm: progLessons) {
@@ -75,4 +84,15 @@ public class AssessmentPrescriptionCustom extends AssessmentPrescription {
         }
         new HaTestRunDao().addLessonsToTestRun(conn,testRun, _sessions);
     }
+    
+    @Override
+    /** get grade level for the current custom program 
+     *  by using the highest level from lessons in program.
+     *  
+     *  _customProgramSubjectLevel set in constructor.
+     *  
+     */
+    public int getGradeLevel() {
+        return _customProgramSubjectLevel;
+    }    
 }

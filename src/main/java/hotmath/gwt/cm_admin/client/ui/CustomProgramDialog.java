@@ -41,6 +41,7 @@ public class CustomProgramDialog extends CmWindow {
     CmAdminModel adminModel;
 
     ListView<CustomProgramModel> _listView;
+    boolean _isDebug;
     
     public CustomProgramDialog(CmAdminModel adminModel) {
         this.adminModel = adminModel;
@@ -50,6 +51,8 @@ public class CustomProgramDialog extends CmWindow {
         setModal(true);
         setSize(350, 280);
 
+        _isDebug = CmShared.getQueryParameter("debug") != null;
+        
         buildGui();
         getCustomProgramDefinitions();
         setVisible(true);
@@ -161,12 +164,12 @@ public class CustomProgramDialog extends CmWindow {
             return;
         }
         
-        if(sel.getAssignedCount() > 0) {
+        if(!_isDebug && sel.getAssignedCount() > 0) {
             CatchupMathTools.showAlert("This program cannot be deleted because it is currently in use.");
             return;
         }
         
-        if(sel.getIsTemplate()) {
+        if(!_isDebug && sel.getIsTemplate()) {
             CatchupMathTools.showAlert("This program is a built-in and cannot be deleted.");
             return;
         }

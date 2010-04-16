@@ -2,6 +2,8 @@ package hotmath.gwt.shared.client.rpc.result;
 
 import hotmath.gwt.shared.client.rpc.Response;
 
+import java.util.List;
+
 public class QuizHtmlResult implements Response {
     String quizHtml;
     int testId;
@@ -10,7 +12,18 @@ public class QuizHtmlResult implements Response {
     String title;
     String subTitle;
     int userId;
+    List<Integer> answers;
     
+    /** list of indexes that represent the
+     *  correct answer for each question.
+     * @return
+     */
+    public List<Integer> getAnswers() {
+        return answers;
+    }
+    public void setAnswers(List<Integer> answers) {
+        this.answers = answers;
+    }
     public int getUserId() {
         return userId;
     }

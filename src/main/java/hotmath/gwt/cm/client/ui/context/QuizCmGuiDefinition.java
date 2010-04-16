@@ -107,7 +107,7 @@ public class QuizCmGuiDefinition implements CmGuiDefinition {
                             list2.add(new Button("Mark Correct", new SelectionListener<ButtonEvent>() {
                                 @Override
                                 public void componentSelected(ButtonEvent ce) {
-                                    QuizPage.markAllCorrectAnswers();
+                                    qp.markAllAnswersCorrect();
                                 }
                             }));
                         }

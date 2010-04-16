@@ -90,6 +90,7 @@ public class GetUserInfoCommand implements ActionHandler<GetUserInfoAction, User
                     
                     activeInfo.setActiveTestId(0);
                     activeInfo.setActiveRunId(testRun.getRunId());
+                    activeInfo.setActiveRunSession(0);
                     
                     /** save for next time */
                     dao.setActiveInfo(conn, action.getUserId(), activeInfo);

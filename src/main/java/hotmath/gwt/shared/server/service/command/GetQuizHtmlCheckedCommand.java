@@ -1,5 +1,6 @@
 package hotmath.gwt.shared.server.service.command;
 
+import hotmath.cm.test.HaTestSet;
 import hotmath.cm.util.CmCacheManager;
 import hotmath.cm.util.CmCacheManager.CacheName;
 import hotmath.gwt.shared.client.rpc.Action;
@@ -9,7 +10,6 @@ import hotmath.gwt.shared.client.util.CmRpcException;
 import hotmath.gwt.shared.client.util.RpcData;
 import hotmath.gwt.shared.server.service.ActionHandler;
 import hotmath.gwt.shared.server.service.ActionHandlerManualConnectionManagement;
-import hotmath.testset.TestSet;
 import hotmath.testset.ha.HaTest;
 import hotmath.testset.ha.HaTestDao;
 import hotmath.util.HMConnectionPool;
@@ -48,7 +48,7 @@ public class GetQuizHtmlCheckedCommand implements ActionHandlerManualConnectionM
             HaTest haTest = HaTestDao.loadTest(conn, action.getTestId());
             String testTitle = haTest.getTitle();
 
-            TestSet _testSet = new TestSet(haTest.getPids());
+            HaTestSet _testSet = new HaTestSet(conn, haTest.getPids());
 
             int testSegment = haTest.getSegment();
             map.put("haTest", haTest);

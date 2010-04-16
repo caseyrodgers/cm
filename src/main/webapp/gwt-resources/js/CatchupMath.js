@@ -1,20 +1,21 @@
 // External JS for GWT
 //
+// TODO: why optionSkipped?
+// 
 // called from dynamically loaded question HTML
 function questionGuessChanged(o) {
 	try {
-
 		var pid = findQuestionGuid(o);
 
 		var questionIndex = -1;
 		if (o.id == 'optionSkipped') {
 			questionIndex = '-2'; // skipped
 		} else {
-			// is it correct or wrong?
-			var nd = o.parentNode.getElementsByTagName("div").item(0).innerHTML;
-
+			
 			// how to know which index ..
 			// .. go to parent, and look for child that matches this
+			// TODO: remove dependency on structure
+			// 
 			var parentUl = o.parentNode.parentNode;
 			var ndItems = parentUl.getElementsByTagName("input");
 			for ( var i = 0; i < ndItems.length; i++) {
@@ -24,13 +25,33 @@ function questionGuessChanged(o) {
 				}
 			}
 		}
+
+		var questionNum = findQuestionNumberByPid(pid);
 		// call GWT JSNI function defined in QuizPage
-		questionGuessChanged_Gwt(nd, "" + questionIndex, pid);
+		questionGuessChanged_Gwt("" + questionNum, "" + questionIndex, pid);
 	} catch (e) {
 		alert('Error answering question in external JS: ' + e);
 	}
 }
 
+function setSolutionQuestionAnswerIndexByNumber(questionNum, which) {
+	var qn=0;
+	showCorrectAnswers( function(ql) {
+		var inputList = ql.getElementsByTagName("input");
+		if(qn == questionNum) {
+			for ( var i = 0, t = inputList.length; i < t; i++) {
+				if(i == which) {
+					inputList[i].checked = true;
+					var ai = inputList[i];
+					questionGuessChanged(ai);
+				} else {
+				    inputList[i].checked = false;
+				}
+			}
+		}
+		qn++;
+	});
+}
 
 /** Return count of correct questions */
 function getQuizResults_Correct() {
@@ -99,6 +120,31 @@ function findQuestionByPid(pid) {
 
 	return null;
 }
+
+
+function findQuestionNumberByPid(pid) {
+	var all = document.getElementById('testset_div').getElementsByTagName('div');
+	var num=0;
+	try {
+		for ( var i = 0; i < all.length; i++) {
+			var o = all[i].getAttribute('guid');
+			if (o) {
+				if(o == pid) {
+					return num;
+				}
+				else {
+					num++;
+				}
+			}
+		}
+	} catch (x) {
+		alert('Error while question index: ' + x);
+	}
+	alert('findQuestionByPid: pid not found: ' + pid);
+
+	return null;
+}
+
 
 ////////////////////
 // / For the tutor viewer
@@ -207,8 +253,7 @@ function getQuestionMarkText(questionIndex) {
  *
  */
 window.showCorrectAnswers = function(func) {
-	var testSet = document.getElementById('testset_div').getElementsByTagName(
-			'div');
+	var testSet = document.getElementById('testset_div').getElementsByTagName('div');
 	for ( var q = 0; q < testSet.length; q++) {
 		if (testSet[q].className == 'question_wrapper') {
 			func(testSet[q]);

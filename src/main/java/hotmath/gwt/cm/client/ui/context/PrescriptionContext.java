@@ -442,12 +442,13 @@ public class PrescriptionContext implements CmContext {
             final String resourceType = rt;
             List<InmhItemData> resources = PrescriptionCmGuiDefinition._registeredResources.get(resourceType);
             int which=0;
+            boolean onlyRpp = CmShared.getQueryParameter("test_rpp_only") != null;
             for(final InmhItemData r: resources) {
                 
                 if (!r.getType().equals(resourceType))
                     continue;
                 
-                if(r.getType().indexOf("practice") == -1)
+                if(onlyRpp && r.getType().indexOf("practice") == -1)
                     continue;
                 
                 CmAutoTest.ResourceObject ro = new CmAutoTest.ResourceObject(r, which++);

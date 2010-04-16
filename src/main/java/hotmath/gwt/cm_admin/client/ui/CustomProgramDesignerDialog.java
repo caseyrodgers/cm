@@ -68,6 +68,9 @@ public class CustomProgramDesignerDialog extends CmWindow {
         buildGui();
         String programName="";
 
+        /** if debug mode, the always allow edit */
+        boolean isDebug = CmShared.getQueryParameter("debug")!=null;
+        
         if(customProgram != null) {
             loadCustomProgramDefinition(customProgram);
             programName = customProgram.getProgramName();
@@ -93,8 +96,12 @@ public class CustomProgramDesignerDialog extends CmWindow {
             _isEditable=true;
             programName = "";
         }
-        add(createInfoSection(_isEditable, programName), new BorderLayoutData(LayoutRegion.NORTH,50));        
-        enableForm(_isEditable);
+        add(createInfoSection(_isEditable, programName), new BorderLayoutData(LayoutRegion.NORTH,50));
+        
+        if(isDebug)
+            enableForm(true);
+        else 
+            enableForm(_isEditable);
         
         setVisible(true);
     }

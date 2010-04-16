@@ -292,7 +292,7 @@ public class CmCustomProgramDao {
      * @param subject
      * @return
      */
-    private int getSubjectLevel(String subject) throws Exception {
+    public int getSubjectLevel(String subject) throws Exception {
        if(subject == null || subject.length() == 0)
            return 99;
        else if(subject.equals("Pre-Alg"))

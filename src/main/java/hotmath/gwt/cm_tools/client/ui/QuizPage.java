@@ -2,7 +2,6 @@ package hotmath.gwt.cm_tools.client.ui;
 
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
-import hotmath.gwt.cm_tools.client.service.CmServiceAsync;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.data.CmAsyncRequest;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
@@ -17,6 +16,8 @@ import hotmath.gwt.shared.client.rpc.result.QuizHtmlResult;
 import hotmath.gwt.shared.client.util.RpcData;
 import hotmath.gwt.shared.client.util.UserInfo;
 
+import java.util.List;
+
 import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.Style.Scroll;
 import com.extjs.gxt.ui.client.widget.Html;
@@ -26,13 +27,8 @@ public class QuizPage extends LayoutContainer {
 	
 	
 	String _title;   // @TODO: move into model
-
-	static {
-        publishNative();
-	}
-	
-	
 	CmAsyncRequest callbackWhenComplete;
+	static List<Integer> testQuestionAnswers;
 	public QuizPage(boolean loadActive, CmAsyncRequest callbackWhenComplete) {
 	    
 	    setScrollMode(Scroll.AUTOY);
@@ -41,27 +37,9 @@ public class QuizPage extends LayoutContainer {
 		setStyleName("quiz-panel");
 		getQuizHtmlFromServer(loadActive);
 	}
-	
-	
-    /** Push a GWT method onto the global space for the app window
-     * 
-     *   This wil be called from CatchupMath.js:questionGuessChanged
-     *   which is called after each guess selection.
-     *   
-     */
-    static private native void publishNative() /*-{
-                                    $wnd.questionGuessChanged_Gwt = @hotmath.gwt.cm_tools.client.ui.QuizPage::questionGuessChanged_Gwt(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;);
-                                    $wnd.checkQuiz_Gwt = @hotmath.gwt.cm_tools.client.ui.QuizPage::checkQuiz_Gwt();
-                                    }-*/;
-    
-    
 
-    /** Call Check Test from external JS 
-     * 
-     */
-    static private void checkQuiz_Gwt() {
-        ContextController.getInstance().doNext();
-    }
+	
+
     
     /** Setup method that will call a global method that will set the selected
      *  guess for the given question.
@@ -72,52 +50,15 @@ public class QuizPage extends LayoutContainer {
     private native void setSolutionQuestionAnswerIndex(String pid, String which) /*-{
          $wnd.setSolutionQuestionAnswerIndex(pid,which);
     }-*/;
-
-    
-    
-    /** JSNI call to mark all correct answers on test
-     * 
-     */
-    static public native void markAllCorrectAnswers() /*-{
-         $wnd.markAllCorrectAnswers();
+    private native void setSolutionQuestionAnswerIndexByNumber(int questionNumber, String which) /*-{
+        $wnd.setSolutionQuestionAnswerIndexByNumber(questionNumber,which);
     }-*/;
-    
 
-    
-    /**
-     * Expose the following method into JavaScript.
-     *
-     * This will be an entry point for the external JS to call into Gwt
-     * call when a testset selection is changed.
-     *
-     * @param correct If the selection is correct
-     * @param answerIndex the index into array of options
-     * @param the pid of this test question.
-     */
-    static public String questionGuessChanged_Gwt(final String correct, final String answerIndex, final String pid) {
-
-        if(!UserInfo.getInstance().isActiveUser()) {
-            CatchupMathTools.showAlert("You are just a visitor here, please do not change any selections");
-            return "OK";
+    public void markAllAnswersCorrect() {
+        for(int i=0,t=testQuestionAnswers.size();i<t;i++) {
+            setSolutionQuestionAnswerIndexByNumber(i, testQuestionAnswers.get(i).toString());
         }
-        
-        new RetryAction<RpcData>() {
-            @Override
-            public void attempt() {
-                Boolean isCorrect = (correct != null && correct.equals("Correct")) ? true : false;
-                CmServiceAsync s = CmShared.getCmService();
-                SaveQuizCurrentResultAction action = new SaveQuizCurrentResultAction(UserInfo.getInstance().getTestId(), isCorrect, Integer.parseInt(answerIndex), pid);
-                setAction(action);
-                s.execute(action,this);
-            }
-            @Override
-            public void oncapture(RpcData value) {
-                /** do nothing */
-            }
-        }.register();
-        return "OK";
     }
-    
     
     
     /** Display the Quiz Html.
@@ -157,10 +98,6 @@ public class QuizPage extends LayoutContainer {
 
 	/** Read the raw HTML from server and inserts into DOM node
 	 * 
-	 * Data from server contains JSON meta info and then HTML.  The two
-	 * sides are separated by +++.
-	 * 
-	 * @TODO: find a better way to accommodate a single request combining JSON/XML 
 	 */
 	private void getQuizHtmlFromServer(final boolean loadActive) {
 
@@ -178,20 +115,94 @@ public class QuizPage extends LayoutContainer {
 	        
             @Override
             public void oncapture(QuizHtmlResult rdata) {
+                CatchupMathTools.setBusy(false);
+                
+                testQuestionAnswers = rdata.getAnswers();
+                
                 UserInfo.getInstance().setTestSegment(rdata.getQuizSegment());
                 UserInfo.getInstance().setTestId(rdata.getTestId());
                 _title = rdata.getTitle();
                 UserInfo.getInstance().setTestSegmentCount(rdata.getQuizSegmentCount());
+                
                 if(rdata.getUserId() != UserInfo.getInstance().getUid()) {
                     UserInfo.getInstance().setActiveUser(false);
                     UserInfo.getInstance().setUserName("Guest user on account: " + rdata.getUserId());
                     EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_USERCHANGED));
                 }
-                
+
                 displayQuizHtml(rdata.getQuizHtml());
-                
-                CatchupMathTools.setBusy(false);
             }
         }.register();	    
 	}
+	
+    
+    static {
+        publishNative();
+    }
+    
+    /** Push a GWT method onto the global space for the app window
+     * 
+     *   This wil be called from CatchupMath.js:questionGuessChanged
+     *   which is called after each guess selection.
+     *   
+     */
+    static private native void publishNative() /*-{
+                                    $wnd.questionGuessChanged_Gwt = @hotmath.gwt.cm_tools.client.ui.QuizPage::questionGuessChanged_Gwt(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;);
+                                    $wnd.checkQuiz_Gwt = @hotmath.gwt.cm_tools.client.ui.QuizPage::checkQuiz_Gwt();
+                                    }-*/;
+    
+    
+
+    /** Call Check Test from external JS 
+     * 
+     */
+    static private void checkQuiz_Gwt() {
+        ContextController.getInstance().doNext();
+    }
+    
+    
+    /** JSNI call to mark all correct answers on test
+     * 
+     */
+    static public native void markAllCorrectAnswers() /*-{
+         $wnd.markAllCorrectAnswers();
+    }-*/;
+    
+
+    
+    /**
+     * Expose the following method into JavaScript.
+     *
+     * This will be an entry point for the external JS to call 
+     * into Gwt when a testset selection is changed.
+     *
+     * @param correct If the selection is correct
+     * @param answerIndex the index into array of options
+     * @param the pid of this test question.
+     */
+    static public String questionGuessChanged_Gwt(String sQuestionIndex, String answerIndex, final String pid) {
+
+        if(!UserInfo.getInstance().isActiveUser()) {
+            CatchupMathTools.showAlert("You are just a visitor here, please do not change any selections");
+            return "OK";
+        }
+        
+        final int questionIndex = Integer.parseInt(sQuestionIndex);
+        final int answerChoice = Integer.parseInt(answerIndex);
+        new RetryAction<RpcData>() {
+            @Override
+            public void attempt() {
+                final int correctIndex = testQuestionAnswers.get(questionIndex);
+                Boolean isCorrect = correctIndex == answerChoice;
+                SaveQuizCurrentResultAction action = new SaveQuizCurrentResultAction(UserInfo.getInstance().getTestId(), isCorrect, answerChoice, pid);
+                setAction(action);
+                CmShared.getCmService().execute(action,this);
+            }
+            @Override
+            public void oncapture(RpcData value) {
+                /** do nothing */
+            }
+        }.register();
+        return "OK";
+    }
 }

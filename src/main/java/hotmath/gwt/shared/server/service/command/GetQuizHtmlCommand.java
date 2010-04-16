@@ -1,6 +1,7 @@
 package hotmath.gwt.shared.server.service.command;
 
 import hotmath.cm.server.model.CmUserProgramDao;
+import hotmath.cm.test.HaTestSet;
 import hotmath.gwt.cm_admin.server.model.CmStudentDao;
 import hotmath.gwt.cm_tools.client.model.StudentActiveInfo;
 import hotmath.gwt.shared.client.rpc.Action;
@@ -8,7 +9,6 @@ import hotmath.gwt.shared.client.rpc.Response;
 import hotmath.gwt.shared.client.rpc.action.GetQuizHtmlAction;
 import hotmath.gwt.shared.client.rpc.result.QuizHtmlResult;
 import hotmath.gwt.shared.server.service.ActionHandler;
-import hotmath.testset.TestSet;
 import hotmath.testset.ha.ChapterInfo;
 import hotmath.testset.ha.HaTest;
 import hotmath.testset.ha.HaTestDao;
@@ -64,7 +64,6 @@ public class GetQuizHtmlCommand implements ActionHandler<GetQuizHtmlAction, Quiz
         
         
         new CmStudentDao().verifyActiveProgram(conn, action.getTestId());
-        
 
         int testSegment = action.getTestSegment();
         int uid = action.getUid();
@@ -102,7 +101,7 @@ public class GetQuizHtmlCommand implements ActionHandler<GetQuizHtmlAction, Quiz
             }
             String testTitle = haTest.getTitle();            
 
-            TestSet _testSet = new TestSet(haTest.getPids());
+            HaTestSet _testSet = new HaTestSet(conn,haTest.getPids());
 
             HaTestDefDao tdo = new HaTestDefDao();
             
@@ -131,7 +130,7 @@ public class GetQuizHtmlCommand implements ActionHandler<GetQuizHtmlAction, Quiz
             result.setTitle(testTitle);
             result.setSubTitle(subTitle);
             result.setTestId(haTest.getTestId());
-            
+            result.setAnswers(_testSet.getAnswers());
             return result;
         } catch (Exception e) {
             throw e;

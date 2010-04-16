@@ -1,6 +1,5 @@
 package hotmath.gwt.shared.client.util;
 
-import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.shared.client.CatchupMathVersionInfo;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.rpc.action.GetCatchupMathVersionAction;
@@ -74,7 +73,8 @@ public class SystemVersionUpdateChecker extends StandardSystemRefreshWindow {
             }
              @Override
             public void onFailure(Throwable arg0) {
-                 CatchupMathTools.showAlert(arg0.getMessage());
+                 /** fail silent */
+                 // CatchupMathTools.showAlert(arg0.getMessage());
             }
         });
     }

@@ -13,7 +13,7 @@
                 <div style='float: right;color: #3E3E3E;' id='response_text_$question.problemIndex' class='response_div_text'> &nbsp; </div>
             </div>
        </div>
-       <div class='question_div' id='question_div_$velocityCount'  guid='$question.problemIndex'>$question.questionHtml
+       <div class='question_div' id='question_div_$velocityCount'  guid='$question.problemIndex'>$question.questionHtmlProcessed
             <div class='question_solution_link'> <a href='#' onclick='gotoTestGUID(&quot;$question.problemIndex&quot;)'><img src='/images/trifco/view_solution-88x18.gif'/></a> </div>
        </div>
        <div class='debug-hide'>$question.problemIndex</div>
