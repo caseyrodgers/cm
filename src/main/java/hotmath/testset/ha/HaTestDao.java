@@ -347,6 +347,9 @@ public class HaTestDao {
                 __logger.debug("loadTestsForProgramList(): pstat: " + pstat.toString());
 
             rs = pstat.executeQuery();
+            
+            List<Integer> testIds = new ArrayList<Integer>();
+
             while (rs.next()) {
                 HaTest test = new HaTest();
                 test.setTestId(rs.getInt("test_id"));
@@ -365,19 +368,32 @@ public class HaTestDao {
                 test.setProgramInfo(programInfo);
                 test.setTestDef(HaTestDefFactory.createTestDef(conn, programInfo.getTestDefId()));
 
-                /*
-                 * Get all ids defined for test and add to HaTest object
-                 */
-                List<String> testIds = getTestIdsForTest(conn, test.getTestId());
-
-                for (String pid : testIds) {
-                    test.addPid(pid);
-                }
+                // collect testIds
+                testIds.add(test.getTestId());
+                
                 list.add(test);
             }
-            ;
+            if (list.size() == 0) return list;
 
+            /*
+             * Get pids for all tests in list
+             */
+            Map<Integer, List<String>> testPidMap = getPidsForTestIds(conn, testIds);
+
+            /*
+             * add pids to each test
+             */
+            for (HaTest test : list) {
+                Integer testId = test.getTestId();
+                List<String> pids = testPidMap.get(testId);
+                if (pids == null) continue;
+                
+                for (String pid : pids) {
+                    test.addPid(pid);
+                }                
+            }
             return list;
+
         } catch (HotMathException hme) {
             __logger.warn("*** no tests found for pstat: " + pstat.toString());
             throw hme;
@@ -543,14 +559,59 @@ public class HaTestDao {
             pstat.setInt(1, testId);
             rs = pstat.executeQuery();
             if (!rs.first()) {
-                // HotMathLogger.logMessage("hatest",
-                // "Could not read test pids for: " + testId,"");
+                __logger.warn("Could not load pids for testId: " + testId);
             } else {
                 do {
                     pids.add(rs.getString("pid"));
                 } while (rs.next());
             }
             return pids;
+        } finally {
+            SqlUtilities.releaseResources(rs, pstat, null);
+        }
+    }
+
+    /**
+     * Return Map of (testId, pids) that represents all pids in each test for all segments.
+     * 
+     * @param testIds
+     * 
+     * @return
+     * @throws Exception
+     */
+    static public Map<Integer,List<String>> getPidsForTestIds(final Connection conn, List<Integer> testIds) throws Exception {
+
+    	Map<Integer, List<String>> testPidMap = new HashMap<Integer, List<String>> ();
+    	
+		String testIdStr = testIds.toString().substring(1);
+    	testIdStr = testIdStr.substring(0, testIdStr.length()-1);
+    	
+        List<String> pids = new ArrayList<String>();
+        PreparedStatement pstat = null;
+        ResultSet rs = null;
+
+        try {
+            // read tests' pids
+            String sql = "select test_id, pid from HA_TEST_IDS where test_id in (XXX) order by test_id";
+        	String sqlWithTestIds = sql.replaceFirst("XXX", testIdStr);
+            
+            pstat = conn.prepareStatement(sqlWithTestIds);
+            rs = pstat.executeQuery();
+            if (!rs.first()) {
+                __logger.warn("Could not load pids for testIds: " + testIds);
+            } else {
+            	int lastId = -1;
+            	while (rs.next()) {
+            		int tid = rs.getInt("test_id");
+            		if (tid != lastId) {
+            			lastId = tid;
+            	        pids = new ArrayList<String>();
+            	        testPidMap.put(tid, pids);
+            		}
+                    pids.add(rs.getString("pid"));
+            	}
+            }
+            return testPidMap;
         } finally {
             SqlUtilities.releaseResources(rs, pstat, null);
         }
