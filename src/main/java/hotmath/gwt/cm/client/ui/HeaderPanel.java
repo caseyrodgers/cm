@@ -115,6 +115,8 @@ public class HeaderPanel extends LayoutContainer {
         int viewCount = UserInfo.getInstance().getViewCount();
         if(user != null) {
             String nameCap = user.getUserName();
+            if(nameCap == null)
+                return;
             
             /** Check for demo user and normalize the display name
              * 
