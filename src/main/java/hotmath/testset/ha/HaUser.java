@@ -251,6 +251,7 @@ public class HaUser extends HaBasicUserImpl {
 			
 			String cacheKey = (uid != null)?String.valueOf(uid) : userName;
 			
+			/** Problem here is possible changes to the USER since last put in cache */
 	        HaUser user  = (HaUser) CmCacheManager.getInstance().retrieveFromCache(CacheName.HA_USER, cacheKey);
 	        if (user != null) return user;
 	        
