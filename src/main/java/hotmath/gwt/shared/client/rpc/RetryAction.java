@@ -9,9 +9,9 @@ import hotmath.gwt.shared.client.data.CmAsyncRequestImplDefault;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
 import hotmath.gwt.shared.client.eventbus.EventBus;
 import hotmath.gwt.shared.client.eventbus.EventType;
-import hotmath.gwt.shared.client.model.UserProgramIsNotActiveException;
 import hotmath.gwt.shared.client.util.NotActiveProgramWindow;
 import hotmath.gwt.shared.client.util.RpcData;
+import hotmath.gwt.shared.client.util.SystemVersionUpdateChecker;
 import hotmath.gwt.shared.client.util.UserInfo;
 
 import com.extjs.gxt.ui.client.event.ButtonEvent;
@@ -129,9 +129,9 @@ public abstract class RetryAction<T> implements AsyncCallback<T> {
         try {
             throw error;
         } catch (IncompatibleRemoteServiceException remoteServiceException) {
-            onCancel();
+            onNewVersion();
         } catch (SerializationException serializationException) {
-            onCancel();
+            onNewVersion();
         } catch (Throwable throwable) {
             String message = throwable.getLocalizedMessage();
 
@@ -194,7 +194,6 @@ public abstract class RetryAction<T> implements AsyncCallback<T> {
      */
     public void onCancel() {
         
-        
         EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_MODAL_WINDOW_OPEN));
         
         CmLogger.info("RetryAction " + instanceCount + " cancel [" + getRequestTime() + "] (" + activeAction + ") : " 
@@ -206,7 +205,6 @@ public abstract class RetryAction<T> implements AsyncCallback<T> {
         win.setSize(350,200);
         win.setModal(true);
         win.setResizable(false);
-        
         
         String msg = "<p style='padding: 15px;font-size: 105%'>" +
                     "Catchup Math has encountered an exception. " +
@@ -224,6 +222,10 @@ public abstract class RetryAction<T> implements AsyncCallback<T> {
         }));
         
         win.setVisible(true);
+    }
+    
+    public void onNewVersion() {
+        new SystemVersionUpdateChecker();        
     }
     
     public Action<? extends Response> activeAction;
