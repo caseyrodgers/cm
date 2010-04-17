@@ -19,17 +19,23 @@ public class GeneratePdfAssessmentReportCommand implements ActionHandler<Generat
 
     @Override
     public CmWebResource execute(Connection conn, GeneratePdfAssessmentReportAction action) throws Exception {
-        GetAdminTrendingDataCommand tdCmd = new GetAdminTrendingDataCommand();
-        CmAdminTrendingDataI tData = tdCmd.execute(conn, new GetAdminTrendingDataAction(GetAdminTrendingDataAction.DataType.FULL_HISTORY,action.getAdminId(), action.getPageAction()));
-
-        List<Integer> studentIds = new ArrayList<Integer>();
-        for(StudentModelExt sme: tdCmd.getStudentPool()) {
-            studentIds.add(sme.getUid());
+        try {
+            GetAdminTrendingDataCommand tdCmd = new GetAdminTrendingDataCommand();
+            CmAdminTrendingDataI tData = tdCmd.execute(conn, new GetAdminTrendingDataAction(GetAdminTrendingDataAction.DataType.FULL_HISTORY,action.getAdminId(), action.getPageAction()));
+    
+            List<Integer> studentIds = new ArrayList<Integer>();
+            for(StudentModelExt sme: tdCmd.getStudentPool()) {
+                studentIds.add(sme.getUid());
+            }
+    
+            GeneratePdfAction pdfAction = new GeneratePdfAction(PdfType.GROUP_ASSESSMENT, action.getAdminId(), studentIds);
+            pdfAction.setFilterMap(action.getFilterMap());
+            return new GeneratePdfCommand().execute(conn, pdfAction);
         }
-
-        GeneratePdfAction pdfAction = new GeneratePdfAction(PdfType.GROUP_ASSESSMENT, action.getAdminId(), studentIds);
-        pdfAction.setFilterMap(action.getFilterMap());
-        return new GeneratePdfCommand().execute(conn, pdfAction);
+        catch(Throwable th) {
+            th.printStackTrace();
+        }
+        return null;
     }
 
     @Override
