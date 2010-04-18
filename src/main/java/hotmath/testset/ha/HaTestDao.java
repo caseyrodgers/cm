@@ -353,7 +353,7 @@ public class HaTestDao {
             while (rs.next()) {
                 HaTest test = new HaTest();
                 test.setTestId(rs.getInt("test_id"));
-                test.setUser(HaUser.lookUser(conn, rs.getInt("user_id"), null));
+                test.setUser(HaUser.lookUser(conn, rs.getInt("user_id"), null, true));
                 test.setSegment(rs.getInt("test_segment"));
                 test.setNumTestQuestions(rs.getInt("test_question_count"));
                 test.setTotalSegments(rs.getInt("total_segments"));
