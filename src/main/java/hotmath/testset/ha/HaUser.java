@@ -25,7 +25,7 @@ import org.apache.log4j.Logger;
  *
  */
 public class HaUser extends HaBasicUserImpl {
-
+    
     Integer aid;
 	public Integer getAid() {
         return aid;
