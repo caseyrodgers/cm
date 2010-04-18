@@ -4,9 +4,9 @@ import hotmath.gwt.cm_rpc.client.rpc.Action;
 import hotmath.gwt.cm_rpc.client.rpc.CmRpcException;
 import hotmath.gwt.cm_rpc.client.rpc.Response;
 import hotmath.gwt.cm_rpc.client.rpc.RpcData;
+import hotmath.gwt.cm_rpc.server.rpc.ActionHandler;
 import hotmath.gwt.shared.client.rpc.action.GetViewedInmhItemsAction;
 import hotmath.gwt.shared.client.rpc.result.GetViewedInmhItemsResult;
-import hotmath.gwt.shared.server.service.ActionHandler;
 import hotmath.util.sql.SqlUtilities;
 
 import java.sql.Connection;
