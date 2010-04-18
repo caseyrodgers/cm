@@ -1,7 +1,7 @@
 import hotmath.gwt.cm.server.CmDbTestCase;
 import hotmath.gwt.cm_rpc.client.rpc.RpcData;
+import hotmath.gwt.cm_rpc.server.rpc.ActionDispatcher;
 import hotmath.gwt.shared.client.rpc.action.ResetUserAction;
-import hotmath.gwt.shared.server.service.ActionDispatcher;
 import hotmath.gwt.shared.server.service.command.ResetUserCommand;
 
 

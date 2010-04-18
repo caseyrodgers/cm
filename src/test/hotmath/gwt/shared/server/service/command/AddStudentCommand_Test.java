@@ -2,11 +2,11 @@ package hotmath.gwt.shared.server.service.command;
 
 import hotmath.gwt.cm.server.CmDbTestCase;
 import hotmath.gwt.cm_admin.server.model.CmStudentDao;
+import hotmath.gwt.cm_rpc.server.rpc.ActionDispatcher;
 import hotmath.gwt.cm_tools.client.model.StudentModel;
 import hotmath.gwt.cm_tools.client.model.StudentModelI;
 import hotmath.gwt.cm_tools.client.model.StudentProgramModel;
 import hotmath.gwt.shared.client.rpc.action.AddStudentAction;
-import hotmath.gwt.shared.server.service.ActionDispatcher;
 import hotmath.testset.ha.CmProgram;
 
 public class AddStudentCommand_Test extends CmDbTestCase {

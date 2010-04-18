@@ -2,9 +2,9 @@ package hotmath.gwt.shared.server.service.command;
 
 import hotmath.gwt.cm.server.CmDbTestCase;
 import hotmath.gwt.cm_admin.server.model.CmStudentDao;
+import hotmath.gwt.cm_rpc.server.rpc.ActionDispatcher;
 import hotmath.gwt.shared.client.rpc.action.GetQuizHtmlAction;
 import hotmath.gwt.shared.client.rpc.result.QuizHtmlResult;
-import hotmath.gwt.shared.server.service.ActionDispatcher;
 import hotmath.testset.ha.CmProgram;
 
 public class GetQuizHtmlCommand_Test extends CmDbTestCase {

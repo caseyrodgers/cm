@@ -3,6 +3,7 @@ package hotmath.gwt.shared.server.service;
 import hotmath.gwt.cm.server.CmDbTestCase;
 import hotmath.gwt.cm_admin.server.model.CmAdminDao;
 import hotmath.gwt.cm_rpc.client.rpc.RpcData;
+import hotmath.gwt.cm_rpc.server.rpc.ActionDispatcher;
 import hotmath.gwt.cm_tools.client.model.GroupInfoModel;
 import hotmath.gwt.shared.client.rpc.action.GroupManagerAction;
 import hotmath.gwt.shared.client.rpc.action.GroupManagerAction.ActionType;

@@ -1,10 +1,10 @@
 package hotmath.gwt.shared.server.service.command;
 
 import hotmath.gwt.cm.server.CmDbTestCase;
+import hotmath.gwt.cm_rpc.server.rpc.ActionDispatcher;
 import hotmath.gwt.shared.client.model.CentralMessage;
 import hotmath.gwt.shared.client.rpc.action.CheckForCentralMessagesAction;
 import hotmath.gwt.shared.client.rpc.action.CmList;
-import hotmath.gwt.shared.server.service.ActionDispatcher;
 
 public class CheckForCentralMessagesCommand_Test extends CmDbTestCase {
     

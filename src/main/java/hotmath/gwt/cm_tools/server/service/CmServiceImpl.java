@@ -3,8 +3,8 @@ package hotmath.gwt.cm_tools.server.service;
 import hotmath.gwt.cm_rpc.client.rpc.Action;
 import hotmath.gwt.cm_rpc.client.rpc.CmRpcException;
 import hotmath.gwt.cm_rpc.client.rpc.Response;
+import hotmath.gwt.cm_rpc.server.rpc.ActionDispatcher;
 import hotmath.gwt.cm_tools.client.service.CmService;
-import hotmath.gwt.shared.server.service.ActionDispatcher;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
