@@ -1,0 +1,3 @@
+<module rename-to='cm_rpc'>
+      <entry-point class='hotmath.gwt.cm_rpc.client.CmRpc'/>
+</module>
