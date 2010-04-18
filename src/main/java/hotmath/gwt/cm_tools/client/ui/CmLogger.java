@@ -1,5 +1,6 @@
 package hotmath.gwt.cm_tools.client.ui;
 
+import hotmath.gwt.cm_rpc.client.rpc.RpcData;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
 import hotmath.gwt.shared.client.CmShared;
@@ -7,7 +8,6 @@ import hotmath.gwt.shared.client.rpc.QueueMessage;
 import hotmath.gwt.shared.client.rpc.RetryActionManagerQueueWatcher;
 import hotmath.gwt.shared.client.rpc.action.SaveCmLoggerTextAction;
 import hotmath.gwt.shared.client.util.CmAsyncCallback;
-import hotmath.gwt.shared.client.util.RpcData;
 import hotmath.gwt.shared.client.util.UserInfo;
 
 import java.util.ArrayList;

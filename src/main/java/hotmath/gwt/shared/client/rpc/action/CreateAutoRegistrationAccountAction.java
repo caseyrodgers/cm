@@ -1,7 +1,7 @@
 package hotmath.gwt.shared.client.rpc.action;
 
 import hotmath.gwt.cm_rpc.client.rpc.Action;
-import hotmath.gwt.shared.client.util.RpcData;
+import hotmath.gwt.cm_rpc.client.rpc.RpcData;
 
 
 /** Create a single user account using the Auto Registration system

@@ -5,6 +5,7 @@ import hotmath.gwt.cm.client.history.CmHistoryQueue;
 import hotmath.gwt.cm.client.history.CmLocation;
 import hotmath.gwt.cm.client.history.CmLocation.LocationType;
 import hotmath.gwt.cm.client.ui.HeaderPanel;
+import hotmath.gwt.cm_rpc.client.rpc.RpcData;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.data.InmhItemData;
@@ -23,7 +24,6 @@ import hotmath.gwt.shared.client.eventbus.EventType;
 import hotmath.gwt.shared.client.rpc.RetryAction;
 import hotmath.gwt.shared.client.rpc.action.GetPrescriptionAction;
 import hotmath.gwt.shared.client.rpc.action.SetInmhItemAsViewedAction;
-import hotmath.gwt.shared.client.util.RpcData;
 import hotmath.gwt.shared.client.util.StatusImagePanel;
 import hotmath.gwt.shared.client.util.UserInfo;
 

@@ -1,5 +1,6 @@
 package hotmath.gwt.cm_admin.client.ui;
 
+import hotmath.gwt.cm_rpc.client.rpc.RpcData;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.model.CmAdminDataReader;
@@ -18,7 +19,6 @@ import hotmath.gwt.shared.client.rpc.action.CmList;
 import hotmath.gwt.shared.client.rpc.action.GetGroupAggregateInfoAction;
 import hotmath.gwt.shared.client.rpc.action.GetTemplateForSelfRegGroupAction;
 import hotmath.gwt.shared.client.rpc.action.GroupManagerAction;
-import hotmath.gwt.shared.client.util.RpcData;
 
 import java.util.ArrayList;
 import java.util.List;

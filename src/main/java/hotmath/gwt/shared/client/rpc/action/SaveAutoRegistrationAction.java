@@ -1,8 +1,8 @@
 package hotmath.gwt.shared.client.rpc.action;
 
 import hotmath.gwt.cm_rpc.client.rpc.Action;
+import hotmath.gwt.cm_rpc.client.rpc.RpcData;
 import hotmath.gwt.cm_tools.client.model.StudentModelI;
-import hotmath.gwt.shared.client.util.RpcData;
 
 public class SaveAutoRegistrationAction implements Action<RpcData>{
     

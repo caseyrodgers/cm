@@ -2,8 +2,8 @@ package hotmath.gwt.shared.server.service.command;
 
 import hotmath.gwt.cm_rpc.client.rpc.Action;
 import hotmath.gwt.cm_rpc.client.rpc.Response;
+import hotmath.gwt.cm_rpc.client.rpc.RpcData;
 import hotmath.gwt.shared.client.rpc.LogRetryActionFailedAction;
-import hotmath.gwt.shared.client.util.RpcData;
 import hotmath.gwt.shared.server.service.ActionHandler;
 import hotmath.util.sql.SqlUtilities;
 

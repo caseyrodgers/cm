@@ -2,7 +2,7 @@ package hotmath.gwt.shared.client.rpc;
 
 import hotmath.gwt.cm_rpc.client.rpc.Action;
 import hotmath.gwt.cm_rpc.client.rpc.Response;
-import hotmath.gwt.shared.client.util.RpcData;
+import hotmath.gwt.cm_rpc.client.rpc.RpcData;
 
 public class LogRetryActionFailedAction implements Action<RpcData> {
     
