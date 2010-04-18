@@ -232,8 +232,7 @@ public class HaUser extends HaBasicUserImpl {
 		}			
 	}
 	
-	
-	/** Lookup and return HaUser user based on uid (PK) 
+	/** Lookup and return HaUser user based on uid (PK), does not use HA_USER cache
 	 * @param uid THe uid for this user
 	 * @param userName The user name to use for lookup.
 	 * 
@@ -245,15 +244,38 @@ public class HaUser extends HaBasicUserImpl {
 	 * @throws HotMathException
 	 */
 	static public HaUser lookUser(final Connection conn,Integer uid,String userName) throws HotMathException {
+        return lookUser(conn, uid, userName, false);
+	}
+		
+	/** Lookup and return HaUser user based on uid (PK) 
+	 * @param uid the uid for this user
+	 * @param userName the user name to use for lookup
+	 * @param useCache if true use UA_USER cache 
+	 * 
+	 * If uid is non null it is used and userName is ignored.
+	 * If uid is null, then userName is used for lookup
+	 * 
+	 * @return
+	 * @throws HotMathException
+	 */
+	static public HaUser lookUser(final Connection conn,Integer uid,String userName, Boolean useCache) throws HotMathException {
 		PreparedStatement pstat=null;
 		ResultSet rs = null;
 		try {
 			
+			HaUser user;
 			String cacheKey = (uid != null)?String.valueOf(uid) : userName;
-			
-			/** Problem here is possible changes to the USER since last put in cache */
-	        HaUser user  = (HaUser) CmCacheManager.getInstance().retrieveFromCache(CacheName.HA_USER, cacheKey);
-	        if (user != null) return user;
+
+			if (useCache) {
+			    /**
+			     *  Problem here is possible changes to the USER since last put in cache
+			     *  By default cache is not used; client should only use cache if possible staleness is OK
+			     *  Currently, life of HA_USER cache is 5 minutes.  
+			     */
+				
+	            user  = (HaUser) CmCacheManager.getInstance().retrieveFromCache(CacheName.HA_USER, cacheKey);
+	            if (user != null) return user;
+			}
 	        
 			String sql = CmMultiLinePropertyReader.getInstance().getProperty("HA_USER_LOOKUP_USER");
 			if(uid != null)
