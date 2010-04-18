@@ -1,7 +1,7 @@
 package hotmath.gwt.shared.client.util;
 
+import hotmath.gwt.cm_rpc.client.rpc.Response;
 import hotmath.gwt.cm_tools.client.model.BaseModel;
-import hotmath.gwt.shared.client.rpc.Response;
 
 
 public class NetTestModel extends BaseModel implements Response {

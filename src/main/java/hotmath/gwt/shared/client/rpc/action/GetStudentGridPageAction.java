@@ -1,8 +1,8 @@
 package hotmath.gwt.shared.client.rpc.action;
 
+import hotmath.gwt.cm_rpc.client.rpc.Action;
 import hotmath.gwt.cm_tools.client.model.StudentModelExt;
 import hotmath.gwt.shared.client.model.CmStudentPagingLoadResult;
-import hotmath.gwt.shared.client.rpc.Action;
 
 import com.extjs.gxt.ui.client.data.PagingLoadConfig;
 
@@ -17,6 +17,8 @@ public class GetStudentGridPageAction implements Action<CmStudentPagingLoadResul
 	boolean forceRefresh;
 	String quickSearch;
 	Map<FilterType,String> filterMap;
+	
+	// int newField;
 	
 	public GetStudentGridPageAction() {}
 	

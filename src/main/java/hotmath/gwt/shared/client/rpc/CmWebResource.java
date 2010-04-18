@@ -2,6 +2,7 @@ package hotmath.gwt.shared.client.rpc;
 
 import com.allen_sauer.gwt.log.client.Log;
 
+import hotmath.gwt.cm_rpc.client.rpc.Response;
 import hotmath.gwt.shared.client.CmShared;
 
 

@@ -1,7 +1,7 @@
 package hotmath.gwt.shared.client.rpc.action;
 
+import hotmath.gwt.cm_rpc.client.rpc.Action;
 import hotmath.gwt.cm_tools.client.model.StudentModelExt;
-import hotmath.gwt.shared.client.rpc.Action;
 
 public class GetAdminTrendingDataDetailAction implements Action<CmList<StudentModelExt>>{
 

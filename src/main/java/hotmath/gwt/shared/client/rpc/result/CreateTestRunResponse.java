@@ -1,7 +1,7 @@
 package hotmath.gwt.shared.client.rpc.result;
 
+import hotmath.gwt.cm_rpc.client.rpc.Response;
 import hotmath.gwt.cm_tools.client.ui.NextAction.NextActionName;
-import hotmath.gwt.shared.client.rpc.Response;
 
 
 /** Represents the user's current Test Run status

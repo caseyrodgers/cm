@@ -1,7 +1,7 @@
 package hotmath.gwt.shared.server.service;
 
-import hotmath.gwt.shared.client.rpc.Action;
-import hotmath.gwt.shared.client.rpc.Response;
+import hotmath.gwt.cm_rpc.client.rpc.Action;
+import hotmath.gwt.cm_rpc.client.rpc.Response;
 
 import java.sql.Connection;
 

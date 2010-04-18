@@ -1,4 +1,4 @@
-package hotmath.gwt.shared.client.rpc;
+package hotmath.gwt.cm_rpc.client.rpc;
 
 import java.io.Serializable;
 

@@ -1,8 +1,8 @@
 package hotmath.gwt.shared.client.rpc.action;
 
+import hotmath.gwt.cm_rpc.client.rpc.Action;
 import hotmath.gwt.cm_tools.client.model.CustomProgramModel;
 import hotmath.gwt.shared.client.model.CustomProgramInfoModel;
-import hotmath.gwt.shared.client.rpc.Action;
 
 public class CustomProgramInfoAction implements Action<CustomProgramInfoModel>{
     CustomProgramModel program;

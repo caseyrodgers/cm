@@ -1,19 +1,14 @@
 package hotmath.gwt.shared.client.rpc.action;
 
-import hotmath.gwt.shared.client.rpc.Action;
+import hotmath.gwt.cm_rpc.client.rpc.Action;
 import hotmath.gwt.shared.client.util.RpcData;
 
 public class SaveQuizCurrentResultAction implements Action<RpcData> {
-    
 
     int testId;
     boolean correct;
     int answerIndex;
-    @Override
-    public String toString() {
-        return "SaveQuizCurrentResultAction [answerIndex=" + answerIndex + ", correct=" + correct + ", pid=" + pid
-                + ", testId=" + testId + "]";
-    }
+    
 
     String pid;
     
@@ -57,4 +52,11 @@ public class SaveQuizCurrentResultAction implements Action<RpcData> {
     public void setPid(String pid) {
         this.pid = pid;
     }
+    
+    @Override
+    public String toString() {
+        return "SaveQuizCurrentResultAction [answerIndex=" + answerIndex + ", correct=" + correct + ", pid=" + pid
+                + ", testId=" + testId + "]";
+    }
+    
 }

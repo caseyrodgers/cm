@@ -1,6 +1,6 @@
 package hotmath.gwt.shared.client.rpc.result;
 
-import hotmath.gwt.shared.client.rpc.Response;
+import hotmath.gwt.cm_rpc.client.rpc.Response;
 
 /** Represents a single whiteboard action (draw,line,etc..)
  * and the related JSON data describing the action.

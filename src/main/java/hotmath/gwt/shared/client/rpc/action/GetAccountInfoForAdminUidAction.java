@@ -1,7 +1,7 @@
 package hotmath.gwt.shared.client.rpc.action;
 
+import hotmath.gwt.cm_rpc.client.rpc.Action;
 import hotmath.gwt.cm_tools.client.model.AccountInfoModel;
-import hotmath.gwt.shared.client.rpc.Action;
 
 public class GetAccountInfoForAdminUidAction implements Action<AccountInfoModel> {
     Integer uid;

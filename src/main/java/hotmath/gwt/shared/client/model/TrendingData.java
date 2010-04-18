@@ -1,6 +1,6 @@
 package hotmath.gwt.shared.client.model;
 
-import hotmath.gwt.shared.client.rpc.Response;
+import hotmath.gwt.cm_rpc.client.rpc.Response;
 
 public class TrendingData implements Response {
     

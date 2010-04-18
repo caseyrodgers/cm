@@ -1,6 +1,6 @@
 package hotmath.gwt.shared.client.model;
 
-import hotmath.gwt.shared.client.rpc.Response;
+import hotmath.gwt.cm_rpc.client.rpc.Response;
 
 /** Central message coming from central server.
  * 

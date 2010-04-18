@@ -6,7 +6,7 @@
   <artifactId>cm</artifactId>
   <packaging>war</packaging>
   <version>1.0-SNAPSHOT</version>
-  <name>gwt-maven-archetype-project</name>
+  <name>Catchup Math</name>
   <properties>
     <gwtVersion>2.0.3</gwtVersion>
     <gwtHome>${basedir}/libs/gwt-2.0.3</gwtHome>
@@ -73,18 +73,17 @@
       <id>projectlombok.org</id>
       <url>http://projectlombok.org/mavenrepo</url>
     </repository>
-
   </repositories>
 
   <dependencies>
 
-<!--
-    <dependency>
-      <groupId>com.google.collections</groupId>
-      <artifactId>google-collections</artifactId>
-      <version>1.0</version>
-    </dependency>
--->
+    <!--
+       <dependency>
+         <groupId>com.google.collections</groupId>
+         <artifactId>google-collections</artifactId>
+         <version>1.0</version>
+       </dependency>
+       -->
 
     <dependency>
       <groupId>org.projectlombok</groupId>
@@ -320,52 +319,47 @@
     </dependency>
 
     <dependency>
-    	<groupId>jfree</groupId>
-    	<artifactId>jfreechart</artifactId>
-    	<version>1.0.13</version>
-    	<type>jar</type>
-    	<scope>compile</scope>
+      <groupId>jfree</groupId>
+      <artifactId>jfreechart</artifactId>
+      <version>1.0.13</version>
+      <type>jar</type>
+      <scope>compile</scope>
     </dependency>
     <dependency>
-    	<groupId>jfree</groupId>
-    	<artifactId>jcommon</artifactId>
-    	<version>1.0.15</version>
-    	<type>jar</type>
-    	<scope>compile</scope>
+      <groupId>jfree</groupId>
+      <artifactId>jcommon</artifactId>
+      <version>1.0.15</version>
+      <type>jar</type>
+      <scope>compile</scope>
     </dependency>
 
-<dependency>
-    <groupId>org.htmlparser</groupId>
-    <artifactId>htmlparser</artifactId>
-    <version>1.6</version>
-</dependency>
-
-
-
-
+    <dependency>
+      <groupId>org.htmlparser</groupId>
+      <artifactId>htmlparser</artifactId>
+      <version>1.6</version>
+    </dependency>
   </dependencies>
 
 
   <build>
 
-
     <plugins>
 
-<plugin>
-    <groupId>org.codehaus.mojo</groupId>
-    <artifactId>selenium-maven-plugin</artifactId>
-    <executions>
-        <execution>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>selenium-maven-plugin</artifactId>
+        <executions>
+          <execution>
             <phase>pre-integration-test</phase>
             <goals>
-                <goal>start-server</goal>
+              <goal>start-server</goal>
             </goals>
             <configuration>
-                <background>true</background>
+              <background>true</background>
             </configuration>
-        </execution>
-    </executions>
-</plugin>
+          </execution>
+        </executions>
+      </plugin>
 
 
 
@@ -433,11 +427,11 @@
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>gwt-maven-plugin</artifactId>
         <configuration>
-  	  <gwtHome>${gwtHome}</gwtHome>
+          <gwtHome>${gwtHome}</gwtHome>
           <extraJvmArgs>-Xmx256m -Xms256m</extraJvmArgs>
-  	  <inplace>true</inplace>
-  	  <disableCastChecking>true</disableCastChecking>
-	  <disableClassMetadata>true</disableClassMetadata>
+          <inplace>true</inplace>
+          <disableCastChecking>true</disableCastChecking>
+          <disableClassMetadata>true</disableClassMetadata>
           <soyc>false</soyc>
           <outputDirectory>${basedir}/src/main/webapp/</outputDirectory>
           <modules>
@@ -461,7 +455,7 @@
       </plugin>
 
       <!-- Use ANT to update version information file
-	-->
+        -->
 
       <!-- update the GWT build version info after successful compile -->
       <plugin>

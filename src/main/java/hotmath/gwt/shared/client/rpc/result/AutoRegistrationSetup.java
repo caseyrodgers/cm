@@ -1,6 +1,6 @@
 package hotmath.gwt.shared.client.rpc.result;
 
-import hotmath.gwt.shared.client.rpc.Response;
+import hotmath.gwt.cm_rpc.client.rpc.Response;
 import hotmath.gwt.shared.client.rpc.action.CmArrayList;
 import hotmath.gwt.shared.client.rpc.action.CmList;
 

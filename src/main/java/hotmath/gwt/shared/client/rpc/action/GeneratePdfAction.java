@@ -3,7 +3,7 @@ package hotmath.gwt.shared.client.rpc.action;
 import java.util.List;
 import java.util.Map;
 
-import hotmath.gwt.shared.client.rpc.Action;
+import hotmath.gwt.cm_rpc.client.rpc.Action;
 import hotmath.gwt.shared.client.rpc.CmWebResource;
 import hotmath.gwt.shared.client.rpc.action.GetStudentGridPageAction.FilterType;
 

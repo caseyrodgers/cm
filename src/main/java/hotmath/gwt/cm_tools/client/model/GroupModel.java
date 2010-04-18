@@ -1,6 +1,6 @@
 package hotmath.gwt.cm_tools.client.model;
 
-import hotmath.gwt.shared.client.rpc.Response;
+import hotmath.gwt.cm_rpc.client.rpc.Response;
 
 @Deprecated
 class GroupModel extends BaseModel implements Response {

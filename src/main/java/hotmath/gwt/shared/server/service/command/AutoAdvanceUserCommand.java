@@ -1,8 +1,8 @@
 package hotmath.gwt.shared.server.service.command;
 
+import hotmath.gwt.cm_rpc.client.rpc.Action;
+import hotmath.gwt.cm_rpc.client.rpc.Response;
 import hotmath.gwt.cm_tools.client.model.AutoUserAdvanced;
-import hotmath.gwt.shared.client.rpc.Action;
-import hotmath.gwt.shared.client.rpc.Response;
 import hotmath.gwt.shared.client.rpc.action.AutoAdvanceUserAction;
 import hotmath.gwt.shared.server.service.ActionHandler;
 import hotmath.gwt.shared.server.service.ActionHandlerManualConnectionManagement;

@@ -1,6 +1,6 @@
 package hotmath.gwt.shared.client.rpc.result;
 
-import hotmath.gwt.shared.client.rpc.Response;
+import hotmath.gwt.cm_rpc.client.rpc.Response;
 
 /** Provide information about current build version numbers
  *  for CM

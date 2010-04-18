@@ -1,6 +1,6 @@
 package hotmath.gwt.shared.client.rpc.action;
 
-import hotmath.gwt.shared.client.rpc.Action;
+import hotmath.gwt.cm_rpc.client.rpc.Action;
 import hotmath.gwt.shared.client.util.RpcData;
 
 public class GetQuizResultsHtmlAction implements Action<RpcData>{

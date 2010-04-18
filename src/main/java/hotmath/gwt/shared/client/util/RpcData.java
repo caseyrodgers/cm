@@ -1,6 +1,6 @@
 package hotmath.gwt.shared.client.util;
 
-import hotmath.gwt.shared.client.rpc.Response;
+import hotmath.gwt.cm_rpc.client.rpc.Response;
 
 import java.util.HashMap;
 import java.util.List;

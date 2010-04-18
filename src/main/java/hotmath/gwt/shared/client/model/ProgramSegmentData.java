@@ -1,6 +1,6 @@
 package hotmath.gwt.shared.client.model;
 
-import hotmath.gwt.shared.client.rpc.Response;
+import hotmath.gwt.cm_rpc.client.rpc.Response;
 
 /** Represents a single quiz section and the
  * number of times it has been completed
