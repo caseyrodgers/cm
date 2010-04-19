@@ -100,17 +100,16 @@ public class StudentReportCard {
         Document document = new Document();
         baos = new ByteArrayOutputStream();
         PdfWriter writer = PdfWriter.getInstance(document, baos);
-        
+
         StudentReportCardModelI rc = rcDao.getStudentReportCard(conn, stuUid, null, null);
-        
+
         List<Integer> uidList = new ArrayList<Integer>();
         uidList.add(stuUid);
-        
+
         StudentModelI smBase = studentDao.getStudentBaseSummaries(conn, adminId, uidList, true).get(0);
         StudentModelI sm     = studentDao.getStudentExtendedSummaries(conn, uidList).get(0);
+
         StudentSummaryReport.setBaseData(smBase, sm);
-        
-        //StudentModelI sm = studentDao.getStudentModel(conn,stuUid,false);
 
         Phrase school = ReportUtils.buildParagraphLabel("School: ", info.getSchoolName());
         Phrase group = ReportUtils.buildParagraphLabel("Group: ", sm.getGroup());
