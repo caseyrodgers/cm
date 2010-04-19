@@ -1,17 +1,14 @@
 package hotmath.cm.server.model;
 
 import hotmath.cm.util.CmMultiLinePropertyReader;
-import hotmath.gwt.cm_tools.client.model.ChapterModel;
 import hotmath.gwt.cm_admin.server.model.CmAdminDao;
-import hotmath.gwt.cm_admin.server.model.CmStudentDao;
-import hotmath.gwt.cm_tools.client.model.StudentModelI;
+import hotmath.gwt.cm_tools.client.model.ChapterModel;
 import hotmath.gwt.cm_tools.client.model.StudentReportCardModel;
 import hotmath.gwt.cm_tools.client.model.StudentReportCardModelI;
 import hotmath.gwt.shared.client.rpc.action.CmList;
 import hotmath.testset.ha.HaTest;
 import hotmath.testset.ha.HaTestDao;
 import hotmath.testset.ha.StudentUserProgramModel;
-import hotmath.util.HMConnectionPool;
 import hotmath.util.sql.SqlUtilities;
 
 import java.sql.Connection;
@@ -46,12 +43,6 @@ public class CmReportCardDao {
 		 StudentReportCardModelI rval = new StudentReportCardModel();
 		 try {
 
-			 // load student info
-			 CmStudentDao stuDao = new CmStudentDao();
-			 StudentModelI sm = stuDao.getStudentModel(conn, studentUid, false);
-			 rval.setAdminUid(sm.getAdminUid());
-			 rval.setGroupName(sm.getGroup());
-
 			 CmUserProgramDao upDao = new CmUserProgramDao();
 			 List<StudentUserProgramModel> list = upDao.loadProgramInfoAll(conn, studentUid);
 			 List<StudentUserProgramModel> filteredList = findFirstLastUserProgramInDateRange(list, beginDate, endDate);
@@ -66,8 +57,9 @@ public class CmReportCardDao {
 			 if (chapList != null && chapList.size() > 0) {
 				 // getChapters() returns a List - using only the first one
 				 String chapter = chapList.get(0).trim();
+				 
 				 String progLongName = buildProgramName(conn, pm, chapter, testName);
-    			 rval.setInitialProgramName(progLongName);
+				 rval.setInitialProgramName(progLongName);
 			 }
 			 else {
     			 rval.setInitialProgramName(testName);
@@ -204,7 +196,9 @@ public class CmReportCardDao {
 		 try {
 			 sql = CmMultiLinePropertyReader.getInstance().getProperty("PROGRAM_QUIZ_COUNT");
 			 ps = conn.prepareStatement(sql.replaceFirst("XXX", progIds));
+			 Long start = System.currentTimeMillis();
 			 rs = ps.executeQuery();
+			 logger.info("+++ PROGRAM_QUIZ_COUNT: time: " + (System.currentTimeMillis()-start));
 			 if (rs.next()) {
 				 Integer quizCount = rs.getInt(1);
 				 rc.setQuizCount(quizCount);
@@ -213,7 +207,9 @@ public class CmReportCardDao {
 
 			 sql = CmMultiLinePropertyReader.getInstance().getProperty("PROGRAM_PASSED_QUIZ_COUNT");
 			 ps = conn.prepareStatement(sql.replaceFirst("XXX", progIds));
+			 start = System.currentTimeMillis();
 			 rs = ps.executeQuery();
+			 logger.info("+++ PROGRAM_PASSED_QUIZ_COUNT: time: " + (System.currentTimeMillis()-start));
 			 if (rs.next()) {
 				 Integer quizCount = rs.getInt(1);
 				 rc.setQuizPassCount(quizCount);
@@ -222,7 +218,9 @@ public class CmReportCardDao {
 
 			 sql = CmMultiLinePropertyReader.getInstance().getProperty("PROGRAM_AGGREGATE_QUIZ_RESULTS");
 			 ps = conn.prepareStatement(sql.replaceFirst("XXX", progIds));
+			 start = System.currentTimeMillis();
 			 rs = ps.executeQuery();
+			 logger.info("+++ PROGRAM_AGGREGATE_QUIZ_RESULTS: time: " + (System.currentTimeMillis()-start));
 			 if (rs.next()) {
 				 Integer answeredCorrect = rs.getInt("answered_correct");
 				 Integer answeredIncorrect = rs.getInt("answered_incorrect");
