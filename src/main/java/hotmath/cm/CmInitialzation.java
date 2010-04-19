@@ -1,6 +1,7 @@
 package hotmath.cm;
 
 import hotmath.cm.util.CmWebResourceManager;
+import hotmath.gwt.cm_mobile.server.rpc.GetCmMobileLoginCommand;
 import hotmath.gwt.cm_rpc.server.rpc.ActionDispatcher;
 import hotmath.gwt.cm_tools.server.service.SetInmhItemAsViewedCommand;
 import hotmath.gwt.shared.server.service.command.AddGroupCommand;
@@ -165,6 +166,7 @@ public class CmInitialzation extends HttpServlet {
             SaveCmLoggerTextCommand.class,
             CustomProgramCommand.class,
             CustomProgramDefinitionCommand.class,
-            CustomProgramInfoCommand.class
+            CustomProgramInfoCommand.class,
+            GetCmMobileLoginCommand.class,
             };
 }

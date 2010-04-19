@@ -1,7 +1,7 @@
 package hotmath.gwt.cm_tools.client;
 
-import hotmath.gwt.cm_tools.client.service.CmService;
-import hotmath.gwt.cm_tools.client.service.CmServiceAsync;
+import hotmath.gwt.cm_rpc.client.rpc.CmService;
+import hotmath.gwt.cm_rpc.client.rpc.CmServiceAsync;
 import hotmath.gwt.shared.client.CatchupMathVersionInfo;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.data.CmAsyncRequest;

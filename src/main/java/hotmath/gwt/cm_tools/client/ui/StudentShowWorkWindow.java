@@ -6,7 +6,7 @@ import hotmath.gwt.cm_tools.client.data.InmhItemData;
 import hotmath.gwt.cm_tools.client.model.StudentActivityModel;
 import hotmath.gwt.cm_tools.client.model.StudentModelExt;
 import hotmath.gwt.cm_tools.client.model.StudentShowWorkModel;
-import hotmath.gwt.cm_tools.client.service.CmServiceAsync;
+import hotmath.gwt.cm_rpc.client.rpc.CmServiceAsync;
 import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
 import hotmath.gwt.cm_tools.client.ui.resource_viewer.CmResourcePanel;
 import hotmath.gwt.cm_tools.client.ui.viewer.ResourceViewerFactory;

@@ -24,8 +24,6 @@
        <extend-property name="log_level" values="DEBUG,WARN"/>
        -->
       
-      <servlet path="/services/prescriptionService" class="hotmath.gwt.cm.server.service.PrescriptionServiceImpl" />
-      
       <entry-point class='hotmath.gwt.cm_tools.client.CatchupMathTools'/>
 
       <!--

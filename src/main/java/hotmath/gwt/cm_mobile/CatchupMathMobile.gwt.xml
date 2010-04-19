@@ -1,0 +1,12 @@
+
+<module rename-to="cm_mobile">
+	<inherits name="com.google.gwt.user.User" />
+
+	<inherits name='hotmath.gwt.cm_rpc.CmRpc' />
+
+	<entry-point class="hotmath.gwt.cm_mobile.client.CatchupMathMobile" />
+		
+	<!--
+      <set-property name='user.agent' value='gecko'/>
+      -->
+</module>

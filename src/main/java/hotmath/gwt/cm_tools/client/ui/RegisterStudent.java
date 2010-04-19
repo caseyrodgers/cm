@@ -12,7 +12,7 @@ import hotmath.gwt.cm_tools.client.model.StudentProgramModel;
 import hotmath.gwt.cm_tools.client.model.StudentSettingsModel;
 import hotmath.gwt.cm_tools.client.model.StudyProgramModel;
 import hotmath.gwt.cm_tools.client.model.SubjectModel;
-import hotmath.gwt.cm_tools.client.service.CmServiceAsync;
+import hotmath.gwt.cm_rpc.client.rpc.CmServiceAsync;
 import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
 import hotmath.gwt.cm_tools.client.util.ProcessTracker;
 import hotmath.gwt.shared.client.CmShared;

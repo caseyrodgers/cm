@@ -12,7 +12,6 @@
       <!-- Specify the app entry point class.                         -->
       <entry-point class='hotmath.gwt.shared.client.CmShared'/>
 
-
   
      <script src="/gwt-resources/js/shared.js"/>
 </module>
