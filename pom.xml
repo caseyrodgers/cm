@@ -439,7 +439,7 @@
             <module>hotmath.gwt.cm_admin.CatchupMathAdmin</module>
 <!--
             <module>hotmath.gwt.cm_mobile.CatchupMathMobile</module>
-->
+-->
 
           </modules>
           <!--

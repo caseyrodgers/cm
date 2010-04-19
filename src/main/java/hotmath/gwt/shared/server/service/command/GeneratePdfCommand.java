@@ -34,6 +34,8 @@ public class GeneratePdfCommand implements ActionHandler<GeneratePdfAction, CmWe
      */
     @Override
     public CmWebResource execute(Connection conn, GeneratePdfAction action) throws Exception {
+        try {
+
         String reportName=null;
 
         /** Either the pageAction is set, in which we retrieve
@@ -123,6 +125,11 @@ public class GeneratePdfCommand implements ActionHandler<GeneratePdfAction, CmWe
         else {
             throw new Exception("PDF generation failed");
         }
+	}
+        catch(Throwable th) {
+            th.printStackTrace();
+        }
+        return null;
     }
 
     @Override
