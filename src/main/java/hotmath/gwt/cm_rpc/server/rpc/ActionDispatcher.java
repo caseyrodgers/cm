@@ -123,7 +123,7 @@ public class ActionDispatcher {
         logger.info("RPC Action executing: " + clazzName + "  toString: " + action.toString());
         Connection conn = null;
         try {
-            Class clazz = commands.get(action.getClass());
+            Class clazz = getActionCommand(action);
             if (clazz == null) {
                 throw new CmRpcException("Could not find Action: " + action.getClass().getName());
             }
@@ -156,6 +156,42 @@ public class ActionDispatcher {
             logger.info("RPC Action " + clazzName + " toString: " + action.toString() + " complete: elapsed time: "
                     + (System.currentTimeMillis() - timeStart) / 1000);
         }
+    }
+    
+    /** Check for comamnd, if not regiestered then look
+     *  for Command following conventions:
+     *  
+     *  1. actions end with Action
+     *  2. all commands live in package hotmath.gwt.shared.server.service.command;
+     *  3. cmd names match action names, but end with Command instead of Action 
+     *    (MyAction  == MyCommand)
+     *  
+     * @param action
+     * @return
+     * @throws Exception
+     */
+    @SuppressWarnings("unchecked")
+    private Class getActionCommand(Action<? extends Response> action) throws Exception {
+        if(!commands.containsKey(action.getClass())) {
+            logger.info("Auto registering action: " + action.getClass());
+            String actionName = action.getClass().getName();
+            if(actionName.endsWith("Action")) {
+                /* extract name and construct command class name
+                 * using standard package.
+                 */
+                String p[] = actionName.split("\\.");
+                String cmdName = p[p.length-1];
+                cmdName = cmdName.substring(0, cmdName.length() - 6);
+                cmdName = "hotmath.gwt.shared.server.service.command." + cmdName + "Command";
+                
+                /** create instance and get object */
+                logger.info("Auto registering action command: " + cmdName);
+                Class cmdClass = Class.forName(cmdName);
+                Class actionHandler = ((ActionHandler) cmdClass.newInstance()).getActionType();
+                commands.put(actionHandler, cmdClass);
+            }
+        }
+        return commands.get(action.getClass());
     }
 
     /**

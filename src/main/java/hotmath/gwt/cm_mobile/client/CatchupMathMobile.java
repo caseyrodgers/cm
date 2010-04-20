@@ -7,9 +7,9 @@ import hotmath.gwt.cm_rpc.client.rpc.CmServiceAsync;
 
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.rpc.ServiceDefTarget;
-import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
@@ -20,27 +20,29 @@ import com.google.gwt.user.client.ui.SimplePanel;
  *
  */
 public class CatchupMathMobile implements EntryPoint {
-    Label _name = new Label();
-    Panel panel = new SimplePanel();
-    
     public void onModuleLoad() {
     	setupServices();
-        panel.add(_name);
+    	LoginForm loginForm = new LoginForm();
+        Panel panel = new SimplePanel();
+        panel.getElement().appendChild(loginForm.getElement());
         
-        GetCmMobileLoginAction action = new GetCmMobileLoginAction();
-        getCmService().execute(action, new AsyncCallback<CmMobileUser>() {
-        	@Override
-        	public void onSuccess(CmMobileUser result) {
-        		_name.setText("Login successful: " + result);
-        	}
-        	@Override
-        	public void onFailure(Throwable caught) {
-        		_name.setText("Error logging in: " + caught);
-        	}
-		});
         RootPanel.get().add(panel);
     }
     
+    
+    private void doLogin() {
+        GetCmMobileLoginAction action = new GetCmMobileLoginAction();
+        getCmService().execute(action, new AsyncCallback<CmMobileUser>() {
+            @Override
+            public void onSuccess(CmMobileUser result) {
+                  Window.alert("Welcome: " + result.getName());
+            }
+            @Override
+            public void onFailure(Throwable caught) {
+                Window.alert("Error logging in: " + caught);
+            }
+        });
+    }
     
     static CmServiceAsync getCmService() {
     	return _cmService;

@@ -5,6 +5,10 @@ import hotmath.gwt.cm_mobile.client.rpc.GetCmMobileLoginAction;
 import hotmath.gwt.cm_rpc.client.rpc.Action;
 import hotmath.gwt.cm_rpc.client.rpc.Response;
 import hotmath.gwt.cm_rpc.server.rpc.ActionHandler;
+import hotmath.gwt.cm_tools.client.data.HaBasicUser;
+import hotmath.gwt.cm_tools.client.data.HaBasicUser.UserType;
+import hotmath.gwt.shared.client.util.CmException;
+import hotmath.testset.ha.HaUserFactory;
 
 import java.sql.Connection;
 
@@ -12,9 +16,15 @@ public class GetCmMobileLoginCommand implements ActionHandler<GetCmMobileLoginAc
 
     @Override
     public CmMobileUser execute(Connection conn, GetCmMobileLoginAction action) throws Exception {
-        CmMobileUser user = new CmMobileUser();
-        user.setName("Johnny Appleseed");
-        return user;
+        
+        HaBasicUser basicUser = HaUserFactory.loginToCatchup(action.getName(),action.getPassword());
+        if(basicUser.getUserType() != UserType.STUDENT)
+            throw new CmException("Invalid user type: " + basicUser.getUserType());
+        
+        
+        CmMobileUser mobileUser = new CmMobileUser();
+        mobileUser.setUserId(basicUser.getUserKey());
+        return mobileUser;
     }
 
     @Override
