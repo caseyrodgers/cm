@@ -1,11 +1,12 @@
 package hotmath.gwt.shared.client.util;
 
+import hotmath.gwt.cm_tools.client.ui.CmLogger;
 import hotmath.gwt.shared.client.CatchupMathVersionInfo;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.rpc.action.GetCatchupMathVersionAction;
 import hotmath.gwt.shared.client.rpc.result.CatchupMathVersion;
 
-import com.allen_sauer.gwt.log.client.Log;
+import com.extjs.gxt.ui.client.widget.Html;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
@@ -20,11 +21,21 @@ public class SystemVersionUpdateChecker extends StandardSystemRefreshWindow {
     static SystemVersionUpdateChecker _theWindow;
 
     public SystemVersionUpdateChecker() {
+        this(null);
+    }
+    
+    public SystemVersionUpdateChecker(CatchupMathVersion version) {
         super("Catchup Math Update", 
                 "We have recently updated Catchup Math.  " + 
                 "Please Refresh your browser by pressing the F5 key or click the button below. " +
                 "Thank you for using Catchup Math!");
-        
+
+        if(CmShared.getQueryParameter("debug") != null) {
+            if(version != null) {
+                add(new Html("GetCatchupMathVersionAction: " + version.getVersion() + " current: " + CatchupMathVersionInfo.getBuildVersion()));
+            }
+        }
+            
         /** only show one */
         if(_theWindow != null)
             return;
@@ -66,9 +77,9 @@ public class SystemVersionUpdateChecker extends StandardSystemRefreshWindow {
          CmShared.getCmService().execute(action, new AsyncCallback<CatchupMathVersion>() {
              @Override
             public void onSuccess(CatchupMathVersion version) {
-                 Log.debug("GetCatchupMathVersionAction: " + version.getVersion() + " current: " + CatchupMathVersionInfo.getBuildVersion());
+                 CmLogger.debug("GetCatchupMathVersionAction: " + version.getVersion() + " current: " + CatchupMathVersionInfo.getBuildVersion());
                  if(version.getVersion() != CatchupMathVersionInfo.getBuildVersion()) {
-                     new SystemVersionUpdateChecker();
+                     new SystemVersionUpdateChecker(version);
                  }
             }
              @Override

@@ -17,6 +17,11 @@ public class GetCatchupMathVersionAction implements Action<CatchupMathVersion> {
 
     public GetCatchupMathVersionAction() {}
     
+    @Override
+    public String toString() {
+        return "GetCatchupMathVersionAction [currentTestId=" + currentTestId + ", testOne=" + testOne + "]";
+    }
+
     public GetCatchupMathVersionAction(Integer testId) {
         this.currentTestId = testId;
     }
