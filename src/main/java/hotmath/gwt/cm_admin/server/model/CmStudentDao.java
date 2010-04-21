@@ -1583,8 +1583,17 @@ public class CmStudentDao {
             sm.setName(rs.getString("name"));
             sm.setPasscode(rs.getString("passcode"));
             sm.setEmail(rs.getString("email"));
+            
             sm.setShowWorkRequired(rs.getInt("is_show_work_required") > 0);
             sm.setTutoringAvail(rs.getInt("is_tutoring_available") > 0 && ((tutoringEnabledForAdmin == null) || tutoringEnabledForAdmin));
+            
+        	StudentSettingsModel mdl = new StudentSettingsModel();
+		    mdl.setLimitGames(rs.getInt("limit_games") > 0);
+		    mdl.setShowWorkRequired(rs.getInt("show_work_required") > 0);
+		    mdl.setStopAtProgramEnd(rs.getInt("stop_at_program_end") > 0);
+		    mdl.setTutoringAvailable(rs.getInt("tutoring_available") > 0);
+		    sm.setSettings(mdl);
+            
             sm.setBackgroundStyle(rs.getString("gui_background_style"));
 
             sm.setGroupId(String.valueOf(rs.getInt("group_id")));
@@ -1605,8 +1614,6 @@ public class CmStudentDao {
             
             sm.setProgram(program);
 
-            sm.setSettings(getStudentSettings(conn, sm.getUid()));
-            
             if (program.isCustomProgram() == false) {
                 program.setProgramDescription(rs.getString("program"));
                 sm.setStatus(getStatus(program.getProgramId(), sm.getSectionNum(), rs.getString("test_config_json")));
