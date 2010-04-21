@@ -94,79 +94,9 @@ public class CmInitialzation extends HttpServlet {
         }
         
         CmWebResourceManager.setFileBase(getServletContext().getRealPath("cm_temp"));
-
-        ActionDispatcher.getInstance().registerCommands(commands);
     }
 
     public void doGet(HttpServletRequest req, HttpServletResponse res) {
         /** silent */
     }
-    
-    
-    
-    @SuppressWarnings("unchecked")
-    Class[] commands = 
-    {
-            GetPrescriptionCommand.class,
-            GetViewedInmhItemsCommand.class,
-            GetSolutionCommand.class,
-            SetInmhItemAsViewedCommand.class,
-            GetUserInfoCommand.class,
-            CreateTestRunCommand.class,
-            GetQuizHtmlCommand.class,
-            GetQuizHtmlCheckedCommand.class,
-            SaveQuizCurrentResultCommand.class,
-            GetQuizResultsHtmlCommand.class,
-            SaveFeedbackCommand.class,
-            AutoAdvanceUserCommand.class,
-            GetProgramDefinitionsCommand.class,
-            AddStudentCommand.class,
-            UpdateStudentCommand.class,
-            SaveWhiteboardDataCommand.class,
-            ClearWhiteboardDataCommand.class,
-            CreateAutoRegistrationPreviewCommand.class,
-            CreateAutoRegistrationAccountsCommand.class,
-            AddGroupCommand.class,
-            SaveAutoRegistrationCommand.class,
-            GetReportDefCommand.class,
-            CreateAutoRegistrationAccountCommand.class,
-            GetStateStandardsCommand.class,
-            GetLessonItemsForTestRunCommand.class,
-            UnregisterStudentsCommand.class,
-            ProcessLoginRequestCommand.class,
-            GetSummariesForActiveStudentsCommand.class,
-            GetReviewHtmlCommand.class,
-            MarkPrescriptionLessonAsViewedCommand.class,
-            CheckUserAccountStatusCommand.class,
-            LogUserInCommand.class,
-            GetGroupAggregateInfoCommand.class,
-            GroupManagerCommand.class,
-            GeneratePdfCommand.class,
-            SetBackgroundStyleCommand.class,
-            GetCmVersionInfoCommand.class,
-            GetWhiteboardDataCommand.class,
-            GetStudentShowWorkCommand.class,
-            GetStudentActivityCommand.class,
-            GetAccountInfoForAdminUidCommand.class,
-            GetActiveGroupsCommand.class,
-            GetQuizCurrentResultsCommand.class,
-            GetStudentModelCommand.class,
-            ResetUserCommand.class,
-            GetSubjectDefinitionsCommand.class,
-            GetChaptersForProgramSubjectCommand.class,
-            GetStudentGridPageCommand.class,
-            GetTemplateForSelfRegGroupCommand.class,
-            GetAdminTrendingDataCommand.class,
-            GeneratePdfAssessmentReportCommand.class,
-            GetAdminTrendingDataDetailCommand.class,
-            RunNetTestCommand.class,
-            LogRetryActionFailedCommand.class,
-            CheckForCentralMessagesCommand.class,
-            GetCatchupMathVersionCommand.class,
-            SaveCmLoggerTextCommand.class,
-            CustomProgramCommand.class,
-            CustomProgramDefinitionCommand.class,
-            CustomProgramInfoCommand.class,
-            GetCmMobileLoginCommand.class,
-            };
 }
