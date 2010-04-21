@@ -3,7 +3,6 @@ package hotmath.cm;
 import hotmath.cm.util.CmWebResourceManager;
 import hotmath.gwt.cm_mobile.server.rpc.GetCmMobileLoginCommand;
 import hotmath.gwt.cm_rpc.server.rpc.ActionDispatcher;
-import hotmath.gwt.cm_tools.server.service.SetInmhItemAsViewedCommand;
 import hotmath.gwt.shared.server.service.command.AddGroupCommand;
 import hotmath.gwt.shared.server.service.command.AddStudentCommand;
 import hotmath.gwt.shared.server.service.command.AutoAdvanceUserCommand;
@@ -61,6 +60,7 @@ import hotmath.gwt.shared.server.service.command.SaveFeedbackCommand;
 import hotmath.gwt.shared.server.service.command.SaveQuizCurrentResultCommand;
 import hotmath.gwt.shared.server.service.command.SaveWhiteboardDataCommand;
 import hotmath.gwt.shared.server.service.command.SetBackgroundStyleCommand;
+import hotmath.gwt.shared.server.service.command.SetInmhItemAsViewedCommand;
 import hotmath.gwt.shared.server.service.command.UnregisterStudentsCommand;
 import hotmath.gwt.shared.server.service.command.UpdateStudentCommand;
 
