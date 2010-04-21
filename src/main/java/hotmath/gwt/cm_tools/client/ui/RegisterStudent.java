@@ -10,6 +10,7 @@ import hotmath.gwt.cm_tools.client.model.StudentModelExt;
 import hotmath.gwt.cm_tools.client.model.StudentModelI;
 import hotmath.gwt.cm_tools.client.model.StudentProgramModel;
 import hotmath.gwt.cm_tools.client.model.StudentSettingsModel;
+import hotmath.gwt.cm_tools.client.model.StudyProgramExt;
 import hotmath.gwt.cm_tools.client.model.StudyProgramModel;
 import hotmath.gwt.cm_tools.client.model.SubjectModel;
 import hotmath.gwt.cm_rpc.client.rpc.CmServiceAsync;
@@ -36,7 +37,6 @@ import java.util.Map;
 
 import com.extjs.gxt.ui.client.Registry;
 import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
-import com.extjs.gxt.ui.client.data.BaseModelData;
 import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.Events;
@@ -80,8 +80,8 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
 	private int inProcessCount;
 	private String subjectId;
 	
-	private ListStore <StudyProgram> progStore;
-	private ComboBox<StudyProgram> progCombo;
+	private ListStore <StudyProgramExt> progStore;
+	private ComboBox<StudyProgramExt> progCombo;
 	
 	private ListStore <SubjectModel> subjStore;
 	private ComboBox<SubjectModel> subjCombo;
@@ -222,7 +222,7 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
 		
 		_fsProgram.setLayout(fl);
 		
-		progStore = new ListStore <StudyProgram> ();
+		progStore = new ListStore <StudyProgramExt> ();
 		getStudyProgramListRPC(progStore);
 		progCombo = programCombo(progStore, _fsProgram);
 		_fsProgram.add(progCombo);
@@ -312,8 +312,8 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
 		return btn;
 	}
 
-	private ComboBox<StudyProgram> programCombo(ListStore<StudyProgram> store, final FieldSet fs) {
-		ComboBox<StudyProgram> combo = new ComboBox<StudyProgram>();
+	private ComboBox<StudyProgramExt> programCombo(ListStore<StudyProgramExt> store, final FieldSet fs) {
+		ComboBox<StudyProgramExt> combo = new ComboBox<StudyProgramExt>();
 		combo.setFieldLabel("Program");
 		combo.setForceSelection(true);
 		combo.setDisplayField("title");
@@ -330,13 +330,13 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
 		combo.setEmptyText("-- select a program --");
 		combo.setWidth(280);
         		
-	    combo.addSelectionChangedListener(new SelectionChangedListener<StudyProgram>() {
+	    combo.addSelectionChangedListener(new SelectionChangedListener<StudyProgramExt>() {
 	        @SuppressWarnings("unchecked")
-			public void selectionChanged(SelectionChangedEvent<StudyProgram> se) {
+			public void selectionChanged(SelectionChangedEvent<StudyProgramExt> se) {
 	        	
 	        	if (loading) return;
 	        	
-	            StudyProgram sp = se.getSelectedItem();
+	            StudyProgramExt sp = se.getSelectedItem();
 				int needsSubject = ((Integer)sp.get("needsSubject")).intValue();
 				int needsChapters = ((Integer)sp.get("needsChapters")).intValue();
 				passPercentReqd = ((Integer)sp.get("needsPassPercent")).intValue() > 0;
@@ -416,8 +416,8 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
 	        	    try {
 	    	        	skipComboSet = true;
     		        	subjectId = sm.getAbbrev();
-    		        	ComboBox<StudyProgram> cb = (ComboBox<StudyProgram>) _formPanel.getItemByItemId("prog-combo");
-    		        	StudyProgram sp = cb.getValue();
+    		        	ComboBox<StudyProgramExt> cb = (ComboBox<StudyProgramExt>) _formPanel.getItemByItemId("prog-combo");
+    		        	StudyProgramExt sp = cb.getValue();
     		        	String progId = sp.get("shortTitle");
     		        	chapStore.removeAll();
     		            getChapterListRPC(progId, subjectId, true, chapStore);
@@ -476,7 +476,7 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
 		return saveBtn;
 	}
 	
-	private void getStudyProgramListRPC(final ListStore <StudyProgram> progStore) {
+	private void getStudyProgramListRPC(final ListStore <StudyProgramExt> progStore) {
 
 		inProcessCount++;
 
@@ -489,9 +489,9 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
 		        CmShared.getCmService().execute(action, this);
 		    }
             public void oncapture(CmList<StudyProgramModel> spmList) {
-                List<StudyProgram> progList = new ArrayList <StudyProgram> ();
+                List<StudyProgramExt> progList = new ArrayList <StudyProgramExt> ();
                 for (StudyProgramModel spm : spmList) {
-                    progList.add(new StudyProgram(spm.getTitle(), spm.getShortTitle(), spm.getDescr(), 
+                    progList.add(new StudyProgramExt(spm.getTitle(), spm.getShortTitle(), spm.getDescr(), 
                                                   spm.getNeedsSubject(),spm.getNeedsChapters(), spm.getNeedsPassPercent(),
                                                   spm.getCustomProgramId(), spm.getCustomProgramName()));
                 }
@@ -599,7 +599,7 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
 			
 			setGroupSelection();
 			
-    		StudyProgram sp = setProgramSelection();
+    		StudyProgramExt sp = setProgramSelection();
 
     		if (sp == null) {
     			CatchupMathTools.showAlert("Program not found!");
@@ -639,7 +639,7 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
 		}
 	}
 	
-	private StudyProgram setProgramSelection() {
+	private StudyProgramExt setProgramSelection() {
 	    StudentProgramModel program = stuMdl.getProgram();
 		String shortName = program.getProgramType();
 		
@@ -648,8 +648,8 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
 		}
 		
 		if (shortName != null) {
-			List<StudyProgram> list = progStore.getModels();
-			for (StudyProgram sp : list) {
+			List<StudyProgramExt> list = progStore.getModels();
+			for (StudyProgramExt sp : list) {
 				if (progNameCheckHack(shortName, sp)) {
 					progCombo.setOriginalValue(sp);
 					progCombo.setValue(sp);
@@ -668,7 +668,7 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
 	 * @param sp
 	 * @return
 	 */
-	private boolean progNameCheckHack(String shortName, StudyProgram sp) {
+	private boolean progNameCheckHack(String shortName, StudyProgramExt sp) {
         String st=((String) sp.get("shortTitle")).toLowerCase();
         
         if(sp.get("customProgramName") != null && sp.get("customProgramName").equals(shortName)) {
@@ -809,8 +809,8 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
             }
         }
         
-        ComboBox<StudyProgram> cb = (ComboBox<StudyProgram>) fs.getItemByItemId("prog-combo");
-        StudyProgram sp = cb.getValue();
+        ComboBox<StudyProgramExt> cb = (ComboBox<StudyProgramExt>) fs.getItemByItemId("prog-combo");
+        StudyProgramExt sp = cb.getValue();
         cb.clearInvalid();
         if (sp == null) {
             cb.focus();
@@ -991,31 +991,6 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
         
         return false;
 	}
-
-	class StudyProgram extends BaseModelData {
-		private static final long serialVersionUID = 5574506049604177840L;
-
-		StudyProgram(String title, String shortTitle, String descr, Integer needsSubject,Integer needsChapters, Integer needsPassPercent,Integer customProgramId, String customProgramName) {
-			set("title", title);
-			set("shortTitle", shortTitle);
-			set("descr", descr);
-			set("needsSubject", needsSubject);
-			set("needsChapters", needsChapters);
-			set("needsPassPercent", needsPassPercent);
-			set("customProgramName", customProgramName);
-			set("customProgramId", customProgramId);
-			
-			/** set css style to identify as custom program
-			 * 
-			 */
-			String customStyle="";
-			if(customProgramId != null & customProgramId > 0) {
-			    customStyle = "customProgram";
-			}
-			set("styleIsCustomProgram",customStyle);
-		}
-	}
-
 
 	@Override
 	public void beginStep() {
