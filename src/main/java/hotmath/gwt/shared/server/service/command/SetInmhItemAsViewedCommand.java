@@ -1,4 +1,4 @@
-package hotmath.gwt.cm_tools.server.service;
+package hotmath.gwt.shared.server.service.command;
 
 import hotmath.gwt.cm_rpc.client.rpc.Action;
 import hotmath.gwt.cm_rpc.client.rpc.CmRpcException;
@@ -24,6 +24,7 @@ public class SetInmhItemAsViewedCommand implements ActionHandler<SetInmhItemAsVi
 
     @Override
     public RpcData execute(final Connection conn, SetInmhItemAsViewedAction action) throws Exception {
+        
         PreparedStatement pstat = null;
         try {
             String sql = "insert into HA_TEST_RUN_INMH_USE(run_id, item_type, item_file, view_time, session_number)values(?,?,?,?,?)";
