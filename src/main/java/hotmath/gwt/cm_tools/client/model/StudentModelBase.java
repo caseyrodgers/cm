@@ -37,8 +37,8 @@ public class StudentModelBase implements IsSerializable, StudentModelI {
 	
 	StudentProgramModel program = new StudentProgramModel();
 	
-    Boolean isShowWorkRequired;
-    Boolean isTutorAvailable;
+    //Boolean isShowWorkRequired;
+    //Boolean isTutorAvailable;
 	String passPercent;
 
 	StudentSettingsModel settings = new StudentSettingsModel();
@@ -67,19 +67,19 @@ public class StudentModelBase implements IsSerializable, StudentModelI {
 	}
 
 	public Boolean getIsShowWorkRequired() {
-		return isShowWorkRequired;
+		return settings.getShowWorkRequired();
 	}
 
 	public void setIsShowWorkRequired(Boolean isShowWorkReqd) {
-		this.isShowWorkRequired = isShowWorkReqd;
+		settings.setShowWorkRequired(isShowWorkReqd);
 	}
 
     public Boolean getIsTutorAvailable() {
-		return isTutorAvailable;
+		return settings.getTutoringAvailable();
 	}
 
 	public void setIsTutorAvailable(Boolean isTutorAvailable) {
-		this.isTutorAvailable = isTutorAvailable;
+		settings.setTutoringAvailable(isTutorAvailable);
 	}
 
 	@Override
@@ -209,7 +209,7 @@ public class StudentModelBase implements IsSerializable, StudentModelI {
 
 	@Override
 	public Boolean getShowWorkRequired() {
-		return isShowWorkRequired;
+		return settings.getShowWorkRequired();
 	}
 
 	@Override
@@ -232,7 +232,7 @@ public class StudentModelBase implements IsSerializable, StudentModelI {
 
 	@Override
 	public Boolean getTutoringAvail() {
-		return isTutorAvailable;
+		return settings.getTutoringAvailable();
 	}
 
 	@Override
@@ -300,7 +300,7 @@ public class StudentModelBase implements IsSerializable, StudentModelI {
 
 	@Override
 	public void setShowWorkRequired(Boolean val) {
-		isShowWorkRequired = val;
+		settings.setShowWorkRequired(val);
 	}
 
 	@Override
@@ -320,7 +320,7 @@ public class StudentModelBase implements IsSerializable, StudentModelI {
 
 	@Override
 	public void setTutoringAvail(Boolean val) {
-		this.isTutorAvailable = val;
+		settings.setTutoringAvailable(val);
 	}
 
 	@Override
