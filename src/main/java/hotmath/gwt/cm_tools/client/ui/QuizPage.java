@@ -121,6 +121,8 @@ public class QuizPage extends LayoutContainer {
                 
                 UserInfo.getInstance().setTestSegment(rdata.getQuizSegment());
                 UserInfo.getInstance().setTestId(rdata.getTestId());
+                UserInfo.getInstance().setSubTitle(rdata.getSubTitle());
+                
                 _title = rdata.getTitle();
                 UserInfo.getInstance().setTestSegmentCount(rdata.getQuizSegmentCount());
                 

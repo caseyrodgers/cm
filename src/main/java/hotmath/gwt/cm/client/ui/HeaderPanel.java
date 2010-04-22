@@ -88,8 +88,10 @@ public class HeaderPanel extends LayoutContainer {
 		        else if(event.getEventType() == EventType.EVENT_TYPE_CONTEXTCHANGED) {
 		            CmContext context = (CmContext)event.getEventData();
   		            HeaderPanel.__instance.setHeaderTitle();
-  		            if(CmMainPanel.__lastInstance != null)
+  		            if(CmMainPanel.__lastInstance != null) {
+  		                /** note we set a default heading, no matter what the test type */
 		                CmMainPanel.__lastInstance._westPanel.setHeading(context.getContextSubTitle());
+  		            }
 		        }
 		        else if(event.getEventType() == EventType.EVENT_TYPE_TOPIC_CHANGED) {
 		            	GWT.runAsync(new CmRunAsyncCallback() {
@@ -140,7 +142,10 @@ public class HeaderPanel extends LayoutContainer {
 		CatchupMathTools.showAlert("Set Header info");	
 	}
 	
-	/* Set the header title for this context */
+	/* Set the header title for this context
+	 * 
+	 *  NOT USED?
+	 *  */
 	public void setHeaderTitle() {
 	   // CatchupMathTools.showAlert("Set Header info: " + UserInfo.getInstance().getSubTitle());
 	    String subTitle = UserInfo.getInstance().getSubTitle();

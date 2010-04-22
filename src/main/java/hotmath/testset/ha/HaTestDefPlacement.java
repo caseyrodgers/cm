@@ -7,6 +7,10 @@ public class HaTestDefPlacement extends HaTestDef {
 	String TEXTCODE = "placement";
 	String PLACEMENT_CHAPTERS[] = {"prealg", "alg1", "geo", "alg2"};
 
+	public HaTestDefPlacement() {
+	    // silent
+	}
+	
 	public HaTestDefPlacement(final Connection conn, String name) throws Exception {
 		HaTestDef td = new HaTestDefDao().getTestDef(conn, name);
 		super.init(td);

@@ -64,8 +64,6 @@ public class GetQuizHtmlCommand implements ActionHandler<GetQuizHtmlAction, Quiz
      */    
     @Override
     public QuizHtmlResult execute(final Connection conn, GetQuizHtmlAction action) throws Exception {
-
-        
         
         new CmStudentDao().verifyActiveProgram(conn, action.getTestId());
 
@@ -119,8 +117,13 @@ public class GetQuizHtmlCommand implements ActionHandler<GetQuizHtmlAction, Quiz
             if(chapterInfo != null) {
                 testTitle += ", #" + chapterInfo.getChapterNumber();
                 subTitle = chapterInfo.getChapterTitle();
-            }            
+            }
+            else {
+                subTitle = haTest.getSubTitle(testSegment);
+            }
 
+            
+            
             map.put("subTitle", "");
 
             String quizHtml = VelocityTemplateFromStringManager.getInstance().processTemplate(quizHtmlTemplate, map);

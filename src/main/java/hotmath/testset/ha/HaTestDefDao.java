@@ -374,7 +374,16 @@ public class HaTestDefDao {
      }
 
 	private HaTestDef loadRecord(ResultSet rs) throws SQLException, HotMathException {
-		HaTestDef testDef = new HaTestDef();
+	    
+	    String testName = rs.getString("test_name");
+	    HaTestDef testDef = null;
+	    if(testName.toLowerCase().indexOf(CmProgram.AUTO_ENROLL.getTitle().toLowerCase()) > -1) {
+	        testDef = new HaTestDefPlacement();
+	    }
+	    else {
+	        testDef = new HaTestDef();
+	    }
+	
 		testDef.name = rs.getString("test_name");
 		testDef.textCode = rs.getString("textcode");
 		testDef.chapter = rs.getString("chapter");
