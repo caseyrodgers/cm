@@ -113,7 +113,7 @@ public class GetUserInfoCommand implements ActionHandler<GetUserInfoAction, User
             userInfo.setTestName(testTitle);
             userInfo.setSubTitle(subTitle);
             userInfo.setShowWorkRequired(sm.getShowWorkRequired());
-            userInfo.setTutoringAvail(sm.getTutoringAvail());
+            userInfo.setTutoringAvail(sm.getSettings().getShowWorkRequired());
             userInfo.setPassword(sm.getPasscode());
             userInfo.setLoginName(null);
             userInfo.setDemoUser(sm.getIsDemoUser());

@@ -1349,7 +1349,7 @@ public class CmStudentDao {
             
             StudentModelI sm = l.get(0);
             
-            if(sm.getTutoringAvail()) {
+            if(sm.getSettings().getTutoringAvailable()) {
                 /** make sure the admin has tutoring enabled too
                  * 
                  */
@@ -1506,7 +1506,7 @@ public class CmStudentDao {
             
             StudentModelI sm = l.get(0);
             
-            if(sm.getTutoringAvail()) {
+            if(sm.getSettings().getTutoringAvailable()) {
                 /**
                  * make sure the admin has tutoring enabled
                  */
@@ -1560,7 +1560,7 @@ public class CmStudentDao {
             sm.setSectionNum(rs.getInt("active_segment"));
             sm.setStatus(getStatus(sm.getProgram().getProgramId(), sm.getSectionNum(), rs.getString("test_config_json")));
 
-            String tutoringState = (sm.getTutoringAvail()) ? "ON" : "OFF";
+            String tutoringState = (sm.getSettings().getTutoringAvailable()) ? "ON" : "OFF";
             sm.setTutoringState(tutoringState);
             String showWorkState = (sm.getShowWorkRequired()) ? "REQUIRED" : "OPTIONAL";
             sm.setShowWorkState(showWorkState);

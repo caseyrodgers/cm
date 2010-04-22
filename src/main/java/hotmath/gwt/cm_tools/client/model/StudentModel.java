@@ -31,8 +31,6 @@ public class StudentModel implements StudentModelI {
     
     StudentProgramModel program = new StudentProgramModel();
 
-    Boolean showWorkRequired;
-    Boolean tutoringAvail;
     StudentSettingsModel settings = new StudentSettingsModel();
 
     public StudentModel() {
@@ -168,11 +166,11 @@ public class StudentModel implements StudentModelI {
 	}
 
     public Boolean getTutoringAvail() {
-        return tutoringAvail;
+        return getSettings().getTutoringAvailable();
     }
 
     public void setTutoringAvail(Boolean tutoringAvail) {
-        this.tutoringAvail = tutoringAvail;
+        getSettings().setTutoringAvailable(tutoringAvail);
     }
 
     public String getTutoringState() {
@@ -224,7 +222,7 @@ public class StudentModel implements StudentModelI {
 
     @Override
     public Boolean getShowWorkRequired() {
-        return showWorkRequired;
+        return getSettings().getShowWorkRequired();
     }
 
     @Override
@@ -244,7 +242,7 @@ public class StudentModel implements StudentModelI {
 
     @Override
     public void setShowWorkRequired(Boolean val) {
-        showWorkRequired = val;
+        getSettings().setShowWorkRequired(val);
     }
 
     @Override

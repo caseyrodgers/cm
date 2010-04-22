@@ -78,7 +78,7 @@ public class CmStudentDao_Test extends CmDbTestCase {
         _dao.updateStudentMainProperties(conn, _user.getUid(), true,true,90);
         
         StudentModelI sm = _dao.getStudentModel(_user.getUid());
-        assertTrue(sm.getTutoringAvail() == false);
+        assertTrue(sm.getSettings().getTutoringAvailable() == false);
     }
     
     

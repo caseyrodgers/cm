@@ -106,7 +106,7 @@ public class CreateAutoRegistrationAccountCommand implements ActionHandler<Creat
         userInfo.setTestName(testTitle);
         userInfo.setSubTitle(subTitle);
         userInfo.setShowWorkRequired(studentModel.getShowWorkRequired());
-        userInfo.setTutoringAvail(studentModel.getTutoringAvail());
+        userInfo.setTutoringAvail(studentModel.getSettings().getTutoringAvailable());
         
         userInfo.setUserAccountType(accountType);
         

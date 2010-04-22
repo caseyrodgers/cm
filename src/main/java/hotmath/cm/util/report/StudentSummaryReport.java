@@ -173,7 +173,7 @@ public class StudentSummaryReport {
         smExt.setName(smBase.getName());
         smExt.setPasscode(smBase.getPasscode());
         smExt.setShowWorkRequired(smBase.getShowWorkRequired());
-        smExt.setTutoringAvail(smBase.getTutoringAvail());
+        smExt.setTutoringAvail(smBase.getSettings().getTutoringAvailable());
         smExt.setGroupId(smBase.getGroupId());
         smExt.setGroup(smBase.getGroup());
         smExt.setSectionNum(smBase.getSectionNum());

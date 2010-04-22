@@ -108,24 +108,29 @@ public class AutoRegistrationWindow extends CmWindow {
     Grid<AutoRegistrationEntryGxt> _previewGrid;
 
     private void createForm(int total, int errors, List<AutoRegistrationEntryGxt> gridModel) {
-        removeAll();
-
-        setLayout(new BorderLayout());
-
-        add(createInfoPanel(total,errors), new BorderLayoutData(LayoutRegion.NORTH, 85));
-
-        ListStore<AutoRegistrationEntryGxt> store = new ListStore<AutoRegistrationEntryGxt>();
-        store.add(gridModel);
-        _previewGrid = new Grid<AutoRegistrationEntryGxt>(store, defineColumns());
-
-        _previewGrid.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
-        _previewGrid.getSelectionModel().setFiresEvents(true);
-        _previewGrid.setStripeRows(true);
-        _previewGrid.setWidth(565);
-        _previewGrid.setHeight(210);
-
-        add(_previewGrid, new BorderLayoutData(LayoutRegion.CENTER));
-        layout();
+        try {
+            removeAll();
+    
+            setLayout(new BorderLayout());
+    
+            add(createInfoPanel(total,errors), new BorderLayoutData(LayoutRegion.NORTH, 85));
+    
+            ListStore<AutoRegistrationEntryGxt> store = new ListStore<AutoRegistrationEntryGxt>();
+            store.add(gridModel);
+            _previewGrid = new Grid<AutoRegistrationEntryGxt>(store, defineColumns());
+    
+            _previewGrid.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
+            _previewGrid.getSelectionModel().setFiresEvents(true);
+            _previewGrid.setStripeRows(true);
+            _previewGrid.setWidth(565);
+            _previewGrid.setHeight(210);
+    
+            add(_previewGrid, new BorderLayoutData(LayoutRegion.CENTER));
+            layout();
+        }
+        catch(Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private Widget createInfoPanel(int total, int error) {
@@ -143,10 +148,10 @@ public class AutoRegistrationWindow extends CmWindow {
                 + "     </div>"
                 + "     <div class='form right'>"
                 + "        <div class='fld'><label>Tutoring: </label><div>"
-                + (student.getTutoringAvail() ? "Available" : "Not Available")
+                + (student.getSettings().getTutoringAvailable() ? "Available" : "Not Available")
                 + "&nbsp;</div></div>"
                 + "        <div class='fld'><label>Show Work:</label><div>"
-                + (student.getShowWorkRequired() ? "Required" : "Optional")
+                + (student.getSettings().getShowWorkRequired() ? "Required" : "Optional")
                 + "&nbsp;</div></div>"
                 + "     </div>"
                 + " </div>"

@@ -57,9 +57,10 @@ public class CmUploadForm extends FormPanel {
 
             public void handleEvent(FormEvent be) {
 
+                
                 String response = be.getResultHtml();
 
-                Log.info("CmUploadForm: response=" + response);
+                CmLogger.info("CmUploadForm: response=" + response);
 
                 if (response.toLowerCase().indexOf("<pre") != -1) {
                     response = extractJson(response);
@@ -67,13 +68,13 @@ public class CmUploadForm extends FormPanel {
                 }
 
                 try {
-                    Log.info("CmUploadForm: parsing JSON");
+                    CmLogger.info("CmUploadForm: parsing JSON");
                     JSONValue rspValue = JSONParser.parse(response);
                     JSONObject rspObj = rspValue.isObject();
                     String msg = rspObj.get("msg").isString().stringValue();
                     String status = rspObj.get("status").isString().stringValue();
                     if (status.equals("Error")) {
-                        Log.info("CmUploadForm: Error while reading response");
+                        CmLogger.info("CmUploadForm: Error while reading response");
                         CatchupMathTools.showAlert(msg);
                         return;
                     }
@@ -81,7 +82,7 @@ public class CmUploadForm extends FormPanel {
 
                     CmUploadForm.this.callback.requestComplete(uploadKey);
                 } catch (Exception e) {
-                    Log.error("CmUploadForm: Error parsing JSON", e);
+                    CmLogger.error("CmUploadForm: Error parsing JSON", e);
                     e.printStackTrace();
                 }
             }

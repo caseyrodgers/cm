@@ -2,6 +2,7 @@ package hotmath.gwt.shared.server.service.command;
 
 import hotmath.cm.server.model.CmUserProgramDao;
 import hotmath.cm.test.HaTestSet;
+import hotmath.cm.util.CmWebResourceManager;
 import hotmath.gwt.cm_admin.server.model.CmStudentDao;
 import hotmath.gwt.cm_rpc.client.rpc.Action;
 import hotmath.gwt.cm_rpc.client.rpc.Response;
@@ -19,6 +20,7 @@ import hotmath.testset.ha.StudentUserProgramModel;
 import hotmath.util.VelocityTemplateFromStringManager;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -27,6 +29,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
+
+import sb.util.MD5;
 
 
 public class GetQuizHtmlCommand implements ActionHandler<GetQuizHtmlAction, QuizHtmlResult> {
@@ -121,6 +125,8 @@ public class GetQuizHtmlCommand implements ActionHandler<GetQuizHtmlAction, Quiz
 
             String quizHtml = VelocityTemplateFromStringManager.getInstance().processTemplate(quizHtmlTemplate, map);
 
+            //quizHtml = processHtmlForSprites(quizHtml);
+
             QuizHtmlResult result = new QuizHtmlResult();
             result.setUserId(uid);
             result.setQuizHtml(quizHtml);
@@ -137,6 +143,19 @@ public class GetQuizHtmlCommand implements ActionHandler<GetQuizHtmlAction, Quiz
         }
     }
     
+    
+    private String processHtmlForSprites(String quizHtml) throws Exception {
+        String md5OfThis = MD5.getMD5(quizHtml);
+        String fileBase = CmWebResourceManager.getInstance().getFileBase();
+        File quizSprited = new File(fileBase,md5OfThis);
+        if(!quizSprited.exists()) {
+            quizSprited.mkdirs();
+            new CreateQuizSprited(quizSprited, quizHtml).createQuizSpritedHtml();
+        }
+        
+        /** read html with sprited images */
+        return quizHtml;
+    }
     
     @Override
     public Class<? extends Action<? extends Response>> getActionType() {
@@ -160,6 +179,16 @@ public class GetQuizHtmlCommand implements ActionHandler<GetQuizHtmlAction, Quiz
         }
         return sb.toString();
     }
-    
+}
 
+class CreateQuizSprited {
+    File quizSprited;
+    String quizHtml;
+    public CreateQuizSprited(File quizSprited, String quizHtml) {
+        this.quizSprited = quizSprited;
+        this.quizHtml = quizHtml;
+    }
+    public String createQuizSpritedHtml() {
+        return "";
+    }
 }

@@ -25,19 +25,17 @@ public class StudentModelBasic implements StudentModelI, IsSerializable{
 
     StudentProgramModel program = new StudentProgramModel();
     
-    Boolean showWorkRequired;
-    Boolean tutorAvailable;
     String passPercent;
 
     StudentSettingsModel settings = new StudentSettingsModel();
     
     public Boolean getTutorAvailable() {
-        return tutorAvailable;
+        return getSettings().getTutoringAvailable();
     }
 
 
     public void setTutorAvailable(Boolean tutorAvailable) {
-        this.tutorAvailable = tutorAvailable;
+        this.setTutorAvailable(tutorAvailable);
     }
 
 
@@ -135,7 +133,7 @@ public class StudentModelBasic implements StudentModelI, IsSerializable{
 
     @Override
     public Boolean getShowWorkRequired() {
-        return this.showWorkRequired;
+        return getSettings().getShowWorkRequired();
     }
 
     @Override
@@ -159,7 +157,7 @@ public class StudentModelBasic implements StudentModelI, IsSerializable{
 
     @Override
     public Boolean getTutoringAvail() {
-        return this.tutorAvailable;
+        return getSettings().getTutoringAvailable();
     }
 
     @Override
@@ -250,7 +248,7 @@ public class StudentModelBasic implements StudentModelI, IsSerializable{
 
     @Override
     public void setShowWorkRequired(Boolean val) {
-        this.showWorkRequired = val;
+        getSettings().setShowWorkRequired(val);
     }
 
     @Override
@@ -273,8 +271,7 @@ public class StudentModelBasic implements StudentModelI, IsSerializable{
 
     @Override
     public void setTutoringAvail(Boolean val) {
-        this.tutorAvailable = val;
-        
+        getSettings().setTutoringAvailable(val);
     }
 
     @Override
@@ -312,19 +309,6 @@ public class StudentModelBasic implements StudentModelI, IsSerializable{
 	public void setPassingCount(Integer count) {
 		this.passingCount = count;
 	}
-	
-
-
-    @Override
-    public String toString() {
-        return "StudentModelBasic [adminUid=" + adminUid + ", backgroundStyle=" + backgroundStyle + ", chapter="
-                + chapter + ", email=" + email + ", group=" + group + ", groupId=" + groupId + ", isDemoUser="
-                + isDemoUser + ", json=" + json + ", name=" + name + ", notPassingCount=" + notPassingCount
-                + ", passPercent=" + passPercent + ", passcode=" + passcode + ", passingCount=" + passingCount
-                + ", progId=" + progId + ", showWorkRequired=" + showWorkRequired + ", program=" + program
-                + ", subjId=" + subjId + ", tutorAvailable=" + tutorAvailable + ", tutoringUse=" + tutoringUse
-                + ", uid=" + uid + ", userProgramId=" + userProgramId + "]";
-    }
 
 
     @Override

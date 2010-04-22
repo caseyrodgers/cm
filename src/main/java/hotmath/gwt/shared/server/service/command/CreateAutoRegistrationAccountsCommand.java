@@ -88,7 +88,7 @@ public class CreateAutoRegistrationAccountsCommand implements ActionHandler<Crea
         sm.setStatus(t.getStatus());
         
         sm.setTotalUsage(t.getTotalUsage());
-        sm.setTutoringAvail(t.getTutoringAvail());
+        sm.setTutoringAvail(t.getSettings().getTutoringAvailable());
         sm.setTutoringState(t.getTutoringState());
         
         

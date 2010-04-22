@@ -408,10 +408,15 @@ public class StudentModelExt extends BaseModel implements Serializable, StudentM
 	    set(PROGRAM_KEY, studyProgram);
 	}
 
-	@Override
-	public StudentSettingsModel getSettings() {
-		return get(SETTINGS_KEY);
-	}
+    @Override
+    public StudentSettingsModel getSettings() {
+        StudentSettingsModel settings = get(SETTINGS_KEY);
+        if(settings == null) {
+            setSettings(new StudentSettingsModel());
+        }
+        return get(SETTINGS_KEY);
+    }
+
 
 	@Override
 	public void setSettings(StudentSettingsModel optionSettings) {
