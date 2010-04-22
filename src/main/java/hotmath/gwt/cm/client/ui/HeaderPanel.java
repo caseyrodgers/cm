@@ -21,7 +21,6 @@ import com.extjs.gxt.ui.client.widget.Html;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.button.IconButton;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.core.client.RunAsyncCallback;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Label;
@@ -50,18 +49,12 @@ public class HeaderPanel extends LayoutContainer {
 		IconButton btn = new IconButton("header-panel-help-btn");
 		btn.addSelectionListener(new SelectionListener<IconButtonEvent>() {
 			public void componentSelected(IconButtonEvent ce) {
-				GWT.runAsync(new RunAsyncCallback() {
-					
+				GWT.runAsync(new CmRunAsyncCallback() {
 					@Override
 					public void onSuccess() {
-						new HelpWindow().setVisible(true);					}
-					
-					@Override
-					public void onFailure(Throwable reason) {
-						Window.alert("Error loading help window fragment: " + reason.getLocalizedMessage());
+						new HelpWindow().setVisible(true);					
 					}
 				});
-				
 			};
 		});		
 		add(btn);

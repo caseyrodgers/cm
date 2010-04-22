@@ -184,7 +184,17 @@ public class CmShared implements EntryPoint {
                         
                         public void oncapture(UserInfo userInfo) {
 
+                            /** Store login name to show to user on succesful
+                             *  registration.  
+                             *  
+                             *  TODO: this is a bug waiting to happen, get ride of global.
+                             *    For example, what happens if you do a .. back .. the a forward...
+                             *    
+                             *  BUG: the above actually cause null to show up when self-registering.  
+                             */
                             __loginName = userInfo.getLoginName();
+                            
+                            
                             /**
                              * now store in cookie, so next refresh on this page
                              * can read info from cookie.

@@ -10,6 +10,7 @@ import hotmath.gwt.cm_rpc.client.rpc.RpcData;
 import hotmath.gwt.cm_rpc.server.rpc.ActionHandler;
 import hotmath.gwt.cm_tools.client.model.StudentActiveInfo;
 import hotmath.gwt.cm_tools.client.model.StudentModelI;
+import hotmath.gwt.cm_tools.client.model.StudentSettingsModel;
 import hotmath.gwt.shared.client.rpc.action.CreateAutoRegistrationAccountAction;
 import hotmath.gwt.shared.client.util.CmException;
 import hotmath.gwt.shared.client.util.UserInfo;
@@ -66,6 +67,16 @@ public class CreateAutoRegistrationAccountCommand implements ActionHandler<Creat
         
         CmStudentDao dao = new CmStudentDao();
         StudentModelI studentModel = dao.getStudentModel(action.getUserId(), true);
+        
+        /** move settings from student group/template into new student 
+         * 
+         * TODO: why is this needed... why would'nt settings already be set
+         * from dao.getStudentModel .. the sm has a settings, but it is the default
+         * and NOT CORRECT.
+         */
+        StudentSettingsModel settings = dao.getStudentSettings(conn, action.getUserId());
+        studentModel.setSettings(settings);
+        
 
         studentModel.setPasscode(action.getPassword());
         studentModel.setName(action.getUser());
