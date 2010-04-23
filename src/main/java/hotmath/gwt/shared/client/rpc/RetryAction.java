@@ -67,7 +67,7 @@ import com.google.gwt.user.client.rpc.StatusCodeException;
 public abstract class RetryAction<T> implements AsyncCallback<T> {
     
     
-    /** keep a conunt of RetryActions created
+    /** keep a count of RetryActions created
      * 
      */
     static int __counter;
