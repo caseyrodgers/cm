@@ -247,8 +247,8 @@ public class HaUserFactory {
             student.getProgram().setProgramType(CmProgram.PREALG_PROF.getProgramType());
             student.getProgram().setSubjectId(CmProgram.PREALG_PROF.getSubject());
             student.setPassPercent("70%");
-            student.setTutoringAvail(false);
-            student.setShowWorkRequired(false);
+            student.getSettings().setTutoringAvailable(false);
+            student.getSettings().setShowWorkRequired(false);
             student.setIsDemoUser(true);
 
             cmDao.addStudent(conn, student);
