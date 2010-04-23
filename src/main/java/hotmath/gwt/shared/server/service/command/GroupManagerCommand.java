@@ -144,11 +144,10 @@ public class GroupManagerCommand implements ActionHandler<GroupManagerAction, Rp
             
             //String passPercent = studentTemplate.getPassPercent();
             
+            CmStudentDao dao = new CmStudentDao();
             ResultSet rs = ps.executeQuery();
             while(rs.next()) {
-                new CmStudentDao().assignProgramToStudent(conn, rs.getInt("uid"), 
-                        studentTemplate.getProgram(), studentTemplate.getChapter(),
-                        studentTemplate.getPassPercent());
+                dao.assignProgramToStudent(conn, rs.getInt("uid"),studentTemplate.getProgram(), studentTemplate.getChapter(),studentTemplate.getPassPercent(),studentTemplate.getSettings());
             }
         }
         finally {

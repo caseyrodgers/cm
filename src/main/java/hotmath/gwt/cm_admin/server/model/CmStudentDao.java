@@ -1718,7 +1718,7 @@ public class CmStudentDao {
             sm.setPassingCount(rs.getInt("passing_count"));
             sm.setTutoringUse(rs.getInt("tutoring_use"));
             
-            logger.info("+++ passing count: " + sm.getPassingCount() + ", not passing count: " + sm.getNotPassingCount());
+            // logger.debug("+++ passing count: " + sm.getPassingCount() + ", not passing count: " + sm.getNotPassingCount());
 
             l.add(sm);
         }
@@ -2059,6 +2059,9 @@ public class CmStudentDao {
     
     
     public void assignProgramToStudent(final Connection conn, Integer uid, StudentProgramModel program, String chapter, String passPercent) throws Exception {
+        assignProgramToStudent(conn, uid, program, chapter, passPercent, null);
+    }
+    public void assignProgramToStudent(final Connection conn, Integer uid, StudentProgramModel program, String chapter, String passPercent,StudentSettingsModel settings) throws Exception {
         
         StudentModelI sm = getStudentModelBasic(conn, uid);
         
@@ -2072,7 +2075,26 @@ public class CmStudentDao {
         
         setTestConfig(conn, sm);
         updateStudent(conn, sm, true, false, true, false, false);        
+        
+        int percent = getPercentFromString(passPercent);
+        if(settings != null) {
+            sm.setSettings(settings);
+            updateStudentSettings(conn, sm, percent);
+        }
     }    
+    
+    private int getPercentFromString(String passPercent) {
+        try {
+            if(passPercent.endsWith("%"))
+                passPercent = passPercent.substring(0, passPercent.length()-1);
+            
+            return Integer.parseInt(passPercent);
+        }
+        catch(Exception e) {
+            e.printStackTrace();
+        }
+        return 70; // return default
+    }
     
     /** Return total count of INMH items by this user
      * 

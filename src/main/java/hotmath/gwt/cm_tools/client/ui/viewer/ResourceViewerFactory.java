@@ -3,10 +3,10 @@ package hotmath.gwt.cm_tools.client.ui.viewer;
 import hotmath.gwt.cm_tools.client.data.InmhItemData;
 import hotmath.gwt.cm_tools.client.ui.resource_viewer.CmResourcePanel;
 import hotmath.gwt.cm_tools.client.ui.resource_viewer.CmResourcePanelImplDefault;
+import hotmath.gwt.shared.client.util.CmRunAsyncCallback;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.core.client.RunAsyncCallback;
 
 /**
  * Create the appropriate resource viewer
@@ -28,15 +28,10 @@ public class ResourceViewerFactory {
 
 	/**
 	 * Access the module's instance. The callback runs asynchronously, once the
-	 * necessary code has downloaded.
+	 * necessary code has down loaded.
 	 */
 	public static void createAsync(final ResourceViewerFactory_Client client) {
-
-		GWT.runAsync(new RunAsyncCallback() {
-			public void onFailure(Throwable err) {
-				client.onUnavailable();
-			}
-
+		GWT.runAsync(new CmRunAsyncCallback() {
 			public void onSuccess() {
 				if (instance == null) {
 					instance = new ResourceViewerFactory();
