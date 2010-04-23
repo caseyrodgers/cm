@@ -172,8 +172,8 @@ public class StudentSummaryReport {
     static public void setBaseData(StudentModelI smBase, StudentModelI smExt) {
         smExt.setName(smBase.getName());
         smExt.setPasscode(smBase.getPasscode());
-        smExt.setShowWorkRequired(smBase.getShowWorkRequired());
-        smExt.setTutoringAvail(smBase.getSettings().getTutoringAvailable());
+        smExt.getSettings().setShowWorkRequired(smBase.getSettings().getShowWorkRequired());
+        smExt.getSettings().setTutoringAvailable(smBase.getSettings().getTutoringAvailable());
         smExt.setGroupId(smBase.getGroupId());
         smExt.setGroup(smBase.getGroup());
         smExt.setSectionNum(smBase.getSectionNum());

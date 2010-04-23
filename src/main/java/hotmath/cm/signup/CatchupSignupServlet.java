@@ -136,8 +136,8 @@ public class CatchupSignupServlet extends HttpServlet {
                  stdProgram.setSubjectId("");
                  student.setProgram(stdProgram);
                  
-                 student.setTutoringAvail(true);
-                 student.setShowWorkRequired(false);
+                 student.getSettings().setTutoringAvailable(true);
+                 student.getSettings().setShowWorkRequired(false);
                  
                  Connection conn=null;
                  try {
