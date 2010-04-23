@@ -1353,7 +1353,7 @@ public class CmStudentDao {
                 /** make sure the admin has tutoring enabled too
                  * 
                  */
-                sm.setTutoringAvail(isTutoringEnabledForAdmin(conn, sm.getAdminUid()));
+                sm.getSettings().setTutoringAvailable(isTutoringEnabledForAdmin(conn, sm.getAdminUid()));
             }
             return sm; 
         } catch (Exception e) {
@@ -1426,8 +1426,16 @@ public class CmStudentDao {
      */
     
     public StudentModelI getStudentModelBasic(final Connection conn, Integer uid) throws Exception {
-        
-        String sql = "select * from HA_USER where uid = " + uid;
+        /*
+         * TODO: should be able to use:
+         * 
+    	return getStudentModelBase(conn, uid, true);
+        */
+        String sql = "select u.*, " +
+                     " ifnull(s.limit_games, 0) as limit_games, ifnull(s.show_work_required, 0) as show_work_required, " +
+                     " ifnull(s.stop_at_program_end, 0) as stop_at_program_end, ifnull(s.tutoring_available, 0) as tutoring_available " +
+                     " from HA_USER u left join HA_USER_SETTINGS s on s.user_id = u.uid where uid = " + uid;
+
         long timeStart = System.currentTimeMillis();
         Statement ps = null;
         ResultSet rs = null;
@@ -1447,23 +1455,26 @@ public class CmStudentDao {
             sm.setGroupId(rs.getString("group_id"));
             sm.getProgram().setProgramId(rs.getInt("user_prog_id"));
             sm.setBackgroundStyle(rs.getString("gui_background_style"));
-            sm.setShowWorkRequired(rs.getInt("is_show_work_required")==0?false:true);
-
+            sm.setIsDemoUser(rs.getInt("is_demo")==0?false:true);
+            
+            StudentSettingsModel mdl = sm.getSettings();
+            mdl.setShowWorkRequired(rs.getInt("show_work_required")==0?false:true);
+            mdl.setTutoringAvailable(rs.getInt("tutoring_available")==0?false:true);
+            mdl.setLimitGames(rs.getInt("limit_games")==0?false:true);
+            mdl.setStopAtProgramEnd(rs.getInt("stop_at_program_end")==0?false:true);            
+            
             /** Check for tutoring available.
              * 
              * If the student has been enabled, make sure the admin has it 
              * enabled.  This is to allow for tighter messaging and not send
              * the user to LWL if the admin has not registered.
              */
-            boolean isTutoringAvailable = rs.getInt("is_tutoring_available")==0?false:true;
-            if(isTutoringAvailable) {
-                isTutoringAvailable = isTutoringEnabledForAdmin(conn, sm.getAdminUid());
+            if (mdl.getTutoringAvailable()) {
+                mdl.setTutoringAvailable(isTutoringEnabledForAdmin(conn, sm.getAdminUid()));
             }
-            sm.setTutoringAvail(isTutoringAvailable);
-            sm.setIsDemoUser(rs.getInt("is_demo")==0?false:true);
 
             return sm;
-            
+
         } catch (Exception e) {
             logger.error(String.format("*** Error obtaining data for student UID: %d", uid), e);
             throw new Exception(String.format("*** Error obtaining data for student with UID: %d", uid));
@@ -1477,7 +1488,7 @@ public class CmStudentDao {
      *  
      * @param conn
      * @param uid
-     * @param includeSelfRegTemplate  If true, then is_auto_create_template will be considered
+     * @param includeSelfRegTemplate  If false, then records with is_auto_create_template=1 will be excluded
      * @return
      * 
      * 
@@ -1510,7 +1521,7 @@ public class CmStudentDao {
                 /**
                  * make sure the admin has tutoring enabled
                  */
-                sm.setTutoringAvail(isTutoringEnabledForAdmin(conn, sm.getAdminUid()));
+                sm.getSettings().setTutoringAvailable(isTutoringEnabledForAdmin(conn, sm.getAdminUid()));
             }
             return sm; 
         } catch (Exception e) {
@@ -1533,8 +1544,6 @@ public class CmStudentDao {
             sm.setName(rs.getString("name"));
             sm.setPasscode(rs.getString("passcode"));
             sm.setEmail(rs.getString("email"));
-            sm.setShowWorkRequired(rs.getInt("is_show_work_required") > 0);
-            sm.setTutoringAvail(rs.getInt("is_tutoring_available") > 0);
             sm.setTutoringUse(rs.getInt("tutoring_use"));
 
             int groupId = rs.getInt("group_id");
@@ -1547,6 +1556,12 @@ public class CmStudentDao {
             sm.getProgram().setSubjectId(rs.getString("subj_id"));
             sm.getProgram().setCustomProgramId(rs.getInt("custom_program_id"));
             sm.getProgram().setCustomProgramName(rs.getString("custom_program_name"));
+            
+        	StudentSettingsModel mdl = sm.getSettings();
+		    mdl.setLimitGames(rs.getInt("limit_games") > 0);
+		    mdl.setShowWorkRequired(rs.getInt("show_work_required") > 0);
+		    mdl.setStopAtProgramEnd(rs.getInt("stop_at_program_end") > 0);
+		    mdl.setTutoringAvailable(rs.getInt("tutoring_available") > 0);
 
             sm.setLastQuiz(rs.getString("last_quiz"));
             sm.setChapter(getChapter(rs.getString("test_config_json")));
@@ -1583,17 +1598,14 @@ public class CmStudentDao {
             sm.setName(rs.getString("name"));
             sm.setPasscode(rs.getString("passcode"));
             sm.setEmail(rs.getString("email"));
+            sm.setIsDemoUser(rs.getInt("is_demo") > 0);
             
-            sm.setShowWorkRequired(rs.getInt("is_show_work_required") > 0);
-            sm.setTutoringAvail(rs.getInt("is_tutoring_available") > 0 && ((tutoringEnabledForAdmin == null) || tutoringEnabledForAdmin));
-            
-        	StudentSettingsModel mdl = new StudentSettingsModel();
+        	StudentSettingsModel mdl = sm.getSettings();
 		    mdl.setLimitGames(rs.getInt("limit_games") > 0);
 		    mdl.setShowWorkRequired(rs.getInt("show_work_required") > 0);
 		    mdl.setStopAtProgramEnd(rs.getInt("stop_at_program_end") > 0);
-		    mdl.setTutoringAvailable(rs.getInt("tutoring_available") > 0);
-		    sm.setSettings(mdl);
-            
+		    mdl.setTutoringAvailable(rs.getInt("tutoring_available") > 0 && ((tutoringEnabledForAdmin == null) || tutoringEnabledForAdmin));
+
             sm.setBackgroundStyle(rs.getString("gui_background_style"));
 
             sm.setGroupId(String.valueOf(rs.getInt("group_id")));
