@@ -35,7 +35,7 @@ public class GetUserInfoCommand implements ActionHandler<GetUserInfoAction, User
         try {
             CmStudentDao dao = new CmStudentDao();
             StudentModelI sm = dao.getStudentModelBasic(conn, action.getUserId());
-            StudentSettingsModel settings = dao.getStudentSettings(conn, action.getUserId());
+            StudentSettingsModel settings = sm.getSettings();
             
             CmUserProgramDao upDao = new CmUserProgramDao();
             StudentUserProgramModel userProgram = upDao.loadProgramInfoCurrent(conn, action.getUserId());
@@ -112,8 +112,8 @@ public class GetUserInfoCommand implements ActionHandler<GetUserInfoAction, User
             userInfo.setBackgroundStyle(sm.getBackgroundStyle());
             userInfo.setTestName(testTitle);
             userInfo.setSubTitle(subTitle);
-            userInfo.setShowWorkRequired(sm.getShowWorkRequired());
-            userInfo.setTutoringAvail(sm.getSettings().getShowWorkRequired());
+            userInfo.setShowWorkRequired(settings.getShowWorkRequired());
+            userInfo.setTutoringAvail(settings.getTutoringAvailable());
             userInfo.setPassword(sm.getPasscode());
             userInfo.setLoginName(null);
             userInfo.setDemoUser(sm.getIsDemoUser());
