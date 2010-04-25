@@ -22,7 +22,6 @@ public class StudentModelExt extends BaseModel implements Serializable, StudentM
     public static final String UID_KEY = "uid";
     public static final String EMAIL_KEY = "email";
     public static final String ADMIN_UID_KEY = "admin_uid";
-    public static final String SHOW_WORK_KEY = "show-work";
     public static final String SHOW_WORK_STATE_KEY = "show-work-state";
     public static final String TOTAL_USAGE_KEY = "total-usage";
     public static final String TUTORING_STATE_KEY = "tutoring-state";
@@ -66,6 +65,7 @@ public class StudentModelExt extends BaseModel implements Serializable, StudentM
         setTutoringUse(student.getTutoringUse());
         setPassingCount(student.getPassingCount());
         setNotPassingCount(student.getNotPassingCount());        
+        setShowWorkState((student.getSettings().getShowWorkRequired()) ? "REQUIRED" : "OPTIONAL");
 
         set(JSON_KEY, student.getJson());
 
@@ -74,9 +74,6 @@ public class StudentModelExt extends BaseModel implements Serializable, StudentM
         set(ADMIN_UID_KEY, student.getAdminUid());
 
         set(PASS_PERCENT_KEY, student.getPassPercent());
-
-        set(SHOW_WORK_KEY, student.getSettings().getShowWorkRequired());
-        set(SHOW_WORK_STATE_KEY, (student.getSettings().getShowWorkRequired())?"REQUIRED":"OPTIONAL");
 
         set(TOTAL_USAGE_KEY, (student.getTotalUsage() != null)?student.getTotalUsage():0);
 
@@ -208,12 +205,10 @@ public class StudentModelExt extends BaseModel implements Serializable, StudentM
         return get(TUTORING_STATE_KEY);
     }
 
-    @Override
     public void setShowWorkState(String swState) {
         set(SHOW_WORK_STATE_KEY, swState);
     }
 
-    @Override
     public String getShowWorkState() {
         return get(SHOW_WORK_STATE_KEY);
     }
@@ -298,16 +293,6 @@ public class StudentModelExt extends BaseModel implements Serializable, StudentM
     @Override
     public void setJson(String json) {
         set(JSON_KEY, json);
-    }
-
-    @Override
-    public Boolean getShowWorkRequired() {
-        return get(SHOW_WORK_KEY);
-    }
-
-    @Override
-    public void setShowWorkRequired(Boolean val) {
-        set(SHOW_WORK_KEY, val);
     }
 
     @Override
