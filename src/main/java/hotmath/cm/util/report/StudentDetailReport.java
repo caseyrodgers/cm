@@ -62,8 +62,10 @@ public class StudentDetailReport {
 		    
 			Phrase expires  = buildLabelContent("Expires: ", info.getExpirationDate());
 			Phrase student  = buildLabelContent("Student: ", String.valueOf(sm.getName()));
-			//Phrase tutoring = buildLabelContent("Tutoring: ", String.valueOf(sm.getTutoringState()));
-			Phrase showWork = buildLabelContent("Show Work: ", String.valueOf(sm.getShowWorkState()));
+            //String tutoringState = (sm.getSettings().getTutoringAvailable()) ? "ON" : "OFF";
+			//Phrase tutoring = buildLabelContent("Tutoring: ", tutoringState);
+            String showWorkState = (sm.getSettings().getShowWorkRequired()) ? "REQUIRED" : "OPTIONAL";
+			Phrase showWork = buildLabelContent("Show Work: ", showWorkState);
 
 			StringBuilder sb = new StringBuilder();
 			sb.append("CM-DetailReport");
