@@ -132,22 +132,10 @@ public class StudentModelBasic implements StudentModelI, IsSerializable{
     }
 
     @Override
-    public Boolean getShowWorkRequired() {
-        return getSettings().getShowWorkRequired();
-    }
-
-    @Override
-    public String getShowWorkState() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
     public String getStatus() {
         // TODO Auto-generated method stub
         return null;
     }
-
 
     @Override
     public Integer getTotalUsage() {
@@ -242,17 +230,6 @@ public class StudentModelBasic implements StudentModelI, IsSerializable{
 
     @Override
     public void setSectionNum(Integer sectionNum) {
-        // TODO Auto-generated method stub
-        
-    }
-
-    @Override
-    public void setShowWorkRequired(Boolean val) {
-        getSettings().setShowWorkRequired(val);
-    }
-
-    @Override
-    public void setShowWorkState(String swState) {
         // TODO Auto-generated method stub
         
     }

@@ -64,14 +64,6 @@ public class StudentModelBase implements IsSerializable, StudentModelI {
         this.groupModel = groupModel;
     }
 
-    public Boolean getIsShowWorkRequired() {
-        return getSettings().getShowWorkRequired();
-    }
-
-    public void setIsShowWorkRequired(Boolean isShowWorkReqd) {
-        getSettings().setShowWorkRequired(isShowWorkReqd);
-    }
-
     public Boolean getIsTutorAvailable() {
         return getSettings().getTutoringAvailable();
     }
@@ -206,21 +198,9 @@ public class StudentModelBase implements IsSerializable, StudentModelI {
     }
 
     @Override
-    public Boolean getShowWorkRequired() {
-        return getSettings().getShowWorkRequired();
-    }
-
-    @Override
-    public String getShowWorkState() {
-        // not implemented
-        return null;
-    }
-
-    @Override
     public String getStatus() {
         return status;
     }
-
 
     @Override
     public Integer getTotalUsage() {
@@ -294,16 +274,6 @@ public class StudentModelBase implements IsSerializable, StudentModelI {
     @Override
     public void setSectionNum(Integer sectionNum) {
         this.sectionNum = sectionNum;
-    }
-
-    @Override
-    public void setShowWorkRequired(Boolean val) {
-        getSettings().setShowWorkRequired(val);
-    }
-
-    @Override
-    public void setShowWorkState(String swState) {
-        // not implemented
     }
 
     @Override

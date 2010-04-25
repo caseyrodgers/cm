@@ -14,8 +14,6 @@ public class StudentModel implements StudentModelI {
     Integer uid;
     String email;
     Integer adminUid;
-    String showWork;
-    String showWorkState;
     Integer totalUsage;
     Integer passingCount;
 	Integer notPassingCount;
@@ -133,14 +131,6 @@ public class StudentModel implements StudentModelI {
         this.adminUid = adminUid;
     }
 
-    public String getShowWorkState() {
-        return showWorkState;
-    }
-
-    public void setShowWorkState(String showWorkState) {
-        this.showWorkState = showWorkState;
-    }
-
     public Integer getTotalUsage() {
         return totalUsage;
     }
@@ -221,11 +211,6 @@ public class StudentModel implements StudentModelI {
     }
 
     @Override
-    public Boolean getShowWorkRequired() {
-        return getSettings().getShowWorkRequired();
-    }
-
-    @Override
     public void setIsDemoUser(Boolean isDemo) {
         this.isDemoUser = isDemo;
     }
@@ -238,11 +223,6 @@ public class StudentModel implements StudentModelI {
     @Override
     public void setProgramChanged(Boolean changed) {
         programChanged = changed;
-    }
-
-    @Override
-    public void setShowWorkRequired(Boolean val) {
-        getSettings().setShowWorkRequired(val);
     }
 
     @Override

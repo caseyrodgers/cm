@@ -53,10 +53,6 @@ public interface StudentModelI extends Response {
 	
 	public String getTutoringState();
 
-	public void setShowWorkState(String swState);
-	
-	public String getShowWorkState();
-
 	public void setUid(Integer uid);
 	
 	public Integer getUid();
@@ -84,10 +80,6 @@ public interface StudentModelI extends Response {
 	public String getJson();
 	
 	public void setJson(String json);
-
-	public Boolean getShowWorkRequired();
-	
-	public void setShowWorkRequired(Boolean val);
 
 	public Boolean getTutoringAvail();
 	
