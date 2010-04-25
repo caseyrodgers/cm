@@ -97,40 +97,40 @@ public class RegisterStudentAdvancedOptions extends LayoutContainer {
 		advOptions.add(passCombo);
 
 		isShowWorkRequired = new CheckBox();
-        isShowWorkRequired.setId(StudentModelExt.SHOW_WORK_KEY);
+        isShowWorkRequired.setId("show_work");
         isShowWorkRequired.setValue(((StudentSettingsModel) advOptionsMap.get(StudentModelExt.SETTINGS_KEY)).getShowWorkRequired());
         requireShowWork = new CheckBoxGroup(); 
         requireShowWork.setFieldLabel("Require Show Work");
-        requireShowWork.setId(StudentModelExt.SHOW_WORK_KEY);
+        requireShowWork.setId("show_work");
         requireShowWork.add(isShowWorkRequired);
         advOptions.add(requireShowWork);
 
         isGamesLimited = new CheckBox();
-        isGamesLimited.setId(StudentModelExt.LIMIT_GAMES_KEY);
+        isGamesLimited.setId("limit_games");
         isGamesLimited.setValue(((StudentSettingsModel) advOptionsMap.get(StudentModelExt.SETTINGS_KEY)).getLimitGames());
         
         limitGames = new CheckBoxGroup();
         limitGames.setFieldLabel("Limit Games to One per Lesson");
-        limitGames.setId(StudentModelExt.LIMIT_GAMES_KEY);
+        limitGames.setId("limit_games");
 		limitGames.add(isGamesLimited);
 		
 		advOptions.add(limitGames); 
 
         isStopAtProgramEnd = new CheckBox();
-        isStopAtProgramEnd.setId(StudentModelExt.STOP_AT_PROGRAM_END_KEY);
+        isStopAtProgramEnd.setId("stop_at_program_end");
         isStopAtProgramEnd.setValue(((StudentSettingsModel) advOptionsMap.get(StudentModelExt.SETTINGS_KEY)).getStopAtProgramEnd());
         stopAtProgramEnd = new CheckBoxGroup();
         stopAtProgramEnd.setFieldLabel("Stop at End of Program");
-        stopAtProgramEnd.setId(StudentModelExt.STOP_AT_PROGRAM_END_KEY);
+        stopAtProgramEnd.setId("stop_at_program_end");
 		stopAtProgramEnd.add(isStopAtProgramEnd);
 		advOptions.add(stopAtProgramEnd);
 
         isTutoringEnabled = new CheckBox();
-        isTutoringEnabled.setId(StudentModelExt.TUTORING_AVAIL_KEY);
+        isTutoringEnabled.setId("tutoring_available");
         isTutoringEnabled.setValue(((StudentSettingsModel) advOptionsMap.get(StudentModelExt.SETTINGS_KEY)).getTutoringAvailable());
         enableTutoring = new CheckBoxGroup();
         enableTutoring.setFieldLabel("Tutoring Enabled");
-        enableTutoring.setId(StudentModelExt.TUTORING_AVAIL_KEY);
+        enableTutoring.setId("tutoring_available");
 		enableTutoring.add(isTutoringEnabled);
 		advOptions.add(enableTutoring);
 
