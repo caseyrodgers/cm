@@ -184,11 +184,6 @@ public class GroupManagerCommand implements ActionHandler<GroupManagerAction, Rp
             CmStudentDao dao = new CmStudentDao();
             ResultSet rs = ps.executeQuery();
             while(rs.next()) {
-                
-                // update the basic information
-                //StudentModelI sm = dao.getStudentModelBasic(conn,rs.getInt("uid"));
-                //sm.setTutoringAvail(!disallowTutoring);
-                //sm.setShowWorkRequired(showWorkRequired);
                 dao.updateStudentSettings(conn, rs.getInt("uid"), showWorkRequired, !disallowTutoring, limitGames, stopAtProgramEnd, passPercent);
             }
         }
