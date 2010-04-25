@@ -535,8 +535,8 @@ public class CmStudentDao {
             if (count == 1) {
                 int stuUid = SqlUtilities.getLastInsertId(conn);
                 sm.setUid(stuUid);
-                addStudentProgram(conn,sm);
-                updateStudent(conn,sm);
+                addStudentProgram(conn, sm);
+                updateStudent(conn, sm);
             }
         } catch (Exception e) {
             throw new Exception(String.format("Error adding Student: %s, Passcode: %s ***", sm.getName(), sm.getPasscode()),e);
@@ -1577,8 +1577,6 @@ public class CmStudentDao {
 
             String tutoringState = (sm.getSettings().getTutoringAvailable()) ? "ON" : "OFF";
             sm.setTutoringState(tutoringState);
-            String showWorkState = (sm.getShowWorkRequired()) ? "REQUIRED" : "OPTIONAL";
-            sm.setShowWorkState(showWorkState);
 
             l.add(sm);
         }
