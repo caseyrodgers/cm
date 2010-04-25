@@ -662,8 +662,8 @@ public class CmAdminDao {
             sm.setProgram(studentProgram);
             
             sm.setPassPercent("70%");
-            sm.setTutoringAvail(tutoringEnabled);
-            sm.setShowWorkRequired(showWorkRequired);
+            sm.getSettings().setTutoringAvailable(tutoringEnabled);
+            sm.getSettings().setShowWorkRequired(showWorkRequired);
             new SaveAutoRegistrationCommand().execute(conn, new SaveAutoRegistrationAction(aid, sm));
         } catch (Exception e) {
             throw new CmException("The self-registration group could not be created", e);

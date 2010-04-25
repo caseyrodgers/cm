@@ -43,6 +43,9 @@ public class CmPilotCreate {
 
     List<String> messages = new ArrayList<String>();
     Integer aid;
+    
+    public CmPilotCreate() {
+    }
 
     public CmPilotCreate(String subscriberId, Boolean tutoringEnabled, Integer tutoringHours, Boolean showWorkRequired,
             Integer maxStudentCount) throws Exception {
@@ -205,8 +208,8 @@ public class CmPilotCreate {
         student.getProgram().setProgramType("Prof");
         student.getProgram().setSubjectId("Pre-Alg");
         student.setPassPercent("70%");
-        student.setTutoringAvail(tutoringEnabled);
-        student.setShowWorkRequired(showWorkEnabled);
+        student.getSettings().setTutoringAvailable(tutoringEnabled);
+        student.getSettings().setShowWorkRequired(showWorkEnabled);
         student.setIsDemoUser(false);
 
         cmDao.addStudent(conn, student);
