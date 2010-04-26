@@ -66,6 +66,7 @@ public class StudentModelExt extends BaseModel implements Serializable, StudentM
         setPassingCount(student.getPassingCount());
         setNotPassingCount(student.getNotPassingCount());        
         setShowWorkState((student.getSettings().getShowWorkRequired()) ? "REQUIRED" : "OPTIONAL");
+        setTutoringState((student.getSettings().getTutoringAvailable()) ? "ON" : "OFF");
 
         set(JSON_KEY, student.getJson());
 
@@ -77,8 +78,6 @@ public class StudentModelExt extends BaseModel implements Serializable, StudentM
 
         set(TOTAL_USAGE_KEY, (student.getTotalUsage() != null)?student.getTotalUsage():0);
 
-        set(TUTORING_AVAIL_KEY, student.getSettings().getTutoringAvailable());
-        set(TUTORING_STATE_KEY, (student.getSettings().getTutoringAvailable())?"ON":"OFF");
         set(NAME_KEY, student.getName());
         set(PASSCODE_KEY, student.getPasscode());
         set(BACKGROUND_STYLE, student.getBackgroundStyle());
@@ -195,12 +194,10 @@ public class StudentModelExt extends BaseModel implements Serializable, StudentM
         set(PASS_PERCENT_KEY, passPercent);
     }
 
-    @Override
     public void setTutoringState(String tutoringState) {
         set(TUTORING_STATE_KEY, tutoringState);
     }
 
-    @Override
     public String getTutoringState() {
         return get(TUTORING_STATE_KEY);
     }
@@ -293,16 +290,6 @@ public class StudentModelExt extends BaseModel implements Serializable, StudentM
     @Override
     public void setJson(String json) {
         set(JSON_KEY, json);
-    }
-
-    @Override
-    public Boolean getTutoringAvail() {
-        return get(TUTORING_AVAIL_KEY);
-    }
-
-    @Override
-    public void setTutoringAvail(Boolean val) {
-        set(TUTORING_AVAIL_KEY, val);
     }
 
     @Override
