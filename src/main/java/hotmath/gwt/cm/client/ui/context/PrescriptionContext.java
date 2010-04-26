@@ -186,11 +186,7 @@ public class PrescriptionContext implements CmContext {
                 new SampleDemoMessageWindow();
                 return;
             }
-            
-            if(UserInfo.getInstance().getOnCompletion() == ProgramCompletionAction.STOP) {
-                new EndOfProgramWindow();
-                return;
-            }
+
            
             // there are no more sessions, so need to move to the 'next'.
             // Next might be the same Quiz, the next Quiz or AutoAdvance.
@@ -224,6 +220,13 @@ public class PrescriptionContext implements CmContext {
                         }
                     });
                 } else {
+                    
+                    
+                    if(UserInfo.getInstance().getOnCompletion() == ProgramCompletionAction.STOP) {
+                        new EndOfProgramWindow();
+                        return;
+                    }
+                    
                     msg = "You passed this section!  You will now be advanced to the next program.";
                     CatchupMathTools.showAlert(msg, new CmAsyncRequestImplDefault() {
                         public void requestComplete(String requestData) {
