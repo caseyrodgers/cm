@@ -1575,9 +1575,6 @@ public class CmStudentDao {
             sm.setSectionNum(rs.getInt("active_segment"));
             sm.setStatus(getStatus(sm.getProgram().getProgramId(), sm.getSectionNum(), rs.getString("test_config_json")));
 
-            String tutoringState = (sm.getSettings().getTutoringAvailable()) ? "ON" : "OFF";
-            sm.setTutoringState(tutoringState);
-
             l.add(sm);
         }
         return l;
