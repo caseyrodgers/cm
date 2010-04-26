@@ -1,5 +1,6 @@
 package hotmath.gwt.shared.server.service.command;
 
+import hotmath.cm.util.CatchupMathProperties;
 import hotmath.cm.util.CmWebResourceManager;
 import hotmath.gwt.cm.server.CmDbTestCase;
 import hotmath.gwt.cm_admin.server.model.CmStudentDao;
@@ -21,8 +22,7 @@ public class GetQuizHtmlCommand_Test extends CmDbTestCase {
 		if(_user == null)
 			setupDemoAccount();
 		
-		
-		CmWebResourceManager.setFileBase("/dev/local/gwt2/cm/src/main/webapp/cm_temp");
+		CmWebResourceManager.setFileBase(CatchupMathProperties.getInstance().getProperty("web.base.path","/dev/local/gwt2/cm/src/main/webapp/cm_temp"));
 	}
 	
     public void testAlwaysTheSame() throws Exception {
