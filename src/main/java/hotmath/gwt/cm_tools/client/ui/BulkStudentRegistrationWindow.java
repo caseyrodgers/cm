@@ -21,6 +21,13 @@ import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
 import com.extjs.gxt.ui.client.widget.layout.FormLayout;
 
+/**
+ * Provides form dialog for registering students in bulk
+ * 
+ * @author Bob
+ * @author Casey
+ *
+ */
 public class BulkStudentRegistrationWindow extends RegisterStudent {
 
 	TextField<String> groupFld;
