@@ -64,14 +64,6 @@ public class StudentModelBase implements IsSerializable, StudentModelI {
         this.groupModel = groupModel;
     }
 
-    public Boolean getIsTutorAvailable() {
-        return getSettings().getTutoringAvailable();
-    }
-
-    public void setIsTutorAvailable(Boolean isTutorAvailable) {
-        getSettings().setTutoringAvailable(isTutorAvailable);
-    }
-
     @Override
     public Integer getUid() {
         return uid;
@@ -209,17 +201,6 @@ public class StudentModelBase implements IsSerializable, StudentModelI {
     }
 
     @Override
-    public Boolean getTutoringAvail() {
-        return getSettings().getTutoringAvailable();
-    }
-
-    @Override
-    public String getTutoringState() {
-        // not implemented
-        return null;
-    }
-
-    @Override
     public Integer getTutoringUse() {
         // not implemented
         return null;
@@ -283,16 +264,6 @@ public class StudentModelBase implements IsSerializable, StudentModelI {
 
     @Override
     public void setTotalUsage(Integer totalUsage) {
-        // not implemented
-    }
-
-    @Override
-    public void setTutoringAvail(Boolean val) {
-        getSettings().setTutoringAvailable(val);
-    }
-
-    @Override
-    public void setTutoringState(String tutoringState) {
         // not implemented
     }
 

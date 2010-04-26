@@ -49,10 +49,6 @@ public interface StudentModelI extends Response {
 
 	public void setPassPercent(String passPercent);
 
-	public void setTutoringState(String tutoringState);
-	
-	public String getTutoringState();
-
 	public void setUid(Integer uid);
 	
 	public Integer getUid();
@@ -81,10 +77,6 @@ public interface StudentModelI extends Response {
 	
 	public void setJson(String json);
 
-	public Boolean getTutoringAvail();
-	
-	public void setTutoringAvail(Boolean val);
-	
 	public void setTutoringUse(Integer x);
 	
 	public Integer getTutoringUse();

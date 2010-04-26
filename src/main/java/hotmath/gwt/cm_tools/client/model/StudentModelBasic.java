@@ -29,16 +29,6 @@ public class StudentModelBasic implements StudentModelI, IsSerializable{
 
     StudentSettingsModel settings = new StudentSettingsModel();
     
-    public Boolean getTutorAvailable() {
-        return getSettings().getTutoringAvailable();
-    }
-
-
-    public void setTutorAvailable(Boolean tutorAvailable) {
-        this.setTutorAvailable(tutorAvailable);
-    }
-
-
     public Integer getTutoringUse() {
         return tutoringUse;
     }
@@ -143,19 +133,6 @@ public class StudentModelBasic implements StudentModelI, IsSerializable{
         return null;
     }
 
-    @Override
-    public Boolean getTutoringAvail() {
-        return getSettings().getTutoringAvailable();
-    }
-
-    @Override
-    public String getTutoringState() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-
-
 	public Boolean getIsDemoUser() {
 		return this.isDemoUser;
 	}
@@ -242,17 +219,6 @@ public class StudentModelBasic implements StudentModelI, IsSerializable{
 
     @Override
     public void setTotalUsage(Integer totalUsage) {
-        // TODO Auto-generated method stub
-        
-    }
-
-    @Override
-    public void setTutoringAvail(Boolean val) {
-        getSettings().setTutoringAvailable(val);
-    }
-
-    @Override
-    public void setTutoringState(String tutoringState) {
         // TODO Auto-generated method stub
         
     }

@@ -19,7 +19,6 @@ public class StudentModel implements StudentModelI {
 	Integer notPassingCount;
     Integer tutoringUse;
 
-    String tutoringState;
     String name;
     String passcode;
     String backgroundStyle;
@@ -154,22 +153,6 @@ public class StudentModel implements StudentModelI {
 	public void setNotPassingCount(Integer notPassingCount) {
 		this.notPassingCount = notPassingCount;
 	}
-
-    public Boolean getTutoringAvail() {
-        return getSettings().getTutoringAvailable();
-    }
-
-    public void setTutoringAvail(Boolean tutoringAvail) {
-        getSettings().setTutoringAvailable(tutoringAvail);
-    }
-
-    public String getTutoringState() {
-        return tutoringState;
-    }
-
-    public void setTutoringState(String tutoringState) {
-        this.tutoringState = tutoringState;
-    }
 
     public String getName() {
         return name;
