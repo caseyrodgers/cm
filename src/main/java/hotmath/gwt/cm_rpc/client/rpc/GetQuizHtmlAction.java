@@ -1,7 +1,5 @@
-package hotmath.gwt.shared.client.rpc.action;
+package hotmath.gwt.cm_rpc.client.rpc;
 
-import hotmath.gwt.cm_rpc.client.rpc.Action;
-import hotmath.gwt.shared.client.rpc.result.QuizHtmlResult;
 
 /** Defines the movement of the active test by specifying
  * the segment of the current program.

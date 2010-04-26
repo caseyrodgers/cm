@@ -2,14 +2,16 @@ package hotmath.gwt.shared.server.service.command;
 
 import hotmath.cm.server.model.CmUserProgramDao;
 import hotmath.cm.test.HaTestSet;
+import hotmath.cm.util.CmCacheManager;
 import hotmath.cm.util.CmWebResourceManager;
+import hotmath.cm.util.CmCacheManager.CacheName;
 import hotmath.gwt.cm_admin.server.model.CmStudentDao;
 import hotmath.gwt.cm_rpc.client.rpc.Action;
+import hotmath.gwt.cm_rpc.client.rpc.GetQuizHtmlAction;
+import hotmath.gwt.cm_rpc.client.rpc.QuizHtmlResult;
 import hotmath.gwt.cm_rpc.client.rpc.Response;
 import hotmath.gwt.cm_rpc.server.rpc.ActionHandler;
 import hotmath.gwt.cm_tools.client.model.StudentActiveInfo;
-import hotmath.gwt.shared.client.rpc.action.GetQuizHtmlAction;
-import hotmath.gwt.shared.client.rpc.result.QuizHtmlResult;
 import hotmath.testset.ha.ChapterInfo;
 import hotmath.testset.ha.HaTest;
 import hotmath.testset.ha.HaTestDao;
@@ -30,7 +32,7 @@ import java.util.Map;
 
 import org.apache.log4j.Logger;
 
-import sb.util.MD5;
+import sb.util.SbFile;
 
 
 public class GetQuizHtmlCommand implements ActionHandler<GetQuizHtmlAction, QuizHtmlResult> {
@@ -103,62 +105,86 @@ public class GetQuizHtmlCommand implements ActionHandler<GetQuizHtmlAction, Quiz
             }
             String testTitle = haTest.getTitle();            
 
-            HaTestSet _testSet = new HaTestSet(conn,haTest.getPids());
-
-            HaTestDefDao tdo = new HaTestDefDao();
+                        
             
-            map.put("haTest", haTest);
-            map.put("testTitle", testTitle);
-            map.put("testSet", _testSet);
-            
-            ChapterInfo chapterInfo = tdo.getChapterInfo(conn, programInfo);
+            /** is this quiz HTML already in the cache?
+             *   
+             *  we keep both the testSet and the proceed/sprited quiz
+             *  html in the cache via the QuizCachedInfo.
+             */
+            HaTestDef testDef = haTest.getTestDef();
+            String cacheKey = testDef.getTestDefId() + "_" + testDef.getTestInitJson(haTest) + "_" + haTest.getSegment();
+            QuizCachedInfo cacheInfo = (QuizCachedInfo)CmCacheManager.getInstance().retrieveFromCache(CacheName.TEST_HTML, cacheKey);
+            if(cacheInfo == null) {
+                
+                HaTestSet testSet = new HaTestSet(conn,haTest.getPids());
+                
+                map.put("haTest", haTest);
+                map.put("testTitle", testTitle);
+                map.put("testSet", testSet);
+                map.put("subTitle", "");
+    
+                String quizHtml = VelocityTemplateFromStringManager.getInstance().processTemplate(quizHtmlTemplate, map);
+                //  quizHtml = processHtmlForSprites(quizHtml);
+                
+                ChapterInfo chapterInfo = new HaTestDefDao().getChapterInfo(conn, programInfo);
+                String subTitle=null;
+                if(chapterInfo != null) {
+                    testTitle += ", #" + chapterInfo.getChapterNumber();
+                    subTitle = chapterInfo.getChapterTitle();
+                }
+                else {
+                    subTitle = haTest.getSubTitle(testSegment);
+                }  
 
-            String subTitle=null;
-            if(chapterInfo != null) {
-                testTitle += ", #" + chapterInfo.getChapterNumber();
-                subTitle = chapterInfo.getChapterTitle();
+                String spritedHtml = processHtmlForSprites(quizHtml);
+                
+                cacheInfo = new QuizCachedInfo(spritedHtml,testSet, subTitle);
+                CmCacheManager.getInstance().addToCache(CacheName.TEST_HTML, cacheKey, cacheInfo);
             }
-            else {
-                subTitle = haTest.getSubTitle(testSegment);
-            }
-
             
-            
-            map.put("subTitle", "");
-
-            String quizHtml = VelocityTemplateFromStringManager.getInstance().processTemplate(quizHtmlTemplate, map);
-
-            //quizHtml = processHtmlForSprites(quizHtml);
-
+          
             QuizHtmlResult result = new QuizHtmlResult();
             result.setUserId(uid);
-            result.setQuizHtml(quizHtml);
+            result.setQuizHtml(cacheInfo.quizHtml);
             result.setTestId(haTest.getTestId());
             result.setQuizSegment(testSegment);
             result.setQuizSegmentCount(haTest.getTotalSegments());
             result.setTitle(testTitle);
-            result.setSubTitle(subTitle);
+            result.setSubTitle(cacheInfo.subTitle);
             result.setTestId(haTest.getTestId());
-            result.setAnswers(_testSet.getAnswers());
+            result.setAnswers(cacheInfo.testSet.getAnswers());
             return result;
         } catch (Exception e) {
             throw e;
         }
     }
     
-    
     private String processHtmlForSprites(String quizHtml) throws Exception {
-        String md5OfThis = MD5.getMD5(quizHtml);
         String fileBase = CmWebResourceManager.getInstance().getFileBase();
-        File quizSprited = new File(fileBase,md5OfThis);
-        if(!quizSprited.exists()) {
-            quizSprited.mkdirs();
-            new CreateQuizSprited(quizSprited, quizHtml).createQuizSpritedHtml();
+        File quizSprited = new File(fileBase,"quiz_" + System.currentTimeMillis());
+        quizSprited.mkdirs();
+        /** write to sprited file */
+        new CreateQuizSprited(quizSprited, quizHtml).createQuizSpritedHtml();
+        
+        /** return from sprited file */
+        quizHtml = new SbFile(new File(quizSprited, "tutor_steps-sprited.html")).getFileContents().toString("\n");
+        return quizHtml;
+    }   
+    
+    
+    class QuizCachedInfo {
+        public QuizCachedInfo(String quizHtml, HaTestSet testSet,String subTitle) {
+            this.quizHtml = quizHtml;
+            this.testSet = testSet;
+            this.subTitle = subTitle;
         }
         
-        /** read html with sprited images */
-        return quizHtml;
+        String quizHtml;
+        HaTestSet testSet;
+        String subTitle;
     }
+
     
     @Override
     public Class<? extends Action<? extends Response>> getActionType() {
@@ -184,14 +210,7 @@ public class GetQuizHtmlCommand implements ActionHandler<GetQuizHtmlAction, Quiz
     }
 }
 
-class CreateQuizSprited {
-    File quizSprited;
-    String quizHtml;
-    public CreateQuizSprited(File quizSprited, String quizHtml) {
-        this.quizSprited = quizSprited;
-        this.quizHtml = quizHtml;
-    }
-    public String createQuizSpritedHtml() {
-        return "";
-    }
-}
+
+
+
+

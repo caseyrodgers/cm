@@ -188,11 +188,10 @@ public class QuizContext implements CmContext {
 
                     if (runInfo.getPassed()) {
 
-                        // is there any prescription to view?
+                        // are there any prescriptions to view?
                         if (runInfo.getSessionCount() > 0) {
-                            UserInfo.getInstance().setSessionNumber(0); // beginning
-                            // of
-                            // prescription
+                            /** beginning of prescription */
+                            UserInfo.getInstance().setSessionNumber(0);
                             CatchupMath.getThisInstance().showPrescriptionPanel();
                         } else {
                             // are there more Quizzes in this program?

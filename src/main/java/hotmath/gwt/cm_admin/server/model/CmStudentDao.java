@@ -19,6 +19,7 @@ import hotmath.gwt.cm_tools.client.model.StudentModelBase;
 import hotmath.gwt.cm_tools.client.model.StudentModelBasic;
 import hotmath.gwt.cm_tools.client.model.StudentModelI;
 import hotmath.gwt.cm_tools.client.model.StudentProgramModel;
+import hotmath.gwt.cm_tools.client.model.StudentProgramReportModel;
 import hotmath.gwt.cm_tools.client.model.StudentSettingsModel;
 import hotmath.gwt.cm_tools.client.model.StudentShowWorkModel;
 import hotmath.gwt.shared.client.model.UserProgramIsNotActiveException;
@@ -1550,12 +1551,13 @@ public class CmStudentDao {
             sm.setGroupId(String.valueOf(groupId));
             sm.setGroup(rs.getString("group_name"));
 
-            sm.getProgram().setProgramDescription(rs.getString("program"));
-            sm.getProgram().setProgramId(rs.getInt("user_prog_id"));
-            sm.getProgram().setProgramType(rs.getString("prog_id"));
-            sm.getProgram().setSubjectId(rs.getString("subj_id"));
-            sm.getProgram().setCustomProgramId(rs.getInt("custom_program_id"));
-            sm.getProgram().setCustomProgramName(rs.getString("custom_program_name"));
+            StudentProgramModel sprm = sm.getProgram();
+            sprm.setProgramDescription(rs.getString("program"));
+            sprm.setProgramId(rs.getInt("user_prog_id"));
+            sprm.setProgramType(rs.getString("prog_id"));
+            sprm.setSubjectId(rs.getString("subj_id"));
+            sprm.setCustomProgramId(rs.getInt("custom_program_id"));
+            sprm.setCustomProgramName(rs.getString("custom_program_name"));
             
         	StudentSettingsModel mdl = sm.getSettings();
 		    mdl.setLimitGames(rs.getInt("limit_games") > 0);
@@ -2080,7 +2082,7 @@ public class CmStudentDao {
     
     private int getPercentFromString(String passPercent) {
         try {
-            if(passPercent.endsWith("%"))
+            if(passPercent != null && passPercent.endsWith("%"))
                 passPercent = passPercent.substring(0, passPercent.length()-1);
             
             return Integer.parseInt(passPercent);

@@ -182,12 +182,27 @@ public class ActionDispatcher {
                 String p[] = actionName.split("\\.");
                 String cmdName = p[p.length-1];
                 cmdName = cmdName.substring(0, cmdName.length() - 6);
-                cmdName = "hotmath.gwt.shared.server.service.command." + cmdName + "Command";
                 
-                /** create instance and get object */
-                logger.info("Auto registering action command: " + cmdName);
-                Class cmdClass = Class.forName(cmdName);
-                Class actionHandler = ((ActionHandler) cmdClass.newInstance()).getActionType();
+                String standardPlaces[] = {"hotmath.gwt.shared.server.service.command.",
+                                           "hotmath.gwt.cm_mobile.server.rpc."};
+                                     
+                Class actionHandler=null,cmdClass=null;
+                for(int i=0;i<standardPlaces.length;i++) {
+                    String commandClass = standardPlaces[i] + cmdName + "Command";
+                    try {
+                        /** create instance and get object */
+                        logger.info("Auto registering action command: " + cmdName);
+                        cmdClass = Class.forName(commandClass);
+                        actionHandler = ((ActionHandler) cmdClass.newInstance()).getActionType();
+                        break;
+                    }
+                    catch(ClassNotFoundException ie) {
+                        /* silent */
+                    }
+                }
+                if(actionHandler == null)
+                    throw new CmRpcException("No command found action: " + action);
+                
                 commands.put(actionHandler, cmdClass);
             }
         }
