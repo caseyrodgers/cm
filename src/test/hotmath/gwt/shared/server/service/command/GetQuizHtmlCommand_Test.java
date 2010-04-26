@@ -1,10 +1,11 @@
 package hotmath.gwt.shared.server.service.command;
 
+import hotmath.cm.util.CmWebResourceManager;
 import hotmath.gwt.cm.server.CmDbTestCase;
 import hotmath.gwt.cm_admin.server.model.CmStudentDao;
+import hotmath.gwt.cm_rpc.client.rpc.GetQuizHtmlAction;
+import hotmath.gwt.cm_rpc.client.rpc.QuizHtmlResult;
 import hotmath.gwt.cm_rpc.server.rpc.ActionDispatcher;
-import hotmath.gwt.shared.client.rpc.action.GetQuizHtmlAction;
-import hotmath.gwt.shared.client.rpc.result.QuizHtmlResult;
 import hotmath.testset.ha.CmProgram;
 
 public class GetQuizHtmlCommand_Test extends CmDbTestCase {
@@ -19,8 +20,18 @@ public class GetQuizHtmlCommand_Test extends CmDbTestCase {
 		
 		if(_user == null)
 			setupDemoAccount();
+		
+		
+		CmWebResourceManager.setFileBase("/dev/local/gwt2/cm/src/main/webapp/cm_temp");
 	}
 	
+    public void testAlwaysTheSame() throws Exception {
+        GetQuizHtmlAction  action = new GetQuizHtmlAction(_user.getUid(),0, 1);
+        QuizHtmlResult result = new GetQuizHtmlCommand().execute(conn, action);
+        String q1 = result.getQuizHtml();
+        assertNotNull(q1);
+    }
+    
 	public void testCreate() throws Exception {
         GetQuizHtmlAction  action = new GetQuizHtmlAction(_user.getUid(),0, 1);
         QuizHtmlResult result = new GetQuizHtmlCommand().execute(conn, action);
@@ -35,4 +46,7 @@ public class GetQuizHtmlCommand_Test extends CmDbTestCase {
         String chapter = result.getSubTitle();
         assertTrue(chapter.indexOf("Integers") > -1);
     }
+    
+    
+
 }

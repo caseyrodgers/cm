@@ -2,6 +2,8 @@ package hotmath.gwt.shared.server.service;
 
 import hotmath.gwt.cm.server.CmDbTestCase;
 import hotmath.gwt.cm_admin.server.model.CmStudentDao;
+import hotmath.gwt.cm_rpc.client.rpc.GetQuizHtmlAction;
+import hotmath.gwt.cm_rpc.client.rpc.QuizHtmlResult;
 import hotmath.gwt.cm_rpc.client.rpc.RpcData;
 import hotmath.gwt.cm_rpc.server.rpc.ActionDispatcher;
 import hotmath.gwt.cm_tools.client.model.AutoUserAdvanced;
@@ -21,7 +23,6 @@ import hotmath.gwt.shared.client.rpc.action.CreateTestRunAction;
 import hotmath.gwt.shared.client.rpc.action.GetAutoRegistrationSetupAction;
 import hotmath.gwt.shared.client.rpc.action.GetLessonItemsForTestRunAction;
 import hotmath.gwt.shared.client.rpc.action.GetPrescriptionAction;
-import hotmath.gwt.shared.client.rpc.action.GetQuizHtmlAction;
 import hotmath.gwt.shared.client.rpc.action.GetQuizHtmlCheckedAction;
 import hotmath.gwt.shared.client.rpc.action.GetQuizResultsHtmlAction;
 import hotmath.gwt.shared.client.rpc.action.GetReviewHtmlAction;
@@ -39,7 +40,6 @@ import hotmath.gwt.shared.client.rpc.action.SaveWhiteboardDataAction.CommandType
 import hotmath.gwt.shared.client.rpc.result.AutoRegistrationEntry;
 import hotmath.gwt.shared.client.rpc.result.AutoRegistrationSetup;
 import hotmath.gwt.shared.client.rpc.result.CreateTestRunResponse;
-import hotmath.gwt.shared.client.rpc.result.QuizHtmlResult;
 import hotmath.gwt.shared.client.util.UserInfo;
 import hotmath.testset.ha.HaTestRunDao;
 
@@ -118,10 +118,16 @@ public class ActionDispatcher_Test extends CmDbTestCase {
 
     
     public void testProcessLoginRequestAction() throws Exception {
-        ProcessLoginRequestAction action = new ProcessLoginRequestAction("cm_1249959105808");
-        UserInfo userInfo = ActionDispatcher.getInstance().execute(action);
-        assertNotNull(userInfo);
-        assertTrue(userInfo.getUid() > 0);
+        ProcessLoginRequestAction action = new ProcessLoginRequestAction("does_not_exist");
+        try {
+            UserInfo userInfo = ActionDispatcher.getInstance().execute(action);
+            assertNotNull(userInfo);
+            assertTrue(userInfo.getUid() > 0);
+            assert(false);
+        }
+        catch(Exception e) {
+            /** expected */
+        }
     }
     
     public void testGetLessonItemsForTestRunAction() throws Exception {

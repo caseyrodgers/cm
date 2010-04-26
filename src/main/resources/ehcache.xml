@@ -33,7 +33,7 @@
 <cache name="TEST_HTML"
        maxElementsInMemory="50"
        eternal="false"
-       timeToLiveSeconds="120"
+       timeToLiveSeconds="1200"
        overflowToDisk="false">
 </cache>
 

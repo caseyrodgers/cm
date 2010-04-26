@@ -45,7 +45,7 @@ public class AddStudentCommand_Test extends CmDbTestCase {
         student.setProgram(program);
         
         student.setTutoringAvail(false);
-        student.setShowWorkRequired(false);
+        student.getSettings().setShowWorkRequired(false);
         
         AddStudentAction action = new AddStudentAction(student);
         StudentModelI sm = ActionDispatcher.getInstance().execute(action);

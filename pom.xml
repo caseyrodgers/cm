@@ -338,6 +338,13 @@
       <artifactId>htmlparser</artifactId>
       <version>1.6</version>
     </dependency>
+
+    <dependency>
+      <groupId>smartsprites</groupId>
+      <artifactId>smartsprites-with-depends</artifactId>
+      <version>0.3.0</version>
+    </dependency>
+
   </dependencies>
 
 
@@ -435,12 +442,10 @@
           <soyc>false</soyc>
           <outputDirectory>${basedir}/src/main/webapp/</outputDirectory>
           <modules>
-
             <module>hotmath.gwt.cm.CatchupMath</module>
             <module>hotmath.gwt.cm_admin.CatchupMathAdmin</module>
-<!--
             <module>hotmath.gwt.cm_mobile.CatchupMathMobile</module>
--->
+
           </modules>
           <!--
              <runTarget>hotmath.gwt.cm.CatchupMath/CatchupMath.html</runTarget>
