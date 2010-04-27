@@ -113,7 +113,7 @@ public class GetQuizHtmlCommand implements ActionHandler<GetQuizHtmlAction, Quiz
              *  html in the cache via the QuizCachedInfo.
              */
             HaTestDef testDef = haTest.getTestDef();
-            String cacheKey = testDef.getTestDefId() + "_" + testDef.getTestInitJson(haTest) + "_" + haTest.getSegment();
+            String cacheKey = testDef.getTestDefId() + "_" + testDef.getTestInitJson(haTest) + "_" + haTest.getSegment() + "_" + activeInfo.getActiveSegmentSlot();
             QuizCachedInfo cacheInfo = (QuizCachedInfo)CmCacheManager.getInstance().retrieveFromCache(CacheName.TEST_HTML, cacheKey);
             if(cacheInfo == null) {
                 
