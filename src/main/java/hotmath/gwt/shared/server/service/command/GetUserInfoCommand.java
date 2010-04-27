@@ -85,7 +85,7 @@ public class GetUserInfoCommand implements ActionHandler<GetUserInfoAction, User
                      */
                     HaTest custTest = HaTestDao.createTest(conn, action.getUserId(),new HaTestDefDao().getTestDef(conn, CmProgram.CUSTOM_PROGRAM.getDefId()), -1);
                     custTest.setProgramInfo(userProgram);
-                    HaTestRun testRun = HaTestDao.createTestRun(conn, action.getUserId(), custTest.getTestId(), 0,0,0);
+                    HaTestRun testRun = HaTestDao.createTestRun(conn, action.getUserId(), custTest.getTestId(), 10,0,0);
                     testRun.setHaTest(custTest);
                     
                     activeInfo.setActiveTestId(0);

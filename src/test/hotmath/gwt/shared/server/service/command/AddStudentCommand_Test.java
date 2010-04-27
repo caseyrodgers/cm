@@ -44,7 +44,7 @@ public class AddStudentCommand_Test extends CmDbTestCase {
         program.setSubjectId(CmProgram.PREALG_PROF.getSubject());
         student.setProgram(program);
         
-        student.setTutoringAvail(false);
+        student.getSettings().setTutoringAvailable(false);
         student.getSettings().setShowWorkRequired(false);
         
         AddStudentAction action = new AddStudentAction(student);
