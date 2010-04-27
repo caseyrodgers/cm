@@ -18,7 +18,7 @@ public class CatchupMathMobile implements EntryPoint {
     public void onModuleLoad() {
         setupServices();
         QuizPanel panel = new QuizPanel();
-        RootPanel.get().add(panel);
+        RootPanel.get("main-content").add(panel);
     }
 
 

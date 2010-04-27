@@ -1,3 +1,7 @@
+table {
+  width: 100%;
+}
+
 #testset_div {
     border: 1px solid blue;
 }
@@ -14,6 +18,7 @@
 #testset_div li {
   line-height:2em;
 }
+
 #testset_div li {
   list-style-image:none;
   list-style-position:outside;
@@ -50,4 +55,9 @@ question_head_text {
 	font-weight: bold;
 	font-size: large;
 	font-family:sans-serif;
+}
+
+
+#main-content {
+ 
 }
