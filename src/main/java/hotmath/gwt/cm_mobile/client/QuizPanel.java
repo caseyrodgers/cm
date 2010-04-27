@@ -34,15 +34,7 @@ public class QuizPanel extends Composite {
         
         /** do the binding */
         initWidget(uiBinder.createAndBindUi(this));
-
-        
-        HTML html1 = new HTML();
-        html1.setHTML("<a href='http://www.google.com'>Click me!</a>");
-        mainPanel.add(html1);  /** add to binded panel */
-        
-        HTML html2 = new HTML();
-        html2.setHTML("This is my sample <b>content</b>!");
-        mainPanel.add(html2);  /** add second object */
+        mainPanel.add(new HTML("<h2>Quiz loading ...</h2>"));
         
         getQuiz();
     }
@@ -54,6 +46,7 @@ public class QuizPanel extends Composite {
         CatchupMathMobile.getCmService().execute(action, new AsyncCallback<QuizHtmlResult>() {
             @Override
             public void onSuccess(QuizHtmlResult result) {
+                mainPanel.remove(0);
                 mainPanel.add(new HTML(result.getQuizHtml()));
             }
 

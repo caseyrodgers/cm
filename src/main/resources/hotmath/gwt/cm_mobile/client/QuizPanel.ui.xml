@@ -2,10 +2,10 @@
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
      xmlns:g="urn:import:com.google.gwt.user.client.ui">
      <ui:style>
-          .bolder { font-weight:bold; }
+          .bolder { font-weight:bold; color: green;}
      </ui:style>
      <g:HTMLPanel>
-          <g:Label styleName="{style.bolder}" text="This is my label in bold!"/>
+          <g:Label styleName="{style.bolder}" text="Catchup Math Mobile Quiz POC"/>
           <g:VerticalPanel ui:field="mainPanel" spacing="5"/>
      </g:HTMLPanel>
 </ui:UiBinder>
