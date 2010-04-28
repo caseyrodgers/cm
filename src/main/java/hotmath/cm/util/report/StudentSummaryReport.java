@@ -183,6 +183,14 @@ public class StudentSummaryReport {
         smExt.setProgram(smBase.getProgram());
         smExt.setStatus(smBase.getStatus());
     }
+
+    static public void setBaseData(List<StudentModelI> smBaseList, List<StudentModelI> smExtList) {
+    	int i = 0;
+    	for (StudentModelI smBase : smBaseList) {
+    		StudentModelI smExt = smExtList.get(i++);
+    		setBaseData(smBase, smExt);
+    	}
+    }
     
     private String getQuizzesResult(StudentModelI sm) {
         if (sm.getPassingCount() != null && sm.getNotPassingCount() != null &&
