@@ -114,8 +114,9 @@ public class GetQuizHtmlCommand implements ActionHandler<GetQuizHtmlAction, Quiz
              */
             HaTestDef testDef = haTest.getTestDef();
             String cacheKey = testDef.getTestDefId() + "_" + testDef.getTestInitJson(haTest) + "_" + haTest.getSegment() + "_" + activeInfo.getActiveSegmentSlot();
-            QuizCachedInfo cacheInfo = (QuizCachedInfo)CmCacheManager.getInstance().retrieveFromCache(CacheName.TEST_HTML, cacheKey);
+            QuizCacheInfo cacheInfo = (QuizCacheInfo)CmCacheManager.getInstance().retrieveFromCache(CacheName.TEST_HTML, cacheKey);
             if(cacheInfo == null) {
+                logger.info("Create quiz HTML and adding to cache");
                 
                 HaTestSet testSet = new HaTestSet(conn,haTest.getPids());
                 
@@ -139,9 +140,13 @@ public class GetQuizHtmlCommand implements ActionHandler<GetQuizHtmlAction, Quiz
 
                 String spritedHtml = processHtmlForSprites(quizHtml);
                 
-                cacheInfo = new QuizCachedInfo(spritedHtml,testSet, subTitle);
+                cacheInfo = new QuizCacheInfo(spritedHtml,testSet, subTitle);
                 CmCacheManager.getInstance().addToCache(CacheName.TEST_HTML, cacheKey, cacheInfo);
             }
+            else {
+                logger.info("Retrieved quiz HTML from cache");
+            }
+                
             
           
             QuizHtmlResult result = new QuizHtmlResult();
@@ -171,19 +176,6 @@ public class GetQuizHtmlCommand implements ActionHandler<GetQuizHtmlAction, Quiz
         quizHtml = new SbFile(new File(quizSprited, "tutor_steps-sprited.html")).getFileContents().toString("\n");
         return quizHtml;
     }   
-    
-    
-    class QuizCachedInfo {
-        public QuizCachedInfo(String quizHtml, HaTestSet testSet,String subTitle) {
-            this.quizHtml = quizHtml;
-            this.testSet = testSet;
-            this.subTitle = subTitle;
-        }
-        
-        String quizHtml;
-        HaTestSet testSet;
-        String subTitle;
-    }
 
     
     @Override

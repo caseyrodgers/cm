@@ -1,6 +1,9 @@
 package hotmath.cm.test;
 
 import hotmath.ProblemID;
+import hotmath.gwt.shared.server.service.command.GetQuizHtmlCommand;
+
+import java.io.Serializable;
 
 import org.htmlparser.Node;
 import org.htmlparser.Parser;
@@ -43,10 +46,11 @@ import sb.util.SbUtilities;
  * @see GetQuizHtmlCommand setAnswers
  * 
  */
-public class HaTestSetQuestion {
+public class HaTestSetQuestion implements Serializable{
     String problemIndex;
     String questionHtml;
-    QuestionParser questionParser;
+    
+    volatile QuestionParser questionParser;
     
     public HaTestSetQuestion(String guid, String questionHtml) throws Exception {
         this.problemIndex = guid;
@@ -97,7 +101,7 @@ public class HaTestSetQuestion {
      * 
      *
      */
-    static class QuestionParser {
+    static class QuestionParser implements Serializable{
         static Parser __parser;
         Node root;
         int correctAnswer=-1;

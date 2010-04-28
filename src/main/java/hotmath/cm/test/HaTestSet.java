@@ -6,6 +6,7 @@ import hotmath.solution.Solution;
 import hotmath.solution.SolutionPostProcess;
 import hotmath.util.sql.SqlUtilities;
 
+import java.io.Serializable;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
@@ -18,7 +19,8 @@ import java.util.List;
  * @author Casey
  * 
  */
-public class HaTestSet {
+public class HaTestSet implements Serializable{
+    
     List<HaTestSetQuestion> questions = new ArrayList<HaTestSetQuestion>();
     
     String textCode;

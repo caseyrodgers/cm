@@ -13,6 +13,7 @@ import net.sf.ehcache.Ehcache;
 import net.sf.ehcache.Element;
 import net.sf.ehcache.event.CacheEventListener;
 
+import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 
 /** Manage a set of caches 
@@ -124,6 +125,8 @@ public class CmCacheManager  {
         Cache cache = cm.getCache(cacheName.toString());
         Element e = new Element(key, toCache);
         cache.put(e);
+        
+        cache.flush();
     }	
 
     
