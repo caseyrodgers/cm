@@ -6,11 +6,9 @@ import hotmath.gwt.cm_rpc.client.rpc.QuizHtmlResult;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -41,8 +39,9 @@ public class QuizPanel extends Composite {
     
 
     private void getQuiz() {
+        MobileUser user = CatchupMathMobile.__instance.user;
         
-        GetQuizHtmlAction action = new GetQuizHtmlAction(23562, 20008, 0);
+        GetQuizHtmlAction action = new GetQuizHtmlAction(user.uid,user.testId, user.testSegment);
         CatchupMathMobile.getCmService().execute(action, new AsyncCallback<QuizHtmlResult>() {
             @Override
             public void onSuccess(QuizHtmlResult result) {
@@ -52,7 +51,9 @@ public class QuizPanel extends Composite {
 
             @Override
             public void onFailure(Throwable caught) {
-                Window.alert("Error getting quiz: " + caught);
+                mainPanel.remove(0);
+                caught.printStackTrace();               
+                mainPanel.add(new HTML("<div style='color: red'><h1>Error Occurred</h2>" + caught.getMessage() + "</div>"));
             }
         });
     }    
