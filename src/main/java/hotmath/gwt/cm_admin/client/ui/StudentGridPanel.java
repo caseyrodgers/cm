@@ -448,7 +448,6 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
         menu.add(defineRegisterItem());
 
         menu.add(defineUnregisterItem());
-        //btn.setMenu(menu);
         
         menu.add(defineBulkRegItem());
         
@@ -660,39 +659,87 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
     }
 
     private Button displayPrintableReportToolItem(final Grid<StudentModelExt> grid) {
-        Button ti = new Button();
-        ti.setIconStyle("printer-icon");
-        ti.setToolTip("Display a printable student summary report");
+        Button btn = new Button();
+        btn.setIconStyle("printer-icon");
+        btn.setToolTip("Display a printable student summary report or report cards for up to 50 students");
 
-        ti.addSelectionListener(new SelectionListener<ButtonEvent>() {
-            @Override
-            public void componentSelected(ButtonEvent ce) {
-                ListStore<StudentModelExt> store = grid.getStore();
+        Menu menu = new Menu();
 
-                final List<Integer> studentUids = new ArrayList<Integer>();
-                for (int i = 0; i < store.getCount(); i++) {
-                    studentUids.add(store.getAt(i).getUid());
-                }
-                if(studentUids.size() > 0) {
-                    GWT.runAsync(new CmRunAsyncCallback() {
-    
-                        @Override
-                        public void onSuccess() {
-                        	GeneratePdfAction pdfAction = new GeneratePdfAction(PdfType.STUDENT_SUMMARY, _cmAdminMdl.getId(), studentUids);
-                        	pdfAction.setPageAction(StudentGridPanel.instance._pageAction);
-                            new PdfWindow(_cmAdminMdl.getId(), "Catchup Math Student Summary Report", pdfAction);
-                        }
-                    });
-                }
-                else {
-                    CatchupMathTools.showAlert("No students currently displayed.");
-                }
-            }
-        });
-        return ti;
+        menu.add(defineSummaryItem(grid));
+
+        menu.add(defineReportCardItem(grid));
+        
+        btn.setMenu(menu);
+
+        return btn;
     }
 
-    private ColumnModel defineColumns() {
+	private MyMenuItem defineSummaryItem(final Grid<StudentModelExt> grid) {
+
+		return new MyMenuItem("Print Summary Page(s)", "Display a printable summary report.",
+                new SelectionListener<MenuEvent>() {
+                    @Override
+                    public void componentSelected(MenuEvent ce) {
+                        ListStore<StudentModelExt> store = grid.getStore();
+
+                        final List<Integer> studentUids = new ArrayList<Integer>();
+                        for (int i = 0; i < store.getCount(); i++) {
+                            studentUids.add(store.getAt(i).getUid());
+                        }
+                        if(studentUids.size() > 0) {
+                            GWT.runAsync(new CmRunAsyncCallback() {
+            
+                                @Override
+                                public void onSuccess() {
+                                	GeneratePdfAction pdfAction = new GeneratePdfAction(PdfType.STUDENT_SUMMARY, _cmAdminMdl.getId(), studentUids);
+                                	pdfAction.setPageAction(StudentGridPanel.instance._pageAction);
+                                    new PdfWindow(_cmAdminMdl.getId(), "Catchup Math Student Summary Report", pdfAction);
+                                }
+                            });
+                        }
+                        else {
+                            CatchupMathTools.showAlert("No students currently displayed.");
+                        }
+                    }
+                });
+	}
+
+    int currentStudentCount;
+    
+	private MyMenuItem defineReportCardItem(final Grid<StudentModelExt> grid) {
+
+		return new MyMenuItem("Print Student Report Cards(s)", "Display printable report cards for up to 50 students.",
+                new SelectionListener<MenuEvent>() {
+                    @Override
+                    public void componentSelected(MenuEvent ce) {
+                        ListStore<StudentModelExt> store = grid.getStore();
+
+                        final List<Integer> studentUids = new ArrayList<Integer>();
+                        for (int i = 0; i < store.getCount(); i++) {
+                            studentUids.add(store.getAt(i).getUid());
+                        }
+                        int studentCount = studentUids.size();
+                        if(studentCount > 0 && currentStudentCount <= 50) {
+                            GWT.runAsync(new CmRunAsyncCallback() {
+            
+                                @Override
+                                public void onSuccess() {
+                                	GeneratePdfAction pdfAction = new GeneratePdfAction(PdfType.REPORT_CARD, _cmAdminMdl.getId(), studentUids);
+                                    new PdfWindow(_cmAdminMdl.getId(), "Catchup Math Student Report Card", pdfAction);
+                                }
+                            });
+                        }
+                        else {
+                        	if (studentCount < 1)
+                                CatchupMathTools.showAlert("No students currently displayed.");
+                        	else
+                        		CatchupMathTools.showAlert(currentStudentCount + " students selected, please select a 'Group' and/or use 'Text Search' to display 50 or fewer students.");
+                        }
+                    }
+                });
+	}
+
+	private ColumnModel defineColumns() {
         List<ColumnConfig> configs = new ArrayList<ColumnConfig>();
 
         ColumnConfig column = new ColumnConfig();
@@ -927,6 +974,7 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
                     /** callback the proxy listener
                      * 
                      */
+                    currentStudentCount = students.getTotalLength();
                     callback.onSuccess(students);
                 }
             }.register();

@@ -81,9 +81,7 @@ public class StudentReportCard {
     public ByteArrayOutputStream makePdf(final Connection conn, String reportId, Integer adminId) throws Exception {
         ByteArrayOutputStream baos = null;
 
-        Integer stuUid = -1;
         List<Integer> studentUids = (List<Integer>) CmCacheManager.getInstance().retrieveFromCache(REPORT_ID, reportId);
-        stuUid = studentUids.get(0);
 
         CmAdminDao adminDao = new CmAdminDao();
 
@@ -101,89 +99,97 @@ public class StudentReportCard {
         baos = new ByteArrayOutputStream();
         PdfWriter writer = PdfWriter.getInstance(document, baos);
 
-        StudentReportCardModelI rc = rcDao.getStudentReportCard(conn, stuUid, null, null);
+        List<StudentModelI> smBaseList = studentDao.getStudentBaseSummaries(conn, adminId, studentUids, true);
+        List<StudentModelI> smList     = studentDao.getStudentExtendedSummaries(conn, studentUids);
 
-        List<Integer> uidList = new ArrayList<Integer>();
-        uidList.add(stuUid);
-
-        StudentModelI smBase = studentDao.getStudentBaseSummaries(conn, adminId, uidList, true).get(0);
-        StudentModelI sm     = studentDao.getStudentExtendedSummaries(conn, uidList).get(0);
-
-        StudentSummaryReport.setBaseData(smBase, sm);
-
-        Phrase school = ReportUtils.buildParagraphLabel("School: ", info.getSchoolName());
-        Phrase group = ReportUtils.buildParagraphLabel("Group: ", sm.getGroup());
-        String printDate = String.format("%1$tY-%1$tm-%1$td", Calendar.getInstance());
-        Phrase date = ReportUtils.buildParagraphLabel("Today's Date: ", printDate);
-
-        Date actDate = rc.getFirstActivityDate();
-        String activityDate = (actDate != null) ? String.format("%1$tY-%1$tm-%1$td", actDate) : " ";
-        Phrase firstActivityDate = ReportUtils.buildParagraphLabel("First activity: ", activityDate);
-
-        actDate = rc.getLastActivityDate();
-        activityDate = (actDate != null) ? String.format("%1$tY-%1$tm-%1$td", actDate) : " ";
-        Phrase lastActivityDate = ReportUtils.buildParagraphLabel("Last activity: ", activityDate);
-
-        Phrase student = ReportUtils.buildParagraphLabel("Student: ", String.valueOf(sm.getName()));
+        StudentSummaryReport.setBaseData(smBaseList, smList);
 
         StringBuilder sb = new StringBuilder();
         sb.append("CM-ReportCard");
-        if (sm.getName() != null) {
-        	sb.append("-").append(sm.getName().replaceAll(" ", ""));
-        }
-        reportName = sb.toString();
-        
-        int numberOfColumns = 2;
-        PdfPTable pdfTbl = new PdfPTable(numberOfColumns);
-        pdfTbl.getDefaultCell().setBorder(PdfPCell.NO_BORDER);
+        String token = (smList.size() < 2) ? smList.get(0).getName() : info.getSchoolName();
+        sb.append("-").append(token.replaceAll(" ", "").replaceAll("/", ""));
+        this.reportName = sb.toString();
 
-        pdfTbl.addCell(student);
-        pdfTbl.addCell(date);
-
-        pdfTbl.addCell(group);
-        pdfTbl.addCell(" ");
-
-        pdfTbl.addCell(school);
-        pdfTbl.addCell(" ");
-
-        pdfTbl.addCell(" ");
-        pdfTbl.addCell(" ");
-
-        pdfTbl.addCell(firstActivityDate);
-        pdfTbl.addCell(lastActivityDate);
-
-        pdfTbl.setTotalWidth(600.0f);
-
-        writer.setPageEvent(new HeaderTable(writer, pdfTbl));
+        Phrase school = ReportUtils.buildParagraphLabel("School: ", info.getSchoolName());
 
         HeaderFooter footer = new HeaderFooter(new Phrase("Page "), new Phrase("."));
         footer.setAlignment(HeaderFooter.ALIGN_RIGHT);
         document.setFooter(footer);
 
-        document.setMargins(document.leftMargin(), document.rightMargin(), document.topMargin() + 90, document
-                .bottomMargin());
         document.open();
         document.add(Chunk.NEWLINE);
 
-        addProgramInfo(rc, sm, document);
+    	int idx = 0;
+        for (StudentModelI sm : smList) {
+        	
+            StudentReportCardModelI rc = rcDao.getStudentReportCard(conn, sm.getUid(), null, null);
 
-        addQuizInfo(rc, document);
+        	addStudentInfo(school, sm, rc, document);
+        	
+        	addProgramInfo(rc, sm, document);
 
-        if (rc.getResourceUsage().size() > 0) {
-            addResourceUsage(rc, document);
+        	addQuizInfo(rc, document);
+
+        	if (rc.getResourceUsage().size() > 0) {
+        		addResourceUsage(rc, document);
+        	}
+
+        	if (rc.getPrescribedLessonList().size() > 0) {
+        		addPrescribedLessons(rc, document);
+        	}
+
+        	document.add(Chunk.NEWLINE);
+        	document.add(Chunk.NEWLINE);
+        	
+        	if (idx++ < smList.size()) {
+        		document.newPage();
+        	}
         }
-
-        if (rc.getPrescribedLessonList().size() > 0) {
-            addPrescribedLessons(rc, document);
-        }
-
-        document.add(Chunk.NEWLINE);
-        document.add(Chunk.NEWLINE);
 
         document.close();
 
         return baos;
     }
+
+	private void addStudentInfo(Phrase school, StudentModelI sm,
+			StudentReportCardModelI rc, Document document) throws DocumentException {
+
+		Phrase group = ReportUtils.buildParagraphLabel("Group: ", sm.getGroup());
+		String printDate = String.format("%1$tY-%1$tm-%1$td", Calendar.getInstance());
+		Phrase date = ReportUtils.buildParagraphLabel("Today's Date: ", printDate);
+
+		Date actDate = rc.getFirstActivityDate();
+		String activityDate = (actDate != null) ? String.format("%1$tY-%1$tm-%1$td", actDate) : " ";
+		Phrase firstActivityDate = ReportUtils.buildParagraphLabel("First activity: ", activityDate);
+
+		actDate = rc.getLastActivityDate();
+		activityDate = (actDate != null) ? String.format("%1$tY-%1$tm-%1$td", actDate) : " ";
+		Phrase lastActivityDate = ReportUtils.buildParagraphLabel("Last activity: ", activityDate);
+
+		Phrase student = ReportUtils.buildParagraphLabel("Student: ", sm.getName());
+
+		int numberOfColumns = 2;
+		PdfPTable pdfTbl = new PdfPTable(numberOfColumns);
+		pdfTbl.getDefaultCell().setBorder(PdfPCell.NO_BORDER);
+		pdfTbl.setWidthPercentage(100.0f);
+
+		pdfTbl.addCell(student);
+		pdfTbl.addCell(date);
+
+		pdfTbl.addCell(group);
+		pdfTbl.addCell(" ");
+
+		pdfTbl.addCell(school);
+		pdfTbl.addCell(" ");
+
+		pdfTbl.addCell(" ");
+		pdfTbl.addCell(" ");
+
+		pdfTbl.addCell(firstActivityDate);
+		pdfTbl.addCell(lastActivityDate);
+
+    	document.add(pdfTbl);
+	}
     
     public String getReportName() {
     	return reportName;
@@ -294,6 +300,8 @@ public class StudentReportCard {
         progTbl.addCell(initialProg);
         progTbl.addCell(lastProg);
         progTbl.setWidthPercentage(100.0f);
+        progTbl.setSpacingBefore(20.0f);
+
         document.add(progTbl);
         document.add(Chunk.NEWLINE);
     }
