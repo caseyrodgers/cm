@@ -661,7 +661,7 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
     private Button displayPrintableReportToolItem(final Grid<StudentModelExt> grid) {
         Button btn = new Button();
         btn.setIconStyle("printer-icon");
-        btn.setToolTip("Display a printable student summary report or report cards for up to 50 students");
+        btn.setToolTip("Create a file for printing or sharing");
 
         Menu menu = new Menu();
 
@@ -676,7 +676,7 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
 
 	private MyMenuItem defineSummaryItem(final Grid<StudentModelExt> grid) {
 
-		return new MyMenuItem("Print Summary Page(s)", "Display a printable summary report.",
+		return new MyMenuItem("Summary Page(s)", "Display a printable summary report.",
                 new SelectionListener<MenuEvent>() {
                     @Override
                     public void componentSelected(MenuEvent ce) {
@@ -705,10 +705,11 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
 	}
 
     int currentStudentCount;
+    static final int MAX_REPORT_CARD = 50;
     
 	private MyMenuItem defineReportCardItem(final Grid<StudentModelExt> grid) {
 
-		return new MyMenuItem("Print Student Report Cards(s)", "Display printable report cards for up to 50 students.",
+		return new MyMenuItem("Student Report Cards(s)", "Display printable report cards for up to " + MAX_REPORT_CARD + " students.",
                 new SelectionListener<MenuEvent>() {
                     @Override
                     public void componentSelected(MenuEvent ce) {
@@ -719,7 +720,7 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
                             studentUids.add(store.getAt(i).getUid());
                         }
                         int studentCount = studentUids.size();
-                        if(studentCount > 0 && currentStudentCount <= 50) {
+                        if(studentCount > 0 && currentStudentCount <= MAX_REPORT_CARD) {
                             GWT.runAsync(new CmRunAsyncCallback() {
             
                                 @Override
@@ -731,9 +732,11 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
                         }
                         else {
                         	if (studentCount < 1)
-                                CatchupMathTools.showAlert("No students currently displayed.");
+                                CatchupMathTools.showAlert("Report Cards", "No students currently displayed.");
                         	else
-                        		CatchupMathTools.showAlert(currentStudentCount + " students selected, please select a 'Group' and/or use 'Text Search' to display 50 or fewer students.");
+                        		CatchupMathTools.showAlert("Report Cards", currentStudentCount +
+                        				" students selected, please choose a 'Group' and/or use 'Text Search' to select " +
+                        				MAX_REPORT_CARD + " or fewer students.");
                         }
                     }
                 });
