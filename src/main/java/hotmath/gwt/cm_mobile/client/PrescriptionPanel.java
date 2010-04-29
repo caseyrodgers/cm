@@ -1,15 +1,11 @@
 package hotmath.gwt.cm_mobile.client;
 
-import hotmath.gwt.cm_mobile.client.rpc.CmMobileUser;
-import hotmath.gwt.cm_rpc.client.rpc.GetQuizHtmlAction;
-import hotmath.gwt.cm_rpc.client.rpc.QuizHtmlResult;
+import hotmath.gwt.cm_rpc.client.rpc.GetMobileSolutionAction;
+import hotmath.gwt.cm_rpc.client.rpc.SolutionResponse;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.uibinder.client.UiHandler;
-import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
@@ -17,45 +13,38 @@ import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
-public class QuizPanel extends Composite {
+public class PrescriptionPanel extends Composite {
 
     /** define interface to the widget
      */
-    interface QuizPanelBinder extends UiBinder<Widget, QuizPanel> {}
+    interface PrescriptionPanelBinder extends UiBinder<Widget, PrescriptionPanel> {}
 
     /** Have GWT create an instance of the Binder interface/
      * 
      */
-    private static QuizPanelBinder uiBinder = GWT.create(QuizPanelBinder.class);
+    private static PrescriptionPanelBinder uiBinder = GWT.create(PrescriptionPanelBinder.class);
     
     
     /** bind to the main panel */
     @UiField VerticalPanel mainPanel;
     @UiField Button checkTest;
     
-    public QuizPanel() {
+    public PrescriptionPanel() {
         
         /** do the binding */
         initWidget(uiBinder.createAndBindUi(this));
-        mainPanel.add(new HTML("<h2>Quiz loading ...</h2>"));
+        mainPanel.add(new HTML("<h2>Prescription loading ...</h2>"));
         
-        getQuiz();
+        getPrescription();
     }
-    
-    @UiHandler("checkTest")
-    void handleClick(ClickEvent e) {
-        History.newItem("lesson");
-    }    
 
-    private void getQuiz() {
-        CmMobileUser user = CatchupMathMobile.__instance.user;
-        
-        GetQuizHtmlAction action = new GetQuizHtmlAction(user.getUserId(),user.getTestId(), user.getTestSegment());
-        CatchupMathMobile.getCmService().execute(action, new AsyncCallback<QuizHtmlResult>() {
+    private void getPrescription() {
+        GetMobileSolutionAction action = new GetMobileSolutionAction(CatchupMathMobile.__instance.user.getUserId(),"cmextrasgeo_1_5_1_1_5");
+        CatchupMathMobile.getCmService().execute(action, new AsyncCallback<SolutionResponse>() {
             @Override
-            public void onSuccess(QuizHtmlResult result) {
+            public void onSuccess(SolutionResponse result) {
                 mainPanel.remove(0);
-                mainPanel.add(new HTML(result.getQuizHtml()));
+                mainPanel.add(new HTML(result.getTutorHtml()));
             }
 
             @Override

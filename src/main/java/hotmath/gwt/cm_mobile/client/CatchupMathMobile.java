@@ -1,5 +1,6 @@
 package hotmath.gwt.cm_mobile.client;
 
+import hotmath.gwt.cm_mobile.client.rpc.CmMobileUser;
 import hotmath.gwt.cm_rpc.client.rpc.CmService;
 import hotmath.gwt.cm_rpc.client.rpc.CmServiceAsync;
 
@@ -9,9 +10,12 @@ import java.util.Map;
 
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.ServiceDefTarget;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RootPanel;
+import com.google.gwt.user.client.ui.SimplePanel;
 
 /**
  * Provide minimal CM for mobile access.
@@ -23,25 +27,41 @@ public class CatchupMathMobile implements EntryPoint {
     
     public static CatchupMathMobile __instance;
     
-    MobileUser user;
+    CmMobileUser user;
+    SimplePanel mainPanel;
     
     public CatchupMathMobile() {
         __instance = this;
     }
     
     public void onModuleLoad() {
-        
         int uid = CatchupMathMobile.getQueryParameterInt("uid");
         int testId = CatchupMathMobile.getQueryParameterInt("testId");
         int testSegment = CatchupMathMobile.getQueryParameterInt("testSegment");
-        user = new MobileUser(uid,testId,testSegment);
+        user = new CmMobileUser(uid,testId,testSegment,0,0);
         
-        setupServices();
-        QuizPanel panel = new QuizPanel();
-        RootPanel.get("main-content").add(panel);
+        
+        mainPanel = new SimplePanel();
+        mainPanel.setWidget(new Label("Loading ..."));
+        RootPanel.get("main-content").add(mainPanel);
+        
+        
+        History.addValueChangeHandler(new CatchupMathMobileHistoryListener());
+        History.fireCurrentHistoryState();
     }
     
     
+    public void showLoginForm() {
+        mainPanel.setWidget(new LoginForm());
+    }
+    
+    public void showQuizPanel() {
+        mainPanel.setWidget(new QuizPanel());    
+    }
+    
+    public void showPrescriptionPanel() {
+        mainPanel.setWidget(new PrescriptionPanel());
+    }
     
 
     /** Static routines used throughout app
@@ -67,6 +87,7 @@ public class CatchupMathMobile implements EntryPoint {
     
     
     static {
+        setupServices();
         _queryParameters = readQueryString();
     }
     /**

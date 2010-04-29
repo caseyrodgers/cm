@@ -1,5 +1,6 @@
 package hotmath.gwt.cm_mobile.client;
 
+@Deprecated
 public class MobileUser {
     int uid,testId,testSegment;
     public MobileUser() {

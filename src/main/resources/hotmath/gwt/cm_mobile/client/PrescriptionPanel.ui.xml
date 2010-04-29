@@ -6,7 +6,7 @@
      </ui:style>
      <g:HTMLPanel>
           <g:Button ui:field="checkTest">Check Test</g:Button>
-          <g:Label styleName="{style.bolder}" text="Catchup Math Mobile Quiz POC"/>
+          <g:Label styleName="{style.bolder}" text="Catchup Math Mobile Prescription"/>
           <g:VerticalPanel ui:field="mainPanel" spacing="5"/>
      </g:HTMLPanel>
 </ui:UiBinder>

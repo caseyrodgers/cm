@@ -1,3 +1,7 @@
+body {
+	
+}
+
 table {
   width: 100%;
 }
@@ -59,5 +63,12 @@ question_head_text {
 
 
 #main-content {
- 
+	height:      300px;
+}
+
+
+/** Tutor styles */
+#tutor_embedded {
+  width: 350px;
+  border: 1px solid red;
 }

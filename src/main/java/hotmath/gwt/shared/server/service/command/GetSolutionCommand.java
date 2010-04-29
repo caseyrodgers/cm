@@ -12,7 +12,6 @@ import hotmath.gwt.cm_rpc.server.rpc.ActionHandler;
 import hotmath.gwt.shared.client.rpc.action.GetSolutionAction;
 import hotmath.solution.writer.SolutionHTMLCreatorIimplVelocity;
 import hotmath.solution.writer.TutorProperties;
-import hotmath.util.HMConnectionPool;
 import hotmath.util.VelocityTemplateFromStringManager;
 import hotmath.util.sql.SqlUtilities;
 
