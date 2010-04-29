@@ -141,13 +141,12 @@ public class GetQuizHtmlCommand implements ActionHandler<GetQuizHtmlAction, Quiz
                 String spritedHtml = processHtmlForSprites(quizHtml);
                 
                 cacheInfo = new QuizCacheInfo(spritedHtml,testSet, subTitle);
-                CmCacheManager.getInstance().addToCache(CacheName.TEST_HTML, cacheKey, cacheInfo);
+                CmCacheManager.getInstance().addToCache(CacheName.TEST_HTML, cacheKey, cacheInfo,true);
             }
             else {
                 logger.info("Retrieved quiz HTML from cache");
             }
                 
-            
           
             QuizHtmlResult result = new QuizHtmlResult();
             result.setUserId(uid);

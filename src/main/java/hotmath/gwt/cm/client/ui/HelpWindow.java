@@ -1,12 +1,12 @@
 package hotmath.gwt.cm.client.ui;
 
+import hotmath.gwt.cm_rpc.client.rpc.CmServiceAsync;
 import hotmath.gwt.cm_rpc.client.rpc.RpcData;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.model.CmAdminModel;
 import hotmath.gwt.cm_tools.client.model.StudentModelExt;
 import hotmath.gwt.cm_tools.client.model.StudentModelI;
-import hotmath.gwt.cm_rpc.client.rpc.CmServiceAsync;
 import hotmath.gwt.cm_tools.client.ui.CmLogger;
 import hotmath.gwt.cm_tools.client.ui.CmMainPanel;
 import hotmath.gwt.cm_tools.client.ui.ContextController;
@@ -92,9 +92,16 @@ public class HelpWindow extends CmWindow {
         
         FieldSet fs = new FieldSet();
         fs.setHeading("Using Catchup Math");
-
         fs.add(messageArea);
         vp.add(fs);
+        
+        if(CmShared.getQueryParameter("debug") != null) {
+            FieldSet fsDebug = new FieldSet();
+            fsDebug.setHeading("Debug Info");
+            fsDebug.add(new Html(UserInfo.getInstance().getUserStatus()));
+            vp.add(fsDebug);
+        }
+
         
         bgCombo = new ComboBox<BackgroundModel>();
         bgCombo.setStore(getBackgrounds());

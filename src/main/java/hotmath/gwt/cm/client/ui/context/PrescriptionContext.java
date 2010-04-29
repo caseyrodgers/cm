@@ -227,7 +227,7 @@ public class PrescriptionContext implements CmContext {
                                     new GenericVideoPlayerForMona(MonaVideo.PASS_QUIZ);
                                 }
                     }));
-                    cmWindow.addButton(new Button("Close",new SelectionListener<ButtonEvent>() {
+                    cmWindow.addButton(new Button("Continue",new SelectionListener<ButtonEvent>() {
                         @Override
                         public void componentSelected(ButtonEvent ce) {
                             cmWindow.close();

@@ -121,6 +121,10 @@ public class CmCacheManager  {
      * @param toCache the object to cache
      */
     public void addToCache(CacheName cacheName, Object key, Object toCache) {
+        addToCache(cacheName, key, toCache, false);
+    }
+    
+    public void addToCache(CacheName cacheName, Object key, Object toCache, boolean flushCache) {
         if (logger.isDebugEnabled())
         	logger.debug(String.format("addToCache(): cacheName: %s, key: %s", cacheName, key));
 
@@ -128,8 +132,8 @@ public class CmCacheManager  {
         Cache cache = cm.getCache(cacheName.toString());
         Element e = new Element(key, toCache);
         cache.put(e);
-        
-        if (CacheName.TEST_HTML.toString().equals(cacheName.toString()))
+
+        if (flushCache)
             cache.flush();
     }	
 
