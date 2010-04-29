@@ -114,7 +114,10 @@ public class StudentReportCard {
 
         HeaderFooter footer = new HeaderFooter(new Phrase("Page "), new Phrase("."));
         footer.setAlignment(HeaderFooter.ALIGN_RIGHT);
-        document.setFooter(footer);
+        /*
+         * don't include page number footer
+         */
+        //document.setFooter(footer);
 
         document.open();
         document.add(Chunk.NEWLINE);
