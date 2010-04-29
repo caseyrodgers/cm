@@ -17,6 +17,8 @@ import hotmath.gwt.cm_tools.client.ui.CmMainPanel;
 import hotmath.gwt.cm_tools.client.ui.ContextController;
 import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
 import hotmath.gwt.cm_tools.client.ui.context.CmContext;
+import hotmath.gwt.cm_tools.client.util.GenericVideoPlayerForMona;
+import hotmath.gwt.cm_tools.client.util.GenericVideoPlayerForMona.MonaVideo;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.data.CmAsyncRequestImplDefault;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
@@ -211,14 +213,29 @@ public class PrescriptionContext implements CmContext {
                 // are there more Quizzes in this program?
                 boolean areMoreSegments = UserInfo.getInstance().getTestSegment() < UserInfo.getInstance().getTestSegmentCount();
                 if (areMoreSegments) {
-                    msg = "You passed this section!  You will now be shown the next quiz.";
-                    CatchupMathTools.showAlert(msg, new CmAsyncRequestImplDefault() {
-                        public void requestComplete(String requestData) {
+                    msg = "<div style='font-size: 1.2em;margin: 10px;padding: 5px;'>You passed this section!  You will now be shown the next quiz.</div>";
+                    final CmWindow cmWindow = new CmWindow();
+                    cmWindow.setHeading("Congratulations");
+                    cmWindow.setClosable(false);
+                    cmWindow.setModal(true);
+                    cmWindow.add(new Html(msg));
+                    cmWindow.setResizable(false);
+                    cmWindow.addButton(
+                            new Button("Congratulations Video", new SelectionListener<ButtonEvent>() {
+                                @Override
+                                public void componentSelected(ButtonEvent ce) {
+                                    new GenericVideoPlayerForMona(MonaVideo.PASS_QUIZ);
+                                }
+                    }));
+                    cmWindow.addButton(new Button("Close",new SelectionListener<ButtonEvent>() {
+                        @Override
+                        public void componentSelected(ButtonEvent ce) {
+                            cmWindow.close();
                             UserInfo.getInstance().setTestSegment(UserInfo.getInstance().getTestSegment() + 1);
-                            
                             CmHistoryManager.getInstance().addHistoryLocation(new CmLocation(LocationType.QUIZ, UserInfo.getInstance().getTestSegment()));
                         }
-                    });
+                    }));
+                    cmWindow.setVisible(true);
                 } else {
                     
                     
