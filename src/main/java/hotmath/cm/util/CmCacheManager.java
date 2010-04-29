@@ -66,7 +66,8 @@ public class CmCacheManager  {
 	};
 
 	private void flushCache() {
-	    logger.debug("Shutting down EHCache");
+		if (logger.isDebugEnabled())
+			logger.debug("Shutting down EHCache");
 		CacheManager.getInstance().shutdown();
 	}
 
@@ -102,7 +103,8 @@ public class CmCacheManager  {
 
         Element el = cache.get(key);
         if(el != null) {
-          	logger.debug(String.format("retrieveFromCache(): retrieved: cacheName: %s, key: %s", cacheName, key));
+          	if (logger.isDebugEnabled())
+          		logger.debug(String.format("retrieveFromCache(): retrieved: cacheName: %s, key: %s", cacheName, key));
             // return value if in cache
             return el.getObjectValue();
         }
@@ -119,14 +121,16 @@ public class CmCacheManager  {
      * @param toCache the object to cache
      */
     public void addToCache(CacheName cacheName, Object key, Object toCache) {
-        logger.debug(String.format("addToCache(): cacheName: %s, key: %s", cacheName, key));
+        if (logger.isDebugEnabled())
+        	logger.debug(String.format("addToCache(): cacheName: %s, key: %s", cacheName, key));
 
         CacheManager cm = CacheManager.getInstance();
         Cache cache = cm.getCache(cacheName.toString());
         Element e = new Element(key, toCache);
         cache.put(e);
         
-        cache.flush();
+        if (CacheName.TEST_HTML.toString().equals(cacheName.toString()))
+            cache.flush();
     }	
 
     
@@ -141,37 +145,44 @@ public class CmCacheManager  {
         
         @Override
         public void dispose() {
-            logger.debug(name + " disposed");
+            if (logger.isDebugEnabled())
+                logger.debug(name + " disposed");
         }
 
         @Override
         public void notifyElementEvicted(Ehcache cache, Element element) {
-            logger.debug(cache.getName() + " notifyElementEvicted: " + element.getKey());
+            if (logger.isDebugEnabled())
+            	logger.debug(cache.getName() + " notifyElementEvicted: " + element.getKey());
         }
 
         @Override
         public void notifyElementExpired(Ehcache cache, Element element) {
-            logger.debug(cache.getName() + " notifyElementExpired: " + element.getKey());
+            if (logger.isDebugEnabled())
+            	logger.debug(cache.getName() + " notifyElementExpired: " + element.getKey());
         }
 
         @Override
         public void notifyElementPut(Ehcache cache, Element element) throws CacheException {
-            logger.debug(cache.getName() + " notifyElementPut: " + element.getKey());            
+        	if (logger.isDebugEnabled())
+        		logger.debug(cache.getName() + " notifyElementPut: " + element.getKey());            
         }
 
         @Override
         public void notifyElementRemoved(Ehcache cache, Element element) throws CacheException {
-            logger.debug(cache.getName() + " notifyElementRemoved: " + element.getKey());
+        	if (logger.isDebugEnabled())
+        		logger.debug(cache.getName() + " notifyElementRemoved: " + element.getKey());
         }
 
         @Override
         public void notifyElementUpdated(Ehcache cache, Element element) throws CacheException {
-            logger.debug(cache.getName() + " notifyElementUpdated: " + element.getKey());            
+        	if (logger.isDebugEnabled())
+        		logger.debug(cache.getName() + " notifyElementUpdated: " + element.getKey());            
         }
 
         @Override
         public void notifyRemoveAll(Ehcache cache) {
-            logger.debug(cache.getName() + " notifyRemoveAll");
+        	if (logger.isDebugEnabled())
+        		logger.debug(cache.getName() + " notifyRemoveAll");
         }
         
         public Object clone() throws CloneNotSupportedException {
