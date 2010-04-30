@@ -19,7 +19,7 @@ public class GenericVideoPlayerForMona extends GenericVideoPlayer {
         private String title;
         private String file;
         
-        MonaVideo(String file, String title) {
+        MonaVideo(String file, String t) {
             this.title = title;
             this.file = file;
         }

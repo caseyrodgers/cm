@@ -88,6 +88,7 @@ public class CmCacheManager  {
         	}
         }
 		logger.info("+++ started Cache Manager, cache names: " + cNames);
+		logger.info("+++ Temp directory: " + System.getProperty("java.io.tmpdir"));
 	}
 
 	/** Return named object from specified cache.
