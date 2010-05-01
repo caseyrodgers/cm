@@ -280,7 +280,7 @@ public class CmPilotCreate {
     
     
     static public void addPilotRequest(String title, String name, String school, String zip, String email,
-            String phone, String userComments, String phoneType, String phoneWhen,String emailSubject, String emailText) throws Exception {
+            String phone, String userComments, String phoneType, String phoneWhen) throws Exception {
 
         String sendTo[] = { "lincoln@hotmath.com", "sales@hotmath.com", "casey@hotmath.com" };
         String SERVER_NAME = "http://catchupmath.com";
@@ -303,10 +303,10 @@ public class CmPilotCreate {
             // create a new Subscriber record based on this email
             String idToUse = HotMathSubscriber.createUniqueID(null);
 
-            String comments = _dateFormat.format(new Date()) + " Catchup Math online pilot request\n";
+            String comments = _dateFormat.format(new Date()) + " Catchup Math online pilot request CM_pilot_HM\n";
             HotMathSubscriber sub = HotMathSubscriberManager.createBasicAccount(idToUse, school, "ST", email, comments,new Date());
             sub.setResponsibleName(name);
-            sub.setStatus("N");
+            sub.setStatus("A");
             
             /** concatenate phone to end of zip */
             if(phone != null && phone.length() > 0)
@@ -317,23 +317,24 @@ public class CmPilotCreate {
             List<PurchasePlan> plans = new ArrayList<PurchasePlan>();
             plans.add(new PurchasePlan("TYPE_SERVICE_CATCHUP_PILOT"));
             sub.purchaseHotmath(null, plans, "", "", "", "", "", "", "", "", "", "", "", "");
+            
+            /** setup the CM pilot in CM_ADMIN
+             * 
+             */
+            new CmPilotCreate(sub.getId(),false,0,false,1000);
+            
+            
             /** send tracking email to pilot requester
              * 
              */
             try {
-                SbMailManager.getInstance().sendMessage(emailSubject, emailText, email,
-                        "registration@hotmath.com", "text/plain");
+                sub.sendEmailConfirmation("CM Pilot");
             }
             catch(Exception e) {
                 e.printStackTrace();
             }
             
-            String emailComments = "Catchup Math online pilot setup"
-                + "\nComments: " + userComments
-                + "\nphone: " + phone
-                + "\nphone_type: " + phoneType
-                + "\nphone_when: " + phoneWhen;
-
+            
             /** send tracking email to admin people
              * 
              */

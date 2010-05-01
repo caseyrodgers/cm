@@ -10,6 +10,7 @@ import java.util.Map;
 
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.user.client.Cookies;
 import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.ServiceDefTarget;
@@ -35,18 +36,22 @@ public class CatchupMathMobile implements EntryPoint {
     }
     
     public void onModuleLoad() {
-        int uid = CatchupMathMobile.getQueryParameterInt("uid");
-        int testId = CatchupMathMobile.getQueryParameterInt("testId");
-        int testSegment = CatchupMathMobile.getQueryParameterInt("testSegment");
-        user = new CmMobileUser(uid,testId,testSegment,0,0);
-        
         
         mainPanel = new SimplePanel();
         mainPanel.setWidget(new Label("Loading ..."));
         RootPanel.get("main-content").add(mainPanel);
         
-        
         History.addValueChangeHandler(new CatchupMathMobileHistoryListener());
+        
+        int uid = CatchupMathMobile.getQueryParameterInt("uid");
+        if(uid > 0) {
+            int testId = CatchupMathMobile.getQueryParameterInt("testId");
+            int testSegment = CatchupMathMobile.getQueryParameterInt("testSegment");
+            user = new CmMobileUser(uid,testId,testSegment,0,0);
+            
+            History.newItem("quiz");
+        }
+        
         History.fireCurrentHistoryState();
     }
     

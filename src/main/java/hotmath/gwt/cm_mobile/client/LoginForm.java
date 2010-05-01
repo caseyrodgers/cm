@@ -3,11 +3,14 @@ package hotmath.gwt.cm_mobile.client;
 import hotmath.gwt.cm_mobile.client.rpc.CmMobileUser;
 import hotmath.gwt.cm_mobile.client.rpc.GetCmMobileLoginAction;
 
+import java.util.Date;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
+import com.google.gwt.user.client.Cookies;
 import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -25,6 +28,8 @@ public class LoginForm extends Composite {
     public LoginForm() {
         initWidget(uiBinder.createAndBindUi(this));
         setHeight("300px");
+        
+        readCookie();
     }
 
     interface MyUiBinder extends UiBinder<Widget, LoginForm> {
@@ -35,15 +40,9 @@ public class LoginForm extends Composite {
     @UiField
     DialogBox loginBox;
 
-    /**
-     * Contains a reference to the username text field
-     */
     @UiField
     TextBox usernameBox;
 
-    /**
-     * Contains a reference to the password text field
-     */
     @UiField
     PasswordTextBox passwordBox;
 
@@ -59,7 +58,10 @@ public class LoginForm extends Composite {
             Window.alert("Enter username and password");
             return;
         }
-            
+        
+        saveCookie(uName,pass);
+        
+        
         GetCmMobileLoginAction action = new GetCmMobileLoginAction();
         action.setName(uName);
         action.setPassword(pass);
@@ -76,5 +78,29 @@ public class LoginForm extends Composite {
                 Window.alert("Error logging in: " + caught);
             }
         });
+    }
+    
+    
+    
+    /** read the login cookie and extract data
+     * 
+     */
+    private void readCookie() {
+        String login = Cookies.getCookie("cm_login");
+        if(login != null) {
+            String p[] = login.split(":");
+            if(p.length == 2) {
+                usernameBox.setValue(p[0]);
+                passwordBox.setValue(p[1]);
+            }
+        }        
+    }
+    
+    private void saveCookie(String uName, String pass) {
+        Date now = new Date();
+        long nowLong = now.getTime();
+        nowLong = nowLong + (1000 * 60 * 60 * 24 * 3000);
+        now.setTime(nowLong);
+        Cookies.setCookie("cm_login", uName + ":" + pass,now);
     }
 }

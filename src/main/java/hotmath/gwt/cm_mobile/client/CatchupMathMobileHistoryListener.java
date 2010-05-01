@@ -5,8 +5,8 @@ import com.google.gwt.event.logical.shared.ValueChangeHandler;
 
 public class CatchupMathMobileHistoryListener implements ValueChangeHandler<String> {
     public void onValueChange(ValueChangeEvent<String> event) {
-        final String historyToken = event.getValue();
 
+        String historyToken = event.getValue();
         // do default action
         if(historyToken.equals("quiz")) {
             CatchupMathMobile.__instance.showQuizPanel();
