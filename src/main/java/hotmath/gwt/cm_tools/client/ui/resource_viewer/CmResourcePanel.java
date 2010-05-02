@@ -1,6 +1,6 @@
 package hotmath.gwt.cm_tools.client.ui.resource_viewer;
 
-import hotmath.gwt.cm_tools.client.data.InmhItemData;
+import hotmath.gwt.cm_rpc.client.rpc.InmhItemData;
 import hotmath.gwt.cm_tools.client.ui.resource_viewer.CmResourcePanelContainer.ResourceViewerState;
 
 import java.util.List;

@@ -1,15 +1,20 @@
-package hotmath.gwt.cm_tools.client.data;
+package hotmath.gwt.cm_rpc.client.rpc;
+
 
 import java.util.ArrayList;
 import java.util.List;
 
+import com.google.gwt.user.client.rpc.IsSerializable;
 
-public class PrescriptionSessionData {
+
+public class PrescriptionSessionData implements IsSerializable{
 	
 	String topic;
 	String name;
 	int sessionNumber;
-	
+
+    public PrescriptionSessionData() {}
+    
 	public String getTopic() {
 		return topic;
 	}
@@ -29,7 +34,7 @@ public class PrescriptionSessionData {
 
 	List<PrescriptionSessionDataResource> inmhResources = new ArrayList<PrescriptionSessionDataResource>();
 	
-	public PrescriptionSessionData() {}
+
 	
 	public List<PrescriptionSessionDataResource> getInmhResources() {
 		return inmhResources;

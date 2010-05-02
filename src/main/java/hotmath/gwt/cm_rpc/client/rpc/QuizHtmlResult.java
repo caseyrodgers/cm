@@ -12,6 +12,9 @@ public class QuizHtmlResult implements Response {
     String subTitle;
     int userId;
     List<Integer> answers;
+    CmList<RpcData> currentSelections;
+
+    public QuizHtmlResult() {}
     
     /** list of indexes that represent the
      *  correct answer for each question.
@@ -65,4 +68,12 @@ public class QuizHtmlResult implements Response {
     public void setSubTitle(String subTitle) {
         this.subTitle = subTitle;
     }
+    
+    
+    public CmList<RpcData> getCurrentSelections() {
+        return currentSelections;
+    }
+    public void setCurrentSelections(CmList<RpcData> currentSelections) {
+        this.currentSelections = currentSelections;
+    }    
 }

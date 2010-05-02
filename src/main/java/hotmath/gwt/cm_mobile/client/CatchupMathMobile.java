@@ -3,6 +3,7 @@ package hotmath.gwt.cm_mobile.client;
 import hotmath.gwt.cm_mobile.client.rpc.CmMobileUser;
 import hotmath.gwt.cm_rpc.client.rpc.CmService;
 import hotmath.gwt.cm_rpc.client.rpc.CmServiceAsync;
+import hotmath.gwt.cm_rpc.client.rpc.PrescriptionSessionResponse;
 
 import java.util.HashMap;
 import java.util.List;
@@ -10,7 +11,6 @@ import java.util.Map;
 
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.user.client.Cookies;
 import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.ServiceDefTarget;
@@ -55,6 +55,9 @@ public class CatchupMathMobile implements EntryPoint {
         History.fireCurrentHistoryState();
     }
     
+    static public CmMobileUser getUser() {
+        return __instance.user;
+    }
     
     public void showLoginForm() {
         mainPanel.setWidget(new LoginForm());

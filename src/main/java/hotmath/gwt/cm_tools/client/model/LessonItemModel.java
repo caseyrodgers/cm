@@ -1,8 +1,8 @@
 package hotmath.gwt.cm_tools.client.model;
 
+import hotmath.gwt.cm_rpc.client.rpc.CmArrayList;
+import hotmath.gwt.cm_rpc.client.rpc.CmList;
 import hotmath.gwt.cm_rpc.client.rpc.Response;
-import hotmath.gwt.shared.client.rpc.action.CmArrayList;
-import hotmath.gwt.shared.client.rpc.action.CmList;
 
 public class LessonItemModel extends BaseModel implements Response{
 	

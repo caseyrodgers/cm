@@ -6,14 +6,15 @@ import hotmath.assessment.AssessmentPrescriptionSession;
 import hotmath.gwt.cm_admin.server.model.CmStudentDao;
 import hotmath.gwt.cm_rpc.client.rpc.Action;
 import hotmath.gwt.cm_rpc.client.rpc.CmRpcException;
+import hotmath.gwt.cm_rpc.client.rpc.InmhItemData;
+import hotmath.gwt.cm_rpc.client.rpc.PrescriptionData;
+import hotmath.gwt.cm_rpc.client.rpc.PrescriptionSessionData;
+import hotmath.gwt.cm_rpc.client.rpc.PrescriptionSessionDataResource;
+import hotmath.gwt.cm_rpc.client.rpc.PrescriptionSessionResponse;
 import hotmath.gwt.cm_rpc.client.rpc.Response;
 import hotmath.gwt.cm_rpc.client.rpc.RpcData;
 import hotmath.gwt.cm_rpc.server.rpc.ActionDispatcher;
 import hotmath.gwt.cm_rpc.server.rpc.ActionHandler;
-import hotmath.gwt.cm_tools.client.data.InmhItemData;
-import hotmath.gwt.cm_tools.client.data.PrescriptionData;
-import hotmath.gwt.cm_tools.client.data.PrescriptionSessionData;
-import hotmath.gwt.cm_tools.client.data.PrescriptionSessionDataResource;
 import hotmath.gwt.shared.client.rpc.action.GetPrescriptionAction;
 import hotmath.gwt.shared.client.rpc.action.GetViewedInmhItemsAction;
 import hotmath.inmh.INeedMoreHelpItem;
@@ -49,12 +50,12 @@ import org.apache.log4j.Logger;
  *            user state is changed.
  * 
  */
-public class GetPrescriptionCommand implements ActionHandler<GetPrescriptionAction, RpcData> {
+public class GetPrescriptionCommand implements ActionHandler<GetPrescriptionAction, PrescriptionSessionResponse> {
 
     static Logger __logger = Logger.getLogger(GetPrescriptionCommand.class);
 
     @Override
-    public RpcData execute(final Connection conn, GetPrescriptionAction action) throws Exception {
+    public PrescriptionSessionResponse execute(final Connection conn, GetPrescriptionAction action) throws Exception {
 
         __logger.info("getting prescription: " + action);
         int runId = action.getRunId();
@@ -70,7 +71,10 @@ public class GetPrescriptionCommand implements ActionHandler<GetPrescriptionActi
                 // no prescription created (no missed answers?)
                 RpcData rdata = new RpcData();
                 rdata.putData("correct_percent", 100);
-                return rdata;
+                
+                PrescriptionSessionResponse resp = new PrescriptionSessionResponse();
+                resp.setCorrectPercent(100);
+                return resp;
             }
             // which session
             if (sessionNumber > (totalSessions - 1)) {
@@ -190,13 +194,12 @@ public class GetPrescriptionCommand implements ActionHandler<GetPrescriptionActi
              */
             new HaTestRunDao().setLessonViewed(conn,runId,sessionNumber);
             
+            PrescriptionSessionResponse response = new PrescriptionSessionResponse();
+            response.setPrescriptionData(presData);
+            response.setCorrectPercent(getTestPassPercent(pres.getTest().getTestQuestionCount(), pres.getTestRun().getAnsweredCorrect()));
+            response.setProgramTitle(pres.getTest().getTestDef().getTitle());
 
-            RpcData rdata2 = new RpcData();
-            rdata2.putData("json", Jsonizer.toJson(presData));
-            rdata2.putData("correct_percent", getTestPassPercent(pres.getTest().getTestQuestionCount(), pres
-                    .getTestRun().getAnsweredCorrect()));
-            rdata2.putData("program_title", pres.getTest().getTestDef().getTitle());
-            return rdata2;
+            return response;
 
         } catch (Exception e) {
             throw new CmRpcException(e);

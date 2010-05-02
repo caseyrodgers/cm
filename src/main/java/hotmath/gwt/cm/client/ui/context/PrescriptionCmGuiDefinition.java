@@ -5,12 +5,13 @@ import hotmath.gwt.cm.client.history.CmHistoryQueue;
 import hotmath.gwt.cm.client.history.CmLocation;
 import hotmath.gwt.cm.client.history.CmLocation.LocationType;
 import hotmath.gwt.cm.client.ui.HeaderPanel;
+import hotmath.gwt.cm_rpc.client.rpc.InmhItemData;
+import hotmath.gwt.cm_rpc.client.rpc.PrescriptionData;
+import hotmath.gwt.cm_rpc.client.rpc.PrescriptionSessionDataResource;
+import hotmath.gwt.cm_rpc.client.rpc.PrescriptionSessionResponse;
 import hotmath.gwt.cm_rpc.client.rpc.RpcData;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
-import hotmath.gwt.cm_tools.client.data.InmhItemData;
-import hotmath.gwt.cm_tools.client.data.PrescriptionData;
-import hotmath.gwt.cm_tools.client.data.PrescriptionSessionDataResource;
 import hotmath.gwt.cm_tools.client.ui.CmGuiDefinition;
 import hotmath.gwt.cm_tools.client.ui.CmMainPanel;
 import hotmath.gwt.cm_tools.client.ui.ContextController;
@@ -39,7 +40,6 @@ import com.extjs.gxt.ui.client.fx.FxConfig;
 import com.extjs.gxt.ui.client.widget.Html;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.VerticalPanel;
-import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
 import com.extjs.gxt.ui.client.widget.layout.CenterLayout;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
@@ -208,7 +208,7 @@ public class PrescriptionCmGuiDefinition implements CmGuiDefinition {
 
         Log.info("PrescriptionCmGuiDefinition.getAsyncDataFromServer:" + sessionNumber + ", " + location);
 
-        new RetryAction<RpcData>() {
+        new RetryAction<PrescriptionSessionResponse>() {
 
             @Override
             public void attempt() {
@@ -218,20 +218,19 @@ public class PrescriptionCmGuiDefinition implements CmGuiDefinition {
                 CmShared.getCmService().execute(action,this);
             }            
             @Override
-            public void oncapture(RpcData rdata) {
+            public void oncapture(PrescriptionSessionResponse rdata) {
                 try {
                     if (rdata != null) {
                         UserInfo.getInstance().setSessionNumber(sessionNumberF);
 
-                        int correctPercent = rdata.getDataAsInt("correct_percent");
+                        int correctPercent = rdata.getCorrectPercent();
                         UserInfo.getInstance().setCorrectPercent(correctPercent);
                         if (correctPercent == 100) {
                             getContext().doNext();
                             return;
                         }
 
-                        String json = rdata.getDataAsString("json");
-                        context.setPrescriptionData(new PrescriptionData(json));
+                        context.setPrescriptionData(rdata.getPrescriptionData());
 
                         UserInfo.getInstance().setSessionCount(context.prescriptionData.getSessionTopics().size());
 

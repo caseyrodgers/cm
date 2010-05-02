@@ -1,12 +1,12 @@
 package hotmath.gwt.cm_admin.server.model;
 
 import hotmath.cm.util.CmMultiLinePropertyReader;
+import hotmath.gwt.cm_rpc.client.rpc.CmArrayList;
+import hotmath.gwt.cm_rpc.client.rpc.CmList;
 import hotmath.gwt.cm_tools.client.model.CustomLessonModel;
 import hotmath.gwt.cm_tools.client.model.CustomProgramModel;
 import hotmath.gwt.cm_tools.client.model.StudentModelExt;
 import hotmath.gwt.shared.client.model.CustomProgramInfoModel;
-import hotmath.gwt.shared.client.rpc.action.CmArrayList;
-import hotmath.gwt.shared.client.rpc.action.CmList;
 import hotmath.gwt.shared.client.util.CmException;
 import hotmath.util.sql.SqlUtilities;
 

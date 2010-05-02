@@ -7,11 +7,14 @@ import hotmath.cm.util.CmWebResourceManager;
 import hotmath.cm.util.CmCacheManager.CacheName;
 import hotmath.gwt.cm_admin.server.model.CmStudentDao;
 import hotmath.gwt.cm_rpc.client.rpc.Action;
+import hotmath.gwt.cm_rpc.client.rpc.CmList;
 import hotmath.gwt.cm_rpc.client.rpc.GetQuizHtmlAction;
 import hotmath.gwt.cm_rpc.client.rpc.QuizHtmlResult;
 import hotmath.gwt.cm_rpc.client.rpc.Response;
+import hotmath.gwt.cm_rpc.client.rpc.RpcData;
 import hotmath.gwt.cm_rpc.server.rpc.ActionHandler;
 import hotmath.gwt.cm_tools.client.model.StudentActiveInfo;
+import hotmath.gwt.shared.client.rpc.action.GetQuizCurrentResultsAction;
 import hotmath.testset.ha.ChapterInfo;
 import hotmath.testset.ha.HaTest;
 import hotmath.testset.ha.HaTestDao;
@@ -146,8 +149,10 @@ public class GetQuizHtmlCommand implements ActionHandler<GetQuizHtmlAction, Quiz
             else {
                 logger.info("Retrieved quiz HTML from cache");
             }
-                
-          
+            
+            GetQuizCurrentResultsAction resultsAction = new GetQuizCurrentResultsAction(action.getUid());
+            CmList<RpcData> currentResponses = new GetQuizCurrentResultsCommand().execute(conn, resultsAction);
+
             QuizHtmlResult result = new QuizHtmlResult();
             result.setUserId(uid);
             result.setQuizHtml(cacheInfo.quizHtml);
@@ -158,6 +163,7 @@ public class GetQuizHtmlCommand implements ActionHandler<GetQuizHtmlAction, Quiz
             result.setSubTitle(cacheInfo.subTitle);
             result.setTestId(haTest.getTestId());
             result.setAnswers(cacheInfo.testSet.getAnswers());
+            result.setCurrentSelections(currentResponses);
             return result;
         } catch (Exception e) {
             throw e;

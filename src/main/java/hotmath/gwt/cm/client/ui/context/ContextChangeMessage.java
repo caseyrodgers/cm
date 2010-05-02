@@ -1,6 +1,6 @@
 package hotmath.gwt.cm.client.ui.context;
 
-import hotmath.gwt.cm_tools.client.data.InmhItemData;
+import hotmath.gwt.cm_rpc.client.rpc.InmhItemData;
 import hotmath.gwt.cm_tools.client.ui.CmMainPanel;
 import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
 

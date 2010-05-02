@@ -2,9 +2,14 @@ package hotmath.gwt.shared.server.service;
 
 import hotmath.gwt.cm.server.CmDbTestCase;
 import hotmath.gwt.cm_admin.server.model.CmStudentDao;
+import hotmath.gwt.cm_rpc.client.rpc.CmArrayList;
+import hotmath.gwt.cm_rpc.client.rpc.CmList;
+import hotmath.gwt.cm_rpc.client.rpc.CreateTestRunResponse;
 import hotmath.gwt.cm_rpc.client.rpc.GetQuizHtmlAction;
+import hotmath.gwt.cm_rpc.client.rpc.PrescriptionSessionResponse;
 import hotmath.gwt.cm_rpc.client.rpc.QuizHtmlResult;
 import hotmath.gwt.cm_rpc.client.rpc.RpcData;
+import hotmath.gwt.cm_rpc.client.rpc.SaveQuizCurrentResultAction;
 import hotmath.gwt.cm_rpc.server.rpc.ActionDispatcher;
 import hotmath.gwt.cm_tools.client.model.AutoUserAdvanced;
 import hotmath.gwt.cm_tools.client.model.GroupInfoModel;
@@ -14,8 +19,6 @@ import hotmath.gwt.shared.client.rpc.action.AddGroupAction;
 import hotmath.gwt.shared.client.rpc.action.AutoAdvanceUserAction;
 import hotmath.gwt.shared.client.rpc.action.CheckUserAccountStatusAction;
 import hotmath.gwt.shared.client.rpc.action.ClearWhiteboardDataAction;
-import hotmath.gwt.shared.client.rpc.action.CmArrayList;
-import hotmath.gwt.shared.client.rpc.action.CmList;
 import hotmath.gwt.shared.client.rpc.action.CreateAutoRegistrationAccountAction;
 import hotmath.gwt.shared.client.rpc.action.CreateAutoRegistrationAccountsAction;
 import hotmath.gwt.shared.client.rpc.action.CreateAutoRegistrationPreviewAction;
@@ -34,12 +37,10 @@ import hotmath.gwt.shared.client.rpc.action.GetViewedInmhItemsAction;
 import hotmath.gwt.shared.client.rpc.action.LogUserInAction;
 import hotmath.gwt.shared.client.rpc.action.MarkPrescriptionLessonAsViewedAction;
 import hotmath.gwt.shared.client.rpc.action.ProcessLoginRequestAction;
-import hotmath.gwt.shared.client.rpc.action.SaveQuizCurrentResultAction;
 import hotmath.gwt.shared.client.rpc.action.SaveWhiteboardDataAction;
 import hotmath.gwt.shared.client.rpc.action.SaveWhiteboardDataAction.CommandType;
 import hotmath.gwt.shared.client.rpc.result.AutoRegistrationEntry;
 import hotmath.gwt.shared.client.rpc.result.AutoRegistrationSetup;
-import hotmath.gwt.shared.client.rpc.result.CreateTestRunResponse;
 import hotmath.gwt.shared.client.util.UserInfo;
 import hotmath.testset.ha.HaTestRunDao;
 
@@ -299,10 +300,10 @@ public class ActionDispatcher_Test extends CmDbTestCase {
     public void testCreatePrescription() throws Exception {
         
         GetPrescriptionAction action = new GetPrescriptionAction(TEST_RUN_ID,0,false);
-        RpcData data = ActionDispatcher.getInstance().execute(action);
+        PrescriptionSessionResponse data = ActionDispatcher.getInstance().execute(action);
         
         assertNotNull(data);
-        assertNotNull(data.getData("program_title"));
+        assertNotNull(data.getProgramTitle());
     }
   
     public void testGetSolution() throws Exception {

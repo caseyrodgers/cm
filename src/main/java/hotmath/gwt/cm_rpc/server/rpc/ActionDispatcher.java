@@ -197,7 +197,7 @@ public class ActionDispatcher {
                         break;
                     }
                     catch(ClassNotFoundException ie) {
-                        /* silent */
+                        /** silent */
                     }
                 }
                 if(actionHandler == null)

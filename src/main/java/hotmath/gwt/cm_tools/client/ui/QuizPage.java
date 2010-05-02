@@ -1,19 +1,19 @@
 package hotmath.gwt.cm_tools.client.ui;
 
+
+
+import hotmath.gwt.cm_rpc.client.rpc.CmList;
 import hotmath.gwt.cm_rpc.client.rpc.GetQuizHtmlAction;
 import hotmath.gwt.cm_rpc.client.rpc.QuizHtmlResult;
 import hotmath.gwt.cm_rpc.client.rpc.RpcData;
+import hotmath.gwt.cm_rpc.client.rpc.SaveQuizCurrentResultAction;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
-import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.data.CmAsyncRequest;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
 import hotmath.gwt.shared.client.eventbus.EventBus;
 import hotmath.gwt.shared.client.eventbus.EventType;
 import hotmath.gwt.shared.client.rpc.RetryAction;
-import hotmath.gwt.shared.client.rpc.action.CmList;
-import hotmath.gwt.shared.client.rpc.action.GetQuizCurrentResultsAction;
-import hotmath.gwt.shared.client.rpc.action.SaveQuizCurrentResultAction;
 import hotmath.gwt.shared.client.util.UserInfo;
 
 import java.util.List;
@@ -67,7 +67,7 @@ public class QuizPage extends LayoutContainer {
      * 
      * @param quizHtml
      */
-	private void displayQuizHtml(String quizHtml) {
+	private void displayQuizHtml(String quizHtml, CmList<RpcData> selections) {
 	    
 		Html html = new Html(quizHtml);
 		if(CmShared.getQueryParameter("debug") != "") {
@@ -76,24 +76,13 @@ public class QuizPage extends LayoutContainer {
 		add(html);
 		layout();
 
-		new RetryAction<CmList<RpcData>>() {
-            @Override
-            public void attempt() {
-                CmBusyManager.setBusy(true);
-                GetQuizCurrentResultsAction action = new GetQuizCurrentResultsAction(UserInfo.getInstance().getUid());
-                setAction(action);
-                CmShared.getCmService().execute(action,this);
-            }
-            
-            public void oncapture(CmList<RpcData> al) {
-                CmBusyManager.setBusy(false);
-                callbackWhenComplete.requestComplete(_title);
-                for(RpcData rd: al) {
-                    setSolutionQuestionAnswerIndex(rd.getDataAsString("pid"),rd.getDataAsString("answer"));
-                }
-                CmMainPanel.setQuizQuestionDisplayAsActive(CmMainPanel.getLastQuestionPid());
-            }
-        }.register();
+		/** mark the correct selections */
+        CmList<RpcData> al = selections; 
+        callbackWhenComplete.requestComplete(_title);
+        for(RpcData rd: al) {
+            setSolutionQuestionAnswerIndex(rd.getDataAsString("pid"),rd.getDataAsString("answer"));
+        }
+        CmMainPanel.setQuizQuestionDisplayAsActive(CmMainPanel.getLastQuestionPid());
 	}
 
 	/** Read the raw HTML from server and inserts into DOM node
@@ -131,8 +120,7 @@ public class QuizPage extends LayoutContainer {
                     UserInfo.getInstance().setUserName("Guest user on account: " + rdata.getUserId());
                     EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_USERCHANGED));
                 }
-
-                displayQuizHtml(rdata.getQuizHtml());
+                displayQuizHtml(rdata.getQuizHtml(),rdata.getCurrentSelections());
             }
         }.register();	    
 	}

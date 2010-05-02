@@ -1,0 +1,47 @@
+<P>
+
+</P>
+<DIV id="question_1" class="question_stepunit">
+	<P>
+	</P>
+	<P>The
+		absolute value of &ndash;8
+		is
+	</P>
+	<P></P>
+	<UL class="question_responses">
+		<LI>
+			<INPUT onclick="questionGuessChanged(this)" id="question_guess_1"
+				type="radio" name="question_1" value="false">
+				<LABEL for="question_guess_1">
+					<P>A. &ndash;8
+					</P>
+				</LABEL>
+				<DIV style="display: none">Incorrect</DIV>
+		</LI>
+		<LI>
+			<INPUT onclick="questionGuessChanged(this)" id="question_guess_2"
+				type="radio" name="question_1" value="false">
+				<LABEL for="question_guess_2">
+					<P>B. 0</P>
+				</LABEL>
+				<DIV style="display: none">Incorrect</DIV>
+		</LI>
+		<LI>
+			<INPUT onclick="questionGuessChanged(this)" id="question_guess_3"
+				type="radio" name="question_1" value="false">
+				<LABEL for="question_guess_3">
+					<P>C. 2</P>
+				</LABEL>
+				<DIV style="display: none">Incorrect</DIV>
+		</LI>
+		<LI>
+			<INPUT onclick="questionGuessChanged(this)" id="question_guess_4"
+				type="radio" name="question_1" value="true">
+				<LABEL for="question_guess_4">
+					<P>D. 8</P>
+				</LABEL>
+				<DIV style="display: none">Correct</DIV>
+		</LI>
+	</UL>
+</DIV>

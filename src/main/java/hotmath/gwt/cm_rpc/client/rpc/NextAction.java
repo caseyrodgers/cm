@@ -1,5 +1,12 @@
-package hotmath.gwt.cm_tools.client.ui;
+package hotmath.gwt.cm_rpc.client.rpc;
 
+/** Provides abstraction over what to do 'next' when
+ * the user is moving to the next 'part' of their program.
+ * 
+ * 
+ * @author casey
+ *
+ */
 public class NextAction {
     
     static public enum NextActionName {QUIZ,PRESCRIPTION,AUTO_ASSSIGNED};
@@ -8,8 +15,6 @@ public class NextAction {
     
     String assignedTest;
     Integer assignedTestId;
-
-
 
     public NextAction() {
     }
@@ -22,11 +27,9 @@ public class NextAction {
         nextAction = action;
     }
 
-
     public String getAssignedTest() {
         return assignedTest;
     }
-
 
     public void setAssignedTest(String assignedTest) {
         this.assignedTest = assignedTest;
@@ -49,5 +52,4 @@ public class NextAction {
     public void setNextAction(NextActionName nextAction) {
         this.nextAction = nextAction;
     }
-
 }

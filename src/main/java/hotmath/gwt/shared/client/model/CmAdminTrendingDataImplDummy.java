@@ -1,8 +1,8 @@
 package hotmath.gwt.shared.client.model;
 
+import hotmath.gwt.cm_rpc.client.rpc.CmArrayList;
+import hotmath.gwt.cm_rpc.client.rpc.CmList;
 import hotmath.gwt.cm_tools.client.model.AccountInfoModel;
-import hotmath.gwt.shared.client.rpc.action.CmArrayList;
-import hotmath.gwt.shared.client.rpc.action.CmList;
 import hotmath.gwt.shared.client.util.CmException;
 
 /**

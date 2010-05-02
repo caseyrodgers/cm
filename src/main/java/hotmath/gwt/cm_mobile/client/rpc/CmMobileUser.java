@@ -1,15 +1,26 @@
 package hotmath.gwt.cm_mobile.client.rpc;
 
+import hotmath.gwt.cm_rpc.client.rpc.PrescriptionData;
 import hotmath.gwt.cm_rpc.client.rpc.Response;
 
 public class CmMobileUser implements Response {
+    
     String name;
     int userId;
     int testId;
     int testSegment;
     int testSlot;
     int runId;
+    PrescriptionData prescripion;
 
+
+    public PrescriptionData getPrescripion() {
+        return prescripion;
+    }
+
+    public void setPrescripion(PrescriptionData prescripion) {
+        this.prescripion = prescripion;
+    }
 
     public CmMobileUser() {}
     

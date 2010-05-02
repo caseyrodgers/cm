@@ -69,7 +69,6 @@ public class LoginForm extends Composite {
             @Override
             public void onSuccess(CmMobileUser result) {
                 CatchupMathMobile.__instance.user = result;
-                
                 History.newItem("quiz");
             }
 

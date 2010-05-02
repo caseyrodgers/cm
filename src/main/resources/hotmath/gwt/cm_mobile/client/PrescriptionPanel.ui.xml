@@ -4,9 +4,6 @@
      <ui:style>
           .bolder { font-weight:bold; color: green;}
      </ui:style>
-     <g:HTMLPanel>
-          <g:Button ui:field="checkTest">Check Test</g:Button>
-          <g:Label styleName="{style.bolder}" text="Catchup Math Mobile Prescription"/>
-          <g:VerticalPanel ui:field="mainPanel" spacing="5"/>
-     </g:HTMLPanel>
+     <g:VerticalPanel ui:field="mainPanel">
+     </g:VerticalPanel>
 </ui:UiBinder>

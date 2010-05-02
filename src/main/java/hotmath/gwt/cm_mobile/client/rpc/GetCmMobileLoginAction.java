@@ -6,6 +6,9 @@ public class GetCmMobileLoginAction implements Action<CmMobileUser>{
     
     String name;
     String password;
+
+    public GetCmMobileLoginAction() {
+    }    
     
     public String getPassword() {
         return password;
@@ -23,6 +26,4 @@ public class GetCmMobileLoginAction implements Action<CmMobileUser>{
         this.name = name;
     }
 
-    public GetCmMobileLoginAction() {
-    }
 }

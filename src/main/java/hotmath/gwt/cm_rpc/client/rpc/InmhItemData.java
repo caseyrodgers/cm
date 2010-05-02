@@ -1,6 +1,8 @@
-package hotmath.gwt.cm_tools.client.data;
+package hotmath.gwt.cm_rpc.client.rpc;
 
-public class InmhItemData {
+import com.google.gwt.user.client.rpc.IsSerializable;
+
+public class InmhItemData implements IsSerializable{
 	
 	String type;
 	String title;

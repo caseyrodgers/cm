@@ -2,8 +2,8 @@ package hotmath.assessment;
 
 import hotmath.ProblemID;
 import hotmath.gwt.cm_admin.server.model.CmCustomProgramDao;
+import hotmath.gwt.cm_rpc.client.rpc.CmList;
 import hotmath.gwt.cm_tools.client.model.CustomLessonModel;
-import hotmath.gwt.shared.client.rpc.action.CmList;
 import hotmath.inmh.INeedMoreHelpItem;
 import hotmath.testset.ha.HaTestRun;
 import hotmath.testset.ha.HaTestRunDao;

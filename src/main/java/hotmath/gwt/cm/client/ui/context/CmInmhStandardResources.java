@@ -1,8 +1,8 @@
 package hotmath.gwt.cm.client.ui.context;
 
 
-import hotmath.gwt.cm_tools.client.data.InmhItemData;
-import hotmath.gwt.cm_tools.client.data.PrescriptionSessionDataResource;
+import hotmath.gwt.cm_rpc.client.rpc.InmhItemData;
+import hotmath.gwt.cm_rpc.client.rpc.PrescriptionSessionDataResource;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,7 +1,10 @@
-package hotmath.gwt.cm_tools.client.data;
+package hotmath.gwt.cm_rpc.client.rpc;
+
 
 import java.util.ArrayList;
 import java.util.List;
+
+import com.google.gwt.user.client.rpc.IsSerializable;
 
 /** 
  *   A single INMH resource + all items POJO
@@ -9,12 +12,14 @@ import java.util.List;
  * @author Casey
  *
  */
-public class PrescriptionSessionDataResource {
+public class PrescriptionSessionDataResource implements IsSerializable {
 
     String type;
 	String label;
 	boolean viewed;
 	String description;
+	
+	public PrescriptionSessionDataResource() {}
 	
 	public boolean isViewed() {
         return viewed;
