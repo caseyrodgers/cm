@@ -18,6 +18,7 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.History;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
@@ -130,6 +131,18 @@ public class QuizPanel extends Composite {
         final int correctIndex = testQuestionAnswers.get(Integer.parseInt(sQuestionIndex));
         Boolean isCorrect = correctIndex == Integer.parseInt(answerIndex);        
         SaveQuizCurrentResultAction action = new SaveQuizCurrentResultAction(user.getTestId(), isCorrect, Integer.parseInt(answerIndex), pid);
+        CatchupMathMobile.getCmService().execute(action, new AsyncCallback<RpcData>() {
+            @Override
+            public void onSuccess(RpcData arg0) {
+                /** saved */
+            }
+            @Override
+            public void onFailure(Throwable ex) {
+                ex.printStackTrace();
+                Window.alert(ex.getLocalizedMessage());
+            }
+        });
+        
         answerAction.getActions().add(action);
         
         return "";
