@@ -1,9 +1,9 @@
 package hotmath.gwt.shared.client.rpc.action;
 
 import hotmath.gwt.cm_rpc.client.rpc.Action;
-import hotmath.gwt.cm_rpc.client.rpc.RpcData;
+import hotmath.gwt.cm_rpc.client.rpc.PrescriptionSessionResponse;
 
-public class GetPrescriptionAction implements Action<RpcData> {
+public class GetPrescriptionAction implements Action<PrescriptionSessionResponse> {
 
     int runId;
     int sessionNumber;

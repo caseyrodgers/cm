@@ -1,7 +1,7 @@
 package hotmath.gwt.shared.client.rpc.action;
 
 import hotmath.gwt.cm_rpc.client.rpc.Action;
-import hotmath.gwt.shared.client.rpc.result.CreateTestRunResponse;
+import hotmath.gwt.cm_rpc.client.rpc.CreateTestRunResponse;
 
 public class CreateTestRunAction implements Action<CreateTestRunResponse> {
 
