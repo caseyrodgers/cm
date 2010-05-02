@@ -56,8 +56,17 @@ public class CmWebResourceManager {
             e.printStackTrace();
         }
         
-        watcher = new ResourceWatcherThread(__fileBase, EXPIRE_TIME);
-        watcher.start();
+        
+        /** Disabled watcher, for now ...
+         *   
+         *   Quiz is being cached in ehcache and related CSS is output into CmWebResource,
+         *   so we cannot allow it to be deleted.
+         *   
+         *    TODO: provide a way to set 'non-watched' directories that are cleaned manually.
+         *    
+         */
+        //watcher = new ResourceWatcherThread(__fileBase, EXPIRE_TIME);
+        //watcher.start();
     }
     
     
