@@ -7,11 +7,14 @@ import hotmath.gwt.cm_rpc.client.rpc.PrescriptionSessionDataResource;
 import hotmath.gwt.cm_rpc.client.rpc.SolutionResponse;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -38,23 +41,23 @@ public class PrescriptionPanel extends Composite {
         
         /** do the binding */
         initWidget(uiBinder.createAndBindUi(this));
-        String html = "<ul style='cmResources'>\n";
+        UnOrderedList ol = new UnOrderedList();
         for (PrescriptionSessionDataResource r : prescription.getCurrSession().getInmhResources()) {
-            
-            html += "<li>" +
-                    r.getLabel() + "\n";
+            ListItem li = new ListItem();
+            ol.add(li);
+            li.setText(r.getLabel());
             if(r.getItems().size() > 0) {
-                html += "<ul>\n";
-                for(InmhItemData i: r.getItems()) {
-                    html += "<li>" + i.getTitle() + "</li>\n";
+                UnOrderedList ol2 = new UnOrderedList();
+                li.add(ol2);
+                for(int ordinal=0;ordinal<r.getItems().size();ordinal++) {
+                    InmhItemData i = r.getItems().get(ordinal);
+                    ListItem li2 = new ListItem();
+                    li2.add(new ResourceButton(ordinal, i));
+                    ol2.add(li2);
                 }
-                html += "</ul>";
             }
-            html += "</li>\n";
         }
-        html += "</ul>";
-        
-        mainPanel.add(new HTML(html));
+        mainPanel.add(ol);
     }
 
     private void getSolution() {
@@ -70,4 +73,23 @@ public class PrescriptionPanel extends Composite {
             }
         });
     }    
+    
+    
+    static class ResourceButton extends Button {
+        InmhItemData item;
+        int ordinal;
+        public ResourceButton(final int ordinal, final InmhItemData item) {
+            super(item.getTitle());
+            this.ordinal = ordinal;
+            this.item = item;
+            setWidth("250px");
+            addClickHandler(new ClickHandler() {
+                @Override
+                public void onClick(ClickEvent arg0) {
+                    History.newItem("resource:" + item.getType() + ":" + ordinal); 
+                }
+            });
+        }
+    }
 }
+

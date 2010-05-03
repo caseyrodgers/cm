@@ -20,7 +20,6 @@ public class CmWebResourceManager {
     final static Logger __logger = Logger.getLogger(CmWebResourceManager.class);
 
     static String __fileBase;
-    
     static private CmWebResourceManager __instance;
     static public CmWebResourceManager getInstance() throws Exception {
         if(__instance == null)
@@ -31,6 +30,9 @@ public class CmWebResourceManager {
     
     ResourceWatcherThread watcher;
     final static String WEB_BASE = "cm_temp";
+    final static String PERM_DIR = "retain";
+    
+
     
     int EXPIRE_TIME = 1000; //  * 60 * 60 * 24; // one day
     
@@ -56,19 +58,20 @@ public class CmWebResourceManager {
             e.printStackTrace();
         }
         
-        
-        /** Disabled watcher, for now ...
-         *   
-         *   Quiz is being cached in ehcache and related CSS is output into CmWebResource,
-         *   so we cannot allow it to be deleted.
-         *   
-         *    TODO: provide a way to set 'non-watched' directories that are cleaned manually.
-         *    
-         */
-        //watcher = new ResourceWatcherThread(__fileBase, EXPIRE_TIME);
-        //watcher.start();
+        watcher = new ResourceWatcherThread(__fileBase, EXPIRE_TIME);
+        watcher.start();
     }
     
+    /** return directory that will not be cleansed by the
+     *  automatic file cleaner.
+     *    
+     *  These files will not be deleted.
+     *  
+     * @return
+     */
+    public String getRetainedFileBase() {
+        return getFileBase() + "/" + PERM_DIR;
+    }
     
     public void flush() {
       if(watcher != null)
@@ -148,6 +151,16 @@ public class CmWebResourceManager {
         private void cleanDir(File dir) throws CmException {
             if(!fileIsNotChildOfWebBase(dir))
                 throw new CmException("Cannot delete invalid resource directory: " + dir.getPath());
+            
+            
+            /** do not process the permanent dir
+             * 
+             */
+            if(dir.getName().equals(PERM_DIR)) {
+                __logger.info("NOT removing '" + PERM_DIR + "'");
+                return;
+            }
+            
             
             File kids[] = dir.listFiles();
             if (kids !=null ) {

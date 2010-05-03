@@ -171,7 +171,7 @@ public class GetQuizHtmlCommand implements ActionHandler<GetQuizHtmlAction, Quiz
     }
     
     private String processHtmlForSprites(String quizHtml) throws Exception {
-        String fileBase = CmWebResourceManager.getInstance().getFileBase();
+        String fileBase = CmWebResourceManager.getInstance().getRetainedFileBase();
         File quizSprited = new File(fileBase,"quiz_" + System.currentTimeMillis());
         quizSprited.mkdirs();
         /** write to sprited file */

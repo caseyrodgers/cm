@@ -5,7 +5,5 @@
           .bolder { font-weight:bold; color: green;}
      </ui:style>
      <g:VerticalPanel ui:field="mainPanel">
-         <g:Anchor ui:field="prevButton">Previous</g:Anchor>
-         <g:Anchor ui:field="nextButton">Next</g:Anchor>
      </g:VerticalPanel>
 </ui:UiBinder>

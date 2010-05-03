@@ -21,6 +21,7 @@ import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.VerticalPanel;
@@ -43,8 +44,11 @@ public class QuizPanel extends Composite {
     /** bind to the main panel */
     @UiField VerticalPanel mainPanel;
     @UiField Button checkTest;
+    @UiField CheckBox checkOffline;
 
     List<Integer> testQuestionAnswers;
+    
+    boolean _isOffline;
     
     public QuizPanel() {
         
@@ -77,6 +81,12 @@ public class QuizPanel extends Composite {
             }
         });
     }    
+    
+    
+    @UiHandler("checkOffline")
+    void handleSetOffline(ClickEvent e) {
+        _isOffline = checkOffline.getValue();
+    }
     
     
     /** Setup method that will call a global method that will set the selected
@@ -131,18 +141,24 @@ public class QuizPanel extends Composite {
         final int correctIndex = testQuestionAnswers.get(Integer.parseInt(sQuestionIndex));
         Boolean isCorrect = correctIndex == Integer.parseInt(answerIndex);        
         SaveQuizCurrentResultAction action = new SaveQuizCurrentResultAction(user.getTestId(), isCorrect, Integer.parseInt(answerIndex), pid);
-        CatchupMathMobile.getCmService().execute(action, new AsyncCallback<RpcData>() {
-            @Override
-            public void onSuccess(RpcData arg0) {
-                /** saved */
-            }
-            @Override
-            public void onFailure(Throwable ex) {
-                ex.printStackTrace();
-                Window.alert(ex.getLocalizedMessage());
-            }
-        });
-        
+
+        if(_isOffline) {
+            answerAction.getActions().add(action);
+        }
+        else {
+            /** save in real time */
+            CatchupMathMobile.getCmService().execute(action, new AsyncCallback<RpcData>() {
+                @Override
+                public void onSuccess(RpcData arg0) {
+                    /** saved */
+                }
+                @Override
+                public void onFailure(Throwable ex) {
+                    ex.printStackTrace();
+                    Window.alert(ex.getLocalizedMessage());
+                }
+            });
+        }
         answerAction.getActions().add(action);
         
         return "";

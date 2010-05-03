@@ -3,7 +3,7 @@ package hotmath.gwt.cm_mobile.client;
 import hotmath.gwt.cm_mobile.client.rpc.CmMobileUser;
 import hotmath.gwt.cm_rpc.client.rpc.CmService;
 import hotmath.gwt.cm_rpc.client.rpc.CmServiceAsync;
-import hotmath.gwt.cm_rpc.client.rpc.PrescriptionSessionResponse;
+import hotmath.gwt.cm_rpc.client.rpc.InmhItemData;
 
 import java.util.HashMap;
 import java.util.List;
@@ -69,6 +69,10 @@ public class CatchupMathMobile implements EntryPoint {
     
     public void showPrescriptionPanel() {
         mainPanel.setWidget(new PrescriptionPanel());
+    }
+    
+    public void showResourcePanel(InmhItemData item) {
+        mainPanel.setWidget(CmMobileResourceViewerFactory.createViewer(item).getViewer(item));
     }
     
 
