@@ -73,6 +73,10 @@ public class CmWebResourceManager {
         return getFileBase() + "/" + PERM_DIR;
     }
     
+    public String getRetailedWebBase() {
+        return PERM_DIR;
+    }
+    
     public void flush() {
       if(watcher != null)
           watcher.cancelWatch();

@@ -18,7 +18,7 @@ class CreateQuizSprited {
     }
     public void createQuizSpritedHtml() throws Exception {
 
-        String locationOfSprite = "/" + CmWebResourceManager.getInstance().getRetainedFileBase() + "/" + quizSprited.getName();
+        String locationOfSprite = "/" + CmWebResourceManager.getInstance().getRetailedWebBase() + "/" + quizSprited.getName();
         String spritedHtml = new SpriteWriter().processHtml(quizSprited, locationOfSprite,quizHtml);
         
         SbFile file = new SbFile(new File(quizSprited, "tutor_steps-sprited.html"));
