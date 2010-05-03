@@ -74,7 +74,7 @@ public class CmWebResourceManager {
     }
     
     public String getRetailedWebBase() {
-        return PERM_DIR;
+        return WEB_BASE + "/" + PERM_DIR;
     }
     
     public void flush() {
