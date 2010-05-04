@@ -68,9 +68,10 @@ public class QuizPanel extends Composite {
         CatchupMathMobile.getCmService().execute(checkTestAction, new AsyncCallback<PrescriptionSessionResponse>() {
             @Override
             public void onSuccess(PrescriptionSessionResponse result) {
+                CatchupMathMobile.getUser().setRunId(result.getRunId());
                 CatchupMathMobile.getUser().setPrescripion(result.getPrescriptionData());
                 
-                History.newItem("lesson");
+                History.newItem("lesson:" + result.getPrescriptionData().getCurrSession().getSessionNumber());
             }
 
             @Override

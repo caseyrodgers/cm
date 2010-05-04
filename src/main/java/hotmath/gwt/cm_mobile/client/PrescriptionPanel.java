@@ -1,9 +1,12 @@
 package hotmath.gwt.cm_mobile.client;
 
+import hotmath.gwt.cm_mobile.client.rpc.CmMobileUser;
 import hotmath.gwt.cm_rpc.client.rpc.GetMobileSolutionAction;
+import hotmath.gwt.cm_rpc.client.rpc.GetPrescriptionAction;
 import hotmath.gwt.cm_rpc.client.rpc.InmhItemData;
 import hotmath.gwt.cm_rpc.client.rpc.PrescriptionData;
 import hotmath.gwt.cm_rpc.client.rpc.PrescriptionSessionDataResource;
+import hotmath.gwt.cm_rpc.client.rpc.PrescriptionSessionResponse;
 import hotmath.gwt.cm_rpc.client.rpc.SolutionResponse;
 
 import com.google.gwt.core.client.GWT;
@@ -11,7 +14,9 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.History;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
@@ -35,9 +40,11 @@ public class PrescriptionPanel extends Composite {
     /** bind to the main panel */
     
     @UiField VerticalPanel mainPanel;
+    @UiField Button prevButton, nextButton;
     
     public PrescriptionPanel() {
         this.prescription = CatchupMathMobile.getUser().getPrescripion();
+        
         
         /** do the binding */
         initWidget(uiBinder.createAndBindUi(this));
@@ -74,6 +81,32 @@ public class PrescriptionPanel extends Composite {
         });
     }    
     
+    @UiHandler("nextButton")
+    void handleNextButtonClick(ClickEvent e) {
+        CmMobileUser user = CatchupMathMobile.getUser();
+        int sessionNumber = user.getPrescripion().getCurrSession().getSessionNumber();
+        if(sessionNumber > user.getPrescripion().getSessionTopics().size()) {
+            Window.alert("No more lessons");
+            return;
+        }
+        
+        loadLesson(++sessionNumber);
+    }
+    
+    private void loadLesson(int sessionNumber) {
+        History.newItem("lesson:" + sessionNumber);                
+    }
+    
+    @UiHandler("prevButton")
+    void handlePrevButtonClick(ClickEvent e) {
+        CmMobileUser user = CatchupMathMobile.getUser();
+        int sessionNumber = user.getPrescripion().getCurrSession().getSessionNumber();
+        if(sessionNumber < 1) {
+            Window.alert("No previous lessons");
+            return;
+        }
+        loadLesson(--sessionNumber);
+    }
     
     static class ResourceButton extends Button {
         InmhItemData item;
@@ -82,7 +115,7 @@ public class PrescriptionPanel extends Composite {
             super(item.getTitle());
             this.ordinal = ordinal;
             this.item = item;
-            setWidth("250px");
+            setWidth("200px");
             addClickHandler(new ClickHandler() {
                 @Override
                 public void onClick(ClickEvent arg0) {

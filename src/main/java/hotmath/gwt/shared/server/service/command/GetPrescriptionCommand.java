@@ -6,6 +6,7 @@ import hotmath.assessment.AssessmentPrescriptionSession;
 import hotmath.gwt.cm_admin.server.model.CmStudentDao;
 import hotmath.gwt.cm_rpc.client.rpc.Action;
 import hotmath.gwt.cm_rpc.client.rpc.CmRpcException;
+import hotmath.gwt.cm_rpc.client.rpc.GetPrescriptionAction;
 import hotmath.gwt.cm_rpc.client.rpc.InmhItemData;
 import hotmath.gwt.cm_rpc.client.rpc.PrescriptionData;
 import hotmath.gwt.cm_rpc.client.rpc.PrescriptionSessionData;
@@ -15,7 +16,6 @@ import hotmath.gwt.cm_rpc.client.rpc.Response;
 import hotmath.gwt.cm_rpc.client.rpc.RpcData;
 import hotmath.gwt.cm_rpc.server.rpc.ActionDispatcher;
 import hotmath.gwt.cm_rpc.server.rpc.ActionHandler;
-import hotmath.gwt.shared.client.rpc.action.GetPrescriptionAction;
 import hotmath.gwt.shared.client.rpc.action.GetViewedInmhItemsAction;
 import hotmath.inmh.INeedMoreHelpItem;
 import hotmath.inmh.INeedMoreHelpResourceType;
@@ -195,6 +195,7 @@ public class GetPrescriptionCommand implements ActionHandler<GetPrescriptionActi
             new HaTestRunDao().setLessonViewed(conn,runId,sessionNumber);
             
             PrescriptionSessionResponse response = new PrescriptionSessionResponse();
+            response.setRunId(pres.getTestRun().getRunId());
             response.setPrescriptionData(presData);
             response.setCorrectPercent(getTestPassPercent(pres.getTest().getTestQuestionCount(), pres.getTestRun().getAnsweredCorrect()));
             response.setProgramTitle(pres.getTest().getTestDef().getTitle());

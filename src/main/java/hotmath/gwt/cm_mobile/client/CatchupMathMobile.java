@@ -67,6 +67,9 @@ public class CatchupMathMobile implements EntryPoint {
         mainPanel.setWidget(new QuizPanel());    
     }
     
+    /** show the PrescriptionPanel loading the prescription
+     *  currently loaded into User
+     */
     public void showPrescriptionPanel() {
         mainPanel.setWidget(new PrescriptionPanel());
     }
