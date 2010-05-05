@@ -1,5 +1,7 @@
 package hotmath.gwt.cm_admin.client.ui;
 
+import hotmath.gwt.cm_rpc.client.model.program_listing.ProgramListing;
+import hotmath.gwt.cm_rpc.client.rpc.GetProgramListingAction;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.model.CmAdminDataReader;
@@ -226,7 +228,17 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
                     contextMenu.hide();
                 }
             });
-            contextMenu.add(clientTests);            
+            contextMenu.add(clientTests);
+            
+            MenuItem programListing = new MenuItem("Get Program Listing");
+            programListing.addSelectionListener(new SelectionListener<MenuEvent>() {
+                public void componentSelected(MenuEvent ce) {
+                    getProgramListing();
+                    contextMenu.hide();
+                }
+            });
+            contextMenu.add(programListing);            
+            
             
         }
 
@@ -364,6 +376,23 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
             }
         });
         return btn;
+    }
+    
+    
+    private void getProgramListing() {
+        
+        GetProgramListingAction listAction = new GetProgramListingAction();
+        CmShared.getCmService().execute(listAction, new AsyncCallback<ProgramListing>() {
+            @Override
+            public void onSuccess(ProgramListing arg0) {
+                Window.alert("Program listing: " + arg0);
+                
+            }
+            @Override
+            public void onFailure(Throwable arg0) {
+                Window.alert("Erro: " + arg0);
+            }
+        });
     }
 
     /**
