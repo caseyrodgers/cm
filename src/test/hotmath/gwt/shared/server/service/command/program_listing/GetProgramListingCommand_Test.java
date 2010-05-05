@@ -14,18 +14,21 @@ public class GetProgramListingCommand_Test extends CmDbTestCase {
     
     public void testCreate() throws Exception {
         GetProgramListingAction action = new GetProgramListingAction();
+        action.setAdminId(2);
         ProgramListing pr = new GetProgramListingCommand().execute(conn, action);
         assertTrue(pr.getProgramTypes().size() > 0);
     }
 
     public void testCreateRpc() throws Exception {
         GetProgramListingAction action = new GetProgramListingAction();
+        action.setAdminId(2);
         ProgramListing pr = ActionDispatcher.getInstance().execute(action);
         assertTrue(pr.getProgramTypes().size() > 0);
     }
     
     public void testCreateLessons() throws Exception {
         GetProgramListingAction action = new GetProgramListingAction();
+        action.setAdminId(2);
         ProgramListing pr = ActionDispatcher.getInstance().execute(action);
         assertTrue(pr.getProgramTypes().get(0).getProgramChapters().get(0).getLessons().size() > 0);
     }

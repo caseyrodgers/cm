@@ -19,7 +19,7 @@ public class CmProgramListingDao {
     public CmProgramListingDao() {
     }
 
-    public ProgramListing getProgramListing(final Connection conn) throws Exception {
+    public ProgramListing getProgramListing(final Connection conn, int adminId) throws Exception {
 
         try {
             ProgramListing pr = new ProgramListing();

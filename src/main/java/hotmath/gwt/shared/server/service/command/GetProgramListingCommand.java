@@ -17,8 +17,8 @@ import java.sql.Connection;
 public class GetProgramListingCommand implements ActionHandler<GetProgramListingAction, ProgramListing>{
 
     @Override
-    public ProgramListing execute(Connection conn, GetProgramListingAction action) throws Exception {
-        ProgramListing pr = new CmProgramListingDao().getProgramListing(conn);
+    public ProgramListing execute(final Connection conn, GetProgramListingAction action) throws Exception {
+        ProgramListing pr = new CmProgramListingDao().getProgramListing(conn, action.getAdminId());
         return pr;
     }
 
