@@ -2,8 +2,8 @@ package hotmath.gwt.shared.server.service.command.program_listing;
 
 import hotmath.gwt.cm.server.CmDbTestCase;
 import hotmath.gwt.cm_rpc.client.model.program_listing.ProgramListing;
+import hotmath.gwt.cm_rpc.client.rpc.GetProgramListingAction;
 import hotmath.gwt.cm_rpc.server.rpc.ActionDispatcher;
-import hotmath.gwt.cm_rpc.server.rpc.program_listing.GetProgramListingAction;
 import hotmath.gwt.shared.server.service.command.GetProgramListingCommand;
 
 public class GetProgramListingCommand_Test extends CmDbTestCase {

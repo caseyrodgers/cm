@@ -3,7 +3,9 @@ package hotmath.gwt.cm_rpc.client.model.program_listing;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ProgramChapter {
+import com.google.gwt.user.client.rpc.IsSerializable;
+
+public class ProgramChapter implements IsSerializable{
     String name;
     int number;
     

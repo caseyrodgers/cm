@@ -1,6 +1,8 @@
 package hotmath.gwt.cm_rpc.client.model.program_listing;
 
-public class ProgramLesson {
+import com.google.gwt.user.client.rpc.IsSerializable;
+
+public class ProgramLesson implements IsSerializable{
     String name;
     public ProgramLesson() {
         

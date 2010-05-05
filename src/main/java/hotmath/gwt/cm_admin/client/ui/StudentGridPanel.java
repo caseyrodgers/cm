@@ -390,7 +390,7 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
             }
             @Override
             public void onFailure(Throwable arg0) {
-                Window.alert("Erro: " + arg0);
+                Window.alert("Error: " + arg0);
             }
         });
     }

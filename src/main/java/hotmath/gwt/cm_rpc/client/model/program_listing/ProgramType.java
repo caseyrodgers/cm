@@ -3,13 +3,15 @@ package hotmath.gwt.cm_rpc.client.model.program_listing;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.google.gwt.user.client.rpc.IsSerializable;
+
 /** Defines a single type of program
  *  and lists all child data
  * 
  * @author casey
  *
  */
-public class ProgramType {
+public class ProgramType implements IsSerializable {
     List<ProgramChapter> programChapters = new ArrayList<ProgramChapter>();
 
     String type;
