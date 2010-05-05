@@ -23,16 +23,4 @@ public class ProgramListing implements Response {
     public void setProgramTypes(List<ProgramType> programTypes) {
         this.programTypes = programTypes;
     }
-    
-    public void addProgramType(ProgramType programType) {
-        programTypes.add(programType);
-        
-        /** also always add to ALL
-         * 
-         */
-        List<ProgramChapter> chaps = programType.getProgramChapters();
-        for(int i=1;i<chaps.size();i++) {
-            programTypes.get(0).getProgramChapters().add(chaps.get(i));
-        }
-    }
 }

@@ -23,7 +23,7 @@ public class CmProgramListingDao {
 
         try {
             ProgramListing pr = new ProgramListing();
-            pr.addProgramType(createProgramType(conn, CmProgram.ALG1_PROF.getProgramType()));
+            pr.getProgramTypes().add(createProgramType(conn, CmProgram.ALG1_PROF.getProgramType()));
 
             return pr;
         } finally {
