@@ -28,9 +28,7 @@ public class CatchupMathMobileHistoryListener implements ValueChangeHandler<Stri
                 return;
             }
             else {
-                int sessionNumber = user.getPrescripion().getCurrSession().getSessionNumber();
-                sessionNumber++;
-                GetPrescriptionAction action = new GetPrescriptionAction(user.getRunId(), sessionNumber, true);
+                GetPrescriptionAction action = new GetPrescriptionAction(user.getRunId(), sessionNum, true);
                 CatchupMathMobile.getCmService().execute(action,new AsyncCallback<PrescriptionSessionResponse>() {
                     public void onSuccess(PrescriptionSessionResponse prescriptionSession) {
                         CatchupMathMobile.getUser().setPrescripion(prescriptionSession.getPrescriptionData());

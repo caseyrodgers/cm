@@ -1,7 +1,3 @@
-body {
-	
-}
-
 table {
   width: 100%;
 }
@@ -71,4 +67,9 @@ question_head_text {
 #tutor_embedded {
   width: 350px;
   border: 1px solid red;
+}
+
+
+.check-quiz-link {
+  display: none;
 }
