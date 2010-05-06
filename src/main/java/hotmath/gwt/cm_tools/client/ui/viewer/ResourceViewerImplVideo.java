@@ -1,11 +1,13 @@
 package hotmath.gwt.cm_tools.client.ui.viewer;
 
+import hotmath.gwt.cm_rpc.client.rpc.InmhItemData;
 import hotmath.gwt.cm_tools.client.ui.resource_viewer.CmResourcePanelContainer.ResourceViewerState;
 import hotmath.gwt.shared.client.CmShared;
 import pl.rmalinowski.gwt2swf.client.ui.SWFSettings;
 import pl.rmalinowski.gwt2swf.client.ui.SWFWidget;
 import pl.rmalinowski.gwt2swf.client.utils.PlayerVersion;
 import pl.rmalinowski.gwt2swf.client.utils.SWFObjectUtil;
+import sb.util.SbUtilities;
 
 import com.extjs.gxt.ui.client.widget.Html;
 import com.google.gwt.user.client.ui.Widget;
@@ -41,7 +43,16 @@ public class ResourceViewerImplVideo extends ResourceViewerImplFlash {
             addResource(html,getResourceItem().getTitle());
         }
         else {
-            String videoPath = "/help/flvs/tw/" + getResourceItem().getFile() + ".flv";
+            
+            InmhItemData item = getResourceItem();
+            
+            String prefix = null;
+            if(isANumber(item.getFile())) 
+                prefix = "/help/flvs/tw/";
+            else 
+                prefix = "/help/flvs/mathtv/";
+            
+            String videoPath = prefix + item.getFile() + ".flv";
             
             SWFSettings s = new SWFSettings();
             s.setMinPlayerVersion(new PlayerVersion(9));
@@ -70,6 +81,25 @@ public class ResourceViewerImplVideo extends ResourceViewerImplFlash {
         }
         
         return this;
+    }
+    
+    /** return true if the string in x 
+     *  can be evaluated as an integer.
+     *  
+     *  TODO: how to know without exception?
+     *        why do this at all?
+     *        
+     * @param x
+     * @return
+     */
+    private boolean isANumber(String x) {
+        try {
+            Integer.parseInt(x);
+            return true;
+        }
+        catch(NumberFormatException nfe) {
+            return false;
+        }
     }
     
     @Override

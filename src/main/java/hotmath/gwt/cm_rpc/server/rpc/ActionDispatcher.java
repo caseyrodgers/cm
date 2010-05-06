@@ -183,8 +183,13 @@ public class ActionDispatcher {
                 String cmdName = p[p.length-1];
                 cmdName = cmdName.substring(0, cmdName.length() - 6);
                 
+                /** TODO: how to add these automatically ?
+                 * 
+                 * NOTE: each ends with period
+                 */
                 String standardPlaces[] = {"hotmath.gwt.shared.server.service.command.",
-                                           "hotmath.gwt.cm_mobile.server.rpc."};
+                                           "hotmath.gwt.cm_mobile.server.rpc.",
+                                           "hotmath.gwt.solution_manager.server.rpc."};
                                      
                 Class actionHandler=null,cmdClass=null;
                 for(int i=0;i<standardPlaces.length;i++) {
