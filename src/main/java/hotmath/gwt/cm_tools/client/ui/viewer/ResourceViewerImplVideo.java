@@ -52,7 +52,7 @@ public class ResourceViewerImplVideo extends ResourceViewerImplFlash {
             else 
                 prefix = "/help/flvs/mathtv/";
             
-            String videoPath = prefix + item.getFile() + ".flv";
+            String videoPath = "http://hotmath.kattare.com/" + prefix + item.getFile() + ".flv";
             
             SWFSettings s = new SWFSettings();
             s.setMinPlayerVersion(new PlayerVersion(9));
