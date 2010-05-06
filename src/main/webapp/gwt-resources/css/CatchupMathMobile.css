@@ -73,3 +73,24 @@ question_head_text {
 .check-quiz-link {
   display: none;
 }
+
+.percent-complete {
+        background: green;
+        border: 1px solid red;
+        font-weight: bold;
+        text-align: right;
+}
+.percent-complete-wrapper {
+        background-color: red;
+        height: 6px;
+        width: 100%;
+}
+.percent-complete-wrapper img {
+        height: 4px;
+}
+.percent-complete-title {
+        display: block;
+        position: absolute;
+        right: 0;
+        width: 200px;
+}

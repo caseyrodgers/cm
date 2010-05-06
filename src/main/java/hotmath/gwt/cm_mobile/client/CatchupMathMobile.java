@@ -51,8 +51,11 @@ public class CatchupMathMobile implements EntryPoint {
             
             History.newItem("quiz");
         }
-        
-        History.fireCurrentHistoryState();
+        else {
+            History.newItem("login");
+        }
+        // bypass anchor info on startup
+        // History.fireCurrentHistoryState();
     }
     
     static public CmMobileUser getUser() {

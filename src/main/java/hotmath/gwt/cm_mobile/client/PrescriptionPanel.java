@@ -1,13 +1,9 @@
 package hotmath.gwt.cm_mobile.client;
 
 import hotmath.gwt.cm_mobile.client.rpc.CmMobileUser;
-import hotmath.gwt.cm_rpc.client.rpc.GetMobileSolutionAction;
-import hotmath.gwt.cm_rpc.client.rpc.GetPrescriptionAction;
 import hotmath.gwt.cm_rpc.client.rpc.InmhItemData;
 import hotmath.gwt.cm_rpc.client.rpc.PrescriptionData;
 import hotmath.gwt.cm_rpc.client.rpc.PrescriptionSessionDataResource;
-import hotmath.gwt.cm_rpc.client.rpc.PrescriptionSessionResponse;
-import hotmath.gwt.cm_rpc.client.rpc.SolutionResponse;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -17,9 +13,9 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -36,11 +32,13 @@ public class PrescriptionPanel extends Composite {
     
     
     PrescriptionData prescription;
+    Thermometer _thermometer = new Thermometer();
     
     /** bind to the main panel */
     
     @UiField VerticalPanel mainPanel;
     @UiField Button prevButton, nextButton;
+    @UiField SimplePanel thermometerPanel;
     
     public PrescriptionPanel() {
         this.prescription = CatchupMathMobile.getUser().getPrescripion();
@@ -50,6 +48,15 @@ public class PrescriptionPanel extends Composite {
         initWidget(uiBinder.createAndBindUi(this));
         UnOrderedList ol = new UnOrderedList();
         for (PrescriptionSessionDataResource r : prescription.getCurrSession().getInmhResources()) {
+            
+            String type = r.getType();
+            
+            /** only show mobile ready resource
+             * TODO: only return mobile types
+             */
+            if(type.equals("video") || type.startsWith("flashcards") || type.equals("activity") || type.equals("results"))
+                continue;
+            
             ListItem li = new ListItem();
             ol.add(li);
             li.setText(r.getLabel());
@@ -64,23 +71,21 @@ public class PrescriptionPanel extends Composite {
                 }
             }
         }
+        _thermometer.setPerecent(getPrescriptionCompletionPercent());
+        thermometerPanel.add(_thermometer);
         mainPanel.add(ol);
     }
-
-    private void getSolution() {
-        GetMobileSolutionAction action = new GetMobileSolutionAction(CatchupMathMobile.__instance.user.getUserId(),"cmextrasgeo_1_5_1_1_5");
-        CatchupMathMobile.getCmService().execute(action, new AsyncCallback<SolutionResponse>() {
-            @Override
-            public void onSuccess(SolutionResponse result) {
-            }
-
-            @Override
-            public void onFailure(Throwable caught) {
-                caught.printStackTrace();               
-            }
-        });
-    }    
     
+    private int getPrescriptionCompletionPercent() {
+        if (prescription == null)
+            return 0;
+        double cs = prescription.getCurrSession().getSessionNumber();
+        double ts = prescription.getSessionTopics().size();
+        double d = ((cs * 100) / ts);
+        int i = (int) Math.round(d);
+        return i;
+    }
+
     @UiHandler("nextButton")
     void handleNextButtonClick(ClickEvent e) {
         CmMobileUser user = CatchupMathMobile.getUser();
