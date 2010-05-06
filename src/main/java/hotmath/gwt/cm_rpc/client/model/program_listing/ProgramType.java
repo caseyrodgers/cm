@@ -12,25 +12,31 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  *
  */
 public class ProgramType implements IsSerializable {
-    List<ProgramChapter> programChapters = new ArrayList<ProgramChapter>();
+
+    List<ProgramSubject> subjects = new ArrayList<ProgramSubject>();
 
     String type;
+
     public ProgramType() {
     }
+
     public ProgramType(String type) {
         this();
         this.type = type;
     }
 
-    public List<ProgramChapter> getProgramChapters() {
-        return programChapters;
+    public List<ProgramSubject> getProgramSubjects() {
+        return subjects;
     }
-    public void setProgramChapters(List<ProgramChapter> programChapters) {
-        this.programChapters = programChapters;
+
+    public void setProgramSubjects(List<ProgramSubject> subjects) {
+        this.subjects = subjects;
     }
+
     public String getType() {
         return type;
     }
+
     public void setType(String type) {
         this.type = type;
     }
