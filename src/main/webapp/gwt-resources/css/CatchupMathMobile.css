@@ -1,3 +1,8 @@
+#main-content {
+    width: 300px;
+}
+
+
 table {
   width: 100%;
 }
@@ -57,12 +62,6 @@ question_head_text {
 	font-family:sans-serif;
 }
 
-
-#main-content {
-	height:      300px;
-}
-
-
 /** Tutor styles */
 #tutor_embedded {
   width: 350px;
@@ -93,4 +92,15 @@ question_head_text {
         position: absolute;
         right: 0;
         width: 200px;
+}
+
+
+/** tutor sytles */
+#show-work-force,#tutoring_button {
+   display: none;
+}
+
+
+#steps_prev {
+  margin-right: 10px;
 }

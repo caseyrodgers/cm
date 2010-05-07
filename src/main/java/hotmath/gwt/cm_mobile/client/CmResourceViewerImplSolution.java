@@ -29,7 +29,7 @@ public class CmResourceViewerImplSolution extends Composite implements CmMobileR
     }
     
     @Override
-    public Widget getViewer(InmhItemData item) {
+    public Widget getViewer(final InmhItemData item) {
         CmMobileUser user = CatchupMathMobile.getUser();
         GetMobileSolutionAction action = new GetMobileSolutionAction(user.getUserId(),item.getFile());
         CatchupMathMobile.getCmService().execute(action, new AsyncCallback<SolutionResponse>() {
@@ -37,6 +37,7 @@ public class CmResourceViewerImplSolution extends Composite implements CmMobileR
             public void onSuccess(SolutionResponse result) {
                 HTML html = new HTML(result.getTutorHtml());
                 mainPanel.add(html);
+                initializeTutor(item.getFile(),result.getSolutionData(),"Solution", false,false);
             }
 
             @Override
@@ -47,4 +48,8 @@ public class CmResourceViewerImplSolution extends Composite implements CmMobileR
         
         return this;
     }
+    
+    private native void initializeTutor(String pid, String solutionDataJs, String title, boolean hasShowWork,boolean shouldExpandSolution) /*-{
+                                          $wnd.TutorManager.initializeTutor(pid, solutionDataJs,title,hasShowWork,shouldExpandSolution);
+                                          }-*/;
 }

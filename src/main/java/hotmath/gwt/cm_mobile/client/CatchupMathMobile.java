@@ -43,6 +43,10 @@ public class CatchupMathMobile implements EntryPoint {
         
         History.addValueChangeHandler(new CatchupMathMobileHistoryListener());
         
+        
+//        showTestSolution();
+//        if(true)return;
+        
         int uid = CatchupMathMobile.getQueryParameterInt("uid");
         if(uid > 0) {
             int testId = CatchupMathMobile.getQueryParameterInt("testId");
@@ -78,6 +82,13 @@ public class CatchupMathMobile implements EntryPoint {
     }
     
     public void showResourcePanel(InmhItemData item) {
+        mainPanel.setWidget(CmMobileResourceViewerFactory.createViewer(item).getViewer(item));
+    }
+    
+    
+    private void showTestSolution() {
+        user = new CmMobileUser(23502,19959,4,0,0);
+        InmhItemData item = new InmhItemData("practice", "samples_1_1_SampleExercises_1-Algebra_1","Test Solution");
         mainPanel.setWidget(CmMobileResourceViewerFactory.createViewer(item).getViewer(item));
     }
     
