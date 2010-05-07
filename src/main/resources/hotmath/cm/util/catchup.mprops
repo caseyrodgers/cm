@@ -1388,3 +1388,18 @@ from HA_USER u
 where u.admin_id = ?
 and cp.id = ?
 
+
+
+
+#################
+### CmProgramListingDao 
+#######################
+
+
+.key=GET_PROGRAM_LESSONS
+
+select distinct lesson
+from  HA_PROGRAM_LESSONS
+where pid in ($$PIDLIST$$)
+order by lesson;
+

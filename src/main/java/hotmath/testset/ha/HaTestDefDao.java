@@ -303,7 +303,7 @@ public class HaTestDefDao {
       * @return
       * @throws Exception
       */
-     private List<String> getTestIdsBasic(final Connection conn, String textcode, String chapter, int section, int startProblemNumber, int endProblemNumber, HaTestConfig config) throws Exception {
+     public List<String> getTestIdsBasic(final Connection conn, String textcode, String chapter, int section, int startProblemNumber, int endProblemNumber, HaTestConfig config) throws Exception {
          PreparedStatement ps=null;
          ResultSet rs=null;
          try {
