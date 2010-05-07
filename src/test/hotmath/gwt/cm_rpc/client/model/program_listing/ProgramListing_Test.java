@@ -16,14 +16,14 @@ public class ProgramListing_Test extends TestCase {
     public void testCreateTypes() throws Exception {
         ProgramListing pr = new ProgramListing();
         for(ProgramType type: pr.getProgramTypes()) {
-            assertTrue(type.getProgramChapters() != null);
+            assertTrue(type.getProgramSubjects().get(0).getChapters() != null);
         }
     }
     
     public void testCreateLessons() throws Exception {
         ProgramListing pr = new ProgramListing();
         for(ProgramType type: pr.getProgramTypes()) {
-            for(ProgramChapter chapters:type.getProgramChapters()) {
+            for(ProgramChapter chapters:type.getProgramSubjects().get(0).getChapters()) {
                 assertTrue(chapters.getLessons() != null);
             }
 

@@ -19,52 +19,52 @@ var TutorManager = {
 	steps : [],
 	pid : '',
 	stepUnit : null,
-	initializeTutor : function(pid, solutionData, showWork, expand) {
-		TutorManager.pid = pid;
-		TutorManager.loadTutorData(solutionData);
-		TutorManager.analyzeLoadedData();
-	},
-	
-	showNextStep:function() {
-		if(TutorManager.currentStepUnit+1 < TutorManager.stepUnits.length) {
-		    TutorManager.currentStepUnit++;
-		    showStepUnit(TutorManager.currentStepUnit);
-		}
-		else {
-			alert('No more steps');
-		}
-	},
-	
-	showPreviousStep:function() {
-		
-		if(TutorManager.currentStepUnit<0) {
-			alert('No previous step');
-			return;
-		}
-		else {
-		    while(TutorManager.currentStepUnit > 0) {
-		    	
-		        var step = TutorManager.stepUnits[TutorManager.currentStepUnit].ele;
-		        if(TutorManager.stepUnits[TutorManager.currentStepUnit].realNum != TutorManager.currentRealStep) {
-		        	TutorManager.currentRealStep = TutorManager.stepUnits[TutorManager.currentStepUnit].realNum;
-		            break;
-		        }
-		        step.style.display = 'none';
-		        TutorManager.currentStepUnit--;        
-		    }    
-		    if(TutorManager.currentStepUnit == 0) {
-		        //. move back one to signal not
-		        // curent in a step, only problem def
-		    	TutorManager.currentStepUnit = -1;
-		        // reposition at top
-		        window.scrollTo(0,0);
-		    }
-		    setAsCurrent(TutorManager.stepUnits[TutorManager.currentStepUnit].ele);
-		    return false;			
-		}
-	},
+    initializeTutor : function(pid, solutionData, showWork, expand) {
+        TutorManager.pid = pid;
+        TutorManager.currentRealStep = -1;
+        TutorManager.currentStepUnit = -1;
+        TutorManager.loadTutorData(solutionData);
+        TutorManager.analyzeLoadedData();
+    },
 
+    showNextStep:function() {
+        if(TutorManager.currentStepUnit+1 < TutorManager.stepUnits.length) {
+            TutorManager.currentStepUnit++;
+            showStepUnit(TutorManager.currentStepUnit);
+        }
+        else {
+                alert('No more steps');
+        }
+     },
+     showPreviousStep:function() {
 
+        if(TutorManager.currentStepUnit<0) {
+                alert('No previous step');
+                return;
+        }
+        else {
+            while(TutorManager.currentStepUnit > 0) {
+
+                var step = TutorManager.stepUnits[TutorManager.currentStepUnit].ele;
+                if(TutorManager.stepUnits[TutorManager.currentStepUnit].realNum != TutorManager.currentRealStep) {
+                        TutorManager.currentRealStep = TutorManager.stepUnits[TutorManager.currentStepUnit].realNum;
+                    break;
+                }
+                step.style.display = 'none';
+                TutorManager.currentStepUnit--;
+            }
+            if(TutorManager.currentStepUnit == 0) {
+                //. move back one to signal not
+                // curent in a step, only problem def
+                TutorManager.currentStepUnit = -1;
+                // reposition at top
+                window.scrollTo(0,0);
+            }
+            if(TutorManager.currentStepUnit > -1)
+                setAsCurrent(TutorManager.stepUnits[TutorManager.currentStepUnit].ele);
+            return false;
+        }
+      },
 	loadTutorData : function(solutionData) {
 		try {
 			var js = solutionData;

@@ -30,6 +30,6 @@ public class GetProgramListingCommand_Test extends CmDbTestCase {
         GetProgramListingAction action = new GetProgramListingAction();
         action.setAdminId(2);
         ProgramListing pr = ActionDispatcher.getInstance().execute(action);
-        assertTrue(pr.getProgramTypes().get(0).getProgramChapters().get(0).getLessons().size() > 0);
+        assertTrue(pr.getProgramTypes().get(0).getProgramSubjects().get(0).getChapters().get(0).getLessons().size() > 0);
     }
 }

@@ -164,8 +164,7 @@ public class GetPrescriptionCommand implements ActionHandler<GetPrescriptionActi
 
             /** Call action and request list of INMH items */
             GetViewedInmhItemsAction getViewedAction = new GetViewedInmhItemsAction(runId);
-            List<RpcData> rdata = ActionDispatcher.getInstance().execute(getViewedAction).getRpcData();
-            
+            List<RpcData> rdata = new GetViewedInmhItemsCommand().execute(conn, getViewedAction).getRpcData();
             
             List<PrescriptionSessionDataResource> resources = fixupInmhResources(sessionData.getInmhResources());
             for (PrescriptionSessionDataResource r : resources) {
