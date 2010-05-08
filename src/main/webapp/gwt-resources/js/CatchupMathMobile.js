@@ -183,62 +183,67 @@ function showStepUnit(num) {
 	if(num < 0)
 		return;
 	
-	var stepElement = TutorManager.stepUnits[num].ele;
-	if (stepElement == null)
-		return false;
-
-	stepElement.style.display = 'block'; // show it
-
-	if (stepElement.getAttribute("steprole") == 'step')
-		setAsCurrent(stepElement);
-
-	setStepTitle(num, stepElement);
-
-	// determine if figure should be displayed.  Only display
-	// if is the first one or different than the previous.
-	var figureUnit = _getFigureUnit(num);
-	if (figureUnit != null) {
-		if (num == 0) {
-			figureUnit.style.display = "block";
-		} else {
-			// only display image if it is not 
-			// the same as the previously displayed image.
-			// find the first previous image.
-			var prevFigureUnit = findPreviousFigureUnit(num);
-			if (prevFigureUnit != null && prevFigureUnit.src == figureUnit.src) {
-				// skip it
-				figureUnit.style.display = "none";
-			} else {
-				// image is different, so show it
+	try {
+		var stepElement = TutorManager.stepUnits[num].ele;
+		if (stepElement == null)
+			return false;
+	
+		stepElement.style.display = 'block'; // show it
+	
+		if (stepElement.getAttribute("steprole") == 'step')
+			setAsCurrent(stepElement);
+	
+		setStepTitle(num, stepElement);
+	
+		// determine if figure should be displayed.  Only display
+		// if is the first one or different than the previous.
+		var figureUnit = _getFigureUnit(num);
+		if (figureUnit != null) {
+			if (num == 0) {
 				figureUnit.style.display = "block";
+			} else {
+				// only display image if it is not 
+				// the same as the previously displayed image.
+				// find the first previous image.
+				var prevFigureUnit = findPreviousFigureUnit(num);
+				if (prevFigureUnit != null && prevFigureUnit.src == figureUnit.src) {
+					// skip it
+					figureUnit.style.display = "none";
+				} else {
+					// image is different, so show it
+					figureUnit.style.display = "block";
+				}
 			}
 		}
-	}
-
-	// make sure all previous hints are invisible
-	// stepunits of role == 'hint'
-	for (i = num - 1; i > -1; i--) {
-		if (TutorManager.stepUnits[i].roleType == 'hint') {
-			TutorManager.stepUnits[i].ele.style.display = 'none';
-		} else {
-			// set as not-current
-			setAsNotCurrent(TutorManager.stepUnits[i].ele);
+	
+		// make sure all previous hints are invisible
+		// stepunits of role == 'hint'
+		for (i = num - 1; i > -1; i--) {
+			if (TutorManager.stepUnits[i].roleType == 'hint') {
+				TutorManager.stepUnits[i].ele.style.display = 'none';
+			} else {
+				// set as not-current
+				setAsNotCurrent(TutorManager.stepUnits[i].ele);
+			}
 		}
+	
+		TutorManager.currentStepUnit = num;
+		TutorManager.currentRealStep = TutorManager.stepUnits[num].realNum;
+	
+		// Turn off next if no more steps
+		if (TutorManager.stepUnits[num + 1] == null) {
+			setState("step", false);
+		} else {
+			setState("step", true);
+		}
+		// back is on
+		setState("back", true);
+	
+		scrollToStep(num);
 	}
-
-	TutorManager.currentStepUnit = num;
-	TutorManager.currentRealStep = TutorManager.stepUnits[num].realNum;
-
-	// Turn off next if no more steps
-	if (TutorManager.stepUnits[num + 1] == null) {
-		setState("step", false);
-	} else {
-		setState("step", true);
+	catch(e) {
+		alert('Error showing step: ' + e);
 	}
-	// back is on
-	setState("back", true);
-
-	scrollToStep(num);
 	return true;
 }
 
