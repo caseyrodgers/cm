@@ -1,14 +1,13 @@
 #main-content {
-    width: 300px;
+    
 }
-
 
 table {
   width: 100%;
 }
 
 #testset_div {
-    border: 1px solid blue;
+    
 }
 
 .question_solution_link {
@@ -64,8 +63,7 @@ question_head_text {
 
 /** Tutor styles */
 #tutor_embedded {
-  width: 350px;
-  border: 1px solid red;
+  width: 100%;
 }
 
 
@@ -103,4 +101,12 @@ question_head_text {
 
 #steps_prev {
   margin-right: 10px;
+}
+
+.step_title_step {
+   background: #E7C2AA;
+}
+
+.step_title_hint {
+	background: #DBE11E;
 }

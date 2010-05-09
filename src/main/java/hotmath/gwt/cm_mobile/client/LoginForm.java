@@ -27,8 +27,6 @@ public class LoginForm extends Composite {
 
     public LoginForm() {
         initWidget(uiBinder.createAndBindUi(this));
-        setHeight("300px");
-        
         readCookie();
     }
 

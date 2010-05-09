@@ -43,7 +43,7 @@ public class QuizPanel extends Composite {
     
     /** bind to the main panel */
     @UiField VerticalPanel mainPanel;
-    @UiField Button checkTest;
+    @UiField Button checkTest1, checkTest2;
     @UiField CheckBox checkOffline;
 
     List<Integer> testQuestionAnswers;
@@ -61,8 +61,16 @@ public class QuizPanel extends Composite {
         getQuiz();
     }
     
-    @UiHandler("checkTest")
-    void handleClick(ClickEvent e) {
+    @UiHandler("checkTest1")
+    void handleClick1(ClickEvent e) {
+        handleCheck(e);
+    }
+    @UiHandler("checkTest2")
+    void handleClick2(ClickEvent e) {
+        handleCheck(e);
+    }    
+
+    private void handleCheck(ClickEvent e) {
         CmMobileUser user = CatchupMathMobile.__instance.user;
         CreateTestRunMobileAction checkTestAction = new CreateTestRunMobileAction(user,answerAction);
         CatchupMathMobile.getCmService().execute(checkTestAction, new AsyncCallback<PrescriptionSessionResponse>() {
@@ -81,8 +89,7 @@ public class QuizPanel extends Composite {
                 mainPanel.add(new HTML("<div style='color: red'><h1>Error Occurred</h2>" + caught.getMessage() + "</div>"));
             }
         });
-    }    
-    
+    }
     
     @UiHandler("checkOffline")
     void handleSetOffline(ClickEvent e) {

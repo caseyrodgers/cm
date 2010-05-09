@@ -3,18 +3,22 @@
 
 	<ui:style>
 	    .formLayout {
-	    	background: #05326D;
+	    	background: #CCCCCC;
 	    	margin: 20px;
 	    	color: white;
-	    	width: 300px;
+	    	height: 200px;
 	     }
 	     
 		.heading {
-			color: #4282D3;
+			color: #F3280D;
 			font-weight: bold;
 			font-size: 1.1em;
 			text-align: center;
 			margin-top: 10px;
+		}
+		.tableLayout {
+			color: white;
+			margin: 20px 0 15px 10px;
 		}
 	</ui:style>
 	
@@ -22,7 +26,7 @@
 		glassEnabled="true" animationEnabled="true" styleName="{style.formLayout}">
 		<g:HTMLPanel styleName="{style.heading}">
 		   <h2 style="{style.heading}">Catchup Math Mobile</h2>
-			<table   style='color: white;margin: 20px 0 15px 10px;' >
+			<table styleName='style.tableLayout' >
 				<tr>
 					<td>Username:</td>
 					<td>
