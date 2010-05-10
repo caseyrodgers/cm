@@ -9,7 +9,7 @@ public class ProgramChapter implements IsSerializable{
     String name;
     int number;
     
-    List<ProgramLesson> lessons = new ArrayList<ProgramLesson>();
+    List<ProgramSection> sections = new ArrayList<ProgramSection>();
     
     public ProgramChapter() {
     }
@@ -35,12 +35,12 @@ public class ProgramChapter implements IsSerializable{
         this.number = number;
     }
 
-    public List<ProgramLesson> getLessons() {
-        return lessons;
+    public List<ProgramSection> getSections() {
+        return sections;
     }
 
-    public void setLessons(List<ProgramLesson> lessons) {
-        this.lessons = lessons;
+    public void setSections(List<ProgramSection> lessons) {
+        this.sections = lessons;
     }
     
 }
