@@ -406,6 +406,9 @@ class MyFieldValidator implements Validator {
         if(value.trim().length() == 0)
             return "This field is required";
         
+        if(value.contains(" "))
+            return "No spaces allowed";
+        
         return null;
     }
 }

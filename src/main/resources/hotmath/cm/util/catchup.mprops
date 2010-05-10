@@ -1243,7 +1243,9 @@ left outer join (
    group by subscriber_id
 ) ss
    on a.subscriber_id = ss.subscriber_id
-where a.user_name = ? and a.passcode = ?
+where a.user_name = ? 
+and replace(a.passcode,' ','') = replace(?,' ','')
+
 
 .key=USER_LOGIN_SCHOOL
 
@@ -1258,7 +1260,7 @@ left outer join (
 ) ss
 on h.subscriber_id = ss.subscriber_id
 where s.password = ?
-  and u.user_passcode = ? and u.is_active = 1
+  and replace(u.user_passcode,' ','') = replace(?,' ','') and u.is_active = 1
 
 .key=USER_LOGIN_INDIV
 
@@ -1273,7 +1275,7 @@ left outer join (
 ) ss
 on h.subscriber_id = ss.subscriber_id
 where s.student_email = ? and s.type = 'PS'
-  and u.user_passcode = ? and u.is_active = 1
+  and replace(u.user_passcode,' ','') = replace(?,' ','') and u.is_active = 1
   
 .key=USER_LOGIN_AUTOREG
 

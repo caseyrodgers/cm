@@ -4,6 +4,7 @@ import hotmath.gwt.cm_rpc.client.rpc.RpcData;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.ui.CmMainPanel;
+import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
 import hotmath.gwt.shared.client.eventbus.CmEventListenerImplDefault;
@@ -19,6 +20,7 @@ import com.extjs.gxt.ui.client.widget.Html;
 import com.extjs.gxt.ui.client.widget.Window;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.google.gwt.user.client.DOM;
+import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Frame;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -46,7 +48,6 @@ public class ResourceViewerImplTutor extends CmResourcePanelImplWithWhiteboard {
     
     public ResourceViewerImplTutor() {
         _instance = this;
-
         addStyleName(STYLE_NAME);
         setScrollMode(Scroll.AUTOY);
     }
@@ -158,6 +159,15 @@ public class ResourceViewerImplTutor extends CmResourcePanelImplWithWhiteboard {
                     ResourceViewerImplTutor.initializeTutor(getResourceItem().getFile(), getResourceItem().getTitle(), hasShowWork,shouldExpandSolution);
 
                     EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_SOLUTION_SHOW, getResourceItem()));
+                    
+                    
+                    Anchor anchor = new Anchor("How To Use This");
+                    anchor.getElement().setAttribute("position", "absolute");
+                    anchor.getElement().setAttribute("left", "0");
+                    anchor.getElement().setAttribute("top", "0");
+                    add(anchor);
+
+                    
                     
                     
                 } catch (Exception e) {
@@ -313,4 +323,22 @@ class ShowWorkExampleWindow extends Window {
         add(frame);
         setVisible(true);
     }
+}
+
+
+class ShowHowToUseDialog extends CmWindow {
+    public ShowHowToUseDialog() {
+        setSize(440,480);
+        setHeading("How To Use This");
+        add(new Html(html));
+        addCloseButton();
+    }
+    String html = 
+        "<p>The best way to learn is to try problems on your own, before clicking the arrow button below.</p>" +
+        "<p>In order to advance to the next lesson, please click all the way through our hints and steps.</p>" +
+        "<p>Your whiteboard input is saved for your teacher to review. If your teacher requires it, you must use" +
+        " the whiteboard before viewing the hints and steps.</p>" +
+        "<p>There is an optional “Enter your answer” box for some problems. This is for your convenience; your answer " +
+        "is not saved or graded. If you enter the correct answer, you do not need to click through the steps!" +
+        "</p>";
 }

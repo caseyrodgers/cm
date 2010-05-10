@@ -92,13 +92,22 @@ public class BulkRegLoader {
             line = removeSpecialCharacters(line);
             
             String pair[] = line.split("\t");
-            if(pair.length == 2 && !nameSet.contains(pair[0]) && !passwdSet.contains(pair[1]) ) {
+            
+            /** strip spaces from passwords before processing
+             *  
+             *  NOTE: this could lead to confusing error reporting
+             *        (perhaps keep orig to use in reporting)
+             *        
+             */
+            String password = pair[1].replace(" ", "");
+            
+            if(pair.length == 2 && !nameSet.contains(pair[0]) && !passwdSet.contains(password) ) {
                 AutoRegistrationEntry entry = new AutoRegistrationEntry();
                 entry.setName(pair[0]);
                 entry.setPassword(pair[1]);
                 
                 nameSet.add(pair[0]);
-                passwdSet.add(pair[1]);
+                passwdSet.add(password);
                 
                 entries.add(entry);
             }

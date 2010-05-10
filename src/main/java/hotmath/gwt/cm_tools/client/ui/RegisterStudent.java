@@ -784,6 +784,14 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
                 tf.forceInvalid(ENTRY_REQUIRED_MSG);
                 throw new CmExceptionValidationFailed();
             }
+            else {
+                if(passcode.contains(" ")) {
+                    tf.focus();
+                    tf.forceInvalid("Password cannot contain spaces");
+                    throw new CmExceptionValidationFailed();
+                }
+
+            }
         }
 
         
