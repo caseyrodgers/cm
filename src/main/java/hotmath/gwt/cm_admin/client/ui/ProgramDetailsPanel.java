@@ -12,6 +12,7 @@ import hotmath.gwt.cm_rpc.client.model.program_listing.ProgramType;
 import hotmath.gwt.cm_rpc.client.model.program_listing.ProgramChapter;
 import hotmath.gwt.cm_rpc.client.model.program_listing.ProgramChapterAll;
 import hotmath.gwt.cm_rpc.client.model.program_listing.ProgramLesson;
+import hotmath.gwt.cm_rpc.client.model.program_listing.ProgramSection;
 import hotmath.gwt.cm_rpc.client.model.program_listing.ProgramSubject;
 import hotmath.gwt.cm_rpc.client.rpc.GetProgramListingAction;
 
@@ -32,21 +33,23 @@ import com.extjs.gxt.ui.client.widget.layout.FlowLayout;
 import com.extjs.gxt.ui.client.widget.tips.ToolTipConfig;  
 import com.extjs.gxt.ui.client.widget.treepanel.TreePanel;  
 import com.google.gwt.user.client.Element;  
+import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.rpc.AsyncCallback;  
 import com.google.gwt.user.client.ui.AbstractImagePrototype;  
   
 import com.extjs.gxt.ui.client.Style.Scroll;
 import com.extjs.gxt.ui.client.data.ModelData;  
-import com.extjs.gxt.ui.client.event.ButtonEvent;  
+import com.extjs.gxt.ui.client.event.BaseEvent;
+import com.extjs.gxt.ui.client.event.ButtonEvent;
+import com.extjs.gxt.ui.client.event.Events;
+import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.SelectionListener;  
-import com.extjs.gxt.ui.client.store.TreeStore;  
-import com.extjs.gxt.ui.client.widget.LayoutContainer;  
+import com.extjs.gxt.ui.client.event.ResizeEvent;
+import com.extjs.gxt.ui.client.event.SelectionEvent;
 import com.extjs.gxt.ui.client.widget.button.Button;  
 import com.extjs.gxt.ui.client.widget.button.ButtonBar;  
 import com.extjs.gxt.ui.client.widget.form.ComboBox;
 import com.extjs.gxt.ui.client.widget.layout.FlowData;  
-import com.extjs.gxt.ui.client.widget.treepanel.TreePanel;  
-import com.google.gwt.user.client.Element;  
   
 public class ProgramDetailsPanel extends CmWindow {  
 
@@ -76,6 +79,9 @@ public class ProgramDetailsPanel extends CmWindow {
     	tree.setWidth(290);  
     	tree.setDisplayProperty("name");
     	tree.setAutoHeight(true);
+    	
+    	//Listener<SelectionEvent<ModelData>> listener;
+		//tree.addListener(Events.OnClick, listener );
 
     	getProgramListingRPC();
 
@@ -122,8 +128,8 @@ public class ProgramDetailsPanel extends CmWindow {
                 
             	List <ProgramType> progTypeList = pl.getProgramTypes();
             	CmTreeModel ctMdl = new CmTreeModel();
+
             	for (ProgramType pt : progTypeList) {
-            		//StudyProgramExt spe = new StudyProgramExt(pt.getType(), " ", " ", 0, 0, 0, 0, " ");
             		CmTreeModel ctm0 = new CmTreeModel(pt.getType());
             		ctMdl.add(ctm0);
 
@@ -135,25 +141,26 @@ public class ProgramDetailsPanel extends CmWindow {
             			for (ProgramChapter pc : ps.getChapters()) {
 
             				if (pc instanceof ProgramChapterAll) {
-            					// TODO: don't load leaf node data now - load asynchronously into tree or separate window
-            					for (ProgramLesson l : pc.getLessons()) {
-            						//LessonItemModel lim = new LessonItemModel();
-            						//lim.setName(l.getName());
-            						CmTreeModel ctm = new CmTreeModel(l.getName());
-            						ctm1.add(ctm);
+            					for (ProgramSection s : pc.getSections()) {
+            						CmTreeModel ctm2 = new CmTreeModel(s.getName());
+            						ctm1.add(ctm2);
+            						
+            						// add place holder Lesson Item to Section (will be loaded asynchronously)
+            						CmTreeModel ctm3 = new CmTreeModel("Lessons");
+            						ctm2.add(ctm3);
             					}
             				}
             				else {
-            					//ChapterModel cm = new ChapterModel(String.valueOf(pc.getNumber()), pc.getName());
             					CmTreeModel ctm2 = new CmTreeModel(String.valueOf(pc.getNumber()) + " " + pc.getName());
             					ctm1.add(ctm2);
 
-            					// TODO: don't load leaf node data now - load asynchronously into tree or separate window
-            					for (ProgramLesson l : pc.getLessons()) {
-            						//LessonItemModel lim = new LessonItemModel();
-            						//lim.setName(l.getName());
-            						CmTreeModel ctm = new CmTreeModel(l.getName());
-            						ctm2.add(ctm);
+            					for (ProgramSection s : pc.getSections()) {
+            						CmTreeModel ctm3 = new CmTreeModel(s.getName());
+            						ctm2.add(ctm3);
+            						
+            						// add place holder Lesson Item to Section (will be loaded asynchronously)
+            						CmTreeModel ctm4 = new CmTreeModel("Lessons");
+            						ctm3.add(ctm4);            						
             					}
             				}
             			}
