@@ -754,6 +754,14 @@ FROM   HA_TEST_DEF
 WHERE  test_def_id = ?
 
 
+.key=TEST_DEF_IDS_FOR_PROG_ID
+
+SELECT test_def_id
+FROM   HA_TEST_DEF
+where  prog_id = ?
+  and  is_active = 1
+
+
 .key=TEST_IDS_FOR_PLACEMENT_SEGMENT
 
 SELECT problemindex
