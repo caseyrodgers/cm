@@ -31,7 +31,7 @@ public class HaTestDefDao {
         
         List<String> names = new ArrayList<String>();
         try {
-            String sql = "select test_name from HA_TEST_DEF order by test_def_id";
+            String sql = CmMultiLinePropertyReader.getInstance().getProperty("ALL_TEST_NAMES");
             ps = conn.prepareStatement(sql);
             rs = ps.executeQuery();
             while(rs.next()) {
@@ -67,7 +67,7 @@ public class HaTestDefDao {
          PreparedStatement pstat = null;
          ResultSet rs = null;
          try {
-             String sql = "select * from HA_TEST_DEF where test_name = ? ";
+             String sql = CmMultiLinePropertyReader.getInstance().getProperty("TEST_FOR_TEST_NAME");
 
              pstat = conn.prepareStatement(sql);
 
@@ -105,7 +105,7 @@ public class HaTestDefDao {
          PreparedStatement pstat = null;
          ResultSet rs = null;
          try {
-             String sql = "select * from HA_TEST_DEF where test_def_id = ? ";
+             String sql = CmMultiLinePropertyReader.getInstance().getProperty("TEST_FOR_TEST_DEF_ID");
 
              pstat = conn.prepareStatement(sql);
 
@@ -124,7 +124,52 @@ public class HaTestDefDao {
              SqlUtilities.releaseResources(rs, pstat, null);
          }
      }
-     
+
+     public List<HaTestDef> getTestDefs(final Connection conn, List<Integer> testDefIds) throws Exception {
+    	 List<HaTestDef> list = new ArrayList<HaTestDef>();
+    	 
+    	 try {
+        	 for (Integer testDefId : testDefIds) {
+        		 list.add(getTestDef(conn, testDefId));
+        	 }
+    	 }
+    	 catch (Exception e) {
+    		 logger.error("Error getting test defs for test_def_ids: " + testDefIds, e);
+             throw new HotMathException(e, "Error getting test defs for testDefIds: " + testDefIds + ", " + e.getMessage());
+         }
+    	 return list;
+     }
+
+     public List<HaTestDef> getTestDefs(final Connection conn, String progId) throws Exception {
+    	 List<Integer> testDefIds = getTestDefIdsForProgId(conn, progId);
+    	 List<HaTestDef> list = getTestDefs(conn, testDefIds);
+    	 return list;
+     }
+
+     public List<Integer> getTestDefIdsForProgId(final Connection conn, String progId) throws Exception {
+    	 PreparedStatement ps = null;
+    	 ResultSet rs = null;
+    	 List<Integer> ids = new ArrayList<Integer>();
+    	 try {
+             String sql = CmMultiLinePropertyReader.getInstance().getProperty("TEST_DEF_IDS_FOR_PROG_ID");
+             ps = conn.prepareStatement(sql);
+             ps.setString(1, progId);
+             rs = ps.executeQuery();
+             while (rs.next()) {
+            	 ids.add(rs.getInt("test_def_id"));
+             }
+             if (ids.size() < 1) {
+            	 logger.warn("*** no test_def_ids found for prog_id: " + progId, new Exception());
+             }
+    	 }
+    	 catch (Exception e) {
+    		 logger.error("Error getting test def ids for prog id: " + progId, e);
+             throw new HotMathException(e, "Error getting test def ids for prog id: " + progId + ", " + e.getMessage());
+         } finally {
+             SqlUtilities.releaseResources(rs, ps, null);
+         }
+         return ids;
+     }
      
      
      /**
@@ -139,8 +184,7 @@ public class HaTestDefDao {
          ResultSet rs = null;
          List<String> chapters = new ArrayList<String>();
          try {
-             String sql = "select title " + " from BOOK_TOC t " + " where level = 2 " + " and textcode = ?"
-                     + " order by cast(title_number as unsigned) ";
+             String sql = CmMultiLinePropertyReader.getInstance().getProperty("PROGRAM_CHAPTERS_FOR_TEST_DEF");
 
              pstat = conn.prepareStatement(sql);
 
