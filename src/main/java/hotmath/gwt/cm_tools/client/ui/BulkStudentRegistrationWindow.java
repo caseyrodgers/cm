@@ -15,7 +15,6 @@ import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.widget.Html;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.FieldSet;
-import com.extjs.gxt.ui.client.widget.form.FileUploadField;
 import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
@@ -32,7 +31,6 @@ public class BulkStudentRegistrationWindow extends RegisterStudent {
 
 	TextField<String> groupFld;
 	String _uploadKey; // = "upload_1250558647547";
-	FileUploadField _fileUpload;
 	CmUploadForm _uploadForm;
 	StudentModel _student;
 
