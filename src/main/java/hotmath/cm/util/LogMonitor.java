@@ -46,7 +46,7 @@ public class LogMonitor {
         _tailer.addLogFileTailerListener(new LogFileTailerListener() {
             @Override
             public void newLogFileLine(String line) {
-                if(line.indexOf("service.ActionDispatcher") > -1)
+                if(line.indexOf("rpc.ActionDispatcher") > -1)
                     processActionLog(line);
             }
         });
