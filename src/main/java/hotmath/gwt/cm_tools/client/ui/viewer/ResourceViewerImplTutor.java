@@ -14,13 +14,19 @@ import hotmath.gwt.shared.client.rpc.RetryAction;
 import hotmath.gwt.shared.client.rpc.action.GetSolutionAction;
 import hotmath.gwt.shared.client.util.UserInfo;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.Style.Scroll;
+import com.extjs.gxt.ui.client.event.ButtonEvent;
+import com.extjs.gxt.ui.client.event.SelectionListener;
+import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.Html;
 import com.extjs.gxt.ui.client.widget.Window;
+import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.google.gwt.user.client.DOM;
-import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Frame;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -102,6 +108,19 @@ public class ResourceViewerImplTutor extends CmResourcePanelImplWithWhiteboard {
         return this.pid;
     }
 
+    
+    public List<Component> getContainerTools() {
+        List<Component> tools = new ArrayList<Component>();
+        tools.add(new Button("How to Use This", new SelectionListener<ButtonEvent>() {
+            @Override
+            public void componentSelected(ButtonEvent ce) {
+                new ShowHowToUseDialog().setVisible(true);
+            }
+        }));
+        tools.addAll(super.getContainerTools());
+        return tools;
+    }
+    
     /**
      * Load the tutor
      * 
@@ -133,9 +152,9 @@ public class ResourceViewerImplTutor extends CmResourcePanelImplWithWhiteboard {
                 String html = result.getDataAsString("solutionHtml");
                 boolean hasShowWork = result.getDataAsInt("hasShowWork") > 0;
 
+                
                 tutorPanel = new Html(html);
                 tutorPanel.setStyleName("tutor_solution_wrapper");
-
                 addResource(tutorPanel, getResourceItem().getTitle());
 
                 
@@ -159,17 +178,6 @@ public class ResourceViewerImplTutor extends CmResourcePanelImplWithWhiteboard {
                     ResourceViewerImplTutor.initializeTutor(getResourceItem().getFile(), getResourceItem().getTitle(), hasShowWork,shouldExpandSolution);
 
                     EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_SOLUTION_SHOW, getResourceItem()));
-                    
-                    
-                    Anchor anchor = new Anchor("How To Use This");
-                    anchor.getElement().setAttribute("position", "absolute");
-                    anchor.getElement().setAttribute("left", "0");
-                    anchor.getElement().setAttribute("top", "0");
-                    add(anchor);
-
-                    
-                    
-                    
                 } catch (Exception e) {
                     e.printStackTrace();
                     CatchupMathTools.showAlert(e.getMessage());
@@ -328,17 +336,20 @@ class ShowWorkExampleWindow extends Window {
 
 class ShowHowToUseDialog extends CmWindow {
     public ShowHowToUseDialog() {
-        setSize(440,480);
+        setPosition(300,40);
+        setModal(true);
+        setSize(350,300);
         setHeading("How To Use This");
         add(new Html(html));
         addCloseButton();
     }
-    String html = 
+    String html =
+        "<div style='padding: 10px 5px;'>" +
         "<p>The best way to learn is to try problems on your own, before clicking the arrow button below.</p>" +
         "<p>In order to advance to the next lesson, please click all the way through our hints and steps.</p>" +
         "<p>Your whiteboard input is saved for your teacher to review. If your teacher requires it, you must use" +
         " the whiteboard before viewing the hints and steps.</p>" +
-        "<p>There is an optional “Enter your answer” box for some problems. This is for your convenience; your answer " +
+        "<p>There is an optional 'Enter your answer' box for some problems. This is for your convenience; your answer " +
         "is not saved or graded. If you enter the correct answer, you do not need to click through the steps!" +
-        "</p>";
+        "</p></div>";
 }

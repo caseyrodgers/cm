@@ -910,7 +910,6 @@ img.resource-item-complete {
 
 /** Target the background of the resource container for the tutor*/
 /** .cm-resource-viewer-container .resource-viewer-impl-tutor .x-panel-body */
- 
 .cm-resource-viewer-container .x-panel-body {
     background: transparent;
     border: none;
@@ -1014,3 +1013,4 @@ img.resource-item-complete {
 	position: relative;
 	z-index: 1;
 }
+
