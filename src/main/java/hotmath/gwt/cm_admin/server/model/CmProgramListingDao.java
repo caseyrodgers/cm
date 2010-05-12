@@ -67,6 +67,7 @@ public class CmProgramListingDao {
 
         for (HaTestDef testDef : testDefs) {
             ProgramSubject ps = new ProgramSubject();
+            ps.setTestDefId(testDef.getTestDefId());
             ps.setName(testDef.getSubjectId());
             pt.getProgramSubjects().add(ps);
 
@@ -103,6 +104,8 @@ public class CmProgramListingDao {
         ResultSet rs = null;
         try {
             CmList<ProgramLesson> lessons = new CmArrayList<ProgramLesson>();
+            
+            logger.info(String.format("+++ getLessonsFor(): testDefId: %d, segment: %d", testDefId, segment));
             
             /** first get list of PIDS that make this quiz segment
              * 
