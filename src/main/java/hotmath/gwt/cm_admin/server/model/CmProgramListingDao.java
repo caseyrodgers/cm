@@ -115,7 +115,7 @@ public class CmProgramListingDao {
 
             StudentUserProgramModel userProgram = new StudentUserProgramModel();
             userProgram.setTestDef(testDef);
-            List<String> pids = hda.getTestIdsForSegment(conn,userProgram,2,testDef.getTextCode(),testDef.getChapter(),testConfig,0);
+            List<String> pids = hda.getTestIdsForSegment(conn,userProgram,2,testDef.getTextCode(),testDef.getChapter(),testDef.getTestConfig(),0);
             
             /** now get list of lessons assigned to these pids by looking in HM_PROGRAM_LESSONS which is created
              *  by the HA_PRESCRIPTION_LOG Deploylet action.  This is a static table that holds information about
@@ -123,19 +123,24 @@ public class CmProgramListingDao {
              *  
              */
             /** construct pid in list */
-            String pidList="";
+            StringBuilder sb = new StringBuilder();
+            boolean first = true;
             for(String id : pids) {
-                if(pidList.length()>0) pidList += ",";
-                pidList += "'" + id + "'";
+                if (first != true)
+                	sb.append(",");
+                else
+                	first = false;
+                sb.append("'").append(id).append("'");
             }
             Map<String,String> map = new HashMap<String,String>(); 
-            map.put("PIDLIST", pidList);
+            map.put("PIDLIST", sb.toString());
             String sql = CmMultiLinePropertyReader.getInstance().getProperty("GET_PROGRAM_LESSONS", map);
             stmt = conn.createStatement();
             rs = stmt.executeQuery(sql);
             while(rs.next()) {
                 lessons.add(new ProgramLesson(rs.getString("lesson")));
             }
+            logger.info(String.format("+++ getLessonsFor(): found %d lessons", lessons.size()));
             return lessons;
         }
         finally {
@@ -150,7 +155,8 @@ public class CmProgramListingDao {
     	
     	for (int i=1; i<=segmentCount; i++) {
     		ProgramSection s = new ProgramSection();
-    		s.setName("Section " + i);
+    		s.setName(String.format("Section %d", i));
+    		s.setNumber(i);
     		list.add(s);
     	}
     	return list;
