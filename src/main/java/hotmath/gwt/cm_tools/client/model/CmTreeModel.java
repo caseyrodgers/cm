@@ -8,7 +8,10 @@ public class CmTreeModel extends BaseTreeModel implements Serializable {
 
 	private static final long serialVersionUID = -8370354125432687765L;
 	
-	private Boolean showChildrenOutsideTree = false;
+	private Boolean loadChildrenAsynchronously = false;
+	
+	private int id = 0;
+	private int number = 0;
 	
 	public CmTreeModel() {}
 	
@@ -24,12 +27,28 @@ public class CmTreeModel extends BaseTreeModel implements Serializable {
 		return get("name");
 	}
 
-	public Boolean showChildrenOutsideTree() {
-		return showChildrenOutsideTree;
+	public int getId() {
+		return id;
 	}
 	
-	public void setShowChildrenOutsideTree(Boolean showChildrenOutsideTree) {
-		this.showChildrenOutsideTree = showChildrenOutsideTree;
+	public void setId(int id) {
+		this.id = id;
+	}
+
+	public int getNumber() {
+		return number;
+	}
+
+	public void setNumber(int number) {
+		this.number = number;
+	}
+
+	public Boolean loadChildrenAsynchronously() {
+		return loadChildrenAsynchronously;
+	}
+	
+	public void setLoadChildrenAsynchronously(Boolean loadChildrenAsynchronously) {
+		this.loadChildrenAsynchronously = loadChildrenAsynchronously;
 	}
 
 }
