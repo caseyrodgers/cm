@@ -7,13 +7,13 @@ import hotmath.gwt.cm_rpc.client.model.program_listing.ProgramLesson;
  * @author casey
  *
  */
-public class GetProgramLessonAction implements Action<CmList<ProgramLesson>>{
+public class GetProgramLessonsAction implements Action<CmList<ProgramLesson>>{
     
     int testDefId;
     int segment;
     
-    public GetProgramLessonAction() {}
-    public GetProgramLessonAction(int testDefId, int segment) {
+    public GetProgramLessonsAction() {}
+    public GetProgramLessonsAction(int testDefId, int segment) {
         this.testDefId = testDefId;
         this.segment = segment;
     }
