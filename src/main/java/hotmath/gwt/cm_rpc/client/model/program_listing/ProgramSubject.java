@@ -7,6 +7,8 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 
 public class ProgramSubject implements IsSerializable{
     String name;
+    
+    int testDefId;
 
     List<String> gradeLevels;
     
@@ -28,7 +30,15 @@ public class ProgramSubject implements IsSerializable{
         this.name = name;
     }
 
-    public List<String> getGradeLevels() {
+    public int getTestDefId() {
+		return testDefId;
+	}
+
+	public void setTestDefId(int testDefId) {
+		this.testDefId = testDefId;
+	}
+
+	public List<String> getGradeLevels() {
         return gradeLevels;
     }
 
