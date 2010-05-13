@@ -17,8 +17,13 @@ public class GetAccountInfoForAdminUidCommand implements ActionHandler<GetAccoun
         CmAdminDao dao = new CmAdminDao();
         AccountInfoModel aInfo = dao.getAccountInfo(conn, action.getUid());
         if(aInfo.getIsTutoringEnabled()) {
-            int minutes = LWLIntegrationManager.getInstance().getRemainingMinute(aInfo.getSubscriberId());
-            aInfo.setTutoringMinutes(minutes);
+            try {
+                int minutes = LWLIntegrationManager.getInstance().getRemainingMinute(aInfo.getSubscriberId());
+                aInfo.setTutoringMinutes(minutes);
+            }
+            catch(Exception e) {
+                aInfo.setTutoringMinutes(-1);
+            }
         }
         return aInfo;
     }

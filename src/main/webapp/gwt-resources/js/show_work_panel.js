@@ -13,6 +13,10 @@ function flashWhiteboardOut(jsonOut) {
     parent.flashWhiteboardOut(jsonOut);
 }
 
+function flashLostFocus() {
+	alert('Flash has lost focus!');
+}
+
 // called when whiteboard is ready for
 // commands.  Funnel it back to parent
 // JSNI defined method in ShowWorkPanel.class
@@ -91,6 +95,10 @@ function whiteboardSnapshotData(snapshot) {
 function createWhiteboardSnapshot_Jsni() {
 	var fo = swfobject.getObjectById("whiteboard-object");
 	fo.flashWhiteboardSnapshot();
+}
+
+function flushWhiteboardChanges() {
+	parent.flushWhiteboardChanges();
 }
 
 // setup hooks for GWT to call from the app window.

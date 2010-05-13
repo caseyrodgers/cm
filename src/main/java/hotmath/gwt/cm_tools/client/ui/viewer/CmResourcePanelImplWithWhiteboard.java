@@ -1,19 +1,24 @@
 package hotmath.gwt.cm_tools.client.ui.viewer;
 
+import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.ui.CmMainPanel;
 import hotmath.gwt.cm_tools.client.ui.resource_viewer.CmResourcePanelImplDefault;
 import hotmath.gwt.cm_tools.client.ui.resource_viewer.CmResourcePanelContainer.ResourceViewerState;
 import hotmath.gwt.shared.client.data.CmAsyncRequestImplDefault;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
+import hotmath.gwt.shared.client.eventbus.CmEventListenerImplDefault;
 import hotmath.gwt.shared.client.eventbus.EventBus;
 import hotmath.gwt.shared.client.eventbus.EventType;
 import hotmath.gwt.shared.client.util.UserInfo;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.extjs.gxt.ui.client.Style.LayoutRegion;
 import com.extjs.gxt.ui.client.Style.Scroll;
+import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
+import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
@@ -30,14 +35,40 @@ import com.google.gwt.user.client.ui.Widget;
  *
  */
 public abstract class CmResourcePanelImplWithWhiteboard extends CmResourcePanelImplDefault {
-    
+
     public enum DisplayMode{TUTOR,WHITEBOARD};
     
     DisplayMode _displayMode;
     static DisplayMode __lastDisplayMode = null;
     
+    static Button _saveWhiteboard;
+    static {
+        _saveWhiteboard = new Button("Save Whiteboard");
+        _saveWhiteboard.setVisible(false);
+        _saveWhiteboard.addSelectionListener(new SelectionListener<ButtonEvent>() {
+            @Override
+            public void componentSelected(ButtonEvent ce) {
+                EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_WHITEBOARD_SAVE));
+            }
+        });
+        
+        EventBus.getInstance().addEventListener(new CmEventListenerImplDefault() {
+            @Override
+            public void handleEvent(CmEvent event) {
+                switch(event.getEventType()) {
+                    case EVENT_TYPE_SOLUTION_SHOW:
+                    case EVENT_TYPE_WHITEBOARD_SAVE_COMPLETE:
+                        _saveWhiteboard.setEnabled(false);
+                        break;
+                    case EVENT_TYPE_WHITEBOARD_SAVE_PENDING:
+                        _saveWhiteboard.setEnabled(true);
+                        break;
+                }
+            }
+        });
+    }
+    
     public CmResourcePanelImplWithWhiteboard() {
-
         _displayMode = getInitialWhiteboardDisplay();
     }
 
@@ -97,8 +128,11 @@ public abstract class CmResourcePanelImplWithWhiteboard extends CmResourcePanelI
                 }
             }
         });
-        Component[] btn = {_showWorkBtn};
-        return java.util.Arrays.asList(btn);
+        
+        List<Component> tools = new ArrayList<Component>();
+        tools.add(_saveWhiteboard);
+        tools.add(_showWorkBtn);
+        return tools;
     }
     
 
@@ -140,11 +174,13 @@ public abstract class CmResourcePanelImplWithWhiteboard extends CmResourcePanelI
         if(displayMode == DisplayMode.TUTOR) {
         	if(_showWorkBtn != null)
                 _showWorkBtn.setText("Show Whiteboard");
+        	_saveWhiteboard.setVisible(false);
             add(getTutorDisplay());
             
             CmMainPanel.__lastInstance._mainContent.currentContainer.getMaximizeButton().setEnabled(true);
         }
         else {
+            _saveWhiteboard.setVisible(true);
         	if(CmMainPanel.__lastInstance._mainContent.currentContainer != null) {
         		_wasMaxBeforeWhiteboard = CmMainPanel.__lastInstance._mainContent.currentContainer.isMaximized();
                 CmMainPanel.__lastInstance._mainContent.currentContainer.setMaximize(this,_wasMaxBeforeWhiteboard);
@@ -164,6 +200,7 @@ public abstract class CmResourcePanelImplWithWhiteboard extends CmResourcePanelI
             lcTutor.add(getTutorDisplay());
             
             LayoutContainer lcMain = new LayoutContainer(new BorderLayout());
+            
             lcMain.addStyleName("whiteboard-container");
             lcMain.setStyleAttribute("background", "transparent");
             lcMain.setScrollMode(Scroll.NONE);
@@ -175,8 +212,8 @@ public abstract class CmResourcePanelImplWithWhiteboard extends CmResourcePanelI
 
             bld = new BorderLayoutData(LayoutRegion.EAST, .50f);
             bld.setSplit(false);
+            
             lcMain.add(swp, bld);
-
         
             if(_showWorkBtn != null)
                _showWorkBtn.setText("Hide Whiteboard");

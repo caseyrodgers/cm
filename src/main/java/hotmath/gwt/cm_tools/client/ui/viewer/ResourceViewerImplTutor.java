@@ -20,6 +20,9 @@ import java.util.List;
 import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.Style.Scroll;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
+import com.extjs.gxt.ui.client.event.ComponentEvent;
+import com.extjs.gxt.ui.client.event.Events;
+import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.Html;
@@ -27,35 +30,26 @@ import com.extjs.gxt.ui.client.widget.Window;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.google.gwt.user.client.DOM;
+import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.Frame;
 import com.google.gwt.user.client.ui.Widget;
 
 public class ResourceViewerImplTutor extends CmResourcePanelImplWithWhiteboard {
 
-    static ResourceViewerImplTutor _instance;
-    static {
-        publishNative();
-
-        EventBus.getInstance().addEventListener(new CmEventListenerImplDefault() {
-            public void handleEvent(CmEvent event) {
-                if (event.getEventType() == EventType.EVENT_TYPE_WHITEBOARDUPDATED) {
-                    _instance.whiteBoardHasBeenUpdated((String) event.getEventData());
-                }
-                else if(event.getEventType() == EventType.EVENT_TYPE_MODAL_WINDOW_OPEN) {
-                    if(__lastDisplayMode == DisplayMode.WHITEBOARD) {
-                        CmMainPanel.__lastInstance.removeResource();
-                    }
-                }
-            }
-        });
-    }
-
     static public final String STYLE_NAME="resource-viewer-impl-tutor";
-    
+
     public ResourceViewerImplTutor() {
         _instance = this;
         addStyleName(STYLE_NAME);
         setScrollMode(Scroll.AUTOY);
+        
+        sinkEvents(Event.ONMOUSEOVER);
+        
+        addListener(Events.OnMouseOver, new Listener<ComponentEvent>(){
+            public void handleEvent(ComponentEvent be) {
+                EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_WHITEBOARD_SAVE));
+            }
+        });
     }
     
     @Override
@@ -306,6 +300,25 @@ public class ResourceViewerImplTutor extends CmResourcePanelImplWithWhiteboard {
     static private native void setTutorState(Boolean yesNo) /*-{
         $wnd.setState('step',yesNo);
     }-*/;
+    
+
+    static ResourceViewerImplTutor _instance;
+    static {
+        publishNative();
+
+        EventBus.getInstance().addEventListener(new CmEventListenerImplDefault() {
+            public void handleEvent(CmEvent event) {
+                if (event.getEventType() == EventType.EVENT_TYPE_WHITEBOARDUPDATED) {
+                    _instance.whiteBoardHasBeenUpdated((String) event.getEventData());
+                }
+                else if(event.getEventType() == EventType.EVENT_TYPE_MODAL_WINDOW_OPEN) {
+                    if(__lastDisplayMode == DisplayMode.WHITEBOARD) {
+                        CmMainPanel.__lastInstance.removeResource();
+                    }
+                }
+            }
+        });
+    }
 }
 
 /**

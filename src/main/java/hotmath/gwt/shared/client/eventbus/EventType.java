@@ -120,7 +120,21 @@ public enum EventType{
     /** Fired when whiteboard is ready
      * 
      */
-    EVENT_TYPE_WHITEBOARD_READY
+    EVENT_TYPE_WHITEBOARD_READY,
     
+    /** Fired to request Whiteboard/Showwork data be
+     *  flushed to server
+     */
+    EVENT_TYPE_WHITEBOARD_SAVE,
+    
+    /** Fired afer the whiteboard has been successfully 
+     * saved on server.
+     */
+    EVENT_TYPE_WHITEBOARD_SAVE_COMPLETE,
+    
+    /** Fired when there are pending whiteboard changes
+     * 
+     */
+    EVENT_TYPE_WHITEBOARD_SAVE_PENDING
     
 }
