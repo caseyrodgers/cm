@@ -115,7 +115,7 @@ public class CmProgramListingDao {
 
             StudentUserProgramModel userProgram = new StudentUserProgramModel();
             userProgram.setTestDef(testDef);
-            List<String> pids = hda.getTestIdsForSegment(conn,userProgram,2,testDef.getTextCode(),testDef.getChapter(),testDef.getTestConfig(),0);
+            List<String> pids = hda.getTestIdsForSegment(conn,userProgram,segment,testDef.getTextCode(),testDef.getChapter(),testDef.getTestConfig(),0);
             
             /** now get list of lessons assigned to these pids by looking in HM_PROGRAM_LESSONS which is created
              *  by the HA_PRESCRIPTION_LOG Deploylet action.  This is a static table that holds information about
@@ -155,6 +155,7 @@ public class CmProgramListingDao {
     	
     	for (int i=1; i<=segmentCount; i++) {
     		ProgramSection s = new ProgramSection();
+    		s.setTestDefId(testDef.getTestDefId());
     		s.setName(String.format("Section %d", i));
     		s.setNumber(i);
     		list.add(s);

@@ -1,15 +1,10 @@
 package hotmath.gwt.cm_tools.client.model;
 
-import com.extjs.gxt.ui.client.data.BaseTreeModel;
-
 import java.io.Serializable;
 
-public class CmTreeModel extends BaseTreeModel implements Serializable {
+import com.extjs.gxt.ui.client.data.BaseTreeModel;
 
-	private static final long serialVersionUID = -8370354125432687765L;
-	
-	private Boolean loadChildrenAsynchronously = false;
-	
+public class CmTreeModel extends BaseTreeModel implements Serializable {
 	private int id = 0;
 	private int number = 0;
 	
@@ -42,13 +37,4 @@ public class CmTreeModel extends BaseTreeModel implements Serializable {
 	public void setNumber(int number) {
 		this.number = number;
 	}
-
-	public Boolean loadChildrenAsynchronously() {
-		return loadChildrenAsynchronously;
-	}
-	
-	public void setLoadChildrenAsynchronously(Boolean loadChildrenAsynchronously) {
-		this.loadChildrenAsynchronously = loadChildrenAsynchronously;
-	}
-
 }

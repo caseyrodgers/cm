@@ -7,6 +7,6 @@ package hotmath.gwt.cm_rpc.client.model.program_listing;
  */
 public class ProgramChapterAll extends ProgramChapter {
     public ProgramChapterAll() {
-        super();
+        super("All Chapters",-1);
     }
 }

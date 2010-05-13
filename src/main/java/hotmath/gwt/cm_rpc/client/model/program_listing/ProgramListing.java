@@ -12,7 +12,7 @@ import java.util.List;
  * @author casey
  *
  */
-public class ProgramListing implements Response {
+public class ProgramListing implements CmTreeNode, Response {
     List<ProgramType> programTypes = new ArrayList<ProgramType>();
     
     public ProgramListing(){
@@ -23,4 +23,20 @@ public class ProgramListing implements Response {
     public void setProgramTypes(List<ProgramType> programTypes) {
         this.programTypes = programTypes;
     }
+    
+    @Override
+    public String getLabel() {
+        return "Program Listing";
+    }
+    @Override
+    public int getLevel() {
+        return LEVEL_ROOT;
+    }
+    
+    final public static int LEVEL_ROOT=0;
+    final public static int LEVEL_TYPE=1;
+    final public static int LEVEL_SUBJ=2;
+    final public static int LEVEL_CHAP=3;
+    final public static int LEVEL_SECT=4;
+    final public static int LEVEL_LESS=5;
 }

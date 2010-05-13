@@ -11,7 +11,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  * @author casey
  *
  */
-public class ProgramType implements IsSerializable {
+public class ProgramType implements CmTreeNode, IsSerializable {
 
     List<ProgramSubject> subjects = new ArrayList<ProgramSubject>();
 
@@ -39,5 +39,15 @@ public class ProgramType implements IsSerializable {
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    @Override
+    public String getLabel() {
+        return type;
+    }
+
+    @Override
+    public int getLevel() {
+        return ProgramListing.LEVEL_TYPE;
     }
 }

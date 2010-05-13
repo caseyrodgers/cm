@@ -5,8 +5,9 @@ import java.util.List;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 
-public class ProgramSection implements IsSerializable{
+public class ProgramSection implements CmTreeNode, IsSerializable{
     String name;
+    int testDefId;
     int number;
     
     List<ProgramLesson> lessons = new ArrayList<ProgramLesson>();
@@ -14,9 +15,18 @@ public class ProgramSection implements IsSerializable{
     public ProgramSection() {
     }
     
-    public ProgramSection(String name, int number) {
+    public ProgramSection(String name, int testDefId, int number) {
         this.name = name;
+        this.testDefId = testDefId;
         this.number = number;
+    }
+
+    public int getTestDefId() {
+        return testDefId;
+    }
+
+    public void setTestDefId(int testDefId) {
+        this.testDefId = testDefId;
     }
 
     public String getName() {
@@ -41,6 +51,16 @@ public class ProgramSection implements IsSerializable{
 
     public void setLessons(List<ProgramLesson> lessons) {
         this.lessons = lessons;
+    }
+
+    @Override
+    public String getLabel() {
+        return name;
+    }
+
+    @Override
+    public int getLevel() {
+        return ProgramListing.LEVEL_SECT;
     }
     
 }

@@ -5,7 +5,7 @@ import java.util.List;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 
-public class ProgramSubject implements IsSerializable{
+public class ProgramSubject implements CmTreeNode,IsSerializable{
     String name;
     
     int testDefId;
@@ -53,5 +53,15 @@ public class ProgramSubject implements IsSerializable{
 	public void setChapters(List<ProgramChapter> chapters) {
 		this.chapters = chapters;
 	}
-    
+
+    @Override
+    public String getLabel() {
+       return name;
+    }
+
+    @Override
+    public int getLevel() {
+        // TODO Auto-generated method stub
+        return ProgramListing.LEVEL_SUBJ;
+    }
 }
