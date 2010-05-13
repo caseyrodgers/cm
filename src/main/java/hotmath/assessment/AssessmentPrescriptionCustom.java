@@ -31,7 +31,7 @@ public class AssessmentPrescriptionCustom extends AssessmentPrescription {
             InmhItemData itemData = new InmhItemData(item);
             
             // now choose pids from the pool for this item
-            List<ProblemID> workBookPids = itemData.getWookBookSolutionPool(conn);
+            List<RppWidget> workBookPids = itemData.getWookBookSolutionPool(conn);
             if (workBookPids.size() == 0) {
                 logger.warn("No pool solutions found for + '" + itemData.getInmhItem().toString() + "'");
                 continue; // nothing to see here.
@@ -40,8 +40,8 @@ public class AssessmentPrescriptionCustom extends AssessmentPrescription {
             // cmdao.getSubjectLevel(clm.getSubject());
             
             AssessmentPrescriptionSession session = new AssessmentPrescriptionSession(this,"Session: " + (sessNum + 1));
-            for(ProblemID pid: workBookPids) {
-                
+            for(RppWidget widget: workBookPids) {
+                ProblemID pid = widget.getPid();
                 // subject filter solutions
                 int gradeLevel = pid.getGradeLevel();
                 if (gradeLevel > getGradeLevel()) {

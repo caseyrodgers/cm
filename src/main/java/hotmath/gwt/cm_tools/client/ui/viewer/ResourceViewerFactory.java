@@ -3,6 +3,9 @@ package hotmath.gwt.cm_tools.client.ui.viewer;
 import hotmath.gwt.cm_rpc.client.rpc.InmhItemData;
 import hotmath.gwt.cm_tools.client.ui.resource_viewer.CmResourcePanel;
 import hotmath.gwt.cm_tools.client.ui.resource_viewer.CmResourcePanelImplDefault;
+import hotmath.gwt.shared.client.eventbus.CmEvent;
+import hotmath.gwt.shared.client.eventbus.EventBus;
+import hotmath.gwt.shared.client.eventbus.EventType;
 import hotmath.gwt.shared.client.util.CmRunAsyncCallback;
 
 import com.allen_sauer.gwt.log.client.Log;
@@ -39,7 +42,6 @@ public class ResourceViewerFactory {
 				client.onSuccess(instance);
 			}
 		});
-
 	}
 
 	/**
@@ -58,7 +60,20 @@ public class ResourceViewerFactory {
 
 		CmResourcePanel rp = null;
 		if (type.equals("practice")) {
-			rp = new ResourceViewerImplTutor();
+		    
+		    /** RPPs might be either a tutor or a flash widget
+		     * 
+		     */
+		    String file = item.getFile();
+		    if(file.indexOf(".swf")>-1) {
+		        /** is widget 
+		         *  TODO: correct abstraction
+		         */
+		        rp = new ResourceViewerImplRppFlashCard();
+		    }
+		    else {
+		        rp = new ResourceViewerImplTutor();
+		    }
 		} else if (type.equals("video")) {
 			rp = new ResourceViewerImplVideo();
 		} else if (type.startsWith("activity")) {

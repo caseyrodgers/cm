@@ -54,12 +54,10 @@ public class InmhItemData {
      * 
      * @return
      */
-    public List<String> getWeightedIndexes(int sumOfWeights,
-            int totalNumSolsInPrescription) {
+    public List<String> getWeightedIndexes(int sumOfWeights, int totalNumSolsInPrescription) {
         List<String> values = new ArrayList<String>();
         for (String pid : pidsReferenced) {
-            int weight = (getWeight() / sumOfWeights)
-                    * totalNumSolsInPrescription;
+            int weight = (getWeight() / sumOfWeights) * totalNumSolsInPrescription;
             values.add(String.format("%s:%s", weight, pid));
         }
         return values;
@@ -79,7 +77,7 @@ public class InmhItemData {
     public void setINeedMoreHelpItem(INeedMoreHelpItem item) {
         this.item = item;
     }
-    
+
     public INeedMoreHelpItem getInmhItem() {
         return item;
     }
@@ -100,16 +98,25 @@ public class InmhItemData {
     /**
      * Return pool of solutions that can be used for this INMH item
      * 
+     * 
+     * NOTE: deal with RPPs as widgets or as solutions
+     * 
+     * Default is RPP as solution ... If any widgets are specified for a lesson,
+     * it trumps all .. and only widgets will be shown. Meaning, solutions and
+     * widgets will not be shown together.
+     * 
+     * 
      * @return
      */
-    public List<ProblemID> getWookBookSolutionPool(final Connection conn) {
+    public List<RppWidget> getWookBookSolutionPool(final Connection conn) {
 
         List<ProblemID> pids = new ArrayList<ProblemID>();
 
         // SQL to get list of ranges that match each INMH item
-        String sql = "select range " + " from   inmh_assessment i "
-                + " where  i.file = ? ";
+        String sql = "select range " + " from   inmh_assessment i " + " where  i.file = ? ";
         PreparedStatement ps = null;
+
+        List<RppWidget> widgets = new ArrayList<RppWidget>();
         try {
             ps = conn.prepareStatement(sql);
             ps.setString(1, this.item.getFile());
@@ -119,14 +126,19 @@ public class InmhItemData {
                 if (range == null || range.length() == 0)
                     continue;
 
-                List<String> related = findSolutionsMatchingRange(range);
-                for (String s : related) {
-                    ProblemID pid = new ProblemID(s);
-                    if (!pids.contains(pid)) {
-                        if (SolutionManager.getInstance().doesSolutionExist(conn, pid.getGUID())) {
-                            pids.add(pid);
-                        } else {
-                            logger.fine("Inmh: GUID does not exist: " + s);
+                if (range.startsWith("[")) {
+                    /** is widget */
+                    widgets.add(new RppWidget(range));
+                } else {
+                    List<String> related = findSolutionsMatchingRange(range);
+                    for (String s : related) {
+                        ProblemID pid = new ProblemID(s);
+                        if (!pids.contains(pid)) {
+                            if (SolutionManager.getInstance().doesSolutionExist(conn, pid.getGUID())) {
+                                widgets.add(new RppWidget(pid));
+                            } else {
+                                logger.fine("Inmh: GUID does not exist: " + s);
+                            }
                         }
                     }
                 }
@@ -136,7 +148,7 @@ public class InmhItemData {
         } finally {
             SqlUtilities.releaseResources(null, ps, null);
         }
-        return pids;
+        return widgets;
     }
 
     /**
@@ -146,9 +158,54 @@ public class InmhItemData {
      * @return
      * @throws Exception
      */
-    private List<String> findSolutionsMatchingRange(String range)
-            throws Exception {
+    private List<String> findSolutionsMatchingRange(String range) throws Exception {
         ConcordanceEntry con = new ConcordanceEntry(range);
         return (List<String>) Arrays.asList(con.getGUIDs());
+    }
+}
+
+class RppWidget {
+
+    String file;
+    String title;
+    ProblemID pid;
+
+    /**
+     * form of [PATH_TO_WIDGET|TITLE_OF_WIDGET]
+     * 
+     * @param def
+     */
+    public RppWidget(String def) {
+        String p[] = def.substring(1, def.length() - 1).split("\\|");
+        file = p[0];
+        title = p[1];
+    }
+
+    public RppWidget(ProblemID pid) {
+        this.pid = pid;
+    }
+
+    public ProblemID getPid() {
+        return pid;
+    }
+
+    public void setPid(ProblemID pid) {
+        this.pid = pid;
+    }
+
+    public String getFile() {
+        return file;
+    }
+
+    public void setFile(String file) {
+        this.file = file;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
     }
 }

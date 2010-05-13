@@ -134,29 +134,55 @@ public class AssessmentPrescription {
             int numPids2get = (int) Math.ceil(numPids);
             
             // now choose pids from the pool for this item
-            List<ProblemID> workBookPids = id.getWookBookSolutionPool(conn);
-            if (workBookPids.size() == 0) {
+            List<RppWidget> rppWidgets = id.getWookBookSolutionPool(conn);
+            if (rppWidgets.size() == 0) {
                 logger.warn("No pool solutions found for + '" + id.getInmhItem().toString() + "'");
                 continue; // nothing to see here.
             }
-
-            AssessmentPrescriptionSession session = new AssessmentPrescriptionSession(this,"Session: " + (sessNum + 1));
-            for(ProblemID pid: workBookPids) {
-
-                // subject filter solutions
-                int gradeLevel = pid.getGradeLevel();
-                if (gradeLevel > getGradeLevel()) {
-                    SbLogger.postMessage("AssessmentPrescriptionSession: " + testRun.getRunId() + ", level: " + getGradeLevel() + ", inmh item not included due to higher grade level:  " + pid + ", level: " + gradeLevel);
-                    continue;
-                }
-                    
-                    
-                List<SessionData> si = session.getSessionItems();
-
-                si.add(new SessionData(id.getInmhItem(), pid.getGUID(), (int) numPids2get, id.getWeight()));
- 
-                if (si.size() > TOTAL_SESSION_SOLUTIONS-1)
+            
+            
+            AssessmentPrescriptionSession session = new AssessmentPrescriptionSession(this,"Session: " + (sessNum + 1));            
+            List<SessionData> sessionItems = session.getSessionItems();
+            
+            /** if any widgets are not pids, then only show the widgets
+             * 
+             */
+            boolean hasNonPid=false;
+            for(RppWidget rpp: rppWidgets) {
+                if(rpp.getPid() == null) {
+                    hasNonPid=true;
                     break;
+                }
+            }
+            if(hasNonPid) {
+                /** only show nonPid widgets
+                 * 
+                 */
+                for(RppWidget rpp: rppWidgets) {
+                    if(rpp.getPid() == null) {
+                        sessionItems.add(new SessionData(id.getInmhItem(), rpp.getFile(), (int) numPids2get, id.getWeight()));
+                    }
+                }
+            }
+            else {
+                /** show only pid widgets
+                 * 
+                 */
+                for(RppWidget rpp: rppWidgets) {
+    
+                    ProblemID pid = rpp.getPid();
+                    
+                    // subject filter solutions
+                    int gradeLevel = pid.getGradeLevel();
+                    if (gradeLevel > getGradeLevel()) {
+                        SbLogger.postMessage("AssessmentPrescriptionSession: " + testRun.getRunId() + ", level: " + getGradeLevel() + ", inmh item not included due to higher grade level:  " + pid + ", level: " + gradeLevel);
+                        continue;
+                    }
+                    sessionItems.add(new SessionData(id.getInmhItem(), pid.getGUID(), (int) numPids2get, id.getWeight()));
+     
+                    if (sessionItems.size() > TOTAL_SESSION_SOLUTIONS-1)
+                        break;
+                }
             }
             
             // assert that there is at least one
