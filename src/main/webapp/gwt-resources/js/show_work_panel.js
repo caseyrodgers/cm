@@ -13,8 +13,10 @@ function flashWhiteboardOut(jsonOut) {
     parent.flashWhiteboardOut(jsonOut);
 }
 
+// called when the flash whiteboard loses focus
+// 
 function flashLostFocus() {
-	alert('Flash has lost focus!');
+	parent.flushWhiteboardChanges();
 }
 
 // called when whiteboard is ready for
