@@ -346,11 +346,8 @@ class ShowHowToUseDialog extends CmWindow {
     }
     String html =
         "<div style='padding: 10px 5px;'>" +
-        "<p>The best way to learn is to try problems on your own, before clicking the arrow button below.</p>" +
-        "<p>In order to advance to the next lesson, please click all the way through our hints and steps.</p>" +
-        "<p>Your whiteboard input is saved for your teacher to review. If your teacher requires it, you must use" +
-        " the whiteboard before viewing the hints and steps.</p>" +
-        "<p>There is an optional 'Enter your answer' box for some problems. This is for your convenience; your answer " +
-        "is not saved or graded. If you enter the correct answer, you do not need to click through the steps!" +
-        "</p></div>";
+        "<p>Work out your answer using pencil and paper, or click 'Show Whiteboard' to enter your work there.  (Some teachers may require this.)</p>" +
+        "<p>If you see an 'Enter Your Answer' input box, you can check your answer there.</p>" +
+        "<p>Then, click the green arrow keys to see a step-by-step solution.</p>" +
+        "</div>";
 }
