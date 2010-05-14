@@ -760,6 +760,7 @@ SELECT test_def_id
 FROM   HA_TEST_DEF
 where  prog_id = ?
   and  is_active = 1
+  and  subj_id is not null
 
 
 .key=TEST_IDS_FOR_PLACEMENT_SEGMENT
