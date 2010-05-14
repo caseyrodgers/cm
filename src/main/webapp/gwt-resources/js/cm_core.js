@@ -2,8 +2,6 @@
  * 
  */
 
-
-
 /** Find list of questions and for each
  *  one call func to and pass the question div
  *  to supplied func.
@@ -271,4 +269,36 @@ window.markCorrectResponse = function(questionList) {
 
 function checkQuiz_Gwt() {
 	alert('Checking quiz ...');
+}
+
+/** Called from GWT to set the quiz question with the appropriate image
+*
+*/
+window.setQuizQuestionResult = function(pid, result) {
+
+       var ql = findQuestionByPid(pid);
+
+
+       var el = getQuestionMarkImage(pid);
+       var elT = getQuestionMarkText(pid);
+       if (result == 'Correct') {
+               el.src = '/gwt-resources/images/check_correct.png';
+               elT.innerHTML = 'Correct';
+       } else if (result == 'Incorrect') {
+               el.src = '/gwt-resources/images/check_incorrect.png';
+               elT.innerHTML = 'Incorrect';
+       } else {
+               el.src = '/gwt-resources/images/check_notanswered.png';
+               elT.innerHTML = 'Not answered';
+       }
+       el.parentNode.style.display = 'block';
+}
+ 
+/** return the question mark image element */
+function getQuestionMarkImage(questionIndex) {
+        return document.getElementById("response_image_" + questionIndex);
+}
+
+function getQuestionMarkText(questionIndex) {
+        return document.getElementById("response_text_" + questionIndex);
 }

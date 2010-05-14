@@ -33,9 +33,9 @@
 
 <!--  For Test HTML -->
 <cache name="TEST_HTML"
-       maxElementsInMemory="1"
+       maxElementsInMemory="20"
        eternal="true"
-       diskPersistent="true">
+       diskPersistent="false">
 </cache>
 
 <!--  For Test TEST_HTML_CHECKED, which is the results -->
