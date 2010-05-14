@@ -222,15 +222,10 @@ public class PrescriptionCmGuiDefinition implements CmGuiDefinition {
                 try {
                     if (rdata != null) {
                         UserInfo.getInstance().setSessionNumber(sessionNumberF);
+                       
 
-
-                        if(UserInfo.getInstance().isCustomProgram())
-                            UserInfo.getInstance().setCorrectPercent(0);
-                        else {
-                            UserInfo.getInstance().setCorrectPercent(rdata.getCorrectPercent());
-                        }
-                        
-                        if (UserInfo.getInstance().getCorrectPercent() == 100) {
+                        UserInfo.getInstance().setCorrectPercent(rdata.getCorrectPercent());
+                        if (!UserInfo.getInstance().isCustomProgram() && UserInfo.getInstance().getCorrectPercent() == 100) {
                             getContext().doNext();
                             return;
                         }

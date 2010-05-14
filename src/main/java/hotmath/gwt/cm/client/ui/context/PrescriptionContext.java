@@ -111,9 +111,10 @@ public class PrescriptionContext implements CmContext {
 
         CmMainPanel.__lastInstance._mainContent.removeAll();
 
-        // deal with anomaly of no missed questions .. move to the next quiz
-        // section
-        final boolean hasPrescription = !(UserInfo.getInstance().getCorrectPercent() == 100);
+        /** 
+         *  deal with anomaly of no missed questions .. move to the next quiz/section
+         */
+        final boolean hasPrescription = UserInfo.getInstance().isCustomProgram() || !(UserInfo.getInstance().getCorrectPercent() == 100);
 
         // before anything can happen, the user must view the required practice
         // problems
