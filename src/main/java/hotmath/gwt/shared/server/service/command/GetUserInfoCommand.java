@@ -60,7 +60,7 @@ public class GetUserInfoCommand implements ActionHandler<GetUserInfoAction, User
             
             
             
-            /** if Custom Program, then force user to prescription .. there are no
+            /** if Custom Program, then force user to prescription phase .. there are no
              *  quizzes.  However, we still create a Test and a Test Run in order
              *  to facilitate using the existing infrastructure.
              *  
