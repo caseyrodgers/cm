@@ -7,6 +7,7 @@ import hotmath.gwt.cm_tools.client.model.StudentModelI;
 import hotmath.subscriber.HotMathSubscriber;
 import hotmath.subscriber.HotMathSubscriberManager;
 import hotmath.subscriber.PurchasePlan;
+import hotmath.subscriber.id.IdCreateStategyImpHmPilot;
 import hotmath.subscriber.service.HotMathSubscriberServiceFactory;
 import hotmath.testset.ha.CmProgram;
 import hotmath.util.HMConnectionPool;
@@ -280,7 +281,7 @@ public class CmPilotCreate {
     
     
     static public void addPilotRequest(String title, String name, String school, String zip, String email,
-            String phone, String userComments, String phoneType, String phoneWhen) throws Exception {
+            String phone, String userComments, String phoneType, String phoneWhen, String schoolPrefix) throws Exception {
 
         String sendTo[] = { "lincoln@hotmath.com", "sales@hotmath.com", "casey@hotmath.com" };
         String SERVER_NAME = "http://catchupmath.com";
@@ -301,7 +302,7 @@ public class CmPilotCreate {
             ps.executeUpdate();
 
             // create a new Subscriber record based on this email
-            String idToUse = HotMathSubscriber.createUniqueID(null);
+            String idToUse = HotMathSubscriber.createUniqueIDByStategy(new IdCreateStategyImpHmPilot(schoolPrefix));
 
             String comments = _dateFormat.format(new Date()) + " Catchup Math online pilot request CM_pilot_HM\n";
             HotMathSubscriber sub = HotMathSubscriberManager.createBasicAccount(idToUse, school, "ST", email, comments,new Date());
