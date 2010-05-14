@@ -281,7 +281,7 @@ public class CmPilotCreate {
     
     
     static public void addPilotRequest(String title, String name, String school, String zip, String email,
-            String phone, String userComments, String phoneType, String phoneWhen, String schoolPrefix) throws Exception {
+            String phone, String userComments,String phoneWhen, String schoolPrefix) throws Exception {
 
         String sendTo[] = { "lincoln@hotmath.com", "sales@hotmath.com", "casey@hotmath.com" };
         String SERVER_NAME = "http://catchupmath.com";
@@ -341,7 +341,7 @@ public class CmPilotCreate {
              */
             String txt = "A request for a Catchup Math Pilot was created by:\n" + "Subscriber ID: " + idToUse
                     + "\n" + "\nTitle: " + title + "\nName: " + name + "\nSchool: " + school + "\nZip: " + zip
-                    + "\nEmail: " + email + "\nPhone: " + phone + "\nPhone Type: " + phoneType + "\nPhone When: "
+                    + "\nEmail: " + email + "\nPhone: " + phone +  "\nPhone When: "
                     + phoneWhen + "\nComments: " + userComments;
             try {
                 SbMailManager.getInstance().sendMessage("Catchup Math Pilot Request", txt, sendTo,
