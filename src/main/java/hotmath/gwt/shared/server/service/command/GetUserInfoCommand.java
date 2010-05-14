@@ -87,7 +87,7 @@ public class GetUserInfoCommand implements ActionHandler<GetUserInfoAction, User
                     custTest.setProgramInfo(userProgram);
                     HaTestRun testRun = HaTestDao.createTestRun(conn, action.getUserId(), custTest.getTestId(), 10,0,0);
                     testRun.setHaTest(custTest);
-                    
+                    activeInfo.setActiveSegment(0);
                     activeInfo.setActiveTestId(0);
                     activeInfo.setActiveRunId(testRun.getRunId());
                     activeInfo.setActiveRunSession(0);

@@ -442,6 +442,32 @@ public class HaTestDefDao {
 		
 		return testDef;
 	}
+	
+	
+	/** Return list of TestDefs that are of type programType
+	 * 
+	 * @param conn
+	 * @param programType
+	 * @return
+	 * @throws Exception
+	 */
+	public List<HaTestDef> getTestDefsForProgramType(final Connection conn, String programType) throws Exception {
+	    PreparedStatement ps = null;
+	    try {
+	        List<HaTestDef> testDefs = new ArrayList<HaTestDef>();
+	        String sql = "select * from   HA_TEST_DEF where prog_id = ? and is_active = 1 order by load_order";
+	        ps = conn.prepareStatement(sql);
+	        ps.setString(1, programType);
+	        ResultSet rs = ps.executeQuery();
+	        while(rs.next()) {
+	            testDefs.add(getTestDef(conn, rs.getInt("test_def_id")));
+	        }
+	        return testDefs;
+	    }
+	    finally{
+	        SqlUtilities.releaseResources(null, ps, null);
+	    }
+	}
 }
 
 

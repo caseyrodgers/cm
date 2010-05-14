@@ -15,14 +15,16 @@ public class ProgramType implements CmTreeNode, IsSerializable {
 
     List<ProgramSubject> subjects = new ArrayList<ProgramSubject>();
 
+    String label;
     String type;
 
     public ProgramType() {
     }
 
-    public ProgramType(String type) {
+    public ProgramType(String type,String label) {
         this();
         this.type = type;
+        this.label = label;
     }
 
     public List<ProgramSubject> getProgramSubjects() {
@@ -43,7 +45,7 @@ public class ProgramType implements CmTreeNode, IsSerializable {
 
     @Override
     public String getLabel() {
-        return type;
+        return label;
     }
 
     @Override

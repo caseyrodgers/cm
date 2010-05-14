@@ -18,6 +18,7 @@ import hotmath.testset.ha.StudentUserProgramModel;
 import hotmath.util.sql.SqlUtilities;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
@@ -34,10 +35,24 @@ public class CmProgramListingDao {
     public CmProgramListingDao() {
     }
 
+    /** why adminId?  The listing will always be same ... plus we can cache it when complete
+     *  and share.
+     *  
+     * @param conn
+     * @param adminId
+     * @return
+     * @throws Exception
+     */
     public ProgramListing getProgramListing(final Connection conn, int adminId) throws Exception {
+        PreparedStatement stmt=null;
         try {
+            String sql = "select * from HA_PROG_DEF where id in ('Prof','__Chap') order by id desc";
+            stmt = conn.prepareStatement(sql);
+            ResultSet rs = stmt.executeQuery();
             ProgramListing pr = new ProgramListing();
-            pr.getProgramTypes().add(createProficiencyProgramType(conn, "Proficiency"));
+            while(rs.next()) {
+                pr.getProgramTypes().add(createProficiencyProgramType(conn, rs.getString("id"), rs.getString("title")));
+            }
             return pr;
         } finally {
             SqlUtilities.releaseResources(null, null, null);
@@ -52,18 +67,13 @@ public class CmProgramListingDao {
      * @return
      * @throws Exception
      */
-    private ProgramType createProficiencyProgramType(final Connection conn, String type) throws Exception {
+    private ProgramType createProficiencyProgramType(final Connection conn, String type, String title) throws Exception {
     	
     	HaTestDefDao dao = new HaTestDefDao();
-    	List<Integer> testDefIds = new ArrayList<Integer>();
-    	testDefIds.add(CmProgram.PREALG_PROF.getDefId());
-    	testDefIds.add(CmProgram.ALG1_PROF.getDefId());
-    	testDefIds.add(CmProgram.GEOM_PROF.getDefId());
-    	testDefIds.add(CmProgram.ALG2_PROF.getDefId());
     	
-    	List<HaTestDef> testDefs = dao.getTestDefs(conn, testDefIds);
+    	List<HaTestDef> testDefs = dao.getTestDefsForProgramType(conn, type);;
     	
-        ProgramType pt = new ProgramType(type);
+        ProgramType pt = new ProgramType(type,title);
 
         for (HaTestDef testDef : testDefs) {
             ProgramSubject ps = new ProgramSubject();
@@ -77,17 +87,6 @@ public class CmProgramListingDao {
             List<ProgramSection> list = buildSectionListForProficiencyTestDef(testDef);
             chapter.setSections(list);
         }
-/*   	
-        CmProgram[] programs = { CmProgram.PREALG_PROF, CmProgram.ALG1_PROF, CmProgram.GEOM_PROF, CmProgram.ALG2_PROF};
-        for(CmProgram program: programs) {
-            ProgramSubject ps = new ProgramSubject();
-            ps.setName(program.getSubject());
-            pt.getProgramSubjects().add(ps);
-
-            ProgramChapter chapters = new ProgramChapterAll();
-            ps.getChapters().add(chapters);
-        }
-*/
         return pt;
     }
     

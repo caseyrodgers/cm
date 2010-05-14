@@ -59,15 +59,17 @@ public class ProgramDetailsPanel extends CmWindow {
 
     private void buildGui() {
         setHeading("Catchup Math Programs");
-        setSize(300, 300);
+        setSize(400, 400);
 
         setLayout(new BorderLayout());
 
-        getHeader().addTool(new Button("Expand All", new SelectionListener<ButtonEvent>() {
-            public void componentSelected(ButtonEvent ce) {
-                tree.expandAll();
-            }
-        }));
+        if(CmShared.getQueryParameter("debug") != null) {
+            getHeader().addTool(new Button("Expand All", new SelectionListener<ButtonEvent>() {
+                public void componentSelected(ButtonEvent ce) {
+                    tree.expandAll();
+                }
+            }));
+        }
         getHeader().addTool(new Button("Collapse All", new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent ce) {
                 tree.collapseAll();

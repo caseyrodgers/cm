@@ -16,7 +16,7 @@ public class GetProgramListingCommand_Test extends CmDbTestCase {
         GetProgramListingAction action = new GetProgramListingAction();
         action.setAdminId(2);
         ProgramListing pr = new GetProgramListingCommand().execute(conn, action);
-        assertTrue(pr.getProgramTypes().size() > 0);
+        assertTrue(pr.getProgramTypes().get(0).getLabel().contains("Proficiency"));
     }
 
     public void testCreateRpc() throws Exception {
