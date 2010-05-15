@@ -34,7 +34,7 @@ public class CmCustomProgramDao {
         Statement stmt=null;
         try {
             stmt = conn.createStatement();
-            ResultSet rs = stmt.executeQuery("select distinct lesson, file, subject from HA_PROGRAM_LESSONS where subject > '' order by lesson");
+            ResultSet rs = stmt.executeQuery("select distinct lesson, file, subject from HA_PROGRAM_LESSONS_static where subject > '' order by lesson");
             while(rs.next()) {
                 CustomLessonModel clm = new CustomLessonModel(rs.getString("lesson"), rs.getString("file"), rs.getString("subject"));
                 List<CustomLessonModel> lessons = map.get(clm.getFile());
@@ -298,10 +298,10 @@ public class CmCustomProgramDao {
        else if(subject.equals("Pre-Alg"))
            return 1;
        else if(subject.equals("Alg 1"))
-           return 2;       
-       else if(subject.equals("Alg 2"))
-           return 3;
+           return 2;
        else if(subject.equals("Geom"))
+           return 3;
+       else if(subject.equals("Alg 2"))
            return 4;
        else
            throw new Exception("Unknown subject: " + subject);

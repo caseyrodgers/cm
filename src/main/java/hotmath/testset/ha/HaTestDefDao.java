@@ -311,7 +311,7 @@ public class HaTestDefDao {
          try {
              String sql = "" +
              "select  pid " +
-             "from  HA_PROGRAM_LESSONS p " +
+             "from  HA_PROGRAM_LESSONS_static p " +
              "  JOIN HA_CUSTOM_PROGRAM_LESSON l " +
              "    ON p.file = l.file " +
              " where l.program_id = ?" +
