@@ -1,3 +1,4 @@
+
 /** core Catchup Math routines
  * 
  */
@@ -196,9 +197,6 @@ function doLoadResource(type, file) {
 	return false;
 }
 
-function log() {
-	//
-}
 
 /** Mark all questions as correct */
 window.markAllCorrectAnswers = function() {
@@ -301,4 +299,13 @@ function getQuestionMarkImage(questionIndex) {
 
 function getQuestionMarkText(questionIndex) {
         return document.getElementById("response_text_" + questionIndex);
+}
+
+
+/** dummy, empty implementation 
+ * 
+ * @return
+ */
+function log() {
+	//
 }

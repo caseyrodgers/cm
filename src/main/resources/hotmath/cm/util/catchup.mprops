@@ -300,6 +300,7 @@ from     HA_TEST_RUN_WHITEBOARD a,
                    pid,
                    Max(insert_time_mills) as insert_time_mills
           from     HA_TEST_RUN_WHITEBOARD b
+          where b.user_id = ?
           group by user_id, pid) b
 where    a.user_id = ?
          and b.pid = a.pid

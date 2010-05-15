@@ -1207,6 +1207,7 @@ public class CmStudentDao {
         try {
             ps = conn.prepareStatement(sql);
             ps.setInt(1, uid);
+            ps.setInt(2,uid);
             rs = ps.executeQuery();
 
             SimpleDateFormat dteForat = new SimpleDateFormat("yyyy-MM-dd hh:mm a");
