@@ -429,6 +429,23 @@
         </configuration>
       </plugin>
 
+<plugin>
+        <groupId>com.samaxes.maven</groupId>
+        <artifactId>maven-minify-plugin</artifactId>
+        <version>1.2</version>
+        <configuration>
+          <cssSourceFiles>
+            <param>file-1.css</param>
+            <param>file-n.css</param>
+          </cssSourceFiles>
+          <jsSourceFiles>
+            <param>file-1.js</param>
+            <param>file-n.js</param>
+          </jsSourceFiles>
+        </configuration>
+      </plugin>
+
+
 
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
