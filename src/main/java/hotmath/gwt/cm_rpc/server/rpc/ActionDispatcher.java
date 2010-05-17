@@ -64,6 +64,13 @@ public class ActionDispatcher {
         __instance = null;
     }
 
+    
+    /** list of Connection objects that have been used, and meta information
+     *  describing their count and length of use.
+     */
+    Map<Integer,ConnectionInfo> _connectionInfo = new HashMap<Integer, ConnectionInfo>();
+    
+    
     private ActionDispatcher() {
         logger.info("Creating new ActionDispatcher");
     }
@@ -98,6 +105,11 @@ public class ActionDispatcher {
         this.commands = commands;
     }
 
+    public Map<Integer,ConnectionInfo> getConnectionKeys() {
+        return _connectionInfo;
+    }
+    
+    
     /**
      * Execute the given command and return the proper Result object.
      * 
@@ -141,6 +153,7 @@ public class ActionDispatcher {
             if (!(actionHandler instanceof ActionHandlerManualConnectionManagement)) {
                 logger.debug("RPC Action: DB Connection requested");
                 conn = HMConnectionPool.getConnection();
+                trackConnection(conn);
             } else {
                 logger.debug("RPC Action: DB Connection NOT requested");
             }
@@ -158,7 +171,26 @@ public class ActionDispatcher {
         }
     }
     
-    /** Check for comamnd, if not regiestered then look
+    
+    /** Track use of JDBC connections created and track count, time use and max use
+     *  in order to identify patterns and possible anomalies.
+     *  
+     *  This information is reported in hm_system_status.jsp
+     *  
+     * @param conn
+     * @throws Exception
+     */
+    private void trackConnection(Connection conn) throws Exception {
+        int key=conn.hashCode();
+        ConnectionInfo info = _connectionInfo.get(key);
+        if(info == null) {
+            info = new ConnectionInfo(key);
+            _connectionInfo.put(key, info);
+        }
+        info.setInUse(true);
+    }
+    
+    /** Check for command, if not registered then look
      *  for Command following conventions:
      *  
      *  1. actions end with Action
@@ -229,4 +261,40 @@ public class ActionDispatcher {
             addCommand(command);
         }
     }
+    
+    public static class ConnectionInfo {
+        Integer key;
+        int useCount;
+        long totalTimeUtilization;
+        long maxTimeUtilization;
+        long inUseTime;
+        
+        public ConnectionInfo(Integer key) {
+           this.key = key;
+        }
+        
+        public void setInUse(boolean inUse) {
+            if(inUse == true) {
+                useCount++;
+                inUseTime = System.currentTimeMillis();
+            }
+            else {
+                /* end use */
+                if(inUseTime == 0)
+                    logger.info("Connection termination before start");
+                else {
+                    long thisUse = System.currentTimeMillis() - inUseTime;
+                    if(thisUse > maxTimeUtilization)
+                        maxTimeUtilization = thisUse;
+                    totalTimeUtilization += thisUse;
+                }
+            }
+        }
+        
+        public String toString() {
+            return "Connection: " + key + ", " + "count=" + useCount + ", totalTime=" + totalTimeUtilization + ", " + maxTimeUtilization;
+        }
+    }
 }
+
+
