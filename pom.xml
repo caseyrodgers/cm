@@ -27,14 +27,14 @@
   </pluginRepositories>
 
   <!--
-     <scm>
-       <connection>scm:cvs:pserver:casey@hotmath.kattare.com:/home/cvsroot/CVSBASE:cm</connection>
-       <developerConnection>scm:cvs:pserver:casey@hotmath.kattare.com:/home/cvsroot/CVSBASE:cm</developerConnection>
-       <tag>cm</tag> </scm> <distributionManagement> <repository>
-         <id>repo</id> <name>The CVS Repository</name>
-         <url>scp://hotmath@hotmath.kattare.com:/home/hotmath/temp</url>
-     </repository> </distributionManagement>
-     -->
+      <scm>
+      <connection>scm:cvs:pserver:casey@hotmath.kattare.com:/home/cvsroot/CVSBASE:cm</connection>
+      <developerConnection>scm:cvs:pserver:casey@hotmath.kattare.com:/home/cvsroot/CVSBASE:cm</developerConnection>
+      <tag>cm</tag> </scm> <distributionManagement> <repository>
+      <id>repo</id> <name>The CVS Repository</name>
+      <url>scp://hotmath@hotmath.kattare.com:/home/hotmath/temp</url>
+      </repository> </distributionManagement>
+  -->
 
   <repositories>
     <repository>
@@ -78,12 +78,12 @@
   <dependencies>
 
     <!--
-       <dependency>
-         <groupId>com.google.collections</groupId>
-         <artifactId>google-collections</artifactId>
-         <version>1.0</version>
-       </dependency>
-       -->
+	<dependency>
+	<groupId>com.google.collections</groupId>
+	<artifactId>google-collections</artifactId>
+	<version>1.0</version>
+	</dependency>
+    -->
 
     <dependency>
       <groupId>org.projectlombok</groupId>
@@ -429,18 +429,28 @@
         </configuration>
       </plugin>
 
-<plugin>
+      <plugin>
         <groupId>com.samaxes.maven</groupId>
         <artifactId>maven-minify-plugin</artifactId>
         <version>1.2</version>
         <configuration>
+          <cssSourceDir>gwt-resources/css</cssSourceDir>
+          <jsSourceDir>gwt-resources/js</jsSourceDir>
+          <cssFinalFile>CatchupMath.css</cssFinalFile>
+          <jsFinalFile>CatchupMath.js</jsFinalFile>
           <cssSourceFiles>
-            <param>file-1.css</param>
-            <param>file-n.css</param>
+               <param>../../css/testset.css</param>
+               <param>../../css/default.css</param>
+               <param>../../css/hotmath_review.css</param>
+               <param>../../css/bookindex_with_tutor_combined.css</param>
+               <param>CatchupMath.css</param>
+               <param>loading_image.css</param>
           </cssSourceFiles>
           <jsSourceFiles>
-            <param>file-1.js</param>
-            <param>file-n.js</param>
+            <param>../../js/cm_with_tutor_combined.js</param>
+            <param>cm_core.js</param>
+            <param>CatchupMath.js</param>
+            <param>swfobject/swfobject.js</param>
           </jsSourceFiles>
         </configuration>
       </plugin>
@@ -461,13 +471,13 @@
           <modules>
             <module>hotmath.gwt.cm.CatchupMath</module>
             <module>hotmath.gwt.cm_admin.CatchupMathAdmin</module>
-<!--
-            <module>hotmath.gwt.cm_mobile.CatchupMathMobile</module>
--->
+	    <!--
+		<module>hotmath.gwt.cm_mobile.CatchupMathMobile</module>
+	    -->
           </modules>
           <!--
-             <runTarget>hotmath.gwt.cm.CatchupMath/CatchupMath.html</runTarget>
-             -->
+	      <runTarget>hotmath.gwt.cm.CatchupMath/CatchupMath.html</runTarget>
+	  -->
           <hostedWebapp>
             ${project.build.directory}/${project.build.finalName}
           </hostedWebapp>
@@ -499,7 +509,7 @@
 
 
       <!-- Use ANT to update version information file
-        -->
+      -->
 
       <!-- update the GWT build version info after successful compile -->
       <plugin>
