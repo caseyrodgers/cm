@@ -141,7 +141,7 @@ public class GetQuizHtmlCommand implements ActionHandler<GetQuizHtmlAction, Quiz
                     subTitle = haTest.getSubTitle(testSegment);
                 }  
 
-                String spritedHtml = processHtmlForSprites(quizHtml);
+                String spritedHtml = quizHtml; //  processHtmlForSprites(quizHtml);
                 
                 cacheInfo = new QuizCacheInfo(spritedHtml,testSet, subTitle);
                 CmCacheManager.getInstance().addToCache(CacheName.TEST_HTML, cacheKey, cacheInfo,true);
