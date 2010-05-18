@@ -150,15 +150,22 @@ public class ActionDispatcher {
              * interface, then no connection is automatically created, it must
              * manually manage the creation/release of connections.
              */
+            Integer connectionKey = null;
+            
             if (!(actionHandler instanceof ActionHandlerManualConnectionManagement)) {
                 logger.debug("RPC Action: DB Connection requested");
                 conn = HMConnectionPool.getConnection();
-                trackConnection(conn);
+                connectionKey = trackConnection(conn, connectionKey, true);
             } else {
                 logger.debug("RPC Action: DB Connection NOT requested");
             }
 
-            return (T) actionHandler.execute(conn, action);
+            T response = (T) actionHandler.execute(conn, action);
+            
+            if (conn != null)
+                trackConnection(conn, connectionKey, false);
+
+            return response;
         } catch (CmRpcException cre) {
             throw cre;
         } catch (Exception e) {
@@ -180,14 +187,21 @@ public class ActionDispatcher {
      * @param conn
      * @throws Exception
      */
-    private void trackConnection(Connection conn) throws Exception {
-        int key=conn.hashCode();
+    private Integer trackConnection(Connection conn, Integer connectionKey, Boolean inUse) throws Exception {
+    	int key = conn.hashCode();
+    	if (connectionKey != null) {
+    		if (logger.isDebugEnabled())
+        		logger.debug(String.format("+++ trackConnection(): connectionKey: %d, hashCode: %d, equal: %s",
+        			connectionKey, conn.hashCode(), (connectionKey.equals(key))));
+    		key = connectionKey;
+    	}
         ConnectionInfo info = _connectionInfo.get(key);
         if(info == null) {
             info = new ConnectionInfo(key);
             _connectionInfo.put(key, info);
         }
-        info.setInUse(true);
+        info.setInUse(inUse);
+        return key;
     }
     
     /** Check for command, if not registered then look
@@ -292,7 +306,7 @@ public class ActionDispatcher {
         }
         
         public String toString() {
-            return "Connection: " + key + ", " + "count=" + useCount + ", totalTime=" + totalTimeUtilization + ", " + maxTimeUtilization;
+        	return String.format("Connection: %d,\tcount=%d,\ttotalTime : maxTime = %d : %d", key, useCount, totalTimeUtilization, maxTimeUtilization);
         }
     }
 }
