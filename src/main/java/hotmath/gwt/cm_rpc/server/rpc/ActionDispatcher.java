@@ -306,7 +306,7 @@ public class ActionDispatcher {
         }
         
         public String toString() {
-        	return String.format("Connection: %d,\tcount=%d,\ttotalTime : maxTime = %d : %d", key, useCount, totalTimeUtilization, maxTimeUtilization);
+        	return String.format("Connection: %d, count=%d, totalTime : maxTime = %d : %d", key, useCount, totalTimeUtilization, maxTimeUtilization);
         }
     }
 }
