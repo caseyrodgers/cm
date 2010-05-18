@@ -189,7 +189,7 @@ public class StudentSummaryReport {
     }
 
     /**
-     *  Set the base data in the StudentModel by extracing data from matching
+     *  Set the base data in the StudentModel by extracting data from matching
      *  StudentModel in smExtList.
      *  
      *  NOTE: these two lists might not be in the same order...

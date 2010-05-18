@@ -4,6 +4,8 @@ import hotmath.cm.server.model.CmUserProgramDao;
 import hotmath.gwt.cm.server.CmDbTestCase;
 import hotmath.gwt.cm_admin.server.model.CmStudentDao;
 
+import java.util.List;
+
 public class EndOfProgramHander_Test extends CmDbTestCase {
     
     CmStudentDao dao;
@@ -35,8 +37,13 @@ public class EndOfProgramHander_Test extends CmDbTestCase {
     
     public void testEndOfProgramChapterTestGeoChap2Prof() throws Exception {
 
+        HaTestDefDao tda = new HaTestDefDao();
+        List<String> chaps = tda.getProgramChapters(conn, tda.getTestDef(conn, CmProgram.GEOM_CHAP.getDefId()));
+        
+        String lastChap = chaps.get(chaps.size()-1);
+        
         // assign chapter test to test student (last chapter)
-        dao.assignProgramToStudent(conn,userId, CmProgram.GEOM_CHAP, "Circles");
+        dao.assignProgramToStudent(conn,userId, CmProgram.GEOM_CHAP, lastChap);
         
         EndOfProgramHandler eop = new EndOfProgramHandler(userId);
         StudentUserProgramModel nextProgram = eop.getNextProgram();

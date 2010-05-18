@@ -58,7 +58,8 @@ public class EndOfProgramHandler {
             }
             else if(programCurr.getTestDefId() == CmProgram.ALG1_PROF.getDefId() 
                     || programCurr.getTestDefId() == CmProgram.ALG1_PROF_V1.getDefId() 
-                    || programCurr.getTestDefId() == CmProgram.ALG1_PROF_V2.getDefId() ) {
+                    || programCurr.getTestDefId() == CmProgram.ALG1_PROF_V2.getDefId()
+                    || programCurr.getTestDefId() == CmProgram.ALG1_PROF_V3.getDefId()) {
                 updateProgram(CmProgram.GEOM_PROF.getSubject(),CmProgram.GEOM_PROF.getProgramType(),null);                
             }
             else if(programCurr.getTestDefId() == CmProgram.GEOM_PROF.getDefId()) {

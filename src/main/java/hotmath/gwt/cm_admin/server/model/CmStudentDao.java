@@ -2082,10 +2082,12 @@ public class CmStudentDao {
     
     private int getPercentFromString(String passPercent) {
         try {
-            if(passPercent != null && passPercent.endsWith("%"))
-                passPercent = passPercent.substring(0, passPercent.length()-1);
-            
-            return Integer.parseInt(passPercent);
+            if(passPercent != null) {
+                if(passPercent.endsWith("%")) {
+                    passPercent = passPercent.substring(0, passPercent.length()-1);
+                }
+                return Integer.parseInt(passPercent);                
+            }
         }
         catch(Exception e) {
             e.printStackTrace();
