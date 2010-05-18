@@ -18,6 +18,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.log4j.Logger;
+
 import com.lowagie.text.Cell;
 import com.lowagie.text.Chunk;
 import com.lowagie.text.Document;
@@ -28,6 +30,8 @@ import com.lowagie.text.Table;
 import com.lowagie.text.pdf.PdfWriter;
 
 public class StudentSummaryReport {
+    
+    static private Logger __logger = Logger.getLogger(StudentSummaryReport.class);
 	
 	private String reportName;
 	private Map<FilterType,String> filterMap;
@@ -184,13 +188,39 @@ public class StudentSummaryReport {
         smExt.setStatus(smBase.getStatus());
     }
 
+    /**
+     *  Set the base data in the StudentModel by extracing data from matching
+     *  StudentModel in smExtList.
+     *  
+     *  NOTE: these two lists might not be in the same order...
+     *  
+     * @param smBaseList
+     * @param smExtList
+     */
     static public void setBaseData(List<StudentModelI> smBaseList, List<StudentModelI> smExtList) {
-    	int i = 0;
     	for (StudentModelI smBase : smBaseList) {
-    		StudentModelI smExt = smExtList.get(i++);
+    		StudentModelI smExt = findStudentModel(smBase.getUid(), smExtList);
+    		if(smExt == null) {
+    		    __logger.warn("uid not found in extension list: " + smBase);
+    		}
     		setBaseData(smBase, smExt);
     	}
     }
+    
+    /** Return StudentModel with UID specified
+     * 
+     * @param uid
+     * @param models
+     * @return
+     */
+    static private StudentModelI findStudentModel(Integer uid, List<StudentModelI> models) {
+        for(StudentModelI sm: models) {
+            if(sm.getUid().equals(uid))
+                return sm;
+        }
+        return null;
+    }
+    
     
     private String getQuizzesResult(StudentModelI sm) {
         if (sm.getPassingCount() != null && sm.getNotPassingCount() != null &&

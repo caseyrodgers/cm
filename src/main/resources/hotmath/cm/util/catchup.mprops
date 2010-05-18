@@ -102,7 +102,7 @@ LEFT JOIN v_HA_TEST_RUN_PNP_TOTALS q
   on q.user_id = h.uid
 LEFT JOIN (select uid, count(*) as tutoring_use from HA_USER_TUTORING_SESSION ts group by uid) ut on ut.uid = h.uid
 WHERE h.uid in (XXX) 
-
+ORDER BY h.user_name
 
 .key=STUDENT_LAST_LOGIN
 
