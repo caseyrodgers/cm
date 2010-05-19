@@ -145,6 +145,17 @@ LEFT JOIN (select uid, count(*) as tutoring_use from HA_USER_TUTORING_SESSION ts
 WHERE h.uid in (XXX)
 
 
+.key=SETTINGS_SELECT_SQL
+
+select limit_games,
+       show_work_required,
+       stop_at_program_end,
+       tutoring_available
+from   HA_USER_SETTINGS
+where  user_id = ? 
+
+
+
 ###
 .key=STUDENT_SEARCH_EXTENDED
 

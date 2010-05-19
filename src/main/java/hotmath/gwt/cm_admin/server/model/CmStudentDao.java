@@ -865,19 +865,6 @@ public class CmStudentDao {
         }
     }
     
-    /** Update settings for the specified user.
-     * 
-     * @param conn
-     * @param uid
-     * @param showWorkRequired
-     * @param tutoringAvailable
-     * @param limitGames
-     * @param stopAtProgramEnd
-     * @param passPercent
-     * @throws Exception
-     */
-
-    static final String SETTINGS_SELECT_SQL = "select limit_games, show_work_required, stop_at_program_end, tutoring_available from HA_USER_SETTINGS where user_id = ?";
 
     public StudentSettingsModel getStudentSettings(final Connection conn, Integer uid) throws Exception {
     	
@@ -887,7 +874,7 @@ public class CmStudentDao {
     	StudentSettingsModel mdl = new StudentSettingsModel();
     	
     	try {
-       	    ps = conn.prepareStatement(SETTINGS_SELECT_SQL);
+       	    ps = conn.prepareStatement("SETTINGS_SELECT_SQL");
     	    ps.setInt(1, uid);
     	    rs = ps.executeQuery();
      	    if (rs.next()) {
@@ -903,12 +890,24 @@ public class CmStudentDao {
     	return mdl;
     }
 
+    
     public void updateStudentSettings(final Connection conn, StudentModelI sm, Integer passPercent) throws Exception {
     	StudentSettingsModel ssm = sm.getSettings();
         updateStudentSettings(conn, sm.getUid(), ssm.getShowWorkRequired(), ssm.getTutoringAvailable(),
         		ssm.getLimitGames(), ssm.getStopAtProgramEnd(), passPercent);
     }
 
+    /** Update settings for the specified user.
+     * 
+     * @param conn
+     * @param uid
+     * @param showWorkRequired
+     * @param tutoringAvailable
+     * @param limitGames
+     * @param stopAtProgramEnd
+     * @param passPercent
+     * @throws Exception
+     */    
     public void updateStudentSettings(final Connection conn, Integer uid, Boolean showWorkRequired, Boolean tutoringAvailable,
     	Boolean limitGames, Boolean stopAtProgramEnd, Integer passPercent) throws Exception {
 
@@ -920,7 +919,7 @@ public class CmStudentDao {
         	String insertSql = "insert into HA_USER_SETTINGS (limit_games, show_work_required, stop_at_program_end, tutoring_available, user_id) values (?, ?, ?, ?, ?)";
         	String updateSql = "update HA_USER_SETTINGS set limit_games=?, show_work_required=?, stop_at_program_end=?, tutoring_available=? where user_id=?";
 
-        	ps = conn.prepareStatement(SETTINGS_SELECT_SQL);
+        	ps = conn.prepareStatement(CmMultiLinePropertyReader.getInstance().getProperty("SETTINGS_SELECT_SQL"));
         	ps.setInt(1, uid);
         	rs = ps.executeQuery();
 

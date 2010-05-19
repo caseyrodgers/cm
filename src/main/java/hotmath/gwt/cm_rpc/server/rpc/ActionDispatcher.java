@@ -160,10 +160,26 @@ public class ActionDispatcher {
                 logger.debug("RPC Action: DB Connection NOT requested");
             }
 
-            T response = (T) actionHandler.execute(conn, action);
-            
+            /** track connection before passed to action
+             * 
+             */
             if (conn != null)
                 trackConnection(conn, connectionKey, false);
+            
+
+            T response = (T) actionHandler.execute(conn, action);
+            
+            
+            if(conn != null) {
+                ConnectionInfo info = _connectionInfo.get(conn.hashCode());
+                if(info != null) {
+                    /** assert not null?
+                     * 
+                     */
+                    info.setInUse(false);
+                }
+            }
+            
 
             return response;
         } catch (CmRpcException cre) {
@@ -183,6 +199,8 @@ public class ActionDispatcher {
      *  in order to identify patterns and possible anomalies.
      *  
      *  This information is reported in hm_system_status.jsp
+     *  
+     *  NOTE: connection info objects are removed after action returned.
      *  
      * @param conn
      * @throws Exception
@@ -306,7 +324,7 @@ public class ActionDispatcher {
         }
         
         public String toString() {
-        	return String.format("Connection: %d, count=%d, totalTime : maxTime = %d : %d", key, useCount, totalTimeUtilization, maxTimeUtilization);
+        	return String.format("Connection: %d, count=%d, totalTime=%d maxTime=%d", key, useCount, totalTimeUtilization, maxTimeUtilization);
         }
     }
 }
