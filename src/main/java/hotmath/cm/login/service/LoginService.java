@@ -4,6 +4,8 @@ import hotmath.gwt.cm_tools.client.data.HaBasicUser;
 import hotmath.testset.ha.HaLoginInfo;
 import hotmath.testset.ha.HaUserFactory;
 
+import org.apache.log4j.Logger;
+
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 
@@ -27,6 +29,8 @@ import javax.servlet.http.HttpServletResponse;
  * 
  */
 public class LoginService extends HttpServlet {
+	
+    static final Logger LOGGER = Logger.getLogger(LoginService.class.getName());
 
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String user = req.getParameter("user");
@@ -102,7 +106,7 @@ public class LoginService extends HttpServlet {
         }
         catch(Exception e) {
             resp.getWriter().write(e.getMessage());
-            e.printStackTrace();
+            LOGGER.error(String.format("*** Login failed for user: %s, pwd: %s", user, pwd), e);
         }
     }
 	
