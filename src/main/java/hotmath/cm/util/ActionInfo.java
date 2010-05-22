@@ -6,8 +6,12 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.log4j.Logger;
 
 public class ActionInfo {
+	
+	private static Logger logger = Logger.getLogger(ActionInfo.class);
+
     String name;
     int max;
     int avg;
@@ -94,7 +98,7 @@ public class ActionInfo {
                  lastUse = dte;
         }
         catch(Exception e) {
-            e.printStackTrace();
+        	logger.error(String.format("*** error setting timeStamp: %s", timeStamp), e);
         }
     }
 

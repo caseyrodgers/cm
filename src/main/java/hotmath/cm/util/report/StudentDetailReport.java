@@ -30,9 +30,13 @@ import com.lowagie.text.pdf.PdfPTable;
 import com.lowagie.text.pdf.PdfPageEvent;
 import com.lowagie.text.pdf.PdfWriter;
 
+import org.apache.log4j.Logger;
+
 public class StudentDetailReport {
 	
 	private String reportName;
+	
+	private static Logger logger = Logger.getLogger(StudentDetailReport.class);
 	
 	@SuppressWarnings("unchecked")
 	public ByteArrayOutputStream makePdf(final Connection conn, String reportId, Integer adminId) {
@@ -132,9 +136,8 @@ public class StudentDetailReport {
 			document.close();
 
 		} catch (Exception e) {
-			System.out.println(String.format("*** Error generating student detail for aid: %d, uid: %d",
-				adminId, stuUid));
-			e.printStackTrace();
+			logger.error(String.format("*** Error generating student detail for aid: %d, uid: %d",
+				adminId, stuUid), e);
 		}
 		return baos;
 	}
