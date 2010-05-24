@@ -55,7 +55,6 @@ public class CmWebResourceManager {
         }
         catch(Exception e) {
             __logger.warn("user: " + System.getProperty("user.name"), e);
-            e.printStackTrace();
         }
         
         watcher = new ResourceWatcherThread(__fileBase, EXPIRE_TIME);
