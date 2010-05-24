@@ -232,7 +232,8 @@ public class StudentReportCard {
 
         for (String key : orderList) {
             String label = labelMap.get(key);
-            System.out.println("key: " + key + ", label: " + label);
+            if (logger.isDebugEnabled())
+                logger.debug("key: " + key + ", label: " + label);
             Integer count = (map.get(key) == null) ? 0 : map.get(key);
             usage = buildSectionContent(label, String.valueOf(count), true);
             usageTbl.addCell(usage);
