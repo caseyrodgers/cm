@@ -134,7 +134,6 @@ public class CmAdminDao {
                 gm.setId(grpId);
             }
         } catch (Exception e) {
-            e.printStackTrace();
             logger.error(String.format("*** Error adding Group: %s, for adminUid: %d", gm.getName(), adminUid), e);
             throw new Exception(String.format("*** Error adding Group: %s ***", gm.getName()));
         } finally {
@@ -362,7 +361,7 @@ public class CmAdminDao {
                 logger.warn("User was not removed");
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error(String.format("*** Error removing User with UID: %d", sm.getUid()), e);
         } finally {
             SqlUtilities.releaseResources(rs, ps, conn);
         }
@@ -656,12 +655,14 @@ public class CmAdminDao {
             sm.setGroup(groupName);
             sm.setAdminUid(aid);
             sm.setGroupId("1");
+
             StudentProgramModel studentProgram = new StudentProgramModel();
             studentProgram.setProgramType(program.getProgramType());
             studentProgram.setSubjectId(program.getSubject());
             sm.setProgram(studentProgram);
             
             sm.setPassPercent("70%");
+            
             sm.getSettings().setTutoringAvailable(tutoringEnabled);
             sm.getSettings().setShowWorkRequired(showWorkRequired);
             new SaveAutoRegistrationCommand().execute(conn, new SaveAutoRegistrationAction(aid, sm));
@@ -859,7 +860,7 @@ public class CmAdminDao {
                     counts[segNum-1] = rs.getInt("count_users");
                 }
                 catch(Exception e) {
-                    e.printStackTrace();
+                    logger.error(String.format("*** Error getting quiz segment user count for testDefId: %d, UIDs: %s", testDef.getTestDefId(), replacements), e);
                 }
             }
             
@@ -893,4 +894,5 @@ public class CmAdminDao {
             SqlUtilities.releaseResources(null, ps, null);
         }
     }
+    
 }
