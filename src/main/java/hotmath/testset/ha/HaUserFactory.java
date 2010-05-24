@@ -2,10 +2,8 @@ package hotmath.testset.ha;
 
 import hotmath.HotMathException;
 import hotmath.cm.util.CmMultiLinePropertyReader;
-import hotmath.gwt.cm_admin.server.model.CmAdminDao;
 import hotmath.gwt.cm_admin.server.model.CmStudentDao;
 import hotmath.gwt.cm_tools.client.data.HaBasicUser;
-import hotmath.gwt.cm_tools.client.model.AccountInfoModel;
 import hotmath.gwt.cm_tools.client.model.StudentModel;
 import hotmath.util.HMConnectionPool;
 import hotmath.util.sql.SqlUtilities;
