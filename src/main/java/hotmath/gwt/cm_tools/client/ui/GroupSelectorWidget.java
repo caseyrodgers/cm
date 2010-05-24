@@ -40,6 +40,7 @@ public class GroupSelectorWidget implements CmAdminDataRefresher {
 
 	public GroupSelectorWidget(final CmAdminModel cmAdminMdl, final ListStore<GroupInfoModel> groupStore,
 		boolean inRegistrationMode, ProcessTracker pTracker, String id, Boolean loadRpc) {
+
 		this.cmAdminMdl= cmAdminMdl;
         this.groupStore = groupStore;
         this.inRegistrationMode = inRegistrationMode;
