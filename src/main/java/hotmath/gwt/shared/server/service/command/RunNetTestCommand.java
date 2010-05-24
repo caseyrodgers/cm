@@ -10,12 +10,16 @@ import hotmath.gwt.shared.client.util.CmException;
 import hotmath.gwt.shared.client.util.NetTestModel;
 import hotmath.util.sql.SqlUtilities;
 
+import org.apache.log4j.Logger;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 
 
 
 public class RunNetTestCommand implements ActionHandler<RunNetTestAction, NetTestModel>{
+
+	private static Logger logger = Logger.getLogger(RunNetTestCommand.class);
 
     @Override
     public NetTestModel execute(Connection conn, RunNetTestAction action) throws Exception {
@@ -53,7 +57,7 @@ public class RunNetTestCommand implements ActionHandler<RunNetTestAction, NetTes
                 }
                 }
                 catch(Exception e) {
-                    e.printStackTrace();
+                	logger.error(String.format("*** Error executing Action: %s", action.toString()), e);
                 }
             }
             finally {

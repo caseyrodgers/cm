@@ -9,6 +9,8 @@ import hotmath.gwt.shared.client.rpc.action.GetViewedInmhItemsAction;
 import hotmath.gwt.shared.client.rpc.result.GetViewedInmhItemsResult;
 import hotmath.util.sql.SqlUtilities;
 
+import org.apache.log4j.Logger;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -21,7 +23,8 @@ import java.util.ArrayList;
  *
  */
 public class GetViewedInmhItemsCommand implements ActionHandler<GetViewedInmhItemsAction, GetViewedInmhItemsResult>{
-    
+
+    private static Logger logger = Logger.getLogger(GetViewedInmhItemsCommand.class);
 
     @Override
     public GetViewedInmhItemsResult execute(final Connection conn, GetViewedInmhItemsAction action) throws Exception {
@@ -48,7 +51,7 @@ public class GetViewedInmhItemsCommand implements ActionHandler<GetViewedInmhIte
                     data.add(rpcData);
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+            	logger.error(String.format("*** Error executing Action: %s", action.toString()), e);
                 throw new CmRpcException("Error adding test run item view: " + e.getMessage());
             } finally {
                 SqlUtilities.releaseResources(null, pstat, null);

@@ -6,6 +6,8 @@ import hotmath.gwt.cm_rpc.server.rpc.ActionHandler;
 import hotmath.gwt.shared.client.rpc.action.GetCmVersionInfoAction;
 import hotmath.gwt.shared.client.rpc.result.CmVersionInfo;
 
+import org.apache.log4j.Logger;
+
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.URL;
@@ -20,7 +22,7 @@ import java.util.Date;
  *
  */
 public class GetCmVersionInfoCommand implements ActionHandler<GetCmVersionInfoAction, CmVersionInfo>{
-    
+
     @Override
     public CmVersionInfo execute(Connection conn, GetCmVersionInfoAction action) throws Exception {
         VersionInfo gwtVersion = new VersionInfo(readGwtVersionInfo(action.getBaseUrl()));
@@ -71,14 +73,15 @@ public class GetCmVersionInfoCommand implements ActionHandler<GetCmVersionInfoAc
 class VersionInfo {
     Integer num;
     String dateStamp;
-    
+
+    private static Logger logger = Logger.getLogger(GetCmVersionInfoCommand.class);
+
     public VersionInfo(String versionFileText) throws Exception {
-        
+
         // break into lines and extract pieces
         String lines[] = versionFileText.split("\n");
         if(lines.length == 3) {
             dateStamp = lines[1].substring(1);
-            DateFormat df = new SimpleDateFormat();
             try {
                 DateFormat formatFrom = new SimpleDateFormat("E MMM d k:m:s z yyyy");
                 Date dte = formatFrom.parse(dateStamp);
@@ -86,13 +89,13 @@ class VersionInfo {
                 dateStamp = formatTo.format(dte);
             }
             catch(Exception e) {
-                e.printStackTrace();
+            	logger.error(String.format("*** Error in constructor for versionFileText: %s", versionFileText), e);
             }
             num = Integer.parseInt(lines[2].substring("build.number=".length()));
         }
-        
+
     }
-    
+
     public Integer getNum() {
         return num;
     }

@@ -24,7 +24,11 @@ import java.sql.Connection;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.log4j.Logger;
+
 public class GetQuizHtmlCheckedCommand implements ActionHandlerManualConnectionManagement, ActionHandler<GetQuizHtmlCheckedAction, RpcData> {
+
+	private static Logger logger = Logger.getLogger(GetQuizHtmlCheckedCommand.class);
 
     /** Get the quiz HTML with the answers in place
      * 
@@ -64,12 +68,11 @@ public class GetQuizHtmlCheckedCommand implements ActionHandlerManualConnectionM
             rpcData.putData("quiz_segment", testSegment);
             rpcData.putData("title", testTitle);
             
-            
             CmCacheManager.getInstance().addToCache(CacheName.TEST_HTML_CHECKED, action.getTestId(), rpcData);
 
             return rpcData;
         } catch (Exception e) {
-            e.printStackTrace();
+        	logger.error(String.format("*** Error executing Action: %s", action.toString()), e);
             throw new CmRpcException(e.getMessage());
         }
         finally {

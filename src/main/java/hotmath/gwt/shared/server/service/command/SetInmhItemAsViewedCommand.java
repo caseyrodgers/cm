@@ -9,6 +9,8 @@ import hotmath.gwt.shared.client.rpc.action.SetInmhItemAsViewedAction;
 import hotmath.testset.ha.HaTestRunDao;
 import hotmath.util.sql.SqlUtilities;
 
+import org.apache.log4j.Logger;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.Timestamp;
@@ -21,6 +23,8 @@ import java.sql.Timestamp;
  *
  */
 public class SetInmhItemAsViewedCommand implements ActionHandler<SetInmhItemAsViewedAction, RpcData> {
+
+	private static Logger logger = Logger.getLogger(SetInmhItemAsViewedCommand.class);
 
     @Override
     public RpcData execute(final Connection conn, SetInmhItemAsViewedAction action) throws Exception {
@@ -45,7 +49,7 @@ public class SetInmhItemAsViewedCommand implements ActionHandler<SetInmhItemAsVi
             
             return rpcData;
         } catch (Exception e) {
-            e.printStackTrace();
+        	logger.error(String.format("*** Error executing Action: %s", action.toString()), e);
             throw new CmRpcException("Error adding test run item view: " + e.getMessage());
         } finally {
             SqlUtilities.releaseResources(null, pstat, null);

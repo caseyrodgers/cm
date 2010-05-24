@@ -15,6 +15,8 @@ import hotmath.solution.writer.TutorProperties;
 import hotmath.util.VelocityTemplateFromStringManager;
 import hotmath.util.sql.SqlUtilities;
 
+import org.apache.log4j.Logger;
+
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -33,6 +35,8 @@ import java.util.Map;
  * 
  */
 public class GetSolutionCommand implements ActionHandler<GetSolutionAction, RpcData> {
+
+	private static final Logger logger = Logger.getLogger(GetSolutionCommand.class);
 
     static SolutionHTMLCreatorIimplVelocity __creator;
     static TutorProperties __tutorProps = new TutorProperties();
@@ -78,7 +82,7 @@ public class GetSolutionCommand implements ActionHandler<GetSolutionAction, RpcD
             // solutionHtml = "<b><img src='images/logo_1.gif'/>TEST 1</b>";
             return rpcData;
         } catch (Exception e) {
-            e.printStackTrace();
+        	logger.error(String.format("*** Error executing Action: %s", action.toString()), e);
             throw new CmRpcException(e);
         }
     }

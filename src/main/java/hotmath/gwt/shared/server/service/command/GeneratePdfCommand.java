@@ -34,102 +34,102 @@ public class GeneratePdfCommand implements ActionHandler<GeneratePdfAction, CmWe
      */
     @Override
     public CmWebResource execute(Connection conn, GeneratePdfAction action) throws Exception {
-        try {
+    	try {
 
-        String reportName=null;
+    		String reportName=null;
 
-        /** Either the pageAction is set, in which we retrieve
-         * from cache.  Or a List of UIDS is sent.
-         * 
-         * @TODO: Combine into one?
-         */
-        Integer adminId = action.getAdminId();
-        List<Integer> studentUids = null;
-        if(action.getPageAction() != null) {
-            List<StudentModelExt> studentPool = new GetStudentGridPageCommand().getStudentPool(conn, action.getPageAction());
-            studentUids = new ArrayList<Integer>();
-            for(StudentModelI sm: studentPool) {
-                studentUids.add(sm.getUid());
-            }
-        }
-        else {
-            studentUids = action.getStudentUids();
-        }
-        PdfType pdfType = action.getPdfType();
+    		/** Either the pageAction is set, in which we retrieve
+    		 * from cache.  Or a List of UIDS is sent.
+    		 * 
+    		 * @TODO: Combine into one?
+    		 */
+    		Integer adminId = action.getAdminId();
+    		List<Integer> studentUids = null;
+    		if(action.getPageAction() != null) {
+    			List<StudentModelExt> studentPool = new GetStudentGridPageCommand().getStudentPool(conn, action.getPageAction());
+    			studentUids = new ArrayList<Integer>();
+    			for(StudentModelI sm: studentPool) {
+    				studentUids.add(sm.getUid());
+    			}
+    		}
+    		else {
+    			studentUids = action.getStudentUids();
+    		}
+    		PdfType pdfType = action.getPdfType();
 
-        
-        
-        String reportId = new CmAdminDao().getPrintableStudentReportId(studentUids);
 
-        ByteArrayOutputStream baos = null;
-        if (pdfType == PdfType.STUDENT_SUMMARY) {
-            StudentSummaryReport ss = new StudentSummaryReport();
-            ss.setFilterMap(action.getFilterMap());
-            baos = ss.makePdf(reportId, adminId);
-            reportName = ss.getReportName();
-        }
-        else if (pdfType == PdfType.STUDENT_DETAIL) {
-            StudentDetailReport sd = new StudentDetailReport();
-            baos = sd.makePdf(conn, reportId, adminId);
-            reportName = sd.getReportName();
-        }
-        else if (pdfType == PdfType.REPORT_CARD) {
-            StudentReportCard sr = new StudentReportCard();
-            baos = sr.makePdf(conn, reportId, adminId);
-            reportName = sr.getReportName();
-        }
-        else if (pdfType == PdfType.GROUP_ASSESSMENT) {
-            GroupAssessmentReport gr = new GroupAssessmentReport();
-            gr.setFilterMap(action.getFilterMap());
-            baos = gr.makePdf(conn, reportId, adminId);
-            reportName = gr.getReportName();
-        }    
-        else if(pdfType == PdfType.STUDENT_LIST) {
-            StudentListReport slr = new StudentListReport(action.getTitle());
-            slr.setFilterMap(action.getFilterMap());
-            baos = slr.makePdf(conn, reportId, adminId, action.getStudentUids());
-            reportName = slr.getReportName();
-        }
-        else {
-            throw new IllegalArgumentException("Unrecognized report type: " + pdfType);
-        }
 
-        /** 
-         * write PDF ByteArrayOutputStream to a ServletOutputStream
-         */
-        if (baos != null) {
+    		String reportId = new CmAdminDao().getPrintableStudentReportId(studentUids);
 
-        	// write to temporary file to be cleaned up later
-            String outputBase = CmWebResourceManager.getInstance().getFileBase();
+    		ByteArrayOutputStream baos = null;
+    		if (pdfType == PdfType.STUDENT_SUMMARY) {
+    			StudentSummaryReport ss = new StudentSummaryReport();
+    			ss.setFilterMap(action.getFilterMap());
+    			baos = ss.makePdf(reportId, adminId);
+    			reportName = ss.getReportName();
+    		}
+    		else if (pdfType == PdfType.STUDENT_DETAIL) {
+    			StudentDetailReport sd = new StudentDetailReport();
+    			baos = sd.makePdf(conn, reportId, adminId);
+    			reportName = sd.getReportName();
+    		}
+    		else if (pdfType == PdfType.REPORT_CARD) {
+    			StudentReportCard sr = new StudentReportCard();
+    			baos = sr.makePdf(conn, reportId, adminId);
+    			reportName = sr.getReportName();
+    		}
+    		else if (pdfType == PdfType.GROUP_ASSESSMENT) {
+    			GroupAssessmentReport gr = new GroupAssessmentReport();
+    			gr.setFilterMap(action.getFilterMap());
+    			baos = gr.makePdf(conn, reportId, adminId);
+    			reportName = gr.getReportName();
+    		}    
+    		else if(pdfType == PdfType.STUDENT_LIST) {
+    			StudentListReport slr = new StudentListReport(action.getTitle());
+    			slr.setFilterMap(action.getFilterMap());
+    			baos = slr.makePdf(conn, reportId, adminId, action.getStudentUids());
+    			reportName = slr.getReportName();
+    		}
+    		else {
+    			throw new IllegalArgumentException("Unrecognized report type: " + pdfType);
+    		}
 
-            // if outputBase/adminId directory doesn't exist, create it
-            
-            String unique = Long.toString(System.currentTimeMillis());
+    		/** 
+    		 * write PDF ByteArrayOutputStream to a ServletOutputStream
+    		 */
+    		 if (baos != null) {
 
-            outputBase = outputBase + "/" + adminId;
-            String outputDir = ensureOutputDir(outputBase, unique);
-            
-            File filePath = new File(outputDir, reportName + ".pdf");
-            logger.info("Writing PDF output: " + filePath);
-            FileOutputStream fw = null;
-            try {
-                fw = new FileOutputStream(filePath);
-                baos.writeTo(fw);
+    			 // write to temporary file to be cleaned up later
+    			 String outputBase = CmWebResourceManager.getInstance().getFileBase();
 
-                return new CmWebResource(filePath.getPath(), CmWebResourceManager.getInstance().getFileBase(), CmWebResourceManager.getInstance().getWebBase());
-            }
-            finally {
-                if (fw != null) fw.close();
-            }
-        }
-        else {
-            throw new Exception("PDF generation failed");
-        }
-	}
-        catch(Throwable th) {
-            th.printStackTrace();
-        }
-        return null;
+    			 // if outputBase/adminId directory doesn't exist, create it
+
+    			 String unique = Long.toString(System.currentTimeMillis());
+
+    			 outputBase = outputBase + "/" + adminId;
+    			 String outputDir = ensureOutputDir(outputBase, unique);
+
+    			 File filePath = new File(outputDir, reportName + ".pdf");
+    			 logger.info("Writing PDF output: " + filePath);
+    			 FileOutputStream fw = null;
+    			 try {
+    				 fw = new FileOutputStream(filePath);
+    				 baos.writeTo(fw);
+
+    				 return new CmWebResource(filePath.getPath(), CmWebResourceManager.getInstance().getFileBase(), CmWebResourceManager.getInstance().getWebBase());
+    			 }
+    			 finally {
+    				 if (fw != null) fw.close();
+    			 }
+    		 }
+    		 else {
+    			 throw new Exception("PDF generation failed");
+    		 }
+    	}
+    	catch(Throwable th) {
+    		logger.error(String.format("*** Error generating pdfType: %s", action.getPdfType()), th);
+    	}
+    	return null;
     }
 
     @Override

@@ -26,9 +26,13 @@ import hotmath.testset.ha.HaTestRun;
 import hotmath.testset.ha.HaTestRunDao;
 import hotmath.testset.ha.StudentUserProgramModel;
 
+import org.apache.log4j.Logger;
+
 import java.sql.Connection;
 
 public class GetUserInfoCommand implements ActionHandler<GetUserInfoAction, UserInfo> {
+
+	private static final Logger logger = Logger.getLogger(GetUserInfoCommand.class);
 
     @Override
     public UserInfo execute(final Connection conn, GetUserInfoAction action) throws Exception {
@@ -144,7 +148,7 @@ public class GetUserInfoCommand implements ActionHandler<GetUserInfoAction, User
             
             return userInfo;
         } catch (Exception e) {
-            e.printStackTrace();
+        	logger.error(String.format("*** Error executing Action: %s", action.toString()), e);
             throw new CmRpcException(e);
         }
     }
