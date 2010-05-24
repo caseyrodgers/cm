@@ -10,6 +10,8 @@ import hotmath.gwt.cm_rpc.client.rpc.SolutionResponse;
 import hotmath.gwt.cm_rpc.server.rpc.ActionHandler;
 import hotmath.util.VelocityTemplateFromStringManager;
 
+import org.apache.log4j.Logger;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.InputStream;
@@ -29,6 +31,8 @@ import sb.util.SbFile;
  * 
  */
 public class GetMobileSolutionCommand implements ActionHandler<GetMobileSolutionAction, SolutionResponse> {
+
+	private static Logger logger = Logger.getLogger(GetMobileSolutionCommand.class);
 
     @Override
     public SolutionResponse execute(final Connection conn, GetMobileSolutionAction action) throws Exception {
@@ -64,7 +68,7 @@ public class GetMobileSolutionCommand implements ActionHandler<GetMobileSolution
             SolutionResponse rs = new SolutionResponse(solutionHtml, solutionData, false);
             return rs;
         } catch (Exception e) {
-            e.printStackTrace();
+        	logger.error(String.format("*** Error executing Action: %s", action.toString()), e);
             throw new CmRpcException(e);
         }
     }
