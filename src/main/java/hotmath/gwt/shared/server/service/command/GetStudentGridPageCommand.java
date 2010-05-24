@@ -13,6 +13,8 @@ import hotmath.gwt.shared.client.model.CmStudentPagingLoadResult;
 import hotmath.gwt.shared.client.rpc.action.GetStudentGridPageAction;
 import hotmath.gwt.shared.server.service.command.helper.GetStudentGridPageHelper;
 
+import org.apache.log4j.Logger;
+
 import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -37,7 +39,9 @@ import com.extjs.gxt.ui.client.data.PagingLoadConfig;
  */
 public class GetStudentGridPageCommand implements
         ActionHandler<GetStudentGridPageAction, CmStudentPagingLoadResult<StudentModelExt>> {
-	
+
+	private static Logger logger = Logger.getLogger(GetStudentGridPageCommand.class);
+
 	GetStudentGridPageHelper pageHelper;
 	
 	public GetStudentGridPageCommand() {
@@ -247,7 +251,8 @@ public class GetStudentGridPageCommand implements
 
     private String formatQuizzes(StudentModelI sm) {
         if (sm.getPassingCount() > 0 || sm.getNotPassingCount() > 0) {
-        	System.out.println("+++ formatQuizzes: " + String.format("%d passed out of %d", sm.getPassingCount(), (sm.getPassingCount()+sm.getNotPassingCount())));
+        	if (logger.isDebugEnabled())
+        	    logger.debug("+++ formatQuizzes: " + String.format("%d passed out of %d", sm.getPassingCount(), (sm.getPassingCount()+sm.getNotPassingCount())));
             return String.format("%d passed out of %d", sm.getPassingCount(), (sm.getPassingCount()+sm.getNotPassingCount()));
         }
         else {
