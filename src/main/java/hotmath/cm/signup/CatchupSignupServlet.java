@@ -20,13 +20,13 @@ import hotmath.testset.ha.HaUser;
 import hotmath.util.HMConnectionPool;
 import hotmath.util.sql.SqlUtilities;
 
+import org.apache.log4j.Logger;
+
 import java.io.IOException;
 import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -60,7 +60,7 @@ public class CatchupSignupServlet extends HttpServlet {
 
     
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        _logger.log(Level.INFO, "Attempting to create a new Subscriber account for: " + req.getRemoteAddr());
+        _logger.info("Attempting to create a new Subscriber account for: " + req.getRemoteAddr());
         
         HotMathSubscriber sub=null;
         try {
@@ -170,11 +170,11 @@ public class CatchupSignupServlet extends HttpServlet {
             resp.getWriter().write(returnJson);
 
         } catch (Exception e) {
-            _logger.log(Level.SEVERE,"Error creating new account", e);
+            _logger.error("*** Error creating new account", e);
             try {
                 sub.addComment(e.getMessage());
             } catch (Exception ee) {
-                _logger.log(Level.SEVERE,"Error adding comment", ee);
+                _logger.error("*** Error adding comment", ee);
             }
             resp.getWriter().write("error:" + e.getMessage());
         }
