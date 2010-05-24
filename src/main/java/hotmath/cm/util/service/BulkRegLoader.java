@@ -116,13 +116,16 @@ public class BulkRegLoader {
             }
             else {
                 if ((pair.length > 0 && nameSet.contains(pair[0])) ||
-                    (pair.length > 1 && passwdSet.contains(pair[1]))) {
+                    (pair.length > 1 && passwdSet.contains(password))) {
                     errorCount++;
                     if (nameSet.contains(pair[0])) {
                     	if (! dupNames.contains(pair[0]))
                         	dupNames.add(pair[0]);
                     }
-                    if (pair.length > 1 && passwdSet.contains(pair[1])) {
+                    /*
+                     * check password (no blanks), include original password in dups
+                     */
+                    if (pair.length > 1 && passwdSet.contains(password)) {
                     	if (! dupPasswords.contains(pair[1]))
                         	dupPasswords.add(pair[1]);
                     }
@@ -256,7 +259,7 @@ public class BulkRegLoader {
     					cellCount++;
     					break;
     				default:
-    					LOGGER.info( "unsupported cell type" );
+    					//System.out.println( "unsupported cell type" );
     				break;
     				}
     				if (cellCount < 2) {
