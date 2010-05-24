@@ -22,6 +22,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.log4j.Logger;
+
 import sb.mail.SbMailManager;
 
 /**
@@ -41,6 +43,8 @@ import sb.mail.SbMailManager;
  * Make sure there is a Catchup service
  */
 public class CmPilotCreate {
+
+	private static Logger logger = Logger.getLogger(CmPilotCreate.class);
 
     List<String> messages = new ArrayList<String>();
     Integer aid;
@@ -138,7 +142,7 @@ public class CmPilotCreate {
 
 
         } catch (Exception e) {
-            e.printStackTrace();
+        	logger.error(String.format("*** problem creating pilot for subscriberID: %s", subscriberId), e);
         } finally {
             SqlUtilities.releaseResources(null, pstmt, conn);
         }
@@ -281,7 +285,7 @@ public class CmPilotCreate {
     
     
     static public void addPilotRequest(String title, String name, String school, String zip, String email,
-            String phone, String userComments,String phoneWhen, String schoolPrefix) throws Exception {
+            String phone, String userComments, String phoneWhen, String schoolPrefix) throws Exception {
 
         String sendTo[] = { "lincoln@hotmath.com", "sales@hotmath.com", "casey@hotmath.com" };
         String SERVER_NAME = "http://catchupmath.com";
@@ -332,7 +336,7 @@ public class CmPilotCreate {
                 sub.sendEmailConfirmation("CM Pilot");
             }
             catch(Exception e) {
-                e.printStackTrace();
+            	logger.error(String.format("*** problem creating pilot for school: %s", school), e);
             }
             
             
@@ -347,10 +351,10 @@ public class CmPilotCreate {
                 SbMailManager.getInstance().sendMessage("Catchup Math Pilot Request", txt, sendTo,
                         "registration@hotmath.com", "text/plain");
             } catch (Exception e) {
-                e.printStackTrace();
+            	logger.error(String.format("*** problem sending pilot request email: %s", txt), e);
             }
         } catch (Exception e) {
-            e.printStackTrace();
+        	logger.error(String.format("*** problem adding pilot request for school: %s", school), e);
         } finally {
             SqlUtilities.releaseResources(null, ps, conn);
         }

@@ -259,6 +259,7 @@ public class CmStudentDao {
     }
 
 	private String getUidString(List<Integer> studentUids) {
+		if (studentUids == null) return " ";
 		String uidStr = studentUids.toString().substring(1);
     	uidStr = uidStr.substring(0, uidStr.length()-1);
 		return uidStr;
@@ -686,7 +687,7 @@ public class CmStudentDao {
                 logger.warn("User was not removed");
             }
         } catch (Exception e) {
-            e.printStackTrace();
+        	logger.error(String.format("*** Error removing user with Uid: %d", sm.getUid()), e);
         } finally {
             SqlUtilities.releaseResources(rs, ps, null);
         }
@@ -1238,7 +1239,7 @@ public class CmStudentDao {
                 swModels.add(s);
             }
         } catch (Exception e) {
-            e.printStackTrace();
+        	logger.error(String.format("*** Error getting show work for Uid: %d", uid), e);
         } finally {
             SqlUtilities.releaseResources(rs, ps, null);
         }
@@ -2089,7 +2090,7 @@ public class CmStudentDao {
             }
         }
         catch(Exception e) {
-            e.printStackTrace();
+        	logger.error(String.format("*** Error getting percent from passPercent: %s", passPercent), e);
         }
         return 70; // return default
     }
@@ -2116,7 +2117,7 @@ public class CmStudentDao {
             return rs.getInt(1);
 
         } catch (Exception e) {
-            e.printStackTrace();
+        	logger.error(String.format("*** Error getting INMH view count for Uid: %d", uid), e);
             throw new CmRpcException("Error adding test run item view: " + e.getMessage());
         } finally {
             SqlUtilities.releaseResources(null, pstat, null);
@@ -2178,6 +2179,10 @@ public class CmStudentDao {
                     throw new UserProgramIsNotActiveException();
                 }
             }
+        }
+        catch (Exception e) {
+        	logger.warn(">>> verifyActiveProgram(): program is not active for testId: " + testId);
+        	throw e;
         }
         finally {
             SqlUtilities.releaseResources(null,ps,null);

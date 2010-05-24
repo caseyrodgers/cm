@@ -3,6 +3,7 @@ package hotmath.cm.util.service;
 import hotmath.gwt.shared.client.rpc.result.AutoRegistrationEntry;
 
 import org.apache.commons.fileupload.FileItem;
+import org.apache.log4j.Logger;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
@@ -27,6 +28,8 @@ import java.util.Set;
  * 
  */
 public class BulkRegLoader {
+
+	private static final Logger LOGGER = Logger.getLogger(BulkRegLoader.class);
 
     private int errorCount;
     private List<String> dupNames;
@@ -269,7 +272,7 @@ public class BulkRegLoader {
     		return true;
 
     	} catch ( Exception ex ) {
-    		ex.printStackTrace();
+    		LOGGER.warn("Exception processing: " + fi.getName(), ex);
     	}
     	finally {
     		if (is != null) {

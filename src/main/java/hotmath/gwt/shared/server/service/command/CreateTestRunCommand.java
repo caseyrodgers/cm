@@ -16,6 +16,8 @@ import hotmath.testset.ha.HaTestDao;
 import hotmath.testset.ha.HaTestRun;
 import hotmath.util.sql.SqlUtilities;
 
+import org.apache.log4j.Logger;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -35,6 +37,8 @@ import java.util.List;
  * @return
  */
 public class CreateTestRunCommand implements ActionHandler<CreateTestRunAction, CreateTestRunResponse> {
+
+	private static Logger logger = Logger.getLogger(CreateTestRunCommand.class);
 
     @Override
     public CreateTestRunResponse execute(Connection conn, CreateTestRunAction action) throws Exception {
@@ -132,7 +136,7 @@ public class CreateTestRunCommand implements ActionHandler<CreateTestRunAction, 
             return testRunInfo;
 
         } catch (Exception e) {
-            e.printStackTrace();
+        	logger.error(String.format("*** Error executing Action: %s", action.toString()), e);
             throw new CmRpcException("Error creating new test run: " + e.getMessage());
         } finally {
             SqlUtilities.releaseResources(null, pstat,null);

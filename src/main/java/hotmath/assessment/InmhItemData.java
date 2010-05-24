@@ -8,13 +8,14 @@ import hotmath.inmh.INeedMoreHelpItem;
 import hotmath.util.HMConnectionPool;
 import hotmath.util.sql.SqlUtilities;
 
+import org.apache.log4j.Logger;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.logging.Logger;
 
 /**
  * Represents a single INMH item and all the PIDS that reference ie
@@ -137,14 +138,14 @@ public class InmhItemData {
                             if (SolutionManager.getInstance().doesSolutionExist(conn, pid.getGUID())) {
                                 widgets.add(new RppWidget(pid));
                             } else {
-                                logger.fine("Inmh: GUID does not exist: " + s);
+                                logger.warn("Inmh: GUID does not exist: " + s);
                             }
                         }
                     }
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
+        	logger.error(String.format("*** Load of RppWidget for %s failed", item.getFile(), e));
         } finally {
             SqlUtilities.releaseResources(null, ps, null);
         }
