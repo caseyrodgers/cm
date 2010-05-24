@@ -3,7 +3,7 @@ package hotmath.gwt.shared.client.model;
 import hotmath.gwt.cm_rpc.client.rpc.CmArrayList;
 import hotmath.gwt.cm_rpc.client.rpc.CmList;
 
-public class CmAdminTrendingDataImplDefault implements CmAdminTrendingDataI{
+public class CmAdminTrendingDataImplDefault implements CmAdminTrendingDataI {
     
     CmList<TrendingData> trendingData = new CmArrayList<TrendingData>();
     CmList<ProgramData> programData = new CmArrayList<ProgramData>();
@@ -21,7 +21,6 @@ public class CmAdminTrendingDataImplDefault implements CmAdminTrendingDataI{
 
     @Override
     public CmList<ProgramData> getProgramData() {
-        // TODO Auto-generated method stub
         return programData;
     }
 }

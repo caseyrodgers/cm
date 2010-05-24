@@ -51,7 +51,6 @@ public class BulkRegisterService extends HttpServlet {
             	ServletFileUpload sfu = new ServletFileUpload(fiFactory);
             	List<FileItem> fileItems = sfu.parseRequest(req);
             	if (fileItems != null  && fileItems.size() > 0) {
-            	    
 
             	    BulkRegLoader brLoader=new BulkRegLoader();
             	    brLoader.processUpload(fileItems);
