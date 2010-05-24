@@ -259,7 +259,7 @@ public class BulkRegLoader {
     					cellCount++;
     					break;
     				default:
-    					//System.out.println( "unsupported cell type" );
+    					LOGGER.info( "unsupported cell type" );
     				break;
     				}
     				if (cellCount < 2) {
