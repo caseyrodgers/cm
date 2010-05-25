@@ -161,3 +161,27 @@ function setQuizQuestionDisplayAsActive(pid) {
 function setWhiteboardIsVisible(wbIsVisible) {
 	_whiteboardActive = wbIsVisible;
 }
+
+
+/** called from Flash Input Widget
+ *
+ * result is JSON string defined as:
+ *
+ * {
+ *     result:'CORRECT/INCORRECT',
+ *     input:'THE_INPUT_VALUE',
+ *     answer: 'The correct answer',
+ *     id: 'pkey'
+ *
+ * }
+ *
+ *  */
+function flash_quizResult(result) {
+        try {
+            var resO = eval('(' + result + ')');
+            flashInputField_Gwt(resO.result, resO.input, resO.answer, resO.id);
+        }
+        catch(e) {
+                alert('There was a problem processing Flash Input Field: ' + e);
+        }
+}
