@@ -1,11 +1,9 @@
 package hotmath.assessment;
 
-import hotmath.HotMathExceptionSolutionNotFound;
 import hotmath.ProblemID;
 import hotmath.SolutionManager;
 import hotmath.concordance.ConcordanceEntry;
 import hotmath.inmh.INeedMoreHelpItem;
-import hotmath.util.HMConnectionPool;
 import hotmath.util.sql.SqlUtilities;
 
 import org.apache.log4j.Logger;
