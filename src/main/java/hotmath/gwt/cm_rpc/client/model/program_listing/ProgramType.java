@@ -52,4 +52,9 @@ public class ProgramType implements CmTreeNode, IsSerializable {
     public int getLevel() {
         return ProgramListing.LEVEL_TYPE;
     }
+
+	@Override
+	public CmTreeNode getParent() {
+		return null;
+	}
 }

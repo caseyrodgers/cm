@@ -9,6 +9,7 @@ public class ProgramSection implements CmTreeNode, IsSerializable{
     String name;
     int testDefId;
     int number;
+    CmTreeNode parent;
     
     List<ProgramLesson> lessons = new ArrayList<ProgramLesson>();
     
@@ -45,6 +46,10 @@ public class ProgramSection implements CmTreeNode, IsSerializable{
         this.number = number;
     }
 
+    public void setParent(CmTreeNode parent) {
+    	this.parent = parent;
+    }
+
     public List<ProgramLesson> getLessons() {
         return lessons;
     }
@@ -62,5 +67,10 @@ public class ProgramSection implements CmTreeNode, IsSerializable{
     public int getLevel() {
         return ProgramListing.LEVEL_SECT;
     }
+
+	@Override
+	public CmTreeNode getParent() {
+		return parent;
+	}
     
 }

@@ -4,6 +4,8 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 
 public class ProgramLesson implements CmTreeNode, IsSerializable{
     String name;
+    CmTreeNode parent;
+
     public ProgramLesson() {
         
     }
@@ -16,6 +18,11 @@ public class ProgramLesson implements CmTreeNode, IsSerializable{
     public void setName(String name) {
         this.name = name;
     }
+    
+    public void setParent(CmTreeNode parent) {
+    	this.parent = parent;
+    }
+
     @Override
     public String getLabel() {
         return name;
@@ -24,4 +31,9 @@ public class ProgramLesson implements CmTreeNode, IsSerializable{
     public int getLevel() {
         return ProgramListing.LEVEL_LESS;
     }
+    
+	@Override
+	public CmTreeNode getParent() {
+		return parent;
+	}
 }

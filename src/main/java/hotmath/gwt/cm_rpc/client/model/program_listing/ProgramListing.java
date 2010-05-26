@@ -39,4 +39,9 @@ public class ProgramListing implements CmTreeNode, Response {
     final public static int LEVEL_CHAP=3;
     final public static int LEVEL_SECT=4;
     final public static int LEVEL_LESS=5;
+
+	@Override
+	public CmTreeNode getParent() {
+		return null;
+	}
 }

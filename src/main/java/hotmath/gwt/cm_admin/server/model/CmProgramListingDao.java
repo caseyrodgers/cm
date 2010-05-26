@@ -46,13 +46,23 @@ public class CmProgramListingDao {
     public ProgramListing getProgramListing(final Connection conn, int adminId) throws Exception {
         PreparedStatement stmt=null;
         try {
-            String sql = "select * from HA_PROG_DEF where id in ('Prof','__Chap') order by id desc";
+            String sql = "select * from HA_PROG_DEF where id in ('Prof','Chap') order by id desc";
             stmt = conn.prepareStatement(sql);
             ResultSet rs = stmt.executeQuery();
             ProgramListing pr = new ProgramListing();
+            
             while(rs.next()) {
-                pr.getProgramTypes().add(createProficiencyProgramType(conn, rs.getString("id"), rs.getString("title")));
+            	String id = rs.getString("id");
+            	if ("Prof".equals(id)) {
+                    pr.getProgramTypes().add(createProficiencyProgramType(conn, id, rs.getString("title")));
+                    continue;
+            	}
+            	if ("Chap".equals(id)) {
+            		pr.getProgramTypes().add(createSubjectAndChapterProgramType(conn, id, rs.getString("title")));
+            		continue;
+            	}
             }
+
             return pr;
         } finally {
             SqlUtilities.releaseResources(null, null, null);
@@ -90,6 +100,45 @@ public class CmProgramListingDao {
         return pt;
     }
     
+    
+    /** Return program type for all Subject and Chapter Lessons
+     * 
+     * @param conn
+     * @param type
+     * @return
+     * @throws Exception
+     */
+    private ProgramType createSubjectAndChapterProgramType(final Connection conn, String type, String label) throws Exception {
+    	
+    	HaTestDefDao dao = new HaTestDefDao();
+    	
+    	List<HaTestDef> testDefs = dao.getTestDefs(conn, type);
+    	
+        ProgramType pt = new ProgramType(type,label);
+
+        for (HaTestDef testDef : testDefs) {
+            ProgramSubject ps = new ProgramSubject();
+            ps.setTestDefId(testDef.getTestDefId());
+            ps.setName(testDef.getSubjectId());
+            pt.getProgramSubjects().add(ps);
+
+            List<String> chapNames = dao.getProgramChapters(conn, testDef);
+            int i = 1;
+            for (String name : chapNames) {
+            	ProgramChapter chapter = new ProgramChapter();
+            	chapter.setName(name);
+            	chapter.setNumber(i);
+                ps.getChapters().add(chapter);
+
+                List<ProgramSection> list = buildSectionListForSubjectChapterTestDef(conn, testDef, name, i);
+                chapter.setSections(list);
+                i++;
+            }
+            
+        }
+        return pt;
+    }
+
     /** Return distinct lessons for a given testDefId modified with testConfig
      * 
      * @param conn
@@ -98,13 +147,14 @@ public class CmProgramListingDao {
      * @return
      * @throws Exception
      */
-    public CmList<ProgramLesson> getLessonsFor(final Connection conn, int testDefId, int segment, HaTestConfig testConfig) throws Exception {
+    public CmList<ProgramLesson> getLessonsFor(final Connection conn, int testDefId, int segment, String chapter) throws Exception {
         Statement stmt = null;
         ResultSet rs = null;
         try {
             CmList<ProgramLesson> lessons = new CmArrayList<ProgramLesson>();
             
-            logger.info(String.format("+++ getLessonsFor(): testDefId: %d, segment: %d", testDefId, segment));
+            logger.info(String.format("+++ getLessonsFor(): testDefId: %d, segment: %d, chapter: %s",
+            	testDefId, segment, (chapter != null)?chapter:"n/a"));
             
             /** first get list of PIDS that make this quiz segment
              * 
@@ -146,7 +196,11 @@ public class CmProgramListingDao {
             SqlUtilities.releaseResources(rs,stmt,null);
         }
     }
-    
+
+    private List<ProgramSection> buildSectionListForSubjectChapterTestDef(final Connection conn, HaTestDef testDef, String chapName, int chapNumber) {
+    	return buildSectionListForProficiencyTestDef(testDef);
+    }
+
     private List<ProgramSection> buildSectionListForProficiencyTestDef(HaTestDef testDef) {
     	List<ProgramSection> list = new ArrayList<ProgramSection>();
     	

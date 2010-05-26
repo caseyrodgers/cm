@@ -11,15 +11,22 @@ public class GetProgramLessonsAction implements Action<CmList<ProgramLesson>>{
     
     int testDefId;
     int segment;
+    String chapter;
     
     public GetProgramLessonsAction() {}
-    public GetProgramLessonsAction(int testDefId, int segment) {
+    public GetProgramLessonsAction(int testDefId, int segment, String chapter) {
         this.testDefId = testDefId;
         this.segment = segment;
+        this.chapter = chapter;
     }
     public int getTestDefId() {
         return testDefId;
     }
+    
+    public String getChapter() {
+    	return chapter;
+    }
+
     public void setTestDefId(int testDefId) {
         this.testDefId = testDefId;
     }

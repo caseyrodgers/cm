@@ -8,6 +8,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 public class ProgramChapter implements CmTreeNode, IsSerializable{
     String name;
     int number;
+    CmTreeNode parent;
     
     List<ProgramSection> sections = new ArrayList<ProgramSection>();
     
@@ -35,6 +36,10 @@ public class ProgramChapter implements CmTreeNode, IsSerializable{
         this.number = number;
     }
 
+    public void setparent(CmTreeNode parent) {
+    	this.parent = parent;
+    }
+
     public List<ProgramSection> getSections() {
         return sections;
     }
@@ -52,4 +57,9 @@ public class ProgramChapter implements CmTreeNode, IsSerializable{
     public int getLevel() {
         return ProgramListing.LEVEL_CHAP;
     }
+
+	@Override
+	public CmTreeNode getParent() {
+		return parent;
+	}
 }

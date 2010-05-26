@@ -10,6 +10,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 public class ProgramSubject implements CmTreeNode,IsSerializable{
     String name;
     String label;
+    CmTreeNode parent;
     
     int testDefId;
 
@@ -63,6 +64,11 @@ public class ProgramSubject implements CmTreeNode,IsSerializable{
 		this.chapters = chapters;
 	}
 
+	@Override
+	public CmTreeNode getParent() {
+		return parent;
+	}
+
     @Override
     public String getLabel() {
         return labelMap.get(name);
@@ -70,7 +76,6 @@ public class ProgramSubject implements CmTreeNode,IsSerializable{
 
     @Override
     public int getLevel() {
-        // TODO Auto-generated method stub
         return ProgramListing.LEVEL_SUBJ;
     }
 }
