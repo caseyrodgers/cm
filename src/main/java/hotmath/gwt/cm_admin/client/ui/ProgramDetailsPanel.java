@@ -2,7 +2,6 @@ package hotmath.gwt.cm_admin.client.ui;
 
 import hotmath.gwt.cm_rpc.client.model.program_listing.CmTreeNode;
 import hotmath.gwt.cm_rpc.client.model.program_listing.ProgramChapter;
-import hotmath.gwt.cm_rpc.client.model.program_listing.ProgramChapterAll;
 import hotmath.gwt.cm_rpc.client.model.program_listing.ProgramLesson;
 import hotmath.gwt.cm_rpc.client.model.program_listing.ProgramListing;
 import hotmath.gwt.cm_rpc.client.model.program_listing.ProgramSection;
@@ -12,7 +11,6 @@ import hotmath.gwt.cm_rpc.client.rpc.CmList;
 import hotmath.gwt.cm_rpc.client.rpc.GetProgramLessonsAction;
 import hotmath.gwt.cm_rpc.client.rpc.GetProgramListingAction;
 import hotmath.gwt.cm_tools.client.model.CmAdminModel;
-import hotmath.gwt.cm_tools.client.model.CmTreeModel;
 import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.rpc.RetryAction;
@@ -131,9 +129,11 @@ public class ProgramDetailsPanel extends CmWindow {
                             models.add(new ProgListModel(pt));
                         }
                     } else if (m.getLevel() == ProgramListing.LEVEL_CHAP) {
-                        List<ProgramSection> l = ((ProgramChapter) m.getData()).getSections();
+                    	ProgramChapter pc = (ProgramChapter) m.getData();
+                        List<ProgramSection> l = pc.getSections();
                         for (int i = 0, t = l.size(); i < t; i++) {
                             ProgramSection pt = l.get(i);
+                            pt.setParent(pc);
                             models.add(new ProgListModel(pt));
                         }
                     }
@@ -167,8 +167,10 @@ public class ProgramDetailsPanel extends CmWindow {
         new RetryAction<CmList<ProgramLesson>>() {
             @Override
             public void attempt() {
-                GetProgramLessonsAction action = new GetProgramLessonsAction(section.getTestDefId(), section
-                        .getNumber());
+            	ProgramChapter chapter = (ProgramChapter) section.getParent();
+            	String chap = chapter.getLabel();
+                GetProgramLessonsAction action = new GetProgramLessonsAction(
+                		section.getTestDefId(), section.getNumber(), chap);
                 setAction(action);
                 CmShared.getCmService().execute(action, this);
             }
@@ -202,7 +204,7 @@ public class ProgramDetailsPanel extends CmWindow {
             }
         }.register();
     }
-
+/*
     private void getProgramListingRPC2() {
 
         new RetryAction<ProgramListing>() {
@@ -268,7 +270,7 @@ public class ProgramDetailsPanel extends CmWindow {
             }
         }.register();
     }
-
+*/
 }
 
 class ProgListModel extends BaseModelData {
@@ -307,6 +309,9 @@ class ProgListModel extends BaseModelData {
         return data.getLevel();
     }
 
+    public void setParent(ProgListModel model) {
+    	
+    }
     @Override
     public boolean equals(Object obj) {
         if (obj != null && obj instanceof ProgListModel) {
