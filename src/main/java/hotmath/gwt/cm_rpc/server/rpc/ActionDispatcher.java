@@ -97,11 +97,13 @@ public class ActionDispatcher {
         }
     }
 
-    public Map<Class<? extends Action<? extends Response>>, Class> getCommands() {
+    @SuppressWarnings("unchecked")
+	public Map<Class<? extends Action<? extends Response>>, Class> getCommands() {
         return commands;
     }
 
-    public void setCommands(Map<Class<? extends Action<? extends Response>>, Class> commands) {
+    @SuppressWarnings("unchecked")
+	public void setCommands(Map<Class<? extends Action<? extends Response>>, Class> commands) {
         this.commands = commands;
     }
 
