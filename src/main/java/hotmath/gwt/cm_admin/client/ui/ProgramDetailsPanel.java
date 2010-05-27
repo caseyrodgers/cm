@@ -168,9 +168,10 @@ public class ProgramDetailsPanel extends CmWindow {
             @Override
             public void attempt() {
             	ProgramChapter chapter = (ProgramChapter) section.getParent();
-            	String chap = chapter.getLabel();
+            	String chap = String.valueOf(chapter.getNumber());  // chapter.getLabel();
+            	int sectionCount = chapter.getSections().size();
                 GetProgramLessonsAction action = new GetProgramLessonsAction(
-                		section.getTestDefId(), section.getNumber(), chap);
+                		section.getTestDefId(), section.getNumber(), chap, sectionCount);
                 setAction(action);
                 CmShared.getCmService().execute(action, this);
             }
