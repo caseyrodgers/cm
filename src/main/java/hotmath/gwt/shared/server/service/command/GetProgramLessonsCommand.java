@@ -19,7 +19,8 @@ public class GetProgramLessonsCommand implements ActionHandler<GetProgramLessons
 
     @Override
     public CmList<ProgramLesson> execute(final Connection conn, GetProgramLessonsAction action) throws Exception {
-        CmList<ProgramLesson> lessons = new CmProgramListingDao().getLessonsFor(conn, action.getTestDefId(), action.getSegment(), action.getChapter());
+        CmList<ProgramLesson> lessons =
+        	new CmProgramListingDao().getLessonsFor(conn, action.getTestDefId(), action.getSegment(), action.getChapter(), action.getSectionCount());
         return lessons;
     }
 
