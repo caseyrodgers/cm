@@ -147,12 +147,10 @@ public class CmProgramListingDao {
      * @return
      * @throws Exception
      */
-    public CmList<ProgramLesson> getLessonsFor(final Connection conn, int testDefId, int segment, String chapter) throws Exception {
+    public CmList<ProgramLesson> getLessonsFor(final Connection conn, int testDefId, int segment, String chapter, int sectionCount) throws Exception {
         Statement stmt = null;
         ResultSet rs = null;
         try {
-            CmList<ProgramLesson> lessons = new CmArrayList<ProgramLesson>();
-            
             logger.info(String.format("+++ getLessonsFor(): testDefId: %d, segment: %d, chapter: %s",
             	testDefId, segment, (chapter != null)?chapter:"n/a"));
             
@@ -160,8 +158,14 @@ public class CmProgramListingDao {
              * 
              */
             HaTestDefDao hda = new HaTestDefDao();
-            HaTestDef testDef = hda.getTestDef(conn,testDefId);
-
+            HaTestDef testDef = hda.getTestDef(conn, testDefId);
+            
+            if ("chap".equalsIgnoreCase(testDef.getProgId())) {
+                return getLessonsForChapterProgram(conn, testDef, segment, chapter, sectionCount);	
+            }
+            
+            CmList<ProgramLesson> lessons = new CmArrayList<ProgramLesson>();
+            
             StudentUserProgramModel userProgram = new StudentUserProgramModel();
             userProgram.setTestDef(testDef);
             List<String> pids = hda.getTestIdsForSegment(conn,userProgram,segment,testDef.getTextCode(),testDef.getChapter(),testDef.getTestConfig(),0);
@@ -197,6 +201,15 @@ public class CmProgramListingDao {
         }
     }
 
+    private CmList<ProgramLesson>  getLessonsForChapterProgram(final Connection conn, HaTestDef testDef, int segment, String chapter, int sectionCount) {
+        CmList<ProgramLesson> lessons = new CmArrayList<ProgramLesson>();
+    	for (int i=1; i <= 10; i++) {
+    		ProgramLesson pl = new ProgramLesson(String.format("Lesson %d", i));
+    		lessons.add(pl);
+    	}
+    	return lessons;
+    }
+    
     private List<ProgramSection> buildSectionListForSubjectChapterTestDef(final Connection conn, HaTestDef testDef, String chapName, int chapNumber) {
     	return buildSectionListForProficiencyTestDef(testDef);
     }
