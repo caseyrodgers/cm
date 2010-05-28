@@ -9,6 +9,7 @@ public class ProgramChapter implements CmTreeNode, IsSerializable{
     String name;
     int number;
     CmTreeNode parent;
+    String label;
     
     List<ProgramSection> sections = new ArrayList<ProgramSection>();
     
@@ -18,6 +19,7 @@ public class ProgramChapter implements CmTreeNode, IsSerializable{
     public ProgramChapter(String name, int number) {
         this.name = name;
         this.number = number;
+        this.label = buildLabel();
     }
 
     public String getName() {
@@ -26,6 +28,7 @@ public class ProgramChapter implements CmTreeNode, IsSerializable{
 
     public void setName(String name) {
         this.name = name;
+        this.label = buildLabel();
     }
 
     public int getNumber() {
@@ -34,9 +37,10 @@ public class ProgramChapter implements CmTreeNode, IsSerializable{
 
     public void setNumber(int number) {
         this.number = number;
+        this.label = buildLabel();
     }
 
-    public void setparent(CmTreeNode parent) {
+    public void setParent(CmTreeNode parent) {
     	this.parent = parent;
     }
 
@@ -50,7 +54,7 @@ public class ProgramChapter implements CmTreeNode, IsSerializable{
 
     @Override
     public String getLabel() {
-        return name;
+        return label;
     }
 
     @Override
@@ -61,5 +65,14 @@ public class ProgramChapter implements CmTreeNode, IsSerializable{
 	@Override
 	public CmTreeNode getParent() {
 		return parent;
+	}
+	
+	private String buildLabel() {
+		if (number > 0) {
+		    return "Ch " + number + ": " + ((name != null)?name:"");
+		}
+		else {
+			return (name != null)?name:"";
+		}
 	}
 }
