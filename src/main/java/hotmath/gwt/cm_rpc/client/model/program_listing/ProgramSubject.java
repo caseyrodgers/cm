@@ -64,6 +64,10 @@ public class ProgramSubject implements CmTreeNode,IsSerializable{
 		this.chapters = chapters;
 	}
 
+	public void setParent(CmTreeNode parent) {
+		this.parent = parent;
+	}
+
 	@Override
 	public CmTreeNode getParent() {
 		return parent;
