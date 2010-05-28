@@ -117,24 +117,45 @@ public class ProgramDetailsPanel extends CmWindow {
                             models.add(new ProgListModel(pt));
                         }
                     } else if (m.getLevel() == ProgramListing.LEVEL_TYPE) {
-                        List<ProgramSubject> subjects = ((ProgramType) m.getData()).getProgramSubjects();
+                    	ProgramType pType = (ProgramType) m.getData();
+                        List<ProgramSubject> subjects = pType.getProgramSubjects();
                         for (int i = 0, t = subjects.size(); i < t; i++) {
-                            ProgramSubject pt = subjects.get(i);
-                            models.add(new ProgListModel(pt));
+                            ProgramSubject ps = subjects.get(i);
+                            models.add(new ProgListModel(ps));
+                            ps.setParent(pType);
                         }
                     } else if (m.getLevel() == ProgramListing.LEVEL_SUBJ) {
+                    	
                         List<ProgramChapter> chaps = ((ProgramSubject) m.getData()).getChapters();
-                        for (int i = 0, t = chaps.size(); i < t; i++) {
-                            ProgramChapter pt = chaps.get(i);
-                            models.add(new ProgListModel(pt));
-                        }
+                    	ProgramSubject pSubj = (ProgramSubject) m.getData();
+                    	ProgramType pType = (ProgramType) pSubj.getParent();
+                        
+                    	if (pType.getLabel().indexOf("Proficiency") < 0) {
+                    		// not Proficiency Program, add Chapters
+                            for (int i = 0, t = chaps.size(); i < t; i++) {
+                                ProgramChapter pc = chaps.get(i);
+                                models.add(new ProgListModel(pc));
+                                pc.setParent(pSubj);
+                            }
+                    	}
+                    	else {
+                    		// Proficiency Program, add sections
+                        	ProgramChapter pc = chaps.get(0);
+                            List<ProgramSection> l = pc.getSections();
+                            for (int i = 0, t = l.size(); i < t; i++) {
+                                ProgramSection ps = l.get(i);
+                                ps.setParent(pc);
+                                models.add(new ProgListModel(ps));
+                            }
+                    	}
+                        
                     } else if (m.getLevel() == ProgramListing.LEVEL_CHAP) {
                     	ProgramChapter pc = (ProgramChapter) m.getData();
                         List<ProgramSection> l = pc.getSections();
                         for (int i = 0, t = l.size(); i < t; i++) {
-                            ProgramSection pt = l.get(i);
-                            pt.setParent(pc);
-                            models.add(new ProgListModel(pt));
+                            ProgramSection ps = l.get(i);
+                            ps.setParent(pc);
+                            models.add(new ProgListModel(ps));
                         }
                     }
                     callback.onSuccess(models);
