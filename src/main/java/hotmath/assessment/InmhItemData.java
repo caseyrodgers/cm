@@ -16,7 +16,7 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * Represents a single INMH item and all the PIDS that reference ie
+ * Represents a single INMH item and all the PIDS that reference it
  * 
  * @author Casey
  * 
@@ -112,7 +112,7 @@ public class InmhItemData {
         List<ProblemID> pids = new ArrayList<ProblemID>();
 
         // SQL to get list of ranges that match each INMH item
-        String sql = "select range " + " from   inmh_assessment i " + " where  i.file = ? ";
+        String sql = "select range   from inmh_assessment i   where  i.file = ? ";
         PreparedStatement ps = null;
 
         List<RppWidget> widgets = new ArrayList<RppWidget>();
