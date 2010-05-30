@@ -124,7 +124,7 @@ public class CreateTestRunCommand implements ActionHandler<CreateTestRunAction, 
             }
 
             testRunInfo.setRunId(run.getRunId());
-            testRunInfo.setTestCorrectPercent(GetPrescriptionCommand.getTestPassPercent(run.getHaTest().getNumTestQuestions(), run.getAnsweredCorrect()));
+            testRunInfo.setTestCorrectPercent(GetPrescriptionCommand.getTestPassPercent(run.getAnsweredCorrect() + run.getAnsweredIncorrect(), run.getAnsweredCorrect()));
             
             
             testRunInfo.setSessionCount(pres.getSessions().size());
