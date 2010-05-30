@@ -64,13 +64,6 @@ public class ActionDispatcher {
         __instance = null;
     }
 
-    
-    /** list of Connection objects that have been used, and meta information
-     *  describing their count and length of use.
-     */
-    Map<Integer,ConnectionInfo> _connectionInfo = new HashMap<Integer, ConnectionInfo>();
-    
-    
     private ActionDispatcher() {
         logger.info("Creating new ActionDispatcher");
     }
@@ -106,11 +99,6 @@ public class ActionDispatcher {
 	public void setCommands(Map<Class<? extends Action<? extends Response>>, Class> commands) {
         this.commands = commands;
     }
-
-    public Map<Integer,ConnectionInfo> getConnectionKeys() {
-        return _connectionInfo;
-    }
-    
     
     /**
      * Execute the given command and return the proper Result object.
@@ -152,36 +140,15 @@ public class ActionDispatcher {
              * interface, then no connection is automatically created, it must
              * manually manage the creation/release of connections.
              */
-            Integer connectionKey = null;
-            
             if (!(actionHandler instanceof ActionHandlerManualConnectionManagement)) {
                 logger.debug("RPC Action: DB Connection requested");
                 conn = HMConnectionPool.getConnection();
-                connectionKey = trackConnection(conn, connectionKey, true);
             } else {
                 logger.debug("RPC Action: DB Connection NOT requested");
             }
 
-            /** track connection before passed to action
-             * 
-             */
-            if (conn != null)
-                trackConnection(conn, connectionKey, false);
-            
 
             T response = (T) actionHandler.execute(conn, action);
-            
-            
-            if(conn != null) {
-                ConnectionInfo info = _connectionInfo.get(conn.hashCode());
-                if(info != null) {
-                    /** assert not null?
-                     * 
-                     */
-                    info.setInUse(false);
-                }
-            }
-            
 
             return response;
         } catch (CmRpcException cre) {
@@ -194,34 +161,6 @@ public class ActionDispatcher {
             logger.info("RPC Action " + clazzName + " toString: " + action.toString() + " complete: elapsed time: "
                     + (System.currentTimeMillis() - timeStart) / 1000);
         }
-    }
-    
-    
-    /** Track use of JDBC connections created and track count, time use and max use
-     *  in order to identify patterns and possible anomalies.
-     *  
-     *  This information is reported in hm_system_status.jsp
-     *  
-     *  NOTE: connection info objects are removed after action returned.
-     *  
-     * @param conn
-     * @throws Exception
-     */
-    private Integer trackConnection(Connection conn, Integer connectionKey, Boolean inUse) throws Exception {
-    	int key = conn.hashCode();
-    	if (connectionKey != null) {
-    		if (logger.isDebugEnabled())
-        		logger.debug(String.format("+++ trackConnection(): connectionKey: %d, hashCode: %d, equal: %s",
-        			connectionKey, conn.hashCode(), (connectionKey.equals(key))));
-    		key = connectionKey;
-    	}
-        ConnectionInfo info = _connectionInfo.get(key);
-        if(info == null) {
-            info = new ConnectionInfo(key);
-            _connectionInfo.put(key, info);
-        }
-        info.setInUse(inUse);
-        return key;
     }
     
     /** Check for command, if not registered then look
@@ -293,40 +232,6 @@ public class ActionDispatcher {
         logger.info("Adding " + commands.length + " commands");
         for (Class command : commands) {
             addCommand(command);
-        }
-    }
-    
-    public static class ConnectionInfo {
-        Integer key;
-        int useCount;
-        long totalTimeUtilization;
-        long maxTimeUtilization;
-        long inUseTime;
-        
-        public ConnectionInfo(Integer key) {
-           this.key = key;
-        }
-        
-        public void setInUse(boolean inUse) {
-            if(inUse == true) {
-                useCount++;
-                inUseTime = System.currentTimeMillis();
-            }
-            else {
-                /* end use */
-                if(inUseTime == 0)
-                    logger.info("Connection termination before start");
-                else {
-                    long thisUse = System.currentTimeMillis() - inUseTime;
-                    if(thisUse > maxTimeUtilization)
-                        maxTimeUtilization = thisUse;
-                    totalTimeUtilization += thisUse;
-                }
-            }
-        }
-        
-        public String toString() {
-        	return String.format("Connection: %d, count=%d, totalTime=%d maxTime=%d", key, useCount, totalTimeUtilization, maxTimeUtilization);
         }
     }
 }

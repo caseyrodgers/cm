@@ -6,8 +6,6 @@ import hotmath.concordance.ConcordanceEntry;
 import hotmath.inmh.INeedMoreHelpItem;
 import hotmath.util.sql.SqlUtilities;
 
-import org.apache.log4j.Logger;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -15,8 +13,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.apache.log4j.Logger;
+
+
 /**
- * Represents a single INMH item and all the PIDS that reference it
+ * Represents a single INMH item and all the PIDS that reference ie
  * 
  * @author Casey
  * 
@@ -26,7 +27,7 @@ public class InmhItemData {
     INeedMoreHelpItem item;
     List<String> pidsReferenced = new ArrayList<String>();
 
-    Logger logger = Logger.getLogger(InmhItemData.class.getName());
+    Logger logger = Logger.getLogger(InmhItemData.class);
 
     public InmhItemData() {
     }
@@ -108,11 +109,8 @@ public class InmhItemData {
      * @return
      */
     public List<RppWidget> getWookBookSolutionPool(final Connection conn) {
-
-        List<ProblemID> pids = new ArrayList<ProblemID>();
-
         // SQL to get list of ranges that match each INMH item
-        String sql = "select range   from inmh_assessment i   where  i.file = ? ";
+        String sql = "select range " + " from   inmh_assessment i " + " where  i.file = ? ";
         PreparedStatement ps = null;
 
         List<RppWidget> widgets = new ArrayList<RppWidget>();
@@ -131,19 +129,22 @@ public class InmhItemData {
                 } else {
                     List<String> related = findSolutionsMatchingRange(range);
                     for (String s : related) {
-                        ProblemID pid = new ProblemID(s);
-                        if (!pids.contains(pid)) {
-                            if (SolutionManager.getInstance().doesSolutionExist(conn, pid.getGUID())) {
-                                widgets.add(new RppWidget(pid));
+                        RppWidget widget = new RppWidget(new ProblemID(s));
+                        if (!widgets.contains(widget)) {
+                            if (SolutionManager.getInstance().doesSolutionExist(conn, widget.getPid().getGUID())) {
+                                widgets.add(widget);
                             } else {
-                                logger.warn("Inmh: GUID does not exist: " + s);
+                                logger.debug("Inmh: GUID does not exist: " + s);
                             }
+                        }
+                        else {
+                            logger.info(String.format("Duplicate RPP %s for item '%s'",widget,this));
                         }
                     }
                 }
             }
         } catch (Exception e) {
-        	logger.error(String.format("*** Load of RppWidget for %s failed", item.getFile(), e));
+            e.printStackTrace();
         } finally {
             SqlUtilities.releaseResources(null, ps, null);
         }
@@ -161,50 +162,10 @@ public class InmhItemData {
         ConcordanceEntry con = new ConcordanceEntry(range);
         return (List<String>) Arrays.asList(con.getGUIDs());
     }
-}
-
-class RppWidget {
-
-    String file;
-    String title;
-    ProblemID pid;
-
-    /**
-     * form of [PATH_TO_WIDGET|TITLE_OF_WIDGET]
-     * 
-     * @param def
-     */
-    public RppWidget(String def) {
-        String p[] = def.substring(1, def.length() - 1).split("\\|");
-        file = p[0];
-        title = p[1];
-    }
-
-    public RppWidget(ProblemID pid) {
-        this.pid = pid;
-    }
-
-    public ProblemID getPid() {
-        return pid;
-    }
-
-    public void setPid(ProblemID pid) {
-        this.pid = pid;
-    }
-
-    public String getFile() {
-        return file;
-    }
-
-    public void setFile(String file) {
-        this.file = file;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
+    
+    @Override
+    public String toString() {
+        return this.item.toString() + ",pid_count=" + this.pidsReferenced.size();
     }
 }
+
