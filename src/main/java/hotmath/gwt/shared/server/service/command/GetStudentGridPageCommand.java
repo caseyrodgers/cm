@@ -81,22 +81,31 @@ public class GetStudentGridPageCommand implements
     @SuppressWarnings("unchecked")
     public List<StudentModelExt> getStudentPool(final Connection conn, GetStudentGridPageAction action) throws Exception {
 
+
         PagingLoadConfig config = action!=null?action.getLoadConfig():null;
-
+        logger.debug("page config: " + config);
+        
         String cacheKey = getCacheKey(action.getAdminId());
-
+        logger.debug("cache key: " + cacheKey);
+        
+        
         /**
          * Get all student data for this one admin from cache
          * 
          */
         List<StudentModelExt> _allStudents = (List<StudentModelExt>) CmCacheManager.getInstance().retrieveFromCache(CacheName.STUDENT_PAGED_DATA, cacheKey);
         if (action.isForceRefresh() || _allStudents == null) {
+            logger.debug("creating _allStudents");
             _allStudents = new ArrayList<StudentModelExt>();
             for (StudentModelI smi : new CmStudentDao().getStudentBaseSummaries(conn, action.getAdminId(), true)) {
                 _allStudents.add(new StudentModelExt(smi));
             }
             CmCacheManager.getInstance().addToCache(CacheName.STUDENT_PAGED_DATA, cacheKey, _allStudents);
         }
+        else {
+            logger.debug("using cached all_students");
+        }
+        logger.debug("_allStudents: " + _allStudents.size());        
 
         List<StudentModelExt> studentPool = null;
 
@@ -112,6 +121,7 @@ public class GetStudentGridPageCommand implements
              * filtered values only matching filtered group
              * 
              */
+            logger.debug("filtering student pool");
             studentPool = new ArrayList<StudentModelExt>();
             for (StudentModelExt sme : _allStudents) {
                 if (sme.getGroupId().equals(action.getGroupFilter()))
@@ -124,7 +134,7 @@ public class GetStudentGridPageCommand implements
              */
             studentPool = _allStudents;
         }
-        
+        logger.debug("filtered student pool: " + studentPool.size());        
         
         /** apply the quick search algorithm
          * 
@@ -147,6 +157,7 @@ public class GetStudentGridPageCommand implements
             removeOverlap(nfpMap, qsStudentPool);
 
             if (nfpMap.size() > 0) {
+                logger.debug("applying quick_search");
             	List<Integer> uidMatchList = new CmStudentDao().getQuickSearchUids(conn, nfpMap.keySet(), search);
             	/*
             	 * add any matches to QS student pool
@@ -155,8 +166,9 @@ public class GetStudentGridPageCommand implements
             	    qsStudentPool.add(nfpMap.get(uid));
             	}
             }
-            studentPool = qsStudentPool;            
+            studentPool = qsStudentPool;
         }
+        logger.debug("quick_search student pool: " + studentPool.size());
         
         /**
          * Should the student pool be sorted?
@@ -166,6 +178,7 @@ public class GetStudentGridPageCommand implements
             final String sortField = config.getSortInfo().getSortField();
             if (sortField != null) {
             	
+                logger.debug("sorting student pool");
             	/**
             	 * fill the sort field as needed in both studentPool and _allStudents
             	 */
@@ -175,6 +188,7 @@ public class GetStudentGridPageCommand implements
                         new StudentGridComparator(sortField)));
             }
         }   
+        logger.debug("sorted student pool: " + studentPool.size());
         
         return studentPool;
     }
