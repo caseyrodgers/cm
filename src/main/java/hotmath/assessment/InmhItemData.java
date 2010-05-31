@@ -17,7 +17,7 @@ import org.apache.log4j.Logger;
 
 
 /**
- * Represents a single INMH item and all the PIDS that reference ie
+ * Represents a single INMH item and all the PIDS that reference it
  * 
  * @author Casey
  * 
@@ -110,7 +110,7 @@ public class InmhItemData {
      */
     public List<RppWidget> getWookBookSolutionPool(final Connection conn) {
         // SQL to get list of ranges that match each INMH item
-        String sql = "select range " + " from   inmh_assessment i " + " where  i.file = ? ";
+        String sql = "select range   from inmh_assessment i   where i.file = ? ";
         PreparedStatement ps = null;
 
         List<RppWidget> widgets = new ArrayList<RppWidget>();
@@ -144,7 +144,7 @@ public class InmhItemData {
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
+        	logger.error(String.format("*** Load of RppWidget for %s failed", item.getFile(), e));
         } finally {
             SqlUtilities.releaseResources(null, ps, null);
         }
