@@ -263,6 +263,7 @@ public class HaTestRunDao {
 	        testRun.setRunTime(rs.getTimestamp("run_time").getTime());
 	        testRun.setSessionNumber(conn, rs.getInt("run_session"));
 	        testRun.setAnsweredCorrect((rs.getInt("answered_correct")));
+	        testRun.setAnsweredIncorrect((rs.getInt("answered_incorrect")));
 	        testRun.setPassing(rs.getInt("is_passing")==0?false:true);
 	
 	        testRun.setHaTest(HaTestDao.loadTest(conn,rs.getInt("test_id")));
