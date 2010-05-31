@@ -868,6 +868,8 @@ public class CmAdminDao {
                 }
             }
             
+            logger.debug("getCountsOfUsersWhoHaveVisitedQuizSegment: " + counts);
+            
             return counts;
         } finally {
             SqlUtilities.releaseResources(null, ps, null);
