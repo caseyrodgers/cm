@@ -1,44 +1,30 @@
 package hotmath.gwt.cm_tools.client.ui;
 
+import hotmath.gwt.cm_rpc.client.rpc.CmList;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.model.LessonItemModel;
-import hotmath.gwt.cm_rpc.client.rpc.CmList;
-import hotmath.gwt.cm_rpc.client.rpc.CmServiceAsync;
+import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
 import hotmath.gwt.shared.client.CmShared;
+import hotmath.gwt.shared.client.rpc.RetryAction;
 import hotmath.gwt.shared.client.rpc.action.GetStateStandardsAction;
 
-import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.data.BaseModel;
-import com.extjs.gxt.ui.client.event.ButtonEvent;
-import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.ListView;
-import com.extjs.gxt.ui.client.widget.Window;
-import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 
-public class StudentLessTopicsStateStandardsWindow extends Window {
+public class StudentLessTopicsStateStandardsWindow extends CmWindow {
     
     String topic;
-    public StudentLessTopicsStateStandardsWindow(LessonItemModel lessonModel) {
-           readCaliStateStandards(lessonModel.getFile());
+    public StudentLessTopicsStateStandardsWindow(LessonItemModel lessonModel,String stateLabel, String state) {
+        
+            readStateStandards(lessonModel.getFile(),state);
          
             setModal(true);
             setSize(325, 250);
-            setHeading("California State Standards for: " + lessonModel.getName());
-
+            setHeading(stateLabel + " State Standards for: " + lessonModel.getName());
             setLayout(new FitLayout());
-
-            Button close = new Button("Close");
-            close.addSelectionListener(new SelectionListener<ButtonEvent>() {
-                public void componentSelected(ButtonEvent ce) {
-                    close();
-                }
-            });
-            addButton(close);
-            
-            
+            addCloseButton();
             setVisible(true);        
         }
     
@@ -68,23 +54,21 @@ public class StudentLessTopicsStateStandardsWindow extends Window {
      * 
      * @param lim
      */
-    private void readCaliStateStandards(final String topic) {
-        CatchupMathTools.setBusy(true);
-        
-        CmServiceAsync s = CmShared.getCmService();
-        s.execute(new GetStateStandardsAction(topic), new AsyncCallback<CmList<String>>() {
-            public void onSuccess(CmList<String> result) {
+    private void readStateStandards(final String topic,final String state) {
+        new RetryAction<CmList<String>>() {
+            @Override
+            public void attempt() {
+                GetStateStandardsAction action = new GetStateStandardsAction(topic,state);
+                setAction(action);
+                CmShared.getCmService().execute(action, this);
+            }
+            
+            @Override
+            public void oncapture(CmList<String> result) {
                 loadStandards(result);
                 CatchupMathTools.setBusy(false);
             }
-
-            @Override
-            public void onFailure(Throwable caught) {
-                Log.error("Error reading california standareds", caught);
-                CatchupMathTools.setBusy(false);
-            }
-        });
-    }    
+        }.attempt();
     }
 
     class StandardsModel extends BaseModel {
@@ -101,3 +85,4 @@ public class StudentLessTopicsStateStandardsWindow extends Window {
             return get("standard");
         }
     }        
+}

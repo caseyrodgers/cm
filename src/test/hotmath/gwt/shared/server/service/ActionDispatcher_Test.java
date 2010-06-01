@@ -140,7 +140,7 @@ public class ActionDispatcher_Test extends CmDbTestCase {
     }
 
     public void testGetStateStandards() throws Exception {
-        GetStateStandardsAction action = new GetStateStandardsAction("aas-postulate.html");
+        GetStateStandardsAction action = new GetStateStandardsAction("aas-postulate.html","CA");
         CmList<String> list = ActionDispatcher.getInstance().execute(action);
         assertNotNull(list);
         assertTrue(list.size() > 0);

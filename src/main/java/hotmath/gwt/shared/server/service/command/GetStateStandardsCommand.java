@@ -27,16 +27,17 @@ public class GetStateStandardsCommand implements ActionHandler<GetStateStandards
         if(topic.startsWith("topics/"))
             topic = topic.substring(7);
         
-        String sql = "select * from inmh_standard where topic = ? order by standard_name";
+        String sql = "select * from inmh_standard where topic = ? and standard_state = ? order by standard_name";
         PreparedStatement ps = null;
         
         CmList<String> list = new CmArrayList<String>();
         try {
             ps = conn.prepareStatement(sql);
             ps.setString(1, topic);
+            ps.setString(2, action.getState());
             ResultSet rs = ps.executeQuery();
             while(rs.next()) {
-                list.add(String.format("%s %s", rs.getString("standard_name"), rs.getString("standard_num")));
+                list.add(rs.getString("standard_name"));
             }
         }
         finally {

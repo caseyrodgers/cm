@@ -1,11 +1,11 @@
 package hotmath.gwt.cm_tools.client.ui;
 
+import hotmath.gwt.cm_rpc.client.rpc.CmList;
+import hotmath.gwt.cm_rpc.client.rpc.CmServiceAsync;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.model.LessonItemModel;
 import hotmath.gwt.cm_tools.client.model.StudentActivityModel;
 import hotmath.gwt.cm_tools.client.model.StudentModelExt;
-import hotmath.gwt.cm_rpc.client.rpc.CmList;
-import hotmath.gwt.cm_rpc.client.rpc.CmServiceAsync;
 import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.rpc.action.GetLessonItemsForTestRunAction;
@@ -15,6 +15,7 @@ import java.util.List;
 
 import com.extjs.gxt.ui.client.Style.SelectionMode;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
+import com.extjs.gxt.ui.client.event.MenuEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
@@ -24,6 +25,8 @@ import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
 import com.extjs.gxt.ui.client.widget.grid.Grid;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
+import com.extjs.gxt.ui.client.widget.menu.Menu;
+import com.extjs.gxt.ui.client.widget.menu.MenuItem;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 /**
@@ -72,19 +75,7 @@ public class StudentLessonTopicsStatusWindow extends CmWindow {
         cp.add(limGrid);
         add(cp);
 
-        Button stateStandardsBtn = new Button("California Standards");
-        stateStandardsBtn.setToolTip("Show corresponding California state standards");
-        stateStandardsBtn.addSelectionListener(new SelectionListener<ButtonEvent>() {
-            public void componentSelected(ButtonEvent ce) {
-                LessonItemModel lim = limGrid.getSelectionModel().getSelectedItem();
-                if (lim != null) {
-                    new StudentLessTopicsStateStandardsWindow(lim);
-                } else {
-                    CatchupMathTools.showAlert("Select a standard first");
-                }
-            }
-        });
-
+        Button stateStandardsBtn = createStandardsButton();
         addButton(stateStandardsBtn);
 
         Button closeBtn = new Button("Close");
@@ -101,13 +92,50 @@ public class StudentLessonTopicsStatusWindow extends CmWindow {
         this.getStudentLessonTopicsRPC(store);
 
     }
+    
+    private Button createStandardsButton() {
+        Button btn = new Button("State Standards");
+        btn.setToolTip("Show standards for selected topic");
 
+        Menu menu = new Menu();
+
+        menu.add(new MenuItem("California",new SelectionListener<MenuEvent>() {
+            public void componentSelected(MenuEvent ce) {
+                showStandardsFor("California", "CA");
+                }
+        }));
+        menu.add(new MenuItem("Texas",new SelectionListener<MenuEvent>() {
+            public void componentSelected(MenuEvent ce) {
+                showStandardsFor("Texas", "TX");
+                }
+        }));
+
+        menu.add(new MenuItem("Utah",new SelectionListener<MenuEvent>() {
+            public void componentSelected(MenuEvent ce) {
+                showStandardsFor("Utah", "UT");
+                }
+        }));
+        
+        btn.setMenu(menu);
+
+        return btn;        
+    }
+
+    private void showStandardsFor(String stateLabel, String state) {
+        LessonItemModel lim = limGrid.getSelectionModel().getSelectedItem();
+        if (lim != null) {
+            new StudentLessTopicsStateStandardsWindow(lim,stateLabel,state);
+        } else {
+            CatchupMathTools.showAlert("Select a topic first");
+        }
+    }
+    
     private ColumnModel defineColumns() {
         List<ColumnConfig> configs = new ArrayList<ColumnConfig>();
 
         ColumnConfig topicName = new ColumnConfig();
         topicName.setId(LessonItemModel.NAME_KEY);
-        topicName.setHeader("Standards Covered This Section");
+        topicName.setHeader("Topics Covered This Section");
         topicName.setWidth(240);
         topicName.setSortable(true);
         topicName.setMenuDisabled(true);
