@@ -264,6 +264,7 @@ public class HaTestRunDao {
 	        testRun.setSessionNumber(conn, rs.getInt("run_session"));
 	        testRun.setAnsweredCorrect((rs.getInt("answered_correct")));
 	        testRun.setAnsweredIncorrect((rs.getInt("answered_incorrect")));
+	        testRun.setNotAnswered((rs.getInt("not_answered")));
 	        testRun.setPassing(rs.getInt("is_passing")==0?false:true);
 	
 	        testRun.setHaTest(HaTestDao.loadTest(conn,rs.getInt("test_id")));
@@ -341,7 +342,7 @@ public class HaTestRunDao {
         ResultSet rs = null;
         try {
             String sql = CmMultiLinePropertyReader.getInstance().getProperty("TEST_RUN_RESULT_INSERT");
-            pstat = conn.prepareStatement(sql);
+            pstat = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
             HaTestRunResult testRunResult = new HaTestRunResult();
 
             pstat.setInt(1, runId);
