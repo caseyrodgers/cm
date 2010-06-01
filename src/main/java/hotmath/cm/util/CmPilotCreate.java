@@ -16,6 +16,7 @@ import hotmath.util.sql.SqlUtilities;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.Statement;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -99,7 +100,7 @@ public class CmPilotCreate {
                  * add new HA_ADMIN account
                  */
                 String sql = "insert into HA_ADMIN(subscriber_id, passcode, user_name, create_date)values(?,?,?,now())";
-                pstmt = conn.prepareStatement(sql);
+                pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
                 pstmt.setString(1, subscriberId);
                 pstmt.setString(2, "admin123");
                 pstmt.setString(3, password); // use subs password as username

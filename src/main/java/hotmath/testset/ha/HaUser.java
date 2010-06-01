@@ -13,6 +13,7 @@ import hotmath.util.sql.SqlUtilities;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -367,8 +368,9 @@ public class HaUser extends HaBasicUserImpl {
 	                     "from   HA_TEST_DEF " +
 	                     "where  test_name = ?";
 	        conn = HMConnectionPool.getConnection();
-	        pstat = conn.prepareStatement(sql);
-	        
+
+	        pstat = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+
 	        pstat.setInt(1,Integer.parseInt(adminId));
 	        pstat.setString(2, userName);
 	        pstat.setString(3, passCode);

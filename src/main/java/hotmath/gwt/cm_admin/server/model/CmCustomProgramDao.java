@@ -231,7 +231,7 @@ public class CmCustomProgramDao {
 
         try {
             String sql = "insert into HA_CUSTOM_PROGRAM(admin_id,name)values(?,?)";
-            stmt = conn.prepareStatement(sql);
+            stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
             stmt.setInt(1, adminId);
             stmt.setString(2, name);
             if(stmt.executeUpdate() != 1) {
