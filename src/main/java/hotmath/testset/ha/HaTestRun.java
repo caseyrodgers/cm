@@ -13,7 +13,7 @@ public class HaTestRun {
     Integer runId;
     Long runTime;
     HaTest haTest;
-    int answeredCorrect, answeredIncorrect;
+    int answeredCorrect, answeredIncorrect, notAnswered;
     int sessionNumber;
     boolean isPassing;
 
@@ -49,6 +49,16 @@ public class HaTestRun {
 
     public void setAnsweredIncorrect(int answeredIncorrect) {
         this.answeredIncorrect = answeredIncorrect;
+    }
+    
+    
+
+    public int getNotAnswered() {
+        return notAnswered;
+    }
+
+    public void setNotAnswered(int notAnswered) {
+        this.notAnswered = notAnswered;
     }
 
     public Integer getRunId() {
