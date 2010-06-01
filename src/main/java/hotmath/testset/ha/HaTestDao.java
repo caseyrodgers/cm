@@ -155,7 +155,7 @@ public class HaTestDao {
 
             String sql = "insert into HA_TEST(user_id,user_prog_id,test_def_id,create_time,test_segment,test_segment_slot, total_segments,test_question_count)values(?,?,?,?,?,?,?,?)";
 
-            pstat = conn.prepareStatement(sql);
+            pstat = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
 
             // get the program info used to create this test
             StudentUserProgramModel userProgram = new CmUserProgramDao().loadProgramInfoCurrent(conn, uid);
@@ -438,7 +438,7 @@ public class HaTestDao {
 
             HaTest test = HaTestDao.loadTest(conn, testId);
             String sql = "insert into HA_TEST_RUN(test_id, run_time, answered_correct, answered_incorrect, not_answered,run_session,is_passing)values(?,?,?,?,?,1,?)";
-            pstat = conn.prepareStatement(sql);
+            pstat = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
             HaTestRun testRun = new HaTestRun();
 
             pstat.setInt(1, testId);
@@ -466,6 +466,7 @@ public class HaTestDao {
             testRun.setHaTest(test);
             testRun.setAnsweredCorrect(answeredCorrect);
             testRun.setAnsweredIncorrect(answeredIncorrect);
+            testRun.setNotAnswered(notAnswered);
             testRun.setPassing(passedQuiz);
 
             /**
