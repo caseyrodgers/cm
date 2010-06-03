@@ -724,7 +724,7 @@ public class CmAdminDao {
             }
             return tdata;
         } finally {
-            logger.debug("trending data retrieved");
+            logger.debug("aid=" + aid + " trending data retrieved");
             SqlUtilities.releaseResources(null, ps, null);
         }
     }
