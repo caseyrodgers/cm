@@ -864,7 +864,7 @@ public class CmAdminDao {
                 }
                 catch(Exception e) {
                     /** could be change segment count */
-                    logger.debug(String.format("*** Error getting quiz segment user count for testDefId: %d, UIDs: %s", testDef.getTestDefId(), replacements), e);
+                    //silent logger.debug(String.format("*** Error getting quiz segment user count for testDefId: %d, UIDs: %s", testDef.getTestDefId(), replacements), e);
                 }
             }
             
