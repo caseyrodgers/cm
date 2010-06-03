@@ -760,7 +760,7 @@ public class CmAdminDao {
         } catch (Exception e) {
             throw e;
         } finally {
-            logger.debug("aid=" + aid + "trending data retrieved: " + tdata.size());
+            logger.debug("aid=" + aid + " trending data for program retrieved: " + tdata.size());
             SqlUtilities.releaseResources(null, ps, null);
         }
     }
