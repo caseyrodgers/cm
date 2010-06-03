@@ -712,7 +712,7 @@ public class CmAdminDao {
             throws Exception {
         CmList<TrendingData> tdata = new CmArrayList<TrendingData>();
         PreparedStatement ps = null;
-        logger.debug("getting trending data");
+        logger.debug("aid=" + aid + " getting trending data");
         try {
             String sqlToken = (useActiveOnly?"TRENDING_DATA_SQL_FROM_UIDS_ACTIVE_ONLY":"TRENDING_DATA_SQL_FROM_UIDS_FULL_HISTORY");
             ps = conn.prepareStatement(CmMultiLinePropertyReader.getInstance().getProperty(
@@ -742,7 +742,7 @@ public class CmAdminDao {
     public CmList<ProgramData> getTrendingData_ForProgram(final Connection conn, Integer aid,
             List<StudentModelExt> studentPool,boolean useActiveOnly) throws Exception {
        
-        logger.debug("getting trending data for program");
+        logger.debug("aid=" + aid + " getting trending data for program");
         CmList<ProgramData> tdata = new CmArrayList<ProgramData>();
         PreparedStatement ps = null;
         try {
@@ -760,7 +760,7 @@ public class CmAdminDao {
         } catch (Exception e) {
             throw e;
         } finally {
-            logger.debug("trending data retrieved: " + tdata.size());
+            logger.debug("aid=" + aid + "trending data retrieved: " + tdata.size());
             SqlUtilities.releaseResources(null, ps, null);
         }
     }

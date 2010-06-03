@@ -83,10 +83,10 @@ public class GetStudentGridPageCommand implements
 
 
         PagingLoadConfig config = action!=null?action.getLoadConfig():null;
-        logger.debug("page config: " + config);
+        logger.debug("aid=" + action.getAdminId() + " page config: " + config);
         
         String cacheKey = getCacheKey(action.getAdminId());
-        logger.debug("cache key: " + cacheKey);
+        logger.debug("aid=" + action.getAdminId() + " cache key: " + cacheKey);
         
         
         /**
@@ -95,7 +95,7 @@ public class GetStudentGridPageCommand implements
          */
         List<StudentModelExt> _allStudents = (List<StudentModelExt>) CmCacheManager.getInstance().retrieveFromCache(CacheName.STUDENT_PAGED_DATA, cacheKey);
         if (action.isForceRefresh() || _allStudents == null) {
-            logger.debug("creating _allStudents");
+            logger.debug("aid=" + action.getAdminId() + "creating _allStudents");
             _allStudents = new ArrayList<StudentModelExt>();
             for (StudentModelI smi : new CmStudentDao().getStudentBaseSummaries(conn, action.getAdminId(), true)) {
                 _allStudents.add(new StudentModelExt(smi));
@@ -103,9 +103,9 @@ public class GetStudentGridPageCommand implements
             CmCacheManager.getInstance().addToCache(CacheName.STUDENT_PAGED_DATA, cacheKey, _allStudents);
         }
         else {
-            logger.debug("using cached all_students");
+            logger.debug("aid=" + action.getAdminId() + "using cached all_students");
         }
-        logger.debug("_allStudents: " + _allStudents.size());        
+        logger.debug("aid=" + action.getAdminId() + "_allStudents: " + _allStudents.size());        
 
         List<StudentModelExt> studentPool = null;
 
@@ -121,7 +121,7 @@ public class GetStudentGridPageCommand implements
              * filtered values only matching filtered group
              * 
              */
-            logger.debug("filtering student pool");
+            logger.debug("aid=" + action.getAdminId() + "filtering student pool");
             studentPool = new ArrayList<StudentModelExt>();
             for (StudentModelExt sme : _allStudents) {
                 if (sme.getGroupId().equals(action.getGroupFilter()))
@@ -134,7 +134,7 @@ public class GetStudentGridPageCommand implements
              */
             studentPool = _allStudents;
         }
-        logger.debug("filtered student pool: " + studentPool.size());        
+        logger.debug("aid=" + action.getAdminId() + "filtered student pool: " + studentPool.size());        
         
         /** apply the quick search algorithm
          * 
@@ -157,7 +157,7 @@ public class GetStudentGridPageCommand implements
             removeOverlap(nfpMap, qsStudentPool);
 
             if (nfpMap.size() > 0) {
-                logger.debug("applying quick_search");
+                logger.debug("aid=" + action.getAdminId() + "applying quick_search");
             	List<Integer> uidMatchList = new CmStudentDao().getQuickSearchUids(conn, nfpMap.keySet(), search);
             	/*
             	 * add any matches to QS student pool
@@ -168,7 +168,7 @@ public class GetStudentGridPageCommand implements
             }
             studentPool = qsStudentPool;
         }
-        logger.debug("quick_search student pool: " + studentPool.size());
+        logger.debug("aid=" + action.getAdminId() + "quick_search student pool: " + studentPool.size());
         
         /**
          * Should the student pool be sorted?
@@ -178,7 +178,7 @@ public class GetStudentGridPageCommand implements
             final String sortField = config.getSortInfo().getSortField();
             if (sortField != null) {
             	
-                logger.debug("sorting student pool");
+                logger.debug("aid=" + action.getAdminId() + "sorting student pool");
             	/**
             	 * fill the sort field as needed in both studentPool and _allStudents
             	 */
@@ -188,7 +188,7 @@ public class GetStudentGridPageCommand implements
                         new StudentGridComparator(sortField)));
             }
         }   
-        logger.debug("sorted student pool: " + studentPool.size());
+        logger.debug("aid=" + action.getAdminId() + "sorted student pool: " + studentPool.size());
         
         return studentPool;
     }
