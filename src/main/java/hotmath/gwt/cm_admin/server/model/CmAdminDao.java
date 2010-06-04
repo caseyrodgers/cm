@@ -699,6 +699,7 @@ public class CmAdminDao {
     public CmList<TrendingData> getTrendingData(final Connection conn, Integer aid, List<StudentModelExt> studentPool, boolean useActiveOnly)
             throws Exception {
         CmList<TrendingData> tdata = new CmArrayList<TrendingData>();
+
         PreparedStatement ps = null;
         logger.debug("aid=" + aid + " getting trending data");
         try {
@@ -714,9 +715,7 @@ public class CmAdminDao {
 
             ps = conn.prepareStatement(sql);
             ps.setInt(1, aid);
-            if (logger.isDebugEnabled()) {
-            	logger.debug("+++ getTrendingData(): SQL: " + ps.toString());
-            }
+            logger.debug("+++ getTrendingData(): SQL: " + ps.toString());
 
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
@@ -744,6 +743,10 @@ public class CmAdminDao {
        
         logger.debug("aid=" + aid + " getting trending data for program");
         CmList<ProgramData> tdata = new CmArrayList<ProgramData>();
+	if(true) {
+	    logger.info("SKIPPING GETTRENDINGDATA_FORPROGRAM");
+            return tdata;
+        }
         PreparedStatement ps = null;
         try {
             List<Integer> studentUids = createInListReplacements(studentPool);
