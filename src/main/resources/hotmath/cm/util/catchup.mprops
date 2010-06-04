@@ -527,7 +527,7 @@ from   HA_TEST_RUN_LESSON l
   JOIN HA_USER u on u.uid = t.user_id
   JOIN HA_ADMIN a on a.aid = u.admin_id
 where a.aid = ?
-and   u.uid in($$UID_LIST$$)
+and   %s
 group by lesson_name 
 order by count_assigned desc
 limit 5        
@@ -543,7 +543,7 @@ from   HA_TEST_RUN_LESSON l
   JOIN HA_USER u on u.user_prog_id = p.id
   JOIN HA_ADMIN a on a.aid = u.admin_id
 where a.aid = ?
-and   u.uid in($$UID_LIST$$)
+and   %s
 group by lesson_name 
 order by count_assigned desc
 limit 5        
