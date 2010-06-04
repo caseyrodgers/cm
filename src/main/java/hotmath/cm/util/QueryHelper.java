@@ -2,11 +2,11 @@ package hotmath.cm.util;
 
 import java.util.List;
 
+/*
+ * @author bob
+ */
+
 public class QueryHelper {
-	
-	/*
-	 * @author bob
-	 */
 	
 	/**
 	 * @param sqlTemplate
