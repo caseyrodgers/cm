@@ -28,47 +28,75 @@ public class QueryHelper {
 		sb.append("(");
 		
 		int count = vals.size(); 
-		int chunks = count / limit;
-		
-		if ((chunks * limit) < count) chunks += 1;
 		
 		if(count == 0) {
 		    /** handle empty list with valid SQL 
 		     * 
 		     */
-		    sb.append(name + " in (NULL)");
+		    sb.append(name + " is NULL ");
 		}
 		else {
-    		int j = 0;
-    		for (int i=0; i<chunks; i++) {
-    
-    			int k = j + limit;
-    			if (k > count) k = count;
-    
-    			boolean first = true;
-    			for (; j < k; j++) {
-    				
-    				if (first) {
-    					first = false;
-    					sb.append(name).append(" IN (");
-    				}
-    				else {
-    					sb.append(", ");
-    				}
-    				sb.append(vals.get(j));
-    			}
-    			sb.append(")");
-    			
-    			if (k < count) {
-    				sb.append(" OR " );
-    			}
+    		for(Integer v: vals) {
+    		    if(sb.length()>1)
+    		        sb.append(" OR ");
+    		    
+    		    sb.append(name + " = " + v);
     		}
 		}
-        sb.append(" )");
+		sb.append(")");
 		
 		String sql = sqlTemplate.replace("$$UID_LIST$$", sb.toString());
 		
 		return sql;
 	}
+	
+    static public String createInListSQL2(String sqlTemplate, List<Integer> vals, String name, int limit) throws Exception {
+        
+        StringBuilder sb = new StringBuilder();
+        sb.append("(");
+        
+        int count = vals.size(); 
+        int chunks = count / limit;
+        
+        if ((chunks * limit) < count) chunks += 1;
+        
+        if(count == 0) {
+            /** handle empty list with valid SQL 
+             * 
+             */
+            sb.append(name + " in (NULL)");
+        }
+        else {
+            int j = 0;
+            for (int i=0; i<chunks; i++) {
+    
+                int k = j + limit;
+                if (k > count) k = count;
+    
+                boolean first = true;
+                for (; j < k; j++) {
+                    
+                    if (first) {
+                        first = false;
+                        sb.append(name).append(" IN (");
+                    }
+                    else {
+                        sb.append(", ");
+                    }
+                    sb.append(vals.get(j));
+                }
+                sb.append(")");
+                
+                if (k < count) {
+                    sb.append(" OR " );
+                }
+            }
+        }
+        sb.append(" )");
+        
+        String sql = sqlTemplate.replace("$$UID_LIST$$", sb.toString());
+        
+        return sql;
+    }	
 
 }
