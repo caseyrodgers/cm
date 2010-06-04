@@ -37,7 +37,7 @@ public class QueryHelper_Test extends TestCase {
     		vals.add(i);
     	}
     	vals.add(99999);
-        String sql = QueryHelper.createInListSQL("select * from mytable where $$UID_LIST$$ and this='that'", vals, "UID", 5);
+        String sql = QueryHelper.createInListSQL("select * from mytable where $$UID_LIST$$ and this='that'", vals, "UID");
         System.out.println("sql: " + sql);
         assertTrue(sql.length() > 0);
         assertTrue(sql.contains("99999"));        
@@ -45,7 +45,7 @@ public class QueryHelper_Test extends TestCase {
     
     public void testZeroUids() throws Exception {
         List<Integer> vals = new ArrayList<Integer>();
-        String sql = QueryHelper.createInListSQL("select * from mytable where $$UID_LIST$$ and this='that'", vals, "UID", 20);
+        String sql = QueryHelper.createInListSQL("select * from mytable where $$UID_LIST$$ and this='that'", vals, "UID");
         System.out.println("sql: " + sql);
         assertTrue(sql.length() > 0);
         assertTrue(sql.contains("NULL"));

@@ -19,38 +19,36 @@ public class QueryHelper {
 	 * @throws Exception
 	 */
     static public String createInListSQL(String sqlTemplate, List<Integer> vals, String name) throws Exception {
-        return createInListSQL(sqlTemplate, vals, name, 10);
+        
+        StringBuilder sb = new StringBuilder();
+        sb.append("(");
+        
+        int count = vals.size(); 
+        if(count == 0) {
+            /** handle empty list with valid SQL 
+             * 
+             */
+            sb.append(name + " in (NULL)");
+        }
+        else {
+            sb.append(name + " IN (");
+            int cnt=0;
+            for(Integer v: vals) {
+                if(++cnt > 1) 
+                    sb.append(", ");
+                sb.append(v);
+            }
+            sb.append(")");
+        }
+        sb.append(" )");
+        
+        String sql = sqlTemplate.replace("$$UID_LIST$$", sb.toString());
+        
+        return sql;
     }
-    
-	static public String createInListSQL(String sqlTemplate, List<Integer> vals, String name, int limit) throws Exception {
-		
-		StringBuilder sb = new StringBuilder();
-		sb.append("(");
-		
-		int count = vals.size(); 
-		
-		if(count == 0) {
-		    /** handle empty list with valid SQL 
-		     * 
-		     */
-		    sb.append(name + " is NULL ");
-		}
-		else {
-    		for(Integer v: vals) {
-    		    if(sb.length()>1)
-    		        sb.append(" OR ");
-    		    
-    		    sb.append(name + " = " + v);
-    		}
-		}
-		sb.append(")");
-		
-		String sql = sqlTemplate.replace("$$UID_LIST$$", sb.toString());
-		
-		return sql;
-	}
+
 	
-    static public String createInListSQL2(String sqlTemplate, List<Integer> vals, String name, int limit) throws Exception {
+    static public String createInListMultiSQL(String sqlTemplate, List<Integer> vals, String name, int limit) throws Exception {
         
         StringBuilder sb = new StringBuilder();
         sb.append("(");
@@ -97,6 +95,35 @@ public class QueryHelper {
         String sql = sqlTemplate.replace("$$UID_LIST$$", sb.toString());
         
         return sql;
-    }	
+    }
+    
+    
+    static public String createOrListSQL(String sqlTemplate, List<Integer> vals, String name, int limit) throws Exception {
+        
+        StringBuilder sb = new StringBuilder();
+        sb.append("(");
+        
+        int count = vals.size(); 
+        
+        if(count == 0) {
+            /** handle empty list with valid SQL 
+             * 
+             */
+            sb.append(name + " is NULL ");
+        }
+        else {
+            for(Integer v: vals) {
+                if(sb.length()>1)
+                    sb.append(" OR ");
+                
+                sb.append(name + " = " + v);
+            }
+        }
+        sb.append(")");
+        
+        String sql = sqlTemplate.replace("$$UID_LIST$$", sb.toString());
+        
+        return sql;
+    }    
 
 }

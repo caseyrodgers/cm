@@ -31,6 +31,7 @@ import hotmath.testset.ha.HaTestDefDao;
 import hotmath.util.HMConnectionPool;
 import hotmath.util.sql.SqlUtilities;
 
+import java.io.FileWriter;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -395,7 +396,8 @@ public class CmAdminDao {
         PreparedStatement pstmt = null;
         ResultSet rs = null;
         try {
-            pstmt = conn.prepareStatement(CmMultiLinePropertyReader.getInstance().getProperty("ADMIN_PROGRAM_DEFINITIONS"));
+            pstmt = conn.prepareStatement(CmMultiLinePropertyReader.getInstance().getProperty(
+                    "ADMIN_PROGRAM_DEFINITIONS"));
             pstmt.setInt(1, uid);
             rs = pstmt.executeQuery();
             rval = loadProgramDefinitions(rs);
@@ -661,9 +663,9 @@ public class CmAdminDao {
             studentProgram.setProgramType(program.getProgramType());
             studentProgram.setSubjectId(program.getSubject());
             sm.setProgram(studentProgram);
-            
+
             sm.setPassPercent("70%");
-            
+
             sm.getSettings().setTutoringAvailable(tutoringEnabled);
             sm.getSettings().setShowWorkRequired(showWorkRequired);
             new SaveAutoRegistrationCommand().execute(conn, new SaveAutoRegistrationAction(aid, sm));
@@ -686,29 +688,33 @@ public class CmAdminDao {
         return studentIds;
     }
 
-    /** Return list of TrendingData objects that represent distinct
-     *  program assigned to group.
-     *  
+    /**
+     * Return list of TrendingData objects that represent distinct program
+     * assigned to group.
+     * 
      * @param conn
      * @param aid
      * @param studentPool
-     * @param useActiveOnly  If true, then limit programs to active only.
+     * @param useActiveOnly
+     *            If true, then limit programs to active only.
      * @return
      * @throws Exception
      */
-    public CmList<TrendingData> getTrendingData(final Connection conn, Integer aid, List<StudentModelExt> studentPool, boolean useActiveOnly)
-            throws Exception {
+    public CmList<TrendingData> getTrendingData(final Connection conn, Integer aid, List<StudentModelExt> studentPool,
+            boolean useActiveOnly) throws Exception {
         CmList<TrendingData> tdata = new CmArrayList<TrendingData>();
 
         PreparedStatement ps = null;
         logger.debug("aid=" + aid + " getting trending data");
         try {
-            String sqlToken = (useActiveOnly?"TRENDING_DATA_SQL_FROM_UIDS_ACTIVE_ONLY":"TRENDING_DATA_SQL_FROM_UIDS_FULL_HISTORY");
+            String sqlToken = (useActiveOnly ? "TRENDING_DATA_SQL_FROM_UIDS_ACTIVE_ONLY"
+                    : "TRENDING_DATA_SQL_FROM_UIDS_FULL_HISTORY");
             String sqlTemplate = CmMultiLinePropertyReader.getInstance().getProperty(sqlToken);
 
             List<Integer> uidList = new ArrayList<Integer>();
             for (StudentModelExt sme : studentPool) {
-            	if (useActiveOnly) {  /* TODO StudentModelExt isActive */ }
+                if (useActiveOnly) { /* TODO StudentModelExt isActive */
+                }
                 uidList.add(sme.getUid());
             }
             String sql = QueryHelper.createInListSQL(sqlTemplate, uidList, "u.uid");
@@ -717,6 +723,8 @@ public class CmAdminDao {
             ps.setInt(1, aid);
             logger.debug("+++ getTrendingData(): SQL: " + ps.toString());
 
+            SqlOutWriter.write(ps.toString());
+            
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
                 tdata.add(new TrendingData(rs.getString("lesson_name"), rs.getInt("count_assigned")));
@@ -739,25 +747,25 @@ public class CmAdminDao {
      * @throws Exception
      */
     public CmList<ProgramData> getTrendingData_ForProgram(final Connection conn, Integer aid,
-            List<StudentModelExt> studentPool,boolean useActiveOnly) throws Exception {
-       
+            List<StudentModelExt> studentPool, boolean useActiveOnly) throws Exception {
+
         logger.debug("aid=" + aid + " getting trending data for program");
         CmList<ProgramData> tdata = new CmArrayList<ProgramData>();
-	if(true) {
-	    logger.info("SKIPPING GETTRENDINGDATA_FORPROGRAM");
+        if (true) {
+            logger.info("SKIPPING GETTRENDINGDATA_FORPROGRAM");
             return tdata;
         }
         PreparedStatement ps = null;
         try {
             List<Integer> studentUids = createInListReplacements(studentPool);
-            String sqlToken = (useActiveOnly?"TRENDING_DATA_FOR_PROGRAMS_SQL_FROM_UIDS_ACTIVE_ONLY":"TRENDING_DATA_FOR_PROGRAMS_SQL_FROM_UIDS_FULL_HISTORY");
+            String sqlToken = (useActiveOnly ? "TRENDING_DATA_FOR_PROGRAMS_SQL_FROM_UIDS_ACTIVE_ONLY"
+                    : "TRENDING_DATA_FOR_PROGRAMS_SQL_FROM_UIDS_FULL_HISTORY");
             String sql = CmMultiLinePropertyReader.getInstance().getProperty(sqlToken);
             sql = QueryHelper.createInListSQL(sql, studentUids, "u.uid");
             ps = conn.prepareStatement(sql);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
-                ProgramData pd = createProgramData(conn, studentUids, rs
-                        .getInt("test_def_id"),useActiveOnly);
+                ProgramData pd = createProgramData(conn, studentUids, rs.getInt("test_def_id"), useActiveOnly);
                 tdata.add(pd);
             }
             return tdata;
@@ -780,12 +788,14 @@ public class CmAdminDao {
      * @throws Exception
      */
     public CmList<StudentModelExt> getStudentsWhoHaveBeenAssignedProgramSegment(final Connection conn,
-            List<StudentModelExt> studentPool, Integer testDefId, Integer quizSegment,Boolean useActiveOnly) throws Exception {
+            List<StudentModelExt> studentPool, Integer testDefId, Integer quizSegment, Boolean useActiveOnly)
+            throws Exception {
         CmList<StudentModelExt> students = new CmArrayList<StudentModelExt>();
         PreparedStatement ps = null;
         try {
-            String sql = CmMultiLinePropertyReader.getInstance().getProperty("TRENDING_DATA_DETAIL_FOR_PROGRAM_SEGMENT_FROM_UIDS");
-            sql = QueryHelper.createInListSQL(sql,createInListReplacements(studentPool),"u.uid");
+            String sql = CmMultiLinePropertyReader.getInstance().getProperty(
+                    "TRENDING_DATA_DETAIL_FOR_PROGRAM_SEGMENT_FROM_UIDS");
+            sql = QueryHelper.createInListSQL(sql, createInListReplacements(studentPool), "u.uid");
             ps = conn.prepareStatement(sql);
             ps.setInt(1, testDefId);
             ps.setInt(2, quizSegment);
@@ -802,7 +812,8 @@ public class CmAdminDao {
         }
     }
 
-    /** Return list of students who have been assigned the name lesson 
+    /**
+     * Return list of students who have been assigned the name lesson
      * 
      * @param conn
      * @param studentPool
@@ -811,21 +822,22 @@ public class CmAdminDao {
      * @throws Exception
      */
     public CmList<StudentModelExt> getStudentsWhoHaveBeenAssignedLesson(final Connection conn,
-            List<StudentModelExt> studentPool, String lessonName,boolean useActiveOnly) throws Exception {
+            List<StudentModelExt> studentPool, String lessonName, boolean useActiveOnly) throws Exception {
         CmList<StudentModelExt> students = new CmArrayList<StudentModelExt>();
         PreparedStatement ps = null;
         try {
 
-            String sql = CmMultiLinePropertyReader.getInstance().getProperty("TRENDING_DATA_DETAIL_FOR_LESSON_FROM_UIDS");
-            sql = QueryHelper.createInListSQL(sql, createInListReplacements(studentPool),"u.uid"); 
+            String sql = CmMultiLinePropertyReader.getInstance().getProperty(
+                    "TRENDING_DATA_DETAIL_FOR_LESSON_FROM_UIDS");
+            sql = QueryHelper.createInListSQL(sql, createInListReplacements(studentPool), "u.uid");
             ps = conn.prepareStatement(sql);
             ps.setString(1, lessonName);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
                 StudentModelExt parialStudent = new StudentModelExt();
-                String name=rs.getString("user_name");
+                String name = rs.getString("user_name");
                 int timesAssigned = rs.getInt("times_assigned");
-                if(timesAssigned > 1)
+                if (timesAssigned > 1)
                     name = name + " (" + timesAssigned + " times)";
                 parialStudent.setName(name);
                 parialStudent.setUid(rs.getInt("uid"));
@@ -837,12 +849,12 @@ public class CmAdminDao {
         }
     }
 
-    
-    /** Return array of counts indicating the count of users in each segment.
+    /**
+     * Return array of counts indicating the count of users in each segment.
      * 
-     * The array is sequential from 1, and only contains values
-     * for seqments that have data.  So, if checking test with no users
-     * the array would be zero lenght.
+     * The array is sequential from 1, and only contains values for seqments
+     * that have data. So, if checking test with no users the array would be
+     * zero lenght.
      * 
      * 
      * @param conn
@@ -852,26 +864,29 @@ public class CmAdminDao {
      * @return
      * @throws Exception
      */
-    private int[] getCountsOfUsersWhoHaveVisitedQuizSegment(final Connection conn, List<Integer> studentIds,HaTestDef testDef,boolean useActiveOnly) throws Exception {
+    private int[] getCountsOfUsersWhoHaveVisitedQuizSegment(final Connection conn, List<Integer> studentIds,
+            HaTestDef testDef, boolean useActiveOnly) throws Exception {
         PreparedStatement ps = null;
         try {
-            
+
             int counts[] = new int[testDef.getTestConfig().getSegmentCount()];
-            
-            String sqlToken = (useActiveOnly?"TRENDING_DATA_FOR_TEST_SEGMENTS_SQL_FROM_UIDS_ACTIVE_ONLY":"TRENDING_DATA_FOR_TEST_SEGMENTS_SQL_FROM_UIDS_FULL_HISTORY");
+
+            String sqlToken = (useActiveOnly ? "TRENDING_DATA_FOR_TEST_SEGMENTS_SQL_FROM_UIDS_ACTIVE_ONLY"
+                    : "TRENDING_DATA_FOR_TEST_SEGMENTS_SQL_FROM_UIDS_FULL_HISTORY");
             String sql = CmMultiLinePropertyReader.getInstance().getProperty(sqlToken);
             sql = QueryHelper.createInListSQL(sql, studentIds, "u.uid");
             ps = conn.prepareStatement(sql);
             ps.setInt(1, testDef.getTestDefId());
             ResultSet rs = ps.executeQuery();
-            while(rs.next()) {
+            while (rs.next()) {
                 int segNum = rs.getInt("test_segment");
                 try {
-                    counts[segNum-1] = rs.getInt("count_users");
-                }
-                catch(Exception e) {
+                    counts[segNum - 1] = rs.getInt("count_users");
+                } catch (Exception e) {
                     /** could be change segment count */
-                    //silent logger.debug(String.format("*** Error getting quiz segment user count for testDefId: %d, UIDs: %s", testDef.getTestDefId(), replacements), e);
+                    // silent
+                    // logger.debug(String.format("*** Error getting quiz segment user count for testDefId: %d, UIDs: %s",
+                    // testDef.getTestDefId(), replacements), e);
                 }
             }
             return counts;
@@ -880,8 +895,8 @@ public class CmAdminDao {
         }
     }
 
-    private ProgramData createProgramData(final Connection conn, List<Integer> studentIds, int testDefId,boolean useActiveOnly)
-            throws Exception {
+    private ProgramData createProgramData(final Connection conn, List<Integer> studentIds, int testDefId,
+            boolean useActiveOnly) throws Exception {
         PreparedStatement ps = null;
         try {
             HaTestDef testDef = new HaTestDefDao().getTestDef(conn, testDefId);
@@ -894,9 +909,9 @@ public class CmAdminDao {
              * 
              */
             int segmentCount = testDef.getTestConfig().getSegmentCount();
-            int segUserCount[] = getCountsOfUsersWhoHaveVisitedQuizSegment(conn,studentIds,testDef,useActiveOnly);
+            int segUserCount[] = getCountsOfUsersWhoHaveVisitedQuizSegment(conn, studentIds, testDef, useActiveOnly);
             for (int i = 0; i < segmentCount; i++) {
-                ProgramSegmentData psd = new ProgramSegmentData(i, segUserCount[i]);                 
+                ProgramSegmentData psd = new ProgramSegmentData(i, segUserCount[i]);
                 pd.getSegments().add(psd);
             }
             return pd;
@@ -904,5 +919,29 @@ public class CmAdminDao {
             SqlUtilities.releaseResources(null, ps, null);
         }
     }
-    
+
+}
+
+
+
+class SqlOutWriter {
+    synchronized static public void write(String sql) {
+        FileWriter fout=null;
+        try {
+            fout = new FileWriter("/tmp/cm_sql.txt",true);
+            fout.write(sql + ";");
+            fout.write("\n\n");
+        }
+        catch(Exception e) {
+            e.printStackTrace();
+        }
+        finally {
+            try {
+                fout.close();
+            }
+            catch(Exception ee) {
+                ee.printStackTrace();
+            }
+        }
+}
 }
