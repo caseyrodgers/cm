@@ -2,6 +2,8 @@ package hotmath.cm.util;
 
 import java.util.List;
 
+import sb.util.SbUtilities;
+
 /*
  * @author bob
  */
@@ -9,14 +11,18 @@ import java.util.List;
 public class QueryHelper {
 	
 	/**
-	 * @param sqlTemplate
+	 * @param sqlTemplate A string containing token $$UID_LIST$$ which will be replaced. (using named token to help document SQL)
 	 * @param vals
 	 * @param name  the column name
 	 * @param limit number of vals per list chunk
 	 * @return SQL with vals in one or more comma separated lists
 	 * @throws Exception
 	 */
-	static public String createInListSQL(String sqlTemplate, List<Integer> vals, String name, Integer limit) throws Exception {
+    static public String createInListSQL(String sqlTemplate, List<Integer> vals, String name) throws Exception {
+        return createInListSQL(sqlTemplate, vals, name, 10);
+    }
+    
+	static public String createInListSQL(String sqlTemplate, List<Integer> vals, String name, int limit) throws Exception {
 		
 		StringBuilder sb = new StringBuilder();
 		sb.append("(");
@@ -60,7 +66,7 @@ public class QueryHelper {
 		}
         sb.append(" )");
 		
-		String sql = String.format(sqlTemplate, sb.toString());
+		String sql = sqlTemplate.replace("$$UID_LIST$$", sb.toString());
 		
 		return sql;
 	}

@@ -527,7 +527,7 @@ from   HA_TEST_RUN_LESSON l
   JOIN HA_USER u on u.uid = t.user_id
   JOIN HA_ADMIN a on a.aid = u.admin_id
 where a.aid = ?
-and   %s
+and   $$UID_LIST$$
 group by lesson_name 
 order by count_assigned desc
 limit 5        
@@ -543,7 +543,7 @@ from   HA_TEST_RUN_LESSON l
   JOIN HA_USER u on u.user_prog_id = p.id
   JOIN HA_ADMIN a on a.aid = u.admin_id
 where a.aid = ?
-and   %s
+and   $$UID_LIST$$
 group by lesson_name 
 order by count_assigned desc
 limit 5        
@@ -562,7 +562,7 @@ FROM   HA_TEST_DEF d
    JOIN CM_USER_PROGRAM p
      ON p.id = t.user_prog_id
 WHERE (p.test_def_id = ?)
-and u.uid in ($$UID_LIST$$)
+and $$UID_LIST$$
 group by test_segment
 order by test_segment;
 
@@ -578,7 +578,7 @@ FROM  HA_USER u
      JOIN HA_TEST t
        ON t.user_prog_id = p.id
 WHERE (p.test_def_id = ?)
-and u.uid in ($$UID_LIST$$)
+and $$UID_LIST$$
 group by test_segment
 order by test_segment;
 
@@ -593,7 +593,7 @@ from    HA_TEST_DEF d
     ON t.test_def_id = d.test_def_id
   JOIN HA_USER u 
     ON u.uid = t.user_id
-where u.uid in ($$UID_LIST$$)
+where $$UID_LIST$$
 and d.prog_id in ('Prof', 'Auto-Enroll','Grad Prep', 'Grad Prep Tx')
 order by d.test_name
 
@@ -609,7 +609,7 @@ from     HA_TEST_DEF d
            on u.user_prog_id = p.id
           join HA_TEST t 
             on t.user_prog_id = p.id
-where u.uid in ($$UID_LIST$$)
+where $$UID_LIST$$
 and d.prog_id in ('Prof', 'Auto-Enroll','Grad Prep', 'Grad Prep Tx')
 order by d.test_name
 
@@ -625,7 +625,7 @@ FROM   HA_TEST_DEF d
      ON u.uid = t.user_id
 WHERE (d.test_def_id = ?)
 and t.test_segment = ?
-and u.uid in ($$UID_LIST$$)
+and $$UID_LIST$$
 
 
 
@@ -639,7 +639,7 @@ from  HA_TEST_RUN_LESSON l
      ON t.test_id = r.test_id
    JOIN v_HA_USER_ACTIVE u
      ON u.uid = t.user_id
-where u.uid in ($$UID_LIST$$)
+where $$UID_LIST$$
 and     l.lesson_name = ?
 group by uid
 order by user_name

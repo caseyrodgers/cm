@@ -43,7 +43,7 @@ public class StudentQuickSearcher {
         "  JOIN CM_GROUP g on g.id = u.group_id " +
         "  JOIN CM_USER_PROGRAM p on p.id = u.user_prog_id " +
         "  JOIN HA_TEST_DEF d ON d.test_def_id = p.test_def_id " +
-        "where %s " +
+        "where $$UID_LIST$$ " +
         "and ( " +
         "    lower(u.user_name) like ? " +
         "    or " +
@@ -55,7 +55,7 @@ public class StudentQuickSearcher {
         " ) ";
         
         
-        sql = QueryHelper.createInListSQL(sql, studentUids, "uid", 20);
+        sql = QueryHelper.createInListSQL(sql, studentUids, "uid");
         
         PreparedStatement pstat=null;
         try {

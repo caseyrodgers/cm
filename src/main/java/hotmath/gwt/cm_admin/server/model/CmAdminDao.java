@@ -678,25 +678,12 @@ public class CmAdminDao {
      * @param students
      * @return
      */
-    private Map<String, String> createInListReplacements(List<StudentModelExt> students, boolean useActiveOnly) {
-        String inList = "";
+    private List<Integer> createInListReplacements(List<StudentModelExt> students) {
+        List<Integer> studentIds = new ArrayList<Integer>();
         for (int i = 0, t = students.size(); i < t; i++) {
-            if (i > 0)
-                inList += ",";
-            inList += students.get(i).getUid();
+            studentIds.add(students.get(i).getUid());
         }
-
-        /**
-         * default to empty list
-         * 
-         */
-        if (inList.length() == 0)
-            inList = "''";
-
-        Map<String, String> replacements = new HashMap<String, String>();
-        replacements.put("UID_LIST", inList);
-        
-        return replacements;
+        return studentIds;
     }
 
     /** Return list of TrendingData objects that represent distinct
@@ -723,7 +710,7 @@ public class CmAdminDao {
             	if (useActiveOnly) {  /* TODO StudentModelExt isActive */ }
                 uidList.add(sme.getUid());
             }
-            String sql = QueryHelper.createInListSQL(sqlTemplate, uidList, "u.uid", 50);
+            String sql = QueryHelper.createInListSQL(sqlTemplate, uidList, "u.uid");
 
             ps = conn.prepareStatement(sql);
             ps.setInt(1, aid);
@@ -759,13 +746,14 @@ public class CmAdminDao {
         CmList<ProgramData> tdata = new CmArrayList<ProgramData>();
         PreparedStatement ps = null;
         try {
-            Map<String,String> replacements = createInListReplacements(studentPool, useActiveOnly);
-            
+            List<Integer> studentUids = createInListReplacements(studentPool);
             String sqlToken = (useActiveOnly?"TRENDING_DATA_FOR_PROGRAMS_SQL_FROM_UIDS_ACTIVE_ONLY":"TRENDING_DATA_FOR_PROGRAMS_SQL_FROM_UIDS_FULL_HISTORY");
-            ps = conn.prepareStatement(CmMultiLinePropertyReader.getInstance().getProperty(sqlToken, replacements));
+            String sql = CmMultiLinePropertyReader.getInstance().getProperty(sqlToken);
+            sql = QueryHelper.createInListSQL(sql, studentUids, "u.uid");
+            ps = conn.prepareStatement(sql);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
-                ProgramData pd = createProgramData(conn, createInListReplacements(studentPool,useActiveOnly), rs
+                ProgramData pd = createProgramData(conn, studentUids, rs
                         .getInt("test_def_id"),useActiveOnly);
                 tdata.add(pd);
             }
@@ -793,9 +781,9 @@ public class CmAdminDao {
         CmList<StudentModelExt> students = new CmArrayList<StudentModelExt>();
         PreparedStatement ps = null;
         try {
-
-            ps = conn.prepareStatement(CmMultiLinePropertyReader.getInstance().getProperty(
-                    "TRENDING_DATA_DETAIL_FOR_PROGRAM_SEGMENT_FROM_UIDS", createInListReplacements(studentPool,useActiveOnly)));
+            String sql = CmMultiLinePropertyReader.getInstance().getProperty("TRENDING_DATA_DETAIL_FOR_PROGRAM_SEGMENT_FROM_UIDS");
+            sql = QueryHelper.createInListSQL(sql,createInListReplacements(studentPool),"u.uid");
+            ps = conn.prepareStatement(sql);
             ps.setInt(1, testDefId);
             ps.setInt(2, quizSegment);
             ResultSet rs = ps.executeQuery();
@@ -825,8 +813,9 @@ public class CmAdminDao {
         PreparedStatement ps = null;
         try {
 
-            ps = conn.prepareStatement(CmMultiLinePropertyReader.getInstance().getProperty(
-                    "TRENDING_DATA_DETAIL_FOR_LESSON_FROM_UIDS", createInListReplacements(studentPool,useActiveOnly)));
+            String sql = CmMultiLinePropertyReader.getInstance().getProperty("TRENDING_DATA_DETAIL_FOR_LESSON_FROM_UIDS");
+            sql = QueryHelper.createInListSQL(sql, createInListReplacements(studentPool),"u.uid"); 
+            ps = conn.prepareStatement(sql);
             ps.setString(1, lessonName);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
@@ -860,14 +849,16 @@ public class CmAdminDao {
      * @return
      * @throws Exception
      */
-    private int[] getCountsOfUsersWhoHaveVisitedQuizSegment(final Connection conn, Map<String, String> replacements,HaTestDef testDef,boolean useActiveOnly) throws Exception {
+    private int[] getCountsOfUsersWhoHaveVisitedQuizSegment(final Connection conn, List<Integer> studentIds,HaTestDef testDef,boolean useActiveOnly) throws Exception {
         PreparedStatement ps = null;
         try {
             
             int counts[] = new int[testDef.getTestConfig().getSegmentCount()];
             
             String sqlToken = (useActiveOnly?"TRENDING_DATA_FOR_TEST_SEGMENTS_SQL_FROM_UIDS_ACTIVE_ONLY":"TRENDING_DATA_FOR_TEST_SEGMENTS_SQL_FROM_UIDS_FULL_HISTORY");
-            ps = conn.prepareStatement(CmMultiLinePropertyReader.getInstance().getProperty(sqlToken, replacements));
+            String sql = CmMultiLinePropertyReader.getInstance().getProperty(sqlToken);
+            sql = QueryHelper.createInListSQL(sql, studentIds, "u.uid");
+            ps = conn.prepareStatement(sql);
             ps.setInt(1, testDef.getTestDefId());
             ResultSet rs = ps.executeQuery();
             while(rs.next()) {
@@ -886,7 +877,7 @@ public class CmAdminDao {
         }
     }
 
-    private ProgramData createProgramData(final Connection conn, Map<String, String> replacements, int testDefId,boolean useActiveOnly)
+    private ProgramData createProgramData(final Connection conn, List<Integer> studentIds, int testDefId,boolean useActiveOnly)
             throws Exception {
         PreparedStatement ps = null;
         try {
@@ -900,7 +891,7 @@ public class CmAdminDao {
              * 
              */
             int segmentCount = testDef.getTestConfig().getSegmentCount();
-            int segUserCount[] = getCountsOfUsersWhoHaveVisitedQuizSegment(conn,replacements,testDef,useActiveOnly);
+            int segUserCount[] = getCountsOfUsersWhoHaveVisitedQuizSegment(conn,studentIds,testDef,useActiveOnly);
             for (int i = 0; i < segmentCount; i++) {
                 ProgramSegmentData psd = new ProgramSegmentData(i, segUserCount[i]);                 
                 pd.getSegments().add(psd);

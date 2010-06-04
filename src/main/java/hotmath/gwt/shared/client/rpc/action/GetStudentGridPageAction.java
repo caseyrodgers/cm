@@ -78,9 +78,12 @@ public class GetStudentGridPageAction implements Action<CmStudentPagingLoadResul
     
     @Override
     public String toString() {
-        return "GetStudentGridPageAction [adminId=" + adminId + ", filterMap=" + filterMap + ", forceRefresh="
-                + forceRefresh + ", groupFilter=" + groupFilter + ", loadConfig.limit=" + loadConfig.getLimit() + ", loadConfig.limit=" + loadConfig.getOffset() + ", quickSearch="
+        String loadConfigStr=loadConfig==null?"NULL":" offset=" + loadConfig.getOffset();
+        String s = "GetStudentGridPageAction [adminId=" + adminId + ", filterMap=" + filterMap + ", forceRefresh="
+                + forceRefresh + ", groupFilter=" + groupFilter + "loadConfig=" + loadConfigStr + ", quickSearch="
                 + quickSearch + "]";
+        
+        return s;
     }
     public enum FilterType {GROUP, QUICKTEXT};
 }
