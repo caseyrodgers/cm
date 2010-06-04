@@ -26,31 +26,39 @@ public class QueryHelper {
 		
 		if ((chunks * limit) < count) chunks += 1;
 		
-		int j = 0;
-		for (int i=0; i<chunks; i++) {
-
-			int k = j + limit;
-			if (k > count) k = count;
-
-			boolean first = true;
-			for (; j < k; j++) {
-				
-				if (first) {
-					first = false;
-					sb.append(name).append(" IN (");
-				}
-				else {
-					sb.append(", ");
-				}
-				sb.append(vals.get(j));
-			}
-			sb.append(")");
-			
-			if (k < count) {
-				sb.append(" OR " );
-			}
+		if(count == 0) {
+		    /** handle empty list with valid SQL 
+		     * 
+		     */
+		    sb.append(name + " in (NULL)");
 		}
-		sb.append(" )");
+		else {
+    		int j = 0;
+    		for (int i=0; i<chunks; i++) {
+    
+    			int k = j + limit;
+    			if (k > count) k = count;
+    
+    			boolean first = true;
+    			for (; j < k; j++) {
+    				
+    				if (first) {
+    					first = false;
+    					sb.append(name).append(" IN (");
+    				}
+    				else {
+    					sb.append(", ");
+    				}
+    				sb.append(vals.get(j));
+    			}
+    			sb.append(")");
+    			
+    			if (k < count) {
+    				sb.append(" OR " );
+    			}
+    		}
+		}
+        sb.append(" )");
 		
 		String sql = String.format(sqlTemplate, sb.toString());
 		

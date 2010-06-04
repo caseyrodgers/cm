@@ -19,6 +19,11 @@ public class StudentQuickSearcher_Test extends CmDbTestCase {
         assertTrue(matches.size() > 0);
     }
     
+    public void testSearchZeroUids() throws Exception {
+        StudentQuickSearcher searcher2 = new StudentQuickSearcher(conn, new HashSet<Integer>());
+        List<Integer> matches = searcher2.doQuickSearch("A");
+        assertTrue(matches.size() == 0);
+    }
     
     @Override
     protected void setUp() throws Exception {

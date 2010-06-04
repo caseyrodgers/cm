@@ -1,5 +1,6 @@
 package hotmath.gwt.cm_admin.server.model;
 
+import hotmath.cm.util.QueryHelper;
 import hotmath.util.sql.SqlUtilities;
 
 import java.sql.Connection;
@@ -12,27 +13,13 @@ import java.util.Set;
 public class StudentQuickSearcher {
     
     Connection conn;
-    Set<Integer> studentUids;
-    String inList;
+    List<Integer> studentUids;
     List<Integer> matches = new ArrayList<Integer>();
     
     public StudentQuickSearcher(final Connection conn, Set<Integer> studentUids) {
-        this.studentUids = studentUids;
+        this.studentUids = new ArrayList<Integer>();
+        this.studentUids.addAll(studentUids);
         this.conn = conn;
-        this.inList = createInList(studentUids);
-    }
-    
-    private String createInList(Set<Integer> list) {
-        String il = null;
-        for(Integer i: list) {
-            if(il != null) 
-                il += ",";
-            else
-                il = "";
-            
-            il+=i;
-        }
-        return il;
     }
 
     
@@ -56,7 +43,7 @@ public class StudentQuickSearcher {
         "  JOIN CM_GROUP g on g.id = u.group_id " +
         "  JOIN CM_USER_PROGRAM p on p.id = u.user_prog_id " +
         "  JOIN HA_TEST_DEF d ON d.test_def_id = p.test_def_id " +
-        "where u.uid in (" + inList + ") " +
+        "where %s " +
         "and ( " +
         "    lower(u.user_name) like ? " +
         "    or " +
@@ -66,6 +53,10 @@ public class StudentQuickSearcher {
         "    or " +
         "    lower(d.test_name) like ? " +
         " ) ";
+        
+        
+        sql = QueryHelper.createInListSQL(sql, studentUids, "uid", 20);
+        
         PreparedStatement pstat=null;
         try {
             search = "%" + search + "%";
