@@ -22,7 +22,7 @@ public class GetProgramListingAction implements Action<ProgramListing> {
 
     @Override
     public String toString() {
-        return "GetProgramListingAction [adminId=" + adminId + "]";
+        return "GetProgramListingAction [aid=" + adminId + "]";
     }
 
 }

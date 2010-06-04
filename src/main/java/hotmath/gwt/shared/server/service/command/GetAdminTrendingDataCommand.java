@@ -44,4 +44,5 @@ public class GetAdminTrendingDataCommand implements ActionHandler<GetAdminTrendi
     public Class<? extends Action<? extends Response>> getActionType() {
         return GetAdminTrendingDataAction.class;
     }
+
 }

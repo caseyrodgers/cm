@@ -4,7 +4,8 @@ import hotmath.gwt.cm_rpc.client.rpc.Action;
 import hotmath.gwt.shared.client.model.CmAdminTrendingDataI;
 
 public class GetAdminTrendingDataAction implements Action<CmAdminTrendingDataI>{
-    
+
+
     Integer adminId;
     GetStudentGridPageAction dataAction;
     DataType dataType;
@@ -40,6 +41,13 @@ public class GetAdminTrendingDataAction implements Action<CmAdminTrendingDataI>{
     public void setDataType(DataType dataType) {
         this.dataType = dataType;
     }
+    
+    
+    @Override
+    public String toString() {
+        return "GetAdminTrendingDataAction [adminId=" + adminId + ", dataAction=" + dataAction + ", dataType="
+                + dataType + "]";
+    }    
 
     public enum DataType{
         /** Use the full history for each user
@@ -53,4 +61,6 @@ public class GetAdminTrendingDataAction implements Action<CmAdminTrendingDataI>{
          * 
          */
         ONLY_ACTIVE};
+        
+        
 }
