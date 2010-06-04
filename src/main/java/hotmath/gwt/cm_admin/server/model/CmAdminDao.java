@@ -4,6 +4,7 @@ import static hotmath.cm.util.CmCacheManager.CacheName.REPORT_ID;
 import static hotmath.cm.util.CmCacheManager.CacheName.SUBJECT_CHAPTERS;
 import hotmath.cm.util.CmCacheManager;
 import hotmath.cm.util.CmMultiLinePropertyReader;
+import hotmath.cm.util.QueryHelper;
 import hotmath.gwt.cm_rpc.client.rpc.CmArrayList;
 import hotmath.gwt.cm_rpc.client.rpc.CmList;
 import hotmath.gwt.cm_tools.client.model.AccountInfoModel;
@@ -715,9 +716,21 @@ public class CmAdminDao {
         logger.debug("aid=" + aid + " getting trending data");
         try {
             String sqlToken = (useActiveOnly?"TRENDING_DATA_SQL_FROM_UIDS_ACTIVE_ONLY":"TRENDING_DATA_SQL_FROM_UIDS_FULL_HISTORY");
-            ps = conn.prepareStatement(CmMultiLinePropertyReader.getInstance().getProperty(
-                    sqlToken, createInListReplacements(studentPool,useActiveOnly)));
+            String sqlTemplate = CmMultiLinePropertyReader.getInstance().getProperty(sqlToken);
+
+            List<Integer> uidList = new ArrayList<Integer>();
+            for (StudentModelExt sme : studentPool) {
+            	if (useActiveOnly) {  /* TODO StudentModelExt isActive */ }
+                uidList.add(sme.getUid());
+            }
+            String sql = QueryHelper.createInListSQL(sqlTemplate, uidList, "u.uid", 50);
+
+            ps = conn.prepareStatement(sql);
             ps.setInt(1, aid);
+            if (logger.isDebugEnabled()) {
+            	logger.debug("+++ getTrendingData(): SQL: " + ps.toString());
+            }
+
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
                 tdata.add(new TrendingData(rs.getString("lesson_name"), rs.getInt("count_assigned")));
