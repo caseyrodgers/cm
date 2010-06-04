@@ -321,30 +321,7 @@ public class CmStudentDao {
      * @throws Exception
      */
     public List<Integer> getQuickSearchUids(final Connection conn, Set<Integer> studentUids, String search) throws Exception {
-    	
-    	List<Integer> qsUids = new ArrayList<Integer>();
-    	
-    	String sql = CmMultiLinePropertyReader.getInstance().getProperty("STUDENT_SEARCH_EXTENDED");
-    	String uidStr = getUidString(studentUids);
-    	String sqlWithUids = sql.replaceFirst("XXX", uidStr);
-    	String sqlWithSearch = sqlWithUids.replaceAll("YYY", search.toLowerCase());
-
-    	PreparedStatement ps = null;
-    	ResultSet rs = null;
-    	
-    	try {
-    		ps = conn.prepareStatement(sqlWithSearch);
-    		rs = ps.executeQuery();
-    		while (rs.next()) {
-    			qsUids.add(rs.getInt(1));
-    		}
-    	} catch (Exception e) {
-            logger.error(String.format("*** Error getting quick search student data for uids: %s, sql: ", uidStr, sqlWithUids), e);
-			throw new Exception("*** Error getting student quick search data ***");
-        } finally {
-            SqlUtilities.releaseResources(rs, ps, null);
-        }
-    	return qsUids;
+        return new StudentQuickSearcher(conn,studentUids).doQuickSearch(search);
     }
 
 /*

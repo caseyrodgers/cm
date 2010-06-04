@@ -867,9 +867,6 @@ public class CmAdminDao {
                     //silent logger.debug(String.format("*** Error getting quiz segment user count for testDefId: %d, UIDs: %s", testDef.getTestDefId(), replacements), e);
                 }
             }
-            
-            logger.debug("getCountsOfUsersWhoHaveVisitedQuizSegment: " + counts);
-            
             return counts;
         } finally {
             SqlUtilities.releaseResources(null, ps, null);
