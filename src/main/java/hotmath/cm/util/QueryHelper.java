@@ -28,10 +28,10 @@ public class QueryHelper {
             /** handle empty list with valid SQL 
              * 
              */
-            sb.append(name + " in (NULL)");
+            sb.append(name).append(" in (NULL)");
         }
         else {
-            sb.append(name + " IN (");
+            sb.append(name).append(" IN (");
             int cnt=0;
             for(Integer v: vals) {
                 if(++cnt > 1) 
@@ -62,7 +62,7 @@ public class QueryHelper {
             /** handle empty list with valid SQL 
              * 
              */
-            sb.append(name + " in (NULL)");
+            sb.append(name).append(" in (NULL)");
         }
         else {
             int j = 0;
@@ -109,14 +109,14 @@ public class QueryHelper {
             /** handle empty list with valid SQL 
              * 
              */
-            sb.append(name + " is NULL ");
+            sb.append(name).append(" is NULL ");
         }
         else {
             for(Integer v: vals) {
                 if(sb.length()>1)
                     sb.append(" OR ");
                 
-                sb.append(name + " = " + v);
+                sb.append(name).append(" = ").append(v);
             }
         }
         sb.append(")");
