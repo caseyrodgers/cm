@@ -33,11 +33,11 @@ public class QueryHelper_Test extends TestCase {
 
     public void testMultiChunk() throws Exception {
     	List<Integer> vals = new ArrayList<Integer>();
-    	for (int i=1; i < 50; i++) {
+    	for (int i=1; i < 49; i++) {
     		vals.add(i);
     	}
     	vals.add(99999);
-        String sql = QueryHelper.createInListSQL("select * from mytable where $$UID_LIST$$ and this='that'", vals, "UID");
+        String sql = QueryHelper.createInListMultiSQL("select * from mytable where $$UID_LIST$$ and this='that'", vals, "UID", 10);
         System.out.println("sql: " + sql);
         assertTrue(sql.length() > 0);
         assertTrue(sql.contains("99999"));        
