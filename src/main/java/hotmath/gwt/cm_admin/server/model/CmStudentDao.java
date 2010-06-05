@@ -309,20 +309,7 @@ public class CmStudentDao {
         }
         return l;
     }
-    
-    /** Return a list UIDs that represent the students 
-     *  that match the requested quick search 'search'.
-     *  
-     *  
-     * @param conn
-     * @param studentUids
-     * @param search
-     * @return
-     * @throws Exception
-     */
-    public List<Integer> getQuickSearchUids(final Connection conn, Set<Integer> studentUids, String search) throws Exception {
-        return new StudentQuickSearcher(conn,studentUids).doQuickSearch(search);
-    }
+
 
 /*
 	private void loadChapInfo(final Connection conn, List<StudentModelBaseI> l) throws Exception {

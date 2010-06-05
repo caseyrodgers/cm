@@ -3,6 +3,7 @@ package hotmath.gwt.shared.server.service.command;
 import hotmath.cm.util.CmCacheManager;
 import hotmath.cm.util.CmCacheManager.CacheName;
 import hotmath.gwt.cm_admin.server.model.CmStudentDao;
+import hotmath.gwt.cm_admin.server.model.StudentQuickSearcher;
 import hotmath.gwt.cm_rpc.client.rpc.Action;
 import hotmath.gwt.cm_rpc.client.rpc.Response;
 import hotmath.gwt.cm_rpc.server.rpc.ActionHandler;
@@ -13,8 +14,6 @@ import hotmath.gwt.shared.client.model.CmStudentPagingLoadResult;
 import hotmath.gwt.shared.client.rpc.action.GetStudentGridPageAction;
 import hotmath.gwt.shared.server.service.command.helper.GetStudentGridPageHelper;
 
-import org.apache.log4j.Logger;
-
 import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -22,6 +21,8 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import org.apache.log4j.Logger;
 
 import com.extjs.gxt.ui.client.data.PagingLoadConfig;
 
@@ -158,7 +159,8 @@ public class GetStudentGridPageCommand implements
 
             if (nfpMap.size() > 0) {
                 logger.debug("aid=" + action.getAdminId() + " applying quick_search");
-            	List<Integer> uidMatchList = new CmStudentDao().getQuickSearchUids(conn, nfpMap.keySet(), search);
+            	List<Integer> uidMatchList = new StudentQuickSearcher(conn,nfpMap.keySet()).doQuickSearch(search); 
+
             	/*
             	 * add any matches to QS student pool
             	 */
@@ -205,6 +207,7 @@ public class GetStudentGridPageCommand implements
     
     /** run through specialized field searches looking for matches
      * 
+     * 
      * @param sme
      * @param search
      * @return
@@ -221,7 +224,14 @@ public class GetStudentGridPageCommand implements
         
         if(checkMatch(sme.getProgram().getProgramDescription(), search))
             return true;
-        
+
+        /*
+         * 
+         * Do not do quick search for extended fields. 
+         * 
+         * It is more confusing when it sometimes works
+         * and sometimes does not.
+         * 
         if(checkMatch(sme.getStatus(), search))
             return true;
         
@@ -236,6 +246,7 @@ public class GetStudentGridPageCommand implements
         
         if (checkMatch(formatQuizzes(sme), search))
         	return true;
+        */
 
         return false;
     }
@@ -274,6 +285,12 @@ public class GetStudentGridPageCommand implements
         }
     }
 
+    /** Create a map of UIDS to StudentModelExt 
+     *  instances that DO NOT have their extended data read.
+     *  
+     * @param list
+     * @return
+     */
     private Map <Integer, StudentModelExt> collectNotFullyPopulated(List<StudentModelExt> list) {
     	Map<Integer, StudentModelExt> rMap = new HashMap<Integer, StudentModelExt> ();
     	for (StudentModelExt sme : list) {
@@ -284,6 +301,11 @@ public class GetStudentGridPageCommand implements
     	return rMap;
     }
     
+    /** Remove from map any entries that are in list
+     * 
+     * @param smMap
+     * @param smList
+     */
     private void removeOverlap(Map<Integer, StudentModelExt> smMap, List<StudentModelExt> smList) {
     	for (StudentModelExt sme : smList) {
     		if (smMap.containsKey(sme.getUid())) {
