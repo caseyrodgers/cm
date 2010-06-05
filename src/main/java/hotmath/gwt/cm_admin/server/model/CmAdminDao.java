@@ -751,10 +751,6 @@ public class CmAdminDao {
 
         logger.debug("aid=" + aid + " getting trending data for program");
         CmList<ProgramData> tdata = new CmArrayList<ProgramData>();
-        if (true) {
-            logger.info("SKIPPING GETTRENDINGDATA_FORPROGRAM");
-            return tdata;
-        }
         PreparedStatement ps = null;
         try {
             List<Integer> studentUids = createInListReplacements(studentPool);
