@@ -151,8 +151,9 @@ public class CmProgramListingDao {
         Statement stmt = null;
         ResultSet rs = null;
         try {
-            logger.info(String.format("+++ getLessonsFor(): testDefId: %d, segment: %d, chapter: %s",
-            	testDefId, segment, (chapter != null)?chapter:"n/a"));
+        	if (logger.isDebugEnabled())
+                logger.debug(String.format("+++ getLessonsFor(): testDefId: %d, segment: %d, chapter: %s",
+                	testDefId, segment, (chapter != null)?chapter:"n/a"));
             
             /** first get list of PIDS that make this quiz segment
              * 
@@ -160,15 +161,20 @@ public class CmProgramListingDao {
             HaTestDefDao hda = new HaTestDefDao();
             HaTestDef testDef = hda.getTestDef(conn, testDefId);
             
-            if ("chap".equalsIgnoreCase(testDef.getProgId())) {
-                return getLessonsForChapterProgram(conn, testDef, segment, chapter, sectionCount);	
-            }
-            
             CmList<ProgramLesson> lessons = new CmArrayList<ProgramLesson>();
             
             StudentUserProgramModel userProgram = new StudentUserProgramModel();
             userProgram.setTestDef(testDef);
-            List<String> pids = hda.getTestIdsForSegment(conn,userProgram,segment,testDef.getTextCode(),testDef.getChapter(),testDef.getTestConfig(),0);
+            
+            if (chapter == null) {
+            	chapter = testDef.getChapter();
+            }
+            else {
+            	// trim leading 'Ch N': '
+            	int offset = chapter.indexOf(":");
+            	chapter = chapter.substring(offset + 2);
+            }
+            List<String> pids = hda.getTestIdsForSegment(conn, userProgram, segment, testDef.getTextCode(), chapter, testDef.getTestConfig(), 0);
             
             /** now get list of lessons assigned to these pids by looking in HM_PROGRAM_LESSONS which is created
              *  by the HA_PRESCRIPTION_LOG Deploylet action.  This is a static table that holds information about
@@ -199,15 +205,6 @@ public class CmProgramListingDao {
         finally {
             SqlUtilities.releaseResources(rs,stmt,null);
         }
-    }
-
-    private CmList<ProgramLesson>  getLessonsForChapterProgram(final Connection conn, HaTestDef testDef, int segment, String chapter, int sectionCount) {
-        CmList<ProgramLesson> lessons = new CmArrayList<ProgramLesson>();
-    	for (int i=1; i <= 10; i++) {
-    		ProgramLesson pl = new ProgramLesson(String.format("Lesson %d", i));
-    		lessons.add(pl);
-    	}
-    	return lessons;
     }
     
     private List<ProgramSection> buildSectionListForSubjectChapterTestDef(final Connection conn, HaTestDef testDef, String chapName, int chapNumber) {
