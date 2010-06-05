@@ -172,7 +172,20 @@ public class CmProgramListingDao {
             else {
             	// trim leading 'Ch N': '
             	int offset = chapter.indexOf(":");
-            	chapter = chapter.substring(offset + 2);
+            	if(offset > -1) { 
+            	    /** look for tokenized chapter name.
+            	     *  If specified, then it is a chapter 
+            	     *  test.  Remove number part of token
+            	     */
+            	    chapter = chapter.substring(offset + 2);
+            	}
+            	else {
+            	    /** use default Chapter
+            	     *  for complete proficiency tests
+            	     *  
+            	     */
+            	    chapter = "Course Test";
+            	}
             }
             List<String> pids = hda.getTestIdsForSegment(conn, userProgram, segment, testDef.getTextCode(), chapter, testDef.getTestConfig(), 0);
             
