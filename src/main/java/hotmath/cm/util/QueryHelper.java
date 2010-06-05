@@ -14,7 +14,6 @@ public class QueryHelper {
 	 * @param sqlTemplate A string containing token $$UID_LIST$$ which will be replaced. (using named token to help document SQL)
 	 * @param vals
 	 * @param name  the column name
-	 * @param limit number of vals per list chunk
 	 * @return SQL with vals in one or more comma separated lists
 	 * @throws Exception
 	 */
@@ -48,6 +47,14 @@ public class QueryHelper {
     }
 
 	
+	/**
+	 * @param sqlTemplate A string containing token $$UID_LIST$$ which will be replaced. (using named token to help document SQL)
+	 * @param vals
+	 * @param name  the column name
+	 * @param limit number of vals per list chunk
+	 * @return SQL with vals in one or more comma separated lists
+	 * @throws Exception
+	 */
     static public String createInListMultiSQL(String sqlTemplate, List<Integer> vals, String name, int limit) throws Exception {
         
         StringBuilder sb = new StringBuilder();
@@ -98,7 +105,14 @@ public class QueryHelper {
     }
     
     
-    static public String createOrListSQL(String sqlTemplate, List<Integer> vals, String name, int limit) throws Exception {
+	/**
+	 * @param sqlTemplate A string containing token $$UID_LIST$$ which will be replaced. (using named token to help document SQL)
+	 * @param vals
+	 * @param name  the column name
+	 * @return SQL with vals in concatenated name=val[0] OR name=val[1]... conditions
+	 * @throws Exception
+	 */
+    static public String createOrListSQL(String sqlTemplate, List<Integer> vals, String name) throws Exception {
         
         StringBuilder sb = new StringBuilder();
         sb.append("(");
