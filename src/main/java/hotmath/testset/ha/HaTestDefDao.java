@@ -227,22 +227,30 @@ public class HaTestDefDao {
          if(segment == -1)
              return new ArrayList<String>();
          
+         if (logger.isDebugEnabled())
+             logger.debug("getTestIdsForSegment(): segment: " + segment + ", textCode: " + textcode + ", chapter: " + chapter + ", segmentSlot: " + segmentSlot);
+
+         int cnt = 0;
+         int solsPerSeg = 0;
+         int segPnEnd = 0;
+         int segPnStart = 0;
+
          // Use chapter from config if available, otherwise
          // use the default chapter defined for this test_def
-         List<String> problemIds = getTestIds(conn, userProgram,textcode, chapter, segmentSlot,0,99999,config);
+         List<String> problemIds = getTestIds(conn, userProgram, textcode, chapter, segmentSlot,0,99999,config);
 
-         int cnt = problemIds.size();
-         
+         cnt = problemIds.size();
+
          // how does the total test break into segments?
-         int solsPerSeg = (config != null) ? solsPerSeg = cnt / config.getSegmentCount() : 0;
+         solsPerSeg = (config != null) ? solsPerSeg = cnt / config.getSegmentCount() : 0;
          solsPerSeg = (solsPerSeg < 5) ? cnt : solsPerSeg;
 
-         int segPnEnd = (segment * solsPerSeg);
-         int segPnStart = (segPnEnd - (solsPerSeg - 1));
+         segPnEnd = (segment * solsPerSeg);
+         segPnStart = (segPnEnd - (solsPerSeg - 1));
 
          problemIds = getTestIds(conn, userProgram,textcode, chapter, segmentSlot,segPnStart,segPnEnd,config);
          if (problemIds.size() == 0) {
-             throw new HotMathException(String.format("No problems for test segment: %s, %s, %n, %n, %n", textcode, chapter,segPnStart, segPnEnd, segmentSlot));
+             throw new HotMathException(String.format("No problems for test segment: %s, %s, %d, %d, %d", textcode, chapter,segPnStart, segPnEnd, segmentSlot));
          }
          return problemIds;
      }
@@ -356,7 +364,8 @@ public class HaTestDefDao {
                  /** Is a chapter program
                   * 
                   */
-                 chapter = config.getChapters().get(0);
+                 if (chapter == null)
+                     chapter = config.getChapters().get(0);
                  
                  sql = CmMultiLinePropertyReader.getInstance().getProperty("TEST_IDS_FOR_CHAPTER_PROGRAM");
              } else {
@@ -370,6 +379,9 @@ public class HaTestDefDao {
              ps.setInt(3, (section+1));  // test_segment_slots are zero based
              ps.setInt(4, startProblemNumber);
              ps.setInt(5, endProblemNumber);
+
+             if (logger.isDebugEnabled())
+                 logger.debug("+++ getTestIdsBasic(): sql: " + ps.toString());
 
              rs = ps.executeQuery();
              
