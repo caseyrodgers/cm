@@ -1326,7 +1326,7 @@ public class CmStudentDao {
             throw new Exception(String.format("*** Error obtaining data for student with UID: %d", uid));
         } finally {
             SqlUtilities.releaseResources(rs, ps, null);
-            logger.info(String.format("End getStudentModel(), UID: %d, elapsed seconds: %d", uid, ((System.currentTimeMillis() - timeStart)/1000)));
+            logger.debug(String.format("End getStudentModel(), UID: %d, elapsed seconds: %d", uid, ((System.currentTimeMillis() - timeStart)/1000)));
         }
     }
     
