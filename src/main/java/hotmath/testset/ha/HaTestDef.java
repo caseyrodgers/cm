@@ -198,7 +198,13 @@ public class HaTestDef {
 
     public List<String> getTestIdsForSegment(final Connection conn, StudentUserProgramModel userProgram, int segment, HaTestConfig config, int segmentSlot) throws Exception {
         _lastSegment = segment;
-        return new HaTestDefDao().getTestIdsForSegment(conn, userProgram,segment, textCode, chapter, config, segmentSlot);
+        String chap = "";
+        if(config.getChapters().size() > 0)
+            chap = config.getChapters().get(0);
+        else
+            chap = chapter;
+            
+        return new HaTestDefDao().getTestIdsForSegment(conn, userProgram,segment, textCode, chap, config, segmentSlot);
     }
 
 

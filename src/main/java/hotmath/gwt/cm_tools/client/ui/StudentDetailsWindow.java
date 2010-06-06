@@ -273,7 +273,15 @@ public class StudentDetailsWindow extends CmWindow {
     private void showTopicsForSelected() {
         StudentActivityModel sam = samGrid.getSelectionModel().getSelectedItem();
         if (sam == null) {
-            CatchupMathTools.showAlert("Select a row in the table first");
+            CatchupMathTools.showAlert("Select a Quiz or Review from the list first");
+            return;
+        }
+        
+        /** only show list if a Review is selected, quizzes do not have lessons
+         * 
+         */
+        if(sam.getRunId() == 0) {
+            CatchupMathTools.showAlert("Topics not shown unless Quiz is completed");
             return;
         }
         new StudentLessonTopicsStatusWindow(studentModel, sam);
@@ -287,7 +295,7 @@ public class StudentDetailsWindow extends CmWindow {
     private void showWorkForSelected() {
         StudentActivityModel sam = samGrid.getSelectionModel().getSelectedItem();
         if (sam == null) {
-            CatchupMathTools.showAlert("Select a row in the table first");
+            CatchupMathTools.showAlert("Select a Review from the list first");
             return;
         }
         new StudentShowWorkWindow(studentModel, sam);

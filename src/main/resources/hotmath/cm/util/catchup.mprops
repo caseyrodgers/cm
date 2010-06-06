@@ -1423,7 +1423,7 @@ and cp.id = ?
 .key=GET_PROGRAM_LESSONS
 
 select distinct lesson
-from  HA_PROGRAM_LESSONS
+from  HA_PROGRAM_LESSONS_static
 where pid in ($$PIDLIST$$)
 order by lesson;
 
