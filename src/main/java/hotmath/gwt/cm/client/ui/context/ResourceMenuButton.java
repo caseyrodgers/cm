@@ -227,8 +227,7 @@ class ResourceMenuButton extends Button {
      * @return
      */
     private boolean isResourceAvailable(PrescriptionSessionDataResource resource) {
-        if(UserInfo.getInstance().isLimitGames() &&
-                (resource.getType().indexOf("activity") > -1|| resource.getType().indexOf("flashcard") > -1)) {
+        if(UserInfo.getInstance().isLimitGames() && resource.getType().indexOf("activity") > -1) {
             /** if user has already viewed a game on this lesson, disallow */
             String lesson = PrescriptionCmGuiDefinition.__instance.context.getPrescriptionData().getCurrSession().getTopic();
             String cookie = Cookies.getCookie("cm_lesson_viewed");
