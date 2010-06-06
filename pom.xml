@@ -439,15 +439,15 @@
           <cssFinalFile>CatchupMath.css</cssFinalFile>
           <jsFinalFile>CatchupMath.js</jsFinalFile>
           <cssSourceFiles>
-               <param>../../css/testset.css</param>
-               <param>../../css/default.css</param>
-               <param>../../css/hotmath_review.css</param>
-               <param>../../css/bookindex_with_tutor_combined.css</param>
+               <param>../../../../../../hotmath2/web/css/testset.css</param>
+               <param>../../../../../../hotmath2/web/css/default.css</param>
+               <param>../../../../../../hotmath2/web/css/hotmath_review.css</param>
+               <param>../../../../../../hotmath2/web/css/bookindex_with_tutor_combined.css</param>
                <param>CatchupMath.css</param>
                <param>loading_image.css</param>
           </cssSourceFiles>
           <jsSourceFiles>
-            <param>../../js/cm_with_tutor_combined.js</param>
+            <param>../../../../../../hotmath2/web/js/cm_with_tutor_combined.js</param>
             <param>cm_core.js</param>
             <param>CatchupMath.js</param>
             <param>swfobject/swfobject.js</param>
