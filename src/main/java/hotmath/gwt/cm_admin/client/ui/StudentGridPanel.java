@@ -1008,9 +1008,11 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
         TextField<String> quickFilter;
 
         public QuickSearchPanel() {
+
+            String qfTip = "Apply text filter to first four columns.";
             quickFilter = new TextField<String>();
             quickFilter.setEmptyText("--- Text Search ---");
-            quickFilter.setToolTip("Apply text filter to first four columns.");
+            quickFilter.setToolTip(qfTip);
             quickFilter.setFieldLabel("Text Search");
             quickFilter.addListener(Events.KeyUp, new Listener<FieldEvent>() {
                 public void handleEvent(FieldEvent be) {
@@ -1026,7 +1028,7 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
                     applyQuickSearch();
                 }
             });
-            submit.setToolTip("Apply text search");
+            submit.setToolTip(qfTip);
             add(submit);
             Button clear = new Button("clear", new SelectionListener<ButtonEvent>() {
                 public void componentSelected(ButtonEvent ce) {
