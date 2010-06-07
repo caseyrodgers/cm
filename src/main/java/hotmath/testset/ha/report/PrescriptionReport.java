@@ -27,6 +27,7 @@ import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
@@ -50,15 +51,15 @@ import org.apache.log4j.Logger;
  * @author casey
  *
  */
-public class CmDebugReport {
+public class PrescriptionReport {
 
-    static Logger __logger = Logger.getLogger(CmDebugReport.class);
+    static Logger __logger = Logger.getLogger(PrescriptionReport.class);
     FileWriter _fileOut;
     ReportGui _rgui = null;
     Integer _uid;
     Connection _conn;
 
-    public CmDebugReport(String logFile, CmProgram programToTest) throws Exception {
+    public PrescriptionReport(String logFile, CmProgram programToTest) throws Exception {
 
         /**
          * first try to init gui, if fails move on...
@@ -73,7 +74,7 @@ public class CmDebugReport {
         }
 
         if (logFile != null) {
-            logFile = CmDebugReport.class.getName() + ".log";
+            logFile = PrescriptionReport.class.getName() + ".log";
             _fileOut = new FileWriter(logFile);
         }
 
@@ -90,6 +91,7 @@ public class CmDebugReport {
                 testProgramProfTests(programToTest);    
             }
             else {
+                
                 /**
                  * assign every program to user and check for anomalies
                  * 
@@ -135,6 +137,8 @@ public class CmDebugReport {
         HaTestDefDao dao = new HaTestDefDao();
         List<String> chapters = dao.getProgramChapters(_conn,dao.getTestDef(_conn, progDef.getDefId()));
 
+        chapters = Arrays.asList(chapters.get(6));
+        
         for (String chapter : chapters) {
             setupNewUserAndProgram(progDef, chapter);
             testCurrentlyAssignedProgram(_conn);
@@ -162,6 +166,8 @@ public class CmDebugReport {
          */
         for (int segment = 1; segment - 1 < testDef.getTotalSegmentCount(); segment++) {
 
+            
+            
             logMessage(-1, "Testing segment: " + segment);
 
             HaTest test = null;
@@ -403,7 +409,7 @@ public class CmDebugReport {
             
             CmProgram prog = null; // CmProgram.GEOM_PROF;
             
-            new CmDebugReport(logFile,prog);
+            new PrescriptionReport(logFile,prog);
         } catch (Exception e) {
             e.printStackTrace();
         }
