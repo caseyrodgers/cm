@@ -174,10 +174,10 @@ public class AssessmentPrescriptionSession {
     public String getTopic() {
         // return the topic of this session
         List<INeedMoreHelpItem> list = getSessionCategories();
-        // all are the title...
         logger.debug("in getTopic()");
         
-        return (list.size() > 0)?list.get(0).getTitle():"No Topic";
+        String topic = (list.size() > 0)?list.get(0).getTitle():"No Topic";
+        return topic;
     }
 
     public List<INeedMoreHelpResourceType> getInmhTypes() throws Exception {

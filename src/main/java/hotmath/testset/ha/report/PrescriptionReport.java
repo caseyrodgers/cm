@@ -45,7 +45,7 @@ import org.apache.log4j.Logger;
  * Writes to table HA_PRESCRIPTION_LOG
  * 
  * Also populates the HA_PROGRAM_LESSON table which 
- * contains all the ACTIVE lessons current in play.
+ * contains all the ACTIVE lessons currently in play.
  * 
  * 
  * @author casey

@@ -197,7 +197,7 @@ public class GetPrescriptionCommand implements ActionHandler<GetPrescriptionActi
             PrescriptionSessionResponse response = new PrescriptionSessionResponse();
             response.setRunId(testRun.getRunId());
             response.setPrescriptionData(presData);
-            response.setCorrectPercent(getTestPassPercent(testRun.getAnsweredCorrect() + testRun.getAnsweredIncorrect(), pres.getTestRun().getAnsweredCorrect()));
+            response.setCorrectPercent(getTestPassPercent(testRun.getAnsweredCorrect() + testRun.getAnsweredIncorrect() + testRun.getNotAnswered(), pres.getTestRun().getAnsweredCorrect()));
             response.setProgramTitle(pres.getTest().getTestDef().getTitle());
 
             return response;

@@ -1,7 +1,10 @@
 package hotmath.assessment;
 
 import hotmath.gwt.cm.server.CmDbTestCase;
+import hotmath.gwt.cm_admin.server.model.CmStudentDao;
+import hotmath.gwt.shared.server.service.CmTestUtils;
 import hotmath.inmh.INeedMoreHelpResourceType;
+import hotmath.testset.ha.CmProgram;
 import hotmath.testset.ha.HaTest;
 import hotmath.testset.ha.HaTestDao;
 import hotmath.testset.ha.HaTestDef;
@@ -63,6 +66,8 @@ public class AssessmentPrescription_Test extends CmDbTestCase {
                 "cahseehm_1_1_PracticeTest_2_1", "cahseehm_1_1_PracticeTest_3_1", "cahseehm_1_1_PracticeTest_4_1",
                 "cahseehm_1_1_PracticeTest_5_1", "cahseehm_1_1_PracticeTest_6_1", "cahseehm_1_1_PracticeTest_7_1",
                 "cahseehm_1_1_PracticeTest_8_1", "cahseehm_1_1_PracticeTest_9_1" };
+        
+        String guids2[] = {"prealgptests_7_1_Chapter7PracticeTest_19_7"};
         
         userId = setupDemoAccount();
         
