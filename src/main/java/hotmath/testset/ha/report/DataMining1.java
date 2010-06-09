@@ -102,7 +102,8 @@ public class DataMining1 {
             conn = HMConnectionPool.getConnection();
           new DataMining1(conn);  
           
-          System.out.println("Data Mining Complete");
+          System.out.println("Data Mining Complete!");
+          System.exit(0);
         }
         catch(Exception e) {
             e.printStackTrace();
