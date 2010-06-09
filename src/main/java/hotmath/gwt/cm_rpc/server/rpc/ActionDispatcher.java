@@ -126,6 +126,7 @@ public class ActionDispatcher {
     	for (int retryCount=0; retryCount<maxRetries; retryCount++) {
         	try {
         	    response = executeAction(action);
+        	    return response;
         	}
         	catch (CmRpcException cre) {
         		throw cre;

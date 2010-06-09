@@ -85,6 +85,13 @@
 	</dependency>
     -->
 
+<dependency>
+    <groupId>net.sourceforge.jeuclid</groupId>
+    <artifactId>jeuclid-core</artifactId>
+    <version>3.1.9</version>
+</dependency>
+
+
     <dependency>
       <groupId>org.projectlombok</groupId>
       <artifactId>lombok</artifactId>
