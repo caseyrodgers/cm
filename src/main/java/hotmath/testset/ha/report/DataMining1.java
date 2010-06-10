@@ -76,7 +76,7 @@ public class DataMining1 {
             
                 /** num sessions from first login */
             String sql = 
-                "select count(*) " +
+                "select count(distinct lesson_name) " +
                 "from HA_TEST_RUN_LESSON l " +
                 " JOIN HA_TEST_RUN r on r.run_id = l.run_id " +
                 " JOIN HA_TEST t on t.test_id = r.test_id " + 
