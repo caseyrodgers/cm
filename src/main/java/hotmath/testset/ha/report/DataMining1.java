@@ -5,6 +5,7 @@ import hotmath.util.sql.SqlUtilities;
 
 import java.sql.Connection;
 import java.sql.Date;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
@@ -86,8 +87,28 @@ public class DataMining1 {
                 rs.first();
                 mdata.numSessionsFromPreviousSegment = rs.getInt(1);
                 
+                /** num logins from pass */
+                sql = 
+                    "select count(*) " +
+                    "from HA_USER_LOGIN l " +
+                    " where user_id = " + uid + 
+                    " and login_time < ? ";
+                    
+                PreparedStatement ps = null;
+                try {
+                    ps = conn.prepareStatement(sql);
+                    ps.setDate(1, passDate);
+                    rs = ps.executeQuery();
+                    rs.first();
+                    mdata.loginsToPass = rs.getInt(1);                
+                }
+                finally {
+                    SqlUtilities.releaseResources(null,ps,null);
+                }
                 
-           conn.createStatement().executeUpdate("update JUNK_DM set lessons_to_pass = " + mdata.numSessionsFromPreviousSegment + " where run_id = " + runId);
+           conn.createStatement().executeUpdate("update JUNK_DM set lessons_to_pass = " + mdata.numSessionsFromPreviousSegment + 
+                   ",logins_to_pass = " + mdata.loginsToPass + 
+                   "  where run_id = " + runId);
         }
         catch(Exception e) {
             throw e;
@@ -124,6 +145,7 @@ class MinedData {
     int numSegmentsFromPreviousSegment;
     int numSessionsFromPreviousSegment;
     int numSessionsFromFirstLogin;
+    int loginsToPass;
     
     public MinedData(int uid, int testId, int runId) {
         this.uid = uid;
