@@ -1,6 +1,6 @@
 package hotmath.gwt.cm_tools.client.ui.viewer;
 
-import hotmath.gwt.cm_rpc.client.GetSolutionAction;
+import hotmath.gwt.cm_rpc.client.rpc.GetSolutionAction;
 import hotmath.gwt.cm_rpc.client.rpc.RpcData;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.CmBusyManager;

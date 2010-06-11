@@ -4,7 +4,7 @@ import hotmath.HotMathException;
 import hotmath.HotMathLogger;
 import hotmath.HotMathUtilities;
 import hotmath.ProblemID;
-import hotmath.gwt.cm_rpc.client.GetSolutionAction;
+import hotmath.gwt.cm_rpc.client.rpc.GetSolutionAction;
 import hotmath.gwt.cm_rpc.client.rpc.Action;
 import hotmath.gwt.cm_rpc.client.rpc.CmRpcException;
 import hotmath.gwt.cm_rpc.client.rpc.Response;
