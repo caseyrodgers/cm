@@ -84,11 +84,20 @@ public class LogTailer extends Thread {
             l.newLogFileLine(line);
         }
     }
+    
+    protected void fireLogReady() {
+        for (Iterator i = this.listeners.iterator(); i.hasNext();) {
+            LogFileTailerListener l = (LogFileTailerListener) i.next();
+            l.logReady();
+        }
+    }    
 
     public void stopTailing() {
         this.tailing = false;
     }
 
+    boolean firstReadComplete=false;
+    
     public void run() {
         // The file pointer keeps track of where we are in the file
         long filePointer = 0;
@@ -111,6 +120,7 @@ public class LogTailer extends Thread {
                     if (fileLength < filePointer) {
                         // Log file must have been rotated or deleted;
                         // reopen the file and reset the file pointer
+                        System.out.println("Resetting log file pointer");
                         file = new RandomAccessFile(logfile, "r");
                         filePointer = 0;
                     }
@@ -124,6 +134,11 @@ public class LogTailer extends Thread {
                             line = file.readLine();
                         }
                         filePointer = file.getFilePointer();
+                        
+                        if(!firstReadComplete) {
+                            System.out.println("Initial log file read complete ...");
+                            fireLogReady();
+                        }
                     }
 
                     // Sleep for the specified interval

@@ -57,7 +57,7 @@ public class ActionDispatcher {
     
     int maxRetries = 5;
     int retryDelayMsec = 1000;
-
+    
     /**
      * remove commands
      * 
@@ -70,6 +70,60 @@ public class ActionDispatcher {
     private ActionDispatcher() {
         logger.info("Creating new ActionDispatcher");
     }
+    
+    
+    /**
+     * Execute the given command and return the proper Result object.
+     * 
+     * Each command is given a preallocated Connection option that it will
+     * utilize for any DB access.
+     * 
+     * You can disable the automatic creation of the Connection by having your
+     * Command object implement the ActionHandlerManualConnectionManagement
+     * interface.
+     * 
+     * 
+     * @param <T>
+     * @param action
+     * @return
+     * @throws Exception
+     */
+    public <T extends Response> T execute(Action<T> action) throws CmRpcException {
+
+        T response = null;
+        for (int retryCount=0; retryCount<maxRetries; retryCount++) {
+            try {
+                response = executeAction(action);
+                break;
+            }
+            catch (Exception e) {
+                
+                monitorCountActionsRetried++;
+
+                String c[] = action.getClass().getName().split("\\.");
+                String clazzName = c[c.length - 1];
+                logger.info(String.format("RPC Action: %s failed, count: %d ", clazzName, retryCount+1));
+
+                if ((retryCount+1) < maxRetries) {
+                    try {
+                        Thread.sleep(retryDelayMsec);
+                    }
+                    catch (InterruptedException ie) {ie.printStackTrace();}
+                }
+                else {
+                    throw new CmRpcException(e);
+                }
+            }
+        }
+    
+        if(response == null) {
+            monitorCountActionsFailed++;
+            
+            throw new CmRpcException("ACTION FAILURE, Could not execute after multiple attempts: '" + action + "'");
+        }
+        
+        return response;
+    }    
 
     /**
      * Register a new command with system.
@@ -102,54 +156,7 @@ public class ActionDispatcher {
 	public void setCommands(Map<Class<? extends Action<? extends Response>>, Class> commands) {
         this.commands = commands;
     }
-    
-    /**
-     * Execute the given command and return the proper Result object.
-     * 
-     * Each command is given a preallocated Connection option that it will
-     * utilize for any DB access.
-     * 
-     * You can disable the automatic creation of the Connection by having your
-     * Command object implement the ActionHandlerManualConnectionManagement
-     * interface.
-     * 
-     * 
-     * @param <T>
-     * @param action
-     * @return
-     * @throws Exception
-     */
-    public <T extends Response> T execute(Action<T> action) throws CmRpcException {
 
-    	T response = null;
-    	
-    	for (int retryCount=0; retryCount<maxRetries; retryCount++) {
-        	try {
-        	    response = executeAction(action);
-        	    return response;
-        	}
-        	catch (CmRpcException cre) {
-        		throw cre;
-        	}
-        	catch (Exception e) {
-
-        		String c[] = action.getClass().getName().split("\\.");
-        		String clazzName = c[c.length - 1];
-        		logger.info(String.format("RPC Action: %s failed, count: %d ", clazzName, retryCount+1));
-
-        		if ((retryCount+1) < maxRetries) {
-        			try {
-        				Thread.sleep(retryDelayMsec);
-        			}
-        			catch (InterruptedException ie) {;}
-        		}
-        		else {
-        			throw new CmRpcException(e);
-        		}
-        	}
-    	}
-    	return response;
-    }
     
     /**
      * Execute the given command and return the proper Result object.
@@ -170,6 +177,7 @@ public class ActionDispatcher {
     @SuppressWarnings("unchecked")
     private <T extends Response> T executeAction(Action<T> action) throws Exception {
 
+        
         long timeStart = System.currentTimeMillis();
         String c[] = action.getClass().getName().split("\\.");
         String clazzName = c[c.length - 1];
@@ -198,15 +206,22 @@ public class ActionDispatcher {
                 logger.debug("RPC Action: DB Connection NOT requested");
             }
 
+            
+            monitorCountActionsExecuted++;
+            
             T response = (T) actionHandler.execute(conn, action);
+            
+            monitorCountActionsCompleted++;
 
             return response;
         }
         finally {
             if (conn != null)
                 SqlUtilities.releaseResources(null, null, conn);
-            logger.info("RPC Action " + clazzName + " toString: " + action.toString() + " complete: elapsed time: "
-                    + (System.currentTimeMillis() - timeStart) / 1000);
+            long executeTime = (System.currentTimeMillis() - timeStart) / 1000;
+            logger.info("RPC Action " + clazzName + " toString: " + action.toString() + " complete: elapsed time: " + executeTime);
+            
+            monitorTotalProcessingTime += executeTime;  
         }
     }
 
@@ -297,6 +312,53 @@ public class ActionDispatcher {
 	public void setRetryDelayMsec(int retryDelayMsec) {
 		this.retryDelayMsec = retryDelayMsec;
 	}
+	
+	
+	/** Used by CmMonitor get get inidividual stats
+	 *  from running ActionDispatcher.
+	 *  
+	 * @param type
+	 * @return
+	 */
+	public long getMonitoredData(MonitorData type) {
+	    switch(type) {
+	    case ActionsExecuted:
+	        return monitorCountActionsExecuted;
+	        
+	    
+	    case ActionsCompleted:
+	        return monitorCountActionsCompleted;
+	        
+	        
+	    case ActionsRetry:
+	        return monitorCountActionsRetried;
+	        
+	    case ActionsFailed:
+	        return monitorCountActionsFailed;
+	        
+	    case ProcessingTime:
+	        return monitorTotalProcessingTime;
+	        
+	        default:
+	            return -1;
+	       
+	    }
+	}
+	public static enum MonitorData {
+	    ActionsExecuted,
+	    ActionsCompleted,
+	    ActionsRetry,
+	    ActionsFailed,
+	    ProcessingTime
+	}
+	
+    
+    /** for zabbix logging see CmMonitor */
+    int monitorCountActionsExecuted; 
+    int monitorCountActionsRetried;
+    int monitorCountActionsFailed;
+    int monitorCountActionsCompleted;
+    long monitorTotalProcessingTime;
 }
 
 

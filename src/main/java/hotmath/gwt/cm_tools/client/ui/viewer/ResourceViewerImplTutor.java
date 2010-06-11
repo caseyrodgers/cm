@@ -1,5 +1,6 @@
 package hotmath.gwt.cm_tools.client.ui.viewer;
 
+import hotmath.gwt.cm_rpc.client.GetSolutionAction;
 import hotmath.gwt.cm_rpc.client.rpc.RpcData;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
@@ -11,7 +12,6 @@ import hotmath.gwt.shared.client.eventbus.CmEventListenerImplDefault;
 import hotmath.gwt.shared.client.eventbus.EventBus;
 import hotmath.gwt.shared.client.eventbus.EventType;
 import hotmath.gwt.shared.client.rpc.RetryAction;
-import hotmath.gwt.shared.client.rpc.action.GetSolutionAction;
 import hotmath.gwt.shared.client.util.UserInfo;
 
 import java.util.ArrayList;

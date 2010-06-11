@@ -2,6 +2,7 @@ package hotmath.gwt.shared.server.service;
 
 import hotmath.gwt.cm.server.CmDbTestCase;
 import hotmath.gwt.cm_admin.server.model.CmStudentDao;
+import hotmath.gwt.cm_rpc.client.GetSolutionAction;
 import hotmath.gwt.cm_rpc.client.rpc.CmArrayList;
 import hotmath.gwt.cm_rpc.client.rpc.CmList;
 import hotmath.gwt.cm_rpc.client.rpc.CreateTestRunResponse;
@@ -29,7 +30,6 @@ import hotmath.gwt.shared.client.rpc.action.GetAutoRegistrationSetupAction;
 import hotmath.gwt.shared.client.rpc.action.GetLessonItemsForTestRunAction;
 import hotmath.gwt.shared.client.rpc.action.GetQuizHtmlCheckedAction;
 import hotmath.gwt.shared.client.rpc.action.GetQuizResultsHtmlAction;
-import hotmath.gwt.shared.client.rpc.action.GetSolutionAction;
 import hotmath.gwt.shared.client.rpc.action.GetStateStandardsAction;
 import hotmath.gwt.shared.client.rpc.action.GetSummariesForActiveStudentsAction;
 import hotmath.gwt.shared.client.rpc.action.GetUserInfoAction;
