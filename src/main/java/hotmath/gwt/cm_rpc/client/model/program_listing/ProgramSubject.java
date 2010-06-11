@@ -75,7 +75,7 @@ public class ProgramSubject implements CmTreeNode,IsSerializable{
 
     @Override
     public String getLabel() {
-        return labelMap.get(name);
+    	return (labelMap.get(name) != null)?labelMap.get(name) : name;
     }
 
     @Override

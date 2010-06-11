@@ -44,11 +44,12 @@ public class CmProgramListingDao {
      * @throws Exception
      */
     public ProgramListing getProgramListing(final Connection conn, int adminId) throws Exception {
-        PreparedStatement stmt=null;
+        String sql = "select * from HA_PROG_DEF where id in ('Prof','Chap','Grad Prep') order by load_order asc";
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
         try {
-            String sql = "select * from HA_PROG_DEF where id in ('Prof','Chap') order by id desc";
             stmt = conn.prepareStatement(sql);
-            ResultSet rs = stmt.executeQuery();
+            rs = stmt.executeQuery();
             ProgramListing pr = new ProgramListing();
             
             while(rs.next()) {
@@ -61,11 +62,15 @@ public class CmProgramListingDao {
             		pr.getProgramTypes().add(createSubjectAndChapterProgramType(conn, id, rs.getString("title")));
             		continue;
             	}
+            	if (id.indexOf("Grad Prep") > -1) {
+            		pr.getProgramTypes().add(createGradPrepProgramType(conn, id, rs.getString("title")));
+            		continue;
+            	}
             }
 
             return pr;
         } finally {
-            SqlUtilities.releaseResources(null, null, null);
+            SqlUtilities.releaseResources(rs, stmt, null);
         }
     }
 
@@ -94,7 +99,7 @@ public class CmProgramListingDao {
             ProgramChapter chapter = new ProgramChapterAll();
             ps.getChapters().add(chapter);
             
-            List<ProgramSection> list = buildSectionListForProficiencyTestDef(testDef);
+            List<ProgramSection> list = buildSectionListForTestDef(testDef);
             chapter.setSections(list);
         }
         return pt;
@@ -130,7 +135,7 @@ public class CmProgramListingDao {
             	chapter.setNumber(i);
                 ps.getChapters().add(chapter);
 
-                List<ProgramSection> list = buildSectionListForSubjectChapterTestDef(conn, testDef, name, i);
+                List<ProgramSection> list = buildSectionListForTestDef(testDef);
                 chapter.setSections(list);
                 i++;
             }
@@ -139,6 +144,47 @@ public class CmProgramListingDao {
         return pt;
     }
 
+    /** Return program type for all proficiency tests
+     * 
+     * @param conn
+     * @param type
+     * @return
+     * @throws Exception
+     */
+    private ProgramType createGradPrepProgramType(final Connection conn, String type, String title) throws Exception {
+    	
+    	// collect all Grad Prep programs
+    	String sql = "select * from HA_TEST_DEF where prog_id like 'Grad Prep%' and is_active = 1 order by load_order asc";
+
+        ProgramType pt = new ProgramType(type, "Graduation Preparation");
+
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+        try {
+            stmt = conn.prepareStatement(sql);
+            rs = stmt.executeQuery();
+            
+            while(rs.next()) {
+            	ProgramSubject ps = new ProgramSubject();
+            	ps.setName(rs.getString("test_name"));
+            	ps.setTestDefId(rs.getInt("test_def_id"));
+                pt.getProgramSubjects().add(ps);
+
+                ProgramChapter chapter = new ProgramChapterAll();
+                ps.getChapters().add(chapter);
+
+                HaTestConfig tc = new HaTestConfig(rs.getString("test_config_json"));
+
+                List<ProgramSection> list = buildSectionListForTestConfig(ps.getTestDefId(), tc);
+                chapter.setSections(list);
+            }
+        } finally {
+            SqlUtilities.releaseResources(rs, stmt, null);
+        }
+
+        return pt;
+    }
+    
     /** Return distinct lessons for a given testDefId modified with testConfig
      * 
      * @param conn
@@ -180,11 +226,19 @@ public class CmProgramListingDao {
             	    chapter = chapter.substring(offset + 2);
             	}
             	else {
-            	    /** use default Chapter
-            	     *  for complete proficiency tests
-            	     *  
-            	     */
-            	    chapter = "Course Test";
+            		if (testDef.getProgId().indexOf("Grad Prep") < 0) {
+                	    /** use default Chapter
+                	     *  for complete proficiency tests
+                	     *  
+                	     */
+            	        chapter = "Course Test";
+            		}
+            		else {
+            			/*
+            			 * use "1" for Grad Prep programs
+            			 */
+            			chapter = "1";
+            		}
             	}
             }
             List<String> pids = hda.getTestIdsForSegment(conn, userProgram, segment, testDef.getTextCode(), chapter, testDef.getTestConfig(), 0);
@@ -216,27 +270,28 @@ public class CmProgramListingDao {
             return lessons;
         }
         finally {
-            SqlUtilities.releaseResources(rs,stmt,null);
+            SqlUtilities.releaseResources(rs, stmt, null);
         }
     }
-    
-    private List<ProgramSection> buildSectionListForSubjectChapterTestDef(final Connection conn, HaTestDef testDef, String chapName, int chapNumber) {
-    	return buildSectionListForProficiencyTestDef(testDef);
-    }
 
-    private List<ProgramSection> buildSectionListForProficiencyTestDef(HaTestDef testDef) {
+    private List<ProgramSection> buildSectionListForTestDef(HaTestDef testDef) {
+
+    	return buildSectionListForTestConfig(testDef.getTestDefId(), testDef.getTestConfig());
+
+    }
+    
+    private List<ProgramSection> buildSectionListForTestConfig(int testDefId, HaTestConfig testConfig) {
     	List<ProgramSection> list = new ArrayList<ProgramSection>();
     	
-    	int segmentCount = testDef.getTestConfig().getSegmentCount();
+    	int segmentCount = testConfig.getSegmentCount();
     	
     	for (int i=1; i<=segmentCount; i++) {
     		ProgramSection s = new ProgramSection();
-    		s.setTestDefId(testDef.getTestDefId());
+    		s.setTestDefId(testDefId);
     		s.setName(String.format("Section %d", i));
     		s.setNumber(i);
     		list.add(s);
     	}
     	return list;
     }
-    
 }

@@ -130,8 +130,8 @@ public class ProgramDetailsPanel extends CmWindow {
                     	ProgramSubject pSubj = (ProgramSubject) m.getData();
                     	ProgramType pType = (ProgramType) pSubj.getParent();
                         
-                    	if (pType.getLabel().indexOf("Proficiency") < 0) {
-                    		// not Proficiency Program, add Chapters
+                    	if (pType.getLabel().indexOf("Proficiency") < 0 && pType.getLabel().indexOf("Graduation") < 0) {
+                    		// not Proficiency Program or Grad Prep Program, add Chapters
                             for (int i = 0, t = chaps.size(); i < t; i++) {
                                 ProgramChapter pc = chaps.get(i);
                                 models.add(new ProgListModel(pc));
@@ -139,7 +139,7 @@ public class ProgramDetailsPanel extends CmWindow {
                             }
                     	}
                     	else {
-                    		// Proficiency Program, add sections
+                    		// Proficiency or Grad Prep Program, add sections
                         	ProgramChapter pc = chaps.get(0);
                             List<ProgramSection> l = pc.getSections();
                             for (int i = 0, t = l.size(); i < t; i++) {
