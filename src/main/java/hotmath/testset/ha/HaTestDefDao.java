@@ -248,7 +248,7 @@ public class HaTestDefDao {
          segPnEnd = (segment * solsPerSeg);
          segPnStart = (segPnEnd - (solsPerSeg - 1));
 
-         problemIds = getTestIds(conn, userProgram,textcode, chapter, segmentSlot,segPnStart,segPnEnd,config);
+         problemIds = getTestIds(conn, userProgram, textcode, chapter, segmentSlot, segPnStart, segPnEnd, config);
          if (problemIds.size() == 0) {
              throw new HotMathException(String.format("No problems for test segment: %s, %s, %d, %d, %d", textcode, chapter,segPnStart, segPnEnd, segmentSlot));
          }
