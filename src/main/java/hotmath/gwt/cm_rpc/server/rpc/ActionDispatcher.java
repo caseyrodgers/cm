@@ -218,10 +218,12 @@ public class ActionDispatcher {
         finally {
             if (conn != null)
                 SqlUtilities.releaseResources(null, null, conn);
-            long executeTime = (System.currentTimeMillis() - timeStart) / 1000;
+            long now = System.currentTimeMillis();
+            long executeTimeMills = (now - timeStart);
+            long executeTime = executeTimeMills / 1000;
             logger.info("RPC Action " + clazzName + " toString: " + action.toString() + " complete: elapsed time: " + executeTime);
             
-            monitorTotalProcessingTime += executeTime;  
+            monitorTotalProcessingTime += executeTimeMills;  
         }
     }
 
