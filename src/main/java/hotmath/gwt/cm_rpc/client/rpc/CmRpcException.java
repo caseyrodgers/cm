@@ -1,17 +1,13 @@
 package hotmath.gwt.cm_rpc.client.rpc;
 
-import org.apache.log4j.Logger;
-
 public class CmRpcException extends Exception implements java.io.Serializable {
 
 	String message;
 
-	private static final Logger logger = Logger.getLogger(CmRpcException.class);
-
 	public CmRpcException(Exception e) {
 
 	    // make sure stack trace ends up in log
-	    logger.error(e);
+	    e.printStackTrace();
 
 		message = e.getMessage();
 
@@ -24,7 +20,7 @@ public class CmRpcException extends Exception implements java.io.Serializable {
 		this.message = message;
 
 		// make sure stack trace ends up in log
-	    logger.error(message, t);		
+	    t.printStackTrace();
 	}
 
 	public CmRpcException() {
