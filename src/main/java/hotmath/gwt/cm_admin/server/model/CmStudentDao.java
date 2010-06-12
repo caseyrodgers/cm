@@ -1944,7 +1944,7 @@ public class CmStudentDao {
     /** How many slots of alternate questions have been setup
      * 
      */
-    static public int MAX_QUIZ_SEGMENT_SLOTS=2;
+    static public int MAX_QUIZ_SEGMENT_SLOTS=3;
     
     
     
