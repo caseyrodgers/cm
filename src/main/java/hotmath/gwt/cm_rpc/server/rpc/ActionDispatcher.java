@@ -108,18 +108,19 @@ public class ActionDispatcher {
                     try {
                         Thread.sleep(retryDelayMsec);
                     }
-                    catch (InterruptedException ie) {ie.printStackTrace();}
+                    catch (InterruptedException ie) {logger.error(ie);}
                 }
                 else {
-                    throw new CmRpcException(e);
+                    monitorCountActionsFailed++;
+                    throw new CmRpcException(String.format("ACTION FAILURE, Could not execute after %d attempts, action: %s", maxRetries, action), e);
                 }
             }
         }
     
         if(response == null) {
+        	// TODO: will this code actually be visited?
             monitorCountActionsFailed++;
-            
-            throw new CmRpcException("ACTION FAILURE, Could not execute after multiple attempts: '" + action + "'");
+            throw new CmRpcException(String.format("ACTION FAILURE, NULL response after %d attempts, action: %s", maxRetries, action));
         }
         
         return response;
@@ -177,7 +178,6 @@ public class ActionDispatcher {
     @SuppressWarnings("unchecked")
     private <T extends Response> T executeAction(Action<T> action) throws Exception {
 
-        
         long timeStart = System.currentTimeMillis();
         String c[] = action.getClass().getName().split("\\.");
         String clazzName = c[c.length - 1];
@@ -186,7 +186,7 @@ public class ActionDispatcher {
         try {
             Class clazz = getActionCommand(action);
             if (clazz == null) {
-                throw new CmRpcException("Could not find Action: " + action.getClass().getName());
+                throw new CmRpcException("Could not find Command for Action: " + action.getClass().getName());
             }
             ActionHandler actionHandler = (ActionHandler) clazz.newInstance();
 
@@ -206,11 +206,10 @@ public class ActionDispatcher {
                 logger.debug("RPC Action: DB Connection NOT requested");
             }
 
-            
             monitorCountActionsExecuted++;
-            
+
             T response = (T) actionHandler.execute(conn, action);
-            
+
             monitorCountActionsCompleted++;
 
             return response;
@@ -222,8 +221,8 @@ public class ActionDispatcher {
             long executeTimeMills = (now - timeStart);
             long executeTime = executeTimeMills / 1000;
             logger.info("RPC Action " + clazzName + " toString: " + action.toString() + " complete: elapsed time: " + executeTime);
-            
-            monitorTotalProcessingTime += executeTimeMills;  
+
+            monitorTotalProcessingTime += executeTimeMills;
         }
     }
 
