@@ -42,25 +42,33 @@ public class ProgramDetailsPanel extends CmWindow {
     TreeLoader<ProgListModel> loader;
 
     CmAdminModel cmAdminMdl;
+    
+    static ProgramDetailsPanel instance;
 
     TreePanel<ProgListModel> tree;
     ProgramListing _programListing;
     LayoutContainer _mainPanel = new LayoutContainer();
 
-    public ProgramDetailsPanel(CmAdminModel cmAdminMdl) {
+    private ProgramDetailsPanel(CmAdminModel cmAdminMdl) {
         this.cmAdminMdl = cmAdminMdl;
         getProgramListingRPC();
 
         buildGui();
-        setVisible(true);
+    }
+
+    public static void showPanel(CmAdminModel cmAdminMdl) {
+    	if (instance == null) {
+    		instance = new ProgramDetailsPanel(cmAdminMdl);
+    	}
+        instance.setVisible(true);    	
     }
 
     private void buildGui() {
-        setHeading("Catchup Math Programs");
+        setHeading("View Lesson Topics Covered in Program Sections");
         setSize(400, 400);
 
         setLayout(new BorderLayout());
-
+/*
         if(CmShared.getQueryParameter("debug") != null) {
             getHeader().addTool(new Button("Expand All", new SelectionListener<ButtonEvent>() {
                 public void componentSelected(ButtonEvent ce) {
@@ -68,6 +76,7 @@ public class ProgramDetailsPanel extends CmWindow {
                 }
             }));
         }
+*/
         getHeader().addTool(new Button("Collapse All", new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent ce) {
                 tree.collapseAll();
@@ -101,26 +110,26 @@ public class ProgramDetailsPanel extends CmWindow {
                 ProgListModel m = (ProgListModel) loadConfig;
                 if (m != null && m.getLevel() == ProgramListing.LEVEL_SECT) {
                     /**
-                     * lesson async call needed
-                     * 
+                     * obtain lesson data asynchronously
                      */
                     final ProgramSection section = (ProgramSection) m.getData();
                     getLessonItemsRPC(section, callback);
                 } else {
-                    /** process local data */
+                    /**
+                     *  process local data
+                     */
                     List<ProgListModel> models = new ArrayList<ProgListModel>();
                     if (m == null) {
                         /** root node */
                         List<ProgramType> types = _programListing.getProgramTypes();
-                        for (int i = 0, t = types.size(); i < t; i++) {
-                            ProgramType pt = types.get(i);
-                            models.add(new ProgListModel(pt));
+                        for (ProgramType pType : types) {
+                            models.add(new ProgListModel(pType));
+                            List<ProgramSubject> subjects = pType.getProgramSubjects();
                         }
                     } else if (m.getLevel() == ProgramListing.LEVEL_TYPE) {
                     	ProgramType pType = (ProgramType) m.getData();
                         List<ProgramSubject> subjects = pType.getProgramSubjects();
-                        for (int i = 0, t = subjects.size(); i < t; i++) {
-                            ProgramSubject ps = subjects.get(i);
+                        for (ProgramSubject ps : subjects) {
                             models.add(new ProgListModel(ps));
                             ps.setParent(pType);
                         }
@@ -132,8 +141,7 @@ public class ProgramDetailsPanel extends CmWindow {
                         
                     	if (pType.getLabel().indexOf("Proficiency") < 0 && pType.getLabel().indexOf("Graduation") < 0) {
                     		// not Proficiency Program or Grad Prep Program, add Chapters
-                            for (int i = 0, t = chaps.size(); i < t; i++) {
-                                ProgramChapter pc = chaps.get(i);
+                            for (ProgramChapter pc : chaps) {
                                 models.add(new ProgListModel(pc));
                                 pc.setParent(pSubj);
                             }
@@ -142,8 +150,7 @@ public class ProgramDetailsPanel extends CmWindow {
                     		// Proficiency or Grad Prep Program, add sections
                         	ProgramChapter pc = chaps.get(0);
                             List<ProgramSection> l = pc.getSections();
-                            for (int i = 0, t = l.size(); i < t; i++) {
-                                ProgramSection ps = l.get(i);
+                            for (ProgramSection ps : l) {
                                 ps.setParent(pc);
                                 models.add(new ProgListModel(ps));
                             }
@@ -152,8 +159,7 @@ public class ProgramDetailsPanel extends CmWindow {
                     } else if (m.getLevel() == ProgramListing.LEVEL_CHAP) {
                     	ProgramChapter pc = (ProgramChapter) m.getData();
                         List<ProgramSection> l = pc.getSections();
-                        for (int i = 0, t = l.size(); i < t; i++) {
-                            ProgramSection ps = l.get(i);
+                        for (ProgramSection ps : l) {
                             ps.setParent(pc);
                             models.add(new ProgListModel(ps));
                         }
