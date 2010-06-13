@@ -434,19 +434,19 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
             }
         }));
 
-        if (CmShared.getQueryParameter("debug") != null) {
+        // if (CmShared.getQueryParameter("debug") != null) {
         toolbar.add(new Button("Program Details", new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent ce) {
                 GWT.runAsync(new CmRunAsyncCallback() {
                     @Override
                     public void onSuccess() {
-                        new ProgramDetailsPanel(_cmAdminMdl);                            
+                        ProgramDetailsPanel.showPanel(_cmAdminMdl);
                     }
                 });
             }
         }));
-        }
+        //}
         
         toolbar.add(new FillToolItem());
         toolbar.add(displayPrintableReportToolItem(_grid));
