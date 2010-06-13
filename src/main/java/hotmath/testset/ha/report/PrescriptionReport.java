@@ -408,8 +408,10 @@ public class PrescriptionReport {
                 logFile = args[0];
             
             CmProgram prog = null; // CmProgram.GEOM_PROF;
-            
             new PrescriptionReport(logFile,prog);
+
+            System.out.println("PrescriptionReport complete successfully!");
+            System.exit(0);
         } catch (Exception e) {
             e.printStackTrace();
         }
