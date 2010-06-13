@@ -2,6 +2,7 @@ package hotmath.gwt.shared.client.util;
 
 import hotmath.gwt.cm_rpc.client.rpc.Response;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
+import hotmath.gwt.cm_tools.client.ui.CmLogger;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.data.CmAsyncRequest;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
@@ -418,7 +419,7 @@ public class UserInfo implements IsSerializable, Response {
                     user.setActiveUser(true);
                 }
                 
-                Log.info("UserInfo object set to: " + user);
+                CmLogger.debug("UserInfo object set to: " + user);
                 
                 CmBusyManager.setBusy(false);     
                 callback.requestComplete(null);
