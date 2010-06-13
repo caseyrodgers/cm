@@ -13,6 +13,7 @@ import hotmath.gwt.cm_rpc.client.rpc.RpcData;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.model.AutoUserAdvanced;
 import hotmath.gwt.cm_tools.client.ui.AutoTestWindow;
+import hotmath.gwt.cm_tools.client.ui.CmLogger;
 import hotmath.gwt.cm_tools.client.ui.CmMainPanel;
 import hotmath.gwt.cm_tools.client.ui.ContextController;
 import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
@@ -203,6 +204,9 @@ public class PrescriptionContext implements CmContext {
 
             String msg = "";
             int testSegmentToLoad = 0;
+            
+            CmLogger.debug("Correct percent: " + correctPercent + ", " + passPercentRequired);
+            
             if (correctPercent >= passPercentRequired) {
                 
                 // User has passed this section, and is ready to move to next quiz/autoAdvance
