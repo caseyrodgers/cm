@@ -9,6 +9,7 @@ import hotmath.gwt.cm_rpc.client.rpc.CreateTestRunResponse;
 import hotmath.gwt.cm_rpc.client.rpc.NextAction.NextActionName;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
+import hotmath.gwt.cm_tools.client.ui.CmLogger;
 import hotmath.gwt.cm_tools.client.ui.NextPanelInfo;
 import hotmath.gwt.cm_tools.client.ui.NextPanelInfoImplDefault;
 import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
@@ -259,6 +260,9 @@ public class QuizContext implements CmContext {
             }
             public void oncapture(CreateTestRunResponse testRunInfo) {
                 try {
+                    
+                    CmLogger.debug("CreateTestRunResponse: " + testRunInfo);
+                    
                     if (testRunInfo.getAction() != null) {
                         if (testRunInfo.getAction() == NextActionName.AUTO_ASSSIGNED) {
                             UserInfo.getInstance().setTestSegment(0); // reset
