@@ -14,6 +14,7 @@ import hotmath.gwt.cm_rpc.client.rpc.RpcData;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.ui.CmGuiDefinition;
+import hotmath.gwt.cm_tools.client.ui.CmLogger;
 import hotmath.gwt.cm_tools.client.ui.CmMainPanel;
 import hotmath.gwt.cm_tools.client.ui.ContextController;
 import hotmath.gwt.cm_tools.client.ui.context.CmContext;
@@ -221,6 +222,9 @@ public class PrescriptionCmGuiDefinition implements CmGuiDefinition {
             public void oncapture(PrescriptionSessionResponse rdata) {
                 try {
                     if (rdata != null) {
+                        
+                        CmLogger.debug("PrescriptionSessionResponse: " + rdata);
+                        
                         UserInfo.getInstance().setSessionNumber(sessionNumberF);
                        
 

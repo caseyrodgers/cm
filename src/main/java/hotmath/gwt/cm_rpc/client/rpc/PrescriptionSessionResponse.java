@@ -3,7 +3,6 @@ package hotmath.gwt.cm_rpc.client.rpc;
 
 
 public class PrescriptionSessionResponse implements Response {
-    
     PrescriptionData prescriptionData;
     int correctPercent;
     String programTitle;
@@ -50,4 +49,10 @@ public class PrescriptionSessionResponse implements Response {
         this.programTitle = programTitle;
     }
     
+    
+    @Override
+    public String toString() {
+        return "PrescriptionSessionResponse [correctPercent=" + correctPercent + ", prescriptionData="
+                + prescriptionData + ", programTitle=" + programTitle + ", runId=" + runId + "]";
+    }
 }
