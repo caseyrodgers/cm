@@ -354,6 +354,8 @@ public class PrescriptionReport {
         finally {
             SqlUtilities.releaseResources(null,ps,null);
         }
+        
+        System.out.println("PrescriptionReport: " + runId + ", " + msg);
     }
 
     private void logMessage(int runId, String msg, Throwable t) throws Exception {
