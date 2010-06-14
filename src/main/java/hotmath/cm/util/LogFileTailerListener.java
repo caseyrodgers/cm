@@ -12,6 +12,4 @@ public interface LogFileTailerListener {
      *            The new line that has been added to the tailed log file
      */
     public void newLogFileLine(String line);
-    
-    public void logReady();
 }

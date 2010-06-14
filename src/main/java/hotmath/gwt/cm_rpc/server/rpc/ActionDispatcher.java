@@ -152,8 +152,10 @@ public class ActionDispatcher {
 
             return response;
         } catch (CmRpcException cre) {
+            monitorCountOfExceptions++;
             throw cre;
         } catch (Exception e) {
+            monitorCountOfExceptions++;
             throw new CmRpcException(e);
         } finally {
             if (conn != null)
@@ -252,6 +254,9 @@ public class ActionDispatcher {
         case ProcessingTime:
             return monitorTotalProcessingTime;
             
+        case ExceptionCount:
+            return monitorCountOfExceptions;
+            
             default:
                 return -1;
            
@@ -260,13 +265,15 @@ public class ActionDispatcher {
     public static enum MonitorData {
         ActionsExecuted,
         ActionsCompleted,
-        ProcessingTime
+        ProcessingTime,
+        ExceptionCount
     }
     
     
     /** for zabbix logging see CmMonitor */
     int monitorCountActionsExecuted; 
     int monitorCountActionsCompleted;
+    int monitorCountOfExceptions;
     long monitorTotalProcessingTime;
 }
 
