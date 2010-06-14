@@ -4,6 +4,7 @@ import hotmath.cm.util.CmCacheManager;
 import hotmath.cm.util.CmCacheManager.CacheName;
 import hotmath.gwt.cm_admin.server.model.CmCustomProgramDao;
 import hotmath.gwt.cm_rpc.client.rpc.Action;
+import hotmath.gwt.cm_rpc.client.rpc.CmArrayList;
 import hotmath.gwt.cm_rpc.client.rpc.CmList;
 import hotmath.gwt.cm_rpc.client.rpc.Response;
 import hotmath.gwt.cm_rpc.server.rpc.ActionHandler;
@@ -12,6 +13,7 @@ import hotmath.gwt.cm_tools.client.model.CustomProgramModel;
 import hotmath.gwt.shared.client.rpc.action.CustomProgramAction;
 
 import java.sql.Connection;
+import java.util.Arrays;
 
 /** Provide RPC services for creating and managing 
  *  a custom program
@@ -42,7 +44,7 @@ public class CustomProgramCommand implements ActionHandler<CustomProgramAction, 
                   
             case CREATE:                
                 CustomProgramModel newProgram = new CmCustomProgramDao().createNewCustomProgram(conn, action.getAdminId(), action.getProgramName(), action.getLessons());
-                return null;
+                return new CmArrayList<CustomLessonModel>();
                 
             default:
                 throw new IllegalArgumentException("Unknown ActionType: "  + action);

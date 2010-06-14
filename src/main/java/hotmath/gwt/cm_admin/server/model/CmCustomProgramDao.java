@@ -246,6 +246,10 @@ public class CmCustomProgramDao {
             
             return new CustomProgramModel(name, newProgId, 0, 0,false);
         }
+        catch(Exception e) {
+            e.printStackTrace();
+            throw e;
+        }
         finally {
             SqlUtilities.releaseResources(null,stmt, null);
         }
