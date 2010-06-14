@@ -116,13 +116,13 @@ public class ActionDispatcher {
                 }
             }
         }
-    
+        /*
         if(response == null) {
         	// TODO: will this code actually be visited?
             monitorCountActionsFailed++;
             throw new CmRpcException(String.format("ACTION FAILURE, NULL response after %d attempts, action: %s", maxRetries, action));
         }
-        
+        */
         return response;
     }    
 
