@@ -127,11 +127,11 @@ public class LogMonitor {
             }
         }
     }
-    
+    int recordsWritten=0;
     private void writeDatabaseRecord(String type, String timeStamp, String actionName, String args, int elapseTime)  {
         Connection conn=null;
         PreparedStatement ps=null;
-        System.out.println("Writing db record: " + actionName);
+        System.out.println("cm_log record=" + (++recordsWritten) + "," + actionName);
         
         try {
             String sql = "insert into HA_ACTION_LOG(type, time_stamp, action_name, action_args, elapse_time)values(?,?,?,?,?)";
@@ -153,6 +153,7 @@ public class LogMonitor {
             SqlUtilities.releaseResources(null, ps,conn);
         }
     }
+
 
     private ActionInfo getActionInfo(String name) {
         ActionInfo ai = actions.get(name);
