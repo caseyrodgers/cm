@@ -146,9 +146,13 @@ public class ActionDispatcher {
             } else {
                 logger.debug("RPC Action: DB Connection NOT requested");
             }
+            
+            monitorCountActionsExecuted++;
 
 
             T response = (T) actionHandler.execute(conn, action);
+
+            monitorCountActionsCompleted++;
 
             return response;
         } catch (CmRpcException cre) {
@@ -160,8 +164,13 @@ public class ActionDispatcher {
         } finally {
             if (conn != null)
                 SqlUtilities.releaseResources(null, null, conn);
+
+            long now = System.currentTimeMillis();
+            long executeTimeMills = (now - timeStart);
             logger.info("RPC Action " + clazzName + " toString: " + action.toString() + " complete: elapsed time: "
                     + (System.currentTimeMillis() - timeStart) / 1000);
+                    
+            monitorTotalProcessingTime += executeTimeMills;                    
         }
     }
 
