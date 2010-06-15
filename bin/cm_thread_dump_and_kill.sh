@@ -6,7 +6,7 @@ sleep 3;
 
 export CATALINA_HOME=~hotmath/tomcat2
 
-. ${CATALINA_HOME}/bin/setenv.sh
+#. ${CATALINA_HOME}/bin/setenv.sh
 
 echo CATALINA_HOME: ${CATALINA_HOME}
 
@@ -27,8 +27,7 @@ else
     echo ${CATALINA_HOME}/logs/catalina.out does not exist
 fi
 
-tc2_pid=`cat ${CATALINA_PID}`
-rm ${CATALINA_PID}
+tc2_pid=`ps -eaf | grep tomcat2 | grep -v grep | grep Bootstrap | awk '{print $2}'`
 
 echo "killing (SIGKILL) Catalina PID: $tc2_pid"
 
