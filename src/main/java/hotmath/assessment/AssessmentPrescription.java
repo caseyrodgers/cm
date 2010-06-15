@@ -42,6 +42,7 @@ public class AssessmentPrescription {
     final static public int MAX_SESSIONS = 100;
 
     InmhAssessment _assessment;
+    
     public InmhAssessment get_assessment() {
 		return _assessment;
 	}
@@ -159,7 +160,7 @@ public class AssessmentPrescription {
                  */
                 for(RppWidget rpp: rppWidgets) {
                     if(rpp.getPid() == null) {
-                        sessionItems.add(new SessionData(id.getInmhItem(), rpp.getFile(), (int) numPids2get, id.getWeight()));
+                        sessionItems.add(new SessionData(id.getInmhItem(), rpp.getFile(), (int) numPids2get, id.getWeight(),rpp.getWidgetJsonArgs()));
                     }
                 }
             }
@@ -437,6 +438,27 @@ public class AssessmentPrescription {
         String pid;
         INeedMoreHelpItem item;
         int numPids, weight;
+        String widgetArgs;
+
+
+        public SessionData(INeedMoreHelpItem item, String pid, int numPids,int weight) {
+            this.item = item;
+            this.pid = pid;
+            this.numPids = numPids;
+            this.weight = weight;
+        }
+        
+        public SessionData(INeedMoreHelpItem item, String pid, int numPids,int weight,String widgetArgs) {
+            this(item, pid, numPids, weight);
+            this.widgetArgs = widgetArgs;
+        }
+        public String getWidgetArgs() {
+            return widgetArgs;
+        }
+
+        public void setWidgetArgs(String widgetArgs) {
+            this.widgetArgs = widgetArgs;
+        }
 
         public int getNumPids() {
             return numPids;
@@ -453,15 +475,7 @@ public class AssessmentPrescription {
         public void setWeight(int weight) {
             this.weight = weight;
         }
-
-        public SessionData(INeedMoreHelpItem item, String pid, int numPids,
-                int weight) {
-            this.item = item;
-            this.pid = pid;
-            this.numPids = numPids;
-            this.weight = weight;
-        }
-
+        
         public String getPid() {
             return pid;
         }

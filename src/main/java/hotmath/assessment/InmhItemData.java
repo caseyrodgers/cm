@@ -123,7 +123,7 @@ public class InmhItemData {
                 if (range == null || range.length() == 0)
                     continue;
 
-                if (range.startsWith("[")) {
+                if (range.startsWith("{")) {
                     /** is widget */
                     widgets.add(new RppWidget(range));
                 } else {

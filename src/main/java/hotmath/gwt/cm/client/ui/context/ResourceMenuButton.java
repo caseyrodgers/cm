@@ -39,7 +39,6 @@ class ResourceMenuButton extends Button {
         addStyleName("resource-button");
         setWidth(185);
         
-        
         if(resource.getItems().size() == 0) {
            setEnabled(false);
         }

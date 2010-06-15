@@ -1,23 +1,67 @@
 package hotmath.assessment;
 
 import hotmath.ProblemID;
+import hotmath.gwt.shared.client.util.CmException;
+
+import java.io.StringReader;
+
+import com.sdicons.json.model.JSONObject;
+import com.sdicons.json.model.JSONString;
+import com.sdicons.json.model.JSONValue;
+import com.sdicons.json.parser.JSONParser;
 
 
+/** Can either be a Tutor or a Flash Widget
+ * 
+ * TODO: move to separate implementions.
+ * 
+ * @author casey
+ *
+ */
 public class RppWidget {
 
+    public String getWidgetJsonArgs() {
+        return widgetJsonArgs;
+    }
+
+    public void setWidgetJsonArgs(String widgetJsonArgs) {
+        this.widgetJsonArgs = widgetJsonArgs;
+    }
+
     String file;
+    String widgetJsonArgs;
     String title;
     ProblemID pid;
 
     /**
      * form of [PATH_TO_WIDGET|TITLE_OF_WIDGET]
      * 
+     * Is a JSON block that describes this RPP.
+     * 
+     * The jsonRecord will be passed to the widget
+     * to allow it be configured by the author.
+     * 
+     *  
+     * Must have a file
      * @param def
      */
-    public RppWidget(String def) {
-        String p[] = def.substring(1, def.length() - 1).split("\\|");
-        file = p[0];
-        title = p[1];
+    public RppWidget(String jsonRecord) throws Exception {
+        try {
+            JSONParser parser = new JSONParser(new StringReader(jsonRecord));
+            final JSONValue value = parser.nextValue();
+            
+            if(value.isComplex()) {
+                JSONObject complex = (JSONObject)value;
+                file = ((JSONString)complex.get("widget")).getValue();
+                widgetJsonArgs = jsonRecord;
+            }
+        }
+        catch(Exception e) {
+            e.printStackTrace();
+        }
+        
+        if(file == null)
+            throw new CmException("JSON string did not contain a 'widget' element");
     }
 
     public RppWidget(ProblemID pid) {

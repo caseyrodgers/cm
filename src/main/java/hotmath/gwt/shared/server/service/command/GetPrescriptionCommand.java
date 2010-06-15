@@ -88,14 +88,21 @@ public class GetPrescriptionCommand implements ActionHandler<GetPrescriptionActi
             List<AssessmentPrescription.SessionData> practiceProblems = sess.getSessionDataFor(sess.getTopic());
             PrescriptionSessionDataResource problemsResource = new PrescriptionSessionDataResource();
             problemsResource.setType("practice");
-            problemsResource.setLabel("Required Practice Problems");
+            
+            
+            /** label either as Problems or Activities */
+            boolean isActivity=practiceProblems.get(0).getWidgetArgs()!=null;
+            String title = "Required Practice " + (isActivity?"Activities":"Problems");
+            problemsResource.setLabel(title);
             int cnt = 1;
             for (AssessmentPrescription.SessionData sdata : practiceProblems) {
                 InmhItemData id = new InmhItemData();
-                id.setTitle("Problem " + cnt++);
+                String type = isActivity?"Activity ":"Problem ";
+                id.setTitle(type + cnt++);
                 id.setFile(sdata.getPid());
                 id.setType("practice");
-
+                id.setWidgetJsonArgs(sdata.getWidgetArgs());
+                
                 problemsResource.getItems().add(id);
             }
 
@@ -225,7 +232,7 @@ public class GetPrescriptionCommand implements ActionHandler<GetPrescriptionActi
                 { "Lesson", "review", "Review lesson on the current topic" },
                 { "Video", "video", "Math videos related to the current topic" },
                 { "Activities", "activity", "Math activities and games related to the current topic" },                
-                { "Required Practice Problems", "practice", "Practice problems you must complete before advancing" },
+                { null, "practice", "Practice problems you must complete before advancing" },
                 { "Extra Practice Problems", "cmextra", "Additional workbook problems" },
                 { "Quiz Results", "results", "The current quiz's results" },
         };
@@ -238,7 +245,8 @@ public class GetPrescriptionCommand implements ActionHandler<GetPrescriptionActi
             for (PrescriptionSessionDataResource r : inmhTypes) {
                 if (r.getType().equals(type[1])) {
                     // exists, so add it
-                    r.setLabel(type[0]);
+                    if(type[0]!=null)
+                        r.setLabel(type[0]);
                     r.setDescription(type[2]);
                     newTypes.add(r);
                     found = true;

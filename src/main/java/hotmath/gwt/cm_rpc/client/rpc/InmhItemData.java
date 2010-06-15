@@ -7,16 +7,33 @@ public class InmhItemData implements IsSerializable{
 	String type;
 	String title;
 	String file;
-	boolean viewed;
+	String widgetJsonArgs;
+
+    
+	public InmhItemData(String type, String file, String title) {
+	    this(type,file,title,null);
+	}
+    public InmhItemData(String type, String file, String title,String widgetJsonArgs) {
+        this.type = type;
+        this.file = file;
+        this.title = title;
+        this.widgetJsonArgs = widgetJsonArgs;
+    }
+    
+    
+	public String getWidgetJsonArgs() {
+        return widgetJsonArgs;
+    }
+
+    public void setWidgetJsonArgs(String widgetJsonArgs) {
+        this.widgetJsonArgs = widgetJsonArgs;
+    }
+
+    boolean viewed;
 	
 	public InmhItemData() {
 	}
-	
-	public InmhItemData(String type, String file, String title) {
-	    this.type = type;
-	    this.file = file;
-	    this.title = title;
-	}
+
 	public boolean isViewed() {
         return viewed;
     }
