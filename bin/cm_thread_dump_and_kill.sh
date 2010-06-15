@@ -27,6 +27,9 @@ else
     echo ${CATALINA_HOME}/logs/catalina.out does not exist
 fi
 
-echo "killing (SIGKILL) Catalina PID: `cat ${CATALINA_PID}`"
+tc2_pid=`cat ${CATALINA_PID}`
+rm ${CATALINA_PID}
 
-kill -9 `cat $CATALINA_PID`
+echo "killing (SIGKILL) Catalina PID: $tc2_pid"
+
+kill -9 $tc2_pid
