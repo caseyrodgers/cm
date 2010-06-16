@@ -1,6 +1,10 @@
 #!/bin/bash
 
-./cm_thread_dump.sh
+tc2_pid=$1;
+
+d=`/usr/bin/dirname $0`
+
+$d/cm_thread_dump.sh $tc2_pid
 
 sleep 3;
 
@@ -27,8 +31,15 @@ else
     echo ${CATALINA_HOME}/logs/catalina.out does not exist
 fi
 
-tc2_pid=`ps -eaf | grep tomcat2 | grep -v grep | grep Bootstrap | awk '{print $2}'`
+if [ -z $tc2_pid ]; then
+    tc2_pid=`/usr/bin/ps -eaf | /usr/bin/grep tomcat2 | /usr/bin/grep -v grep | /usr/bin/grep Bootstrap | /usr/bin/awk '{print $2}'`
+
+    if [ -z $tc2_pid ]; then
+        echo "cant determine CM's Tomcat instance PID, exiting..."
+        exit 1;
+    fi
+fi
 
 echo "killing (SIGKILL) Catalina PID: $tc2_pid"
 
-kill -9 $tc2_pid
+/bin/kill -9 $tc2_pid
