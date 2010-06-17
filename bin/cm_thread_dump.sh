@@ -1,17 +1,10 @@
 #!/bin/bash
-#export CATALINA_HOME=~hotmath/tomcat2
-
-#. $CATALINA_HOME/bin/setenv.sh
 
 tc2_pid=$1;
 
 if [ -z $tc2_pid ]; then
-    tc2_pid=`/usr/bin/ps -eaf | grep tomcat2 | /usr/bin/grep -v grep | /usr/bin/grep Bootstrap | /usr/bin/awk '{print $2}'`
-
-    if [ -z $tc2_pid ]; then
-        echo "can't determine CM's tomcat instance PID, exiting..."
-        exit 1;
-    fi
+    echo "PID must be supplied: $0 <PID>, exiting..."
+    exit 1;
 fi
 
 echo taking first thread dump... $tc2_pid
