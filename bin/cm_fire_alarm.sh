@@ -14,8 +14,12 @@ ps_out_base=~hotmath/cm-logs/fire_alarm_$pid.out.`date +%c-%m-%d | awk '{print $
 
 echo "= = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =" >> $ps_out_base;
 echo `date` >> $ps_out_base;
-echo " " >> $ps_out_base;
+echo  >> $ps_out_base;
 ps -eaf | sort >> $ps_out_base;
+echo  >> $ps_out_base;
+echo "= = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =" >> $ps_out_base;
+top -b -n 1 >> $ps_out_base;
+echo  >> $ps_out_base;
 
 tc2_pid=$1;
 
