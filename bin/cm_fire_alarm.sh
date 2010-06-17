@@ -8,8 +8,6 @@
 
 pid=$$;
 
-e=1;
-
 ps_out_base=~hotmath/cm-logs/fire_alarm_$pid.out.`date +%c-%m-%d | awk '{print $5}'`
 
 echo "= = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =" >> $ps_out_base;
@@ -30,6 +28,8 @@ else
     d=`/usr/bin/dirname $0`
     $d/cm_thread_dump.sh $tc2_pid
 fi
+
+e=0;
 
 while [ true ]; do
     sleep 30;
