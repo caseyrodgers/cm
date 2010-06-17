@@ -24,9 +24,8 @@ echo  >> $ps_out_base;
 tc2_pid=$1;
 
 if [ -z $tc2_pid ]; then
-    echo  
     echo "PID must be supplied: $0 <PID>, to obtain thread dump" >> $ps_out_base
-    echo  
+    echo  >> $ps_out_base
 else
     d=`/usr/bin/dirname $0`
     $d/cm_thread_dump.sh $tc2_pid
