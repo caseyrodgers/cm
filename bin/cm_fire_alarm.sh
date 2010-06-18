@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# this script records the outout of 'ps' and 'top' commands in ~hotmath/cm-logs/
+# this script records the output of 'ps' and 'top' commands in ~hotmath/cm-logs/
 # in file_alarm_PID.out.YYYY-MM-DD* files, where PID is the PID of this script.
 # 
 # if a PID (tc2_pid) is supplied on the command line, then the cm_thread_dump.sh script is invoked with that PID.
