@@ -5,10 +5,12 @@
 # 
 # if a PID (tc2_pid) is supplied on the command line, then the cm_thread_dump.sh script is invoked with that PID.
 #
+# if a PID is not supplied, then it is obtained from ~hotmath/cm.pid if available
+#
 
-pid=$$;
+my_pid=$$;
 
-ps_out_base=~hotmath/cm-logs/fire_alarm_$pid.out.`date +%c-%m-%d | awk '{print $5}'`
+ps_out_base=~hotmath/cm-logs/fire_alarm_$my_pid.out.`date +%c-%m-%d | awk '{print $5}'`
 
 echo "= = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =" >> $ps_out_base;
 echo `date` >> $ps_out_base;
@@ -22,8 +24,15 @@ echo  >> $ps_out_base;
 tc2_pid=$1;
 
 if [ -z $tc2_pid ]; then
-    echo "PID must be supplied: $0 <PID>, to obtain thread dump" >> $ps_out_base
-    echo  >> $ps_out_base
+    # attempt to obtain PID
+    tc2_pid=`cat ~hotmath/cm.pid`
+    if [ -z $tc2_pid ]; then
+        echo PID could not be obtained from ~hotmath/cm.pid - thread dump not possible >> $ps_out_base
+        echo  >> $ps_out_base
+    else
+        d=`/usr/bin/dirname $0`
+        $d/cm_thread_dump.sh $tc2_pid 
+    fi
 else
     d=`/usr/bin/dirname $0`
     $d/cm_thread_dump.sh $tc2_pid
