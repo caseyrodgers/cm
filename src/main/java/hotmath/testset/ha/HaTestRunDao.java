@@ -1,8 +1,10 @@
 package hotmath.testset.ha;
 
 import hotmath.HotMathException;
+import hotmath.ProblemID;
 import hotmath.assessment.AssessmentPrescription;
 import hotmath.assessment.AssessmentPrescriptionSession;
+import hotmath.assessment.RppWidget;
 import hotmath.assessment.AssessmentPrescription.SessionData;
 import hotmath.cm.util.CmMultiLinePropertyReader;
 import hotmath.util.sql.SqlUtilities;
@@ -24,6 +26,9 @@ public class HaTestRunDao {
      *  to the HaTestRunLesson object.  This table is used 
      *  as a quick method of accessing the lessons assigned
      *  to a testRun without having to recreate the prescription.
+     *  
+     *  Serialize prescription information.
+     *  
      */
     public void addLessonsToTestRun(final Connection conn, HaTestRun testRun, List<AssessmentPrescriptionSession> sessions) throws Exception  {
         
@@ -54,12 +59,13 @@ public class HaTestRunDao {
                 // write out each pid lesson references
                 PreparedStatement pstat2=null;
                 try {
-                    pstat2 = conn.prepareStatement("insert into HA_TEST_RUN_LESSON_PID(pid, lid, run_id)values(?,?,?)");
+                    pstat2 = conn.prepareStatement("insert into HA_TEST_RUN_LESSON_PID(pid, lid,config,run_id)values(?,?,?,?)");
                     
                     for(SessionData sd: s.getSessionItems()) {
                         pstat2.setString(1, sd.getPid());
                         pstat2.setInt(2, lid);
-                        pstat2.setInt(3, testRun.getRunId());
+                        pstat2.setString(3, sd.getWidgetArgs());
+                        pstat2.setInt(4, testRun.getRunId());
                         
                         if( pstat2.executeUpdate() != 1)
                             throw new Exception("Could not add to HA_TEST_RUN_LESSON_PID for unknown reasons");
@@ -106,6 +112,7 @@ public class HaTestRunDao {
             while(rs.next()) {
                 String lesson = rs.getString("lesson_name");
                 String pid = rs.getString("pid");
+                String config = rs.getString("config");
                 
                 if(!lastLesson.equals(lesson)) {
                     String file = rs.getString("lesson_file");
@@ -113,7 +120,15 @@ public class HaTestRunDao {
                     lessons.add(trl);
                     lastLesson = lesson;
                 }
-                trl.getPids().add(pid);
+                
+                RppWidget rppWidget = null;
+                if(config != null && config.length() > 0) {
+                    rppWidget = new RppWidget(config);
+                }
+                else {
+                    rppWidget = new RppWidget(new ProblemID(pid));
+                }
+                trl.getPids().add(rppWidget);
             }
             
             return lessons;
@@ -401,7 +416,7 @@ public class HaTestRunDao {
     public class TestRunLesson {
         String lesson;
         String file;
-        List<String> pids = new ArrayList<String>();
+        List<RppWidget> rpps = new ArrayList<RppWidget>();
         
         public TestRunLesson(String lesson, String file) {
             this.lesson = lesson;
@@ -416,12 +431,12 @@ public class HaTestRunDao {
             this.lesson = lesson;
         }
 
-        public List<String> getPids() {
-            return pids;
+        public List<RppWidget> getPids() {
+            return rpps;
         }
 
-        public void setPids(List<String> pids) {
-            this.pids = pids;
+        public void setPids(List<RppWidget> rpps) {
+            this.rpps = rpps;
         }
 
         public String getFile() {

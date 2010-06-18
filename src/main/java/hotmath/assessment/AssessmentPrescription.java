@@ -212,14 +212,14 @@ public class AssessmentPrescription {
         int sessNum = 0;
         for(TestRunLesson lesson: lessons) {
             AssessmentPrescriptionSession session = new AssessmentPrescriptionSession(this,"Session: " + (sessNum + 1));
-            for(String pid: lesson.getPids()) {
+            for(RppWidget pid: lesson.getPids()) {
                 List<SessionData> si = session.getSessionItems();
 
                 /** @TODO: need to get item (lesson name?)
                  * 
                  */
                 INeedMoreHelpItem item= new INeedMoreHelpItem("review",lesson.getFile(),lesson.getLesson());
-                si.add(new SessionData(item, pid, 3, 1));
+                si.add(new SessionData(item, pid.getPid().getGUID(), 3, 1));
             }
             _sessions.add(session);    
             sessNum++;            

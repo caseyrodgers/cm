@@ -309,3 +309,7 @@ function getQuestionMarkText(questionIndex) {
 function log() {
 	//
 }
+
+/** define empty implementation as place holder
+ */
+InmhButtons = {};

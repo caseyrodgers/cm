@@ -13,7 +13,6 @@ import net.sf.ehcache.Ehcache;
 import net.sf.ehcache.Element;
 import net.sf.ehcache.event.CacheEventListener;
 
-import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 
 /** Manage a set of caches 
@@ -89,6 +88,24 @@ public class CmCacheManager  {
         }
 		logger.info("+++ started Cache Manager, cache names: " + cNames);
 		logger.info("+++ Temp directory: " + System.getProperty("java.io.tmpdir"));
+	}
+	
+	public String getCacheMemoryStatus() {
+	    String[] cnArray = CacheManager.getInstance().getCacheNames();
+        List<String> cNames = null;
+        String status="";
+        if (cnArray != null) {
+            cNames = Arrays.asList(cnArray);
+            // registered listener for each cache
+            for(String cn: cNames) {
+                Cache cache = CacheManager.getInstance().getCache(cn);
+                
+                if(status.length() > 0)
+                    status += ", ";
+                status += " cache: " + cn + ", memoryStoreSize: " + cache.getMemoryStoreSize(); 
+            }
+        }	 
+        return status;
 	}
 
 	/** Return named object from specified cache.
@@ -194,7 +211,6 @@ public class CmCacheManager  {
             return super.clone();
         }
     }
-    
 }
 	
 	

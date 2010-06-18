@@ -31,7 +31,6 @@ function doLoad_Gwt(pid, title, hasShowWork, shouldExpandSteps) {
 			swf.style.display = 'none';
 		}
 	}
-
 }
 
 var _bookMeta = {
