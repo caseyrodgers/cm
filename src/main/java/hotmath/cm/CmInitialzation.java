@@ -1,5 +1,9 @@
 package hotmath.cm;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+
 import hotmath.cm.util.CatchupMathProperties;
 import hotmath.cm.util.CmWebResourceManager;
 
@@ -18,10 +22,11 @@ import org.apache.log4j.PropertyConfigurator;
  */
 public class CmInitialzation extends HttpServlet {
 
-    /**
-     * 
-     */
     private static final long serialVersionUID = -771897979715468574L;
+
+    private static Logger logger = Logger.getLogger(CmInitialzation.class);
+    
+    private static String PID = "n/a";
 
     public void init() {
         
@@ -34,13 +39,50 @@ public class CmInitialzation extends HttpServlet {
         }
         CmWebResourceManager.setFileBase(getServletContext().getRealPath("cm_temp"));
         
-        Logger logger = Logger.getLogger(this.getClass());
+        
         try {
             logger.info("Catchup Math initialized: version=" + CatchupMathProperties.getInstance().getClientVersionNumber());
+            savePid();
         }
         catch(Exception e) {
             logger.info("Error starting Catchup Math", e);
         }
+    }
+
+    /**
+     * This method is Unix/Linux specific 
+     */
+    private void savePid() {
+        File pidFile = new File(System.getProperty("user.home"), "cm.pid");
+        logger.info("Writing PID file: " + pidFile.getAbsolutePath());
+
+        String [] cmd = { "bash", "-c", "echo $PPID" };
+        
+        byte [] bo = new byte[100];
+
+        Process p;
+		try {
+			p = Runtime.getRuntime().exec(cmd);
+	        p.getInputStream ().read (bo);
+	        logger.info("PID is: " + new String (bo));
+	        
+	        FileWriter fw = new FileWriter(pidFile);
+	        
+	        PID = new String(bo);
+	        if (PID != null) PID = PID.trim();
+	        
+	        fw.write(PID);
+	        fw.flush();
+	        fw.close();
+
+		} catch (Exception e) {
+			logger.error("Failed to save PID file", e);
+		}
+
+    }
+    
+    public static String getPid() {
+    	return PID;
     }
 
     public void doGet(HttpServletRequest req, HttpServletResponse res) {
