@@ -34,6 +34,7 @@ import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
 import com.extjs.gxt.ui.client.widget.layout.CenterLayout;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.treepanel.TreePanel;
+import com.extjs.gxt.ui.client.util.Margins;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public class ProgramDetailsPanel extends CmWindow {
@@ -45,6 +46,8 @@ public class ProgramDetailsPanel extends CmWindow {
     
     static ProgramDetailsPanel instance;
 
+    static int WIDTH = 400;
+    
     TreePanel<ProgListModel> tree;
     ProgramListing _programListing;
     LayoutContainer _mainPanel = new LayoutContainer();
@@ -64,8 +67,8 @@ public class ProgramDetailsPanel extends CmWindow {
     }
 
     private void buildGui() {
-        setHeading("View Lesson Topics Covered in Program Sections");
-        setSize(400, 400);
+        setHeading("List Lesson Topics Covered in Program Sections");
+        setSize(WIDTH, 400);
 
         setLayout(new BorderLayout());
 /*
@@ -76,19 +79,36 @@ public class ProgramDetailsPanel extends CmWindow {
                 }
             }));
         }
-*/
         getHeader().addTool(new Button("Collapse All", new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent ce) {
                 tree.collapseAll();
             }
         }));
-
+*/
+        getHeader().setStyleAttribute("height", "30px");
+        getHeader().setStyleAttribute("padding-top", "15px");
+        
         _mainPanel = new LayoutContainer();
         _mainPanel.setLayout(new CenterLayout());
         _mainPanel.add(new Label("Loading Program Information.."));
 
-        add(_mainPanel, new BorderLayoutData(LayoutRegion.CENTER));
+        BorderLayoutData bld = new BorderLayoutData(LayoutRegion.CENTER);
+        Margins m = bld.getMargins();
+        m.top += 10;
+        add(_mainPanel, bld);
 
+        Button btn = new Button("Collapse All", new SelectionListener<ButtonEvent>() {
+            public void componentSelected(ButtonEvent ce) {
+                tree.collapseAll();
+            }
+        });
+        btn.setStyleAttribute("position", "absolute");
+        String posn = String.valueOf(WIDTH - 105) + "px";
+        btn.setStyleAttribute("right", posn);
+        btn.setStyleAttribute("margin-right", "0px");
+        btn.setStyleAttribute("top", "2px");
+        addButton(btn);
+        
         addCloseButton();
 
         setModal(true);
