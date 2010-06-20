@@ -127,11 +127,13 @@ public class InmhItemData {
                     /** is widget */
                     widgets.add(new RppWidget(range));
                 } else {
+                    /** is a solution PID */
                     List<String> related = findSolutionsMatchingRange(range);
                     for (String s : related) {
-                        RppWidget widget = new RppWidget(new ProblemID(s));
+                        RppWidget widget = new RppWidget();
+                        widget.setFile(s);
                         if (!widgets.contains(widget)) {
-                            if (SolutionManager.getInstance().doesSolutionExist(conn, widget.getPid().getGUID())) {
+                            if (SolutionManager.getInstance().doesSolutionExist(conn, widget.getFile())) {
                                 widgets.add(widget);
                             } else {
                                 logger.debug("Inmh: GUID does not exist: " + s);

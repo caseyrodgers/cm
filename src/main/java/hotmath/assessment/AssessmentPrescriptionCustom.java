@@ -41,7 +41,7 @@ public class AssessmentPrescriptionCustom extends AssessmentPrescription {
             
             AssessmentPrescriptionSession session = new AssessmentPrescriptionSession(this,"Session: " + (sessNum + 1));
             for(RppWidget widget: workBookPids) {
-                ProblemID pid = widget.getPid();
+                ProblemID pid = new ProblemID(widget.getFile());
                 // subject filter solutions
                 int gradeLevel = pid.getGradeLevel();
                 if (gradeLevel > getGradeLevel()) {

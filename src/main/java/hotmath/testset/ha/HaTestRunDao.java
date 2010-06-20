@@ -126,7 +126,8 @@ public class HaTestRunDao {
                     rppWidget = new RppWidget(config);
                 }
                 else {
-                    rppWidget = new RppWidget(new ProblemID(pid));
+                    rppWidget = new RppWidget();
+                    rppWidget.setFile(pid);
                 }
                 trl.getPids().add(rppWidget);
             }

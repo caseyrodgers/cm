@@ -1,9 +1,10 @@
 package hotmath.assessment;
 
-import hotmath.ProblemID;
 import hotmath.gwt.shared.client.util.CmException;
 
 import java.io.StringReader;
+
+import org.apache.log4j.Logger;
 
 import com.sdicons.json.model.JSONObject;
 import com.sdicons.json.model.JSONString;
@@ -11,28 +12,24 @@ import com.sdicons.json.model.JSONValue;
 import com.sdicons.json.parser.JSONParser;
 
 
-/** Can either be a Tutor or a Flash Widget
- * 
- * TODO: move to separate implementions.
+/** Can either be a Tutor solution or a Flash Widget
  * 
  * @author casey
  *
  */
 public class RppWidget {
+    
+    static Logger __logger = Logger.getLogger(RppWidget.class);
+    
 
-    public String getWidgetJsonArgs() {
-        return widgetJsonArgs;
-    }
-
-    public void setWidgetJsonArgs(String widgetJsonArgs) {
-        this.widgetJsonArgs = widgetJsonArgs;
-    }
-
-    String file;
+    String widetKey;
     String widgetJsonArgs;
     String title;
-    ProblemID pid;
 
+    public RppWidget() {
+        /* empty */
+    }
+    
     /**
      * form of [PATH_TO_WIDGET|TITLE_OF_WIDGET]
      * 
@@ -46,42 +43,35 @@ public class RppWidget {
      * @param def
      */
     public RppWidget(String jsonRecord) throws Exception {
-        try {
-            JSONParser parser = new JSONParser(new StringReader(jsonRecord));
-            final JSONValue value = parser.nextValue();
-            
-            if(value.isComplex()) {
-                JSONObject complex = (JSONObject)value;
-                file = ((JSONString)complex.get("widget")).getValue();
-                widgetJsonArgs = jsonRecord;
-            }
+        setJsonRecord(jsonRecord);
+    }
+    
+    public void setJsonRecord(String jsonRecord) throws Exception {
+        JSONParser parser = new JSONParser(new StringReader(jsonRecord));
+        final JSONValue value = parser.nextValue();
+        if(value.isComplex()) {
+            JSONObject complex = (JSONObject)value;
+            widetKey = ((JSONString)complex.get("widget")).getValue();
+            widgetJsonArgs = jsonRecord;
         }
-        catch(Exception e) {
-            e.printStackTrace();
-        }
-        
-        if(file == null)
+        if(widetKey == null)
             throw new CmException("JSON string did not contain a 'widget' element");
     }
-
-    public RppWidget(ProblemID pid) {
-        this.pid = pid;
+    
+    public String getWidgetJsonArgs() {
+        return widgetJsonArgs;
     }
 
-    public ProblemID getPid() {
-        return pid;
-    }
-
-    public void setPid(ProblemID pid) {
-        this.pid = pid;
+    public void setWidgetJsonArgs(String widgetJsonArgs) {
+        this.widgetJsonArgs = widgetJsonArgs;
     }
 
     public String getFile() {
-        return file;
+        return widetKey;
     }
 
     public void setFile(String file) {
-        this.file = file;
+        this.widetKey = file;
     }
 
     public String getTitle() {
@@ -93,24 +83,19 @@ public class RppWidget {
     }
     
     public boolean isSolution() {
-        return this.pid != null;
+        return this.widgetJsonArgs == null;
     }
     
     @Override
     public String toString() {
-        return String.format("pid=%s,file=%s",pid,file);
+        return String.format("widgetKey=%s,widgetJsonArgs=%s",widetKey,widgetJsonArgs);
     }
     
     @Override
     public boolean equals(Object obj) {
         if(obj instanceof RppWidget) {
-            RppWidget w = (RppWidget)obj;
-            if(this.isSolution() && w.isSolution()) {
-                return this.getPid().equals(w.getPid());
-            }
-            else {
-                return this.getFile().equals(w.getFile());
-            }
+           RppWidget w = (RppWidget)obj;
+           return this.getFile().equals(w.getFile());
         }
         else {
             return super.equals(obj);

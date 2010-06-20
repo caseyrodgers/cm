@@ -144,12 +144,12 @@ public class AssessmentPrescription {
             AssessmentPrescriptionSession session = new AssessmentPrescriptionSession(this,"Session: " + (sessNum + 1));            
             List<SessionData> sessionItems = session.getSessionItems();
             
-            /** if any widgets are not pids, then only show the widgets
+            /** if any widgets are not then, then only show the Flash widgets
              * 
              */
             boolean hasNonPid=false;
             for(RppWidget rpp: rppWidgets) {
-                if(rpp.getPid() == null) {
+                if(!rpp.isSolution()) {
                     hasNonPid=true;
                     break;
                 }
@@ -159,7 +159,7 @@ public class AssessmentPrescription {
                  * 
                  */
                 for(RppWidget rpp: rppWidgets) {
-                    if(rpp.getPid() == null) {
+                    if(!rpp.isSolution()) {
                         sessionItems.add(new SessionData(id.getInmhItem(), rpp.getFile(), (int) numPids2get, id.getWeight(),rpp.getWidgetJsonArgs()));
                     }
                 }
@@ -170,8 +170,7 @@ public class AssessmentPrescription {
                  */
                 for(RppWidget rpp: rppWidgets) {
     
-                    ProblemID pid = rpp.getPid();
-                    
+                    ProblemID pid = new ProblemID(rpp.getFile());
                     // subject filter solutions
                     int gradeLevel = pid.getGradeLevel();
                     if (gradeLevel > getGradeLevel()) {
@@ -219,8 +218,7 @@ public class AssessmentPrescription {
                  * 
                  */
                 INeedMoreHelpItem item= new INeedMoreHelpItem("review",lesson.getFile(),lesson.getLesson());
-                String pidGuid = (pid.getPid()!=null?pid.getPid().getGUID():null);
-                si.add(new SessionData(item,pidGuid , 3, 1,pid.getWidgetJsonArgs()));
+                si.add(new SessionData(item,pid.getFile(), 3, 1,pid.getWidgetJsonArgs()));
             }
             _sessions.add(session);    
             sessNum++;            

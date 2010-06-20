@@ -26,7 +26,7 @@ public class InmhItemData_Test extends CmDbTestCase {
     private boolean hasDuplicates(List<RppWidget> rpps) {
         List<String> list = new ArrayList<String>();
         for(RppWidget r: rpps) {
-            String pid = r.getPid().getGUID();
+            String pid = r.getFile();
             if(list.contains(pid))
                 return true;
             list.add(pid);

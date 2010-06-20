@@ -72,7 +72,6 @@ public class CmMainResourceContainer extends LayoutContainer {
             removeAll();
             
             ResourceViewerFactory.ResourceViewerFactory_Client client = new ResourceViewerFactory.ResourceViewerFactory_Client() {
-				
 				@Override
 				public void onUnavailable() {
 					CatchupMathTools.showAlert("Resource not available");
