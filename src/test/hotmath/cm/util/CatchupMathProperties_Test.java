@@ -7,6 +7,8 @@ public class CatchupMathProperties_Test extends TestCase {
     public CatchupMathProperties_Test(String name) {
         super(name);
     }
+
+
     
     public void testReadProp() throws Exception {
         String noValue = CatchupMathProperties.getInstance().getProperty("client.version");

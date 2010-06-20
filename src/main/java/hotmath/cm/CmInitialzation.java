@@ -35,11 +35,9 @@ public class CmInitialzation extends HttpServlet {
         // if the log4j-init-file is not set, then no point in trying
         if (file != null) {
             PropertyConfigurator.configure(prefix + file);
-            Logger.getLogger(this.getClass()) .info("Catchup Math Log4J intialized");
+            logger.info("Catchup Math Log4J intialized");
         }
         CmWebResourceManager.setFileBase(getServletContext().getRealPath("cm_temp"));
-        
-        
         try {
             logger.info("Catchup Math initialized: version=" + CatchupMathProperties.getInstance().getClientVersionNumber());
             savePid();

@@ -313,3 +313,4 @@ function log() {
 /** define empty implementation as place holder
  */
 InmhButtons = {};
+

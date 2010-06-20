@@ -2,14 +2,15 @@ package hotmath.gwt.cm_mobile.client;
 
 import hotmath.gwt.cm_rpc.client.rpc.GetReviewHtmlAction;
 import hotmath.gwt.cm_rpc.client.rpc.InmhItemData;
-import hotmath.gwt.cm_rpc.client.rpc.RpcData;
+import hotmath.gwt.cm_rpc.client.rpc.LessonResult;
+import hotmath.gwt.cm_tools.client.model.StringHolder;
 
+import com.extjs.gxt.ui.client.widget.Html;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -29,13 +30,12 @@ public class CmResourceViewerImplLesson extends Composite implements CmMobileRes
     
     @Override
     public Widget getViewer(InmhItemData item) {
-        GetReviewHtmlAction action = new GetReviewHtmlAction("/hotmath_help/" + item.getFile(), "/hotmath_help/topics");
+        GetReviewHtmlAction action = new GetReviewHtmlAction(item.getFile());
         
-        CatchupMathMobile.getCmService().execute(action, new AsyncCallback<RpcData>() {
+        CatchupMathMobile.getCmService().execute(action, new AsyncCallback<LessonResult>() {
             @Override
-            public void onSuccess(RpcData result) {
-                HTML html = new HTML(result.getDataAsString("html"));
-                mainPanel.add(html);
+            public void onSuccess(LessonResult result) {
+                mainPanel.add(new Html(result.getLesson()));
             }
 
             @Override

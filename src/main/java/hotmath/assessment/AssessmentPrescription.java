@@ -219,7 +219,8 @@ public class AssessmentPrescription {
                  * 
                  */
                 INeedMoreHelpItem item= new INeedMoreHelpItem("review",lesson.getFile(),lesson.getLesson());
-                si.add(new SessionData(item, pid.getPid().getGUID(), 3, 1));
+                String pidGuid = (pid.getPid()!=null?pid.getPid().getGUID():null);
+                si.add(new SessionData(item,pidGuid , 3, 1,pid.getWidgetJsonArgs()));
             }
             _sessions.add(session);    
             sessNum++;            
