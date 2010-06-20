@@ -17,7 +17,7 @@ import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.Html;
-import com.extjs.gxt.ui.client.widget.button.ToggleButton;
+import com.extjs.gxt.ui.client.widget.button.Button;
 import com.google.gwt.user.client.ui.Widget;
 
 public class ResourceViewerImplReview extends CmResourcePanelImplDefault {
@@ -26,7 +26,8 @@ public class ResourceViewerImplReview extends CmResourcePanelImplDefault {
     
     static final String STYLE_NAME = "resource-viewer-impl-review";
     
-    static ToggleButton spanishButton = new ToggleButton("Spanish");
+    static boolean __isSpanish;
+    static Button __spanishButton = new Button("Spanish");
 
     boolean itemHasSpanish;
     
@@ -55,17 +56,24 @@ public class ResourceViewerImplReview extends CmResourcePanelImplDefault {
             @Override
             public void attempt() {
                 GetReviewHtmlAction action = new GetReviewHtmlAction(file);
-                if(spanishButton.isPressed())
+                if(__isSpanish)
                     action.setSpanish(true);
                 setAction(action);
                 CmShared.getCmService().execute(action,this);
             }
             public void oncapture(LessonResult result) {
-                spanishButton.setEnabled(result.isHasSpanish());
                 _mainHtmlPanel.setHtml(result.getLesson());
                 if(result.getWarning() != null) {
                     CatchupMathTools.showAlert("Lesson Information", result.getWarning());
                 }
+
+                /** if in Engine mode, and lesson does not have a spanish version 
+                 *  disable button
+                 */
+                if(!__isSpanish && !result.isHasSpanish())
+                    __spanishButton.setEnabled(false);
+                else 
+                    __spanishButton.setEnabled(true);
             }
         }.register();
     }
@@ -73,14 +81,19 @@ public class ResourceViewerImplReview extends CmResourcePanelImplDefault {
     @Override
     public List<Component> getContainerTools() {
         List<Component> tools = new ArrayList<Component>();
-        spanishButton.removeAllListeners();
-        spanishButton.addSelectionListener(new SelectionListener<ButtonEvent>() {
+        __spanishButton.removeAllListeners();
+        __spanishButton.addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent ce) {
+                __isSpanish = __spanishButton.getText().equals("Spanish"); 
+                if(__isSpanish)
+                    __spanishButton.setText("English");
+                else
+                    __spanishButton.setText("Spanish");
                 getLessonData();
             }
         });
-        tools.add(spanishButton);
+        tools.add(__spanishButton);
         return tools;
     }
     

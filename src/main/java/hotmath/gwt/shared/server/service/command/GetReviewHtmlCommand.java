@@ -25,34 +25,52 @@ public class GetReviewHtmlCommand implements ActionHandler<GetReviewHtmlAction, 
     public LessonResult execute(Connection conn, GetReviewHtmlAction action) throws Exception {
         String filePath = HotMathProperties.getInstance().getHotMathWebBase();
 
-        /**
-         * If Spanish version requested, make sure it exists .. If not give an
-         * appropriate message.
-         * 
-         * Also, check to see if spanish version is available for this lesson
+        /** Always check to see if there is a Spanish version of this file.
+         *  The GUI can use this to determine which controls to enable.
          * 
          */
         LessonResult result = new LessonResult();
-        if (action.isSpanish()) {
-            if (!new File(filePath, action.getFile()).exists()) {
-                result.setWarning("Spanish version of this lesson does not exist.");
-                action.setSpanish(false);
-            }
-        }
-        else {
-            /** check to see if a Spanish version is available for this text
-             * 
-             */
-            action.setSpanish(true);
-            result.setHasSpanish(new File(filePath, action.getFile()).exists());
+        result.setHasSpanish(checkIfSpanishAvailable(filePath, action.getFile()));
+        
+        /** Read the appropriate file and return HTML.
+         * 
+         * If Spanish is requested, then return English and a warning message
+         * 
+         */
+        if(action.isSpanish() && !result.isHasSpanish()) {
+            result.setWarning("Spanish version of this lesson not available");
             action.setSpanish(false);
         }
-        String html = new SbFile(filePath + "/" + action.getFile()).getFileContents().toString("\n");
+        String html = new SbFile(filePath + "/" + getFile(action.getFile(),action.isSpanish())).getFileContents().toString("\n");
+        
         HmContentExtractor ext = new HmContentExtractor();
-        String htmlCooked = ext.extractContent(html, action.getBaseDirectory());
+        String htmlCooked = ext.extractContent(html, getBaseDirectory(action.isSpanish()));
 
         result.setLesson(htmlCooked);
         return result;
+    }
+    
+    private String getFile(String file, boolean isSpanish) {
+        return "/hotmath_help/" +
+        (isSpanish?"spanish/":"") +
+        "/" + file;
+    }
+    
+    private String getBaseDirectory(boolean isSpanish) {
+        return "/hotmath_help/" +
+               (isSpanish?"spanish/":"") +
+               "/topics";
+    }
+    
+    /** return true if a spanish version of this file exists
+     * 
+     * @param file
+     * @return
+     * @throws Exception
+     */
+    private boolean checkIfSpanishAvailable(String filePath, String file) throws Exception {
+        File f = new File(filePath,getFile(file,true));
+        return f.exists();
     }
 
     @Override

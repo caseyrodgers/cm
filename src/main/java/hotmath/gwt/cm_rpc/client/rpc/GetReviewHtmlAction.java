@@ -14,27 +14,12 @@ public class GetReviewHtmlAction implements Action<LessonResult>{
         this.file = file;
     }
 
-    /** Return the base directory to use for lookup
-     *  
-     *  If spanish, return specific spanish directory
-     *  
-     * @return
-     */
-    public String getBaseDirectory() {
-        return "/hotmath_help/" +
-               (isSpanish?"spanish/":"") +
-               "/topics";
-    }
-    
-
-    /** Return absolute path to file either spanish or english ,
+    /** Return absolute path to file either Spanish or English ,
      *  
      * @return
      */
     public String getFile() {
-        return "/hotmath_help/" +
-        (isSpanish?"spanish/":"") +
-        "/" + file;
+        return file;
     }
 
     public void setFile(String file) {

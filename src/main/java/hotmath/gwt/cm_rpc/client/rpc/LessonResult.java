@@ -1,7 +1,6 @@
 package hotmath.gwt.cm_rpc.client.rpc;
 
 public class LessonResult implements Response {
-    
     String lesson;
     String warning;
     boolean hasSpanish;

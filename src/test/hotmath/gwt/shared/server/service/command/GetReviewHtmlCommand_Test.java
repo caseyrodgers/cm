@@ -7,7 +7,7 @@ import hotmath.gwt.cm_rpc.server.rpc.ActionDispatcher;
 
 public class GetReviewHtmlCommand_Test extends CmDbTestCase {
 
-    static String TEST_FILE = "hotmath_help/topics/angles.html";
+    static String TEST_FILE = "topics/angles.html";
 
     public GetReviewHtmlCommand_Test(String name) {
         super(name);
@@ -15,8 +15,9 @@ public class GetReviewHtmlCommand_Test extends CmDbTestCase {
 
     public void testGetReviewHtmlCommand() throws Exception {
         GetReviewHtmlAction action = new GetReviewHtmlAction(TEST_FILE);
-        LessonResult rdata = ActionDispatcher.getInstance().execute(action);
-        assertNotNull(rdata.getLesson());
+        LessonResult lesson = ActionDispatcher.getInstance().execute(action);
+        assertNotNull(lesson.getLesson());
+        assertTrue(lesson.isHasSpanish());
     }
 
     public void testGetReviewHtmlCommandSpanish() throws Exception {
@@ -24,6 +25,7 @@ public class GetReviewHtmlCommand_Test extends CmDbTestCase {
         action.setSpanish(true);
         LessonResult st = new GetReviewHtmlCommand().execute(conn, action);
         assertNotNull(st.getLesson());
+        assertTrue(st.getLesson().indexOf("ngulos") > -1);
     }
 
 }
