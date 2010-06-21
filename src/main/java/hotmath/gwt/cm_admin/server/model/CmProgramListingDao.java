@@ -10,7 +10,6 @@ import hotmath.gwt.cm_rpc.client.model.program_listing.ProgramSubject;
 import hotmath.gwt.cm_rpc.client.model.program_listing.ProgramType;
 import hotmath.gwt.cm_rpc.client.rpc.CmArrayList;
 import hotmath.gwt.cm_rpc.client.rpc.CmList;
-import hotmath.testset.ha.CmProgram;
 import hotmath.testset.ha.HaTestConfig;
 import hotmath.testset.ha.HaTestDef;
 import hotmath.testset.ha.HaTestDefDao;
@@ -243,9 +242,9 @@ public class CmProgramListingDao {
             }
             List<String> pids = hda.getTestIdsForSegment(conn, userProgram, segment, testDef.getTextCode(), chapter, testDef.getTestConfig(), 0);
             
-            /** now get list of lessons assigned to these pids by looking in HM_PROGRAM_LESSONS which is created
-             *  by the HA_PRESCRIPTION_LOG Deploylet action.  This is a static table that holds information about
-             *  lessons .. and must be rebuilt on data changes.
+            /** now get list of lessons assigned to these pids by looking in HM_PROGRAM_LESSONS_static which is
+             *  created by the HA_PRESCRIPTION_LOG Deploylet action.  This is a static table that holds information
+             *  about lessons... and must be rebuilt on data changes.
              *  
              */
             /** construct pid in list */
@@ -261,8 +260,14 @@ public class CmProgramListingDao {
             Map<String,String> map = new HashMap<String,String>(); 
             map.put("PIDLIST", sb.toString());
             String sql = CmMultiLinePropertyReader.getInstance().getProperty("GET_PROGRAM_LESSONS", map);
+
+            if (logger.isDebugEnabled()) {
+            	logger.debug(String.format("+++ getLessonsFor(): Program Lesson sql: %s", sql));
+            }
+
             stmt = conn.createStatement();
             rs = stmt.executeQuery(sql);
+            
             while(rs.next()) {
                 lessons.add(new ProgramLesson(rs.getString("lesson")));
             }
