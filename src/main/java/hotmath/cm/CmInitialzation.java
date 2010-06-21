@@ -61,14 +61,14 @@ public class CmInitialzation extends HttpServlet {
         Process p;
 		try {
 			p = Runtime.getRuntime().exec(cmd);
-	        p.getInputStream ().read (bo);
-	        logger.info("PID is: " + new String (bo));
-	        
-	        FileWriter fw = new FileWriter(pidFile);
-	        
+	        p.getInputStream ().read(bo);
 	        PID = new String(bo);
 	        if (PID != null) PID = PID.trim();
+
+	        logger.info("PID is: " + PID);
 	        
+	        FileWriter fw = new FileWriter(pidFile);
+
 	        fw.write(PID);
 	        fw.flush();
 	        fw.close();
