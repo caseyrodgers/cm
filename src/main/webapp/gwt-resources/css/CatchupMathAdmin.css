@@ -253,8 +253,25 @@ trending-data-student-list-item {
 	  display: inline;
 } 
 
-	
 .program-read-only {
 	color: red;
 }
 
+.program-details-header {
+    height: 30px;
+    padding-top: 15px;
+}
+
+.program-details-tree-panel {
+    margin-top: 10px;
+}
+
+/** attempt to override ext-js style */
+#program-details-panel .x-ftree2-selected {
+ Ê background-color: #DFE8F6 !important;
+}
+
+/** attempt to override ext-js style */
+program-details-panel .x-ftree2-node-over {
+ Ê background-color: #EEEEEE !important;
+}
