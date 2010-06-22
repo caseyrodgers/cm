@@ -137,7 +137,7 @@ public class PrescriptionReport {
         HaTestDefDao dao = new HaTestDefDao();
         List<String> chapters = dao.getProgramChapters(_conn,dao.getTestDef(_conn, progDef.getDefId()));
 
-        chapters = Arrays.asList(chapters.get(6));
+        //chapters = Arrays.asList(chapters.get(6));
         
         for (String chapter : chapters) {
             setupNewUserAndProgram(progDef, chapter);
