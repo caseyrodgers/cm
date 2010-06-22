@@ -34,7 +34,6 @@ import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
 import com.extjs.gxt.ui.client.widget.layout.CenterLayout;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.treepanel.TreePanel;
-import com.extjs.gxt.ui.client.util.Margins;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public class ProgramDetailsPanel extends CmWindow {
@@ -79,36 +78,26 @@ public class ProgramDetailsPanel extends CmWindow {
                 }
             }));
         }
-        getHeader().addTool(new Button("Collapse All", new SelectionListener<ButtonEvent>() {
+
+*/
+        Button cBtn = new Button("Collapse All", new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent ce) {
                 tree.collapseAll();
             }
-        }));
-*/
-        getHeader().setStyleAttribute("height", "30px");
-        getHeader().setStyleAttribute("padding-top", "15px");
+        });
+        //cBtn.setStyleName("program-details-collapse-btn");
+        getHeader().addTool(cBtn);
+        getHeader().setStyleName("program-details-header");
         
         _mainPanel = new LayoutContainer();
         _mainPanel.setLayout(new CenterLayout());
         _mainPanel.add(new Label("Loading Program Information.."));
 
         BorderLayoutData bld = new BorderLayoutData(LayoutRegion.CENTER);
-        Margins m = bld.getMargins();
-        m.top += 10;
+        _mainPanel.setStyleName("program-details-tree-panel");
+        _mainPanel.setId("program-details-panel");
         add(_mainPanel, bld);
 
-        Button btn = new Button("Collapse All", new SelectionListener<ButtonEvent>() {
-            public void componentSelected(ButtonEvent ce) {
-                tree.collapseAll();
-            }
-        });
-        btn.setStyleAttribute("position", "absolute");
-        String posn = String.valueOf(WIDTH - 105) + "px";
-        btn.setStyleAttribute("right", posn);
-        btn.setStyleAttribute("margin-right", "0px");
-        btn.setStyleAttribute("top", "2px");
-        addButton(btn);
-        
         addCloseButton();
 
         setModal(true);
@@ -123,8 +112,28 @@ public class ProgramDetailsPanel extends CmWindow {
         tree.setDisplayProperty("label");
         tree.setAutoHeight(true);
 
-        // data proxy
-        RpcProxy<List<ProgListModel>> proxy = new RpcProxy<List<ProgListModel>>() {
+        RpcProxy<List<ProgListModel>> proxy = dataProxy();
+
+        loader = new BaseTreeLoader<ProgListModel>(proxy) {
+            @Override
+            public boolean hasChildren(ProgListModel parent) {
+                return parent.getLevel() != ProgramListing.LEVEL_LESS;
+            }
+        };
+
+        // trees store
+        TreeStore<ProgListModel> store = new TreeStore<ProgListModel>(loader);
+        tree = new TreePanel<ProgListModel>(store);
+        tree.setDisplayProperty("label");
+
+        _mainPanel.removeAll();
+        _mainPanel.setLayout(new FitLayout());
+        _mainPanel.add(tree);
+        layout();
+    }
+
+	private RpcProxy<List<ProgListModel>> dataProxy() {
+		return new RpcProxy<List<ProgListModel>>() {
             @Override
             protected void load(Object loadConfig, final AsyncCallback<List<ProgListModel>> callback) {
                 ProgListModel m = (ProgListModel) loadConfig;
@@ -144,7 +153,6 @@ public class ProgramDetailsPanel extends CmWindow {
                         List<ProgramType> types = _programListing.getProgramTypes();
                         for (ProgramType pType : types) {
                             models.add(new ProgListModel(pType));
-                            List<ProgramSubject> subjects = pType.getProgramSubjects();
                         }
                     } else if (m.getLevel() == ProgramListing.LEVEL_TYPE) {
                     	ProgramType pType = (ProgramType) m.getData();
@@ -190,24 +198,7 @@ public class ProgramDetailsPanel extends CmWindow {
                 // service.getFolderChildren((FileModel) loadConfig, callback);
             }
         };
-
-        loader = new BaseTreeLoader<ProgListModel>(proxy) {
-            @Override
-            public boolean hasChildren(ProgListModel parent) {
-                return parent.getLevel() != ProgramListing.LEVEL_LESS;
-            }
-        };
-
-        // trees store
-        TreeStore<ProgListModel> store = new TreeStore<ProgListModel>(loader);
-        tree = new TreePanel<ProgListModel>(store);
-        tree.setDisplayProperty("label");
-
-        _mainPanel.removeAll();
-        _mainPanel.setLayout(new FitLayout());
-        _mainPanel.add(tree);
-        layout();
-    }
+	}
 
     private void getLessonItemsRPC(final ProgramSection section, final AsyncCallback<List<ProgListModel>> callback) {
 
