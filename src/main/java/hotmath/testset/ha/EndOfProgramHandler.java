@@ -69,11 +69,10 @@ public class EndOfProgramHandler {
             else if(programCurr.getTestDefId() == CmProgram.ALG2_PROF.getDefId() ) {
                 updateProgram(CmProgram.CAHSEEHM.getSubject(),CmProgram.CAHSEEHM.getProgramType(),null);
             }
-/*             else if(programCurr.getTestDefId() == CmProgram.NATIONAL.getDefId()) {
+             else if(programCurr.getTestDefId() == CmProgram.NATIONAL.getDefId()) {
                 // reset/repeat
                 updateProgram(CmProgram.NATIONAL.getSubject(), CmProgram.NATIONAL.getProgramType(),null);
             }
-*/            
             else if(programCurr.getTestDefId() == CmProgram.CAHSEEHM.getDefId()) {
                 // reset/repeat
                 updateProgram(CmProgram.CAHSEEHM.getSubject(), CmProgram.CAHSEEHM.getProgramType(),null);

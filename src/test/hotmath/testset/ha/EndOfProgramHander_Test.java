@@ -22,7 +22,6 @@ public class EndOfProgramHander_Test extends CmDbTestCase {
     }
     
    
-    /*
     public void testEndOfProgramNational() throws Exception {
 
         // assign chapter test to test student (last chapter)
@@ -34,7 +33,6 @@ public class EndOfProgramHander_Test extends CmDbTestCase {
         // this should just loop around
         assertTrue(nextProgram.getTestDefId() == CmProgram.NATIONAL.getDefId());
     }  
-    */
     
     public void testEndOfProgramChapterTestGeoChap() throws Exception {
 
