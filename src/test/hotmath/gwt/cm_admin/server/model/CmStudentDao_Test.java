@@ -81,9 +81,7 @@ public class CmStudentDao_Test extends CmDbTestCase {
     }
     
     
-    public void moveToNextQuizSegmentSlot() throws Exception {
-        _dao.moveToNextQuizSegmentSlot(conn, _test.getTestId(),_test.getTestDef().getNumAlternateTests());
-        
+    public void testMoveToNextQuizSegmentSlot() throws Exception {
         StudentActiveInfo active1 = _dao.moveToNextQuizSegmentSlot(conn, _test.getTestId(),_test.getTestDef().getNumAlternateTests());
         StudentActiveInfo active = _dao.moveToNextQuizSegmentSlot(conn, _test.getTestId(), _test.getTestDef().getNumAlternateTests());
         assertNotNull(active);
