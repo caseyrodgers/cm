@@ -162,7 +162,7 @@ public class HaTestDao {
 
             /**
              * Determine the proper quiz zone to use
-             * 
+             *  @see CreateTestRunCommand.java
              */
             int segmentSlot = new CmStudentDao().loadActiveInfo(conn, uid).getActiveSegmentSlot();
 

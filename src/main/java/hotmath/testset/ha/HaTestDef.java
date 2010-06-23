@@ -11,7 +11,7 @@ import java.util.List;
 import org.apache.log4j.Logger;
 
 /**
- * A single Hotmath Advance test definition.
+ * A single Catchup Math test source definition.
  * 
  * Each test definition is made up of:
  * 
@@ -33,32 +33,33 @@ public class HaTestDef {
 
     static Logger logger = Logger.getLogger(HaTestDef.class.getName());
     static public int PREALG_PROFICENCY = 16;
-
     String name;
     int indexRelatedPool;
     String textCode;
+    int numAlternateTests;
     String chapter;
     int testDefId;
-	String subjectId;
+    String subjectId;
     String progId;
     String stateId;
     HaTestConfig config;
-    
+
     public HaTestDef() {
         this.indexRelatedPool = getRelatedPoolIndex();
     }
-    
-	protected void init(HaTestDef td) {
-		this.name = td.getName();
-		this.chapter = td.getChapter();
-		this.testDefId = td.getTestDefId();
-		this.textCode = td.getTextCode();
-		this.config = td.getTestConfig();
-		this.subjectId = td.getSubjectId();
-		this.progId = td.getProgId();
-		this.stateId = td.getStateId();
-	}
-    
+
+    protected void init(HaTestDef td) {
+        this.name = td.getName();
+        this.chapter = td.getChapter();
+        this.testDefId = td.getTestDefId();
+        this.textCode = td.getTextCode();
+        this.config = td.getTestConfig();
+        this.subjectId = td.getSubjectId();
+        this.progId = td.getProgId();
+        this.stateId = td.getStateId();
+        this.numAlternateTests = td.getNumAlternateTests();
+    }
+
     /** Return the default test configuration for this test def
      * 
      * @return
@@ -108,32 +109,31 @@ public class HaTestDef {
     }
 
     public String getSubjectId() {
-		return subjectId;
-	}
+        return subjectId;
+    }
 
-	public void setSubjectId(String subjectId) {
-		this.subjectId = subjectId;
-	}
+    public void setSubjectId(String subjectId) {
+        this.subjectId = subjectId;
+    }
 
-	public String getProgId() {
-		return progId;
-	}
+    public String getProgId() {
+        return progId;
+    }
 
-	public void setProgId(String progId) {
-		this.progId = progId;
-	}
+    public void setProgId(String progId) {
+        this.progId = progId;
+    }
 
-	public String getStateId() {
-		return stateId;
-	}
+    public String getStateId() {
+        return stateId;
+    }
 
-	public void setStateId(String stateId) {
-		this.stateId = stateId;
-	}
-
-
+    public void setStateId(String stateId) {
+        this.stateId = stateId;
+    }
     int gradeLevel = 0;
-    final static int HEIGHEST_LEVEL=99;  /* can include any problem */
+    final static int HEIGHEST_LEVEL = 99;  /* can include any problem */
+
 
     /**
      * Return the grade level for this program or return -1 on error.
@@ -141,10 +141,9 @@ public class HaTestDef {
     public int getGradeLevel() {
         try {
             String textCode = this.getTextCode();
-            if(textCode == null || textCode.length() == 0) {
+            if (textCode == null || textCode.length() == 0) {
                 return HEIGHEST_LEVEL;
-            }
-            else {
+            } else {
                 return BookInfoManager.getInstance().getBookInfo(textCode).getGradeLevel();
             }
         } catch (HotMathException hme) {
@@ -152,8 +151,6 @@ public class HaTestDef {
         }
         return -1;
     }
-
-
 
     public int getTestDefId() {
         return testDefId;
@@ -170,7 +167,6 @@ public class HaTestDef {
      * @return
      */
     private int getRelatedPoolIndex() {
-
         int howManyRelatedForEachQuestion = 2;
         return howManyRelatedForEachQuestion;
     }
@@ -182,7 +178,6 @@ public class HaTestDef {
     public String getTitle() {
         return name;
     }
-
     /**
      * Return a list of ProblemIds that are used to populate this test's
      * segment.
@@ -199,14 +194,14 @@ public class HaTestDef {
     public List<String> getTestIdsForSegment(final Connection conn, StudentUserProgramModel userProgram, int segment, HaTestConfig config, int segmentSlot) throws Exception {
         _lastSegment = segment;
         String chap = "";
-        if(config.getChapters().size() > 0)
+        if (config.getChapters().size() > 0) {
             chap = config.getChapters().get(0);
-        else
+        } else {
             chap = chapter;
-            
-        return new HaTestDefDao().getTestIdsForSegment(conn, userProgram,segment, textCode, chap, config, segmentSlot);
-    }
+        }
 
+        return new HaTestDefDao().getTestIdsForSegment(conn, userProgram, segment, textCode, chap, config, segmentSlot);
+    }
 
     public int getTotalSegmentCount() {
         return config.getSegmentCount();
@@ -221,4 +216,13 @@ public class HaTestDef {
         return null;
     }
 
+
+    /** Return the number of alternate tests defined
+     *  for this text.
+     * 
+     * @return
+     */
+    public int getNumAlternateTests() {
+        return this.numAlternateTests;
+    }
 }

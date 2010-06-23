@@ -87,10 +87,12 @@ public class CreateTestRunCommand implements ActionHandler<CreateTestRunAction, 
             HaTestRun run = HaTestDao.createTestRun(conn, test.getUser().getUid(), test.getTestId(), answeredCorrect, answeredIncorrect, notAnswered);
             
             /** 
-             * if user DID NOT pass this quiz, we increment the zone used to retrieve quiz solutions
+             * if user DID NOT pass this quiz, 
+             * we increment the quiz slot to show
+             * a new quiz on next quiz creation.
              */
             if(!run.isPassing()) {
-                new CmStudentDao().moveToNextQuizSegmentSlot(conn,test.getUser().getUid());
+                new CmStudentDao().moveToNextQuizSegmentSlot(conn,test.getUser().getUid(), test.getTestDef().getNumAlternateTests());
             }
 
             AssessmentPrescription pres = AssessmentPrescriptionManager.getInstance().getPrescription(conn, run.getRunId());

@@ -26,6 +26,9 @@ import hotmath.gwt.cm_tools.client.model.StudentShowWorkModel;
 import hotmath.gwt.shared.client.model.UserProgramIsNotActiveException;
 import hotmath.gwt.shared.client.util.CmException;
 import hotmath.testset.ha.CmProgram;
+import hotmath.testset.ha.HaTestDao;
+import hotmath.testset.ha.HaTestDef;
+import hotmath.testset.ha.HaTestDefDao;
 import hotmath.testset.ha.HaTestDefDescription;
 import hotmath.testset.ha.HaTestRun;
 import hotmath.testset.ha.HaTestRunDao;
@@ -1932,7 +1935,7 @@ public class CmStudentDao {
              */
             if(activeInfo.getActiveSegmentSlot() > 0) {
             	CmUserProgramDao upDao = new CmUserProgramDao();
-                if(! upDao.loadProgramInfoCurrent(conn, userId).hasAlternateTests())
+                if(upDao.loadProgramInfoCurrent(conn, userId).getTestDef().getNumAlternateTests() == 0)
                    activeInfo.setActiveSegmentSlot(0);
             }
             return activeInfo;
@@ -1948,7 +1951,7 @@ public class CmStudentDao {
     
     
     
-    /** Move this user to the next quiz slot.
+    /** Move this user to the next quiz slot or back to zero
      * 
      *  A quiz slot acts like a circular data structure, rolling over back to zero.
      * @param conn
@@ -1956,13 +1959,13 @@ public class CmStudentDao {
      * @return
      * @throws Exception
      */
-    public StudentActiveInfo moveToNextQuizSegmentSlot(final Connection conn, Integer userId) throws Exception {
+    public StudentActiveInfo moveToNextQuizSegmentSlot(final Connection conn, Integer userId, int numSlotsInProgram) throws Exception {
         StudentActiveInfo activeInfo = loadActiveInfo(conn, userId);
         
         int segmentSlot = activeInfo.getActiveSegmentSlot();
         segmentSlot++;
         
-        if(segmentSlot > (MAX_QUIZ_SEGMENT_SLOTS-1))
+        if(segmentSlot > (numSlotsInProgram-1))
             segmentSlot = 0; // roll over, back to zero
         
         activeInfo.setActiveSegmentSlot(segmentSlot);

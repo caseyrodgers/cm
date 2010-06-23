@@ -109,23 +109,6 @@ public class StudentUserProgramModel {
 		this.testDef = testDef;
 	}
 
-	
-	/** Return true if this program has alternate tests available
-	 * 
-     * @return
-     */
-    public Boolean hasAlternateTests() {
-        
-        if(testDefId == CmProgram.ALG1_PROF.getDefId()
-           || testDefId == CmProgram.PREALG_PROF.getDefId()
-           || testDefId == CmProgram.ALG2_PROF.getDefId()
-           || testDefId == CmProgram.GEOM_PROF.getDefId()
-           || testDefId == CmProgram.ALG1_PROF.getDefId()) {
-            return true;
-        }
-        else
-            return false;
-    }
     
     @Override
     public String toString() {

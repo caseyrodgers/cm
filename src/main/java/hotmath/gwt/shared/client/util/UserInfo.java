@@ -312,7 +312,9 @@ public class UserInfo implements IsSerializable, Response {
      * @return
      */
     public String getUserStatus() {
-       String status = "uid: " + uid + ", test_id: " + getTestId() + ", run_id: " + getRunId() + ", quiz: " + getTestSegment() + "/" + getTestSegmentCount() + ", prescription: " + getSessionNumber() + "/" + getSessionCount();
+       String status = "uid: " + uid + ", test_id: " + getTestId() + 
+                       ", run_id: " + getRunId() + ", quiz: " + getTestSegment() + "/" + getTestSegmentCount() + 
+                       ", prescription: " + getSessionNumber() + "/" + getSessionCount();
        return status;
     }
     

@@ -2,7 +2,6 @@ package hotmath.gwt.cm_admin.server.model;
 
 import hotmath.cm.server.model.CmUserProgramDao;
 import hotmath.gwt.cm.server.CmDbTestCase;
-import hotmath.gwt.cm_admin.server.model.CmStudentDao;
 import hotmath.gwt.cm_tools.client.model.StudentActiveInfo;
 import hotmath.gwt.cm_tools.client.model.StudentModelBasic;
 import hotmath.gwt.cm_tools.client.model.StudentModelI;
@@ -83,10 +82,10 @@ public class CmStudentDao_Test extends CmDbTestCase {
     
     
     public void moveToNextQuizSegmentSlot() throws Exception {
-        _dao.moveToNextQuizSegmentSlot(conn, _test.getTestId());
+        _dao.moveToNextQuizSegmentSlot(conn, _test.getTestId(),_test.getTestDef().getNumAlternateTests());
         
-        StudentActiveInfo active1 = _dao.moveToNextQuizSegmentSlot(conn, _test.getTestId());
-        StudentActiveInfo active = _dao.moveToNextQuizSegmentSlot(conn, _test.getTestId());
+        StudentActiveInfo active1 = _dao.moveToNextQuizSegmentSlot(conn, _test.getTestId(),_test.getTestDef().getNumAlternateTests());
+        StudentActiveInfo active = _dao.moveToNextQuizSegmentSlot(conn, _test.getTestId(), _test.getTestDef().getNumAlternateTests());
         assertNotNull(active);
         
         assertTrue(active1.getActiveSegmentSlot() != active.getActiveSegmentSlot());
