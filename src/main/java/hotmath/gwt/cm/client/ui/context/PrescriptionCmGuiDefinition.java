@@ -325,7 +325,7 @@ public class PrescriptionCmGuiDefinition implements CmGuiDefinition {
      */
     static public void solutionHasBeenViewed_Gwt(String eventName) {
         __last_solution_item.setViewed(true);
-        EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_SOLUTIONS_COMPLETE, __last_solution_item));
+        EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_REQUIRED_COMPLETE, __last_solution_item));
     }
 
     /**
@@ -357,7 +357,7 @@ public class PrescriptionCmGuiDefinition implements CmGuiDefinition {
             public void handleEvent(CmEvent event) {
                 if (event.getEventType() == EventType.EVENT_TYPE_SOLUTION_SHOW) {
                     __last_solution_item = (InmhItemData) event.getEventData();
-                } else if (event.getEventType() == EventType.EVENT_TYPE_SOLUTIONS_COMPLETE) {
+                } else if (event.getEventType() == EventType.EVENT_TYPE_REQUIRED_COMPLETE) {
                     // update the InmhItemData associated with the currently
                     // active solution
 
@@ -517,7 +517,7 @@ class PrescriptionResourcePanel extends LayoutContainer {
          */
         EventBus.getInstance().addEventListener(new CmEventListenerImplDefault() {
             public void handleEvent(CmEvent event) {
-                if (event.getEventType() == EventType.EVENT_TYPE_SOLUTIONS_COMPLETE) {
+                if (event.getEventType() == EventType.EVENT_TYPE_REQUIRED_COMPLETE) {
                     __instance.resourceButtons.get("practice").checkCompletion();
                 }
             }

@@ -395,10 +395,8 @@ public class CatchupMath implements EntryPoint {
                                                
                                                $wnd.showMotivationalVideo_Gwt = @hotmath.gwt.cm.client.CatchupMath::showMotivationalVideo_Gwt();
 
-                                               
-                                               // Set global variable to signal that Cm system has been initialized.
+                                               // Set global variable to signal that CM system has been initialized.
                                                // This is checked in CatchupMath.html to indicate that a loading error occurred.
                                                $wnd.__cmInitialized = true;
                                                }-*/;
-
 }

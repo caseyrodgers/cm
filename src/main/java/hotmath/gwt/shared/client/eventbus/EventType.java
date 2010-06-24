@@ -24,10 +24,10 @@ public enum EventType{
     EVENT_TYPE_SOLUTION_SHOW,
     
     
-    /** Fired when a solution has been completed (ie, moved to last step)
+    /** Fired when a required problem has been completed (ie, moved to last step)
      * 
      */
-    EVENT_TYPE_SOLUTIONS_COMPLETE,
+    EVENT_TYPE_REQUIRED_COMPLETE,
     
     /** Fired when a resource viewer is manually closed/removed
      * 

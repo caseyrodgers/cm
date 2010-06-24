@@ -61,7 +61,7 @@ public class ResourceViewerFactory {
 		CmResourcePanel rp = null;
 		if (type.equals("practice")) {
 		    
-		    /** RPPs might be either a tutor or a flash widget
+		    /** RPs might be either a tutor (RPP) or a flash widget (RPA)
 		     * 
 		     */
 		    String file = item.getFile();
