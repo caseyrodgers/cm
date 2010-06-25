@@ -1,6 +1,6 @@
 package hotmath.gwt.cm_tools.client.ui.viewer;
 
-import hotmath.gwt.cm_tools.client.CatchupMathTools;
+import hotmath.gwt.cm_tools.client.ui.CmLogger;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
 import hotmath.gwt.shared.client.eventbus.EventBus;
 import hotmath.gwt.shared.client.eventbus.EventType;
@@ -26,14 +26,18 @@ public class ResourceViewerImplRppFlashCard extends ResourceViewerImplActivity  
         EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_REQUIRED_COMPLETE,getResourceItem()));
         return widget;
     }
-    
 
-    static public void flash_Rpp_getCompletionRule() {
-        CatchupMathTools.showAlert("wnd.flash_Rpp_getCompletionRule called");
+    static public String flash_Rpp_getCompletionRule() {
+        CmLogger.info("flash_Rpp_getCompletionRule called");
+        return "{\"widget\":\"/learning_activities/interactivities/flash_rpp_test/flashcard_template.swf\",\"rule\":\"time\",\"seconds\":45}";
+    }
+    
+    static public void flash_RppComplete() {
+    	CmLogger.info("flash_RppComplete called");
     }
     
     static private native void publishNative() /*-{
         $wnd.flash_Rpp_getCompletionRule  = @hotmath.gwt.cm_tools.client.ui.viewer.ResourceViewerImplRppFlashCard::flash_Rpp_getCompletionRule();
+        $wnd.flash_RppComplete  = @hotmath.gwt.cm_tools.client.ui.viewer.ResourceViewerImplRppFlashCard::flash_RppComplete();
      }-*/;
-	
 }

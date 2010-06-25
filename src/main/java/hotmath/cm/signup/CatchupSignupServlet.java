@@ -56,6 +56,7 @@ public class CatchupSignupServlet extends HttpServlet {
     static Logger _logger = Logger.getLogger(CatchupSignupServlet.class.getName());
 
     public CatchupSignupServlet() {
+    	/* empty */
     }
 
     
@@ -69,12 +70,9 @@ public class CatchupSignupServlet extends HttpServlet {
             String ipOfCaller = req.getRemoteAddr();
 
             
-            
             /** Extract the data from the request 
              * 
              */
-
-
             HotMathSubscriberSignupInfo sifo = getSignupInfo(req);
 
             
@@ -127,7 +125,7 @@ public class CatchupSignupServlet extends HttpServlet {
                  student.setName(sifo.getFirstName() + " " + sifo.getLastName());
                  
                  student.setPasscode(uniquePassword);
-                 
+                 student.setPassPercent("80%");
                  student.setAdminUid(haAdmin.getAdminId());
                  student.setGroupId("1");
                  
