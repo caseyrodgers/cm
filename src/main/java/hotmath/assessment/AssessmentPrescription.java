@@ -40,6 +40,7 @@ public class AssessmentPrescription {
 
     final static public int TOTAL_SESSION_SOLUTIONS = 3;
     final static public int MAX_SESSIONS = 100;
+    static final int PID_COUNT = 3;
 
     InmhAssessment _assessment;
     
@@ -81,7 +82,6 @@ public class AssessmentPrescription {
     
     protected AssessmentPrescription() {}
     
-
     /**
      * Create an assessment prescription based on comma separated list of
      * problem ids.
@@ -114,75 +114,27 @@ public class AssessmentPrescription {
 
         List<InmhItemData> itemsData = _assessment.getInmhItemUnion("review");
         int sumOfWeights = 0;
-        for (InmhItemData id : itemsData) {
-            sumOfWeights += id.getWeight();
+        for (InmhItemData itemData : itemsData) {
+            sumOfWeights += itemData.getWeight();
         }
 
-        int cnt = itemsData.size();
         totalPrescription = itemsData.size() * TOTAL_SESSION_SOLUTIONS;
         
         // assign weights to items
         int sessNum = 0;
-        for (InmhItemData id : itemsData) {
+        for (InmhItemData itemData : itemsData) {
             
-            if(id.getInmhItem().getFile().equals("/hotmath_help/topics/index_hotmath_review_full.html"))
+            if(itemData.getInmhItem().getFile().equals("/hotmath_help/topics/index_hotmath_review_full.html"))
                 continue;
-            
-            int wi = id.getWeight();
 
-            double numPids = ((double) wi / (double) sumOfWeights) * totalPrescription;
-            int numPids2get = (int) Math.ceil(numPids);
-            
             // now choose pids from the pool for this item
-            List<RppWidget> rppWidgets = id.getWookBookSolutionPool(conn);
+            List<RppWidget> rppWidgets = itemData.getWookBookSolutionPool(conn);
             if (rppWidgets.size() == 0) {
-                logger.warn("No pool solutions found for + '" + id.getInmhItem().toString() + "'");
+                logger.warn("No pool solutions found for + '" + itemData.getInmhItem().toString() + "'");
                 continue; // nothing to see here.
             }
             
-            
-            AssessmentPrescriptionSession session = new AssessmentPrescriptionSession(this,"Session: " + (sessNum + 1));            
-            List<SessionData> sessionItems = session.getSessionItems();
-            
-            /** if any widgets are not then, then only show the Flash widgets
-             * 
-             */
-            boolean hasNonPid=false;
-            for(RppWidget rpp: rppWidgets) {
-                if(!rpp.isSolution()) {
-                    hasNonPid=true;
-                    break;
-                }
-            }
-            if(hasNonPid) {
-                /** only show nonPid widgets
-                 * 
-                 */
-                for(RppWidget rpp: rppWidgets) {
-                    if(!rpp.isSolution()) {
-                        sessionItems.add(new SessionData(id.getInmhItem(), rpp.getFile(), (int) numPids2get, id.getWeight(),rpp.getWidgetJsonArgs()));
-                    }
-                }
-            }
-            else {
-                /** show only pid widgets
-                 * 
-                 */
-                for(RppWidget rpp: rppWidgets) {
-    
-                    ProblemID pid = new ProblemID(rpp.getFile());
-                    // subject filter solutions
-                    int gradeLevel = pid.getGradeLevel();
-                    if (gradeLevel > getGradeLevel()) {
-                        SbLogger.postMessage("AssessmentPrescriptionSession: " + testRun.getRunId() + ", level: " + getGradeLevel() + ", inmh item not included due to higher grade level:  " + pid + ", level: " + gradeLevel);
-                        continue;
-                    }
-                    sessionItems.add(new SessionData(id.getInmhItem(), pid.getGUID(), (int) numPids2get, id.getWeight()));
-     
-                    if (sessionItems.size() > TOTAL_SESSION_SOLUTIONS-1)
-                        break;
-                }
-            }
+            AssessmentPrescriptionSession session = createSession(sessNum, rppWidgets, itemData);
             
             // assert that there is at least one
             if(session.getSessionItems().size() == 0) {
@@ -223,6 +175,60 @@ public class AssessmentPrescription {
             _sessions.add(session);    
             sessNum++;            
         }
+    }
+    
+    /** Create a single prescription session based on passed in data
+     * 
+     * @param sessNum
+     * @param workBookPids
+     * @param itemData
+     * @return
+     * @throws Exception
+     */
+    protected AssessmentPrescriptionSession createSession(int sessNum, List<RppWidget> rppWidgets, InmhItemData itemData) throws Exception {
+    	AssessmentPrescriptionSession session = new AssessmentPrescriptionSession(this,"Session: " + (sessNum + 1));            
+        List<SessionData> sessionItems = session.getSessionItems();
+        
+        /** if any widgets are Flash then only show the Flash widgets
+         * 
+         */
+        boolean hasNonPid=false;
+        for(RppWidget rpp: rppWidgets) {
+            if(!rpp.isSolution()) {
+                hasNonPid=true;
+                break;
+            }
+        }
+        if(hasNonPid) {
+            /** only show nonPid widgets
+             * 
+             */
+            for(RppWidget rpp: rppWidgets) {
+                if(!rpp.isSolution()) {
+                    sessionItems.add(new SessionData(itemData.getInmhItem(), rpp.getFile(), (int) PID_COUNT, itemData.getWeight(),rpp.getWidgetJsonArgs()));
+                }
+            }
+        }
+        else {
+            /** show only pid widgets
+             * 
+             */
+            for(RppWidget rpp: rppWidgets) {
+
+                ProblemID pid = new ProblemID(rpp.getFile());
+                // subject filter solutions
+                int gradeLevel = pid.getGradeLevel();
+                if (gradeLevel > getGradeLevel()) {
+                    SbLogger.postMessage("AssessmentPrescriptionSession: " + testRun.getRunId() + ", level: " + getGradeLevel() + ", inmh item not included due to higher grade level:  " + pid + ", level: " + gradeLevel);
+                    continue;
+                }
+                sessionItems.add(new SessionData(itemData.getInmhItem(), pid.getGUID(),PID_COUNT, itemData.getWeight()));
+ 
+                if (sessionItems.size() > TOTAL_SESSION_SOLUTIONS-1)
+                    break;
+            }
+        }
+        return session;
     }
 
     /** Return all INMH items that are referenced by session data
@@ -287,24 +293,6 @@ public class AssessmentPrescription {
 
         throw new HotMathException("Could not find session: " + name);
     }
-
-
-
-    /** Read the appropriate Prescription related inmh items.
-     * 
-     *  1. all related videos
-     *  2. 
-     * @return
-     * @throws Exception
-     */
-    public List<INeedMoreHelpItem> readInmhItems() throws Exception {
-    	String types[] = {"video","review","lessons","workbook"};
-    	// INeedMoreHelpManager.getInstance().getHelpItemsUnion(session.getSessionProblemIds(),types)
-    	return null;
-    }
-
-    
-    
     
     /** Find all solutions in this prescription, then get list of
      *  all INMH items referenced ... then

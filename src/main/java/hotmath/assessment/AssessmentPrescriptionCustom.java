@@ -1,6 +1,5 @@
 package hotmath.assessment;
 
-import hotmath.ProblemID;
 import hotmath.gwt.cm_admin.server.model.CmCustomProgramDao;
 import hotmath.gwt.cm_rpc.client.rpc.CmList;
 import hotmath.gwt.cm_tools.client.model.CustomLessonModel;
@@ -16,7 +15,6 @@ import sb.logger.SbLogger;
 
 public class AssessmentPrescriptionCustom extends AssessmentPrescription {
     int _customProgramSubjectLevel;
-    static final int PID_COUNT = 3;
     public AssessmentPrescriptionCustom(final Connection conn,HaTestRun testRun) throws Exception {
         super();
         
@@ -37,26 +35,7 @@ public class AssessmentPrescriptionCustom extends AssessmentPrescription {
                 continue; // nothing to see here.
             }
 
-            // cmdao.getSubjectLevel(clm.getSubject());
-            
-            AssessmentPrescriptionSession session = new AssessmentPrescriptionSession(this,"Session: " + (sessNum + 1));
-            for(RppWidget widget: workBookPids) {
-                ProblemID pid = new ProblemID(widget.getFile());
-                // subject filter solutions
-                int gradeLevel = pid.getGradeLevel();
-                if (gradeLevel > getGradeLevel()) {
-                    SbLogger.postMessage("AssessmentPrescriptionSession: " + testRun.getRunId() + ", level: " + getGradeLevel() + ", inmh item not included due to higher grade level:  " + pid + ", level: " + gradeLevel);
-                    continue;
-                }
-                    
-                    
-                List<SessionData> si = session.getSessionItems();
-
-                si.add(new SessionData(itemData.getInmhItem(), pid.getGUID(), (int) PID_COUNT, itemData.getWeight()));
- 
-                if (si.size() > TOTAL_SESSION_SOLUTIONS-1)
-                    break;
-            }
+            AssessmentPrescriptionSession session = createSession(sessNum,workBookPids,itemData);
             
             // assert that there is at least one
             if(session.getSessionItems().size() == 0) {
@@ -72,5 +51,4 @@ public class AssessmentPrescriptionCustom extends AssessmentPrescription {
         }
         new HaTestRunDao().addLessonsToTestRun(conn,testRun, _sessions);
     }
- 
 }
