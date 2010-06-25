@@ -29,7 +29,7 @@ public class ResourceViewerImplRppFlashCard extends ResourceViewerImplActivity  
 
     static public String flash_Rpp_getCompletionRule() {
         CmLogger.info("flash_Rpp_getCompletionRule called");
-        return "{\"widget\":\"/learning_activities/interactivities/flash_rpp_test/flashcard_template.swf\",\"rule\":\"time\",\"seconds\":45}";
+        return "{\"rule\":\"time\",\"limit\":\"45\"}";
     }
     
     static public void flash_RppComplete() {

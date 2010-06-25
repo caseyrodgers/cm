@@ -28,6 +28,17 @@ import org.jfree.ui.RectangleInsets;
  *  static images are created by running the this class's main. 
  *  
  *  
+ *  
+ *  
+ *  new lessons (start of the piechart color) #808080
+checked lesson (the one solved) #CCCCCC
+current lesson (active segment) #0071BC
+
+piechart divider lines (they are black now) #43464B
+
+15% bigger.
+
+ *  
  * @author casey
  *
  */
@@ -99,8 +110,10 @@ public class StatusPie {
             }
 
             PiePlot plot = new PiePlot();
+            plot.setShadowPaint(new Color(67, 70, 75));
+            
             plot.setDataset(data);
-            plot.setBackgroundPaint(new Color(67, 70, 75));  
+            plot.setBackgroundPaint(new Color(67, 70, 75));
             plot.setInsets(new RectangleInsets(-1,-1,-1,-1));
             plot.setCircular(true);
 
@@ -111,30 +124,28 @@ public class StatusPie {
             Color[] colors = new Color[total];
             for (int i = 0; i < total; i++) {
                 if ((i + 1) == current) {
-                    colors[i] = Color.blue;
+                    colors[i] = new Color(0x0071BC);
                 } else if ((i + 1) < current) {
-                    colors[i] = Color.GREEN;
+                    colors[i] = new Color(0xCCCCCC);
                 } else {
-                    colors[i] = Color.YELLOW;
+                    colors[i] = new Color(0x808080);
                 }
             }
             PieRenderer renderer = new PieRenderer(colors);
             renderer.setColor(plot, data);
+            plot.setBaseSectionOutlinePaint(new Color(0x43464B));
 
             /** Turn off labels
              * 
              */
             plot.setLabelGenerator(new CustomLabelGenerator());
-            
             JFreeChart chart = new JFreeChart(null, JFreeChart.DEFAULT_TITLE_FONT, plot, false);
             chart.setBorderVisible(false);
             // Write the chart image to the temporary directory
             ChartRenderingInfo info = new ChartRenderingInfo(new StandardEntityCollection());
-            // filename = ServletUtilities.saveChartAsPNG(chart, 500, 300, info,
-            // session);
-            // Write the image map to the PrintWriter
             
-            ChartUtilities.saveChartAsPNG(imageFile, chart, 150, 150, info);
+            // Write the image map to the PrintWriter
+            ChartUtilities.saveChartAsPNG(imageFile, chart, 172, 172, info);
         } catch (Exception e) {
             e.printStackTrace();
             throw e;
@@ -190,7 +201,7 @@ public class StatusPie {
     
     static public void main(String as[])  {
         try {
-            File base = new File("/dev/local/gwt2/cm/src/main/webapp/gwt-resources/images/status");
+            File base = new File("/dev/local/cm/src/main/webapp/gwt-resources/images/status");
             if(!base.exists())
                 base.mkdirs();
     
