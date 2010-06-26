@@ -86,5 +86,13 @@
          </java>
      </target>
 
-
+    <target name='import_cm_inmh_assessment'>
+        <echo>Importing INMH ASSESSMENT</echo>
+        <java   classname="hotmath.upload.InmhAssessmentUpload" fork="true" failonerror="true" classpathref="local.classpath.run" >
+             <jvmarg value="-Xmx400m"/>
+             <jvmarg value="-Xms300m"/>
+             <arg value="../../hotmath2/inmh_assessment/all.inmh_assessment"/>
+        </java>
+    </target>
+	
 </project>
