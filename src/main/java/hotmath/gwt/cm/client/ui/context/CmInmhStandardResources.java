@@ -35,6 +35,21 @@ public class CmInmhStandardResources extends ArrayList<PrescriptionSessionDataRe
         items.add(new InmhItemData(t,"/learning_activities/interactivities/flashcard_addfrac_like.swf", "Adding Like Fractions"));
         items.add(new InmhItemData(t,"/learning_activities/interactivities/flashcard_addfrac_unlike.swf", "Adding Unlike Fractions"));        
         items.add(new InmhItemData(t,"/learning_activities/interactivities/flashcard_muti_frac.swf", "Multiplying Fractions"));
+        resourceType.setItems(items);
+        add(resourceType);
+        
+        
+        /** Add the Standard Flash Cards
+         * 
+         */
+        t = "flashcard";
+        resourceType = new PrescriptionSessionDataResource();
+        resourceType.setType(t);
+        resourceType.setLabel("Flash Cards and Skill Builders");
+        resourceType.setDescription("Flash Card and Skill Builder resources that might help you");
+        
+        items = new ArrayList<InmhItemData>();
+        t = resourceType.getType();        
 
         items.add(new InmhItemData(t,"/learning_activities/interactivities/flashcard_convert_improper.swf", "Converting Improper Fractions"));
         items.add(new InmhItemData(t,"/learning_activities/interactivities/flashcard_convert_mixed.swf", "Converting Mixed Numbers"));
