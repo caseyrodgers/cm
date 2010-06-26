@@ -110,7 +110,7 @@ public class InmhItemData {
      */
     public List<RppWidget> getWookBookSolutionPool(final Connection conn) {
         // SQL to get list of ranges that match each INMH item
-        String sql = "select range   from inmh_assessment i   where i.file = ? ";
+        String sql = "select range from inmh_assessment i where i.file = ?";
         PreparedStatement ps = null;
 
         List<RppWidget> widgets = new ArrayList<RppWidget>();
@@ -119,16 +119,16 @@ public class InmhItemData {
             ps.setString(1, this.item.getFile());
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
-                String range = rs.getString("range");
-                if (range == null || range.length() == 0)
+                String rangeOrJson = rs.getString("range");
+                if (rangeOrJson == null || rangeOrJson.length() == 0)
                     continue;
 
-                if (range.startsWith("{")) {
-                    /** is widget */
-                    widgets.add(new RppWidget(range));
+                if (rangeOrJson.startsWith("{")) {
+                    /** is widget defined in JSON */
+                    widgets.add(new RppWidget(rangeOrJson));
                 } else {
                     /** is a solution PID */
-                    List<String> related = findSolutionsMatchingRange(range);
+                    List<String> related = findSolutionsMatchingRange(rangeOrJson);
                     for (String s : related) {
                         RppWidget widget = new RppWidget();
                         widget.setFile(s);

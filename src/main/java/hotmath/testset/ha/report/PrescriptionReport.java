@@ -271,9 +271,17 @@ public class PrescriptionReport {
                         isError = true;
                     }
                     for(SessionData p: rpp) {
-                        if(!SolutionManager.getInstance().doesSolutionExist(conn, p.getPid())) {
-                            logMessage(prescription.getTestRun().getRunId(), "WARNING: Session " + i + ": RPP does not exist '" + p.getPid() + "'");
-                        }
+                    	if(p.getWidgetArgs() != null) {
+                    		/** is a flash widget 
+                    		 * 
+                    		 * TODO: validate JSON and activity.
+                    		 * */
+                    	}
+                    	else {
+                    		if(!SolutionManager.getInstance().doesSolutionExist(conn, p.getPid())) {
+                    			logMessage(prescription.getTestRun().getRunId(), "WARNING: Session " + i + ": RPP does not exist '" + p.getPid() + "'");
+                    		}
+                    	}
                     }
                     
                     Collection<INeedMoreHelpResourceType> epp = session.getPrescriptionInmhTypes(_conn, "cmextra");
