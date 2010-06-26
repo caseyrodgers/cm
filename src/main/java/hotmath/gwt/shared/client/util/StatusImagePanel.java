@@ -21,18 +21,11 @@ public class StatusImagePanel extends VerticalPanel {
     public StatusImagePanel(int total, int current, String title, String toolTip) {
         this.total = total;
         this.current = current;
-        setStyleAttribute("margin-top", "25px");
-        setToolTip(toolTip);
-        String html = 
-            "<img style='margin-left: 20px;' src='/gwt-resources/images/status/status-" + total + "_" + current + ".png'/>";
+        setStyleName("status-image-panel");
+        setToolTip("Your current program status");
+        String html = "<img src='/gwt-resources/images/status/status-" + total + "_" + current + ".png'/>" +
+                      "<span>" + toolTip + "</span>";
         add(new Html(html));
-
-//        double perDone = Math.round(((double)current / (double)total * 100));
-//        html = "<div style='text-align: left;width: 100%;background: white' id='status_bar'>" +
-//               "  <div style='background-color: green;width: " + perDone + "%' class='done'>&nbsp;</div>" +
-//               "</div>";
-//        
-//        add(new Html(html));
     }
     
     @Override

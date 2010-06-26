@@ -255,7 +255,7 @@ class ContextTooltipPanel extends LayoutContainer {
         return __instance;
     }
 
-    static final int TIP_SHOW_MILLS = 4000;
+    static final int TIP_SHOW_MILLS = 2000;
     Timer tipTimer;
 
     private ContextTooltipPanel() {

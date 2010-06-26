@@ -2,7 +2,6 @@ h1, h2, h3, h4 {
   font-size: 100%;
 }
 
-
 .main-container p .gold {
         color: #AAC656;
 }
@@ -1013,4 +1012,21 @@ img.resource-item-complete {
 .hm_flash_widget {
 	position: relative;
 	z-index: 1;
+}
+
+.status-image-panel {
+	margin-top:25px;
+	position: relative;
+}
+.status-image-panel img {
+	margin-left: 2px;
+}
+.status-image-panel span {
+	position: absolute;
+	top: 10px;
+	left: 20px;
+	width: 150px; 
+	top: 145px;
+	text-align: center;
+	color: #CCCCCC;
 }
