@@ -49,8 +49,12 @@ public class CmInmhStandardResources extends ArrayList<PrescriptionSessionDataRe
         resourceType.setDescription("Flash Card and Skill Builder resources that might help you");
         
         items = new ArrayList<InmhItemData>();
-        t = resourceType.getType();        
-
+        t = resourceType.getType();    
+        
+        items.add(new InmhItemData(t,"/learning_activities/interactivities/flashcard_reducingfractions.swf", "Reducing Fractions"));
+        items.add(new InmhItemData(t,"/learning_activities/interactivities/flashcard_addfrac_like.swf", "Adding Like Fractions"));
+        items.add(new InmhItemData(t,"/learning_activities/interactivities/flashcard_addfrac_unlike.swf", "Adding Unlike Fractions"));        
+        items.add(new InmhItemData(t,"/learning_activities/interactivities/flashcard_muti_frac.swf", "Multiplying Fractions"));
         items.add(new InmhItemData(t,"/learning_activities/interactivities/flashcard_convert_improper.swf", "Converting Improper Fractions"));
         items.add(new InmhItemData(t,"/learning_activities/interactivities/flashcard_convert_mixed.swf", "Converting Mixed Numbers"));
         items.add(new InmhItemData(t,"/learning_activities/interactivities/flashcard_oops_level1.swf", "Order of Operations: Level 1"));
@@ -58,6 +62,8 @@ public class CmInmhStandardResources extends ArrayList<PrescriptionSessionDataRe
         items.add(new InmhItemData(t,"/learning_activities/interactivities/flashcard_comparing_quantities.swf", "Comparing Quantities"));
         items.add(new InmhItemData(t,"/learning_activities/interactivities/flashcard_multi.swf", "Multiplication Facts"));
         items.add(new InmhItemData(t,"/learning_activities/interactivities/prime_factorization.swf", "Prime Factorization"));
+        // items.add(new InmhItemData(t,"/learning_activities/interactivities/flashcard_mixed_improper.swf", "Mixed Numbers & Improper Fractions"));
+
         
         resourceType.setItems(items);        
         add(resourceType);
