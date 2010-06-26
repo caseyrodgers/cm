@@ -145,7 +145,7 @@ public class StatusPie {
             ChartRenderingInfo info = new ChartRenderingInfo(new StandardEntityCollection());
             
             // Write the image map to the PrintWriter
-            ChartUtilities.saveChartAsPNG(imageFile, chart, 172, 172, info);
+            ChartUtilities.saveChartAsPNG(imageFile, chart, 190, 190, info);
         } catch (Exception e) {
             e.printStackTrace();
             throw e;
