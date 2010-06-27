@@ -193,16 +193,12 @@ public class AssessmentPrescription {
          * 
          */
         boolean hasNonPid=false;
-        /*  Disable Required Practice Activities
         for(RppWidget rpp: rppWidgets) {
             if(!rpp.isSolution()) {
                 hasNonPid=true;
                 break;
             }
         }
-        */
-        hasNonPid = false;
-        
         if(hasNonPid) {
             /** only show nonPid widgets
              * 

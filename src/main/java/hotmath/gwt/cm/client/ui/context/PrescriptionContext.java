@@ -449,6 +449,11 @@ public class PrescriptionContext implements CmContext {
 		});
     }
     
+    /** Test the prescription.
+     * 
+     *  If URL param test_rpp_only is set to true, the only RPP will be loaded. 
+     *   
+     */
     public void runAutoTestAux() {
         int timeToWait = 1;
         

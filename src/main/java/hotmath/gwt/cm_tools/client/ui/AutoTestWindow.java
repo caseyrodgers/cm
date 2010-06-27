@@ -7,6 +7,8 @@ import java.util.Date;
 
 import com.extjs.gxt.ui.client.Style.LayoutRegion;
 import com.extjs.gxt.ui.client.data.BaseModel;
+import com.extjs.gxt.ui.client.data.BaseModelData;
+import com.extjs.gxt.ui.client.data.ModelData;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.store.ListStore;
@@ -16,6 +18,7 @@ import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.ListView;
 import com.extjs.gxt.ui.client.widget.Slider;
 import com.extjs.gxt.ui.client.widget.button.Button;
+import com.extjs.gxt.ui.client.widget.form.ComboBox;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.google.gwt.user.client.ui.Label;
@@ -105,8 +108,13 @@ public class AutoTestWindow extends ContentPanel {
         Label l = new Label("Interval time: ");
         lc.add(l);
         lc.add(_waitTimeForSingleResourceSlider);
-        
         return lc;
+    }
+    
+    class TestType extends BaseModelData {
+    	public TestType(String text) {
+    		set("text", text);
+    	}
     }
     
     

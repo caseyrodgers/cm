@@ -24,7 +24,7 @@ public enum EventType{
     EVENT_TYPE_SOLUTION_SHOW,
     
     
-    /** Fired when a required problem has been completed (ie, moved to last step)
+    /** Fired when a required problem/activity has been completed (ie, moved to last step)
      * 
      */
     EVENT_TYPE_REQUIRED_COMPLETE,
