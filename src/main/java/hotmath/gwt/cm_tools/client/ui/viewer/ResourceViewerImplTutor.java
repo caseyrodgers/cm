@@ -4,6 +4,7 @@ import hotmath.gwt.cm_rpc.client.rpc.GetSolutionAction;
 import hotmath.gwt.cm_rpc.client.rpc.RpcData;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
+import hotmath.gwt.cm_tools.client.ui.CmLogger;
 import hotmath.gwt.cm_tools.client.ui.CmMainPanel;
 import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
 import hotmath.gwt.shared.client.CmShared;
@@ -33,6 +34,8 @@ import com.google.gwt.user.client.ui.Widget;
 public class ResourceViewerImplTutor extends CmResourcePanelImplWithWhiteboard {
 
     static public final String STYLE_NAME="resource-viewer-impl-tutor";
+    
+    static boolean __externalJsInitialized=false;
 
     public ResourceViewerImplTutor() {
         _instance = this;
@@ -111,6 +114,11 @@ public class ResourceViewerImplTutor extends CmResourcePanelImplWithWhiteboard {
     Widget tutorPanel;
     public void showSolution() {
 
+    	if(!__externalJsInitialized) {
+    		/** showSolution is called after JS initialied */
+    		return;
+    	}
+    	
     	Log.debug("ResourceViewerImplTutor: loading solution '" + pid + "'");
         
         /** If panel has already been initialized, then 
@@ -197,21 +205,42 @@ public class ResourceViewerImplTutor extends CmResourcePanelImplWithWhiteboard {
     }-*/;
     
     
+    /** called after CatchupMath.min.js loaded.  We then 
+     *  call showSolution to show thes
+     */
+    static public void externalTutorJsLoaded_Gwt() {
+    	CmLogger.info("External Tutor JS (CatchupMath.min.js) loaded successfully");
+    	__externalJsInitialized=true;
+    	_instance.showSolution();
+    }
     /**
      * publish native method to allow for opening of Show Window from external
      * JS using current instance
      * 
+     * 
      */
     static private native void publishNative() /*-{
-                                               $wnd.showWorkDialog_Gwt     
-                                                 = @hotmath.gwt.cm_tools.client.ui.viewer.ResourceViewerImplTutor::showWorkDialog();
-                                               $wnd.showTutoringDialog_Gwt 
-                                                 = @hotmath.gwt.cm_tools.client.ui.viewer.ResourceViewerImplTutor::showTutoringDialog();
-                                               $wnd.flashInputField_Gwt   
-                                                 = @hotmath.gwt.cm_tools.client.ui.viewer.ResourceViewerImplTutor::flashInputField_Gwt(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;);
-                                               $wnd.saveWhiteboardSnapshot_Gwt
-                                                 = @hotmath.gwt.cm_tools.client.ui.viewer.ResourceViewerImplTutor::saveWhiteboardSnapshot_Gwt(Ljava/lang/String;);
-                                               }-*/;
+	   $wnd.showWorkDialog_Gwt     
+	     = @hotmath.gwt.cm_tools.client.ui.viewer.ResourceViewerImplTutor::showWorkDialog();
+	   $wnd.showTutoringDialog_Gwt 
+	     = @hotmath.gwt.cm_tools.client.ui.viewer.ResourceViewerImplTutor::showTutoringDialog();
+	   $wnd.flashInputField_Gwt   
+	     = @hotmath.gwt.cm_tools.client.ui.viewer.ResourceViewerImplTutor::flashInputField_Gwt(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;);
+	   $wnd.saveWhiteboardSnapshot_Gwt
+	     = @hotmath.gwt.cm_tools.client.ui.viewer.ResourceViewerImplTutor::saveWhiteboardSnapshot_Gwt(Ljava/lang/String;);
+
+       // define GWT method to be called by CatchupMath.min.js
+       // 
+  	   $wnd.externalTutorJsLoaded_Gwt
+	     = @hotmath.gwt.cm_tools.client.ui.viewer.ResourceViewerImplTutor::externalTutorJsLoaded_Gwt();
+
+        // load the tutor external JS dependencies asynchronously 
+        // 
+	    var el = document.createElement('script');
+	    el.src = '/gwt-resources/js/CatchupMath.min.js';
+	    el.type = 'text/javascript';
+	    $wnd.document.getElementsByTagName("head")[0].appendChild(el);
+     }-*/;
 
     /**
      * Called from the show-work-button display on the tutor and default in

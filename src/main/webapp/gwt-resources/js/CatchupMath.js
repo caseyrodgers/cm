@@ -184,3 +184,6 @@ function flash_quizResult(result) {
                 alert('There was a problem processing Flash Input Field: ' + e);
         }
 }
+
+/** make a callback to inform code is loaded successfully */
+externalTutorJsLoaded_Gwt();

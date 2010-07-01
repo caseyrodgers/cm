@@ -233,6 +233,7 @@ public class CatchupMath implements EntryPoint {
         History.addValueChangeHandler(new CatchupMathHistoryListener());
         History.fireCurrentHistoryState();
 
+
         /**
          * Register an event lister waiting to see if user's data change. If it
          * does, we must reset this user
@@ -260,6 +261,7 @@ public class CatchupMath implements EntryPoint {
             FooterPanel.startAutoTest_Gwt();
         }
     }
+
 
     /**
      * Helper page to create the Login page
