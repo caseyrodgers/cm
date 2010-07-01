@@ -232,7 +232,9 @@ public class CatchupMath implements EntryPoint {
     public void startNormalOperation() {
         History.addValueChangeHandler(new CatchupMathHistoryListener());
         History.fireCurrentHistoryState();
-
+        
+        
+        loadCatchupMathExternalJs();
 
         /**
          * Register an event lister waiting to see if user's data change. If it
@@ -261,7 +263,22 @@ public class CatchupMath implements EntryPoint {
             FooterPanel.startAutoTest_Gwt();
         }
     }
-
+    
+    /** Load the CatchupMath.min.js into the address space.
+     * 
+     *  This is done here to minimize the initial load time.
+     *  
+     *  TODO: Potential timing problem if tutor is requested before code
+     *  loaded, perhaps add a call back from load before moving forward.
+     *  
+     *  Move to TutorViewer.
+     */
+    private native void loadCatchupMathExternalJs() /*-{
+        var el = document.createElement('script');
+        el.src = '/gwt-resources/js/CatchupMath.min.js';
+        el.type = 'text/javascript';
+        $wnd.document.getElementsByTagName("head")[0].appendChild(el);
+    }-*/;
 
     /**
      * Helper page to create the Login page

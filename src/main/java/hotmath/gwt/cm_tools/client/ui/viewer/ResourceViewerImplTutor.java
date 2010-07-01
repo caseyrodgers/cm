@@ -35,8 +35,6 @@ public class ResourceViewerImplTutor extends CmResourcePanelImplWithWhiteboard {
 
     static public final String STYLE_NAME="resource-viewer-impl-tutor";
     
-    static boolean __externalJsInitialized=false;
-
     public ResourceViewerImplTutor() {
         _instance = this;
         addStyleName(STYLE_NAME);
@@ -114,11 +112,6 @@ public class ResourceViewerImplTutor extends CmResourcePanelImplWithWhiteboard {
     Widget tutorPanel;
     public void showSolution() {
 
-    	if(!__externalJsInitialized) {
-    		/** showSolution is called after JS initialied */
-    		return;
-    	}
-    	
     	Log.debug("ResourceViewerImplTutor: loading solution '" + pid + "'");
         
         /** If panel has already been initialized, then 
@@ -203,16 +196,7 @@ public class ResourceViewerImplTutor extends CmResourcePanelImplWithWhiteboard {
     static private native void createWhiteboardSnapshot_Jsni() /*-{
         parent.createWhiteboardSnapshot_Jsni();
     }-*/;
-    
-    
-    /** called after CatchupMath.min.js loaded.  We then 
-     *  call showSolution to show thes
-     */
-    static public void externalTutorJsLoaded_Gwt() {
-    	CmLogger.info("External Tutor JS (CatchupMath.min.js) loaded successfully");
-    	__externalJsInitialized=true;
-    	_instance.showSolution();
-    }
+
     /**
      * publish native method to allow for opening of Show Window from external
      * JS using current instance
@@ -228,18 +212,6 @@ public class ResourceViewerImplTutor extends CmResourcePanelImplWithWhiteboard {
 	     = @hotmath.gwt.cm_tools.client.ui.viewer.ResourceViewerImplTutor::flashInputField_Gwt(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;);
 	   $wnd.saveWhiteboardSnapshot_Gwt
 	     = @hotmath.gwt.cm_tools.client.ui.viewer.ResourceViewerImplTutor::saveWhiteboardSnapshot_Gwt(Ljava/lang/String;);
-
-       // define GWT method to be called by CatchupMath.min.js
-       // 
-  	   $wnd.externalTutorJsLoaded_Gwt
-	     = @hotmath.gwt.cm_tools.client.ui.viewer.ResourceViewerImplTutor::externalTutorJsLoaded_Gwt();
-
-        // load the tutor external JS dependencies asynchronously 
-        // 
-	    var el = document.createElement('script');
-	    el.src = '/gwt-resources/js/CatchupMath.min.js';
-	    el.type = 'text/javascript';
-	    $wnd.document.getElementsByTagName("head")[0].appendChild(el);
      }-*/;
 
     /**
