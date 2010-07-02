@@ -1,5 +1,6 @@
 package hotmath.gwt.cm_tools.client.model;
 
+import hotmath.gwt.cm_tools.client.ui.CmLogger;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
 import hotmath.gwt.shared.client.eventbus.CmEventListenerImplDefault;
 import hotmath.gwt.shared.client.eventbus.EventBus;
@@ -8,7 +9,6 @@ import hotmath.gwt.shared.client.eventbus.EventType;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.user.client.Timer;
 
 /**
@@ -80,13 +80,13 @@ public class CmAdminDataReader extends Timer {
         long now = System.currentTimeMillis() - lastRefresh;
         boolean needsRefreshing = now > REFRESH_MILLS;
         if(skipRefresh) {
-            Log.debug("CmAdminDataReader: skipped, by request");
+            CmLogger.debug("CmAdminDataReader: skipped, by request");
         }
         else if(isRefreshing) {
-            Log.debug("CmAdminDataReader: skipped, is currently being refresehed&& needsRefreshing");
+            CmLogger.debug("CmAdminDataReader: skipped, is currently being refresehed&& needsRefreshing");
         }
         else if(!needsRefreshing) {
-            Log.debug("CmAdminDataReader: skipped, not needed");
+            CmLogger.debug("CmAdminDataReader: skipped, not needed");
         }
         else {
             fireRefreshData();
@@ -99,7 +99,7 @@ public class CmAdminDataReader extends Timer {
     public void fireRefreshData() {
         isRefreshing=true;
         try {
-            Log.debug("CmAdminDataReader: refreshing data");
+            CmLogger.debug("CmAdminDataReader: refreshing data");
             for (CmAdminDataRefresher reader : dataReaders) {
                 reader.refreshData();
             }

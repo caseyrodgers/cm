@@ -1,6 +1,6 @@
 package hotmath.gwt.cm.client.history;
 
-import com.allen_sauer.gwt.log.client.Log;
+import hotmath.gwt.cm_tools.client.ui.CmLogger;
 
 
 
@@ -79,7 +79,7 @@ public class CmLocation {
     }
     
     private void warn(String msg) {
-        Log.warn("Warning: " + msg);
+        CmLogger.info("Warning: " + msg);
     }
 
     public String getResourceType() {

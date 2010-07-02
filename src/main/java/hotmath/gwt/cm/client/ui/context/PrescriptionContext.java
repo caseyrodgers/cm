@@ -34,7 +34,6 @@ import hotmath.gwt.shared.client.util.UserInfo.ProgramCompletionAction;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.Events;
@@ -303,7 +302,7 @@ public class PrescriptionContext implements CmContext {
             }
             @Override
             public void oncapture(RpcData userAdvance) {
-                Log.info("MarkPrescriptionLessonAsViewedAction complete: " + userAdvance);
+                CmLogger.info("MarkPrescriptionLessonAsViewedAction complete: " + userAdvance);
             }
         }.register();
     }

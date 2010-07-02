@@ -2,6 +2,7 @@ package hotmath.gwt.cm_tools.client;
 
 import hotmath.gwt.cm_rpc.client.rpc.CmService;
 import hotmath.gwt.cm_rpc.client.rpc.CmServiceAsync;
+import hotmath.gwt.cm_tools.client.ui.CmLogger;
 import hotmath.gwt.shared.client.CatchupMathVersionInfo;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.data.CmAsyncRequest;
@@ -11,29 +12,20 @@ import hotmath.gwt.shared.client.eventbus.EventType;
 import hotmath.gwt.shared.client.rpc.action.GetCmVersionInfoAction;
 import hotmath.gwt.shared.client.rpc.result.CmVersionInfo;
 
-import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.Registry;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.MessageBoxEvent;
 import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.user.client.Command;
-import com.google.gwt.user.client.DeferredCommand;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.rpc.ServiceDefTarget;
 
 public class CatchupMathTools implements EntryPoint {
     
     public void onModuleLoad() {
-        Log.setUncaughtExceptionHandler();
-
-        DeferredCommand.addCommand(new Command() {
-          public void execute() {
-              onModuleLoadLocal();
-          }
-        });
-      }
+    	CmLogger.info("Catchup Math Tools library loaded successfully");
+    }
     
     static {
         setupServices();
@@ -42,7 +34,7 @@ public class CatchupMathTools implements EntryPoint {
      * This is the entry point method.
      */
     public void onModuleLoadLocal() {
-        Log.info("Catchup Math Tools library loaded successfully");
+        CmLogger.info("Catchup Math Tools library loaded successfully");
     }
 
     static public void setBusy(boolean trueFalse) {
@@ -94,7 +86,7 @@ public class CatchupMathTools implements EntryPoint {
      * 
      */
     static private void setupServices() {
-        Log.info("CatchupMathTools: Setting up services");
+        CmLogger.info("CatchupMathTools: Setting up services");
         
         
         String point = GWT.getModuleBaseURL();

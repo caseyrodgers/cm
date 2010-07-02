@@ -21,14 +21,13 @@ import hotmath.gwt.shared.client.eventbus.EventBus;
 import hotmath.gwt.shared.client.eventbus.EventType;
 import hotmath.gwt.shared.client.rpc.RetryAction;
 import hotmath.gwt.shared.client.rpc.action.GetStudentModelAction;
+import hotmath.gwt.shared.client.rpc.action.RunNetTestAction.TestApplication;
 import hotmath.gwt.shared.client.rpc.action.SaveFeedbackAction;
 import hotmath.gwt.shared.client.rpc.action.SetBackgroundStyleAction;
-import hotmath.gwt.shared.client.rpc.action.RunNetTestAction.TestApplication;
 import hotmath.gwt.shared.client.util.CmRunAsyncCallback;
 import hotmath.gwt.shared.client.util.NetTestWindow;
 import hotmath.gwt.shared.client.util.UserInfo;
 
-import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.Registry;
 import com.extjs.gxt.ui.client.data.BaseModelData;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
@@ -43,8 +42,8 @@ import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.VerticalPanel;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.ComboBox;
-import com.extjs.gxt.ui.client.widget.form.FieldSet;
 import com.extjs.gxt.ui.client.widget.form.ComboBox.TriggerAction;
+import com.extjs.gxt.ui.client.widget.form.FieldSet;
 import com.extjs.gxt.ui.client.widget.layout.FlowLayout;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.ui.Label;
@@ -81,7 +80,7 @@ public class HelpWindow extends CmWindow {
             messageArea = new Html(html);
             
         } catch (Exception e) {
-            Log.info("Error getting context help", e);
+            CmLogger.error("Error getting context help", e);
             messageArea.setHtml("Catchup Math makes learning fun!");
         }
         
@@ -434,7 +433,7 @@ public class HelpWindow extends CmWindow {
                         s.execute(action,this);
                     }
                     public void oncapture(RpcData result) {
-                        Log.info("Feedback saved");
+                    	CmLogger.info("Feedback saved");
                         CmBusyManager.setBusy(false);
                     }
                 }.register();

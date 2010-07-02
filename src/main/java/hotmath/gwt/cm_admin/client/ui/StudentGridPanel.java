@@ -11,6 +11,7 @@ import hotmath.gwt.cm_tools.client.model.StudentModelExt;
 import hotmath.gwt.cm_tools.client.model.StudentModelI;
 import hotmath.gwt.cm_tools.client.ui.AutoRegisterStudentSetup;
 import hotmath.gwt.cm_tools.client.ui.BulkStudentRegistrationWindow;
+import hotmath.gwt.cm_tools.client.ui.CmLogger;
 import hotmath.gwt.cm_tools.client.ui.GroupSelectorWidget;
 import hotmath.gwt.cm_tools.client.ui.PdfWindow;
 import hotmath.gwt.cm_tools.client.ui.RegisterStudent;
@@ -24,9 +25,9 @@ import hotmath.gwt.shared.client.eventbus.EventType;
 import hotmath.gwt.shared.client.model.CmStudentPagingLoadResult;
 import hotmath.gwt.shared.client.rpc.RetryAction;
 import hotmath.gwt.shared.client.rpc.action.GeneratePdfAction;
+import hotmath.gwt.shared.client.rpc.action.GeneratePdfAction.PdfType;
 import hotmath.gwt.shared.client.rpc.action.GetStudentGridPageAction;
 import hotmath.gwt.shared.client.rpc.action.UnregisterStudentsAction;
-import hotmath.gwt.shared.client.rpc.action.GeneratePdfAction.PdfType;
 import hotmath.gwt.shared.client.util.CmRunAsyncCallback;
 
 import java.util.ArrayList;
@@ -34,7 +35,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.Style.LayoutRegion;
 import com.extjs.gxt.ui.client.Style.SelectionMode;
 import com.extjs.gxt.ui.client.Style.SortDir;
@@ -1044,7 +1044,7 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
         }
 
         private void applyQuickSearch() {
-            Log.debug("GroupFilter: setting quick search: " + quickFilter.getValue());
+            CmLogger.debug("GroupFilter: setting quick search: " + quickFilter.getValue());
             boolean shouldRefresh = true;
             if (_quickSearch != null && _quickSearch.equals(quickFilter.getValue()))
                 shouldRefresh = false;

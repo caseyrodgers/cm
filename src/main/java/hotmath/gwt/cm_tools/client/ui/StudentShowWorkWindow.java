@@ -1,13 +1,12 @@
 package hotmath.gwt.cm_tools.client.ui;
 
+import hotmath.gwt.cm_rpc.client.rpc.CmList;
+import hotmath.gwt.cm_rpc.client.rpc.InmhItemData;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.model.StudentActivityModel;
 import hotmath.gwt.cm_tools.client.model.StudentModelExt;
 import hotmath.gwt.cm_tools.client.model.StudentShowWorkModel;
-import hotmath.gwt.cm_rpc.client.rpc.CmList;
-import hotmath.gwt.cm_rpc.client.rpc.CmServiceAsync;
-import hotmath.gwt.cm_rpc.client.rpc.InmhItemData;
 import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
 import hotmath.gwt.cm_tools.client.ui.resource_viewer.CmResourcePanel;
 import hotmath.gwt.cm_tools.client.ui.viewer.ResourceViewerFactory;
@@ -19,7 +18,6 @@ import hotmath.gwt.shared.client.util.UserInfo;
 
 import java.util.List;
 
-import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.Style.LayoutRegion;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.ComponentEvent;
@@ -171,7 +169,7 @@ public class StudentShowWorkWindow extends CmWindow {
             ResourceViewerFactory.createAsync(client);
             
         } catch (Exception e) {
-            Log.error("Error creating Show Work panel for student: " + pid + "," + student.getUid(), e);
+            CmLogger.error("Error creating Show Work panel for student: " + pid + "," + student.getUid(), e);
         }
         return lc;
     }
@@ -184,7 +182,7 @@ public class StudentShowWorkWindow extends CmWindow {
             public void handleEvent(ComponentEvent ce) {
                 String pid = lv.getSelectionModel().getSelectedItem().getPid(); 
 
-                Log.debug("StudentShoworkWindow: " + "Loading solution: " + pid);
+                CmLogger.debug("StudentShoworkWindow: " + "Loading solution: " + pid);
 
                 createCenterPanelForPid(pid);
                 layout();
@@ -216,7 +214,7 @@ public class StudentShowWorkWindow extends CmWindow {
             @Override
             public void attempt() {
                 CmBusyManager.setBusy(true);
-                Log.debug("StudentShowWorkWindow: reading student show work list");
+                CmLogger.debug("StudentShowWorkWindow: reading student show work list");
                 GetStudentShowWorkAction action = new GetStudentShowWorkAction(student.getUid(), activityModel.getRunId());
                 setAction(action);
                 CmShared.getCmService().execute(action,this);
@@ -230,7 +228,7 @@ public class StudentShowWorkWindow extends CmWindow {
                 else {
                     createDataList(list);
                 }
-                Log.debug("StudentShowWorkWindow: student show work read successfully");
+                CmLogger.debug("StudentShowWorkWindow: student show work read successfully");
             }
 
             public void onFailure(Throwable caught) {

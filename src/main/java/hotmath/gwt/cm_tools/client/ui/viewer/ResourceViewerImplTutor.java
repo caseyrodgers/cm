@@ -18,7 +18,6 @@ import hotmath.gwt.shared.client.util.UserInfo;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.Style.Scroll;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
@@ -112,7 +111,7 @@ public class ResourceViewerImplTutor extends CmResourcePanelImplWithWhiteboard {
     Widget tutorPanel;
     public void showSolution() {
 
-    	Log.debug("ResourceViewerImplTutor: loading solution '" + pid + "'");
+    	CmLogger.debug("ResourceViewerImplTutor: loading solution '" + pid + "'");
         
         /** If panel has already been initialized, then 
          *  use existing panel.
@@ -235,7 +234,7 @@ public class ResourceViewerImplTutor extends CmResourcePanelImplWithWhiteboard {
     }
 
     static public void flashInputField_Gwt(String result, String input, String answer, String id) {
-        Log.info("FIF: result: " + result + ",input: " + input + ", answer:  " + answer + ",id: " + id);
+        CmLogger.info("FIF: result: " + result + ",input: " + input + ", answer:  " + answer + ",id: " + id);
         if(result.equals("correct")) {
             EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_SOLUTION_FIF_CORRECT,_instance.getPid()));
         }

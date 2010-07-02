@@ -6,6 +6,7 @@ import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.model.CmAdminModel;
 import hotmath.gwt.cm_tools.client.model.CustomLessonModel;
 import hotmath.gwt.cm_tools.client.model.CustomProgramModel;
+import hotmath.gwt.cm_tools.client.ui.CmLogger;
 import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.data.CmAsyncRequest;
@@ -13,13 +14,12 @@ import hotmath.gwt.shared.client.rpc.RetryAction;
 import hotmath.gwt.shared.client.rpc.action.CustomProgramAction;
 import hotmath.gwt.shared.client.rpc.action.CustomProgramAction.ActionType;
 
-import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.Style.LayoutRegion;
 import com.extjs.gxt.ui.client.Style.Orientation;
 import com.extjs.gxt.ui.client.Style.Scroll;
+import com.extjs.gxt.ui.client.dnd.DND.Feedback;
 import com.extjs.gxt.ui.client.dnd.ListViewDragSource;
 import com.extjs.gxt.ui.client.dnd.ListViewDropTarget;
-import com.extjs.gxt.ui.client.dnd.DND.Feedback;
 import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.Events;
@@ -376,7 +376,7 @@ public class CustomProgramDesignerDialog extends CmWindow {
             
             @Override
             public void oncapture(CmList<CustomLessonModel> value) {
-                Log.info("CustomProgramModel Save complete: " + value);
+                CmLogger.info("CustomProgramModel Save complete: " + value);
                 CmBusyManager.setBusy(false);
                 callback.requestComplete("refresh");
                 close();

@@ -3,7 +3,6 @@ package hotmath.gwt.cm_tools.client.ui;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.shared.client.data.CmAsyncRequest;
 
-import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.FormEvent;
@@ -64,7 +63,7 @@ public class CmUploadForm extends FormPanel {
 
                 if (response.toLowerCase().indexOf("<pre") != -1) {
                     response = extractJson(response);
-                    Log.info("CmUploadForm: done extracting JSON: " + response);
+                    CmLogger.info("CmUploadForm: done extracting JSON: " + response);
                 }
 
                 try {

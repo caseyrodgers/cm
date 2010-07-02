@@ -1,18 +1,8 @@
 <module rename-to='cm_shared'>
-
       <!-- Inherit the core Web Toolkit stuff.                        -->
       <inherits name='com.google.gwt.user.User'/>
-
-      <!--
-      <inherits name='hotmath.gwt.debug_panel.DebugPanel'/>   
-      -->
-
       <inherits name='hotmath.gwt.cm_rpc.CmRpc'/>
-      
       <!-- Specify the app entry point class.                         -->
       <entry-point class='hotmath.gwt.shared.client.CmShared'/>
-
-  
-     <script src="/gwt-resources/js/shared.js"/>
 </module>
 

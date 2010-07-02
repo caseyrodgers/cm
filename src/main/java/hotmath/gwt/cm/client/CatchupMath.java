@@ -9,6 +9,7 @@ import hotmath.gwt.cm.client.ui.context.PrescriptionCmGuiDefinition;
 import hotmath.gwt.cm.client.ui.context.QuizCmGuiDefinition;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
+import hotmath.gwt.cm_tools.client.ui.CmLogger;
 import hotmath.gwt.cm_tools.client.ui.CmMainPanel;
 import hotmath.gwt.cm_tools.client.ui.FooterPanel;
 import hotmath.gwt.cm_tools.client.util.GenericVideoPlayerForMona;
@@ -24,9 +25,7 @@ import hotmath.gwt.shared.client.rpc.action.RunNetTestAction.TestApplication;
 import hotmath.gwt.shared.client.util.CmRunAsyncCallback;
 import hotmath.gwt.shared.client.util.NetTestWindow;
 import hotmath.gwt.shared.client.util.UserInfo;
-import hotmath.inmh.INeedMoreHelpItemVideoMathTv;
 
-import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.Style.LayoutRegion;
 import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.Events;
@@ -77,7 +76,7 @@ public class CatchupMath implements EntryPoint {
      * This is the entry point method.
      */
     public void onModuleLoad() {
-        Log.info("Catchup Math Startup");
+        CmLogger.info("Catchup Math Startup");
 
         __thisInstance = this;
 
@@ -232,9 +231,6 @@ public class CatchupMath implements EntryPoint {
     public void startNormalOperation() {
         History.addValueChangeHandler(new CatchupMathHistoryListener());
         History.fireCurrentHistoryState();
-        
-        
-        loadCatchupMathExternalJs();
 
         /**
          * Register an event lister waiting to see if user's data change. If it
@@ -273,12 +269,19 @@ public class CatchupMath implements EntryPoint {
      *  
      *  Move to TutorViewer.
      */
-    private native void loadCatchupMathExternalJs() /*-{
-        var el = document.createElement('script');
-        el.src = '/gwt-resources/js/CatchupMath.min.js';
-        el.type = 'text/javascript';
-        $wnd.document.getElementsByTagName("head")[0].appendChild(el);
-    }-*/;
+//    private native void loadCatchupMathExternalJs() /*-{
+//        var el = document.createElement('script');
+//        el.src = '/gwt-resources/js/CatchupMath.min.js';
+//        el.type = 'text/javascript';
+//        try {
+//           var d = $doc.getElementsByTagName("head")[0].appendChild(el);
+//           alert(d.appendChild);
+//           d.appendChild(el);
+//        }
+//        catch(e) {
+//            alert('There was a problem loading an external JS file: ' + e);
+//        }
+//    }-*/;
 
     /**
      * Helper page to create the Login page

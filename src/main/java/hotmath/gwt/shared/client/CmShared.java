@@ -2,6 +2,7 @@ package hotmath.gwt.shared.client;
 
 import hotmath.gwt.cm_rpc.client.rpc.CmServiceAsync;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
+import hotmath.gwt.cm_tools.client.ui.CmLogger;
 import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
 import hotmath.gwt.shared.client.data.CmAsyncRequestImplDefault;
 import hotmath.gwt.shared.client.model.UserInfoBase;
@@ -19,7 +20,6 @@ import java.util.Map;
 import pl.rmalinowski.gwt2swf.client.utils.PlayerVersion;
 import pl.rmalinowski.gwt2swf.client.utils.SWFObjectUtil;
 
-import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.Registry;
 import com.extjs.gxt.ui.client.widget.Html;
 import com.google.gwt.core.client.EntryPoint;
@@ -187,10 +187,10 @@ public class CmShared implements EntryPoint {
                             /** Store login name to show to user on succesful
                              *  registration.  
                              *  
-                             *  TODO: this is a bug waiting to happen, get ride of global.
+                             *  TODO: this is a bug waiting to happen, get rid of global.
                              *    For example, what happens if you do a .. back .. the a forward...
                              *    
-                             *  BUG: the above actually cause null to show up when self-registering.  
+                             *  BUG: the above actually will cause null to show up when self-registering.  
                              */
                             __loginName = userInfo.getLoginName();
                             
@@ -224,7 +224,7 @@ public class CmShared implements EntryPoint {
 
     static private void displayLoginError(Exception exception) {
         exception.printStackTrace();
-        Log.info("Login error: " + exception.getMessage());
+        CmLogger.info("Login error: " + exception.getMessage());
         
 
         String msg = "We suggest you refresh this page by pressing the F5 function key.";

@@ -3,7 +3,7 @@ package hotmath.gwt.cm.client;
 import hotmath.gwt.cm_rpc.client.rpc.RpcData;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
-import hotmath.gwt.cm_rpc.client.rpc.CmServiceAsync;
+import hotmath.gwt.cm_tools.client.ui.CmLogger;
 import hotmath.gwt.cm_tools.client.ui.ContextController;
 import hotmath.gwt.cm_tools.client.ui.InfoPopupBox;
 import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
@@ -20,8 +20,6 @@ import hotmath.gwt.shared.client.util.UserInfo;
 
 import java.util.List;
 
-import com.allen_sauer.gwt.log.client.Log;
-import com.extjs.gxt.ui.client.Registry;
 import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
@@ -39,7 +37,6 @@ import com.extjs.gxt.ui.client.widget.layout.CenterLayout;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.layout.FormLayout;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Label;
 
 
@@ -265,7 +262,7 @@ public class AutoStudentRegistrationPanel extends CmMainResourceContainer {
 
             //@Override
             public void onFailure(Throwable caught) {
-                Log.info(caught.getMessage(), caught);
+                CmLogger.error(caught.getMessage(), caught);
                 String msg = caught.getMessage();
                 if(msg.indexOf("passcode you entered") > -1) {
                     showAlreadyMsg(password);

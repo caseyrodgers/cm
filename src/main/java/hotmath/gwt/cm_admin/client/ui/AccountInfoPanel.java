@@ -7,10 +7,10 @@ import hotmath.gwt.cm_tools.client.model.AccountInfoModel;
 import hotmath.gwt.cm_tools.client.model.CmAdminDataReader;
 import hotmath.gwt.cm_tools.client.model.CmAdminDataRefresher;
 import hotmath.gwt.cm_tools.client.model.CmAdminModel;
+import hotmath.gwt.cm_tools.client.ui.CmLogger;
 import hotmath.gwt.shared.client.rpc.RetryAction;
 import hotmath.gwt.shared.client.rpc.action.GetAccountInfoForAdminUidAction;
 
-import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.Registry;
 import com.extjs.gxt.ui.client.core.XTemplate;
 import com.extjs.gxt.ui.client.util.Util;
@@ -109,7 +109,7 @@ public class AccountInfoPanel extends LayoutContainer implements CmAdminDataRefr
                 CmServiceAsync s = (CmServiceAsync) Registry.get("cmService");
                 GetAccountInfoForAdminUidAction action = new GetAccountInfoForAdminUidAction(uid);
                 setAction(action);
-                Log.info("AccountInfoPanel: reading student info RPC");
+                CmLogger.info("AccountInfoPanel: reading student info RPC");
                 s.execute(action,this);
             }
 
@@ -143,7 +143,7 @@ public class AccountInfoPanel extends LayoutContainer implements CmAdminDataRefr
                 
                 setAccountInfoModel(ai);
                 
-                Log.info("AccountInfoPanel: student info read succesfully");
+                CmLogger.info("AccountInfoPanel: student info read succesfully");
             }
         }.register();        
     }

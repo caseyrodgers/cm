@@ -18,7 +18,6 @@ import hotmath.gwt.shared.client.util.UserInfo;
 
 import java.util.List;
 
-import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.Style.Scroll;
 import com.extjs.gxt.ui.client.widget.Html;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
@@ -98,7 +97,7 @@ public class QuizPage extends LayoutContainer {
 	            GetQuizHtmlAction quizAction = new GetQuizHtmlAction(UserInfo.getInstance().getUid(), UserInfo.getInstance().getTestId(), UserInfo.getInstance().getTestSegment());
 	            setAction(quizAction);
 	            quizAction.setLoadActive(loadActive);
-	            Log.info("QuizPage.getQuizHtmlFromServer: " + quizAction);
+	            CmLogger.info("QuizPage.getQuizHtmlFromServer: " + quizAction);
 	            CmShared.getCmService().execute(quizAction, this);
 	        }
 	        

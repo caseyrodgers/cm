@@ -34,7 +34,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.Style.LayoutRegion;
 import com.extjs.gxt.ui.client.Style.Scroll;
 import com.extjs.gxt.ui.client.fx.FxConfig;
@@ -72,7 +71,7 @@ public class PrescriptionCmGuiDefinition implements CmGuiDefinition {
      */
     public void markResourceAsViewed(final InmhItemData resourceItem) {
         if (UserInfo.getInstance().getRunId() == 0)
-            Log.error("PrescriptionCmGuiDefinition: run_id is null!");
+        	CmLogger.error("PrescriptionCmGuiDefinition: run_id is null!");
 
         /**
          * 
@@ -90,7 +89,7 @@ public class PrescriptionCmGuiDefinition implements CmGuiDefinition {
             
             public void oncapture(RpcData result) {
 
-                Log.debug("PrescriptionResourceAccord: setItemAsViewed: " + resourceItem);
+            	CmLogger.debug("PrescriptionResourceAccord: setItemAsViewed: " + resourceItem);
 
                 boolean isSolutionResource = (resourceItem.getType().equals("practice") || resourceItem.getType()
                         .equals("cmextra"));
@@ -207,7 +206,7 @@ public class PrescriptionCmGuiDefinition implements CmGuiDefinition {
 
         CmBusyManager.setBusy(true);
 
-        Log.info("PrescriptionCmGuiDefinition.getAsyncDataFromServer:" + sessionNumber + ", " + location);
+        CmLogger.info("PrescriptionCmGuiDefinition.getAsyncDataFromServer:" + sessionNumber + ", " + location);
 
         new RetryAction<PrescriptionSessionResponse>() {
 
@@ -253,7 +252,7 @@ public class PrescriptionCmGuiDefinition implements CmGuiDefinition {
                         CatchupMathTools.showAlert("There was a problem reading this prescription data");
                     }
                 } catch (Exception e) {
-                    Log.error("Error reading data from server", e);
+                	CmLogger.error("Error reading data from server", e);
                 } finally {
                     CmBusyManager.setBusy(false);
                 }

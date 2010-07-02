@@ -1,8 +1,7 @@
 package hotmath.gwt.shared.client.rpc;
 
-import com.allen_sauer.gwt.log.client.Log;
-
 import hotmath.gwt.cm_rpc.client.rpc.Response;
+import hotmath.gwt.cm_tools.client.ui.CmLogger;
 import hotmath.gwt.shared.client.CmShared;
 
 
@@ -65,7 +64,7 @@ public class CmWebResource implements Response {
     	name = name.replaceAll("\\\\", "/");
 
         String ret = CmShared.CM_HOME_URL + webBase + name;
-        Log.info("CmWebResource: return URL: " + ret);
+        CmLogger.info("CmWebResource: return URL: " + ret);
         return ret;
     }
 }

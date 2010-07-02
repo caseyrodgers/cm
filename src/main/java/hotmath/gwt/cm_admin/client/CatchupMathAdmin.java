@@ -8,11 +8,11 @@ import hotmath.gwt.cm_admin.client.ui.StudentShowWorkPanel;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.model.CmAdminDataReader;
 import hotmath.gwt.cm_tools.client.model.CmAdminModel;
+import hotmath.gwt.cm_tools.client.ui.CmLogger;
 import hotmath.gwt.shared.client.CmLoginAsync;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.util.CmRunAsyncCallback;
 
-import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.Style.LayoutRegion;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.Viewport;
@@ -44,7 +44,7 @@ public class CatchupMathAdmin implements EntryPoint, ValueChangeHandler<String> 
 
     public void onModuleLoad() {
 
-        Log.info("CatchupMathAdmin is starting");
+        CmLogger.info("CatchupMathAdmin is starting");
 
         instance = this;
 
@@ -101,7 +101,7 @@ public class CatchupMathAdmin implements EntryPoint, ValueChangeHandler<String> 
 
     
     private void loadMainPage() {
-        Log.info("Loading CMAdmin main page");
+        CmLogger.info("Loading CMAdmin main page");
         mainContainer.removeAll();
 
 
@@ -114,7 +114,7 @@ public class CatchupMathAdmin implements EntryPoint, ValueChangeHandler<String> 
     }
 
     private void loadShowWorkPage() {
-        Log.info("Loading CMAdmin show work page");
+        CmLogger.info("Loading CMAdmin show work page");
         mainContainer.removeAll();
         mainContainer.setLayout(new FitLayout());
 
@@ -136,7 +136,7 @@ public class CatchupMathAdmin implements EntryPoint, ValueChangeHandler<String> 
     @Override
     public void onValueChange(ValueChangeEvent<String> history) {
 
-        Log.info("CatchupMathAdmin: history changed: " + history);
+        CmLogger.info("CatchupMathAdmin: history changed: " + history);
 
         if (history.getValue().equals("sw")) {
             loadShowWorkPage();

@@ -197,6 +197,10 @@ public class CmLogger extends CmWindow {
     static public void error(String msg,Throwable th) {
         getInstance()._error(msg, th);
     }
+    static public void error(String msg) {
+        getInstance()._error(msg, null);
+    }
+
     
     
     private void _info(String msg) {
