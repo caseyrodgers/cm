@@ -21,7 +21,20 @@ public class EndOfProgramHander_Test extends CmDbTestCase {
         userId = setupDemoAccount();
     }
     
-   
+
+    public void testEndOfProgramAlg2Prof() throws Exception {
+
+        // assign chapter test to test student (last chapter)
+        dao.assignProgramToStudent(conn, userId, CmProgram.ALG2_PROF, null);
+        
+        EndOfProgramHandler eop = new EndOfProgramHandler(userId);
+        StudentUserProgramModel nextProgram = eop.getNextProgram();
+        
+        // this should just loop around
+        assertTrue(nextProgram.getTestDefId() == CmProgram.GEOM_PROF.getDefId());
+    }  
+
+    
     public void testEndOfProgramNational() throws Exception {
 
         // assign chapter test to test student (last chapter)

@@ -66,7 +66,9 @@ public class EndOfProgramHandler {
                     || programCurr.getTestDefId() == CmProgram.GEOM_PROF_V1.getDefId()) {
                 updateProgram(CmProgram.ALG2_PROF.getSubject(), CmProgram.ALG2_PROF.getProgramType(),null);
             }
-            else if(programCurr.getTestDefId() == CmProgram.ALG2_PROF.getDefId() ) {
+            else if(programCurr.getTestDefId() == CmProgram.ALG2_PROF.getDefId()
+            		|| programCurr.getTestDefId() == CmProgram.ALG2_PROF_V1.getDefId()) {
+            	
                 updateProgram(CmProgram.CAHSEEHM.getSubject(),CmProgram.CAHSEEHM.getProgramType(),null);
             }
              else if(programCurr.getTestDefId() == CmProgram.NATIONAL.getDefId()) {
