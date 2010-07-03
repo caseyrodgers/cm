@@ -3,7 +3,6 @@ package hotmath.gwt.cm_tools.client;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.widget.Viewport;
 import com.google.gwt.user.client.ui.RootPanel;
 
