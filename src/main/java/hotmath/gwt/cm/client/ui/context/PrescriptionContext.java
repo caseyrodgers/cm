@@ -132,7 +132,7 @@ public class PrescriptionContext implements CmContext {
                 }
             }
             /**
-             * If all required solutions have been not been viewed, then force
+             * If all required solutions have not been viewed, then force
              * user to do so
              * 
              * if 'debug' parameter is on URL, then this check is skipped
@@ -146,8 +146,18 @@ public class PrescriptionContext implements CmContext {
                  *        accordion
                  */
                 ((PrescriptionCmGuiDefinition) CmMainPanel.__lastInstance.cmGuiDef)._guiWidget.expandResourcePracticeProblems();
-                CatchupMathTools.showAlert("View All the Steps","Please view all required practice problem answers to the very last step.",new CmAsyncRequestImplDefault() {
-                    
+                
+                /** show an appropriate message for either RPA or RPP 
+                 * 
+                 */
+                String msg=null;
+                if(!prescriptionData.getCurrSession().isSessionRpa()) {
+                	msg = "Please view all required practice problem answers to the very last step.";
+                }
+                else {
+                	msg = "Please complete all required practice activities.";
+                }
+                CatchupMathTools.showAlert("More Practice Required",msg,new CmAsyncRequestImplDefault() {
                     @Override
                     public void requestComplete(String requestData) {
                         ((PrescriptionCmGuiDefinition) CmMainPanel.__lastInstance.cmGuiDef)._guiWidget.expandResourcePracticeProblems();

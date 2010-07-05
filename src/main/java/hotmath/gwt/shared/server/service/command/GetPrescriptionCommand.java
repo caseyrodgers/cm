@@ -123,6 +123,7 @@ public class GetPrescriptionCommand implements ActionHandler<GetPrescriptionActi
             // @TODO: should we have an initialize phase and return this info
             // This would impose two request/response
             PrescriptionSessionData sessionData = new PrescriptionSessionData();
+            sessionData.setSessionRpa(isActivity);
             for (AssessmentPrescriptionSession s : pres.getSessions()) {
                 presData.getSessionTopics().add(s.getTopic());
             }

@@ -12,8 +12,24 @@ public class PrescriptionSessionData implements IsSerializable{
 	String topic;
 	String name;
 	int sessionNumber;
+	boolean sessionRpa;
 
-    public PrescriptionSessionData() {}
+    public boolean isSessionRpa() {
+		return sessionRpa;
+	}
+
+    /** Is this session data in RPA mode or RPP
+     *  
+     *  If RPA, then there are Activities for RP
+     *  otherwise, it is solutions.
+     *  
+     * @param sessionRpa
+     */
+	public void setSessionRpa(boolean sessionRpa) {
+		this.sessionRpa = sessionRpa;
+	}
+
+	public PrescriptionSessionData() {}
     
 	public String getTopic() {
 		return topic;
