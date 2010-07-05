@@ -46,6 +46,7 @@ import com.extjs.gxt.ui.client.widget.form.ComboBox.TriggerAction;
 import com.extjs.gxt.ui.client.widget.form.FieldSet;
 import com.extjs.gxt.ui.client.widget.layout.FlowLayout;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Label;
 
 public class HelpWindow extends CmWindow {
@@ -57,6 +58,7 @@ public class HelpWindow extends CmWindow {
         setWidth(490);
         setModal(true);
         setResizable(false);
+        setClosable(false);
         addStyleName("help-window");
         setHeading("Catchup-Math Help Window, version: " + CatchupMathVersionInfo.getBuildVersion());
 
@@ -69,6 +71,7 @@ public class HelpWindow extends CmWindow {
         Button closeBtn = new Button("Close");
         closeBtn.addSelectionListener(new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent ce) {
+            	EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_MODAL_WINDOW_CLOSED, this));
                 HelpWindow.this.close();
             }
         });
@@ -280,7 +283,7 @@ public class HelpWindow extends CmWindow {
                     GWT.runAsync(new CmRunAsyncCallback() {
                         @Override
                         public void onSuccess() {
-                            CmLogger.getInstance().setVisible(true);                        
+                            CmLogger.getInstance().enable(true);                        
                         }
                     });
                 }

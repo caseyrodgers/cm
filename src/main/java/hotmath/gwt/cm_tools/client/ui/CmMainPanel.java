@@ -150,19 +150,6 @@ public class CmMainPanel extends LayoutContainer {
                 } else if (event.getEventType() == EventType.EVENT_TYPE_RESOURCE_VIEWER_CLOSE) {
                     __lastInstance.expandResourceButtons();
                     __lastInstance._lastResourceViewer = (CmResourcePanel) event.getEventData();
-                }
-                /**
-                 * Any modal window, should hide the resource window to allow
-                 * for Flash widgets to be hidden
-                 * 
-                 */
-                else if (event.getEventType() == EventType.EVENT_TYPE_MODAL_WINDOW_OPEN) {
-                    // we must remove any resource viewer that contains
-                    // flash, otherwise the z-order gets screwed up and
-                    // the dialog will bleed through the flash.
-                    if (__lastInstance != null && __lastInstance._lastResourceViewer instanceof ResourceViewerImplFlash) {
-                        __lastInstance._mainContent.removeResource();
-                    }
                 } else if (event.getEventType() == EventType.EVENT_TYPE_WINDOW_RESIZED) {
                     __lastInstance._mainContent.fireWindowResized();
                 } else if (event.getEventType() == EventType.EVENT_TYPE_CONTEXT_TOOLTIP_SHOW) {

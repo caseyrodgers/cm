@@ -16,6 +16,9 @@ import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
 import hotmath.gwt.cm_tools.client.ui.context.CmContext;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.data.CmAsyncRequestImplDefault;
+import hotmath.gwt.shared.client.eventbus.CmEvent;
+import hotmath.gwt.shared.client.eventbus.EventBus;
+import hotmath.gwt.shared.client.eventbus.EventType;
 import hotmath.gwt.shared.client.rpc.RetryAction;
 import hotmath.gwt.shared.client.rpc.action.CreateTestRunAction;
 import hotmath.gwt.shared.client.util.UserInfo;
@@ -149,6 +152,7 @@ public class QuizContext implements CmContext {
             CatchupMath.getThisInstance().showPrescriptionPanel();
         } else {
             final CmWindow window = new CmWindow();
+            EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_MODAL_WINDOW_OPEN));
             window.setModal(true);
             window.setAutoHeight(true);
             window.setWidth(350);

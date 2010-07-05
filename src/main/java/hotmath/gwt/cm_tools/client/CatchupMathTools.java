@@ -1,6 +1,5 @@
 package hotmath.gwt.cm_tools.client;
 
-import hotmath.gwt.cm_rpc.client.rpc.CmService;
 import hotmath.gwt.cm_rpc.client.rpc.CmServiceAsync;
 import hotmath.gwt.cm_tools.client.ui.CmLogger;
 import hotmath.gwt.shared.client.CatchupMathVersionInfo;
@@ -12,24 +11,18 @@ import hotmath.gwt.shared.client.eventbus.EventType;
 import hotmath.gwt.shared.client.rpc.action.GetCmVersionInfoAction;
 import hotmath.gwt.shared.client.rpc.result.CmVersionInfo;
 
-import com.extjs.gxt.ui.client.Registry;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.MessageBoxEvent;
 import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.google.gwt.core.client.EntryPoint;
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.rpc.ServiceDefTarget;
 
 public class CatchupMathTools implements EntryPoint {
     
     public void onModuleLoad() {
     	CmLogger.info("Catchup Math Tools library loaded successfully");
     }
-    
-    static {
-        setupServices();
-    }
+
     /**
      * This is the entry point method.
      */
@@ -64,15 +57,19 @@ public class CatchupMathTools implements EntryPoint {
         EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_MODAL_WINDOW_OPEN));
         MessageBox.alert(title, msg, new Listener<MessageBoxEvent>() {
             public void handleEvent(MessageBoxEvent be) {
+                EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_MODAL_WINDOW_CLOSED));
             }
         });
     }
 
     static public void showAlert(String title, String msg, final CmAsyncRequest callback) {
+        EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_MODAL_WINDOW_OPEN));
         MessageBox.alert(title, msg, new Listener<MessageBoxEvent>() {
             public void handleEvent(MessageBoxEvent be) {
                 if (callback != null)
                     callback.requestComplete(be.getValue());
+                
+                EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_MODAL_WINDOW_CLOSED));
             }
         });
     }
@@ -81,38 +78,17 @@ public class CatchupMathTools implements EntryPoint {
         showAlert("Info", msg, callback);
     }
 
-    /**
-     * Register any RPC services with the system
-     * 
-     */
-    static private void setupServices() {
-        CmLogger.info("CatchupMathTools: Setting up services");
-        
-        
-        String point = GWT.getModuleBaseURL();
-        if (!point.endsWith("/"))
-            point += "/";
-        
-        final CmServiceAsync cmService = (CmServiceAsync)GWT.create(CmService.class);
-        
-        
-        ((ServiceDefTarget) cmService).setServiceEntryPoint(point + "services/cmService");
-        Registry.register("cmService", cmService);        
-    }
     
     static public String FEEDBACK_MESSAGE="<p>Please use the Help button to send us feedback.</p>";
     
     
-    
-    
-
     /** Call server to get version information, send the URL
      *  that serves this app.
      *  
      */
     static public void showVersionInfo() {
 
-        CmServiceAsync s = (CmServiceAsync) Registry.get("cmService");
+        CmServiceAsync s = (CmServiceAsync) CmShared.getCmService();
         GetCmVersionInfoAction action = new GetCmVersionInfoAction(CmShared.CM_HOME_URL);
         s.execute(action, new AsyncCallback<CmVersionInfo>() {
 

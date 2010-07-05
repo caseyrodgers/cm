@@ -5,6 +5,7 @@ import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.ui.resource_viewer.CmResourcePanelContainer.ResourceViewerState;
 import hotmath.gwt.cm_tools.client.ui.viewer.ResourceViewerFactory;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
+import hotmath.gwt.shared.client.eventbus.CmEventListener;
 import hotmath.gwt.shared.client.eventbus.EventBus;
 import hotmath.gwt.shared.client.eventbus.EventType;
 import hotmath.gwt.shared.client.util.UserInfo;
@@ -30,6 +31,7 @@ public class CmMainResourceContainer extends LayoutContainer {
 	
 	public CmResourcePanelContainer currentContainer;
 	CmResourcePanel currentPanel;
+	String currentTitle;
 
     public CmMainResourceContainer() {
         addStyleName("resource-container");
@@ -39,6 +41,30 @@ public class CmMainResourceContainer extends LayoutContainer {
 		    addStyleName(UserInfo.getInstance().getBackgroundStyle());
 		
         setScrollMode(Scroll.AUTO);
+        
+
+        /** Setup listener to watch modal window views.   Since the
+         *  current resource might have embedded flash it could screw
+         *  up the z-order.  So, we remove the current resource and
+         *  restore it when the modal window is closed.
+         */
+        EventBus.getInstance().addEventListener(new CmEventListener() {
+			@Override
+			public void handleEvent(CmEvent event) {
+				if(event.getEventType() == EventType.EVENT_TYPE_MODAL_WINDOW_OPEN){
+					/** hide the current resource to avoid Flash z-order issues
+					 * 
+					 */
+				    removeAll();
+				    layout();
+				}
+				else if(event.getEventType() == EventType.EVENT_TYPE_MODAL_WINDOW_CLOSED) {
+					if(currentPanel != null) {
+						showResource(currentPanel, currentTitle);
+					}
+				}
+			}
+		});
 	}
 
     
@@ -117,6 +143,7 @@ public class CmMainResourceContainer extends LayoutContainer {
         layout();
         
         currentPanel = viewer;
+        currentTitle = title;
         
         EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_RESOURCE_VIEWER_OPEN, viewer));     
     }

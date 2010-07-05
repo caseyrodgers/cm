@@ -44,8 +44,6 @@ public class HeaderPanel extends LayoutContainer {
 		_helloInfo.setStyleName("hello-info");
 		add(_helloInfo);
 		
-
-		
 		IconButton btn = new IconButton("header-panel-help-btn");
 		btn.addSelectionListener(new SelectionListener<IconButtonEvent>() {
 			public void componentSelected(IconButtonEvent ce) {

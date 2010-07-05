@@ -473,7 +473,7 @@
           <inplace>true</inplace>
           <disableCastChecking>true</disableCastChecking>
           <disableClassMetadata>true</disableClassMetadata>
-          <soyc>false</soyc>
+          <soyc>true</soyc>
           <outputDirectory>${basedir}/src/main/webapp/</outputDirectory>
           <modules>
             <module>hotmath.gwt.cm.CatchupMath</module>

@@ -1,14 +1,15 @@
 package hotmath.gwt.shared.server.service;
 
+import hotmath.gwt.cm.client.rpc.GetPrescriptionAction;
 import hotmath.gwt.cm.server.CmDbTestCase;
 import hotmath.gwt.cm_admin.server.model.CmStudentDao;
 import hotmath.gwt.cm_rpc.client.rpc.GetSolutionAction;
 import hotmath.gwt.cm_rpc.client.rpc.CmArrayList;
 import hotmath.gwt.cm_rpc.client.rpc.CmList;
 import hotmath.gwt.cm_rpc.client.rpc.CreateTestRunResponse;
-import hotmath.gwt.cm_rpc.client.rpc.GetPrescriptionAction;
 import hotmath.gwt.cm_rpc.client.rpc.GetQuizHtmlAction;
 import hotmath.gwt.cm_rpc.client.rpc.GetReviewHtmlAction;
+import hotmath.gwt.cm_rpc.client.rpc.GetUserInfoAction;
 import hotmath.gwt.cm_rpc.client.rpc.PrescriptionSessionResponse;
 import hotmath.gwt.cm_rpc.client.rpc.QuizHtmlResult;
 import hotmath.gwt.cm_rpc.client.rpc.RpcData;
@@ -33,7 +34,6 @@ import hotmath.gwt.shared.client.rpc.action.GetQuizHtmlCheckedAction;
 import hotmath.gwt.shared.client.rpc.action.GetQuizResultsHtmlAction;
 import hotmath.gwt.shared.client.rpc.action.GetStateStandardsAction;
 import hotmath.gwt.shared.client.rpc.action.GetSummariesForActiveStudentsAction;
-import hotmath.gwt.shared.client.rpc.action.GetUserInfoAction;
 import hotmath.gwt.shared.client.rpc.action.GetViewedInmhItemsAction;
 import hotmath.gwt.shared.client.rpc.action.LogUserInAction;
 import hotmath.gwt.shared.client.rpc.action.MarkPrescriptionLessonAsViewedAction;

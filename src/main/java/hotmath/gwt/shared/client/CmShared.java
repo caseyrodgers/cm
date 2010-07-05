@@ -1,9 +1,9 @@
 package hotmath.gwt.shared.client;
 
+import hotmath.gwt.cm_rpc.client.rpc.CmService;
 import hotmath.gwt.cm_rpc.client.rpc.CmServiceAsync;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.ui.CmLogger;
-import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
 import hotmath.gwt.shared.client.data.CmAsyncRequestImplDefault;
 import hotmath.gwt.shared.client.model.UserInfoBase;
 import hotmath.gwt.shared.client.rpc.RetryAction;
@@ -20,19 +20,22 @@ import java.util.Map;
 import pl.rmalinowski.gwt2swf.client.utils.PlayerVersion;
 import pl.rmalinowski.gwt2swf.client.utils.SWFObjectUtil;
 
-import com.extjs.gxt.ui.client.Registry;
-import com.extjs.gxt.ui.client.widget.Html;
 import com.google.gwt.core.client.EntryPoint;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONParser;
 import com.google.gwt.json.client.JSONValue;
 import com.google.gwt.user.client.Cookies;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.rpc.ServiceDefTarget;
 
 public class CmShared implements EntryPoint {
     
     static public String __loginName;
-    
+
+    static {
+    	setupServices();
+    }
 
     // @Override
     public void onModuleLoad() {
@@ -244,14 +247,7 @@ public class CmShared implements EntryPoint {
         }
         else {
             /** show window that cannot be dismissed .. END OF LINE */
-            CmWindow cm = new CmWindow();
-            cm.setModal(true);
-            cm.setHeading("Login Error");
-            cm.setClosable(false);
-            cm.setResizable(false);
-            cm.add(new Html("<div style='padding: 10px;font-weight: bold'>" + msg + "</div>"));
-            cm.setSize(250,100);
-            cm.setVisible(true);
+            Window.alert(msg);
         }
     }
 
@@ -304,8 +300,27 @@ public class CmShared implements EntryPoint {
      *  
      * @return
      */
+    static CmServiceAsync _serviceInstance;
     static public CmServiceAsync getCmService() {
-        return (CmServiceAsync)Registry.get("cmService");
+        return _serviceInstance;
+    }
+    
+
+    /**
+     * Register any RPC services with the system
+     * 
+     */
+    static private void setupServices() {
+        CmLogger.info("CatchupMathTools: Setting up services");
+        
+        
+        String point = GWT.getModuleBaseURL();
+        if (!point.endsWith("/"))
+            point += "/";
+        
+        final CmServiceAsync cmService = (CmServiceAsync)GWT.create(CmService.class);
+        ((ServiceDefTarget) cmService).setServiceEntryPoint(point + "services/cmService");
+        _serviceInstance = cmService;
     }
 
     static private native String getHostName() /*-{

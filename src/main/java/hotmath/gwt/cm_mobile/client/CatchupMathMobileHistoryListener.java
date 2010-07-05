@@ -1,7 +1,7 @@
 package hotmath.gwt.cm_mobile.client;
 
+import hotmath.gwt.cm.client.rpc.GetPrescriptionAction;
 import hotmath.gwt.cm_mobile.client.rpc.CmMobileUser;
-import hotmath.gwt.cm_rpc.client.rpc.GetPrescriptionAction;
 import hotmath.gwt.cm_rpc.client.rpc.InmhItemData;
 import hotmath.gwt.cm_rpc.client.rpc.PrescriptionSessionDataResource;
 import hotmath.gwt.cm_rpc.client.rpc.PrescriptionSessionResponse;
