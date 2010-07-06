@@ -41,30 +41,7 @@ public class CmMainResourceContainer extends LayoutContainer {
 		    addStyleName(UserInfo.getInstance().getBackgroundStyle());
 		
         setScrollMode(Scroll.AUTO);
-        
 
-        /** Setup listener to watch modal window views.   Since the
-         *  current resource might have embedded flash it could screw
-         *  up the z-order.  So, we remove the current resource and
-         *  restore it when the modal window is closed.
-         */
-        EventBus.getInstance().addEventListener(new CmEventListener() {
-			@Override
-			public void handleEvent(CmEvent event) {
-				if(event.getEventType() == EventType.EVENT_TYPE_MODAL_WINDOW_OPEN){
-					/** hide the current resource to avoid Flash z-order issues
-					 * 
-					 */
-				    removeAll();
-				    layout();
-				}
-				else if(event.getEventType() == EventType.EVENT_TYPE_MODAL_WINDOW_CLOSED) {
-					if(currentPanel != null) {
-						showResource(currentPanel, currentTitle);
-					}
-				}
-			}
-		});
 	}
 
     
@@ -119,6 +96,15 @@ public class CmMainResourceContainer extends LayoutContainer {
             hme.printStackTrace();
             CatchupMathTools.showAlert("Error: " + hme.getMessage());
         }
+    }
+    
+    /** show the last viewed resource, if any
+     * 
+     */
+    public void showResource() {
+    	if(currentPanel != null) {
+    		showResource(currentPanel, currentTitle);
+    	}
     }
 
     

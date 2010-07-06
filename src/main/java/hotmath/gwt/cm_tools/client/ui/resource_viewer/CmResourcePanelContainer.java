@@ -84,8 +84,7 @@ public class CmResourcePanelContainer extends ContentPanel {
                     panel.removeResourcePanel();
                     EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_RESOURCE_VIEWER_CLOSE, panel));
                     
-                    CmResourcePanelContainer.this.container.removeAll();
-                    CmResourcePanelContainer.this.container.layout();
+                    CmResourcePanelContainer.this.container.removeResource();
                 }
             }));
         }		
