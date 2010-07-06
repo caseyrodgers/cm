@@ -865,6 +865,10 @@ img.resource-item-complete {
 .resource-viewer-impl-results #testset_footer .check-quiz-link {
 	display: none;
 }
+
+.resource-viewer-impl-results p {
+	margin-right: 10px;  /** add margin on right to show when scrollbar is visible */
+}
 	
 #testset_div a.check-quiz-link:link,#testset_div a.check-quiz-link:active,#testset_div a.check-quiz-link:visited,#testset_div a.check-quiz-link:hover {
         color: black;
@@ -904,7 +908,7 @@ img.resource-item-complete {
 }
 
 .response_div {
-   margin-right: 15px;
+   margin-right: 17px;
 }
 
 /** Target the background of the resource container for the tutor*/
