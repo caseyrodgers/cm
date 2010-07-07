@@ -83,12 +83,11 @@ public class StudentDetailsWindow extends CmWindow {
         ColumnModel cm = defineColumns();
 
         samGrid = new Grid<StudentActivityModel>(store, cm);
-        // samGrid.setStyleName("student-details-panel-grid");
         samGrid.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
         samGrid.getSelectionModel().setFiresEvents(true);
         samGrid.setStripeRows(true);
         samGrid.setWidth(565);
-        samGrid.setHeight(210);
+        samGrid.setHeight(225);
 
         samGrid.getSelectionModel().addSelectionChangedListener(new SelectionChangedListener<StudentActivityModel>() {
             @Override
@@ -115,8 +114,10 @@ public class StudentDetailsWindow extends CmWindow {
 
         LayoutContainer gridContainer = new LayoutContainer();
         gridContainer.setLayout(new FitLayout());
-        gridContainer.addStyleName("student-details-panel-grid");
+        gridContainer.setStyleName("student-details-panel-grid");
         gridContainer.add(samGrid);
+        gridContainer.setHeight(250);
+        
         add(gridContainer, new BorderLayoutData(LayoutRegion.CENTER));
 
         _studentCount = new Label();
@@ -133,33 +134,37 @@ public class StudentDetailsWindow extends CmWindow {
         getStudentActivityRPC(store, studentModel);
 
         if (CmShared.getQueryParameter("debug") != null) {
-            MenuItem detailDebug = new MenuItem("Debug Info");
-            detailDebug.addSelectionListener(new SelectionListener<MenuEvent>() {
-                public void componentSelected(MenuEvent ce) {
-                    StudentActivityModel m = samGrid.getSelectionModel().getSelectedItem();
-                    CatchupMathTools.showAlert("testId: " + m.getTestId() + ", runId: " + m.getRunId());
-                }
-            });
-            final Menu contextMenu = new Menu();
-            contextMenu.add(detailDebug);
-
-            MenuItem detailLogin = new MenuItem("Login/View");
-            detailLogin.addSelectionListener(new SelectionListener<MenuEvent>() {
-                public void componentSelected(MenuEvent ce) {
-                    StudentActivityModel sm = samGrid.getSelectionModel().getSelectedItem();
-                    loginAsSelectedUser(sm);
-                }
-            });
-            contextMenu.add(detailLogin);
-
-            samGrid.setContextMenu(contextMenu);
+            Menu debugMenu = buildDebugMenu();
+            samGrid.setContextMenu(debugMenu);
         }
 
         setVisible(true);
     }
 
+	private Menu buildDebugMenu() {
+		MenuItem detailDebug = new MenuItem("Debug Info");
+		detailDebug.addSelectionListener(new SelectionListener<MenuEvent>() {
+		    public void componentSelected(MenuEvent ce) {
+		        StudentActivityModel m = samGrid.getSelectionModel().getSelectedItem();
+		        CatchupMathTools.showAlert("testId: " + m.getTestId() + ", runId: " + m.getRunId());
+		    }
+		});
+		Menu menu = new Menu();
+		menu.add(detailDebug);
+
+		MenuItem detailLogin = new MenuItem("Login/View");
+		detailLogin.addSelectionListener(new SelectionListener<MenuEvent>() {
+		    public void componentSelected(MenuEvent ce) {
+		        StudentActivityModel sm = samGrid.getSelectionModel().getSelectedItem();
+		        loginAsSelectedUser(sm);
+		    }
+		});
+		menu.add(detailLogin);
+		return menu;
+	}
+
     /**
-     * Logon as selected user, connecting to selected test/run
+     * Login as selected user, connecting to selected test/run
      * 
      */
     private void loginAsSelectedUser(StudentActivityModel sm) {
@@ -400,7 +405,8 @@ public class StudentDetailsWindow extends CmWindow {
         StringBuilder sb = new StringBuilder();
         sb.append("<div class='detail-info'>");
         sb.append("<div class='form left'>");
-        sb.append("  <div class='fld'><label>Password:</label><div>{passcode}&nbsp;</div></div>");
+        sb.append("  <div class='fld'><label>Password:</label><div>{");
+        sb.append(StudentModelExt.PASSCODE_KEY).append("}&nbsp;</div></div>");
         sb.append("</div>");
         sb.append("<div class='form right'>");
         sb.append("  <div class='fld'><label>Show Work:</label><div>{");

@@ -670,12 +670,15 @@ img.resource-item-complete {
 }
 .student-details-window {
 }
+
 .student-details-window-container {
-        height: 300px;
-        width: 570px;
+        height: 412px;
+        width: 580px;
 }
 .student-details-panel-grid {
-        margin-top: 45px;
+	height: 250px;
+    margin-top: 45px;
+    padding-bottom: 45px;
 }
 .student-details-panel-sw-btn {
         padding-bottom: 10px;
