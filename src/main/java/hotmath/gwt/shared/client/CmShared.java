@@ -280,8 +280,7 @@ public class CmShared implements EntryPoint {
         String hostName = Window.Location.getHostName();
         if (hostName.indexOf("hotmath.com") > -1) {
             hostName = "catchupmath.com";
-        } else if (hostName.equals("hotmath.kattare.com"))
-            hostName = "hotmath.kattare.com:8081";
+        } 
         else {
             String hostPort = Window.Location.getPort();
             if (!"80".equals(hostPort)) {
