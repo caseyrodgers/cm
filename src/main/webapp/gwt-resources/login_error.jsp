@@ -48,9 +48,10 @@ pageTracker._trackPageview();
 	text-align: center;
 	margin: auto;
 	margin-top: 40px;
+	padding-bottom: 10px;
 	width: 370px;
 	border: 1px solid black;
-	height: 150px;
+	height: auto;
 }
 
 #login-wrapper h1 {
@@ -67,6 +68,10 @@ pageTracker._trackPageview();
 #login-wrapper button {
   margin-top: 15px;
   }
+  
+#more-info {
+   margin-top: 10px;
+}  
 </style>
 <!-- InstanceEndEditable -->
 </head>
@@ -100,11 +105,16 @@ pageTracker._trackPageview();
           <h1>Login Problem</h1>
           <p class='reason'><%= reason %></p>
  
-          <button onclick='/login.html' class="sexybutton sexysimple sexyblue">
+          <button onclick='document.location = "/login.html"' class="sexybutton sexysimple sexyblue">
                 <div style='display: inline;font-size: 120%'>Try Again</div>
           </button>
-
-
+          <div style='margin-top: 20x;'>
+              <br/>
+	          <a onclick="document.getElementById('more-info').style.display = 'block';this.style.display = 'none'">More Info</a>
+	          <div id='more-info' style='display: none'>
+	             <%= exp != null?exp.getMessage():"No more info" %>
+	          </div>
+          </div>
         </div>
         <!-- InstanceEndEditable --> </div>
       <div id='bd-right'> <!-- InstanceBeginEditable name="BodyRight" --><!-- InstanceEndEditable --> </div>
