@@ -73,8 +73,6 @@ public class CmShared implements EntryPoint {
      */
     static public String getServerForCmStudent() {
         String server = CmShared.CM_HOME_URL;
-        if(server.indexOf("kattare") > -1)
-            server = "http://hotmath.kattare.com";
         return server;
     }
 
