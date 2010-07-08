@@ -98,8 +98,7 @@ public class BulkRegLoader {
             
             /** strip spaces from passwords before processing
              *  
-             *  NOTE: this could lead to confusing error reporting
-             *        (perhaps keep orig to use in reporting)
+             *  NOTE: original password is used in error reporting)
              *        
              */
             String password = pair[1].replace(" ", "");
@@ -182,7 +181,7 @@ public class BulkRegLoader {
     public String toString() {
         return "BulkRegLoader [duplicateNames=" + dupNames + ", duplicatePasswords="
                 + dupPasswords + ", entries=" + entries + ", errorCount=" + errorCount
-                + ", key=" + key + "]";
+                + ", hasNumericContent=" + hasNumericContent + ", key=" + key + "]";
     }
 
     public int getStudentCount() {
@@ -203,6 +202,10 @@ public class BulkRegLoader {
     
     public boolean hasDuplicatePasswords() {
     	return (dupPasswords != null && dupPasswords.size() > 0);
+    }
+
+    public boolean hasNumericContent() {
+    	return hasNumericContent;
     }
 
     public boolean contentIsAcceptable() {
@@ -226,6 +229,7 @@ public class BulkRegLoader {
     }
     
     private StringBuilder tsvContents;
+    private boolean hasNumericContent;
     
     @SuppressWarnings("unchecked")
 	private boolean isExcel(FileItem fi) throws IOException {
@@ -239,6 +243,7 @@ public class BulkRegLoader {
     		// Iterate over each row in the sheet
     		Iterator rows = sheet.rowIterator(); 
     		tsvContents = new StringBuilder();
+    		hasNumericContent = false;
     		
     		while( rows.hasNext() ) {           
     			HSSFRow row = (HSSFRow) rows.next();
@@ -251,7 +256,9 @@ public class BulkRegLoader {
 
     				switch (cell.getCellType()) {
     				case HSSFCell.CELL_TYPE_NUMERIC:
-    					tsvContents.append(cell.getNumericCellValue());
+    					long val = new Double(cell.getNumericCellValue()).longValue();
+    					tsvContents.append(val);
+    					hasNumericContent = true;
     					cellCount++;
     					break;
     				case HSSFCell.CELL_TYPE_STRING: 
@@ -259,7 +266,7 @@ public class BulkRegLoader {
     					cellCount++;
     					break;
     				default:
-    					LOGGER.info( "unsupported cell type" );
+    					LOGGER.info( "unsupported cell type: " + cell.getCellType() );
     				break;
     				}
     				if (cellCount < 2) {
