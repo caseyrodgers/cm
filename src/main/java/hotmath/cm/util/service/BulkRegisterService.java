@@ -81,6 +81,9 @@ public class BulkRegisterService extends HttpServlet {
                     else if (! contentIsAcceptable) {
                     	returnJson += "Uploaded file must be a tab-delimited text file (.txt) or Excel (.xls) file.";
                     }
+                    else if (brLoader.hasNumericContent()){
+                        returnJson += "File uploaded successfully; numeric values may have been changed, please check.";
+                    }
                     else {
                         returnJson += "File uploaded successfully.";
                     }
