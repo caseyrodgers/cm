@@ -16,7 +16,6 @@ import hotmath.gwt.cm_tools.client.util.GenericVideoPlayerForMona;
 import hotmath.gwt.cm_tools.client.util.GenericVideoPlayerForMona.MonaVideo;
 import hotmath.gwt.shared.client.CmLoginAsync;
 import hotmath.gwt.shared.client.CmShared;
-import hotmath.gwt.shared.client.data.CmAsyncRequest;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
 import hotmath.gwt.shared.client.eventbus.CmEventListenerImplDefault;
 import hotmath.gwt.shared.client.eventbus.EventBus;
@@ -25,6 +24,7 @@ import hotmath.gwt.shared.client.rpc.action.RunNetTestAction.TestApplication;
 import hotmath.gwt.shared.client.util.CmRunAsyncCallback;
 import hotmath.gwt.shared.client.util.NetTestWindow;
 import hotmath.gwt.shared.client.util.UserInfo;
+import hotmath.gwt.shared.client.util.UserInfoDao;
 
 import com.extjs.gxt.ui.client.Style.LayoutRegion;
 import com.extjs.gxt.ui.client.event.BaseEvent;
@@ -158,7 +158,7 @@ public class CatchupMath implements EntryPoint {
     private void processLoginComplete(final Integer uid) {
     	try {
 	    	String jsonUserInfo = getUserInfoFromExtenalJs();
-	    	UserInfo.loadUser(jsonUserInfo);
+	    	UserInfoDao.loadUser(jsonUserInfo);
 	
 	    	if (CmShared.getQueryParameterValue("type").equals("su")) {
 	    		UserInfo.getInstance().setUserAccountType(UserInfo.UserType.SINGLE_USER);

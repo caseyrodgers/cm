@@ -3,7 +3,6 @@ package hotmath.cm.login.service;
 import hotmath.gwt.cm_rpc.client.rpc.GetUserInfoAction;
 import hotmath.gwt.cm_rpc.server.rpc.ActionDispatcher;
 import hotmath.gwt.cm_tools.client.data.HaBasicUser;
-import hotmath.gwt.shared.client.util.CmException;
 import hotmath.gwt.shared.client.util.UserInfo;
 import hotmath.testset.ha.HaAdmin;
 import hotmath.testset.ha.HaLoginInfo;
@@ -118,24 +117,24 @@ public class LoginService extends HttpServlet {
             	 *  required to initialize, which is defined in each launch.jsp file.
             	 *   
             	 */
+        		StringBuilder sb = new StringBuilder();
+        		sb.append("{status:'").append((cmUser.isExpired())?"Expired":"OK");
+        		sb.append("', key:'").append(loginInfo.getKey());
+        		sb.append("', type:'").append(loginInfo.getType());
+        		sb.append("', accountType: '").append(cmUser.getAccountType());
+        		sb.append("', userId:").append(loginInfo.getUserId());
+        		String dateStr = (cmUser.getExpireDate() != null) ? dateFormat.format((cmUser.getExpireDate())) : "n/a";
+        		sb.append(", expireDate: '").append(dateStr);
+        		sb.append("', loginMsg: '").append((cmUser.getLoginMessage() != null)?cmUser.getLoginMessage():"NONE");
+        		sb.append("' }");
+        		req.getSession().setAttribute("jsonizedLoginInfo", sb.toString());
+        		
         		req.getSession().setAttribute("securityKey", loginInfo.getKey());            	
             	if(cmUser instanceof HaAdmin) {
             		req.getSession().setAttribute("loginInfo", loginInfo);
             		req.getRequestDispatcher("/cm_admin/launch.jsp").forward(req, resp);
             	}
             	else {
-            		StringBuilder sb = new StringBuilder();
-            		sb.append("{status:'").append((cmUser.isExpired())?"Expired":"OK");
-            		sb.append("', key:'").append(loginInfo.getKey());
-            		sb.append("', type:'").append(loginInfo.getType());
-            		sb.append("', accountType: '").append(cmUser.getAccountType());
-            		sb.append("', userId:").append(loginInfo.getUserId());
-            		String dateStr = (cmUser.getExpireDate() != null) ? dateFormat.format((cmUser.getExpireDate())) : "n/a";
-            		sb.append(", expireDate: '").append(dateStr);
-            		sb.append("', loginMsg: '").append((cmUser.getLoginMessage() != null)?cmUser.getLoginMessage():"NONE");
-            		sb.append("' }");
-            		req.getSession().setAttribute("jsonizedLoginInfo", sb.toString());
-            		
             		UserInfo userInfo = ActionDispatcher.getInstance().execute(new GetUserInfoAction(loginInfo.getUserId()));
             		String jsonizedUserInfo = Jsonizer.toJson(userInfo);
             		req.getSession().setAttribute("jsonizedUserInfo", jsonizedUserInfo);
