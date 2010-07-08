@@ -100,7 +100,7 @@ pageTracker._trackPageview();
           <h1>Login Problem</h1>
           <p class='reason'><%= reason %></p>
  
-          <button onclick='history.go(-1);' class="sexybutton sexysimple sexyblue">
+          <button onclick='/login.html' class="sexybutton sexysimple sexyblue">
                 <div style='display: inline;font-size: 120%'>Try Again</div>
           </button>
 
