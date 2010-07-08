@@ -83,7 +83,6 @@ public class CatchupMathAdmin implements EntryPoint, ValueChangeHandler<String> 
     private void completeLoginProcess(int uid) {
         cmAdminMdl = new CmAdminModel();
         cmAdminMdl.setId(uid);
-
         
         infoPanel = new AccountInfoPanel(cmAdminMdl);
         studentGrid = new StudentGridPanel(cmAdminMdl);

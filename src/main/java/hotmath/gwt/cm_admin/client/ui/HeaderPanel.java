@@ -1,5 +1,10 @@
 package hotmath.gwt.cm_admin.client.ui;
 
+import hotmath.gwt.cm_admin.client.CatchupMathAdmin;
+import hotmath.gwt.cm_tools.client.CatchupMathTools;
+import hotmath.gwt.shared.client.CmShared;
+import hotmath.gwt.shared.client.util.UserInfo;
+
 import com.extjs.gxt.ui.client.event.IconButtonEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.widget.Html;
@@ -28,7 +33,12 @@ public class HeaderPanel extends LayoutContainer {
 		IconButton btn = new IconButton("header-panel-help-btn");
 		btn.addSelectionListener(new SelectionListener<IconButtonEvent>() {
 			public void componentSelected(IconButtonEvent ce) {
-			   new HelpWindow();
+            	if(ce.getEvent().getCtrlKey()) {
+					String url = CmShared.getServerForCmStudent() + "/loginService?type=ADMIN&debug=true&uid=" + StudentGridPanel.instance._cmAdminMdl.getId();
+					CatchupMathTools.showAlert("Catchup Math Connection URL", url);
+				}            	
+            	else 
+            		new HelpWindow();
 			};
 		});		
 		add(btn);

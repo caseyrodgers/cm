@@ -234,8 +234,6 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
 
         instance = this;
 
-        CmAdminDataReader.getInstance().addReader(this);
-
         EventBus.getInstance().addEventListener(new CmEventListenerImplDefault() {
             public void handleEvent(CmEvent event) {
                 if (event.getEventType() == EventType.EVENT_TYPE_REFRESH_STUDENT_DATA) {
@@ -948,9 +946,11 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
         
         @Override
         public void load(final Object loadConfig, final AsyncCallback<CmStudentPagingLoadResult<StudentModelExt>> callback) {
-            new RetryAction<CmStudentPagingLoadResult<StudentModelExt>>() {
-                @Override
-                public void attempt() {
+        	
+        	new RetryAction<CmStudentPagingLoadResult<StudentModelExt>>() {
+        		@Override
+        		public void attempt() {
+        			CmBusyManager.setBusy(true);
                     _pageAction = new GetStudentGridPageAction(_cmAdminMdl.getId(), (PagingLoadConfig) loadConfig);
                     setAction(_pageAction);
                     
@@ -974,25 +974,34 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
 
                     CmShared.getCmService().execute(_pageAction, this);
                     
-                    
-                    
                     /** always turn off */
-                    
                     _forceServerRefresh=false;
                     _pageAction.setForceRefresh(_forceServerRefresh);
+        		}
+        		@Override
+        		public void oncapture(CmStudentPagingLoadResult<StudentModelExt> students) {
+        			/** always reset request options */
+        			_forceServerRefresh = false;
+        			EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_STUDENT_GRID_FILTERED, _pageAction));
+
+        			/** callback the proxy listener
+        			 * 
+        			 */
+        			currentStudentCount = students.getTotalLength();
+        			callback.onSuccess(students);
+        			CmBusyManager.setBusy(false);
+        		}
+        	}.attempt();
+        	
+        	
+        	
+            new RetryAction<CmStudentPagingLoadResult<StudentModelExt>>() {
+                @Override
+                public void attempt() {
                 }
                 
                 @Override
                 public void oncapture(CmStudentPagingLoadResult<StudentModelExt> students) {
-                    /** always reset request options */
-                    _forceServerRefresh = false;
-                    EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_STUDENT_GRID_FILTERED, _pageAction));
-
-                    /** callback the proxy listener
-                     * 
-                     */
-                    currentStudentCount = students.getTotalLength();
-                    callback.onSuccess(students);
                 }
             }.register();
         }

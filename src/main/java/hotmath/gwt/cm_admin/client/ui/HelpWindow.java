@@ -8,6 +8,7 @@ import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.rpc.action.RunNetTestAction.TestApplication;
 import hotmath.gwt.shared.client.util.CmRunAsyncCallback;
 import hotmath.gwt.shared.client.util.NetTestWindow;
+import hotmath.gwt.shared.client.util.UserInfo;
 
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;

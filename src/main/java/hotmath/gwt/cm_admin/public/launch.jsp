@@ -1,43 +1,31 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
-<!-- The HTML 4.01 Transitional DOCTYPE declaration-->
-<!-- above set at the top of the file will set     -->
-<!-- the browser's rendering engine into           -->
-<!-- "Quirks Mode". Replacing this declaration     -->
-<!-- with a "Standards Mode" doctype is supported, -->
-<!-- but may lead to some differences in layout.   -->
-
+<%@page import="hotmath.testset.ha.HaLoginInfo"%>
+<%
+  /** Provide a wrapper around CM Admin initialization to allow for pre-fetching data
+      and inserting into initial HTML download
+  */
+  String securityKey = (String)request.getSession().getAttribute("securityKey");
+  if(securityKey == null) {
+	  throw new Exception("'securityKey' could not be found in session");
+  }
+  String jsonizedLoginInfo = (String)request.getSession().getAttribute("jsonizedLoginInfo");
+  if(jsonizedLoginInfo == null) {
+	  throw new Exception("'loginInfo' could not be found in session");
+  }  
+%>
 <html>
   <head>
-  
     <!--  For Tutor/Show Work -->  
     <link rel="stylesheet" href="/css/bookindex_with_tutor_combined.css" type="text/css"/>
     <link rel="stylesheet" type="text/css" href="/gwt-resources/css/CatchupMath.css" />    
-
-      
     <link rel="stylesheet" type="text/css" href="/gwt-resources/gxt-2.1.3/css/gxt-all.css" />
     <link rel="stylesheet" type="text/css" href="/gwt-resources/css/CatchupMathAdmin.css" />
-    
     <meta http-equiv="content-type" content="text/html; charset=UTF-8">
-    <!--                                           -->
-    <!-- Any title is fine                         -->
-    <!--                                           -->
     <title>Catchup Math Admin</title>
-    
-    <!--                                           -->
-    <!-- This script loads your compiled module.   -->
-    <!-- If you add any GWT meta tags, they must   -->
-    <!-- be added before this line.                -->
-    <!--                                           -->
     <script type="text/javascript" language="javascript" src="/cm_admin/cm_admin.nocache.js"></script>
-    
     <link rel="stylesheet" type="text/css" href="/gwt-resources/css/loading_image.css" />
   </head>
 
-  <!--                                           -->
-  <!-- The body can have arbitrary html, or      -->
-  <!-- you can leave the body empty if you want  -->
-  <!-- to create a completely dynamic UI.        -->
-  <!--                                 	          -->
   <body>
     <div id="loading" style="display:none">
         <div class="loading-indicator">
@@ -55,5 +43,12 @@
      <script src="/gwt-resources/js/cm_core.js"></script>
      <script src="/gwt-resources/js/CatchupMath.js"></script>
      
-     <script type="text/javascript" language="javascript" src="/gwt-resources/js/swfobject/swfobject.js"></script>     
+     <script type="text/javascript" language="javascript" src="/gwt-resources/js/swfobject/swfobject.js"></script>
+     <script>
+         var __securityKey = '<%= securityKey %>'
+     </script>
+    <div id='login_info' style='display: none'>
+        <%= jsonizedLoginInfo %>
+    </div>     
+     
 </html>

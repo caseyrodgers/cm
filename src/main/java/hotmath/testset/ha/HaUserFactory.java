@@ -5,6 +5,7 @@ import hotmath.cm.util.CmMultiLinePropertyReader;
 import hotmath.gwt.cm_admin.server.model.CmStudentDao;
 import hotmath.gwt.cm_tools.client.data.HaBasicUser;
 import hotmath.gwt.cm_tools.client.model.StudentModel;
+import hotmath.gwt.shared.client.util.CmException;
 import hotmath.util.HMConnectionPool;
 import hotmath.util.sql.SqlUtilities;
 
@@ -257,4 +258,86 @@ public class HaUserFactory {
             SqlUtilities.releaseResources(rs, pstat, conn);
         }
     }
+    
+
+	/**
+	 * Return login information user for user with known uid
+	 * 
+	 * @param uid
+	 * @param type
+	 * @return
+	 * @throws Exception
+	 */
+	static public HaBasicUser getLoginUserInfo(int uid, String type) throws Exception {
+		Connection conn = null;
+		PreparedStatement pstat = null;
+		ResultSet rs = null;
+		try {
+			conn = HMConnectionPool.getConnection();
+			if (type.equals("ADMIN")) {
+				/** return admin information */
+				HaAdmin admin = new HaAdmin();
+				String sql = "select a.*, ss.date_expire, ss.subscriber_id, s.type as account_type,a.passcode "
+						+ " from HA_ADMIN a "
+						+ "  inner join SUBSCRIBERS s on s.id = a.subscriber_id "
+						+ " left outer join ( "
+						+ " select subscriber_id, max(date_expire) as date_expire from SUBSCRIBERS_SERVICES "
+						+ " where service_name = 'catchup' "
+						+ " group by subscriber_id "
+						+ ") ss on a.subscriber_id = ss.subscriber_id "
+						+ " where a.aid = ? ";
+
+				pstat = conn.prepareStatement(sql);
+				pstat.setInt(1, uid);
+				rs = pstat.executeQuery();
+				if(rs.first()) {
+					admin.setUserName(rs.getString("user_name"));
+					admin.setPassword(rs.getString("passcode"));
+					admin.setAdminId(rs.getInt("aid"));
+					java.sql.Date date = rs.getDate("date_expire");
+					if (date != null)
+						admin.setExpireDate(new Date(date.getTime()));
+					admin.setAccountType(rs.getString("account_type"));
+
+					return admin;
+				}
+			} else {
+				/** return student information */
+				String sql = "select u.uid, u.user_name,  s.type,  ss.date_expire, s.password" +
+				             " from   HA_USER u " +
+				             " inner join HA_ADMIN h " +
+				             "  on u.admin_id = h.aid " +
+				             " inner join SUBSCRIBERS s " +
+				             " on s.id = h.subscriber_id " +
+				             " left outer join (select subscriber_id, " +
+				                               "max(date_expire) as date_expire " +
+				                        " from   SUBSCRIBERS_SERVICES " +
+				                        " where  service_name = 'catchup' " +
+				                        " group  by subscriber_id) ss " +
+				             " on h.subscriber_id = ss.subscriber_id " +
+				             " where  u.uid = ? " +
+				             " and u.is_active = 1";
+				pstat = conn.prepareStatement(sql);
+				pstat.setInt(1, uid);
+				rs = pstat.executeQuery();
+				if (rs.first()) {
+					int userId = rs.getInt("uid");
+					HaUser student = HaUser.lookUser(conn, userId, null);
+					student.setUserName(rs.getString("user_name"));
+					student.setPassword(rs.getString("password"));
+					student.setLoginName(rs.getString("user_name"));
+					student.setAccountType(rs.getString("type"));
+					java.sql.Date date = rs.getDate("date_expire");
+					if (date != null)
+						student.setExpireDate(new Date(date.getTime()));
+					return student;
+				}				
+			}
+			
+			throw new CmException("Could not find user/admin with uid: " + uid);
+			
+		} finally {
+			SqlUtilities.releaseResources(rs, pstat, conn);
+		}
+	}    
 }

@@ -5,6 +5,7 @@ import hotmath.gwt.cm.client.ui.context.ContextChangeMessage;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.ui.CmMainPanel;
 import hotmath.gwt.cm_tools.client.ui.InfoPopupBox;
+import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
 import hotmath.gwt.cm_tools.client.ui.context.CmContext;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
@@ -21,6 +22,8 @@ import com.extjs.gxt.ui.client.widget.Html;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.button.IconButton;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Label;
@@ -47,12 +50,19 @@ public class HeaderPanel extends LayoutContainer {
 		IconButton btn = new IconButton("header-panel-help-btn");
 		btn.addSelectionListener(new SelectionListener<IconButtonEvent>() {
 			public void componentSelected(IconButtonEvent ce) {
-				GWT.runAsync(new CmRunAsyncCallback() {
-					@Override
-					public void onSuccess() {
-						new HelpWindow().setVisible(true);					
-					}
-				});
+				
+				if(ce.getEvent().getCtrlKey()) {
+					String url = CmShared.getServerForCmStudent() + "/loginService?debug=true&uid=" + UserInfo.getInstance().getUid();
+					CatchupMathTools.showAlert("Catchup Math Connection URL", url);
+				}
+				else {
+					GWT.runAsync(new CmRunAsyncCallback() {
+						@Override
+						public void onSuccess() {
+							new HelpWindow().setVisible(true);					
+						}
+					});
+				}
 			};
 		});		
 		add(btn);
@@ -100,6 +110,9 @@ public class HeaderPanel extends LayoutContainer {
 		        }
 		    }
 		});
+		
+		
+		
 	}
 	
 	

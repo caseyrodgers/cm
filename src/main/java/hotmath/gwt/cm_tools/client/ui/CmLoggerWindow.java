@@ -125,7 +125,7 @@ public class CmLoggerWindow extends CmWindow {
         }));
     }
     
-    private void clearLog() {
+    public void clearLog() {
         _messages.clear();
         _grid.getStore().removeAll();
     }
@@ -189,7 +189,7 @@ public class CmLoggerWindow extends CmWindow {
     }
     
     
-    private void _info(String msg) {
+    public void _info(String msg) {
         if(!isVisible())
             return;
         
@@ -205,11 +205,11 @@ public class CmLoggerWindow extends CmWindow {
             _grid.getView().focusRow(_grid.getStore().getCount()-1);
     }
     
-    private void _error(String msg, Throwable th) {
+    public void _error(String msg, Throwable th) {
         _info(msg + "\n" + th.getStackTrace());
     }
     
-    private void _debug(String msg) {
+    public void _debug(String msg) {
         _info(msg);
     }
 }

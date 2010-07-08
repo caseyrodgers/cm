@@ -56,9 +56,6 @@ public class SystemVersionUpdateChecker extends StandardSystemRefreshWindow {
             }
         };
         timer.scheduleRepeating(CHECK_EVERY);
-        
-        /** check now */
-        checkForUpdate();
     }
     
     

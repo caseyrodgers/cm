@@ -76,13 +76,10 @@ public class CatchupMath implements EntryPoint {
      * This is the entry point method.
      */
     public void onModuleLoad() {
-        CmLogger.info("Catchup Math Startup");
-
         __thisInstance = this;
+    	CmLogger.info("Catchup Math Startup");
 
         // GXT.setDefaultTheme(Theme.GRAY, true);
-
-        __hasBeenInformedAboutShowWork = false;
 
         _mainPort = new Viewport();
         CmBusyManager.setViewPort(_mainPort);
@@ -149,6 +146,9 @@ public class CatchupMath implements EntryPoint {
             }
         });
     }
+    
+    
+    
 
     /**
      * Called when successfully logged into CM server
@@ -156,51 +156,58 @@ public class CatchupMath implements EntryPoint {
      * @param uid
      */
     private void processLoginComplete(final Integer uid) {
-        UserInfo.loadUser(uid, new CmAsyncRequest() {
-            public void requestComplete(String requestData) {
-
-                if (CmShared.getQueryParameterValue("type").equals("su")) {
-                    UserInfo.getInstance().setUserAccountType(UserInfo.UserType.SINGLE_USER);
-                }
-
-                if (UserInfo.getInstance().isSingleUser())
-                    Window.setTitle("Catchup Math: Student");
-
-                String ac = CmShared.getQueryParameterValue("type");
-                if (ac.equals("ac")) {
-                    /**
-                     * self registration
-                     * 
-                     * mark as not owner, since this is templated.
-                     */
-                    UserInfo.getInstance().setActiveUser(false);
-                    CatchupMath.__thisInstance.showAutoRegistration_gwt();
-                } else if (ac.startsWith("auto_test")) {
-                    __thisInstance.startNormalOperation();
-                } else if (CmShared.getQueryParameter("debug_info") != null) {
-                    setDebugOverrideInformation(CmShared.getQueryParameter("debug_info"));
-                    __thisInstance.startNormalOperation();
-                } else if (UserInfo.getInstance().getRunId() > 0) {
-                    /**
-                     * already has active session, just move to current
-                     * position.
-                     */
-                    __thisInstance.startNormalOperation();
-                } else {
-                    /**
-                     * Otherwise, show the welcome screen to new visits
-                     * 
-                     */
-                    showWelcomePanel();
-                }
-
-            }
-
-            public void requestFailed(int code, String text) {
-                CatchupMathTools.showAlert("There was a problem reading user information from server");
-            }
-        });
+    	try {
+	    	String jsonUserInfo = getUserInfoFromExtenalJs();
+	    	UserInfo.loadUser(jsonUserInfo);
+	
+	    	if (CmShared.getQueryParameterValue("type").equals("su")) {
+	    		UserInfo.getInstance().setUserAccountType(UserInfo.UserType.SINGLE_USER);
+	    	}
+	    	if (UserInfo.getInstance().isSingleUser())
+	    		Window.setTitle("Catchup Math: Student");
+	    	
+	    	String ac = CmShared.getQueryParameterValue("type");
+	    	if (ac.equals("ac")) {
+	    		/**
+	    		 * self registration
+	    		 * 
+	    		 * mark as not owner, since this is templated.
+	    		 */
+	    		UserInfo.getInstance().setActiveUser(false);
+	    		CatchupMath.__thisInstance.showAutoRegistration_gwt();
+	    	} else if (ac.startsWith("auto_test")) {
+	    		__thisInstance.startNormalOperation();
+	    	} else if (CmShared.getQueryParameter("debug_info") != null) {
+	    		setDebugOverrideInformation(CmShared.getQueryParameter("debug_info"));
+	    		__thisInstance.startNormalOperation();
+	    	} else if (UserInfo.getInstance().getRunId() > 0) {
+	    		/**
+	    		 * already has active session, just move to current
+	    		 * position.
+	    		 */
+	    		__thisInstance.startNormalOperation();
+	    	} else {
+	    		/**
+	    		 * Otherwise, show the welcome screen to new visits
+	    		 * 
+	    		 */
+	    		showWelcomePanel();
+	    	}
+    	}
+    	catch(Exception e) {
+    		e.printStackTrace();
+    		CatchupMathTools.showAlert("There has been a problem creating the user object: " + e.getMessage());
+    	}
     }
+
+    /** return the user_info data passed in the bootstrap html 
+     * 
+     * @return
+     */
+    static private native String getUserInfoFromExtenalJs() /*-{
+       var d = $doc.getElementById('user_info');
+       return d.innerHTML;
+    }-*/;    
 
     /**
      * read token containing the uid, test and run ids:

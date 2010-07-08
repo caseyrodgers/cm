@@ -134,31 +134,20 @@ public class CmShared implements EntryPoint {
             // inform the server not to update the
             // current state as the user moves around system.
             int userId = 0;
-            if (_queryParameters.get("debug") != null) {
-                if (_queryParameters.get("uid") != null) {
-                    // for debugging .. perhaps this should not be allowed
-                    // during normal processing.
 
-                    // check for special case demo user
-                    if (_queryParameters.get("uid").equals("demo")) {
-                        userId = DEMO_UID;
-                    } else {
-                        userId = Integer.parseInt(_queryParameters.get("uid"));
-                    }
-                }
-            }
 
             // for testing, if uid is passed allow it override cookie
             if (userId > 0) {
                 callback.loginSuccessful(userId);
             } else {
-                final String key2 = _queryParameters.get("key");
+                final String key2 = getSecurityKey();
                 if (key2 == null || key2.length() == 0) {
-                    throw new CmExceptionLoginInvalid("Invalid login: no security key found on URL");
+                    throw new CmExceptionLoginInvalid("Invalid login: no security key found!");
                 }
 
                 boolean needToValidate = true;
-                final String cmKey = Cookies.getCookie("cm_key");
+                final String cmKey = getLoginInfoFromExtenalJs(); 
+                // Cookies.getCookie("cm_key");
                 // if no cookie, then we must validate
                 if (cmKey != null) {
                     JSONValue jsonValue = JSONParser.parse(cmKey);
@@ -168,7 +157,7 @@ public class CmShared implements EntryPoint {
                         throw new CmException("Invalid security key found");
                     }
                     if (key2.equals(keyVal)) {
-                        userId = (int) o.get("uid").isNumber().doubleValue();
+                        userId = (int) o.get("userId").isNumber().doubleValue();
                         needToValidate = false;
                     }
                 }
@@ -187,7 +176,7 @@ public class CmShared implements EntryPoint {
                         
                         public void oncapture(UserInfo userInfo) {
 
-                            /** Store login name to show to user on succesful
+                            /** Store login name to show to user on successful
                              *  registration.  
                              *  
                              *  TODO: this is a bug waiting to happen, get rid of global.
@@ -223,6 +212,17 @@ public class CmShared implements EntryPoint {
         } catch (Exception e) {
             displayLoginError(e);
         }
+    }
+    
+    
+    static private String getSecurityKey() {
+    	String key = _queryParameters.get("key");
+    	if(key == null) {
+    		// see if pass in JS variable
+    		key = getSecurityKeyFromExtenalJs();
+    	}
+    	
+    	return key;
     }
 
     static private void displayLoginError(Exception exception) {
@@ -323,6 +323,24 @@ public class CmShared implements EntryPoint {
         _serviceInstance = cmService;
     }
 
+    /** create JSNI to return KEY JS variable set during login
+     * 
+     * @return
+     */
+    static private native String getSecurityKeyFromExtenalJs() /*-{
+        return $wnd.__securityKey;
+    }-*/;
+    
+    
+    /** return the generic loginInfo jsonized string from bootstrap html 
+     * 
+     * @return
+     */
+    static private native String getLoginInfoFromExtenalJs() /*-{
+        var d = $doc.getElementById('login_info');
+        return d.innerHTML;
+    }-*/;    
+    
     static private native String getHostName() /*-{
                                                var host = window.location.host;
                                                if(host.indexOf("hotmath.com") > -1) {

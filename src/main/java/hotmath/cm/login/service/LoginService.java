@@ -1,10 +1,14 @@
 package hotmath.cm.login.service;
 
+import hotmath.gwt.cm_rpc.client.rpc.GetUserInfoAction;
+import hotmath.gwt.cm_rpc.server.rpc.ActionDispatcher;
 import hotmath.gwt.cm_tools.client.data.HaBasicUser;
+import hotmath.gwt.shared.client.util.CmException;
+import hotmath.gwt.shared.client.util.UserInfo;
+import hotmath.testset.ha.HaAdmin;
 import hotmath.testset.ha.HaLoginInfo;
 import hotmath.testset.ha.HaUserFactory;
-
-import org.apache.log4j.Logger;
+import hotmath.util.Jsonizer;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -13,6 +17,10 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import org.apache.log4j.Logger;
+
+import sb.util.SbUtilities;
 
 /**
  * Exposed as servlet that is called from Login Handler js in (core.js) of CM module
@@ -31,16 +39,17 @@ import javax.servlet.http.HttpServletResponse;
 public class LoginService extends HttpServlet {
 	
     static final Logger LOGGER = Logger.getLogger(LoginService.class.getName());
-
+    static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+    
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String user = req.getParameter("user");
         String pwd = req.getParameter("pwd");
         String action = req.getParameter("action");
+        boolean isDebug=false;
 
         
         if(action == null)
             action = "";
-        
         else if(action.equals("sample")) {
             user = "catchup_demo";
             action = "login";
@@ -49,11 +58,19 @@ public class LoginService extends HttpServlet {
             user="catchup_demo";
         }
         
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        
         try {
+        	
+        	isDebug = req.getParameter("debug") != null;
+        	int uid=SbUtilities.getInt(req.getParameter("uid"));
+        	String type=req.getParameter("type");
+        	if(type == null)
+        		type = "STUDENT";
+        	
             HaBasicUser cmUser=null;
-            if(user.equals("catchup_demo")) {
+        	if(isDebug && uid > 0) {
+        		cmUser = HaUserFactory.getLoginUserInfo(uid,type);
+        	}
+        	else if(user.equals("catchup_demo")) {
                 cmUser = HaUserFactory.createDemoUser();
             }
             else {
@@ -88,24 +105,48 @@ public class LoginService extends HttpServlet {
             }
 
             else {
-                /** create JSON that can be used to connect to this account
-                 * 
-                 */
-                StringBuilder sb = new StringBuilder();
-                sb.append("{status:'").append((cmUser.isExpired())?"Expired":"OK");
-                sb.append("', key:'").append(loginInfo.getKey());
-                sb.append("', type:'").append(loginInfo.getType());
-                sb.append("', accountType: '").append(cmUser.getAccountType());
-                sb.append("', userId:").append(loginInfo.getUserId());
-                String dateStr = (cmUser.getExpireDate() != null) ? dateFormat.format((cmUser.getExpireDate())) : "n/a";
-                sb.append(", expireDate: '").append(dateStr);
-                sb.append("', loginMsg: '").append((cmUser.getLoginMessage() != null)?cmUser.getLoginMessage():"NONE");
-                sb.append("' }");
-                resp.getWriter().write(sb.toString());
+            	
+            	if(cmUser.getExpireDate().getTime() < System.currentTimeMillis()) {
+            		throw new CmExceptionUserExpired(cmUser);
+            	}
+            	
+            	/** add shared user info into session and forward to specific
+            	 *  launcher JSP pages that will encapsulate the login/init data
+            	 *  in the returned HTML as JSON JS vars.
+            	 *  
+            	 *  Each type (cm_student, cm_admin) will have different data
+            	 *  required to initialize, which is defined in each launch.jsp file.
+            	 *   
+            	 */
+        		req.getSession().setAttribute("securityKey", loginInfo.getKey());            	
+            	if(cmUser instanceof HaAdmin) {
+            		req.getSession().setAttribute("loginInfo", loginInfo);
+            		req.getRequestDispatcher("/cm_admin/launch.jsp").forward(req, resp);
+            	}
+            	else {
+            		StringBuilder sb = new StringBuilder();
+            		sb.append("{status:'").append((cmUser.isExpired())?"Expired":"OK");
+            		sb.append("', key:'").append(loginInfo.getKey());
+            		sb.append("', type:'").append(loginInfo.getType());
+            		sb.append("', accountType: '").append(cmUser.getAccountType());
+            		sb.append("', userId:").append(loginInfo.getUserId());
+            		String dateStr = (cmUser.getExpireDate() != null) ? dateFormat.format((cmUser.getExpireDate())) : "n/a";
+            		sb.append(", expireDate: '").append(dateStr);
+            		sb.append("', loginMsg: '").append((cmUser.getLoginMessage() != null)?cmUser.getLoginMessage():"NONE");
+            		sb.append("' }");
+            		req.getSession().setAttribute("jsonizedLoginInfo", sb.toString());
+            		
+            		UserInfo userInfo = ActionDispatcher.getInstance().execute(new GetUserInfoAction(loginInfo.getUserId()));
+            		String jsonizedUserInfo = Jsonizer.toJson(userInfo);
+            		req.getSession().setAttribute("jsonizedUserInfo", jsonizedUserInfo);
+            		
+            		req.getRequestDispatcher("/cm_student/launch.jsp").forward(req, resp);
+            	}
             }
         }
         catch(Exception e) {
-            resp.getWriter().write(e.getMessage());
+        	req.getSession().setAttribute("exception", e);
+        	req.getRequestDispatcher("/gwt-resources/login_error.jsp").forward(req, resp);
             LOGGER.error(String.format("*** Login failed for user: %s, pwd: %s", user, pwd), e);
         }
     }

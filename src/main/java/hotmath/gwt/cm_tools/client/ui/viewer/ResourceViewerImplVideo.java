@@ -52,7 +52,7 @@ public class ResourceViewerImplVideo extends ResourceViewerImplFlash {
             else 
                 prefix = "/help/flvs/mathtv/";
             
-            String videoPath = "http://hotmath.kattare.com/" + prefix + item.getFile() + ".flv";
+            String videoPath = prefix + item.getFile() + ".flv";
             
             SWFSettings s = new SWFSettings();
             s.setMinPlayerVersion(new PlayerVersion(9));
@@ -60,7 +60,7 @@ public class ResourceViewerImplVideo extends ResourceViewerImplFlash {
             /** add id to force no cache .. is a bug with flowplayer that 
              *  if in cache it only plays once.
              */
-            SWFWidget swfWidget = new SWFWidget("flowplayer-3.1.5.swf?id=" + id, "100%", "100%", s);
+            SWFWidget swfWidget = new SWFWidget("/cm_student/flowplayer-3.1.5.swf?id=" + id, "100%", "100%", s);
 
             // cm: $a12fd4b15a588479e9e
             // hm: $852288f15c37539e229

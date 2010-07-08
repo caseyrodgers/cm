@@ -1,7 +1,9 @@
 package hotmath.gwt.cm_tools.client.ui;
 
-import java.util.ArrayList;
-import java.util.List;
+import hotmath.gwt.shared.client.CmShared;
+import hotmath.gwt.shared.client.util.CmRunAsyncCallback;
+
+import com.google.gwt.core.client.GWT;
 
 public class CmLogger  {
     
@@ -11,16 +13,24 @@ public class CmLogger  {
             __instance = new CmLogger();
         return __instance;
     }
+    CmLoggerWindow window;
+    public CmLogger() { }
     
-    List<String> _messages = new ArrayList<String>();
     
-    public CmLogger() {
-    }
-    
-    boolean _isEnabled;
     public void enable(boolean yesNo) {
-    	_isEnabled=yesNo;
+    	if(!yesNo) {
+    		window.clearLog();
+    		window.close();
+    		window = null;
+    	}
+    	else {
+    		if(window == null) {
+    			window = new CmLoggerWindow();
+    			window.show();
+    		}
+    	}
     }
+
     static public void info(String msg) {
         getInstance()._info(msg);
     }
@@ -35,17 +45,20 @@ public class CmLogger  {
     }
 
     private void _info(String msg) {
-    	if(!_isEnabled) return;
-        _messages.add(msg);
+    	if(window != null) {
+    		window._info(msg);
+    	}
     }
     
     private void _error(String msg, Throwable th) {
-    	if(!_isEnabled) return;    	
-        _info(msg + "\n" + th.getStackTrace());
+    	if(window != null) {
+    		window._error(msg, th);
+    	}
     }
     
     private void _debug(String msg) {
-    	if(!_isEnabled) return;    	
-        _info(msg);
+    	if(window != null) {
+    		window._debug(msg);
+    	}
     }
 }

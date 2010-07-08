@@ -66,10 +66,9 @@ public class AccountInfoPanel extends LayoutContainer implements CmAdminDataRefr
 		html.setHTML(sb.toString());
 		hp.add(html);
 		
+		CmAdminDataReader.getInstance().addReader(this);
 
 		add(hp);
-		
-		CmAdminDataReader.getInstance().addReader(this);
 	}
 	
 	
@@ -100,8 +99,6 @@ public class AccountInfoPanel extends LayoutContainer implements CmAdminDataRefr
 	}
 
     protected void getAccountInfoRPC(final Integer uid) {
-        
-        
         new RetryAction<AccountInfoModel>() {
             @Override
             public void attempt() {
@@ -115,38 +112,42 @@ public class AccountInfoPanel extends LayoutContainer implements CmAdminDataRefr
 
             public void oncapture(AccountInfoModel ai) {
                 CmBusyManager.setBusy(false);
-                
-                StringBuilder sb = new StringBuilder();
-                sb.append("Manage ").append(ai.getSchoolName()).append(" Students");
-                // _gridContainer.setHeading(sb.toString());
-
-                if(ai.getTotalStudents() > ai.getMaxStudents()) {
-                    if(!haveDisplayedOverLimitMsg) {
-                        String msg = "Your student registration now exceeds the licensed total. " +
-                                     "We will contact you soon about upgrading your license, or you " +
-                                     "may wish to unregister students no longer active.  Thank you " +
-                                     "for using Catchup Math!";
-                        CatchupMathTools.showAlert("Number of Students Exceeds License", msg);
-                        haveDisplayedOverLimitMsg = true;
-                    }
-                    ai.setStudentCountStyle("fld-warn");
-                }
-                else {
-                    ai.setStudentCountStyle("fld");
-
-                }
-                
-                if(ai.getIsTutoringEnabled()) {
-                    //ai.set(AccountInfoModel.TUTORING_MINUTES_LABEL, "(" + getTutoringRemaingLabel(ai.getTutoringMinutes()) + " remaining)");
-                    ai.set(AccountInfoModel.TUTORING_MINUTES_LABEL, "");
-                }
-                
-                setAccountInfoModel(ai);
-                
-                CmLogger.info("AccountInfoPanel: student info read succesfully");
+                setAccountInfo(ai);
             }
         }.register();        
     }
+    
+    public void setAccountInfo(AccountInfoModel ai) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("Manage ").append(ai.getSchoolName()).append(" Students");
+        // _gridContainer.setHeading(sb.toString());
+
+        if(ai.getTotalStudents() > ai.getMaxStudents()) {
+            if(!haveDisplayedOverLimitMsg) {
+                String msg = "Your student registration now exceeds the licensed total. " +
+                             "We will contact you soon about upgrading your license, or you " +
+                             "may wish to unregister students no longer active.  Thank you " +
+                             "for using Catchup Math!";
+                CatchupMathTools.showAlert("Number of Students Exceeds License", msg);
+                haveDisplayedOverLimitMsg = true;
+            }
+            ai.setStudentCountStyle("fld-warn");
+        }
+        else {
+            ai.setStudentCountStyle("fld");
+
+        }
+        
+        if(ai.getIsTutoringEnabled()) {
+            //ai.set(AccountInfoModel.TUTORING_MINUTES_LABEL, "(" + getTutoringRemaingLabel(ai.getTutoringMinutes()) + " remaining)");
+            ai.set(AccountInfoModel.TUTORING_MINUTES_LABEL, "");
+        }
+        
+        setAccountInfoModel(ai);
+        
+        CmLogger.info("AccountInfoPanel: student info read succesfully");
+    }
+    
     //@Override
     public void refreshData() {
         getAccountInfoRPC(cmAdminModel.getId());

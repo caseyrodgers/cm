@@ -83,7 +83,7 @@ public class CmAdminDataReader extends Timer {
             CmLogger.debug("CmAdminDataReader: skipped, by request");
         }
         else if(isRefreshing) {
-            CmLogger.debug("CmAdminDataReader: skipped, is currently being refresehed&& needsRefreshing");
+            CmLogger.debug("CmAdminDataReader: skipped, is currently being refresehed and needsRefreshing");
         }
         else if(!needsRefreshing) {
             CmLogger.debug("CmAdminDataReader: skipped, not needed");
