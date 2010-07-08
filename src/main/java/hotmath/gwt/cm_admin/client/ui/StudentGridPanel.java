@@ -241,6 +241,7 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
                 }
             }
         });
+        CmAdminDataReader.getInstance().addReader(this);
     }
 
     public void refreshData() {
@@ -850,7 +851,6 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
     boolean hasBeenInitialized = false;
 
     protected void getStudentsRPC(Integer uid, final ListStore<StudentModelExt> store, final Integer uidToSelect) {
-
         /**
          * do not do this the first time, because the paging loader will
          * initialize the data set, we will use this call to refresh its view.
