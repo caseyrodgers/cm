@@ -1,9 +1,5 @@
 package hotmath.gwt.cm_tools.client.ui;
 
-import hotmath.gwt.shared.client.CmShared;
-import hotmath.gwt.shared.client.util.CmRunAsyncCallback;
-
-import com.google.gwt.core.client.GWT;
 
 public class CmLogger  {
     

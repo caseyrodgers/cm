@@ -17,6 +17,7 @@ import hotmath.gwt.cm_tools.client.ui.CmGuiDefinition;
 import hotmath.gwt.cm_tools.client.ui.CmLogger;
 import hotmath.gwt.cm_tools.client.ui.CmMainPanel;
 import hotmath.gwt.cm_tools.client.ui.ContextController;
+import hotmath.gwt.cm_tools.client.ui.InfoPopupBox;
 import hotmath.gwt.cm_tools.client.ui.context.CmContext;
 import hotmath.gwt.cm_tools.client.ui.resource_viewer.CmResourcePanel;
 import hotmath.gwt.shared.client.CmShared;
@@ -26,6 +27,7 @@ import hotmath.gwt.shared.client.eventbus.EventBus;
 import hotmath.gwt.shared.client.eventbus.EventType;
 import hotmath.gwt.shared.client.rpc.RetryAction;
 import hotmath.gwt.shared.client.rpc.action.SetInmhItemAsViewedAction;
+import hotmath.gwt.shared.client.util.CmInfoConfig;
 import hotmath.gwt.shared.client.util.StatusImagePanel;
 import hotmath.gwt.shared.client.util.UserInfo;
 
@@ -518,6 +520,20 @@ class PrescriptionResourcePanel extends LayoutContainer {
             public void handleEvent(CmEvent event) {
                 if (event.getEventType() == EventType.EVENT_TYPE_REQUIRED_COMPLETE) {
                     __instance.resourceButtons.get("practice").checkCompletion();
+                    
+                    InmhItemData id = (InmhItemData)event.getEventData();
+                    String title=null;
+                    String msg=null;
+                    if(id.getWidgetJsonArgs() != null) {
+                    	title = "Activity Complete";
+                    	msg = "You have completed this practice activity.";
+                    }
+                    else {
+                    	title = "Problem Complete";
+                    	msg = "You have completed this practice problem.";
+                    }
+                    
+                    InfoPopupBox.display(new CmInfoConfig(title, msg));
                 }
             }
         });

@@ -34,6 +34,7 @@ public class ResourceViewerImplRppFlashCard extends ResourceViewerImplActivity  
      */
     static public String flash_Rpp_getCompletionRule() {
     	String json = __lastItemData.getWidgetJsonArgs();
+    	json = "{\"rule\":\"time\",\"limit\":\"5\"}";
         CmLogger.info("flash_Rpp_getCompletionRule called, and returned with '" + json);    	
     	return json;
     }

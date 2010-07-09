@@ -6,6 +6,6 @@ public class CmInfoConfig extends InfoConfig {
     public CmInfoConfig(String t, String m) {
         super(t, m);
         display = 6000;
-        width = 300;
+        width = 221;
     }
 }
