@@ -110,7 +110,7 @@ public class InmhItemData {
      */
     public List<RppWidget> getWookBookSolutionPool(final Connection conn) {
         // SQL to get list of ranges that match each INMH item
-        String sql = "select range from inmh_assessment i where i.file = ?";
+        String sql = "select `range` from inmh_assessment i where i.file = ?";
         PreparedStatement ps = null;
 
         List<RppWidget> widgets = new ArrayList<RppWidget>();
