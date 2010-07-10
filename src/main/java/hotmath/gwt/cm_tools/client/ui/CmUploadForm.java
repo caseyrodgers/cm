@@ -67,12 +67,14 @@ public class CmUploadForm extends FormPanel {
                 }
 
                 String uploadKey = null;
+                String status = "";
+                String msg = "";
                 try {
                     CmLogger.info("CmUploadForm: parsing JSON");
                     JSONValue rspValue = JSONParser.parse(response);
                     JSONObject rspObj = rspValue.isObject();
-                    String msg = rspObj.get("msg").isString().stringValue();
-                    String status = rspObj.get("status").isString().stringValue();
+                    msg = rspObj.get("msg").isString().stringValue();
+                    status = rspObj.get("status").isString().stringValue();
                     if (status.equals("Error")) {
                         CmLogger.info("CmUploadForm: Error while reading response");
                         CatchupMathTools.showAlert(msg);
@@ -84,8 +86,14 @@ public class CmUploadForm extends FormPanel {
                     CmLogger.error("CmUploadForm: Error parsing JSON", e);
                     e.printStackTrace();
                 }
-                if (uploadKey != null)
-                    CmUploadForm.this.callback.requestComplete(uploadKey);
+                if (uploadKey != null) {
+                	if (status.equalsIgnoreCase("warning")) {
+                		CatchupMathTools.showAlert("Warning", msg, CmUploadForm.this.callback, uploadKey);
+                	}
+                	else {
+                        CmUploadForm.this.callback.requestComplete(uploadKey);
+                	}
+                }
                 else
                     CatchupMathTools.showAlert("There was a problem uploading your file, please re-try.");
 
@@ -100,6 +108,10 @@ public class CmUploadForm extends FormPanel {
         fileUpload.setAllowBlank(false);
         fileUpload.setBorders(false);
         fileUpload.setName("bulk.reg.field");
+
+        String allowedContentTypes = "text/plain,text/tab-separated-values," +
+            "application/excel,application/vnd.ms-excel,application/x-excel,application/x-msexcel";
+        fileUpload.setAccept(allowedContentTypes);
 
         add(fileUpload);
 
