@@ -52,7 +52,7 @@ public class BulkRegisterService extends HttpServlet {
             	List<FileItem> fileItems = sfu.parseRequest(req);
             	if (fileItems != null  && fileItems.size() > 0) {
 
-            	    BulkRegLoader brLoader=new BulkRegLoader();
+            	    BulkRegLoader brLoader = new BulkRegLoader();
             	    brLoader.processUpload(fileItems);
                     
                     boolean hasErrors = brLoader.hasErrors();
@@ -64,7 +64,7 @@ public class BulkRegisterService extends HttpServlet {
                          "key:'" + brLoader.getKey() + "', " +
                          "status:'" + ((hasErrors || !contentIsAcceptable) ? "Error" : "Successful") + "', " +
                          "msg:'";
-      
+
                     if (hasErrors && !hasDuplicates && contentIsAcceptable) {
                         returnJson += "Uploaded file contains errors, please review and correct.";
                     }
