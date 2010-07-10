@@ -59,10 +59,14 @@ public class BulkRegisterService extends HttpServlet {
                     boolean hasDuplicates = brLoader.hasDuplicateNames() || brLoader.hasDuplicatePasswords();
                     boolean contentIsAcceptable = brLoader.contentIsAcceptable();
 
+                    String status = ((hasErrors || !contentIsAcceptable) ?
+                    		"Error" :
+                    		(brLoader.hasNumericContent()) ? "Warning" : "Successful");
+                    
                     returnJson = 
                         "{" +
                          "key:'" + brLoader.getKey() + "', " +
-                         "status:'" + ((hasErrors || !contentIsAcceptable) ? "Error" : "Successful") + "', " +
+                         "status:'" + status + "', " +
                          "msg:'";
 
                     if (hasErrors && !hasDuplicates && contentIsAcceptable) {
