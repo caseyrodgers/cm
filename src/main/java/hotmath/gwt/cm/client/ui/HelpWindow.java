@@ -429,7 +429,7 @@ public class HelpWindow extends CmWindow {
                     @Override
                     public void attempt() {
                         CmBusyManager.setBusy(true);
-                        CmServiceAsync s = (CmServiceAsync) Registry.get("cmService");
+                        CmServiceAsync s = CmShared.getCmService();
                         SaveFeedbackAction action = new SaveFeedbackAction(value, "", getFeedbackStateInfo());
                         setAction(action);
                         s.execute(action,this);

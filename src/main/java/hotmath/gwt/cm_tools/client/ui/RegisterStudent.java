@@ -726,7 +726,7 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
 		    
 		    @Override
 		    public void attempt() {
-		        CmServiceAsync s = (CmServiceAsync) Registry.get("cmService");
+		        CmServiceAsync s = CmShared.getCmService();
 		        GetChaptersForProgramSubjectAction action = new GetChaptersForProgramSubjectAction(progId, subjId);
 		        setAction(action);
 		        s.execute(action, this);
