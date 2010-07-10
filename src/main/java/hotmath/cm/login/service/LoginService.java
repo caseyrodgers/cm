@@ -92,14 +92,14 @@ public class LoginService extends HttpServlet {
                 /** redirect and connect to the CM student,passing auto_test parameter  
                  * 
                  */
-                String urlWithSessionID = "http://" + getCmServer(req) + "/cm_student/CatchupMath.html?type=auto_test&debug=true&uid=" + loginInfo.getUserId() + "&key=" + loginInfo.getKey();
+                String urlWithSessionID = "http://" + getCmServer(req) + "/loginService?type=auto_test&debug=true&uid=" + loginInfo.getUserId();
                 resp.sendRedirect(urlWithSessionID);
             }
             else if(action.equals("auto_test_net")) {
                 /** redirect and connect to the CM student,passing auto_test parameter  
                  * 
                  */
-                String urlWithSessionID = "http://" + getCmServer(req) + "/cm_student/CatchupMath.html?type=auto_test_net&debug=true&uid=" + loginInfo.getUserId() + "&key=" + loginInfo.getKey();
+                String urlWithSessionID = "http://" + getCmServer(req) + "/loginService?type=auto_test_net&debug=true&uid=" + loginInfo.getUserId();
                 resp.sendRedirect(urlWithSessionID);
             }
 
