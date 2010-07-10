@@ -66,6 +66,7 @@ public class CmUploadForm extends FormPanel {
                     CmLogger.info("CmUploadForm: done extracting JSON: " + response);
                 }
 
+                String uploadKey = null;
                 try {
                     CmLogger.info("CmUploadForm: parsing JSON");
                     JSONValue rspValue = JSONParser.parse(response);
@@ -77,13 +78,17 @@ public class CmUploadForm extends FormPanel {
                         CatchupMathTools.showAlert(msg);
                         return;
                     }
-                    String uploadKey = rspObj.get("key").isString().stringValue();
+                    uploadKey = rspObj.get("key").isString().stringValue();
 
-                    CmUploadForm.this.callback.requestComplete(uploadKey);
                 } catch (Exception e) {
                     CmLogger.error("CmUploadForm: Error parsing JSON", e);
                     e.printStackTrace();
                 }
+                if (uploadKey != null)
+                    CmUploadForm.this.callback.requestComplete(uploadKey);
+                else
+                    CatchupMathTools.showAlert("There was a problem uploading your file, please re-try.");
+
             }
         });
 
