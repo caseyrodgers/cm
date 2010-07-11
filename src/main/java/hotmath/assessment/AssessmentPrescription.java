@@ -107,6 +107,9 @@ public class AssessmentPrescription {
      * @throws Exception
      */
     public AssessmentPrescription(final Connection conn, HaTestRun testRun) throws Exception {
+
+
+        logger.info("Creating prescription for run: " + testRun);
         
         this.testRun = testRun;
         _assessment = new InmhAssessment(conn, testRun.getPidList());
@@ -151,6 +154,7 @@ public class AssessmentPrescription {
         
 
         new HaTestRunDao().addLessonsToTestRun(conn,testRun, _sessions);
+        logger.info("Finished creating prescription for run: " + testRun);
     }
     
     
