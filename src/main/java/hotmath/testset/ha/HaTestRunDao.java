@@ -97,9 +97,13 @@ public class HaTestRunDao {
      */
     public List<TestRunLesson> loadTestRunLessonsAndPids(final Connection conn, Integer runId) throws Exception {
         
+    	
         List<TestRunLesson> lessons = new ArrayList<TestRunLesson>();
         PreparedStatement pstat=null;
         try {
+        	
+        	__logger.info("Reading session data for run_id: " + runId);
+        	
             String sql = CmMultiLinePropertyReader.getInstance().getProperty("TEST_RUN_LOAD_PRESCRIPTION");
             
             pstat = conn.prepareStatement(sql);
@@ -136,6 +140,7 @@ public class HaTestRunDao {
         }
         finally {
             SqlUtilities.releaseResources(null,pstat,null);
+            __logger.info("Session data read run_id: " + runId);
         }
     }
     
