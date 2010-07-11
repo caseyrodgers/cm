@@ -108,11 +108,13 @@ public class InmhItemData {
      * 
      * @return
      */
-    public List<RppWidget> getWookBookSolutionPool(final Connection conn) {
+    public List<RppWidget> getWookBookSolutionPool(final Connection conn, String logTag) {
         // SQL to get list of ranges that match each INMH item
         String sql = "select `range` from inmh_assessment i where i.file = ?";
         PreparedStatement ps = null;
 
+        logger.info("getting solution pool " + logTag);
+        
         List<RppWidget> widgets = new ArrayList<RppWidget>();
         try {
             ps = conn.prepareStatement(sql);
@@ -128,6 +130,7 @@ public class InmhItemData {
                     widgets.add(new RppWidget(rangeOrJson));
                 } else {
                     /** is a solution PID */
+                	logger.info("find solutions in range " + logTag);
                     List<String> related = findSolutionsMatchingRange(rangeOrJson);
                     for (String s : related) {
                         RppWidget widget = new RppWidget();
@@ -149,6 +152,7 @@ public class InmhItemData {
         	logger.error(String.format("*** Load of RppWidget for %s failed", item.getFile(), e));
         } finally {
             SqlUtilities.releaseResources(null, ps, null);
+            logger.info("finished getting solution pool " + logTag);
         }
         return widgets;
     }
@@ -161,7 +165,7 @@ public class InmhItemData {
      * @throws Exception
      */
     private List<String> findSolutionsMatchingRange(String range) throws Exception {
-        ConcordanceEntry con = new ConcordanceEntry(range);
+    	ConcordanceEntry con = new ConcordanceEntry(range);
         return (List<String>) Arrays.asList(con.getGUIDs());
     }
     

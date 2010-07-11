@@ -131,7 +131,7 @@ public class AssessmentPrescription {
                 continue;
 
             // now choose pids from the pool for this item
-            List<RppWidget> rppWidgets = itemData.getWookBookSolutionPool(conn);
+            List<RppWidget> rppWidgets = itemData.getWookBookSolutionPool(conn, testRun.getHaTest().getUser().getUid() + "/" + testRun.getRunId());
             if (rppWidgets.size() == 0) {
                 logger.warn("No pool solutions found for + '" + itemData.getInmhItem().toString() + "'");
                 continue; // nothing to see here.
@@ -194,9 +194,6 @@ public class AssessmentPrescription {
      * @throws Exception
      */
     protected AssessmentPrescriptionSession createSession(int sessNum, List<RppWidget> rppWidgets, InmhItemData itemData) throws Exception {
-    	
-    	logger.info("Creating prescription sessions for: " + testRun.getHaTest().getUser().getUid() + "/" + testRun.getRunId());
-    	
     	AssessmentPrescriptionSession session = new AssessmentPrescriptionSession(this,"Session: " + (sessNum + 1));            
         List<SessionData> sessionItems = session.getSessionItems();
         
@@ -239,7 +236,6 @@ public class AssessmentPrescription {
                     break;
             }
         }
-        logger.info("Finished creating sessions for: " + testRun.getHaTest().getUser().getUid() + "/" + testRun.getRunId());
         return session;
     }
 
