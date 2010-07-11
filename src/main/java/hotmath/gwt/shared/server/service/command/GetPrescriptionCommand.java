@@ -62,6 +62,7 @@ public class GetPrescriptionCommand implements ActionHandler<GetPrescriptionActi
         try {
             AssessmentPrescription pres = AssessmentPrescriptionManager.getInstance().getPrescription(conn, runId);
             
+            __logger.info("verifing prescription: " + action);
             new CmStudentDao().verifyActiveProgram(conn, pres.getTest().getTestId());
 
 
@@ -89,6 +90,7 @@ public class GetPrescriptionCommand implements ActionHandler<GetPrescriptionActi
             PrescriptionSessionDataResource problemsResource = new PrescriptionSessionDataResource();
             problemsResource.setType("practice");
             
+            __logger.info("assigning problems to prescription: " + action);
             
             /** label either as Problems or Activities */
             boolean isActivity=practiceProblems.get(0).getWidgetArgs()!=null;
@@ -129,6 +131,8 @@ public class GetPrescriptionCommand implements ActionHandler<GetPrescriptionActi
             }
             presData.setCurrSession(sessionData);
 
+            
+            __logger.info("Getting prescription resource items: " + action);
             sessionData.setTopic(sess.getTopic());
             sessionData.setSessionNumber(sessionNumber);
             sessionData.setName(sess.getName());
@@ -164,7 +168,8 @@ public class GetPrescriptionCommand implements ActionHandler<GetPrescriptionActi
             
             
             
-
+            __logger.info("creating prescription sessions: " + action);
+            
             sessionData.getInmhResources().add(lessonResource);
             sessionData.getInmhResources().add(problemsResource);
             sessionData.getInmhResources().add(resultsResource);
