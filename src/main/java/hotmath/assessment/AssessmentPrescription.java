@@ -112,7 +112,7 @@ public class AssessmentPrescription {
         logger.info("Creating prescription for run: " + testRun);
         
         this.testRun = testRun;
-        _assessment = new InmhAssessment(conn, testRun.getPidList());
+        _assessment = new InmhAssessment(conn, testRun.getRunId(), testRun.getPidList());
         missed = _assessment.getPids().length;
 
         List<InmhItemData> itemsData = _assessment.getInmhItemUnion("review");
@@ -162,7 +162,7 @@ public class AssessmentPrescription {
     	
     	logger.info("Creating AssessmentPrescription from existing lessons: " + testRun.getRunId());
         this.testRun = testRun;
-        _assessment = new InmhAssessment(conn, testRun.getPidList());
+        _assessment = new InmhAssessment(conn, testRun.getRunId(), testRun.getPidList());
         missed = _assessment.getPids().length;
 
         // create sessions from persistent data
