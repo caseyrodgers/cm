@@ -139,7 +139,7 @@ public class AssessmentPrescriptionSession {
         int runId = this.prescription.getTestRun().getRunId();
         logger.debug("Reading referenced pids for " + runId);
         for (SessionData it : _pids) {
-            INeedMoreHelpItem[] i2 = INeedMoreHelpManager.getInstance().getHelpItems(conn,it.getPid(), true);
+            INeedMoreHelpItem[] i2 = INeedMoreHelpManager.getInstance().getHelpItems(conn,it.getPid());
 
             boolean found = false;
             for (INeedMoreHelpItem i : i2) {
