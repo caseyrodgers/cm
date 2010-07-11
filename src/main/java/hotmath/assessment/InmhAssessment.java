@@ -44,7 +44,7 @@ public class InmhAssessment {
 	 * 
 	 * @param pids
 	 */
-	public InmhAssessment(String pids[]) throws CmException {
+	public InmhAssessment(final Connection conn, String pids[]) throws CmException {
         logger.debug("InmhAssessment(): pids: " + pids);
         _pids = pids;
         for(String p : _pids) {
@@ -66,8 +66,8 @@ public class InmhAssessment {
      *  
      * @param pids
      */	
-	public InmhAssessment(String pids) throws CmException {
-		this(pids.split(","));
+	public InmhAssessment(final Connection conn, String pids) throws CmException {
+		this(conn, pids.split(","));
 	}
 	
 	/** Return array of pids used in assessment

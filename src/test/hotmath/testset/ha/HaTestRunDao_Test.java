@@ -26,7 +26,7 @@ public class HaTestRunDao_Test extends CmDbTestCase {
          */
         List<TestRunLesson> lessons = new HaTestRunDao().loadTestRunLessonsAndPids(conn, testRun.getRunId());
 
-        AssessmentPrescription apLoaded = new AssessmentPrescription(lessons,testRun);
+        AssessmentPrescription apLoaded = new AssessmentPrescription(conn,lessons,testRun);
         
         assertTrue(apOrignal.equals(apLoaded));
     }

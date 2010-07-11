@@ -109,7 +109,7 @@ public class AssessmentPrescription {
     public AssessmentPrescription(final Connection conn, HaTestRun testRun) throws Exception {
         
         this.testRun = testRun;
-        _assessment = new InmhAssessment(testRun.getPidList());
+        _assessment = new InmhAssessment(conn, testRun.getPidList());
         missed = _assessment.getPids().length;
 
         List<InmhItemData> itemsData = _assessment.getInmhItemUnion("review");
@@ -154,9 +154,9 @@ public class AssessmentPrescription {
     }
     
     
-    public AssessmentPrescription(List<TestRunLesson> lessons, HaTestRun testRun) throws CmException {
+    public AssessmentPrescription(final Connection conn, List<TestRunLesson> lessons, HaTestRun testRun) throws CmException {
         this.testRun = testRun;
-        _assessment = new InmhAssessment(testRun.getPidList());
+        _assessment = new InmhAssessment(conn, testRun.getPidList());
         missed = _assessment.getPids().length;
 
         // create sessions from persistent data

@@ -33,7 +33,7 @@
 
 <!--  For Test HTML -->
 <cache name="TEST_HTML"
-       maxElementsInMemory="20"
+       maxElementsInMemory="100"
        eternal="true"
        diskPersistent="false">
 </cache>
@@ -86,7 +86,7 @@
 
 -->
 <cache name="PRESCRIPTION"
-       maxElementsInMemory="20"
+       maxElementsInMemory="100"
        eternal="false"
        timeToLiveSeconds="2400"
        overflowToDisk="false">

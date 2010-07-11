@@ -60,7 +60,7 @@ public class AssessmentPrescriptionManager {
 		__logger.info("Getting prescription for: " + runId);
 	    AssessmentPrescription pres = (AssessmentPrescription)CmCacheManager.getInstance().retrieveFromCache(CacheName.PRESCRIPTION, runId.toString());
 		if(pres == null) {
-			__logger.info("Creating new prescription for: " + runId);
+			__logger.debug("Creating new prescription for: " + runId);
 			/**
 			 * first need to lookup the test for this run
 			 */
@@ -74,7 +74,7 @@ public class AssessmentPrescriptionManager {
 			CmCacheManager.getInstance().addToCache(CacheName.PRESCRIPTION, runId.toString(), pres);
 		}
 		else {
-			__logger.info("Return prescription from cache: " + runId);
+			__logger.debug("Return prescription from cache: " + runId);
 		}
 		return pres;
 	}

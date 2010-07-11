@@ -37,7 +37,7 @@ public class AssessmentPrescriptionFactory {
 	        }
 	    }
 	    else {
-	        return new AssessmentPrescription(lessons, testRun);
+	        return new AssessmentPrescription(conn,lessons, testRun);
 	    }
 	}
 }
