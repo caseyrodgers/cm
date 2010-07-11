@@ -238,12 +238,11 @@ public class AssessmentPrescription {
      * @return
      * @throws HotMathException
      */
-    public List<INeedMoreHelpItem> getInmhItemsFor(String type,
-            List<SessionData> sessionData) throws HotMathException {
+    public List<INeedMoreHelpItem> getInmhItemsFor(final Connection conn, String type,List<SessionData> sessionData) throws HotMathException {
         List<INeedMoreHelpItem> items = new ArrayList<INeedMoreHelpItem>();
         
         for(SessionData sd: sessionData) {
-            INeedMoreHelpItem inmhItems[] = INeedMoreHelpManager.getInstance().getHelpItems(sd.getPid());
+            INeedMoreHelpItem inmhItems[] = INeedMoreHelpManager.getInstance().getHelpItems(conn, sd.getPid());
             for (INeedMoreHelpItem inmhItem : inmhItems) {
                 if (inmhItem.getType().equals(type)) {
                     items.add(inmhItem);

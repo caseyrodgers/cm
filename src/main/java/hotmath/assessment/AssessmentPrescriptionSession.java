@@ -133,11 +133,10 @@ public class AssessmentPrescriptionSession {
      * @return
      * @throws HotMathException
      */
-    public String getInmhReferencedPids(INeedMoreHelpItem item) throws HotMathException {
-
+    public String getInmhReferencedPids(final Connection conn, INeedMoreHelpItem item) throws HotMathException {
         StringBuilder pidSb = new StringBuilder();
         for (SessionData it : _pids) {
-            INeedMoreHelpItem[] i2 = INeedMoreHelpManager.getInstance().getHelpItems(it.getPid(), true);
+            INeedMoreHelpItem[] i2 = INeedMoreHelpManager.getInstance().getHelpItems(conn,it.getPid(), true);
 
             boolean found = false;
             for (INeedMoreHelpItem i : i2) {

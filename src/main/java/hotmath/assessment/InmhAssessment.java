@@ -49,8 +49,8 @@ public class InmhAssessment {
         _pids = pids;
         for(String p : _pids) {
             try {
-                List<INeedMoreHelpItem> inmhItems = new ArrayList<INeedMoreHelpItem>();             
-                INeedMoreHelpItem items[] = INeedMoreHelpManager.getInstance().getHelpItems(p);
+                List<INeedMoreHelpItem> inmhItems = new ArrayList<INeedMoreHelpItem>();          
+                INeedMoreHelpItem items[] = INeedMoreHelpManager.getInstance().getHelpItems(conn,p);
                 for(INeedMoreHelpItem h:items)
                     inmhItems.add(h);
                 inmhItemsMap.put(p, inmhItems);
