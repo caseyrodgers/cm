@@ -159,6 +159,8 @@ public class AssessmentPrescription {
     
     
     public AssessmentPrescription(final Connection conn, List<TestRunLesson> lessons, HaTestRun testRun) throws CmException {
+    	
+    	logger.info("Creating AssessmentPrescription from existing lessons: " + testRun.getRunId());
         this.testRun = testRun;
         _assessment = new InmhAssessment(conn, testRun.getPidList());
         missed = _assessment.getPids().length;
@@ -166,6 +168,7 @@ public class AssessmentPrescription {
         // create sessions from persistent data
         int sessNum = 0;
         for(TestRunLesson lesson: lessons) {
+        	logger.info("Creating AssessmentPrescription for lesson '" + lesson + "': " + testRun.getRunId());
             AssessmentPrescriptionSession session = new AssessmentPrescriptionSession(this,"Session: " + (sessNum + 1));
             for(RppWidget pid: lesson.getPids()) {
                 List<SessionData> si = session.getSessionItems();
@@ -179,6 +182,7 @@ public class AssessmentPrescription {
             _sessions.add(session);    
             sessNum++;            
         }
+        logger.info("Finished creating AssessmentPrescription from lessons: " + testRun.getRunId());
     }
     
     /** Create a single prescription session based on passed in data
@@ -236,7 +240,7 @@ public class AssessmentPrescription {
             }
         }
         
-        logger.info("Finished creating sessions for: " + testRun.getRunId());
+        logger.info("Creating prescription sessions for: " + testRun.getRunId());
         return session;
     }
 

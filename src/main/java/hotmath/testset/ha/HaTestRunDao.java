@@ -102,7 +102,7 @@ public class HaTestRunDao {
         PreparedStatement pstat=null;
         try {
         	
-        	__logger.info("Reading session data for run_id: " + runId);
+        	__logger.debug("Reading session data for run_id: " + runId);
         	
             String sql = CmMultiLinePropertyReader.getInstance().getProperty("TEST_RUN_LOAD_PRESCRIPTION");
             
@@ -140,7 +140,7 @@ public class HaTestRunDao {
         }
         finally {
             SqlUtilities.releaseResources(null,pstat,null);
-            __logger.info("Session data read run_id: " + runId);
+            __logger.debug("Session data read run_id: " + runId);
         }
     }
     
