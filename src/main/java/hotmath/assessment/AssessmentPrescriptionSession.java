@@ -5,7 +5,6 @@ import hotmath.ProblemID;
 import hotmath.assessment.AssessmentPrescription.SessionData;
 import hotmath.inmh.INeedMoreHelpItem;
 import hotmath.inmh.INeedMoreHelpItemFactory;
-import hotmath.inmh.INeedMoreHelpManager;
 import hotmath.inmh.INeedMoreHelpResourceType;
 import hotmath.inmh.INeedMoreHelpResourceTypeDef;
 import hotmath.util.sql.SqlUtilities;
@@ -124,34 +123,6 @@ public class AssessmentPrescriptionSession {
                 items.add(item);
         }
         return items;
-    }
-
-    /**
-     * Return comma separated list of pids that reference this item
-     * 
-     * @param item
-     * @return
-     * @throws HotMathException
-     */
-    public String getInmhReferencedPids(final Connection conn, INeedMoreHelpItem item) throws HotMathException {
-        StringBuilder pidSb = new StringBuilder();
-        
-        int runId = this.prescription.getTestRun().getRunId();
-        logger.debug("Reading referenced pids for " + runId);
-        for (SessionData it : _pids) {
-            INeedMoreHelpItem[] i2 = INeedMoreHelpManager.getInstance().getHelpItems(conn,it.getPid());
-
-            boolean found = false;
-            for (INeedMoreHelpItem i : i2) {
-                if (i.equals(item)) {
-                    if (found)
-                        pidSb.append(",");
-                    pidSb.append(it.getPid());
-                    found = true;
-                }
-            }
-        }
-        return pidSb.toString();
     }
 
     /**
