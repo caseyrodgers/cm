@@ -137,9 +137,8 @@ public class AssessmentPrescriptionSession {
         StringBuilder pidSb = new StringBuilder();
         
         int runId = this.prescription.getTestRun().getRunId();
-        logger.info("Reading referenced pids for " + runId);
+        logger.debug("Reading referenced pids for " + runId);
         for (SessionData it : _pids) {
-        	logger.info("Reading referenced pid: " + it + "  for " + runId);
             INeedMoreHelpItem[] i2 = INeedMoreHelpManager.getInstance().getHelpItems(conn,it.getPid(), true);
 
             boolean found = false;
@@ -152,7 +151,6 @@ public class AssessmentPrescriptionSession {
                 }
             }
         }
-        logger.info("Finished reading referenced pids for " + runId);
         return pidSb.toString();
     }
 
