@@ -9,6 +9,8 @@ import hotmath.testset.ha.HaTestRunDao;
 
 import java.sql.Connection;
 
+import org.apache.log4j.Logger;
+
 
 public class AssessmentPrescriptionManager {
 	
@@ -20,6 +22,8 @@ public class AssessmentPrescriptionManager {
 		return __instance;
 	}
 
+	
+	static Logger __logger = Logger.getLogger(AssessmentPrescriptionManager.class);
 	
 	private AssessmentPrescriptionManager() {
 		//
@@ -53,8 +57,10 @@ public class AssessmentPrescriptionManager {
 	    /** First check memory cache
 	     * 
 	     */
+		__logger.info("Getting prescription for: " + runId);
 	    AssessmentPrescription pres = (AssessmentPrescription)CmCacheManager.getInstance().retrieveFromCache(CacheName.PRESCRIPTION, runId.toString());
 		if(pres == null) {
+			__logger.info("Creating new prescription for: " + runId);
 			/**
 			 * first need to lookup the test for this run
 			 */
@@ -66,6 +72,9 @@ public class AssessmentPrescriptionManager {
 			    pres = AssessmentPrescriptionFactory.createOrLoadExisting(conn, testRun);
 			
 			CmCacheManager.getInstance().addToCache(CacheName.PRESCRIPTION, pres.getTestRun().getRunId().toString(), pres);
+		}
+		else {
+			__logger.info("Return prescription from cache: " + runId);
 		}
 		return pres;
 	}
