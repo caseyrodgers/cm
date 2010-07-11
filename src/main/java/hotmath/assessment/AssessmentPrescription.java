@@ -195,7 +195,7 @@ public class AssessmentPrescription {
      */
     protected AssessmentPrescriptionSession createSession(int sessNum, List<RppWidget> rppWidgets, InmhItemData itemData) throws Exception {
     	
-    	logger.info("Creating prescription sessions for: " + testRun.getRunId());
+    	logger.info("Creating prescription sessions for: " + testRun.getHaTest().getUser().getUid() + "/" + testRun.getRunId());
     	
     	AssessmentPrescriptionSession session = new AssessmentPrescriptionSession(this,"Session: " + (sessNum + 1));            
         List<SessionData> sessionItems = session.getSessionItems();
@@ -239,8 +239,7 @@ public class AssessmentPrescription {
                     break;
             }
         }
-        
-        logger.info("Creating prescription sessions for: " + testRun.getRunId());
+        logger.info("Finished creating sessions for: " + testRun.getHaTest().getUser().getUid() + "/" + testRun.getRunId());
         return session;
     }
 
