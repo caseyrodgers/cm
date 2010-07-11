@@ -52,7 +52,7 @@ public class InmhAssessment {
             	logger.info("Getting Help Items for '" + p + ": " + runId);
             	
                 List<INeedMoreHelpItem> inmhItems = new ArrayList<INeedMoreHelpItem>();          
-                INeedMoreHelpItem items[] = INeedMoreHelpManager.getInstance().getHelpItems(conn,p);
+                INeedMoreHelpItem items[] = INeedMoreHelpManager.getInstance().getHelpItems(conn,p, "run_id=" + runId);
                 logger.info("Getting Help Items for '" + p + ": " + runId);
                 for(INeedMoreHelpItem h:items)
                     inmhItems.add(h);
