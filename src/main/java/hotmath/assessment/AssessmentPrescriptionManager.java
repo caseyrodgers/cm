@@ -71,7 +71,7 @@ public class AssessmentPrescriptionManager {
 			else 
 			    pres = AssessmentPrescriptionFactory.createOrLoadExisting(conn, testRun);
 			
-			CmCacheManager.getInstance().addToCache(CacheName.PRESCRIPTION, pres.getTestRun().getRunId().toString(), pres);
+			CmCacheManager.getInstance().addToCache(CacheName.PRESCRIPTION, runId.toString(), pres);
 		}
 		else {
 			__logger.info("Return prescription from cache: " + runId);
