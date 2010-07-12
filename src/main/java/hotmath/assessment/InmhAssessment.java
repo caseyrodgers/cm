@@ -44,16 +44,16 @@ public class InmhAssessment {
 	 * 
 	 * @param pids
 	 */
-	public InmhAssessment(final Connection conn, int runId, String pids[]) throws CmException {
+	public InmhAssessment(final Connection conn, int userId, String pids[]) throws CmException {
         logger.debug("InmhAssessment(): pids: " + pids);
         _pids = pids;
         for(String p : _pids) {
             try {
-            	logger.info("Getting Help Items for '" + p + ": " + runId);
+            	logger.info("Getting Help Items for '" + p + ": " + userId);
             	
                 List<INeedMoreHelpItem> inmhItems = new ArrayList<INeedMoreHelpItem>();          
-                INeedMoreHelpItem items[] = INeedMoreHelpManager.getInstance().getHelpItems(conn,p, "run_id=" + runId);
-                logger.info("Getting Help Items for '" + p + ": " + runId);
+                INeedMoreHelpItem items[] = INeedMoreHelpManager.getInstance().getHelpItems(conn,p, "user_id=" + userId);
+                logger.info("Getting Help Items for '" + p + ": " + userId);
                 for(INeedMoreHelpItem h:items)
                     inmhItems.add(h);
                 inmhItemsMap.put(p, inmhItems);
@@ -69,8 +69,8 @@ public class InmhAssessment {
      *  
      * @param pids
      */	
-	public InmhAssessment(final Connection conn, int runId, String pids) throws CmException {
-		this(conn,runId, pids.split(","));
+	public InmhAssessment(final Connection conn, int userId, String pids) throws CmException {
+		this(conn,userId, pids.split(","));
 	}
 	
 	/** Return array of pids used in assessment
