@@ -1,7 +1,8 @@
 package hotmath.assessment;
 
-import hotmath.ProblemID;
 import hotmath.SolutionManager;
+import hotmath.cm.util.CmCacheManager;
+import hotmath.cm.util.CmCacheManager.CacheName;
 import hotmath.concordance.ConcordanceEntry;
 import hotmath.inmh.INeedMoreHelpItem;
 import hotmath.util.sql.SqlUtilities;
@@ -109,13 +110,20 @@ public class InmhItemData {
      * @return
      */
     public List<RppWidget> getWookBookSolutionPool(final Connection conn, String logTag) {
+    	
+    	
+    	List<RppWidget> widgets = (List<RppWidget>)CmCacheManager.getInstance().retrieveFromCache(CacheName.WOOKBOOK_POOL, this.item.getFile());
+    	if(widgets != null)
+    		return widgets;
+    	
+    	
         // SQL to get list of ranges that match each INMH item
         String sql = "select `range` from inmh_assessment i where i.file = ?";
         PreparedStatement ps = null;
 
         logger.info("getting solution pool " + logTag);
         
-        List<RppWidget> widgets = new ArrayList<RppWidget>();
+        widgets = new ArrayList<RppWidget>();
         try {
             ps = conn.prepareStatement(sql);
             ps.setString(1, this.item.getFile());
@@ -155,6 +163,8 @@ public class InmhItemData {
             SqlUtilities.releaseResources(null, ps, null);
             logger.info("finished getting solution pool " + logTag);
         }
+        
+        CmCacheManager.getInstance().addToCache(CacheName.WOOKBOOK_POOL, this.item.getFile(), widgets);
         return widgets;
     }
 

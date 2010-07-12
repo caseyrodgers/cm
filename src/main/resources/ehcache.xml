@@ -123,5 +123,10 @@
        overflowToDisk="false">
 </cache>
 
+<cache name="WOOKBOOK_POOL"
+       maxElementsInMemory="1000"
+       eternal="true"
+       overflowToDisk="false">
+</cache>
 
 </ehcache>

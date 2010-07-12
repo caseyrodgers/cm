@@ -64,7 +64,10 @@ public class CmCacheManager  {
 		HA_USER,
 		
 		/** IneedMoreHelpItems looked for a pid */
-		INMH_ITEMS
+		INMH_ITEMS,
+		
+		/** Lists of solutions that can be used to create lesson RPPS */
+		WOOKBOOK_POOL
 	};
 
 	private void flushCache() {
