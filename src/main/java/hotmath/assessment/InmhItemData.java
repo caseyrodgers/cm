@@ -131,7 +131,7 @@ public class InmhItemData {
                 } else {
                     /** is a solution PID */
                 	logger.info("find solutions in range " + logTag);
-                    List<String> related = findSolutionsMatchingRange(rangeOrJson);
+                    List<String> related = findSolutionsMatchingRange(conn, rangeOrJson);
                     logger.info("finished finding solutions in range " + logTag);
                     for (String s : related) {
                         RppWidget widget = new RppWidget();
@@ -165,8 +165,8 @@ public class InmhItemData {
      * @return
      * @throws Exception
      */
-    private List<String> findSolutionsMatchingRange(String range) throws Exception {
-    	ConcordanceEntry con = new ConcordanceEntry(range);
+    private List<String> findSolutionsMatchingRange(final Connection conn, String range) throws Exception {
+    	ConcordanceEntry con = new ConcordanceEntry(conn, range);
         return (List<String>) Arrays.asList(con.getGUIDs());
     }
     

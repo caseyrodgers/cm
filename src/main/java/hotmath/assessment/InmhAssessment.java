@@ -132,7 +132,7 @@ public class InmhAssessment {
 				String range = rs.getString("range");
 				if(range == null || range.length() == 0)
 					throw new Exception("Range is null for this item");
-				ConcordanceEntry con = new ConcordanceEntry(range);
+				ConcordanceEntry con = new ConcordanceEntry(conn, range);
 				
 				guids.addAll(Arrays.asList( con.getGUIDs() ) ) ;
             }
