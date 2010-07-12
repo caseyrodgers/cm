@@ -132,6 +132,7 @@ public class InmhItemData {
                     /** is a solution PID */
                 	logger.info("find solutions in range " + logTag);
                     List<String> related = findSolutionsMatchingRange(rangeOrJson);
+                    logger.info("finished finding solutions in range " + logTag);
                     for (String s : related) {
                         RppWidget widget = new RppWidget();
                         widget.setFile(s);
