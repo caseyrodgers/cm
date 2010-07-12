@@ -417,7 +417,7 @@ public class PrescriptionReport {
             if (args.length > 0)
                 logFile = args[0];
             
-            CmProgram prog = null; // CmProgram.GEOM_PROF;
+            CmProgram prog = CmProgram.NATIONAL;
             new PrescriptionReport(logFile,prog);
 
             System.out.println("PrescriptionReport complete successfully!");
