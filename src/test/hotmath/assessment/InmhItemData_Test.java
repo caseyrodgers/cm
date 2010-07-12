@@ -19,7 +19,7 @@ public class InmhItemData_Test extends CmDbTestCase {
          */
         INeedMoreHelpItem item = new INeedMoreHelpItem("practice", "topics/functions.html", "Test");  
         InmhItemData itemData = new InmhItemData(item);
-        List<RppWidget> rpps = itemData.getWookBookSolutionPool(conn);
+        List<RppWidget> rpps = itemData.getWookBookSolutionPool(conn,"testing");
         assertTrue(!hasDuplicates(rpps));
     }
 
