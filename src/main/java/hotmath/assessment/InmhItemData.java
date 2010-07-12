@@ -116,12 +116,11 @@ public class InmhItemData {
     	if(widgets != null)
     		return widgets;
     	
-    	
         // SQL to get list of ranges that match each INMH item
         String sql = "select `range` from inmh_assessment i where i.file = ?";
         PreparedStatement ps = null;
 
-        logger.info("getting solution pool " + logTag);
+        logger.debug("getting solution pool " + logTag);
         
         widgets = new ArrayList<RppWidget>();
         try {
