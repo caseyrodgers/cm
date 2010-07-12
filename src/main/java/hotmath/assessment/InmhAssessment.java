@@ -1,5 +1,7 @@
 package hotmath.assessment;
 
+import hotmath.cm.util.CmCacheManager;
+import hotmath.cm.util.CmCacheManager.CacheName;
 import hotmath.concordance.ConcordanceEntry;
 import hotmath.gwt.shared.client.util.CmException;
 import hotmath.inmh.INeedMoreHelpItem;
@@ -51,12 +53,19 @@ public class InmhAssessment {
             try {
             	logger.info("Getting Help Items for '" + p + ": " + userId);
             	
-                List<INeedMoreHelpItem> inmhItems = new ArrayList<INeedMoreHelpItem>();          
-                INeedMoreHelpItem items[] = INeedMoreHelpManager.getInstance().getHelpItems(conn,p, "user_id=" + userId);
-                logger.info("Getting Help Items for '" + p + ": " + userId);
-                for(INeedMoreHelpItem h:items)
-                    inmhItems.add(h);
-                inmhItemsMap.put(p, inmhItems);
+                List<INeedMoreHelpItem> inmhItems = new ArrayList<INeedMoreHelpItem>();   
+                
+                INeedMoreHelpItem items[] = (INeedMoreHelpItem[])CmCacheManager.getInstance().retrieveFromCache(CacheName.INMH_ITEMS, p);
+                if(items == null) {
+                	logger.debug("Retrieving INMH Items for '" + p + ": " + userId);
+                	items = INeedMoreHelpManager.getInstance().getHelpItems(conn,p, "user_id=" + userId);
+                	CmCacheManager.getInstance().addToCache(CacheName.INMH_ITEMS, p, items);
+                }
+
+            	for(INeedMoreHelpItem h:items) {
+            		inmhItems.add(h);
+            		inmhItemsMap.put(p, inmhItems);
+            	}
             }
             catch(Exception e) {
                 throw new CmException("ERROR obtaining INMH for pids: " + pids, e);

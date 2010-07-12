@@ -117,5 +117,11 @@
        overflowToDisk="false">
 </cache>
 
+<cache name="INMH_ITEMS"
+       maxElementsInMemory="1000"
+       eternal="true"
+       overflowToDisk="false">
+</cache>
+
 
 </ehcache>

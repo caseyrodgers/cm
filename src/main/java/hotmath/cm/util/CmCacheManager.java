@@ -61,7 +61,10 @@ public class CmCacheManager  {
 		/** List of lessons available to create custom programs 
 		 */
 		CUSTOM_PROGRAM_LESSONS,
-		HA_USER
+		HA_USER,
+		
+		/** IneedMoreHelpItems looked for a pid */
+		INMH_ITEMS
 	};
 
 	private void flushCache() {
