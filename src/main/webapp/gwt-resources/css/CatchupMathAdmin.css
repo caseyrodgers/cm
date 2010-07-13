@@ -264,6 +264,7 @@ trending-data-student-list-item {
 
 .program-details-tree-panel {
     margin-top: 10px;
+    padding-bottom: 10px;
 }
 
 /** attempt to override ext-js style */
