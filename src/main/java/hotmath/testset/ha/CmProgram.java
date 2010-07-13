@@ -26,7 +26,7 @@ public enum CmProgram {
     TAKS(33,"TAKS Exit Level Practice Test","","Grad Prep Tx",true),
     GEOM_CHAP(24,"Geometry - Chapters", "Geom", "Chap",true),
     AUTO_ENROLL(15,"Auto-Enrollment","","Auto-Enroll",true),
-    NATIONAL(37,"National Practice Test","","Grad Prep National",false),
+    NATIONAL(37,"National Practice Test","","Grad Prep National",true),
     CUSTOM_PROGRAM(36,"Custom Program","Custom","Custom",false);
 
     private final int defId;
