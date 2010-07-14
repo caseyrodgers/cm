@@ -147,9 +147,9 @@ public class HaLoginInfo {
             if(!rs.first())
                 throw new CmExceptionLoginAlreadyConsumed("No such Catchup Math login key: " + key);
             
-            if(rs.getInt("is_consumed") == 1) {
-                throw new CmExceptionLoginAlreadyConsumed("Security key is invalid: " + key);
-            }
+//            if(rs.getInt("is_consumed") == 1) {
+//                throw new CmExceptionLoginAlreadyConsumed("Security key is invalid: " + key);
+//            }
     
             /** Mark this record as is_consumed, to disallow future logins
              * 

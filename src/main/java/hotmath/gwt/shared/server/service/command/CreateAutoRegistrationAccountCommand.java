@@ -118,6 +118,7 @@ public class CreateAutoRegistrationAccountCommand implements ActionHandler<Creat
         // Make a new HA_USER_LOGIN entry and return key
         HaUser huser = new HaUser();
         huser.setUid(userInfo.getUid());
+        huser.setLoginName(action.getUser());
         
         RpcData rdata = new RpcData();
         rdata.putData("key", HaLoginInfo.addLoginInfo(huser));

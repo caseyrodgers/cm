@@ -4,12 +4,16 @@ import hotmath.gwt.cm_rpc.client.rpc.GetUserInfoAction;
 import hotmath.gwt.cm_rpc.server.rpc.ActionDispatcher;
 import hotmath.gwt.cm_tools.client.data.HaBasicUser;
 import hotmath.gwt.shared.client.util.UserInfo;
+import hotmath.testset.ha.CmExceptionLoginAlreadyConsumed;
 import hotmath.testset.ha.HaAdmin;
 import hotmath.testset.ha.HaLoginInfo;
 import hotmath.testset.ha.HaUserFactory;
+import hotmath.util.HMConnectionPool;
 import hotmath.util.Jsonizer;
+import hotmath.util.sql.SqlUtilities;
 
 import java.io.IOException;
+import java.sql.Connection;
 import java.text.SimpleDateFormat;
 
 import javax.servlet.ServletException;
@@ -44,6 +48,7 @@ public class LoginService extends HttpServlet {
         String user = req.getParameter("user");
         String pwd = req.getParameter("pwd");
         String action = req.getParameter("action");
+        String key = req.getParameter("key");
         boolean isDebug=false;
 
         
@@ -56,23 +61,43 @@ public class LoginService extends HttpServlet {
         else if(action.startsWith("auto_test")) {
             user="catchup_demo";
         }
+
         
         try {
-        	
         	isDebug = req.getParameter("debug") != null;
         	int uid=SbUtilities.getInt(req.getParameter("uid"));
+
+        	HaBasicUser cmUser=null;
+        	
+        	if(uid == 0 ) {
+        		/** uid param has precedence */
+	            if(key != null) {
+	            	Connection conn=null;
+	            	try {
+	            		conn = HMConnectionPool.getConnection();
+	            		HaLoginInfo hi = HaLoginInfo.getLoginInfo(conn, key);
+	            		uid = hi.getUserId();
+	            		cmUser = HaUserFactory.getLoginUserInfo(uid,"STUDENT");
+	            		user = cmUser.getLoginName();
+	            	}
+	            	finally {
+	            		SqlUtilities.releaseResources(null,null,conn);
+	            	}
+	            }
+        	}
+        	
         	String type=req.getParameter("type");
         	if(type == null)
         		type = "STUDENT";
         	
-            HaBasicUser cmUser=null;
-        	if(isDebug && uid > 0) {
+            
+        	if(uid > 0) {
         		cmUser = HaUserFactory.getLoginUserInfo(uid,type);
         	}
         	else if(user.equals("catchup_demo")) {
                 cmUser = HaUserFactory.createDemoUser();
             }
-            else {
+            else if(cmUser == null) {
                 cmUser = HaUserFactory.loginToCatchup(user, pwd);
             }
             

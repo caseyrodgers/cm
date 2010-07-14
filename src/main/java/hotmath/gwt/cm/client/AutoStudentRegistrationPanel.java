@@ -298,9 +298,9 @@ public class AutoStudentRegistrationPanel extends CmMainResourceContainer {
             @Override
             public void componentSelected(ButtonEvent ce) {
                 String userKey = key;
-                String url = Window.Location.getPath();
+                String url = "http://" + Window.Location.getHost();
                 
-                url += "?key=" + userKey;
+                url += "/loginService?key=" + userKey;
                 Window.Location.replace(url);
             }
         });

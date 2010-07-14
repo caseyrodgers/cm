@@ -143,7 +143,7 @@ public class CmShared implements EntryPoint {
                     throw new CmExceptionLoginInvalid("Invalid login: no security key found!");
                 }
 
-                boolean needToValidate = true;
+                boolean needToValidate = false;
                 final String cmJson = getLoginInfoFromExtenalJs(); 
                 // Cookies.getCookie("cm_key");
                 // if no cookie, then we must validate
