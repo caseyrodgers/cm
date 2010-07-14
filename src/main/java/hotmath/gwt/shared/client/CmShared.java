@@ -144,11 +144,11 @@ public class CmShared implements EntryPoint {
                 }
 
                 boolean needToValidate = true;
-                final String cmKey = getLoginInfoFromExtenalJs(); 
+                final String cmJson = getLoginInfoFromExtenalJs(); 
                 // Cookies.getCookie("cm_key");
                 // if no cookie, then we must validate
-                if (cmKey != null) {
-                    JSONValue jsonValue = JSONParser.parse(cmKey);
+                if (cmJson != null) {
+                    JSONValue jsonValue = JSONParser.parse(cmJson);
                     JSONObject o = jsonValue.isObject();
                     String keyVal = o.get("key").isString().stringValue();
                     if (keyVal == null) {
@@ -156,14 +156,21 @@ public class CmShared implements EntryPoint {
                     }
                     if (key2.equals(keyVal)) {
                         userId = (int) o.get("userId").isNumber().doubleValue();
+                        UserInfoBase.getInstance().setUid(userId);
                         needToValidate = false;
+                    }
+                    String cmStartType = o.get("type").isString().stringValue();
+                    if(cmStartType != null && cmStartType.equals("AUTO_CREATE")) {
+                    	UserInfoBase.getInstance().setCmStartType(cmStartType);
                     }
                 }
                 if (!needToValidate) {
-                    UserInfoBase user = UserInfoBase.getInstance();
-                    user.setUid(userId);
                     callback.loginSuccessful(userId);
                 } else {
+                	/** THIS IS NOT BEING CALLED NOW
+                	 * 
+                	 * @TODO: remove 
+                	 */
                     new RetryAction<UserInfo>() {
                         @Override
                         public void attempt() {

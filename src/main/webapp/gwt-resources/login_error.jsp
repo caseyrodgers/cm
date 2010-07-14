@@ -39,6 +39,7 @@ pageTracker._trackPageview();
 	   reason = "Invalid Login Name and/or Password";
    }
    
+   boolean showMoreInfo=false; // request.getParameter("debug") != null;
 %>
 <style>
 .info-section {
@@ -108,13 +109,18 @@ pageTracker._trackPageview();
           <button onclick='document.location = "/login.html"' class="sexybutton sexysimple sexyblue">
                 <div style='display: inline;font-size: 120%'>Try Again</div>
           </button>
-          <div style='margin-top: 20x;'>
-              <br/>
-	          <a onclick="document.getElementById('more-info').style.display = 'block';this.style.display = 'none'">More Info</a>
-	          <div id='more-info' style='display: none'>
-	             <%= exp != null?exp.getMessage():"No more info" %>
+          <% if(showMoreInfo)  {
+              %>    	   
+              <div style='margin-top: 20x;'>
+	              <br/>
+		          <a onclick="document.getElementById('more-info').style.display = 'block';this.style.display = 'none'">More Info</a>
+		          <div id='more-info' style='display: none'>
+		             <%= exp != null?exp.getMessage():"No more info" %>
+		          </div>
 	          </div>
-          </div>
+	          <%
+	          }
+	      %>
         </div>
         <!-- InstanceEndEditable --> </div>
       <div id='bd-right'> <!-- InstanceBeginEditable name="BodyRight" --><!-- InstanceEndEditable --> </div>

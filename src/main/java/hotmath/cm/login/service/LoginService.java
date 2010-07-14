@@ -102,7 +102,6 @@ public class LoginService extends HttpServlet {
                 String urlWithSessionID = "http://" + getCmServer(req) + "/loginService?type=auto_test_net&debug=true&uid=" + loginInfo.getUserId();
                 resp.sendRedirect(urlWithSessionID);
             }
-
             else {
             	
             	if(cmUser.getExpireDate().getTime() < System.currentTimeMillis()) {
@@ -126,6 +125,7 @@ public class LoginService extends HttpServlet {
         		String dateStr = (cmUser.getExpireDate() != null) ? dateFormat.format((cmUser.getExpireDate())) : "n/a";
         		sb.append(", expireDate: '").append(dateStr);
         		sb.append("', loginMsg: '").append((cmUser.getLoginMessage() != null)?cmUser.getLoginMessage():"NONE");
+        		sb.append(",  loginName: '").append((cmUser.getLoginName() != null)?cmUser.getLoginName():"");
         		sb.append("' }");
         		req.getSession().setAttribute("jsonizedLoginInfo", sb.toString());
         		
@@ -135,7 +135,7 @@ public class LoginService extends HttpServlet {
             		req.getRequestDispatcher("/cm_admin/launch.jsp").forward(req, resp);
             	}
             	else {
-            		UserInfo userInfo = ActionDispatcher.getInstance().execute(new GetUserInfoAction(loginInfo.getUserId()));
+            		UserInfo userInfo = ActionDispatcher.getInstance().execute(new GetUserInfoAction(loginInfo.getUserId(),loginInfo.getLoginName()));
             		String jsonizedUserInfo = Jsonizer.toJson(userInfo);
             		req.getSession().setAttribute("jsonizedUserInfo", jsonizedUserInfo);
             		

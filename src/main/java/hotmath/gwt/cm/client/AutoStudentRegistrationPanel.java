@@ -282,9 +282,11 @@ public class AutoStudentRegistrationPanel extends CmMainResourceContainer {
         win.setSize(320,200);
         win.setModal(true);
         win.setClosable(false);
+        
+        String ln = UserInfo.getInstance().getLoginName();
         String html = "<div style='margin: 10px;'>" +
                       "<p>Your personal password is: <br/><b>" + password + "</b></p>" +
-                      "<p style='margin-top: 10px;'>In the future, your Login Name will be <b>" + CmShared.__loginName + "</b> along with the above password, so please write them both down!</p>" +
+                      "<p style='margin-top: 10px;'>In the future, your Login Name will be <b>" + ln + "</b> along with the above password, so please write them both down!</p>" +
                       "</div>";
         
         win.add(new Html(html));

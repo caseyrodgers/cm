@@ -31,7 +31,7 @@ public class UserInfoDao {
             @Override
             public void attempt() {
                 CmBusyManager.setBusy(true);
-                GetUserInfoAction action = new GetUserInfoAction(uid);
+                GetUserInfoAction action = new GetUserInfoAction(uid,"");
                 setAction(action);
                 CmShared.getCmService().execute(action, this);
             }

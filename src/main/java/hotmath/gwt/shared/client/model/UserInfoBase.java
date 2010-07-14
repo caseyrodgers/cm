@@ -14,6 +14,7 @@ public class UserInfoBase implements IsSerializable {
 	int uid;
 	int runId;
 	boolean isAdmin;
+	String cmStartType;
 
 	String userName;
 
@@ -31,6 +32,14 @@ public class UserInfoBase implements IsSerializable {
 	    return __instance;
 	}
 	
+	public String getCmStartType() {
+		return cmStartType;
+	}
+
+	public void setCmStartType(String cmStartType) {
+		this.cmStartType = cmStartType;
+	}
+
 	public UserInfoBase() {
 	}
 		

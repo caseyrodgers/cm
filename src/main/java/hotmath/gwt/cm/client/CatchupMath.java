@@ -20,6 +20,7 @@ import hotmath.gwt.shared.client.eventbus.CmEvent;
 import hotmath.gwt.shared.client.eventbus.CmEventListenerImplDefault;
 import hotmath.gwt.shared.client.eventbus.EventBus;
 import hotmath.gwt.shared.client.eventbus.EventType;
+import hotmath.gwt.shared.client.model.UserInfoBase;
 import hotmath.gwt.shared.client.rpc.action.RunNetTestAction.TestApplication;
 import hotmath.gwt.shared.client.util.CmRunAsyncCallback;
 import hotmath.gwt.shared.client.util.NetTestWindow;
@@ -166,8 +167,8 @@ public class CatchupMath implements EntryPoint {
 	    	if (UserInfo.getInstance().isSingleUser())
 	    		Window.setTitle("Catchup Math: Student");
 	    	
-	    	String ac = CmShared.getQueryParameterValue("type");
-	    	if (ac.equals("ac")) {
+	    	String ac = UserInfoBase.getInstance().getCmStartType();
+	    	if (ac.equals("AUTO_CREATE")) {
 	    		/**
 	    		 * self registration
 	    		 * 

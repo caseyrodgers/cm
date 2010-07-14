@@ -3,12 +3,11 @@ package hotmath.gwt.shared.server.service;
 import hotmath.gwt.cm.client.rpc.GetPrescriptionAction;
 import hotmath.gwt.cm.server.CmDbTestCase;
 import hotmath.gwt.cm_admin.server.model.CmStudentDao;
-import hotmath.gwt.cm_rpc.client.rpc.GetSolutionAction;
 import hotmath.gwt.cm_rpc.client.rpc.CmArrayList;
 import hotmath.gwt.cm_rpc.client.rpc.CmList;
 import hotmath.gwt.cm_rpc.client.rpc.CreateTestRunResponse;
 import hotmath.gwt.cm_rpc.client.rpc.GetQuizHtmlAction;
-import hotmath.gwt.cm_rpc.client.rpc.GetReviewHtmlAction;
+import hotmath.gwt.cm_rpc.client.rpc.GetSolutionAction;
 import hotmath.gwt.cm_rpc.client.rpc.GetUserInfoAction;
 import hotmath.gwt.cm_rpc.client.rpc.PrescriptionSessionResponse;
 import hotmath.gwt.cm_rpc.client.rpc.QuizHtmlResult;
@@ -18,7 +17,6 @@ import hotmath.gwt.cm_rpc.server.rpc.ActionDispatcher;
 import hotmath.gwt.cm_tools.client.model.AutoUserAdvanced;
 import hotmath.gwt.cm_tools.client.model.GroupInfoModel;
 import hotmath.gwt.cm_tools.client.model.LessonItemModel;
-import hotmath.gwt.cm_tools.client.model.StringHolder;
 import hotmath.gwt.cm_tools.client.model.StudentModelI;
 import hotmath.gwt.shared.client.rpc.action.AddGroupAction;
 import hotmath.gwt.shared.client.rpc.action.AutoAdvanceUserAction;
@@ -228,7 +226,7 @@ public class ActionDispatcher_Test extends CmDbTestCase {
     }
 
     public void testGetUserInfo() throws Exception {
-        GetUserInfoAction action = new GetUserInfoAction(uid);
+        GetUserInfoAction action = new GetUserInfoAction(uid,"Testing");
         UserInfo user = ActionDispatcher.getInstance().execute(action);
         
         assertNotNull(user);

@@ -54,7 +54,7 @@ public class HaLoginInfo {
             key = addLoginInfo(user);
             userId = user.getUserKey();
             type = user.getUserType().toString();
-            
+            loginName = user.getLoginName();
         }
         catch(Exception e) {
             throw new HotMathException(e, "Error logging into Catchup Math");

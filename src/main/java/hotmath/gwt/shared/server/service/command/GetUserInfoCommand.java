@@ -119,7 +119,7 @@ public class GetUserInfoCommand implements ActionHandler<GetUserInfoAction, User
             userInfo.setShowWorkRequired(settings.getShowWorkRequired());
             userInfo.setTutoringAvail(settings.getTutoringAvailable());
             userInfo.setPassword(sm.getPasscode());
-            userInfo.setLoginName(null);
+            userInfo.setLoginName(action.getLoginName());
             userInfo.setDemoUser(sm.getIsDemoUser());
             userInfo.setCustomProgram(isCustomProgram);
             
