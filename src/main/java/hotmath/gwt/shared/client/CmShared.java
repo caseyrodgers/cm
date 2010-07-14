@@ -167,50 +167,7 @@ public class CmShared implements EntryPoint {
                 if (!needToValidate) {
                     callback.loginSuccessful(userId);
                 } else {
-                	/** THIS IS NOT BEING CALLED NOW
-                	 * 
-                	 * @TODO: remove 
-                	 */
-                    new RetryAction<UserInfo>() {
-                        @Override
-                        public void attempt() {
-                            ProcessLoginRequestAction action = new ProcessLoginRequestAction(key2);
-                            setAction(action);
-                            CmShared.getCmService().execute(action,this);
-                        }
-                        
-                        public void oncapture(UserInfo userInfo) {
-
-                            /** Store login name to show to user on successful
-                             *  registration.  
-                             *  
-                             *  TODO: this is a bug waiting to happen, get rid of global.
-                             *    For example, what happens if you do a .. back .. the a forward...
-                             *    
-                             *  BUG: the above actually will cause null to show up when self-registering.  
-                             */
-                            __loginName = userInfo.getLoginName();
-                            
-                            
-                            /**
-                             * now store in cookie, so next refresh on this page
-                             * can read info from cookie.
-                             */
-                            Cookies.setCookie("cm_key", "{key:'" + key2 + "',uid:" + userInfo.getUid() + "}");
-
-                            /**
-                             * Check Flash, if not supported show error .. but
-                             * allow system to continue and initialize.
-                             */
-                            if (!SWFObjectUtil.isVersionIsValid(new PlayerVersion(CmShared.FLASH_MIN_VERSION))) {
-                                new FlashVersionNotSupportedWindow();
-                            }
-
-                            /** Call back app waiting to be logged in ... */
-                            callback.loginSuccessful(userInfo.getUid());
-
-                        }
-                    }.register();
+                	throw new CmException("Invalid login operation!");
                 }
             }
 
