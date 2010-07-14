@@ -125,7 +125,7 @@ public class LoginService extends HttpServlet {
         		String dateStr = (cmUser.getExpireDate() != null) ? dateFormat.format((cmUser.getExpireDate())) : "n/a";
         		sb.append(", expireDate: '").append(dateStr);
         		sb.append("', loginMsg: '").append((cmUser.getLoginMessage() != null)?cmUser.getLoginMessage():"NONE");
-        		sb.append(",  loginName: '").append((cmUser.getLoginName() != null)?cmUser.getLoginName():"");
+        		sb.append("',  loginName: '").append((cmUser.getLoginName() != null)?cmUser.getLoginName():"");
         		sb.append("' }");
         		req.getSession().setAttribute("jsonizedLoginInfo", sb.toString());
         		

@@ -168,6 +168,8 @@ public class CatchupMath implements EntryPoint {
 	    		Window.setTitle("Catchup Math: Student");
 	    	
 	    	String ac = UserInfoBase.getInstance().getCmStartType();
+	    	if(ac == null)ac = "";
+	    	
 	    	if (ac.equals("AUTO_CREATE")) {
 	    		/**
 	    		 * self registration
