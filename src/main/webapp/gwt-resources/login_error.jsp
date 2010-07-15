@@ -41,6 +41,7 @@ pageTracker._trackPageview();
    
    boolean showMoreInfo=false; // request.getParameter("debug") != null;
 %>
+<link rel="stylesheet" type="text/css" href="/resources/css/login.css" /><!-- InstanceEndEditable -->
 <style>
 .info-section {
 	display: none;
@@ -51,8 +52,13 @@ pageTracker._trackPageview();
 	margin-top: 40px;
 	padding-bottom: 10px;
 	width: 370px;
-	border: 1px solid black;
+	border: 1px solid A3C530;
 	height: auto;
+	background: white;
+}
+
+.round-corners {
+	border: 1px solid #A3C530;
 }
 
 #login-wrapper h1 {
@@ -102,11 +108,11 @@ pageTracker._trackPageview();
     </div>
     <div id="bd" role="main"> <!-- InstanceBeginEditable name="MainBody" --> <!-- InstanceEndEditable -->
       <div id='bd-left'> <!-- InstanceBeginEditable name="BodyLeft" -->
-        <div id='login-wrapper'>
+        <div id='login-wrapper' class='round-corners'>
           <h1>Login Problem</h1>
           <p class='reason'><%= reason %></p>
  
-          <button onclick='document.location = "/login.html"' class="sexybutton sexysimple sexyblue">
+          <button onclick='doLoginAgain();' class="sexybutton sexysimple sexyblue">
                 <div style='display: inline;font-size: 120%'>Try Again</div>
           </button>
           <% if(showMoreInfo)  {
