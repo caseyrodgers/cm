@@ -6,10 +6,12 @@
 case $1 in
 
     mysql)
-        ps -eo pcpu,pid,user,args | grep mysql | grep port | grep -v grep | awk '{print $1}';;
+        p=`ps -eo pcpu,pid,user,args | grep mysql | grep port | grep -v grep | awk '{print $1}'`;
+        echo -n $p;;
     
     cm)
-        ps -eo pcpu,pid,user,args | grep `cat ${HOME}/cm.pid` | grep -v grep | awk '{print $1}';;
+        p=`ps -eo pcpu,pid,user,args | grep `cat ${HOME}/cm.pid` | grep -v grep | awk '{print $1}'`;
+        echo -n $p;;
     
     httpd)
     
@@ -20,7 +22,7 @@ case $1 in
         done;
         w=`expr $p / 10`;
         d=`expr $p % 10`;
-        echo $w.$d;;
+        echo -n $w.$d;;
     
     *)
         echo "usage: $0 {cm | mysql | httpd}";
