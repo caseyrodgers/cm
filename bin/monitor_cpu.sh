@@ -10,7 +10,8 @@ case $1 in
         echo -n $p;;
     
     cm)
-        p=`ps -eo pcpu,pid,user,args | grep `cat ${HOME}/cm.pid` | grep -v grep | awk '{print $1}'`;
+        pid=`cat ${HOME}/cm.pid`;
+        p=`ps -eo pcpu,pid,user,args | grep $pid | grep -v grep | awk '{print $1}'`;
         echo -n $p;;
     
     httpd)
