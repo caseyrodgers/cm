@@ -3,8 +3,12 @@ package hotmath.gwt.cm.client.ui.context;
 import hotmath.gwt.cm.client.history.CmHistoryManager;
 import hotmath.gwt.cm_rpc.client.rpc.InmhItemData;
 import hotmath.gwt.cm_rpc.client.rpc.PrescriptionSessionDataResource;
+import hotmath.gwt.cm_rpc.client.rpc.SubMenuItem;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.shared.client.util.UserInfo;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
@@ -32,6 +36,7 @@ class ResourceMenuButton extends Button {
     PrescriptionSessionDataResource resource;
     
     String initialValue;
+    List<InmhItemData> resouresToRegister=new ArrayList<InmhItemData>();
     public ResourceMenuButton(final PrescriptionSessionDataResource resource) {
         super(resource.getLabel());
         this.initialValue = getText();
@@ -39,7 +44,11 @@ class ResourceMenuButton extends Button {
         addStyleName("resource-button");
         setWidth(185);
         
-        if(resource.getItems().size() == 0) {
+        
+        if(resource.getSubMenuItems().size() > 0) {
+        	setMenu(createNewSubResourceMenu(resource));
+        }
+        else if(resource.getItems().size() == 0) {
            setEnabled(false);
         }
         else if(resource.getItems().size() > 1) {
@@ -52,7 +61,7 @@ class ResourceMenuButton extends Button {
                  };
             });
         }
-        
+
 
         /** Setup listener to update menu's isViewed state.
          * 
@@ -71,7 +80,7 @@ class ResourceMenuButton extends Button {
          * the history mechanism to locate the proper resource to show.
          * 
          */
-        PrescriptionCmGuiDefinition._registeredResources.put(resource.getType(),resource.getItems());
+        PrescriptionCmGuiDefinition._registeredResources.put(resource.getType(),resouresToRegister);
         
         
         checkCompletion();
@@ -183,7 +192,7 @@ class ResourceMenuButton extends Button {
             }
             else {
                 item = new MenuItem(id.getTitle());
-            }
+            }            
             
             item.setHideOnClick(true);
             
@@ -214,9 +223,86 @@ class ResourceMenuButton extends Button {
            indicateCompletion();
         }
         
+        resouresToRegister = resource.getItems();
+        
         return menu;
-    } 
+    }
     
+    /** Proivide a method to have submenus.  If a submenu
+     *  has a null title, then show the first item as the 
+     *  a normal MenuItem without a submenu.
+     *  
+     * @param resource
+     * @return
+     */
+    private Menu createNewSubResourceMenu(final PrescriptionSessionDataResource resource) {
+        fixupResourceItems(resource);
+        
+        Menu menu = new Menu();
+        setText(resource.getLabel());
+        for (final SubMenuItem sid : resource.getSubMenuItems()) {
+            /** if only one item in submenu, then do not add submenu
+             * 
+             */
+            if(sid.getTitle() == null) {  
+            	/** single item, no submenu */
+            	final InmhItemData id = sid.getItemData().get(0);
+            	resouresToRegister.add(id);
+            	final MenuItem citem = new MenuItem(sid.getItemData().get(0).getTitle());
+            	citem.addSelectionListener(new SelectionListener<MenuEvent>() {
+                    public void componentSelected(MenuEvent ce) {
+                    	resourceWasClicked(id);
+                    }
+                });
+            	menu.add(citem);
+            }
+            else {
+                MenuItem subMi = new MenuItem(sid.getTitle());
+                menu.add(subMi);
+                
+            	/** add submenu */
+	            Menu subMenu = new Menu();
+	            subMi.setSubMenu(subMenu);
+	            for(final InmhItemData id: sid.getItemData()) {
+	            	resouresToRegister.add(id);
+	            	final MenuItem citem = new MenuItem(id.getTitle());
+	            	citem.addSelectionListener(new SelectionListener<MenuEvent>() {
+	                    public void componentSelected(MenuEvent ce) {
+	                    	resourceWasClicked(id);
+	                    }
+	                });
+	            	subMenu.add(citem);
+	            }
+            }
+        }
+        return menu;
+    }     
+    
+    
+    private void resourceWasClicked(InmhItemData id) {
+        /** Remove any existing resource viewers 
+         * 
+         * @TODO: This needs to be centralized  (throw a CLOSE event?)
+         */
+        Integer ordinalPosition=-1;
+        int cnt=0;
+        for(int i=0,t=resource.getSubMenuItems().size();i<t;i++) {
+        	SubMenuItem si = resource.getSubMenuItems().get(i);
+        	for(InmhItemData sid: si.getItemData()) {
+        		if(sid.getFile().equals(id.getFile())) {
+        			ordinalPosition=cnt;
+        			break;
+        		}
+        		cnt++;
+            }
+        	if(ordinalPosition > -1)
+        		break;
+        }
+        
+        if(isResourceAvailable(resource)) {
+            CmHistoryManager.loadResourceIntoHistory(resource.getType(),ordinalPosition.toString());
+        }
+    }
 
     /** implement limits on resources.
      * 

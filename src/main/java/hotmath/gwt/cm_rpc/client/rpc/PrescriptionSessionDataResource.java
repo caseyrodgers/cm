@@ -18,6 +18,7 @@ public class PrescriptionSessionDataResource implements IsSerializable {
 	String label;
 	boolean viewed;
 	String description;
+	List<SubMenuItem> subMenuItems = new ArrayList<SubMenuItem>();
 	
 	public PrescriptionSessionDataResource() {}
 	
@@ -63,5 +64,13 @@ public class PrescriptionSessionDataResource implements IsSerializable {
     public void setDescription(String description) {
         this.description = description;
     }
+
+	public List<SubMenuItem> getSubMenuItems() {
+		return subMenuItems;
+	}
+
+	public void setSubMenuItems(List<SubMenuItem> subMenuItems) {
+		this.subMenuItems = subMenuItems;
+	}
 	
 }

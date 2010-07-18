@@ -3,6 +3,7 @@ package hotmath.gwt.cm.client.ui.context;
 
 import hotmath.gwt.cm_rpc.client.rpc.InmhItemData;
 import hotmath.gwt.cm_rpc.client.rpc.PrescriptionSessionDataResource;
+import hotmath.gwt.cm_rpc.client.rpc.SubMenuItem;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,27 +47,51 @@ public class CmInmhStandardResources extends ArrayList<PrescriptionSessionDataRe
         resourceType.setLabel("Flash Cards and Skill Builders");
         resourceType.setDescription("Flash Card and Skill Builder resources that might help you");
         
-        items = new ArrayList<InmhItemData>();
-        t = resourceType.getType();    
+        List<SubMenuItem> subMenu = new ArrayList<SubMenuItem>();
+        SubMenuItem si = new SubMenuItem("Fractions");
         
-        items.add(new InmhItemData(t,"/learning_activities/interactivities/flashcard_reducingfractions.swf", "Reducing Fractions"));
-        items.add(new InmhItemData(t,"/learning_activities/interactivities/flashcard_addfrac_like.swf", "Adding Like Fractions"));
-        items.add(new InmhItemData(t,"/learning_activities/interactivities/flashcard_addfrac_unlike.swf", "Adding Unlike Fractions"));        
-        items.add(new InmhItemData(t,"/learning_activities/interactivities/flashcard_muti_frac.swf", "Multiplying Fractions"));
-        items.add(new InmhItemData(t,"/learning_activities/interactivities/flashcard_convert_improper.swf", "Converting Improper Fractions"));
-        items.add(new InmhItemData(t,"/learning_activities/interactivities/flashcard_convert_mixed.swf", "Converting Mixed Numbers"));
-        items.add(new InmhItemData(t,"/learning_activities/interactivities/flashcard_oops_level1.swf", "Order of Operations: Level 1"));
-        items.add(new InmhItemData(t,"/learning_activities/interactivities/flashcard_oops_level2.swf", "Order of Operations: Level 2"));
-        items.add(new InmhItemData(t,"/learning_activities/interactivities/flashcard_comparing_quantities.swf", "Comparing Quantities"));
-        items.add(new InmhItemData(t,"/learning_activities/interactivities/flashcard_multi.swf", "Multiplication Facts"));
-        items.add(new InmhItemData(t,"/learning_activities/interactivities/prime_factorization.swf", "Prime Factorization"));
-        // items.add(new InmhItemData(t,"/learning_activities/interactivities/flashcard_mixed_improper.swf", "Mixed Numbers & Improper Fractions"));
-
+        si.getItemData().add(new InmhItemData(t,"/learning_activities/interactivities/flashcard_addfrac_like.swf", "Adding Like Fractions"));
+        si.getItemData().add(new InmhItemData(t,"/learning_activities/interactivities/flashcard_addfrac_unlike.swf", "Adding Unlike Fractions"));
+        si.getItemData().add(new InmhItemData(t,"/learning_activities/interactivities/flashcard_muti_frac.swf", "Multiplying Fractions"));
+        si.getItemData().add(new InmhItemData(t,"/learning_activities/interactivities/flashcard_convert_improper.swf", "Converting Improper Fractions"));
+        si.getItemData().add(new InmhItemData(t,"/learning_activities/interactivities/flashcard_convert_mixed.swf", "Converting Mixed Numbers"));
+        si.getItemData().add(new InmhItemData(t,"/learning_activities/interactivities/flashcard_reducingfractions.swf", "Reducing Fractions"));
+        subMenu.add(si);
         
-        resourceType.setItems(items);        
+        
+        si = new SubMenuItem("Decimals");
+        si.getItemData().add(new InmhItemData(t,"/learning_activities/interactivities/flashcard_add_sub_deci.swf", "Adding Decimals"));
+        subMenu.add(si);
+        
+        
+        si = new SubMenuItem("Negatives");
+        si.getItemData().add(new InmhItemData(t,"/learning_activities/interactivities/flashcard_add_sub_neg.swf", "Adding with Negatives"));
+        si.getItemData().add(new InmhItemData(t,"/learning_activities/interactivities/flashcard_multi_div_neg.swf", "Multiplying with Negatives"));
+        subMenu.add(si);
+        
+        si = new SubMenuItem("Order of Operations");
+        si.getItemData().add(new InmhItemData(t,"/learning_activities/interactivities/flashcard_oops_level1.swf", "Order of Operations: Level 1"));
+        si.getItemData().add(new InmhItemData(t,"/learning_activities/interactivities/flashcard_oops_level2.swf", "Order of Operations: Level 2"));
+        subMenu.add(si);
+        
+        
+        si = new SubMenuItem(null);
+        si.getItemData().add(new InmhItemData(t,"/learning_activities/interactivities/flashcard_comparing_quantities.swf", "Comparing Quantities"));
+        subMenu.add(si);
+        
+        si = new SubMenuItem(null);
+        si.getItemData().add(new InmhItemData(t,"/learning_activities/interactivities/flashcard_multi.swf", "Multiplication Facts"));
+        subMenu.add(si);
+        
+        si = new SubMenuItem(null);
+        si.getItemData().add(new InmhItemData(t,"/learning_activities/interactivities/prime_factorization.swf", "Prime Factorization"));
+        subMenu.add(si);
+        
+        resourceType.setSubMenuItems(subMenu);
+        
         add(resourceType);
         
-        /** Add the Standard Flash Cards
+        /** Add the Standard Spanish Flash Cards
          * 
          */
         t = "flashcard_spanish";
@@ -74,22 +99,38 @@ public class CmInmhStandardResources extends ArrayList<PrescriptionSessionDataRe
         resourceType.setType(t);
         resourceType.setLabel("Tarjetas Flash en Espa&ntilde;ol");
         resourceType.setDescription("Spanish Flash Card and Skill Builder resources that might help you");
+
         
-        items = new ArrayList<InmhItemData>();
-        t = resourceType.getType();
+        subMenu = new ArrayList<SubMenuItem>();
+        si = new SubMenuItem("Fracciones");
         
-        items.add(new InmhItemData(t,"/learning_activities/interactivities/flashcard_reducingfractions.swf?lang=es", "Reduciendo Fracciones"));
-        items.add(new InmhItemData(t,"/learning_activities/interactivities/flashcard_addfrac_like.swf?lang=es", "Sumando Fracciones Semejantes"));
-        items.add(new InmhItemData(t,"/learning_activities/interactivities/flashcard_addfrac_unlike.swf?lang=es", "Sumando Fracciones no Semejantes"));
-        items.add(new InmhItemData(t,"/learning_activities/interactivities/flashcard_muti_frac.swf?lang=es", "Multiplicando Fracciones"));
-        items.add(new InmhItemData(t,"/learning_activities/interactivities/flashcard_convert_improper.swf?lang=es", "Convirtiendo Fracciones Improprias"));
-        items.add(new InmhItemData(t,"/learning_activities/interactivities/flashcard_convert_mixed.swf?lang=es", "Convirtiendo N&uacute;meros Mixtos"));
-        items.add(new InmhItemData(t,"/learning_activities/interactivities/flashcard_oops_level1.swf?lang=es", "Orden de las Operaciones: Nivel 1"));
-        items.add(new InmhItemData(t,"/learning_activities/interactivities/flashcard_oops_level2.swf?lang=es", "Orden de las Operaciones: Nivel 2"));
-        items.add(new InmhItemData(t,"/learning_activities/interactivities/flashcard_comparing_quantities.swf?lang=es", "Comparando Cantidades"));
-        items.add(new InmhItemData(t,"/learning_activities/interactivities/flashcard_multi.swf?lang=es", "Hechos de la Multiplicaci&oacute;n"));
-        items.add(new InmhItemData(t,"/learning_activities/interactivities/prime_factorization.swf?lang=es", "Factorizaci&oacute;n prima"));
-        resourceType.setItems(items);        
+        si.getItemData().add(new InmhItemData(t,"/learning_activities/interactivities/flashcard_reducingfractions.swf?lang=es", "Reduciendo Fracciones"));
+        si.getItemData().add(new InmhItemData(t,"/learning_activities/interactivities/flashcard_addfrac_like.swf?lang=es", "Sumando Fracciones Semejantes"));
+        si.getItemData().add(new InmhItemData(t,"/learning_activities/interactivities/flashcard_addfrac_unlike.swf?lang=es", "Sumando Fracciones no Semejantes"));
+        si.getItemData().add(new InmhItemData(t,"/learning_activities/interactivities/flashcard_muti_frac.swf?lang=es", "Multiplicando Fracciones"));
+        si.getItemData().add(new InmhItemData(t,"/learning_activities/interactivities/flashcard_convert_improper.swf?lang=es", "Convirtiendo Fracciones Improprias"));
+        si.getItemData().add(new InmhItemData(t,"/learning_activities/interactivities/flashcard_convert_mixed.swf?lang=es", "Convirtiendo N&uacute;meros Mixtos"));
+        subMenu.add(si);
+        
+        si = new SubMenuItem("Orden de las Operaciones");
+        si.getItemData().add(new InmhItemData(t,"/learning_activities/interactivities/flashcard_oops_level1.swf?lang=es", "Orden de las Operaciones: Nivel 1"));
+        si.getItemData().add(new InmhItemData(t,"/learning_activities/interactivities/flashcard_oops_level2.swf?lang=es", "Orden de las Operaciones: Nivel 2"));
+        subMenu.add(si);
+
+        si = new SubMenuItem(null);
+        si.getItemData().add(new InmhItemData(t,"/learning_activities/interactivities/flashcard_comparing_quantities.swf?lang=es", "Comparando Cantidades"));
+        subMenu.add(si);
+        
+        si = new SubMenuItem(null);
+        si.getItemData().add(new InmhItemData(t,"/learning_activities/interactivities/flashcard_multi.swf?lang=es", "Hechos de la Multiplicaci&oacute;n"));
+        subMenu.add(si);
+        
+        si = new SubMenuItem(null);
+        si.getItemData().add(new InmhItemData(t,"/learning_activities/interactivities/prime_factorization.swf?lang=es", "Factorizaci&oacute;n prima"));
+        subMenu.add(si);
+        
+        resourceType.setSubMenuItems(subMenu);
+        
         add(resourceType);
     }
 }
