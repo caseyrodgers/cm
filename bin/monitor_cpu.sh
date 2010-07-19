@@ -7,12 +7,14 @@ case $1 in
 
     mysql)
         pid=`ps -eo pid,user,args | grep mysql | grep port | grep -v grep | awk '{print $1}'`;
-        pidstat 1 1 -p $pid | grep Average | awk '{print $6}';
+        cpu=`pidstat 1 1 -p $pid | grep Average | awk '{print $6}'`;
+        echo -n $cpu;
         ;;
     
     cm)
         pid=`cat /home/hotmath/cm.pid`;
-        pidstat 1 1 -p $pid | grep Average | awk '{print $6}';
+        cpu=`pidstat 1 1 -p $pid | grep Average | awk '{print $6}'`;
+        echo -n $cpu;
         ;;
     
     httpd)
