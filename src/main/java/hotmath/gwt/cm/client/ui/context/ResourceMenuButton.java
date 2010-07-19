@@ -55,6 +55,7 @@ class ResourceMenuButton extends Button {
             setMenu(createNewResourceMenu(resource));
         }
         else {
+        	resouresToRegister.addAll(resource.getItems());
             addSelectionListener(new SelectionListener<ButtonEvent>() {
                  public void componentSelected(ButtonEvent ce) {
                      CmHistoryManager.loadResourceIntoHistory(resource.getType(),"0");
@@ -223,7 +224,7 @@ class ResourceMenuButton extends Button {
            indicateCompletion();
         }
         
-        resouresToRegister = resource.getItems();
+        resouresToRegister.addAll(resource.getItems());
         
         return menu;
     }
