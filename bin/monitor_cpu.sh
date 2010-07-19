@@ -6,24 +6,45 @@
 case $1 in
 
     mysql)
-        p=`ps -eo pcpu,pid,user,args | grep mysql | grep port | grep -v grep | awk '{print $1}'`;
-        echo -n $p;;
+        pid=`ps -eo pid,user,args | grep mysql | grep port | grep -v grep | awk '{print $1}'`;
+        pidstat 1 1 -p $pid | grep Average | awk '{print $6}';
+        ;;
     
     cm)
-        pid=`cat ${HOME}/cm.pid`;
-        p=`ps -eo pcpu,pid,user,args | grep $pid | grep -v grep | awk '{print $1}'`;
-        echo -n $p;;
+        pid=`cat /home/hotmath/cm.pid`;
+        pidstat 1 1 -p $pid | grep Average | awk '{print $6}';
+        ;;
     
     httpd)
     
-        hps=`ps -eo pcpu,pid,user,args | grep httpd | grep apache | grep -v grep | awk '{print $1}' | sed 's/\.//'`
-        p=0;
-        for c in $hps; do
-            p=`expr $p + $c`;
+        hpids=`ps -eo pid,user,args | grep httpd | grep apache | grep -v grep | awk '{print $1}'`;
+        echo $hpids;
+        
+        pidarg=`echo $hpids | sed 's/ /,/g'`;
+        echo $pidarg;
+        
+        hcpu=`pidstat 1 1 -p $pidarg | grep Average | grep -v CPU | awk '{print $6}' | sed 's/\.//'`;
+        echo $hcpu;
+        
+        cpu=0;
+        for c in $hcpu; do
+            echo $c;
+            cpu=`expr $p + $c`;
         done;
-        w=`expr $p / 10`;
-        d=`expr $p % 10`;
-        echo -n $w.$d;;
+        echo $cpu;
+    
+        w=`expr $cpu / 100`;
+        echo w: $w
+        
+        d=`expr $cpu % 100`;
+        echo d: $d;
+        
+        if [ $d -ge 10 ]; then
+            echo -n $w.$d;
+        else
+            echo -n $w.0$d;
+        fi
+        ;;
     
     *)
         echo "usage: $0 {cm | mysql | httpd}";
