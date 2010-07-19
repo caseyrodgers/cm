@@ -1,10 +1,10 @@
 package hotmath.cm.login.service;
 
+import hotmath.cm.login.service.lcom.LcomManager;
 import hotmath.gwt.cm_rpc.client.rpc.GetUserInfoAction;
 import hotmath.gwt.cm_rpc.server.rpc.ActionDispatcher;
 import hotmath.gwt.cm_tools.client.data.HaBasicUser;
 import hotmath.gwt.shared.client.util.UserInfo;
-import hotmath.testset.ha.CmExceptionLoginAlreadyConsumed;
 import hotmath.testset.ha.HaAdmin;
 import hotmath.testset.ha.HaLoginInfo;
 import hotmath.testset.ha.HaUserFactory;
@@ -52,18 +52,24 @@ public class LoginService extends HttpServlet {
         boolean isDebug=false;
 
         
-        if(action == null)
-            action = "";
-        else if(action.equals("sample")) {
-            user = "catchup_demo";
-            action = "login";
-        }
-        else if(action.startsWith("auto_test")) {
-            user="catchup_demo";
-        }
-
-        
         try {
+        	
+            if(action == null)
+                action = "";
+            else if(action.equals("sample")) {
+                user = "catchup_demo";
+                action = "login";
+            }
+            else if(action.startsWith("auto_test")) {
+                user="catchup_demo";
+            }
+            else if(action.equals("LCOM")) {
+            	handleLcomLogin(req, resp);
+            	return;
+            }
+
+            
+        	
         	isDebug = req.getParameter("debug") != null;
         	int uid=SbUtilities.getInt(req.getParameter("uid"));
 
@@ -194,5 +200,37 @@ public class LoginService extends HttpServlet {
 
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         doPost(req, resp);
+    }
+    
+    /** perform login for LCOM interrgation
+     * 
+     * @param req
+     * @param resp
+     * @throws ServletException
+     * @throws IOException
+     * 
+     * http://catchupmath.com/?lcomtype=student&sp1=Catchup%2520Math%2520%20Teacher&sp2=a38f84d9-29c3-4080-a5e7-5996e7b1fdb8&sp3=e1f83d2e-4e64-4342-b94f-bd7095c44c00&sp4=a38f84d9-29c3-4080-a5e7-5996e7b1fdb8
+     */
+    private void handleLcomLogin(HttpServletRequest req, HttpServletResponse resp) throws Exception {
+    	String type = req.getParameter("lcomtype");
+    	if(type.equals("student")) {
+	    	String firstLast = req.getParameter("sp1");
+	    	String userId = req.getParameter("sp2");
+	    	String courseId = req.getParameter("sp3"); 
+	    	String teacherId = req.getParameter("sp4");
+	    	LcomManager.getInstance().loginStudent(firstLast, userId, courseId, teacherId);
+    	}
+    	else if(type.equals("teacher")) {
+	    	String firstName = req.getParameter("tp1");
+	    	String lastName = req.getParameter("tp2");
+	    	String email = req.getParameter("tp3"); // null for now
+	    	String district = req.getParameter("tp4");
+	    	String zip = req.getParameter("tp5"); // null for now
+	    	String courseName = req.getParameter("tp6");
+	    	String courseId = req.getParameter("tp7");
+	    	LcomManager.getInstance().loginTeacher(firstName, lastName, email, district, zip, courseName,courseId);
+    	}
+    	
+    	throw new Exception("Not implemented!");
     }
 }
