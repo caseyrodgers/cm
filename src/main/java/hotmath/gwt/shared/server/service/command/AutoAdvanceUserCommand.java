@@ -1,5 +1,6 @@
 package hotmath.gwt.shared.server.service.command;
 
+import hotmath.cm.util.UserTypeHolder;
 import hotmath.gwt.cm_rpc.client.rpc.Action;
 import hotmath.gwt.cm_rpc.client.rpc.Response;
 import hotmath.gwt.cm_rpc.server.rpc.ActionHandler;
@@ -26,6 +27,8 @@ public class AutoAdvanceUserCommand implements ActionHandlerManualConnectionMana
     @Override
     public AutoUserAdvanced execute(final Connection conn, AutoAdvanceUserAction action) throws Exception {
         
+        UserTypeHolder.set(UserTypeHolder.UserType.STUDENT);
+
         int userId = action.getUserId();
         EndOfProgramHandler eofh = new EndOfProgramHandler(userId);
         StudentUserProgramModel program = eofh.getNextProgram();
