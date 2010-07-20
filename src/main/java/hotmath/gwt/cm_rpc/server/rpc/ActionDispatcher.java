@@ -1,5 +1,6 @@
 package hotmath.gwt.cm_rpc.server.rpc;
 
+import hotmath.cm.util.UserTypeHolder;
 import hotmath.flusher.Flushable;
 import hotmath.flusher.HotmathFlusher;
 import hotmath.gwt.cm_rpc.client.rpc.Action;
@@ -14,6 +15,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
+
+import static hotmath.cm.util.UserTypeHolder.UserType.ADMIN;
+import static hotmath.cm.util.UserTypeHolder.UserType.STUDENT;
 
 /**
  * Implements a Command Pattern for controlling commands used by Catchup Math
@@ -147,12 +151,13 @@ public class ActionDispatcher {
                 logger.debug("RPC Action: DB Connection NOT requested");
             }
             
-            monitorCountActionsExecuted++;
+            UserTypeHolder.UserType userType = UserTypeHolder.get();
 
+            incrementActionsExecuted(userType);
 
             T response = (T) actionHandler.execute(conn, action);
 
-            monitorCountActionsCompleted++;
+            incrementActionsCompleted(userType);
 
             return response;
         } catch (CmRpcException cre) {
@@ -174,7 +179,34 @@ public class ActionDispatcher {
         }
     }
 
-    /** Check for command, if not registered then look
+	private void incrementActionsExecuted(UserTypeHolder.UserType userType) {
+		switch (userType) {
+		case ADMIN:
+			monitorCountAdminActionsExecuted++;
+			break;
+		case STUDENT:
+			monitorCountStudentActionsExecuted++;
+			break;
+		}
+
+		monitorCountActionsExecuted++;
+	}
+
+
+	private void incrementActionsCompleted(UserTypeHolder.UserType userType) {
+		switch (userType) {
+		case ADMIN:
+			monitorCountAdminActionsCompleted++;
+			break;
+		case STUDENT:
+			monitorCountStudentActionsCompleted++;
+			break;
+		}
+
+		monitorCountActionsCompleted++;
+	}
+
+	/** Check for command, if not registered then look
      *  for Command following conventions:
      *  
      *  1. actions end with Action
@@ -275,7 +307,11 @@ public class ActionDispatcher {
         ActionsExecuted,
         ActionsCompleted,
         ProcessingTime,
-        ExceptionCount
+        ExceptionCount,
+        StudentActionsExecuted,
+        StudentActionsCompleted,
+        AdminActionsExcecuted,
+        AdminActionsCompleted
     }
     
     
@@ -284,6 +320,12 @@ public class ActionDispatcher {
     int monitorCountActionsCompleted;
     int monitorCountOfExceptions;
     long monitorTotalProcessingTime;
+    
+    int monitorCountStudentActionsExecuted;
+    int monitorCountStudentActionsCompleted;
+    int monitorCountAdminActionsExecuted;
+    int monitorCountAdminActionsCompleted;
+    
 }
 
 
