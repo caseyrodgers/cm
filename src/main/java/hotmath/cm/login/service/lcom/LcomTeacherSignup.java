@@ -7,33 +7,58 @@ package hotmath.cm.login.service.lcom;
  */
 public class LcomTeacherSignup {
 
-	String firstName, lastName,email,district,zip,courseName,courseId;
+	String firstLast,teacherId, email,district,zip,courseName,courseId;
+	int adminId;
 	
-	public LcomTeacherSignup(String firstName, String lastName, String email, String district, String zip, String courseName,String courseId) {
-		this.firstName = firstName;
-		this.lastName = lastName;
+	public LcomTeacherSignup(String firstLast, String teacherId, String email, String district, String zip, String courseName,String courseId) {
+		this.firstLast = firstLast;
+		this.teacherId = teacherId;
 		this.email = email;
 		this.district = district;
-		this.zip = zip;
+		this.zip = zip!=null?zip:"";
 		this.courseName = courseName;
 		this.courseId = courseId;
 	}
 
-	public String getFirstName() {
-		return firstName;
+	public String getSchoolName() {
+		return "LCOM: " + district;
 	}
 
-	public void setFirstName(String firstName) {
-		this.firstName = firstName;
+
+	@Override
+	public String toString() {
+		return "LcomTeacherSignup [firstLast=" + firstLast + ", teacherId="
+				+ teacherId + ", email=" + email + ", district=" + district
+				+ ", zip=" + zip + ", courseName=" + courseName + ", courseId="
+				+ courseId + ", adminId=" + adminId + "]";
 	}
 
-	public String getLastName() {
-		return lastName;
+
+
+	public Integer getAdminId() {
+		return adminId;
 	}
 
-	public void setLastName(String lastName) {
-		this.lastName = lastName;
+	public void setAdminId(Integer adminId) {
+		this.adminId = adminId;
 	}
+
+	public String getFirstLast() {
+		return firstLast;
+	}
+
+	public void setFirstLast(String firstLast) {
+		this.firstLast = firstLast;
+	}
+
+	public String getTeacherId() {
+		return teacherId;
+	}
+
+	public void setTeacherId(String teacherId) {
+		this.teacherId = teacherId;
+	}
+
 
 	public String getEmail() {
 		return email;

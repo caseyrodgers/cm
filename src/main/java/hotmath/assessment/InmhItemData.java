@@ -137,9 +137,9 @@ public class InmhItemData {
                     widgets.add(new RppWidget(rangeOrJson));
                 } else {
                     /** is a solution PID */
-                	logger.info("find solutions in range " + logTag);
+                	logger.debug("find solutions in range " + logTag);
                     List<String> related = findSolutionsMatchingRange(conn, rangeOrJson);
-                    logger.info("finished finding solutions in range " + logTag);
+                    logger.debug("finished finding solutions in range " + logTag);
                     for (String s : related) {
                         RppWidget widget = new RppWidget();
                         widget.setFile(s);

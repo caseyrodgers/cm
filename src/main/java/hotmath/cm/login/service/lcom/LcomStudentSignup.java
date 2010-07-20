@@ -7,19 +7,29 @@ package hotmath.cm.login.service.lcom;
  */
 public class LcomStudentSignup {
 	String lastFirst;
+	int userId;
 	String studentUserId;
 	String studentCourseId;
 	String currentCourseTeacherUserId;
 	
-	public LcomStudentSignup(String lastFirst, String studentUserId, String courseId, String currentCourseTeacherUserId) {
+	public LcomStudentSignup(String lastFirst, String studentUserId, String courseId, String currentCourseTeacherUserId, int userId) {
 		this.lastFirst = lastFirst;
-		this.studentCourseId = studentUserId;
+		this.studentUserId = studentUserId;
 		this.studentCourseId = courseId;
 		this.currentCourseTeacherUserId = currentCourseTeacherUserId;
+		this.userId = userId;
 	}
 
 	public String getLastFirst() {
 		return lastFirst;
+	}
+
+	public int getUserId() {
+		return userId;
+	}
+
+	public void setUserId(int userId) {
+		this.userId = userId;
 	}
 
 	public void setLastFirst(String lastFirst) {

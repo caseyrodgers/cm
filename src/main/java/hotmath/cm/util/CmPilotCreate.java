@@ -141,7 +141,6 @@ public class CmPilotCreate {
                 // fail silent
             }
 
-
         } catch (Exception e) {
         	logger.error(String.format("*** problem creating pilot for subscriberID: %s", subscriberId), e);
         } finally {
@@ -285,11 +284,15 @@ public class CmPilotCreate {
     }
     
     
-    static public void addPilotRequest(String title, String name, String school, String zip, String email,
+    static public Integer addPilotRequest(String title, String name, String school, String zip, String email,
             String phone, String userComments, String phoneWhen, String schoolPrefix) throws Exception {
+    	return addPilotRequest(title, name, school, zip, email, phone, userComments, phoneWhen, schoolPrefix, true);
+    }
+
+    static public Integer addPilotRequest(String title, String name, String school, String zip, String email,
+            String phone, String userComments, String phoneWhen, String schoolPrefix, boolean sendEmailConfirmation) throws Exception {
 
         String sendTo[] = { "lincoln@hotmath.com", "sales@hotmath.com", "casey@hotmath.com" };
-        String SERVER_NAME = "http://catchupmath.com";
 
         Connection conn = null;
         PreparedStatement ps = null;
@@ -327,37 +330,41 @@ public class CmPilotCreate {
             /** setup the CM pilot in CM_ADMIN
              * 
              */
-            new CmPilotCreate(sub.getId(),false,0,false,1000);
+            CmPilotCreate pilot = new CmPilotCreate(sub.getId(),false,0,false,1000);
             
             
-            /** send tracking email to pilot requester
-             * 
-             */
-            try {
-                sub.sendEmailConfirmation("CM Pilot");
-            }
-            catch(Exception e) {
-            	logger.error(String.format("*** problem creating pilot for school: %s", school), e);
-            }
-            
-            
-            /** send tracking email to admin people
-             * 
-             */
-            String txt = "A request for a Catchup Math Pilot was created by:\n" + "Subscriber ID: " + idToUse
-                    + "\n" + "\nTitle: " + title + "\nName: " + name + "\nSchool: " + school + "\nZip: " + zip
-                    + "\nEmail: " + email + "\nPhone: " + phone +  "\nPhone When: "
-                    + phoneWhen + "\nComments: " + userComments;
-            try {
+            if(sendEmailConfirmation) {
+	            /** send tracking email to pilot requester
+	             * 
+	             */
+	            try {
+	                sub.sendEmailConfirmation("CM Pilot");
+	            }
+	            catch(Exception e) {
+	            	logger.error(String.format("*** problem creating pilot for school: %s", school), e);
+	            }
+	            
+	            /** send tracking email to admin people
+	             * 
+	             */
+	            String txt = "A request for a Catchup Math Pilot was created by:\n" + "Subscriber ID: " + idToUse
+	                    + "\n" + "\nTitle: " + title + "\nName: " + name + "\nSchool: " + school + "\nZip: " + zip
+	                    + "\nEmail: " + email + "\nPhone: " + phone +  "\nPhone When: "
+	                    + phoneWhen + "\nComments: " + userComments;
+	            try {
                 SbMailManager.getInstance().sendMessage("Catchup Math Pilot Request", txt, sendTo,
-                        "registration@hotmath.com", "text/plain");
-            } catch (Exception e) {
-            	logger.error(String.format("*** problem sending pilot request email: %s", txt), e);
+	                        "registration@hotmath.com", "text/plain");
+	            } catch (Exception e) {
+	            	logger.error(String.format("*** problem sending pilot request email: %s", txt), e);
+	            }
             }
+            return pilot.getAid();
         } catch (Exception e) {
         	logger.error(String.format("*** problem adding pilot request for school: %s", school), e);
         } finally {
             SqlUtilities.releaseResources(null, ps, conn);
         }
+
+        return -1;
     }
 }

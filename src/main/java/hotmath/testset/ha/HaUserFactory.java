@@ -2,8 +2,10 @@ package hotmath.testset.ha;
 
 import hotmath.HotMathException;
 import hotmath.cm.util.CmMultiLinePropertyReader;
+import hotmath.gwt.cm_admin.server.model.CmAdminDao;
 import hotmath.gwt.cm_admin.server.model.CmStudentDao;
 import hotmath.gwt.cm_tools.client.data.HaBasicUser;
+import hotmath.gwt.cm_tools.client.model.GroupInfoModel;
 import hotmath.gwt.cm_tools.client.model.StudentModel;
 import hotmath.gwt.shared.client.util.CmException;
 import hotmath.util.HMConnectionPool;
@@ -259,6 +261,45 @@ public class HaUserFactory {
         }
     }
     
+    /**
+     * Create a unique demo user, created by reading a template record
+     * 
+     * @throws Exception
+     */
+    static public int createUser(final Connection conn, int adminId, String groupName, String userName, String userPass) throws Exception {
+
+        PreparedStatement pstat = null;
+        ResultSet rs = null;
+        try {
+            String sql = "select * from HA_USER where uid = ?";
+
+            pstat = conn.prepareStatement(sql);
+
+            CmStudentDao cmDao = new CmStudentDao();
+
+            StudentModel student = new StudentModel();
+            student.setName(userName);
+            student.setPasscode(userPass);
+            student.setAdminUid(adminId);
+            
+            GroupInfoModel group = new CmAdminDao().getGroup(conn, adminId, groupName);
+            if(group == null)
+            	throw new CmException("Group '" + groupName + "' could not be found");
+            
+            student.setGroupId(Integer.toString(group.getId()));
+            student.getProgram().setProgramType(CmProgram.PREALG_PROF.getProgramType());
+            student.getProgram().setSubjectId(CmProgram.PREALG_PROF.getSubject());
+            student.setPassPercent("70%");
+            student.getSettings().setTutoringAvailable(false);
+            student.getSettings().setShowWorkRequired(false);
+            student.setIsDemoUser(false);
+
+            int uid = cmDao.addStudent(conn, student).getUid();
+            return uid;
+        } finally {
+            SqlUtilities.releaseResources(rs, pstat, null);
+        }
+    }    
 
 	/**
 	 * Return login information user for user with known uid

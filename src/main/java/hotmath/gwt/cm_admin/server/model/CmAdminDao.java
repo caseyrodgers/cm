@@ -86,6 +86,14 @@ public class CmAdminDao {
         return l;
     }
 
+    public GroupInfoModel getGroup(final Connection conn, int adminId, String groupName) throws Exception {
+    	CmList<GroupInfoModel> groups = getActiveGroups(conn, adminId);
+    	for(GroupInfoModel g: groups) {
+    		if(g.getName().equals(groupName))
+    			return g;
+    	}
+    	return null;
+    }
     public CmList<GroupInfoModel> getActiveGroups(final Connection conn, Integer adminUid) throws Exception {
         CmList<GroupInfoModel> l = null;
 

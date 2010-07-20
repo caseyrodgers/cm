@@ -1,6 +1,8 @@
 package hotmath.cm.login.service;
 
 import hotmath.cm.login.service.lcom.LcomManager;
+import hotmath.cm.login.service.lcom.LcomStudentSignup;
+import hotmath.cm.login.service.lcom.LcomTeacherSignup;
 import hotmath.gwt.cm_rpc.client.rpc.GetUserInfoAction;
 import hotmath.gwt.cm_rpc.server.rpc.ActionDispatcher;
 import hotmath.gwt.cm_tools.client.data.HaBasicUser;
@@ -13,6 +15,7 @@ import hotmath.util.Jsonizer;
 import hotmath.util.sql.SqlUtilities;
 
 import java.io.IOException;
+import java.net.URLDecoder;
 import java.sql.Connection;
 import java.text.SimpleDateFormat;
 
@@ -50,8 +53,6 @@ public class LoginService extends HttpServlet {
         String action = req.getParameter("action");
         String key = req.getParameter("key");
         boolean isDebug=false;
-
-        
         try {
         	
             if(action == null)
@@ -68,9 +69,7 @@ public class LoginService extends HttpServlet {
             	return;
             }
 
-            
-        	
-        	isDebug = req.getParameter("debug") != null;
+            isDebug = req.getParameter("debug") != null;
         	int uid=SbUtilities.getInt(req.getParameter("uid"));
 
         	HaBasicUser cmUser=null;
@@ -202,7 +201,7 @@ public class LoginService extends HttpServlet {
         doPost(req, resp);
     }
     
-    /** perform login for LCOM interrgation
+    /** perform login for LCOM integration
      * 
      * @param req
      * @param resp
@@ -212,25 +211,32 @@ public class LoginService extends HttpServlet {
      * http://catchupmath.com/?lcomtype=student&sp1=Catchup%2520Math%2520%20Teacher&sp2=a38f84d9-29c3-4080-a5e7-5996e7b1fdb8&sp3=e1f83d2e-4e64-4342-b94f-bd7095c44c00&sp4=a38f84d9-29c3-4080-a5e7-5996e7b1fdb8
      */
     private void handleLcomLogin(HttpServletRequest req, HttpServletResponse resp) throws Exception {
-    	String type = req.getParameter("lcomtype");
-    	if(type.equals("student")) {
-	    	String firstLast = req.getParameter("sp1");
-	    	String userId = req.getParameter("sp2");
-	    	String courseId = req.getParameter("sp3"); 
-	    	String teacherId = req.getParameter("sp4");
-	    	LcomManager.getInstance().loginStudent(firstLast, userId, courseId, teacherId);
+    	try {
+	    	String type = req.getParameter("lcomtype");
+	    	String urlToRedirectTo=null;
+	    	if(type.equals("student")) {
+		    	String firstLast = URLDecoder.decode(req.getParameter("sp1"));
+		    	String userId = req.getParameter("sp2");
+		    	String courseId = req.getParameter("sp3"); 
+		    	String teacherId = req.getParameter("sp4");
+		    	urlToRedirectTo = LcomManager.loginStudent(new LcomStudentSignup(firstLast, userId, courseId, teacherId,0));
+	    	}
+	    	else if(type.equals("teacher")) {
+		    	String firstLast = URLDecoder.decode(req.getParameter("tp1"));
+		    	String teacherId = req.getParameter("tp2");
+		    	String email = req.getParameter("tp3"); // null for now
+		    	String district = req.getParameter("tp4");
+		    	String zip = req.getParameter("tp5"); // null for now
+		    	String courseName = req.getParameter("tp6");
+		    	String courseId = req.getParameter("tp7");
+		    	urlToRedirectTo = LcomManager.loginTeacher(new LcomTeacherSignup(firstLast, teacherId, email, district, zip, courseName, courseId));
+	    	}
+	    	resp.sendRedirect(urlToRedirectTo);
     	}
-    	else if(type.equals("teacher")) {
-	    	String firstName = req.getParameter("tp1");
-	    	String lastName = req.getParameter("tp2");
-	    	String email = req.getParameter("tp3"); // null for now
-	    	String district = req.getParameter("tp4");
-	    	String zip = req.getParameter("tp5"); // null for now
-	    	String courseName = req.getParameter("tp6");
-	    	String courseId = req.getParameter("tp7");
-	    	LcomManager.getInstance().loginTeacher(firstName, lastName, email, district, zip, courseName,courseId);
+    	catch(Exception e) {
+    		req.getSession().setAttribute("exception", e);
+        	req.getRequestDispatcher("/gwt-resources/lcom/login_error.jsp").forward(req, resp);
     	}
-    	
-    	throw new Exception("Not implemented!");
+	    	
     }
 }
