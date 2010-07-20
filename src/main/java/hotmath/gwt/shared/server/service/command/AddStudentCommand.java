@@ -1,5 +1,6 @@
 package hotmath.gwt.shared.server.service.command;
 
+import hotmath.cm.util.UserTypeHolder;
 import hotmath.gwt.cm_admin.server.model.CmStudentDao;
 import hotmath.gwt.cm_rpc.client.rpc.Action;
 import hotmath.gwt.cm_rpc.client.rpc.Response;
@@ -14,6 +15,7 @@ public class AddStudentCommand implements ActionHandler<AddStudentAction, Studen
     @Override
     public StudentModelI execute(Connection conn, AddStudentAction action) throws Exception {
         CmStudentDao dao = new CmStudentDao();
+        UserTypeHolder.set(UserTypeHolder.UserType.ADMIN);
         return dao.addStudent(conn, action.getStudent());
     }
 
