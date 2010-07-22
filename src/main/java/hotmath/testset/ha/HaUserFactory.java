@@ -79,6 +79,7 @@ public class HaUserFactory {
                     admin.setUserName(user);
                     admin.setPassword(pwd);
                     admin.setAdminId(rs.getInt("aid"));
+                    admin.setEmail(rs.getString("student_email"));
                     java.sql.Date date = rs.getDate("date_expire");
                     if (date != null)
                         admin.setExpireDate(new Date(date.getTime()));

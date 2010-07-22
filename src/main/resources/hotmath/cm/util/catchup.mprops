@@ -1253,7 +1253,7 @@ order by  name
 
 .key=ADMIN_LOGIN
 
-select a.*, ss.date_expire, ss.subscriber_id, s.type as account_type
+select a.*, ss.date_expire, ss.subscriber_id, s.type as account_type,s.student_email
 from HA_ADMIN a
 inner join SUBSCRIBERS s
    on s.id = a.subscriber_id
