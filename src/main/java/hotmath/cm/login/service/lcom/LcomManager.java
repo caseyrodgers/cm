@@ -25,7 +25,7 @@ public class LcomManager {
      *    -- Create new class as a CM Group
      *          
      * - If the teacher IS setup and class IS setup, but the student IS NOT already set up
-     *     -- register new student and enroll her in “Prealgebra Proficiency” with default parameters assigned to the class group.
+     *     -- register new student and enroll her in Pre-Algebra Proficiency with default parameters assigned to the class group.
      *      
 	 * @param student
 	 * @throws Exception
