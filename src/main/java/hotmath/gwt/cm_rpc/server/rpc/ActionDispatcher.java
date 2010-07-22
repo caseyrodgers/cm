@@ -1,5 +1,6 @@
 package hotmath.gwt.cm_rpc.server.rpc;
 
+import hotmath.cm.util.ActionTypeMap;
 import hotmath.flusher.Flushable;
 import hotmath.flusher.HotmathFlusher;
 import hotmath.gwt.cm_rpc.client.rpc.Action;
@@ -124,6 +125,7 @@ public class ActionDispatcher {
         String clazzName = c[c.length - 1];
         logger.info("RPC Action executing: " + clazzName + "  toString: " + action.toString());
         Connection conn = null;
+        ActionTypeMap.ActionType actionType = null;
         try {
             Class clazz = getActionCommand(action);
             if (clazz == null) {
@@ -146,13 +148,14 @@ public class ActionDispatcher {
             } else {
                 logger.debug("RPC Action: DB Connection NOT requested");
             }
-            
-            monitorCountActionsExecuted++;
 
+            actionType = ActionTypeMap.getActionType(clazzName);
+            
+            incrementActionsExecuted(actionType);
 
             T response = (T) actionHandler.execute(conn, action);
 
-            monitorCountActionsCompleted++;
+            incrementActionsCompleted(actionType);
 
             return response;
         } catch (CmRpcException cre) {
@@ -168,13 +171,63 @@ public class ActionDispatcher {
             long now = System.currentTimeMillis();
             long executeTimeMills = (now - timeStart);
             logger.info("RPC Action " + clazzName + " toString: " + action.toString() + " complete: elapsed time: "
-                    + (System.currentTimeMillis() - timeStart) / 1000);
-                    
-            monitorTotalProcessingTime += executeTimeMills;                    
+                    + executeTimeMills / 1000);
+            
+            incrementProcessingTime(actionType, executeTimeMills);
+            
         }
     }
 
-    /** Check for command, if not registered then look
+	private void incrementActionsExecuted(ActionTypeMap.ActionType actionType) {
+		if (actionType == ActionTypeMap.ActionType.ADMIN) {
+			monitorCountAdminActionsExecuted++;
+		}
+		if (actionType == ActionTypeMap.ActionType.STUDENT) {
+			monitorCountStudentActionsExecuted++;
+		}
+		if (actionType == ActionTypeMap.ActionType.ANY) {
+			monitorCountAnyActionsExecuted++;
+		}
+
+		monitorCountActionsExecuted++;
+		
+		logger.debug(String.format("+++ incrementActionsExecuted(): admin: %d, student: %d, all: %d",
+			monitorCountAdminActionsExecuted, monitorCountStudentActionsExecuted, monitorCountActionsExecuted));
+	}
+
+	private void incrementProcessingTime(ActionTypeMap.ActionType actionType, long executeTimeMillis) {
+		if (actionType == ActionTypeMap.ActionType.ADMIN) {
+			monitorAdminProcessingTime += executeTimeMillis;
+		}
+		if (actionType == ActionTypeMap.ActionType.STUDENT) {
+			monitorStudentProcessingTime += executeTimeMillis;
+		}
+		if (actionType == ActionTypeMap.ActionType.ANY) {
+			monitorAnyProcessingTime += executeTimeMillis;
+		}
+
+        monitorTotalProcessingTime += executeTimeMillis; 
+	}
+
+
+	private void incrementActionsCompleted(ActionTypeMap.ActionType actionType) {
+		if (actionType == ActionTypeMap.ActionType.ADMIN) {
+			monitorCountAdminActionsCompleted++;
+		}
+		if (actionType == ActionTypeMap.ActionType.STUDENT) {
+			monitorCountStudentActionsCompleted++;
+		}
+		if (actionType == ActionTypeMap.ActionType.ANY) {
+			monitorCountAnyActionsCompleted++;
+		}
+
+		monitorCountActionsCompleted++;
+
+		logger.debug(String.format("+++ incrementActionsCompleted(): admin: %d, student: %d, all: %d",
+				monitorCountAdminActionsCompleted, monitorCountStudentActionsCompleted, monitorCountActionsCompleted));
+	}
+
+	/** Check for command, if not registered then look
      *  for Command following conventions:
      *  
      *  1. actions end with Action
@@ -246,7 +299,7 @@ public class ActionDispatcher {
         }
     }
     
-    /** Used by CmMonitor get get inidividual stats
+    /** Used by CmMonitor get get individual stats
      *  from running ActionDispatcher.
      *  
      * @param type
@@ -260,8 +313,29 @@ public class ActionDispatcher {
         case ActionsCompleted:
             return monitorCountActionsCompleted;
             
+        case StudentActionsExecuted:
+        	return monitorCountStudentActionsExecuted;
+            
+        case StudentActionsCompleted:
+        	return monitorCountStudentActionsCompleted;
+            
+        case AdminActionsExcecuted:
+        	return monitorCountAdminActionsExecuted;
+            
+        case AdminActionsCompleted:
+        	return monitorCountAdminActionsCompleted;
+            
         case ProcessingTime:
             return monitorTotalProcessingTime;
+            
+        case AdminProcessingTime:
+            return monitorAdminProcessingTime;
+            
+        case StudentProcessingTime:
+            return monitorStudentProcessingTime;
+            
+        case AnyProcessingTime:
+            return monitorAnyProcessingTime;
             
         case ExceptionCount:
             return monitorCountOfExceptions;
@@ -275,7 +349,16 @@ public class ActionDispatcher {
         ActionsExecuted,
         ActionsCompleted,
         ProcessingTime,
-        ExceptionCount
+        ExceptionCount,
+        StudentActionsExecuted,
+        StudentActionsCompleted,
+        AdminActionsExcecuted,
+        AdminActionsCompleted,
+        AnyActionsExecuted,
+        AnyActionsCompleted,
+        AdminProcessingTime,
+        StudentProcessingTime,
+        AnyProcessingTime
     }
     
     
@@ -284,6 +367,17 @@ public class ActionDispatcher {
     int monitorCountActionsCompleted;
     int monitorCountOfExceptions;
     long monitorTotalProcessingTime;
+    
+    int monitorCountStudentActionsExecuted;
+    int monitorCountStudentActionsCompleted;
+    int monitorCountAdminActionsExecuted;
+    int monitorCountAdminActionsCompleted;
+    int monitorCountAnyActionsExecuted;
+    int monitorCountAnyActionsCompleted;
+
+    long monitorAdminProcessingTime;
+    long monitorStudentProcessingTime;
+    long monitorAnyProcessingTime;
 }
 
 
