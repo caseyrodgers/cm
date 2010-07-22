@@ -85,6 +85,23 @@ public class CmAdminDao {
         }
         return l;
     }
+    
+    public void setAdminPassword(final Connection conn, int adminId, String email) throws Exception {
+    	PreparedStatement ps=null;
+    	try {
+    		String sql = CmMultiLinePropertyReader.getInstance().getProperty("ADMIN_EMAIL_UPDATE");
+    		ps = conn.prepareStatement(sql);
+    		ps.setString(1, email);
+    		ps.setInt(2, adminId);
+    		int cnt = ps.executeUpdate();
+    		if(cnt != 1) {
+    			throw new CmException("Could not update HA_ADMIN email in SUBSCRIBERS");
+    		}
+    	}
+    	finally {
+    		SqlUtilities.releaseResources(null,ps,null);
+    	}
+    }
 
     public GroupInfoModel getGroup(final Connection conn, int adminId, String groupName) throws Exception {
     	CmList<GroupInfoModel> groups = getActiveGroups(conn, adminId);

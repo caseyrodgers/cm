@@ -646,6 +646,12 @@ order by user_name
 
 
 
+.key=ADMIN_EMAIL_UPDATE
+
+update SUBSCRIBERS 
+JOIN HA_ADMIN a ON id = a.subscriber_id 
+set student_email = ? 
+where a.aid = ?
 
 
 

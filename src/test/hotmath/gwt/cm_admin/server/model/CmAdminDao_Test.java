@@ -2,6 +2,7 @@ package hotmath.gwt.cm_admin.server.model;
 
 import hotmath.cm.server.model.CmUserProgramDao;
 import hotmath.gwt.cm.server.CmDbTestCase;
+import hotmath.gwt.cm_tools.client.model.AccountInfoModel;
 import hotmath.gwt.cm_tools.client.model.ChapterModel;
 import hotmath.gwt.cm_tools.client.model.GroupInfoModel;
 import hotmath.gwt.cm_tools.client.model.StudentActiveInfo;
@@ -34,6 +35,10 @@ public class CmAdminDao_Test extends CmDbTestCase {
         if(_user == null)
             TEST_ID = setupDemoAccount();
 
+    }
+    
+    public void testSetEmail() throws Exception {
+    	new CmAdminDao().setAdminPassword(conn, _user.getAid(),"test@test.com");
     }
 
 
