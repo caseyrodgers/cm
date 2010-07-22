@@ -81,7 +81,7 @@ public class LcomManager {
 			LcomStudentSignup studentActive = dom.getStudent(conn, student.getStudentUserId());
 			if(studentActive == null) {
 				/** register as new student with ADMIN */
-				String passwd = "pwd_" + System.currentTimeMillis();
+				String passwd = student.getStudentUserId();
 				int uid = HaUserFactory.createUser(conn, teacher.getAdminId(), course.getCourseId(),student.getLastFirst(), passwd);
 				student.setUserId(uid);
 				dom.registerStudent(conn, student);

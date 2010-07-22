@@ -1,5 +1,6 @@
 package hotmath.gwt.cm_admin.client.ui;
 
+import hotmath.gwt.cm_admin.client.CollectEmailFromUserDialog;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.model.CmAdminDataReader;
@@ -227,6 +228,15 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
                 }
             });
             contextMenu.add(clientTests);
+
+            MenuItem getEmail = new MenuItem("Enter Email");
+            getEmail.addSelectionListener(new SelectionListener<MenuEvent>() {
+                public void componentSelected(MenuEvent ce) {
+                	new CollectEmailFromUserDialog();
+                    contextMenu.hide();
+                }
+            });
+            contextMenu.add(getEmail);
             
         }
 

@@ -3,29 +3,23 @@ package hotmath.gwt.shared.client;
 import hotmath.gwt.cm_rpc.client.rpc.CmService;
 import hotmath.gwt.cm_rpc.client.rpc.CmServiceAsync;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
+import hotmath.gwt.cm_tools.client.data.HaBasicUser;
 import hotmath.gwt.cm_tools.client.ui.CmLogger;
 import hotmath.gwt.shared.client.data.CmAsyncRequestImplDefault;
 import hotmath.gwt.shared.client.model.UserInfoBase;
-import hotmath.gwt.shared.client.rpc.RetryAction;
-import hotmath.gwt.shared.client.rpc.action.ProcessLoginRequestAction;
 import hotmath.gwt.shared.client.util.CmException;
 import hotmath.gwt.shared.client.util.CmExceptionLoginInvalid;
 import hotmath.gwt.shared.client.util.SystemVersionUpdateChecker;
-import hotmath.gwt.shared.client.util.UserInfo;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import pl.rmalinowski.gwt2swf.client.utils.PlayerVersion;
-import pl.rmalinowski.gwt2swf.client.utils.SWFObjectUtil;
 
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONParser;
 import com.google.gwt.json.client.JSONValue;
-import com.google.gwt.user.client.Cookies;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.ServiceDefTarget;
 
@@ -163,6 +157,8 @@ public class CmShared implements EntryPoint {
                     if(cmStartType != null && cmStartType.equals("AUTO_CREATE")) {
                     	UserInfoBase.getInstance().setCmStartType(cmStartType);
                     }
+                    String email = o.get("email").isString().stringValue();
+                    UserInfoBase.getInstance().setEmail(email);
                 }
                 if (!needToValidate) {
                     callback.loginSuccessful(userId);

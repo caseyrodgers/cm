@@ -29,4 +29,6 @@ public class HaAdmin extends HaBasicUserImpl {
     public int getUserKey() {
         return adminId;
     }
+
+
 }

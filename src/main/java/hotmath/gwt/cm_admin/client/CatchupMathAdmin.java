@@ -11,6 +11,7 @@ import hotmath.gwt.cm_tools.client.model.CmAdminModel;
 import hotmath.gwt.cm_tools.client.ui.CmLogger;
 import hotmath.gwt.shared.client.CmLoginAsync;
 import hotmath.gwt.shared.client.CmShared;
+import hotmath.gwt.shared.client.model.UserInfoBase;
 import hotmath.gwt.shared.client.util.CmRunAsyncCallback;
 
 import com.extjs.gxt.ui.client.Style.LayoutRegion;
@@ -24,7 +25,6 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.History;
-import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RootPanel;
 
 /**
@@ -97,6 +97,11 @@ public class CatchupMathAdmin implements EntryPoint, ValueChangeHandler<String> 
         }
         History.addValueChangeHandler(this);
         History.fireCurrentHistoryState();
+        
+        
+        if(UserInfoBase.getInstance().getEmail() == null || UserInfoBase.getInstance().getEmail().length() == 0) {
+        	new CollectEmailFromUserDialog();
+        }
     }
 
     
@@ -150,22 +155,4 @@ public class CatchupMathAdmin implements EntryPoint, ValueChangeHandler<String> 
     }
 }
 
-class AdminTopComponent extends LayoutContainer {
-    public AdminTopComponent() {
-        add(new Label("Top"));
-    }
-}
-
-
-class AdminCenterComponent extends LayoutContainer {
-    public AdminCenterComponent() {
-        add(new Label("Center"));
-    }
-}
-
-class AdminBottomComponent extends LayoutContainer {
-    public AdminBottomComponent() {
-        add(new Label("Bottom"));
-    }
-}
 

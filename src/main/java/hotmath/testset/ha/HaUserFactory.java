@@ -318,7 +318,7 @@ public class HaUserFactory {
 			if (type.equals("ADMIN")) {
 				/** return admin information */
 				HaAdmin admin = new HaAdmin();
-				String sql = "select a.*, ss.date_expire, ss.subscriber_id, s.type as account_type,a.passcode "
+				String sql = "select a.*, ss.date_expire, ss.subscriber_id, s.type as account_type,a.passcode,s.student_email "
 						+ " from HA_ADMIN a "
 						+ "  inner join SUBSCRIBERS s on s.id = a.subscriber_id "
 						+ " left outer join ( "
@@ -335,6 +335,7 @@ public class HaUserFactory {
 					admin.setUserName(rs.getString("user_name"));
 					admin.setPassword(rs.getString("passcode"));
 					admin.setAdminId(rs.getInt("aid"));
+					admin.setEmail(rs.getString("student_email"));
 					java.sql.Date date = rs.getDate("date_expire");
 					if (date != null)
 						admin.setExpireDate(new Date(date.getTime()));

@@ -15,6 +15,7 @@ public interface HaBasicUser {
     String getUserName();
     String getPassword();
     String getLoginName();
+    String getEmail();
     
     String getLoginMessage();
     void setLoginMessage(String msg);

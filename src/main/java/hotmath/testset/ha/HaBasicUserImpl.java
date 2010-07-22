@@ -9,6 +9,19 @@ abstract public class HaBasicUserImpl implements HaBasicUser {
 	Date expireDate;
 	String accountType;
     String loginMessage;
+    String password;
+    String userName;
+    String loginName;
+    String email;
+
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
 
 	public void setPassword(String password) {
         this.password = password;
@@ -17,10 +30,6 @@ abstract public class HaBasicUserImpl implements HaBasicUser {
     public void setUserName(String userName) {
         this.userName = userName;
     }
-    String password;
-    String userName;
-    String loginName;
-    
 
     public String getLoginName() {
         return loginName;

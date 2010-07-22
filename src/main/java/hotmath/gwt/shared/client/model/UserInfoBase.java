@@ -15,6 +15,7 @@ public class UserInfoBase implements IsSerializable {
 	int runId;
 	boolean isAdmin;
 	String cmStartType;
+	String email;
 
 	String userName;
 
@@ -71,6 +72,14 @@ public class UserInfoBase implements IsSerializable {
     public void setUserName(String userName) {
         this.userName = userName;
     }
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
 
 	public int getUid() {
 		return uid;

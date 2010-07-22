@@ -65,6 +65,9 @@ public class LoginService extends HttpServlet {
                 user="catchup_demo";
             }
             else if(action.equals("LCOM")) {
+            	/** if LCOM action, then handle separately
+            	 * 
+            	 */
             	handleLcomLogin(req, resp);
             	return;
             }
@@ -156,6 +159,7 @@ public class LoginService extends HttpServlet {
         		sb.append(", expireDate: '").append(dateStr);
         		sb.append("', loginMsg: '").append((cmUser.getLoginMessage() != null)?cmUser.getLoginMessage():"NONE");
         		sb.append("',  loginName: '").append((cmUser.getLoginName() != null)?cmUser.getLoginName():"");
+        		sb.append("',  email: '").append((cmUser.getEmail() != null)?cmUser.getEmail():"");
         		sb.append("' }");
         		req.getSession().setAttribute("jsonizedLoginInfo", sb.toString());
         		
