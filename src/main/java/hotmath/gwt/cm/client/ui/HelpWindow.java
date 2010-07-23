@@ -28,7 +28,6 @@ import hotmath.gwt.shared.client.util.CmRunAsyncCallback;
 import hotmath.gwt.shared.client.util.NetTestWindow;
 import hotmath.gwt.shared.client.util.UserInfo;
 
-import com.extjs.gxt.ui.client.Registry;
 import com.extjs.gxt.ui.client.data.BaseModelData;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.Listener;
@@ -435,7 +434,7 @@ public class HelpWindow extends CmWindow {
                         s.execute(action,this);
                     }
                     public void oncapture(RpcData result) {
-                    	CmLogger.info("Feedback saved");
+                    	CatchupMathTools.showAlert("Feedback saved");
                         CmBusyManager.setBusy(false);
                     }
                 }.register();

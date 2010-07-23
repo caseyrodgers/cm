@@ -94,7 +94,7 @@ public class StudentLessonTopicsStatusWindow extends CmWindow {
     }
     
     private Button createStandardsButton() {
-        Button btn = new Button("State Standards");
+        Button btn = new Button("State Correlations");
         btn.setToolTip("Show standards for selected topic");
 
         Menu menu = new Menu();
@@ -115,9 +115,9 @@ public class StudentLessonTopicsStatusWindow extends CmWindow {
                 showStandardsFor("Utah", "UT");
                 }
         }));
-        menu.add(new MenuItem("Common",new SelectionListener<MenuEvent>() {
+        menu.add(new MenuItem("Common Core",new SelectionListener<MenuEvent>() {
             public void componentSelected(MenuEvent ce) {
-                showStandardsFor("Common", "common");
+                showStandardsFor("Common Core", "common");
                 }
         }));
         

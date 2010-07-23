@@ -22,7 +22,11 @@ public class StudentLessTopicsStateStandardsWindow extends CmWindow {
          
             setModal(true);
             setSize(325, 250);
-            setHeading(stateLabel + " State Standards for: " + lessonModel.getName());
+            if(state.length() == 2)
+            	setHeading(stateLabel + " State Standards for: " + lessonModel.getName());
+            else {
+            	setHeading("Common Core Standards for: " + lessonModel.getName());
+            }
             setLayout(new FitLayout());
             addCloseButton();
             setVisible(true);        
