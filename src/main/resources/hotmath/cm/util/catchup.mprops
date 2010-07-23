@@ -458,7 +458,7 @@ select   d.id,
          d.needs_state,
          null as custom_program_id,
          null as custom_program_name,
-         0 as load_order,
+         d.load_order,
          0 as is_template
 from     HA_PROG_DEF d
 where    d.is_active = 1
@@ -478,13 +478,13 @@ select      'Custom' as id,
             0 as needs_state,
             cp.id as custom_program_id,
             cp.name as custom_program_name,
-            1 as load_order,
+            999 as load_order,
             is_template
 from   HA_ADMIN a join HA_CUSTOM_PROGRAM cp on cp.admin_id = a.aid
 where    a.aid = ? 
 or is_template = 1
                             
-order by load_order, id,title                      
+order by load_order, id, title                      
            
            
            
@@ -748,7 +748,7 @@ ORDER BY test_def_id
 
 .key=TEST_IDS_FOR_CHAPTER_PROGRAM
 
-SELECT problemindex
+SELECT s.problemindex
 FROM   SOLUTIONS s
 INNER  JOIN BOOK_TOC b on b.textcode = s.booktitle
 WHERE  s.BOOKTITLE = ?
