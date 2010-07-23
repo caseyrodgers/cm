@@ -46,7 +46,7 @@ pageTracker._trackPageview();
 	margin: auto;
 	margin-top: 40px;
 	padding-bottom: 10px;
-	width: 370px;
+	width: 400px;
 	border: 1px solid A3C530;
 	height: auto;
 	background: white;
@@ -63,6 +63,7 @@ pageTracker._trackPageview();
 
 #login-wrapper p {
     margin: 0;
+    margin-bottom: 15px;
     padding: 0;
     width: auto;
   }
@@ -74,6 +75,8 @@ pageTracker._trackPageview();
 #more-info {
    margin-top: 10px;
 }  
+
+
 </style>
 <!-- InstanceEndEditable -->
 </head>
@@ -107,9 +110,9 @@ pageTracker._trackPageview();
           <h1>Login Problem</h1>
           <p class='reason'><%= reason %></p>
  
-          <button onclick='' class="sexybutton sexysimple sexyblue">
-                <div style='display: inline;font-size: 120%'>Return to Learning.com</div>
-          </button>
+          <a href='#' onclick='return false;'>
+             <img src='/gwt-resources/lcom/Return-to-SKY.png'/>   
+          </a>
           <% if(showMoreInfo)  {
               %>    	   
               <div style='margin-top: 20x;'>
