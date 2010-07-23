@@ -115,6 +115,12 @@ public class StudentLessonTopicsStatusWindow extends CmWindow {
                 showStandardsFor("Utah", "UT");
                 }
         }));
+        menu.add(new MenuItem("Common",new SelectionListener<MenuEvent>() {
+            public void componentSelected(MenuEvent ce) {
+                showStandardsFor("Common", "common");
+                }
+        }));
+        
         
         btn.setMenu(menu);
 
