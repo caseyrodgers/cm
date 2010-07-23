@@ -160,7 +160,7 @@ public class InmhItemData {
         	logger.error(String.format("*** Load of RppWidget for %s failed", item.getFile(), e));
         } finally {
             SqlUtilities.releaseResources(null, ps, null);
-            logger.info("finished getting solution pool " + logTag);
+            logger.debug("finished getting solution pool " + logTag);
         }
         
         CmCacheManager.getInstance().addToCache(CacheName.WOOKBOOK_POOL, this.item.getFile(), widgets);

@@ -53,7 +53,7 @@ public class HaTestSet implements Serializable{
                 
                 ResultSet rs = conn.createStatement().executeQuery(sql);
                 while(rs.next()) {
-                    Solution sol = SolutionManager.getSolution(rs.getString("problemindex"));
+                    Solution sol = SolutionManager.getSolution(rs.getString("problemindex"),true);
                     String statement = postProcessor.processHTML_SolutionImagesAbsolute(sol.getStatement(), sol.getSolutionImagesURI(), null);
                     questions.add(new HaTestSetQuestion(sol.getGUID(), statement));
                 }
