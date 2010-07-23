@@ -806,11 +806,7 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
         ColumnConfig quizzes = defineQuizzesColumn();
         configs.add(quizzes);
         
-        ColumnConfig lastQuiz = new ColumnConfig();
-        lastQuiz.setId(StudentModelExt.LAST_QUIZ_KEY);
-        lastQuiz.setHeader("Last Quiz");
-        lastQuiz.setWidth(70);
-        lastQuiz.setSortable(true);
+        ColumnConfig lastQuiz = defineLastQuizColumn();
         configs.add(lastQuiz);
 
         ColumnConfig lastLogin = new ColumnConfig();
@@ -831,6 +827,28 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
         ColumnModel cm = new ColumnModel(configs);
         return cm;
     }
+
+	private ColumnConfig defineLastQuizColumn() {
+		ColumnConfig lastQuiz = new ColumnConfig();
+        lastQuiz.setId(StudentModelExt.LAST_QUIZ_KEY);
+        lastQuiz.setHeader("Last Quiz");
+        lastQuiz.setWidth(70);
+        lastQuiz.setSortable(true);
+        lastQuiz.setRenderer(new GridCellRenderer<StudentModelExt>() {
+			@Override
+			public Object render(StudentModelExt sm, String property,
+					ColumnData config, int rowIndex, int colIndex,
+					ListStore<StudentModelExt> store, Grid<StudentModelExt> grid) {
+                if (sm.getProgram().isCustomProgram()) {
+                	return "";
+                }
+                else {
+                	return sm.getLastQuiz();
+                }
+			}
+        });        
+		return lastQuiz;
+	}
 
 	private ColumnConfig defineQuizzesColumn() {
 		ColumnConfig quizzes = new ColumnConfig();
