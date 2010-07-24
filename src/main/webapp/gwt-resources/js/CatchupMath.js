@@ -184,3 +184,24 @@ function flash_quizResult(result) {
                 alert('There was a problem processing Flash Input Field: ' + e);
         }
 }
+
+
+
+function gotoGUID(messageContext, callAfter) {
+	
+    var loc = messageContext.messageLocation;
+    if(loc.type != 'solution') {
+        alert('MessageContext must be a solution in gotoGUID');
+    }
+    _currentGUID = loc.locationString1;
+    var htmlFile = 'tutor_steps.html';
+    var rpath = '/help/solutions' + getSolutionPath(loc.locationString1, '/help/solutions', htmlFile);
+    handleLoadSolutionSteps(null, rpath, messageContext, callAfter);
+}
+
+function handleLoadSolutionSteps(stepText, pathToHtml, messageContext) {
+    var tsw=$get('tutor_raw_steps_wrapper');
+    if(!tsw)
+        return;
+    loadSolutionData(pathToHtml, messageContext);
+}
