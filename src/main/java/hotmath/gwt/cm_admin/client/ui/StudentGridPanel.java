@@ -1,6 +1,5 @@
 package hotmath.gwt.cm_admin.client.ui;
 
-import hotmath.gwt.cm_admin.client.CollectEmailFromUserDialog;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.model.CmAdminDataReader;
@@ -28,6 +27,7 @@ import hotmath.gwt.shared.client.rpc.RetryAction;
 import hotmath.gwt.shared.client.rpc.action.GeneratePdfAction;
 import hotmath.gwt.shared.client.rpc.action.GeneratePdfAction.PdfType;
 import hotmath.gwt.shared.client.rpc.action.GetStudentGridPageAction;
+import hotmath.gwt.shared.client.rpc.action.GetStudentGridPageExtendedAction;
 import hotmath.gwt.shared.client.rpc.action.UnregisterStudentsAction;
 import hotmath.gwt.shared.client.util.CmRunAsyncCallback;
 
@@ -228,16 +228,6 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
                 }
             });
             contextMenu.add(clientTests);
-
-            MenuItem getEmail = new MenuItem("Enter Email");
-            getEmail.addSelectionListener(new SelectionListener<MenuEvent>() {
-                public void componentSelected(MenuEvent ce) {
-                	new CollectEmailFromUserDialog();
-                    contextMenu.hide();
-                }
-            });
-            contextMenu.add(getEmail);
-            
         }
 
         _grid.setContextMenu(contextMenu);
@@ -862,7 +852,7 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
 			public Object render(StudentModelExt sm, String property,
 					ColumnData config, int rowIndex, int colIndex,
 					ListStore<StudentModelExt> store, Grid<StudentModelExt> grid) {
-                if (sm.getPassingCount() > 0 || sm.getNotPassingCount() > 0) {
+				if (sm.getPassingCount() > 0 || sm.getNotPassingCount() > 0) {
                 	StringBuffer sb = new StringBuffer();
                 	sb.append(sm.getPassingCount()).append(" passed out of ");
                 	sb.append(sm.getPassingCount() + sm.getNotPassingCount());
@@ -948,6 +938,38 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
         }.register();
         
     }
+    
+    
+    /** Read any extended data for the current page
+     * 
+     */
+    private void readExtendedDataForPage(final List<Integer> studentUids) {
+    	new RetryAction<CmStudentPagingLoadResult<StudentModelExt>>() {
+    		@Override
+    		public void attempt() {
+    			GetStudentGridPageExtendedAction action = new GetStudentGridPageExtendedAction(StudentGridPanel.this._cmAdminMdl.getId(),studentUids);
+    			setAction(action);
+    			CmShared.getCmService().execute(action, this);
+    		}
+    		@Override
+    		public void oncapture(CmStudentPagingLoadResult<StudentModelExt> value) {
+    			for (int i = 0, t = value.getData().size(); i < t; i++) {
+    				StudentModelExt smEx = value.getData().get(i);
+					StudentModelExt smLive = _grid.getStore().getModels().get(i);
+					
+					smLive.setPassingCount(smEx.getPassingCount());
+					smLive.setLastQuiz(smEx.getLastQuiz());
+					smLive.setLastLogin(smEx.getLastLogin());
+					smLive.setNotPassingCount(smEx.getNotPassingCount());
+					smLive.setTutoringUse(smEx.getTutoringUse());
+				}
+    			/** Force refresh of display
+    			 * TODO: is there a better way than refreshing entire display?
+    			 */
+    			_grid.reconfigure(_grid.getStore(), _grid.getColumnModel());
+    		}
+		}.register();
+    }
 
     @Override
     public void beginStep() {
@@ -1012,6 +1034,21 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
         			_forceServerRefresh = false;
         			EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_STUDENT_GRID_FILTERED, _pageAction));
 
+        			
+        			/** request any extended data, if required
+        			 *  
+        			 */
+        			List<Integer> needExtendedFor = new ArrayList<Integer>();
+        			for(int i=0;i<students.getData().size();i++) {
+        				StudentModelExt sm = students.getData().get(i);
+        				if(!sm.getHasExtendedData()) {
+        					needExtendedFor.add(sm.getUid());
+        				}
+        			}
+        			if(needExtendedFor.size() > 0) {
+        				readExtendedDataForPage(needExtendedFor);
+        			}
+        			
         			/** callback the proxy listener
         			 * 
         			 */
