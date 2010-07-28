@@ -137,7 +137,7 @@ public class LoginService extends HttpServlet {
             }
             else {
             	
-            	if(cmUser.getExpireDate().getTime() < System.currentTimeMillis()) {
+            	if(!isDebug && cmUser.getExpireDate().getTime() < System.currentTimeMillis()) {
             		throw new CmExceptionUserExpired(cmUser);
             	}
             	
