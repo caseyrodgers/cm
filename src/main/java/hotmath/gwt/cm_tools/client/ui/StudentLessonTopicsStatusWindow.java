@@ -94,7 +94,7 @@ public class StudentLessonTopicsStatusWindow extends CmWindow {
     }
     
     private Button createStandardsButton() {
-        Button btn = new Button("State Correlations");
+        Button btn = new Button("Standard Correlations");
         btn.setToolTip("Show standards for selected topic");
 
         Menu menu = new Menu();

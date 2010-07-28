@@ -19,7 +19,6 @@ public class CatchupMathHistoryListener implements ValueChangeHandler<String> {
         
         CmLocation location = new CmLocation(historyToken);
         
-        
         CmLogger.debug("CatchupMathHistoryListener.onValueChange: " + location);
         
         // setup HistoryQueue to allow for asynchronous access
