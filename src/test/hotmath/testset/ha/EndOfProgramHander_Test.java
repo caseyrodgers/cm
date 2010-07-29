@@ -31,7 +31,7 @@ public class EndOfProgramHander_Test extends CmDbTestCase {
         StudentUserProgramModel nextProgram = eop.getNextProgram();
         
         // this should just loop around
-        assertTrue(nextProgram.getTestDefId() == CmProgram.GEOM_PROF.getDefId());
+        assertTrue(nextProgram.getTestDefId() == CmProgram.CAHSEEHM.getDefId());
     }  
 
     
@@ -44,7 +44,7 @@ public class EndOfProgramHander_Test extends CmDbTestCase {
         StudentUserProgramModel nextProgram = eop.getNextProgram();
         
         // this should just loop around
-        assertTrue(nextProgram.getTestDefId() == CmProgram.NATIONAL.getDefId());
+        assertTrue(nextProgram.getTestDefId() == CmProgram.ALG2_PROF.getDefId());
     }  
     
     public void testEndOfProgramChapterTestGeoChap() throws Exception {
@@ -87,7 +87,7 @@ public class EndOfProgramHander_Test extends CmDbTestCase {
         StudentUserProgramModel nextProgram = eop.getNextProgram();
         
         // this should just loop around
-        assertTrue(nextProgram.getTestDefId() == CmProgram.TAKS.getDefId());
+        assertTrue(nextProgram.getTestDefId() == CmProgram.ALG2_PROF.getDefId());
     }  
     
     
@@ -100,7 +100,7 @@ public class EndOfProgramHander_Test extends CmDbTestCase {
         StudentUserProgramModel nextProgram = eop.getNextProgram();
         
         // this should just loop around
-        assertTrue(nextProgram.getTestDefId() == CmProgram.CAHSEEHM.getDefId());
+        assertTrue(nextProgram.getTestDefId() == CmProgram.ALG2_PROF.getDefId());
     }  
     
     
