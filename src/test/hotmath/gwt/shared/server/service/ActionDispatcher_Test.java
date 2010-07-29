@@ -13,6 +13,7 @@ import hotmath.gwt.cm_rpc.client.rpc.PrescriptionSessionResponse;
 import hotmath.gwt.cm_rpc.client.rpc.QuizHtmlResult;
 import hotmath.gwt.cm_rpc.client.rpc.RpcData;
 import hotmath.gwt.cm_rpc.client.rpc.SaveQuizCurrentResultAction;
+import hotmath.gwt.cm_rpc.client.rpc.SolutionInfo;
 import hotmath.gwt.cm_rpc.server.rpc.ActionDispatcher;
 import hotmath.gwt.cm_tools.client.model.AutoUserAdvanced;
 import hotmath.gwt.cm_tools.client.model.GroupInfoModel;
@@ -71,6 +72,17 @@ public class ActionDispatcher_Test extends CmDbTestCase {
         uid = _user.getUid();
     }
 
+    
+    public void testGetSolution() throws Exception {
+        
+        GetSolutionAction action = new GetSolutionAction(uid, TEST_PID);
+        SolutionInfo data = ActionDispatcher.getInstance().execute(action);
+        
+        assertNotNull(data);
+        assertNotNull(data.getHtml());
+        assertNotNull(data.getJs());;
+    }
+    
     public void testLogUserInAction() throws Exception {
         LogUserInAction action = new LogUserInAction(_user.getLoginName(),_user.getPassword());
         RpcData rdata = ActionDispatcher.getInstance().execute(action);
@@ -296,15 +308,6 @@ public class ActionDispatcher_Test extends CmDbTestCase {
         assertNotNull(data);
         assertNotNull(data.getProgramTitle());
     }
-  
-    public void testGetSolution() throws Exception {
-        
-        GetSolutionAction action = new GetSolutionAction(uid, TEST_PID);
-        RpcData data = ActionDispatcher.getInstance().execute(action);
-        
-        assertNotNull(data);
-        assertNotNull(data.getData("solutionHtml"));
-        assertNotNull(data.getData("hasShowWork"));
-    }
+
 
 }

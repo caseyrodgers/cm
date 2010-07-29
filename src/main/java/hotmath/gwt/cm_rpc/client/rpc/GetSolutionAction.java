@@ -8,7 +8,7 @@ import hotmath.gwt.cm_rpc.client.rpc.RpcData;
  * @author casey
  *
  */
-public class GetSolutionAction implements Action<RpcData> {
+public class GetSolutionAction implements Action<SolutionInfo> {
     
     String pid;
     int uid;

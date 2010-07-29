@@ -2,6 +2,7 @@ package hotmath.gwt.cm_tools.client.ui.viewer;
 
 import hotmath.gwt.cm_rpc.client.rpc.GetSolutionAction;
 import hotmath.gwt.cm_rpc.client.rpc.RpcData;
+import hotmath.gwt.cm_rpc.client.rpc.SolutionInfo;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.ui.CmLogger;
@@ -33,6 +34,7 @@ import com.google.gwt.user.client.ui.Widget;
 public class ResourceViewerImplTutor extends CmResourcePanelImplWithWhiteboard {
 
     static public final String STYLE_NAME="resource-viewer-impl-tutor";
+    SolutionInfo _solutionInfo;
     
     public ResourceViewerImplTutor() {
         _instance = this;
@@ -120,7 +122,7 @@ public class ResourceViewerImplTutor extends CmResourcePanelImplWithWhiteboard {
             return;  
 
         
-        new RetryAction<RpcData>() {
+        new RetryAction<SolutionInfo>() {
             @Override
             public void attempt() {
                 CmBusyManager.setBusy(true);
@@ -130,15 +132,14 @@ public class ResourceViewerImplTutor extends CmResourcePanelImplWithWhiteboard {
             }
             
             @Override
-            public void oncapture(RpcData result) {
-                String html = result.getDataAsString("solutionHtml");
-                boolean hasShowWork = result.getDataAsInt("hasShowWork") > 0;
-
+            public void oncapture(SolutionInfo result) {
+            	_solutionInfo = result;
+                String html = result.getHtml();
+                boolean hasShowWork = result.isHasShowWork();
                 
                 tutorPanel = new Html(html);
                 tutorPanel.setStyleName("tutor_solution_wrapper");
                 addResource(tutorPanel, getResourceItem().getTitle());
-
                 
                 // CmMainPanel.__lastInstance._mainContent.addControl(showWorkBtn);
                 if (CmMainPanel.__lastInstance != null)
@@ -157,7 +158,7 @@ public class ResourceViewerImplTutor extends CmResourcePanelImplWithWhiteboard {
                         shouldExpandSolution = true;
                         // showWorkDialog();
                     }
-                    ResourceViewerImplTutor.initializeTutor(getResourceItem().getFile(), getResourceItem().getTitle(), hasShowWork,shouldExpandSolution);
+                    ResourceViewerImplTutor.initializeTutor(getResourceItem().getFile(), getResourceItem().getTitle(),hasShowWork,shouldExpandSolution,result.getJs());
 
                     EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_SOLUTION_SHOW, getResourceItem()));
                 } catch (Exception e) {
@@ -183,7 +184,7 @@ public class ResourceViewerImplTutor extends CmResourcePanelImplWithWhiteboard {
              * this solution's whiteboard has been updated, so
              * we must make sure the ForceShowWork button is removed
              */
-            initializeTutor(pid, this.getResourceItem().getTitle(), true, false);
+            initializeTutor(pid, this.getResourceItem().getTitle(), true, false,_solutionInfo.getJs());
 
             hasShowWork = true;
         }
@@ -277,8 +278,8 @@ public class ResourceViewerImplTutor extends CmResourcePanelImplWithWhiteboard {
      * @param pid
      */
     static private native void initializeTutor(String pid, String title, boolean hasShowWork,
-            boolean shouldExpandSolution) /*-{
-                                          $wnd.doLoad_Gwt(pid, title,hasShowWork,shouldExpandSolution);
+            boolean shouldExpandSolution,String solutionData) /*-{
+                                          $wnd.doLoad_Gwt(pid, title,hasShowWork,shouldExpandSolution,solutionData);
                                           }-*/;
 
     static private native void expandAllSteps() /*-{

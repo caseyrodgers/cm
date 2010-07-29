@@ -16,14 +16,38 @@ function showAskATutorTooltip_Cm() {
 // //////////////////
 // / For the tutor viewer
 // ///////////////////
-// called by GWT, which setups the context for the pid
+// called by GWT to allow proper external setup of tutor
 var _shouldExpandSteps;
-function doLoad_Gwt(pid, title, hasShowWork, shouldExpandSteps) {
+function doLoad_Gwt(pid, title, hasShowWork, shouldExpandSteps, solutionJs) {
 	// store in var, registered listener will be notified
 	// after solution has been fully initialized
 	_shouldExpandSteps = shouldExpandSteps;
 	var mc = createNewSolutionMessageContext(pid);
-	gotoGUID(mc, title);
+	mc.solutionData = solutionJs;
+
+    var loc = mc.messageLocation;
+    if(loc.type != 'solution') {
+        alert('MessageContext must be a solution');
+    }
+    _currentGUID = loc.locationString1;
+    var tsw=$get('tutor_raw_steps_wrapper');
+    if(!tsw)
+        return;
+    
+    try {
+    	if(mc.solutionData == undefined) {
+    		alert('solutionData not available');
+    		return;
+    	}
+    	
+		var obj = eval('(' +  mc.solutionData + ')' );
+        handleLoadSolutionData(mc,obj,this.argument);
+	}
+     catch(e) {
+    	 alert('CM loadSolutionData catch: ' + e);
+     }
+	
+	
 	if (hasShowWork) {
 		// turn off/hide the ShowWorkFirst button
 		var swf = document.getElementById("show-work-force");
@@ -185,23 +209,3 @@ function flash_quizResult(result) {
         }
 }
 
-
-
-function gotoGUID(messageContext, callAfter) {
-	
-    var loc = messageContext.messageLocation;
-    if(loc.type != 'solution') {
-        alert('MessageContext must be a solution in gotoGUID');
-    }
-    _currentGUID = loc.locationString1;
-    var htmlFile = 'tutor_steps.html';
-    var rpath = '/help/solutions' + getSolutionPath(loc.locationString1, '/help/solutions', htmlFile);
-    handleLoadSolutionSteps(null, rpath, messageContext, callAfter);
-}
-
-function handleLoadSolutionSteps(stepText, pathToHtml, messageContext) {
-    var tsw=$get('tutor_raw_steps_wrapper');
-    if(!tsw)
-        return;
-    loadSolutionData(pathToHtml, messageContext);
-}

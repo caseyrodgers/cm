@@ -4,18 +4,17 @@ import hotmath.HotMathException;
 import hotmath.HotMathLogger;
 import hotmath.HotMathUtilities;
 import hotmath.ProblemID;
-import hotmath.gwt.cm_rpc.client.rpc.GetSolutionAction;
 import hotmath.gwt.cm_rpc.client.rpc.Action;
 import hotmath.gwt.cm_rpc.client.rpc.CmRpcException;
+import hotmath.gwt.cm_rpc.client.rpc.GetSolutionAction;
 import hotmath.gwt.cm_rpc.client.rpc.Response;
-import hotmath.gwt.cm_rpc.client.rpc.RpcData;
+import hotmath.gwt.cm_rpc.client.rpc.SolutionInfo;
 import hotmath.gwt.cm_rpc.server.rpc.ActionHandler;
+import hotmath.solution.SolutionParts;
 import hotmath.solution.writer.SolutionHTMLCreatorIimplVelocity;
 import hotmath.solution.writer.TutorProperties;
 import hotmath.util.VelocityTemplateFromStringManager;
 import hotmath.util.sql.SqlUtilities;
-
-import org.apache.log4j.Logger;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
@@ -26,6 +25,8 @@ import java.sql.ResultSet;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.log4j.Logger;
+
 /**
  * Return the raw HTML that makes up the solution
  * 
@@ -34,8 +35,8 @@ import java.util.Map;
  * Return RpcData with the following members: solutionHtml, hasShowWork
  * 
  */
-public class GetSolutionCommand implements ActionHandler<GetSolutionAction, RpcData> {
-
+public class GetSolutionCommand implements ActionHandler<GetSolutionAction, SolutionInfo> {
+	
 	private static final Logger logger = Logger.getLogger(GetSolutionCommand.class);
 
     static SolutionHTMLCreatorIimplVelocity __creator;
@@ -49,13 +50,14 @@ public class GetSolutionCommand implements ActionHandler<GetSolutionAction, RpcD
     }
 
     @Override
-    public RpcData execute(final Connection conn, GetSolutionAction action) throws Exception {
+    public SolutionInfo execute(final Connection conn, GetSolutionAction action) throws Exception {
         try {
 
             String pid = action.getPid();
             int uid = action.getUid();
             
-            String solutionHtml = __creator.getSolutionHTML(__tutorProps, pid).getMainHtml();
+            SolutionParts parts = __creator.getSolutionHTML(__tutorProps, pid);
+            String solutionHtml = parts.getMainHtml();
 
             ProblemID ppid = new ProblemID(pid);
             String path = ppid.getSolutionPath_DirOnly("solutions");
@@ -76,11 +78,8 @@ public class GetSolutionCommand implements ActionHandler<GetSolutionAction, RpcD
 
             solutionHtml = VelocityTemplateFromStringManager.getInstance().processTemplate(tutorWrapper, map);
 
-            RpcData rpcData = new RpcData();
-            rpcData.putData("solutionHtml", solutionHtml);
-            rpcData.putData("hasShowWork", getHasShowWork(conn,uid, pid) ? 1 : 0);
-            // solutionHtml = "<b><img src='images/logo_1.gif'/>TEST 1</b>";
-            return rpcData;
+            SolutionInfo solutionInfo = new SolutionInfo(solutionHtml, parts.getData(),getHasShowWork(conn,uid, pid));
+            return solutionInfo;
         } catch (Exception e) {
         	logger.error(String.format("*** Error executing Action: %s", action.toString()), e);
             throw new CmRpcException(e);
