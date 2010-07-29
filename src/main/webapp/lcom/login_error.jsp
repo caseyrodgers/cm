@@ -121,7 +121,7 @@ pageTracker._trackPageview();
           <p class='reason'><%= reason %></p>
  
           <a href='#' onclick='alert("Waiting for instructions from LCOM");return false;'>
-             <img src='/gwt-resources/lcom/Return-to-SKY.png'/>   
+             <img src='/lcom/Return-to-SKY.png'/>   
           </a>
           <% if(showMoreInfo)  {
               %>    	   

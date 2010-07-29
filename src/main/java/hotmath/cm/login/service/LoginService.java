@@ -239,7 +239,7 @@ public class LoginService extends HttpServlet {
     	}
     	catch(Exception e) {
     		req.getSession().setAttribute("exception", e);
-        	req.getRequestDispatcher("/gwt-resources/lcom/login_error.jsp").forward(req, resp);
+        	req.getRequestDispatcher("/lcom/login_error.jsp").forward(req, resp);
     	}
 	    	
     }
