@@ -32,7 +32,7 @@ public class CollectEmailFromUserDialog extends CmWindow {
 		setClosable(false);
 		setResizable(false);
 
-		String html = "<p style='padding: 10px;'>Before you can begin using Catchup Math you will need to provide a valid email address.</p>";
+		String html = "<p style='padding: 10px;'>Please provide your email address for occasional Catchup Math getting started tips and usage reports.</p>";
 		add(new Html(html));
 
 		FormPanel form = new FormPanel();
