@@ -258,6 +258,7 @@ public class AutoStudentRegistrationPanel extends CmMainResourceContainer {
         	}
         	@Override
         	public void onFailure(Throwable caught) {
+        		Window.alert(caught.getMessage());
             	CmBusyManager.setBusy(false);
                 CmLogger.error(caught.getMessage(), caught);
                 String msg = caught.getMessage();
