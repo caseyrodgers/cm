@@ -310,13 +310,14 @@ public class AutoStudentRegistrationPanel extends CmMainResourceContainer {
     }
     
     private void showAlreadyMsg(final String password) {
-        String msg = "You are already registered with this name.";
-        Window.alert("Showing Already Message");
-        CatchupMathTools.showAlert("Already Registered", msg,new CmAsyncRequestImplDefault() {
-            public void requestComplete(String requestData) {
-                /** create a login key for this user
-                 * 
-                 */
+        String msg = "<p style='padding: 10px'>You are already registered with this name.</p>";
+        CmWindow w = new CmWindow();
+        w.setHeading("Already Registered");
+        w.setClosable(false);
+        w.add(new Html(msg));
+        w.setSize(300,130);
+        w.addButton(new Button("Get Login Info", new SelectionListener<ButtonEvent>() {
+        	public void componentSelected(ButtonEvent ce) {
                 LogUserInAction action = new LogUserInAction(null,password);
                 CmShared.getCmService().execute(action,new CmAsyncCallback<RpcData>() {
                 	public void onSuccess(RpcData result) {
@@ -329,8 +330,8 @@ public class AutoStudentRegistrationPanel extends CmMainResourceContainer {
                 		super.onFailure(caught);
                 	}
 				});
-            }
-        });
+        	}}));
+        w.setVisible(true);
     }
 
     
