@@ -1,7 +1,6 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <%@page import="hotmath.cm.login.service.CmExceptionUserExpired"%>
-<html>
-<!-- InstanceBegin template="/Templates/cm_main_2.dwt" codeOutsideHTMLIsLocked="false" -->
+<html><!-- InstanceBegin template="/Templates/cm_main_2.dwt" codeOutsideHTMLIsLocked="false" -->
 <head>
 <!-- InstanceBeginEditable name="doctitle" -->
 <title>Catchup Math/Learning.com Login Page</title>
@@ -178,7 +177,7 @@ pageTracker._trackPageview();
         </div>
     </div>
 </div>
-<script type="text/javascript" src="/resources/js/yui/build//yahoo-dom-event/yahoo-dom-event.js"></script> 
+<script type="text/javascript" src="/resources/js/yui/build/yahoo-dom-event/yahoo-dom-event.js"></script> 
 <script type="text/javascript" src="/resources/js/yui/build/dragdrop/dragdrop-min.js"></script> 
 <script type="text/javascript" src="/resources/js/yui/build/container/container-min.js"></script> 
 <script type="text/javascript" src="/resources/js/yui/build/connection/connection-min.js"></script> 

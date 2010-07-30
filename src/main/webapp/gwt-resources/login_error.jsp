@@ -179,7 +179,7 @@ pageTracker._trackPageview();
         </div>
     </div>
 </div>
-<script type="text/javascript" src="/resources/js/yui/build//yahoo-dom-event/yahoo-dom-event.js"></script> 
+<script type="text/javascript" src="/resources/js/yui/build/yahoo-dom-event/yahoo-dom-event.js"></script> 
 <script type="text/javascript" src="/resources/js/yui/build/dragdrop/dragdrop-min.js"></script> 
 <script type="text/javascript" src="/resources/js/yui/build/container/container-min.js"></script> 
 <script type="text/javascript" src="/resources/js/yui/build/connection/connection-min.js"></script> 
