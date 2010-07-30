@@ -2,6 +2,8 @@ package hotmath.gwt.cm_tools.client.ui;
 
 import hotmath.gwt.cm_tools.client.ui.resource_viewer.CmMainResourceContainer;
 import hotmath.gwt.cm_tools.client.ui.resource_viewer.CmResourcePanel;
+import hotmath.gwt.cm_tools.client.ui.viewer.CmResourcePanelImplWithWhiteboard;
+import hotmath.gwt.cm_tools.client.ui.viewer.CmResourcePanelImplWithWhiteboard.DisplayMode;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
 import hotmath.gwt.shared.client.eventbus.CmEventListenerImplDefault;
 import hotmath.gwt.shared.client.eventbus.EventBus;
@@ -144,61 +146,78 @@ public class CmMainPanel extends LayoutContainer {
 	static {
 		publishNative();
 
+		/**
+		 * Implement a static listener for performance reasons
+		 * 
+		 */
 		EventBus.getInstance().addEventListener(
 				new CmEventListenerImplDefault() {
 					@Override
 					public void handleEvent(CmEvent event) {
-						switch(event.getEventType()) {
-						
+						switch (event.getEventType()) {
+
 						case EVENT_TYPE_RESOURCE_VIEWER_OPEN:
-							__lastInstance._lastResourceViewer = (CmResourcePanel) event.getEventData();
+							__lastInstance._lastResourceViewer = (CmResourcePanel) event
+									.getEventData();
 							break;
-							
-							
+
 						case EVENT_TYPE_RESOURCE_VIEWER_CLOSE:
 							__lastInstance.expandResourceButtons();
-							__lastInstance._lastResourceViewer = (CmResourcePanel) event.getEventData();
+							__lastInstance._lastResourceViewer = (CmResourcePanel) event
+									.getEventData();
 							break;
-							
-							
+
 						case EVENT_TYPE_WINDOW_RESIZED:
 							__lastInstance._mainContent.fireWindowResized();
 							break;
-							
-							
+
 						case EVENT_TYPE_CONTEXT_TOOLTIP_SHOW:
-							ContextTooltipPanel.getInstance().setContextTooltip((String) event.getEventData());
+							ContextTooltipPanel.getInstance()
+									.setContextTooltip(
+											(String) event.getEventData());
 							break;
-							
-							
+
 						case EVENT_TYPE_WHITEBOARD_READY:
 							setWhiteboardIsVisible(true);
 							setQuizQuestionDisplayAsActive(getLastQuestionPid());
 							break;
-							
-							
+
 						case EVENT_TYPE_WHITEBOARD_CLOSED:
 							setWhiteboardIsVisible(false);
 							setQuizQuestionDisplayAsActive(null);
 							break;
-							
-							
+
 						case EVENT_TYPE_MODAL_WINDOW_OPEN:
 							/**
-							 * hide the current resource to avoid Flash z-order
-							 * issues
-							 * 
+							 * only hide windows if they might contain a
+							 * whiteboard
 							 */
-							__lastInstance._mainContent.removeAll();
-							break;
-							
-							
-							
-						case EVENT_TYPE_MODAL_WINDOW_CLOSED:
-							if (__lastInstance._mainContent != null) {
-								__lastInstance._mainContent.showResource();
+							if (__lastInstance != null
+								&& __lastInstance._mainContent != null
+								&& __lastInstance._lastResourceViewer != null
+								&& __lastInstance._lastResourceViewer instanceof CmResourcePanelImplWithWhiteboard
+								&& ((CmResourcePanelImplWithWhiteboard)__lastInstance._lastResourceViewer).isWhiteboardActive()) {
+									/**
+									 * If the whiteboard is active
+									 * hide the current resource to avoid Flash
+									 * z-order issues
+									 * 
+									 */
+									__lastInstance._mainContent.removeAll();
 							}
-							
+							break;
+
+						case EVENT_TYPE_MODAL_WINDOW_CLOSED:
+							if (__lastInstance != null
+									&& __lastInstance._mainContent != null
+									&& __lastInstance._lastResourceViewer != null
+									&& __lastInstance._lastResourceViewer instanceof CmResourcePanelImplWithWhiteboard
+									&& ((CmResourcePanelImplWithWhiteboard)__lastInstance._lastResourceViewer).isWhiteboardActive()) {
+								       /** If whiteboard is active, restore any resources
+								        * 
+								        */
+										__lastInstance._mainContent.showResource();
+									}
 							break;
 						}
 					}

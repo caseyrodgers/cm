@@ -69,7 +69,8 @@ public class ResourceViewerImplVideo extends ResourceViewerImplFlash {
             flashVars = flashVars.replaceAll("THE_VIDEO", videoPath);
             flashVars = flashVars.replaceAll("PLAYER_ID", id);
             
-            swfWidget.addFlashVar("config", flashVars);                
+            swfWidget.addFlashVar("config", flashVars);
+            swfWidget.addParam("wmode", "opaque");
             swfWidget.addParam("scale", "scale");
             swfWidget.addParam("allowfullscreen", "true");
             swfWidget.addParam("allowscriptaccess", "always");

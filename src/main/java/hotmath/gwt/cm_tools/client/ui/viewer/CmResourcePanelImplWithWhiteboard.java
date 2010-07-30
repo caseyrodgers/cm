@@ -72,6 +72,10 @@ public abstract class CmResourcePanelImplWithWhiteboard extends CmResourcePanelI
         _displayMode = getInitialWhiteboardDisplay();
     }
 
+    public boolean isWhiteboardActive() {
+    	return _displayMode == DisplayMode.WHITEBOARD;
+    }
+    
     /** Should the whiteboard be shown
      */
     protected DisplayMode getInitialWhiteboardDisplay() {

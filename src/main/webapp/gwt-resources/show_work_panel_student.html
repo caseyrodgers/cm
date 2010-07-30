@@ -7,8 +7,7 @@
     <link rel="stylesheet" href="/css/tutor5.css" type="text/css" />
   </head>
   <body style='margin: 0;border: none;'>
-    <script src='/gwt-resources/js/swfobject/swfobject.js'></script>
-      	<div id='whiteboard-object'></div>
+      <div id='whiteboard-object'></div>
       <div id='no-flash' style='display:none'>
         <div id='flash-alt-content'>
           <p>Flash version 8 or higher is required.  Either download Flash now, try a different browser, or try a different computer.</p> 
@@ -17,7 +16,7 @@
           </p>
         </div>
       </div>
-    <img src="/images/tutor5/spacer.gif" id="scrollTo-button" /></div>
+    <script src='/gwt-resources/js/swfobject/swfobject.js'></script>
     <script src='/gwt-resources/js/show_work_panel.js'></script>
     <script>
     function checkFailure(o) {
@@ -25,9 +24,11 @@
            document.getElementById("no-flash").style.display = "block";
         }
     }
-    var params = {}; 
-    params.wmode = "transparent"; 
-    swfobject.embedSWF('/gwt-resources/flash/sw_wb_2.swf', 'whiteboard-object', '100%', '100%','8.0.0',params);
+    var flashvars = {};
+    var params = {};
+    params.wmode = "opaque";
+    var attributes = {};
+    swfobject.embedSWF("/gwt-resources/flash/sw_wb_2.swf", "whiteboard-object", "100%", "100%", "8.0.0", flashvars, params, attributes );
     </script>
   </body>
 </html>
