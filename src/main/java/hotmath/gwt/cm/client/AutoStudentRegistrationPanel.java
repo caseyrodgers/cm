@@ -267,6 +267,9 @@ public class AutoStudentRegistrationPanel extends CmMainResourceContainer {
                 else if(msg.indexOf("name you entered") > -1) {
                     checkIfPasswordMatches(password);
                 }
+                else {
+                	CatchupMathTools.showAlert("There was a problem creating your new account: " + msg);
+                }
         	}
 		});
     }
