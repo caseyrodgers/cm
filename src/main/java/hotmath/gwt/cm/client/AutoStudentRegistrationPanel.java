@@ -258,7 +258,6 @@ public class AutoStudentRegistrationPanel extends CmMainResourceContainer {
         	}
         	@Override
         	public void onFailure(Throwable caught) {
-        		Window.alert(caught.getMessage());
             	CmBusyManager.setBusy(false);
                 CmLogger.error(caught.getMessage(), caught);
                 String msg = caught.getMessage();
@@ -312,25 +311,24 @@ public class AutoStudentRegistrationPanel extends CmMainResourceContainer {
     
     private void showAlreadyMsg(final String password) {
         String msg = "You are already registered with this name.";
+        Window.alert("Showing Already Message");
         CatchupMathTools.showAlert("Already Registered", msg,new CmAsyncRequestImplDefault() {
             public void requestComplete(String requestData) {
                 /** create a login key for this user
                  * 
                  */
-                new RetryAction<RpcData>() {
-                    @Override
-                    public void attempt() {
-                        CmBusyManager.setBusy(true);
-                        LogUserInAction action = new LogUserInAction(null,password);
-                        setAction(action);
-                        CmShared.getCmService().execute(action,this);
-                    }
-                    public void oncapture(RpcData result) {
+                LogUserInAction action = new LogUserInAction(null,password);
+                CmShared.getCmService().execute(action,new CmAsyncCallback<RpcData>() {
+                	public void onSuccess(RpcData result) {
                         CmBusyManager.setBusy(false);
                         String key = result.getDataAsString("key");
                         showPasswordAssignment(password, key);
-                    }
-                }.register();
+                	}
+                	public void onFailure(Throwable caught) {
+                		CmBusyManager.setBusy(false);
+                		super.onFailure(caught);
+                	}
+				});
             }
         });
     }
