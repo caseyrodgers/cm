@@ -15,6 +15,7 @@ import hotmath.gwt.shared.client.rpc.RetryAction;
 import hotmath.gwt.shared.client.rpc.action.CheckUserAccountStatusAction;
 import hotmath.gwt.shared.client.rpc.action.CreateAutoRegistrationAccountAction;
 import hotmath.gwt.shared.client.rpc.action.LogUserInAction;
+import hotmath.gwt.shared.client.util.CmAsyncCallback;
 import hotmath.gwt.shared.client.util.CmInfoConfig;
 import hotmath.gwt.shared.client.util.UserInfo;
 
@@ -245,23 +246,19 @@ public class AutoStudentRegistrationPanel extends CmMainResourceContainer {
         }
 
         final String password = (lastName.getValue() + "-" + firstName.getValue() + "-" + birthDate.getValue()).toLowerCase();
-        new RetryAction<RpcData>() {
-            @Override
-            public void attempt() {
-                CmBusyManager.setBusy(true);
-                CreateAutoRegistrationAccountAction action = new CreateAutoRegistrationAccountAction(UserInfo.getInstance().getUid(), lastName.getValue() + ", " + firstName.getValue().trim(), password);
-                setAction(action);
-                CmShared.getCmService().execute(action,this );
-            }
-            //@Override
-            public void oncapture(final RpcData rdata) {
+
+        CmBusyManager.setBusy(true);
+        CreateAutoRegistrationAccountAction action = new CreateAutoRegistrationAccountAction(UserInfo.getInstance().getUid(), lastName.getValue() + ", " + firstName.getValue().trim(), password);
+        CmShared.getCmService().execute(action,new CmAsyncCallback<RpcData>() {
+        	@Override
+        	public void onSuccess(RpcData rdata) {
                 CmBusyManager.setBusy(false);
                 String key = rdata.getDataAsString("key");
                 showPasswordAssignment(password,key);
-            }
-
-            //@Override
-            public void onFailure(Throwable caught) {
+        	}
+        	@Override
+        	public void onFailure(Throwable caught) {
+            	CmBusyManager.setBusy(false);
                 CmLogger.error(caught.getMessage(), caught);
                 String msg = caught.getMessage();
                 if(msg.indexOf("passcode you entered") > -1) {
@@ -270,10 +267,8 @@ public class AutoStudentRegistrationPanel extends CmMainResourceContainer {
                 else if(msg.indexOf("name you entered") > -1) {
                     checkIfPasswordMatches(password);
                 }
-                else
-                    super.onFailure(caught);
-            }
-        }.register();
+        	}
+		});
     }
     
     private void showPasswordAssignment(String password, final String key) {
