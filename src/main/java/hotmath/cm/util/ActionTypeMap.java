@@ -10,6 +10,15 @@ public class ActionTypeMap {
 
 	static HashMap<String,ActionType> actionTypeMap;
 	
+	/** TODO: We should use the actual class (*.class) 
+	 * to allow for refactoring and referencing.
+	 * 
+	 * Objects not in list are counted as Other?
+	 * 
+	 * Perhaps, the right way to do this is to make
+	 * it part of the Action interface.
+	 * 
+	 */
 	static {
 		actionTypeMap = new HashMap<String,ActionType>();
 		

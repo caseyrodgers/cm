@@ -6,12 +6,15 @@ import hotmath.flusher.HotmathFlusher;
 import hotmath.gwt.cm_rpc.client.rpc.Action;
 import hotmath.gwt.cm_rpc.client.rpc.CmRpcException;
 import hotmath.gwt.cm_rpc.client.rpc.Response;
+import hotmath.gwt.cm_rpc.server.rpc.ActionDispatcherListener.ActionExecutionType;
 import hotmath.gwt.shared.server.service.ActionHandlerManualConnectionManagement;
 import hotmath.util.HMConnectionPool;
 import hotmath.util.sql.SqlUtilities;
 
 import java.sql.Connection;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
@@ -53,8 +56,10 @@ public class ActionDispatcher {
 
     @SuppressWarnings("unchecked")
     Map<Class<? extends Action<? extends Response>>, Class> commands = new HashMap<Class<? extends Action<? extends Response>>, Class>();
+    List<ActionDispatcherListener> listeners = new ArrayList<ActionDispatcherListener>();
 
     static Logger logger = Logger.getLogger(ActionDispatcher.class.getName());
+    
     /**
      * remove commands
      * 
@@ -80,7 +85,7 @@ public class ActionDispatcher {
      * 
      * @param command
      */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({ "rawtypes", "unchecked" })
     public void addCommand(Class command) {
         try {
             Class action = ((ActionHandler) command.newInstance()).getActionType();
@@ -90,16 +95,39 @@ public class ActionDispatcher {
         }
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("rawtypes")
     public Map<Class<? extends Action<? extends Response>>, Class> getCommands() {
         return commands;
     }
 
-    @SuppressWarnings("unchecked")
-    public void setCommands(Map<Class<? extends Action<? extends Response>>, Class> commands) {
+    @SuppressWarnings("rawtypes")
+	public void setCommands(Map<Class<? extends Action<? extends Response>>, Class> commands) {
         this.commands = commands;
     }
 
+
+    /** Add listener ability to ActionDispatcher.  Each event executed
+     *  will fire an event to any interested parties.
+     *  
+     * @param listener
+     */
+    public void addActionDispatchListener(ActionDispatcherListener listener) {
+    	listeners.add(listener);
+    }
+    public void removeActionDispatcherListener(ActionDispatcherListener listener) {
+    	if(listeners.contains(listener)) {
+    		listeners.remove(listener);
+    	}
+    }
+    public void removeActionDispatcherListenerAll() {
+    	listeners.clear();
+    }
+    private void fireActionDispatcherEvent(ActionExecutionType type, Action<? extends Response> action) {
+    	for(ActionDispatcherListener listener: listeners) {
+    		listener.actionExecuted(type, action);
+    	}
+    }
+    
     
     /**
      * Execute the given command and return the proper Result object.
@@ -117,7 +145,7 @@ public class ActionDispatcher {
      * @return
      * @throws Exception
      */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     public <T extends Response> T execute(Action<T> action) throws CmRpcException {
 
         long timeStart = System.currentTimeMillis();
@@ -151,9 +179,16 @@ public class ActionDispatcher {
 
             actionType = ActionTypeMap.getActionType(clazzName);
             
+            /** todo: move to listener
+             * 
+             */
             incrementActionsExecuted(actionType);
 
+            fireActionDispatcherEvent(ActionExecutionType.BEFORE, action);
+            
             T response = (T) actionHandler.execute(conn, action);
+            
+            fireActionDispatcherEvent(ActionExecutionType.AFTER, action);
 
             incrementActionsCompleted(actionType);
 
@@ -239,7 +274,7 @@ public class ActionDispatcher {
      * @return
      * @throws Exception
      */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     private Class getActionCommand(Action<? extends Response> action) throws Exception {
         if(!commands.containsKey(action.getClass())) {
             logger.info("Auto registering action: " + action.getClass());
@@ -291,7 +326,7 @@ public class ActionDispatcher {
      * 
      * 
      */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({ "rawtypes" })
     public void registerCommands(Class[] commands) {
         logger.info("Adding " + commands.length + " commands");
         for (Class command : commands) {
