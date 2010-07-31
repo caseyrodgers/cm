@@ -22,6 +22,10 @@ public class ActionDispatcherListenerImplLogListener implements ActionDispatcher
 		ActionDispatcher.getInstance().addActionDispatchListener(this);
 	}
 
+	public void clearActionInfo() {
+		actionInfo.clear();
+	}
+	
 	@Override
 	public void actionExecuted(ActionExecutionType type,Action<? extends Response> action) {
 		switch(type) {
