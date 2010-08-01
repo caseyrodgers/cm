@@ -98,8 +98,22 @@ LEFT JOIN (select user_id, max(run_id) as run_id from HA_TEST_RUN r JOIN HA_TEST
 LEFT JOIN HA_TEST_RUN m 
   on m.run_id =  x.run_id
 LEFT JOIN (select user_id, max(login_time) as login_time from HA_USER_LOGIN GROUP BY user_id) l on l.user_id = h.uid 
-LEFT JOIN v_HA_TEST_RUN_PNP_TOTALS q
-  on q.user_id = h.uid
+LEFT JOIN ( SELECT ifnull(p.total,0) as passing_count, ifnull(n.total,0) as not_passing_count, u.uid as user_id
+			FROM HA_USER u 
+			  LEFT JOIN (
+			    SELECT count(*) as total, 1 as is_passing, t.user_id as user_id
+			    FROM HA_TEST_RUN r
+			     JOIN HA_TEST t on r.test_id = t.test_id
+			     WHERE r.is_passing = 1
+			     GROUP BY t.user_id
+			) p on p.user_id = u.uid 
+			  LEFT JOIN (
+			    SELECT count(*) as total, 0 as is_passing, t.user_id as user_id
+			    FROM HA_TEST_RUN r
+			   JOIN HA_TEST t on r.test_id = t.test_id
+			   WHERE r.is_passing = 0
+			   GROUP BY t.user_id
+			) n on n.user_id = u.uid) q on q.user_id = h.uid
 LEFT JOIN (select uid, count(*) as tutoring_use from HA_USER_TUTORING_SESSION ts group by uid) ut on ut.uid = h.uid
 WHERE h.uid in (XXX) 
 ORDER BY h.user_name
