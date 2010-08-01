@@ -71,7 +71,7 @@ public class GetStudentGridPageCommand implements
             sublist.add(studentPool.get(i));
         }
         
-        pageHelper.getAnyMissingData(conn, action, sublist);
+        // pageHelper.getAnyMissingData(conn, action, sublist);
         
         return new CmStudentPagingLoadResult<StudentModelExt>(sublist, action.getLoadConfig().getOffset(), studentPool.size());
     }

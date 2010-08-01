@@ -1037,7 +1037,7 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
         			
         			/** request any extended data, if required
         			 *  
-        			
+        			 */
         			List<Integer> needExtendedFor = new ArrayList<Integer>();
         			for(int i=0;i<students.getData().size();i++) {
         				StudentModelExt sm = students.getData().get(i);
@@ -1048,7 +1048,6 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
         			if(needExtendedFor.size() > 0) {
         				readExtendedDataForPage(needExtendedFor);
         			}
-        			*/
         			
         			/** callback the proxy listener
         			 * 
