@@ -6,6 +6,8 @@ import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
 
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
+import com.extjs.gxt.ui.client.event.WindowEvent;
+import com.extjs.gxt.ui.client.event.WindowListener;
 import com.extjs.gxt.ui.client.widget.Html;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.button.Button;
@@ -44,17 +46,26 @@ public class ContextChangeMessage extends CmWindow {
 
             @Override
             public void componentSelected(ButtonEvent ce) {
-                
+                close();
+            }
+        });
+        addButton(close);
+        
+        /** Perform operations when ever the window is dismissed
+         * 
+         */
+        addWindowListener(new WindowListener() {
+        	@Override
+        	public void windowHide(WindowEvent we) {
                 InmhItemData itemData = PrescriptionCmGuiDefinition.__instance._guiWidget.registeredResources.get(0).getItems().get(0);
                 
                 if(CmMainPanel.__lastInstance._mainContent.getItemCount() == 0)
                    CmMainPanel.__lastInstance._mainContent.showResource(itemData);   
                 
                 setVisible(false);
-                close();
-            }
+        	}
         });
-        addButton(close);
+        
         setVisible(true);
     }
 }
