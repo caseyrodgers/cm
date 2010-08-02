@@ -27,7 +27,7 @@ public class GenericVideoPlayer extends CmWindow {
         /** add id to force no cache .. is a bug with flowplayer that 
          *  if in cache it only plays once.
          */
-        SWFWidget swfWidget = new SWFWidget("flowplayer-3.1.5.swf?id=" + videoPlayerId, "100%", "100%", s);
+        SWFWidget swfWidget = new SWFWidget("/cm_student/flowplayer-3.1.5.swf?id=" + videoPlayerId, "100%", "100%", s);
 
         String flashVars = "{'key':'$a12fd4b15a588479e9e','clip':{'url':'THE_VIDEO'},'playerId':'PLAYER_ID','playlist':[{'url':'THE_VIDEO'}]}";
         
