@@ -105,6 +105,7 @@ LEFT JOIN ( SELECT ifnull(p.total,0) as passing_count, ifnull(n.total,0) as not_
 			    FROM HA_TEST_RUN r
 			     JOIN HA_TEST t on r.test_id = t.test_id
 			     WHERE r.is_passing = 1
+			     AND t.user_id in (XXX)
 			     GROUP BY t.user_id
 			) p on p.user_id = u.uid 
 			  LEFT JOIN (
@@ -112,6 +113,7 @@ LEFT JOIN ( SELECT ifnull(p.total,0) as passing_count, ifnull(n.total,0) as not_
 			    FROM HA_TEST_RUN r
 			   JOIN HA_TEST t on r.test_id = t.test_id
 			   WHERE r.is_passing = 0
+			   AND t.user_id in (XXX)
 			   GROUP BY t.user_id
 			) n on n.user_id = u.uid) q on q.user_id = h.uid
 LEFT JOIN (select uid, count(*) as tutoring_use from HA_USER_TUTORING_SESSION ts group by uid) ut on ut.uid = h.uid

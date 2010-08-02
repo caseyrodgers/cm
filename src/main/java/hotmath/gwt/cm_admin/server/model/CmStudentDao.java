@@ -243,7 +243,7 @@ public class CmStudentDao {
     	
     	String uidStr = getUidString(studentUids);
     			
-    	String sqlWithUids = sql.replaceFirst("XXX", uidStr);
+    	String sqlWithUids = sql.replaceAll("XXX", uidStr);
 
     	PreparedStatement ps = null;
     	ResultSet rs = null;
