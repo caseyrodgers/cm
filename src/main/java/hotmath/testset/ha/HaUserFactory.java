@@ -80,6 +80,7 @@ public class HaUserFactory {
                     admin.setPassword(pwd);
                     admin.setAdminId(rs.getInt("aid"));
                     admin.setEmail(rs.getString("student_email"));
+                    admin.setPartner(rs.getString("partner_key"));
                     java.sql.Date date = rs.getDate("date_expire");
                     if (date != null)
                         admin.setExpireDate(new Date(date.getTime()));
@@ -116,6 +117,7 @@ public class HaUserFactory {
                     student.setPassword(pwd);
                     student.setLoginName(user);
                     student.setAccountType(rs.getString("type"));
+                    student.setPartner(rs.getString("partner_key"));
                     java.sql.Date date = rs.getDate("date_expire");
                     if (date != null)
                         student.setExpireDate(new Date(date.getTime()));
@@ -150,6 +152,7 @@ public class HaUserFactory {
                     student.setPassword(pwd);
                     student.setLoginName(user);
                     student.setAccountType(rs.getString("type"));
+                    student.setPartner(rs.getString("partner_key"));
                     java.sql.Date date = rs.getDate("date_expire");
                     if (date != null)
                         student.setExpireDate(new Date(date.getTime()));
@@ -183,6 +186,7 @@ public class HaUserFactory {
                 if (rs.first()) { 
                     int userId = rs.getInt("uid");
                     HaUserAutoRegistration student = new HaUserAutoRegistration(HaUser.lookUser(conn, userId,null).getUid());
+                    student.setPartner("partner");
                     student.setLoginName(user);
                     student.setUserName("auto");
                     student.setPassword("auto");
@@ -319,7 +323,7 @@ public class HaUserFactory {
 			if (type.equals("ADMIN")) {
 				/** return admin information */
 				HaAdmin admin = new HaAdmin();
-				String sql = "select a.*, ss.date_expire, ss.subscriber_id, s.type as account_type,a.passcode,s.student_email "
+				String sql = "select a.*,a.partner_key, ss.date_expire, ss.subscriber_id, s.type as account_type,a.passcode,s.student_email "
 						+ " from HA_ADMIN a "
 						+ "  inner join SUBSCRIBERS s on s.id = a.subscriber_id "
 						+ " left outer join ( "
@@ -337,6 +341,7 @@ public class HaUserFactory {
 					admin.setPassword(rs.getString("passcode"));
 					admin.setAdminId(rs.getInt("aid"));
 					admin.setEmail(rs.getString("student_email"));
+					admin.setPartner(rs.getString("partner_key"));
 					java.sql.Date date = rs.getDate("date_expire");
 					if (date != null)
 						admin.setExpireDate(new Date(date.getTime()));
@@ -346,7 +351,7 @@ public class HaUserFactory {
 				}
 			} else {
 				/** return student information */
-				String sql = "select u.uid, u.user_name,  s.type,  ss.date_expire, s.password" +
+				String sql = "select u.uid, u.user_name,  s.type,  ss.date_expire, s.password,h.partner_key" +
 				             " from   HA_USER u " +
 				             " inner join HA_ADMIN h " +
 				             "  on u.admin_id = h.aid " +
@@ -370,6 +375,7 @@ public class HaUserFactory {
 					student.setPassword(rs.getString("password"));
 					student.setLoginName(rs.getString("user_name"));
 					student.setAccountType(rs.getString("type"));
+					student.setPartner(rs.getString("partner_key"));
 					java.sql.Date date = rs.getDate("date_expire");
 					if (date != null)
 						student.setExpireDate(new Date(date.getTime()));

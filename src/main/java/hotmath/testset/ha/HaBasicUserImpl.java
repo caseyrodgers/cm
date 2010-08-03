@@ -13,6 +13,7 @@ abstract public class HaBasicUserImpl implements HaBasicUser {
     String userName;
     String loginName;
     String email;
+    String partner;
 
 
 	public String getEmail() {
@@ -75,7 +76,15 @@ abstract public class HaBasicUserImpl implements HaBasicUser {
         this.loginMessage = msg;
     }
     
-    abstract public Object getUserObject();
+    public String getPartner() {
+		return partner;
+	}
+
+	public void setPartner(String partner) {
+		this.partner = partner;
+	}
+
+	abstract public Object getUserObject();
     abstract public UserType getUserType();
     
 }

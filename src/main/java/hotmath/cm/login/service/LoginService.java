@@ -115,11 +115,7 @@ public class LoginService extends HttpServlet {
              * or return JSON describing login info.
              */
             if(action.equals("login")) {
-                /** redirect and connect to the CM student  
-                 * 
-                 */
-                String urlWithSessionID = "http://" + getCmServer(req) + "/cm_student/CatchupMath.html?key=" + loginInfo.getKey();
-                resp.sendRedirect(urlWithSessionID);
+            	throw new Exception("Not Supported");
             }
             else if(action.equals("auto_test")) {
                 /** redirect and connect to the CM student,passing auto_test parameter  
@@ -137,6 +133,9 @@ public class LoginService extends HttpServlet {
             }
             else {
             	
+            	/** Check for expired account.  But, allow debug users to bypass
+            	 * 
+            	 */
             	if(!isDebug && cmUser.getExpireDate().getTime() < System.currentTimeMillis()) {
             		throw new CmExceptionUserExpired(cmUser);
             	}
@@ -160,6 +159,7 @@ public class LoginService extends HttpServlet {
         		sb.append("', loginMsg: '").append((cmUser.getLoginMessage() != null)?cmUser.getLoginMessage():"NONE");
         		sb.append("',  loginName: '").append((cmUser.getLoginName() != null)?cmUser.getLoginName():"");
         		sb.append("',  email: '").append((cmUser.getEmail() != null)?cmUser.getEmail():"");
+        		sb.append("',  partner: '").append(cmUser.getPartner() != null?cmUser.getPartner():"");        		
         		sb.append("' }");
         		req.getSession().setAttribute("jsonizedLoginInfo", sb.toString());
         		

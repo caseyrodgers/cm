@@ -7,6 +7,7 @@ import hotmath.gwt.cm_tools.client.data.HaBasicUser;
 import hotmath.gwt.cm_tools.client.ui.CmLogger;
 import hotmath.gwt.shared.client.data.CmAsyncRequestImplDefault;
 import hotmath.gwt.shared.client.model.UserInfoBase;
+import hotmath.gwt.shared.client.model.UserInfoBase.Partner;
 import hotmath.gwt.shared.client.util.CmException;
 import hotmath.gwt.shared.client.util.CmExceptionLoginInvalid;
 import hotmath.gwt.shared.client.util.SystemVersionUpdateChecker;
@@ -128,9 +129,11 @@ public class CmShared implements EntryPoint {
             int userId = 0;
 
 
-            // for testing, if uid is passed allow it override cookie
+            /** 
+             *  for testing, if uid is passed allow override.
+             */
             if (userId > 0) {
-                callback.loginSuccessful(userId);
+            	callback.loginSuccessful(userId);
             } else {
                 final String key2 = getSecurityKey();
                 if (key2 == null || key2.length() == 0) {
@@ -157,6 +160,19 @@ public class CmShared implements EntryPoint {
                     if(cmStartType != null && cmStartType.equals("AUTO_CREATE")) {
                     	UserInfoBase.getInstance().setCmStartType(cmStartType);
                     }
+
+                    if(o.containsKey("partner")) {
+                    	String partner = o.get("partner").isString().stringValue();
+                    	if(partner != null && partner.length() > 1) {
+                    		if(partner.equals(Partner.LCOM.key)) {
+                    			UserInfoBase.getInstance().setPartner(Partner.LCOM);
+                    		}
+                    		else {
+                    			CmLogger.error("Invalid partner setup for user: " + partner);
+                    		}
+                    	}
+                    }
+                    
                     String email = o.get("email").isString().stringValue();
                     UserInfoBase.getInstance().setEmail(email);
                 }
