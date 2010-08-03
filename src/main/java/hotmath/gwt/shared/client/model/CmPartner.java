@@ -10,7 +10,7 @@ package hotmath.gwt.shared.client.model;
  */
 public enum CmPartner {
 	
-	LCOM("lcom","Learning.Com", "/lcom/logo.png", "http://www.learning.com/sky/");
+	LCOM("lcom","Learning.Com", "/lcom/logo.png", "javascript:window.close();");
 	
 	public String key;
 	public String name;
