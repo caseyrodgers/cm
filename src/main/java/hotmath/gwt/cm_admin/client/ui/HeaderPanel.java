@@ -2,7 +2,10 @@ package hotmath.gwt.cm_admin.client.ui;
 
 import hotmath.gwt.cm_admin.client.CatchupMathAdmin;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
+import hotmath.gwt.cm_tools.client.ui.CmLogger;
 import hotmath.gwt.shared.client.CmShared;
+import hotmath.gwt.shared.client.model.CmPartner;
+import hotmath.gwt.shared.client.model.UserInfoBase;
 import hotmath.gwt.shared.client.util.UserInfo;
 
 import com.extjs.gxt.ui.client.event.IconButtonEvent;
@@ -46,8 +49,22 @@ public class HeaderPanel extends LayoutContainer {
 		btn = new IconButton("header-panel-logout-btn");
 	    btn.addSelectionListener(new SelectionListener<IconButtonEvent>() {
 			public void componentSelected(IconButtonEvent ce) {
-				//CmShared.logout();
-				Window.Location.assign("/");
+				/** todo: find how to share this between student and admin
+				 * 
+				 */
+				CmPartner partner = UserInfoBase.getInstance().getPartner();
+				if(partner != null) {
+					CmLogger.info("Doing custom admin thing: " + partner.onCloseLink);
+					try {
+						Window.Location.assign(partner.onCloseLink);
+					}
+					catch(Exception e) {
+					    CatchupMathTools.showAlert("Error returning to our partner page: " + e.getMessage());
+					}
+				}
+				else {
+					Window.Location.assign(CmShared.CM_HOME_URL);
+				}
 			};
 		});		
 		add(btn);
