@@ -16,7 +16,7 @@ public class UserInfoBase implements IsSerializable {
 	boolean isAdmin;
 	String cmStartType;
 	String email;
-	Partner partner;
+	CmPartner partner;
 
 	String userName;
 
@@ -108,35 +108,11 @@ public class UserInfoBase implements IsSerializable {
 	}
 	
 
-	public Partner getPartner() {
+	public CmPartner getPartner() {
 		return partner;
 	}
 
-	public void setPartner(Partner partner) {
+	public void setPartner(CmPartner partner) {
 		this.partner = partner;
-	}
-
-
-	/** represents a CM Parnter.  
-	 *  
-	 *  A CM Partner contains various
-	 *  information that allows for 
-	 *  branding of the partner.
-	 * @author casey
-	 *
-	 */
-	public static enum Partner {
-		
-		LCOM("lcom","Learning.Com", "/lcom/logo.png");
-		
-		public String key;
-		public String name;
-		public String logoImage;
-
-		Partner(String key, String name, String logoImage) {
-			this.key = key;
-			this.name = name;
-			this.logoImage = logoImage;
-		}
 	}
 }
