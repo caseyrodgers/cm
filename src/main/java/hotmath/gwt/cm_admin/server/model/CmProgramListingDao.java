@@ -143,7 +143,7 @@ public class CmProgramListingDao {
         return pt;
     }
 
-    /** Return program type for all proficiency tests
+    /** Return program type for all Grad Prep Programs
      * 
      * @param conn
      * @param type
@@ -240,7 +240,12 @@ public class CmProgramListingDao {
             		}
             	}
             }
+        	if (logger.isDebugEnabled())
+                logger.debug(String.format("+++ getLessonsFor(): textCode: %s, chapter: %s", testDef.getTextCode(), chapter));
+            
             List<String> pids = hda.getTestIdsForSegment(conn, userProgram, segment, testDef.getTextCode(), chapter, testDef.getTestConfig(), 0);
+        	if (logger.isDebugEnabled())
+                logger.debug(String.format("+++ getLessonsFor(): pids.size(): %d", pids.size()));
             
             /** now get list of lessons assigned to these pids by looking in HM_PROGRAM_LESSONS_static which is
              *  created by the HA_PRESCRIPTION_LOG Deploylet action.  This is a static table that holds information
