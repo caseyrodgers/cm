@@ -19,6 +19,7 @@ import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
 import hotmath.gwt.shared.client.eventbus.EventBus;
 import hotmath.gwt.shared.client.eventbus.EventType;
+import hotmath.gwt.shared.client.model.UserInfoBase;
 import hotmath.gwt.shared.client.rpc.RetryAction;
 import hotmath.gwt.shared.client.rpc.action.GetStudentModelAction;
 import hotmath.gwt.shared.client.rpc.action.RunNetTestAction.TestApplication;
@@ -58,7 +59,10 @@ public class HelpWindow extends CmWindow {
         setModal(true);
         setResizable(false);
         addStyleName("help-window");
-        setHeading("Catchup-Math Help Window, version: " + CatchupMathVersionInfo.getBuildVersion() + "   user: " + UserInfo.getInstance().getUid());
+        setHeading("Catchup-Math Help Window, version: " +
+        		   CatchupMathVersionInfo.getBuildVersion() + 
+        		   "   user: " + UserInfo.getInstance().getUid() +
+        		   "   partner: " + (UserInfoBase.getInstance().getPartner()!=null?UserInfoBase.getInstance().getPartner():""));
 
         EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_MODAL_WINDOW_OPEN, this));
 

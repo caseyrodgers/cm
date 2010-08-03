@@ -5,10 +5,10 @@ import hotmath.gwt.cm_tools.client.ui.CmLogger;
 import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
 import hotmath.gwt.shared.client.CatchupMathVersionInfo;
 import hotmath.gwt.shared.client.CmShared;
+import hotmath.gwt.shared.client.model.UserInfoBase;
 import hotmath.gwt.shared.client.rpc.action.RunNetTestAction.TestApplication;
 import hotmath.gwt.shared.client.util.CmRunAsyncCallback;
 import hotmath.gwt.shared.client.util.NetTestWindow;
-import hotmath.gwt.shared.client.util.UserInfo;
 
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
@@ -26,7 +26,8 @@ public class HelpWindow extends CmWindow {
         setModal(true);
         setResizable(false);
         setStyleName("help-window");
-        setHeading("Catchup Math Administration Help Window, version: " + CatchupMathVersionInfo.getBuildVersion());
+        setHeading("Catchup Math Administration Help Window, version: " + CatchupMathVersionInfo.getBuildVersion() +
+        		   "   partner: " + (UserInfoBase.getInstance().getPartner()!=null?UserInfoBase.getInstance().getPartner():""));
         
         Frame frame = new Frame("/gwt-resources/cm-admin-help.html");
         frame.setSize("100%", "450px");
