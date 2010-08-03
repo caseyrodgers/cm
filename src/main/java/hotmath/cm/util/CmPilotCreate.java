@@ -4,6 +4,7 @@ import hotmath.gwt.cm_admin.server.model.CmAdminDao;
 import hotmath.gwt.cm_admin.server.model.CmStudentDao;
 import hotmath.gwt.cm_tools.client.model.StudentModel;
 import hotmath.gwt.cm_tools.client.model.StudentModelI;
+import hotmath.gwt.shared.client.model.CmPartner;
 import hotmath.subscriber.HotMathSubscriber;
 import hotmath.subscriber.HotMathSubscriberManager;
 import hotmath.subscriber.PurchasePlan;
@@ -53,8 +54,7 @@ public class CmPilotCreate {
     public CmPilotCreate() {
     }
 
-    public CmPilotCreate(String subscriberId, Boolean tutoringEnabled, Integer tutoringHours, Boolean showWorkRequired,
-            Integer maxStudentCount) throws Exception {
+    public CmPilotCreate(String subscriberId, Boolean tutoringEnabled, Integer tutoringHours, Boolean showWorkRequired,Integer maxStudentCount, CmPartner partner) throws Exception {
 
         HotMathSubscriber sub = HotMathSubscriberManager.findSubscriber(subscriberId);
 
@@ -99,11 +99,12 @@ public class CmPilotCreate {
                 /**
                  * add new HA_ADMIN account
                  */
-                String sql = "insert into HA_ADMIN(subscriber_id, passcode, user_name, create_date)values(?,?,?,now())";
+                String sql = "insert into HA_ADMIN(subscriber_id, passcode, user_name,partner_key, create_date)values(?,?,?,?,now())";
                 pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
                 pstmt.setString(1, subscriberId);
                 pstmt.setString(2, "admin123");
                 pstmt.setString(3, password); // use subs password as username
+                pstmt.setString(4, partner!=null?partner.key:null);
     
                 try {
                     pstmt.executeUpdate();
@@ -286,11 +287,11 @@ public class CmPilotCreate {
     
     static public Integer addPilotRequest(String title, String name, String school, String zip, String email,
             String phone, String userComments, String phoneWhen, String schoolPrefix) throws Exception {
-    	return addPilotRequest(title, name, school, zip, email, phone, userComments, phoneWhen, schoolPrefix, true);
+    	return addPilotRequest(title, name, school, zip, email, phone, userComments, phoneWhen, schoolPrefix, true,null);
     }
 
     static public Integer addPilotRequest(String title, String name, String school, String zip, String email,
-            String phone, String userComments, String phoneWhen, String schoolPrefix, boolean sendEmailConfirmation) throws Exception {
+            String phone, String userComments, String phoneWhen, String schoolPrefix, boolean sendEmailConfirmation,CmPartner partner) throws Exception {
 
         String sendTo[] = { "lincoln@hotmath.com", "sales@hotmath.com", "casey@hotmath.com" };
 
@@ -330,7 +331,7 @@ public class CmPilotCreate {
             /** setup the CM pilot in CM_ADMIN
              * 
              */
-            CmPilotCreate pilot = new CmPilotCreate(sub.getId(),false,0,false,1000);
+            CmPilotCreate pilot = new CmPilotCreate(sub.getId(),false,0,false,1000,partner);
             
             
             if(sendEmailConfirmation) {

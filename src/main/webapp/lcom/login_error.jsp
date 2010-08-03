@@ -119,7 +119,7 @@ pageTracker._trackPageview();
           <h1>Login Problem</h1>
           <p class='reason'><%= reason %></p>
  
-          <a href='#' onclick='alert("Waiting for instructions from LCOM");return false;'>
+          <a href='#' onclick='window.close();return false;'>
              <img src='/lcom/Return-to-SKY.png'/>   
           </a>
           <% if(showMoreInfo)  {
