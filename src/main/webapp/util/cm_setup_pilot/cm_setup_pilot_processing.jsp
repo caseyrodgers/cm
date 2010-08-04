@@ -17,7 +17,7 @@ if(te != null) {
     Boolean showWorkRequired = SbUtilities.getBoolean(request.getParameter("show_work_required"));
     Integer maxStudentCount = SbUtilities.getInt(request.getParameter("max_student_count"));
     
-    aid=new CmPilotCreate(_subscriberId,false, 0, showWorkRequired, maxStudentCount).getAid();
+    aid=new CmPilotCreate(_subscriberId,false, 0, showWorkRequired, maxStudentCount,null).getAid();
 }
 else {
     throw new Exception("Pilot configuration information was not found");
@@ -32,7 +32,7 @@ else {
 The Catchup Math pilot has been created successfully.
 </p>
 <p>
-<a target='_new' href='/cm_admin/CatchupMathAdmin.html?uid=<%= aid %>&debug=true'>Admin Page</a> 
+<a target='_new' href='/loginService?type=ADMIN&uid=<%= aid %>&debug=true'>Admin Page</a> 
 </p>
 </body>
 <script>
