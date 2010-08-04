@@ -242,10 +242,14 @@ public class QuizContext implements CmContext {
 
     public void doNext() {
         String msg = "Did you work out your answers carefully?";
+        EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_MODAL_WINDOW_OPEN));
         MessageBox.confirm("Ready to Check Quiz?", msg, new Listener<MessageBoxEvent>() {
             public void handleEvent(MessageBoxEvent be) {
                 if (be.getButtonClicked().getText().equals("Yes")) {
                     doCheckTest();
+                }
+                else {
+                	EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_MODAL_WINDOW_CLOSED));
                 }
             }
         });
