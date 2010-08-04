@@ -87,7 +87,6 @@ public class HeaderPanel extends LayoutContainer {
 		});		
 		add(btn);
 		
-		
 		_headerText = new Label();
 		_headerText.addStyleName("header-panel-title");
 		add(_headerText);
@@ -95,36 +94,41 @@ public class HeaderPanel extends LayoutContainer {
 		
 		EventBus.getInstance().addEventListener(new CmEventListenerImplDefault() {
 		    public void handleEvent(final CmEvent event) {
-		        if(event.getEventType() == EventType.EVENT_TYPE_USERCHANGED) {
-		            setLoginInfo();
-		        }
-		        else if(event.getEventType() == EventType.EVENT_TYPE_CONTEXTCHANGED) {
-		            CmContext context = (CmContext)event.getEventData();
-  		            HeaderPanel.__instance.setHeaderTitle();
-  		            if(CmMainPanel.__lastInstance != null) {
-  		                /** note we set a default heading, no matter what the test type */
-		                CmMainPanel.__lastInstance._westPanel.setHeading(context.getContextSubTitle());
-  		            }
-		        }
-		        else if(event.getEventType() == EventType.EVENT_TYPE_TOPIC_CHANGED) {
-		            	GWT.runAsync(new CmRunAsyncCallback() {
-							@Override
-							public void onSuccess() {
-			                    /** Only show modal popup if not in auto test mode 
-			                     * 
-			                     */
-			                    if(CmShared.getQueryParameter("debug") != null || UserInfo.getInstance().isAutoTestMode() || CmHistoryQueue.getInstance().isInitializingToNonStandard())
-			                        InfoPopupBox.display(new CmInfoConfig("Current Topic", "Current topic is: " + event.getEventData()));
-			                    else
-			                        new ContextChangeMessage((String)event.getEventData());
-							}
-						});
-		        }
+		    	switch(event.getEventType()) {
+			    	case EVENT_TYPE_USERCHANGED:
+			            setLoginInfo();
+			            break;
+			            
+			    	case EVENT_TYPE_CONTEXTCHANGED:
+			            CmContext context = (CmContext)event.getEventData();
+	  		            HeaderPanel.__instance.setHeaderTitle();
+	  		            if(CmMainPanel.__lastInstance != null) {
+	  		                /** note we set a default heading, no matter what the test type */
+			                CmMainPanel.__lastInstance._westPanel.setHeading(context.getContextSubTitle());
+	  		            }
+	  		            break;
+			    	case EVENT_TYPE_TOPIC_CHANGED:
+			            	GWT.runAsync(new CmRunAsyncCallback() {
+								@Override
+								public void onSuccess() {
+				                    /** Only show modal popup if not in auto test mode 
+				                     * 
+				                     */
+				                    if(CmShared.getQueryParameter("debug") != null || UserInfo.getInstance().isAutoTestMode() || CmHistoryQueue.getInstance().isInitializingToNonStandard())
+				                        InfoPopupBox.display(new CmInfoConfig("Current Topic", "Current topic is: " + event.getEventData()));
+				                    else
+				                        new ContextChangeMessage((String)event.getEventData());
+								}
+							});
+			    	break;
+			    	
+			    	case EVENT_TYPE_PARTNER_INIT:
+			    		CmPartner partner = (CmPartner)event.getEventData();
+			    		add(new Html("<div style='width: 150;margin: auto;text-align: center;' class='cm-partner-logo'><img src='" + partner.logoImage + "'/></div>"));
+			    		break;
+			    		
 		    }
-		});
-		
-		
-		
+		    }});
 	}
 	
 	

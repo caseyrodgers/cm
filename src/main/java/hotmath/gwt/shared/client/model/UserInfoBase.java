@@ -1,5 +1,9 @@
 package hotmath.gwt.shared.client.model;
 
+import hotmath.gwt.shared.client.eventbus.CmEvent;
+import hotmath.gwt.shared.client.eventbus.EventBus;
+import hotmath.gwt.shared.client.eventbus.EventType;
+
 import com.google.gwt.user.client.rpc.IsSerializable;
 
 /** Class to encapsulate basic user information
@@ -114,5 +118,7 @@ public class UserInfoBase implements IsSerializable {
 
 	public void setPartner(CmPartner partner) {
 		this.partner = partner;
+		
+		EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_PARTNER_INIT,partner));
 	}
 }

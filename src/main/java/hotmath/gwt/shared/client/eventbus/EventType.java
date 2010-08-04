@@ -135,6 +135,13 @@ public enum EventType{
     /** Fired when there are pending whiteboard changes
      * 
      */
-    EVENT_TYPE_WHITEBOARD_SAVE_PENDING
+    EVENT_TYPE_WHITEBOARD_SAVE_PENDING,
+    
+    
+    /** Fired when a cm partner is being integrated into GUI
+     *  Provides hooks to brand UI.
+     * 
+     */
+    EVENT_TYPE_PARTNER_INIT
     
 }
