@@ -204,14 +204,13 @@ h1, h2, h3, h4 {
         background: url(../images/logout-over.png) no-repeat center left !important;
 }
 
- ** setup partner images */
 .header-panel-logout-btn_cm-partner-lcom {
         background: url(/lcom/logo_close.png) no-repeat center left !important;
-        height: 34px;
+        height: 34px !important;
         position: absolute;
         right: 100px;
         top: 2px;
-        width: 92px;
+        width: 92px !important;
 }
 .header-panel-logout-btn_cm-partner-lcom-over {
         background: url(/lcom/logo_close-over.png) no-repeat center left !important;

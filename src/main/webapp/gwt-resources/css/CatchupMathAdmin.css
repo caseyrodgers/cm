@@ -13,17 +13,6 @@
 .header-panel-school-label {
         text-align: center;
 }
-.header-panel-logout-btn {
-        background: url(/gwt-resources/images/logout.png) no-repeat center left !important;
-        height: 34px;
-        position: absolute;
-        right: 100px;
-        top: 2px;
-        width: 92px;
-}
-.header-panel-logout-btn-over {
-        background: url(/gwt-resources/images/logout-over.png) no-repeat center left !important;
-}
 .header-panel-guide-btn {
         background: url(/gwt-resources/images/admin_getting_started.png) no-repeat center left !important;
         height: 32px;
