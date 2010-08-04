@@ -138,10 +138,10 @@ public enum EventType{
     EVENT_TYPE_WHITEBOARD_SAVE_PENDING,
     
     
-    /** Fired when a cm partner is being integrated into GUI
+    /** Fired after base login information is read
      *  Provides hooks to brand UI.
      * 
      */
-    EVENT_TYPE_PARTNER_INIT
+    EVENT_TYPE_USER_LOGIN
     
 }

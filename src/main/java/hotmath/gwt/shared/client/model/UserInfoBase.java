@@ -118,7 +118,5 @@ public class UserInfoBase implements IsSerializable {
 
 	public void setPartner(CmPartner partner) {
 		this.partner = partner;
-		
-		EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_PARTNER_INIT,partner));
 	}
 }

@@ -203,6 +203,20 @@ h1, h2, h3, h4 {
 .header-panel-logout-btn-over {
         background: url(../images/logout-over.png) no-repeat center left !important;
 }
+
+ ** setup partner images */
+.header-panel-logout-btn_cm-partner-lcom {
+        background: url(/lcom/logo_close.png) no-repeat center left !important;
+        height: 34px;
+        position: absolute;
+        right: 100px;
+        top: 2px;
+        width: 92px;
+}
+.header-panel-logout-btn_cm-partner-lcom-over {
+        background: url(/lcom/logo_close-over.png) no-repeat center left !important;
+}
+
 .header-panel-help-btn {
         background: url(../images/help.png) no-repeat center left !important;
         height: 34px;
@@ -1037,9 +1051,3 @@ img.resource-item-complete {
 	text-align: center;
 	color: #CCCCCC;
 }
-
-.cm-partner-logo {
-	width: 150;
-	margin: auto;
-	text-align: center;
-} 

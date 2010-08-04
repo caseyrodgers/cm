@@ -11,7 +11,6 @@ import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
 import hotmath.gwt.shared.client.eventbus.CmEventListenerImplDefault;
 import hotmath.gwt.shared.client.eventbus.EventBus;
-import hotmath.gwt.shared.client.eventbus.EventType;
 import hotmath.gwt.shared.client.model.CmPartner;
 import hotmath.gwt.shared.client.model.UserInfoBase;
 import hotmath.gwt.shared.client.util.CmInfoConfig;
@@ -67,26 +66,6 @@ public class HeaderPanel extends LayoutContainer {
 		});		
 		add(btn);
 		
-		btn = new IconButton("header-panel-logout-btn");
-		btn.addSelectionListener(new SelectionListener<IconButtonEvent>() {
-			public void componentSelected(IconButtonEvent ce) {
-				CmPartner partner = UserInfoBase.getInstance().getPartner();
-				if(partner != null) {
-					CmLogger.info("Doing custom thing: " + partner.onCloseLink);
-					try {
-						Window.Location.assign(partner.onCloseLink);
-					}
-					catch(Exception e) {
-					    CatchupMathTools.showAlert("Error returning to our partner page: " + e.getMessage());
-					}
-				}
-				else {
-					Window.Location.assign(CmShared.CM_HOME_URL);
-				}
-			};
-		});		
-		add(btn);
-		
 		_headerText = new Label();
 		_headerText.addStyleName("header-panel-title");
 		add(_headerText);
@@ -122,15 +101,49 @@ public class HeaderPanel extends LayoutContainer {
 							});
 			    	break;
 			    	
-			    	case EVENT_TYPE_PARTNER_INIT:
-			    		CmPartner partner = (CmPartner)event.getEventData();
-			    		add(new Html("<div style='width: 150;margin: auto;text-align: center;' class='cm-partner-logo'><img src='" + partner.logoImage + "'/></div>"));
+			    	case EVENT_TYPE_USER_LOGIN:
+			    		/** done after login to allow parter info to be set first */
+			    		addLogoutButton();
 			    		break;
 			    		
 		    }
 		    }});
 	}
 	
+	
+	/** TODO: how to share this between student and admin 
+	 * 
+	 */
+	private void addLogoutButton() {
+		final CmPartner partner = UserInfoBase.getInstance().getPartner();
+		String logoClass=null;
+		if(partner != null) {
+			logoClass = "header-panel-logout-btn_cm-partner-" + partner.key;
+		}
+		else {
+			logoClass = "header-panel-logout-btn";
+		}
+			
+		IconButton btn = new IconButton(logoClass);
+		btn.addSelectionListener(new SelectionListener<IconButtonEvent>() {
+			public void componentSelected(IconButtonEvent ce) {
+				
+				if(partner != null) {
+					CmLogger.info("Doing custom thing: " + partner.onCloseLink);
+					try {
+						Window.Location.assign(partner.onCloseLink);
+					}
+					catch(Exception e) {
+					    CatchupMathTools.showAlert("Error returning to our partner page: " + e.getMessage());
+					}
+				}
+				else {
+					Window.Location.assign(CmShared.CM_HOME_URL);
+				}
+			};
+		});		
+		add(btn);
+	}
 	
 	public void setLoginInfo() {
         UserInfo user = UserInfo.getInstance();

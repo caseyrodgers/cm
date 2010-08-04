@@ -49,29 +49,6 @@ public class HeaderPanel extends LayoutContainer {
 		});		
 		add(btn);
 		
-		btn = new IconButton("header-panel-logout-btn");
-	    btn.addSelectionListener(new SelectionListener<IconButtonEvent>() {
-			public void componentSelected(IconButtonEvent ce) {
-				/** todo: find how to share this between student and admin
-				 * 
-				 */
-				CmPartner partner = UserInfoBase.getInstance().getPartner();
-				if(partner != null) {
-					CmLogger.info("Doing custom admin thing: " + partner.onCloseLink);
-					try {
-						Window.Location.assign(partner.onCloseLink);
-					}
-					catch(Exception e) {
-					    CatchupMathTools.showAlert("Error returning to our partner page: " + e.getMessage());
-					}
-				}
-				else {
-					Window.Location.assign(CmShared.CM_HOME_URL);
-				}
-			};
-		});		
-		add(btn);
-		
 		schoolLabel = new Html();
 		//schoolLabel.setStyleName("header-panel-school-label");
 		//setSchoolInfo();
@@ -96,13 +73,44 @@ public class HeaderPanel extends LayoutContainer {
 			@Override
 			public void handleEvent(CmEvent event) {
 				switch(event.getEventType()) {
-		    	case EVENT_TYPE_PARTNER_INIT:
-		    		CmPartner partner = (CmPartner)event.getEventData();
-		    		add(new Html("<div class='cm-partner-logo'><img src='" + partner.logoImage + "'/></div>"));
+		    	case EVENT_TYPE_USER_LOGIN:
+		    		addLogoutButton();
 		    		break;
 				}
 			}
 		});
+	}
+
+	private void addLogoutButton() {
+		final CmPartner partner = UserInfoBase.getInstance().getPartner();
+		String logoClass=null;
+		if(partner != null) {
+			logoClass = "header-panel-logout-btn_cm-partner-" + partner.key;
+		}
+		else {
+			logoClass = "header-panel-logout-btn";
+		}
+			
+		IconButton btn = new IconButton(logoClass);
+		btn.addSelectionListener(new SelectionListener<IconButtonEvent>() {
+			public void componentSelected(IconButtonEvent ce) {
+				
+				if(partner != null) {
+					CmLogger.info("Doing custom thing: " + partner.onCloseLink);
+					try {
+						Window.Location.assign(partner.onCloseLink);
+					}
+					catch(Exception e) {
+					    CatchupMathTools.showAlert("Error returning to our partner page: " + e.getMessage());
+					}
+				}
+				else {
+					Window.Location.assign(CmShared.CM_HOME_URL);
+				}
+			};
+		});		
+		add(btn);
+		layout();
 	}
 
 	/**
