@@ -1037,3 +1037,9 @@ img.resource-item-complete {
 	text-align: center;
 	color: #CCCCCC;
 }
+
+.cm-partner-logo {
+	width: 150;
+	margin: auto;
+	text-align: center;
+} 

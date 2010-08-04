@@ -4,6 +4,9 @@ import hotmath.gwt.cm_admin.client.CatchupMathAdmin;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.ui.CmLogger;
 import hotmath.gwt.shared.client.CmShared;
+import hotmath.gwt.shared.client.eventbus.CmEvent;
+import hotmath.gwt.shared.client.eventbus.CmEventListener;
+import hotmath.gwt.shared.client.eventbus.EventBus;
 import hotmath.gwt.shared.client.model.CmPartner;
 import hotmath.gwt.shared.client.model.UserInfoBase;
 import hotmath.gwt.shared.client.util.UserInfo;
@@ -86,6 +89,20 @@ public class HeaderPanel extends LayoutContainer {
             }
         });
         add(guide);
+        
+        
+        EventBus.getInstance().addEventListener(new CmEventListener() {
+			
+			@Override
+			public void handleEvent(CmEvent event) {
+				switch(event.getEventType()) {
+		    	case EVENT_TYPE_PARTNER_INIT:
+		    		CmPartner partner = (CmPartner)event.getEventData();
+		    		add(new Html("<div class='cm-partner-logo'><img src='" + partner.logoImage + "'/></div>"));
+		    		break;
+				}
+			}
+		});
 	}
 
 	/**
