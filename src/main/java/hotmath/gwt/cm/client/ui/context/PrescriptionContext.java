@@ -109,8 +109,6 @@ public class PrescriptionContext implements CmContext {
 
     public void gotoNextTopic() {
 
-        CmMainPanel.__lastInstance._mainContent.removeAll();
-
         /** 
          *  deal with anomaly of no missed questions .. move to the next quiz/section
          */
