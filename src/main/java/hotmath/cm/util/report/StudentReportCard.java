@@ -138,7 +138,8 @@ public class StudentReportCard {
         	}
 
         	if (rc.getPrescribedLessonList().size() > 0) {
-        		addPrescribedLessons(rc, document);
+        		sm.getProgram().isCustomProgram();
+        		addPrescribedLessons(rc, sm.getProgram().isCustomProgram(), document);
         	}
 
         	document.add(Chunk.NEWLINE);
@@ -198,11 +199,12 @@ public class StudentReportCard {
     	return reportName;
     }
 
-    private void addPrescribedLessons(StudentReportCardModelI rc, Document document) throws DocumentException {
+    private void addPrescribedLessons(StudentReportCardModelI rc, boolean isCustomProgram, Document document) throws DocumentException {
         PdfPTable lessonTbl = new PdfPTable(1);
         lessonTbl.getDefaultCell().setBorder(PdfPCell.NO_BORDER);
 
-        Phrase lesson = buildSectionLabel("Prescribed Lessons (based on wrong quiz answers)");
+        String text = (isCustomProgram) ? "Prescribed Lessons" : "Prescribed Lessons (based on wrong quiz answers)";
+        Phrase lesson = buildSectionLabel(text);
         lessonTbl.addCell(lesson);
 
         StringBuilder sb = new StringBuilder();
