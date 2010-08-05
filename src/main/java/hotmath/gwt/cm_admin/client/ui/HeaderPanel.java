@@ -96,7 +96,6 @@ public class HeaderPanel extends LayoutContainer {
 			public void componentSelected(IconButtonEvent ce) {
 				
 				if(partner != null) {
-					CmLogger.info("Doing custom thing: " + partner.onCloseLink);
 					try {
 						Window.Location.assign(partner.onCloseLink);
 					}

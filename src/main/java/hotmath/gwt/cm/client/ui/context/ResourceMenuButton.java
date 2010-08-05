@@ -317,28 +317,27 @@ class ResourceMenuButton extends Button {
     	
     }
     private void resourceWasClicked(InmhItemData id) {
-        /** Remove any existing resource viewers 
-         * 
-         * @TODO: This needs to be centralized  (throw a CLOSE event?)
-         */
-        Integer ordinalPosition=-1;
-        int cnt=0;
-        for(int i=0,t=resource.getSubMenuItems().size();i<t;i++) {
-        	SubMenuItem si = resource.getSubMenuItems().get(i);
-        	for(InmhItemData sid: si.getItemData()) {
-        		if(sid.getFile().equals(id.getFile())) {
-        			ordinalPosition=cnt;
-        			break;
-        		}
-        		cnt++;
-            }
-        	if(ordinalPosition > -1)
-        		break;
+    	Integer pos=0;
+    	for(InmhItemData idI: resouresToRegister) {
+    		if(idI.getFile().equals(id.getFile())) {
+		        if(isResourceAvailable(resource)) {
+		            CmHistoryManager.loadResourceIntoHistory(resource.getType(),pos.toString());
+		            return;
+		        }
+    		}
+    		pos++;
+    	}
+    }
+    
+    private int getOrdinalPos(String name, List<InmhItemData> data) {
+    	int cnt=0;
+    	for(InmhItemData sid: data) {
+    		if(sid.getFile().equals(name)) {
+    			return cnt;
+    		}
+    		cnt++;
         }
-        
-        if(isResourceAvailable(resource)) {
-            CmHistoryManager.loadResourceIntoHistory(resource.getType(),ordinalPosition.toString());
-        }
+    	return -1;
     }
 
     /** implement limits on resources.

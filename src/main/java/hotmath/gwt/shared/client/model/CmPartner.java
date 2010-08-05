@@ -10,17 +10,18 @@ package hotmath.gwt.shared.client.model;
  */
 public enum CmPartner {
 	
-	LCOM("lcom","Learning.Com", "/lcom/logo.png", "javascript:window.close();");
+	LCOM("lcom","Learning.Com", "/lcom/logout_admin.png","/lcom/logout_student.png","javascript:window.close();");
 	
 	public String key;
 	public String name;
-	public String logoImage;
+	public String logoutImageAdmin,logoutImageStudent;
 	public String onCloseLink;
 
-	CmPartner(String key, String name, String logoImage,String onCloseLink) {
+	CmPartner(String key, String name, String logoutImageAdmin, String logoutImageStudent, String onCloseLink) {
 		this.key = key;
 		this.name = name;
-		this.logoImage = logoImage;
+		this.logoutImageAdmin = logoutImageAdmin;
+		this.logoutImageStudent = logoutImageStudent;
 		this.onCloseLink = onCloseLink;
 	}
 }
