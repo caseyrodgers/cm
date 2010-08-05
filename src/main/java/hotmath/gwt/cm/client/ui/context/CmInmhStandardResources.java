@@ -87,20 +87,17 @@ public class CmInmhStandardResources extends ArrayList<PrescriptionSessionDataRe
         si.getItemData().add(new InmhItemData(t,"/learning_activities/interactivities/prime_factorization.swf", "Prime Factorization"));
         subMenu.add(si);
         
-        resourceType.setSubMenuItems(subMenu);
+        List<SubMenuItem> subMenu2 = new ArrayList<SubMenuItem>();
+        SubMenuItem subMainEnglish = new SubMenuItem("English");
+        SubMenuItem subMainSpanish = new SubMenuItem("Spanish");
+        subMenu2.add(subMainEnglish);
+        subMenu2.add(subMainSpanish);
         
-        add(resourceType);
+        subMainEnglish.setChildren(subMenu);
         
         /** Add the Standard Spanish Flash Cards
          * 
          */
-        t = "flashcard_spanish";
-        resourceType = new PrescriptionSessionDataResource();
-        resourceType.setType(t);
-        resourceType.setLabel("Tarjetas Flash en Espa&ntilde;ol");
-        resourceType.setDescription("Spanish Flash Card and Skill Builder resources that might help you");
-
-        
         subMenu = new ArrayList<SubMenuItem>();
         si = new SubMenuItem("Fracciones");
         
@@ -125,12 +122,10 @@ public class CmInmhStandardResources extends ArrayList<PrescriptionSessionDataRe
         si.getItemData().add(new InmhItemData(t,"/learning_activities/interactivities/flashcard_multi.swf?lang=es", "Hechos de la Multiplicaci&oacute;n"));
         subMenu.add(si);
         
-        si = new SubMenuItem(null);
-        si.getItemData().add(new InmhItemData(t,"/learning_activities/interactivities/prime_factorization.swf?lang=es", "Factorizaci&oacute;n prima"));
-        subMenu.add(si);
+        subMainSpanish.setChildren(subMenu);
         
-        resourceType.setSubMenuItems(subMenu);
-        
+        resourceType.setSubMenuItems(subMenu2);
+
         add(resourceType);
     }
 }

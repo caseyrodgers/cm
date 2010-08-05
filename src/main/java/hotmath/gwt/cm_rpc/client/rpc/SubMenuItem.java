@@ -5,6 +5,7 @@ import java.util.List;
 
 public class SubMenuItem {
 	List<InmhItemData> itemData = new ArrayList<InmhItemData>();
+	List<SubMenuItem> children = new ArrayList<SubMenuItem>();
 	String title;
 	
 	public SubMenuItem(String title) {
@@ -26,4 +27,13 @@ public class SubMenuItem {
 	public void setTitle(String title) {
 		this.title = title;
 	}
+
+	public List<SubMenuItem> getChildren() {
+		return children;
+	}
+
+	public void setChildren(List<SubMenuItem> children) {
+		this.children = children;
+	}
+	
 }

@@ -260,26 +260,62 @@ class ResourceMenuButton extends Button {
             else {
                 MenuItem subMi = new MenuItem(sid.getTitle());
                 menu.add(subMi);
-                
-            	/** add submenu */
-	            Menu subMenu = new Menu();
-	            subMi.setSubMenu(subMenu);
-	            for(final InmhItemData id: sid.getItemData()) {
-	            	resouresToRegister.add(id);
-	            	final MenuItem citem = new MenuItem(id.getTitle());
-	            	citem.addSelectionListener(new SelectionListener<MenuEvent>() {
-	                    public void componentSelected(MenuEvent ce) {
-	                    	resourceWasClicked(id);
-	                    }
-	                });
-	            	subMenu.add(citem);
-	            }
+
+            	if(sid.getChildren().size() > 0) {
+            		subMi.setSubMenu(buildSubMenu(sid));
+            	}
+            	else {
+            		subMi.setSubMenu(buildMenu(sid.getItemData()));
+            	}
             }
         }
         return menu;
     }     
+
+    private Menu buildSubMenu(SubMenuItem sid) {
+    	Menu menu = new Menu();
+    	for(SubMenuItem smi: sid.getChildren()) {
+    		
+    		if(smi.getTitle() == null) {  
+            	/** single item, no submenu */
+            	final InmhItemData id = smi.getItemData().get(0);
+            	resouresToRegister.add(id);
+            	final MenuItem citem = new MenuItem(smi.getItemData().get(0).getTitle());
+            	citem.addSelectionListener(new SelectionListener<MenuEvent>() {
+                    public void componentSelected(MenuEvent ce) {
+                    	resourceWasClicked(id);
+                    }
+                });
+            	menu.add(citem);
+    		}
+    		else {
+	        	MenuItem item = new MenuItem(smi.getTitle());
+	        	//menu.add(item);
+	        	item.setSubMenu(buildMenu(smi.getItemData()));
+	        	
+	        	menu.add(item);
+    		}
+    	}
+    	return menu;
+    }
     
-    
+
+    private Menu buildMenu(List<InmhItemData> list) {
+    	/** add submenu */
+        Menu subMenu = new Menu();
+        for(final InmhItemData id: list) {
+        	resouresToRegister.add(id);
+        	final MenuItem citem = new MenuItem(id.getTitle());
+        	citem.addSelectionListener(new SelectionListener<MenuEvent>() {
+                public void componentSelected(MenuEvent ce) {
+                	resourceWasClicked(id);
+                }
+            });
+        	subMenu.add(citem);
+        }
+        return subMenu;
+    	
+    }
     private void resourceWasClicked(InmhItemData id) {
         /** Remove any existing resource viewers 
          * 
