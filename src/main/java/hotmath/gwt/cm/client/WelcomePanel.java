@@ -1,9 +1,7 @@
 package hotmath.gwt.cm.client;
 
 import hotmath.gwt.cm_tools.client.CmBusyManager;
-import hotmath.gwt.cm_tools.client.util.GenericVideoPlayerForMona;
 import hotmath.gwt.shared.client.CmShared;
-import hotmath.gwt.shared.client.util.CmRunAsyncCallback;
 import hotmath.gwt.shared.client.util.UserInfo;
 
 import com.extjs.gxt.ui.client.Style.LayoutRegion;
@@ -38,10 +36,10 @@ public class WelcomePanel extends LayoutContainer {
             main.setSize(370,180);
             main.add(new SampleSessionInfo(), new BorderLayoutData(LayoutRegion.CENTER));
         } else if (CmShared.getQueryParameterValue("type").equals("2") || UserInfo.getInstance().getViewCount() == 0) {
-            main.setSize(330, 180);
+            main.setSize(330, 190);
             main.add(new StandardInfo(), new BorderLayoutData(LayoutRegion.CENTER));
         } else {
-            main.setSize(350, 180);
+            main.setSize(350, 190);
             main.add(new StandardInfo(), new BorderLayoutData(LayoutRegion.CENTER, 200));
         }
 
@@ -105,7 +103,7 @@ public class WelcomePanel extends LayoutContainer {
         public StandardInfo() {
             String html = "<p>You will start this session with a quiz.</p>"
                         + "<p>Please work out your answers carefully using our whiteboard or pencil and paper.</p>"
-                        + "<p><a style='text-decoration: underline;margin: 0;' href='#' onclick='showMotivationalVideo_Gwt();return false;'>Watch motivational video</a></p>";
+                        + "<a style='display: block;margin-left: 10px;text-decoration: underline;' href='#' onclick='showMotivationalVideo_Gwt();return false;'>Watch motivational video</a>";
             
             setHtml(html);
         }
