@@ -1465,6 +1465,14 @@ where u.admin_id = ?
 and cp.id = ?
 
 
+.key=CUSTOM_PROGRAM_LESSONS_FOR_TEST_ID
+
+select cpl.*
+from   HA_CUSTOM_PROGRAM_LESSON cpl, HA_TEST t, CM_USER_PROGRAM up
+where  t.test_id = ?
+  and  up.id = t.user_prog_id
+  and  cpl.program_id = up.custom_program_id
+order by cpl.lesson
 
 
 #################
