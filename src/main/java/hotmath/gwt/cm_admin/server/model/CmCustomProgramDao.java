@@ -10,6 +10,8 @@ import hotmath.gwt.shared.client.model.CustomProgramInfoModel;
 import hotmath.gwt.shared.client.util.CmException;
 import hotmath.util.sql.SqlUtilities;
 
+import org.apache.log4j.Logger;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -19,9 +21,11 @@ import java.util.HashMap;
 import java.util.List;
 
 public class CmCustomProgramDao {
-    
+
+	private static final Logger LOGGER = Logger.getLogger(CmCustomProgramDao.class);
+
     public CmCustomProgramDao(){}
-    
+
     /** Return list of lessons that can be used to create a custom program
      * 
      * NOTE: HA_PROGRAM_LESSONS is created in CmDebugReport while creating the HA_PRESCRIPTION_LOG
@@ -44,7 +48,7 @@ public class CmCustomProgramDao {
                 }
                 lessons.add(clm);
             }
-            
+
             /** Create list of distinct lessons and the highest subject
              *  
              */
@@ -53,7 +57,7 @@ public class CmCustomProgramDao {
                 List<CustomLessonModel> ls = map.get(lesson);
                 CustomLessonModel use = null;
                 for(CustomLessonModel clm: ls) {
-                    
+
                     /** use the lowest level */
                     if(use == null || getSubjectLevel(clm.getSubject()) < getSubjectLevel(use.getSubject())) {
                         use = clm;
@@ -68,7 +72,7 @@ public class CmCustomProgramDao {
         }
     }
 
-    
+
     /** Return list of custom programs defined by this admin 
      * 
      * @param conn
@@ -172,6 +176,37 @@ public class CmCustomProgramDao {
         }
         finally {
             SqlUtilities.releaseResources(null,stmt, null);
+        }
+    }
+
+    /** return list of custom program lessons for supplied testId 
+     * 
+     * @param conn
+     * @param testId
+     * @return
+     * @throws Exception
+     */
+    public CmList<CustomLessonModel> getCustomProgramLessonsForTestId(final Connection conn, Integer testId) throws Exception {
+        PreparedStatement stmt=null;
+        ResultSet rs = null;
+        try {
+            CmList<CustomLessonModel> lessons = new CmArrayList<CustomLessonModel>();
+            String sql = CmMultiLinePropertyReader.getInstance().getProperty("CUSTOM_PROGRAM_LESSONS_FOR_TEST_ID");
+            stmt = conn.prepareStatement(sql);
+            stmt.setInt(1, testId);
+
+            rs = stmt.executeQuery();
+            while(rs.next()) {
+                lessons.add(new CustomLessonModel(rs.getString("lesson"),rs.getString("file"), rs.getString("subject")));
+            }
+            if (LOGGER.isDebugEnabled()) {
+            	LOGGER.debug(String.format("+++ getCustomProgramLessonsForTestId(): testId: %d, lessons.size(): %d",
+            			testId, lessons.size()));
+            }
+            return lessons;
+        }
+        finally {
+            SqlUtilities.releaseResources(rs, stmt, null);
         }
     }
 
