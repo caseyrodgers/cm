@@ -9,6 +9,7 @@ import hotmath.gwt.cm_tools.client.model.StudentModelExt;
 import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.rpc.action.GetLessonItemsForTestRunAction;
+import hotmath.gwt.shared.client.rpc.action.GetLessonItemsForCustomProgramTestAction;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,20 +39,25 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 public class StudentLessonTopicsStatusWindow extends CmWindow {
 
     private Integer runId;
+    private Integer testId;
     private String programName;
     private Grid<LessonItemModel> limGrid;
     private int width = 400;
     private int height = 300;
+    private boolean isCustomProgram;
 
     public StudentLessonTopicsStatusWindow(StudentModelExt student, final StudentActivityModel activityModel) {
 
         setStyleName("student-lesson-topic-status-window");
         runId = activityModel.getRunId();
+        testId = activityModel.getTestId();
+
         setSize(width, height);
         setResizable(false);
         super.setModal(true);
 
         programName = activityModel.getProgramDescr();
+        isCustomProgram = programName.trim().startsWith("CP:");
 
         setLayout(new BorderLayout());
         StringBuffer sb = new StringBuffer();
@@ -164,23 +170,45 @@ public class StudentLessonTopicsStatusWindow extends CmWindow {
         CatchupMathTools.setBusy(true);
         
         CmServiceAsync s = CmShared.getCmService();
-        s.execute(new   GetLessonItemsForTestRunAction(runId), new AsyncCallback<CmList<LessonItemModel>>() {
+        
+        if (! isCustomProgram) {
+        	s.execute(new   GetLessonItemsForTestRunAction(runId), new AsyncCallback<CmList<LessonItemModel>>() {
 
-            @Override
-            public void onSuccess(CmList<LessonItemModel> list) {
-                store.add(list);
-                setVisible(true);
-                CatchupMathTools.setBusy(false);
-            }
+        		@Override
+        		public void onSuccess(CmList<LessonItemModel> list) {
+        			store.add(list);
+        			setVisible(true);
+        			CatchupMathTools.setBusy(false);
+        		}
 
-            public void onFailure(Throwable caught) {
-                CatchupMathTools.setBusy(false);
-                caught.toString();
-                String msg = caught.getMessage();
-                CatchupMathTools.showAlert(msg);
-                
-            }
-        });
+        		public void onFailure(Throwable caught) {
+        			CatchupMathTools.setBusy(false);
+        			caught.toString();
+        			String msg = caught.getMessage();
+        			CatchupMathTools.showAlert(msg);
+
+        		}
+        	});
+        }
+        else {
+        	s.execute(new GetLessonItemsForCustomProgramTestAction(testId), new AsyncCallback<CmList<LessonItemModel>>() {
+
+        		@Override
+        		public void onSuccess(CmList<LessonItemModel> list) {
+        			store.add(list);
+        			setVisible(true);
+        			CatchupMathTools.setBusy(false);
+        		}
+
+        		public void onFailure(Throwable caught) {
+        			CatchupMathTools.setBusy(false);
+        			caught.toString();
+        			String msg = caught.getMessage();
+        			CatchupMathTools.showAlert(msg);
+
+        		}
+        	});        	
+        }
     }
 
 }
