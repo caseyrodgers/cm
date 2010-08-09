@@ -1,4 +1,3 @@
-Advertisements                      
 BOOKINFO                            
 BOOKINFO_CATEGORIES                 
 BOOK_TOC                            
@@ -63,17 +62,6 @@ MESSAGES
 PROBLEMS                            
 PROMOTION_SIGNUP                    
 RESOLUTIONS                         
-RT_SECURITY_RESTRICTION             
-RT_SESSION                          
-RT_SESSION_KEYS                     
-RT_SESSION_MESSAGES                 
-RT_SESSION_RESOURCE                 
-RT_SESSION_USERS                    
-RT_SESSION_WHITEBOARD               
-RT_TUTOR                            
-RT_TUTOR_CONTROL                    
-RT_TUTOR_INTEREST_LOG               
-RT_TUTOR_REQUEST                    
 SCHOOL_SETUP                        
 SMARTHINKING_SIGNUP                 
 SOLUTIONCOMMENTS_USER               
@@ -88,8 +76,6 @@ STATS_CATCHUP
 STATS_INFO                          
 STATS_SEARCH                        
 STATS_SOLUTIONS                     
-STATS_SOLUTIONS_NOUSER              
-STATS_SOLUTIONS_new                 
 STATS_VIDEOS                        
 SUBJECT                             
 SUBSCRIBERS                         
@@ -107,9 +93,6 @@ TW_TOC
 TW_VIDEOS                           
 TW_VIDEOS_ONLINE                    
 VIEWCOUNTS                          
-app_user                            
-bookinfonew                         
-camt_email                          
 cm_program_lessons_Static           
 config_properties                   
 cp_cleanup                          
@@ -120,13 +103,6 @@ geo_location_info
 geo_location_ip_range               
 geoloc_ipaddr_subscriber_restrict   
 ha_custom_program_lesson            
-htc_email_fix                       
-htc_entered_emails                  
-htc_entered_emails_old              
-htc_message                         
-htc_school                          
-htc_send_email_results              
-htc_teacher                         
 inmh_assessment                     
 inmh_check                          
 inmh_link                           
@@ -138,10 +114,6 @@ innodb_lock_monitor
 linked_account_usage                
 loadorder                           
 loadorders                          
-mailing_georgia                     
-mailing_miss                        
-mailing_tenn                        
-mailing_texas                       
 role                                
 signup_today                        
 solution_problemindex_stats         
