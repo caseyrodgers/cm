@@ -1,5 +1,5 @@
 mvn install:install-file -DgroupId=hotmath -DartifactId=hotmath -Dversion=2.0 -Dpackaging=jar -Dfile=hotmath2.jar -DgeneratePom=true
-mvn install:install-file -DgroupId=com.extjs.gxt -DartifactId=gxt -Dversion=2.1.3 -Dpackaging=jar -Dfile=gxt-2.1.3.jar -DgeneratePom=true
+mvn install:install-file -DgroupId=com.extjs.gxt -DartifactId=gxt -Dversion=2.2 -Dpackaging=jar -Dfile=gxt-2.2.jar -DgeneratePom=true
 mvn install:install-file -DgroupId=sb -DartifactId=sblib -Dversion=2.0 -Dpackaging=jar -Dfile=sblib.jar -DgeneratePom=true
 mvn install:install-file -DgroupId=smartsprites -DartifactId=smartsprites-with-depends -Dversion=0.3.0 -Dpackaging=jar -Dfile=smartsprites-with-depends.jar -DgeneratePom=true
 mvn install:install-file -DgroupId=com.yahoo.platform.yui -DartifactId=yuicompressor -Dversion=2.3.6 -Dpackaging=jar -Dfile=yuicompressor-2.4.2.jar -DgeneratePom=true

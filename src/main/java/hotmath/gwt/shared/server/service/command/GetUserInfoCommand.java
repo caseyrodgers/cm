@@ -58,8 +58,11 @@ public class GetUserInfoCommand implements ActionHandler<GetUserInfoAction, User
             String testTitle = testDef.getName();
             String subTitle=null;
             if(chapterInfo != null) {
-                testTitle += ", #" + chapterInfo.getChapterNumber();
-                subTitle = chapterInfo.getChapterTitle();
+            	/** do not add subtitle if chap program 
+            	 * 
+            	 */
+                //testTitle += ", #" + chapterInfo.getChapterNumber();
+                //subTitle = chapterInfo.getChapterTitle();
             }
             
             

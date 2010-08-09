@@ -13,8 +13,8 @@
 %>
 <html>
   <head>
-  <link rel="stylesheet" type="text/css" href="/gwt-resources/gxt-2.1.3/css/gxt-all.css" />
-  <link class="gray" rel="stylesheet" type="text/css" href="/gwt-resources/gxt-2.1.3/css/gxt-gray.css" />
+  <link rel="stylesheet" type="text/css" href="/gwt-resources/gxt-2.2/css/gxt-all.css" />
+  <link class="gray" rel="stylesheet" type="text/css" href="/gwt-resources/gxt-2.2/css/gxt-gray.css" />
   <link rel="stylesheet" type="text/css" href="/gwt-resources/css/CatchupMath.min.css" />
   <meta http-equiv="content-type" content="text/html; charset=UTF-8">
   <title>Catchup Math</title>
@@ -22,7 +22,7 @@
   <body>
     <div id="loading">
         <div class="loading-indicator">
-        <img src="/gwt-resources/gxt-2.1.3/images/default/shared/large-loading.gif" width="32" height="32"/>Catchup Math<br />
+        <img src="/gwt-resources/gxt-2.2/images/default/shared/large-loading.gif" width="32" height="32"/>Catchup Math<br />
         <span id="loading-msg">loading...</span>
         </div>
     </div>  

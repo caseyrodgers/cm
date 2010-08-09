@@ -10,8 +10,10 @@ import hotmath.gwt.shared.client.eventbus.EventBus;
 import hotmath.gwt.shared.client.eventbus.EventType;
 import hotmath.gwt.shared.client.util.UserInfo;
 
+import com.extjs.gxt.ui.client.Style.Direction;
 import com.extjs.gxt.ui.client.Style.Scroll;
 import com.extjs.gxt.ui.client.core.El;
+import com.extjs.gxt.ui.client.fx.FxConfig;
 import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.Container;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
@@ -124,9 +126,11 @@ public class CmMainResourceContainer extends LayoutContainer {
             currentContainer = new CmResourcePanelContainer(this,viewer);
             currentContainer.setHeading(title);
             add(currentContainer);
+            
         }
         
         layout();
+        currentContainer.el().slideIn(Direction.DOWN, FxConfig.NONE);
         
         currentPanel = viewer;
         currentTitle = title;
