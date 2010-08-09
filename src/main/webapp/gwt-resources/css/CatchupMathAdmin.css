@@ -11,6 +11,11 @@
         top: 15px;
 }
 
+.header-panel-logout-btn {
+        height: 34px;
+        width: 92px;
+}
+
 .header-panel-logout-btn_cm-partner-lcom {
         background: url(/lcom/logo_admin_close.png) no-repeat center left !important;
 }
