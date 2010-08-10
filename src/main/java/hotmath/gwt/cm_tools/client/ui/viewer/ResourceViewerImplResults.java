@@ -40,7 +40,7 @@ public class ResourceViewerImplResults extends CmResourcePanelImplWithWhiteboard
 
     @Override
     public void whiteboardIsReady() {
-        ShowWorkPanel.setWhiteboardIsReadonly();
+        // ShowWorkPanel.setWhiteboardIsReadonly();
     }
 
     /**
