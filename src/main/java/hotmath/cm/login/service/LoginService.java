@@ -219,19 +219,19 @@ public class LoginService extends HttpServlet {
 	    	String type = req.getParameter("lcomtype");
 	    	String urlToRedirectTo=null;
 	    	if(type.equals("student")) {
-		    	String firstLast = URLDecoder.decode(req.getParameter("sp1"));
+		    	String firstLast = URLDecoder.decode(req.getParameter("sp1"),"UTF-8");
 		    	String userId = req.getParameter("sp2");
 		    	String courseId = req.getParameter("sp3"); 
 		    	String teacherId = req.getParameter("sp4");
 		    	urlToRedirectTo = LcomManager.loginStudent(new LcomStudentSignup(firstLast, userId, courseId, teacherId,0));
 	    	}
 	    	else if(type.equals("teacher")) {
-		    	String firstLast = URLDecoder.decode(req.getParameter("tp1"));
+		    	String firstLast = URLDecoder.decode(req.getParameter("tp1"),"UTF-8");
 		    	String teacherId = req.getParameter("tp2");
 		    	String email = req.getParameter("tp3"); // null for now
-		    	String district = req.getParameter("tp4");
+		    	String district = URLDecoder.decode(req.getParameter("tp4"),"UTF-8");
 		    	String zip = req.getParameter("tp5"); // null for now
-		    	String courseName = req.getParameter("tp6");
+		    	String courseName = URLDecoder.decode(req.getParameter("tp6"), "UTF-8");
 		    	String courseId = req.getParameter("tp7");
 		    	urlToRedirectTo = LcomManager.loginTeacher(new LcomTeacherSignup(firstLast, teacherId, email, district, zip, courseName, courseId));
 	    	}
