@@ -99,7 +99,6 @@ public class CmMainPanel extends LayoutContainer {
 		if (w != null) {
 			_mainContent.add(w);
 		}
-
 	}
 
 	public void expandResourceButtons() {

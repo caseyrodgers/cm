@@ -40,6 +40,7 @@ import com.extjs.gxt.ui.client.Style.LayoutRegion;
 import com.extjs.gxt.ui.client.Style.Scroll;
 import com.extjs.gxt.ui.client.fx.FxConfig;
 import com.extjs.gxt.ui.client.widget.Html;
+import com.extjs.gxt.ui.client.widget.Label;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.VerticalPanel;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
@@ -458,25 +459,27 @@ class PrescriptionResourcePanel extends LayoutContainer {
                 
             vp.add(btn);
         }
-
+        add(vp);
         /**
          * Add the standard resources
          * 
          */
+        VerticalPanel fs = new VerticalPanel();
+        // <div style='margin-left: -7px;margin-top: 10px;font-size: .8em;color: white;'>Other Resources</div>
+        fs.add(new Html("<hr style='margin-top:15px;'/>"));
         for (PrescriptionSessionDataResource type : new CmInmhStandardResources()) {
-            registeredResources.add(type);
-            ResourceMenuButton btn = new ResourceMenuButton(type);
-            vp.add(btn);
-            resourceButtons.put(type.getType(), btn);
+    		registeredResources.add(type);
+    		ResourceMenuButton btn = new ResourceMenuButton(type);
+    		fs.add(btn);
+    		resourceButtons.put(type.getType(), btn);
         }
-
-        add(vp);
-        
+        add(fs);
         
         int currentSession = UserInfo.getInstance().getSessionNumber();
         int  totalSessions = UserInfo.getInstance().getSessionCount();
         String  statusMsg = "Lesson " + (currentSession+1) + " of " + totalSessions;
         add(new StatusImagePanel(totalSessions, currentSession+1,"Lesson Status", statusMsg));
+        
         layout();
     }
 

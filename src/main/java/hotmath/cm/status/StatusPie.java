@@ -5,6 +5,7 @@ import hotmath.assessment.AssessmentPrescriptionSession;
 import hotmath.testset.ha.HaTest;
 
 import java.awt.Color;
+import java.awt.geom.Rectangle2D;
 import java.io.File;
 import java.text.AttributedString;
 import java.util.List;
@@ -112,6 +113,7 @@ public class StatusPie {
             PiePlot plot = new PiePlot();
             plot.setShadowPaint(new Color(67, 70, 75));
             
+            
             plot.setDataset(data);
             plot.setBackgroundPaint(new Color(67, 70, 75));
             plot.setInsets(new RectangleInsets(-1,-1,-1,-1));
@@ -140,6 +142,7 @@ public class StatusPie {
              */
             plot.setLabelGenerator(new CustomLabelGenerator());
             JFreeChart chart = new JFreeChart(null, JFreeChart.DEFAULT_TITLE_FONT, plot, false);
+
             chart.setBorderVisible(false);
             // Write the chart image to the temporary directory
             ChartRenderingInfo info = new ChartRenderingInfo(new StandardEntityCollection());

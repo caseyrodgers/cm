@@ -72,5 +72,5 @@ public class PrescriptionSessionDataResource implements IsSerializable {
 	public void setSubMenuItems(List<SubMenuItem> subMenuItems) {
 		this.subMenuItems = subMenuItems;
 	}
-	
+
 }
