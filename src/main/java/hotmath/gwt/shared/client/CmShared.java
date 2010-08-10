@@ -115,9 +115,6 @@ public class CmShared implements EntryPoint {
      */
     static public void handleLoginProcessAsync(final CmLoginAsync callback) {
         try {
-            
-            SystemVersionUpdateChecker.monitorVersionChanges();        
-            
             /** Provide shortcut, single argument entry for debugging a user
              */
             if(_queryParameters.get("debug_uid") != null) {

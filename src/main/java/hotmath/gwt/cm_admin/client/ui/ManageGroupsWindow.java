@@ -213,7 +213,22 @@ public class ManageGroupsWindow extends CmWindow {
                     new GroupManagerGlobalSettings(adminModel,gim);
                 }
             }
-        }));        
+        }));
+        
+        lc.add(new MyButton("Assign Students", "Add or remove students from selected group.",new SelectionListener<ButtonEvent>() {
+            public void componentSelected(ButtonEvent ce) {
+                final GroupInfoModel gim = getGroupInfo();
+                if (gim != null) {
+                    new ManageGroupsAssignStudents(adminModel, gim,new CmAsyncRequestImplDefault() {
+						@Override
+						public void requestComplete(String requestData) {
+							readRpcData(adminModel.getId(), false);
+							CmAdminDataReader.getInstance().fireRefreshData();							
+						}
+					});
+                }
+            }
+        }));
 
         add(lc, new BorderLayoutData(LayoutRegion.EAST,200));
     }

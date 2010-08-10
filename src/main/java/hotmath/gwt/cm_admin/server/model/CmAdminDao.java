@@ -37,9 +37,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.log4j.Logger;
 
@@ -133,6 +131,109 @@ public class CmAdminDao {
         }
         return l;
     }
+    
+    
+    /** Return basic student info (name, uid) for each student
+     *  currently assigned to group.
+     *  
+     *  
+     * @return
+     * @throws Exception
+     */
+    public CmList<StudentModelExt> getGroupStudents(final Connection conn,GroupInfoModel gim) throws Exception {
+    	
+    	CmList<StudentModelExt> students = new CmArrayList<StudentModelExt>();
+    	PreparedStatement ps = null;
+    	try {
+    		String sql = "select g.id as group_id, u.uid, u.user_name " +
+    		             " from   HA_ADMIN h" +
+    		             " JOIN HA_USER u on u.admin_id = h.aid" +
+    		             " JOIN CM_GROUP g on g.id = u.group_id" +
+    		             " where h.aid = ? and g.name = ?" +
+    		             " order by user_name ";
+    		
+    		ps = conn.prepareStatement(sql);
+    		ps.setInt(1, gim.getAdminId());
+    		ps.setString(2, gim.getName());
+    		
+    		ResultSet rs = ps.executeQuery();
+    		while(rs.next()) {
+    			StudentModelExt sm = new StudentModelExt();
+    			sm.setUid(rs.getInt("uid"));
+    			sm.setName(rs.getString("user_name"));
+    			students.add(sm);
+    		}
+    		return students;
+    	}
+    	finally {
+    		SqlUtilities.releaseResources(null, ps,null);
+    	}
+    	
+    }
+    
+    /** Return list of students not in current group
+     * 
+     * @param conn
+     * @param gim
+     * @return
+     * @throws Exception
+     */
+    public CmList<StudentModelExt> getGroupStudentsNotIn(final Connection conn,GroupInfoModel gim) throws Exception {
+    	CmList<StudentModelExt> students = new CmArrayList<StudentModelExt>();
+    	PreparedStatement ps = null;
+    	try {
+    		String sql = "select g.id as group_id, u.uid, u.user_name " +
+    		             " from   HA_ADMIN h" +
+    		             " JOIN HA_USER u on u.admin_id = h.aid" +
+    		             " LEFT JOIN CM_GROUP g on g.id = u.group_id" +
+    		             " where h.aid = ? and (g.name <> ? or g.name is null)" +
+    		             " order by user_name ";
+    		
+    		ps = conn.prepareStatement(sql);
+    		ps.setInt(1, gim.getAdminId());
+    		ps.setString(2, gim.getName());
+    		
+    		ResultSet rs = ps.executeQuery();
+    		while(rs.next()) {
+    			StudentModelExt sm = new StudentModelExt();
+    			sm.setUid(rs.getInt("uid"));
+    			sm.setName(rs.getString("user_name"));
+    			students.add(sm);
+    		}
+    		return students;
+    	}
+    	finally {
+    		SqlUtilities.releaseResources(null, ps,null);
+    	}
+    } 
+    
+    /** Set the students in named group to match exactly list of uids in students
+     * 
+     * @param conn
+     * @param gim
+     * @param students
+     * @throws Exception
+     */
+    public void setGroupStudents(final Connection conn, GroupInfoModel gim, List<StudentModelExt> students) throws Exception {
+    	PreparedStatement ps=null;
+    	try {
+    		String inList="";
+    		for(StudentModelExt se: students) {
+    			if(inList.length() > 0)
+    				inList += ",";
+    			inList += se.getUid();
+    		}
+    		String sql1 = "update HA_USER set group_id = 1 where admin_id = " + gim.getAdminId() + " and group_id = " + gim.getId();
+    		conn.createStatement().executeUpdate(sql1);
+    		String sql = "update HA_USER set group_id = " + gim.getId() + " where uid in (" + inList + ")";
+    		ps = conn.prepareStatement(sql);
+    		ps.executeUpdate();
+    	}
+    	finally {
+    		SqlUtilities.releaseResources(null,ps,conn);
+    	}
+    }
+    
 
     private static final String ADD_GROUP_SQL = "insert into CM_GROUP (name, description, is_active, admin_id) "
             + "values( ?, ?, ?, ?)";
@@ -518,10 +619,9 @@ public class CmAdminDao {
 
             return haAdmin;
         } catch (Exception e) {
-            logger.error(String.format("*** Error creating admin, name: %s, subscriberId: %s, passcode: %s", userName,
-                    subscriberId, passcode), e);
-            throw new Exception(String.format("*** Error creating HA_ADMIN, name: %s, subscriberId: %s, passcode: %s",
-                    userName, subscriberId, passcode));
+        	String msg = String.format("*** Error creating admin, name: %s, subscriberId: %s, passcode: %s", userName,subscriberId, passcode);
+            logger.error(msg, e);
+            throw new Exception(String.format("*** Error creating HA_ADMIN, name: %s, subscriberId: %s, passcode: %s", userName, subscriberId, passcode));
         } finally {
             SqlUtilities.releaseResources(rs, ps, conn);
         }

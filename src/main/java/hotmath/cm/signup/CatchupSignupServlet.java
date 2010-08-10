@@ -174,6 +174,12 @@ public class CatchupSignupServlet extends HttpServlet {
             } catch (Exception ee) {
                 _logger.error("*** Error adding comment", ee);
             }
+            
+            /** CHECK: should this throw an Exception?
+             * At very lease we need to check for this instance
+             * in resources/js/signup.js
+             *  
+             */
             resp.getWriter().write("error:" + e.getMessage());
         }
     }
