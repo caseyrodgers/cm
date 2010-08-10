@@ -419,7 +419,9 @@ img.resource-item-complete {
 }
 #tutoroutput p {
         margin: 0 0 10px;
+        margin-right: 15px;
 }
+
 #tutor_embedded, #tutoroutput, #tutoroutput .step, #tutoroutput .hint, #steps_tail  {
         width: auto;
 }
