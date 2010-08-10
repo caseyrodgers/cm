@@ -2,9 +2,9 @@ package hotmath.testset.ha.report;
 
 import hotmath.SolutionManager;
 import hotmath.assessment.AssessmentPrescription;
+import hotmath.assessment.AssessmentPrescription.SessionData;
 import hotmath.assessment.AssessmentPrescriptionManager;
 import hotmath.assessment.AssessmentPrescriptionSession;
-import hotmath.assessment.AssessmentPrescription.SessionData;
 import hotmath.cm.server.model.CmUserProgramDao;
 import hotmath.gwt.cm_admin.server.model.CmStudentDao;
 import hotmath.gwt.shared.server.service.CmTestUtils;
@@ -27,7 +27,6 @@ import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
@@ -414,13 +413,28 @@ public class PrescriptionReport {
     public static void main(String[] args) {
         try {
             String logFile = null;
-            if (args.length > 0)
-                logFile = args[0];
-            
-            CmProgram prog = CmProgram.NATIONAL;
-            new PrescriptionReport(logFile,prog);
+            String programName=null;
+            CmProgram program=null;
+            for(String s: args) {
+            	if(s.startsWith("-log="))
+            		logFile = s.split("=")[1];
+            	else if(s.startsWith("-program=")) {
+            		programName = s;
+            	}
+            }
 
-            System.out.println("PrescriptionReport complete successfully!");
+            if(programName != null) {
+            	for(CmProgram p: CmProgram.values()) {
+            		if(p.getTitle().equals(programName)) {
+            			__logger.info("Only checking program: " + p);
+            			program = p;
+            			break;
+            		}
+            	}
+            }
+            __logger.info("PrescriptionReport: Starting");
+            new PrescriptionReport(logFile,program);
+            __logger.info("PrescriptionReport complete successfully!");
             System.exit(0);
         } catch (Exception e) {
             e.printStackTrace();
