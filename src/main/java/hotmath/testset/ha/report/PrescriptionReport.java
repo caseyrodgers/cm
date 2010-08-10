@@ -419,13 +419,13 @@ public class PrescriptionReport {
             	if(s.startsWith("-log="))
             		logFile = s.split("=")[1];
             	else if(s.startsWith("-program=")) {
-            		programName = s;
+            		programName = s.split("=")[1];
             	}
             }
 
             if(programName != null) {
             	for(CmProgram p: CmProgram.values()) {
-            		if(p.getTitle().equals(programName)) {
+            		if(p.name().equals(programName) ) {
             			__logger.info("Only checking program: " + p);
             			program = p;
             			break;
