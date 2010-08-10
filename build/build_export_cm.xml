@@ -6,7 +6,7 @@
 -->
 <project basedir="." default="" name="catchup">
 
-    <property name="textcodes" value="cahseehm,nationalhm,genericprealg,genericalg1,genericgeo,genericalg2,mini6and7gt,minialg1gt,minigeogt,minialg2gt,cmextras,cmextrasgeo,cmextrasalg2,cmextrasgeo-2,alg1ptests,alg1ptests2,alg2ptests,prealgptests,geoptests,geoptests2,placement,miniprealggt,miniprecalcgt,taks11hm,alg2ptests2,prealgptests2,alg1ptests3,cmextrasalg1"/>
+    <property name="textcodes" value="cahseehm,nationalhm,genericprealg,genericalg1,genericgeo,genericalg2,mini6and7gt,minialg1gt,minigeogt,minialg2gt,cmextras,cmextrasgeo,cmextrasalg2,cmextrasgeo-2,alg1ptests,alg1ptests2,alg2ptests,prealgptests,geoptests,geoptests2,placement,miniprealggt,miniprecalcgt,taks11hm,alg2ptests2,prealgptests2,alg1ptests3,cmextrasalg1,essptests"/>
 
     <target name='export' depends='export_cm_solutions_all'/>
     <target name='import_inmh' depends='import_cm_inmh_all,import_cm_inmh_link_all'/>
