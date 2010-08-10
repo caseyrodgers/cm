@@ -23,6 +23,7 @@ import hotmath.gwt.shared.client.eventbus.CmEventListenerImplDefault;
 import hotmath.gwt.shared.client.eventbus.EventBus;
 import hotmath.gwt.shared.client.eventbus.EventType;
 import hotmath.gwt.shared.client.model.CmStudentPagingLoadResult;
+import hotmath.gwt.shared.client.model.UserInfoBase;
 import hotmath.gwt.shared.client.rpc.RetryAction;
 import hotmath.gwt.shared.client.rpc.action.GeneratePdfAction;
 import hotmath.gwt.shared.client.rpc.action.GeneratePdfAction.PdfType;
@@ -765,12 +766,14 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
         column.setSortable(true);
         configs.add(column);
 
-        ColumnConfig pass = new ColumnConfig();
-        pass.setId("passcode");
-        pass.setHeader("Password");
-        pass.setWidth(120);
-        pass.setSortable(true);
-        configs.add(pass);
+        if(UserInfoBase.getInstance().getPartner() == null) {
+        	ColumnConfig pass = new ColumnConfig();
+	        pass.setId("passcode");
+	        pass.setHeader("Password");
+	        pass.setWidth(120);
+	        pass.setSortable(true);
+	        configs.add(pass);
+        }
 
         ColumnConfig group = new ColumnConfig();
         group.setId(StudentModelExt.GROUP_KEY);
