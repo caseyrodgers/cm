@@ -221,7 +221,7 @@ public class LoginService extends HttpServlet {
 	    	if(type.equals("student")) {
 		    	String firstLast = URLDecoder.decode(req.getParameter("sp1"),"UTF-8");
 		    	String userId = req.getParameter("sp2");
-		    	String courseId = req.getParameter("sp3"); 
+		    	String courseId = URLDecoder.decode(req.getParameter("sp3"),"UTF-8"); 
 		    	String teacherId = req.getParameter("sp4");
 		    	urlToRedirectTo = LcomManager.loginStudent(new LcomStudentSignup(firstLast, userId, courseId, teacherId,0));
 	    	}
@@ -232,7 +232,7 @@ public class LoginService extends HttpServlet {
 		    	String district = URLDecoder.decode(req.getParameter("tp4"),"UTF-8");
 		    	String zip = req.getParameter("tp5"); // null for now
 		    	String courseName = URLDecoder.decode(req.getParameter("tp6"), "UTF-8");
-		    	String courseId = req.getParameter("tp7");
+		    	String courseId = URLDecoder.decode(req.getParameter("tp7"),"UTF-8");
 		    	urlToRedirectTo = LcomManager.loginTeacher(new LcomTeacherSignup(firstLast, teacherId, email, district, zip, courseName, courseId));
 	    	}
 	    	resp.sendRedirect(urlToRedirectTo);
