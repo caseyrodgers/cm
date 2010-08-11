@@ -442,7 +442,8 @@ class PrescriptionResourcePanel extends LayoutContainer {
         addStyleName("prescription-cm-gui-definition-resource-panel");
 
         boolean isCustomProgram = UserInfo.getInstance().isCustomProgram();
-        
+
+        PrescriptionSessionDataResource review=null;
         // setTitle("Choose a resource type, then click one of its items.");
         for (PrescriptionSessionDataResource resource : resources) {
             ResourceMenuButton btn = new ResourceMenuButton(resource);
@@ -454,10 +455,13 @@ class PrescriptionResourcePanel extends LayoutContainer {
             /** if a Custom Program, then make sure the results
              * button is disabled .. there are no quizzes.
              */
-            if(isCustomProgram && resource.getType().equals("results"))
-                btn.setEnabled(false);
-                
-            vp.add(btn);
+            if(resource.getType().equals("results")) {
+            	review = resource;
+            }
+            else {
+            	vp.add(btn);	
+            }
+            
         }
         add(vp);
         /**
@@ -466,7 +470,15 @@ class PrescriptionResourcePanel extends LayoutContainer {
          */
         VerticalPanel fs = new VerticalPanel();
         // <div style='margin-left: -7px;margin-top: 10px;font-size: .8em;color: white;'>Other Resources</div>
-        fs.add(new Html("<hr style='margin-top:15px;'/>"));
+        
+        String style = "padding: 0; margin: 15px 0 0px 0;width: 100%;border: none;border-top: 1px solid #AAA;border-bottom: 1px solid #FFF;font-size: 1px;line-height: 0;overflow: visible;";
+        fs.add(new Html("<hr style='" + style + "'/>"));
+        ResourceMenuButton rbtn = new ResourceMenuButton(review);
+        if(isCustomProgram) {
+            rbtn.setEnabled(false);
+        }
+        fs.add(rbtn);
+        
         for (PrescriptionSessionDataResource type : new CmInmhStandardResources()) {
     		registeredResources.add(type);
     		ResourceMenuButton btn = new ResourceMenuButton(type);
