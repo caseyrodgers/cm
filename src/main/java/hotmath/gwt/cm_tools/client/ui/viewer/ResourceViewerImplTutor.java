@@ -1,7 +1,6 @@
 package hotmath.gwt.cm_tools.client.ui.viewer;
 
 import hotmath.gwt.cm_rpc.client.rpc.GetSolutionAction;
-import hotmath.gwt.cm_rpc.client.rpc.RpcData;
 import hotmath.gwt.cm_rpc.client.rpc.SolutionInfo;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
@@ -22,6 +21,8 @@ import java.util.List;
 import com.extjs.gxt.ui.client.Style.Scroll;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
+import com.extjs.gxt.ui.client.event.WindowEvent;
+import com.extjs.gxt.ui.client.event.WindowListener;
 import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.Html;
 import com.extjs.gxt.ui.client.widget.Window;
@@ -338,12 +339,18 @@ class ShowWorkExampleWindow extends Window {
 
 class ShowHowToUseDialog extends CmWindow {
     public ShowHowToUseDialog() {
-        setPosition(300,40);
+    	EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_MODAL_WINDOW_OPEN));
         setModal(true);
         setSize(350,300);
         setHeading("How To Use This");
         add(new Html(html));
         addCloseButton();
+        addWindowListener(new WindowListener() {
+        	@Override
+        	public void windowHide(WindowEvent we) {
+        		EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_MODAL_WINDOW_CLOSED));
+        	}
+        });
     }
     String html =
         "<div style='padding: 10px 5px;'>" +
