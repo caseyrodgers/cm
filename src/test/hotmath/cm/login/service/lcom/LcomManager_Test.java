@@ -10,7 +10,7 @@ public class LcomManager_Test extends CmDbTestCase {
 	
 	public void testLoginTeacher() throws Exception {
 		String teacherId = "teacher_id_" + System.currentTimeMillis();
-		LcomTeacherSignup teacher = new LcomTeacherSignup("first_last", teacherId, "test@test.com", "district", "12345", "Course Name", "course_id");
+		LcomTeacherSignup teacher = new LcomTeacherSignup("first_last", teacherId, "test@test.com", "district", "12345");
 		String urlFirst = LcomManager.loginTeacher(teacher);
 		
 		String urlSecond = LcomManager.loginTeacher(teacher);

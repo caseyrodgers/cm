@@ -1,8 +1,8 @@
 package hotmath.gwt.cm_admin.client.ui;
 
-import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.model.CmAdminModel;
+import hotmath.gwt.cm_tools.client.model.CustomLessonModel;
 import hotmath.gwt.cm_tools.client.model.GroupInfoModel;
 import hotmath.gwt.cm_tools.client.model.StudentModelExt;
 import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
@@ -18,11 +18,17 @@ import com.extjs.gxt.ui.client.Style.Orientation;
 import com.extjs.gxt.ui.client.dnd.DND.Feedback;
 import com.extjs.gxt.ui.client.dnd.ListViewDragSource;
 import com.extjs.gxt.ui.client.dnd.ListViewDropTarget;
+import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
+import com.extjs.gxt.ui.client.event.Events;
+import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.store.ListStore;
+import com.extjs.gxt.ui.client.store.Store;
+import com.extjs.gxt.ui.client.store.StoreSorter;
 import com.extjs.gxt.ui.client.util.Margins;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
+import com.extjs.gxt.ui.client.widget.Html;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.ListView;
 import com.extjs.gxt.ui.client.widget.button.Button;
@@ -53,8 +59,12 @@ class ManageGroupsAssignStudents extends CmWindow {
 		drawGui();
 		setModal(true);
 		setResizable(true);
-		addCloseButton();
 
+		addButton(new Button("Cancel", new SelectionListener<ButtonEvent>() {
+			public void componentSelected(ButtonEvent ce) {
+				close();
+			}
+		}));
 		setLayout(new BorderLayout());
 
 		getGroupInfo();
@@ -69,19 +79,56 @@ class ManageGroupsAssignStudents extends CmWindow {
 	private void drawGui() {
 		LayoutContainer lc = new LayoutContainer();
 		lc.setLayout(new RowLayout(Orientation.HORIZONTAL));
+		
+		StoreSorter<StudentModelExt> sorter = new StoreSorter<StudentModelExt>() {
+            @Override
+            public int compare(Store<StudentModelExt> store, StudentModelExt m1, StudentModelExt m2,
+                    String property) {
+                    if (property != null) {
+                        return comparator.compare(m1.getName().toLowerCase(), m2.getName().toLowerCase());
+                    }            
+                    return super.compare(store, m1, m2, property);
+                }            
+        };
+        
 		ListStore<StudentModelExt> storeAll = new ListStore<StudentModelExt>();
+		storeAll.setStoreSorter(sorter);
+		storeAll.setSortField("name");
 		String template = "<tpl for=\".\"><div class='x-view-item'><span style='font-size:.5em;width: 5px;' class='{subjectStyleClass}'>&nbsp;</span>&nbsp;{name}</div></tpl>";
 		_listAll.setStore(storeAll);
 		_listAll.setTemplate(template);
 
 		ListStore<StudentModelExt> store = new ListStore<StudentModelExt>();
+        store.setStoreSorter(sorter);
+        store.setSortField("name");
 		_listInGroup.setStore(store);
 		_listInGroup.setTemplate(template);
+		
+		_listInGroup.setBorders(false);
+		_listAll.setBorders(false);
+		
+		_listAll.addListener(Events.OnDoubleClick, new Listener<BaseEvent>() {
+	      public void handleEvent(BaseEvent be) {
+	    	  StudentModelExt s1 = _listAll.getSelectionModel().getSelectedItem();
+	    	  _listAll.getStore().remove(s1);
+	    	  _listInGroup.getStore().add(s1);
+	      }
+	    });
+		
+		_listInGroup.addListener(Events.OnDoubleClick, new Listener<BaseEvent>() {
+		      public void handleEvent(BaseEvent be) {
+		    	  StudentModelExt s1 = _listInGroup.getSelectionModel().getSelectedItem();
+		    	  _listInGroup.getStore().remove(s1);
+		    	  _listAll.getStore().add(s1);
+		      }
+		    });
+
+
 
 		new ListViewDropTarget(_listAll);
 		ListViewDropTarget target = new ListViewDropTarget(_listInGroup);
 		target.setFeedback(Feedback.INSERT);
-		target.setAllowSelfAsSource(true);
+		target.setAllowSelfAsSource(false);
 
 		new ListViewDragSource(_listAll);
 		new ListViewDragSource(_listInGroup);
@@ -103,6 +150,17 @@ class ManageGroupsAssignStudents extends CmWindow {
 			}
 		});
 		addButton(_btnSave);
+		
+		 String ledgend = "<div style='position: absolute; top: 1px; left: 0;width: 60px;'>"
+			 + "Drag and drop users into group."
+             + "</div>";
+     
+
+     getButtonBar().setStyleAttribute("position", "relative");
+     Html html = new Html(ledgend);
+     html.setToolTip("This color indicates highest appropriate level for the lesson.");
+     getButtonBar().add(html);		
+		
 	}
 
 	private void saveChanges() {
@@ -143,17 +201,18 @@ class ManageGroupsAssignStudents extends CmWindow {
 				_listInGroup.getStore().removeAll();
 				_listInGroup.getStore().add(response.getInGroup());
 				_listAll.getStore().add(response.getNotInGroup());
+
 			}
 		}.register();
 	}
 
 	static class MyListContainer extends ContentPanel {
-		MyListContainer(ListView<StudentModelExt> listView, String title,
-				boolean showFilter) {
+		MyListContainer(ListView<StudentModelExt> listView, String title,boolean showFilter) {
 			super();
 
 			setHeading(title);
 			setLayout(new FitLayout());
+			listView.setBorders(false);
 			add(listView);
 		}
 	}

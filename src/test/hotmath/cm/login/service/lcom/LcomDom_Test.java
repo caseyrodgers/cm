@@ -18,7 +18,7 @@ public class LcomDom_Test extends CmDbTestCase {
 	}
 	
 	public void testRegisterTeacher() throws Exception {
-		LcomTeacherSignup teacher = new LcomTeacherSignup("first_last", teacherId, "test@test.com", "district", "12345", "Course Name", courseId);
+		LcomTeacherSignup teacher = new LcomTeacherSignup("first_last", teacherId, "test@test.com", "district", "12345");
 		new LcomDom().registerTeacher(conn, teacher);
 		
 		teacher = new LcomDom().getTeacher(conn,teacherId);

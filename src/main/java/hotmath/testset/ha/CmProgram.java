@@ -27,7 +27,8 @@ public enum CmProgram {
     GEOM_CHAP(24,"Geometry - Chapters", "Geom", "Chap",true),
     AUTO_ENROLL(15,"Auto-Enrollment","","Auto-Enroll",true),
     NATIONAL(37,"National Practice Test","","Grad Prep National",true),
-    CUSTOM_PROGRAM(36,"Custom Program","Custom","Custom",false);
+    CUSTOM_PROGRAM(36,"Custom Program","Custom","Custom",false),
+    ESSENTIALS(41,"Essentials Program","Ess","Prof", true);
 
     private final int defId;
     private final String subject;
