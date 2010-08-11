@@ -51,7 +51,7 @@ public class ResourceViewerImplVideo extends ResourceViewerImplFlash {
 			boolean isYouTube = item.getFile().indexOf("youtube") > -1;
 			if (isYouTube) {
 
-				String file = "http://www.youtube.com/v/VhNkWdLGpmA&amp;hl=en_US&amp;fs=1";
+				String file = item.getFile();
 
 				SWFSettings s = new SWFSettings();
 				s.setMinPlayerVersion(new PlayerVersion(9));
