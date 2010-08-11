@@ -63,7 +63,6 @@ public class LcomManager {
 						group = new GroupInfoModel();
 						group.setGroupName(student.getStudentCourseId());
 						group.setIsActive(true);
-						group.setDescription("LCOM Teacher Course: " + teacher.getCourseId());
 						new CmAdminDao().addGroup(conn, teacher.getAdminId(), group);
 					}
 				}

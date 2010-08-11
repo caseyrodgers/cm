@@ -231,9 +231,7 @@ public class LoginService extends HttpServlet {
 		    	String email = req.getParameter("tp3"); // null for now
 		    	String district = URLDecoder.decode(req.getParameter("tp4"),"UTF-8");
 		    	String zip = req.getParameter("tp5"); // null for now
-		    	String courseName = URLDecoder.decode(req.getParameter("tp6"), "UTF-8");
-		    	String courseId = URLDecoder.decode(req.getParameter("tp7"),"UTF-8");
-		    	urlToRedirectTo = LcomManager.loginTeacher(new LcomTeacherSignup(firstLast, teacherId, email, district, zip, courseName, courseId));
+		    	urlToRedirectTo = LcomManager.loginTeacher(new LcomTeacherSignup(firstLast, teacherId, email, district, zip));
 	    	}
 	    	resp.sendRedirect(urlToRedirectTo);
     	}

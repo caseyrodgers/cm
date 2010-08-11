@@ -7,17 +7,15 @@ package hotmath.cm.login.service.lcom;
  */
 public class LcomTeacherSignup {
 
-	String firstLast,teacherId, email,district,zip,courseName,courseId;
+	String firstLast,teacherId, email,district,zip;
 	int adminId;
 	
-	public LcomTeacherSignup(String firstLast, String teacherId, String email, String district, String zip, String courseName,String courseId) {
+	public LcomTeacherSignup(String firstLast, String teacherId, String email, String district, String zip) {
 		this.firstLast = firstLast;
 		this.teacherId = teacherId;
 		this.email = email;
 		this.district = district;
 		this.zip = zip!=null?zip:"";
-		this.courseName = courseName;
-		this.courseId = courseId;
 	}
 
 	public String getSchoolName() {
@@ -29,8 +27,7 @@ public class LcomTeacherSignup {
 	public String toString() {
 		return "LcomTeacherSignup [firstLast=" + firstLast + ", teacherId="
 				+ teacherId + ", email=" + email + ", district=" + district
-				+ ", zip=" + zip + ", courseName=" + courseName + ", courseId="
-				+ courseId + ", adminId=" + adminId + "]";
+				+ ", zip=" + zip + ", adminId=" + adminId + "]";
 	}
 
 
@@ -84,19 +81,4 @@ public class LcomTeacherSignup {
 		this.zip = zip;
 	}
 
-	public String getCourseName() {
-		return courseName;
-	}
-
-	public void setCourseName(String courseName) {
-		this.courseName = courseName;
-	}
-
-	public String getCourseId() {
-		return courseId;
-	}
-
-	public void setCourseId(String courseId) {
-		this.courseId = courseId;
-	}
 }

@@ -17,7 +17,7 @@ public class LcomDom {
 			st.setString(1,teacherId);
 			ResultSet rs = st.executeQuery();
 			if(rs.first()) {
-				LcomTeacherSignup teacher = new LcomTeacherSignup(rs.getString("first_last"), rs.getString("teacher_id"), rs.getString("email"), rs.getString("district"), rs.getString("zip"), rs.getString("course_name"), rs.getString("course_id"));
+				LcomTeacherSignup teacher = new LcomTeacherSignup(rs.getString("first_last"), rs.getString("teacher_id"), rs.getString("email"), rs.getString("district"), rs.getString("zip"));
 				teacher.setAdminId(rs.getInt("admin_id"));
 				return teacher;
 			}
@@ -33,16 +33,14 @@ public class LcomDom {
 	public void registerTeacher(final Connection conn, LcomTeacherSignup teacher) throws Exception {
 		PreparedStatement ps=null;
 		try {
-			String sql = "insert into LCOM_TEACHER(first_last, teacher_id, email, zip, course_name, course_id, admin_id)values(?,?,?,?,?,?,?)";
+			String sql = "insert into LCOM_TEACHER(first_last, teacher_id, email, zip, admin_id)values(?,?,?,?,?)";
 			ps = conn.prepareStatement(sql);
 			
 			ps.setString(1, teacher.getFirstLast());
 			ps.setString(2, teacher.getTeacherId());
 			ps.setString(3, teacher.getEmail());
 			ps.setString(4, teacher.getZip());
-			ps.setString(5, teacher.getCourseName());
-			ps.setString(6, teacher.getCourseId());
-			ps.setInt(7, teacher.getAdminId());
+			ps.setInt(5, teacher.getAdminId());
 			
 			int cnt = ps.executeUpdate();
 			if(cnt != 1) {
