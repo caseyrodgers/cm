@@ -127,7 +127,8 @@ public class ShowWorkPanel extends Frame {
          * normal draw command.
          */
         CommandType commandType = json.equals("clear") ? CommandType.CLEAR : CommandType.DRAW;
-        SaveWhiteboardDataAction action = new SaveWhiteboardDataAction(UserInfo.getInstance().getUid(),UserInfo.getInstance().getRunId(), pid, commandType, json);
+        int runId = pid.startsWith("quiz") ? 0 : UserInfo.getInstance().getRunId();
+        SaveWhiteboardDataAction action = new SaveWhiteboardDataAction(UserInfo.getInstance().getUid(),runId, pid, commandType, json);
         whiteboardActions.getActions().add(action);
         
         /** fire event about pending changes only on first entry
