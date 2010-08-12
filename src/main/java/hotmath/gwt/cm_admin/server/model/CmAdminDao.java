@@ -182,7 +182,7 @@ public class CmAdminDao {
     	CmList<StudentModelExt> students = new CmArrayList<StudentModelExt>();
     	PreparedStatement ps = null;
     	try {
-    		String sql = "select g.id as group_id, u.uid, u.user_name " +
+    		String sql = "select g.id as group_id, u.uid, u.user_name,g.name as group_name " +
     		             " from   HA_ADMIN h" +
     		             " JOIN HA_USER u on u.admin_id = h.aid" +
     		             " LEFT JOIN CM_GROUP g on g.id = u.group_id" +
@@ -198,6 +198,7 @@ public class CmAdminDao {
     			StudentModelExt sm = new StudentModelExt();
     			sm.setUid(rs.getInt("uid"));
     			sm.setName(rs.getString("user_name"));
+    			sm.setGroup(rs.getString("group_name"));
     			students.add(sm);
     		}
     		return students;

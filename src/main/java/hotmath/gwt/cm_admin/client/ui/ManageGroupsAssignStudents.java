@@ -55,7 +55,7 @@ class ManageGroupsAssignStudents extends CmWindow {
 		this.gim = gim;
 		this.callback = callback;
 		setHeading("Assign Students to group '" + gim.getName() + "'");
-		setSize(400, 390);
+		setSize(500, 400);
 		drawGui();
 		setModal(true);
 		setResizable(true);
@@ -94,15 +94,16 @@ class ManageGroupsAssignStudents extends CmWindow {
 		ListStore<StudentModelExt> storeAll = new ListStore<StudentModelExt>();
 		storeAll.setStoreSorter(sorter);
 		storeAll.setSortField("name");
-		String template = "<tpl for=\".\"><div class='x-view-item'><span style='font-size:.5em;width: 5px;' class='{subjectStyleClass}'>&nbsp;</span>&nbsp;{name}</div></tpl>";
+		String templateInGroup = "<tpl for=\".\"><div class='x-view-item'>{name}</div></tpl>";
+		String templateOther = "<tpl for=\".\"><div class='x-view-item'>{name} <span style='font-size: .7em;color:red'>{group}</span></div></tpl>";
 		_listAll.setStore(storeAll);
-		_listAll.setTemplate(template);
+		_listAll.setTemplate(templateOther);
 
 		ListStore<StudentModelExt> store = new ListStore<StudentModelExt>();
         store.setStoreSorter(sorter);
         store.setSortField("name");
 		_listInGroup.setStore(store);
-		_listInGroup.setTemplate(template);
+		_listInGroup.setTemplate(templateInGroup);
 		
 		_listInGroup.setBorders(false);
 		_listAll.setBorders(false);
