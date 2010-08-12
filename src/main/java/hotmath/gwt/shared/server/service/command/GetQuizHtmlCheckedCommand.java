@@ -12,7 +12,6 @@ import hotmath.gwt.shared.client.rpc.action.GetQuizHtmlCheckedAction;
 import hotmath.gwt.shared.server.service.ActionHandlerManualConnectionManagement;
 import hotmath.testset.ha.HaTest;
 import hotmath.testset.ha.HaTestDao;
-import hotmath.util.HMConnectionPool;
 import hotmath.util.VelocityTemplateFromStringManager;
 import hotmath.util.sql.SqlUtilities;
 
@@ -39,20 +38,15 @@ public class GetQuizHtmlCheckedCommand implements ActionHandlerManualConnectionM
         RpcData rpcDataCached = (RpcData)CmCacheManager.getInstance().retrieveFromCache(CacheName.TEST_HTML_CHECKED, action.getTestId());
         if(rpcDataCached != null)
             return rpcDataCached;
-        
-        
-        Connection conn=null;
         try {
 
-            conn = HMConnectionPool.getConnection();
-            
             String quizHtmlTemplate = GetQuizHtmlCommand.readQuizHtmlTemplate();
             Map<String, Object> map = new HashMap<String, Object>();
 
-            HaTest haTest = HaTestDao.loadTest(conn, action.getTestId());
+            HaTest haTest = HaTestDao.loadTest(autoConn, action.getTestId());
             String testTitle = haTest.getTitle();
 
-            HaTestSet _testSet = new HaTestSet(conn, haTest.getPids());
+            HaTestSet _testSet = new HaTestSet(autoConn, haTest.getPids());
 
             int testSegment = haTest.getSegment();
             map.put("haTest", haTest);
@@ -76,7 +70,7 @@ public class GetQuizHtmlCheckedCommand implements ActionHandlerManualConnectionM
             throw new CmRpcException(e.getMessage());
         }
         finally {
-            SqlUtilities.releaseResources(null,null, conn);
+            SqlUtilities.releaseResources(null,null, null);
         }
     }
 

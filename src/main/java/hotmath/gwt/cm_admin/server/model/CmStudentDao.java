@@ -56,6 +56,8 @@ import org.apache.log4j.Logger;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import sb.util.SbUtilities;
+
 public class CmStudentDao {
 
   
@@ -1019,7 +1021,18 @@ public class CmStudentDao {
            }
             
             sm.setSectionNum(0);
-            setActiveInfo(conn, sm.getUid(), new StudentActiveInfo());
+            
+            /** Setup random first quiz, if supported
+             * 
+             */
+            StudentActiveInfo info = new StudentActiveInfo();
+            CmUserProgramDao upDao = new CmUserProgramDao();
+            int altSlots = upDao.loadProgramInfoCurrent(conn, sm.getUid()).getTestDef().getNumAlternateTests();
+            if(altSlots > 0) {
+            	int randSlot = SbUtilities.getRandomNumber(altSlots);
+            	info.setActiveSegmentSlot(randSlot);
+            }
+            setActiveInfo(conn, sm.getUid(), info);
         } catch (Exception e) {
             String m = String.format("*** Error adding student program for student with uid: %d", sm.getUid());
             logger.error(m, e);
@@ -1944,12 +1957,6 @@ public class CmStudentDao {
         }
     }
 
-    /** How many slots of alternate questions have been setup
-     * 
-     */
-    static public int MAX_QUIZ_SEGMENT_SLOTS=3;
-    
-    
     
     /** Move this user to the next quiz slot or back to zero
      * 

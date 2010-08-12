@@ -2,11 +2,8 @@ package hotmath.testset.ha;
 
 import hotmath.HotMathException;
 import hotmath.cm.util.CmCacheManager;
-import hotmath.cm.util.CmMultiLinePropertyReader;
 import hotmath.cm.util.CmCacheManager.CacheName;
-import hotmath.gwt.cm_admin.server.model.CmStudentDao;
-import hotmath.gwt.cm_tools.client.model.StudentModelExt;
-import hotmath.gwt.cm_tools.client.model.StudentModelI;
+import hotmath.cm.util.CmMultiLinePropertyReader;
 import hotmath.util.HMConnectionPool;
 import hotmath.util.sql.SqlUtilities;
 
@@ -14,8 +11,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.List;
 
 import org.apache.log4j.Logger;
 

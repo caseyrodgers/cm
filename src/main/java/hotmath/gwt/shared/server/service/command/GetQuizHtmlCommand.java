@@ -38,35 +38,33 @@ import org.apache.log4j.Logger;
 import sb.util.SbFile;
 
 
+/** If user is re-taking the current segment, then move to next
+ * slot.
+ */
+
+/** TODO: how to know if this a retake?
+ * 
+ */
+
+/** determine the quiz slot to use.  
+ * 
+ * We reuse the slot if:
+ * 
+ * 1. user has never seen this quiz.
+ * 2. user has never seen this quiz segment.
+ * 3. user passed last quiz segment.
+ * 
+ * 
+ * We increment the slot if:
+ * 
+ * 1. user failed current segment
+ * 2. user is re-taking same segment
+ * 
+ * 
+ */    
 public class GetQuizHtmlCommand implements ActionHandler<GetQuizHtmlAction, QuizHtmlResult> {
 
     static final Logger logger = Logger.getLogger(GetQuizHtmlCommand.class);
-    
-    
-    /** If user is re-taking the current segment, then move to next
-     * slot.
-     */
-    
-    /** TODO: how to know if this a retake?
-     * 
-     */
-    
-    /** determine the quiz slot to use.  
-     * 
-     * We reuse the slot if:
-     * 
-     * 1. user has never seen this quiz.
-     * 2. user has never seen this quiz segment.
-     * 3. user passed last quiz segment.
-     * 
-     * 
-     * We increment the slot if:
-     * 
-     * 1. user failed current segment
-     * 2. user is re-taking same segment
-     * 
-     * 
-     */    
     @Override
     public QuizHtmlResult execute(final Connection conn, GetQuizHtmlAction action) throws Exception {
         
