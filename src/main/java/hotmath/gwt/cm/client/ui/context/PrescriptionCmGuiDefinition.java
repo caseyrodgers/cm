@@ -471,7 +471,7 @@ class PrescriptionResourcePanel extends LayoutContainer {
         VerticalPanel fs = new VerticalPanel();
         // <div style='margin-left: -7px;margin-top: 10px;font-size: .8em;color: white;'>Other Resources</div>
         
-        String style = "padding: 0; margin: 15px 0 0px 0;width: 100%;border: none;border-top: 1px solid #AAA;border-bottom: 1px solid #FFF;font-size: 1px;line-height: 0;overflow: visible;";
+        String style = "background: green;padding: 0; margin: auto;margin-top: 20px; width: 50%;";
         fs.add(new Html("<hr style='" + style + "'/>"));
         ResourceMenuButton rbtn = new ResourceMenuButton(review);
         if(isCustomProgram) {
