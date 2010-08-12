@@ -365,6 +365,14 @@ insert CM_USER_PROGRAM (user_id, admin_id, test_def_id, create_date,test_config_
 values (?, ?, (select test_def_id from HA_TEST_DEF where prog_id = ? and subj_id = ? and is_active = 1), ?, ?,?)
 
 
+.key=GET_TEST_DEF_BY_PROG_SUBJECT
+select test_def_id 
+from HA_TEST_DEF 
+where prog_id = ? 
+and subj_id = ? 
+and is_active = 1
+
+
 
 .key=VERIFY_IS_ACTIVE_PROGRAM
 

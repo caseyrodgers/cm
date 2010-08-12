@@ -1026,11 +1026,10 @@ public class CmStudentDao {
              * 
              */
             StudentActiveInfo info = new StudentActiveInfo();
-            CmUserProgramDao upDao = new CmUserProgramDao();
-            int altSlots = upDao.loadProgramInfoCurrent(conn, sm.getUid()).getTestDef().getNumAlternateTests();
-            if(altSlots > 0) {
-            	int randSlot = SbUtilities.getRandomNumber(altSlots);
-            	info.setActiveSegmentSlot(randSlot);
+            HaTestDef testDef = new HaTestDefDao().getTestDef(conn,sp.getProgramType(), sp.getSubjectId() );
+            if(testDef.getNumAlternateTests() > 0) {
+            	int randStartSeg = SbUtilities.getRandomNumber(testDef.getNumAlternateTests());
+            	info.setActiveSegment(randStartSeg);
             }
             setActiveInfo(conn, sm.getUid(), info);
         } catch (Exception e) {

@@ -122,6 +122,27 @@ public class HaTestDefDao {
             SqlUtilities.releaseResources(rs, pstat, null);
         }
     }
+    
+    public HaTestDef getTestDef(final Connection conn, String progType, String subject) throws Exception {
+        PreparedStatement pstat = null;
+        ResultSet rs = null;
+        try {
+            String sql = CmMultiLinePropertyReader.getInstance().getProperty("GET_TEST_DEF_BY_PROG_SUBJECT");
+
+            pstat = conn.prepareStatement(sql);
+
+            pstat.setString(1, progType);
+            pstat.setString(2, subject);
+            rs = pstat.executeQuery();
+            if(rs.first()) {
+            	return getTestDef(conn, rs.getInt("test_def_id"));
+            }
+            
+            return null;
+        } finally {
+            SqlUtilities.releaseResources(rs, pstat, null);
+        }
+    }
 
     public List<HaTestDef> getTestDefs(final Connection conn, List<Integer> testDefIds) throws Exception {
         List<HaTestDef> list = new ArrayList<HaTestDef>();
