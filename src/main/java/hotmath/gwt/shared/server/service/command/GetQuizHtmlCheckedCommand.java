@@ -25,7 +25,7 @@ import java.util.Map;
 
 import org.apache.log4j.Logger;
 
-public class GetQuizHtmlCheckedCommand implements ActionHandlerManualConnectionManagement, ActionHandler<GetQuizHtmlCheckedAction, RpcData> {
+public class GetQuizHtmlCheckedCommand implements ActionHandler<GetQuizHtmlCheckedAction, RpcData> {
 
 	private static Logger logger = Logger.getLogger(GetQuizHtmlCheckedCommand.class);
 
