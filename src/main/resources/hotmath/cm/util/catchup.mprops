@@ -348,8 +348,8 @@ order by insert_time_mills desc
 .key=ADD_STUDENT_SQL
 
 
-insert into HA_USER (user_name, user_passcode, active_segment, group_id, test_def_id, admin_id, is_active, is_demo, date_created)
-values(?, ?, ?, ?, (select test_def_id from HA_TEST_DEF where prog_id = ? and subj_id = ? and is_active = 1), ?, 1, ?, now())
+insert into HA_USER (user_name, user_passcode, active_segment, group_id, test_def_id, admin_id, is_active, is_demo, gui_background_style, date_created)
+values(?, ?, ?, ?, (select test_def_id from HA_TEST_DEF where prog_id = ? and subj_id = ? and is_active = 1), ?, 1, ?,?, now())
 
 
 

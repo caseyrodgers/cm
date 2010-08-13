@@ -114,7 +114,7 @@ public class HelpWindow extends CmWindow {
 
         
         bgCombo = new ComboBox<BackgroundModel>();
-        bgCombo.setStore(getBackgrounds());
+        bgCombo.setStore(getBackgroundListStores());
         bgCombo.setEditable(false);
         bgCombo.addStyleName("help-window-bg-combo");
         bgCombo.setEmptyText("-- Select Wallpaper --");
@@ -362,66 +362,35 @@ public class HelpWindow extends CmWindow {
         });
     }
 
-    private ListStore<BackgroundModel> getBackgrounds() {
+
+    /** Return two dim array showing registered
+     *  and available background wallpapers.
+     * @return
+     */
+    public static String[][] getBackgrounds() {
+    	 String bgs[][] = {
+     		{"Catchup Math","resource-container"},
+     		{"Clouds","resource-container-clouds"},
+     		{"Forest","resource-container-forest"},
+     		{"Meadow","resource-container-sunrise"},
+     		{"Mountain Bike","resource-container-bike1"},
+     		{"Snowman","Snowman"},
+     		{"Sunfield","resource-container-sunfield"},
+     		{"Tulips","resource-container-tulips"},
+     		{"Neutral","resource-container-neutral"},
+     		{"Redish","resource-container-redish"},
+     		{"No background image","resource-container-none"}
+     };
+     return bgs;
+    }
+    
+    public  ListStore<BackgroundModel> getBackgroundListStores() {
         ListStore<BackgroundModel> backgrounds = new ListStore<BackgroundModel>();
-
-        BackgroundModel m = new BackgroundModel();
-        m.set("text", "Catchup Math");
-        m.set("bg_style", "resource-container");
-        backgrounds.add(m);
-
-        m = new BackgroundModel();
-        m.set("text", "Clouds");
-        m.set("bg_style", "resource-container-clouds");
-        backgrounds.add(m);
-
-        m = new BackgroundModel();
-        m.set("text", "Forest");
-        m.set("bg_style", "resource-container-forest");
-        backgrounds.add(m);
-
-        m = new BackgroundModel();
-        m.set("text", "Meadow");
-        m.set("bg_style", "resource-container-sunrise");
-        backgrounds.add(m);
-
-        m = new BackgroundModel();
-        m.set("text", "Mountain Bike");
-        m.set("bg_style", "resource-container-bike1");
-        backgrounds.add(m);
-
-        m = new BackgroundModel();
-        m.set("text", "Snowman");
-        m.set("bg_style", "resource-container-snowman");
-        backgrounds.add(m);
-
-        m = new BackgroundModel();
-        m.set("text", "Sunfield");
-        m.set("bg_style", "resource-container-sunfield");
-        backgrounds.add(m);
-
-        m = new BackgroundModel();
-        m.set("text", "Tulips");
-        m.set("bg_style", "resource-container-tulips");
-        backgrounds.add(m);
-
-        m = new BackgroundModel();
-        m.set("text", "Neutral");
-        m.set("bg_style", "resource-container-neutral");
-        backgrounds.add(m);
-
-        m = new BackgroundModel();
-        m.set("text", "Redish");
-        m.set("bg_style", "resource-container-redish");
-        backgrounds.add(m);
-
-        m = new BackgroundModel();
-        m.set("text", "No background image   ");
-        m.set("bg_style", "resource-container-none");
-        backgrounds.add(m);
-
+        String bgMap[][] = getBackgrounds();
+        for(String s[]: bgMap) {
+        	backgrounds.add(new BackgroundModel(s[0],s[1]));
+        }
         return backgrounds;
-
     }
 
     static public void showFeedbackPanel_Gwt() {
@@ -464,6 +433,11 @@ public class HelpWindow extends CmWindow {
 
 class BackgroundModel extends BaseModelData {
 
+	public BackgroundModel(String text, String style) {
+		set("text", text);
+		set("bg_style", style);
+	}
+	
     public String getBackgroundName() {
         return get("text");
     }

@@ -7,6 +7,7 @@ import static hotmath.gwt.cm_tools.client.model.StudentModelExt.HAS_TUTORING_USE
 import hotmath.assessment.InmhItemData;
 import hotmath.cm.server.model.CmUserProgramDao;
 import hotmath.cm.util.CmMultiLinePropertyReader;
+import hotmath.gwt.cm.client.ui.HelpWindow;
 import hotmath.gwt.cm_rpc.client.rpc.CmArrayList;
 import hotmath.gwt.cm_rpc.client.rpc.CmList;
 import hotmath.gwt.cm_rpc.client.rpc.CmRpcException;
@@ -491,6 +492,8 @@ public class CmStudentDao {
         }
 
         try {
+        	sm.setBackgroundStyle(getBackgroundImageRamdom());
+        	
             ps = conn.prepareStatement(CmMultiLinePropertyReader.getInstance().getProperty("ADD_STUDENT_SQL"));
             ps.setString(1, sm.getName());
             ps.setString(2, sm.getPasscode());
@@ -500,6 +503,7 @@ public class CmStudentDao {
             ps.setString(6, sm.getProgram().getSubjectId());
             ps.setInt(7, sm.getAdminUid());
             ps.setInt(8, (sm.getIsDemoUser() != null && sm.getIsDemoUser()) ? 1 : 0);
+            ps.setString(9, sm.getBackgroundStyle());
 
             int count = ps.executeUpdate();
             if (count == 1) {
@@ -514,6 +518,33 @@ public class CmStudentDao {
             SqlUtilities.releaseResources(rs, ps, null);
         }
         return sm;
+    }
+    
+    /** Return two dim array showing registered
+     *  and available background wallpapers.
+     * @return
+     */
+    private String[][] getBackgrounds() {
+    	 String bgs[][] = {
+     		{"Catchup Math","resource-container"},
+     		{"Clouds","resource-container-clouds"},
+     		{"Forest","resource-container-forest"},
+     		{"Meadow","resource-container-sunrise"},
+     		{"Mountain Bike","resource-container-bike1"},
+     		{"Snowman","Snowman"},
+     		{"Sunfield","resource-container-sunfield"},
+     		{"Tulips","resource-container-tulips"},
+     		{"Neutral","resource-container-neutral"},
+     		{"Redish","resource-container-redish"},
+     		{"No background image","resource-container-none"}
+     };
+     return bgs;
+    }
+    
+    private String getBackgroundImageRamdom() {
+        String bgMap[][] = getBackgrounds();
+        int which = SbUtilities.getRandomNumber(bgMap.length);
+        return bgMap[which][1];
     }
 
     private static final String DEACTIVATE_STUDENT_SQL =
