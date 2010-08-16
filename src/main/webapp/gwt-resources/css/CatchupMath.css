@@ -803,7 +803,8 @@ img.resource-item-complete {
         margin-top: 10px;
 }
 .context-change-message b {
-        font-size: 120%;
+        font-size: 1.3em;
+        color: #0066AA;
 }
 .context-change-message a:link,.context-change-message a:visited,.context-change-message a:active,.context-change-message a:hover {
         margin-left: 10px;
@@ -819,6 +820,10 @@ img.resource-item-complete {
         list-style: disc;
         list-style-position: inside;
 }
+.suggest-div {
+	display: none;
+}
+
 .auto-student-registration-forgot-password p {
         padding: 10px;
 }
@@ -1056,3 +1061,9 @@ img.resource-item-complete {
 	text-align: center;
 	color: #CCCCCC;
 }
+
+
+.cm-info-popup-box  .x-info-body {
+	font-size: 1.3em;
+}
+

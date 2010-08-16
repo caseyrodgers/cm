@@ -1,5 +1,6 @@
 package hotmath.gwt.cm.client.ui.context;
 
+import hotmath.gwt.cm.client.ui.HelpWindow;
 import hotmath.gwt.cm_rpc.client.rpc.InmhItemData;
 import hotmath.gwt.cm_tools.client.ui.CmMainPanel;
 import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
@@ -41,7 +42,18 @@ public class ContextChangeMessage extends CmWindow {
 
         add(lc);
 
-        Button close = new Button("Close");
+        
+        Button help = new Button("Help");
+        help.addSelectionListener(new SelectionListener<ButtonEvent>() {
+
+            @Override
+            public void componentSelected(ButtonEvent ce) {
+                new HelpWindow().setVisible(true);
+            }
+        });
+        addButton(help);
+        
+        Button close = new Button("Begin Lesson");
         close.addSelectionListener(new SelectionListener<ButtonEvent>() {
 
             @Override
@@ -50,6 +62,7 @@ public class ContextChangeMessage extends CmWindow {
             }
         });
         addButton(close);
+
         
         /** Perform operations when ever the window is dismissed
          * 

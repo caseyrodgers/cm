@@ -16,6 +16,7 @@ import hotmath.gwt.cm_tools.client.ui.AutoTestWindow;
 import hotmath.gwt.cm_tools.client.ui.CmLogger;
 import hotmath.gwt.cm_tools.client.ui.CmMainPanel;
 import hotmath.gwt.cm_tools.client.ui.ContextController;
+import hotmath.gwt.cm_tools.client.ui.InfoPopupBox;
 import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
 import hotmath.gwt.cm_tools.client.ui.context.CmContext;
 import hotmath.gwt.cm_tools.client.util.GenericVideoPlayerForMona;
@@ -42,6 +43,7 @@ import com.extjs.gxt.ui.client.event.MessageBoxEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.Html;
+import com.extjs.gxt.ui.client.widget.InfoConfig;
 import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.Window;
 import com.extjs.gxt.ui.client.widget.button.Button;
@@ -155,12 +157,20 @@ public class PrescriptionContext implements CmContext {
                 else {
                 	msg = "Please complete all required practice activities.";
                 }
-                CatchupMathTools.showAlert("More Practice Required",msg,new CmAsyncRequestImplDefault() {
-                    @Override
-                    public void requestComplete(String requestData) {
-                        ((PrescriptionCmGuiDefinition) CmMainPanel.__lastInstance.cmGuiDef)._guiWidget.expandResourcePracticeProblems();
-                    }
-                });
+                
+                
+
+                /** make resource area is clean
+                 * 
+                 */
+                InfoPopupBox.display("More Practice Required", msg);
+                ((PrescriptionCmGuiDefinition) CmMainPanel.__lastInstance.cmGuiDef)._guiWidget.expandResourcePracticeProblems();
+//                CatchupMathTools.showAlert("More Practice Required",msg,new CmAsyncRequestImplDefault() {
+//                    @Override
+//                    public void requestComplete(String requestData) {
+//                        ((PrescriptionCmGuiDefinition) CmMainPanel.__lastInstance.cmGuiDef)._guiWidget.expandResourcePracticeProblems();
+//                    }
+//                });
                 ContextController.getInstance().setCurrentContext(PrescriptionContext.this);
 
                 return;
