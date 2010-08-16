@@ -17,8 +17,8 @@ import java.util.List;
  *
  */
 public class CmInmhStandardResources extends ArrayList<PrescriptionSessionDataResource>{
-    
-    
+	
+	
     public CmInmhStandardResources() {
         
         /** Add the standard Activities
@@ -42,10 +42,30 @@ public class CmInmhStandardResources extends ArrayList<PrescriptionSessionDataRe
          * 
          */
         t = "flashcard";
+
+        List<SubMenuItem> menu = new ArrayList<SubMenuItem>();
+        
         resourceType = new PrescriptionSessionDataResource();
+		
+		resourceType = new PrescriptionSessionDataResource();
         resourceType.setType(t);
         resourceType.setLabel("Flash Cards and Skill Builders");
         resourceType.setDescription("Flash Card and Skill Builder resources that might help you");
+        
+        
+        SubMenuItem subMainEnglish = new SubMenuItem("English");
+        menu.add(subMainEnglish);
+        subMainEnglish.setChildren(createEnglishSubmenu(t,resourceType));
+        
+        SubMenuItem subMainSpanish = new SubMenuItem("Spanish");
+        menu.add(subMainSpanish);
+        subMainSpanish.setChildren(createSpanishSubmenu(t,resourceType));
+        
+        resourceType.setSubMenuItems(menu);
+        add(resourceType);
+    }	
+    
+	private List<SubMenuItem>  createEnglishSubmenu(String t,PrescriptionSessionDataResource resourceType) {
         
         List<SubMenuItem> subMenu = new ArrayList<SubMenuItem>();
         SubMenuItem si = new SubMenuItem("Fractions");
@@ -79,27 +99,24 @@ public class CmInmhStandardResources extends ArrayList<PrescriptionSessionDataRe
         si.getItemData().add(new InmhItemData(t,"/learning_activities/interactivities/flashcard_comparing_quantities.swf", "Comparing Quantities"));
         subMenu.add(si);
         
-        si = new SubMenuItem(null);
+        si = new SubMenuItem("Multiplication");
         si.getItemData().add(new InmhItemData(t,"/learning_activities/interactivities/flashcard_multi.swf", "Multiplication Facts"));
+        si.getItemData().add(new InmhItemData(t,"/learning_activities/interactivities/flashcard_dist_prop.swf", "The Distributive Property"));
         subMenu.add(si);
         
         si = new SubMenuItem(null);
         si.getItemData().add(new InmhItemData(t,"/learning_activities/interactivities/prime_factorization.swf", "Prime Factorization"));
         subMenu.add(si);
         
-        List<SubMenuItem> subMenu2 = new ArrayList<SubMenuItem>();
-        SubMenuItem subMainEnglish = new SubMenuItem("English");
-        SubMenuItem subMainSpanish = new SubMenuItem("Spanish");
-        subMenu2.add(subMainEnglish);
-        subMenu2.add(subMainSpanish);
-        
-        subMainEnglish.setChildren(subMenu);
-        
+        return subMenu;
+	}
+    
+	private List<SubMenuItem> createSpanishSubmenu(String t,PrescriptionSessionDataResource resourceType) {
         /** Add the Standard Spanish Flash Cards
          * 
          */
-        subMenu = new ArrayList<SubMenuItem>();
-        si = new SubMenuItem("Fracciones");
+		List<SubMenuItem> subMenu = new ArrayList<SubMenuItem>();
+		SubMenuItem si= new SubMenuItem("Fracciones");
         
         si.getItemData().add(new InmhItemData(t,"/learning_activities/interactivities/flashcard_reducingfractions.swf?lang=es", "Reduciendo Fracciones"));
         si.getItemData().add(new InmhItemData(t,"/learning_activities/interactivities/flashcard_addfrac_like.swf?lang=es", "Sumando Fracciones Semejantes"));
@@ -122,10 +139,6 @@ public class CmInmhStandardResources extends ArrayList<PrescriptionSessionDataRe
         si.getItemData().add(new InmhItemData(t,"/learning_activities/interactivities/flashcard_multi.swf?lang=es", "Hechos de la Multiplicaci&oacute;n"));
         subMenu.add(si);
         
-        subMainSpanish.setChildren(subMenu);
-        
-        resourceType.setSubMenuItems(subMenu2);
-
-        add(resourceType);
-    }
+        return subMenu;
+	}
 }
