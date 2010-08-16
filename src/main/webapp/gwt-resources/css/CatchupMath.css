@@ -773,6 +773,14 @@ img.resource-item-complete {
 .prescription-cm-gui-definition-resource-panel .resource-button {
         margin-top: 10px;
 }
+.prescription-cm-gui-definition-resource-panel .resource-separator {
+	color: #94C3F5; /** #0071BC; */
+	padding: 0; 
+	margin: auto;
+	margin-top: 20px; 
+	width: 50%;
+}
+
 .resource-menu-button-complete-icon {
         background: url(/gwt-resources/images/check_black.png) no-repeat center
                 left !important;
