@@ -225,8 +225,6 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
 		
 		_fsProgram.setLayout(fl);
 		
-        getAccountInfoRPC(cmAdminMdl.getId());
-		
 		progStore = new ListStore <StudyProgramExt> ();
 		getStudyProgramListRPC(progStore);
 		progCombo = programCombo(progStore, _fsProgram);
@@ -241,6 +239,8 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
         getChapterListRPC((stuMdl != null)?stuMdl.getProgram().getProgramType():null, subjectId, false, chapStore);
 		chapCombo = chapterCombo(chapStore);
 		_fsProgram.add(chapCombo);        
+
+		getAccountInfoRPC(cmAdminMdl.getId());
 
 		advOptionsBtn = advancedOptionsBtn();
 		advOptionsBtn.disable();
@@ -758,8 +758,6 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
 	}
 
     protected void getAccountInfoRPC(final Integer uid) {
-		inProcessCount++;
-
         new RetryAction<AccountInfoModel>() {
             @Override
             public void attempt() {
@@ -771,7 +769,6 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
             }
 
             public void oncapture(AccountInfoModel ai) {
-        		inProcessCount--;
                 acctInfoMdl = ai;
             }
         }.register();        
