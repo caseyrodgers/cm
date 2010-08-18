@@ -2,6 +2,7 @@ package hotmath.gwt.cm_tools.client.ui;
 
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
+import hotmath.gwt.cm_tools.client.model.AccountInfoModel;
 import hotmath.gwt.cm_tools.client.model.ChapterModel;
 import hotmath.gwt.cm_tools.client.model.CmAdminModel;
 import hotmath.gwt.cm_tools.client.model.GroupInfoModel;
@@ -23,6 +24,7 @@ import hotmath.gwt.shared.client.eventbus.EventBus;
 import hotmath.gwt.shared.client.eventbus.EventType;
 import hotmath.gwt.shared.client.rpc.RetryAction;
 import hotmath.gwt.shared.client.rpc.action.AddStudentAction;
+import hotmath.gwt.shared.client.rpc.action.GetAccountInfoForAdminUidAction;
 import hotmath.gwt.shared.client.rpc.action.GetChaptersForProgramSubjectAction;
 import hotmath.gwt.shared.client.rpc.action.GetProgramDefinitionsAction;
 import hotmath.gwt.shared.client.rpc.action.GetSubjectDefinitionsAction;
@@ -77,6 +79,7 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
 	private StudentModelI stuMdl;
 	private StudentSettingsModel stuSettingsMdl;
 	protected CmAdminModel cmAdminMdl;
+	private AccountInfoModel acctInfoMdl;
 	private int inProcessCount;
 	private String subjectId;
 	
@@ -190,7 +193,7 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
 		}
 		_fsProfile.add(userName);
 		
-		TextField<String> passCode = new TextField<String>();
+	    TextField<String> passCode = new TextField<String>();
 		passCode.setFieldLabel("Passcode");
 		passCode.setEmptyText("-- enter passcode --");
 		passCode.setAllowBlank(false);
@@ -221,6 +224,8 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
 		fl.setDefaultWidth(fL.getDefaultWidth());
 		
 		_fsProgram.setLayout(fl);
+		
+        getAccountInfoRPC(cmAdminMdl.getId());
 		
 		progStore = new ListStore <StudyProgramExt> ();
 		getStudyProgramListRPC(progStore);
@@ -302,6 +307,12 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
                     ssm.setShowWorkRequired(stuSettingsMdl.getShowWorkRequired());
                     ssm.setStopAtProgramEnd(stuSettingsMdl.getStopAtProgramEnd());
                     ssm.setTutoringAvailable(stuSettingsMdl.getTutoringAvailable());
+                }
+                else {
+                	/** use account data to set tutoring available */
+                	if (acctInfoMdl != null) {
+                	    ssm.setTutoringAvailable(acctInfoMdl.getIsTutoringEnabled());
+                	}
                 }
                 advOptionsMap.put(StudentModelExt.PASS_PERCENT_KEY, passPercent);
                 advOptionsMap.put(StudentModelExt.SETTINGS_KEY, ssm);
@@ -746,11 +757,31 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
         }.register();
 	}
 
+    protected void getAccountInfoRPC(final Integer uid) {
+		inProcessCount++;
+
+        new RetryAction<AccountInfoModel>() {
+            @Override
+            public void attempt() {
+                CmServiceAsync s = CmShared.getCmService();
+                GetAccountInfoForAdminUidAction action = new GetAccountInfoForAdminUidAction(uid);
+                setAction(action);
+                CmLogger.info("AccountInfoPanel: reading admin info RPC");
+                s.execute(action,this);
+            }
+
+            public void oncapture(AccountInfoModel ai) {
+        		inProcessCount--;
+                acctInfoMdl = ai;
+            }
+        }.register();        
+    }
+    
 	/** Perform the form save operation and display any required validation.
 	 * 
 	 * Throws CmExeptionValidationFailed on failed validation attempt.
 	 * 
-	 * if callback == null, then default operation which is saving data is performed.
+	 * if callback == null, then default operation, saving data, is performed.
 	 * If callback is provided, then after validation of form callback is called.
 	 * 
 	 * 
