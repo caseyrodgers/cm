@@ -408,8 +408,11 @@ order by bt.title_number
 
 select sd.*
 from HA_SUBJ_DEF sd, HA_TEST_DEF td
-where sd.id = td.subj_id and td.is_active = 1 
-and td.prog_id = ? and sd.for_school = ?
+where sd.id = td.subj_id 
+and td.is_active = 1 
+and td.prog_id = ? 
+and sd.for_school = ?
+order by td.load_order
 
 
 .key=SELECT_GROUPS_SQL
