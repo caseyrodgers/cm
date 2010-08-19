@@ -129,4 +129,10 @@
        overflowToDisk="false">
 </cache>
 
+<cache name="LESSON_RANKINGS"
+       maxElementsInMemory="1"
+       overflowToDisk="false">
+</cache>
+
+
 </ehcache>

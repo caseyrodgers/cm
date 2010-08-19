@@ -27,16 +27,10 @@ public class AssessmentPrescriptionSession {
 	static Logger logger = Logger.getLogger(AssessmentPrescriptionSession.class);
 	
     List<SessionData> _pids = new ArrayList<SessionData>();
-    String name;
     AssessmentPrescription prescription;
 
-    public AssessmentPrescriptionSession(AssessmentPrescription prescription, String name) {
-        this.name = name;
+    public AssessmentPrescriptionSession(AssessmentPrescription prescription) {
         this.prescription = prescription;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     public void addSolution(String pid, INeedMoreHelpItem item) {
@@ -46,16 +40,12 @@ public class AssessmentPrescriptionSession {
         _pids.add(new SessionData(item, pid, 0, 0));
     }
 
-    public String getName() {
-        return name;
-    }
-
     public List<SessionData> getSessionItems() {
         return _pids;
     }
 
     public String toString() {
-        return name + ", " + getTopic();
+        return getTopic();
     }
 
     /**

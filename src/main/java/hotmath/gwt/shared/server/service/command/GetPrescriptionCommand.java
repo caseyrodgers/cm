@@ -135,7 +135,6 @@ public class GetPrescriptionCommand implements ActionHandler<GetPrescriptionActi
             __logger.debug("Getting prescription resource items: " + action);
             sessionData.setTopic(sess.getTopic());
             sessionData.setSessionNumber(sessionNumber);
-            sessionData.setName(sess.getName());
             for (INeedMoreHelpResourceType t : sess.getPrescriptionInmhTypesDistinct(conn)) {
 
                 // skip the workbooks for now.

@@ -67,7 +67,10 @@ public class CmCacheManager  {
 		INMH_ITEMS,
 		
 		/** Lists of solutions that can be used to create lesson RPPS */
-		WOOKBOOK_POOL
+		WOOKBOOK_POOL,
+		
+		/** Map of lesson files and their sort rankings */
+		LESSON_RANKINGS
 	};
 
 	private void flushCache() {
