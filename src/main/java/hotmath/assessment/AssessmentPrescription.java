@@ -195,7 +195,7 @@ public class AssessmentPrescription {
 	static public int getLessonRank(Map<String, Integer> map, String name) {
 		Integer rank = map.get(name);
 		if(rank == null)
-			rank = 999;  /** end of list */
+			rank = 999999;  /** end of list */
 		return rank;
 	}
 	static public  Map<String, Integer> getLessonRankings(final Connection conn) throws Exception {
