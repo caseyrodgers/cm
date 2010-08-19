@@ -278,7 +278,7 @@ public class PrescriptionContext implements CmContext {
                 return;
 
             } else {
-                msg = "Would you like to take your next quiz?";
+                msg = "Are you ready to be quizzed again on this section?";
                 testSegmentToLoad = UserInfo.getInstance().getTestSegment();
             }
 
