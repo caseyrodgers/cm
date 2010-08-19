@@ -165,25 +165,29 @@ public class QuizContext implements CmContext {
             int total = runInfo.getTotal();
 
             int lessonCount = runInfo.getSessionCount();
-            String reviewLessons = "You have " + lessonCount + " review " + (lessonCount == 1 ? "topic" : "topics")
-                    + " to study before advancing to the next quiz.<br/>";
+            String reviewLessons = "<p class='prescription-info'> " + 
+                                    "You have " + lessonCount + " review " + (lessonCount == 1 ? "topic" : "topics") +
+                                    " to study before advancing to the next quiz." +
+                                    "</p>";
 
             String msg = "";
             if (runInfo.getPassed()) {
                 if (correct != total) {
-                    msg += "Your quiz score: " + runInfo.getTestCorrectPercent() + "%</br>"
-                            + "Congratulations, you passed!</br>" + reviewLessons + "</br>";
+                    msg += "<p>Your quiz score: <span class='pass-percent'>" + runInfo.getTestCorrectPercent() + "%</span></p>"
+                         + "<p class='pass-congrat'>Congratulations, you passed!</p>" 
+                         + reviewLessons;
                 } else {
-                    msg += "Your quiz score: " + runInfo.getTestCorrectPercent() + "%</br>"
-                            + "<br/>You will now be given a quiz for the next section!</br>";
+                    msg += "<p>Your quiz score: <span class='pass-percent'>" + runInfo.getTestCorrectPercent() + "%</span></p>" +
+                           "<p class='info'>You will now be given a quiz for the next section!</p>";
                 }
             } else {
                 // did not pass
-                msg += "Your quiz score: " + runInfo.getTestCorrectPercent() + "%</br>" + "You need "
-                        + UserInfo.getInstance().getPassPercentRequired() + "% to pass.</br>" + reviewLessons + "</br>";
+                msg += "<p>Your quiz score: <span class='pass-percent'>" + runInfo.getTestCorrectPercent() + "%</span></p>" + 
+                       "<p>You need " + UserInfo.getInstance().getPassPercentRequired() + "% to pass.</p>" + 
+                       reviewLessons;
             }
 
-            Html html = new Html("<p>" + msg + "</p>");
+            Html html = new Html(msg);
             window.add(html);
 
             Button close = new Button();

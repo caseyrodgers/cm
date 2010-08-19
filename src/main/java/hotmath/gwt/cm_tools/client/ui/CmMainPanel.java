@@ -42,7 +42,7 @@ public class CmMainPanel extends LayoutContainer {
 	 * Main Catchup Math application area.
 	 * 
 	 * Including a west component with a title and a main center area with user
-	 * settable background image.
+	 * set-able background image.
 	 * 
 	 * Each form/context is responsible for calling updateGui(context) when the
 	 * context is full ready Meaning, any async data has been fetched and
@@ -83,8 +83,7 @@ public class CmMainPanel extends LayoutContainer {
 		westData.setSplit(false);
 		westData.setCollapsible(true);
 
-		_westPanel.add(cmGuiDef.getWestWidget(), new BorderLayoutData(
-				LayoutRegion.CENTER));
+		_westPanel.add(cmGuiDef.getWestWidget(), new BorderLayoutData(LayoutRegion.CENTER));
 
 		add(_westPanel, westData);
 

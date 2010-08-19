@@ -620,16 +620,27 @@ img.resource-item-complete {
 }
 .auto-assignment-window p {
         padding: 10px;
-}
-.auto-assignment-window p {
         font-size: 1.2em;
-        margin-bottom: 5px;
-        padding: 10px;
 }
+
 .auto-assignment-window b {
         font-size: 1.3em;
         font-weight: bold;
 }
+
+.auto-assignment-window .pass-percent {
+	font-size: 2em;
+	color: red;
+}
+
+.auto-assignment-window .prescription-info {
+	margin: 10px 0 10px 0;
+}
+
+.auto-assignment-window .info {
+	padding: 10px;
+}
+
 .debug-hide {
         color: white;
         display: none;
@@ -1066,4 +1077,37 @@ img.resource-item-complete {
 .cm-info-popup-box  .x-info-body {
 	font-size: 1.3em;
 }
+
+
+.location-bar a {
+	color: white;
+	font-size: .8em;
+}
+
+.location-bar a.normal {
+	color: white;
+	font-size: .8em;
+}
+
+.location-bar a.completed {
+	color: black;
+	font-size: .8em;
+}
+
+.location-bar a.todo {
+	color: blue;
+	font-size: .8em;
+}
+
+.location-bar a:link
+ {
+	text-decoration: none;
+}
+
+.location-bar a:hover,
+.location-bar a:active
+ {
+	text-decoration: underline;
+}
+
 
