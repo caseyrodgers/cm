@@ -415,6 +415,11 @@ public class PrescriptionReport {
             String logFile = null;
             String programName=null;
             CmProgram program=null;
+
+
+
+
+
             for(String s: args) {
             	if(s.startsWith("-log="))
             		logFile = s.split("=")[1];
