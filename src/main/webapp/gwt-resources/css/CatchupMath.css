@@ -629,8 +629,9 @@ img.resource-item-complete {
 }
 
 .auto-assignment-window .pass-percent {
-	font-size: 2em;
-	color: red;
+	font-size: 1.2em;
+	font-weight: bold;
+	color: #B1334E;
 }
 
 .auto-assignment-window .prescription-info {
@@ -1111,3 +1112,14 @@ img.resource-item-complete {
 }
 
 
+
+
+.x-window-plain .x-window-mc {
+	background-color: white;
+	font-family: tahoma;
+}
+
+.x-window-mc {
+	background-color: white;
+	font-family: tahoma;	
+}

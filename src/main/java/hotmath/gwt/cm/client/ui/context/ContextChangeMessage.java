@@ -20,7 +20,7 @@ public class ContextChangeMessage extends CmWindow {
         setStyleName("context-change-message");
         setHeading("Current Topic");
         setModal(true);
-        setSize(300, 180);
+        setSize(330, 150);
 
         LayoutContainer lc = new LayoutContainer();
         String html = "<p>Your topic for review and practice is now:</p>" + "<b>" + lesson + "</b>";

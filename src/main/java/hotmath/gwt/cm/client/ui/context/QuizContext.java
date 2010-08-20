@@ -31,6 +31,8 @@ import com.extjs.gxt.ui.client.event.IconButtonEvent;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.MessageBoxEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
+import com.extjs.gxt.ui.client.event.WindowEvent;
+import com.extjs.gxt.ui.client.event.WindowListener;
 import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.Html;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
@@ -155,11 +157,11 @@ public class QuizContext implements CmContext {
             EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_MODAL_WINDOW_OPEN));
             window.setModal(true);
             window.setAutoHeight(true);
-            window.setWidth(350);
+            window.setWidth(330);
             window.setClosable(false);
             window.setResizable(false);
             window.setStyleName("auto-assignment-window");
-            window.setHeading("Quiz results");
+            window.setHeading("Quiz Results");
 
             int correct = runInfo.getCorrect();
             int total = runInfo.getTotal();
@@ -183,7 +185,7 @@ public class QuizContext implements CmContext {
             } else {
                 // did not pass
                 msg += "<p>Your quiz score: <span class='pass-percent'>" + runInfo.getTestCorrectPercent() + "%</span></p>" + 
-                       "<p>You need " + UserInfo.getInstance().getPassPercentRequired() + "% to pass.</p>" + 
+                       "<p>You need to pass: <span class='pass-percent'>" + UserInfo.getInstance().getPassPercentRequired() + "%</span></p>" + 
                        reviewLessons;
             }
 
@@ -245,19 +247,45 @@ public class QuizContext implements CmContext {
     }
 
     public void doNext() {
-        String msg = "Did you work out your answers carefully?";
+        
         EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_MODAL_WINDOW_OPEN));
-        MessageBox.confirm("Ready to Check Quiz?", msg, new Listener<MessageBoxEvent>() {
-            public void handleEvent(MessageBoxEvent be) {
-                if (be.getButtonClicked().getText().equals("Yes")) {
-                    doCheckTest();
-                }
-                else {
-                	EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_MODAL_WINDOW_CLOSED));
-                }
-            }
-        });
-
+        
+        class MyCmWindow extends CmWindow {
+        	public MyCmWindow() {
+                setSize(330,120);
+                setStyleName("quiz-context-msg-window");
+                
+                setModal(true);
+                setHeading("Ready to Check Quiz?");
+                add(new Html("<p style='padding: 15px 10px;'>Did you work out your answers carefully?</p>")); 
+                
+                addButton(new Button("Yes", new SelectionListener<ButtonEvent>() {
+                	@Override
+                	public void componentSelected(ButtonEvent ce) {
+                		close();
+                        doCheckTest();                		
+                	}
+				}));
+                
+                addButton(new Button("No", new SelectionListener<ButtonEvent>() {
+                	@Override
+                	public void componentSelected(ButtonEvent ce) {
+                		close();
+                	}
+                }));
+                
+                addWindowListener(new WindowListener() {
+                	@Override
+                	public void windowDeactivate(WindowEvent we) {
+                		EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_MODAL_WINDOW_CLOSED));
+                	}
+                });
+                
+                setVisible(true);
+        	}
+        }
+        
+        new MyCmWindow();
     }
 
     public void doCheckTest() {

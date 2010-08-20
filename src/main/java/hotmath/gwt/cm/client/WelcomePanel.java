@@ -4,6 +4,7 @@ import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.util.UserInfo;
 
+import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
 import com.extjs.gxt.ui.client.Style.LayoutRegion;
 import com.extjs.gxt.ui.client.Style.Scroll;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
@@ -33,13 +34,13 @@ public class WelcomePanel extends LayoutContainer {
         main.setHeading("Welcome to Catchup Math");
 
         if (CmShared.getQueryParameterValue("type").equals("1")) {
-            main.setSize(370,180);
+            main.setSize(370,190);
             main.add(new SampleSessionInfo(), new BorderLayoutData(LayoutRegion.CENTER));
         } else if (CmShared.getQueryParameterValue("type").equals("2") || UserInfo.getInstance().getViewCount() == 0) {
-            main.setSize(330, 190);
+            main.setSize(330, 200);
             main.add(new StandardInfo(), new BorderLayoutData(LayoutRegion.CENTER));
         } else {
-            main.setSize(350, 190);
+            main.setSize(350, 200);
             main.add(new StandardInfo(), new BorderLayoutData(LayoutRegion.CENTER, 200));
         }
 
@@ -51,6 +52,9 @@ public class WelcomePanel extends LayoutContainer {
             }
         });
         main.addButton(_goBtn);
+        main.setButtonAlign(HorizontalAlignment.CENTER);
+        main.setStyleAttribute("background", "#DEDEDE");
+        main.setStyleAttribute("padding", "0 5px 0 5px");
 
         add(main);
     }
@@ -101,9 +105,9 @@ public class WelcomePanel extends LayoutContainer {
      */
     class StandardInfo extends Html {
         public StandardInfo() {
-            String html = "<p>You will start this session with a quiz.</p>"
+            String html = "<p>You will start this Catchup Math session with a quiz.</p>"
                         + "<p>Please work out your answers carefully using our whiteboard or pencil and paper.</p>"
-                        + "<a style='display: block;margin-left: 10px;text-decoration: underline;' href='#' onclick='showMotivationalVideo_Gwt();return false;'>Watch motivational video</a>";
+                        + "<a style='display: block;margin-left: 10px;text-decoration: underline;color: #00A8FF;' href='#' onclick='showMotivationalVideo_Gwt();return false;'>Watch motivational video</a>";
             
             setHtml(html);
         }
