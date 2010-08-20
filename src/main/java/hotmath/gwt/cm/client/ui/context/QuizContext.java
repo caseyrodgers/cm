@@ -276,7 +276,7 @@ public class QuizContext implements CmContext {
                 
                 addWindowListener(new WindowListener() {
                 	@Override
-                	public void windowDeactivate(WindowEvent we) {
+                	public void windowHide(WindowEvent we) {
                 		EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_MODAL_WINDOW_CLOSED));
                 	}
                 });
