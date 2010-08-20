@@ -103,7 +103,9 @@ public class CustomProgramDesignerDialog extends CmWindow {
             enableForm(true);
         else 
             enableForm(_isEditable);
-        
+
+        _listAll.getStore().sort("lesson", SortDir.ASC);
+
         setVisible(true);
     }
 
@@ -138,22 +140,9 @@ public class CustomProgramDesignerDialog extends CmWindow {
         _listAll.setTemplate(template);
 
         ListStore<CustomLessonModel> store = new ListStore<CustomLessonModel>();
-        store.setStoreSorter(new StoreSorter<CustomLessonModel>() {
-            @Override
-            public int compare(Store<CustomLessonModel> store, CustomLessonModel m1, CustomLessonModel m2,
-                    String property) {
-                    if (property != null) {
-                        String v1 = m1.getLesson();
-                        String v2 = m2.getLesson();
-                        return comparator.compare(v1, v2);
-                    }            
-                    return super.compare(store, m1, m2, property);
-                }            
-        });
         _listSelected.setStore(store);
         _listSelected.setTemplate(template);
 
-         
         new ListViewDropTarget(_listAll);
         ListViewDropTarget target = new ListViewDropTarget(_listSelected);
         target.setFeedback(Feedback.INSERT);
@@ -298,7 +287,6 @@ public class CustomProgramDesignerDialog extends CmWindow {
                 __allLessons = allLessons;
                 _listAll.getStore().removeAll();
                 _listAll.getStore().add(__allLessons);
-				_listAll.getStore().sort("lesson", SortDir.ASC);
             }
         }.register();
     }
@@ -339,7 +327,6 @@ public class CustomProgramDesignerDialog extends CmWindow {
                 }
                 _listSelected.getStore().removeAll();
                 _listSelected.getStore().add(lessons);
-				_listSelected.getStore().sort("lesson", SortDir.ASC);
 
                 CmBusyManager.setBusy(false);
             }
