@@ -219,6 +219,11 @@ public class ManageGroupsWindow extends CmWindow {
             public void componentSelected(ButtonEvent ce) {
                 final GroupInfoModel gim = getGroupInfo();
                 if (gim != null) {
+
+                	// TODO: adminId == 0 is used to indicate a "global/default" group - should use an attribute instead
+                	if (gim.getAdminId() == 0)
+                		gim.setAdminId(adminModel.getId());
+                	
                     new ManageGroupsAssignStudents(adminModel, gim,new CmAsyncRequestImplDefault() {
 						@Override
 						public void requestComplete(String requestData) {
