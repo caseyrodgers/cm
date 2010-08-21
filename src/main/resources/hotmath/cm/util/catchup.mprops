@@ -432,6 +432,30 @@ WHERE      g.admin_id = 0
 ORDER BY   name asc
 
 
+.key=STUDENTS_IN_GROUP
+
+SELECT     g.id as group_id, u.uid, u.user_name
+FROM       HA_ADMIN h
+JOIN       HA_USER u
+  ON       u.admin_id = h.aid and u.is_active = 1 and u.is_auto_create_template = 0
+JOIN       CM_GROUP g
+  ON       g.id = u.group_id
+WHERE      h.aid = ? and g.name = ?
+ORDER BY   user_name
+
+    		
+.key=STUDENTS_NOT_IN_GROUP
+
+SELECT     g.id as group_id, u.uid, u.user_name, g.name as group_name
+FROM       HA_ADMIN h
+JOIN       HA_USER u
+  ON       u.admin_id = h.aid and u.is_active = 1 and u.is_auto_create_template = 0
+LEFT JOIN  CM_GROUP g
+  ON       g.id = u.group_id
+WHERE      h.aid = ? and (g.name <> ? or g.name is null)
+ORDER BY   user_name
+
+
 .key=ACCOUNT_INFO_SQL
 
 select s.id,
