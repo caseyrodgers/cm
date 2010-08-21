@@ -52,7 +52,10 @@ public class EndOfProgramHandler {
             conn = HMConnectionPool.getConnection();
             StudentUserProgramModel programCurr = upDao.loadProgramInfoCurrent(conn,student.getUid());
 
-            if(programCurr.getTestDefId() == CmProgram.PREALG_PROF.getDefId() 
+            if(programCurr.getTestDefId() == CmProgram.ESSENTIALS.getDefId()){
+                updateProgram(CmProgram.PREALG_PROF.getSubject(),CmProgram.PREALG_PROF.getProgramType(),null);                
+            }
+            else if(programCurr.getTestDefId() == CmProgram.PREALG_PROF.getDefId() 
                     || programCurr.getTestDefId() == CmProgram.PREALG_PROF_V1.getDefId()) {
                 updateProgram(CmProgram.ALG1_PROF.getSubject(),CmProgram.ALG1_PROF.getProgramType(),null);                
             }
