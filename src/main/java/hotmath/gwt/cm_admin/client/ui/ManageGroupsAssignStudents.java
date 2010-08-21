@@ -137,9 +137,10 @@ class ManageGroupsAssignStudents extends CmWindow {
 		RowData data = new RowData(.5, 1);
 		data.setMargins(new Margins(5));
 
-		lc.add(new MyListContainer(_listInGroup, "Students In Group", true),
-				data);
 		lc.add(new MyListContainer(_listAll, "Students Not In Group", false),
+				data);
+
+		lc.add(new MyListContainer(_listInGroup, "Students In Group", true),
 				data);
 
 		add(lc, new BorderLayoutData(LayoutRegion.CENTER));
@@ -193,7 +194,6 @@ class ManageGroupsAssignStudents extends CmWindow {
 				action.setGroupStudents(_listInGroup.getStore().getModels());
 				setAction(action);
 				CmShared.getCmService().execute(action, this);
-
 			}
 
 			@Override
