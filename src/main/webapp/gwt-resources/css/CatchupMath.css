@@ -1123,3 +1123,13 @@ img.resource-item-complete {
 	background-color: white;
 	font-family: tahoma;	
 }
+
+.required-practice-complete-dialog p {
+	padding: 10px;
+	margin: 0;
+}
+
+.user-program-advancement-panel .prog-advance-options {
+	padding: 10px;
+}
+

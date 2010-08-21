@@ -41,9 +41,11 @@ public class ResourceViewerImplRppFlashCard extends ResourceViewerImplActivity  
     
     static public void flash_RppComplete() {
     	CmLogger.info("flash_RppComplete called");
-    	__lastItemData.setViewed(true);
-    	EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_REQUIRED_COMPLETE,__lastItemData));
-    	__lastItemData.setViewed(true);
+    	if(!__lastItemData.isViewed()) {
+    		__lastItemData.setViewed(true);
+    		EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_REQUIRED_COMPLETE,__lastItemData));
+    		__lastItemData.setViewed(true);
+    	}
     }
     
     /** Register two methods to handle the Flash RPA integration.

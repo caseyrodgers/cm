@@ -163,8 +163,12 @@ public class PrescriptionContext implements CmContext {
                 /** make resource area is clean
                  * 
                  */
-                InfoPopupBox.display("More Practice Required", msg);
                 ((PrescriptionCmGuiDefinition) CmMainPanel.__lastInstance.cmGuiDef)._guiWidget.expandResourcePracticeProblems();
+                
+                new RequiredPracticeCompleteDialog("More Practice Required", msg);
+                
+                // InfoPopupBox.display("More Practice Required", msg);
+                
 //                CatchupMathTools.showAlert("More Practice Required",msg,new CmAsyncRequestImplDefault() {
 //                    @Override
 //                    public void requestComplete(String requestData) {

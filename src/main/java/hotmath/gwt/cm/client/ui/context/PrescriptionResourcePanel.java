@@ -22,6 +22,7 @@ import java.util.Map;
 import com.extjs.gxt.ui.client.Style.Scroll;
 import com.extjs.gxt.ui.client.fx.FxConfig;
 import com.extjs.gxt.ui.client.widget.Html;
+import com.extjs.gxt.ui.client.widget.InfoConfig;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.VerticalPanel;
 
@@ -56,7 +57,7 @@ public class PrescriptionResourcePanel extends LayoutContainer {
 
     
     public void buildUi(PrescriptionData pdata) {
-    	
+    	this.pdata = pdata;
     	/** have switch to keep development GUI in source
     	 * 
     	 */
@@ -246,10 +247,11 @@ public class PrescriptionResourcePanel extends LayoutContainer {
         EventBus.getInstance().addEventListener(new CmEventListenerImplDefault() {
             public void handleEvent(CmEvent event) {
                 if (event.getEventType() == EventType.EVENT_TYPE_REQUIRED_COMPLETE) {
-                    __instance.indicateRequiredPracticeComplete();
-                    __instance.resourceButtons.get("practice").indicateCompletion();
-                    
-                    InmhItemData id = (InmhItemData)event.getEventData();
+                    InmhItemData id = (InmhItemData)event.getEventData();                	
+                	/** if first time completing this RPP/RPA display message to user
+                	 * 
+                	 */
+                	__instance.resourceButtons.get("practice").indicateCompletion();
                     String title=null;
                     String msg=null;
                     if(id.getWidgetJsonArgs() != null) {
@@ -260,8 +262,9 @@ public class PrescriptionResourcePanel extends LayoutContainer {
                     	title = "Problem Complete";
                     	msg = "You have completed this practice problem.";
                     }
-                    
-                    InfoPopupBox.display(new CmInfoConfig(title, msg));
+
+                    InfoPopupBox.display(title, msg);
+                    //new RequiredPracticeCompleteDialog(title, msg);
                 }
             }
         });

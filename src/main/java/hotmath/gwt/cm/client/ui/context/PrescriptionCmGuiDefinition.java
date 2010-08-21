@@ -317,8 +317,10 @@ public class PrescriptionCmGuiDefinition implements CmGuiDefinition {
      * @param pid
      */
     static public void solutionHasBeenViewed_Gwt(String eventName) {
-        __last_solution_item.setViewed(true);
-        EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_REQUIRED_COMPLETE, __last_solution_item));
+    	if(CmShared.getQueryParameter("debug") != null || !__last_solution_item.isViewed()) {
+    		__last_solution_item.setViewed(true);
+    		EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_REQUIRED_COMPLETE, __last_solution_item));
+    	}
     }
 
     /**
