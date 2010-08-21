@@ -52,7 +52,15 @@ public class CmAdminDao {
 
     private static final Logger logger = Logger.getLogger(CmAdminDao.class);
 
+    private static CmAdminDao instance;
+    
     public CmAdminDao() {
+    	instance = this;
+    }
+
+    public static CmAdminDao getInstance() {
+        if (instance == null) new CmAdminDao();
+        return instance;
     }
 
     // TODO add Subject selection by school type (non-college, college)
@@ -109,6 +117,7 @@ public class CmAdminDao {
     	}
     	return null;
     }
+
     public CmList<GroupInfoModel> getActiveGroups(final Connection conn, Integer adminUid) throws Exception {
         CmList<GroupInfoModel> l = null;
 
@@ -140,18 +149,13 @@ public class CmAdminDao {
      * @return
      * @throws Exception
      */
-    public CmList<StudentModelExt> getGroupStudents(final Connection conn,GroupInfoModel gim) throws Exception {
+    public CmList<StudentModelExt> getGroupStudents(final Connection conn, GroupInfoModel gim) throws Exception {
     	
     	CmList<StudentModelExt> students = new CmArrayList<StudentModelExt>();
     	PreparedStatement ps = null;
     	try {
-    		String sql = "select g.id as group_id, u.uid, u.user_name " +
-    		             " from   HA_ADMIN h" +
-    		             " JOIN HA_USER u on u.admin_id = h.aid" +
-    		             " JOIN CM_GROUP g on g.id = u.group_id" +
-    		             " where h.aid = ? and g.name = ?" +
-    		             " order by user_name ";
-    		
+    		String sql = CmMultiLinePropertyReader.getInstance().getProperty("STUDENTS_IN_GROUP");
+
     		ps = conn.prepareStatement(sql);
     		ps.setInt(1, gim.getAdminId());
     		ps.setString(2, gim.getName());
@@ -182,12 +186,7 @@ public class CmAdminDao {
     	CmList<StudentModelExt> students = new CmArrayList<StudentModelExt>();
     	PreparedStatement ps = null;
     	try {
-    		String sql = "select g.id as group_id, u.uid, u.user_name,g.name as group_name " +
-    		             " from   HA_ADMIN h" +
-    		             " JOIN HA_USER u on u.admin_id = h.aid" +
-    		             " LEFT JOIN CM_GROUP g on g.id = u.group_id" +
-    		             " where h.aid = ? and (g.name <> ? or g.name is null)" +
-    		             " order by user_name ";
+    		String sql = CmMultiLinePropertyReader.getInstance().getProperty("STUDENTS_NOT_IN_GROUP");
     		
     		ps = conn.prepareStatement(sql);
     		ps.setInt(1, gim.getAdminId());
