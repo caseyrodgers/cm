@@ -1,9 +1,8 @@
 package hotmath.gwt.cm_tools.client.ui.viewer;
 
-import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.ui.CmMainPanel;
-import hotmath.gwt.cm_tools.client.ui.resource_viewer.CmResourcePanelImplDefault;
 import hotmath.gwt.cm_tools.client.ui.resource_viewer.CmResourcePanelContainer.ResourceViewerState;
+import hotmath.gwt.cm_tools.client.ui.resource_viewer.CmResourcePanelImplDefault;
 import hotmath.gwt.shared.client.data.CmAsyncRequestImplDefault;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
 import hotmath.gwt.shared.client.eventbus.CmEventListenerImplDefault;
@@ -16,9 +15,7 @@ import java.util.List;
 
 import com.extjs.gxt.ui.client.Style.LayoutRegion;
 import com.extjs.gxt.ui.client.Style.Scroll;
-import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
-import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
@@ -172,7 +169,7 @@ public abstract class CmResourcePanelImplWithWhiteboard extends CmResourcePanelI
      * 
      * @param displayMode
      */
-    protected void setDisplayMode(DisplayMode displayMode) {
+    public void setDisplayMode(DisplayMode displayMode) {
     	
         removeAll();
         if(displayMode == DisplayMode.TUTOR) {

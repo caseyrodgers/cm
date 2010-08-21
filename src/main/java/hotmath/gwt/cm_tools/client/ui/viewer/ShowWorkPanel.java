@@ -98,7 +98,6 @@ public class ShowWorkPanel extends Frame {
                 EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_WHITEBOARD_SAVE_COMPLETE));
             }
         }.register();
-
     }
     
     /**

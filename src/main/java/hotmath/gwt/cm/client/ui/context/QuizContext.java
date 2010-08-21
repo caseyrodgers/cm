@@ -10,10 +10,13 @@ import hotmath.gwt.cm_rpc.client.rpc.NextAction.NextActionName;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.ui.CmLogger;
+import hotmath.gwt.cm_tools.client.ui.CmMainPanel;
 import hotmath.gwt.cm_tools.client.ui.NextPanelInfo;
 import hotmath.gwt.cm_tools.client.ui.NextPanelInfoImplDefault;
 import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
 import hotmath.gwt.cm_tools.client.ui.context.CmContext;
+import hotmath.gwt.cm_tools.client.ui.viewer.CmResourcePanelImplWithWhiteboard;
+import hotmath.gwt.cm_tools.client.ui.viewer.CmResourcePanelImplWithWhiteboard.DisplayMode;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.data.CmAsyncRequestImplDefault;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
@@ -28,15 +31,12 @@ import java.util.List;
 
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.IconButtonEvent;
-import com.extjs.gxt.ui.client.event.Listener;
-import com.extjs.gxt.ui.client.event.MessageBoxEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.event.WindowEvent;
 import com.extjs.gxt.ui.client.event.WindowListener;
 import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.Html;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
-import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.button.IconButton;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -247,13 +247,15 @@ public class QuizContext implements CmContext {
     }
 
     public void doNext() {
-        
-        EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_MODAL_WINDOW_OPEN));
-        
+    	/** if Check Quiz is selected, then do not reshow quiz/whiteboard 
+    	 * 
+    	 */
+    	EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_MODAL_WINDOW_OPEN));
         class MyCmWindow extends CmWindow {
         	public MyCmWindow() {
                 setSize(330,120);
                 setStyleName("quiz-context-msg-window");
+                setClosable(false);
                 
                 setModal(true);
                 setHeading("Ready to Check Quiz?");
@@ -270,16 +272,10 @@ public class QuizContext implements CmContext {
                 addButton(new Button("No", new SelectionListener<ButtonEvent>() {
                 	@Override
                 	public void componentSelected(ButtonEvent ce) {
+                		EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_MODAL_WINDOW_CLOSED));
                 		close();
                 	}
                 }));
-                
-                addWindowListener(new WindowListener() {
-                	@Override
-                	public void windowHide(WindowEvent we) {
-                		EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_MODAL_WINDOW_CLOSED));
-                	}
-                });
                 
                 setVisible(true);
         	}
