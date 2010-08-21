@@ -492,7 +492,7 @@ public class CmStudentDao {
         }
 
         try {
-        	sm.setBackgroundStyle(getBackgroundImageRamdom());
+        	sm.setBackgroundStyle(null);
         	
             ps = conn.prepareStatement(CmMultiLinePropertyReader.getInstance().getProperty("ADD_STUDENT_SQL"));
             ps.setString(1, sm.getName());
