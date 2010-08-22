@@ -1060,7 +1060,7 @@ public class CmStudentDao {
             HaTestDef testDef = new HaTestDefDao().getTestDef(conn,sp.getProgramType(), sp.getSubjectId() );
             if(testDef.getNumAlternateTests() > 0) {
             	int randStartSeg = SbUtilities.getRandomNumber(testDef.getNumAlternateTests());
-            	info.setActiveSegment(randStartSeg);
+            	info.setActiveSegmentSlot(randStartSeg);
             }
             setActiveInfo(conn, sm.getUid(), info);
         } catch (Exception e) {
