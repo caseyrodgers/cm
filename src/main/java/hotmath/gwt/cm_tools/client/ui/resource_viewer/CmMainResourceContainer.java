@@ -4,8 +4,8 @@ import hotmath.gwt.cm_rpc.client.rpc.InmhItemData;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.ui.resource_viewer.CmResourcePanelContainer.ResourceViewerState;
 import hotmath.gwt.cm_tools.client.ui.viewer.ResourceViewerFactory;
+import hotmath.gwt.cm_tools.client.ui.viewer.ResourceViewerImplActivity;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
-import hotmath.gwt.shared.client.eventbus.CmEventListener;
 import hotmath.gwt.shared.client.eventbus.EventBus;
 import hotmath.gwt.shared.client.eventbus.EventType;
 import hotmath.gwt.shared.client.util.UserInfo;
@@ -130,7 +130,15 @@ public class CmMainResourceContainer extends LayoutContainer {
         }
         
         layout();
-        currentContainer.el().slideIn(Direction.DOWN, FxConfig.NONE);
+        
+        if(viewer instanceof ResourceViewerImplActivity) {
+        	/** 
+        	 * do not slide in activity to avoid double load
+        	 */
+        }
+        else {
+        	currentContainer.el().slideIn(Direction.DOWN, FxConfig.NONE);
+        }
         
         currentPanel = viewer;
         currentTitle = title;
