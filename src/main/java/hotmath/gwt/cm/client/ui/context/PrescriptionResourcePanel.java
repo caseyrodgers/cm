@@ -251,7 +251,8 @@ public class PrescriptionResourcePanel extends LayoutContainer {
                 	/** if first time completing this RPP/RPA display message to user
                 	 * 
                 	 */
-                	__instance.resourceButtons.get("practice").indicateCompletion();
+                    __instance.resourceButtons.get("practice").indicateCompletion();
+                    
                     String title=null;
                     String msg=null;
                     if(id.getWidgetJsonArgs() != null) {
@@ -263,7 +264,7 @@ public class PrescriptionResourcePanel extends LayoutContainer {
                     	msg = "You have completed this practice problem.";
                     }
 
-                    InfoPopupBox.display(title, msg);
+                    //InfoPopupBox.display(title, msg);
                     //new RequiredPracticeCompleteDialog(title, msg);
                 }
             }
