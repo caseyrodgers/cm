@@ -492,7 +492,7 @@ public class CmStudentDao {
         }
 
         try {
-        	sm.setBackgroundStyle(null);
+        	sm.setBackgroundStyle(getBackgroundImageRamdom());
         	
             ps = conn.prepareStatement(CmMultiLinePropertyReader.getInstance().getProperty("ADD_STUDENT_SQL"));
             ps.setString(1, sm.getName());
@@ -534,9 +534,6 @@ public class CmStudentDao {
      		{"Snowman","Snowman"},
      		{"Sunfield","resource-container-sunfield"},
      		{"Tulips","resource-container-tulips"},
-     		{"Neutral","resource-container-neutral"},
-     		{"Redish","resource-container-redish"},
-     		{"No background image","resource-container-none"}
      };
      return bgs;
     }
