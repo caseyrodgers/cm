@@ -251,7 +251,7 @@ public class PrescriptionResourcePanel extends LayoutContainer {
                 	/** if first time completing this RPP/RPA display message to user
                 	 * 
                 	 */
-                    __instance.resourceButtons.get("practice").indicateCompletion();
+                    __instance.resourceButtons.get("practice").checkCompletion();
                     
                     String title=null;
                     String msg=null;
