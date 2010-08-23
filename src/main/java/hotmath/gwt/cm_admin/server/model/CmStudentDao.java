@@ -1062,6 +1062,7 @@ public class CmStudentDao {
             	int randStartSeg = SbUtilities.getRandomNumber(testDef.getNumAlternateTests());
             	info.setActiveSegmentSlot(randStartSeg);
             }
+            logger.info("Setting Active Info: " + info);
             setActiveInfo(conn, sm.getUid(), info);
         } catch (Exception e) {
             String m = String.format("*** Error adding student program for student with uid: %d", sm.getUid());
