@@ -226,9 +226,12 @@ public class CmAdminDao {
     		}
     		String sql1 = "update HA_USER set group_id = 1 where is_auto_create_template != 1 and admin_id = " + gim.getAdminId() + " and group_id = " + gim.getId();
     		conn.createStatement().executeUpdate(sql1);
-    		String sql = "update HA_USER set group_id = " + gim.getId() + " where uid in (" + inList + ")";
-    		ps = conn.prepareStatement(sql);
-    		ps.executeUpdate();
+    		
+    		if(students.size() > 0) {
+	    		String sql = "update HA_USER set group_id = " + gim.getId() + " where uid in (" + inList + ")";
+	    		ps = conn.prepareStatement(sql);
+	    		ps.executeUpdate();
+    		}
     	}
     	finally {
     		SqlUtilities.releaseResources(null,ps,conn);
