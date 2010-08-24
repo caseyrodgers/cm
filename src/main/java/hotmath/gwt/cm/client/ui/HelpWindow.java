@@ -368,13 +368,14 @@ public class HelpWindow extends CmWindow {
      * @return
      */
     public static String[][] getBackgrounds() {
+
    	 String bgs[][] = {
     		{"Catchup Math","resource-container"},
     		{"Clouds","resource-container-clouds"},
     		{"Forest","resource-container-forest"},
     		{"Meadow","resource-container-sunrise"},
     		{"Mountain Bike","resource-container-bike1"},
-    		{"Snowman","Snowman"},
+    		{"Snowman","resource-container-snowman"},
     		{"Sunfield","resource-container-sunfield"},
     		{"Tulips","resource-container-tulips"},
     		{"Neutral","resource-container-neutral"},
@@ -383,6 +384,7 @@ public class HelpWindow extends CmWindow {
     };
     return bgs;
    }
+
     
     public  ListStore<BackgroundModel> getBackgroundListStores() {
         ListStore<BackgroundModel> backgrounds = new ListStore<BackgroundModel>();
