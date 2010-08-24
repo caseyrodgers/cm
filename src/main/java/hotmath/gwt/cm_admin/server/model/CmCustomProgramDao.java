@@ -328,6 +328,8 @@ public class CmCustomProgramDao {
 
     /** return integer representing the level logically of this subject
      * 
+     * TODO: This should not be hard-coded here, use table.
+     * 
      * @param subject
      * @return
      */
@@ -343,6 +345,6 @@ public class CmCustomProgramDao {
        else if(subject.equals("Alg 2"))
            return 4;
        else
-           throw new Exception("Unknown subject: " + subject);
+           return 99;
     }
 }

@@ -155,7 +155,6 @@ public class CmAdminDao {
     	PreparedStatement ps = null;
     	try {
     		String sql = CmMultiLinePropertyReader.getInstance().getProperty("STUDENTS_IN_GROUP");
-
     		ps = conn.prepareStatement(sql);
     		ps.setInt(1, gim.getAdminId());
     		ps.setString(2, gim.getName());
@@ -187,7 +186,6 @@ public class CmAdminDao {
     	PreparedStatement ps = null;
     	try {
     		String sql = CmMultiLinePropertyReader.getInstance().getProperty("STUDENTS_NOT_IN_GROUP");
-    		
     		ps = conn.prepareStatement(sql);
     		ps.setInt(1, gim.getAdminId());
     		ps.setString(2, gim.getName());
@@ -209,6 +207,9 @@ public class CmAdminDao {
     
     /** Set the students in named group to match exactly list of uids in students
      * 
+     * NOTE: avoid changing any self-registration groups.
+     * 
+     * 
      * @param conn
      * @param gim
      * @param students
@@ -223,7 +224,7 @@ public class CmAdminDao {
     				inList += ",";
     			inList += se.getUid();
     		}
-    		String sql1 = "update HA_USER set group_id = 1 where admin_id = " + gim.getAdminId() + " and group_id = " + gim.getId();
+    		String sql1 = "update HA_USER set group_id = 1 where is_auto_create_template != 1 and admin_id = " + gim.getAdminId() + " and group_id = " + gim.getId();
     		conn.createStatement().executeUpdate(sql1);
     		String sql = "update HA_USER set group_id = " + gim.getId() + " where uid in (" + inList + ")";
     		ps = conn.prepareStatement(sql);

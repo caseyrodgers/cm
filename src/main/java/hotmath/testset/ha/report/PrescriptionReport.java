@@ -164,8 +164,6 @@ public class PrescriptionReport {
          * for each quiz in this program
          */
         for (int segment = 1; segment - 1 < testDef.getTotalSegmentCount(); segment++) {
-
-            
             
             logMessage(-1, "Testing segment: " + segment);
 
