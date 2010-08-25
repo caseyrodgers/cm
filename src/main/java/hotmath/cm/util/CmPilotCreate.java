@@ -177,6 +177,9 @@ public class CmPilotCreate {
         // - gradprepTX - a self-reg group with show work req and our TAKS
         // (Texas grad prep) program
         new CmAdminDao().createSelfRegistrationGroup(conn, aid, "gradprepTX", CmProgram.TAKS, false, false);
+        
+        // -- essentials - a selfreg group with show work req and essentials prof
+        new CmAdminDao().createSelfRegistrationGroup(conn, aid, "essentials", CmProgram.ESSENTIALS, false, false);
     }
 
     public List<String> getMessages() {
