@@ -371,4 +371,36 @@ public class CmPilotCreate {
 
         return -1;
     }
+    
+    static public void main(String as[]) {
+    	/** make sure all active admin accounts have an essentials self-registration group
+    	 * 
+    	 */
+    	Connection conn=null;
+    	try {
+    		conn = HMConnectionPool.getConnection();
+    		String sql = "select aid from HA_ADMIN";
+    		ResultSet rs = conn.createStatement().executeQuery(sql);
+    		while(rs.next()) {
+    			int aid = rs.getInt("aid");
+
+    			try {
+    				new CmAdminDao().createSelfRegistrationGroup(conn, aid,"essentials" , CmProgram.ESSENTIALS, false, false);
+    			}
+    			catch(Exception ex) {
+    				logger.error("Error creating group", ex);
+    			}
+    			
+    		}
+    		
+    	}
+    	catch(Exception e) {
+    		e.printStackTrace();
+    	}
+    	finally {
+    		SqlUtilities.releaseResources(null,null,conn);
+    	}
+    	System.exit(0);
+    	
+    }
 }
