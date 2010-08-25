@@ -85,6 +85,11 @@ public class CmInmhStandardResources extends ArrayList<PrescriptionSessionDataRe
         si = new SubMenuItem("Decimals");
         si.getItemData().add(new InmhItemData(t,"/learning_activities/interactivities/flashcard_add_sub_deci.swf", "Adding Decimals"));
         subMenu.add(si);
+
+        si = new SubMenuItem("Percents");
+        si.getItemData().add(new InmhItemData(t,"/learning_activities/interactivities/flashcard_percents_level1.swf", "Percents: Level 1"));
+        si.getItemData().add(new InmhItemData(t,"/learning_activities/interactivities/flashcard_percents_level2.swf", "Percents: Level 2"));
+        subMenu.add(si);
         
         
         si = new SubMenuItem("Negatives");
