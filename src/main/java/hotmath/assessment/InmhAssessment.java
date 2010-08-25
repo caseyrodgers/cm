@@ -141,9 +141,14 @@ public class InmhAssessment {
 				String range = rs.getString("range");
 				if(range == null || range.length() == 0)
 					throw new Exception("Range is null for this item");
-				ConcordanceEntry con = new ConcordanceEntry(conn, range);
 				
-				guids.addAll(Arrays.asList( con.getGUIDs() ) ) ;
+				if(!range.startsWith("{")) {
+					ConcordanceEntry con = new ConcordanceEntry(conn, range);
+					guids.addAll(Arrays.asList( con.getGUIDs() ) ) ;
+				}
+				else {
+					guids.addAll(Arrays.asList( range ) ) ;
+				}
             }
 			return guids.toArray(new String[guids.size()]);
 		}
