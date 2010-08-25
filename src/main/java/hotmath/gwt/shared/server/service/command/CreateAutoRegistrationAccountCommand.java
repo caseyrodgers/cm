@@ -44,45 +44,70 @@ public class CreateAutoRegistrationAccountCommand implements ActionHandler<Creat
      */
     public RpcData execute(Connection conn, CreateAutoRegistrationAccountAction action) throws Exception {
         
-        
+        long millis = 0;
+
         /** make sure that password does not match a group name 
          *  attached to a is_auto_create_template
          * 
          */
         String sqlCheck = CmMultiLinePropertyReader.getInstance().getProperty("AUTO_CREATE_TEMPLATE_CHECK");
         PreparedStatement stmt = null;
+        ResultSet rs = null;
         try {
             stmt = conn.prepareStatement(sqlCheck);
             stmt.setString(1, action.getPassword());
-            ResultSet rs = stmt.executeQuery();
+            millis = System.currentTimeMillis();
+            rs = stmt.executeQuery();
             if(rs.first()) {
                 __logger.error("self registration password '" + action.getPassword() + "' cannot match any existing self-registration template group names.");
                 throw new CmException("Please choose a different password");
             }
         }
         finally {
-            SqlUtilities.releaseResources(null, stmt, null);
+        	if (__logger.isDebugEnabled())
+            	__logger.debug("+++ CARAC check password took: " + (System.currentTimeMillis()-millis) + " msec");
+            SqlUtilities.releaseResources(rs, stmt, null);
         }
         
         CmStudentDao dao = new CmStudentDao();
-        StudentModelI studentModel = dao.getStudentModel(conn, action.getUserId(), true);
+        millis = System.currentTimeMillis();
+        StudentModelI studentModel = dao.getStudentModelBase(conn, action.getUserId(), true);
+    	if (__logger.isDebugEnabled())
+        	__logger.debug("+++ CARAC getStudentModel took: " + (System.currentTimeMillis()-millis) + " msec");
         
         studentModel.setPasscode(action.getPassword());
         studentModel.setName(action.getUser());
+        millis = System.currentTimeMillis();
         studentModel = dao.addStudent(conn, studentModel);
-
+    	if (__logger.isDebugEnabled())
+        	__logger.debug("+++ CARAC addStudent() took: " + (System.currentTimeMillis()-millis) + " msec");
 
         CmUserProgramDao upDao = new CmUserProgramDao();
+        millis = System.currentTimeMillis();
         StudentUserProgramModel si = upDao.loadProgramInfoCurrent(conn, studentModel.getUid());
+    	if (__logger.isDebugEnabled())
+        	__logger.debug("+++ CARAC loadProgramInfoCurrent() took: " + (System.currentTimeMillis()-millis) + " msec");
+
+        millis = System.currentTimeMillis();
         StudentActiveInfo activeInfo = dao.loadActiveInfo(conn, studentModel.getUid());
-        
-        
+    	if (__logger.isDebugEnabled())
+        	__logger.debug("+++ CARAC loadActiveInfo() took: " + (System.currentTimeMillis()-millis) + " msec");
+                
         HaTestDefDao hdao = new HaTestDefDao();
+        millis = System.currentTimeMillis();
         HaTestDef testDef = hdao.getTestDef(conn, si.getTestDefId());
+    	if (__logger.isDebugEnabled())
+        	__logger.debug("+++ CARAC getTestDef() took: " + (System.currentTimeMillis()-millis) + " msec");
         
+        millis = System.currentTimeMillis();
         ChapterInfo chapterInfo = hdao.getChapterInfo(conn, si);
+    	if (__logger.isDebugEnabled())
+        	__logger.debug("+++ CARAC getChapterInfo() took: " + (System.currentTimeMillis()-millis) + " msec");
         
+        millis = System.currentTimeMillis();
         AccountType accountType = new CmAdminDao().getAccountType(conn,studentModel.getAdminUid());
+    	if (__logger.isDebugEnabled())
+        	__logger.debug("+++ CARAC getAccountType() took: " + (System.currentTimeMillis()-millis) + " msec");
 
         /** Create title sections.  The main title
          *  will contain the chapter # (if any).  The
@@ -94,7 +119,7 @@ public class CreateAutoRegistrationAccountCommand implements ActionHandler<Creat
             testTitle += ", #" + chapterInfo.getChapterNumber();
             subTitle = chapterInfo.getChapterTitle();
         }
-        
+
         UserInfo userInfo = new UserInfo();
         userInfo.setUid(studentModel.getUid());
         userInfo.setTestId(activeInfo.getActiveTestId());
@@ -107,14 +132,13 @@ public class CreateAutoRegistrationAccountCommand implements ActionHandler<Creat
         userInfo.setSubTitle(subTitle);
         userInfo.setShowWorkRequired(studentModel.getSettings().getShowWorkRequired());
         userInfo.setTutoringAvail(studentModel.getSettings().getTutoringAvailable());
-        
+
         userInfo.setUserAccountType(accountType);
-        
+
         userInfo.setPassPercentRequired(si.getConfig().getPassPercent());
         userInfo.setTestSegmentCount(testDef.getTotalSegmentCount());
         userInfo.setViewCount(dao.getTotalInmHViewCount(conn,action.getUserId()));
-        
-        
+
         // Make a new HA_USER_LOGIN entry and return key
         HaUser huser = new HaUser();
         huser.setUid(userInfo.getUid());
