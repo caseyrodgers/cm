@@ -28,6 +28,7 @@ public class ActionTypeMap {
 		actionTypeMap.put("WhiteboardAction",                           ActionType.STUDENT);
 		actionTypeMap.put("AutoAdvanceUserAction",                      ActionType.STUDENT);
 		actionTypeMap.put("ClearWhiteboardDataAction",                  ActionType.STUDENT);
+		actionTypeMap.put("CreateAutoRegistrationAccountAction",        ActionType.STUDENT);
 		actionTypeMap.put("CreateTestRunAction",                        ActionType.STUDENT);
 		actionTypeMap.put("GetLessonItemsForTestRunAction",             ActionType.STUDENT);
 		actionTypeMap.put("GetPrescriptionAction",                      ActionType.STUDENT);
@@ -53,7 +54,6 @@ public class ActionTypeMap {
 		actionTypeMap.put("AddGroupAction",                             ActionType.ADMIN);
 		actionTypeMap.put("AddStudentAction",                           ActionType.ADMIN);
 		actionTypeMap.put("AddUserAction",                              ActionType.ADMIN);
-		actionTypeMap.put("CreateAutoRegistrationAccountAction",        ActionType.ADMIN);
 		actionTypeMap.put("CreateAutoRegistrationAccountsAction",       ActionType.ADMIN);
 		actionTypeMap.put("CreateAutoRegistrationPreviewAction",        ActionType.ADMIN);
 		actionTypeMap.put("CreateProgramAction",                        ActionType.ADMIN);
