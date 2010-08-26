@@ -55,9 +55,11 @@ public class QuizPage extends LayoutContainer {
     }-*/;
 
     public void markAllAnswersCorrect() {
+    	questionProcessTracker.beginStep();
         for(int i=0,t=testQuestionAnswers.size();i<t;i++) {
             setSolutionQuestionAnswerIndexByNumber(i, testQuestionAnswers.get(i).toString());
         }
+        questionProcessTracker.completeStep();
     }
     
     
@@ -186,14 +188,15 @@ public class QuizPage extends LayoutContainer {
             CatchupMathTools.showAlert("You are just a visitor here, please do not change any selections");
             return "OK";
         }
+
+        /** track before inserting into request que */
+    	questionProcessTracker.beginStep();
         
         final int questionIndex = Integer.parseInt(sQuestionIndex);
         final int answerChoice = Integer.parseInt(answerIndex);
         new RetryAction<RpcData>() {
             @Override
             public void attempt() {
-            	questionProcessTracker.beginStep();
-            	
                 final int correctIndex = testQuestionAnswers.get(questionIndex);
                 Boolean isCorrect = correctIndex == answerChoice;
                 SaveQuizCurrentResultAction action = new SaveQuizCurrentResultAction(UserInfo.getInstance().getTestId(), isCorrect, answerChoice, pid);
@@ -202,6 +205,7 @@ public class QuizPage extends LayoutContainer {
             }
             @Override
             public void oncapture(RpcData value) {
+            	/** clear after return from server */
             	questionProcessTracker.completeStep();
             }
         }.register();
@@ -213,7 +217,7 @@ class MyProcessTracker implements ProcessTracker {
 	int depth;
 	
 	public boolean isBusy() {
-		return depth==0;
+		return depth!=0;
 	}
 
 	@Override
