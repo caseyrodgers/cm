@@ -38,8 +38,7 @@ public class InfoPopupBox extends ContentPanel {
 	 */
 	public static void display(String title, String text) {
 		InfoConfig config = new InfoConfig(title, text);
-		config.height = 120;
-		config.display = 5000; // show message for 5 secs
+		config.display = 4000; // show message for 5 secs
 		display(config);
 	}
 

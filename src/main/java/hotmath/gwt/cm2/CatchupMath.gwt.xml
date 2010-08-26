@@ -1,0 +1,24 @@
+<module rename-to='cm2'>
+      <!-- Inherit the default GWT style sheet.  You can change       -->
+      <!-- the theme of your GWT application by uncommenting          -->
+      <!-- any one of the following lines.                            -->
+      <!-- <inherits name='com.google.gwt.user.theme.standard.Standard'/> -->
+      <!-- <inherits name='com.google.gwt.user.theme.chrome.Chrome'/> -->
+      <!-- <inherits name='com.google.gwt.user.theme.dark.Dark'/>     -->
+
+      <!-- Other module inherits                                      -->
+      <inherits name='com.extjs.gxt.ui.GXT'/>
+      <inherits name='com.extjs.gxt.themes.Themes' />
+      <inherits name='com.google.gwt.json.JSON' />
+      
+      <inherits name="com.google.gwt.uibinder.UiBinder"/>
+
+      <inherits name='hotmath.gwt.cm.CatchupMath'/> 
+      <inherits name='hotmath.gwt.cm_admin.CatchupMathAdmin'/>
+      
+      <entry-point class='hotmath.gwt.cm2.client.CatchupMath'/>
+
+      <!--
+      <set-property name='user.agent' value='gecko'/>
+      -->
+</module>

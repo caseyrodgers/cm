@@ -8,6 +8,7 @@ import hotmath.gwt.cm_rpc.client.rpc.QuizHtmlResult;
 import hotmath.gwt.cm_rpc.client.rpc.RpcData;
 import hotmath.gwt.cm_rpc.client.rpc.SaveQuizCurrentResultAction;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
+import hotmath.gwt.cm_tools.client.util.ProcessTracker;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.data.CmAsyncRequest;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
@@ -82,6 +83,10 @@ public class QuizPage extends LayoutContainer {
             setSolutionQuestionAnswerIndex(rd.getDataAsString("pid"),rd.getDataAsString("answer"));
         }
         CmMainPanel.setQuizQuestionDisplayAsActive(CmMainPanel.getLastQuestionPid());
+        
+        
+        /** reset each displayed quiz */
+        questionProcessTracker.finish();
 	}
 
 	/** Read the raw HTML from server and inserts into DOM node
@@ -125,6 +130,11 @@ public class QuizPage extends LayoutContainer {
 	}
 	
     
+	static private MyProcessTracker questionProcessTracker = new MyProcessTracker();
+	static public boolean isAnsweringQuestions() {
+		return questionProcessTracker.isBusy();
+	}
+	
     static {
         publishNative();
     }
@@ -159,6 +169,7 @@ public class QuizPage extends LayoutContainer {
     
 
     
+    
     /**
      * Expose the following method into JavaScript.
      *
@@ -181,6 +192,8 @@ public class QuizPage extends LayoutContainer {
         new RetryAction<RpcData>() {
             @Override
             public void attempt() {
+            	questionProcessTracker.beginStep();
+            	
                 final int correctIndex = testQuestionAnswers.get(questionIndex);
                 Boolean isCorrect = correctIndex == answerChoice;
                 SaveQuizCurrentResultAction action = new SaveQuizCurrentResultAction(UserInfo.getInstance().getTestId(), isCorrect, answerChoice, pid);
@@ -189,9 +202,32 @@ public class QuizPage extends LayoutContainer {
             }
             @Override
             public void oncapture(RpcData value) {
-                /** do nothing */
+            	questionProcessTracker.completeStep();
             }
         }.register();
         return "OK";
     }
+}
+
+class MyProcessTracker implements ProcessTracker {
+	int depth;
+	
+	public boolean isBusy() {
+		return depth==0;
+	}
+
+	@Override
+	public void beginStep() {
+		depth++;
+	}
+
+	@Override
+	public void completeStep() {
+		depth--;
+	}
+
+	@Override
+	public void finish() {
+		depth=0;
+	}	
 }
