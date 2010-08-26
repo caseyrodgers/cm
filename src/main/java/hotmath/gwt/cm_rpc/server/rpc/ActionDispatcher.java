@@ -194,6 +194,7 @@ public class ActionDispatcher {
 
             return response;
         } catch (CmRpcException cre) {
+        	incrementActionsException(actionType);
             monitorCountOfExceptions++;
             throw cre;
         } catch (Exception e) {
@@ -260,6 +261,24 @@ public class ActionDispatcher {
 
 		logger.debug(String.format("+++ incrementActionsCompleted(): admin: %d, student: %d, all: %d",
 				monitorCountAdminActionsCompleted, monitorCountStudentActionsCompleted, monitorCountActionsCompleted));
+	}
+
+	private void incrementActionsException(ActionTypeMap.ActionType actionType) {
+		
+		if (actionType == ActionTypeMap.ActionType.ADMIN) {
+			monitorCountAdminActionsException++;
+		}
+		if (actionType == ActionTypeMap.ActionType.STUDENT) {
+			monitorCountStudentActionsException++;
+		}
+		if (actionType == ActionTypeMap.ActionType.ANY) {
+			monitorCountAnyActionsException++;
+		}
+
+		monitorCountOfExceptions++;
+
+		logger.debug(String.format("+++ incrementActionsException(): admin: %d, student: %d, all: %d",
+				monitorCountAdminActionsException, monitorCountStudentActionsException, monitorCountOfExceptions));
 	}
 
 	/** Check for command, if not registered then look
@@ -354,11 +373,17 @@ public class ActionDispatcher {
         case StudentActionsCompleted:
         	return monitorCountStudentActionsCompleted;
             
+        case StudentActionsException:
+        	return monitorCountStudentActionsException;
+            
         case AdminActionsExcecuted:
         	return monitorCountAdminActionsExecuted;
             
         case AdminActionsCompleted:
         	return monitorCountAdminActionsCompleted;
+            
+        case AdminActionsException:
+        	return monitorCountAdminActionsException;
             
         case ProcessingTime:
             return monitorTotalProcessingTime;
@@ -387,10 +412,13 @@ public class ActionDispatcher {
         ExceptionCount,
         StudentActionsExecuted,
         StudentActionsCompleted,
+        StudentActionsException,
         AdminActionsExcecuted,
         AdminActionsCompleted,
+        AdminActionsException,
         AnyActionsExecuted,
         AnyActionsCompleted,
+        AnyActionsException,
         AdminProcessingTime,
         StudentProcessingTime,
         AnyProcessingTime
@@ -405,10 +433,13 @@ public class ActionDispatcher {
     
     int monitorCountStudentActionsExecuted;
     int monitorCountStudentActionsCompleted;
+    int monitorCountStudentActionsException;
     int monitorCountAdminActionsExecuted;
     int monitorCountAdminActionsCompleted;
+    int monitorCountAdminActionsException;
     int monitorCountAnyActionsExecuted;
     int monitorCountAnyActionsCompleted;
+    int monitorCountAnyActionsException;
 
     long monitorAdminProcessingTime;
     long monitorStudentProcessingTime;
