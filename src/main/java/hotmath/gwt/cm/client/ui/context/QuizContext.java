@@ -23,6 +23,7 @@ import hotmath.gwt.shared.client.eventbus.CmEvent;
 import hotmath.gwt.shared.client.eventbus.EventBus;
 import hotmath.gwt.shared.client.eventbus.EventType;
 import hotmath.gwt.shared.client.rpc.RetryAction;
+import hotmath.gwt.shared.client.rpc.RetryActionManager;
 import hotmath.gwt.shared.client.rpc.action.CreateTestRunAction;
 import hotmath.gwt.shared.client.util.UserInfo;
 
@@ -286,6 +287,14 @@ public class QuizContext implements CmContext {
 
     public void doCheckTest() {
         
+    	/** Make sure no other request is pending.
+    	 *   
+    	 */
+    	if(RetryActionManager.getInstance().getQueue().size() > 0) {
+    		CatchupMathTools.showAlert("Waiting for pending selections to complete...");
+    		return;
+    	}
+    	
         new RetryAction<CreateTestRunResponse>() {
             @Override
             public void attempt() {

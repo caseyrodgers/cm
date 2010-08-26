@@ -105,18 +105,14 @@ public class CatchupMathMobile implements EntryPoint {
 
     static CmServiceAsync _cmService;
 
-    static private void setupServices() {
+    static {
         String point = GWT.getModuleBaseURL();
         if (!point.endsWith("/"))
             point += "/";
 
         _cmService = (CmServiceAsync) GWT.create(CmService.class);
         ((ServiceDefTarget) _cmService).setServiceEntryPoint(point + "services/cmService");
-    }
-    
-    
-    static {
-        setupServices();
+
         _queryParameters = readQueryString();
     }
     /**

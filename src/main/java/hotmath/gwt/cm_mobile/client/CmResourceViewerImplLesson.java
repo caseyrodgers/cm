@@ -3,14 +3,13 @@ package hotmath.gwt.cm_mobile.client;
 import hotmath.gwt.cm_rpc.client.rpc.GetReviewHtmlAction;
 import hotmath.gwt.cm_rpc.client.rpc.InmhItemData;
 import hotmath.gwt.cm_rpc.client.rpc.LessonResult;
-import hotmath.gwt.cm_tools.client.model.StringHolder;
 
-import com.extjs.gxt.ui.client.widget.Html;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -35,7 +34,7 @@ public class CmResourceViewerImplLesson extends Composite implements CmMobileRes
         CatchupMathMobile.getCmService().execute(action, new AsyncCallback<LessonResult>() {
             @Override
             public void onSuccess(LessonResult result) {
-                mainPanel.add(new Html(result.getLesson()));
+                mainPanel.add(new HTML(result.getLesson()));
             }
 
             @Override
