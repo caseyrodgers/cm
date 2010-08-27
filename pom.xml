@@ -13,10 +13,19 @@
   </properties>
 
   <pluginRepositories>
+<!--
     <pluginRepository>
       <id>gwt-maven-plugins</id>
-      <url> http://snapshots.repository.codehaus.org/ </url>
+      <url>http://snapshots.repository.codehaus.org/ </url>
     </pluginRepository>
+
+    <pluginRepository>
+      <id>gwt-maven-plugins</id>
+      <url>http://ondex.rothamsted.bbsrc.ac.uk/nexus/content/repositories/codehaus-snapshots </url>
+    </pluginRepository>
+
+-->
+
 
     <pluginRepository>
       <id>repository.jboss.org</id>
@@ -85,11 +94,11 @@
 	</dependency>
     -->
 
-<dependency>
-    <groupId>net.sourceforge.jeuclid</groupId>
-    <artifactId>jeuclid-core</artifactId>
-    <version>3.1.9</version>
-</dependency>
+    <dependency>
+      <groupId>net.sourceforge.jeuclid</groupId>
+      <artifactId>jeuclid-core</artifactId>
+      <version>3.1.9</version>
+    </dependency>
 
 
     <dependency>
@@ -353,11 +362,11 @@
     </dependency>
 
 
-  <dependency>
-	<groupId>org.seleniumhq.selenium</groupId>
-	<artifactId>selenium</artifactId>
-	<version>2.0a5</version>
-</dependency>
+    <dependency>
+      <groupId>org.seleniumhq.selenium</groupId>
+      <artifactId>selenium</artifactId>
+      <version>2.0a5</version>
+    </dependency>
 
   </dependencies>
 
@@ -452,12 +461,12 @@
           <cssFinalFile>CatchupMath.css</cssFinalFile>
           <jsFinalFile>CatchupMath.js</jsFinalFile>
           <cssSourceFiles>
-               <param>../../../../../../hotmath2/web/css/testset.css</param>
-               <param>../../../../../../hotmath2/web/css/default.css</param>
-               <param>../../../../../../hotmath2/web/css/hotmath_review.css</param>
-               <param>../../../../../../hotmath2/web/css/bookindex_with_tutor_combined.css</param>
-               <param>CatchupMath.css</param>
-               <param>loading_image.css</param>
+	    <param>../../../../../../hotmath2/web/css/testset.css</param>
+	    <param>../../../../../../hotmath2/web/css/default.css</param>
+	    <param>../../../../../../hotmath2/web/css/hotmath_review.css</param>
+	    <param>../../../../../../hotmath2/web/css/bookindex_with_tutor_combined.css</param>
+	    <param>CatchupMath.css</param>
+	    <param>loading_image.css</param>
           </cssSourceFiles>
           <jsSourceFiles>
             <param>../../../../../../hotmath2/web/js/cm_with_tutor_combined.js</param>
