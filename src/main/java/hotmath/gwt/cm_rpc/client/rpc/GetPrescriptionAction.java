@@ -1,7 +1,5 @@
-package hotmath.gwt.cm.client.rpc;
+package hotmath.gwt.cm_rpc.client.rpc;
 
-import hotmath.gwt.cm_rpc.client.rpc.Action;
-import hotmath.gwt.cm_rpc.client.rpc.PrescriptionSessionResponse;
 
 
 public class GetPrescriptionAction implements Action<PrescriptionSessionResponse> {
@@ -9,11 +7,11 @@ public class GetPrescriptionAction implements Action<PrescriptionSessionResponse
     int runId;
     int sessionNumber;
     boolean updateActiveInfo;
-    
+
     public GetPrescriptionAction() {}
-    
+
     /** Return the Prescription data for this runid and session
-     * 
+     *
      * @param runId
      * @param sessionNumber
      * @param updateActiveInfo
@@ -47,7 +45,7 @@ public class GetPrescriptionAction implements Action<PrescriptionSessionResponse
     public void setUpdateActiveInfo(boolean updateActiveInfo) {
         this.updateActiveInfo = updateActiveInfo;
     }
-    
+
     public boolean getUpdateActionInfo() {
         return updateActiveInfo;
     }
@@ -58,3 +56,4 @@ public class GetPrescriptionAction implements Action<PrescriptionSessionResponse
                 + updateActiveInfo + "]";
     }
 }
+
