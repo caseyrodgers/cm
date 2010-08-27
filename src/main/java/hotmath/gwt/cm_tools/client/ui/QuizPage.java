@@ -2,6 +2,7 @@ package hotmath.gwt.cm_tools.client.ui;
 
 
 
+import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_rpc.client.rpc.CmList;
 import hotmath.gwt.cm_rpc.client.rpc.GetQuizHtmlAction;
 import hotmath.gwt.cm_rpc.client.rpc.QuizHtmlResult;
@@ -15,7 +16,6 @@ import hotmath.gwt.shared.client.eventbus.CmEvent;
 import hotmath.gwt.shared.client.eventbus.EventBus;
 import hotmath.gwt.shared.client.eventbus.EventType;
 import hotmath.gwt.shared.client.rpc.RetryAction;
-import hotmath.gwt.shared.client.util.UserInfo;
 
 import java.util.List;
 

@@ -1,5 +1,6 @@
 package hotmath.gwt.shared.client.rpc;
 
+import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_rpc.client.rpc.Action;
 import hotmath.gwt.cm_rpc.client.rpc.Response;
 import hotmath.gwt.cm_rpc.client.rpc.RpcData;
@@ -14,7 +15,6 @@ import hotmath.gwt.shared.client.eventbus.EventBus;
 import hotmath.gwt.shared.client.eventbus.EventType;
 import hotmath.gwt.shared.client.util.NotActiveProgramWindow;
 import hotmath.gwt.shared.client.util.SystemVersionUpdateChecker;
-import hotmath.gwt.shared.client.util.UserInfo;
 
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;

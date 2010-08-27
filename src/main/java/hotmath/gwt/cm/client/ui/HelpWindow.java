@@ -1,5 +1,6 @@
 package hotmath.gwt.cm.client.ui;
 
+import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_rpc.client.rpc.CmServiceAsync;
 import hotmath.gwt.cm_rpc.client.rpc.RpcData;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
@@ -27,7 +28,6 @@ import hotmath.gwt.shared.client.rpc.action.SaveFeedbackAction;
 import hotmath.gwt.shared.client.rpc.action.SetBackgroundStyleAction;
 import hotmath.gwt.shared.client.util.CmRunAsyncCallback;
 import hotmath.gwt.shared.client.util.NetTestWindow;
-import hotmath.gwt.shared.client.util.UserInfo;
 
 import com.extjs.gxt.ui.client.data.BaseModelData;
 import com.extjs.gxt.ui.client.event.ButtonEvent;

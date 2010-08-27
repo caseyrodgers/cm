@@ -1,5 +1,6 @@
 package hotmath.gwt.cm.client;
 
+import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_rpc.client.rpc.RpcData;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
@@ -17,7 +18,6 @@ import hotmath.gwt.shared.client.rpc.action.CreateAutoRegistrationAccountAction;
 import hotmath.gwt.shared.client.rpc.action.LogUserInAction;
 import hotmath.gwt.shared.client.util.CmAsyncCallback;
 import hotmath.gwt.shared.client.util.CmInfoConfig;
-import hotmath.gwt.shared.client.util.UserInfo;
 
 import java.util.List;
 

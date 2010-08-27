@@ -1,8 +1,8 @@
 package hotmath.gwt.cm.client;
 
+import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.shared.client.CmShared;
-import hotmath.gwt.shared.client.util.UserInfo;
 
 import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
 import com.extjs.gxt.ui.client.Style.LayoutRegion;

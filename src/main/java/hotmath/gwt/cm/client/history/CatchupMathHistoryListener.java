@@ -4,9 +4,9 @@ import hotmath.gwt.cm.client.CatchupMath;
 import hotmath.gwt.cm.client.history.CmLocation.LocationType;
 import hotmath.gwt.cm.client.ui.context.PrescriptionCmGuiDefinition;
 import hotmath.gwt.cm.client.ui.context.PrescriptionContext;
+import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_tools.client.ui.CmLogger;
 import hotmath.gwt.cm_tools.client.ui.ContextController;
-import hotmath.gwt.shared.client.util.UserInfo;
 
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;

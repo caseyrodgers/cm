@@ -1,5 +1,6 @@
 package hotmath.gwt.shared.client.util;
 
+import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
 import hotmath.gwt.shared.client.eventbus.EventBus;

@@ -6,6 +6,7 @@ import hotmath.gwt.cm.client.history.CmLocation;
 import hotmath.gwt.cm.client.history.CmLocation.LocationType;
 import hotmath.gwt.cm.client.rpc.GetPrescriptionAction;
 import hotmath.gwt.cm.client.ui.HeaderPanel;
+import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_rpc.client.rpc.InmhItemData;
 import hotmath.gwt.cm_rpc.client.rpc.PrescriptionSessionResponse;
 import hotmath.gwt.cm_rpc.client.rpc.RpcData;
@@ -24,7 +25,6 @@ import hotmath.gwt.shared.client.eventbus.EventBus;
 import hotmath.gwt.shared.client.eventbus.EventType;
 import hotmath.gwt.shared.client.rpc.RetryAction;
 import hotmath.gwt.shared.client.rpc.action.SetInmhItemAsViewedAction;
-import hotmath.gwt.shared.client.util.UserInfo;
 
 import java.util.HashMap;
 import java.util.List;

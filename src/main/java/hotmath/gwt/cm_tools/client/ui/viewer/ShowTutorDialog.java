@@ -1,7 +1,7 @@
 package hotmath.gwt.cm_tools.client.ui.viewer;
 
 
-import hotmath.gwt.shared.client.util.UserInfo;
+import hotmath.gwt.cm_rpc.client.UserInfo;
 
 import com.extjs.gxt.ui.client.widget.Window;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;

@@ -1,11 +1,15 @@
 package hotmath.gwt.cm_mobile.client;
 
 import hotmath.gwt.cm_mobile.client.rpc.CmMobileUser;
+import hotmath.gwt.cm_rpc.client.GetPrescriptionAction;
 import hotmath.gwt.cm_rpc.client.rpc.InmhItemData;
 import hotmath.gwt.cm_rpc.client.rpc.PrescriptionSessionDataResource;
+import hotmath.gwt.cm_rpc.client.rpc.PrescriptionSessionResponse;
 
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public class CatchupMathMobileHistoryListener implements ValueChangeHandler<String> {
     public void onValueChange(ValueChangeEvent<String> event) {
@@ -24,17 +28,17 @@ public class CatchupMathMobileHistoryListener implements ValueChangeHandler<Stri
                 return;
             }
             else {
-//                GetPrescriptionAction action = new GetPrescriptionAction(user.getRunId(), sessionNum, true);
-//                CatchupMathMobile.getCmService().execute(action,new AsyncCallback<PrescriptionSessionResponse>() {
-//                    public void onSuccess(PrescriptionSessionResponse prescriptionSession) {
-//                        CatchupMathMobile.getUser().setPrescripion(prescriptionSession.getPrescriptionData());
-//                        CatchupMathMobile.__instance.showPrescriptionPanel();                
-//                    }
-//                    @Override
-//                    public void onFailure(Throwable arg0) {
-//                        Window.alert(arg0.getMessage());
-//                    }
-//                });
+            	 GetPrescriptionAction action = new GetPrescriptionAction(user.getRunId(), sessionNum, true);
+                CatchupMathMobile.getCmService().execute(action,new AsyncCallback<PrescriptionSessionResponse>() {
+                    public void onSuccess(PrescriptionSessionResponse prescriptionSession) {
+                        CatchupMathMobile.getUser().setPrescripion(prescriptionSession.getPrescriptionData());
+                        CatchupMathMobile.__instance.showPrescriptionPanel();                
+                    }
+                    @Override
+                    public void onFailure(Throwable arg0) {
+                        Window.alert(arg0.getMessage());
+                    }
+                });
             }
         }
         else if(historyToken.startsWith("resource")) {

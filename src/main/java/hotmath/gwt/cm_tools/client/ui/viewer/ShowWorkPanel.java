@@ -1,5 +1,6 @@
 package hotmath.gwt.cm_tools.client.ui.viewer;
 
+import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_rpc.client.rpc.CmList;
 import hotmath.gwt.cm_rpc.client.rpc.MultiActionRequestAction;
 import hotmath.gwt.cm_rpc.client.rpc.Response;
@@ -15,7 +16,6 @@ import hotmath.gwt.shared.client.rpc.action.GetWhiteboardDataAction;
 import hotmath.gwt.shared.client.rpc.action.SaveWhiteboardDataAction;
 import hotmath.gwt.shared.client.rpc.action.SaveWhiteboardDataAction.CommandType;
 import hotmath.gwt.shared.client.rpc.result.WhiteboardCommand;
-import hotmath.gwt.shared.client.util.UserInfo;
 
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.Frame;

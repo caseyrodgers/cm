@@ -1,10 +1,10 @@
 package hotmath.gwt.cm.client.ui.context;
 
 import hotmath.gwt.cm.client.history.CmHistoryManager;
+import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_rpc.client.rpc.InmhItemData;
 import hotmath.gwt.cm_tools.client.ui.AutoTestWindow;
 import hotmath.gwt.shared.client.data.CmAsyncRequest;
-import hotmath.gwt.shared.client.util.UserInfo;
 
 import java.util.ArrayList;
 import java.util.List;

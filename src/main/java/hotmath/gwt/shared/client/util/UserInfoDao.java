@@ -1,5 +1,8 @@
 package hotmath.gwt.shared.client.util;
 
+import hotmath.gwt.cm_rpc.client.UserInfo;
+import hotmath.gwt.cm_rpc.client.UserInfo.AccountType;
+import hotmath.gwt.cm_rpc.client.UserInfo.ProgramCompletionAction;
 import hotmath.gwt.cm_rpc.client.rpc.GetUserInfoAction;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.ui.CmLogger;
@@ -9,8 +12,6 @@ import hotmath.gwt.shared.client.eventbus.CmEvent;
 import hotmath.gwt.shared.client.eventbus.EventBus;
 import hotmath.gwt.shared.client.eventbus.EventType;
 import hotmath.gwt.shared.client.rpc.RetryAction;
-import hotmath.gwt.shared.client.util.UserInfo.AccountType;
-import hotmath.gwt.shared.client.util.UserInfo.ProgramCompletionAction;
 
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONParser;

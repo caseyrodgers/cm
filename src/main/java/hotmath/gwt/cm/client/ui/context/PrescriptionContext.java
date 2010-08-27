@@ -6,6 +6,8 @@ import hotmath.gwt.cm.client.history.CmLocation;
 import hotmath.gwt.cm.client.history.CmLocation.LocationType;
 import hotmath.gwt.cm.client.ui.EndOfProgramWindow;
 import hotmath.gwt.cm.client.ui.context.CmAutoTest.ResourceObject;
+import hotmath.gwt.cm_rpc.client.UserInfo;
+import hotmath.gwt.cm_rpc.client.UserInfo.ProgramCompletionAction;
 import hotmath.gwt.cm_rpc.client.rpc.InmhItemData;
 import hotmath.gwt.cm_rpc.client.rpc.PrescriptionData;
 import hotmath.gwt.cm_rpc.client.rpc.PrescriptionSessionDataResource;
@@ -29,8 +31,6 @@ import hotmath.gwt.shared.client.eventbus.EventType;
 import hotmath.gwt.shared.client.rpc.RetryAction;
 import hotmath.gwt.shared.client.rpc.action.AutoAdvanceUserAction;
 import hotmath.gwt.shared.client.rpc.action.MarkPrescriptionLessonAsViewedAction;
-import hotmath.gwt.shared.client.util.UserInfo;
-import hotmath.gwt.shared.client.util.UserInfo.ProgramCompletionAction;
 
 import java.util.ArrayList;
 import java.util.List;

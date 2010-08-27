@@ -1,5 +1,6 @@
 package hotmath.gwt.cm_tools.client.ui.viewer;
 
+import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_tools.client.ui.CmMainPanel;
 import hotmath.gwt.cm_tools.client.ui.resource_viewer.CmResourcePanelContainer.ResourceViewerState;
 import hotmath.gwt.cm_tools.client.ui.resource_viewer.CmResourcePanelImplDefault;
@@ -8,7 +9,6 @@ import hotmath.gwt.shared.client.eventbus.CmEvent;
 import hotmath.gwt.shared.client.eventbus.CmEventListenerImplDefault;
 import hotmath.gwt.shared.client.eventbus.EventBus;
 import hotmath.gwt.shared.client.eventbus.EventType;
-import hotmath.gwt.shared.client.util.UserInfo;
 
 import java.util.ArrayList;
 import java.util.List;

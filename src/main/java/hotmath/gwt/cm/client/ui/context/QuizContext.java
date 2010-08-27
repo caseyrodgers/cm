@@ -5,6 +5,7 @@ import hotmath.gwt.cm.client.history.CmHistoryManager;
 import hotmath.gwt.cm.client.history.CmLocation;
 import hotmath.gwt.cm.client.history.CmLocation.LocationType;
 import hotmath.gwt.cm.client.ui.EndOfProgramWindow;
+import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_rpc.client.rpc.CreateTestRunResponse;
 import hotmath.gwt.cm_rpc.client.rpc.NextAction.NextActionName;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
@@ -24,7 +25,6 @@ import hotmath.gwt.shared.client.eventbus.EventBus;
 import hotmath.gwt.shared.client.eventbus.EventType;
 import hotmath.gwt.shared.client.rpc.RetryAction;
 import hotmath.gwt.shared.client.rpc.action.CreateTestRunAction;
-import hotmath.gwt.shared.client.util.UserInfo;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,6 +1,6 @@
 package hotmath.gwt.cm.client.history;
 
-import hotmath.gwt.shared.client.util.UserInfo;
+import hotmath.gwt.cm_rpc.client.UserInfo;
 
 import com.google.gwt.user.client.History;
 

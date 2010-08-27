@@ -1,7 +1,7 @@
 package hotmath.gwt.cm_tools.client.ui;
 
 
-import hotmath.gwt.shared.client.util.UserInfo;
+import hotmath.gwt.cm_rpc.client.UserInfo;
 
 import java.util.Date;
 

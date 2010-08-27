@@ -1,11 +1,11 @@
 package hotmath.gwt.cm_tools.client.ui;
 
+import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.ui.context.CmContext;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
 import hotmath.gwt.shared.client.eventbus.EventBus;
 import hotmath.gwt.shared.client.eventbus.EventType;
-import hotmath.gwt.shared.client.util.UserInfo;
 
 import java.util.ArrayList;
 import java.util.List;

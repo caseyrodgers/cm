@@ -7,6 +7,7 @@ import hotmath.gwt.cm.client.history.CmLocation.LocationType;
 import hotmath.gwt.cm.client.ui.HeaderPanel;
 import hotmath.gwt.cm.client.ui.context.PrescriptionCmGuiDefinition;
 import hotmath.gwt.cm.client.ui.context.QuizCmGuiDefinition;
+import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.CmLoginPanel;
@@ -25,7 +26,6 @@ import hotmath.gwt.shared.client.eventbus.EventType;
 import hotmath.gwt.shared.client.rpc.action.RunNetTestAction.TestApplication;
 import hotmath.gwt.shared.client.util.CmRunAsyncCallback;
 import hotmath.gwt.shared.client.util.NetTestWindow;
-import hotmath.gwt.shared.client.util.UserInfo;
 import hotmath.gwt.shared.client.util.UserInfoDao;
 
 import com.extjs.gxt.ui.client.Style.LayoutRegion;

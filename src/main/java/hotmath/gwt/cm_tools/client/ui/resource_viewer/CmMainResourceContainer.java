@@ -1,5 +1,6 @@
 package hotmath.gwt.cm_tools.client.ui.resource_viewer;
 
+import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_rpc.client.rpc.InmhItemData;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.ui.resource_viewer.CmResourcePanelContainer.ResourceViewerState;
@@ -8,7 +9,6 @@ import hotmath.gwt.cm_tools.client.ui.viewer.ResourceViewerImplActivity;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
 import hotmath.gwt.shared.client.eventbus.EventBus;
 import hotmath.gwt.shared.client.eventbus.EventType;
-import hotmath.gwt.shared.client.util.UserInfo;
 
 import com.extjs.gxt.ui.client.Style.Direction;
 import com.extjs.gxt.ui.client.Style.Scroll;

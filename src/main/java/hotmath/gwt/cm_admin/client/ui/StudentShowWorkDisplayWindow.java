@@ -1,12 +1,12 @@
 package hotmath.gwt.cm_admin.client.ui;
 
+import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_rpc.client.rpc.InmhItemData;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.model.StudentModel;
 import hotmath.gwt.cm_tools.client.ui.resource_viewer.CmResourcePanel;
 import hotmath.gwt.cm_tools.client.ui.viewer.ResourceViewerFactory;
 import hotmath.gwt.cm_tools.client.ui.viewer.ShowWorkPanel;
-import hotmath.gwt.shared.client.util.UserInfo;
 
 import com.extjs.gxt.ui.client.Style.LayoutRegion;
 import com.extjs.gxt.ui.client.widget.Window;

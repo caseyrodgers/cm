@@ -2,7 +2,7 @@ package hotmath.gwt.cm_tools.client.ui;
 
 // import hotmath.gwt.cm.client.history.CmHistoryManager;
 // import hotmath.gwt.cm.client.history.CmLocation;
-import hotmath.gwt.shared.client.util.UserInfo;
+import hotmath.gwt.cm_rpc.client.UserInfo;
 
 import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
 import com.extjs.gxt.ui.client.Style.Scroll;

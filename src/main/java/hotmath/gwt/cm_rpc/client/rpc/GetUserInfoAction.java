@@ -1,6 +1,6 @@
 package hotmath.gwt.cm_rpc.client.rpc;
 
-import hotmath.gwt.shared.client.util.UserInfo;
+import hotmath.gwt.cm_rpc.client.UserInfo;
 
 public class GetUserInfoAction implements Action<UserInfo>{
     

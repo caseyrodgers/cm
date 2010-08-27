@@ -1,4 +1,4 @@
-package hotmath.gwt.shared.client.util;
+package hotmath.gwt.cm_rpc.client;
 
 import hotmath.gwt.cm_rpc.client.rpc.Response;
 

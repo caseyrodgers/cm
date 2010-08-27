@@ -1,5 +1,7 @@
 package hotmath.gwt.shared.client.util;
 
+import hotmath.gwt.cm_rpc.client.UserInfo;
+
 import com.extjs.gxt.ui.client.widget.Html;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 

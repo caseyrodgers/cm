@@ -2,6 +2,7 @@ package hotmath.gwt.cm.client.ui;
 
 import hotmath.gwt.cm.client.history.CmHistoryQueue;
 import hotmath.gwt.cm.client.ui.context.ContextChangeMessage;
+import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.ui.CmLogger;
 import hotmath.gwt.cm_tools.client.ui.CmMainPanel;
@@ -15,7 +16,6 @@ import hotmath.gwt.shared.client.model.CmPartner;
 import hotmath.gwt.shared.client.model.UserInfoBase;
 import hotmath.gwt.shared.client.util.CmInfoConfig;
 import hotmath.gwt.shared.client.util.CmRunAsyncCallback;
-import hotmath.gwt.shared.client.util.UserInfo;
 
 import com.extjs.gxt.ui.client.event.IconButtonEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;

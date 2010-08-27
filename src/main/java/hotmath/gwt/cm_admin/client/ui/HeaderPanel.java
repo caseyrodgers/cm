@@ -1,6 +1,7 @@
 package hotmath.gwt.cm_admin.client.ui;
 
 import hotmath.gwt.cm_admin.client.CatchupMathAdmin;
+import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.ui.CmLogger;
 import hotmath.gwt.shared.client.CmShared;
@@ -9,7 +10,6 @@ import hotmath.gwt.shared.client.eventbus.CmEventListener;
 import hotmath.gwt.shared.client.eventbus.EventBus;
 import hotmath.gwt.shared.client.model.CmPartner;
 import hotmath.gwt.shared.client.model.UserInfoBase;
-import hotmath.gwt.shared.client.util.UserInfo;
 
 import com.extjs.gxt.ui.client.event.IconButtonEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;

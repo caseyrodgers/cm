@@ -2,13 +2,13 @@ package hotmath.gwt.cm_admin.server.model;
 
 import hotmath.cm.server.model.CmUserProgramDao;
 import hotmath.gwt.cm.server.CmDbTestCase;
+import hotmath.gwt.cm_rpc.client.UserInfo.AccountType;
 import hotmath.gwt.cm_tools.client.model.AccountInfoModel;
 import hotmath.gwt.cm_tools.client.model.ChapterModel;
 import hotmath.gwt.cm_tools.client.model.GroupInfoModel;
 import hotmath.gwt.cm_tools.client.model.StudentActiveInfo;
 import hotmath.gwt.cm_tools.client.model.StudentModelI;
 import hotmath.gwt.cm_tools.client.model.SubjectModel;
-import hotmath.gwt.shared.client.util.UserInfo.AccountType;
 import hotmath.testset.ha.CmProgram;
 import hotmath.testset.ha.StudentUserProgramModel;
 

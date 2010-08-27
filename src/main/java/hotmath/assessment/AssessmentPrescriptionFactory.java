@@ -1,5 +1,6 @@
 package hotmath.assessment;
 
+import hotmath.testset.ha.CmProgram;
 import hotmath.testset.ha.HaTestRun;
 import hotmath.testset.ha.HaTestRunDao;
 import hotmath.testset.ha.HaTestRunDao.TestRunLesson;
@@ -29,7 +30,7 @@ public class AssessmentPrescriptionFactory {
 	    List<TestRunLesson> lessons = new HaTestRunDao().loadTestRunLessonsAndPids(conn, testRun.getRunId());
 	    if(lessons.size() == 0) {
 	        
-	        if(testRun.getHaTest().getTestDef().getTestDefId() == 36) {
+	        if(testRun.getHaTest().getTestDef().getTestDefId() == CmProgram.CUSTOM_PROGRAM.getDefId()) {
 	            return new AssessmentPrescriptionCustom(conn, testRun);
 	        }
 	        else {
