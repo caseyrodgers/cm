@@ -70,8 +70,7 @@ public class CmPilotCreate {
 
             HotMathSubscriber subscriber = HotMathSubscriberManager.findSubscriber(subscriberId);
             if (subscriber.getService("catchup") == null)
-                subscriber.addService(HotMathSubscriberServiceFactory.create("catchup"), new PurchasePlan(
-                        "TYPE_SERVICE_CATCHUP_MONTH"));
+                subscriber.addService(HotMathSubscriberServiceFactory.create("catchup"), new PurchasePlan("TYPE_SERVICE_CATCHUP_MONTH"));
 
             setMaxStudents(conn, subscriber, maxStudentCount);
 
@@ -368,7 +367,6 @@ public class CmPilotCreate {
         } finally {
             SqlUtilities.releaseResources(null, ps, conn);
         }
-
         return -1;
     }
     
@@ -390,9 +388,7 @@ public class CmPilotCreate {
     			catch(Exception ex) {
     				logger.error("Error creating group", ex);
     			}
-    			
     		}
-    		
     	}
     	catch(Exception e) {
     		e.printStackTrace();
@@ -401,6 +397,5 @@ public class CmPilotCreate {
     		SqlUtilities.releaseResources(null,null,conn);
     	}
     	System.exit(0);
-    	
     }
 }
