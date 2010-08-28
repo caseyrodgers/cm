@@ -79,8 +79,7 @@ public class CatchupSignupServlet extends HttpServlet {
             /** Setup the purchase by either creating or reusing existing SUBSCRIBER record based
              *  on this user's email.
              */
-            sub = Registration.setupPurchase(Registration.getLoginInfo(req), sifo.getCardEmail(), sifo.getFirstName(),
-                    sifo.getLastName(), sifo.getBillingZip(), "","", "", sifo);
+            sub = Registration.setupPurchase(Registration.getLoginInfo(req), sifo.getCardEmail(), sifo.getFirstName(),sifo.getLastName(), sifo.getBillingZip(), "","", "", sifo);
 
             @SuppressWarnings("unchecked")
             Map<String, String[]> formData = req.getParameterMap();
