@@ -28,7 +28,8 @@ public enum CmProgram {
     AUTO_ENROLL(15,"Auto-Enrollment","","Auto-Enroll",true),
     NATIONAL(37,"National Practice Test","","Grad Prep National",true),
     CUSTOM_PROGRAM(36,"Custom Program","Custom","Custom",false),
-    ESSENTIALS(41,"Essentials Program","Ess","Prof", true);
+    ESSENTIALS_V1(41,"Essentials Program (version 1)","Ess","Prof", false),
+    ESSENTIALS(42,"Essentials Program","Ess","Prof", true);
 
     private final int defId;
     private final String subject;
