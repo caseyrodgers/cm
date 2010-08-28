@@ -47,6 +47,13 @@ public class AssessmentPrescriptionSession {
     public String toString() {
         return getTopic();
     }
+    
+    /** Return true if this session is an
+     *  Required Practice Activity type
+     */
+    public boolean isRpa() {
+    	return (_pids.size() > 0 && _pids.get(0).getWidgetArgs() != null);
+    }
 
     /**
      * Return list of solutions in session as ProblemIDs

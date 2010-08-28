@@ -257,13 +257,15 @@ public class PrescriptionReport {
                 ps = conn.prepareStatement("insert into HA_PROGRAM_LESSONS(lesson,subject,file,pid)values(?,?,?,?)");
                 
                 /**
-                 * there are sessions, make search the RPP for each equals three
+                 * there are sessions, make search:
+                 *  -- if RPP there are three
+                 *  -- if RPA there is at least one.
                  * 
                  */
                 for (int i = 0, t = prescription.getSessions().size(); i < t; i++) {
                     AssessmentPrescriptionSession session = prescription.getSessions().get(i);
                     List<SessionData> rpp = session.getSessionItems();
-                    if (rpp.size() != 3) {
+                    if(!session.isRpa() && rpp.size() != 3) {
                         logMessage(prescription.getTestRun().getRunId(), "WARNING: Session " + i + ": incorrect number of RPP (" + rpp.size() + ")");
                         isError = true;
                     }
@@ -428,7 +430,7 @@ public class PrescriptionReport {
 
             if(programName != null) {
             	for(CmProgram p: CmProgram.values()) {
-            		if(p.name().equals(programName) ) {
+            		if(p.name().equalsIgnoreCase(programName) ) {
             			__logger.info("Only checking program: " + p);
             			program = p;
             			break;
