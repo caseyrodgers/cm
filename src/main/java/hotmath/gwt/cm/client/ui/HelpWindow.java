@@ -60,9 +60,7 @@ public class HelpWindow extends CmWindow {
         setResizable(false);
         addStyleName("help-window");
         setHeading("Catchup-Math Help Window, version: " +
-        		   CatchupMathVersionInfo.getBuildVersion() + 
-        		   "   user: " + UserInfo.getInstance().getUid() +
-        		   "   partner: " + (UserInfoBase.getInstance().getPartner()!=null?UserInfoBase.getInstance().getPartner():""));
+        		   CatchupMathVersionInfo.getBuildVersion());
 
         EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_MODAL_WINDOW_OPEN, this));
 
