@@ -24,9 +24,11 @@ import com.google.gwt.user.client.ui.SimplePanel;
  * @author casey
  * 
  */
-public class CatchupMathMobile implements EntryPoint {
+public class CatchupMathMobile implements EntryPoint,Screen.OrientationChangedHandler {
     
     public static CatchupMathMobile __instance;
+    
+    private RootPanel _rootPanel;
     
     CmMobileUser user;
     SimplePanel mainPanel;
@@ -40,6 +42,8 @@ public class CatchupMathMobile implements EntryPoint {
         mainPanel = new SimplePanel();
         mainPanel.setWidget(new Label("Loading ..."));
         RootPanel.get("main-content").add(mainPanel);
+        
+        _rootPanel = RootPanel.get("main-content");
         
         History.addValueChangeHandler(new CatchupMathMobileHistoryListener());
         
@@ -58,8 +62,11 @@ public class CatchupMathMobile implements EntryPoint {
         else {
             History.newItem("login:" + System.currentTimeMillis());
         }
-        // bypass anchor info on startup
-        // History.fireCurrentHistoryState();
+        
+        
+		Screen screen = new Screen();
+		screen.addHandler(this);
+		orientationChanged(screen.getScreenOrientation());        
     }
     
     static public CmMobileUser getUser() {
@@ -152,4 +159,16 @@ public class CatchupMathMobile implements EntryPoint {
         }
         return m;
     }
+
+	@Override
+	public void orientationChanged(ScreenOrientation newOrientation) {
+		Window.alert("Orientation Changed");
+		if (newOrientation == ScreenOrientation.Portrait) {
+			_rootPanel.removeStyleName("landscape");
+			_rootPanel.addStyleName("portrait");
+		} else {
+			_rootPanel.addStyleName("landscape");
+			_rootPanel.removeStyleName("portrait");
+		}		
+	}
 }
