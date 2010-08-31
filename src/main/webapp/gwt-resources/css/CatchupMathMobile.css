@@ -12,6 +12,218 @@ body {
   -webkit-text-size-adjust: none;
 }
 
+#startup {
+	display: table-cell;
+	vertical-align: middle;
+	height: 356px;
+ }
+
+#startup > div {
+	width: 320px;
+	text-align: center;
+}
+
+#header {
+  position: relative;
+  height: 40px;
+  background-image: url('images/header_middle.png');
+  border-bottom: 1px solid rgb(45, 54, 66);
+}
+
+
+#header .backButton {
+
+  
+  /* the buttons should be displayed on top of the titles so that they can always receive touches */
+  z-index: 1;
+
+  font-size: 12px;
+  font-weight: bold;
+  text-align: center;
+  color: white;
+  text-shadow: rgba(0, 0, 0, .6) 0px -1px 0px;
+  /* set up the chrome background */
+  -webkit-border-image : url('images/back_button.png') 0 4 0 13;
+  border-width : 0 4px 0 13px;
+  padding-top: 7px;
+  padding-right: 4px;
+  /* base metrics used to ensure a minumum size and specify a max size that can be used to trim the contents */
+  //min-width: 40px;
+  //max-width: 60px;
+  height: 23px; 
+  /* enfore trimming if the label is too long */
+  white-space : nowrap;
+  overflow : hidden;
+  text-overflow: ellipsis;
+}
+
+
+div.portrait #header .backButton {
+	width: 60px;
+}
+
+div.landscape #header .backButton {
+	width: 90px;
+}
+
+
+#header .title {
+  /* base metrics */
+  height: 31px;
+  margin-top: 3px;
+  margin-left: 5px;
+  margin-right: 5px;
+  /* the titles should be displayed below the button so that they don't receive touches */
+  z-index: 0;
+  /* set up the font appearance */
+  font-size: 16pt;
+  font-weight: bold;
+  color: white;
+  text-shadow: rgba(0, 0, 0, .6) 0px -1px 0px;
+  /* enfore trimming if the label is too long */
+  white-space : nowrap;
+  overflow : hidden;
+  text-overflow: ellipsis;
+
+
+}
+
+div.portrait #header .title.button-off {
+	width: 310px;
+	text-align: center;
+}
+
+div.portrait #header .title.button-on.portrait-overflow-off {
+	width: 310px;
+	text-align: center;
+}
+
+div.portrait #header .title.button-on.portrait-overflow-on {
+	width: 218px;
+	text-align: left;
+}
+
+
+
+
+div.landscape #header .title.button-off {
+	width: 470px;
+	text-align: center;
+}
+
+div.landscape #header .title.button-on.landscape-overflow-off {
+	width: 470px;
+	text-align: center;
+}
+
+div.landscape #header .title.button-on.landscape-overflow-on {
+	/*width: 355px;*/
+	width: 310px;
+	text-align: left;
+}
+
+
+
+
+
+
+div.page 
+{
+	width: 320px;
+	min-height: 376px;
+}
+
+div.landscape div.page 
+{
+	width: 480px;
+	min-height: 228px;
+	
+}
+
+
+
+
+
+
+div.page ul {
+  width: 300px;
+  padding: 0px;
+  margin: 10px 0px 6px 10px;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+div.landscape div.page ul {
+  width: 460px;
+}
+
+div.page li {
+  height: 32px;
+  list-style-type: none;
+  background-color: white;
+  border-style: solid;
+  border-width: 1px 1px 0px 1px;
+  border-color: rgb(171,173,176);  
+  margin: 0px;
+  padding-top: 14px;
+  padding-left: 10px;
+  padding-right: 20px;
+  /* ensure that long pieces of text get trimmed */
+  white-space : nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/*
+this matches the first list item, which needs rounding in the top corners
+and no bottom border as the item below will already draw a border at its top
+*/
+div.page li:first-child {
+  -webkit-border-top-left-radius: 8px;
+  -webkit-border-top-right-radius: 8px;
+  border: 1px solid rgb(171,173,176);
+  border-bottom-width: 0;
+}
+
+/*
+this matches the last list item, which needs rounding in the bottom corners
+and a bottom border
+*/
+div.page li:last-child {
+  -webkit-border-bottom-left-radius: 8px;
+  -webkit-border-bottom-right-radius: 8px;
+  border: 1px solid rgb(171,173,176);
+  margin-bottom: 5px;
+}
+
+/*
+list items with the .group class are those that can be tapped to drill
+further down and therefore need an arrow in the background to indicate that
+*/
+div.page li.group {
+  background-image: url('images/chevron.png');
+  background-repeat: no-repeat;
+  background-position: 280px 18px;
+}
+
+div.landscape div.page li.group {
+  background-position: 440px 18px;
+}
+
+/* this is for the touched state of list items */
+div.page li.group:active {
+  background-image: url('images/chevron_touched.png'), url('images/item_background_touched.png');
+  background-position: 280px 18px, 0 0;
+  background-repeat: no-repeat, repeat-x;
+  color: white;
+}
+
+div.landscape div.page li.group:active {
+  background-position: 440px 18px, 0 0;
+}
+
+
+
 
 #main-content {
 	width: 300px;
