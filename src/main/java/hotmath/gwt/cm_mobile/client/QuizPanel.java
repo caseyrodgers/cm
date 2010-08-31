@@ -1,5 +1,6 @@
 package hotmath.gwt.cm_mobile.client;
 
+import hotmath.gwt.cm_mobile.client.page.QuizPage;
 import hotmath.gwt.cm_mobile.client.rpc.CmMobileUser;
 import hotmath.gwt.cm_mobile.client.rpc.CreateTestRunMobileAction;
 import hotmath.gwt.cm_rpc.client.rpc.CmList;
@@ -22,12 +23,11 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.CheckBox;
-import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
-public class QuizPanel extends Composite {
+public class QuizPanel extends AbstractPagePanel {
     
     MultiActionRequestAction answerAction = new MultiActionRequestAction();
 
@@ -49,8 +49,11 @@ public class QuizPanel extends Composite {
     List<Integer> testQuestionAnswers;
     
     boolean _isOffline;
+    QuizPage quizPage;
     
-    public QuizPanel() {
+    public QuizPanel(QuizPage quizPage) {
+    	
+    	this.quizPage = quizPage;
         
         /** do the binding */
         initWidget(uiBinder.createAndBindUi(this));
@@ -79,7 +82,7 @@ public class QuizPanel extends Composite {
                 CatchupMathMobile.getUser().setRunId(result.getRunId());
                 CatchupMathMobile.getUser().setPrescripion(result.getPrescriptionData());
                 
-                History.newItem("lesson:" + result.getPrescriptionData().getCurrSession().getSessionNumber());
+                Controller.navigateToPrescription(quizPage, result.getPrescriptionData().getCurrSession());
             }
 
             @Override

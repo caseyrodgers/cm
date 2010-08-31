@@ -1,5 +1,6 @@
 package hotmath.gwt.cm_mobile.client;
 
+import hotmath.gwt.cm_mobile.client.page.PrescriptionPage;
 import hotmath.gwt.cm_mobile.client.rpc.CmMobileUser;
 import hotmath.gwt.cm_rpc.client.rpc.InmhItemData;
 import hotmath.gwt.cm_rpc.client.rpc.PrescriptionData;
@@ -14,12 +15,11 @@ import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
-public class PrescriptionPanel extends Composite {
+public class PrescriptionPanel extends AbstractPagePanel {
 
     /** define interface to the widget
      */
@@ -40,7 +40,10 @@ public class PrescriptionPanel extends Composite {
     @UiField Button prevButton, nextButton;
     @UiField SimplePanel thermometerPanel;
     
-    public PrescriptionPanel() {
+    PrescriptionPage pPage;
+    
+    public PrescriptionPanel(PrescriptionPage pPage) {
+    	this.pPage = pPage;
         this.prescription = CatchupMathMobile.getUser().getPrescripion();
         
         
@@ -66,7 +69,7 @@ public class PrescriptionPanel extends Composite {
                 for(int ordinal=0;ordinal<r.getItems().size();ordinal++) {
                     InmhItemData i = r.getItems().get(ordinal);
                     ListItem li2 = new ListItem();
-                    li2.add(new ResourceButton(ordinal, i));
+                    li2.add(new ResourceButton(pPage,ordinal, i));
                     ol2.add(li2);
                 }
             }
@@ -116,7 +119,7 @@ public class PrescriptionPanel extends Composite {
     static class ResourceButton extends Button {
         InmhItemData item;
         int ordinal;
-        public ResourceButton(final int ordinal, final InmhItemData item) {
+        public ResourceButton(final PrescriptionPage pPage, final int ordinal, final InmhItemData item) {
             super(item.getTitle());
             this.ordinal = ordinal;
             this.item = item;
@@ -124,7 +127,7 @@ public class PrescriptionPanel extends Composite {
             addClickHandler(new ClickHandler() {
                 @Override
                 public void onClick(ClickEvent arg0) {
-                    History.newItem("resource:" + item.getType() + ":" + ordinal); 
+                	Controller.navigateToPrescriptionResource(pPage, item, ordinal);
                 }
             });
         }

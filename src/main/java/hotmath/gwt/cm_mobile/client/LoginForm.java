@@ -11,21 +11,21 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.Cookies;
-import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.PasswordTextBox;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 
-public class LoginForm extends Composite {
+public class LoginForm extends AbstractPagePanel {
     @UiField
     Button loginButton;
+    LoginPage loginPage;
 
-    public LoginForm() {
+    public LoginForm(LoginPage loginPage) {
+    	this.loginPage = loginPage;
         initWidget(uiBinder.createAndBindUi(this));
         readCookie();
     }
@@ -67,7 +67,7 @@ public class LoginForm extends Composite {
             @Override
             public void onSuccess(CmMobileUser result) {
                 CatchupMathMobile.__instance.user = result;
-                History.newItem("quiz");
+                Controller.navigateToQuiz(loginPage);
             }
 
             @Override
