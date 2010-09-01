@@ -3,32 +3,38 @@
 
 	<ui:style>
 	    .formLayout {
-	    	background: #CCCCCC;
 	    	margin: 20px;
 	    	color: white;
 	    	height: 200px;
 	     }
 	     
 		.heading {
-			color: #F3280D;
+			color: #738AA6;
 			font-weight: bold;
 			font-size: 1.1em;
-			text-align: center;
 			margin-top: 10px;
 		}
 		.tableLayout {
 			color: white;
 			margin: 20px 0 15px 10px;
 		}
+		
+		.fieldLabel {
+		     width: 85px;
+		 }
+		 
+		 .formLayout button {
+		     margin-left: 100px;
+	      }
 	</ui:style>
 	
 	<g:DialogBox ui:field="loginBox" autoHide="false" modal="true"
 		glassEnabled="true" animationEnabled="true" styleName="{style.formLayout}">
 		<g:HTMLPanel styleName="{style.heading}">
-		   <h2 style="{style.heading}">Catchup Math Mobile</h2>
-			<table styleName='style.tableLayout' >
+		   <h2 class="{style.heading}">Catchup Math Mobile</h2>
+			<table class='{style.tableLayout}' >
 				<tr>
-					<td>Username:</td>
+					<td class='{style.fieldLabel}'>Username:</td>
 					<td>
 						<g:TextBox ui:field='usernameBox' />
 					</td>

@@ -17,7 +17,15 @@ public class PrescriptionResourcePage implements IPage {
 
 	@Override
 	public String getBackButtonText() {
-		return "Prescription";
+		return "<< Lesson";
 	}
+
+	public InmhItemData getItem() {
+    	return item;
+    }
+
+	public void setItem(InmhItemData item) {
+    	this.item = item;
+    }
 
 }

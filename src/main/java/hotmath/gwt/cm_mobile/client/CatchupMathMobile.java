@@ -185,7 +185,7 @@ public class CatchupMathMobile implements EntryPoint,Screen.OrientationChangedHa
 
 	@Override
 	public void orientationChanged(ScreenOrientation newOrientation) {
-		Window.alert("Orientation Changed");
+		// Window.alert("Orientation Changed");
 		if (newOrientation == ScreenOrientation.Portrait) {
 			_rootPanel.removeStyleName("landscape");
 			_rootPanel.addStyleName("portrait");

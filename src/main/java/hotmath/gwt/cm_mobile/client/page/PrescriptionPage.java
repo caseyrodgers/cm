@@ -17,7 +17,7 @@ public class PrescriptionPage implements IPage {
 
 	@Override
 	public String getBackButtonText() {
-		return "Quiz";
+		return "<< Quiz";
 	}
 
 }

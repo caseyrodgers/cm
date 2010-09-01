@@ -26,7 +26,7 @@ body {
 #header {
   position: relative;
   height: 40px;
-  background-image: url('images/header_middle.png');
+  background-image: url('/gwt-resources/images/mobile/header_middle.png');
   border-bottom: 1px solid rgb(45, 54, 66);
 }
 
@@ -139,89 +139,6 @@ div.landscape div.page
 	min-height: 228px;
 	
 }
-
-
-
-
-
-
-div.page ul {
-  width: 300px;
-  padding: 0px;
-  margin: 10px 0px 6px 10px;
-  font-size: 18px;
-  font-weight: bold;
-}
-
-div.landscape div.page ul {
-  width: 460px;
-}
-
-div.page li {
-  height: 32px;
-  list-style-type: none;
-  background-color: white;
-  border-style: solid;
-  border-width: 1px 1px 0px 1px;
-  border-color: rgb(171,173,176);  
-  margin: 0px;
-  padding-top: 14px;
-  padding-left: 10px;
-  padding-right: 20px;
-  /* ensure that long pieces of text get trimmed */
-  white-space : nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-/*
-this matches the first list item, which needs rounding in the top corners
-and no bottom border as the item below will already draw a border at its top
-*/
-div.page li:first-child {
-  -webkit-border-top-left-radius: 8px;
-  -webkit-border-top-right-radius: 8px;
-  border: 1px solid rgb(171,173,176);
-  border-bottom-width: 0;
-}
-
-/*
-this matches the last list item, which needs rounding in the bottom corners
-and a bottom border
-*/
-div.page li:last-child {
-  -webkit-border-bottom-left-radius: 8px;
-  -webkit-border-bottom-right-radius: 8px;
-  border: 1px solid rgb(171,173,176);
-  margin-bottom: 5px;
-}
-
-/*
-list items with the .group class are those that can be tapped to drill
-further down and therefore need an arrow in the background to indicate that
-*/
-div.page li.group {
-  background-image: url('images/chevron.png');
-  background-repeat: no-repeat;
-  background-position: 280px 18px;
-}
-
-div.landscape div.page li.group {
-  background-position: 440px 18px;
-}
-
-/* this is for the touched state of list items */
-div.page li.group:active {
-  background-image: url('images/chevron_touched.png'), url('images/item_background_touched.png');
-  background-position: 280px 18px, 0 0;
-  background-repeat: no-repeat, repeat-x;
-  color: white;
-}
-
-div.landscape div.page li.group:active {
-  background-position: 440px 18px, 0 0;
-}
-
 
 
 

@@ -2,9 +2,12 @@ package hotmath.gwt.cm_mobile.client;
 
 import hotmath.gwt.cm_mobile.client.page.PrescriptionPage;
 import hotmath.gwt.cm_mobile.client.rpc.CmMobileUser;
+import hotmath.gwt.cm_rpc.client.rpc.GetPrescriptionAction;
 import hotmath.gwt.cm_rpc.client.rpc.InmhItemData;
 import hotmath.gwt.cm_rpc.client.rpc.PrescriptionData;
+import hotmath.gwt.cm_rpc.client.rpc.PrescriptionSessionData;
 import hotmath.gwt.cm_rpc.client.rpc.PrescriptionSessionDataResource;
+import hotmath.gwt.cm_rpc.client.rpc.PrescriptionSessionResponse;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -14,6 +17,7 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
@@ -41,16 +45,33 @@ public class PrescriptionPanel extends AbstractPagePanel {
     @UiField SimplePanel thermometerPanel;
     
     PrescriptionPage pPage;
+    UnOrderedList listItems = new UnOrderedList();
     
     public PrescriptionPanel(PrescriptionPage pPage) {
     	this.pPage = pPage;
+    	
+    	/** to get started... probably, should pass data in
+    	 * 
+    	 */
         this.prescription = CatchupMathMobile.getUser().getPrescripion();
         
         
         /** do the binding */
         initWidget(uiBinder.createAndBindUi(this));
-        UnOrderedList ol = new UnOrderedList();
-        for (PrescriptionSessionDataResource r : prescription.getCurrSession().getInmhResources()) {
+        
+        loadPrescriptionSession(prescription.getCurrSession());
+        _thermometer.setPerecent(getPrescriptionCompletionPercent());
+        mainPanel.add(listItems);  
+        thermometerPanel.add(_thermometer);
+    }
+    
+    
+    private void loadPrescriptionSession(PrescriptionSessionData session) {
+    	
+    	/** start fresh */
+        listItems.clear();
+        
+        for (PrescriptionSessionDataResource r : session.getInmhResources()) {
             
             String type = r.getType();
             
@@ -59,9 +80,8 @@ public class PrescriptionPanel extends AbstractPagePanel {
              */
             if(type.equals("video") || type.startsWith("flashcards") || type.equals("activity") || type.equals("results"))
                 continue;
-            
             ListItem li = new ListItem();
-            ol.add(li);
+            listItems.add(li);
             li.setText(r.getLabel());
             if(r.getItems().size() > 0) {
                 UnOrderedList ol2 = new UnOrderedList();
@@ -75,8 +95,6 @@ public class PrescriptionPanel extends AbstractPagePanel {
             }
         }
         _thermometer.setPerecent(getPrescriptionCompletionPercent());
-        thermometerPanel.add(_thermometer);
-        mainPanel.add(ol);
     }
     
     private int getPrescriptionCompletionPercent() {
@@ -92,8 +110,8 @@ public class PrescriptionPanel extends AbstractPagePanel {
     @UiHandler("nextButton")
     void handleNextButtonClick(ClickEvent e) {
         CmMobileUser user = CatchupMathMobile.getUser();
-        int sessionNumber = user.getPrescripion().getCurrSession().getSessionNumber();
-        if(sessionNumber > user.getPrescripion().getSessionTopics().size()) {
+        int sessionNumber = this.prescription.getCurrSession().getSessionNumber();
+        if((sessionNumber+1) >= this.prescription.getSessionTopics().size()) {
             Window.alert("No more lessons");
             return;
         }
@@ -102,13 +120,26 @@ public class PrescriptionPanel extends AbstractPagePanel {
     }
     
     private void loadLesson(int sessionNumber) {
-        History.newItem("lesson:" + sessionNumber);                
+		GetPrescriptionAction action = new GetPrescriptionAction(CatchupMathMobile.getUser().getRunId(), sessionNumber, true);
+		CatchupMathMobile.getCmService().execute(action, new AsyncCallback<PrescriptionSessionResponse>() {
+			public void onSuccess(PrescriptionSessionResponse prescriptionSession) {
+				PrescriptionPanel.this.prescription = prescriptionSession.getPrescriptionData();
+				
+				loadPrescriptionSession(prescriptionSession.getPrescriptionData().getCurrSession());
+				
+			}
+
+			@Override
+			public void onFailure(Throwable arg0) {
+				Window.alert(arg0.getMessage());
+			}
+		});
     }
     
     @UiHandler("prevButton")
     void handlePrevButtonClick(ClickEvent e) {
         CmMobileUser user = CatchupMathMobile.getUser();
-        int sessionNumber = user.getPrescripion().getCurrSession().getSessionNumber();
+        int sessionNumber = this.prescription.getCurrSession().getSessionNumber();
         if(sessionNumber < 1) {
             Window.alert("No previous lessons");
             return;
