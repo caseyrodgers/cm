@@ -115,7 +115,12 @@ public class InmhAssessment {
 		List<InmhItemData> list = new ArrayList<InmhItemData>();
 		for(InmhItemData itemData: inmhItemsMap.getInmhData()) {
 			if(inmhType == null || itemData.getInmhItem().getType().equals(inmhType))
-				list.add(itemData);
+				if (! list.contains(itemData)) {
+				    list.add(itemData);
+				}
+				else {
+					logger.warn("*** duplicate INMH item of type: " + inmhType + " found: " + itemData);
+				}
 		}
 		return list;
 	}
