@@ -1931,7 +1931,7 @@ public class CmStudentDao {
     		rs = ps.executeQuery();
     		if (rs.first()) {
     			int uid = rs.getInt(1);
-    			return getStudentModel(conn, uid, true); 
+    			return getStudentModelBase(conn, uid, true); 
     		}
     		else {
                 throw new Exception(String.format("Auto Reg Template for Group ID: %d was not found", groupId));
