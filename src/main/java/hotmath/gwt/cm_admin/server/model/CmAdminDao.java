@@ -153,13 +153,14 @@ public class CmAdminDao {
     	
     	CmList<StudentModelExt> students = new CmArrayList<StudentModelExt>();
     	PreparedStatement ps = null;
+    	ResultSet rs = null;
     	try {
     		String sql = CmMultiLinePropertyReader.getInstance().getProperty("STUDENTS_IN_GROUP");
     		ps = conn.prepareStatement(sql);
     		ps.setInt(1, gim.getAdminId());
     		ps.setString(2, gim.getName());
     		
-    		ResultSet rs = ps.executeQuery();
+    		rs = ps.executeQuery();
     		while(rs.next()) {
     			StudentModelExt sm = new StudentModelExt();
     			sm.setUid(rs.getInt("uid"));
@@ -169,7 +170,7 @@ public class CmAdminDao {
     		return students;
     	}
     	finally {
-    		SqlUtilities.releaseResources(null, ps,null);
+    		SqlUtilities.releaseResources(rs, ps,null);
     	}
     	
     }
@@ -184,13 +185,14 @@ public class CmAdminDao {
     public CmList<StudentModelExt> getGroupStudentsNotIn(final Connection conn,GroupInfoModel gim) throws Exception {
     	CmList<StudentModelExt> students = new CmArrayList<StudentModelExt>();
     	PreparedStatement ps = null;
+    	ResultSet rs = null;
     	try {
     		String sql = CmMultiLinePropertyReader.getInstance().getProperty("STUDENTS_NOT_IN_GROUP");
     		ps = conn.prepareStatement(sql);
     		ps.setInt(1, gim.getAdminId());
     		ps.setString(2, gim.getName());
     		
-    		ResultSet rs = ps.executeQuery();
+    		rs = ps.executeQuery();
     		while(rs.next()) {
     			StudentModelExt sm = new StudentModelExt();
     			sm.setUid(rs.getInt("uid"));
@@ -201,7 +203,7 @@ public class CmAdminDao {
     		return students;
     	}
     	finally {
-    		SqlUtilities.releaseResources(null, ps,null);
+    		SqlUtilities.releaseResources(rs, ps,null);
     	}
     } 
     
@@ -244,7 +246,6 @@ public class CmAdminDao {
 
     public GroupInfoModel addGroup(final Connection conn, Integer adminUid, GroupInfoModel gm) throws Exception {
         PreparedStatement ps = null;
-        ResultSet rs = null;
 
         checkForReservedGroup(gm.getName());
 
@@ -269,7 +270,7 @@ public class CmAdminDao {
             logger.error(String.format("*** Error adding Group: %s, for adminUid: %d", gm.getName(), adminUid), e);
             throw new Exception(String.format("*** Error adding Group: %s ***", gm.getName()));
         } finally {
-            SqlUtilities.releaseResources(rs, ps, null);
+            SqlUtilities.releaseResources(null, ps, null);
         }
         return gm;
     }
@@ -482,7 +483,6 @@ public class CmAdminDao {
 
         Connection conn = null;
         PreparedStatement ps = null;
-        ResultSet rs = null;
 
         try {
             logger.info("Removing user: " + sm.getUid());
@@ -495,7 +495,7 @@ public class CmAdminDao {
         } catch (Exception e) {
             logger.error(String.format("*** Error removing User with UID: %d", sm.getUid()), e);
         } finally {
-            SqlUtilities.releaseResources(rs, ps, conn);
+            SqlUtilities.releaseResources(null, ps, conn);
         }
     }
 
@@ -600,7 +600,6 @@ public class CmAdminDao {
 
         Connection conn = null;
         PreparedStatement ps = null;
-        ResultSet rs = null;
 
         try {
             conn = HMConnectionPool.getConnection();
@@ -627,7 +626,7 @@ public class CmAdminDao {
             logger.error(msg, e);
             throw new Exception(String.format("*** Error creating HA_ADMIN, name: %s, subscriberId: %s, passcode: %s", userName, subscriberId, passcode));
         } finally {
-            SqlUtilities.releaseResources(rs, ps, conn);
+            SqlUtilities.releaseResources(null, ps, conn);
         }
     }
 
@@ -757,12 +756,13 @@ public class CmAdminDao {
      */
     public AccountType getAccountType(final Connection conn, Integer adminId) throws Exception {
         PreparedStatement ps = null;
+        ResultSet rs = null;
         try {
             String sql = CmMultiLinePropertyReader.getInstance().getProperty("ACCOUNT_TYPE_LOOKUP");
             ps = conn.prepareStatement(sql);
             ps.setInt(1, adminId);
 
-            ResultSet rs = ps.executeQuery();
+            rs = ps.executeQuery();
             if (!rs.first())
                 throw new CmException("Admin record does not have an associated SUBSCRIBER record");
 
@@ -775,7 +775,7 @@ public class CmAdminDao {
                 return AccountType.OTHER;
 
         } finally {
-            SqlUtilities.releaseResources(null, ps, null);
+            SqlUtilities.releaseResources(rs, ps, null);
         }
     }
 
@@ -834,6 +834,8 @@ public class CmAdminDao {
         CmList<TrendingData> tdata = new CmArrayList<TrendingData>();
 
         PreparedStatement ps = null;
+        ResultSet rs = null;
+        
         logger.debug("aid=" + aid + " getting trending data");
         try {
             String sqlToken = (useActiveOnly ? "TRENDING_DATA_SQL_FROM_UIDS_ACTIVE_ONLY"
@@ -854,14 +856,14 @@ public class CmAdminDao {
 
             SqlOutWriter.write(ps.toString());
             
-            ResultSet rs = ps.executeQuery();
+            rs = ps.executeQuery();
             while (rs.next()) {
                 tdata.add(new TrendingData(rs.getString("lesson_name"), rs.getInt("count_assigned")));
             }
             return tdata;
         } finally {
             logger.debug("aid=" + aid + " trending data retrieved");
-            SqlUtilities.releaseResources(null, ps, null);
+            SqlUtilities.releaseResources(rs, ps, null);
         }
     }
 
@@ -881,6 +883,7 @@ public class CmAdminDao {
         logger.debug("aid=" + aid + " getting trending data for program");
         CmList<ProgramData> tdata = new CmArrayList<ProgramData>();
         PreparedStatement ps = null;
+        ResultSet rs = null;
         try {
             List<Integer> studentUids = createInListReplacements(studentPool);
             String sqlToken = (useActiveOnly ? "TRENDING_DATA_FOR_PROGRAMS_SQL_FROM_UIDS_ACTIVE_ONLY"
@@ -888,7 +891,7 @@ public class CmAdminDao {
             String sql = CmMultiLinePropertyReader.getInstance().getProperty(sqlToken);
             sql = QueryHelper.createInListSQL(sql, studentUids, "u.uid");
             ps = conn.prepareStatement(sql);
-            ResultSet rs = ps.executeQuery();
+            rs = ps.executeQuery();
             while (rs.next()) {
                 ProgramData pd = createProgramData(conn, studentUids, rs.getInt("test_def_id"), useActiveOnly);
                 tdata.add(pd);
@@ -898,7 +901,7 @@ public class CmAdminDao {
             throw e;
         } finally {
             logger.debug("aid=" + aid + " trending data for program retrieved: " + tdata.size());
-            SqlUtilities.releaseResources(null, ps, null);
+            SqlUtilities.releaseResources(rs, ps, null);
         }
     }
 
@@ -917,6 +920,7 @@ public class CmAdminDao {
             throws Exception {
         CmList<StudentModelExt> students = new CmArrayList<StudentModelExt>();
         PreparedStatement ps = null;
+        ResultSet rs = null;
         try {
             String sql = CmMultiLinePropertyReader.getInstance().getProperty(
                     "TRENDING_DATA_DETAIL_FOR_PROGRAM_SEGMENT_FROM_UIDS");
@@ -924,7 +928,7 @@ public class CmAdminDao {
             ps = conn.prepareStatement(sql);
             ps.setInt(1, testDefId);
             ps.setInt(2, quizSegment);
-            ResultSet rs = ps.executeQuery();
+            rs = ps.executeQuery();
             while (rs.next()) {
                 StudentModelExt parialStudent = new StudentModelExt();
                 parialStudent.setName(rs.getString("user_name"));
@@ -933,7 +937,7 @@ public class CmAdminDao {
             }
             return students;
         } finally {
-            SqlUtilities.releaseResources(null, ps, null);
+            SqlUtilities.releaseResources(rs, ps, null);
         }
     }
 
@@ -950,6 +954,7 @@ public class CmAdminDao {
             List<StudentModelExt> studentPool, String lessonName, boolean useActiveOnly) throws Exception {
         CmList<StudentModelExt> students = new CmArrayList<StudentModelExt>();
         PreparedStatement ps = null;
+        ResultSet rs = null;
         try {
 
             String sql = CmMultiLinePropertyReader.getInstance().getProperty(
@@ -957,7 +962,7 @@ public class CmAdminDao {
             sql = QueryHelper.createInListSQL(sql, createInListReplacements(studentPool), "u.uid");
             ps = conn.prepareStatement(sql);
             ps.setString(1, lessonName);
-            ResultSet rs = ps.executeQuery();
+            rs = ps.executeQuery();
             while (rs.next()) {
                 StudentModelExt parialStudent = new StudentModelExt();
                 String name = rs.getString("user_name");
@@ -970,7 +975,7 @@ public class CmAdminDao {
             }
             return students;
         } finally {
-            SqlUtilities.releaseResources(null, ps, null);
+            SqlUtilities.releaseResources(rs, ps, null);
         }
     }
 
@@ -992,6 +997,7 @@ public class CmAdminDao {
     private int[] getCountsOfUsersWhoHaveVisitedQuizSegment(final Connection conn, List<Integer> studentIds,
             HaTestDef testDef, boolean useActiveOnly) throws Exception {
         PreparedStatement ps = null;
+        ResultSet rs = null;
         try {
 
             int counts[] = new int[testDef.getTestConfig().getSegmentCount()];
@@ -1002,7 +1008,7 @@ public class CmAdminDao {
             sql = QueryHelper.createInListSQL(sql, studentIds, "u.uid");
             ps = conn.prepareStatement(sql);
             ps.setInt(1, testDef.getTestDefId());
-            ResultSet rs = ps.executeQuery();
+            rs = ps.executeQuery();
             while (rs.next()) {
                 int segNum = rs.getInt("test_segment");
                 try {
@@ -1016,7 +1022,7 @@ public class CmAdminDao {
             }
             return counts;
         } finally {
-            SqlUtilities.releaseResources(null, ps, null);
+            SqlUtilities.releaseResources(rs, ps, null);
         }
     }
 
