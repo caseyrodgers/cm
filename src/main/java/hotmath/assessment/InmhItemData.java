@@ -184,27 +184,5 @@ public class InmhItemData {
         return this.item.toString() + ",pid_count=" + this.pidsReferenced.size();
     }
     
-    @Override
-    public boolean equals(Object obj) {
-    	if (! (obj instanceof InmhItemData)) return false;
-
-    	String filename = this.item.getFile();
-    	String oFilename = ((InmhItemData) obj).getInmhItem().getFile();
-
-    	if (filename == null && oFilename == null) return super.equals(obj);
-    	
-    	if (filename == null || oFilename == null) return false;
-    	
-    	return filename.equals(oFilename);
-    }
-    
-    @Override
-    public int hashCode() {
-    	String file = item.getFile();
-    	
-    	if (file != null) return file.hashCode();
-
-    	return super.hashCode();
-    }
 }
 
