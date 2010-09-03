@@ -24,12 +24,32 @@ body {
 }
 
 #header {
-  position: relative;
-  height: 40px;
-  background-image: url('/gwt-resources/images/mobile/header_middle.png');
-  border-bottom: 1px solid rgb(45, 54, 66);
+	position: fixed;
+	/* right: 18px; */
+	width: 100%;
+	z-index: 5;
+	height: 40px;
+	background-image: url('/gwt-resources/images/mobile/header_middle.png');
+	border-bottom: 1px solid rgb(45, 54, 66);
+}
+#pad1 {
+	display: block;
+	width: 18px;
+	height: 50px;
+	float: left;
 }
 
+#pad3 {
+	display: block;
+	width: 18px;
+	height: 50px;
+	float: left;
+}
+
+.pad2 {
+	display: block;
+	height: 50px;
+}
 
 #header .backButton {
 

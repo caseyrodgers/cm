@@ -7,6 +7,13 @@ import com.google.gwt.event.shared.GwtEvent;
 import com.google.gwt.event.shared.HandlerManager;
 import com.google.gwt.event.shared.HandlerRegistration;
 
+/** A stack object that tracks and notifies
+ *  listeners when objects are added or popped.
+ *  
+ * @author casey
+ *
+ * @param <E>
+ */
 public class ObservableStack<E> implements Iterable<E> {
 
 	private HandlerManager mHandlerManager;

@@ -12,6 +12,7 @@ import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.DeferredCommand;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.ScrollPanel;
 
 public class PagesContainerPanel extends Composite {
 
@@ -22,7 +23,6 @@ public class PagesContainerPanel extends Composite {
 	private boolean mIsIphone;
 
 	public PagesContainerPanel() {
-
 		mBasePanel = new FlowPanel();
 		mBasePanel.getElement().setId("pages_container");
 
@@ -41,7 +41,6 @@ public class PagesContainerPanel extends Composite {
 		mIsIphone = calculateIsIphone();
 
 		initWidget(mBasePanel);
-
 	}
 
 	private native static boolean calculateIsIphone() /*-{

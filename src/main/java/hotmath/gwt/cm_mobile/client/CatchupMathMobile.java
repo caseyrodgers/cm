@@ -2,6 +2,7 @@ package hotmath.gwt.cm_mobile.client;
 
 import hotmath.gwt.cm_mobile.client.page.IPage;
 import hotmath.gwt.cm_mobile.client.rpc.CmMobileUser;
+import hotmath.gwt.cm_mobile.client.util.GenericTextTag;
 import hotmath.gwt.cm_mobile.client.util.ObservableStack;
 import hotmath.gwt.cm_mobile.client.util.Screen;
 import hotmath.gwt.cm_rpc.client.rpc.CmService;
@@ -19,8 +20,11 @@ import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.ServiceDefTarget;
+import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
+import com.google.gwt.user.client.ui.Widget;
 
 /**
  * Provide minimal CM for mobile access.
@@ -40,22 +44,11 @@ public class CatchupMathMobile implements EntryPoint,Screen.OrientationChangedHa
     public CatchupMathMobile() {
         __instance = this;
     }
-    
     public void onModuleLoad() {
-        
-    	_rootPanel = RootPanel.get("browser");
-		HeaderPanel headerPanel = new HeaderPanel();
-		PagesContainerPanel pagesPanel = new PagesContainerPanel();
-		
-    	_rootPanel.add(headerPanel);
-    	_rootPanel.add(pagesPanel);
-        
-		ObservableStack<IPage> pageStack = new ObservableStack<IPage>();
-		
-		
-		pagesPanel.bind(pageStack);
-		headerPanel.bind(pageStack);
-		Controller.init(pageStack);		
+
+        _rootPanel = RootPanel.get("browser");
+    	
+    	_rootPanel.add(createApplicationPanel());
 		
 		
 		Screen screen = new Screen();
@@ -193,5 +186,40 @@ public class CatchupMathMobile implements EntryPoint,Screen.OrientationChangedHa
 			_rootPanel.addStyleName("landscape");
 			_rootPanel.removeStyleName("portrait");
 		}		
+	}
+	
+
+	/** Create a panel with a static header
+	 *  and scrollable body area.
+	 *  
+	 *  The header will contain buttons and meta data.
+	 *  The body will container the app data.
+	 *  
+	 * @return
+	 */
+	private Widget createApplicationPanel() {
+	    
+	    /** we want this to have an absolute size
+	     *  and be added as the top component.
+	     *  
+	     */
+        HeaderPanel headerPanel = new HeaderPanel();
+        PagesContainerPanel pagesPanel = new PagesContainerPanel();
+        
+        FlowPanel fp = new FlowPanel();
+        fp.setStyleName("app-panel");
+        
+        fp.add(headerPanel);
+        HTML div = new HTML();
+        div.setStyleName("pad2");
+        fp.add(div);
+        fp.add(pagesPanel);
+        
+        ObservableStack<IPage> pageStack = new ObservableStack<IPage>();
+        pagesPanel.bind(pageStack);
+        headerPanel.bind(pageStack);
+        Controller.init(pageStack);
+        
+        return fp; 
 	}
 }
