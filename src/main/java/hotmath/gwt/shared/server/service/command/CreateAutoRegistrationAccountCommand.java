@@ -28,10 +28,10 @@ import java.sql.ResultSet;
 
 import org.apache.log4j.Logger;
 
-/** Create Student accounts based on StudentModel passed in (as template)
- *  and list of name/passwords.
+/** Create Student accounts based on StudentModel (template) passed via UID assigned to Action
+ *  and password (generated).
  *  
- *  Either create all ... or none of the accounts.
+ *  Fail if password matches an existing password
  **/
 public class CreateAutoRegistrationAccountCommand implements ActionHandler<CreateAutoRegistrationAccountAction, RpcData> {
 
@@ -59,6 +59,7 @@ public class CreateAutoRegistrationAccountCommand implements ActionHandler<Creat
             millis = System.currentTimeMillis();
             rs = stmt.executeQuery();
             if(rs.first()) {
+            	//TODO: different message since password is generated not selected?
                 __logger.error("self registration password '" + action.getPassword() + "' cannot match any existing self-registration template group names.");
                 throw new CmException("Please choose a different password");
             }
@@ -84,10 +85,12 @@ public class CreateAutoRegistrationAccountCommand implements ActionHandler<Creat
 
         CmUserProgramDao upDao = new CmUserProgramDao();
         millis = System.currentTimeMillis();
+        // TODO: make ProgramInfo an attribute of Student Model and skip this lookup
         StudentUserProgramModel si = upDao.loadProgramInfoCurrent(conn, studentModel.getUid());
     	if (__logger.isDebugEnabled())
         	__logger.debug("+++ CARAC loadProgramInfoCurrent() took: " + (System.currentTimeMillis()-millis) + " msec");
 
+    	// TODO: student was just created, shouldn't  all active info be 0
         millis = System.currentTimeMillis();
         StudentActiveInfo activeInfo = dao.loadActiveInfo(conn, studentModel.getUid());
     	if (__logger.isDebugEnabled())
@@ -122,11 +125,14 @@ public class CreateAutoRegistrationAccountCommand implements ActionHandler<Creat
 
         UserInfo userInfo = new UserInfo();
         userInfo.setUid(studentModel.getUid());
+
+        //TODO: default all of these to 0?
         userInfo.setTestId(activeInfo.getActiveTestId());
         userInfo.setRunId(activeInfo.getActiveRunId());
         userInfo.setTestSegment(activeInfo.getActiveSegment());
-        userInfo.setUserName(studentModel.getName());
         userInfo.setSessionNumber(activeInfo.getActiveRunSession());
+
+        userInfo.setUserName(studentModel.getName());
         userInfo.setBackgroundStyle(studentModel.getBackgroundStyle());
         userInfo.setTestName(testTitle);
         userInfo.setSubTitle(subTitle);
@@ -137,6 +143,8 @@ public class CreateAutoRegistrationAccountCommand implements ActionHandler<Creat
 
         userInfo.setPassPercentRequired(si.getConfig().getPassPercent());
         userInfo.setTestSegmentCount(testDef.getTotalSegmentCount());
+
+        //TODO: shouldn't this be 0 and why use action.getUserId()?
         userInfo.setViewCount(dao.getTotalInmHViewCount(conn,action.getUserId()));
 
         // Make a new HA_USER_LOGIN entry and return key
