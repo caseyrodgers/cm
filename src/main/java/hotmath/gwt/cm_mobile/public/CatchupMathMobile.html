@@ -27,9 +27,11 @@
 			<img src="/gwt-resources/images/mobile/spinner.gif" /> Loading
 		</div>
 	</div>
-	
+
+    <div id='control-floater'>&nbsp;</div>	
 	
 	<div id="browser" style="display: none;">
+	  <div id='control-floater-anchor' style='float: right'>&nbsp;</div>
       <!--
         this is the container for the header, the area at the top of the screen with the title and back button:
         we keep two of buttons and titles so that we can transition a pair in and another pair out in transitions.
@@ -45,8 +47,21 @@
       </div>
       -->
     </div>
-       
+   <script src='/js/floater.js'></script>
+   <script src='/js/domutils.js'></script>
    <script src='/gwt-resources/js/cm_core.js'></script>
    <script src='/gwt-resources/js/CatchupMathMobile.js'></script>
+   
+   <script>
+	   var divName = 'control-floater';
+	   new FloatLayer(divName,150,15,10);
+	   detach(divName,$get('control-floater-anchor'));
+
+	   function alignControlFloater() {
+	   	   alignFloatLayers();
+	       setTimeout(alignControlFloater,5000);
+	   } 
+	   alignControlFloater();  
+   </script>
   </body>
 </html>

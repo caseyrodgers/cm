@@ -24,8 +24,7 @@ body {
 }
 
 #header {
-	position: fixed;
-	/* right: 18px; */
+	position: relative;
 	width: 100%;
 	z-index: 5;
 	height: 40px;
@@ -275,3 +274,7 @@ question_head_text {
 	background: #DBE11E;
 }
 
+#control-floater {
+	width: 25px;
+	background: #A2B0C3;
+}

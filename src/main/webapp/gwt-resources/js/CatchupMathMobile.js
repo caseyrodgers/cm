@@ -1,14 +1,14 @@
+function $get(name) {
+	return document.getElementById(name);
+}
+
+
 /** Tutor routines  */
 function setStepsInfoHelp() {
-
 }
-
 function resetStepsInfo() {
-
 }
-
 function getNextMoveTo() {
-
 }
 
 var TutorManager = {
@@ -301,78 +301,13 @@ function scrollToStep(num) {
     var visTop = scrollXy[1];
     var visHeight = visibleSize[1];
     var visBot = visHeight + visTop;  
-    var buttonBar = getElementTop(document.getElementById('scrollTo-button'));
+    var buttonBar = DL_GetElementTop(document.getElementById('scrollTo-button'));
     if(buttonBar < visTop || buttonBar > visBot) {
         var st = Number(buttonBar) - visHeight;
         window.scrollTo(0,(st+25) );
     }     
 }    
 
-
-
-function getElementTop(eElement) {
-    if (!eElement && this)                    // if argument is invalid
-    {                                         // (not specified, is null or is 0)
-        eElement = this;                       // and function is a method
-    }                                         // identify the element as the method owner
-
-    var DL_bIE = document.all ? true : false; // initialize var to identify IE
-    
-    var nTopPos = eElement.offsetTop;       // initialize var to store calculations 
-    var eParElement = eElement.offsetParent;  // identify first offset parent element                            
-
-    while (eParElement != null)                 
-    {                                         // move up through element hierarchy
-        if(DL_bIE)
-        {
-            if(eParElement.tagName == "TD")     // if parent a table cell, then...
-            {
-                nTopPos += eParElement.clientTop; // append cell border width to calcs
-            }
-        }
-
-        nTopPos += eParElement.offsetTop;    // append top offset of parent
-        eParElement = eParElement.offsetParent; // and move up the element hierarchy
-    }                                         // until no more offset parents exist
-    return nTopPos;                          // return the number calculated
-}
-
-function getViewableSize() {
-    var myWidth = 0, myHeight = 0;
-    if( typeof( window.innerWidth ) == 'number' ) {
-        //Non-IE
-        myWidth = window.innerWidth;
-        myHeight = window.innerHeight;
-    } else if( document.documentElement && ( document.documentElement.clientWidth || document.documentElement.clientHeight ) ) {
-        //IE 6+ in 'standards compliant mode'
-        myWidth = document.documentElement.clientWidth;
-        myHeight = document.documentElement.clientHeight;
-    } else if( document.body && ( document.body.clientWidth || document.body.clientHeight ) ) {
-        //IE 4 compatible
-        myWidth = document.body.clientWidth;
-        myHeight = document.body.clientHeight;
-    }
-    a = [myWidth, myHeight];
-    return  a;
-}
-
-function getScrollXY() {
-    var scrOfX = 0, scrOfY = 0;
-    if( typeof( window.pageYOffset ) == 'number' ) {
-        //Netscape compliant
-        scrOfY = window.pageYOffset;
-        scrOfX = window.pageXOffset;
-    } else if( document.body && ( document.body.scrollLeft || document.body.scrollTop ) ) {
-        //DOM compliant
-        scrOfY = document.body.scrollTop;
-        scrOfX = document.body.scrollLeft;
-    } else if( document.documentElement && ( document.documentElement.scrollLeft || document.documentElement.scrollTop ) ) {
-        //IE6 standards compliant mode
-        scrOfY = document.documentElement.scrollTop;
-        scrOfX = document.documentElement.scrollLeft;
-    }
-    return [ scrOfX, scrOfY ];
-}
 
 function hideAllSteps() {
     for(var s=0;s<TutorManager.stepUnits.length;s++) {
@@ -386,3 +321,10 @@ function hideAllSteps() {
     }
     window.scrollTo(0,0);
 }
+
+
+
+var divName = 'control-floater';
+new FloatLayer(divName,150,15,10);
+detach(divName,$get('control-floater-anchor'));
+alignFloatLayers();
