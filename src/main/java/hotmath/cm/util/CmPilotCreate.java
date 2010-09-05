@@ -292,12 +292,12 @@ public class CmPilotCreate {
     
     
     static public Integer addPilotRequest(String title, String name, String school, String zip, String email,
-            String phone, String userComments, String phoneWhen, String schoolPrefix) throws Exception {
-    	return addPilotRequest(title, name, school, zip, email, phone, userComments, phoneWhen, schoolPrefix, true,null);
+            String phone, String userComments, String phoneWhen, String schoolPrefix,int studentCount) throws Exception {
+    	return addPilotRequest(title, name, school, zip, email, phone, userComments, phoneWhen, schoolPrefix, true,studentCount,null);
     }
 
     static public Integer addPilotRequest(String title, String name, String school, String zip, String email,
-            String phone, String userComments, String phoneWhen, String schoolPrefix, boolean sendEmailConfirmation,CmPartner partner) throws Exception {
+            String phone, String userComments, String phoneWhen, String schoolPrefix, boolean sendEmailConfirmation,int studentCount, CmPartner partner) throws Exception {
 
         String sendTo[] = { "lincoln@hotmath.com", "sales@hotmath.com", "casey@hotmath.com" };
 
@@ -319,7 +319,7 @@ public class CmPilotCreate {
             // create a new Subscriber record based on this email
             String idToUse = HotMathSubscriber.createUniqueIDByStategy(new IdCreateStategyImpHmPilot(schoolPrefix));
 
-            String comments = _dateFormat.format(new Date()) + " Catchup Math online pilot request CM_pilot_HM\n";
+            String comments = _dateFormat.format(new Date()) + " Catchup Math online pilot request CM_pilot_HM (approx student count: " + studentCount + ")\n";
             HotMathSubscriber sub = HotMathSubscriberManager.createBasicAccount(idToUse, school, "ST", email, comments,new Date());
             sub.setResponsibleName(name);
             sub.setStatus("A");

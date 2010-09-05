@@ -25,7 +25,6 @@ body {
 
 #header {
 	position: relative;
-	width: 100%;
 	z-index: 5;
 	height: 40px;
 	background-image: url('/gwt-resources/images/mobile/header_middle.png');
@@ -277,4 +276,5 @@ question_head_text {
 #control-floater {
 	width: 25px;
 	background: #A2B0C3;
+	z-index: 10;
 }

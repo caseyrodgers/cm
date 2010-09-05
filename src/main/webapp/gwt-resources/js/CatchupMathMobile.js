@@ -322,9 +322,14 @@ function hideAllSteps() {
     window.scrollTo(0,0);
 }
 
+function initializeExternalJs() {
+    var divName = 'control-floater';
+    new FloatLayer(divName,150,15,10);
+    detach(divName,$get('control-floater-anchor'));
+    alignControlFloater();  
+}
 
-
-var divName = 'control-floater';
-new FloatLayer(divName,150,15,10);
-detach(divName,$get('control-floater-anchor'));
-alignFloatLayers();
+function alignControlFloater() {
+    alignFloatLayers();
+    setTimeout(alignControlFloater,5000);
+} 

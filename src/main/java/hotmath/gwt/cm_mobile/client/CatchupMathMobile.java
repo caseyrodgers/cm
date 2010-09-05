@@ -22,9 +22,8 @@ import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.ServiceDefTarget;
 import com.google.gwt.user.client.ui.Anchor;
-import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -51,21 +50,12 @@ public class CatchupMathMobile implements EntryPoint, Screen.OrientationChangedH
 
     public void onModuleLoad() {
 
-        _rootPanel = RootPanel.get("browser");
+        _rootPanel = RootPanel.get("main-content");
 
-        _rootPanel.add(createApplicationPanel());
-
-        Screen screen = new Screen();
-        screen.addHandler(this);
-        orientationChanged(screen.getScreenOrientation());
-
-        /** remove the startup spinner */
-        Element startup = Document.get().getElementById("startup");
-        startup.getParentElement().removeChild(startup);
-
-        _rootPanel.getElement().getStyle().setProperty("display", "inline");
-
-        RootPanel controlAnchor = RootPanel.get("control-floater");
+        /** add the floater
+         */
+        FlowPanel floaterAnchor = new FlowPanel();
+        floaterAnchor.getElement().setId("control-floater-anchor");
         Anchor anchor = new Anchor("<<");
         anchor.addClickHandler(new ClickHandler() {
 
@@ -74,7 +64,24 @@ public class CatchupMathMobile implements EntryPoint, Screen.OrientationChangedH
                 Controller.navigateBack();
             }
         });
-       controlAnchor.add(anchor);
+        anchor.getElement().setId("control-floater");
+        floaterAnchor.add(anchor);
+        _rootPanel.add(floaterAnchor);
+        _rootPanel.add(createApplicationPanel());
+
+        Screen screen = new Screen();
+        screen.addHandler(this);
+        orientationChanged(screen.getScreenOrientation());
+
+
+        
+        /** remove the startup spinner */
+        Element startup = Document.get().getElementById("startup");
+        startup.getParentElement().removeChild(startup);
+
+        _rootPanel.getElement().getStyle().setProperty("display", "inline");
+
+        initializeExternalJs();
 
         if (true)
             return;
@@ -96,6 +103,12 @@ public class CatchupMathMobile implements EntryPoint, Screen.OrientationChangedH
         }
     }
 
+    
+    private native void initializeExternalJs()/*-{
+        $wnd.initializeExternalJs();
+    }-*/;
+    
+    
     public ControlPanel getControlPanel() {
         return controlPanel;
     }

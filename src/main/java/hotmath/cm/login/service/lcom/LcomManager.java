@@ -150,7 +150,7 @@ public class LcomManager {
 	 */
 	static private Integer setupNewTeacherAccount(final Connection conn, LcomTeacherSignup teacher) throws Exception {
 		int teacherAid = CmPilotCreate.addPilotRequest("LCOM Teacher: " + teacher.getTeacherId(), teacher.getFirstLast(), teacher.getSchoolName(), 
-				teacher.getZip(), teacher.getEmail(), "", "LCOM Teacher signup", "", "lcom", false,CmPartner.LCOM);
+				teacher.getZip(), teacher.getEmail(), "", "LCOM Teacher signup", "", "lcom", false,0,CmPartner.LCOM);
 		if(teacherAid == -1)
 			throw new CmException("Could not setup LCOM Teacher account, please see server log");
 		teacher.setAdminId(teacherAid);
