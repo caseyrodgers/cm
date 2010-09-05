@@ -206,8 +206,8 @@ public class ActionDispatcher {
 
             long now = System.currentTimeMillis();
             long executeTimeMills = (now - timeStart);
-            logger.info("RPC Action " + clazzName + " toString: " + action.toString() + " complete: elapsed time: "
-                    + executeTimeMills / 1000);
+            logger.info("RPC Action " + clazzName + " toString: " + action.toString() + " complete; elapsed time: "
+                    + executeTimeMills + " msec");
             
             incrementProcessingTime(actionType, executeTimeMills);
             
