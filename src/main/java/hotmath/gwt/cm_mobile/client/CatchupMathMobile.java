@@ -54,8 +54,6 @@ public class CatchupMathMobile implements EntryPoint, Screen.OrientationChangedH
 
         /** add the floater
          */
-        FlowPanel floaterAnchor = new FlowPanel();
-        floaterAnchor.getElement().setId("control-floater-anchor");
         Anchor anchor = new Anchor("<<");
         anchor.addClickHandler(new ClickHandler() {
 
@@ -65,8 +63,7 @@ public class CatchupMathMobile implements EntryPoint, Screen.OrientationChangedH
             }
         });
         anchor.getElement().setId("control-floater");
-        floaterAnchor.add(anchor);
-        _rootPanel.add(floaterAnchor);
+        _rootPanel.add(anchor);
         _rootPanel.add(createApplicationPanel());
 
         Screen screen = new Screen();

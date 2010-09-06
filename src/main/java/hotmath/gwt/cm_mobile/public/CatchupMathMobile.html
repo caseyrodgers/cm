@@ -20,9 +20,8 @@
   <body>
    
    
-	<div id='control-floater-anchor' style='float: right'><div id='control-floater'></div></div>  
-   <div id='main-content'></div>
-   
+	  
+   <div id='main-content' class='landscape'>
    <!-- OPTIONAL: include this if you want history support -->
    <iframe src="javascript:''" id="__gwt_historyFrame" tabIndex='-1' style="position:absolute;width:0;height:0;border:0"></iframe>
    
@@ -50,21 +49,10 @@
       </div>
       -->
     </div>
+    </div>
    <script src='/js/floater.js'></script>
    <script src='/js/domutils.js'></script>
    <script src='/gwt-resources/js/cm_core.js'></script>
    <script src='/gwt-resources/js/CatchupMathMobile.js'></script>
-   
-   <script>
-	   var divName = 'control-floater';
-	   new FloatLayer(divName,150,15,10);
-	   detach(divName,$get('control-floater-anchor'));
-
-	   function alignControlFloater() {
-	   	   alignFloatLayers();
-	       setTimeout(alignControlFloater,5000);
-	   } 
-	   alignControlFloater();  
-   </script>
   </body>
 </html>

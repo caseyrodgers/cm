@@ -325,7 +325,7 @@ function hideAllSteps() {
 function initializeExternalJs() {
     var divName = 'control-floater';
     new FloatLayer(divName,150,15,10);
-    detach(divName,$get('control-floater-anchor'));
+    detach(divName);
     alignControlFloater();  
 }
 
