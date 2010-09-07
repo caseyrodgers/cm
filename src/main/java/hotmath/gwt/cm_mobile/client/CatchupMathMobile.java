@@ -63,9 +63,7 @@ public class CatchupMathMobile implements EntryPoint, Screen.OrientationChangedH
         screen.addHandler(this);
         orientationChanged(screen.getScreenOrientation());
         
-        /** remove the startup spinner */
-        Element startup = Document.get().getElementById("startup");
-        startup.getParentElement().removeChild(startup);
+        hideBusyPanel();
 
         _rootPanel.getElement().getStyle().setProperty("display", "inline");
 
@@ -90,8 +88,22 @@ public class CatchupMathMobile implements EntryPoint, Screen.OrientationChangedH
             History.newItem("login:" + System.currentTimeMillis());
         }
     }
-
     
+    public void hideBusyPanel() {
+        /** hide the startup spinner */
+        Element startup = Document.get().getElementById("startup");
+        startup.setClassName("hide");        
+    }
+    
+    public void showBusyPanel() {
+        /** hide the startup spinner */
+        Element startup = Document.get().getElementById("startup");
+        startup.removeClassName("hide");        
+    }
+
+    /** call global JS function to intialize any external resources
+     * 
+     */
     private native void initializeExternalJs()/*-{
         $wnd.initializeExternalJs();
     }-*/;

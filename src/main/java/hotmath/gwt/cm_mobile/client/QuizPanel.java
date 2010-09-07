@@ -78,6 +78,9 @@ public class QuizPanel extends AbstractPagePanel {
     }
     
     public void checkTest() {
+
+        CatchupMathMobile.__instance.getControlPanel().showBusy(true);
+
         CmMobileUser user = CatchupMathMobile.__instance.user;
         CreateTestRunMobileAction checkTestAction = new CreateTestRunMobileAction(user,answerAction);
         CatchupMathMobile.getCmService().execute(checkTestAction, new AsyncCallback<PrescriptionSessionResponse>() {
@@ -87,10 +90,13 @@ public class QuizPanel extends AbstractPagePanel {
                 CatchupMathMobile.getUser().setPrescripion(result.getPrescriptionData());
                 
                 Controller.navigateToPrescription(quizPage, result.getPrescriptionData().getCurrSession());
+                
+                CatchupMathMobile.__instance.getControlPanel().showBusy(false);
             }
 
             @Override
             public void onFailure(Throwable caught) {
+                CatchupMathMobile.__instance.hideBusyPanel();
                 mainPanel.remove(0);
                 caught.printStackTrace();               
                 mainPanel.add(new HTML("<div style='color: red'><h1>Error Occurred</h2>" + caught.getMessage() + "</div>"));
@@ -116,8 +122,9 @@ public class QuizPanel extends AbstractPagePanel {
     
 
     private void getQuiz() {
-        CmMobileUser user = CatchupMathMobile.__instance.user;
         
+        CatchupMathMobile.__instance.getControlPanel().showBusy(true);
+        CmMobileUser user = CatchupMathMobile.__instance.user;
         GetQuizHtmlAction action = new GetQuizHtmlAction(user.getUserId(),user.getTestId(), user.getTestSegment());
         CatchupMathMobile.getCmService().execute(action, new AsyncCallback<QuizHtmlResult>() {
             @Override
@@ -132,11 +139,14 @@ public class QuizPanel extends AbstractPagePanel {
                 CmList<RpcData> al = result.getCurrentSelections(); 
                 for(RpcData rd: al) {
                     setSolutionQuestionAnswerIndex(rd.getDataAsString("pid"),rd.getDataAsString("answer"));
-                }                
+                }
+                
+                CatchupMathMobile.__instance.getControlPanel().showBusy(false);
             }
 
             @Override
             public void onFailure(Throwable caught) {
+                CatchupMathMobile.__instance.getControlPanel().showBusy(false);
                 mainPanel.remove(0);
                 caught.printStackTrace();               
                 mainPanel.add(new HTML("<div style='color: red'><h1>Error Occurred</h2>" + caught.getMessage() + "</div>"));
@@ -152,6 +162,7 @@ public class QuizPanel extends AbstractPagePanel {
      * @return
      */
     public String questionGuessChanged_Gwt(String sQuestionIndex, String answerIndex, String pid) {
+        CatchupMathMobile.__instance.getControlPanel().showBusy(true);
         CmMobileUser user = CatchupMathMobile.__instance.user;
         final int correctIndex = testQuestionAnswers.get(Integer.parseInt(sQuestionIndex));
         Boolean isCorrect = correctIndex == Integer.parseInt(answerIndex);        
@@ -166,9 +177,11 @@ public class QuizPanel extends AbstractPagePanel {
                 @Override
                 public void onSuccess(RpcData arg0) {
                     /** saved */
+                    CatchupMathMobile.__instance.getControlPanel().showBusy(false);
                 }
                 @Override
                 public void onFailure(Throwable ex) {
+                    CatchupMathMobile.__instance.getControlPanel().showBusy(false);
                     ex.printStackTrace();
                     Window.alert(ex.getLocalizedMessage());
                 }

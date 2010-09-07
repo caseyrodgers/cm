@@ -301,3 +301,7 @@ question_head_text {
 #control-panel-expanded.show {
 	display: block;
 }
+
+#startup.hide {
+	display: none;
+}

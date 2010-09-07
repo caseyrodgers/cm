@@ -15,7 +15,6 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
-import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
@@ -120,17 +119,21 @@ public class PrescriptionPanel extends AbstractPagePanel {
     }
     
     private void loadLesson(int sessionNumber) {
+        CatchupMathMobile.__instance.getControlPanel().showBusy(true);
+        
 		GetPrescriptionAction action = new GetPrescriptionAction(CatchupMathMobile.getUser().getRunId(), sessionNumber, true);
 		CatchupMathMobile.getCmService().execute(action, new AsyncCallback<PrescriptionSessionResponse>() {
 			public void onSuccess(PrescriptionSessionResponse prescriptionSession) {
+			    CatchupMathMobile.__instance.getControlPanel().showBusy(false);
 				PrescriptionPanel.this.prescription = prescriptionSession.getPrescriptionData();
 				
 				loadPrescriptionSession(prescriptionSession.getPrescriptionData().getCurrSession());
-				
+						
 			}
 
 			@Override
 			public void onFailure(Throwable arg0) {
+			    CatchupMathMobile.__instance.getControlPanel().showBusy(false);
 				Window.alert(arg0.getMessage());
 			}
 		});

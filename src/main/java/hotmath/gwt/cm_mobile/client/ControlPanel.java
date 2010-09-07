@@ -7,6 +7,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -27,12 +28,27 @@ public class ControlPanel extends FlowPanel {
         collapsed = anchor;
         add(anchor);
         
-        
-        
         FlowPanel fp = new FlowPanel();
         expanded = fp;
         expanded.getElement().setId("control-panel-expanded");
         RootPanel.get().add(expanded);        
+    }
+    
+    Widget busyWidget=null;
+    public void showBusy(boolean show) {
+        if(show) {
+            if(busyWidget == null) {
+                /** not already busy */
+                busyWidget = new HTML("<img src='/gwt-resources/images/mobile/spinner.gif' />");
+                add(busyWidget);
+            }
+        }
+        else {
+            if(busyWidget != null) {
+                remove(busyWidget);
+                busyWidget = null;
+            }
+        }
     }
     
     public void hideControlPanelFloater() {
