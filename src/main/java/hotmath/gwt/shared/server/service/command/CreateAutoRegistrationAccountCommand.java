@@ -50,12 +50,21 @@ public class CreateAutoRegistrationAccountCommand implements ActionHandler<Creat
          *  attached to a is_auto_create_template
          * 
          */
-        String sqlCheck = CmMultiLinePropertyReader.getInstance().getProperty("AUTO_CREATE_TEMPLATE_CHECK");
         PreparedStatement stmt = null;
         ResultSet rs = null;
+        
+        CmStudentDao dao = new CmStudentDao();
+        millis = System.currentTimeMillis();
+        StudentModelI studentModel = dao.getStudentModelBase(conn, action.getUserId(), true);
+    	if (__logger.isDebugEnabled())
+        	__logger.debug("+++ CARAC getStudentModel took: " + (System.currentTimeMillis()-millis) + " msec");
+
+        String sqlCheck = CmMultiLinePropertyReader.getInstance().getProperty("AUTO_CREATE_TEMPLATE_CHECK");
         try {
             stmt = conn.prepareStatement(sqlCheck);
-            stmt.setString(1, action.getPassword());
+            stmt.setInt(1, studentModel.getAdminUid());
+            stmt.setString(2, action.getPassword());
+            
             millis = System.currentTimeMillis();
             rs = stmt.executeQuery();
             if(rs.first()) {
@@ -69,13 +78,7 @@ public class CreateAutoRegistrationAccountCommand implements ActionHandler<Creat
             	__logger.debug("+++ CARAC check password took: " + (System.currentTimeMillis()-millis) + " msec");
             SqlUtilities.releaseResources(rs, stmt, null);
         }
-        
-        CmStudentDao dao = new CmStudentDao();
-        millis = System.currentTimeMillis();
-        StudentModelI studentModel = dao.getStudentModelBase(conn, action.getUserId(), true);
-    	if (__logger.isDebugEnabled())
-        	__logger.debug("+++ CARAC getStudentModel took: " + (System.currentTimeMillis()-millis) + " msec");
-        
+
         studentModel.setPasscode(action.getPassword());
         studentModel.setName(action.getUser());
         millis = System.currentTimeMillis();
