@@ -16,7 +16,7 @@ public class ControlPanel extends FlowPanel {
     FlowPanel expanded;
     public ControlPanel() {
         getElement().setId("control-floater");
-        Anchor anchor = new Anchor("!");
+        Anchor anchor = new Anchor("<<<");
         anchor.addClickHandler(new ClickHandler() {
 
             @Override
