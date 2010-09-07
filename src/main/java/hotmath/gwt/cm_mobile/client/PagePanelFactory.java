@@ -1,5 +1,8 @@
 package hotmath.gwt.cm_mobile.client;
 
+import hotmath.gwt.cm_mobile.client.event.CmEvent;
+import hotmath.gwt.cm_mobile.client.event.EventBus;
+import hotmath.gwt.cm_mobile.client.event.EventTypes;
 import hotmath.gwt.cm_mobile.client.page.IPage;
 import hotmath.gwt.cm_mobile.client.page.MainPage;
 import hotmath.gwt.cm_mobile.client.page.PrescriptionPage;
@@ -16,23 +19,28 @@ public class PagePanelFactory {
 	}
 
 	public static AbstractPagePanel createPagePanel(IPage page) {
-		if (page instanceof MainPage) {
-			return new MainPagePanel((MainPage) page);
-		} else if (page instanceof WelcomePage) {
-			return new WelcomePagePanel((WelcomePage) page);
-		}
-		else if(page instanceof LoginPage) {
-			return new LoginForm((LoginPage)page);
-		}
-		else if(page instanceof QuizPage) {
-			return new QuizPanel((QuizPage)page);
-		}
-		else if(page instanceof PrescriptionPage) {
-			return new PrescriptionPanel((PrescriptionPage)page);
-		}
-		else if(page instanceof PrescriptionResourcePage) {
-			return new PrescriptionResourcePagePanel((PrescriptionResourcePage)page);
-		}
-		throw new IllegalArgumentException("The page is unknown:" + page.getClass().getName());
+	    try {
+    		if (page instanceof MainPage) {
+    			return new MainPagePanel((MainPage) page);
+    		} else if (page instanceof WelcomePage) {
+    			return new WelcomePagePanel((WelcomePage) page);
+    		}
+    		else if(page instanceof LoginPage) {
+    			return new LoginForm((LoginPage)page);
+    		}
+    		else if(page instanceof QuizPage) {
+    			return new QuizPanel((QuizPage)page);
+    		}
+    		else if(page instanceof PrescriptionPage) {
+    			return new PrescriptionPanel((PrescriptionPage)page);
+    		}
+    		else if(page instanceof PrescriptionResourcePage) {
+    			return new PrescriptionResourcePagePanel((PrescriptionResourcePage)page);
+    		}
+    		throw new IllegalArgumentException("The page is unknown:" + page.getClass().getName());
+	    }
+	    finally {
+	        EventBus.getInstance().fireEvent(new CmEvent(EventTypes.EVENT_PAGE_ACTIVATED, page));
+	    }
 	}
 }

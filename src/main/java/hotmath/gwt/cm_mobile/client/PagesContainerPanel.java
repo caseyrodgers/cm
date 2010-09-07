@@ -1,5 +1,8 @@
 package hotmath.gwt.cm_mobile.client;
 
+import hotmath.gwt.cm_mobile.client.event.CmEvent;
+import hotmath.gwt.cm_mobile.client.event.EventBus;
+import hotmath.gwt.cm_mobile.client.event.EventTypes;
 import hotmath.gwt.cm_mobile.client.page.IPage;
 import hotmath.gwt.cm_mobile.client.util.GenericContainerTag;
 import hotmath.gwt.cm_mobile.client.util.ObservableStack;
@@ -156,6 +159,8 @@ public class PagesContainerPanel extends Composite {
 		if (mIsIphone && startedAnimation) {
 			ViewSettings.AnimationRunning = true;
 		}
+		
+		EventBus.getInstance().fireEvent(new CmEvent(EventTypes.EVENT_PAGE_LOADED, p));
 	}
 
 	private void removePage(IPage removedPage) {
@@ -163,8 +168,7 @@ public class PagesContainerPanel extends Composite {
 		final GenericContainerTag oldContainer = mActiveContainerPanel;
 		final GenericContainerTag newContainer = mInactiveContainerPanel;
 
-		AbstractPagePanel pagePanel = PagePanelFactory
-				.createPagePanel(mPageModel.peek());
+		AbstractPagePanel pagePanel = PagePanelFactory.createPagePanel(mPageModel.peek());
 
 		newContainer.clear();
 
@@ -194,6 +198,7 @@ public class PagesContainerPanel extends Composite {
 		if (mIsIphone) {
 			ViewSettings.AnimationRunning = true;
 		}
-
+		
+        EventBus.getInstance().fireEvent(new CmEvent(EventTypes.EVENT_PAGE_REMOVED, removedPage));
 	}
 }
