@@ -275,8 +275,13 @@ question_head_text {
 
 #control-floater {
 	width: 25px;
-	background: #A2B0C3;
+	background: yellow;
 	z-index: 10;
+	display: block;
+}
+
+#control-floater.hide {
+	display: none;
 }
 
 #control-floater.control-panel-expanded {

@@ -3,7 +3,7 @@ package hotmath.gwt.cm_mobile.client;
 abstract public class ControlAction {
     String label;
     
-    abstract void doAction();
+    abstract public void doAction();
     
     public ControlAction(String label) {
         this.label = label;

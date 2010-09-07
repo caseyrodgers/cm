@@ -1,5 +1,10 @@
 package hotmath.gwt.cm_mobile.client;
 
+import hotmath.gwt.cm_mobile.client.event.CmEvent;
+import hotmath.gwt.cm_mobile.client.event.CmEventListener;
+import hotmath.gwt.cm_mobile.client.event.EventBus;
+import hotmath.gwt.cm_mobile.client.event.EventType;
+import hotmath.gwt.cm_mobile.client.event.EventTypes;
 import hotmath.gwt.cm_mobile.client.page.IPage;
 import hotmath.gwt.cm_mobile.client.rpc.CmMobileUser;
 import hotmath.gwt.cm_mobile.client.util.ObservableStack;
@@ -16,12 +21,9 @@ import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.ServiceDefTarget;
-import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
@@ -39,7 +41,7 @@ public class CatchupMathMobile implements EntryPoint, Screen.OrientationChangedH
 
     private RootPanel _rootPanel;
 
-    CmMobileUser user;
+    public CmMobileUser user;
     SimplePanel mainPanel;
     ControlPanel controlPanel;
 
@@ -54,15 +56,12 @@ public class CatchupMathMobile implements EntryPoint, Screen.OrientationChangedH
         /** add the floater
          */
         controlPanel = new ControlPanel();
-        controlPanel.getElement().setId("control-floater");
         _rootPanel.add(controlPanel);
         _rootPanel.add(createApplicationPanel());
 
         Screen screen = new Screen();
         screen.addHandler(this);
         orientationChanged(screen.getScreenOrientation());
-
-
         
         /** remove the startup spinner */
         Element startup = Document.get().getElementById("startup");
@@ -139,7 +138,7 @@ public class CatchupMathMobile implements EntryPoint, Screen.OrientationChangedH
      * 
      * @return
      */
-    static CmServiceAsync getCmService() {
+    static public CmServiceAsync getCmService() {
         return _cmService;
     }
 
@@ -215,7 +214,6 @@ public class CatchupMathMobile implements EntryPoint, Screen.OrientationChangedH
      * @return
      */
     private Widget createApplicationPanel() {
-
         /**
          * we want this to have an absolute size and be added as the top
          * component.
@@ -236,5 +234,26 @@ public class CatchupMathMobile implements EntryPoint, Screen.OrientationChangedH
         Controller.init(pageStack);
 
         return fp;
+    }
+    
+    
+    static {
+        EventBus.getInstance().addEventListener(new CmEventListener() {
+            
+            @Override
+            public void handleEvent(CmEvent event) {
+                EventType type = event.getEventType();
+                if(type == EventTypes.EVENT_PAGE_LOADED) {
+                    //System.out.println("Page loaded");
+                }
+                else if(type == EventTypes.EVENT_PAGE_REMOVED) {
+                    //System.out.println("Page removed");
+                }
+                else if(type == EventTypes.EVENT_PAGE_ACTIVATED) {
+                    IPage page = (IPage)event.getEventData();
+                    page.setupControlFloater();
+                }
+            }
+        });
     }
 }

@@ -1,6 +1,5 @@
 package hotmath.gwt.cm_mobile.client;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -14,25 +13,10 @@ import com.google.gwt.user.client.ui.Widget;
 
 public class ControlPanel extends FlowPanel {
     Widget collapsed;
-    Widget expanded;
+    FlowPanel expanded;
     public ControlPanel() {
-        getElement().setId("control-panel");
-        List<ControlAction> controls = new ArrayList<ControlAction>();
-        controls.add(new ControlAction("Test 1") {
-            
-            @Override
-            void doAction() {
-            }
-        });
-        controls.add(new ControlAction("Test 2") {
-            
-            @Override
-            void doAction() {
-            }
-        });
-        setControlActions(controls);
-        
-        Anchor anchor = new Anchor("<<");
+        getElement().setId("control-floater");
+        Anchor anchor = new Anchor("!");
         anchor.addClickHandler(new ClickHandler() {
 
             @Override
@@ -42,17 +26,30 @@ public class ControlPanel extends FlowPanel {
         });
         collapsed = anchor;
         add(anchor);
+        
+        
+        
+        FlowPanel fp = new FlowPanel();
+        expanded = fp;
+        expanded.getElement().setId("control-panel-expanded");
+        RootPanel.get().add(expanded);        
+    }
+    
+    public void hideControlPanelFloater() {
+        getElement().setClassName("hide");
+    }
+    
+    public void showControlPanelFloater() {
+        getElement().removeClassName("hide");
     }
     
     private void showControlPanel() {
-        
-
         setExpandedDimensions();
         expanded.getElement().setClassName("show");
     }
 
         
-    private native int setExpandedDimensions() /*-{
+    private native void setExpandedDimensions() /*-{
     
         var visibleSize = $wnd.getViewableSize();
     
@@ -76,6 +73,7 @@ public class ControlPanel extends FlowPanel {
         
         controlPanel.style.display = "block";
         
+        // hide it in 5 seconds
         setTimeout(function(){controlPanel.style.display = 'none';},5000);
         
 }-*/;
@@ -89,20 +87,16 @@ public class ControlPanel extends FlowPanel {
 
     
     public void setControlActions(List<ControlAction> actions) {
-        FlowPanel fp = new FlowPanel();
-        for(ControlAction action: actions) {
+        expanded.clear();
+        for(final ControlAction action: actions) {
             Button btn = new Button(action.getLabel(), new ClickHandler() {
-                
                 @Override
                 public void onClick(ClickEvent arg0) {
+                    action.doAction();
                     hideControlPanel();                    
                 }
             });
-            fp.add(btn);
+            expanded.add(btn);
         }
-        expanded = fp;
-        
-        expanded.getElement().setId("control-panel-expanded");
-        RootPanel.get().add(expanded);
     }
 }

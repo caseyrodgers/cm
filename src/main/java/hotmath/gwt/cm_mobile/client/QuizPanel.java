@@ -53,6 +53,7 @@ public class QuizPanel extends AbstractPagePanel {
     public QuizPanel(QuizPage quizPage) {
     	
     	this.quizPage = quizPage;
+    	quizPage.setQuizPanel(this);
         
         /** do the binding */
         initWidget(uiBinder.createAndBindUi(this));
@@ -73,6 +74,10 @@ public class QuizPanel extends AbstractPagePanel {
     }    
 
     private void handleCheck(ClickEvent e) {
+        checkTest();
+    }
+    
+    public void checkTest() {
         CmMobileUser user = CatchupMathMobile.__instance.user;
         CreateTestRunMobileAction checkTestAction = new CreateTestRunMobileAction(user,answerAction);
         CatchupMathMobile.getCmService().execute(checkTestAction, new AsyncCallback<PrescriptionSessionResponse>() {
