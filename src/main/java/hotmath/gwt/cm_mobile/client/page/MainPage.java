@@ -1,5 +1,7 @@
 package hotmath.gwt.cm_mobile.client.page;
 
+import hotmath.gwt.cm_mobile.client.CatchupMathMobile;
+
 import java.util.ArrayList;
 
 public class MainPage implements IPage {
@@ -41,5 +43,10 @@ public class MainPage implements IPage {
 	public String getTitle() {
 		return "Catchup Math Mobile";
 	}
+
+    @Override
+    public void setupControlFloater() {
+        CatchupMathMobile.__instance.getControlPanel().hideControlPanelFloater();        
+    }
 
 }

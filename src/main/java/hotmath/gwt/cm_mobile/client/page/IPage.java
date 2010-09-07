@@ -5,4 +5,6 @@ public interface IPage {
 	String getTitle();
 
 	String getBackButtonText();
+	
+	void setupControlFloater();
 }

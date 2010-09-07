@@ -1,5 +1,7 @@
 package hotmath.gwt.cm_mobile.client.page;
 
+import hotmath.gwt.cm_mobile.client.CatchupMathMobile;
+
 public class WelcomePage implements IPage {
 
 	@Override
@@ -11,4 +13,9 @@ public class WelcomePage implements IPage {
 	public String getBackButtonText() {
 		return "Back to Welcome Page";
 	}
+
+    @Override
+    public void setupControlFloater() {
+        CatchupMathMobile.__instance.getControlPanel().hideControlPanelFloater();
+    }
 }

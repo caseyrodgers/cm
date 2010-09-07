@@ -1,5 +1,7 @@
 package hotmath.gwt.cm_mobile.client.page;
 
+import hotmath.gwt.cm_mobile.client.CatchupMathMobile;
+import hotmath.gwt.cm_mobile.client.ControlPanel;
 import hotmath.gwt.cm_rpc.client.rpc.PrescriptionSessionData;
 
 public class PrescriptionPage implements IPage {
@@ -20,4 +22,9 @@ public class PrescriptionPage implements IPage {
 		return "<< Quiz";
 	}
 
+    @Override
+    public void setupControlFloater() {
+        ControlPanel cp = CatchupMathMobile.__instance.getControlPanel();
+        cp.hideControlPanelFloater();
+    }
 }
