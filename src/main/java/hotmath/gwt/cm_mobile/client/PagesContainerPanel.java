@@ -15,7 +15,6 @@ import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.DeferredCommand;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.ScrollPanel;
 
 public class PagesContainerPanel extends Composite {
 
@@ -160,6 +159,7 @@ public class PagesContainerPanel extends Composite {
 			ViewSettings.AnimationRunning = true;
 		}
 		
+		mBasePanel.getElement().setScrollTop(0);
 		EventBus.getInstance().fireEvent(new CmEvent(EventTypes.EVENT_PAGE_LOADED, p));
 	}
 
