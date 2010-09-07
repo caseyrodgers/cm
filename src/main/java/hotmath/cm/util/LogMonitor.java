@@ -111,7 +111,7 @@ public class LogMonitor {
              * is end of action
              * 
              */
-            String end = "^(.*),.*RPC Action\\ (.*)\\.*toString.*elapsed time\\:\\ (.*)$";
+            String end = "^(.*),.*RPC Action\\ (.*)\\.*toString.*elapsed time\\:\\ (.*) msec$";
             Pattern endPattern = Pattern.compile(end);
             matcher = endPattern.matcher(line);
             if (matcher.find()) {
@@ -120,7 +120,8 @@ public class LogMonitor {
                  * 
                  */
                 String actionName = matcher.group(2).trim();
-                int elapseTime = Integer.parseInt(matcher.group(3));
+                String mills = matcher.group(3).trim();
+                int elapseTime = Integer.parseInt(mills);
                 String timeStamp = matcher.group(1).trim();
                 
                 writeDatabaseRecord("end", timeStamp, actionName, null, elapseTime);
