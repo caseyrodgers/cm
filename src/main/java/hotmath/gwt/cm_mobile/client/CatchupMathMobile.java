@@ -23,7 +23,6 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.ServiceDefTarget;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -54,16 +53,9 @@ public class CatchupMathMobile implements EntryPoint, Screen.OrientationChangedH
 
         /** add the floater
          */
-        Anchor anchor = new Anchor("<<");
-        anchor.addClickHandler(new ClickHandler() {
-
-            @Override
-            public void onClick(ClickEvent arg0) {
-                Controller.navigateBack();
-            }
-        });
-        anchor.getElement().setId("control-floater");
-        _rootPanel.add(anchor);
+        controlPanel = new ControlPanel();
+        controlPanel.getElement().setId("control-floater");
+        _rootPanel.add(controlPanel);
         _rootPanel.add(createApplicationPanel());
 
         Screen screen = new Screen();
@@ -244,19 +236,5 @@ public class CatchupMathMobile implements EntryPoint, Screen.OrientationChangedH
         Controller.init(pageStack);
 
         return fp;
-    }
-}
-
-class ControlPanel extends FlowPanel {
-    public ControlPanel() {
-        Anchor anchor = new Anchor("<<");
-        anchor.addClickHandler(new ClickHandler() {
-
-            @Override
-            public void onClick(ClickEvent arg0) {
-                Controller.navigateBack();
-            }
-        });
-        add(anchor);
     }
 }

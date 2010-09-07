@@ -1,0 +1,19 @@
+package hotmath.gwt.cm_mobile.client;
+
+abstract public class ControlAction {
+    String label;
+    
+    abstract void doAction();
+    
+    public ControlAction(String label) {
+        this.label = label;
+    }
+
+    public String getLabel() {
+        return label;
+    }
+
+    public void setLabel(String label) {
+        this.label = label;
+    }
+}

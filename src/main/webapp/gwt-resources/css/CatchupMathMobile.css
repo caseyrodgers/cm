@@ -278,3 +278,21 @@ question_head_text {
 	background: #A2B0C3;
 	z-index: 10;
 }
+
+#control-floater.control-panel-expanded {
+	background: green;
+}
+
+#control-panel-expanded {
+	display: none;
+	position: absolute;
+	top: 40;
+	width: 250px;
+	z-index: 999;
+	background: yellow;
+	padding: 10px;
+}
+
+#control-panel-expanded.show {
+	display: block;
+}
