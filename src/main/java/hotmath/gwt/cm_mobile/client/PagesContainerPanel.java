@@ -158,8 +158,6 @@ public class PagesContainerPanel extends Composite {
 		if (mIsIphone && startedAnimation) {
 			ViewSettings.AnimationRunning = true;
 		}
-		
-		mBasePanel.getElement().setScrollTop(0);
 		EventBus.getInstance().fireEvent(new CmEvent(EventTypes.EVENT_PAGE_LOADED, p));
 	}
 

@@ -39,7 +39,7 @@ public class CatchupMathMobile implements EntryPoint, Screen.OrientationChangedH
 
     public static CatchupMathMobile __instance;
 
-    private RootPanel _rootPanel;
+    RootPanel _rootPanel;
 
     public CmMobileUser user;
     SimplePanel mainPanel;
@@ -256,10 +256,10 @@ public class CatchupMathMobile implements EntryPoint, Screen.OrientationChangedH
             public void handleEvent(CmEvent event) {
                 EventType type = event.getEventType();
                 if(type == EventTypes.EVENT_PAGE_LOADED) {
-                    //System.out.println("Page loaded");
+                    CatchupMathMobile.__instance._rootPanel.getElement().setScrollTop(0);
                 }
                 else if(type == EventTypes.EVENT_PAGE_REMOVED) {
-                    //System.out.println("Page removed");
+                    CatchupMathMobile.__instance._rootPanel.getElement().setScrollTop(0);
                 }
                 else if(type == EventTypes.EVENT_PAGE_ACTIVATED) {
                     IPage page = (IPage)event.getEventData();
