@@ -147,13 +147,13 @@ div.landscape #header .title.button-on.landscape-overflow-on {
 
 div.page 
 {
-	width: 320px;
+	#width: 320px;
 	min-height: 376px;
 }
 
 div.landscape div.page 
 {
-	width: 480px;
+	#width: 480px;
 	min-height: 228px;
 	
 }
@@ -161,7 +161,7 @@ div.landscape div.page
 
 
 #main-content {
-	width: 300px;
+	#width: 300px;
 }
 
 table {
@@ -281,7 +281,7 @@ question_head_text {
 }
 
 #control-floater.hide {
-	display: none;
+	visibility: hidden;
 }
 
 #control-floater.control-panel-expanded {
