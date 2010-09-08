@@ -40,11 +40,11 @@ public class HeaderPanel extends Composite {
         mActiveButton = new GenericTextTag<String>("div");
         mActiveButton.setStyleName("backButton");
         configureActiveButtonEvent();
-        basePanel.add(mActiveButton);
+        // basePanel.add(mActiveButton);
 
         mInactiveButton = new GenericTextTag<String>("div");
         mInactiveButton.setStyleName("backButton");
-        basePanel.add(mInactiveButton);
+        // basePanel.add(mInactiveButton);
 
         mActiveTitle = new Label();
         mActiveTitle.setStyleName("title");

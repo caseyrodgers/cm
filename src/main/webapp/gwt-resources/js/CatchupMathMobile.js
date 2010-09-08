@@ -331,5 +331,5 @@ function initializeExternalJs() {
 
 function alignControlFloater() {
     alignFloatLayers();
-    setTimeout(alignControlFloater,5000);
+    setTimeout(alignControlFloater,2000);
 } 

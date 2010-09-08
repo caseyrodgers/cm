@@ -69,24 +69,21 @@ public class CatchupMathMobile implements EntryPoint, Screen.OrientationChangedH
 
         initializeExternalJs();
 
-        if (true)
-            return;
-
         History.addValueChangeHandler(new CatchupMathMobileHistoryListener());
 
         // showTestSolution();
         // if(true)return;
 
-        int uid = CatchupMathMobile.getQueryParameterInt("uid");
-        if (uid > 0) {
-            int testId = CatchupMathMobile.getQueryParameterInt("testId");
-            int testSegment = CatchupMathMobile.getQueryParameterInt("testSegment");
-            user = new CmMobileUser(uid, testId, testSegment, 0, 0);
-
-            History.newItem("quiz");
-        } else {
-            History.newItem("login:" + System.currentTimeMillis());
-        }
+//        int uid = CatchupMathMobile.getQueryParameterInt("uid");
+//        if (uid > 0) {
+//            int testId = CatchupMathMobile.getQueryParameterInt("testId");
+//            int testSegment = CatchupMathMobile.getQueryParameterInt("testSegment");
+//            user = new CmMobileUser(uid, testId, testSegment, 0, 0);
+//
+//            History.newItem("quiz");
+//        } else {
+//            History.newItem("login:" + System.currentTimeMillis());
+//        }
     }
     
     public void hideBusyPanel() {
@@ -117,31 +114,6 @@ public class CatchupMathMobile implements EntryPoint, Screen.OrientationChangedH
         return __instance.user;
     }
 
-    public void showLoginForm() {
-        mainPanel.setWidget(new LoginForm(null));
-    }
-
-    public void showQuizPanel() {
-        mainPanel.setWidget(new QuizPanel(null));
-    }
-
-    /**
-     * show the PrescriptionPanel loading the prescription currently loaded into
-     * User
-     */
-    public void showPrescriptionPanel() {
-        mainPanel.setWidget(new PrescriptionPanel(null));
-    }
-
-    public void showResourcePanel(InmhItemData item) {
-        mainPanel.setWidget(CmMobileResourceViewerFactory.createViewer(item).getViewer(item));
-    }
-
-    private void showTestSolution() {
-        user = new CmMobileUser(23502, 19959, 4, 0, 0);
-        InmhItemData item = new InmhItemData("practice", "samples_1_1_SampleExercises_1-Algebra_1", "Test Solution");
-        mainPanel.setWidget(CmMobileResourceViewerFactory.createViewer(item).getViewer(item));
-    }
 
     /**
      * Static routines used throughout app

@@ -12,7 +12,7 @@ public class Thermometer extends SimplePanel {
         setStyleName("percent-complete-wrapper");
         _thermometer = new Image("/gwt-resources/images/therm_complete.png");
         _thermometer.setStyleName("percent-complete");
-        setPerecent(DEF_PERCENT);
+        setPercent(DEF_PERCENT);
         add(_thermometer);
     }
     
@@ -21,7 +21,7 @@ public class Thermometer extends SimplePanel {
      * 
      * @param percent
      */
-    public void setPerecent(int percent) {
+    public void setPercent(int percent) {
         _thermometer.setWidth(percent + "%");
         _thermometer.setTitle(percent + "%");
     }

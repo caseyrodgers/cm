@@ -3,6 +3,8 @@ package hotmath.gwt.cm_mobile.client.page;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.google.gwt.user.client.History;
+
 import hotmath.gwt.cm_mobile.client.CatchupMathMobile;
 import hotmath.gwt.cm_mobile.client.ControlAction;
 import hotmath.gwt.cm_mobile.client.ControlPanel;
@@ -42,7 +44,8 @@ public class PrescriptionResourcePage implements IPage {
         actions.add(new ControlAction("Back to Lesson") {
             @Override
             public void doAction() {
-                Controller.navigateBack();
+                History.back();
+                // Controller.navigateBack();
             }
         });
         cp.setControlActions(actions);

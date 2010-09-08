@@ -11,6 +11,7 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.Cookies;
+import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
@@ -67,7 +68,7 @@ public class LoginForm extends AbstractPagePanel {
             @Override
             public void onSuccess(CmMobileUser result) {
                 CatchupMathMobile.__instance.user = result;
-                Controller.navigateToQuiz(loginPage);
+                History.newItem("quiz");
             }
 
             @Override

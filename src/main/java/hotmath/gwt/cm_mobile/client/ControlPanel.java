@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -104,6 +105,17 @@ public class ControlPanel extends FlowPanel {
     
     public void setControlActions(List<ControlAction> actions) {
         expanded.clear();
+        
+        /** standard buttons */
+        Button logoutBtn = new Button("Logout", new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent arg0) {
+                hideControlPanel();   
+                History.newItem("login");
+            }
+        });
+        expanded.add(logoutBtn);
+        
         for(final ControlAction action: actions) {
             Button btn = new Button(action.getLabel(), new ClickHandler() {
                 @Override

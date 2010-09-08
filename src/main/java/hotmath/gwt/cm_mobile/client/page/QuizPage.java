@@ -34,12 +34,6 @@ public class QuizPage implements IPage {
     public void setupControlFloater() {
         ControlPanel cp = CatchupMathMobile.__instance.getControlPanel();
         List<ControlAction> actions = new ArrayList<ControlAction>();
-        actions.add(new ControlAction("Logout") {
-            @Override
-            public void doAction() {
-                Controller.navigateBack();
-            }
-        });
         actions.add(new ControlAction("Check Quiz") {
             @Override
             public void doAction() {

@@ -35,6 +35,11 @@ public class Controller {
 		QuizPage quizPage = new QuizPage();
 		mPageStack.push(quizPage);
 	}
+	
+	public static void navigateToLogin() {
+        LoginPage loginPage = new LoginPage();
+        mPageStack.push(loginPage);
+    }
 
 	public static void navigateToPrescription(IPage currentPage, PrescriptionSessionData sessionData) {
 		PrescriptionPage page = new PrescriptionPage(sessionData);

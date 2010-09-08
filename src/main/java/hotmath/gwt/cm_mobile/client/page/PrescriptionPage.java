@@ -1,8 +1,11 @@
 package hotmath.gwt.cm_mobile.client.page;
 
 import hotmath.gwt.cm_mobile.client.CatchupMathMobile;
+import hotmath.gwt.cm_mobile.client.ControlAction;
 import hotmath.gwt.cm_mobile.client.ControlPanel;
 import hotmath.gwt.cm_rpc.client.rpc.PrescriptionSessionData;
+
+import java.util.ArrayList;
 
 public class PrescriptionPage implements IPage {
 
@@ -25,6 +28,7 @@ public class PrescriptionPage implements IPage {
     @Override
     public void setupControlFloater() {
         ControlPanel cp = CatchupMathMobile.__instance.getControlPanel();
-        cp.hideControlPanelFloater();
+        cp.setControlActions(new ArrayList<ControlAction>());
+        // cp.hideControlPanelFloater();
     }
 }
