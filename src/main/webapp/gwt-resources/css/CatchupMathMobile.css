@@ -161,7 +161,6 @@ div.landscape div.page
 
 
 #main-content {
-	#width: 300px;
 }
 
 table {
@@ -304,4 +303,8 @@ question_head_text {
 
 #startup.hide {
 	display: none;
+}
+
+#pages_container {
+	padding: 10px;
 }
