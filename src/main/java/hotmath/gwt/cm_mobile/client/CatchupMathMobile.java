@@ -248,6 +248,11 @@ public class CatchupMathMobile implements EntryPoint, Screen.OrientationChangedH
         return fp;
     }
     
+    static private native void scrollToTop()  /*-{
+        window.scrollTo(0, 1);
+    }-*/;
+
+    
     
     static {
         EventBus.getInstance().addEventListener(new CmEventListener() {
@@ -256,10 +261,10 @@ public class CatchupMathMobile implements EntryPoint, Screen.OrientationChangedH
             public void handleEvent(CmEvent event) {
                 EventType type = event.getEventType();
                 if(type == EventTypes.EVENT_PAGE_LOADED) {
-                    CatchupMathMobile.__instance._rootPanel.getElement().setScrollTop(0);
+                    scrollToTop();
                 }
                 else if(type == EventTypes.EVENT_PAGE_REMOVED) {
-                    CatchupMathMobile.__instance._rootPanel.getElement().setScrollTop(0);
+                    scrollToTop();
                 }
                 else if(type == EventTypes.EVENT_PAGE_ACTIVATED) {
                     IPage page = (IPage)event.getEventData();
