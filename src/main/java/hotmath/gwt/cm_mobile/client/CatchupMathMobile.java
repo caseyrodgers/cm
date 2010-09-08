@@ -261,13 +261,12 @@ public class CatchupMathMobile implements EntryPoint, Screen.OrientationChangedH
             public void handleEvent(CmEvent event) {
                 EventType type = event.getEventType();
                 if(type == EventTypes.EVENT_PAGE_LOADED) {
-                    scrollToTop();
                 }
                 else if(type == EventTypes.EVENT_PAGE_REMOVED) {
-                    scrollToTop();
                 }
                 else if(type == EventTypes.EVENT_PAGE_ACTIVATED) {
                     IPage page = (IPage)event.getEventData();
+                    scrollToTop();
                     page.setupControlFloater();
                 }
             }
