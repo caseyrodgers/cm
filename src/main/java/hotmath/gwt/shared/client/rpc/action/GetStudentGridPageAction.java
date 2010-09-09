@@ -1,5 +1,6 @@
 package hotmath.gwt.shared.client.rpc.action;
 
+import hotmath.gwt.cm_rpc.client.ClientInfo;
 import hotmath.gwt.cm_rpc.client.rpc.Action;
 import hotmath.gwt.cm_tools.client.model.StudentModelExt;
 import hotmath.gwt.shared.client.model.CmStudentPagingLoadResult;
@@ -11,20 +12,28 @@ import java.util.Map;
 
 public class GetStudentGridPageAction implements Action<CmStudentPagingLoadResult<StudentModelExt>>{
 
-    Integer adminId;
+	private static final long serialVersionUID = -3117922126418717986L;
+
+	Integer adminId;
 	PagingLoadConfig loadConfig;
 	String groupFilter;
 	boolean forceRefresh;
 	String quickSearch;
 	Map<FilterType,String> filterMap;
 	
-	// int newField;
+	ClientInfo clientInfo;
 	
-	public GetStudentGridPageAction() {}
+	public GetStudentGridPageAction() {
+		clientInfo = new ClientInfo();
+	}
 	
-	public GetStudentGridPageAction(Integer adminId,PagingLoadConfig loadConfig) {
+	public GetStudentGridPageAction(Integer adminId, PagingLoadConfig loadConfig) {
 	    this.adminId = adminId;
 		this.loadConfig = loadConfig;
+
+        clientInfo = new ClientInfo();
+        clientInfo.setUserId(adminId);
+        clientInfo.setUserType(ClientInfo.UserType.ADMIN);
 	}
 
 	public PagingLoadConfig getLoadConfig() {
@@ -67,6 +76,14 @@ public class GetStudentGridPageAction implements Action<CmStudentPagingLoadResul
         this.quickSearch = quickSearch;
     }
     
+	public ClientInfo getClientInfo() {
+		return clientInfo;
+	}
+
+	public void setClientInfo(ClientInfo clientInfo) {
+		this.clientInfo = clientInfo;
+	};
+    
     public void addFilter(FilterType key, String value) {
     	if (filterMap == null) filterMap = new HashMap<FilterType,String>();
     	filterMap.put(key, value);
@@ -85,5 +102,5 @@ public class GetStudentGridPageAction implements Action<CmStudentPagingLoadResul
         
         return s;
     }
-    public enum FilterType {GROUP, QUICKTEXT};
+    public enum FilterType {GROUP, QUICKTEXT}
 }
