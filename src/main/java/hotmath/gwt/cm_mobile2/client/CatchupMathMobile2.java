@@ -1,8 +1,6 @@
 package hotmath.gwt.cm_mobile2.client;
 
-import hotmath.gwt.cm_mobile2.client.CatchupMathMobileHistoryListener;
 import hotmath.gwt.cm_mobile_shared.client.CatchupMathMobileShared;
-import hotmath.gwt.cm_mobile_shared.client.ControlPanel;
 import hotmath.gwt.cm_mobile_shared.client.Controller;
 import hotmath.gwt.cm_mobile_shared.client.HeaderPanel;
 import hotmath.gwt.cm_mobile_shared.client.PagesContainerPanel;
@@ -33,14 +31,11 @@ import com.google.gwt.user.client.ui.Widget;
 public class CatchupMathMobile2 implements EntryPoint, OrientationChangedHandler {
 
     RootPanel _rootPanel;
-    ControlPanel controlPanel;
     public void onModuleLoad() {
 
         _rootPanel = RootPanel.get("main-content");
         /** add the floater
          */
-        controlPanel = new ControlPanel();
-        _rootPanel.add(controlPanel);
         _rootPanel.add(createApplicationPanel());
 
         Screen screen = new Screen();
@@ -51,7 +46,7 @@ public class CatchupMathMobile2 implements EntryPoint, OrientationChangedHandler
 
         _rootPanel.getElement().getStyle().setProperty("display", "inline");
 
-        initializeExternalJs();
+        //initializeExternalJs();
 
         CatchupMathMobileShared.__instance.user = new CmMobileUser();
         

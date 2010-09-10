@@ -43,7 +43,7 @@ public class TopicViewPagePanel extends AbstractPagePanel {
     
     PrescriptionPage pPage;
     GenericContainerTag listItems = new GenericContainerTag("ul");
-    
+    static PrescriptionData pData=null;
     TopicViewPage page;
     public TopicViewPagePanel(TopicViewPage page) {
         this.page = page;
@@ -62,10 +62,17 @@ public class TopicViewPagePanel extends AbstractPagePanel {
     
     
     private void loadLessonData(String file) {
+        
+        if(pData != null && pData.getCurrSession().getInmhResources().get(0).getItems().get(0).getFile().equals(file)) {
+            loadPrescriptionSession(pData.getCurrSession().getInmhResources());
+            return;
+        }
+        
         GetMobileLessonInfoAction action = new GetMobileLessonInfoAction(file);
         CatchupMathMobileShared.getCmService().execute(action, new AsyncCallback<MobileLessonInfo>() {
             @Override
             public void onSuccess(MobileLessonInfo lessonInfo) {
+                pData = lessonInfo.getPresData();
                 CatchupMathMobileShared.getUser().setPrescripion(lessonInfo.getPresData());
                 loadPrescriptionSession(lessonInfo.getPresData().getCurrSession().getInmhResources());
             }

@@ -42,7 +42,8 @@ public class CmResourceViewerImplSolution extends Composite implements CmMobileR
 
             @Override
             public void onFailure(Throwable caught) {
-                caught.printStackTrace();               
+                caught.printStackTrace();
+                mainPanel.add(new HTML("Could not load solution: " + caught.getMessage()));               
             }
         });
         
