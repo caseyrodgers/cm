@@ -3,7 +3,10 @@ package hotmath.gwt.cm_rpc.server.rpc;
 import hotmath.cm.util.ActionTypeMap;
 import hotmath.flusher.Flushable;
 import hotmath.flusher.HotmathFlusher;
+import hotmath.gwt.cm_rpc.client.ClientInfo;
+import hotmath.gwt.cm_rpc.client.ClientInfo.UserType;
 import hotmath.gwt.cm_rpc.client.rpc.Action;
+import hotmath.gwt.cm_rpc.client.rpc.ActionBase;
 import hotmath.gwt.cm_rpc.client.rpc.CmRpcException;
 import hotmath.gwt.cm_rpc.client.rpc.Response;
 import hotmath.gwt.cm_rpc.server.rpc.ActionDispatcherListener.ActionExecutionType;
@@ -54,7 +57,7 @@ public class ActionDispatcher {
         });
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("rawtypes")
     Map<Class<? extends Action<? extends Response>>, Class> commands = new HashMap<Class<? extends Action<? extends Response>>, Class>();
     List<ActionDispatcherListener> listeners = new ArrayList<ActionDispatcherListener>();
 
@@ -148,6 +151,15 @@ public class ActionDispatcher {
     @SuppressWarnings({ "unchecked", "rawtypes" })
     public <T extends Response> T execute(Action<T> action) throws CmRpcException {
 
+    	ClientInfo clientInfo;
+    	if (action instanceof ActionBase) {
+    		clientInfo = ((ActionBase)action).getClientInfo();
+    	}
+    	else {
+    		clientInfo = new ClientInfo();
+    		clientInfo.setUserType(UserType.UNKNOWN);
+    	}
+    	
         long timeStart = System.currentTimeMillis();
         String c[] = action.getClass().getName().split("\\.");
         String clazzName = c[c.length - 1];
@@ -157,12 +169,12 @@ public class ActionDispatcher {
         try {
             Class clazz = getActionCommand(action);
             if (clazz == null) {
-                throw new CmRpcException("Could not find Action: " + action.getClass().getName());
+                throw new CmRpcException("Could not find Action Handler for Action: " + action.getClass().getName());
             }
             ActionHandler actionHandler = (ActionHandler) clazz.newInstance();
 
             if (actionHandler == null)
-                throw new CmRpcException("No such RPC Action defined: " + action.getClass().getName());
+                throw new CmRpcException("No such RPC Action Handler defined: " + action.getClass().getName());
 
             /**
              * Should connection management be automatic (default)? If Command
@@ -178,6 +190,9 @@ public class ActionDispatcher {
             }
 
             actionType = ActionTypeMap.getActionType(clazzName);
+            if (actionType == ActionTypeMap.ActionType.OTHER) {
+                logger.info(String.format("=== RPC Action [%s] not in ActionTypeMap!", clazzName));	
+            }
             
             /** todo: move to listener
              * 
@@ -206,8 +221,9 @@ public class ActionDispatcher {
 
             long now = System.currentTimeMillis();
             long executeTimeMills = (now - timeStart);
-            logger.info("RPC Action " + clazzName + " toString: " + action.toString() + " complete; elapsed time: "
-                    + executeTimeMills + " msec");
+
+            logger.info(String.format("RPC Action (userId:%d,userType:%s) %s toString: %s complete; elapsed time: %d msec",
+            		clientInfo.getUserId(), clientInfo.getUserType(), clazzName, action.toString(), executeTimeMills));
             
             incrementProcessingTime(actionType, executeTimeMills);
             
@@ -215,31 +231,42 @@ public class ActionDispatcher {
     }
 
 	private void incrementActionsExecuted(ActionTypeMap.ActionType actionType) {
-		if (actionType == ActionTypeMap.ActionType.ADMIN) {
+		switch(actionType) {
+		case ADMIN:
 			monitorCountAdminActionsExecuted++;
-		}
-		if (actionType == ActionTypeMap.ActionType.STUDENT) {
+			break;
+		case STUDENT:
 			monitorCountStudentActionsExecuted++;
-		}
-		if (actionType == ActionTypeMap.ActionType.ANY) {
+			break;
+		case ANY:
 			monitorCountAnyActionsExecuted++;
+			break;
+		case OTHER:
+        	monitorCountOtherActionsExecuted++;
+        	break;
 		}
 
 		monitorCountActionsExecuted++;
 		
-		logger.debug(String.format("+++ incrementActionsExecuted(): admin: %d, student: %d, all: %d",
-			monitorCountAdminActionsExecuted, monitorCountStudentActionsExecuted, monitorCountActionsExecuted));
+		logger.debug(String.format("+++ incrementActionsExecuted(): admin: %d, student: %d, any: %d, other: %d, all: %d",
+			monitorCountAdminActionsExecuted, monitorCountStudentActionsExecuted,
+			monitorCountAnyActionsExecuted, monitorCountOtherActionsExecuted, monitorCountActionsExecuted));
 	}
 
 	private void incrementProcessingTime(ActionTypeMap.ActionType actionType, long executeTimeMillis) {
-		if (actionType == ActionTypeMap.ActionType.ADMIN) {
+		switch(actionType) {
+		case ADMIN:
 			monitorAdminProcessingTime += executeTimeMillis;
-		}
-		if (actionType == ActionTypeMap.ActionType.STUDENT) {
+			break;
+		case STUDENT:
 			monitorStudentProcessingTime += executeTimeMillis;
-		}
-		if (actionType == ActionTypeMap.ActionType.ANY) {
+			break;
+		case ANY:
 			monitorAnyProcessingTime += executeTimeMillis;
+			break;
+		case OTHER:
+			monitorOtherProcessingTime += executeTimeMillis;
+        	break;
 		}
 
         monitorTotalProcessingTime += executeTimeMillis; 
@@ -247,14 +274,19 @@ public class ActionDispatcher {
 
 
 	private void incrementActionsCompleted(ActionTypeMap.ActionType actionType) {
-		if (actionType == ActionTypeMap.ActionType.ADMIN) {
+		switch(actionType) {
+		case ADMIN:
 			monitorCountAdminActionsCompleted++;
-		}
-		if (actionType == ActionTypeMap.ActionType.STUDENT) {
+			break;
+		case STUDENT:
 			monitorCountStudentActionsCompleted++;
-		}
-		if (actionType == ActionTypeMap.ActionType.ANY) {
+			break;
+		case ANY:
 			monitorCountAnyActionsCompleted++;
+			break;
+		case OTHER:
+        	monitorCountOtherActionsCompleted++;
+        	break;
 		}
 
 		monitorCountActionsCompleted++;
@@ -265,14 +297,19 @@ public class ActionDispatcher {
 
 	private void incrementActionsException(ActionTypeMap.ActionType actionType) {
 		
-		if (actionType == ActionTypeMap.ActionType.ADMIN) {
+		switch(actionType) {
+		case ADMIN:
 			monitorCountAdminActionsException++;
-		}
-		if (actionType == ActionTypeMap.ActionType.STUDENT) {
+			break;
+		case STUDENT:
 			monitorCountStudentActionsException++;
-		}
-		if (actionType == ActionTypeMap.ActionType.ANY) {
+			break;
+		case ANY:
 			monitorCountAnyActionsException++;
+			break;
+		case OTHER:
+        	monitorCountOtherActionsException++;
+        	break;
 		}
 
 		monitorCountOfExceptions++;
@@ -304,7 +341,7 @@ public class ActionDispatcher {
                  */
                 String p[] = actionName.split("\\.");
                 String cmdName = p[p.length-1];
-                cmdName = cmdName.substring(0, cmdName.length() - 6);
+                cmdName = cmdName.substring(0, cmdName.length() - 6) + "Command";
                 
                 /** TODO: how to add these automatically ?
                  * 
@@ -316,7 +353,7 @@ public class ActionDispatcher {
                                      
                 Class actionHandler=null,cmdClass=null;
                 for(int i=0;i<standardPlaces.length;i++) {
-                    String commandClass = standardPlaces[i] + cmdName + "Command";
+                    String commandClass = standardPlaces[i] + cmdName;
                     try {
                         /** create instance and get object */
                         logger.info("Auto registering action command: " + cmdName);
@@ -329,7 +366,7 @@ public class ActionDispatcher {
                     }
                 }
                 if(actionHandler == null)
-                    throw new CmRpcException("No command found action: " + action);
+                    throw new CmRpcException("No command found for Action: " + action);
                 
                 commands.put(actionHandler, cmdClass);
             }
@@ -419,9 +456,13 @@ public class ActionDispatcher {
         AnyActionsExecuted,
         AnyActionsCompleted,
         AnyActionsException,
+        OtherActionsExecuted,
+        OtherActionsCompleted,
+        OtherActionsException,
         AdminProcessingTime,
         StudentProcessingTime,
-        AnyProcessingTime
+        AnyProcessingTime,
+        OtherProcessingTime
     }
     
     
@@ -440,10 +481,14 @@ public class ActionDispatcher {
     int monitorCountAnyActionsExecuted;
     int monitorCountAnyActionsCompleted;
     int monitorCountAnyActionsException;
+    int monitorCountOtherActionsExecuted;
+    int monitorCountOtherActionsCompleted;
+    int monitorCountOtherActionsException;
 
     long monitorAdminProcessingTime;
     long monitorStudentProcessingTime;
     long monitorAnyProcessingTime;
+    long monitorOtherProcessingTime;
 }
 
 
