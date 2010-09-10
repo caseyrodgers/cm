@@ -230,7 +230,7 @@ public class GetPrescriptionCommand implements ActionHandler<GetPrescriptionActi
      * 
      * @param inmhTypes
      */
-    private List<PrescriptionSessionDataResource> fixupInmhResources(List<PrescriptionSessionDataResource> inmhTypes) {
+    static public List<PrescriptionSessionDataResource> fixupInmhResources(List<PrescriptionSessionDataResource> inmhTypes) {
 
         List<PrescriptionSessionDataResource> newTypes = new ArrayList<PrescriptionSessionDataResource>();
         String types[][] = {

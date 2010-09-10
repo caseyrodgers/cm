@@ -35,7 +35,7 @@ public class AssessmentPrescriptionCustom extends AssessmentPrescription {
                 continue; // nothing to see here.
             }
 
-            AssessmentPrescriptionSession session = createSession(sessNum,workBookPids,itemData);
+            AssessmentPrescriptionSession session = createSession(sessNum,workBookPids,itemData,true);
             
             // assert that there is at least one
             if(session.getSessionItems().size() == 0) {

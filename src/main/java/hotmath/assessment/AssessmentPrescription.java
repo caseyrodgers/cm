@@ -85,7 +85,7 @@ public class AssessmentPrescription {
 		this.testRun = testRun;
 	}
 
-	protected AssessmentPrescription() {
+	public AssessmentPrescription() {
 	}
 
 	/**
@@ -152,7 +152,7 @@ public class AssessmentPrescription {
 			}
 
 			AssessmentPrescriptionSession session = createSession(sessNum,
-					rppWidgets, itemData);
+					rppWidgets, itemData, true);
 
 			// assert that there is at least one
 			if (session.getSessionItems().size() == 0) {
@@ -266,8 +266,7 @@ public class AssessmentPrescription {
 	 * @return
 	 * @throws Exception
 	 */
-	protected AssessmentPrescriptionSession createSession(int sessNum,
-			List<RppWidget> rppWidgets, InmhItemData itemData) throws Exception {
+	protected AssessmentPrescriptionSession createSession(int sessNum,List<RppWidget> rppWidgets, InmhItemData itemData, boolean filter) throws Exception {
 		AssessmentPrescriptionSession session = new AssessmentPrescriptionSession(this);
 		List<SessionData> sessionItems = session.getSessionItems();
 
@@ -304,7 +303,7 @@ public class AssessmentPrescription {
 				ProblemID pid = new ProblemID(rpp.getFile());
 				// subject filter solutions
 				int gradeLevel = pid.getGradeLevel();
-				if (gradeLevel > getGradeLevel()) {
+				if (filter && gradeLevel > getGradeLevel()) {
 					SbLogger.postMessage("AssessmentPrescriptionSession: "
 							+ testRun.getRunId()
 							+ ", level: "

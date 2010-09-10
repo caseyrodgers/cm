@@ -1,0 +1,17 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+     xmlns:g="urn:import:com.google.gwt.user.client.ui">
+     <ui:style>
+          .toolbar { height: .75em; border: 1px solid blue;width: 300px;}
+          .buttonRight {float: right;}
+          .buttonLeft {float: left;}
+          .statusBar {width: 300px;height: 10px;}
+     </ui:style>
+     <g:VerticalPanel ui:field="mainPanel">
+         <g:HorizontalPanel styleName="{style.toolbar}">
+              <g:Button ui:field="prevButton" >Previous</g:Button>
+              <g:Button ui:field="nextButton" styleName="{style.buttonRight}">Next</g:Button>         
+         </g:HorizontalPanel>
+         <g:SimplePanel ui:field="thermometerPanel" styleName="{style.statusBar}"></g:SimplePanel>
+     </g:VerticalPanel>
+</ui:UiBinder>

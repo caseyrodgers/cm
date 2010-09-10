@@ -1,14 +1,14 @@
-package hotmath.gwt.cm_mobile.client;
+package hotmath.gwt.cm_mobile_shared.client;
 
-import hotmath.gwt.cm_mobile.client.event.CmEvent;
-import hotmath.gwt.cm_mobile.client.event.CmEventListener;
-import hotmath.gwt.cm_mobile.client.event.EventBus;
-import hotmath.gwt.cm_mobile.client.event.EventType;
-import hotmath.gwt.cm_mobile.client.event.EventTypes;
-import hotmath.gwt.cm_mobile.client.page.IPage;
-import hotmath.gwt.cm_mobile.client.rpc.CmMobileUser;
-import hotmath.gwt.cm_mobile.client.util.ObservableStack;
-import hotmath.gwt.cm_mobile.client.util.Screen;
+import hotmath.gwt.cm_mobile_shared.client.event.CmEvent;
+import hotmath.gwt.cm_mobile_shared.client.event.CmEventListener;
+import hotmath.gwt.cm_mobile_shared.client.event.EventBus;
+import hotmath.gwt.cm_mobile_shared.client.event.EventType;
+import hotmath.gwt.cm_mobile_shared.client.event.EventTypes;
+import hotmath.gwt.cm_mobile_shared.client.page.IPage;
+import hotmath.gwt.cm_mobile_shared.client.rpc.CmMobileUser;
+import hotmath.gwt.cm_mobile_shared.client.util.ObservableStack;
+import hotmath.gwt.cm_mobile_shared.client.util.Screen;
 import hotmath.gwt.cm_rpc.client.rpc.CmService;
 import hotmath.gwt.cm_rpc.client.rpc.CmServiceAsync;
 
@@ -34,9 +34,9 @@ import com.google.gwt.user.client.ui.Widget;
  * @author casey
  * 
  */
-public class CatchupMathMobile implements EntryPoint, Screen.OrientationChangedHandler {
+public class CatchupMathMobileShared implements EntryPoint, Screen.OrientationChangedHandler {
 
-    public static CatchupMathMobile __instance;
+    public static CatchupMathMobileShared __instance;
 
     RootPanel _rootPanel;
 
@@ -44,46 +44,24 @@ public class CatchupMathMobile implements EntryPoint, Screen.OrientationChangedH
     SimplePanel mainPanel;
     ControlPanel controlPanel;
 
-    public CatchupMathMobile() {
+    public CatchupMathMobileShared() {
         __instance = this;
     }
 
     public void onModuleLoad() {
-
-        _rootPanel = RootPanel.get("main-content");
-
-        /** add the floater
-         */
-        controlPanel = new ControlPanel();
-        _rootPanel.add(controlPanel);
-        _rootPanel.add(createApplicationPanel());
-
-        Screen screen = new Screen();
-        screen.addHandler(this);
-        orientationChanged(screen.getScreenOrientation());
-        
-        hideBusyPanel();
-
-        _rootPanel.getElement().getStyle().setProperty("display", "inline");
-
-        initializeExternalJs();
-
-        History.addValueChangeHandler(new CatchupMathMobileHistoryListener());
-
-        // showTestSolution();
-        // if(true)return;
-
-//        int uid = CatchupMathMobile.getQueryParameterInt("uid");
-//        if (uid > 0) {
-//            int testId = CatchupMathMobile.getQueryParameterInt("testId");
-//            int testSegment = CatchupMathMobile.getQueryParameterInt("testSegment");
-//            user = new CmMobileUser(uid, testId, testSegment, 0, 0);
-//
-//            History.newItem("quiz");
-//        } else {
-//            History.newItem("login:" + System.currentTimeMillis());
-//        }
     }
+    
+
+    
+    
+    public ControlPanel getControlPanel() {
+        return controlPanel;
+    }
+
+    static public CmMobileUser getUser() {
+        return __instance.user;
+    }
+
     
     public void hideBusyPanel() {
         /** hide the startup spinner */
@@ -96,23 +74,7 @@ public class CatchupMathMobile implements EntryPoint, Screen.OrientationChangedH
         Element startup = Document.get().getElementById("startup");
         startup.removeClassName("hide");        
     }
-
-    /** call global JS function to intialize any external resources
-     * 
-     */
-    private native void initializeExternalJs()/*-{
-        $wnd.initializeExternalJs();
-    }-*/;
-    
-    
-    public ControlPanel getControlPanel() {
-        return controlPanel;
-    }
-
-    static public CmMobileUser getUser() {
-        return __instance.user;
-    }
-
+        
 
     /**
      * Static routines used throughout app
@@ -188,42 +150,12 @@ public class CatchupMathMobile implements EntryPoint, Screen.OrientationChangedH
         }
     }
 
-    /**
-     * Create a panel with a static header and scrollable body area.
-     * 
-     * The header will contain buttons and meta data. The body will container
-     * the app data.
-     * 
-     * @return
-     */
-    private Widget createApplicationPanel() {
-        /**
-         * we want this to have an absolute size and be added as the top
-         * component.
-         * 
-         */
-        HeaderPanel headerPanel = new HeaderPanel();
-        PagesContainerPanel pagesPanel = new PagesContainerPanel();
 
-        FlowPanel fp = new FlowPanel();
-        fp.setStyleName("app-panel");
-
-        fp.add(headerPanel);
-        fp.add(pagesPanel);
-
-        ObservableStack<IPage> pageStack = new ObservableStack<IPage>();
-        pagesPanel.bind(pageStack);
-        headerPanel.bind(pageStack);
-        Controller.init(pageStack);
-
-        return fp;
-    }
     
     static private native void scrollToTop()  /*-{
         window.scrollTo(0, 1);
     }-*/;
 
-    
     
     static {
         EventBus.getInstance().addEventListener(new CmEventListener() {
@@ -236,9 +168,6 @@ public class CatchupMathMobile implements EntryPoint, Screen.OrientationChangedH
                 else if(type == EventTypes.EVENT_PAGE_REMOVED) {
                 }
                 else if(type == EventTypes.EVENT_PAGE_ACTIVATED) {
-                    IPage page = (IPage)event.getEventData();
-                    scrollToTop();
-                    page.setupControlFloater();
                 }
             }
         });
