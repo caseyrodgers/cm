@@ -46,7 +46,13 @@ public class AssessmentPrescriptionPlacement extends AssessmentPrescription {
             // map to real Program name
             // @TODO: we need single mapping api for test names.
             if (thisTest.indexOf("pre-algebra") > -1) {
-                program = CmProgram.PREALG_PROF;
+                // 0-2 correct on first quiz --> Essentials Prof
+                if(correct < 3) {
+                    program = CmProgram.ESSENTIALS;
+                }
+                else {
+                    program = CmProgram.PREALG_PROF;    
+                }
             } else if (thisTest.indexOf("algebra 1") > -1) {
                 program = CmProgram.ALG1_PROF;
             } else if (thisTest.indexOf("geometry") > -1) {
