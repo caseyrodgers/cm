@@ -19,7 +19,7 @@ public class ClientInfo implements Response {
 	public ClientInfo() {
 	}
 
-	public enum UserType {STUDENT, ADMIN}
+	public enum UserType {STUDENT, ADMIN, UNKNOWN}
 
 	public int getUserId() {
 		return userId;
