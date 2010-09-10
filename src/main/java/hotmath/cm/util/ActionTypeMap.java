@@ -5,7 +5,7 @@ import java.util.HashMap;
 public class ActionTypeMap {
 	
 	static public enum ActionType {
-		ADMIN, STUDENT, ANY, TEST
+		ADMIN, STUDENT, ANY, TEST, OTHER
 	}
 
 	static HashMap<String,ActionType> actionTypeMap;
@@ -102,6 +102,6 @@ public class ActionTypeMap {
 	}
 	
 	static public ActionType getActionType(String className) {
-		return actionTypeMap.get(className);
+		return (actionTypeMap.get(className) != null) ? actionTypeMap.get(className) : ActionType.OTHER;
 	}
 }
