@@ -4,13 +4,14 @@ import hotmath.gwt.cm_rpc.client.ClientInfo;
 import hotmath.gwt.cm_rpc.client.rpc.Action;
 import hotmath.gwt.cm_tools.client.model.StudentModelExt;
 import hotmath.gwt.shared.client.model.CmStudentPagingLoadResult;
+import hotmath.gwt.cm_rpc.client.rpc.ActionBase;
 
 import com.extjs.gxt.ui.client.data.PagingLoadConfig;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class GetStudentGridPageAction implements Action<CmStudentPagingLoadResult<StudentModelExt>>{
+public class GetStudentGridPageAction extends ActionBase implements Action<CmStudentPagingLoadResult<StudentModelExt>> {
 
 	private static final long serialVersionUID = -3117922126418717986L;
 
@@ -20,20 +21,16 @@ public class GetStudentGridPageAction implements Action<CmStudentPagingLoadResul
 	boolean forceRefresh;
 	String quickSearch;
 	Map<FilterType,String> filterMap;
-	
-	ClientInfo clientInfo;
-	
+		
 	public GetStudentGridPageAction() {
-		clientInfo = new ClientInfo();
 	}
 	
 	public GetStudentGridPageAction(Integer adminId, PagingLoadConfig loadConfig) {
-	    this.adminId = adminId;
+		this.adminId = adminId;
 		this.loadConfig = loadConfig;
 
-        clientInfo = new ClientInfo();
-        clientInfo.setUserId(adminId);
-        clientInfo.setUserType(ClientInfo.UserType.ADMIN);
+        getClientInfo().setUserId(adminId);
+        getClientInfo().setUserType(ClientInfo.UserType.ADMIN);
 	}
 
 	public PagingLoadConfig getLoadConfig() {
@@ -75,14 +72,6 @@ public class GetStudentGridPageAction implements Action<CmStudentPagingLoadResul
     public void setQuickSearch(String quickSearch) {
         this.quickSearch = quickSearch;
     }
-    
-	public ClientInfo getClientInfo() {
-		return clientInfo;
-	}
-
-	public void setClientInfo(ClientInfo clientInfo) {
-		this.clientInfo = clientInfo;
-	};
     
     public void addFilter(FilterType key, String value) {
     	if (filterMap == null) filterMap = new HashMap<FilterType,String>();
