@@ -1,9 +1,10 @@
 package hotmath.gwt.shared.client.rpc.action;
 
 import hotmath.gwt.cm_rpc.client.rpc.Action;
+import hotmath.gwt.cm_rpc.client.rpc.ActionBase;
 import hotmath.gwt.cm_rpc.client.rpc.CreateTestRunResponse;
 
-public class CreateTestRunAction implements Action<CreateTestRunResponse> {
+public class CreateTestRunAction extends ActionBase implements Action<CreateTestRunResponse> {
 
     int testId;
 

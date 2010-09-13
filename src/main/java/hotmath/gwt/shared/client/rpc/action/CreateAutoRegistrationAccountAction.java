@@ -1,6 +1,8 @@
 package hotmath.gwt.shared.client.rpc.action;
 
+import hotmath.gwt.cm_rpc.client.ClientInfo.UserType;
 import hotmath.gwt.cm_rpc.client.rpc.Action;
+import hotmath.gwt.cm_rpc.client.rpc.ActionBase;
 import hotmath.gwt.cm_rpc.client.rpc.RpcData;
 
 
@@ -9,19 +11,22 @@ import hotmath.gwt.cm_rpc.client.rpc.RpcData;
  * @author casey
  *
  */
-public class CreateAutoRegistrationAccountAction implements Action<RpcData> {
+public class CreateAutoRegistrationAccountAction extends ActionBase implements Action<RpcData> {
     Integer userId;
     String user;
     String password;
 
     public CreateAutoRegistrationAccountAction() {
+        getClientInfo().setUserType(UserType.STUDENT);
     }
-    
     
     public CreateAutoRegistrationAccountAction(Integer userId, String user, String password) {
         this.userId = userId;
         this.user = user;
         this.password = password;
+        
+        getClientInfo().setUserId(userId);
+        getClientInfo().setUserType(UserType.STUDENT);
     }
 
 

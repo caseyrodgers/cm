@@ -1,12 +1,14 @@
 package hotmath.gwt.shared.client.rpc.action;
 
+import hotmath.gwt.cm_rpc.client.ClientInfo.UserType;
 import hotmath.gwt.cm_rpc.client.rpc.Action;
+import hotmath.gwt.cm_rpc.client.rpc.ActionBase;
 import hotmath.gwt.cm_rpc.client.rpc.CmList;
 import hotmath.gwt.cm_tools.client.model.CustomLessonModel;
 
 import java.util.List;
 
-public class CustomProgramAction implements Action<CmList<CustomLessonModel>>{
+public class CustomProgramAction extends ActionBase implements Action<CmList<CustomLessonModel>>{
 
     private static final long serialVersionUID = -5883561195322210717L;
     
@@ -21,22 +23,23 @@ public class CustomProgramAction implements Action<CmList<CustomLessonModel>>{
 
     public void setAdminId(Integer adminId) {
         this.adminId = adminId;
+    	getClientInfo().setUserId((adminId!=null)?adminId:0);
     }
 
     List<CustomLessonModel> lessons;
     
     public CustomProgramAction() {
-        /** empty */
+    	getClientInfo().setUserType(UserType.ADMIN);
     }
     
     public CustomProgramAction(ActionType action) {
         this.action = action;
+    	getClientInfo().setUserType(UserType.ADMIN);
     }
     
     public ActionType getAction() {
         return action;
     }
-
 
     public String getProgramName() {
         return programName;

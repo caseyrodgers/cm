@@ -1,10 +1,12 @@
 package hotmath.gwt.shared.client.rpc.action;
 
+import hotmath.gwt.cm_rpc.client.ClientInfo.UserType;
 import hotmath.gwt.cm_rpc.client.rpc.Action;
+import hotmath.gwt.cm_rpc.client.rpc.ActionBase;
 import hotmath.gwt.cm_rpc.client.rpc.CmList;
 import hotmath.gwt.shared.client.model.CentralMessage;
 
-public class CheckForCentralMessagesAction implements Action<CmList<CentralMessage>> {
+public class CheckForCentralMessagesAction extends ActionBase implements Action<CmList<CentralMessage>> {
 
     Integer uid;
     CmList<CentralMessage> messages;
@@ -15,12 +17,14 @@ public class CheckForCentralMessagesAction implements Action<CmList<CentralMessa
     public CheckForCentralMessagesAction(Integer uid) {
         this.actionType = MessageActionType.GET_UNREAD_MESSAGE;
         this.uid = uid;
+        setClientInfo();
     }
     
     public CheckForCentralMessagesAction(Integer uid,CmList<CentralMessage> messages) {
         this.actionType = MessageActionType.MARK_AS_VIEWED;
         this.uid = uid;
         this.messages = messages;
+        setClientInfo();
     }
 
     public CmList<CentralMessage> getMessages() {
@@ -54,4 +58,9 @@ public class CheckForCentralMessagesAction implements Action<CmList<CentralMessa
     }
     
     public enum MessageActionType{GET_UNREAD_MESSAGE,MARK_AS_VIEWED};
+    
+    private void setClientInfo() {
+    	getClientInfo().setUserId(uid);
+    	getClientInfo().setUserType(UserType.UNKNOWN);
+    }
 }

@@ -1,6 +1,8 @@
 package hotmath.gwt.shared.client.rpc.action;
 
+import hotmath.gwt.cm_rpc.client.ClientInfo.UserType;
 import hotmath.gwt.cm_rpc.client.rpc.Action;
+import hotmath.gwt.cm_rpc.client.rpc.ActionBase;
 import hotmath.gwt.cm_rpc.client.rpc.RpcData;
 
 /** Save a single Whiteboard command for this user
@@ -8,18 +10,23 @@ import hotmath.gwt.cm_rpc.client.rpc.RpcData;
  * @author casey
  *
  */
-public class ClearWhiteboardDataAction implements Action<RpcData> {
+public class ClearWhiteboardDataAction extends ActionBase implements Action<RpcData> {
 
     Integer uid;
     Integer rid;
     String pid;
     
-    public ClearWhiteboardDataAction() {}
+    public ClearWhiteboardDataAction() {
+        getClientInfo().setUserType(UserType.STUDENT);    	
+    }
         
     public ClearWhiteboardDataAction(int uid, int runId, String pid) {
         this.uid = uid;
         this.rid = runId;
         this.pid = pid;
+        
+        getClientInfo().setUserId(uid);
+        getClientInfo().setUserType(UserType.STUDENT);
     }
 
     public Integer getUid() {

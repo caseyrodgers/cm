@@ -1,6 +1,8 @@
 package hotmath.gwt.shared.client.rpc.action;
 
+import hotmath.gwt.cm_rpc.client.ClientInfo.UserType;
 import hotmath.gwt.cm_rpc.client.rpc.Action;
+import hotmath.gwt.cm_rpc.client.rpc.ActionBase;
 import hotmath.gwt.cm_rpc.client.rpc.RpcData;
 
 
@@ -9,14 +11,17 @@ import hotmath.gwt.cm_rpc.client.rpc.RpcData;
  * @author casey
  *
  */
-public class CheckUserAccountStatusAction implements Action<RpcData>{
+public class CheckUserAccountStatusAction extends ActionBase implements Action<RpcData>{
     
     String password;
     
-    public CheckUserAccountStatusAction(){}
+    public CheckUserAccountStatusAction(){
+    	setClientInfo();
+    }
     
     public CheckUserAccountStatusAction(String password) {
         this.password = password;
+    	setClientInfo();
     }
     
     
@@ -29,4 +34,8 @@ public class CheckUserAccountStatusAction implements Action<RpcData>{
         this.password = password;
     }
 
+    private void setClientInfo() {
+    	// currently, only used for self-registration 
+    	getClientInfo().setUserType(UserType.STUDENT);
+    }
 }
