@@ -435,6 +435,9 @@ public class ActionDispatcher {
         case AnyProcessingTime:
             return monitorAnyProcessingTime;
             
+        case OtherProcessingTime:
+            return monitorOtherProcessingTime;
+            
         case ExceptionCount:
             return monitorCountOfExceptions;
             
