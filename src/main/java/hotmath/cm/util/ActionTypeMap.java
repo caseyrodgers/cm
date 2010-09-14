@@ -74,6 +74,7 @@ public class ActionTypeMap {
 		actionTypeMap.put("GetStateStandardsAction",                    ActionType.ADMIN);
 		actionTypeMap.put("GetStudentActivityAction",                   ActionType.ADMIN);
 		actionTypeMap.put("GetStudentGridPageAction",                   ActionType.ADMIN);
+		actionTypeMap.put("GetStudentGridPageExtendedAction",           ActionType.ADMIN);
 		actionTypeMap.put("GetSubjectDefinitionsAction",                ActionType.ADMIN);
 		actionTypeMap.put("GetSummariesForActiveStudentsAction",        ActionType.ADMIN);
 		actionTypeMap.put("GetTemplateForSelfRegGroupAction",           ActionType.ADMIN);
