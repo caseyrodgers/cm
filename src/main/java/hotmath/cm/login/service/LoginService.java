@@ -3,6 +3,8 @@ package hotmath.cm.login.service;
 import hotmath.cm.login.service.lcom.LcomManager;
 import hotmath.cm.login.service.lcom.LcomStudentSignup;
 import hotmath.cm.login.service.lcom.LcomTeacherSignup;
+import hotmath.gwt.cm_rpc.client.ClientInfo;
+import hotmath.gwt.cm_rpc.client.ClientInfo.UserType;
 import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_rpc.client.rpc.GetUserInfoAction;
 import hotmath.gwt.cm_rpc.server.rpc.ActionDispatcher;
@@ -163,18 +165,27 @@ public class LoginService extends HttpServlet {
         		sb.append("' }");
         		req.getSession().setAttribute("jsonizedLoginInfo", sb.toString());
         		
-        		req.getSession().setAttribute("securityKey", loginInfo.getKey());            	
+        		req.getSession().setAttribute("securityKey", loginInfo.getKey());
+
+        		ClientInfo clientInfo = new ClientInfo();
+        		clientInfo.setUserId(loginInfo.getUserId());
+        		
             	if(cmUser instanceof HaAdmin) {
+            		clientInfo.setUserType(UserType.ADMIN);
+
             		req.getSession().setAttribute("loginInfo", loginInfo);
             		req.getRequestDispatcher("/cm_admin/launch.jsp").forward(req, resp);
             	}
             	else {
+            		clientInfo.setUserType(UserType.STUDENT);
             		UserInfo userInfo = ActionDispatcher.getInstance().execute(new GetUserInfoAction(loginInfo.getUserId(),loginInfo.getLoginName()));
             		String jsonizedUserInfo = Jsonizer.toJson(userInfo);
             		req.getSession().setAttribute("jsonizedUserInfo", jsonizedUserInfo);
             		
             		req.getRequestDispatcher("/cm_student/launch.jsp").forward(req, resp);
             	}
+
+            	req.getSession().setAttribute("clientInfo", clientInfo);
             }
         }
         catch(Exception e) {
