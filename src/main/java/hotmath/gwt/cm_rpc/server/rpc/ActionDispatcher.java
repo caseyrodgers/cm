@@ -3,6 +3,7 @@ package hotmath.gwt.cm_rpc.server.rpc;
 import hotmath.cm.util.ActionTypeMap;
 import hotmath.flusher.Flushable;
 import hotmath.flusher.HotmathFlusher;
+import hotmath.cm.util.ClientInfoHolder;
 import hotmath.gwt.cm_rpc.client.ClientInfo;
 import hotmath.gwt.cm_rpc.client.ClientInfo.UserType;
 import hotmath.gwt.cm_rpc.client.rpc.Action;
@@ -158,6 +159,14 @@ public class ActionDispatcher {
     	else {
     		clientInfo = new ClientInfo();
     		clientInfo.setUserType(UserType.UNKNOWN);
+    	}
+    	
+    	ClientInfo clientInfo2 = ClientInfoHolder.get();
+    	if (clientInfo2 != null)
+        	logger.info(String.format("+++ execute(): ClientInfo from ThreadLocal; userId: %d, userType: %s",
+        	    clientInfo2.getUserId(), clientInfo2.getUserType()));
+    	else {
+    		logger.info("+++ execute(): ClientInfo from ThreadLocal is NULL");
     	}
     	
         long timeStart = System.currentTimeMillis();
