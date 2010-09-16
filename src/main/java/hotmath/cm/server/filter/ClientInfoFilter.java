@@ -41,10 +41,30 @@ public class ClientInfoFilter implements Filter {
         	ClientInfoHolder.set(clientInfo);
         }
 
-        filterChain.doFilter(request, response);
+        try {
+            filterChain.doFilter(request, response);
+        }
+        catch (IOException ioe) {
+        	logException(ioe);
+        	throw ioe;
+        }
+        catch (ServletException se) {
+        	logException(se);
+        	throw se;
+        }
         
-    }
+     }
 
     public void destroy() {
+    }
+    
+    private void logException(Exception e) {
+    	ClientInfo clientInfo = ClientInfoHolder.get();
+    	if (clientInfo != null) {
+    	    String message = String.format("*** %s: userId: %d, userType: %s ***",
+    	    	e.getClass().getName(), clientInfo.getUserId(), clientInfo.getUserType());
+    	    logger.error(message, e);
+    	}
+
     }
 }
