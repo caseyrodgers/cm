@@ -2,7 +2,6 @@ package hotmath.gwt.shared.server.service.command;
 
 import hotmath.assessment.AssessmentPrescription;
 import hotmath.assessment.AssessmentPrescriptionManager;
-import hotmath.cm.util.UserTypeHolder;
 import hotmath.gwt.cm_admin.server.model.CmStudentDao;
 import hotmath.gwt.cm_rpc.client.rpc.Action;
 import hotmath.gwt.cm_rpc.client.rpc.CmRpcException;
@@ -45,8 +44,6 @@ public class CreateTestRunCommand implements ActionHandler<CreateTestRunAction, 
     public CreateTestRunResponse execute(Connection conn, CreateTestRunAction action) throws Exception {
         PreparedStatement pstat = null;
         
-        UserTypeHolder.set(UserTypeHolder.UserType.STUDENT);
-
         new CmStudentDao().verifyActiveProgram(conn, action.getTestId());
 
         try {

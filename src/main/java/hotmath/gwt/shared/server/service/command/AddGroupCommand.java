@@ -1,6 +1,5 @@
 package hotmath.gwt.shared.server.service.command;
 
-import hotmath.cm.util.UserTypeHolder;
 import hotmath.gwt.cm_admin.server.model.CmAdminDao;
 import hotmath.gwt.cm_rpc.client.rpc.Action;
 import hotmath.gwt.cm_rpc.client.rpc.Response;
@@ -21,7 +20,6 @@ public class AddGroupCommand implements ActionHandler<AddGroupAction, GroupInfoM
     @Override
     public GroupInfoModel execute(Connection conn, AddGroupAction action) throws Exception {
         CmAdminDao cma = new CmAdminDao();
-        UserTypeHolder.set(UserTypeHolder.UserType.ADMIN);
         return cma.addGroup(conn, action.getAdminId(), action.getGroup());
     }
 
