@@ -43,8 +43,15 @@ public class CreateTestRunCommand implements ActionHandler<CreateTestRunAction, 
     @Override
     public CreateTestRunResponse execute(Connection conn, CreateTestRunAction action) throws Exception {
         PreparedStatement pstat = null;
+        ResultSet rs = null;
+        long startTime;
         
+        startTime = System.currentTimeMillis();
         new CmStudentDao().verifyActiveProgram(conn, action.getTestId());
+        if (logger.isDebugEnabled()) {
+        	logger.debug(String.format("+++ execute(): verifyActiveProgram(): took: %d msec",
+        		System.currentTimeMillis() - startTime));
+        }
 
         try {
             // get list of all correct answers
@@ -54,14 +61,19 @@ public class CreateTestRunCommand implements ActionHandler<CreateTestRunAction, 
             int answeredCorrect = 0;
             int answeredIncorrect = 0;
 
-            String sql = "select cs.pid, cs.is_correct, t.total_segments from v_HA_TEST_CURRENT_STATUS cs, HA_TEST t where cs.test_id = ? and t.test_id = cs.test_id";
-
+            startTime = System.currentTimeMillis();
             HaTest test = HaTestDao.loadTest(conn, action.getTestId());
+            if (logger.isDebugEnabled()) {
+            	logger.debug(String.format("+++ execute(): loadTest(): took: %d msec",
+            		System.currentTimeMillis() - startTime));
+            }
             
+            startTime = System.currentTimeMillis();
+            String sql = "select cs.pid, cs.is_correct, t.total_segments from v_HA_TEST_CURRENT_STATUS cs, HA_TEST t where cs.test_id = ? and t.test_id = cs.test_id";
             pstat = conn.prepareStatement(sql);
 
             pstat.setInt(1, action.getTestId());
-            ResultSet rs = pstat.executeQuery();
+            rs = pstat.executeQuery();
             while (rs.next()) {
                 String pid = rs.getString("pid");
                 Integer corr = rs.getInt("is_correct");
@@ -82,8 +94,17 @@ public class CreateTestRunCommand implements ActionHandler<CreateTestRunAction, 
                     incorrectPids.add(pid);
                 }
             }
+            if (logger.isDebugEnabled()) {
+            	logger.debug(String.format("+++ execute(): getting current test results took: %d msec",
+            		System.currentTimeMillis() - startTime));
+            }
 
+            startTime = System.currentTimeMillis();
             HaTestRun run = HaTestDao.createTestRun(conn, test.getUser().getUid(), test.getTestId(), answeredCorrect, answeredIncorrect, notAnswered);
+            if (logger.isDebugEnabled()) {
+            	logger.debug(String.format("+++ execute(): createTestRun(): took: %d msec",
+            		System.currentTimeMillis() - startTime));
+            }
             
             /** 
              * if user DID NOT pass this quiz, 
@@ -91,10 +112,20 @@ public class CreateTestRunCommand implements ActionHandler<CreateTestRunAction, 
              * a new quiz on next quiz creation.
              */
             if(!run.isPassing()) {
+                startTime = System.currentTimeMillis();
                 new CmStudentDao().moveToNextQuizSegmentSlot(conn,test.getUser().getUid(), test.getTestDef().getNumAlternateTests());
+                if (logger.isDebugEnabled()) {
+                	logger.debug(String.format("+++ execute(): moveToNextQuizSegmentSlot(): took: %d msec",
+                		System.currentTimeMillis() - startTime));
+                }
             }
 
+            startTime = System.currentTimeMillis();
             AssessmentPrescription pres = AssessmentPrescriptionManager.getInstance().getPrescription(conn, run.getRunId());
+            if (logger.isDebugEnabled()) {
+            	logger.debug(String.format("+++ execute(): getPrescription(): took: %d msec",
+            		System.currentTimeMillis() - startTime));
+            }
 
             CreateTestRunResponse testRunInfo = new CreateTestRunResponse();
             
@@ -140,7 +171,7 @@ public class CreateTestRunCommand implements ActionHandler<CreateTestRunAction, 
         	logger.error(String.format("*** Error executing Action: %s", action.toString()), e);
             throw new CmRpcException("Error creating new test run: " + e.getMessage());
         } finally {
-            SqlUtilities.releaseResources(null, pstat,null);
+            SqlUtilities.releaseResources(rs, pstat,null);
         }
     }
     
