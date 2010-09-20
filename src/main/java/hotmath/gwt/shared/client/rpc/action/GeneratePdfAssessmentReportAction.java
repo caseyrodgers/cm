@@ -1,28 +1,23 @@
 package hotmath.gwt.shared.client.rpc.action;
 
-import hotmath.gwt.cm_rpc.client.ClientInfo.UserType;
 import hotmath.gwt.cm_rpc.client.rpc.Action;
-import hotmath.gwt.cm_rpc.client.rpc.ActionBase;
 import hotmath.gwt.shared.client.rpc.CmWebResource;
 import hotmath.gwt.shared.client.rpc.action.GetStudentGridPageAction.FilterType;
 
 import java.util.Map;
 
-public class GeneratePdfAssessmentReportAction extends ActionBase implements Action<CmWebResource>{
+public class GeneratePdfAssessmentReportAction implements Action<CmWebResource>{
 
     Integer adminId;
     GetStudentGridPageAction pageAction;
 	Map<FilterType,String> filterMap;
     
 	public GeneratePdfAssessmentReportAction() {
-		getClientInfo().setUserType(UserType.ADMIN);
 	}
     
     public GeneratePdfAssessmentReportAction(Integer adminId, GetStudentGridPageAction pageAction) {
         this.pageAction = pageAction;
         this.adminId = adminId;
-		getClientInfo().setUserId((adminId!=null)?adminId:0);
-		getClientInfo().setUserType(UserType.ADMIN);
     }
 
     public Integer getAdminId() {

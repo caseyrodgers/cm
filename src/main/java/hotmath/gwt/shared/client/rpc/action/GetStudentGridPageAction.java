@@ -4,14 +4,13 @@ import hotmath.gwt.cm_rpc.client.ClientInfo;
 import hotmath.gwt.cm_rpc.client.rpc.Action;
 import hotmath.gwt.cm_tools.client.model.StudentModelExt;
 import hotmath.gwt.shared.client.model.CmStudentPagingLoadResult;
-import hotmath.gwt.cm_rpc.client.rpc.ActionBase;
 
 import com.extjs.gxt.ui.client.data.PagingLoadConfig;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class GetStudentGridPageAction extends ActionBase implements Action<CmStudentPagingLoadResult<StudentModelExt>> {
+public class GetStudentGridPageAction implements Action<CmStudentPagingLoadResult<StudentModelExt>> {
 
 	private static final long serialVersionUID = -3117922126418717986L;
 
@@ -28,9 +27,6 @@ public class GetStudentGridPageAction extends ActionBase implements Action<CmStu
 	public GetStudentGridPageAction(Integer adminId, PagingLoadConfig loadConfig) {
 		this.adminId = adminId;
 		this.loadConfig = loadConfig;
-
-        getClientInfo().setUserId(adminId);
-        getClientInfo().setUserType(ClientInfo.UserType.ADMIN);
 	}
 
 	public PagingLoadConfig getLoadConfig() {

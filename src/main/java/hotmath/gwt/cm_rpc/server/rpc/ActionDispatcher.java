@@ -7,7 +7,6 @@ import hotmath.cm.util.ClientInfoHolder;
 import hotmath.gwt.cm_rpc.client.ClientInfo;
 import hotmath.gwt.cm_rpc.client.ClientInfo.UserType;
 import hotmath.gwt.cm_rpc.client.rpc.Action;
-import hotmath.gwt.cm_rpc.client.rpc.ActionBase;
 import hotmath.gwt.cm_rpc.client.rpc.CmRpcException;
 import hotmath.gwt.cm_rpc.client.rpc.Response;
 import hotmath.gwt.cm_rpc.server.rpc.ActionDispatcherListener.ActionExecutionType;
@@ -152,21 +151,11 @@ public class ActionDispatcher {
     @SuppressWarnings({ "unchecked", "rawtypes" })
     public <T extends Response> T execute(Action<T> action) throws CmRpcException {
 
-    	ClientInfo clientInfo;
-    	if (action instanceof ActionBase) {
-    		clientInfo = ((ActionBase)action).getClientInfo();
-    	}
-    	else {
+    	ClientInfo clientInfo = ClientInfoHolder.get();
+    	if (clientInfo == null) {
     		clientInfo = new ClientInfo();
     		clientInfo.setUserType(UserType.UNKNOWN);
-    	}
-    	
-    	ClientInfo clientInfo2 = ClientInfoHolder.get();
-    	if (clientInfo2 != null)
-        	logger.info(String.format("+++ execute(): ClientInfo from ThreadLocal; userId: %d, userType: %s",
-        	    clientInfo2.getUserId(), clientInfo2.getUserType()));
-    	else {
-    		logger.info("+++ execute(): ClientInfo from ThreadLocal is NULL");
+    		logger.warn("+++ execute(): ClientInfo from ThreadLocal is NULL");
     	}
     	
         long timeStart = System.currentTimeMillis();

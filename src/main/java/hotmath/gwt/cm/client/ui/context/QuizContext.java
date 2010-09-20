@@ -5,7 +5,6 @@ import hotmath.gwt.cm.client.history.CmHistoryManager;
 import hotmath.gwt.cm.client.history.CmLocation;
 import hotmath.gwt.cm.client.history.CmLocation.LocationType;
 import hotmath.gwt.cm.client.ui.EndOfProgramWindow;
-import hotmath.gwt.cm_rpc.client.ClientInfo.UserType;
 import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_rpc.client.rpc.CreateTestRunResponse;
 import hotmath.gwt.cm_rpc.client.rpc.NextAction.NextActionName;
@@ -18,7 +17,6 @@ import hotmath.gwt.cm_tools.client.ui.NextPanelInfoImplDefault;
 import hotmath.gwt.cm_tools.client.ui.QuizPage;
 import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
 import hotmath.gwt.cm_tools.client.ui.context.CmContext;
-import hotmath.gwt.cm_tools.client.util.ProcessTracker;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.data.CmAsyncRequestImplDefault;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
@@ -317,8 +315,6 @@ public class QuizContext implements CmContext {
                 InfoPopupBox.display("Quiz Check", "Checking quiz ...");
 
                 CreateTestRunAction action = new CreateTestRunAction(UserInfo.getInstance().getTestId());
-                action.getClientInfo().setUserId(UserInfo.getInstance().getUid());
-                action.getClientInfo().setUserType(UserType.STUDENT);
 
                 setAction(action);
                 CmShared.getCmService().execute(action,this);

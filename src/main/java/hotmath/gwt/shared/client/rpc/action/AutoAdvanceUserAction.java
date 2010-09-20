@@ -1,11 +1,9 @@
 package hotmath.gwt.shared.client.rpc.action;
 
-import hotmath.gwt.cm_rpc.client.ClientInfo.UserType;
 import hotmath.gwt.cm_rpc.client.rpc.Action;
-import hotmath.gwt.cm_rpc.client.rpc.ActionBase;
 import hotmath.gwt.cm_tools.client.model.AutoUserAdvanced;
 
-public class AutoAdvanceUserAction extends ActionBase implements Action<AutoUserAdvanced>{
+public class AutoAdvanceUserAction implements Action<AutoUserAdvanced>{
 
     Integer userId;
     
@@ -13,9 +11,6 @@ public class AutoAdvanceUserAction extends ActionBase implements Action<AutoUser
     
     public AutoAdvanceUserAction(Integer userId){
         this.userId = userId;
-        
-        getClientInfo().setUserId(userId);
-        getClientInfo().setUserType(UserType.STUDENT);
     }
 
     public Integer getUserId() {

@@ -3,13 +3,11 @@ package hotmath.gwt.shared.client.rpc.action;
 import java.util.List;
 import java.util.Map;
 
-import hotmath.gwt.cm_rpc.client.ClientInfo.UserType;
 import hotmath.gwt.cm_rpc.client.rpc.Action;
-import hotmath.gwt.cm_rpc.client.rpc.ActionBase;
 import hotmath.gwt.shared.client.rpc.CmWebResource;
 import hotmath.gwt.shared.client.rpc.action.GetStudentGridPageAction.FilterType;
 
-public class GeneratePdfAction extends ActionBase implements Action<CmWebResource>{
+public class GeneratePdfAction implements Action<CmWebResource>{
 
 	@Override
     public String toString() {
@@ -24,32 +22,22 @@ public class GeneratePdfAction extends ActionBase implements Action<CmWebResourc
     Map<FilterType,String> filterMap;
     String title;
     
-    
     GetStudentGridPageAction pageAction;
 
-
     public GeneratePdfAction() {
-    	getClientInfo().setUserType(UserType.ADMIN);
     }
     
     public GeneratePdfAction(PdfType pdfType, Integer adminId, List<Integer> studentUids) {
         this.pdfType = pdfType;
         this.adminId = adminId;
         this.studentUids = studentUids;
-
-        getClientInfo().setUserId((adminId != null)?adminId:0);
-    	getClientInfo().setUserType(UserType.ADMIN);
     }
     
     public GeneratePdfAction(PdfType pdfType, Integer adminId, GetStudentGridPageAction pageAction) {
         this.pdfType = pdfType;
         this.adminId = adminId;
         this.pageAction = pageAction;
-
-        getClientInfo().setUserId((adminId != null)?adminId:0);
-    	getClientInfo().setUserType(UserType.ADMIN);
     }
-
 
     public PdfType getPdfType() {
         return pdfType;
