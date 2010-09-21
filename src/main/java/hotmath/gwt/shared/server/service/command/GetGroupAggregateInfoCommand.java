@@ -31,11 +31,14 @@ public class GetGroupAggregateInfoCommand implements ActionHandler<GetGroupAggre
             ps.setInt(4, action.getAdminId());
             ps.setInt(5, action.getAdminId());
             ps.setInt(6, action.getAdminId());
+            ps.setInt(7, action.getAdminId());
+            ps.setInt(8, action.getAdminId());
+            ps.setInt(9, action.getAdminId());
             
             ResultSet rs = ps.executeQuery();
             while(rs.next()) {
-                groupInfo.add(new GroupInfoModel(rs.getInt("admin_id"),rs.getInt("id"), rs.getString("name"),
-                	rs.getInt("student_count"), true,(rs.getInt("is_self_reg") > 0)));
+                groupInfo.add(new GroupInfoModel(rs.getInt("admin_id"), rs.getInt("id"), rs.getString("name"),
+                	rs.getInt("student_count"), true, (rs.getInt("is_self_reg") > 0)));
             }
             
             return groupInfo;

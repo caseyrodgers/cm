@@ -1280,6 +1280,23 @@ union
 select    g.admin_id,
           g.id,
           g.name,
+          1 as is_self_reg,
+          Count(u.uid) as student_count
+from      CM_GROUP g
+left join HA_USER u
+  on      u.group_id = g.id
+ and      u.admin_id = ?
+ and      u.is_active = 1
+ and      u.is_auto_create_template = 1
+where     g.admin_id = 0
+  and     g.id in (select distinct group_id from HA_USER where admin_id = ? and is_auto_create_template = 1)
+group by  g.id
+
+union 
+
+select    g.admin_id,
+          g.id,
+          g.name,
           0 as is_self_reg,
           Count(u.uid) as student_count
 from      CM_GROUP g
@@ -1289,6 +1306,7 @@ left join HA_USER u
  and      u.is_active = 1
  and      u.is_auto_create_template = 0
 where     g.admin_id = 0
+  and     g.id not in (select distinct group_id from HA_USER where admin_id = ? and is_auto_create_template = 1)
 group by  g.id
 
 union
