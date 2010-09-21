@@ -80,6 +80,11 @@ public class LogMonitor {
      * .shared.client.rpc.action.GetAdminTrendingDataDetailAction@ff0d4b
      * complete: elapsed time: 0
      * 
+     * end .. with thread local info:
+     * 2010-09-20 00:48:18,124 INFO  http-8081-3 [hotmath.gwt.cm_rpc.server.rpc.ActionDispatcher] - 
+     *              RPC Action (userId:6,userType:ADMIN) GetAccountInfoForAdminUidAction toString: 
+     *              hotmath.gwt.shared.client.rpc.action.GetAccountInfoForAdminUidAction@12022b7 complete; elapsed time: 1018 msec
+     * 
      * @param line
      */
     private void processActionLog(String line) {
@@ -108,10 +113,10 @@ public class LogMonitor {
             writeDatabaseRecord("start", timeStamp, actionName, args,-1);
         } else {
             /**
-             * is end of action
+             * is end of action?
              * 
              */
-            String end = "^(.*),.*RPC Action\\ (.*)\\.*toString.*elapsed time\\:\\ (.*) msec$";
+            String end = "^(.*),.*RPC Action\\ \\(userId:(.*),userType:(.*)\\)\\ (.*)\\.*toString.*elapsed time\\:\\ (.*) msec$";
             Pattern endPattern = Pattern.compile(end);
             matcher = endPattern.matcher(line);
             if (matcher.find()) {
@@ -119,8 +124,10 @@ public class LogMonitor {
                  * is start of action
                  * 
                  */
-                String actionName = matcher.group(2).trim();
-                String mills = matcher.group(3).trim();
+            	String userId = matcher.group(2).trim();
+            	String userType = matcher.group(3).trim();
+                String actionName = matcher.group(4).trim();
+                String mills = matcher.group(5).trim();
                 int elapseTime = Integer.parseInt(mills);
                 String timeStamp = matcher.group(1).trim();
                 
