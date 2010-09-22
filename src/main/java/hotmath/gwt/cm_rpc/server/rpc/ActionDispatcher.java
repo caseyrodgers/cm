@@ -161,7 +161,10 @@ public class ActionDispatcher {
         long timeStart = System.currentTimeMillis();
         String c[] = action.getClass().getName().split("\\.");
         String clazzName = c[c.length - 1];
-        logger.info("RPC Action executing: " + clazzName + "  toString: " + action.toString());
+
+        logger.info(String.format("RPC Action (userId:%d,userType:%s) executing: %s toString: %s",
+        	clientInfo.getUserId(), clientInfo.getUserType(), clazzName,  action.toString()));
+
         Connection conn = null;
         ActionTypeMap.ActionType actionType = null;
         try {
