@@ -5,6 +5,8 @@ import hotmath.flusher.HotmathFlusher;
 import hotmath.util.HMConnectionPool;
 import hotmath.util.sql.SqlUtilities;
 
+import sb.util.*;
+
 import java.io.File;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -110,7 +112,7 @@ public class LogMonitor {
                 args = argMatcher.group(1);
             }
             
-            writeDatabaseRecord("start", timeStamp, actionName, args,-1);
+            writeDatabaseRecord("start", timeStamp, actionName, args,-1,-1,null);
         } else {
             /**
              * is end of action?
@@ -124,25 +126,25 @@ public class LogMonitor {
                  * is start of action
                  * 
                  */
-            	String userId = matcher.group(2).trim();
+            	int userId = SbUtilities.getInt(matcher.group(2).trim());
             	String userType = matcher.group(3).trim();
                 String actionName = matcher.group(4).trim();
                 String mills = matcher.group(5).trim();
                 int elapseTime = Integer.parseInt(mills);
                 String timeStamp = matcher.group(1).trim();
                 
-                writeDatabaseRecord("end", timeStamp, actionName, null, elapseTime);
+                writeDatabaseRecord("end", timeStamp, actionName, null, elapseTime,userId,userType);
             }
         }
     }
     int recordsWritten=0;
-    private void writeDatabaseRecord(String type, String timeStamp, String actionName, String args, int elapseTime)  {
+    private void writeDatabaseRecord(String type, String timeStamp, String actionName, String args, int elapseTime,int userId, String userType)  {
         Connection conn=null;
         PreparedStatement ps=null;
-        System.out.println("cm_log record=" + (++recordsWritten) + "," + actionName);
+        System.out.println(String.format("cm_log record=%d %s,%d,%s", (++recordsWritten),userType,userId, actionName));
         
         try {
-            String sql = "insert into HA_ACTION_LOG(type, time_stamp, action_name, action_args, elapse_time)values(?,?,?,?,?)";
+            String sql = "insert into HA_ACTION_LOG(type, time_stamp, action_name, action_args, elapse_time,user_id, user_type)values(?,?,?,?,?,?,?)";
             conn = HMConnectionPool.getConnection();
             ps = conn.prepareStatement(sql);
             
@@ -151,6 +153,8 @@ public class LogMonitor {
             ps.setString(3, actionName);
             ps.setString(4, args);
             ps.setInt(5, elapseTime);
+            ps.setInt(6,userId);
+            ps.setString(7,userType);
             
             ps.executeUpdate();
         }
