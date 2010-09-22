@@ -119,8 +119,12 @@ public class CmInmhStandardResources extends ArrayList<PrescriptionSessionDataRe
         si = new SubMenuItem("Exponents");
         si.getItemData().add(new InmhItemData(t,"/learning_activities/interactivities/flashcard_exponents_level1.swf", "Exponents: Level 1"));
         si.getItemData().add(new InmhItemData(t,"/learning_activities/interactivities/flashcard_exponents_level2.swf", "Exponents: Level 2"));
-        subMenu.add(si); 
-
+        subMenu.add(si);
+        
+        si = new SubMenuItem("Word Problems");
+        si.getItemData().add(new InmhItemData(t,"/learning_activities/interactivities/flashcard_wordproblems_level1.swf", "Word Problems: Level 1"));
+        subMenu.add(si);
+        
         return subMenu;
 	}
     
