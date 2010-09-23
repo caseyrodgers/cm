@@ -20,10 +20,15 @@ public class ProgramSubject implements CmTreeNode,IsSerializable{
     List<ProgramChapter> chapters = new ArrayList<ProgramChapter>();
     
     public ProgramSubject() {
+        
+        /** TODO: look up from table 
+         * 
+         */
         labelMap.put("Pre-Alg", "Pre-Algebra");
         labelMap.put("Alg 1", "Algebra 1");
         labelMap.put("Alg 2", "Algebra 2");
         labelMap.put("Geom", "Geometry");
+        labelMap.put("Ess", "Essentials");
     }
     
     public ProgramSubject(String name, List<String> gradeLevels) {

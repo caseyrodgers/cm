@@ -171,6 +171,7 @@ public class PrescriptionReport {
             altTests = 1;
         
         for(int altTest=0;altTest < altTests;altTest++) {
+            logMessage(-1,"Testing alternate test: " + testDef + " " + altTest);
             StudentActiveInfo activeInfo = sda.loadActiveInfo(conn, userProgram.getUserId());
             activeInfo.setActiveSegmentSlot(altTest);
             sda.setActiveInfo(conn, userProgram.getUserId(), activeInfo);
