@@ -160,6 +160,12 @@ public abstract class RetryAction<T> implements AsyncCallback<T> {
                 });
             }
             else if(message.indexOf("UserProgramIsNotActiveException") > -1) {
+                /** if current program is Auto-Enroll, then allow forced changes
+                 *  to programs without user message
+                 */
+                String tn = UserInfo.getInstance().getTestName();
+                System.out.println(tn);
+                
                 /** Exception is thrown if Program has been changed */
                 new NotActiveProgramWindow();                
             }

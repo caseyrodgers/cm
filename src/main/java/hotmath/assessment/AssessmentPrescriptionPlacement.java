@@ -40,14 +40,14 @@ public class AssessmentPrescriptionPlacement extends AssessmentPrescription {
         NextAction nextAction = new NextAction();
         // some trigger, in this case > 1 wrong answers.
         if ((total - correct) > 1) {
-            // some action
-
-            // Sign user up for the current subject program.
-            // map to real Program name
-            // @TODO: we need single mapping api for test names.
+            /** Sign user up for the current subject program.
+                map to real Program name.
+            */
             if (thisTest.indexOf("pre-algebra") > -1) {
-                // 0-2 correct on first quiz --> Essentials Prof
                 if(correct < 3) {
+                    /** 
+                     * 0-2 correct on first quiz --> Essentials Prof
+                     */
                     program = CmProgram.ESSENTIALS;
                 }
                 else {
@@ -61,8 +61,11 @@ public class AssessmentPrescriptionPlacement extends AssessmentPrescription {
                 program = CmProgram.ALG2_PROF;
             }
         } else if (thisTest.indexOf("algebra 2") > -1) {
-            // this means user passed the last test
-            // assign to casshe as default
+            /**
+             * this means user passed the last test
+             * assign to casshe as default
+             * 
+             */
             program = CmProgram.CAHSEEHM;
         }
 

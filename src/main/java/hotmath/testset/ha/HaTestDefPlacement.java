@@ -3,6 +3,12 @@ package hotmath.testset.ha;
 import java.sql.Connection;
 import java.util.List;
 
+/** Placement HaTestDef that will automatically 
+ *  assign a user based on current programs score.
+ *  
+ * @author casey
+ *
+ */
 public class HaTestDefPlacement extends HaTestDef {
 	String TEXTCODE = "placement";
 	String PLACEMENT_CHAPTERS[] = {"prealg", "alg1", "geo", "alg2"};

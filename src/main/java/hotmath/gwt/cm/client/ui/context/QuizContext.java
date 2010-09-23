@@ -40,6 +40,7 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.Timer;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Widget;
@@ -128,8 +129,11 @@ public class QuizContext implements CmContext {
         close.setText("OK");
         close.addSelectionListener(new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent ce) {
-                CatchupMath.getThisInstance().showQuizPanel();
-                window.close();
+                
+                /** force a page refresh to load newly changed program.
+                 *  Otherwise, things are out of sync with server.
+                 */
+                CatchupMath.reloadUser();
             }
         });
 

@@ -25,7 +25,7 @@ public class LoadTester {
         try {
             conn = HMConnectionPool.getConnection();
 
-            int _userId = CmTestUtils.setupDemoAccount();
+            int _userId = CmTestUtils.setupDemoAccount(CmProgram.PREALG_PROF);
 
             CmStudentDao _dao = new CmStudentDao();
             StudentModelI _sm = _dao.getStudentModel(_userId);

@@ -148,6 +148,15 @@ public class CatchupMath implements EntryPoint {
         });
     }
     
+    /** Reload the current user's page allowing any changed
+     * program configuration to take effect.
+     * 
+     * 
+     */
+    static public void reloadUser() {
+        String url="/loginService?uid=" + UserInfo.getInstance().getUid();
+        Window.Location.assign(url);        
+    }
     
     
 

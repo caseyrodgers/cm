@@ -12,18 +12,18 @@ import java.sql.Connection;
 public class CmTestUtils {
     
     
-    /** Create demo user and assign to Pre-Alg Prof
+    /** Create demo user and assign to name program
      * 
      * @return
      * @throws Exception
      */
-    static public int setupDemoAccount() throws Exception {
+    static public int setupDemoAccount(CmProgram program) throws Exception {
         Connection conn = null;
         try {
             conn = HMConnectionPool.getConnection();
             HaBasicUser user = HaUserFactory.createDemoUser();
 
-            new CmStudentDao().assignProgramToStudent(conn, user.getUserKey(),CmProgram.PREALG_PROF,null);
+            new CmStudentDao().assignProgramToStudent(conn, user.getUserKey(),program,null);
             
             return user.getUserKey();
             

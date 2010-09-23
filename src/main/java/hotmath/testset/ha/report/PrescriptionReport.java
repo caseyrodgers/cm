@@ -77,7 +77,7 @@ public class PrescriptionReport {
             _fileOut = new FileWriter(logFile);
         }
 
-        _uid = CmTestUtils.setupDemoAccount();
+        _uid = CmTestUtils.setupDemoAccount(CmProgram.PREALG_PROF);
 
 
         try {

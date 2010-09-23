@@ -8,6 +8,7 @@ import hotmath.gwt.shared.client.rpc.action.SaveWhiteboardDataAction;
 import hotmath.gwt.shared.client.rpc.action.SaveWhiteboardDataAction.CommandType;
 import hotmath.gwt.shared.server.service.CmTestUtils;
 import hotmath.gwt.shared.server.service.command.SaveWhiteboardDataCommand;
+import hotmath.testset.ha.CmProgram;
 import hotmath.testset.ha.HaTest;
 import hotmath.testset.ha.HaTestDao;
 import hotmath.testset.ha.HaTestDef;
@@ -36,7 +37,7 @@ public class CmDbTestCase extends DbTestCase {
      */
     public int setupDemoAccount() throws Exception {
         
-        int uid = CmTestUtils.setupDemoAccount();
+        int uid = CmTestUtils.setupDemoAccount(CmProgram.PREALG_PROF);
         
         _user = HaUser.lookUser(conn, uid, null);
         return uid;
