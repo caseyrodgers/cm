@@ -6,7 +6,10 @@ import hotmath.assessment.AssessmentPrescription.SessionData;
 import hotmath.assessment.AssessmentPrescriptionManager;
 import hotmath.assessment.AssessmentPrescriptionSession;
 import hotmath.cm.server.model.CmUserProgramDao;
+import hotmath.cm.util.ActionInfo;
 import hotmath.gwt.cm_admin.server.model.CmStudentDao;
+import hotmath.gwt.cm_tools.client.model.StudentActiveInfo;
+import hotmath.gwt.cm_tools.client.model.StudentModelI;
 import hotmath.gwt.shared.server.service.CmTestUtils;
 import hotmath.inmh.INeedMoreHelpItem;
 import hotmath.inmh.INeedMoreHelpResourceType;
@@ -160,64 +163,77 @@ public class PrescriptionReport {
 
         HaTestDef testDef = userProgram.getTestDef();
 
-        /**
-         * for each quiz in this program
-         */
-        for (int segment = 1; segment - 1 < testDef.getTotalSegmentCount(); segment++) {
+        
+        CmStudentDao sda = new CmStudentDao();
+        StudentModelI sm = sda.getStudentModel(userProgram.getUserId());
+        int altTests = testDef.getNumAlternateTests();
+        if(altTests == 0)
+            altTests = 1;
+        
+        for(int altTest=0;altTest < altTests;altTest++) {
+            StudentActiveInfo activeInfo = sda.loadActiveInfo(conn, userProgram.getUserId());
+            activeInfo.setActiveSegmentSlot(altTest);
+            sda.setActiveInfo(conn, userProgram.getUserId(), activeInfo);
             
-            logMessage(-1, "Testing segment: " + segment);
-
-            HaTest test = null;
-            try {
-                test = HaTestDao.createTest(_conn, _uid, testDef, segment);
-            } catch (Exception e) {
-                logMessage(-1, "Error creating test: " + userProgram, e);
-                continue;
-            }
-
             /**
-             * for every distinct question in quiz
-             * 
+             * for each quiz in this program
              */
-            List<String> pids = test.getPids();
-
-            for (String pid : pids) {
-
-                logMessage(-1, "Testing pid: " + pid);
-                /**
-                 * create a prescription marking this question as incorrect in
-                 * order to create a related prescription.
-                 * 
-                 */
-
-                /**
-                 * mark all others as correct
-                 * 
-                 */
-                for (String p : pids) {
-                    HaTestDao.saveTestQuestionChange(_conn, test.getTestId(), p, 0, true);
-                }
-
-                /**
-                 * mark the one pid as Incorrect
-                 * 
-                 */
-                HaTestDao.saveTestQuestionChange(_conn, test.getTestId(), pid, 0, false);
-
-                /**
-                 * first create the test run based on ONE pid
-                 * 
-                 */
-                HaTestRun testRun = HaTestDao.createTestRun(_conn, _uid, test.getTestId(), 0, 1, 0);
-
-                /**
-                 * then the prescription by missing the ONE pid
-                 * 
-                 */
-                AssessmentPrescription prescription = AssessmentPrescriptionManager.getInstance().getPrescription(_conn,
-                        testRun.getRunId());
+            for (int segment = 1; segment - 1 < testDef.getTotalSegmentCount(); segment++) {
                 
-                checkPrescription(_conn,prescription,pid);
+                logMessage(-1, "Testing segment: " + segment);
+    
+                HaTest test = null;
+                try {
+                    test = HaTestDao.createTest(_conn, _uid, testDef, segment);
+                } catch (Exception e) {
+                    logMessage(-1, "Error creating test: " + userProgram, e);
+                    continue;
+                }
+    
+                /**
+                 * for every distinct question in quiz
+                 * 
+                 */
+                List<String> pids = test.getPids();
+    
+                for (String pid : pids) {
+    
+                    logMessage(-1, "Testing pid: " + pid);
+                    /**
+                     * create a prescription marking this question as incorrect in
+                     * order to create a related prescription.
+                     * 
+                     */
+    
+                    /**
+                     * mark all others as correct
+                     * 
+                     */
+                    for (String p : pids) {
+                        HaTestDao.saveTestQuestionChange(_conn, test.getTestId(), p, 0, true);
+                    }
+    
+                    /**
+                     * mark the one pid as Incorrect
+                     * 
+                     */
+                    HaTestDao.saveTestQuestionChange(_conn, test.getTestId(), pid, 0, false);
+    
+                    /**
+                     * first create the test run based on ONE pid
+                     * 
+                     */
+                    HaTestRun testRun = HaTestDao.createTestRun(_conn, _uid, test.getTestId(), 0, 1, 0);
+    
+                    /**
+                     * then the prescription by missing the ONE pid
+                     * 
+                     */
+                    AssessmentPrescription prescription = AssessmentPrescriptionManager.getInstance().getPrescription(_conn,
+                            testRun.getRunId());
+                    
+                    checkPrescription(_conn,prescription,pid);
+                }
             }
         }
     }
