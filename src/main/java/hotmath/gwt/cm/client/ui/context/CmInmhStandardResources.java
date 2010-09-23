@@ -121,8 +121,8 @@ public class CmInmhStandardResources extends ArrayList<PrescriptionSessionDataRe
         si.getItemData().add(new InmhItemData(t,"/learning_activities/interactivities/flashcard_exponents_level2.swf", "Exponents: Level 2"));
         subMenu.add(si);
         
-        si = new SubMenuItem("Word Problems");
-        si.getItemData().add(new InmhItemData(t,"/learning_activities/interactivities/flashcard_wordproblems_level1.swf", "Word Problems: Level 1"));
+        si = new SubMenuItem(null);
+        si.getItemData().add(new InmhItemData(t,"/learning_activities/interactivities/flashcard_wordproblems_level1.swf", "Word Problems"));
         subMenu.add(si);
         
         return subMenu;
