@@ -16,7 +16,7 @@ public class WebinarWindow extends CmWindow {
     String videoPlayerId = "flowPlayer_" + System.currentTimeMillis();
     
     public WebinarWindow() {
-        String swf = "/resources/webinar/CM Webinar draft.swf";
+        String swf = "/resources/webinar/CM Webinar draft_controller.swf";
 
         setHeading("Catchup Math Webinar");
         setSize(800,498);
