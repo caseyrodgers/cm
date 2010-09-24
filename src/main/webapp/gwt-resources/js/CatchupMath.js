@@ -208,4 +208,3 @@ function flash_quizResult(result) {
                 alert('There was a problem processing Flash Input Field: ' + e);
         }
 }
-
