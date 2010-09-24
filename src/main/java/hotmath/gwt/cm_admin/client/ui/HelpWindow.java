@@ -32,14 +32,18 @@ public class HelpWindow extends CmWindow {
         Frame frame = new Frame("/gwt-resources/cm-admin-help.html");
         frame.setSize("100%", "450px");
         
-        Button closeBtn = new Button("Close");
-        closeBtn.addSelectionListener(new SelectionListener<ButtonEvent>() {
+        
+        
+        Button webinar = new Button("Catchup Math Webinar");
+        webinar.setToolTip("View a webinar explaining Catchup Math in detail.");
+        webinar.addSelectionListener(new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent ce) {
-                HelpWindow.this.close();
+                new WebinarWindow();
             }
         });
-        addButton(closeBtn);
-        
+        addButton(webinar);
+        addCloseButton();
+
         add(frame);
         
         setVisible(true);
