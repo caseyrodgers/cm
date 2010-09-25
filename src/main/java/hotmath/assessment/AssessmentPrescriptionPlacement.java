@@ -63,7 +63,7 @@ public class AssessmentPrescriptionPlacement extends AssessmentPrescription {
         } else if (thisTest.indexOf("algebra 2") > -1) {
             /**
              * this means user passed the last test
-             * assign to casshe as default
+             * assign to cahsee as default
              * 
              */
             program = CmProgram.CAHSEEHM;
