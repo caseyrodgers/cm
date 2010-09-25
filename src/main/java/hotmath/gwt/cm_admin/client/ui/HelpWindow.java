@@ -26,8 +26,7 @@ public class HelpWindow extends CmWindow {
         setModal(true);
         setResizable(false);
         setStyleName("help-window");
-        setHeading("Catchup Math Administration Help Window, version: " + CatchupMathVersionInfo.getBuildVersion() +
-        		   "   partner: " + (UserInfoBase.getInstance().getPartner()!=null?UserInfoBase.getInstance().getPartner():""));
+        setHeading("Catchup Math Administration Help Window");
         
         Frame frame = new Frame("/gwt-resources/cm-admin-help.html");
         frame.setSize("100%", "450px");
