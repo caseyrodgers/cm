@@ -18,7 +18,7 @@ public class WebinarWindow extends CmWindow {
     public WebinarWindow() {
         String swf = "/resources/webinar/CM Webinar draft_controller.swf";
 
-        setHeading("Catchup Math Webinar");
+        setHeading("Teaching with Catchup Math");
         setSize(800,498);
         setResizable(true);
         setModal(false);

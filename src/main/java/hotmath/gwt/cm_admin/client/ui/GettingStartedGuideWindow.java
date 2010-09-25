@@ -37,7 +37,7 @@ public class GettingStartedGuideWindow extends CmWindow {
         addButton(closeBtn);
 
         
-        Button webinar = new Button("Teaching with Catchup Math");
+        Button webinar = new Button("VIDEO: Teaching with Catchup Math");
         webinar.setStyleAttribute("margin","10px;");
         webinar.setToolTip("This supplement to our Getting Started Guide is for teachers and administrators.  It is divided into sections.");
         webinar.addSelectionListener(new SelectionListener<ButtonEvent>() {
