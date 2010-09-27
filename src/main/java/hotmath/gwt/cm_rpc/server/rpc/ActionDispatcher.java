@@ -3,6 +3,7 @@ package hotmath.gwt.cm_rpc.server.rpc;
 import hotmath.cm.util.ActionTypeMap;
 import hotmath.flusher.Flushable;
 import hotmath.flusher.HotmathFlusher;
+import hotmath.cm.server.listener.ContextListener;
 import hotmath.cm.util.ClientInfoHolder;
 import hotmath.gwt.cm_rpc.client.ClientInfo;
 import hotmath.gwt.cm_rpc.client.ClientInfo.UserType;
@@ -15,6 +16,7 @@ import hotmath.util.HMConnectionPool;
 import hotmath.util.sql.SqlUtilities;
 
 import java.sql.Connection;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -42,12 +44,16 @@ import org.apache.log4j.Logger;
 public class ActionDispatcher {
 
     static private ActionDispatcher __instance;
+    
+    static String startDate;
 
     static public ActionDispatcher getInstance() {
         if (__instance == null)
             __instance = new ActionDispatcher();
         return __instance;
     }
+    
+    private int counter;
 
     static {
         HotmathFlusher.getInstance().addFlushable(new Flushable() {
@@ -74,6 +80,8 @@ public class ActionDispatcher {
 
     private ActionDispatcher() {
         logger.info("Creating new ActionDispatcher");
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+        startDate = sdf.format(ContextListener.getStartDate());
     }
     
     /**
@@ -150,6 +158,8 @@ public class ActionDispatcher {
      */
     @SuppressWarnings({ "unchecked", "rawtypes" })
     public <T extends Response> T execute(Action<T> action) throws CmRpcException {
+    	
+    	String actionId = new StringBuilder().append(startDate).append(".").append(++counter).toString();
 
     	ClientInfo clientInfo = ClientInfoHolder.get();
     	if (clientInfo == null) {
@@ -162,8 +172,8 @@ public class ActionDispatcher {
         String c[] = action.getClass().getName().split("\\.");
         String clazzName = c[c.length - 1];
 
-        logger.info(String.format("RPC Action (userId:%d,userType:%s) executing: %s toString: %s",
-        	clientInfo.getUserId(), clientInfo.getUserType(), clazzName,  action.toString()));
+        logger.info(String.format("RPC Action (userId:%d,userType:%s) (ID:%s) executing: %s toString: %s",
+        	clientInfo.getUserId(), clientInfo.getUserType(), actionId, clazzName,  action.toString()));
 
         Connection conn = null;
         ActionTypeMap.ActionType actionType = null;
@@ -223,8 +233,8 @@ public class ActionDispatcher {
             long now = System.currentTimeMillis();
             long executeTimeMills = (now - timeStart);
 
-            logger.info(String.format("RPC Action (userId:%d,userType:%s) %s toString: %s complete; elapsed time: %d msec",
-            		clientInfo.getUserId(), clientInfo.getUserType(), clazzName, action.toString(), executeTimeMills));
+            logger.info(String.format("RPC Action (userId:%d,userType:%s) (ID:%s) %s toString: %s complete; elapsed time: %d msec",
+            		clientInfo.getUserId(), clientInfo.getUserType(), actionId, clazzName, action.toString(), executeTimeMills));
             
             incrementProcessingTime(actionType, executeTimeMills);
             
