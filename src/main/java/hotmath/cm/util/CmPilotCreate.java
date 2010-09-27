@@ -149,40 +149,38 @@ public class CmPilotCreate {
     }
 
     private void setupPilotGroups(final Connection conn, Integer aid) throws Exception {
+    	
+    	CmAdminDao dao = new CmAdminDao();
 
-        // - quizme - a selfreg group with show work required and auto-enroll
-        // prog
-        new CmAdminDao().createSelfRegistrationGroup(conn, aid, "quizme", CmProgram.AUTO_ENROLL, false, false);
+        // - quizme - a self-reg group for auto-enroll program
+        dao.createSelfRegistrationGroup(conn, aid, "quizme", CmProgram.AUTO_ENROLL, false, false);
 
-        // - prealgebra - a selfreg group with show work req and Prealgebra prof
-        // prog
-        new CmAdminDao().createSelfRegistrationGroup(conn, aid, "prealgebra", CmProgram.PREALG_PROF, false, false);
+        // - prealgebra - a self-reg group for prealgebra prof prog
+        dao.createSelfRegistrationGroup(conn, aid, "prealgebra", CmProgram.PREALG_PROF, false, false);
 
-        // - algebra1 - a selfreg group with show work req and algebra1 prof
-        // prog
-        new CmAdminDao().createSelfRegistrationGroup(conn, aid, "algebra1", CmProgram.ALG1_PROF, false, false);
+        // - algebra1 - a self-reg group for algebra1 prof program
+        dao.createSelfRegistrationGroup(conn, aid, "algebra1", CmProgram.ALG1_PROF, false, false);
 
-        // - geometry - a selfreg group with show work req and geometry prof
-        // prog
-        new CmAdminDao().createSelfRegistrationGroup(conn, aid, "geometry", CmProgram.GEOM_PROF, false, false);
+        // - geometry - a self-reg group for geometry prof program
+        dao.createSelfRegistrationGroup(conn, aid, "geometry", CmProgram.GEOM_PROF, false, false);
 
-        // - algebra2 - a selfreg group with show work req and algebra2 prof
-        // prog
-        new CmAdminDao().createSelfRegistrationGroup(conn, aid, "algebra2", CmProgram.ALG2_PROF, false, false);
+        // - algebra2 - a self-reg group for algebra2 prof program
+        dao.createSelfRegistrationGroup(conn, aid, "algebra2", CmProgram.ALG2_PROF, false, false);
 
-        // - gradprep - a self-reg group with show work req and cashee program
-        new CmAdminDao().createSelfRegistrationGroup(conn, aid, "gradprep", CmProgram.CAHSEEHM, false, false);
-        new CmAdminDao().createSelfRegistrationGroup(conn, aid, "cahsee", CmProgram.CAHSEEHM, false, false);        
+        // - gradprep - a self-reg group for CAHSEE (CA grad prep) program
+        dao.createSelfRegistrationGroup(conn, aid, "gradprep", CmProgram.CAHSEEHM, false, false);
 
-        // - gradprepTX - a self-reg group with show work req and our TAKS
-        // (Texas grad prep) program
-        new CmAdminDao().createSelfRegistrationGroup(conn, aid, "gradprepTX", CmProgram.TAKS, false, false);
+        // - cahsee - a self-reg group for CAHSEE (CA grad prep) program
+        dao.createSelfRegistrationGroup(conn, aid, "cahsee", CmProgram.CAHSEEHM, false, false);        
+
+        // - gradprepTX - a self-reg group for TAKS (Texas grad prep) program
+        dao.createSelfRegistrationGroup(conn, aid, "gradprepTX", CmProgram.TAKS, false, false);
         
-        // -- essentials - a selfreg group with show work req and essentials prof
-        new CmAdminDao().createSelfRegistrationGroup(conn, aid, "essentials", CmProgram.ESSENTIALS, false, false);
+        // - essentials - a self-reg group for essentials prof program
+        dao.createSelfRegistrationGroup(conn, aid, "essentials", CmProgram.ESSENTIALS, false, false);
 
-        // -- exitexam, for National self-ref group
-        new CmAdminDao().createSelfRegistrationGroup(conn, aid, "exitexam", CmProgram.NATIONAL, false, false);
+        // - exitexam - a self-ref group for nationals program
+        dao.createSelfRegistrationGroup(conn, aid, "exitexam", CmProgram.NATIONAL, false, false);
     }
 
     public List<String> getMessages() {
