@@ -48,8 +48,8 @@ public class CreateTestRunCommand implements ActionHandler<CreateTestRunAction, 
         
         startTime = System.currentTimeMillis();
         new CmStudentDao().verifyActiveProgram(conn, action.getTestId());
-        if (logger.isDebugEnabled()) {
-        	logger.debug(String.format("+++ execute(): verifyActiveProgram(): took: %d msec",
+        if (logger.isInfoEnabled()) {
+        	logger.info(String.format("+++ execute(): verifyActiveProgram(): took: %d msec",
         		System.currentTimeMillis() - startTime));
         }
 
@@ -63,8 +63,8 @@ public class CreateTestRunCommand implements ActionHandler<CreateTestRunAction, 
 
             startTime = System.currentTimeMillis();
             HaTest test = HaTestDao.loadTest(conn, action.getTestId());
-            if (logger.isDebugEnabled()) {
-            	logger.debug(String.format("+++ execute(): loadTest(): took: %d msec",
+            if (logger.isInfoEnabled()) {
+            	logger.info(String.format("+++ execute(): loadTest(): took: %d msec",
             		System.currentTimeMillis() - startTime));
             }
             
@@ -94,15 +94,15 @@ public class CreateTestRunCommand implements ActionHandler<CreateTestRunAction, 
                     incorrectPids.add(pid);
                 }
             }
-            if (logger.isDebugEnabled()) {
-            	logger.debug(String.format("+++ execute(): getting current test results took: %d msec",
+            if (logger.isInfoEnabled()) {
+            	logger.info(String.format("+++ execute(): getting current test results took: %d msec",
             		System.currentTimeMillis() - startTime));
             }
 
             startTime = System.currentTimeMillis();
             HaTestRun run = HaTestDao.createTestRun(conn, test.getUser().getUid(), test.getTestId(), answeredCorrect, answeredIncorrect, notAnswered);
-            if (logger.isDebugEnabled()) {
-            	logger.debug(String.format("+++ execute(): createTestRun(): took: %d msec",
+            if (logger.isInfoEnabled()) {
+            	logger.info(String.format("+++ execute(): createTestRun(): took: %d msec",
             		System.currentTimeMillis() - startTime));
             }
             
@@ -114,16 +114,16 @@ public class CreateTestRunCommand implements ActionHandler<CreateTestRunAction, 
             if(!run.isPassing()) {
                 startTime = System.currentTimeMillis();
                 new CmStudentDao().moveToNextQuizSegmentSlot(conn,test.getUser().getUid(), test.getTestDef().getNumAlternateTests());
-                if (logger.isDebugEnabled()) {
-                	logger.debug(String.format("+++ execute(): moveToNextQuizSegmentSlot(): took: %d msec",
+                if (logger.isInfoEnabled()) {
+                	logger.info(String.format("+++ execute(): moveToNextQuizSegmentSlot(): took: %d msec",
                 		System.currentTimeMillis() - startTime));
                 }
             }
 
             startTime = System.currentTimeMillis();
             AssessmentPrescription pres = AssessmentPrescriptionManager.getInstance().getPrescription(conn, run.getRunId());
-            if (logger.isDebugEnabled()) {
-            	logger.debug(String.format("+++ execute(): getPrescription(): took: %d msec",
+            if (logger.isInfoEnabled()) {
+            	logger.info(String.format("+++ execute(): getPrescription(): took: %d msec",
             		System.currentTimeMillis() - startTime));
             }
 
