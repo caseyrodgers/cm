@@ -806,7 +806,7 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
         lastLogin.setId(StudentModelExt.LAST_LOGIN_KEY);
         lastLogin.setHeader("Last Login");
         lastLogin.setWidth(70);
-        lastLogin.setSortable(true);
+        lastLogin.setSortable(false);
         configs.add(lastLogin);
 
         ColumnConfig tutoring = new ColumnConfig();
@@ -826,7 +826,7 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
         lastQuiz.setId(StudentModelExt.LAST_QUIZ_KEY);
         lastQuiz.setHeader("Last Quiz");
         lastQuiz.setWidth(70);
-        lastQuiz.setSortable(true);
+        lastQuiz.setSortable(false);
         lastQuiz.setRenderer(new GridCellRenderer<StudentModelExt>() {
 			@Override
 			public Object render(StudentModelExt sm, String property,
@@ -848,7 +848,7 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
         quizzes.setId(StudentModelExt.PASSING_COUNT_KEY);
         quizzes.setHeader("Quizzes");
         quizzes.setWidth(100);
-        quizzes.setSortable(true);
+        quizzes.setSortable(false);
         quizzes.setToolTip("Passed quizzes vs the number taken.");
         quizzes.setRenderer(new GridCellRenderer<StudentModelExt>() {
 			@Override
