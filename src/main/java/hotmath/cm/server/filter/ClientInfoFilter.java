@@ -52,6 +52,10 @@ public class ClientInfoFilter implements Filter {
         	logException(se);
         	throw se;
         }
+        catch (RuntimeException re) {
+        	logException(re);
+        	throw re;
+        }
         
      }
 
