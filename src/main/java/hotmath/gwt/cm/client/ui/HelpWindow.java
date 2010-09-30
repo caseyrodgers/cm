@@ -59,7 +59,7 @@ public class HelpWindow extends CmWindow {
         setModal(true);
         setResizable(false);
         addStyleName("help-window");
-        setHeading("Catchup-Math Help Window, version: " +
+        setHeading("Catchup Math Help Window, version: " +
         		   CatchupMathVersionInfo.getBuildVersion());
 
         EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_MODAL_WINDOW_OPEN, this));
@@ -397,7 +397,7 @@ public class HelpWindow extends CmWindow {
         
         EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_MODAL_WINDOW_OPEN));
         
-        MessageBox.prompt("Feedback","Enter Catchup-Math feedback.",true,new Listener<MessageBoxEvent> () {
+        MessageBox.prompt("Feedback","Enter Catchup Math feedback.",true,new Listener<MessageBoxEvent> () {
             public void handleEvent(MessageBoxEvent be) {
                 final String value = be.getValue();
                 if(value == null || value.length() == 0)
