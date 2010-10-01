@@ -2208,9 +2208,14 @@ public class CmStudentDao {
      */
     public void verifyActiveProgram(final Connection conn, int testId, int uid) throws Exception {
         
-        if(testId == 0 || uid == 0)
+        if(testId == 0)
             return;
         
+    	if (uid == 0) {
+    		verifyActiveProgram(conn, testId);
+    		return;
+    	}
+    		
         PreparedStatement ps=null;
         ResultSet rs = null;
         try {

@@ -47,7 +47,8 @@ public class CreateTestRunCommand implements ActionHandler<CreateTestRunAction, 
         long startTime;
         
         startTime = System.currentTimeMillis();
-        new CmStudentDao().verifyActiveProgram(conn, action.getTestId());
+        new CmStudentDao().verifyActiveProgram(conn, action.getTestId(), action.getUserId());
+
         if (logger.isInfoEnabled()) {
         	logger.info(String.format("+++ execute(): verifyActiveProgram(): took: %d msec",
         		System.currentTimeMillis() - startTime));

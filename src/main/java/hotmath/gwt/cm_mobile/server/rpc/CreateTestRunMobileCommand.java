@@ -30,7 +30,7 @@ public class CreateTestRunMobileCommand implements ActionHandler<CreateTestRunMo
         /** check the test/create test run
          * 
          */
-        CreateTestRunAction actionTestRun = new CreateTestRunAction(action.getUser().getTestId());
+        CreateTestRunAction actionTestRun = new CreateTestRunAction(action.getUser().getTestId(), action.getUser().getUserId());
         CreateTestRunResponse testRunResult = new CreateTestRunCommand().execute(conn, actionTestRun);
 
         
