@@ -2167,11 +2167,12 @@ public class CmStudentDao {
             return ;
         
         PreparedStatement ps=null;
+        ResultSet rs = null;
         try {
             String sql = CmMultiLinePropertyReader.getInstance().getProperty("VERIFY_IS_ACTIVE_PROGRAM");
             ps = conn.prepareStatement(sql);
             ps.setInt(1, testId);
-            ResultSet rs = ps.executeQuery();
+            rs = ps.executeQuery();
             if(rs.next()) {
                 /** value will equal 1 if program is active
                  *  otherwise, testId is not 
@@ -2187,7 +2188,53 @@ public class CmStudentDao {
         	throw e;
         }
         finally {
-            SqlUtilities.releaseResources(null,ps,null);
+            SqlUtilities.releaseResources(rs,ps,null);
+        }
+    }
+
+    /** 
+     * Verify that this is the currently active
+     * program for the specified student (uid).
+     * 
+     * Given a testId and uid, make sure that its CM_PROGRAM
+     * is the currently active CM_PROGRAM for the student.
+     * 
+     * If this testId is not from the currently active
+     * program for the test's user, return false; otherwise
+     * return true.
+     * 
+     * @param testId
+     * @param uid
+     */
+    public void verifyActiveProgram(final Connection conn, int testId, int uid) throws Exception {
+        
+        if(testId == 0 || uid == 0)
+            return;
+        
+        PreparedStatement ps=null;
+        ResultSet rs = null;
+        try {
+            String sql = CmMultiLinePropertyReader.getInstance().getProperty("VERIFY_IS_ACTIVE_PROGRAM_FOR_STUDENT");
+            ps = conn.prepareStatement(sql);
+            ps.setInt(1, uid);
+            ps.setInt(2, testId);
+            rs = ps.executeQuery();
+            if(rs.next()) {
+                /** value will equal 1 if program is active
+                 *  otherwise, testId is not 
+                 *  created from the active program.   
+                 */
+                if(rs.getInt(1) != 1) {
+                	throw new UserProgramIsNotActiveException();
+                }
+            }
+        }
+        catch (Exception e) {
+        	logger.warn(String.format(">>> verifyActiveProgram(): program is not active uid: %d, testId: %d", uid, testId));
+        	throw e;
+        }
+        finally {
+            SqlUtilities.releaseResources(rs,ps,null);
         }
     }
 }
