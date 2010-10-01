@@ -318,7 +318,7 @@ public class QuizContext implements CmContext {
                 CmBusyManager.setBusy(true);
                 InfoPopupBox.display("Quiz Check", "Checking quiz ...");
 
-                CreateTestRunAction action = new CreateTestRunAction(UserInfo.getInstance().getTestId());
+                CreateTestRunAction action = new CreateTestRunAction(UserInfo.getInstance().getTestId(), UserInfo.getInstance().getUid());
 
                 setAction(action);
                 CmShared.getCmService().execute(action,this);

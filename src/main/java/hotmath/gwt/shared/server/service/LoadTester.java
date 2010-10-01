@@ -53,7 +53,7 @@ public class LoadTester {
             QuizHtmlResult result = dispatcher.execute(new GetQuizHtmlAction(user.getUid(),0, 1));
             int testId = result.getTestId();
 
-            CreateTestRunResponse userInfo = dispatcher.execute(new CreateTestRunAction(testId));
+            CreateTestRunResponse userInfo = dispatcher.execute(new CreateTestRunAction(testId, user.getUid()));
 
             int runId = userInfo.getRunId();
 
