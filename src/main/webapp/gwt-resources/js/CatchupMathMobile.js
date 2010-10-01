@@ -1,3 +1,20 @@
+var _productionMode=false;
+
+/** replacement for YUI events */
+var HmEvents = {
+		listeners:[],
+		eventTutorInitialized: {
+	          subscribe:function(callBack) {
+	               HmEvents.listeners[HmEvents.listeners.length] = callBack;
+              },
+              fire:function() {
+            	  for(var i=0;i<HmEvents.listeners.length;i++) {
+            		  HmEvents.listeners[i]();
+            	  }
+              }
+        }
+}
+
 function $get(name) {
 	return document.getElementById(name);
 }
@@ -25,6 +42,8 @@ var TutorManager = {
         TutorManager.currentStepUnit = -1;
         TutorManager.loadTutorData(solutionData);
         TutorManager.analyzeLoadedData();
+        
+        HmEvents.eventTutorInitialized.fire();
     },
 
     showNextStep:function() {

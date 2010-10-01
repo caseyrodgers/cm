@@ -1,26 +1,31 @@
 package hotmath.gwt.cm_mobile.server.rpc;
 
+import hotmath.HotMathException;
+import hotmath.HotMathLogger;
+import hotmath.HotMathUtilities;
 import hotmath.ProblemID;
-import hotmath.cm.util.CmWebResourceManager;
 import hotmath.gwt.cm_rpc.client.rpc.Action;
 import hotmath.gwt.cm_rpc.client.rpc.CmRpcException;
 import hotmath.gwt.cm_rpc.client.rpc.GetMobileSolutionAction;
+import hotmath.gwt.cm_rpc.client.rpc.GetSolutionAction;
 import hotmath.gwt.cm_rpc.client.rpc.Response;
+import hotmath.gwt.cm_rpc.client.rpc.SolutionInfo;
 import hotmath.gwt.cm_rpc.client.rpc.SolutionResponse;
 import hotmath.gwt.cm_rpc.server.rpc.ActionHandler;
+import hotmath.gwt.shared.server.service.command.GetSolutionCommand;
+import hotmath.solution.SolutionParts;
+import hotmath.solution.writer.SolutionHTMLCreatorIimplVelocity;
+import hotmath.solution.writer.TutorProperties;
 import hotmath.util.VelocityTemplateFromStringManager;
 
-import org.apache.log4j.Logger;
-
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.sql.Connection;
 import java.util.HashMap;
 import java.util.Map;
 
-import sb.util.SbFile;
+import org.apache.log4j.Logger;
 
 /**
  * Return the raw HTML that makes up the solution
@@ -33,25 +38,30 @@ import sb.util.SbFile;
 public class GetMobileSolutionCommand implements ActionHandler<GetMobileSolutionAction, SolutionResponse> {
 
 	private static Logger logger = Logger.getLogger(GetMobileSolutionCommand.class);
+    public static SolutionHTMLCreatorIimplVelocity __creator;
+    static TutorProperties __tutorProps = new TutorProperties();
+    static {
+        try {
+            __creator = new SolutionHTMLCreatorIimplVelocity(__tutorProps.getTemplate(), __tutorProps.getTutor());
+        } catch (HotMathException hme) {
+            HotMathLogger.logMessage(hme, "Error creating solution creator: " + hme);
+        }
+    }	
 
     @Override
     public SolutionResponse execute(final Connection conn, GetMobileSolutionAction action) throws Exception {
         try {
-            
-            /** read the sprited tutor html */
-            File pathWebBase = new File(CmWebResourceManager.getInstance().getFileBase()).getParentFile();
-            ProblemID pid = new ProblemID(action.getPid());
-            String path = pid.getSolutionPath().replace("\\", "/");
-            String pidPath = "help/solutions/" + path + "/" + pid.getGUID();
-            String spriteHtmlPath =  pidPath + "/tutor_steps-sprited.html";
-            String solutionDataPath = pidPath + "/tutor_data.js";
-            
-            String solutionHtml = new SbFile(new File(pathWebBase, spriteHtmlPath)).getFileContents().toString("\n");
-            String solutionData = new SbFile(new File(pathWebBase, solutionDataPath)).getFileContents().toString("\n");
-            
+            String pid = action.getPid();
+            SolutionParts parts = __creator.getSolutionHTML(__tutorProps, pid);
+            String solutionHtml = parts.getMainHtml();
+
+            ProblemID ppid = new ProblemID(pid);
+            String path = ppid.getSolutionPath_DirOnly("solutions");
+            solutionHtml = HotMathUtilities.makeAbsolutePaths(path, solutionHtml);
+
             Map<String, String> map = new HashMap<String, String>();
             map.put("solution_html", solutionHtml);
-            map.put("pid", action.getPid());
+            map.put("pid", pid);
 
             InputStream is = getClass().getResourceAsStream("mobile_tutor_wrapper.vm");
             BufferedReader br = new BufferedReader(new InputStreamReader(is));
@@ -61,11 +71,9 @@ public class GetMobileSolutionCommand implements ActionHandler<GetMobileSolution
                 sb.append(tutorWrapper);
             }
             tutorWrapper = sb.toString();
-
-            int i = 1;
             solutionHtml = VelocityTemplateFromStringManager.getInstance().processTemplate(tutorWrapper, map);
             
-            SolutionResponse rs = new SolutionResponse(solutionHtml, solutionData, false);
+            SolutionResponse rs = new SolutionResponse(solutionHtml, parts.getData(), false);
             return rs;
         } catch (Exception e) {
         	logger.error(String.format("*** Error executing Action: %s", action.toString()), e);

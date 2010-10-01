@@ -112,7 +112,8 @@ public class GetMobileLessonInfoCommand implements ActionHandler<GetMobileLesson
                 continue;
 
             PrescriptionSessionDataResource resource = new PrescriptionSessionDataResource();
-            resource.setType(t.getTypeDef().getType());
+            String type = t.getTypeDef().getType();
+            resource.setType(type);
             resource.setLabel(t.getTypeDef().getLabel());
             for (INeedMoreHelpItem i : t.getResources()) {
                 InmhItemData id = new InmhItemData();

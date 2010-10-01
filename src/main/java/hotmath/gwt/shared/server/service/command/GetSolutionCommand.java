@@ -39,7 +39,7 @@ public class GetSolutionCommand implements ActionHandler<GetSolutionAction, Solu
 	
 	private static final Logger logger = Logger.getLogger(GetSolutionCommand.class);
 
-    static SolutionHTMLCreatorIimplVelocity __creator;
+    public static SolutionHTMLCreatorIimplVelocity __creator;
     static TutorProperties __tutorProps = new TutorProperties();
     static {
         try {

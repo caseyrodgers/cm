@@ -470,6 +470,30 @@
           </jsSourceFiles>
         </configuration>
       </plugin>
+      
+      <plugin>
+        <groupId>com.samaxes.maven</groupId>
+        <artifactId>maven-minify-plugin</artifactId>
+        <version>1.2</version>
+        <configuration>
+          <cssSourceDir>gwt-resources/css</cssSourceDir>
+          <jsSourceDir>gwt-resources/js</jsSourceDir>
+          <cssFinalFile>CatchupMathMobile.css</cssFinalFile>
+          <jsFinalFile>CatchupMathMobile.js</jsFinalFile>
+          <cssSourceFiles>
+  	         <param>../../../../../../hotmath2/web/css/tutor_widget.css</param>
+	         <param>CatchupMathMobile.css</param>
+          </cssSourceFiles>
+          <jsSourceFiles>
+            <param>../../../../../../hotmath2/web/js/floater-min.js</param>
+            <param>../../../../../../hotmath2/web/js/domutils-min.js</param>
+			<param>../../../../../../hotmath2/web/js/tutor_flash_widget.js</param>
+            <param>cm_core.js</param>
+            <param>CatchupMathMobile.js</param>
+          </jsSourceFiles>
+        </configuration>
+      </plugin>
+      
 
 
 

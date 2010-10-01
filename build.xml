@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project basedir="." default="minify" name="cm_build_utils">
+    <property name='web.dir' value='src/main/webapp'/>
+    <property name='css.dir' value='src/main/webapp/gwt-resources/css'/>
+    <property name='js.dir'  value='src/main/webapp/gwt-resources/js'/>
+    <property name="src.ant-tasks.dir" value="../hotmath2/src/ant/" />
+    <property name="yui-compressor" value="libs/yuicompressor-2.3.1.jar" />
+
+    <path id="local.classpath.run">
+        <fileset file="${yui-compressor}"/>
+    </path>
+
+    <target name='minify' depends='css_compress'/>
+
+    <property name='build.classes' value='target/classes'/>
+
+    <!-- Minifiy all JS Code -->
+    <target name="javascript-minify">
+        <taskdef resource="net/sf/antcontrib/antlib.xml" />
+
+        <!-- Process all JS files.
+             The minifyJavaScript task minifies JS files as needed -
+             new/modified JS file or no matching -min.js file
+        -->
+        <for param="file">
+            <path>
+                <fileset dir="${web.dir}/gwt-resources/js" includes="*.js" excludes="*-min.js, *_combined.js" />
+            </path>
+            <sequential>
+                <echo>'@{file}'</echo>
+                <java jar="${yui-compressor}" fork="true" failonerror="true" classpathref="local.classpath.run" >
+                    <arg value="@{file}"/>
+                    <arg value="-o"/>
+                    <arg value="@{file}-min.js"/>
+               </java>
+
+            </sequential>
+        </for>
+    </target>
+
+    <!-- Compresses css file inplace (overwrites) -->
+    <macrodef name="css_compress-do" >
+        <attribute name="cssfile"/>
+        <sequential>
+            <echo>CSS_COMPRESS: processing @{cssfile}</echo>
+            <java jar="${yui-compressor}" fork="true" failonerror="true" classpathref="local.classpath.run" >
+                <arg value="@{cssfile}"/>
+                <arg value="-o"/>
+                <arg value="@{cssfile}"/>
+            </java>
+        </sequential>
+    </macrodef>
+
+    <target name="combine-cm_mobile_core_js" depends="javascript-minify">
+        <!-- Combine core JS into a single download
+        -->
+        <delete file="${js.dir}/cm_mobile_core_combined.js" />
+        <concat destfile="${js.dir}/cm_mobile_core_combined.js" append="true">
+            <filelist id="jsfiles" dir="src/main/webapp" files="
+
+                    js/floater-min.js
+                    js/domutils-min.js
+                    gwt-resources/js/cm_core.js-min.js
+                    gwt-resources/js/CatchupMathMobile.js-min.js
+	            js/tutor_flash_widget.js
+              " />
+        </concat>
+    </target>
+
+
+    <target name='css_compress' depends="resource_combine">
+        <echo>Running CSS_COMPRESS on core combined files</echo>
+        <css_compress-do cssfile='src/main/webapp/resources/css/core.css'/>
+    </target>
+    <target name="resource_combine"/>
+</project>

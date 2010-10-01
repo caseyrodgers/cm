@@ -7,7 +7,7 @@
   <!--                                                               -->
     <!-- Consider inlining CSS to reduce the number of requested files -->
     <!--                                                               -->
-    <link rel="stylesheet" href="/gwt-resources/css/CatchupMathMobile.css" type="text/css"/>
+    <link rel="stylesheet" href="/gwt-resources/css/CatchupMathMobile.min.css" type="text/css"/>
     
 	<link media="only screen and (max-device-width: 480px)" href="/gwt-resources/css/CatchupMathMobile-iphone.css" type= "text/css" rel="stylesheet">
 	<link media="screen and (min-device-width: 481px)" href="/gwt-resources/css/CatchupMathMobile-other.css" type="text/css" rel="stylesheet">
@@ -30,8 +30,6 @@
 			<img src="/gwt-resources/images/mobile/spinner.gif" /> Loading
 		</div>
 	</div>
-
-    	
     
 	<div id="browser" style="display: none;">
       <!--
@@ -51,9 +49,15 @@
     </div>
     </div>
     <script type="text/javascript" language="javascript" src="cm_mobile2.nocache.js"></script>    
-   <script src='/js/floater.js'></script>
-   <script src='/js/domutils.js'></script>
-   <script src='/gwt-resources/js/cm_core.js'></script>
-   <script src='/gwt-resources/js/CatchupMathMobile.js'></script>
+
+    <script src='/gwt-resources/js/cm_mobile_core_combined.js'></script>
+   <!--
+       for debugging replace combined with following:
+       <script src='/js/floater.js'></script>
+	   <script src='/js/domutils.js'></script>
+	   <script src='/gwt-resources/js/cm_core.js'></script>
+	   <script src='/gwt-resources/js/CatchupMathMobile.js'></script>
+	   <script src='/js/tutor_flash_widget.js'></script> 
+   -->
   </body>
 </html>

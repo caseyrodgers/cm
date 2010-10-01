@@ -389,3 +389,8 @@ div.landscape div.page ul.touch li.group:active {
   background-position: 440px 18px, 0 0;
 }
 
+
+#hm_flash_widget.not_used {
+	display: none;
+}
+
