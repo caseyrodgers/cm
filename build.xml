@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project basedir="." default="minify" name="cm_build_utils">
+<project basedir="." default="combine-cm_mobile_core_js" name="cm_build_utils">
     <property name='web.dir' value='src/main/webapp'/>
     <property name='css.dir' value='src/main/webapp/gwt-resources/css'/>
     <property name='js.dir'  value='src/main/webapp/gwt-resources/js'/>
