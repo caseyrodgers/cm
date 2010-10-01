@@ -388,6 +388,20 @@ from HA_TEST t
   JOIN CM_USER_PROGRAM p  ON p.id = u.user_prog_id
 where t.test_id = ?
 
+
+
+.key=VERIFY_IS_ACTIVE_PROGRAM_FOR_STUDENT
+
+# verify that the test_id was created from the active
+# program assigned to user with uid.  This is to check if a 
+# new program has been assigned while user is currently
+# using a program.
+
+select count(*)
+from HA_TEST t
+  JOIN HA_USER u on u.uid = ? and u.user_prog_id = t.user_prog_id
+  JOIN CM_USER_PROGRAM p  ON p.id = u.user_prog_id
+where t.test_id = ?
         
 #############
 ##
