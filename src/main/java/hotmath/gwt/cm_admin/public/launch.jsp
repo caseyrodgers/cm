@@ -20,6 +20,7 @@
     <link rel="stylesheet" type="text/css" href="/gwt-resources/css/CatchupMath.css" />    
     <link rel="stylesheet" type="text/css" href="/gwt-resources/gxt-2.2.0/css/gxt-all.css" />
     <link rel="stylesheet" type="text/css" href="/gwt-resources/css/CatchupMathAdmin.css" />
+   <link rel="stylesheet" type="text/css" href="/css/tutor_widget.css" />
     <meta http-equiv="content-type" content="text/html; charset=UTF-8">
     <title>Catchup Math Admin</title>
     <script type="text/javascript" language="javascript" src="/cm_admin/cm_admin.nocache.js"></script>
@@ -42,7 +43,7 @@
      <script src="/js/cm_with_tutor_combined.js"></script>
      <script src="/gwt-resources/js/cm_core.js"></script>
      <script src="/gwt-resources/js/CatchupMath.js"></script>
-     
+     <script type="text/javascript" language="javascript" src="/js/tutor_flash_widget.js"></script>     
      <script type="text/javascript" language="javascript" src="/gwt-resources/js/swfobject/swfobject.js"></script>
      <script>
          var __securityKey = '<%= securityKey %>'
