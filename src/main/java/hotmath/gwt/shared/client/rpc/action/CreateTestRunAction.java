@@ -16,6 +16,14 @@ public class CreateTestRunAction implements Action<CreateTestRunResponse> {
     	this.userId = userId;
     }
     
+    /** Leave default with just testId, or change all calls
+     * 
+     * @param testId
+     */
+    public CreateTestRunAction(int testId) {
+        this.testId = testId;
+    }
+    
     public int getTestId() {
         return testId;
     }

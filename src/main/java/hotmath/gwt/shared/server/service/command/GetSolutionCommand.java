@@ -2,6 +2,7 @@ package hotmath.gwt.shared.server.service.command;
 
 import hotmath.HotMathException;
 import hotmath.HotMathLogger;
+import hotmath.HotMathProperties;
 import hotmath.HotMathUtilities;
 import hotmath.ProblemID;
 import hotmath.gwt.cm_rpc.client.rpc.Action;
@@ -17,6 +18,7 @@ import hotmath.util.VelocityTemplateFromStringManager;
 import hotmath.util.sql.SqlUtilities;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.sql.Connection;
@@ -26,6 +28,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
+
+import sb.util.SbFile;
 
 /**
  * Return the raw HTML that makes up the solution
@@ -56,11 +60,17 @@ public class GetSolutionCommand implements ActionHandler<GetSolutionAction, Solu
             String pid = action.getPid();
             int uid = action.getUid();
             
-            SolutionParts parts = __creator.getSolutionHTML(__tutorProps, pid);
-            String solutionHtml = parts.getMainHtml();
-
+            // SolutionParts parts = __creator.getSolutionHTML(__tutorProps, pid);
+            //String solutionHtml = parts.getMainHtml();
+            
+            String base = HotMathProperties.getInstance().getHotMathWebBase();
+            
             ProblemID ppid = new ProblemID(pid);
             String path = ppid.getSolutionPath_DirOnly("solutions");
+            
+            String solutionHtml = new SbFile(new File(base, path + "/" +  "/tutor_steps.html")).getFileContents().toString("\n");
+            String solutionData = new SbFile(new File(base, path + "/" +  "/tutor_data.js")).getFileContents().toString("\n");
+            
             solutionHtml = HotMathUtilities.makeAbsolutePaths(path, solutionHtml);
 
             Map<String, String> map = new HashMap<String, String>();
@@ -78,7 +88,7 @@ public class GetSolutionCommand implements ActionHandler<GetSolutionAction, Solu
 
             solutionHtml = VelocityTemplateFromStringManager.getInstance().processTemplate(tutorWrapper, map);
 
-            SolutionInfo solutionInfo = new SolutionInfo(solutionHtml, parts.getData(),getHasShowWork(conn,uid, pid));
+            SolutionInfo solutionInfo = new SolutionInfo(solutionHtml,solutionData,getHasShowWork(conn,uid, pid));
             return solutionInfo;
         } catch (Exception e) {
         	logger.error(String.format("*** Error executing Action: %s", action.toString()), e);
