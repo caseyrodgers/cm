@@ -445,6 +445,9 @@
         </configuration>
       </plugin>
 
+      <!-- Minimize JS/CSS for CM.
+           All HM resources come from HM dir, not CM.
+      -->
       <plugin>
         <groupId>com.samaxes.maven</groupId>
         <artifactId>maven-minify-plugin</artifactId>
