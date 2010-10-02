@@ -56,6 +56,11 @@ public class ClientInfoFilter implements Filter {
         	logException(re);
         	throw re;
         }
+        catch (Exception e) {
+        	// shouldn't ever get here...
+        	logException(e);
+        	throw new ServletException(e);
+        }
         
      }
 
