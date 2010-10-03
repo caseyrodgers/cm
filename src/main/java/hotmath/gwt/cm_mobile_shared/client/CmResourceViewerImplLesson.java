@@ -32,12 +32,18 @@ public class CmResourceViewerImplLesson extends Composite implements CmMobileRes
     
     @Override
     public Widget getViewer(InmhItemData item) {
-        GetReviewHtmlAction action = new GetReviewHtmlAction(item.getFile());
+        loadItem(item);
+        return this;
+    }
+    
+    public void loadItem(InmhItemData item) {
         EventBus.getInstance().fireEvent(new CmEvent(EventTypes.EVENT_SERVER_START));
+        GetReviewHtmlAction action = new GetReviewHtmlAction(item.getFile());
         CatchupMathMobileShared.getCmService().execute(action, new AsyncCallback<LessonResult>() {
             @Override
             public void onSuccess(LessonResult result) {
                 EventBus.getInstance().fireEvent(new CmEvent(EventTypes.EVENT_SERVER_END));
+                mainPanel.clear();
                 mainPanel.add(new HTML(result.getLesson()));
             }
 
@@ -47,7 +53,5 @@ public class CmResourceViewerImplLesson extends Composite implements CmMobileRes
                 caught.printStackTrace();               
             }
         });
-        
-        return this;
     }
 }

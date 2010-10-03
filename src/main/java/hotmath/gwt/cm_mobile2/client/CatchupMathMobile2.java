@@ -1,6 +1,8 @@
 package hotmath.gwt.cm_mobile2.client;
 
 import hotmath.gwt.cm_mobile_shared.client.CatchupMathMobileShared;
+import hotmath.gwt.cm_mobile_shared.client.CmMobileResourceViewer;
+import hotmath.gwt.cm_mobile_shared.client.CmResourceViewerImplLesson;
 import hotmath.gwt.cm_mobile_shared.client.ControlAction;
 import hotmath.gwt.cm_mobile_shared.client.ControlPanel;
 import hotmath.gwt.cm_mobile_shared.client.Controller;
@@ -17,6 +19,7 @@ import hotmath.gwt.cm_mobile_shared.client.rpc.CmMobileUser;
 import hotmath.gwt.cm_mobile_shared.client.util.ObservableStack;
 import hotmath.gwt.cm_mobile_shared.client.util.Screen;
 import hotmath.gwt.cm_mobile_shared.client.util.Screen.OrientationChangedHandler;
+import hotmath.gwt.cm_rpc.client.rpc.InmhItemData;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,8 +40,10 @@ public class CatchupMathMobile2 implements EntryPoint, OrientationChangedHandler
 
     RootPanel _rootPanel;
     static ControlPanel _controlPanel;
+    static public CatchupMathMobile2 __instance;
     public void onModuleLoad() {
 
+        __instance = this;
         _rootPanel = RootPanel.get("main-content");
         /** add the floater
          */
@@ -114,7 +119,9 @@ public class CatchupMathMobile2 implements EntryPoint, OrientationChangedHandler
         return fp;
     }    
     
+    static CmMobileResourceViewer __lastViewer;
     static {
+        publishNative();
         EventBus.getInstance().addEventListener(new CmEventListener() {
             
             @Override
@@ -132,9 +139,34 @@ public class CatchupMathMobile2 implements EntryPoint, OrientationChangedHandler
                 else if(type == EventTypes.EVENT_SERVER_END) {
                     CatchupMathMobile2._controlPanel.showBusy(false);
                 }
+                else if(type == EventTypes.EVENT_LOAD_RESOURCE) {
+                    InmhItemData d = (InmhItemData)event.getEventData();
+                    
+                    History.newItem("res_object:" + d.getFile());
+                    Controller.navigateToPrescriptionResource(null, d, 0);
+                }
+                else if(type == EventTypes.EVENT_RES_VIEW_LOADED) {
+                    __lastViewer = (CmMobileResourceViewer)event.getEventData();
+                }
             }
         });
     }
+    
+    /** External JS request to load a resource
+     * 
+     * @param type
+     * @param file
+     */
+    static public void doResourceLoad(String type, String file) {
+        History.newItem("res_object:" + type + ":" + file);
+        //InmhItemData inmh = new InmhItemData(type,file,"");
+        //Controller.navigateToPrescriptionResource(null, inmh,-1);
+    }
+    
+    static private native void publishNative() /*-{
+        $wnd.doLoadResource_Gwt = @hotmath.gwt.cm_mobile2.client.CatchupMathMobile2::doResourceLoad(Ljava/lang/String;Ljava/lang/String;);
+    }-*/;
+
 
     @Override
     public void orientationChanged(ScreenOrientation newOrientation) {

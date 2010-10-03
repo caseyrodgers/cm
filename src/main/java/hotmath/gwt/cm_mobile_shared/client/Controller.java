@@ -59,11 +59,16 @@ public class Controller {
 
     public static void navigateToPrescriptionResource(IPage currentPage, InmhItemData itemIn, int ordinal) {
         InmhItemData item = null;
-        for (PrescriptionSessionDataResource r : CatchupMathMobileShared.getUser().getPrescripion().getCurrSession()
-                .getInmhResources()) {
-            if (r.getType().equals(itemIn.getType())) {
-                item = r.getItems().get(ordinal);
-                break;
+        if(ordinal == -1) {
+            item = itemIn;
+        }
+        else {
+            for (PrescriptionSessionDataResource r : CatchupMathMobileShared.getUser().getPrescripion().getCurrSession()
+                    .getInmhResources()) {
+                if (r.getType().equals(itemIn.getType())) {
+                    item = r.getItems().get(ordinal);
+                    break;
+                }
             }
         }
         PrescriptionResourcePage page = new PrescriptionResourcePage(item);

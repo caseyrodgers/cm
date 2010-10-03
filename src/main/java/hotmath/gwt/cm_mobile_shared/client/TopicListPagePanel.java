@@ -13,16 +13,26 @@ import hotmath.gwt.cm_mobile_shared.client.util.ViewSettings;
 import hotmath.gwt.cm_rpc.client.rpc.CmArrayList;
 import hotmath.gwt.cm_rpc.client.rpc.CmList;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.google.code.gwt.storage.client.Storage;
+import com.google.gwt.event.dom.client.ChangeEvent;
+import com.google.gwt.event.dom.client.ChangeHandler;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.Panel;
+import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -40,6 +50,7 @@ public class TopicListPagePanel extends AbstractPagePanel {
     }
 
     FlowPanel matches = new FlowPanel();
+    TextBox _searchText;
     
     /** Draw the gui showing the topic list
      * 
@@ -50,26 +61,93 @@ public class TopicListPagePanel extends AbstractPagePanel {
         FlowPanel top = new FlowPanel();
         
         GenericContainerTag searchBox = new GenericContainerTag("div");
-        final TextBox textBox = new TextBox();
-        textBox.addKeyUpHandler(new KeyUpHandler() {
+        _searchText = new TextBox();
+        _searchText.addKeyUpHandler(new KeyUpHandler() {
             
             @Override
             public void onKeyUp(KeyUpEvent event) {
-                searchForMatches(textBox.getValue());                
+                searchForMatches(_searchText.getValue());                
             }
         });
-
         searchBox.add(new Label("Search for lessons: "));
-        searchBox.add(textBox);
-        top.add(searchBox);
+        searchBox.add(_searchText);
+        searchBox.add(new Button("History",new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                final PopupPanel popup = new PopupPanel();
+                popup.setAutoHideEnabled(true);
+                popup.setModal(true);
+                
+                FlowPanel fp = new FlowPanel();
+                
+                final ListBox lb = new ListBox();
+                lb.getElement().setId("search-list-items");
+                lb.addItem("-- Previous Entries --");
+                List<String> previousEntries = getPreviousEntries();
+                for(int i=0,t=previousEntries.size();i<t;i++) {
+                    lb.addItem(previousEntries.get(i));
+                }
+                lb.setVisibleItemCount(4);
+                lb.setWidth("300px;");
+                lb.addChangeHandler(new ChangeHandler() {
+                    @Override
+                    public void onChange(ChangeEvent event) {
+                        String txt = lb.getItemText(lb.getSelectedIndex());
+                        popup.hide();
+                        _searchText.setText(txt);
+                        searchForMatches(txt);
+                    }
+                });
+                fp.add(lb);
+
+                popup.setWidget(lb);
+                popup.center();
+                
+                popup.show();
+            }
+        }));;
         
-        /** Add search bar */
-        top.add(createSearchPanel());
+        top.add(searchBox);
         
         topicPanel.clear();
         topicPanel.add(top);
         
         topicPanel.add(matches);
+    }
+    
+    List<String> previousEntries = null;
+    private List<String> getPreviousEntries() {
+        if(previousEntries == null) {
+            previousEntries = new ArrayList<String>();
+            
+            if(Storage.isSupported()) {
+               String entries = Storage.getLocalStorage().getItem("prev-entries");
+               if(entries != null) {
+                   String l[] = entries.split("\n");
+                   for(int i=0,t=l.length;i<t;i++) {
+                       previousEntries.add(l[i]);
+                   }
+               }
+            }
+        }
+        return previousEntries;
+    }
+    
+    private void addToPreviousEntries(String entry) {
+        List<String> pe = getPreviousEntries();
+        if(!pe.contains(entry)) {
+            pe.add(entry);
+            if(Storage.isSupported()) {
+                
+                String data="";
+                for(int i=0,t=previousEntries.size();i<t;i++) {
+                    if(data.length() > 0)
+                        data += "\n";
+                    data += previousEntries.get(i);
+                } 
+                Storage.getLocalStorage().setItem("prev-entries", data);
+            }
+        }
     }
     
     private void searchForMatches(String searchFor) {
@@ -104,6 +182,12 @@ public class TopicListPagePanel extends AbstractPagePanel {
                 @Override
                 public void touchClick(TouchClickEvent<String> e) {
                     if (!ViewSettings.AnimationRunning) {
+                        
+                        /** add the current search term to previous entries
+                         * 
+                         */
+                        addToPreviousEntries(_searchText.getText());
+                        
                         String tag = "topic:" + topic.getFile();
                         History.newItem(tag);
                     }

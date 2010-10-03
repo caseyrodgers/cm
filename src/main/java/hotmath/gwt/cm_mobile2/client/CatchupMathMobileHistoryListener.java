@@ -37,7 +37,20 @@ public class CatchupMathMobileHistoryListener implements ValueChangeHandler<Stri
             }
             /** assert(item != null); */
             Controller.navigateToPrescriptionResource(null, item, ordinal);
-        }        
+        }
+        else if(historyToken.startsWith("res_object")) {
+            /** parse history 
+             * TODO: abstract history token
+             * 
+             */
+            String p[] = historyToken.split(":");
+            String type = p[0];
+            String file =  p[2];
+
+            InmhItemData item = new InmhItemData("review", file,"");
+            /** assert(item != null); */
+            Controller.navigateToPrescriptionResource(null, item, -1);            
+        }                
         else {
             Controller.navigateToTopicList();
         }
