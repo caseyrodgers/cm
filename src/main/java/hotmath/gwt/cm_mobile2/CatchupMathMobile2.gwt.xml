@@ -3,5 +3,7 @@
 	<inherits name='hotmath.gwt.cm_mobile_shared.CatchupMathMobileShared' />
 	<entry-point class="hotmath.gwt.cm_mobile2.client.CatchupMathMobile2" />
 
+    <inherits name="com.google.code.gwt.storage.Html5Storage" />
+
 	<!-- <set-property name='user.agent' value='gecko'/> -->
 </module>

@@ -12,7 +12,7 @@ import hotmath.gwt.cm_rpc.client.rpc.Response;
 import hotmath.gwt.cm_rpc.client.rpc.SolutionInfo;
 import hotmath.gwt.cm_rpc.server.rpc.ActionHandler;
 import hotmath.solution.SolutionParts;
-import hotmath.solution.writer.SolutionHTMLCreatorIimplVelocity;
+import hotmath.solution.writer.SolutionHTMLCreator;
 import hotmath.solution.writer.TutorProperties;
 import hotmath.util.VelocityTemplateFromStringManager;
 import hotmath.util.sql.SqlUtilities;
@@ -43,12 +43,12 @@ public class GetSolutionCommand implements ActionHandler<GetSolutionAction, Solu
 	
 	private static final Logger logger = Logger.getLogger(GetSolutionCommand.class);
 
-    public static SolutionHTMLCreatorIimplVelocity __creator;
+    public static SolutionHTMLCreator __creator;
     static TutorProperties __tutorProps = new TutorProperties();
     static {
         try {
-            __creator = new SolutionHTMLCreatorIimplVelocity(__tutorProps.getTemplate(), __tutorProps.getTutor());
-        } catch (HotMathException hme) {
+            __creator = new SolutionHTMLCreatorImplFileSystem(__tutorProps.getTemplate(), __tutorProps.getTutor());
+        } catch (Exception hme) {
             HotMathLogger.logMessage(hme, "Error creating solution creator: " + hme);
         }
     }
@@ -60,17 +60,12 @@ public class GetSolutionCommand implements ActionHandler<GetSolutionAction, Solu
             String pid = action.getPid();
             int uid = action.getUid();
             
-            // SolutionParts parts = __creator.getSolutionHTML(__tutorProps, pid);
-            //String solutionHtml = parts.getMainHtml();
-            
-            String base = HotMathProperties.getInstance().getHotMathWebBase();
-            
             ProblemID ppid = new ProblemID(pid);
+            
+            SolutionParts sp = __creator.getSolutionHTML(null, pid);
+            String solutionHtml= sp.getMainHtml();
+            
             String path = ppid.getSolutionPath_DirOnly("solutions");
-            
-            String solutionHtml = new SbFile(new File(base, path + "/" +  "/tutor_steps.html")).getFileContents().toString("\n");
-            String solutionData = new SbFile(new File(base, path + "/" +  "/tutor_data.js")).getFileContents().toString("\n");
-            
             solutionHtml = HotMathUtilities.makeAbsolutePaths(path, solutionHtml);
 
             Map<String, String> map = new HashMap<String, String>();
@@ -88,7 +83,7 @@ public class GetSolutionCommand implements ActionHandler<GetSolutionAction, Solu
 
             solutionHtml = VelocityTemplateFromStringManager.getInstance().processTemplate(tutorWrapper, map);
 
-            SolutionInfo solutionInfo = new SolutionInfo(solutionHtml,solutionData,getHasShowWork(conn,uid, pid));
+            SolutionInfo solutionInfo = new SolutionInfo(solutionHtml,sp.getData(),getHasShowWork(conn,uid, pid));
             return solutionInfo;
         } catch (Exception e) {
         	logger.error(String.format("*** Error executing Action: %s", action.toString()), e);

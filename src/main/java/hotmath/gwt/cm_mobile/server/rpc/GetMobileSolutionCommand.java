@@ -1,20 +1,17 @@
 package hotmath.gwt.cm_mobile.server.rpc;
 
-import hotmath.HotMathException;
 import hotmath.HotMathLogger;
 import hotmath.HotMathUtilities;
 import hotmath.ProblemID;
 import hotmath.gwt.cm_rpc.client.rpc.Action;
 import hotmath.gwt.cm_rpc.client.rpc.CmRpcException;
 import hotmath.gwt.cm_rpc.client.rpc.GetMobileSolutionAction;
-import hotmath.gwt.cm_rpc.client.rpc.GetSolutionAction;
 import hotmath.gwt.cm_rpc.client.rpc.Response;
-import hotmath.gwt.cm_rpc.client.rpc.SolutionInfo;
 import hotmath.gwt.cm_rpc.client.rpc.SolutionResponse;
 import hotmath.gwt.cm_rpc.server.rpc.ActionHandler;
-import hotmath.gwt.shared.server.service.command.GetSolutionCommand;
+import hotmath.gwt.shared.server.service.command.SolutionHTMLCreatorImplFileSystem;
 import hotmath.solution.SolutionParts;
-import hotmath.solution.writer.SolutionHTMLCreatorIimplVelocity;
+import hotmath.solution.writer.SolutionHTMLCreator;
 import hotmath.solution.writer.TutorProperties;
 import hotmath.util.VelocityTemplateFromStringManager;
 
@@ -38,12 +35,12 @@ import org.apache.log4j.Logger;
 public class GetMobileSolutionCommand implements ActionHandler<GetMobileSolutionAction, SolutionResponse> {
 
 	private static Logger logger = Logger.getLogger(GetMobileSolutionCommand.class);
-    public static SolutionHTMLCreatorIimplVelocity __creator;
+    public static SolutionHTMLCreator __creator;
     static TutorProperties __tutorProps = new TutorProperties();
     static {
         try {
-            __creator = new SolutionHTMLCreatorIimplVelocity(__tutorProps.getTemplate(), __tutorProps.getTutor());
-        } catch (HotMathException hme) {
+            __creator = new SolutionHTMLCreatorImplFileSystem(__tutorProps.getTemplate(), __tutorProps.getTutor());
+        } catch (Exception hme) {
             HotMathLogger.logMessage(hme, "Error creating solution creator: " + hme);
         }
     }	
