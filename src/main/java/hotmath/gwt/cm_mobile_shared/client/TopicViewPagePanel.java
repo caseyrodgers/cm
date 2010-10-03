@@ -1,5 +1,8 @@
 package hotmath.gwt.cm_mobile_shared.client;
 
+import hotmath.gwt.cm_mobile_shared.client.event.CmEvent;
+import hotmath.gwt.cm_mobile_shared.client.event.EventBus;
+import hotmath.gwt.cm_mobile_shared.client.event.EventTypes;
 import hotmath.gwt.cm_mobile_shared.client.page.PrescriptionPage;
 import hotmath.gwt.cm_mobile_shared.client.rpc.GetMobileLessonInfoAction;
 import hotmath.gwt.cm_mobile_shared.client.rpc.MobileLessonInfo;
@@ -68,10 +71,12 @@ public class TopicViewPagePanel extends AbstractPagePanel {
             return;
         }
         
+        EventBus.getInstance().fireEvent(new CmEvent(EventTypes.EVENT_SERVER_START));
         GetMobileLessonInfoAction action = new GetMobileLessonInfoAction(file);
         CatchupMathMobileShared.getCmService().execute(action, new AsyncCallback<MobileLessonInfo>() {
             @Override
             public void onSuccess(MobileLessonInfo lessonInfo) {
+                EventBus.getInstance().fireEvent(new CmEvent(EventTypes.EVENT_SERVER_END));
                 pData = lessonInfo.getPresData();
                 CatchupMathMobileShared.getUser().setPrescripion(lessonInfo.getPresData());
                 loadPrescriptionSession(lessonInfo.getPresData().getCurrSession().getInmhResources());
@@ -79,6 +84,7 @@ public class TopicViewPagePanel extends AbstractPagePanel {
             
             @Override
             public void onFailure(Throwable arg0) {
+                EventBus.getInstance().fireEvent(new CmEvent(EventTypes.EVENT_SERVER_END));
                 Window.alert(arg0.getMessage());
             }
         });

@@ -10,4 +10,6 @@ public class EventTypes {
     public static EventType EVENT_PAGE_LOADED = new EventType("PAGE_LOADED");
     public static EventType EVENT_PAGE_REMOVED = new EventType("PAGE_REMOVED");
     public static EventType EVENT_PAGE_ACTIVATED = new EventType("EVENT_PAGE_ACTIVATED");
+    public static EventType EVENT_SERVER_START = new EventType("EVENT_SERVER_START");
+    public static EventType EVENT_SERVER_END = new EventType("EVENT_SERVER_END");
 }

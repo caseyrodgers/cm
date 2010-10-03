@@ -106,16 +106,6 @@ public class ControlPanel extends FlowPanel {
     public void setControlActions(List<ControlAction> actions) {
         expanded.clear();
         
-        /** standard buttons */
-        Button logoutBtn = new Button("Logout", new ClickHandler() {
-            @Override
-            public void onClick(ClickEvent arg0) {
-                hideControlPanel();   
-                History.newItem("login");
-            }
-        });
-        expanded.add(logoutBtn);
-        
         for(final ControlAction action: actions) {
             Button btn = new Button(action.getLabel(), new ClickHandler() {
                 @Override

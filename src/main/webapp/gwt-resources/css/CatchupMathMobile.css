@@ -394,3 +394,20 @@ div.landscape div.page ul.touch li.group:active {
 	display: none;
 }
 
+
+.search-bar {
+	margin-top: 5px;
+	background: #9CABBF;
+}
+
+.search-bar span {
+	font-size: 1.5em;
+	margin: 0 5px;
+	
+}
+
+.search-bar .selected {
+	font-size: 1.8em;
+	font-weight: bold;
+	background-color: yellow;
+}

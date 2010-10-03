@@ -1,6 +1,8 @@
 package hotmath.gwt.cm_mobile2.client;
 
 import hotmath.gwt.cm_mobile_shared.client.CatchupMathMobileShared;
+import hotmath.gwt.cm_mobile_shared.client.ControlAction;
+import hotmath.gwt.cm_mobile_shared.client.ControlPanel;
 import hotmath.gwt.cm_mobile_shared.client.Controller;
 import hotmath.gwt.cm_mobile_shared.client.HeaderPanel;
 import hotmath.gwt.cm_mobile_shared.client.PagesContainerPanel;
@@ -15,6 +17,9 @@ import hotmath.gwt.cm_mobile_shared.client.rpc.CmMobileUser;
 import hotmath.gwt.cm_mobile_shared.client.util.ObservableStack;
 import hotmath.gwt.cm_mobile_shared.client.util.Screen;
 import hotmath.gwt.cm_mobile_shared.client.util.Screen.OrientationChangedHandler;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.user.client.History;
@@ -31,11 +36,24 @@ import com.google.gwt.user.client.ui.Widget;
 public class CatchupMathMobile2 implements EntryPoint, OrientationChangedHandler {
 
     RootPanel _rootPanel;
+    static ControlPanel _controlPanel;
     public void onModuleLoad() {
 
         _rootPanel = RootPanel.get("main-content");
         /** add the floater
          */
+        _controlPanel = new ControlPanel();
+        List<ControlAction> actions = new ArrayList<ControlAction>();
+        actions.add(new ControlAction("Search for a lesson") {
+            
+            @Override
+            public void doAction() {
+                Controller.navigateToTopicList();
+            }
+        });
+        _controlPanel.setControlActions(actions);
+        
+        _rootPanel.add(_controlPanel);
         _rootPanel.add(createApplicationPanel());
 
         Screen screen = new Screen();
@@ -45,8 +63,11 @@ public class CatchupMathMobile2 implements EntryPoint, OrientationChangedHandler
         CatchupMathMobileShared.__instance.hideBusyPanel();
 
         _rootPanel.getElement().getStyle().setProperty("display", "inline");
+        
+        
+        
 
-        //initializeExternalJs();
+        initializeExternalJs();
 
         CatchupMathMobileShared.__instance.user = new CmMobileUser();
         
@@ -104,6 +125,12 @@ public class CatchupMathMobile2 implements EntryPoint, OrientationChangedHandler
                 else if(type == EventTypes.EVENT_PAGE_REMOVED) {
                 }
                 else if(type == EventTypes.EVENT_PAGE_ACTIVATED) {
+                }
+                else if(type == EventTypes.EVENT_SERVER_START) {
+                    CatchupMathMobile2._controlPanel.showBusy(true);
+                }
+                else if(type == EventTypes.EVENT_SERVER_END) {
+                    CatchupMathMobile2._controlPanel.showBusy(false);
                 }
             }
         });

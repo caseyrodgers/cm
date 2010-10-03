@@ -1,19 +1,19 @@
 package hotmath.gwt.cm_mobile_shared.client;
 
+import hotmath.gwt.cm_mobile_shared.client.event.CmEvent;
+import hotmath.gwt.cm_mobile_shared.client.event.EventBus;
+import hotmath.gwt.cm_mobile_shared.client.event.EventTypes;
 import hotmath.gwt.cm_mobile_shared.client.rpc.GetMobileTopicListAction;
 import hotmath.gwt.cm_mobile_shared.client.rpc.Topic;
 import hotmath.gwt.cm_mobile_shared.client.util.GenericContainerTag;
 import hotmath.gwt.cm_mobile_shared.client.util.GenericTextTag;
 import hotmath.gwt.cm_mobile_shared.client.util.TouchClickEvent;
+import hotmath.gwt.cm_mobile_shared.client.util.TouchClickEvent.TouchClickHandler;
 import hotmath.gwt.cm_mobile_shared.client.util.ViewSettings;
 import hotmath.gwt.cm_rpc.client.rpc.CmArrayList;
 import hotmath.gwt.cm_rpc.client.rpc.CmList;
 
-import java.util.ArrayList;
-
 import com.google.code.gwt.storage.client.Storage;
-import com.google.gwt.event.dom.client.KeyPressEvent;
-import com.google.gwt.event.dom.client.KeyPressHandler;
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.user.client.History;
@@ -22,7 +22,9 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.TextBox;
+import com.google.gwt.user.client.ui.Widget;
 
 
 public class TopicListPagePanel extends AbstractPagePanel {
@@ -38,6 +40,11 @@ public class TopicListPagePanel extends AbstractPagePanel {
     }
 
     FlowPanel matches = new FlowPanel();
+    
+    /** Draw the gui showing the topic list
+     * 
+     * @param topics
+     */
     private void drawGui(CmList<Topic> topics) {
         
         FlowPanel top = new FlowPanel();
@@ -56,14 +63,13 @@ public class TopicListPagePanel extends AbstractPagePanel {
         searchBox.add(textBox);
         top.add(searchBox);
         
+        /** Add search bar */
+        top.add(createSearchPanel());
+        
         topicPanel.clear();
         topicPanel.add(top);
         
         topicPanel.add(matches);
-        
-        if(true)
-            return;
-
     }
     
     private void searchForMatches(String searchFor) {
@@ -82,6 +88,10 @@ public class TopicListPagePanel extends AbstractPagePanel {
         showForMatches(matches);
     }
     
+    /** Update the list of matching lessons
+     * 
+     * @param topicMatch
+     */
     private void showForMatches(CmList<Topic> topicMatch) {
         GenericContainerTag ul = new GenericContainerTag("ul");
         ul.addStyleName("touch");
@@ -135,9 +145,11 @@ public class TopicListPagePanel extends AbstractPagePanel {
         
         GetMobileTopicListAction topicAction = new GetMobileTopicListAction();
         
+        EventBus.getInstance().fireEvent(new CmEvent(EventTypes.EVENT_SERVER_START));
         CatchupMathMobileShared.getCmService().execute(topicAction, new AsyncCallback<CmList<Topic>>() {
             @Override
             public void onSuccess(CmList<Topic> topics) {
+                EventBus.getInstance().fireEvent(new CmEvent(EventTypes.EVENT_SERVER_END));
                 TopicListPagePanel.topics = topics;
                 
 
@@ -155,6 +167,7 @@ public class TopicListPagePanel extends AbstractPagePanel {
             }
             @Override
             public void onFailure(Throwable arg0) {
+                EventBus.getInstance().fireEvent(new CmEvent(EventTypes.EVENT_SERVER_END));
                 arg0.printStackTrace();
                 Window.alert(arg0.getMessage());
             }
@@ -180,5 +193,32 @@ public class TopicListPagePanel extends AbstractPagePanel {
             str += topic.getName() + "|" + topic.getFile() + "\n";
         }
         return str;
+    }
+    
+    private Panel createSearchPanel() {
+        final GenericContainerTag ulTag = new GenericContainerTag("div");
+        ulTag.setStyleName("search-bar");
+        String letters = "abcdefghijklmnlop";
+        for(int i=0,t=letters.length();i<t;i++) {
+            GenericTextTag<String> li = new GenericTextTag<String>("span",letters.substring(i,i+1));
+            li.addHandler(new TouchClickHandler<String>() {
+                @Override
+                public void touchClick(TouchClickEvent<String> event) {
+                    
+                    /** turn off current selection
+                     * 
+                     */
+                    for(int w=0,wt=ulTag.getWidgetCount();w<wt;w++) {
+                        Widget widget = ulTag.getWidget(w);
+                        widget.getElement().removeClassName("selected");
+                    }
+                    event.getTarget().getElement().addClassName("selected");
+                    String txt = event.getTarget().getText();
+                    searchForMatches(txt);
+                }
+            });
+            ulTag.add(li);
+        }
+        return ulTag;
     }
 }
