@@ -59,12 +59,25 @@ public class CatchupMathMobile2 implements EntryPoint, OrientationChangedHandler
                 Controller.navigateToTopicList();
             }
         });
+        actions.add(new ControlAction("Goto top of page") {
+            @Override
+            public void doAction() {
+                gotoTopOfDoc();
+            }
+        });
+        actions.add(new ControlAction("Goto bottom of page") {
+            @Override
+            public void doAction() {
+                gotoBottomOfDoc();
+            }
+        });
+
         _controlPanel.setControlActions(actions);
         
         _rootPanel.add(_controlPanel);
-        //_rootPanel.add(createApplicationPanel());
+        _rootPanel.add(createApplicationPanel());
         
-        _rootPanel.add(createTestPanel());
+        //_rootPanel.add(createTestPanel());
 
         Screen screen = new Screen();
         screen.addHandler(this);
@@ -82,9 +95,14 @@ public class CatchupMathMobile2 implements EntryPoint, OrientationChangedHandler
         History.addValueChangeHandler(new CatchupMathMobileHistoryListener());
     }
 
-    private native void gotoEndOfDoc()/*-{
+    private native void gotoBottomOfDoc()/*-{
         $wnd.scrollTo(0,10000);
+    }-*/;
+    
+    private native void gotoTopOfDoc()/*-{
+        $wnd.scrollTo(0,0);
     }-*/;    
+
     
     private FlowPanel createTestPanel() {
         FlowPanel fp = new FlowPanel();
@@ -92,7 +110,7 @@ public class CatchupMathMobile2 implements EntryPoint, OrientationChangedHandler
         fp.add(new Button("End",new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
-                gotoEndOfDoc();
+                gotoBottomOfDoc();
             }
         }));
         for(int i=0;i<100;i++) {

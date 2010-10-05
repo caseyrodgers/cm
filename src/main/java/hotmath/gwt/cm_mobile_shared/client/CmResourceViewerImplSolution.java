@@ -28,7 +28,6 @@ public class CmResourceViewerImplSolution extends Composite implements CmMobileR
    
     public CmResourceViewerImplSolution() {
         initWidget(uiBinder.createAndBindUi(this));
-        
     }
     
     @Override
@@ -55,7 +54,11 @@ public class CmResourceViewerImplSolution extends Composite implements CmMobileR
         
         return this;
     }
-    
+
+    private native void gotoEndOfDoc()/*-{
+        $wnd.scrollTo(0,10000);
+    }-*/;    
+
     private native void initializeTutor(String pid, String solutionDataJs, String title, boolean hasShowWork,boolean shouldExpandSolution) /*-{
                                           $wnd.TutorManager.initializeTutor(pid, solutionDataJs,title,hasShowWork,shouldExpandSolution);
                                           }-*/;
