@@ -58,11 +58,11 @@
         <concat destfile="${js.dir}/cm_mobile_core_combined.js" append="true">
             <filelist id="jsfiles" dir="src/main/webapp" files="
 
-                    js/floater-min.js
-                    js/domutils-min.js
+                    ../../../../hotmath2/web/js/floater-min.js
+                    ../../../../hotmath2/web/js/domutils-min.js
                     gwt-resources/js/cm_core.js-min.js
                     gwt-resources/js/CatchupMathMobile.js-min.js
-	            js/tutor_flash_widget.js
+	            ../../../../hotmath2/web/js/tutor_flash_widget.js
               " />
         </concat>
     </target>

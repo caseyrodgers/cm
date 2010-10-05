@@ -266,10 +266,24 @@ question_head_text {
 
 .step_title_step {
    background: #E7C2AA;
+   -moz-border-radius:0 0 15px 0;
+   border-radius: 0 0 15px 0;
+   width: 100px;
 }
 
+.hint {
+   background: #DEFF66;
+}
 .step_title_hint {
-	background: #DBE11E;
+  background: #6F7F33;
+  color: white;
+  width: 100px;
+  padding-left: 2px;
+}
+
+.step_content {
+   -moz-border-radius:0 0 15px 15px;
+   border-radius: 0 0 15px 15px;
 }
 
 #control-floater {
@@ -321,7 +335,7 @@ div.page ul.touch {
 }
 
 div.landscape div.page ul.touch {
-  width: 460px;
+ h width: 460px;
 }
 
 div.page ul.touch li {
@@ -410,4 +424,17 @@ div.landscape div.page ul.touch li.group:active {
 	font-size: 1.8em;
 	font-weight: bold;
 	background-color: yellow;
+}
+
+
+#steps_tail {
+    background-color: #DEDEDE;
+    font-size: 20px;
+    padding: 1px 0 2px 5px;
+    -moz-border-radius:10px;
+    border-radius: 10px;
+}
+
+#steps_tail button {
+   font-size: 1.2em;
 }

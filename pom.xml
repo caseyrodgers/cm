@@ -500,6 +500,7 @@
           <modules>
             <module>hotmath.gwt.cm.CatchupMath</module>
             <module>hotmath.gwt.cm_admin.CatchupMathAdmin</module>
+            <module>hotmath.gwt.cm_mobile2.CatchupMathMobile2</module>
 	    <!--
 		<module>hotmath.gwt.cm_mobile.CatchupMathMobile</module>
 	    -->
