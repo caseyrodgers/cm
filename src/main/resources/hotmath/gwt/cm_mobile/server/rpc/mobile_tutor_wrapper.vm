@@ -8,15 +8,15 @@
         </div>
         
         <div id='steps_tail' style='position: relative'>
-	        <a id='steps_prev' href="#"
+	        <button id='steps_prev' href="#"
 	            onclick="TutorManager.showPreviousStep();return false;" accesskey="p">
 	            Previous
-	        </a>
-	        <a id='steps_next' href="#" onclick="TutorManager.showNextStep();return false;" accesskey="s">
+	        </button>
+	        <button id='steps_next' href="#" onclick="TutorManager.showNextStep();return false;" accesskey="s">
 	            Next
-	        </a>
+	        </button>
 	        <div class='cm-tutor-button-bar-bottom' style='display: none;float: right;'>
-	           <a class='button debug-off' href='javascript:void(0)' onclick='expandAllSteps();return false;'>Expand</a>
+	           <button class='button debug-off' onclick='expandAllSteps();return false;'>Expand</button>
 	       </div>
         <img id='scrollTo-button' src='/images/tutor5/spacer.gif'>
     </div>

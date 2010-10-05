@@ -323,7 +323,7 @@ function scrollToStep(num) {
     var buttonBar = DL_GetElementTop(document.getElementById('scrollTo-button'));
     if(buttonBar < visTop || buttonBar > visBot) {
         var st = Number(buttonBar) - visHeight;
-        setTimeout("window.scrollTo(0,10000);",1000);
+        setTimeout("window.scrollTo(0,10000);",0);
     }     
 }    
 function hideAllSteps() {

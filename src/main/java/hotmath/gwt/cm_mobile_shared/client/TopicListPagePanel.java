@@ -120,7 +120,7 @@ public class TopicListPagePanel extends AbstractPagePanel {
          * 
          */
         if(getPreviousEntries().size() > 0) {
-            _searchText.setValue(getPreviousEntries().get(getPreviousEntries().size()-1));
+            _searchText.setValue(getPreviousEntries().get(0));
             searchForMatches(_searchText.getValue());
         }
     }
