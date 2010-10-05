@@ -160,6 +160,8 @@ public class ActionDispatcher {
     public <T extends Response> T execute(Action<T> action) throws CmRpcException {
     	
     	String actionId = new StringBuilder().append(startDate).append(".").append(++counter).toString();
+    	
+    	boolean failed = false;
 
     	ClientInfo clientInfo = ClientInfoHolder.get();
     	if (clientInfo == null) {
@@ -167,6 +169,7 @@ public class ActionDispatcher {
     		clientInfo.setUserType(UserType.UNKNOWN);
     		logger.warn("+++ execute(): ClientInfo from ThreadLocal is NULL");
     	}
+    	clientInfo.setActionId(actionId);
     	
         long timeStart = System.currentTimeMillis();
         String c[] = action.getClass().getName().split("\\.");
@@ -222,9 +225,11 @@ public class ActionDispatcher {
         } catch (CmRpcException cre) {
         	incrementActionsException(actionType);
             monitorCountOfExceptions++;
+            failed = true;
             throw cre;
         } catch (Exception e) {
             monitorCountOfExceptions++;
+            failed = true;
             throw new CmRpcException(e);
         } finally {
             if (conn != null)
@@ -233,7 +238,11 @@ public class ActionDispatcher {
             long now = System.currentTimeMillis();
             long executeTimeMills = (now - timeStart);
 
-            logger.info(String.format("RPC Action (userId:%d,userType:%s) (ID:%s) %s toString: %s complete; elapsed time: %d msec",
+            if (! failed)
+                logger.info(String.format("RPC Action (userId:%d,userType:%s) (ID:%s) %s toString: %s complete; elapsed time: %d msec",
+            		clientInfo.getUserId(), clientInfo.getUserType(), actionId, clazzName, action.toString(), executeTimeMills));
+            else
+                logger.info(String.format("RPC Action (userId:%d,userType:%s) (ID:%s) %s toString: %s FAILED; elapsed time: %d msec",
             		clientInfo.getUserId(), clientInfo.getUserType(), actionId, clazzName, action.toString(), executeTimeMills));
             
             incrementProcessingTime(actionType, executeTimeMills);
