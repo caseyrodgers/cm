@@ -113,6 +113,16 @@ public class TopicListPagePanel extends AbstractPagePanel {
         topicPanel.add(top);
         
         topicPanel.add(matches);
+        
+        
+        
+        /** Try to initialize to last search 
+         * 
+         */
+        if(getPreviousEntries().size() > 0) {
+            _searchText.setValue(getPreviousEntries().get(getPreviousEntries().size()-1));
+            searchForMatches(_searchText.getValue());
+        }
     }
     
     List<String> previousEntries = null;
