@@ -1,23 +1,33 @@
 package hotmath.gwt.cm_rpc.server.service;
 
+import hotmath.cm.server.listener.ContextListener;
+import hotmath.cm.util.ClientInfoHolder;
+import hotmath.gwt.cm_rpc.client.ClientInfo;
+import hotmath.gwt.cm_rpc.client.ClientInfo.UserType;
 import hotmath.gwt.cm_rpc.client.rpc.Action;
 import hotmath.gwt.cm_rpc.client.rpc.CmRpcException;
 import hotmath.gwt.cm_rpc.client.rpc.CmService;
 import hotmath.gwt.cm_rpc.client.rpc.Response;
 import hotmath.gwt.cm_rpc.server.rpc.ActionDispatcher;
 
-import hotmath.gwt.cm_rpc.client.ClientInfo;
-import hotmath.cm.util.ClientInfoHolder;
-
-import com.google.gwt.user.server.rpc.RemoteServiceServlet;
+import java.text.SimpleDateFormat;
 
 import org.apache.log4j.Logger;
+
+import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
 public class CmServiceImpl extends RemoteServiceServlet implements CmService {
 
     private static final long serialVersionUID = -3449687645592040570L;
     
     private static final Logger LOGGER = Logger.getLogger(CmServiceImpl.class);
+    
+    private static String unknownActionId;
+    
+    static {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+        unknownActionId = sdf.format(ContextListener.getStartDate()) + ".UNKNOWN";
+    }
 
     /**
      * Central processing of RPC calls. All RPC calls are one-to-one with a
@@ -38,12 +48,15 @@ public class CmServiceImpl extends RemoteServiceServlet implements CmService {
     public void doUnexpectedFailure(Throwable t) {
         super.doUnexpectedFailure(t);
 
-        ClientInfo ci = ClientInfoHolder.get();
-        if (ci != null) {
-            LOGGER.error(String.format("*** userId: %d, userType: %s", ci.getUserId(), ci.getUserType()), t);
-        }
-        else {
-            LOGGER.error("*** ClientInfo is NULL ***", t);
-        }
+    	ClientInfo clientInfo = ClientInfoHolder.get();
+    	if (clientInfo == null) {
+    		clientInfo = new ClientInfo();
+    		clientInfo.setUserType(UserType.UNKNOWN);
+        	clientInfo.setActionId(unknownActionId);
+    		LOGGER.warn("+++ execute(): ClientInfo from ThreadLocal is NULL");
+    	}
+
+        LOGGER.info(String.format("RPC Action (userId:%d,userType:%s) (ID:%s) %s toString: %s FAILED; elapsed time: %d msec",
+        		clientInfo.getUserId(), clientInfo.getUserType(), unknownActionId, "GWT-RPC", t.getMessage(), -1));
     }
 }

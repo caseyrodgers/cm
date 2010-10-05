@@ -16,6 +16,8 @@ public class ClientInfo implements Response {
 	
 	private String ipAddress;
 	
+	private String actionId;
+	
 	public ClientInfo() {
 	}
 
@@ -59,6 +61,14 @@ public class ClientInfo implements Response {
 
 	public void setIpAddress(String ipAddress) {
 		this.ipAddress = ipAddress;
+	}
+
+	public String getActionId() {
+		return actionId;
+	}
+
+	public void setActionId(String actionId) {
+		this.actionId = actionId;
 	};
 	
 	
