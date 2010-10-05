@@ -279,6 +279,8 @@ question_head_text {
   color: white;
   width: 100px;
   padding-left: 2px;
+   -moz-border-radius:0 0 15px 0;
+   border-radius: 0 0 15px 0;
 }
 
 .step_content {
@@ -426,6 +428,28 @@ div.landscape div.page ul.touch li.group:active {
 	background-color: yellow;
 }
 
+.topic-view-page-panel ul {
+	margin: 0 0 0 2px;
+	padding: 0;
+}
+
+.topic-view-page-panel li {
+	list-style: none;
+}
+
+
+.topic-view-page-panel .resource_type {
+   width: 300px;
+   color: white;
+   padding: 2px;
+   background-color: #A8B5C6;
+   margin: 10px 0 3px; 0;
+}
+
+.topic-view-page-panel .resource_type button {
+	margin-bottom: 5px;
+	font-size: 1.2em;
+}
 
 #steps_tail {
     background-color: #DEDEDE;
@@ -437,4 +461,9 @@ div.landscape div.page ul.touch li.group:active {
 
 #steps_tail button {
    font-size: 1.2em;
+}
+
+
+#steps_head_title {
+	display: none;
 }

@@ -2,6 +2,8 @@ package hotmath.gwt.cm_mobile_shared.client;
 
 import hotmath.gwt.cm_mobile_shared.client.page.IPage;
 
+import java.util.List;
+
 public class LoginPage implements IPage {
     
     public LoginPage() {
@@ -18,8 +20,7 @@ public class LoginPage implements IPage {
 	}
 
     @Override
-    public void setupControlFloater() {
-        ControlPanel cp = CatchupMathMobileShared.__instance.getControlPanel();
-        cp.hideControlPanelFloater();
+    public List<ControlAction> getControlFloaterActions() {
+        return null;
     }
 }

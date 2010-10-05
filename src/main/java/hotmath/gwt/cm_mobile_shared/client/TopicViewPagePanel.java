@@ -23,6 +23,7 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -54,9 +55,8 @@ public class TopicViewPagePanel extends AbstractPagePanel {
         /** do the binding */
         initWidget(uiBinder.createAndBindUi(this));
         
-        mainPanel.add(new HTML("Loading lesson ..."));
+        mainPanel.add(new HTML("<span style='font-weight: bold;font-height: 1.2em;>Loading lesson ...</span>"));
         mainPanel.setStyleName("topic-view-page-panel");
-
         
         loadLessonData(page.getTopicFile());
         //loadPrescriptionSession(prescription.getCurrSession());
@@ -104,13 +104,14 @@ public class TopicViewPagePanel extends AbstractPagePanel {
             /** only show mobile ready resource
              * TODO: only return mobile types
              */
-            if(type.equals("video") || type.startsWith("flashcards") || type.equals("activity") || type.equals("results"))
+            if(type.startsWith("flashcards") || type.equals("activity") || type.equals("results"))
                 continue;
             
-            ListItem li = new ListItem();
-            listItems.add(li);
-            li.setText(r.getLabel());
             if(r.getItems().size() > 0) {
+                ListItem li = new ListItem();
+                li.add(new HTML("<div class='resource_type'>" + r.getLabel() + "</div>"));
+                listItems.add(li);
+                
                 UnOrderedList ol2 = new UnOrderedList();
                 li.add(ol2);
                 for(int ordinal=0;ordinal<r.getItems().size();ordinal++) {
@@ -131,7 +132,7 @@ public class TopicViewPagePanel extends AbstractPagePanel {
             super(item.getTitle());
             this.ordinal = ordinal;
             this.item = item;
-            setWidth("200px");
+            setWidth("300px");
             addClickHandler(new ClickHandler() {
                 @Override
                 public void onClick(ClickEvent arg0) {

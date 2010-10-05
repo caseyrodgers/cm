@@ -12,12 +12,9 @@ import hotmath.gwt.cm_rpc.client.rpc.PrescriptionData;
 import hotmath.gwt.cm_rpc.client.rpc.PrescriptionSessionData;
 import hotmath.gwt.cm_rpc.client.rpc.PrescriptionSessionDataResource;
 import hotmath.gwt.cm_rpc.client.rpc.Response;
-import hotmath.gwt.cm_rpc.client.rpc.RpcData;
 import hotmath.gwt.cm_rpc.server.rpc.ActionHandler;
 import hotmath.gwt.cm_tools.client.model.CustomLessonModel;
-import hotmath.gwt.shared.client.rpc.action.GetViewedInmhItemsAction;
 import hotmath.gwt.shared.server.service.command.GetPrescriptionCommand;
-import hotmath.gwt.shared.server.service.command.GetViewedInmhItemsCommand;
 import hotmath.inmh.INeedMoreHelpItem;
 import hotmath.inmh.INeedMoreHelpItemFactory;
 import hotmath.inmh.INeedMoreHelpResourceType;
@@ -130,6 +127,8 @@ public class GetMobileLessonInfoCommand implements ActionHandler<GetMobileLesson
         sessionData.getInmhResources().add(problemsResource);
 
         List<PrescriptionSessionDataResource> resources = GetPrescriptionCommand.fixupInmhResources(sessionData.getInmhResources());
+        fixupInmhResources(resources);
+        
         sessionData.setInmhResources(resources);
 
         MobileLessonInfo lessonInfo = new MobileLessonInfo();
@@ -364,4 +363,19 @@ public class GetMobileLessonInfoCommand implements ActionHandler<GetMobileLesson
     public Class<? extends Action<? extends Response>> getActionType() {
         return GetMobileLessonInfoAction.class;
     }
+    
+    
+    static public List<PrescriptionSessionDataResource> fixupInmhResources(List<PrescriptionSessionDataResource> inmhTypes) {
+        for (PrescriptionSessionDataResource r : inmhTypes) {
+            if (r.getType().equals("cmextra")) {
+                int i=0;
+                for(InmhItemData id:r.getItems()) {
+                    id.setTitle("Problem " + (++i));
+                }
+                break;
+            }
+        }
+        return inmhTypes;
+    }
+    
 }

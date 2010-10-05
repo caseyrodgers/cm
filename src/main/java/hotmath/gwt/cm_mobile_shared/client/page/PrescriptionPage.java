@@ -1,11 +1,9 @@
 package hotmath.gwt.cm_mobile_shared.client.page;
 
 import hotmath.gwt.cm_mobile_shared.client.ControlAction;
-import hotmath.gwt.cm_mobile_shared.client.ControlPanel;
-import hotmath.gwt.cm_mobile_shared.client.CatchupMathMobileShared;
 import hotmath.gwt.cm_rpc.client.rpc.PrescriptionSessionData;
 
-import java.util.ArrayList;
+import java.util.List;
 
 public class PrescriptionPage implements IPage {
 
@@ -26,9 +24,7 @@ public class PrescriptionPage implements IPage {
 	}
 
     @Override
-    public void setupControlFloater() {
-        ControlPanel cp = CatchupMathMobileShared.__instance.getControlPanel();
-        cp.setControlActions(new ArrayList<ControlAction>());
-        // cp.hideControlPanelFloater();
+    public List<ControlAction> getControlFloaterActions() {
+        return null;
     }
 }

@@ -2,7 +2,6 @@ package hotmath.gwt.cm_mobile2.client;
 
 import hotmath.gwt.cm_mobile_shared.client.CatchupMathMobileShared;
 import hotmath.gwt.cm_mobile_shared.client.CmMobileResourceViewer;
-import hotmath.gwt.cm_mobile_shared.client.ControlAction;
 import hotmath.gwt.cm_mobile_shared.client.ControlPanel;
 import hotmath.gwt.cm_mobile_shared.client.Controller;
 import hotmath.gwt.cm_mobile_shared.client.HeaderPanel;
@@ -19,9 +18,6 @@ import hotmath.gwt.cm_mobile_shared.client.util.ObservableStack;
 import hotmath.gwt.cm_mobile_shared.client.util.Screen;
 import hotmath.gwt.cm_mobile_shared.client.util.Screen.OrientationChangedHandler;
 import hotmath.gwt.cm_rpc.client.rpc.InmhItemData;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -51,28 +47,6 @@ public class CatchupMathMobile2 implements EntryPoint, OrientationChangedHandler
         /** add the floater
          */
         _controlPanel = new ControlPanel();
-        List<ControlAction> actions = new ArrayList<ControlAction>();
-        actions.add(new ControlAction("Search for a lesson") {
-            
-            @Override
-            public void doAction() {
-                Controller.navigateToTopicList();
-            }
-        });
-        actions.add(new ControlAction("Goto top of page") {
-            @Override
-            public void doAction() {
-                gotoTopOfDoc();
-            }
-        });
-        actions.add(new ControlAction("Goto bottom of page") {
-            @Override
-            public void doAction() {
-                gotoBottomOfDoc();
-            }
-        });
-
-        _controlPanel.setControlActions(actions);
         
         _rootPanel.add(_controlPanel);
         _rootPanel.add(createApplicationPanel());
@@ -168,6 +142,7 @@ public class CatchupMathMobile2 implements EntryPoint, OrientationChangedHandler
             public void handleEvent(CmEvent event) {
                 EventType type = event.getEventType();
                 if(type == EventTypes.EVENT_PAGE_LOADED) {
+                    _controlPanel.setControlActions(((IPage)event.getEventData()).getControlFloaterActions());
                 }
                 else if(type == EventTypes.EVENT_PAGE_REMOVED) {
                 }

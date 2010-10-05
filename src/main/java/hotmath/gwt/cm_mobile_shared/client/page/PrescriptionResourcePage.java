@@ -1,8 +1,6 @@
 package hotmath.gwt.cm_mobile_shared.client.page;
 
-import hotmath.gwt.cm_mobile_shared.client.CatchupMathMobileShared;
 import hotmath.gwt.cm_mobile_shared.client.ControlAction;
-import hotmath.gwt.cm_mobile_shared.client.ControlPanel;
 import hotmath.gwt.cm_rpc.client.rpc.InmhItemData;
 
 import java.util.ArrayList;
@@ -37,8 +35,7 @@ public class PrescriptionResourcePage implements IPage {
     }
 
     @Override
-    public void setupControlFloater() {
-        ControlPanel cp = CatchupMathMobileShared.__instance.getControlPanel();
+    public List<ControlAction> getControlFloaterActions() {
         List<ControlAction> actions = new ArrayList<ControlAction>();
         actions.add(new ControlAction("Back to Lesson") {
             @Override
@@ -47,7 +44,6 @@ public class PrescriptionResourcePage implements IPage {
                 // Controller.navigateBack();
             }
         });
-        cp.setControlActions(actions);
-        cp.showControlPanelFloater();        
+        return actions;
     }
 }

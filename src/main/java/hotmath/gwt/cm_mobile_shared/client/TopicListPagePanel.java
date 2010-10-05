@@ -120,7 +120,7 @@ public class TopicListPagePanel extends AbstractPagePanel {
          * 
          */
         if(getPreviousEntries().size() > 0) {
-            _searchText.setValue(getPreviousEntries().get(0));
+            _searchText.setValue(getPreviousEntries().get(getPreviousEntries().size()-1));
             searchForMatches(_searchText.getValue());
         }
     }
@@ -142,21 +142,27 @@ public class TopicListPagePanel extends AbstractPagePanel {
         }
         return previousEntries;
     }
-    
+
+    /** Add to previous list at bottom.  If already exists
+     *  then value is removed first and added to make sure it
+     *  shows up as last used.
+     * @param entry
+     */
     private void addToPreviousEntries(String entry) {
         List<String> pe = getPreviousEntries();
-        if(!pe.contains(entry)) {
-            pe.add(entry);
-            if(Storage.isSupported()) {
-                
-                String data="";
-                for(int i=0,t=previousEntries.size();i<t;i++) {
-                    if(data.length() > 0)
-                        data += "\n";
-                    data += previousEntries.get(i);
-                } 
-                Storage.getLocalStorage().setItem("prev-entries", data);
-            }
+        if(pe.contains(entry)) {
+            pe.remove(entry);
+        }
+        pe.add(entry);
+        
+        if(Storage.isSupported()) {
+            String data="";
+            for(int i=0,t=previousEntries.size();i<t;i++) {
+                if(data.length() > 0)
+                    data += "\n";
+                data += previousEntries.get(i);
+            } 
+            Storage.getLocalStorage().setItem("prev-entries", data);
         }
     }
     

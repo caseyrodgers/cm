@@ -30,16 +30,14 @@ public class QuizPage implements IPage {
 	}
 
     @Override
-    public void setupControlFloater() {
-        ControlPanel cp = CatchupMathMobileShared.__instance.getControlPanel();
+    public List<ControlAction> getControlFloaterActions() {
         List<ControlAction> actions = new ArrayList<ControlAction>();
         actions.add(new ControlAction("Check Quiz") {
             @Override
             public void doAction() {
                 quizPanel.checkTest();
             }
-        });        
-        cp.setControlActions(actions);
-        cp.showControlPanelFloater();
+        });
+        return actions;
     }
 }

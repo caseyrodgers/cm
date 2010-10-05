@@ -1,5 +1,6 @@
 package hotmath.gwt.cm_mobile_shared.client;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -31,7 +32,10 @@ public class ControlPanel extends FlowPanel {
         FlowPanel fp = new FlowPanel();
         expanded = fp;
         expanded.getElement().setId("control-panel-expanded");
-        RootPanel.get().add(expanded);        
+        RootPanel.get().add(expanded);   
+        
+        
+        setControlActions(null);
     }
     
     Widget busyWidget=null;
@@ -105,7 +109,15 @@ public class ControlPanel extends FlowPanel {
     public void setControlActions(List<ControlAction> actions) {
         expanded.clear();
         
-        for(final ControlAction action: actions) {
+        /** Add default actions */
+        List<ControlAction> defaultActions = new ArrayList<ControlAction>();
+        defaultActions.add(new ControlAction("Search for a lesson") {
+            @Override
+            public void doAction() {
+                Controller.navigateToTopicList();
+            }
+        });
+        for(final ControlAction action: defaultActions) {
             Button btn = new Button(action.getLabel(), new ClickHandler() {
                 @Override
                 public void onClick(ClickEvent arg0) {
@@ -114,6 +126,20 @@ public class ControlPanel extends FlowPanel {
                 }
             });
             expanded.add(btn);
+        }
+
+        if(actions != null) {
+            /** Add any custom actions */
+            for(final ControlAction action: actions) {
+                Button btn = new Button(action.getLabel(), new ClickHandler() {
+                    @Override
+                    public void onClick(ClickEvent arg0) {
+                        action.doAction();
+                        hideControlPanel();                    
+                    }
+                });
+                expanded.add(btn);
+            }
         }
     }
 }

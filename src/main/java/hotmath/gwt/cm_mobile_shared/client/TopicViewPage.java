@@ -2,6 +2,8 @@ package hotmath.gwt.cm_mobile_shared.client;
 
 import hotmath.gwt.cm_mobile_shared.client.page.IPage;
 
+import java.util.List;
+
 public class TopicViewPage implements IPage {
     
     String file;
@@ -24,7 +26,7 @@ public class TopicViewPage implements IPage {
 	}
 
     @Override
-    public void setupControlFloater() {
-        ControlPanel cp = CatchupMathMobileShared.__instance.getControlPanel();
+    public List<ControlAction> getControlFloaterActions() {
+        return null;
     }
 }
