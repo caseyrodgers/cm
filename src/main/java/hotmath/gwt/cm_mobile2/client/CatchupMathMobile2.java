@@ -62,9 +62,9 @@ public class CatchupMathMobile2 implements EntryPoint, OrientationChangedHandler
         _controlPanel.setControlActions(actions);
         
         _rootPanel.add(_controlPanel);
-        //_rootPanel.add(createApplicationPanel());
+        _rootPanel.add(createApplicationPanel());
         
-        _rootPanel.add(createTestPanel());
+        //_rootPanel.add(createTestPanel());
 
         Screen screen = new Screen();
         screen.addHandler(this);
