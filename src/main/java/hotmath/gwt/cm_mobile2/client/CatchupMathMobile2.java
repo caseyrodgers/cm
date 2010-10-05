@@ -62,9 +62,9 @@ public class CatchupMathMobile2 implements EntryPoint, OrientationChangedHandler
         _controlPanel.setControlActions(actions);
         
         _rootPanel.add(_controlPanel);
-        _rootPanel.add(createApplicationPanel());
+        //_rootPanel.add(createApplicationPanel());
         
-        //_rootPanel.add(createTestPanel());
+        _rootPanel.add(createTestPanel());
 
         Screen screen = new Screen();
         screen.addHandler(this);
@@ -83,7 +83,7 @@ public class CatchupMathMobile2 implements EntryPoint, OrientationChangedHandler
     }
 
     private native void gotoEndOfDoc()/*-{
-        $wnd.document.location = '#end_of_doc';
+        $wnd.scrollTo(0,10000);
     }-*/;    
     
     private FlowPanel createTestPanel() {
@@ -95,10 +95,9 @@ public class CatchupMathMobile2 implements EntryPoint, OrientationChangedHandler
                 gotoEndOfDoc();
             }
         }));
-        for(int i=0;i<1000;i++) {
-            fp.add(new HTML("<h1>TEST: " + i + "</h1>"));
+        for(int i=0;i<100;i++) {
+            fp.add(new HTML("<p>as dfaskdfas;fasdf askdf asf;asf sadf asfsadf adfkasdfasdf TEST: " + i + "</h1>"));
         }
-        html = "<a name='end_of_doc'>&nbsp;</a>";
         fp.add(new HTML(html));
         return fp;
     }
