@@ -2,7 +2,6 @@ package hotmath.gwt.cm_mobile2.client;
 
 import hotmath.gwt.cm_mobile_shared.client.CatchupMathMobileShared;
 import hotmath.gwt.cm_mobile_shared.client.CmMobileResourceViewer;
-import hotmath.gwt.cm_mobile_shared.client.CmResourceViewerImplLesson;
 import hotmath.gwt.cm_mobile_shared.client.ControlAction;
 import hotmath.gwt.cm_mobile_shared.client.ControlPanel;
 import hotmath.gwt.cm_mobile_shared.client.Controller;
@@ -25,8 +24,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.google.gwt.core.client.EntryPoint;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.History;
+import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -59,7 +62,9 @@ public class CatchupMathMobile2 implements EntryPoint, OrientationChangedHandler
         _controlPanel.setControlActions(actions);
         
         _rootPanel.add(_controlPanel);
-        _rootPanel.add(createApplicationPanel());
+        //_rootPanel.add(createApplicationPanel());
+        
+        _rootPanel.add(createTestPanel());
 
         Screen screen = new Screen();
         screen.addHandler(this);
@@ -70,8 +75,6 @@ public class CatchupMathMobile2 implements EntryPoint, OrientationChangedHandler
         _rootPanel.getElement().getStyle().setProperty("display", "inline");
         
         
-        
-
         initializeExternalJs();
 
         CatchupMathMobileShared.__instance.user = new CmMobileUser();
@@ -79,6 +82,26 @@ public class CatchupMathMobile2 implements EntryPoint, OrientationChangedHandler
         History.addValueChangeHandler(new CatchupMathMobileHistoryListener());
     }
 
+    private native void gotoEndOfDoc()/*-{
+        $wnd.document.location = '#end_of_doc';
+    }-*/;    
+    
+    private FlowPanel createTestPanel() {
+        FlowPanel fp = new FlowPanel();
+        String html = "";
+        fp.add(new Button("End",new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                gotoEndOfDoc();
+            }
+        }));
+        for(int i=0;i<1000;i++) {
+            fp.add(new HTML("<h1>TEST: " + i + "</h1>"));
+        }
+        html = "<a name='end_of_doc'>&nbsp;</a>";
+        fp.add(new HTML(html));
+        return fp;
+    }
 
 
     /** call global JS function to intialize any external resources
