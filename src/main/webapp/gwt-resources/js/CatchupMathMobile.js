@@ -315,6 +315,9 @@ function setState(n, onoff) {
  * @return
  */
 function scrollToStep(num) {
+	gwt_scrollToBottom();
+	return;
+	
     var visibleSize = getViewableSize();
     var scrollXy = getScrollXY();
     var visTop = scrollXy[1];
