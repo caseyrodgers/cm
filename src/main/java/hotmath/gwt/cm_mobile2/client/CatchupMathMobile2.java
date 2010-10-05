@@ -205,11 +205,6 @@ public class CatchupMathMobile2 implements EntryPoint, OrientationChangedHandler
     
     static private native void publishNative() /*-{
         $wnd.doLoadResource_Gwt = @hotmath.gwt.cm_mobile2.client.CatchupMathMobile2::doResourceLoad(Ljava/lang/String;Ljava/lang/String;);
-        $wnd.gwt_scrollToBottom = function() {
-            alert('scrolling to bottom');
-            $wnd.scrollTo(0,100000);
-        } 
-           
     }-*/;
 
 

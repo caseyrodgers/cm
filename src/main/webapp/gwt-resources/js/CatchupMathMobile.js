@@ -315,9 +315,6 @@ function setState(n, onoff) {
  * @return
  */
 function scrollToStep(num) {
-	gwt_scrollToBottom();
-	return;
-	
     var visibleSize = getViewableSize();
     var scrollXy = getScrollXY();
     var visTop = scrollXy[1];
@@ -326,7 +323,7 @@ function scrollToStep(num) {
     var buttonBar = DL_GetElementTop(document.getElementById('scrollTo-button'));
     if(buttonBar < visTop || buttonBar > visBot) {
         var st = Number(buttonBar) - visHeight;
-        window.scrollTo(0,(st+25) );
+        setTimeout("alert('scrolling');window.scrollTo(0,10000);",5000);
     }     
 }    
 function hideAllSteps() {
