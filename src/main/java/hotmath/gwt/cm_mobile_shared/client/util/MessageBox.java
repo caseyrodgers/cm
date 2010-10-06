@@ -12,6 +12,10 @@ public class MessageBox {
         popup.setModal(true);
         popup.add(new HTML(msg));
         popup.center();
+        
+        int left=0;
+        int top=50;
+        popup.setPopupPosition(left, top);
         popup.show();        
     }
     
