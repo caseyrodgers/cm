@@ -126,7 +126,7 @@ public class LogMonitor {
             matcher = endPattern.matcher(line);
             if (matcher.find()) {
                 /**
-                 * is end of action
+                 * is end of action or failed action
                  */
                 String timeStamp = matcher.group(1).trim();
             	int userId = SbUtilities.getInt(matcher.group(2).trim());
@@ -136,7 +136,12 @@ public class LogMonitor {
                 String mills = matcher.group(6).trim();
                 int elapsedTime = Integer.parseInt(mills);
                 
-                writeDatabaseRecord("end", timeStamp, actionName, null, elapsedTime, userId, userType, id);
+                if (line.indexOf("FAILED") < 0) {
+                    writeDatabaseRecord("end", timeStamp, actionName, null, elapsedTime, userId, userType, id);                	
+                }
+                else {
+            		writeDatabaseRecord("fail", timeStamp, actionName, null, elapsedTime, userId, userType, id);
+                }
             }
         }
     }
