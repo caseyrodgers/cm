@@ -302,6 +302,10 @@ question_head_text {
 #control-floater.control-panel-expanded {
 	background: green;
 }
+#control-panel-expanded button {
+	width: 150px;
+	margin-bottom: 3px;
+}
 
 #control-panel-expanded {
 	display: none;
@@ -329,7 +333,7 @@ question_head_text {
 
 
 div.page ul.touch {
-  width: 300px;
+  width: 450px;
   padding: 0px;
   margin: 10px 0px 6px 10px;
   font-size: 18px;
@@ -439,11 +443,13 @@ div.landscape div.page ul.touch li.group:active {
 
 
 .topic-view-page-panel .resource_type {
-   width: 300px;
+   width: 250px;
    color: white;
    padding: 2px;
-   background-color: #A8B5C6;
+   background-color: #7086A4;
    margin: 10px 0 3px; 0;
+   -moz-border-radius:0 15px 0px 0;
+    border-radius: 0 15px 0px 0;
 }
 
 .topic-view-page-panel .resource_type button {
@@ -466,4 +472,19 @@ div.landscape div.page ul.touch li.group:active {
 
 #steps_head_title {
 	display: none;
+}
+
+.popup-message {
+	-moz-border-radius:10px;
+    border-radius: 10px;
+	border: 2px solid #6E84A2;
+	padding: 10px;
+	font-size: 1.2em;
+    -moz-box-shadow: 3px 3px 3px #666;
+    -webkit-box-shadow: 3px 3px 3px #666;
+    box-shadow: 3px 3px 3px #666;
+}
+
+.popup-message.error {
+	color: red;
 }

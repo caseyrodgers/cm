@@ -11,7 +11,7 @@ public class TopicListPage implements IPage {
 
 	@Override
 	public String getTitle() {
-		return "Catchup Math Topic List";
+		return "Lesson List";
 	}
 
 	@Override

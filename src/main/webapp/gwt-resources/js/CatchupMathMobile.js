@@ -52,14 +52,14 @@ var TutorManager = {
             showStepUnit(TutorManager.currentStepUnit);
         }
         else {
-                alert('No more steps');
+        	  gwt_showMessage('no more steps');
         }
      },
      showPreviousStep:function() {
 
         if(TutorManager.currentStepUnit<0) {
-                alert('No previous step');
-                return;
+        	gwt_showMessage('No previous step');
+            return;
         }
         else {
             while(TutorManager.currentStepUnit > 0) {
@@ -350,3 +350,4 @@ function alignControlFloater() {
     alignFloatLayers();
     setTimeout(alignControlFloater,2000);
 } 
+

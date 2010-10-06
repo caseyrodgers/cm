@@ -18,7 +18,7 @@ public class PrescriptionResourcePage implements IPage {
 	
 	@Override
 	public String getTitle() {
-		return "Prescription Resource";
+		return "Resource";
 	}
 
 	@Override

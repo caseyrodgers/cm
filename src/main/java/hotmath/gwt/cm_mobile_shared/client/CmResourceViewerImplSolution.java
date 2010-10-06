@@ -54,12 +54,8 @@ public class CmResourceViewerImplSolution extends Composite implements CmMobileR
         
         return this;
     }
-
-    private native void gotoEndOfDoc()/*-{
-        $wnd.scrollTo(0,10000);
-    }-*/;    
-
     private native void initializeTutor(String pid, String solutionDataJs, String title, boolean hasShowWork,boolean shouldExpandSolution) /*-{
                                           $wnd.TutorManager.initializeTutor(pid, solutionDataJs,title,hasShowWork,shouldExpandSolution);
+                                          $wnd.gwt_showMessage = @hotmath.gwt.cm_mobile_shared.client.util.MessageBox::showMessage(Ljava/lang/String;);
                                           }-*/;
 }

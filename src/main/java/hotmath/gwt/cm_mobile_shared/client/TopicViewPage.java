@@ -17,7 +17,7 @@ public class TopicViewPage implements IPage {
     }
 	@Override
 	public String getTitle() {
-		return "Catchup Math Topic View";
+		return "Lesson";
 	}
 
 	@Override

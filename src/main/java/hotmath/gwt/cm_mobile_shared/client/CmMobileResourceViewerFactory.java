@@ -16,6 +16,9 @@ public class CmMobileResourceViewerFactory {
                 || "cmextra".equals(item.getType())) {
             viewer = new CmResourceViewerImplSolution();
         }
+        else if("video".equals(item.getType())) {
+            viewer = new CmResourceViewerImplVideo();
+        }
         else 
             viewer = new CmResourceViewerImplDefault();
         
