@@ -18,6 +18,7 @@
 	        <div class='cm-tutor-button-bar-bottom' style='display: none;float: right;'>
 	           <button class='button debug-off' onclick='expandAllSteps();return false;'>Expand</button>
 	       </div>
+	       <span id='tutor_message'>&nbsp;</span>
         <img id='scrollTo-button' src='/images/tutor5/spacer.gif'>
     </div>
     <!-- HOTMATH BODY END -->

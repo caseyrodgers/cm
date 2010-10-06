@@ -45,20 +45,24 @@ var TutorManager = {
         
         HmEvents.eventTutorInitialized.fire();
     },
-
+    showMessage:function(msg) {
+    	var tm = $get('tutor_message');
+    	tm.innerHTML = msg;
+    	setTimeout(function(){tm.innerHTML = '&nbsp;';},5000);
+    },
     showNextStep:function() {
         if(TutorManager.currentStepUnit+1 < TutorManager.stepUnits.length) {
             TutorManager.currentStepUnit++;
             showStepUnit(TutorManager.currentStepUnit);
         }
         else {
-        	  gwt_showMessage('no more steps');
+        	  TutorManager.showMessage('no more steps');
         }
      },
      showPreviousStep:function() {
 
         if(TutorManager.currentStepUnit<0) {
-        	gwt_showMessage('No previous step');
+        	TutorManager.showMessage('No previous step');
             return;
         }
         else {
