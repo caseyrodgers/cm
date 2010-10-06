@@ -5,9 +5,8 @@ import hotmath.gwt.cm_rpc.client.rpc.InmhItemData;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.Frame;
+import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -21,16 +20,8 @@ public class CmResourceViewerImplVideo extends Composite implements CmMobileReso
    
     public CmResourceViewerImplVideo() {
         initWidget(uiBinder.createAndBindUi(this));
-        
-        Frame frame = new Frame();
-        DOM.setElementProperty(frame.getElement(), "frameBorder", "no"); // disable
-        DOM.setElementPropertyInt(frame.getElement(), "border", 0); // disable
-        DOM.setElementPropertyInt(frame.getElement(), "frameSpacing", 0); // disable
-        DOM.setElementProperty(frame.getElement(), "scrolling", "no"); // disable
-        
-        frame.setSize("500px","650px");
-        frame.setUrl("/gwt-resources/mobile_view_video.html");
-        mainPanel.add(frame);
+        HTML html = new HTML("<object width=\"480\" height=\"385\"><param name=\"movie\" value=\"http://www.youtube.com/v/s80J2dAUUyI?fs=1&amp;hl=en_US\"></param><param name=\"allowFullScreen\" value=\"true\"></param><param name=\"allowscriptaccess\" value=\"always\"></param><embed src=\"http://www.youtube.com/v/s80J2dAUUyI?fs=1&amp;hl=en_US\" type=\"application/x-shockwave-flash\" allowscriptaccess=\"always\" allowfullscreen=\"true\" width=\"480\" height=\"385\"></embed></object>");
+        mainPanel.add(html);
     }
     
     private native void loadVideo() /*-{

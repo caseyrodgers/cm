@@ -11,12 +11,12 @@ public class TopicListPage implements IPage {
 
 	@Override
 	public String getTitle() {
-		return "Lesson List";
+		return "Lesson Search";
 	}
 
 	@Override
 	public String getBackButtonText() {
-		return "Home";
+		return "";
 	}
 
     @Override

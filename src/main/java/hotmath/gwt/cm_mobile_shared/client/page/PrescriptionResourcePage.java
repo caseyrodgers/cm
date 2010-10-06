@@ -18,12 +18,12 @@ public class PrescriptionResourcePage implements IPage {
 	
 	@Override
 	public String getTitle() {
-		return "Resource";
+		return this.item.getType();
 	}
 
 	@Override
 	public String getBackButtonText() {
-		return "<< Lesson";
+		return "Lesson";
 	}
 
 	public InmhItemData getItem() {

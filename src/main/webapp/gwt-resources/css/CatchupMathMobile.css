@@ -61,7 +61,7 @@ body {
   color: white;
   text-shadow: rgba(0, 0, 0, .6) 0px -1px 0px;
   /* set up the chrome background */
-  -webkit-border-image : url('images/back_button.png') 0 4 0 13;
+  -webkit-border-image : url('/gwt-resources/images/back_button.png') 0 4 0 13;
   border-width : 0 4px 0 13px;
   padding-top: 7px;
   padding-right: 4px;
@@ -433,12 +433,13 @@ div.landscape div.page ul.touch li.group:active {
 }
 
 .topic-view-page-panel ul {
-	margin: 0 0 0 2px;
+	margin: 0 0 0 3px;
 	padding: 0;
 }
 
 .topic-view-page-panel li {
 	list-style: none;
+	margin-left: 6px;
 }
 
 
@@ -454,7 +455,7 @@ div.landscape div.page ul.touch li.group:active {
 
 .topic-view-page-panel .resource_type button {
 	margin-bottom: 5px;
-	font-size: 1.2em;
+	font-size: 1.1em;
 }
 
 #steps_tail {
@@ -466,7 +467,7 @@ div.landscape div.page ul.touch li.group:active {
 }
 
 #steps_tail button {
-   font-size: 1.2em;
+   font-size: 1.1em;
 }
 
 
@@ -475,6 +476,7 @@ div.landscape div.page ul.touch li.group:active {
 }
 
 .popup-message {
+	background: white;
 	-moz-border-radius:10px;
     border-radius: 10px;
 	border: 2px solid #6E84A2;
@@ -487,4 +489,15 @@ div.landscape div.page ul.touch li.group:active {
 
 .popup-message.error {
 	color: red;
+}
+
+.topic-view-page-panel .resource-button {
+	width: 200px;
+	height: 50px;
+	margin: 3px;
+}
+
+
+#search-list-items {
+	font-size: 1.2em;
 }

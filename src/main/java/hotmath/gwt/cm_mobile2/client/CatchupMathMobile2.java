@@ -128,6 +128,7 @@ public class CatchupMathMobile2 implements EntryPoint, OrientationChangedHandler
         ObservableStack<IPage> pageStack = new ObservableStack<IPage>();
         pagesPanel.bind(pageStack);
         headerPanel.bind(pageStack);
+        
         Controller.init(pageStack);
 
         return fp;

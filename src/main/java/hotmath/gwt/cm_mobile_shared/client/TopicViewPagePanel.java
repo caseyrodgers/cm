@@ -7,6 +7,9 @@ import hotmath.gwt.cm_mobile_shared.client.page.PrescriptionPage;
 import hotmath.gwt.cm_mobile_shared.client.rpc.GetMobileLessonInfoAction;
 import hotmath.gwt.cm_mobile_shared.client.rpc.MobileLessonInfo;
 import hotmath.gwt.cm_mobile_shared.client.util.GenericContainerTag;
+import hotmath.gwt.cm_mobile_shared.client.util.GenericTextTag;
+import hotmath.gwt.cm_mobile_shared.client.util.TouchClickEvent;
+import hotmath.gwt.cm_mobile_shared.client.util.TouchClickEvent.TouchClickHandler;
 import hotmath.gwt.cm_rpc.client.rpc.InmhItemData;
 import hotmath.gwt.cm_rpc.client.rpc.PrescriptionData;
 import hotmath.gwt.cm_rpc.client.rpc.PrescriptionSessionDataResource;
@@ -23,7 +26,6 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -112,14 +114,22 @@ public class TopicViewPagePanel extends AbstractPagePanel {
                 li.add(new HTML("<div class='resource_type'>" + r.getLabel() + "</div>"));
                 listItems.add(li);
                 
-                UnOrderedList ol2 = new UnOrderedList();
-                li.add(ol2);
+                GenericContainerTag ul = new GenericContainerTag("ul");
+                ul.addStyleName("touch");                
+                li.add(ul);
                 for(int ordinal=0;ordinal<r.getItems().size();ordinal++) {
-                    InmhItemData i = r.getItems().get(ordinal);
-                    ListItem li2 = new ListItem();
-                    // li2.add(new ResourceButton(ordinal, i));
-                    li2.add(new ResourceButton(ordinal, i));
-                    ol2.add(li2);
+                    final InmhItemData item = r.getItems().get(ordinal);
+                    GenericTextTag<String> resourceLi = new GenericTextTag<String>("li");
+                    resourceLi.setStyleName("group");
+                    resourceLi.setText(item.getTitle());
+                    final int ordinalHolder = ordinal;
+                    resourceLi.addHandler(new TouchClickHandler<String>() {
+                        @Override
+                        public void touchClick(TouchClickEvent<String> event) {
+                            History.newItem("resource:" + item.getType() + ":" + ordinalHolder);
+                        }
+                    });
+                    ul.add(resourceLi);
                 }
             }
         }
@@ -130,9 +140,9 @@ public class TopicViewPagePanel extends AbstractPagePanel {
         int ordinal;
         public ResourceButton(final int ordinal, final InmhItemData item) {
             super(item.getTitle());
+            setStyleName("resource-button");
             this.ordinal = ordinal;
             this.item = item;
-            setWidth("300px");
             addClickHandler(new ClickHandler() {
                 @Override
                 public void onClick(ClickEvent arg0) {

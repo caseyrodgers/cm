@@ -22,7 +22,7 @@ public class TopicViewPage implements IPage {
 
 	@Override
 	public String getBackButtonText() {
-		return "";
+		return "Search";
 	}
 
     @Override

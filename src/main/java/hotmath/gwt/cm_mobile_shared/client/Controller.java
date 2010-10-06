@@ -1,5 +1,7 @@
 package hotmath.gwt.cm_mobile_shared.client;
 
+import com.google.gwt.user.client.History;
+
 import hotmath.gwt.cm_mobile_shared.client.page.IPage;
 import hotmath.gwt.cm_mobile_shared.client.page.PrescriptionPage;
 import hotmath.gwt.cm_mobile_shared.client.page.PrescriptionResourcePage;
@@ -16,9 +18,12 @@ public class Controller {
     private Controller() {
     }
 
+    /** Always go to topic list on init
+     * 
+     * @param pageStack
+     */
     public static void init(ObservableStack<IPage> pageStack) {
         mPageStack = pageStack;
-
         TopicListPage p = new TopicListPage();
         mPageStack.push(p);
     }

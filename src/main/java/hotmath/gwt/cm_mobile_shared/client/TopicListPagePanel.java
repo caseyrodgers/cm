@@ -61,6 +61,7 @@ public class TopicListPagePanel extends AbstractPagePanel {
         FlowPanel top = new FlowPanel();
         
         GenericContainerTag searchBox = new GenericContainerTag("div");
+        searchBox.setStyleName("search-box");
         _searchText = new TextBox();
         _searchText.addKeyUpHandler(new KeyUpHandler() {
             
@@ -204,7 +205,7 @@ public class TopicListPagePanel extends AbstractPagePanel {
                          */
                         addToPreviousEntries(_searchText.getText());
                         
-                        String tag = "topic:" + topic.getFile();
+                        String tag = "topic:" + topic.getFile() + ":" + System.currentTimeMillis();
                         History.newItem(tag);
                     }
                 }
