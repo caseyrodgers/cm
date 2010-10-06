@@ -467,7 +467,7 @@ div.landscape div.page ul.touch li.group:active {
 }
 
 #steps_tail button {
-   font-size: 1.1em;
+   .8em;
 }
 
 
