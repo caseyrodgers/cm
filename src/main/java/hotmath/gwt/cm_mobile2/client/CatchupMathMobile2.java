@@ -14,6 +14,7 @@ import hotmath.gwt.cm_mobile_shared.client.event.EventType;
 import hotmath.gwt.cm_mobile_shared.client.event.EventTypes;
 import hotmath.gwt.cm_mobile_shared.client.page.IPage;
 import hotmath.gwt.cm_mobile_shared.client.rpc.CmMobileUser;
+import hotmath.gwt.cm_mobile_shared.client.util.MessageBox;
 import hotmath.gwt.cm_mobile_shared.client.util.ObservableStack;
 import hotmath.gwt.cm_mobile_shared.client.util.Screen;
 import hotmath.gwt.cm_mobile_shared.client.util.Screen.OrientationChangedHandler;
@@ -65,6 +66,8 @@ public class CatchupMathMobile2 implements EntryPoint, OrientationChangedHandler
         initializeExternalJs();
 
         CatchupMathMobileShared.__instance.user = new CmMobileUser();
+        
+        orientationChanged(ScreenOrientation.Portrait);
         
         History.addValueChangeHandler(new CatchupMathMobileHistoryListener());
     }
@@ -186,5 +189,14 @@ public class CatchupMathMobile2 implements EntryPoint, OrientationChangedHandler
 
     @Override
     public void orientationChanged(ScreenOrientation newOrientation) {
+        MessageBox.showMessage("Orientation Changed: " + newOrientation);
+        if (newOrientation == ScreenOrientation.Portrait) {
+            _rootPanel.removeStyleName("landscape");
+            _rootPanel.addStyleName("portrait");
+        } else {
+            _rootPanel.addStyleName("landscape");
+            _rootPanel.removeStyleName("portrait");
+        }
+        
     }
 }

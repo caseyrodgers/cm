@@ -316,7 +316,10 @@ public class QuizContext implements CmContext {
             @Override
             public void attempt() {
                 CmBusyManager.setBusy(true);
-                InfoPopupBox.display("Quiz Check", "Checking quiz ...");
+                
+                if(CmShared.getQueryParameter("debug") != null) {
+                    InfoPopupBox.display("Quiz Check", "Checking quiz ...");
+                }
 
                 CreateTestRunAction action = new CreateTestRunAction(UserInfo.getInstance().getTestId(), UserInfo.getInstance().getUid());
 

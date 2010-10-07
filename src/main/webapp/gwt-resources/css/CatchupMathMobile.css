@@ -261,7 +261,7 @@ question_head_text {
 
 
 #steps_prev {
-  margin-right: 10px;
+  margin-right: 5px;
 }
 
 .step_title_step {
@@ -333,7 +333,7 @@ question_head_text {
 
 
 div.page ul.touch {
-  width: 450px;
+  width: 300px;
   padding: 0px;
   margin: 10px 0px 6px 10px;
   font-size: 18px;
@@ -345,7 +345,6 @@ div.landscape div.page ul.touch {
 }
 
 div.page ul.touch li {
-  height: 32px;
   list-style-type: none;
   background-color: white;
   border-style: solid;
@@ -356,7 +355,6 @@ div.page ul.touch li {
   padding-left: 10px;
   padding-right: 20px;
   /* ensure that long pieces of text get trimmed */
-  white-space : nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
@@ -467,7 +465,7 @@ div.landscape div.page ul.touch li.group:active {
 }
 
 #steps_tail button {
-   .8em;
+   1em;
 }
 
 

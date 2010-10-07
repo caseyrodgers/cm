@@ -189,7 +189,7 @@ public class TopicListPagePanel extends AbstractPagePanel {
      */
     private void showForMatches(CmList<Topic> topicMatch) {
         GenericContainerTag ul = new GenericContainerTag("ul");
-        ul.addStyleName("touch");
+       ul.addStyleName("touch");
         for(int i=0,t=topicMatch.size();i<t;i++) {
             final Topic topic = topicMatch.get(i);
             
