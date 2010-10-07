@@ -57,7 +57,7 @@ public class LogMonitor {
         _tailer.addLogFileTailerListener(new LogFileTailerListener() {
             @Override
             public void newLogFileLine(String line) {
-                if (line.indexOf("rpc.ActionDispatcher") > -1)
+                if (line.indexOf("rpc.ActionDispatcher") > -1 || line.indexOf("service.CmServiceImpl") > -1)
                     processActionLog(line);
             }
         });
@@ -121,7 +121,7 @@ public class LogMonitor {
              * may be end of action
              * 
              */
-            String end = "^(.*),.*RPC Action\\ \\(userId:(.*),userType:(.*)\\)\\ \\(ID:(.*)\\)\\ (.*)\\.*toString.*elapsed time\\:\\ (.*) msec$";
+            String end = "^(.*),.*RPC Action\\ \\(userId:(.*),userType:(.*)\\)\\ \\(ID:(.*)\\)\\ (.*)\\.*toString:(.*)elapsed time\\:\\ (.*) msec$";
             Pattern endPattern = Pattern.compile(end);
             matcher = endPattern.matcher(line);
             if (matcher.find()) {
@@ -133,14 +133,20 @@ public class LogMonitor {
             	String userType = matcher.group(3).trim();
                 String id = matcher.group(4).trim();
                 String actionName = matcher.group(5).trim();
-                String mills = matcher.group(6).trim();
+                String mills = matcher.group(7).trim();
                 int elapsedTime = Integer.parseInt(mills);
                 
                 if (line.indexOf("FAILED") < 0) {
                     writeDatabaseRecord("end", timeStamp, actionName, null, elapsedTime, userId, userType, id);                	
                 }
                 else {
-            		writeDatabaseRecord("fail", timeStamp, actionName, null, elapsedTime, userId, userType, id);
+                	String msg = matcher.group(6).trim();
+                	// trim "FAILED" if present
+                	int idx;
+                	if ((idx = msg.indexOf("FAILED")) > 0) {
+                		msg = msg.substring(0, idx);
+                	}
+            		writeDatabaseRecord("fail", timeStamp, actionName, msg, elapsedTime, userId, userType, id);
                 }
             }
         }
