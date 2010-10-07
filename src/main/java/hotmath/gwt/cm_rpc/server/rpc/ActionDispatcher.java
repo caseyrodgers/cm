@@ -162,6 +162,8 @@ public class ActionDispatcher {
     	String actionId = new StringBuilder().append(startDate).append(".").append(++counter).toString();
     	
     	boolean failed = false;
+    	String errMsg = null;
+    	String exceptionClass = null;
 
     	ClientInfo clientInfo = ClientInfoHolder.get();
     	if (clientInfo == null) {
@@ -226,10 +228,15 @@ public class ActionDispatcher {
         	incrementActionsException(actionType);
             monitorCountOfExceptions++;
             failed = true;
+            errMsg = cre.getMessage();
+            exceptionClass = cre.getClass().getName();
             throw cre;
         } catch (Exception e) {
+        	incrementActionsException(actionType);
             monitorCountOfExceptions++;
             failed = true;
+            errMsg = e.getMessage();
+            exceptionClass = e.getClass().getName();
             throw new CmRpcException(e);
         } finally {
             if (conn != null)
@@ -242,8 +249,8 @@ public class ActionDispatcher {
                 logger.info(String.format("RPC Action (userId:%d,userType:%s) (ID:%s) %s toString: %s complete; elapsed time: %d msec",
             		clientInfo.getUserId(), clientInfo.getUserType(), actionId, clazzName, action.toString(), executeTimeMills));
             else
-                logger.info(String.format("RPC Action (userId:%d,userType:%s) (ID:%s) %s toString: %s FAILED; elapsed time: %d msec",
-            		clientInfo.getUserId(), clientInfo.getUserType(), actionId, clazzName, action.toString(), executeTimeMills));
+                logger.info(String.format("RPC Action (userId:%d,userType:%s) (ID:%s) %s toString: %s - %s FAILED; elapsed time: %d msec",
+            		clientInfo.getUserId(), clientInfo.getUserType(), actionId, clazzName, exceptionClass, errMsg, executeTimeMills));
             
             incrementProcessingTime(actionType, executeTimeMills);
             
