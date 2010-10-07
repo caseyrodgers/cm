@@ -141,6 +141,13 @@ var TutorManager = {
 	        myStep.stepUnits[myStep.stepUnits.length] = su;
        }
        return TutorManager.stepUnits.length;
+    },
+    backToLesson:function() {
+    	/** Move back to lesson that called tutor
+    	 * 
+    	 *  TODO: need gotoLessonForPid(currentPid);
+    	 *  */
+    	history.back();
     }
 }
 
