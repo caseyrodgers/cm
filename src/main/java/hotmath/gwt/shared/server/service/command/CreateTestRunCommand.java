@@ -45,8 +45,9 @@ public class CreateTestRunCommand implements ActionHandler<CreateTestRunAction, 
         PreparedStatement pstat = null;
         ResultSet rs = null;
         long startTime;
+        long beginTime;
         
-        startTime = System.currentTimeMillis();
+        startTime = beginTime = System.currentTimeMillis();
         new CmStudentDao().verifyActiveProgram(conn, action.getTestId(), action.getUserId());
 
         if (logger.isInfoEnabled()) {
@@ -172,6 +173,9 @@ public class CreateTestRunCommand implements ActionHandler<CreateTestRunAction, 
         	logger.error(String.format("*** Error executing Action: %s", action.toString()), e);
             throw new CmRpcException("Error creating new test run: " + e.getMessage());
         } finally {
+            if (logger.isInfoEnabled()) {
+            	logger.info(String.format("+++ execute(): CreateTestRun overall time: %d msec", System.currentTimeMillis() - beginTime));
+            }
             SqlUtilities.releaseResources(rs, pstat,null);
         }
     }
