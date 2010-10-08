@@ -1076,7 +1076,7 @@ public class CmStudentDao {
             	ci.setUserType(UserType.UNKNOWN);
             }
             logger.info(String.format("+++ addStudentProgram(): (userId:%d,userType:%s), elapsed time: %d",
-            		ci.getUserId(), ci.getUserType()));
+            		ci.getUserId(), ci.getUserType(), System.currentTimeMillis()-startTime));
         }
         return sm;
     }
