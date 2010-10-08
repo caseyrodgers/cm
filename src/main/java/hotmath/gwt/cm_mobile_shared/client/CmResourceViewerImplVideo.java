@@ -20,8 +20,10 @@ public class CmResourceViewerImplVideo extends Composite implements CmMobileReso
    
     public CmResourceViewerImplVideo() {
         initWidget(uiBinder.createAndBindUi(this));
-        HTML html = new HTML("<object width=\"480\" height=\"385\"><param name=\"movie\" value=\"http://www.youtube.com/v/s80J2dAUUyI?fs=1&amp;hl=en_US\"></param><param name=\"allowFullScreen\" value=\"true\"></param><param name=\"allowscriptaccess\" value=\"always\"></param><embed src=\"http://www.youtube.com/v/s80J2dAUUyI?fs=1&amp;hl=en_US\" type=\"application/x-shockwave-flash\" allowscriptaccess=\"always\" allowfullscreen=\"true\" width=\"480\" height=\"385\"></embed></object>");
-        mainPanel.add(html);
+        
+        String html = "<object width=\"480\" height=\"385\"><param name=\"movie\" value=\"http://www.youtube.com/v/s80J2dAUUyI?fs=1&amp;hl=en_US\"></param><param name=\"allowFullScreen\" value=\"true\"></param><param name=\"allowscriptaccess\" value=\"always\"></param><embed src=\"http://www.youtube.com/v/s80J2dAUUyI?fs=1&amp;hl=en_US\" type=\"application/x-shockwave-flash\" allowscriptaccess=\"always\" allowfullscreen=\"true\" width=\"480\" height=\"385\"></embed></object>";
+        html = "<iframe height='800' width='900' src='/gwt-resources/mobile_view_video.html'></iframe>";
+        mainPanel.add(new HTML(html));
     }
     
     private native void loadVideo() /*-{
