@@ -14,11 +14,11 @@ import hotmath.gwt.cm_mobile_shared.client.event.EventType;
 import hotmath.gwt.cm_mobile_shared.client.event.EventTypes;
 import hotmath.gwt.cm_mobile_shared.client.page.IPage;
 import hotmath.gwt.cm_mobile_shared.client.rpc.CmMobileUser;
-import hotmath.gwt.cm_mobile_shared.client.util.MessageBox;
 import hotmath.gwt.cm_mobile_shared.client.util.ObservableStack;
 import hotmath.gwt.cm_mobile_shared.client.util.Screen;
 import hotmath.gwt.cm_mobile_shared.client.util.Screen.OrientationChangedHandler;
 import hotmath.gwt.cm_rpc.client.rpc.InmhItemData;
+import hotmath.gwt.cm_rpc.client.rpc.PrescriptionSessionData;
 
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -182,8 +182,14 @@ public class CatchupMathMobile2 implements EntryPoint, OrientationChangedHandler
         //Controller.navigateToPrescriptionResource(null, inmh,-1);
     }
     
+    static public void backToLesson() {
+        PrescriptionSessionData psd = CatchupMathMobileShared.__instance.user.getPrescripion().getCurrSession();
+        Controller.navigateToTopicView(psd.getInmhResources().get(0).getItems().get(0).getFile());
+    }
+    
     static private native void publishNative() /*-{
         $wnd.doLoadResource_Gwt = @hotmath.gwt.cm_mobile2.client.CatchupMathMobile2::doResourceLoad(Ljava/lang/String;Ljava/lang/String;);
+        $wnd.gwt_backToLesson = @hotmath.gwt.cm_mobile2.client.CatchupMathMobile2::backToLesson();
     }-*/;
 
 

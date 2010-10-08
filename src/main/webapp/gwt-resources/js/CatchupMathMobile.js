@@ -147,7 +147,7 @@ var TutorManager = {
     	 * 
     	 *  TODO: need gotoLessonForPid(currentPid);
     	 *  */
-    	history.back();
+    	gwt_backToLesson();
     }
 }
 

@@ -260,8 +260,8 @@ question_head_text {
 }
 
 
-#steps_prev {
-  margin-right: 5px;
+#steps_next {
+  margin-right: 10px;
 }
 
 .step_title_step {
@@ -335,7 +335,7 @@ question_head_text {
 div.page ul.touch {
   width: 300px;
   padding: 0px;
-  margin: 10px 0px 6px 10px;
+  margin: 0;
   font-size: 18px;
   font-weight: bold;
 }
@@ -431,13 +431,13 @@ div.landscape div.page ul.touch li.group:active {
 }
 
 .topic-view-page-panel ul {
-	margin: 0 0 0 3px;
+	margin: 0 0 0 0px;
 	padding: 0;
 }
 
 .topic-view-page-panel li {
 	list-style: none;
-	margin-left: 6px;
+	margin-left: 0px;
 }
 
 
@@ -446,9 +446,9 @@ div.landscape div.page ul.touch li.group:active {
    color: white;
    padding: 2px;
    background-color: #7086A4;
-   margin: 10px 0 3px; 0;
+   margin: 10px 0 4px 0;
    -moz-border-radius:0 15px 0px 0;
-    border-radius: 0 15px 0px 0;
+   border-radius: 0 15px 0px 0;
 }
 
 .topic-view-page-panel .resource_type button {
@@ -504,4 +504,8 @@ div.landscape div.page ul.touch li.group:active {
 #tutor_message {
 	color: red;
 	font-size: .9em;
+}
+
+.search-box {
+	margin-bottom: 10px;
 }

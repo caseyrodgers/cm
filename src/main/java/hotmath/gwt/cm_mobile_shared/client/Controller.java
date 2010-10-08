@@ -1,7 +1,5 @@
 package hotmath.gwt.cm_mobile_shared.client;
 
-import com.google.gwt.user.client.History;
-
 import hotmath.gwt.cm_mobile_shared.client.page.IPage;
 import hotmath.gwt.cm_mobile_shared.client.page.PrescriptionPage;
 import hotmath.gwt.cm_mobile_shared.client.page.PrescriptionResourcePage;
