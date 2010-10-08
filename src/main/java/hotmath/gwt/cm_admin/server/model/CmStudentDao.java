@@ -4,10 +4,13 @@ import static hotmath.gwt.cm_tools.client.model.StudentModelExt.HAS_LAST_LOGIN_K
 import static hotmath.gwt.cm_tools.client.model.StudentModelExt.HAS_LAST_QUIZ_KEY;
 import static hotmath.gwt.cm_tools.client.model.StudentModelExt.HAS_PASSING_COUNT_KEY;
 import static hotmath.gwt.cm_tools.client.model.StudentModelExt.HAS_TUTORING_USE_KEY;
+
 import hotmath.assessment.InmhItemData;
 import hotmath.cm.server.model.CmUserProgramDao;
+import hotmath.cm.util.ClientInfoHolder;
 import hotmath.cm.util.CmMultiLinePropertyReader;
-import hotmath.gwt.cm.client.ui.HelpWindow;
+import hotmath.gwt.cm_rpc.client.ClientInfo;
+import hotmath.gwt.cm_rpc.client.ClientInfo.UserType;
 import hotmath.gwt.cm_rpc.client.rpc.CmArrayList;
 import hotmath.gwt.cm_rpc.client.rpc.CmList;
 import hotmath.gwt.cm_rpc.client.rpc.CmRpcException;
@@ -27,7 +30,6 @@ import hotmath.gwt.cm_tools.client.model.StudentShowWorkModel;
 import hotmath.gwt.shared.client.model.UserProgramIsNotActiveException;
 import hotmath.gwt.shared.client.util.CmException;
 import hotmath.testset.ha.CmProgram;
-import hotmath.testset.ha.HaTestDao;
 import hotmath.testset.ha.HaTestDef;
 import hotmath.testset.ha.HaTestDefDao;
 import hotmath.testset.ha.HaTestDefDescription;
@@ -61,9 +63,8 @@ import sb.util.SbUtilities;
 
 public class CmStudentDao {
 
-  
     private static final Logger logger = Logger.getLogger(CmStudentDao.class);
-    
+
     public static final int GROUP_NONE_ID = 1;
 
     public CmStudentDao() {
@@ -1014,6 +1015,7 @@ public class CmStudentDao {
         }
         
         PreparedStatement ps = null;
+        long startTime = System.currentTimeMillis();
         try {
             
             StudentProgramModel sp = sm.getProgram();
@@ -1067,6 +1069,14 @@ public class CmStudentDao {
             throw new Exception(m, e);
         } finally {
             SqlUtilities.releaseResources(null, ps, null);
+            ClientInfo ci = ClientInfoHolder.get();
+            if (ci == null) {
+            	ci = new ClientInfo();
+            	ci.setUserId(0);
+            	ci.setUserType(UserType.UNKNOWN);
+            }
+            logger.info(String.format("+++ addStudentProgram(): (userId:%d,userType:%s), elapsed time: %d",
+            		ci.getUserId(), ci.getUserType()));
         }
         return sm;
     }
