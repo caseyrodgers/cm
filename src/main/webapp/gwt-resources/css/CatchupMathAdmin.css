@@ -1,269 +1,311 @@
 .header-panel {
-        background-color: white;
-        background-image: url(/gwt-resources/images/logo_1.gif);
-        background-position: 5 5;
-        background-repeat: no-repeat;
-        text-align: left;
+	background-color: white;
+	background-image: url(/gwt-resources/images/logo_1.gif);
+	background-position: 5 5;
+	background-repeat: no-repeat;
+	text-align: left;
 }
+
 .header-panel-title {
-        left: 180px;
-        position: absolute;
-        top: 15px;
+	left: 180px;
+	position: absolute;
+	top: 15px;
 }
 
 .header-panel-logout-btn {
-        height: 34px;
-        width: 92px;
+	height: 34px;
+	width: 92px;
 }
 
 .header-panel-logout-btn_cm-partner-lcom {
-        background: url(/lcom/logo_admin_close.png) no-repeat center left !important;
+	background: url(/lcom/logo_admin_close.png) no-repeat center left
+		!important;
 }
+
 .header-panel-logout-btn_cm-partner-lcom-over {
-        background: url(/lcom/logo_admin_close-over.png) no-repeat center left !important;
+	background: url(/lcom/logo_admin_close-over.png) no-repeat center left
+		!important;
 }
 
 .header-panel-school-label {
-        text-align: center;
-}
-
-
-.admin-header-buttons {
-	width: 332px;
-	position: absolute;
-	right: 200px;
-	height: 35px;
-	top: 3px;
+	text-align: center;
 }
 
 .header-panel-guide-btn {
-   float: left;
-   background: url(/gwt-resources/images/admin_getting_started.png) no-repeat center left !important;
-   height: 32px;
-   width: 144px;
-}
-.header-panel-guide-btn-over {
-        background: url(/gwt-resources/images/admin_getting_started-over.png) no-repeat center left !important;
+	position: absolute;
+	top: 3px;
+	right: 387px; 
+	background :url(/gwt-resources/images/admin_getting_started.png) no-repeat center left !important;
+	height: 32px;
+	width: 144px;
+	background: url(/gwt-resources/images/admin_getting_started.png)
+		no-repeat center left !important;
 }
 
+.header-panel-guide-btn-over {
+	background: url(/gwt-resources/images/admin_getting_started-over.png)
+		no-repeat center left !important;
+}
 
 .header-panel-training-btn {
-	float: right;
-       background: url(/gwt-resources/images/admin_teacher_training.png) no-repeat center left !important;
-       height: 32px;
-       width: 179px;
+	position: absolute; top : 3px;
+	right: 200px;
+	background: url(/gwt-resources/images/admin_teacher_training.png)
+		no-repeat center left !important;
+	height: 32px;
+	width: 179px;
+	top: 3px;
 }
+
 .header-panel-training-btn-over {
-        background: url(/gwt-resources/images/admin_teacher_training-over.png) no-repeat center left !important;
+	background: url(/gwt-resources/images/admin_teacher_training-over.png)
+		no-repeat center left !important;
 }
-
-
-
-
 
 .header-panel-help-btn {
-        background: url(/gwt-resources/images/help.png) no-repeat center left !important;
-        height: 34px;
-        position: absolute;
-        right: 15px;
-        top: 2px;
-        width: 76px;
+	background: url(/gwt-resources/images/help.png) no-repeat center left
+		!important;
+	height: 34px;
+	position: absolute;
+	right: 15px;
+	top: 2px;
+	width: 76px;
 }
+
 .header-panel-help-btn-over {
-        background: url(/gwt-resources/images/help-over.png) no-repeat center left !important;
+	background: url(/gwt-resources/images/help-over.png) no-repeat center
+		left !important;
 }
+
 .printer-icon {
-        background: url(/gwt-resources/images/icons/printer-icon.png) no-repeat center left !important;
+	background: url(/gwt-resources/images/icons/printer-icon.png) no-repeat
+		center left !important;
 }
+
 .main-container {
-        height: 400px;
-        overflow: auto;
-        padding: 0 20px 20px 20px;
-        position: relative;
+	height: 400px;
+	overflow: auto;
+	padding: 0 20px 20px 20px;
+	position: relative;
 }
+
 .student-grid {
-        margin: auto;
-        width: 400px;
+	margin: auto;
+	width: 400px;
 }
+
 .student-details {
-        overflow: auto;
-        overflow-x: auto;
-        overflow-y: auto;
+	overflow: auto;
+	overflow-x: auto;
+	overflow-y: auto;
 }
+
 .header-panel-logo-2 {
-        float: right;
+	float: right;
 }
+
 .main-port {
-        border: 1px solid blue;
-        text-align: center;
-        width: 100%;
+	border: 1px solid blue;
+	text-align: center;
+	width: 100%;
 }
+
 .main-toolbar {
-        margin-top: 40px;
+	margin-top: 40px;
 }
+
 .main-toolbar-go-left {
-        font-size: 100px;
-        text-align: center;
+	font-size: 100px;
+	text-align: center;
 }
+
 .footer-panel {
-        background-color: white;
-        color: #929292;
-        font-size: 10px;
-        margin: auto;
+	background-color: white;
+	color: #929292;
+	font-size: 10px;
+	margin: auto;
 }
+
 .footer-panel ul {
-        margin-left: 150px;
-        margin-top: 3px;
+	margin-left: 150px;
+	margin-top: 3px;
 }
+
 .footer-panel li {
-        float: left;
-        margin-right: 20px;
+	float: left;
+	margin-right: 20px;
 }
+
 .student-grid-pane-button {
-        font-size: 12px;
-        font-weight: bold;
+	font-size: 12px;
+	font-weight: bold;
 }
+
 .register-student-fieldset {
-        margin-top: 20px;
+	margin-top: 20px;
 }
+
 .account-info {
-        height: 120px;
+	height: 120px;
 }
+
 .account-info .form {
-        width: 420px;
+	width: 420px;
 }
+
 .account-info .fld {
-        width: 410px;
+	width: 410px;
 }
+
 .account-info .fld label {
-        display: block;
-        float: left;
-        font-weight: bold;
-        margin-right: 5px;
-        text-align: right;
-        width: 170px;
+	display: block;
+	float: left;
+	font-weight: bold;
+	margin-right: 5px;
+	text-align: right;
+	width: 170px;
 }
+
 .account-info .fld div {
-        float: right;
-        width: 230px;
+	float: right;
+	width: 230px;
 }
+
 .account-info .fld-warn {
-	    color: red;
-        width: 360px;
+	color: red;
+	width: 360px;
 }
+
 .account-info .fld-warn label {
-        display: block;
-        float: left;
-        font-weight: bold;
-        margin-right: 5px;
-        text-align: right;
-        width: 170px;
+	display: block;
+	float: left;
+	font-weight: bold;
+	margin-right: 5px;
+	text-align: right;
+	width: 170px;
 }
+
 .account-info .fld-warn div {
-        float: right;
-        width: 180px;
+	float: right;
+	width: 180px;
 }
 
 .account-info .left {
-        left: 20px;
-        position: absolute;
-        top: 30px;
+	left: 20px;
+	position: absolute;
+	top: 30px;
 }
-.account-info .right {
-        left: 450px;
-        position: absolute;
-        top: 30px;
-}
-.account-info .school-name-form .fld {
-        width: 100%;
-}
-.account-info .school-name-form {
-        left: 20px;
-        position: absolute;
-        top: 10px;
-        width: 600px;
-}
-.account-info .school-name-form .fld div {
-        float: right;
-        width: 420px;
-}
-.student-grid-panel-grid {
-        height: 200px;
-}
-.student-grid-panel-grid-container {
-        height: 450px;
-        margin-left: 100px;
-        width: 800px;
-}
-.student-grid-panel-toolbar {
-}
-.student-grid-panel-button {
-        width: 200px;
-}
-.register-student-form-panel {
-        padding: 10px 10px 5px 10px;
-}
-.register-student-upload-form {
-        padding: 0px 0px 0px 0px;
-}
-.admin-help {
-}
-.faq li {
-        list-style: none;
-}
-.faq .question {
-        color: red;
-}
-.print-report-btn {
-        float: right;
-}
-.manage-groups-window-buttons {
-        padding: 10px 10px 10px 20px;
-}
-.manage-groups-window-buttons-button {
-        margin-bottom: 5px;
-        margin-left: 10px;
-}
-.student-grid-panel-group-filter-panel {
-   font-size: .8em;
-   margin-top: 10px;
-}	
 
+.account-info .right {
+	left: 450px;
+	position: absolute;
+	top: 30px;
+}
+
+.account-info .school-name-form .fld {
+	width: 100%;
+}
+
+.account-info .school-name-form {
+	left: 20px;
+	position: absolute;
+	top: 10px;
+	width: 600px;
+}
+
+.account-info .school-name-form .fld div {
+	float: right;
+	width: 420px;
+}
+
+.student-grid-panel-grid {
+	height: 200px;
+}
+
+.student-grid-panel-grid-container {
+	height: 450px;
+	margin-left: 100px;
+	width: 800px;
+}
+
+.student-grid-panel-toolbar {
+	
+}
+
+.student-grid-panel-button {
+	width: 200px;
+}
+
+.register-student-form-panel {
+	padding: 10px 10px 5px 10px;
+}
+
+.register-student-upload-form {
+	padding: 0px 0px 0px 0px;
+}
+
+.admin-help {
+	
+}
+
+.faq li {
+	list-style: none;
+}
+
+.faq .question {
+	color: red;
+}
+
+.print-report-btn {
+	float: right;
+}
+
+.manage-groups-window-buttons {
+	padding: 10px 10px 10px 20px;
+}
+
+.manage-groups-window-buttons-button {
+	margin-bottom: 5px;
+	margin-left: 10px;
+}
+
+.student-grid-panel-group-filter-panel {
+	font-size: .8em;
+	margin-top: 10px;
+}
 
 .x-grid3-hd-row td span {
-   font-weight: bold;
+	font-weight: bold;
 }
 
-
 .trending-data-student-list {
+	
 }
 
 trending-data-student-list-item {
-  font-size: 110%;
+	font-size: 110%;
 }
-
 
 /** Custom Program Lessons */
 .custom-prescription-dialog .pre-alg {
-    padding: 4px;
-    background-color: #8dc63f;
+	padding: 4px;
+	background-color: #8dc63f;
 }
 
 .custom-prescription-dialog .alg1 {
-    padding: 4px;
-        background-color: #f7941d;
+	padding: 4px;
+	background-color: #f7941d;
 }
 
 .custom-prescription-dialog .alg2 {
-    padding: 4px;
-        background-color: #ed1c24;
+	padding: 4px;
+	background-color: #ed1c24;
 }
 
 .custom-prescription-dialog .geom {
-    padding: 4px;
-    background-color: #00aeef
+	padding: 4px;
+	background-color: #00aeef
 }
-
 
 /** On RegisterStudent program combo box place
     a small square at first position of each 
@@ -274,31 +316,32 @@ trending-data-student-list-item {
 .customProgramDot {
 	display: none;
 }
+
 /** turn on by setting */
 .customProgram .customProgramDot {
-	  display: inline;
-} 
+	display: inline;
+}
 
 .program-read-only {
 	color: red;
 }
 
 .program-details-header {
-    height: 30px;
-    padding-top: 15px;
+	height: 30px;
+	padding-top: 15px;
 }
 
 .program-details-tree-panel {
-    margin-top: 10px;
-    padding-bottom: 10px;
+	margin-top: 10px;
+	padding-bottom: 10px;
 }
 
 /** attempt to override ext-js style */
 #program-details-panel .x-ftree2-selected {
- Ê background-color: #DFE8F6 !important;
+	Ê background-color: #DFE8F6 !important;
 }
 
 /** attempt to override ext-js style */
 program-details-panel .x-ftree2-node-over {
- Ê background-color: #EEEEEE !important;
+	Ê background-color: #EEEEEE !important;
 }

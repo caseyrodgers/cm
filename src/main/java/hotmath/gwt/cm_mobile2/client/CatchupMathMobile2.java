@@ -62,7 +62,6 @@ public class CatchupMathMobile2 implements EntryPoint, OrientationChangedHandler
 
         _rootPanel.getElement().getStyle().setProperty("display", "inline");
         
-        
         initializeExternalJs();
 
         CatchupMathMobileShared.__instance.user = new CmMobileUser();
