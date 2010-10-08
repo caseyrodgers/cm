@@ -1,7 +1,5 @@
 package hotmath.gwt.cm_mobile_shared.client;
 
-import hotmath.gwt.cm_mobile_shared.client.HeaderPanel.CssAnimate;
-import hotmath.gwt.cm_mobile_shared.client.HeaderPanel.CssPos;
 import hotmath.gwt.cm_mobile_shared.client.event.CmEvent;
 import hotmath.gwt.cm_mobile_shared.client.event.EventBus;
 import hotmath.gwt.cm_mobile_shared.client.event.EventTypes;
