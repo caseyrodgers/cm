@@ -135,7 +135,12 @@ public class CreateTestRunCommand implements ActionHandler<CreateTestRunAction, 
              * Let the prescription direct the next action depending on
              * type of test, status, etc.
              */
+            startTime = System.currentTimeMillis();
             NextAction nextAction = pres.getNextAction();
+            if (logger.isInfoEnabled()) {
+            	logger.info(String.format("+++ execute: Prescription Class: %s, getNextAction(): took: %d msec",
+            	    pres.getClass().getName(), System.currentTimeMillis() - startTime));
+            }
             
             testRunInfo.setCorrect(answeredCorrect);
             testRunInfo.setTotal(pres.getTest().getTestQuestionCount());
