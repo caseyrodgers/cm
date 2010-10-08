@@ -55,6 +55,8 @@ public class HeaderPanel extends LayoutContainer {
 		headerText.setStyleName("header-panel-title");
 		add(headerText);
 		
+		LayoutContainer lc = new LayoutContainer();
+		lc.setStyleName("admin-header-buttons");
         IconButton guide = new IconButton("header-panel-guide-btn");
         guide.setToolTip("Find out how to get started with Catchup Math");
         guide.addSelectionListener(new SelectionListener<IconButtonEvent>() {
@@ -62,8 +64,18 @@ public class HeaderPanel extends LayoutContainer {
                 new GettingStartedGuideWindow();
             }
         });
-        add(guide);
+        lc.add(guide);
         
+        IconButton traning = new IconButton("header-panel-training-btn");
+        traning.setToolTip("View a Catchup Math training video");
+        traning.addSelectionListener(new SelectionListener<IconButtonEvent>() {
+            public void componentSelected(IconButtonEvent ce) {
+                new WebinarWindow();
+            }
+        });
+        lc.add(traning);
+       
+        add(lc);
         
         EventBus.getInstance().addEventListener(new CmEventListener() {
 			

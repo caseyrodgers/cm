@@ -23,21 +23,44 @@
         background: url(/lcom/logo_admin_close-over.png) no-repeat center left !important;
 }
 
-
 .header-panel-school-label {
         text-align: center;
 }
+
+
+.admin-header-buttons {
+	width: 335px;
+	position: absolute;
+	right: 40%;
+	height: 35px;
+	top: 3px;
+}
+
 .header-panel-guide-btn {
-        background: url(/gwt-resources/images/admin_getting_started.png) no-repeat center left !important;
-        height: 32px;
-        position: absolute;
-        right: 40%;
-        top: 4px;
-        width: 192px;
+   float: left;
+   background: url(/gwt-resources/images/admin_getting_started.png) no-repeat center left !important;
+   height: 32px;
+   width: 144px;
 }
 .header-panel-guide-btn-over {
         background: url(/gwt-resources/images/admin_getting_started-over.png) no-repeat center left !important;
 }
+
+
+.header-panel-training-btn {
+	float: right;
+       background: url(/gwt-resources/images/admin_teacher_training.png) no-repeat center left !important;
+       height: 32px;
+       width: 179px;
+}
+.header-panel-training-btn-over {
+        background: url(/gwt-resources/images/admin_teacher_training-over.png) no-repeat center left !important;
+}
+
+
+
+
+
 .header-panel-help-btn {
         background: url(/gwt-resources/images/help.png) no-repeat center left !important;
         height: 34px;
