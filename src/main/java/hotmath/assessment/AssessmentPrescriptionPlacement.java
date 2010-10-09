@@ -70,6 +70,7 @@ public class AssessmentPrescriptionPlacement extends AssessmentPrescription {
         }
 
         HaUser user = getTestRun().getHaTest().getUser();        
+
         if (program != null) {
             // next action is another quiz
             /** @TODO: Need to set test config json when assigning test
@@ -77,24 +78,47 @@ public class AssessmentPrescriptionPlacement extends AssessmentPrescription {
              */
             nextAction.setNextAction(NextActionName.AUTO_ASSSIGNED);
             CmStudentDao dao = new CmStudentDao();
-            StudentModelI sm = dao.getStudentModel(user.getUid());
-            
-            sm.getProgram().setProgramType(program.getProgramType());
-            sm.getProgram().setSubjectId(program.getSubject());
-            sm.setProgramChanged(true);
             
             // now update the ActiveInfo to empty
             StudentActiveInfo active = new StudentActiveInfo();
             
-            Connection conn=null;
+            // TODO: eliminate local Connection 
+            Connection conn = super.conn;
+            boolean useLocalConnection = (conn == null);
+            
+            long studentModelTime = -1;
+            long updateStudentTime = -1;
+            long activeInfoTime = -1;
+
             try {
-                conn = HMConnectionPool.getConnection();
+                if (useLocalConnection) {
+                	conn = HMConnectionPool.getConnection();
+                }
+
+                long startTime = System.currentTimeMillis();
+                StudentModelI sm = dao.getStudentModelBase(conn, user.getUid(), false);
+                studentModelTime = System.currentTimeMillis() - startTime;
                 
-                dao.updateStudent(conn, sm,true,false, true, false, false);
+                sm.getProgram().setProgramType(program.getProgramType());
+                sm.getProgram().setSubjectId(program.getSubject());
+                sm.setProgramChanged(true);
+                
+                startTime = System.currentTimeMillis();
+                dao.updateStudent(conn, sm, true, false, true, false, false);
+                updateStudentTime = System.currentTimeMillis() - startTime;
+                
+                startTime = System.currentTimeMillis();
                 dao.setActiveInfo(conn, user.getUid(), active);
+                activeInfoTime = System.currentTimeMillis() - startTime;
             }
             finally {
-                SqlUtilities.releaseResources(null,null,conn);
+            	logger.info(String.format("+++ getNextAction(): getStudentModel took: %d msec, updateStudent() took: %d msec, setActiveInfo() took: %d msec",
+            			studentModelTime, updateStudentTime, activeInfoTime));
+            	if (useLocalConnection) {
+            		// TODO: eliminate local Connection
+            		logger.info("=== getNextAction(): closing a local Connection", new Exception());
+                    SqlUtilities.releaseResources(null,null,conn);
+            	}
             }
             nextAction.setAssignedTest(program.getTitle());
             nextAction.setAssignedTestId(active.getActiveTestId());
