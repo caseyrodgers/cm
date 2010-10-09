@@ -26,6 +26,7 @@ import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.DeferredCommand;
 import com.google.gwt.user.client.History;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
@@ -126,13 +127,13 @@ public class TopicListPagePanel extends AbstractPagePanel {
             searchForMatches(_searchText.getValue());
         }
 
-        DeferredCommand.addCommand(new Command() {
+        Timer t = new Timer() {
             @Override
-            public void execute() {
-                Window.alert("Setting focus to search field");
+            public void run() {
                 searchBox.getElement().focus();
             }
-        });
+        };
+        t.schedule(1000);
     }
     
     List<String> previousEntries = null;
