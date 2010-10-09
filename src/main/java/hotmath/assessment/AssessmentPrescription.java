@@ -42,6 +42,8 @@ import sb.logger.SbLogger;
 public class AssessmentPrescription {
 
 	static final Logger logger = Logger.getLogger(AssessmentPrescription.class);
+	
+	protected Connection conn;
 
 	final static public int TOTAL_SESSION_SOLUTIONS = 3;
 	final static public int MAX_SESSIONS = 100;
@@ -117,6 +119,7 @@ public class AssessmentPrescription {
 
 		logger.info("Creating prescription for run: " + testRun);
 
+		this.conn = conn;
 		this.testRun = testRun;
 		_assessment = new InmhAssessment(conn, testRun.getHaTest().getUser()
 				.getUid(), testRun.getPidList());
@@ -161,6 +164,7 @@ public class AssessmentPrescription {
 				SbLogger.postMessage("AssessmentPrescriptionSession: session has no items: "
 						+ session);
 			} else {
+				//TOOD: should sessNum be incremented if session not actually added?
 				// add this session, and move to next
 				_sessions.add(session);
 				sessNum++;
@@ -250,8 +254,10 @@ public class AssessmentPrescription {
 				si.add(new SessionData(item, pid.getFile(), 3, 1, pid
 						.getWidgetJsonArgs()));
 			}
-			_sessions.add(session);
-			sessNum++;
+			if (! _sessions.contains(session)) {
+				_sessions.add(session);
+    			sessNum++;
+			}
 		}
 		logger.info("Finished creating AssessmentPrescription from lessons: "
 				+ testRun.getRunId());
@@ -352,7 +358,7 @@ public class AssessmentPrescription {
 	}
 
 	/**
-	 * Return the sum of all the weights associated with the the inmh items
+	 * Return the sum of all the weights for the inmh items
 	 * associated with this assessment.
 	 * 
 	 * @return
