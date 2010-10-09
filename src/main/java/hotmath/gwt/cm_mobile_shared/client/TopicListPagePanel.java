@@ -23,8 +23,6 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.dom.client.KeyUpHandler;
-import com.google.gwt.user.client.Command;
-import com.google.gwt.user.client.DeferredCommand;
 import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
@@ -126,11 +124,15 @@ public class TopicListPagePanel extends AbstractPagePanel {
             _searchText.setValue(getPreviousEntries().get(getPreviousEntries().size()-1));
             searchForMatches(_searchText.getValue());
         }
+        else {
+            searchForMatches("");
+        }
 
         Timer t = new Timer() {
             @Override
             public void run() {
-                searchBox.getElement().focus();
+                Window.alert("setting focus: " + _searchText.getElement().getInnerHTML());
+                _searchText.getElement().focus();
             }
         };
         t.schedule(1000);
@@ -237,7 +239,7 @@ public class TopicListPagePanel extends AbstractPagePanel {
             return;
         }
         
-        /** see if in local storage
+        /** see if list of lessons is in local storage
          * 
          */
         if (Storage.isSupported()) {
