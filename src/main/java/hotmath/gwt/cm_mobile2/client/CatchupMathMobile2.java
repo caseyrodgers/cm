@@ -102,7 +102,7 @@ public class CatchupMathMobile2 implements EntryPoint, OrientationChangedHandler
      * 
      */
     private native void initializeExternalJs()/*-{
-        $wnd.initializeExternalJs();
+        // $wnd.initializeExternalJs();
     }-*/;    
 
     /**
