@@ -47,14 +47,6 @@ public class CatchupMathMobile2 implements EntryPoint, OrientationChangedHandler
         __instance = this;
         _rootPanel = RootPanel.get("main-content");
         
-        
-        if(true) {
-            _rootPanel.add(new TextBox());
-            Window.alert("Text Box Created");
-            return;
-        }
-        
-        
         /** add the floater
          */
         _controlPanel = new ControlPanel();
