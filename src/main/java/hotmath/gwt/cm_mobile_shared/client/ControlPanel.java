@@ -5,9 +5,11 @@ import java.util.List;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 
@@ -15,25 +17,25 @@ public class ControlPanel extends FlowPanel {
     Widget collapsed;
     FlowPanel expanded;
     public ControlPanel() {
-//        getElement().setId("control-floater");
-//        Anchor anchor = new Anchor("<<<");
-//        anchor.addClickHandler(new ClickHandler() {
-//
-//            @Override
-//            public void onClick(ClickEvent arg0) {
-//                showControlPanel();
-//            }
-//        });
-//        collapsed = anchor;
-//        add(anchor);
-//        
-//        FlowPanel fp = new FlowPanel();
-//        expanded = fp;
-//        expanded.getElement().setId("control-panel-expanded");
-//        RootPanel.get().add(expanded);   
-//        
-//        
-//        setControlActions(null);
+        getElement().setId("control-floater");
+        Anchor anchor = new Anchor("<<<");
+        anchor.addClickHandler(new ClickHandler() {
+
+            @Override
+            public void onClick(ClickEvent arg0) {
+                showControlPanel();
+            }
+        });
+        collapsed = anchor;
+        add(anchor);
+        
+        FlowPanel fp = new FlowPanel();
+        expanded = fp;
+        expanded.getElement().setId("control-panel-expanded");
+        RootPanel.get().add(expanded);   
+        
+        
+        setControlActions(null);
     }
     
     Widget busyWidget=null;
