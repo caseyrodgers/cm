@@ -24,8 +24,8 @@ public class Controller {
     public static void init(ObservableStack<IPage> pageStack) {
         mPageStack = pageStack;
         
-        TestPage p = new TestPage();
-        // TopicListPage p = new TopicListPage();
+        // TestPage p = new TestPage();
+        TopicListPage p = new TopicListPage();
         mPageStack.push(p);
     }
 
