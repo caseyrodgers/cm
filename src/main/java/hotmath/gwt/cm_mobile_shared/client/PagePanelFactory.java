@@ -10,6 +10,7 @@ import hotmath.gwt.cm_mobile_shared.client.page.PrescriptionResourcePage;
 import hotmath.gwt.cm_mobile_shared.client.page.PrescriptionResourcePagePanel;
 import hotmath.gwt.cm_mobile_shared.client.page.QuizPage;
 import hotmath.gwt.cm_mobile_shared.client.page.TestPage;
+import hotmath.gwt.cm_mobile_shared.client.page.TestPagePanel;
 import hotmath.gwt.cm_mobile_shared.client.page.WelcomePage;
 import hotmath.gwt.cm_mobile_shared.client.page.WelcomePagePanel;
 
