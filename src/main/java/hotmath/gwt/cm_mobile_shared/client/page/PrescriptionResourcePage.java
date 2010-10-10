@@ -19,7 +19,7 @@ public class PrescriptionResourcePage implements IPage {
 	
 	@Override
 	public String getTitle() {
-		return this.item.getType();
+		return "Learning Resource";
 	}
 
 	@Override

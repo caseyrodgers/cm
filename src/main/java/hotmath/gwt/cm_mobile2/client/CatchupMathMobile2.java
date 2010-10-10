@@ -182,8 +182,7 @@ public class CatchupMathMobile2 implements EntryPoint, OrientationChangedHandler
     }
     
     static public void backToLesson() {
-        PrescriptionSessionData psd = CatchupMathMobileShared.__instance.user.getPrescripion().getCurrSession();
-        Controller.navigateToTopicView(psd.getInmhResources().get(0).getItems().get(0).getFile());
+        Controller.navigateBack();
     }
     
     static private native void publishNative() /*-{
@@ -201,6 +200,5 @@ public class CatchupMathMobile2 implements EntryPoint, OrientationChangedHandler
             _rootPanel.addStyleName("landscape");
             _rootPanel.removeStyleName("portrait");
         }
-        
     }
 }

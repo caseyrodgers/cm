@@ -131,7 +131,6 @@ public class TopicListPagePanel extends AbstractPagePanel {
         Timer t = new Timer() {
             @Override
             public void run() {
-                Window.alert("setting focus: " + _searchText.getElement().getInnerHTML());
                 _searchText.getElement().focus();
             }
         };

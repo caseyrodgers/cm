@@ -126,7 +126,8 @@ public class TopicViewPagePanel extends AbstractPagePanel {
                     resourceLi.addHandler(new TouchClickHandler<String>() {
                         @Override
                         public void touchClick(TouchClickEvent<String> event) {
-                            History.newItem("resource:" + item.getType() + ":" + ordinalHolder);
+                            String tag = "resource:" + item.getType() + ":" + ordinalHolder + ":" + System.currentTimeMillis();
+                            History.newItem(tag);
                         }
                     });
                     ul.add(resourceLi);
