@@ -18,16 +18,17 @@ import hotmath.gwt.cm_mobile_shared.client.util.ObservableStack;
 import hotmath.gwt.cm_mobile_shared.client.util.Screen;
 import hotmath.gwt.cm_mobile_shared.client.util.Screen.OrientationChangedHandler;
 import hotmath.gwt.cm_rpc.client.rpc.InmhItemData;
-import hotmath.gwt.cm_rpc.client.rpc.PrescriptionSessionData;
 
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.History;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.RootPanel;
+import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -45,6 +46,15 @@ public class CatchupMathMobile2 implements EntryPoint, OrientationChangedHandler
 
         __instance = this;
         _rootPanel = RootPanel.get("main-content");
+        
+        
+        if(true) {
+            _rootPanel.add(new TextBox());
+            Window.alert("Text Box Created");
+            return;
+        }
+        
+        
         /** add the floater
          */
         _controlPanel = new ControlPanel();
