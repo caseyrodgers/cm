@@ -64,11 +64,7 @@ public class CatchupMathMobile2 implements EntryPoint, OrientationChangedHandler
         _rootPanel.add(_controlPanel);
         _rootPanel.add(createApplicationPanel());
         
-        if(true) {
-            _rootPanel.add(new TextBox());
-            Window.alert("Text Box Created");
-            return;
-        }
+
         
         //_rootPanel.add(createTestPanel());
 
@@ -77,6 +73,14 @@ public class CatchupMathMobile2 implements EntryPoint, OrientationChangedHandler
         orientationChanged(screen.getScreenOrientation());
         
         CatchupMathMobileShared.__instance.hideBusyPanel();
+        
+        
+        if(true) {
+            _rootPanel.add(new TextBox());
+            Window.alert("Text Box 2 Created");
+            return;
+        }        
+        
 
         _rootPanel.getElement().getStyle().setProperty("display", "inline");
         
