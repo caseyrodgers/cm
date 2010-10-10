@@ -8,10 +8,12 @@ body div {
 
 div.page 
 {
-	-webkit-transform: translate(0px,0px);
+/* 	This causes Android browsers to not allow INPUT focus keyboard support
+        
+        -webkit-transform: translate(0px,0px); 
+*/
 	position: absolute;	
 }
-
 
 div.page.left 
 {
@@ -163,4 +165,4 @@ div.landscape #header .title.pos-right {
 }
 
 
-
+<
