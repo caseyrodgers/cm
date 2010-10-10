@@ -23,12 +23,10 @@ import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.History;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.RootPanel;
-import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -51,12 +49,9 @@ public class CatchupMathMobile2 implements EntryPoint, OrientationChangedHandler
          */
         _controlPanel = new ControlPanel();
 
-        
-        
-        _rootPanel.add(_controlPanel);
-        _rootPanel.add(createApplicationPanel());
-        
 
+        _rootPanel.add(createApplicationPanel());
+        _rootPanel.add(_controlPanel);        
         
         //_rootPanel.add(createTestPanel());
 
