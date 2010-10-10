@@ -64,13 +64,13 @@ public class TopicListPagePanel extends AbstractPagePanel {
         final GenericContainerTag searchBox = new GenericContainerTag("div");
         searchBox.setStyleName("search-box");
         _searchText = new TextBox();
-        _searchText.addKeyUpHandler(new KeyUpHandler() {
-            
-            @Override
-            public void onKeyUp(KeyUpEvent event) {
-                searchForMatches(_searchText.getValue());                
-            }
-        });
+//        _searchText.addKeyUpHandler(new KeyUpHandler() {
+//            
+//            @Override
+//            public void onKeyUp(KeyUpEvent event) {
+//                searchForMatches(_searchText.getValue());                
+//            }
+//        });
         searchBox.add(new Label("Search for lessons: "));
         searchBox.add(_searchText);
         searchBox.add(new Button("History",new ClickHandler() {

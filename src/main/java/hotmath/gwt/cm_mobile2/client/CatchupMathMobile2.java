@@ -75,16 +75,6 @@ public class CatchupMathMobile2 implements EntryPoint, OrientationChangedHandler
         orientationChanged(ScreenOrientation.Portrait);
         
         History.addValueChangeHandler(new CatchupMathMobileHistoryListener());
-        
-        
-        
-        
-        if(true) {
-            _rootPanel.add(new TextBox());
-            Window.alert("Text Box 3 Created");
-            return;
-        }        
-
     }
 
     private native void gotoBottomOfDoc()/*-{
