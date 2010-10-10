@@ -112,11 +112,6 @@ public class TopicListPagePanel extends AbstractPagePanel {
         
         top.add(searchBox);
         
-        
-        top.add(new TextBox());
-        top.add(new TextBox());
-        top.add(new TextBox());
-        
         topicPanel.clear();
         topicPanel.add(top);
         
