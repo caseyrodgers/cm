@@ -65,14 +65,6 @@ public class CatchupMathMobile2 implements EntryPoint, OrientationChangedHandler
         orientationChanged(screen.getScreenOrientation());
         
         CatchupMathMobileShared.__instance.hideBusyPanel();
-        
-        
-        if(true) {
-            _rootPanel.add(new TextBox());
-            Window.alert("Text Box 2 Created");
-            return;
-        }        
-        
 
         _rootPanel.getElement().getStyle().setProperty("display", "inline");
         
@@ -83,6 +75,16 @@ public class CatchupMathMobile2 implements EntryPoint, OrientationChangedHandler
         orientationChanged(ScreenOrientation.Portrait);
         
         History.addValueChangeHandler(new CatchupMathMobileHistoryListener());
+        
+        
+        
+        
+        if(true) {
+            _rootPanel.add(new TextBox());
+            Window.alert("Text Box 3 Created");
+            return;
+        }        
+
     }
 
     private native void gotoBottomOfDoc()/*-{
