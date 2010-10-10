@@ -2,6 +2,7 @@ package hotmath.gwt.cm_mobile2.client;
 
 import hotmath.gwt.cm_mobile_shared.client.CatchupMathMobileShared;
 import hotmath.gwt.cm_mobile_shared.client.CmMobileResourceViewer;
+import hotmath.gwt.cm_mobile_shared.client.ControlPanel;
 import hotmath.gwt.cm_mobile_shared.client.Controller;
 import hotmath.gwt.cm_mobile_shared.client.HeaderPanel;
 import hotmath.gwt.cm_mobile_shared.client.PagesContainerPanel;
@@ -37,7 +38,7 @@ import com.google.gwt.user.client.ui.Widget;
 public class CatchupMathMobile2 implements EntryPoint, OrientationChangedHandler {
 
     RootPanel _rootPanel;
-    //static ControlPanel _controlPanel;
+    static ControlPanel _controlPanel;
     static public CatchupMathMobile2 __instance;
     public void onModuleLoad() {
 
@@ -46,11 +47,11 @@ public class CatchupMathMobile2 implements EntryPoint, OrientationChangedHandler
         
         /** add the floater
          */
-        //_controlPanel = new ControlPanel();
+        _controlPanel = new ControlPanel();
 
 
         _rootPanel.add(createApplicationPanel());
-        //_rootPanel.add(_controlPanel);        
+        _rootPanel.add(_controlPanel);        
         
         //_rootPanel.add(createTestPanel());
 
@@ -145,17 +146,17 @@ public class CatchupMathMobile2 implements EntryPoint, OrientationChangedHandler
             public void handleEvent(CmEvent event) {
                 EventType type = event.getEventType();
                 if(type == EventTypes.EVENT_PAGE_LOADED) {
-                    //_controlPanel.setControlActions(((IPage)event.getEventData()).getControlFloaterActions());
+                    _controlPanel.setControlActions(((IPage)event.getEventData()).getControlFloaterActions());
                 }
                 else if(type == EventTypes.EVENT_PAGE_REMOVED) {
                 }
                 else if(type == EventTypes.EVENT_PAGE_ACTIVATED) {
                 }
                 else if(type == EventTypes.EVENT_SERVER_START) {
-                    //CatchupMathMobile2._controlPanel.showBusy(true);
+                    CatchupMathMobile2._controlPanel.showBusy(true);
                 }
                 else if(type == EventTypes.EVENT_SERVER_END) {
-                    //CatchupMathMobile2._controlPanel.showBusy(false);
+                    CatchupMathMobile2._controlPanel.showBusy(false);
                 }
                 else if(type == EventTypes.EVENT_LOAD_RESOURCE) {
                     InmhItemData d = (InmhItemData)event.getEventData();
