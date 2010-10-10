@@ -44,14 +44,7 @@ public class TopicListPagePanel extends AbstractPagePanel {
     static CmList<Topic> topics;
     public TopicListPagePanel(TopicListPage page) {
         this.page = page;
-        
-        
-        TextBox tb = new TextBox();
-        initWidget(tb);
-        if(true)
-            return;
-        
-        
+
         topicPanel.add(new HTML("Loading topic list ..."));
         initWidget(topicPanel);
         
