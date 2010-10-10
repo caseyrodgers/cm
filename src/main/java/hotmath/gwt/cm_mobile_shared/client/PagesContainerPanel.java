@@ -117,37 +117,38 @@ public class PagesContainerPanel extends Composite {
 		newContainer.clear();
 
 		boolean startedAnimation = false;
-
-		if (oldContainer.getWidgetCount() > 0) {
-
-			newContainer.removeStyleName("animate");
-			newContainer.removeStyleName("left");
-			newContainer.addStyleName("right");
-
-			DeferredCommand.addCommand(new Command() {
-				@Override
-				public void execute() {
-					oldContainer.addStyleName("animate");
-					oldContainer.addStyleName("left");
-					oldContainer.removeStyleName("right");
-
-					newContainer.addStyleName("animate");
-					newContainer.removeStyleName("left");
-					newContainer.removeStyleName("right");
-				}
-			});
-
-			startedAnimation = true;
-
-		} else {
-			oldContainer.removeStyleName("animate");
-			oldContainer.addStyleName("left");
-			oldContainer.removeStyleName("right");
-
-			newContainer.removeStyleName("animate");
-			newContainer.removeStyleName("left");
-			newContainer.removeStyleName("right");
-
+		if(mIsIphone) {
+    		if (oldContainer.getWidgetCount() > 0) {
+    
+    			newContainer.removeStyleName("animate");
+    			newContainer.removeStyleName("left");
+    			newContainer.addStyleName("right");
+    
+    			DeferredCommand.addCommand(new Command() {
+    				@Override
+    				public void execute() {
+    					oldContainer.addStyleName("animate");
+    					oldContainer.addStyleName("left");
+    					oldContainer.removeStyleName("right");
+    
+    					newContainer.addStyleName("animate");
+    					newContainer.removeStyleName("left");
+    					newContainer.removeStyleName("right");
+    				}
+    			});
+    
+    			startedAnimation = true;
+    
+    		} else {
+    			oldContainer.removeStyleName("animate");
+    			oldContainer.addStyleName("left");
+    			oldContainer.removeStyleName("right");
+    
+    			newContainer.removeStyleName("animate");
+    			newContainer.removeStyleName("left");
+    			newContainer.removeStyleName("right");
+    
+    		}
 		}
 
 		newContainer.add(pagePanel);
