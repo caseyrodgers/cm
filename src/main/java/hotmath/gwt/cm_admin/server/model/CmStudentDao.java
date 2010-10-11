@@ -1507,6 +1507,18 @@ public class CmStudentDao {
      *  
      * @param conn
      * @param uid
+     * @return
+     * 
+     * @throws Exception
+     */
+    public StudentModelI getStudentModelBase(final Connection conn, Integer uid) throws Exception {
+    	return getStudentModelBase(conn, uid, false);
+    }
+
+    /** Return student model named by uid
+     *  
+     * @param conn
+     * @param uid
      * @param includeSelfRegTemplate  If false, then records with is_auto_create_template=1 will be excluded
      * @return
      * 
@@ -1548,7 +1560,7 @@ public class CmStudentDao {
             throw new Exception(String.format("*** Error obtaining data for student with UID: %d", uid));
         } finally {
             SqlUtilities.releaseResources(rs, ps, null);
-            logger.info(String.format("End getStudentModel(), UID: %d, elapsed seconds: %d", uid, ((System.currentTimeMillis() - timeStart)/1000)));
+            logger.info(String.format("End getStudentModelBase(), UID: %d, elapsed seconds: %d", uid, ((System.currentTimeMillis() - timeStart)/1000)));
         }
     }
     
