@@ -92,12 +92,8 @@ div.landscape #header .backButton.pos-right {
 
 /* touched state for the buttons */
 #header .backButton:active {
-  -webkit-border-image : url('images/back_button_touched.png') 0 4 0 13;
+  -webkit-border-image : url('/gwt-resources/images/back_button_touched.png') 0 4 0 13;
 }
-
-
-
-
 
 
 
