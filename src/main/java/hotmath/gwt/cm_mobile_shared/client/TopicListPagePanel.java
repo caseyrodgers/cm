@@ -1,6 +1,7 @@
 package hotmath.gwt.cm_mobile_shared.client;
 
 import hotmath.gwt.cm_mobile_shared.client.event.CmEvent;
+import hotmath.gwt.cm_mobile_shared.client.event.CmEventListener;
 import hotmath.gwt.cm_mobile_shared.client.event.EventBus;
 import hotmath.gwt.cm_mobile_shared.client.event.EventTypes;
 import hotmath.gwt.cm_mobile_shared.client.rpc.GetMobileTopicListAction;
@@ -138,8 +139,21 @@ public class TopicListPagePanel extends AbstractPagePanel {
         t.schedule(1000);
     }
     
-    List<String> previousEntries = null;
-    private List<String> getPreviousEntries() {
+    static List<String> previousEntries = null;
+    static String PRESCRIBED_LESSONS = "<<< Your Lessons >>>";
+    static CmList<Topic> prescribedLessons=null;
+    
+    /** Create and maintian static list of previous
+     *  search entries.  Refreshes on LOGIN event.
+     *  
+     *  If user is logged in special token is added
+     *  to signify that the user's assigned lessons 
+     *  should be assigned.
+     *  
+     *  
+     * @return
+     */
+    static private List<String> getPreviousEntries() {
         if(previousEntries == null) {
             previousEntries = new ArrayList<String>();
             
@@ -152,6 +166,9 @@ public class TopicListPagePanel extends AbstractPagePanel {
                    }
                }
             }
+            if(CatchupMathMobileShared.getUser() != null) {
+                previousEntries.add(PRESCRIBED_LESSONS);
+            }            
         }
         return previousEntries;
     }
@@ -161,7 +178,7 @@ public class TopicListPagePanel extends AbstractPagePanel {
      *  shows up as last used.
      * @param entry
      */
-    private void addToPreviousEntries(String entry) {
+    static private void addToPreviousEntries(String entry) {
         List<String> pe = getPreviousEntries();
         if(pe.contains(entry)) {
             pe.remove(entry);
@@ -182,11 +199,24 @@ public class TopicListPagePanel extends AbstractPagePanel {
     private void searchForMatches(String searchFor) {
         CmList<Topic> matches = new CmArrayList<Topic>();
         if(searchFor == null || searchFor.length() == 0) {
-            matches = this.topics;
+            /** match all */
+            matches = topics;
         }
         else {
-            for(int i=0,t=this.topics.size();i<t;i++) {
-                Topic t1 = this.topics.get(i);
+            
+            if(searchFor.equals(PRESCRIBED_LESSONS)) {
+                if(prescribedLessons == null) {
+                    Window.alert("No prescribed lessons have been assigned");
+                }
+                else {
+                    showForMatches(prescribedLessons);
+                }
+                return;
+            }
+            
+            
+            for(int i=0,t=topics.size();i<t;i++) {
+                Topic t1 = topics.get(i);
                 if(t1.getName().toLowerCase().indexOf(searchFor.toLowerCase()) > -1) {
                     matches.add(t1);
                 }
@@ -200,7 +230,8 @@ public class TopicListPagePanel extends AbstractPagePanel {
      * @param topicMatch
      */
     private void showForMatches(CmList<Topic> topicMatch) {
-        GenericContainerTag ul = new GenericContainerTag("ul");
+        
+       GenericContainerTag ul = new GenericContainerTag("ul");
        ul.addStyleName("touch");
         for(int i=0,t=topicMatch.size();i<t;i++) {
             final Topic topic = topicMatch.get(i);
@@ -215,7 +246,8 @@ public class TopicListPagePanel extends AbstractPagePanel {
                         /** add the current search term to previous entries
                          * 
                          */
-                        addToPreviousEntries(_searchText.getText());
+                        if(!_searchText.getText().equals(PRESCRIBED_LESSONS))
+                            addToPreviousEntries(_searchText.getText());
                         
                         String tag = "topic:" + topic.getFile() + ":" + System.currentTimeMillis();
                         History.newItem(tag);
@@ -234,7 +266,7 @@ public class TopicListPagePanel extends AbstractPagePanel {
         /** Has already been drawn ?
          * 
          */
-        if(this.topics != null) {
+        if(topics != null) {
             drawGui(topics);
             return;
         }
@@ -246,7 +278,7 @@ public class TopicListPagePanel extends AbstractPagePanel {
             Storage localStorage = Storage.getLocalStorage();
             String valueList = localStorage.getItem("value_list");
             if(valueList != null) {
-                TopicListPagePanel.this.topics = convertValueListIntoCmList(valueList);
+                topics = convertValueListIntoCmList(valueList);
                 drawGui(topics);
                 return;
             }
@@ -333,5 +365,18 @@ public class TopicListPagePanel extends AbstractPagePanel {
             ulTag.add(li);
         }
         return ulTag;
+    }
+    
+    static {
+        EventBus.getInstance().addEventListener(new CmEventListener() {
+            @Override
+            public void handleEvent(CmEvent event) {
+                if(event.getEventType().equals(EventTypes.EVENT_USER_LOGIN)) {
+                    previousEntries = null; // force refresh
+                    prescribedLessons = CatchupMathMobileShared.getUser().getPrescribedLessons();
+                    Controller.navigateToTopicList();
+                }
+            }
+        });
     }
 }

@@ -1,7 +1,10 @@
 package hotmath.gwt.cm_mobile_shared.client.rpc;
 
+import hotmath.gwt.cm_rpc.client.rpc.CmList;
 import hotmath.gwt.cm_rpc.client.rpc.PrescriptionData;
 import hotmath.gwt.cm_rpc.client.rpc.Response;
+
+import java.util.List;
 
 public class CmMobileUser implements Response {
     
@@ -11,6 +14,17 @@ public class CmMobileUser implements Response {
     int testSegment;
     int testSlot;
     int runId;
+    CmList<Topic> prescribedLessons;
+
+    
+    public CmList<Topic> getPrescribedLessons() {
+        return prescribedLessons;
+    }
+
+    public void setPrescribedLessons(CmList<Topic> prescribedLessons) {
+        this.prescribedLessons = prescribedLessons;
+    }
+
     PrescriptionData prescripion;
 
 

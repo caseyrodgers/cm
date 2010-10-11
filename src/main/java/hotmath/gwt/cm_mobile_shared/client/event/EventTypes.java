@@ -14,5 +14,6 @@ public class EventTypes {
     public static EventType EVENT_SERVER_END = new EventType("EVENT_SERVER_END");
     public static EventType EVENT_LOAD_RESOURCE = new EventType("EVENT_LOAD_RESOURCE");
     public static EventType EVENT_RES_VIEW_LOADED = new EventType("EVENT_RES_VIEW_LOADED");
+    public static EventType EVENT_USER_LOGIN = new EventType("EVENT_USER_LOGIN");
     
 }

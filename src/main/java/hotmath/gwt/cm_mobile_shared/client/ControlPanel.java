@@ -117,6 +117,13 @@ public class ControlPanel extends FlowPanel {
                 Controller.navigateToTopicList();
             }
         });
+        defaultActions.add(new ControlAction("Login") {
+            @Override
+            public void doAction() {
+                Controller.navigateToLogin();
+            }
+        });
+        
         for(final ControlAction action: defaultActions) {
             Button btn = new Button(action.getLabel(), new ClickHandler() {
                 @Override

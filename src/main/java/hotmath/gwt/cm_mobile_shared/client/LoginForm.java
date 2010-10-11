@@ -1,5 +1,8 @@
 package hotmath.gwt.cm_mobile_shared.client;
 
+import hotmath.gwt.cm_mobile_shared.client.event.CmEvent;
+import hotmath.gwt.cm_mobile_shared.client.event.EventBus;
+import hotmath.gwt.cm_mobile_shared.client.event.EventTypes;
 import hotmath.gwt.cm_mobile_shared.client.rpc.CmMobileUser;
 import hotmath.gwt.cm_mobile_shared.client.rpc.GetCmMobileLoginAction;
 
@@ -11,7 +14,6 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.Cookies;
-import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
@@ -61,18 +63,21 @@ public class LoginForm extends AbstractPagePanel {
         saveCookie(uName,pass);
         
         
+        EventBus.getInstance().fireEvent(new CmEvent(EventTypes.EVENT_SERVER_START));
         GetCmMobileLoginAction action = new GetCmMobileLoginAction();
         action.setName(uName);
         action.setPassword(pass);
         CatchupMathMobileShared.getCmService().execute(action, new AsyncCallback<CmMobileUser>() {
             @Override
             public void onSuccess(CmMobileUser result) {
+                EventBus.getInstance().fireEvent(new CmEvent(EventTypes.EVENT_SERVER_END));
                 CatchupMathMobileShared.__instance.user = result;
-                History.newItem("quiz");
+                EventBus.getInstance().fireEvent(new CmEvent(EventTypes.EVENT_USER_LOGIN));
             }
 
             @Override
             public void onFailure(Throwable caught) {
+                EventBus.getInstance().fireEvent(new CmEvent(EventTypes.EVENT_SERVER_END));
                 Window.alert("Error logging in: " + caught);
             }
         });

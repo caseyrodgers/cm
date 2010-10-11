@@ -28,7 +28,7 @@ public class Controller {
         TopicListPage p = new TopicListPage();
         mPageStack.push(p);
     }
-
+    
     public static void navigateToTopicList() {
         TopicListPage topicPage = new TopicListPage();
         mPageStack.push(topicPage);

@@ -16,7 +16,7 @@ public class LoginPage implements IPage {
 
 	@Override
 	public String getBackButtonText() {
-		return "Home";
+		return "Back";
 	}
 
     @Override

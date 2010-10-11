@@ -375,8 +375,8 @@ public class ActionDispatcher {
                  * NOTE: each ends with period
                  */
                 String standardPlaces[] = {"hotmath.gwt.shared.server.service.command.",
-                                           "hotmath.gwt.cm_mobile.server.rpc.",
                                            "hotmath.gwt.cm_mobile_shared.server.rpc.",
+                                           "hotmath.gwt.cm_mobile.server.rpc.",
                                            "hotmath.gwt.solution_manager.server.rpc."};
                                      
                 Class actionHandler=null,cmdClass=null;
@@ -399,7 +399,8 @@ public class ActionDispatcher {
                 commands.put(actionHandler, cmdClass);
             }
         }
-        return commands.get(action.getClass());
+        Class x = commands.get(action.getClass());
+        return x;
     }
 
     /**
