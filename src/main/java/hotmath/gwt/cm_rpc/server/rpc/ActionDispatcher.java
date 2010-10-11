@@ -181,7 +181,7 @@ public class ActionDispatcher {
         	clientInfo.getUserId(), clientInfo.getUserType(), actionId, clazzName,  action.toString()));
 
         Connection conn = null;
-        ActionTypeMap.ActionType actionType = null;
+        ActionTypeMap.ActionType actionType = ActionTypeMap.ActionType.UNKNOWN;
         try {
             Class clazz = getActionCommand(action);
             if (clazz == null) {
@@ -253,7 +253,6 @@ public class ActionDispatcher {
             		clientInfo.getUserId(), clientInfo.getUserType(), actionId, clazzName, exceptionClass, errMsg, executeTimeMills));
             
             incrementProcessingTime(actionType, executeTimeMills);
-            
         }
     }
 
@@ -323,7 +322,6 @@ public class ActionDispatcher {
 	}
 
 	private void incrementActionsException(ActionTypeMap.ActionType actionType) {
-		
 		switch(actionType) {
 		case ADMIN:
 			monitorCountAdminActionsException++;
@@ -338,7 +336,6 @@ public class ActionDispatcher {
         	monitorCountOtherActionsException++;
         	break;
 		}
-
 		monitorCountOfExceptions++;
 
 		logger.debug(String.format("+++ incrementActionsException(): admin: %d, student: %d, all: %d",
