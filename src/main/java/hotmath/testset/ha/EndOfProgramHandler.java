@@ -42,78 +42,74 @@ public class EndOfProgramHandler {
      * 
      * Throw Exception if error or program cannot be assigned.
      * 
+     * @param conn
+     * 
      * @return
      * @throws Exception
      */
-    public StudentUserProgramModel getNextProgram() throws Exception {
-        Connection conn=null;
-        CmUserProgramDao upDao = new CmUserProgramDao();
-        try {
-            conn = HMConnectionPool.getConnection();
-            StudentUserProgramModel programCurr = upDao.loadProgramInfoCurrent(conn,student.getUid());
+    public StudentUserProgramModel getNextProgram(final Connection conn) throws Exception {
+    	CmUserProgramDao upDao = new CmUserProgramDao();
 
-            if(programCurr.getTestDefId() == CmProgram.ESSENTIALS.getDefId()
-            		|| programCurr.getTestDefId() == CmProgram.ESSENTIALS_V1.getDefId()){
-                updateProgram(CmProgram.PREALG_PROF.getSubject(),CmProgram.PREALG_PROF.getProgramType(),null);                
-            }
-            else if(programCurr.getTestDefId() == CmProgram.PREALG_PROF.getDefId() 
-                    || programCurr.getTestDefId() == CmProgram.PREALG_PROF_V1.getDefId()) {
-                updateProgram(CmProgram.ALG1_PROF.getSubject(),CmProgram.ALG1_PROF.getProgramType(),null);                
-            }
-            else if(programCurr.getTestDefId() == CmProgram.ALG1_PROF.getDefId() 
-                    || programCurr.getTestDefId() == CmProgram.ALG1_PROF_V1.getDefId() 
-                    || programCurr.getTestDefId() == CmProgram.ALG1_PROF_V2.getDefId()
-                    || programCurr.getTestDefId() == CmProgram.ALG1_PROF_V3.getDefId()) {
-                updateProgram(CmProgram.GEOM_PROF.getSubject(),CmProgram.GEOM_PROF.getProgramType(),null);                
-            }
-            else if(programCurr.getTestDefId() == CmProgram.GEOM_PROF.getDefId()
-                    || programCurr.getTestDefId() == CmProgram.GEOM_PROF_V1.getDefId()) {
-                updateProgram(CmProgram.ALG2_PROF.getSubject(), CmProgram.ALG2_PROF.getProgramType(),null);
-            }
-            else if(programCurr.getTestDefId() == CmProgram.ALG2_PROF.getDefId() || programCurr.getTestDefId() == CmProgram.ALG2_PROF_V1.getDefId()) {
-                updateProgram(CmProgram.CAHSEEHM.getSubject(),CmProgram.CAHSEEHM.getProgramType(),null);
-            }
-             else if(programCurr.getTestDefId() == CmProgram.NATIONAL.getDefId()) {
-                // reset/repeat
-                updateProgram(CmProgram.ALG2_PROF.getSubject(), CmProgram.ALG2_PROF.getProgramType(),null);
-            }
-            else if(programCurr.getTestDefId() == CmProgram.CAHSEEHM.getDefId()) {
-                // reset/repeat
-                updateProgram(CmProgram.ALG2_PROF.getSubject(), CmProgram.ALG2_PROF.getProgramType(),null);
-            }            
-            else if(programCurr.getTestDefId() == CmProgram.TAKS.getDefId()) {
-                // reset/repeat
-                updateProgram(CmProgram.ALG2_PROF.getSubject(), CmProgram.ALG2_PROF.getProgramType(),null);
-            }            
-            else {
-                // if is a chapter test, then we must find the currently assigned
-                // chapter number.  If there are additional chapters, then move to 
-                // next in sequence.  Otherwise, move to the associated proficiency test
-                
-                if(programCurr.getTestDefId() == CmProgram.PREALG_CHAP.getDefId()) {
-                    setupChapterTest(conn, programCurr,CmProgram.PREALG_CHAP.getSubject());
-                }
-                else if(programCurr.getTestDefId() == CmProgram.ALG1_CHAP.getDefId()) {
-                    setupChapterTest(conn, programCurr,CmProgram.ALG1_CHAP.getSubject());
-                }
-                else if(programCurr.getTestDefId() == CmProgram.ALG2_CHAP.getDefId()) {
-                    setupChapterTest(conn, programCurr,CmProgram.ALG2_CHAP.getSubject());
-                }
-                else if(programCurr.getTestDefId() == CmProgram.GEOM_CHAP.getDefId()) {
-                    setupChapterTest(conn, programCurr,CmProgram.GEOM_CHAP.getSubject());
-                }                
-                else {
-                    throw new Exception("Unknown program: " + 
-                            programCurr);
-                }
-            }
-            
-            StudentUserProgramModel programNext = upDao.loadProgramInfoCurrent(conn,student.getUid());
-            return programNext;
-        }
-        finally {
-            SqlUtilities.releaseResources(null, null, conn);
-        }
+    	StudentUserProgramModel programCurr = upDao.loadProgramInfoCurrent(conn,student.getUid());
+
+    	if(programCurr.getTestDefId() == CmProgram.ESSENTIALS.getDefId()
+    			|| programCurr.getTestDefId() == CmProgram.ESSENTIALS_V1.getDefId()){
+    		updateProgram(conn, CmProgram.PREALG_PROF.getSubject(),CmProgram.PREALG_PROF.getProgramType(),null);                
+    	}
+    	else if(programCurr.getTestDefId() == CmProgram.PREALG_PROF.getDefId() 
+    			|| programCurr.getTestDefId() == CmProgram.PREALG_PROF_V1.getDefId()) {
+    		updateProgram(conn, CmProgram.ALG1_PROF.getSubject(),CmProgram.ALG1_PROF.getProgramType(),null);                
+    	}
+    	else if(programCurr.getTestDefId() == CmProgram.ALG1_PROF.getDefId() 
+    			|| programCurr.getTestDefId() == CmProgram.ALG1_PROF_V1.getDefId() 
+    			|| programCurr.getTestDefId() == CmProgram.ALG1_PROF_V2.getDefId()
+    			|| programCurr.getTestDefId() == CmProgram.ALG1_PROF_V3.getDefId()) {
+    		updateProgram(conn, CmProgram.GEOM_PROF.getSubject(),CmProgram.GEOM_PROF.getProgramType(),null);                
+    	}
+    	else if(programCurr.getTestDefId() == CmProgram.GEOM_PROF.getDefId()
+    			|| programCurr.getTestDefId() == CmProgram.GEOM_PROF_V1.getDefId()) {
+    		updateProgram(conn, CmProgram.ALG2_PROF.getSubject(), CmProgram.ALG2_PROF.getProgramType(),null);
+    	}
+    	else if(programCurr.getTestDefId() == CmProgram.ALG2_PROF.getDefId() || programCurr.getTestDefId() == CmProgram.ALG2_PROF_V1.getDefId()) {
+    		updateProgram(conn, CmProgram.CAHSEEHM.getSubject(),CmProgram.CAHSEEHM.getProgramType(),null);
+    	}
+    	else if(programCurr.getTestDefId() == CmProgram.NATIONAL.getDefId()) {
+    		// reset/repeat
+    		updateProgram(conn, CmProgram.ALG2_PROF.getSubject(), CmProgram.ALG2_PROF.getProgramType(),null);
+    	}
+    	else if(programCurr.getTestDefId() == CmProgram.CAHSEEHM.getDefId()) {
+    		// reset/repeat
+    		updateProgram(conn, CmProgram.ALG2_PROF.getSubject(), CmProgram.ALG2_PROF.getProgramType(),null);
+    	}            
+    	else if(programCurr.getTestDefId() == CmProgram.TAKS.getDefId()) {
+    		// reset/repeat
+    		updateProgram(conn, CmProgram.ALG2_PROF.getSubject(), CmProgram.ALG2_PROF.getProgramType(),null);
+    	}            
+    	else {
+    		// if is a chapter test, then we must find the currently assigned
+    		// chapter number.  If there are additional chapters, then move to 
+    		// next in sequence.  Otherwise, move to the associated proficiency test
+
+    		if(programCurr.getTestDefId() == CmProgram.PREALG_CHAP.getDefId()) {
+    			setupChapterTest(conn, programCurr,CmProgram.PREALG_CHAP.getSubject());
+    		}
+    		else if(programCurr.getTestDefId() == CmProgram.ALG1_CHAP.getDefId()) {
+    			setupChapterTest(conn, programCurr,CmProgram.ALG1_CHAP.getSubject());
+    		}
+    		else if(programCurr.getTestDefId() == CmProgram.ALG2_CHAP.getDefId()) {
+    			setupChapterTest(conn, programCurr,CmProgram.ALG2_CHAP.getSubject());
+    		}
+    		else if(programCurr.getTestDefId() == CmProgram.GEOM_CHAP.getDefId()) {
+    			setupChapterTest(conn, programCurr,CmProgram.GEOM_CHAP.getSubject());
+    		}                
+    		else {
+    			throw new Exception("Unknown program: " + 
+    					programCurr);
+    		}
+    	}
+
+    	StudentUserProgramModel programNext = upDao.loadProgramInfoCurrent(conn,student.getUid());
+    	return programNext;
     }
     
     
@@ -139,10 +135,10 @@ public class EndOfProgramHandler {
             
             // assign this new config to the program, by resetting 
             // the entire program.
-            updateProgram(subjId, "Chap",nextChapter);
+            updateProgram(conn, subjId, "Chap",nextChapter);
         }
         else {
-            updateProgram(subjId, "Prof",null);
+            updateProgram(conn, subjId, "Prof",null);
         }
         
     }
@@ -169,20 +165,13 @@ public class EndOfProgramHandler {
         return null;
     }
 
-    private void updateProgram(String subId,String progId, String chapter) throws Exception {
+    private void updateProgram(final Connection conn, String subId,String progId, String chapter) throws Exception {
         student.getProgram().setProgramType(progId);
         student.getProgram().setSubjectId(subId);
         student.setChapter(chapter);
         student.setProgramChanged(true);
         
-        Connection conn=null;
-        try {
-            conn = HMConnectionPool.getConnection();
-            dao.updateStudent(conn,student, true, false, true, false, false);
-        }
-        finally {
-            SqlUtilities.releaseResources(null,null,conn);
-        }
+        dao.updateStudent(conn,student, true, false, true, false, false);
     }
 
 }
