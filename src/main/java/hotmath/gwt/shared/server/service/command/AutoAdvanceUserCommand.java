@@ -28,7 +28,7 @@ public class AutoAdvanceUserCommand implements ActionHandlerManualConnectionMana
         
         int userId = action.getUserId();
         EndOfProgramHandler eofh = new EndOfProgramHandler(userId);
-        StudentUserProgramModel program = eofh.getNextProgram();
+        StudentUserProgramModel program = eofh.getNextProgram(conn);
         
         String chapter = program.getConfig().getChapters().size() > 0?program.getConfig().getChapters().get(0):null;
         AutoUserAdvanced advance = new AutoUserAdvanced(program.getTestName(), chapter);
