@@ -17,14 +17,11 @@ import hotmath.gwt.cm_rpc.client.rpc.PrescriptionSessionDataResource;
 import java.util.List;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -61,8 +58,6 @@ public class TopicViewPagePanel extends AbstractPagePanel {
         mainPanel.setStyleName("topic-view-page-panel");
         
         loadLessonData(page.getTopicFile());
-        //loadPrescriptionSession(prescription.getCurrSession());
-        //mainPanel.add(listItems);  
     }
     
     
@@ -100,7 +95,6 @@ public class TopicViewPagePanel extends AbstractPagePanel {
         listItems.clear();
         
         for (PrescriptionSessionDataResource r : resources) {
-            
             String type = r.getType();
             
             /** only show mobile ready resource
@@ -134,23 +128,8 @@ public class TopicViewPagePanel extends AbstractPagePanel {
                 }
             }
         }
-    }
-    
-    static class ResourceButton extends Button {
-        InmhItemData item;
-        int ordinal;
-        public ResourceButton(final int ordinal, final InmhItemData item) {
-            super(item.getTitle());
-            setStyleName("resource-button");
-            this.ordinal = ordinal;
-            this.item = item;
-            addClickHandler(new ClickHandler() {
-                @Override
-                public void onClick(ClickEvent arg0) {
-                    History.newItem("resource:" + item.getType() + ":" + ordinal);
-                }
-            });
-        }
+        
+        EventBus.getInstance().fireEvent(new CmEvent(EventTypes.EVENT_LESSON_LOADED, pData));
     }
 }
 

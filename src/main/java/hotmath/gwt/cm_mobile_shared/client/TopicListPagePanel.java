@@ -9,7 +9,6 @@ import hotmath.gwt.cm_mobile_shared.client.rpc.Topic;
 import hotmath.gwt.cm_mobile_shared.client.util.GenericContainerTag;
 import hotmath.gwt.cm_mobile_shared.client.util.GenericTextTag;
 import hotmath.gwt.cm_mobile_shared.client.util.TouchClickEvent;
-import hotmath.gwt.cm_mobile_shared.client.util.TouchClickEvent.TouchClickHandler;
 import hotmath.gwt.cm_mobile_shared.client.util.ViewSettings;
 import hotmath.gwt.cm_rpc.client.rpc.CmArrayList;
 import hotmath.gwt.cm_rpc.client.rpc.CmList;
@@ -24,20 +23,22 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.dom.client.KeyUpHandler;
+import com.google.gwt.event.logical.shared.SelectionEvent;
+import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.DecoratedTabPanel;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
-import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.PopupPanel;
+import com.google.gwt.user.client.ui.TabPanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
-
 
 public class TopicListPagePanel extends AbstractPagePanel {
     TopicListPage page;
@@ -52,8 +53,11 @@ public class TopicListPagePanel extends AbstractPagePanel {
         loadTopicList();
     }
 
+    TabPanel _tabPanel = new DecoratedTabPanel();
     FlowPanel matches = new FlowPanel();
     TextBox _searchText;
+    HistoryPanel _historyPanel = new HistoryPanel();
+    LessonsPrescribedPanel _assignedPanel = new LessonsPrescribedPanel();
     
     /** Draw the gui showing the topic list
      * 
@@ -73,9 +77,11 @@ public class TopicListPagePanel extends AbstractPagePanel {
                 searchForMatches(_searchText.getValue());                
             }
         });
-        searchBox.add(new Label("Search for lessons: "));
+        
+        String html = "<p>Type in the search field to narrow down the list of lessons.</p>";
+        searchBox.add(new HTML(html));
         searchBox.add(_searchText);
-        searchBox.add(new Button("History",new ClickHandler() {
+        searchBox.add(new Button(">>",new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
                 final PopupPanel popup = new PopupPanel();
@@ -114,9 +120,43 @@ public class TopicListPagePanel extends AbstractPagePanel {
         top.add(searchBox);
         
         topicPanel.clear();
-        topicPanel.add(top);
+        _tabPanel.clear();
+        topicPanel.add(_tabPanel);
         
-        topicPanel.add(matches);
+        FlowPanel searchPanel = new FlowPanel();
+        searchPanel.add(top);
+        searchPanel.add(matches);
+        _tabPanel.add(searchPanel, "Search");
+        _tabPanel.add(_historyPanel, "History");
+        _tabPanel.add(_assignedPanel, "Assigned");
+        _tabPanel.setAnimationEnabled(true);
+
+        _tabPanel.addSelectionHandler(new SelectionHandler<Integer>() {
+            @Override
+            public void onSelection(SelectionEvent<Integer> event) {
+                if(event.getSelectedItem() == 1) {
+                    /** history tab */
+                    Widget w = _tabPanel.getWidget(event.getSelectedItem());
+                    if(w == _historyPanel) {
+                        if(!_historyPanel.isInitialized()) {
+                            _historyPanel.initialize();
+                        }
+                    }
+                }
+                else if(event.getSelectedItem() == 2) {
+                    /** assigned tab */
+                    Widget w = _tabPanel.getWidget(event.getSelectedItem());
+                    if(w == _assignedPanel) {
+                        if(!_assignedPanel.isInitialized()) {
+                            _assignedPanel.initialize();
+                        }
+                    }
+                }
+            }
+        });
+        
+        _tabPanel.selectTab(0);
+
         
         
         /** Try to initialize to last search 
@@ -143,7 +183,7 @@ public class TopicListPagePanel extends AbstractPagePanel {
     static String PRESCRIBED_LESSONS = "<<< Your Lessons >>>";
     static CmList<Topic> prescribedLessons=null;
     
-    /** Create and maintian static list of previous
+    /** Create and maintain static list of previous
      *  search entries.  Refreshes on LOGIN event.
      *  
      *  If user is logged in special token is added
@@ -338,45 +378,5 @@ public class TopicListPagePanel extends AbstractPagePanel {
             str += topic.getName() + "|" + topic.getFile() + "\n";
         }
         return str;
-    }
-    
-    private Panel createSearchPanel() {
-        final GenericContainerTag ulTag = new GenericContainerTag("div");
-        ulTag.setStyleName("search-bar");
-        String letters = "abcdefghijklmnlop";
-        for(int i=0,t=letters.length();i<t;i++) {
-            GenericTextTag<String> li = new GenericTextTag<String>("span",letters.substring(i,i+1));
-            li.addHandler(new TouchClickHandler<String>() {
-                @Override
-                public void touchClick(TouchClickEvent<String> event) {
-                    
-                    /** turn off current selection
-                     * 
-                     */
-                    for(int w=0,wt=ulTag.getWidgetCount();w<wt;w++) {
-                        Widget widget = ulTag.getWidget(w);
-                        widget.getElement().removeClassName("selected");
-                    }
-                    event.getTarget().getElement().addClassName("selected");
-                    String txt = event.getTarget().getText();
-                    searchForMatches(txt);
-                }
-            });
-            ulTag.add(li);
-        }
-        return ulTag;
-    }
-    
-    static {
-        EventBus.getInstance().addEventListener(new CmEventListener() {
-            @Override
-            public void handleEvent(CmEvent event) {
-                if(event.getEventType().equals(EventTypes.EVENT_USER_LOGIN)) {
-                    previousEntries = null; // force refresh
-                    prescribedLessons = CatchupMathMobileShared.getUser().getPrescribedLessons();
-                    Controller.navigateToTopicList();
-                }
-            }
-        });
     }
 }
