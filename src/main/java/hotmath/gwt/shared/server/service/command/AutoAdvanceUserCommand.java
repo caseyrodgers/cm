@@ -19,7 +19,7 @@ import org.apache.log4j.Logger;
  * @author casey
  *
  */
-public class AutoAdvanceUserCommand implements ActionHandlerManualConnectionManagement, ActionHandler<AutoAdvanceUserAction, AutoUserAdvanced> {
+public class AutoAdvanceUserCommand implements ActionHandler<AutoAdvanceUserAction, AutoUserAdvanced> {
 
     Logger logger = Logger.getLogger(AutoAdvanceUserCommand.class);
 
