@@ -5,7 +5,6 @@ import hotmath.gwt.cm_rpc.client.rpc.Response;
 import hotmath.gwt.cm_rpc.server.rpc.ActionHandler;
 import hotmath.gwt.cm_tools.client.model.AutoUserAdvanced;
 import hotmath.gwt.shared.client.rpc.action.AutoAdvanceUserAction;
-import hotmath.gwt.shared.server.service.ActionHandlerManualConnectionManagement;
 import hotmath.testset.ha.EndOfProgramHandler;
 import hotmath.testset.ha.StudentUserProgramModel;
 
@@ -26,8 +25,8 @@ public class AutoAdvanceUserCommand implements ActionHandler<AutoAdvanceUserActi
     @Override
     public AutoUserAdvanced execute(final Connection conn, AutoAdvanceUserAction action) throws Exception {
         
-        int userId = action.getUserId();
-        EndOfProgramHandler eofh = new EndOfProgramHandler(userId);
+        EndOfProgramHandler eofh = new EndOfProgramHandler();
+        eofh.loadStudent(conn, action.getUserId());
         StudentUserProgramModel program = eofh.getNextProgram(conn);
         
         String chapter = program.getConfig().getChapters().size() > 0?program.getConfig().getChapters().get(0):null;

@@ -25,12 +25,16 @@ grad test would loop
  *
  */
 public class EndOfProgramHandler {
+
+	private CmStudentDao dao = new CmStudentDao();
+
+	StudentModelI student;
     
-    StudentModelI student;
-    CmStudentDao dao;
-    public EndOfProgramHandler(int userId) throws Exception {
-        dao = new CmStudentDao();
-        student = dao.getStudentModel(userId);
+    public EndOfProgramHandler() throws Exception {
+    }
+    
+    public void loadStudent(final Connection conn, int userId) throws Exception {
+        student = dao.getStudentModelBase(conn, userId);    	
     }
     
     /** Move this user to the next logical program.  This should 
@@ -108,7 +112,7 @@ public class EndOfProgramHandler {
     		}
     	}
 
-    	StudentUserProgramModel programNext = upDao.loadProgramInfoCurrent(conn,student.getUid());
+    	StudentUserProgramModel programNext = upDao.loadProgramInfoCurrent(conn, student.getUid());
     	return programNext;
     }
     
@@ -135,10 +139,10 @@ public class EndOfProgramHandler {
             
             // assign this new config to the program, by resetting 
             // the entire program.
-            updateProgram(conn, subjId, "Chap",nextChapter);
+            updateProgram(conn, subjId, "Chap", nextChapter);
         }
         else {
-            updateProgram(conn, subjId, "Prof",null);
+            updateProgram(conn, subjId, "Prof", null);
         }
         
     }
@@ -165,13 +169,13 @@ public class EndOfProgramHandler {
         return null;
     }
 
-    private void updateProgram(final Connection conn, String subId,String progId, String chapter) throws Exception {
+    private void updateProgram(final Connection conn, String subId, String progId, String chapter) throws Exception {
         student.getProgram().setProgramType(progId);
         student.getProgram().setSubjectId(subId);
         student.setChapter(chapter);
         student.setProgramChanged(true);
         
-        dao.updateStudent(conn,student, true, false, true, false, false);
+        dao.updateStudent(conn, student, true, false, true, false, false);
     }
 
 }
