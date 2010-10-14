@@ -26,8 +26,9 @@ public class EndOfProgramHander_Test extends CmDbTestCase {
         // assign chapter test to test student (last chapter)
         dao.assignProgramToStudent(conn, userId, CmProgram.ESSENTIALS, null);
         
-        EndOfProgramHandler eop = new EndOfProgramHandler(userId);
-        StudentUserProgramModel nextProgram = eop.getNextProgram();
+        EndOfProgramHandler eop = new EndOfProgramHandler();
+        eop.loadStudent(conn, userId);
+        StudentUserProgramModel nextProgram = eop.getNextProgram(conn);
         
         // this should just loop around
         assertTrue(nextProgram.getTestDefId() == CmProgram.PREALG_PROF.getDefId());
@@ -39,8 +40,9 @@ public class EndOfProgramHander_Test extends CmDbTestCase {
         // assign chapter test to test student (last chapter)
         dao.assignProgramToStudent(conn, userId, CmProgram.ALG2_PROF, null);
         
-        EndOfProgramHandler eop = new EndOfProgramHandler(userId);
-        StudentUserProgramModel nextProgram = eop.getNextProgram();
+        EndOfProgramHandler eop = new EndOfProgramHandler();
+        eop.loadStudent(conn, userId);
+        StudentUserProgramModel nextProgram = eop.getNextProgram(conn);
         
         // this should just loop around
         assertTrue(nextProgram.getTestDefId() == CmProgram.CAHSEEHM.getDefId());
@@ -52,8 +54,9 @@ public class EndOfProgramHander_Test extends CmDbTestCase {
         // assign chapter test to test student (last chapter)
         dao.assignProgramToStudent(conn, userId, CmProgram.NATIONAL, null);
         
-        EndOfProgramHandler eop = new EndOfProgramHandler(userId);
-        StudentUserProgramModel nextProgram = eop.getNextProgram();
+        EndOfProgramHandler eop = new EndOfProgramHandler();
+        eop.loadStudent(conn, userId);
+        StudentUserProgramModel nextProgram = eop.getNextProgram(conn);
         
         // this should just loop around
         assertTrue(nextProgram.getTestDefId() == CmProgram.ALG2_PROF.getDefId());
@@ -64,8 +67,9 @@ public class EndOfProgramHander_Test extends CmDbTestCase {
         // assign chapter test to test student (last chapter)
         dao.assignProgramToStudent(conn,userId, CmProgram.GEOM_CHAP, "Circles");
         
-        EndOfProgramHandler eop = new EndOfProgramHandler(userId);
-        StudentUserProgramModel nextProgram = eop.getNextProgram();
+        EndOfProgramHandler eop = new EndOfProgramHandler();
+        eop.loadStudent(conn, userId);
+        StudentUserProgramModel nextProgram = eop.getNextProgram(conn);
         
         // this should be moved to the Pre-Alg proficiency test
         assertTrue(nextProgram.getTestDefId() == CmProgram.GEOM_CHAP.getDefId());
@@ -83,8 +87,9 @@ public class EndOfProgramHander_Test extends CmDbTestCase {
         // assign chapter test to test student (last chapter)
         dao.assignProgramToStudent(conn,userId, CmProgram.GEOM_CHAP, lastChap);
         
-        EndOfProgramHandler eop = new EndOfProgramHandler(userId);
-        StudentUserProgramModel nextProgram = eop.getNextProgram();
+        EndOfProgramHandler eop = new EndOfProgramHandler();
+        eop.loadStudent(conn, userId);
+        StudentUserProgramModel nextProgram = eop.getNextProgram(conn);
         
         // this should be moved to the Pre-Alg proficiency test
         assertTrue(nextProgram.getTestDefId() == CmProgram.GEOM_PROF.getDefId());
@@ -95,8 +100,9 @@ public class EndOfProgramHander_Test extends CmDbTestCase {
         // assign chapter test to test student (last chapter)
         dao.assignProgramToStudent(conn, userId, CmProgram.TAKS, null);
         
-        EndOfProgramHandler eop = new EndOfProgramHandler(userId);
-        StudentUserProgramModel nextProgram = eop.getNextProgram();
+        EndOfProgramHandler eop = new EndOfProgramHandler();
+        eop.loadStudent(conn, userId);
+        StudentUserProgramModel nextProgram = eop.getNextProgram(conn);
         
         // this should just loop around
         assertTrue(nextProgram.getTestDefId() == CmProgram.ALG2_PROF.getDefId());
@@ -108,8 +114,9 @@ public class EndOfProgramHander_Test extends CmDbTestCase {
         // assign chapter test to test student (last chapter)
         dao.assignProgramToStudent(conn, userId, CmProgram.CAHSEEHM, null);
         
-        EndOfProgramHandler eop = new EndOfProgramHandler(userId);
-        StudentUserProgramModel nextProgram = eop.getNextProgram();
+        EndOfProgramHandler eop = new EndOfProgramHandler();
+        eop.loadStudent(conn, userId);
+        StudentUserProgramModel nextProgram = eop.getNextProgram(conn);
         
         // this should just loop around
         assertTrue(nextProgram.getTestDefId() == CmProgram.ALG2_PROF.getDefId());
@@ -121,8 +128,9 @@ public class EndOfProgramHander_Test extends CmDbTestCase {
         // assign chapter test to test student (last chapter)
         dao.assignProgramToStudent(conn,userId, CmProgram.GEOM_PROF, null);
         
-        EndOfProgramHandler eop = new EndOfProgramHandler(userId);
-        StudentUserProgramModel nextProgram = eop.getNextProgram();
+        EndOfProgramHandler eop = new EndOfProgramHandler();
+        eop.loadStudent(conn, userId);
+        StudentUserProgramModel nextProgram = eop.getNextProgram(conn);
         
         // this should just loop around
         assertTrue(nextProgram.getTestDefId() == CmProgram.ALG2_PROF.getDefId());
@@ -133,8 +141,9 @@ public class EndOfProgramHander_Test extends CmDbTestCase {
         // assign chapter test to test student (last chapter)
         dao.assignProgramToStudent(conn,userId, CmProgram.ALG1_CHAP, "Solving Linear Equations");
         
-        EndOfProgramHandler eop = new EndOfProgramHandler(userId);
-        StudentUserProgramModel nextProgram = eop.getNextProgram();
+        EndOfProgramHandler eop = new EndOfProgramHandler();
+        eop.loadStudent(conn, userId);
+        StudentUserProgramModel nextProgram = eop.getNextProgram(conn);
         
         // this should be moved to the Pre-Alg proficiency test
         assertTrue(nextProgram.getTestDefId() == CmProgram.ALG1_CHAP.getDefId());
@@ -149,8 +158,9 @@ public class EndOfProgramHander_Test extends CmDbTestCase {
         // assign chapter test to test student (last chapter)
         dao.assignProgramToStudent(conn,userId, CmProgram.PREALG_CHAP, "Linear Equations and Inequalities");
         
-        EndOfProgramHandler eop = new EndOfProgramHandler(userId);
-        StudentUserProgramModel nextProgram = eop.getNextProgram();
+        EndOfProgramHandler eop = new EndOfProgramHandler();
+        eop.loadStudent(conn, userId);
+        StudentUserProgramModel nextProgram = eop.getNextProgram(conn);
         
         // this should be moved to the Pre-Alg proficiency test
         assertTrue(nextProgram.getTestDefId() == CmProgram.PREALG_PROF.getDefId());
@@ -168,8 +178,9 @@ public class EndOfProgramHander_Test extends CmDbTestCase {
         // read currently set program info
         StudentUserProgramModel currProgram = new CmUserProgramDao().loadProgramInfoCurrent(conn,userId);
         
-        EndOfProgramHandler eop = new EndOfProgramHandler(userId);
-        StudentUserProgramModel nextProgram = eop.getNextProgram();
+        EndOfProgramHandler eop = new EndOfProgramHandler();
+        eop.loadStudent(conn, userId);
+        StudentUserProgramModel nextProgram = eop.getNextProgram(conn);
         
         // this should be the next chapter in the current prog/subj
         assertTrue(nextProgram.getTestDefId() == currProgram.getTestDefId());
@@ -195,7 +206,9 @@ public class EndOfProgramHander_Test extends CmDbTestCase {
      * @throws Exception
      */
     public void testEndOfProgram() throws Exception {
-        EndOfProgramHandler eop = new EndOfProgramHandler(userId);
+        EndOfProgramHandler eop = new EndOfProgramHandler();
+        eop.loadStudent(conn, userId);
+        StudentUserProgramModel nextProgram = eop.getNextProgram(conn);
         assertNotNull(eop);
     }
     
@@ -205,8 +218,9 @@ public class EndOfProgramHander_Test extends CmDbTestCase {
      * @throws Exception
      */
     public void testEndOfProgramAssign() throws Exception {
-        EndOfProgramHandler eop = new EndOfProgramHandler(userId);
-        StudentUserProgramModel nextProgram = eop.getNextProgram();
+        EndOfProgramHandler eop = new EndOfProgramHandler();
+        eop.loadStudent(conn, userId);
+        StudentUserProgramModel nextProgram = eop.getNextProgram(conn);
         assertNotNull(nextProgram);
         
         assertNotNull(nextProgram.getTestName());
@@ -223,8 +237,9 @@ public class EndOfProgramHander_Test extends CmDbTestCase {
         StudentUserProgramModel currProgram = new CmUserProgramDao().loadProgramInfoCurrent(conn,userId);
         
         // auto assign next
-        EndOfProgramHandler eop = new EndOfProgramHandler(userId);
-        StudentUserProgramModel nextProgram = eop.getNextProgram();
+        EndOfProgramHandler eop = new EndOfProgramHandler();
+        eop.loadStudent(conn, userId);
+        StudentUserProgramModel nextProgram = eop.getNextProgram(conn);
         assertNotNull(nextProgram);
         
         // make sure it was actually updated
