@@ -437,6 +437,7 @@ public class CmAdminDao {
             ps.setInt(1, adminUid);
             ps.setInt(2, adminUid);
             ps.setInt(3, adminUid);
+            ps.setInt(4, adminUid);
             rs = ps.executeQuery();
             if (rs.next()) {
                 ai.setSubscriberId(rs.getString("id"));

@@ -498,8 +498,9 @@ from   SUBSCRIBERS s
                            is_active,
                            Count(* ) as student_count
                   from     HA_USER
-                  where    is_active = 1
-                           and is_auto_create_template = 0
+                  where    admin_id = ?
+                    and    is_active = 1
+                    and    is_auto_create_template = 0
                   group by admin_id) t
          on t.admin_id = h.aid
        left join (select   user_id,
@@ -508,7 +509,7 @@ from   SUBSCRIBERS s
                   where    u.login_time < (select   Max(login_time) as login_time
                                            from     HA_USER_LOGIN
                                            where    user_type = 'ADMIN'
-                                                    and user_id = ?
+                                             and    user_id = ?
                                            group by user_id)
                            and u.user_id = ?
                   group by u.user_id) l
