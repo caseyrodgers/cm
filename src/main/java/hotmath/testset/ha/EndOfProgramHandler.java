@@ -34,7 +34,7 @@ public class EndOfProgramHandler {
     }
     
     public void loadStudent(final Connection conn, int userId) throws Exception {
-        student = dao.getStudentModelBase(conn, userId);    	
+        student = dao.getStudentModelBase(conn, userId, false);    	
     }
     
     /** Move this user to the next logical program.  This should 
