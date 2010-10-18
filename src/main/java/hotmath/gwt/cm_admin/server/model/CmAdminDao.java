@@ -127,8 +127,9 @@ public class CmAdminDao {
         try {
             ps = conn.prepareStatement(CmMultiLinePropertyReader.getInstance().getProperty("SELECT_GROUPS_SQL"));
             ps.setInt(1, adminUid);
-            ps.setInt(2, 1);
+            ps.setInt(2, adminUid);
             ps.setInt(3, 1);
+            ps.setInt(4, 1);
             rs = ps.executeQuery();
 
             l = loadGroups(rs);
