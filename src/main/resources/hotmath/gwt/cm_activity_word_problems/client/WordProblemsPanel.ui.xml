@@ -1,0 +1,386 @@
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui">
+
+	<ui:style>
+		.wrapper {
+	        padding: 10px;
+	        position: relative;
+		}
+		
+		.description {
+			margin: 10px;
+			font-size: .8em;
+			color: white;
+			display: inline;
+		}
+		
+		.question {
+			font-size: 1.1em;
+			color: #91013F;
+			background: white;
+            margin: 10px 10px 10px 15px;
+			padding: 10px;
+			overflow: auto;
+			background: #B0B92E;
+			
+			
+	        -moz-border-radius: 2%;
+	        border-radius: 2%;
+	        
+	        -moz-box-shadow: 3px 3px 3px #666;
+	        -webkit-box-shadow: 3px 3px 3px #666;
+	        box-shadow: 3px 3px 3px #666;			
+		}
+		
+		.inputAnswer {
+			color: #91013F;
+			background: white;
+			padding: 10px;
+			height: 45px;	
+			margin: 15px 25px;
+			font-weight: bold;
+			font-size: 1.3em;
+			text-align: center;
+			float: left;
+		}
+		
+		.inputAnswerButton {
+			height: 30px;
+			float: left;
+			margin: 20px;
+			width: 115px;
+		}
+		
+		.header_image {
+			display: inline;
+		}
+		
+		.explainButton {
+			margin-top: 35px;
+			width: 100px;
+		}
+		
+		#wp-footer {
+			
+		}
+		
+		.statusLabel {
+			
+			font-weight: bold;
+			font-size: .8em;
+		}
+		
+		.status {
+			color: #C85B8B;
+			font-size: 2em;
+			display: inline;
+		}
+		
+		.footerPanel {
+			color: white;
+		}
+
+
+
+
+
+
+
+
+#startup {
+	display: table-cell;
+	vertical-align: middle;
+	height: 356px;
+ }
+
+#startup > div {
+	width: 320px;
+	text-align: center;
+}
+
+
+#startup.hide {
+	display: none;
+}
+
+
+
+
+.activity {
+	border: 1px solid blue;
+	background: #9C275E;
+	
+	max-width: 500px;
+	min-width: 300px;
+	
+	min-height: 250px;
+	
+	-moz-border-radius: 2%;
+	border-radius: 2%;
+	-moz-box-shadow: 3px 3px 3px #666;
+	-webkit-box-shadow: 3px 3px 3px #666;
+	box-shadow: 3px 3px 3px #666;
+	margin: 10px;
+}
+
+* html .activity { 
+   width: expression( document.body.clientWidth > 599 ? "600px" : "auto" ); /* sets max-width for IE */
+   height: expression( document.body.clientHeight > 249 ? "250px" : "auto" ); /* sets max-height for IE */
+}
+
+
+.act-header {
+	border: 1px solid red;
+	margin: 5px 20px;
+	height: 50px;
+}
+
+.act-title {
+	margin: 20px 5px;
+	float: right;
+}
+
+.old_act-body {
+
+}
+
+.act-footer {
+	border: 1px solid green;
+	margin: 0 20px
+	height: 75px;;
+}
+
+
+
+
+
+
+/** popup message box */
+
+
+.gwt-PopupPanel {
+  border: 3px solid #C3D9FF;
+  padding: 3px;
+  background: white;
+}
+.gwt-PopupPanelGlass {
+  background-color: #000;
+  opacity: 0.3;
+  filter: alpha(opacity=30);
+}
+html>body .gwt-PopupPanel {
+}
+* html .gwt-PopupPanel {
+}
+.gwt-DecoratedPopupPanel .popupContent {
+}
+.gwt-DecoratedPopupPanel .popupMiddleCenter {
+  padding: 3px;
+  background: #d0e4f6;
+}
+.gwt-DecoratedPopupPanel .popupTopCenter {
+  background: url(/activities/images/hborder.png) repeat-x;
+}
+.gwt-DecoratedPopupPanel .popupBottomCenter {
+  background: url(/activities/images/hborder.png) repeat-x 0px -4px;
+  -background: url(/activities/images/hborder_ie6.png) repeat-x 0px -4px;
+}
+.gwt-DecoratedPopupPanel .popupMiddleLeft {
+  background: url(/activities/images/vborder.png) repeat-y;
+}
+.gwt-DecoratedPopupPanel .popupMiddleRight {
+  background: url(/activities/images/vborder.png) repeat-y -4px 0px;
+  -background: url(/activities/images/vborder_ie6.png) repeat-y -4px 0px;
+}
+.gwt-DecoratedPopupPanel .popupTopLeftInner {
+  width: 5px;
+  height: 5px;
+  zoom: 1;
+}
+.gwt-DecoratedPopupPanel .popupTopRightInner {
+  width: 8px;
+  height: 5px;
+  zoom: 1;
+}
+.gwt-DecoratedPopupPanel .popupBottomLeftInner {
+  width: 5px;
+  height: 8px;
+  zoom: 1;
+}
+.gwt-DecoratedPopupPanel .popupBottomRightInner {
+  width: 8px;
+  height: 8px;
+  zoom: 1;
+}
+.gwt-DecoratedPopupPanel .popupTopLeft {
+  background: url(/activities/images/corner.png) no-repeat 0px -10px;
+  -background: url(/activities/images/corner_ie6.png) no-repeat 0px -10px;
+}
+.gwt-DecoratedPopupPanel .popupTopRight {
+  background: url(/activities/images/corner.png) no-repeat -5px -10px;
+  -background: url(/activities/images/corner_ie6.png) no-repeat -5px -10px;
+}
+.gwt-DecoratedPopupPanel .popupBottomLeft {
+  background: url(/activities/images/corner.png) no-repeat 0px -15px;
+  -background: url(/activities/images/corner_ie6.png) no-repeat 0px -15px;
+}
+.gwt-DecoratedPopupPanel .popupBottomRight {
+  background: url(/activities/images/corner.png) no-repeat -5px -15px;
+  -background: url(/activities/images/corner_ie6.png) no-repeat -5px -15px;
+}
+html>body .gwt-DecoratedPopupPanel {
+}
+* html .gwt-DecoratedPopupPanel .popupTopLeftInner {
+  width: 5px;
+  height: 5px;
+  overflow: hidden;
+}
+* html .gwt-DecoratedPopupPanel .popupTopRightInner {
+  width: 8px;
+  height: 5px;
+  overflow: hidden;
+}
+* html .gwt-DecoratedPopupPanel .popupBottomLeftInner {
+  width: 5px;
+  height: 8px;
+  overflow: hidden;
+}
+* html .gwt-DecoratedPopupPanel .popupBottomRightInner {
+  width: 8px;
+  height: 8px;
+  overflow: hidden;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.gwt-DialogBox .Caption {
+  background: #e3e8f3 url(images/hborder.png) repeat-x 0px -2003px;
+  padding: 4px 4px 4px 8px;
+  cursor: default;
+  border-bottom: 1px solid #bbbbbb;
+  border-top: 5px solid #d0e4f6;
+}
+.gwt-DialogBox .dialogContent {
+}
+.gwt-DialogBox .dialogMiddleCenter {
+  padding: 3px;
+  background: white;
+}
+.gwt-DialogBox .dialogBottomCenter {
+  background: url(images/hborder.png) repeat-x 0px -4px;
+  -background: url(images/hborder_ie6.png) repeat-x 0px -4px;
+}
+.gwt-DialogBox .dialogMiddleLeft {
+  background: url(images/vborder.png) repeat-y;
+}
+.gwt-DialogBox .dialogMiddleRight {
+  background: url(images/vborder.png) repeat-y -4px 0px;
+  -background: url(images/vborder_ie6.png) repeat-y -4px 0px;
+}
+.gwt-DialogBox .dialogTopLeftInner {
+  width: 5px;
+  zoom: 1;
+}
+.gwt-DialogBox .dialogTopRightInner {
+  width: 8px;
+  zoom: 1;
+}
+.gwt-DialogBox .dialogBottomLeftInner {
+  width: 5px;
+  height: 8px;
+  zoom: 1;
+}
+.gwt-DialogBox .dialogBottomRightInner {
+  width: 5px;
+  height: 8px;
+  zoom: 1;
+}
+.gwt-DialogBox .dialogTopLeft {
+  background: url(images/corner.png) no-repeat -13px 0px;
+  -background: url(images/corner_ie6.png) no-repeat -13px 0px;
+}
+.gwt-DialogBox .dialogTopRight {
+  background: url(images/corner.png) no-repeat -18px 0px;
+  -background: url(images/corner_ie6.png) no-repeat -18px 0px;
+}
+.gwt-DialogBox .dialogBottomLeft {
+  background: url(images/corner.png) no-repeat 0px -15px;
+  -background: url(images/corner_ie6.png) no-repeat 0px -15px;
+}
+.gwt-DialogBox .dialogBottomRight {
+  background: url(images/corner.png) no-repeat -5px -15px;
+  -background: url(images/corner_ie6.png) no-repeat -5px -15px;
+}
+html>body .gwt-DialogBox {
+}
+* html .gwt-DialogBox .dialogTopLeftInner {
+  width: 5px;
+  overflow: hidden;
+}
+* html .gwt-DialogBox .dialogTopRightInner {
+  width: 8px;
+  overflow: hidden;
+}
+* html .gwt-DialogBox .dialogBottomLeftInner {
+  width: 5px;
+  height: 8px;
+  overflow: hidden;
+}
+* html .gwt-DialogBox .dialogBottomRightInner {
+  width: 8px;
+  height: 8px;
+  overflow: hidden;
+}
+.cw-DialogBox {
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	</ui:style>
+	
+	<ui:with field='res' type='hotmath.gwt.cm_activity_word_problems.client.CmActivityWordProblemsResources'/>
+	<g:FlowPanel styleName="{style.wrapper}" ui:field="activityBox" >
+	   <!-- 
+	   <g:Image styleName='{style.header_image}' resource='{res.goButton}'/>
+	    -->
+	   <g:FlowPanel styleName="{style.description}" ui:field='questionDescribe'></g:FlowPanel>
+	   <g:FlowPanel styleName='{style.question}' ui:field='questionHtmlPanel' ></g:FlowPanel>
+	   <g:TextBox styleName='{style.inputAnswer}' ui:field='answerPanel' ></g:TextBox>
+	   <g:Button text="Check Answer" styleName='{style.inputAnswerButton}' ui:field='answerButton'/>
+	   <g:HTMLPanel styleName='{style.footerPanel}'>
+	      <!--  The footer panel -->
+	      <br style='clear:both'/>
+	      <g:Button text="Explain" ui:field="explainButton" styleName='{style.explainButton}'/>
+	      <span>(question will be marked as incorrect)</span>	      
+	      <hr/>
+	      <div id='wp-footer'>
+	         <span styleName='{style.statusLabel}'>Question: </span>
+	         <g:Label styleName='{style.status}' ui:field='statusLabel' ></g:Label>
+	         <div>You will get your score on completion of 10 problems.</div>
+	      </div>
+	   </g:HTMLPanel>
+  	 </g:FlowPanel>
+</ui:UiBinder> 

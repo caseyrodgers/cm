@@ -16,6 +16,7 @@ public class EventTypes {
     public static EventType EVENT_RES_VIEW_LOADED = new EventType("EVENT_RES_VIEW_LOADED");
     public static EventType EVENT_USER_LOGIN = new EventType("EVENT_USER_LOGIN");
     public static EventType EVENT_LESSON_LOADED = new EventType("EVENT_LESSON_LOADED");
+    public static EventType EVENT_INITIALIZE = new EventType("EVENT_INITIALIZE");
     
     
 }

@@ -1,0 +1,13 @@
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui">
+
+	<ui:style>
+		.wrapper {
+	        padding: 10px;
+	        position: relative;
+		}
+	</ui:style>
+	
+	<g:FlowPanel styleName="{style.wrapper}" ui:field="wrapperPanel" >
+  	</g:FlowPanel> 
+</ui:UiBinder> 

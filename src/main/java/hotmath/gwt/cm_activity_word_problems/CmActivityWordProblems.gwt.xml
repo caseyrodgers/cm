@@ -1,0 +1,8 @@
+<module rename-to="cm_activity_word_problems">
+   <inherits name="com.google.gwt.user.User" />
+   <inherits name='hotmath.gwt.cm_mobile_shared.CatchupMathMobileShared' />
+   <inherits name='hotmath.gwt.cm_activity.CmActivity' />
+
+   <entry-point class="hotmath.gwt.cm_activity_word_problems.client.CmActivityWordProblems" />
+   <!-- <set-property name='user.agent' value='gecko'/> -->
+</module>

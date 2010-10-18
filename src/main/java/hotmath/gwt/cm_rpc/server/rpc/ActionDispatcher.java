@@ -368,13 +368,18 @@ public class ActionDispatcher {
                 cmdName = cmdName.substring(0, cmdName.length() - 6) + "Command";
                 
                 /** TODO: how to add these automatically ?
+                 * ? annotations would need preprocessing
+                 * ? static initializer would have to be client side and would break gwt.  
+                 * ? external configuration file is messy
+                 * ? server side startup using reflection ...  hmm..
                  * 
                  * NOTE: each ends with period
                  */
                 String standardPlaces[] = {"hotmath.gwt.shared.server.service.command.",
                                            "hotmath.gwt.cm_mobile.server.rpc.",
                                            "hotmath.gwt.cm_mobile_shared.server.rpc.",
-                                           "hotmath.gwt.solution_manager.server.rpc."};
+                                           "hotmath.gwt.solution_manager.server.rpc.",
+                                           "hotmath.gwt.cm_activity.server.rpc."};
                                      
                 Class actionHandler=null,cmdClass=null;
                 for(int i=0;i<standardPlaces.length;i++) {

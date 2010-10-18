@@ -1,0 +1,106 @@
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui">
+
+	<ui:style>
+		.wrapper {
+	        padding: 10px;
+	        position: relative;
+		}
+		
+		.description {
+			margin: 10px;
+			font-size: .8em;
+			color: white;
+			display: inline;
+		}
+		
+		.question {
+			font-size: 1.1em;
+			color: #91013F;
+			background: white;
+            margin: 10px 10px 10px 15px;
+			padding: 10px;
+			overflow: auto;
+			background: #B0B92E;
+			
+			
+	        -moz-border-radius: 2%;
+	        border-radius: 2%;
+	        
+	        -moz-box-shadow: 3px 3px 3px #666;
+	        -webkit-box-shadow: 3px 3px 3px #666;
+	        box-shadow: 3px 3px 3px #666;			
+		}
+		
+		.inputAnswer {
+			color: #91013F;
+			background: white;
+			padding: 10px;
+			height: 45px;	
+			margin: 15px 25px;
+			font-weight: bold;
+			font-size: 1.3em;
+			text-align: center;
+			float: left;
+		}
+		
+		.inputAnswerButton {
+			height: 30px;
+			float: left;
+			margin: 20px;
+			width: 115px;
+		}
+		
+		.header_image {
+			display: inline;
+		}
+		
+		.explainButton {
+			margin-top: 35px;
+			width: 100px;
+		}
+		
+		#wp-footer {
+			
+		}
+		
+		.statusLabel {
+			
+			font-weight: bold;
+			font-size: .8em;
+		}
+		
+		.status {
+			color: #C85B8B;
+			font-size: 2em;
+			display: inline;
+		}
+		
+		.footerPanel {
+			color: white;
+		}
+
+	</ui:style>
+	
+	<g:FlowPanel styleName="{style.wrapper}" ui:field="activityBox" >
+	   <!-- 
+	   <g:Image styleName='{style.header_image}' resource='{res.goButton}'/>
+	    -->
+	   <g:FlowPanel styleName="{style.description}" ui:field='questionDescribe'></g:FlowPanel>
+	   <g:FlowPanel styleName='{style.question}' ui:field='questionHtmlPanel' ></g:FlowPanel>
+	   <g:TextBox styleName='{style.inputAnswer}' ui:field='answerPanel' ></g:TextBox>
+	   <g:Button text="Check Answer" styleName='{style.inputAnswerButton}' ui:field='answerButton'/>
+	   <g:HTMLPanel styleName='{style.footerPanel}'>
+	      <!--  The footer panel -->
+	      <br style='clear:both'/>
+	      <g:Button text="Explain" ui:field="explainButton" styleName='{style.explainButton}'/>
+	      <div>(question will be marked as incorrect)</div>	      
+	      <hr/>
+	      <div id='wp-footer'>
+	         <span styleName='{style.statusLabel}'>Question: </span>
+	         <g:Label styleName='{style.status}' ui:field='statusLabel' ></g:Label>
+	         <div>You will get your score on completion of 10 problems.</div>
+	      </div>
+	   </g:HTMLPanel>
+  	 </g:FlowPanel>
+</ui:UiBinder> 

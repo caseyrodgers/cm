@@ -123,172 +123,32 @@ public class GetMobileLessonInfoCommand implements ActionHandler<GetMobileLesson
             sessionData.getInmhResources().add(resource);
         }
 
+        
+        
         sessionData.getInmhResources().add(lessonResource);
         sessionData.getInmhResources().add(problemsResource);
 
         List<PrescriptionSessionDataResource> resources = GetPrescriptionCommand.fixupInmhResources(sessionData.getInmhResources());
         fixupInmhResources(resources);
-        
         sessionData.setInmhResources(resources);
+        
+
+        /** create single activity for testing
+         * 
+         */
+        PrescriptionSessionDataResource activityResource = new PrescriptionSessionDataResource();
+        activityResource.setType("js_activity");
+        activityResource.setLabel("Learning Activity (JS)");
+        InmhItemData jsActivity = new InmhItemData("js_activity", "word_problems", "Word Problems");
+        activityResource.getItems().add(jsActivity);
+        sessionData.getInmhResources().add(0,activityResource);
+
 
         MobileLessonInfo lessonInfo = new MobileLessonInfo();
         lessonInfo.setPresData(presData);
 
         return lessonInfo;
     }
-
-    // public MobileLessonInfo execute2(Connection conn,
-    // GetMobileLessonInfoAction action) throws Exception {
-    // try {
-    //
-    // AssessmentPrescriptionSession sess =
-    // pres.getSessions().get(sessionNumber);
-    //
-    // PrescriptionData presData = new PrescriptionData();
-    //
-    // List<AssessmentPrescription.SessionData> practiceProblems =
-    // sess.getSessionDataFor(sess.getTopic());
-    // PrescriptionSessionDataResource problemsResource = new
-    // PrescriptionSessionDataResource();
-    // problemsResource.setType("practice");
-    //
-    // __logger.debug("assigning problems to prescription: " + action);
-    //
-    // /** label either as Problems or Activities */
-    // boolean isActivity=practiceProblems.get(0).getWidgetArgs()!=null;
-    // String title = "Required Practice " +
-    // (isActivity?"Activities":"Problems");
-    // problemsResource.setLabel(title);
-    // int cnt = 1;
-    // for (AssessmentPrescription.SessionData sdata : practiceProblems) {
-    // InmhItemData id = new InmhItemData();
-    // String type = isActivity?"Activity ":"Problem ";
-    // id.setTitle(type + cnt++);
-    // id.setFile(sdata.getPid());
-    // id.setType("practice");
-    // id.setWidgetJsonArgs(sdata.getWidgetArgs());
-    //
-    // problemsResource.getItems().add(id);
-    // }
-    //
-    // PrescriptionSessionDataResource lessonResource = new
-    // PrescriptionSessionDataResource();
-    // lessonResource.setType("review");
-    // lessonResource.setLabel("Review Lesson");
-    // InmhItemData lessonId = new InmhItemData();
-    //
-    // // Get the lesson this session is based on
-    // // each session is a single topic
-    // INeedMoreHelpItem item = sess.getSessionCategories().get(0);
-    // lessonId.setTitle(item.getTitle());
-    // lessonId.setFile(item.getFile());
-    // lessonId.setType(item.getType());
-    // lessonResource.getItems().add(lessonId);
-    //
-    // // always send complete list of all topics
-    // // @TODO: should we have an initialize phase and return this info
-    // // This would impose two request/response
-    // PrescriptionSessionData sessionData = new PrescriptionSessionData();
-    // sessionData.setSessionRpa(isActivity);
-    // for (AssessmentPrescriptionSession s : pres.getSessions()) {
-    // presData.getSessionTopics().add(s.getTopic());
-    // }
-    // presData.setCurrSession(sessionData);
-    //
-    //
-    // __logger.debug("Getting prescription resource items: " + action);
-    // sessionData.setTopic(sess.getTopic());
-    // sessionData.setSessionNumber(sessionNumber);
-    // for (INeedMoreHelpResourceType t :
-    // sess.getPrescriptionInmhTypesDistinct(conn)) {
-    //
-    // // skip the workbooks for now.
-    // if (t.getTypeDef().getType().equals("workbook"))
-    // continue;
-    //
-    // PrescriptionSessionDataResource resource = new
-    // PrescriptionSessionDataResource();
-    // resource.setType(t.getTypeDef().getType());
-    // resource.setLabel(t.getTypeDef().getLabel());
-    // for (INeedMoreHelpItem i : t.getResources()) {
-    // InmhItemData id = new InmhItemData();
-    // id.setFile(i.getFile());
-    // id.setTitle(i.getTitle());
-    // id.setType(i.getType());
-    //
-    // resource.getItems().add(id);
-    // }
-    // sessionData.getInmhResources().add(resource);
-    // }
-    //
-    // // add a results resource type to allow user to view current results
-    // PrescriptionSessionDataResource resultsResource = new
-    // PrescriptionSessionDataResource();
-    // resultsResource.setType("results");
-    // resultsResource.setLabel("Quiz Results");
-    // InmhItemData id = new InmhItemData();
-    // id.setTitle("Your quiz results");
-    // id.setFile("");
-    // id.setType("results");
-    // resultsResource.getItems().add(id);
-    //
-    //
-    //
-    // __logger.debug("creating prescription sessions: " + action);
-    //
-    // sessionData.getInmhResources().add(lessonResource);
-    // sessionData.getInmhResources().add(problemsResource);
-    // sessionData.getInmhResources().add(resultsResource);
-    //
-    // /** Call action and request list of INMH items */
-    // GetViewedInmhItemsAction getViewedAction = new
-    // GetViewedInmhItemsAction(runId);
-    // List<RpcData> rdata = new GetViewedInmhItemsCommand().execute(conn,
-    // getViewedAction).getRpcData();
-    //
-    // List<PrescriptionSessionDataResource> resources =
-    // fixupInmhResources(sessionData.getInmhResources());
-    // for (PrescriptionSessionDataResource r : resources) {
-    // for (InmhItemData itemData : r.getItems()) {
-    // // is this item viewed?
-    // for (RpcData rd : rdata) {
-    // if (rd.getDataAsString("file").equals(itemData.getFile())) {
-    // itemData.setViewed(true);
-    // break;
-    // }
-    // }
-    // }
-    // }
-    // sessionData.setInmhResources(resources);
-    //
-    // // update this user's active run session
-    // if (action.getUpdateActionInfo()) {
-    // pres.getTest().getUser().setActiveTestRunSession(sessionNumber);
-    // pres.getTest().getUser().update(conn);
-    // }
-    //
-    //
-    //
-    // /** Mark this lesson as being viewed
-    // *
-    // */
-    // new HaTestRunDao().setLessonViewed(conn,runId,sessionNumber);
-    //
-    // HaTestRun testRun = pres.getTestRun();
-    //
-    // PrescriptionSessionResponse response = new PrescriptionSessionResponse();
-    // response.setRunId(testRun.getRunId());
-    // response.setPrescriptionData(presData);
-    // response.setCorrectPercent(getTestPassPercent(testRun.getAnsweredCorrect()
-    // + testRun.getAnsweredIncorrect() + testRun.getNotAnswered(),
-    // pres.getTestRun().getAnsweredCorrect()));
-    // response.setProgramTitle(pres.getTest().getTestDef().getTitle());
-    //
-    // return response;
-    //
-    // } catch (Exception e) {
-    // throw new CmRpcException(e);
-    // }
 
     private String getLessonTitle(final Connection conn, String file) throws Exception {
         PreparedStatement ps = null;

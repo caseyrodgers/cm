@@ -51,9 +51,6 @@ public class CatchupMathMobileShared implements EntryPoint, Screen.OrientationCh
     public void onModuleLoad() {
     }
     
-
-    
-    
     public ControlPanel getControlPanel() {
         return controlPanel;
     }
@@ -94,6 +91,8 @@ public class CatchupMathMobileShared implements EntryPoint, Screen.OrientationCh
         if (!point.endsWith("/"))
             point += "/";
 
+        point = "/cm/";
+        
         _cmService = (CmServiceAsync) GWT.create(CmService.class);
         ((ServiceDefTarget) _cmService).setServiceEntryPoint(point + "services/cmService");
 

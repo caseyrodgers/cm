@@ -1,0 +1,58 @@
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui">
+
+	<ui:style>
+		.wrapper {
+	        padding: 10px;
+	        position: relative;
+		}
+
+        .questionPanel {
+			font-size: 1.1em;
+			color: #91013F;
+			background: white;
+			padding: 10px;
+			overflow: auto;
+			background: #B0B92E;
+	        -moz-border-radius: 2%;
+	        border-radius: 2%;
+	        -moz-box-shadow: 3px 3px 3px #666;
+	        -webkit-box-shadow: 3px 3px 3px #666;
+	        box-shadow: 3px 3px 3px #666;	         
+	     }
+	     
+	     .explainPanel {
+	     	background: white;
+	     	margin-top: 20px;
+	     	padding: 10px;
+	     	
+	        -moz-border-radius: 2%;
+	        border-radius: 2%;
+	     }
+	     
+	     .buttonBar {
+	     	margin-top: 20px;
+	     	text-align: center;
+	     }
+	     
+	     .headerPanel {
+	     	color: white;
+	     	font-weight: bold;
+	     	font-size: 1.1em;
+	     	text-align: right;
+	     	margin: 0 0 15px 0;
+	     }
+		
+	</ui:style>
+	
+	<g:FlowPanel styleName="{style.wrapper}" ui:field="wrapperPanel" >
+	    <g:FlowPanel ui:field="headerPanel" styleName='{style.headerPanel}'>
+	        <g:Label text='Explain'/>
+	    </g:FlowPanel>
+	    <g:FlowPanel ui:field="questionPanel" styleName='{style.questionPanel}'/>
+	    <g:FlowPanel ui:field="explainPanel" styleName='{style.explainPanel}'/>
+	    <g:FlowPanel styleName='{style.buttonBar}'>
+	        <g:Button ui:field="goNext" text="Next Question"/>
+	    </g:FlowPanel>
+  	 </g:FlowPanel>
+</ui:UiBinder> 
