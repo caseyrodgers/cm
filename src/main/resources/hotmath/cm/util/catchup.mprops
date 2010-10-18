@@ -435,7 +435,9 @@ order by td.load_order
 SELECT     id, name, description, g.is_active, ifnull(is_auto_create_template, 0) as is_auto_create_template
 FROM       CM_GROUP g
 LEFT JOIN  HA_USER u
-       ON  u.group_id = g.id and u.is_auto_create_template = 1
+       ON  u.group_id = g.id
+      AND  u.is_auto_create_template = 1
+      AND  u.admin_id = ?
 WHERE      g.admin_id = ?
   AND      g.is_active = ?
 UNION
