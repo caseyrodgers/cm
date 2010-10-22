@@ -84,49 +84,29 @@ LEFT JOIN HA_CUSTOM_PROGRAM cp
 
 SELECT h.uid, h.admin_id as admin_uid, h.user_prog_id,
        if ((h.active_run_id > 0),
-           lpad(concat(format((m.answered_correct*100)/(m.answered_correct+m.answered_incorrect+m.not_answered),0),'%'),4,' '),
+           lpad(concat(format(ux.last_quiz,0),'%'),4,' '),
            if((h.active_test_id > 0), 'Started', ' ') ) as last_quiz,
-       date_format(l.login_time,'%Y-%m-%d') as last_use_date, 
-       ifnull(q.passing_count, 0) as passing_count, ifnull(q.not_passing_count, 0) as not_passing_count,
+       date_format(ux.last_login,'%Y-%m-%d') as last_use_date, 
+       ifnull(ux.quiz_pass_count, 0) as passing_count, ifnull(ux.quiz_not_pass_count, 0) as not_passing_count,
        ifnull(ut.tutoring_use, 0) as tutoring_use
 FROM  HA_USER h
-INNER JOIN CM_USER_PROGRAM p 
-   on p.user_id = h.uid and p.id = h.user_prog_id 
-LEFT JOIN HA_TEST_DEF d 
-   on d.test_def_id = p.test_def_id 
-LEFT JOIN ( SELECT user_id, max(run_id) as run_id 
-            FROM HA_TEST_RUN r 
-              JOIN HA_TEST t on r.test_id = t.test_id 
-            GROUP BY user_id) x ON x.user_id = h.uid 
-LEFT JOIN HA_TEST_RUN m 
-  on m.run_id =  x.run_id
-LEFT JOIN ( SELECT user_id, max(login_time) as login_time 
-            FROM HA_USER_LOGIN
-            WHERE user_id in (XXX) 
-            GROUP BY user_id) l on l.user_id = h.uid 
-LEFT JOIN ( SELECT ifnull(p.total,0) as passing_count, ifnull(n.total,0) as not_passing_count, u.uid as user_id
-			FROM HA_USER u 
-			  LEFT JOIN (
-			    SELECT count(*) as total, 1 as is_passing, t.user_id as user_id
-			    FROM HA_TEST_RUN r
-			     JOIN HA_TEST t on r.test_id = t.test_id
-			     WHERE r.is_passing = 1
-			     AND t.user_id in (XXX)
-			     GROUP BY t.user_id
-			) p on p.user_id = u.uid 
-			  LEFT JOIN (
-			    SELECT count(*) as total, 0 as is_passing, t.user_id as user_id
-			    FROM HA_TEST_RUN r
-			   JOIN HA_TEST t on r.test_id = t.test_id
-			   WHERE r.is_passing = 0
-			   AND t.user_id in (XXX)
-			   GROUP BY t.user_id
-			) n on n.user_id = u.uid) q on q.user_id = h.uid
+LEFT JOIN HA_USER_EXTENDED ux on ux.user_id = h.uid
 LEFT JOIN (SELECT uid, count(*) as tutoring_use 
-           FROM HA_USER_TUTORING_SESSION ts 
+           FROM HA_USER_TUTORING_SESSION ts
            GROUP by uid) ut on ut.uid = h.uid
 WHERE h.uid in (XXX) 
 ORDER BY h.user_name
+
+.key=INSERT_STUDENT_EXTENDED
+
+INSERT into HA_USER_EXTENDED (user_id, quiz_pass_count, quiz_not_pass_count, last_quiz, last_login)
+values(?,?,?,?,(select max(login_time) from HA_USER_LOGIN where user_id = ?))
+
+.key=INSERT_STUDENT_EXTENDED_LOGIN
+
+INSERT into HA_USER_EXTENDED (user_id, quiz_pass_count, quiz_not_pass_count, last_quiz, last_login)
+values(?,null,null,null,(select max(login_time) from HA_USER_LOGIN where user_id = ?))
+
 
 .key=STUDENT_LAST_LOGIN
 
