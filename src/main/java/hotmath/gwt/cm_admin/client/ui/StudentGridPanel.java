@@ -962,7 +962,12 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
     		@Override
     		public void attempt() {
     			GetStudentGridPageExtendedAction action = new GetStudentGridPageExtendedAction(StudentGridPanel.this._cmAdminMdl.getId(),studentUids);
+    			
+    			/** save the page used to make request
+    			 * 
+    			 */
     			_requestPage = getCurrentPage();
+    			
     			setAction(action);
     			_lastRequest=action;
     			CmShared.getCmService().execute(action, this);
@@ -971,7 +976,7 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
     		public void oncapture(CmStudentPagingLoadResult<StudentModelExt> value) {
     		    
     		    /** Check to make sure the current page (_grid) is on  
-    		     *  the correct page. 
+    		     *  the associated with this request. 
     		     */
     		    int pageNow = getCurrentPage();
     		    if(pageNow != _requestPage) {
