@@ -944,6 +944,14 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
     }
     
     
+    /* what page is the grid currently viewing?
+     * 
+     */
+    private int getCurrentPage() {
+        int offset = _pageAction.getLoadConfig().getOffset();
+        return offset==0?0:offset/MAX_ROWS_PER_PAGE;
+    }
+    
     /** Read any extended data for the current page
      * 
      */
@@ -954,7 +962,7 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
     		@Override
     		public void attempt() {
     			GetStudentGridPageExtendedAction action = new GetStudentGridPageExtendedAction(StudentGridPanel.this._cmAdminMdl.getId(),studentUids);
-    			_requestPage = _pagingToolBar.getActivePage();
+    			_requestPage = getCurrentPage();
     			setAction(action);
     			_lastRequest=action;
     			CmShared.getCmService().execute(action, this);
@@ -963,9 +971,9 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
     		public void oncapture(CmStudentPagingLoadResult<StudentModelExt> value) {
     		    
     		    /** Check to make sure the current page (_grid) is on  
-    		     *  the correct page.  If not, then data cannot be set.
+    		     *  the correct page. 
     		     */
-    		    int pageNow = _pagingToolBar.getActivePage();
+    		    int pageNow = getCurrentPage();
     		    if(pageNow != _requestPage) {
     	            CmLogger.debug("Extended data out of sync (" + pageNow + " != " + _requestPage); 
     		        return; // ?
