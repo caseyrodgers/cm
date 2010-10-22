@@ -2,6 +2,7 @@ package hotmath.testset.ha;
 
 import hotmath.HotMathException;
 import hotmath.gwt.cm_tools.client.data.HaBasicUser;
+import hotmath.gwt.cm_tools.client.data.HaBasicUser.UserType;
 import hotmath.gwt.shared.client.util.CmException;
 import hotmath.util.HMConnectionPool;
 import hotmath.util.sql.SqlUtilities;
@@ -112,6 +113,10 @@ public class HaLoginInfo {
     
             if(pstat.executeUpdate() != 1)
                 throw new Exception("could not not insert new HA_USER_LOGIN record");
+            
+            if (user.getUserType() == UserType.STUDENT) {
+            	HaTestDao.updateUserExtendedLastLogin(conn, user.getUserKey());
+            }
             
             return key;
             
