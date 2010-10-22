@@ -106,6 +106,8 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
 
     final PagingLoader<PagingLoadResult<StudentModelExt>> _studentLoader;
     final PagingToolBar _pagingToolBar;
+    
+    final int MAX_ROWS_PER_PAGE = 50;
 
     public StudentGridPanel(CmAdminModel cmAdminMdl) {
         this._cmAdminMdl = cmAdminMdl;
@@ -140,7 +142,7 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
                 config.setOffset(0);
 
                 /** set rows per page */
-                config.setLimit(50);
+                config.setLimit(MAX_ROWS_PER_PAGE);
 
                 Map<String, Object> state = getState();
                 if (state.containsKey("offset")) {
@@ -163,7 +165,7 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
         add(createToolbar(), new BorderLayoutData(LayoutRegion.NORTH, 30));
 
         LayoutContainer lc = new LayoutContainer(new BorderLayout());
-        _pagingToolBar = new PagingToolBar(50);
+        _pagingToolBar = new PagingToolBar(MAX_ROWS_PER_PAGE);
         _pagingToolBar.bind(_studentLoader);
         lc.add(_pagingToolBar, new BorderLayoutData(LayoutRegion.SOUTH, 30));
         lc.add(_grid, new BorderLayoutData(LayoutRegion.CENTER, 400));
@@ -939,32 +941,50 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
         		CmAdminDataReader.getInstance().fireRefreshData();
             }
         }.register();
-        
     }
     
     
     /** Read any extended data for the current page
      * 
      */
+    GetStudentGridPageExtendedAction _lastRequest;
     private void readExtendedDataForPage(final List<Integer> studentUids) {
     	new RetryAction<CmStudentPagingLoadResult<StudentModelExt>>() {
+    	    int _requestPage;
     		@Override
     		public void attempt() {
     			GetStudentGridPageExtendedAction action = new GetStudentGridPageExtendedAction(StudentGridPanel.this._cmAdminMdl.getId(),studentUids);
+    			_requestPage = _pagingToolBar.getActivePage();
     			setAction(action);
+    			_lastRequest=action;
     			CmShared.getCmService().execute(action, this);
     		}
     		@Override
     		public void oncapture(CmStudentPagingLoadResult<StudentModelExt> value) {
+    		    
+    		    /** Check to make sure the current page (_grid) is on  
+    		     *  the correct page.  If not, then data cannot be set.
+    		     */
+    		    int pageNow = _pagingToolBar.getActivePage();
+    		    if(pageNow != _requestPage) {
+    	            CmLogger.debug("Extended data out of sync (" + pageNow + " != " + _requestPage); 
+    		        return; // ?
+
+    		    }
     			for (int i = 0, t = value.getData().size(); i < t; i++) {
-    				StudentModelExt smEx = value.getData().get(i);
-					StudentModelExt smLive = _grid.getStore().getModels().get(i);
-					
-					smLive.setPassingCount(smEx.getPassingCount());
-					smLive.setLastQuiz(smEx.getLastQuiz());
-					smLive.setLastLogin(smEx.getLastLogin());
-					smLive.setNotPassingCount(smEx.getNotPassingCount());
-					smLive.setTutoringUse(smEx.getTutoringUse());
+    			    try {
+        				StudentModelExt smEx = value.getData().get(i);
+    					StudentModelExt smLive = _grid.getStore().getModels().get(i);
+    					
+    					smLive.setPassingCount(smEx.getPassingCount());
+    					smLive.setLastQuiz(smEx.getLastQuiz());
+    					smLive.setLastLogin(smEx.getLastLogin());
+    					smLive.setNotPassingCount(smEx.getNotPassingCount());
+    					smLive.setTutoringUse(smEx.getTutoringUse());
+    			    }
+    			    catch(Exception ex) {
+    			        CmLogger.debug("Extended data could not be set for row '" + i + ": " + ex.getMessage());
+    			    }
 				}
     			/** Force refresh of display
     			 * TODO: is there a better way than refreshing entire display?

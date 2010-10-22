@@ -297,7 +297,7 @@ public class CmPilotCreate {
     static public Integer addPilotRequest(String title, String name, String school, String zip, String email,
             String phone, String userComments, String phoneWhen, String schoolPrefix, boolean sendEmailConfirmation,int studentCount, CmPartner partner) throws Exception {
 
-        String sendTo[] = { "lincoln@hotmath.com", "sales@hotmath.com", "casey@hotmath.com" };
+        String sendTo[] = {"sales@hotmath.com"};
 
         Connection conn = null;
         PreparedStatement ps = null;
