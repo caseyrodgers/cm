@@ -142,6 +142,20 @@ public enum EventType{
      *  Provides hooks to brand UI.
      * 
      */
-    EVENT_TYPE_USER_LOGIN
+    EVENT_TYPE_USER_LOGIN,
     
+    
+    /** Fired when the resource area has been reset
+     *  causing a redraw to happen.  IE (GWT) will reset
+     *  any field from dynamically inserted HTML such as radiobuttons.
+     *  In this case, radiobuttons must be manually set each 
+     *  time the display is refreshed.
+     */
+    EVENT_TYPE_RESOURCE_CONTAINER_REFRESH,
+    
+    
+    /** Fired when a question has had its selection changed
+     * 
+     */
+    EVENT_TYPE_QUIZ_QUESTION_SELECTION_CHANGED
 }

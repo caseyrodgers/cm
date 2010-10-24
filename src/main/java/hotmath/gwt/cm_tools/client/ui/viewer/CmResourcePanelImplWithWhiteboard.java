@@ -22,6 +22,7 @@ import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
+import com.extjs.gxt.ui.client.widget.layout.ColumnLayout;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -106,7 +107,6 @@ public abstract class CmResourcePanelImplWithWhiteboard extends CmResourcePanelI
     
     Button _showWorkBtn;
     public List<Component> getContainerTools() {
-        
         String btnText = _displayMode == DisplayMode.WHITEBOARD?"Hide Whiteboard":"Show Whiteboard";
         _showWorkBtn = new Button(btnText,new SelectionListener<ButtonEvent>() {
             @Override
@@ -164,37 +164,45 @@ public abstract class CmResourcePanelImplWithWhiteboard extends CmResourcePanelI
     	/** empty */
     }
     
+    ShowWorkPanel _showWorkPanel;
+    
+    
+    
     /** Central method to setup either tutor or whiteboard
-     *  display modes. 
+     *  display modes.
+     *  
+     *   Key point is to not remove the resource panel, only remove
+     *   the whiteboard and reset the layout.  This will make sure
+     *   to not reset external radiobuttons in IE
      * 
      * @param displayMode
      */
     public void setDisplayMode(DisplayMode displayMode) {
-    	
         removeAll();
         if(displayMode == DisplayMode.TUTOR) {
         	if(_showWorkBtn != null)
                 _showWorkBtn.setText("Show Whiteboard");
         	_saveWhiteboard.setVisible(false);
-            add(getTutorDisplay());
-            
+        	remove(_showWorkPanel);
+        	add(getTutorDisplay());
             CmMainPanel.__lastInstance._mainContent.currentContainer.getMaximizeButton().setEnabled(true);
+            
+            setLayout(new FitLayout());
+            layout(true);
         }
         else {
-            _saveWhiteboard.setVisible(true);
-        	if(CmMainPanel.__lastInstance._mainContent.currentContainer != null) {
+            if(CmMainPanel.__lastInstance._mainContent.currentContainer != null) {
         		_wasMaxBeforeWhiteboard = CmMainPanel.__lastInstance._mainContent.currentContainer.isMaximized();
-                CmMainPanel.__lastInstance._mainContent.currentContainer.setMaximize(this,_wasMaxBeforeWhiteboard);
+                CmMainPanel.__lastInstance._mainContent.currentContainer.setMaximize(this,_wasMaxBeforeWhiteboard,false);
                 CmMainPanel.__lastInstance._mainContent.currentContainer.getMaximizeButton().setEnabled(false);
         	}
-            
-            ShowWorkPanel swp = new ShowWorkPanel(new CmAsyncRequestImplDefault() {
+            _showWorkPanel = new ShowWorkPanel(new CmAsyncRequestImplDefault() {
 				@Override
 				public void requestComplete(String requestData) {
 					whiteboardIsReady();
 				}
 			});
-            setupShowWorkPanel(swp);
+            setupShowWorkPanel(_showWorkPanel);
 
             LayoutContainer lcTutor = new LayoutContainer(new FitLayout());
             lcTutor.setScrollMode(Scroll.AUTO);
@@ -214,7 +222,7 @@ public abstract class CmResourcePanelImplWithWhiteboard extends CmResourcePanelI
             bld = new BorderLayoutData(LayoutRegion.EAST, .50f);
             bld.setSplit(false);
             
-            lcMain.add(swp, bld);
+            lcMain.add(_showWorkPanel, bld);
         
             if(_showWorkBtn != null)
                _showWorkBtn.setText("Hide Whiteboard");
@@ -225,7 +233,9 @@ public abstract class CmResourcePanelImplWithWhiteboard extends CmResourcePanelI
         _displayMode = displayMode;
         __lastDisplayMode = _displayMode;
         
-        layout();
+        layout(true);
+
+        EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_RESOURCE_CONTAINER_REFRESH));
     }
     
     @Override

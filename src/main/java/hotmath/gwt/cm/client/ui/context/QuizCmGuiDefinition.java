@@ -12,7 +12,6 @@ import hotmath.gwt.cm_tools.client.ui.viewer.CmResourcePanelImplWithWhiteboard;
 import hotmath.gwt.cm_tools.client.ui.viewer.ShowWorkPanel;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.data.CmAsyncRequestImplDefault;
-import hotmath.gwt.shared.client.util.StatusImagePanel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,7 +22,6 @@ import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.Html;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.button.Button;
-import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Widget;
 
 
@@ -80,7 +78,8 @@ public class QuizCmGuiDefinition implements CmGuiDefinition {
 		        
 			public void requestComplete(String quizTitle) {
 			    
-			    /** Create resource container to display the tutor/whiteboard combination 
+			    /** Create resource container to display 
+			     * the tutor/white-board combination 
 			     * 
 			     */
                 CmResourcePanelImplDefault resourcePanel = new CmResourcePanelImplWithWhiteboard() {

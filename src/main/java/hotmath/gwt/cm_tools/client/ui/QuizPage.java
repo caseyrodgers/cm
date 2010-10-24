@@ -3,7 +3,6 @@ package hotmath.gwt.cm_tools.client.ui;
 
 
 import hotmath.gwt.cm_rpc.client.UserInfo;
-import hotmath.gwt.cm_rpc.client.rpc.CmList;
 import hotmath.gwt.cm_rpc.client.rpc.GetQuizHtmlAction;
 import hotmath.gwt.cm_rpc.client.rpc.QuizHtmlResult;
 import hotmath.gwt.cm_rpc.client.rpc.RpcData;
@@ -13,6 +12,7 @@ import hotmath.gwt.cm_tools.client.util.ProcessTracker;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.data.CmAsyncRequest;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
+import hotmath.gwt.shared.client.eventbus.CmEventListener;
 import hotmath.gwt.shared.client.eventbus.EventBus;
 import hotmath.gwt.shared.client.eventbus.EventType;
 import hotmath.gwt.shared.client.rpc.RetryAction;
@@ -22,32 +22,59 @@ import java.util.List;
 import com.extjs.gxt.ui.client.Style.Scroll;
 import com.extjs.gxt.ui.client.widget.Html;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
+import com.google.gwt.user.client.Command;
+import com.google.gwt.user.client.DeferredCommand;
 
 public class QuizPage extends LayoutContainer {
 	
+    static QuizPage __lastInstance;
 	
 	String _title;   // @TODO: move into model
 	CmAsyncRequest callbackWhenComplete;
 	static List<Integer> testQuestionAnswers;
+	QuizHtmlResult _quizInfo;
+	
 	public QuizPage(boolean loadActive, CmAsyncRequest callbackWhenComplete) {
-	    
+	    __lastInstance = this;
 	    setScrollMode(Scroll.AUTOY);
-	    
 		this.callbackWhenComplete = callbackWhenComplete;
 		setStyleName("quiz-panel");
 		getQuizHtmlFromServer(loadActive);
 	}
 
 	
+	/** Called when user makes an answer selection 
+	 * 
+	 * @param action
+	 */
+	public void saveQuestionSelection(SaveQuizCurrentResultAction action) {
+	    /** replace entry, or add new
+	     * 
+	     */
+	    boolean found=false;
+	    for(int i=0,t=_quizInfo.getCurrentSelections().size();i<t;i++) {
+	        RpcData rdata = _quizInfo.getCurrentSelections().get(i);
+	        if(rdata.getDataAsString("pid").equals(action.getPid())) {
+	            rdata.putData("answer", action.getAnswerIndex());
+	            found=true;
+	            break;
+	        }
+	    }
+	    if(!found) {
+            RpcData nrdata = new RpcData("pid=" + action.getPid() + ",answer=" + action.getAnswerIndex());
+            _quizInfo.getCurrentSelections().add(nrdata);
+	    }
+	}
 
     
-    /** Setup method that will call a global method that will set the selected
+    /** Call external JS global method that will set the selected
      *  guess for the given question.
      *  
      * @param pid
      * @param which
      */
     private native void setSolutionQuestionAnswerIndex(String pid, String which) /*-{
+         // alert($wnd.document.getElementById);
          $wnd.setSolutionQuestionAnswerIndex(pid,which);
     }-*/;
     private native void setSolutionQuestionAnswerIndexByNumber(int questionNumber, String which) /*-{
@@ -69,7 +96,7 @@ public class QuizPage extends LayoutContainer {
      * 
      * @param quizHtml
      */
-	private void displayQuizHtml(String quizHtml, CmList<RpcData> selections) {
+	private void displayQuizHtml(String quizHtml) {
 	    
 		Html html = new Html(quizHtml);
 		if(CmShared.getQueryParameter("debug") != "") {
@@ -78,20 +105,36 @@ public class QuizPage extends LayoutContainer {
 		add(html);
 		layout();
 
-		/** mark the correct selections */
-        CmList<RpcData> al = selections; 
         callbackWhenComplete.requestComplete(_title);
-        for(RpcData rd: al) {
-            setSolutionQuestionAnswerIndex(rd.getDataAsString("pid"),rd.getDataAsString("answer"));
-        }
-        CmMainPanel.setQuizQuestionDisplayAsActive(CmMainPanel.getLastQuestionPid());
         
+        CmMainPanel.setQuizQuestionDisplayAsActive(CmMainPanel.getLastQuestionPid());
         
         /** reset each displayed quiz */
         questionProcessTracker.finish();
 	}
 
-	/** Read the raw HTML from server and inserts into DOM node
+	/** mark the quiz with the user's current selections
+	 * 
+	 */
+	public void markUserAnswers() {
+	    CmLogger.debug("QuizPage: marking user selections: " + this);
+	    DeferredCommand.addCommand(new Command() {
+            @Override
+            public void execute() {
+                try {
+                    for(RpcData rd: _quizInfo.getCurrentSelections()) {
+                        setSolutionQuestionAnswerIndex(rd.getDataAsString("pid"),rd.getDataAsString("answer"));
+                    }
+                }
+                catch(Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+	}
+	
+	/** Read the raw HTML from server and insert into DOM node.
+	 *  Also, set the users selections as saved on server.
 	 * 
 	 */
 	private void getQuizHtmlFromServer(final boolean loadActive) {
@@ -111,14 +154,13 @@ public class QuizPage extends LayoutContainer {
             @Override
             public void oncapture(QuizHtmlResult rdata) {
                 CatchupMathTools.setBusy(false);
-                
+                _quizInfo = rdata;
                 testQuestionAnswers = rdata.getAnswers();
                 
                 UserInfo.getInstance().setTestSegment(rdata.getQuizSegment());
                 UserInfo.getInstance().setTestId(rdata.getTestId());
                 UserInfo.getInstance().setSubTitle(rdata.getSubTitle());
                 
-                _title = rdata.getTitle();
                 UserInfo.getInstance().setTestSegmentCount(rdata.getQuizSegmentCount());
                 
                 if(rdata.getUserId() != UserInfo.getInstance().getUid()) {
@@ -126,7 +168,13 @@ public class QuizPage extends LayoutContainer {
                     UserInfo.getInstance().setUserName("Guest user on account: " + rdata.getUserId());
                     EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_USERCHANGED));
                 }
-                displayQuizHtml(rdata.getQuizHtml(),rdata.getCurrentSelections());
+                displayQuizHtml(rdata.getQuizHtml());
+                DeferredCommand.addCommand(new Command() {
+                    @Override
+                    public void execute() {
+                        markUserAnswers();
+                    }
+                });
             }
         }.register();	    
 	}
@@ -139,6 +187,18 @@ public class QuizPage extends LayoutContainer {
 	
     static {
         publishNative();
+        
+        EventBus.getInstance().addEventListener(new CmEventListener() {
+            @Override
+            public void handleEvent(CmEvent event) {
+                if(event.getEventType() == EventType.EVENT_TYPE_RESOURCE_CONTAINER_REFRESH) {
+                    __lastInstance.markUserAnswers();
+                }
+                else if(event.getEventType() == EventType.EVENT_TYPE_QUIZ_QUESTION_SELECTION_CHANGED) {
+                    __lastInstance.saveQuestionSelection((SaveQuizCurrentResultAction)event.getEventData());
+                }
+            }
+        });
     }
     
     /** Push a GWT method onto the global space for the app window
@@ -188,7 +248,7 @@ public class QuizPage extends LayoutContainer {
             CatchupMathTools.showAlert("You are just a visitor here, please do not change any selections");
             return "OK";
         }
-
+        
         /** track before inserting into request que */
     	questionProcessTracker.beginStep();
         
@@ -200,6 +260,7 @@ public class QuizPage extends LayoutContainer {
                 final int correctIndex = testQuestionAnswers.get(questionIndex);
                 Boolean isCorrect = correctIndex == answerChoice;
                 SaveQuizCurrentResultAction action = new SaveQuizCurrentResultAction(UserInfo.getInstance().getTestId(), isCorrect, answerChoice, pid);
+                EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_QUIZ_QUESTION_SELECTION_CHANGED,action));
                 setAction(action);
                 CmShared.getCmService().execute(action,this);
             }

@@ -1,11 +1,14 @@
 package hotmath.gwt.cm_tools.client.ui.resource_viewer;
 
+import hotmath.gwt.cm.client.ui.context.QuizCmGuiDefinition;
 import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_rpc.client.rpc.InmhItemData;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.ui.resource_viewer.CmResourcePanelContainer.ResourceViewerState;
+import hotmath.gwt.cm_tools.client.ui.viewer.CmResourcePanelImplWithWhiteboard;
 import hotmath.gwt.cm_tools.client.ui.viewer.ResourceViewerFactory;
 import hotmath.gwt.cm_tools.client.ui.viewer.ResourceViewerImplActivity;
+import hotmath.gwt.cm_tools.client.ui.viewer.ResourceViewerImplQuiz;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
 import hotmath.gwt.shared.client.eventbus.EventBus;
 import hotmath.gwt.shared.client.eventbus.EventType;
@@ -113,27 +116,18 @@ public class CmMainResourceContainer extends LayoutContainer {
     public void showResource(CmResourcePanel viewer, String title) {
         
         setLayout(new MyCenterLayout());
-        
-        /** create a new resource container to encapsulate the resource
-         * 
-         */
-        if(viewer.showContainer()) {
-            currentContainer = new CmResourcePanelContainer(this,viewer);
-            currentContainer.setHeading(title);
-            add(currentContainer);
-        }
-        else {
-            currentContainer = new CmResourcePanelContainer(this,viewer);
-            currentContainer.setHeading(title);
-            add(currentContainer);
-            
-        }
+
+        currentContainer = new CmResourcePanelContainer(this,viewer);
+        currentContainer.setHeading(title);
+        add(currentContainer);
         
         layout();
         
-        if(viewer instanceof ResourceViewerImplActivity) {
+        if(viewer instanceof ResourceViewerImplActivity || viewer instanceof CmResourcePanelImplWithWhiteboard) {
         	/** 
-        	 * do not slide in activity to avoid double load
+        	 * do not slide in activity to avoid bugs:
+        	 * - double load of flash objecs
+        	 * - unsetting of external HTML radio buttons
         	 */
         }
         else {
@@ -143,7 +137,7 @@ public class CmMainResourceContainer extends LayoutContainer {
         currentPanel = viewer;
         currentTitle = title;
         
-        EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_RESOURCE_VIEWER_OPEN, viewer));     
+        EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_RESOURCE_VIEWER_OPEN, viewer));  
     }
     
     

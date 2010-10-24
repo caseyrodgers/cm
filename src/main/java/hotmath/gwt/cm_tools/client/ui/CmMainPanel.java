@@ -214,6 +214,12 @@ public class CmMainPanel extends LayoutContainer {
 								        * 
 								        */
 										__lastInstance._mainContent.showResource();
+										
+										/** Trigger a refresh to allow any viewer to reset any
+										 *  data that might be reset if panel is removed/added.
+										 *  This is mainly for IE.
+										 */
+										EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_RESOURCE_CONTAINER_REFRESH));
 									}
 							break;
 						}

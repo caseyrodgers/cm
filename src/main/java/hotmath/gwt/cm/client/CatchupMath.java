@@ -31,15 +31,24 @@ import com.extjs.gxt.ui.client.Style.LayoutRegion;
 import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
+import com.extjs.gxt.ui.client.widget.Html;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.Viewport;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
+import com.extjs.gxt.ui.client.widget.layout.ColumnLayout;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
+import com.extjs.gxt.ui.client.widget.layout.RowLayout;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.RadioButton;
 import com.google.gwt.user.client.ui.RootPanel;
 
 /**
@@ -77,6 +86,14 @@ public class CatchupMath implements EntryPoint {
      * This is the entry point method.
      */
     public void onModuleLoad() {
+        
+        
+        if(false) {
+            RootPanel.get("main-content").add(new TestApp());
+            return;
+        }
+        
+        
         __thisInstance = this;
     	CmLogger.info("Catchup Math Startup");
 
@@ -106,6 +123,8 @@ public class CatchupMath implements EntryPoint {
         /** Turn on debugging CSS */
         if (CmShared.getQueryParameter("debug") != null) {
             _mainPort.addStyleName("debug-on");
+            if(CmShared.getQueryParameter("show_log") != null)
+                CmLogger.getInstance().enable(true);
         }
 
         /**
@@ -440,4 +459,121 @@ public class CatchupMath implements EntryPoint {
                                                // This is checked in CatchupMath.html to indicate that a loading error occurred.
                                                $wnd.__cmInitialized = true;
                                                }-*/;
+}
+
+
+
+
+
+/** Code below is test case showing bug in IE that will
+ *  reset radio buttons that are part of dynamic html 
+ *  on each add/remove from container.  So, a clear/add
+ *  will not retain current settings.  All other browsers
+ *  seem to work correctly.
+ */
+class TestApp extends FlowPanel {
+    int times=0;
+    public TestApp() {
+        LayoutContainer wrapper = new LayoutContainer();
+        final LayoutContainer container = new LayoutContainer();
+        container.setLayout(new RowLayout());
+        String htmlStr = "<label>External<input type='radio' checked='true' name='test'>" +
+                      "<input type='radio' name='test'></label>";
+        final Html html = new Html(htmlStr);
+        final RadioButton maleRadioButton = new RadioButton("gender", "Male");
+        container.add(maleRadioButton);
+        container.add(html);
+        wrapper.add(container);
+        wrapper.add(new Button("Test", new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+               // clear container and
+               // re add widgets.
+                // this works ...
+                if(++times%2==0)
+                    html.setVisible(false);
+                else 
+                    html.setVisible(true);
+                
+                /** this causes radiobuttons to reset
+                // container.el().slideIn(Direction.DOWN, FxConfig.NONE);
+                 * 
+                 */
+               /** this retains its value */
+               //container.add(maleRadioButton);
+               /** this always comes up unset */
+               //container.add(html);
+               //container.layout();
+            }
+        }));
+        RootPanel.get("main-content").add(wrapper);
+        return;
+    }
+}
+class TestApp2 extends FlowPanel {
+    int times=0;
+    public TestApp2() {
+        LayoutContainer wrapper = new LayoutContainer();
+        final LayoutContainer container = new LayoutContainer();
+        container.setLayout(new RowLayout());
+        String htmlStr = "<label>External<input type='radio' checked='true' name='test'>" +
+                      "<input type='radio' name='test'></label>";
+        final Html html = new Html(htmlStr);
+        final RadioButton maleRadioButton = new RadioButton("gender", "Male");
+        container.add(maleRadioButton);
+        container.add(html);
+        wrapper.add(container);
+        wrapper.add(new Button("Test", new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+               // clear container and
+               // re add widgets.
+                // this works ...
+                if(++times%2==0)
+                    container.setLayout(new ColumnLayout());
+                else 
+                    container.setLayout(new RowLayout());
+                
+                /** this causes radiobuttons to reset
+                // container.el().slideIn(Direction.DOWN, FxConfig.NONE);
+                 * 
+                 */
+               /** this retains its value */
+               //container.add(maleRadioButton);
+               /** this always comes up unset */
+               //container.add(html);
+               //container.layout();
+            }
+        }));
+        RootPanel.get("main-content").add(wrapper);
+        return;
+    }
+}
+class TestApp3 extends FlowPanel {
+    public TestApp3() {
+        FlowPanel fp = new FlowPanel();
+        final FlowPanel container = new FlowPanel();
+        String html = "<label>External<input type='radio' checked='true' name='test'>" +
+                      "<input type='radio' name='test'></label>";
+        final HTML hp = new HTML(html);
+        final RadioButton maleRadioButton = new RadioButton("gender", "Male");
+        container.add(maleRadioButton);
+        container.add(hp);
+        fp.add(container);
+        fp.add(new Button("Test", new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+               // clear container and
+               // re add widgets.
+               container.clear();
+
+               /** this retains its value */
+               container.add(maleRadioButton);
+               /** this always comes up unset */
+               container.add(hp);
+            }
+        }));
+        RootPanel.get("main-content").add(fp);
+        return;
+    }
 }

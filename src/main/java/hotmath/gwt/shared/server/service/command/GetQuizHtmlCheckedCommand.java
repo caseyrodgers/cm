@@ -9,7 +9,6 @@ import hotmath.gwt.cm_rpc.client.rpc.Response;
 import hotmath.gwt.cm_rpc.client.rpc.RpcData;
 import hotmath.gwt.cm_rpc.server.rpc.ActionHandler;
 import hotmath.gwt.shared.client.rpc.action.GetQuizHtmlCheckedAction;
-import hotmath.gwt.shared.server.service.ActionHandlerManualConnectionManagement;
 import hotmath.testset.ha.HaTest;
 import hotmath.testset.ha.HaTestDao;
 import hotmath.util.VelocityTemplateFromStringManager;
@@ -25,13 +24,15 @@ import java.util.Map;
 
 import org.apache.log4j.Logger;
 
+/** Get the quiz HTML with the answers in place
+ * 
+ * @TODO: replace RpcData with specific HtmlChecked
+ * 
+ */
 public class GetQuizHtmlCheckedCommand implements ActionHandler<GetQuizHtmlCheckedAction, RpcData> {
 
 	private static Logger logger = Logger.getLogger(GetQuizHtmlCheckedCommand.class);
-
-    /** Get the quiz HTML with the answers in place
-     * 
-     */
+   
     @Override
     public RpcData execute(final Connection autoConn, GetQuizHtmlCheckedAction action) throws Exception {
         
@@ -78,8 +79,7 @@ public class GetQuizHtmlCheckedCommand implements ActionHandler<GetQuizHtmlCheck
     public Class<? extends Action<? extends Response>> getActionType() {
         return GetQuizHtmlCheckedAction.class;
     }
-    
-    
+
 
     /** Read the velocity template from the classpath
      * 

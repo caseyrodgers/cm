@@ -9,13 +9,15 @@
  *
  */
 window.showCorrectAnswers = function(func) {
-	var testSet = document.getElementById('testset_div').getElementsByTagName(
-			'div');
-	for ( var q = 0; q < testSet.length; q++) {
-		if (testSet[q].className == 'question_wrapper') {
-			func(testSet[q]);
-		}
-	}
+    var td = document.getElementById('testset_div');
+    if(td) {
+    	var testSet = document.getElementById('testset_div').getElementsByTagName('div');
+    	for ( var q = 0; q < testSet.length; q++) {
+    		if (testSet[q].className == 'question_wrapper') {
+    			func(testSet[q]);
+    		}
+    	}
+    }
 }
 
 /** called by generated quiz HTML when a given question is selected
@@ -126,26 +128,6 @@ function questionGuessChanged(o) {
 		alert('Error answering question in external JS: ' + e);
 	}
 }
-
-function setSolutionQuestionAnswerIndexByNumber(questionNum, which) {
-	var qn = 0;
-	showCorrectAnswers(function(ql) {
-		var inputList = ql.getElementsByTagName("input");
-		if (qn == questionNum) {
-			for ( var i = 0, t = inputList.length; i < t; i++) {
-				if (i == which) {
-					inputList[i].checked = true;
-					var ai = inputList[i];
-					questionGuessChanged(ai);
-				} else {
-					inputList[i].checked = false;
-				}
-			}
-		}
-		qn++;
-	});
-}
-
 
 function setSolutionQuestionAnswerIndexByNumber(questionNum, which) {
 	var qn = 0;

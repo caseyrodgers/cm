@@ -43,7 +43,7 @@ public class CmLoggerWindow extends CmWindow {
     
     TextField<String> _filter = new TextField<String>();
     List<String> _messages = new ArrayList<String>();
-    boolean _follow;
+    boolean _follow=true;
     RetryActionManagerQueueWatcher _watcher;
     
     Grid<QueueMessage> _grid;

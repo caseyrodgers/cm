@@ -37,8 +37,7 @@ public class CmResourcePanelContainer extends ContentPanel {
 	 * 
 	 */
 	static ResourceViewerState __currentDisplayState = ResourceViewerState.OPTIMIZED;
-	
-	
+
 	/** Create a new Resource Container with named container as the outer container and panel
 	 *  as the child.
 	 *  
@@ -61,7 +60,7 @@ public class CmResourcePanelContainer extends ContentPanel {
 		        getHeader().addTool(tools.get(i));
 		    }
 		}
-		
+
 		
 		/** Maximize is an optional feature
 		 * 
@@ -96,7 +95,6 @@ public class CmResourcePanelContainer extends ContentPanel {
 			CmResourcePanelContainer.this.setBodyBorder(false);
 			CmResourcePanelContainer.this.layout();
 		}
-
 		/** If user has already maximized resource viewer, try to open all resources maximized
 		 * 
 		 */
@@ -109,6 +107,9 @@ public class CmResourcePanelContainer extends ContentPanel {
         else {          
             setMaximize(panel);
         }
+		
+
+        setPanelWidget(panel, false, false);
 	}
 	
 	public Button getMaximizeButton() {
@@ -134,14 +135,14 @@ public class CmResourcePanelContainer extends ContentPanel {
         
         if(_maximize != null)
             _maximize.setText(EXPAND_TEXT);
+
         
+        CmResourcePanelContainer.this.layout();
         
         /** Reset the panel widget
          * 
          */
-        resetPanelWidget(panel, true);
-        
-        CmResourcePanelContainer.this.layout();
+        //resetPanelWidget(panel, true, true);        
 	}
 	
 	public boolean isMaximized() {
@@ -149,10 +150,10 @@ public class CmResourcePanelContainer extends ContentPanel {
 	}
 	
 	public void setMaximize(CmResourcePanel panel) {
-	    setMaximize(panel, true);
+	    setMaximize(panel, true, true);
 	}
 	
-	public void setMaximize(CmResourcePanel panel, boolean trackChange) {
+	public void setMaximize(CmResourcePanel panel, boolean trackChange,boolean fireCmEvent) {
 	    
 	    if(viewerState == ResourceViewerState.MAXIMIZED)
 	        return;
@@ -170,9 +171,10 @@ public class CmResourcePanelContainer extends ContentPanel {
         /** Reset the panel widget
          * 
          */
-        resetPanelWidget(panel,trackChange);
+        //resetPanelWidget(panel,trackChange,fireCmEvent);
         
-        CmResourcePanelContainer.this.layout();
+        CmResourcePanelContainer.this.container.layout(true);
+        CmResourcePanelContainer.this.layout(true);        
 	}
 	
 	private void closeResource(ButtonEvent ce, CmResourcePanel panel) {
@@ -189,14 +191,13 @@ public class CmResourcePanelContainer extends ContentPanel {
 	 * 
 	 * @param panel
 	 */
-	public void resetPanelWidget(CmResourcePanel panel, boolean trackChange) {
-        CmResourcePanelContainer.this.removeAll();
+	public void setPanelWidget(CmResourcePanel panel, boolean trackChange, boolean fireCmEvent) {
+        //CmResourcePanelContainer.this.removeAll();
+	    
         LayoutContainer lc =(LayoutContainer) panel.getResourcePanel();
         
         CmResourcePanelContainer.this.add(lc);
         CmResourcePanelContainer.this.container.layout();
-        
-        
         
         if(trackChange) {
             /** If resource is 'forced' to open maximum, do not allow it affect
@@ -218,6 +219,9 @@ public class CmResourcePanelContainer extends ContentPanel {
                 __currentDisplayState = viewerState;
             }
         }
+        
+        if(fireCmEvent)
+            EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_RESOURCE_CONTAINER_REFRESH));
 	}
 	
 	
