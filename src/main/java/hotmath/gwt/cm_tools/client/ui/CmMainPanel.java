@@ -78,7 +78,6 @@ public class CmMainPanel extends LayoutContainer {
 		// _westPanel.setAnimCollapse(true);
 		_westPanel.getHeader().addStyleName("cm-main-panel-header");
 		_westPanel.setBorders(false);
-
 		BorderLayoutData westData = new BorderLayoutData(LayoutRegion.WEST, 226);
 		westData.setSplit(false);
 		westData.setCollapsible(true);

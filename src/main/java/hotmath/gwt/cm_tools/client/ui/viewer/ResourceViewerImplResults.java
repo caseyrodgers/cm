@@ -81,7 +81,7 @@ public class ResourceViewerImplResults extends CmResourcePanelImplWithWhiteboard
 
                     addResource(_quizPanel, getResourceItem().getTitle() + ": " + correct + " out of " + total);
 
-                   //  markAnswers(resultJson);
+                    markAnswers(resultJson);
 
                     CmMainPanel.setQuizQuestionDisplayAsActive(CmMainPanel.getLastQuestionPid());
                 } finally {

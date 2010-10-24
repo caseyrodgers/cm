@@ -2,12 +2,14 @@ package hotmath.gwt.cm_tools.client.ui;
 
 
 
+import hotmath.gwt.cm.client.ui.context.QuizContext;
 import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_rpc.client.rpc.GetQuizHtmlAction;
 import hotmath.gwt.cm_rpc.client.rpc.QuizHtmlResult;
 import hotmath.gwt.cm_rpc.client.rpc.RpcData;
 import hotmath.gwt.cm_rpc.client.rpc.SaveQuizCurrentResultAction;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
+import hotmath.gwt.cm_tools.client.ui.context.CmContext;
 import hotmath.gwt.cm_tools.client.util.ProcessTracker;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.data.CmAsyncRequest;
@@ -29,7 +31,6 @@ public class QuizPage extends LayoutContainer {
 	
     static QuizPage __lastInstance;
 	
-	String _title;   // @TODO: move into model
 	CmAsyncRequest callbackWhenComplete;
 	static List<Integer> testQuestionAnswers;
 	QuizHtmlResult _quizInfo;
@@ -105,7 +106,7 @@ public class QuizPage extends LayoutContainer {
 		add(html);
 		layout();
 
-        callbackWhenComplete.requestComplete(_title);
+        callbackWhenComplete.requestComplete(_quizInfo.getTitle());
         
         CmMainPanel.setQuizQuestionDisplayAsActive(CmMainPanel.getLastQuestionPid());
         
@@ -192,7 +193,11 @@ public class QuizPage extends LayoutContainer {
             @Override
             public void handleEvent(CmEvent event) {
                 if(event.getEventType() == EventType.EVENT_TYPE_RESOURCE_CONTAINER_REFRESH) {
-                    __lastInstance.markUserAnswers();
+                    CmContext context = ContextController.getInstance().getTheContext();
+                    if(context instanceof QuizContext) {
+                        /** mark questions only if Quiz is current context */
+                        __lastInstance.markUserAnswers();
+                    }
                 }
                 else if(event.getEventType() == EventType.EVENT_TYPE_QUIZ_QUESTION_SELECTION_CHANGED) {
                     __lastInstance.saveQuestionSelection((SaveQuizCurrentResultAction)event.getEventData());
