@@ -193,9 +193,29 @@ public class QuizPage extends LayoutContainer {
                     
                     /** TODO: move QuizContext into shared
                      * 
+                     * PROBLEM:
+                     * We only want to run this code when the QuizPage is active. 
+                     * 
+                     * So, how do we know that ...?   We can check the context, but
+                     * the QuizContext lives in cm module, not available from cm_admin
+                     * which shares the QuizPanel.
+                     * 
+                     * Said another way, we cannot have the cm_shared module depend on 
+                     * cm or cm_admin.  
+                     * 
+                     * 
+                     * TODO: Move QuizContext (all contexts) into cm_shared to allow
+                     * sharing between cm_admin and cm
+                     * 
+                     * 
+                     * For now, check number of tools to determine ...  this will allow
+                     * us to do a hybrid (gui only) build.  
+                     * 
+                     * 
+                     * 
                      */
-                    String className = ContextController.getInstance().getTheContext().getClass().getName();
-                    if(className.contains("QuizContext")) {
+                    int toolCount = ContextController.getInstance().getTheContext().getTools().size();
+                    if(toolCount == 1) {  /** this will NOT WORK! */
                         /** mark questions only if Quiz is current context */
                         __lastInstance.markUserAnswers();
                     }
