@@ -215,7 +215,7 @@ public class QuizPage extends LayoutContainer {
                      * 
                      */
                     int toolCount = ContextController.getInstance().getTheContext().getTools().size();
-                    if(toolCount == 1) {  /** this will NOT WORK! */
+                    if(toolCount == 1) {  /** this will NOT WORK! (temporary fix!) */
                         /** mark questions only if Quiz is current context */
                         __lastInstance.markUserAnswers();
                     }

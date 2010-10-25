@@ -3,7 +3,6 @@ package hotmath.gwt.cm_admin.server.model;
 import hotmath.cm.server.model.CmUserProgramDao;
 import hotmath.gwt.cm.server.CmDbTestCase;
 import hotmath.gwt.cm_rpc.client.UserInfo.AccountType;
-import hotmath.gwt.cm_tools.client.model.AccountInfoModel;
 import hotmath.gwt.cm_tools.client.model.ChapterModel;
 import hotmath.gwt.cm_tools.client.model.GroupInfoModel;
 import hotmath.gwt.cm_tools.client.model.StudentActiveInfo;
