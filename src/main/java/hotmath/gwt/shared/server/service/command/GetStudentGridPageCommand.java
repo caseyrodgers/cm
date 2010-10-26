@@ -95,7 +95,7 @@ public class GetStudentGridPageCommand implements
         if (action.isForceRefresh() || _allStudents == null) {
             logger.debug("aid=" + action.getAdminId() + " creating _allStudents");
             _allStudents = new ArrayList<StudentModelExt>();
-            for (StudentModelI smi : new CmStudentDao().getStudentBaseSummaries(conn, action.getAdminId(), true)) {
+            for (StudentModelI smi : new CmStudentDao().getStudentSummaries(conn, action.getAdminId(), true)) {
                 _allStudents.add(new StudentModelExt(smi));
             }
             CmCacheManager.getInstance().addToCache(CacheName.STUDENT_PAGED_DATA, cacheKey, _allStudents);
@@ -151,6 +151,7 @@ public class GetStudentGridPageCommand implements
              * otherwise check unmatched and not fully populated student models for
              * possible matches and add to QS student pool. 
              */
+            if (false ) {
             Map<Integer, StudentModelExt> nfpMap = collectNotFullyPopulated(studentPool);
             removeOverlap(nfpMap, qsStudentPool);
 
@@ -161,10 +162,12 @@ public class GetStudentGridPageCommand implements
             	/*
             	 * add any matches to QS student pool
             	 */
-            	for (Integer uid : uidMatchList) {
+                for (Integer uid : uidMatchList) {
             	    qsStudentPool.add(nfpMap.get(uid));
             	}
             }
+            }
+
             studentPool = qsStudentPool;
         }
         logger.debug("aid=" + action.getAdminId() + " quick_search student pool: " + studentPool.size());
@@ -222,13 +225,6 @@ public class GetStudentGridPageCommand implements
         if(checkMatch(sme.getProgram().getProgramDescription(), search))
             return true;
 
-        /*
-         * 
-         * Do not do quick search for extended fields. 
-         * 
-         * It is more confusing when it sometimes works
-         * and sometimes does not.
-         * 
         if(checkMatch(sme.getStatus(), search))
             return true;
         
@@ -243,7 +239,6 @@ public class GetStudentGridPageCommand implements
         
         if (checkMatch(formatQuizzes(sme), search))
         	return true;
-        */
 
         return false;
     }
