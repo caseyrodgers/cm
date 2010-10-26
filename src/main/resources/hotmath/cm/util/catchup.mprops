@@ -21,17 +21,19 @@
 .key=STUDENT_SUMMARY
 
 SELECT h.uid, upper(h.user_name) as name, h.user_passcode as passcode, h.user_email as email, h.admin_id as admin_uid,
-       h.is_show_work_required, h.is_tutoring_available,  h.active_segment, p.test_config_json, h.user_prog_id,
-       p.test_def_id, p.create_date, concat(p.pass_percent,'%') as pass_percent, t.total_segments, 
+       h.user_prog_id, h.is_show_work_required, h.is_tutoring_available, h.active_segment, h.gui_background_style, h.is_demo,
+       p.test_def_id, p.create_date, p.pass_percent, p.test_config_json,
        ifnull(s.limit_games, 0) as limit_games, ifnull(s.show_work_required, 0) as show_work_required,
        ifnull(s.stop_at_program_end, 0) as stop_at_program_end, ifnull(s.tutoring_available, 0) as tutoring_available,
-       lpad(concat(format((m.answered_correct*100)/(m.answered_correct+m.answered_incorrect+m.not_answered),0),'%'),4,' ') as last_quiz, 
        trim(concat(ifnull(d.subj_id,''), ' ', d.prog_id)) as program, d.prog_id, d.subj_id,
-       date_format(l.login_time,'%Y-%m-%d') as last_use_date, 
-       ifnull(q.passing_count, 0) as passing_count, ifnull(q.not_passing_count, 0) as not_passing_count,
-       ifnull(g.id, 0) as group_id, ifnull(g.name, 'none') as group_name, gui_background_style,
-       ifnull(ut.tutoring_use, 0) as tutoring_use,
-       cp.id as custom_program_id,  cp.name as custom_program_name
+       ifnull(g.id, 0) as group_id, ifnull(g.name, 'none') as group_name, g.is_active, g.is_self_reg,
+       cp.id as custom_program_id, cp.name as custom_program_name,
+       if ((h.active_run_id > 0),
+           lpad(concat(format(ux.last_quiz,0),'%'),4,' '),
+           if((h.active_test_id > 0), 'Started', ' ') ) as last_quiz,
+       date_format(ux.last_login,'%Y-%m-%d') as last_use_date, 
+       ifnull(ux.quiz_pass_count, 0) as passing_count, ifnull(ux.quiz_not_pass_count, 0) as not_passing_count,
+       ifnull(ut.tutoring_use, 0) as tutoring_use
 FROM  HA_ADMIN a 
 INNER JOIN HA_USER h 
    on a.aid = h.admin_id  
@@ -41,18 +43,14 @@ LEFT JOIN HA_USER_SETTINGS s
    on s.user_id = h.uid
 LEFT JOIN HA_TEST_DEF d 
    on d.test_def_id = p.test_def_id 
-LEFT JOIN (select user_id, max(run_id) as run_id from HA_TEST_RUN r JOIN HA_TEST t on r.test_id = t.test_id GROUP BY user_id) x ON x.user_id = h.uid 
-LEFT JOIN HA_TEST_RUN m 
-  on m.run_id =  x.run_id
-LEFT JOIN (select user_id, max(login_time) as login_time from HA_USER_LOGIN GROUP BY user_id) l on l.user_id = h.uid 
-LEFT JOIN HA_TEST t 
-  on t.user_id = h.uid and t.test_id = m.test_id 
-LEFT JOIN v_HA_TEST_RUN_PNP_TOTALS q
-  on q.user_id = h.uid
 LEFT JOIN CM_GROUP g 
    on g.id = h.group_id
-LEFT JOIN (select uid, count(*) as tutoring_use from HA_USER_TUTORING_SESSION ts group by uid) ut on ut.uid = h.uid
-LEFT JOIN HA_CUSTOM_PROGRAM cp on cp.id = p.custom_program_id   
+LEFT JOIN HA_CUSTOM_PROGRAM cp 
+   on cp.id = p.custom_program_id
+LEFT JOIN HA_USER_EXTENDED ux on ux.user_id = h.uid
+LEFT JOIN (SELECT uid, count(*) as tutoring_use 
+           FROM HA_USER_TUTORING_SESSION ts
+           GROUP by uid) ut on ut.uid = h.uid
 
 
 .key=STUDENT_SUMMARY_BASE
