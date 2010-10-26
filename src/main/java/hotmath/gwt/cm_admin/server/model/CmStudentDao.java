@@ -615,7 +615,7 @@ public class CmStudentDao {
      * uniqueness collisions.
      * 
      * 
-     * NOTE: if student does not any history (no entry in HA_TEST), then delete
+     * NOTE: if student has no history (no entry in HA_TEST), then delete
      *       from DB instead of deactivating.
      * 
      */
@@ -704,7 +704,7 @@ public class CmStudentDao {
         if (studentChanged)
             updateStudent(conn, sm);
         if (programChanged)
-            updateStudentProgram(sm);
+            updateStudentProgram(conn, sm);
 
         if (passPercentChanged) {
         	String passPcnt = sm.getPassPercent();
@@ -798,6 +798,7 @@ public class CmStudentDao {
     public StudentModelI updateStudent(final Connection conn, StudentModelI sm) throws Exception {
         PreparedStatement ps = null;
         ResultSet rs = null;
+        long startTime = System.currentTimeMillis();
         
         try {
             StudentProgramModel spm = sm.getProgram();
@@ -824,6 +825,14 @@ public class CmStudentDao {
             throw new Exception(String.format("*** Error occurred while updating student: %s ***", sm.getName()));
         } finally {
             SqlUtilities.releaseResources(rs, ps, null);
+            ClientInfo ci = ClientInfoHolder.get();
+            if (ci == null) {
+            	ci = new ClientInfo();
+            	ci.setUserId(0);
+            	ci.setUserType(ClientInfo.UserType.UNKNOWN);
+            }
+            logger.info(String.format("+++ updateStudent(): (userId:%d,userType:%s) elapsed time: %d msec",
+            	ci.getUserId(), ci.getUserType(), System.currentTimeMillis() - startTime));
         }
         return sm;
     }
@@ -850,13 +859,15 @@ public class CmStudentDao {
             ps.setBoolean(2, tutoringAvailable);
             ps.setInt(3, uid);
             int cnt = ps.executeUpdate();
+            
+            // TODO: should we return if single user not found?
             if(cnt != 1)
                 logger.warn("user not found to update: " + uid);
             
             /** update the current program information with new pass percentages
              * 
              */
-            StudentModelI sm = getStudentModelBasic(conn, uid);
+            StudentModelI sm = getStudentModelBase(conn, uid);
             new CmUserProgramDao().setProgramPassPercent(conn, sm.getProgram().getProgramId(),passPercent);
 
         } finally {
@@ -946,7 +957,7 @@ public class CmStudentDao {
              *  update the current program information with new pass percentage (if not null)
              */
             if (passPercent != null) {
-                StudentModelI sm = getStudentModelBasic(conn, uid);
+                StudentModelI sm = getStudentModelBase(conn, uid);
                 new CmUserProgramDao().setProgramPassPercent(conn, sm.getProgram().getProgramId(), passPercent);
             }
 
@@ -965,12 +976,11 @@ public class CmStudentDao {
             "set pass_percent = null " +
             "where id = ?";
 
-    public StudentModelI updateStudentProgram(StudentModelI sm) throws Exception {
-        Connection conn = null;
+    public StudentModelI updateStudentProgram(final Connection conn, StudentModelI sm) throws Exception {
         PreparedStatement ps = null;
 
+        long startTime = System.currentTimeMillis();
         try {
-            conn = HMConnectionPool.getConnection();
             String s = sm.getPassPercent();
 
             if (s != null) {
@@ -991,7 +1001,9 @@ public class CmStudentDao {
             logger.error(String.format("*** Error updating student with uid: %d", sm.getUid()), e);
             throw new Exception(String.format("*** Error occurred while updating Student: %s ***", sm.getName()));
         } finally {
-            SqlUtilities.releaseResources(null, ps, conn);
+            SqlUtilities.releaseResources(null, ps, null);
+            logger.info(String.format("+++ updateStudentProgram(): (userId:%d, userType:%s), elapsed time: %d msec",
+            	ClientInfoHolder.get().getUserId(), ClientInfoHolder.get().getUserType(), System.currentTimeMillis()-startTime));
         }
         return sm;
     }
@@ -1195,8 +1207,6 @@ public class CmStudentDao {
             SqlUtilities.releaseResources(rs, ps2, null);
         }            
     }
-
-
     
     /**
      * Return list of StudentShowWorkModel that represent distinct list of
@@ -1290,7 +1300,7 @@ public class CmStudentDao {
     public List<StudentModelI> getStudentModels(final Connection conn, List<Integer> uids) throws Exception {
        List<StudentModelI> students = new ArrayList<StudentModelI>();
        for(Integer uid: uids) {
-           students.add(getStudentModelBasic(conn, uid));
+           students.add(getStudentModelBase(conn, uid));
        }
        return students;
     }
@@ -1400,7 +1410,7 @@ public class CmStudentDao {
         try {
             rs = conn.createStatement().executeQuery("select uid from HA_USER where admin_id = " + aid + " and user_passcode = '" + password + "'");
             while(rs.next()) {
-                students.add( getStudentModel(rs.getInt(1)));
+                students.add( getStudentModelBase(conn, rs.getInt(1)));
             }
             return students;
         } finally {
@@ -1423,7 +1433,7 @@ public class CmStudentDao {
         try {
             rs = conn.createStatement().executeQuery("select uid from HA_USER where admin_id = " + aid + " and user_name = '" + userName + "'");
             while(rs.next()) {
-                students.add( getStudentModel(conn, rs.getInt(1), true));
+                students.add( getStudentModelBase(conn, rs.getInt(1), true));
             }
             return students;
         } finally {
@@ -2077,15 +2087,15 @@ public class CmStudentDao {
         progToAssign.setSubjectId(program.getSubject());
         assignProgramToStudent(conn, uid,progToAssign, chapter, null);
     }
-    
-    
+
     public void assignProgramToStudent(final Connection conn, Integer uid, StudentProgramModel program, String chapter, String passPercent) throws Exception {
         assignProgramToStudent(conn, uid, program, chapter, passPercent, null);
     }
+
     public void assignProgramToStudent(final Connection conn, Integer uid, StudentProgramModel program, String chapter, String passPercent,StudentSettingsModel settings) throws Exception {
-        
-        StudentModelI sm = getStudentModelBasic(conn, uid);
-        
+
+        StudentModelI sm = getStudentModelBase(conn, uid);
+
         sm.getProgram().setProgramType(program.getProgramType());
         sm.getProgram().setSubjectId(program.getSubjectId());
         sm.getProgram().setCustomProgramId(program.getCustomProgramId());
@@ -2093,17 +2103,17 @@ public class CmStudentDao {
         sm.setProgramChanged(true);
         sm.setChapter(chapter);
         sm.setPassPercent(passPercent);
-        
+
         setTestConfig(conn, sm);
         updateStudent(conn, sm, true, false, true, false, false);        
-        
+
         int percent = getPercentFromString(passPercent);
         if(settings != null) {
             sm.setSettings(settings);
             updateStudentSettings(conn, sm, percent);
         }
-    }    
-    
+    }
+
     private int getPercentFromString(String passPercent) {
         try {
             if(passPercent != null) {
