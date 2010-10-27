@@ -1133,3 +1133,8 @@ img.resource-item-complete {
 	padding: 10px;
 }
 
+
+
+#hm_flash_widget.not_used {
+	display: block;
+}
