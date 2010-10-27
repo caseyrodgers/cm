@@ -13,6 +13,11 @@ import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 
+/** depends on hotmath2/web/js/floater*.js 
+ * 
+ * @author casey
+ *
+ */
 public class ControlPanel extends FlowPanel {
     Widget collapsed;
     FlowPanel expanded;
@@ -33,7 +38,6 @@ public class ControlPanel extends FlowPanel {
         expanded = fp;
         expanded.getElement().setId("control-panel-expanded");
         RootPanel.get().add(expanded);   
-        
         
         setControlActions(null);
     }
@@ -93,9 +97,8 @@ public class ControlPanel extends FlowPanel {
         
         controlPanel.style.display = "block";
         
-        // hide it in 5 seconds
+        // how hide it in 5 seconds
         setTimeout(function(){controlPanel.style.display = 'none';},5000);
-        
 }-*/;
 
    

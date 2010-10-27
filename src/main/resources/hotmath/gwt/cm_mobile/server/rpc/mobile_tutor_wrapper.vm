@@ -8,21 +8,21 @@
         </div>
         
         <div id='steps_tail' style='position: relative'>
-	        <button id='steps_prev' href="#"
+	       <div id='tutor_message'>&nbsp;</div>
+	        <button id='steps_prev' href="#" class="sexybutton sexysimple sexymedium  sexyred"
 	            onclick="TutorManager.showPreviousStep();" accesskey="p">
 	            Back Step
 	        </button>
-	        <button id='steps_next' href="#" onclick="TutorManager.showNextStep();" accesskey="s">
+	        <button id='steps_next' href="#" onclick="TutorManager.showNextStep();" accesskey="s" class="sexybutton sexysimple sexymedium  sexyred">
 	            Next Step
 	        </button>
-	        <button id='steps_next' href="#" onclick="TutorManager.backToLesson();" accesskey="s">
+	        <button id='steps_next' href="#" onclick="TutorManager.backToLesson();" accesskey="s" class="sexybutton sexysimple sexymedium  sexyred">
 	            Lesson
 	        </button>
 	        
 	        <div class='cm-tutor-button-bar-bottom' style='display: none;float: right;'>
 	           <button class='button debug-off' onclick='expandAllSteps();'>Expand</button>
 	       </div>
-	       <div id='tutor_message'>&nbsp;</div>
         <img id='scrollTo-button' src='/images/tutor5/spacer.gif'>
     </div>
     <!-- HOTMATH BODY END -->

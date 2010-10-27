@@ -350,6 +350,9 @@ function hideAllSteps() {
     window.scrollTo(0,0);
 }
 
+/** called after control-floater inserted in ControlPanel
+ * 
+ */
 function initializeExternalJs() {
     var divName = 'control-floater';
     new FloatLayer(divName,150,15,10);
