@@ -151,6 +151,9 @@ public class GetStudentGridPageCommand implements
              * otherwise check unmatched and not fully populated student models for
              * possible matches and add to QS student pool. 
              */
+            /**
+             * student models are fully populated when first read, no need to check
+             */
             if (false ) {
             Map<Integer, StudentModelExt> nfpMap = collectNotFullyPopulated(studentPool);
             removeOverlap(nfpMap, qsStudentPool);
@@ -181,13 +184,16 @@ public class GetStudentGridPageCommand implements
             if (sortField != null) {
             	
                 logger.debug("aid=" + action.getAdminId() + " sorting student pool");
+
             	/**
             	 * fill the sort field as needed in both studentPool and _allStudents
+            	 * student models are fully populated when first read, no need to fill the sort field
             	 */
-            	pageHelper.fillSortField(conn, sortField, studentPool, _allStudents, action.getAdminId());
-            	
-                Collections.sort(studentPool, config.getSortInfo().getSortDir().comparator(
-                        new StudentGridComparator(sortField)));
+            	//pageHelper.fillSortField(conn, sortField, studentPool, _allStudents, action.getAdminId());
+
+                StudentGridComparator cmp = new StudentGridComparator(sortField);
+
+                Collections.sort(studentPool, config.getSortInfo().getSortDir().comparator(cmp));
             }
         }   
         logger.debug("aid=" + action.getAdminId() + " sorted student pool: " + studentPool.size());
@@ -267,7 +273,7 @@ public class GetStudentGridPageCommand implements
     }
 
     private String formatQuizzes(StudentModelI sm) {
-        if (sm.getPassingCount() > 0 || sm.getNotPassingCount() > 0) {
+        if ((sm.getPassingCount() > 0 || sm.getNotPassingCount() > 0) && sm.getProgram().isCustomProgram() == false) {
         	if (logger.isDebugEnabled())
         	    logger.debug("+++ formatQuizzes: " + String.format("%d passed out of %d", sm.getPassingCount(), (sm.getPassingCount()+sm.getNotPassingCount())));
             return String.format("%d passed out of %d", sm.getPassingCount(), (sm.getPassingCount()+sm.getNotPassingCount()));
@@ -317,13 +323,13 @@ public class GetStudentGridPageCommand implements
 class StudentGridComparator implements Comparator<StudentModelExt> {
 
     String sortField;
-
+    
     public StudentGridComparator(String sortField) {
         this.sortField = sortField;
     }
 
     public int compare(StudentModelExt p1, StudentModelExt p2) {
-        if (sortField.equals(StudentModelExt.NAME_KEY)) {
+    	if (sortField.equals(StudentModelExt.NAME_KEY)) {
             return p1.getName().compareToIgnoreCase(p2.getName());
         } else if (sortField.equals(StudentModelExt.PASSCODE_KEY)) {
             return p1.getPasscode().compareToIgnoreCase(p2.getPasscode());
@@ -344,14 +350,16 @@ class StudentGridComparator implements Comparator<StudentModelExt> {
         }
         else if(sortField.equals(StudentModelExt.PASSING_COUNT_KEY)) {
         	
-        	int t1 = p1.getNotPassingCount() + p1.getPassingCount();
-        	int t2 = p2.getNotPassingCount() + p2.getPassingCount();
+        	int t1 = (p1.getProgram().isCustomProgram()) ? 0 : p1.getNotPassingCount() + p1.getPassingCount();
+        	int t2 = (p2.getProgram().isCustomProgram()) ? 0 : p2.getNotPassingCount() + p2.getPassingCount();
 
             // check total # quizzes
         	if (t1 != t2) return t1 - t2;
         	
         	// total same, sort by number passed
-        	int pDiff = p1.getPassingCount() - p2.getPassingCount();
+        	int pass1 = (p1.getProgram().isCustomProgram()) ? 0 : p1.getPassingCount();
+        	int pass2 = (p2.getProgram().isCustomProgram()) ? 0 : p2.getPassingCount();
+        	int pDiff = pass1 - pass2;
         	if (pDiff != 0) return pDiff;
         	
             // following test disabled for now
