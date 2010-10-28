@@ -53,7 +53,7 @@ public class StudentDetailReport {
 
         	CmStudentDao studentDao = new CmStudentDao();
         	List<StudentActivityModel> sList = studentDao.getStudentActivity(conn, stuUid);
-        	StudentModelI sm = studentDao.getStudentModelBase(conn, stuUid);
+        	StudentModelI sm = studentDao.getStudentModelBase(conn, stuUid, false);
 						
 			Document document = new Document();
 			baos = new ByteArrayOutputStream();
