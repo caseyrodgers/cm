@@ -16,6 +16,10 @@ import hotmath.gwt.shared.client.rpc.CmWebResource;
 import hotmath.gwt.shared.client.rpc.action.GeneratePdfAction;
 import hotmath.gwt.shared.client.rpc.action.GeneratePdfAction.PdfType;
 
+import hotmath.cm.util.ClientInfoHolder;
+import hotmath.gwt.cm_rpc.client.ClientInfo;
+import hotmath.gwt.cm_rpc.client.ClientInfo.UserType;
+
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -57,7 +61,13 @@ public class GeneratePdfCommand implements ActionHandler<GeneratePdfAction, CmWe
     		}
     		PdfType pdfType = action.getPdfType();
 
-
+    		ClientInfo ci = ClientInfoHolder.get();
+    		if (ci == null) {
+    			ci = new ClientInfo();
+    			ci.setUserId(0);
+    			ci.setUserType(ClientInfo.UserType.UNKNOWN);
+    		}
+            logger.info(String.format("+++ execute(): (userId:%d,userType:%s) pdfType: %s", ci.getUserId(), ci.getUserType(), pdfType));
 
     		String reportId = new CmAdminDao().getPrintableStudentReportId(studentUids);
 
