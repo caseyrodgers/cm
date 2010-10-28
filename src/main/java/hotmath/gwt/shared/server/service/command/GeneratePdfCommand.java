@@ -61,14 +61,6 @@ public class GeneratePdfCommand implements ActionHandler<GeneratePdfAction, CmWe
     		}
     		PdfType pdfType = action.getPdfType();
 
-    		ClientInfo ci = ClientInfoHolder.get();
-    		if (ci == null) {
-    			ci = new ClientInfo();
-    			ci.setUserId(0);
-    			ci.setUserType(ClientInfo.UserType.UNKNOWN);
-    		}
-            logger.info(String.format("+++ execute(): (userId:%d,userType:%s) pdfType: %s", ci.getUserId(), ci.getUserType(), pdfType));
-
     		String reportId = new CmAdminDao().getPrintableStudentReportId(studentUids);
 
     		ByteArrayOutputStream baos = null;
