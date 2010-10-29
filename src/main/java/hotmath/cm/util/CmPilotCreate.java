@@ -8,6 +8,8 @@ import hotmath.gwt.shared.client.model.CmPartner;
 import hotmath.subscriber.HotMathSubscriber;
 import hotmath.subscriber.HotMathSubscriberManager;
 import hotmath.subscriber.PurchasePlan;
+import hotmath.subscriber.SalesZone;
+import hotmath.subscriber.SalesZone.Person;
 import hotmath.subscriber.id.IdCreateStategyImpHmPilot;
 import hotmath.subscriber.service.HotMathSubscriberServiceFactory;
 import hotmath.testset.ha.CmProgram;
@@ -138,7 +140,7 @@ public class CmPilotCreate {
                 addJohnDoeUser(conn, aid, "John Doe", "jd12345", showWorkRequired, tutoringEnabled, tutoringHours);
             }
             catch(Exception e) {
-                // fail silent
+                // fail silent .. might already exist.
             }
 
         } catch (Exception e) {
@@ -297,8 +299,9 @@ public class CmPilotCreate {
     static public Integer addPilotRequest(String title, String name, String school, String zip, String email,
             String phone, String userComments, String phoneWhen, String schoolPrefix, boolean sendEmailConfirmation,int studentCount, CmPartner partner) throws Exception {
 
-        String sendTo[] = {"sales@hotmath.com"};
-
+        
+        Person salesPerson = SalesZone.getSalesPerson(zip);
+        
         Connection conn = null;
         PreparedStatement ps = null;
         try {
@@ -326,7 +329,7 @@ public class CmPilotCreate {
             if(phone != null && phone.length() > 0)
                 zip += " / " + phone;
             sub.setZip(zip);
-            
+            sub.setSalesZone(salesPerson.getLabel());
             sub.saveChanges();
             List<PurchasePlan> plans = new ArrayList<PurchasePlan>();
             plans.add(new PurchasePlan("TYPE_SERVICE_CATCHUP_PILOT"));
@@ -343,7 +346,8 @@ public class CmPilotCreate {
 	             * 
 	             */
 	            try {
-	                sub.sendEmailConfirmation("CM Pilot");
+	                String emailTemplate = "CM Pilot " + salesPerson.getLabel();
+	                sub.sendEmailConfirmation(emailTemplate);
 	            }
 	            catch(Exception e) {
 	            	logger.error(String.format("*** problem creating pilot for school: %s", school), e);
@@ -355,10 +359,12 @@ public class CmPilotCreate {
 	            String txt = "A request for a Catchup Math Pilot was created by:\n" + "Subscriber ID: " + idToUse
 	                    + "\n" + "\nTitle: " + title + "\nName: " + name + "\nSchool: " + school + "\nZip: " + zip
 	                    + "\nEmail: " + email + "\nPhone: " + phone +  "\nPhone When: "
-	                    + phoneWhen + "\nComments: " + userComments;
+	                    + phoneWhen + "\nComments: " + userComments + "\nsalesZone: " + salesPerson.getLabel();
 	            try {
-                SbMailManager.getInstance().sendMessage("Catchup Math Pilot Request", txt, sendTo,
-	                        "registration@hotmath.com", "text/plain");
+	                
+	                /** send to sales rep and chuck */
+	                String sendTo[] = {salesPerson.getEmail(),"cgrant@hotmath.com"};
+	                SbMailManager.getInstance().sendMessage("Catchup Math Pilot Request", txt, sendTo,"registration@hotmath.com", "text/plain");
 	            } catch (Exception e) {
 	            	logger.error(String.format("*** problem sending pilot request email: %s", txt), e);
 	            }
