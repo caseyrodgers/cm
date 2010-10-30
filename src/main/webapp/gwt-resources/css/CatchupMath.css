@@ -1138,3 +1138,10 @@ img.resource-item-complete {
 #hm_flash_widget.not_used {
 	display: block;
 }
+
+
+
+#hm_flash_object div {
+	display: none;
+}
+
