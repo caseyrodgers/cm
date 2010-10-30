@@ -4,7 +4,6 @@ import static hotmath.gwt.cm_tools.client.model.StudentModelExt.HAS_LAST_LOGIN_K
 import static hotmath.gwt.cm_tools.client.model.StudentModelExt.HAS_LAST_QUIZ_KEY;
 import static hotmath.gwt.cm_tools.client.model.StudentModelExt.HAS_PASSING_COUNT_KEY;
 import static hotmath.gwt.cm_tools.client.model.StudentModelExt.HAS_TUTORING_USE_KEY;
-
 import hotmath.assessment.InmhItemData;
 import hotmath.cm.server.model.CmUserProgramDao;
 import hotmath.cm.util.ClientInfoHolder;
@@ -984,7 +983,7 @@ public class CmStudentDao {
             String s = sm.getPassPercent();
 
             if (s != null) {
-                int passPcnt = Integer.parseInt(s.substring(0, s.indexOf("%")));
+                int passPcnt = getPercentFromString(s);
                 ps = conn.prepareStatement(UPDATE_STUDENT_PROGRAM_SQL);
                 ps.setInt(1, passPcnt);
                 ps.setInt(2, sm.getProgram().getProgramId());
@@ -1035,7 +1034,7 @@ public class CmStudentDao {
             setTestConfig(conn, sm);
             String pp = sm.getPassPercent();
             if (pp != null) {
-                int passPcnt = Integer.parseInt(pp.substring(0, pp.indexOf("%")));
+                int passPcnt = getPercentFromString(pp);
                 ps = conn.prepareStatement(CmMultiLinePropertyReader.getInstance().getProperty("INSERT_STUDENT_PROGRAM_SQL"));
                 ps.setInt(1, sm.getUid());
                 ps.setInt(2, sm.getAdminUid());
@@ -1120,7 +1119,7 @@ public class CmStudentDao {
         try {
             String pp = sm.getPassPercent();
             if (pp != null) {
-                int passPcnt = Integer.parseInt(pp.substring(0, pp.indexOf("%")));
+                int passPcnt = getPercentFromString(pp);
                 ps = conn.prepareStatement(CmMultiLinePropertyReader.getInstance().getProperty("INSERT_STUDENT_PROGRAM_SQL"));
                 ps.setInt(1, sm.getUid());
                 ps.setInt(2, sm.getAdminUid());
@@ -2126,7 +2125,7 @@ public class CmStudentDao {
         catch(Exception e) {
         	logger.error(String.format("*** Error getting percent from passPercent: %s", passPercent), e);
         }
-        return 70; // return default
+        return 0;
     }
     
     /** Return total count of INMH items by this user
