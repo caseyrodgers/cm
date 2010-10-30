@@ -339,16 +339,22 @@ class StudentGridComparator implements Comparator<StudentModelExt> {
             return p1.getProgram().getProgramDescription().compareToIgnoreCase(p2.getProgram().getProgramDescription());
         } else if (sortField.equals(StudentModelExt.STATUS_KEY)) {
             return p1.getStatus().compareToIgnoreCase(p2.getStatus());
-        } else if (sortField.equals(StudentModelExt.LAST_QUIZ_KEY)) {
-            return nz(p1.getLastQuiz()).compareToIgnoreCase(nz(p2.getLastQuiz()));
         } else if (sortField.equals(StudentModelExt.LAST_LOGIN_KEY)) {
             return nz(p1.getLastLogin()).compareToIgnoreCase(nz(p2.getLastLogin()));
         } else if (sortField.equals(StudentModelExt.TOTAL_USAGE_KEY)) {
             return p1.getTotalUsage() - p2.getTotalUsage();
         } else if (sortField.equals(StudentModelExt.TUTORING_USE_KEY)) {
             return p1.getTutoringUse() - p2.getTutoringUse();
-        }
-        else if(sortField.equals(StudentModelExt.PASSING_COUNT_KEY)) {
+        } else if (sortField.equals(StudentModelExt.LAST_QUIZ_KEY)) { 
+        	
+            String lq1 = (p1.getProgram().isCustomProgram()) ? "" : p1.getLastQuiz();
+            String lq2 = (p2.getProgram().isCustomProgram()) ? "" : p2.getLastQuiz();
+            
+            if ((lq1 == null || lq1.trim().length() == 0) && (lq2 == null | lq2.trim().length() == 0)) return 0;
+            
+            return nz(lq1).compareToIgnoreCase(nz(lq2));
+
+        } else if(sortField.equals(StudentModelExt.PASSING_COUNT_KEY)) {
         	
         	int t1 = (p1.getProgram().isCustomProgram()) ? 0 : p1.getNotPassingCount() + p1.getPassingCount();
         	int t2 = (p2.getProgram().isCustomProgram()) ? 0 : p2.getNotPassingCount() + p2.getPassingCount();
