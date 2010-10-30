@@ -363,7 +363,7 @@ public class CmPilotCreate {
 	            try {
 	                
 	                /** send to sales rep and chuck */
-	                String sendTo[] = {salesPerson.getEmail(),"cgrant@hotmath.com"};
+	                String sendTo[] = {salesPerson.getEmail(),"cgrant.hotmath@gmail.com"};
 	                SbMailManager.getInstance().sendMessage("Catchup Math Pilot Request", txt, sendTo,"registration@hotmath.com", "text/plain");
 	            } catch (Exception e) {
 	            	logger.error(String.format("*** problem sending pilot request email: %s", txt), e);
