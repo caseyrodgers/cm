@@ -706,8 +706,7 @@ public class CmStudentDao {
             updateStudentProgram(conn, sm);
 
         if (passPercentChanged) {
-        	String passPcnt = sm.getPassPercent();
-        	Integer passPercent = (passPcnt != null) ? Integer.parseInt(passPcnt.substring(0, passPcnt.length() - 1)) : 0;
+        	Integer passPercent = getPercentFromString(sm.getPassPercent());
         	
             new CmUserProgramDao().setProgramPassPercent(conn, sm.getProgram().getProgramId(), passPercent);
         }
@@ -1452,7 +1451,7 @@ public class CmStudentDao {
      * @return
      * @throws Exception
      */
-    
+    @Deprecated
     public StudentModelI getStudentModelBasic(final Connection conn, Integer uid) throws Exception {
         /*
          * TODO: should be able to use:
