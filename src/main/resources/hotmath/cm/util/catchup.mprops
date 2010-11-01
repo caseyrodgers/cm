@@ -22,7 +22,7 @@
 
 SELECT h.uid, upper(h.user_name) as name, h.user_passcode as passcode, h.user_email as email, h.admin_id as admin_uid,
        h.user_prog_id, h.is_show_work_required, h.is_tutoring_available, h.active_segment, h.gui_background_style, h.is_demo,
-       p.test_def_id, p.create_date, p.pass_percent, p.test_config_json,
+       p.test_def_id, p.create_date, concat(p.pass_percent,'%') as pass_percent, p.test_config_json,
        ifnull(s.limit_games, 0) as limit_games, ifnull(s.show_work_required, 0) as show_work_required,
        ifnull(s.stop_at_program_end, 0) as stop_at_program_end, ifnull(s.tutoring_available, 0) as tutoring_available,
        trim(concat(ifnull(d.subj_id,''), ' ', d.prog_id)) as program, d.prog_id, d.subj_id,
@@ -974,7 +974,15 @@ from   HA_TEST_RUN_LESSON
 where  run_id = ?
 and    date_completed is not null
 
+.key=TEST_RUN_ASSIGNED_LESSON_STATUS
 
+select r.total_sessions, s.sessions_completed
+from HA_TEST_RUN r,
+     (select count(*) as sessions_completed from HA_TEST_RUN_LESSON
+      where run_id = ?
+        and date_completed is not null) s
+where r.run_id = ?;
+ 
 .key=TEST_RUN_ASSIGNED_LESSONS_VIEWED_COUNT
 
 select count(*) as cnt
