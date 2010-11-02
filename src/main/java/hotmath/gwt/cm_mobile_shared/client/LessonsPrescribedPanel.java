@@ -58,8 +58,7 @@ public class LessonsPrescribedPanel extends FlowPanel {
             li.addHandler(new TouchClickEvent.TouchClickHandler<String>() {
                 @Override
                 public void touchClick(TouchClickEvent<String> e) {
-                    String tag = "topic:" + topic.getFile() + ":" + System.currentTimeMillis();
-                    History.newItem(tag);
+                    History.newItem(new TokenParser("lesson",topic.getFile(),0).getHistoryTag());
                 }
             });
             li.setStyleName("group");
