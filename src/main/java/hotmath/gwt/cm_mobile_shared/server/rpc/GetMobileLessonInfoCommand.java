@@ -100,7 +100,7 @@ public class GetMobileLessonInfoCommand implements ActionHandler<GetMobileLesson
         }
         presData.setCurrSession(sessionData);
 
-        sessionData.setTopic(sess.getTopic());
+        sessionData.setTopic(sess.getTopic(), item.getFile());
         sessionData.setSessionNumber(0);
         for (INeedMoreHelpResourceType t : sess.getPrescriptionInmhTypesDistinct(conn)) {
 

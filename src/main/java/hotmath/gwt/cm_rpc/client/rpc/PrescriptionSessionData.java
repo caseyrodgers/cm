@@ -10,6 +10,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 public class PrescriptionSessionData implements IsSerializable{
 	
 	String topic;
+	String file;
 	String name;
 	int sessionNumber;
 	boolean sessionRpa;
@@ -34,9 +35,14 @@ public class PrescriptionSessionData implements IsSerializable{
 	public String getTopic() {
 		return topic;
 	}
+	
+	public String getFile() {
+	    return this.file;
+	}
 
-	public void setTopic(String topic) {
+	public void setTopic(String topic, String file) {
 		this.topic = topic;
+		this.file = file;
 	}
 
 	

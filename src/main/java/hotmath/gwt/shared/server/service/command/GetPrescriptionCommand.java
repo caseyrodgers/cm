@@ -133,7 +133,7 @@ public class GetPrescriptionCommand implements ActionHandler<GetPrescriptionActi
 
             
             __logger.debug("Getting prescription resource items: " + action);
-            sessionData.setTopic(sess.getTopic());
+            sessionData.setTopic(sess.getTopic(),item.getFile());
             sessionData.setSessionNumber(sessionNumber);
             for (INeedMoreHelpResourceType t : sess.getPrescriptionInmhTypesDistinct(conn)) {
 

@@ -53,6 +53,7 @@ public class HistoryPanel extends FlowPanel {
         return __historyLessons; 
     }
 
+    static int MAX_HISTORY=20;
     static void addToHistoryLessons(String title, String file) {
         CmList<Topic> lessons = getHistoryLessons();
         
@@ -60,17 +61,20 @@ public class HistoryPanel extends FlowPanel {
          * 
          */
         for(int a=0,at=lessons.size();a<at;a++) {
-            if(lessons.get(a).getFile().equals(file))
-                return;
+            if(lessons.get(a).getFile().equals(file)) {
+                lessons.remove(a);
+                break;
+            }
         }
-        
-        
-        lessons.add(new Topic(title, file));
+        lessons.add(0,new Topic(title, file));
 
         if (Storage.isSupported()) {
             Storage storeage = Storage.getLocalStorage();
             String persist = "";
             for (int i = 0, t = lessons.size(); i < t; i++) {
+                if(i > MAX_HISTORY)
+                    break;
+                
                 if (persist.length() > 0)
                     persist += "\n";
 
@@ -140,7 +144,7 @@ public class HistoryPanel extends FlowPanel {
             public void handleEvent(CmEvent event) {
                 if(event.getEventType().equals(EventTypes.EVENT_LESSON_LOADED)) {
                     PrescriptionData pd = (PrescriptionData)event.getEventData();
-                    addToHistoryLessons(pd.getCurrSession().getTopic(), pd.getCurrSession().getInmhResources().get(0).getItems().get(0).getFile());
+                    addToHistoryLessons(pd.getCurrSession().getTopic(), pd.getCurrSession().getFile());
                 }
             }
         });
