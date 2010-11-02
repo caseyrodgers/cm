@@ -1,6 +1,7 @@
 package hotmath.gwt.cm_mobile_shared.client.page;
 
 import hotmath.gwt.cm_mobile_shared.client.ControlAction;
+import hotmath.gwt.cm_mobile_shared.client.TokenParser;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,6 +45,11 @@ public class MainPage implements IPage {
 	public String getTitle() {
 		return "Catchup Math Mobile";
 	}
+    
+    @Override
+    public TokenParser getBackButtonLocation() {
+        return null;
+    }	
 
     @Override
     public List<ControlAction> getControlFloaterActions() {

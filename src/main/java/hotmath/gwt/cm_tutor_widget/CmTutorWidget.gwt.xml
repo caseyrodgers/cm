@@ -1,0 +1,6 @@
+<module rename-to="cm_tutor_widget">
+   <inherits name="com.google.gwt.user.User" />
+   <inherits name="hotmath.gwt.cm_activity.CmActivity" />
+   <entry-point class="hotmath.gwt.cm_tutor_widget.client.CmTutorWidget" />
+   <!-- <set-property name='user.agent' value='gecko'/> -->
+</module>

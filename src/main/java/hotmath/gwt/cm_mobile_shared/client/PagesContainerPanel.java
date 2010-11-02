@@ -13,6 +13,7 @@ import hotmath.gwt.cm_mobile_shared.client.util.ViewSettings;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.DeferredCommand;
+import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 
@@ -90,7 +91,15 @@ public class PagesContainerPanel extends Composite {
 				.addHandler(new ObservableStackPopEvent.ObservableStackPopHandler<IPage>() {
 					@Override
 					public void itemPoped(ObservableStackPopEvent<IPage> e) {
-						removePage(e.getItemPoped());
+					    IPage page = e.getItemPoped();
+					    TokenParser tp = page.getBackButtonLocation();
+					    if(tp != null) {
+					        mPageModel.removeAll();
+					        History.newItem(tp.getHistoryTag());
+					    }
+					    else {
+					        removePage(page);
+					    }
 					}
 				});
 
@@ -162,7 +171,8 @@ public class PagesContainerPanel extends Composite {
 	}
 
 	private void removePage(IPage removedPage) {
-
+	    
+	    //Window.alert("Removing: " + removedPage);
 		final GenericContainerTag oldContainer = mActiveContainerPanel;
 		final GenericContainerTag newContainer = mInactiveContainerPanel;
 

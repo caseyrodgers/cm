@@ -1,3 +1,10 @@
+# create a standalone domain
+# by hooking up shared resources
+# as if they are in the current directory.
+#
+# This will allow for a standalone domain
+# to be served through apache.
+##
 ln -s ../gwt-resources .
 ln -s ../resources .
 

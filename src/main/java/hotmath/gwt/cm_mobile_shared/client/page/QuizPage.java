@@ -1,9 +1,8 @@
 package hotmath.gwt.cm_mobile_shared.client.page;
 
-import hotmath.gwt.cm_mobile_shared.client.CatchupMathMobileShared;
 import hotmath.gwt.cm_mobile_shared.client.ControlAction;
-import hotmath.gwt.cm_mobile_shared.client.ControlPanel;
 import hotmath.gwt.cm_mobile_shared.client.QuizPanel;
+import hotmath.gwt.cm_mobile_shared.client.TokenParser;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,4 +39,10 @@ public class QuizPage implements IPage {
         });
         return actions;
     }
+    
+    
+    @Override
+    public TokenParser getBackButtonLocation() {
+        return null;
+    }    
 }

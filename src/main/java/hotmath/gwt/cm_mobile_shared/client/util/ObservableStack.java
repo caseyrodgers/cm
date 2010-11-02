@@ -27,6 +27,10 @@ public class ObservableStack<E> implements Iterable<E> {
 
 		firePushEvent(new ObservableStackPushEvent<E>(e));
 	}
+	
+	public void removeAll() {
+	    mStack.clear();
+	}
 
 	public E pop() {
 		E e = mStack.pop();

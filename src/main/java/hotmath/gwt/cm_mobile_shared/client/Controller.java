@@ -4,10 +4,10 @@ import hotmath.gwt.cm_mobile_shared.client.page.IPage;
 import hotmath.gwt.cm_mobile_shared.client.page.PrescriptionPage;
 import hotmath.gwt.cm_mobile_shared.client.page.PrescriptionResourcePage;
 import hotmath.gwt.cm_mobile_shared.client.page.QuizPage;
-import hotmath.gwt.cm_mobile_shared.client.page.TestPage;
 import hotmath.gwt.cm_mobile_shared.client.page.WelcomePage;
 import hotmath.gwt.cm_mobile_shared.client.util.ObservableStack;
 import hotmath.gwt.cm_rpc.client.rpc.InmhItemData;
+import hotmath.gwt.cm_rpc.client.rpc.PrescriptionData;
 import hotmath.gwt.cm_rpc.client.rpc.PrescriptionSessionData;
 import hotmath.gwt.cm_rpc.client.rpc.PrescriptionSessionDataResource;
 
@@ -23,12 +23,8 @@ public class Controller {
      */
     public static void init(ObservableStack<IPage> pageStack) {
         mPageStack = pageStack;
-        
-        // TestPage p = new TestPage();
-        TopicListPage p = new TopicListPage();
-        mPageStack.push(p);
     }
-    
+
     public static void navigateToTopicList() {
         TopicListPage topicPage = new TopicListPage();
         mPageStack.push(topicPage);
@@ -77,7 +73,10 @@ public class Controller {
                 }
             }
         }
-        PrescriptionResourcePage page = new PrescriptionResourcePage(item);
+        String lesson = CatchupMathMobileShared.getUser().getPrescripion().getCurrSession().getInmhResources().get(1).getItems().get(0).getFile();
+        
+        
+        PrescriptionResourcePage page = new PrescriptionResourcePage(lesson, item);
         mPageStack.push(page);
     }
 

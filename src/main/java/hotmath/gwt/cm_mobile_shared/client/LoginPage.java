@@ -23,4 +23,9 @@ public class LoginPage implements IPage {
     public List<ControlAction> getControlFloaterActions() {
         return null;
     }
+    
+    @Override
+    public TokenParser getBackButtonLocation() {
+        return null;
+    }
 }

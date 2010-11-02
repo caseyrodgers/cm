@@ -1,7 +1,6 @@
 package hotmath.gwt.cm_mobile_shared.client;
 
 import hotmath.gwt.cm_mobile_shared.client.event.CmEvent;
-import hotmath.gwt.cm_mobile_shared.client.event.CmEventListener;
 import hotmath.gwt.cm_mobile_shared.client.event.EventBus;
 import hotmath.gwt.cm_mobile_shared.client.event.EventTypes;
 import hotmath.gwt.cm_mobile_shared.client.rpc.GetMobileTopicListAction;
@@ -33,7 +32,6 @@ import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.DecoratedTabPanel;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.TabPanel;
@@ -180,7 +178,6 @@ public class TopicListPagePanel extends AbstractPagePanel {
     }
     
     static List<String> previousEntries = null;
-    static String PRESCRIBED_LESSONS = "<<< Your Lessons >>>";
     static CmList<Topic> prescribedLessons=null;
     
     /** Create and maintain static list of previous
@@ -206,9 +203,6 @@ public class TopicListPagePanel extends AbstractPagePanel {
                    }
                }
             }
-            if(CatchupMathMobileShared.getUser() != null) {
-                previousEntries.add(PRESCRIBED_LESSONS);
-            }            
         }
         return previousEntries;
     }
@@ -243,18 +237,6 @@ public class TopicListPagePanel extends AbstractPagePanel {
             matches = topics;
         }
         else {
-            
-            if(searchFor.equals(PRESCRIBED_LESSONS)) {
-                if(prescribedLessons == null) {
-                    Window.alert("No prescribed lessons have been assigned");
-                }
-                else {
-                    showForMatches(prescribedLessons);
-                }
-                return;
-            }
-            
-            
             for(int i=0,t=topics.size();i<t;i++) {
                 Topic t1 = topics.get(i);
                 if(t1.getName().toLowerCase().indexOf(searchFor.toLowerCase()) > -1) {
@@ -286,11 +268,8 @@ public class TopicListPagePanel extends AbstractPagePanel {
                         /** add the current search term to previous entries
                          * 
                          */
-                        if(!_searchText.getText().equals(PRESCRIBED_LESSONS))
-                            addToPreviousEntries(_searchText.getText());
-                        
-                        String tag = "topic:" + topic.getFile() + ":" + System.currentTimeMillis();
-                        History.newItem(tag);
+                        addToPreviousEntries(_searchText.getText());
+                        History.newItem(new TokenParser("lesson",topic.getFile(),0).getHistoryTag());
                     }
                 }
             });

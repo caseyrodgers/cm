@@ -367,7 +367,7 @@ class ResourceMenuButton extends Button {
     /** Make button indicate that this resource is complete
      * 
      */
-    public void indicateCompletion() {
+    private void indicateCompletion() {
         setIconStyle("resource-menu-button-complete-icon");
         VerticalPanel vp = (VerticalPanel)getParent();
         if(vp != null) {

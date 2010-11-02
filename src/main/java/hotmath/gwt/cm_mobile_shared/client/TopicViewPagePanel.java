@@ -1,11 +1,11 @@
 package hotmath.gwt.cm_mobile_shared.client;
 
+import hotmath.gwt.cm_mobile2.client.CatchupMathMobile2;
+import hotmath.gwt.cm_mobile2.client.CatchupMathMobile2.Callback;
 import hotmath.gwt.cm_mobile_shared.client.event.CmEvent;
 import hotmath.gwt.cm_mobile_shared.client.event.EventBus;
 import hotmath.gwt.cm_mobile_shared.client.event.EventTypes;
 import hotmath.gwt.cm_mobile_shared.client.page.PrescriptionPage;
-import hotmath.gwt.cm_mobile_shared.client.rpc.GetMobileLessonInfoAction;
-import hotmath.gwt.cm_mobile_shared.client.rpc.MobileLessonInfo;
 import hotmath.gwt.cm_mobile_shared.client.util.GenericContainerTag;
 import hotmath.gwt.cm_mobile_shared.client.util.GenericTextTag;
 import hotmath.gwt.cm_mobile_shared.client.util.TouchClickEvent;
@@ -20,8 +20,6 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.History;
-import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -57,35 +55,15 @@ public class TopicViewPagePanel extends AbstractPagePanel {
         mainPanel.add(new HTML("<span style='font-weight: bold;font-height: 1.2em;>Loading lesson ...</span>"));
         mainPanel.setStyleName("topic-view-page-panel");
         
-        loadLessonData(page.getTopicFile());
-    }
-    
-    
-    private void loadLessonData(String file) {
-        
-        if(pData != null && pData.getCurrSession().getInmhResources().get(0).getItems().get(0).getFile().equals(file)) {
-            loadPrescriptionSession(pData.getCurrSession().getInmhResources());
-            return;
-        }
-        
-        EventBus.getInstance().fireEvent(new CmEvent(EventTypes.EVENT_SERVER_START));
-        GetMobileLessonInfoAction action = new GetMobileLessonInfoAction(file);
-        CatchupMathMobileShared.getCmService().execute(action, new AsyncCallback<MobileLessonInfo>() {
+        CatchupMathMobile2.loadLessonData(page.getTopicFile(),new Callback() {
             @Override
-            public void onSuccess(MobileLessonInfo lessonInfo) {
-                EventBus.getInstance().fireEvent(new CmEvent(EventTypes.EVENT_SERVER_END));
-                pData = lessonInfo.getPresData();
-                CatchupMathMobileShared.getUser().setPrescripion(lessonInfo.getPresData());
-                loadPrescriptionSession(lessonInfo.getPresData().getCurrSession().getInmhResources());
-            }
-            
-            @Override
-            public void onFailure(Throwable arg0) {
-                EventBus.getInstance().fireEvent(new CmEvent(EventTypes.EVENT_SERVER_END));
-                Window.alert(arg0.getMessage());
+            public void isComplete(Object data) {
+                pData = (PrescriptionData)data;
+                loadPrescriptionSession(pData.getCurrSession().getInmhResources());                
             }
         });
     }
+    
     
     private void loadPrescriptionSession(List<PrescriptionSessionDataResource> resources) {
     	mainPanel.clear();
@@ -120,8 +98,8 @@ public class TopicViewPagePanel extends AbstractPagePanel {
                     resourceLi.addHandler(new TouchClickHandler<String>() {
                         @Override
                         public void touchClick(TouchClickEvent<String> event) {
-                            String tag = "resource:" + item.getType() + ":" + ordinalHolder + ":" + System.currentTimeMillis();
-                            History.newItem(tag);
+                            String lessonFile = page.getTopicFile();
+                            History.newItem(new TokenParser(item.getType(), lessonFile, ordinalHolder).getHistoryTag());
                         }
                     });
                     ul.add(resourceLi);

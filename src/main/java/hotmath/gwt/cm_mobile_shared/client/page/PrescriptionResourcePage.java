@@ -1,7 +1,7 @@
 package hotmath.gwt.cm_mobile_shared.client.page;
 
 import hotmath.gwt.cm_mobile_shared.client.ControlAction;
-import hotmath.gwt.cm_mobile_shared.client.Controller;
+import hotmath.gwt.cm_mobile_shared.client.TokenParser;
 import hotmath.gwt.cm_rpc.client.rpc.InmhItemData;
 
 import java.util.ArrayList;
@@ -12,8 +12,10 @@ import com.google.gwt.user.client.History;
 public class PrescriptionResourcePage implements IPage {
 
 	InmhItemData item;
+	String lesson;
 	
-	public PrescriptionResourcePage(InmhItemData item) {
+	public PrescriptionResourcePage(String lesson, InmhItemData item) {
+	    this.lesson = lesson;	    
 		this.item = item;
 	}
 	
@@ -42,9 +44,15 @@ public class PrescriptionResourcePage implements IPage {
             @Override
             public void doAction() {
                 //History.back();
-                Controller.navigateBack();
+                History.newItem(new TokenParser("lesson", lesson, 0).getHistoryTag());
             }
         });
         return actions;
     }
+    
+    
+    @Override
+    public TokenParser getBackButtonLocation() {
+        return new TokenParser("lesson", lesson, 0);
+    }    
 }

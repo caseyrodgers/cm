@@ -7,6 +7,7 @@ import hotmath.gwt.cm_mobile_shared.client.Controller;
 import hotmath.gwt.cm_mobile_shared.client.HeaderPanel;
 import hotmath.gwt.cm_mobile_shared.client.PagesContainerPanel;
 import hotmath.gwt.cm_mobile_shared.client.ScreenOrientation;
+import hotmath.gwt.cm_mobile_shared.client.TokenParser;
 import hotmath.gwt.cm_mobile_shared.client.event.CmEvent;
 import hotmath.gwt.cm_mobile_shared.client.event.CmEventListener;
 import hotmath.gwt.cm_mobile_shared.client.event.EventBus;
@@ -14,15 +15,20 @@ import hotmath.gwt.cm_mobile_shared.client.event.EventType;
 import hotmath.gwt.cm_mobile_shared.client.event.EventTypes;
 import hotmath.gwt.cm_mobile_shared.client.page.IPage;
 import hotmath.gwt.cm_mobile_shared.client.rpc.CmMobileUser;
+import hotmath.gwt.cm_mobile_shared.client.rpc.GetMobileLessonInfoAction;
+import hotmath.gwt.cm_mobile_shared.client.rpc.MobileLessonInfo;
 import hotmath.gwt.cm_mobile_shared.client.util.ObservableStack;
 import hotmath.gwt.cm_mobile_shared.client.util.Screen;
 import hotmath.gwt.cm_mobile_shared.client.util.Screen.OrientationChangedHandler;
 import hotmath.gwt.cm_rpc.client.rpc.InmhItemData;
+import hotmath.gwt.cm_rpc.client.rpc.PrescriptionData;
 
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.History;
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
@@ -66,9 +72,9 @@ public class CatchupMathMobile2 implements EntryPoint, OrientationChangedHandler
 
         CatchupMathMobileShared.__instance.user = new CmMobileUser();
         
-        orientationChanged(ScreenOrientation.Portrait);
-        
         History.addValueChangeHandler(new CatchupMathMobileHistoryListener());
+        
+        History.fireCurrentHistoryState();
     }
 
     private native void gotoBottomOfDoc()/*-{
@@ -104,6 +110,7 @@ public class CatchupMathMobile2 implements EntryPoint, OrientationChangedHandler
         $wnd.initializeExternalJs();
     }-*/;    
 
+    ObservableStack<IPage> _pageStack;
     /**
      * Create a panel with a static header and scrollable body area.
      * 
@@ -127,11 +134,10 @@ public class CatchupMathMobile2 implements EntryPoint, OrientationChangedHandler
         fp.add(headerPanel);
         fp.add(pagesPanel);
 
-        ObservableStack<IPage> pageStack = new ObservableStack<IPage>();
-        pagesPanel.bind(pageStack);
-        headerPanel.bind(pageStack);
-        
-        Controller.init(pageStack);
+        _pageStack = new ObservableStack<IPage>();
+        pagesPanel.bind(_pageStack);
+        headerPanel.bind(_pageStack);
+        Controller.init(_pageStack);
 
         return fp;
     }    
@@ -159,8 +165,7 @@ public class CatchupMathMobile2 implements EntryPoint, OrientationChangedHandler
                 }
                 else if(type == EventTypes.EVENT_LOAD_RESOURCE) {
                     InmhItemData d = (InmhItemData)event.getEventData();
-                    
-                    History.newItem("res_object:" + d.getFile());
+                    History.newItem(new TokenParser("res_object",d.getFile(),0).getHistoryTag());
                     Controller.navigateToPrescriptionResource(null, d, 0);
                 }
                 else if(type == EventTypes.EVENT_RES_VIEW_LOADED) {
@@ -176,9 +181,7 @@ public class CatchupMathMobile2 implements EntryPoint, OrientationChangedHandler
      * @param file
      */
     static public void doResourceLoad(String type, String file) {
-        History.newItem("res_object:" + type + ":" + file);
-        //InmhItemData inmh = new InmhItemData(type,file,"");
-        //Controller.navigateToPrescriptionResource(null, inmh,-1);
+        History.newItem(new TokenParser("res_object",file,0).getHistoryTag());
     }
     
     static public void backToLesson() {
@@ -189,6 +192,35 @@ public class CatchupMathMobile2 implements EntryPoint, OrientationChangedHandler
         $wnd.doLoadResource_Gwt = @hotmath.gwt.cm_mobile2.client.CatchupMathMobile2::doResourceLoad(Ljava/lang/String;Ljava/lang/String;);
         $wnd.gwt_backToLesson = @hotmath.gwt.cm_mobile2.client.CatchupMathMobile2::backToLesson();
     }-*/;
+    
+    
+    static PrescriptionData pData;
+    static public void loadLessonData(String file, final Callback callback) {
+        
+        if(pData != null && pData.getCurrSession().getInmhResources().get(0).getItems().get(0).getFile().equals(file)) {
+            callback.isComplete(pData);
+            return;
+        }
+        
+        EventBus.getInstance().fireEvent(new CmEvent(EventTypes.EVENT_SERVER_START));
+        GetMobileLessonInfoAction action = new GetMobileLessonInfoAction(file);
+        CatchupMathMobileShared.getCmService().execute(action, new AsyncCallback<MobileLessonInfo>() {
+            @Override
+            public void onSuccess(MobileLessonInfo lessonInfo) {
+                EventBus.getInstance().fireEvent(new CmEvent(EventTypes.EVENT_SERVER_END));
+                pData = lessonInfo.getPresData();
+                CatchupMathMobileShared.getUser().setPrescripion(lessonInfo.getPresData());
+                callback.isComplete(pData);
+            }
+            
+            @Override
+            public void onFailure(Throwable arg0) {
+                EventBus.getInstance().fireEvent(new CmEvent(EventTypes.EVENT_SERVER_END));
+                Window.alert(arg0.getMessage());
+            }
+        });
+    }
+
 
 
     @Override
@@ -201,4 +233,10 @@ public class CatchupMathMobile2 implements EntryPoint, OrientationChangedHandler
             _rootPanel.removeStyleName("portrait");
         }
     }
+    
+    public interface Callback {
+        void isComplete(Object data);
+    }
 }
+
+

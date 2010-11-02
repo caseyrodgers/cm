@@ -29,4 +29,9 @@ public class TopicViewPage implements IPage {
     public List<ControlAction> getControlFloaterActions() {
         return null;
     }
+    
+    @Override
+    public TokenParser getBackButtonLocation() {
+        return new TokenParser();
+    }
 }

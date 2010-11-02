@@ -14,7 +14,7 @@
   
     <!--  For Tutor/Show Work -->  
     <link rel="stylesheet" href="/css/bookindex_with_tutor_combined.css" type="text/css"/>
-    <link rel="stylesheet" type="text/css" href="/gwt-resources/css/CatchupMath.css" />    
+    <link rel="stylesheet" type="text/css" href="/gwt-resources/css/CatchupMath_combined.css" />    
 
       
     <link rel="stylesheet" type="text/css" href="/gwt-resources/gxt-2.1.3/css/gxt-all.css" />
