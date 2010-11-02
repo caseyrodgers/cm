@@ -59,8 +59,8 @@
                     ../../../../hotmath2/web/js/domutils-min.js
                     gwt-resources/js/cm_core.js-min.js
                     gwt-resources/js/CatchupMathMobile.js-min.js
-	            ../../../../hotmath2/web/js/tutor_flash_widget-min.js
-	            ../../../../hotmath2/web/js/tutor_flash_widget_validation-min.js
+	            ../../../../hotmath2/web/js/tutor_flash_widget.js
+	            ../../../../hotmath2/web/js/tutor_flash_widget_validation.js
               " />
         </concat>
     </target>

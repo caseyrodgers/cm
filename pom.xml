@@ -473,8 +473,8 @@
         <configuration>
           <cssSourceDir>gwt-resources/css</cssSourceDir>
           <jsSourceDir>gwt-resources/js</jsSourceDir>
-          <cssFinalFile>CatchupMath.css</cssFinalFile>
-          <jsFinalFile>CatchupMath.js</jsFinalFile>
+          <cssFinalFile>CatchupMath_combined.css</cssFinalFile>
+          <jsFinalFile>CatchupMath_combined.js</jsFinalFile>
           <cssSourceFiles>
 	    <param>../../../../../../hotmath2/web/css/testset.css</param>
 	    <param>../../../../../../hotmath2/web/css/default.css</param>

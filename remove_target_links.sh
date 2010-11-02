@@ -1,0 +1,1 @@
+rm `find target/cm-1.0-SNAPSHOT -type l`

@@ -1,2 +1,2 @@
 echo 'importing: '  $1
-mysqldump -uhotmath -pgeometry hotmath_live $1 < exported_data/$1.dump
+mysql -uhotmath -pgeometry -h hotmath-live.cpcll61ssmu3.us-west-1.rds.amazonaws.com hotmath_live < $1 

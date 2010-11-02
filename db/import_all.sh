@@ -1,4 +1,4 @@
 for a in `cat tables.txt` 
 do 
-   ./import.sh $a
+   ./import.sh exported_data/$a.dump
 done
