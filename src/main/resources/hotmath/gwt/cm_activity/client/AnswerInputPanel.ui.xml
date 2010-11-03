@@ -1,0 +1,49 @@
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui"
+	xmlns:cm="urn:import:hotmath.gwt.cm_activity.client">
+	<ui:style  type='hotmath.gwt.cm_activity.client.AnswerInputPanel.Style'>
+	    .answer {
+	    	width: 200px;
+	    	padding: 0;
+	    	margin: none;
+	    	height: 200px;
+	     }
+	    .answer input  {
+            font-size: 1em;
+            width: 150px;
+         }
+         .numerator  {
+         	display:block;
+         }
+        .denominator  {
+            display: none;
+         }
+         .divider {
+            height: 3px;
+            background: black;
+            margin: none;
+            padding: 0;
+            border: none;
+            display: none;
+            width: 150px;
+         }         
+         .remove {
+         	display: none;
+         }
+         .show {
+            display: block;
+         }
+         
+         .integerSetup {
+         	margin-top: 20px;
+         }
+         
+         .fractionSetup {
+         }
+	</ui:style>
+   <g:HTMLPanel ui:field="answerPanel" styleName='{style.answer}'>
+       <cm:AnswerTextBox styleName='{style.numerator}' ui:field="numeratorField"></cm:AnswerTextBox>
+       <g:FlowPanel ui:field="dividerPanel" styleName='{style.divider}'></g:FlowPanel>
+       <cm:AnswerTextBox styleName='{style.denominator}' ui:field="denominatorField"></cm:AnswerTextBox>
+   </g:HTMLPanel>
+</ui:UiBinder> 

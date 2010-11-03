@@ -1,21 +1,13 @@
 package hotmath.gwt.cm_activity_word_problems.client;
 
-import hotmath.gwt.cm_activity.client.CmActivity;
-import hotmath.gwt.cm_activity.client.EventTypes;
-import hotmath.gwt.cm_activity.client.WordProblemSet;
 import hotmath.gwt.cm_activity.client.WordProblemsPanel;
-import hotmath.gwt.cm_activity.client.rpc.GetWordProblemSetAction;
 import hotmath.gwt.cm_mobile_shared.client.CatchupMathMobileShared;
 import hotmath.gwt.cm_mobile_shared.client.ScreenOrientation;
-import hotmath.gwt.cm_mobile_shared.client.event.CmEvent;
-import hotmath.gwt.cm_mobile_shared.client.event.EventBus;
 import hotmath.gwt.cm_mobile_shared.client.rpc.CmMobileUser;
 import hotmath.gwt.cm_mobile_shared.client.util.Screen;
 import hotmath.gwt.cm_mobile_shared.client.util.Screen.OrientationChangedHandler;
 
 import com.google.gwt.core.client.EntryPoint;
-import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -42,8 +34,6 @@ public class CmActivityWordProblems implements EntryPoint, OrientationChangedHan
         CatchupMathMobileShared.__instance.hideBusyPanel();
 
         CatchupMathMobileShared.__instance.user = new CmMobileUser();
-        
-        orientationChanged(ScreenOrientation.Portrait);
     }
     
     /** call global JS function to initialize any external resources

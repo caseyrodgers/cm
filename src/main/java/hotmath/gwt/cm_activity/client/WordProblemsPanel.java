@@ -1,6 +1,7 @@
 package hotmath.gwt.cm_activity.client;
 
 
+import hotmath.gwt.cm_activity.client.AnswerInputPanel.AnswerCallback;
 import hotmath.gwt.cm_activity.client.model.WordProblem;
 import hotmath.gwt.cm_activity.client.rpc.GetWordProblemSetAction;
 import hotmath.gwt.cm_mobile_shared.client.CatchupMathMobileShared;
@@ -11,8 +12,6 @@ import hotmath.gwt.cm_mobile_shared.client.event.EventBus;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.dom.client.KeyDownEvent;
-import com.google.gwt.event.dom.client.KeyDownHandler;
 import com.google.gwt.event.logical.shared.CloseEvent;
 import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -27,7 +26,6 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.PopupPanel;
-import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 
 public class WordProblemsPanel extends Composite {
@@ -36,7 +34,7 @@ public class WordProblemsPanel extends Composite {
     private static MyUiBinder uiBinder = GWT.create(MyUiBinder.class);
     
     @UiField FlowPanel questionHtmlPanel;
-    @UiField TextBox answerPanel;
+    @UiField AnswerInputPanel answerPanel;
     @UiField FlowPanel questionDescribe;
     @UiField Button answerButton;
     @UiField Button explainButton;
@@ -74,12 +72,10 @@ public class WordProblemsPanel extends Composite {
             }
         });
         
-        answerPanel.addKeyDownHandler(new KeyDownHandler() {
+        answerPanel.setCallbackOnAnswer(new AnswerCallback() {
             @Override
-            public void onKeyDown(KeyDownEvent event) {
-                if(event.getNativeKeyCode() == 13) {
-                    checkAnswer();
-                }
+            public void doComplete(AnswerInputPanel o) {
+                checkAnswer();
             }
         });
         
@@ -91,6 +87,9 @@ public class WordProblemsPanel extends Composite {
                 }
                 else if(event.getEventType() == EventTypes.EVENT_MOVE_TO_NEXT_QUESTION) {
                     loadQuestion(_currentQuestion+1);
+                }
+                else if(event.getEventType() == EventTypes.EVENT_SHOW_INPUT_SUBMIT) {
+                    checkAnswer();
                 }
             }
         });
@@ -177,14 +176,13 @@ public class WordProblemsPanel extends Composite {
         simplePopup.show();
         if(callBack != null) {
             
-            popupWidget.add(new Button("Continue", new ClickHandler() {
-                
+            final Button btn = new Button("Continue", new ClickHandler() {
                 @Override
                 public void onClick(ClickEvent event) {
                     simplePopup.hide(true);
                 }
-            }));
-            
+            });
+            popupWidget.add(btn);
             simplePopup.addCloseHandler(new CloseHandler<PopupPanel>() {
                 
                 @Override
@@ -192,6 +190,12 @@ public class WordProblemsPanel extends Composite {
                     callBack.doCallback();                
                 }
             });
+            new Timer() {
+                @Override
+                public void run() {
+                    btn.setFocus(true);
+                }
+            }.schedule(500);
         }
         else { 
             new Timer() {
@@ -229,7 +233,7 @@ public class WordProblemsPanel extends Composite {
         String describe = "Write an algebraic expression for the statement.";        
         questionDescribe.getElement().setInnerHTML(describe);
         questionHtmlPanel.getElement().setInnerHTML(problem.getQuestion());
-        answerPanel.setText("");
+        answerPanel.resetPanel();
         
         _mainPanel.clear();
         _mainPanel.add(_questionPanel);
@@ -245,9 +249,7 @@ public class WordProblemsPanel extends Composite {
 
         loadQuestion(0);
 
-        answerPanel.setText("?");
-        answerPanel.selectAll();
-        
+        answerPanel.resetPanel();
         answerPanel.setFocus(true);
     }
     
@@ -255,8 +257,10 @@ public class WordProblemsPanel extends Composite {
     public CmActivityWordProblemsResources getRes() {
         return resources;
     }
+    
+
+    static public interface Callback {
+        void doCallback();
+    }
 }
 
-interface Callback {
-    void doCallback();
-}
