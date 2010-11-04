@@ -307,6 +307,12 @@ trending-data-student-list-item {
 	background-color: #00aeef
 }
 
+.custom-prescription-dialog .ess {
+    padding: 4px;
+    background-color: yellow;
+}
+
+
 /** On RegisterStudent program combo box place
     a small square at first position of each 
     custom program.
