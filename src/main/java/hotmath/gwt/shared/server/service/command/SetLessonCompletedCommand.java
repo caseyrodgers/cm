@@ -4,30 +4,29 @@ import hotmath.gwt.cm_rpc.client.rpc.Action;
 import hotmath.gwt.cm_rpc.client.rpc.Response;
 import hotmath.gwt.cm_rpc.client.rpc.RpcData;
 import hotmath.gwt.cm_rpc.server.rpc.ActionHandler;
-import hotmath.gwt.shared.client.rpc.action.MarkPrescriptionLessonAsViewedAction;
+import hotmath.gwt.shared.client.rpc.action.SetLessonCompletedAction;
 import hotmath.testset.ha.HaTestRunDao;
 
 import java.sql.Connection;
 
 
-/** Mark the given Prescription Lesson as being viewed
+/** Set completed status for specified Lesson
  * 
  * @author casey
  *
  */
-public class MarkPrescriptionLessonAsViewedCommand implements ActionHandler<MarkPrescriptionLessonAsViewedAction, RpcData>{
+public class SetLessonCompletedCommand implements ActionHandler<SetLessonCompletedAction, RpcData>{
 
     @Override
-    public RpcData execute(Connection conn, MarkPrescriptionLessonAsViewedAction action) throws Exception {
+    public RpcData execute(Connection conn, SetLessonCompletedAction action) throws Exception {
         
-        new HaTestRunDao().markLessonAsCompleted(conn, action.getRunId(),action.getLesson());
+        new HaTestRunDao().setLessonCompleted(conn, action.getRunId(),action.getLesson());
         return new RpcData("status=OK");
     }
 
     @Override
     public Class<? extends Action<? extends Response>> getActionType() {
-        // TODO Auto-generated method stub
-        return MarkPrescriptionLessonAsViewedAction.class;
+        return SetLessonCompletedAction.class;
     }
 
 }
