@@ -159,7 +159,7 @@ public class CmStudentDao {
             ps.setInt(2, (isActive) ? 1 : 0);
             rs = ps.executeQuery();
 
-            l = loadStudentSummaries(rs);
+            l = loadStudentSummaries(conn,rs);
             
             loadChapterInfo(conn, l);
         } catch (Exception e) {
@@ -1366,7 +1366,7 @@ public class CmStudentDao {
             rs = ps.executeQuery();
 
             List<StudentModelI> l = null;
-            l = loadStudentSummaries(rs);
+            l = loadStudentSummaries(conn, rs);
             if (l.size() == 0)
                 throw new Exception(String.format("Student with UID: %d was not found", uid));
             if (l.size() > 1)
@@ -1572,7 +1572,7 @@ public class CmStudentDao {
         }
     }
     
-    private List<StudentModelI> loadStudentSummaries(ResultSet rs) throws Exception {
+    private List<StudentModelI> loadStudentSummaries(final Connection conn, ResultSet rs) throws Exception {
 
         List<StudentModelI> l = new ArrayList<StudentModelI>();
 
@@ -1613,13 +1613,33 @@ public class CmStudentDao {
             sm.setPassPercent(passPercent);
             sm.setBackgroundStyle(rs.getString("gui_background_style"));
             sm.setSectionNum(rs.getInt("active_segment"));
-            sm.setStatus(getStatus(sm.getProgram().getProgramId(), sm.getSectionNum(), rs.getString("test_config_json")));
 
+            setupProgramStatus(conn,sm,rs.getString("test_config_json"),rs.getString("program"));
+            
             l.add(sm);
         }
         return l;
     }
 
+    
+    /** Format status and or custom program label for display.
+     * 
+     *  For custom programs, add the CP:PROG_NAME and looks up the status info
+     * 
+     */
+
+    private void setupProgramStatus(final Connection conn, StudentModelI student, String programName, String testConfigJson) throws Exception {
+        StudentProgramModel program = student.getProgram();
+        if (program.isCustomProgram() == false) {
+            program.setProgramDescription(programName);
+            student.setStatus(getStatus(program.getProgramId(), student.getSectionNum(), testConfigJson));
+        }
+        else {
+            program.setProgramDescription("CP: " + program.getCustomProgramName());
+            student.setStatus(getCustomProgramStatus(conn, program.getCustomProgramId(), student.getUid()));              
+        }
+    }
+    
     private List<StudentModelI> loadStudentBaseSummaries(final Connection conn, ResultSet rs, Boolean tutoringEnabledForAdmin) throws Exception {
 
         List<StudentModelI> l = new ArrayList<StudentModelI>();
@@ -1661,14 +1681,7 @@ public class CmStudentDao {
             
             sm.setProgram(program);
 
-            if (program.isCustomProgram() == false) {
-                program.setProgramDescription(rs.getString("program"));
-                sm.setStatus(getStatus(program.getProgramId(), sm.getSectionNum(), rs.getString("test_config_json")));
-            }
-            else {
-                program.setProgramDescription("CP: " + program.getCustomProgramName());
-                sm.setStatus(getCustomProgramStatus(conn, program.getCustomProgramId(), sm.getUid()));            	
-            }
+            setupProgramStatus(conn, sm, rs.getString("program"), rs.getString("test_config_json"));
 
             l.add(sm);
         }
