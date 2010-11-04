@@ -45,5 +45,4 @@ public class SaveFeedbackAction implements Action<RpcData> {
         return "SaveFeedbackAction [comments=" + comments + ", commentsUrl=" + commentsUrl + ", stateInfo=" + stateInfo
                 + "]";
     }
-
 }

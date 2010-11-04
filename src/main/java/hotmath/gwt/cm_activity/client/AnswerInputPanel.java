@@ -86,7 +86,7 @@ public class AnswerInputPanel extends FlowPanel {
     }
     
     public void setCallbackOnAnswer(AnswerCallback call) {
-        call.doComplete(this);
+        
     }
     
     public String getText() {

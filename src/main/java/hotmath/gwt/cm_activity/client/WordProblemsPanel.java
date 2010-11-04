@@ -126,13 +126,27 @@ public class WordProblemsPanel extends Composite {
         _mainPanel.add(_explainPanel);
     }
     
+    private native boolean validateQuestion(String expected,String vars,String value1, String value2, String value3, String value3p)/*-{
+        return $wnd.validateWordProblem1(expected,vars,value1,value2,value3,value3p);
+    }-*/;
     private void checkAnswer() {
-        String value = answerPanel.getText();
-        if(value.length() == 0 || value.equals("?")) {
+        QuestionAnswer answer = getAnswer();
+        
+        WordProblem problem = _problemSet.getProblems().get(_currentQuestion);
+        
+        String vars = problem.getVars();
+        String expected=problem.getAnswer();
+        String value1=answer.value1;
+        String value2 = answer.value2;
+        String value3 = answer.value3;
+        String value3p = answer.value3p;
+        
+        if(value1.length() == 0 || value1.equals("?")) {
             showPopup(answerPanel,"Enter a valid expression.",null);
         }
         else {
-            if(isCorrect(value)) {
+            ;
+            if(validateQuestion(expected, vars, value1,value2,value3,value3p)) {
                 showCorrectAnswer();
             }
             else {
@@ -209,7 +223,12 @@ public class WordProblemsPanel extends Composite {
     
     
     private void showCorrectAnswer() {
-        loadQuestion(_currentQuestion+1);
+        showPopup(answerPanel, "<div style='text-align: center;color: green;font-size: 1.2em;'>Correct!</b>",new Callback() {
+            @Override
+            public void doCallback() {
+                loadQuestion(_currentQuestion+1);
+            }
+        }); 
     }
     
     private void showResults() {
@@ -218,14 +237,17 @@ public class WordProblemsPanel extends Composite {
         _mainPanel.add(_resultsPanel);
     }
     
+    public QuestionAnswer getAnswer() {
+        String text = answerPanel.getText();
+        return new QuestionAnswer(text);
+    }
+    
     int _currentQuestion=0;
     private void loadQuestion(int which) {
-        
         if(which > _problemSet.getProblems().size()-1) {
             showResults();
             return;
         }
-        
         _currentQuestion=which;
         WordProblem problem = _problemSet.getProblems().get(which);
         
@@ -238,6 +260,8 @@ public class WordProblemsPanel extends Composite {
         _mainPanel.clear();
         _mainPanel.add(_questionPanel);
     }
+    
+    
     private void initializeData(WordProblemSet problemSet) {
 
         if(problemSet != null)
@@ -261,6 +285,38 @@ public class WordProblemsPanel extends Composite {
 
     static public interface Callback {
         void doCallback();
+    }
+    
+    static public class QuestionAnswer {
+        public String value1;
+        public String value2;
+        public String value3;
+        public String value3p;
+        
+        public QuestionAnswer(String text) {
+            try {
+            String p[] = text.split("\\+");
+            if(p.length > 3) {
+                value3p = p[3];
+            }
+            if(p.length > 2) {
+                value3 = p[2];
+            }
+            if(p.length > 1) {
+                value2 = p[1];
+            }
+            value1 = p[0];
+            }
+            catch(Exception e) {
+                e.printStackTrace();
+            }
+        }
+        public QuestionAnswer(String v1, String v2, String v3, String v3p) {
+            this.value1 = v1;
+            this.value2 = v2;
+            this.value3 = v3;
+            this.value3p = v3p;            
+        }
     }
 }
 
