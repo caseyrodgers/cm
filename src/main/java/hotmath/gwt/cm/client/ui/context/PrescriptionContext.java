@@ -29,7 +29,7 @@ import hotmath.gwt.shared.client.eventbus.EventBus;
 import hotmath.gwt.shared.client.eventbus.EventType;
 import hotmath.gwt.shared.client.rpc.RetryAction;
 import hotmath.gwt.shared.client.rpc.action.AutoAdvanceUserAction;
-import hotmath.gwt.shared.client.rpc.action.MarkPrescriptionLessonAsViewedAction;
+import hotmath.gwt.shared.client.rpc.action.SetLessonCompletedAction;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -276,7 +276,7 @@ public class PrescriptionContext implements CmContext {
                     });
                 }
 
-                // any either case, get out of here.
+                // in either case, get out of here.
                 return;
 
             } else {
@@ -316,13 +316,13 @@ public class PrescriptionContext implements CmContext {
         new RetryAction<RpcData>() {
             @Override
             public void attempt() {
-                MarkPrescriptionLessonAsViewedAction action = new MarkPrescriptionLessonAsViewedAction(prescriptionData.getCurrSession().getTopic(), runId, session);
+            	SetLessonCompletedAction action = new SetLessonCompletedAction(prescriptionData.getCurrSession().getTopic(), runId, session);
                 setAction(action);
                 CmShared.getCmService().execute(action,this);
             }
             @Override
             public void oncapture(RpcData userAdvance) {
-                CmLogger.info("MarkPrescriptionLessonAsViewedAction complete: " + userAdvance);
+                CmLogger.info("SetLessonCompletedAction complete: " + userAdvance);
             }
         }.register();
     }
