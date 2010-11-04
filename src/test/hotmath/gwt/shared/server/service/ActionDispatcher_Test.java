@@ -36,10 +36,10 @@ import hotmath.gwt.shared.client.rpc.action.GetStateStandardsAction;
 import hotmath.gwt.shared.client.rpc.action.GetSummariesForActiveStudentsAction;
 import hotmath.gwt.shared.client.rpc.action.GetViewedInmhItemsAction;
 import hotmath.gwt.shared.client.rpc.action.LogUserInAction;
-import hotmath.gwt.shared.client.rpc.action.MarkPrescriptionLessonAsViewedAction;
 import hotmath.gwt.shared.client.rpc.action.ProcessLoginRequestAction;
 import hotmath.gwt.shared.client.rpc.action.SaveWhiteboardDataAction;
 import hotmath.gwt.shared.client.rpc.action.SaveWhiteboardDataAction.CommandType;
+import hotmath.gwt.shared.client.rpc.action.SetLessonCompletedAction;
 import hotmath.gwt.shared.client.rpc.result.AutoRegistrationEntry;
 import hotmath.gwt.shared.client.rpc.result.AutoRegistrationSetup;
 import hotmath.testset.ha.HaTestRunDao;
@@ -103,11 +103,11 @@ public class ActionDispatcher_Test extends CmDbTestCase {
         assertTrue(rdata.getDataAsString("message") != null);
     }
     
-    public void testMarkPrescriptionLessonAsViewedCommand() throws Exception {
+    public void testSetLessonCompletedCommand() throws Exception {
 
         String lesson = new HaTestRunDao().getTestRunLessons(conn, _testRun.getRunId()).get(0).getLesson();
         
-        MarkPrescriptionLessonAsViewedAction action = new MarkPrescriptionLessonAsViewedAction(lesson,_testRun.getRunId(), 0);
+        SetLessonCompletedAction action = new SetLessonCompletedAction(lesson,_testRun.getRunId(), 0);
         RpcData rdata = ActionDispatcher.getInstance().execute(action);
         assertNotNull(rdata);
         assertTrue(rdata.getDataAsString("status").equals("OK"));
@@ -169,7 +169,7 @@ public class ActionDispatcher_Test extends CmDbTestCase {
     
     public void testCreateAutoRegistrationAccountsCommand() throws Exception {
         
-        StudentModelI student = new CmStudentDao().getStudentModel(uid);
+        StudentModelI student = new CmStudentDao().getStudentModelBase(conn, uid);
         AutoRegistrationSetup preview = new AutoRegistrationSetup();
         
         CmList<AutoRegistrationEntry> entries = new CmArrayList<AutoRegistrationEntry>();
@@ -190,7 +190,7 @@ public class ActionDispatcher_Test extends CmDbTestCase {
     
     public void testCreateAutoRegistrationPreviewCommand() throws Exception {
         
-        StudentModelI student = new CmStudentDao().getStudentModel(uid);
+        StudentModelI student = new CmStudentDao().getStudentModelBase(conn, uid);
         
         CreateAutoRegistrationPreviewAction action = new CreateAutoRegistrationPreviewAction(student,"key");
         AutoRegistrationSetup autoSetup = ActionDispatcher.getInstance().execute(action);
@@ -230,7 +230,7 @@ public class ActionDispatcher_Test extends CmDbTestCase {
 
     
     public void testAutoAdvanceUserCommand() throws Exception {
-        AutoAdvanceUserAction action = new AutoAdvanceUserAction(uid);
+        AutoAdvanceUserAction action = new AutoAdvanceUserAction(25828);
         AutoUserAdvanced advanced = ActionDispatcher.getInstance().execute(action);
         
         assertNotNull(advanced);
