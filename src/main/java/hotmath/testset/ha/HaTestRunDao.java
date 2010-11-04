@@ -229,7 +229,6 @@ public class HaTestRunDao {
         }        
     }
     
-    
     /** Mark this lesson as being viewed.
      * 
      *  set the date completed, but only set
@@ -240,7 +239,7 @@ public class HaTestRunDao {
      * @param lesson
      * @throws Exception
      */
-    public void markLessonAsCompleted(final Connection conn, Integer runId, String lesson) throws Exception {
+    public void setLessonCompleted(final Connection conn, Integer runId, String lesson) throws Exception {
         
         PreparedStatement pstat = null;
         try {
@@ -413,7 +412,36 @@ public class HaTestRunDao {
         }
     }
 
-    
+    /** determine if all Lessons for TestRun have been completed
+     * 
+     * @param conn
+     * @param runId
+     * @throws Exception
+     */
+    public boolean testRunLessonsCompleted(final Connection conn, int runId) throws Exception {
+        PreparedStatement pstat = null;
+        ResultSet rs = null;
+        try {
+            String sql = CmMultiLinePropertyReader.getInstance().getProperty("TEST_RUN_ASSIGNED_LESSON_STATUS");
+            pstat = conn.prepareStatement(sql);
+            pstat.setInt(1, runId);
+            pstat.setInt(2, runId);
+            rs = pstat.executeQuery();
+            if (rs.next()) {
+                int totalSessions = rs.getInt("total_sessions");
+                int sessionsCompleted = rs.getInt("sessions_completed");
+                return (totalSessions == sessionsCompleted);
+            }
+        }
+        catch (Exception e) {
+        	__logger.error("*** Error getting TestRun Lesson status", e);
+        	throw new HotMathException("Could not get assigned lesson status");
+        } finally {
+            SqlUtilities.releaseResources(rs, pstat, null);
+        }
+    	return false;
+    }
+
     /** holds a single lesson and the associated pids
      * 
      * @author casey
