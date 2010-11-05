@@ -1,6 +1,7 @@
 package hotmath.gwt.cm_admin.server.model;
 
 import hotmath.gwt.cm.server.CmDbTestCase;
+import hotmath.gwt.cm_rpc.client.rpc.CmList;
 import hotmath.gwt.cm_tools.client.model.CustomLessonModel;
 
 import java.util.ArrayList;
@@ -19,6 +20,11 @@ public class CmCustomProgramDao_Test extends CmDbTestCase {
             setupDemoAccount();
     }
     
+    public void testCustGetAll() throws Exception {
+        /** requires row for samples HA_CUSTOM_PROGRAM */
+        CmList<CustomLessonModel> models = new CmCustomProgramDao().getAllLessons(conn);
+        assertTrue(models.size() > 0);
+    }
     
     public void testCustProgs() throws Exception {
         /** requires row for samples HA_CUSTOM_PROGRAM */

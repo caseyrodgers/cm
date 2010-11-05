@@ -28,7 +28,8 @@ public class CmCustomProgramDao {
 
     /** Return list of lessons that can be used to create a custom program
      * 
-     * NOTE: HA_PROGRAM_LESSONS is created in CmDebugReport while creating the HA_PRESCRIPTION_LOG
+     * NOTE: HA_PROGRAM_LESSONS is created in PrescriptionReport
+     * while creating the HA_PRESCRIPTION_LOG
      * 
      * Mark each lesson with the lowest level applicable for the lesson.
      * 
@@ -336,14 +337,16 @@ public class CmCustomProgramDao {
     public int getSubjectLevel(String subject) throws Exception {
        if(subject == null || subject.length() == 0)
            return 99;
-       else if(subject.equals("Pre-Alg"))
+       else if(subject.equals("Ess"))
            return 1;
-       else if(subject.equals("Alg 1"))
+       else if(subject.equals("Pre-Alg"))
            return 2;
-       else if(subject.equals("Geom"))
+       else if(subject.equals("Alg 1"))
            return 3;
-       else if(subject.equals("Alg 2"))
+       else if(subject.equals("Geom"))
            return 4;
+       else if(subject.equals("Alg 2"))
+           return 5;
        else
            return 99;
     }
