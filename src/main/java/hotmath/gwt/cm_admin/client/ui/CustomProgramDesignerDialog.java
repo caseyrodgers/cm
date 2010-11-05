@@ -183,11 +183,11 @@ public class CustomProgramDesignerDialog extends CmWindow {
         }));
 
         String ledgend = "<div style='position: absolute; top: 2px; left: 0;width: 350px;'>"
+                + "<div style='margin-right: 3px;float: left;' class='ess'>Essentials</div>"
                 + "<div style='margin-right: 3px;float: left;' class='pre-alg'>Pre-Algebra</div>"
                 + "<div style='margin-right: 3px;float: left;' class='alg1'>Algebra 1</div>"
                 + "<div style='margin-right: 3px;float: left;' class='geom'>Geometry</div>"
                 + "<div style='margin-right: 3px;float: left;' class='alg2'>Algebra 2</div>"
-                + "<div style='margin-right: 3px;float: left;' class='ess'>Essentials</div>"
                 + "</div>";
         
 
