@@ -996,7 +996,7 @@ and    lesson_viewed is not null
 update HA_TEST_RUN_LESSON
 SET    date_completed = now()
 where  run_id = ?
-  and  lesson_name = ?
+  and  lesson_number = ?
   and  date_completed is null
   
 .key=TEST_RUN_LESSON_SET_LESSON_VIEWED
@@ -1005,7 +1005,6 @@ update HA_TEST_RUN_LESSON
 set    lesson_viewed = now()
 where  run_id = ? 
   and  lesson_number = ?
-
 
 .key=TEST_RUN_RESULT_INSERT
 
