@@ -4,10 +4,14 @@ import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_rpc.client.rpc.InmhItemData;
 import hotmath.gwt.cm_rpc.client.rpc.PrescriptionData;
 import hotmath.gwt.cm_rpc.client.rpc.PrescriptionSessionDataResource;
+import hotmath.gwt.cm_rpc.client.rpc.RpcData;
+import hotmath.gwt.cm_tools.client.ui.CmLogger;
+import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
 import hotmath.gwt.shared.client.eventbus.CmEventListenerImplDefault;
 import hotmath.gwt.shared.client.eventbus.EventBus;
-import hotmath.gwt.shared.client.eventbus.EventType;
+import hotmath.gwt.shared.client.rpc.RetryAction;
+import hotmath.gwt.shared.client.rpc.action.SetLessonCompletedAction;
 import hotmath.gwt.shared.client.util.StatusImagePanel;
 
 import java.util.ArrayList;
@@ -231,17 +235,25 @@ public class PrescriptionResourcePanel extends LayoutContainer {
     static {
         /**
          * Setup a listen for solution view completions to all the updating of
-         * GUI accordingly.
+         * GUI accordingly.  Also update DB via PRC when Lesson is complete
          */
         EventBus.getInstance().addEventListener(new CmEventListenerImplDefault() {
             public void handleEvent(CmEvent event) {
-                if (event.getEventType() == EventType.EVENT_TYPE_REQUIRED_COMPLETE) {
-                    InmhItemData id = (InmhItemData)event.getEventData();                	
+            	
+            	switch(event.getEventType()) {
+            	case EVENT_TYPE_REQUIRED_COMPLETE:
+                    InmhItemData id = (InmhItemData)event.getEventData();
+                    boolean isComplete = __instance.resourceButtons.get("practice").checkCompletion();
+                    
+                    if (isComplete) {
+                    	setLessonCompleted(id.getTitle());
+                    }
+                    
                 	/** if first time completing this RPP/RPA display message to user
                 	 * 
                 	 */
-                    __instance.resourceButtons.get("practice").checkCompletion();
-                    
+                    /*
+                     * TODO: it looks like the code below can be removed?
                     String title=null;
                     String msg=null;
                     if(id.getWidgetJsonArgs() != null) {
@@ -252,11 +264,35 @@ public class PrescriptionResourcePanel extends LayoutContainer {
                     	title = "Problem Complete";
                     	msg = "You have completed this practice problem.";
                     }
+                    InfoPopupBox.display(title, msg);
+                    new RequiredPracticeCompleteDialog(title, msg);            	
+                    */
 
-                    //InfoPopupBox.display(title, msg);
-                    //new RequiredPracticeCompleteDialog(title, msg);
-                }
+            	}
             }
         });
+
     }
+    
+    private static void setLessonCompleted(final String title) {
+    	
+    	final int runId = UserInfo.getInstance().getRunId();
+    	final int session = UserInfo.getInstance().getSessionNumber();
+    	
+        new RetryAction<RpcData>() {
+            @Override
+            public void attempt() {
+            	SetLessonCompletedAction action = new SetLessonCompletedAction(title, runId, session);
+                setAction(action);
+                CmShared.getCmService().execute(action,this);
+            }
+            @Override
+            public void oncapture(RpcData userAdvance) {
+                CmLogger.info("SetLessonCompletedAction complete: " + userAdvance);
+            }
+        }.register();
+    	
+    	
+    }
+
 }

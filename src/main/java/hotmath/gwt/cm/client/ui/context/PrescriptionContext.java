@@ -191,14 +191,6 @@ public class PrescriptionContext implements CmContext {
         int sessionNumber = (hasPrescription) ? prescriptionData.getCurrSession().getSessionNumber() : 0;
         boolean thereAreNoMoreSessions = (!hasPrescription) || !((sessionNumber + 1) < (prescriptionData.getSessionTopics().size()));
         
-        
-        /** Mark this lesson as being complete
-         * 
-         */
-        if(hasPrescription && UserInfo.getInstance().isActiveUser())
-            markLessonAsComplete(UserInfo.getInstance().getRunId(),sessionNumber);        
-        
-
         correctPercent = UserInfo.getInstance().getCorrectPercent();
         if (!hasPrescription || thereAreNoMoreSessions) {
 
@@ -306,27 +298,6 @@ public class PrescriptionContext implements CmContext {
         }
     }
     
-    
-    /** Mark this user as having completed this lesson 
-     * 
-     * @param runId
-     * @param session
-     */
-    private void markLessonAsComplete(final int runId, final int session) {
-        new RetryAction<RpcData>() {
-            @Override
-            public void attempt() {
-            	SetLessonCompletedAction action = new SetLessonCompletedAction(prescriptionData.getCurrSession().getTopic(), runId, session);
-                setAction(action);
-                CmShared.getCmService().execute(action,this);
-            }
-            @Override
-            public void oncapture(RpcData userAdvance) {
-                CmLogger.info("SetLessonCompletedAction complete: " + userAdvance);
-            }
-        }.register();
-    }
-
     /**
      * Auto Advance the user to the next program
      * 
