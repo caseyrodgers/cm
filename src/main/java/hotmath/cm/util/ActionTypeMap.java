@@ -43,7 +43,7 @@ public class ActionTypeMap {
 		actionTypeMap.put("GetStudentShowWorkAction",                   ActionType.STUDENT);
 		actionTypeMap.put("GetViewedInmhItemsAction",                   ActionType.STUDENT);
 		actionTypeMap.put("GetWhiteboardDataAction",                    ActionType.STUDENT);
-		actionTypeMap.put("MarkPrescriptionLessonAsViewedAction",       ActionType.STUDENT);
+		actionTypeMap.put("SetLessonCompletedAction",                   ActionType.STUDENT);
 		actionTypeMap.put("ResetUserAction",                            ActionType.STUDENT);
 		actionTypeMap.put("SaveAutoRegistrationAction",                 ActionType.STUDENT);
 		actionTypeMap.put("SaveQuizCurrentResultAction",                ActionType.STUDENT);
