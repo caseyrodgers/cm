@@ -1614,7 +1614,7 @@ public class CmStudentDao {
             sm.setBackgroundStyle(rs.getString("gui_background_style"));
             sm.setSectionNum(rs.getInt("active_segment"));
 
-            setupProgramStatus(conn,sm,rs.getString("test_config_json"),rs.getString("program"));
+            setupProgramStatus(conn,sm,rs.getString("program"),rs.getString("test_config_json"));
             
             l.add(sm);
         }
