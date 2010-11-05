@@ -239,7 +239,7 @@ public class HaTestRunDao {
      * @param lesson
      * @throws Exception
      */
-    public void setLessonCompleted(final Connection conn, Integer runId, String lesson) throws Exception {
+    public void setLessonCompleted(final Connection conn, Integer runId, Integer lessonNumber) throws Exception {
         
         PreparedStatement pstat = null;
         try {
@@ -247,7 +247,7 @@ public class HaTestRunDao {
             pstat = conn.prepareStatement(sql);
             
             pstat.setInt(1, runId);
-            pstat.setString(2, lesson);
+            pstat.setInt(2, lessonNumber);
             
             pstat.executeUpdate();
         }
