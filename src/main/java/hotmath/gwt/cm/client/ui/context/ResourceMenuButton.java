@@ -104,16 +104,16 @@ class ResourceMenuButton extends Button {
     /** Check to see if this resource has been completed, if
      * so then indicate appropriately.
      */
-    public void checkCompletion() {
-        updateCheckMarks();
+    public boolean checkCompletion() {
+        return updateCheckMarks();
     }
 
     /** Update all the check marks to on/off
      * 
      */
-    public void updateCheckMarks() {
+    public boolean updateCheckMarks() {
         if(!resource.getType().equals("practice"))
-            return;
+            return false;
         
         
         boolean isComplete=true;
@@ -141,6 +141,7 @@ class ResourceMenuButton extends Button {
         if(isComplete) {
             indicateCompletion();
         }
+        return isComplete;
     }
     
     
