@@ -45,6 +45,6 @@ public class SetLessonCompletedAction implements Action<RpcData>{
 
     @Override
     public String toString() {
-        return "MarkPrescriptionLessonAsViewedAction [Session=" + session + ", runId=" + runId + ", lesson=" + lesson + "]";
+        return "SetLessonCompletedAction [Session=" + session + ", runId=" + runId + ", lesson=" + lesson + "]";
     }
 }
