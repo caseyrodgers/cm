@@ -256,6 +256,32 @@ public class HaTestRunDao {
         }
     }
 
+    /** Mark this lesson as being viewed.
+     * 
+     *  set the date completed, but only set
+     *  if currently unset.
+     *  
+     * @param conn
+     * @param runId
+     * @param lesson
+     * @throws Exception
+     */
+    public void markLessonAsCompleted(final Connection conn, Integer runId, String lesson) throws Exception {
+        
+        PreparedStatement pstat = null;
+        try {
+            String sql = CmMultiLinePropertyReader.getInstance().getProperty("TEST_RUN_LESSON_SET_DATE_COMPLETED_ORIG");
+            pstat = conn.prepareStatement(sql);
+            
+            pstat.setInt(1, runId);
+            pstat.setString(2, lesson);
+            
+            pstat.executeUpdate();
+        }
+        finally {
+            SqlUtilities.releaseResources(null, pstat, null);
+        }
+    }
 
 	/** Look up and load existing test run named by runId
 	 * 
