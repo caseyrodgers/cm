@@ -70,7 +70,7 @@ public class CmStudentDao {
     }
 
     enum StudentSqlType {
-        SINGLE_STUDENT, ALL_STUDENTS_FOR_ADMIN
+        SINGLE_STUDENT, ALL_STUDENTS_FOR_ADMIN, SELECTED_STUDENTS_FOR_ADMIN
     };
 
     /**
@@ -87,13 +87,16 @@ public class CmStudentDao {
     private String getStudentSql(StudentSqlType sqlType, Boolean includeSelfRegistrationTemplates) {
         String studentSql = CmMultiLinePropertyReader.getInstance().getProperty("STUDENT_SUMMARY");
 
-        if (sqlType.equals(StudentSqlType.ALL_STUDENTS_FOR_ADMIN)) {
-            studentSql += " WHERE a.aid = ? ";
-        } else {
-            // single student
-            studentSql += " WHERE h.uid = ? ";
+        switch (sqlType) {
+        case ALL_STUDENTS_FOR_ADMIN:
+        	studentSql += " WHERE a.aid = ? ";
+        	break;
+        case SINGLE_STUDENT:
+        	studentSql += " WHERE h.uid = ? ";
+        	break;
+        case SELECTED_STUDENTS_FOR_ADMIN:
+        	studentSql += " WHERE a.aid = ? AND h.uid in (XXX) ";
         }
-        
         
         // to filter the Self Registration Setup records
         if(!includeSelfRegistrationTemplates)
@@ -170,6 +173,39 @@ public class CmStudentDao {
         }
         return l;
     }
+
+    public List<StudentModelI> getStudentSummaries(final Connection conn, Integer adminUid, List<Integer> uids, Boolean isActive) throws Exception {
+        List<StudentModelI> l = null;
+
+    	String uidStr = getUidString(uids);
+
+    	String sql = getStudentSql(StudentSqlType.SELECTED_STUDENTS_FOR_ADMIN, false);
+    	String sqlWithUids = sql.replaceAll("XXX", uidStr);
+
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        
+        try {
+        	ps = conn.prepareStatement(sqlWithUids);
+        	ps.setInt(1, adminUid);
+            ps.setInt(2, (isActive) ? 1 : 0);
+            rs = ps.executeQuery();
+
+            l = loadStudentSummaries(conn,rs);
+            
+            loadChapterInfo(conn, l);
+        }
+        catch (Exception e) {
+            logger.error(String.format("*** Error getting selected student summaries for Admin uid: %d", adminUid), e);
+            throw new Exception("*** Error getting student summary data ***");        	
+        }
+        finally {
+        	SqlUtilities.releaseResources(rs, ps, null);
+        }
+        
+        return l;
+    }
+
 
     public List<StudentModelI> getBaseSummariesForActiveStudents(final Connection conn, Integer adminUid) throws Exception {
         return getStudentBaseSummaries(conn, adminUid, true);
