@@ -99,10 +99,7 @@ public class StudentReportCard {
         baos = new ByteArrayOutputStream();
         PdfWriter writer = PdfWriter.getInstance(document, baos);
 
-        List<StudentModelI> smBaseList = studentDao.getStudentBaseSummaries(conn, adminId, studentUids, true);
-        List<StudentModelI> smList     = studentDao.getStudentExtendedSummaries(conn, studentUids);
-
-        StudentSummaryReport.setBaseData(smBaseList, smList);
+        List<StudentModelI> smList = studentDao.getStudentSummaries(conn, adminId, studentUids, true);
 
         StringBuilder sb = new StringBuilder();
         sb.append("CM-ReportCard");
