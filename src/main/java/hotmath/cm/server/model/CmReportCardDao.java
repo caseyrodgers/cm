@@ -2,12 +2,15 @@ package hotmath.cm.server.model;
 
 import hotmath.cm.util.CmMultiLinePropertyReader;
 import hotmath.gwt.cm_admin.server.model.CmAdminDao;
+import hotmath.gwt.cm_admin.server.model.CmStudentDao;
 import hotmath.gwt.cm_rpc.client.rpc.CmList;
 import hotmath.gwt.cm_tools.client.model.ChapterModel;
+import hotmath.gwt.cm_tools.client.model.StudentActiveInfo;
 import hotmath.gwt.cm_tools.client.model.StudentReportCardModel;
 import hotmath.gwt.cm_tools.client.model.StudentReportCardModelI;
 import hotmath.testset.ha.HaTest;
 import hotmath.testset.ha.HaTestDao;
+import hotmath.testset.ha.HaTestRunDao;
 import hotmath.testset.ha.StudentUserProgramModel;
 import hotmath.util.sql.SqlUtilities;
 
@@ -82,7 +85,8 @@ public class CmReportCardDao {
 
 			 // load HaTest and HaTestRun
 			 List<HaTest> testList = loadQuizData(conn, filteredList);
-			 setFirstLastProgramStatus(rval, testList);
+			 StudentActiveInfo ai = new CmStudentDao().loadActiveInfo(conn, studentUid);
+			 setFirstLastProgramStatus(conn, rval, testList, pm, ai);
 
 			 // set first and last activity date based on quiz data (HaTest and HaTestRun)
 			 setFirstLastActivityDate(rval, testList);
@@ -110,6 +114,7 @@ public class CmReportCardDao {
 		 CmAdminDao adminDao = new CmAdminDao();
 		 String subjectId = pm.getTestDef().getSubjectId();
 		 String progId = pm.getTestDef().getProgId();
+		 pm.getTestDef().getTotalSegmentCount();
 		 
 		 CmList<ChapterModel> cmList = adminDao.getChaptersForProgramSubject(conn, progId, subjectId);
 		 String chapNumb = null;
@@ -123,8 +128,8 @@ public class CmReportCardDao {
                  String.format("%s, %s", testName, chapter);
 	 }
 
-	 private void setFirstLastProgramStatus(StudentReportCardModelI rval,
-			List<HaTest> testList) {
+	 private void setFirstLastProgramStatus(final Connection conn, StudentReportCardModelI rval,
+			List<HaTest> testList, StudentUserProgramModel pm, StudentActiveInfo ai) throws Exception {
 		 // no HA_TEST data found... (should this be possible, data problem?)
 		 if (testList == null || testList.size() < 1) {
 			 rval.setInitialProgramStatus("Section 1");
@@ -142,11 +147,17 @@ public class CmReportCardDao {
 			 rval.setInitialProgramStatus("Completed");
 		 }
 		 
-		 section = testList.get(testList.size()-1).getSegment();
-		 totalSections =  testList.get(testList.size()-1).getTotalSegments();
+		 //section = testList.get(testList.size()-1).getSegment();
+		 //totalSections =  testList.get(testList.size()-1).getTotalSegments();
 		 sb.delete(0, sb.length());
-		 if (section < totalSections) {
-		     String status = sb.append("Section ").append(section).append(" of ").append(totalSections).toString();
+		 int totalSegments = pm.getTestDef().getTotalSegmentCount();
+		 int currentSegment = ai.getActiveSegment();
+		 int testId = ai.getActiveTestId();
+		 int runId = ai.getActiveRunId();
+		 logger.debug(String.format("+++ setFirstLastProgramStatus(): testId: %d, runId: %d, currentSegment: %d, totalSegments: %d",
+				 testId, runId, currentSegment, totalSegments));
+		 if (currentSegment < totalSegments || runId == 0 || (runId != 0 && ! lessonsCompleted(conn, runId))) {
+		     String status = sb.append("Section ").append(currentSegment).append(" of ").append(totalSegments).toString();
 		     rval.setLastProgramStatus(status);
 		 }
 		 else {
@@ -162,6 +173,11 @@ public class CmReportCardDao {
 		 l.addAll(list);
 
 		 return l;
+	 }
+	 
+	 private boolean lessonsCompleted(final Connection conn, int runId) throws Exception {
+		 HaTestRunDao dao = new HaTestRunDao();
+		 return dao.testRunLessonsCompleted(conn, runId);
 	 }
 
 	 private void setFirstLastActivityDate(StudentReportCardModelI rc, List<HaTest>testList) {
