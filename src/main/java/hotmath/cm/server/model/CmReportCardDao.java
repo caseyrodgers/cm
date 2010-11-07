@@ -154,7 +154,8 @@ public class CmReportCardDao {
 		 int currentSegment = ai.getActiveSegment();
 		 int testId = ai.getActiveTestId();
 		 int runId = ai.getActiveRunId();
-		 logger.debug(String.format("+++ setFirstLastProgramStatus(): testId: %d, runId: %d, currentSegment: %d, totalSegments: %d",
+		 if (logger.isDebugEnabled())
+    		 logger.debug(String.format("+++ setFirstLastProgramStatus(): testId: %d, runId: %d, currentSegment: %d, totalSegments: %d",
 				 testId, runId, currentSegment, totalSegments));
 		 if (currentSegment < totalSegments || runId == 0 || (runId != 0 && ! lessonsCompleted(conn, runId))) {
 		     String status = sb.append("Section ").append(currentSegment).append(" of ").append(totalSegments).toString();
