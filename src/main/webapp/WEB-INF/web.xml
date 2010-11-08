@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<web-app xmlns="http://java.sun.com/xml/ns/j2ee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	 xmlns:schemdaLocation="http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd"
+	 version="2.4">
+
+  <display-name>Catchup Math Redux</display-name>
+  <context-param>
+    <param-name>contextConfigLocation</param-name>
+    <param-value>WEB-INF/beans.xml</param-value>
+  </context-param>
+
+  <filter>
+    <filter-name>ClientInfoFilter</filter-name>
+    <filter-class>
+      hotmath.cm.server.filter.ClientInfoFilter
+    </filter-class>
+  </filter>
+  <filter-mapping>
+    <filter-name>ClientInfoFilter</filter-name>
+    <url-pattern>/*</url-pattern>
+    <dispatcher>REQUEST</dispatcher>
+    <dispatcher>ERROR</dispatcher>
+  </filter-mapping>
+
+  <listener>
+    <listener-class>hotmath.cm.server.listener.ContextListener</listener-class>
+  </listener>
+ 
+  <servlet>
+    <servlet-name>cm-init</servlet-name>
+    <servlet-class>hotmath.cm.CmInitialzation</servlet-class>
+    <init-param>
+      <param-name>log4j-init-file</param-name>
+      <param-value>WEB-INF/classes/log4j.properties</param-value>
+    </init-param>
+    <load-on-startup>1</load-on-startup>
+  </servlet>
+
+  <servlet>
+    <servlet-name>BulkRegisterService</servlet-name>
+    <servlet-class>hotmath.cm.util.service.BulkRegisterService</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>BulkRegisterService</servlet-name>
+    <url-pattern>/cm_admin/bulkRegister</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>SolutionResourceUploadService</servlet-name>
+    <servlet-class>hotmath.cm.util.service.SolutionResourceUploadService</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>SolutionResourceUploadService</servlet-name>
+    <url-pattern>/solution_manager/resourceUpload</url-pattern>
+  </servlet-mapping>
+  
+  <servlet>
+    <servlet-name>CmSignpService</servlet-name>
+    <servlet-class>
+      hotmath.cm.signup.CatchupSignupServlet
+    </servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>CmSignpService</servlet-name>
+    <url-pattern>
+      /signup_cm
+    </url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>CmLoginService</servlet-name>
+    <servlet-class>
+      hotmath.cm.login.service.LoginService
+    </servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>CmLoginService</servlet-name>
+    <url-pattern>
+      /cm/loginService
+    </url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>CmLoginService</servlet-name>
+    <url-pattern>
+      /loginService
+    </url-pattern>
+  </servlet-mapping>
+  
+  <servlet>
+    <servlet-name>CmService</servlet-name>
+    <servlet-class>
+      hotmath.gwt.cm_rpc.server.service.CmServiceImpl
+    </servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>CmService</servlet-name>
+    <url-pattern>
+      /cm_student/services/cmService
+    </url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>CmService</servlet-name>
+    <url-pattern>
+      /cm_admin/services/cmService
+    </url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>CmService</servlet-name>
+    <url-pattern>
+      /cm_mobile/services/cmService
+    </url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>CmService</servlet-name>
+    <url-pattern>
+      /solution_manager/services/cmService
+    </url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>CmService</servlet-name>
+    <url-pattern>
+      /cm_mobile2/services/cmService
+    </url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>CmService</servlet-name>
+    <url-pattern>
+      /cm/services/cmService
+    </url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>GeneratePDFService</servlet-name>
+    <servlet-class>
+      hotmath.cm.util.service.GeneratePDF
+    </servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>GeneratePDFService</servlet-name>
+    <url-pattern>
+      /cm_admin/genPDF
+    </url-pattern>
+  </servlet-mapping>
+
+</web-app>
