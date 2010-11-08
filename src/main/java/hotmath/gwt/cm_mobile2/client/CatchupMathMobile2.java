@@ -42,7 +42,6 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  */
 public class CatchupMathMobile2 implements EntryPoint, OrientationChangedHandler {
-
     RootPanel _rootPanel;
     static ControlPanel _controlPanel;
     static public CatchupMathMobile2 __instance;
