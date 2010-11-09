@@ -999,6 +999,14 @@ where  run_id = ?
   and  lesson_number = ?
   and  date_completed is null
   
+.key=TEST_RUN_LESSON_SET_DATE_COMPLETED_ORIG
+
+update HA_TEST_RUN_LESSON
+SET    date_completed = now()
+where  run_id = ?
+  and  lesson_name = ?
+  and  date_completed is null
+  
 .key=TEST_RUN_LESSON_SET_LESSON_VIEWED
   
 update HA_TEST_RUN_LESSON
