@@ -36,7 +36,7 @@ public class ExplainPanel extends Composite {
     
     public void setExplaination(WordProblem problem) {
         questionPanel.getElement().setInnerHTML(problem.getQuestion());
-        explainPanel.getElement().setInnerHTML(prepareForEval(problem.getExplanation()));
+        explainPanel.getElement().setInnerHTML(prepareForEval(problem.getVars(),problem.getExplanation()));
         new Timer() {
             @Override
             public void run() {
@@ -52,7 +52,7 @@ public class ExplainPanel extends Composite {
      * @param str
      * @return
      */
-    static private native String prepareForEval(String str) /*-{
-       return $wnd.prepareForEval(str);
+    static private native String prepareForEval(String vars, String str) /*-{
+       return $wnd.getExplainString(str,vars);
     }-*/;
 }

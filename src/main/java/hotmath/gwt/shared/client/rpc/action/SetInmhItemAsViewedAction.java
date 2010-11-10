@@ -9,13 +9,14 @@ public class SetInmhItemAsViewedAction implements Action<RpcData> {
     int runId;
     String type;
     String file;
-    
+    int sessionNumber;
     public SetInmhItemAsViewedAction(){}
     
-    public SetInmhItemAsViewedAction(int runId, String type, String file) {
+    public SetInmhItemAsViewedAction(int runId, String type, String file,int sessionNumber) {
         this.runId = runId;
         this.type = type;
         this.file = file;
+        this.sessionNumber = sessionNumber;
     }
     public int getRunId() {
         return runId;
@@ -36,8 +37,18 @@ public class SetInmhItemAsViewedAction implements Action<RpcData> {
         this.file = file;
     }
 
+    
+    public int getSessionNumber() {
+        return sessionNumber;
+    }
+
+    public void setSessionNumber(int sessionNumber) {
+        this.sessionNumber = sessionNumber;
+    }
+
     @Override
     public String toString() {
-        return "SetInmhItemAsViewedAction [file=" + file + ", runId=" + runId + ", type=" + type + "]";
+        return "SetInmhItemAsViewedAction [runId=" + runId + ", type=" + type + ", file=" + file + ", sessionNumber="
+                + sessionNumber + "]";
     }    
 }

@@ -76,7 +76,8 @@ public class PrescriptionCmGuiDefinition implements CmGuiDefinition {
 
             @Override
             public void attempt() {
-                SetInmhItemAsViewedAction action = new SetInmhItemAsViewedAction(UserInfo.getInstance().getRunId(), resourceItem.getType(),resourceItem.getFile());
+                int sessionNumber = UserInfo.getInstance().getSessionNumber();
+                SetInmhItemAsViewedAction action = new SetInmhItemAsViewedAction(UserInfo.getInstance().getRunId(), resourceItem.getType(),resourceItem.getFile(),sessionNumber);
                 setAction(action);
                 CmShared.getCmService().execute(action, this);
             }

@@ -6,14 +6,13 @@ import hotmath.gwt.cm_rpc.client.rpc.Response;
 import hotmath.gwt.cm_rpc.client.rpc.RpcData;
 import hotmath.gwt.cm_rpc.server.rpc.ActionHandler;
 import hotmath.gwt.shared.client.rpc.action.SetInmhItemAsViewedAction;
-import hotmath.testset.ha.HaTestRunDao;
 import hotmath.util.sql.SqlUtilities;
-
-import org.apache.log4j.Logger;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.Timestamp;
+
+import org.apache.log4j.Logger;
 
 /** Set named INMH resource as being viewed in given runid
  * 
@@ -38,7 +37,7 @@ public class SetInmhItemAsViewedCommand implements ActionHandler<SetInmhItemAsVi
             pstat.setString(2, action.getType());
             pstat.setString(3, action.getFile());
             pstat.setTimestamp(4, new Timestamp(System.currentTimeMillis()));
-            pstat.setInt(5, new HaTestRunDao().lookupTestRun(conn, action.getRunId()).getHaTest().getUser().getActiveTestRunSession());
+            pstat.setInt(5, action.getSessionNumber());
 
             int cnt = pstat.executeUpdate();
             if (cnt != 1)
