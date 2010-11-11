@@ -35,25 +35,25 @@
         <div class="yui3-u-1" id='menubar'  >
             <div class="yui3-g" >
                 <div class='yui3-u-1-8'>
-                   <a class="sexybutton sexyyellow" href="/index.html"><span><span>Home</span></span></a>
+                   <a class="" href="/index.html"><span><span>Home</span></span></a>
                 </div>
                 <div class='yui3-u-1-8'>
-                   <a class="sexybutton sexyyellow" href="/schools.html"><span><span>Schools</span></span></a>
+                   <a class="" href="/schools.html"><span><span>Schools</span></span></a>
                 </div>
                 <div class='yui3-u-1-8'>
-                   <a class="sexybutton sexyyellow" href="/collages.html"><span><span>Collages</span></span></a>
+                   <a class="" href="/collages.html"><span><span>Collages</span></span></a>
                 </div>
                 <div class='yui3-u-1-8'>
-                   <a class="sexybutton sexyyellow" href="/students.html"><span><span>Students</span></span></a>
+                   <a class="" href="/students.html"><span><span>Students</span></span></a>
                 </div>
                 <div class='yui3-u-1-8'>
-                   <a class="sexybutton sexyyellow" href="/support.html"><span><span>Support</span></span></a>
+                   <a class="" href="/support.html"><span><span>Support</span></span></a>
                 </div>                                                
                 <div class='yui3-u-1-8'>
-                   <a class="sexybutton sexyyellow" href="/purchase.html"><span><span>Purchase</span></span></a>
+                   <a class="" href="/purchase.html"><span><span>Purchase</span></span></a>
                 </div>
                 <div class='yui3-u-1-8'>
-                   <a class="sexybutton sexyyellow" href="/contact.html"><span><span>Contact</span></span></a>
+                   <a class="" href="/contact.html"><span><span>Contact</span></span></a>
                 </div>                                
              </div>
         </div>
@@ -115,7 +115,7 @@
         <!-- Footer -->
         <div class='yui3-g' id='footer'>
             <div class='yui3-u-1'>
-                <div class='copyright'>Copyright 2010</div>
+                <div class='copyright'>Copyright &copy; 2010 Catchupmath.com. All rights reserved.</div>
             </div>
         </div>	    
     </div>
