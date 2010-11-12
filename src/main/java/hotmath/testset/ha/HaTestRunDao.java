@@ -2,9 +2,9 @@ package hotmath.testset.ha;
 
 import hotmath.HotMathException;
 import hotmath.assessment.AssessmentPrescription;
+import hotmath.assessment.AssessmentPrescription.SessionData;
 import hotmath.assessment.AssessmentPrescriptionSession;
 import hotmath.assessment.RppWidget;
-import hotmath.assessment.AssessmentPrescription.SessionData;
 import hotmath.cm.util.CmMultiLinePropertyReader;
 import hotmath.util.sql.SqlUtilities;
 
@@ -13,6 +13,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -213,12 +214,13 @@ public class HaTestRunDao {
      * @return
      * @throws Exception
      */
-    public int getLessonsViewedCount(final Connection conn, Integer runId) throws Exception {
+    public int getLessonsViewedCount(final Connection conn, Integer runId, Date fromDate) throws Exception {
         PreparedStatement pstat=null;
         try {
             String sql = CmMultiLinePropertyReader.getInstance().getProperty("TEST_RUN_ASSIGNED_LESSONS_VIEWED_COUNT");
             pstat = conn.prepareStatement(sql);
             pstat.setInt(1, runId);
+            pstat.setDate(2, new java.sql.Date(fromDate.getTime()));
             ResultSet rs = pstat.executeQuery();
             rs.first();
             return rs.getInt(1);

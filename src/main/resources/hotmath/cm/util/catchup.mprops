@@ -988,8 +988,7 @@ where r.run_id = ?;
 select count(*) as cnt
 from   HA_TEST_RUN_LESSON 
 where  run_id = ?
-and    lesson_viewed is not null
-
+and lesson_viewed <= ?
 
 .key=TEST_RUN_LESSON_SET_DATE_COMPLETED
 

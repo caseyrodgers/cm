@@ -258,9 +258,12 @@ html>body .gwt-DialogBox {
 
 .frac {
 	border: 1px solid blue;
+	display: inline;
+	height: 40px;
 }
 	
 #den {
+	
 }
 	
 #num {

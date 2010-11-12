@@ -1865,7 +1865,13 @@ public class CmStudentDao {
                 }
             } else {
                 // was: problemsViewed / problemsPerLesson; // where problemsPerLesson assumed to be always equal to 3
-                int completed =  trDao.getLessonsViewedCount(conn, runId);
+                
+                /** Set dateFrom as the login date for this record
+                 *  We only want a count of lessons viewed on this 
+                 *  date or below.
+                 */
+                Date useDate = rs.getDate("use_date");
+                int completed =  trDao.getLessonsViewedCount(conn, runId, useDate);
                 
                 int inProgress = 0; // lessonsViewed % problemsPerLesson;
                 int totalSessions = rs.getInt("total_sessions");
