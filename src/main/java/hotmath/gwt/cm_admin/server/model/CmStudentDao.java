@@ -1864,22 +1864,15 @@ public class CmStudentDao {
                 	sb.append("Started");
                 }
             } else {
-                // was: problemsViewed / problemsPerLesson; // where problemsPerLesson assumed to be always equal to 3
-                
-                /** Set dateFrom as the login date for this record
-                 *  We only want a count of lessons viewed on this 
-                 *  date or below.
-                 */
-                Date useDate = rs.getDate("use_date");
-                int completed =  trDao.getLessonsViewedCount(conn, runId, useDate);
-                
                 int inProgress = 0; // lessonsViewed % problemsPerLesson;
                 int totalSessions = rs.getInt("total_sessions");
+                
+                int lessonsViewed = rs.getInt("session_number") + 1;
 
-                if (completed >= 0) {
+                if (lessonsViewed >= 0) {
                     if (totalSessions < 1) {
-                        sb.append("total of ").append(completed);
-                        if (completed > 1)
+                        sb.append("total of ").append(lessonsViewed);
+                        if (lessonsViewed > 1)
                             sb.append(" reviews completed");
                         else
                             sb.append(" review completed");
@@ -1887,7 +1880,7 @@ public class CmStudentDao {
                             sb.append(", 1 in progress");
                         }
                     } else {
-                        sb.append(completed).append(" out of ");
+                        sb.append(lessonsViewed).append(" out of ");
                         sb.append(totalSessions).append(" reviewed");
                     }
                 } else {
