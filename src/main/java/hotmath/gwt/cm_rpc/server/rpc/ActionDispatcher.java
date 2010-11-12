@@ -81,7 +81,15 @@ public class ActionDispatcher {
     private ActionDispatcher() {
         logger.info("Creating new ActionDispatcher");
         SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
-        startDate = sdf.format(ContextListener.getStartDate());
+        
+        /** ContextListener will only be initialized in a Servlet Container.
+         * So, running in UnitTest or standalone ContextListener will
+         * not have been initialized ... so all tests fail.
+         */
+        if(ContextListener.getStartDate() != null)
+            startDate = sdf.format(ContextListener.getStartDate());
+        else
+            startDate = sdf.format(System.currentTimeMillis());
     }
     
     /**

@@ -35,7 +35,7 @@ public class GroupManagerCommand implements ActionHandler<GroupManagerAction, Rp
         else if(action.getActionType() == GroupManagerAction.ActionType.UNREGISTER_STUDENTS)
             doUnregister(conn, action.getAdminId(), action.getGroupId());
         else if(action.getActionType() == GroupManagerAction.ActionType.GROUP_PROGRAM_ASSIGNMENT)
-            doGroupProgramAssignment(conn,action.getAdminId(),action.getGroupId(), action.getStudentModel(), action.getIsSelfReg());
+            doGroupProgramAssignment(conn,action.getAdminId(),action.getGroupId(), action.getStudentModel(), action.getIsSelfReg()>0);
         else if(action.getActionType() == GroupManagerAction.ActionType.GROUP_PROPERTY_SET)
             doGroupPropertySet(conn,action.getAdminId(),action.getGroupId(),action.getShowWorkRequired(),action.getDisallowTutoring(),
             		action.getLimitGames(), action.getStopAtProgramEnd(), action.getPassPercent());
@@ -121,7 +121,7 @@ public class GroupManagerCommand implements ActionHandler<GroupManagerAction, Rp
      * @param studentTemplate
      * @throws Exception
      */
-    private void doGroupProgramAssignment(final Connection conn, Integer adminId, Integer groupId, StudentModel studentTemplate, Integer isSelfReg) throws Exception {
+    private void doGroupProgramAssignment(final Connection conn, Integer adminId, Integer groupId, StudentModel studentTemplate, boolean isSelfReg) throws Exception {
         PreparedStatement ps=null;
         try {
             if(groupId == -1) {
@@ -129,13 +129,16 @@ public class GroupManagerCommand implements ActionHandler<GroupManagerAction, Rp
                 ps = conn.prepareStatement(sql);
                 ps.setInt(1,adminId);
             }
-            else if (isSelfReg < 1){
+            else if (!isSelfReg){
                 String sql = "select uid from HA_USER where is_active = 1 and is_auto_create_template = 0 and admin_id = ? and group_id = ?";
                 ps = conn.prepareStatement(sql);
                 ps.setInt(1,adminId);
                 ps.setInt(2,groupId);
             }
             else {
+                /** is a self registration group. 
+                 *  We must make sure to update the self_reg group
+                 */
                 String sql = "select uid from HA_USER where is_active = 1 and admin_id = ? and group_id = ?";
                 ps = conn.prepareStatement(sql);
                 ps.setInt(1,adminId);
@@ -147,7 +150,7 @@ public class GroupManagerCommand implements ActionHandler<GroupManagerAction, Rp
             CmStudentDao dao = new CmStudentDao();
             ResultSet rs = ps.executeQuery();
             while(rs.next()) {
-                dao.assignProgramToStudent(conn, rs.getInt("uid"),studentTemplate.getProgram(), studentTemplate.getChapter(),studentTemplate.getPassPercent(),studentTemplate.getSettings());
+                dao.assignProgramToStudent(conn, rs.getInt("uid"),studentTemplate.getProgram(), studentTemplate.getChapter(),studentTemplate.getPassPercent(),studentTemplate.getSettings(),isSelfReg);
             }
         }
         finally {

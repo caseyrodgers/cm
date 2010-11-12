@@ -991,7 +991,7 @@ public class CmStudentDao {
              *  update the current program information with new pass percentage (if not null)
              */
             if (passPercent != null) {
-                StudentModelI sm = getStudentModelBase(conn, uid);
+                StudentModelI sm = getStudentModelBase(conn, uid, true);  /** always include templates */
                 new CmUserProgramDao().setProgramPassPercent(conn, sm.getProgram().getProgramId(), passPercent);
             }
 
@@ -2135,12 +2135,23 @@ public class CmStudentDao {
     }
 
     public void assignProgramToStudent(final Connection conn, Integer uid, StudentProgramModel program, String chapter, String passPercent) throws Exception {
-        assignProgramToStudent(conn, uid, program, chapter, passPercent, null);
+        assignProgramToStudent(conn, uid, program, chapter, passPercent, null,false);
     }
 
-    public void assignProgramToStudent(final Connection conn, Integer uid, StudentProgramModel program, String chapter, String passPercent,StudentSettingsModel settings) throws Exception {
+    /** Assign program to student.
+     *  
+     * @param conn
+     * @param uid
+     * @param program
+     * @param chapter
+     * @param passPercent
+     * @param settings
+     * @param includeSelfRegGroups  (must be set to true if updating self-reg user template)
+     * @throws Exception
+     */
+    public void assignProgramToStudent(final Connection conn, Integer uid, StudentProgramModel program, String chapter, String passPercent,StudentSettingsModel settings,boolean includeSelfRegGroups) throws Exception {
 
-        StudentModelI sm = getStudentModelBase(conn, uid);
+        StudentModelI sm = getStudentModelBase(conn, uid,includeSelfRegGroups);
 
         sm.getProgram().setProgramType(program.getProgramType());
         sm.getProgram().setSubjectId(program.getSubjectId());

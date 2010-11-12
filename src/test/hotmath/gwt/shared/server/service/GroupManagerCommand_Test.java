@@ -41,6 +41,7 @@ public class GroupManagerCommand_Test extends CmDbTestCase {
         action.setGroupId(_groupModel.getId());
         action.setDisallowTutoring(true);
         action.setShowWorkRequired(true);
+        action.setLimitGames(false);
         
         RpcData rdata = ActionDispatcher.getInstance().execute(action);
         assertTrue(rdata.getDataAsString("status").equals("OK"));
@@ -52,6 +53,9 @@ public class GroupManagerCommand_Test extends CmDbTestCase {
         action.setDisallowTutoring(true);
         action.setShowWorkRequired(true);
         action.setPassPercent(80);
+        action.setLimitGames(false);
+        action.setStopAtProgramEnd(true);
+        
         RpcData rdata = ActionDispatcher.getInstance().execute(action);
         assertTrue(rdata.getDataAsString("status").equals("OK"));
     }
