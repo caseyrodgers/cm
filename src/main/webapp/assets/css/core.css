@@ -171,9 +171,27 @@ p {
     text-decoration: none;
 }
 
+#footer-find h2 a {
+	color: white;
+	text-decoration: none;
+}
+#footer-find h2 a:hover {
+	text-decoration:underline;
+}
+
+
 #footer-find ul li img {
 	margin-right: 10px;
 }
+
+.footer-wrapper {
+    margin-left: 120px;
+}
+
+.footer-wrapper h1 {
+	margin-left: 180px;
+}
+
 
 #footer {
 	height: 73px;
