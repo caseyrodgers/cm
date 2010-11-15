@@ -118,9 +118,12 @@ public class CmInmhStandardResources extends ArrayList<PrescriptionSessionDataRe
         
         si = new SubMenuItem(null);
         si.getItemData().add(new InmhItemData(t,"/learning_activities/interactivities/prime_factorization.swf", "Prime Factorization"));
-        si.getItemData().add(new InmhItemData(t,"/learning_activities/interactivities/flashcard_gcf.swf", "Greatest Common Factors"));        
-        
         subMenu.add(si);
+        
+        si = new SubMenuItem(null);
+        si.getItemData().add(new InmhItemData(t,"/learning_activities/interactivities/flashcard_gcf.swf", "Greatest Common Factors"));        
+        subMenu.add(si);
+        
         
         si = new SubMenuItem("Exponents");
         si.getItemData().add(new InmhItemData(t,"/learning_activities/interactivities/flashcard_exponents_level1.swf", "Exponents: Level 1"));
