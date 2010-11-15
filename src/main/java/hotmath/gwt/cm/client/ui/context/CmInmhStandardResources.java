@@ -87,6 +87,8 @@ public class CmInmhStandardResources extends ArrayList<PrescriptionSessionDataRe
         si = new SubMenuItem("Decimals");
         si.getItemData().add(new InmhItemData(t,"/learning_activities/interactivities/flashcard_add_sub_deci.swf", "Adding Decimals"));
         si.getItemData().add(new InmhItemData(t,"/learning_activities/interactivities/flashcard_convert_decitofrac.swf", "Converting Decimals to Fractions"));
+        si.getItemData().add(new InmhItemData(t,"/learning_activities/interactivities/flashcard_multi_deci.swf", "Multiplying Decimals"));
+        
         
         subMenu.add(si);
 
