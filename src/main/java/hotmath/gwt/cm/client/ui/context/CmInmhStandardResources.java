@@ -78,6 +78,7 @@ public class CmInmhStandardResources extends ArrayList<PrescriptionSessionDataRe
         si.getItemData().add(new InmhItemData(t,"/learning_activities/interactivities/flashcard_convert_improper.swf", "Converting Improper Fractions"));
         si.getItemData().add(new InmhItemData(t,"/learning_activities/interactivities/flashcard_convert_mixed.swf", "Converting Mixed Numbers"));
         si.getItemData().add(new InmhItemData(t,"/learning_activities/interactivities/flashcard_reducingfractions.swf", "Reducing Fractions"));
+        si.getItemData().add(new InmhItemData(t,"/learning_activities/interactivities/flashcard_convert_fractodeci.swf", "Converting Fractions to Decimals"));        
         
         
         subMenu.add(si);
@@ -85,6 +86,8 @@ public class CmInmhStandardResources extends ArrayList<PrescriptionSessionDataRe
         
         si = new SubMenuItem("Decimals");
         si.getItemData().add(new InmhItemData(t,"/learning_activities/interactivities/flashcard_add_sub_deci.swf", "Adding Decimals"));
+        si.getItemData().add(new InmhItemData(t,"/learning_activities/interactivities/flashcard_convert_decitofrac.swf", "Converting Decimals to Fractions"));
+        
         subMenu.add(si);
 
         si = new SubMenuItem("Percents");
@@ -115,6 +118,8 @@ public class CmInmhStandardResources extends ArrayList<PrescriptionSessionDataRe
         
         si = new SubMenuItem(null);
         si.getItemData().add(new InmhItemData(t,"/learning_activities/interactivities/prime_factorization.swf", "Prime Factorization"));
+        si.getItemData().add(new InmhItemData(t,"/learning_activities/interactivities/flashcard_gcf.swf", "Greatest Common Factors"));        
+        
         subMenu.add(si);
         
         si = new SubMenuItem("Exponents");
