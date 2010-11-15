@@ -86,6 +86,9 @@ p {
 	position: relative;
 }
 
+.top-image {
+	margin-bottom: 15px;
+}
 
 #content-top {
 	text-align: center;

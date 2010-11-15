@@ -1,0 +1,412 @@
+ol#terms_msg li{
+    margin-bottom: 10px;
+}
+
+#password_info {
+    padding: 10px 0 10px 0;
+    font-weight: bold;
+}
+
+#final_message {
+    margin-right: 10px;
+    margin-left: 20px;
+    font-size: 80%;
+}
+
+
+#main-wrapper .signup_section {
+    width: 315px;
+    margin-bottom: 20px;
+    vertical-align: bottom;
+}    
+
+#main-wrapper .signup_section2 {
+    width: 300px;
+    margin-bottom: 20px;
+    vertical-align: bottom;
+}  
+
+#sub_form {
+    display: inline;
+}
+
+h1, h2 {
+   margin-top: 0;
+   margin-left: 20px;
+}
+
+form {
+   padding: 0;
+   margin: 20px 0 0 0;
+}
+
+h2 {
+    color: #f94701;
+}
+
+h3 {
+    color: #1C97D1;
+}
+
+#main-wrapper .amount {
+    color: red;
+}
+
+#subtype_div {
+    margin-top: 20px;
+}
+
+#terms_span {
+    color: blue;
+}
+
+#term_div {
+       padding: 0px 0 20px 0;
+}
+#termaccept_div {
+   padding: 10px 0 20px 0;
+}
+
+#submit_div {
+       padding: 0px 0 20px 0;
+       text-align: center;
+}
+
+ul#terms_list {
+    list-style: none;
+    text-indent: -1em;
+}
+
+td.col_name {
+    text-align: right;
+    padding-right: 20px;
+    width: 170px;
+}
+
+div.field_value {
+}
+
+#submit_col {
+    padding-top: 20px;
+}
+
+#main-wrapper .input_field {
+    width: 238px;
+	font-size: 1.1em;
+}
+
+#security_info {
+    margin-top: 100px;
+    float: right;
+    width: 200px;
+}
+
+.security_img {
+    padding: 30px 10px 30px 30px;
+}
+
+div.input_error {
+    background-color: red;
+    color: black;
+    font-weight: bold;
+    padding: 0 5px 0 5px;
+    display: none;
+}
+
+/* ...... signup popup window ..... */
+#popupMask {
+    position: absolute;
+    z-index: 200;
+    top: 0px;
+    left: 0px;
+    width: 100%;
+    height: 100%;
+    opacity: .4;
+    filter: alpha(opacity=40);
+    /* this hack is so it works in IE
+     * I find setting the color in the css gives me more flexibility 
+     * than the PNG solution.
+     */
+    background-color:transparent !important;
+    background-color: #333333;
+    /* this hack is for opera support
+     * you can uncomment the background-image if you don't care about opera.
+     * this gives you the flexibility to use any bg color that you want, instead of the png
+     */
+    background-image:none;
+    background-repeat: repeat;
+    display:none;
+}
+
+#popupContainer {
+    position: absolute;
+    z-index: 201;
+    top: 0px;
+    left: 0px;
+    display:none;
+    padding: 0px;
+}
+#popupInner {
+    border: 2px solid #000000;
+    background-color: #ffffff;
+}
+
+#popupFrame {
+    margin: 0px;
+    width: 100%;
+    height: 100%;
+    position: relative;
+    z-index: 202;
+}
+#popupTitleBar {
+    background-color: #486CAE;
+    color: #ffffff;
+    font-weight: bold;
+    height: 1.3em;
+    padding: 5px;
+    border-bottom: 2px solid #000000;
+    border-top: 1px solid #78A3F2;
+    border-left: 1px solid #78A3F2;
+    border-right: 1px solid #204095;
+    position: relative;
+    z-index: 203;
+}
+
+#popupTitle {
+    float:left;
+    font-size: 1.1em;
+}
+
+#popupControls {
+    float: right;
+    cursor: pointer;
+    cursor: hand;
+}
+
+#popupTitleBar {
+    font-family: Tahoma;
+}
+
+#popupContents {
+    color: blue;
+    border: 1px solid red;
+    font-size: 14px;
+    font-weight: bold;
+    padding: 25px 10px 20px 10px;
+}
+
+#signup_indicator_img {
+    float: left;
+    display: inline;
+    margin: 5px;
+}
+
+#popupContents .error {
+    color: red;
+}
+
+#main-wrapper_ {
+    padding-left: 35px;
+    padding-right: 35px;
+}
+
+#main-wrapper {
+    padding:0;
+    margin: 15px;
+}
+
+
+.product_container {
+    width: 700px;
+    margin: auto;
+    text-align: center;
+    margin-top: 25px;
+    margin-bottom: 20px;
+}
+
+.product_container img {
+    border: none;
+}
+.product_container .spacer {
+    width: 20px;
+}
+
+.section {
+   width: 700px;
+   margin: auto;
+}
+
+.section_title {
+   position: relative;
+   height: 40px;
+   margin-bottom: 10px;
+}
+
+.section_title img {
+   position: absolute;
+   top: 0;
+   left: 0;
+}
+.section_title h2 {
+   position: absolute;
+   left: 50px;
+}
+
+/** The Services Boxes */
+
+.service_list {
+    padding: 0;
+    margin: 0;
+   list-style: none;
+}
+.service_list input {
+   margin-left: 25px;
+}
+
+#service-total {
+   font-weight: bold;
+   font-size: 110%;
+   height: auto;
+   margin-top: 15px;
+   margin-bottom: 25px;
+}
+
+#service-box-wrapper {
+    clear:both;
+}
+
+.service_name {
+   font-weight: bold;
+}
+
+#signup_message {
+  width: 421px;
+  color: #999999;
+  margin-bottom: 60px;
+}
+
+
+
+.service-box, .service-box-plus {
+  float: left;
+}
+
+.service-box-plus {
+   font-size: 110%;
+   font-weight: bold;
+   top: 30px;   
+   width: 10px;
+   position: relative;
+   margin: 0px 5px 0 5px;
+}
+
+.service-box-info input {
+  float: left;
+  margin-right: 5px;
+  font-weight: bold;
+}
+
+.service-add-renew {
+  font-weight: bold;
+  font-size: 105%;
+  color: green;
+  clear: both;
+}
+
+.service-inactive {  
+   color: red;
+}
+
+/* End of Services Boxes */
+
+.signup_container {
+   padding-left: 20px;
+   padding-right: 20px;
+   margin-top: 20px;
+}
+
+
+.product_div {
+   float: left;
+   height: 120px;
+   width: 230px;
+   margin-right: 5px;
+   position: relative;
+}
+
+.signup_section div {
+   margin-bottom:15px;
+}
+
+.service-bundle {
+   margin-left: 50px;
+}
+
+
+.bundle {
+   font-size: 150%; 
+   font-weight: bold;
+   font-color: black;
+   margin: 15px 0;
+}
+
+
+.bundle span {
+   color: red;
+}
+
+span.underline{
+   text-decoration: underline;
+   color: black;
+}
+
+
+
+
+#only-if-school-id {
+   position:absolute; 
+   top: 0px; 
+   left: 100px;
+   background: #E8FFB6;
+}
+
+#total-plus-message {
+    position: relative;
+}
+
+
+
+.tooltip {
+   width: 200px;
+   text-align: left;
+   padding: 5px;
+}
+
+
+#signup_success p {
+   padding: 0px 15px;
+   width: 90%;
+   margin-bottom: 10px;
+}
+
+#signup_success .login-info {
+	margin-left: 30px;
+	margin-bottom: 10px;
+	width: 310px;
+	height: 35px;
+}
+
+
+#signup_success .login-info .col {
+	font-weight: bold;
+	width: 100px;
+	float: left;
+	text-align: right;
+	margin-right: 5px;
+}
+
+#signup_success .login-info .val {
+	width: 200px;
+	float: right;
+	text-align: left;
+}
