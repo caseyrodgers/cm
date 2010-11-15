@@ -1,5 +1,8 @@
 package hotmath.gwt.cm_mobile_shared.client;
 
+import hotmath.gwt.cm_mobile_shared.client.event.CmEvent;
+import hotmath.gwt.cm_mobile_shared.client.event.EventBus;
+import hotmath.gwt.cm_mobile_shared.client.event.EventTypes;
 import hotmath.gwt.cm_mobile_shared.client.page.QuizPage;
 import hotmath.gwt.cm_mobile_shared.client.rpc.CmMobileUser;
 import hotmath.gwt.cm_mobile_shared.client.rpc.CreateTestRunMobileAction;
@@ -80,7 +83,7 @@ public class QuizPanel extends AbstractPagePanel {
     
     public void checkTest() {
 
-        CatchupMathMobileShared.__instance.getControlPanel().showBusy(true);
+        EventBus.getInstance().fireEvent(new CmEvent(EventTypes.EVENT_SERVER_START));
 
         CmMobileUser user = CatchupMathMobileShared.__instance.user;
         CreateTestRunMobileAction checkTestAction = new CreateTestRunMobileAction(user,answerAction);
@@ -92,12 +95,12 @@ public class QuizPanel extends AbstractPagePanel {
                 
                 History.newItem("lesson:" + result.getPrescriptionData().getCurrSession().getSessionNumber());
                 
-                CatchupMathMobileShared.__instance.getControlPanel().showBusy(false);
+                EventBus.getInstance().fireEvent(new CmEvent(EventTypes.EVENT_SERVER_END));
             }
 
             @Override
             public void onFailure(Throwable caught) {
-                CatchupMathMobileShared.__instance.hideBusyPanel();
+                EventBus.getInstance().fireEvent(new CmEvent(EventTypes.EVENT_SERVER_END));
                 mainPanel.remove(0);
                 caught.printStackTrace();               
                 mainPanel.add(new HTML("<div style='color: red'><h1>Error Occurred</h2>" + caught.getMessage() + "</div>"));
@@ -124,7 +127,8 @@ public class QuizPanel extends AbstractPagePanel {
 
     private void getQuiz() {
         
-        CatchupMathMobileShared.__instance.getControlPanel().showBusy(true);
+        EventBus.getInstance().fireEvent(new CmEvent(EventTypes.EVENT_SERVER_START));
+        
         CmMobileUser user = CatchupMathMobileShared.__instance.user;
         GetQuizHtmlAction action = new GetQuizHtmlAction(user.getUserId(),user.getTestId(), user.getTestSegment());
         CatchupMathMobileShared.getCmService().execute(action, new AsyncCallback<QuizHtmlResult>() {
@@ -142,12 +146,12 @@ public class QuizPanel extends AbstractPagePanel {
                     setSolutionQuestionAnswerIndex(rd.getDataAsString("pid"),rd.getDataAsString("answer"));
                 }
                 
-                CatchupMathMobileShared.__instance.getControlPanel().showBusy(false);
+                EventBus.getInstance().fireEvent(new CmEvent(EventTypes.EVENT_SERVER_END));
             }
 
             @Override
             public void onFailure(Throwable caught) {
-                CatchupMathMobileShared.__instance.getControlPanel().showBusy(false);
+                EventBus.getInstance().fireEvent(new CmEvent(EventTypes.EVENT_SERVER_END));
                 mainPanel.remove(0);
                 caught.printStackTrace();               
                 mainPanel.add(new HTML("<div style='color: red'><h1>Error Occurred</h2>" + caught.getMessage() + "</div>"));
@@ -163,7 +167,7 @@ public class QuizPanel extends AbstractPagePanel {
      * @return
      */
     public String questionGuessChanged_Gwt(String sQuestionIndex, String answerIndex, String pid) {
-        CatchupMathMobileShared.__instance.getControlPanel().showBusy(true);
+        EventBus.getInstance().fireEvent(new CmEvent(EventTypes.EVENT_SERVER_START));
         CmMobileUser user = CatchupMathMobileShared.__instance.user;
         final int correctIndex = testQuestionAnswers.get(Integer.parseInt(sQuestionIndex));
         Boolean isCorrect = correctIndex == Integer.parseInt(answerIndex);        
@@ -178,11 +182,11 @@ public class QuizPanel extends AbstractPagePanel {
                 @Override
                 public void onSuccess(RpcData arg0) {
                     /** saved */
-                    CatchupMathMobileShared.__instance.getControlPanel().showBusy(false);
+                    EventBus.getInstance().fireEvent(new CmEvent(EventTypes.EVENT_SERVER_END));
                 }
                 @Override
                 public void onFailure(Throwable ex) {
-                    CatchupMathMobileShared.__instance.getControlPanel().showBusy(false);
+                    EventBus.getInstance().fireEvent(new CmEvent(EventTypes.EVENT_SERVER_END));
                     ex.printStackTrace();
                     Window.alert(ex.getLocalizedMessage());
                 }

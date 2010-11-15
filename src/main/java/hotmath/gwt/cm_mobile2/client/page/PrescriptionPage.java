@@ -1,7 +1,8 @@
-package hotmath.gwt.cm_mobile_shared.client.page;
+package hotmath.gwt.cm_mobile2.client.page;
 
 import hotmath.gwt.cm_mobile_shared.client.ControlAction;
 import hotmath.gwt.cm_mobile_shared.client.TokenParser;
+import hotmath.gwt.cm_mobile_shared.client.page.IPage;
 import hotmath.gwt.cm_rpc.client.rpc.PrescriptionSessionData;
 
 import java.util.List;

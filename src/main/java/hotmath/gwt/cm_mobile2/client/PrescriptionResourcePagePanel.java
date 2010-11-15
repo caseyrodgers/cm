@@ -1,7 +1,7 @@
-package hotmath.gwt.cm_mobile_shared.client.page;
+package hotmath.gwt.cm_mobile2.client;
 
 import hotmath.gwt.cm_mobile_shared.client.AbstractPagePanel;
-import hotmath.gwt.cm_mobile_shared.client.CmMobileResourceViewerFactory;
+import hotmath.gwt.cm_mobile_shared.client.page.PrescriptionResourcePage;
 
 import com.google.gwt.user.client.ui.Widget;
 

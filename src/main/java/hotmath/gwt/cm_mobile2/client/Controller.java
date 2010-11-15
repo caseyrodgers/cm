@@ -1,19 +1,22 @@
-package hotmath.gwt.cm_mobile_shared.client;
+package hotmath.gwt.cm_mobile2.client;
 
+import hotmath.gwt.cm_mobile2.client.page.PrescriptionPage;
+import hotmath.gwt.cm_mobile_shared.client.CatchupMathMobileShared;
+import hotmath.gwt.cm_mobile_shared.client.LoginPage;
+import hotmath.gwt.cm_mobile_shared.client.TopicListPage;
+import hotmath.gwt.cm_mobile_shared.client.TopicViewPage;
 import hotmath.gwt.cm_mobile_shared.client.page.IPage;
-import hotmath.gwt.cm_mobile_shared.client.page.PrescriptionPage;
 import hotmath.gwt.cm_mobile_shared.client.page.PrescriptionResourcePage;
 import hotmath.gwt.cm_mobile_shared.client.page.QuizPage;
 import hotmath.gwt.cm_mobile_shared.client.page.WelcomePage;
 import hotmath.gwt.cm_mobile_shared.client.util.ObservableStack;
 import hotmath.gwt.cm_rpc.client.rpc.InmhItemData;
-import hotmath.gwt.cm_rpc.client.rpc.PrescriptionData;
 import hotmath.gwt.cm_rpc.client.rpc.PrescriptionSessionData;
 import hotmath.gwt.cm_rpc.client.rpc.PrescriptionSessionDataResource;
 
 public class Controller {
     private static ObservableStack<IPage> mPageStack;
-
+    
     private Controller() {
     }
 

@@ -1,4 +1,7 @@
-package hotmath.gwt.cm_mobile_shared.client;
+package hotmath.gwt.cm_mobile2.client;
+
+
+import hotmath.gwt.cm_mobile_shared.client.ControlAction;
 
 import java.util.ArrayList;
 import java.util.List;

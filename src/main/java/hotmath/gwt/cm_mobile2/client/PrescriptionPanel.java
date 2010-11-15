@@ -1,6 +1,11 @@
-package hotmath.gwt.cm_mobile_shared.client;
+package hotmath.gwt.cm_mobile2.client;
 
-import hotmath.gwt.cm_mobile_shared.client.page.PrescriptionPage;
+import hotmath.gwt.cm_mobile2.client.page.PrescriptionPage;
+import hotmath.gwt.cm_mobile_shared.client.AbstractPagePanel;
+import hotmath.gwt.cm_mobile_shared.client.CatchupMathMobileShared;
+import hotmath.gwt.cm_mobile_shared.client.ListItem;
+import hotmath.gwt.cm_mobile_shared.client.Thermometer;
+import hotmath.gwt.cm_mobile_shared.client.UnOrderedList;
 import hotmath.gwt.cm_mobile_shared.client.rpc.CmMobileUser;
 import hotmath.gwt.cm_rpc.client.rpc.GetPrescriptionAction;
 import hotmath.gwt.cm_rpc.client.rpc.InmhItemData;

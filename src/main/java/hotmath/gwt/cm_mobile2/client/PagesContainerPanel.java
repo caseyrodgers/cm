@@ -1,5 +1,7 @@
-package hotmath.gwt.cm_mobile_shared.client;
+package hotmath.gwt.cm_mobile2.client;
 
+import hotmath.gwt.cm_mobile_shared.client.AbstractPagePanel;
+import hotmath.gwt.cm_mobile_shared.client.TokenParser;
 import hotmath.gwt.cm_mobile_shared.client.event.CmEvent;
 import hotmath.gwt.cm_mobile_shared.client.event.EventBus;
 import hotmath.gwt.cm_mobile_shared.client.event.EventTypes;
@@ -67,7 +69,7 @@ public class PagesContainerPanel extends Composite {
 			var instance = this;
 
 			var callBack = function(e){
-				instance.@hotmath.gwt.cm_mobile_shared.client.PagesContainerPanel::onDomTransitionEnded()();
+				instance.@hotmath.gwt.cm_mobile2.client.PagesContainerPanel::onDomTransitionEnded()();
 			};
 
 			element.addEventListener('webkitTransitionEnd', callBack, false);	

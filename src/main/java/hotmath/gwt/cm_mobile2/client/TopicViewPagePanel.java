@@ -1,11 +1,14 @@
-package hotmath.gwt.cm_mobile_shared.client;
+package hotmath.gwt.cm_mobile2.client;
 
-import hotmath.gwt.cm_mobile2.client.CatchupMathMobile2;
-import hotmath.gwt.cm_mobile2.client.CatchupMathMobile2.Callback;
+
+import hotmath.gwt.cm_mobile2.client.page.PrescriptionPage;
+import hotmath.gwt.cm_mobile_shared.client.AbstractPagePanel;
+import hotmath.gwt.cm_mobile_shared.client.ListItem;
+import hotmath.gwt.cm_mobile_shared.client.TokenParser;
+import hotmath.gwt.cm_mobile_shared.client.TopicViewPage;
 import hotmath.gwt.cm_mobile_shared.client.event.CmEvent;
 import hotmath.gwt.cm_mobile_shared.client.event.EventBus;
 import hotmath.gwt.cm_mobile_shared.client.event.EventTypes;
-import hotmath.gwt.cm_mobile_shared.client.page.PrescriptionPage;
 import hotmath.gwt.cm_mobile_shared.client.util.GenericContainerTag;
 import hotmath.gwt.cm_mobile_shared.client.util.GenericTextTag;
 import hotmath.gwt.cm_mobile_shared.client.util.TouchClickEvent;
@@ -108,6 +111,15 @@ public class TopicViewPagePanel extends AbstractPagePanel {
         }
         
         EventBus.getInstance().fireEvent(new CmEvent(EventTypes.EVENT_LESSON_LOADED, pData));
+    }
+    
+    
+    public interface Callback {
+        void isComplete(Object data);
+    }
+    
+    public interface LessonLoader {
+        void loadLessonData(String topicFile, Callback callbackWhenLoaded);        
     }
 }
 

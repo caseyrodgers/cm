@@ -1,5 +1,11 @@
-package hotmath.gwt.cm_mobile_shared.client;
+package hotmath.gwt.cm_mobile2.client;
 
+import hotmath.gwt.cm_activity.client.CmResourceViewerImplActivity;
+import hotmath.gwt.cm_mobile_shared.client.CmMobileResourceViewer;
+import hotmath.gwt.cm_mobile_shared.client.CmResourceViewerImplDefault;
+import hotmath.gwt.cm_mobile_shared.client.CmResourceViewerImplLesson;
+import hotmath.gwt.cm_mobile_shared.client.CmResourceViewerImplSolution;
+import hotmath.gwt.cm_mobile_shared.client.CmResourceViewerImplVideo;
 import hotmath.gwt.cm_mobile_shared.client.event.CmEvent;
 import hotmath.gwt.cm_mobile_shared.client.event.EventBus;
 import hotmath.gwt.cm_mobile_shared.client.event.EventTypes;

@@ -5,9 +5,7 @@ import hotmath.gwt.cm_mobile_shared.client.event.CmEventListener;
 import hotmath.gwt.cm_mobile_shared.client.event.EventBus;
 import hotmath.gwt.cm_mobile_shared.client.event.EventType;
 import hotmath.gwt.cm_mobile_shared.client.event.EventTypes;
-import hotmath.gwt.cm_mobile_shared.client.page.IPage;
 import hotmath.gwt.cm_mobile_shared.client.rpc.CmMobileUser;
-import hotmath.gwt.cm_mobile_shared.client.util.ObservableStack;
 import hotmath.gwt.cm_mobile_shared.client.util.Screen;
 import hotmath.gwt.cm_rpc.client.rpc.CmService;
 import hotmath.gwt.cm_rpc.client.rpc.CmServiceAsync;
@@ -20,13 +18,10 @@ import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
-import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.ServiceDefTarget;
-import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
-import com.google.gwt.user.client.ui.Widget;
 
 /**
  * Provide minimal CM for mobile access.
@@ -42,7 +37,6 @@ public class CatchupMathMobileShared implements EntryPoint, Screen.OrientationCh
 
     public CmMobileUser user;
     SimplePanel mainPanel;
-    ControlPanel controlPanel;
 
     public CatchupMathMobileShared() {
         __instance = this;
@@ -51,10 +45,6 @@ public class CatchupMathMobileShared implements EntryPoint, Screen.OrientationCh
     public void onModuleLoad() {
     }
     
-    public ControlPanel getControlPanel() {
-        return controlPanel;
-    }
-
     static public CmMobileUser getUser() {
         return __instance.user;
     }

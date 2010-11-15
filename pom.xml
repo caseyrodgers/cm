@@ -389,6 +389,7 @@
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>selenium-maven-plugin</artifactId>
+        <version>1.1</version>
         <executions>
           <execution>
             <phase>pre-integration-test</phase>
@@ -407,6 +408,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-jar-plugin</artifactId>
+        <version>2.3.1</version>
         <configuration>
           <signedjar>${project.build.directory}/signed/${project.build.finalName}.jar</signedjar>
           <verify>true</verify>

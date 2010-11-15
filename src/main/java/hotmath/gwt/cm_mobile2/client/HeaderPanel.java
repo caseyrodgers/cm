@@ -1,4 +1,4 @@
-package hotmath.gwt.cm_mobile_shared.client;
+package hotmath.gwt.cm_mobile2.client;
 
 import hotmath.gwt.cm_mobile_shared.client.page.IPage;
 import hotmath.gwt.cm_mobile_shared.client.util.GenericTextTag;
@@ -66,7 +66,7 @@ public class HeaderPanel extends Composite {
                                                                          var instance = this;
 
                                                                          var callBack = function(e){
-                                                                         instance.@hotmath.gwt.cm_mobile_shared.client.HeaderPanel::onDomTransitionEnded()();
+                                                                         instance.@hotmath.gwt.cm_mobile2.client.HeaderPanel::onDomTransitionEnded()();
                                                                          };
 
                                                                          element.addEventListener('webkitTransitionEnd', callBack, false);	

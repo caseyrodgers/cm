@@ -1,8 +1,7 @@
 package hotmath.gwt.cm_mobile2.client;
 
-import hotmath.gwt.cm_mobile2.client.CatchupMathMobile2.Callback;
+import hotmath.gwt.cm_mobile2.client.TopicViewPagePanel.Callback;
 import hotmath.gwt.cm_mobile_shared.client.CatchupMathMobileShared;
-import hotmath.gwt.cm_mobile_shared.client.Controller;
 import hotmath.gwt.cm_mobile_shared.client.TokenParser;
 import hotmath.gwt.cm_rpc.client.rpc.InmhItemData;
 import hotmath.gwt.cm_rpc.client.rpc.PrescriptionSessionDataResource;

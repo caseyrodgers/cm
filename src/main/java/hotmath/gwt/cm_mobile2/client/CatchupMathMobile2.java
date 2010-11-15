@@ -1,11 +1,8 @@
 package hotmath.gwt.cm_mobile2.client;
 
+import hotmath.gwt.cm_mobile2.client.TopicViewPagePanel.Callback;
 import hotmath.gwt.cm_mobile_shared.client.CatchupMathMobileShared;
 import hotmath.gwt.cm_mobile_shared.client.CmMobileResourceViewer;
-import hotmath.gwt.cm_mobile_shared.client.ControlPanel;
-import hotmath.gwt.cm_mobile_shared.client.Controller;
-import hotmath.gwt.cm_mobile_shared.client.HeaderPanel;
-import hotmath.gwt.cm_mobile_shared.client.PagesContainerPanel;
 import hotmath.gwt.cm_mobile_shared.client.ScreenOrientation;
 import hotmath.gwt.cm_mobile_shared.client.TokenParser;
 import hotmath.gwt.cm_mobile_shared.client.event.CmEvent;
@@ -232,10 +229,7 @@ public class CatchupMathMobile2 implements EntryPoint, OrientationChangedHandler
             _rootPanel.removeStyleName("portrait");
         }
     }
-    
-    public interface Callback {
-        void isComplete(Object data);
-    }
+
 }
 
 

@@ -1,13 +1,21 @@
-package hotmath.gwt.cm_mobile_shared.client;
+package hotmath.gwt.cm_mobile2.client;
 
+import hotmath.gwt.cm_mobile2.client.TopicViewPagePanel.Callback;
+import hotmath.gwt.cm_mobile2.client.TopicViewPagePanel.LessonLoader;
+import hotmath.gwt.cm_mobile2.client.page.PrescriptionPage;
+import hotmath.gwt.cm_mobile_shared.client.AbstractPagePanel;
+import hotmath.gwt.cm_mobile_shared.client.LoginForm;
+import hotmath.gwt.cm_mobile_shared.client.LoginPage;
+import hotmath.gwt.cm_mobile_shared.client.QuizPanel;
+import hotmath.gwt.cm_mobile_shared.client.TopicListPage;
+import hotmath.gwt.cm_mobile_shared.client.TopicListPagePanel;
+import hotmath.gwt.cm_mobile_shared.client.TopicViewPage;
 import hotmath.gwt.cm_mobile_shared.client.event.CmEvent;
 import hotmath.gwt.cm_mobile_shared.client.event.EventBus;
 import hotmath.gwt.cm_mobile_shared.client.event.EventTypes;
 import hotmath.gwt.cm_mobile_shared.client.page.IPage;
 import hotmath.gwt.cm_mobile_shared.client.page.MainPage;
-import hotmath.gwt.cm_mobile_shared.client.page.PrescriptionPage;
 import hotmath.gwt.cm_mobile_shared.client.page.PrescriptionResourcePage;
-import hotmath.gwt.cm_mobile_shared.client.page.PrescriptionResourcePagePanel;
 import hotmath.gwt.cm_mobile_shared.client.page.QuizPage;
 import hotmath.gwt.cm_mobile_shared.client.page.TestPage;
 import hotmath.gwt.cm_mobile_shared.client.page.TestPagePanel;

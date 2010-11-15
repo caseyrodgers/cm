@@ -1,6 +1,7 @@
-package hotmath.gwt.cm_mobile_shared.client;
+package hotmath.gwt.cm_mobile2.client;
 
 
+import hotmath.gwt.cm_mobile_shared.client.AbstractPagePanel;
 import hotmath.gwt.cm_mobile_shared.client.page.MainPage;
 
 import com.google.gwt.event.dom.client.ClickEvent;
