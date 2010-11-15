@@ -66,6 +66,4 @@ public class CmActivityWordProblems implements EntryPoint, OrientationChangedHan
             _rootPanel.removeStyleName("portrait");
         }
     }
-    
-    
 }

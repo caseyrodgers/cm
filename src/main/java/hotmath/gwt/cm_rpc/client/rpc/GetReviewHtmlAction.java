@@ -1,8 +1,5 @@
 package hotmath.gwt.cm_rpc.client.rpc;
 
-import hotmath.gwt.cm_tools.client.model.StringHolder;
-
-
 public class GetReviewHtmlAction implements Action<LessonResult>{
     
     String file;

@@ -1,7 +1,9 @@
 package hotmath.gwt.cm_test.client;
 
-import com.allen_sauer.gwt.log.client.Log;
+import hotmath.gwt.cm_mobile_shared.client.QuizPanel;
+
 import com.google.gwt.core.client.EntryPoint;
+import com.google.gwt.user.client.Window;
 
 
 /**
@@ -9,6 +11,7 @@ import com.google.gwt.core.client.EntryPoint;
  */
 public class CatchupMathTest implements EntryPoint {
     public void onModuleLoad() {
-        Log.info("Catchup Math Test Startup");
+        QuizPanel qp = new QuizPanel(null);
+        Window.alert("Quiz Panel: " + qp);
     }
 }
