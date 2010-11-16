@@ -21,6 +21,7 @@ public class CmInmhStandardResources extends ArrayList<PrescriptionSessionDataRe
 	
     public CmInmhStandardResources() {
         
+        
         /** Add the standard Activities
          * 
          */
@@ -133,6 +134,7 @@ public class CmInmhStandardResources extends ArrayList<PrescriptionSessionDataRe
         subMenu.add(si);
         
         si = new SubMenuItem(null);
+        si.getItemData().add(new InmhItemData(t,"/learning_activities/interactivities/plot_coordplane.swf", "Plotting Coordinates"));
         si.getItemData().add(new InmhItemData(t,"/learning_activities/interactivities/flashcard_wordproblems_level1.swf", "Word Problems"));
         subMenu.add(si);
         
