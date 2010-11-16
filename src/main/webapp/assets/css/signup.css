@@ -410,3 +410,16 @@ span.underline{
 	float: right;
 	text-align: left;
 }
+
+
+#signup_progress {
+   -moz-border-radius:15px;
+   border-radius:15px;
+   background: #688F0F;
+   padding: 10px;
+   text-align: center;
+   border: 2px solid #E64218;
+   -moz-box-shadow: 5px 5px 5px #666;
+   -webkit-box-shadow: 5px 5px 5px #666;
+   box-shadow: 5px 5px 5px #666;
+}
