@@ -135,6 +135,9 @@ public class CmInmhStandardResources extends ArrayList<PrescriptionSessionDataRe
         
         si = new SubMenuItem(null);
         si.getItemData().add(new InmhItemData(t,"/learning_activities/interactivities/plot_coordplane.swf", "Plotting Coordinates"));
+        subMenu.add(si);
+        
+        si = new SubMenuItem(null);
         si.getItemData().add(new InmhItemData(t,"/learning_activities/interactivities/flashcard_wordproblems_level1.swf", "Word Problems"));
         subMenu.add(si);
         
