@@ -11,6 +11,7 @@ body {
 }
 
 h1 {
+	color: #ed411c;
 	font-size: 1.7em;
 	font-weight: normal;
 	margin-bottom: 15px;
@@ -149,6 +150,7 @@ p {
 	font-size: 1.9em;
 	margin-top: 15px;
 	margin-bottom: 10px;
+	color:  white;
 }
 
 #footer-find p {
@@ -301,5 +303,6 @@ div.postit p {
 #bottom-content-wrapper {
 	margin-top: 25px;
 	background: url(/assets/images/bottom-content-background.png) repeat-x;
+	height: 25px;
 	height: 35px;
 }
