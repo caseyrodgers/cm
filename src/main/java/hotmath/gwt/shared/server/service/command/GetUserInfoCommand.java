@@ -38,7 +38,7 @@ public class GetUserInfoCommand implements ActionHandler<GetUserInfoAction, User
     public UserInfo execute(final Connection conn, GetUserInfoAction action) throws Exception {
         try {
             CmStudentDao dao = new CmStudentDao();
-            StudentModelI sm = dao.getStudentModelBasic(conn, action.getUserId());
+            StudentModelI sm = dao.getStudentModelBase(conn, action.getUserId());
             StudentSettingsModel settings = sm.getSettings();
             
             CmUserProgramDao upDao = new CmUserProgramDao();
