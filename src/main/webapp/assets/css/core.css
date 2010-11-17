@@ -301,4 +301,5 @@ div.postit p {
 #bottom-content-wrapper {
 	margin-top: 25px;
 	background: url(/assets/images/bottom-content-background.png) repeat-x;
+	height: 25px;
 }
