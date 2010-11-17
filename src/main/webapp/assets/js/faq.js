@@ -17,6 +17,7 @@ function setupPageLocal() {
                 var displayNode = tarNode.get('parentNode').get('parentNode').one('.faq-item-content');
 				displayNode.removeClass('hide');
 				displayNode.addClass('display');
+				return false;
 		    });
 	 });
 }
