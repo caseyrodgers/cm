@@ -18,7 +18,9 @@ h1 {
 }
 
 h2 {
+	color: #333333;
 	font-size: 1.2em;
+	margin-bottom: 10px;
 }
 
 
@@ -26,7 +28,7 @@ a:link,
 a:visited,
 a:active,
 a:hover {
-    color: #3AA498;
+    color: #00bdbd;
 }
 
 .purchase-points h1 {
@@ -39,9 +41,9 @@ a:hover {
 }
 
 p {
+	color: #333333;
 	font-size: 1em;
-	margin-bottom: 5px;
-	padding: 5px;
+	margin-bottom: 15px;
 }
 
 #content-middle p {
@@ -305,4 +307,8 @@ div.postit p {
 	background: url(/assets/images/bottom-content-background.png) repeat-x;
 	height: 25px;
 	height: 35px;
+}
+
+.standout {
+	color: #6dad00;
 }
