@@ -275,11 +275,12 @@ p {
 
 
 div.postit{ 
+    float: right;
     font-family: 'Reenie Beanie', arial, serif;
 	font-size: 2em;
     border:1px solid yellow; 
-    height:364px; 
-    width:320px; 
+    height:350px; 
+    width:300px; 
     background-color: rgba(60, 132, 198, 0.8); 
     background-image: -webkit-gradient(linear, 0% 0%, 0% 90%, from(#FFFAAE), to(#FFF057)); 
     background-image: -moz-linear-gradient(#FFFAAE 0%, #FFF057 90%); 
