@@ -5,7 +5,7 @@ body {
     font-size: 15px;
 }
 
-#doc {
+.doc {
     margin: auto; /* center in viewport */
     width: 960px; /* fix page width */
 }
@@ -139,7 +139,6 @@ p {
 }
 
 #footer-find {
-	margin-top: 25px;
 	height: 385px;
 	background: #343434;
 	color: white;
@@ -182,6 +181,13 @@ p {
 #footer-find ul li img {
 	margin-right: 10px;
 }
+
+
+#footer-find ul.sitemap-links li a {
+	color: #CD722C;
+}
+
+
 
 #footer-wrapper {
    width: 960px;
@@ -268,12 +274,6 @@ p {
 }
 
 
-
-#footer-find ul.sitemap-links li a {
-	color: #CD722C;
-}
-
-
 div.postit{ 
     float: right;
     font-family: 'Reenie Beanie', arial, serif;
@@ -295,4 +295,10 @@ div.postit{
 
 div.postit p {
 	padding: 20px;
+}
+
+
+#bottom-content-wrapper {
+	margin-top: 25px;
+	background: url(/assets/images/bottom-content-background.png) repeat-x;
 }
