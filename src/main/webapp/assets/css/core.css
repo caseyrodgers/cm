@@ -11,14 +11,13 @@ body {
 }
 
 h1 {
-	color: #ed411c;
+    color: #333333;	
 	font-size: 1.7em;
 	font-weight: normal;
 	margin-bottom: 15px;
 }
 
 h2 {
-	color: #333333;
 	font-size: 1.2em;
 	margin-bottom: 10px;
 }
@@ -40,11 +39,27 @@ a:hover {
 	font-size: .85em;
 }
 
+.purchase-points a:link,
+.purchase-points a:visited,
+.purchase-points a:active {
+    color: #00bdbd;
+	text-decoration: none;
+}
+
+.purchase-points a:hover {
+	text-decoration: underline;
+}
+
+.purchase-point {
+	margin-left: 20px;
+}
+
 p {
 	color: #333333;
 	font-size: 1em;
 	margin-bottom: 15px;
 }
+
 
 #content-middle p {
 	margin-right: 30px;
@@ -87,6 +102,10 @@ p {
     height: auto !important;
     height: 320px;
 	position: relative;
+}
+
+#main-content-right h1 {
+	   color: #ed411c;
 }
 
 .top-image {
@@ -169,9 +188,14 @@ p {
 }
 
 #footer-find ul li a {
-    color: #5B6A2E;
+    color: #72af15;
     text-decoration: none;
 }
+
+#footer-find ul li a:hover {
+	text-decoration: underline;
+}
+
 
 #footer-find h2 a {
 	color: white;
@@ -311,4 +335,5 @@ div.postit p {
 
 .standout {
 	color: #6dad00;
+	font-size: 1.1em;
 }
