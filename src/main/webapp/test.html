@@ -1,13 +1,31 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<title>Untitled Document</title>
-</head>
-
-<body>
-  This is a Test 1
-  This is a test 2
-  This is a test 3
-</body>
-</html>
+<style>
+  .fraction {
+	  height: 50px;
+	  display: inline;
+  }
+  
+  .frac {
+	  float: left;
+	  text-align:center;
+	  margin-left: 5px;
+	  margin-right: 5px;
+  }
+  .before, .after {
+	  line-height: 40px;
+	  vertical-align:middle;
+	  float: left;
+  }
+  .divider {
+	  height: 1px;
+	  background: black;
+  }
+</style>
+<div class='fraction'>
+    <span class='before' >A = </span>
+    <div class="frac">
+      <div class="num">1</div>
+      <div class='divider'></div>
+      <div class="den">2</div>
+    </div>
+    <span class='after'> != 200</span>
+</div>    
