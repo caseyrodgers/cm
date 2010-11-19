@@ -490,7 +490,7 @@ public class HaTestDao {
 
             updateTestRunSessions(conn, runId);
             
-            updateUserExtended(conn, studentUid, testRun);
+            HaUserExtendedDao.updateUserExtended(conn, studentUid, testRun);
 
             return testRun;
         } catch (HotMathException hme) {
@@ -538,128 +538,6 @@ public class HaTestDao {
         }
     }
 
-    
-    static public void updateUserExtended(Connection conn, Integer userId, HaTestRun testRun) throws Exception {
-    	
-    	/*
-    	 * if row exists update it, otherwise insert new row
-    	 */
-    	String sql = "select quiz_pass_count, quiz_not_pass_count from HA_USER_EXTENDED where user_id = ?";
-    	
-    	ResultSet rs = null;
-    	PreparedStatement stmt = null;
-    	PreparedStatement stmt2 = null;
-		int lastQuiz = (testRun.getAnsweredCorrect() * 100) / (testRun.getAnsweredCorrect() + testRun.getAnsweredIncorrect() + testRun.getNotAnswered());
-
-		try {
-    		stmt = conn.prepareStatement(sql);
-    		stmt.setInt(1, userId);
-    		rs = stmt.executeQuery();
-    		if (rs.next()) {
-    			int passCount = rs.getInt(1) + ((testRun.isPassing()) ? 1 : 0);
-    			int notPassCount = rs.getInt(2) + ((testRun.isPassing()) ? 0 : 1);
-    					
-    			// perform update
-    			sql = "update HA_USER_EXTENDED set quiz_pass_count = ?, quiz_not_pass_count = ?, last_quiz = ? where user_id = ?";
-    			stmt2 = conn.prepareStatement(sql);
-    			stmt2.setInt(1, passCount);
-    			stmt2.setInt(2, notPassCount);
-    			stmt2.setInt(3, lastQuiz);
-    			stmt2.setInt(4, userId);
-    			
-    			stmt2.executeUpdate();
-    			
-    		}
-    		else {
-    			// perform insert
-    			insertUserExtended(conn, userId, testRun.isPassing(), lastQuiz);
-    		}
-    	}
-    	catch (Exception e) {
-    		__logger.error("*** Error updating User extended data, userId: " + userId, e);
-    		throw new HotMathException("Error updating User extended data");
-    	}
-    	finally {
-    		SqlUtilities.releaseResources(rs, stmt, null);
-    		SqlUtilities.releaseResources(null, stmt2, null);
-    	}
-    	
-    }
-
-    static public void updateUserExtendedLastLogin(Connection conn, Integer userId) throws Exception {
-    	
-    	/*
-    	 * if row exists update it, otherwise insert new row
-    	 */
-    	String sql = "select * from HA_USER_EXTENDED where user_id = ?";
-    	
-    	ResultSet rs = null;
-    	PreparedStatement stmt = null;
-    	PreparedStatement stmt2 = null;
-
-		try {
-    		stmt = conn.prepareStatement(sql);
-    		stmt.setInt(1, userId);
-    		rs = stmt.executeQuery();
-    		if (rs.next()) {
-    					
-    			// perform update
-    			sql = "update HA_USER_EXTENDED set last_login = (select max(login_time) from HA_USER_LOGIN where user_id = ?) where user_id = ?";
-    			stmt2 = conn.prepareStatement(sql);
-    			stmt2.setInt(1, userId);
-    			stmt2.setInt(2, userId);
-    			
-    			stmt2.executeUpdate();
-    			
-    		}
-    		else {
-    			// perform insert
-    			insertUserExtendedLastLogin(conn, userId);
-    		}
-    	}
-    	catch (Exception e) {
-    		__logger.error("*** Error updating User extended data, userId: " + userId, e);
-    		throw new HotMathException("Error updating User extended data");
-    	}
-    	finally {
-    		SqlUtilities.releaseResources(rs, stmt, null);
-    		SqlUtilities.releaseResources(null, stmt2, null);
-    	}
-    	
-    }
-
-    static public void insertUserExtended(Connection conn, Integer userId, boolean isPassing, int passPercent) throws Exception {
-        String sql = CmMultiLinePropertyReader.getInstance().getProperty("INSERT_STUDENT_EXTENDED");
-        
-        PreparedStatement stmt = null;
-        try {
-        	stmt = conn.prepareStatement(sql);
-        	stmt.setInt(1, userId);
-        	stmt.setInt(2, isPassing?1:0);
-        	stmt.setInt(3, isPassing?0:1);
-            stmt.setInt(4, passPercent);
-        	stmt.setInt(5, userId);
-            stmt.executeUpdate();
-        }
-        finally {
-        	SqlUtilities.releaseResources(null, stmt, null);
-        }
-    }
-
-    static public void insertUserExtendedLastLogin(Connection conn, Integer userId) throws Exception {
-        String sql = CmMultiLinePropertyReader.getInstance().getProperty("INSERT_STUDENT_EXTENDED_LOGIN");
-        
-        PreparedStatement stmt = null;
-        try {
-        	stmt = conn.prepareStatement(sql);
-        	stmt.setInt(1, userId);
-        	stmt.setInt(2, userId);        	
-        	stmt.executeUpdate();
-        }
-        finally {
-        	SqlUtilities.releaseResources(null, stmt, null);
-        }
-    }
     /**
      * Return list of pids that represent all ids currently in test for all
      * segments.

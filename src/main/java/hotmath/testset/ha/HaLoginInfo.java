@@ -115,7 +115,7 @@ public class HaLoginInfo {
                 throw new Exception("could not not insert new HA_USER_LOGIN record");
             
             if (user.getUserType() == UserType.STUDENT) {
-            	HaTestDao.updateUserExtendedLastLogin(conn, user.getUserKey());
+            	HaUserExtendedDao.updateUserExtendedLastLogin(conn, user.getUserKey());
             }
             
             return key;
