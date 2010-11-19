@@ -36,7 +36,8 @@ public class ExplainPanel extends Composite {
     
     public void setExplaination(WordProblem problem) {
         questionPanel.getElement().setInnerHTML(problem.getQuestion());
-        explainPanel.getElement().setInnerHTML(prepareForEval(problem.getVars(),problem.getExplanation()));
+        String s = prepareForEval(problem.getVars(),problem.getExplanation());
+        explainPanel.getElement().setInnerHTML(s);
         new Timer() {
             @Override
             public void run() {
@@ -47,7 +48,7 @@ public class ExplainPanel extends Composite {
     
     
     
-    /** Call extern JS validation code to prepare 
+    /** Call external JS validation code to prepare 
      * the explanation string for display
      * @param str
      * @return

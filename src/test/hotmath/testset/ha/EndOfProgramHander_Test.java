@@ -21,20 +21,6 @@ public class EndOfProgramHander_Test extends CmDbTestCase {
         userId = setupDemoAccount();
     }
 
-    public void testEndOfProgramEssentials() throws Exception {
-
-        // assign chapter test to test student (last chapter)
-        dao.assignProgramToStudent(conn, userId, CmProgram.ESSENTIALS, null);
-        
-        EndOfProgramHandler eop = new EndOfProgramHandler();
-        eop.loadStudent(conn, userId);
-        StudentUserProgramModel nextProgram = eop.getNextProgram(conn);
-        
-        // this should just loop around
-        assertTrue(nextProgram.getTestDefId() == CmProgram.PREALG_PROF.getDefId());
-    }  
-    
-
     public void testEndOfProgramAlg2Prof() throws Exception {
 
         // assign chapter test to test student (last chapter)
@@ -46,6 +32,33 @@ public class EndOfProgramHander_Test extends CmDbTestCase {
         
         // this should just loop around
         assertTrue(nextProgram.getTestDefId() == CmProgram.CAHSEEHM.getDefId());
+    } 
+    
+    
+    public void testEndOfProgramCahseeHmProf() throws Exception {
+
+        // assign chapter test to test student (last chapter)
+        dao.assignProgramToStudent(conn, userId, CmProgram.CAHSEEHM_V1, null);
+        
+        EndOfProgramHandler eop = new EndOfProgramHandler();
+        eop.loadStudent(conn, userId);
+        StudentUserProgramModel nextProgram = eop.getNextProgram(conn);
+        
+        // this should just loop around
+        assertTrue(nextProgram.getTestDefId() == CmProgram.ALG2_PROF.getDefId());
+    } 
+    
+    public void testEndOfProgramEssentials() throws Exception {
+
+        // assign chapter test to test student (last chapter)
+        dao.assignProgramToStudent(conn, userId, CmProgram.ESSENTIALS, null);
+        
+        EndOfProgramHandler eop = new EndOfProgramHandler();
+        eop.loadStudent(conn, userId);
+        StudentUserProgramModel nextProgram = eop.getNextProgram(conn);
+        
+        // this should just loop around
+        assertTrue(nextProgram.getTestDefId() == CmProgram.PREALG_PROF.getDefId());
     }  
 
     
