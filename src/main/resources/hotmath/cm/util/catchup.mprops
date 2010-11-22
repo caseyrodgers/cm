@@ -105,6 +105,21 @@ values(?,?,?,?,(select max(login_time) from HA_USER_LOGIN where user_id = ?))
 INSERT into HA_USER_EXTENDED (user_id, quiz_pass_count, quiz_not_pass_count, last_quiz, last_login)
 values(?,null,null,null,(select max(login_time) from HA_USER_LOGIN where user_id = ?))
 
+.key=INSERT_STUDENT_EXTENDED_LESSON_STATUS
+
+INSERT into HA_USER_EXTENDED (user_id, current_lesson, lesson_count, lessons_completed, last_login)
+values(?,0,?,0,(select max(login_time) from HA_USER_LOGIN where user_id = ?))
+
+
+.key=INSERT_STUDENT_EXTENDED_LESSON_STATUS_PLUS
+
+INSERT into HA_USER_EXTENDED (user_id, current_lesson, lesson_count, lessons_completed, last_login)
+values(?,0,(select active_run_id from HA_USER where uid = ?), 0, (select max(login_time) from HA_USER_LOGIN where user_id = ?))
+
+.key=INSERT_STUDENT_EXTENDED_LESSON_COMPLETED
+
+INSERT into HA_USER_EXTENDED (user_id, lesson_count, lessons_completed, last_login)
+values(?,(select active_run_id from HA_USER where uid = ?), 1, (select max(login_time) from HA_USER_LOGIN where user_id = ?))
 
 .key=STUDENT_LAST_LOGIN
 
