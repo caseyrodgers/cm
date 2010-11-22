@@ -16,7 +16,7 @@ public class CmAdminTrendingDataImplDummy implements CmAdminTrendingDataI {
     CmList<TrendingData> trendingData = new CmArrayList<TrendingData>();
     AccountInfoModel adminModel;
 
-    public CmAdminTrendingDataImplDummy() throws Exception {
+    public CmAdminTrendingDataImplDummy() {
         int maxLessons = 5;
         for (int i = 0; i < maxLessons; i++) {
             trendingData.add(getRandom());
@@ -28,16 +28,22 @@ public class CmAdminTrendingDataImplDummy implements CmAdminTrendingDataI {
         return this.trendingData;
     }
 
-    private TrendingData getRandom() throws CmException {
-        for (int tries=5; tries > 0; tries--) {
-            String ln = __sampleData[getRandNumber(__sampleData.length - 1)];
-            for (TrendingData td : trendingData) {
-                if (td.getLessonName().equals(ln))
-                    continue;
+    private TrendingData getRandom() {
+        try {
+            for (int tries=5; tries > 0; --tries) {
+                String ln = __sampleData[getRandNumber(__sampleData.length - 1)];
+                for (TrendingData td : trendingData) {
+                    if (td.getLessonName().equals(ln))
+                        continue;
+                }
+                return new TrendingData(ln, getRandNumber(1000));
             }
-            return new TrendingData(ln, getRandNumber(1000));
+            throw new CmException("Could not create sample TrendingData");
         }
-        throw new CmException("Could not create sample TrendingData");
+        catch(Exception e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     private int getRandNumber(int max) {

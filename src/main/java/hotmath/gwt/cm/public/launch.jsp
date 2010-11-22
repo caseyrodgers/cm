@@ -13,8 +13,8 @@
 %>
 <html>
   <head>
-  <link rel="stylesheet" type="text/css" href="/gwt-resources/gxt-2.2.0/css/gxt-all.css" />
-  <link class="gray" rel="stylesheet" type="text/css" href="/gwt-resources/gxt-2.2.0/css/gxt-gray.css" />
+  <link rel="stylesheet" type="text/css" href="/gwt-resources/gxt-2.2.1/css/gxt-all.css" />
+  <link class="gray" rel="stylesheet" type="text/css" href="/gwt-resources/gxt-2.2.1/css/gxt-gray.css" />
    <link rel="stylesheet" type="text/css" href="/css/tutor_widget.css" />
   <link rel="stylesheet" type="text/css" href="/gwt-resources/css/CatchupMath_combined.min.css" />
   <link rel="stylesheet" type="text/css" href="/css/SexyButtons/sexybuttons.css" />
@@ -24,7 +24,7 @@
   <body>
     <div id="loading">
         <div class="loading-indicator">
-        <img src="/gwt-resources/gxt-2.2.0/images/default/shared/large-loading.gif" width="32" height="32"/>Catchup Math<br />
+        <img src="/gwt-resources/gxt-2.2.1/images/default/shared/large-loading.gif" width="32" height="32"/>Catchup Math<br />
         <span id="loading-msg">loading...</span>
         </div>
     </div>  
