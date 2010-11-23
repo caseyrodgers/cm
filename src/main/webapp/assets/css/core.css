@@ -30,9 +30,12 @@ a:hover {
     color: #00bdbd;
 }
 
+.purchase-points {
+	color: #666666;
+}
 .purchase-points h1 {
 	margin-bottom: 10px;
-  
+	color: #ed411c;
 }
 
 .purchase-points .yui3-g {
@@ -42,7 +45,7 @@ a:hover {
 .purchase-points a:link,
 .purchase-points a:visited,
 .purchase-points a:active {
-    color: #00bdbd;
+    color: #00bebe;
 	text-decoration: none;
 }
 
@@ -51,12 +54,12 @@ a:hover {
 }
 
 .purchase-point {
-	margin-left: 20px;
+	margin-left: 5px;
 }
 
 p {
 	color: #666;
-	font-size: 1em;
+	font-size: .9em;
 	margin-bottom: 15px;
 }
 
@@ -149,8 +152,22 @@ p {
 }
 
 .info-box p {
-	height: 60px;
+	font-size: .8em;
 	width: 300px;
+	margin-bottom: 5px;
+	padding: 3px;
+	min-height: 50px;
+    height:auto !important;
+    height:50px;
+}
+
+.info-box-selected {
+	background: #E8E8E8;
+    
+    -webkit-box-shadow: #AAA 3px 3px 3px; 
+    -moz-box-shadow: #AAA 3px 3px 3px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
 }
 
 #content-bottom  .info-box-wrapper a:hover,

@@ -1,0 +1,108 @@
+/** login form */
+#login_form {
+	width: 220px;
+}
+
+#login_form .error {
+	color: red;
+}
+
+#login_form .section {
+	height: 60px;
+	margin-top: 10px;
+}
+
+#login_form .field {
+	width: 280px;
+	height: 24px;
+	text-align: right;
+}
+
+#login_form .field label {
+	float: left;
+	width: 100px;
+}
+
+#login_form .submit {
+	float: right;
+	margin-right: 10px;
+}
+
+#login_form .field input {
+	float: right;
+	width: 170px;
+}
+
+
+
+.info-section {
+	display: block;
+}
+#login_form {
+	width: 300px;
+	margin: auto;
+	margin-top: 30px;	
+	height: 100px;
+}
+#login-wrapper {
+	width: 320px;
+	height: 120px;
+}
+
+#login_faq_list {
+	text-align: left;
+	height: 120px;
+}
+#login_faq_list p {
+	  width: auto;
+	  padding-top: 5px;
+	  margin-top: 2px;
+}
+
+#login_faq_list {
+	width: 540px;
+	margin-right: 35px;
+	background: white;
+        border: 3px solid #A3C530;
+}
+
+#login_faq_list li {
+	float: left;
+	width: 270px;
+}
+
+.round-corners {
+    background-color: #A3C530;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    padding: 10px;
+}
+
+#bd-left: {
+	width: 770px;
+}
+
+.body-left {
+	float: left;
+	width: 320px;
+	margin-top: 20px;
+        border: 3px solid #A3C530;
+}
+
+.body-right {
+    margin-top: 20px;
+	float: right;
+	width: 320px;
+}
+
+h1, h2 {
+	margin: 0;
+}
+
+.info-section {
+	margin-top: 120px;
+}
+
+#bd {
+	height:400px !important;
+}
