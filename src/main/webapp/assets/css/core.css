@@ -61,6 +61,7 @@ p {
 	color: #666;
 	font-size: .9em;
 	margin-bottom: 15px;
+        line-height: 1.5em;
 }
 
 
@@ -81,7 +82,7 @@ p {
 }
 
 #header .header_image {
-	margin: 30px 0 0 15px;
+	margin: 30px 0 0 0px;
 }
 
 #header .loginbutton {
@@ -130,11 +131,10 @@ p {
 
 #content-bottom {
 	margin-top: 25px;
-	height: 755px;
 }
 
 #content-bottom .info-box-wrapper {
-	height: 350px;
+	height: 320px;
 }
 
 #content-bottom .info-box {
@@ -143,7 +143,7 @@ p {
 
 #content-bottom .info-box .label {
 	font-size: 1.5em;
-	color: #829E3A;
+	color: #6DAD00;
 	margin-left: 5px;
 }
 
@@ -153,21 +153,18 @@ p {
 
 .info-box p {
 	font-size: .8em;
-	width: 300px;
+	width: 290px;
+        margin-top: 3px;
 	margin-bottom: 5px;
 	padding: 3px;
 	min-height: 50px;
-    height:auto !important;
-    height:50px;
+        height:auto !important;
+        height:50px;
+        line-height: 1.5em;
 }
 
 .info-box-selected {
 	background: #E8E8E8;
-    
-    -webkit-box-shadow: #AAA 3px 3px 3px; 
-    -moz-box-shadow: #AAA 3px 3px 3px;
-    -moz-border-radius: 5px;
-    border-radius: 5px;
 }
 
 #content-bottom  .info-box-wrapper a:hover,
@@ -287,7 +284,7 @@ p {
 }
 
 #content-middle-right img {
-	margin-top: 5px;
+	margin-top: 2px;
 }
 
 
@@ -364,9 +361,10 @@ div.postit p {
 	height: 35px;
 }
 
-.standout {
+p.standout {
 	color: #6dad00;
 	font-size: 1.1em;
+        line-height: 1.3em;
 }
 
 
@@ -384,4 +382,10 @@ div.postit p {
     margin: auto;
     padding-top: 5px;
     background: black;
+}
+
+
+#content-middle-right b {
+   color: #333;
+   font-weight: normal;
 }
