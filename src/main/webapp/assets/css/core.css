@@ -55,7 +55,7 @@ a:hover {
 }
 
 p {
-	color: #333333;
+	color: #666;
 	font-size: 1em;
 	margin-bottom: 15px;
 }
@@ -135,20 +135,34 @@ p {
 }
 
 #content-bottom .info-box {
-	margin-top: 10px;
+	margin-top: 5px;
 }
 
 #content-bottom .info-box .label {
 	font-size: 1.5em;
 	color: #829E3A;
-	margin-left: 15px;
+	margin-left: 5px;
 }
 
 #big-buttons {
 	margin-top: 50px;
 }
-.info-box p{
-	height: 70px;
+
+.info-box p {
+	height: 60px;
+	width: 300px;
+}
+
+#content-bottom  .info-box-wrapper a:hover,
+#content-bottom .info-box-wrapper  a:link,
+#content-bottom .info-box-wrapper  a:active,
+#content-bottom .info-box-wrapper  a:visited {
+	color: #666666;
+	text-decoration:none;
+}
+
+#content-bottom .info-box-wrapper {
+	cursor:pointer;
 }
 
 .info-box button {
