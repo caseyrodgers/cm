@@ -24,7 +24,7 @@ public class ResetUserCommand implements ActionHandler<ResetUserAction, RpcData>
             user.setActiveTestRunSession(0);
 
             StudentActiveInfo activeInfo = new StudentActiveInfo();
-            activeInfo.setActiveSegmentSlot(0);
+            activeInfo.setActiveSegmentSlot(action.getAltTest());
             new CmStudentDao().setActiveInfo(conn, action.getUid(), activeInfo);
 
             user.update(conn);

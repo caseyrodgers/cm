@@ -50,8 +50,16 @@ public class FooterPanel extends LayoutContainer {
 			@Override
 			public void onSuccess() {
 				CmServiceAsync s = CmShared.getCmService();
-
-				s.execute(new ResetUserAction(UserInfo.getInstance().getUid()),
+				int altTest=0;
+				try {
+				    altTest = Integer.parseInt(CmShared.getQueryParameter("alt_test"));
+				    CmLogger.info("Resetting to alternate test " + altTest);
+				}
+				catch(Exception e) {
+				    //quiet
+				}
+				
+				s.execute(new ResetUserAction(UserInfo.getInstance().getUid(),altTest),
 						new AsyncCallback<RpcData>() {
 
 							@Override

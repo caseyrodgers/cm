@@ -85,6 +85,11 @@ public class ActionDispatcher {
         /** ContextListener will only be initialized in a Servlet Container.
          * So, running in UnitTest or standalone ContextListener will
          * not have been initialized ... so all tests fail.
+         * 
+         * @TODO: ContextListener should initialize getStartDate
+         * and have servlet context override it when running in 
+         * a servlet context.
+         * 
          */
         if(ContextListener.getStartDate() != null)
             startDate = sdf.format(ContextListener.getStartDate());

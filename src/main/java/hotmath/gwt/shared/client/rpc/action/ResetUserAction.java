@@ -11,12 +11,15 @@ import hotmath.gwt.cm_rpc.client.rpc.RpcData;
 public class ResetUserAction implements Action<RpcData> {
 	
 	Integer uid;
+	int altTest;  // make sure default is zero,not null
 	
 	public ResetUserAction() {}
 	
 
-	public ResetUserAction(Integer uid) {
+	public ResetUserAction(Integer uid, Integer alternateTest) {
 		this.uid = uid;
+		this.altTest = alternateTest;
+		
 	}
 
 
@@ -28,4 +31,21 @@ public class ResetUserAction implements Action<RpcData> {
 	public void setUid(Integer uid) {
 		this.uid = uid;
 	}
+
+
+    public Integer getAltTest() {
+        return altTest;
+    }
+
+
+    public void setAltTest(Integer altTest) {
+        this.altTest = altTest;
+    }
+    
+
+
+    @Override
+    public String toString() {
+        return "ResetUserAction [uid=" + uid + ", altTest=" + altTest + "]";
+    }
 }
