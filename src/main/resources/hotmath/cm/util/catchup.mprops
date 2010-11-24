@@ -33,6 +33,8 @@ SELECT h.uid, upper(h.user_name) as name, h.user_passcode as passcode, h.user_em
            if((h.active_test_id > 0), 'Started', ' ') ) as last_quiz,
        date_format(ux.last_login,'%Y-%m-%d') as last_use_date, 
        ifnull(ux.quiz_pass_count, 0) as passing_count, ifnull(ux.quiz_not_pass_count, 0) as not_passing_count,
+       ifnull(ux.current_lesson, 0) as current_lesson, ifnull(ux.lesson_count, 0) as lesson_count,
+       ifnull(ux.lessons_completed, 0) as lessons_completed,
        ifnull(ut.tutoring_use, 0) as tutoring_use
 FROM  HA_ADMIN a 
 INNER JOIN HA_USER h 

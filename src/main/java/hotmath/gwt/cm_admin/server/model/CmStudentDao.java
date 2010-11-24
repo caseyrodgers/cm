@@ -163,7 +163,7 @@ public class CmStudentDao {
             ps.setInt(2, (isActive) ? 1 : 0);
             rs = ps.executeQuery();
 
-            l = loadStudentSummaries(conn,rs);
+            l = loadStudentSummaries(rs);
             
             loadChapterInfo(conn, l);
         } catch (Exception e) {
@@ -192,7 +192,7 @@ public class CmStudentDao {
             ps.setInt(2, (isActive) ? 1 : 0);
             rs = ps.executeQuery();
 
-            l = loadStudentSummaries(conn,rs);
+            l = loadStudentSummaries(rs);
             
             loadChapterInfo(conn, l);
         }
@@ -1406,7 +1406,7 @@ public class CmStudentDao {
             rs = ps.executeQuery();
 
             List<StudentModelI> l = null;
-            l = loadStudentSummaries(conn, rs);
+            l = loadStudentSummaries(rs);
             if (l.size() == 0)
                 throw new Exception(String.format("Student with UID: %d was not found", uid));
             if (l.size() > 1)
@@ -1613,7 +1613,7 @@ public class CmStudentDao {
         }
     }
     
-    private List<StudentModelI> loadStudentSummaries(final Connection conn, ResultSet rs) throws Exception {
+    private List<StudentModelI> loadStudentSummaries(ResultSet rs) throws Exception {
 
         List<StudentModelI> l = new ArrayList<StudentModelI>();
 
@@ -1655,7 +1655,8 @@ public class CmStudentDao {
             sm.setBackgroundStyle(rs.getString("gui_background_style"));
             sm.setSectionNum(rs.getInt("active_segment"));
 
-            setupProgramStatus(conn,sm,rs.getString("program"),rs.getString("test_config_json"));
+            setupProgramStatus(sm, rs.getString("program"), rs.getString("test_config_json"),
+            		rs.getInt("current_lesson"), rs.getInt("lesson_count"), rs.getInt("lessons_completed"));
             
             l.add(sm);
         }
@@ -1668,7 +1669,7 @@ public class CmStudentDao {
      *  For custom programs, add the CP:PROG_NAME and looks up the status info
      * 
      */
-
+    @Deprecated
     private void setupProgramStatus(final Connection conn, StudentModelI student, String programName, String testConfigJson) throws Exception {
         StudentProgramModel program = student.getProgram();
         if (program.isCustomProgram() == false) {
@@ -1677,7 +1678,21 @@ public class CmStudentDao {
         }
         else {
             program.setProgramDescription("CP: " + program.getCustomProgramName());
-            student.setStatus(getCustomProgramStatus(conn, program.getCustomProgramId(), student.getUid()));              
+            student.setStatus(getCustomProgramStatus(conn, program.getCustomProgramId(), student.getUid()));
+        }
+    }
+
+    private void setupProgramStatus(StudentModelI student, String programName, String testConfigJson,
+        int currentLesson, int lessonCount, int isLessonsCompleted) {
+
+        StudentProgramModel program = student.getProgram();
+        if (program.isCustomProgram() == false) {
+            program.setProgramDescription(programName);
+            student.setStatus(getStatus(program.getProgramId(), student.getSectionNum(), testConfigJson));
+        }
+        else {
+            program.setProgramDescription("CP: " + program.getCustomProgramName());
+            student.setStatus(getCustomProgramStatus(currentLesson, lessonCount, isLessonsCompleted));             
         }
     }
     
@@ -1686,7 +1701,6 @@ public class CmStudentDao {
         List<StudentModelI> l = new ArrayList<StudentModelI>();
 
         while (rs.next()) {
-            //StudentModelBaseI sm = new StudentModelBase();
             StudentModelI sm = new StudentModelBase();
 
             sm.setUid(rs.getInt("uid"));
@@ -1722,7 +1736,8 @@ public class CmStudentDao {
             
             sm.setProgram(program);
 
-            setupProgramStatus(conn, sm, rs.getString("program"), rs.getString("test_config_json"));
+            setupProgramStatus(sm, rs.getString("program"), rs.getString("test_config_json"),
+            	rs.getInt("current_lesson"), rs.getInt("lesson_count"), rs.getInt("lessons_completed"));
 
             l.add(sm);
         }
@@ -1741,6 +1756,17 @@ public class CmStudentDao {
                     logger.error(String.format("*** Error getting status for user_prog_id: %d, test_config_json: %s", userProgId, testConfigJson), e);
                 }
             }
+        }
+        return "Not started";
+    }
+
+    private String getCustomProgramStatus(int currentLesson, int lessonCount, int isLessonsCompleted) {
+        if (currentLesson > 0) {
+            if (isLessonsCompleted == 0) {
+                StringBuilder sb = new StringBuilder();
+            	return sb.append("Lesson ").append(currentLesson).append(" of " ).append(lessonCount).toString();
+            }
+            return "Completed";
         }
         return "Not started";
     }
