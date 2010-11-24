@@ -76,6 +76,30 @@ public class HaUserExtendedDao {
         "      where t.test_id = tr.test_id and tr.run_id = ?) x " +
         "left outer join HA_USER_EXTENDED ux on ux.user_id = x.user_id";
 
+    static final String SELECT_USER_ID_SQL = 
+        "select x.user_id " +
+        "from (select t.user_id from HA_TEST t, HA_TEST_RUN tr " +
+        "      where t.test_id = tr.test_id and tr.run_id = ?) x";
+
+    static public int runIdToUid(final Connection conn, Integer runId) throws Exception {
+    	ResultSet rs = null;
+    	PreparedStatement stmt = null;
+    	int userId = 0;
+
+		try {
+    		stmt = conn.prepareStatement(SELECT_USER_ID_SQL);
+    		stmt.setInt(1, runId);
+    		rs = stmt.executeQuery();
+    		if (rs.next()) {
+    			userId = rs.getInt(1);
+    		}
+		}
+		finally {
+    		SqlUtilities.releaseResources(rs, stmt, null);
+		}
+		return userId;
+    }
+    			
     static public void updateUserExtendedLessonStatus(final Connection conn, HaTestRun testRun, int lessonCount) throws Exception {
         updateUserExtendedLessonStatus(conn, testRun.getRunId(), lessonCount);
     }
@@ -98,7 +122,7 @@ public class HaUserExtendedDao {
     			
     			if (userId == uxUserId) {
     				// HA_USER_EXTENDED record exists, update
-        			String sql = "update HA_USER_EXTENDED set lesson_count = ?, current_lesson = 0, lesson_completed = 0 where user_id = ?";
+        			String sql = "update HA_USER_EXTENDED set lesson_count = ?, current_lesson = 0, lessons_completed = 0 where user_id = ?";
         			stmt2 = conn.prepareStatement(sql);
         			stmt2.setInt(1, lessonCount);
         			stmt2.setInt(2, userId);
@@ -110,6 +134,85 @@ public class HaUserExtendedDao {
     	    		if (userId != 0)
         	    		insertUserExtendedLessonStatus(conn, userId, lessonCount);
     		    }
+    		}
+    	}
+    	catch (Exception e) {
+    		LOGGER.error("*** Error updating User extended data, userId: " + userId, e);
+    		throw new HotMathException("Error updating User extended data");
+    	}
+    	finally {
+    		SqlUtilities.releaseResources(rs, stmt, null);
+    		SqlUtilities.releaseResources(null, stmt2, null);
+    	}
+    	
+    }
+
+    static final String SELECT_USER_EXTENDED_BY_UID_SQL = 
+        "select * from HA_USER_EXTENDED where user_id = ?";
+
+    static public void resetUserExtendedLessonStatusForUid(final Connection conn, int userId) throws Exception {
+    	updateUserExtendedLessonStatusForUid(conn, userId, 0);
+    }
+
+    static public void updateUserExtendedLessonCompleted(final Connection conn, int runId) throws Exception {
+    	int uid = runIdToUid(conn, runId);
+    	updateUserExtendedLessonCompletedForUid(conn, uid);
+    }
+ 
+    static public void updateUserExtendedLessonStatusForUid(final Connection conn, int userId, int lessonCount) throws Exception {
+
+    	ResultSet rs = null;
+    	PreparedStatement stmt = null;
+    	PreparedStatement stmt2 = null;
+
+		try {
+    		stmt = conn.prepareStatement(SELECT_USER_EXTENDED_BY_UID_SQL);
+    		stmt.setInt(1, userId);
+    		rs = stmt.executeQuery();
+    		if (rs.next()) {
+    			String sql = "update HA_USER_EXTENDED set lesson_count = ?, current_lesson = 0, lessons_completed = 0 where user_id = ?";
+    			stmt2 = conn.prepareStatement(sql);
+    			stmt2.setInt(1, lessonCount);
+    			stmt2.setInt(2, userId);
+    			stmt2.executeUpdate();
+    		}
+        	else {
+    	    	LOGGER.warn("*** updateUserExtendedLessonStatus(): Inserting User extended lesson status data, userId: " + userId);
+        		// perform insert (shouldn't happen)
+        	    insertUserExtendedLessonStatus(conn, userId, lessonCount);
+    		}
+    	}
+    	catch (Exception e) {
+    		LOGGER.error("*** Error updating User extended data, userId: " + userId, e);
+    		throw new HotMathException("Error updating User extended data");
+    	}
+    	finally {
+    		SqlUtilities.releaseResources(rs, stmt, null);
+    		SqlUtilities.releaseResources(null, stmt2, null);
+    	}
+    	
+    }
+    
+    static public void updateUserExtendedLessonCompletedForUid(final Connection conn, int userId) throws Exception {
+
+    	ResultSet rs = null;
+    	PreparedStatement stmt = null;
+    	PreparedStatement stmt2 = null;
+
+		try {
+    		stmt = conn.prepareStatement(SELECT_USER_EXTENDED_BY_UID_SQL);
+    		stmt.setInt(1, userId);
+    		rs = stmt.executeQuery();
+    		if (rs.next()) {
+    			String sql = "update HA_USER_EXTENDED set lessons_completed = 1, where user_id = ?";
+    			stmt2 = conn.prepareStatement(sql);
+    			stmt2.setInt(1, userId);
+    			stmt2.executeUpdate();
+    		}
+        	else {
+    	    	LOGGER.warn("*** updateUserExtendedLessonCompletedForUid(): Inserting User extended lesson completed data, userId: " + userId);
+        		// perform insert (shouldn't happen)
+        	    insertUserExtendedLessonCompleted(conn, userId);
     		}
     	}
     	catch (Exception e) {
@@ -262,6 +365,23 @@ public class HaUserExtendedDao {
         String sql = CmMultiLinePropertyReader.getInstance().getProperty("INSERT_STUDENT_EXTENDED_LESSON_STATUS_PLUS");
 
         LOGGER.warn("*** insertUserExtendedLessonStatusPlus() for userId: " + userId);
+        PreparedStatement stmt = null;
+        try {
+        	stmt = conn.prepareStatement(sql);
+        	stmt.setInt(1, userId);
+        	stmt.setInt(2, userId);
+        	stmt.executeUpdate();
+        }
+        finally {
+        	SqlUtilities.releaseResources(null, stmt, null);
+        }
+    }
+
+
+    static public void insertUserExtendedLessonCompleted(Connection conn, Integer userId) throws Exception {
+        String sql = CmMultiLinePropertyReader.getInstance().getProperty("INSERT_STUDENT_EXTENDED_LESSON_COMPLETED");
+
+        LOGGER.warn("*** insertUserExtendedLessonCompleted() for userId: " + userId);
         PreparedStatement stmt = null;
         try {
         	stmt = conn.prepareStatement(sql);

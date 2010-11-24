@@ -76,6 +76,13 @@ public class HaTestRunDao {
                 }
                 
             }
+            /**
+             * update HA_USER_EXTENDED
+             * 
+             * current_lesson = 0, lesson_count = sessions.size(), lessons_completed = 0
+             */
+            HaUserExtendedDao.updateUserExtendedLessonStatus(conn, testRun.getRunId(), sessions.size());
+            
         }
         finally {
             SqlUtilities.releaseResources(null,pstat,null);
@@ -153,13 +160,15 @@ public class HaTestRunDao {
             
             pstat = conn.prepareStatement(sql);
             
-            pstat.setInt(1,runId);
+            pstat.setInt(1, runId);
             pstat.setInt(2, lessonViewed);
             
             int updated = pstat.executeUpdate();
             if(updated != 1) {
                 __logger.info("Could not update lesson viewed: " + pstat);
             }
+            
+            HaUserExtendedDao.updateUserExtendedCurrentLesson(conn, runId, lessonViewed+1);
         }
         finally {
             SqlUtilities.releaseResources(null,pstat,null);
@@ -250,7 +259,10 @@ public class HaTestRunDao {
             pstat.setInt(1, runId);
             pstat.setInt(2, lessonNumber);
             
-            pstat.executeUpdate();
+            int count = pstat.executeUpdate();
+            
+            if (count > 0)
+            	HaUserExtendedDao.updateUserExtendedLessonCompleted(conn, runId);
         }
         finally {
             SqlUtilities.releaseResources(null, pstat, null);

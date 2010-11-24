@@ -34,6 +34,7 @@ import hotmath.testset.ha.HaTestDefDao;
 import hotmath.testset.ha.HaTestDefDescription;
 import hotmath.testset.ha.HaTestRun;
 import hotmath.testset.ha.HaTestRunDao;
+import hotmath.testset.ha.HaUserExtendedDao;
 import hotmath.util.HMConnectionPool;
 import hotmath.util.sql.SqlUtilities;
 
@@ -740,6 +741,9 @@ public class CmStudentDao {
             updateStudent(conn, sm);
         if (programChanged)
             updateStudentProgram(conn, sm);
+        
+        if (programChanged || progIsNew)
+            HaUserExtendedDao.resetUserExtendedLessonStatusForUid(conn, sm.getUid());
 
         if (passPercentChanged) {
         	Integer passPercent = getPercentFromString(sm.getPassPercent());
@@ -1596,6 +1600,7 @@ public class CmStudentDao {
                 /**
                  * make sure the admin has tutoring enabled
                  */
+            	//TODO: incorporate Admin tutoring value in Summary SQL
                 sm.getSettings().setTutoringAvailable(isTutoringEnabledForAdmin(conn, sm.getAdminUid()));
             }
             return sm; 
@@ -2169,6 +2174,8 @@ public class CmStudentDao {
             sm.setSettings(settings);
             updateStudentSettings(conn, sm, percent);
         }
+        
+        HaUserExtendedDao.resetUserExtendedLessonStatusForUid(conn, uid);
     }
 
     private int getPercentFromString(String passPercent) {
