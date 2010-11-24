@@ -41,7 +41,7 @@ public class CmUserProgramDao {
 
         String sql = CmMultiLinePropertyReader.getInstance().getProperty("CURRENT_USER_PROGRAM_SQL");
         try {
-            StudentUserProgramModel supm = new StudentUserProgramModel();
+            StudentUserProgramModel supm;
 
             ps = conn.prepareStatement(sql);
 
@@ -51,6 +51,9 @@ public class CmUserProgramDao {
                 supm = defineUserProgram(rs);
                 HaTestDef td = new HaTestDefDao().getTestDef(conn, supm.getTestDefId());
                 supm.setTestDef(td);
+            }
+            else {
+            	 supm = new StudentUserProgramModel();
             }
             return supm;
         } finally {
