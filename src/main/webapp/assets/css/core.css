@@ -199,7 +199,7 @@ p {
 	font-size: 1.9em;
 	margin-top: 15px;
 	margin-bottom: 10px;
-	color:  white;
+	color:  #8F8F8F;
 }
 
 #footer-find p {
@@ -208,6 +208,11 @@ p {
 
 #footer-find h2 {
 	margin-top: 15px;
+	font-size: 1.1em;
+}
+
+#footer-find .bar {
+	color: #8F8F8F;
 }
 
 #footer-find ul li {
@@ -218,6 +223,7 @@ p {
 #footer-find ul li a {
     color: #72af15;
     text-decoration: none;
+	font-size: 1em;
 }
 
 #footer-find ul li a:hover {
@@ -226,9 +232,10 @@ p {
 
 
 #footer-find h2 a {
-	color: white;
 	text-decoration: none;
+	color: white;
 }
+
 #footer-find h2 a:hover {
 	text-decoration:underline;
 }
