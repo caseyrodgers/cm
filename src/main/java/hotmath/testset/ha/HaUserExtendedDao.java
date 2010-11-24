@@ -204,7 +204,7 @@ public class HaUserExtendedDao {
     		stmt.setInt(1, userId);
     		rs = stmt.executeQuery();
     		if (rs.next()) {
-    			String sql = "update HA_USER_EXTENDED set lessons_completed = 1, where user_id = ?";
+    			String sql = "update HA_USER_EXTENDED set lessons_completed = 1 where user_id = ?";
     			stmt2 = conn.prepareStatement(sql);
     			stmt2.setInt(1, userId);
     			stmt2.executeUpdate();
