@@ -31,6 +31,7 @@
    */
    var _mainMenuItem=4;
 </script>
+<link rel="stylesheet" type="text/css" href="/assets/css/faq.css">
 <style>
   #bd-left {
 
@@ -49,7 +50,11 @@
         top: 40px;
         right: 88px;
     }
-     
+    
+    ul.problem-type-list li {
+       list-style: disc;
+       list-style-type: disc;
+    }     
      
 </style>
 <link href='http://fonts.googleapis.com/css?family=Reenie+Beanie&subset=latin' rel='stylesheet' type='text/css'>
@@ -179,12 +184,47 @@
                             
                             <h2>Problems with Your Computer</h2>
                             <p>
-                            If you see an error message when using Catchup Math, this could be 
-                            a <a id='browser-tip' href='#'>browser issue</a>, 
-                            a <a id='firewall-tip' href='#'/>firewall issue</a>, 
-                            a <a id='router-tip' href='#'>router issue</a>, 
-                            a <a id='bookmark-tip' href='#'>bookmark issue</a>, 
-                            or a <a id='popupblocker-tip' href='#'>popup blocker issue</a>.
+                            If you see an error message when using Catchup Math, this could be due to one of the following:
+                            <ul id='faq_list' class='problem-type-list'>  
+                            <li class='faq-item'>
+                               <h2><a href='javascript:void(0)'>Browser Issue</a></h2>
+                               <div class='faq-item-content'>
+                                 <p>Catchup Math works on virtually all modern browsers. Internet Option settings
+                                  should be Cookies: Enabled; Security: Medium or Low; Privacy: Medium or Low;
+                                  Temporary Internet Files: 'check for new pages every time you start the browser
+                                  or 'every visit to the page.</p>
+                               </div>
+                            </li>
+                            
+                            <li class='faq-item'><h2><a href='javascript:void(0)'/>Firewall issue</a></h2>
+                                <div class='faq-item-content'>
+                                     <p>Some firewall services can cause login failures,with no error message being given.
+                                     If this happens, please ask your firewall service for assistance.</p>                                   
+                                </div>
+                            </li>
+                             
+                            <li class='faq-item'><h2><a href='javascript:void(0)'>Router Issue</a></h2>
+                                <div class='faq-item-content'>
+                                    <p>If you use a router, you may need to specify that catchupmath.com
+                                    is a permitted website.
+                                    </p>
+                                </div>
+                            </li> 
+                            
+                            
+                            <li class='faq-item'><h2><a href='javascript:void(0)'>Bookmark Issue</a></h2>
+                            
+                                 <div class='faq-item-content'>
+                                     <p>We may have improved our pages, so if you bookmark a Catchup Math internal page, re-enter
+                                     "catchupmath.com and then reset the bookmark</p>
+                            </li> 
+                            <li class='faq-item'><h2><a href='javascript:void(0)'>Popup Blocker Issue</a></h2>
+                                <div class='faq-item-content'>
+                                    <p>Catchup Math does not display popup advertisements.  Nevertheless, you may need to inform your
+                                    popup blocker to allow popups from Catchupmath.com.</p>
+                                </div>
+                            </li>
+                            </ul>
                             </p>
                             
                             <h2>More Help for Errors</h2>
@@ -372,6 +412,7 @@
 <script src='/assets/js/core.js'></script>
         <!-- InstanceBeginEditable name="AfterJavascriptLoad" -->
 <script src='/assets/js/support.js'></script>
+<script src='/assets/js/faq.js'></script>
 
 <!-- InstanceEndEditable -->
     </body>
