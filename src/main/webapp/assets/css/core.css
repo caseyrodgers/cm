@@ -28,6 +28,12 @@ a:visited,
 a:active,
 a:hover {
     color: #00bdbd;
+    text-decoration: none;
+}
+
+
+a:hover {
+  text-decoration: underline;
 }
 
 .purchase-points {
@@ -196,7 +202,7 @@ p {
 }
 
 #footer-find h1 {
-	font-size: 1.9em;
+	font-size: 1.7em;
 	margin-top: 15px;
 	margin-bottom: 10px;
 	color:  #8F8F8F;
