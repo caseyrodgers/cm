@@ -14,13 +14,13 @@ ol#terms_msg li{
 }
 
 
-#main-wrapper .signup_section {
+.signup_section {
     width: 315px;
     margin-bottom: 20px;
     vertical-align: bottom;
 }    
 
-#main-wrapper .signup_section2 {
+.signup_section2 {
     width: 300px;
     margin-bottom: 20px;
     vertical-align: bottom;
@@ -48,7 +48,7 @@ h3 {
     color: #1C97D1;
 }
 
-#main-wrapper .amount {
+.amount {
     color: red;
 }
 
@@ -90,7 +90,7 @@ div.field_value {
     padding-top: 20px;
 }
 
-#main-wrapper .input_field {
+.input_field {
     width: 238px;
 	font-size: 1.1em;
 }
@@ -111,6 +111,7 @@ div.input_error {
     font-weight: bold;
     padding: 0 5px 0 5px;
     display: none;
+    width: 300px;
 }
 
 /* ...... signup popup window ..... */
@@ -205,15 +206,6 @@ div.input_error {
     color: red;
 }
 
-#main-wrapper_ {
-    padding-left: 35px;
-    padding-right: 35px;
-}
-
-#main-wrapper {
-    padding:0;
-    margin: 15px;
-}
 
 
 .product_container {
@@ -415,11 +407,16 @@ span.underline{
 #signup_progress {
    -moz-border-radius:15px;
    border-radius:15px;
-   background: #688F0F;
+   background: #DF4219;
    padding: 10px;
    text-align: center;
-   border: 2px solid #E64218;
+   border: 2px solid #FFF;
    -moz-box-shadow: 5px 5px 5px #666;
    -webkit-box-shadow: 5px 5px 5px #666;
    box-shadow: 5px 5px 5px #666;
+}
+
+
+div.form_field {
+	
 }
