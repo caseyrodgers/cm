@@ -368,8 +368,8 @@ public class HaUserExtendedDao {
         PreparedStatement stmt = null;
         try {
         	stmt = conn.prepareStatement(sql);
-        	stmt.setInt(1, lessonCount);
-        	stmt.setInt(2, userId);
+        	stmt.setInt(1, userId);
+        	stmt.setInt(2, lessonCount);
         	stmt.setInt(3, userId);
         	stmt.executeUpdate();
         }
