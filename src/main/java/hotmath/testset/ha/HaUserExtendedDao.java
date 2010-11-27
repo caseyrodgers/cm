@@ -4,6 +4,11 @@ import hotmath.HotMathException;
 import hotmath.cm.util.CmMultiLinePropertyReader;
 import hotmath.util.sql.SqlUtilities;
 
+import hotmath.gwt.cm_admin.server.model.CmCustomProgramDao;
+import hotmath.gwt.cm_rpc.client.rpc.CmList;
+import hotmath.gwt.cm_tools.client.model.CustomLessonModel;
+import hotmath.gwt.cm_tools.client.model.StudentProgramModel;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -149,6 +154,17 @@ public class HaUserExtendedDao {
 
     static final String SELECT_USER_EXTENDED_BY_UID_SQL = 
         "select * from HA_USER_EXTENDED where user_id = ?";
+
+    static public void resetUserExtendedLessonStatusForUid(final Connection conn, StudentProgramModel program, int userId) throws Exception {
+    	if (program.isCustomProgram()) {
+    		CmCustomProgramDao dao = new CmCustomProgramDao();
+    		CmList<CustomLessonModel> list = dao.getCustomProgramDefinition(conn, program.getProgramId());
+    	    updateUserExtendedLessonStatusForUid(conn, userId, (list!=null)?list.size():0);    		
+    	}
+    	else {
+    	    updateUserExtendedLessonStatusForUid(conn, userId, 0);
+    	}
+    }
 
     static public void resetUserExtendedLessonStatusForUid(final Connection conn, int userId) throws Exception {
     	updateUserExtendedLessonStatusForUid(conn, userId, 0);
@@ -353,7 +369,8 @@ public class HaUserExtendedDao {
         try {
         	stmt = conn.prepareStatement(sql);
         	stmt.setInt(1, lessonCount);
-        	stmt.setInt(2, userId);        	
+        	stmt.setInt(2, userId);
+        	stmt.setInt(3, userId);
         	stmt.executeUpdate();
         }
         finally {
@@ -370,6 +387,7 @@ public class HaUserExtendedDao {
         	stmt = conn.prepareStatement(sql);
         	stmt.setInt(1, userId);
         	stmt.setInt(2, userId);
+        	stmt.setInt(3, userId);
         	stmt.executeUpdate();
         }
         finally {

@@ -548,6 +548,7 @@ public class CmStudentDao {
                 sm.setUid(stuUid);
                 addStudentProgram(conn, sm);
                 updateStudent(conn, sm);
+                HaUserExtendedDao.resetUserExtendedLessonStatusForUid(conn, sm.getProgram(), sm.getUid());
             }
         } catch (Exception e) {
             throw new Exception(String.format("Error adding Student: %s, Passcode: %s ***", sm.getName(), sm.getPasscode()),e);
@@ -2200,8 +2201,7 @@ public class CmStudentDao {
             sm.setSettings(settings);
             updateStudentSettings(conn, sm, percent);
         }
-        
-        HaUserExtendedDao.resetUserExtendedLessonStatusForUid(conn, uid);
+        HaUserExtendedDao.resetUserExtendedLessonStatusForUid(conn, program, uid);
     }
 
     private int getPercentFromString(String passPercent) {
