@@ -1,31 +1,21 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<!DOCTYPE HTML PUBLIC"-// W3C//DTD HTML 4.01//EN"" http://www.w3.org/TR/html4/strict.dtd">
 <%@page import="hotmath.cm.login.service.CmExceptionUserExpired"%>
-<html><!-- InstanceBegin template="/Templates/cm_main_2.dwt" codeOutsideHTMLIsLocked="false" -->
-<head>
-<!-- InstanceBeginEditable name="doctitle" -->
+<html><!-- InstanceBegin template="/Templates/main.dwt" codeOutsideHTMLIsLocked="false" -->
+    <head>
+        <!-- InstanceBeginEditable name="doctitle" -->
 <title>Catchup Math Login Page</title>
 <!-- InstanceEndEditable -->
-<link rel="icon" href="favicon.ico?" type="image/x-icon"/>
-<link rel="stylesheet" type="text/css" href="/resources/js/yui/build/reset-fonts-grids/reset-fonts-grids.css" />
-<link rel="stylesheet" type="text/css" href="/resources/js/yui/build/container/assets/skins/sam/container.css" /> 
-<link rel="stylesheet" type="text/css" href="/resources/css/core.css"/>
-<style>
-.info-section-img {
-   position: absolute;
-   right: 20px;
-   top: 23px;
-}
-</style>
-<script type="text/javascript">
-var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
-document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+        <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.2.0/build/cssreset/reset-min.css">
+        <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.2.0/build/cssgrids/grids-min.css">
+        <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Cantarell">
+        <link rel="stylesheet" type="text/css" href="/assets/css/core.css">
+        <link rel="stylesheet" type="text/css" href="/assets/css/SexyButtons/sexybuttons.css">
+<script>
+   /** specify which main menu item is selected
+   */
+   var _mainMenuItem=-1;
 </script>
-<script type="text/javascript">
-try {
-var pageTracker = _gat._getTracker("UA-634757-3");
-pageTracker._trackPageview();
-} catch(err) {}</script>
-<!-- InstanceBeginEditable name="head" -->
+        <!-- InstanceBeginEditable name="head" -->
 <link rel="stylesheet" href="/resources/SexyButtons/sexybuttons.css" type="text/css" />
 
 <%
@@ -80,42 +70,91 @@ pageTracker._trackPageview();
 }  
 </style>
 <!-- InstanceEndEditable -->
-</head>
-<body class='yui-skin-sam'>
-<div id="custom-doc" class="yui-t7">
-    <div id="main-wrapper">
-        <div id="hd" role="banner">
-            <div id='logo-div'>
-                <img alt='Catchup Math - Quiz, Review, Practice - Get caught up in algebra and geometry' class='logo png_bg' src='/resources/images/logo.png'/>
-            </div>
-            <div id='login-btn'>
-                <a id='login-anchor' href='/login.html'>
-                    <img src='/resources/images/login2.png'/>
-                </a>
-                <img class='powered_by_hotmath' src='/resources/images/powered_by_hotmath.png'/>
-            </div>
-	        <div class="toolbar">
-                <ul class='top-menu'>
-                    <li class='first'><a href='/'>Home</a></li>
-                    <li class='divider'>&nbsp;</li>
-                    <li><a href='/schools.html'>Schools</a></li>
-                    <li class='divider'>&nbsp;</li>                    
-                    <li><a href='/colleges.html'>Colleges</a></li>
-                    <li class='divider'>&nbsp;</li>                    
-                    <li><a href='/students.html'>Students</a></li>
-                    <li class='divider'>&nbsp;</li>                    
-                    <li><a href='/support.html'>Support</a></li>
-                    <li class='divider'>&nbsp;</li>                    
-                    <li><a href='/purchase.html'>Purchase</a></li>
-                    <li class='divider'>&nbsp;</li>                    
-                    <li class='last'><a href='/contact.html'>Contact</a></li>
-                </ul>
-            </div>
-        </div>
-        <div id="bd" role="main">
-		    <!-- InstanceBeginEditable name="MainBody" --> <!-- InstanceEndEditable --> 
-		  <div id='bd-left'>
-			    <!-- InstanceBeginEditable name="BodyLeft" -->
+    </head>
+    <body class='yui3-skin-sam'>
+        <div class='doc'>
+            <div class="yui3-g">
+                <!-- Header Area -->
+                <div class='yui3-g' id='header'>    
+                    <div class='yui3-u-7-8'>
+                        <img class='header_image' src='/assets/images/header_main.png'/>
+                    </div>
+                </div>
+
+                <!-- Menu bar Area -->
+                <div class="yui3-u-1" id='menubar'>
+                    <div class="yui3-g">
+                        <div class='yui3-u-1-8'>
+                            <a class="" href="/index.html">
+                                <span>
+                                    <span>Home
+                                    </span>
+                                </span>
+                            </a>
+                        </div>
+                        <div class='yui3-u-1-8'>
+                            <a class="" href="/schools.html">
+                                <span>
+                                    <span>Schools
+                                    </span>
+                                </span>
+                            </a>
+                        </div>
+                        <div class='yui3-u-1-8'>
+                            <a class="" href="/colleges.html">
+                                <span>
+                                    <span>Colleges
+                                    </span>
+                                </span>
+                            </a>
+                        </div>
+                        <div class='yui3-u-1-8'>
+                            <a class="" href="/students.html">
+                                <span>
+                                    <span>Students
+                                    </span>
+                                </span>
+                            </a>
+                        </div>
+                        <div class='yui3-u-1-8'>
+                            <a class="" href="/support.html">
+                                <span>
+                                    <span>Support
+                                    </span>
+                                </span>
+                            </a>
+                        </div>                                                
+                        <div class='yui3-u-1-8'>
+                            <a class="" href="/purchase.html">
+                                <span>
+                                    <span>Purchase
+                                    </span>
+                                </span>
+                            </a>
+                        </div>
+                        <div class='yui3-u-1-8'>
+                            <a class="" href="/contact.html">
+                                <span>
+                                    <span>Contact
+                                    </span>
+                                </span>
+                            </a>
+                        </div>  
+                        <div class='yui3-u-1-8'>
+                            <a class="" href="/login.html">
+                                <span>
+                                    <span>Login
+                                    </span>
+                                </span>
+                            </a>
+                        </div>                                                       
+                    </div>
+                </div>
+
+                <!-- Main Content area -->
+                <div id='main-content' class='yui3-g'>
+                    <div class='yui3-u-1'>
+                        <!-- InstanceBeginEditable name="main-content" -->
         <div id='login-wrapper' class='round-corners'>
           <h1>Login Problem</h1>
           <p class='reason'><%= reason %></p>
@@ -136,60 +175,172 @@ pageTracker._trackPageview();
 	          }
 	      %>
         </div>
-        <!-- InstanceEndEditable -->			</div>
-			<div id='bd-right'>
-			    <!-- InstanceBeginEditable name="BodyRight" --><!-- InstanceEndEditable -->			</div>
-            <div class="info-section">
-                <div class="section first">
-                    <a href='/schools.html'> <img class='info-section-img' src='/resources/images/for_schools.png'/>
-                    <h3>For Schools</h3>
-                    <p class='copy-text'>Help under-prepared students succeed in their math courses and tests.</p>
-                    <div class='find-out-more'><img src='/resources/images/link_arrow.png'/> <span>Find out more</span></div>
-		         </a>                                
+<!-- InstanceEndEditable -->
+                    </div>
                 </div>
-                <div class='section'>
-                    <a href='/colleges.html'><img class='info-section-img' src='/resources/images/for_colleges.png'/>
-                    <h3>For Colleges</h3>
-                    <p class='copy-text'> Help your under-prepared students meet prerequisites or catch up in class.</p>
-                    <div class='find-out-more'><img src='/resources/images/link_arrow.png'/> <span>Find out more</span> </div>
-				  </a>                </div>
-                <div id='section-last' class='section last'>
-                    <a href='/students.html'><img class='info-section-img' src='/resources/images/for_students.png'/>
-                    <h3>For Students</h3>
-                    <p class='copy-text'> Use Catchup Math to get caught up in your class,
-                        or to get ready for your next class.</p>
-                    <div class='find-out-more'><img src='/resources/images/link_arrow.png'/> <span>Find out more</span> </div>
-					</a>                </div>
-            </div>                
-		</div>
-        <div id="ft" role="contentinfo">
-          <ul class='bottom-menu'>
-                    <li class='first'><a href='/about.html'>About</a></li>
-                    <li class='divider'>|</li>                    
-                    <li><a href='/contact.html'>Contact</a></li>
-                    <li class='divider'>|</li>                    
-                    <li><a href='/sitemap.html'>Site Map</a></li>
-                    <li class='divider'>|</li>                    
-                    <li><a href='http://hotmath.com/pressroom/'>Press Room</a></li>
-                    <li class='divider'>|</li>     
-					<li><a href='http://hotmath.com/privacy_policy.html'>Privacy Policy</a></li>               
-                    <li class='divider'>|</li>     					
-                    <li class='last'><a href='http://hotmath.com'>Hotmath.com</a></li>
-                </ul>
+            </div>
         </div>
-    </div>
-</div>
-<script type="text/javascript" src="/resources/js/yui/build/yahoo-dom-event/yahoo-dom-event.js"></script> 
-<script type="text/javascript" src="/resources/js/yui/build/dragdrop/dragdrop-min.js"></script> 
-<script type="text/javascript" src="/resources/js/yui/build/container/container-min.js"></script> 
-<script type="text/javascript" src="/resources/js/yui/build/connection/connection-min.js"></script> 
-<script src="/resources/js/core.js"></script>
-<script>
-//    Ext.onReady(function() {
-//        Ext.DomHelper.append(document.body, {tag: 'p', cls: 'test'});
-//        Ext.select('p.test').update('Ext Core successfully injected');
-//    });    
-</script>
-<!-- InstanceBeginEditable name="AfterCoreJavascript" --><!-- InstanceEndEditable -->
-</body>
+        <div id='bottom-content-wrapper'>
+            <div id='bottom-content' class='doc'>
+                <!-- InstanceBeginEditable name="bottom-content" -->&nbsp;<!-- InstanceEndEditable -->
+            </div>
+        </div>
+        <!-- Fast Find Area -->
+        <div id='footer-find'>
+            <div id='footer-wrapper'>
+                <h1>CatchupMath.com
+                </h1>
+                <div class='yui3-g'>
+                    <div class='yui3-u-1-3'>
+                        <h2>
+                            <a href='/schools.html'>Schools
+                            </a> <span class='bar'>| </span>
+                            <a href='/colleges.html'>Colleges
+                            </a>
+                        </h2>
+                        <ul>
+                            <li>
+                                <img src='/assets/images/arrow_right_small.png'/>
+                                <a href='/pilot/'>Sign Up for a Pilot
+                                </a>
+                            </li>
+                            <li>
+                                <img src='/assets/images/arrow_right_small.png'/>
+                                <a href='/assets/forms/cm-price-list.pdf'>Price List
+                                </a>
+                            </li>
+                            <li>
+                                <img src='/assets/images/arrow_right_small.png'/>
+                                <a href='/assets/forms/cm-order-form.pdf'>Order Form
+                                </a>
+                            </li>
+                        </ul>
+                        <h2>
+                            <a href='/educators.html'>Educators Page
+                            </a>
+                        </h2>
+                        <ul>
+                            <li>
+                                <img src='/assets/images/arrow_right_small.png'/>
+                                <a href='/teacher-training-video.html'>Teacher Training Video
+                                </a>
+                            </li>
+                            <li>
+                                <img src='/assets/images/arrow_right_small.png'/>
+                                <a href='/administrator-getting-started.html'>Getting Started Guide
+                                </a>
+                            </li>
+                            <li>
+                                <img src='/assets/images/arrow_right_small.png'/>
+                                <a href='/assets/documents/cm-usage-performance-data.pdf'>Performance Data
+                                </a>
+                            </li>
+                            <li>
+                                <img src='/assets/images/arrow_right_small.png'/>
+                                <a href='/standards.html'>Standards
+                                </a>
+                            </li>                        
+                        </ul>
+                    </div>
+                    <div class='yui3-u-1-3'>
+                        <h2>
+                            <a href='/students.html'>Students
+                            </a>
+                        </h2>
+                        <ul>
+                            <li>
+                                <img src='/assets/images/arrow_right_small.png'/>
+                                <a href='#' onclick='showMonaMotivationalVideo();return false'>Student Video
+                                </a>
+                            </li>
+                            <li>
+                                <img src='/assets/images/arrow_right_small.png'/>
+                                <a href='/catchupmath_personal.html'>Retail Purchase
+                                </a>
+                            </li>
+                        </ul>
+                        <h2>
+                            <a href='/intervention.html'>Intervention
+                            </a>
+                        </h2>
+                        <ul>
+                            <li>
+                                <img src='/assets/images/arrow_right_small.png'/>
+                                <a href='/research.html'>Research
+                                </a>
+                            </li>
+                            <li>
+                                <img src='/assets/images/arrow_right_small.png'/>
+                                <a href='/success.html'>Success Stories
+                                </a>
+                            </li>
+                            <li>
+                                <img src='/assets/images/arrow_right_small.png'/>
+                                <a href='/programs.html'>Programs
+                                </a>
+                            </li>
+                            <li>
+                                <img src='/assets/images/arrow_right_small.png'/>
+                                <a href='/faq.html'>FAQ
+                                </a>
+                            </li>                                                  
+                        </ul>
+                    </div>
+                    <div class='yui3-u-1-3'>
+                        <h2>&nbsp;
+                        </h2>
+                        <ul class='sitemap-links'>
+                            <li>
+                                <img src='/assets/images/arrow_right_small_red.png'/>
+                                <a href='/support.html'>Support
+                                </a>
+                            </li>
+                            <li>
+                                <img src='/assets/images/arrow_right_small_red.png'/>
+                                <a href='http://hotmath.com/pressroom/'>Press Room
+                                </a>
+                            </li>
+                            <li>
+                                <img src='/assets/images/arrow_right_small_red.png'/>
+                                <a href='/privacy.html'>Privacy
+                                </a>
+                            </li>
+                            <li>
+                                <img src='/assets/images/arrow_right_small_red.png'/>
+                                <a href='http://hotmath.com'>Hotmath.com
+                                </a>
+                            </li>
+                            <li>
+                                <img src='/assets/images/arrow_right_small_red.png'/>
+                                <a href='/about.html'>About
+                                </a>
+                            </li>
+                            <li>
+                                <img src='/assets/images/arrow_right_small_red.png'/>
+                                <a href='/contact.html'>Contact
+                                </a>
+                            </li>                         
+                        </ul>
+                    </div>          
+                </div>
+            </div>
+        </div>
+        <!-- Footer -->
+      <div class='yui3-g' id='footer'>
+            <div class='yui3-u-1'>
+                <div class='copyright'>Copyright &copy; 2010 Catchupmath.com. All rights reserved.
+                </div>
+            </div>
+        </div>          
+        
+<script src="http://yui.yahooapis.com/3.2.0/build/yui/yui-min.js" type="text/javascript"></script>
+<script src='/assets/js/core.js'></script>
+        <!-- InstanceBeginEditable name="AfterJavascriptLoad" --><!-- AfterJavascriptLoad -->
+		<script>
+		  function doLoginAgain() {
+       	     history.go(-1);
+          }
+		</script>
+		<!-- InstanceEndEditable -->
+    </body>
 <!-- InstanceEnd --></html>

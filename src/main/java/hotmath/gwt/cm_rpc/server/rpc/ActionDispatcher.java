@@ -1,10 +1,10 @@
 package hotmath.gwt.cm_rpc.server.rpc;
 
+import hotmath.cm.server.listener.ContextListener;
 import hotmath.cm.util.ActionTypeMap;
+import hotmath.cm.util.ClientInfoHolder;
 import hotmath.flusher.Flushable;
 import hotmath.flusher.HotmathFlusher;
-import hotmath.cm.server.listener.ContextListener;
-import hotmath.cm.util.ClientInfoHolder;
 import hotmath.gwt.cm_rpc.client.ClientInfo;
 import hotmath.gwt.cm_rpc.client.ClientInfo.UserType;
 import hotmath.gwt.cm_rpc.client.rpc.Action;
@@ -237,20 +237,16 @@ public class ActionDispatcher {
             incrementActionsCompleted(actionType);
 
             return response;
-        } catch (CmRpcException cre) {
-        	incrementActionsException(actionType);
-            monitorCountOfExceptions++;
-            failed = true;
-            errMsg = cre.getMessage();
-            exceptionClass = cre.getClass().getName();
-            throw cre;
         } catch (Exception e) {
         	incrementActionsException(actionType);
             monitorCountOfExceptions++;
             failed = true;
             errMsg = e.getMessage();
             exceptionClass = e.getClass().getName();
-            throw new CmRpcException(e);
+            if(e instanceof CmRpcException)
+                throw (CmRpcException)e;
+            else 
+                throw new CmRpcException(e);
         } finally {
             if (conn != null)
                 SqlUtilities.releaseResources(null, null, conn);
