@@ -38,8 +38,11 @@ public class HaUserExtendedDao {
     	ResultSet rs = null;
     	PreparedStatement stmt = null;
     	PreparedStatement stmt2 = null;
-		int lastQuiz = (testRun.getAnsweredCorrect() * 100) / (testRun.getAnsweredCorrect() + testRun.getAnsweredIncorrect() + testRun.getNotAnswered());
-
+		int lastQuiz = 0;
+		if(testRun.getAnsweredCorrect() + testRun.getAnsweredIncorrect() + testRun.getNotAnswered() > 0) {
+		    /** protect against divide by zero errors */
+		    lastQuiz = (testRun.getAnsweredCorrect() * 100) / (testRun.getAnsweredCorrect() + testRun.getAnsweredIncorrect() + testRun.getNotAnswered());
+		}
 		try {
     		stmt = conn.prepareStatement(sql);
     		stmt.setInt(1, userId);
