@@ -21,13 +21,13 @@ public class ResetUserCommand_Test extends CmDbTestCase {
 	
 	
 	public void testCreate() throws Exception {
-		ResetUserAction a = new ResetUserAction(_user.getUid());
+		ResetUserAction a = new ResetUserAction(_user.getUid(),0);
 		RpcData r = new ResetUserCommand().execute(conn,a);
 		assertTrue(r.getDataAsString("status").equals("OK"));
 	}
 	
 	public void testDispatch() throws Exception {
-		ResetUserAction a = new ResetUserAction(_user.getUid());
+		ResetUserAction a = new ResetUserAction(_user.getUid(),0);
 		RpcData r = ActionDispatcher.getInstance().execute(a);
 		assertTrue(r.getDataAsString("status").equals("OK"));
 	}

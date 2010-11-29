@@ -173,6 +173,7 @@ public class GetPrescriptionCommand implements ActionHandler<GetPrescriptionActi
             sessionData.getInmhResources().add(problemsResource);
             sessionData.getInmhResources().add(resultsResource);
 
+
             /** Call action and request list of INMH items */
             GetViewedInmhItemsAction getViewedAction = new GetViewedInmhItemsAction(runId);
             List<RpcData> rdata = new GetViewedInmhItemsCommand().execute(conn, getViewedAction).getRpcData();
@@ -211,6 +212,7 @@ public class GetPrescriptionCommand implements ActionHandler<GetPrescriptionActi
             response.setPrescriptionData(presData);
             response.setCorrectPercent(getTestPassPercent(testRun.getAnsweredCorrect() + testRun.getAnsweredIncorrect() + testRun.getNotAnswered(), pres.getTestRun().getAnsweredCorrect()));
             response.setProgramTitle(pres.getTest().getTestDef().getTitle());
+            
 
             return response;
 

@@ -111,7 +111,7 @@ public class CreateTestRunCommand implements ActionHandler<CreateTestRunAction, 
             /** 
              * if user DID NOT pass this quiz, 
              * we increment the quiz slot to show
-             * a new quiz on next quiz creation.
+             * a new alternate quiz on next quiz creation.
              */
             if(!run.isPassing()) {
                 startTime = System.currentTimeMillis();
