@@ -188,11 +188,10 @@
         <!-- Fast Find Area -->
         <div id='footer-find'>
             <div id='footer-wrapper'>
-                <h1>CatchupMath.com
-                </h1>
                 <div class='yui3-g'>
                     <div class='yui3-u-1-3'>
                         <h2>
+                            <img src='/assets/images/arrow_right_small_white.png'/>
                             <a href='/schools.html'>Schools
                             </a> <span class='bar'>| </span>
                             <a href='/colleges.html'>Colleges
@@ -216,7 +215,7 @@
                             </li>
                         </ul>
                         <h2>
-                            <a href='/educators.html'>Educators Page
+                            <img src='/assets/images/arrow_right_small_white.png'/>                            <a href='/educators.html'>Educators Page
                             </a>
                         </h2>
                         <ul>
@@ -244,7 +243,7 @@
                     </div>
                     <div class='yui3-u-1-3'>
                         <h2>
-                            <a href='/students.html'>Students
+                            <img src='/assets/images/arrow_right_small_white.png'/>                            <a href='/students.html'>Students
                             </a>
                         </h2>
                         <ul>
@@ -260,7 +259,7 @@
                             </li>
                         </ul>
                         <h2>
-                            <a href='/intervention.html'>Intervention
+                            <img src='/assets/images/arrow_right_small_white.png'/>                            <a href='/intervention.html'>Intervention
                             </a>
                         </h2>
                         <ul>

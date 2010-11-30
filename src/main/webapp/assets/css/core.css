@@ -140,7 +140,7 @@ p {
 }
 
 #content-bottom .info-box-wrapper {
-	height: 320px;
+	height: 260px;
 }
 
 #content-bottom .info-box {
@@ -179,6 +179,10 @@ p {
 #content-bottom .info-box-wrapper  a:visited {
 	color: #666666;
 	text-decoration:none;
+}
+
+#content-bottom  .info-box-wrapper a:hover {
+	text-decoration: underline;
 }
 
 #content-bottom .info-box-wrapper {
@@ -261,6 +265,10 @@ p {
 #footer-wrapper {
    width: 960px;
    margin: auto;
+}
+
+#footer-wrapper h2 img {
+	margin-right: 10px;
 }
 
 
