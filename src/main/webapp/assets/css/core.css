@@ -140,7 +140,7 @@ p {
 }
 
 #content-bottom .info-box-wrapper {
-	height: 260px;
+	height: 280px;
 }
 
 #content-bottom .info-box {
@@ -150,7 +150,6 @@ p {
 #content-bottom .info-box .label {
 	font-size: 1.5em;
 	color: #6DAD00;
-	margin-left: 5px;
 }
 
 #big-buttons {
@@ -177,7 +176,7 @@ p {
 #content-bottom .info-box-wrapper  a:link,
 #content-bottom .info-box-wrapper  a:active,
 #content-bottom .info-box-wrapper  a:visited {
-	color: #666666;
+        color:#00BEBE;
 	text-decoration:none;
 }
 
