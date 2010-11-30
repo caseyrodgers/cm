@@ -194,7 +194,7 @@
                             <img src='/assets/images/arrow_right_small_white.png'/>
                             <a href='/schools.html'>Schools
                             </a> <span class='bar'>| </span>
-                            <img style='margin-right: 3' src='/assets/images/arrow_right_small_white.png'/>
+                            <img style='margin-right: 3px' src='/assets/images/arrow_right_small_white.png'/>
                             <a href='/colleges.html'>Colleges
                             </a>
                         </h2>
