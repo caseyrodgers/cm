@@ -56,7 +56,7 @@ public class GetSolutionCommand implements ActionHandler<GetSolutionAction, Solu
     @Override
     public SolutionInfo execute(final Connection conn, GetSolutionAction action) throws Exception {
         try {
-
+            long startTime = System.currentTimeMillis();
             String pid = action.getPid();
             int uid = action.getUid();
             
@@ -71,7 +71,10 @@ public class GetSolutionCommand implements ActionHandler<GetSolutionAction, Solu
             Map<String, String> map = new HashMap<String, String>();
             map.put("solution_html", solutionHtml);
             map.put("pid", pid);
-
+            logger.debug(String.format("+++ execute(): solution_html done in: %d msec",
+            	System.currentTimeMillis()-startTime));
+            
+            startTime = System.currentTimeMillis();
             InputStream is = getClass().getResourceAsStream("tutor_wrapper.vm");
             BufferedReader br = new BufferedReader(new InputStreamReader(is));
             String tutorWrapper = null;
@@ -82,8 +85,19 @@ public class GetSolutionCommand implements ActionHandler<GetSolutionAction, Solu
             tutorWrapper = sb.toString();
 
             solutionHtml = VelocityTemplateFromStringManager.getInstance().processTemplate(tutorWrapper, map);
+            logger.debug(String.format("+++ execute(): solutionHtml (Velocity) done in: %d msec",
+                	System.currentTimeMillis()-startTime));
+            
+            startTime = System.currentTimeMillis();
+            boolean hasShowWork = getHasShowWork(conn, uid, pid);
+            logger.debug(String.format("+++ execute(): getHasShowWork() done in: %d msec",
+                	System.currentTimeMillis()-startTime));
 
-            SolutionInfo solutionInfo = new SolutionInfo(solutionHtml,sp.getData(),getHasShowWork(conn,uid, pid));
+            startTime = System.currentTimeMillis();
+            SolutionInfo solutionInfo = new SolutionInfo(solutionHtml,sp.getData(),hasShowWork);
+            logger.debug(String.format("+++ execute(): SolutionInfo() done in: %d msec",
+                	System.currentTimeMillis()-startTime));
+
             return solutionInfo;
         } catch (Exception e) {
         	logger.error(String.format("*** Error executing Action: %s", action.toString()), e);
@@ -112,19 +126,20 @@ public class GetSolutionCommand implements ActionHandler<GetSolutionAction, Solu
      */
     private boolean getHasShowWork(final Connection conn, int uid, String pid) throws Exception {
         PreparedStatement pstat = null;
+        ResultSet rs = null;
         try {
-            String sql = "select count(*) as cnt from HA_TEST_RUN_WHITEBOARD " + " where user_id = ? and pid = ?";
+            String sql = "select count(*) as cnt from HA_TEST_RUN_WHITEBOARD where user_id = ? and pid = ?";
             pstat = conn.prepareStatement(sql);
 
             pstat.setInt(1, uid);
             pstat.setString(2, pid);
 
-            ResultSet rs = pstat.executeQuery();
+            rs = pstat.executeQuery();
             rs.first();
             int cnt = rs.getInt("cnt");
             return cnt > 0;
         } finally {
-            SqlUtilities.releaseResources(null, pstat, null);
+            SqlUtilities.releaseResources(rs, pstat, null);
         }
     }    
 
