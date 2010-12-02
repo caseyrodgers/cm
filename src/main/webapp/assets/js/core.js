@@ -20,7 +20,6 @@ function setupPage() {
             mainButton.removeClass('sexybutton');
             mainButton.addClass('sexy_cm_green');
             mainButton.addClass('sexybutton');
-            mainButton.addClass('sexy_cm_green');
         });
      });
  }
