@@ -516,3 +516,11 @@ p.standout {
 .yui3-u-1-8 {
 	vertical-align: middle;
 }
+
+
+
+#menubar a span span {
+   padding-left: 12px;
+   min-width: 60px;
+   text-align: center;
+}
