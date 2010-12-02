@@ -135,6 +135,9 @@
 	background-position: 0% -72px;
 }
 
+
+
+
 .sexybutton:hover span span span,
 .sexybutton:focus span span span,
 .sexybutton:active span span span,
@@ -224,7 +227,8 @@
 .sexybutton.sexyorange.disabled:focus {
 	color: #333 !important;
 }
-	
+
+
 .sexybutton.sexyorange span {
 	background-image: url(images/skins/orange/button_right.png);
 }
@@ -232,6 +236,8 @@
 .sexybutton.sexyorange span span {
 	background-image: url(images/skins/orange/button_left.png);
 }
+
+
 
 /* Yellow Button Skin */
 
@@ -354,6 +360,9 @@
 .sexybutton.sexysimple.sexyblack		{ background-color: #333; }
 .sexybutton.sexysimple.sexyred		{ background-color: #a90118; }
 .sexybutton.sexysimple.sexyorange	{ background-color: #ff8a00; }
+
+.sexybutton.sexysimple.sexy_cm_green   { background-color: #71B522; }
+
 .sexybutton.sexysimple.sexyyellow	{ background-color: #ffb515; }
 .sexybutton.sexysimple.sexygreen		{ background-color: #59a901; }
 .sexybutton.sexysimple.sexyblue		{ background-color: #015ea9; }

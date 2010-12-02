@@ -18,9 +18,9 @@ function setupPage() {
             var menuButtons = Y.one('#menubar').all('a');
             var mainButton = menuButtons.item(_mainMenuItem);
             mainButton.removeClass('sexybutton');
-            mainButton.removeClass('sexyorange');
+            mainButton.addClass('sexy_cm_green');
             mainButton.addClass('sexybutton');
-            mainButton.addClass('sexyorange');
+            mainButton.addClass('sexy_cm_green');
         });
      });
  }

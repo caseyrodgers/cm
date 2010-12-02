@@ -96,13 +96,12 @@ p {
 	margin-left: 20px;
 }
 #menubar {
-	height: 61px;
-    text-align: center;
+	margin-top: 5px;
+	height: 51px;
+    text-align: left;
 }
 
 #menubar a {
-	display: block;
-	margin-top: 15px;
 	text-decoration: none;
 	color: #2F2F2F;
 }
@@ -447,4 +446,73 @@ p.standout {
 #content-middle-right b {
    color: #333;
    font-weight: normal;
+}
+
+
+
+
+#menubar .sexy_cm_green:hover span,
+#menubar .sexy_cm_green:focus span {
+    background-position: 100% -40px;
+}
+
+#menubar .sexy_cm_green:hover span span,
+#menubar .sexy_cm_green:focus span span {
+	background-position: 0% -40px;
+}
+
+#menubar .sexy_cm_green:active span {
+	background-position: 100% -80px;
+}
+
+#menubar .sexy_cm_green:active span span {
+	background-position: 0% -80px;
+}
+
+#menubar .sexy_cm_green[disabled] span,
+#menubar .sexy_cm_green.disabled span {
+	background-position: 100% -120px;
+}
+
+#menubar .sexy_cm_green[disabled] span span,
+#menubar .sexy_cm_green.disabled span span {
+	background-position: 0% -120px;
+}
+
+
+/* CM Custom Skins */
+
+#menubar .sexybutton.sexy_cm_green,
+#menubar .sexybutton.sexy_cm_green:hover,
+#menubar .sexybutton.sexy_cm_green:focus {
+    color: white !important;
+}
+    
+#menubar .sexybutton.sexy_cm_green[disabled],
+#menubar .sexybutton.sexy_cm_green[disabled]:hover,
+#menubar .sexybutton.sexy_cm_green[disabled]:active,
+#menubar .sexybutton.sexy_cm_green[disabled]:focus,
+#menubar .sexybutton.sexy_cm_green.disabled,
+#menubar .sexybutton.sexy_cm_green.disabled:hover,
+#menubar .sexybutton.sexy_cm_green.disabled:active,
+#menubar .sexybutton.sexy_cm_green.disabled:focus {
+    color: #333 !important;
+}
+
+#menubar .sexybutton.sexy_cm_green span span {
+    background-image: url(/assets/images/sexybutton_green_left.png);
+}
+
+#menubar .sexybutton.sexy_cm_green span {
+    background-image: url(/assets/images/sexybutton_green_right.png);
+}
+
+#menubar .sexybutton.sexy_cm_green span {
+	height: 40px;
+	line-height: 40px;
+} 	
+
+
+.yui3-u-1-8 {
+	vertical-align: middle;
 }
