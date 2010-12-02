@@ -289,6 +289,10 @@ p {
 }
 
 
+.italic {
+	font-style: italic;
+}
+
 .sexybutton.sexysimple.sexywhite {
 	background: #FFF;
 }
