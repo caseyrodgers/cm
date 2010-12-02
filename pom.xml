@@ -500,7 +500,7 @@
         <version>1.2</version>
         <configuration>
           <gwtHome>${gwtHome}</gwtHome>
-          <extraJvmArgs>-Xmx256m -Xms256m</extraJvmArgs>
+          <extraJvmArgs>-Xmx256m -Xms256m -Dgwt.logLevel=INFO</extraJvmArgs>
           <inplace>true</inplace>
           <disableCastChecking>true</disableCastChecking>
           <disableClassMetadata>true</disableClassMetadata>
@@ -509,8 +509,8 @@
           <modules>
             <module>hotmath.gwt.cm.CatchupMath</module>
             <module>hotmath.gwt.cm_admin.CatchupMathAdmin</module>
-            <!-- 
             <module>hotmath.gwt.cm_mobile2.CatchupMathMobile2</module>
+            <!-- 
             <module>hotmath.gwt.cm_activity_word_problems.CmActivityWordProblems</module>
             -->
           <!--

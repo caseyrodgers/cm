@@ -36,7 +36,9 @@ ant
 # build the CM package
 #
 echo Building full CM package
-mvn package
+mvn package minify:minify
+
+
 
 
 # make symbolic links for base CM to shared resources
@@ -67,9 +69,10 @@ echo Copying latest CM jarj into HM
 cp target/cm-1.0-SNAPSHOT.jar ../hotmath2/web/WEB-INF/lib
 
 # make sure Tomcat has a clean idea of webapp
+# WARNING: tomcat2 or tomcat .. depends on live/test 
 #
 echo Copying tomcat ROOT.xml into CM tomcat instance.
-cp src/main/webapp/ROOT.xml ~/tomcat/conf/Catalina/localhost
+cp src/main/webapp/ROOT.xml ~/tomcat2/conf/Catalina/localhost
 
 # be rough
 #
