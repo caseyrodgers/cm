@@ -1,0 +1,11 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder" xmlns:g="urn:import:com.google.gwt.user.client.ui">
+     <ui:style>
+          .bolder { font-weight:bold; color: green;}
+     </ui:style>
+     <g:HTMLPanel>
+          <h1>Solution is made up of <g:Label ui:field="stepCount"></g:Label></h1>
+          The Solution Step Editor is going to be cool.
+          <g:RichTextArea ui:field="richText"></g:RichTextArea>
+     </g:HTMLPanel>
+</ui:UiBinder>
