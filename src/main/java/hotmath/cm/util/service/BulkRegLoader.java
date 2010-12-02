@@ -282,7 +282,7 @@ public class BulkRegLoader {
     		return true;
 
     	} catch ( Exception ex ) {
-    		LOGGER.warn("Exception processing: " + fi.getName(), ex);
+    		LOGGER.debug("Exception processing: " + fi.getName(), ex);
     	}
     	finally {
     		if (is != null) {
