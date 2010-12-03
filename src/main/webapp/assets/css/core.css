@@ -453,6 +453,13 @@ p.standout {
 
 
 
+.sexy_cm_green span span {
+ #font-family: Tahoma, 'Cantarell', sans-serif;
+ font-size: 15px;
+ font-weight: normal;
+
+ text-shadow: 0px 1px 1px rgba(0, 0, 0, 0.5);
+}
 
 .sexy_cm_green:hover span,
 .sexy_cm_green:focus span {
@@ -546,6 +553,12 @@ span {
 	margin-left: 10px;
 }
 
+#menubar2 a:link,
+#menubar2 a:active,
+#menubar2 a:visited,
+#menubar2 a:hover {
+   color: #333;
+}
 
 ul#menubar2 {
 	margin-top: 5px;
