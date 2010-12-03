@@ -454,68 +454,68 @@ p.standout {
 
 
 
-#menubar .sexy_cm_green:hover span,
-#menubar .sexy_cm_green:focus span {
+.sexy_cm_green:hover span,
+.sexy_cm_green:focus span {
     background-position: 100% -40px;
 }
 
-#menubar .sexy_cm_green:hover span span,
-#menubar .sexy_cm_green:focus span span {
+.sexy_cm_green:hover span span,
+.sexy_cm_green:focus span span {
 	background-position: 0% -40px;
 }
 
-#menubar .sexy_cm_green:active span {
+ .sexy_cm_green:active span {
 	background-position: 100% -80px;
 }
 
-#menubar .sexy_cm_green:active span span {
+.sexy_cm_green:active span span {
 	background-position: 0% -80px;
 }
 
-#menubar .sexy_cm_green[disabled] span,
-#menubar .sexy_cm_green.disabled span {
+.sexy_cm_green[disabled] span,
+ .sexy_cm_green.disabled span {
 	background-position: 100% -120px;
 }
 
-#menubar .sexy_cm_green[disabled] span span,
-#menubar .sexy_cm_green.disabled span span {
+.sexy_cm_green[disabled] span span,
+.sexy_cm_green.disabled span span {
 	background-position: 0% -120px;
 }
 
 
 /* CM Custom Skins */
 
-#menubar .sexybutton.sexy_cm_green,
-#menubar .sexybutton.sexy_cm_green:hover,
-#menubar .sexybutton.sexy_cm_green:focus {
+.sexybutton.sexy_cm_green,
+ .sexybutton.sexy_cm_green:hover,
+.sexybutton.sexy_cm_green:focus {
     color: white !important;
 }
     
-#menubar .sexybutton.sexy_cm_green[disabled],
-#menubar .sexybutton.sexy_cm_green[disabled]:hover,
-#menubar .sexybutton.sexy_cm_green[disabled]:active,
-#menubar .sexybutton.sexy_cm_green[disabled]:focus,
-#menubar .sexybutton.sexy_cm_green.disabled,
-#menubar .sexybutton.sexy_cm_green.disabled:hover,
-#menubar .sexybutton.sexy_cm_green.disabled:active,
-#menubar .sexybutton.sexy_cm_green.disabled:focus {
+.sexybutton.sexy_cm_green[disabled],
+.sexybutton.sexy_cm_green[disabled]:hover,
+.sexybutton.sexy_cm_green[disabled]:active,
+.sexybutton.sexy_cm_green[disabled]:focus,
+.sexybutton.sexy_cm_green.disabled,
+.sexybutton.sexy_cm_green.disabled:hover,
+.sexybutton.sexy_cm_green.disabled:active,
+.sexybutton.sexy_cm_green.disabled:focus {
     color: #333 !important;
 }
 
-#menubar .sexybutton.sexy_cm_green span span {
+.sexybutton.sexy_cm_green span span {
     background-image: url(/assets/images/sexybutton_green_left.png);
 }
 
-#menubar .sexybutton.sexy_cm_green span {
+.sexybutton.sexy_cm_green span {
     background-image: url(/assets/images/sexybutton_green_right.png);
 }
 
-#menubar span {
+span {
 	height: 40px;
     line-height: 40px;
 }
 
-#menubar .sexybutton.sexy_cm_green span {
+.sexybutton.sexy_cm_green span {
 	height: 40px;
 	line-height: 40px;
 } 	
@@ -523,7 +523,7 @@ p.standout {
 
 #menubar a span span {
    text-align: center;
-   width: 65px;
+   width: 90px;
 }
 
 #menubar .notselected span span{
@@ -531,16 +531,30 @@ p.standout {
 	text-align: center;
 }
 
-#menubar a.notselected:hover {
+#menubar2 a span span {
+	text-align: center;
+	width: 70px;
+}
+
+#menubar2 a.notselected:hover {
 	background-image: url(/assets/images/menu_over.png);
 	width: 90px;
 	height: 40px;
 	display: block;
-	margin-left: 15px;
 	text-align: center;
+	text-decoration: none;
+	margin-left: 10px;
 }
 
 
-#menubar .yui3-u-1-8 {
+ul#menubar2 {
+	margin-top: 5px;
+	display: block;
+	height:51px; 
+}
+
+#menubar2 li {
+	float: left;
+	width: 110px;
 	text-align: center;
 }

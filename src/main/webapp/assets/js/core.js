@@ -18,7 +18,7 @@ function setupPage() {
             return;
         
         Y.on('domready',function() {
-            var menuButtons = Y.one('#menubar').all('a');
+            var menuButtons = Y.one('#menubar2').all('a');
             _mainMenuItemObject = menuButtons.item(_mainMenuItem);
             _mainMenuItemObject.removeClass('notselected');
             _mainMenuItemObject.addClass('sexy_cm_green');
