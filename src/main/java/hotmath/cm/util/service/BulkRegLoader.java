@@ -10,8 +10,6 @@ import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.poifs.filesystem.POIFSFileSystem;
 
-import sb.util.SbUtilities;
-
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -106,16 +104,16 @@ public class BulkRegLoader {
                 entry.setMessage("Invalid row: Must be name TAB password.");
                 entries.add(entry);
             }
-            else {
+            else { // (pair.length == 2)
                 
                 /** strip spaces from passwords before processing
                  *  
                  *  NOTE: original password is used in error reporting)
                  *        
                  */
-                String password = (pair.length > 1)?pair[1].replace(" ", ""):"";
+                String password = pair[1].replace(" ", "");
                 
-                if(pair.length == 2 && !nameSet.contains(pair[0]) && !passwdSet.contains(password) ) {
+                if (!nameSet.contains(pair[0]) && !passwdSet.contains(password) ) {
                     AutoRegistrationEntry entry = new AutoRegistrationEntry();
                     entry.setName(pair[0]);
                     entry.setPassword(pair[1]);
@@ -125,29 +123,19 @@ public class BulkRegLoader {
                     
                     entries.add(entry);
                 }
-                else {
-                    if ((pair.length > 0 && nameSet.contains(pair[0])) ||
-                        (pair.length > 1 && passwdSet.contains(password))) {
-                        errorCount++;
-                        if (nameSet.contains(pair[0])) {
-                        	if (! dupNames.contains(pair[0]))
-                            	dupNames.add(pair[0]);
-                        }
-                        /*
-                         * check password (no blanks), include original password in dups
-                         */
-                        if (pair.length > 1 && passwdSet.contains(password)) {
-                        	if (! dupPasswords.contains(pair[1]))
-                            	dupPasswords.add(pair[1]);
-                        }
-                    }
-                    else {
-                        /** if error is simply not enough tokens, eat it.
-                         * 
-                         * @TODO: find better way to know lines to ignore
-                         * (This is to deal with filename added to input by IE.)
-                         */
-                    }
+                else { // have dup name and/or password
+                	errorCount++;
+                	if (nameSet.contains(pair[0])) {
+                		if (! dupNames.contains(pair[0]))
+                			dupNames.add(pair[0]);
+                	}
+                	/*
+                	 * check password (no blanks), include original password in dups
+                	 */
+                	if (passwdSet.contains(password)) {
+                		if (! dupPasswords.contains(pair[1]))
+                			dupPasswords.add(pair[1]);
+                	}
                 }
             }
         }
@@ -244,7 +232,6 @@ public class BulkRegLoader {
     private StringBuilder tsvContents;
     private boolean hasNumericContent;
     
-    @SuppressWarnings("unchecked")
 	private boolean isExcel(FileItem fi) throws IOException {
 		InputStream is = null;
     	try {
@@ -254,7 +241,7 @@ public class BulkRegLoader {
     		HSSFSheet sheet = wb.getSheetAt(0);
 
     		// Iterate over each row in the sheet
-    		Iterator rows = sheet.rowIterator(); 
+    		Iterator<?> rows = sheet.rowIterator(); 
     		tsvContents = new StringBuilder();
     		hasNumericContent = false;
     		
@@ -262,7 +249,7 @@ public class BulkRegLoader {
     			HSSFRow row = (HSSFRow) rows.next();
 
     			// Iterate over each cell in the row
-    			Iterator cells = row.cellIterator();
+    			Iterator<?> cells = row.cellIterator();
     			int cellCount = 0;
     			while (cells.hasNext()) {
     				HSSFCell cell = (HSSFCell) cells.next();
