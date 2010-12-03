@@ -98,7 +98,6 @@ p {
 #menubar {
 	margin-top: 5px;
 	height: 51px;
-    text-align: left;
 }
 
 #menubar a {
@@ -512,7 +511,7 @@ p.standout {
 }
 
 #menubar span {
-	   height: 40px;
+	height: 40px;
     line-height: 40px;
 }
 
@@ -522,14 +521,26 @@ p.standout {
 } 	
 
 
-.yui3-u-1-8 {
-	vertical-align: middle;
+#menubar a span span {
+   text-align: center;
+   width: 65px;
+}
+
+#menubar .notselected span span{
+	padding-left: 0;
+	text-align: center;
+}
+
+#menubar a.notselected:hover {
+	background-image: url(/assets/images/menu_over.png);
+	width: 90px;
+	height: 40px;
+	display: block;
+	margin-left: 15px;
+	text-align: center;
 }
 
 
-
-#menubar a span span {
-   padding-left: 12px;
-   min-width: 60px;
-   text-align: center;
+#menubar .yui3-u-1-8 {
+	text-align: center;
 }

@@ -2,6 +2,9 @@ function $get(x) {
     return document.getElementById(x);
 }
 
+
+var _mainMenuItemObject=null;
+
 function setupPage() {
     /** setup menu buttons
      * 
@@ -16,12 +19,35 @@ function setupPage() {
         
         Y.on('domready',function() {
             var menuButtons = Y.one('#menubar').all('a');
-            var mainButton = menuButtons.item(_mainMenuItem);
-            mainButton.removeClass('sexybutton');
-            mainButton.addClass('sexy_cm_green');
-            mainButton.addClass('sexybutton');
+            _mainMenuItemObject = menuButtons.item(_mainMenuItem);
+            _mainMenuItemObject.removeClass('notselected');
+            _mainMenuItemObject.addClass('sexy_cm_green');
+            _mainMenuItemObject.addClass('sexybutton');
         });
      });
+    
+    YUI().use('event-mouseenter', function(Y) {
+        return;
+        
+        Y.on("mouseenter", function (e) {
+            if(_mainMenuItemObject == this) {
+                alert('this is the selected object');
+                return;
+            }
+            
+             this.addClass('sexybutton');
+             this.addClass('sexy_cm_green');
+             this.addClass('disabled');
+         }, ".notselected");
+        
+        Y.on("mouseleave", function (e) {
+             this.removeClass('disabled');
+             this.removeClass('sexybutton');
+             this.removeClass('sexy_cm_green');
+
+         }, ".notselected");
+        
+    });
  }
 
 function setupPageLocal() {
