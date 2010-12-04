@@ -571,3 +571,27 @@ ul#menubar2 {
 	width: 110px;
 	text-align: center;
 }
+
+.postit_2 {
+	background: url(/assets/images/postit_2.png) no-repeat;
+	width: 320px;
+	height: 364px;
+}
+
+.postit_2 p {
+	margin-left: 10px;
+	padding: 20px;
+    font-family:'Reenie Beanie',arial,serif;
+    font-size:2em;
+}
+
+.postit_2 a {
+	display: block;
+	font-family: Tahoma;
+	font-size: .7em;
+	font-weight: normal;
+}
+
+.postit_2 .normal {
+    font-family: Tahoma;font-size: 1.5em;
+}	
