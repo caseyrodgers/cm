@@ -4,5 +4,8 @@
       <inherits name='hotmath.gwt.cm_rpc.CmRpc'/>
       <!-- Specify the app entry point class.                         -->
       <entry-point class='hotmath.gwt.shared.client.CmShared'/>
+      <inherits name="com.extjs.gxt.ui.GXT"/>
+      <inherits name="hotmath.gwt.cm_tools.CatchupMathTools"/>
+      <inherits name="com.extjs.gxt.ui.GXT"/>
 </module>
 
