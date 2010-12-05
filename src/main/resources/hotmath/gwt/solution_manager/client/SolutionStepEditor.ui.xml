@@ -3,9 +3,8 @@
      <ui:style>
           .bolder { font-weight:bold; color: green;}
      </ui:style>
-     <g:HTMLPanel>
-          <h1>Solution is made up of <g:Label ui:field="stepCount"></g:Label></h1>
-          The Solution Step Editor is going to be cool.
-          <g:RichTextArea ui:field="richText"></g:RichTextArea>
+     <g:HTMLPanel ui:field="mainPanel">
+          <h1>Solution Step Editor</h1>
+          <h2><g:Label ui:field="solutionId"></g:Label></h2>
      </g:HTMLPanel>
 </ui:UiBinder>
