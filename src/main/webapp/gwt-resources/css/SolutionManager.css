@@ -1,0 +1,16 @@
+body {
+
+}
+
+.step {
+  border: 1px solid blue;
+}
+
+.solution-step-editor {
+  border: 1px solid blue;
+}
+
+.problem-statement {
+  border: 1px solid red;
+}
+
