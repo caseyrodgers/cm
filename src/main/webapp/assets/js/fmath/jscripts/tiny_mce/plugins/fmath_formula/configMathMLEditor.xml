@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<configuration>
+	<translate>
+		<text id="helpMsg">Use "arrows" and "tab" to navigate, "enter" to create new element, "delete", "backspace" ...</text>
+		<text id="matrixChoiceLines">Nb of Lines:</text>
+		<text id="matrixChoiceColumns">Nb of columns:</text>		
+		<text id="matrixChoiceButton">Create matrix</text>				
+	</translate>
+	<properties>
+		<property id="width">800</property>
+		<property id="height">450</property>		
+		<property id="disableSave">true</property>
+		<property id="disableOpen">true</property>
+		<property id="loadOnInit">true</property>
+	</properties>
+</configuration>
