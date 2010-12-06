@@ -112,30 +112,34 @@ public class BulkRegLoader {
                  *        
                  */
                 String password = pair[1].replace(" ", "");
+
+                AutoRegistrationEntry entry = new AutoRegistrationEntry();
+                entry.setName(pair[0]);
+                entry.setPassword(pair[1]);
+                entries.add(entry);
                 
                 if (!nameSet.contains(pair[0]) && !passwdSet.contains(password) ) {
-                    AutoRegistrationEntry entry = new AutoRegistrationEntry();
-                    entry.setName(pair[0]);
-                    entry.setPassword(pair[1]);
-                    
                     nameSet.add(pair[0]);
                     passwdSet.add(password);
-                    
-                    entries.add(entry);
                 }
                 else { // have dup name and/or password
-                	errorCount++;
+                    entry.setIsError(true);
+
+                    StringBuilder sb = new StringBuilder();
+                    sb.append("Invalid row: ");
                 	if (nameSet.contains(pair[0])) {
-                		if (! dupNames.contains(pair[0]))
-                			dupNames.add(pair[0]);
+                		sb.append(" duplicate name");
                 	}
-                	/*
-                	 * check password (no blanks), include original password in dups
-                	 */
                 	if (passwdSet.contains(password)) {
-                		if (! dupPasswords.contains(pair[1]))
-                			dupPasswords.add(pair[1]);
+                		if (nameSet.contains(pair[0])) {
+                			sb.append(" and password");
+                		}
+                		else {
+                			sb.append(" duplicate password");
+                		}
                 	}
+            		sb.append(".");
+                    entry.setMessage(sb.toString());
                 }
             }
         }
@@ -181,7 +185,7 @@ public class BulkRegLoader {
     @Override
     public String toString() {
         return "BulkRegLoader [duplicateNames=" + dupNames + ", duplicatePasswords="
-                + dupPasswords + ", entries=" + entries + ", errorCount=" + errorCount
+                + dupPasswords + ", entries=" + entries
                 + ", hasNumericContent=" + hasNumericContent + ", key=" + key + "]";
     }
 
