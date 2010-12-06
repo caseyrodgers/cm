@@ -77,35 +77,21 @@ public class AutoRegistrationWindow extends CmWindow {
         setVisible(false);
     }
 
-    Button _buttonCreate;
-    Button _buttonCancel;
+    Button _buttonCreateXXX;
+    Button _buttonClose;
 
     private void drawGui() {
-    	
-        _buttonCreate = new Button("Create Students");
-        
-        _buttonCreate.addSelectionListener(new SelectionListener<ButtonEvent>() {
-            @Override
-            public void componentSelected(ButtonEvent ce) {
-                createStudentAccounts();
-            }
-        });
-        _buttonCreate.setEnabled(false);
-        addButton(_buttonCreate);
-
-        _buttonCancel = new Button("Cancel");
-        _buttonCancel.addSelectionListener(new SelectionListener<ButtonEvent>() {
+        _buttonClose = new Button("Close");
+        _buttonClose.addSelectionListener(new SelectionListener<ButtonEvent>() {
 
             @Override
             public void componentSelected(ButtonEvent ce) {
                 close();
             }
         });
-        //getButtonBar().setAlignment(HorizontalAlignment.RIGHT);
-        addButton(_buttonCancel);
+        addButton(_buttonClose);
     }
 
-    private FormData formData = new FormData("-20");
     Grid<AutoRegistrationEntryGxt> _previewGrid;
 
     private void createForm(int total, int errors, List<AutoRegistrationEntryGxt> gridModel) {
@@ -188,14 +174,11 @@ public class AutoRegistrationWindow extends CmWindow {
                     		createStudentAccounts();
                     	}
                     	else {
-	                        /** There are records to create
+	                        /** There are errors to display
 	                         * 
 	                         */
                     		createForm(result.getEntries().size(), errorCount, createGxtModelFromEntries(result.getEntries()));
                     		
-	                        if(result.getEntries().size() - errorCount > 0)
-	                        	_buttonCreate.setEnabled(true);
-	                        
 	                        setVisible(true);
                     	}
                         CatchupMathTools.setBusy(false);
@@ -241,8 +224,8 @@ public class AutoRegistrationWindow extends CmWindow {
 
                         if (result.getErrorCount() > 0) {
                         	
-                            _buttonCancel.setText("Close");
-                            _buttonCreate.setEnabled(false);
+                            _buttonClose.setText("Close");
+                            //_buttonCreate.setEnabled(false);
 
                             _previewGrid.getStore().removeAll();
                             _previewGrid.getStore().add(createGxtModelFromEntries(result.getEntries()));
@@ -251,7 +234,8 @@ public class AutoRegistrationWindow extends CmWindow {
                             
                             String msg = "";
                             if(ok > 0) {
-                            	String msgErr = "However, there were errors while creating the other student accounts.";
+                            	String msgErr = (ok > 1) ? "However, there were errors while creating some of the student accounts."
+                            			                 : "However, there was an error while creating one of the student accounts.";
                             	msg = msgSuccess + " " + msgErr;
                             }
                             else {
