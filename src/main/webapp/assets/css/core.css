@@ -595,3 +595,16 @@ ul#menubar2 {
 .postit_2 .normal {
     font-family: Tahoma;font-size: 1.5em;
 }	
+
+
+.postit_3 .top {
+	background: url(/assets/images/postit_top.png) no-repeat;
+	min-height: 51px;
+	width: 320px;
+}
+
+.postit_3 .bottom {
+    background: url(/assets/images/postit_bottom.png) no-repeat;
+    min-height: 51px;
+    width: 320px;
+}
