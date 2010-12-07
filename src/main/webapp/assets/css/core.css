@@ -722,20 +722,22 @@ ul#menubar2 {
 	margin-left: 10px;
 	padding-left: 30px;
 	padding-right: 30px;
-	padding-top: 25px;
+	padding-top: 40px;
     font-size: 1em;
     color: #000000;
     font-family:'Neucha',arial,serif;
+margin-bottom: 0;
+padding-bottom: 0;
 }
 
 .postit_2 .second {
-	padding-top: 10px;
+	padding-top: 30px;
 }
 
 .postit_2 a {
     color: #0057c2;
     display: block;
-    padding-top: 15px;
+    padding-top: 7px;
     font-family:'Neucha',arial,serif;
     font-size: 1em;
     font-weight: normal;
