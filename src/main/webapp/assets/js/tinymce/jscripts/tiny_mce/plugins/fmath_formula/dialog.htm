@@ -44,6 +44,7 @@
 	</tr>
 	</table>
 
+        <button onclick='showMathML()'>Show MathML</button>
 	<div class="mceActionPanel">
 		<input type="button" class="button" id="update" name="update" value="{#update}" onclick="updateFormula();" />
 		<input type="button" id="insert" name="insert" value="{#insert}" onclick="insertFormula();" />
@@ -51,6 +52,11 @@
 	</div>
 </form>
 <script>
+
+        function showMathML() {
+             alert(mathMlEd.getMathML());
+        }
+
 	if(mathml!=null){
 		document.getElementById("insert").style.display="none";
 	}else{

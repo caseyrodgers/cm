@@ -452,6 +452,9 @@ p.standout {
 }
 
 
+/* define Sexy Buttons */
+
+/* start sexy_cm_green */
 
 .sexy_cm_green span span {
  #font-family: Tahoma, 'Cantarell', sans-serif;
@@ -489,9 +492,6 @@ p.standout {
 	background-position: 0% -120px;
 }
 
-
-/* CM Custom Skins */
-
 .sexybutton.sexy_cm_green,
  .sexybutton.sexy_cm_green:hover,
 .sexybutton.sexy_cm_green:focus {
@@ -526,6 +526,146 @@ span {
 	height: 40px;
 	line-height: 40px;
 } 	
+
+/* end sexy button green */
+
+
+/* start sexybutton_xxl-aqua_left */
+
+.sexybutton_xxl-aqua span span {
+   font-size: 25px;
+   font-weight: normal;
+}
+
+.sexybutton_xxl-aqua:hover span,
+.sexybutton_xxl-aqua:focus span {
+    background-position: 100% -90px;
+}
+
+.sexybutton_xxl-aqua:hover span span,
+.sexybutton_xxl-aqua:focus span span {
+    background-position: 0% -90px;
+}
+
+ .sexybutton_xxl-aqua:active span {
+    background-position: 100% -180px;
+}
+
+.sexybutton_xxl-aqua:active span span {
+    background-position: 0% -180px;
+}
+
+.sexybutton_xxl-aqua[disabled] span,
+ .sexybutton_xxl-aqua.disabled span {
+    background-position: 100% -270px;
+}
+
+.sexybutton_xxl-aqua[disabled] span span,
+.sexybutton_xxl-aqua.disabled span span {
+    background-position: 0% -270px;
+}
+
+.sexybutton.sexybutton_xxl-aqua,
+ .sexybutton.sexybutton_xxl-aqua:hover,
+.sexybutton.sexybutton_xxl-aqua:focus {
+    color: white !important;
+}
+    
+.sexybutton.sexybutton_xxl-aqua[disabled],
+.sexybutton.sexybutton_xxl-aqua[disabled]:hover,
+.sexybutton.sexybutton_xxl-aqua[disabled]:active,
+.sexybutton.sexybutton_xxl-aqua[disabled]:focus,
+.sexybutton.sexybutton_xxl-aqua.disabled,
+.sexybutton.sexybutton_xxl-aqua.disabled:hover,
+.sexybutton.sexybutton_xxl-aqua.disabled:active,
+.sexybutton.sexybutton_xxl-aqua.disabled:focus {
+    color: #333 !important;
+}
+
+.sexybutton.sexybutton_xxl-aqua span span {
+    background-image: url(/assets/images/sexybutton_xxl-aqua_left.png);
+}
+
+.sexybutton.sexybutton_xxl-aqua span {
+    background-image: url(/assets/images/sexybutton_xxl-aqua_right.png);
+}
+
+.sexybutton.sexybutton_xxl-aqua span {
+    height: 90px;
+    line-height: 90px;
+}   
+
+/* end sexybutton_xxl-aqua_left */
+
+/* start sexybutton_xxl-green_left */
+
+.sexybutton_xxl-green span span {
+     font-size: 25px;
+     font-weight: normal;
+}
+
+.sexybutton_xxl-green:hover span,
+.sexybutton_xxl-green:focus span {
+    background-position: 100% -90px;
+}
+
+.sexybutton_xxl-green:hover span span,
+.sexybutton_xxl-green:focus span span {
+    background-position: 0% -90px;
+}
+
+ .sexybutton_xxl-green:active span {
+    background-position: 100% -180px;
+}
+
+.sexybutton_xxl-green:active span span {
+    background-position: 0% -180px;
+}
+
+.sexybutton_xxl-green[disabled] span,
+ .sexybutton_xxl-green.disabled span {
+    background-position: 100% -270px;
+}
+
+.sexybutton_xxl-green[disabled] span span,
+.sexybutton_xxl-green.disabled span span {
+    background-position: 0% -270px;
+}
+
+.sexybutton.sexybutton_xxl-green,
+ .sexybutton.sexybutton_xxl-green:hover,
+.sexybutton.sexybutton_xxl-green:focus {
+    color: white !important;
+}
+    
+.sexybutton.sexybutton_xxl-green[disabled],
+.sexybutton.sexybutton_xxl-green[disabled]:hover,
+.sexybutton.sexybutton_xxl-green[disabled]:active,
+.sexybutton.sexybutton_xxl-green[disabled]:focus,
+.sexybutton.sexybutton_xxl-green.disabled,
+.sexybutton.sexybutton_xxl-green.disabled:hover,
+.sexybutton.sexybutton_xxl-green.disabled:active,
+.sexybutton.sexybutton_xxl-green.disabled:focus {
+    color: #333 !important;
+}
+
+.sexybutton.sexybutton_xxl-green span span {
+    background-image: url(/assets/images/sexybutton_xxl-green_left.png);
+}
+
+.sexybutton.sexybutton_xxl-green span {
+    background-image: url(/assets/images/sexybutton_xxl-green_right.png);
+}
+
+.sexybutton.sexybutton_xxl-green span {
+    height: 90px;
+    line-height: 90px;
+}   
+
+/* end sexybutton_xxl-green_left */
+
+/* end of Sexy Button Definitions */
+
 
 
 #menubar a span span {
