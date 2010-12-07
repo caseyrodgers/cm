@@ -120,14 +120,6 @@
                             </a>
                         </li>
                         <li>
-                            <a class="notselected" href="/support.html">
-                                <span>
-                                    <span>Support
-                                    </span>
-                                </span>
-                            </a>
-                        </li>                                                
-                        <li>
                             <a class="notselected" href="/purchase.html">
                                 <span>
                                     <span>Purchase
@@ -135,14 +127,6 @@
                                 </span>
                             </a>
                         </li>
-                        <li>
-                            <a class="notselected" href="/contact.html">
-                                <span>
-                                    <span>Contact
-                                    </span>
-                                </span>
-                            </a>
-                        </li>  
                         <li>
                             <a class="notselected" href="/login.html">
                                 <span>
