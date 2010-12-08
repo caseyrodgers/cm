@@ -160,7 +160,7 @@ var QuoteManager = {
         formatQuote:function(quote) {
             return '<p>' +
                        quote.text +
-                       '<a href="' + quote.link_url + '">' + quote.link_text + '</a>' + 
+                       '<a href="' + quote.link_url + '">' + quote.link_text + ' <span class="more">(click for more)</span></a>' + 
                    '</p>';
         }        
 };
