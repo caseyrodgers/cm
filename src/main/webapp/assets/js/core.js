@@ -172,7 +172,7 @@ var QuoteManager = {
         formatQuote:function(quote) {
             return '<p>' +
                        quote.text +
-                       '<a href="' + quote.link_url + '">' + quote.link_text + ' <div class="more">click for more</div></a>' + 
+                       '<div class="credit">' + quote.link_text + '</div><a href="' + quote.link_url + '"> click for more </a>' + 
                    '</p>';
         }        
 };
