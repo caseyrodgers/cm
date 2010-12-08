@@ -28,10 +28,19 @@ function setupPage() {
              */
             var postIt = Y.one('#postit');
             if(postIt) {
-                var quote1 = QuoteManager.getRandomQuoteNotMatching(null);
-                var html = QuoteManager.formatQuote(quote1);
+                var html='';
+                var quote1;
+                
+                /** allow force selection */
+                if(_forceStickyQuote) {
+                    quote1 = Quotes[_forceStickyQuote];
+                }
+                else {
+                    quote1 = QuoteManager.getRandomQuoteNotMatching(null);
+                }
+                html = QuoteManager.formatQuote(quote1);
                 html += QuoteManager.formatQuote(QuoteManager.getRandomQuoteNotMatching(quote1));
-                postIt.set('innerHTML',html);
+                postIt.set('innerHTML',html);                
             }
             
            setupPageLocal();
@@ -160,7 +169,7 @@ var QuoteManager = {
         formatQuote:function(quote) {
             return '<p>' +
                        quote.text +
-                       '<a href="' + quote.link_url + '">' + quote.link_text + ' <span class="more">(click for more)</span></a>' + 
+                       '<a href="' + quote.link_url + '">' + quote.link_text + ' <div class="more">click for more</div></a>' + 
                    '</p>';
         }        
 };
