@@ -1,12 +1,15 @@
-var _forceStickyQuote;
-
+/** Initialize system
+ *  Might be modified in 
+ *  individual pages */
+var CmPage = {
+        menuItem:-1,
+        sticky:[]
+};
 
 function $get(x) {
     return document.getElementById(x);
 }
 
-
-var _mainMenuItemObject=null;
 
 function setupPage() {
     /** setup menu buttons
@@ -16,10 +19,10 @@ function setupPage() {
         
         Y.on('domready',function() {
             
-            if(_mainMenuItem > -1) {
+            if(CmPage.menuItem > -1) {
                 /** Set the selected menu button */
                 var menuButtons = Y.one('#menubar2').all('a');
-                _mainMenuItemObject = menuButtons.item(_mainMenuItem);
+                _mainMenuItemObject = menuButtons.item(CmPage.menuItem);
                 _mainMenuItemObject.removeClass('notselected');
                 _mainMenuItemObject.addClass('sexy_cm_green');
                 _mainMenuItemObject.addClass('sexybutton');
@@ -31,19 +34,11 @@ function setupPage() {
              */
             var postIt = Y.one('#postit');
             if(postIt) {
-                var html='';
-                var quote1;
-                
-                /** allow force selection */
-                if(_forceStickyQuote) {
-                    quote1 = Quotes[_forceStickyQuote];
+                if(CmPage.sticky) {
+                    var html= formatQuote(Quotes[CmPage.sticky[0]]);
+                    html += formatQuote(Quotes[CmPage.sticky[1]]);
+                    postIt.set('innerHTML',html);
                 }
-                else {
-                    quote1 = QuoteManager.getRandomQuoteNotMatching(null);
-                }
-                html = QuoteManager.formatQuote(quote1);
-                html += QuoteManager.formatQuote(QuoteManager.getRandomQuoteNotMatching(quote1));
-                postIt.set('innerHTML',html);                
             }
             
            setupPageLocal();
@@ -95,6 +90,17 @@ function closeMonaVideo() {
 }
 
 
+        function formatQuote(quote) {
+            
+            var url = quote.link_type == 'success'?'/success.html':'/research.html';
+            var readMore = (quote.link_type == 'success')?'Read more testimonials':'Read more research';
+            return '<p>' +
+                       quote.text +
+                       '<div class="credit">' + quote.link_text + '</div><a href="' + url + 
+                       '"> ' + readMore + '</a>' + 
+                   '</p>';
+        }        
+
 
 
 var Quotes = 
@@ -102,77 +108,37 @@ var Quotes =
      {
          text:"A test-reteach-retest model that targets and remediates individual skill weaknesses dramatically accelerates learning.",
          link_text: 'Bloom, B.S.  (1984)',
-         link_url:'/research.html'
+         link_type:'research'
      }
      ,
      {
          text:"A new student initially tested into our lowest math course. Not satisfied, she used Catchup Math for three weeks and then retested four course levels higher --- a full year and a quarter.",
          link_text: 'College Instructor, Ohio',
-         link_url:'/success.html'             
+         link_type:'success'             
      },
      {
          text:"I've never done so well in a math class before.",
          link_text: ' Kentucky',
-         link_url:'/success.html'             
+         link_type:'success'             
      },
      {
          text:"Technology-infused Interventions ... were the top model predictors of improved high stakes test scores, dropout rate reduction, and improved discipline.",
          link_text: ' Greaves',
-         link_url:'/research.html'             
+         link_type:'research'             
      },         
      {
          text:"It worked so well over the last 3 weeks that my students are all caught up and doing their regular work now.",
          link_text: 'New York',
-         link_url:'/success.html'             
+         link_type:'success'             
      }, 
      {
          text:"Instructional Software is proven to improve learning.",
          link_text: ' National Math Panel',
-         link_url:'/research.html'             
+         link_type:'research'             
      }, 
      {
          text:"Use of multi-media to provide alternate forms of representation improves effectiveness.",
          link_text: '  Mayer',
-         link_url:'/research.html'             
+         link_type:'research'             
      }
  ];
-
-/** return a random quote object:
- *    quote.text == text of the quote
- *    
- *    
- *  if quoteMustBeDifferentThan is specified
- *  then the return quote must be different
- *  to make sure caller does not end up with 
- *  same quote twice.
- *  
- */
-var QuoteManager = {
-        getRandomQuoteNotMatching: function(quoteMustBeDifferentThan) {
-            var max = Quotes.length;
-            
-            var MAXCHECK=5;
-            var check=0;
-            while(check < MAXCHECK) {
-                var rand = Math.floor(Math.random()*max);
-                var quote = Quotes[rand];
-                
-                if(quoteMustBeDifferentThan == quote) {
-                    check++;
-                    continue; // try again
-                }
-                else {
-                    return quote;
-                }
-            }
-            
-            /** if fall off end, simply return the first Quote */
-            return Quotes[0];
-        },
-        formatQuote:function(quote) {
-            return '<p>' +
-                       quote.text +
-                       '<div class="credit">' + quote.link_text + '</div><a href="' + quote.link_url + '"> click for more </a>' + 
-                   '</p>';
-        }        
-};
