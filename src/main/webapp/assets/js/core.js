@@ -1,3 +1,6 @@
+var _forceStickyQuote;
+
+
 function $get(x) {
     return document.getElementById(x);
 }
