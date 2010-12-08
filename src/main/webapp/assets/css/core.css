@@ -721,14 +721,13 @@ ul#menubar2 {
 .postit_2 p, .postit_2 .credit, .postit_2 a {
 	   padding: 40px 30px 0 30px;
 }
-
-.postit_2 p{
+.postit_2 p {
+    color: #666666;
+    font-family: 'Neucha',arial,serif;
     font-size: 1em;
-    color: #000000;
-    font-family:'Neucha',arial,serif; 
     margin-bottom: 0;
     padding-bottom: 0;
-    padding-top: 40px;
+    padding-top: 30px;
 }
 
 div#postit  a + p {
@@ -739,21 +738,22 @@ div#postit  a + p {
 	
 }
 
+
 .postit_2 .credit {
-    color: #0057c2;
+    color: #666666;
     display: block;
-    padding-top: 7px;
-    font-family:'Neucha',arial,serif;
+    font-family: 'Neucha',arial,serif;
     font-size: 1em;
-    font-weight: normal;
+    font-weight: bold;
+    padding-top:3px;
 }
 
 .postit_2 a {
     display: block;
-    font-family:'Neucha',arial,serif;
-    font-size: .8em;
-    font-weight: normal;
-    padding-top: 0px;
+    font-family: verdana;
+    font-size: 0.6em;
+    font-weight: bold;
+    padding-top: 0;
 }
 
 .postit_2 .not_normal {
