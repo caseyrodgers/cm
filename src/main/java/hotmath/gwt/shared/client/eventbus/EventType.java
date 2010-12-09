@@ -157,5 +157,11 @@ public enum EventType{
     /** Fired when a question has had its selection changed
      * 
      */
-    EVENT_TYPE_QUIZ_QUESTION_SELECTION_CHANGED
+    EVENT_TYPE_QUIZ_QUESTION_SELECTION_CHANGED,
+    
+    
+    /** Fired when a solution's HTML has been changed
+     *  This is used to re-fire a MathJax process 
+     */
+    SOLUTION_HTML_REFERSH
 }
