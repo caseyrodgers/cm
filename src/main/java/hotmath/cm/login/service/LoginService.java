@@ -138,7 +138,7 @@ public class LoginService extends HttpServlet {
             	/** Check for expired account.  But, allow debug users to bypass
             	 * 
             	 */
-            	if(!isDebug && cmUser.getExpireDate().getTime() < System.currentTimeMillis()) {
+            	if(!isDebug && (cmUser.getExpireDate() == null || cmUser.getExpireDate().getTime() < System.currentTimeMillis())) {
             		throw new CmExceptionUserExpired(cmUser);
             	}
             	
