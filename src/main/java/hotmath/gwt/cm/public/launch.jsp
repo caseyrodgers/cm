@@ -15,7 +15,7 @@
   <head>
   <link rel="stylesheet" type="text/css" href="/gwt-resources/gxt-2.2.1/css/gxt-all.css" />
   <link class="gray" rel="stylesheet" type="text/css" href="/gwt-resources/gxt-2.2.1/css/gxt-gray.css" />
-   <link rel="stylesheet" type="text/css" href="/css/tutor_widget.css" />
+  <link rel="stylesheet" type="text/css" href="/css/tutor_widget.css" />
   <link rel="stylesheet" type="text/css" href="/gwt-resources/css/CatchupMath_combined.min.css" />
   <link rel="stylesheet" type="text/css" href="/css/SexyButtons/sexybuttons.css" />
   <meta http-equiv="content-type" content="text/html; charset=UTF-8">

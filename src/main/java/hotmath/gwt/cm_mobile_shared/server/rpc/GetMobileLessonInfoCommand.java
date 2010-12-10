@@ -60,34 +60,36 @@ public class GetMobileLessonInfoCommand implements ActionHandler<GetMobileLesson
         List<INeedMoreHelpResourceType> items = getPrescriptionInmhTypes(conn, action.getFile(), lessonTitle, null);
         PrescriptionSessionDataResource problemsResource = new PrescriptionSessionDataResource();
         problemsResource.setType("practice");
-
-        /** label either as Problems or Activities */
-        boolean isActivity = practiceProblems.get(0).getWidgetArgs() != null;
-        String title = "Required Practice " + (isActivity ? "Activities" : "Problems");
-        problemsResource.setLabel(title);
-        int cnt = 1;
-        for (AssessmentPrescription.SessionData sdata : practiceProblems) {
-            InmhItemData id = new InmhItemData();
-            String type = isActivity ? "Activity " : "Problem ";
-            id.setTitle(type + cnt++);
-            id.setFile(sdata.getPid());
-            id.setType("practice");
-            id.setWidgetJsonArgs(sdata.getWidgetArgs());
-
-            problemsResource.getItems().add(id);
+        boolean isActivity=false;
+        if(practiceProblems.size() > 0) {
+            /** label either as Problems or Activities */
+            isActivity = practiceProblems.get(0).getWidgetArgs() != null;
+            String title = "Required Practice " + (isActivity ? "Activities" : "Problems");
+            problemsResource.setLabel(title);
+            int cnt = 1;
+            for (AssessmentPrescription.SessionData sdata : practiceProblems) {
+                InmhItemData id = new InmhItemData();
+                String type = isActivity ? "Activity " : "Problem ";
+                id.setTitle(type + cnt++);
+                id.setFile(sdata.getPid());
+                id.setType("practice");
+                id.setWidgetJsonArgs(sdata.getWidgetArgs());
+    
+                problemsResource.getItems().add(id);
+            }
         }
 
         PrescriptionSessionDataResource lessonResource = new PrescriptionSessionDataResource();
         lessonResource.setType("review");
+     
         lessonResource.setLabel("Review Lesson");
         InmhItemData lessonId = new InmhItemData();
 
         // Get the lesson this session is based on
         // each session is a single topic
-        INeedMoreHelpItem item = sess.getSessionCategories().get(0);
-        lessonId.setTitle(item.getTitle());
-        lessonId.setFile(item.getFile());
-        lessonId.setType(item.getType());
+        lessonId.setTitle(lessonTitle);
+        lessonId.setFile(action.getFile());
+        lessonId.setType("review");
         lessonResource.getItems().add(lessonId);
 
         // always send complete list of all topics
@@ -100,27 +102,29 @@ public class GetMobileLessonInfoCommand implements ActionHandler<GetMobileLesson
         }
         presData.setCurrSession(sessionData);
 
-        sessionData.setTopic(sess.getTopic(), item.getFile());
+        sessionData.setTopic(sess.getTopic(), action.getFile());
         sessionData.setSessionNumber(0);
-        for (INeedMoreHelpResourceType t : sess.getPrescriptionInmhTypesDistinct(conn)) {
-
-            // skip the workbooks for now.
-            if (t.getTypeDef().getType().equals("workbook"))
-                continue;
-
-            PrescriptionSessionDataResource resource = new PrescriptionSessionDataResource();
-            String type = t.getTypeDef().getType();
-            resource.setType(type);
-            resource.setLabel(t.getTypeDef().getLabel());
-            for (INeedMoreHelpItem i : t.getResources()) {
-                InmhItemData id = new InmhItemData();
-                id.setFile(i.getFile());
-                id.setTitle(i.getTitle());
-                id.setType(i.getType());
-
-                resource.getItems().add(id);
+        if(sess.getSessionItems().size() > 0) {
+            for (INeedMoreHelpResourceType t : sess.getPrescriptionInmhTypesDistinct(conn)) {
+    
+                // skip the workbooks for now.
+                if (t.getTypeDef().getType().equals("workbook"))
+                    continue;
+    
+                PrescriptionSessionDataResource resource = new PrescriptionSessionDataResource();
+                String type = t.getTypeDef().getType();
+                resource.setType(type);
+                resource.setLabel(t.getTypeDef().getLabel());
+                for (INeedMoreHelpItem i : t.getResources()) {
+                    InmhItemData id = new InmhItemData();
+                    id.setFile(i.getFile());
+                    id.setTitle(i.getTitle());
+                    id.setType(i.getType());
+    
+                    resource.getItems().add(id);
+                }
+                sessionData.getInmhResources().add(resource);
             }
-            sessionData.getInmhResources().add(resource);
         }
 
         
@@ -141,6 +145,8 @@ public class GetMobileLessonInfoCommand implements ActionHandler<GetMobileLesson
         activityResource.setLabel("Learning Activity (JS)");
         InmhItemData jsActivity = new InmhItemData("js_activity", "word_problems", "Word Problems");
         activityResource.getItems().add(jsActivity);
+        
+        
         sessionData.getInmhResources().add(0,activityResource);
 
 

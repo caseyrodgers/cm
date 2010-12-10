@@ -26,4 +26,9 @@ public class GetMobileSolutionAction implements Action<SolutionResponse>{
     public void setUid(int uid) {
         this.uid = uid;
     }
+
+    @Override
+    public String toString() {
+        return "GetMobileSolutionAction [pid=" + pid + ", uid=" + uid + "]";
+    }
 }

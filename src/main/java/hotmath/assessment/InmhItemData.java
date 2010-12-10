@@ -110,8 +110,26 @@ public class InmhItemData {
      * @return
      */
     public List<RppWidget> getWookBookSolutionPool(final Connection conn, String logTag) {
-    	
-    	
+        return getWookBookSolutionPool(conn,logTag,true);
+    }
+    
+    @SuppressWarnings("unchecked")
+    /** Return pool of solutions that will make up this prescription's
+     *  required problems (RP).  Which consist of either Required Practice Activities 
+     *  or RequiredPracticeProblems.  If RPAs are available, then only they will be used
+     *  ignoring all RPPs.
+     *  
+     *  You can specify if RPAs are to be considered, thus guaranteeing only RPPs are returned.
+     * 
+     */
+    public List<RppWidget> getWookBookSolutionPool(final Connection conn, String logTag,boolean allowRpa) {
+
+        /** check if in cache and return.  Side effect is if browserType changes no new pool will be created
+         *  I'm not sure that is problem ... but, I think it is.
+         *  
+         *  TODO: We could save the browser type with the cached object and verify.
+         *  
+         */
     	List<RppWidget> widgets = (List<RppWidget>)CmCacheManager.getInstance().retrieveFromCache(CacheName.WOOKBOOK_POOL, this.item.getFile());
     	if(widgets != null)
     		return widgets;
@@ -133,8 +151,10 @@ public class InmhItemData {
                     continue;
 
                 if (rangeOrJson.startsWith("{")) {
-                    /** is widget defined in JSON */
-                    widgets.add(new RppWidget(rangeOrJson));
+                    if(allowRpa) {
+                        /** is widget defined in JSON */
+                        widgets.add(new RppWidget(rangeOrJson));
+                    }
                 } else {
                     /** is a solution PID */
                 	logger.debug("find solutions in range " + logTag);
@@ -184,5 +204,9 @@ public class InmhItemData {
         return this.item.toString() + ",pid_count=" + this.pidsReferenced.size();
     }
     
+    static public enum BrowserType {
+        BROWSER_WITH_FLASH,
+        BROWSER_WITHOUT_FLASH
+    }
 }
 

@@ -44,6 +44,10 @@ public class HaTestRunDao {
             for(int sn=0,t=sessions.size();sn < t;sn++) {
                 AssessmentPrescriptionSession s = sessions.get(sn);
                 
+                if(s.getSessionItems().size() == 0)
+                    continue;
+                
+                
                 pstat.setInt(1, testRun.getRunId());
                 pstat.setString(2, s.getTopic());
                 pstat.setInt(3, sn);
