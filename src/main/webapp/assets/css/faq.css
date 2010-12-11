@@ -1,23 +1,21 @@
  .faq-item-content {
       display: none;
-	  margin: 5px; 10px 15px 15px;
-	  background: #EEEEEE;
- 	  padding: 5px 5px 5px 8px;
+      background: #EEEEEE;
       width:550px;
       font-family:Arial,Helvetica,sans-serif;
-	  font-size:1.1em;
+      font-size:1.1em;
       line-height:1.3em;
    }
 
 .faq-item-content p {
-   margin-bottom: 0;
-   padding: 0;
+   padding: 5px 5px 5px 8px;
+   border: 1px solid #fefefe;
 }
 
    #faq_list li {
-	list-style-type: disc;
-	list-style:disc;
-	list-style:disc;
+	list-style-type: circle;
+	list-style:circle;
+	list-style:circle;
 	margin-left: 20px;
 	list-style-position:outside;
    }
@@ -27,8 +25,10 @@
 	  font-size: 1.1em;
    } 
 
-   #faq_list ul {
+   ul#faq_list {
       padding-left: 0px;
+      margin-top: 20px;
+      margin-bottom: 20px;
    }
    
    #faq_list a:link,

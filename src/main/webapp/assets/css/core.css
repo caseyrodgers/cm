@@ -714,6 +714,7 @@ ul#menubar2 {
 }
 
 .postit_2 {
+        margin-left: 15px;
 	background: url(/assets/images/postit_2.png) no-repeat;
 	width: 320px;
 	height: 364px;
