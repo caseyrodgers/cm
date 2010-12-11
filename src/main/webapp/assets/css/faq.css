@@ -1,15 +1,24 @@
-   .faq-item-content {
+ .faq-item-content {
       display: none;
 	  margin: 5px; 10px 15px 15px;
+          color: 
 	  background: #EEEEEE;
-	  padding: 5px;
+          color: #666666;
+	  padding: 5px 5px 5px 8px;
       width:550px;
       font-family:Arial,Helvetica,sans-serif;
 	  font-size:1.1em;
       line-height:1.3em;
-	  padding-bottom:10px;
-      padding-left:10px;
+
+   margin-bottom: 0;
+   padding: 0;
+
    }
+
+.faq-item-content p {
+   margin-bottom: 0;
+   padding: 0;
+}
 
    #faq_list li {
 	list-style-type: disc;
@@ -32,7 +41,7 @@
    #faq_list a:active,
    #faq_list a:visited
    { 
-     color: #D6471F;
+   color: #00BDBD;
      text-decoration: none;
    }
 
