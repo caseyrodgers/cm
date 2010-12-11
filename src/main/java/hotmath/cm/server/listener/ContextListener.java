@@ -21,8 +21,9 @@ public final class ContextListener implements ServletContextAttributeListener, S
 
 	private static Logger logger = Logger.getLogger(ContextListener.class);
 
-    private ServletContext context = null;
-
+    private ServletContext context;
+    
+    private static String serverName;
     private static Date startDate;
     
     
@@ -92,6 +93,7 @@ public final class ContextListener implements ServletContextAttributeListener, S
 	    startDate = new Date();
 
         this.context = event.getServletContext();
+        serverName = event.getServletContext().getServerInfo();
         logger.info("+++ contextInitialized()");
 
     }
@@ -101,4 +103,8 @@ public final class ContextListener implements ServletContextAttributeListener, S
     }
 
 
+    public static String getServerName() {
+        return serverName;
+    }
+    
 }

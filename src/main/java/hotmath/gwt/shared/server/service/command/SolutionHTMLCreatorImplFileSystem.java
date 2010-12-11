@@ -43,7 +43,7 @@ public class SolutionHTMLCreatorImplFileSystem implements SolutionHTMLCreator {
             return sp;
         }
         catch(Exception e) {
-            throw new HotMathException(e,"Error creating object");
+            throw new HotMathException(e,"Error loading solution: " + guid);
         }
    }
 }

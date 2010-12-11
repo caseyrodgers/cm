@@ -15,6 +15,8 @@ import hotmath.gwt.shared.server.service.ActionHandlerManualConnectionManagement
 import hotmath.util.HMConnectionPool;
 import hotmath.util.sql.SqlUtilities;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.sql.Connection;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -23,6 +25,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
+
+import sb.mail.SbMailManager;
 
 /**
  * Implements a Command Pattern for controlling commands used by Catchup Math
@@ -240,6 +244,9 @@ public class ActionDispatcher {
         } catch (Exception e) {
         	incrementActionsException(actionType);
             monitorCountOfExceptions++;
+            
+            sendEmailNotifications(e);
+            
             failed = true;
             errMsg = e.getMessage();
             exceptionClass = e.getClass().getName();
@@ -263,6 +270,35 @@ public class ActionDispatcher {
             
             incrementProcessingTime(actionType, executeTimeMills);
         }
+    }
+    
+    private void sendEmailNotifications(final Exception ex) {
+        
+        /** send mail in separate thread to make sure
+         *  not block server thread.
+         */
+        new Thread() {
+            public void run() {
+                
+                String serverName = ContextListener.getServerName();
+                
+                String subject = "CM ActionDispatcher ("+ serverName + ") error: " + ex.getLocalizedMessage();
+                StringWriter sw = new StringWriter();
+                PrintWriter pw = new PrintWriter(sw, true);
+                ex.printStackTrace(pw);
+                pw.flush();
+                sw.flush();
+                String message = subject + "\n\n" + sw.toString();
+                try {
+                    SbMailManager.getInstance().sendMessage(subject, message, "errors@hotmath.com", "errors@hotmath.com");
+                }
+                catch(Exception e) {
+                    logger.error("Could not send error notification error",e);
+                }
+            }
+        }.run();
+        
+        
     }
 
 	private void incrementActionsExecuted(ActionTypeMap.ActionType actionType) {

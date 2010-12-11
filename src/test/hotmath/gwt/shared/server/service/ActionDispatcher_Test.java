@@ -72,6 +72,30 @@ public class ActionDispatcher_Test extends CmDbTestCase {
         uid = _user.getUid();
     }
 
+    public void testSendErrorNotification() throws Exception {
+        GetSolutionAction action = new GetSolutionAction(uid, "DOES_NOT_EXIST");
+        try {
+            SolutionInfo data = ActionDispatcher.getInstance().execute(action);
+        }
+        catch(Exception e) {
+            /** should throw an error */
+            
+            /** how to know error was reported?
+             * 
+             * ?send email and check for result..?
+             * 
+             * ?register message in queue and
+             * make sure it was removed when complete?
+             * 
+             * ?mock up an email server and wait
+             * for the email to be sent ...?
+             * 
+             * 
+             */
+            return;
+        }
+        assertTrue("Should never reach here",false);
+    }
     
     public void testGetSolution() throws Exception {
         
