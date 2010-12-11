@@ -34,7 +34,7 @@ function setupPage() {
              */
             var postIt = Y.one('#postit');
             if(postIt) {
-                if(CmPage.sticky) {
+                if(CmPage.sticky.length == 2) {
                     var html= formatQuote(Quotes[CmPage.sticky[0]]);
                     html += formatQuote(Quotes[CmPage.sticky[1]]);
                     postIt.set('innerHTML',html);
