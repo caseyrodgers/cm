@@ -272,10 +272,15 @@ public class ActionDispatcher {
         }
     }
     
+    /** Send error notification to errors@hotmath.com to allow
+     *  real time tracking of errors.
+     * 
+     * @param ex
+     */
     private void sendEmailNotifications(final Exception ex) {
         
         /** send mail in separate thread to make sure
-         *  not block server thread.
+         *  not to block server thread.
          */
         new Thread() {
             public void run() {
