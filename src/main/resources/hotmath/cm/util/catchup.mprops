@@ -1097,16 +1097,16 @@ from (
        and t.user_prog_id = p.id
        and tr.test_id = t.test_id) tt
   where iu.run_id = tt.run_id
-    and not (iu.item_type = 'activity' and iu.item_file like '%game%')
+    and iu.item_type != 'activity_standard'
   union
-  select item_file, 'game'
+  select iu.item_file, 'game'
   from HA_TEST_RUN_INMH_USE iu,
     (select tr.run_id from HA_TEST_RUN tr, HA_TEST t, CM_USER_PROGRAM p
      where p.id in (XXX)
        and t.user_prog_id = p.id
        and tr.test_id = t.test_id) tt
   where iu.run_id = tt.run_id
-    and (iu.item_type = 'activity' and iu.item_file like '%game%')
+    and iu.item_type = 'activity_standard'
 ) s
 group by s.item_type
 
