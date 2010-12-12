@@ -33,8 +33,6 @@ SELECT h.uid, upper(h.user_name) as name, h.user_passcode as passcode, h.user_em
            if((h.active_test_id > 0), 'Started', ' ') ) as last_quiz,
        date_format(ux.last_login,'%Y-%m-%d') as last_use_date, 
        ifnull(ux.quiz_pass_count, 0) as passing_count, ifnull(ux.quiz_not_pass_count, 0) as not_passing_count,
-       ifnull(ux.current_lesson, 0) as current_lesson, ifnull(ux.lesson_count, 0) as lesson_count,
-       ifnull(ux.lessons_completed, 0) as lessons_completed,
        ifnull(ut.tutoring_use, 0) as tutoring_use
 FROM  HA_ADMIN a 
 INNER JOIN HA_USER h 
@@ -64,8 +62,6 @@ SELECT h.uid, upper(h.user_name) as name, h.user_passcode as passcode, h.user_em
        ifnull(s.stop_at_program_end, 0) as stop_at_program_end, ifnull(s.tutoring_available, 0) as tutoring_available,
        trim(concat(ifnull(d.subj_id,''), ' ', d.prog_id)) as program, d.prog_id, d.subj_id,
        ifnull(g.id, 0) as group_id, ifnull(g.name, 'none') as group_name, g.is_active, g.is_self_reg,
-       ifnull(ux.current_lesson, 0) as current_lesson, ifnull(ux.lesson_count, 0) as lesson_count,
-       ifnull(ux.lessons_completed, 0) as lessons_completed,
        cp.id as custom_program_id, cp.name as custom_program_name
 FROM  HA_ADMIN a 
 INNER JOIN HA_USER h 
@@ -79,8 +75,7 @@ LEFT JOIN HA_TEST_DEF d
 LEFT JOIN CM_GROUP g 
    on g.id = h.group_id
 LEFT JOIN HA_CUSTOM_PROGRAM cp 
-   on cp.id = p.custom_program_id
-LEFT JOIN HA_USER_EXTENDED ux on ux.user_id = h.uid
+   on cp.id = p.custom_program_id   
 
 
 .key=STUDENT_SUMMARY_EXTENDED
@@ -110,21 +105,6 @@ values(?,?,?,?,(select max(login_time) from HA_USER_LOGIN where user_id = ?))
 INSERT into HA_USER_EXTENDED (user_id, quiz_pass_count, quiz_not_pass_count, last_quiz, last_login)
 values(?,null,null,null,(select max(login_time) from HA_USER_LOGIN where user_id = ?))
 
-.key=INSERT_STUDENT_EXTENDED_LESSON_STATUS
-
-INSERT into HA_USER_EXTENDED (user_id, current_lesson, lesson_count, lessons_completed, last_login)
-values(?,0,?,0,(select max(login_time) from HA_USER_LOGIN where user_id = ?))
-
-
-.key=INSERT_STUDENT_EXTENDED_LESSON_STATUS_PLUS
-
-INSERT into HA_USER_EXTENDED (user_id, current_lesson, lesson_count, lessons_completed, last_login)
-values(?,0,(select active_run_id from HA_USER where uid = ?), 0, (select max(login_time) from HA_USER_LOGIN where user_id = ?))
-
-.key=INSERT_STUDENT_EXTENDED_LESSON_COMPLETED
-
-INSERT into HA_USER_EXTENDED (user_id, lesson_count, lessons_completed, last_login)
-values(?,(select active_run_id from HA_USER where uid = ?), 1, (select max(login_time) from HA_USER_LOGIN where user_id = ?))
 
 .key=STUDENT_LAST_LOGIN
 
@@ -1109,6 +1089,7 @@ from (
     and iu.item_type = 'activity_standard'
 ) s
 group by s.item_type
+
 
 .key=LESSONS_ASSIGNED
 
