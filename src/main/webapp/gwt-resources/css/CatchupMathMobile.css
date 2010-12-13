@@ -660,3 +660,10 @@ html>body .gwt-DecoratedTabBar {
 	margin: 5px;
 	padding: 5px;
 }
+
+
+.questionResponseAnswer {
+	background: #DDDEEE;
+	margin: 10px;
+	padding: 10px;
+}

@@ -13,7 +13,7 @@ import sb.util.SbFile;
 
 
 
-/** Provide creator that reads from static files 
+/** Provide solution creator that reads from static files 
  * 
  * @author casey
  *

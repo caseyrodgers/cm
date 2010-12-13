@@ -49,10 +49,11 @@ public class SolutionResourceUploadService extends HttpServlet {
             /* path to solution's resource dir
              * 
              */
-            String solutionPath = getSolutionPath();
+            SolutionDef solDef = new SolutionDef(pid);
+            String solutionPath = solDef.getSolutionPath();
             
             
-            File resourcesDir = new File(solutionPath, "resources");
+            File resourcesDir = new File(solDef.getResourcesPath());
             if(!resourcesDir.exists())
                 resourcesDir.mkdirs();
             
@@ -75,15 +76,7 @@ public class SolutionResourceUploadService extends HttpServlet {
         resp.getWriter().write("OK");
     }
 
-    
-    private String getSolutionPath() {
-        ProblemID problemId = new ProblemID(pid);
-        return HotMathProperties.getInstance().getHotMathWebBase() + 
-               "/" + HotMathProperties.getInstance().getStaticSolutionsDir() +
-               "/" + problemId.getSolutionPath() +
-               "/" + problemId.getGUID();
-    }
-    
+
     String pid;
     /** Get the uploaded file and extract the pid and
      *  store in module param.

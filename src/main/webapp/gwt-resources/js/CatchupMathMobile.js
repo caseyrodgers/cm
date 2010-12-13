@@ -378,9 +378,22 @@ function alignControlFloater() {
 function doQuestionResponseEnd() {
 }
 
+var _activeQuestion;
+
 function doQuestionResponse(key,yesNo) {
     var questionResponse = TutorManager.tutorData._strings_moArray[key];
-    gwt_showMessage(questionResponse);
+    
+    if(_activeQuestion) {
+        var node = document.createElement('div');
+        node.className = 'questionResponseAnswer';
+        node.innerHTML = questionResponse;
+        
+        _activeQuestion.parentNode.appendChild(node);
+
+    }
+    else {
+        gwt_showMessage(questionResponse);
+    }
 }
 
 
@@ -395,14 +408,38 @@ HmEvents.eventTutorInitialized.subscribe(function() {
     /* Mobile does not have onmoueover, 
      * so convert the mouseover to onclick
      * on all hint question_guess elements.
+     * 
+     * We rename the onmouseover to onmouseoverDeferred
+     * and the call the deffered event onclick.  
+     * 
+     * The event will call doQuestionResponse to be called
+     * passing in the proper key to use to lookup the actual
+     * response text.  The text is kept in a JSON array to 
+     * provide easy embedding of HTML.
+     * 
+     * In the mobile version this call is caught and passed to
+     * and question answer is added to existing question div.
      *  
      */
     for(var d=0;d<len;d++) {
         var div = divs.item(d);
         if(div.className == 'question_guess') {
             var imgs = div.getElementsByTagName("img");
-            var mo = imgs.item(0).onmouseout = null;
-            imgs.item(0).onclick = function() {this.onmouseover();}
+            var imgEl = imgs.item(0);
+            var mo = imgEl.onmouseout = null;
+            imgEl.onmouseoverDeferred = imgEl.onmouseover;
+            imgEl.onmouseover = null;
+            imgEl.onclick = function(x) {
+                var event = (x)?x:window.event;
+                var target = event.srcElement?event.srcElement:event.target;
+                _activeQuestion = target;
+                if(!target.onmouseoverDeferred) {
+                    alert('error: no deferred move event');  // fail loud
+                    return;
+                }
+                target.onclick = null;  // only allow one trigger
+                target.onmouseoverDeferred();
+            }
         }
     }
     

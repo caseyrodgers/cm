@@ -7,5 +7,6 @@ public class EventTypes {
      * 
      */
     public static EventType POST_SOLUTION_LOAD = new EventType("POST_SOLUTION_LOAD");
+    public static EventType STATUS_MESSAGE = new EventType("STATUS_MESSAGE");
     
 }

@@ -1,6 +1,5 @@
 package hotmath.gwt.cm_mobile_shared.client.util;
 
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.PopupPanel;
 
@@ -14,9 +13,9 @@ public class MessageBox {
         popup.add(new HTML(msg));
         popup.center();
         
-        int left=0;
-        int top=50 + Window.getScrollTop();
-        popup.setPopupPosition(left, top);
+        //int left=0;
+        //int top=50 + Window.getScrollTop();
+        //popup.setPopupPosition(left, top);
         popup.show();        
     }
     

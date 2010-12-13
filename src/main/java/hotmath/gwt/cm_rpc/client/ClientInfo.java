@@ -69,9 +69,11 @@ public class ClientInfo implements Response {
 
 	public void setActionId(String actionId) {
 		this.actionId = actionId;
-	};
-	
-	
-	
+	}
 
+    @Override
+    public String toString() {
+        return "ClientInfo [userId=" + userId + ", userType=" + userType + ", userAgent=" + userAgent + ", platform="
+                + platform + ", ipAddress=" + ipAddress + ", actionId=" + actionId + "]";
+    };
 }
