@@ -92,8 +92,8 @@ public final class ContextListener implements ServletContextAttributeListener, S
 	
 	    startDate = new Date();
 
-        this.context = event.getServletContext();
-        serverName = event.getServletContext().getServerInfo();
+        context = event.getServletContext();
+        serverName = context.getServerInfo();
         logger.info("+++ contextInitialized()");
 
     }
