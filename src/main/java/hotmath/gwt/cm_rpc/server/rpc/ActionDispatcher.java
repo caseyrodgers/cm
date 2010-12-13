@@ -245,7 +245,7 @@ public class ActionDispatcher {
         	incrementActionsException(actionType);
             monitorCountOfExceptions++;
             
-            sendEmailNotifications(e);
+            sendEmailNotifications(e,clientInfo);
             
             failed = true;
             errMsg = e.getMessage();
@@ -277,7 +277,7 @@ public class ActionDispatcher {
      * 
      * @param ex
      */
-    private void sendEmailNotifications(final Exception ex) {
+    private void sendEmailNotifications(final Exception ex, final ClientInfo clientInfo) {
         
         /** send mail in separate thread to make sure
          *  not to block server thread.
@@ -287,15 +287,15 @@ public class ActionDispatcher {
                 
                 String serverName = ContextListener.getServerName();
                 
-                String subject = "CM ActionDispatcher ("+ serverName + ") error: " + ex.getLocalizedMessage();
+                String subject = "CM ActionDispatcher ("+ serverName + ") [" + clientInfo.getUserId() + "] error: " + ex.getLocalizedMessage();
                 StringWriter sw = new StringWriter();
                 PrintWriter pw = new PrintWriter(sw, true);
                 ex.printStackTrace(pw);
                 pw.flush();
                 sw.flush();
-                String message = subject + "\n\n" + sw.toString();
+                String message = subject + "\n\n" + clientInfo.toString() + "\n\n" + sw.toString();
                 try {
-                    SbMailManager.getInstance().sendMessage(subject, message, "errors@hotmath.com", "errors@hotmath.com");
+                    SbMailManager.getInstance().sendMessage(subject, message, "errors@hotmath.com", "errors@hotmath.com","text/plain");
                 }
                 catch(Exception e) {
                     logger.error("Could not send error notification error",e);
