@@ -36,6 +36,7 @@ var TutorManager = {
 	steps : [],
 	pid : '',
 	stepUnit : null,
+	tutorData: null,
     initializeTutor : function(pid, solutionData, showWork, expand) {
         TutorManager.pid = pid;
         TutorManager.currentRealStep = -1;
@@ -43,7 +44,13 @@ var TutorManager = {
         TutorManager.loadTutorData(solutionData);
         TutorManager.analyzeLoadedData();
         
+        
+        /** hookup any question steps */
+        
         HmEvents.eventTutorInitialized.fire();
+        
+        
+        
     },
     showMessage:function(msg) {
     	var tm = $get('tutor_message');
@@ -90,8 +97,7 @@ var TutorManager = {
       },
 	loadTutorData : function(solutionData) {
 		try {
-			var js = solutionData;
-			eval("var tutorData = (" + js + ")");
+		    TutorManager.tutorData = eval("(" + solutionData + ")");
 		} catch (e) {
 			alert(e);
 		}
@@ -365,3 +371,39 @@ function alignControlFloater() {
     setTimeout(alignControlFloater,2000);
 } 
 
+
+
+
+/** for solution question/hints */
+function doQuestionResponseEnd() {
+}
+
+function doQuestionResponse(key,yesNo) {
+    var questionResponse = TutorManager.tutorData._strings_moArray[key];
+    gwt_showMessage(questionResponse);
+}
+
+
+HmEvents.eventTutorInitialized.subscribe(function() {
+    var tutor = document.getElementById('tutor_raw_steps_wrapper');
+    if(tutor == null)
+        return;
+    
+    var divs = tutor.getElementsByTagName("div");
+    var len = divs.length;
+    
+    /* Mobile does not have onmoueover, 
+     * so convert the mouseover to onclick
+     * on all hint question_guess elements.
+     *  
+     */
+    for(var d=0;d<len;d++) {
+        var div = divs.item(d);
+        if(div.className == 'question_guess') {
+            var imgs = div.getElementsByTagName("img");
+            var mo = imgs.item(0).onmouseout = null;
+            imgs.item(0).onclick = function() {this.onmouseover();}
+        }
+    }
+    
+});

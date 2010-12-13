@@ -641,3 +641,22 @@ html>body .gwt-DecoratedTabBar {
 }
 
 /** End Search List Tab Panel */
+
+
+
+
+.question_guess {
+	line-height: 2.5em;
+}
+
+.question_guess img {
+	display: inline;
+	margin-left: 10px;
+}
+	
+	
+.question_guess p {
+	display: inline;
+	margin: 5px;
+	padding: 5px;
+}
