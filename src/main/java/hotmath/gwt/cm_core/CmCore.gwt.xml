@@ -1,0 +1,3 @@
+<module rename-to='cm_core'>
+      <entry-point class='hotmath.gwt.cm_core.client.CmCore'/>
+</module>
