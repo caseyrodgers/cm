@@ -1,6 +1,9 @@
+
+
 h1 {
 	margin-bottom: 25px;
 }
+
 
 .quote {
         color: #666666;
@@ -8,6 +11,13 @@ h1 {
 	font-weight: normal;
 	margin-bottom: 10px;
 	font-style: normal;
+        background:#FCFFD8;
+        padding: 15px;
+        border: 1px solid #f4f1ca;
+        border-radius: 6px;
+        -moz-border-radius: 10px;
+        -webkit-border-radius: 10px;
+        margin-bottom: 20px;
 }
 
 .quote-from {
