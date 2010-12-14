@@ -17,7 +17,7 @@ function doLogin() {
 }
 
 function showLoginInvalid() {
-    showDialog("Both Login Name and Password must be specified.", "Login Invalid");
+    showDialog("Please enter both Login Name and Password.", "Login Invalid");
 }
 
 var _overlay=null;
