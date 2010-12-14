@@ -12,5 +12,8 @@
 		<property id="disableSave">true</property>
 		<property id="disableOpen">true</property>
 		<property id="loadOnInit">true</property>
+                <property id="urlGenerateImage">http://hotmath.kattare.com:8081/assets/js/fmath/generateImage.jsp?param1=value</property>
+		<property id="defaultImageType">PNG</property>
+		<property id="defaultImageCompression">=80</property>
 	</properties>
 </configuration>
