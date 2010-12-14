@@ -110,7 +110,8 @@ p {
     min-height: 320px;
     height: auto !important;
     height: 320px;
-	position: relative;
+    position: relative;
+    margin-left: 5px;
 }
 
 #main-content-right h1 {
