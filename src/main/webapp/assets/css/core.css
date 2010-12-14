@@ -763,3 +763,28 @@ div#postit  a + p {
         font-size:1em;
         font-family: 'Inconsolata', arial, serif;
 }	
+
+
+
+
+.quote {
+    color: #666666;
+    font-size: 13px;
+    font-weight: normal;
+    margin-bottom: 10px;
+    font-style: normal;
+    background: #FCFFD8;
+    padding: 15px;
+    border: 1px solid #f4f1ca;
+    border-radius: 6px;
+    -moz-border-radius: 10px;
+    -webkit-border-radius: 10px;
+    margin-bottom: 20px;
+}
+
+.quote-from {
+    font-weight: bold;
+    font-size: 1em;
+    font-style: normal;
+    color: #666;
+}

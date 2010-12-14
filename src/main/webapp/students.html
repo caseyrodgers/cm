@@ -9,6 +9,9 @@
         <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Cantarell">
         <link rel="stylesheet" type="text/css" href="/assets/css/SexyButtons/sexybuttons.css">
         <link rel="stylesheet" type="text/css" href="/assets/css/core.css">
+        <link rel="stylesheet" type="text/css" href="/assets/js/yui/build/container/assets/container.css" />        
+        <link rel="stylesheet" type="text/css" href="/assets/js/yui/build/container/assets/skins/sam/container.css" />
+                
 <!--[if IE]>
         <link rel="stylesheet" type="text/css" href="/assets/css/core-ie.css" />
 <![endif]-->
@@ -112,7 +115,7 @@
                         order of operations, times tables, and much, much more.
                         </p>
 
-                        <a href='/student-video.html' class='sexybutton sexybutton_xxl-aqua'>
+                        <a href='javascript:void(0)' onclick='showMonaMotivationalVideo();return false' class='sexybutton sexybutton_xxl-aqua'>
                                 <span><span>Watch Student Video</span></span>
                         </a>
 
@@ -294,8 +297,13 @@
         </div>          
         
 <script src="http://yui.yahooapis.com/3.2.0/build/yui/yui-min.js" type="text/javascript"></script>
+
 <script src='/assets/js/core.js'></script>
         <!-- InstanceBeginEditable name="AfterJavascriptLoad" --><!-- AfterJavascriptLoad -->
+<script src="/assets/js/yui/build/yuiloader-dom-event/yuiloader-dom-event.js" type="text/javascript"></script>
+<script src="/assets/js/yui/build/container/container-min.js" type="text/javascript"></script>
+<script src="/assets/js/yui/build/dragdrop/dragdrop-min.js" type="text/javascript"></script>
+        
         <script>
            /** specify which main menu item is selected
            */
