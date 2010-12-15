@@ -43,6 +43,10 @@ public class CatchupMathProperties extends Properties {
         load(new FileReader(pfile));
     }
     
+    public String getSolutionsServer() {
+        return getProperty("solution.server",""); 
+    }
+    
     public int getClientVersionNumber() {
         return SbUtilities.getInt(getProperty("client.version"));
     }
