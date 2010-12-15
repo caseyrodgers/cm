@@ -8,14 +8,32 @@ public class SolutionDef extends ProblemID {
         super(pid);
     }
     
-    public String getSolutionPath() {
+    public String getSolutionPathOnDisk() {
         return HotMathProperties.getInstance().getHotMathWebBase() + 
                "/" + HotMathProperties.getInstance().getStaticSolutionsDir() +
                "/" + super.getSolutionPath() +
                "/" + getGUID();
     }
     
+    /** Return Absolute path to the resource
+     *  directory for this solution.  This is 
+     *  the file system path .. 
+     * @return
+     */
     public String getResourcesPath() {
-        return getSolutionPath() + "/resources";
+        return getSolutionPathOnDisk() + "/resources";
+    }
+    
+    public String getSolutionPathHttp() {
+        String path = getSolutionPath();
+        
+        path = HotMathProperties.getInstance().getStaticSolutionsDir() 
+            + "/"
+            + path
+            + "/"
+            + getGUID();
+        
+        return path;
+               
     }
 }

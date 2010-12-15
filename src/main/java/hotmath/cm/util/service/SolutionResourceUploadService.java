@@ -50,7 +50,7 @@ public class SolutionResourceUploadService extends HttpServlet {
              * 
              */
             SolutionDef solDef = new SolutionDef(pid);
-            String solutionPath = solDef.getSolutionPath();
+            String solutionPath = solDef.getSolutionPathOnDisk();
             
             
             File resourcesDir = new File(solDef.getResourcesPath());
