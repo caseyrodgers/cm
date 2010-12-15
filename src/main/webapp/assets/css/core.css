@@ -334,7 +334,7 @@ p {
 .yui3-overlay-content {
     padding:2px;
     border:1px solid #000;
-    background-color:#aaa;
+    background-color:#33CCCC;
     font-size:93%;
 }
  
@@ -342,17 +342,19 @@ p {
     font-weight:bold;
     text-align:center;
     padding:2px;
-    border:2px solid #aa0000;
+    border:2px solid #33CCCC;
     background-color:#fff;
 }
  
 .yui3-overlay-content .yui3-widget-bd {
     text-align:left;
     padding:2px;
-    border:2px solid #0000aa;
+    border:2px solid #33CCCC;
     background-color:#fff;
 }
-
+.yui3-overlay-content .yui3-widget-hd {
+   background: inherit;
+}
  
 .yui-widget #general-dialog { 
     display: block; 
