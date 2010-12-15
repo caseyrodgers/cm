@@ -1438,9 +1438,16 @@ where s.type = 'ST'
   and is_auto_create_template = 1
 
 
+.key=SCHOOL_ACCOUNT_EXISTS
+select password from SUBSCRIBERS where password = ?;
 
 
+.key=INDIV_ACCOUNT_EXISTS
+select student_email from SUBSCRIBERS where student_email = ?;
 
+
+.key=ADMIN_ACCOUNT_EXISTS
+select user_name from HA_ADMIN where user_name = ?;
 
 
 # return the LWL school_id associated
