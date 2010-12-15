@@ -1,4 +1,6 @@
 function setupPageLocal() {
+  return;
+
         YAHOO.hm_standard = new YAHOO.widget.Panel("yui_standard_panel",
                     {modal:true,underlay: "none",
                     fixedcenter:true,

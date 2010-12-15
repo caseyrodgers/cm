@@ -791,9 +791,9 @@ div#postit  a + p {
 }
 
 .column-left {
-	margin-right: 25px;
+	margin-right: 10px;
 }
 
 .column-right {
-	margin-left: 25px;
+	margin-left: 10px;
 }
