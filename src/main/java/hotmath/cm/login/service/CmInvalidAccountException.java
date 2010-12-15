@@ -3,7 +3,6 @@ package hotmath.cm.login.service;
 import java.text.Format;
 import java.text.SimpleDateFormat;
 
-import hotmath.gwt.cm_tools.client.data.HaBasicUser;
 import hotmath.gwt.shared.client.util.CmException;
 
 /** Thrown when a user does not have access to CM
@@ -19,7 +18,7 @@ public class CmInvalidAccountException extends CmException {
 
 	Format _format = new SimpleDateFormat("MMM dd yyyy");
 
-	public CmInvalidAccountException(HaBasicUser user) {
+	public CmInvalidAccountException() {
 
 		message = "The Login Name and Password are valid; however, the referenced account does not have access to Catchup Math";
 	}
