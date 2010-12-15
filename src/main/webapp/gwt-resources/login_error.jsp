@@ -20,7 +20,6 @@
    var _mainMenuItem=-1;
 </script>
         <!-- InstanceBeginEditable name="head" -->
-<link rel="stylesheet" href="/resources/SexyButtons/sexybuttons.css" type="text/css" />
 
 <%
    Exception exp = (Exception)request.getSession().getAttribute("exception");
@@ -34,45 +33,8 @@
    
    boolean showMoreInfo=false; // request.getParameter("debug") != null;
 %>
-<link rel="stylesheet" type="text/css" href="/resources/css/login.css" />
-<style>
-.info-section {
-	display: none;
-}
-#login-wrapper {
-	text-align: center;
-	margin: auto;
-	margin-top: 40px;
-	padding-bottom: 10px;
-	width: 370px;
-	border: 1px solid A3C530;
-	height: auto;
-	background: white;
-}
-
-.round-corners {
-	border: 1px solid #A3C530;
-}
-
-#login-wrapper h1 {
-  padding: 0;
-  }
-  
-
-#login-wrapper p {
-    margin: 0;
-    padding: 0;
-    width: auto;
-  }
-  
-#login-wrapper button {
-  margin-top: 15px;
-  }
-  
-#more-info {
-   margin-top: 10px;
-}  
-</style>
+<link rel="stylesheet" type="text/css" href="/assets/css/login.css" />
+<link rel="stylesheet" type="text/css" href="/assets/css/login_error.css" />
 <!-- InstanceEndEditable -->
     </head>
     <body class='yui3-skin-sam'>

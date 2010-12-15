@@ -40,3 +40,13 @@
 	text-align: left;
 	padding: 10px;
 }
+
+#login-wrapper ul {
+	text-align: left;
+	margin-left: 20px;
+}
+
+#login-wrapper ul li {
+	list-style: circle;
+	margin-left: 15px;
+}
