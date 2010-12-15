@@ -14,3 +14,28 @@ body {
   border: 1px solid red;
 }
 
+
+.solution-resource-panel {
+    width: 210px;
+    height: 210px;
+    border: 1px solid white;
+    float: left;
+    margin-right: 10px;
+    margin-bottom: 10px;
+}
+
+.solution-resource-panel img{
+    width: 200px;
+    height: 200px;
+    border: none;
+}
+
+
+.solution-resource-panel.selected {
+    border: 1px solid red;
+}
+
+.solution-resource-panel h2 {
+	color: black;
+	text-align: center;
+}

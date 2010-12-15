@@ -789,3 +789,11 @@ div#postit  a + p {
     font-style: normal;
     color: #666;
 }
+
+.column-left {
+	margin-right: 25px;
+}
+
+.column-right {
+	margin-left: 25px;
+}
