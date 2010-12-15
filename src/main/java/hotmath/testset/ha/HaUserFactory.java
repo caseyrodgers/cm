@@ -1,6 +1,6 @@
 package hotmath.testset.ha;
 
-import hotmath.HotMathException;
+//import hotmath.HotMathException;
 import hotmath.cm.util.CmMultiLinePropertyReader;
 import hotmath.gwt.cm_admin.server.model.CmAdminDao;
 import hotmath.gwt.cm_admin.server.model.CmStudentDao;
@@ -220,13 +220,16 @@ public class HaUserFactory {
 				SqlUtilities.releaseResources(rs, pstat, null);
 			}
 
-			throw new HotMathException("Could not login user to Catchup Math: "
-					+ user);
+			checkForStudentLoginFailure(conn, user);
+			
+			checkForAdminLoginFailure(conn, user);
+			
+			throw new CmException("The Login Name is not recognized. School Login Names are a school code (e.g., jfk752).");
 
-		} catch (HotMathException hme) {
-			throw hme;
+		} catch (CmException cme) {
+			throw cme;
 		} catch (Exception e) {
-			throw new HotMathException(e, "Error logging in");
+			throw new CmException("Error logging in", e);
 		} finally {
 			SqlUtilities.releaseResources(null, null, conn);
 		}
@@ -256,7 +259,7 @@ public class HaUserFactory {
 			pstat.setInt(1, demoId);
 			rs = pstat.executeQuery();
 			if (!rs.first())
-				throw new HotMathException("Error reading demo template user");
+				throw new CmException("Error reading demo template user");
 
 			int adminId = rs.getInt("admin_id");
 
@@ -418,6 +421,84 @@ public class HaUserFactory {
 		}
 	}
 
+	//TODO: fix presentation of Error msgs
+	private static final String STUDENT_WRONG_PASSWORD_SCHOOL_ACCT =
+		"Students: Your Password will be one of these:<br/><br/>"+
+		"o A self-registration code, e.g., quizme, jones1, or essentials<br/>" +
+		"o Your name and birth date, e.g., smith-robin-0212, if you self-registered<br/>" +
+	    "o Your student ID<br/>" +
+	    "o A unique password that your teacher assigned to you";
+
+	private static final String ADMIN_WRONG_PASSWORD_SCHOOL_ACCT =
+		"Teachers: Ask your Account Manager for your admin password";
+	
+	private static final String WRONG_PASSWORD_INDIV_ACCT =
+		"Your password is not correct. It was sent in an email from registration@hotmath.com.";
+
+	/**
+	 * 
+	 * @param userName
+	 * 
+	 * if userName is a valid school id, then password is wrong for school account; throw Exception
+	 * if userName is an email address, then password is wrong for personal account; throw Exception
+	 * if userName is not an email address, could be an Admin login attempt
+	 */
+    private static void checkForStudentLoginFailure(final Connection conn, String userName)  throws Exception {
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+    	String sql = CmMultiLinePropertyReader.getInstance().getProperty("SCHOOL_ACCOUNT_EXISTS");
+
+        try {
+	        ps = conn.prepareStatement(sql);
+
+	        ps.setString(1, userName);
+            rs = ps.executeQuery();
+        	if (rs.first()) {
+        		throw new CmException(STUDENT_WRONG_PASSWORD_SCHOOL_ACCT);
+        	}
+        	SqlUtilities.releaseResources(rs, ps, null);
+        	
+        	sql = CmMultiLinePropertyReader.getInstance().getProperty("INDIV_ACCOUNT_EXISTS");
+        	ps = conn.prepareStatement(sql);
+	        ps.setString(1, userName);
+            rs = ps.executeQuery();
+        	if (rs.first()) {
+        		throw new CmException(WRONG_PASSWORD_INDIV_ACCT);
+        	}
+
+        }
+        finally {
+        	SqlUtilities.releaseResources(rs, ps, null);
+        }
+    }
+
+    /**
+     * 
+     * @param userName
+     *
+     * if userName is a valid Admin id, then password is wrong for Admin account; throw Exception
+     * 
+     * 
+     */
+    private static void checkForAdminLoginFailure(final Connection conn, String userName) throws Exception {
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+    	String sql = CmMultiLinePropertyReader.getInstance().getProperty("ADMIN_ACCOUNT_EXISTS");
+
+        try {
+	        ps = conn.prepareStatement(sql);
+
+	        ps.setString(1, userName);
+            rs = ps.executeQuery();
+        	if (rs.first()) {
+        		throw new CmException(ADMIN_WRONG_PASSWORD_SCHOOL_ACCT);
+        	}
+        }
+        finally {
+        	SqlUtilities.releaseResources(rs, ps, null);
+        }        
+    }
+
 	static public void main(String as[]) {
 		Connection conn=null;
 	try {
@@ -428,7 +509,7 @@ public class HaUserFactory {
 			
 			int uid = u.getUserKey();
 			
-			StudentModelI student = new CmStudentDao().getStudentModel(uid);
+			StudentModelI student = new CmStudentDao().getStudentModelBase(conn, uid);
 			StudentActiveInfo sai = new CmStudentDao().loadActiveInfo(conn, uid);
 			System.out.println("Info: " + student.getUid() + ", " + sai.getActiveSegment());
 		}
