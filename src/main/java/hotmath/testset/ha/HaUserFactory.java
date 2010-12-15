@@ -421,13 +421,12 @@ public class HaUserFactory {
 		}
 	}
 
-	//TODO: fix presentation of Error msgs
 	private static final String STUDENT_WRONG_PASSWORD_SCHOOL_ACCT =
-		"Students: Your Password will be one of these:<br/><br/>"+
-		"o A self-registration code, e.g., quizme, jones1, or essentials<br/>" +
-		"o Your name and birth date, e.g., smith-robin-0212, if you self-registered<br/>" +
-	    "o Your student ID<br/>" +
-	    "o A unique password that your teacher assigned to you";
+		"Students: Your Password will be one of these:" +
+		"<ul><li>A self-registration code, e.g., quizme, jones1, or essential</li>" +
+		"<li>Your name and birth date, e.g., smith-robin-0212, if you self-registered</li>" +
+	    "<li>Your student ID</li>" +
+	    "<li>A unique password that your teacher assigned to you</li></ul>";
 
 	private static final String ADMIN_WRONG_PASSWORD_SCHOOL_ACCT =
 		"Teachers: Ask your Account Manager for your admin password";
