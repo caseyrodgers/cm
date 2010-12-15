@@ -108,3 +108,22 @@ h1, h2 {
 #bd {
 	height:400px !important;
 }
+
+.more-info {
+	margin-top: 20px;
+}
+
+.more-info p {
+	margin: 0;
+    color: black;
+}
+
+.more-info li ul li {
+	list-style: circle;
+	margin-left: 25px;
+}
+.more-info ul {
+	margin-bottom: 20px;
+}
+
+

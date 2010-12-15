@@ -1,0 +1,42 @@
+.info-section {
+    display: none;
+}
+#login-wrapper {
+    text-align: center;
+    margin: auto;
+    margin-top: 40px;
+    padding-bottom: 10px;
+    width: 370px;
+    border: 1px solid A3C530;
+    height: auto;
+    background: white;
+}
+
+.round-corners {
+    border: 1px solid #A3C530;
+}
+
+#login-wrapper h1 {
+  padding: 0;
+  }
+  
+
+#login-wrapper p {
+    margin: 0;
+    padding: 0;
+    width: auto;
+  }
+  
+#login-wrapper button {
+  margin-top: 15px;
+  }
+  
+#more-info {
+   margin-top: 10px;
+}  
+
+
+#login-wrapper .reason {
+	text-align: left;
+	padding: 10px;
+}
