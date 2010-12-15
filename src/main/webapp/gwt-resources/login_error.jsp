@@ -1,5 +1,5 @@
 <!DOCTYPE HTML PUBLIC"-// W3C//DTD HTML 4.01//EN"" http://www.w3.org/TR/html4/strict.dtd">
-<%@page import="hotmath.cm.login.service.CmExceptionUserExpired"%>
+<%@page import="hotmath.gwt.shared.client.util.CmException"%>
 <html><!-- InstanceBegin template="/Templates/main.dwt" codeOutsideHTMLIsLocked="false" -->
     <head>
         <!-- InstanceBeginEditable name="doctitle" -->
@@ -25,7 +25,7 @@
 <%
    Exception exp = (Exception)request.getSession().getAttribute("exception");
    String reason = null;
-   if(exp instanceof CmExceptionUserExpired) {
+   if(exp instanceof CmException) {
 	   reason = exp.getMessage();   
    }
    else {
