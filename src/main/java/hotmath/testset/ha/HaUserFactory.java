@@ -426,10 +426,11 @@ public class HaUserFactory {
 		"<ul><li>A self-registration code, e.g., quizme, jones1, or essential</li>" +
 		"<li>Your name and birth date, e.g., smith-robin-0212, if you self-registered</li>" +
 	    "<li>Your student ID</li>" +
-	    "<li>A unique password that your teacher assigned to you</li></ul>";
+	    "<li>A unique password that your teacher assigned to you</li></ul>" +
+	    "Teachers: Ask your Account Manager for your admin password";
 
 	private static final String ADMIN_WRONG_PASSWORD_SCHOOL_ACCT =
-		"Teachers: Ask your Account Manager for your admin password";
+		"Ask your Account Manager for your admin password";
 	
 	private static final String WRONG_PASSWORD_INDIV_ACCT =
 		"Your password is not correct. It was sent in an email from registration@hotmath.com.";
