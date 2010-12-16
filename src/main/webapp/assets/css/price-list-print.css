@@ -1,0 +1,12 @@
+
+body {
+	background: white;
+}
+
+#main-content-right,
+ul#menubar2,
+#footer-find, 
+#footer,
+.top-image {
+   display: none;
+}
