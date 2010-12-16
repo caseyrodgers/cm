@@ -146,7 +146,7 @@ public class LoginService extends HttpServlet {
             	/** Check for expired account.  But, allow debug users to bypass
             	 * 
             	 */
-            	if(!isDebug || cmUser.getExpireDate().getTime() < System.currentTimeMillis()) {
+            	if(!isDebug && cmUser.getExpireDate().getTime() < System.currentTimeMillis()) {
             		throw new CmExceptionUserExpired(cmUser);
             	}
             	
@@ -203,9 +203,8 @@ public class LoginService extends HttpServlet {
         }
     }
 	
-	/** return the server name to use for the CM Student
-	 * app.  This is complicated due to different deployment
-	 * configurations.
+	/** return the server name to use for the CM Student app.
+	 * This is complicated due to different deployment configurations.
 	 * 
 	 * @param req
 	 * @return
