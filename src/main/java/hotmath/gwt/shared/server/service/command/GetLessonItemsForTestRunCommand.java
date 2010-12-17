@@ -1,6 +1,5 @@
 package hotmath.gwt.shared.server.service.command;
 
-import hotmath.gwt.cm_admin.server.model.CmAdminDao;
 import hotmath.gwt.cm_admin.server.model.CmStudentDao;
 import hotmath.gwt.cm_rpc.client.rpc.Action;
 import hotmath.gwt.cm_rpc.client.rpc.CmArrayList;
@@ -18,7 +17,6 @@ public class GetLessonItemsForTestRunCommand implements ActionHandler<GetLessonI
     @Override
     public CmList<LessonItemModel> execute(Connection conn, GetLessonItemsForTestRunAction action) throws Exception {
         
-        CmAdminDao dao = new CmAdminDao();
         List<LessonItemModel> list = new CmStudentDao().getLessonItemsForTestRun(conn, action.getRunId());
         CmList<LessonItemModel> toRet = new CmArrayList<LessonItemModel>();
         if(list != null) {
