@@ -35,8 +35,10 @@
         <style>
 .special-note {
 	font-style:italic;
-	font-size: .9em;
+	font-size: .8em;
+        font-weight: bold;
 	margin-bottom: 15px;
+        color: #333;
 }
 #main-content ul li {
 	list-style:decimal;
@@ -47,23 +49,36 @@
 	margin-bottom: 15px;
 }
 #main-content .special-note li {
-	list-style:disc;
+	list-style:none;
 	margin: 0;
 }
 th {
 	font-weight: bold;
 	text-align:center;
+        padding: 5px;
+        color: #333;
+        border: 1px solid #AAA;
+        background: #f4f1ca;
 }
 table {
 	margin-bottom: 15px;
+        background: #FCFFD8;
 }
 table td {
 	text-align: center;
 	min-width: 100px;
+        padding: 5px;
+        color: #333;
+        border: 1px solid #AAA;
 }
 #main-content {
 	margin-top: 40px;
 }
+
+td.left-just{
+   text-align: left;
+}
+
 </style>
         <link rel="stylesheet" type="text/css" href="/assets/css/price-list-print.css" media="print" />
         <!-- InstanceEndEditable -->
@@ -144,19 +159,19 @@ table td {
           <ul class='special-note'>
             <li>There is an additional $250 per school fee for multi-school orders.</li>
           </ul>
-          <h2>Professional Online Tutoring (one-to-one live tutoring for practice problems)</h2>
+          <h2>Professional Online Tutoring<br/> (one-to-one live tutoring for practice problems)</h2>
           <p>Tutoring time is debited from hours purchased in per-minute increments as it is used. </p>
-          <table border="1">
+          <table border="1" >
             <tr>
               <th>Package</th>
               <th>Price</th>
             </tr>
             <tr>
-              <td>100 hours</td>
-              <td>$ 1,995</td>
+              <td class='left-just'>100 hours</td>
+              <td >$ 1,995</td>
             </tr>
             <tr>
-              <td>1000 hours </td>
+              <td class='left-just'>1000 hours </td>
               <td>$18,995 </td>
             </tr>
           </table>
@@ -167,17 +182,17 @@ table td {
           <h2>Training, Professional Development, and Data Interpretation</h2>
           <p>A free 2-hour telephone implementation/training is included for all purchases, including each school
             for multi-school orders. In addition we offer these two services:</p>
-          <table border="1">
+          <table border="1" >
             <tr>
               <th>Service</th>
               <th>Price</th>
             </tr>
             <tr>
-              <td>On site Professional Development (PD) for teachers & lab aids</td>
+              <td class='left-just'>On site Professional Development (PD) for teachers & lab aids</td>
               <td> $1,500</td>
             </tr>
             <tr>
-              <td>Data Interpretation (DI) for data-driven decision making</td>
+              <td class='left-just'>Data Interpretation (DI) for data-driven decision making</td>
               <td>$1,500</td>
             </tr>
           </table>
