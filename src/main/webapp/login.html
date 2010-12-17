@@ -88,7 +88,7 @@
                             </a>
                         </li>
                         <li>
-                            <a class="notselected" href="/login.html">
+                            <a id='login_button' class="sexybutton sexy_cm_gray" href="/login.html">
                                 <span>
                                     <span>Login
                                     </span>
@@ -293,25 +293,7 @@
 <script src='/assets/js/core.js'></script>
         <!-- InstanceBeginEditable name="AfterJavascriptLoad" -->
 <script src='/assets/js/login.js'></script>
-<script>
-  function expandFaq(o) {
-	  var p = o.parentNode.getElementsByTagName("p")[0];
-      if(p.style.display == 'block') {
-		  p.style.display = 'none';
-	  }
-	  else {
-		  p.style.display = 'block';
-	  }
-  }
-
-  /** set the focus on the user name field */
-  function setupPageLocal() {
-	  var el = document.getElementById('fld_user');
-	  if(el) {
-		  el.focus();
-	  }
-  }
-</script>
+<script>CmPage.menuItem = -1;</script>
 <!-- InstanceEndEditable -->
     </body>
 <!-- InstanceEnd --></html>
