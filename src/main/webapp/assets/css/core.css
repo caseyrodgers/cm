@@ -507,8 +507,13 @@ p.standout {
 .sexy_cm_gray span span {
     font-size: 15px;
     font-weight: normal;
+    text-shadow: #FFF 0px 1px 0;
+}
 
-    text-shadow: 0px 1px 1px rgba(0, 0, 0, 0.5 );
+#login_button.sexy_cm_gray a:link,
+#login_button.sexy_cm_gray a:active,
+#login_button.sexy_cm_gray a:visited,
+#login_button.sexy_cm_gray a:hover  {
 }
 
 .sexy_cm_gray:hover span,
@@ -542,7 +547,7 @@ p.standout {
 .sexybutton.sexy_cm_gray,
 .sexybutton.sexy_cm_gray:hover,
 .sexybutton.sexy_cm_gray:focus {
-    color: white !important;
+    color: black !important;
 }
 
 .sexybutton.sexy_cm_gray[disabled],
