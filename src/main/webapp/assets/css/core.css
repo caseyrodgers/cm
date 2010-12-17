@@ -507,7 +507,7 @@ p.standout {
 .sexy_cm_gray span span {
     font-size: 15px;
     font-weight: normal;
-    text-shadow: #FFF 0px 1px 0;
+    text-shadow: none;
 }
 
 #login_button.sexy_cm_gray a:link,

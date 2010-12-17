@@ -24,6 +24,7 @@ function setupPage() {
                 var menuButtons = Y.one('#menubar2').all('a');
                 _mainMenuItemObject = menuButtons.item(CmPage.menuItem);
                 _mainMenuItemObject.removeClass('notselected');
+                _mainMenuItemObject.removeClass('sexy_cm_gray');				
                 _mainMenuItemObject.addClass('sexy_cm_green');
                 _mainMenuItemObject.addClass('sexybutton');
             }
