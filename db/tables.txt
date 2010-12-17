@@ -39,7 +39,8 @@ HA_TEST_RUN_LESSON_PID
 HA_TEST_RUN_MAX                     
 HA_TEST_RUN_RESULTS                 
 HA_TEST_RUN_WHITEBOARD              
-HA_USER                             
+HA_USER
+HA_USER_EXTENDED
 HA_USER_LOGIN                       
 HA_USER_LOGIN_LAST                  
 HA_USER_NET_TEST                    
