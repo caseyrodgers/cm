@@ -175,7 +175,7 @@ public class CatchupSignupServlet extends HttpServlet {
             }
             
             /** CHECK: should this throw an Exception?
-             * At very lease we need to check for this instance
+             * At very least we need to check for this instance
              * in resources/js/signup.js
              *  
              */
