@@ -325,7 +325,7 @@ p {
 }
 
 .yui3-overlay-content .yui3-widget-hd {
-    background: inherit;
+    background: #33CCCC;
 }
 
 .yui-widget #general-dialog {
@@ -858,4 +858,14 @@ div#postit  a + p {
 
 .column-right {
     margin-left: 10px;
+}
+
+
+
+#mona-video .close {
+	position: absolute;
+	top: 3px;
+	right: 5px;
+	color: white;
+	font-weight: bold;
 }
