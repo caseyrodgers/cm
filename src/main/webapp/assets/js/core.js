@@ -62,10 +62,16 @@ YUI().use('node',function(Y) {
 var _overlay=null;
 
 function showMonaMotivationalVideo() {
-    var closer = '<div style="text-align: center;margin-top: 25px;">' +
-                 '<a class="sexybutton sexysimple" href="#" onclick="closeMonaVideo();return false;">Close</a></div>';
-    var html = '<iframe src="/motivational_video/" width="100%" height="250px" scrolling="no" frameborder="no"></iframe>'
-            + closer;
+    var closeHead = '<a href="#" onclick="closeMonaVideo();return false" class="close">X</a>';
+    
+    var closeFoot = '<div style="text-align: center;margin-top: 25px;">' +
+                 '    <a class="sexybutton sexysimple" href="#" onclick="closeMonaVideo();return false;">Close</a>' +
+                 '</div>';
+    
+    
+    var html = closeHead + 
+            '<iframe src="/motivational_video/" width="100%" height="250px" scrolling="no" frameborder="no"></iframe>' +
+            closeFoot;
     
     YUI().use('anim','overlay',
                     function(Y) {
@@ -87,6 +93,7 @@ function showMonaMotivationalVideo() {
 
 /** Closed from close button */
 function closeMonaVideo() {
+    _overlay.set("bodyContent", "");  // make sure video stops
     _overlay.hide();
 }
 
