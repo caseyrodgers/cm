@@ -45,9 +45,11 @@ import sb.util.SbUtilities;
  * @author casey
  * 
  */
-public class CmMultiLinePropertyReader extends Properties {
+public class CmMultiLinePropertyReader extends AbstractCmMultiLinePropertyReader {
 
-    static private CmMultiLinePropertyReader __instance;
+	private static final long serialVersionUID = -2215233022960313983L;
+
+	static private CmMultiLinePropertyReader __instance;
 
     static public CmMultiLinePropertyReader getInstance() {
         if (__instance == null)
@@ -78,56 +80,12 @@ public class CmMultiLinePropertyReader extends Properties {
 
         __logger.info("Reading multi-line problem file: " + propFile);
         
-        try {
-            /**
-             * Read in the default multi-line property file
-             * 
-             */
-            InputStream is = getClass().getResourceAsStream(propFile);
-            BufferedReader br = new BufferedReader(new InputStreamReader(is));
-            String line = null;
-
-            String value = "";
-            String name = null;
-    
-            while ((line = br.readLine()) != null) {
-    
-                if (line == null || line.length() == 0 || line.startsWith("#"))
-                    continue;
-    
-                if (line.startsWith(".key=")) {
-                    if (value.length() > 0) {
-                        
-                        /** Make sure this entry does not already exist
-                         * 
-                         */
-                        if(containsKey(name)) {
-                            __logger.warn("property already exists: " + name);
-                        }
-                        
-                        put(name, value);
-                        value = "";
-                    }
-                    name = line.substring(5);
-                } else {
-                    value += (line + "\n");
-                }
-            }
-    
-            /**
-             * put last value
-             * 
-             */
-            if (value.length() > 0)
-                put(name, value);
-        }
-        catch(Exception e) {
-            __logger.error("Error reading multi line property file: " + propFile, e);
-        }
+        loadProps(propFile);
+        
     }
     
-    public String getProperty(String key, Map<String,String> replacements) {
-        String val = getProperty(key);
-        return SbUtilities.replaceTokens(val, replacements);
-    }
+	@Override
+	protected Logger getLogger() {
+		return __logger;
+	}
 }
