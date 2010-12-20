@@ -126,7 +126,7 @@ var Quotes =
          link_type:'success'
      },
      {
-         text:'Instructional Software is proven to improve learning, according to the National Math Panel.',
+         text:'Instructional software is proven to improve learning, according to the National Math Panel.',
          link_text: 'National Mathematics Advisory Panel.',
          link_type:'research'
      },
@@ -186,7 +186,7 @@ var Quotes =
          link_type:'success'
      },     
      {
-         text:'Online mathematics computer-aided Instruction products can be a significant component of a school or college review and remediation program.',
+         text:'Online mathematics computer-aided instruction products can be a significant component of a school or college review and remediation program.',
          link_text: 'Berniker',
          link_type:'research'
      },
