@@ -1,0 +1,65 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<title>Catchup Math Web Test Launcher</title>
+<style>
+   .web-test-define {
+   }
+   .web-test-define label {
+      margin-top: 10px;
+      display: block;
+   }
+   
+   .web-test-define select {
+      display: block;
+      margin-bottom: 20px;
+   }
+</style>
+</head>
+<body>
+<h1>Launch Multiple CM Web Tests</h1>
+<form class='web-test-define' method="get" action="#" onsubmit="launchTest();return false;">
+    <label>Test Type:</label>
+    <select id='fld_test_type'>
+	        <option value='program'>Full Program</option>
+	        <option value='net'>Network Test</option>
+	    </select>
+    <label>How Many Tests:</label>
+    <select id='fld_how_many'>
+	        <option value='1'>1</option>
+                <option value='2'>2</option>
+                <option value='3'>3</option>
+	        <option value='5'>5</option>
+	        <option value='10'>10</option>
+	    </select>
+    <label>Server to Test:</label>
+	    <select id='fld_server'>
+	        <option value=''>Current</option>
+	        <option value='catchupmath.com/cm'>Live Server</option>
+	        <option value='hotmath.kattare.com:8081'>Test Server</option>
+	        <option value='localhost:8088'>Local Development Server</option>
+	    </select>
+    <input type='submit' value='Launch Tests'/>
+</form>
+<script>
+   function launchTest() {
+	   var howMany = document.getElementById('fld_how_many').value;
+	   var server = document.getElementById('fld_server').value;
+	   var type = document.getElementById('fld_test_type').value;
+
+	   for(var i=0;i<howMany;i++) {
+		   launchCmWebTest(type, i,server);
+	   }
+   }
+
+
+   function launchCmWebTest(type, which,server) {
+           var typeParam='';
+           var action = (type=='net')?'auto_test_net':'auto_test';
+           var serverUrl = server?'http://' + server:"";
+           var win = window.open(serverUrl + '/loginService?action=' + action);
+           win.focus();
+   }
+</script>
+</body>
+</html>
