@@ -17,6 +17,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.log4j.Logger;
 
@@ -220,7 +222,9 @@ public class HaUserFactory {
 				SqlUtilities.releaseResources(rs, pstat, null);
 			}
 
-			checkForStudentLoginFailure(conn, user);
+			checkForSchoolLoginFailure(conn, user);
+			
+			checkForIndivAcctLoginFailure(conn, user);
 			
 			checkForAdminLoginFailure(conn, user);
 			
@@ -421,13 +425,19 @@ public class HaUserFactory {
 		}
 	}
 
-	private static final String STUDENT_WRONG_PASSWORD_SCHOOL_ACCT =
+	private static final String STUDENT_OR_ADMIN_WRONG_PASSWORD_SCHOOL_ACCT =
 		"Students: Your Password will be one of these:" +
 		"<ul><li>A self-registration code, e.g., quizme, jones1, or essential</li>" +
 		"<li>Your name and birth date, e.g., smith-robin-0212, if you self-registered</li>" +
 	    "<li>Your student ID</li>" +
 	    "<li>A unique password that your teacher assigned to you</li></ul>" +
 	    "Teachers: Ask your Account Manager for your admin password";
+	
+	private static final String SCHOOL_HOTMATH_ACCT =
+		"This Login Name is for Hotmath.com. Please contact your account manager about Catchup Math.";
+
+	private static final String INDIV_HOTMATH_ACCT =
+		"This Login Name is for Hotmath.com. A separate purchase is required to use Catchup Math";
 
 	private static final String ADMIN_WRONG_PASSWORD_SCHOOL_ACCT =
 		"Ask your Account Manager for your admin password";
@@ -440,30 +450,33 @@ public class HaUserFactory {
 	 * @param userName
 	 * 
 	 * if userName is a valid school id, then password is wrong for school account; throw Exception
-	 * if userName is an email address, then password is wrong for personal account; throw Exception
-	 * if userName is not an email address, could be an Admin login attempt
+     *
 	 */
-    private static void checkForStudentLoginFailure(final Connection conn, String userName)  throws Exception {
+    private static void checkForSchoolLoginFailure(final Connection conn, String userName)  throws Exception {
         PreparedStatement ps = null;
         ResultSet rs = null;
-    	String sql = CmMultiLinePropertyReader.getInstance().getProperty("SCHOOL_ACCOUNT_EXISTS");
+    	String sql = CmMultiLinePropertyReader.getInstance().getProperty("SCHOOL_ACCOUNT_SERVICES");
 
         try {
 	        ps = conn.prepareStatement(sql);
 
 	        ps.setString(1, userName);
+	        ps.setString(2, userName);
             rs = ps.executeQuery();
-        	if (rs.first()) {
-        		throw new CmException(STUDENT_WRONG_PASSWORD_SCHOOL_ACCT);
-        	}
-        	SqlUtilities.releaseResources(rs, ps, null);
-        	
-        	sql = CmMultiLinePropertyReader.getInstance().getProperty("INDIV_ACCOUNT_EXISTS");
-        	ps = conn.prepareStatement(sql);
-	        ps.setString(1, userName);
-            rs = ps.executeQuery();
-        	if (rs.first()) {
-        		throw new CmException(WRONG_PASSWORD_INDIV_ACCT);
+            
+            Map <String, Boolean> serviceMap = loadServices(rs);
+            
+        	if (serviceMap.size() > 0) {
+        		
+        		Boolean cmIsExpired = serviceMap.get("catchup");
+        		// if cmIsExpired is not null, then user (student OR admin) must have entered an incorrect password
+        		if (cmIsExpired != null) {
+            		throw new CmException(STUDENT_OR_ADMIN_WRONG_PASSWORD_SCHOOL_ACCT);        			
+        		}
+
+        		if (serviceMap.containsKey("solution")) {
+        			throw new CmException(SCHOOL_HOTMATH_ACCT);
+        		}
         	}
 
         }
@@ -472,6 +485,57 @@ public class HaUserFactory {
         }
     }
 
+	/**
+	 * 
+	 * @param userName
+	 * 
+	 * if userName is an email address, then password is wrong for personal account; throw Exception
+	 */
+    private static void checkForIndivAcctLoginFailure(final Connection conn, String userName)  throws Exception {
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+    	String sql = CmMultiLinePropertyReader.getInstance().getProperty("INDIV_ACCOUNT_SERVICES");
+
+        try {
+	        ps = conn.prepareStatement(sql);
+
+	        ps.setString(1, userName);
+	        ps.setString(2, userName);
+            rs = ps.executeQuery();
+            
+            Map <String, Boolean> serviceMap = loadServices(rs);
+            
+        	if (serviceMap.size() > 0) {
+        		
+        		Boolean cmIsExpired = serviceMap.get("catchup");
+        		// if cmIsExpired is not null, then indiv user must have entered an incorrect password
+        		if (cmIsExpired != null) {
+            		throw new CmException(WRONG_PASSWORD_INDIV_ACCT);        			
+        		}
+
+        		if (serviceMap.containsKey("solution")) {
+        			throw new CmException(INDIV_HOTMATH_ACCT);
+        		}
+        	}
+
+        }
+        finally {
+        	SqlUtilities.releaseResources(rs, ps, null);
+        }
+    }
+
+    private static Map<String, Boolean> loadServices(ResultSet rs) throws Exception {
+        Map <String, Boolean> serviceMap = new HashMap<String, Boolean>();
+    	if (rs.first()) {
+    		do {
+    			String serviceName = rs.getString("service_name");
+    			Boolean isExpired = (rs.getInt("is_expired") > 0);
+    			serviceMap.put(serviceName, isExpired);
+    		} while (rs.next());
+    	}
+    	return serviceMap; 
+    }
+    
     /**
      * 
      * @param userName

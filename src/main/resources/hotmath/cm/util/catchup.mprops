@@ -1438,12 +1438,31 @@ where s.type = 'ST'
   and is_auto_create_template = 1
 
 
-.key=SCHOOL_ACCOUNT_EXISTS
-select password from SUBSCRIBERS where password = ?;
+.key=SCHOOL_ACCOUNT_SERVICES
+
+select ss.service_name, if(date_expire < curdate(), 1, 0) is_expired
+from   SUBSCRIBERS s
+left outer join (
+       select subscriber_id, service_name,
+       max(date_expire) as date_expire
+       from   SUBSCRIBERS_SERVICES
+       where subscriber_id in (select id from SUBSCRIBERS where password = ?)
+       group  by subscriber_id, service_name) ss
+  on ss.subscriber_id = s.id
+where s.password = ?
 
 
-.key=INDIV_ACCOUNT_EXISTS
-select student_email from SUBSCRIBERS where student_email = ?;
+.key=INDIV_ACCOUNT_SERVICES
+select ss.service_name, if(date_expire < curdate(), 1, 0) is_expired
+from   SUBSCRIBERS s
+left outer join (
+       select subscriber_id, service_name,
+       max(date_expire) as date_expire
+       from   SUBSCRIBERS_SERVICES
+       where subscriber_id in (select id from SUBSCRIBERS where student_email = ?)
+       group  by subscriber_id, service_name) ss
+  on ss.subscriber_id = s.id
+where s.student_email =  ?
 
 
 .key=ADMIN_ACCOUNT_EXISTS
