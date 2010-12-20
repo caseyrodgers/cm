@@ -110,43 +110,99 @@ function closeMonaVideo() {
         }        
 
 
+        
+        
 
+         
+        
+        
+        
+       
 var Quotes = 
     [
      {
-         text:"A test-reteach-retest model that targets and remediates individual skill weaknesses dramatically accelerates learning.",
-         link_text: 'Bloom, B.S.  (1984)',
-         link_type:'research'
-     }
-     ,
+         text:"Really great for students at all achievement levels. It's easy to use, self-explanatory, and encourages students to become independent learners.",
+         link_text: 'High School Math Teacher, Illinois',
+         link_type:'success'
+     },
      {
-         text:"A new student initially tested into our lowest math course. Not satisfied, she used Catchup Math for three weeks and then retested four course levels higher --- a full year and a quarter.",
+         text:'Instructional Software is proven to improve learning, according to the National Math Panel.',
+         link_text: 'National Mathematics Advisory Panel.',
+         link_type:'research'
+     },
+     {
+         text:'A new student initially tested into our lowest math course. Not satisfied, she used Catchup Math for three weeks and then retested four course levels higher — a full year and a quarter. This was exactly our purpose for using it.',
          link_text: 'College Instructor, Ohio',
-         link_type:'success'             
+         link_type:'success'
+     },
+     {
+         text:"Use of multi-media to provide alternate forms of representation improves effectiveness. The addition of graphs, diagrams, conceptual activities, and video lessons reduces students' cognitive load.",
+         link_text: 'Mayer',
+         link_type:'research'
      },
      {
          text:"I've never done so well in a math class before.",
-         link_text: ' Kentucky',
-         link_type:'success'             
+         link_text: 'Formerly Failing Middle School Student, Kentucky',
+         link_type:'success'
      },
      {
-         text:"Technology-infused Interventions ... were the top model predictors of improved high stakes test scores, dropout rate reduction, and improved discipline.",
-         link_text: ' Greaves',
-         link_type:'research'             
-     },         
+         text:'A test-reteach-retest model that targets and remediates individual skill weaknesses dramatically accelerates learning.',
+         link_text: 'Bloom',
+         link_type:'research'
+     },
      {
-         text:"It worked so well over the last 3 weeks that my students are all caught up and doing their regular work now.",
-         link_text: 'New York',
-         link_type:'success'             
-     }, 
+         text:"We used Catchup Math with 30 remedial pre-algebra students. All of the students' scores improved, and five students passed into mainstream classes.",
+         link_text: 'Middle School Intervention Specialist, California',
+         link_type:'success'
+     },
      {
-         text:"Instructional Software is proven to improve learning.",
-         link_text: ' National Math Panel',
-         link_type:'research'             
-     }, 
+         text:"Last year we used another company's service, which cost us $3000 for just 60 students and the results were not that great. This year we got Catchup Math for 200 students for $950, and the support and results were outstanding.",
+         link_text: 'High School Teacher, Washington',
+         link_type:'success'
+     },
      {
-         text:"Use of multi-media to provide alternate forms of representation improves effectiveness.",
-         link_text: '  Mayer',
-         link_type:'research'             
+         text:'Technology-infused interventions were the top model predictor of improved high stakes test scores, dropout rate reduction and improved discipline.',
+         link_text: 'Greaves',
+         link_type:'research'
+     },
+     {
+         text:'Catchup Math shows students that they CAN achieve success in math; it builds up their confidence and self-esteem.',
+         link_text: 'High School Principal, Michigan',
+         link_type:'success'
+     },
+     {
+         text:'Guiding the student through sample problems that have been worked out is more effective than simply assigning problems to work on their own, and transfers better to test performance.',
+         link_text: 'Carroll',
+         link_type:'research'
+     },
+     {
+         text:'We had incredible results this summer. The teachers are clamoring for us to buy it for the fall!',
+         link_text: 'District Curriculum Coordinator, Texas',
+         link_type:'success'
+     },     
+     {
+         text:'It worked so well over the last 3 weeks that my students are all caught up and doing their regular work now.',
+         link_text: 'Geometry Teacher, New York',
+         link_type:'success'
+     },     
+     {
+         text:'Online mathematics computer-aided Instruction products can be a significant component of a school or college review and remediation program.',
+         link_text: 'Berniker',
+         link_type:'research'
+     },
+     {
+         text:'As close to perfect as I have found.',
+         link_text: 'High School Math Intervention Teacher, Kentucky',
+         link_type:'success'
+     },
+     {
+         text:'Students enjoy learning with Catchup Math! In our survey of remedial students using Catchup Math, 76% said they would recommend it to a friend and 81% said they would like to use it themselves again.',
+         link_text: 'High School Instructional Technology Coordinator, California',
+         link_type:'success'
+     },
+     {
+         text:'We increased the number of students achieving honor-roll status from 13% to 22%.',
+         link_text: 'High School Principal, California',
+         link_type:'success'
      }
  ];

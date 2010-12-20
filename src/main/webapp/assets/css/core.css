@@ -788,12 +788,12 @@ ul#menubar2 {
 
 .postit_2 p, .postit_2 .credit, .postit_2 a {
     padding: 40px 30px 0 30px;
+    font-size: .9em;
 }
 
 .postit_2 p {
     color: #666666;
     font-family: 'Neucha', arial, serif;
-    font-size: 1em;
     margin-bottom: 0;
     padding-bottom: 0;
     padding-top: 30px;
