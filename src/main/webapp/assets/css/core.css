@@ -411,9 +411,12 @@ p.standout {
     width: 650px;
     height: 505px;
     text-align: center;
-    margin: auto;
-    padding-top: 5px;
-    background: black;
+    padding: 20px;
+    background: #1A1A1A;
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+    width: 960px;
+    height: 468;
 }
 
 #content-middle-right b {
