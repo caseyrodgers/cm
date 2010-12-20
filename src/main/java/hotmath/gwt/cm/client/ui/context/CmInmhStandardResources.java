@@ -315,7 +315,10 @@ public class CmInmhStandardResources extends ArrayList<PrescriptionSessionDataRe
         si.getItemData().add(new InmhItemData(t, "/learning_activities/interactivities/slope.swf?lang=es","Pendiente"));
         si.getItemData().add(new InmhItemData(t, "/learning_activities/interactivities/distance_formula.swf?lang=es","F&oacute;rmula de la distancia"));
         subMenu.add(si);
-        
+
+        si = new SubMenuItem(null);
+        si.getItemData().add(new InmhItemData(t, "/learning_activities/interactivities/flashcard_wordproblems_level1.swf","Problemas con palabras"));
+        subMenu.add(si);
         
         return subMenu;
     }
