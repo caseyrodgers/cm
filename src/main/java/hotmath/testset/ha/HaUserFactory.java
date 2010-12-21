@@ -1,6 +1,6 @@
 package hotmath.testset.ha;
 
-//import hotmath.HotMathException;
+import hotmath.cm.util.CmMessagePropertyReader;
 import hotmath.cm.util.CmMultiLinePropertyReader;
 import hotmath.gwt.cm_admin.server.model.CmAdminDao;
 import hotmath.gwt.cm_admin.server.model.CmStudentDao;
@@ -425,26 +425,6 @@ public class HaUserFactory {
 		}
 	}
 
-	private static final String STUDENT_OR_ADMIN_WRONG_PASSWORD_SCHOOL_ACCT =
-		"Students: Your Password will be one of these:" +
-		"<ul><li>A self-registration code, e.g., quizme, jones1, or essential</li>" +
-		"<li>Your name and birth date, e.g., smith-robin-0212, if you self-registered</li>" +
-	    "<li>Your student ID</li>" +
-	    "<li>A unique password that your teacher assigned to you</li></ul>" +
-	    "Teachers: Ask your Account Manager for your admin password";
-	
-	private static final String SCHOOL_HOTMATH_ACCT =
-		"This Login Name is for Hotmath.com. Please contact your account manager about Catchup Math.";
-
-	private static final String INDIV_HOTMATH_ACCT =
-		"This Login Name is for Hotmath.com. A separate purchase is required to use Catchup Math";
-
-	private static final String ADMIN_WRONG_PASSWORD_SCHOOL_ACCT =
-		"Ask your Account Manager for your admin password";
-	
-	private static final String WRONG_PASSWORD_INDIV_ACCT =
-		"Your password is not correct. It was sent in an email from registration@hotmath.com.";
-
 	/**
 	 * 
 	 * @param userName
@@ -471,11 +451,11 @@ public class HaUserFactory {
         		Boolean cmIsExpired = serviceMap.get("catchup");
         		// if cmIsExpired is not null, then user (student OR admin) must have entered an incorrect password
         		if (cmIsExpired != null) {
-            		throw new CmException(STUDENT_OR_ADMIN_WRONG_PASSWORD_SCHOOL_ACCT);        			
+            		throw new CmException(CmMessagePropertyReader.getInstance().getProperty("STUDENT_OR_ADMIN_WRONG_PASSWORD_SCHOOL_ACCT"));
         		}
 
         		if (serviceMap.containsKey("solution")) {
-        			throw new CmException(SCHOOL_HOTMATH_ACCT);
+        			throw new CmException(CmMessagePropertyReader.getInstance().getProperty("SCHOOL_HOTMATH_ACCT"));
         		}
         	}
 
@@ -510,11 +490,11 @@ public class HaUserFactory {
         		Boolean cmIsExpired = serviceMap.get("catchup");
         		// if cmIsExpired is not null, then indiv user must have entered an incorrect password
         		if (cmIsExpired != null) {
-            		throw new CmException(WRONG_PASSWORD_INDIV_ACCT);        			
+            		throw new CmException(CmMessagePropertyReader.getInstance().getProperty("WRONG_PASSWORD_INDIV_ACCT"));        			
         		}
 
         		if (serviceMap.containsKey("solution")) {
-        			throw new CmException(INDIV_HOTMATH_ACCT);
+        			throw new CmException(CmMessagePropertyReader.getInstance().getProperty("INDIV_HOTMATH_ACCT"));
         		}
         	}
 
@@ -555,7 +535,7 @@ public class HaUserFactory {
 	        ps.setString(1, userName);
             rs = ps.executeQuery();
         	if (rs.first()) {
-        		throw new CmException(ADMIN_WRONG_PASSWORD_SCHOOL_ACCT);
+        		throw new CmException(CmMessagePropertyReader.getInstance().getProperty("ADMIN_WRONG_PASSWORD_SCHOOL_ACCT"));
         	}
         }
         finally {

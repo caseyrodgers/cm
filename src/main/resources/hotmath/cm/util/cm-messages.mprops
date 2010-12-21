@@ -1,0 +1,27 @@
+#####################
+## Message properties
+#####################
+
+.key=STUDENT_OR_ADMIN_WRONG_PASSWORD_SCHOOL_ACCT
+Students: Your Password will be one of these:
+<ul><li>A self-registration code, e.g., quizme, jones1, or essential</li>
+<li>Your name and birth date, e.g., smith-robin-0212, if you self-registered</li>
+<li>Your student ID</li>
+<li>A unique password that your teacher assigned to you</li></ul>
+Teachers: Ask your Account Manager for your admin password
+
+
+.key=SCHOOL_HOTMATH_ACCT
+This Login Name is for Hotmath.com. Please contact your account manager about Catchup Math.
+
+
+.key=INDIV_HOTMATH_ACCT
+This Login Name is for Hotmath.com. A separate purchase is required to use Catchup Math.
+
+
+.key=ADMIN_WRONG_PASSWORD_SCHOOL_ACCT
+Ask your Account Manager for your admin password
+	
+
+.key=WRONG_PASSWORD_INDIV_ACCT
+Your password is not correct. It was sent in an email from registration@hotmath.com.
