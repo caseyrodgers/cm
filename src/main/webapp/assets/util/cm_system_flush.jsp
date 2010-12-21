@@ -1,7 +1,7 @@
-<%@ page import="hotmath.util.*" %>
+<%@ page import="hotmath.flusher.HotmathFlusher" %>
 
 <%
-    hotmath.SolutionManager.flushCache();
+    HotmathFlusher.getInstance().flushAll();
 %>
 <html>
   <body>
