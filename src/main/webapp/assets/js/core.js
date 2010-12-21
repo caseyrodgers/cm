@@ -126,7 +126,7 @@ var Quotes =
          link_type:'success'
      },
      {
-         text:'Instructional software is proven to improve learning, according to the National Math Panel.',
+         text:'Instructional software is proven to improve learning.',
          link_text: 'National Mathematics Advisory Panel.',
          link_type:'research'
      },
