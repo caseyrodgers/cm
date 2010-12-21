@@ -105,7 +105,7 @@
                     <div class='yui3-u-1'>
                         <!-- InstanceBeginEditable name="main-content" -->
         <div id='login-wrapper' class='round-corners'>
-          <h1>Login Problem</h1>
+          <h1>Login Help</h1>
           <p class='reason'><%= reason %></p>
  
           <button onclick='doLoginAgain();' class="sexybutton sexysimple sexyblue">
