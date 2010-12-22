@@ -312,7 +312,7 @@ update HA_USER
 set    user_name = ?,
        user_passcode = ?,
        group_id = ?,
-       test_def_id = (select test_def_id
+       test_def_id = (select max(test_def_id) as test_def_id
                       from   HA_TEST_DEF
                       where  prog_id = ?
                              and subj_id = ?
@@ -347,7 +347,7 @@ order by insert_time_mills desc
 
 
 insert into HA_USER (user_name, user_passcode, active_segment, group_id, test_def_id, admin_id, is_active, is_demo, gui_background_style, date_created)
-values(?, ?, ?, ?, (select test_def_id from HA_TEST_DEF where prog_id = ? and subj_id = ? and is_active = 1), ?, 1, ?,?, now())
+values(?, ?, ?, ?, (select max(test_def_id) as test_def_id from HA_TEST_DEF where prog_id = ? and subj_id = ? and is_active = 1), ?, 1, ?,?, now())
 
 
 
@@ -355,16 +355,16 @@ values(?, ?, ?, ?, (select test_def_id from HA_TEST_DEF where prog_id = ? and su
 .key=INSERT_STUDENT_PROGRAM_SQL
 
 insert CM_USER_PROGRAM (user_id, admin_id, test_def_id, pass_percent, create_date, test_config_json,custom_program_id)
-values (?, ?, (select test_def_id from HA_TEST_DEF where prog_id = ? and subj_id = ? and is_active = 1), ?, ?,?,?)
+values (?, ?, (select max(test_def_id) as test_def_id from HA_TEST_DEF where prog_id = ? and subj_id = ? and is_active = 1), ?, ?,?,?)
 
 
 .key=INSERT_STUDENT_PROGRAM_NULL_PASS_PERCENT_SQL
 insert CM_USER_PROGRAM (user_id, admin_id, test_def_id, create_date,test_config_json,custom_program_id)
-values (?, ?, (select test_def_id from HA_TEST_DEF where prog_id = ? and subj_id = ? and is_active = 1), ?, ?,?)
+values (?, ?, (select max(test_def_id) as test_def_id from HA_TEST_DEF where prog_id = ? and subj_id = ? and is_active = 1), ?, ?,?)
 
 
 .key=GET_TEST_DEF_BY_PROG_SUBJECT
-select test_def_id 
+select max(test_def_id) as test_def_id 
 from HA_TEST_DEF 
 where prog_id = ? 
 and subj_id = ? 
@@ -848,7 +848,7 @@ WHERE  test_def_id = ?
 
 .key=TEST_DEF_IDS_FOR_PROG_ID
 
-SELECT test_def_id
+select max(test_def_id) as test_def_id
 FROM   HA_TEST_DEF
 where  prog_id = ?
   and  is_active = 1
