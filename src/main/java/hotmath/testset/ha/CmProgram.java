@@ -29,7 +29,8 @@ public enum CmProgram {
     TAKS(33,"TAKS Exit Level Practice Test","","Grad Prep Tx",true),
     GEOM_CHAP(24,"Geometry - Chapters", "Geom", "Chap",true),
     AUTO_ENROLL(15,"Auto-Enrollment","","Auto-Enroll",true),
-    NATIONAL(37,"National Practice Test","","Grad Prep National",true),
+    NATIONAL_V1(37,"National Practice Test","","Grad Prep National (version 1)",false),
+    NATIONAL(44,"National Practice Test","","Grad Prep National",true),
     CUSTOM_PROGRAM(36,"Custom Program","Custom","Custom",false),
     ESSENTIALS_V1(41,"Essentials Program (version 1)","Ess","Prof", false),
     ESSENTIALS(42,"Essentials Program","Ess","Prof", true);
