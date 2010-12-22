@@ -3,6 +3,7 @@ package hotmath.gwt.shared.server.service.command;
 import hotmath.HotMathException;
 import hotmath.HotMathProperties;
 import hotmath.ProblemID;
+import hotmath.cm.util.CatchupMathProperties;
 import hotmath.solution.SolutionParts;
 import hotmath.solution.writer.SolutionHTMLCreator;
 import hotmath.solution.writer.TutorProperties;
@@ -20,7 +21,6 @@ import sb.util.SbFile;
  */
 public class SolutionHTMLCreatorImplFileSystem implements SolutionHTMLCreator {
     
-    String base = HotMathProperties.getInstance().getHotMathWebBase();
     public SolutionHTMLCreatorImplFileSystem(String template, String data) {
         /** unused .. 
          * 
@@ -30,6 +30,8 @@ public class SolutionHTMLCreatorImplFileSystem implements SolutionHTMLCreator {
     @Override
     public SolutionParts getSolutionHTML(TutorProperties tutorProps, String guid) throws HotMathException {
         try {
+            String base = CatchupMathProperties.getInstance().getSolutionBase();
+
             ProblemID pid = new ProblemID(guid);
             String path = pid.getSolutionPath_DirOnly("solutions");
     
