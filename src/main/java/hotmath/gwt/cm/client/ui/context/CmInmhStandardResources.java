@@ -178,15 +178,9 @@ public class CmInmhStandardResources extends ArrayList<PrescriptionSessionDataRe
         
         si = new SubMenuItem("Graphing");
         si.getItemData().add(new InmhItemData(t, "/learning_activities/interactivities/inequality_one_variable.swf","Inequality in One Variable"));
-        si.getItemData().add(new InmhItemData(t, "/learning_activities/interactivities/flashcard_add_sub_neg.swf","Plotting Coordinates"));
+        si.getItemData().add(new InmhItemData(t, "/learning_activities/interactivities/plot_coordplane.swf","Plotting Coordinates"));
         si.getItemData().add(new InmhItemData(t, "/learning_activities/interactivities/slope.swf","Slope"));
         si.getItemData().add(new InmhItemData(t, "/learning_activities/interactivities/distance_formula.swf","Distance Formula"));
-        subMenu.add(si);
-
-        si = new SubMenuItem(null);
-        si.getItemData()
-                .add(new InmhItemData(t, "/learning_activities/interactivities/plot_coordplane.swf",
-                        "Plotting Coordinates"));
         subMenu.add(si);
 
         si = new SubMenuItem(null);
@@ -300,7 +294,6 @@ public class CmInmhStandardResources extends ArrayList<PrescriptionSessionDataRe
         si = new SubMenuItem(null);
         si.getItemData().add(new InmhItemData(t, "/learning_activities/interactivities/flashcard_gcf.swf","Factores comunes m&aacute;s grandes"));
         subMenu.add(si);
-  
 
         si = new SubMenuItem("Exponentes");
         si.getItemData().add(new InmhItemData(t, "/learning_activities/interactivities/flashcard_exponents_level1.swf?lang=es","Exponentes: Nivel 1"));
@@ -311,9 +304,9 @@ public class CmInmhStandardResources extends ArrayList<PrescriptionSessionDataRe
         
         si = new SubMenuItem("Graficando");
         si.getItemData().add(new InmhItemData(t, "/learning_activities/interactivities/inequality_one_variable.swf?lang=es","Desigualdad con una variable"));
-        si.getItemData().add(new InmhItemData(t, "/learning_activities/interactivities/plot_coordplane.swf?lang=es","Graficando coordenadas"));
-        si.getItemData().add(new InmhItemData(t, "/learning_activities/interactivities/slope.swf?lang=es","Pendiente"));
-        si.getItemData().add(new InmhItemData(t, "/learning_activities/interactivities/distance_formula.swf?lang=es","F&oacute;rmula de la distancia"));
+//        si.getItemData().add(new InmhItemData(t, "/learning_activities/interactivities/plot_coordplane.swf?lang=es","Graficando coordenadas"));
+//        si.getItemData().add(new InmhItemData(t, "/learning_activities/interactivities/slope.swf?lang=es","Pendiente"));
+//        si.getItemData().add(new InmhItemData(t, "/learning_activities/interactivities/distance_formula.swf?lang=es","F&oacute;rmula de la distancia"));
         subMenu.add(si);
 
         si = new SubMenuItem(null);
