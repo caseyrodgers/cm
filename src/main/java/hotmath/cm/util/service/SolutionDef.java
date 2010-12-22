@@ -2,14 +2,15 @@ package hotmath.cm.util.service;
 
 import hotmath.HotMathProperties;
 import hotmath.ProblemID;
+import hotmath.cm.util.CatchupMathProperties;
 
 public class SolutionDef extends ProblemID {
     public SolutionDef(String pid) {
         super(pid);
     }
     
-    public String getSolutionPathOnDisk() {
-        return HotMathProperties.getInstance().getHotMathWebBase() + 
+    public String getSolutionPathOnDisk() throws Exception {
+        return CatchupMathProperties.getInstance().getSolutionBase() + 
                "/" + HotMathProperties.getInstance().getStaticSolutionsDir() +
                "/" + super.getSolutionPath() +
                "/" + getGUID();
@@ -20,7 +21,7 @@ public class SolutionDef extends ProblemID {
      *  the file system path .. 
      * @return
      */
-    public String getResourcesPath() {
+    public String getResourcesPath() throws Exception {
         return getSolutionPathOnDisk() + "/resources";
     }
     

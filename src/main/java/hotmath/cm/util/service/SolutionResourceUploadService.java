@@ -1,8 +1,5 @@
 package hotmath.cm.util.service;
 
-import hotmath.HotMathProperties;
-import hotmath.ProblemID;
-
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -65,6 +62,9 @@ public class SolutionResourceUploadService extends HttpServlet {
             while((cnt=bis.read(buffer,0, 1024)) > -1) {
                 fos.write(buffer,0, cnt);    
             }
+        }
+        catch(Exception e) {
+            e.printStackTrace();
         }
         finally {
             fos.close();

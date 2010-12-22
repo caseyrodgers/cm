@@ -92,6 +92,10 @@ public class ResourceViewerImplTutor extends CmResourcePanelImplWithWhiteboard {
     public String getPid() {
         return this.pid;
     }
+    
+    public void setPid(String pid){
+        this.pid = pid;
+    }
 
     
     public List<Component> getContainerTools() {

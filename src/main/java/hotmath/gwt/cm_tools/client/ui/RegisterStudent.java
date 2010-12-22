@@ -1067,10 +1067,6 @@ class CombinedFormPanel extends FormPanel {
     }
 }
 
-class CmExceptionValidationFailed extends CmException {
-    
-}
-
 abstract class AdvOptCallback {
 	abstract void setAdvancedOptions(Map<String,Object> optionMap);
 }

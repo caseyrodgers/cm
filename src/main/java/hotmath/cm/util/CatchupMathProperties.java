@@ -2,6 +2,7 @@ package hotmath.cm.util;
 
 import hotmath.flusher.Flushable;
 import hotmath.flusher.HotmathFlusher;
+import hotmath.gwt.shared.client.util.CmException;
 
 import java.io.File;
 import java.io.FileReader;
@@ -49,5 +50,13 @@ public class CatchupMathProperties extends Properties {
     
     public int getClientVersionNumber() {
         return SbUtilities.getInt(getProperty("client.version"));
+    }
+    
+    public String getSolutionBase() throws Exception {
+        String base = getProperty("solution.base");
+        if(base == null) {
+            throw new CmException("'solution.base' must be set in the cm.properties file to the absolute path of the solutions directory.");
+        }
+        return base;
     }
 }
