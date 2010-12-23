@@ -3,12 +3,12 @@
 #####################
 
 .key=STUDENT_OR_ADMIN_WRONG_PASSWORD_SCHOOL_ACCT
-Students: Your Password will be one of these:
+<h3>Students: Your Password will be one of these:</h3>
 <ul><li>A self-registration code, e.g., quizme, jones1, or essential</li>
 <li>Your name and birth date, e.g., smith-robin-0212, if you self-registered</li>
 <li>Your student ID</li>
 <li>A unique password that your teacher assigned to you</li></ul>
-Teachers: Ask your Account Manager for your admin password
+<h3>Teachers: Ask your Account Manager for your admin password</h3>
 
 
 .key=SCHOOL_HOTMATH_ACCT
@@ -20,7 +20,7 @@ This Login Name is for Hotmath.com. A separate purchase is required to use Catch
 
 
 .key=ADMIN_WRONG_PASSWORD_SCHOOL_ACCT
-Ask your Account Manager for your admin password
+Ask your Account Manager for your admin password.
 	
 
 .key=WRONG_PASSWORD_INDIV_ACCT

@@ -23,6 +23,13 @@ h2 {
     margin-bottom: 5px;
 }
 
+h3 {
+    color: #6DAD00;
+    font-size: 1.2em;
+    margin-top: 3px;
+    margin-bottom: 5px;
+}
+
 a:link,
 a:visited,
 a:active,
