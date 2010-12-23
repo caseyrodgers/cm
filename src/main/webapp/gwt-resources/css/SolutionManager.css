@@ -2,6 +2,9 @@ body {
 
 }
 
+#main-content {
+}
+
 .step {
   border: 1px solid blue;
 }
@@ -31,6 +34,7 @@ body {
 }
 
 
+
 .solution-resource-panel.selected {
     border: 1px solid red;
 }
@@ -38,4 +42,28 @@ body {
 .solution-resource-panel h2 {
 	color: black;
 	text-align: center;
+}
+
+
+#main-content h2 {
+	margin: 0 0 15px 0;
+}
+
+
+.editable-step-unit {
+	margin: 10px;
+	border: 1px solid blue;
+}
+
+.step-unit-hint {
+	background: yellow;
+}
+
+.problem-statement {
+	background: grey;
+}
+
+.step-unit-text {
+	background: #DDD;
+	
 }
