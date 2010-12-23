@@ -61,3 +61,9 @@ function handleLoadSolutionData(messageContext, tutorData, callAfter) {
    }
    showTutor();
 }
+
+
+function scrollToStep(num) {
+    var objDiv = document.getElementById("tutor_embedded").parentNode.parentNode.parentNode;
+    objDiv.scrollTop = objDiv.scrollHeight;
+}  

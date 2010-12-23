@@ -46,13 +46,22 @@ body {
 
 
 #main-content h2 {
-	margin: 0 0 15px 0;
+	margin: 15px;
 }
 
+#main-content h3 {
+	
+}
 
 .editable-step-unit {
 	margin: 10px;
+	padding: 10px;
 	border: 1px solid blue;
+}
+
+.step-container {
+	border: 1px solid black;
+	margin: 20px;
 }
 
 .step-unit-hint {
@@ -60,7 +69,7 @@ body {
 }
 
 .problem-statement {
-	background: grey;
+	background: #F1F1F1;
 }
 
 .step-unit-text {
