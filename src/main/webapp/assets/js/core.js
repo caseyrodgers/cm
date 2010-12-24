@@ -64,7 +64,7 @@ function showMonaMotivationalVideo() {
     var closeFoot = '';
     
     
-    var html = '<iframe src="/motivational_video/" width="100%" height="265px" scrolling="no" frameborder="no"></iframe>' +
+    var html = '<iframe src="/motivational_video/" width="320" height="265px" scrolling="no" frameborder="no"></iframe>' +
               closeFoot;
     
     var head = '<a href="#" onclick="closeMonaVideo();return false" class="close">X</a>' + "Catchup Math Motivational Video";
@@ -76,8 +76,7 @@ function showMonaMotivationalVideo() {
                         _overlay = new Y.Overlay(
                                 {   
                                     id:"mona-video",
-                                    width : "350px",
-                                    
+                                    width : "328px",
                                     centered : true,
                                     headerContent : head,
                                     bodyContent : html,
@@ -124,8 +123,11 @@ function showDialog(msg, title) {
     }
     var closer = '<div style="text-align: center;padding-bottom: 10px;">'
             + '<a class="sexybutton sexysimple" href="#" onclick="closeGeneralDialog();return false;">Close</a></div>';
+
+    closer = '';
+
     var html = '<div style="padding: 10px;">' + msg + '</div>' + closer;
-    var head = '<a href="#" onclick="closeGeneralDialog();return false" class="close">X</a>' + title;
+    var head = '<a href="#" onclick="closeGeneralDialog();return false" class="close"><span>close</span> X</a>' + title;
     YUI().use('overlay', function(Y) {
         _overlay = new Y.Overlay({
             width : "420px",

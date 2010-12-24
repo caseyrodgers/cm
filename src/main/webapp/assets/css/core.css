@@ -317,10 +317,11 @@ p {
 
 .yui3-overlay-content .yui3-widget-hd {
     font-weight: bold;
-    text-align: center;
+    text-align: left;
+    color: white;
     padding: 2px;
     border: 2px solid #33CCCC;
-    background-color: #fff;
+    background: #33CCCC;
 }
 
 .yui3-overlay-content .yui3-widget-bd {
@@ -331,13 +332,12 @@ p {
 }
 
 .yui3-overlay-content .yui3-widget-hd {
-    background: #33CCCC;
-    color: white;
 }
 
 
 #mona-video .yui3-overlay-content .yui3-widget-bd {
     background: #1a1a1a;
+    padding: 0;
 }
 
 #mona-video .yui3-overlay-content {
@@ -845,8 +845,13 @@ div#postit  a + p {
 
 .yui3-widget-hd .close {
 	position: absolute;
-	top: 3px;
-	right: 5px;
-	color: #FDF8A4;
+	top: 5px;
+	right: 8px;
+	color: white;
 	font-weight: bold;
+}
+
+
+.yui3-widget-hd .close span {
+   font-size: .8em;
 }
