@@ -110,20 +110,26 @@ h1, h2 {
 }
 
 .more-info {
-	margin-top: 20px;
+    color: #333;
+    margin: 0;
+    padding: 0;
+}
+.more-info h2 {
+	font-size: 1.1em;
+	color: #333;
 }
 
 .more-info p {
-	margin: 0;
-    color: black;
+	color: #333;
 }
 
-.more-info li ul li {
-	list-style: circle;
-	margin-left: 25px;
+.more-info ul li {
+	list-style: disc;
+	margin-left: 15px;
+	color: color: #333;
 }
 .more-info ul {
-	margin-bottom: 20px;
+	margin-bottom: 10px;
 }
 
 

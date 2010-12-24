@@ -18,7 +18,6 @@ function setupPage() {
     YUI().use('node', function(Y) {
         
         Y.on('domready',function() {
-            
             if(CmPage.menuItem > -1) {
                 /** Set the selected menu button */
                 var menuButtons = Y.one('#menubar2').all('a');
@@ -62,16 +61,17 @@ YUI().use('node',function(Y) {
 var _overlay=null;
 
 function showMonaMotivationalVideo() {
-    var closeHead = '<a href="#" onclick="closeMonaVideo();return false" class="close">X</a>';
-    
     var closeFoot = '<div style="text-align: center;margin-top: 25px;">' +
                  '    <a class="sexybutton sexysimple" href="#" onclick="closeMonaVideo();return false;">Close</a>' +
                  '</div>';
     
     
-    var html = closeHead + 
-            '<iframe src="/motivational_video/" width="100%" height="250px" scrolling="no" frameborder="no"></iframe>' +
-            closeFoot;
+    var html = '<iframe src="/motivational_video/" width="100%" height="250px" scrolling="no" frameborder="no"></iframe>' +
+              closeFoot;
+    
+    var head = '<a href="#" onclick="closeMonaVideo();return false" class="close">X</a>' + "Catchup Math Motivational Video";
+    
+
     
     YUI().use('anim','overlay',
                     function(Y) {
@@ -81,7 +81,7 @@ function showMonaMotivationalVideo() {
                                     width : "350px",
                                     height : "350px",
                                     centered : true,
-                                    headerContent : "Catchup Math Motivational Video",
+                                    headerContent : head,
                                     bodyContent : html,
                                     zIndex : 2,
                                     visible:true
@@ -97,26 +97,51 @@ function closeMonaVideo() {
     _overlay.hide();
 }
 
-
-        function formatQuote(quote) {
-            
-            var url = quote.link_type == 'success'?'/success.html':'/research.html';
-            var readMore = (quote.link_type == 'success')?'Read more testimonials':'Read more research';
-            return '<p>' +
-                       quote.text +
-                       '<div class="credit">' + quote.link_text + '</div><a href="' + url + 
-                       '"> ' + readMore + '</a>' + 
-                   '</p>';
-        }        
+/** Closed from close button */
+function closeGeneralDialog() {
+    _overlay.hide();
+}
 
 
-        
-        
 
-         
-        
-        
-        
+function formatQuote(quote) {
+    
+    var url = quote.link_type == 'success'?'/success.html':'/research.html';
+    var readMore = (quote.link_type == 'success')?'Read more testimonials':'Read more research';
+    return '<p>' +
+               quote.text +
+               '<div class="credit">' + quote.link_text + '</div><a href="' + url + 
+               '"> ' + readMore + '</a>' + 
+           '</p>';
+}        
+
+
+
+
+var _overlay = null;
+
+function showDialog(msg, title) {
+    if (_overlay) {
+        _overlay.hide();
+    }
+    var closer = '<div style="text-align: center;padding-bottom: 10px;">'
+            + '<a class="sexybutton sexysimple" href="#" onclick="closeGeneralDialog();return false;">Close</a></div>';
+    var html = '<div style="padding: 10px;">' + msg + '</div>' + closer;
+    var head = '<a href="#" onclick="closeGeneralDialog();return false" class="close">X</a>' + title;
+    YUI().use('overlay', function(Y) {
+        _overlay = new Y.Overlay({
+            width : "420px",
+            centered : true,
+            headerContent : head,
+            bodyContent : html,
+            zIndex : 2,
+            visible : true
+        });
+
+        _overlay.render();
+    });
+}
+
        
 var Quotes = 
     [
@@ -206,3 +231,5 @@ var Quotes =
          link_type:'success'
      }
  ];
+
+
