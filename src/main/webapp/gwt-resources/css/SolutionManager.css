@@ -62,14 +62,19 @@ body {
 .step-container {
 	border: 1px solid black;
 	margin: 20px;
+        border-radius: 6px;
+        -moz-border-radius: 6px;
+        -webkit-border-radius: 6px;
+        background: #E4F6F8;
+
 }
 
 .step-unit-hint {
-	background: yellow;
+	background: #EEF66C;
 }
 
 .problem-statement {
-	background: #F1F1F1;
+	background: #62C2CC;
 }
 
 .step-unit-text {
