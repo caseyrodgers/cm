@@ -30,7 +30,7 @@ ol#terms_msg li{
     display: inline;
 }
 
-h1, h2 {
+#main-content h1, #main-content h2 {
    margin-top: 0;
    margin-left: 20px;
 }
@@ -40,7 +40,7 @@ form {
    margin: 20px 0 0 0;
 }
 
-h2 {
+#main-content h2 {
     color: #f94701;
 }
 

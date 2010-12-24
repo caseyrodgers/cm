@@ -62,11 +62,17 @@ body {
 .step-container {
 	border: 1px solid black;
 	margin: 20px;
-        border-radius: 6px;
-        -moz-border-radius: 6px;
-        -webkit-border-radius: 6px;
-        background: #E4F6F8;
+    border-radius: 6px;
+    -moz-border-radius: 6px;
+    -webkit-border-radius: 6px;
+    background: #E4F6F8;
+}
 
+.step-container.selected {
+	border: 1px solid red;
+    -moz-box-shadow: -3px -3px -3px #666;
+    -webkit-box-shadow: -3px -3px -3px #666;
+    box-shadow: -3px -3px -3px #666;
 }
 
 .step-unit-hint {
