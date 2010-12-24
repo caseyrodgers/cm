@@ -311,7 +311,6 @@ p {
 
 .yui3-overlay-content {
     padding: 2px;
-    border: 1px solid #000;
     background-color: #33CCCC;
     font-size: 93%;
 }
@@ -333,9 +332,16 @@ p {
 
 .yui3-overlay-content .yui3-widget-hd {
     background: #33CCCC;
+    color: white;
 }
 
 
+#mona-video .yui3-overlay-content .yui3-widget-bd {
+    background: #1a1a1a;
+}
+
+#mona-video .yui3-overlay-content {
+}
 
 div.postit {
     float: right;
