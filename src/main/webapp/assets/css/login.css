@@ -68,8 +68,16 @@
 
 #login_faq_list li {
 	float: left;
-	width: 270px;
-        margin-left: 10px;
+	width: 260px;
+    margin-left: 10px;
+}
+
+#login_faq_list li.separate {
+	background: black;
+	width: 1px;
+	height: 100px;
+	padding-top: 20px;
+    background: #6DAD00;	
 }
 
 .round-corners {

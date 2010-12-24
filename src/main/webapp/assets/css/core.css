@@ -841,6 +841,6 @@ div#postit  a + p {
 	position: absolute;
 	top: 3px;
 	right: 5px;
-	color: yellow;
+	color: #FDF8A4;
 	font-weight: bold;
 }
