@@ -225,19 +225,7 @@ public class CmProgramListingDao {
             	    chapter = chapter.substring(offset + 2);
             	}
             	else {
-            		if (testDef.getProgId().indexOf("Grad Prep") < 0) {
-                	    /** use default Chapter
-                	     *  for complete proficiency tests
-                	     *  
-                	     */
-            	        chapter = "Course Test";
-            		}
-            		else {
-            			/*
-            			 * use "1" for Grad Prep programs
-            			 */
-            			chapter = "1";
-            		}
+            		chapter = testDef.getChapter();
             	}
             }
         	if (logger.isDebugEnabled())
