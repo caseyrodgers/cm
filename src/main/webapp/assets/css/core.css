@@ -335,7 +335,7 @@ p {
 }
 
 
-#mona-video .yui3-overlay-content .yui3-widget-bd {
+#webinar-video .yui3-overlay-content .yui3-widget-bd, #mona-video .yui3-overlay-content .yui3-widget-bd {
     background: #1a1a1a;
     padding: 0;
 }

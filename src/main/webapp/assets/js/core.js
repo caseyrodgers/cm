@@ -67,7 +67,7 @@ function showMonaMotivationalVideo() {
     var html = '<iframe src="/motivational_video/" width="320" height="265px" scrolling="no" frameborder="no"></iframe>' +
               closeFoot;
     
-    var head = '<a href="#" onclick="closeMonaVideo();return false" class="close">X</a>' + "Catchup Math Motivational Video";
+    var head = '<a href="#" onclick="closeMonaVideo();return false" class="close"><span>close</span> X</a>' + "Catchup Math Motivational Video";
     
 
     
@@ -99,6 +99,36 @@ function closeGeneralDialog() {
     _overlay.hide();
 }
 
+function closeWebinar() {
+    _overlay.set("bodyContent", "");  // make sure video stops
+    _overlay.hide();
+}
+
+
+function showWebinar() {
+    var closeFoot = '';
+    var html = '<iframe src="/teacher-training-video/embedded.html" width="800" height="498px" scrolling="no" frameborder="no"></iframe>' +
+              closeFoot;
+    
+    var head = '<a href="#" onclick="closeWebinar();return false" class="close"><span>close</span> X</a>' + "Teaching With Catchup Math";
+    
+    YUI().use('anim','overlay',
+                    function(Y) {
+                        _overlay = new Y.Overlay(
+                                {   
+                                    id:"webinar-video",
+                                    width : "810px",
+                                    heigth: "498px",
+                                    centered : true,
+                                    headerContent : head,
+                                    bodyContent : html,
+                                    zIndex : 2,
+                                    visible:true
+                                });
+                        
+                       _overlay.render();
+    });
+}
 
 
 function formatQuote(quote) {
@@ -152,7 +182,7 @@ var Quotes =
      },
      {
          text:'Instructional software is proven to improve learning.',
-         link_text: 'National Mathematics Advisory Panel.',
+         link_text: 'National Mathematics Advisory Panel',
          link_type:'research'
      },
      {
@@ -229,6 +259,11 @@ var Quotes =
          text:'We increased the number of students achieving honor-roll status from 13% to 22%.',
          link_text: 'High School Principal, California',
          link_type:'success'
+     },
+     {
+         text:'More than 60 percent of students admitted to California state colleges require remedial education.',
+         link_text: 'Early Assessment Program',
+         link_type: 'research'
      }
  ];
 

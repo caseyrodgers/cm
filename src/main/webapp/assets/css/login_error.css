@@ -1,6 +1,7 @@
 .info-section {
     display: none;
 }
+
 #login-wrapper {
     text-align: center;
     margin: auto;
@@ -22,7 +23,6 @@
   
 
 #login-wrapper p {
-	color: black;
     margin: 0;
     margin-bottom: 0;
     padding: 0;

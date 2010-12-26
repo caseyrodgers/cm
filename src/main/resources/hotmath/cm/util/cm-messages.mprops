@@ -3,18 +3,18 @@
 #####################
 
 .key=STUDENT_OR_ADMIN_WRONG_PASSWORD_SCHOOL_ACCT
-<p>
-   <b>Students</b>: Your Password will be one of these:
-</p>
-<ul>
-   <li>A self-registration code, e.g., quizme, jones1, or essential</li>
+<div class="more-info">
+   <h2>Students</h2>
+   <p>Your Password will be one of these:</p>
+   <ul><li>A self-registration code, e.g., quizme, jones1, or essential</li>
    <li>Your name and birth date, e.g., smith-robin-0212, if you self-registered</li>
    <li>Your student ID</li>
-   <li>A unique password that your teacher assigned to you</li>
-</ul>
-<p>
-   <b>Teachers</b>: Ask your Account Manager for your admin password
-</p>
+   <li>A password that your teacher assigned to you</li>
+   </ul>
+   
+   <h2>Teachers</h2>
+   <p>Ask your Account Manager for your admin password.</p>
+</div>
 
 .key=SCHOOL_HOTMATH_ACCT
 This Login Name is for Hotmath.com. Please contact your account manager about Catchup Math.

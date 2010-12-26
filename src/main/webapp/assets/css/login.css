@@ -77,8 +77,8 @@
 	width: 2px;
 	height: 100px;
 	padding-top: 20px;
-        margin-right: 5px;
-    background:  #ebebeb;
+    margin-right: 5px;
+    background:  #6DAD00;
 }
 
 .round-corners {
@@ -124,6 +124,7 @@ h1, h2 {
     padding: 0;
 }
 .more-info h2 {
+	text-align: left;
 }
 
 .more-info p {
