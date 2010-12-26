@@ -1,5 +1,7 @@
 package hotmath.cm.util.service;
 
+import hotmath.cm.util.CatchupMathProperties;
+
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -30,11 +32,6 @@ public class SolutionResourceUploadService extends HttpServlet {
             resp.getWriter().write("No uploaded resource");
             return;
         }
-        if(pid == null) {
-            resp.getWriter().write("No pid provided");
-            return;
-        }
-        
         FileOutputStream fos = null;
         try {
             
@@ -43,14 +40,17 @@ public class SolutionResourceUploadService extends HttpServlet {
              */
             File fileName = new File(uploadItem.getName());
             
+            File resourcesDir=null;
             /* path to solution's resource dir
              * 
              */
-            SolutionDef solDef = new SolutionDef(pid);
-            String solutionPath = solDef.getSolutionPathOnDisk();
-            
-            
-            File resourcesDir = new File(solDef.getResourcesPath());
+            if(pid != null && pid.length()>0) { 
+                SolutionDef solDef = new SolutionDef(pid);
+                resourcesDir = new File(solDef.getResourcesPath());
+            }
+            else {
+                resourcesDir = new File(CatchupMathProperties.getInstance().getSolutionBase() + "/help/solutions/resources");
+            }
             if(!resourcesDir.exists())
                 resourcesDir.mkdirs();
             
