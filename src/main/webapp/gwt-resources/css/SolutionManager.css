@@ -87,3 +87,8 @@ body {
 	background: #DDD;
 	
 }
+
+
+#steps_lesson {
+	display: none;
+}

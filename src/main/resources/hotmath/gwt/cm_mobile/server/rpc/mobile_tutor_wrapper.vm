@@ -16,7 +16,7 @@
 	        <button id='steps_next' href="#" onclick="TutorManager.showNextStep();" accesskey="s" class="sexybutton sexysimple sexymedium  sexyred">
 	            Next Step
 	        </button>
-	        <button id='steps_next' href="#" onclick="TutorManager.backToLesson();" accesskey="s" class="sexybutton sexysimple sexymedium  sexyred">
+	        <button id='steps_lesson' href="#" onclick="TutorManager.backToLesson();" accesskey="s" class="sexybutton sexysimple sexymedium  sexyred">
 	            Lesson
 	        </button>
 	        
