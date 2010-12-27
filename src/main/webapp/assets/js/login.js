@@ -24,7 +24,7 @@ var moreInfo = '' +
     '<h2>Students</h2>' +
     '<p>Your Password will be one of these:</p>' +
     '<ul>' +
-    '<li>A self-registration code, e.g., quizme, jones1, or essential</li>' +
+    '<li>A self-registration code, e.g., quizme, jones1, or essentials</li>' +
     '<li>Your name and birth date, e.g., smith-robin-0212, if you self-registered</li>' +
     '<li>Your student ID</li>' +
     '<li>A password that your teacher assigned to you</li>' +
