@@ -1,0 +1,103 @@
+body {
+}
+
+#main-content {
+}
+
+.step {
+  border: 1px solid blue;
+}
+
+.solution-step-editor {
+  border: 1px solid blue;
+}
+
+.problem-statement {
+  border: 1px solid red;
+}
+
+
+.solution-resource-panel {
+    width: 210px;
+    height: 210px;
+    border: 1px solid white;
+    float: left;
+    margin-right: 10px;
+    margin-bottom: 10px;
+}
+
+.solution-resource-panel img{
+    width: 200px;
+    height: 200px;
+    border: none;
+}
+
+
+
+.solution-resource-panel.selected {
+    border: 1px solid red;
+}
+
+.solution-resource-panel h2 {
+	color: black;
+	text-align: center;
+}
+
+
+#main-content h2 {
+	margin: 15px;
+}
+
+#main-content h3 {
+	
+}
+
+.editable-step-unit {
+	margin: 10px;
+	padding: 10px;
+	border: 1px solid blue;
+}
+
+.step-container {
+	border: 1px solid black;
+	margin: 20px;
+    border-radius: 6px;
+    -moz-border-radius: 6px;
+    -webkit-border-radius: 6px;
+    background: #E4F6F8;
+}
+
+.step-container.selected {
+	border: 1px solid red;
+    -moz-box-shadow: -3px -3px -3px #666;
+    -webkit-box-shadow: -3px -3px -3px #666;
+    box-shadow: -3px -3px -3px #666;
+}
+
+.step-unit-hint {
+	background: #EEF66C;
+}
+
+.problem-statement {
+	background: #62C2CC;
+}
+
+.step-unit-text {
+	background: #DDD;
+	
+}
+
+
+#steps_lesson {
+	display: none;
+}
+
+.solution-searcher-dialog .x-window-body{
+	padding: 10px;
+}
+
+solution-searcher-dialog .label {
+}
+
+solution-searcher-dialog button {
+}

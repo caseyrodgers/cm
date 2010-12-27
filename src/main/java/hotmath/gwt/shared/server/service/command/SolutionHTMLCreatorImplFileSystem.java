@@ -1,7 +1,6 @@
 package hotmath.gwt.shared.server.service.command;
 
 import hotmath.HotMathException;
-import hotmath.HotMathProperties;
 import hotmath.ProblemID;
 import hotmath.cm.util.CatchupMathProperties;
 import hotmath.solution.SolutionParts;

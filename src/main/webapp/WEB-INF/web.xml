@@ -51,7 +51,7 @@
   </servlet>
   <servlet-mapping>
     <servlet-name>SolutionResourceUploadService</servlet-name>
-    <url-pattern>/solution_manager/resourceUpload</url-pattern>
+    <url-pattern>/solution_editor/resourceUpload</url-pattern>
   </servlet-mapping>
   
   <servlet>
@@ -113,7 +113,7 @@
   <servlet-mapping>
     <servlet-name>CmService</servlet-name>
     <url-pattern>
-      /solution_manager/services/cmService
+      /solution_editor/services/cmService
     </url-pattern>
   </servlet-mapping>
   <servlet-mapping>

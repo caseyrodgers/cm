@@ -428,7 +428,7 @@ public class ActionDispatcher {
                 String standardPlaces[] = {"hotmath.gwt.shared.server.service.command.",
                                            "hotmath.gwt.cm_mobile.server.rpc.",
                                            "hotmath.gwt.cm_mobile_shared.server.rpc.",
-                                           "hotmath.gwt.solution_manager.server.rpc.",
+                                           "hotmath.gwt.solution_editor.server.rpc.",
                                            "hotmath.gwt.cm_activity.server.rpc."};
                                      
                 Class actionHandler=null,cmdClass=null;
