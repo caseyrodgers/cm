@@ -1,0 +1,12 @@
+
+<module rename-to="solution_editor">
+
+    <inherits name='com.extjs.gxt.themes.Themes' />
+    <inherits name='com.google.gwt.json.JSON' />
+    <inherits name="com.google.gwt.uibinder.UiBinder"/>
+    <inherits name='hotmath.gwt.cm_tools.CatchupMathTools'/>
+    <inherits name='hotmath.gwt.cm_core.CmCore' />
+    <inherits name='pl.rmalinowski.gwt2swf.GWT2SWF' />
+            
+    <entry-point class="hotmath.gwt.solution_editor.client.SolutionEditor" />
+</module>

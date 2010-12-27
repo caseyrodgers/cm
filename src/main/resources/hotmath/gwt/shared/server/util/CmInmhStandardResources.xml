@@ -1,0 +1,16 @@
+<inmh_resources>
+        <inmh_resource type='Math Games' description='Math games that might help you'>
+           <menu_item label='Catch The Fly' file='/hotmath_help/games/ctf/ctf_hotmath.swf'/>
+           <menu_item label='Number Cop' file='/hotmath_help/games/numbercop/numbercop_hotmath.swf'/>
+        </inmh_resource>
+       
+        <inmh_resource type='flashcard' description='Flash Cards and Skill Builders'>
+            <sub_menu label='English'>
+                <sub_menu label='Fractions'>        
+                    <menu_item label='Adding Like Fractions' file='/learning_activities/interactivities/flashcard_addfrac_like.swf'/>
+                    <menu_item label='Multiplying a Fraction by an Integer' file='/learning_activities/interactivities/flashcard_multi_frac_int.swf'/>
+                </sub_menu>
+                <menu_item label='Comparing Quantities' file='/learning_activities/interactivities/flashcard_comparing_quantities.swf'/>
+            </sub_menu>
+        </inmh_resource>
+    </inmh_resources>
