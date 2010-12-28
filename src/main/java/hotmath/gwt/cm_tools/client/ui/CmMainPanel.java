@@ -45,7 +45,7 @@ public class CmMainPanel extends LayoutContainer {
 	 * set-able background image.
 	 * 
 	 * Each form/context is responsible for calling updateGui(context) when the
-	 * context is full ready Meaning, any async data has been fetched and
+	 * context is full ready and any async data has been fetched and
 	 * parsed.
 	 * 
 	 * Each time the context is changed, updateGui(context) must be called to

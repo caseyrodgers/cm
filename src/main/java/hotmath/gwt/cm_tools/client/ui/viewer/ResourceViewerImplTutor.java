@@ -19,7 +19,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.extjs.gxt.ui.client.Style.Scroll;
+import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
+import com.extjs.gxt.ui.client.event.Events;
+import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.event.WindowEvent;
 import com.extjs.gxt.ui.client.event.WindowListener;
@@ -29,6 +32,7 @@ import com.extjs.gxt.ui.client.widget.Window;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.google.gwt.user.client.DOM;
+import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.Frame;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -41,7 +45,30 @@ public class ResourceViewerImplTutor extends CmResourcePanelImplWithWhiteboard {
         _instance = this;
         addStyleName(STYLE_NAME);
         setScrollMode(Scroll.AUTOY);
+        
+        
+        
+        /** If in debug mode, the provide double click on 
+         * the tutor loads the solution editor for the current
+         * solution.
+         * 
+         */
+        if(CmShared.getQueryParameter("debug") != null) {
+            addListener(Events.OnDoubleClick, new Listener<BaseEvent>() {
+                public void handleEvent(BaseEvent be) {
+                    showSolutionEditorForPid(getPid());
+                }
+            });
+            
+            sinkEvents(Event.ONDBLCLICK);
+        }
     }
+    
+    private native void showSolutionEditorForPid(String pid) /*-{
+    alert(pid);
+        var se = window.open('/solution_editor/SolutionEditor.html?pid=' + pid);
+        se.focus();
+    }-*/;
     
     @Override
     public Widget getTutorDisplay() {

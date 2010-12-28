@@ -112,7 +112,7 @@ public class CmResourcePanelContainer extends ContentPanel {
         } else {
             setMaximize(panel);
         }
-
+        
         setPanelWidget(panel, false, false);
     }
 
