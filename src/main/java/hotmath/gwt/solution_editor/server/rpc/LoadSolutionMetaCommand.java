@@ -45,7 +45,7 @@ public class LoadSolutionMetaCommand implements ActionHandler<LoadSolutionMetaAc
         _pid = action.getPid();
         Solution solution = hotmath.SolutionManager.getSolution(action.getPid());
         SolutionMeta meta = new SolutionMeta(action.getPid());
-        meta.setProblemStatement(solution.getStatement());
+        meta.setProblemStatement(postProcessHtml(solution.getStatement()));
         StepUnit units[] = solution.getStepUnits();
         for(int s=0;s<units.length;s++) {
             

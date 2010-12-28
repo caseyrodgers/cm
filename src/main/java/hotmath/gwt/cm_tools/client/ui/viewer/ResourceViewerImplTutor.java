@@ -65,7 +65,6 @@ public class ResourceViewerImplTutor extends CmResourcePanelImplWithWhiteboard {
     }
     
     private native void showSolutionEditorForPid(String pid) /*-{
-    alert(pid);
         var se = window.open('/solution_editor/SolutionEditor.html?pid=' + pid);
         se.focus();
     }-*/;
