@@ -51,7 +51,6 @@ public class AccountInfoPanel extends LayoutContainer implements CmAdminDataRefr
 		sb.append("  <div class='fld'><label>Administrator:</label><div>{school-user-name}&nbsp;</div></div>");
 		sb.append("  <div class='fld'><label>Maximum Students:</label><div> {max-students}&nbsp;</div></div>");
 		sb.append("  <div class='fld'><label>Expires:</label><div> {expiration-date}&nbsp;</div></div>");
-		sb.append("  <div class='fld'><label>Live Tutoring:</label><div>{has-tutoring}&nbsp;{tutoring-minutes-label}</div></div>");
 		sb.append("</div>");
         sb.append("<div class='form right'>");
         sb.append("  <div class='fld'><label>Account login name:</label><div>{admin-user-name}&nbsp;</div></div>");
@@ -136,11 +135,6 @@ public class AccountInfoPanel extends LayoutContainer implements CmAdminDataRefr
         else {
             ai.setStudentCountStyle("fld");
 
-        }
-        
-        if(ai.getIsTutoringEnabled()) {
-            //ai.set(AccountInfoModel.TUTORING_MINUTES_LABEL, "(" + getTutoringRemaingLabel(ai.getTutoringMinutes()) + " remaining)");
-            ai.set(AccountInfoModel.TUTORING_MINUTES_LABEL, "");
         }
         
         setAccountInfoModel(ai);

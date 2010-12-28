@@ -36,11 +36,9 @@ public class RegisterStudentAdvancedOptions extends LayoutContainer {
 
 	private FieldSet advOptions;
 	private CheckBox isShowWorkRequired;
-	private CheckBox isTutoringEnabled;
 	private CheckBox isGamesLimited;
 	private CheckBox isStopAtProgramEnd;
 	private CheckBoxGroup requireShowWork;
-	private CheckBoxGroup enableTutoring;
 	private CheckBoxGroup limitGames;
 	private CheckBoxGroup stopAtProgramEnd;
 
@@ -125,15 +123,6 @@ public class RegisterStudentAdvancedOptions extends LayoutContainer {
 		stopAtProgramEnd.add(isStopAtProgramEnd);
 		advOptions.add(stopAtProgramEnd);
 
-        isTutoringEnabled = new CheckBox();
-        isTutoringEnabled.setId("tutoring_available");
-        isTutoringEnabled.setValue(((StudentSettingsModel) advOptionsMap.get(StudentModelExt.SETTINGS_KEY)).getTutoringAvailable());
-        enableTutoring = new CheckBoxGroup();
-        enableTutoring.setFieldLabel("Tutoring Enabled");
-        enableTutoring.setId("tutoring_available");
-		enableTutoring.add(isTutoringEnabled);
-		advOptions.add(enableTutoring);
-
 		advOptWindow.setHeading((isNew)?"Set Options":"Edit Options");
 		advOptWindow.setWidth(formWidth+10);
 		advOptWindow.setHeight(formHeight+20);
@@ -193,7 +182,6 @@ public class RegisterStudentAdvancedOptions extends LayoutContainer {
 				passCombo.setValue(p);
 	    		
 	        	isShowWorkRequired.setValue(false);
-	            isTutoringEnabled.setValue(false);
 	            isGamesLimited.setValue(false);
 	            isStopAtProgramEnd.setValue(false);
 	        }  
@@ -221,7 +209,6 @@ public class RegisterStudentAdvancedOptions extends LayoutContainer {
                 StudentSettingsModel ssm = new StudentSettingsModel();
                 
                 ssm.setShowWorkRequired(isShowWorkRequired.getValue());
-                ssm.setTutoringAvailable(isTutoringEnabled.getValue());
                 ssm.setStopAtProgramEnd(isStopAtProgramEnd.getValue());
                 ssm.setLimitGames(isGamesLimited.getValue());
                 

@@ -811,14 +811,6 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
         lastLogin.setSortable(true);
         configs.add(lastLogin);
 
-        ColumnConfig tutoring = new ColumnConfig();
-        tutoring.setId(StudentModelExt.TUTORING_USE_KEY);
-        tutoring.setHeader("Tutoring");
-        tutoring.setToolTip("Number of tutor requests");
-        tutoring.setWidth(55);
-        tutoring.setSortable(true);
-        configs.add(tutoring);
-
         ColumnModel cm = new ColumnModel(configs);
         return cm;
     }

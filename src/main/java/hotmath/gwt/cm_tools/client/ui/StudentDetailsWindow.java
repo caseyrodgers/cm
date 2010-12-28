@@ -100,7 +100,6 @@ public class StudentDetailsWindow extends CmWindow {
         toolBar.add(showWorkBtn());
         toolBar.add(showTopicsBtn());
         toolBar.add(displayReportCardToolItem(studentModel));
-        toolBar.add(showTutoringUseBtn());
         toolBar.add(new FillToolItem());
         toolBar.add(displayPrintableReportToolItem(studentModel));
 
@@ -220,41 +219,6 @@ public class StudentDetailsWindow extends CmWindow {
         _showTopicsBtn.addSelectionListener(stListener);
         _showTopicsBtn.addStyleName("student-details-panel-sw-btn");
         return _showTopicsBtn;
-    }
-
-    private Button showTutoringUseBtn() {
-
-        Button btn = new Button("Tutoring Sessions");
-        btn.addStyleName("student-details-panel-sw-btn");
-
-        if(this.studentModel.getTutoringUse() == 0) {
-            btn.setEnabled(false);
-        }
-        else {
-            btn.setToolTip("Display any tutoring sessions created by this user");
-            btn.addSelectionListener(new SelectionListener<ButtonEvent>() {
-    
-                @Override
-                public void componentSelected(ButtonEvent ce) {
-                    showTutoringForUser();
-                }
-            });
-        }
-        return btn;
-    }
-
-    private void showTutoringForUser() {
-
-        String contentUrl = "pid=ADMIN_VIEW";
-        String url = "/collab/lwl/cm_lwl_launch.jsp?admin=true&pid=ADMIN_VIEW&uid=" + studentModel.getUid()
-                + "&contentUrl=" + contentUrl;
-
-        int w = 800;
-        int h = 560;
-        String windowProps = "toolbar=0, titlebar=0, status=0, menubar=0, resizable=0, width=" + w + ", height=" + h
-                + ", directories=0, location=0,scrollbars=0,directories=0,location=0";
-
-        com.google.gwt.user.client.Window.open(url, "_blank", windowProps);
     }
 
     private Button showWorkBtn() {
