@@ -90,25 +90,26 @@ public class SolutionEditor implements EntryPoint {
         mainPort.add(_tabPanel,new BorderLayoutData(LayoutRegion.CENTER));  
         
         mainPort.add(_status,new BorderLayoutData(LayoutRegion.SOUTH,25));
-        
+
         String pid = SolutionEditor.getQueryParameter("pid");
-        if(pid != null) {
+        if(pid != null && pid.length() > 0) {
             __pidLoaded = pid;
-            _stepEditorViewer.loadSolution(pid);
         }
 
         _tabPanel.addListener(Events.Select, new Listener<BaseEvent>() {
             @Override
             public void handleEvent(BaseEvent be) {
-                TabItem item = _tabPanel.getSelectedItem();
-                if(item != null) {
-                    if(_tabPanel.getSelectedItem().getText().equals("Tutor View")) {
-                        _solutionViewer.loadSolution(__pidLoaded);
+                if(__pidLoaded != null) {
+                    TabItem item = _tabPanel.getSelectedItem();
+                    if(item != null) {
+                        if(_tabPanel.getSelectedItem().getText().equals("Tutor View")) {
+                            _solutionViewer.loadSolution(__pidLoaded);
+                        }
+                        if(_tabPanel.getSelectedItem().getText().equals("Step Editor")) {
+                            _stepEditorViewer.loadSolution(__pidLoaded);
+                        }
+                        
                     }
-                    if(_tabPanel.getSelectedItem().getText().equals("Step Editor")) {
-                        _stepEditorViewer.loadSolution(__pidLoaded);
-                    }
-                    
                 }
             }
         });
