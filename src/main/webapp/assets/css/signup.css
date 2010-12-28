@@ -407,7 +407,8 @@ span.underline{
 #signup_progress {
    -moz-border-radius:15px;
    border-radius:15px;
-   background: #DF4219;
+   
+   background: #52A200;
    padding: 10px;
    text-align: center;
    border: 2px solid #FFF;

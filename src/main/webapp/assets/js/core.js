@@ -1,3 +1,11 @@
+/** add trim, if not available */
+if(typeof String.prototype.trim !== 'function') {
+    String.prototype.trim = function() {
+      return this.replace(/^\s+|\s+$/g, ''); 
+    }
+  }
+
+
 /** Initialize system
  *  Might be modified in 
  *  individual pages */
@@ -266,5 +274,3 @@ var Quotes =
          link_type: 'research'
      }
  ];
-
-

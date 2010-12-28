@@ -39,10 +39,27 @@ public class CreateAutoRegistrationAccountCommand implements ActionHandler<Creat
     static Logger __logger = Logger.getLogger(CreateAutoRegistrationAccountCommand.class);
     
     /** Return RpcData with fields:
+     *
+     * Catch any local exceptions and return simply error message.
+     * 
+     *  TODO: create specific object instead of RpcData. (note: new values in rpcdata does not break RPC ...)
      * 
      *    key = new login key
+     *    error_message
      */
     public RpcData execute(Connection conn, CreateAutoRegistrationAccountAction action) throws Exception {
+        try {
+            return executeAux(conn, action);
+        }
+        catch(CmException cm) {
+            __logger.warn("Local exception handled", cm);
+            RpcData rdata = new RpcData();
+            rdata.putData("error_message", cm.getLocalizedMessage());
+            return rdata;
+        }
+    }
+    
+    private RpcData executeAux(Connection conn, CreateAutoRegistrationAccountAction action) throws Exception {
         
         long millis = 0;
 

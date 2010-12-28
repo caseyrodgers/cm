@@ -71,6 +71,7 @@ function checkForm() {
             return false;
         }    }
     var errMsg = validateEmail(fld.value);
+    
     if(errMsg != null) {
         if(showError(fld, errMsg))
             return false;
@@ -329,7 +330,6 @@ function validateZip(s) {
 
 // Return error message, or null if is valid
 function validateEmail(s) {
-
  s = s.trim();
  if (s.length == 0) {
      return "Please enter an email address";
@@ -376,7 +376,7 @@ function doSignup() {
 
 function showProcessingMessage() {
 	/** Show signup progress */
-	var html = "<p><b>Please wait while your request is being processed.</p>";
+	var html = "<p style='margin-top: 15px;font-size: 1em;color: white;'>Please wait while your request is being processed.</p>";
 	    
 	    YAHOO.cm = new Object();
 	    YAHOO.cm.signup_progress = new YAHOO.widget.Panel("signup_progress", {
@@ -387,7 +387,7 @@ function showProcessingMessage() {
 	       close : false,
 	       modal: true
 	    });
-	    YAHOO.cm.signup_progress.setHeader("Processing Catchup Math Request");  
+	    YAHOO.cm.signup_progress.setHeader("<span style='font-size: 1.2em;color: black;'>Processing Catchup Math Request</span>");  
 	    YAHOO.cm.signup_progress.setBody(html);
 	    YAHOO.cm.signup_progress.setFooter("");
 	    YAHOO.cm.signup_progress.render(document.body);
@@ -506,3 +506,7 @@ function setTotalCost(cost) {
    _totalCost = cost;
    $get('service-total').innerHTML = 'Total: $' + _totalCost + '.00';
 }
+
+
+
+showProcessingMessage("TEST");

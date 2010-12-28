@@ -11,7 +11,6 @@ import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
 import hotmath.gwt.cm_tools.client.ui.context.CmContext;
 import hotmath.gwt.cm_tools.client.ui.resource_viewer.CmMainResourceContainer;
 import hotmath.gwt.shared.client.CmShared;
-import hotmath.gwt.shared.client.data.CmAsyncRequestImplDefault;
 import hotmath.gwt.shared.client.rpc.RetryAction;
 import hotmath.gwt.shared.client.rpc.action.CheckUserAccountStatusAction;
 import hotmath.gwt.shared.client.rpc.action.CreateAutoRegistrationAccountAction;
@@ -253,23 +252,37 @@ public class AutoStudentRegistrationPanel extends CmMainResourceContainer {
         	@Override
         	public void onSuccess(RpcData rdata) {
                 CmBusyManager.setBusy(false);
-                String key = rdata.getDataAsString("key");
-                showPasswordAssignment(password,key);
+             
+                /** check for build-in error message
+                 * 
+                 * @TODO: move to specific object away from RpcData
+                 * 
+                 * if error_message is non-null, then an a programatic
+                 * (local domain) error occurred.  As opposed to a lower 
+                 * level exception that would be caught by the generic
+                 * error handlers.
+                 * 
+                 */
+                String errorMessage = rdata.getDataAsString("error_message");
+                if(errorMessage != null && errorMessage.length() > 0) {
+                    if(errorMessage.indexOf("passcode you entered") > -1) {
+                        showAlreadyMsg(password);
+                    }
+                    else if(errorMessage.indexOf("name you entered") > -1) {
+                        checkIfPasswordMatches(password);
+                    }
+                }
+                else {
+                    String key = rdata.getDataAsString("key");
+                    showPasswordAssignment(password,key);
+                }
         	}
         	@Override
         	public void onFailure(Throwable caught) {
             	CmBusyManager.setBusy(false);
                 CmLogger.error(caught.getMessage(), caught);
                 String msg = caught.getMessage();
-                if(msg.indexOf("passcode you entered") > -1) {
-                    showAlreadyMsg(password);
-                }
-                else if(msg.indexOf("name you entered") > -1) {
-                    checkIfPasswordMatches(password);
-                }
-                else {
-                	CatchupMathTools.showAlert("There was a problem creating your new account: " + msg);
-                }
+              	CatchupMathTools.showAlert("There was a problem creating your new account: " + msg);
         	}
 		});
     }

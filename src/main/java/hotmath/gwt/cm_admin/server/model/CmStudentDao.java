@@ -521,11 +521,11 @@ public class CmStudentDao {
 
         Boolean isDuplicate = checkForDuplicatePasscode(conn, sm);
         if (isDuplicate) {
-            throw new Exception("The passcode you entered is already in use, please try again.");
+            throw new CmException("The passcode you entered is already in use, please try again.");
         }
         isDuplicate = checkForDuplicateName(conn, sm);
         if (isDuplicate) {
-            throw new Exception("The name you entered is already in use, please try again.");
+            throw new CmException("The name you entered is already in use, please try again.");
         }
 
         try {
