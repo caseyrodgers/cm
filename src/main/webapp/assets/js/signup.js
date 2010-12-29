@@ -494,19 +494,10 @@ function signupComplete(data) {
        success.set('innerHTML', html);
        success.setStyle('display', 'block');
        window.scrollTo(0,0);
-       
-       
     });
 }
-
-
-
    
 function setTotalCost(cost) {
    _totalCost = cost;
    $get('service-total').innerHTML = 'Total: $' + _totalCost + '.00';
 }
-
-
-
-showProcessingMessage("TEST");
