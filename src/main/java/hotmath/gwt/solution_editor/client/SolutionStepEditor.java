@@ -117,8 +117,14 @@ public class SolutionStepEditor extends ContentPanel {
         }
         layout();
         
+        initializeTutorInEditor();
+        
         EventBus.getInstance().fireEvent(new CmEvent(EventTypes.POST_SOLUTION_LOAD));
     }
+    
+    private native void initializeTutorInEditor() /*-{
+        $wnd._showTutorWidget();
+    }-*/;
     
     private void setStepContainerSelected(StepContainer container) {
         _selectedContainer = container;

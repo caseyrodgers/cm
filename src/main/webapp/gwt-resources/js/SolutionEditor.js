@@ -67,3 +67,34 @@ function scrollToStep(num) {
     var objDiv = document.getElementById("tutor_embedded").parentNode.parentNode.parentNode;
     objDiv.scrollTop = objDiv.scrollHeight;
 }  
+
+
+_enableJsWidgets=true
+
+function _showTutorWidget() {
+
+     var cn = $get('hm_flash_widget');
+     var widgetDiv=null;
+     if(cn != null) {
+         widgetDiv = cn;
+         /** extract embedded JSON */
+         var jsonDef = $get('hm_flash_widget_def');
+         if(jsonDef) {
+                 if(_enableJsWidgets) {
+                     _json = jsonDef.innerHTML;
+                     var jsonObj = eval('(' + _json + ')');
+                      HmFlashWidgetFactory.createWidget(jsonObj);
+                 }
+                 else {
+                     showFlashObject();
+                     widgetDiv.style.display = 'none';
+                 }
+         }
+         else {
+             widgetDiv.innerHTML = _createGuiWrapper().innerHTML;
+             var info = document.createElement("div");
+             info.innerHTML = _getWidgetNotUsedHtml();
+             widgetDiv.appendChild(info);
+         }
+     }
+}
