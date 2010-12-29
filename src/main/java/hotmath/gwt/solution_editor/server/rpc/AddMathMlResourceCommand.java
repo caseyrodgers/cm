@@ -42,6 +42,17 @@ public class AddMathMlResourceCommand implements ActionHandler<AddMathMlResource
             resourceFile = CatchupMathProperties.getInstance().getSolutionBase() + "/help/solutions/resources/" + action.getResourceName();
             break;
         }
+        
+        
+        
+        /** strip off any extension 
+         *  
+         */
+        if(resourceFile.indexOf(".") > -1) {
+            resourceFile = resourceFile.substring(0, resourceFile.indexOf("."));
+        }
+        
+        
         writeImage(resourceFile, action.getMathMl());        
         writeMathmlDefinition(resourceFile, action.getMathMl());
 
