@@ -71,30 +71,77 @@ function scrollToStep(num) {
 
 _enableJsWidgets=true
 
+var _tutorWidgetDefinition;
 function _showTutorWidget() {
+    var problemHead = document.getElementById('problem_statement');
+    if(problemHead != null) {
+        _showTutorWidgetReal();
+        return;
+    }
+    
+     var widgetDiv = $get('hm_flash_widget');
+     if(!widgetDiv)
+         return;
+     /** extract embedded JSON */
+     var jsonDiv = $get('hm_flash_widget_def');
+     if(jsonDiv) {
+         _tutorWidgetDefinition=jsonDiv;
+     }
+     else {
+         
+         /** create anew jsonDef widget
+          * 
+          */
+         jsonDiv = document.createElement("div");
+         jsonDiv.setAttribute("id", "hm_flash_widget_def");
+         jsonDiv.setAttribute("style", "display:none;");
+         widgetDiv.innerHTML = "";
+         widgetDiv.appendChild(jsonDiv);
+         widgetDiv.setAttribute("class", "");
+         
+         jsonDiv.innerHTML = "{}"; // default widget?
+     }
+     
+     _tutorWidgetDefinition = jsonDiv;
+     /** bring up widget editor in Gwt */
+     widgetDiv.onclick=function(){tutorWidgetClicked_gwt(jsonDiv.innerHTML)};
+}
 
-     var cn = $get('hm_flash_widget');
-     var widgetDiv=null;
-     if(cn != null) {
-         widgetDiv = cn;
-         /** extract embedded JSON */
-         var jsonDef = $get('hm_flash_widget_def');
-         if(jsonDef) {
-                 if(_enableJsWidgets) {
-                     _json = jsonDef.innerHTML;
-                     var jsonObj = eval('(' + _json + ')');
-                      HmFlashWidgetFactory.createWidget(jsonObj);
-                 }
-                 else {
-                     showFlashObject();
-                     widgetDiv.style.display = 'none';
-                 }
+
+function _showTutorWidgetReal() {
+    var problemHead = document.getElementById('problem_statement');
+    var divs = problemHead.getElementsByTagName('div');
+    
+    var wd=null;
+    var jsonDiv=null;
+    var _json="";
+    
+    for(var w=0,t=divs.length;w<t;w++) {
+         var widgetDiv = divs[w];
+         var at = widgetDiv.getAttribute('id');
+         if(at == 'hm_flash_widget') {
+             wd=widgetDiv;
          }
-         else {
-             widgetDiv.innerHTML = _createGuiWrapper().innerHTML;
-             var info = document.createElement("div");
-             info.innerHTML = _getWidgetNotUsedHtml();
-             widgetDiv.appendChild(info);
+         else if(at == 'hm_flash_widget_def') {
+             jsonDiv = widgetDiv;
          }
+    }
+     /** extract embedded JSON */
+     if(jsonDiv) {
+         if(_enableJsWidgets) {
+             _json = jsonDiv.innerHTML;
+             var jsonObj = eval('(' + _json + ')');
+          HmFlashWidgetFactory.createWidget(jsonObj);
+     }
+     else {
+         showFlashObject();
+         widgetDiv.style.display = 'none';
+         }
+     }
+     else {
+         wd.innerHTML = _createGuiWrapper().innerHTML;
+         var info = document.createElement("div");
+         info.innerHTML = _getWidgetNotUsedHtml();
+         wd.appendChild(info);
      }
 }
