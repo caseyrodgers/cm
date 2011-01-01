@@ -101,3 +101,9 @@ solution-searcher-dialog .label {
 
 solution-searcher-dialog button {
 }
+
+
+
+.solution-step-editor #hm_flash_widget {
+	height: 25px;
+}
