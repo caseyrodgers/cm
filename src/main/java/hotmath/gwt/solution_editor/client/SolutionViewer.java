@@ -62,6 +62,9 @@ public class SolutionViewer extends LayoutContainer {
         
     }
     
+    public void clearAll() {
+        removeAll();
+    }
     
     static private void showMessage(String msg) {
         Window.alert("GWT: " + msg);

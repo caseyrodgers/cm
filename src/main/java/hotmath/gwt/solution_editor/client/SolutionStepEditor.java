@@ -117,8 +117,6 @@ public class SolutionStepEditor extends ContentPanel {
         }
         layout();
         
-        initializeTutorInEditor();
-        
         EventBus.getInstance().fireEvent(new CmEvent(EventTypes.POST_SOLUTION_LOAD));
     }
     
@@ -214,6 +212,7 @@ public class SolutionStepEditor extends ContentPanel {
             public void handleEvent(CmEvent event) {
                 if(event.getEventType().equals(EventTypes.POST_SOLUTION_LOAD)) {
                     mathJaxProcess();
+                    __instance.initializeTutorInEditor();
                 }
                 else if(event.getEventType().equals(hotmath.gwt.solution_editor.client.EventTypes.STEP_CONTAINER_SELECTED)) {
                     __instance.setStepContainerSelected((StepContainer)event.getEventData());

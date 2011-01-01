@@ -52,6 +52,8 @@ public class SolutionEditor implements EntryPoint {
     @Override
     public void onModuleLoad() {
         
+        publishNative(this);
+        
         UserInfo userInfo = new UserInfo();
         UserInfo.setInstance(userInfo);
         RetryActionManager.getInstance();
@@ -106,6 +108,7 @@ public class SolutionEditor implements EntryPoint {
                             _solutionViewer.loadSolution(__pidLoaded);
                         }
                         if(_tabPanel.getSelectedItem().getText().equals("Step Editor")) {
+                            _solutionViewer.clearAll();
                             _stepEditorViewer.loadSolution(__pidLoaded);
                         }
                         
@@ -315,7 +318,38 @@ public class SolutionEditor implements EntryPoint {
     /* all global definitions 
      * 
      */
-    static public String __pidLoaded;    
+    static public String __pidLoaded;
+    
+    
+    public void tutorWidgetClicked_gwt(String html) {
+        WidgetListDialog.showWidgetListDialog(new hotmath.gwt.solution_editor.client.WidgetListDialog.Callback() {
+            @Override
+            public void resourceSelected(WidgetDefModel resource) {
+                /** replace the widgetHtml with resource
+                 * 
+                 */
+                gwt_updateWidgetDefinition(resource.getJson());
+                
+                
+                
+            }
+        },html);
+    }
+
+    /** Update extern global _tutorWidgetDefinition set before
+     *  call tutorWidgetClicked_gwt.
+     *   
+     * @param json
+     */
+    native void gwt_updateWidgetDefinition(String json) /*-{
+        $wnd._tutorWidgetDefinition.innerHTML = json;
+    }-*/;
+    
+    native void publishNative(SolutionEditor se) /*-{
+       $wnd.tutorWidgetClicked_gwt = function(html) {
+           se.@hotmath.gwt.solution_editor.client.SolutionEditor::tutorWidgetClicked_gwt(Ljava/lang/String;)(html);
+        }
+    }-*/;
 }
 
 

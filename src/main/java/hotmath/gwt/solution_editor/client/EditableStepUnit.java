@@ -5,22 +5,20 @@ import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.google.gwt.user.client.ui.Widget;
 
 abstract public class EditableStepUnit extends LayoutContainer implements StepUnitItem {
-    String html;
-    
     public EditableStepUnit() {
         addStyleName("editable-step-unit");
-
+        removeAll();
+        add(htmlDiv);
     }
     
+    Html htmlDiv = new Html();
     public void setEditorText(String text) {
-       this.html = text;
-       removeAll();
-       add(new Html(text));
-       layout();
+        htmlDiv.setHtml(text);
+        layout();
     }
     
     public String getEditorText() {
-        return this.html; 
+         return htmlDiv.el().getInnerHtml();
     }
     
     @Override

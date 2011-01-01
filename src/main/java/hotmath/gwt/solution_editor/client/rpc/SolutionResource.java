@@ -5,6 +5,9 @@ import hotmath.gwt.cm_rpc.client.rpc.Response;
 public class SolutionResource implements Response {
     String file;
     String urlPath;
+    String contents;
+    String display;
+    
     public SolutionResource() {}
     public SolutionResource(String file, String urlPath) {
         this.file = file;
@@ -22,4 +25,17 @@ public class SolutionResource implements Response {
     public void setUrlPath(String urlPath) {
         this.urlPath = urlPath;
     }
+    public String getContents() {
+        return contents;
+    }
+    public void setContents(String contents) {
+        this.contents = contents;
+    }
+    public String getDisplay() {
+        return display;
+    }
+    public void setDisplay(String display) {
+        this.display = display;
+    }
+    
 }

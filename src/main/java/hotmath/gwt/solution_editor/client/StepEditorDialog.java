@@ -101,6 +101,30 @@ public class StepEditorDialog extends Window {
             }
         }));
         
+//        getHeader().addTool(new Button("Insert Widget",new SelectionListener<ButtonEvent>() {
+//            @Override
+//            public void componentSelected(ButtonEvent ce) {
+//                WidgetListDialog.showWidgetListDialog(new WidgetListDialog.Callback() {
+//                    @Override
+//                    public void resourceSelected(WidgetDefModel resource) {
+//                        String toInsert = resource.getJson();
+//                        
+//                        if(_tabPanel.getSelectedItem().getText().equals("HTML")) {
+//                            int index = _textArea.getCursorPos();
+//                            String text = _textArea.getValue();
+//                            text = (text != null?text:"");
+//                            _textArea.setValue(text.substring(0, index) + toInsert + text.substring(index));                            
+//                        }
+//                        else {
+//                            _tinyMce.insertText(toInsert);
+//                        }
+//                        layout();
+//                    }
+//                });
+//            }
+//        }));        
+        
+        
         getHeader().addTool(new Button("Format", new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent ce) {

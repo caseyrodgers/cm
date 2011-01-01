@@ -28,5 +28,5 @@ public class GetSolutionResourcesAdminAction implements Action<CmList<SolutionRe
     }
 
 
-    static public enum ResourceType{LOCAL,GLOBAL};
+    static public enum ResourceType{LOCAL,GLOBAL,WIDGET};
 }

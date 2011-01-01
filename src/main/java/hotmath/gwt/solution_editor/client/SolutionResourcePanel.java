@@ -13,8 +13,13 @@ public class SolutionResourcePanel extends LayoutContainer {
         
         addStyleName("solution-resource-panel");
         
-        String html = "<h2>" + sr.getFile() + "</h2>" + 
-                      "<img src='" + sr.getUrlPath() + "?rand=" + System.currentTimeMillis() + "'/>";
+        String html = "<h2>" + sr.getFile() + "</h2>";
+        if(sr.getUrlPath() != null) {
+            html += "<img src='" + sr.getUrlPath() + "?rand=" + System.currentTimeMillis() + "'/>";
+        }
+        else if(sr.getDisplay() != null) {
+            html += sr.getDisplay();
+        }
         add(new Html(html));
     }
     

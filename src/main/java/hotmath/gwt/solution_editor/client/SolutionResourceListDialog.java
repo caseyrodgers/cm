@@ -30,7 +30,6 @@ import com.extjs.gxt.ui.client.widget.TabItem;
 import com.extjs.gxt.ui.client.widget.TabPanel;
 import com.extjs.gxt.ui.client.widget.Window;
 import com.extjs.gxt.ui.client.widget.button.Button;
-import com.extjs.gxt.ui.client.widget.layout.FlowLayout;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -61,12 +60,11 @@ public class SolutionResourceListDialog extends Window {
         _tabPanel.add(_tabLocal);
         
         _tabGlobal = new TabItem("Global Resources");
-        _tabGlobal.add(new Label("GLobal"));
+        _tabGlobal.add(new Label("Global"));
         
         _tabPanel.add(_tabGlobal);
         
         add(_tabPanel);
-        
         
         _tabPanel.addListener(Events.Select, new Listener<BaseEvent>() {
             @Override
@@ -270,7 +268,12 @@ public class SolutionResourceListDialog extends Window {
 
 
     private ResourceType determineResourceType() {
-        return _tabPanel.getSelectedItem() == _tabLocal?ResourceType.LOCAL:ResourceType.GLOBAL;
+        if(_tabPanel.getSelectedItem() == _tabLocal)
+            return ResourceType.LOCAL;
+        else if(_tabPanel.getSelectedItem() == _tabGlobal)
+            return ResourceType.GLOBAL;
+        
+        return null;
     }
     
     private void getDataFromServer() {
