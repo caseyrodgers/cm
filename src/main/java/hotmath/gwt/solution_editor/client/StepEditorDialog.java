@@ -97,7 +97,7 @@ public class StepEditorDialog extends Window {
                         layout();
                         
                     }
-                },SolutionEditor.__pidLoaded);
+                },SolutionEditor.__pidToLoad);
             }
         }));
         

@@ -203,6 +203,9 @@ public class SolutionStepEditor extends ContentPanel {
                 Window.alert(arg0.getMessage());
             }
         });
+        
+        
+        EventBus.getInstance().fireEvent(new CmEvent(EventTypes.SOLUTION_LOAD_COMPLETE, pid));
     }
     
     

@@ -31,6 +31,10 @@ public class SolutionViewer extends LayoutContainer {
         add(new Label("No solution loaded"));
     }
     
+    public boolean isSolutionLoaded() {
+        return pid != null;
+    }
+    
     public void loadSolution(final String pid) {
         this.pid = pid;
         
