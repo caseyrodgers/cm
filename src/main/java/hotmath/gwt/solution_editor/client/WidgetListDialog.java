@@ -1,7 +1,6 @@
 package hotmath.gwt.solution_editor.client;
 
 import hotmath.gwt.cm_core.client.JSOModel;
-import hotmath.gwt.solution_editor.client.rpc.SolutionResource;
 
 import java.util.ArrayList;
 import java.util.List;
