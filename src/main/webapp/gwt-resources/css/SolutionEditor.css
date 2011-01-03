@@ -103,7 +103,14 @@ solution-searcher-dialog button {
 }
 
 
-
+.solution-step-editor #hm_flash_widget:BEFORE {
+	font-family: serif;
+	color: red;
+	font-size: .8em;
+	padding: 10px 10px;
+	content: "Click to edit widget definition";
+}
+	
 .solution-step-editor #hm_flash_widget {
 	height: 25px;
 }
