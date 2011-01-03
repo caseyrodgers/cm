@@ -76,6 +76,7 @@ public class GetSolutionResourcesAdminCommand implements ActionHandler<GetSoluti
                         || kid.getName().endsWith(".html")
                         || kid.getName().endsWith(".xml")
                         || kid.getName().endsWith(".json") 
+                        || kid.getName().endsWith(".css")
                         || kid.getName().endsWith(".js")) {
                     continue;
                 }
