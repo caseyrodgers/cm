@@ -85,7 +85,7 @@ public class GetSolutionResourcesAdminCommand implements ActionHandler<GetSoluti
                     urlPath = solutionDef.getSolutionPathHttp();
                 }
                 else {
-                    urlPath = "/help/solutions";  /** global resources */
+                    urlPath = "/help/solutions/resources";  /** global resources */
                 }
                 
                 if(depth > 0) {
