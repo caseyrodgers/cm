@@ -72,7 +72,7 @@ cp target/cm-1.0-SNAPSHOT.jar ../hotmath2/web/WEB-INF/lib
 # WARNING: tomcat2 or tomcat .. depends on live/test 
 #
 echo Copying tomcat ROOT.xml into CM tomcat instance.
-cp src/main/webapp/ROOT.xml ~/tomcat2/conf/Catalina/localhost
+cp src/main/webapp/ROOT.xml ~/dist/cm_tomcat/conf/Catalina/localhost
 
 # be rough
 #
