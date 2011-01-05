@@ -28,7 +28,7 @@ public class LoadTester {
             int _userId = CmTestUtils.setupDemoAccount(CmProgram.PREALG_PROF);
 
             CmStudentDao _dao = new CmStudentDao();
-            StudentModelI _sm = _dao.getStudentModel(_userId);
+            StudentModelI _sm = _dao.getStudentModelBase(conn, _userId);
 
             long timeStart = System.currentTimeMillis();
 
