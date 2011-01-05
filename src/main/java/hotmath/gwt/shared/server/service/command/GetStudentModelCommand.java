@@ -14,7 +14,7 @@ public class GetStudentModelCommand implements ActionHandler<GetStudentModelActi
     @Override
     public StudentModelI execute(Connection conn, GetStudentModelAction action) throws Exception {
         CmStudentDao dao = new CmStudentDao();
-        return dao.getStudentModelBase(conn, action.getUid(), false);
+        return dao.getStudentModelBase(conn, action.getUid());
     }
 
     
