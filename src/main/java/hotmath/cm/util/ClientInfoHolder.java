@@ -14,4 +14,8 @@ public class ClientInfoHolder {
         holder.set(clientInfo);
     }
 
+    public static void remove() {
+    	holder.remove();
+    }
+
 }

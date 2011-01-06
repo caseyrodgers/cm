@@ -43,6 +43,8 @@ public class ClientInfoFilter implements Filter {
 
         try {
             filterChain.doFilter(request, response);
+
+            ClientInfoHolder.remove();
         }
         catch (IOException ioe) {
         	logException(ioe);
