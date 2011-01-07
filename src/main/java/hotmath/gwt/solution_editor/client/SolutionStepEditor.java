@@ -209,12 +209,14 @@ public class SolutionStepEditor extends ContentPanel {
     }
     
     
+    final static boolean shouldProcessMathJax = false;
     static {
         EventBus.getInstance().addEventListener(new CmEventListener() {
             @Override
             public void handleEvent(CmEvent event) {
                 if(event.getEventType().equals(EventTypes.POST_SOLUTION_LOAD)) {
-                    mathJaxProcess();
+                    if(shouldProcessMathJax)
+                        mathJaxProcess();
                     __instance.initializeTutorInEditor();
                 }
                 else if(event.getEventType().equals(hotmath.gwt.solution_editor.client.EventTypes.STEP_CONTAINER_SELECTED)) {
