@@ -18,29 +18,21 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
 import com.extjs.gxt.ui.client.Style.LayoutRegion;
 import com.extjs.gxt.ui.client.Style.Scroll;
-import com.extjs.gxt.ui.client.Style.VerticalAlignment;
 import com.extjs.gxt.ui.client.data.BaseModel;
-import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
-import com.extjs.gxt.ui.client.event.Events;
-import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.SelectionListener;
+import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.HorizontalPanel;
-import com.extjs.gxt.ui.client.widget.Label;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.Status;
-import com.extjs.gxt.ui.client.widget.TabItem;
-import com.extjs.gxt.ui.client.widget.TabPanel;
 import com.extjs.gxt.ui.client.widget.Viewport;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.TextArea;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
-import com.extjs.gxt.ui.client.widget.layout.TableData;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
@@ -64,80 +56,42 @@ public class SolutionEditor implements EntryPoint {
         RetryActionManager.getInstance();
         
         Viewport mainPort = new Viewport();
-        mainPort.setLayout(new FitLayout());
         mainPort.setScrollMode(Scroll.AUTOY);
-        
-        mainPort.setLayout(new BorderLayout());
         LayoutContainer toolbarPanel = new HorizontalPanel();
-        TableData tData = new TableData(HorizontalAlignment.RIGHT, VerticalAlignment.MIDDLE);
         toolbarPanel.add(createToolbar());
-        toolbarPanel.add(_title,tData);
-        mainPort.add(toolbarPanel, new BorderLayoutData(LayoutRegion.NORTH,25));
+        _mainPanel.setLayout(new BorderLayout());
+        _mainPanel.add(toolbarPanel, new BorderLayoutData(LayoutRegion.NORTH,25));
+        _mainPanel.add(_status,new BorderLayoutData(LayoutRegion.SOUTH,25));
+        _mainPanel.add(_stepEditorViewer,new BorderLayoutData(LayoutRegion.CENTER));        
 
-        _tabPanel.addStyleName("main-tab-panel");
-        TabItem tab = new TabItem("Step Editor");
-        tab.setWidth(960);
-        tab.setLayout(new FitLayout());
-        tab.add(_stepEditorViewer);
-        tab.setScrollMode(Scroll.AUTO);
-        _tabPanel.add(tab);
-        
-        //tab = new TabItem("Source View");
-        //tab.setLayout(new FitLayout());
-        //tab.setScrollMode(Scroll.AUTO);
-        //tab.add(_textArea);
-        //_tabPanel.add(tab);
-        
-        
-        tab = new TabItem("Tutor View");
-        tab.setLayout(new FitLayout());
-        tab.add(_solutionViewer);
-        tab.setScrollMode(Scroll.AUTO);
-        _tabPanel.add(tab);
-        
-        mainPort.add(_tabPanel,new BorderLayoutData(LayoutRegion.CENTER));  
-        
-        mainPort.add(_status,new BorderLayoutData(LayoutRegion.SOUTH,25));
+        mainPort.setLayout(new FitLayout());
+        mainPort.add(_mainPanel);  
 
         __pidToLoad = SolutionEditor.getQueryParameter("pid");
         if(__pidToLoad == null)
             __pidToLoad = Cookies.getCookie("last_pid");
         
-        _tabPanel.addListener(Events.Select, new Listener<BaseEvent>() {
-            @Override
-            public void handleEvent(BaseEvent be) {
-                if(__pidToLoad != null) {
-                    TabItem item = _tabPanel.getSelectedItem();
-                    if(item != null) {
-                        if(_tabPanel.getSelectedItem().getText().equals("Tutor View")) {
-                            _solutionViewer.loadSolution(__pidToLoad);
-                        }
-                        else if(_tabPanel.getSelectedItem().getText().equals("Step Editor")) {
-                            _solutionViewer.clearAll();
-                            _stepEditorViewer.loadSolution(__pidToLoad);
-                        }
-                    }
-                }
-            }
-        });
         
         EventBus.getInstance().addEventListener(new CmEventListener() {
             @Override
             public void handleEvent(CmEvent event) {
                 if(event.getEventType().equals(EventTypes.SOLUTION_LOAD_COMPLETE)) {
-                    _title.setText("Loaded: " + event.getEventData());
+                    _mainPanel.setHeading("Loaded: " + event.getEventData());
                 }
             }
         });
-        
-        _title.setStyleName("main-title");
         RootPanel.get("main-content").add(mainPort);
+        
+        
+        if(__pidToLoad != null) {
+            _stepEditorViewer.loadSolution(__pidToLoad);
+        }
     }
     
     private Widget createToolbar() {
         ToolBar tb = new ToolBar();
         
-        tb.add(new Button("Create New",new SelectionListener<ButtonEvent>() {
+        tb.add(new Button("Create",new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent ce) {
                 addSolutionIntoEditor();
@@ -163,6 +117,13 @@ public class SolutionEditor implements EntryPoint {
             @Override
             public void componentSelected(ButtonEvent ce) {
                 saveSolutionLoaded();
+            }
+        }));
+        
+        tb.add(new Button("View",new SelectionListener<ButtonEvent>() {
+            @Override
+            public void componentSelected(ButtonEvent ce) {
+                showTutorView();
             }
         }));
 
@@ -198,7 +159,7 @@ public class SolutionEditor implements EntryPoint {
             public void onSuccess(SolutionAdminResponse solutionResponse) {
                 _textArea.setValue(solutionResponse.getXml());
                 _status.clearStatus("");
-                _title.setText("Loaded Solution: " + pid);
+                _mainPanel.setHeading("Loaded Solution: " + pid);
             }
             @Override
             public void onFailure(Throwable arg0) {
@@ -210,6 +171,13 @@ public class SolutionEditor implements EntryPoint {
     }
     
     
+    private void showTutorView() {
+        if(__pidToLoad!=null) {
+            new SolutionViewerFrame(__pidToLoad);
+        }
+    }
+    
+    
     private void addSolutionIntoEditor() {
         GetSolutionAdminAction action = new GetSolutionAdminAction(Type.CREATE,null);
         _status.setBusy("Loading solution ...");
@@ -217,7 +185,7 @@ public class SolutionEditor implements EntryPoint {
             public void onSuccess(SolutionAdminResponse solutionResponse) {
                 _stepEditorViewer.loadSolution(solutionResponse.getPid());
                 _status.clearStatus("");
-                _title.setText("Loaded Solution: " + solutionResponse.getPid());
+                _mainPanel.setHeading("Loaded Solution: " + solutionResponse.getPid());
             }
             @Override
             public void onFailure(Throwable arg0) {
@@ -298,11 +266,9 @@ public class SolutionEditor implements EntryPoint {
         return m;
     }
     
-    TabPanel _tabPanel = new TabPanel();    
+    ContentPanel _mainPanel = new ContentPanel();    
     TextArea _textArea = new TextArea();
-    SolutionViewer _solutionViewer = new SolutionViewer();
     SolutionStepEditor _stepEditorViewer = new SolutionStepEditor();
-    Label _title = new Label();
     static public Status _status = new Status();
     
     

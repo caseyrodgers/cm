@@ -1,0 +1,126 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<meta http-equiv="content-type" content="text/html; charset=iso-8859-1">
+<title>Step-by-Step Math Answer</title>
+<link rel="stylesheet" href="/jlibs/yui/build/container/assets/container.css" type="text/css"/>
+<link rel="stylesheet" href="/css/core_combined.css" type="text/css"/>
+<link rel="stylesheet" href="/css/SexyButtons/sexybuttons.css" type="text/css"/>
+<link rel="stylesheet" href="/jlibs/yui/build/button/assets/skins/sam/button.css" type="text/css"/>
+<link rel="stylesheet" href="/jlibs/yui/build/menu/assets/skins/sam/menu.css" type="text/css"/>
+<link rel="stylesheet" href="/css/tutor_widget.css" type="text/css"/>
+<link rel="stylesheet" href="/css/bookindex_with_tutor_combined.css" type="text/css"/>
+<script>
+ // Meta variables that describe this book
+ // There is only ONE of these per instance
+ var _bookMeta = {
+    pageMin:0,
+    pageMax:0,
+    textCode:'',
+    bookTitle:'',
+    defaultPage:0,
+    isControlled:true, 
+    category:''
+    };
+</script>
+<script src='/gwt-resources/js/MathJax/MathJax.js'></script>
+<style>
+  #tutor_inmh, #new_solution {
+      display: none;
+      }
+</style>
+</head>
+<body class='yui-skin-sam'>
+
+<div id="tutor_viewer" > 
+	    <div id="overDiv" style="position:absolute; visibility: hidden; z-index:10000;"></div> 
+		 <!-- HOTMATH BODY START -->
+  <div id="tutoroutput" style='display: none'>
+    <div id='tutor_raw_steps_wrapper'> &nbsp; </div> 
+    <div id='steps_tail' style='position: relative;'> 
+      <div id='steps_tail_padding'>
+        <a id='steps_prev' 
+          onmouseover='setStepsInfoHelp(getNextMoveTo(-1))' 
+          onMouseOut="resetStepsInfo();"
+          href="javascript:HomeworkHelp()" onclick="showPreviousStep();return false;"
+          accesskey="p">
+          <img id='steps_prev_img' src="/images/tutor5/steps_previous-disabled.gif">
+          </a>
+        <a id='steps_next' 
+          onmouseover='setStepsInfoHelp(getNextMoveTo(1))' 
+          onMouseOut="resetStepsInfo();"
+          href="javascript:HomeworkHelp()" onclick="showNextStep();return false;"
+          tabindex="1" class="notips" accesskey="s">
+          <img  id='steps_next_img' src="/images/tutor5/steps_next-disabled.gif">
+          </a>
+        <div id='steps_info'> &nbsp; </div>
+        <a id='new_problem_link' href="javascript:gotoBookIndexLocal()"
+          onmouseover="setStepsInfoHelp('Choose another problem');"
+          onmouseout="resetStepsInfo();"
+          class="notips" 
+          accesskey="n">
+          <img id='new_solution' src="/images/tutor5/new_problem.gif">
+          </a>
+        <a  style='display: none' id='review_link' accesskey="r"
+          href="javascript:HomeworkHelp()" 
+          onmouseover="setStepsInfoHelp('Choose a Review Lesson');"
+          onclick="showInmhMenu();return false;"  
+          onmouseout="resetStepsInfo();ndLocal(1000);"
+          tabindex="2">
+          <img id='inmh_goto' src="/images/tutor5/steps_review-enabled.gif"/>
+          </a>
+        </div>
+      <div id='tutor_inmh'>
+        <div id='video_inmh_button' class='inmh_button'></div>
+        <div id='review_inmh_button' class='inmh_button'></div>
+        <div id='activity_inmh_button' class='inmh_button'></div>
+        <div id='tutor_inmh_button' class='inmh_button'></div>
+        </div>
+      </div>  
+  </div>
+  <!-- HOTMATH BODY END -->
+  <div id='info_section' style='display: block;margin-top: 50px;'> 
+    <div id='info_section_detail'> &nbsp; </div>
+  </div>
+    <img style='display: inline;' id='scrollTo-button' src='/images/tutor5/spacer.gif'>  </div>
+
+<script src="/js/core_combined.js" type="text/javascript" ></script>
+<script type="text/javascript">
+  // once document is loaded, process startup 
+  YAHOO.util.Event.addListener(window, "load", setupPage);
+</script> <script type="text/javascript" src="/js/bookindex_with_tutor_combined.js"></script>
+<script src="/js/tutor_standalone-min.js" type="text/javascript" ></script>
+<script src="/js/tutor_flash_widget.js" type="text/javascript" ></script>
+<script src="/js/tutor_flash_widget_validation.js" type="text/javascript" ></script>
+
+<script src="/jlibs/yui/build/menu/menu.js" type="text/javascript" ></script>
+<script src="/jlibs/yui/build/element/element-min.js" type="text/javascript" ></script>
+<script src="/jlibs/yui/build/button/button-min.js" type="text/javascript" ></script>
+
+<style>
+  #tutor_inmh {
+  }
+  .inmh_button {
+     float: left;
+     width: 125px;
+     text-align: center;
+}
+</style>
+<script src='/js/hm_mathjax.js'></script>
+<script>
+AdController.initializeAdsFromServer = function() {
+      // alert('no ads');
+};
+</script>
+<!--
+<script src="/js/lwl_tutor_manager-min.js" type="text/javascript" ></script>
+<script src="/js/tutor5-min.js" type="text/javascript" ></script>
+<script src="/js/bookindex_with_tutor-min.js" type="text/javascript" ></script>
+<script src="/js/tutor6-min.js" type="text/javascript" ></script>
+<script src="/js/tutor_standalone-min.js" type="text/javascript" ></script>
+<script src="/js/help_info-min.js" type="text/javascript" ></script>
+<script src="/js/inmh_buttons-min.js" type="text/javascript" ></script>
+<script src="/js/ad_control-min.js" type="text/javascript" ></script>
+-->
+</body>
+</html>
