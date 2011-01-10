@@ -7,6 +7,13 @@
 
 727
 
+#select max(test_def_id) as test_def_id, subj_id
+#FROM   HA_TEST_DEF
+#where  prog_id = 'Chap'
+#  and  is_active = 1
+#  and  subj_id is not null
+#group by subj_id
+#order by load_order
 
 
 # 
@@ -853,6 +860,7 @@ FROM   HA_TEST_DEF
 where  prog_id = ?
   and  is_active = 1
   and  subj_id is not null
+group by subj_id
 order by load_order
 
 
