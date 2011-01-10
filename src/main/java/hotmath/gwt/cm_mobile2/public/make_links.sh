@@ -6,7 +6,8 @@
 # to be served through apache.
 ##
 ln -s ../gwt-resources .
-ln -s ../resources .
+ln -s ../assets .
+ln -s ../activities .
 
 
 ln -s ../../../../hotmath2/web/js ./

@@ -65,7 +65,7 @@ public class HeaderPanel extends LayoutContainer {
         add(guide);
         
         IconButton traning = new IconButton("header-panel-training-btn");
-        traning.setToolTip("View a Catchup Math training video");
+        traning.setToolTip("Watch a 20-minute video about teaching with Catchup Math");
         traning.addSelectionListener(new SelectionListener<IconButtonEvent>() {
             public void componentSelected(IconButtonEvent ce) {
                 new WebinarWindow();
