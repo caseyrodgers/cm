@@ -124,6 +124,8 @@ public class WordProblemsPanel extends Composite {
         _mainPanel.clear();
         _explainPanel.setExplaination(_problemSet.getProblems().get(_currentQuestion));
         _mainPanel.add(_explainPanel);
+        
+        processMathJax();
     }
     
     private native boolean validateQuestion(String expected,String vars,String value1, String value2, String value3, String value3p)/*-{
@@ -259,8 +261,19 @@ public class WordProblemsPanel extends Composite {
         
         _mainPanel.clear();
         _mainPanel.add(_questionPanel);
+        
+        
+        processMathJax();
     }
     
+    private native void processMathJax() /*-{
+        try {
+            $wnd.processMathJax();
+        }
+        catch(e) {
+            alert("error: " + e);
+        }    
+    }-*/;
     
     private void initializeData(WordProblemSet problemSet) {
 

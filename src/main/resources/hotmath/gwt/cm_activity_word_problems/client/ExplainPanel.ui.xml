@@ -30,6 +30,11 @@
 	        border-radius: 2%;
 	     }
 	     
+	     .explainPanel p {
+	         line-height: 1.2em;
+	     }
+	     
+	     
 	     .buttonBar {
 	     	margin-top: 20px;
 	     	text-align: center;

@@ -1,0 +1,590 @@
+<data>
+	<item>
+		<question><![CDATA[
+            The average score of three tests with scores of <i>a</i>, <i>b</i>, and <i>c</i>.
+            ]]></question>
+		<answer vars="a,b,c"><![CDATA[
+             (a+b+c)/3
+            ]]></answer>
+		<explanation><![CDATA[
+        
+            <p>Average is computed by adding all the values and dividing by the number of values.</p> 
+            <p>For example, if the scores were 70, 80, and 90, then the average score would 
+            be
+            
+<math mathsize="1.2">
+        <mrow>
+                <mtable>
+                        <mtr>
+                                <mtd>
+                                        <mfrac>
+                                                <mfenced open="(" close=")">
+                                                        <mtext>70 + 80 + 90</mtext>
+                                                </mfenced>
+                                                <mtext>3</mtext>
+                                        </mfrac>
+                                </mtd>
+                                <mtd>
+                                        <mtext>=</mtext>
+                                </mtd>
+                                <mtd>
+                                        <mfrac>
+                                                <mtext>240</mtext>
+                                                <mtext>3</mtext>
+                                        </mfrac>
+                                </mtd>
+                                <mtd>
+                                        <mtext>=</mtext>
+                                </mtd>
+                                <mtd>
+                                        <mtext selected="true">80</mtext>
+                                </mtd>
+                        </mtr>
+                </mtable>
+        </mrow>
+</math> 
+            . So, the answer is
+<math mathsize="1.2">
+        <mrow>
+                <mtable>
+                        <mtr>
+                                <mtd>
+                                        <mfrac>
+                                                <mfenced open="(" close=")">
+                                                        <mtext>a + b + c</mtext>
+                                                </mfenced>
+                                                <mtext>3</mtext>
+                                        </mfrac>
+                                </mtd>
+                        </mtr>
+                </mtable>
+        </mrow>
+</math>            
+            .
+            
+            </p>
+            ]]></explanation>
+	</item>
+
+
+	<item>
+		<question><![CDATA[
+            The age in years of someone who is twice as old as Cayenne, if Cayenne is <i>C</i> years old.
+        ]]></question>
+		<answer vars="C"><![CDATA[2C]]></answer>
+		<explanation><![CDATA[
+           If Cayenne is 5 years old, then twice that is
+           
+           
+<math>
+        <mrow>
+                <mtext>2</mtext>
+                <mo>&#x0002A;</mo>
+                <mtext>5</mtext>
+                <mo>=</mo>
+                <mtext selected="true">10</mtext>
+        </mrow>
+</math>
+           
+           
+           
+           , if Cayenne is 7 years old, 
+           then twice that is would be
+           
+           
+<math>
+        <mrow>
+                <mtext>2</mtext>
+                <mo>&#x0002A;</mo>
+                <mtext>7</mtext>
+                <mo>=</mo>
+                <mtext selected="true">14</mtext>
+        </mrow>
+</math>
+           
+           
+           years old. If Cayenne is C years old, 
+           then twice that would be
+           
+<math>
+        <mrow>
+                <mtext>2</mtext>
+                <mo>&#x0002A;</mo>
+                <mtext>C</mtext>
+        </mrow>
+</math>           
+           
+           years old.
+        ]]></explanation>
+	</item>
+
+
+
+	<item>
+		<question><![CDATA[
+        
+        The number of minutes it takes me to read 7 pages if I read 1 page in <i>M</i> minutes.
+        
+        ]]></question>
+		<answer vars="M"><![CDATA[7M]]></answer>
+		<explanation><![CDATA[
+        
+           It takes M minutes to read 1 page,
+<math>
+        <mrow>
+                <mtext>2</mtext>
+                <mo>&#x0002A;</mo>
+                <mtext>M</mtext>
+        </mrow>
+</math>
+
+           
+           minutes to read 2 pages,
+           
+           
+           
+<math>
+        <mrow>
+                <mtext>3</mtext>
+                <mo>&#x0002A;</mo>
+                <mtext>M</mtext>
+        </mrow>
+</math>           
+
+           
+           
+           minutes to read 3 pages, etc. So it takes
+           
+           
+<math>
+        <mrow>
+                <mtext>7</mtext>
+                <mo>&#x0002A;</mo>
+                <mtext>M</mtext>
+        </mrow>
+</math>           
+           
+           minutes to read 7 pages.
+           
+        ]]></explanation>
+	</item>
+
+
+	<item>
+		<question><![CDATA[
+            The perimeter, in units, of an equilateral triangle with each side <i>L</i> units long.]]>
+		</question>
+		<answer vars="L"><![CDATA[3L]]></answer>
+		<explanation><![CDATA[
+        
+                  An equilateral triangle has three equal sides. The perimeter of a triangle is the sum of the lengths of the three sides. 
+                  For our triangle, the perimeter is
+                  
+<math>
+        <mrow>
+                <mtext>L</mtext>
+                <mo>+</mo>
+                <mtext>L</mtext>
+                <mo>+</mo>
+                <mtext>L</mtext>
+        </mrow>
+</math>           
+                  
+                  which simplifies to
+                  
+                  
+<math>
+        <mrow>
+                <mtext>3</mtext>
+                <mo>*</mo>
+                <mtext>L</mtext>
+        </mrow>
+</math>                             
+                  
+                  or
+                  
+<math>
+        <mrow>
+                <mtext>3L</mtext>
+        </mrow>
+</math>           
+                  
+                  
+                  .]]></explanation>
+	</item>
+
+	<item>
+		<question><![CDATA[The number of months it takes to grow one foot of hair, if the hair grows <i>N</i> inches per month.]]></question>
+		<answer vars="N"><![CDATA[12/N]]></answer>
+		<explanation><![CDATA[
+             There are 12 inches in 1 foot.  Therefore, we divide 12 by the number of inches per month to get the answer. 
+             For example, if hair grows 2 inches per month, then in
+             
+<math>
+        <mrow>
+                <mtable>
+                        <mtr>
+                                <mtd>
+                                        <mfrac>
+                                                <mtext>12</mtext>
+                                                <mtext>2</mtext>
+                                        </mfrac>
+                                </mtd>
+                                <mtd>
+                                        <mtext>= 6</mtext>
+                                </mtd>
+                        </mtr>
+                </mtable>
+        </mrow>
+</math>
+             
+             
+             
+             months to grow one foot. So, at N inches per month it would take
+             
+             
+<math>
+        <mrow>
+                <mfrac bevelled="true">
+                        <mtext>12</mtext>
+                        <mtext selected="true">N</mtext>
+                </mfrac>
+        </mrow>
+</math>             
+             
+             
+             
+             months.]]></explanation>
+	</item>
+
+
+	<item>
+		<question><![CDATA[Number of gallons of gas it takes to go 50 miles if you get <i>G</i> miles per gallon.]]></question>
+		<answer vars="G"><![CDATA[50/G]]></answer>
+		<explanation><![CDATA[
+        
+        At 10 miles per gallon, it will take
+        
+<math>
+        <mrow>
+                <mtable>
+                        <mtr>
+                                <mtd>
+                                        <mfrac>
+                                                <mtext>50</mtext>
+                                                <mtext>10</mtext>
+                                        </mfrac>
+                                </mtd>
+                                <mtd>
+                                        <mo>=</mo>
+                                </mtd>
+                                <mtd>
+                                        <mtext selected="true">5</mtext>
+                                </mtd>
+                        </mtr>
+                </mtable>
+        </mrow>
+</math>
+
+
+
+        
+        gallons. At 25 miles per gallon, it will take
+        
+<math>
+        <mrow>
+                <mtable>
+                        <mtr>
+                                <mtd>
+                                        <mfrac>
+                                                <mtext>50</mtext>
+                                                <mtext>25</mtext>
+                                        </mfrac>
+                                </mtd>
+                                <mtd>
+                                        <mo>=</mo>
+                                </mtd>
+                                <mtd>
+                                        <mtext selected="true">2</mtext>
+                                </mtd>
+                        </mtr>
+                </mtable>
+        </mrow>
+</math>
+        
+        gallons. So, at G miles per gallon it will take me 
+        
+<math>
+        <mrow>
+                <mfrac>
+                        <mtext>50</mtext>
+                        <mtext selected="true">G</mtext>
+                </mfrac>
+        </mrow>
+</math>
+        
+        
+        gallons.]]></explanation>
+	</item>
+
+
+	<item>
+		<question><![CDATA[The number of minutes required to watch half of an <i>M</i>-minute movie.]]></question>
+		<answer vars="M"><![CDATA[M/2]]></answer>
+		<explanation><![CDATA[To find half of any quantity, divide by 2. For example, 
+        half of a 110 minute movie would take
+        
+        
+<math>
+        <mrow>
+                <mtable>
+                        <mtr>
+                                <mtd>
+                                        <mfrac>
+                                                <mtext>110</mtext>
+                                                <mtext>2</mtext>
+                                        </mfrac>
+                                </mtd>
+                                <mtd>
+                                        <mtext>=</mtext>
+                                </mtd>
+                                <mtd>
+                                        <mtext selected="true">55</mtext>
+                                </mtd>
+                        </mtr>
+                </mtable>
+        </mrow>
+</math>
+        
+        
+        minutes. So, half of an
+        M-minute movie would take
+        
+        <math>
+        <mrow>
+                <mfrac>
+                        <mtext>M</mtext>
+                        <mtext selected="true">2</mtext>
+                </mfrac>
+        </mrow>
+</math>
+        
+        minutes.]]></explanation>
+	</item>
+
+
+	<item>
+		<question><![CDATA[The sum of two consecutive numbers with <i>N</i> as the first one.]]></question>
+		<answer vars="N"><![CDATA[2N+1]]></answer>
+		<explanation><![CDATA[
+        
+        As an example, 5 and 6 are two consecutive numbers. Their sum would be
+        
+<math>
+        <mrow>
+                <mtable>
+                        <mtr>
+                                <mtd>
+                                        <mtext>5</mtext>
+                                </mtd>
+                                <mtd>
+                                        <mtext>+</mtext>
+                                </mtd>
+                                <mtd>
+                                        <mtext>6</mtext>
+                                </mtd>
+                                <mtd>
+                                        <mtext>=</mtext>
+                                </mtd>
+                                <mtd>
+                                        <mtext selected="true">11</mtext>
+                                </mtd>
+                        </mtr>
+                </mtable>
+        </mrow>
+</math>
+
+        
+        
+        . If the first number is 
+        
+        
+<math>
+        <mrow>
+                <mtext>N</mtext>
+        </mrow>
+</math>           
+        
+        
+        
+        , then the next one would be
+        
+        
+<math>
+        <mrow>
+                <mtext>N</mtext>
+                <mo>+</mo>
+                <mtext>1</mtext>
+        </mrow>
+</math>           
+
+        
+        
+        . The sum would be
+        
+        
+<math>
+        <mrow>
+                <mtable>
+                        <mtr>
+                                <mtd>
+                                        <mtext>N</mtext>
+                                </mtd>
+                                <mtd>
+                                        <mtext>+</mtext>
+                                        <mfenced>
+                                                <mtable>
+                                                        <mtr>
+                                                                <mtd>
+                                                                        <mtext selected="true">N</mtext>
+                                                                </mtd>
+                                                                <mtd>
+                                                                        <mtext>+</mtext>
+                                                                </mtd>
+                                                                <mtd>
+                                                                        <mtext>1</mtext>
+                                                                </mtd>
+                                                        </mtr>
+                                                </mtable>
+                                        </mfenced>
+                                </mtd>
+                        </mtr>
+                </mtable>
+        </mrow>
+</math>
+        
+        
+        
+        which simplifies to
+        
+        
+       <math>
+        <mrow>
+                <mtable>
+                        <mtr>
+                                <mtd>
+                                        <mtext>2N</mtext>
+                                </mtd>
+                                <mtd>
+                                        <mtext>+</mtext>
+                                </mtd>
+                                <mtd>
+                                        <mtext selected="true">1</mtext>
+                                </mtd>
+                        </mtr>
+                </mtable>
+        </mrow>
+</math>
+        
+        
+        .]]></explanation>
+	</item>
+
+
+
+	<item>
+		<question><![CDATA[The total score of a football game with <i>T</i> 6-pointer touchdowns, <i>F</i> 3-pointer field goals, and <i>C</i> 1-point conversions.]]></question>
+		<answer vars="T,F,C"><![CDATA[6T+3F+C]]></answer>
+		<explanation><![CDATA[
+        
+        
+            As an example, three touchdowns give
+            
+<math>
+        <mrow>
+                <mtext>3</mtext>
+                <mo>*</mo>
+                <mtext>6</mtext>
+                <mo>=</mo>
+                <mtext>18</mtext>                
+        </mrow>
+</math>           
+            
+            
+            points, 5 field goals add
+            
+            
+<math>
+        <mrow>
+                <mtext>5</mtext>
+                <mo>*</mo>
+                <mtext>3</mtext>
+                <mo>=</mo>
+                <mtext>15</mtext>                
+        </mrow>
+</math>           
+            
+            more points, and 3 conversions add
+            
+<math>
+        <mrow>
+                <mtext>3</mtext>
+                <mo>*</mo>
+                <mtext>1</mtext>
+                <mo>=</mo>
+                <mtext>3</mtext>                
+        </mrow>
+</math>           
+            
+            
+            points. So the answer using
+            
+<math>
+        <mrow>
+            <mtext>T</mtext>                
+        </mrow>
+</math>           
+            
+            
+            ,
+            
+<math>
+        <mrow>
+            <mtext>F</mtext>                
+        </mrow>
+</math>     
+            
+            and
+            
+            
+<math>
+        <mrow>
+            <mtext>C</mtext>                
+        </mrow>
+</math>     
+            
+            
+            
+            would be
+            
+            
+            
+<math>
+        <mrow>
+                <mtext>6T</mtext>
+                <mo>+</mo>
+                <mtext>3F</mtext>
+                <mo>+</mo>
+                <mtext>C</mtext>                
+        </mrow>
+</math>           
+                          
+.        
+        ]]></explanation>
+	</item>
+
+
+
+
+</data>
+

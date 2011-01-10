@@ -1,3 +1,7 @@
+body {
+	font-size: 15px;
+}
+
 #startup {
 	display: table-cell;
 	vertical-align: middle;
@@ -251,53 +255,4 @@ html>body .gwt-DialogBox {
   overflow: hidden;
 }
 .cw-DialogBox {
-}
-
-
-/** Handle the formatting of the fractions in 
-   explain panel
-*/
-.float-left {
-	float:left;
-}
-
-.fraction {
-    height: 50px;
-    float: left;
-}
-
-.frac {
-    position: relative;
-    text-align:center;
-    margin-left: 5px;
-    margin-right: 5px;
-    width: 100px;
-    height: 50px;
-}
-.before, .after {
-    line-height: 40px;
-    vertical-align:middle;
-}
-.divider {
-    height: 1px;
-    background: black;
-    line-height: 1px;
-    position: absolute;
-    top: 20px;
-    left: 0;
-    width: 30px;         
-}
-
-.num {
-   position: absolute;
-   top: 0;
-   left: 0;
-   width: 30px;
-}
-     
-.den {
-   position: absolute;
-   left: 0;
-   top: 30px;
-   width: 30px;
 }

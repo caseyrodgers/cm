@@ -28,6 +28,7 @@
 	     	
 	        -moz-border-radius: 2%;
 	        border-radius: 2%;
+	        line-height: 1.5em;
 	     }
 	     
 	     .buttonBar {

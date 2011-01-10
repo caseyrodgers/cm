@@ -31,7 +31,7 @@ public class WordProblemsDao {
          * 
          */
         String fileBase = CmWebResourceManager.getInstance().getFileBase();
-        File activitiesFile = new File(fileBase,"../activities/word_problems/word_problem_def.xml");
+        File activitiesFile = new File(fileBase,"../activities/word_problems/word_problem_def_mathml.xml");
         
         WordProblemsParser wp = WordProblemsParser.parseXml(new SbFile(activitiesFile).getFileContents().toString("\n"));
         return wp.getProblems();
