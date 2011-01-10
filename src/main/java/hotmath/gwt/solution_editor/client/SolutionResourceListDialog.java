@@ -280,17 +280,17 @@ public class SolutionResourceListDialog extends Window {
         
         ResourceType resourceType = determineResourceType();
         
-        SolutionEditor._status.setText("Getting " + resourceType + " resources ...");
+        SolutionEditor.__status.setText("Getting " + resourceType + " resources ...");
         
         GetSolutionResourcesAdminAction action = new GetSolutionResourcesAdminAction(pid, resourceType);
         SolutionEditor.getCmService().execute(action, new AsyncCallback<CmList<SolutionResource>>() {
             public void onSuccess(CmList<SolutionResource> resources) {
-                SolutionEditor._status.setText("");
+                SolutionEditor.__status.setText("");
                 showResources(resources);
             }
             @Override
             public void onFailure(Throwable arg0) {
-                SolutionEditor._status.setText("");
+                SolutionEditor.__status.setText("");
                 arg0.printStackTrace();
                 com.google.gwt.user.client.Window.alert(arg0.getLocalizedMessage());
             }

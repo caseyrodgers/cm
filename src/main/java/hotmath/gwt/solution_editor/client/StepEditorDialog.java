@@ -96,6 +96,8 @@ public class StepEditorDialog extends Window {
                         }
                         layout();
                         
+                        
+                        EventBus.getInstance().fireEvent(new CmEvent(hotmath.gwt.solution_editor.client.EventTypes.SOLUTION_EDITOR_CHANGED));       
                     }
                 },SolutionEditor.__pidToLoad);
             }
@@ -145,7 +147,9 @@ public class StepEditorDialog extends Window {
                 }
                 item.setEditorText(value);
                 hide();
-                EventBus.getInstance().fireEvent(new CmEvent(EventTypes.POST_SOLUTION_LOAD));                
+                
+                EventBus.getInstance().fireEvent(new CmEvent(EventTypes.POST_SOLUTION_LOAD));
+                EventBus.getInstance().fireEvent(new CmEvent(hotmath.gwt.solution_editor.client.EventTypes.SOLUTION_EDITOR_CHANGED));                
             }
         }));
 
@@ -166,15 +170,15 @@ public class StepEditorDialog extends Window {
     
     private void formatXml() {
         FormatXmlAdminAction action = new FormatXmlAdminAction(_tinyMce.getText());
-        SolutionEditor._status.setBusy("Formatting XML ...");
+        SolutionEditor.__status.setBusy("Formatting XML ...");
         SolutionEditor.getCmService().execute(action, new AsyncCallback<SolutionAdminResponse>() {
             public void onSuccess(SolutionAdminResponse solutionResponse) {
                 _tinyMce.setText(solutionResponse.getXml());
-                SolutionEditor._status.clearStatus("");
+                SolutionEditor.__status.clearStatus("");
             }
             @Override
             public void onFailure(Throwable arg0) {
-                SolutionEditor._status.clearStatus("");
+                SolutionEditor.__status.clearStatus("");
                 arg0.printStackTrace();
                 com.google.gwt.user.client.Window.alert(arg0.getLocalizedMessage());
             }

@@ -114,3 +114,9 @@ solution-searcher-dialog button {
 .solution-step-editor #hm_flash_widget {
 	height: 25px;
 }
+
+.solution-editor-save-button button {
+	color: red;
+	font-weight: bold;
+	font-size: 1.2em;
+}

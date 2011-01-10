@@ -111,7 +111,7 @@ public class SolutionSearcherDialog extends Window {
     private void doSearch() {
         String text = _searchField.getValue();
         
-        SolutionEditor._status.setText("Searching for: " + text);
+        SolutionEditor.__status.setText("Searching for: " + text);
         if (text != null && text.length() > 0) {
             
             SearchForSolutionsAction action = new SearchForSolutionsAction(text);
@@ -119,7 +119,7 @@ public class SolutionSearcherDialog extends Window {
                 @Override
                 public void onSuccess(CmList<SolutionSearchModel> result) {
                     _matches.setText("Found: " + result.size());
-                    SolutionEditor._status.setText("");
+                    SolutionEditor.__status.setText("");
                     showResults(result);
                 }
                 

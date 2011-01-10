@@ -83,12 +83,12 @@ class CmResourceViewerImplSolution extends LayoutContainer  {
     }
     
     public Widget getViewer(final InmhItemData item) {
-        SolutionEditor._status.setText("Loading solution: " + item.getFile());
+        SolutionEditor.__status.setText("Loading solution: " + item.getFile());
         GetMobileSolutionAction action = new GetMobileSolutionAction(UserInfo.getInstance().getUid(),item.getFile());
         SolutionEditor.getCmService().execute(action, new AsyncCallback<SolutionResponse>() {
             @Override
             public void onSuccess(SolutionResponse result) {
-                SolutionEditor._status.setText("");
+                SolutionEditor.__status.setText("");
                 HTML html = new HTML(result.getTutorHtml());
                 add(html);
                 layout();
@@ -97,7 +97,7 @@ class CmResourceViewerImplSolution extends LayoutContainer  {
 
             @Override
             public void onFailure(Throwable caught) {
-                SolutionEditor._status.setText("");
+                SolutionEditor.__status.setText("");
                 caught.printStackTrace();
                 add(new HTML("Could not load solution: " + caught.getMessage()));               
             }

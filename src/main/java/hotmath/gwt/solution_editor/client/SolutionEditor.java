@@ -45,6 +45,10 @@ import com.google.gwt.user.client.ui.Widget;
 
 
 public class SolutionEditor implements EntryPoint {
+    
+    public SolutionEditor() {
+        __instance = this;
+    }
 
     @Override
     public void onModuleLoad() {
@@ -61,7 +65,7 @@ public class SolutionEditor implements EntryPoint {
         toolbarPanel.add(createToolbar());
         _mainPanel.setLayout(new BorderLayout());
         _mainPanel.add(toolbarPanel, new BorderLayoutData(LayoutRegion.NORTH,25));
-        _mainPanel.add(_status,new BorderLayoutData(LayoutRegion.SOUTH,25));
+        _mainPanel.add(__status,new BorderLayoutData(LayoutRegion.SOUTH,25));
         _mainPanel.add(_stepEditorViewer,new BorderLayoutData(LayoutRegion.CENTER));        
 
         mainPort.setLayout(new FitLayout());
@@ -113,12 +117,15 @@ public class SolutionEditor implements EntryPoint {
             }
         }));
         
-        tb.add(new Button("Save",new SelectionListener<ButtonEvent>() {
+        _saveButton = new Button("Save",new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent ce) {
                 saveSolutionLoaded();
             }
-        }));
+        });
+        _saveButton.addStyleName("solution-editor-save-button");
+        
+        tb.add(_saveButton);
         
         tb.add(new Button("View",new SelectionListener<ButtonEvent>() {
             @Override
@@ -154,16 +161,16 @@ public class SolutionEditor implements EntryPoint {
     
     private void loadSolutionXml(final String pid) {
         GetSolutionAdminAction action = new GetSolutionAdminAction(Type.GET,pid);
-        _status.setBusy("Loading solution ...");
+        __status.setBusy("Loading solution ...");
         SolutionEditor.getCmService().execute(action, new AsyncCallback<SolutionAdminResponse>() {
             public void onSuccess(SolutionAdminResponse solutionResponse) {
                 _textArea.setValue(solutionResponse.getXml());
-                _status.clearStatus("");
+                __status.clearStatus("");
                 _mainPanel.setHeading("Loaded Solution: " + pid);
             }
             @Override
             public void onFailure(Throwable arg0) {
-                _status.clearStatus("");
+                __status.clearStatus("");
                 arg0.printStackTrace();
                 Window.alert(arg0.getLocalizedMessage());
             }
@@ -180,16 +187,16 @@ public class SolutionEditor implements EntryPoint {
     
     private void addSolutionIntoEditor() {
         GetSolutionAdminAction action = new GetSolutionAdminAction(Type.CREATE,null);
-        _status.setBusy("Loading solution ...");
+        __status.setBusy("Loading solution ...");
         SolutionEditor.getCmService().execute(action, new AsyncCallback<SolutionAdminResponse>() {
             public void onSuccess(SolutionAdminResponse solutionResponse) {
                 _stepEditorViewer.loadSolution(solutionResponse.getPid());
-                _status.clearStatus("");
+                __status.clearStatus("");
                 _mainPanel.setHeading("Loaded Solution: " + solutionResponse.getPid());
             }
             @Override
             public void onFailure(Throwable arg0) {
-                _status.clearStatus("");
+                __status.clearStatus("");
                 arg0.printStackTrace();
                 Window.alert(arg0.getLocalizedMessage());
             }
@@ -269,8 +276,11 @@ public class SolutionEditor implements EntryPoint {
     ContentPanel _mainPanel = new ContentPanel();    
     TextArea _textArea = new TextArea();
     SolutionStepEditor _stepEditorViewer = new SolutionStepEditor();
-    static public Status _status = new Status();
     
+    Button _saveButton;
+    
+    static public Status __status = new Status();
+    static SolutionEditor __instance;
     
     /* all global definitions 
      * 
@@ -286,6 +296,13 @@ public class SolutionEditor implements EntryPoint {
                 if(event.getEventType().equals(EventTypes.SOLUTION_LOAD_COMPLETE)) {
                     __pidToLoad = (String)event.getEventData();
                     Cookies.setCookie("last_pid", __pidToLoad);
+                    __instance._saveButton.setEnabled(false);
+                }
+                else if(event.getEventType().equals(hotmath.gwt.solution_editor.client.EventTypes.SOLUTION_EDITOR_CHANGED)) {
+                    __instance._saveButton.setEnabled(true);
+                }
+                else if(event.getEventType().equals(hotmath.gwt.solution_editor.client.EventTypes.SOLUTION_EDITOR_SAVED)) {
+                    __instance._saveButton.setEnabled(false);
                 }
             }
         });
@@ -300,6 +317,9 @@ public class SolutionEditor implements EntryPoint {
                  * 
                  */
                 gwt_updateWidgetDefinition(resource.getJson());
+                
+                
+                EventBus.getInstance().fireEvent(new CmEvent(hotmath.gwt.solution_editor.client.EventTypes.SOLUTION_EDITOR_CHANGED));
             }
         },html);
     }

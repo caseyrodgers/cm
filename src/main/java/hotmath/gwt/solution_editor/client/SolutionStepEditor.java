@@ -78,7 +78,15 @@ public class SolutionStepEditor extends ContentPanel {
         flushChanges();
         _meta.getSteps().add(new SolutionMetaStep("A New Hint", "A New Step"));
         buildSolutionEditor(_meta);
+        
+        fireChanged();
     }
+    
+    
+    public void fireChanged() {
+        EventBus.getInstance().fireEvent(new CmEvent(hotmath.gwt.solution_editor.client.EventTypes.SOLUTION_EDITOR_CHANGED,_meta));
+    }
+    
     
     private void cutSelectedStep() {
         flushChanges();
@@ -90,7 +98,8 @@ public class SolutionStepEditor extends ContentPanel {
                 break;
             }
         }
-        buildSolutionEditor(_meta);        
+        buildSolutionEditor(_meta);   
+        fireChanged();
     }
     
     private void pasteCutStep() {
@@ -103,6 +112,7 @@ public class SolutionStepEditor extends ContentPanel {
             }
         }
         buildSolutionEditor(_meta);   
+        fireChanged();
     }
     
     private void buildSolutionEditor(SolutionMeta meta) {
@@ -173,14 +183,15 @@ public class SolutionStepEditor extends ContentPanel {
         }
         
         SaveSolutionStepsAdminAction action = new SaveSolutionStepsAdminAction(_meta.getPid(),statement,stepPairs);
-        SolutionEditor._status.setBusy("Saving solution ...");
+        SolutionEditor.__status.setBusy("Saving solution ...");
         SolutionEditor.getCmService().execute(action, new AsyncCallback<RpcData>() {
             public void onSuccess(RpcData solutionResponse) {
-                SolutionEditor._status.clearStatus("");
+                SolutionEditor.__status.clearStatus("");
+                EventBus.getInstance().fireEvent(new CmEvent(hotmath.gwt.solution_editor.client.EventTypes.SOLUTION_EDITOR_SAVED, solutionResponse));
             }
             @Override
             public void onFailure(Throwable arg0) {
-                SolutionEditor._status.clearStatus("");
+                SolutionEditor.__status.clearStatus("");
                 arg0.printStackTrace();
                 Window.alert(arg0.getLocalizedMessage());
             }
@@ -188,17 +199,17 @@ public class SolutionStepEditor extends ContentPanel {
     }
     
     public void loadSolution(final String pid) {
-        SolutionEditor._status.setText("Loading solution: " + pid);
+        SolutionEditor.__status.setText("Loading solution: " + pid);
         LoadSolutionMetaAction action = new LoadSolutionMetaAction(pid);
         SolutionEditor.getCmService().execute(action, new AsyncCallback<SolutionMeta>() {
             @Override
             public void onSuccess(SolutionMeta meta) {
-                SolutionEditor._status.setText("");
+                SolutionEditor.__status.setText("");
                 buildSolutionEditor(meta);
             }
             @Override
             public void onFailure(Throwable arg0) {
-                SolutionEditor._status.setText("");
+                SolutionEditor.__status.setText("");
                 arg0.printStackTrace();
                 Window.alert(arg0.getMessage());
             }
