@@ -124,8 +124,16 @@ public class SolutionEditor implements EntryPoint {
             }
         });
         _saveButton.addStyleName("solution-editor-save-button");
-        
         tb.add(_saveButton);
+        
+        tb.add(new Button("Save As",new SelectionListener<ButtonEvent>() {
+            @Override
+            public void componentSelected(ButtonEvent ce) {
+                
+            }
+        }));
+        
+        
         
         tb.add(new Button("View",new SelectionListener<ButtonEvent>() {
             @Override

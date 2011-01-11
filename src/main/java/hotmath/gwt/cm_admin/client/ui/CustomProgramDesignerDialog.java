@@ -1,5 +1,6 @@
 package hotmath.gwt.cm_admin.client.ui;
 
+import hotmath.gwt.cm_admin.client.ui.CustomProgramAddQuizDialog.Callback;
 import hotmath.gwt.cm_rpc.client.rpc.CmList;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
@@ -151,8 +152,31 @@ public class CustomProgramDesignerDialog extends CmWindow {
         RowData data = new RowData(.5, 1);
         data.setMargins(new Margins(5));
         
+        MyListContainer sectionList = new MyListContainer(_listSelected,"Sections in Program",false);
+
+        sectionList.getHeader().addTool(new Button("Update Quiz", new SelectionListener<ButtonEvent>() {
+            @Override
+            public void componentSelected(ButtonEvent ce) {
+                new CustomProgramAddQuizDialog(new Callback() {
+                    public void quizCreated() {
+                        
+                    }
+                });
+            }
+        }));
+        sectionList.getHeader().addTool(new Button("Add Quiz", new SelectionListener<ButtonEvent>() {
+            @Override
+            public void componentSelected(ButtonEvent ce) {
+                new CustomProgramAddQuizDialog(new Callback() {
+                    public void quizCreated() {
+                        
+                    }
+                });
+            }
+        }));
+        
         lc.add(new MyListContainer(_listAll,"All Available Lessons",true), data);
-        lc.add(new MyListContainer(_listSelected,"Lessons in Program",false), data);
+        lc.add(sectionList, data);
 
         add(lc, new BorderLayoutData(LayoutRegion.CENTER));
 

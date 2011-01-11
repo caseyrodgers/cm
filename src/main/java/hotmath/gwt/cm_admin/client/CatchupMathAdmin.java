@@ -65,8 +65,6 @@ public class CatchupMathAdmin implements EntryPoint, ValueChangeHandler<String> 
         mainPort.add(mainContainer, new BorderLayoutData(LayoutRegion.CENTER));
 
         RootPanel.get("main-content").add(mainPort);
-        
-        
         GWT.runAsync(new CmRunAsyncCallback() {
             @Override
             public void onSuccess() {
