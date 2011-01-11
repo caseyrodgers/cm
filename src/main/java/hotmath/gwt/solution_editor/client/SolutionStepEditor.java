@@ -131,7 +131,7 @@ public class SolutionStepEditor extends ContentPanel {
     }
     
     private native void initializeTutorInEditor() /*-{
-        $wnd._showTutorWidget();
+        $wnd.initializeSolutionEditor();
     }-*/;
     
     private void setStepContainerSelected(StepContainer container) {

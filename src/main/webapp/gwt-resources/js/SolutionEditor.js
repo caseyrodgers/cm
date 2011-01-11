@@ -164,3 +164,8 @@ _createGuiWrapper = function() {
     guiWrapper.innerHTML = html;
     return guiWrapper;
 }
+
+
+function initializeSolutionEditor() {
+    _showTutorWidget();
+}
