@@ -5,6 +5,7 @@ import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.google.gwt.user.client.ui.Widget;
 
 abstract public class EditableStepUnit extends LayoutContainer implements StepUnitItem {
+    
     public EditableStepUnit() {
         addStyleName("editable-step-unit");
         removeAll();
@@ -13,6 +14,9 @@ abstract public class EditableStepUnit extends LayoutContainer implements StepUn
     
     Html htmlDiv = new Html();
     public void setEditorText(String text) {
+        
+        
+        
         htmlDiv.setHtml(text);
         layout();
     }

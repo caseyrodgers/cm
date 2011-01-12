@@ -6,34 +6,27 @@ import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.google.gwt.user.client.Event;
 
+/** Provides wrapper around editable row that can be c
+ * clicked and edited.
+ * 
+ * @author casey
+ *
+ */
 class StepUnitWrapper extends LayoutContainer {
     StepUnitItem item;
     public StepUnitWrapper(String title, StepUnitItem w) {
         this.item = w;
-//        
-//        add(new Button("Edit", new SelectionListener<ButtonEvent>() {
-//            @Override
-//            public void componentSelected(ButtonEvent ce) {
-//                new StepEditorDialog(item);
-//            }
-//        }));
-        
-        //add(new Html("<h3>" + title + "</h3>"));
         add(w.getWidget());
-        
         addListener(Events.OnDoubleClick, new Listener<BaseEvent>(){
             
             @Override
             public void handleEvent(BaseEvent be) {
                 if (be.getType().equals(Events.OnDoubleClick)) {
-                    new StepEditorDialog(item);    
+                    new StepEditorDialog(item);
                 }
             } 
          });
-        
         sinkEvents(Event.ONDBLCLICK);        
-
-        
     }
     
     public StepUnitItem getItem() {

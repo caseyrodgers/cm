@@ -1,81 +1,16 @@
 <html>
 <head>
-    <link rel="stylesheet" type="text/css" href="/assets/css/SexyButtons/sexybuttons.css">   
-    <style>
-
-
-#menubar .sexy_cm_green:hover span,
-#menubar .sexy_cm_green:focus span {
-    background-position: 100% -40px;
-}
-
-#menubar .sexy_cm_green:hover span span,
-#menubar .sexy_cm_green:focus span span {
-	background-position: 0% -40px;
-}
-
-#menubar .sexy_cm_green:active span {
-	background-position: 100% -80px;
-}
-
-#menubar .sexy_cm_green:active span span {
-	background-position: 0% -80px;
-}
-
-#menubar .sexy_cm_green[disabled] span,
-#menubar .sexy_cm_green.disabled span {
-	background-position: 100% -120px;
-}
-
-#menubar .sexy_cm_green[disabled] span span,
-#menubar .sexy_cm_green.disabled span span {
-	background-position: 0% -120px;
-}
-
-
-/* CM Custom Skins */
-
-#menubar .sexybutton.sexy_cm_green,
-#menubar .sexybutton.sexy_cm_green:hover,
-#menubar .sexybutton.sexy_cm_green:focus {
-    color: white !important;
-}
-    
-#menubar .sexybutton.sexy_cm_green[disabled],
-#menubar .sexybutton.sexy_cm_green[disabled]:hover,
-#menubar .sexybutton.sexy_cm_green[disabled]:active,
-#menubar .sexybutton.sexy_cm_green[disabled]:focus,
-#menubar .sexybutton.sexy_cm_green.disabled,
-#menubar .sexybutton.sexy_cm_green.disabled:hover,
-#menubar .sexybutton.sexy_cm_green.disabled:active,
-#menubar .sexybutton.sexy_cm_green.disabled:focus {
-    color: #333 !important;
-}
-
-#menubar .sexybutton.sexy_cm_green span span {
-    background-image: url(/assets/images/sexybutton_green_left.png);
-}
-
-#menubar .sexybutton.sexy_cm_green span {
-    background-image: url(/assets/images/sexybutton_green_right.png);
-}
-
-#menubar .sexybutton.sexy_cm_green span {
-	height: 40px;
-	line-height: 40px;
-} 	
-
-
-	</style>
 </head>
 <body>
-  <h1>Test</h1>
-  <div style='background: yellow;height: 61px' id='menubar'>
-      <a href='#' class='sexybutton sexy_cm_green '><span><span>Test Button With a Long Thing</span>  </span></a>
-   <a href='#' class='sexybutton sexy_cm_green '><span><span>Test Button</span>  </span></a>
-      <a href='#' class='sexybutton sexyorange '><span><span>Test Button</span>  </span></a>
-
-  </div>
-</body>
-</html>
-
+  <textarea id='test' onclick='test()'>
+      &#x2212;
+  </textarea>
+  
+  <script>
+      function test() {
+          var val = document.getElementById('test');
+          alert(val.value);
+      }
+  
+  </script>
+</body>  

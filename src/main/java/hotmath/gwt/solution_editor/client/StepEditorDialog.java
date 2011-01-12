@@ -59,13 +59,13 @@ public class StepEditorDialog extends Window {
             @Override
             public void handleEvent(BaseEvent be) {
                 if(_tabPanel.getSelectedItem().getText().equals("HTML")) {
-                    String value = _tinyMce.getText();
+                    String value = item.getEditorText();
                     if(value != null) {
                         _textArea.setValue(value);
                     }
                 }
                 else {
-                    String value = _textArea.getValue();
+                    String value = item.getEditorText();
                     if(value != null) {
                         _tinyMce.setText(value);
                         _tinyMce.updateContent(_tinyMce.getID());

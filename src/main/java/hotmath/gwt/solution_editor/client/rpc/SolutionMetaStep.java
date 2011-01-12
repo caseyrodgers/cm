@@ -2,6 +2,12 @@ package hotmath.gwt.solution_editor.client.rpc;
 
 import hotmath.gwt.cm_rpc.client.rpc.Response;
 
+/** A complete Step Unit.  Consisting of both
+ * a hint-unit and a step-unit.
+ * 
+ * @author casey
+ *
+ */
 public class SolutionMetaStep implements Response {
     String hint;
     String text;

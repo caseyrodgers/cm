@@ -120,7 +120,7 @@ public class SolutionStepEditor extends ContentPanel {
         removeAll();
 
         setHeading("Solution Step Editor");
-        add(new StepUnitWrapper("Problem Statement", new ProblemStatement(meta.getProblemStatement())));
+        add(new StepUnitWrapper("Problem Statement", new ProblemStatement(meta)));
         
         for(int s=0,t=meta.getSteps().size();s<t;s++) {
             add(new StepContainer((s+1), meta.getSteps().get(s)));
@@ -147,6 +147,10 @@ public class SolutionStepEditor extends ContentPanel {
     }
     
     private void flushChanges() {
+        
+        if(true)
+            return;
+        
         List<SolutionMetaStep> steps = new ArrayList<SolutionMetaStep>();
         List<Component> items = getItems();
         for(int i=0,t=items.size();i<t;i++) {

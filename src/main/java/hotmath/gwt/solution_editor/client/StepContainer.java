@@ -11,6 +11,11 @@ import com.extjs.gxt.ui.client.widget.Html;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.google.gwt.user.client.Event;
 
+/** Provides wrapper around a step (step-unit and hint-unit)
+ * 
+ * @author casey
+ *
+ */
 public class StepContainer extends LayoutContainer {
     
     StepUnitWrapper hintWrapper;
@@ -20,12 +25,11 @@ public class StepContainer extends LayoutContainer {
     public StepContainer(int stepNumber, SolutionMetaStep step) {
         this.step = step;
         setStyleName("step-container");
-        hintWrapper = new StepUnitWrapper("Hint", new StepUnitHint(step.getHint()) );
-        textWrapper = new StepUnitWrapper("Step Text",new StepUnitText(step.getText()));
+        hintWrapper = new StepUnitWrapper("Hint", new StepUnitHint(step) );
+        textWrapper = new StepUnitWrapper("Step Text",new StepUnitText(step));
         add(new Html("<h2>Step Number: " + stepNumber));        
         add( hintWrapper );
         add( textWrapper );
-        
         
         addListener(Events.OnClick, new Listener<BaseEvent>(){
             @Override
