@@ -222,12 +222,13 @@ public class HaUserExtendedDao {
     		stmt = conn.prepareStatement(SELECT_USER_EXTENDED_BY_UID_SQL);
     		stmt.setInt(1, userId);
     		rs = stmt.executeQuery();
-    		int lessonCount = rs.getInt("lesson_count");
-
-    		// don't set completed status if lessonCount > lessonNumber
-    		if (lessonCount > lessonNumber) return;
-
+    		
     		if (rs.next()) {
+        		int lessonCount = rs.getInt("lesson_count");
+
+        		// don't set completed status if lessonCount > lessonNumber
+    	    	if (lessonCount > lessonNumber) return;
+
     			String sql = "update HA_USER_EXTENDED set lessons_completed = 1 where user_id = ?";
     			stmt2 = conn.prepareStatement(sql);
     			stmt2.setInt(1, userId);
