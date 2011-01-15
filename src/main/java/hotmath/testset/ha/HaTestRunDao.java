@@ -266,7 +266,7 @@ public class HaTestRunDao {
             int count = pstat.executeUpdate();
             
             if (count > 0)
-            	HaUserExtendedDao.updateUserExtendedLessonCompleted(conn, runId);
+            	HaUserExtendedDao.updateUserExtendedLessonCompleted(conn, runId, lessonNumber);
         }
         finally {
             SqlUtilities.releaseResources(null, pstat, null);

@@ -173,9 +173,9 @@ public class HaUserExtendedDao {
     	updateUserExtendedLessonStatusForUid(conn, userId, 0);
     }
 
-    static public void updateUserExtendedLessonCompleted(final Connection conn, int runId) throws Exception {
+    static public void updateUserExtendedLessonCompleted(final Connection conn, int runId, int lessonNumber) throws Exception {
     	int uid = runIdToUid(conn, runId);
-    	updateUserExtendedLessonCompletedForUid(conn, uid);
+    	updateUserExtendedLessonCompletedForUid(conn, uid, lessonNumber);
     }
  
     static public void updateUserExtendedLessonStatusForUid(final Connection conn, int userId, int lessonCount) throws Exception {
@@ -212,7 +212,7 @@ public class HaUserExtendedDao {
     	
     }
     
-    static public void updateUserExtendedLessonCompletedForUid(final Connection conn, int userId) throws Exception {
+    static public void updateUserExtendedLessonCompletedForUid(final Connection conn, int userId, int lessonNumber) throws Exception {
 
     	ResultSet rs = null;
     	PreparedStatement stmt = null;
@@ -222,6 +222,11 @@ public class HaUserExtendedDao {
     		stmt = conn.prepareStatement(SELECT_USER_EXTENDED_BY_UID_SQL);
     		stmt.setInt(1, userId);
     		rs = stmt.executeQuery();
+    		int lessonCount = rs.getInt("lesson_count");
+
+    		// don't set completed status if lessonCount > lessonNumber
+    		if (lessonCount > lessonNumber) return;
+
     		if (rs.next()) {
     			String sql = "update HA_USER_EXTENDED set lessons_completed = 1 where user_id = ?";
     			stmt2 = conn.prepareStatement(sql);
