@@ -2,6 +2,8 @@ mvn install:install-file -DgroupId=hotmath -DartifactId=hotmath -Dversion=2.0 -D
 
 mvn install:install-file -DgroupId=com.extjs.gxt -DartifactId=gxt -Dversion=2.2.1 -Dpackaging=jar -Dfile=gxt-2.2.1-gwt2.1.jar -DgeneratePom=true
 
+mvn install:install-file -DgroupId=html.editor -DartifactId=editor -Dversion=0.1 -Dpackaging=jar -Dfile=syntax_jtext-1.0.jar -DgeneratePom=true
+
 mvn install:install-file -DgroupId=sb -DartifactId=sblib -Dversion=2.0 -Dpackaging=jar -Dfile=sblib.jar -DgeneratePom=true
 mvn install:install-file -DgroupId=smartsprites -DartifactId=smartsprites-with-depends -Dversion=0.3.0 -Dpackaging=jar -Dfile=smartsprites-with-depends.jar -DgeneratePom=true
 

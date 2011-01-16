@@ -6,6 +6,8 @@ import com.google.gwt.user.client.ui.Widget;
 
 abstract public class EditableStepUnit extends LayoutContainer implements StepUnitItem {
     
+    String editorText;
+    
     public EditableStepUnit() {
         addStyleName("editable-step-unit");
         removeAll();
@@ -14,15 +16,13 @@ abstract public class EditableStepUnit extends LayoutContainer implements StepUn
     
     Html htmlDiv = new Html();
     public void setEditorText(String text) {
-        
-        
-        
+        editorText = text;
         htmlDiv.setHtml(text);
         layout();
     }
     
     public String getEditorText() {
-         return htmlDiv.el().getInnerHtml();
+        return editorText;
     }
     
     @Override

@@ -1,6 +1,7 @@
 package hotmath.gwt.solution_editor.client;
 
 import com.extjs.gxt.ui.client.event.BaseEvent;
+import com.extjs.gxt.ui.client.event.BoxComponentEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
@@ -22,7 +23,13 @@ class StepUnitWrapper extends LayoutContainer {
             @Override
             public void handleEvent(BaseEvent be) {
                 if (be.getType().equals(Events.OnDoubleClick)) {
-                    new StepEditorDialog(item);
+                    if( ((BoxComponentEvent)be).isControlKey()) {
+                        new StepEditorRtfDialog(item);
+                    }
+                    else {
+                        new StepEditorPlainTextDialog(item);
+                    }
+
                 }
             } 
          });

@@ -179,6 +179,7 @@ public class TinyMCE extends Composite {
         
         $wnd.tinyMCE.init({
             // General options
+            entity_encoding : "raw",
             convert_urls : false,
             mode : "none",
             theme : "advanced",

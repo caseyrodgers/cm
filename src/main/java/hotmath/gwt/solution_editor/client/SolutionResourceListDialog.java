@@ -231,7 +231,8 @@ public class SolutionResourceListDialog extends Window {
         tabItem.removeAll();
         
         for(SolutionResource sr: resources) {
-            final SolutionResourcePanel thisResource = new SolutionResourcePanel(sr);
+            ResourceType resourceType = determineResourceType();
+            final SolutionResourcePanel thisResource = new SolutionResourcePanel(sr,pid);
             thisResource.addListener(Events.OnDoubleClick, new Listener<BaseEvent>() {
                 @Override
                 public void handleEvent(BaseEvent be) {

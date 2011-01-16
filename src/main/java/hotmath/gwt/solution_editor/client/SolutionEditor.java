@@ -33,7 +33,7 @@ import com.extjs.gxt.ui.client.widget.form.TextArea;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
-import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
+import com.extjs.gxt.ui.client.widget.layout.TableData;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Cookies;
@@ -55,21 +55,21 @@ public class SolutionEditor implements EntryPoint {
         
         publishNative(this);
         
+        Viewport mainPort = new Viewport();        
         UserInfo userInfo = new UserInfo();
         UserInfo.setInstance(userInfo);
         RetryActionManager.getInstance();
-        
-        Viewport mainPort = new Viewport();
+
         mainPort.setScrollMode(Scroll.AUTOY);
         LayoutContainer toolbarPanel = new HorizontalPanel();
         toolbarPanel.add(createToolbar());
         _mainPanel.setLayout(new BorderLayout());
-        _mainPanel.add(toolbarPanel, new BorderLayoutData(LayoutRegion.NORTH,25));
+        
+        _mainPanel.add(createToolbar(), new BorderLayoutData(LayoutRegion.NORTH,25));
         _mainPanel.add(__status,new BorderLayoutData(LayoutRegion.SOUTH,25));
-        _mainPanel.add(_stepEditorViewer,new BorderLayoutData(LayoutRegion.CENTER));        
-
+        _mainPanel.add(_stepEditorViewer, new BorderLayoutData(LayoutRegion.CENTER));        
         mainPort.setLayout(new FitLayout());
-        mainPort.add(_mainPanel);  
+        mainPort.add(_mainPanel);
 
         __pidToLoad = SolutionEditor.getQueryParameter("pid");
         if(__pidToLoad == null)
@@ -85,22 +85,22 @@ public class SolutionEditor implements EntryPoint {
             }
         });
         RootPanel.get("main-content").add(mainPort);
-        
-        
         if(__pidToLoad != null) {
             _stepEditorViewer.loadSolution(__pidToLoad);
         }
     }
     
     private Widget createToolbar() {
-        ToolBar tb = new ToolBar();
+        HorizontalPanel tb = new HorizontalPanel();
+        TableData td = new TableData();
+        td.setMargin(5);
         
         tb.add(new Button("Create",new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent ce) {
                 addSolutionIntoEditor();
             }
-        }));
+        }),td);
 
         
         tb.add(new Button("Load",new SelectionListener<ButtonEvent>() {
@@ -108,14 +108,14 @@ public class SolutionEditor implements EntryPoint {
             public void componentSelected(ButtonEvent ce) {
                 loadSolutionIntoEditor();
             }
-        }));
+        }),td);
         
         tb.add(new Button("Refresh",new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent ce) {
                 _stepEditorViewer.loadSolution(__pidToLoad);
             }
-        }));
+        }),td);
         
         _saveButton = new Button("Save",new SelectionListener<ButtonEvent>() {
             @Override
@@ -124,14 +124,14 @@ public class SolutionEditor implements EntryPoint {
             }
         });
         _saveButton.addStyleName("solution-editor-save-button");
-        tb.add(_saveButton);
+        tb.add(_saveButton,td);
         
         tb.add(new Button("Save As",new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent ce) {
                 
             }
-        }));
+        }),td);
         
         
         
@@ -140,7 +140,7 @@ public class SolutionEditor implements EntryPoint {
             public void componentSelected(ButtonEvent ce) {
                 showTutorView();
             }
-        }));
+        }),td);
 
         
         tb.add(new Button("Resources",new SelectionListener<ButtonEvent>() {
@@ -148,7 +148,7 @@ public class SolutionEditor implements EntryPoint {
             public void componentSelected(ButtonEvent ce) {
                 showAllResources();
             }
-        })); 
+        }),td); 
         
         return tb;
     }
