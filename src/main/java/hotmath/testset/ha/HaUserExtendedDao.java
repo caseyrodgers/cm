@@ -226,8 +226,8 @@ public class HaUserExtendedDao {
     		if (rs.next()) {
         		int lessonCount = rs.getInt("lesson_count");
 
-        		// don't set completed status if lessonCount > lessonNumber
-    	    	if (lessonCount > lessonNumber) return;
+        		// don't set completed status if lessonCount > (lessonNumber+1) {lessonNumber 0 is 1st lesson}
+    	    	if (lessonCount > (lessonNumber+1)) return;
 
     			String sql = "update HA_USER_EXTENDED set lessons_completed = 1 where user_id = ?";
     			stmt2 = conn.prepareStatement(sql);
