@@ -20,7 +20,6 @@ import com.extjs.gxt.ui.client.widget.Viewport;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
-import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
@@ -50,13 +49,6 @@ public class CatchupMathAdmin implements EntryPoint, ValueChangeHandler<String> 
         instance = this;
 
         mainPort = new Viewport();
-        
-        if(true) {
-            mainPort.add(new ToolBar());
-            RootPanel.get("main-content").add(mainPort);            
-            return;
-        }
-        
         
         CmBusyManager.setViewPort(mainPort);
         

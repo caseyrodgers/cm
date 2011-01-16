@@ -421,8 +421,8 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
         toolbar.add(editStudentToolItem(_grid, _cmAdminMdl));
         toolbar.add(studentDetailsToolItem(_grid));
         toolbar.add(manageGroupButton(_grid));
-        
         toolbar.add(trendingReportButton());
+        toolbar.add(highlightsButton());
         
         toolbar.add(new Button("Custom Programs", new SelectionListener<ButtonEvent>() {
             @Override
@@ -584,6 +584,22 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
             }
         });
         return btn;
+    }
+    
+    private Button highlightsButton() {
+        Button btn = new StudenPanelButton("Highlights");
+        btn.setToolTip("Display statistical student highlights");
+        btn.addSelectionListener(new SelectionListener<ButtonEvent>() {
+            public void componentSelected(ButtonEvent ce) {
+                GWT.runAsync(new CmRunAsyncCallback() {
+                    @Override
+                    public void onSuccess() {
+                        new HighlightsDataWindow(_cmAdminMdl.getId());
+                    }
+                });
+            }
+        });
+        return btn;        
     }
 
     private Grid<StudentModelExt> defineGrid(final ListStore<StudentModelExt> store, ColumnModel cm) {
