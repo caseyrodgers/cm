@@ -65,7 +65,7 @@ public class SolutionEditor implements EntryPoint {
         toolbarPanel.add(createToolbar());
         _mainPanel.setLayout(new BorderLayout());
         
-        _mainPanel.add(createToolbar(), new BorderLayoutData(LayoutRegion.NORTH,25));
+        _mainPanel.add(createToolbar(), new BorderLayoutData(LayoutRegion.NORTH,30));
         _mainPanel.add(__status,new BorderLayoutData(LayoutRegion.SOUTH,25));
         _mainPanel.add(_stepEditorViewer, new BorderLayoutData(LayoutRegion.CENTER));        
         mainPort.setLayout(new FitLayout());
@@ -91,6 +91,7 @@ public class SolutionEditor implements EntryPoint {
     }
     
     private Widget createToolbar() {
+        
         HorizontalPanel tb = new HorizontalPanel();
         TableData td = new TableData();
         td.setMargin(5);

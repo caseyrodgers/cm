@@ -21,6 +21,7 @@ import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public class SolutionResourcePanel extends LayoutContainer {
@@ -110,6 +111,7 @@ class ShowValueWindow extends Window {
         
         final TextArea ta = new TextArea();
         ta.setValue(text);
+        ta.setReadOnly(true);
         add(ta);
         
         addButton(new Button("Close", new SelectionListener<ButtonEvent>() {
@@ -121,13 +123,15 @@ class ShowValueWindow extends Window {
         
         
         setVisible(true);
-        
-        Scheduler.get().scheduleDeferred(new ScheduledCommand() {
+
+        /** delay setting focus */
+        new Timer() {
             @Override
-            public void execute() {
-                ta.selectAll();
+            public void run() {
                 ta.focus();
+                ta.selectAll();
             }
-        });
+        }.schedule(500);
+
     }
 }

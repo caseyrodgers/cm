@@ -232,7 +232,8 @@ public class SolutionResourceListDialog extends Window {
         
         for(SolutionResource sr: resources) {
             ResourceType resourceType = determineResourceType();
-            final SolutionResourcePanel thisResource = new SolutionResourcePanel(sr,pid);
+            String rPid = (determineResourceType() == ResourceType.GLOBAL)?null:pid;
+            final SolutionResourcePanel thisResource = new SolutionResourcePanel(sr,rPid);
             thisResource.addListener(Events.OnDoubleClick, new Listener<BaseEvent>() {
                 @Override
                 public void handleEvent(BaseEvent be) {
