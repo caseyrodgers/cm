@@ -344,10 +344,22 @@ trending-data-student-list-item {
 
 /** attempt to override ext-js style */
 #program-details-panel .x-ftree2-selected {
-	Ê background-color: #DFE8F6 !important;
+    background-color: #DFE8F6 !important;
 }
 
 /** attempt to override ext-js style */
 program-details-panel .x-ftree2-node-over {
-	Ê background-color: #EEEEEE !important;
+	background-color: #EEEEEE !important;
+}
+
+
+
+
+
+
+.highlights-data-window h2,
+.date-range-picker-dialog h2 {
+	margin-top: 10px;
+	color: blue;
+	text-align: center;
 }

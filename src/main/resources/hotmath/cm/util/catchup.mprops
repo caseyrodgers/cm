@@ -400,6 +400,35 @@ from HA_TEST t
   JOIN HA_USER u on u.uid = ? and u.user_prog_id = t.user_prog_id
   JOIN CM_USER_PROGRAM p  ON p.id = u.user_prog_id
 where t.test_id = ?
+
+
+
+.key=STUDENT_CAN_BE_DELETED
+
+## return a row for active students.  This 
+## should include includes all self-reg template users.
+
+select 'x' 
+from HA_USER u
+LEFT JOIN HA_TEST t on t.user_id = u.uid
+where u.uid = $$UID$$
+and (
+             u.is_auto_create_template = 1
+             OR
+             t.test_id is not null
+)             
+
+
+
+.key=DEACTIVATE_STUDENT
+
+
+update HA_USER 
+set is_active = 0, user_passcode = ? 
+where uid = ?
+and is_auto_create_template = 0
+
+
         
 #############
 ##

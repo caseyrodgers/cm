@@ -1,12 +1,5 @@
 package hotmath.gwt.cm_admin.client.ui;
 
-import hotmath.gwt.cm_rpc.client.rpc.CmList;
-import hotmath.gwt.cm_tools.client.CmBusyManager;
-import hotmath.gwt.shared.client.CmShared;
-import hotmath.gwt.shared.client.rpc.RetryAction;
-import hotmath.gwt.shared.client.rpc.action.HighlightReportData;
-import hotmath.gwt.shared.client.rpc.action.HighlightsGetReportAction;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,7 +16,6 @@ import com.extjs.gxt.ui.client.widget.ListView;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
-import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.Widget;
 
 
@@ -204,7 +196,6 @@ class HighlightImplMostQuizzesFailed extends HighlightImplBase {
     public Widget prepareWidget() {
         return new HighlightImplGreatestEffortDetailsPanel(this);
     }
-    
 }
 
 class HighlightImplMostFailuresLatestQuiz extends HighlightImplBase {
@@ -217,50 +208,3 @@ class HighlightImplMostFailuresLatestQuiz extends HighlightImplBase {
     
 }
 
-
-class HighlightImplGreatestEffortDetailsPanel extends LayoutContainer {
-    HighlightImplBase base;
-    public HighlightImplGreatestEffortDetailsPanel(HighlightImplBase base) {
-        this.base = base;
-    }
-    
-    @Override
-    protected void onRender(Element parent, int index) {
-        super.onRender(parent, index);
-        
-        add(new Label("Loading data from server ..."));
-        getDataFromServer();
-    }
-    
-    protected void getDataFromServer() {
-        new RetryAction<CmList<HighlightReportData>>() {
-            @Override
-            public void attempt() {
-                CmBusyManager.setBusy(true);
-                HighlightsGetReportAction action = new HighlightsGetReportAction(HighlightsGetReportAction.ReportType.GREATEST_EFFORT, 
-                        StudentGridPanel.instance._cmAdminMdl.getId(), 
-                        HighlightsDataWindow._from,
-                        HighlightsDataWindow._to
-                        );
-                setAction(action);
-                CmShared.getCmService().execute(action, this);
-            }
-
-            @Override
-            public void oncapture(CmList<HighlightReportData> allLessons) {
-                drawTable(allLessons);
-                CmBusyManager.setBusy(false);                
-            }
-        }.register();        
-    }
-    
-    private void drawTable(CmList<HighlightReportData> data) {
-         removeAll();
-         add(new Html("<h1>data read from server!</h1>"));
-         
-         for(int i=0,t=data.size();i<t;i++) {
-             add(new Label(data.get(i).getData()));
-         }
-         layout();
-    }
-}

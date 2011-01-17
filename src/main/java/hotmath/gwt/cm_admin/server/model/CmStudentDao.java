@@ -582,9 +582,6 @@ public class CmStudentDao {
         return bgMap[which][1];
     }
 
-    private static final String DEACTIVATE_STUDENT_SQL =
-            "update HA_USER set is_active = 0, user_passcode = ? where uid = ?";
-
     public StringHolder unregisterStudents(final Connection conn, List<StudentModelI> smList) {
     	int removeCount = 0;
     	int removeErrorCount = 0;
@@ -600,7 +597,11 @@ public class CmStudentDao {
                  *  Remove from DB if user has never used account
                  */
                 stmt = conn.createStatement();
-                rsCheck = stmt.executeQuery("select 'x' from HA_TEST where user_id = " + sm.getUid());
+                Map<String,String> map = new HashMap<String, String>();
+                map.put("uid", sm.getUid().toString());
+                
+                String sql = CmMultiLinePropertyReader.getInstance().getProperty("STUDENT_CAN_BE_DELETED",map);
+                rsCheck = stmt.executeQuery(sql);
                 if(!rsCheck.first()) {
                     removeUser(conn, sm);
                     removeCount++;
@@ -619,7 +620,7 @@ public class CmStudentDao {
              * account has been used, deactivate
              */
             try {
-                ps = conn.prepareStatement(DEACTIVATE_STUDENT_SQL);
+                ps = conn.prepareStatement(CmMultiLinePropertyReader.getInstance().getProperty("DEACTIVATE_STUDENT"));
                 StringBuilder sb = new StringBuilder();
                 sb.append(sm.getUid()).append(".").append(System.currentTimeMillis());
                 ps.setString(1, sb.toString());
@@ -681,7 +682,7 @@ public class CmStudentDao {
                 SqlUtilities.releaseResources(null,stmt,null);
             }
 
-            ps = conn.prepareStatement(DEACTIVATE_STUDENT_SQL);
+            ps = conn.prepareStatement(CmMultiLinePropertyReader.getInstance().getProperty("DEACTIVATE_STUDENT"));
             StringBuilder sb = new StringBuilder();
             sb.append(sm.getUid()).append(".").append(System.currentTimeMillis());
             ps.setString(1, sb.toString());

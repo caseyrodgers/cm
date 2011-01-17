@@ -16,7 +16,18 @@ public class HighlightsGetReportCommand implements ActionHandler< HighlightsGetR
     public CmList<HighlightReportData> execute(Connection conn, HighlightsGetReportAction action) throws Exception {
         
         CmList<HighlightReportData> list = new CmArrayList<HighlightReportData>();
-        list.add(new HighlightReportData("SERVER DATA: " + System.currentTimeMillis()));
+        
+        switch(action.getType()) {
+            case GREATEST_EFFORT:
+                        
+                break;
+        }
+        
+        
+        for(int i=0;i<25;i++) {
+            list.add(new HighlightReportData(i + " user", "SERVER DATA: " + System.currentTimeMillis()));
+        }
+        
         return list;
     }
 
