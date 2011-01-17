@@ -594,7 +594,7 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
                 GWT.runAsync(new CmRunAsyncCallback() {
                     @Override
                     public void onSuccess() {
-                        new HighlightsDataWindow(_cmAdminMdl.getId());
+                        HighlightsDataWindow.getSharedInstance(_cmAdminMdl.getId());
                     }
                 });
             }

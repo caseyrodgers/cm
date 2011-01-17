@@ -14,58 +14,91 @@ import hotmath.gwt.shared.client.rpc.action.GeneratePdfAssessmentReportAction;
 import hotmath.gwt.shared.client.rpc.action.GetAdminTrendingDataAction;
 import hotmath.gwt.shared.client.util.CmRunAsyncCallback;
 
+import java.util.Date;
+
+import com.extjs.gxt.ui.client.Style.LayoutRegion;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
+import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.Label;
+import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.TabItem;
 import com.extjs.gxt.ui.client.widget.TabPanel;
+import com.extjs.gxt.ui.client.widget.TabPanel.TabPosition;
 import com.extjs.gxt.ui.client.widget.button.Button;
-import com.extjs.gxt.ui.client.widget.layout.FillLayout;
+import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
+import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
+import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.i18n.client.DateTimeFormat;
 
 /**
  * Provide a window to display trending data
+ *
+ * 
+ * http://gridpapr.com/edit/974c01b2bde8d85ca580f5dd8e97fb4f
  * 
  * @author casey
  * 
  */
 public class HighlightsDataWindow extends CmWindow {
     
-    static HighlightsDataWindow __instance;
+    
+    private static HighlightsDataWindow __instance;
+    public static HighlightsDataWindow getSharedInstance(Integer aid) {
+        if(__instance == null) {
+            __instance = new HighlightsDataWindow();
+        }
+        __instance.setAdminId(aid);
+        __instance.setVisible(true);
+        
+        return __instance;
+    }
     
     Integer adminId;
 
     TabPanel _tabPanel;
-    public HighlightsDataWindow(Integer adminId) {
-        this.adminId = adminId;
-        
+    final String TITLE="Student Usage Highlights";
+    public static Date _from, _to;
+    
+    private HighlightsDataWindow() {
         __instance = this;
-        
-        setHeading("Statical Highlights");
+        addStyleName("highlights-data-window");
+        setHeading(TITLE);
         setWidth(600);
         setHeight(500);
         
         _tabPanel = new TabPanel();
+        _tabPanel.setTabPosition(TabPosition.TOP);
 
-        setLayout(new FillLayout());
+        setLayout(new FitLayout());
+        _tabPanel.add(createIndividualTab());
+        _tabPanel.add(createGroupTab());
         
-        _tabPanel.add(new HighlightImplGreatestEffort());
-        _tabPanel.add(new HighlightImplLeastEffort());
-        _tabPanel.add(new HighlightImplMostGamesPlayed());
-        _tabPanel.add(new HighlightImplMostQuizzesPassed());       
-        _tabPanel.add(new HighlightImplHighestAverageQuizScores());
-        _tabPanel.add(new HighlightImplMostQuizzesFailed());        
-        _tabPanel.add(new HighlightImplMostFailuresLatestQuiz());
-        _tabPanel.setAnimScroll(true);
-        _tabPanel.setTabScroll(true);
         add(_tabPanel);
+
         
-        addButton(new Button("Close", new SelectionListener<ButtonEvent>() {
+
+        getHeader().addTool(new Button("Set Date Range", new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent ce) {
-                close();
+                DateRangePickerDialog.showSharedInstance(new DateRangePickerDialog.Callback() {
+                    @Override
+                    public void datePicked(Date from, Date to) {
+                        _from = from;
+                        _to = to;
+                        if(from != null) {
+                            DateTimeFormat format = DateTimeFormat.getFormat("yyyy-MM-dd"); 
+                            HighlightsDataWindow.this.setHeading(TITLE + ": " + format.format(from) + " - " + format.format(to));
+                        }
+                        else {
+                            HighlightsDataWindow.this.setHeading(TITLE);
+                        }
+                    }
+                });
             }
         }));
+
 
         getHeader().addTool(new Button("Refresh", new SelectionListener<ButtonEvent>() {
             @Override
@@ -74,13 +107,21 @@ public class HighlightsDataWindow extends CmWindow {
             }
         }));
 
+        addButton(new Button("Close", new SelectionListener<ButtonEvent>() {
+            @Override
+            public void componentSelected(ButtonEvent ce) {
+                close();
+            }
+        }));
+
+        
+        
         getHeader().addTool(new Button("Print Report", new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent ce) {
                 reportButton();
             }
         }));
-        
         
         /**
          * turn on after data retrieved
@@ -89,9 +130,13 @@ public class HighlightsDataWindow extends CmWindow {
         setVisible(true);
     }
     
+    private void setAdminId(Integer aid) {
+        this.adminId = aid;
+    }
+    
     private void resetGui() {
         removeAll();
-        setLayout(new FillLayout());
+        setLayout(new FitLayout());
     }
 
     private void reportButton() {
@@ -105,6 +150,20 @@ public class HighlightsDataWindow extends CmWindow {
             }
         });
 
+    }
+    
+    private  TabItem createIndividualTab() {
+        TabItem ti = new TabItem("Individual");
+        ti.setLayout(new FitLayout());
+        ti.add(new HighlightsIndividualPanel());
+        return ti;
+    }
+    
+    private TabItem createGroupTab() {
+        TabItem ti = new TabItem("Group");
+        ti.setLayout(new FitLayout());
+        ti.add(new HighlightGroupPanel());
+        return ti;
     }
 
     CmAdminTrendingDataI _trendingData;
@@ -146,56 +205,22 @@ public class HighlightsDataWindow extends CmWindow {
 
 
 
-class HighlightImplBase extends TabItem {
-    HighlightImplBase(String name) {
-        super(name);
-    }
-}
 
-class HighlightImplGreatestEffort extends HighlightImplBase {
-    public HighlightImplGreatestEffort() {
-        super("Greatest Effort");
-        add(new Label(getText()));
-    }
-}
-
-class HighlightImplLeastEffort extends HighlightImplBase {
-    public HighlightImplLeastEffort() {
-        super("Least Effort");
-        add(new Label(getText()));
-    }
-}
-
-class HighlightImplMostGamesPlayed extends HighlightImplBase {
-    public HighlightImplMostGamesPlayed() {
-        super("Most Games Played");
-        add(new Label(getText()));
-    }
-}
-
-class HighlightImplMostQuizzesPassed extends HighlightImplBase {
-    public HighlightImplMostQuizzesPassed() {
-        super("Most Quizzes Passed");
-        add(new Label(getText()));
-    }
-}
-class HighlightImplHighestAverageQuizScores extends HighlightImplBase {
-    public HighlightImplHighestAverageQuizScores() {
-        super("Highest Average Quiz Scores");
-        add(new Label(getText()));
-    }
-}
-
-class HighlightImplMostQuizzesFailed extends HighlightImplBase {
-    public HighlightImplMostQuizzesFailed() {
-        super("Most Quizzes Failed");
-        add(new Label(getText()));
-    }
-}
-
-class HighlightImplMostFailuresLatestQuiz extends HighlightImplBase {
-    public HighlightImplMostFailuresLatestQuiz() {
-        super("Most Failures of Latest Quiz");
-        add(new Label(getText()));
+class HighlightGroupPanel extends ContentPanel {
+    public HighlightGroupPanel() {
+        setHeading("Group Reports");
+        setLayout(new BorderLayout());
+        
+        LayoutContainer leftPanel = new LayoutContainer();
+        leftPanel.add(new Label("LEFT"));
+        BorderLayoutData dData = new BorderLayoutData(LayoutRegion.WEST,200);
+        dData.setSplit(true);
+        add(leftPanel,dData);
+        
+        LayoutContainer centerPanel = new LayoutContainer();
+        centerPanel.add(new Label("CENTER"));
+        dData = new BorderLayoutData(LayoutRegion.CENTER);
+        dData.setSplit(true);
+        add(centerPanel, dData);
     }
 }

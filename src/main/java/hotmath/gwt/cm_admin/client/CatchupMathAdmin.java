@@ -49,7 +49,6 @@ public class CatchupMathAdmin implements EntryPoint, ValueChangeHandler<String> 
         instance = this;
 
         mainPort = new Viewport();
-        
         CmBusyManager.setViewPort(mainPort);
         
         mainPort.setLayout(new BorderLayout());
