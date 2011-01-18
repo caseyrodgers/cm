@@ -64,10 +64,21 @@ public class SolutionStepEditor extends ContentPanel {
                 addNewStep();
             }
         }));
+        
+        getHeader().addTool(new Button("Info", new SelectionListener<ButtonEvent>() {
+            @Override
+            public void componentSelected(ButtonEvent ce) {
+                showInfo();
+            }
+        }));
     }
     
     public String getStatement() {
         return _statement;
+    }
+    
+    private void showInfo() {
+       new ShowValueWindow("Loaded Problem",_meta.getPid());
     }
     
     public List<StepUnitPair> getSteps() {
@@ -224,7 +235,7 @@ public class SolutionStepEditor extends ContentPanel {
     }
     
     
-    final static boolean shouldProcessMathJax = false;
+    final static boolean shouldProcessMathJax = true;
     static {
         EventBus.getInstance().addEventListener(new CmEventListener() {
             @Override

@@ -3,6 +3,7 @@ package hotmath.gwt.solution_editor.server;
 import hotmath.gwt.cm.server.CmDbTestCase;
 import hotmath.gwt.cm_rpc.client.rpc.CmList;
 import hotmath.gwt.solution_editor.client.SolutionSearchModel;
+import hotmath.gwt.solution_editor.server.solution.TutorSolution;
 import hotmath.solution.Solution;
 
 public class CmSolutionManagerDao_Test extends CmDbTestCase {
@@ -11,6 +12,13 @@ public class CmSolutionManagerDao_Test extends CmDbTestCase {
         super(name);
     }
     
+    
+    public void testGetSolutionMeta() throws Exception {
+        String pid="test_chap0_s-new_ps-new_pb-1295308560243_1";
+        TutorSolution meta = new CmSolutionManagerDao().getTutorSolution(conn, pid);
+        assertTrue(meta.getProblem() != null);
+    }
+
     public void testSearchFor() throws Exception {
         CmList<SolutionSearchModel> list = new CmSolutionManagerDao().searchForSolutions(conn, "test_");
         assertTrue(list.size() > 0);

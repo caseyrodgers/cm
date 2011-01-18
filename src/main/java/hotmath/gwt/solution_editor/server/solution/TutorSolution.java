@@ -3,6 +3,7 @@ package hotmath.gwt.solution_editor.server.solution;
 import hotmath.cm.util.service.SolutionDef;
 import hotmath.gwt.solution_editor.client.StepUnitPair;
 
+import java.io.StringReader;
 import java.io.StringWriter;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -38,21 +39,31 @@ import sb.util.SbTestImpl;
 @Root(name="hmsl")
 public class TutorSolution implements SbTestImpl {
     
-    @Attribute
+    @Attribute (required=false)
     String version="2.0";
     
-    @Attribute
+    @Attribute (required=false)
     String date;
     
     @Element
     TutorProblem problem = null;
 
+    public TutorSolution(){}
+    
     public TutorSolution(String createdBy,SolutionDef def,String statement, List<StepUnitPair> steps) {
         this(createdBy, def, statement);
         
         for(StepUnitPair step: steps) {
             addStep(step.getHint(), step.getText());
         }
+    }
+    
+    
+    static public TutorSolution parse(String xml) throws Exception  {
+        Serializer serializer = new Persister();
+        //Configuration configuraiton = serializer.read(Configuration.class, fileLocation);
+        StringReader sr = new StringReader(xml);
+        return (TutorSolution)serializer.read(TutorSolution.class, sr);
     }
     
     SimpleDateFormat _dateFormat = new SimpleDateFormat("MM/dd/yy");
@@ -104,151 +115,31 @@ public class TutorSolution implements SbTestImpl {
             e.printStackTrace();
         }
     }
-}
 
-@Root (name="problem")
-class TutorProblem {
-    
-    public TutorProblem(String createdBy, Identification id, String statement) {
-        this.identification = id;
-        this.statement = statement;
-        this.createdBy = createdBy;
+    public String getVersion() {
+        return version;
+    }
+
+    public void setVersion(String version) {
+        this.version = version;
+    }
+
+    public String getDate() {
+        return date;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
+    }
+
+    public TutorProblem getProblem() {
+        return problem;
+    }
+
+    public void setProblem(TutorProblem problem) {
+        this.problem = problem;
     }
     
-    @Attribute(name="createdby")
-    String createdBy;
-
-    @Element
-    Identification identification;
-    
-    @Element (data=true,required=false)
-    String statement;
-    
-    @ElementList (inline=true)
-    List<TutorStepUnit> stepUnits = new ArrayList<TutorStepUnit>();
-}
-
-@Root (name="identification")
-class Identification {
-    
-    @Attribute
-    String book;
-        
-    @Attribute
-    String chapter;
-    
-    @Attribute 
-    String section;
-    
-    @Attribute 
-    String set;
-    
-    @Attribute (name="problemnumber") 
-    String problemNumber;
-    
-    @Attribute 
-    Integer page;
-    
-    
-    public Identification(String book, String chapter, String section, String set, String problemNumber, Integer page) {
-        this.book = book;
-        this.chapter = chapter;
-        this.section = section;
-        this.set = set;
-        this.problemNumber = problemNumber;
-        this.page = page;
-    }
-
-
-    public String getBook() {
-        return book;
-    }
-
-
-    public void setBook(String book) {
-        this.book = book;
-    }
-
-
-    public String getChapter() {
-        return chapter;
-    }
-
-
-    public void setChapter(String chapter) {
-        this.chapter = chapter;
-    }
-
-
-    public String getSection() {
-        return section;
-    }
-
-
-    public void setSection(String section) {
-        this.section = section;
-    }
-
-
-    public String getSet() {
-        return set;
-    }
-
-
-    public void setSet(String set) {
-        this.set = set;
-    }
-
-
-    public String getProblemNumber() {
-        return problemNumber;
-    }
-
-
-    public void setProblemNumber(String problemNumber) {
-        this.problemNumber = problemNumber;
-    }
-
-
-    public Integer getPage() {
-        return page;
-    }
-
-
-    public void setPage(Integer page) {
-        this.page = page;
-    }
-}
-
-
-@Root (name="stepunit")
-class TutorStepUnit {
-    
-    @Element (required=false,data=true)
-    String step;
-    
-    @Element (required=false,data=true)
-    String hint;
-    
-    public TutorStepUnit(StepType type, String text) {
-        switch(type) {
-           case HINT:
-               hint = text;
-               break;
-               
-           case STEP:
-               step = text;
-               break;
-        }
-        
-    }
 }
 
 enum StepType {HINT,STEP}
-
-@Root (name="step")
-class TutorStep {}
-
-
-@Root (name="hint")
-class TutorHint {}

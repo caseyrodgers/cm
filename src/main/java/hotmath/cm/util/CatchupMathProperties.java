@@ -52,6 +52,11 @@ public class CatchupMathProperties extends Properties {
         return SbUtilities.getInt(getProperty("client.version"));
     }
     
+    /** Solution base is absolute path to OS dir of solution base.
+     * 
+     * @return
+     * @throws Exception
+     */
     public String getSolutionBase() throws Exception {
         String base = getProperty("solution.base");
         if(base == null) {

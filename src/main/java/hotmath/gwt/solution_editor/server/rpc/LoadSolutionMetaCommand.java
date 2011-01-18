@@ -2,7 +2,6 @@ package hotmath.gwt.solution_editor.server.rpc;
 
 import hotmath.HotMathException;
 import hotmath.HotMathProperties;
-import hotmath.StepUnit;
 import hotmath.cm.util.CatchupMathProperties;
 import hotmath.cm.util.service.SolutionDef;
 import hotmath.gwt.cm_rpc.client.rpc.Action;
@@ -11,7 +10,9 @@ import hotmath.gwt.cm_rpc.server.rpc.ActionHandler;
 import hotmath.gwt.solution_editor.client.rpc.LoadSolutionMetaAction;
 import hotmath.gwt.solution_editor.client.rpc.SolutionMeta;
 import hotmath.gwt.solution_editor.client.rpc.SolutionMetaStep;
-import hotmath.solution.Solution;
+import hotmath.gwt.solution_editor.server.CmSolutionManagerDao;
+import hotmath.gwt.solution_editor.server.solution.TutorSolution;
+import hotmath.gwt.solution_editor.server.solution.TutorStepUnit;
 import hotmath.solution.SolutionPostProcess;
 import hotmath.util.HtmlCleanser;
 
@@ -20,13 +21,11 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.StringWriter;
 import java.sql.Connection;
+import java.util.List;
 
 import javax.imageio.ImageIO;
 
 import org.apache.log4j.Logger;
-import org.apache.xerces.xni.parser.XMLDocumentFilter;
-import org.cyberneko.html.filters.Purifier;
-import org.cyberneko.html.filters.Writer;
 import org.cyberneko.html.parsers.DOMFragmentParser;
 import org.htmlparser.Node;
 import org.htmlparser.Parser;
@@ -43,28 +42,29 @@ public class LoadSolutionMetaCommand implements ActionHandler<LoadSolutionMetaAc
     public SolutionMeta execute(Connection conn, LoadSolutionMetaAction action) throws Exception {
         
         _pid = action.getPid();
-        Solution solution = hotmath.SolutionManager.getSolution(action.getPid());
+        String solutionBase = CatchupMathProperties.getInstance().getSolutionBase();
+        
+        TutorSolution tutorSolution = new CmSolutionManagerDao().getTutorSolution(conn, action.getPid());
         SolutionMeta meta = new SolutionMeta(action.getPid());
-        meta.setProblemStatement(postProcessHtml(solution.getStatement()));
-        StepUnit units[] = solution.getStepUnits();
-        for(int s=0;s<units.length;s++) {
-            
+        meta.setProblemStatement(postProcessHtml(solutionBase, tutorSolution.getProblem().getStatement()));
+        List<TutorStepUnit> units = tutorSolution.getProblem().getStepUnits();
+        for(int u=0,t=units.size();u<t;u++) {
+
             /** each step is a two units: the hint and step
              * 
              */
-            String hint = postProcessHtml(units[s++].getHTML());
-            String text = postProcessHtml(units[s].getHTML());
+            String hint = postProcessHtml(solutionBase, units.get(u++).getHint());
+            String text = postProcessHtml(solutionBase, units.get(u).getStep());
         
-            SolutionMetaStep step = new SolutionMetaStep(hint, text);
+            SolutionMetaStep step = new SolutionMetaStep(hint,text);
             meta.getSteps().add(step);
-            
         }
         return meta;
     }
     
     
-    private String postProcessHtml(String html) throws Exception {
-        String solutionBase = CatchupMathProperties.getInstance().getSolutionBase();
+    private String postProcessHtml(String solutionBase, String html) throws Exception {
+        
         SolutionDef solution = new SolutionDef(_pid);
         
         String processed = _solutionPostProcess.processHTML_SolutionImagesAbsolute( html, solution.getSolutionPathHttp() + "/", solutionBase);

@@ -50,7 +50,7 @@ public class SolutionResourcePanel extends LayoutContainer {
             @Override
             public void componentSelected(ButtonEvent ce) {
                 String url = "<img src='" + sr.getUrlPath() + "' class='solution_resource'/>";
-                new ShowValueWindow(url);
+                new ShowValueWindow("URL", url);
             }
         }));
         tb.add(new Button("MathML", new SelectionListener<ButtonEvent>() {
@@ -82,7 +82,7 @@ public class SolutionResourcePanel extends LayoutContainer {
                     if(!mathMl.startsWith("<math")) {
                         mathMl = "<math>\n" + mathMl + "\n</math>";
                     }
-                    new ShowValueWindow(mathMl);
+                    new ShowValueWindow("MathML", mathMl);
                 }
                 @Override
                 public void onFailure(Throwable arg0) {
@@ -99,39 +99,3 @@ public class SolutionResourcePanel extends LayoutContainer {
     }
 }
 
-
-class ShowValueWindow extends Window {
-    public ShowValueWindow(String text) {
-        
-        setLayout(new FitLayout());
-        setSize(600,400);
-        setScrollMode(Scroll.AUTO);
-        setModal(true);
-        setHeading("Value Display");
-        
-        final TextArea ta = new TextArea();
-        ta.setValue(text);
-        ta.setReadOnly(true);
-        add(ta);
-        
-        addButton(new Button("Close", new SelectionListener<ButtonEvent>() {
-            @Override
-            public void componentSelected(ButtonEvent ce) {
-                hide();
-            }
-        }));
-        
-        
-        setVisible(true);
-
-        /** delay setting focus */
-        new Timer() {
-            @Override
-            public void run() {
-                ta.focus();
-                ta.selectAll();
-            }
-        }.schedule(500);
-
-    }
-}

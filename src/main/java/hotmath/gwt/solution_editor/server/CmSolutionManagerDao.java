@@ -3,11 +3,15 @@ package hotmath.gwt.solution_editor.server;
 import hotmath.HotMathException;
 import hotmath.HotMathLogger;
 import hotmath.HotMathProperties;
+import hotmath.StepUnit;
 import hotmath.cm.util.CatchupMathProperties;
 import hotmath.cm.util.service.SolutionDef;
 import hotmath.gwt.cm_rpc.client.rpc.CmArrayList;
 import hotmath.gwt.cm_rpc.client.rpc.CmList;
 import hotmath.gwt.solution_editor.client.SolutionSearchModel;
+import hotmath.gwt.solution_editor.client.rpc.SolutionMeta;
+import hotmath.gwt.solution_editor.client.rpc.SolutionMetaStep;
+import hotmath.gwt.solution_editor.server.solution.TutorSolution;
 import hotmath.solution.StaticWriter;
 import hotmath.solution.writer.SolutionHTMLCreatorIimplVelocity;
 import hotmath.solution.writer.TutorProperties;
@@ -124,6 +128,28 @@ public class CmSolutionManagerDao {
                 list.add(new SolutionSearchModel(rs.getString(1)));
             }
             return list;
+        }
+        finally {
+            SqlUtilities.releaseResources(null, ps, null);
+        }
+    }
+    
+    
+    public TutorSolution getTutorSolution(final Connection conn, String pid) throws Exception {
+        SolutionMeta meta = null;
+        
+        PreparedStatement ps=null;
+        try {
+            String sql = "select solutionxml from SOLUTIONS where problemindex = ?";
+            ps = conn.prepareStatement(sql);
+            ps.setString(1, pid);
+            
+            ResultSet rs = ps.executeQuery();
+            if(!rs.first()) {
+                throw new Exception("No such solution: " + pid);
+            }
+            TutorSolution ts = TutorSolution.parse(rs.getString("solutionxml"));
+            return ts;
         }
         finally {
             SqlUtilities.releaseResources(null, ps, null);
