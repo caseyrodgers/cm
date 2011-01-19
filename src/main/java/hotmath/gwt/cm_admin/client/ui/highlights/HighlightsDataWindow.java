@@ -162,7 +162,7 @@ public class HighlightsDataWindow extends CmWindow {
     private TabItem createGroupTab() {
         TabItem ti = new TabItem("Group");
         ti.setLayout(new FitLayout());
-        ti.add(new HighlightGroupPanel());
+        ti.add(new HighlightsGroupPanel());
         return ti;
     }
 
@@ -200,27 +200,5 @@ public class HighlightsDataWindow extends CmWindow {
                 }
             }
         }});
-    }
-}
-
-
-
-
-class HighlightGroupPanel extends ContentPanel {
-    public HighlightGroupPanel() {
-        setHeading("Group Reports");
-        setLayout(new BorderLayout());
-        
-        LayoutContainer leftPanel = new LayoutContainer();
-        leftPanel.add(new Label("LEFT"));
-        BorderLayoutData dData = new BorderLayoutData(LayoutRegion.WEST,200);
-        dData.setSplit(true);
-        add(leftPanel,dData);
-        
-        LayoutContainer centerPanel = new LayoutContainer();
-        centerPanel.add(new Label("CENTER"));
-        dData = new BorderLayoutData(LayoutRegion.CENTER);
-        dData.setSplit(true);
-        add(centerPanel, dData);
     }
 }
