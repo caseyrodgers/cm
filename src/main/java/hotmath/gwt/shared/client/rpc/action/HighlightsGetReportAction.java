@@ -64,5 +64,5 @@ public class HighlightsGetReportAction implements Action<CmList<HighlightReportD
     }
 
 
-    public enum ReportType{GREATEST_EFFORT};
+    public enum ReportType{GREATEST_EFFORT,LEAST_EFFORT,MOST_GAMES,NATIONWIDE_COMPARE,SCHOOL_COMPARE,MOST_QUIZZES_PASSED};
 }
