@@ -13,7 +13,15 @@
 <!--[if IE]>
         <link rel="stylesheet" type="text/css" href="/assets/css/core-ie.css" />
 <![endif]-->
-        
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-634757-3");
+pageTracker._trackPageview();
+} catch(err) {}</script>      
 <script>
    /** specify which main menu item is selected
    */
