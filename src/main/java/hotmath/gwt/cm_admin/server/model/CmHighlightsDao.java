@@ -262,7 +262,8 @@ public class CmHighlightsDao {
         "where t.user_id in(" + createInList(uids) + " ) " +
         "and t.test_segment = u.active_segment " +
         "and r.is_passing = 0 " +
-        "group by u.uid";
+        "group by u.uid " +
+        "order by failed_quizzes desc";
         
         CmList<HighlightReportData> list=new CmArrayList<HighlightReportData>();
         
