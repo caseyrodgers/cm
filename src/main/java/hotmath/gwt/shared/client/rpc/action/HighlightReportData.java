@@ -4,11 +4,12 @@ import hotmath.gwt.cm_rpc.client.rpc.Response;
 
 public class HighlightReportData implements Response {
     
+    int uid;
     String data;
     String name;
     
     public HighlightReportData(){}
-    public HighlightReportData(String name, String data) {
+    public HighlightReportData(Integer uid, String name, String data) {
         this.name = name;
         this.data = data;
     }
@@ -24,4 +25,11 @@ public class HighlightReportData implements Response {
     public void setName(String name) {
         this.name = name;
     }
+    public int getUid() {
+        return uid;
+    }
+    public void setUid(int uid) {
+        this.uid = uid;
+    }
+    
 }

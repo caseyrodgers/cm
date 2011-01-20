@@ -14,7 +14,7 @@ public class CmSolutionManagerDao_Test extends CmDbTestCase {
     
     
     public void testGetSolutionMeta() throws Exception {
-        String pid="test_chap0_s-new_ps-new_pb-1295308560243_1";
+        String pid="samples_1_1_SampleExercises_3-Calculus_1";
         TutorSolution meta = new CmSolutionManagerDao().getTutorSolution(conn, pid);
         assertTrue(meta.getProblem() != null);
     }

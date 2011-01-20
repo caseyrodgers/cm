@@ -11,18 +11,19 @@ public class HighlightsGetReportAction implements Action<CmList<HighlightReportD
     Integer adminId;
     Date from;
     Date to;
-
+    
+    GetStudentGridPageAction studentGridPageAction;
 
     public HighlightsGetReportAction() {
     }
 
-    public HighlightsGetReportAction(ReportType type, Integer adminId, Date from, Date to) {
+    public HighlightsGetReportAction(GetStudentGridPageAction studentGridAction, ReportType type, Integer adminId, Date from, Date to) {
+        this.studentGridPageAction = studentGridAction;
         this.type = type;
         this.adminId = adminId;
         this.from = from;
         this.to = to;
     }
-
     
     public ReportType getType() {
         return type;
@@ -57,12 +58,20 @@ public class HighlightsGetReportAction implements Action<CmList<HighlightReportD
     }
 
 
+    public GetStudentGridPageAction getStudentGridPageAction() {
+        return studentGridPageAction;
+    }
+
+    public void setStudentGridPageAction(GetStudentGridPageAction studentGridPageAction) {
+        this.studentGridPageAction = studentGridPageAction;
+    }
+
     @Override
     public String toString() {
         return "HighlightsGetReportAction [type=" + type + ", adminId=" + adminId + ", from=" + from + ", to=" + to
-                + "]";
+                + ", _studentGridPageAction=" + studentGridPageAction + "]";
     }
 
 
-    public enum ReportType{GREATEST_EFFORT,LEAST_EFFORT,MOST_GAMES,NATIONWIDE_COMPARE,SCHOOL_COMPARE,MOST_QUIZZES_PASSED};
+    public enum ReportType{GREATEST_EFFORT,LEAST_EFFORT,MOST_GAMES,NATIONWIDE_COMPARE,SCHOOL_COMPARE,MOST_QUIZZES_PASSED,AVERAGE_QUIZ_SCORES,FAILED_QUIZZES,FAILED_CURRENT_QUIZZES};
 }
