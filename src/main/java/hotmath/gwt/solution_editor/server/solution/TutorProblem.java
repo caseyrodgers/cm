@@ -32,6 +32,12 @@ public class TutorProblem {
     @ElementList (inline=true,required=false)
     List<TutorStepUnit> stepUnits = new ArrayList<TutorStepUnit>();
 
+    /** TODO: integrate into SimpleXML as annotation
+     *  move String to Statement object with figure attirubte
+     */
+    String statementFigure;
+    
+    
     public String getCreatedBy() {
         return createdBy;
     }
@@ -62,5 +68,13 @@ public class TutorProblem {
 
     public void setStepUnits(List<TutorStepUnit> stepUnits) {
         this.stepUnits = stepUnits;
+    }
+
+    public String getStatementFigure() {
+        return statementFigure;
+    }
+
+    public void setStatementFigure(String statementFigure) {
+        this.statementFigure = statementFigure;
     }
 }

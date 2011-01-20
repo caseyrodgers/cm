@@ -6,13 +6,11 @@ import hotmath.gwt.solution_editor.client.StepUnitPair;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 import org.simpleframework.xml.Attribute;
 import org.simpleframework.xml.Element;
-import org.simpleframework.xml.ElementList;
 import org.simpleframework.xml.Root;
 import org.simpleframework.xml.Serializer;
 import org.simpleframework.xml.core.Persister;
@@ -45,6 +43,9 @@ public class TutorSolution implements SbTestImpl {
     @Attribute (required=false)
     String date;
     
+    @Attribute (required=false)
+    String createdBy;
+
     @Element
     TutorProblem problem = null;
 
@@ -57,15 +58,7 @@ public class TutorSolution implements SbTestImpl {
             addStep(step.getHint(), step.getText());
         }
     }
-    
-    
-    static public TutorSolution parse(String xml) throws Exception  {
-        Serializer serializer = new Persister();
-        //Configuration configuraiton = serializer.read(Configuration.class, fileLocation);
-        StringReader sr = new StringReader(xml);
-        return (TutorSolution)serializer.read(TutorSolution.class, sr);
-    }
-    
+  
     SimpleDateFormat _dateFormat = new SimpleDateFormat("MM/dd/yy");
     public TutorSolution(String createdBy, SolutionDef def, String statement) {
         Identification id = new Identification(def.getBook(), def.getChapter(), 
@@ -82,8 +75,8 @@ public class TutorSolution implements SbTestImpl {
      * @param text
      */
     public void addStep(String hint, String text) {
-        TutorStepUnit hintSu = new TutorStepUnit(StepType.HINT,hint);
-        TutorStepUnit textSu = new TutorStepUnit(StepType.STEP,text);
+        TutorStepUnit hintSu = new TutorStepUnitImplHint(hint);
+        TutorStepUnit textSu = new TutorStepUnitImplStep(text);
         
         problem.stepUnits.add(hintSu);
         problem.stepUnits.add(textSu);
@@ -105,6 +98,34 @@ public class TutorSolution implements SbTestImpl {
             e.printStackTrace();
         }
     }
+    
+    
+  
+    
+    static public TutorSolution parse(String xml) throws Exception  {
+        try {
+            /** Use the JDOM parser until we can work out details with 
+             * SimpleXML dealing with elments containing text+child-elements.
+             * 
+             */
+            
+            if(true) {
+                return TutorSolutionParser.parseXML(xml);
+            }
+            else {
+                Serializer serializer = new Persister();
+                //Configuration configuraiton = serializer.read(Configuration.class, fileLocation);
+                StringReader sr = new StringReader(xml);
+                TutorSolution tutorSolution = serializer.read(TutorSolution.class, sr);
+                return tutorSolution;
+            }
+        }
+        catch(Exception e) {
+            e.printStackTrace();
+            throw e;
+        }
+    }
+        
     
     static public void main(String as[]) {
         try {
@@ -139,7 +160,22 @@ public class TutorSolution implements SbTestImpl {
     public void setProblem(TutorProblem problem) {
         this.problem = problem;
     }
-    
+
+    public String getCreatedBy() {
+        return createdBy;
+    }
+
+    public void setCreatedBy(String createdBy) {
+        this.createdBy = createdBy;
+    }
+
+    public SimpleDateFormat get_dateFormat() {
+        return _dateFormat;
+    }
+
+    public void set_dateFormat(SimpleDateFormat _dateFormat) {
+        this._dateFormat = _dateFormat;
+    }
 }
 
-enum StepType {HINT,STEP}
+enum StepType {HINT,STEP,QUESSTION,PROOF}

@@ -1,50 +1,27 @@
 package hotmath.gwt.solution_editor.server.solution;
 
-import org.simpleframework.xml.Element;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.simpleframework.xml.Root;
 
 
 
 @Root (name="stepunit")
-public class TutorStepUnit {
-    
-    @Element (required=false,data=true)
-    String step;
-    
-    @Element (required=false,data=true)
-    String hint;
+abstract public class TutorStepUnit {
+    List<String> figures = new ArrayList<String>();
     
     public TutorStepUnit() {
-        
-    }
-    public TutorStepUnit(StepType type, String text) {
-        switch(type) {
-           case HINT:
-               hint = text;
-               break;
-               
-           case STEP:
-               step = text;
-               break;
-        }
-        
     }
 
-    public String getStep() {
-        return step;
+    public List<String> getFigures() {
+        return figures;
     }
 
-    public void setStep(String step) {
-        this.step = step;
-    }
-
-    public String getHint() {
-        return hint;
-    }
-
-    public void setHint(String hint) {
-        this.hint = hint;
+    public void setFigures(List<String> figures) {
+        this.figures = figures;
     }
     
+    public abstract String getContentAsString();
 }
 

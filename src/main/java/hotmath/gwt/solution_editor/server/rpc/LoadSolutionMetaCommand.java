@@ -13,6 +13,8 @@ import hotmath.gwt.solution_editor.client.rpc.SolutionMetaStep;
 import hotmath.gwt.solution_editor.server.CmSolutionManagerDao;
 import hotmath.gwt.solution_editor.server.solution.TutorSolution;
 import hotmath.gwt.solution_editor.server.solution.TutorStepUnit;
+import hotmath.gwt.solution_editor.server.solution.TutorStepUnitImplHint;
+import hotmath.gwt.solution_editor.server.solution.TutorStepUnitImplStep;
 import hotmath.solution.SolutionPostProcess;
 import hotmath.util.HtmlCleanser;
 
@@ -52,9 +54,14 @@ public class LoadSolutionMetaCommand implements ActionHandler<LoadSolutionMetaAc
 
             /** each step is a two units: the hint and step
              * 
+             * do sainity check!
              */
-            String hint = postProcessHtml(solutionBase, units.get(u++).getHint());
-            String text = postProcessHtml(solutionBase, units.get(u).getStep());
+            if(!(units.get(u) instanceof TutorStepUnitImplHint) ||
+               !(units.get(u+1) instanceof TutorStepUnitImplStep)) {
+                throw new Exception("Invalid series of steps in solution: " + action.getPid());
+            }
+            String hint = postProcessHtml(solutionBase, units.get(u++).getContentAsString());
+            String text = postProcessHtml(solutionBase, units.get(u).getContentAsString());
         
             SolutionMetaStep step = new SolutionMetaStep(hint,text);
             meta.getSteps().add(step);
