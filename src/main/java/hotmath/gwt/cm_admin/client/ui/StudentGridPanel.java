@@ -1077,23 +1077,6 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
         			/** always reset request options */
         			_forceServerRefresh = false;
         			EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_STUDENT_GRID_FILTERED, _pageAction));
-
-        			
-        			/** request any extended data, if required
-        			 *  
-        			 */
-        			if (false) {
-        			List<Integer> needExtendedFor = new ArrayList<Integer>();
-        			for(int i=0;i<students.getData().size();i++) {
-        				StudentModelExt sm = students.getData().get(i);
-        				if(!sm.getHasExtendedData()) {
-        					needExtendedFor.add(sm.getUid());
-        				}
-        			}
-        			if(needExtendedFor.size() > 0) {
-        				readExtendedDataForPage(needExtendedFor);
-        			}
-        			}
         			
         			/** callback the proxy listener
         			 * 

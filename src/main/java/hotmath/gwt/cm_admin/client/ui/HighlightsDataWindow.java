@@ -77,8 +77,6 @@ public class HighlightsDataWindow extends CmWindow {
         
         add(_tabPanel);
 
-        
-
         getHeader().addTool(new Button("Set Date Range", new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent ce) {
@@ -128,6 +126,13 @@ public class HighlightsDataWindow extends CmWindow {
          * 
          */
         setVisible(true);
+    }
+    
+    private void reloadAllReports() {
+        _tabPanel.getItem(0).removeAll();
+        _tabPanel.getItem(0).add(new HighlightsIndividualPanel());
+        
+        layout();
     }
     
     private void setAdminId(Integer aid) {
@@ -196,7 +201,7 @@ public class HighlightsDataWindow extends CmWindow {
             public void handleEvent(CmEvent event) {
                 if(event.getEventType() == EventType.EVENT_TYPE_STUDENT_GRID_FILTERED) {
                 if(__instance != null && __instance.isVisible()) {
-                    __instance.loadTrendDataAsync();
+                    __instance.reloadAllReports();
                 }
             }
         }});

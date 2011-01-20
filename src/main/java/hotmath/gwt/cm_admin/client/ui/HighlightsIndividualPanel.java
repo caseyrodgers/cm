@@ -155,9 +155,8 @@ class HighlightImplLeastEffort extends HighlightImplBase {
         super("Least Effort");
     }
     public Widget prepareWidget() {
-        return new HighlightImplGreatestEffortDetailsPanel(this);
+        return new HighlightImplLeastEffortDetailsPanel(this);
     }
-    
 }
 
 class HighlightImplMostGamesPlayed extends HighlightImplBase {
@@ -165,7 +164,7 @@ class HighlightImplMostGamesPlayed extends HighlightImplBase {
         super("Most Games Played");
     }
     public Widget prepareWidget() {
-        return new HighlightImplGreatestEffortDetailsPanel(this);
+        return new HighlightImplMostGamesPlayedDetailsPanel(this);
     }
     
 }
@@ -175,7 +174,7 @@ class HighlightImplMostQuizzesPassed extends HighlightImplBase {
         super("Most Quizzes Passed");
     }
     public Widget prepareWidget() {
-        return new HighlightImplGreatestEffortDetailsPanel(this);
+        return new HighlightImplMostQuizzesPassedDetailsPanel(this);
     }
     
 }
@@ -184,9 +183,8 @@ class HighlightImplHighestAverageQuizScores extends HighlightImplBase {
         super("Highest Average Quiz Scores");
     }
     public Widget prepareWidget() {
-        return new HighlightImplGreatestEffortDetailsPanel(this);
+        return new HighlightImplHighestAverageQuizScoresDetailsPanel(this);
     }
-    
 }
 
 class HighlightImplMostQuizzesFailed extends HighlightImplBase {
@@ -194,7 +192,7 @@ class HighlightImplMostQuizzesFailed extends HighlightImplBase {
         super("Most Quizzes Failed");
     }
     public Widget prepareWidget() {
-        return new HighlightImplGreatestEffortDetailsPanel(this);
+        return new HighlightImplMostQuizzesFailedDetailsPanel(this);
     }
 }
 
@@ -203,7 +201,7 @@ class HighlightImplMostFailuresLatestQuiz extends HighlightImplBase {
         super("Most Failures of Latest Quiz");
     }
     public Widget prepareWidget() {
-        return new HighlightImplGreatestEffortDetailsPanel(this);
+        return new HighlightImplMostFailuresLatestQuizDetailsPanel(this);
     }
     
 }

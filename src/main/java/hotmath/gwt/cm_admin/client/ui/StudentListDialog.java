@@ -56,6 +56,7 @@ public class TrendingDataStudentListDialog extends CmWindow {
                 showStudentInfo(StudentEventType.REGISTER, sm);
             }
         },"Edit selected student's registration."));
+
         
         addButton(new MyButton("Details", new SelectionListener<ButtonEvent>() {
             @Override
@@ -65,6 +66,7 @@ public class TrendingDataStudentListDialog extends CmWindow {
             }
         },"Show selected student's history detail."));
 
+        
         addButton(new Button("Close", new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent ce) {

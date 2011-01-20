@@ -31,34 +31,34 @@ public class HighlightImplComparePanel extends LayoutContainer {
     }
     
     protected void getDataFromServer() {
-        new RetryAction<CmList<HighlightReportData>>() {
-            @Override
-            public void attempt() {
-                CmBusyManager.setBusy(true);
-                
-                switch (base.getType()) {
-                case NATIONWIDE_COMPARE:
-                	reportType = HighlightsGetReportAction.ReportType.NATIONWIDE_COMPARE;
-                	break;
-                case SCHOOL_COMPARE:
-                	reportType = HighlightsGetReportAction.ReportType.SCHOOL_COMPARE;
-                	break;
-                }
-                HighlightsGetReportAction action = new HighlightsGetReportAction(reportType, 
-                        StudentGridPanel.instance._cmAdminMdl.getId(), 
-                        HighlightsDataWindow._from,
-                        HighlightsDataWindow._to
-                        );
-                setAction(action);
-                CmShared.getCmService().execute(action, this);
-            }
-
-            @Override
-            public void oncapture(CmList<HighlightReportData> data) {
-                drawTable(data);
-                CmBusyManager.setBusy(false);                
-            }
-        }.register();        
+//        new RetryAction<CmList<HighlightReportData>>() {
+//            @Override
+//            public void attempt() {
+//                CmBusyManager.setBusy(true);
+//                
+//                switch (base.getType()) {
+//                case NATIONWIDE_COMPARE:
+//                	reportType = HighlightsGetReportAction.ReportType.NATIONWIDE_COMPARE;
+//                	break;
+//                case SCHOOL_COMPARE:
+//                	reportType = HighlightsGetReportAction.ReportType.SCHOOL_COMPARE;
+//                	break;
+//                }
+//                HighlightsGetReportAction action = new HighlightsGetReportAction(reportType, 
+//                        StudentGridPanel.instance._cmAdminMdl.getId(), 
+//                        HighlightsDataWindow._from,
+//                        HighlightsDataWindow._to
+//                        );
+//                setAction(action);
+//                CmShared.getCmService().execute(action, this);
+//            }
+//
+//            @Override
+//            public void oncapture(CmList<HighlightReportData> data) {
+//                drawTable(data);
+//                CmBusyManager.setBusy(false);                
+//            }
+//        }.register();        
     }
     
     private void drawTable(CmList<HighlightReportData> data) {
