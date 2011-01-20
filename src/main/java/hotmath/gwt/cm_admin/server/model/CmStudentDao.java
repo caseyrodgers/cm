@@ -535,7 +535,11 @@ public class CmStudentDao {
             ps.setString(1, sm.getName());
             ps.setString(2, sm.getPasscode());
             ps.setInt(3, 0);
-            ps.setInt(4, Integer.parseInt(sm.getGroupId()));
+            
+            //TODO: getGroupId() returns null sometimes - need to determine why/how
+            int groupId = (sm.getGroupId() == null) ? GROUP_NONE_ID : Integer.parseInt(sm.getGroupId());
+            
+            ps.setInt(4, groupId);
             ps.setString(5, sm.getProgram().getProgramType());
             ps.setString(6, sm.getProgram().getSubjectId());
             ps.setInt(7, sm.getAdminUid());
