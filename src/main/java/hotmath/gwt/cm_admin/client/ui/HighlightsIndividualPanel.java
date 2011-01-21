@@ -198,7 +198,7 @@ class HighlightImplMostQuizzesFailed extends HighlightImplBase {
 
 class HighlightImplMostFailuresLatestQuiz extends HighlightImplBase {
     public HighlightImplMostFailuresLatestQuiz() {
-        super("Most Failures of Latest Quiz");
+        super("Most Failures of Current Quiz");
     }
     public Widget prepareWidget() {
         return new HighlightImplMostFailuresLatestQuizDetailsPanel(this);

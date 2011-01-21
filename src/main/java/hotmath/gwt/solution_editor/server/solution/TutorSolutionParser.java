@@ -198,26 +198,7 @@ public class TutorSolutionParser {
        <div class="question_guess">
            <img onmouseover="doQuestionResponse('rid_40','yes');" onmouseout="doQuestionResponseEnd();" src="/images/tutor5/hint_question-16x16.gif" name="question_1" class="text-bottom">&nbsp;<p>35 and 37</p>
       </div>
-      
-      
-      
-      
-      example tutor_data.js:
-      {
-
-      "tutorProperties": {
-        "_isControlled":"false",
-        "_textCode":"samples",
-        "_category":"$category",
-        "_bookTitle":"Sample Exercises"
-        },
-      "_stepUnits_moArray": {},
-      "_strings_moArray": {"rid_99":"Combine similar terms.", 
-                           "rid_102":"You\'ve found the first odd integer.",
-                           "rid_100":"Next, gather the constants on the right side." 
-                          }
-     }
-     */ 
+     */
      static private String convertOldQuestionFormatToNew(String pid, Element oldQuesEl) throws Exception {
         
         List<QuestionPiece> questionPieces = new ArrayList<QuestionPiece>();

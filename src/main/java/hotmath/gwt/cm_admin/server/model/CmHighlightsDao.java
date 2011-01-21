@@ -263,7 +263,7 @@ public class CmHighlightsDao {
         "and t.test_segment = u.active_segment " +
         "and r.is_passing = 0 " +
         "group by u.uid " +
-        "order by failed_quizzes desc";
+        "order by failed_quizzes desc, user_name";
         
         CmList<HighlightReportData> list=new CmArrayList<HighlightReportData>();
         
