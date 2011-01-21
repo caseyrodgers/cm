@@ -10,6 +10,7 @@ public class HighlightReportData implements Response {
     
     public HighlightReportData(){}
     public HighlightReportData(Integer uid, String name, String data) {
+        this.uid = uid;
         this.name = name;
         this.data = data;
     }

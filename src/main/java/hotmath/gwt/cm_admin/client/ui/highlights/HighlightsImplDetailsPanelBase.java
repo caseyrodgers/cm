@@ -3,8 +3,11 @@ package hotmath.gwt.cm_admin.client.ui;
 import hotmath.gwt.cm_rpc.client.rpc.CmList;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.model.StudentModelExt;
+import hotmath.gwt.cm_tools.client.model.StudentModelI;
+import hotmath.gwt.cm_tools.client.ui.StudentDetailsWindow;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.rpc.RetryAction;
+import hotmath.gwt.shared.client.rpc.action.GetStudentModelAction;
 import hotmath.gwt.shared.client.rpc.action.HighlightReportData;
 import hotmath.gwt.shared.client.rpc.action.HighlightsGetReportAction;
 
@@ -13,9 +16,10 @@ import java.util.List;
 
 import com.extjs.gxt.ui.client.Style.SelectionMode;
 import com.extjs.gxt.ui.client.data.BaseModelData;
+import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.Events;
+import com.extjs.gxt.ui.client.event.GridEvent;
 import com.extjs.gxt.ui.client.event.Listener;
-import com.extjs.gxt.ui.client.event.SelectionEvent;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.Label;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
@@ -37,7 +41,6 @@ abstract public class HighlightImplDetailsPanelBase extends LayoutContainer {
     @Override
     protected void onRender(Element parent, int index) {
         super.onRender(parent, index);
-
         add(new Label("Loading data from server ..."));
         getDataFromServer();
     }
@@ -99,10 +102,18 @@ abstract public class HighlightImplDetailsPanelBase extends LayoutContainer {
         _grid = defineGrid(store, getColumns());
         List<HighlightReportModel> reportList = new ArrayList<HighlightReportModel>();
         for (int i = 0, t = data.size(); i < t; i++) {
-            reportList.add(new HighlightReportModel(data.get(i).getName(), data.get(i).getData()));
+            reportList.add(new HighlightReportModel(data.get(i).getUid(), data.get(i).getName(), data.get(i).getData()));
         }
         store.add(reportList);
         add(_grid);
+        
+        _grid.addListener(Events.CellDoubleClick, new Listener<BaseEvent>(){
+            public void handleEvent(BaseEvent be) {
+                GridEvent ge = (GridEvent)be;
+                showSelectStudentDetail();
+            }
+        });
+        
         layout();
     }
 
@@ -113,23 +124,40 @@ abstract public class HighlightImplDetailsPanelBase extends LayoutContainer {
         grid.setStripeRows(true);
         grid.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
         grid.getSelectionModel().setFiresEvents(true);
-        grid.getSelectionModel().addListener(Events.RowDoubleClick, new Listener<SelectionEvent<StudentModelExt>>() {
-            public void handleEvent(final SelectionEvent<StudentModelExt> se) {
-                if (grid.getSelectionModel().getSelectedItems().size() > 0) {
-                    //
-                }
-            }
-        });
         grid.setWidth("100%");
         grid.setHeight("100%");
         grid.setLoadMask(true);
         return grid;
     }
+    
+    private void showSelectStudentDetail() {
+
+        final HighlightReportModel model = _grid.getSelectionModel().getSelectedItem();
+        new RetryAction<StudentModelI>() {
+            @Override
+            public void attempt() {
+                CmBusyManager.setBusy(true);
+                GetStudentModelAction action = new GetStudentModelAction(model.getUid());
+                setAction(action);
+                CmShared.getCmService().execute(action,this);
+            }            
+            
+            @Override
+            public void oncapture(StudentModelI result) {
+                CmBusyManager.setBusy(false);
+                StudentModelExt sm = new StudentModelExt(result);
+                new StudentDetailsWindow(sm);
+            }
+        }.register();
+    }
 
 }
 
 class HighlightReportModel extends BaseModelData {
-    public HighlightReportModel(String name, String data) {
+    int uid;
+    
+    public HighlightReportModel(Integer uid, String name, String data) {
+        this.uid = uid;
         set("name", name);
         set("data", data);
     }
@@ -140,5 +168,9 @@ class HighlightReportModel extends BaseModelData {
 
     public String getData() {
         return get("data");
+    }
+    
+    public Integer getUid() {
+        return uid;
     }
 }
