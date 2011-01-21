@@ -30,5 +30,12 @@ public class TutorStepUnitImplStep extends TutorStepUnit {
     public String getContentAsString() {
         return step;
     }
+    
+
+    @Override
+    public Role getRole() {
+        // TODO Auto-generated method stub
+        return Role.STEP;
+    }
 }
 

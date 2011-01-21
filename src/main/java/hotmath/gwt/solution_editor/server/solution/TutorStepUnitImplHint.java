@@ -29,5 +29,12 @@ public class TutorStepUnitImplHint extends TutorStepUnit {
     public String getContentAsString() {
         return hint;
     }
+    
+    
+    @Override
+    public Role getRole() {
+        // TODO Auto-generated method stub
+        return Role.HINT;
+    }
 }
 

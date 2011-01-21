@@ -1,19 +1,13 @@
 package hotmath.gwt.solution_editor.server.solution;
 
-import hotmath.Figure;
-import hotmath.Hint;
 import hotmath.HotMathException;
-import hotmath.HotMathTokenReplacements;
-import hotmath.HotMathUtilities;
-import hotmath.ProblemID;
-import hotmath.ProofStep;
-import hotmath.Step;
-import hotmath.StepUnit;
-import hotmath.solution.Solution;
-import hotmath.solution.SolutionImageResource;
-import hotmath.solution.SolutionParser;
+import hotmath.cm.util.service.SolutionDef;
+import hotmath.util.HtmlCleanser;
 
+import java.io.File;
 import java.io.StringReader;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import org.jdom.Document;
@@ -21,14 +15,15 @@ import org.jdom.Element;
 import org.jdom.input.SAXBuilder;
 
 import sb.logger.SbLogger;
-import sb.util.SbException;
 import sb.util.SbFile;
-import sb.util.SbMessage;
-import sb.util.SbTestImpl;
 import sb.util.SbUtilities;
 
+import com.sdicons.json.model.JSONObject;
+import com.sdicons.json.model.JSONValue;
+import com.sdicons.json.parser.JSONParser;
+
 /** Parse the XML file, and create the abstractions */
-public class TutorSolutionParser implements SbTestImpl {
+public class TutorSolutionParser {
 
     static SAXBuilder __builder;
 
@@ -118,7 +113,7 @@ public class TutorSolutionParser implements SbTestImpl {
             for (int iUnit = 0; iUnit < iTotalUnits; iUnit++) {
                 Element stepEle = (Element) listUnits.get(iUnit);
                 if (stepEle.getName().equals("stepunit")) {
-                    TutorStepUnit stepUnit = create(stepEle);
+                    TutorStepUnit stepUnit = create(ident.toString(), stepEle);
                     solution.getProblem().getStepUnits().add(stepUnit);
                 }
             }
@@ -134,7 +129,7 @@ public class TutorSolutionParser implements SbTestImpl {
     }
 
     // TODO: static method, does this need to be synchronized ?
-    static public synchronized TutorStepUnit create(Element element) throws HotMathException {
+    static public synchronized TutorStepUnit create(String pid, Element element) throws Exception {
 
         String sStepUnitText = null;
         String sType = null;
@@ -175,11 +170,11 @@ public class TutorSolutionParser implements SbTestImpl {
                 throw new HotMathException("No stepunit/justification found under proofstep");
             }
             
-            stepUnit = new TutorStepUnitImplStep(eleUnit.getValue());
+            stepUnit = new TutorStepUnitImplProof(eleUnit.getValue());
             return stepUnit;
 
         } else if (sType.equals("question")) {
-            stepUnit = new TutorStepUnitImplHint(eleUnit.getValue());
+            stepUnit = new TutorStepUnitImplHint(convertOldQuestionFormatToNew(pid, eleUnit));
         } else {
             throw new HotMathException("Unknown StepUnit type: " + sType);
         }
@@ -194,6 +189,94 @@ public class TutorSolutionParser implements SbTestImpl {
 
     }
 
+    
+    /** old:
+     * <div class="question">QUESTION</div>
+       <div class="question_guess">
+           <img onmouseover="doQuestionResponse('rid_39','no');" onmouseout="doQuestionResponseEnd();" src="/images/tutor5/hint_question-16x16.gif" name="question_0" class="text-bottom">&nbsp;<p>29 and 31</p>
+       </div>
+       <div class="question_guess">
+           <img onmouseover="doQuestionResponse('rid_40','yes');" onmouseout="doQuestionResponseEnd();" src="/images/tutor5/hint_question-16x16.gif" name="question_1" class="text-bottom">&nbsp;<p>35 and 37</p>
+      </div>
+      
+      
+      
+      
+      example tutor_data.js:
+      {
+
+      "tutorProperties": {
+        "_isControlled":"false",
+        "_textCode":"samples",
+        "_category":"$category",
+        "_bookTitle":"Sample Exercises"
+        },
+      "_stepUnits_moArray": {},
+      "_strings_moArray": {"rid_99":"Combine similar terms.", 
+                           "rid_102":"You\'ve found the first odd integer.",
+                           "rid_100":"Next, gather the constants on the right side." 
+                          }
+     }
+     */ 
+     static private String convertOldQuestionFormatToNew(String pid, Element oldQuesEl) throws Exception {
+        SolutionDef solution = new SolutionDef(pid);
+        
+        String solutionJsonData = new SbFile(new File(solution.getSolutionPathOnDisk(),"tutor_data.js")).getFileContents().toString("\n");
+        JSONParser parser = new JSONParser(new StringReader(solutionJsonData));
+        final JSONValue value = parser.nextValue();
+        JSONObject solutionData = (JSONObject)value;
+        JSONObject solutionStrings = (JSONObject)solutionData.get("_strings_moArray");
+        HashMap<String,JSONValue> solutionStringsMap = solutionStrings.getValue();        
+        
+        List<QuestionPiece> questionPieces = new ArrayList<QuestionPiece>();
+        
+        
+        String questionText = HtmlCleanser.getInstance().cleanseHtml(oldQuesEl.getTextNormalize());
+        List children = oldQuesEl.getChildren();
+        for(Object og: children) {
+            Element guess = (Element)og;
+            String correct = guess.getAttributeValue("correct");
+            String guessText = HtmlCleanser.getInstance().cleanseHtml(guess.getTextNormalize());
+            Element response = (Element)guess.getChild("response");
+            String responseText = HtmlCleanser.getInstance().cleanseHtml(response.getTextNormalize());
+            
+            questionPieces.add(new QuestionPiece(correct, guessText, responseText));
+        }
+        
+        
+        String newHtml = 
+            "<div class='hm_question_def'>\n" +
+            "    <div>" + questionText + "</div>\n" +
+            "    <ul>\n";
+        
+        for(QuestionPiece p: questionPieces) {
+            newHtml += 
+            "        <li correct='" + p.correct + "'>\n" +
+            "            <div>" + p.guess + "</div>\n" +
+            "            <div>" + p.response + "</div>\n" +
+            "        </li>\n";
+        }
+                
+        newHtml += 
+            "    </ul>\n" +
+            "</div>\n";
+
+        return newHtml;
+    }
+    
+     static class QuestionPiece {
+         String correct;
+         String guess;
+         String response;
+         
+         public QuestionPiece(String correct, String guess, String response) {
+             this.correct = correct;
+             this.guess = guess;
+             this.response = response;
+         }
+     }
+    
+    
     /**
      * Clean up text by removing white space. This includes newlines
      * 
@@ -201,8 +284,7 @@ public class TutorSolutionParser implements SbTestImpl {
      * @return string stripped of leading/trailing whitespace
      */
     static public String cleanUpText(String s) {
-        if (s == null)
-            return s;
+       if (s == null)            return s;
 
         s = s.trim();
 
@@ -247,31 +329,4 @@ public class TutorSolutionParser implements SbTestImpl {
         }
         return s;
     }
-
-    public void doTest(Object out, String sFromGUI) throws SbException {
-        try {
-            String sXML = new SbFile(sFromGUI).getFileContents().toString();
-
-            Solution solutions[] = SolutionParser.parseXML(sXML, null, null);
-
-            System.out.println("Read: " + solutions.length);
-            for (int iS = 0; iS < solutions.length; iS++) {
-                System.out.println("Solution: " + solutions[iS].getID().toString());
-
-                StepUnit units[] = solutions[iS].getStepUnits();
-                for (int iU = 0; iU < units.length; iU++) {
-                    System.out.println(units[iU].toString());
-                }
-            }
-        } catch (Exception e) {
-            SbMessage.showMessageBox(e, "Error");
-        }
-    }
-
-    /*
-     * static public void main(String as[]) { try { SbTesterFrameGeneric tester
-     * = new SbTesterFrameGeneric("C:/temp/HMSol.xml"); tester.doTest(new
-     * SolutionParser()); } catch(Exception e) { SbMessage.showMessageBox(e,
-     * "Error"); } }
-     */
 }

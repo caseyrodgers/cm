@@ -120,3 +120,10 @@ solution-searcher-dialog button {
 	font-weight: bold;
 	font-size: 1.2em;
 }
+
+
+.hm_question_def {
+	border: 2px double red;
+	width: 200px;
+    content: "Question Definition";
+}

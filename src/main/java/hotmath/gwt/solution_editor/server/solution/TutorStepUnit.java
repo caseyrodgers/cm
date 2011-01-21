@@ -23,5 +23,10 @@ abstract public class TutorStepUnit {
     }
     
     public abstract String getContentAsString();
+    
+    
+    public abstract Role getRole();
+    
+    public enum Role{HINT,STEP};
 }
 
