@@ -219,18 +219,9 @@ public class TutorSolutionParser {
      }
      */ 
      static private String convertOldQuestionFormatToNew(String pid, Element oldQuesEl) throws Exception {
-        SolutionDef solution = new SolutionDef(pid);
-        
-        String solutionJsonData = new SbFile(new File(solution.getSolutionPathOnDisk(),"tutor_data.js")).getFileContents().toString("\n");
-        JSONParser parser = new JSONParser(new StringReader(solutionJsonData));
-        final JSONValue value = parser.nextValue();
-        JSONObject solutionData = (JSONObject)value;
-        JSONObject solutionStrings = (JSONObject)solutionData.get("_strings_moArray");
-        HashMap<String,JSONValue> solutionStringsMap = solutionStrings.getValue();        
         
         List<QuestionPiece> questionPieces = new ArrayList<QuestionPiece>();
-        
-        
+
         String questionText = HtmlCleanser.getInstance().cleanseHtml(oldQuesEl.getTextNormalize());
         List children = oldQuesEl.getChildren();
         for(Object og: children) {

@@ -22,6 +22,7 @@ import com.extjs.gxt.ui.client.Style.LayoutRegion;
 import com.extjs.gxt.ui.client.Style.Scroll;
 import com.extjs.gxt.ui.client.data.BaseModel;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
+import com.extjs.gxt.ui.client.event.MenuEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.HorizontalPanel;
@@ -34,6 +35,8 @@ import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.layout.TableData;
+import com.extjs.gxt.ui.client.widget.menu.Menu;
+import com.extjs.gxt.ui.client.widget.menu.MenuItem;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Cookies;
@@ -130,18 +133,34 @@ public class SolutionEditor implements EntryPoint {
         tb.add(new Button("Save As",new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent ce) {
-                
+                SaveSolutionAsDialog.getSharedInstance().setCallback(new hotmath.gwt.solution_editor.client.SaveSolutionAsDialog.Callback() {
+                    @Override
+                    public void saveSolutionAs(String pid) {
+                        _stepEditorViewer.saveStepChanges(pid);
+                    }
+                },__pidToLoad);
             }
         }),td);
         
         
-        
-        tb.add(new Button("View",new SelectionListener<ButtonEvent>() {
-            @Override
-            public void componentSelected(ButtonEvent ce) {
+       
+        Menu viewMenu = new Menu();
+        MenuItem mi = new MenuItem("Tutor",new SelectionListener<MenuEvent>() {
+            public void componentSelected(MenuEvent ce) {
                 showTutorView();
             }
-        }),td);
+        });
+        viewMenu.add(mi);
+        mi = new MenuItem("XML (on server)",new SelectionListener<MenuEvent>() {
+            public void componentSelected(MenuEvent ce) {
+                showSolutionXml(__pidToLoad);
+            }
+        });
+        viewMenu.add(mi);
+
+        Button viewBtn = new Button("View");
+        viewBtn.setMenu(viewMenu);
+        tb.add(viewBtn,td);
 
         
         tb.add(new Button("Resources",new SelectionListener<ButtonEvent>() {
@@ -168,14 +187,13 @@ public class SolutionEditor implements EntryPoint {
         new SolutionResourceListDialog(__pidToLoad);
     }
     
-    private void loadSolutionXml(final String pid) {
+    private void showSolutionXml(final String pid) {
         GetSolutionAdminAction action = new GetSolutionAdminAction(Type.GET,pid);
         __status.setBusy("Loading solution ...");
         SolutionEditor.getCmService().execute(action, new AsyncCallback<SolutionAdminResponse>() {
             public void onSuccess(SolutionAdminResponse solutionResponse) {
-                _textArea.setValue(solutionResponse.getXml());
                 __status.clearStatus("");
-                _mainPanel.setHeading("Loaded Solution: " + pid);
+                new ShowValueWindow("Raw XML From Server", solutionResponse.getXml(),false);
             }
             @Override
             public void onFailure(Throwable arg0) {
@@ -215,7 +233,7 @@ public class SolutionEditor implements EntryPoint {
     
     
     private void saveSolutionLoaded() {
-        _stepEditorViewer.saveStepChanges();
+        _stepEditorViewer.saveStepChanges(__pidToLoad);
     } 
     
     /** Static routines used throughout app

@@ -178,7 +178,7 @@ public class SolutionStepEditor extends ContentPanel {
         _meta.setSteps(steps );
     }
     
-    public void saveStepChanges() {
+    public void saveStepChanges(String asPid) {
 
         List<StepUnitPair> stepPairs = new ArrayList<StepUnitPair>();
 
@@ -197,7 +197,7 @@ public class SolutionStepEditor extends ContentPanel {
             }
         }
         
-        SaveSolutionStepsAdminAction action = new SaveSolutionStepsAdminAction(_meta.getPid(),statement,stepPairs);
+        SaveSolutionStepsAdminAction action = new SaveSolutionStepsAdminAction(asPid,statement,stepPairs);
         SolutionEditor.__status.setBusy("Saving solution ...");
         SolutionEditor.getCmService().execute(action, new AsyncCallback<RpcData>() {
             public void onSuccess(RpcData solutionResponse) {

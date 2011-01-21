@@ -3,14 +3,12 @@ package hotmath.gwt.solution_editor.server;
 import hotmath.HotMathException;
 import hotmath.HotMathLogger;
 import hotmath.HotMathProperties;
-import hotmath.StepUnit;
 import hotmath.cm.util.CatchupMathProperties;
 import hotmath.cm.util.service.SolutionDef;
 import hotmath.gwt.cm_rpc.client.rpc.CmArrayList;
 import hotmath.gwt.cm_rpc.client.rpc.CmList;
 import hotmath.gwt.solution_editor.client.SolutionSearchModel;
 import hotmath.gwt.solution_editor.client.rpc.SolutionMeta;
-import hotmath.gwt.solution_editor.client.rpc.SolutionMetaStep;
 import hotmath.gwt.solution_editor.server.solution.TutorSolution;
 import hotmath.solution.StaticWriter;
 import hotmath.solution.writer.SolutionHTMLCreatorIimplVelocity;
@@ -43,6 +41,11 @@ public class CmSolutionManagerDao {
     public void saveSolutionXml(final Connection conn, String pid, String xml) throws Exception {
         PreparedStatement ps=null;
         try {
+            
+            if(!solutionExists(conn, pid)) {
+                createNewSolution(conn, pid);
+            }
+            
             String sql = "update SOLUTIONS set local_edit = 1, solutionxml = ? where problemindex = ?";
             ps = conn.prepareStatement(sql);
             ps.setString(1, xml);
@@ -58,6 +61,27 @@ public class CmSolutionManagerDao {
             SqlUtilities.releaseResources(null,ps,null);
         }
     }
+    
+
+    /** return true if the named solution already exists
+     * 
+     * @param conn
+     * @param pid
+     * @return
+     * @throws Exception
+     */
+    public boolean solutionExists(final Connection conn, String pid) throws Exception {
+        PreparedStatement ps = null;
+        try {
+            String sql = "select 'x' from SOLUTIONS where problemindex = ?";
+            ps = conn.prepareStatement(sql);
+            ps.setString(1, pid);
+            return ps.executeQuery().first();
+        }
+        finally {
+            SqlUtilities.releaseResources(null, ps, null);
+        }
+    }
 
     /** Create a brand spanking new solutions with just the
      * problem set defined.
@@ -66,9 +90,11 @@ public class CmSolutionManagerDao {
      * @throws Exception
      */
     public String createNewSolution(final Connection conn) throws Exception {
+        return createNewSolution(conn,"test_chap0_s-new_ps-new_" + "pb-" + System.currentTimeMillis() + "_1");
+    }
+    public String createNewSolution(final Connection conn, String newSolutionPid) throws Exception {
         PreparedStatement ps=null;
         try {
-            
             String createdBy="auto";
             
             /** TODO: get meta data from command line
@@ -78,10 +104,8 @@ public class CmSolutionManagerDao {
             /** create new problem
              * 
              */
-            String newSolutionPid = "test_chap0_s-new_ps-new_" + "pb-" + System.currentTimeMillis() + "_1";
             SolutionDef solution = new SolutionDef(newSolutionPid);
 
-           
             String sql = 
                 "INSERT INTO SOLUTIONS(LOCAL_EDIT, " +
                 "      PROBLEMINDEX,BOOKTITLE,CHAPTERTITLE,SECTIONTITLE,PROBLEMSET," +
@@ -98,7 +122,6 @@ public class CmSolutionManagerDao {
             ps.setString(7,solution.getCreateNewXml(createdBy));
             ps.setString(8,createdBy);
             ps.setString(9,createdBy);
-            
             
             if(ps.executeUpdate() != 1)
                 throw new Exception("Could not create solution xml: " + newSolutionPid);

@@ -18,12 +18,17 @@ import com.google.gwt.user.client.Timer;
  */
 public class ShowValueWindow extends Window {
     public ShowValueWindow(String title, String text) {
+        this(title,text,true);
+    }
+    
+    public ShowValueWindow(String title, String text, boolean selectAll) {
         
         setLayout(new FitLayout());
         setSize(600,400);
         setScrollMode(Scroll.AUTO);
         setModal(true);
         setHeading(title);
+        setMaximizable(true);
         
         final TextArea ta = new TextArea();
         ta.setValue(text);
@@ -40,14 +45,16 @@ public class ShowValueWindow extends Window {
         
         setVisible(true);
 
-        /** delay setting focus */
-        new Timer() {
-            @Override
-            public void run() {
-                ta.focus();
-                ta.selectAll();
-            }
-        }.schedule(500);
+        if(selectAll) {
+            /** delay setting focus */
+            new Timer() {
+                @Override
+                public void run() {
+                    ta.focus();
+                    ta.selectAll();
+                }
+            }.schedule(500);
+        }
 
     }
 }

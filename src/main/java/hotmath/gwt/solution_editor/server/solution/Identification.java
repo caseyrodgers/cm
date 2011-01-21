@@ -95,5 +95,11 @@ public class Identification {
     public void setPage(Integer page) {
         this.page = page;
     }
+    
+    
+    @Override
+    public String toString() {
+        return (book + "_" + chapter + "_" + section + "_" + set + "_" + problemNumber + "_"  + page).toLowerCase();
+    }
 }
 

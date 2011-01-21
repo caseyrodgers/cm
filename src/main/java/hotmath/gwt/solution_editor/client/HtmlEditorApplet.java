@@ -20,7 +20,7 @@ public class HtmlEditorApplet extends LayoutContainer {
         String appletHtml  = "<applet MAYSCRIPT width='100%' height='100%' " + 
         "id='html_editor' archive='html_editor.jar'  " +
         "code='hotmath.editor.HtmlEditorApp.class'  " +
-        "codebase='http://127.0.0.1:8080/gwt-resources/solution_editor'> " +
+        "codebase='/gwt-resources/solution_editor'> " +
         "<param value='16' name='fontSize'> " +
         "<param value='false' name='codebase_lookup'> " + 
         "</applet>";
