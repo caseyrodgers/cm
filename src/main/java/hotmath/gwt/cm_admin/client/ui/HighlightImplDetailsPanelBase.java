@@ -90,8 +90,8 @@ abstract public class HighlightImplDetailsPanelBase extends LayoutContainer {
             
             @Override
             public void onFailure(Throwable error) {
-                super.onFailure(error);
                 CmBusyManager.setBusy(false);
+                drawTable(null);
             }
         }.register();
     }
@@ -102,8 +102,10 @@ abstract public class HighlightImplDetailsPanelBase extends LayoutContainer {
         ListStore<HighlightReportModel> store = new ListStore<HighlightReportModel>();
         _grid = defineGrid(store, getColumns());
         List<HighlightReportModel> reportList = new ArrayList<HighlightReportModel>();
-        for (int i = 0, t = data.size(); i < t; i++) {
-            reportList.add(new HighlightReportModel(data.get(i).getUid(), data.get(i).getName(), data.get(i).getData()));
+        if(data != null) {
+            for (int i = 0, t = data.size(); i < t; i++) {
+                reportList.add(new HighlightReportModel(data.get(i).getUid(), data.get(i).getName(), data.get(i).getData()));
+            }
         }
         store.add(reportList);
         add(_grid);
