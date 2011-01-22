@@ -14,6 +14,7 @@ import hotmath.gwt.shared.client.rpc.action.HighlightsGetReportAction;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
 import com.extjs.gxt.ui.client.Style.SelectionMode;
 import com.extjs.gxt.ui.client.data.BaseModelData;
 import com.extjs.gxt.ui.client.event.BaseEvent;
@@ -58,7 +59,7 @@ abstract public class HighlightImplDetailsPanelBase extends LayoutContainer {
         configs.add(column);
 
         column = new ColumnConfig();
-        column.setId("data");
+        column.setId("data1");
         column.setHeader("Lessons Completed");
         column.setWidth(140);
         column.setSortable(false);
@@ -133,6 +134,9 @@ abstract public class HighlightImplDetailsPanelBase extends LayoutContainer {
     private void showSelectStudentDetail() {
 
         final HighlightReportModel model = _grid.getSelectionModel().getSelectedItem();
+        if(model.getUid() == 0)
+            return;
+        
         new RetryAction<StudentModelI>() {
             @Override
             public void attempt() {
@@ -159,16 +163,41 @@ class HighlightReportModel extends BaseModelData {
     public HighlightReportModel(Integer uid, String name, String data) {
         this.uid = uid;
         set("name", name);
-        set("data", data);
+        
+        /** allow up to four data variables to be
+         * passed separated by |.  Each value 
+         * will be in data1, data2, etc..
+         * 
+         */
+        if(data != null) {
+            String ds[] = data.split("\\|");
+            for(int i=0;i<ds.length;i++) {
+                set("data" + (i+1), ds[i]);    
+            }
+        }
     }
 
     public String getName() {
         return get("name");
     }
 
-    public String getData() {
-        return get("data");
+    public String getData1() {
+        return get("data1");
     }
+    
+    public String getData2() {
+        return get("data2");
+    }
+    
+    public String getData3() {
+        return get("data3");
+    }
+    
+    public String getData4() {
+        return get("data4");
+    }
+
+
     
     public Integer getUid() {
         return uid;

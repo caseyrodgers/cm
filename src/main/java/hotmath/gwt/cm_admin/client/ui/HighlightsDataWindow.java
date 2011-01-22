@@ -16,18 +16,9 @@ import hotmath.gwt.shared.client.util.CmRunAsyncCallback;
 
 import java.util.Date;
 
-import com.extjs.gxt.ui.client.Style.LayoutRegion;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
-import com.extjs.gxt.ui.client.widget.ContentPanel;
-import com.extjs.gxt.ui.client.widget.Label;
-import com.extjs.gxt.ui.client.widget.LayoutContainer;
-import com.extjs.gxt.ui.client.widget.TabItem;
-import com.extjs.gxt.ui.client.widget.TabPanel;
-import com.extjs.gxt.ui.client.widget.TabPanel.TabPosition;
 import com.extjs.gxt.ui.client.widget.button.Button;
-import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
-import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.i18n.client.DateTimeFormat;
@@ -57,7 +48,6 @@ public class HighlightsDataWindow extends CmWindow {
     
     Integer adminId;
 
-    TabPanel _tabPanel;
     final String TITLE="Student Usage Highlights";
     public static Date _from, _to;
     
@@ -67,41 +57,35 @@ public class HighlightsDataWindow extends CmWindow {
         setHeading(TITLE);
         setWidth(600);
         setHeight(500);
-        
-        _tabPanel = new TabPanel();
-        _tabPanel.setTabPosition(TabPosition.TOP);
 
         setLayout(new FitLayout());
-        _tabPanel.add(createIndividualTab());
-        _tabPanel.add(createGroupTab());
-        
-        add(_tabPanel);
+        add(new HighlightsIndividualPanel());
 
-        getHeader().addTool(new Button("Set Date Range", new SelectionListener<ButtonEvent>() {
-            @Override
-            public void componentSelected(ButtonEvent ce) {
-                DateRangePickerDialog.showSharedInstance(new DateRangePickerDialog.Callback() {
-                    @Override
-                    public void datePicked(Date from, Date to) {
-                        _from = from;
-                        _to = to;
-                        if(from != null) {
-                            DateTimeFormat format = DateTimeFormat.getFormat("yyyy-MM-dd"); 
-                            HighlightsDataWindow.this.setHeading(TITLE + ": " + format.format(from) + " - " + format.format(to));
-                        }
-                        else {
-                            HighlightsDataWindow.this.setHeading(TITLE);
-                        }
-                    }
-                });
-            }
-        }));
+//        getHeader().addTool(new Button("Set Date Range", new SelectionListener<ButtonEvent>() {
+//            @Override
+//            public void componentSelected(ButtonEvent ce) {
+//                DateRangePickerDialog.showSharedInstance(new DateRangePickerDialog.Callback() {
+//                    @Override
+//                    public void datePicked(Date from, Date to) {
+//                        _from = from;
+//                        _to = to;
+//                        if(from != null) {
+//                            DateTimeFormat format = DateTimeFormat.getFormat("yyyy-MM-dd"); 
+//                            HighlightsDataWindow.this.setHeading(TITLE + ": " + format.format(from) + " - " + format.format(to));
+//                        }
+//                        else {
+//                            HighlightsDataWindow.this.setHeading(TITLE);
+//                        }
+//                    }
+//                });
+//            }
+//        }));
 
 
         getHeader().addTool(new Button("Refresh", new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent ce) {
-                loadTrendDataAsync();
+                reloadAllReports();
             }
         }));
 
@@ -127,11 +111,12 @@ public class HighlightsDataWindow extends CmWindow {
          */
         setVisible(true);
     }
-    
+
+
+    int _currentSelection;
     private void reloadAllReports() {
-        _tabPanel.getItem(0).removeAll();
-        _tabPanel.getItem(0).add(new HighlightsIndividualPanel());
-        
+        removeAll();
+        add(new HighlightsIndividualPanel());
         layout();
     }
     
@@ -156,20 +141,7 @@ public class HighlightsDataWindow extends CmWindow {
         });
 
     }
-    
-    private  TabItem createIndividualTab() {
-        TabItem ti = new TabItem("Individual");
-        ti.setLayout(new FitLayout());
-        ti.add(new HighlightsIndividualPanel());
-        return ti;
-    }
-    
-    private TabItem createGroupTab() {
-        TabItem ti = new TabItem("Group");
-        ti.setLayout(new FitLayout());
-        ti.add(new HighlightsGroupPanel());
-        return ti;
-    }
+
 
     CmAdminTrendingDataI _trendingData;
 

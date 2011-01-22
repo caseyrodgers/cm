@@ -16,6 +16,8 @@ import com.extjs.gxt.ui.client.widget.ListView;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.user.client.ui.Widget;
 
 
@@ -26,7 +28,7 @@ public class HighlightsIndividualPanel extends ContentPanel {
     LayoutContainer _reportOutput = new LayoutContainer();
     
     public HighlightsIndividualPanel() {
-        setHeading("Individual Student Reports");
+        setHeading("");
         
         setLayout(new BorderLayout());
         
@@ -42,6 +44,7 @@ public class HighlightsIndividualPanel extends ContentPanel {
         add(_reportOutput, dData);
     }
     
+    static int __lastSelectedReport=0;
     String template = "<tpl for=\".\"><div class='x-view-item'>{text}</div></tpl>";    
     ListView<ReportModel> _listReports = new ListView<ReportModel>();
     private LayoutContainer createListOfAvailableReports() {
@@ -49,14 +52,23 @@ public class HighlightsIndividualPanel extends ContentPanel {
         _listReports.setTemplate(template);
         
         List<ReportModel> list = new ArrayList<ReportModel>();
-        list.add(_listReports.getStore().getAt(0));
+        list.add(_listReports.getStore().getAt(__lastSelectedReport));
         _listReports.getSelectionModel().setSelection(list);
         showReportOutput(list.get(0));
         
         _listReports.getSelectionModel().addSelectionChangedListener(new SelectionChangedListener<ReportModel>() {
             @Override
             public void selectionChanged(SelectionChangedEvent<ReportModel> se) {
+                
+                /** find selected index */
                 ReportModel report = _listReports.getSelectionModel().getSelectedItem();
+                for(int i=0,t=_listReports.getStore().getCount();i<t;i++) {
+                    ReportModel sr = _listReports.getStore().getAt(i);
+                    if(sr.getText().equals(report.getText())) {
+                        __lastSelectedReport = i;
+                        break;
+                    }
+                }
                 if(report != null) {
                     showReportOutput(report);
                 }
@@ -86,6 +98,7 @@ public class HighlightsIndividualPanel extends ContentPanel {
         s.add(new ReportModel(new HighlightImplHighestAverageQuizScores()));
         s.add(new ReportModel(new HighlightImplMostQuizzesFailed()));
         s.add(new ReportModel(new HighlightImplMostFailuresLatestQuiz()));
+        s.add(new ReportModel(new HighlightImplComparePerformance()));
         return s;
     }
 }
@@ -137,6 +150,10 @@ abstract class HighlightImplBase  {
         return _widget;
     }
     
+    /** one time call to draw the gui
+     * 
+     * @return
+     */
     abstract Widget prepareWidget();
 }
 
@@ -166,7 +183,6 @@ class HighlightImplMostGamesPlayed extends HighlightImplBase {
     public Widget prepareWidget() {
         return new HighlightImplMostGamesPlayedDetailsPanel(this);
     }
-    
 }
 
 class HighlightImplMostQuizzesPassed extends HighlightImplBase {
@@ -176,8 +192,8 @@ class HighlightImplMostQuizzesPassed extends HighlightImplBase {
     public Widget prepareWidget() {
         return new HighlightImplMostQuizzesPassedDetailsPanel(this);
     }
-    
 }
+
 class HighlightImplHighestAverageQuizScores extends HighlightImplBase {
     public HighlightImplHighestAverageQuizScores() {
         super("Highest Average Quiz Scores");
@@ -205,4 +221,14 @@ class HighlightImplMostFailuresLatestQuiz extends HighlightImplBase {
     }
     
 }
+
+class HighlightImplComparePerformance extends HighlightImplBase {
+    public HighlightImplComparePerformance() {
+        super("Compare Performance");
+    }
+    public Widget prepareWidget() {
+        return new HighlightImplComparePerformanceDetailsPanel(this);
+    }
+}
+
 

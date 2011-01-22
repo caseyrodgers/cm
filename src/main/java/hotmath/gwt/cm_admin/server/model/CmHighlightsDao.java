@@ -280,8 +280,32 @@ public class CmHighlightsDao {
         }
         return list;
     }
+
     
-    
+    public CmList<HighlightReportData> getReportComparePerformance(final Connection conn, List<String> uids, Date from, Date to) throws Exception {
+        
+        CmList<HighlightReportData> list=new CmArrayList<HighlightReportData>();
+        
+        String sql = 
+            " SELECT * FROM v_HA_USER_HIGHLIGHTS where uid in (" + createInList(uids) + ")";
+
+        PreparedStatement ps=null;
+        try {
+            ps = conn.prepareStatement(sql);
+            ResultSet rs = ps.executeQuery();
+            while(rs.next()) {
+                String values = rs.getInt("group_val") + "|" + rs.getInt("school_val") + "|" + rs.getInt("db_val");
+                list.add(new HighlightReportData(0, rs.getString("stat_label"), values));
+            }
+        }
+        finally {
+            SqlUtilities.releaseResources(null,ps,null);
+        }
+        
+        
+        return list;
+    }    
+        
     
     
     private String createInList(List<String> uids) {
@@ -294,3 +318,4 @@ public class CmHighlightsDao {
         return inList;
     }
 }
+

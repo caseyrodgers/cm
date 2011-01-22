@@ -61,6 +61,12 @@ public class HighlightsGetReportCommand implements ActionHandler< HighlightsGetR
                 case FAILED_CURRENT_QUIZZES:
                     list = dao.getReportFailedCurrentQuizzes(conn, uids, action.getFrom(), action.getTo());
                     break; 
+                    
+                case COMPARE_PERFORMANCE:
+                    list = dao.getReportComparePerformance(conn, uids, action.getFrom(), action.getTo());
+                    break; 
+                    
+                    
 
                     default:
                         throw new Exception("Uknown report type: " + action);
