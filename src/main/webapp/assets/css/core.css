@@ -781,24 +781,25 @@ ul#menubar2 {
 }
 
 .postit_wide {
-    margin-left: 15px;
     background-color: #F3ED93;
     width: 500px;
-    height: 160px;
-}
 
-.postit_wide p, .postit_2 .credit, .postit_2 a {
-    padding: 40px 30px 0 30px;
-    font-size: .9em;
+    border-radius: 10px;
+    -moz-border-radius: 10px;
+    -webkit-border-radius: 10px;
 }
 
 .postit_wide p {
     color: #666666;
     font-family: 'Neucha', arial, serif;
-    margin-bottom: 0;
-    padding-bottom: 0;
-    padding-top: 30px;
+    padding: 10px;
 }
+
+.postit_2 .credit, .postit_2 a {
+    padding: 40px 30px 0 30px;
+    font-size: .9em;
+}
+
 
 div#postit  a + p {
     padding-top: 20px;
