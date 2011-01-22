@@ -16,10 +16,6 @@ import hotmath.gwt.shared.client.rpc.CmWebResource;
 import hotmath.gwt.shared.client.rpc.action.GeneratePdfAction;
 import hotmath.gwt.shared.client.rpc.action.GeneratePdfAction.PdfType;
 
-import hotmath.cm.util.ClientInfoHolder;
-import hotmath.gwt.cm_rpc.client.ClientInfo;
-import hotmath.gwt.cm_rpc.client.ClientInfo.UserType;
-
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;

@@ -1,5 +1,12 @@
 package hotmath.gwt.cm_admin.client.ui;
 
+import hotmath.gwt.cm_tools.client.ui.InfoPopupBox;
+import hotmath.gwt.cm_tools.client.ui.PdfWindow;
+import hotmath.gwt.shared.client.eventbus.CmEvent;
+import hotmath.gwt.shared.client.eventbus.CmEventListener;
+import hotmath.gwt.shared.client.eventbus.EventType;
+import hotmath.gwt.shared.client.rpc.action.GeneratePdfHighlightsReportAction;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,8 +23,6 @@ import com.extjs.gxt.ui.client.widget.ListView;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
-import com.google.gwt.core.client.Scheduler;
-import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.user.client.ui.Widget;
 
 
@@ -26,8 +31,10 @@ public class HighlightsIndividualPanel extends ContentPanel {
     
     
     LayoutContainer _reportOutput = new LayoutContainer();
+    static HighlightsIndividualPanel __instance;
     
     public HighlightsIndividualPanel() {
+        __instance = this;
         setHeading("");
         
         setLayout(new BorderLayout());
@@ -101,7 +108,34 @@ public class HighlightsIndividualPanel extends ContentPanel {
         s.add(new ReportModel(new HighlightImplComparePerformance()));
         return s;
     }
+    
+    private void printCurrentReport() {
+        if(HighlightImplDetailsPanelBase.__lastReportData == null) {
+            InfoPopupBox.display("Highlight Report", "Nothing to print");
+        }
+        else {
+            String reportName = _listReports.getStore().getAt(__lastSelectedReport).getText();
+            GeneratePdfHighlightsReportAction action = new GeneratePdfHighlightsReportAction(StudentGridPanel.instance._cmAdminMdl.getId(),reportName,StudentGridPanel.instance._pageAction);
+            action.setFilterMap(StudentGridPanel.instance._pageAction.getFilterMap());
+            action.setModels(HighlightImplDetailsPanelBase.__lastReportData);
+            new PdfWindow(0, "Catchup Math Highlight Report", action);
+        }
+    }
+    
+    
+    static {
+        hotmath.gwt.shared.client.eventbus.EventBus.getInstance().addEventListener(new CmEventListener() {
+            @Override
+            public void handleEvent(CmEvent event) {
+                if(event.getEventType() == EventType.EVENT_TYPE_PRINT_HIGHLIGHT_REPORT) {
+                    __instance.printCurrentReport();    
+                }
+            }
+        });
+    }
 }
+
+
 
 
 class ReportModel extends BaseModelData {
@@ -111,6 +145,10 @@ class ReportModel extends BaseModelData {
         set("text", report.getText());
     }
     
+    /** The report name 
+     * 
+     * @return
+     */
     public String getText() {
         return get("text");
     }

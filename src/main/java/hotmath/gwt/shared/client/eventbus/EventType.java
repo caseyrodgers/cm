@@ -163,5 +163,12 @@ public enum EventType{
     /** Fired when a solution's HTML has been changed
      *  This is used to re-fire a MathJax process 
      */
-    SOLUTION_HTML_REFERSH
+    SOLUTION_HTML_REFERSH,
+    
+    
+    /** Print the current highlight report
+     * 
+     */
+    EVENT_TYPE_PRINT_HIGHLIGHT_REPORT
+    
 }

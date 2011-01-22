@@ -20,13 +20,16 @@ public class HighlightsGetReportCommand implements ActionHandler< HighlightsGetR
     @Override
     public CmList<HighlightReportData> execute(Connection conn, HighlightsGetReportAction action) throws Exception {
         try {
+
+            
+            CmList<HighlightReportData> list=null;
+            
             
             
             List<StudentModelExt> studentPool = new GetStudentGridPageCommand().getStudentPool(conn, action.getStudentGridPageAction());
             if(studentPool.size() == 0)
-                throw new CmRpcException("No students found");
+                return list;
             
-            CmList<HighlightReportData> list=null;
             
             List<String> uids = new ArrayList<String>();
             for(StudentModelExt student: studentPool) {

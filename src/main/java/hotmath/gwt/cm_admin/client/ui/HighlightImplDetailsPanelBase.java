@@ -14,7 +14,6 @@ import hotmath.gwt.shared.client.rpc.action.HighlightsGetReportAction;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
 import com.extjs.gxt.ui.client.Style.SelectionMode;
 import com.extjs.gxt.ui.client.data.BaseModelData;
 import com.extjs.gxt.ui.client.event.BaseEvent;
@@ -22,11 +21,13 @@ import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.GridEvent;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.store.ListStore;
+import com.extjs.gxt.ui.client.widget.Html;
 import com.extjs.gxt.ui.client.widget.Label;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
 import com.extjs.gxt.ui.client.widget.grid.Grid;
+import com.extjs.gxt.ui.client.widget.layout.CenterLayout;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.google.gwt.user.client.Element;
 
@@ -90,32 +91,38 @@ abstract public class HighlightImplDetailsPanelBase extends LayoutContainer {
             
             @Override
             public void onFailure(Throwable error) {
+                super.onFailure(error);
                 CmBusyManager.setBusy(false);
                 drawTable(null);
             }
         }.register();
     }
 
+    static public CmList<HighlightReportData> __lastReportData;
     private void drawTable(CmList<HighlightReportData> data) {
+        __lastReportData = data;
         removeAll();
         setLayout(new FitLayout());
         ListStore<HighlightReportModel> store = new ListStore<HighlightReportModel>();
         _grid = defineGrid(store, getColumns());
-        List<HighlightReportModel> reportList = new ArrayList<HighlightReportModel>();
-        if(data != null) {
+        if(data == null) {
+            add(new NoRowsFoundPanel());
+        }
+        else {
+            
+            List<HighlightReportModel> reportList = new ArrayList<HighlightReportModel>();
             for (int i = 0, t = data.size(); i < t; i++) {
                 reportList.add(new HighlightReportModel(data.get(i).getUid(), data.get(i).getName(), data.get(i).getData()));
             }
+            store.add(reportList);
+            add(_grid);
+            _grid.addListener(Events.CellDoubleClick, new Listener<BaseEvent>(){
+                public void handleEvent(BaseEvent be) {
+                    GridEvent ge = (GridEvent)be;
+                    showSelectStudentDetail();
+                }
+            });
         }
-        store.add(reportList);
-        add(_grid);
-        
-        _grid.addListener(Events.CellDoubleClick, new Listener<BaseEvent>(){
-            public void handleEvent(BaseEvent be) {
-                GridEvent ge = (GridEvent)be;
-                showSelectStudentDetail();
-            }
-        });
         
         layout();
     }
@@ -203,5 +210,13 @@ class HighlightReportModel extends BaseModelData {
     
     public Integer getUid() {
         return uid;
+    }
+}
+
+
+class NoRowsFoundPanel extends LayoutContainer {
+    public NoRowsFoundPanel() {
+        setLayout(new CenterLayout());
+        add(new Html("<h1>No Students Found</h1>"));
     }
 }

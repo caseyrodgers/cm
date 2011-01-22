@@ -1,17 +1,12 @@
 package hotmath.gwt.cm_admin.client.ui;
 
-import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.ui.PdfWindow;
 import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
-import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
 import hotmath.gwt.shared.client.eventbus.CmEventListenerImplDefault;
 import hotmath.gwt.shared.client.eventbus.EventBus;
 import hotmath.gwt.shared.client.eventbus.EventType;
-import hotmath.gwt.shared.client.model.CmAdminTrendingDataI;
-import hotmath.gwt.shared.client.rpc.RetryAction;
-import hotmath.gwt.shared.client.rpc.action.GeneratePdfAssessmentReportAction;
-import hotmath.gwt.shared.client.rpc.action.GetAdminTrendingDataAction;
+import hotmath.gwt.shared.client.rpc.action.GeneratePdfHighlightsReportAction;
 import hotmath.gwt.shared.client.util.CmRunAsyncCallback;
 
 import java.util.Date;
@@ -21,7 +16,6 @@ import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.i18n.client.DateTimeFormat;
 
 /**
  * Provide a window to display trending data
@@ -130,42 +124,9 @@ public class HighlightsDataWindow extends CmWindow {
     }
 
     private void reportButton() {
-        GWT.runAsync(new CmRunAsyncCallback() {
-
-            @Override
-            public void onSuccess() {
-            	GeneratePdfAssessmentReportAction action = new GeneratePdfAssessmentReportAction(adminId,StudentGridPanel.instance._pageAction);
-            	action.setFilterMap(StudentGridPanel.instance._pageAction.getFilterMap());
-                new PdfWindow(adminId, "Catchup Math Group Assessment Report", action);
-            }
-        });
-
+        EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_PRINT_HIGHLIGHT_REPORT));
     }
 
-
-    CmAdminTrendingDataI _trendingData;
-
-    private void loadTrendDataAsync() {
-        new RetryAction<CmAdminTrendingDataI>() {
-            @Override
-            public void attempt() {
-                CmBusyManager.setBusy(true);
-                GetAdminTrendingDataAction action = null; // new GetAdminTrendingDataAction(onlyActiveOrFullHistory(), adminId, StudentGridPanel.instance._pageAction);
-                setAction(action);
-                CmShared.getCmService().execute(action,this);
-            }
-            
-            public void oncapture(CmAdminTrendingDataI trendingData) {
-                _trendingData = trendingData;
-
-                CmBusyManager.setBusy(false);
-                
-                resetGui();
-                setVisible(true);
-                layout(true);
-            }
-        }.register();
-    }
 
     static {
         EventBus.getInstance().addEventListener(new CmEventListenerImplDefault() {

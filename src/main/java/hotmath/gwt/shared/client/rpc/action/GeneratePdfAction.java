@@ -118,5 +118,13 @@ public class GeneratePdfAction implements Action<CmWebResource>{
         /** Student list report
          * 
          */
-        STUDENT_LIST};
+        STUDENT_LIST,
+        
+    
+        /**  
+         * Generalized highlight report
+         * 
+         */
+        HIGHLIGHT_REPORT
+    };
 }
