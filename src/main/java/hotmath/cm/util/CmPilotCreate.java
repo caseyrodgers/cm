@@ -359,7 +359,7 @@ public class CmPilotCreate {
 	            String txt = "A request for a Catchup Math Pilot was created by:\n" + "Subscriber ID: " + idToUse
 	                    + "\n" + "\nTitle: " + title + "\nName: " + name + "\nSchool: " + school + "\nZip: " + zip
 	                    + "\nEmail: " + email + "\nPhone: " + phone +  "\nPhone When: "
-	                    + phoneWhen + "\nComments: " + userComments + "\nsalesZone: " + salesPerson.getLabel();
+	                    + phoneWhen + "\nStudent count: " + studentCount + "\nComments: " + userComments + "\nsalesZone: " + salesPerson.getLabel();
 	            try {
 	                
 	                /** send to sales rep and chuck */
