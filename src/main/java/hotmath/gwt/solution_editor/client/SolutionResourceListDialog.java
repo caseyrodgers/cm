@@ -22,6 +22,8 @@ import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.MessageBoxEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
+import com.extjs.gxt.ui.client.event.WindowEvent;
+import com.extjs.gxt.ui.client.event.WindowListener;
 import com.extjs.gxt.ui.client.widget.Html;
 import com.extjs.gxt.ui.client.widget.Label;
 import com.extjs.gxt.ui.client.widget.ListView;
@@ -51,6 +53,13 @@ public class SolutionResourceListDialog extends Window {
         this._callback = callback;
         this.pid = pid;
         setSize(800,600);
+        
+        addWindowListener(new WindowListener() {
+            @Override
+            public void windowHide(WindowEvent we) {
+                _callback.resourceSelected(null);
+            }
+        });
         
         setScrollMode(Scroll.AUTO);
         
@@ -114,17 +123,17 @@ public class SolutionResourceListDialog extends Window {
         
 
         
-        if(callback != null) {
-            addButton(new Button("Select", new SelectionListener<ButtonEvent>() {
-                @Override
-                public void componentSelected(ButtonEvent ce) {
-                    if(_callback != null) {
-                        _callback.resourceSelected(getSelectedResource());
-                    }
-                    hide();
-                }
-            }));
-        }
+//        if(callback != null) {
+//            addButton(new Button("Select", new SelectionListener<ButtonEvent>() {
+//                @Override
+//                public void componentSelected(ButtonEvent ce) {
+//                    if(_callback != null) {
+//                        _callback.resourceSelected(getSelectedResource());
+//                    }
+//                    hide();
+//                }
+//            }));
+//        }
         
         
         addButton(new Button("Close", new SelectionListener<ButtonEvent>() {

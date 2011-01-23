@@ -3,7 +3,6 @@ package hotmath.gwt.solution_editor.client;
 import com.extjs.gxt.ui.client.widget.Html;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
-import com.google.gwt.user.client.ui.Focusable;
 
 public class HtmlEditorApplet extends LayoutContainer {
     

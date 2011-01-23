@@ -66,25 +66,11 @@ public class StepEditorPlainTextDialog extends Window {
         getHeader().addTool(new Button("Resources",new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent ce) {
+                setVisible(false);
                 new SolutionResourceListDialog(new Callback() {
                     @Override
                     public void resourceSelected(SolutionResource resource) {
-//                        String toInsert = "<img class='sol_resource' src='" + resource.getUrlPath() + "'/>";
-//                        
-//
-//                        if(_tabPanel.getSelectedItem().getText().equals("HTML")) {
-//                            // int index = _textArea.getCursorPos();
-//                            String text = _textArea.getValue();
-//                            text = (text != null?text:"");
-//                            //_textArea.setText(text.substring(0, index) + toInsert + text.substring(index));                            
-//                        }
-//                        else {
-//                            //_tinyMce.insertText(toInsert);
-//                        }
-//                        layout();
-//                        
-//                        
-//                        EventBus.getInstance().fireEvent(new CmEvent(hotmath.gwt.solution_editor.client.EventTypes.SOLUTION_EDITOR_CHANGED));       
+                        setVisible(true);
                     }
                 },SolutionEditor.__pidToLoad);
             }
