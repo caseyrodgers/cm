@@ -8,13 +8,13 @@ abstract public class EditableStepUnit extends LayoutContainer implements StepUn
     
     String editorText;
     
+    Html htmlDiv = new Html();
     public EditableStepUnit() {
         addStyleName("editable-step-unit");
         removeAll();
         add(htmlDiv);
     }
     
-    Html htmlDiv = new Html();
     public void setEditorText(String text) {
         editorText = text;
         htmlDiv.setHtml(text);
