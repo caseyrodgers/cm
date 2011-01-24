@@ -91,7 +91,7 @@ public class CmHighLightManager {
         Connection conn=null;
         try {
             conn = HMConnectionPool.getConnection();
-            new CmHighLightManager(conn);
+            new CmHighLightManager(conn).generateAllStats(conn);
         }
         catch(Exception e) {
             e.printStackTrace();
