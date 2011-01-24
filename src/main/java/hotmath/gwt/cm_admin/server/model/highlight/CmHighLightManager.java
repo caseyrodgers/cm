@@ -1,5 +1,7 @@
 package hotmath.gwt.cm_admin.server.model.highlight;
 
+import hotmath.gwt.cm_rpc.client.rpc.CmList;
+import hotmath.gwt.shared.client.rpc.action.HighlightReportData;
 import hotmath.util.HMConnectionPool;
 import hotmath.util.sql.SqlUtilities;
 
@@ -7,6 +9,7 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -41,6 +44,7 @@ public class CmHighLightManager {
                 String className = rs.getString("generator_class");
                 className = "hotmath.gwt.cm_admin.server.model.highlight." + className;
                 HighLightStat stat = (HighLightStat)getClass().getClassLoader().loadClass(className).newInstance();
+                stat.setStatName(rs.getString("stat_label"));
                 stats.add(stat);
             }
         }
@@ -87,7 +91,22 @@ public class CmHighLightManager {
     }
 
     public interface HighLightStat {
+        String getStatName();
+        void setStatName(String name);
         void generateStat(final Connection conn) throws Exception;
+        
+        /** Return the fully processed data for the report.  It should contain
+         *  data for group, school and dbwide
+         *  
+         * @param fromDate
+         * @param toDate
+         * @param adminId
+         * @param uids
+         * @return
+         */
+        CmList<HighlightReportData> getHighLightData(final Connection conn, Date fromDate, Date toDate, int adminId, List<String> uids);
+        
+        public enum Category {GROUP,SCHOOL,DATABASE};
     }
     
     

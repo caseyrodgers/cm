@@ -66,7 +66,7 @@ public class HighlightsGetReportCommand implements ActionHandler< HighlightsGetR
                     break; 
                     
                 case COMPARE_PERFORMANCE:
-                    list = dao.getReportComparePerformance(conn, uids, action.getFrom(), action.getTo());
+                    list = dao.getReportComparePerformance(conn, action.getAdminId(), uids, action.getFrom(), action.getTo());
                     break; 
                     
                     

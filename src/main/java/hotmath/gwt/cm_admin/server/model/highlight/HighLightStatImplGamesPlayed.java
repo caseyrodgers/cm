@@ -7,6 +7,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.Date;
 
+
 public class HighLightStatImplGamesPlayed extends HighLightStatImplBase {
     
     @Override

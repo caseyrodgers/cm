@@ -1,6 +1,9 @@
 package hotmath.gwt.cm_admin.server.model.highlight;
 
 import hotmath.gwt.cm_admin.server.model.highlight.CmHighLightManager.HighLightStat;
+import hotmath.gwt.cm_rpc.client.rpc.CmArrayList;
+import hotmath.gwt.cm_rpc.client.rpc.CmList;
+import hotmath.gwt.shared.client.rpc.action.HighlightReportData;
 import hotmath.util.sql.SqlUtilities;
 
 import java.sql.Connection;
@@ -8,6 +11,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.List;
 
 import org.apache.log4j.Logger;
 
@@ -22,6 +26,7 @@ import org.apache.log4j.Logger;
 abstract public class HighLightStatImplBase implements HighLightStat {
     
     final static Logger __logger = Logger.getLogger(HighLightStatImplBase.class);
+    String statName;
     
     public HighLightStatImplBase(){}
     
@@ -32,7 +37,13 @@ abstract public class HighLightStatImplBase implements HighLightStat {
     }
     
     
-    abstract public void getStatsFromDate(final Connection conn, Date fromDate) throws Exception;
+    abstract public void getStatsFromDate(final Connection conn,Date fromDate) throws Exception;
+    
+    @Override
+    public CmList<HighlightReportData> getHighLightData(final Connection conn, Date fromDate, Date toDate,int adminId, List<String> uids) {
+        CmList<HighlightReportData> list = new CmArrayList<HighlightReportData>();
+        return list;
+    }
     
     public void writeStatRecord(final Connection conn, int uid, Date runDate, String columnName, int value) throws Exception {
         
@@ -85,5 +96,13 @@ abstract public class HighLightStatImplBase implements HighLightStat {
         finally {
             SqlUtilities.releaseResources(null,psUpdate,null);
         }
+    }
+
+    public String getStatName() {
+        return statName;
+    }
+
+    public void setStatName(String statName) {
+        this.statName = statName;
     }
 }

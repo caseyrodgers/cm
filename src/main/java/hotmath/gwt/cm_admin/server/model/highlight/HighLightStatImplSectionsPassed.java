@@ -1,11 +1,15 @@
 package hotmath.gwt.cm_admin.server.model.highlight;
 
+import hotmath.gwt.cm_rpc.client.rpc.CmArrayList;
+import hotmath.gwt.cm_rpc.client.rpc.CmList;
+import hotmath.gwt.shared.client.rpc.action.HighlightReportData;
 import hotmath.util.sql.SqlUtilities;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.Date;
+import java.util.List;
 
 import org.apache.log4j.Logger;
 
@@ -50,5 +54,15 @@ public class HighLightStatImplSectionsPassed extends HighLightStatImplBase {
         finally {
             SqlUtilities.releaseResources(null,ps,null);
         }
+    }
+    
+    
+    
+    @Override
+    public CmList<HighlightReportData> getHighLightData(final Connection conn, Date fromDate, Date toDate, int adminId, List<String> uids) {
+        CmList<HighlightReportData> list = new CmArrayList<HighlightReportData>();
+        
+        
+        return list;
     }
 }
