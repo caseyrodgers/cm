@@ -59,9 +59,7 @@ public class CmHighLightManager {
         __logger.info("Generating user highlight stats");
         try {
             for(HighLightStat stat: stats) {
-                __logger.info("Generating stats for: " + stat.getClass().getName());
-                stat.generateStat(conn);
-                __logger.info("Completed generating stats for: " + stat.getClass().getName());
+                generateStat(conn, stat);
             }
             return true;
         }
@@ -72,6 +70,12 @@ public class CmHighLightManager {
         finally {
             __logger.info("Completed generating user highlight stats");
         }
+    }
+    
+    public void generateStat(final Connection conn, HighLightStat stat) throws Exception {
+        __logger.info("Generating stats for: " + stat.getClass().getName());
+        stat.generateStat(conn);
+        __logger.info("Completed generating stats for: " + stat.getClass().getName());
     }
     
     public List<HighLightStat> getStats() {

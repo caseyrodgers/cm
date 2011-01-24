@@ -2,6 +2,7 @@ package hotmath.gwt.solution_editor.server.solution;
 
 import hotmath.HotMathException;
 import hotmath.cm.util.service.SolutionDef;
+import hotmath.gwt.shared.client.util.CmException;
 import hotmath.util.HtmlCleanser;
 
 import java.io.File;
@@ -159,6 +160,10 @@ public class TutorSolutionParser {
             String sStepText = sStepUnitText;
             stepUnit = new TutorStepUnitImplStep(sStepText);
         } else if (sType.equals("proofstep")) {
+            
+            if(true) {
+                throw new CmException("'proof' stepunits not supported yet!");
+            }
             // should be proofset/stepunit/justification
             // get this elements next sibling (which must be a
             // stepunit/justification)
