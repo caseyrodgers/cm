@@ -9,11 +9,14 @@ import java.util.Map;
 
 public class GeneratePdfHighlightsReportAction implements Action<CmWebResource>{
 
-    Integer adminId;
+	private static final long serialVersionUID = -4533387142154640743L;
+	
+	Integer adminId;
     GetStudentGridPageAction pageAction;
 	Map<FilterType,String> filterMap;
 	CmList<HighlightReportData> models;
 	String reportName;
+	CmList<String> columnLabels;
     
 	public GeneratePdfHighlightsReportAction() {
 	}
@@ -21,6 +24,7 @@ public class GeneratePdfHighlightsReportAction implements Action<CmWebResource>{
     public GeneratePdfHighlightsReportAction(Integer adminId, String reportName, GetStudentGridPageAction pageAction) {
         this.pageAction = pageAction;
         this.reportName = reportName;
+        
         this.adminId = adminId;
     }
 
@@ -64,9 +68,17 @@ public class GeneratePdfHighlightsReportAction implements Action<CmWebResource>{
         this.reportName = reportName;
     }
 
-    @Override
+    public CmList<String> getColumnLabels() {
+		return columnLabels;
+	}
+
+	public void setColumnLabels(CmList<String> columnLabels) {
+		this.columnLabels = columnLabels;
+	}
+
+	@Override
     public String toString() {
         return "GeneratePdfHighlightsReportAction [adminId=" + adminId + ", pageAction=" + pageAction + ", filterMap="
-                + filterMap + ", models=" + models + ", reportName=" + reportName + "]";
+                + filterMap + ", models=" + models + ", reportName=" + reportName + ", columnLabels=" + columnLabels + "]";
     }
 }

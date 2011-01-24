@@ -5,6 +5,7 @@ import hotmath.gwt.cm_admin.server.model.CmAdminDao;
 import hotmath.gwt.cm_rpc.client.rpc.CmList;
 import hotmath.gwt.cm_tools.client.model.AccountInfoModel;
 import hotmath.gwt.cm_tools.client.model.StudentModelI;
+import hotmath.gwt.shared.client.model.TrendingData;
 import hotmath.gwt.shared.client.rpc.CmWebResource;
 import hotmath.gwt.shared.client.rpc.action.GetStudentGridPageAction.FilterType;
 import hotmath.gwt.shared.client.rpc.action.HighlightReportData;
@@ -31,16 +32,16 @@ import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPTable;
 import com.lowagie.text.pdf.PdfWriter;
 
-public class HighlightPdfReport {
+public class HighlightsReport {
     
-    static private Logger __logger = Logger.getLogger(HighlightPdfReport.class);
+    static private Logger __logger = Logger.getLogger(HighlightsReport.class);
 	
 	private String reportName;
 	private Map<FilterType,String> filterMap;
 	CmList<HighlightReportData> models;
 	int adminId;
 	
-	public HighlightPdfReport(int adminId, String reportName, CmList<HighlightReportData> models) throws Exception {
+	public HighlightsReport(int adminId, String reportName, CmList<HighlightReportData> models) throws Exception {
 	    this.adminId = adminId;
 	    this.reportName = reportName;
 	    this.models = models;   
@@ -86,33 +87,31 @@ public class HighlightPdfReport {
 
         document.open();
 
-        Table tbl = new Table(7);
+        Table tbl = new Table(2);
         tbl.setWidth(100.0f);
         tbl.setBorder(Table.BOTTOM);
 
         document.add(Chunk.NEWLINE);
         document.add(Chunk.NEWLINE);
 
-        addHeader("Student", "15%", tbl);
-        addHeader("Group", "15%", tbl);
-        addHeader("Program", "15%", tbl);
-        addHeader("Status", "15%", tbl);
-        addHeader("Quizzes", "15%", tbl);
-        addHeader("Last Quiz", "10%", tbl);
-        addHeader("Last Login", "15%", tbl);
+        addHeader("Student", "70%", tbl);
+        addHeader("<Data Label>", "30%", tbl);
 
         tbl.endHeaders();
 
         document.add(Chunk.NEWLINE);
         
-        
+        int i = 0;
+        for (HighlightReportData d : models) {
+            addCell(d.getName(), tbl, ++i);
+            addCell(d.getData(), tbl, i);
+        }
+/*        
         for (HighlightReportData sm : models) {
             addReportDataLine(document, sm);
         }
-        
-        
-        
-        
+*/
+        document.add(tbl);
         document.add(Chunk.NEWLINE);
 
         document.close();

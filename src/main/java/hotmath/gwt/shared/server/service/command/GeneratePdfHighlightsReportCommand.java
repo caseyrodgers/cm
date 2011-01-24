@@ -2,7 +2,7 @@ package hotmath.gwt.shared.server.service.command;
 
 import static hotmath.cm.util.CmCacheManager.CacheName.REPORT_ID;
 import hotmath.cm.util.CmCacheManager;
-import hotmath.cm.util.report.HighlightPdfReport;
+import hotmath.cm.util.report.HighlightsReport;
 import hotmath.gwt.cm_rpc.client.rpc.Action;
 import hotmath.gwt.cm_rpc.client.rpc.Response;
 import hotmath.gwt.cm_rpc.server.rpc.ActionHandler;
@@ -27,7 +27,7 @@ public class GeneratePdfHighlightsReportCommand implements ActionHandler<Generat
         for(StudentModelExt sme: studentPool) {
             studentIds.add(sme.getUid());
         }
-        return new HighlightPdfReport(action.getAdminId(), action.getReportName(), action.getModels()).getWebResource(conn);
+        return new HighlightsReport(action.getAdminId(), action.getReportName(), action.getModels()).getWebResource(conn);
     }
     
     
