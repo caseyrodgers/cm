@@ -29,8 +29,8 @@ public class HighLightStatImplAvgQuiz extends HighLightStatImplBase {
                 int uid = rs.getInt("uid");
                 Date runDate = rs.getDate("run_date");
                 int cnt = rs.getInt("avg_score");
-                
-                writeStatRecord(conn, uid, runDate, "avg_quiz_score", cnt);
+
+                writeStatRecord(conn, uid, runDate, getStatName(), cnt);
             }
         }
         finally {

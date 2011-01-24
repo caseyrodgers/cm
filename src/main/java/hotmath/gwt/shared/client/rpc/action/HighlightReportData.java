@@ -20,9 +20,6 @@ public class HighlightReportData implements Response {
     
     public HighlightReportData(String name) {
         this.name = name;
-        this.groupCount = groupCount;
-        this.schoolCount = schoolCount;
-        this.dbCount = dbCount;
     }
     
     public String getData() {

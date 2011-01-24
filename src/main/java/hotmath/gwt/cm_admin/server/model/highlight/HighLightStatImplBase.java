@@ -27,6 +27,7 @@ abstract public class HighLightStatImplBase implements HighLightStat {
     
     final static Logger __logger = Logger.getLogger(HighLightStatImplBase.class);
     String statName;
+    String statLabel;
     
     public HighLightStatImplBase(){}
     
@@ -36,13 +37,89 @@ abstract public class HighLightStatImplBase implements HighLightStat {
         getStatsFromDate(conn,cal.getTime());
     }
     
+    @Override
+    public String getStatLabel() {
+        // TODO Auto-generated method stub
+        return statLabel;
+    }
+    
+    @Override
+    public void setStatLabel(String label) {
+        statLabel = label;
+    }
     
     abstract public void getStatsFromDate(final Connection conn,Date fromDate) throws Exception;
     
     @Override
-    public CmList<HighlightReportData> getHighLightData(final Connection conn, Date fromDate, Date toDate,int adminId, List<String> uids) throws Exception {
+    public CmList<HighlightReportData> getHighLightData(final Connection conn,  Date fromDate, Date toDate,int adminId, List<String> uids) throws Exception {
         CmList<HighlightReportData> list = new CmArrayList<HighlightReportData>();
-        return list;
+        
+        HighlightReportData reportData = new HighlightReportData(getStatName());
+        list.add(reportData);
+        
+        String colName = getStatName();
+        /** Get group data
+         * 
+         */
+        PreparedStatement ps=null;
+        try {
+            String sql = 
+                "select count(" + colName + ") as cnt_passed " +
+                " from  HA_USER_HIGHLIGHT " +
+                " where uid in ( " + createInList(uids) + ") ";
+            ps = conn.prepareStatement(sql);
+            ResultSet rs = ps.executeQuery();
+            if(rs.first()) {
+                reportData.setGroupCount(rs.getInt("cnt_passed"));
+            }
+        }
+        finally {
+            SqlUtilities.releaseResources(null,ps,null);
+        }
+        
+        
+        /** Get school data
+         * 
+         */
+        try {
+            String sql = 
+                "select count(" + colName + ") as cnt_passed " +
+                "from  HA_USER u " + 
+                " JOIN HA_ADMIN a on a.aid = u.admin_id " +
+                " JOIN HA_USER_HIGHLIGHT h on h.uid = u.uid " +
+                " where a.aid = ? ";
+                
+            ps = conn.prepareStatement(sql);
+            ps.setInt(1, adminId);
+            ResultSet rs = ps.executeQuery();
+            if(rs.first()) {
+                reportData.setSchoolCount(rs.getInt("cnt_passed"));
+            }
+        }
+        finally {
+            SqlUtilities.releaseResources(null,ps,null);
+        }
+        
+        /** Get entire DB count
+         * 
+         */
+        try {
+            String sql = 
+                "select count(" + colName + ") as cnt_passed " +
+                " from  HA_USER u " + 
+                " JOIN HA_ADMIN a on a.aid = u.admin_id " +
+                " JOIN HA_USER_HIGHLIGHT h on h.uid = u.uid ";
+            ps = conn.prepareStatement(sql);
+            ResultSet rs = ps.executeQuery();
+            if(rs.first()) {
+                reportData.setDbCount(rs.getInt("cnt_passed"));
+            }
+        }
+        finally {
+            SqlUtilities.releaseResources(null,ps,null);
+        }                
+        
+        return list;    
     }
     
     public void writeStatRecord(final Connection conn, int uid, Date runDate, String columnName, int value) throws Exception {

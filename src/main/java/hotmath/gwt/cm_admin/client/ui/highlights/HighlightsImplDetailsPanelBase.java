@@ -112,19 +112,26 @@ abstract public class HighlightImplDetailsPanelBase extends LayoutContainer {
             
             List<HighlightReportModel> reportList = new ArrayList<HighlightReportModel>();
             for (int i = 0, t = data.size(); i < t; i++) {
-                reportList.add(new HighlightReportModel(data.get(i).getUid(), data.get(i).getName(), data.get(i).getData()));
+                reportList.add(createTableModel(data.get(i)));
             }
             store.add(reportList);
             add(_grid);
             _grid.addListener(Events.CellDoubleClick, new Listener<BaseEvent>(){
                 public void handleEvent(BaseEvent be) {
-                    GridEvent ge = (GridEvent)be;
                     showSelectStudentDetail();
                 }
             });
         }
         
         layout();
+    }
+    
+    protected HighlightReportModel createTableModel(HighlightReportData data) {
+        if(data.getData() != null)
+            return new HighlightReportModel(data.getUid(), data.getName(), data.getData());
+        else 
+            return new HighlightReportModel(data.getName(), data.getGroupCount(), data.getSchoolCount(), data.getDbCount());
+        
     }
 
     private Grid<HighlightReportModel> defineGrid(final ListStore<HighlightReportModel> store, ColumnModel cm) {
@@ -166,6 +173,13 @@ abstract public class HighlightImplDetailsPanelBase extends LayoutContainer {
 
 }
 
+/** Class to encapsulate table data for report output
+ * 
+ *  NOTE: Really two models... one for individual and one for groups.
+ *  
+ * @author casey
+ *
+ */
 class HighlightReportModel extends BaseModelData {
     int uid;
     
@@ -184,6 +198,13 @@ class HighlightReportModel extends BaseModelData {
                 set("data" + (i+1), ds[i]);    
             }
         }
+    }
+    
+    public HighlightReportModel(String name, int groupCnt, int schoolCount, int nationalCount) {
+        set("name", name);
+        set("group", groupCnt);
+        set("school", schoolCount);
+        set("national", nationalCount);
     }
 
     public String getName() {
@@ -205,8 +226,6 @@ class HighlightReportModel extends BaseModelData {
     public String getData4() {
         return get("data4");
     }
-
-
     
     public Integer getUid() {
         return uid;

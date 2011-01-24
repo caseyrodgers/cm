@@ -2,7 +2,6 @@ package hotmath.gwt.cm_admin.server.model;
 
 import hotmath.gwt.cm_admin.server.model.highlight.CmHighLightManager;
 import hotmath.gwt.cm_admin.server.model.highlight.CmHighLightManager.HighLightStat;
-import hotmath.gwt.cm_admin.server.model.highlight.CmHighLightManager.HighLightStat.Category;
 import hotmath.gwt.cm_rpc.client.rpc.CmArrayList;
 import hotmath.gwt.cm_rpc.client.rpc.CmList;
 import hotmath.gwt.shared.client.rpc.action.HighlightReportData;
@@ -303,34 +302,11 @@ public class CmHighlightsDao {
      * @throws Exception
      */
     public CmList<HighlightReportData> getReportComparePerformance(final Connection conn, int adminId, List<String> uids, Date from, Date to) throws Exception {
-        
-        
         CmList<HighlightReportData> list=new CmArrayList<HighlightReportData>();
         for(HighLightStat stat: new CmHighLightManager(conn).getStats()) {
             list.addAll(stat.getHighLightData(conn, from, to, adminId, uids));
         }
-        
         return list;
-//        
-//        
-//        String sql = 
-//            " SELECT * FROM v_HA_USER_HIGHLIGHTS where uid in (" + createInList(uids) + ")";
-//
-//        PreparedStatement ps=null;
-//        try {
-//            ps = conn.prepareStatement(sql);
-//            ResultSet rs = ps.executeQuery();
-//            while(rs.next()) {
-//                String values = rs.getInt("group_val") + "|" + rs.getInt("school_val") + "|" + rs.getInt("db_val");
-//                list.add(new HighlightReportData(0, rs.getString("stat_label"), values));
-//            }
-//        }
-//        finally {
-//            SqlUtilities.releaseResources(null,ps,null);
-//        }
-//        
-//        
-//        return list;
     }    
         
     

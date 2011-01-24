@@ -44,7 +44,8 @@ public class CmHighLightManager {
                 String className = rs.getString("generator_class");
                 className = "hotmath.gwt.cm_admin.server.model.highlight." + className;
                 HighLightStat stat = (HighLightStat)getClass().getClassLoader().loadClass(className).newInstance();
-                stat.setStatName(rs.getString("stat_label"));
+                stat.setStatLabel(rs.getString("stat_label"));
+                stat.setStatName(rs.getString("stat_id"));
                 stats.add(stat);
             }
         }
@@ -92,6 +93,8 @@ public class CmHighLightManager {
 
     public interface HighLightStat {
         String getStatName();
+        void setStatLabel(String label);
+        String getStatLabel();
         void setStatName(String name);
         void generateStat(final Connection conn) throws Exception;
         

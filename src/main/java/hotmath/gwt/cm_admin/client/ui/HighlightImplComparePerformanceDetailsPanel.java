@@ -57,7 +57,7 @@ public class HighlightImplComparePerformanceDetailsPanel extends HighlightImplDe
         configs.add(column);
 
         column = new ColumnConfig();
-        column.setId("data1");
+        column.setId("group");
         column.setHeader("Group");
         column.setWidth(75);
         column.setSortable(false);
@@ -65,7 +65,7 @@ public class HighlightImplComparePerformanceDetailsPanel extends HighlightImplDe
         configs.add(column);
 
         column = new ColumnConfig();
-        column.setId("data2");
+        column.setId("school");
         column.setHeader("School");
         column.setWidth(75);
         column.setSortable(false);
@@ -73,8 +73,8 @@ public class HighlightImplComparePerformanceDetailsPanel extends HighlightImplDe
         configs.add(column);
         
         column = new ColumnConfig();
-        column.setId("data3");
-        column.setHeader("Nationwide");
+        column.setId("national");
+        column.setHeader("Nation Wide");
         column.setWidth(75);
         column.setSortable(false);
         column.setAlignment(HorizontalAlignment.RIGHT);        

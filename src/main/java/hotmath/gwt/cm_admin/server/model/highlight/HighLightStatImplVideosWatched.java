@@ -1,11 +1,14 @@
 package hotmath.gwt.cm_admin.server.model.highlight;
 
+import hotmath.gwt.cm_rpc.client.rpc.CmList;
+import hotmath.gwt.shared.client.rpc.action.HighlightReportData;
 import hotmath.util.sql.SqlUtilities;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.Date;
+import java.util.List;
 
 public class HighLightStatImplVideosWatched extends HighLightStatImplBase {
     
