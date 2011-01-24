@@ -282,6 +282,23 @@ public class CmHighlightsDao {
     }
 
     
+    /** Kludged ...
+     * 
+     * Here we are returning three data values delimited by a |.  The GXT model 
+     * looks for this a parses into data1, data2, etc..
+     * 
+     * The view v_HA_USER_HIGHLIGHTS tries to encapsulate the query 
+     * and allow for its maintenance without a build.
+     * 
+     * 
+     * 
+     * @param conn
+     * @param uids
+     * @param from
+     * @param to
+     * @return
+     * @throws Exception
+     */
     public CmList<HighlightReportData> getReportComparePerformance(final Connection conn, List<String> uids, Date from, Date to) throws Exception {
         
         CmList<HighlightReportData> list=new CmArrayList<HighlightReportData>();
