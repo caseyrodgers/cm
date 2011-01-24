@@ -99,5 +99,6 @@ public class CmHighLightManager {
         finally {
             SqlUtilities.releaseResources(null, null, conn);
         }
+        System.exit(0);
     }
 }
