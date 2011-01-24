@@ -34,7 +34,7 @@ import com.lowagie.text.pdf.PdfWriter;
 
 public class HighlightsReport {
     
-    static private Logger __logger = Logger.getLogger(HighlightsReport.class);
+    static private Logger __logger = Logger.getLogger(HighlightsReportPdf.class);
 	
 	private String reportName;
 	private Map<FilterType,String> filterMap;
