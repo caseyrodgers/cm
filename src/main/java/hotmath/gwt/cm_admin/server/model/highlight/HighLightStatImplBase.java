@@ -54,7 +54,7 @@ abstract public class HighLightStatImplBase implements HighLightStat {
     public CmList<HighlightReportData> getHighLightData(final Connection conn,  Date fromDate, Date toDate,int adminId, List<String> uids) throws Exception {
         CmList<HighlightReportData> list = new CmArrayList<HighlightReportData>();
         
-        HighlightReportData reportData = new HighlightReportData(getStatName());
+        HighlightReportData reportData = new HighlightReportData(getStatLabel());
         list.add(reportData);
         
         String colName = getStatName();
@@ -64,7 +64,7 @@ abstract public class HighLightStatImplBase implements HighLightStat {
         PreparedStatement ps=null;
         try {
             String sql = 
-                "select count(" + colName + ") as cnt_passed " +
+                "select sum(" + colName + ") as cnt_passed " +
                 " from  HA_USER_HIGHLIGHT " +
                 " where uid in ( " + createInList(uids) + ") ";
             ps = conn.prepareStatement(sql);
@@ -82,8 +82,8 @@ abstract public class HighLightStatImplBase implements HighLightStat {
          * 
          */
         try {
-            String sql = 
-                "select count(" + colName + ") as cnt_passed " +
+            String sql =    
+                "select sum(" + colName + ") as cnt_passed " +
                 "from  HA_USER u " + 
                 " JOIN HA_ADMIN a on a.aid = u.admin_id " +
                 " JOIN HA_USER_HIGHLIGHT h on h.uid = u.uid " +
@@ -105,7 +105,7 @@ abstract public class HighLightStatImplBase implements HighLightStat {
          */
         try {
             String sql = 
-                "select count(" + colName + ") as cnt_passed " +
+                "select sum(" + colName + ") as cnt_passed " +
                 " from  HA_USER u " + 
                 " JOIN HA_ADMIN a on a.aid = u.admin_id " +
                 " JOIN HA_USER_HIGHLIGHT h on h.uid = u.uid ";

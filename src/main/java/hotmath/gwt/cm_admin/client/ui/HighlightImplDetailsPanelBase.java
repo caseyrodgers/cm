@@ -147,7 +147,7 @@ abstract public class HighlightImplDetailsPanelBase extends LayoutContainer {
         return grid;
     }
     
-    private void showSelectStudentDetail() {
+    protected void showSelectStudentDetail() {
 
         final HighlightReportModel model = _grid.getSelectionModel().getSelectedItem();
         if(model.getUid() == 0)

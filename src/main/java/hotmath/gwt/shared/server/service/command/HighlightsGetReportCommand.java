@@ -70,7 +70,6 @@ public class HighlightsGetReportCommand implements ActionHandler< HighlightsGetR
                     break; 
                     
                     
-
                     default:
                         throw new Exception("Uknown report type: " + action);
             }

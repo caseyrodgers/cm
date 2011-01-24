@@ -83,4 +83,9 @@ public class HighlightImplComparePerformanceDetailsPanel extends HighlightImplDe
         ColumnModel cm = new ColumnModel(configs);
         return cm;
     }
+    
+    @Override
+    protected void showSelectStudentDetail() {
+    }
+  
 }

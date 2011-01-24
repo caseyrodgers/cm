@@ -7,6 +7,7 @@ public class HighlightReportData implements Response {
     int uid;
     String data;
     String name;
+    String label;
     int groupCount;
     int schoolCount;
     int dbCount;
