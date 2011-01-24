@@ -1,5 +1,6 @@
 package hotmath.gwt.cm_admin.server.model.highlight;
 
+import hotmath.util.HMConnectionPool;
 import hotmath.util.sql.SqlUtilities;
 
 import java.sql.Connection;
@@ -83,5 +84,20 @@ public class CmHighLightManager {
 
     public interface HighLightStat {
         void generateStat(final Connection conn) throws Exception;
+    }
+    
+    
+    static public void main(String as[]) {
+        Connection conn=null;
+        try {
+            conn = HMConnectionPool.getConnection();
+            new CmHighLightManager(conn);
+        }
+        catch(Exception e) {
+            e.printStackTrace();
+        }
+        finally {
+            SqlUtilities.releaseResources(null, null, conn);
+        }
     }
 }
