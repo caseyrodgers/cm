@@ -94,7 +94,7 @@ public class CmHighLightManager {
             new CmHighLightManager(conn).generateAllStats(conn);
         }
         catch(Exception e) {
-            e.printStackTrace();
+            __logger.error("Error running Highlight Manager", e);
         }
         finally {
             SqlUtilities.releaseResources(null, null, conn);
