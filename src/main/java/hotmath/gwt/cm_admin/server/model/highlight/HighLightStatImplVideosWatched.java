@@ -1,14 +1,11 @@
 package hotmath.gwt.cm_admin.server.model.highlight;
 
-import hotmath.gwt.cm_rpc.client.rpc.CmList;
-import hotmath.gwt.shared.client.rpc.action.HighlightReportData;
 import hotmath.util.sql.SqlUtilities;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.Date;
-import java.util.List;
 
 public class HighLightStatImplVideosWatched extends HighLightStatImplBase {
     
@@ -33,7 +30,7 @@ public class HighLightStatImplVideosWatched extends HighLightStatImplBase {
                 Date runDate = rs.getDate("view_date");
                 int cnt = rs.getInt("view_count");
                 
-                writeStatRecord(conn, uid, runDate, "videos_watched", cnt);
+                writeStatRecord(conn, uid, runDate, "videos_watched", cnt, -1);
             }
         }
         finally {

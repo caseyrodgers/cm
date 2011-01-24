@@ -31,7 +31,7 @@ public class HighLightStatImplFlashCardsUsed extends HighLightStatImplBase {
                 Date runDate = rs.getDate("view_date");
                 int cnt = rs.getInt("flash_cards_viewed");
                 
-                writeStatRecord(conn, uid, runDate, "flashcards_used", cnt);
+                writeStatRecord(conn, uid, runDate, "flashcards_used", cnt, -1);
             }
         }
         finally {

@@ -31,7 +31,7 @@ public class HighLightStatImplGamesPlayed extends HighLightStatImplBase {
                 Date runDate = rs.getDate("view_date");
                 int cnt = rs.getInt("games_played");
                 
-                writeStatRecord(conn, uid, runDate, "games_played", cnt);
+                writeStatRecord(conn, uid, runDate, "games_played", cnt, -1);
             }
         }
         finally {

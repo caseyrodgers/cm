@@ -13,7 +13,7 @@ public class HighLightStatImplAvgQuiz extends HighLightStatImplBase {
     public void getStatsFromDate(Connection conn, Date fromDate) throws Exception {
         
         String sql = 
-            "select date(r.run_time) as run_date, u.uid, t.test_id,  avg(floor((answered_correct / (answered_correct + answered_incorrect + not_answered) * 100))) as avg_score " +
+            "select date(r.run_time) as run_date, u.uid, t.test_id,  count(*) as cnt_quizzes, avg(floor((answered_correct / (answered_correct + answered_incorrect + not_answered) * 100))) as avg_score " +
             "from HA_USER u " +
             "  JOIN HA_TEST t on t.user_id = u.uid " +
             "  JOIN HA_TEST_RUN r on r.test_id = t.test_id " +
@@ -30,7 +30,7 @@ public class HighLightStatImplAvgQuiz extends HighLightStatImplBase {
                 Date runDate = rs.getDate("run_date");
                 int cnt = rs.getInt("avg_score");
 
-                writeStatRecord(conn, uid, runDate, getStatName(), cnt);
+                writeStatRecord(conn, uid, runDate, getStatName(),cnt,rs.getInt("cnt_quizzes"));
             }
         }
         finally {

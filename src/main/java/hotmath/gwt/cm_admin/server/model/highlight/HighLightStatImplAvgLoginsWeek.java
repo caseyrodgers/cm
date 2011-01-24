@@ -28,7 +28,7 @@ public class HighLightStatImplAvgLoginsWeek extends HighLightStatImplBase {
                 Date runDate = rs.getDate("login_date");
                 int cnt = rs.getInt("logins");
                 
-                writeStatRecord(conn, uid, runDate, "logins_week", cnt);
+                writeStatRecord(conn, uid, runDate, "logins_week", cnt, -1);
             }
         }
         finally {

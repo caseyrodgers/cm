@@ -122,7 +122,7 @@ abstract public class HighLightStatImplBase implements HighLightStat {
         return list;    
     }
     
-    public void writeStatRecord(final Connection conn, int uid, Date runDate, String columnName, int value) throws Exception {
+    public void writeStatRecord(final Connection conn, int uid, Date runDate, String columnName, int value, int basis) throws Exception {
         
         PreparedStatement psCheck=null;
         try {
@@ -161,11 +161,12 @@ abstract public class HighLightStatImplBase implements HighLightStat {
         
         PreparedStatement psUpdate=null;
         try {
-            String sql = "update HA_USER_HIGHLIGHT set " + columnName + " = ? where uid = ? and highlight_time = ?";
+            String sql = "update HA_USER_HIGHLIGHT set " + columnName + " = ?, " + columnName +"_basis = ? where uid = ? and highlight_time = ?";
             psUpdate = conn.prepareStatement(sql);
             psUpdate.setInt(1, value);
-            psUpdate.setInt(2, uid);
-            psUpdate.setDate(3, new java.sql.Date(runDate.getTime()));
+            psUpdate.setInt(2, basis);
+            psUpdate.setInt(3, uid);
+            psUpdate.setDate(4, new java.sql.Date(runDate.getTime()));
             if(psUpdate.executeUpdate() != 1) {
                 __logger.warn("Could not update stat record to HA_USER_HIGHLIGHT: " + psUpdate);
             }

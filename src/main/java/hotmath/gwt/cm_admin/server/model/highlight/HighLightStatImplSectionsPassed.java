@@ -44,7 +44,7 @@ public class HighLightStatImplSectionsPassed extends HighLightStatImplBase {
                 Date runDate = rs.getDate("run_date");
                 int uid = rs.getInt("uid");
                 int cntPass = rs.getInt("cnt_passed");
-                writeStatRecord(conn, uid, runDate, "sections_passed", cntPass);
+                writeStatRecord(conn, uid, runDate, "sections_passed", cntPass,-1);
             }
         }
         finally {
