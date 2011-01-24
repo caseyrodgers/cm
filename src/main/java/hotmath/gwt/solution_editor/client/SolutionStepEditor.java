@@ -41,7 +41,7 @@ public class SolutionStepEditor extends ContentPanel {
         setStyleName("solution-step-editor");
         setScrollMode(Scroll.AUTOY);
         add(new Label("No solution loaded."));
-        
+
 
         getHeader().addTool(new Button("Cut Step", new SelectionListener<ButtonEvent>() {
             @Override

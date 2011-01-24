@@ -104,7 +104,7 @@ public class CmHighLightManager {
          * @param uids
          * @return
          */
-        CmList<HighlightReportData> getHighLightData(final Connection conn, Date fromDate, Date toDate, int adminId, List<String> uids);
+        CmList<HighlightReportData> getHighLightData(final Connection conn, Date fromDate, Date toDate, int adminId, List<String> uids) throws Exception;
         
         public enum Category {GROUP,SCHOOL,DATABASE};
     }

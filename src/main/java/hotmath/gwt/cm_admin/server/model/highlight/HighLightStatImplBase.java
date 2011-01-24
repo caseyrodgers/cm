@@ -40,7 +40,7 @@ abstract public class HighLightStatImplBase implements HighLightStat {
     abstract public void getStatsFromDate(final Connection conn,Date fromDate) throws Exception;
     
     @Override
-    public CmList<HighlightReportData> getHighLightData(final Connection conn, Date fromDate, Date toDate,int adminId, List<String> uids) {
+    public CmList<HighlightReportData> getHighLightData(final Connection conn, Date fromDate, Date toDate,int adminId, List<String> uids) throws Exception {
         CmList<HighlightReportData> list = new CmArrayList<HighlightReportData>();
         return list;
     }
@@ -104,5 +104,15 @@ abstract public class HighLightStatImplBase implements HighLightStat {
 
     public void setStatName(String statName) {
         this.statName = statName;
+    }
+    
+    protected String createInList(List<String> uids) {
+        String inList = "";
+        for(String uid: uids) {
+            if(inList.length() > 0)
+                inList += ",";
+            inList += uid;
+        }
+        return inList;
     }
 }

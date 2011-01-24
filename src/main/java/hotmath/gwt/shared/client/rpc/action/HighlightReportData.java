@@ -7,6 +7,9 @@ public class HighlightReportData implements Response {
     int uid;
     String data;
     String name;
+    int groupCount;
+    int schoolCount;
+    int dbCount;
     
     public HighlightReportData(){}
     public HighlightReportData(Integer uid, String name, String data) {
@@ -14,6 +17,14 @@ public class HighlightReportData implements Response {
         this.name = name;
         this.data = data;
     }
+    
+    public HighlightReportData(String name) {
+        this.name = name;
+        this.groupCount = groupCount;
+        this.schoolCount = schoolCount;
+        this.dbCount = dbCount;
+    }
+    
     public String getData() {
         return data;
     }
@@ -32,5 +43,22 @@ public class HighlightReportData implements Response {
     public void setUid(int uid) {
         this.uid = uid;
     }
-    
+    public int getGroupCount() {
+        return groupCount;
+    }
+    public void setGroupCount(int groupCount) {
+        this.groupCount = groupCount;
+    }
+    public int getSchoolCount() {
+        return schoolCount;
+    }
+    public void setSchoolCount(int schoolCount) {
+        this.schoolCount = schoolCount;
+    }
+    public int getDbCount() {
+        return dbCount;
+    }
+    public void setDbCount(int dbCount) {
+        this.dbCount = dbCount;
+    }
 }
