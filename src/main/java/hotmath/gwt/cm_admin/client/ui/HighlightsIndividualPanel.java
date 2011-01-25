@@ -28,8 +28,7 @@ import com.google.gwt.user.client.ui.Widget;
 
 
 public class HighlightsIndividualPanel extends ContentPanel {
-    
-    
+
     LayoutContainer _reportOutput = new LayoutContainer();
     static HighlightsIndividualPanel __instance;
     
@@ -53,10 +52,21 @@ public class HighlightsIndividualPanel extends ContentPanel {
     
     static int __lastSelectedReport=0;
     String template = "<tpl for=\".\"><div class='x-view-item'>{text}</div></tpl>";    
+    
+    private native String getTemplate() /*-{ 
+    return  [ 
+    '<tpl for=".">', 
+    '<div class="x-view-item" qtip="{toolTip}">{text}</div>', 
+    '</tpl>' 
+    ].join(""); 
+  }-*/;  
+    
+    
     ListView<ReportModel> _listReports = new ListView<ReportModel>();
     private LayoutContainer createListOfAvailableReports() {
         _listReports.setStore(createListStore());
-        _listReports.setTemplate(template);
+        _listReports.setTemplate(getTemplate());
+        
         
         List<ReportModel> list = new ArrayList<ReportModel>();
         list.add(_listReports.getStore().getAt(__lastSelectedReport));
@@ -143,6 +153,8 @@ class ReportModel extends BaseModelData {
     public ReportModel(HighlightImplBase report) {
         this.report = report;
         set("text", report.getText());
+        
+        set("toolTip", report.getToolTip());
     }
     
     /** The report name 
@@ -173,9 +185,15 @@ class MyLayoutContainer extends LayoutContainer {
 
 abstract class HighlightImplBase  {
     String name;
+    String toolTip;
     Widget _widget;
-    HighlightImplBase(String name) {
+    HighlightImplBase(String name, String toolTip) {
         this.name = name;
+        this.toolTip = toolTip;
+    }
+    
+    public String getToolTip() {
+        return toolTip;
     }
     
     public String getText() {
@@ -197,7 +215,7 @@ abstract class HighlightImplBase  {
 
 class HighlightImplGreatestEffort extends HighlightImplBase {
     public HighlightImplGreatestEffort() {
-        super("Greatest Effort");
+        super("Greatest Effort", "Displays students in order of most lessons completed (excluding those who have viewed zero lessons)");
     }
     
     public Widget prepareWidget() {
@@ -207,7 +225,7 @@ class HighlightImplGreatestEffort extends HighlightImplBase {
 
 class HighlightImplLeastEffort extends HighlightImplBase {
     public HighlightImplLeastEffort() {
-        super("Least Effort");
+        super("Least Effort", "Displays students in order of least lessons completed (excluding those who have viewed zero lessons)");
     }
     public Widget prepareWidget() {
         return new HighlightImplLeastEffortDetailsPanel(this);
@@ -216,7 +234,7 @@ class HighlightImplLeastEffort extends HighlightImplBase {
 
 class HighlightImplMostGamesPlayed extends HighlightImplBase {
     public HighlightImplMostGamesPlayed() {
-        super("Most Games Played");
+        super("Most Games Played","Displays students in order of most quizzes passed (which correlates to most Sections completed as Auto-Enroll quizzes are not counted)");
     }
     public Widget prepareWidget() {
         return new HighlightImplMostGamesPlayedDetailsPanel(this);
@@ -225,7 +243,7 @@ class HighlightImplMostGamesPlayed extends HighlightImplBase {
 
 class HighlightImplMostQuizzesPassed extends HighlightImplBase {
     public HighlightImplMostQuizzesPassed() {
-        super("Most Quizzes Passed");
+        super("Most Quizzes Passed","Displays students in order of most quizzes passed (which correlates to most Sections completed as Auto-Enroll quizzes are not counted)");
     }
     public Widget prepareWidget() {
         return new HighlightImplMostQuizzesPassedDetailsPanel(this);
@@ -234,7 +252,7 @@ class HighlightImplMostQuizzesPassed extends HighlightImplBase {
 
 class HighlightImplHighestAverageQuizScores extends HighlightImplBase {
     public HighlightImplHighestAverageQuizScores() {
-        super("Highest Average Quiz Scores");
+        super("Highest Average Quiz Score","Displays students in order of their average quiz score, including passed and failed quizzes, but excluding Auto-Enroll quizzes.");
     }
     public Widget prepareWidget() {
         return new HighlightImplHighestAverageQuizScoresDetailsPanel(this);
@@ -243,7 +261,7 @@ class HighlightImplHighestAverageQuizScores extends HighlightImplBase {
 
 class HighlightImplMostQuizzesFailed extends HighlightImplBase {
     public HighlightImplMostQuizzesFailed() {
-        super("Most Quizzes Failed");
+        super("Most Quizzes Failed","Displays students in order of most quizzes failed, a possible indicator of students in a program above their level");
     }
     public Widget prepareWidget() {
         return new HighlightImplMostQuizzesFailedDetailsPanel(this);
@@ -252,7 +270,7 @@ class HighlightImplMostQuizzesFailed extends HighlightImplBase {
 
 class HighlightImplMostFailuresLatestQuiz extends HighlightImplBase {
     public HighlightImplMostFailuresLatestQuiz() {
-        super("Most Failures of Current Quiz");
+        super("Most Failures of Current Quiz","Displays students who have failed their current quiz at least once, in rank order - a possible indicator of needing teacher assistance");
     }
     public Widget prepareWidget() {
         return new HighlightImplMostFailuresLatestQuizDetailsPanel(this);
@@ -262,7 +280,7 @@ class HighlightImplMostFailuresLatestQuiz extends HighlightImplBase {
 
 class HighlightImplComparePerformance extends HighlightImplBase {
     public HighlightImplComparePerformance() {
-        super("Compare Performance");
+        super("Compare Performance","Various metrics for comparing group performance with the entire school and the total community of Catchup Math students nationwide");
     }
     public Widget prepareWidget() {
         return new HighlightImplComparePerformanceDetailsPanel(this);

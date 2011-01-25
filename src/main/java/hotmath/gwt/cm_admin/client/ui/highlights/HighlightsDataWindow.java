@@ -1,13 +1,10 @@
 package hotmath.gwt.cm_admin.client.ui;
 
-import hotmath.gwt.cm_tools.client.ui.PdfWindow;
 import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
 import hotmath.gwt.shared.client.eventbus.CmEventListenerImplDefault;
 import hotmath.gwt.shared.client.eventbus.EventBus;
 import hotmath.gwt.shared.client.eventbus.EventType;
-import hotmath.gwt.shared.client.rpc.action.GeneratePdfHighlightsReportAction;
-import hotmath.gwt.shared.client.util.CmRunAsyncCallback;
 
 import java.util.Date;
 
@@ -15,7 +12,7 @@ import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
-import com.google.gwt.core.client.GWT;
+import com.google.gwt.i18n.client.DateTimeFormat;
 
 /**
  * Provide a window to display trending data
@@ -33,6 +30,9 @@ public class HighlightsDataWindow extends CmWindow {
     public static HighlightsDataWindow getSharedInstance(Integer aid) {
         if(__instance == null) {
             __instance = new HighlightsDataWindow();
+        }
+        else {
+            __instance.reloadAllReports();
         }
         __instance.setAdminId(aid);
         __instance.setVisible(true);
@@ -55,25 +55,25 @@ public class HighlightsDataWindow extends CmWindow {
         setLayout(new FitLayout());
         add(new HighlightsIndividualPanel());
 
-//        getHeader().addTool(new Button("Set Date Range", new SelectionListener<ButtonEvent>() {
-//            @Override
-//            public void componentSelected(ButtonEvent ce) {
-//                DateRangePickerDialog.showSharedInstance(new DateRangePickerDialog.Callback() {
-//                    @Override
-//                    public void datePicked(Date from, Date to) {
-//                        _from = from;
-//                        _to = to;
-//                        if(from != null) {
-//                            DateTimeFormat format = DateTimeFormat.getFormat("yyyy-MM-dd"); 
-//                            HighlightsDataWindow.this.setHeading(TITLE + ": " + format.format(from) + " - " + format.format(to));
-//                        }
-//                        else {
-//                            HighlightsDataWindow.this.setHeading(TITLE);
-//                        }
-//                    }
-//                });
-//            }
-//        }));
+        getHeader().addTool(new Button("Set Date Range", new SelectionListener<ButtonEvent>() {
+            @Override
+            public void componentSelected(ButtonEvent ce) {
+                DateRangePickerDialog.showSharedInstance(new DateRangePickerDialog.Callback() {
+                    @Override
+                    public void datePicked(Date from, Date to) {
+                        _from = from;
+                        _to = to;
+                        if(from != null) {
+                            DateTimeFormat format = DateTimeFormat.getFormat("yyyy-MM-dd"); 
+                            HighlightsDataWindow.this.setHeading(TITLE + ": " + format.format(from) + " - " + format.format(to));
+                        }
+                        else {
+                            HighlightsDataWindow.this.setHeading(TITLE);
+                        }
+                    }
+                });
+            }
+        }));
 
 
         getHeader().addTool(new Button("Refresh", new SelectionListener<ButtonEvent>() {

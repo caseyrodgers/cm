@@ -14,7 +14,6 @@ import java.util.Date;
 import java.util.List;
 
 
-
 public class CmHighlightsDao {
 
     
@@ -35,15 +34,15 @@ public class CmHighlightsDao {
     public CmList<HighlightReportData> getReportGreatestEffort(final Connection conn, List<String> uids, Date from, Date to) throws Exception {
         
         String sql = 
-            " select u.uid, u.user_name, count(*) as lessons_completed " +
+            " select u.uid, u.user_name, count(*) as lessons_viewed " +
             "from HA_USER u " +
             "JOIN HA_TEST t on t.user_id = u.uid " +
             "JOIN HA_TEST_RUN r on r.test_id = t.test_id " +
             "JOIN HA_TEST_RUN_LESSON l on l.run_id = r.run_id " +
             "where u.uid in ( " + createInList(uids) + " ) " +
-            "AND l.date_completed is not null " +
+            "AND l.lesson_viewed is not null " +
             "group by u.uid " +
-            "order by lessons_completed desc, u.user_name";
+            "order by lessons_viewed desc, u.user_name";
         
         CmList<HighlightReportData> list=new CmArrayList<HighlightReportData>();
         
@@ -52,7 +51,7 @@ public class CmHighlightsDao {
             ps = conn.prepareStatement(sql);
             ResultSet rs = ps.executeQuery();
             while(rs.next()) {
-                list.add(new HighlightReportData(rs.getInt("uid"), rs.getString("user_name"), rs.getString("lessons_completed")));
+                list.add(new HighlightReportData(rs.getInt("uid"), rs.getString("user_name"), rs.getString("lessons_viewed")));
             }
         }
         finally {
@@ -146,10 +145,12 @@ public class CmHighlightsDao {
             " from   HA_USER u " +
             " join HA_TEST t " +
             " on t.user_id = u.uid " +
+            " join CM_USER_PROGRAM c on c.id = t.user_prog_id " +
             " join HA_TEST_RUN r " +
             " on r.test_id = t.test_id " +
             " where  u.uid in (" + createInList(uids) + ") " +
             " and r.is_passing = 1 " +
+            " and c.test_def_id <> 15 " +
             " group  by u.uid " +
             " order  by quizzes_passed desc, u.user_name"; 
         
@@ -171,15 +172,21 @@ public class CmHighlightsDao {
     
     public CmList<HighlightReportData> getReportAvgQuizScores(final Connection conn, List<String> uids, Date from, Date to) throws Exception {
         
+        /** Make sure to not include Auto Enroll (15)
+         * 
+         */
         String sql = 
             "select u.uid, u.user_name, " +
             "floor(avg((answered_correct / (answered_correct + answered_incorrect + not_answered)) * 100)) as avg_quiz_score " +
             " from   HA_USER u " +
             " join HA_TEST t " +
             " on t.user_id = u.uid "+
+            " join CM_USER_PROGRAM c " +
+            " on c.id = t.user_prog_id " +
             " join HA_TEST_RUN r " +
             " on r.test_id = t.test_id " +
             " where  u.uid in ( " + createInList(uids) + " ) " +
+            " and c.test_def_id <> 15 " +
             " group by u.uid " +
             " order by avg_quiz_score desc, u.user_name";
 
@@ -207,10 +214,12 @@ public class CmHighlightsDao {
             "FROM HA_USER u " +
             " join HA_TEST t " +
             " on t.user_id = u.uid " +
+            " join CM_USER_PROGRAM c on c.id = t.user_prog_id " +
             " join HA_TEST_RUN r " +
             " on r.test_id = t.test_id " +
             " where  u.uid in ( " + createInList(uids) + " ) " +
             " and r.is_passing = 0 " +
+            " and c.test_def_id <> 15 " +
             " group by u.uid " +
             " order by failed_quizzes desc";
      
