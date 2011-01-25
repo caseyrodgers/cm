@@ -8,9 +8,14 @@ import hotmath.gwt.shared.client.eventbus.EventType;
 
 import java.util.Date;
 
+import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
+import com.extjs.gxt.ui.client.event.Events;
+import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.SelectionListener;
+import com.extjs.gxt.ui.client.widget.Label;
 import com.extjs.gxt.ui.client.widget.button.Button;
+import com.extjs.gxt.ui.client.widget.form.CheckBox;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.google.gwt.i18n.client.DateTimeFormat;
 
@@ -45,6 +50,10 @@ public class HighlightsDataWindow extends CmWindow {
     final String TITLE="Student Usage Highlights";
     public static Date _from, _to;
     
+    Button _dateRangeButton;
+    String DEFAULT_DATE_RANGE_LABEL="No Date Range Set";
+    Label _dateRange = new Label(DEFAULT_DATE_RANGE_LABEL);
+    
     private HighlightsDataWindow() {
         __instance = this;
         addStyleName("highlights-data-window");
@@ -55,25 +64,15 @@ public class HighlightsDataWindow extends CmWindow {
         setLayout(new FitLayout());
         add(new HighlightsIndividualPanel());
 
-        getHeader().addTool(new Button("Set Date Range", new SelectionListener<ButtonEvent>() {
+        _dateRangeButton = new Button("Set Date Range", new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent ce) {
-                DateRangePickerDialog.showSharedInstance(new DateRangePickerDialog.Callback() {
-                    @Override
-                    public void datePicked(Date from, Date to) {
-                        _from = from;
-                        _to = to;
-                        if(from != null) {
-                            DateTimeFormat format = DateTimeFormat.getFormat("yyyy-MM-dd"); 
-                            HighlightsDataWindow.this.setHeading(TITLE + ": " + format.format(from) + " - " + format.format(to));
-                        }
-                        else {
-                            HighlightsDataWindow.this.setHeading(TITLE);
-                        }
-                    }
-                });
+                showDatePicker();
             }
-        }));
+        });
+        
+        
+        getHeader().addTool(_dateRangeButton);
 
 
         getHeader().addTool(new Button("Refresh", new SelectionListener<ButtonEvent>() {
@@ -99,6 +98,22 @@ public class HighlightsDataWindow extends CmWindow {
             }
         }));
         
+        /** Position button at left margin on button bar
+         * 
+         */
+        getButtonBar().setStyleAttribute("position", "relative");
+        _dateRange.setStyleAttribute("position", "absolute");
+        _dateRange.setStyleAttribute("left", "0");
+        _dateRange.setStyleAttribute("top", "0");
+        _dateRange.setStyleAttribute("color", "blue");
+        _dateRange.setStyleAttribute("padding", "5px 10px 0 0");
+        _dateRange.addListener(Events.OnClick, new Listener<BaseEvent>() {
+            public void handleEvent(BaseEvent be) {
+                showDatePicker();
+            }
+        });
+        getButtonBar().add(_dateRange);                  
+        
         /**
          * turn on after data retrieved
          * 
@@ -106,6 +121,22 @@ public class HighlightsDataWindow extends CmWindow {
         setVisible(true);
     }
 
+    private void showDatePicker() {
+        DateRangePickerDialog.showSharedInstance(new DateRangePickerDialog.Callback() {
+            @Override
+            public void datePicked(Date from, Date to) {
+                _from = from;
+                _to = to;
+                if(from != null) {
+                    DateTimeFormat format = DateTimeFormat.getFormat("yyyy-MM-dd"); 
+                    _dateRange.setText("Date range: " + format.format(from) + " - " + format.format(to));
+                }
+                else {
+                    _dateRange.setText(DEFAULT_DATE_RANGE_LABEL);
+                }
+            }
+        });
+    }
 
     int _currentSelection;
     private void reloadAllReports() {

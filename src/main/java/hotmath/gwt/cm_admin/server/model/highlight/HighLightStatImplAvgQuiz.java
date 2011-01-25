@@ -17,7 +17,9 @@ public class HighLightStatImplAvgQuiz extends HighLightStatImplBase {
             "from HA_USER u " +
             "  JOIN HA_TEST t on t.user_id = u.uid " +
             "  JOIN HA_TEST_RUN r on r.test_id = t.test_id " +
+            "  JOIN CM_USER_PROGRAM c on c.id = t.user_prog_id " +
             "where date(r.run_time)  > ? " +
+            " and c.test_def_id  <> 15 " +
             "group by date(r.run_time),u.uid ";
         
         PreparedStatement ps=null;
@@ -28,14 +30,19 @@ public class HighLightStatImplAvgQuiz extends HighLightStatImplBase {
             while(rs.next()) {
                 int uid = rs.getInt("uid");
                 Date runDate = rs.getDate("run_date");
-                int cnt = rs.getInt("avg_score");
-
-                writeStatRecord(conn, uid, runDate, getStatName(),cnt,rs.getInt("cnt_quizzes"));
+                int avg = rs.getInt("avg_score");
+                int basis = rs.getInt("cnt_quizzes");
+                
+                writeStatRecord(conn, uid, runDate, getStatName(),avg,basis);
             }
         }
         finally {
             SqlUtilities.releaseResources(null, ps, null);
         }        
     }
-
+    
+    @Override
+    protected String getSqlSelectColumn() {
+            return "concat(floor(sum(" + getStatName() + ") / sum(" + getStatName() + "_basis)),'%')";
+    }
 }

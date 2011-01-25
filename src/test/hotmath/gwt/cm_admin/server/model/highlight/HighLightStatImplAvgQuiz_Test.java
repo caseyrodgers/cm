@@ -13,7 +13,9 @@ public class HighLightStatImplAvgQuiz_Test extends CmDbTestCase {
     
     public void testExecute() throws Exception {
         Date fromDate = new GregorianCalendar(2011,0,0).getTime();
-        new HighLightStatImplAvgQuiz().getStatsFromDate(conn, fromDate);
+        HighLightStatImplAvgQuiz hq = new HighLightStatImplAvgQuiz();
+        hq.setStatName("quiz_score");
+        hq.getStatsFromDate(conn, fromDate);
     }
 
 }

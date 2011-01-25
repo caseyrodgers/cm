@@ -50,21 +50,29 @@ abstract public class HighLightStatImplBase implements HighLightStat {
     
     abstract public void getStatsFromDate(final Connection conn,Date fromDate) throws Exception;
     
+    /** Return the SQL column name use to acquire
+     *  the aggregate data for this stat.
+     * @return
+     */
+    protected String getSqlSelectColumn() {
+        return "sum(" + getStatName() + ")";
+    }
+    
+    
     @Override
     public CmList<HighlightReportData> getHighLightData(final Connection conn,  Date fromDate, Date toDate,int adminId, List<String> uids) throws Exception {
         CmList<HighlightReportData> list = new CmArrayList<HighlightReportData>();
         
         HighlightReportData reportData = new HighlightReportData(getStatLabel());
         list.add(reportData);
-        
-        String colName = getStatName();
+
         /** Get group data
          * 
          */
         PreparedStatement ps=null;
         try {
             String sql = 
-                "select sum(" + colName + ") as cnt_passed " +
+                "select " + getSqlSelectColumn() + " as cnt_passed " +
                 " from  HA_USER_HIGHLIGHT " +
                 " where uid in ( " + createInList(uids) + ") ";
             ps = conn.prepareStatement(sql);
@@ -83,7 +91,7 @@ abstract public class HighLightStatImplBase implements HighLightStat {
          */
         try {
             String sql =    
-                "select sum(" + colName + ") as cnt_passed " +
+                "select " + getSqlSelectColumn() + " as cnt_passed " +
                 "from  HA_USER u " + 
                 " JOIN HA_ADMIN a on a.aid = u.admin_id " +
                 " JOIN HA_USER_HIGHLIGHT h on h.uid = u.uid " +
@@ -105,7 +113,7 @@ abstract public class HighLightStatImplBase implements HighLightStat {
          */
         try {
             String sql = 
-                "select sum(" + colName + ") as cnt_passed " +
+                "select " + getSqlSelectColumn() + " as cnt_passed " +
                 " from  HA_USER u " + 
                 " JOIN HA_ADMIN a on a.aid = u.admin_id " +
                 " JOIN HA_USER_HIGHLIGHT h on h.uid = u.uid ";

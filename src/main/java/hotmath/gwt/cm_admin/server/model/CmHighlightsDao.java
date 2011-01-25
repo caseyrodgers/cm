@@ -40,6 +40,7 @@ public class CmHighlightsDao {
             "JOIN HA_TEST_RUN r on r.test_id = t.test_id " +
             "JOIN HA_TEST_RUN_LESSON l on l.run_id = r.run_id " +
             "where u.uid in ( " + createInList(uids) + " ) " +
+            " AND date(r.run_time) between ? and ? " +
             "AND l.lesson_viewed is not null " +
             "group by u.uid " +
             "order by lessons_viewed desc, u.user_name";
@@ -49,6 +50,8 @@ public class CmHighlightsDao {
         PreparedStatement ps=null;
         try {
             ps = conn.prepareStatement(sql);
+            ps.setDate(1, new java.sql.Date(from.getTime()));
+            ps.setDate(2, new java.sql.Date(to.getTime()));
             ResultSet rs = ps.executeQuery();
             while(rs.next()) {
                 list.add(new HighlightReportData(rs.getInt("uid"), rs.getString("user_name"), rs.getString("lessons_viewed")));
@@ -83,6 +86,8 @@ public class CmHighlightsDao {
             "JOIN HA_TEST_RUN_LESSON l on l.run_id = r.run_id " +
             "where u.uid in ( " + createInList(uids) + " ) " +
             "AND l.date_completed is not null " +
+            " AND date(r.run_time) between ? and ? " +
+            "AND l.lesson_viewed is not null " +            
             "group by u.uid " +
             "order by lessons_completed, u.user_name";
         
@@ -91,6 +96,8 @@ public class CmHighlightsDao {
         PreparedStatement ps=null;
         try {
             ps = conn.prepareStatement(sql);
+            ps.setDate(1, new java.sql.Date(from.getTime()));
+            ps.setDate(2, new java.sql.Date(to.getTime()));
             ResultSet rs = ps.executeQuery();
             while(rs.next()) {
                 list.add(new HighlightReportData(rs.getInt("uid"), rs.getString("user_name"), rs.getString("lessons_completed")));
@@ -117,6 +124,7 @@ public class CmHighlightsDao {
             " on i.run_id = r.run_id " +
             " where  u.uid in (" + createInList(uids) + ") " +
             " and i.item_type = 'activity_standard' " +
+            " and date(i.view_time) between ? and ? " +
             " group  by u.uid " +
             " order  by games_viewed desc, u.user_name"; 
         
@@ -125,6 +133,9 @@ public class CmHighlightsDao {
         PreparedStatement ps=null;
         try {
             ps = conn.prepareStatement(sql);
+            ps.setDate(1, new java.sql.Date(from.getTime()));
+            ps.setDate(2, new java.sql.Date(to.getTime()));
+
             ResultSet rs = ps.executeQuery();
             while(rs.next()) {
                 list.add(new HighlightReportData(rs.getInt("uid"), rs.getString("user_name"), rs.getString("games_viewed")));
@@ -151,6 +162,7 @@ public class CmHighlightsDao {
             " where  u.uid in (" + createInList(uids) + ") " +
             " and r.is_passing = 1 " +
             " and c.test_def_id <> 15 " +
+            " and date(r.run_time) between ? and ? " +
             " group  by u.uid " +
             " order  by quizzes_passed desc, u.user_name"; 
         
@@ -159,6 +171,8 @@ public class CmHighlightsDao {
         PreparedStatement ps=null;
         try {
             ps = conn.prepareStatement(sql);
+            ps.setDate(1, new java.sql.Date(from.getTime()));
+            ps.setDate(2, new java.sql.Date(to.getTime()));
             ResultSet rs = ps.executeQuery();
             while(rs.next()) {
                 list.add(new HighlightReportData(rs.getInt("uid"), rs.getString("user_name"), rs.getString("quizzes_passed")));
@@ -187,6 +201,7 @@ public class CmHighlightsDao {
             " on r.test_id = t.test_id " +
             " where  u.uid in ( " + createInList(uids) + " ) " +
             " and c.test_def_id <> 15 " +
+            " and date(r.run_time) between ? and ? " +
             " group by u.uid " +
             " order by avg_quiz_score desc, u.user_name";
 
@@ -196,6 +211,9 @@ public class CmHighlightsDao {
         PreparedStatement ps=null;
         try {
             ps = conn.prepareStatement(sql);
+            ps.setDate(1, new java.sql.Date(from.getTime()));
+            ps.setDate(2, new java.sql.Date(to.getTime()));
+            
             ResultSet rs = ps.executeQuery();
             while(rs.next()) {
                 list.add(new HighlightReportData(rs.getInt("uid"), rs.getString("user_name"), rs.getString("avg_quiz_score")));
@@ -220,6 +238,7 @@ public class CmHighlightsDao {
             " where  u.uid in ( " + createInList(uids) + " ) " +
             " and r.is_passing = 0 " +
             " and c.test_def_id <> 15 " +
+            " and date(r.run_time) between ? and ? " +
             " group by u.uid " +
             " order by failed_quizzes desc";
      
@@ -228,6 +247,9 @@ public class CmHighlightsDao {
         PreparedStatement ps=null;
         try {
             ps = conn.prepareStatement(sql);
+            ps.setDate(1, new java.sql.Date(from.getTime()));
+            ps.setDate(2, new java.sql.Date(to.getTime()));
+
             ResultSet rs = ps.executeQuery();
             while(rs.next()) {
                 list.add(new HighlightReportData(rs.getInt("uid"), rs.getString("user_name"), rs.getString("failed_quizzes")));
@@ -273,6 +295,7 @@ public class CmHighlightsDao {
         "where t.user_id in(" + createInList(uids) + " ) " +
         "and t.test_segment = u.active_segment " +
         "and r.is_passing = 0 " +
+        " and date(r.run_time) between ? and ? " +
         "group by u.uid " +
         "order by failed_quizzes desc, user_name";
         
@@ -281,6 +304,9 @@ public class CmHighlightsDao {
         PreparedStatement ps=null;
         try {
             ps = conn.prepareStatement(sql);
+            ps.setDate(1, new java.sql.Date(from.getTime()));
+            ps.setDate(2, new java.sql.Date(to.getTime()));
+            
             ResultSet rs = ps.executeQuery();
             while(rs.next()) {
                 list.add(new HighlightReportData(rs.getInt("uid"), rs.getString("user_name"), rs.getString("failed_quizzes")));

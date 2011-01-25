@@ -42,7 +42,6 @@ abstract public class HighlightImplDetailsPanelBase extends LayoutContainer {
     @Override
     protected void onRender(Element parent, int index) {
         super.onRender(parent, index);
-        add(new Label("Loading data from server ..."));
         getDataFromServer();
     }
 
@@ -104,7 +103,7 @@ abstract public class HighlightImplDetailsPanelBase extends LayoutContainer {
         setLayout(new FitLayout());
         ListStore<HighlightReportModel> store = new ListStore<HighlightReportModel>();
         _grid = defineGrid(store, getColumns());
-        if(data == null) {
+        if(data == null || data.size() == 0) {
             add(new NoRowsFoundPanel());
         }
         else {
@@ -231,10 +230,14 @@ class HighlightReportModel extends BaseModelData {
     }
 }
 
-
+/** Shown when no students meet criteria
+ * 
+ * @author casey
+ *
+ */
 class NoRowsFoundPanel extends LayoutContainer {
     public NoRowsFoundPanel() {
         setLayout(new CenterLayout());
-        add(new Html("<h1>No Students Found</h1>"));
+        add(new Html("<h1 style='font-size: 1.2em;margin: 10px;padding: 10px'>No students meet the criteria for this display.<br/>Please ‘mouseover’ the menu item for details.</h1>"));
     }
 }
