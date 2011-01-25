@@ -134,6 +134,8 @@ public class HighlightsDataWindow extends CmWindow {
                 else {
                     _dateRange.setText(DEFAULT_DATE_RANGE_LABEL);
                 }
+                
+                reloadAllReports();
             }
         });
     }

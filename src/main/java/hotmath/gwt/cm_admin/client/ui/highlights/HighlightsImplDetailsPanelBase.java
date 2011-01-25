@@ -238,6 +238,6 @@ class HighlightReportModel extends BaseModelData {
 class NoRowsFoundPanel extends LayoutContainer {
     public NoRowsFoundPanel() {
         setLayout(new CenterLayout());
-        add(new Html("<h1 style='font-size: 1.2em;margin: 10px;padding: 10px'>No students meet the criteria for this display.<br/>Please ‘mouseover’ the menu item for details.</h1>"));
+        add(new Html("<h1 style='font-size: 1.2em;margin: 10px;padding: 10px'>No students meet the criteria for this display.<br/>Please 'mouseover' the menu item for details.</h1>"));
     }
 }

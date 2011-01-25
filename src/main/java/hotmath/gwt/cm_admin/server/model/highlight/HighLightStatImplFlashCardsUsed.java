@@ -10,7 +10,7 @@ import java.util.Date;
 public class HighLightStatImplFlashCardsUsed extends HighLightStatImplBase {
     
     @Override
-    public void getStatsFromDate(Connection conn, Date fromDate) throws Exception {
+    public void getStatsFromDate(Connection conn, Date fromDate, Date toDate) throws Exception {
         String sql = 
         "select date(i.view_time) as view_date, u.uid, count(*) as flash_cards_viewed " +
         "from HA_USER u " +

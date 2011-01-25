@@ -21,7 +21,7 @@ public class HighLightStatImplSectionsPassed extends HighLightStatImplBase {
     final static Logger __logger = Logger.getLogger(HighLightStatImplSectionsPassed.class);
 
     @Override
-    public void getStatsFromDate(final Connection conn, Date fromDate) throws Exception {
+    public void getStatsFromDate(final Connection conn, Date fromDate, Date toDate) throws Exception {
         String sql =
             "select date(run_time) as run_date, uid, count(*) as cnt_passed " +
             "from   HA_USER u " +

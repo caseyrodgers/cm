@@ -317,6 +317,38 @@ public class CmHighlightsDao {
         }
         return list;
     }
+    
+    
+    public CmList<HighlightReportData> getReportLoginsPerWeek(final Connection conn, List<String> uids, Date from, Date to) throws Exception {
+        
+        String sql =
+            
+            "select u.uid, u.user_name,  floor( (count(*)  /  7) ) as avg_login_week " +
+            " from   HA_USER_LOGIN l " +
+            "   JOIN HA_USER u ON u.uid = l.user_id " +
+            " where  u.uid in(" + createInList(uids) + " ) " +
+            " and date(l.login_time) between ? and ? " +
+            " group by u.uid " +
+            " order by avg_login_week desc, u.user_name";
+            
+        CmList<HighlightReportData> list=new CmArrayList<HighlightReportData>();
+        
+        PreparedStatement ps=null;
+        try {
+            ps = conn.prepareStatement(sql);
+            ps.setDate(1, new java.sql.Date(from.getTime()));
+            ps.setDate(2, new java.sql.Date(to.getTime()));
+            
+            ResultSet rs = ps.executeQuery();
+            while(rs.next()) {
+                list.add(new HighlightReportData(rs.getInt("uid"), rs.getString("user_name"), rs.getString("avg_login_week")));
+            }
+        }
+        finally {
+            SqlUtilities.releaseResources(null,ps,null);
+        }
+        return list;
+    }
 
     
     /** Kludged ...
@@ -338,6 +370,8 @@ public class CmHighlightsDao {
      */
     public CmList<HighlightReportData> getReportComparePerformance(final Connection conn, int adminId, List<String> uids, Date from, Date to) throws Exception {
         CmList<HighlightReportData> list=new CmArrayList<HighlightReportData>();
+        
+        
         for(HighLightStat stat: new CmHighLightManager(conn).getStats()) {
             list.addAll(stat.getHighLightData(conn, from, to, adminId, uids));
         }

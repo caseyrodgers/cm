@@ -10,7 +10,7 @@ import java.util.Date;
 public class HighLightStatImplAvgQuiz extends HighLightStatImplBase {
 
     @Override
-    public void getStatsFromDate(Connection conn, Date fromDate) throws Exception {
+    public void getStatsFromDate(Connection conn, Date fromDate, Date toDate) throws Exception {
         
         String sql = 
             "select date(r.run_time) as run_date, u.uid, t.test_id,  count(*) as cnt_quizzes, avg(floor((answered_correct / (answered_correct + answered_incorrect + not_answered) * 100))) as avg_score " +

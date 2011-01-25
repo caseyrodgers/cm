@@ -1,5 +1,6 @@
 package hotmath.gwt.cm_admin.client.ui;
 
+import hotmath.gwt.cm_admin.server.model.highlight.HighLightStatImplAvgLoginsWeek;
 import hotmath.gwt.cm_tools.client.ui.InfoPopupBox;
 import hotmath.gwt.cm_tools.client.ui.PdfWindow;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
@@ -115,6 +116,7 @@ public class HighlightsIndividualPanel extends ContentPanel {
         s.add(new ReportModel(new HighlightImplHighestAverageQuizScores()));
         s.add(new ReportModel(new HighlightImplMostQuizzesFailed()));
         s.add(new ReportModel(new HighlightImplMostFailuresLatestQuiz()));
+        s.add(new ReportModel(new HighlightImplLoginsWeek()));        
         s.add(new ReportModel(new HighlightImplComparePerformance()));
         return s;
     }
@@ -287,4 +289,11 @@ class HighlightImplComparePerformance extends HighlightImplBase {
     }
 }
 
-
+class HighlightImplLoginsWeek extends HighlightImplBase {
+    public HighlightImplLoginsWeek() {
+        super("Average Logins Week","Average number of logins per week");
+    }
+    public Widget prepareWidget() {
+        return new HighlightImplLoginsWeekDetailsPanel(this);
+    }
+}

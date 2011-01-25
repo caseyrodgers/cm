@@ -15,6 +15,8 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
+import com.sun.xml.internal.rngom.digested.DDataPattern;
+
 /** Update Sections Passed stats
  * 
  * Provide basic routines used to update db
@@ -34,7 +36,7 @@ abstract public class HighLightStatImplBase implements HighLightStat {
     @Override
     public void generateStat(Connection conn) throws Exception {
         GregorianCalendar cal = new GregorianCalendar(2009,0,0);
-        getStatsFromDate(conn,cal.getTime());
+        getStatsFromDate(conn,cal.getTime(), null);
     }
     
     @Override
@@ -48,7 +50,7 @@ abstract public class HighLightStatImplBase implements HighLightStat {
         statLabel = label;
     }
     
-    abstract public void getStatsFromDate(final Connection conn,Date fromDate) throws Exception;
+    abstract public void getStatsFromDate(final Connection conn,Date fromDate, Date toDate) throws Exception;
     
     /** Return the SQL column name use to acquire
      *  the aggregate data for this stat.
@@ -74,8 +76,13 @@ abstract public class HighLightStatImplBase implements HighLightStat {
             String sql = 
                 "select " + getSqlSelectColumn() + " as cnt_passed " +
                 " from  HA_USER_HIGHLIGHT " +
-                " where uid in ( " + createInList(uids) + ") ";
+                " where uid in ( " + createInList(uids) + ") " +
+                " and date(HIGHLIGHT_TIME) between ? and ?";
+            
             ps = conn.prepareStatement(sql);
+            ps.setDate(1, new java.sql.Date(fromDate.getTime()));
+            ps.setDate(2, new java.sql.Date(toDate.getTime()));
+
             ResultSet rs = ps.executeQuery();
             if(rs.first()) {
                 reportData.setGroupCount(rs.getInt("cnt_passed"));
@@ -95,10 +102,14 @@ abstract public class HighLightStatImplBase implements HighLightStat {
                 "from  HA_USER u " + 
                 " JOIN HA_ADMIN a on a.aid = u.admin_id " +
                 " JOIN HA_USER_HIGHLIGHT h on h.uid = u.uid " +
-                " where a.aid = ? ";
+                " where a.aid = ? " +
+                " and date(HIGHLIGHT_TIME) between ? and ? ";
                 
             ps = conn.prepareStatement(sql);
             ps.setInt(1, adminId);
+            ps.setDate(2, new java.sql.Date(fromDate.getTime()));
+            ps.setDate(3, new java.sql.Date(toDate.getTime()));
+            
             ResultSet rs = ps.executeQuery();
             if(rs.first()) {
                 reportData.setSchoolCount(rs.getInt("cnt_passed"));
@@ -116,8 +127,12 @@ abstract public class HighLightStatImplBase implements HighLightStat {
                 "select " + getSqlSelectColumn() + " as cnt_passed " +
                 " from  HA_USER u " + 
                 " JOIN HA_ADMIN a on a.aid = u.admin_id " +
-                " JOIN HA_USER_HIGHLIGHT h on h.uid = u.uid ";
+                " JOIN HA_USER_HIGHLIGHT h on h.uid = u.uid " +
+                " WHERE date(HIGHLIGHT_TIME) BETWEEN ? and ? ";
             ps = conn.prepareStatement(sql);
+            ps.setDate(1, new java.sql.Date(fromDate.getTime()));
+            ps.setDate(2, new java.sql.Date(toDate.getTime()));
+
             ResultSet rs = ps.executeQuery();
             if(rs.first()) {
                 reportData.setDbCount(rs.getInt("cnt_passed"));

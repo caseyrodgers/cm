@@ -13,7 +13,7 @@ public class HighLightStatImplGamesPlayed_Test extends CmDbTestCase {
     
     public void testExecute() throws Exception {
         Date fromDate = new GregorianCalendar(2010,0,0).getTime();
-        new HighLightStatImplGamesPlayed().getStatsFromDate(conn, fromDate);
+        new HighLightStatImplGamesPlayed().getStatsFromDate(conn, fromDate, null);
     }
 
 }
