@@ -1680,7 +1680,7 @@ from   HA_USER u
                 
           ) la on la.group_id = u.group_id
           
-          join ( 
+          left join ( 
           
                   /* 
                   * get total count of lessons viewed
@@ -1697,7 +1697,7 @@ from   HA_USER u
           ) lv on lv.group_id = u.group_id
           
           
-          join (
+          left join (
           
               /** 
               * get number of quizzes passed for group 
@@ -1713,7 +1713,7 @@ from   HA_USER u
           ) qp on qp.group_id = u.group_id
           
           
-          join (
+          left join (
           
               /** 
               * get number of quizzes passed for entire school
