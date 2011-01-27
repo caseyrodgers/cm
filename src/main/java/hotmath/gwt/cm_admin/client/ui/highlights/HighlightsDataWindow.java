@@ -1,5 +1,6 @@
 package hotmath.gwt.cm_admin.client.ui;
 
+import hotmath.gwt.cm_admin.client.CatchupMathAdmin;
 import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
 import hotmath.gwt.shared.client.eventbus.CmEventListenerImplDefault;
@@ -15,7 +16,6 @@ import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.widget.Label;
 import com.extjs.gxt.ui.client.widget.button.Button;
-import com.extjs.gxt.ui.client.widget.form.CheckBox;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.google.gwt.i18n.client.DateTimeFormat;
 
@@ -51,18 +51,21 @@ public class HighlightsDataWindow extends CmWindow {
     public static Date _from, _to;
     
     Button _dateRangeButton;
-    String DEFAULT_DATE_RANGE_LABEL="No Date Range Set";
-    Label _dateRange = new Label(DEFAULT_DATE_RANGE_LABEL);
+    Label _dateRange = new Label();
     
     private HighlightsDataWindow() {
         __instance = this;
         addStyleName("highlights-data-window");
         setHeading(TITLE);
-        setWidth(600);
+        setWidth(750);
         setHeight(500);
 
         setLayout(new FitLayout());
         add(new HighlightsIndividualPanel());
+        
+        
+        _from = CatchupMathAdmin.getInstance().getAccountInfoPanel().getModel().getAccountCreateDate();
+        _to = new Date();
 
         _dateRangeButton = new Button("Set Date Range", new SelectionListener<ButtonEvent>() {
             @Override
@@ -70,6 +73,7 @@ public class HighlightsDataWindow extends CmWindow {
                 showDatePicker();
             }
         });
+        _dateRange.setText(formatDateRangeLabel(_from, _to));
         
         
         getHeader().addTool(_dateRangeButton);
@@ -120,21 +124,20 @@ public class HighlightsDataWindow extends CmWindow {
          */
         setVisible(true);
     }
+    
+    static final DateTimeFormat _dateFormat = DateTimeFormat.getFormat("yyyy-MM-dd");
+    private String formatDateRangeLabel(Date from, Date to) {
+        return "Date range: " + _dateFormat.format(from) + " - " + _dateFormat.format(to);
+    }
 
     private void showDatePicker() {
         DateRangePickerDialog.showSharedInstance(new DateRangePickerDialog.Callback() {
             @Override
             public void datePicked(Date from, Date to) {
-                _from = from;
-                _to = to;
-                if(from != null) {
-                    DateTimeFormat format = DateTimeFormat.getFormat("yyyy-MM-dd"); 
-                    _dateRange.setText("Date range: " + format.format(from) + " - " + format.format(to));
-                }
-                else {
-                    _dateRange.setText(DEFAULT_DATE_RANGE_LABEL);
-                }
-                
+                _from = (from != null)?from:_from;
+                _to = (to != null)?to:_to;
+
+                _dateRange.setText(formatDateRangeLabel(from, to));
                 reloadAllReports();
             }
         });

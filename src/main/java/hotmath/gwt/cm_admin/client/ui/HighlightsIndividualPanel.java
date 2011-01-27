@@ -1,6 +1,5 @@
 package hotmath.gwt.cm_admin.client.ui;
 
-import hotmath.gwt.cm_admin.server.model.highlight.HighLightStatImplAvgLoginsWeek;
 import hotmath.gwt.cm_tools.client.ui.InfoPopupBox;
 import hotmath.gwt.cm_tools.client.ui.PdfWindow;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
@@ -116,8 +115,9 @@ public class HighlightsIndividualPanel extends ContentPanel {
         s.add(new ReportModel(new HighlightImplHighestAverageQuizScores()));
         s.add(new ReportModel(new HighlightImplMostQuizzesFailed()));
         s.add(new ReportModel(new HighlightImplMostFailuresLatestQuiz()));
-        s.add(new ReportModel(new HighlightImplLoginsWeek()));        
+        s.add(new ReportModel(new HighlightImplLoginsWeek()));
         s.add(new ReportModel(new HighlightImplComparePerformance()));
+        s.add(new ReportModel(new HighlightImplGroupProgress()));
         return s;
     }
     
@@ -280,6 +280,24 @@ class HighlightImplMostFailuresLatestQuiz extends HighlightImplBase {
     
 }
 
+class HighlightImplLoginsWeek extends HighlightImplBase {
+    public HighlightImplLoginsWeek() {
+        super("Average Logins Week","Average number of logins per week");
+    }
+    public Widget prepareWidget() {
+        return new HighlightImplLoginsWeekDetailsPanel(this);
+    }
+}
+
+class HighlightImplGroupProgress extends HighlightImplBase {
+    public HighlightImplGroupProgress() {
+        super("Group Progress","Shows number of active students (logged in at least once), total logins, lessons viewed, and quizzes passed for each group and entire school. Groups with no active students are omitted.");
+    }
+    public Widget prepareWidget() {
+        return new HighlightImplGroupProgressDetailsPanel(this);
+    }
+}
+
 class HighlightImplComparePerformance extends HighlightImplBase {
     public HighlightImplComparePerformance() {
         super("Compare Performance","Various metrics for comparing group performance with the entire school and the total community of Catchup Math students nationwide");
@@ -289,11 +307,3 @@ class HighlightImplComparePerformance extends HighlightImplBase {
     }
 }
 
-class HighlightImplLoginsWeek extends HighlightImplBase {
-    public HighlightImplLoginsWeek() {
-        super("Average Logins Week","Average number of logins per week");
-    }
-    public Widget prepareWidget() {
-        return new HighlightImplLoginsWeekDetailsPanel(this);
-    }
-}

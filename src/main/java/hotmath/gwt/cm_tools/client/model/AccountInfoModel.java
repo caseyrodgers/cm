@@ -2,6 +2,8 @@ package hotmath.gwt.cm_tools.client.model;
 
 import hotmath.gwt.cm_rpc.client.rpc.Response;
 
+import java.util.Date;
+
 import com.extjs.gxt.ui.client.data.BaseModelData;
 
 public class AccountInfoModel extends BaseModelData  implements Response {
@@ -17,6 +19,7 @@ public class AccountInfoModel extends BaseModelData  implements Response {
 	public static final String ADMIN_SUBSCRIBER_ID = "subscriber-id";
 	public static final String STUDENT_COUNT_STYLE_KEY = "student-count-style";
 	public static final String TUTORING_MINUTES_LABEL = "tutoring-minutes-label";
+	public static final String ACCOUNT_CREATE_DATE = "account_create_date";
 	public String getSchoolName() {
 		return get(SCHOOL_NAME_KEY);
 	}
@@ -125,6 +128,13 @@ public class AccountInfoModel extends BaseModelData  implements Response {
 	    return get(STUDENT_COUNT_STYLE_KEY);
 	}
 	
+	public Date getAccountCreateDate() {
+	    return get(ACCOUNT_CREATE_DATE);
+	}
+	
+	public void setAccountCreateDate(Date date) {
+	    set(ACCOUNT_CREATE_DATE, date);
+	}
 
 	public AccountInfoModel() {
 	}

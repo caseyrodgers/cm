@@ -37,6 +37,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -448,6 +449,14 @@ public class CmAdminDao {
                 ai.setMaxStudents(rs.getInt("max_students"));
                 ai.setTotalStudents(rs.getInt("student_count"));
                 java.sql.Date dt = rs.getDate("catchup_expire_date");
+                ai.setAccountCreateDate(rs.getDate("account_create_date"));
+                
+                /** if account create is null (test account), use default
+                 * 
+                 */
+                if(ai.getAccountCreateDate() == null)
+                    ai.setAccountCreateDate(new GregorianCalendar(2010,1,1).getTime());
+                    
                 String cmDate = (dt != null) ? dt.toString() : "2009-12-31";
                 /** @TODO: remove hard-coded value */
                 ai.setExpirationDate(cmDate);

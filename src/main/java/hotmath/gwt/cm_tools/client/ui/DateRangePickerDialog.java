@@ -1,5 +1,7 @@
 package hotmath.gwt.cm_admin.client.ui;
 
+import hotmath.gwt.cm_admin.client.CatchupMathAdmin;
+
 import java.util.Date;
 
 import com.extjs.gxt.ui.client.Style.LayoutRegion;
@@ -34,12 +36,13 @@ public class DateRangePickerDialog extends Window {
         __instance.setVisible(true);
         return __instance;
     }
-    
+
+    Date _defaultStartDate;
     Callback callback;
     private DateRangePickerDialog() {
         addStyleName("date-range-picker-dialog");
         setSize(400,350);
-        setHeading("Date Range Picker");
+        setHeading("Choose Date Range");
         setModal(true);
         setLayout(new RowLayout(Orientation.HORIZONTAL));
         
@@ -48,14 +51,15 @@ public class DateRangePickerDialog extends Window {
         
         add(createFromPicker(), data);
         add(createToPicker(), data);
-       
+
+        _defaultStartDate = CatchupMathAdmin.getInstance().getAccountInfoPanel().getModel().getAccountCreateDate();
 
         addButton(new Button("No Date Range", new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent ce) {
                 
-                Date from = null;
-                Date to = null;
+                Date from = _defaultStartDate;
+                Date to = new Date();
                 
                 DateRangePickerDialog.this.callback.datePicked(from, to);
                 hide();
@@ -75,7 +79,7 @@ public class DateRangePickerDialog extends Window {
         }));
 
         
-        addButton(new Button("Close", new SelectionListener<ButtonEvent>() {
+        addButton(new Button("Cancel", new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent ce) {
                 hide();
@@ -83,6 +87,7 @@ public class DateRangePickerDialog extends Window {
         }));
         setVisible(true);
     }
+
     
     public void setCallback(Callback callback) {
         this.callback = callback;

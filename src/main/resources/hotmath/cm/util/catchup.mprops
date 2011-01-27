@@ -508,6 +508,7 @@ select s.id,
        sc.service_name,
        st.date_expire                                as tutoring_expire_date,
        h.user_name,
+       h.create_date as account_create_date,       
        t.student_count,
        Ifnull(cc.max_students,1000)                   as max_students,
        l.login_time,
@@ -1624,4 +1625,109 @@ select distinct lesson
 from  HA_PROGRAM_LESSONS_static
 where pid in ($$PIDLIST$$)
 order by lesson;
+
+
+
+
+########################
+##### HIGHLIGHT INFORMATION 
+########################
+
+.key=GET_HIGHLIGHT_REPORT_GROUP_PROGRESS
+
+select u.group_id,
+       g.name as group_name,
+       la.active_count,
+       lc.login_count,
+       lv.lessons_viewed,
+       qp.quizzes_passed,
+       sqp.school_quizzes_passed
+from   HA_USER u
+       join CM_GROUP g
+         on g.id = u.group_id
+       join (
+               /* 
+                *  total login count
+               */
+               select u2.group_id,
+                      count(*) as login_count
+               from   HA_USER_LOGIN l
+                      join HA_USER u2
+                        on u2.uid = l.user_id
+               where    u2.uid in ($$UIDLIST$$)
+               and   date(l.login_time) between '$$DATE_FROM$$' and '$$DATE_TO$$'     
+               group  by u2.group_id
+               
+          ) lc on lc.group_id = u.group_id
+          
+         join (
+               /* 
+               *  count of users in group 
+               */
+               select group_id, count(*) as active_count
+               from   HA_USER u3
+               where  exists (
+                       /*
+                       *  check if user has every logged in
+                       */
+                       select 'x'
+                       from   HA_USER_LOGIN
+                       where  user_id = u3.uid
+                       and   date(login_time) between '$$DATE_FROM$$' and '$$DATE_TO$$'                            
+                )
+                and    u3.uid in ($$UIDLIST$$)
+                group by group_id
+                
+          ) la on la.group_id = u.group_id
+          
+          join ( 
+          
+                  /* 
+                  * get total count of lessons viewed
+                  */
+                select group_id, count(l.id) as lessons_viewed
+                from    HA_USER u
+                   JOIN HA_TEST t on t.user_id = u.uid
+                   JOIN HA_TEST_RUN r on r.test_id = t.test_id
+                   JOIN HA_TEST_RUN_LESSON l on l.run_id = r.run_id
+              where u.uid in ($$UIDLIST$$)
+              and  l.lesson_viewed between '$$DATE_FROM$$' and '$$DATE_TO$$'
+              group by group_id
+              
+          ) lv on lv.group_id = u.group_id
+          
+          
+          join (
+          
+              /** 
+              * get number of quizzes passed for group 
+              */
+              select group_id, count(r.run_id) as quizzes_passed
+              from HA_USER u
+                  JOIN HA_TEST t on t.user_id = u.uid 
+                  JOIN HA_TEST_RUN r on r.test_id = t.test_id
+              where r.is_passing = 1
+              and u.uid in ($$UIDLIST$$)
+              and date(r.run_time) between '$$DATE_FROM$$' and '$$DATE_TO$$'
+              group by group_id    
+          ) qp on qp.group_id = u.group_id
+          
+          
+          join (
+          
+              /** 
+              * get number of quizzes passed for entire school
+              */
+              select u.admin_id, group_id, count(r.run_id) as school_quizzes_passed
+              from HA_USER u
+                  JOIN HA_TEST t on t.user_id = u.uid 
+                  JOIN HA_TEST_RUN r on r.test_id = t.test_id
+              where r.is_passing = 1
+              and u.admin_id = $$AID$$
+              and date(r.run_time) between '$$DATE_FROM$$' and '$$DATE_TO$$'
+              group by u.admin_id,group_id
+           ) sqp on sqp.group_id = u.group_id
+where  u.uid in ($$UIDLIST$$)
+group  by u.group_id
+order by  g.name;
 

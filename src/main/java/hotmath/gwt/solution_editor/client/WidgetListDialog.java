@@ -67,7 +67,7 @@ public class WidgetListDialog extends Window {
         add(createForm());
         
         setModal(true);
-       // getDataFromServer();
+        setVisible(true);
     }
     
     /** extract data from form and put in 

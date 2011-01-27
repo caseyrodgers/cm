@@ -8,16 +8,38 @@ public class HighlightReportData implements Response {
     String data;
     String name;
     String label;
+    
+    
     int groupCount;
     int schoolCount;
     int dbCount;
     
+    int activeCount;
+    int loginCount;
+    int lessonsViewed;
+    int quizzesPassed;
+    int schoolQuizzesPassed;
+    
+    
     public HighlightReportData(){}
+    
+    /** For group report */
     public HighlightReportData(Integer uid, String name, String data) {
         this.uid = uid;
         this.name = name;
         this.data = data;
     }
+    
+    /** for group performance */
+    public HighlightReportData(String name, int activeCount, int loginCount,int lessonsViewed,int quizzesPassed,int schoolQuizzesPassed) {
+        this.name = name;
+        this.activeCount = activeCount;
+        this.loginCount = loginCount;
+        this.lessonsViewed = lessonsViewed;
+        this.quizzesPassed = quizzesPassed;
+        this.schoolQuizzesPassed = schoolQuizzesPassed;
+    }
+    
     
     public HighlightReportData(String name) {
         this.name = name;
@@ -58,5 +80,45 @@ public class HighlightReportData implements Response {
     }
     public void setDbCount(int dbCount) {
         this.dbCount = dbCount;
+    }
+
+    public int getActiveCount() {
+        return activeCount;
+    }
+
+    public void setActiveCount(int activeCount) {
+        this.activeCount = activeCount;
+    }
+
+    public int getLoginCount() {
+        return loginCount;
+    }
+
+    public void setLoginCount(int loginCount) {
+        this.loginCount = loginCount;
+    }
+
+    public int getLessonsViewed() {
+        return lessonsViewed;
+    }
+
+    public void setLessonsViewed(int lessonsViewed) {
+        this.lessonsViewed = lessonsViewed;
+    }
+
+    public int getQuizzesPassed() {
+        return quizzesPassed;
+    }
+
+    public void setQuizzesPassed(int quizzesPassed) {
+        this.quizzesPassed = quizzesPassed;
+    }
+
+    public int getSchoolQuizzesPassed() {
+        return schoolQuizzesPassed;
+    }
+
+    public void setSchoolQuizzesPassed(int schoolQuizzesPassed) {
+        this.schoolQuizzesPassed = schoolQuizzesPassed;
     }
 }

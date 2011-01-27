@@ -1,7 +1,7 @@
 package hotmath.gwt.solution_editor.server.rpc;
 
 import hotmath.HotMathException;
-import hotmath.HotMathProperties;
+import hotmath.HotMathTokenReplacements;
 import hotmath.cm.util.CatchupMathProperties;
 import hotmath.cm.util.service.SolutionDef;
 import hotmath.gwt.cm_rpc.client.rpc.Action;
@@ -15,6 +15,7 @@ import hotmath.gwt.solution_editor.server.solution.TutorSolution;
 import hotmath.gwt.solution_editor.server.solution.TutorStepUnit;
 import hotmath.gwt.solution_editor.server.solution.TutorStepUnit.Role;
 import hotmath.solution.SolutionPostProcess;
+import hotmath.solution.SolutionResources;
 import hotmath.util.HtmlCleanser;
 
 import java.awt.image.BufferedImage;
@@ -29,8 +30,10 @@ import javax.imageio.ImageIO;
 import org.apache.log4j.Logger;
 import org.cyberneko.html.parsers.DOMFragmentParser;
 import org.htmlparser.Node;
+import org.htmlparser.NodeFilter;
 import org.htmlparser.Parser;
 import org.htmlparser.Tag;
+import org.htmlparser.tags.Div;
 import org.htmlparser.util.NodeList;
 import org.htmlparser.visitors.NodeVisitor;
 
@@ -73,6 +76,12 @@ public class LoadSolutionMetaCommand implements ActionHandler<LoadSolutionMetaAc
         
         SolutionDef solution = new SolutionDef(_pid);
         
+        /** Do any token replacement before loading into editor
+         * 
+         */
+        SolutionResources sr = new SolutionResources();
+        html = HotMathTokenReplacements.doReplacements(sr, html);
+        
         String processed = _solutionPostProcess.processHTML_SolutionImagesAbsolute( html, solution.getSolutionPathHttp() + "/", solutionBase);
         return processed;
     }
@@ -83,17 +92,16 @@ public class LoadSolutionMetaCommand implements ActionHandler<LoadSolutionMetaAc
     StringWriter _writerBalancer;
     Node root;
     SolutionPostProcess _solutionPostProcess = new SolutionPostProcess();
-    
-    public String  processHTML(String html, final String solutionPath) throws HotMathException {
-        String head = "<span class='pp'>";
-        String tail = "</span>";
+    String _widgetJson;
+    public String  removeHmWidgetOldStyle(String html) throws HotMathException {
         
-        // put in valid head and foot before 
-        // processing so we know at least that
-        // is valid.  Otherwise, some text 
-        // might be lost.
-        html = head + html + tail;
-            //SbLogger.postMessage("in -> " + html, "postprocess");
+        _parser = new Parser();
+        _parser = new Parser();
+        _parser.setFeedback(Parser.STDOUT);
+
+        String widgetJson=null;
+        
+        //SbLogger.postMessage("in -> " + html, "postprocess");
         try {
             _parser.setInputHTML(html);
             NodeVisitor visitor = new  NodeVisitor() {
@@ -102,54 +110,35 @@ public class LoadSolutionMetaCommand implements ActionHandler<LoadSolutionMetaAc
                         root = tag;
                     
                     String name = tag.getTagName();
-                    //if (name.equalsIgnoreCase("sub")) {
-                    //    SbLogger.postMessage("===  <sub> ===", "upload");
-                    //}
                     
-                    if (name.equalsIgnoreCase("p")) {
-                        tag.removeAttribute("class");
-                        NodeList nl = tag.getChildren();
-                        removeExtraneousSubTags(nl);
-                    }
-                    else {
-                        if (name.equalsIgnoreCase("img")) {
-                            String src = tag.getAttribute("src");
-                            if (src == null || src.trim().length() == 0) {
-                                _logger.warn("image src cannot be empty");
-                            }
-                            else {
-                                if(tag.getAttribute("v:shapes") != null) {
-                                    tag.removeAttribute("v:shapes");
-                                    tag.removeAttribute("width");
-                                    tag.removeAttribute("height");
-                                    tag.setAttribute("src", src);
-                                }
-                                else {
-                                    tag.removeAttribute("align");
-                                    String cssClass = tag.getAttribute("class");
-                                    String height = null;
-                                    if (cssClass == null) {
-                                        height = tag.getAttribute("height");
-                                        int h = 0;
-                                        if (height != null) {
-                                            h = Integer.parseInt(height);
-                                            cssClass = getCssClass(h);
+                    if (name.equalsIgnoreCase("div")) {
+                        String id = tag.getAttribute("id");
+                        if(id != null && id.equals("hm_flash_object")) {
+                            
+                            /** Extract the json for JS widget only */
+                            NodeList nl = tag.getParent().getChildren();
+                            for(int i=0;i<nl.size();i++) {
+                                
+                               nl.extractAllNodesThatMatch(new NodeFilter() {
+                                
+                                    @Override
+                                    public boolean accept(Node arg0) {
+                                        Div div=null;
+                                        if(arg0 instanceof Div) {
+                                            div = ((Div)arg0);
+                                            String id = div.getAttribute("id");
+                                            if(id != null) {
+                                                if(id.equals("hm_flash_widget")) {
+                                                    _widgetJson = arg0.getText();
+                                                }
+                                            }
                                         }
-                                        else {
-                                            String path;
-                                            // obtain height from image file
-                                            path = (src.startsWith("/")) ?
-                                                   HotMathProperties.getInstance().getHotMathHome() + "/web" :
-                                                   solutionPath;
-                                            h = obtainHeightFromImage(src, path);
-                                            cssClass = getCssClass(h);
-                                            _logger.debug("*** obtained CSS class {" + cssClass + "} from [" + src + "] h(" + h +")");
-                                        }
+                                        
+                                        return false;
                                     }
-                                    tag.setAttribute("class", cssClass);
-                                    tag.setAttribute("src", src);
-                                }
-                            }                        
+                               });
+                            }
+                            tag.setEmptyXmlTag(true);
                         }
                     }
                 }
@@ -159,9 +148,6 @@ public class LoadSolutionMetaCommand implements ActionHandler<LoadSolutionMetaAc
             html = getDocumentNode(root).toHtml();
             
             html = HtmlCleanser.getInstance().cleanseHtml(html);
-            
-            // strip off the head and tail
-            html = html.substring(head.length(),html.length()-tail.length()).trim();
             return html;
             
         }

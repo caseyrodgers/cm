@@ -1,5 +1,6 @@
 package hotmath.gwt.cm_admin.server.model;
 
+import hotmath.cm.util.CmMultiLinePropertyReader;
 import hotmath.gwt.cm_admin.server.model.highlight.CmHighLightManager;
 import hotmath.gwt.cm_admin.server.model.highlight.CmHighLightManager.HighLightStat;
 import hotmath.gwt.cm_rpc.client.rpc.CmArrayList;
@@ -10,8 +11,12 @@ import hotmath.util.sql.SqlUtilities;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.Statement;
+import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 public class CmHighlightsDao {
@@ -349,7 +354,46 @@ public class CmHighlightsDao {
         }
         return list;
     }
+    
+    
+    public CmList<HighlightReportData> getReportGroupProgress(final Connection conn, final int adminId,final List<String> uids, final Date from, final Date to) throws Exception {
 
+        Map<String,String> tokenMap = new HashMap<String,String>()
+        {
+            {
+                put("UIDLIST",createInList(uids));
+                put("DATE_FROM",formatDate(from));
+                put("DATE_TO",formatDate(to));
+                put("AID", Integer.toString(adminId));
+            }
+        };
+        
+        
+        String sql = CmMultiLinePropertyReader.getInstance().getProperty("GET_HIGHLIGHT_REPORT_GROUP_PROGRESS", tokenMap);
+            
+            
+        CmList<HighlightReportData> list=new CmArrayList<HighlightReportData>();
+        
+        Statement ps=null;
+        try {
+            ps = conn.createStatement();
+            ResultSet rs = ps.executeQuery(sql);
+            while(rs.next()) {
+                list.add(new HighlightReportData(rs.getString("group_name"),rs.getInt("active_count"),rs.getInt("login_count"),rs.getInt("lessons_viewed"),rs.getInt("quizzes_passed"),rs.getInt("school_quizzes_passed")));
+            }
+        }
+        finally {
+            SqlUtilities.releaseResources(null,ps,null);
+        }
+        return list;
+    }
+
+    
+    SimpleDateFormat _format = new SimpleDateFormat("yyyy-MM-dd");
+    private String formatDate(Date date) {
+        return _format.format(date);
+    }
+    
     
     /** Kludged ...
      * 
@@ -377,8 +421,7 @@ public class CmHighlightsDao {
         }
         return list;
     }    
-        
-    
+            
     
     private String createInList(List<String> uids) {
         String inList = "";
