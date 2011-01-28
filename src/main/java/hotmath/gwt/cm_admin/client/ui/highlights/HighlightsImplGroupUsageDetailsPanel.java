@@ -1,16 +1,14 @@
 package hotmath.gwt.cm_admin.client.ui;
 
+import hotmath.gwt.shared.client.rpc.action.HighlightReportData;
 import hotmath.gwt.shared.client.rpc.action.HighlightsGetReportAction;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
-import com.extjs.gxt.ui.client.data.ModelData;
-import com.extjs.gxt.ui.client.widget.Html;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
-import com.extjs.gxt.ui.client.widget.grid.GridCellRenderer;
 
 /**
  * 
@@ -41,38 +39,38 @@ public class HighlightImplGroupUsageDetailsPanel extends HighlightImplDetailsPan
 
         ColumnConfig column = new ColumnConfig();
         column.setId("name");
-        column.setHeader("");
+        column.setHeader("Group");
         column.setWidth(100);
         column.setSortable(false);
-        column.setRenderer(new GridCellRenderer<ModelData>() {
-            public Object render(ModelData model, String property, com.extjs.gxt.ui.client.widget.grid.ColumnData config, int rowIndex, int colIndex, com.extjs.gxt.ui.client.store.ListStore<ModelData> store, com.extjs.gxt.ui.client.widget.grid.Grid<ModelData> grid) {
-                String msg = (String)model.get("name");
-                Html html = new Html("<h2 style='font-size: 1.2em;'>" + msg + "</h2>");
-                html.setToolTip("Data associated with '" + msg);
-                return html;
-            }
-        });
         configs.add(column);
 
         column = new ColumnConfig();
-        column.setId("group");
-        column.setHeader("Group");
+        column.setId("activeCount");
+        column.setHeader("Active");
         column.setWidth(75);
         column.setSortable(false);
         column.setAlignment(HorizontalAlignment.RIGHT);
         configs.add(column);
 
         column = new ColumnConfig();
-        column.setId("school");
-        column.setHeader("School");
+        column.setId("videosViewed");
+        column.setHeader("Videos");
         column.setWidth(75);
         column.setSortable(false);
         column.setAlignment(HorizontalAlignment.RIGHT);
         configs.add(column);
         
         column = new ColumnConfig();
-        column.setId("national");
-        column.setHeader("Nation Wide");
+        column.setId("gamesViewed");
+        column.setHeader("Games Viewed");
+        column.setWidth(75);
+        column.setSortable(false);
+        column.setAlignment(HorizontalAlignment.RIGHT);        
+        configs.add(column);
+        
+        column = new ColumnConfig();
+        column.setId("activitiesViewed");
+        column.setHeader("Activities");
         column.setWidth(75);
         column.setSortable(false);
         column.setAlignment(HorizontalAlignment.RIGHT);        
@@ -82,8 +80,11 @@ public class HighlightImplGroupUsageDetailsPanel extends HighlightImplDetailsPan
         return cm;
     }
     
+    protected HighlightReportModel createTableModel(HighlightReportData data) {
+        return new HighlightReportModel(data.getName(),data.getActiveCount(), data.getVideosViewed(), data.getGamesViewed(), data.getActivitiesViewed(), data.getFlashCardsViewed());
+    }
+    
     @Override
     protected void showSelectStudentDetail() {
     }
-  
 }

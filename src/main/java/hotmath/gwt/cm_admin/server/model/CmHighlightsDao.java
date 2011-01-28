@@ -417,7 +417,7 @@ public class CmHighlightsDao {
             ps = conn.createStatement();
             ResultSet rs = ps.executeQuery(sql);
             while(rs.next()) {
-                list.add(new HighlightReportData(rs.getString("group_name"),rs.getInt("active_count"),rs.getInt("login_count"),rs.getInt("lessons_viewed"),rs.getInt("quizzes_passed")));
+                list.add(new HighlightReportData(rs.getString("group_name"),rs.getInt("active_count"),rs.getInt("videos_viewed"),rs.getInt("games_viewed"),rs.getInt("activities_viewed"),rs.getInt("flash_cards_viewed")));
             }
         }
         finally {

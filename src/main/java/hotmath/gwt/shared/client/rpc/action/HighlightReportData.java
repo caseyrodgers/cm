@@ -19,6 +19,11 @@ public class HighlightReportData implements Response {
     int lessonsViewed;
     int quizzesPassed;
     
+    int videosViewed;
+    int gamesViewed;
+    int activitiesViewed;
+    int flashCardsViewed;
+    
     
     public HighlightReportData(){}
     
@@ -37,6 +42,23 @@ public class HighlightReportData implements Response {
         this.lessonsViewed = lessonsViewed;
         this.quizzesPassed = quizzesPassed;
     }
+    
+    
+    /** for group compare 
+     *       vv.videos_viewed,
+       gv.games_viewed,
+       av.activities_viewed,
+       fc.flash_cards_viewed
+       
+     * */
+    public HighlightReportData(String name, int activeCount, int videosViewed, int gamesViewed, int activitiesViewed, int flashCardsViewed ) {
+        this.name = name;
+        this.activeCount = activeCount;
+        this.videosViewed = videosViewed;
+        this.gamesViewed = gamesViewed;
+        this.activitiesViewed = activitiesViewed;
+        this.flashCardsViewed = flashCardsViewed;
+    }    
     
     
     public HighlightReportData(String name) {
@@ -111,5 +133,47 @@ public class HighlightReportData implements Response {
     public void setQuizzesPassed(int quizzesPassed) {
         this.quizzesPassed = quizzesPassed;
     }
+
+    public String getLabel() {
+        return label;
+    }
+
+    public void setLabel(String label) {
+        this.label = label;
+    }
+
+    public int getVideosViewed() {
+        return videosViewed;
+    }
+
+    public void setVideosViewed(int videosViewed) {
+        this.videosViewed = videosViewed;
+    }
+
+    public int getGamesViewed() {
+        return gamesViewed;
+    }
+
+    public void setGamesViewed(int gamesViewed) {
+        this.gamesViewed = gamesViewed;
+    }
+
+    public int getActivitiesViewed() {
+        return activitiesViewed;
+    }
+
+    public void setActivitiesViewed(int activitiesViewed) {
+        this.activitiesViewed = activitiesViewed;
+    }
+
+    public int getFlashCardsViewed() {
+        return flashCardsViewed;
+    }
+
+    public void setFlashCardsViewed(int flashCardsViewed) {
+        this.flashCardsViewed = flashCardsViewed;
+    }
+    
+    
 
 }
