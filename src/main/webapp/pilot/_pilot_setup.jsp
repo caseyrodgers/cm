@@ -10,8 +10,9 @@
     String comments = request.getParameter("fld_comments");
     String phoneWhen = request.getParameter("fld_phone_when");
     String schoolPrefix = request.getParameter("fld_password_prefix");
-    int studentCount = SbUtilities.getInt(request.getParameter("fld_student_count"));    
+    int studentCount = SbUtilities.getInt(request.getParameter("fld_student_count"));
+    String additionalEmails = request.getParameter("fld_additional_emails");
 
-    CmPilotCreate.addPilotRequest(title, name, school, zip, email, phone,comments, 
-                                  phoneWhen,schoolPrefix,studentCount);
+    CmPilotCreate.addPilotRequest(title, name, school, zip, email, phone, comments, 
+                                  phoneWhen, schoolPrefix, studentCount, additionalEmails);
 %>
