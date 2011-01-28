@@ -94,6 +94,11 @@ div.field_value {
 	font-size: 1.1em;
 }
 
+.input_area {
+    width: 360px;
+	font-size: 1.1em;
+}
+
 #security_info {
     margin-top: 100px;
     float: right;
