@@ -1779,3 +1779,216 @@ FROM HA_ADMIN a
    ) qp on qp.admin_id = a.aid
    
 where a.aid = $$AID$$
+
+
+
+
+.key=GET_HIGHLIGHT_REPORT_GROUP_USAGE
+
+
+select g.name as group_name,
+       la.active_count,
+       vv.videos_viewed,
+       gv.games_viewed,
+       av.activities_viewed,
+       fc.flash_cards_viewed
+       
+from   HA_USER u
+       join CM_GROUP g
+         on g.id = u.group_id
+         join (
+               /* 
+               *  count of active users in group
+               */
+               select group_id, count(*) as active_count
+               from   HA_USER u3
+               where  exists (
+                       /*
+                       *  check if user has every logged in
+                       */
+                       select 'x'
+                       from   HA_USER_LOGIN
+                       where  user_id = u3.uid
+                       and   date(login_time) between '$$DATE_FROM$$' and '$$DATE_TO$$'                            
+                )
+                and    u3.uid in ($$UIDLIST$$)
+                group by group_id
+                
+          ) la on la.group_id = u.group_id
+          
+          left join ( 
+                  /* 
+                  * get total count of videos viewed
+                  */
+                select group_id, count(i.use_id) as videos_viewed
+                from    HA_USER u
+                   JOIN HA_TEST t on t.user_id = u.uid
+                   JOIN HA_TEST_RUN r on r.test_id = t.test_id
+                   JOIN HA_TEST_RUN_INMH_USE i on i.run_id = r.run_id
+              where u.uid in ($$UIDLIST$$)
+              and  i.item_type = 'video'
+              and  date(i.view_time) between '$$DATE_FROM$$' and '$$DATE_TO$$'
+              group by group_id
+              
+          ) vv on vv.group_id = u.group_id
+          
+          
+          left join (
+          
+                  /* 
+                  * get total count of games viewed
+                  */
+                select group_id, count(i.use_id) as games_viewed
+                from    HA_USER u
+                   JOIN HA_TEST t on t.user_id = u.uid
+                   JOIN HA_TEST_RUN r on r.test_id = t.test_id
+                   JOIN HA_TEST_RUN_INMH_USE i on i.run_id = r.run_id
+              where u.uid in ($$UIDLIST$$)
+              and  i.item_type = 'activity_standard'
+              and  date(i.view_time) between '$$DATE_FROM$$' and '$$DATE_TO$$'
+              group by group_id 
+              
+          ) gv  on gv.group_id = u.group_id
+          
+          left join (
+                  /* 
+                  * get total count of activities viewed
+                  */
+                select group_id, count(i.use_id) as activities_viewed
+                from    HA_USER u
+                   JOIN HA_TEST t on t.user_id = u.uid
+                   JOIN HA_TEST_RUN r on r.test_id = t.test_id
+                   JOIN HA_TEST_RUN_INMH_USE i on i.run_id = r.run_id
+              where u.uid in ($$UIDLIST$$)
+              and  i.item_type = 'activity'
+              and  date(i.view_time) between '$$DATE_FROM$$' and '$$DATE_TO$$'
+              group by group_id 
+              
+          ) av  on av.group_id = u.group_id
+          
+                              
+          left join (
+                  /* 
+                  * get total count of flash cards viewed
+                  */
+                select group_id, count(i.use_id) as flash_cards_viewed
+                from    HA_USER u
+                   JOIN HA_TEST t on t.user_id = u.uid
+                   JOIN HA_TEST_RUN r on r.test_id = t.test_id
+                   JOIN HA_TEST_RUN_INMH_USE i on i.run_id = r.run_id
+              where u.uid in ($$UIDLIST$$)
+              and  i.item_type in ('flashcard', 'flashcard_es')
+              and  date(i.view_time) between '$$DATE_FROM$$' and '$$DATE_TO$$'
+              group by group_id 
+              
+          ) fc  on fc.group_id = u.group_id                              
+
+where  u.uid in ($$UIDLIST$$)
+group  by u.group_id
+
+
+
+union 
+
+
+
+select 'SCHOOLWIDE' as group_name,
+       la.active_count,
+       vv.videos_viewed,
+       gv.games_viewed,
+       av.activities_viewed,
+       fc.flash_cards_viewed
+       
+from   HA_ADMIN a
+         join (
+         
+               /* 
+               *  count of active users in group
+               */
+               select u3.admin_id, count(*) as active_count
+               from   HA_USER u3
+               where  exists (
+                       /*
+                       *  check if user has every logged in
+                       */
+                       select 'x'
+                       from   HA_USER_LOGIN
+                       where  user_id = u3.uid
+                       and   date(login_time) between '$$DATE_FROM$$' and '$$DATE_TO$$'                            
+                )
+                and    u3.admin_id = $$AID$$
+                group by admin_id
+                
+          ) la on la.admin_id = a.aid
+          
+          left join ( 
+          
+                  /* 
+                  * get total count of videos viewed
+                  */
+                select u.admin_id, count(i.use_id) as videos_viewed
+                from    HA_USER u
+                   JOIN HA_TEST t on t.user_id = u.uid
+                   JOIN HA_TEST_RUN r on r.test_id = t.test_id
+                   JOIN HA_TEST_RUN_INMH_USE i on i.run_id = r.run_id
+              where u.admin_id = $$AID$$
+              and  i.item_type = 'video'
+              and  date(i.view_time) between '$$DATE_FROM$$' and '$$DATE_TO$$'
+              group by admin_id
+              
+          ) vv on vv.admin_id = a.aid
+          
+          
+          left join (
+          
+                  /* 
+                  * get total count of games viewed
+                  */
+                select u.admin_id, count(i.use_id) as games_viewed
+                from    HA_USER u
+                   JOIN HA_TEST t on t.user_id = u.uid
+                   JOIN HA_TEST_RUN r on r.test_id = t.test_id
+                   JOIN HA_TEST_RUN_INMH_USE i on i.run_id = r.run_id
+              where u.admin_id = $$AID$$
+              and  i.item_type = 'activity_standard'
+              and  date(i.view_time) between '$$DATE_FROM$$' and '$$DATE_TO$$'
+              group by admin_id 
+              
+          ) gv  on gv.admin_id = a.aid
+          
+          left join (
+                  /* 
+                  * get total count of activities viewed
+                  */
+                select u.admin_id, count(i.use_id) as activities_viewed
+                from    HA_USER u
+                   JOIN HA_TEST t on t.user_id = u.uid
+                   JOIN HA_TEST_RUN r on r.test_id = t.test_id
+                   JOIN HA_TEST_RUN_INMH_USE i on i.run_id = r.run_id
+              where u.admin_id = $$AID$$
+              and  i.item_type = 'activity'
+              and  date(i.view_time) between '$$DATE_FROM$$' and '$$DATE_TO$$'
+              group by admin_id
+              
+          ) av  on av.admin_id = a.aid
+          
+                              
+          left join (
+                  /* 
+                  * get total count of flash cards viewed
+                  */
+                select u.admin_id, count(i.use_id) as flash_cards_viewed
+                from    HA_USER u
+                   JOIN HA_TEST t on t.user_id = u.uid
+                   JOIN HA_TEST_RUN r on r.test_id = t.test_id
+                   JOIN HA_TEST_RUN_INMH_USE i on i.run_id = r.run_id
+              where u.admin_id = $$AID$$
+              and  i.item_type in ('flashcard', 'flashcard_es')
+              and  date(i.view_time) between '$$DATE_FROM$$' and '$$DATE_TO$$'
+              group by admin_id
+              
+          ) fc  on fc.admin_id = a.aid
+where  a.aid = $$AID$$
+group  by a.aid
+
+

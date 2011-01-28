@@ -14,17 +14,15 @@ import com.extjs.gxt.ui.client.widget.grid.GridCellRenderer;
 
 /**
  * 
- *  
- *                           Group  School   District   Nationwide
-Sections Passed     3.2     5.2       4.5            3.6
-Avg. Quiz Score      63%   52%    31%          75%
-Avg Logins/week      2.1    2.2       3.2            2.7
-Games Played        3.2     5.2       4.5            3.6
-Videos Watched     3.2     5.2       4.5            3.6
-Flashcards used      3.2     5.2       4.5            3.6
+Report #2
 
-
- * @author casey
+    •  Name: Group Usage
+    •  Tooltip: Shows the usage of optional learning resources for groups with at least one active student.
+    •  Sample report
+    Group name  Active Videos Games Activities Flash Cards
+    7th-Graders <n> <n> <n> <n> <n>
+    8th-Graders <n> <n> <n> <n> <n>
+    SCHOOLWIDE <n> <n> <n> <n> <n>
  *
  */
 public class HighlightImplGroupUsageDetailsPanel extends HighlightImplDetailsPanelBase {

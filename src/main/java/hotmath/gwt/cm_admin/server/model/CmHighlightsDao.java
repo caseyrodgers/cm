@@ -367,8 +367,6 @@ public class CmHighlightsDao {
                 put("AID", Integer.toString(adminId));
             }
         };
-        
-        
         String sql = CmMultiLinePropertyReader.getInstance().getProperty("GET_HIGHLIGHT_REPORT_GROUP_PROGRESS", tokenMap);
             
             
@@ -388,6 +386,46 @@ public class CmHighlightsDao {
         return list;
     }
 
+    
+    
+    /**     •  Name: Group Usage
+    •  Tooltip: Shows the usage of optional learning resources for groups with at least one active student.
+    •  Sample report
+
+        Group name  Active Videos Games Activities Flash Cards
+        7th-Graders <n> <n> <n> <n> <n>
+        8th-Graders <n> <n> <n> <n> <n>
+        SCHOOLWIDE <n> <n> <n> <n> <n>
+    */
+    public CmList<HighlightReportData> getReportGroupUsage(final Connection conn, final int adminId,final List<String> uids, final Date from, final Date to) throws Exception {
+        Map<String,String> tokenMap = new HashMap<String,String>()
+        {
+            {
+                put("UIDLIST",createInList(uids));
+                put("DATE_FROM",formatDate(from));
+                put("DATE_TO",formatDate(to));
+                put("AID", Integer.toString(adminId));
+            }
+        };
+        String sql = CmMultiLinePropertyReader.getInstance().getProperty("GET_HIGHLIGHT_REPORT_GROUP_USAGE", tokenMap);
+            
+            
+        CmList<HighlightReportData> list=new CmArrayList<HighlightReportData>();
+        
+        Statement ps=null;
+        try {
+            ps = conn.createStatement();
+            ResultSet rs = ps.executeQuery(sql);
+            while(rs.next()) {
+                list.add(new HighlightReportData(rs.getString("group_name"),rs.getInt("active_count"),rs.getInt("login_count"),rs.getInt("lessons_viewed"),rs.getInt("quizzes_passed")));
+            }
+        }
+        finally {
+            SqlUtilities.releaseResources(null,ps,null);
+        }
+        return list;
+    }
+    
     
     SimpleDateFormat _format = new SimpleDateFormat("yyyy-MM-dd");
     private String formatDate(Date date) {
