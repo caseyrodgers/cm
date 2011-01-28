@@ -40,7 +40,7 @@ public class HighlightImplGroupProgressDetailsPanel extends HighlightImplDetails
     
     @Override
     protected HighlightReportModel createTableModel(HighlightReportData data) {
-        return new HighlightReportModel(data.getName(),data.getActiveCount(),data.getLoginCount(),data.getLessonsViewed(),data.getQuizzesPassed(),data.getSchoolQuizzesPassed());                
+        return new HighlightReportModel(data.getName(),data.getActiveCount(),data.getLoginCount(),data.getLessonsViewed(),data.getQuizzesPassed());                
     }
     
     @Override
@@ -57,6 +57,7 @@ public class HighlightImplGroupProgressDetailsPanel extends HighlightImplDetails
         column = new ColumnConfig();
         column.setId("activeCount");
         column.setHeader("Active");
+        column.setToolTip("Count of active users");
         column.setWidth(75);
         column.setSortable(false);
         column.setAlignment(HorizontalAlignment.RIGHT);
@@ -64,7 +65,8 @@ public class HighlightImplGroupProgressDetailsPanel extends HighlightImplDetails
 
         column = new ColumnConfig();
         column.setId("loginCount");
-        column.setHeader("Login");
+        column.setHeader("Logins");
+        column.setToolTip("Number of logins");
         column.setWidth(75);
         column.setSortable(false);
         column.setAlignment(HorizontalAlignment.RIGHT);
@@ -72,7 +74,8 @@ public class HighlightImplGroupProgressDetailsPanel extends HighlightImplDetails
         
         column = new ColumnConfig();
         column.setId("lessonsViewed");
-        column.setHeader("Lessons Viewed");
+        column.setHeader("Lessons");
+        column.setToolTip("Lessons viewed");
         column.setWidth(75);
         column.setSortable(false);
         column.setAlignment(HorizontalAlignment.RIGHT);        
@@ -80,19 +83,12 @@ public class HighlightImplGroupProgressDetailsPanel extends HighlightImplDetails
         
         column = new ColumnConfig();
         column.setId("quizzesPassed");
-        column.setHeader("Quizzes Passed");
+        column.setHeader("Passed");
+        column.setToolTip("Quizzes passed");
         column.setWidth(75);
         column.setSortable(false);
         column.setAlignment(HorizontalAlignment.RIGHT);        
         configs.add(column);
-        
-        column = new ColumnConfig();
-        column.setId("schoolQuizzesPassed");
-        column.setHeader("Quizzes Passed (school)");
-        column.setWidth(75);
-        column.setSortable(false);
-        column.setAlignment(HorizontalAlignment.RIGHT);        
-        configs.add(column);        
 
         ColumnModel cm = new ColumnModel(configs);
         return cm;

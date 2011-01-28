@@ -57,7 +57,7 @@ public class HighlightsDataWindow extends CmWindow {
         __instance = this;
         addStyleName("highlights-data-window");
         setHeading(TITLE);
-        setWidth(750);
+        setWidth(650);
         setHeight(500);
 
         setLayout(new FitLayout());

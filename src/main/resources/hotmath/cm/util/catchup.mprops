@@ -1635,13 +1635,11 @@ order by lesson;
 
 .key=GET_HIGHLIGHT_REPORT_GROUP_PROGRESS
 
-select u.group_id,
-       g.name as group_name,
+select g.name as group_name,
        la.active_count,
        lc.login_count,
        lv.lessons_viewed,
-       qp.quizzes_passed,
-       sqp.school_quizzes_passed
+       qp.quizzes_passed
 from   HA_USER u
        join CM_GROUP g
          on g.id = u.group_id
@@ -1712,22 +1710,72 @@ from   HA_USER u
               group by group_id    
           ) qp on qp.group_id = u.group_id
           
-          
-          left join (
-          
-              /** 
-              * get number of quizzes passed for entire school
-              */
-              select u.admin_id, group_id, count(r.run_id) as school_quizzes_passed
-              from HA_USER u
-                  JOIN HA_TEST t on t.user_id = u.uid 
-                  JOIN HA_TEST_RUN r on r.test_id = t.test_id
-              where r.is_passing = 1
-              and u.admin_id = $$AID$$
-              and date(r.run_time) between '$$DATE_FROM$$' and '$$DATE_TO$$'
-              group by u.admin_id,group_id
-           ) sqp on sqp.group_id = u.group_id
 where  u.uid in ($$UIDLIST$$)
 group  by u.group_id
-order by  g.name;
 
+
+union 
+
+
+select 
+      'SCHOOLWIDE' as group_name,
+      la.active_count,
+      lc.login_count,
+      lv.lessons_viewed,
+      qp.quizzes_passed
+FROM HA_ADMIN a
+
+   JOIN (
+       select admin_id, count(*) as active_count
+       from HA_USER u
+       where exists (select 'x' 
+                               from HA_USER_LOGIN l 
+                               where user_id = u.uid
+                               and   date(l.login_time) between '$$DATE_FROM$$' and '$$DATE_TO$$'
+                               )
+        group by admin_id                               
+        
+   ) la on la.admin_id = a.aid
+   
+  JOIN (
+
+      select u.admin_id, count(*) as login_count
+      FROM HA_USER u
+          JOIN HA_USER_LOGIN l on l.user_id = u.uid
+      WHERE u.admin_id = $$AID$$
+      and   date(l.login_time) between '$$DATE_FROM$$' and '$$DATE_TO$$'     
+      
+      GROUP BY u.admin_id
+      
+   ) lc on lc.admin_id = a.aid
+   
+   JOIN (
+   
+       select u.admin_id, count(*) as lessons_viewed
+       FROM HA_ADMIN a
+           JOIN HA_USER u on u.admin_id = a.aid
+           JOIN HA_TEST t on t.user_id = u.uid
+           JOIN HA_TEST_RUN r on r.test_id = t.test_id
+           JOIN HA_TEST_RUN_LESSON l on l.run_id = r.run_id
+       WHERE l.lesson_viewed is not null
+       and  l.lesson_viewed between '$$DATE_FROM$$' and '$$DATE_TO$$'
+       and a.aid = $$AID$$
+       GROUP BY admin_id
+       
+   ) lv on lv.admin_id = a.aid
+   
+   JOIN (
+   
+       select u.admin_id, count(*) as quizzes_passed
+       FROM HA_ADMIN a
+           JOIN HA_USER u on u.admin_id = a.aid
+           JOIN HA_TEST t on t.user_id = u.uid
+           JOIN HA_TEST_RUN r on r.test_id = t.test_id
+       WHERE r.is_passing = 1
+       and date(r.run_time) between '$$DATE_FROM$$' and '$$DATE_TO$$'
+       and a.aid = $$AID$$
+       GROUP BY admin_id
+       
+   ) qp on qp.admin_id = a.aid
+   
+where a.aid = $$AID$$

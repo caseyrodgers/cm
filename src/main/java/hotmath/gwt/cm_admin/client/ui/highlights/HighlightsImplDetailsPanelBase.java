@@ -205,13 +205,12 @@ class HighlightReportModel extends BaseModelData {
         set("national", nationalCount);
     }
     
-    public HighlightReportModel(String name, int activeCount, int loginCount, int lessonsViewed, int quizzesCount, int schoolQuizzesCount) {
+    public HighlightReportModel(String name, int activeCount, int loginCount, int lessonsViewed, int quizzesCount) {
         set("name", name);
         set("activeCount", activeCount);
         set("loginCount", loginCount);
         set("lessonsViewed", lessonsViewed);
         set("quizzesPassed", quizzesCount);
-        set("schoolQuizzesPassed", schoolQuizzesCount);
     }
 
     public String getName() {

@@ -18,7 +18,6 @@ public class HighlightReportData implements Response {
     int loginCount;
     int lessonsViewed;
     int quizzesPassed;
-    int schoolQuizzesPassed;
     
     
     public HighlightReportData(){}
@@ -31,13 +30,12 @@ public class HighlightReportData implements Response {
     }
     
     /** for group performance */
-    public HighlightReportData(String name, int activeCount, int loginCount,int lessonsViewed,int quizzesPassed,int schoolQuizzesPassed) {
+    public HighlightReportData(String name, int activeCount, int loginCount,int lessonsViewed,int quizzesPassed) {
         this.name = name;
         this.activeCount = activeCount;
         this.loginCount = loginCount;
         this.lessonsViewed = lessonsViewed;
         this.quizzesPassed = quizzesPassed;
-        this.schoolQuizzesPassed = schoolQuizzesPassed;
     }
     
     
@@ -114,11 +112,4 @@ public class HighlightReportData implements Response {
         this.quizzesPassed = quizzesPassed;
     }
 
-    public int getSchoolQuizzesPassed() {
-        return schoolQuizzesPassed;
-    }
-
-    public void setSchoolQuizzesPassed(int schoolQuizzesPassed) {
-        this.schoolQuizzesPassed = schoolQuizzesPassed;
-    }
 }

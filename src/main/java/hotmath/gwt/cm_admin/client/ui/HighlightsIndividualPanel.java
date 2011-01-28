@@ -118,6 +118,7 @@ public class HighlightsIndividualPanel extends ContentPanel {
         s.add(new ReportModel(new HighlightImplLoginsWeek()));
         s.add(new ReportModel(new HighlightImplComparePerformance()));
         s.add(new ReportModel(new HighlightImplGroupProgress()));
+        s.add(new ReportModel(new HighlightImplGroupUsage()));
         return s;
     }
     
@@ -307,3 +308,11 @@ class HighlightImplComparePerformance extends HighlightImplBase {
     }
 }
 
+class HighlightImplGroupUsage extends HighlightImplBase {
+    public HighlightImplGroupUsage() {
+        super("Group Usage","Shows the usage of optional learning resources for groups with at least one active student.");
+    }
+    public Widget prepareWidget() {
+        return new HighlightImplGroupUsageDetailsPanel(this);
+    }
+}
