@@ -1,73 +1,86 @@
   function checkForm() {
 	  clearErrorMessages();
 	  
+	  haveError = false;
 	  fld = $get('fld_title');
 	  if(fld.value == "") {
 	      if(showError(fld, "Please specify your title.")) {
-	          return false;
+	          haveError = true;
 	      }
 	  }
 	  fld = $get('fld_name');
 	  if(fld.value == "") {
 	      if(showError(fld, "Please specify your name.")) {
-	          return false;
+	          haveError = true;
 	      }
 	  }
 	  fld = $get('fld_school');
 	  if(fld.value == "") {
 	      if(showError(fld, "Please specify your school or district.")) {
-	          return false;
+	          haveError = true;
 	      }
 	  }
 	  fld = $get('fld_student_count');
 	  if(fld.value == "") {
 	      if(showError(fld, "Please specify the approximate number of students enrolled in your school or district.")) {
-	          return false;
+	          haveError = true;
 	      }
 	  }
 	  if(isNaN(fld.value) || Number(fld.value) < 1) {
 	      if(showError(fld, "Please specify a valid number of students greater than zero.")) {
-	          return false;
+	          haveError = true;
 	      }
 	  }
-
 
 	  fld = $get('fld_zip');
 	  if(fld.value == "") {
 	      if(showError(fld, "Please specify your zip code.")) {
-	          return false;
+	          haveError = true;
 	      }
 	  }	  
 	  else if(!validateZip(fld.value)) {
 	        if(showError(fld, "This is not a valid zip code (if outside U.S., use 99999)"))
-	            return false;
+	            haveError = true;
       }
+
 	  fld = $get('fld_email');
 	  if(fld.value == "") {
 	      if(showError(fld, "Please specify your email.")) {
-	          return false;
+	          haveError = true;
 	      }
 	  }
 	  var errMsg = validateEmail(fld.value);
 	  if(errMsg != null) {
 		  if(showError(fld, errMsg))
-	            return false;		  
+	            haveError = true;		  
 	  }
+
 	  fld = $get('fld_phone');
 	  if(fld.value == "") {
 	      if(showError(fld, "Please specify your phone number.")) {
-	          return false;
+	          haveError = true;
 	      }
 	  }
 	  
 	  fld = $get('fld_password_prefix');
 	  if(fld.value == "" || fld.value.length < 3 || fld.value.length > 4 || !isAlphabet(fld.value)) {
 	      if(showError(fld, "Please specify 3 or 4 letters that will be used as the prefix for your password.")) {
-	          return false;
+	          haveError = true;
 	      }
 	  }	  
 
-	  doSignup();
+	  fld = $get('fld_additional_emails');
+	  if (fld.value != '') {
+		  var errMsg = checkAdditionalEmails(fld.value);
+		  if (errMsg != null) {
+			  if(showError(fld, errMsg))
+		            haveError = true;		  
+		  }
+	  }
+	  
+	  if (haveError == false)
+		  doSignup();
+	  
 	  return false;   // always return false;
   }
 
@@ -115,4 +128,17 @@
 	    };
 	   var cObj = YAHOO.util.Connect.asyncRequest('POST', '_pilot_setup.jsp', requestCallback);
 	   showProcessingMessage();
-  }	  
+  }
+
+  function checkAdditionalEmails(emails) {
+	  var emailArray = emails.split("\n");
+	  for (i in emailArray) {
+		  if (emailArray[i] != '') {
+			  var errMsg = validateEmail(emailArray[i]);
+			  if(errMsg != null) {
+				  return errMsg + ": " + emailArray[i];
+			  }
+		  } 
+	  }
+	  return null;
+  }

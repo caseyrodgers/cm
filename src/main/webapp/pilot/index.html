@@ -155,23 +155,23 @@ pageTracker._trackPageview();
                   </div>
                    <div id='student_count_div' class='form_field'>
                     Approximate Total School Population<br/>
-                    <input type='text'  name='fld_student_count' id='fld_student_count' class='input_field' tabindex="3"/>
+                    <input type='text'  name='fld_student_count' id='fld_student_count' class='input_field' tabindex="4"/>
                     <div class='input_error'> &nbsp; </div> 
                   </div>
                    <div id='zip_div' class='form_field'>
                     School Zip code<br/>
-                    <input type='text'  name='fld_zip' id='fld_zip' class='input_field' tabindex="4"/>
+                    <input type='text'  name='fld_zip' id='fld_zip' class='input_field' tabindex="5"/>
                     <div class='input_error'> &nbsp; </div> 
                   </div>  
                    <div id='email_div' class='form_field'>
                     Email address<br/>
-                    <input type='text'  name='fld_email' id='fld_email' class='input_field' tabindex="5"/>
+                    <input type='text'  name='fld_email' id='fld_email' class='input_field' tabindex="6"/>
                     <div class='input_error'> &nbsp; </div> 
                   </div>
                    <div id='phone_div' class='form_field'>
                     School or Cell Phone (e.g., 555-123-1234 ext 123)
                     <input type='text'  name='fld_phone' id='fld_phone' class='input_field' style='width: 40%' tabindex="7"/>
-                    <select name='fld_phone_when' tabindex="9">
+                    <select name='fld_phone_when' tabindex="8">
                        <option  value=''>--when--</option>
                        <option  value='7am'> 7am</option>
                        <option  value='8am'> 8am</option>
@@ -189,15 +189,21 @@ pageTracker._trackPageview();
                   </div>
                   <div id='password_prefix_div' class='form_field'>
                     Choose 3 or 4 letters to start your Login Name (e.g., jkhs)<br/>
-                    <input type='text' name='fld_password_prefix' id='fld_password_prefix' class='input_field' tabindex="10"/>
+                    <input type='text' name='fld_password_prefix' id='fld_password_prefix' class='input_field' tabindex="9"/>
 					<div class='input_error'> &nbsp; </div>                    
                   </div>
                   
                    <div id='comments_div' class='form_field'>
-                    Comments (include email addresses of additional participating teachers)<br/>
-                    <textarea name='fld_comments' id='fld_comments' class='input_field' tabindex="10"></textarea>
+                    Comments/special requests<br/>
+                    <textarea rows='5' name='fld_comments' id='fld_comments' class='input_area' tabindex="10"></textarea>
                   </div>   
-                     
+                  
+                  <div id='addl_email_div' class='form_field'>
+                     Email addresses of additional teachers for this account, one per line<br />
+                    <textarea rows='7' name='fld_additional_emails' id='fld_additional_emails' class='input_area' tabindex="11"></textarea>                      
+                    <div class='input_error'> &nbsp; </div>
+                  </div>
+
                   <div id='submit_div' class='yui3-g'>
                     <div class='yui3-u-1-3'>
                         <button class="sexybutton sexyorange"><span><span>Request Pilot</span></span></button>
