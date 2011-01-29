@@ -313,6 +313,7 @@ public class SolutionEditor implements EntryPoint {
      * 
      */
     static public String __pidToLoad;
+
     
     static {
         EventBus.getInstance().addEventListener(new CmEventListener() {

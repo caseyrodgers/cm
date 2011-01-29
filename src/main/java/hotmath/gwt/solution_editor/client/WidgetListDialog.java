@@ -192,7 +192,7 @@ public class WidgetListDialog extends Window {
      */
     static public String extractWidgetJson(String html) {
 
-       String START_TOKEN="<div id='hm_flash_widget_def'";
+       String START_TOKEN="hm_flash_widget_def";
        
        int startPos = html.indexOf(START_TOKEN);
        if(startPos == -1) {

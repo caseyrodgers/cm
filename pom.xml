@@ -13,12 +13,12 @@
   </properties>
 
   <pluginRepositories>
-<!--
-    <pluginRepository>
-      <id>gwt-maven-plugins</id>
-      <url>http://snapshots.repository.codehaus.org/ </url>
-    </pluginRepository>
--->
+    <!--
+       <pluginRepository>
+	 <id>gwt-maven-plugins</id>
+	 <url>http://snapshots.repository.codehaus.org/ </url>
+       </pluginRepository>
+       -->
 
 
     <pluginRepository>
@@ -30,14 +30,14 @@
   </pluginRepositories>
 
   <!--
-      <scm>
-      <connection>scm:cvs:pserver:casey@hotmath.kattare.com:/home/cvsroot/CVSBASE:cm</connection>
-      <developerConnection>scm:cvs:pserver:casey@hotmath.kattare.com:/home/cvsroot/CVSBASE:cm</developerConnection>
-      <tag>cm</tag> </scm> <distributionManagement> <repository>
-      <id>repo</id> <name>The CVS Repository</name>
-      <url>scp://hotmath@hotmath.kattare.com:/home/hotmath/temp</url>
-      </repository> </distributionManagement>
-  -->
+     <scm>
+       <connection>scm:cvs:pserver:casey@hotmath.kattare.com:/home/cvsroot/CVSBASE:cm</connection>
+       <developerConnection>scm:cvs:pserver:casey@hotmath.kattare.com:/home/cvsroot/CVSBASE:cm</developerConnection>
+       <tag>cm</tag> </scm> <distributionManagement> <repository>
+	 <id>repo</id> <name>The CVS Repository</name>
+	 <url>scp://hotmath@hotmath.kattare.com:/home/hotmath/temp</url>
+     </repository> </distributionManagement>
+     -->
 
   <repositories>
     <repository>
@@ -85,12 +85,12 @@
 
   <dependencies>
 
-     <!-- needed for GWT 2.1 update to UIBinder -->
-     <dependency>
-          <groupId>xerces</groupId>
-          <artifactId>xercesImpl</artifactId>
-          <version>2.9.1</version>
-     </dependency>
+    <!-- needed for GWT 2.1 update to UIBinder -->
+    <dependency>
+      <groupId>xerces</groupId>
+      <artifactId>xercesImpl</artifactId>
+      <version>2.9.1</version>
+    </dependency>
 
 
     <dependency>
@@ -374,16 +374,17 @@
     </dependency>
 
     <dependency>
-       <groupId>com.google.guava</groupId>
-       <artifactId>guava</artifactId>
-       <version>r06</version>
+      <groupId>com.google.guava</groupId>
+      <artifactId>guava</artifactId>
+      <version>r06</version>
     </dependency>
 
-	<dependency>
-	    <groupId>org.simpleframework</groupId>
-	    <artifactId>simple-xml</artifactId>
-	    <version>2.4</version>
-	</dependency>
+    <dependency>
+      <groupId>org.simpleframework</groupId>
+      <artifactId>simple-xml</artifactId>
+      <version>2.4</version>
+    </dependency>
+
   </dependencies>
 
   <build>
@@ -471,7 +472,7 @@
 
       <!-- Minimize JS/CSS for CM.
            All HM resources come from HM dir, not CM.
-      -->
+	-->
       <plugin>
         <groupId>com.samaxes.maven</groupId>
         <artifactId>maven-minify-plugin</artifactId>
@@ -516,11 +517,11 @@
             <module>hotmath.gwt.cm_mobile2.CatchupMathMobile2</module>
             <module>hotmath.gwt.solution_editor.SolutionEditor</module>
             <!-- 
-            <module>hotmath.gwt.cm_activity_word_problems.CmActivityWordProblems</module>
-            -->
-          <!--
-	      <runTarget>hotmath.gwt.cm.CatchupMath/CatchupMath.html</runTarget>
-	  -->
+               <module>hotmath.gwt.cm_activity_word_problems.CmActivityWordProblems</module>
+               -->
+            <!--
+	       <runTarget>hotmath.gwt.cm.CatchupMath/CatchupMath.html</runTarget>
+	       -->
           </modules>
           <hostedWebapp>
             ${project.build.directory}/${project.build.finalName}
@@ -553,7 +554,7 @@
 
 
       <!-- Use ANT to update version information file
-      -->
+	-->
 
       <!-- update the GWT build version info after successful compile -->
       <plugin>

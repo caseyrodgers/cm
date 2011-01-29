@@ -7,6 +7,8 @@ mvn install:install-file -DgroupId=html.editor -DartifactId=editor -Dversion=0.1
 mvn install:install-file -DgroupId=sb -DartifactId=sblib -Dversion=2.0 -Dpackaging=jar -Dfile=sblib.jar -DgeneratePom=true
 mvn install:install-file -DgroupId=smartsprites -DartifactId=smartsprites-with-depends -Dversion=0.3.0 -Dpackaging=jar -Dfile=smartsprites-with-depends.jar -DgeneratePom=true
 
+mvn install:install-file -DgroupId=jtidy -DartifactId=jtidy -Dversion=r-938 -Dpackaging=jar -Dfile=jtidy-r938.jar -DgeneratePom=true
+
 #mvn install:install-file -DgroupId=com.yahoo.platform.yui -DartifactId=yuicompressor -Dversion=2.3.6 -Dpackaging=jar -Dfile=yuicompressor-2.4.2.jar -DgeneratePom=true
 
 
