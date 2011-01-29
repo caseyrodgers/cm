@@ -58,6 +58,7 @@ public class SaveSolutionAsDialog extends CmWindow {
             public void componentSelected(ButtonEvent ce) {
                 String newPid = buildNewPid();
                 callback.saveSolutionAs(newPid);
+                hide();
             }
         });
         FormButtonBinding binding = new FormButtonBinding(form);

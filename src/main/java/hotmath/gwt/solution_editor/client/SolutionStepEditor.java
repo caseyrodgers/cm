@@ -203,7 +203,7 @@ public class SolutionStepEditor extends ContentPanel {
         _meta.setSteps(steps );
     }
     
-    public void saveStepChanges(String asPid) {
+    public void saveStepChanges(final String asPid) {
 
         List<StepUnitPair> stepPairs = new ArrayList<StepUnitPair>();
 
@@ -228,6 +228,12 @@ public class SolutionStepEditor extends ContentPanel {
             public void onSuccess(RpcData solutionResponse) {
                 SolutionEditor.__status.clearStatus("");
                 EventBus.getInstance().fireEvent(new CmEvent(hotmath.gwt.solution_editor.client.EventTypes.SOLUTION_EDITOR_SAVED, solutionResponse));
+                
+                
+                if(!SolutionEditor.__pidToLoad.equals(asPid)) {
+                    loadSolution(asPid);
+                }
+                
             }
             @Override
             public void onFailure(Throwable arg0) {

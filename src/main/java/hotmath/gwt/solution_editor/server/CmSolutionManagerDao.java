@@ -141,6 +141,8 @@ public class CmSolutionManagerDao {
     public CmList<SolutionSearchModel> searchForSolutions(final Connection conn, String searchFor, String searchFullText) throws Exception {
         CmList<SolutionSearchModel> list = new CmArrayList<SolutionSearchModel>();
         
+        if(searchFullText == null)
+            searchFullText="";
         PreparedStatement ps=null;
         try {
             String sql = "select problemindex from SOLUTIONS where problemindex like ? and solutionXML like '%" + searchFullText + "%' order by problemindex limit 100";
