@@ -105,10 +105,10 @@ solution-searcher-dialog button {
 
 .solution-step-editor #hm_flash_widget:BEFORE {
 	font-family: serif;
-	color: red;
+	black: red;
 	font-size: .8em;
 	padding: 10px 10px;
-	content: "Click to edit widget definition";
+	content: "Tutor Widget Definition";
 }
 	
 .solution-step-editor #hm_flash_widget {

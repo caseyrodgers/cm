@@ -1660,7 +1660,7 @@ from   HA_USER u
           
          join (
                /* 
-               *  count of users in group 
+               *  count of active users in group 
                */
                select group_id, count(*) as active_count
                from   HA_USER u3

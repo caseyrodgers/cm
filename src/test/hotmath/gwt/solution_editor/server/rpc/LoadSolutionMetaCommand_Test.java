@@ -11,7 +11,7 @@ public class LoadSolutionMetaCommand_Test extends CmDbTestCase {
     }
     
     public void testGet() throws Exception {
-        String pid = "samples_1_1_SampleExercises_1-Algebra_1";
+        String pid = "cmextrasalg1_1_1_1_1_1";
         LoadSolutionMetaAction action = new LoadSolutionMetaAction(pid);
         SolutionMeta solution = new LoadSolutionMetaCommand().execute(conn, action);
         assertTrue(solution.getPid().equals(pid));

@@ -89,6 +89,17 @@ public class WidgetDefModel extends JSOBaseModel {
         return json;
     }
     
+    public String getWidgetHtml() {
+        return createWidgetHtml(getJson()) ;
+    }
+    
+
+    private String createWidgetHtml(String json) {
+        String widgetDiv = 
+            "<div id='hm_flash_widget'><div id='hm_flash_widget_def' style='display: none'>" + json + "</div></div>";
+        return widgetDiv;
+    }
+    
     public Integer getInt(String o) {
         try {
             return Integer.parseInt(o);

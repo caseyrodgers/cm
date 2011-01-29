@@ -43,29 +43,26 @@ public class SolutionStepEditor extends ContentPanel {
         setScrollMode(Scroll.AUTOY);
         add(new Label("No solution loaded."));
 
-
         getHeader().addTool(new Button("Widget", new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent ce) {
                 
-                String widgetHtml="";
+                String problemStatement = _meta.getProblemStatement();
+                String widgetJson = WidgetListDialog.extractWidgetJson(problemStatement);
                 WidgetListDialog.showWidgetListDialog(new Callback() {
                     @Override
                     public void resourceSelected(WidgetDefModel widget) {
-                        String widgetJson = widget.getJson();
+                        if(widget == null)
+                            return;
                         
-                        
-                        String ps = stripWidgetFromHtml(_meta.getProblemStatement());
-                        ps += createWidgetHtml(widgetJson);
+                        String ps = WidgetListDialog.stripWidgetFromHtml(_meta.getProblemStatement());
+                        ps += widget.getWidgetHtml();
                         _meta.setProblemStatement(ps);
                         buildSolutionEditor(_meta);
-                        // write widget to current step .. 
-                        // after removing any previous widget
-                        // definition
+                        
+                        fireChanged();
                     }
-                }, widgetHtml);
-                
-                
+                }, widgetJson);
             }
         }));
         
@@ -260,27 +257,8 @@ public class SolutionStepEditor extends ContentPanel {
         EventBus.getInstance().fireEvent(new CmEvent(EventTypes.SOLUTION_LOAD_COMPLETE, pid));
     }
     
-    
-    private String stripWidgetFromHtml(String html) {
-        String startToken = "<div style='display: none' id='hm_flash_object'>";
-        String endToken = "</div></div>";
-        int startPos = html.indexOf(startToken);
-        if(startPos > -1) {
-            /** extract the widget HTML */
-            int endPos = html.indexOf(endToken,startPos);
-            String h1 = html.substring(0, startPos);
-            String h2 = html.substring((endPos + 6));  // just first div
-            html = h1 + h2;
-        }
-        return html;
-    }
 
-    private String createWidgetHtml(String json) {
-        String widgetDiv = 
-            "<div id='hm_widget_def'>" + json + "</div>";
-        return widgetDiv;
-    }
-    
+
     final static boolean shouldProcessMathJax = true;
     static {
         EventBus.getInstance().addEventListener(new CmEventListener() {

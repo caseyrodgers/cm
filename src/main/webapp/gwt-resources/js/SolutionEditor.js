@@ -167,5 +167,5 @@ _createGuiWrapper = function() {
 
 
 function initializeSolutionEditor() {
-    _showTutorWidget();
+    // _showTutorWidget();
 }

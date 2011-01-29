@@ -8,6 +8,8 @@ import java.util.List;
 import com.extjs.gxt.ui.client.Style.Scroll;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
+import com.extjs.gxt.ui.client.event.WindowEvent;
+import com.extjs.gxt.ui.client.event.WindowListener;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.ListView;
 import com.extjs.gxt.ui.client.widget.TabItem;
@@ -45,6 +47,12 @@ public class WidgetListDialog extends Window {
         setHeading("Create Solution Widget");
         setScrollMode(Scroll.AUTO);
         
+        addWindowListener(new WindowListener() {
+            @Override
+            public void windowHide(WindowEvent we) {
+                _callback.resourceSelected(null);
+            }
+        });
         
         createButton = new Button("Create", new SelectionListener<ButtonEvent>() {
             @Override
@@ -151,8 +159,6 @@ public class WidgetListDialog extends Window {
         _width.setAllowBlank(false);  
         _width.getFocusSupport().setPreviousId(simple.getButtonBar().getId());  
         simple.add(_width, formData);
-
-        
         
         
         _height.setFieldLabel("Height");
@@ -177,6 +183,49 @@ public class WidgetListDialog extends Window {
             return 0;
         }
     }
+    
+    
+    /** Extract just the widget JSON 
+     * 
+     * @param html
+     * @return
+     */
+    static public String extractWidgetJson(String html) {
+
+       String START_TOKEN="<div id='hm_flash_widget_def'";
+       
+       int startPos = html.indexOf(START_TOKEN);
+       if(startPos == -1) {
+           return null;
+       }
+       
+       startPos = html.indexOf("{", startPos);
+       int endPos = html.indexOf("}", startPos);
+       String json = html.substring(startPos, endPos+1);
+       
+       return json;
+    }
+    
+    /** Return html without any widget definition 
+     * 
+     * @param html
+     * @return
+     */
+    static public String stripWidgetFromHtml(String html) {
+        String START_TOKEN="<div id='hm_flash_widget'";
+        int startPos = html.indexOf(START_TOKEN);
+        if(startPos == -1) {
+            return null;
+        }
+        int endPos = html.indexOf("</div>", startPos);
+        endPos = html.indexOf("</div>", endPos+1);
+
+        String htmlNew = html.substring(0, startPos);
+        htmlNew += html.substring(endPos+6);
+        
+        return htmlNew;    
+    }   
+
 
     
     
@@ -190,19 +239,18 @@ public class WidgetListDialog extends Window {
     
     
     private void setupForm(String widgetJson) {
-        if(widgetJson == null) {
+        if(widgetJson == null || widgetJson.length() == 0) {
             createButton.setText("Create");
         }
         else {
             createButton.setText("Update");
-        }
-        
-        if(widgetJson != null) {
+            
             JSOModel model = JSOModel.fromJson(widgetJson);
             WidgetDefModel widgetDef = new WidgetDefModel(model);
             loadForm(widgetDef);
             layout();
         }
+
     }
     
     private List<WidgetModel> createListOfWidgets() {
@@ -241,12 +289,12 @@ public class WidgetListDialog extends Window {
     }
     
     static private WidgetListDialog __instance;
-    static void showWidgetListDialog(Callback callback, String widgetHtml) {
+    static void showWidgetListDialog(Callback callback, String widgetJson) {
         if(__instance == null) {
             __instance = new WidgetListDialog();
         }
         __instance.setCallback(callback);
-        __instance.setupForm(widgetHtml);
+        __instance.setupForm(widgetJson);
         __instance.setVisible(true);
     }
     static void showWidgetListDialog(Callback callback) {
