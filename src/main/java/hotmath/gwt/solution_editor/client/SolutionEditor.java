@@ -336,34 +336,12 @@ public class SolutionEditor implements EntryPoint {
     }
     
     
-    public void tutorWidgetClicked_gwt(String html) {
-        WidgetListDialog.showWidgetListDialog(new hotmath.gwt.solution_editor.client.WidgetListDialog.Callback() {
-            @Override
-            public void resourceSelected(WidgetDefModel resource) {
-                /** replace the widgetHtml with resource
-                 * 
-                 */
-                gwt_updateWidgetDefinition(resource.getJson());
-                
-                
-                EventBus.getInstance().fireEvent(new CmEvent(hotmath.gwt.solution_editor.client.EventTypes.SOLUTION_EDITOR_CHANGED));
-            }
-        },html);
+    static public void tutorWidgetClicked_gwt() {
+        SolutionStepEditor.__instance.showWidgetEditor();
     }
-
-    /** Update extern global _tutorWidgetDefinition set before
-     *  call tutorWidgetClicked_gwt.
-     *   
-     * @param json
-     */
-    native void gwt_updateWidgetDefinition(String json) /*-{
-        $wnd._tutorWidgetDefinition.innerHTML = json;
-    }-*/;
     
     native void publishNative(SolutionEditor se) /*-{
-       $wnd.tutorWidgetClicked_gwt = function(html) {
-           se.@hotmath.gwt.solution_editor.client.SolutionEditor::tutorWidgetClicked_gwt(Ljava/lang/String;)(html);
-        }
+       $wnd.tutorWidgetClicked_gwt =   @hotmath.gwt.solution_editor.client.SolutionEditor::tutorWidgetClicked_gwt();
     }-*/;
 }
 

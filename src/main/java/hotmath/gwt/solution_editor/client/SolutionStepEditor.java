@@ -46,23 +46,7 @@ public class SolutionStepEditor extends ContentPanel {
         getHeader().addTool(new Button("Widget", new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent ce) {
-                
-                String problemStatement = _meta.getProblemStatement();
-                String widgetJson = WidgetListDialog.extractWidgetJson(problemStatement);
-                WidgetListDialog.showWidgetListDialog(new Callback() {
-                    @Override
-                    public void resourceSelected(WidgetDefModel widget) {
-                        if(widget == null)
-                            return;
-                        
-                        String ps = WidgetListDialog.stripWidgetFromHtml(_meta.getProblemStatement());
-                        ps += widget.getWidgetHtml();
-                        _meta.setProblemStatement(ps);
-                        buildSolutionEditor(_meta);
-                        
-                        fireChanged();
-                    }
-                }, widgetJson);
+                showWidgetEditor();
             }
         }));
         
@@ -116,6 +100,24 @@ public class SolutionStepEditor extends ContentPanel {
         fireChanged();
     }
     
+    public void showWidgetEditor() {
+        String problemStatement = _meta.getProblemStatement();
+        String widgetJson = WidgetListDialog.extractWidgetJson(problemStatement);
+        WidgetListDialog.showWidgetListDialog(new Callback() {
+            @Override
+            public void resourceSelected(WidgetDefModel widget) {
+                if(widget == null)
+                    return;
+                
+                String ps = WidgetListDialog.stripWidgetFromHtml(_meta.getProblemStatement());
+                ps += widget.getWidgetHtml();
+                _meta.setProblemStatement(ps);
+                buildSolutionEditor(_meta);
+                
+                fireChanged();
+            }
+        }, widgetJson);
+    }
     
     public void fireChanged() {
         EventBus.getInstance().fireEvent(new CmEvent(hotmath.gwt.solution_editor.client.EventTypes.SOLUTION_EDITOR_CHANGED,_meta));

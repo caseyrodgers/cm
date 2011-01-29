@@ -68,87 +68,16 @@ function scrollToStep(num) {
 }
 
 _enableJsWidgets = true
-var _widgetParent;
-var _tutorWidgetDefinition;
 
+/** setup click handler to open widget editor */
 function _showTutorWidget() {
-    var problemHead = document.getElementById('problem_statement');
-    if (problemHead != null) {
-        _showTutorWidgetReal();
-        return;
-    }
-
     var widgetDiv = $get('hm_flash_widget');
     if (!widgetDiv)
         return;
-    /** extract embedded JSON */
-    var jsonDiv = $get('hm_flash_widget_def');
-    if (jsonDiv) {
-        _tutorWidgetDefinition = jsonDiv;
-    } else {
-
-        /** create anew jsonDef widget
-         * 
-         */
-        jsonDiv = document.createElement("div");
-        jsonDiv.setAttribute("id", "hm_flash_widget_def");
-        jsonDiv.setAttribute("style", "display:none;");
-        widgetDiv.innerHTML = "";
-        widgetDiv.appendChild(jsonDiv);
-        widgetDiv.setAttribute("class", "");
-
-        jsonDiv.innerHTML = "{}"; // default widget?
-    }
-
-    _tutorWidgetDefinition = jsonDiv;
-    /** bring up widget editor in Gwt */
+    
     widgetDiv.onclick = function() {
-        tutorWidgetClicked_gwt(jsonDiv.innerHTML)
+        tutorWidgetClicked_gwt();
     };
-}
-
-var _widgetDiv;
-function _showTutorWidgetReal() {
-    problemHead = document.getElementById('problem_statement');
-
-    var divs = problemHead.getElementsByTagName('div');
-
-    var wd = null;
-    var jsonDiv = null;
-    var _json = "";
-
-    for ( var w = 0, t = divs.length; w < t; w++) {
-        var div = divs[w];
-        var at = div.getAttribute('id');
-        if (at == 'hm_flash_widget') {
-            _widgetDiv = div;
-        } else if (at == 'hm_flash_widget_def') {
-            jsonDiv = div;
-        }
-    }
-    /** extract embedded JSON */
-    if (jsonDiv) {
-        /** found widget def JSON
-         *  Either create the JS version, or the Flash version 
-         */
-        
-        if (_enableJsWidgets) {
-            _json = jsonDiv.innerHTML;
-            var jsonObj = eval('(' + _json + ')');
-            HmFlashWidgetFactory.createWidget(jsonObj);
-        } else {
-            showFlashObject();
-            widgetDiv.style.display = 'none';
-        }
-    } else {
-        /** no widget def JSON found, so 
-         *  show place holder object.
-         */
-        wd.innerHTML = _createGuiWrapper().innerHTML;
-        var info = document.createElement("div");
-        info.innerHTML = _getWidgetNotUsedHtml();
-        wd.appendChild(info);
-    }
 }
 
 _createGuiWrapper = function() {
@@ -167,5 +96,5 @@ _createGuiWrapper = function() {
 
 
 function initializeSolutionEditor() {
-    // _showTutorWidget();
+    _showTutorWidget();
 }
