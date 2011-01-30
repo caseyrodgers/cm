@@ -125,7 +125,7 @@ public class HighlightsDataWindow extends CmWindow {
         setVisible(true);
     }
     
-    static final DateTimeFormat _dateFormat = DateTimeFormat.getFormat("yyyy-MM-dd");
+    static final DateTimeFormat _dateFormat = DateTimeFormat.getFormat("MM/dd/yyyy");
     private String formatDateRangeLabel(Date from, Date to) {
         return "Date range: " + _dateFormat.format(from) + " - " + _dateFormat.format(to);
     }

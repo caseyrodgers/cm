@@ -21,7 +21,6 @@ import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.Html;
-import com.extjs.gxt.ui.client.widget.Label;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
@@ -47,25 +46,24 @@ abstract public class HighlightImplDetailsPanelBase extends LayoutContainer {
 
     abstract public HighlightsGetReportAction.ReportType getReportType();
     
-    protected ColumnModel getColumns() {
+    protected List<ColumnConfig> getColumns() {
         List<ColumnConfig> configs = new ArrayList<ColumnConfig>();
 
         ColumnConfig column = new ColumnConfig();
         column.setId("name");
-        column.setHeader("Student");
+        column.setHeader("Students with one or more logins");
         column.setWidth(140);
         column.setSortable(false);
         configs.add(column);
 
         column = new ColumnConfig();
         column.setId("data1");
-        column.setHeader("Lessons Completed");
-        column.setWidth(140);
+        column.setHeader("Lessons Viewed");
+        column.setWidth(100);
         column.setSortable(false);
         configs.add(column);
-
-        ColumnModel cm = new ColumnModel(configs);
-        return cm;
+        
+        return configs;
     }
     
     protected void getDataFromServer() {
@@ -102,7 +100,7 @@ abstract public class HighlightImplDetailsPanelBase extends LayoutContainer {
         removeAll();
         setLayout(new FitLayout());
         ListStore<HighlightReportModel> store = new ListStore<HighlightReportModel>();
-        _grid = defineGrid(store, getColumns());
+        _grid = defineGrid(store, new ColumnModel(getColumns()));
         if(data == null || data.size() == 0) {
             add(new NoRowsFoundPanel());
         }
@@ -126,7 +124,7 @@ abstract public class HighlightImplDetailsPanelBase extends LayoutContainer {
     
     protected HighlightReportModel createTableModel(HighlightReportData data) {
         if(data.getData() != null)
-            return new HighlightReportModel(data.getUid(), data.getName(), data.getData());
+            return new HighlightReportModel(data.getUid(), data.getName(), data.getData(),data.getQuizzesTaken());
         else 
             return new HighlightReportModel(data.getName(), data.getGroupCount(), data.getSchoolCount(), data.getDbCount());
         
@@ -180,6 +178,7 @@ abstract public class HighlightImplDetailsPanelBase extends LayoutContainer {
  */
 class HighlightReportModel extends BaseModelData {
     int uid;
+    int quizzesViewed;
     
     public HighlightReportModel(Integer uid, String name, String data) {
         this.uid = uid;
@@ -197,6 +196,24 @@ class HighlightReportModel extends BaseModelData {
             }
         }
     }
+    
+    public HighlightReportModel(Integer uid, String name, String data, int quizzesTaken) {
+        this.uid = uid;
+        set("quizzesTaken", quizzesTaken);
+        set("name", name);
+        
+        /** allow up to four data variables to be
+         * passed separated by |.  Each value 
+         * will be in data1, data2, etc..
+         * 
+         */
+        if(data != null) {
+            String ds[] = data.split("\\|");
+            for(int i=0;i<ds.length;i++) {
+                set("data" + (i+1), ds[i]);    
+            }
+        }
+    }    
     
     public HighlightReportModel(String name, int groupCnt, int schoolCount, int nationalCount) {
         set("name", name);

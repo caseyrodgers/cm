@@ -113,9 +113,8 @@ public class HighlightsIndividualPanel extends ContentPanel {
         s.add(new ReportModel(new HighlightImplMostGamesPlayed()));
         s.add(new ReportModel(new HighlightImplMostQuizzesPassed()));
         s.add(new ReportModel(new HighlightImplHighestAverageQuizScores()));
-        s.add(new ReportModel(new HighlightImplMostQuizzesFailed()));
         s.add(new ReportModel(new HighlightImplMostFailuresLatestQuiz()));
-        s.add(new ReportModel(new HighlightImplLoginsWeek()));
+        s.add(new ReportModel(new HighlightImplZeroLogins()));
         s.add(new ReportModel(new HighlightImplComparePerformance()));
         s.add(new ReportModel(new HighlightImplGroupProgress()));
         s.add(new ReportModel(new HighlightImplGroupUsage()));
@@ -218,7 +217,7 @@ abstract class HighlightImplBase  {
 
 class HighlightImplGreatestEffort extends HighlightImplBase {
     public HighlightImplGreatestEffort() {
-        super("Greatest Effort", "Displays students in order of most lessons completed (excluding those who have viewed zero lessons)");
+        super("Greatest Effort", "Displays students in order of most lessons viewed (excluding those who have viewed zero lessons)");
     }
     
     public Widget prepareWidget() {
@@ -228,7 +227,7 @@ class HighlightImplGreatestEffort extends HighlightImplBase {
 
 class HighlightImplLeastEffort extends HighlightImplBase {
     public HighlightImplLeastEffort() {
-        super("Least Effort", "Displays students in order of least lessons completed (excluding those who have viewed zero lessons)");
+        super("Least Effort", "Displays students in order of least lessons viewed (excluding those who have viewed zero lessons)");
     }
     public Widget prepareWidget() {
         return new HighlightImplLeastEffortDetailsPanel(this);
@@ -305,6 +304,15 @@ class HighlightImplComparePerformance extends HighlightImplBase {
     }
     public Widget prepareWidget() {
         return new HighlightImplComparePerformanceDetailsPanel(this);
+    }
+}
+
+class HighlightImplZeroLogins extends HighlightImplBase {
+    public HighlightImplZeroLogins() {
+        super("Zero Logins","List students who did not log in during the date range.");
+    }
+    public Widget prepareWidget() {
+        return new HighlightImplZeroLoginsDetailsPanel(this);
     }
 }
 

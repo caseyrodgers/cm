@@ -1,8 +1,10 @@
 package hotmath.gwt.cm_admin.client.ui;
 
-import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
-
 import hotmath.gwt.shared.client.rpc.action.HighlightsGetReportAction;
+
+import java.util.List;
+
+import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 
 /** 
 - Least Effort: 
@@ -22,9 +24,17 @@ public class HighlightImplMostGamesPlayedDetailsPanel extends HighlightImplDetai
     
     
     @Override
-    protected ColumnModel getColumns() {
-        ColumnModel cm = super.getColumns();
-        cm.getColumn(1).setHeader("Games Played");
+    protected List<ColumnConfig> getColumns() {
+        List<ColumnConfig> cm = super.getColumns();
+        cm.get(1).setHeader("Games Played");
+
+        ColumnConfig column = new ColumnConfig();
+        column.setId("quizzesTaken");
+        column.setHeader("Quizzes Taken");
+        column.setWidth(100);
+        column.setSortable(false);
+        cm.add(column);
+            
         return cm;
     }
 }

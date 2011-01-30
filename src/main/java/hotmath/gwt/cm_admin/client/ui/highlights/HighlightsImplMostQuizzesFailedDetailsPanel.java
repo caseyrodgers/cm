@@ -1,8 +1,10 @@
 package hotmath.gwt.cm_admin.client.ui;
 
-import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
-
 import hotmath.gwt.shared.client.rpc.action.HighlightsGetReportAction;
+
+import java.util.List;
+
+import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 
 public class HighlightImplMostQuizzesFailedDetailsPanel extends HighlightImplDetailsPanelBase {
     public HighlightImplMostQuizzesFailedDetailsPanel(HighlightImplBase base) {
@@ -15,11 +17,10 @@ public class HighlightImplMostQuizzesFailedDetailsPanel extends HighlightImplDet
     }
     
     @Override
-    protected ColumnModel getColumns() {
-        // TODO Auto-generated method stub
-        ColumnModel cm = super.getColumns();
-        cm.getColumn(1).setHeader("Failed Quizzes");
-        return cm;
+    protected List<ColumnConfig> getColumns() {
+        List<ColumnConfig> configs = super.getColumns();
+        configs.get(1).setHeader("Failed Quizzes");
+        return configs;
     }
    
 }

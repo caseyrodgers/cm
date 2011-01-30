@@ -18,9 +18,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.log4j.Logger;
+
 
 public class CmHighlightsDao {
 
+
+    final static Logger __logger = Logger.getLogger(CmHighlightsDao.class);
     
     /** 
      * 
@@ -39,8 +43,17 @@ public class CmHighlightsDao {
     public CmList<HighlightReportData> getReportGreatestEffort(final Connection conn, List<String> uids, Date from, Date to) throws Exception {
         
         String sql = 
-            " select u.uid, u.user_name, count(*) as lessons_viewed " +
+            " select u.uid, u.user_name, qv.quizzes_taken, count(*) as lessons_viewed " +
             "from HA_USER u " +
+            
+            " join ( " +
+            "        select user_id, count(*) as quizzes_taken " +
+            "        from   HA_TEST t " +
+            "           JOIN HA_TEST_RUN r on r.test_id = t.test_id " +
+            "        where date(r.run_time) between ? and ? " + 
+            "        GROUP BY user_id " +
+            "      ) qv on qv.user_id = u.uid " +
+            
             "JOIN HA_TEST t on t.user_id = u.uid " +
             "JOIN HA_TEST_RUN r on r.test_id = t.test_id " +
             "JOIN HA_TEST_RUN_LESSON l on l.run_id = r.run_id " +
@@ -57,9 +70,14 @@ public class CmHighlightsDao {
             ps = conn.prepareStatement(sql);
             ps.setDate(1, new java.sql.Date(from.getTime()));
             ps.setDate(2, new java.sql.Date(to.getTime()));
+            ps.setDate(3, new java.sql.Date(from.getTime()));
+            ps.setDate(4, new java.sql.Date(to.getTime()));
+
+            __logger.info("report sql: " + ps);
+            
             ResultSet rs = ps.executeQuery();
             while(rs.next()) {
-                list.add(new HighlightReportData(rs.getInt("uid"), rs.getString("user_name"), rs.getString("lessons_viewed")));
+                list.add(new HighlightReportData(rs.getInt("uid"), rs.getString("user_name"), rs.getString("lessons_viewed"), rs.getInt("quizzes_taken")));
             }
         }
         finally {
@@ -67,10 +85,11 @@ public class CmHighlightsDao {
         }
         
         
+        
         return list;
     }
 
-    /** NOTE: same SQL as Greatest, just differnt order
+    /** NOTE: same SQL as Greatest, just different order
      * 
      * TODO: share data set with greatest effort report
      * 
@@ -84,8 +103,17 @@ public class CmHighlightsDao {
     public CmList<HighlightReportData> getReportLeastEffort(final Connection conn, List<String> uids, Date from, Date to) throws Exception {
         
         String sql = 
-            " select u.uid, u.user_name, count(*) as lessons_completed " +
+            " select u.uid, u.user_name, qv.quizzes_taken, count(*) as lessons_completed " +
             "from HA_USER u " +
+            
+            " join ( " +
+            "        select user_id, count(*) as quizzes_taken " +
+            "        from   HA_TEST t " +
+            "           JOIN HA_TEST_RUN r on r.test_id = t.test_id " +
+            "        where date(r.run_time) between ? and ? " + 
+            "        GROUP BY user_id " +
+            "      ) qv on qv.user_id = u.uid " +
+            
             "JOIN HA_TEST t on t.user_id = u.uid " +
             "JOIN HA_TEST_RUN r on r.test_id = t.test_id " +
             "JOIN HA_TEST_RUN_LESSON l on l.run_id = r.run_id " +
@@ -103,9 +131,14 @@ public class CmHighlightsDao {
             ps = conn.prepareStatement(sql);
             ps.setDate(1, new java.sql.Date(from.getTime()));
             ps.setDate(2, new java.sql.Date(to.getTime()));
+            ps.setDate(3, new java.sql.Date(from.getTime()));
+            ps.setDate(4, new java.sql.Date(to.getTime()));
+            
+            __logger.info("report sql: " + ps);
+            
             ResultSet rs = ps.executeQuery();
             while(rs.next()) {
-                list.add(new HighlightReportData(rs.getInt("uid"), rs.getString("user_name"), rs.getString("lessons_completed")));
+                list.add(new HighlightReportData(rs.getInt("uid"), rs.getString("user_name"), rs.getString("lessons_completed"),rs.getInt("quizzes_taken")));
             }
         }
         finally {
@@ -119,8 +152,18 @@ public class CmHighlightsDao {
         String sql = 
             "select u.uid, " +
             "u.user_name, " +
+            "qv.quizzes_taken,  " +
             "count(*) as games_viewed " +
             " from   HA_USER u " +
+            
+            " join ( " +
+            "        select user_id, count(*) as quizzes_taken " +
+            "        from   HA_TEST t " +
+            "           JOIN HA_TEST_RUN r on r.test_id = t.test_id " +
+            "        where date(r.run_time) between ? and ? " + 
+            "        GROUP BY user_id " +
+            "      ) qv on qv.user_id = u.uid " +
+            
             " join HA_TEST t " +
             " on t.user_id = u.uid " +
             " join HA_TEST_RUN r " + 
@@ -140,10 +183,14 @@ public class CmHighlightsDao {
             ps = conn.prepareStatement(sql);
             ps.setDate(1, new java.sql.Date(from.getTime()));
             ps.setDate(2, new java.sql.Date(to.getTime()));
+            ps.setDate(3, new java.sql.Date(from.getTime()));
+            ps.setDate(4, new java.sql.Date(to.getTime()));
 
+            __logger.info("report sql: " + ps);
+            
             ResultSet rs = ps.executeQuery();
             while(rs.next()) {
-                list.add(new HighlightReportData(rs.getInt("uid"), rs.getString("user_name"), rs.getString("games_viewed")));
+                list.add(new HighlightReportData(rs.getInt("uid"), rs.getString("user_name"), rs.getString("games_viewed"), rs.getInt("quizzes_taken")));
             }
         }
         finally {
@@ -178,6 +225,10 @@ public class CmHighlightsDao {
             ps = conn.prepareStatement(sql);
             ps.setDate(1, new java.sql.Date(from.getTime()));
             ps.setDate(2, new java.sql.Date(to.getTime()));
+            
+            __logger.info("report sql: " + ps);
+            
+            
             ResultSet rs = ps.executeQuery();
             while(rs.next()) {
                 list.add(new HighlightReportData(rs.getInt("uid"), rs.getString("user_name"), rs.getString("quizzes_passed")));
@@ -219,6 +270,8 @@ public class CmHighlightsDao {
             ps.setDate(1, new java.sql.Date(from.getTime()));
             ps.setDate(2, new java.sql.Date(to.getTime()));
             
+            __logger.info("report sql: " + ps);
+            
             ResultSet rs = ps.executeQuery();
             while(rs.next()) {
                 list.add(new HighlightReportData(rs.getInt("uid"), rs.getString("user_name"), rs.getString("avg_quiz_score")));
@@ -255,6 +308,8 @@ public class CmHighlightsDao {
             ps.setDate(1, new java.sql.Date(from.getTime()));
             ps.setDate(2, new java.sql.Date(to.getTime()));
 
+            __logger.info("report sql: " + ps);
+            
             ResultSet rs = ps.executeQuery();
             while(rs.next()) {
                 list.add(new HighlightReportData(rs.getInt("uid"), rs.getString("user_name"), rs.getString("failed_quizzes")));
@@ -312,6 +367,8 @@ public class CmHighlightsDao {
             ps.setDate(1, new java.sql.Date(from.getTime()));
             ps.setDate(2, new java.sql.Date(to.getTime()));
             
+            __logger.info("report sql: " + ps);
+            
             ResultSet rs = ps.executeQuery();
             while(rs.next()) {
                 list.add(new HighlightReportData(rs.getInt("uid"), rs.getString("user_name"), rs.getString("failed_quizzes")));
@@ -344,6 +401,8 @@ public class CmHighlightsDao {
             ps.setDate(1, new java.sql.Date(from.getTime()));
             ps.setDate(2, new java.sql.Date(to.getTime()));
             
+            __logger.info("report sql: " + ps);
+            
             ResultSet rs = ps.executeQuery();
             while(rs.next()) {
                 list.add(new HighlightReportData(rs.getInt("uid"), rs.getString("user_name"), rs.getString("avg_login_week")));
@@ -355,6 +414,43 @@ public class CmHighlightsDao {
         return list;
     }
     
+    /*return students who have not login
+     * 
+     */
+    public CmList<HighlightReportData>  getReportZeroLogins(final Connection conn, List<String> uids, Date from, Date to) throws Exception {
+        
+        String sql =
+            
+            "select u.uid, u.user_name " +
+            " FROM HA_USER u " +
+            " where  u.uid in(" + createInList(uids) + " ) " +
+            " and not exists ( select 'x' " +
+            "                  from HA_USER_LOGIN l " +
+            "                  where user_id = u.uid " +
+            "                  and date(l.login_time) between ? and ? " +
+            "                  ) " +
+            " order by u.user_name";
+            
+        CmList<HighlightReportData> list=new CmArrayList<HighlightReportData>();
+        
+        PreparedStatement ps=null;
+        try {
+            ps = conn.prepareStatement(sql);
+            ps.setDate(1, new java.sql.Date(from.getTime()));
+            ps.setDate(2, new java.sql.Date(to.getTime()));
+            
+            __logger.info("report sql: " + ps);
+            
+            ResultSet rs = ps.executeQuery();
+            while(rs.next()) {
+                list.add(new HighlightReportData(rs.getInt("uid"), rs.getString("user_name"), null));
+            }
+        }
+        finally {
+            SqlUtilities.releaseResources(null,ps,null);
+        }
+        return list;
+    }
     
     public CmList<HighlightReportData> getReportGroupProgress(final Connection conn, final int adminId,final List<String> uids, final Date from, final Date to) throws Exception {
 
@@ -375,6 +471,9 @@ public class CmHighlightsDao {
         Statement ps=null;
         try {
             ps = conn.createStatement();
+            
+            __logger.info("report sql: " + sql);
+            
             ResultSet rs = ps.executeQuery(sql);
             while(rs.next()) {
                 list.add(new HighlightReportData(rs.getString("group_name"),rs.getInt("active_count"),rs.getInt("login_count"),rs.getInt("lessons_viewed"),rs.getInt("quizzes_passed")));
@@ -415,6 +514,9 @@ public class CmHighlightsDao {
         Statement ps=null;
         try {
             ps = conn.createStatement();
+            
+            __logger.info("report sql: " + sql);
+            
             ResultSet rs = ps.executeQuery(sql);
             while(rs.next()) {
                 list.add(new HighlightReportData(rs.getString("group_name"),rs.getInt("active_count"),rs.getInt("videos_viewed"),rs.getInt("games_viewed"),rs.getInt("activities_viewed"),rs.getInt("flash_cards_viewed")));

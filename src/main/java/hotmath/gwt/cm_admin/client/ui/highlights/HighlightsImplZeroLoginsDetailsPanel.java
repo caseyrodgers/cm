@@ -1,12 +1,11 @@
 package hotmath.gwt.cm_admin.client.ui;
 
+import hotmath.gwt.shared.client.rpc.action.HighlightsGetReportAction;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
-import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
-
-import hotmath.gwt.shared.client.rpc.action.HighlightsGetReportAction;
 
 public class HighlightImplZeroLoginsDetailsPanel extends HighlightImplDetailsPanelBase {
     public HighlightImplZeroLoginsDetailsPanel(HighlightImplBase base) {
@@ -20,7 +19,7 @@ public class HighlightImplZeroLoginsDetailsPanel extends HighlightImplDetailsPan
     
     
     @Override
-    protected ColumnModel getColumns() {
+    protected List<ColumnConfig> getColumns() {
         List<ColumnConfig> configs = new ArrayList<ColumnConfig>();
         ColumnConfig column = new ColumnConfig();
         column.setId("name");
@@ -28,8 +27,8 @@ public class HighlightImplZeroLoginsDetailsPanel extends HighlightImplDetailsPan
         column.setWidth(140);
         column.setSortable(false);
         configs.add(column);
-        ColumnModel cm = new ColumnModel(configs);
-        return cm;
+        
+        return configs;
     }
    
    

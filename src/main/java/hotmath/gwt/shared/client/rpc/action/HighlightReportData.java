@@ -9,6 +9,7 @@ public class HighlightReportData implements Response {
     String name;
     String label;
     
+    int quizzesTaken;
     
     int groupCount;
     int schoolCount;
@@ -32,6 +33,12 @@ public class HighlightReportData implements Response {
         this.uid = uid;
         this.name = name;
         this.data = data;
+    }
+    
+    /** For standard report with quizzes viewed */
+    public HighlightReportData(Integer uid, String name, String data, int quizzesTaken) {
+        this(uid,name,data);
+        this.quizzesTaken = quizzesTaken;
     }
     
     /** for group performance */
@@ -173,7 +180,12 @@ public class HighlightReportData implements Response {
     public void setFlashCardsViewed(int flashCardsViewed) {
         this.flashCardsViewed = flashCardsViewed;
     }
-    
-    
 
+    public int getQuizzesTaken() {
+        return quizzesTaken;
+    }
+
+    public void setQuizzesTaken(int quizzesTaken) {
+        this.quizzesTaken = quizzesTaken;
+    }
 }

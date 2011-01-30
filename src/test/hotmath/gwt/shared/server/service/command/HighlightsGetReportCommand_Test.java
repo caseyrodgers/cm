@@ -12,8 +12,15 @@ public class HighlightsGetReportCommand_Test extends CmDbTestCase {
     public HighlightsGetReportCommand_Test(String name) {
         super(name);
     }
+
+    public void testExecute2() throws Exception {
+        HighlightsGetReportAction action = new HighlightsGetReportAction(new GetStudentGridPageAction(), ReportType.ZERO_LOGINS,2,null,null);
+        CmList<HighlightReportData> list = new HighlightsGetReportCommand().execute(conn, action);
+        assertTrue(list.size() > 0);
+    }
+
     
-    public void testExecute() throws Exception {
+    public void testExecute3() throws Exception {
         HighlightsGetReportAction action = new HighlightsGetReportAction(new GetStudentGridPageAction(), ReportType.GREATEST_EFFORT,2,null,null);
         CmList<HighlightReportData> list = new HighlightsGetReportCommand().execute(conn, action);
         assertTrue(list.size() > 0);

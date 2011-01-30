@@ -89,7 +89,11 @@ public class HighlightsGetReportCommand implements ActionHandler< HighlightsGetR
                 case GROUP_USAGE:
                     list = dao.getReportGroupUsage(conn, action.getAdminId(), uids, fromDate, toDate);
                     break;
-                                        
+                              
+                case ZERO_LOGINS:
+                    list = dao.getReportZeroLogins(conn, uids, fromDate, toDate);
+                    break;
+                    
                     
                     default:
                         throw new Exception("Uknown report type: " + action);

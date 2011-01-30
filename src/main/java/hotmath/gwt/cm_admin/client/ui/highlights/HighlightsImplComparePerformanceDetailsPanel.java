@@ -38,7 +38,7 @@ public class HighlightImplComparePerformanceDetailsPanel extends HighlightImplDe
     }
     
     @Override
-    protected ColumnModel getColumns() {
+    protected List<ColumnConfig> getColumns() {
         List<ColumnConfig> configs = new ArrayList<ColumnConfig>();
 
         ColumnConfig column = new ColumnConfig();
@@ -80,8 +80,7 @@ public class HighlightImplComparePerformanceDetailsPanel extends HighlightImplDe
         column.setAlignment(HorizontalAlignment.RIGHT);        
         configs.add(column);
 
-        ColumnModel cm = new ColumnModel(configs);
-        return cm;
+        return configs;
     }
     
     @Override

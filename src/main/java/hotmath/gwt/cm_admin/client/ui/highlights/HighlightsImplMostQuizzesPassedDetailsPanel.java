@@ -1,8 +1,10 @@
 package hotmath.gwt.cm_admin.client.ui;
 
-import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
-
 import hotmath.gwt.shared.client.rpc.action.HighlightsGetReportAction;
+
+import java.util.List;
+
+import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 
 
 public class HighlightImplMostQuizzesPassedDetailsPanel extends HighlightImplDetailsPanelBase {
@@ -15,10 +17,10 @@ public class HighlightImplMostQuizzesPassedDetailsPanel extends HighlightImplDet
         return HighlightsGetReportAction.ReportType.MOST_QUIZZES_PASSED;
     }
     
-    protected ColumnModel getColumns() {
-        ColumnModel cm = super.getColumns();
-        cm.getColumn(1).setHeader("Quizzes Passed");
-        return cm;
+    protected List<ColumnConfig> getColumns() {
+        List<ColumnConfig> configs = super.getColumns();
+        configs.get(1).setHeader("Quizzes Passed");
+        return configs;
     }
    
 }

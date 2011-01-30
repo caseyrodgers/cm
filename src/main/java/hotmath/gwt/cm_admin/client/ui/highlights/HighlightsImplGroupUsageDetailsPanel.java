@@ -34,7 +34,7 @@ public class HighlightImplGroupUsageDetailsPanel extends HighlightImplDetailsPan
     }
     
     @Override
-    protected ColumnModel getColumns() {
+    protected List<ColumnConfig> getColumns() {
         List<ColumnConfig> configs = new ArrayList<ColumnConfig>();
 
         ColumnConfig column = new ColumnConfig();
@@ -75,9 +75,8 @@ public class HighlightImplGroupUsageDetailsPanel extends HighlightImplDetailsPan
         column.setSortable(false);
         column.setAlignment(HorizontalAlignment.RIGHT);        
         configs.add(column);
-
-        ColumnModel cm = new ColumnModel(configs);
-        return cm;
+        
+        return configs;
     }
     
     protected HighlightReportModel createTableModel(HighlightReportData data) {
