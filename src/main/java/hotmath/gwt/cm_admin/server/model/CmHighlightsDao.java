@@ -118,8 +118,7 @@ public class CmHighlightsDao {
             "JOIN HA_TEST_RUN r on r.test_id = t.test_id " +
             "JOIN HA_TEST_RUN_LESSON l on l.run_id = r.run_id " +
             "where u.uid in ( " + createInList(uids) + " ) " +
-            "AND l.date_completed is not null " +
-            " AND date(r.run_time) between ? and ? " +
+            "AND date(r.run_time) between ? and ? " +
             "AND l.lesson_viewed is not null " +            
             "group by u.uid " +
             "order by lessons_completed, u.user_name";
