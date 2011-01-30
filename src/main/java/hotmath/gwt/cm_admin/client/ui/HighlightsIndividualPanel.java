@@ -115,7 +115,7 @@ public class HighlightsIndividualPanel extends ContentPanel {
         s.add(new ReportModel(new HighlightImplHighestAverageQuizScores()));
         s.add(new ReportModel(new HighlightImplMostFailuresLatestQuiz()));
         s.add(new ReportModel(new HighlightImplZeroLogins()));
-        s.add(new ReportModel(new HighlightImplComparePerformance()));
+        // s.add(new ReportModel(new HighlightImplComparePerformance()));
         s.add(new ReportModel(new HighlightImplGroupProgress()));
         s.add(new ReportModel(new HighlightImplGroupUsage()));
         return s;
@@ -236,7 +236,7 @@ class HighlightImplLeastEffort extends HighlightImplBase {
 
 class HighlightImplMostGamesPlayed extends HighlightImplBase {
     public HighlightImplMostGamesPlayed() {
-        super("Most Games Played","Displays students in order of most quizzes passed (which correlates to most Sections completed as Auto-Enroll quizzes are not counted)");
+        super("Most Games Played","Displays students in order of most games played (excluding those who have played no games)");
     }
     public Widget prepareWidget() {
         return new HighlightImplMostGamesPlayedDetailsPanel(this);

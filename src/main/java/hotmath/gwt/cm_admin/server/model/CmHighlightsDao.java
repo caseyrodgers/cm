@@ -43,17 +43,8 @@ public class CmHighlightsDao {
     public CmList<HighlightReportData> getReportGreatestEffort(final Connection conn, List<String> uids, Date from, Date to) throws Exception {
         
         String sql = 
-            " select u.uid, u.user_name, qv.quizzes_taken, count(*) as lessons_viewed " +
+            " select u.uid, u.user_name,count(*) as lessons_viewed " +
             "from HA_USER u " +
-            
-            " join ( " +
-            "        select user_id, count(*) as quizzes_taken " +
-            "        from   HA_TEST t " +
-            "           JOIN HA_TEST_RUN r on r.test_id = t.test_id " +
-            "        where date(r.run_time) between ? and ? " + 
-            "        GROUP BY user_id " +
-            "      ) qv on qv.user_id = u.uid " +
-            
             "JOIN HA_TEST t on t.user_id = u.uid " +
             "JOIN HA_TEST_RUN r on r.test_id = t.test_id " +
             "JOIN HA_TEST_RUN_LESSON l on l.run_id = r.run_id " +
@@ -70,14 +61,12 @@ public class CmHighlightsDao {
             ps = conn.prepareStatement(sql);
             ps.setDate(1, new java.sql.Date(from.getTime()));
             ps.setDate(2, new java.sql.Date(to.getTime()));
-            ps.setDate(3, new java.sql.Date(from.getTime()));
-            ps.setDate(4, new java.sql.Date(to.getTime()));
 
             __logger.info("report sql: " + ps);
             
             ResultSet rs = ps.executeQuery();
             while(rs.next()) {
-                list.add(new HighlightReportData(rs.getInt("uid"), rs.getString("user_name"), rs.getString("lessons_viewed"), rs.getInt("quizzes_taken")));
+                list.add(new HighlightReportData(rs.getInt("uid"), rs.getString("user_name"), rs.getString("lessons_viewed")));
             }
         }
         finally {
@@ -103,17 +92,8 @@ public class CmHighlightsDao {
     public CmList<HighlightReportData> getReportLeastEffort(final Connection conn, List<String> uids, Date from, Date to) throws Exception {
         
         String sql = 
-            " select u.uid, u.user_name, qv.quizzes_taken, count(*) as lessons_completed " +
+            " select u.uid, u.user_name, count(*) as lessons_completed " +
             "from HA_USER u " +
-            
-            " join ( " +
-            "        select user_id, count(*) as quizzes_taken " +
-            "        from   HA_TEST t " +
-            "           JOIN HA_TEST_RUN r on r.test_id = t.test_id " +
-            "        where date(r.run_time) between ? and ? " + 
-            "        GROUP BY user_id " +
-            "      ) qv on qv.user_id = u.uid " +
-            
             "JOIN HA_TEST t on t.user_id = u.uid " +
             "JOIN HA_TEST_RUN r on r.test_id = t.test_id " +
             "JOIN HA_TEST_RUN_LESSON l on l.run_id = r.run_id " +
@@ -130,14 +110,12 @@ public class CmHighlightsDao {
             ps = conn.prepareStatement(sql);
             ps.setDate(1, new java.sql.Date(from.getTime()));
             ps.setDate(2, new java.sql.Date(to.getTime()));
-            ps.setDate(3, new java.sql.Date(from.getTime()));
-            ps.setDate(4, new java.sql.Date(to.getTime()));
             
             __logger.info("report sql: " + ps);
             
             ResultSet rs = ps.executeQuery();
             while(rs.next()) {
-                list.add(new HighlightReportData(rs.getInt("uid"), rs.getString("user_name"), rs.getString("lessons_completed"),rs.getInt("quizzes_taken")));
+                list.add(new HighlightReportData(rs.getInt("uid"), rs.getString("user_name"), rs.getString("lessons_completed")));
             }
         }
         finally {
@@ -151,10 +129,10 @@ public class CmHighlightsDao {
         String sql = 
             "select u.uid, " +
             "u.user_name, " +
-            "qv.quizzes_taken,  " +
+            "qv.quizzes_taken," +
             "count(*) as games_viewed " +
             " from   HA_USER u " +
-            
+
             " join ( " +
             "        select user_id, count(*) as quizzes_taken " +
             "        from   HA_TEST t " +
@@ -162,6 +140,7 @@ public class CmHighlightsDao {
             "        where date(r.run_time) between ? and ? " + 
             "        GROUP BY user_id " +
             "      ) qv on qv.user_id = u.uid " +
+            
             
             " join HA_TEST t " +
             " on t.user_id = u.uid " +
@@ -203,8 +182,20 @@ public class CmHighlightsDao {
         String sql = 
             "select u.uid, " +
             " u.user_name, " +
+            " qv.quizzes_taken, " +
             "count(*) as quizzes_passed " +
             " from   HA_USER u " +
+            
+            
+            " join ( " +
+            "        select user_id, count(*) as quizzes_taken " +
+            "        from   HA_TEST t " +
+            "           JOIN HA_TEST_RUN r on r.test_id = t.test_id " +
+            "        where date(r.run_time) between ? and ? " + 
+            "        GROUP BY user_id " +
+            "      ) qv on qv.user_id = u.uid " +
+            
+
             " join HA_TEST t " +
             " on t.user_id = u.uid " +
             " join CM_USER_PROGRAM c on c.id = t.user_prog_id " +
@@ -224,13 +215,15 @@ public class CmHighlightsDao {
             ps = conn.prepareStatement(sql);
             ps.setDate(1, new java.sql.Date(from.getTime()));
             ps.setDate(2, new java.sql.Date(to.getTime()));
+            ps.setDate(3, new java.sql.Date(from.getTime()));
+            ps.setDate(4, new java.sql.Date(to.getTime()));
             
             __logger.info("report sql: " + ps);
             
             
             ResultSet rs = ps.executeQuery();
             while(rs.next()) {
-                list.add(new HighlightReportData(rs.getInt("uid"), rs.getString("user_name"), rs.getString("quizzes_passed")));
+                list.add(new HighlightReportData(rs.getInt("uid"), rs.getString("user_name"), rs.getString("quizzes_passed"),rs.getInt("quizzes_taken")));
             }
         }
         finally {
@@ -245,9 +238,18 @@ public class CmHighlightsDao {
          * 
          */
         String sql = 
-            "select u.uid, u.user_name, " +
+            "select u.uid, u.user_name,qv.quizzes_taken, " +
             "floor(avg((answered_correct / (answered_correct + answered_incorrect + not_answered)) * 100)) as avg_quiz_score " +
             " from   HA_USER u " +
+            
+            " join ( " +
+            "        select user_id, count(*) as quizzes_taken " +
+            "        from   HA_TEST t " +
+            "           JOIN HA_TEST_RUN r on r.test_id = t.test_id " +
+            "        where date(r.run_time) between ? and ? " + 
+            "        GROUP BY user_id " +
+            "      ) qv on qv.user_id = u.uid " +
+            
             " join HA_TEST t " +
             " on t.user_id = u.uid "+
             " join CM_USER_PROGRAM c " +
@@ -268,12 +270,14 @@ public class CmHighlightsDao {
             ps = conn.prepareStatement(sql);
             ps.setDate(1, new java.sql.Date(from.getTime()));
             ps.setDate(2, new java.sql.Date(to.getTime()));
+            ps.setDate(3, new java.sql.Date(from.getTime()));
+            ps.setDate(4, new java.sql.Date(to.getTime()));
             
             __logger.info("report sql: " + ps);
             
             ResultSet rs = ps.executeQuery();
             while(rs.next()) {
-                list.add(new HighlightReportData(rs.getInt("uid"), rs.getString("user_name"), rs.getString("avg_quiz_score")));
+                list.add(new HighlightReportData(rs.getInt("uid"), rs.getString("user_name"), rs.getString("avg_quiz_score"),rs.getInt("quizzes_taken")));
             }
         }
         finally {
@@ -573,3 +577,16 @@ public class CmHighlightsDao {
     }
 }
 
+
+
+/** 
+
+" join ( " +
+"        select user_id, count(*) as quizzes_taken " +
+"        from   HA_TEST t " +
+"           JOIN HA_TEST_RUN r on r.test_id = t.test_id " +
+"        where date(r.run_time) between ? and ? " + 
+"        GROUP BY user_id " +
+"      ) qv on qv.user_id = u.uid " +
+
+*/
