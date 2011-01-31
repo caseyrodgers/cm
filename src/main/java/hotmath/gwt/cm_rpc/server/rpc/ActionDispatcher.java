@@ -410,49 +410,53 @@ public class ActionDispatcher {
             logger.info("Auto registering action: " + action.getClass());
             String actionName = action.getClass().getName();
             if(actionName.endsWith("Action")) {
-                /* extract name and construct command class name
-                 * using standard package.
-                 */
-                String p[] = actionName.split("\\.");
-                String cmdName = p[p.length-1];
-                cmdName = cmdName.substring(0, cmdName.length() - 6) + "Command";
+                                                     
+                Class cmdClass=loadCommandClass(action);
+                Class actionType=((ActionHandler)cmdClass.newInstance()).getActionType();
                 
-                /** TODO: how to add these automatically ?
-                 * ? annotations would need preprocessing
-                 * ? static initializer would have to be client side and would break gwt.  
-                 * ? external configuration file is messy
-                 * ? server side startup using reflection ...  hmm..
-                 * 
-                 * NOTE: each ends with period
-                 */
-                String standardPlaces[] = {"hotmath.gwt.shared.server.service.command.",
-                                           "hotmath.gwt.cm_mobile.server.rpc.",
-                                           "hotmath.gwt.cm_mobile_shared.server.rpc.",
-                                           "hotmath.gwt.solution_editor.server.rpc.",
-                                           "hotmath.gwt.cm_activity.server.rpc."};
-                                     
-                Class actionHandler=null,cmdClass=null;
-                for(int i=0;i<standardPlaces.length;i++) {
-                    String commandClass = standardPlaces[i] + cmdName;
-                    try {
-                        /** create instance and get object */
-                        logger.info("Auto registering action command: " + cmdName);
-                        cmdClass = Class.forName(commandClass);
-                        actionHandler = ((ActionHandler) cmdClass.newInstance()).getActionType();
-                        break;
-                    }
-                    catch(ClassNotFoundException ie) {
-                        /** silent */
-                    }
-                }
-                if(actionHandler == null)
-                    throw new CmRpcException("No command found for Action: " + action);
-                
-                commands.put(actionHandler, cmdClass);
+                commands.put(actionType, cmdClass);
             }
         }
         Class x = commands.get(action.getClass());
         return x;
+    }
+    
+    /* extract name and construct command class name
+     * using standard package.
+     */
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    static public Class loadCommandClass(Action<? extends Response> action) throws Exception {
+
+        
+        String standardPlaces[] = {"hotmath.gwt.shared.server.service.command.",
+                "hotmath.gwt.cm_mobile.server.rpc.",
+                "hotmath.gwt.cm_mobile_shared.server.rpc.",
+                "hotmath.gwt.solution_editor.server.rpc.",
+                "hotmath.gwt.cm_activity.server.rpc."};
+
+        Class cmdClass=null;
+        
+        String actionName = action.getClass().getName();
+        String p[] = actionName.split("\\.");
+        String cmdName = p[p.length-1];
+        cmdName = cmdName.substring(0, cmdName.length() - 6) + "Command";
+        for(int i=0;i<standardPlaces.length;i++) {
+            String commandClass = standardPlaces[i] + cmdName;
+            try {
+                /** create instance and get object */
+                logger.info("Auto registering action command: " + cmdName);
+                cmdClass = Class.forName(commandClass);
+                break;
+            }
+            catch(ClassNotFoundException ie) {
+                /** silent */
+            }
+        }
+        
+        if(cmdClass == null)
+            throw new CmRpcException("No command found for Action: " + action);
+        
+        return cmdClass;
     }
 
     /**

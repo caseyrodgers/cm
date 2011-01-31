@@ -22,7 +22,12 @@ public class MultiActionRequestCommand implements ActionHandler<MultiActionReque
     public CmList<Response> execute(Connection conn, MultiActionRequestAction action) throws Exception {
         CmList<Response> responses = new CmArrayList<Response>();
         for(Action<? extends Response> runAct: action.getActions()) {
-            responses.add(ActionDispatcher.getInstance().execute(runAct));
+            /** create a call a new instance of the real command object
+             * 
+             */
+            Class clazz = ActionDispatcher.loadCommandClass(runAct); 
+            ActionHandler actionHandler = (ActionHandler) clazz.newInstance();
+            responses.add( actionHandler.execute(conn, runAct));
         }
         return responses;
     }
