@@ -20,7 +20,7 @@ public class HighlightImplMostFailuresLatestQuizDetailsPanel extends HighlightIm
     protected List<ColumnConfig> getColumns() {
         // TODO Auto-generated method stub
         List<ColumnConfig> configs = super.getColumns();
-        configs.get(1).setHeader("Failed Last Quiz Count");
+        configs.get(1).setHeader("Failures");
         return configs;
     }
    

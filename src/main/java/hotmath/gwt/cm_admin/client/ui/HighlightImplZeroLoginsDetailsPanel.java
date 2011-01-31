@@ -1,5 +1,6 @@
 package hotmath.gwt.cm_admin.client.ui;
 
+import hotmath.gwt.shared.client.rpc.action.HighlightReportData;
 import hotmath.gwt.shared.client.rpc.action.HighlightsGetReportAction;
 
 import java.util.ArrayList;
@@ -31,5 +32,10 @@ public class HighlightImplZeroLoginsDetailsPanel extends HighlightImplDetailsPan
         return configs;
     }
    
+    
+    @Override
+    protected HighlightReportModel createTableModel(HighlightReportData data) {
+        return new HighlightReportModel(data.getUid(), data.getName(), null);
+    }
    
 }

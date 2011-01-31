@@ -481,6 +481,7 @@ public class CmHighlightsDao {
             while(rs.next()) {
                 list.add(new HighlightReportData(rs.getString("group_name"),rs.getInt("active_count"),rs.getInt("login_count"),rs.getInt("lessons_viewed"),rs.getInt("quizzes_passed")));
             }
+            list.add(createTotalRow(list));            
         }
         finally {
             SqlUtilities.releaseResources(null,ps,null);
@@ -524,11 +525,29 @@ public class CmHighlightsDao {
             while(rs.next()) {
                 list.add(new HighlightReportData(rs.getString("group_name"),rs.getInt("active_count"),rs.getInt("videos_viewed"),rs.getInt("games_viewed"),rs.getInt("activities_viewed"),rs.getInt("flash_cards_viewed")));
             }
+            list.add(createTotalRow(list));
         }
         finally {
             SqlUtilities.releaseResources(null,ps,null);
         }
         return list;
+    }
+    
+    
+    private HighlightReportData createTotalRow(CmList<HighlightReportData> list) {
+        HighlightReportData row = new HighlightReportData();
+        row.setName("SCHOOLWIDE");
+
+        for(HighlightReportData d: list) {
+            row.setActiveCount(row.getActiveCount() + d.getActiveCount());
+            row.setVideosViewed(row.getVideosViewed() + d.getVideosViewed());
+            row.setGamesViewed(row.getGamesViewed() + d.getGamesViewed());
+            row.setActivitiesViewed(row.getActivitiesViewed() + d.getActivitiesViewed());
+            row.setLoginCount(row.getLoginCount() + d.getLoginCount());
+            row.setLessonsViewed(row.getLessonsViewed() + d.getLessonsViewed());
+            row.setQuizzesPassed(row.getQuizzesPassed() + d.getQuizzesPassed());            
+        }
+        return row;
     }
     
     

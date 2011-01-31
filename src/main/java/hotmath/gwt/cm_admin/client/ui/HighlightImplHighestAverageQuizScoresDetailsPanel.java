@@ -20,7 +20,7 @@ public class HighlightImplHighestAverageQuizScoresDetailsPanel extends Highlight
     protected List<ColumnConfig> getColumns() {
         // TODO Auto-generated method stub
         List<ColumnConfig> configs = super.getColumns();
-        configs.get(1).setHeader("Average Quiz Score");
+        configs.get(1).setHeader("Average");
         
 
         ColumnConfig column = new ColumnConfig();
