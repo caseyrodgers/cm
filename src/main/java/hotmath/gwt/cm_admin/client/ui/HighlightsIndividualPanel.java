@@ -204,7 +204,7 @@ class MyLayoutContainer extends LayoutContainer {
                                    "</div>");
         
         _infoLabel.addStyleName("info-label");
-        add(_infoLabel, new BorderLayoutData(LayoutRegion.SOUTH,35));        
+        add(_infoLabel, new BorderLayoutData(LayoutRegion.SOUTH,45));        
     }
 }
 

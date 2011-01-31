@@ -42,7 +42,6 @@ public class HighlightsDataWindow extends CmWindow {
         }
         __instance.setAdminId(aid);
         __instance.setVisible(true);
-        
         return __instance;
     }
     
