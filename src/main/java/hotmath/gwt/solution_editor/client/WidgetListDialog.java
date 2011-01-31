@@ -215,7 +215,7 @@ public class WidgetListDialog extends Window {
         String START_TOKEN="<div id='hm_flash_widget'";
         int startPos = html.indexOf(START_TOKEN);
         if(startPos == -1) {
-            return null;
+            return html;
         }
         int endPos = html.indexOf("</div>", startPos);
         endPos = html.indexOf("</div>", endPos+1);
