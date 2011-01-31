@@ -14,6 +14,7 @@ import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.SelectionListener;
+import com.extjs.gxt.ui.client.widget.Html;
 import com.extjs.gxt.ui.client.widget.Label;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
@@ -106,11 +107,9 @@ public class HighlightsDataWindow extends CmWindow {
          * 
          */
         getButtonBar().setStyleAttribute("position", "relative");
-        _dateRange.setStyleAttribute("position", "absolute");
-        _dateRange.setStyleAttribute("left", "0");
-        _dateRange.setStyleAttribute("top", "0");
-        _dateRange.setStyleAttribute("color", "blue");
-        _dateRange.setStyleAttribute("padding", "5px 10px 0 0");
+
+        
+        _dateRange.addStyleName("date-range-label");
         _dateRange.addListener(Events.OnClick, new Listener<BaseEvent>() {
             public void handleEvent(BaseEvent be) {
                 showDatePicker();

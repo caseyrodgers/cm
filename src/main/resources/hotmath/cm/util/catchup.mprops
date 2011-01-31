@@ -1652,7 +1652,7 @@ from   HA_USER u
                from   HA_USER_LOGIN l
                       join HA_USER u2
                         on u2.uid = l.user_id
-               where    u2.uid in ($$UIDLIST$$)
+               where    u2.admin_id = $$AID$$
                and   date(l.login_time) between '$$DATE_FROM$$' and '$$DATE_TO$$'     
                group  by u2.group_id
                
@@ -1673,7 +1673,7 @@ from   HA_USER u
                        where  user_id = u3.uid
                        and   date(login_time) between '$$DATE_FROM$$' and '$$DATE_TO$$'                            
                 )
-                and    u3.uid in ($$UIDLIST$$)
+                and    u3.admin_id = $$AID$$
                 group by group_id
                 
           ) la on la.group_id = u.group_id
@@ -1688,7 +1688,7 @@ from   HA_USER u
                    JOIN HA_TEST t on t.user_id = u.uid
                    JOIN HA_TEST_RUN r on r.test_id = t.test_id
                    JOIN HA_TEST_RUN_LESSON l on l.run_id = r.run_id
-              where u.uid in ($$UIDLIST$$)
+              where u.admin_id = $$AID$$
               and  l.lesson_viewed between '$$DATE_FROM$$' and '$$DATE_TO$$'
               group by group_id
               
@@ -1705,12 +1705,12 @@ from   HA_USER u
                   JOIN HA_TEST t on t.user_id = u.uid 
                   JOIN HA_TEST_RUN r on r.test_id = t.test_id
               where r.is_passing = 1
-              and u.uid in ($$UIDLIST$$)
+              and u.admin_id = $$AID$$
               and date(r.run_time) between '$$DATE_FROM$$' and '$$DATE_TO$$'
               group by group_id    
           ) qp on qp.group_id = u.group_id
           
-where  u.uid in ($$UIDLIST$$)
+where  u.admin_id = $$AID$$
 group  by u.group_id
 
 
@@ -1742,7 +1742,7 @@ from   HA_USER u
                        where  user_id = u3.uid
                        and   date(login_time) between '$$DATE_FROM$$' and '$$DATE_TO$$'                            
                 )
-                and    u3.uid in ($$UIDLIST$$)
+                and    u3.admin_id = $$AID$$
                 group by group_id
                 
           ) la on la.group_id = u.group_id
@@ -1756,7 +1756,7 @@ from   HA_USER u
                    JOIN HA_TEST t on t.user_id = u.uid
                    JOIN HA_TEST_RUN r on r.test_id = t.test_id
                    JOIN HA_TEST_RUN_INMH_USE i on i.run_id = r.run_id
-              where u.uid in ($$UIDLIST$$)
+              where u.admin_id = $$AID$$
               and  i.item_type = 'video'
               and  date(i.view_time) between '$$DATE_FROM$$' and '$$DATE_TO$$'
               group by group_id
@@ -1774,7 +1774,7 @@ from   HA_USER u
                    JOIN HA_TEST t on t.user_id = u.uid
                    JOIN HA_TEST_RUN r on r.test_id = t.test_id
                    JOIN HA_TEST_RUN_INMH_USE i on i.run_id = r.run_id
-              where u.uid in ($$UIDLIST$$)
+              where u.admin_id = $$AID$$
               and  i.item_type = 'activity_standard'
               and  date(i.view_time) between '$$DATE_FROM$$' and '$$DATE_TO$$'
               group by group_id 
@@ -1790,7 +1790,7 @@ from   HA_USER u
                    JOIN HA_TEST t on t.user_id = u.uid
                    JOIN HA_TEST_RUN r on r.test_id = t.test_id
                    JOIN HA_TEST_RUN_INMH_USE i on i.run_id = r.run_id
-              where u.uid in ($$UIDLIST$$)
+              where u.admin_id = $$AID$$
               and  i.item_type = 'activity'
               and  date(i.view_time) between '$$DATE_FROM$$' and '$$DATE_TO$$'
               group by group_id 
@@ -1807,12 +1807,12 @@ from   HA_USER u
                    JOIN HA_TEST t on t.user_id = u.uid
                    JOIN HA_TEST_RUN r on r.test_id = t.test_id
                    JOIN HA_TEST_RUN_INMH_USE i on i.run_id = r.run_id
-              where u.uid in ($$UIDLIST$$)
+              where u.admin_id = $$AID$$
               and  i.item_type in ('flashcard', 'flashcard_es')
               and  date(i.view_time) between '$$DATE_FROM$$' and '$$DATE_TO$$'
               group by group_id 
               
           ) fc  on fc.group_id = u.group_id                              
 
-where  u.uid in ($$UIDLIST$$)
+where  u.admin_id = $$AID$$
 group  by u.group_id

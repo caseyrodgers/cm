@@ -357,9 +357,32 @@ program-details-panel .x-ftree2-node-over {
 
 
 
-.highlights-data-window h2,
+.highlights-data-window h1,
 .date-range-picker-dialog h2 {
 	margin-top: 10px;
-	color: blue;
 	text-align: center;
+}
+
+
+
+.highlights-data-window .highlight-report-uses-summary {
+	color: red;
+}
+
+.highlights-data-window .info-label {
+    position: absolute;
+    top: 0;
+    font-size: .8em;
+    left: 0;
+    margin: 0;
+    padding: 5px 0 0 5px;
+    line-height: 1.3em;
+}
+
+.highlights-data-window .date-range-label {
+    position: absolute;
+    left: 0;
+    top: 0;
+    color: blue;
+    padding: 5px 10px 0 0;
 }

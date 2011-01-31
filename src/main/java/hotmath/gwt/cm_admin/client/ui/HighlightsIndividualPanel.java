@@ -48,15 +48,16 @@ public class HighlightsIndividualPanel extends ContentPanel {
         dData.setCollapsible(true);
 
         add(_reportOutput, dData);
+        
+        layout();
     }
     
     static int __lastSelectedReport=0;
-    String template = "<tpl for=\".\"><div class='x-view-item'>{text}</div></tpl>";    
     
     private native String getTemplate() /*-{ 
     return  [ 
     '<tpl for=".">', 
-    '<div class="x-view-item" qtip="{toolTip}">{text}</div>', 
+    '<div class="x-view-item {decorationClass}" qtip="{toolTip}">{text}</div>', 
     '</tpl>' 
     ].join(""); 
   }-*/;  
@@ -102,7 +103,6 @@ public class HighlightsIndividualPanel extends ContentPanel {
     }
 
     private LayoutContainer createReportOutputPanel() {
-        ListStore<ReportModel> store = new ListStore<ReportModel>();
         return new MyLayoutContainer("Report Output", new Label("Report Output"));
     }
  
@@ -116,8 +116,15 @@ public class HighlightsIndividualPanel extends ContentPanel {
         s.add(new ReportModel(new HighlightImplMostFailuresLatestQuiz()));
         s.add(new ReportModel(new HighlightImplZeroLogins()));
         // s.add(new ReportModel(new HighlightImplComparePerformance()));
-        s.add(new ReportModel(new HighlightImplGroupProgress()));
-        s.add(new ReportModel(new HighlightImplGroupUsage()));
+        
+        /** mark these two reports as not using the summary page selection */
+        ReportModel rm = new ReportModel(new HighlightImplGroupProgress());
+        rm.set("decorationClass", "highlight-report-uses-summary");
+        s.add(rm);
+        
+        rm = new ReportModel(new HighlightImplGroupUsage());
+        rm.set("decorationClass", "highlight-report-uses-summary");
+        s.add(rm);
         return s;
     }
     
@@ -178,10 +185,26 @@ class MyLayoutContainer extends LayoutContainer {
     public MyLayoutContainer(String title, Widget container) {
         setLayout(new BorderLayout());
         
-        String html = "<h2>" + title + "</h2>";
+        String html = "<h1>" + title + "</h1>";
         Html ohtml = new Html(html);
         add(ohtml, new BorderLayoutData(LayoutRegion.NORTH,35));
         add(container, new BorderLayoutData(LayoutRegion.CENTER));
+        
+        
+        /** add info box describing type of reports */
+        Html _infoLabel = new Html("<div>" +
+                                   "    <div>" +
+                                   "        <span style='background: black;width: 10px;'>&nbsp;</span>" +
+                                   "        Report using summary page selection" +
+                                   "    </div>" +
+                                   "    <div style='color: red'>" +
+                                   "        <span style='background: red;width: 10px;'>&nbsp;</span>" +
+                                   "        Report NOT using summary page selection" +
+                                   "    </div>" +
+                                   "</div>");
+        
+        _infoLabel.addStyleName("info-label");
+        add(_infoLabel, new BorderLayoutData(LayoutRegion.SOUTH,35));        
     }
 }
 
