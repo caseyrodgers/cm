@@ -199,7 +199,7 @@ class MyLayoutContainer extends LayoutContainer {
                                    "    </div>" +
                                    "    <div style='color: red'>" +
                                    "        <span style='background: red;width: 10px;'>&nbsp;</span>" +
-                                   "        Report NOT using summary page selection" +
+                                   "        Reports ignoring summary page selection" +
                                    "    </div>" +
                                    "</div>");
         

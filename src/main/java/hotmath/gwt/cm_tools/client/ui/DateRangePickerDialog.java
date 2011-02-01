@@ -28,11 +28,11 @@ import com.google.gwt.user.client.ui.Widget;
 public class DateRangePickerDialog extends Window {
     
     static private DateRangePickerDialog __instance;
-    static public DateRangePickerDialog showSharedInstance(Callback callback) {
+    static public DateRangePickerDialog showSharedInstance(Date from, Date to, Callback callback) {
         if(__instance == null) {
             __instance = new DateRangePickerDialog();
         }
-        __instance.setCallback(callback);
+        __instance.setCallback(callback, from, to);
         __instance.setVisible(true);
         return __instance;
     }
@@ -89,8 +89,11 @@ public class DateRangePickerDialog extends Window {
     }
 
     
-    public void setCallback(Callback callback) {
+    public void setCallback(Callback callback, Date from, Date to) {
         this.callback = callback;
+        
+        _fromPicker.setValue(from);
+        _toPicker.setValue(to);
     }
     
     DatePicker _fromPicker, _toPicker; 

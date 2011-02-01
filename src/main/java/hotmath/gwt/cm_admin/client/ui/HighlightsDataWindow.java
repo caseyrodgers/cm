@@ -129,7 +129,7 @@ public class HighlightsDataWindow extends CmWindow {
     }
 
     private void showDatePicker() {
-        DateRangePickerDialog.showSharedInstance(new DateRangePickerDialog.Callback() {
+        DateRangePickerDialog.showSharedInstance(_from, _to,new DateRangePickerDialog.Callback() {
             @Override
             public void datePicked(Date from, Date to) {
                 _from = (from != null)?from:_from;
