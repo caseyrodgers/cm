@@ -46,10 +46,14 @@ import sb.mail.SbMailManager;
  * 
  */
 public class ActionDispatcher {
+	
+	private static final int CONNECTION_WARNING_THRESHOLD = 10;
 
     static private ActionDispatcher __instance;
     
     static String startDate;
+    
+    Integer openConnectionCount = 0;
 
     static public ActionDispatcher getInstance() {
         if (__instance == null)
@@ -85,6 +89,8 @@ public class ActionDispatcher {
     private ActionDispatcher() {
         logger.info("Creating new ActionDispatcher");
         SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+        
+        
         
         /** ContextListener will only be initialized in a Servlet Container.
          * So, running in UnitTest or standalone ContextListener will
@@ -218,6 +224,10 @@ public class ActionDispatcher {
             if (!(actionHandler instanceof ActionHandlerManualConnectionManagement)) {
                 logger.debug("RPC Action: DB Connection requested");
                 conn = HMConnectionPool.getConnection();
+                synchronized(openConnectionCount) {
+                    openConnectionCount++;
+                }
+                
             } else {
                 logger.debug("RPC Action: DB Connection NOT requested");
             }
@@ -255,8 +265,18 @@ public class ActionDispatcher {
             else 
                 throw new CmRpcException(e);
         } finally {
-            if (conn != null)
+            if (conn != null) {
                 SqlUtilities.releaseResources(null, null, conn);
+                synchronized(openConnectionCount) {
+                    openConnectionCount--;
+                }
+                if (logger.isDebugEnabled()) {
+                	logger.debug(String.format("RPC Action: (ID:%s) DB Connection closed, openConnectionCount: (%d)", actionId, openConnectionCount));
+                }
+                if (openConnectionCount > CONNECTION_WARNING_THRESHOLD) {
+                	logger.warn(String.format("RPC Action: DB openConnectionCount: %d over threshold: %d", openConnectionCount, CONNECTION_WARNING_THRESHOLD));
+                }
+            }
 
             long now = System.currentTimeMillis();
             long executeTimeMills = (now - timeStart);
@@ -420,7 +440,15 @@ public class ActionDispatcher {
         Class x = commands.get(action.getClass());
         return x;
     }
-    
+
+    private static String standardPlaces[] = {
+    	"hotmath.gwt.shared.server.service.command.",
+        "hotmath.gwt.cm_mobile.server.rpc.",
+        "hotmath.gwt.cm_mobile_shared.server.rpc.",
+        "hotmath.gwt.solution_editor.server.rpc.",
+        "hotmath.gwt.cm_activity.server.rpc."
+    };
+
     /* extract name and construct command class name
      * using standard package.
      */
@@ -428,12 +456,6 @@ public class ActionDispatcher {
     static public Class loadCommandClass(Action<? extends Response> action) throws Exception {
 
         
-        String standardPlaces[] = {"hotmath.gwt.shared.server.service.command.",
-                "hotmath.gwt.cm_mobile.server.rpc.",
-                "hotmath.gwt.cm_mobile_shared.server.rpc.",
-                "hotmath.gwt.solution_editor.server.rpc.",
-                "hotmath.gwt.cm_activity.server.rpc."};
-
         Class cmdClass=null;
         
         String actionName = action.getClass().getName();
