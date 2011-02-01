@@ -49,6 +49,14 @@ pageTracker._trackPageview();
         top: -15px;
         right: 95px;
     }
+    
+    #sales_rep div {
+        display: none;
+        padding: 10px;
+        font-size: 2em;
+        font-weight: bold;
+        color: #666666;
+    }
 
 </style>
 <script>
@@ -151,13 +159,42 @@ pageTracker._trackPageview();
 
 
 <h2>Students and Parents</h2>
-<p>Please email support@hotmath.com at any time.  Many of your questions may already be answered on our <a href='/students.html'>Students</a> or <a href='/catchupmath_personal.html'>Purchase</a> pages.</p>
-<br/>
-<br/>
-<br/>
-<br/>
+<p>Please email support@hotmath.com at any time. Many of your questions may already be answered on our <a href='/students.html'>Students</a> or <a href='/catchupmath_personal.html'>Purchase</a> pages.</p>
 
-				
+<h2>Sales Representatives</h2>
+<p>Click on your state below to find your personal sales representative.</p>
+<div id='sales_rep' style='display: none'>
+   <h3>Your Personal Sales Representative is:</h3>
+   <div id='sales_rep_lincoln'>
+        Lincoln<br/>
+        123-123-1234<br/>
+   </div>
+   <div id='sales_rep_tina'>
+        Tina<br/>
+        123-123-1234<br/>
+   </div>
+    <div id='sales_rep_ray'>
+        Ray<br/>
+        123-123-1234<br/>
+   </div>
+   <div id='sales_rep_chuck'>
+        Chuck<br/>
+        123-123-1234<br/>
+   </div>   
+</div>
+<div class='rep-map'>
+
+<object classid="clsid:d27cdb6e-ae6d-11cf-96b8-444553540000" codebase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=7,0,0,0" width="550" height="300" id="zoom_map" align="top">
+<param name="movie" value="/assets/map/us/us.swf?data_file=/assets/map/us/cm_sales_rep.xml" />
+<param name="quality" value="high" />
+<param name="bgcolor" value="#FFFFFF" />
+<embed src="/assets/map/us/us.swf?data_file=/assets/map/us/cm_sales_rep.xml" quality="high" bgcolor="#FFFFFF"  width="550" height="300" name="Clickable World Map" align="top" 
+type="application/x-shockwave-flash" 
+pluginspage="http://www.macromedia.com/go/getflashplayer"></embed>
+</object>
+
+</div>
+
 			<!-- InstanceEndEditable -->
                     </div>
                     
@@ -334,6 +371,21 @@ pageTracker._trackPageview();
 		<script>
 		CmPage.sticky = [14,1];
 		CmPage.menuItem = 5;</script>
+		
+		
+		
+<script> 
+   function showSalesRep(which) {
+       var sr = document.getElementById('sales_rep');
+       var srd = sr.getElementsByTagName('div');
+       
+       for(var i=0,t=srd.length;i<t;i++) {
+            srd[i].style.display = (i==which)?'block':'none';
+       }
+       sr.style.display = 'block';
+   }
+</script>
+		
 		<!-- InstanceEndEditable -->
     </body>
 <!-- InstanceEnd --></html>
