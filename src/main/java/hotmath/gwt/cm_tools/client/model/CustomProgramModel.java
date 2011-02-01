@@ -14,7 +14,7 @@ public class CustomProgramModel extends BaseModel implements Response {
         setInUseCount(inUseCount);
         setIsTemplate(isTemplate);
 
-        if(isTemplate || inUseCount > 0)
+        if(isTemplate)
             setStyleName("program-read-only");
         
     }
