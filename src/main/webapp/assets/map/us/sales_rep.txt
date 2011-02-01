@@ -1,0 +1,51 @@
+AK	Alaska	Tina	1
+AL	Alabama	Lincoln	0
+AR	Arkansas	Elizabeth	3
+AZ	Arizona	Lincoln	0
+CA	California	Lincoln	0
+CO	Colorado	Tina	1
+CT	Connecticut	Ray	2
+DC	Washington DC	Lincoln	0
+DE	Delaware	Lincoln	0
+FL	Florida	Lincoln	0
+GA	Georgia	Lincoln	0
+HI	Hawaii	Tina	1
+IA	Iowa	Elizabeth	3
+ID	Idaho	Tina	1
+IL	Illinois	Elizabeth	3
+IN	Indiana	Ray	2
+KS	Kansas	Elizabeth	3
+KY	Kentucky	Lincoln	0
+LA	Louisiana	Lincoln	0
+MA	Massachusetts	Ray	2
+MD	Maryland	Lincoln	0
+ME	Maine	Ray	2
+MI	Michigan	Ray	2
+MN	Minnesota	Elizabeth	3
+MO	Missouri	Elizabeth	3
+MS	Mississippi	Lincoln	0
+MT	Montana	Tina	1
+NC	North Carolina	Lincoln	0
+ND	North Dakota	Elizabeth	3
+NE	Nebraska	Elizabeth	3
+NH	New Hampshire	Ray	2
+NJ	New Jersey	Ray	2
+NM	New Mexico	Lincoln	0
+NV	Nevada	Tina	1
+NY	New York	Ray	2
+OH	Ohio	Ray	2
+OK	Oklahoma	Elizabeth	3
+OR	Oregon	Tina	1
+PA	Pennsylvania	Ray	2
+RI	Rhode Island	Ray	2
+SC	South Carolina	Lincoln	0
+SD	South Dakota	Elizabeth	3
+TN	Tennessee	Lincoln	0
+TX	Texas	Lincoln	0
+UT	Utah	Tina	1
+VA	Virginia	Lincoln	0
+VT	Vermont	Ray	2
+WA	Washington	Tina	1
+WI	Wisconsin	Elizabeth	3
+WV	West Virgina	Lincoln	0
+WY	Wyoming	Tina	1
