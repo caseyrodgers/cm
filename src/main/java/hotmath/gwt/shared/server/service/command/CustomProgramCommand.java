@@ -13,7 +13,6 @@ import hotmath.gwt.cm_tools.client.model.CustomProgramModel;
 import hotmath.gwt.shared.client.rpc.action.CustomProgramAction;
 
 import java.sql.Connection;
-import java.util.Arrays;
 
 /** Provide RPC services for creating and managing 
  *  a custom program

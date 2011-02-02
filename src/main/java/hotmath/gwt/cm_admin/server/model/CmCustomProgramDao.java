@@ -26,10 +26,14 @@ public class CmCustomProgramDao {
 
     public CmCustomProgramDao(){}
 
-    /** Return list of lessons that can be used to create a custom program
+    /** Return complete list of lessons that 
+     * can be used to create a custom program.
      * 
      * NOTE: HA_PROGRAM_LESSONS is created in PrescriptionReport
      * while creating the HA_PRESCRIPTION_LOG
+     * 
+     * This table is manually renamed to HA_PRESCRIPTION_LOG_static.
+     * (done to allow creation of new lookup table on live server)
      * 
      * Mark each lesson with the lowest level applicable for the lesson.
      * 
@@ -39,16 +43,29 @@ public class CmCustomProgramDao {
         Statement stmt=null;
         try {
             stmt = conn.createStatement();
+            
+            /** for every entry with a specified subject */
             ResultSet rs = stmt.executeQuery("select distinct lesson, file, subject from HA_PROGRAM_LESSONS_static where subject > '' order by lesson");
             while(rs.next()) {
                 CustomLessonModel clm = new CustomLessonModel(rs.getString("lesson"), rs.getString("file"), rs.getString("subject"));
+
+                /** see if there is a entry for this file already
+                 *  if there is use it and keep a counter, otherwise
+                 *  create a new entry.
+                 */
                 List<CustomLessonModel> lessons = map.get(clm.getFile());
                 if(lessons == null) {
                     lessons = new ArrayList<CustomLessonModel>();
                     map.put(clm.getFile(), lessons);
                 }
                 lessons.add(clm);
+                
             }
+            
+            /** at this point we have a map containing a distinct list
+             * of file names as keys and as values a list of lessons 
+             * linked to the file.
+             */
 
             /** Create list of distinct lessons and the highest subject
              *  

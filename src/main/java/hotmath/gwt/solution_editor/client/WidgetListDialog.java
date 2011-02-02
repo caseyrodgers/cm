@@ -19,10 +19,13 @@ import com.extjs.gxt.ui.client.widget.Window;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.ComboBox;
 import com.extjs.gxt.ui.client.widget.form.ComboBox.TriggerAction;
+import com.extjs.gxt.ui.client.widget.form.Field;
 import com.extjs.gxt.ui.client.widget.form.FormButtonBinding;
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
 import com.extjs.gxt.ui.client.widget.form.FormPanel.LabelAlign;
+import com.extjs.gxt.ui.client.widget.form.NumberField;
 import com.extjs.gxt.ui.client.widget.form.TextField;
+import com.extjs.gxt.ui.client.widget.form.Validator;
 import com.extjs.gxt.ui.client.widget.layout.FormData;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -42,7 +45,6 @@ public class WidgetListDialog extends Window {
         
         ListStore<WidgetModel> store = new ListStore<WidgetModel>();
         _listView.setStore(store);
-        
         
         setHeading("Create Solution Widget");
         setScrollMode(Scroll.AUTO);
@@ -87,10 +89,10 @@ public class WidgetListDialog extends Window {
         WidgetDefModel widget = new WidgetDefModel();
         widget.setType(_typeCombo.getValue().getType());
         widget.setValue(_inputValue.getValue());
-        widget.setFormat(_format.getValue());
+        widget.setFormat(_formatCombo.getValue().getType());
         
-        widget.setWidth(getInt(_width.getValue()));
-        widget.setHeight(getInt(_height.getValue()));
+        widget.setWidth(_width.getValue().intValue());
+        widget.setHeight(_height.getValue().intValue());
         return widget;
     }
     
@@ -127,16 +129,13 @@ public class WidgetListDialog extends Window {
         List<WidgetModel> widgets = createListOfWidgets();
         ListStore<WidgetModel> store = new ListStore<WidgetModel>();  
         store.add(widgets);  
-
+        
         _typeCombo.setFieldLabel("Widget Type");  
         _typeCombo.setDisplayField("type");  
         _typeCombo.setTriggerAction(TriggerAction.ALL);  
         _typeCombo.setStore(store);  
         _typeCombo.setEditable(false);
         simple.add(_typeCombo, formData);
-        
-
-        
         
           
         _inputValue.setFieldLabel("Correct Value");
@@ -145,24 +144,31 @@ public class WidgetListDialog extends Window {
         simple.add(_inputValue, formData);
         
         
-        _format.setFieldLabel("Format");
-        _format.setAllowBlank(true);  
-        _format.getFocusSupport().setPreviousId(simple.getButtonBar().getId());  
-        simple.add(_format, formData);
+        _formatCombo.setFieldLabel("Format");
+        _formatCombo.setDisplayField("type");
+        _formatCombo.setAllowBlank(true);
+        _formatCombo.setEditable(true);
+        _formatCombo.getFocusSupport().setPreviousId(simple.getButtonBar().getId());
         
-
+        List<WidgetModel> formats = createListOfFormats();
+        ListStore<WidgetModel> formatStore = new ListStore<WidgetModel>();  
+        formatStore.add(formats);
+        _formatCombo.setStore(formatStore);
+        _formatCombo.setTriggerAction(TriggerAction.ALL);
         
-          
+        simple.add(_formatCombo, formData);
         
         
         _width.setFieldLabel("Width");
-        _width.setAllowBlank(false);  
+        _width.setAllowBlank(true);
+        _width.setValidator(new VTypeValidator(VType.NUMERIC));
         _width.getFocusSupport().setPreviousId(simple.getButtonBar().getId());  
         simple.add(_width, formData);
         
         
         _height.setFieldLabel("Height");
-        _height.setAllowBlank(false);  
+        _height.setAllowBlank(true);  
+        _height.setValidator(new VTypeValidator(VType.NUMERIC));
         _height.getFocusSupport().setPreviousId(simple.getButtonBar().getId());  
         simple.add(_height, formData);
         
@@ -232,9 +238,11 @@ public class WidgetListDialog extends Window {
     private void loadForm(WidgetDefModel widgetDef) {
         _typeCombo.setValue(_typeCombo.getStore().findModel("type",widgetDef.getType()));
         _inputValue.setValue(widgetDef.getValue());
-        _format.setValue(widgetDef.getFormat());
-        _width.setValue(Integer.toString(widgetDef.getWidth()));
-        _height.setValue(Integer.toString(widgetDef.getHeight()));   
+        
+        WidgetModel model = _formatCombo.getStore().findModel("type",widgetDef.getFormat());
+        _formatCombo.setValue(model);
+        _width.setValue(widgetDef.getWidth());
+        _height.setValue(widgetDef.getHeight());   
     }
     
     
@@ -274,12 +282,22 @@ public class WidgetListDialog extends Window {
         return widgets;
     }
     
+    private List<WidgetModel> createListOfFormats() {
+        List<WidgetModel> widgets = new ArrayList<WidgetModel>();
+        
+        widgets.add(new  WidgetModel("money"));
+        widgets.add(new  WidgetModel("angle_deg"));
+        widgets.add(new  WidgetModel("text_simplified"));
+        
+        return widgets;
+    }
+    
     
     ComboBox<WidgetModel> _typeCombo = new ComboBox<WidgetModel>();
-    TextField<String> _width = new TextField<String>();
+    NumberField _width = new NumberField();
     TextField<String> _inputValue = new TextField<String>();
-    TextField<String> _format = new TextField<String>();        
-    TextField<String> _height = new TextField<String>();
+    ComboBox<WidgetModel> _formatCombo = new ComboBox<WidgetModel>();     
+    NumberField _height = new NumberField();
     
     
     
@@ -290,7 +308,7 @@ public class WidgetListDialog extends Window {
     
     static private WidgetListDialog __instance;
     static void showWidgetListDialog(Callback callback, String widgetJson) {
-        if(__instance == null) {
+        if(true || __instance == null) {
             __instance = new WidgetListDialog();
         }
         __instance.setCallback(callback);
@@ -300,4 +318,36 @@ public class WidgetListDialog extends Window {
     static void showWidgetListDialog(Callback callback) {
         showWidgetListDialog(callback,null);
     }
+}
+
+ enum VType {
+    ALPHABET("^[a-zA-Z_]+$", "Alphabet"), 
+    ALPHANUMERIC("^[a-zA-Z0-9_]+$", "Alphanumeric"), 
+    NUMERIC("^[+0-9]+$", "Numeric"),
+    EMAIL("^(\\w+)([-+.][\\w]+)*@(\\w[-\\w]*\\.){1,5}([A-Za-z]){2,4}$", "Email");
+    String regex;
+    String name;
+
+    VType(String regex, String name) {
+      this.regex = regex;
+      this.name = name;
+    }
+  }
+
+class VTypeValidator implements Validator {
+
+    private VType type;
+    
+    public VTypeValidator(VType type){
+      this.type = type;
+    }
+    @Override
+    public String validate(Field<?> field, String value) {
+      String res = null;
+      if(!value.matches(type.regex)){
+        res = value + " isn't a valid " + type.name;
+      }
+      return res;
+    }
+
 }

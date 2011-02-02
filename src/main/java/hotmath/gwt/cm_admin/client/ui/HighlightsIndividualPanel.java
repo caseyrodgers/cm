@@ -195,11 +195,11 @@ class MyLayoutContainer extends LayoutContainer {
         Html _infoLabel = new Html("<div>" +
                                    "    <div>" +
                                    "        <span style='background: black;width: 10px;'>&nbsp;</span>" +
-                                   "        Report using summary page selection" +
+                                   "        Uses Summary page selection" +
                                    "    </div>" +
                                    "    <div style='color: red'>" +
                                    "        <span style='background: red;width: 10px;'>&nbsp;</span>" +
-                                   "        Reports ignoring summary page selection" +
+                                   "        Applies to designated Groups" +
                                    "    </div>" +
                                    "</div>");
         
