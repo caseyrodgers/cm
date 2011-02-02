@@ -9,14 +9,18 @@
           }
 
           .frac-input input {
-             width: 50px;
+             width: 100px;
              color: blue;
+          }
+          
+          .submit {
+             margin-top: 25px;
           }
       </style>
 
    </head>
    <body>
-    <div class='frac-input'>
+   <form class='frac-input' action='#' onsubmit='doSubmit();return false;'>
         <div class='top'>
             <input type='text' id='top'/>
         </div>
@@ -24,8 +28,12 @@
         <div class='bottom'>
             <input type='text' id='bottom'/>
         </div>
-    </div>
+        <input class='submit' type='submit'/>
+    </form>
     <script>
+         function doSubmit() {
+              alert('validing fields');
+         }
     </script>
    </body>
 </html>
