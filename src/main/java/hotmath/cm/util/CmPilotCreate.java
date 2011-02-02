@@ -49,6 +49,8 @@ import sb.mail.SbMailManager;
 public class CmPilotCreate {
 
 	private static Logger logger = Logger.getLogger(CmPilotCreate.class);
+	
+	private static String NEW_LINE = System.getProperty("line.separator");
 
     List<String> messages = new ArrayList<String>();
     Integer aid;
@@ -292,20 +294,27 @@ public class CmPilotCreate {
     
     
     static public Integer addPilotRequest(String title, String name, String school, String zip, String email,
-            String phone, String userComments, String phoneWhen, String schoolPrefix,int studentCount) throws Exception {
-    	return addPilotRequest(title, name, school, zip, email, phone, userComments, phoneWhen, schoolPrefix, true,studentCount,null);
+            String phone, String userComments, String phoneWhen, String schoolPrefix, int studentCount,
+            String additionalEmails) throws Exception {
+    	return addPilotRequest(title, name, school, zip, email, phone, userComments, phoneWhen, schoolPrefix, true,studentCount, additionalEmails, null);
     }
 
     static public Integer addPilotRequest(String title, String name, String school, String zip, String email,
-            String phone, String userComments, String phoneWhen, String schoolPrefix, boolean sendEmailConfirmation,int studentCount, CmPartner partner) throws Exception {
+            String phone, String userComments, String phoneWhen, String schoolPrefix,
+            boolean sendEmailConfirmation,int studentCount, String additionalEmails, CmPartner partner) throws Exception {
 
         
         Person salesPerson = SalesZone.getSalesPerson(zip);
         
+        String ccEmails = null;
+        if (additionalEmails != null) {
+        	ccEmails = parseAdditionalEmails(additionalEmails);
+        }
+        
         Connection conn = null;
         PreparedStatement ps = null;
         try {
-            String sql = "insert into HA_ADMIN_PILOT_REQUEST(title,name,school,zip,email,phone,request_date)values(?,?,?,?,?,?,now())";
+            String sql = "insert into HA_ADMIN_PILOT_REQUEST(title,name,school,zip,email,phone,request_date,cc_emails)values(?,?,?,?,?,?,now(),?)";
             conn = HMConnectionPool.getConnection();
             ps = conn.prepareStatement(sql);
             ps.setString(1, title);
@@ -314,13 +323,16 @@ public class CmPilotCreate {
             ps.setString(4, zip);
             ps.setString(5, email);
             ps.setString(6, phone);
+            if (ccEmails != null) ps.setString(7, ccEmails);
 
             ps.executeUpdate();
 
             // create a new Subscriber record based on this email
             String idToUse = HotMathSubscriber.createUniqueIDByStategy(new IdCreateStategyImpHmPilot(schoolPrefix));
 
-            String comments = _dateFormat.format(new Date()) + " Catchup Math online pilot request CM_pilot_HM (approx student count: " + studentCount + ")\n";
+            String comments = String.format("%s Catchup Math online pilot request CM_pilot_HM (approx student count: %d) (cc_emails: %s)%s",
+            		studentCount, (ccEmails != null) ? ccEmails : "NONE", NEW_LINE);
+
             HotMathSubscriber sub = HotMathSubscriberManager.createBasicAccount(idToUse, school, "ST", email, comments,new Date());
             sub.setResponsibleName(name);
             sub.setStatus("A");
@@ -364,7 +376,8 @@ public class CmPilotCreate {
 	                
 	                /** send to sales rep and chuck */
 	                String sendTo[] = {salesPerson.getEmail(),"cgrant.hotmath@gmail.com"};
-	                SbMailManager.getInstance().sendMessage("Catchup Math Pilot Request", txt, sendTo,"registration@hotmath.com", "text/plain");
+	                SbMailManager.getInstance().
+	                    sendMessage("Catchup Math Pilot Request", txt, sendTo,"registration@hotmath.com", "text/plain");
 	            } catch (Exception e) {
 	            	logger.error(String.format("*** problem sending pilot request email: %s", txt), e);
 	            }
@@ -377,7 +390,30 @@ public class CmPilotCreate {
         }
         return -1;
     }
-    
+
+    static private String parseAdditionalEmails(String additionalEmails) {
+    	
+    	if (additionalEmails != null && additionalEmails.trim().length() > 0) {
+        	if (additionalEmails != null && additionalEmails.trim().length() > 0) {
+        		
+        		// split on new line
+        		String[] emails = additionalEmails.split(System.getProperty("line.separator"));
+        		
+                StringBuilder sb = new StringBuilder();
+                boolean first = true;
+        		for (String cce : emails) {
+        			if (cce.trim().length() > 0) {
+        				if (! first) sb.append(",");
+        				sb.append(cce);
+        				first = false;
+        			}
+        		}
+        		return sb.toString();
+        	}
+        }
+    	return null;
+    }
+
     static public void main(String as[]) {
     	/** make sure all active admin accounts have an essentials self-registration group
     	 * 
