@@ -199,7 +199,7 @@ class MyLayoutContainer extends LayoutContainer {
                                    "    </div>" +
                                    "    <div style='color: red'>" +
                                    "        <div style='background: red;float:left;width: 10px;margin-right: 5px;'>&nbsp;</div>" +
-                                   "        Applies to designated Groups" +
+                                   "        Applies to all Groups" +
                                    "    </div>" +
                                    "</div>");
         
