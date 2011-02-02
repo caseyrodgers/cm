@@ -49,8 +49,7 @@ public class CmHighlightsDao {
             "JOIN HA_TEST_RUN r on r.test_id = t.test_id " +
             "JOIN HA_TEST_RUN_LESSON l on l.run_id = r.run_id " +
             "where u.uid in ( " + createInList(uids) + " ) " +
-            " AND date(r.run_time) between ? and ? " +
-            "AND l.lesson_viewed is not null " +
+            " AND date(l.lesson_viewed) between ? and ? " +
             "group by u.uid " +
             "order by lessons_viewed desc, u.user_name";
         
@@ -92,16 +91,15 @@ public class CmHighlightsDao {
     public CmList<HighlightReportData> getReportLeastEffort(final Connection conn, List<String> uids, Date from, Date to) throws Exception {
         
         String sql = 
-            " select u.uid, u.user_name, count(*) as lessons_completed " +
+            " select u.uid, u.user_name, count(*) as lessons_viewed " +
             "from HA_USER u " +
             "JOIN HA_TEST t on t.user_id = u.uid " +
             "JOIN HA_TEST_RUN r on r.test_id = t.test_id " +
             "JOIN HA_TEST_RUN_LESSON l on l.run_id = r.run_id " +
             "where u.uid in ( " + createInList(uids) + " ) " +
-            "AND date(r.run_time) between ? and ? " +
-            "AND l.lesson_viewed is not null " +            
+            "AND date(l.lesson_viewed) between ? and ? " +
             "group by u.uid " +
-            "order by lessons_completed, u.user_name";
+            "order by lessons_viewed, u.user_name";
         
         CmList<HighlightReportData> list=new CmArrayList<HighlightReportData>();
         
@@ -115,7 +113,7 @@ public class CmHighlightsDao {
             
             ResultSet rs = ps.executeQuery();
             while(rs.next()) {
-                list.add(new HighlightReportData(rs.getInt("uid"), rs.getString("user_name"), rs.getString("lessons_completed")));
+                list.add(new HighlightReportData(rs.getInt("uid"), rs.getString("user_name"), rs.getString("lessons_viewed")));
             }
         }
         finally {

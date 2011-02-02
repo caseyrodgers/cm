@@ -54,7 +54,7 @@ public class DateRangePickerDialog extends Window {
 
         _defaultStartDate = CatchupMathAdmin.getInstance().getAccountInfoPanel().getModel().getAccountCreateDate();
 
-        addButton(new Button("No Date Range", new SelectionListener<ButtonEvent>() {
+        addButton(new Button("Maximum Range", new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent ce) {
                 

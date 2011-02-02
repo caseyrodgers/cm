@@ -14,5 +14,5 @@
     String additionalEmails = request.getParameter("fld_additional_emails");
 
     CmPilotCreate.addPilotRequest(title, name, school, zip, email, phone, comments, 
-                                  phoneWhen, schoolPrefix, studentCount, additionalEmails);
+                                  phoneWhen, schoolPrefix, false, studentCount, null, additionalEmails);
 %>

@@ -294,15 +294,13 @@ public class CmPilotCreate {
     
     
     static public Integer addPilotRequest(String title, String name, String school, String zip, String email,
-            String phone, String userComments, String phoneWhen, String schoolPrefix, int studentCount,
-            String additionalEmails) throws Exception {
-    	return addPilotRequest(title, name, school, zip, email, phone, userComments, phoneWhen, schoolPrefix, true,studentCount, additionalEmails, null);
+            String phone, String userComments, String phoneWhen, String schoolPrefix,int studentCount) throws Exception {
+        return addPilotRequest(title, name, school, zip, email, phone, userComments, phoneWhen, schoolPrefix, true,studentCount,null,null);
     }
 
     static public Integer addPilotRequest(String title, String name, String school, String zip, String email,
-            String phone, String userComments, String phoneWhen, String schoolPrefix,
-            boolean sendEmailConfirmation,int studentCount, String additionalEmails, CmPartner partner) throws Exception {
-
+            String phone, String userComments, String phoneWhen, String schoolPrefix, boolean sendEmailConfirmation,int studentCount, CmPartner partner,String additionalEmails) throws Exception {
+        
         
         Person salesPerson = SalesZone.getSalesPerson(zip);
         

@@ -62,7 +62,7 @@ public class HighlightImplGroupUsageDetailsPanel extends HighlightImplDetailsPan
         
         column = new ColumnConfig();
         column.setId("gamesViewed");
-        column.setHeader("Games Viewed");
+        column.setHeader("Games");
         column.setWidth(75);
         column.setSortable(false);
         column.setAlignment(HorizontalAlignment.RIGHT);        
