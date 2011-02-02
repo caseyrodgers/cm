@@ -28,7 +28,7 @@
    </head>
    <body>
    <div id='fraction'>
-       <div class='single-input'>
+       <div id='single-input'>
            <input type='input' id='single'/>
            <button onclick='showFrac();'>Show Frac</buttton>
        </div>
@@ -52,7 +52,7 @@
          }
 
          function showFrac() {
-            document.getElementById('single').style.display = 'none';
+            document.getElementById('single-input').style.display = 'none';
             document.getElementById('frac-input').style.display = 'block';
          }
     </script>
