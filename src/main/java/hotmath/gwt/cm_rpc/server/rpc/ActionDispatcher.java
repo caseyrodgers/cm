@@ -53,8 +53,6 @@ public class ActionDispatcher {
     
     static String startDate;
     
-    Integer openConnectionCount = 0;
-
     static public ActionDispatcher getInstance() {
         if (__instance == null)
             __instance = new ActionDispatcher();
@@ -223,11 +221,7 @@ public class ActionDispatcher {
              */
             if (!(actionHandler instanceof ActionHandlerManualConnectionManagement)) {
                 logger.debug("RPC Action: DB Connection requested");
-                conn = HMConnectionPool.getConnection();
-                synchronized(openConnectionCount) {
-                    openConnectionCount++;
-                }
-                
+                conn = HMConnectionPool.getConnection();                
             } else {
                 logger.debug("RPC Action: DB Connection NOT requested");
             }
@@ -267,14 +261,11 @@ public class ActionDispatcher {
         } finally {
             if (conn != null) {
                 SqlUtilities.releaseResources(null, null, conn);
-                synchronized(openConnectionCount) {
-                    openConnectionCount--;
-                }
                 if (logger.isDebugEnabled()) {
-                	logger.debug(String.format("RPC Action: (ID:%s) DB Connection closed, openConnectionCount: (%d)", actionId, openConnectionCount));
+                	logger.debug(String.format("RPC Action: (ID:%s) DB Connection closed, openConnectionCount: (%d)", actionId, HMConnectionPool.getInstance().getConnectionCount()));
                 }
-                if (openConnectionCount > CONNECTION_WARNING_THRESHOLD) {
-                	logger.warn(String.format("RPC Action: DB openConnectionCount: %d over threshold: %d", openConnectionCount, CONNECTION_WARNING_THRESHOLD));
+                if (HMConnectionPool.getInstance().getConnectionCount() > CONNECTION_WARNING_THRESHOLD) {
+                	logger.warn(String.format("RPC Action: DB openConnectionCount: %d over threshold: %d", HMConnectionPool.getInstance().getConnectionCount(), CONNECTION_WARNING_THRESHOLD));
                 }
             }
 
@@ -452,9 +443,8 @@ public class ActionDispatcher {
     /* extract name and construct command class name
      * using standard package.
      */
-    @SuppressWarnings({ "unchecked", "rawtypes" })
+    @SuppressWarnings("rawtypes")
     static public Class loadCommandClass(Action<? extends Response> action) throws Exception {
-
         
         Class cmdClass=null;
         
