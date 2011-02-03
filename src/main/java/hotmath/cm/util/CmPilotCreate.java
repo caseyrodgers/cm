@@ -357,7 +357,7 @@ public class CmPilotCreate {
 	             */
 	            try {
 	                String emailTemplate = "CM Pilot " + salesPerson.getLabel();
-	                sub.sendEmailConfirmation(emailTemplate);
+	                sub.sendEmailConfirmation(emailTemplate, ccEmails);
 	            }
 	            catch(Exception e) {
 	            	logger.error(String.format("*** problem creating pilot for school: %s", school), e);
