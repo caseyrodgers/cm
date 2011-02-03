@@ -13,6 +13,10 @@ public class CustomLessonModel extends BaseModel implements Response {
     }
     
     public CustomLessonModel(String lesson, String file, String subject) {
+        
+        if(subject == null || subject.length() == 0)
+            subject = "Alg 1";
+        
         setLesson(lesson);
         setFile(file);
         setSubject(subject);

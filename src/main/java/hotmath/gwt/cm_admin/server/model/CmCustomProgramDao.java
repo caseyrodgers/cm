@@ -45,7 +45,7 @@ public class CmCustomProgramDao {
             stmt = conn.createStatement();
             
             /** for every entry with a specified subject */
-            ResultSet rs = stmt.executeQuery("select distinct lesson, file, subject from HA_PROGRAM_LESSONS_static where subject > '' order by lesson");
+            ResultSet rs = stmt.executeQuery("select distinct lesson, file, subject from HA_PROGRAM_LESSONS_static order by lesson");
             while(rs.next()) {
                 CustomLessonModel clm = new CustomLessonModel(rs.getString("lesson"), rs.getString("file"), rs.getString("subject"));
 
@@ -59,8 +59,10 @@ public class CmCustomProgramDao {
                     map.put(clm.getFile(), lessons);
                 }
                 lessons.add(clm);
-                
             }
+
+            
+            checkForDuplicates(map);
             
             /** at this point we have a map containing a distinct list
              * of file names as keys and as values a list of lessons 
@@ -90,6 +92,32 @@ public class CmCustomProgramDao {
         }
     }
 
+    private void checkForDuplicates(HashMap<String, List<CustomLessonModel>> map) {
+        System.out.println("List of files with more than one lesson:");
+        for(String f: map.keySet()) {
+             f.length();
+             List<CustomLessonModel> lc = map.get(f);
+             if(lc.size() > 1) {
+                 String prev=null;
+                 for(CustomLessonModel c: lc) {
+                     if(prev == null) {
+                         prev = c.getLesson();
+                     }
+                     else if(!prev.equals(c.getLesson())) {
+                         printLessonInfo(f, lc);
+                     }
+                 }
+             }
+             
+        }        
+    }
+    
+    private void printLessonInfo(String f, List<CustomLessonModel> lc) {
+        System.out.println(f);
+        for(CustomLessonModel clm: lc) {
+            System.out.println("    " + clm.getLesson() + " (" + clm.getSubject() + ")");    
+        }
+    }
 
     /** Return list of custom programs defined by this admin 
      * 
@@ -353,7 +381,7 @@ public class CmCustomProgramDao {
      */
     public int getSubjectLevel(String subject) throws Exception {
        if(subject == null || subject.length() == 0)
-           return 99;
+           return 3; // *no subject equals alg 1 by default 
        else if(subject.equals("Ess"))
            return 1;
        else if(subject.equals("Pre-Alg"))

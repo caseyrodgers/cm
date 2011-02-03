@@ -154,26 +154,26 @@ public class CustomProgramDesignerDialog extends CmWindow {
         
         MyListContainer sectionList = new MyListContainer(_listSelected,"Sections in Program",false);
 
-        sectionList.getHeader().addTool(new Button("Update Quiz", new SelectionListener<ButtonEvent>() {
-            @Override
-            public void componentSelected(ButtonEvent ce) {
-                new CustomProgramAddQuizDialog(new Callback() {
-                    public void quizCreated() {
-                        
-                    }
-                });
-            }
-        }));
-        sectionList.getHeader().addTool(new Button("Add Quiz", new SelectionListener<ButtonEvent>() {
-            @Override
-            public void componentSelected(ButtonEvent ce) {
-                new CustomProgramAddQuizDialog(new Callback() {
-                    public void quizCreated() {
-                        
-                    }
-                });
-            }
-        }));
+//        sectionList.getHeader().addTool(new Button("Update Quiz", new SelectionListener<ButtonEvent>() {
+//            @Override
+//            public void componentSelected(ButtonEvent ce) {
+//                new CustomProgramAddQuizDialog(new Callback() {
+//                    public void quizCreated() {
+//                        
+//                    }
+//                });
+//            }
+//        }));
+//        sectionList.getHeader().addTool(new Button("Add Quiz", new SelectionListener<ButtonEvent>() {
+//            @Override
+//            public void componentSelected(ButtonEvent ce) {
+//                new CustomProgramAddQuizDialog(new Callback() {
+//                    public void quizCreated() {
+//                        
+//                    }
+//                });
+//            }
+//        }));
         
         lc.add(new MyListContainer(_listAll,"All Available Lessons",true), data);
         lc.add(sectionList, data);
