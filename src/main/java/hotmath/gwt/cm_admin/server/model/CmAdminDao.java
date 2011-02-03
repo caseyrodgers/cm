@@ -352,7 +352,7 @@ public class CmAdminDao {
      * 
      */
     private void checkForReservedGroup(String name) throws Exception {
-        if (name.equals("none") || name.equals("All Students")) {
+        if (name != null && (name.equals("none") || name.equals("All Students"))) {
             throw new Exception("The group name '" + name + "' is reserved.");
         }
     }
