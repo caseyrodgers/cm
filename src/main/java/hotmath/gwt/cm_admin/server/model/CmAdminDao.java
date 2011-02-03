@@ -350,6 +350,8 @@ public class CmAdminDao {
      * 
      * @TODO: should be all default groups..?
      * 
+     * @TODO: obtain from DB?
+     * 
      */
     private void checkForReservedGroup(String name) throws Exception {
         if (name != null && (name.equals("none") || name.equals("All Students"))) {
