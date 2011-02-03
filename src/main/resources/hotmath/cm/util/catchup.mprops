@@ -1640,7 +1640,7 @@ select g.name as group_name,
        lc.login_count,
        lv.lessons_viewed,
        qp.quizzes_passed
-from   HA_USER u
+from   v_HA_USER_ACTIVE u
        join CM_GROUP g
          on g.id = u.group_id
        join (
@@ -1713,6 +1713,8 @@ from   HA_USER u
 where  u.admin_id = $$AID$$
 group  by u.group_id
 
+order by active_count desc
+
 
 .key=GET_HIGHLIGHT_REPORT_GROUP_USAGE
 
@@ -1724,7 +1726,7 @@ select g.name as group_name,
        av.activities_viewed,
        fc.flash_cards_viewed
        
-from   HA_USER u
+from   v_HA_USER_ACTIVE u
        join CM_GROUP g
          on g.id = u.group_id
          join (
@@ -1816,3 +1818,5 @@ from   HA_USER u
 
 where  u.admin_id = $$AID$$
 group  by u.group_id
+
+order by active_count desc 

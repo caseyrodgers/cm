@@ -192,13 +192,13 @@ class MyLayoutContainer extends LayoutContainer {
         
         
         /** add info box describing type of reports */
-        Html _infoLabel = new Html("<div>" +
+        Html _infoLabel = new Html("<div class='report-legend'>" +
                                    "    <div>" +
-                                   "        <div style='background: black;float: left;width: 10px;margin-right: 5px;'>&nbsp;</div>" +
+                                   "        <div>&nbsp;</div>" +
                                    "        Uses Summary page selection" +
                                    "    </div>" +
-                                   "    <div style='color: red'>" +
-                                   "        <div style='background: red;float:left;width: 10px;margin-right: 5px;'>&nbsp;</div>" +
+                                   "    <div class='no-selection'>" +
+                                   "        <div>&nbsp;</div>" +
                                    "        Applies to all Groups" +
                                    "    </div>" +
                                    "</div>");

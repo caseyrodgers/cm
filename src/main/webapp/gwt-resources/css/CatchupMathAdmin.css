@@ -386,3 +386,21 @@ program-details-panel .x-ftree2-node-over {
     color: blue;
     padding: 5px 10px 0 0;
 }
+
+
+.report-legend div {
+	line-height: 1.5em;
+}
+.report-legend div div {
+    float:left;
+    width: 10px;
+    height: 10px;
+    margin-right: 5px;
+    margin-top: 3px;
+    background-color: black;
+}
+
+.report-legend .no-selection div {
+	background-color: red;
+}
+

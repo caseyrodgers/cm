@@ -92,7 +92,7 @@ public class CmHighlightsDao {
         
         String sql = 
             " select u.uid, u.user_name, count(*) as lessons_viewed " +
-            "from HA_USER u " +
+            "from v_HA_USER_ACTIVE u " +
             "JOIN HA_TEST t on t.user_id = u.uid " +
             "JOIN HA_TEST_RUN r on r.test_id = t.test_id " +
             "JOIN HA_TEST_RUN_LESSON l on l.run_id = r.run_id " +
@@ -129,7 +129,7 @@ public class CmHighlightsDao {
             "u.user_name, " +
             "qv.quizzes_taken," +
             "count(*) as games_viewed " +
-            " from   HA_USER u " +
+            " from   v_HA_USER_ACTIVE u " +
 
             " join ( " +
             "        select user_id, count(*) as quizzes_taken " +
@@ -182,7 +182,7 @@ public class CmHighlightsDao {
             " u.user_name, " +
             " qv.quizzes_taken, " +
             "count(*) as quizzes_passed " +
-            " from   HA_USER u " +
+            " from   v_HA_USER_ACTIVE u " +
             
             
             " join ( " +
@@ -238,7 +238,7 @@ public class CmHighlightsDao {
         String sql = 
             "select u.uid, u.user_name,qv.quizzes_taken, " +
             "floor(avg((answered_correct / (answered_correct + answered_incorrect + not_answered)) * 100)) as avg_quiz_score " +
-            " from   HA_USER u " +
+            " from   v_HA_USER_ACTIVE u " +
             
             " join ( " +
             "        select user_id, count(*) as quizzes_taken " +
@@ -288,7 +288,7 @@ public class CmHighlightsDao {
         
         String sql = 
             "select  u.uid,  u.user_name, count(*) as failed_quizzes " +
-            "FROM HA_USER u " +
+            "FROM v_HA_USER_ACTIVE u " +
             " join HA_TEST t " +
             " on t.user_id = u.uid " +
             " join CM_USER_PROGRAM c on c.id = t.user_prog_id " +
@@ -345,7 +345,7 @@ public class CmHighlightsDao {
     public CmList<HighlightReportData> getReportFailedCurrentQuizzes(final Connection conn, List<String> uids, Date from, Date to) throws Exception {
         
         String sql = "select  u.uid, u.user_name, count(r.run_id) as failed_quizzes " +
-        "from HA_USER u " +
+        "from v_HA_USER_ACTIVE u " +
         "   JOIN HA_TEST t on t.user_id = u.uid " +
         "  JOIN  CM_USER_PROGRAM c1  " +
         "       on c1.id = t.user_prog_id " +
@@ -388,7 +388,7 @@ public class CmHighlightsDao {
             
             "select u.uid, u.user_name,  floor( (count(*)  /  7) ) as avg_login_week " +
             " from   HA_USER_LOGIN l " +
-            "   JOIN HA_USER u ON u.uid = l.user_id " +
+            "   JOIN v_HA_USER_ACTIVE u ON u.uid = l.user_id " +
             " where  u.uid in(" + createInList(uids) + " ) " +
             " and date(l.login_time) between ? and ? " +
             " group by u.uid " +
@@ -423,7 +423,7 @@ public class CmHighlightsDao {
         String sql =
             
             "select u.uid, u.user_name " +
-            " FROM HA_USER u " +
+            " FROM v_HA_USER_ACTIVE u " +
             " where  u.uid in(" + createInList(uids) + " ) " +
             " and not exists ( select 'x' " +
             "                  from HA_USER_LOGIN l " +
