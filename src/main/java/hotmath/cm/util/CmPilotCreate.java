@@ -321,7 +321,7 @@ public class CmPilotCreate {
             ps.setString(4, zip);
             ps.setString(5, email);
             ps.setString(6, phone);
-            if (ccEmails != null) ps.setString(7, ccEmails);
+            ps.setString(7, ccEmails);
 
             ps.executeUpdate();
 
