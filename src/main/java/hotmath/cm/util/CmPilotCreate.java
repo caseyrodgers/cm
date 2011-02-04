@@ -390,25 +390,23 @@ public class CmPilotCreate {
     }
 
     static private String parseAdditionalEmails(String additionalEmails) {
-    	
+
     	if (additionalEmails != null && additionalEmails.trim().length() > 0) {
-        	if (additionalEmails != null && additionalEmails.trim().length() > 0) {
-        		
-        		// split on new line
-        		String[] emails = additionalEmails.split(System.getProperty("line.separator"));
-        		
-                StringBuilder sb = new StringBuilder();
-                boolean first = true;
-        		for (String cce : emails) {
-        			if (cce.trim().length() > 0) {
-        				if (! first) sb.append(",");
-        				sb.append(cce);
-        				first = false;
-        			}
-        		}
-        		return sb.toString();
-        	}
-        }
+
+    		// split on new line
+    		String[] emails = additionalEmails.split(System.getProperty("line.separator"));
+
+    		StringBuilder sb = new StringBuilder();
+    		boolean first = true;
+    		for (String cce : emails) {
+    			if (cce.trim().length() > 0) {
+    				if (! first) sb.append(",");
+    				sb.append(cce);
+    				first = false;
+    			}
+    		}
+    		return sb.toString();
+    	}
     	return null;
     }
 
