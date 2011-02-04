@@ -555,7 +555,9 @@ public class CmStudentDao {
                 HaUserExtendedDao.resetUserExtendedLessonStatusForUid(conn, sm.getProgram(), sm.getUid());
             }
         } catch (Exception e) {
-            throw new Exception(String.format("Error adding Student: %s, Passcode: %s ***", sm.getName(), sm.getPasscode()),e);
+        	String msg = String.format("Error adding Student: %s, Passcode: %s ***", sm.getName(), sm.getPasscode());
+        	logger.error(msg, e);
+            throw new Exception(msg, e);
         } finally {
             SqlUtilities.releaseResources(rs, ps, null);
         }
@@ -1675,19 +1677,6 @@ public class CmStudentDao {
      *  For custom programs, add the CP:PROG_NAME and looks up the status info
      * 
      */
-    @Deprecated
-    private void setupProgramStatus(final Connection conn, StudentModelI student, String programName, String testConfigJson) throws Exception {
-        StudentProgramModel program = student.getProgram();
-        if (program.isCustomProgram() == false) {
-            program.setProgramDescription(programName);
-            student.setStatus(getStatus(program.getProgramId(), student.getSectionNum(), testConfigJson));
-        }
-        else {
-            program.setProgramDescription("CP: " + program.getCustomProgramName());
-            student.setStatus(getCustomProgramStatus(conn, program.getCustomProgramId(), student.getUid()));
-        }
-    }
-
     private void setupProgramStatus(StudentModelI student, String programName, String testConfigJson,
         int currentLesson, int lessonCount, int isLessonsCompleted) {
 
@@ -1776,50 +1765,6 @@ public class CmStudentDao {
         }
         return "Not started";
     }
-
-	static final String CUSTOM_PROG_STATUS_SQL =
-		"select rl.lesson_viewed, rl.date_completed " +
-        " from HA_USER h " +
-        " LEFT JOIN CM_USER_PROGRAM p       on p.id = h.user_prog_id " +
-        " LEFT JOIN HA_TEST t               on t.user_prog_id = p.id " +
-        " LEFT JOIN HA_TEST_RUN r           on r.test_id = t.test_id " +
-        " LEFT JOIN HA_TEST_RUN_LESSON rl   on rl.run_id = r.run_id " +
-        " where h.uid = ?";
-
-    private String getCustomProgramStatus(final Connection conn, Integer customProgId, Integer uid) {
-    	
-        PreparedStatement ps = null;
-        ResultSet rs = null;
-
-        try {
-            ps = conn.prepareStatement(CUSTOM_PROG_STATUS_SQL);
-            ps.setInt(1, uid);
-            rs = ps.executeQuery();
-
-            int viewedCount = 0;
-            int completedCount = 0;
-            int lessonCount = 0;
-            while (rs.next()) {
-            	if (rs.getDate("lesson_viewed") != null) viewedCount++;
-            	if (rs.getDate("date_completed") != null) completedCount++;
-            	lessonCount++;
-            }
-            if (viewedCount > 0) {
-                if (completedCount < lessonCount) {
-                    StringBuilder sb = new StringBuilder();
-                	return sb.append("Lesson ").append(viewedCount).append(" of " ).append(lessonCount).toString();
-                }
-                return "Completed";
-            }
-        }
-        catch(Exception e) {
-            logger.error(String.format("*** Error getting status for uid: %d, custom_prog_id: %d", uid, customProgId), e);
-        }
-        finally {
-        	SqlUtilities.releaseResources(rs, ps, null);
-        }
-        return "Not started";
-    }
     
     private List<StudentModelI> loadStudentExtendedSummaries(ResultSet rs) throws Exception {
 
@@ -1850,7 +1795,6 @@ public class CmStudentDao {
 
         List<StudentActivityModel> l = new ArrayList<StudentActivityModel>();
         CmAdminDao cmaDao = new CmAdminDao();
-        HaTestRunDao trDao = new HaTestRunDao();
 
         while (rs.next()) {
             StudentActivityModel m = new StudentActivityModel();
