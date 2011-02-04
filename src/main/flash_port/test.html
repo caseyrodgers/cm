@@ -16,7 +16,9 @@
          
           input {
               width: 200px;
-              color: red;
+              color: blue;
+			  font-size:20px;
+			  text-align:center;
           }
 
           
@@ -28,33 +30,133 @@
    </head>
    <body>
    <div id='fraction'>
-       <div id='single-input'>
+       <div id='single-input' style='display: block'>
            <input type='input' id='single'/>
-           <button onclick='showFrac();'>Show Frac</buttton>
+           <button onclick='doSubmit();'>Submit</buttton>
        </div>
        <form id='frac-input' style='display: none' action='#' onsubmit='doSubmit();return false;'>
            <div class='top'>
               <input type='text' id='top'/>
            </div>
-           <hr/>
+           <hr style='width:100px; margin:0px;'/>
            <div class='bottom'>
                <input type='text' id='bottom'/>
            </div>
-           <input class='submit' type='submit'/>
+           <input class='submit' type='submit' value='Submit'/>
        </form>
     </div>
+	<script src='Math2.js'></script>
+<script src='utility.js'></script>
     <script>
+		document.onkeydown=onkeydownHandler
+		document.onkeyup=onkeyupHandler
+		var expval="1/4"
+		var norm_val;
+		var num_val;
+		var den_val;
+		var setFocusTo;
+		var re;
          function doSubmit() {
-              var top = document.getElementById('top');
-              var bottom = document.getElementById('bottom');
-
-              alert('Top value: ' + top.value);
+			var isNormalField=document.getElementById('single-input').style.display == 'block';
+			var inputVal
+			if(isNormalField){
+			var norm =document.getElementById('single').value;
+			inputVal=norm;
+			re=validate(expval,norm)
+			}else{
+				var num = document.getElementById('top').value;
+				var den = document.getElementById('bottom').value;
+				inputVal=num+"/"+den;
+				re=validate(expval,num,den)
+			}
+			alert(re);
          }
 
          function showFrac() {
             document.getElementById('single-input').style.display = 'none';
             document.getElementById('frac-input').style.display = 'block';
+			if(norm_val){
+				document.getElementById('top').value=norm_val
+				setFocusTo=document.getElementById('bottom')
+			}
          }
+		 function removeFrac() {
+            document.getElementById('single-input').style.display = 'block';
+            document.getElementById('frac-input').style.display = 'none';
+			if(norm_val){
+				document.getElementById('single').value=norm_val
+				setFocusTo=document.getElementById('single')
+			}
+         }
+		 function onkeyupHandler(){
+			if(setFocusTo){
+				setFocusTo.focus();
+			}
+		 }
+		function onkeydownHandler(_event){
+			var event=_event?_event:window.event
+			
+			if(event.keyCode==47||event.keyCode==191){
+				var isNormalField=document.getElementById('single-input').style.display == 'block';
+				if(isNormalField){
+					norm_val=document.getElementById('single').value;
+					showFrac();
+				}
+			}
+			if(event.keyCode==8){
+				var isFracField=document.getElementById('frac-input').style.display == 'block';
+				var bottom=document.getElementById('bottom');
+				var bval=bottom.value
+				//alert(document.activeElement)
+				if(document.activeElement==bottom&&bval==""){
+					norm_val=document.getElementById('top').value;
+					removeFrac();
+				}
+			}
+		}
+		function validate(value0,value1,value2){
+			var isNormal=value2==""||value2==null||value2==undefined;
+			var val,sval,n,d,input,expectedVal,sinput,eexpectedVal,nexpectedVal;
+			var sc;
+			if (isNormal) {
+				val = value1;
+			} else {
+				n = value1;
+				d = value2;
+				val = n + "/" + d;
+				sval = n / d;
+			}
+			input = val;
+			expectedVal =  value0;
+			if (!isNaN(expectedVal)) {
+				expectedVal = String(Math.fixTo(expectedVal, 8));
+			}
+			if (!isNaN(input)) {
+				input = String(Math.fixTo(input, 8));
+			}
+			sinput = Math.simpleFrac(input);
+			sexpectedVal = Math.simpleFrac(expectedVal);
+			var nexpectedValA = expectedVal.split("/");
+			if (nexpectedValA[1] !== undefined) {
+				nexpectedVal = nexpectedValA[0] / nexpectedValA[1];
+			} else {
+				nexpectedVal = nexpectedValA[0];
+			}
+			alert(input+":"+expectedVal)
+			if (input == expectedVal || nexpectedVal == input || ((input * 1) == (expectedVal * 1) && !(input * 1))) {				
+				sc="correct";
+			} else if (sinput == expectedVal) {
+				sc=("simplify");
+			} else {
+				if ((nexpectedVal == sval) && sval !== undefined && nexpectedVal !== undefined) {
+					sc="correct";
+				} else {
+					
+					sc="incorrect";
+				}
+			}
+			return sc
+		}
     </script>
    </body>
 </html>
