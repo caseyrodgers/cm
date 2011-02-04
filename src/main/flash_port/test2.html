@@ -2,7 +2,7 @@
 
    <head>
         <style>
-        #out {
+        #float, #abs {
              width: 300px;
              border: 1px solid red;
              height: 100px;
@@ -14,18 +14,34 @@
 
         .f1 {
           background: green;
-          float: right;
+          float: left;
         }
 
         .f2{
           background: blue;
           float: left;
         }
+
+
+        #abs {
+            position: relative;
+            margin-top: 20px;
+        }
+
+        .rel1 {
+            position: absolute;
+            top: 10px;
+            right: 20px;
+            background: green;
+        }
+
+ 
         </style>
    </head>
    <body>
 
-       <div id='out'>
+       <div id='float'>
+            <p>THis is some test text and this is some more test text and even more.  And another sentence has more stuff in it.</p>
             <div class='f1'>
                    Float 1                 
             </div>
@@ -33,9 +49,19 @@
             <div class='f2'>
                    Float 2
             </div>
+       </div>
 
+
+
+       <div id='abs'>
             <p>THis is some test text and this is some more test text and even more.  And another sentence has more stuff in it.</p>
+            <div class='rel1'>
+                   abs 1                 
+            </div>
 
+            <div class='rel2'>
+                   abs 2
+            </div>
        </div>
 
 
