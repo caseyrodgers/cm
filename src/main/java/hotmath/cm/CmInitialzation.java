@@ -14,6 +14,10 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
 
+import sb.logger.SbLogger;
+import sb.logger.SbLoggerEvent;
+import sb.logger.SbLoggerListenerImplVerbose;
+
 /** Provides hooks to initialize the Catchup Math 
  *  system when plugged into a servlet environment.
  *  
@@ -29,6 +33,14 @@ public class CmInitialzation extends HttpServlet {
     private static String PID = "n/a";
 
     public void init() {
+        
+        
+        SbLogger.addLogListener(new SbLoggerListenerImplVerbose(){
+            @Override
+            public void handleMessageEvent(SbLoggerEvent event) {
+                logger.info(event.getType() + " - " + event.getMessage() + " - " + event.getThrowable());
+            }
+        });
         
         String prefix = getServletContext().getRealPath("/");
         String file = getInitParameter("log4j-init-file");
