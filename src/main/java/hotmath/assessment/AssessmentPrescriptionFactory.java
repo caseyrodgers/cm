@@ -28,7 +28,6 @@ public class AssessmentPrescriptionFactory {
 	
 	static public AssessmentPrescription createOrLoadExisting(final Connection conn, HaTestRun testRun) throws Exception {
 	    List<TestRunLesson> lessons = new HaTestRunDao().loadTestRunLessonsAndPids(conn, testRun.getRunId());
-	    lessons.remove(0);
 	    if(lessons.size() == 0) {
 	        
 	        if(testRun.getHaTest().getTestDef().getTestDefId() == CmProgram.CUSTOM_PROGRAM.getDefId()) {

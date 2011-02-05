@@ -198,11 +198,11 @@ public class PrescriptionReport {
                 List<String> pids = test.getPids();
     
                 for (String pid : pids) {
-    
-                    if(!pid.equals("nationalhm2_CourseTest_1_PracticeTest_63_1"))
-                        continue;
-                    
-                    System.out.println("HERE");
+                    /** 
+                     *   Quick way to test a single pid
+                     *   if(!pid.equals("nationalhm2_CourseTest_1_PracticeTest_63_1"))
+                     *       continue;
+                     */
                     
                     logMessage(-1, "Testing pid: " + pid);
                     /**
