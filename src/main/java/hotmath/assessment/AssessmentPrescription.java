@@ -154,15 +154,13 @@ public class AssessmentPrescription {
 				continue; // nothing to see here.
 			}
 
-			AssessmentPrescriptionSession session = createSession(sessNum,
-					rppWidgets, itemData, true);
+			AssessmentPrescriptionSession session = createSession(sessNum,rppWidgets, itemData, true);
 
 			// assert that there is at least one
 			if (session.getSessionItems().size() == 0) {
 				// this session has no items, so it is invalid and will be
 				// skipped
-				SbLogger.postMessage("AssessmentPrescriptionSession: session has no items: "
-						+ session);
+			    logger.warn("AssessmentPrescriptionSession: session has no items: "	+ session);
 			} else {
 				//TOOD: should sessNum be incremented if session not actually added?
 				// add this session, and move to next
@@ -310,7 +308,8 @@ public class AssessmentPrescription {
 				// subject filter solutions
 				int gradeLevel = pid.getGradeLevel();
 				if (filter && gradeLevel > getGradeLevel()) {
-					SbLogger.postMessage("AssessmentPrescriptionSession: "
+					logger.warn("AssessmentPrescriptionSession: "
+					        + itemData.getInmhItem() 
 							+ testRun.getRunId()
 							+ ", level: "
 							+ getGradeLevel()
