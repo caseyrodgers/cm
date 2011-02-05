@@ -25,7 +25,7 @@ public class HighlightImplZeroLoginsDetailsPanel extends HighlightImplDetailsPan
         ColumnConfig column = new ColumnConfig();
         column.setId("name");
         column.setHeader("Students with zero logins");
-        column.setWidth(140);
+        column.setWidth(500);
         column.setSortable(false);
         configs.add(column);
         

@@ -21,10 +21,13 @@ import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.Html;
+import com.extjs.gxt.ui.client.widget.Label;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
+import com.extjs.gxt.ui.client.widget.grid.ColumnData;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
 import com.extjs.gxt.ui.client.widget.grid.Grid;
+import com.extjs.gxt.ui.client.widget.grid.GridCellRenderer;
 import com.extjs.gxt.ui.client.widget.layout.CenterLayout;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.google.gwt.user.client.Element;
@@ -52,14 +55,14 @@ abstract public class HighlightImplDetailsPanelBase extends LayoutContainer {
         ColumnConfig column = new ColumnConfig();
         column.setId("name");
         column.setHeader("Students with one or more logins");
-        column.setWidth(140);
+        column.setWidth(300);
         column.setSortable(false);
         configs.add(column);
 
         column = new ColumnConfig();
         column.setId("data1");
         column.setHeader("Lessons Viewed");
-        column.setWidth(100);
+        column.setWidth(130);
         column.setSortable(false);
         configs.add(column);
         
@@ -97,7 +100,9 @@ abstract public class HighlightImplDetailsPanelBase extends LayoutContainer {
     static public CmList<HighlightReportData> __lastReportData;
     private void drawTable(CmList<HighlightReportData> data) {
         __lastReportData = data;
+        
         removeAll();
+        
         setLayout(new FitLayout());
         ListStore<HighlightReportModel> store = new ListStore<HighlightReportModel>();
         _grid = defineGrid(store, new ColumnModel(getColumns()));
@@ -110,8 +115,11 @@ abstract public class HighlightImplDetailsPanelBase extends LayoutContainer {
             for (int i = 0, t = data.size(); i < t; i++) {
                 reportList.add(createTableModel(data.get(i)));
             }
+            
             store.add(reportList);
             add(_grid);
+            
+            _grid.setToolTip(getGridToolTip());
             _grid.addListener(Events.CellDoubleClick, new Listener<BaseEvent>(){
                 public void handleEvent(BaseEvent be) {
                     showSelectStudentDetail();
@@ -120,6 +128,10 @@ abstract public class HighlightImplDetailsPanelBase extends LayoutContainer {
         }
         
         layout();
+    }
+    
+    protected String getGridToolTip() {
+        return "Double click for detailed history";
     }
     
     protected HighlightReportModel createTableModel(HighlightReportData data) {
@@ -137,7 +149,11 @@ abstract public class HighlightImplDetailsPanelBase extends LayoutContainer {
         grid.setStripeRows(true);
         grid.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
         grid.getSelectionModel().setFiresEvents(true);
-        grid.setWidth("100%");
+        
+        /** set to default to allow IE to render table correctly
+         * 
+         */
+        grid.setWidth("500");
         grid.setHeight("100%");
         grid.setLoadMask(true);
         return grid;

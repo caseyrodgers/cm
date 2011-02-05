@@ -169,6 +169,6 @@ public enum EventType{
     /** Print the current highlight report
      * 
      */
-    EVENT_TYPE_PRINT_HIGHLIGHT_REPORT
-    
+    EVENT_TYPE_PRINT_HIGHLIGHT_REPORT,
+
 }

@@ -86,4 +86,10 @@ public class HighlightImplGroupUsageDetailsPanel extends HighlightImplDetailsPan
     @Override
     protected void showSelectStudentDetail() {
     }
+    
+    @Override
+    protected String getGridToolTip() {
+        return null;
+    }
+
 }

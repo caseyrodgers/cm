@@ -402,5 +402,6 @@ program-details-panel .x-ftree2-node-over {
 
 .report-legend .no-selection div {
 	background-color: red;
+	clear: both;
 }
 

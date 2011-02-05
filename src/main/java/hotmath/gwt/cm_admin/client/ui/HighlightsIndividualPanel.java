@@ -26,15 +26,13 @@ import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.google.gwt.user.client.ui.Widget;
 
 
-
 public class HighlightsIndividualPanel extends ContentPanel {
 
     LayoutContainer _reportOutput = new LayoutContainer();
     static HighlightsIndividualPanel __instance;
-    
     public HighlightsIndividualPanel() {
         __instance = this;
-        setHeading("");
+        setHeaderVisible(false);
         
         setLayout(new BorderLayout());
         
@@ -46,10 +44,8 @@ public class HighlightsIndividualPanel extends ContentPanel {
         dData = new BorderLayoutData(LayoutRegion.CENTER);
         dData.setSplit(true);
         dData.setCollapsible(true);
-
+        _reportOutput.setLayout(new FitLayout());
         add(_reportOutput, dData);
-        
-        layout();
     }
     
     static int __lastSelectedReport=0;
@@ -96,10 +92,11 @@ public class HighlightsIndividualPanel extends ContentPanel {
     }
     
     private void showReportOutput(ReportModel report) {
+        
         _reportOutput.removeAll();
-        _reportOutput.setLayout(new FitLayout());
         _reportOutput.add(report.getReport().getWidget());
-        _reportOutput.layout();
+        
+        layout(true);
     }
 
     private LayoutContainer createReportOutputPanel() {

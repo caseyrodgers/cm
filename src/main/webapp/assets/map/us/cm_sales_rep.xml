@@ -5,19 +5,19 @@
 
 	<state id="range">
 		<data>3</data>
-		<color>990000</color>
+		<color>A5E439</color>
 	</state>
 	<state id="range">
 		<data>2</data>
-		<color>770000</color>
+		<color>538300</color>
 	</state>
 	<state id="range">
 		<data>1</data>
-		<color>cc0033</color>
+		<color>ED746A</color>
 	</state>
 	<state id="range">
 		<data>0</data>
-		<color>00BDB6</color>
+		<color>B3005B</color>
 	</state>
 
 	<state id="outline_color">
