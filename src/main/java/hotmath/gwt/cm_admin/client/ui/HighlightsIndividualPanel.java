@@ -248,6 +248,7 @@ abstract class HighlightImplBase  {
     protected HighlightReportLayout getReportLayout() {
         String cols[] = {"Name:75", "Lessons Viewed:25"};
         HighlightReportLayout rl = new HighlightReportLayout(cols, getReportValues());
+        rl.setCountLabel("Student Count: ");
         return rl;
     }
     
@@ -258,8 +259,10 @@ abstract class HighlightImplBase  {
 
 class HighlightImplGreatestEffort extends HighlightImplBase {
     HighlightImplGreatestEffortDetailsPanel panel = new HighlightImplGreatestEffortDetailsPanel(this);
+	static String title = "Greatest Effort";
     public HighlightImplGreatestEffort() {
-        super("Greatest Effort", "Displays students in order of most lessons viewed (excluding those who have viewed zero lessons)");
+        super(title, "Displays students in order of most lessons viewed (excluding those who have viewed zero lessons)");
+        getReportLayout().setTitle(title);
     }
     
     public Widget prepareWidget() {
@@ -274,9 +277,10 @@ class HighlightImplGreatestEffort extends HighlightImplBase {
 
 class HighlightImplLeastEffort extends HighlightImplBase {
     HighlightImplLeastEffortDetailsPanel panel = new HighlightImplLeastEffortDetailsPanel(this);
-    
+    static String title = "Least Effort";
     public HighlightImplLeastEffort() {
-        super("Least Effort", "Displays students in order of least lessons viewed (excluding those who have viewed zero lessons)");
+        super(title, "Displays students in order of least lessons viewed (excluding those who have viewed zero lessons)");
+        getReportLayout().setTitle(title);
     }
     public Widget prepareWidget() {
         return panel;
@@ -288,9 +292,11 @@ class HighlightImplLeastEffort extends HighlightImplBase {
 }
 
 class HighlightImplMostGamesPlayed extends HighlightImplBase {
+	static String title = "Most Games Played";
     HighlightImplMostGamesPlayedDetailsPanel panel = new HighlightImplMostGamesPlayedDetailsPanel(this);
     public HighlightImplMostGamesPlayed() {
-        super("Most Games Played","Displays students in order of most games played (excluding those who have played no games)");
+        super(title,"Displays students in order of most games played (excluding those who have played no games)");
+        getReportLayout().setTitle(title);
     }
     public Widget prepareWidget() {
         return panel;
@@ -305,9 +311,10 @@ class HighlightImplMostGamesPlayed extends HighlightImplBase {
 
 class HighlightImplMostQuizzesPassed extends HighlightImplBase {
     HighlightImplMostQuizzesPassedDetailsPanel panel = new HighlightImplMostQuizzesPassedDetailsPanel(this);
-    
+    static String title = "Most Quizzes Passed";
     public HighlightImplMostQuizzesPassed() {
-        super("Most Quizzes Passed","Displays students in order of most quizzes passed (which correlates to most Sections completed as Auto-Enroll quizzes are not counted)");
+        super(title,"Displays students in order of most quizzes passed (which correlates to most Sections completed as Auto-Enroll quizzes are not counted)");
+        getReportLayout().setTitle(title);
     }
     public Widget prepareWidget() {
         return panel;
@@ -322,9 +329,10 @@ class HighlightImplMostQuizzesPassed extends HighlightImplBase {
 
 class HighlightImplHighestAverageQuizScores extends HighlightImplBase {
     HighlightImplHighestAverageQuizScoresDetailsPanel panel = new HighlightImplHighestAverageQuizScoresDetailsPanel(this);
-    
+    static String title = "Highest Average Quiz Score";
     public HighlightImplHighestAverageQuizScores() {
-        super("Highest Average Quiz Score","Displays students in order of their average quiz score, including passed and failed quizzes, but excluding Auto-Enroll quizzes.");
+        super(title,"Displays students in order of their average quiz score, including passed and failed quizzes, but excluding Auto-Enroll quizzes.");
+        getReportLayout().setTitle(title);
     }
     public Widget prepareWidget() {
         return panel;
@@ -338,8 +346,10 @@ class HighlightImplHighestAverageQuizScores extends HighlightImplBase {
 
 class HighlightImplMostQuizzesFailed extends HighlightImplBase {
     HighlightImplMostQuizzesFailedDetailsPanel panel = new HighlightImplMostQuizzesFailedDetailsPanel(this);
+    static String title = "Most Quizzes Failed";
     public HighlightImplMostQuizzesFailed() {
-        super("Most Quizzes Failed","Displays students in order of most quizzes failed, a possible indicator of students in a program above their level");
+        super(title,"Displays students in order of most quizzes failed, a possible indicator of students in a program above their level");
+        getReportLayout().setTitle(title);
     }
     public Widget prepareWidget() {
         return panel;
@@ -353,8 +363,10 @@ class HighlightImplMostQuizzesFailed extends HighlightImplBase {
 
 class HighlightImplMostFailuresLatestQuiz extends HighlightImplBase {
     HighlightImplMostFailuresLatestQuizDetailsPanel panel = new HighlightImplMostFailuresLatestQuizDetailsPanel(this);
+    static String title = "Most Failures of Current Quiz";
     public HighlightImplMostFailuresLatestQuiz() {
-        super("Most Failures of Current Quiz","Displays students who have failed their current quiz at least once, in rank order - a possible indicator of needing teacher assistance");
+        super(title,"Displays students who have failed their current quiz at least once, in rank order - a possible indicator of needing teacher assistance");
+        getReportLayout().setTitle(title);
     }
     public Widget prepareWidget() {
         return panel; 
@@ -376,16 +388,17 @@ class HighlightImplLoginsWeek extends HighlightImplBase {
 
 class HighlightImplGroupProgress extends HighlightImplBase {
     HighlightImplGroupProgressDetailsPanel panel = new HighlightImplGroupProgressDetailsPanel(this);
+    static String title = "Group Progress";
     public HighlightImplGroupProgress() {
-        super("Group Progress","Shows number of active students (logged in at least once), total logins, lessons viewed, and quizzes passed for each group and entire school. Groups with no active students are omitted.");
+        super(title,"Shows number of active students (logged in at least once), total logins, lessons viewed, and quizzes passed for each group and entire school. Groups with no active students are omitted.");
     }
     public Widget prepareWidget() {
         return panel;
     }
     @Override
     protected HighlightReportLayout getReportLayout() {
-        String cols[] = {"Name:50", "Active:12", "Logins:12", "Lessons:12", "Passed:12"};
-        return new HighlightReportLayout(cols, panel.getReportValues());
+        String cols[] = {"Group:50", "Active:12", "Logins:12", "Lessons:12", "Passed:12"};
+        return new HighlightReportLayout(title, "Group Count: ", cols, panel.getReportValues());
     }    
 }
 
@@ -406,8 +419,10 @@ class HighlightImplComparePerformance extends HighlightImplBase {
 
 class HighlightImplZeroLogins extends HighlightImplBase {
     HighlightImplZeroLoginsDetailsPanel panel = new HighlightImplZeroLoginsDetailsPanel(this);
+    static String title = "Zero Logins";
     public HighlightImplZeroLogins() {
-        super("Zero Logins","List students who did not log in during the date range.");
+        super(title,"List students who did not log in during the date range.");
+        getReportLayout().setTitle(title);
     }
     public Widget prepareWidget() {
         return panel;
@@ -421,10 +436,16 @@ class HighlightImplZeroLogins extends HighlightImplBase {
 
 class HighlightImplGroupUsage extends HighlightImplBase {
     HighlightImplGroupUsageDetailsPanel panel = new HighlightImplGroupUsageDetailsPanel(this);
+    static String title = "Group Usage";
     public HighlightImplGroupUsage() {
-        super("Group Usage","Shows the usage of optional learning resources for groups with at least one active student.");
+        super(title,"Shows the usage of optional learning resources for groups with at least one active student.");
     }
     public Widget prepareWidget() {
         return panel;
     }
+    @Override
+    protected HighlightReportLayout getReportLayout() {
+        String cols[] = {"Group:50", "Active:12", "Videos:12", "Games:12", "Activities:12"};
+        return new HighlightReportLayout(title, "Group Count: ", cols,panel.getReportValues());
+    }    
 }
