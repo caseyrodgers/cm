@@ -29,8 +29,6 @@ import java.util.Map;
 
 import org.apache.log4j.Logger;
 
-import sb.logger.SbLogger;
-
 /**
  * Class to represent an assessment prescription for a given set of INMH items.
  * 
