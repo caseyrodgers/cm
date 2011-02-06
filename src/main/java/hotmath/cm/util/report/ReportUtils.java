@@ -77,13 +77,17 @@ public class ReportUtils {
         p.setIndentationLeft(30.0f);
         return p;
     }
-    
+
     public static HeaderFooter getGroupReportHeader(AccountInfoModel info, int studentCount, String filterDescription) {
+    	return getGroupReportHeader(info, "Student Count: ", studentCount, filterDescription);
+    }
+    
+    public static HeaderFooter getGroupReportHeader(AccountInfoModel info, String countLabel, int count, String filterDescription) {
         Phrase heading = new Phrase();
         Phrase school = buildPhraseLabel("School: ", nz(info.getSchoolName()));
         Phrase admin = buildPhraseLabel("Administrator: ", nz(info.getSchoolUserName()));
         Phrase expires = buildPhraseLabel("Expires: ", nz(info.getExpirationDate()));
-        Phrase stuCount = buildPhraseLabel("Student Count: ", String.valueOf(studentCount));
+        Phrase stuCount = buildPhraseLabel(countLabel, String.valueOf(count));
         
         heading.add(school);
         // Chunk c = new Chunk(new Jpeg(new
@@ -106,7 +110,7 @@ public class ReportUtils {
 
         return header;
     }
-    
+
     static private String nz(String s) {
         return s == null?"":s;
     }
