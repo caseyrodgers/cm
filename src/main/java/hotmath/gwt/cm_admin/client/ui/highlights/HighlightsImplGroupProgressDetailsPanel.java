@@ -48,7 +48,7 @@ public class HighlightImplGroupProgressDetailsPanel extends HighlightImplDetails
 
         ColumnConfig column = new ColumnConfig();
         column.setId("name");
-        column.setHeader("Group Name");
+        column.setHeader("Group");
         column.setWidth(150);
         column.setSortable(false);
         configs.add(column);
