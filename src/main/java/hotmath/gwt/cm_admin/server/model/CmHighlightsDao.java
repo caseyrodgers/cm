@@ -49,7 +49,7 @@ public class CmHighlightsDao {
             "JOIN HA_TEST_RUN r on r.test_id = t.test_id " +
             "JOIN HA_TEST_RUN_LESSON l on l.run_id = r.run_id " +
             "where u.uid in ( " + createInList(uids) + " ) " +
-            " AND date(l.lesson_viewed) between ? and ? " +
+            " AND l.lesson_viewed between ? and ? " +
             "group by u.uid " +
             "order by lessons_viewed desc, u.user_name";
         
@@ -97,7 +97,7 @@ public class CmHighlightsDao {
             "JOIN HA_TEST_RUN r on r.test_id = t.test_id " +
             "JOIN HA_TEST_RUN_LESSON l on l.run_id = r.run_id " +
             "where u.uid in ( " + createInList(uids) + " ) " +
-            "AND date(l.lesson_viewed) between ? and ? " +
+            "AND l.lesson_viewed between ? and ? " +
             "group by u.uid " +
             "order by lessons_viewed, u.user_name";
         
@@ -135,7 +135,7 @@ public class CmHighlightsDao {
             "        select user_id, count(*) as quizzes_taken " +
             "        from   HA_TEST t " +
             "           JOIN HA_TEST_RUN r on r.test_id = t.test_id " +
-            "        where date(r.run_time) between ? and ? " + 
+            "        where r.run_time between ? and ? " + 
             "        GROUP BY user_id " +
             "      ) qv on qv.user_id = u.uid " +
             
@@ -148,7 +148,7 @@ public class CmHighlightsDao {
             " on i.run_id = r.run_id " +
             " where  u.uid in (" + createInList(uids) + ") " +
             " and i.item_type = 'activity_standard' " +
-            " and date(i.view_time) between ? and ? " +
+            " and i.view_time between ? and ? " +
             " group  by u.uid " +
             " order  by games_viewed desc, u.user_name"; 
         
@@ -189,7 +189,7 @@ public class CmHighlightsDao {
             "        select user_id, count(*) as quizzes_taken " +
             "        from   HA_TEST t " +
             "           JOIN HA_TEST_RUN r on r.test_id = t.test_id " +
-            "        where date(r.run_time) between ? and ? " + 
+            "        where r.run_time between ? and ? " + 
             "        GROUP BY user_id " +
             "      ) qv on qv.user_id = u.uid " +
             
@@ -202,7 +202,7 @@ public class CmHighlightsDao {
             " where  u.uid in (" + createInList(uids) + ") " +
             " and r.is_passing = 1 " +
             " and c.test_def_id <> 15 " +
-            " and date(r.run_time) between ? and ? " +
+            " and r.run_time between ? and ? " +
             " group  by u.uid " +
             " order  by quizzes_passed desc, u.user_name"; 
         
@@ -244,7 +244,7 @@ public class CmHighlightsDao {
             "        select user_id, count(*) as quizzes_taken " +
             "        from   HA_TEST t " +
             "           JOIN HA_TEST_RUN r on r.test_id = t.test_id " +
-            "        where date(r.run_time) between ? and ? " + 
+            "        where r.run_time between ? and ? " + 
             "        GROUP BY user_id " +
             "      ) qv on qv.user_id = u.uid " +
             
@@ -256,7 +256,7 @@ public class CmHighlightsDao {
             " on r.test_id = t.test_id " +
             " where  u.uid in ( " + createInList(uids) + " ) " +
             " and c.test_def_id <> 15 " +
-            " and date(r.run_time) between ? and ? " +
+            " and r.run_time between ? and ? " +
             " group by u.uid " +
             " order by avg_quiz_score desc, u.user_name";
 
@@ -297,7 +297,7 @@ public class CmHighlightsDao {
             " where  u.uid in ( " + createInList(uids) + " ) " +
             " and r.is_passing = 0 " +
             " and c.test_def_id <> 15 " +
-            " and date(r.run_time) between ? and ? " +
+            " and r.run_time between ? and ? " +
             " group by u.uid " +
             " order by failed_quizzes desc";
      
@@ -356,7 +356,7 @@ public class CmHighlightsDao {
         "where t.user_id in(" + createInList(uids) + " ) " +
         "and t.test_segment = u.active_segment " +
         "and r.is_passing = 0 " +
-        " and date(r.run_time) between ? and ? " +
+        " and r.run_time between ? and ? " +
         "group by u.uid " +
         "order by failed_quizzes desc, user_name";
         
@@ -602,7 +602,7 @@ public class CmHighlightsDao {
 "        select user_id, count(*) as quizzes_taken " +
 "        from   HA_TEST t " +
 "           JOIN HA_TEST_RUN r on r.test_id = t.test_id " +
-"        where date(r.run_time) between ? and ? " + 
+"        where r.run_time between ? and ? " + 
 "        GROUP BY user_id " +
 "      ) qv on qv.user_id = u.uid " +
 
