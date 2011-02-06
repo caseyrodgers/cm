@@ -6,6 +6,7 @@ import hotmath.gwt.shared.client.eventbus.CmEvent;
 import hotmath.gwt.shared.client.eventbus.CmEventListener;
 import hotmath.gwt.shared.client.eventbus.EventType;
 import hotmath.gwt.shared.client.rpc.action.GeneratePdfHighlightsReportAction;
+import hotmath.gwt.shared.client.rpc.action.HighlightReportLayout;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -131,7 +132,10 @@ public class HighlightsIndividualPanel extends ContentPanel {
         }
         else {
             String reportName = _listReports.getStore().getAt(__lastSelectedReport).getText();
-            GeneratePdfHighlightsReportAction action = new GeneratePdfHighlightsReportAction(StudentGridPanel.instance._cmAdminMdl.getId(),reportName,StudentGridPanel.instance._pageAction);
+            
+            HighlightReportLayout reportLayout = _listReports.getStore().getAt(__lastSelectedReport).getReport().getReportLayout();
+                
+            GeneratePdfHighlightsReportAction action = new GeneratePdfHighlightsReportAction(StudentGridPanel.instance._cmAdminMdl.getId(),reportName,reportLayout,StudentGridPanel.instance._pageAction);
             action.setFilterMap(StudentGridPanel.instance._pageAction.getFilterMap());
             action.setModels(HighlightImplDetailsPanelBase.__lastReportData);
             new PdfWindow(0, "Catchup Math Highlight Report", action);
@@ -209,6 +213,7 @@ abstract class HighlightImplBase  {
     String name;
     String toolTip;
     Widget _widget;
+    
     HighlightImplBase(String name, String toolTip) {
         this.name = name;
         this.toolTip = toolTip;
@@ -233,71 +238,131 @@ abstract class HighlightImplBase  {
      * @return
      */
     abstract Widget prepareWidget();
+    
+    
+    /** return the column labels used
+     *  to print the report.
+     *  
+     * @return
+     */
+    protected HighlightReportLayout getReportLayout() {
+        String cols[] = {"Name:75", "Lessons Viewed:25"};
+        HighlightReportLayout rl = new HighlightReportLayout(cols, getReportValues());
+        return rl;
+    }
+    
+    protected String[][] getReportValues() {
+        return new String[0][0];
+    }
 }
 
 class HighlightImplGreatestEffort extends HighlightImplBase {
+    HighlightImplGreatestEffortDetailsPanel panel = new HighlightImplGreatestEffortDetailsPanel(this);
     public HighlightImplGreatestEffort() {
         super("Greatest Effort", "Displays students in order of most lessons viewed (excluding those who have viewed zero lessons)");
     }
     
     public Widget prepareWidget() {
-        return new HighlightImplGreatestEffortDetailsPanel(this);
+        return panel;
+    }
+    
+    @Override
+    protected String[][] getReportValues() {
+        return panel.getReportValues();
     }
 }
 
 class HighlightImplLeastEffort extends HighlightImplBase {
+    HighlightImplLeastEffortDetailsPanel panel = new HighlightImplLeastEffortDetailsPanel(this);
+    
     public HighlightImplLeastEffort() {
         super("Least Effort", "Displays students in order of least lessons viewed (excluding those who have viewed zero lessons)");
     }
     public Widget prepareWidget() {
-        return new HighlightImplLeastEffortDetailsPanel(this);
+        return panel;
+    }
+    @Override
+    protected String[][] getReportValues() {
+        return panel.getReportValues();
     }
 }
 
 class HighlightImplMostGamesPlayed extends HighlightImplBase {
+    HighlightImplMostGamesPlayedDetailsPanel panel = new HighlightImplMostGamesPlayedDetailsPanel(this);
     public HighlightImplMostGamesPlayed() {
         super("Most Games Played","Displays students in order of most games played (excluding those who have played no games)");
     }
     public Widget prepareWidget() {
-        return new HighlightImplMostGamesPlayedDetailsPanel(this);
+        return panel;
     }
+    
+    @Override
+    protected HighlightReportLayout getReportLayout() {
+        String cols[] = {"Name:50", "Games Played:25", "Quizzes Taken:25"};
+        return new HighlightReportLayout(cols,panel.getReportValues());
+    }    
 }
 
 class HighlightImplMostQuizzesPassed extends HighlightImplBase {
+    HighlightImplMostQuizzesPassedDetailsPanel panel = new HighlightImplMostQuizzesPassedDetailsPanel(this);
+    
     public HighlightImplMostQuizzesPassed() {
         super("Most Quizzes Passed","Displays students in order of most quizzes passed (which correlates to most Sections completed as Auto-Enroll quizzes are not counted)");
     }
     public Widget prepareWidget() {
-        return new HighlightImplMostQuizzesPassedDetailsPanel(this);
+        return panel;
     }
+    
+    @Override
+    protected HighlightReportLayout getReportLayout() {
+        String cols[] = {"Name:75", "Quizzes Passed:25"};
+        return new HighlightReportLayout(cols, panel.getReportValues());
+    }    
 }
 
 class HighlightImplHighestAverageQuizScores extends HighlightImplBase {
+    HighlightImplHighestAverageQuizScoresDetailsPanel panel = new HighlightImplHighestAverageQuizScoresDetailsPanel(this);
+    
     public HighlightImplHighestAverageQuizScores() {
         super("Highest Average Quiz Score","Displays students in order of their average quiz score, including passed and failed quizzes, but excluding Auto-Enroll quizzes.");
     }
     public Widget prepareWidget() {
-        return new HighlightImplHighestAverageQuizScoresDetailsPanel(this);
+        return panel;
     }
+    @Override
+    protected HighlightReportLayout getReportLayout() {
+        String cols[] = {"Name:50", "Average:20", "Quizzes Taken:20"};
+        return new HighlightReportLayout(cols, panel.getReportValues());
+    }    
 }
 
 class HighlightImplMostQuizzesFailed extends HighlightImplBase {
+    HighlightImplMostQuizzesFailedDetailsPanel panel = new HighlightImplMostQuizzesFailedDetailsPanel(this);
     public HighlightImplMostQuizzesFailed() {
         super("Most Quizzes Failed","Displays students in order of most quizzes failed, a possible indicator of students in a program above their level");
     }
     public Widget prepareWidget() {
-        return new HighlightImplMostQuizzesFailedDetailsPanel(this);
+        return panel;
     }
+    @Override
+    protected HighlightReportLayout getReportLayout() {
+        String cols[] = {"Name:75", "Failures:25"};
+        return new HighlightReportLayout(cols, panel.getReportValues());
+    }    
 }
 
 class HighlightImplMostFailuresLatestQuiz extends HighlightImplBase {
+    HighlightImplMostFailuresLatestQuizDetailsPanel panel = new HighlightImplMostFailuresLatestQuizDetailsPanel(this);
     public HighlightImplMostFailuresLatestQuiz() {
         super("Most Failures of Current Quiz","Displays students who have failed their current quiz at least once, in rank order - a possible indicator of needing teacher assistance");
     }
     public Widget prepareWidget() {
-        return new HighlightImplMostFailuresLatestQuizDetailsPanel(this);
+        return panel; 
     }
-    
+    @Override
+    protected String[][] getReportValues() {
+        return panel.getReportValues();
+    }
 }
 
 class HighlightImplLoginsWeek extends HighlightImplBase {
@@ -310,37 +375,56 @@ class HighlightImplLoginsWeek extends HighlightImplBase {
 }
 
 class HighlightImplGroupProgress extends HighlightImplBase {
+    HighlightImplGroupProgressDetailsPanel panel = new HighlightImplGroupProgressDetailsPanel(this);
     public HighlightImplGroupProgress() {
         super("Group Progress","Shows number of active students (logged in at least once), total logins, lessons viewed, and quizzes passed for each group and entire school. Groups with no active students are omitted.");
     }
     public Widget prepareWidget() {
-        return new HighlightImplGroupProgressDetailsPanel(this);
+        return panel;
     }
+    @Override
+    protected HighlightReportLayout getReportLayout() {
+        String cols[] = {"Name:50", "Active:12", "Logins:12", "Lessons:12", "Passed:12"};
+        return new HighlightReportLayout(cols, panel.getReportValues());
+    }    
 }
 
 class HighlightImplComparePerformance extends HighlightImplBase {
+    HighlightImplComparePerformanceDetailsPanel panel = new HighlightImplComparePerformanceDetailsPanel(this);
     public HighlightImplComparePerformance() {
         super("Compare Performance","Various metrics for comparing group performance with the entire school and the total community of Catchup Math students nationwide");
     }
     public Widget prepareWidget() {
-        return new HighlightImplComparePerformanceDetailsPanel(this);
+        return panel;
     }
+    @Override
+    protected HighlightReportLayout getReportLayout() {
+        String cols[] = {"Name:50", "Active:12", "Videos:12", "Games:12", "Activities:12"};
+        return new HighlightReportLayout(cols,panel.getReportValues());
+    }    
 }
 
 class HighlightImplZeroLogins extends HighlightImplBase {
+    HighlightImplZeroLoginsDetailsPanel panel = new HighlightImplZeroLoginsDetailsPanel(this);
     public HighlightImplZeroLogins() {
         super("Zero Logins","List students who did not log in during the date range.");
     }
     public Widget prepareWidget() {
-        return new HighlightImplZeroLoginsDetailsPanel(this);
+        return panel;
     }
+    @Override
+    protected HighlightReportLayout getReportLayout() {
+        String cols[] = {"Name:100"};
+        return new HighlightReportLayout(cols, panel.getReportValues());
+    }    
 }
 
 class HighlightImplGroupUsage extends HighlightImplBase {
+    HighlightImplGroupUsageDetailsPanel panel = new HighlightImplGroupUsageDetailsPanel(this);
     public HighlightImplGroupUsage() {
         super("Group Usage","Shows the usage of optional learning resources for groups with at least one active student.");
     }
     public Widget prepareWidget() {
-        return new HighlightImplGroupUsageDetailsPanel(this);
+        return panel;
     }
 }

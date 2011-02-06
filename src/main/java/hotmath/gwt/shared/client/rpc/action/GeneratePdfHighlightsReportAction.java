@@ -16,13 +16,14 @@ public class GeneratePdfHighlightsReportAction implements Action<CmWebResource>{
 	Map<FilterType,String> filterMap;
 	CmList<HighlightReportData> models;
 	String reportName;
-	CmList<String> columnLabels;
+	HighlightReportLayout reportLayout;
     
 	public GeneratePdfHighlightsReportAction() {
 	}
     
-    public GeneratePdfHighlightsReportAction(Integer adminId, String reportName, GetStudentGridPageAction pageAction) {
+    public GeneratePdfHighlightsReportAction(Integer adminId, String reportName, HighlightReportLayout reportLayout, GetStudentGridPageAction pageAction) {
         this.pageAction = pageAction;
+        this.reportLayout = reportLayout;
         this.reportName = reportName;
         
         this.adminId = adminId;
@@ -68,17 +69,19 @@ public class GeneratePdfHighlightsReportAction implements Action<CmWebResource>{
         this.reportName = reportName;
     }
 
-    public CmList<String> getColumnLabels() {
-		return columnLabels;
-	}
 
-	public void setColumnLabels(CmList<String> columnLabels) {
-		this.columnLabels = columnLabels;
-	}
+	public HighlightReportLayout getReportLayout() {
+        return reportLayout;
+    }
 
-	@Override
+    public void setReportLayout(HighlightReportLayout reportLayout) {
+        this.reportLayout = reportLayout;
+    }
+
+    @Override
     public String toString() {
         return "GeneratePdfHighlightsReportAction [adminId=" + adminId + ", pageAction=" + pageAction + ", filterMap="
-                + filterMap + ", models=" + models + ", reportName=" + reportName + ", columnLabels=" + columnLabels + "]";
+                + filterMap + ", models=" + models + ", reportName=" + reportName + ", columnLabels="
+                + reportLayout;
     }
 }

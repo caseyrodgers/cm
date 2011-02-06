@@ -2,8 +2,10 @@ package hotmath.gwt.cm_admin.client.ui;
 
 import hotmath.gwt.shared.client.rpc.action.HighlightsGetReportAction;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 
 
@@ -22,5 +24,7 @@ public class HighlightImplMostQuizzesPassedDetailsPanel extends HighlightImplDet
         configs.get(1).setHeader("Quizzes Passed");
         return configs;
     }
+    
+
    
 }

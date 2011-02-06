@@ -1,5 +1,7 @@
 package hotmath.gwt.shared.client.rpc.action;
 
+import hotmath.gwt.cm_rpc.client.rpc.CmArrayList;
+import hotmath.gwt.cm_rpc.client.rpc.CmList;
 import hotmath.gwt.cm_rpc.client.rpc.Response;
 
 public class HighlightReportData implements Response {
@@ -25,7 +27,9 @@ public class HighlightReportData implements Response {
     int activitiesViewed;
     int flashCardsViewed;
     
+    CmList<String> columnLabels = new CmArrayList<String>();
     
+
     public HighlightReportData(){}
     
     /** For group report */
@@ -71,6 +75,16 @@ public class HighlightReportData implements Response {
     public HighlightReportData(String name) {
         this.name = name;
     }
+    
+    
+    public CmList<String> getColumnLabels() {
+        return columnLabels;
+    }
+
+    public void setColumnLabels(CmList<String> columnLabels) {
+        this.columnLabels = columnLabels;
+    }
+    
     
     public String getData() {
         return data;

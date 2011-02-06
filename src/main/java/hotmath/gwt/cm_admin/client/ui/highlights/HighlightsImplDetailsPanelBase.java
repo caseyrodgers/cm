@@ -15,19 +15,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.extjs.gxt.ui.client.Style.SelectionMode;
-import com.extjs.gxt.ui.client.data.BaseModelData;
 import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.Html;
-import com.extjs.gxt.ui.client.widget.Label;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
-import com.extjs.gxt.ui.client.widget.grid.ColumnData;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
 import com.extjs.gxt.ui.client.widget.grid.Grid;
-import com.extjs.gxt.ui.client.widget.grid.GridCellRenderer;
 import com.extjs.gxt.ui.client.widget.layout.CenterLayout;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.google.gwt.user.client.Element;
@@ -36,8 +32,9 @@ abstract public class HighlightImplDetailsPanelBase extends LayoutContainer {
     
     HighlightImplBase base;
     Grid<HighlightReportModel> _grid;
-
+    HighlightImplDetailsPanelBase __instance;
     public HighlightImplDetailsPanelBase(HighlightImplBase base) {
+        __instance = this;
         this.base = base;
     }
 
@@ -68,6 +65,27 @@ abstract public class HighlightImplDetailsPanelBase extends LayoutContainer {
         
         return configs;
     }
+    
+    
+    public String[][] getReportValues() {
+        
+        ListStore<HighlightReportModel> reportStore = _grid.getStore();
+        
+        List<String[]> rows = new ArrayList<String[]>();
+        for(int r=0, t=reportStore.getCount();r<t;r++) {
+            HighlightReportModel rowM = reportStore.getAt(r);
+            
+            List<String> row = new ArrayList<String>();
+            for(int c=0, ct=_grid.getColumnModel().getColumnCount();c<ct;c++) {
+                ColumnConfig config = _grid.getColumnModel().getColumn(c);
+                row.add( rowM.get(config.getDataIndex()).toString());
+            }
+            
+            rows.add(row.toArray(new String[row.size()]));
+        }
+        return rows.toArray(new String[rows.size()][]);
+    }
+    
     
     protected void getDataFromServer() {
         new RetryAction<CmList<HighlightReportData>>() {
@@ -185,103 +203,7 @@ abstract public class HighlightImplDetailsPanelBase extends LayoutContainer {
 
 }
 
-/** Class to encapsulate table data for report output
- * 
- *  NOTE: Really two models... one for individual and one for groups.
- *  
- * @author casey
- *
- */
-class HighlightReportModel extends BaseModelData {
-    int uid;
-    int quizzesViewed;
-    
-    public HighlightReportModel(Integer uid, String name, String data) {
-        this.uid = uid;
-        set("name", name);
-        
-        /** allow up to four data variables to be
-         * passed separated by |.  Each value 
-         * will be in data1, data2, etc..
-         * 
-         */
-        if(data != null) {
-            String ds[] = data.split("\\|");
-            for(int i=0;i<ds.length;i++) {
-                set("data" + (i+1), ds[i]);    
-            }
-        }
-    }
-    
-    public HighlightReportModel(Integer uid, String name, String data, int quizzesTaken) {
-        this.uid = uid;
-        set("quizzesTaken", quizzesTaken);
-        set("name", name);
-        
-        /** allow up to four data variables to be
-         * passed separated by |.  Each value 
-         * will be in data1, data2, etc..
-         * 
-         */
-        if(data != null) {
-            String ds[] = data.split("\\|");
-            for(int i=0;i<ds.length;i++) {
-                set("data" + (i+1), ds[i]);    
-            }
-        }
-    }    
-    
-    public HighlightReportModel(String name, int groupCnt, int schoolCount, int nationalCount) {
-        set("name", name);
-        set("group", groupCnt);
-        set("school", schoolCount);
-        set("national", nationalCount);
-    }
-    
-    /** for group performance */
-    public HighlightReportModel(String name, int activeCount, int loginCount, int lessonsViewed, int quizzesCount) {
-        set("name", name);
-        set("activeCount", activeCount);
-        set("loginCount", loginCount);
-        set("lessonsViewed", lessonsViewed);
-        set("quizzesPassed", quizzesCount);
-    }
-    
-    
-    /** for group compare */
-    public HighlightReportModel(String name, int activeCount, int videosViewed, int gamesViewed, int activitiesViewed, int flashCardsViewed) { 
-        set("name", name);
-        set("activeCount", activeCount);
-        set("videosViewed", videosViewed);
-        set("gamesViewed", gamesViewed);
-        set("activitiesViewed", activitiesViewed);
-        set("flashcardsViewed", flashCardsViewed);
-    }
 
-    public String getName() {
-        return get("name");
-    }
-
-    public String getData1() {
-        return get("data1");
-    }
-    
-    public String getData2() {
-        return get("data2");
-    }
-    
-    public String getData3() {
-        return get("data3");
-    }
-    
-    public String getData4() {
-        return get("data4");
-    }
-    
-    public Integer getUid() {
-        return uid;
-    }
-}
 
 /** Shown when no students meet criteria
  * 

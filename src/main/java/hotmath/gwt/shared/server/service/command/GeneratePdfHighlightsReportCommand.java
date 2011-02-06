@@ -27,7 +27,7 @@ public class GeneratePdfHighlightsReportCommand implements ActionHandler<Generat
         for(StudentModelExt sme: studentPool) {
             studentIds.add(sme.getUid());
         }
-        return new HighlightsReport(action.getAdminId(), action.getReportName(), action.getModels()).getWebResource(conn);
+        return new HighlightsReport(action.getAdminId(), action.getReportName(), action.getReportLayout()).getWebResource(conn);
     }
     
     

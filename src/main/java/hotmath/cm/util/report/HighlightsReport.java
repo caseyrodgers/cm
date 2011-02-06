@@ -2,13 +2,12 @@ package hotmath.cm.util.report;
 
 import hotmath.cm.util.CmWebResourceManager;
 import hotmath.gwt.cm_admin.server.model.CmAdminDao;
-import hotmath.gwt.cm_rpc.client.rpc.CmList;
 import hotmath.gwt.cm_tools.client.model.AccountInfoModel;
 import hotmath.gwt.cm_tools.client.model.StudentModelI;
-import hotmath.gwt.shared.client.model.TrendingData;
 import hotmath.gwt.shared.client.rpc.CmWebResource;
 import hotmath.gwt.shared.client.rpc.action.GetStudentGridPageAction.FilterType;
 import hotmath.gwt.shared.client.rpc.action.HighlightReportData;
+import hotmath.gwt.shared.client.rpc.action.HighlightReportLayout;
 
 import java.awt.Color;
 import java.io.ByteArrayOutputStream;
@@ -34,17 +33,17 @@ import com.lowagie.text.pdf.PdfWriter;
 
 public class HighlightsReport {
     
-    static private Logger __logger = Logger.getLogger(HighlightsReportPdf.class);
+    static private Logger __logger = Logger.getLogger(HighlightsReport.class);
 	
 	private String reportName;
 	private Map<FilterType,String> filterMap;
-	CmList<HighlightReportData> models;
 	int adminId;
+	HighlightReportLayout reportLayout;
 	
-	public HighlightsReport(int adminId, String reportName, CmList<HighlightReportData> models) throws Exception {
+	public HighlightsReport(int adminId, String reportName, HighlightReportLayout reportLayout) throws Exception {
 	    this.adminId = adminId;
 	    this.reportName = reportName;
-	    this.models = models;   
+        this.reportLayout = reportLayout;	    
 	}
 
 	public CmWebResource getWebResource(final Connection conn) throws Exception {
@@ -66,7 +65,53 @@ public class HighlightsReport {
             if (fw != null) fw.close();
         }	    
 	}
+
 	
+	 @SuppressWarnings("unchecked")
+	    public ByteArrayOutputStream makePdf2(final Connection conn, Integer adminId) throws Exception {
+	        ByteArrayOutputStream baos = null;
+	        String filterDescription;
+	        filterDescription = ReportUtils.getFilterDescription(conn, adminId, new CmAdminDao(), filterMap);
+
+	        Document document = new Document();
+	        baos = new ByteArrayOutputStream();
+	        PdfWriter.getInstance(document, baos);
+
+	        AccountInfoModel info = new CmAdminDao().getAccountInfo(conn,adminId);
+	        
+	        HeaderFooter header = ReportUtils.getGroupReportHeader(info, 2, filterDescription);
+	        HeaderFooter footer = ReportUtils.getFooter();
+	        
+	        document.setHeader(header);
+	        document.setFooter(footer);
+
+	        document.open();
+
+	        Table tbl = new Table(reportLayout.getColumnLabels().length);
+	        tbl.setWidth(100.0f);
+	        tbl.setBorder(Table.BOTTOM);
+
+	        document.add(Chunk.NEWLINE);
+	        document.add(Chunk.NEWLINE);
+
+	        addHeader("Student", "70%", tbl);
+	        addHeader("<Data Label>", "30%", tbl);
+
+	        tbl.endHeaders();
+
+	        document.add(Chunk.NEWLINE);
+	        
+	        int i = 0;
+	        addCell("TEST NAME", tbl, ++i);
+	        addCell("TEST DATA", tbl, i);
+
+	        document.add(tbl);
+	        document.add(Chunk.NEWLINE);
+
+	        document.close();
+	        return baos;
+	    }
+	 
     @SuppressWarnings("unchecked")
     public ByteArrayOutputStream makePdf(final Connection conn, Integer adminId) throws Exception {
         ByteArrayOutputStream baos = null;
@@ -79,7 +124,7 @@ public class HighlightsReport {
 
         AccountInfoModel info = new CmAdminDao().getAccountInfo(conn,adminId);
         
-        HeaderFooter header = ReportUtils.getGroupReportHeader(info, models.size(), filterDescription);
+        HeaderFooter header = ReportUtils.getGroupReportHeader(info, reportLayout.getColumnValues().length, filterDescription);
         HeaderFooter footer = ReportUtils.getFooter();
 
         document.setHeader(header);
@@ -87,30 +132,35 @@ public class HighlightsReport {
 
         document.open();
 
-        Table tbl = new Table(2);
+        Table tbl = new Table(reportLayout.getColumnLabels().length);
         tbl.setWidth(100.0f);
         tbl.setBorder(Table.BOTTOM);
 
         document.add(Chunk.NEWLINE);
         document.add(Chunk.NEWLINE);
 
-        addHeader("Student", "70%", tbl);
-        addHeader("<Data Label>", "30%", tbl);
+        
+        for(String labelToken: reportLayout.getColumnLabels()) {
+            String p[] = labelToken.split(":");
+            String label = p[0];
+            int width = Integer.parseInt(p[1]);
+            addHeader(label, width + "%", tbl);
+        }
 
         tbl.endHeaders();
 
         document.add(Chunk.NEWLINE);
         
-        int i = 0;
-        for (HighlightReportData d : models) {
-            addCell(d.getName(), tbl, ++i);
-            addCell(d.getData(), tbl, i);
+        
+        int rowNum = 1;
+        for (String[] row : reportLayout.getColumnValues()) {
+            for(String labelData: row) {
+                addCell(labelData, tbl,rowNum );
+            }
+            ++rowNum;
+            
+            document.add(Chunk.NEWLINE);            
         }
-/*        
-        for (HighlightReportData sm : models) {
-            addReportDataLine(document, sm);
-        }
-*/
         document.add(tbl);
         document.add(Chunk.NEWLINE);
 
