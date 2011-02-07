@@ -394,7 +394,8 @@ class HighlightImplMostFailuresLatestQuiz extends HighlightImplBase {
     }
     @Override
     protected HighlightReportLayout getReportLayout() {
-        HighlightReportLayout rl = super.getReportLayout();
+        String cols[] = {"Name:75", "Failures:25"};
+        HighlightReportLayout rl = new HighlightReportLayout(cols, panel.getReportValues());
         rl.setTitle(title);
         return rl;
     }    
