@@ -6,7 +6,6 @@ import hotmath.gwt.cm_tools.client.model.AccountInfoModel;
 import hotmath.gwt.cm_tools.client.model.StudentModelI;
 import hotmath.gwt.shared.client.rpc.CmWebResource;
 import hotmath.gwt.shared.client.rpc.action.GetStudentGridPageAction.FilterType;
-import hotmath.gwt.shared.client.rpc.action.HighlightReportData;
 import hotmath.gwt.shared.client.rpc.action.HighlightReportLayout;
 
 import java.awt.Color;
@@ -24,11 +23,7 @@ import com.lowagie.text.Document;
 import com.lowagie.text.Font;
 import com.lowagie.text.FontFactory;
 import com.lowagie.text.HeaderFooter;
-import com.lowagie.text.Paragraph;
-import com.lowagie.text.Phrase;
 import com.lowagie.text.Table;
-import com.lowagie.text.pdf.PdfPCell;
-import com.lowagie.text.pdf.PdfPTable;
 import com.lowagie.text.pdf.PdfWriter;
 
 public class HighlightsReport {
@@ -66,53 +61,6 @@ public class HighlightsReport {
         }	    
 	}
 
-	
-	 @SuppressWarnings("unchecked")
-	    public ByteArrayOutputStream makePdf2(final Connection conn, Integer adminId) throws Exception {
-	        ByteArrayOutputStream baos = null;
-	        String filterDescription;
-	        filterDescription = ReportUtils.getFilterDescription(conn, adminId, new CmAdminDao(), filterMap);
-
-	        Document document = new Document();
-	        baos = new ByteArrayOutputStream();
-	        PdfWriter.getInstance(document, baos);
-
-	        AccountInfoModel info = new CmAdminDao().getAccountInfo(conn,adminId);
-	        
-	        HeaderFooter header = ReportUtils.getGroupReportHeader(info, 2, filterDescription);
-	        HeaderFooter footer = ReportUtils.getFooter();
-	        
-	        document.setHeader(header);
-	        document.setFooter(footer);
-
-	        document.open();
-
-	        Table tbl = new Table(reportLayout.getColumnLabels().length);
-	        tbl.setWidth(100.0f);
-	        tbl.setBorder(Table.BOTTOM);
-
-	        document.add(Chunk.NEWLINE);
-	        document.add(Chunk.NEWLINE);
-
-	        addHeader("Student", "70%", tbl);
-	        addHeader("<Data Label>", "30%", tbl);
-
-	        tbl.endHeaders();
-
-	        document.add(Chunk.NEWLINE);
-	        
-	        int i = 0;
-	        addCell("TEST NAME", tbl, ++i);
-	        addCell("TEST DATA", tbl, i);
-
-	        document.add(tbl);
-	        document.add(Chunk.NEWLINE);
-
-	        document.close();
-	        return baos;
-	    }
-	 
-    @SuppressWarnings("unchecked")
     public ByteArrayOutputStream makePdf(final Connection conn, Integer adminId) throws Exception {
         ByteArrayOutputStream baos = null;
         String filterDescription;
@@ -124,7 +72,7 @@ public class HighlightsReport {
 
         AccountInfoModel info = new CmAdminDao().getAccountInfo(conn,adminId);
         
-        HeaderFooter header = ReportUtils.getGroupReportHeader(info, reportLayout.getColumnValues().length, filterDescription);
+        HeaderFooter header = ReportUtils.getGroupReportHeader(info, reportLayout.getCountLabel(), reportLayout.getColumnValues().length, filterDescription);
         HeaderFooter footer = ReportUtils.getFooter();
 
         document.setHeader(header);
@@ -139,7 +87,6 @@ public class HighlightsReport {
         document.add(Chunk.NEWLINE);
         document.add(Chunk.NEWLINE);
 
-        
         for(String labelToken: reportLayout.getColumnLabels()) {
             String p[] = labelToken.split(":");
             String label = p[0];
@@ -150,12 +97,11 @@ public class HighlightsReport {
         tbl.endHeaders();
 
         document.add(Chunk.NEWLINE);
-        
-        
+
         int rowNum = 1;
         for (String[] row : reportLayout.getColumnValues()) {
             for(String labelData: row) {
-                addCell(labelData, tbl,rowNum );
+                addCell(labelData, tbl, rowNum );
             }
             ++rowNum;
             
@@ -166,59 +112,6 @@ public class HighlightsReport {
 
         document.close();
         return baos;
-    }
-    
-    private void addReportDataLine(Document doc, HighlightReportData data) throws Exception {
-            PdfPTable lessonTbl = new PdfPTable(1);
-            lessonTbl.getDefaultCell().setBorder(PdfPCell.NO_BORDER);
-            
-            Phrase phrase = new Phrase(new Chunk(data.getName(), FontFactory.getFont(FontFactory.HELVETICA, 9, Font.BOLD, new Color(0, 0, 0))));
-            Phrase content = new Phrase(new Chunk(data.getData(), FontFactory.getFont(FontFactory.HELVETICA, 9, Font.NORMAL, new Color(0, 0, 0))));            
-            
-            lessonTbl.addCell(phrase);
-            lessonTbl.addCell(content);
-            lessonTbl.setWidthPercentage(100.0f);
-            lessonTbl.setSpacingBefore(20.0f);
-            doc.add(lessonTbl);
-            doc.add(Chunk.NEWLINE);
-    }
-    
-    private Paragraph buildSectionContent(String label, String value, Boolean useDefault) {
-        if (value == null || value.trim().length() == 0) {
-            value = (useDefault) ? "n/a" : " ";
-        }
-        Phrase phrase = new Phrase(new Chunk(label, FontFactory.getFont(FontFactory.HELVETICA, 9, Font.BOLD, new Color(
-                0, 0, 0))));
-        Phrase content = new Phrase(new Chunk(value, FontFactory.getFont(FontFactory.HELVETICA, 9, Font.NORMAL,
-                new Color(0, 0, 0))));
-        phrase.add(content);
-        Paragraph p = new Paragraph();
-        p.add(phrase);
-        p.setIndentationLeft(30.0f);
-        return p;
-    }    
-
-    private Phrase buildSectionLabel(String label) {
-        Chunk chunk = new Chunk(label, FontFactory.getFont(FontFactory.HELVETICA, 11, Font.BOLD, new Color(0, 0, 0)));
-        chunk.setUnderline(0.5f, -3f);
-        Phrase phrase = new Phrase(chunk);
-        return phrase;
-    }
-
-    public void setFilterMap(Map<FilterType,String> filterMap) {
-    	this.filterMap = filterMap;
-    }
-
-    private void setReportName(AccountInfoModel info) {
-        StringBuilder sb = new StringBuilder();
-        sb.append("CM-SummaryReport");
-        if (info.getSchoolName() != null)
-        	sb.append("-").append(info.getSchoolName().replaceAll("/| ", ""));
-        reportName = sb.toString();
-    }
-
-    public String getReportName() {
-    	return reportName;
     }
 
     private void addHeader(String label, String percentWidth, Table tbl) throws Exception {
@@ -244,21 +137,6 @@ public class HighlightsReport {
         if (rowNum % 2 < 1)
             cell.setGrayFill(0.9f);
         tbl.addCell(cell);
-    }
-
-    static public void setBaseData(StudentModelI smBase, StudentModelI smExt) {
-        smExt.setName(smBase.getName());
-        smExt.setPasscode(smBase.getPasscode());
-        smExt.getSettings().setShowWorkRequired(smBase.getSettings().getShowWorkRequired());
-        smExt.getSettings().setTutoringAvailable(smBase.getSettings().getTutoringAvailable());
-        smExt.setGroupId(smBase.getGroupId());
-        smExt.setGroup(smBase.getGroup());
-        smExt.setSectionNum(smBase.getSectionNum());
-        smExt.setChapter(smBase.getChapter());
-        smExt.setSectionNum(smBase.getSectionNum());
-        smExt.setPassPercent(smBase.getPassPercent());
-        smExt.setProgram(smBase.getProgram());
-        smExt.setStatus(smBase.getStatus());
     }
 
 }
