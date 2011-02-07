@@ -327,9 +327,11 @@ public class CmPilotCreate {
 
             // create a new Subscriber record based on this email
             String idToUse = HotMathSubscriber.createUniqueIDByStategy(new IdCreateStategyImpHmPilot(schoolPrefix));
-
+            
+            String ccEmailText = (ccEmails != null && ccEmails.trim().length() > 0) ? ccEmails.trim() : "NONE";
+            
             String comments = String.format("%s Catchup Math online pilot request CM_pilot_HM (approx student count: %d) %s cc_emails: %s %s",
-            		_dateFormat.format(new Date()), studentCount, NEW_LINE, (ccEmails != null && ccEmails.trim().length() > 0) ? ccEmails.trim() : "NONE", NEW_LINE);
+            		_dateFormat.format(new Date()), studentCount, NEW_LINE, ccEmailText, NEW_LINE);
 
             HotMathSubscriber sub = HotMathSubscriberManager.createBasicAccount(idToUse, school, "ST", email, comments,new Date());
             sub.setResponsibleName(name);
@@ -366,10 +368,13 @@ public class CmPilotCreate {
 	            /** send tracking email to admin people
 	             * 
 	             */
-	            String txt = "A request for a Catchup Math Pilot was created by:\n" + "Subscriber ID: " + idToUse
-	                    + "\n" + "\nTitle: " + title + "\nName: " + name + "\nSchool: " + school + "\nZip: " + zip
-	                    + "\nEmail: " + email + "\nPhone: " + phone +  "\nPhone When: "
-	                    + phoneWhen + "\nStudent count: " + studentCount + "\nComments: " + userComments + "\nsalesZone: " + salesPerson.getLabel();
+	            String txt = "A request for a Catchup Math Pilot was created by:"
+	                    + "\nSubscriber ID: " + idToUse
+	                    + "\nTitle: " + title + "\nName: " + name + "\nSchool: " + school + "\nZip: " + zip
+	                    + "\nEmail: " + email + "\nPhone: " + phone +  "\nPhone When: " + phoneWhen 
+	                    + "\nStudent count: " + studentCount + "\nComments: " + userComments
+	                    + "\nCC emails: " + ccEmailText
+	                    + "\nsalesZone: " + salesPerson.getLabel();
 	            try {
 	                
 	                /** send to sales rep and chuck */
