@@ -1,5 +1,6 @@
 package hotmath.gwt.cm_admin.client.ui;
 
+import hotmath.gwt.shared.client.rpc.action.HighlightReportData;
 import hotmath.gwt.shared.client.rpc.action.HighlightsGetReportAction;
 
 import java.util.List;
@@ -14,6 +15,10 @@ public class HighlightImplHighestAverageQuizScoresDetailsPanel extends Highlight
     @Override
     public HighlightsGetReportAction.ReportType getReportType() {
         return HighlightsGetReportAction.ReportType.AVERAGE_QUIZ_SCORES;
+    }
+    
+    protected HighlightReportModel createTableModel(HighlightReportData data) {
+        return new HighlightReportModel(data.getUid(), data.getName(), data.getData(),data.getQuizzesTaken());
     }
     
     @Override

@@ -230,6 +230,9 @@ public class CmHighlightsDao {
         return list;
     }
     
+    
+    
+    
     public CmList<HighlightReportData> getReportAvgQuizScores(final Connection conn, List<String> uids, Date from, Date to) throws Exception {
         
         /** Make sure to not include Auto Enroll (15)
@@ -283,6 +286,8 @@ public class CmHighlightsDao {
         }
         return list;
     } 
+
+    
     
     public CmList<HighlightReportData> getReportFailedQuizzes(final Connection conn, List<String> uids, Date from, Date to) throws Exception {
         

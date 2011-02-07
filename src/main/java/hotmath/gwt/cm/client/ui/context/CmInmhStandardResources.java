@@ -96,6 +96,11 @@ public class CmInmhStandardResources extends ArrayList<PrescriptionSessionDataRe
         si.getItemData().add(
                 new InmhItemData(t, "/learning_activities/interactivities/flashcard_convert_fractodeci.swf",
                         "Converting Fractions to Decimals"));
+        si.getItemData().add(
+                new InmhItemData(t, "/learning_activities/interactivities/flashcard_reciprocals.swf",
+                        "Reciprocals"));
+
+        
 
         subMenu.add(si);
 
@@ -173,6 +178,10 @@ public class CmInmhStandardResources extends ArrayList<PrescriptionSessionDataRe
         si.getItemData().add(
                 new InmhItemData(t, "/learning_activities/interactivities/flashcard_exponents_level2.swf",
                         "Exponents: Level 2"));
+        si.getItemData().add(
+                new InmhItemData(t, "/learning_activities/interactivities/flashcard_props_exponents.swf",
+                        "Properties of Exponents"));
+        
         subMenu.add(si);
         
         
@@ -181,6 +190,9 @@ public class CmInmhStandardResources extends ArrayList<PrescriptionSessionDataRe
         si.getItemData().add(new InmhItemData(t, "/learning_activities/interactivities/plot_coordplane.swf","Plotting Coordinates"));
         si.getItemData().add(new InmhItemData(t, "/learning_activities/interactivities/slope.swf","Slope"));
         si.getItemData().add(new InmhItemData(t, "/learning_activities/interactivities/distance_formula.swf","Distance Formula"));
+        si.getItemData().add(new InmhItemData(t, "/learning_activities/interactivities/catchthefly_cm.swf ","Finding Coordinates"));
+        si.getItemData().add(new InmhItemData(t, "/learning_activities/interactivities/slope_intercept_form.swf","Slope-Intercept Form"));        
+        
         subMenu.add(si);
 
         si = new SubMenuItem(null);

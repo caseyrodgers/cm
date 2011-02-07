@@ -69,21 +69,36 @@ abstract public class HighlightImplDetailsPanelBase extends LayoutContainer {
     
     public String[][] getReportValues() {
         
-        ListStore<HighlightReportModel> reportStore = _grid.getStore();
-        
-        List<String[]> rows = new ArrayList<String[]>();
-        for(int r=0, t=reportStore.getCount();r<t;r++) {
-            HighlightReportModel rowM = reportStore.getAt(r);
+        try {
+            ListStore<HighlightReportModel> reportStore = _grid.getStore();
             
-            List<String> row = new ArrayList<String>();
-            for(int c=0, ct=_grid.getColumnModel().getColumnCount();c<ct;c++) {
-                ColumnConfig config = _grid.getColumnModel().getColumn(c);
-                row.add( rowM.get(config.getDataIndex()).toString());
+            List<String[]> rows = new ArrayList<String[]>();
+            for(int r=0, t=reportStore.getCount();r<t;r++) {
+                HighlightReportModel rowM = reportStore.getAt(r);
+                
+                List<String> row = new ArrayList<String>();
+                for(int c=0, ct=_grid.getColumnModel().getColumnCount();c<ct;c++) {
+                    ColumnConfig config = _grid.getColumnModel().getColumn(c);
+                    try {
+                        Object data = rowM.get(config.getDataIndex());
+                        if(data == null) {
+                            data = 0;
+                        }
+                        row.add( data.toString());
+                    }
+                    catch(Exception ee) {
+                        ee.printStackTrace();
+                    }
+                }
+                
+                rows.add(row.toArray(new String[row.size()]));
             }
-            
-            rows.add(row.toArray(new String[row.size()]));
+            return rows.toArray(new String[rows.size()][]);
         }
-        return rows.toArray(new String[rows.size()][]);
+        catch(Exception e) {
+            e.printStackTrace();
+        }
+        return null;
     }
     
     
@@ -137,7 +152,9 @@ abstract public class HighlightImplDetailsPanelBase extends LayoutContainer {
             store.add(reportList);
             add(_grid);
             
-            _grid.setToolTip(getGridToolTip());
+            String tip = getGridToolTip();
+            if(tip != null)
+                _grid.setToolTip(tip);
             _grid.addListener(Events.CellDoubleClick, new Listener<BaseEvent>(){
                 public void handleEvent(BaseEvent be) {
                     showSelectStudentDetail();
