@@ -78,11 +78,7 @@ public class MathMlEntityConverter {
         StringBuffer encoded = new StringBuffer();
         for (int i = 0; i < chars.length; i++) {
             char c = chars[i];
-            if (c == '<')
-                encoded.append("&lt;");
-            else if (c == '>')
-                encoded.append("&gt;");
-            else if (c < 128)
+            if (c < 128)
                 encoded.append(c);
             else if (c < 256)
                 encoded.append(htmlEntities[c-128]);

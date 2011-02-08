@@ -52,9 +52,14 @@ public class AddMathMlResourceCommand implements ActionHandler<AddMathMlResource
             resourceFile = resourceFile.substring(0, resourceFile.indexOf("."));
         }
         
+        /** convert entities to portable equivalents
+         * 
+         */
+        String mathMl = MathMlEntityConverter.charToHtml(action.getMathMl());
         
-        writeImage(resourceFile, action.getMathMl());        
-        writeMathmlDefinition(resourceFile, action.getMathMl());
+        
+        writeImage(resourceFile, mathMl);        
+        writeMathmlDefinition(resourceFile, mathMl);
 
         return new RpcData("status=OK");
     }
