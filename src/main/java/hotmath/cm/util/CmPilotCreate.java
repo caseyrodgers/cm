@@ -328,10 +328,18 @@ public class CmPilotCreate {
             // create a new Subscriber record based on this email
             String idToUse = HotMathSubscriber.createUniqueIDByStategy(new IdCreateStategyImpHmPilot(schoolPrefix));
             
-            String ccEmailText = (ccEmails != null && ccEmails.trim().length() > 0) ? ccEmails.trim() : "NONE";
-            
-            String comments = String.format("%s Catchup Math online pilot request CM_pilot_HM (approx student count: %d) %s cc_emails: %s %s",
-            		_dateFormat.format(new Date()), studentCount, NEW_LINE, ccEmailText, NEW_LINE);
+            String ccEmailText;
+            String comments;
+            if (ccEmails != null && ccEmails.trim().length() > 0) {
+                ccEmailText = ccEmails.trim();
+                comments = String.format("%s Catchup Math online pilot request CM_pilot_HM (approx student count: %d) %s cc_emails=%s %s",
+                		_dateFormat.format(new Date()), studentCount, NEW_LINE, ccEmailText, NEW_LINE);
+            }
+            else {
+            	ccEmailText = "NONE";
+                comments = String.format("%s Catchup Math online pilot request CM_pilot_HM (approx student count: %d) %s",
+                		_dateFormat.format(new Date()), studentCount, NEW_LINE);
+            }
 
             HotMathSubscriber sub = HotMathSubscriberManager.createBasicAccount(idToUse, school, "ST", email, comments,new Date());
             sub.setResponsibleName(name);
