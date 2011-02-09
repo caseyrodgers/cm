@@ -332,7 +332,7 @@ public class CmPilotCreate {
             String comments;
             if (ccEmails != null && ccEmails.trim().length() > 0) {
                 ccEmailText = ccEmails.trim();
-                comments = String.format("%s Catchup Math online pilot request CM_pilot_HM (approx student count: %d) %s cc_emails=%s %s",
+                comments = String.format("%s Catchup Math online pilot request CM_pilot_HM (approx student count: %d) %scc_emails=%s %s",
                 		_dateFormat.format(new Date()), studentCount, NEW_LINE, ccEmailText, NEW_LINE);
             }
             else {
