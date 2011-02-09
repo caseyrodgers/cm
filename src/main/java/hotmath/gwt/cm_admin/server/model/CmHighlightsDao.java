@@ -177,6 +177,7 @@ public class CmHighlightsDao {
     
     public CmList<HighlightReportData> getReportQuizzesPassed(final Connection conn, List<String> uids, Date from, Date to) throws Exception {
         
+        /** not auto-test or custom-program */
         String sql = 
             "select u.uid, " +
             " u.user_name, " +
@@ -201,10 +202,11 @@ public class CmHighlightsDao {
             " on r.test_id = t.test_id " +
             " where  u.uid in (" + createInList(uids) + ") " +
             " and r.is_passing = 1 " +
-            " and c.test_def_id <> 15 " +
+            " and c.test_def_id not in (15, 36) " +
             " and r.run_time between ? and ? " +
             " group  by u.uid " +
             " order  by quizzes_passed desc, u.user_name"; 
+        
         
         CmList<HighlightReportData> list=new CmArrayList<HighlightReportData>();
         
@@ -236,6 +238,7 @@ public class CmHighlightsDao {
     public CmList<HighlightReportData> getReportAvgQuizScores(final Connection conn, List<String> uids, Date from, Date to) throws Exception {
         
         /** Make sure to not include Auto Enroll (15)
+         *  or custom program (36)
          * 
          */
         String sql = 
@@ -258,7 +261,7 @@ public class CmHighlightsDao {
             " join HA_TEST_RUN r " +
             " on r.test_id = t.test_id " +
             " where  u.uid in ( " + createInList(uids) + " ) " +
-            " and c.test_def_id <> 15 " +
+            " and c.test_def_id not in (15,36) " +
             " and r.run_time between ? and ? " +
             " group by u.uid " +
             " order by avg_quiz_score desc, u.user_name";
@@ -291,6 +294,7 @@ public class CmHighlightsDao {
     
     public CmList<HighlightReportData> getReportFailedQuizzes(final Connection conn, List<String> uids, Date from, Date to) throws Exception {
         
+        /** not auto-test or custom-program */
         String sql = 
             "select  u.uid,  u.user_name, count(*) as failed_quizzes " +
             "FROM v_HA_USER_ACTIVE u " +
@@ -301,7 +305,7 @@ public class CmHighlightsDao {
             " on r.test_id = t.test_id " +
             " where  u.uid in ( " + createInList(uids) + " ) " +
             " and r.is_passing = 0 " +
-            " and c.test_def_id <> 15 " +
+            " and c.test_def_id not in(15,36) " +
             " and r.run_time between ? and ? " +
             " group by u.uid " +
             " order by failed_quizzes desc";

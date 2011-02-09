@@ -425,7 +425,7 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
         
         toolbar.add(highlightsButton());
         
-        toolbar.add(new Button("Custom Programs", new SelectionListener<ButtonEvent>() {
+        toolbar.add(new StudenPanelButton("Custom Programs", new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent ce) {
                 GWT.runAsync(new CmRunAsyncCallback() {
@@ -438,7 +438,7 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
         }));
 
         // if (CmShared.getQueryParameter("debug") != null) {
-        toolbar.add(new Button("Program Details", new SelectionListener<ButtonEvent>() {
+        toolbar.add(new StudenPanelButton("Program Details", new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent ce) {
                 GWT.runAsync(new CmRunAsyncCallback() {
@@ -1215,9 +1215,13 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
  */
 class StudenPanelButton extends Button {
     public StudenPanelButton(String name) {
-        super(name);
-        addStyleName("student-grid-panel-button");
-        setWidth(115);
+        this(name, null);
+    }
+    
+    public StudenPanelButton(String name, SelectionListener<ButtonEvent> listener) {
+        super(name, listener);
+        // addStyleName("student-grid-panel-button");
+        // setWidth(115);        
     }
 }
 
