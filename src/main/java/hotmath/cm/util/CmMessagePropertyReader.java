@@ -3,15 +3,7 @@ package hotmath.cm.util;
 import hotmath.flusher.Flushable;
 import hotmath.flusher.HotmathFlusher;
 
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.util.Map;
-import java.util.Properties;
-
 import org.apache.log4j.Logger;
-
-import sb.util.SbUtilities;
 
 /**
  * Provides a means of reading in mulit-line property files without having to
@@ -47,9 +39,11 @@ public class CmMessagePropertyReader extends AbstractCmMultiLinePropertyReader {
 
 	static private CmMessagePropertyReader __instance;
 
-    static public CmMessagePropertyReader getInstance() {
-        if (__instance == null)
-            __instance = new CmMessagePropertyReader("cm-messages.mprops");
+    static public CmMessagePropertyReader getInstance() throws Exception {
+        if (__instance == null) {
+            String mprops = CatchupMathProperties.getInstance().getCatchupRuntime() + "/cm-messages.mprops";
+            __instance = new CmMessagePropertyReader(mprops);
+        }
 
         return __instance;
     }
