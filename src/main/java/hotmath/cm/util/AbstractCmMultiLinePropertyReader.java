@@ -1,8 +1,7 @@
 package hotmath.cm.util;
 
 import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.FileReader;
 import java.util.Map;
 import java.util.Properties;
 
@@ -10,37 +9,36 @@ import org.apache.log4j.Logger;
 
 import sb.util.SbUtilities;
 
-/**
- * Extracted from CmMultiLinePropertyReader
- * 
- * Provides a means of reading in mulit-line property files without having to
- * provide line continuation escapes.
- * 
- * Each entry is marked as follows:
- * 
- * .key=THE_KEY_NAME
- * 
- * ## comment lines
- * 
- * ANY TEXT WITH MULTI LINES MORE TXT dfdf ...
- * 
- * 
- * .key=ANOTHER_KEY
- * 
- * The other text until EOF or new .key
- * 
- * EOF
- * 
- * You can cause a re-read of the propertes by flushing the server via
- * loading resources/util/cm_system_flush.jsp.
- * 
- */
+/* Extracted from CmMultiLinePropertyReader
+* 
+* Provides a means of reading in mulit-line property files without having to
+* provide line continuation escapes.
+* 
+* Each entry is marked as follows:
+* 
+* .key=THE_KEY_NAME
+* 
+* ## comment lines
+* 
+* ANY TEXT WITH MULTI LINES MORE TXT dfdf ...
+* 
+* 
+* .key=ANOTHER_KEY
+* 
+* The other text until EOF or new .key
+* 
+* EOF
+* 
+* You can cause a re-read of the propertes by flushing the server via
+* loading resources/util/cm_system_flush.jsp.
+* 
+*/
 
 public abstract class AbstractCmMultiLinePropertyReader extends Properties {
-	
-	private static final long serialVersionUID = 6706889922304528657L;
+    
+    private static final long serialVersionUID = 6706889922304528657L;
 
-	abstract protected Logger getLogger();
+    abstract protected Logger getLogger();
 
     protected void loadProps(String propFile) {
 
@@ -49,8 +47,8 @@ public abstract class AbstractCmMultiLinePropertyReader extends Properties {
              * Read in the multi-line property file
              * 
              */
-            InputStream is = getClass().getResourceAsStream(propFile);
-            BufferedReader br = new BufferedReader(new InputStreamReader(is));
+            FileReader fileReader = new FileReader(propFile);
+            BufferedReader br = new BufferedReader(fileReader);
             String line = null;
 
             String value = "";

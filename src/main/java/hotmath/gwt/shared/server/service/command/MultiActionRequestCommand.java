@@ -18,6 +18,7 @@ import java.sql.Connection;
  */
 public class MultiActionRequestCommand implements ActionHandler<MultiActionRequestAction, CmList<Response>> {
 
+    @SuppressWarnings({ "rawtypes", "unchecked" })
     @Override
     public CmList<Response> execute(Connection conn, MultiActionRequestAction action) throws Exception {
         CmList<Response> responses = new CmArrayList<Response>();

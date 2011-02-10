@@ -85,7 +85,7 @@ public class CmStudentDao {
      * 
      * @return
      */
-    private String getStudentSql(StudentSqlType sqlType, Boolean includeSelfRegistrationTemplates) {
+    private String getStudentSql(StudentSqlType sqlType, Boolean includeSelfRegistrationTemplates) throws Exception {
         String studentSql = CmMultiLinePropertyReader.getInstance().getProperty("STUDENT_SUMMARY");
 
         switch (sqlType) {
@@ -121,7 +121,7 @@ public class CmStudentDao {
      * 
      * @return
      */
-    private String getStudentSummarySql(StudentSqlType sqlType, Boolean includeSelfRegistrationTemplates) {
+    private String getStudentSummarySql(StudentSqlType sqlType, Boolean includeSelfRegistrationTemplates) throws Exception {
         String studentSql = CmMultiLinePropertyReader.getInstance().getProperty("STUDENT_SUMMARY_BASE");
 
         if (sqlType.equals(StudentSqlType.ALL_STUDENTS_FOR_ADMIN)) {

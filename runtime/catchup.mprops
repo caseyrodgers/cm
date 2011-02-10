@@ -1716,6 +1716,8 @@ group  by u.group_id
 order by active_count desc
 
 
+
+
 .key=GET_HIGHLIGHT_REPORT_GROUP_USAGE
 
 

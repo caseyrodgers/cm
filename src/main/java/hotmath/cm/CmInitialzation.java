@@ -49,6 +49,14 @@ public class CmInitialzation extends HttpServlet {
             PropertyConfigurator.configure(prefix + file);
             logger.info("Catchup Math Log4J intialized");
         }
+
+        try {
+            CatchupMathProperties.getInstance().setProperty("servlet.context", getServletContext().getRealPath("."));
+        }
+        catch(Exception e) {
+            logger.error("Could not set catchup.home", e);
+        }
+        
         CmWebResourceManager.setFileBase(getServletContext().getRealPath("cm_temp"));
         try {
             logger.info("Catchup Math initialized: version=" + CatchupMathProperties.getInstance().getClientVersionNumber());

@@ -43,9 +43,11 @@ public class CmMultiLinePropertyReader extends AbstractCmMultiLinePropertyReader
 
 	static private CmMultiLinePropertyReader __instance;
 
-    static public CmMultiLinePropertyReader getInstance() {
-        if (__instance == null)
-            __instance = new CmMultiLinePropertyReader("catchup.mprops");
+    static public CmMultiLinePropertyReader getInstance() throws Exception {
+        if (__instance == null) {
+            String mprops = CatchupMathProperties.getInstance().getCatchupRuntime() + "/catchup.mprops";   
+            __instance = new CmMultiLinePropertyReader(mprops);
+        }
 
         return __instance;
     }
