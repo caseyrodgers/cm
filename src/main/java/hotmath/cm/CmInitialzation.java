@@ -31,16 +31,20 @@ public class CmInitialzation extends HttpServlet {
     private static Logger logger = Logger.getLogger(CmInitialzation.class);
     
     private static String PID = "n/a";
+    
+    private String pidFilename;
 
     public void init() {
         
-        
-        SbLogger.addLogListener(new SbLoggerListenerImplVerbose(){
-            @Override
-            public void handleMessageEvent(SbLoggerEvent event) {
-                logger.info(event.getType() + " - " + event.getMessage() + " - " + event.getThrowable());
-            }
-        });
+        if (getInitParameter("sblogger-init") != null) {
+            SbLogger.addLogListener(new SbLoggerListenerImplVerbose(){
+                @Override
+                public void handleMessageEvent(SbLoggerEvent event) {
+                    logger.info(event.getType() + " - " + event.getMessage() + " - " + event.getThrowable());
+                }
+            });
+            logger.info("set up SbLogger log listener");
+        }
         
         String prefix = getServletContext().getRealPath("/");
         String file = getInitParameter("log4j-init-file");
@@ -48,6 +52,15 @@ public class CmInitialzation extends HttpServlet {
         if (file != null) {
             PropertyConfigurator.configure(prefix + file);
             logger.info("Catchup Math Log4J intialized");
+        }
+        
+        pidFilename = getInitParameter("pid-file");
+        if (pidFilename == null) {
+        	logger.error("pid-file init param not specified in web.xml");
+        	pidFilename = "cm.pid";
+        }
+        else {
+        	logger.info("pid-file: " + pidFilename);
         }
 
         try {
@@ -63,7 +76,7 @@ public class CmInitialzation extends HttpServlet {
             savePid();
         }
         catch(Exception e) {
-            logger.info("Error starting Catchup Math", e);
+            logger.error("Error starting Catchup Math", e);
         }
     }
 
@@ -71,7 +84,7 @@ public class CmInitialzation extends HttpServlet {
      * This method is Unix/Linux specific 
      */
     private void savePid() {
-        File pidFile = new File(System.getProperty("user.home"), "cm.pid");
+        File pidFile = new File(System.getProperty("user.home"), pidFilename);
         logger.info("Writing PID file: " + pidFile.getAbsolutePath());
 
         String [] cmd = { "bash", "-c", "echo $PPID" };
