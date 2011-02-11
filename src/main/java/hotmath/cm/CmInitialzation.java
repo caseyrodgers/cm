@@ -67,7 +67,7 @@ public class CmInitialzation extends HttpServlet {
             CatchupMathProperties.getInstance().setProperty("servlet.context", getServletContext().getRealPath("."));
         }
         catch(Exception e) {
-            logger.error("Could not set catchup.home", e);
+            logger.error("Could not set servlet.context", e);
         }
         
         CmWebResourceManager.setFileBase(getServletContext().getRealPath("cm_temp"));
