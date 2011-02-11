@@ -1,6 +1,5 @@
 package hotmath.gwt.cm_tools.client.ui.resource_viewer;
 
-import hotmath.gwt.cm.client.ui.context.QuizCmGuiDefinition;
 import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_rpc.client.rpc.InmhItemData;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
@@ -8,7 +7,7 @@ import hotmath.gwt.cm_tools.client.ui.resource_viewer.CmResourcePanelContainer.R
 import hotmath.gwt.cm_tools.client.ui.viewer.CmResourcePanelImplWithWhiteboard;
 import hotmath.gwt.cm_tools.client.ui.viewer.ResourceViewerFactory;
 import hotmath.gwt.cm_tools.client.ui.viewer.ResourceViewerImplActivity;
-import hotmath.gwt.cm_tools.client.ui.viewer.ResourceViewerImplQuiz;
+import hotmath.gwt.cm_tools.client.ui.viewer.ResourceViewerImplVideo;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
 import hotmath.gwt.shared.client.eventbus.EventBus;
 import hotmath.gwt.shared.client.eventbus.EventType;
@@ -123,7 +122,9 @@ public class CmMainResourceContainer extends LayoutContainer {
         
         layout();
         
-        if(viewer instanceof ResourceViewerImplActivity || viewer instanceof CmResourcePanelImplWithWhiteboard) {
+        if(viewer instanceof ResourceViewerImplActivity 
+                || viewer instanceof CmResourcePanelImplWithWhiteboard
+                || viewer instanceof ResourceViewerImplVideo) {
         	/** 
         	 * do not slide in activity to avoid bugs:
         	 * - double load of flash objecs
