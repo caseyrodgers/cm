@@ -76,7 +76,7 @@ public class ResourceViewerImplVideo extends ResourceViewerImplFlash {
 				 * in cache it only plays once.
 				 */
 				swfWidget = new SWFWidget(
-						"/cm_student/flowplayer-3.1.5.swf?id=" + id, "100%",
+						"/gwt-resources/flowplayer/flowplayer-3.2.5/flowplayer-3.2.5.swf?id=" + id, "100%",
 						"100%", s);
 
 				// cm: $a12fd4b15a588479e9e
