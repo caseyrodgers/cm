@@ -9,7 +9,7 @@ import hotmath.subscriber.HotMathSubscriber;
 import hotmath.subscriber.HotMathSubscriberManager;
 import hotmath.subscriber.PurchasePlan;
 import hotmath.subscriber.SalesZone;
-import hotmath.subscriber.SalesZone.Person;
+import hotmath.subscriber.SalesZone.Representative;
 import hotmath.subscriber.id.IdCreateStategyImpHmPilot;
 import hotmath.subscriber.service.HotMathSubscriberServiceFactory;
 import hotmath.testset.ha.CmProgram;
@@ -302,8 +302,6 @@ public class CmPilotCreate {
             String phone, String userComments, String phoneWhen, String schoolPrefix, boolean sendEmailConfirmation,int studentCount, CmPartner partner,String additionalEmails) throws Exception {
         
         
-        Person salesPerson = SalesZone.getSalesPerson(zip);
-        
         String ccEmails = null;
         if (additionalEmails != null) {
         	ccEmails = parseAdditionalEmails(additionalEmails);
@@ -312,6 +310,8 @@ public class CmPilotCreate {
         Connection conn = null;
         PreparedStatement ps = null;
         try {
+            
+            
             String sql = "insert into HA_ADMIN_PILOT_REQUEST(title,name,school,zip,email,phone,request_date,cc_emails)values(?,?,?,?,?,?,now(),?)";
             conn = HMConnectionPool.getConnection();
             ps = conn.prepareStatement(sql);
@@ -341,6 +341,9 @@ public class CmPilotCreate {
                 		_dateFormat.format(new Date()), studentCount, NEW_LINE);
             }
 
+            
+            Representative salesPerson = SalesZone.getSalesRepresentativeByZip(conn, zip);
+            
             HotMathSubscriber sub = HotMathSubscriberManager.createBasicAccount(idToUse, school, "ST", email, comments,new Date());
             sub.setResponsibleName(name);
             sub.setStatus("A");
@@ -349,7 +352,7 @@ public class CmPilotCreate {
             if(phone != null && phone.length() > 0)
                 zip += " / " + phone;
             sub.setZip(zip);
-            sub.setSalesZone(salesPerson.getLabel());
+            sub.setSalesZone(salesPerson.getRepId());
             sub.saveChanges();
             List<PurchasePlan> plans = new ArrayList<PurchasePlan>();
             plans.add(new PurchasePlan("TYPE_SERVICE_CATCHUP_PILOT"));
@@ -366,7 +369,7 @@ public class CmPilotCreate {
 	             * 
 	             */
 	            try {
-	                String emailTemplate = "CM Pilot " + salesPerson.getLabel();
+	                String emailTemplate = "CM Pilot " + salesPerson.getRepId();
 	                sub.sendEmailConfirmation(emailTemplate, ccEmails);
 	            }
 	            catch(Exception e) {
@@ -382,7 +385,7 @@ public class CmPilotCreate {
 	                    + "\nEmail: " + email + "\nPhone: " + phone +  "\nPhone When: " + phoneWhen 
 	                    + "\nStudent count: " + studentCount + "\nComments: " + userComments
 	                    + "\nCC emails: " + ccEmailText
-	                    + "\nsalesZone: " + salesPerson.getLabel();
+	                    + "\nsalesZone: " + salesPerson.getRepId();
 	            try {
 	                
 	                /** send to sales rep and chuck */
