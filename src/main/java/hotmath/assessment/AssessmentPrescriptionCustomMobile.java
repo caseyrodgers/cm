@@ -11,9 +11,11 @@ import java.util.List;
 public class AssessmentPrescriptionCustomMobile extends AssessmentPrescription {
 
     public AssessmentPrescriptionCustomMobile(final Connection conn,HaTestRun testRun,List<CustomLessonModel> lessonModels) throws Exception {
-        super();
+        super(conn);
         
         this.testRun = testRun;
+        readAssessment();
+        
         int custProgId = testRun.getHaTest().getProgramInfo().getCustomProgramId();
         
         int sessNum = 0;

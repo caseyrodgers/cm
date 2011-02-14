@@ -49,44 +49,17 @@ public class AssessmentPrescription {
 
 	InmhAssessment _assessment;
 
-	public InmhAssessment get_assessment() {
-		return _assessment;
-	}
-
-	public void set_assessment(InmhAssessment _assessment) {
-		this._assessment = _assessment;
-	}
 
 	List<AssessmentPrescriptionSession> _sessions = new ArrayList<AssessmentPrescriptionSession>();
 	int missed, totalPrescription;
 
 	HaTestRun testRun;
 
-	/**
-	 * Return the grade level of this current program
-	 * 
-	 * This will be determined by the textcode's subject's grade_level found in
-	 * textcode assigned to the test_def
-	 * 
-	 * @return
-	 */
-	public int getGradeLevel() {
-		if (testRun == null)
-			return 99;
-
-		return getTestRun().getHaTest().getTestDef().getGradeLevel();
-	}
-
-	public HaTestRun getTestRun() {
-		return testRun;
-	}
-
-	public void setTestRun(HaTestRun testRun) {
-		this.testRun = testRun;
-	}
-
-	public AssessmentPrescription() {
-	}
+	
+	protected AssessmentPrescription(final Connection conn) {
+	    this.conn = conn;
+	}	
+	
 
 	/**
 	 * Create an assessment prescription based on comma separated list of
@@ -112,15 +85,13 @@ public class AssessmentPrescription {
 	 * @param pids
 	 * @throws Exception
 	 */
-	public AssessmentPrescription(final Connection conn, HaTestRun testRun)
-			throws Exception {
-
+	public AssessmentPrescription(final Connection conn, HaTestRun testRun) throws Exception {
+	    this(conn);
 		logger.info("Creating prescription for run: " + testRun);
-
-		this.conn = conn;
 		this.testRun = testRun;
-		_assessment = new InmhAssessment(conn, testRun.getHaTest().getUser()
-				.getUid(), testRun.getPidList());
+		
+		readAssessment();
+		
 		missed = _assessment.getPids().length;
 
 		List<InmhItemData> itemsData = _assessment.getInmhItemUnion("review");
@@ -172,6 +143,44 @@ public class AssessmentPrescription {
 		new HaTestRunDao().addLessonsToTestRun(conn, testRun, _sessions);
 		logger.info("Finished creating prescription for run: " + testRun);
 	}
+	
+
+    /**
+     * Return the grade level of this current program
+     * 
+     * This will be determined by the textcode's subject's grade_level found in
+     * textcode assigned to the test_def
+     * 
+     * @return
+     */
+    public int getGradeLevel() {
+        if (testRun == null)
+            return 99;
+
+        return getTestRun().getHaTest().getTestDef().getGradeLevel();
+    }
+
+    public HaTestRun getTestRun() {
+        return testRun;
+    }
+
+    public void setTestRun(HaTestRun testRun) {
+        this.testRun = testRun;
+    }
+
+    
+    /** Read and set _assessment variable 
+     * 
+     * @throws CmException
+     */
+    protected void readAssessment() throws CmException  {
+        _assessment = new InmhAssessment(conn, testRun.getHaTest().getUser().getUid(), testRun.getPidList());       
+    }
+    
+    public InmhAssessment getAssessment() {
+        return _assessment;
+    }
+	
 
 	private void sortLessonsByRanking(final Connection conn, List<AssessmentPrescriptionSession> sessions) throws Exception {
 		final Map<String, Integer> sortMap = getLessonRankings(conn);

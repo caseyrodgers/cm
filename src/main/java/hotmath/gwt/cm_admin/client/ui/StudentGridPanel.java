@@ -1220,8 +1220,8 @@ class StudenPanelButton extends Button {
     
     public StudenPanelButton(String name, SelectionListener<ButtonEvent> listener) {
         super(name, listener);
-        // addStyleName("student-grid-panel-button");
-        // setWidth(115);        
+        addStyleName("student-grid-panel-button");
+        setWidth(115);        
     }
 }
 

@@ -11,7 +11,7 @@
     try {
         conn = HMConnectionPool.getConnection();
         assPres = AssessmentPrescriptionManager.getInstance().getPrescription(conn, runId);
-        inmhAssessment = assPres.get_assessment();
+        inmhAssessment = assPres.getAssessment();
     }
     finally {
         SqlUtilities.releaseResources(null,null,conn);

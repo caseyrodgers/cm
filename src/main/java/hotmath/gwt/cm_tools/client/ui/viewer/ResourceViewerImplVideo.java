@@ -48,7 +48,7 @@ public class ResourceViewerImplVideo extends ResourceViewerImplFlash {
 
 			SWFWidget swfWidget = null;
 			
-			boolean isYouTube = item.getFile().indexOf("youtube") > -1;
+			boolean isYouTube = item.getFile().indexOf("http://youtube") > -1;
 			if (isYouTube) {
 
 				String file = item.getFile();
@@ -61,12 +61,21 @@ public class ResourceViewerImplVideo extends ResourceViewerImplFlash {
 				String prefix = null;
 				if (isANumber(item.getFile()))
 					prefix = "/help/flvs/tw/";
+				else if(item.getFile().startsWith("/")) {
+				    /** is absolute .. leave as is
+				     * 
+				     */
+				    prefix = "";
+				}
 				else {
 					prefix = "/help/flvs/mathtv/";
 				}
-
 				
-				String videoPath = prefix + item.getFile() + ".flv";
+				String fileName = item.getFile();
+				if(!fileName.endsWith(".flv")) {
+				    fileName += ".flv";
+				}
+				String videoPath = prefix + fileName;
 
 				SWFSettings s = new SWFSettings();
 				s.setMinPlayerVersion(new PlayerVersion(9));

@@ -16,10 +16,15 @@ import sb.logger.SbLogger;
 public class AssessmentPrescriptionCustom extends AssessmentPrescription {
     int _customProgramSubjectLevel;
     public AssessmentPrescriptionCustom(final Connection conn,HaTestRun testRun) throws Exception {
-        super();
+        super(conn);
         
         this.testRun = testRun;
+        
+        readAssessment();
+        
         int custProgId = testRun.getHaTest().getProgramInfo().getCustomProgramId();
+        
+        readAssessment();        
         
         CmList<CustomLessonModel> progLessons = new CmCustomProgramDao().getCustomProgramDefinition(conn, custProgId);
         int sessNum = 0;
