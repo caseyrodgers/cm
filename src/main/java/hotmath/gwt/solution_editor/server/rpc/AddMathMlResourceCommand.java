@@ -7,6 +7,7 @@ import hotmath.gwt.cm_rpc.client.rpc.Response;
 import hotmath.gwt.cm_rpc.client.rpc.RpcData;
 import hotmath.gwt.cm_rpc.server.rpc.ActionHandler;
 import hotmath.gwt.solution_editor.client.rpc.AddMathMlResourceAction;
+import hotmath.lib.MathMlEntityConverter;
 
 import java.io.File;
 import java.io.StringReader;
@@ -56,7 +57,6 @@ public class AddMathMlResourceCommand implements ActionHandler<AddMathMlResource
          * 
          */
         String mathMl = MathMlEntityConverter.charToHtml(action.getMathMl());
-        
         
         writeImage(resourceFile, mathMl);        
         writeMathmlDefinition(resourceFile, mathMl);

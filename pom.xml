@@ -385,6 +385,13 @@
       <version>2.4</version>
     </dependency>
 
+
+    <dependency>
+      <groupId>hotmath</groupId>
+      <artifactId>cm_lib</artifactId>
+      <version>1.0-SNAPSHOT</version>
+    </dependency>
+
   </dependencies>
 
   <build>
