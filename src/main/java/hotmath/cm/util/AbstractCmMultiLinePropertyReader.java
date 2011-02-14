@@ -68,11 +68,10 @@ public abstract class AbstractCmMultiLinePropertyReader extends Properties {
                         if(containsKey(name)) {
                             getLogger().warn("property already exists: " + name);
                         }
-                        
                         put(name, value);
                         value = "";
                     }
-                    name = line.substring(5);
+                    name = line.substring(5).trim();
                 } else {
                     value += (line + "\n");
                 }

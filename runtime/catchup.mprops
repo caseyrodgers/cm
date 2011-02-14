@@ -486,7 +486,7 @@ JOIN       CM_GROUP g
 WHERE      h.aid = ? and g.name = ?
 ORDER BY   user_name
 
-    		
+            
 .key=STUDENTS_NOT_IN_GROUP
 
 SELECT     g.id as group_id, u.uid, u.user_name, g.name as group_name
@@ -1822,3 +1822,181 @@ where  u.admin_id = $$AID$$
 group  by u.group_id
 
 order by active_count desc 
+
+
+
+.key=HIGHLIGHT_REPORT_GREATEST_EFFORT
+
+
+select u.uid,
+       u.user_name,
+       count(*) as lessons_viewed
+from   HA_USER u
+       join HA_TEST t
+         on t.user_id = u.uid
+       join HA_TEST_RUN r
+         on r.test_id = t.test_id
+       join HA_TEST_RUN_LESSON l
+         on l.run_id = r.run_id
+where  u.uid in ( $$UID_LIST$$ )
+       and l.lesson_viewed between ? and ?
+group  by u.uid
+order  by lessons_viewed desc,
+          u.user_name 
+          
+          
+          
+.key=HIGHLIGHT_REPORT_LEAST_EFFORT
+
+select u.uid,
+       u.user_name,
+       count(*) as lessons_viewed
+from   v_HA_USER_ACTIVE u
+       join HA_TEST t
+         on t.user_id = u.uid
+       join HA_TEST_RUN r
+         on r.test_id = t.test_id
+       join HA_TEST_RUN_LESSON l
+         on l.run_id = r.run_id
+where  u.uid in ( $$UID_LIST$$ )
+       and l.lesson_viewed between ? and ?
+group  by u.uid
+order  by lessons_viewed,
+          u.user_name 
+          
+          
+          
+       
+.key=HIGHLIGHT_REPORT_MOST_GAMES_VIEWED   
+
+select u.uid,
+       u.user_name,
+       qv.quizzes_taken,
+       count(*) as games_viewed
+from   v_HA_USER_ACTIVE u
+       join (select user_id,
+                    count(*) as quizzes_taken
+             from   HA_TEST t
+                    join HA_TEST_RUN r
+                      on r.test_id = t.test_id
+             where  date(r.run_time) between ? and ?
+             group  by user_id) qv
+         on qv.user_id = u.uid
+       join HA_TEST t
+         on t.user_id = u.uid
+       join HA_TEST_RUN r
+         on r.test_id = t.test_id
+       join HA_TEST_RUN_INMH_USE i
+         on i.run_id = r.run_id
+where  u.uid in ( $$UID_LIST$$ )
+       and i.item_type = 'activity_standard'
+       and i.view_time between ? and ?
+group  by u.uid
+order  by games_viewed desc,
+          u.user_name           
+          
+          
+          
+          
+.key=HIGHLIGHT_REPORT_QUIZZES_PASSED          
+          
+select u.uid,
+       u.user_name,
+       qv.quizzes_taken,
+       count(*) as quizzes_passed
+from   v_HA_USER_ACTIVE u
+       join (select user_id,
+                    count(*) as quizzes_taken
+             from   HA_TEST t
+                    join HA_TEST_RUN r
+                      on r.test_id = t.test_id
+             where  date(r.run_time) between ? and ?
+             group  by user_id) qv
+         on qv.user_id = u.uid
+       join HA_TEST t
+         on t.user_id = u.uid
+       join CM_USER_PROGRAM c
+         on c.id = t.user_prog_id
+       join HA_TEST_RUN r
+         on r.test_id = t.test_id
+where  u.uid in ( $$UID_LIST$$)
+       and r.is_passing = 1
+       and c.test_def_id not in ( 15, 36 )
+       and date(r.run_time) between ? and ?
+group  by u.uid
+order  by quizzes_passed desc,
+          u.user_name 
+          
+
+
+.key=HIGHLIGHT_REPORT_AVG_QUIZ_SCORES         
+          
+select u.uid,
+       u.user_name,
+       qv.quizzes_taken,
+       Floor(avg(( answered_correct / ( answered_correct + answered_incorrect +
+                                        not_answered
+                                            ) )
+                       * 100)) as avg_quiz_score
+from   v_HA_USER_ACTIVE u
+       join (select user_id,
+                    count(*) as quizzes_taken
+             from   HA_TEST t
+                    join HA_TEST_RUN r
+                      on r.test_id = t.test_id
+             where  date(r.run_time) between ? and ?
+             group  by user_id) qv
+         on qv.user_id = u.uid
+       join HA_TEST t
+         on t.user_id = u.uid
+       join CM_USER_PROGRAM c
+         on c.id = t.user_prog_id
+       join HA_TEST_RUN r
+         on r.test_id = t.test_id
+where  u.uid in ( $$UID_LIST$$ )
+       and c.test_def_id not in ( 15, 36 )
+       and date(r.run_time) between ? and ?
+group  by u.uid
+order  by avg_quiz_score desc,
+          u.user_name 
+          
+          
+   
+.key=HIGHLIGHT_REPORT_FAILED_CURRENT_QUIZ          
+
+select u.uid,
+       u.user_name,
+       count(r.run_id) as failed_quizzes
+from   v_HA_USER_ACTIVE u
+       join HA_TEST t
+         on t.user_id = u.uid
+       join CM_USER_PROGRAM c1
+         on c1.id = t.user_prog_id
+       join (select user_id,
+                    max(id)
+             from   CM_USER_PROGRAM
+             group  by user_id) c2
+         on c2.user_id = u.uid
+       join HA_TEST_RUN r
+         on r.test_id = t.test_id
+where  t.user_id in( $$UID_LIST$$ )
+       and t.test_segment = u.active_segment
+       and r.is_passing = 0
+       and date(r.run_time) between ? and ?
+group  by u.uid
+order  by failed_quizzes desc,
+          user_name 
+          
+
+.key=HIGHLIGHT_REPORT_ZERO_LOGIN          
+          
+select u.uid,
+       u.user_name
+from   v_HA_USER_ACTIVE u
+where  u.uid in( $$UID_LIST$$ )
+       and not exists (select 'x'
+                       from   HA_USER_LOGIN l
+                       where  user_id = u.uid
+                              and date(l.login_time) between ? and ?)
+order  by u.user_name 
+          

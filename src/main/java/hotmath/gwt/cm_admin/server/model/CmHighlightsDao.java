@@ -42,16 +42,9 @@ public class CmHighlightsDao {
      */
     public CmList<HighlightReportData> getReportGreatestEffort(final Connection conn, List<String> uids, Date from, Date to) throws Exception {
         
-        String sql = 
-            " select u.uid, u.user_name,count(*) as lessons_viewed " +
-            "from HA_USER u " +
-            "JOIN HA_TEST t on t.user_id = u.uid " +
-            "JOIN HA_TEST_RUN r on r.test_id = t.test_id " +
-            "JOIN HA_TEST_RUN_LESSON l on l.run_id = r.run_id " +
-            "where u.uid in ( " + createInList(uids) + " ) " +
-            " AND date(l.lesson_viewed) between ? and ? " +
-            "group by u.uid " +
-            "order by lessons_viewed desc, u.user_name";
+        
+        String sql = CmMultiLinePropertyReader.getInstance().getProperty("HIGHLIGHT_REPORT_GREATEST_EFFORT",createInListMap(createInList(uids)) );
+            
         
         CmList<HighlightReportData> list=new CmArrayList<HighlightReportData>();
         
@@ -89,17 +82,8 @@ public class CmHighlightsDao {
      * @throws Exception
      */
     public CmList<HighlightReportData> getReportLeastEffort(final Connection conn, List<String> uids, Date from, Date to) throws Exception {
-        
-        String sql = 
-            " select u.uid, u.user_name, count(*) as lessons_viewed " +
-            "from v_HA_USER_ACTIVE u " +
-            "JOIN HA_TEST t on t.user_id = u.uid " +
-            "JOIN HA_TEST_RUN r on r.test_id = t.test_id " +
-            "JOIN HA_TEST_RUN_LESSON l on l.run_id = r.run_id " +
-            "where u.uid in ( " + createInList(uids) + " ) " +
-            "AND date(l.lesson_viewed) between ? and ? " +
-            "group by u.uid " +
-            "order by lessons_viewed, u.user_name";
+        String sql = CmMultiLinePropertyReader.getInstance().getProperty("HIGHLIGHT_REPORT_LEAST_EFFORT",createInListMap(createInList(uids)) );
+
         
         CmList<HighlightReportData> list=new CmArrayList<HighlightReportData>();
         
@@ -124,33 +108,7 @@ public class CmHighlightsDao {
     
     public CmList<HighlightReportData> getReportMostGames(final Connection conn, List<String> uids, Date from, Date to) throws Exception {
         
-        String sql = 
-            "select u.uid, " +
-            "u.user_name, " +
-            "qv.quizzes_taken," +
-            "count(*) as games_viewed " +
-            " from   v_HA_USER_ACTIVE u " +
-
-            " join ( " +
-            "        select user_id, count(*) as quizzes_taken " +
-            "        from   HA_TEST t " +
-            "           JOIN HA_TEST_RUN r on r.test_id = t.test_id " +
-            "        where date(r.run_time) between ? and ? " + 
-            "        GROUP BY user_id " +
-            "      ) qv on qv.user_id = u.uid " +
-            
-            
-            " join HA_TEST t " +
-            " on t.user_id = u.uid " +
-            " join HA_TEST_RUN r " + 
-            " on r.test_id = t.test_id " +
-            " join HA_TEST_RUN_INMH_USE i " +
-            " on i.run_id = r.run_id " +
-            " where  u.uid in (" + createInList(uids) + ") " +
-            " and i.item_type = 'activity_standard' " +
-            " and date(i.view_time) between ? and ? " +
-            " group  by u.uid " +
-            " order  by games_viewed desc, u.user_name"; 
+        String sql = CmMultiLinePropertyReader.getInstance().getProperty("HIGHLIGHT_REPORT_MOST_GAMES_VIEWED",createInListMap(createInList(uids)) );
         
         CmList<HighlightReportData> list=new CmArrayList<HighlightReportData>();
         
@@ -177,35 +135,7 @@ public class CmHighlightsDao {
     
     public CmList<HighlightReportData> getReportQuizzesPassed(final Connection conn, List<String> uids, Date from, Date to) throws Exception {
         
-        /** not auto-test or custom-program */
-        String sql = 
-            "select u.uid, " +
-            " u.user_name, " +
-            " qv.quizzes_taken, " +
-            "count(*) as quizzes_passed " +
-            " from   v_HA_USER_ACTIVE u " +
-            
-            
-            " join ( " +
-            "        select user_id, count(*) as quizzes_taken " +
-            "        from   HA_TEST t " +
-            "           JOIN HA_TEST_RUN r on r.test_id = t.test_id " +
-            "        where date(r.run_time) between ? and ? " + 
-            "        GROUP BY user_id " +
-            "      ) qv on qv.user_id = u.uid " +
-            
-
-            " join HA_TEST t " +
-            " on t.user_id = u.uid " +
-            " join CM_USER_PROGRAM c on c.id = t.user_prog_id " +
-            " join HA_TEST_RUN r " +
-            " on r.test_id = t.test_id " +
-            " where  u.uid in (" + createInList(uids) + ") " +
-            " and r.is_passing = 1 " +
-            " and c.test_def_id not in (15, 36) " +
-            " and date(r.run_time) between ? and ? " +
-            " group  by u.uid " +
-            " order  by quizzes_passed desc, u.user_name"; 
+        String sql = CmMultiLinePropertyReader.getInstance().getProperty("HIGHLIGHT_REPORT_QUIZZES_PASSED",createInListMap(createInList(uids)) );
         
         
         CmList<HighlightReportData> list=new CmArrayList<HighlightReportData>();
@@ -241,30 +171,7 @@ public class CmHighlightsDao {
          *  or custom program (36)
          * 
          */
-        String sql = 
-            "select u.uid, u.user_name,qv.quizzes_taken, " +
-            "floor(avg((answered_correct / (answered_correct + answered_incorrect + not_answered)) * 100)) as avg_quiz_score " +
-            " from   v_HA_USER_ACTIVE u " +
-            
-            " join ( " +
-            "        select user_id, count(*) as quizzes_taken " +
-            "        from   HA_TEST t " +
-            "           JOIN HA_TEST_RUN r on r.test_id = t.test_id " +
-            "        where date(r.run_time) between ? and ? " + 
-            "        GROUP BY user_id " +
-            "      ) qv on qv.user_id = u.uid " +
-            
-            " join HA_TEST t " +
-            " on t.user_id = u.uid "+
-            " join CM_USER_PROGRAM c " +
-            " on c.id = t.user_prog_id " +
-            " join HA_TEST_RUN r " +
-            " on r.test_id = t.test_id " +
-            " where  u.uid in ( " + createInList(uids) + " ) " +
-            " and c.test_def_id not in (15,36) " +
-            " and date(r.run_time) between ? and ? " +
-            " group by u.uid " +
-            " order by avg_quiz_score desc, u.user_name";
+        String sql = CmMultiLinePropertyReader.getInstance().getProperty("HIGHLIGHT_REPORT_AVG_QUIZ_SCORES",createInListMap(createInList(uids)) );
 
         
         CmList<HighlightReportData> list=new CmArrayList<HighlightReportData>();
@@ -353,22 +260,7 @@ public class CmHighlightsDao {
 
     public CmList<HighlightReportData> getReportFailedCurrentQuizzes(final Connection conn, List<String> uids, Date from, Date to) throws Exception {
         
-        String sql = "select  u.uid, u.user_name, count(r.run_id) as failed_quizzes " +
-        "from v_HA_USER_ACTIVE u " +
-        "   JOIN HA_TEST t on t.user_id = u.uid " +
-        "  JOIN  CM_USER_PROGRAM c1  " +
-        "       on c1.id = t.user_prog_id " +
-        "   JOIN (select user_id, max(id) from CM_USER_PROGRAM group by user_id) c2  " +
-        "       on c2.user_id = u.uid      " +
-        "   JOIN HA_TEST_RUN r  " +
-        "       on r.test_id = t.test_id " +
-        "where t.user_id in(" + createInList(uids) + " ) " +
-        "and t.test_segment = u.active_segment " +
-        "and r.is_passing = 0 " +
-        " and date(r.run_time) between ? and ? " +
-        "group by u.uid " +
-        "order by failed_quizzes desc, user_name";
-        
+        String sql = CmMultiLinePropertyReader.getInstance().getProperty("HIGHLIGHT_REPORT_FAILED_CURRENT_QUIZ",createInListMap(createInList(uids)) );        
         CmList<HighlightReportData> list=new CmArrayList<HighlightReportData>();
         
         PreparedStatement ps=null;
@@ -429,17 +321,8 @@ public class CmHighlightsDao {
      */
     public CmList<HighlightReportData>  getReportZeroLogins(final Connection conn, List<String> uids, Date from, Date to) throws Exception {
         
-        String sql =
-            
-            "select u.uid, u.user_name " +
-            " FROM v_HA_USER_ACTIVE u " +
-            " where  u.uid in(" + createInList(uids) + " ) " +
-            " and not exists ( select 'x' " +
-            "                  from HA_USER_LOGIN l " +
-            "                  where user_id = u.uid " +
-            "                  and date(l.login_time) between ? and ? " +
-            "                  ) " +
-            " order by u.user_name";
+        
+        String sql = CmMultiLinePropertyReader.getInstance().getProperty("HIGHLIGHT_REPORT_ZERO_LOGIN",createInListMap(createInList(uids)) );
             
         CmList<HighlightReportData> list=new CmArrayList<HighlightReportData>();
         
@@ -591,6 +474,12 @@ public class CmHighlightsDao {
         return list;
     }    
             
+    
+    private Map<String,String> createInListMap(String list) {
+        Map<String,String> map = new HashMap<String, String>();
+        map.put("UID_LIST", list);
+        return map;
+    }
     
     private String createInList(List<String> uids) {
         String inList = "";
