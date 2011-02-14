@@ -417,7 +417,7 @@ public class CmPilotCreate {
     		for (String cce : emails) {
     			if (cce.trim().length() > 0) {
     				if (! first) sb.append(",");
-    				sb.append(cce);
+    				sb.append(cce.trim());
     				first = false;
     			}
     		}
