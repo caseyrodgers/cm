@@ -87,7 +87,7 @@ public class ReportUtils {
         Phrase school = buildPhraseLabel("School: ", nz(info.getSchoolName()));
         Phrase admin = buildPhraseLabel("Administrator: ", nz(info.getSchoolUserName()));
         Phrase expires = buildPhraseLabel("Expires: ", nz(info.getExpirationDate()));
-        Phrase stuCount = buildPhraseLabel(countLabel, String.valueOf(count));
+        Phrase stuCount = buildPhraseLabel((countLabel != null)?countLabel:"Student Count: ", String.valueOf(count));
         
         heading.add(school);
         // Chunk c = new Chunk(new Jpeg(new
