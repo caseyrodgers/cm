@@ -316,8 +316,7 @@ class HighlightImplMostGamesPlayed extends HighlightImplBase {
     @Override
     protected HighlightReportLayout getReportLayout() {
         String cols[] = {"Name:50", "Games Played:25", "Quizzes Taken:25"};
-        HighlightReportLayout rl = new HighlightReportLayout(cols,panel.getReportValues());
-        rl.setTitle(title);
+        HighlightReportLayout rl = new HighlightReportLayout(title, "Student Count: ", cols,panel.getReportValues());
         return rl;
     }    
 }
@@ -336,8 +335,7 @@ class HighlightImplMostQuizzesPassed extends HighlightImplBase {
     @Override
     protected HighlightReportLayout getReportLayout() {
         String cols[] = {"Name:75", "Quizzes Passed:25"};
-        HighlightReportLayout rl = new HighlightReportLayout(cols, panel.getReportValues());
-        rl.setTitle(title);
+        HighlightReportLayout rl = new HighlightReportLayout(title, "Student Count: ", cols, panel.getReportValues());
         return rl;
     }    
 }
@@ -355,8 +353,7 @@ class HighlightImplHighestAverageQuizScores extends HighlightImplBase {
     @Override
     protected HighlightReportLayout getReportLayout() {
         String cols[] = {"Name:50", "Average:20", "Quizzes Taken:20"};
-        HighlightReportLayout rl = new HighlightReportLayout(cols, panel.getReportValues());
-        rl.setTitle(title);
+        HighlightReportLayout rl = new HighlightReportLayout(title, "Student Count: ", cols, panel.getReportValues());
         return rl;
     }    
 }
@@ -373,8 +370,7 @@ class HighlightImplMostQuizzesFailed extends HighlightImplBase {
     @Override
     protected HighlightReportLayout getReportLayout() {
         String cols[] = {"Name:75", "Failures:25"};
-        HighlightReportLayout rl = new HighlightReportLayout(cols, panel.getReportValues());
-        rl.setTitle(title);
+        HighlightReportLayout rl = new HighlightReportLayout(title, "Student Count: ", cols, panel.getReportValues());
         return rl;
     }    
 }
@@ -395,8 +391,7 @@ class HighlightImplMostFailuresLatestQuiz extends HighlightImplBase {
     @Override
     protected HighlightReportLayout getReportLayout() {
         String cols[] = {"Name:75", "Failures:25"};
-        HighlightReportLayout rl = new HighlightReportLayout(cols, panel.getReportValues());
-        rl.setTitle(title);
+        HighlightReportLayout rl = new HighlightReportLayout(title, "Student Count: ", cols, panel.getReportValues());
         return rl;
     }    
 }
