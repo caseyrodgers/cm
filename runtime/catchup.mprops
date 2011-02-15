@@ -1653,7 +1653,7 @@ from   v_HA_USER_ACTIVE u
                       join HA_USER u2
                         on u2.uid = l.user_id
                where    u2.admin_id = $$AID$$
-               and   date(l.login_time) between '$$DATE_FROM$$' and '$$DATE_TO$$'     
+               and   l.login_time between '$$DATE_FROM$$' and '$$DATE_TO$$'     
                group  by u2.group_id
                
           ) lc on lc.group_id = u.group_id
@@ -1671,7 +1671,7 @@ from   v_HA_USER_ACTIVE u
                        select 'x'
                        from   HA_USER_LOGIN
                        where  user_id = u3.uid
-                       and   date(login_time) between '$$DATE_FROM$$' and '$$DATE_TO$$'                            
+                       and   login_time between '$$DATE_FROM$$' and '$$DATE_TO$$'                            
                 )
                 and    u3.admin_id = $$AID$$
                 group by group_id
@@ -1689,7 +1689,7 @@ from   v_HA_USER_ACTIVE u
                    JOIN HA_TEST_RUN r on r.test_id = t.test_id
                    JOIN HA_TEST_RUN_LESSON l on l.run_id = r.run_id
               where u.admin_id = $$AID$$
-              and  date(l.lesson_viewed) between '$$DATE_FROM$$' and '$$DATE_TO$$'
+              and  l.lesson_viewed between '$$DATE_FROM$$' and '$$DATE_TO$$'
               group by group_id
               
           ) lv on lv.group_id = u.group_id
@@ -1706,7 +1706,7 @@ from   v_HA_USER_ACTIVE u
                   JOIN HA_TEST_RUN r on r.test_id = t.test_id
               where r.is_passing = 1
               and u.admin_id = $$AID$$
-              and date(r.run_time) between '$$DATE_FROM$$' and '$$DATE_TO$$'
+              and r.run_time between '$$DATE_FROM$$' and '$$DATE_TO$$'
               group by group_id    
           ) qp on qp.group_id = u.group_id
           
@@ -1744,7 +1744,7 @@ from   v_HA_USER_ACTIVE u
                        select 'x'
                        from   HA_USER_LOGIN
                        where  user_id = u3.uid
-                       and   date(login_time) between '$$DATE_FROM$$' and '$$DATE_TO$$'                            
+                       and   login_time between '$$DATE_FROM$$' and '$$DATE_TO$$'                            
                 )
                 and    u3.admin_id = $$AID$$
                 group by group_id
@@ -1762,7 +1762,7 @@ from   v_HA_USER_ACTIVE u
                    JOIN HA_TEST_RUN_INMH_USE i on i.run_id = r.run_id
               where u.admin_id = $$AID$$
               and  i.item_type = 'video'
-              and  date(i.view_time) between '$$DATE_FROM$$' and '$$DATE_TO$$'
+              and  i.view_time between '$$DATE_FROM$$' and '$$DATE_TO$$'
               group by group_id
               
           ) vv on vv.group_id = u.group_id
@@ -1780,7 +1780,7 @@ from   v_HA_USER_ACTIVE u
                    JOIN HA_TEST_RUN_INMH_USE i on i.run_id = r.run_id
               where u.admin_id = $$AID$$
               and  i.item_type = 'activity_standard'
-              and  date(i.view_time) between '$$DATE_FROM$$' and '$$DATE_TO$$'
+              and  i.view_time between '$$DATE_FROM$$' and '$$DATE_TO$$'
               group by group_id 
               
           ) gv  on gv.group_id = u.group_id
@@ -1796,7 +1796,7 @@ from   v_HA_USER_ACTIVE u
                    JOIN HA_TEST_RUN_INMH_USE i on i.run_id = r.run_id
               where u.admin_id = $$AID$$
               and  i.item_type = 'activity'
-              and  date(i.view_time) between '$$DATE_FROM$$' and '$$DATE_TO$$'
+              and  i.view_time between '$$DATE_FROM$$' and '$$DATE_TO$$'
               group by group_id 
               
           ) av  on av.group_id = u.group_id
@@ -1813,7 +1813,7 @@ from   v_HA_USER_ACTIVE u
                    JOIN HA_TEST_RUN_INMH_USE i on i.run_id = r.run_id
               where u.admin_id = $$AID$$
               and  i.item_type in ('flashcard', 'flashcard_es')
-              and  date(i.view_time) between '$$DATE_FROM$$' and '$$DATE_TO$$'
+              and i.view_time between '$$DATE_FROM$$' and '$$DATE_TO$$'
               group by group_id 
               
           ) fc  on fc.group_id = u.group_id                              
@@ -1879,7 +1879,7 @@ from   v_HA_USER_ACTIVE u
              from   HA_TEST t
                     join HA_TEST_RUN r
                       on r.test_id = t.test_id
-             where  date(r.run_time) between ? and ?
+             where  r.run_time between ? and ?
              group  by user_id) qv
          on qv.user_id = u.uid
        join HA_TEST t
@@ -1910,7 +1910,7 @@ from   v_HA_USER_ACTIVE u
              from   HA_TEST t
                     join HA_TEST_RUN r
                       on r.test_id = t.test_id
-             where  date(r.run_time) between ? and ?
+             where  r.run_time between ? and ?
              group  by user_id) qv
          on qv.user_id = u.uid
        join HA_TEST t
@@ -1922,7 +1922,7 @@ from   v_HA_USER_ACTIVE u
 where  u.uid in ( $$UID_LIST$$)
        and r.is_passing = 1
        and c.test_def_id not in ( 15, 36 )
-       and date(r.run_time) between ? and ?
+       and r.run_time between ? and ?
 group  by u.uid
 order  by quizzes_passed desc,
           u.user_name 
@@ -1944,7 +1944,7 @@ from   v_HA_USER_ACTIVE u
              from   HA_TEST t
                     join HA_TEST_RUN r
                       on r.test_id = t.test_id
-             where  date(r.run_time) between ? and ?
+             where  r.run_time between ? and ?
              group  by user_id) qv
          on qv.user_id = u.uid
        join HA_TEST t
@@ -1955,7 +1955,7 @@ from   v_HA_USER_ACTIVE u
          on r.test_id = t.test_id
 where  u.uid in ( $$UID_LIST$$ )
        and c.test_def_id not in ( 15, 36 )
-       and date(r.run_time) between ? and ?
+       and r.run_time between ? and ?
 group  by u.uid
 order  by avg_quiz_score desc,
           u.user_name 
@@ -1982,7 +1982,7 @@ from   v_HA_USER_ACTIVE u
 where  t.user_id in( $$UID_LIST$$ )
        and t.test_segment = u.active_segment
        and r.is_passing = 0
-       and date(r.run_time) between ? and ?
+       and r.run_time between ? and ?
 group  by u.uid
 order  by failed_quizzes desc,
           user_name 
@@ -1997,6 +1997,6 @@ where  u.uid in( $$UID_LIST$$ )
        and not exists (select 'x'
                        from   HA_USER_LOGIN l
                        where  user_id = u.uid
-                              and date(l.login_time) between ? and ?)
+                              and l.login_time between ? and ?)
 order  by u.user_name 
           
