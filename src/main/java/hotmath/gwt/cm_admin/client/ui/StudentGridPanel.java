@@ -415,6 +415,7 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
 
     private ToolBar createToolbar() {
         ToolBar toolbar = new ToolBar();
+        toolbar.setSpacing(5);
         toolbar.addStyleName("student-grid-panel-toolbar");
         toolbar.add(createRefreshButton());
         toolbar.add(createRegistrationButton());
@@ -1221,7 +1222,7 @@ class StudenPanelButton extends Button {
     public StudenPanelButton(String name, SelectionListener<ButtonEvent> listener) {
         super(name, listener);
         addStyleName("student-grid-panel-button");
-        setWidth(115);        
+        // setWidth(115);        
     }
 }
 

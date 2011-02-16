@@ -10,11 +10,21 @@ public class LoadSolutionMetaCommand_Test extends CmDbTestCase {
         super(name);
     }
     
+    String pidThatExists = "cmextrasalg1_1_1_1_1_1";
+    
     public void testGet() throws Exception {
-        String pid = "cmextrasalg1_1_1_1_1_1";
-        LoadSolutionMetaAction action = new LoadSolutionMetaAction(pid);
+        LoadSolutionMetaAction action = new LoadSolutionMetaAction(pidThatExists);
         SolutionMeta solution = new LoadSolutionMetaCommand().execute(conn, action);
-        assertTrue(solution.getPid().equals(pid));
+        assertTrue(solution.getPid().equals(pidThatExists));
     }
+    
+    public void testGetMd5() throws Exception {
+     
+        LoadSolutionMetaAction action = new LoadSolutionMetaAction(pidThatExists);
+        SolutionMeta solution1 = new LoadSolutionMetaCommand().execute(conn, action);
+        
+        SolutionMeta solution2 = new LoadSolutionMetaCommand().execute(conn, action);
+        assertTrue(solution1.getMd5OnRead() != null && solution1.getMd5OnRead().equals(solution2.getMd5OnRead()));
+    }    
 
 }

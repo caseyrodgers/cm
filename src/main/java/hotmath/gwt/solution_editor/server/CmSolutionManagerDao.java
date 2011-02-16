@@ -19,6 +19,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
+import sb.util.MD5;
+
 
 
 public class CmSolutionManagerDao {
@@ -37,6 +39,12 @@ public class CmSolutionManagerDao {
             SqlUtilities.releaseResources(null,ps,null);
         }
     }
+
+    public String getSolutionMd5(final Connection conn, String pid) throws Exception {
+        String xml = getSolutionXml(conn, pid);
+        return MD5.getMD5(xml);
+    }
+    
     
     public void saveSolutionXml(final Connection conn, String pid, String xml) throws Exception {
         PreparedStatement ps=null;
@@ -161,8 +169,6 @@ public class CmSolutionManagerDao {
     
     
     public TutorSolution getTutorSolution(final Connection conn, String pid) throws Exception {
-        SolutionMeta meta = null;
-        
         PreparedStatement ps=null;
         try {
             String sql = "select solutionxml from SOLUTIONS where problemindex = ?";

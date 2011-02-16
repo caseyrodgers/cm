@@ -10,10 +10,14 @@ import java.util.List;
 public class SaveSolutionStepsAdminAction implements Action<RpcData>{
     String pid;
     String statement;
+    String md5OnRead;
+    boolean overrideDirty;
     List<StepUnitPair> steps;
     
     public SaveSolutionStepsAdminAction(){}
-    public SaveSolutionStepsAdminAction(String pid, String statement, List<StepUnitPair> steps) {
+    
+    public SaveSolutionStepsAdminAction(String md5OnRead, String pid, String statement, List<StepUnitPair> steps) {
+        this.md5OnRead = md5OnRead;
         this.statement=statement;
         this.pid = pid;
         this.steps = steps;
@@ -35,5 +39,19 @@ public class SaveSolutionStepsAdminAction implements Action<RpcData>{
     }
     public void setSteps(CmList<StepUnitPair> steps) {
         this.steps = steps;
+    }
+    public String getMd5OnRead() {
+        return md5OnRead;
+    }
+    public void setM5OnRead(String md5OnRead) {
+        this.md5OnRead = md5OnRead;
+    }
+
+    public boolean isOverrideDirty() {
+        return overrideDirty;
+    }
+
+    public void setForceWrite(boolean overrideDirty) {
+        this.overrideDirty = overrideDirty;
     }
 }

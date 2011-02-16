@@ -8,6 +8,7 @@ import hotmath.gwt.cm_core.client.CmEventListener;
 import hotmath.gwt.cm_core.client.EventBus;
 import hotmath.gwt.cm_core.client.EventTypes;
 import hotmath.gwt.cm_rpc.client.rpc.RpcData;
+import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
 import hotmath.gwt.solution_editor.client.WidgetListDialog.Callback;
 import hotmath.gwt.solution_editor.client.rpc.LoadSolutionMetaAction;
 import hotmath.gwt.solution_editor.client.rpc.SaveSolutionStepsAdminAction;
@@ -19,10 +20,13 @@ import java.util.List;
 
 import com.extjs.gxt.ui.client.Style.Scroll;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
+import com.extjs.gxt.ui.client.event.Listener;
+import com.extjs.gxt.ui.client.event.MessageBoxEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
+import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -203,7 +207,7 @@ public class SolutionStepEditor extends ContentPanel {
         _meta.setSteps(steps );
     }
     
-    public void saveStepChanges(final String asPid) {
+    public void saveStepChanges(String asPid) {
 
         List<StepUnitPair> stepPairs = new ArrayList<StepUnitPair>();
 
@@ -222,13 +226,18 @@ public class SolutionStepEditor extends ContentPanel {
             }
         }
         
-        SaveSolutionStepsAdminAction action = new SaveSolutionStepsAdminAction(asPid,statement,stepPairs);
+        final SaveSolutionStepsAdminAction action = new SaveSolutionStepsAdminAction(_meta.getMd5OnRead(), asPid,statement,stepPairs);
+        saveSolution(action, asPid);
+    }
+    
+    public void saveSolution(final SaveSolutionStepsAdminAction action, final String asPid) {
         SolutionEditor.__status.setBusy("Saving solution ...");
         SolutionEditor.getCmService().execute(action, new AsyncCallback<RpcData>() {
             public void onSuccess(RpcData solutionResponse) {
                 SolutionEditor.__status.clearStatus("");
                 EventBus.getInstance().fireEvent(new CmEvent(hotmath.gwt.solution_editor.client.EventTypes.SOLUTION_EDITOR_SAVED, solutionResponse));
                 
+                _meta.setMd5OnRead(solutionResponse.getDataAsString("md5"));
                 
                 if(!SolutionEditor.__pidToLoad.equals(asPid)) {
                     loadSolution(asPid);
@@ -239,7 +248,23 @@ public class SolutionStepEditor extends ContentPanel {
             public void onFailure(Throwable arg0) {
                 SolutionEditor.__status.clearStatus("");
                 arg0.printStackTrace();
-                Window.alert(arg0.getLocalizedMessage());
+                
+                if(arg0.getLocalizedMessage().contains("has been modified")) {
+                    
+                    MessageBox.confirm("Force Solution Change", "Solution has been changed since last read.  Do you want to overwrite?",new Listener<MessageBoxEvent>() {
+                        
+                        @Override
+                        public void handleEvent(MessageBoxEvent be) {
+                            if(!be.isCancelled()) {
+                                action.setForceWrite(true);
+                                saveSolution(action, asPid);
+                            }
+                        }
+                    });                    
+                }
+                else {
+                    Window.alert(arg0.getLocalizedMessage());
+                }
             }
         });        
     }

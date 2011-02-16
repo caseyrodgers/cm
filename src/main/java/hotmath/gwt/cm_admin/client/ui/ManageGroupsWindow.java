@@ -420,7 +420,7 @@ class GroupManagerGlobalSettings extends CmWindow {
         this.cm = cm;
         this.gim = gim;
         setHeading("Group Settings for '" + gim.getName() + "'" );
-        setSize(400,290);
+        setSize(370,350);
         drawGui();
         setModal(true);
         setResizable(false);
@@ -434,7 +434,6 @@ class GroupManagerGlobalSettings extends CmWindow {
         form.getHeader().setVisible(false);
         FieldSet fs = new FieldSet();
         FormLayout fl = new FormLayout();
-        fl.setLabelWidth(175);
         fs.setLayout(fl);
         fs.setHeading("Group Settings");
         showWorkRequired = new CheckBox();

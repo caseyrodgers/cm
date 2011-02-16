@@ -50,13 +50,19 @@ public class LoadSolutionMetaCommand implements ActionHandler<LoadSolutionMetaAc
         
         TutorSolution tutorSolution = new CmSolutionManagerDao().getTutorSolution(conn, action.getPid());
         SolutionMeta meta = new SolutionMeta(action.getPid());
+        
+        /** Save MD5, and if different on save the user must confirm overwrite
+         *  
+         */
+        meta.setMd5OnRead(new CmSolutionManagerDao().getSolutionMd5(conn, action.getPid()));
+        
         meta.setProblemStatement(postProcessHtml(solutionBase, tutorSolution.getProblem().getStatement()));
         List<TutorStepUnit> units = tutorSolution.getProblem().getStepUnits();
         for(int u=0,t=units.size();u<t;u++) {
 
             /** each step is a two units: the hint and step
              * 
-             * do sainity check!
+             * do sanity check!
              */
             if(!(units.get(u).getRole() == Role.HINT) ||
                !(units.get(u+1).getRole() == Role.STEP)) {

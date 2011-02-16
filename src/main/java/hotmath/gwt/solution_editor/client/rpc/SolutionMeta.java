@@ -9,6 +9,7 @@ public class SolutionMeta implements Response{
     String pid;
     int numSteps;
     String problemStatement;
+    String md5OnRead;
     
     List<SolutionMetaStep> steps = new ArrayList<SolutionMetaStep>();
     
@@ -48,5 +49,13 @@ public class SolutionMeta implements Response{
 
     public void setProblemStatement(String problemStatement) {
         this.problemStatement = problemStatement;
+    }
+
+    public String getMd5OnRead() {
+        return md5OnRead;
+    }
+
+    public void setMd5OnRead(String md5OnRead) {
+        this.md5OnRead = md5OnRead;
     }
 }
