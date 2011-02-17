@@ -46,8 +46,6 @@ public class ResourceViewerImplTutor extends CmResourcePanelImplWithWhiteboard {
         addStyleName(STYLE_NAME);
         setScrollMode(Scroll.AUTOY);
         
-        
-        
         /** If in debug mode, the provide double click on 
          * the tutor loads the solution editor for the current
          * solution.

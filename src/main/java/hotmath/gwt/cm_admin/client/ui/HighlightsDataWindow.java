@@ -14,7 +14,6 @@ import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.SelectionListener;
-import com.extjs.gxt.ui.client.widget.Html;
 import com.extjs.gxt.ui.client.widget.Label;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
@@ -66,6 +65,7 @@ public class HighlightsDataWindow extends CmWindow {
         
         _from = CatchupMathAdmin.getInstance().getAccountInfoPanel().getModel().getAccountCreateDate();
         _to = new Date();
+        addDaysToDate(_to, 1);
 
         _dateRangeButton = new Button("Set Date Range", new SelectionListener<ButtonEvent>() {
             @Override
@@ -128,6 +128,11 @@ public class HighlightsDataWindow extends CmWindow {
         return "Date range: " + _dateFormat.format(from) + " - " + _dateFormat.format(to);
     }
 
+    @SuppressWarnings("deprecation") // GWT requires Date
+    public static void addDaysToDate(Date date, int days) {
+      date.setDate(date.getDate() + days);
+    }
+    
     private void showDatePicker() {
         DateRangePickerDialog.showSharedInstance(_from, _to,new DateRangePickerDialog.Callback() {
             @Override

@@ -1,6 +1,11 @@
 package hotmath.gwt.cm_tools.client.ui.viewer;
 
+import hotmath.gwt.cm_rpc.client.rpc.InmhItemData;
+import hotmath.gwt.cm_tools.client.ui.CmLogger;
 import hotmath.gwt.shared.client.CmShared;
+import hotmath.gwt.shared.client.eventbus.CmEvent;
+import hotmath.gwt.shared.client.eventbus.EventBus;
+import hotmath.gwt.shared.client.eventbus.EventType;
 import pl.rmalinowski.gwt2swf.client.ui.SWFSettings;
 import pl.rmalinowski.gwt2swf.client.ui.SWFWidget;
 import pl.rmalinowski.gwt2swf.client.utils.PlayerVersion;
@@ -14,11 +19,16 @@ public class ResourceViewerImplActivity extends ResourceViewerImplFlash {
     public ResourceViewerImplActivity() {
         addStyleName("resource-viewer-impl-activity");
         setScrollMode(Scroll.AUTOY);
+        
+        __useRpaInfrastructure=false;
     }
 
     Widget panel = null;
+    static boolean __useRpaInfrastructure;
 
     public Widget getResourcePanel() {
+        __lastItemData = getResourceItem();
+
         if (panel == null) {
             if (!SWFObjectUtil.isVersionIsValid(new PlayerVersion(CmShared.FLASH_MIN_VERSION))) {
                 Html html = new Html(CmShared.FLASH_ALT_CONTENT);
@@ -38,25 +48,58 @@ public class ResourceViewerImplActivity extends ResourceViewerImplFlash {
         return panel;
     }
 
-//    static {
-//        EventBus.getInstance().addEventListener(new CmEventListenerImplDefault() {
-//            @Override
-//            public void handleEvent(CmEvent event) {
-//                switch (event.getEventType()) {
-//                case EVENT_TYPE_RESOURCE_VIEWER_OPEN:
-//                    if(event.getEventData() instanceof ResourceViewerImplActivity) {
-//                        PrescriptionCmGuiDefinition.__instance.disableGameResources();
-//                    }
-//                    break;
-//
-//                case EVENT_TYPE_TOPIC_CHANGED:
-//                    break;
-//                    
-//                default:
-//                    break;
-//                }
-//            }
-//        });
-//
-//    }
+    
+    static {
+        publishNativeRpaFlashInfrastructure();
+    }
+
+    
+    /** Store the last loaded __lastItemData 
+     *  ONLY when operating in a RPA configuration.
+     *  
+     *  If viewing as non-constrained (Flashcard)
+     *  the do not set and make sure null is returned
+     *  to Flash widget.
+     *  
+     */
+    static InmhItemData __lastItemData;
+    
+    /** Return activity configuration JSON to caller.
+     *  
+     */
+    static public String flash_Rpp_getCompletionRule() {
+        if(!__useRpaInfrastructure) {
+            return null;
+        }
+        else {
+            String json = __lastItemData.getWidgetJsonArgs();
+            // json = "{\"rule\":\"time\",\"limit\":\"5\"}";
+            CmLogger.info("flash_Rpp_getCompletionRule called, and returned with '" + json);        
+            return json;
+        }
+    }
+    
+    
+    /** Call when the completion rule has been satisified
+     * 
+     */
+    static public void flash_RppComplete() {
+        CmLogger.info("flash_RppComplete called");
+        if(!__lastItemData.isViewed()) {
+            __lastItemData.setViewed(true);
+            EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_REQUIRED_COMPLETE,__lastItemData));
+            __lastItemData.setViewed(true);
+        }
+    }
+    
+    /** Register two methods to handle the Flash RPA integration.
+     * 
+     *  First wnd.flash_Rpp_getCompletionRule is called to return JSON config.
+     *  Then wnd.flash_Rpp_getCompletionRule is called after rule has been completed. 
+     */
+    static private native void publishNativeRpaFlashInfrastructure() /*-{
+        $wnd.flash_RppComplete = @hotmath.gwt.cm_tools.client.ui.viewer.ResourceViewerImplRppFlashCard::flash_RppComplete();
+        $wnd.flash_Rpp_getCompletionRule  = @hotmath.gwt.cm_tools.client.ui.viewer.ResourceViewerImplRppFlashCard::flash_Rpp_getCompletionRule();
+     }-*/;
+    
 }
