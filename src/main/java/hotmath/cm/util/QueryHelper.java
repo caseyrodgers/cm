@@ -1,8 +1,8 @@
 package hotmath.cm.util;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
-
-import sb.util.SbUtilities;
 
 /*
  * @author bob
@@ -140,4 +140,28 @@ public class QueryHelper {
         return sql;
     }    
 
+    private static final SimpleDateFormat fmt = new SimpleDateFormat("yyyy-MM-dd");
+    
+    static public String getDateTime(Date date, boolean begin) {
+    	StringBuilder sb = new StringBuilder();
+    	
+    	sb.append(fmt.format(date));
+    	if (begin) {
+    		sb.append(" 00:00:00");
+    	}
+    	else {
+    		sb.append(" 11:59:59");    		
+    	}
+    	return sb.toString();
+    }
+    
+    static public String[] getDateTimeRange(Date beginDate, Date endDate) {
+    	String[] vals = new String[2];
+    	
+    	vals[0] = getDateTime(beginDate, true);
+    	
+    	vals[1] = getDateTime(endDate, false);
+    	
+    	return vals;
+    }
 }
