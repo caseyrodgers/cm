@@ -1,6 +1,7 @@
 package hotmath.gwt.cm_admin.server.model;
 
 import hotmath.cm.util.CmMultiLinePropertyReader;
+import hotmath.cm.util.QueryHelper;
 import hotmath.gwt.cm_admin.server.model.highlight.CmHighLightManager;
 import hotmath.gwt.cm_admin.server.model.highlight.CmHighLightManager.HighLightStat;
 import hotmath.gwt.cm_rpc.client.rpc.CmArrayList;
@@ -51,8 +52,9 @@ public class CmHighlightsDao {
         PreparedStatement ps=null;
         try {
             ps = conn.prepareStatement(sql);
-            ps.setDate(1, new java.sql.Date(from.getTime()));
-            ps.setDate(2, new java.sql.Date(to.getTime()));
+            String[] vals = QueryHelper.getDateTimeRange(from, to);
+            ps.setString(1, vals[0]);
+            ps.setString(2, vals[1]);
 
             __logger.info("report sql: " + ps);
             
@@ -90,8 +92,9 @@ public class CmHighlightsDao {
         PreparedStatement ps=null;
         try {
             ps = conn.prepareStatement(sql);
-            ps.setDate(1, new java.sql.Date(from.getTime()));
-            ps.setDate(2, new java.sql.Date(to.getTime()));
+            String[] vals = QueryHelper.getDateTimeRange(from, to);
+            ps.setString(1, vals[0]);
+            ps.setString(2, vals[1]);
             
             __logger.info("report sql: " + ps);
             
@@ -115,10 +118,11 @@ public class CmHighlightsDao {
         PreparedStatement ps=null;
         try {
             ps = conn.prepareStatement(sql);
-            ps.setDate(1, new java.sql.Date(from.getTime()));
-            ps.setDate(2, new java.sql.Date(to.getTime()));
-            ps.setDate(3, new java.sql.Date(from.getTime()));
-            ps.setDate(4, new java.sql.Date(to.getTime()));
+            String[] vals = QueryHelper.getDateTimeRange(from, to);
+            ps.setString(1, vals[0]);
+            ps.setString(2, vals[1]);
+            ps.setString(3, vals[0]);
+            ps.setString(4, vals[1]);
 
             __logger.info("report sql: " + ps);
             
@@ -143,10 +147,11 @@ public class CmHighlightsDao {
         PreparedStatement ps=null;
         try {
             ps = conn.prepareStatement(sql);
-            ps.setDate(1, new java.sql.Date(from.getTime()));
-            ps.setDate(2, new java.sql.Date(to.getTime()));
-            ps.setDate(3, new java.sql.Date(from.getTime()));
-            ps.setDate(4, new java.sql.Date(to.getTime()));
+            String[] vals = QueryHelper.getDateTimeRange(from, to);
+            ps.setString(1, vals[0]);
+            ps.setString(2, vals[1]);
+            ps.setString(3, vals[0]);
+            ps.setString(4, vals[1]);
             
             __logger.info("report sql: " + ps);
             
@@ -179,10 +184,11 @@ public class CmHighlightsDao {
         PreparedStatement ps=null;
         try {
             ps = conn.prepareStatement(sql);
-            ps.setDate(1, new java.sql.Date(from.getTime()));
-            ps.setDate(2, new java.sql.Date(to.getTime()));
-            ps.setDate(3, new java.sql.Date(from.getTime()));
-            ps.setDate(4, new java.sql.Date(to.getTime()));
+            String[] vals = QueryHelper.getDateTimeRange(from, to);
+            ps.setString(1, vals[0]);
+            ps.setString(2, vals[1]);
+            ps.setString(3, vals[0]);
+            ps.setString(4, vals[1]);
             
             __logger.info("report sql: " + ps);
             
@@ -222,8 +228,9 @@ public class CmHighlightsDao {
         PreparedStatement ps=null;
         try {
             ps = conn.prepareStatement(sql);
-            ps.setDate(1, new java.sql.Date(from.getTime()));
-            ps.setDate(2, new java.sql.Date(to.getTime()));
+            String[] vals = QueryHelper.getDateTimeRange(from, to);
+            ps.setString(1, vals[0]);
+            ps.setString(2, vals[1]);
 
             __logger.info("report sql: " + ps);
             
@@ -266,8 +273,9 @@ public class CmHighlightsDao {
         PreparedStatement ps=null;
         try {
             ps = conn.prepareStatement(sql);
-            ps.setDate(1, new java.sql.Date(from.getTime()));
-            ps.setDate(2, new java.sql.Date(to.getTime()));
+            String[] vals = QueryHelper.getDateTimeRange(from, to);
+            ps.setString(1, vals[0]);
+            ps.setString(2, vals[1]);
             
             __logger.info("report sql: " + ps);
             
@@ -300,8 +308,9 @@ public class CmHighlightsDao {
         PreparedStatement ps=null;
         try {
             ps = conn.prepareStatement(sql);
-            ps.setDate(1, new java.sql.Date(from.getTime()));
-            ps.setDate(2, new java.sql.Date(to.getTime()));
+            String[] vals = QueryHelper.getDateTimeRange(from, to);
+            ps.setString(1, vals[0]);
+            ps.setString(2, vals[1]);
             
             __logger.info("report sql: " + ps);
             
@@ -329,8 +338,9 @@ public class CmHighlightsDao {
         PreparedStatement ps=null;
         try {
             ps = conn.prepareStatement(sql);
-            ps.setDate(1, new java.sql.Date(from.getTime()));
-            ps.setDate(2, new java.sql.Date(to.getTime()));
+            String[] vals = QueryHelper.getDateTimeRange(from, to);
+            ps.setString(1, vals[0]);
+            ps.setString(2, vals[1]);
             
             __logger.info("report sql: " + ps);
             
@@ -351,8 +361,8 @@ public class CmHighlightsDao {
         {
             {
                 put("UIDLIST",createInList(uids));
-                put("DATE_FROM",formatDate(from));
-                put("DATE_TO",formatDate(to));
+                put("DATE_FROM",QueryHelper.getDateTime(from, true));
+                put("DATE_TO",QueryHelper.getDateTime(to, false));
                 put("AID", Integer.toString(adminId));
             }
         };
@@ -395,8 +405,8 @@ public class CmHighlightsDao {
         {
             {
                 put("UIDLIST",createInList(uids));
-                put("DATE_FROM",formatDate(from));
-                put("DATE_TO",formatDate(to));
+                put("DATE_FROM",QueryHelper.getDateTime(from, true));
+                put("DATE_TO",QueryHelper.getDateTime(to, false));
                 put("AID", Integer.toString(adminId));
             }
         };
