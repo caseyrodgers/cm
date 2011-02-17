@@ -72,7 +72,26 @@ public class HighlightsReport {
 
         AccountInfoModel info = new CmAdminDao().getAccountInfo(conn,adminId);
         
-        HeaderFooter header = ReportUtils.getGroupReportHeader(info, reportLayout.getCountLabel(), reportLayout.getColumnValues().length, filterDescription);
+        int rowCount = 0;
+        String countLabel = null;
+
+        //TODO: the following defensive code should not be needed, perhaps an out-of-date client?
+        if (reportLayout != null) {
+        	countLabel = reportLayout.getCountLabel();
+        	if (reportLayout.getColumnValues() != null) {
+        		rowCount = reportLayout.getColumnValues().length;
+        	}
+        	else {
+        		__logger.warn(String.format("*** no columnValues in reportLayout, adminId: %d, title: %s",
+        				adminId, reportLayout.getTitle()));
+        	}
+        }
+        else {
+    		__logger.warn(String.format("*** reportLayout is NULL, adminId: %d", adminId));
+    		return baos;
+        }
+
+        HeaderFooter header = ReportUtils.getGroupReportHeader(info, countLabel, rowCount, filterDescription);
         HeaderFooter footer = ReportUtils.getFooter();
 
         document.setHeader(header);
@@ -99,13 +118,16 @@ public class HighlightsReport {
         document.add(Chunk.NEWLINE);
 
         int rowNum = 1;
-        for (String[] row : reportLayout.getColumnValues()) {
-            for(String labelData: row) {
-                addCell(labelData, tbl, rowNum );
+        
+        if (reportLayout.getColumnValues() != null) {
+            for (String[] row : reportLayout.getColumnValues()) {
+                for(String labelData: row) {
+                    addCell(labelData, tbl, rowNum );
+                }
+                ++rowNum;
+
+                document.add(Chunk.NEWLINE);
             }
-            ++rowNum;
-            
-            document.add(Chunk.NEWLINE);            
         }
         document.add(tbl);
         document.add(Chunk.NEWLINE);
