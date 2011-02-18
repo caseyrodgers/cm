@@ -150,7 +150,7 @@ public class QueryHelper {
     		sb.append(" 00:00:00");
     	}
     	else {
-    		sb.append(" 11:59:59");    		
+    		sb.append(" 23:59:59");    		
     	}
     	return sb.toString();
     }
