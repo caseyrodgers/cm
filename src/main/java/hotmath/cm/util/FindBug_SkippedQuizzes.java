@@ -7,6 +7,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -47,7 +48,7 @@ public class FindBug_SkippedQuizzes {
         
         PreparedStatement ps=null;
         try {
-            String sql = " select u.uid, p.id as program_id,t.test_id,t.test_segment,r.run_id " +
+            String sql = " select u.uid, p.id as program_id,date(t.create_time) as create_time,t.test_id,t.test_segment,r.run_id " +
                       " from  HA_USER u " +
                       " join HA_TEST t on t.user_id = u.uid " +
                       " join CM_USER_PROGRAM p on p.id = t.user_prog_id " +
@@ -68,7 +69,7 @@ public class FindBug_SkippedQuizzes {
                 int testSegment = rs.getInt("test_segment");
                 int runId = rs.getInt("run_id");
             
-                quizInfos.add(new QuizInfo(userId, progId, testId, testSegment, runId));
+                quizInfos.add(new QuizInfo(userId, progId, testId, testSegment, runId, rs.getDate("create_time")));
             }
             
             
@@ -151,13 +152,15 @@ public class FindBug_SkippedQuizzes {
         int testId;
         int testSegment;
         int runId;
+        Date date;
         
-        public QuizInfo(int userId, int progId, int testId, int testSegment, int runId) {
+        public QuizInfo(int userId, int progId, int testId, int testSegment, int runId, Date date) {
             this.userId = userId;
             this.progId = progId;
             this.testId = testId;
             this.testSegment = testSegment;
             this.runId = runId;
+            this.date = date;
         }
 
         public int getUserId() {
@@ -204,6 +207,14 @@ public class FindBug_SkippedQuizzes {
         public String toString() {
             return "QuizInfo [userId=" + userId + ", progId=" + progId + ", testId=" + testId + ", testSegment="
                     + testSegment + ", runId=" + runId + "]";
+        }
+
+        public Date getDate() {
+            return date;
+        }
+
+        public void setDate(Date date) {
+            this.date = date;
         }
         
     }

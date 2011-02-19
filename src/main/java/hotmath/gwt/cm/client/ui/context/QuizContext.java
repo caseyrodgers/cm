@@ -210,6 +210,7 @@ public class QuizContext implements CmContext {
                             // are there more Quizzes in this program?
                             boolean areMoreSegments = UserInfo.getInstance().getTestSegment() < UserInfo.getInstance().getTestSegmentCount();
                             if (areMoreSegments) {
+                                
                                 // move to the next segment in this quiz
                                 UserInfo.getInstance().setTestSegment(UserInfo.getInstance().getTestSegment() + 1);
                                 
