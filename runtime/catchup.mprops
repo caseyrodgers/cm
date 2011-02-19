@@ -1518,11 +1518,17 @@ where  u.uid = ?
 
 
 
+## Return whiteboard data for selected pid.
+## note we are checking for NOT null command data
+##
 .key=GET_WHITEBOARD_SQL
 
-select * from HA_TEST_RUN_WHITEBOARD
-where user_id = ? and pid = ?
+select * 
+from HA_TEST_RUN_WHITEBOARD
+where user_id = ? 
+and pid = ?
 and run_id = ?
+and command_data is not null
 order by insert_time_mills
 
 
