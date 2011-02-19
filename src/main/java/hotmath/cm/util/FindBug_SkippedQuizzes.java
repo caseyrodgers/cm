@@ -206,7 +206,7 @@ public class FindBug_SkippedQuizzes {
         @Override
         public String toString() {
             return "QuizInfo [userId=" + userId + ", progId=" + progId + ", testId=" + testId + ", testSegment="
-                    + testSegment + ", runId=" + runId + "]";
+                    + testSegment + ", runId=" + runId + ", date=" + date + "]";
         }
 
         public Date getDate() {
