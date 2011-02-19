@@ -82,11 +82,13 @@ public class GetQuizHtmlCommand implements ActionHandler<GetQuizHtmlAction, Quiz
 
             String testName = programInfo.getTestName();
 
-            if (testSegment == 0)
-                testSegment = 1;
-            
             CmStudentDao dao = new CmStudentDao();
             StudentActiveInfo activeInfo = dao.loadActiveInfo(conn, uid);
+
+            if (testSegment < 1) {
+                testSegment = activeInfo.getActiveSegment();
+            }
+            
 
             HaTest haTest=null;
             int activeTest = activeInfo.getActiveTestId();

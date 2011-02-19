@@ -31,6 +31,11 @@ import com.google.gwt.user.client.ui.Widget;
  * @TODO: which quiz?
  */
 public class QuizCmGuiDefinition implements CmGuiDefinition {
+	int testSegment;
+	
+	public QuizCmGuiDefinition(int segmentNumber) {
+	    this.testSegment = segmentNumber;
+	}
 	
 	public String getTitle() {
 		return "Quiz Page";
@@ -74,7 +79,7 @@ public class QuizCmGuiDefinition implements CmGuiDefinition {
 	
 	QuizPage qp;
 	public Widget getCenterWidget() {
-		    qp = new QuizPage(false, new CmAsyncRequestImplDefault() {
+		    qp = new QuizPage(false, testSegment, new CmAsyncRequestImplDefault() {
 		        
 			public void requestComplete(String quizTitle) {
 			    

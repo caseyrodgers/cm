@@ -247,8 +247,13 @@ public class PrescriptionContext implements CmContext {
                         @Override
                         public void componentSelected(ButtonEvent ce) {
                             cmWindow.close();
-                            UserInfo.getInstance().setTestSegment(UserInfo.getInstance().getTestSegment() + 1);
-                            CmHistoryManager.getInstance().addHistoryLocation(new CmLocation(LocationType.QUIZ, UserInfo.getInstance().getTestSegment()));
+                            
+                            /** move to next quiz
+                             * 
+                             *  go directly, do load into history to avoid back/forward 
+                             */
+                            int nextTestSegment = UserInfo.getInstance().getTestSegment() + 1;
+                            CatchupMath.getThisInstance().showQuizPanel_gwt(nextTestSegment);
                         }
                     }));
                     cmWindow.setVisible(true);
@@ -494,7 +499,7 @@ public class PrescriptionContext implements CmContext {
                             nextSegment += 1;
                             AutoTestWindow.getInstance().addLogMessage("Testing Quiz: " + nextSegment);
                             UserInfo.getInstance().setTestSegment(nextSegment);
-                            CatchupMath.getThisInstance().showQuizPanel();
+                            CatchupMath.getThisInstance().showQuizPanel(nextSegment);
                         } else {
                             CatchupMathTools.showAlert("Auto Test has completed at " + nextSegment + "!");
                         }

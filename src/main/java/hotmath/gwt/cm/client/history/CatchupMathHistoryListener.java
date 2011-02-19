@@ -23,7 +23,7 @@ public class CatchupMathHistoryListener implements ValueChangeHandler<String> {
         
         // setup HistoryQueue to allow for asynchronous access
         CmHistoryQueue.getInstance().pushLocation(location);
-        
+
 
         // do default action
         if(location.getLocationType() != LocationType.QUIZ && UserInfo.getInstance().getRunId() > 0) {
@@ -43,7 +43,7 @@ public class CatchupMathHistoryListener implements ValueChangeHandler<String> {
             }
         }
         else {
-            CatchupMath.getThisInstance().showQuizPanel_gwt();
+            CatchupMath.getThisInstance().showQuizPanel_gwt(-1);
         }
 
     }

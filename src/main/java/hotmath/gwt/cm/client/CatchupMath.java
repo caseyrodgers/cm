@@ -320,12 +320,11 @@ public class CatchupMath implements EntryPoint {
      * @TODO: get out of main
      * 
      */
-    public void showQuizPanel() {
-        // History.newItem("quiz");
-        showQuizPanel_gwt();
+    public void showQuizPanel(int segmentNumber) {
+        showQuizPanel_gwt(segmentNumber);
     }
 
-    public void showQuizPanel_gwt() {
+    public void showQuizPanel_gwt(final int segmentNumber) {
 
         GWT.runAsync(new CmRunAsyncCallback() {
 
@@ -335,7 +334,7 @@ public class CatchupMath implements EntryPoint {
 
                 _mainContainer.removeAll();
                 _mainContainer.setLayout(new FitLayout());
-                _mainContainer.add(new CmMainPanel(new QuizCmGuiDefinition()));
+                _mainContainer.add(new CmMainPanel(new QuizCmGuiDefinition(segmentNumber)));
                 _mainContainer.layout();
             }
         });

@@ -10,6 +10,7 @@ import hotmath.gwt.cm_rpc.client.rpc.NextAction;
 import hotmath.gwt.cm_rpc.client.rpc.Response;
 import hotmath.gwt.cm_rpc.client.rpc.NextAction.NextActionName;
 import hotmath.gwt.cm_rpc.server.rpc.ActionHandler;
+import hotmath.gwt.cm_tools.client.model.StudentActiveInfo;
 import hotmath.gwt.shared.client.rpc.action.CreateTestRunAction;
 import hotmath.testset.ha.HaTest;
 import hotmath.testset.ha.HaTestDao;
@@ -120,6 +121,16 @@ public class CreateTestRunCommand implements ActionHandler<CreateTestRunAction, 
                 	logger.info(String.format("+++ execute(): moveToNextQuizSegmentSlot(): took: %d msec",
                 		System.currentTimeMillis() - startTime));
                 }
+            }
+            else {
+                /** Move to the next test segment if test was passed(only place this happens)
+                 */
+                CmStudentDao dao = new CmStudentDao();
+                StudentActiveInfo activeInfo = dao.loadActiveInfo(conn, test.getUser().getUid());
+                int nextSegment=activeInfo.getActiveSegment() + 1;
+                activeInfo.setActiveSegment( nextSegment );
+                test.getUser().setActiveTestSegment(nextSegment);
+                dao.setActiveInfo(conn, test.getUser().getUid(), activeInfo);
             }
 
             startTime = System.currentTimeMillis();

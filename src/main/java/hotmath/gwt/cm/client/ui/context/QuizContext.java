@@ -40,7 +40,6 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.Timer;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Widget;
@@ -145,7 +144,7 @@ public class QuizContext implements CmContext {
         CatchupMathTools.showAlert("Quiz results", "Good job - we'll now give another quiz.",
                 new CmAsyncRequestImplDefault() {
                     public void requestComplete(String requestData) {
-                        CatchupMath.getThisInstance().showQuizPanel();
+                        CatchupMath.getThisInstance().showQuizPanel(-1);
                     }
                 });
     }
@@ -210,11 +209,7 @@ public class QuizContext implements CmContext {
                             // are there more Quizzes in this program?
                             boolean areMoreSegments = UserInfo.getInstance().getTestSegment() < UserInfo.getInstance().getTestSegmentCount();
                             if (areMoreSegments) {
-                                
-                                // move to the next segment in this quiz
-                                UserInfo.getInstance().setTestSegment(UserInfo.getInstance().getTestSegment() + 1);
-                                
-                                CmHistoryManager.getInstance().addHistoryLocation(new CmLocation(LocationType.QUIZ, UserInfo.getInstance().getTestSegment()));
+                                CatchupMath.getThisInstance().showQuizPanel(-1);
                             } else {
                                 switch(UserInfo.getInstance().getOnCompletion()) {
                                         

@@ -32,12 +32,12 @@ public class QuizPage extends LayoutContainer {
 	static List<Integer> testQuestionAnswers;
 	QuizHtmlResult _quizInfo;
 	
-	public QuizPage(boolean loadActive, CmAsyncRequest callbackWhenComplete) {
+	public QuizPage(boolean loadActive, int testSegment, CmAsyncRequest callbackWhenComplete) {
 	    __lastInstance = this;
 	    setScrollMode(Scroll.AUTOY);
 		this.callbackWhenComplete = callbackWhenComplete;
 		setStyleName("quiz-panel");
-		getQuizHtmlFromServer(loadActive);
+		getQuizHtmlFromServer(loadActive, testSegment);
 	}
 
 	
@@ -135,14 +135,14 @@ public class QuizPage extends LayoutContainer {
 	 *  Also, set the users selections as saved on server.
 	 * 
 	 */
-	private void getQuizHtmlFromServer(final boolean loadActive) {
+	private void getQuizHtmlFromServer(final boolean loadActive, final int testSegment) {
 
 	    new RetryAction<QuizHtmlResult>() {
 	        
 	        @Override
 	        public void attempt() {
 	            CatchupMathTools.setBusy(true);
-	            GetQuizHtmlAction quizAction = new GetQuizHtmlAction(UserInfo.getInstance().getUid(), UserInfo.getInstance().getTestId(), UserInfo.getInstance().getTestSegment());
+	            GetQuizHtmlAction quizAction = new GetQuizHtmlAction(UserInfo.getInstance().getUid(), UserInfo.getInstance().getTestId(), testSegment);
 	            setAction(quizAction);
 	            quizAction.setLoadActive(loadActive);
 	            CmLogger.info("QuizPage.getQuizHtmlFromServer: " + quizAction);
@@ -157,6 +157,7 @@ public class QuizPage extends LayoutContainer {
                 
                 UserInfo.getInstance().setTestSegment(rdata.getQuizSegment());
                 UserInfo.getInstance().setTestId(rdata.getTestId());
+                UserInfo.getInstance().setRunId(0); /* not in a prescription */
                 UserInfo.getInstance().setSubTitle(rdata.getSubTitle());
                 
                 UserInfo.getInstance().setTestSegmentCount(rdata.getQuizSegmentCount());
