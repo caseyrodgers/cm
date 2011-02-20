@@ -85,9 +85,15 @@ public class GetQuizHtmlCommand implements ActionHandler<GetQuizHtmlAction, Quiz
             CmStudentDao dao = new CmStudentDao();
             StudentActiveInfo activeInfo = dao.loadActiveInfo(conn, uid);
 
+            /** if -1, then use current active segment
+             * 
+             */
             if (testSegment < 1) {
                 testSegment = activeInfo.getActiveSegment();
             }
+            
+            if(testSegment == 0)
+                testSegment = 1;
             
 
             HaTest haTest=null;
