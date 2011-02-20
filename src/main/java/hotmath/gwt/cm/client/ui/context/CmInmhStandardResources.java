@@ -114,6 +114,10 @@ public class CmInmhStandardResources extends ArrayList<PrescriptionSessionDataRe
         si.getItemData().add(
                 new InmhItemData(t, "/learning_activities/interactivities/flashcard_multi_deci.swf",
                         "Multiplying Decimals"));
+        si.getItemData().add(
+                new InmhItemData(t, "/learning_activities/interactivities/flashcard_multi_deci.swf",
+                        "Dividing Decimals"));
+        
 
         subMenu.add(si);
 
