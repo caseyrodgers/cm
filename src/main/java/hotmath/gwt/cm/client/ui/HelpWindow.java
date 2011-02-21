@@ -1,5 +1,6 @@
 package hotmath.gwt.cm.client.ui;
 
+import hotmath.gwt.cm.client.WelcomePanel;
 import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_rpc.client.rpc.CmServiceAsync;
 import hotmath.gwt.cm_rpc.client.rpc.RpcData;
@@ -20,7 +21,6 @@ import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
 import hotmath.gwt.shared.client.eventbus.EventBus;
 import hotmath.gwt.shared.client.eventbus.EventType;
-import hotmath.gwt.shared.client.model.UserInfoBase;
 import hotmath.gwt.shared.client.rpc.RetryAction;
 import hotmath.gwt.shared.client.rpc.action.GetStudentModelAction;
 import hotmath.gwt.shared.client.rpc.action.RunNetTestAction.TestApplication;
@@ -39,6 +39,7 @@ import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.event.WindowListener;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.Html;
+import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.VerticalPanel;
 import com.extjs.gxt.ui.client.widget.button.Button;
@@ -145,24 +146,7 @@ public class HelpWindow extends CmWindow {
                         CmBusyManager.setBusy(false);
                         try {
                             String newStyle = se.getSelectedItem().getBackgroundStyle();
-                            /**
-                             * Remove any previous wallpaper styles, and make
-                             * sure this is the only one active.
-                             * 
-                             * NOTE: all wallpaper styles start with
-                             * 'resource-container-'
-                             */
-                            String styleName = CmMainPanel.__lastInstance._mainContent.getStyleName();
-                            if (styleName != null) {
-                                String names[] = styleName.split(" ");
-                                for (int i = 0; i < names.length; i++) {
-                                    if (names[i].startsWith("resource-container-"))
-                                        CmMainPanel.__lastInstance._mainContent.removeStyleName(names[i]);
-                                }
-                            }
-                            CmMainPanel.__lastInstance._mainContent.addStyleName(newStyle);
-
-                            UserInfo.getInstance().setBackgroundStyle(newStyle);
+                            setBackgroundStyle(newStyle);
                         } finally {
                             CatchupMathTools.setBusy(false);
                         }
@@ -295,6 +279,48 @@ public class HelpWindow extends CmWindow {
                 }
             }));
         }
+    }
+    
+
+    /**
+     * Remove any previous wallpaper styles, and make
+     * sure this is the only one active.
+     * 
+     * Must check state of systemt to change the appropriate
+     * panel. 
+     *
+     * @TODO: create EventType and listen for change to remove static calls.
+     * 
+     * NOTE: all wallpaper styles start with 'resource-container-'.
+     * The welcome panel starts with 'cm-welcome-panel'
+     * 
+     */
+    private void setBackgroundStyle(String newStyle) {
+        
+        LayoutContainer panelToChange = null;
+        
+        if(CmMainPanel.__lastInstance != null) {
+            panelToChange = CmMainPanel.__lastInstance._mainContent;
+        }
+        else {
+            panelToChange = WelcomePanel.__instance;
+        }
+        
+        if(panelToChange != null) {
+            String styleName = panelToChange.getStyleName();
+            if (styleName != null) {
+                String names[] = styleName.split(" ");
+                for (int i = 0; i < names.length; i++) {
+                    if (names[i].startsWith("resource-container-") ||
+                            names[i].startsWith("cm-welcome-panel")) {
+                            panelToChange.removeStyleName(names[i]);
+                        }
+                }
+            }
+            panelToChange.addStyleName(newStyle);
+        }
+        
+        UserInfo.getInstance().setBackgroundStyle(newStyle);
     }
 
     /**

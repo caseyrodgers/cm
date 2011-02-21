@@ -116,9 +116,9 @@ public class CmSolutionManagerDao {
 
             String sql = 
                 "INSERT INTO SOLUTIONS(LOCAL_EDIT, " +
-                "      PROBLEMINDEX,BOOKTITLE,CHAPTERTITLE,SECTIONTITLE,PROBLEMSET," +
+                "      PROBLEMINDEX,BOOKTITLE,CHAPTERTITLE,SECTIONTITLE,PROBLEMSET,PROBLEMNUMBER," +
                 "      PAGENUMBER,SOLUTIONXML,INPUTTER,CREATEDBY,CREATEDATE,ACTIVE)" +
-                   "VALUES(1, ?,?,?,?,?,?,?,?,?,now(),'1')";
+                   "VALUES(1, ?,?,?,?,?,?,?,?,?,?,now(),'1')";
 
             ps = conn.prepareStatement(sql);
             ps.setString(1, newSolutionPid);
@@ -126,10 +126,11 @@ public class CmSolutionManagerDao {
             ps.setString(3, solution.getChapter());
             ps.setString(4, solution.getSection());
             ps.setString(5,solution.getProblemSet());
-            ps.setInt(6,solution.getPage());
-            ps.setString(7,solution.getCreateNewXml(createdBy));
-            ps.setString(8,createdBy);
+            ps.setString(6,solution.getProblemNumber());
+            ps.setInt(7,solution.getPage());
+            ps.setString(8,solution.getCreateNewXml(createdBy));
             ps.setString(9,createdBy);
+            ps.setString(10,createdBy);
             
             if(ps.executeUpdate() != 1)
                 throw new Exception("Could not create solution xml: " + newSolutionPid);

@@ -93,9 +93,16 @@ public class TutorSolutionParser {
             Element eleStat = eleProblem.getChild("statement");
             if (eleStat != null) {
                 sProblemStatement = eleStat.getText().trim();
+                
+                Element question = eleStat.getChild("question");
+                if(question != null) {
+                    sProblemStatement += convertOldTestQuestionFormatToNew(question);
+                }
+                
                 sProblemStatementFigure = eleStat.getAttributeValue("figure");
                 solution.getProblem().setStatement(sProblemStatement);
                 solution.getProblem().setStatementFigure(sProblemStatementFigure);
+
             }
 
             Identification ident = new Identification(sBook, sChapter, sSection, sProblemSet, sProbNumber, iPageNumber);
@@ -241,6 +248,41 @@ public class TutorSolutionParser {
         return newHtml;
     }
     
+     static private String convertOldTestQuestionFormatToNew(Element oldQuesEl) throws Exception {
+         List<QuestionPiece> questionPieces = new ArrayList<QuestionPiece>();
+
+         String questionText = oldQuesEl.getTextNormalize();
+         List children = oldQuesEl.getChildren();
+         for(Object og: children) {
+             Element guess = (Element)og;
+             String correct = guess.getAttributeValue("correct");
+             String guessText = guess.getTextNormalize();
+             
+             questionPieces.add(new QuestionPiece(correct, guessText, null));
+         }
+         
+         
+         String newHtml = 
+             "\n<div class='hm_question_def'>\n" +
+             "    <div>" + questionText + "</div>\n" +
+             "    <ul>\n";
+         
+         for(QuestionPiece p: questionPieces) {
+             newHtml += 
+             "        <li correct='" + p.correct + "'>\n" +
+             "            <div>" + p.guess + "</div>\n" +
+             "            <div>&nbsp;</div>\n" +
+             "        </li>\n";
+         }
+                 
+         newHtml += 
+             "    </ul>\n" +
+             "</div>\n";
+
+         return newHtml;
+
+     }
+     
      static class QuestionPiece {
          String correct;
          String guess;

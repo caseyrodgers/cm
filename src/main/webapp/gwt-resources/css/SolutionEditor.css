@@ -124,6 +124,6 @@ solution-searcher-dialog button {
 
 .hm_question_def {
 	border: 2px double red;
-	width: 200px;
+	width: 500px;
     content: "Question Definition";
 }

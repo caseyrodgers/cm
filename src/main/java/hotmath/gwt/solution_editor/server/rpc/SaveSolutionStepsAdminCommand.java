@@ -22,10 +22,12 @@ public class SaveSolutionStepsAdminCommand implements ActionHandler<SaveSolution
         /** make sure it has not been changed since read
          * 
          */
-        String md5Now = new CmSolutionManagerDao().getSolutionMd5(conn, action.getPid());
-        if(!md5Now.equals(action.getMd5OnRead())) {
-            if(!action.isOverrideDirty()) {
-                throw new CmException("Solution has been modified since read: " + action.getPid());
+        if(new CmSolutionManagerDao().solutionExists(conn,action.getPid())) {
+            String md5Now = new CmSolutionManagerDao().getSolutionMd5(conn, action.getPid());
+            if(!md5Now.equals(action.getMd5OnRead())) {
+                if(!action.isOverrideDirty()) {
+                    throw new CmException("Solution has been modified since read: " + action.getPid());
+                }
             }
         }
         

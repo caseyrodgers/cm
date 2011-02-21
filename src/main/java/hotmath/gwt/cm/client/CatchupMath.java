@@ -348,7 +348,6 @@ public class CatchupMath implements EntryPoint {
 
         _mainContainer.removeAll();
         _mainContainer.setLayout(new FitLayout());
-        // _mainContainer.add(new CmMainPanel(new QuizCmGuiDefinition()));
         _mainContainer.add(new WelcomePanel());
 
         _mainContainer.layout();

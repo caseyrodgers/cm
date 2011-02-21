@@ -208,3 +208,12 @@ function flash_quizResult(result) {
                 alert('There was a problem processing Flash Input Field: ' + e);
         }
 }
+
+
+function processMathJax() {
+    try {
+        MathJax.Hub.Queue([ "Typeset", MathJax.Hub ]);
+    } catch (e) {
+        alert('Error processing MathJax: ' + e);
+    }
+}

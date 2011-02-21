@@ -102,6 +102,8 @@ public class QuizPage extends LayoutContainer {
 		}
 		add(html);
 		layout();
+		
+		processMathJax();
 
         callbackWhenComplete.requestComplete(_quizInfo.getTitle());
         
@@ -110,6 +112,15 @@ public class QuizPage extends LayoutContainer {
         /** reset each displayed quiz */
         questionProcessTracker.finish();
 	}
+	
+	private native void  processMathJax() /*-{
+	    try {
+	        $wnd.processMathJax();
+	    }
+	    catch(e) {
+	        alert('error processing mathjax: ' + e);
+	    }
+	}-*/;
 
 	/** mark the quiz with the user's current selections
 	 * 
