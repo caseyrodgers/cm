@@ -69,7 +69,7 @@ public class FindBug_SkippedQuizzes {
                 int testSegment = rs.getInt("test_segment");
                 int runId = rs.getInt("run_id");
             
-                quizInfos.add(new QuizInfo(userId, progId, testId, testSegment, runId, rs.getDate("create_time")));
+                quizInfos.add(new QuizInfo(adminId,userId, progId, testId, testSegment, runId, rs.getDate("create_time")));
             }
             
             
@@ -132,7 +132,10 @@ public class FindBug_SkippedQuizzes {
                                 __logger.warn("Found Skipped Quiz: " + q1);
                             }
                             else {
-                               // __logger.warn("record OK: " + q1);
+                                
+                                if(q2.getTestId() == q1.getTestId()) {
+                                    __logger.warn("Found Duplicated Quiz: " + q1);
+                                }
                                 break;  // no error
                             }
                         }
@@ -147,6 +150,7 @@ public class FindBug_SkippedQuizzes {
     }
     
     class QuizInfo {
+        int adminId;
         int userId;
         int progId;
         int testId;
@@ -154,7 +158,8 @@ public class FindBug_SkippedQuizzes {
         int runId;
         Date date;
         
-        public QuizInfo(int userId, int progId, int testId, int testSegment, int runId, Date date) {
+        public QuizInfo(int adminId, int userId, int progId, int testId, int testSegment, int runId, Date date) {
+            this.adminId = adminId;
             this.userId = userId;
             this.progId = progId;
             this.testId = testId;
@@ -203,10 +208,18 @@ public class FindBug_SkippedQuizzes {
             this.runId = runId;
         }
 
+        public int getAdminId() {
+            return adminId;
+        }
+
+        public void setAdminId(int adminId) {
+            this.adminId = adminId;
+        }
+
         @Override
         public String toString() {
-            return "QuizInfo [userId=" + userId + ", progId=" + progId + ", testId=" + testId + ", testSegment="
-                    + testSegment + ", runId=" + runId + ", date=" + date + "]";
+            return "QuizInfo [adminId=" + adminId + ", userId=" + userId + ", progId=" + progId + ", testId=" + testId
+                    + ", testSegment=" + testSegment + ", runId=" + runId + ", date=" + date + "]";
         }
 
         public Date getDate() {
