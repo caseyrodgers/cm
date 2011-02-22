@@ -48,7 +48,7 @@ public class ResourceViewerImplVideo extends ResourceViewerImplFlash {
 
 			SWFWidget swfWidget = null;
 			
-			boolean isYouTube = item.getFile().indexOf("http://youtube") > -1;
+			boolean isYouTube = item.getFile().indexOf("youtube.com/") > -1;
 			if (isYouTube) {
 
 				String file = item.getFile();
