@@ -537,7 +537,21 @@ public class CmStudentDao {
             ps.setInt(3, 0);
             
             //TODO: getGroupId() returns null sometimes - need to determine why/how
-            int groupId = (sm.getGroupId() == null) ? GROUP_NONE_ID : Integer.parseInt(sm.getGroupId());
+            if (sm.getGroupId() == null) {
+            	logger.warn(String.format("+++ addStudent(): with null group; Admin ID: %d, isDemoUser: %d",
+            			sm.getAdminUid(), (sm.getIsDemoUser() != null && sm.getIsDemoUser()) ? 1 : 0));
+            }
+
+            int groupId;
+            try {
+                groupId = (sm.getGroupId() == null) ? GROUP_NONE_ID : Integer.parseInt(sm.getGroupId());
+            }
+            catch (NumberFormatException e) {
+                //TODO: getGroupId() returns non-numeric sometimes - need to determine why/how
+            	groupId = GROUP_NONE_ID;
+            	logger.warn(String.format("+++ addStudent(): with invalid group; Admin ID: %d, groupId: %s, isDemoUser: %d",
+            			sm.getAdminUid(), sm.getGroupId(), (sm.getIsDemoUser() != null && sm.getIsDemoUser()) ? 1 : 0));            	
+            }
             
             ps.setInt(4, groupId);
             ps.setString(5, sm.getProgram().getProgramType());
