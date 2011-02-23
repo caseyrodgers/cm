@@ -40,6 +40,8 @@ import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.MessageBoxEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
+import com.extjs.gxt.ui.client.event.WindowEvent;
+import com.extjs.gxt.ui.client.event.WindowListener;
 import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.Html;
 import com.extjs.gxt.ui.client.widget.MessageBox;
@@ -229,34 +231,7 @@ public class PrescriptionContext implements CmContext {
                 // are there more Quizzes in this program?
                 boolean areMoreSegments = !UserInfo.getInstance().isCustomProgram() && UserInfo.getInstance().getTestSegment() < UserInfo.getInstance().getTestSegmentCount();
                 if (areMoreSegments) {
-                    msg = "<div style='font-size: 1.2em;margin: 10px;padding: 5px;'>You passed this section!  You will now be shown the next quiz.</div>";
-                    final CmWindow cmWindow = new CmWindow();
-                    cmWindow.setHeading("Congratulations");
-                    cmWindow.setClosable(false);
-                    cmWindow.setModal(true);
-                    cmWindow.add(new Html(msg));
-                    cmWindow.setResizable(false);
-                    cmWindow.addButton(
-                            new Button("Congratulations Video", new SelectionListener<ButtonEvent>() {
-                                @Override
-                                public void componentSelected(ButtonEvent ce) {
-                                    new GenericVideoPlayerForMona(MonaVideo.PASS_QUIZ);
-                                }
-                    }));
-                    cmWindow.addButton(new Button("Continue",new SelectionListener<ButtonEvent>() {
-                        @Override
-                        public void componentSelected(ButtonEvent ce) {
-                            cmWindow.close();
-                            
-                            /** move to next quiz
-                             * 
-                             *  go directly, do load into history to avoid back/forward 
-                             */
-                            int nextTestSegment = UserInfo.getInstance().getTestSegment() + 1;
-                            CatchupMath.getThisInstance().showQuizPanel_gwt(nextTestSegment);
-                        }
-                    }));
-                    cmWindow.setVisible(true);
+                    new PassedSectionWindow();
                 } else {
                     
                     
@@ -302,6 +277,53 @@ public class PrescriptionContext implements CmContext {
             // prescriptionCm.getAsyncDataFromServer(sessionNumber);
         }
     }
+    
+    class PassedSectionWindow extends CmWindow {
+        
+        public PassedSectionWindow() {
+            String msg = "<div style='font-size: 1.2em;margin: 10px;padding: 5px;'>You passed this section!  You will now be shown the next quiz.</div>";
+            setHeading("Congratulations");
+            
+            EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_MODAL_WINDOW_OPEN, this));
+            
+            setClosable(false);
+            setModal(true);
+            add(new Html(msg));
+            setResizable(false);
+            addButton(
+                new Button("Congratulations Video", new SelectionListener<ButtonEvent>() {
+                    @Override
+                    public void componentSelected(ButtonEvent ce) {
+                        new GenericVideoPlayerForMona(MonaVideo.PASS_QUIZ);
+                    }
+                }));
+        
+            addButton(new Button("Continue",new SelectionListener<ButtonEvent>() {
+                @Override
+                public void componentSelected(ButtonEvent ce) {
+                    close();
+                
+                    /** move to next quiz
+                     * 
+                     * go directly, do load into history to avoid back/forward 
+                    */
+                    int nextTestSegment = UserInfo.getInstance().getTestSegment() + 1;
+                    CatchupMath.getThisInstance().showQuizPanel_gwt(nextTestSegment);
+                }
+            }));
+            
+            
+            addWindowListener(new WindowListener() {
+                @Override
+                public void windowHide(WindowEvent we) {
+                    EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_MODAL_WINDOW_CLOSED, this));
+                }
+            });
+            
+            setVisible(true);
+        }
+    }
+    
     
     /**
      * Auto Advance the user to the next program
