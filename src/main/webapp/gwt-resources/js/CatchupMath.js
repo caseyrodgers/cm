@@ -212,7 +212,10 @@ function flash_quizResult(result) {
 
 function processMathJax() {
     try {
-        MathJax.Hub.Queue([ "Typeset", MathJax.Hub ]);
+        if(typeof MathJax!="undefined") {
+            MathJax.Hub.Queue([ "Typeset", MathJax.Hub ]);
+            //  alert('MathJax log: ' + MathJax.Message.Log());
+        }
     } catch (e) {
         alert('Error processing MathJax: ' + e);
     }

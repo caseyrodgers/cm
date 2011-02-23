@@ -143,7 +143,7 @@ public class AutoRegistrationWindow extends CmWindow {
                 + "     </div>"
                 + " </div>"
                 + "<h1 style='text-align: center;color:red;'>" +
-                "Bulk Upload Problems" + 
+                "Bulk Upload Problems: Please fix the file and try again." + 
                 "</h1>";
         return new Html(html);
     }

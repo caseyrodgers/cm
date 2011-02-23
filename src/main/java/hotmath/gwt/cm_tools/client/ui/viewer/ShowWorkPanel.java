@@ -4,6 +4,7 @@ import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_rpc.client.rpc.CmList;
 import hotmath.gwt.cm_rpc.client.rpc.MultiActionRequestAction;
 import hotmath.gwt.cm_rpc.client.rpc.Response;
+import hotmath.gwt.cm_tools.client.ui.CmLogger;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.data.CmAsyncRequest;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
@@ -169,7 +170,12 @@ public class ShowWorkPanel extends Frame {
 
             public void oncapture(CmList<WhiteboardCommand> commands) {
                 for (int i = 0, t = commands.size(); i < t; i++) {
-                    updateFlashWhiteboard(flashId, commands.get(i).getCommand(), commands.get(i).getData());
+                    try {
+                        updateFlashWhiteboard(flashId, commands.get(i).getCommand(), commands.get(i).getData());
+                    }
+                    catch(Exception e) {
+                        CmLogger.error("Error processing whitebaord command: " + e.getMessage());
+                    }
                 }
             }
         }.register();

@@ -13,6 +13,9 @@
 %>
 <html>
   <head>
+  <!--  
+      <script type="text/javascript" language="javascript" src="/assets/js/MathJax/MathJax.js"></script>
+  -->  
   <link rel="stylesheet" type="text/css" href="/gwt-resources/gxt-2.2.1/css/gxt-all.css" />
   <link class="gray" rel="stylesheet" type="text/css" href="/gwt-resources/gxt-2.2.1/css/gxt-gray.css" />
   <link rel="stylesheet" type="text/css" href="/css/tutor_widget.css" />

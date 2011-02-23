@@ -38,8 +38,13 @@ import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.RootPanel;
 
 /**
@@ -83,6 +88,13 @@ public class CatchupMath implements EntryPoint {
         // GXT.setDefaultTheme(Theme.GRAY, true);
 
         _mainPort = new Viewport();
+        
+        if(false) {
+            _mainPort.add(new MathMlTest());
+            RootPanel.get("main-content").add(_mainPort);
+            return;
+        }
+        
         CmBusyManager.setViewPort(_mainPort);
 
         _mainPort.setLayout(new BorderLayout());
@@ -440,4 +452,23 @@ public class CatchupMath implements EntryPoint {
                                                // This is checked in CatchupMath.html to indicate that a loading error occurred.
                                                $wnd.__cmInitialized = true;
                                                }-*/;
+}
+
+
+
+class MathMlTest extends FlowPanel {
+    public MathMlTest() {
+        String html = "<math>        <mrow>                <mfenced>                        <mtable>                                <mtr>                                        <mtd>                                                <mfrac>                                                        <mtext>12</mtext>                                                        <mtext>232</mtext>                                                </mfrac>                                        </mtd>                                        <mtd>                                                <mroot>                                                        <mtext >2323</mtext>                                                        <mtext>23</mtext>                                                </mroot>                                        </mtd>                                </mtr>                        </mtable>                </mfenced>        </mrow></math>";
+        add(new HTML(html));
+        add(new Button("Process", new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                processMathJax();
+            }
+        }));
+    }
+    
+    private native void processMathJax() /*-{
+        $wnd.processMathJax()
+    }-*/;
 }

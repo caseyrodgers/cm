@@ -71,10 +71,7 @@ public class FindBug_SkippedQuizzes {
             
                 quizInfos.add(new QuizInfo(adminId,userId, progId, testId, testSegment, runId, rs.getDate("create_time")));
             }
-            
-            
             performChecks(quizInfos);
-            
         }
         finally {
             SqlUtilities.releaseResources(null,ps,null);

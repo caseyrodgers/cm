@@ -27,8 +27,8 @@ public class WelcomePanel extends LayoutContainer {
     public WelcomePanel() {
         __instance = this;
         
-        // setStyleName("cm-welcome-panel");
-        setStyleName(UserInfo.getInstance().getBackgroundStyle());
+        addStyleName("cm-welcome-panel");
+        addStyleName(UserInfo.getInstance().getBackgroundStyle());
         setLayout(new CenterLayout());
 
         setScrollMode(Scroll.AUTO);

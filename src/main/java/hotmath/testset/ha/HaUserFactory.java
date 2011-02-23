@@ -221,15 +221,11 @@ public class HaUserFactory {
 			} finally {
 				SqlUtilities.releaseResources(rs, pstat, null);
 			}
-
 			checkForSchoolLoginFailure(conn, user);
-			
 			checkForIndivAcctLoginFailure(conn, user);
+			//checkForAdminLoginFailure(;, userName);
 			
-			checkForAdminLoginFailure(conn, user);
-			
-			throw new CmException("The Login Name is not recognized. School Login Names are a school code (e.g., jfk752).");
-
+            throw new CmException(CmMessagePropertyReader.getInstance().getProperty("STUDENT_OR_ADMIN_WRONG_PASSWORD_SCHOOL_ACCT"));
 		} catch (CmException cme) {
 			throw cme;
 		} catch (Exception e) {
@@ -521,6 +517,7 @@ public class HaUserFactory {
      * @param userName
      *
      * if userName is a valid Admin id, then password is wrong for Admin account; throw Exception
+     * 
      * 
      * 
      */

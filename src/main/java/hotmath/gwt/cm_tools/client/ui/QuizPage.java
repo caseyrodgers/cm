@@ -23,6 +23,7 @@ import com.extjs.gxt.ui.client.widget.Html;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.DeferredCommand;
+import com.google.gwt.user.client.Timer;
 
 public class QuizPage extends LayoutContainer {
 	
@@ -102,9 +103,6 @@ public class QuizPage extends LayoutContainer {
 		}
 		add(html);
 		layout();
-		
-		processMathJax();
-
         callbackWhenComplete.requestComplete(_quizInfo.getTitle());
         
         CmMainPanel.setQuizQuestionDisplayAsActive(CmMainPanel.getLastQuestionPid());
@@ -126,6 +124,9 @@ public class QuizPage extends LayoutContainer {
 	 * 
 	 */
 	public void markUserAnswers() {
+
+	    processMathJax();
+
 	    CmLogger.debug("QuizPage: marking user selections: " + this);
 	    DeferredCommand.addCommand(new Command() {
             @Override
