@@ -23,7 +23,6 @@ import com.extjs.gxt.ui.client.widget.Html;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.DeferredCommand;
-import com.google.gwt.user.client.Timer;
 
 public class QuizPage extends LayoutContainer {
 	
@@ -110,22 +109,14 @@ public class QuizPage extends LayoutContainer {
         /** reset each displayed quiz */
         questionProcessTracker.finish();
 	}
-	
-	private native void  processMathJax() /*-{
-	    try {
-	        $wnd.processMathJax();
-	    }
-	    catch(e) {
-	        alert('error processing mathjax: ' + e);
-	    }
-	}-*/;
+
 
 	/** mark the quiz with the user's current selections
 	 * 
 	 */
 	public void markUserAnswers() {
 
-	    processMathJax();
+	    initializeQuiz();
 
 	    CmLogger.debug("QuizPage: marking user selections: " + this);
 	    DeferredCommand.addCommand(new Command() {
@@ -142,6 +133,10 @@ public class QuizPage extends LayoutContainer {
             }
         });
 	}
+	
+	private native void initializeQuiz() /*-{
+	    $wnd.initializeQuiz();
+	}-*/;
 	
 	/** Read the raw HTML from server and insert into DOM node.
 	 *  Also, set the users selections as saved on server.
@@ -179,7 +174,9 @@ public class QuizPage extends LayoutContainer {
                     UserInfo.getInstance().setUserName("Guest user on account: " + rdata.getUserId());
                     EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_USERCHANGED));
                 }
+                
                 displayQuizHtml(rdata.getQuizHtml());
+                
                 DeferredCommand.addCommand(new Command() {
                     @Override
                     public void execute() {

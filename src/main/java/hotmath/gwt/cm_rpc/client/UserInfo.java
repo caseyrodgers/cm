@@ -155,8 +155,18 @@ public class UserInfo implements  Response {
         this.isShowWorkRequired = isShowWorkRequired;
     }
 
+    /** return the background style, if null then 
+     * return default.
+     * 
+     * @return
+     */
     public String getBackgroundStyle() {
-        return backgroundStyle;
+        if(backgroundStyle != null && backgroundStyle.length() > 0) {
+            return backgroundStyle;
+        }
+        else {
+            return "resource-container-default";
+        }
     }
 
     public void setBackgroundStyle(String backgroundStyle) {

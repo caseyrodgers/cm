@@ -456,6 +456,16 @@ img.resource-item-complete {
         background-image: url(/gwt-resources/images/bg/default.png);
         background-repeat: repeat-x;
 }
+
+.resource-container-default {
+        background-attachment: fixed;
+        background-image: url(/gwt-resources/images/bg/default.png);
+        background-position: center bottom;
+        background-repeat: no-repeat;
+        max-height: 1065px;
+        max-width: 1600px;
+}
+
 .resource-container-forest {
         background-attachment: fixed;
         background-image: url(/gwt-resources/images/bg/forest-1600x1065.jpg);
@@ -890,7 +900,7 @@ img.resource-item-complete {
 }
 
 
-/** teset_div (quiz) */
+/** Quiz Panel definition */
 
 #testset_div {
         position: relative;
@@ -903,6 +913,9 @@ img.resource-item-complete {
         text-align: center;
 }
 
+#testset_div #hm_flash_widget {
+	display: none;
+}
 
 /** do not display the check quiz link on the results panel */
 .resource-viewer-impl-results #testset_footer .check-quiz-link {

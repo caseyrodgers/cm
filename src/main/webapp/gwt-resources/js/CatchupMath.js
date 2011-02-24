@@ -220,3 +220,45 @@ function processMathJax() {
         alert('Error processing MathJax: ' + e);
     }
 }
+
+
+
+function initializeQuiz() {
+
+    var ts = document.getElementById('testset_div');
+    if(ts) {
+        var divs = ts.getElementsByTagName("div");
+        for(var i=0, t=divs.length; i < t; i++) {
+            var d = divs[i];
+            if(d.className == 'hm_question_def') {
+                initializeQuizQuestion(d);
+            }
+        }
+        processMathJax();
+    }
+}
+
+var uniquer=1;
+function initializeQuizQuestion(question) {
+    var tag = 'answer_' + uniquer;
+    
+    var answers = question.getElementsByTagName("li");
+    for(var i=0, t=answers.length; i < t; i++) {
+        answer = answers[i];
+        
+        var trueOrFalse=answer.getAttribute("correct");
+        
+        var elems = answer.getElementsByTagName("div");
+        var answerEle = elems[0];
+
+        uniquer++;
+        
+        var id='answer_id_' + uniquer;
+
+        
+        /** append the input element */
+        var inputElement = "<input value='" + trueOrFalse + "' type='radio' name='" + tag + "' id='" + id + "' onclick='questionGuessChanged(this)'/>";
+        
+        answerEle.innerHTML = inputElement + answerEle.innerHTML;
+    }
+}
