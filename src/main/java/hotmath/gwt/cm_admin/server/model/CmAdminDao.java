@@ -250,6 +250,14 @@ public class CmAdminDao {
         PreparedStatement ps = null;
 
         checkForReservedGroup(gm.getName());
+        if (gm.getName() == null) {
+        	if (adminUid != null)
+            	logger.warn(String.format("addGroup(): adminId: %d; NULL group name passed", adminUid));
+        	else
+        		logger.warn("addGroup(): NULL admin ID and group name passed");
+            throw new Exception("The group name you entered is NULL.");
+        }
+
 
         Boolean isDuplicate = checkForDuplicateGroup(conn, adminUid, gm);
         if (isDuplicate) {
@@ -329,6 +337,13 @@ public class CmAdminDao {
     public void updateGroup(final Connection conn, Integer groupId, String name) throws Exception {
 
         checkForReservedGroup(name);
+        if (name == null) {
+        	if (groupId != null)
+            	logger.warn(String.format("updateGroup(): groupId: %d; NULL group name passed", groupId));
+        	else
+        		logger.warn("updateGroup(): NULL group ID and group name passed");
+            throw new Exception("The group name you entered is NULL.");
+        }
 
         PreparedStatement ps = null;
         try {
