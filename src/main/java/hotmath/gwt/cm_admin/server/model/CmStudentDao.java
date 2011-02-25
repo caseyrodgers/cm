@@ -589,7 +589,7 @@ public class CmStudentDao {
      		{"Forest","resource-container-forest"},
      		{"Meadow","resource-container-sunrise"},
      		{"Mountain Bike","resource-container-bike1"},
-     		{"Snowman","Snowman"},
+     		{"Snowman","resource-container-snowman"},
      		{"Sunfield","resource-container-sunfield"},
      		{"Tulips","resource-container-tulips"},
      };
