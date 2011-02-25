@@ -123,7 +123,12 @@ public class LoginService extends HttpServlet {
                 /** redirect and connect to the CM student,passing auto_test parameter  
                  * 
                  */
-                String urlWithSessionID = "http://" + getCmServer(req) + "/loginService?type=auto_test&debug=true&uid=" + loginInfo.getUserId();
+                String params = "type=auto_test&debug=true&uid=" + loginInfo.getUserId();
+                if(SbUtilities.getBoolean(req.getParameter("test_rpp_only"))) {
+                    params += "&test_rpp_only=true";
+                }
+
+                String urlWithSessionID = "http://" + getCmServer(req) + "/loginService?" + params;
                 resp.sendRedirect(urlWithSessionID);
             }
             else if(action.equals("auto_test_net")) {

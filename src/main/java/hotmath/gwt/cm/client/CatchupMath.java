@@ -190,7 +190,7 @@ public class CatchupMath implements EntryPoint {
 	    		 */
 	    		UserInfo.getInstance().setActiveUser(false);
 	    		CatchupMath.__thisInstance.showAutoRegistration_gwt();
-	    	} else if (ac.startsWith("auto_test")) {
+	    	} else if (CmShared.getQueryParameterValue("type").equals("auto_test")) {
 	    		__thisInstance.startNormalOperation();
 	    	} else if (CmShared.getQueryParameter("debug_info") != null) {
 	    		setDebugOverrideInformation(CmShared.getQueryParameter("debug_info"));
