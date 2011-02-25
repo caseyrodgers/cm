@@ -33,7 +33,10 @@
 	        <option value='10'>10</option>
 	    </select>
 	<label>Test Only RPP?</label>
-	<input type='checkbox' id='rpp_only'/>    
+	<input type='checkbox' id='rpp_only'/>
+	<label>User ID: </label>
+    <input type='text' id='uid_to_use'/>    
+	    
     <label>Server to Test:</label>
 	    <select id='fld_server'>
 	        <option value=''>Current</option>
@@ -48,19 +51,23 @@
 	   var howMany = document.getElementById('fld_how_many').value;
 	   var server = document.getElementById('fld_server').value;
 	   var type = document.getElementById('fld_test_type').value;
-	   rppOnly = document.getElementById('rpp_only').value;
+	   var rppOnly = document.getElementById('rpp_only').value;
+	   var uidToUse = document.getElementById('uid_to_use').value;
 
 	   for(var i=0;i<howMany;i++) {
-		   launchCmWebTest(type, i,rppOnly,server);
+		   launchCmWebTest(type, i,rppOnly,uidToUse,server);
 	   }
    }
 
 
-   function launchCmWebTest(type, which,rppOnly,server) {
+   function launchCmWebTest(type, which,rppOnly,uidToUse,server) {
            var typeParam='';
            var action = (type=='net')?'auto_test_net':'auto_test';
            var serverUrl = server?'http://' + server:"";
            var params = rppOnly?'&test_rpp_only=true':'';
+           if(uidToUse > 0) {
+               params += '&uid=' + uidToUse;
+           }
            var win = window.open(serverUrl + '/loginService?action=' + action + params);
            win.focus();
    }
