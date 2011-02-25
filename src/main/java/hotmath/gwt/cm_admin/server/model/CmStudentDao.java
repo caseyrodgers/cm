@@ -787,6 +787,9 @@ public class CmStudentDao {
             ps.setString(1, sm.getPasscode());
             ps.setInt(2, (sm.getUid() != null) ? sm.getUid() : -1);
             ps.setInt(3, sm.getAdminUid());
+            ps.setInt(4, sm.getAdminUid());
+            ps.setString(5, sm.getPasscode());
+            ps.setInt(6, sm.getAdminUid());
 
             rs = ps.executeQuery();
             return (rs.next());
