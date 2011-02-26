@@ -257,8 +257,11 @@ public class PrescriptionContext implements CmContext {
             }
 
             final int tstl = testSegmentToLoad;
+            
+            EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_MODAL_WINDOW_OPEN, this));
             MessageBox.confirm("Ready for next Quiz?", msg, new Listener<MessageBoxEvent>() {
                 public void handleEvent(MessageBoxEvent be) {
+                    EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_MODAL_WINDOW_CLOSED, this));
                     if (be.getButtonClicked().getText().equals("Yes")) {
                         UserInfo.getInstance().setTestSegment(tstl);
                         
