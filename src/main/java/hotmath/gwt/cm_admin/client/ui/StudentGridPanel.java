@@ -265,7 +265,7 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
                 if(student==null)
                     return;                
                 if(Window.confirm("This will launch the selected client in auto-test model.  Are you sure?")) {
-                    String url = "/loginService?debug=true&type=auto_test&uid=" + student.getUid();
+                    String url = "/loginService?debug=true&type=auto_test&test_rpp_only=true&uid=" + student.getUid();
                     Window.open(url, "_blank", "height=480,width=640,status=yes,scrollbars=1");
                 }
             }
