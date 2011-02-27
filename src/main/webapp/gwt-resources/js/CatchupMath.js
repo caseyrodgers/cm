@@ -231,6 +231,9 @@ function initializeQuiz() {
         for(var i=0, t=divs.length; i < t; i++) {
             var d = divs[i];
             if(d.className == 'hm_question_def') {
+                
+                var inputElement = "<button class='edit-button' onclick='editQuizQuestion(this);'>!</button>";
+                d.innerHTML = inputElement + d.innerHTML;
                 initializeQuizQuestion(d);
             }
         }
@@ -241,7 +244,7 @@ function initializeQuiz() {
 var uniquer=1;
 function initializeQuizQuestion(question) {
     var tag = 'answer_' + uniquer;
-    
+    var alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
     var answers = question.getElementsByTagName("li");
     for(var i=0, t=answers.length; i < t; i++) {
         answer = answers[i];
@@ -255,10 +258,20 @@ function initializeQuizQuestion(question) {
         
         var id='answer_id_' + uniquer;
 
+        var answerNum = alphabet[i];
         
         /** append the input element */
-        var inputElement = "<input value='" + trueOrFalse + "' type='radio' name='" + tag + "' id='" + id + "' onclick='questionGuessChanged(this)'/>";
+        var inputElement = "<span class='question-input' style='margin-right: 10px'>" +
+                           "<input value='" + trueOrFalse + "' type='radio' name='" + tag + "' id='" + id + "' onclick='questionGuessChanged(this)'/>" +
+                           '&nbsp;' + answerNum + '</span>'
         
         answerEle.innerHTML = inputElement + answerEle.innerHTML;
+    }
+}
+
+function editQuizQuestion(o) {
+    var pid = o.parentNode.parentNode.getAttribute('guid');
+    if(pid) {
+        var w = window.open('/solution_editor/SolutionEditor.html?pid=' + pid);
     }
 }

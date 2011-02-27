@@ -1161,3 +1161,37 @@ img.resource-item-complete {
 #tutoring_button {
 	display: none;
 }
+
+
+#testset_div .hm_question_def .edit-button {
+	display: none;
+}
+
+#testset_div .hm_question_def,
+#testset_div .hm_question_def p {
+	font-family: Georgia,"Bitstream Charter",serif;
+}
+
+.debug-on #testset_div .hm_question_def .edit-button {
+    display: block;	
+    position: absolute;
+    top: -10;
+    right: 0;
+}
+
+
+.hm_question_def .MathJax_Display {
+	display: inline;
+}
+
+
+#testset_div .hm_question_def {
+	position: relative;
+}
+
+/** the question text */
+.hm_question_def>div {
+  margin:10px 0;
+  background-color: #EBEBEB;
+  padding: 5px;
+}
