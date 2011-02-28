@@ -1168,7 +1168,8 @@ img.resource-item-complete {
 }
 
 #testset_div .hm_question_def,
-#testset_div .hm_question_def p {
+#testset_div .hm_question_def p,
+#testset_div .hm_question_def ul {
 	font-family: Georgia,"Bitstream Charter",serif;
 }
 

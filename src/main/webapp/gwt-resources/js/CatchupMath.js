@@ -55,6 +55,8 @@ function doLoad_Gwt(pid, title, hasShowWork, shouldExpandSteps, solutionJs) {
 			swf.style.display = 'none';
 		}
 	}
+	
+	processMathJax();	
 }
 
 var _bookMeta = {
