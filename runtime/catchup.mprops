@@ -2011,3 +2011,22 @@ where  u.uid in( $$UID_LIST$$ )
                               and l.login_time between ? and ?)
 order  by u.user_name 
           
+          
+          
+          
+#########################
+### CmQuizzesDao 
+#########################
+
+.key=GET_LESSON_QUIZZES
+
+select guid
+from inmh_map m
+   JOIN SOLUTIONS s on s.problemindex = m.guid
+  JOIN HA_TEST_DEF d on d.textcode = s.booktitle
+where m.file = ?
+order by guid;
+
+
+
+          

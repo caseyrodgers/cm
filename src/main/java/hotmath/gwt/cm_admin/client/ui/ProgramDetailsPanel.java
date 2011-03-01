@@ -10,7 +10,6 @@ import hotmath.gwt.cm_rpc.client.model.program_listing.ProgramType;
 import hotmath.gwt.cm_rpc.client.rpc.CmList;
 import hotmath.gwt.cm_rpc.client.rpc.GetProgramLessonsAction;
 import hotmath.gwt.cm_rpc.client.rpc.GetProgramListingAction;
-import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.model.CmAdminModel;
 import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
 import hotmath.gwt.shared.client.CmShared;
@@ -243,73 +242,6 @@ public class ProgramDetailsPanel extends CmWindow {
             }
         }.register();
     }
-/*
-    private void getProgramListingRPC2() {
-
-        new RetryAction<ProgramListing>() {
-            @Override
-            public void attempt() {
-                GetProgramListingAction action = new GetProgramListingAction(cmAdminMdl.getId());
-                setAction(action);
-                CmShared.getCmService().execute(action, this);
-            }
-
-            public void oncapture(ProgramListing pl) {
-
-                List<ProgramType> progTypeList = pl.getProgramTypes();
-                CmTreeModel ctMdl = new CmTreeModel();
-
-                for (ProgramType pt : progTypeList) {
-                    CmTreeModel ctm0 = new CmTreeModel(pt.getType());
-                    ctMdl.add(ctm0);
-
-                    for (ProgramSubject ps : pt.getProgramSubjects()) {
-
-                        CmTreeModel ctm1 = new CmTreeModel(ps.getName());
-                        ctm1.setId(ps.getTestDefId());
-                        ctm0.add(ctm1);
-
-                        for (ProgramChapter pc : ps.getChapters()) {
-
-                            if (pc instanceof ProgramChapterAll) {
-                                for (ProgramSection s : pc.getSections()) {
-
-                                    CmTreeModel ctm2 = new CmTreeModel(s.getName());
-                                    ctm2.setId(ctm1.getId());
-                                    ctm2.setNumber(s.getNumber());
-                                    ctm1.add(ctm2);
-
-                                    // add place holder Lesson Item to Section
-                                    // (will be loaded asynchronously)
-                                    CmTreeModel ctm3 = new CmTreeModel("Lessons");
-                                    ctm2.add(ctm3);
-                                }
-                            } else {
-                                CmTreeModel ctm2 = new CmTreeModel(String.valueOf(pc.getNumber()) + " " + pc.getName());
-                                ctm1.add(ctm2);
-
-                                for (ProgramSection s : pc.getSections()) {
-                                    CmTreeModel ctm3 = new CmTreeModel(s.getName());
-                                    ctm3.setId(ctm1.getId());
-                                    ctm3.setNumber(s.getNumber());
-                                    ctm2.add(ctm3);
-
-                                    // add place holder Lesson Item to Section
-                                    // (will be loaded asynchronously)
-                                    CmTreeModel ctm4 = new CmTreeModel("Lessons");
-                                    ctm3.add(ctm4);
-                                }
-                            }
-                        }
-                    }
-                }
-
-                // store.add(ctMdl.getChildren(), true);
-                tree.enable();
-            }
-        }.register();
-    }
-*/
 }
 
 class ProgListModel extends BaseModelData {
