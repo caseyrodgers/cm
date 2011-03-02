@@ -9,16 +9,13 @@ import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_rpc.client.rpc.GetUserInfoAction;
 import hotmath.gwt.cm_rpc.server.rpc.ActionDispatcher;
 import hotmath.gwt.cm_tools.client.data.HaBasicUser;
+import hotmath.gwt.shared.client.rpc.action.LoginAction;
 import hotmath.testset.ha.HaAdmin;
 import hotmath.testset.ha.HaLoginInfo;
-import hotmath.testset.ha.HaUserFactory;
-import hotmath.util.HMConnectionPool;
 import hotmath.util.Jsonizer;
-import hotmath.util.sql.SqlUtilities;
 
 import java.io.IOException;
 import java.net.URLDecoder;
-import java.sql.Connection;
 import java.text.SimpleDateFormat;
 
 import javax.servlet.ServletException;
@@ -58,8 +55,6 @@ public class LoginService extends HttpServlet {
         String key = req.getParameter("key");
         boolean isDebug=false;
 
-        // TODO: refactor as Action / Command
-        Connection conn = null;
         try {
         	
             if(action == null)
@@ -81,39 +76,17 @@ public class LoginService extends HttpServlet {
 
             isDebug = req.getParameter("debug") != null;
         	int uid=SbUtilities.getInt(req.getParameter("uid"));
-
-        	HaBasicUser cmUser=null;
-
-        	conn = HMConnectionPool.getConnection();
-    		if (conn != null) {
-                if (LOGGER.isDebugEnabled()) {
-                	LOGGER.debug(String.format("LOGIN: got DB Connection, openConnectionCount: (%d)", HMConnectionPool.getInstance().getConnectionCount()));
-                }
-    		}
-        	
-    		if(uid == 0 ) {
-    			/** uid param has precedence */
-    			if(key != null) {
-    				HaLoginInfo hi = HaLoginInfo.getLoginInfo(conn, key);
-    				uid = hi.getUserId();
-    				cmUser = HaUserFactory.getLoginUserInfo(conn, uid,"STUDENT");
-    				user = cmUser.getLoginName();
-    			}
-    		}
-        	
         	String type=req.getParameter("type");
-        	if(type == null)
-        		type = "STUDENT";
-            
-        	if(uid > 0) {
-        		cmUser = HaUserFactory.getLoginUserInfo(conn, uid, type);
-        	}
-        	else if(user != null && user.equals("catchup_demo")) {
-                cmUser = HaUserFactory.createDemoUser(conn);
-            }
-            else if(cmUser == null && user != null && pwd != null) {
-                cmUser = HaUserFactory.loginToCatchup(conn, user, pwd);
-            }
+
+        	LoginAction loginAction = new LoginAction();
+        	loginAction.setDebug(isDebug);
+        	loginAction.setKey(key);
+        	loginAction.setPassword(pwd);
+        	loginAction.setType(type);
+        	loginAction.setUid(uid);
+        	loginAction.setUserName(user);
+        	
+    		HaBasicUser cmUser = ActionDispatcher.getInstance().execute(loginAction);
 
         	if (cmUser == null) {
             	req.getRequestDispatcher("/gwt-resources/login_error.jsp").forward(req, resp);
@@ -216,14 +189,6 @@ public class LoginService extends HttpServlet {
         	req.getRequestDispatcher("/gwt-resources/login_error.jsp").forward(req, resp);
             LOGGER.error(String.format("*** Login failed for user: %s, pwd: %s", user, pwd), e);
         }
-    	finally {
-    		SqlUtilities.releaseResources(null,null,conn);
-    		if (conn != null) {
-                if (LOGGER.isDebugEnabled()) {
-                	LOGGER.debug(String.format("LOGIN: DB Connection closed, openConnectionCount: (%d)", HMConnectionPool.getInstance().getConnectionCount()));
-                }
-    		}
-    	}
     }
 	
 	/** return the server name to use for the CM Student app.
