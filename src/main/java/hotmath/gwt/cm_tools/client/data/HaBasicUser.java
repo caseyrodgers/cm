@@ -1,5 +1,7 @@
 package hotmath.gwt.cm_tools.client.data;
 
+import hotmath.gwt.cm_rpc.client.rpc.Response;
+
 import java.util.Date;
 
 /** Represents the basic user information for
@@ -8,7 +10,7 @@ import java.util.Date;
  * @author casey
  *
  */
-public interface HaBasicUser {
+public interface HaBasicUser extends Response {
     
     public static enum UserType { STUDENT, ADMIN, AUTO_CREATE };
     
