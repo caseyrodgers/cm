@@ -24,7 +24,7 @@ public class LogUserInCommand implements ActionHandler<LogUserInAction, RpcData>
 
         RpcData rdata = new RpcData();
         try {
-            HaUser huser = HaUser.lookupUserByPasscode(action.getPassword());
+            HaUser huser = HaUser.lookupUserByPasscode(conn, action.getPassword());
             rdata.putData("key", HaLoginInfo.addLoginInfo(huser));
         }
         catch(Exception e) {

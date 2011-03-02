@@ -326,11 +326,21 @@ public class HaUser extends HaBasicUserImpl {
 	
 	static public HaUser lookupUserByPasscode(String passCode) throws HotMathException {
 		Connection conn=null;
+	
+	    try {
+	        conn = HMConnectionPool.getConnection();
+	        return lookupUserByPasscode(conn, passCode);
+	    }
+	    finally {
+	        SqlUtilities.releaseResources(null,null,conn);
+	    }    				
+	}
+	
+	static public HaUser lookupUserByPasscode(final Connection conn, String passCode) throws HotMathException {
 	    PreparedStatement pstat=null;
 	    ResultSet rs = null;
 	    try {
 	        String sql = "select uid from HA_USER where user_passcode = ?";
-	        conn = HMConnectionPool.getConnection();
 	        pstat = conn.prepareStatement(sql);
 	        
 	        pstat.setString(1, passCode);
@@ -349,7 +359,7 @@ public class HaUser extends HaBasicUserImpl {
 	        throw new HotMathException(e,"Error getting user information: " + e.getMessage());
 	    }
 	    finally {
-	        SqlUtilities.releaseResources(rs,pstat,conn);
+	        SqlUtilities.releaseResources(rs,pstat,null);
 	    }    				
 	}
 	
