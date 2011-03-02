@@ -46,7 +46,9 @@ import sb.util.SbUtilities;
  */
 public class LoginService extends HttpServlet {
 	
-    static final Logger LOGGER = Logger.getLogger(LoginService.class.getName());
+	private static final long serialVersionUID = 8258701625476557059L;
+
+	static final Logger LOGGER = Logger.getLogger(LoginService.class.getName());
     static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
     
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -55,6 +57,9 @@ public class LoginService extends HttpServlet {
         String action = req.getParameter("action");
         String key = req.getParameter("key");
         boolean isDebug=false;
+
+        // TODO: refactor as Action / Command
+        Connection conn = null;
         try {
         	
             if(action == null)
@@ -78,39 +83,44 @@ public class LoginService extends HttpServlet {
         	int uid=SbUtilities.getInt(req.getParameter("uid"));
 
         	HaBasicUser cmUser=null;
+
+        	conn = HMConnectionPool.getConnection();
+    		if (conn != null) {
+                if (LOGGER.isDebugEnabled()) {
+                	LOGGER.debug(String.format("LOGIN: got DB Connection, openConnectionCount: (%d)", HMConnectionPool.getInstance().getConnectionCount()));
+                }
+    		}
         	
-        	if(uid == 0 ) {
-        		/** uid param has precedence */
-	            if(key != null) {
-	            	Connection conn=null;
-	            	try {
-	            		conn = HMConnectionPool.getConnection();
-	            		HaLoginInfo hi = HaLoginInfo.getLoginInfo(conn, key);
-	            		uid = hi.getUserId();
-	            		cmUser = HaUserFactory.getLoginUserInfo(uid,"STUDENT");
-	            		user = cmUser.getLoginName();
-	            	}
-	            	finally {
-	            		SqlUtilities.releaseResources(null,null,conn);
-	            	}
-	            }
-        	}
+    		if(uid == 0 ) {
+    			/** uid param has precedence */
+    			if(key != null) {
+    				HaLoginInfo hi = HaLoginInfo.getLoginInfo(conn, key);
+    				uid = hi.getUserId();
+    				cmUser = HaUserFactory.getLoginUserInfo(conn, uid,"STUDENT");
+    				user = cmUser.getLoginName();
+    			}
+    		}
         	
         	String type=req.getParameter("type");
         	if(type == null)
         		type = "STUDENT";
-        	
             
         	if(uid > 0) {
-        		cmUser = HaUserFactory.getLoginUserInfo(uid,type);
+        		cmUser = HaUserFactory.getLoginUserInfo(conn, uid, type);
         	}
-        	else if(user.equals("catchup_demo")) {
-                cmUser = HaUserFactory.createDemoUser();
+        	else if(user != null && user.equals("catchup_demo")) {
+                cmUser = HaUserFactory.createDemoUser(conn);
             }
-            else if(cmUser == null) {
-                cmUser = HaUserFactory.loginToCatchup(user, pwd);
+            else if(cmUser == null && user != null && pwd != null) {
+                cmUser = HaUserFactory.loginToCatchup(conn, user, pwd);
             }
-            
+
+        	if (cmUser == null) {
+            	req.getRequestDispatcher("/gwt-resources/login_error.jsp").forward(req, resp);
+                LOGGER.warn(String.format("*** Login failed for user: %s, pwd: %s", user, pwd));
+                return;
+        	}
+
             HaLoginInfo loginInfo = new HaLoginInfo(cmUser);
             
             /** either redirect this user to CM using current information
@@ -206,6 +216,14 @@ public class LoginService extends HttpServlet {
         	req.getRequestDispatcher("/gwt-resources/login_error.jsp").forward(req, resp);
             LOGGER.error(String.format("*** Login failed for user: %s, pwd: %s", user, pwd), e);
         }
+    	finally {
+    		SqlUtilities.releaseResources(null,null,conn);
+    		if (conn != null) {
+                if (LOGGER.isDebugEnabled()) {
+                	LOGGER.debug(String.format("LOGIN: DB Connection closed, openConnectionCount: (%d)", HMConnectionPool.getInstance().getConnectionCount()));
+                }
+    		}
+    	}
     }
 	
 	/** return the server name to use for the CM Student app.

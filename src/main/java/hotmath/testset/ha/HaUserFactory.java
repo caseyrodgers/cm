@@ -34,6 +34,17 @@ public class HaUserFactory {
 
 	static Logger __logger = Logger.getLogger(HaUserFactory.class.getName());
 
+	static public HaBasicUser loginToCatchup(String user, String pwd) throws Exception {
+        Connection conn = null;
+        try {
+			conn = HMConnectionPool.getConnection();
+			return loginToCatchup(conn, user, pwd);
+        }
+        finally {
+        	
+        }
+	}
+	
 	/**
 	 * Determine the type of user and create the appropriate user object
 	 * 
@@ -59,9 +70,8 @@ public class HaUserFactory {
 	 * @return
 	 * @throws Exception
 	 */
-	static public HaBasicUser loginToCatchup(String user, String pwd)
+	static public HaBasicUser loginToCatchup(final Connection conn, String user, String pwd)
 			throws Exception {
-		Connection conn = null;
 		PreparedStatement pstat = null;
 		ResultSet rs = null;
 		try {
@@ -73,7 +83,6 @@ public class HaUserFactory {
 			String adminLoginSQL = CmMultiLinePropertyReader.getInstance()
 					.getProperty("ADMIN_LOGIN");
 
-			conn = HMConnectionPool.getConnection();
 			try {
 				pstat = conn.prepareStatement(adminLoginSQL);
 
@@ -230,8 +239,18 @@ public class HaUserFactory {
 			throw cme;
 		} catch (Exception e) {
 			throw new CmException("Error logging in", e);
-		} finally {
-			SqlUtilities.releaseResources(null, null, conn);
+		}
+	}
+
+	static public HaBasicUser createDemoUser() throws Exception {
+
+		Connection conn = null;
+		try {
+			conn = HMConnectionPool.getConnection();
+			return createDemoUser(conn);
+		}
+		finally {
+			
 		}
 	}
 
@@ -240,15 +259,13 @@ public class HaUserFactory {
 	 * 
 	 * @throws Exception
 	 */
-	static public HaBasicUser createDemoUser() throws Exception {
+	static public HaBasicUser createDemoUser(final Connection conn) throws Exception {
 
-		Connection conn = null;
 		PreparedStatement pstat = null;
 		ResultSet rs = null;
 		try {
 			String sql = "select * from HA_USER where uid = ?";
 
-			conn = HMConnectionPool.getConnection();
 			pstat = conn.prepareStatement(sql);
 
 			int demoId = Integer.parseInt(CmMultiLinePropertyReader
@@ -284,10 +301,10 @@ public class HaUserFactory {
 
 			cmDao.addStudent(conn, student);
 
-			HaBasicUser user = loginToCatchup(demoUser, demoPwd);
+			HaBasicUser user = loginToCatchup(conn, demoUser, demoPwd);
 			return user;
 		} finally {
-			SqlUtilities.releaseResources(rs, pstat, conn);
+			SqlUtilities.releaseResources(rs, pstat, null);
 		}
 	}
 
@@ -337,6 +354,17 @@ public class HaUserFactory {
 		}
 	}
 
+	static public HaBasicUser getLoginUserInfo(int uid, String type) throws Exception {
+        Connection conn = null;
+		try {
+			conn = HMConnectionPool.getConnection();
+			return getLoginUserInfo(conn, uid, type);
+		}
+		finally {
+			SqlUtilities.releaseResources(null, null, conn);			
+		}
+	}
+
 	/**
 	 * Return login information user for user with known uid
 	 * 
@@ -345,13 +373,11 @@ public class HaUserFactory {
 	 * @return
 	 * @throws Exception
 	 */
-	static public HaBasicUser getLoginUserInfo(int uid, String type)
+	static public HaBasicUser getLoginUserInfo(final Connection conn, int uid, String type)
 			throws Exception {
-		Connection conn = null;
 		PreparedStatement pstat = null;
 		ResultSet rs = null;
 		try {
-			conn = HMConnectionPool.getConnection();
 			if (type.equals("ADMIN")) {
 				/** return admin information */
 				HaAdmin admin = new HaAdmin();
@@ -417,7 +443,7 @@ public class HaUserFactory {
 			throw new CmException("Could not find user/admin with uid: " + uid);
 
 		} finally {
-			SqlUtilities.releaseResources(rs, pstat, conn);
+			SqlUtilities.releaseResources(rs, pstat, null);
 		}
 	}
 

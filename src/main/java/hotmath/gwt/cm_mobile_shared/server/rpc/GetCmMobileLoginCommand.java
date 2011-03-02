@@ -26,7 +26,7 @@ public class GetCmMobileLoginCommand implements ActionHandler<GetCmMobileLoginAc
     @Override
     public CmMobileUser execute(Connection conn, GetCmMobileLoginAction action) throws Exception {
         
-        HaBasicUser basicUser = HaUserFactory.loginToCatchup(action.getName(),action.getPassword());
+        HaBasicUser basicUser = HaUserFactory.loginToCatchup(conn, action.getName(), action.getPassword());
         if(basicUser.getUserType() != UserType.STUDENT)
             throw new CmException("Invalid user type: " + basicUser.getUserType());
         
