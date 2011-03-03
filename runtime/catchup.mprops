@@ -2020,13 +2020,16 @@ order  by u.user_name
 
 .key=GET_LESSON_QUIZZES
 
-select guid
+select guid, d.test_name as program_name
 from inmh_map m
    JOIN SOLUTIONS s on s.problemindex = m.guid
   JOIN HA_TEST_DEF d on d.textcode = s.booktitle
+  JOIN BOOKINFO b on b.textcode = d.textcode
 where m.file = ?
+and b.grade_level <= ?
+and d.is_active = 1
 order by guid;
-
+          
 
 
           

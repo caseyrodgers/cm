@@ -7,11 +7,13 @@ import hotmath.gwt.shared.client.model.QuizQuestion;
 public class GetLessonQuestionsAction implements Action<CmList<QuizQuestion>>{
     
     String lesson;
+    String subject;
     
     public GetLessonQuestionsAction(){}
     
-    public GetLessonQuestionsAction(String lesson) {
+    public GetLessonQuestionsAction(String lesson, String subject) {
         this.lesson = lesson;
+        this.subject = subject;
     }
 
     public String getLesson() {
@@ -22,8 +24,16 @@ public class GetLessonQuestionsAction implements Action<CmList<QuizQuestion>>{
         this.lesson = lesson;
     }
 
+    public String getSubject() {
+        return subject;
+    }
+
+    public void setSubject(String subject) {
+        this.subject = subject;
+    }
+
     @Override
     public String toString() {
-        return "GetLessonQuestionsAction [lesson=" + lesson + "]";
+        return "GetLessonQuestionsAction [lesson=" + lesson + ", subject=" + subject + "]";
     }
 }

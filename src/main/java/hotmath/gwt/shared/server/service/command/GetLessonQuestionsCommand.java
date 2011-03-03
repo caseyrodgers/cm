@@ -32,8 +32,7 @@ public class GetLessonQuestionsCommand implements ActionHandler<GetLessonQuestio
          *   is being used as a source for a program.
          *   
          */
-        
-        return new CmQuizzesDao().getQuestionsFor(conn, action.getLesson());
+        return new CmQuizzesDao().getQuestionsFor(conn, action.getLesson(), action.getSubject());
     }
     
 

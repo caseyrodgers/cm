@@ -5,12 +5,18 @@ import hotmath.gwt.cm_rpc.client.rpc.Response;
 public class QuizQuestion implements Response {
 
     String lesson;
+    String programName;
+    String questionId;
     String quizHtml;
+    String pid;
     
     public QuizQuestion() {}
     
-    public QuizQuestion(String lesson, String quizHtml) {
+    public QuizQuestion(String questionId, String lesson, String programName,String pid, String quizHtml) {
+        this.questionId = questionId;
         this.lesson = lesson;
+        this.programName = programName;
+        this.pid = pid;
         this.quizHtml = quizHtml;
     }
     
@@ -25,5 +31,29 @@ public class QuizQuestion implements Response {
     }
     public void setQuizHtml(String quizHtml) {
         this.quizHtml = quizHtml;
+    }
+
+    public String getProgramName() {
+        return programName;
+    }
+
+    public void setProgramName(String programName) {
+        this.programName = programName;
+    }
+
+    public String getQuestionId() {
+        return questionId;
+    }
+
+    public void setQuestionId(String questionId) {
+        this.questionId = questionId;
+    }
+
+    public String getPid() {
+        return pid;
+    }
+
+    public void setPid(String pid) {
+        this.pid = pid;
     }
 }

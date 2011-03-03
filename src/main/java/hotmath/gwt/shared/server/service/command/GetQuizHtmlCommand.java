@@ -3,8 +3,8 @@ package hotmath.gwt.shared.server.service.command;
 import hotmath.cm.server.model.CmUserProgramDao;
 import hotmath.cm.test.HaTestSet;
 import hotmath.cm.util.CmCacheManager;
-import hotmath.cm.util.CmWebResourceManager;
 import hotmath.cm.util.CmCacheManager.CacheName;
+import hotmath.cm.util.CmWebResourceManager;
 import hotmath.gwt.cm_admin.server.model.CmStudentDao;
 import hotmath.gwt.cm_rpc.client.rpc.Action;
 import hotmath.gwt.cm_rpc.client.rpc.CmList;
@@ -67,7 +67,7 @@ public class GetQuizHtmlCommand implements ActionHandler<GetQuizHtmlAction, Quiz
     static final Logger logger = Logger.getLogger(GetQuizHtmlCommand.class);
     @Override
     public QuizHtmlResult execute(final Connection conn, GetQuizHtmlAction action) throws Exception {
-        
+
         new CmStudentDao().verifyActiveProgram(conn, action.getTestId());
 
         int testSegment = action.getTestSegment();

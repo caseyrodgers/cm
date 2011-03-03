@@ -36,6 +36,7 @@ import com.extjs.gxt.ui.client.widget.Html;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.ListView;
 import com.extjs.gxt.ui.client.widget.button.Button;
+import com.extjs.gxt.ui.client.widget.button.ButtonBar;
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
 import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
@@ -206,21 +207,28 @@ public class CustomProgramDesignerDialog extends CmWindow {
             }
         }));
 
+        createButtonBarLedgend(getButtonBar());
+        getAllLessonData();
+    }
+    
+    
+    /** Sets up a ledgend in the button bar showing the various subject levels
+     * 
+     * @param bar
+     */
+    static public void createButtonBarLedgend(ButtonBar bar) {
         String ledgend = "<div style='position: absolute; top: 2px; left: 0;width: 350px;'>"
-                + "<div style='margin-right: 3px;float: left;' class='ess'>Essentials</div>"
-                + "<div style='margin-right: 3px;float: left;' class='pre-alg'>Pre-Algebra</div>"
-                + "<div style='margin-right: 3px;float: left;' class='alg1'>Algebra 1</div>"
-                + "<div style='margin-right: 3px;float: left;' class='geom'>Geometry</div>"
-                + "<div style='margin-right: 3px;float: left;' class='alg2'>Algebra 2</div>"
-                + "</div>";
-        
+            + "<div style='margin-right: 3px;float: left;' class='ess'>Essentials</div>"
+            + "<div style='margin-right: 3px;float: left;' class='pre-alg'>Pre-Algebra</div>"
+            + "<div style='margin-right: 3px;float: left;' class='alg1'>Algebra 1</div>"
+            + "<div style='margin-right: 3px;float: left;' class='geom'>Geometry</div>"
+            + "<div style='margin-right: 3px;float: left;' class='alg2'>Algebra 2</div>"
+            + "</div>";
 
-        getButtonBar().setStyleAttribute("position", "relative");
+        bar.setStyleAttribute("position", "relative");
         Html html = new Html(ledgend);
         html.setToolTip("This color indicates highest appropriate level for the lesson.");
-        getButtonBar().add(html);
-
-        getAllLessonData();
+        bar.add(html);        
     }
     
     /** Enable form and prepare for editing.

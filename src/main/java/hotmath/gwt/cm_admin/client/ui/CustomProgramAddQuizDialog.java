@@ -4,6 +4,7 @@ import hotmath.gwt.cm_rpc.client.rpc.CmList;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.model.CustomLessonModel;
 import hotmath.gwt.cm_tools.client.ui.CmLogger;
+import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.model.QuizQuestion;
 import hotmath.gwt.shared.client.rpc.RetryAction;
@@ -28,6 +29,7 @@ import com.extjs.gxt.ui.client.store.Store;
 import com.extjs.gxt.ui.client.store.StoreSorter;
 import com.extjs.gxt.ui.client.util.Margins;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
+import com.extjs.gxt.ui.client.widget.Html;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.ListView;
 import com.extjs.gxt.ui.client.widget.TabItem;
@@ -58,8 +60,9 @@ public class CustomProgramAddQuizDialog extends Window {
     public CustomProgramAddQuizDialog(Callback callback) {
         this.callback = callback;
         setHeading("Define Custom Quiz");
-        setSize(640,480);
+        setSize(800,500);
         
+        addStyleName("custom-program-add-quiz-dialog");
         _mainPanel = createBodyPanel();
         
         ListStore<CustomLessonModel> storeAll = new ListStore<CustomLessonModel>();
@@ -85,6 +88,13 @@ public class CustomProgramAddQuizDialog extends Window {
         _listQuestions.setStore(new ListStore<QuizQuestionModel>());
         _listQuestions.setTemplate("<tpl for=\".\"><div class='x-view-item'>{question}</div></tpl>");
         _tabQuestions.add(_listQuestions);
+        
+        _listQuestions.addListener(Events.DoubleClick, new Listener<BaseEvent>() {
+            @Override
+            public void handleEvent(BaseEvent be) {
+                showQuestionHtml(_listQuestions.getSelectionModel().getSelectedItem());
+            }
+        });
         
         _tabPanel.addListener(Events.Select, new Listener<BaseEvent>() {
             @Override
@@ -113,9 +123,26 @@ public class CustomProgramAddQuizDialog extends Window {
             }
         }));
         
+        CustomProgramDesignerDialog.createButtonBarLedgend(getButtonBar());
+        
         getAllLessonData();
         
         setVisible(true);
+    }
+    
+    
+    private void showQuestionHtml(QuizQuestionModel quizModel) {
+        CmWindow questionWindow = new CmWindow();
+        questionWindow.setHeading("Question: " + quizModel.getQuestionId());
+        questionWindow.setModal(true);
+        questionWindow.setSize(500, 300);
+        
+        Html html = new Html(quizModel.getQuestion());
+        questionWindow.add(html);
+        
+        questionWindow.addCloseButton();
+        
+        questionWindow.setVisible(true);
     }
     
     static CmList<CustomLessonModel> __allLessons;
@@ -149,13 +176,16 @@ public class CustomProgramAddQuizDialog extends Window {
     CmList<QuizQuestion> _questions;
     
     private void loadQuestionsFor(final CustomLessonModel lesson) {
+        if(lesson == null)
+            return;
+        
         CmLogger.info("Loading questions for: " + lesson);
         
         new RetryAction<CmList<QuizQuestion>>() {
             @Override
             public void attempt() {
                 CmBusyManager.setBusy(true);
-                GetLessonQuestionsAction action = new GetLessonQuestionsAction(lesson.getFile());
+                GetLessonQuestionsAction action = new GetLessonQuestionsAction(lesson.getFile(), lesson.getSubject());
                 setAction(action);
                 CmShared.getCmService().execute(action, this);
             }
@@ -244,7 +274,9 @@ public class CustomProgramAddQuizDialog extends Window {
 class QuizQuestionModel extends BaseModelData {
     public QuizQuestionModel(QuizQuestion question) {
         set("lesson", question.getLesson());
+        set("programName", question.getProgramName());
         set("question", question.getQuizHtml());
+        set("questionId", question.getQuestionId());
     }
     
     public String getQuestion() {
@@ -254,4 +286,13 @@ class QuizQuestionModel extends BaseModelData {
     public String getLesson() {
         return get("lesson");
     }
+    
+    public String getProgram() {
+        return get("programName");
+    }
+    
+    public String getQuestionId() {
+        return get("questionId");
+    }
 }
+

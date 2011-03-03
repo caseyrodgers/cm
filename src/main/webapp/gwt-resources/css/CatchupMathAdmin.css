@@ -286,27 +286,28 @@ trending-data-student-list-item {
 }
 
 /** Custom Program Lessons */
-.custom-prescription-dialog .pre-alg {
+/** .custom-prescription-dialog  */
+.pre-alg {
 	padding: 4px;
 	background-color: #8dc63f;
 }
 
-.custom-prescription-dialog .alg1 {
+.alg1 {
 	padding: 4px;
 	background-color: #f7941d;
 }
 
-.custom-prescription-dialog .alg2 {
+.alg2 {
 	padding: 4px;
 	background-color: #ed1c24;
 }
 
-.custom-prescription-dialog .geom {
+.geom {
 	padding: 4px;
 	background-color: #00aeef
 }
 
-.custom-prescription-dialog .ess {
+.ess {
     padding: 4px;
     background-color: yellow;
 }
@@ -404,3 +405,11 @@ program-details-panel .x-ftree2-node-over {
 	clear: both;
 }
 
+
+.custom-program-add-quiz-dialog #hm_flash_widget {
+	display: none;
+}
+
+.custom-program-add-quiz-dialog input {
+	display: none;
+}
