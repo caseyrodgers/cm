@@ -230,7 +230,7 @@ public class CmStudentDao {
             ps.setInt(2, (isActive) ? 1 : 0);
             rs = ps.executeQuery();
 
-            l = loadStudentBaseSummaries(conn, rs, tutoringEnabledForAdmin);
+            l = loadStudentBaseSummaries(rs, tutoringEnabledForAdmin);
             
             loadChapterInfo(conn, l);
         } catch (Exception e) {
@@ -263,7 +263,7 @@ public class CmStudentDao {
             ps.setInt(2, (isActive) ? 1 : 0);
             rs = ps.executeQuery();
 
-            l = loadStudentBaseSummaries(conn, rs, tutoringEnabledForAdmin);
+            l = loadStudentBaseSummaries(rs, tutoringEnabledForAdmin);
             
             loadChapterInfo(conn, l);
         } catch (Exception e) {
@@ -1611,7 +1611,7 @@ public class CmStudentDao {
             rs = ps.executeQuery();
 
             List<StudentModelI> l = null;
-            l = loadStudentBaseSummaries(conn, rs, null);
+            l = loadStudentBaseSummaries(rs, null);
             if (l.size() == 0)
                 throw new Exception(String.format("Student with UID: %d was not found", uid));
             if (l.size() > 1)
@@ -1630,7 +1630,7 @@ public class CmStudentDao {
             }
             return sm; 
         } catch (Exception e) {
-            logger.error(String.format("*** Error obtaining data for student UID: %d", uid), e);
+            logger.error(String.format("*** Error obtaining data for student UID: %d, includeSelfRegTemplate: %s", uid, includeSelfRegTemplate), e);
             throw new Exception(String.format("*** Error obtaining data for student with UID: %d", uid));
         } finally {
             SqlUtilities.releaseResources(rs, ps, null);
@@ -1708,7 +1708,7 @@ public class CmStudentDao {
         }
     }
     
-    private List<StudentModelI> loadStudentBaseSummaries(final Connection conn, ResultSet rs, Boolean tutoringEnabledForAdmin) throws Exception {
+    private List<StudentModelI> loadStudentBaseSummaries(ResultSet rs, Boolean tutoringEnabledForAdmin) throws Exception {
 
         List<StudentModelI> l = new ArrayList<StudentModelI>();
 
