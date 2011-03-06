@@ -1,5 +1,5 @@
 <!DOCTYPE HTML PUBLIC"-// W3C//DTD HTML 4.01//EN"" http://www.w3.org/TR/html4/strict.dtd">
-<%@page import="hotmath.gwt.shared.client.util.CmException"%>
+<%@page import="hotmath.gwt.cm_rpc.client.rpc.CmRpcException"%>
 <html><!-- InstanceBegin template="/Templates/main.dwt" codeOutsideHTMLIsLocked="false" -->
     <head>
         <!-- InstanceBeginEditable name="doctitle" -->
@@ -32,7 +32,7 @@ pageTracker._trackPageview();
 <%
    Exception exp = (Exception)request.getSession().getAttribute("exception");
    String reason = null;
-   if(exp instanceof CmException) {
+   if(exp instanceof CmRpcException) {
 	   reason = exp.getMessage();   
    }
    else {
