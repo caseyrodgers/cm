@@ -16,6 +16,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.sql.Types;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -292,9 +293,9 @@ public class CmCustomProgramDao {
                         break;
                         
                     case QUIZ:
-                        stmt2.setString(2, "");
-                        stmt2.setString(3, "");
-                        stmt2.setString(4, "");
+                        stmt2.setNull(2, Types.VARCHAR);
+                        stmt2.setNull(3, Types.VARCHAR);
+                        stmt2.setNull(4, Types.VARCHAR);
                         stmt2.setInt(5, getCustomQuizId(conn, adminId,l.getCustomProgramItem()));
                         break;
                 }
