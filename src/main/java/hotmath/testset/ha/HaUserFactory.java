@@ -10,6 +10,7 @@ import hotmath.gwt.cm_tools.client.model.StudentActiveInfo;
 import hotmath.gwt.cm_tools.client.model.StudentModel;
 import hotmath.gwt.cm_tools.client.model.StudentModelI;
 import hotmath.gwt.shared.client.util.CmException;
+import hotmath.gwt.shared.client.util.CmUserException;
 import hotmath.util.HMConnectionPool;
 import hotmath.util.sql.SqlUtilities;
 
@@ -230,11 +231,14 @@ public class HaUserFactory {
 			} finally {
 				SqlUtilities.releaseResources(rs, pstat, null);
 			}
+
 			checkForSchoolLoginFailure(conn, user);
+
 			checkForIndivAcctLoginFailure(conn, user);
+
 			//checkForAdminLoginFailure(;, userName);
-			
-            throw new CmException(CmMessagePropertyReader.getInstance().getProperty("STUDENT_OR_ADMIN_WRONG_PASSWORD_SCHOOL_ACCT"));
+
+            throw new CmUserException(CmMessagePropertyReader.getInstance().getProperty("STUDENT_OR_ADMIN_WRONG_PASSWORD_SCHOOL_ACCT"));
 		} catch (CmException cme) {
 			throw cme;
 		} catch (Exception e) {
@@ -473,11 +477,11 @@ public class HaUserFactory {
         		Boolean cmIsExpired = serviceMap.get("catchup");
         		// if cmIsExpired is not null, then user (student OR admin) must have entered an incorrect password
         		if (cmIsExpired != null) {
-            		throw new CmException(CmMessagePropertyReader.getInstance().getProperty("STUDENT_OR_ADMIN_WRONG_PASSWORD_SCHOOL_ACCT"));
+            		throw new CmUserException(CmMessagePropertyReader.getInstance().getProperty("STUDENT_OR_ADMIN_WRONG_PASSWORD_SCHOOL_ACCT"));
         		}
 
         		if (serviceMap.containsKey("solution")) {
-        			throw new CmException(CmMessagePropertyReader.getInstance().getProperty("SCHOOL_HOTMATH_ACCT"));
+        			throw new CmUserException(CmMessagePropertyReader.getInstance().getProperty("SCHOOL_HOTMATH_ACCT"));
         		}
         	}
 
@@ -512,11 +516,11 @@ public class HaUserFactory {
         		Boolean cmIsExpired = serviceMap.get("catchup");
         		// if cmIsExpired is not null, then indiv user must have entered an incorrect password
         		if (cmIsExpired != null) {
-            		throw new CmException(CmMessagePropertyReader.getInstance().getProperty("WRONG_PASSWORD_INDIV_ACCT"));        			
+            		throw new CmUserException(CmMessagePropertyReader.getInstance().getProperty("WRONG_PASSWORD_INDIV_ACCT"));        			
         		}
 
         		if (serviceMap.containsKey("solution")) {
-        			throw new CmException(CmMessagePropertyReader.getInstance().getProperty("INDIV_HOTMATH_ACCT"));
+        			throw new CmUserException(CmMessagePropertyReader.getInstance().getProperty("INDIV_HOTMATH_ACCT"));
         		}
         	}
 
@@ -558,7 +562,7 @@ public class HaUserFactory {
 	        ps.setString(1, userName);
             rs = ps.executeQuery();
         	if (rs.first()) {
-        		throw new CmException(CmMessagePropertyReader.getInstance().getProperty("ADMIN_WRONG_PASSWORD_SCHOOL_ACCT"));
+        		throw new CmUserException(CmMessagePropertyReader.getInstance().getProperty("ADMIN_WRONG_PASSWORD_SCHOOL_ACCT"));
         	}
         }
         finally {
