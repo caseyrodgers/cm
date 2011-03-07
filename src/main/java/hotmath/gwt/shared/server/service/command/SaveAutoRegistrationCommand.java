@@ -9,7 +9,7 @@ import hotmath.gwt.cm_rpc.server.rpc.ActionHandler;
 import hotmath.gwt.cm_tools.client.model.GroupInfoModel;
 import hotmath.gwt.cm_tools.client.model.StudentModelI;
 import hotmath.gwt.shared.client.rpc.action.SaveAutoRegistrationAction;
-import hotmath.gwt.shared.client.util.CmException;
+import hotmath.gwt.shared.client.util.CmUserException;
 
 import java.sql.Connection;
 import java.util.List;
@@ -34,8 +34,8 @@ import java.util.List;
  */
 public class SaveAutoRegistrationCommand implements ActionHandler<SaveAutoRegistrationAction, RpcData> {
 
-    CmAdminDao daoa = CmAdminDao.getInstance();
-    CmStudentDao dao = new CmStudentDao();
+    private CmAdminDao daoa = CmAdminDao.getInstance();
+    private CmStudentDao dao = new CmStudentDao();
     
     @Override
     public RpcData execute(Connection conn, SaveAutoRegistrationAction action) throws Exception {
@@ -48,7 +48,7 @@ public class SaveAutoRegistrationCommand implements ActionHandler<SaveAutoRegist
         student.setPasscode(groupName.trim());
         Boolean isPasscodeTaken = dao.checkForDuplicatePasscode(conn, student);
         if (isPasscodeTaken == true) {
-            throw new CmException("Group name cannot be the same as the password of an existing student.");
+            throw new CmUserException("Group name cannot be the same as the password of an existing student.");
         }
         
         // first make sure this group exists
