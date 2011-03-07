@@ -4,6 +4,7 @@ import hotmath.HotMathException;
 import hotmath.gwt.cm_tools.client.data.HaBasicUser;
 import hotmath.gwt.cm_tools.client.data.HaBasicUser.UserType;
 import hotmath.gwt.shared.client.util.CmException;
+import hotmath.gwt.shared.client.util.CmExceptionLoginAlreadyConsumed;
 import hotmath.util.HMConnectionPool;
 import hotmath.util.sql.SqlUtilities;
 
