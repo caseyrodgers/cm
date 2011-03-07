@@ -11,6 +11,7 @@ import hotmath.gwt.cm_rpc.client.rpc.Action;
 import hotmath.gwt.cm_rpc.client.rpc.CmRpcException;
 import hotmath.gwt.cm_rpc.client.rpc.Response;
 import hotmath.gwt.cm_rpc.server.rpc.ActionDispatcherListener.ActionExecutionType;
+import hotmath.gwt.shared.client.util.CmUserException;
 import hotmath.gwt.shared.server.service.ActionHandlerManualConnectionManagement;
 import hotmath.util.HMConnectionPool;
 import hotmath.util.sql.SqlUtilities;
@@ -246,18 +247,20 @@ public class ActionDispatcher {
 
             return response;
         } catch (Exception e) {
-        	incrementActionsException(actionType);
-            monitorCountOfExceptions++;
-            
-            sendEmailNotifications(e,clientInfo);
-            
-            failed = true;
-            errMsg = e.getMessage();
-            exceptionClass = e.getClass().getName();
-            if(e instanceof CmRpcException)
-                throw (CmRpcException)e;
-            else 
-                throw new CmRpcException(e);
+        	if ((e instanceof CmUserException) == false) {
+        		incrementActionsException(actionType);
+        		monitorCountOfExceptions++;
+
+        		sendEmailNotifications(e,clientInfo);           	
+
+        		failed = true;
+        		errMsg = e.getMessage();
+        		exceptionClass = e.getClass().getName();
+        		if(e instanceof CmRpcException)
+        			throw (CmRpcException)e;
+        	}
+    	    throw new CmRpcException(e);
+    	    
         } finally {
             if (conn != null) {
                 SqlUtilities.releaseResources(null, null, conn);
