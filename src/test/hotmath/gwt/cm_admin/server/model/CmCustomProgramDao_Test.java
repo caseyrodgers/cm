@@ -32,16 +32,15 @@ public class CmCustomProgramDao_Test extends CmDbTestCase {
     }
     
     public void testCreateNew() throws Exception {
+        String programName = "New Custom Program Test: " + System.currentTimeMillis();
+        
         List<CustomLessonModel> lessons = new ArrayList<CustomLessonModel>();
         lessons.add(new CustomLessonModel("test lesson", "test file", "test subject"));
-        new CmCustomProgramDao().createNewCustomProgram(conn, _user.getAid(),"New Custom Program Test", lessons);    
-    }
-      
-    
-    public void testCreate() throws Exception {
-      List<CustomLessonModel> lessons = new ArrayList<CustomLessonModel>();
-      lessons.add(new CustomLessonModel("test lesson", "test file", "test subject"));
-      new CmCustomProgramDao().saveChanges(conn, 1,"Test Name", lessons);    
+        new CmCustomProgramDao().createNewCustomProgram(conn, _user.getAid(),programName, lessons);
+        
+        lessons.clear();
+        lessons.add(new CustomLessonModel("test lesson new", "test file new", "test subject"));
+        new CmCustomProgramDao().saveChanges(conn, 2,1,programName, lessons);    
     }
     
     public void testDelete() throws Exception {

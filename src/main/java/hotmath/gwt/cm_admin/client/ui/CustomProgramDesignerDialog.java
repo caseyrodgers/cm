@@ -2,6 +2,7 @@ package hotmath.gwt.cm_admin.client.ui;
 
 import hotmath.gwt.cm_admin.client.ui.CustomProgramAddQuizDialog.Callback;
 import hotmath.gwt.cm_rpc.client.rpc.CmList;
+import hotmath.gwt.cm_rpc.client.rpc.RpcData;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.model.CmAdminModel;
@@ -11,9 +12,14 @@ import hotmath.gwt.cm_tools.client.ui.CmLogger;
 import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.data.CmAsyncRequest;
+import hotmath.gwt.shared.client.model.CustomQuizDef;
 import hotmath.gwt.shared.client.rpc.RetryAction;
 import hotmath.gwt.shared.client.rpc.action.CustomProgramAction;
 import hotmath.gwt.shared.client.rpc.action.CustomProgramAction.ActionType;
+import hotmath.gwt.shared.client.rpc.action.DeleteCustomQuizAction;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import com.extjs.gxt.ui.client.Style.LayoutRegion;
 import com.extjs.gxt.ui.client.Style.Orientation;
@@ -26,6 +32,7 @@ import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
+import com.extjs.gxt.ui.client.event.MessageBoxEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.store.Store;
@@ -35,6 +42,9 @@ import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.Html;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.ListView;
+import com.extjs.gxt.ui.client.widget.MessageBox;
+import com.extjs.gxt.ui.client.widget.TabItem;
+import com.extjs.gxt.ui.client.widget.TabPanel;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.button.ButtonBar;
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
@@ -113,14 +123,14 @@ public class CustomProgramDesignerDialog extends CmWindow {
 
     ListView<CustomLessonModel> _listAll = new ListView<CustomLessonModel>();
     ListView<CustomLessonModel> _listSelected = new ListView<CustomLessonModel>();
+    ListView<CustomLessonModel> _listCustomPrograms = new ListView<CustomLessonModel>();
     Button _btnClearAll, _btnSave;
     TextField<String> _programName = new TextField<String>();
     private void buildGui() {
         setLayout(new BorderLayout());
         
-        String template = "<tpl for=\".\"><div class='x-view-item'><span style='font-size:.5em;width: 5px;' class='{subjectStyleClass}'>&nbsp;</span>&nbsp;{" + "lesson" + "}</div></tpl>";
+        String template = "<tpl for=\".\"><div class='x-view-item'><span style='font-size:.5em;width: 5px;' class='{subjectStyleClass}'>&nbsp;</span>&nbsp;{" + "customProgramItem" + "}</div></tpl>";
 
-        
         LayoutContainer lc = new LayoutContainer();
         lc.setLayout(new RowLayout(Orientation.HORIZONTAL));
        
@@ -154,31 +164,31 @@ public class CustomProgramDesignerDialog extends CmWindow {
         data.setMargins(new Margins(5));
         
         MyListContainer sectionList = new MyListContainer(_listSelected,"Sections in Program",false);
-
-        sectionList.getHeader().addTool(new Button("Update Quiz", new SelectionListener<ButtonEvent>() {
-            @Override
-            public void componentSelected(ButtonEvent ce) {
-                new CustomProgramAddQuizDialog(new Callback() {
-                    public void quizCreated() {
-                        
-                    }
-                });
-            }
-        }));
-        sectionList.getHeader().addTool(new Button("Add Quiz", new SelectionListener<ButtonEvent>() {
-            @Override
-            public void componentSelected(ButtonEvent ce) {
-                new CustomProgramAddQuizDialog(new Callback() {
-                    public void quizCreated() {
-                        
-                    }
-                });
-            }
-        }));
         
-        lc.add(new MyListContainer(_listAll,"All Available Lessons",true), data);
+        final TabPanel tabPanel = new TabPanel();
+        TabItem lessonsTab = new TabItem("Lessons");
+        tabPanel.add(lessonsTab);        
+        lessonsTab.add(new MyListContainer(_listAll,"All Available Lessons",true));
+        lessonsTab.setLayout(new FitLayout());
+        
+        final TabItem customQuizzesTab = new TabItem("Custom Quizzes");
+        customQuizzesTab.setLayout(new FitLayout());
+        customQuizzesTab.add( createCustomQuizzesPanel());
+        tabPanel.add(customQuizzesTab);
+        
+        tabPanel.addListener(Events.Select,new Listener<BaseEvent>() {
+            @Override
+            public void handleEvent(BaseEvent be) {
+                if(tabPanel.getSelectedItem() == customQuizzesTab) {
+                    loadCustomQuizDefinitions();
+                }
+            }
+        });
+        
+        lc.add(tabPanel, data);
         lc.add(sectionList, data);
 
+        
         add(lc, new BorderLayoutData(LayoutRegion.CENTER));
 
         _btnClearAll = new Button("Clear All", new SelectionListener<ButtonEvent>() {
@@ -241,6 +251,8 @@ public class CustomProgramDesignerDialog extends CmWindow {
         if(yn) {
             new ListViewDragSource(_listAll);
             new ListViewDragSource(_listSelected);
+            new ListViewDragSource(_listCustomPrograms);
+
             _btnSave.setEnabled(true);
             _btnClearAll.setEnabled(true);
             _programName.setEnabled(true);
@@ -419,6 +431,101 @@ public class CustomProgramDesignerDialog extends CmWindow {
         }.attempt();
     }
     
+    private void loadCustomQuizDefinitions() {
+
+            new RetryAction<CmList<CustomQuizDef>>() {
+                @Override
+                public void attempt() {
+                    CmBusyManager.setBusy(true);
+                    GetCustProgQuizDefsAction action = new GetCustProgQuizDefsAction(adminModel.getId());
+                    setAction(action);
+                    CmShared.getCmService().execute(action, this);
+                }
+
+                @Override
+                public void oncapture(CmList<CustomQuizDef> defs) {
+                    CmBusyManager.setBusy(false);              
+                    List<CustomLessonModel> gmodels = new ArrayList<CustomLessonModel>();
+                    for(int i=0,t=defs.size();i<t;i++) {
+                        gmodels.add(new CustomLessonModel(defs.get(i).getQuizName()));
+                    }
+                    _listCustomPrograms.getStore().removeAll();                    
+                    _listCustomPrograms.getStore().add(gmodels);
+                }
+            }.register();        
+    }
+    
+    
+    private void removeCustomQuiz(final CustomQuizDef def) {
+
+        new RetryAction<RpcData>() {
+            @Override
+            public void attempt() {
+                CmBusyManager.setBusy(true);
+                DeleteCustomQuizAction action = new DeleteCustomQuizAction(adminModel.getId(), def.getQuizName());
+                setAction(action);
+                CmShared.getCmService().execute(action, this);
+            }
+
+            @Override
+            public void oncapture(RpcData result) {
+                CmBusyManager.setBusy(false);
+                loadCustomQuizDefinitions();
+            }
+        }.register();        
+    }
+    
+    private LayoutContainer createCustomQuizzesPanel() {
+        
+        ContentPanel cpPanel = new ContentPanel();
+        
+        cpPanel.getHeader().addTool(new Button("Create", new SelectionListener<ButtonEvent>() {
+            @Override
+            public void componentSelected(ButtonEvent ce) {
+                new CustomProgramAddQuizDialog(new Callback() {
+                    @Override
+                    public void quizCreated() {
+                        loadCustomQuizDefinitions();
+                    }
+                },null);
+            }
+        }));
+        
+        cpPanel.getHeader().addTool(new Button("Edit", new SelectionListener<ButtonEvent>() {
+            @Override
+            public void componentSelected(ButtonEvent ce) {
+                
+                CustomQuizDef def = new CustomQuizDef(_listCustomPrograms.getSelectionModel().getSelectedItem().getQuiz(),adminModel.getId());
+                new CustomProgramAddQuizDialog(new Callback() {
+                    @Override
+                    public void quizCreated() {
+                        loadCustomQuizDefinitions();
+                    }
+                },def);
+            }
+        }));
+
+        
+        cpPanel.getHeader().addTool(new Button("Delete", new SelectionListener<ButtonEvent>() {
+            @Override
+            public void componentSelected(ButtonEvent ce) {
+                final CustomQuizDef def = new CustomQuizDef(_listCustomPrograms.getSelectionModel().getSelectedItem().getQuiz(),adminModel.getId());
+                MessageBox.confirm("Delete Custom Quiz?", "Are you sure you want to delete custom quiz '" + def.getQuizName() + "'?", new Listener<MessageBoxEvent>() {
+                    public void handleEvent(MessageBoxEvent be) {
+                        removeCustomQuiz(def);
+                    }
+                });
+            }
+        }));
+
+        _listCustomPrograms.setDisplayProperty("customProgramItem");
+        _listCustomPrograms.setStore(new ListStore<CustomLessonModel>());
+        cpPanel.setLayout(new FitLayout());
+        cpPanel.add(_listCustomPrograms);
+
+        return cpPanel;
+    }
+    
     static class LessonNameStoreSorter extends StoreSorter<CustomLessonModel> {
         @Override
         public int compare(Store<CustomLessonModel> store, CustomLessonModel m1, CustomLessonModel m2, String property) {
@@ -468,8 +575,8 @@ public class CustomProgramDesignerDialog extends CmWindow {
                     for(int i=lastChecked;i<cnt;i++) {
                         CustomLessonModel model = listView.getStore().getAt(i);
                         lastChecked=i;
-                        if(model.getLesson().toLowerCase().indexOf(value.toLowerCase()) > -1) {
-                            if(lesson != null && lesson.getLesson().equals(model.getLesson()))
+                        if(model.getCustomProgramItem().toLowerCase().indexOf(value.toLowerCase()) > -1) {
+                            if(lesson != null && lesson.getCustomProgramItem().equals(model.getCustomProgramItem()))
                                 continue;
                             
                             listView.getSelectionModel().select(listView.getStore().getAt(i),false);

@@ -2028,8 +2028,71 @@ from inmh_map m
 where m.file = ?
 and b.grade_level <= ?
 and d.is_active = 1
-order by guid;
+order by guid
           
 
 
+.key=GET_CUSTOM_QUIZ_DEFS
+
+select q.name as quiz_name
+from  HA_CUSTOM_QUIZ q
+where admin_id = ?
+order by name
+
           
+.key=DELETE_CUSTOM_QUIZ_IDS
+
+delete qi
+from HA_CUSTOM_QUIZ_IDS qi JOIN HA_CUSTOM_QUIZ q on qi.qid = q.qid
+where q.admin_id = ?
+and   q.name = ?
+
+
+.key=DELETE_CUSTOM_QUIZ
+
+delete
+from HA_CUSTOM_QUIZ
+where admin_id = ?
+and name = ?
+
+
+.key=ADD_CUSTOM_QUIZ
+
+insert into HA_CUSTOM_QUIZ(admin_id, name)
+values(?, ?)
+
+          
+.key=ADD_CUSTOM_QUIZ_IDS
+
+insert into HA_CUSTOM_QUIZ_IDS(qid, pid, load_order)
+value(?,?,?)
+
+
+
+.key=GET_CUSTOM_QUIZ_IDS
+
+select q.name, qi.pid
+from HA_CUSTOM_QUIZ q
+  JOIN HA_CUSTOM_QUIZ_IDS qi on qi.qid = q.qid
+where q.admin_id = ?
+and q.name = ?  
+order by qi.load_order;
+
+          
+         
+.key=GET_CUSTOM_QUIZ_ID
+
+select qid as custom_quiz_id
+from HA_CUSTOM_QUIZ q
+where admin_id = ?
+and name = ?         
+
+
+.key=GET_CUSTOM_PROGRAM_ITEMS
+
+
+select l.*,q.name as custom_quiz_name
+from HA_CUSTOM_PROGRAM_LESSON l
+  LEFT JOIN HA_CUSTOM_QUIZ q on q.qid = l.custom_quiz
+where program_id = ?
+order by l.id

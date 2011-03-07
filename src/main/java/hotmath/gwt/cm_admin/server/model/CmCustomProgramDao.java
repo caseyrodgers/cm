@@ -210,13 +210,23 @@ public class CmCustomProgramDao {
      * @throws Exception
      */
     public CmList<CustomLessonModel> getCustomProgramDefinition(final Connection conn, Integer programId) throws Exception {
-        Statement stmt=null;
+        PreparedStatement stmt=null;
         try {
             CmList<CustomLessonModel> lessons = new CmArrayList<CustomLessonModel>();
-            stmt = conn.createStatement();
-            ResultSet rs = stmt.executeQuery("select * from HA_CUSTOM_PROGRAM_LESSON where program_id = " + programId + " order by id");
+            String sql = CmMultiLinePropertyReader.getInstance().getProperty("GET_CUSTOM_PROGRAM_ITEMS");
+            stmt = conn.prepareStatement(sql);
+            stmt.setInt(1, programId);
+            ResultSet rs = stmt.executeQuery();
             while(rs.next()) {
-                lessons.add(new CustomLessonModel(rs.getString("lesson"),rs.getString("file"), rs.getString("subject")));
+                String customQuizName = rs.getString("custom_quiz_name");
+                if(customQuizName != null && customQuizName.length() > 0) {
+                    /** is a quiz */
+                    lessons.add(new CustomLessonModel(customQuizName));
+                }
+                else {
+                    /** is a lesson */
+                    lessons.add(new CustomLessonModel(rs.getString("lesson"),rs.getString("file"), rs.getString("subject")));
+                }
             }
             return lessons;
         }
@@ -256,7 +266,7 @@ public class CmCustomProgramDao {
         }
     }
 
-    public CmList<CustomLessonModel> saveChanges(final Connection conn, Integer progId, String name, List<CustomLessonModel> lessons) throws Exception {
+    public CmList<CustomLessonModel> saveChanges(final Connection conn, int adminId, Integer progId, String name, List<CustomLessonModel> lessons) throws Exception {
         makeSureNameIsValid(conn, name);
 
         PreparedStatement stmt1=null, stmt2=null;
@@ -268,13 +278,26 @@ public class CmCustomProgramDao {
                 throw new CmException("Could not update Custom Program title: " + progId);
             
             conn.createStatement().executeUpdate("delete from HA_CUSTOM_PROGRAM_LESSON where program_id = " + progId);
-            String sql = "insert into HA_CUSTOM_PROGRAM_LESSON(program_id,lesson,file,subject)values(?,?,?,?)";
+            String sql = "insert into HA_CUSTOM_PROGRAM_LESSON(program_id,lesson,file,subject,custom_quiz)values(?,?,?,?,?)";
             stmt2 = conn.prepareStatement(sql);
             stmt2.setInt(1, progId);
             for(CustomLessonModel l: lessons) {
-                stmt2.setString(2, l.getLesson());
-                stmt2.setString(3, l.getFile());
-                stmt2.setString(4, l.getSubject());
+                
+                switch(l.getCustomProgramType()) {
+                    case LESSON:
+                        stmt2.setString(2, l.getLesson());
+                        stmt2.setString(3, l.getFile());
+                        stmt2.setString(4, l.getSubject());
+                        stmt2.setInt(5, 0);
+                        break;
+                        
+                    case QUIZ:
+                        stmt2.setString(2, "");
+                        stmt2.setString(3, "");
+                        stmt2.setString(4, "");
+                        stmt2.setInt(5, getCustomQuizId(conn, adminId,l.getCustomProgramItem()));
+                        break;
+                }
                 
                 if(stmt2.executeUpdate() != 1) {
                     throw new CmException("Could not save new custom program lesson: " + progId + ", " + l);
@@ -286,6 +309,24 @@ public class CmCustomProgramDao {
             SqlUtilities.releaseResources(null,stmt1, null);
             SqlUtilities.releaseResources(null,stmt2, null);
         }
+    }
+    
+    private int getCustomQuizId(final Connection conn, int adminId, String customName) throws Exception {
+        PreparedStatement stmt1=null;
+        try {
+            String sql = CmMultiLinePropertyReader.getInstance().getProperty("GET_CUSTOM_QUIZ_ID");
+            stmt1 = conn.prepareStatement(sql);
+            stmt1.setInt(1, adminId);
+            stmt1.setString(2, customName);
+            ResultSet rs = stmt1.executeQuery();
+            if(!rs.first())
+                throw new CmException("Name is invalid.  Custom program name '" + customName + "' could not be found.");
+            
+            return rs.getInt("custom_quiz_id");
+        }
+        finally {
+            SqlUtilities.releaseResources(null,stmt1, null);
+        }         
     }
     
     /** Make sure the name can be used ... it is not a system template name */
@@ -323,7 +364,7 @@ public class CmCustomProgramDao {
                 throw new CmException("Could not generate a new custom program id: " + adminId + ", " + name + ", " + lessons);
             int newProgId = rs.getInt(1);
             
-            saveChanges(conn, newProgId, name,lessons);
+            saveChanges(conn,adminId, newProgId, name,lessons);
             
             return new CustomProgramModel(name, newProgId, 0, 0,false);
         }

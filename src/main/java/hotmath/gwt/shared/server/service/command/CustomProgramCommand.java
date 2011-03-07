@@ -39,7 +39,7 @@ public class CustomProgramCommand implements ActionHandler<CustomProgramAction, 
                 return new CmCustomProgramDao().getCustomProgramDefinition(conn, action.getProgramId());
                 
             case SAVE:
-                return new CmCustomProgramDao().saveChanges(conn, action.getProgramId(), action.getProgramName(), action.getLessons());
+                return new CmCustomProgramDao().saveChanges(conn, action.getAdminId(),action.getProgramId(), action.getProgramName(), action.getLessons());
                   
             case CREATE:                
                 CustomProgramModel newProgram = new CmCustomProgramDao().createNewCustomProgram(conn, action.getAdminId(), action.getProgramName(), action.getLessons());
