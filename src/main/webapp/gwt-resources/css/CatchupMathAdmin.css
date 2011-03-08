@@ -312,6 +312,15 @@ trending-data-student-list-item {
     background-color: yellow;
 }
 
+.is_quiz {
+    background-color: green;
+    font-weight: bold;
+}
+
+.is_quiz_subject {
+}
+	
+
 
 /** On RegisterStudent program combo box place
     a small square at first position of each 

@@ -37,6 +37,9 @@ public class CustomLessonModel extends BaseModel implements Response {
     public CustomLessonModel(String quizName) {
         this.customProgramType = Type.QUIZ;
         setQuiz(quizName);
+        
+        set("subjectStyleClass", "is_quiz_subject");
+        set("customProgramItemClass", "is_quiz");
     }
     
     public void setQuiz(String name) {

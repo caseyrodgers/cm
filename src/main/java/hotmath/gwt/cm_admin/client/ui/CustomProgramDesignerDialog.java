@@ -129,7 +129,7 @@ public class CustomProgramDesignerDialog extends CmWindow {
     private void buildGui() {
         setLayout(new BorderLayout());
         
-        String template = "<tpl for=\".\"><div class='x-view-item'><span style='font-size:.5em;width: 5px;' class='{subjectStyleClass}'>&nbsp;</span>&nbsp;{" + "customProgramItem" + "}</div></tpl>";
+        String template = "<tpl for=\".\"><div class='x-view-item {customProgramItemClass}'><span style='font-size:.5em;width: 5px;' class='{subjectStyleClass}'>&nbsp;</span>&nbsp;{" + "customProgramItem" + "}</div></tpl>";
 
         LayoutContainer lc = new LayoutContainer();
         lc.setLayout(new RowLayout(Orientation.HORIZONTAL));
@@ -283,7 +283,7 @@ public class CustomProgramDesignerDialog extends CmWindow {
         
         String msg = null;
         if(isEditable)
-            msg = "Drag and drop lessons from left side to create and reorder the custom program";
+            msg = "Drag and drop lessons or custom quizzes from left side to create and reorder the custom program";
         else {
             if(customProgram.getIsTemplate())
                 msg = "<span style='color: red;font-weight: bold'>This program is a Built-in Custom Program.  You can make a copy to customize.</span>";
