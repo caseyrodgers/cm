@@ -6,6 +6,7 @@ import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.ui.CmLogger;
 import hotmath.gwt.shared.client.data.CmAsyncRequestImplDefault;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
+import hotmath.gwt.shared.client.eventbus.CmEventListener;
 import hotmath.gwt.shared.client.eventbus.EventBus;
 import hotmath.gwt.shared.client.eventbus.EventType;
 import hotmath.gwt.shared.client.model.CmPartner;
@@ -34,9 +35,8 @@ public class CmShared implements EntryPoint {
     	setupServices();
     }
 
-    // @Override
-    public void onModuleLoad() {
-    }
+    @Override
+    public void onModuleLoad() { }
 
     static Map<String, String> _queryParameters = new HashMap<String, String>();
 
@@ -99,7 +99,27 @@ public class CmShared implements EntryPoint {
     
     static {
         _queryParameters = readQueryString();
+        
+        EventBus.getInstance().addEventListener(new CmEventListener() {
+            
+            @Override
+            public void handleEvent(CmEvent event) {
+                if(event.getEventType() == EventType.EVENT_TYPE_MATHJAX_RENDER) {
+                    /** Call JSNI routine to process any embedded MathML
+                     * 
+                     */
+                    CmLogger.info("Processing MathML with MathJax");
+                    processMathJax();
+                }
+            }
+        });
     }
+    
+    
+    static native void processMathJax() /*-{
+        // defined in CatchupMath.js
+        $wnd.processMathJax();
+    }-*/; 
     
     /**
      * Verify login attempt by reading security key and making sure it
@@ -192,6 +212,8 @@ public class CmShared implements EntryPoint {
             displayLoginError(e);
         }
     }
+    
+    
     
     
     static private String getSecurityKey() {

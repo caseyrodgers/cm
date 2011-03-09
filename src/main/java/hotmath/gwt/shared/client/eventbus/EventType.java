@@ -170,5 +170,11 @@ public enum EventType{
      * 
      */
     EVENT_TYPE_PRINT_HIGHLIGHT_REPORT,
-
+    
+    
+    /** Fire the MathJax processing to make sure
+     *  all MathJax has been fully rendered.
+     *  
+     */
+    EVENT_TYPE_MATHJAX_RENDER
 }

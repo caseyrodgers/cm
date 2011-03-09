@@ -260,7 +260,7 @@ function initializeQuizQuestion(question) {
         
         var id='answer_id_' + uniquer;
 
-        var answerNum = alphabet[i];
+        var answerNum = alphabet.charAt(i);
         
         /** append the input element */
         var inputElement = "<span class='question-input' style='margin-right: 10px'>" +
@@ -268,6 +268,22 @@ function initializeQuizQuestion(question) {
                            '&nbsp;' + answerNum + '</span>'
         
         answerEle.innerHTML = inputElement + answerEle.innerHTML;
+        
+        if(elems.length > 0) {
+            elems[1].style.display = 'none';
+        }
+    }
+}
+
+
+function hideQuestionResult(question) {
+    var answers = question.getElementsByTagName("li");
+    for(var i=0, t=answers.length; i < t; i++) {
+        answer = answers[i];
+        var elems = answer.getElementsByTagName("div");
+        if(elems.length > 1) {
+            elems[1].style.display = 'none';
+        }
     }
 }
 
@@ -275,5 +291,20 @@ function editQuizQuestion(o) {
     var pid = o.parentNode.parentNode.getAttribute('guid');
     if(pid) {
         var w = window.open('/solution_editor/SolutionEditor.html?pid=' + pid);
+    }
+}
+
+
+function hideQuizQuestionResults() {
+    var ts = document.getElementById('testset_div');
+    if(ts) {
+        var divs = ts.getElementsByTagName("div");
+        for(var i=0, t=divs.length; i < t; i++) {
+            var d = divs[i];
+            if(d.className == 'hm_question_def') {
+                hideQuestionResult(d);
+            }
+        }
+        processMathJax();
     }
 }

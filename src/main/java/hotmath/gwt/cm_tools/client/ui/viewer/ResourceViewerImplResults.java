@@ -5,6 +5,9 @@ import hotmath.gwt.cm_rpc.client.rpc.RpcData;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.ui.CmMainPanel;
 import hotmath.gwt.shared.client.CmShared;
+import hotmath.gwt.shared.client.eventbus.CmEvent;
+import hotmath.gwt.shared.client.eventbus.EventBus;
+import hotmath.gwt.shared.client.eventbus.EventType;
 import hotmath.gwt.shared.client.rpc.RetryAction;
 import hotmath.gwt.shared.client.rpc.action.GetQuizResultsHtmlAction;
 
@@ -81,7 +84,7 @@ public class ResourceViewerImplResults extends CmResourcePanelImplWithWhiteboard
 
                     addResource(_quizPanel, getResourceItem().getTitle() + ": " + correct + " out of " + total);
 
-                    markAnswers(resultJson);
+                    processQuestions(resultJson);
 
                     CmMainPanel.setQuizQuestionDisplayAsActive(CmMainPanel.getLastQuestionPid());
                 } finally {
@@ -93,6 +96,13 @@ public class ResourceViewerImplResults extends CmResourcePanelImplWithWhiteboard
         return this;
     }
 
+    
+    private void processQuestions(String resultJson) {
+        EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_MATHJAX_RENDER));
+        hideAnswerResults();
+        markAnswers(resultJson);
+    }
+    
     /**
      * Parse JSONized array of HaTestRunResult objects
      * 
@@ -128,6 +138,11 @@ public class ResourceViewerImplResults extends CmResourcePanelImplWithWhiteboard
                                                                          }-*/;
 
    
+    private native void hideAnswerResults() /*-{
+        $wnd.hideQuizQuestionResults();
+    
+    }-*/;
+    
     @Override
     public Widget getTutorDisplay() {
         return _quizPanel;
