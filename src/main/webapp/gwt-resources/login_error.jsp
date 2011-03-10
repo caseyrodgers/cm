@@ -30,12 +30,8 @@ pageTracker._trackPageview();
         <!-- InstanceBeginEditable name="head" -->
 
 <%
-   Exception exp = (Exception)request.getSession().getAttribute("exception");
-   String reason = null;
-   if(exp instanceof CmUserException) {
-	   reason = exp.getMessage();   
-   }
-   else {
+   String reason = (String)request.getSession().getAttribute("error-msg");
+   if(reason == null) {
 	   reason = "Invalid Login Name and/or Password";
    }
    
@@ -133,7 +129,7 @@ pageTracker._trackPageview();
 	              <br/>
 		          <a onclick="document.getElementById('more-info').style.display = 'block';this.style.display = 'none'">More Info</a>
 		          <div id='more-info' style='display: none'>
-		             <%= exp != null?exp.getMessage():"No more info" %>
+		             <%= reason != null?reason:"No more info" %>
 		          </div>
 	          </div>
 	          <%

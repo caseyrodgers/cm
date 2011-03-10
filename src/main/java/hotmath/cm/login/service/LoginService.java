@@ -3,8 +3,10 @@ package hotmath.cm.login.service;
 import hotmath.cm.login.service.lcom.LcomManager;
 import hotmath.cm.login.service.lcom.LcomStudentSignup;
 import hotmath.cm.login.service.lcom.LcomTeacherSignup;
+import hotmath.cm.util.ErrorMessageHolder;
 import hotmath.gwt.cm_rpc.client.ClientInfo;
 import hotmath.gwt.cm_rpc.client.ClientInfo.UserType;
+import hotmath.gwt.cm_rpc.client.ErrorMessage;
 import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_rpc.client.rpc.GetUserInfoAction;
 import hotmath.gwt.cm_rpc.server.rpc.ActionDispatcher;
@@ -89,11 +91,17 @@ public class LoginService extends HttpServlet {
 			HaBasicUser cmUser = ActionDispatcher.getInstance().execute(loginAction);
 
 			if (cmUser == null) {
+				ErrorMessage em = ErrorMessageHolder.get();
+				if (em != null) {
+					req.getSession().setAttribute("error-msg", em.getMessage());
+					ErrorMessageHolder.remove();
+				}
 				req.getRequestDispatcher("/gwt-resources/login_error.jsp").forward(req, resp);
 				LOGGER.warn(String.format("*** Login failed for user: %s, pwd: %s", user, pwd));
 				return;
 			}
 
+			// TODO: move following to LoginCommand
 			HaLoginInfo loginInfo = new HaLoginInfo(cmUser);
 
 			/** either redirect this user to CM using current information
@@ -185,7 +193,7 @@ public class LoginService extends HttpServlet {
 			}
 		}
 		catch(Exception e) {
-			req.getSession().setAttribute("exception", e);
+			req.getSession().setAttribute("error-msg", e.getMessage());
 			req.getRequestDispatcher("/gwt-resources/login_error.jsp").forward(req, resp);
 			LOGGER.error(String.format("*** Login failed for user: %s, pwd: %s", user, pwd), e);
 		}
