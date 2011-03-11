@@ -53,7 +53,7 @@ public class CmServiceImpl extends RemoteServiceServlet implements CmService {
     		clientInfo = new ClientInfo();
     		clientInfo.setUserType(UserType.UNKNOWN);
         	clientInfo.setActionId(unknownActionId);
-    		LOGGER.warn("+++ execute(): ClientInfo from ThreadLocal is NULL");
+    		LOGGER.warn("+++ doUnexpectedFailure(): ClientInfo from ThreadLocal is NULL");
     	}
 
         LOGGER.info(String.format("RPC Action (userId:%d,userType:%s) (ID:%s) %s toString: %s - %s FAILED; elapsed time: %d msec",
