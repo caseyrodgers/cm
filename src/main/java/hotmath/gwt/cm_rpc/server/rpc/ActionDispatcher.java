@@ -247,7 +247,7 @@ public class ActionDispatcher {
 
             return response;
         } catch (Exception e) {
-        	if ((e instanceof CmUserException) == false) {
+        	if ((e instanceof CmExceptionDoNotNotify) == false) {
         		incrementActionsException(actionType);
         		monitorCountOfExceptions++;
 
@@ -292,7 +292,7 @@ public class ActionDispatcher {
      * @param ex
      */
     private void sendEmailNotifications(final Exception ex, final ClientInfo clientInfo) {
-        
+
         /** send mail in separate thread to make sure
          *  not to block server thread.
          */

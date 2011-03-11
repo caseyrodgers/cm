@@ -515,11 +515,9 @@ public class HaTestDao {
      */
     static public void updateTestRunSessions(Connection conn, Integer runId) throws Exception {
         /**
-         * now pre-create the prescription, and extract the total number of
-         * sessions
+         * now pre-create the prescription, and extract the total number of sessions
          * 
-         * NOTE: this is needed because, we need the test_run to create the
-         * prescription.
+         * NOTE: this is needed because, we need the test_run to create the prescription.
          */
         AssessmentPrescription pres = AssessmentPrescriptionManager.getInstance().getPrescription(conn, runId);
         int totalSessions = pres.getSessions().size();

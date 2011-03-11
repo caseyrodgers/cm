@@ -77,9 +77,10 @@ public class GetUserInfoCommand implements ActionHandler<GetUserInfoAction, User
                 if(activeInfo.getActiveRunId() == 0) {
                     /** create custom prescription 
                      * 
+                     *  One time per program use.
+                     * 
                      *  This is done here because we do not want the user
-                     *  to be directed to a quiz because no active information
-                     *  would have been set.
+                     *  to be directed to a quiz
                      *  
                      *  Alternatively: ... I see no alternate because the flow is:
                      *  
@@ -89,6 +90,10 @@ public class GetUserInfoCommand implements ActionHandler<GetUserInfoAction, User
                      *  3. The client will use this information and choose
                      *     where to send the user.
                      * 
+                     */
+                    
+                    /** Now that CPs can have CQs maybe this should only be done
+                     *  when the first CPi (custom program item) is not a quiz.
                      */
                     HaTest custTest = HaTestDao.createTest(conn, action.getUserId(),new HaTestDefDao().getTestDef(conn, CmProgram.CUSTOM_PROGRAM.getDefId()), -1);
                     custTest.setProgramInfo(userProgram);

@@ -223,9 +223,10 @@ public class CmCustomProgramDao {
             stmt.setInt(1, programId);
             ResultSet rs = stmt.executeQuery();
             while(rs.next()) {
+                int quizId = rs.getInt("custom_quiz");
                 String customQuizName = rs.getString("custom_quiz_name");
-                int quizId = rs.getInt("quiz_id");
-                if(customQuizName != null && customQuizName.length() > 0) {
+                
+                if(quizId > 0) {
                     /** is a quiz */
                     lessons.add(new CustomLessonModel(quizId, customQuizName));
                 }

@@ -1,5 +1,7 @@
 package hotmath.gwt.shared.client.util;
 
+import hotmath.gwt.cm_rpc.server.rpc.CmExceptionDoNotNotify;
+
 
 /** Represents any type of user error
  *    - duplicate passcode
@@ -9,7 +11,7 @@ package hotmath.gwt.shared.client.util;
  * @author casey
  *
  */
-public class CmUserException extends CmException {
+public class CmUserException extends CmException implements CmExceptionDoNotNotify{
     
 	private static final long serialVersionUID = 6319270152152288015L;
 
