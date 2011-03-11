@@ -7,6 +7,7 @@ import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.model.CmAdminModel;
 import hotmath.gwt.cm_tools.client.model.CustomLessonModel;
+import hotmath.gwt.cm_tools.client.model.CustomLessonModel.Type;
 import hotmath.gwt.cm_tools.client.model.CustomProgramModel;
 import hotmath.gwt.cm_tools.client.ui.CmLogger;
 import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
@@ -20,6 +21,8 @@ import hotmath.gwt.shared.client.rpc.action.DeleteCustomQuizAction;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import sb.logger.SbLogger;
 
 import com.extjs.gxt.ui.client.Style.LayoutRegion;
 import com.extjs.gxt.ui.client.Style.Orientation;
@@ -163,7 +166,15 @@ public class CustomProgramDesignerDialog extends CmWindow {
         RowData data = new RowData(.5, 1);
         data.setMargins(new Margins(5));
         
-        MyListContainer sectionList = new MyListContainer(_listSelected,"Sections in Program",false);
+        MyListContainer sectionList = new MyListContainer(_listSelected,"Selections in Program",false);
+        Button addQuiz = new Button("Add Quiz", new SelectionListener<ButtonEvent>() {
+            @Override
+            public void componentSelected(ButtonEvent ce) {
+                addCustomQuizAuto();
+            }
+        });
+        addQuiz.setToolTip("Create a quiz based on current lessons in custom program.");
+        sectionList.getHeader().addTool(addQuiz);
         
         final TabPanel tabPanel = new TabPanel();
         TabItem lessonsTab = new TabItem("Lessons");
@@ -219,6 +230,34 @@ public class CustomProgramDesignerDialog extends CmWindow {
 
         createButtonBarLedgend(getButtonBar());
         getAllLessonData();
+    }
+
+    private void addCustomQuizAuto() {
+        try {
+            addCustomQuizAutoAux();
+        }
+        catch(Exception e) {
+            CmLogger.error("Error creating custom quiz: " , e);
+            MessageBox.alert("Error creating custom quiz", e.getLocalizedMessage(),new Listener<MessageBoxEvent>() {
+                @Override
+                public void handleEvent(MessageBoxEvent be) {
+                }
+            });
+        }
+    }
+
+    private void addCustomQuizAutoAux() throws Exception {
+        List<CustomLessonModel> cpLessons = _listSelected.getStore().getModels();
+        if(cpLessons.size() == 0) {
+            throw new Exception("Custom program must have at least one lesson.");
+        }
+        
+        if(cpLessons.get(cpLessons.size()-1).getCustomProgramType() == Type.QUIZ) {
+            throw new Exception("Custom program already has a quiz as last item.");
+        }
+        
+        CustomLessonModel autoQuiz = new CustomLessonModel(0,"Auto Quiz");
+        _listSelected.getStore().add(autoQuiz);
     }
     
     
@@ -447,7 +486,7 @@ public class CustomProgramDesignerDialog extends CmWindow {
                     CmBusyManager.setBusy(false);              
                     List<CustomLessonModel> gmodels = new ArrayList<CustomLessonModel>();
                     for(int i=0,t=defs.size();i<t;i++) {
-                        gmodels.add(new CustomLessonModel(defs.get(i).getQuizName()));
+                        gmodels.add(new CustomLessonModel(defs.get(i).getQuizId(), defs.get(i).getQuizName()));
                     }
                     _listCustomPrograms.getStore().removeAll();                    
                     _listCustomPrograms.getStore().add(gmodels);
@@ -495,7 +534,8 @@ public class CustomProgramDesignerDialog extends CmWindow {
             @Override
             public void componentSelected(ButtonEvent ce) {
                 
-                CustomQuizDef def = new CustomQuizDef(_listCustomPrograms.getSelectionModel().getSelectedItem().getQuiz(),adminModel.getId());
+                CustomLessonModel quiz = _listCustomPrograms.getSelectionModel().getSelectedItem();
+                CustomQuizDef def = new CustomQuizDef(quiz.getQuizId(), quiz.getQuiz(),adminModel.getId());
                 new CustomProgramAddQuizDialog(new Callback() {
                     @Override
                     public void quizCreated() {
@@ -509,7 +549,8 @@ public class CustomProgramDesignerDialog extends CmWindow {
         cpPanel.getHeader().addTool(new Button("Delete", new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent ce) {
-                final CustomQuizDef def = new CustomQuizDef(_listCustomPrograms.getSelectionModel().getSelectedItem().getQuiz(),adminModel.getId());
+                CustomLessonModel quiz = _listCustomPrograms.getSelectionModel().getSelectedItem();
+                final CustomQuizDef def = new CustomQuizDef(quiz.getQuizId(), quiz.getQuiz(),adminModel.getId());
                 MessageBox.confirm("Delete Custom Quiz?", "Are you sure you want to delete custom quiz '" + def.getQuizName() + "'?", new Listener<MessageBoxEvent>() {
                     public void handleEvent(MessageBoxEvent be) {
                         removeCustomQuiz(def);

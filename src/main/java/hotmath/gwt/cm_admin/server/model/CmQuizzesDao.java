@@ -29,7 +29,7 @@ public class CmQuizzesDao {
     
     final static Logger __logger = Logger.getLogger(CmQuizzesDao.class);
     
-    public void saveCustomQuiz(final Connection conn, int adminId, String cpName, List<CustomQuizId> ids) throws Exception {
+    public int saveCustomQuiz(final Connection conn, int adminId, String cpName, List<CustomQuizId> ids) throws Exception {
         
 
         deleteCustomQuiz(conn, adminId, cpName);
@@ -79,8 +79,9 @@ public class CmQuizzesDao {
         }
         finally {
             SqlUtilities.releaseResources(null, ps, null);
-        }        
+        }  
         
+        return quizId;
     }
 
     /**
@@ -94,13 +95,17 @@ public class CmQuizzesDao {
      * @throws Exception
      */
     public CmList<QuizQuestion> getQuestionsFor(final Connection conn, String lesson, String subject) throws Exception {
+        return getQuestionsFor(conn, lesson, subject, true);
+    }
+
+    public CmList<QuizQuestion> getQuestionsFor(final Connection conn, String lessonFile, String subject, boolean getHtml) throws Exception {
         CmList<QuizQuestion> list = new CmArrayList<QuizQuestion>();
 
         PreparedStatement ps = null;
         try {
             String sql = CmMultiLinePropertyReader.getInstance().getProperty("GET_LESSON_QUIZZES");
             ps = conn.prepareStatement(sql);
-            ps.setString(1, lesson);
+            ps.setString(1, lessonFile);
             int gradeLevel = 999; // get all for now getGradeLevelFor(subject);
             ps.setInt(2, gradeLevel);
 
@@ -109,9 +114,9 @@ public class CmQuizzesDao {
             while (rs.next()) {
                 String questionId = rs.getString("program_name") + ": " + (num++);
                 String pid = rs.getString("guid");
-                String quizHtml = getQuestionHtml(pid);
+                String quizHtml=getHtml?getQuestionHtml(pid):"";
                 
-                list.add(new QuizQuestion(questionId,lesson, rs.getString("program_name"), pid, quizHtml));
+                list.add(new QuizQuestion(questionId,lessonFile, rs.getString("program_name"), pid, quizHtml));
             }
         } finally {
             SqlUtilities.releaseResources(null, ps, null);
@@ -262,7 +267,7 @@ public class CmQuizzesDao {
             ps.setInt(1, adminId);
             ResultSet rs = ps.executeQuery();
             while(rs.next()) {
-                list.add(new CustomQuizDef(rs.getString("quiz_name"),adminId));
+                list.add(new CustomQuizDef(rs.getInt("quiz_id"), rs.getString("quiz_name"),adminId));
             }
             return list;
         }

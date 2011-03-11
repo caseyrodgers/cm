@@ -294,7 +294,11 @@ function editQuizQuestion(o) {
     }
 }
 
-
+/** hide new style of question results
+ * 
+ * TODO: why doesn't IE ajacent child selector work?
+ * 
+ */
 function hideQuizQuestionResults() {
     var ts = document.getElementById('testset_div');
     if(ts) {

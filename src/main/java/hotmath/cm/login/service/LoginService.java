@@ -3,21 +3,23 @@ package hotmath.cm.login.service;
 import hotmath.cm.login.service.lcom.LcomManager;
 import hotmath.cm.login.service.lcom.LcomStudentSignup;
 import hotmath.cm.login.service.lcom.LcomTeacherSignup;
-import hotmath.cm.util.ErrorMessageHolder;
 import hotmath.gwt.cm_rpc.client.ClientInfo;
 import hotmath.gwt.cm_rpc.client.ClientInfo.UserType;
-import hotmath.gwt.cm_rpc.client.ErrorMessage;
 import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_rpc.client.rpc.GetUserInfoAction;
 import hotmath.gwt.cm_rpc.server.rpc.ActionDispatcher;
 import hotmath.gwt.cm_tools.client.data.HaBasicUser;
 import hotmath.gwt.shared.client.rpc.action.LoginAction;
+import hotmath.gwt.shared.server.service.command.LoginCommand;
 import hotmath.testset.ha.HaAdmin;
 import hotmath.testset.ha.HaLoginInfo;
+import hotmath.util.HMConnectionPool;
 import hotmath.util.Jsonizer;
+import hotmath.util.sql.SqlUtilities;
 
 import java.io.IOException;
 import java.net.URLDecoder;
+import java.sql.Connection;
 import java.text.SimpleDateFormat;
 
 import javax.servlet.ServletException;
@@ -57,8 +59,11 @@ public class LoginService extends HttpServlet {
 		String key = req.getParameter("key");
 		boolean isDebug=false;
 
+		Connection conn=null;
 		try {
 
+		    conn = HMConnectionPool.getConnection();
+		    
 			if(action == null)
 				action = "";
 			else if(action.equals("sample")) {
@@ -88,18 +93,20 @@ public class LoginService extends HttpServlet {
 			loginAction.setUid(uid);
 			loginAction.setUserName(user);
 
-			HaBasicUser cmUser = ActionDispatcher.getInstance().execute(loginAction);
 
-			if (cmUser == null) {
-				ErrorMessage em = ErrorMessageHolder.get();
-				if (em != null) {
-					req.getSession().setAttribute("error-msg", em.getMessage());
-					ErrorMessageHolder.remove();
-				}
-				req.getRequestDispatcher("/gwt-resources/login_error.jsp").forward(req, resp);
-				LOGGER.warn(String.format("*** Login failed for user: %s, pwd: %s", user, pwd));
-				return;
-			}
+			/** Try to log in, Action will throw exception on 
+			 * any login error which will be caught below
+			 * and redirected to login error page.  
+			 * 
+			 * cmUser will never be null.
+			 * 
+			 * NOTE: we are calling the Command directly and passing
+			 * in a locally controlled connection.  This is to get
+			 * around the ActionDispatcher from send exception emails.
+			 *  
+			 */
+			HaBasicUser cmUser = new LoginCommand().execute(conn, loginAction);
+			assert(cmUser != null);
 
 			// TODO: move following to LoginCommand
 			HaLoginInfo loginInfo = new HaLoginInfo(cmUser);
@@ -196,6 +203,9 @@ public class LoginService extends HttpServlet {
 			req.getSession().setAttribute("error-msg", e.getMessage());
 			req.getRequestDispatcher("/gwt-resources/login_error.jsp").forward(req, resp);
 			LOGGER.error(String.format("*** Login failed for user: %s, pwd: %s", user, pwd), e);
+		}
+		finally {
+		    SqlUtilities.releaseResources(null, null, conn);
 		}
 	}
 

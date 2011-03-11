@@ -178,7 +178,7 @@ public class CustomProgramAddQuizDialog extends Window {
             loadCustomQuiz(_customQuiz);
         }
         else {
-            _customQuiz = new CustomQuizDef("New Custom Quiz",adminId);
+            _customQuiz = new CustomQuizDef(0, "New Custom Quiz",adminId);
         }
         _textQuizName.setValue(_customQuiz.getQuizName());
         

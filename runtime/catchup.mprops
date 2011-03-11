@@ -2034,7 +2034,7 @@ order by guid
 
 .key=GET_CUSTOM_QUIZ_DEFS
 
-select q.name as quiz_name
+select q.name as quiz_name, q.qid as quiz_id
 from  HA_CUSTOM_QUIZ q
 where admin_id = ?
 order by name
@@ -2091,7 +2091,7 @@ and name = ?
 .key=GET_CUSTOM_PROGRAM_ITEMS
 
 
-select l.*,q.name as custom_quiz_name
+select l.*,q.qid as quiz_id, q.name as custom_quiz_name
 from HA_CUSTOM_PROGRAM_LESSON l
   LEFT JOIN HA_CUSTOM_QUIZ q on q.qid = l.custom_quiz
 where program_id = ?

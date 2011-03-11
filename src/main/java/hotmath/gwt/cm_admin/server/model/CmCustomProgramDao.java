@@ -4,13 +4,14 @@ import hotmath.cm.util.CmMultiLinePropertyReader;
 import hotmath.gwt.cm_rpc.client.rpc.CmArrayList;
 import hotmath.gwt.cm_rpc.client.rpc.CmList;
 import hotmath.gwt.cm_tools.client.model.CustomLessonModel;
+import hotmath.gwt.cm_tools.client.model.CustomLessonModel.Type;
 import hotmath.gwt.cm_tools.client.model.CustomProgramModel;
 import hotmath.gwt.cm_tools.client.model.StudentModelExt;
 import hotmath.gwt.shared.client.model.CustomProgramInfoModel;
+import hotmath.gwt.shared.client.model.CustomQuizId;
+import hotmath.gwt.shared.client.model.QuizQuestion;
 import hotmath.gwt.shared.client.util.CmException;
 import hotmath.util.sql.SqlUtilities;
-
-import org.apache.log4j.Logger;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -20,6 +21,9 @@ import java.sql.Types;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import org.apache.log4j.Logger;
 
 public class CmCustomProgramDao {
 
@@ -220,9 +224,10 @@ public class CmCustomProgramDao {
             ResultSet rs = stmt.executeQuery();
             while(rs.next()) {
                 String customQuizName = rs.getString("custom_quiz_name");
+                int quizId = rs.getInt("quiz_id");
                 if(customQuizName != null && customQuizName.length() > 0) {
                     /** is a quiz */
-                    lessons.add(new CustomLessonModel(customQuizName));
+                    lessons.add(new CustomLessonModel(quizId, customQuizName));
                 }
                 else {
                     /** is a lesson */
@@ -267,9 +272,87 @@ public class CmCustomProgramDao {
         }
     }
 
+
+    /** Auto Custom Quiz creation
+     *  
+     *  Check to see if any auto quizzes have been added to
+     *  custom program lessons.  If so, then create each
+     *  custom lesson based on previous, untested lessons
+     *  
+     */
+    private void makeSureAutoCustomQuizzesCreated(final Connection conn, int adminId, List<CustomLessonModel> lessons) throws Exception {
+        for(CustomLessonModel lesson: lessons) {
+            if(lesson.getCustomProgramType() == Type.QUIZ) {
+                if(lesson.getQuizId() == 0) {
+                    /** create and assign new custom quiz id */
+                    lesson.setQuizId(createAutoCustomQuiz(conn, adminId, lesson,lessons));
+                }
+            }
+        }
+    }
+    
+    /** Create a new auto custom quiz.
+     * 
+     * 1. Find previous lessons that have not been quizzed
+     * 2. For each lesson take N from each.  Where is number of questions per lesson.
+     *  
+     *  Return the new custom quiz id
+     * 
+     * @param conn
+     * @param adminId
+     * @param lesson
+     * @param lessons
+     * @throws Exception
+     */
+    private int createAutoCustomQuiz(final Connection conn, int adminId, CustomLessonModel lesson, List<CustomLessonModel> lessons) throws Exception {
+       List<CustomLessonModel> lessonsInCp = new ArrayList<CustomLessonModel>();
+
+       CmList<CustomQuizId> customQuizQuestions = new CmArrayList<CustomQuizId>();
+       
+       for(int i=0;i<lessons.size();i++) {
+           CustomLessonModel li = lessons.get(i);
+           if(li == lesson) {
+               while(i-- > 0) {
+                   CustomLessonModel l2 = lessons.get(i);
+                   if(l2.getCustomProgramType() == Type.LESSON) {
+                       lessonsInCp.add(l2);
+                   }
+                   else {
+                       break;
+                   }
+               }
+               
+               break;
+           }
+       }
+       
+       if(lessonsInCp.size() == 0) {
+           throw new Exception("No lessons to create custom quiz from:  " + lesson);
+       }
+
+       /** create a pool from which to choose questions
+        * 
+        */
+       CmQuizzesDao dao = new CmQuizzesDao();
+       
+       int maxFromEachLesson=2;
+       
+       for(CustomLessonModel l: lessonsInCp) {
+           CmList<QuizQuestion> questions = dao.getQuestionsFor(conn,l.getFile(),l.getSubject(), false);
+           for(int i=0;i<questions.size() && i < maxFromEachLesson;i++) {
+               customQuizQuestions.add(new CustomQuizId(questions.get(i).getPid(),i));
+           }
+       }
+
+       String cpName = "Auto Custom Quiz";
+       return dao.saveCustomQuiz(conn, adminId, cpName, customQuizQuestions);
+    }
+
     public CmList<CustomLessonModel> saveChanges(final Connection conn, int adminId, Integer progId, String name, List<CustomLessonModel> lessons) throws Exception {
         makeSureNameIsValid(conn, name);
 
+        makeSureAutoCustomQuizzesCreated(conn, adminId, lessons);
+        
         PreparedStatement stmt1=null, stmt2=null;
         try {
             stmt1 = conn.prepareStatement("update HA_CUSTOM_PROGRAM set name = ? where id = ?");
@@ -296,7 +379,7 @@ public class CmCustomProgramDao {
                         stmt2.setNull(2, Types.VARCHAR);
                         stmt2.setNull(3, Types.VARCHAR);
                         stmt2.setNull(4, Types.VARCHAR);
-                        stmt2.setInt(5, getCustomQuizId(conn, adminId,l.getCustomProgramItem()));
+                        stmt2.setInt(5, l.getQuizId());
                         break;
                 }
                 

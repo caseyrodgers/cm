@@ -18,6 +18,7 @@ public class CustomLessonModel extends BaseModel implements Response {
     
     Type customProgramType;
     
+    
     public CustomLessonModel(){
         /** empty */
     }
@@ -34,12 +35,21 @@ public class CustomLessonModel extends BaseModel implements Response {
         setSubject(subject);
     }
     
-    public CustomLessonModel(String quizName) {
+    public CustomLessonModel(int quizId, String quizLabel) {
         this.customProgramType = Type.QUIZ;
-        setQuiz(quizName);
+        setQuiz(quizLabel);
+        setQuizId(quizId);
         
         set("subjectStyleClass", "is_quiz_subject");
         set("customProgramItemClass", "is_quiz");
+    }
+    
+    public void setQuizId(int quizId) {
+        set("quizId", quizId);
+    }
+    
+    public int getQuizId() {
+        return get("quizId");
     }
     
     public void setQuiz(String name) {
