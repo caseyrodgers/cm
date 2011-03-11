@@ -75,4 +75,10 @@ public class LoginAction implements Action<HaBasicUser> {
 	public void setUid(int uid) {
 		this.uid = uid;
 	}
+
+    @Override
+    public String toString() {
+        return "LoginAction [userName=" + userName + ", type=" + type + ", key=" + key + ", isDebug=" + isDebug
+                + ", uid=" + uid + "]";
+    }
 }
