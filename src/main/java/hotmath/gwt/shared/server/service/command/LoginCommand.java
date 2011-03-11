@@ -1,5 +1,6 @@
 package hotmath.gwt.shared.server.service.command;
 
+import hotmath.cm.dao.HaLoginInfoDao;
 import hotmath.gwt.cm_rpc.client.rpc.Action;
 import hotmath.gwt.cm_rpc.client.rpc.Response;
 import hotmath.gwt.cm_rpc.server.rpc.ActionHandler;
@@ -40,7 +41,7 @@ public class LoginCommand implements ActionHandler<LoginAction, HaBasicUser>{
 			String key = action.getKey();
 
 			if (key != null) {
-				HaLoginInfo hi = HaLoginInfo.getLoginInfo(conn, key);
+				HaLoginInfo hi = new HaLoginInfoDao().getLoginInfo(conn, key);
 				uid = hi.getUserId();
 				cmUser = HaUserFactory.getLoginUserInfo(conn, uid, type);
 				username = cmUser.getLoginName();

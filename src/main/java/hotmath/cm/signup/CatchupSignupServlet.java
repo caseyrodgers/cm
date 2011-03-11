@@ -1,5 +1,6 @@
 package hotmath.cm.signup;
 
+import hotmath.cm.dao.HaLoginInfoDao;
 import hotmath.cm.dao.CmUserDao;
 import hotmath.gwt.cm_admin.server.model.CmAdminDao;
 import hotmath.gwt.cm_admin.server.model.CmStudentDao;
@@ -154,7 +155,15 @@ public class CatchupSignupServlet extends HttpServlet {
              /** Register a login, and return security key allowing auto login
               * 
               */
-             HaLoginInfo userInfo = new HaLoginInfo(user);
+             HaLoginInfo userInfo = null;
+             Connection conn=null;
+             try {
+                 conn = HMConnectionPool.getConnection();
+                 userInfo = new HaLoginInfoDao().getLoginInfo(conn, user);
+             }
+             finally {
+                 SqlUtilities.releaseResources(null, null, conn);
+             }
 
             
             /** Return JSON containing key values

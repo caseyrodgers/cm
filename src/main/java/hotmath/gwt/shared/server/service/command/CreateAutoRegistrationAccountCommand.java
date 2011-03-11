@@ -1,5 +1,6 @@
 package hotmath.gwt.shared.server.service.command;
 
+import hotmath.cm.dao.HaLoginInfoDao;
 import hotmath.cm.server.model.CmUserProgramDao;
 import hotmath.cm.util.CmMultiLinePropertyReader;
 import hotmath.gwt.cm_admin.server.model.CmAdminDao;
@@ -15,7 +16,6 @@ import hotmath.gwt.cm_tools.client.model.StudentModelI;
 import hotmath.gwt.shared.client.rpc.action.CreateAutoRegistrationAccountAction;
 import hotmath.gwt.shared.client.util.CmUserException;
 import hotmath.testset.ha.ChapterInfo;
-import hotmath.testset.ha.HaLoginInfo;
 import hotmath.testset.ha.HaTestDef;
 import hotmath.testset.ha.HaTestDefDao;
 import hotmath.testset.ha.HaUser;
@@ -173,7 +173,7 @@ public class CreateAutoRegistrationAccountCommand implements ActionHandler<Creat
         huser.setLoginName(action.getUser());
         
         RpcData rdata = new RpcData();
-        rdata.putData("key", HaLoginInfo.addLoginInfo(conn, huser));
+        rdata.putData("key", new HaLoginInfoDao().addLoginInfo(conn, huser));
         return rdata;
     }
     

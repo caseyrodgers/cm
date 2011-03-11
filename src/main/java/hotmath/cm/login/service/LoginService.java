@@ -1,5 +1,6 @@
 package hotmath.cm.login.service;
 
+import hotmath.cm.dao.HaLoginInfoDao;
 import hotmath.cm.login.service.lcom.LcomManager;
 import hotmath.cm.login.service.lcom.LcomStudentSignup;
 import hotmath.cm.login.service.lcom.LcomTeacherSignup;
@@ -10,7 +11,6 @@ import hotmath.gwt.cm_rpc.client.rpc.GetUserInfoAction;
 import hotmath.gwt.cm_rpc.server.rpc.ActionDispatcher;
 import hotmath.gwt.cm_tools.client.data.HaBasicUser;
 import hotmath.gwt.shared.client.rpc.action.LoginAction;
-import hotmath.gwt.shared.server.service.command.LoginCommand;
 import hotmath.testset.ha.HaAdmin;
 import hotmath.testset.ha.HaLoginInfo;
 import hotmath.util.HMConnectionPool;
@@ -99,17 +99,12 @@ public class LoginService extends HttpServlet {
 			 * and redirected to login error page.  
 			 * 
 			 * cmUser will never be null.
-			 * 
-			 * NOTE: we are calling the Command directly and passing
-			 * in a locally controlled connection.  This is to get
-			 * around the ActionDispatcher from send exception emails.
 			 *  
 			 */
-			HaBasicUser cmUser = new LoginCommand().execute(conn, loginAction);
+			HaBasicUser cmUser = ActionDispatcher.getInstance().execute(loginAction);
 			assert(cmUser != null);
 
-			// TODO: move following to LoginCommand
-			HaLoginInfo loginInfo = new HaLoginInfo(conn, cmUser);
+			HaLoginInfo loginInfo = new HaLoginInfoDao().getLoginInfo(conn, cmUser);
 
 			/** either redirect this user to CM using current information
 			 * or return JSON describing login info.

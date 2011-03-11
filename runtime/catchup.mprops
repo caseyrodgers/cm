@@ -2096,3 +2096,35 @@ from HA_CUSTOM_PROGRAM_LESSON l
   LEFT JOIN HA_CUSTOM_QUIZ q on q.qid = l.custom_quiz
 where program_id = ?
 order by l.id
+
+
+
+
+
+
+##########################
+#####  CmLoginInfoDao    
+##########################
+
+
+.key=GET_LOGIN_INFO
+
+select *
+from HA_USER_LOGIN
+where login_key = ?
+
+
+
+.key=UPDATE_LOGIN_INFO
+
+update HA_USER_LOGIN 
+set is_consumed = 1 
+where lid = ?
+
+
+
+.key=INSERT_LOGIN_INFO
+
+insert into HA_USER_LOGIN(user_id, login_key, user_type, login_time,login_name)
+values(?,?,?,?,?)
+

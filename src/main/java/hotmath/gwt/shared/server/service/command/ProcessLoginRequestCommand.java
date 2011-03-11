@@ -1,5 +1,6 @@
 package hotmath.gwt.shared.server.service.command;
 
+import hotmath.cm.dao.HaLoginInfoDao;
 import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_rpc.client.rpc.Action;
 import hotmath.gwt.cm_rpc.client.rpc.Response;
@@ -13,7 +14,7 @@ public class ProcessLoginRequestCommand implements ActionHandler<ProcessLoginReq
     
     @Override
     public UserInfo execute(Connection conn, ProcessLoginRequestAction action) throws Exception {
-            HaLoginInfo haLoginInfo = HaLoginInfo.getLoginInfo(conn, action.getKey());
+            HaLoginInfo haLoginInfo = new HaLoginInfoDao().getLoginInfo(conn, action.getKey());
             UserInfo userInfo = new UserInfo();
             userInfo.setUid(haLoginInfo.getUserId());
             userInfo.setLoginName(haLoginInfo.getLoginName());
