@@ -52,8 +52,24 @@ public class HaLoginInfo {
     }
 
     public HaLoginInfo(HaBasicUser user) throws Exception {
-        try {
-            key = addLoginInfo(user);
+    	Connection conn = null;
+    	try {
+    		conn = HMConnectionPool.getConnection();
+        	doIt(conn, user);
+    	}
+    	finally {
+    		SqlUtilities.releaseResources(null, null, conn);
+    	}
+    }
+    
+    public HaLoginInfo(final Connection conn, HaBasicUser user) throws Exception {
+        doIt(conn, user);
+    }
+
+	private void doIt(final Connection conn, HaBasicUser user)
+			throws HotMathException {
+		try {
+            key = addLoginInfo(conn, user);
             userId = user.getUserKey();
             type = user.getUserType().toString();
             loginName = user.getLoginName();
@@ -61,8 +77,7 @@ public class HaLoginInfo {
         catch(Exception e) {
             throw new HotMathException(e, "Error logging into Catchup Math");
         }
-    }
-
+	}
 
     public String getKey() {
         return key;
@@ -94,8 +109,7 @@ public class HaLoginInfo {
     }
 
 
-    static public String addLoginInfo(HaBasicUser user) throws Exception {
-        Connection conn = null;
+    static public String addLoginInfo(final Connection conn, HaBasicUser user) throws Exception {
         PreparedStatement pstat = null;
 
         try {
@@ -103,7 +117,6 @@ public class HaLoginInfo {
             // first see if user is in admin
             String sql = "insert into HA_USER_LOGIN(user_id, login_key, user_type, login_time,login_name)values(?,?,?,?,?)";
                 
-            conn = HMConnectionPool.getConnection();
             pstat = conn.prepareStatement(sql);
 
             pstat.setInt(1, user.getUserKey());
@@ -122,7 +135,7 @@ public class HaLoginInfo {
             return key;
             
         } finally {
-            SqlUtilities.releaseResources(null, pstat, conn);
+            SqlUtilities.releaseResources(null, pstat, null);
         }
     }
     
@@ -191,9 +204,19 @@ public class HaLoginInfo {
         try {
             //HaBasicUser user = HaUserFactory.loginToCatchup("casey_test1","casey_test1");
             HaBasicUser user = HaUserFactory.createDemoUser();
-            HaLoginInfo info = new HaLoginInfo(user);
             
-            System.out.println(info);
+            Connection conn = null;
+            
+            try {
+            	conn = HMConnectionPool.getConnection();
+                HaLoginInfo info = new HaLoginInfo(conn, user);
+                
+                System.out.println(info);
+            }
+            finally {
+                SqlUtilities.releaseResources(null, null, conn);
+            }
+            
         }
         catch(Exception e) {
             e.printStackTrace();

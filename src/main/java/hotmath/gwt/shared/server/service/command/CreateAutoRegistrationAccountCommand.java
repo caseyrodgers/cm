@@ -13,7 +13,7 @@ import hotmath.gwt.cm_rpc.server.rpc.ActionHandler;
 import hotmath.gwt.cm_tools.client.model.StudentActiveInfo;
 import hotmath.gwt.cm_tools.client.model.StudentModelI;
 import hotmath.gwt.shared.client.rpc.action.CreateAutoRegistrationAccountAction;
-import hotmath.gwt.shared.client.util.CmException;
+import hotmath.gwt.shared.client.util.CmUserException;
 import hotmath.testset.ha.ChapterInfo;
 import hotmath.testset.ha.HaLoginInfo;
 import hotmath.testset.ha.HaTestDef;
@@ -51,8 +51,8 @@ public class CreateAutoRegistrationAccountCommand implements ActionHandler<Creat
         try {
             return executeAux(conn, action);
         }
-        catch(CmException cm) {
-            __logger.warn("Local exception handled", cm);
+        catch(CmUserException cm) {
+            __logger.warn("User exception handled", cm);
             RpcData rdata = new RpcData();
             rdata.putData("error_message", cm.getLocalizedMessage());
             return rdata;
@@ -87,7 +87,7 @@ public class CreateAutoRegistrationAccountCommand implements ActionHandler<Creat
             if(rs.first()) {
             	//TODO: different message since password is generated not selected?
                 __logger.error("self registration password '" + action.getPassword() + "' cannot match any existing self-registration template group names.");
-                throw new CmException("Please choose a different password");
+                throw new CmUserException("Please choose a different password");
             }
         }
         finally {
@@ -173,7 +173,7 @@ public class CreateAutoRegistrationAccountCommand implements ActionHandler<Creat
         huser.setLoginName(action.getUser());
         
         RpcData rdata = new RpcData();
-        rdata.putData("key", HaLoginInfo.addLoginInfo(huser));
+        rdata.putData("key", HaLoginInfo.addLoginInfo(conn, huser));
         return rdata;
     }
     

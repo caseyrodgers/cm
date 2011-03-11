@@ -109,7 +109,7 @@ public class LoginService extends HttpServlet {
 			assert(cmUser != null);
 
 			// TODO: move following to LoginCommand
-			HaLoginInfo loginInfo = new HaLoginInfo(cmUser);
+			HaLoginInfo loginInfo = new HaLoginInfo(conn, cmUser);
 
 			/** either redirect this user to CM using current information
 			 * or return JSON describing login info.
