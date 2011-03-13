@@ -5,6 +5,7 @@ import hotmath.cm.test.HaTestSet;
 import hotmath.cm.util.CmCacheManager;
 import hotmath.cm.util.CmCacheManager.CacheName;
 import hotmath.cm.util.CmWebResourceManager;
+import hotmath.gwt.cm_admin.server.model.CmCustomProgramDao;
 import hotmath.gwt.cm_admin.server.model.CmStudentDao;
 import hotmath.gwt.cm_rpc.client.rpc.Action;
 import hotmath.gwt.cm_rpc.client.rpc.CmList;
@@ -164,7 +165,17 @@ public class GetQuizHtmlCommand implements ActionHandler<GetQuizHtmlAction, Quiz
             result.setQuizHtml(cacheInfo.quizHtml);
             result.setTestId(haTest.getTestId());
             result.setQuizSegment(testSegment);
-            result.setQuizSegmentCount(haTest.getTotalSegments());
+            
+            
+            int segmentCount=0;
+            if(programInfo.getCustomProgramId() > 0) {
+                segmentCount = new CmCustomProgramDao().getTotalSegmentCount(conn, programInfo.getCustomProgramId());
+            }
+            else {
+                segmentCount = haTest.getTotalSegments();
+            }
+            result.setQuizSegmentCount(segmentCount);
+            
             result.setTitle(testTitle);
             result.setSubTitle(cacheInfo.subTitle);
             result.setTestId(haTest.getTestId());

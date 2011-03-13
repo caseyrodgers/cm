@@ -66,7 +66,7 @@ public class GetUserInfoCommand implements ActionHandler<GetUserInfoAction, User
             }
             
             
-            
+            int programSegmentCount=testDef.getTotalSegmentCount();
             /** if Custom Program, then force user to prescription phase .. there are no
              *  quizzes.  However, we still create a Test and a Test Run in order
              *  to facilitate using the existing infrastructure.
@@ -95,14 +95,21 @@ public class GetUserInfoCommand implements ActionHandler<GetUserInfoAction, User
                     /** Now that CPs can have CQs maybe this should only be done
                      *  when the first CPi (custom program item) is not a quiz.
                      */
-                    HaTest custTest = HaTestDao.createTest(conn, action.getUserId(),new HaTestDefDao().getTestDef(conn, CmProgram.CUSTOM_PROGRAM.getDefId()), -1);
+                    HaTest custTest = HaTestDao.createTest(conn, action.getUserId(),new HaTestDefDao().getTestDef(conn, CmProgram.CUSTOM_PROGRAM.getDefId()), 0);
                     custTest.setProgramInfo(userProgram);
                     HaTestRun testRun = HaTestDao.createTestRun(conn, action.getUserId(), custTest.getTestId(), 10,0,0);
                     testRun.setHaTest(custTest);
-                    activeInfo.setActiveSegment(0);
+                    activeInfo.setActiveSegment(1);
                     activeInfo.setActiveTestId(0);
                     activeInfo.setActiveRunId(testRun.getRunId());
                     activeInfo.setActiveRunSession(0);
+                    
+                    
+                    /** update the total number of program segments
+                     * 
+                     */
+                    programSegmentCount = new CmCustomProgramDao().getTotalSegmentCount(conn,userProgram.getCustomProgramId());
+                    
                     
                     /** save for next time */
                     dao.setActiveInfo(conn, action.getUserId(), activeInfo);
@@ -111,6 +118,7 @@ public class GetUserInfoCommand implements ActionHandler<GetUserInfoAction, User
                  * 
                  */
                 CustomProgramModel customProgram = new CmCustomProgramDao().getCustomProgram(conn, userProgram.getCustomProgramId());
+                programSegmentCount = new CmCustomProgramDao().getTotalSegmentCount(conn,userProgram.getCustomProgramId());
                 testTitle = customProgram.getProgramName();
             }
             
@@ -131,8 +139,19 @@ public class GetUserInfoCommand implements ActionHandler<GetUserInfoAction, User
             userInfo.setDemoUser(sm.getIsDemoUser());
             userInfo.setCustomProgram(isCustomProgram);
             
-            
-            ProgramCompletionAction onComplete = settings.getStopAtProgramEnd()?ProgramCompletionAction.STOP:ProgramCompletionAction.AUTO_ADVANCE;
+            int sessionCount=0;
+            if(userInfo.getRunId() > 0) {
+                if(isCustomProgram) {
+                    sessionCount = new CmCustomProgramDao().getCustomProgramLessons(conn, userProgram.getCustomProgramId(), userInfo.getTestSegment()).size();
+                }
+                else {
+                    sessionCount = new HaTestRunDao().getTestRunLessons(conn,userInfo.getRunId()).size();
+                }
+            }
+            userInfo.setSessionCount(sessionCount);
+                
+
+            ProgramCompletionAction onComplete = settings.getStopAtProgramEnd()?ProgramCompletionAction.STOP_ALLOW_CONTINUE:ProgramCompletionAction.AUTO_ADVANCE;
             userInfo.setOnCompletion(onComplete);
             userInfo.setLimitGames(settings.getLimitGames());
             
@@ -141,17 +160,13 @@ public class GetUserInfoCommand implements ActionHandler<GetUserInfoAction, User
              * 
              */
             if(isCustomProgram) {
-                userInfo.setOnCompletion(ProgramCompletionAction.STOP);
+                userInfo.setOnCompletion(ProgramCompletionAction.STOP_ALLOW_CONTINUE);
             }
 
-            /** Set number of sessions in current prescription */
-            if(userInfo.getRunId() > 0)
-                userInfo.setSessionCount(new HaTestRunDao().getTestRunLessons(conn,userInfo.getRunId()).size());
-            
             userInfo.setUserAccountType(accountType);
             
             userInfo.setPassPercentRequired(userProgram.getConfig().getPassPercent());
-            userInfo.setTestSegmentCount(testDef.getTotalSegmentCount());
+            userInfo.setTestSegmentCount(programSegmentCount);
             userInfo.setViewCount(dao.getTotalInmHViewCount(conn,action.getUserId()));
             
             return userInfo;

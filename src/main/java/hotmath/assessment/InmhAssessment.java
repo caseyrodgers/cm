@@ -51,7 +51,7 @@ public class InmhAssessment {
         _pids = pids;
         for(String p : _pids) {
             try {
-            	logger.info("Getting Help Items for '" + p + ": " + userId);
+            	logger.debug("Getting Help Items for '" + p + ": " + userId);
             	
                 List<INeedMoreHelpItem> inmhItems = new ArrayList<INeedMoreHelpItem>();   
                 

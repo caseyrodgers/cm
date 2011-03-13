@@ -11,12 +11,21 @@ import com.extjs.gxt.ui.client.widget.Html;
  *
  */
 public class EndOfProgramWindow extends CmWindow {
-    public EndOfProgramWindow() {
+    public EndOfProgramWindow(boolean canContinue) {
         setHeading("Program Completed!");
-        String html = "<p style='padding: 15px;'>Congratulations! You have completed this program.  You are welcome to continue until you are assigned another program.</p>";
+        
+        String msg = "Congratulations! You have completed this program.";
+        if(canContinue) {
+            msg += "You are welcome to continue until you are assigned another program.";
+            addCloseButton();
+        }
+        else {
+            setClosable(false);
+        }
+        
+        String html = "<p style='padding: 15px;'>" + msg + "</p>";
         add(new Html(html));
         setSize(300,150);
-        addCloseButton();
         setVisible(true);
     } 
 }

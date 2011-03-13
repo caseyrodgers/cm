@@ -179,7 +179,7 @@ public class CmQuizzesDao {
      * @return
      * @throws Exception
      */
-    public CmList<QuizQuestion> getCustomQuizQuestions(final Connection conn, int adminId, String cpName) throws Exception {
+    public CmList<QuizQuestion> getCustomQuizQuestions(final Connection conn, int customQuizId) throws Exception {
         CmList<QuizQuestion> list = new CmArrayList<QuizQuestion>();
 
         PreparedStatement ps = null;
@@ -188,8 +188,7 @@ public class CmQuizzesDao {
             ps = conn.prepareStatement(sql);
             
             
-            ps.setInt(1, adminId);
-            ps.setString(2, cpName);
+            ps.setInt(1, customQuizId);
 
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
@@ -275,4 +274,35 @@ public class CmQuizzesDao {
             SqlUtilities.releaseResources(null, ps,null);
         }
     }
+    
+    /** Return list of question HTML for custom quiz
+     * 
+     * @param conn
+     * @param adminId
+     * @param cpName
+     * @return
+     * @throws Exception
+     */
+    public CmList<CustomQuizId> getCustomQuizIds(final Connection conn, int customQuizId) throws Exception {
+        CmList<CustomQuizId> list = new CmArrayList<CustomQuizId>();
+
+        PreparedStatement ps = null;
+        try {
+            String sql = CmMultiLinePropertyReader.getInstance().getProperty("GET_CUSTOM_QUIZ_IDS");
+            ps = conn.prepareStatement(sql);
+            
+            
+            ps.setInt(1, customQuizId);
+
+            ResultSet rs = ps.executeQuery();
+            int order=0;
+            while (rs.next()) {
+                String pid = rs.getString("pid");
+                list.add(new CustomQuizId(pid, order++));
+            }
+        } finally {
+            SqlUtilities.releaseResources(null, ps, null);
+        }
+        return list;
+    }    
 }

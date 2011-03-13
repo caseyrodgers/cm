@@ -338,6 +338,10 @@ public class UserInfo implements  Response {
         return onCompletion;
     }
 
+    /** What should happen on program completion
+     * 
+     * @param onCompletion
+     */
     public void setOnCompletion(ProgramCompletionAction onCompletion) {
         this.onCompletion = onCompletion;
     }
@@ -403,10 +407,16 @@ public class UserInfo implements  Response {
      *
      */
     public enum ProgramCompletionAction {
-        /** Stop when program is completed
+        /** Stop when program is completed but
+         *  allow user to continue.
          * 
          */
-        STOP,
+        STOP_ALLOW_CONTINUE,
+        
+        /** Stop when end of problem and 
+         *  do not allow user to continue
+         */
+        STOP_DO_NOT_ALLOW_CONTINUE,
         
         /** The user should be auto advanced when completed
          * 

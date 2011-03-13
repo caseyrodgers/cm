@@ -7,13 +7,12 @@ import hotmath.gwt.shared.client.model.QuizQuestion;
 public class GetCustomQuizAction implements Action<CmList<QuizQuestion>> {
     
     int adminId;
-    String name;
+    int customQuizId;
     
     public GetCustomQuizAction(){}
     
-    public GetCustomQuizAction(int adminId, String cpName) {
-        this.adminId = adminId;
-        this.name = cpName;
+    public GetCustomQuizAction(int customQuizId) {
+        this.customQuizId=customQuizId;
     }
 
     public int getAdminId() {
@@ -24,16 +23,16 @@ public class GetCustomQuizAction implements Action<CmList<QuizQuestion>> {
         this.adminId = adminId;
     }
 
-    public String getName() {
-        return name;
+    public int getCustomQuizId() {
+        return customQuizId;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setCustomQuizId(int customQuizId) {
+        this.customQuizId = customQuizId;
     }
 
     @Override
     public String toString() {
-        return "GetCustomQuizAction [adminId=" + adminId + ", name=" + name + "]";
+        return "GetCustomQuizAction [adminId=" + adminId + ", customQuizId=" + customQuizId + "]";
     }
 }

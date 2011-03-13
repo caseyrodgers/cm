@@ -119,7 +119,7 @@ public class UserInfoDao {
 	        	 ui.setOnCompletion(ProgramCompletionAction.AUTO_ADVANCE);
 	         }
 	         else {
-	        	 ui.setOnCompletion(ProgramCompletionAction.STOP);
+	        	 ui.setOnCompletion(ProgramCompletionAction.STOP_ALLOW_CONTINUE);
 	         }
 	         
 	         

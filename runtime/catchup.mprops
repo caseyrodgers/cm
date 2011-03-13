@@ -937,7 +937,8 @@ select c.id,
        c.user_id,
        c.pass_percent,
        c.test_def_id,
-       c.test_config_json,       
+       c.test_config_json,
+       c.create_date,       
        d.test_name,
        u.admin_id
 from   CM_USER_PROGRAM c
@@ -1203,6 +1204,25 @@ JOIN      HA_USER u             on c.id = u.user_prog_id
 JOIN      HA_TEST_DEF t         on c.test_def_id = t.test_def_id
 LEFT JOIN HA_CUSTOM_PROGRAM cp  on c.custom_program_id = cp.id
 WHERE c.id = ?
+
+
+
+####
+.key=LOAD_USER_PROGRAM_FOR_TEST_SQL
+#
+#Load test's User Program record
+##
+
+
+SELECT c.id, c.user_id, c.pass_percent, u.admin_id, c.test_def_id, t.test_name, c.test_config_json, c.create_date,
+       cp.id as custom_program_id, cp.name as custom_program_name
+FROM      CM_USER_PROGRAM c
+LEFT JOIN HA_TEST ht on ht.user_prog_id = c.id
+JOIN      HA_USER u             on c.id = u.user_prog_id
+JOIN      HA_TEST_DEF t         on c.test_def_id = t.test_def_id
+LEFT JOIN HA_CUSTOM_PROGRAM cp  on c.custom_program_id = cp.id
+WHERE ht.test_id = ?
+
 
 
 .key=PROGRAM_QUIZ_COUNT
@@ -2074,8 +2094,7 @@ value(?,?,?)
 select q.name, qi.pid
 from HA_CUSTOM_QUIZ q
   JOIN HA_CUSTOM_QUIZ_IDS qi on qi.qid = q.qid
-where q.admin_id = ?
-and q.name = ?  
+where q.qid = ?  
 order by qi.load_order;
 
           

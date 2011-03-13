@@ -9,7 +9,7 @@ package hotmath.gwt.cm_rpc.client.rpc;
  */
 public class NextAction {
     
-    static public enum NextActionName {QUIZ,PRESCRIPTION,AUTO_ASSSIGNED};
+    static public enum NextActionName {QUIZ,PRESCRIPTION,AUTO_ASSSIGNED,STOP_ALLOW_CONTINUE,STOP_DO_NOT_ALLOW_CONTINUE};
     
     NextActionName nextAction;
     

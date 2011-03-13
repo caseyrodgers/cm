@@ -128,7 +128,7 @@ public class CmUserProgramDao {
         PreparedStatement ps = null;
         ResultSet rs = null;
 
-        String sql = CmMultiLinePropertyReader.getInstance().getProperty("LOAD_PROGRAM_INFO_FOR_TEST"); 
+        String sql = CmMultiLinePropertyReader.getInstance().getProperty("LOAD_USER_PROGRAM_FOR_TEST_SQL"); 
         try {
             StudentUserProgramModel supm = new StudentUserProgramModel();
 

@@ -27,7 +27,7 @@ public class RetryActionManager {
      */
     boolean _busy=false;
     
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("rawtypes")
     List<RetryAction> _actions = new ArrayList<RetryAction>();
     private RetryActionManager() {
         /** start up action queue watcher
@@ -35,7 +35,7 @@ public class RetryActionManager {
         */
     }
     
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("rawtypes")
     public void registerAction(RetryAction action) {
         _actions.add(action);
 
@@ -44,14 +44,15 @@ public class RetryActionManager {
         checkQueue();
     }
     
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("rawtypes")
     public void requestComplete(RetryAction action) {
         CmLogger.debug("RetryActionManager: requestComplete: " + action);
         _busy = false;
         checkQueue();
     }
     
-    
+
+    @SuppressWarnings("rawtypes")
     public List<RetryAction> getQueue() {
         return _actions;
     }
@@ -64,7 +65,7 @@ public class RetryActionManager {
      * 
      * 
      */
-    @SuppressWarnings("unchecked")    
+    @SuppressWarnings("rawtypes")    
     public void checkQueue() {
         if(_busy) {
             CmLogger.debug("RetryActionManager: checkQueue (" + _actions.size() + "): isBusy");

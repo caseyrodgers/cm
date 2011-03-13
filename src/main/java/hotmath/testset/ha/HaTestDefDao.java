@@ -4,6 +4,11 @@ import static hotmath.cm.util.CmCacheManager.CacheName.TEST_DEF;
 import hotmath.HotMathException;
 import hotmath.cm.util.CmCacheManager;
 import hotmath.cm.util.CmMultiLinePropertyReader;
+import hotmath.gwt.cm_admin.server.model.CmCustomProgramDao;
+import hotmath.gwt.cm_admin.server.model.CmQuizzesDao;
+import hotmath.gwt.cm_rpc.client.rpc.CmList;
+import hotmath.gwt.shared.client.model.CustomQuizId;
+import hotmath.gwt.shared.client.model.QuizQuestion;
 import hotmath.gwt.shared.client.util.CmException;
 import hotmath.util.sql.SqlUtilities;
 
@@ -16,10 +21,11 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
-/** Provide DAO functionality for HaTestDefs
+/**
+ * Provide DAO functionality for HaTestDefs
  * 
  * @author casey
- *
+ * 
  */
 public class HaTestDefDao {
 
@@ -47,11 +53,14 @@ public class HaTestDefDao {
         }
     }
 
-    /** Look up existing HaTestDef based on the name
+    /**
+     * Look up existing HaTestDef based on the name
      * 
-     * @param conn  The connection to use
-     * @param name the name of the test def
-     *  
+     * @param conn
+     *            The connection to use
+     * @param name
+     *            the name of the test def
+     * 
      * @throws HotMathException
      */
     public HaTestDef getTestDef(final Connection conn, String name) throws Exception {
@@ -85,11 +94,14 @@ public class HaTestDefDao {
         }
     }
 
-    /** Look up HaTestDef based on the testDefId
-     *
-     * @param conn  The connection to use
-     * @param name the id of the test def
-     *
+    /**
+     * Look up HaTestDef based on the testDefId
+     * 
+     * @param conn
+     *            The connection to use
+     * @param name
+     *            the id of the test def
+     * 
      * @throws HotMathException
      */
     public HaTestDef getTestDef(final Connection conn, int testDefId) throws Exception {
@@ -122,7 +134,7 @@ public class HaTestDefDao {
             SqlUtilities.releaseResources(rs, pstat, null);
         }
     }
-    
+
     public HaTestDef getTestDef(final Connection conn, String progType, String subject) throws Exception {
         PreparedStatement pstat = null;
         ResultSet rs = null;
@@ -134,10 +146,10 @@ public class HaTestDefDao {
             pstat.setString(1, progType);
             pstat.setString(2, subject);
             rs = pstat.executeQuery();
-            if(rs.first()) {
-            	return getTestDef(conn, rs.getInt("test_def_id"));
+            if (rs.first()) {
+                return getTestDef(conn, rs.getInt("test_def_id"));
             }
-            
+
             return null;
         } finally {
             SqlUtilities.releaseResources(rs, pstat, null);
@@ -153,7 +165,8 @@ public class HaTestDefDao {
             }
         } catch (Exception e) {
             logger.error("Error getting test defs for test_def_ids: " + testDefIds, e);
-            throw new HotMathException(e, "Error getting test defs for testDefIds: " + testDefIds + ", " + e.getMessage());
+            throw new HotMathException(e, "Error getting test defs for testDefIds: " + testDefIds + ", "
+                    + e.getMessage());
         }
         return list;
     }
@@ -190,7 +203,7 @@ public class HaTestDefDao {
 
     /**
      * Return list of chapter names for book associated with this program
-     *
+     * 
      * @return
      * @throws Exception
      */
@@ -220,30 +233,38 @@ public class HaTestDefDao {
 
     /**
      * Each test is made up of 40 questions.
-     *
+     * 
      * These questions are divided up into 4 segments of 10 questions each.
-     *
+     * 
      * items are return in normal solution sort order
-     *
+     * 
      * @TODO: allow setting multiple chapters
      * @TODO: move into factory pattern
-     *
+     * 
      * @param conn
-     * @param conn Active connection passed in
+     * @param conn
+     *            Active connection passed in
      * @param segment
      * @param textcode
      * @param chapter
      * @return
      * @throws SQLException
      */
-    public List<String> getTestIdsForSegment(final Connection conn, StudentUserProgramModel userProgram, int segment, String textcode, String chapter, HaTestConfig config, int segmentSlot) throws Exception {
+    public List<String> getTestIdsForSegment(final Connection conn, StudentUserProgramModel userProgram, int segment,
+            String textcode, String chapter, HaTestConfig config, int segmentSlot) throws Exception {
 
+        /**
+         * Custom program?
+         * 
+         * TODO: handle custom program correctly
+         */
         if (segment == -1) {
             return new ArrayList<String>();
         }
 
         if (logger.isDebugEnabled()) {
-            logger.debug("getTestIdsForSegment(): segment: " + segment + ", textCode: " + textcode + ", chapter: " + chapter + ", segmentSlot: " + segmentSlot);
+            logger.debug("getTestIdsForSegment(): segment: " + segment + ", textCode: " + textcode + ", chapter: "
+                    + chapter + ", segmentSlot: " + segmentSlot);
         }
 
         int cnt = 0;
@@ -255,23 +276,36 @@ public class HaTestDefDao {
         // use the default chapter defined for this test_def
         List<String> problemIds = getTestIds(conn, userProgram, textcode, chapter, segmentSlot, 0, 99999, config);
 
-        cnt = problemIds.size();
-
-        // how does the total test break into segments?
-        solsPerSeg = (config != null) ? solsPerSeg = cnt / config.getSegmentCount() : 0;
-        solsPerSeg = (solsPerSeg < 5) ? cnt : solsPerSeg;
-
-        segPnEnd = (segment * solsPerSeg);
-        segPnStart = (segPnEnd - (solsPerSeg - 1));
-
-        problemIds = getTestIds(conn, userProgram, textcode, chapter, segmentSlot, segPnStart, segPnEnd, config);
-        if (problemIds.size() == 0) {
-            throw new HotMathException(String.format("No problems for test segment: %s, %s, %d, %d, %d", textcode, chapter, segPnStart, segPnEnd, segmentSlot));
+        if(userProgram.getCustomProgramId() > 0) {
+            
+            /** if custom program, then all ids are included
+             */
+            return problemIds;
         }
-        return problemIds;
+        else {
+            
+            /** return named segment */
+            
+            cnt = problemIds.size();
+    
+            // break program into segments?
+            solsPerSeg = (config != null) ? solsPerSeg = cnt / config.getSegmentCount() : 0;
+            solsPerSeg = (solsPerSeg < 5) ? cnt : solsPerSeg;
+    
+            segPnEnd = (segment * solsPerSeg);
+            segPnStart = (segPnEnd - (solsPerSeg - 1));
+    
+            problemIds = getTestIds(conn, userProgram, textcode, chapter, segmentSlot, segPnStart, segPnEnd, config);
+            if (problemIds.size() == 0) {
+                throw new HotMathException(String.format("No problems for test segment: %s, %s, %d, %d, %d", textcode,
+                        chapter, segPnStart, segPnEnd, segmentSlot));
+            }
+            return problemIds;
+        }
     }
 
-    public List<String> getTestIdsForPlacementSegment(final Connection conn, int segment, String textcode, String chapter, HaTestConfig config, int segmentSlot) throws Exception {
+    public List<String> getTestIdsForPlacementSegment(final Connection conn, int segment, String textcode,
+            String chapter, HaTestConfig config, int segmentSlot) throws Exception {
         PreparedStatement ps = null;
         ResultSet rs = null;
 
@@ -280,8 +314,8 @@ public class HaTestDefDao {
             String sql = CmMultiLinePropertyReader.getInstance().getProperty("TEST_IDS_FOR_PLACEMENT_SEGMENT");
 
             // TODO: Create list of 7 random solutions from
-            //       each text group that is listed in the
-            //       placement test.
+            // each text group that is listed in the
+            // placement test.
             List<String> list = new ArrayList<String>();
 
             ps = conn.prepareStatement(sql);
@@ -304,11 +338,12 @@ public class HaTestDefDao {
         }
     }
 
-    /** Return list of problem ids that match this program quiz.
-     *
-     *  Check to see if is a custom program and process
-     *
-     *
+    /**
+     * Return list of problem ids that match this program quiz.
+     * 
+     * Check to see if is a custom program and process
+     * 
+     * 
      * @param conn
      * @param textcode
      * @param chapter
@@ -319,7 +354,9 @@ public class HaTestDefDao {
      * @return
      * @throws Exception
      */
-    public List<String> getTestIds(final Connection conn, StudentUserProgramModel userProgram, String textcode, String chapter, int section, int startProblemNumber, int endProblemNumber, HaTestConfig config) throws Exception {
+    public List<String> getTestIds(final Connection conn, StudentUserProgramModel userProgram, String textcode,
+            String chapter, int section, int startProblemNumber, int endProblemNumber, HaTestConfig config)
+            throws Exception {
         if (userProgram.getCustomProgramId() > 0) {
             return getTestIdsCustom(conn, userProgram, section, startProblemNumber, endProblemNumber, config);
         } else {
@@ -327,35 +364,33 @@ public class HaTestDefDao {
         }
     }
 
-    private List<String> getTestIdsCustom(final Connection conn, StudentUserProgramModel userProgram, int section, int startProblemNumber, int endProblemNumber, HaTestConfig config) throws Exception {
-        PreparedStatement ps = null;
-        ResultSet rs = null;
-        try {
-            String sql = ""
-                    + "select  pid "
-                    + "from  HA_PROGRAM_LESSONS_static p "
-                    + "  JOIN HA_CUSTOM_PROGRAM_LESSON l "
-                    + "    ON p.file = l.file "
-                    + " where l.program_id = ?"
-                    + " order by pid";
+    /**
+     * Return the solution ids used by this custom program segment
+     * 
+     * @param conn
+     * @param userProgram
+     * @param section
+     * @param startProblemNumber
+     * @param endProblemNumber
+     * @param config
+     * @return
+     * @throws Exception
+     */
+    private List<String> getTestIdsCustom(final Connection conn, StudentUserProgramModel userProgram, int section,
+            int startProblemNumber, int endProblemNumber, HaTestConfig config) throws Exception {
+        int customProgramId = userProgram.getCustomProgramId();
+        CmList<CustomQuizId> items = new CmCustomProgramDao().getCustomProgramQuizIds(conn, customProgramId, section);
 
-            ps = conn.prepareStatement(sql);
-
-            ps.setInt(1, userProgram.getCustomProgramId());
-            rs = ps.executeQuery();
-
-            List<String> pids = new ArrayList<String>();
-            while (rs.next()) {
-                pids.add(rs.getString(1));
-            }
-            return pids;
-        } finally {
-            SqlUtilities.releaseResources(null, ps, null);
+        List<String> pids = new ArrayList<String>();
+        for (CustomQuizId quid : items) {
+            pids.add(quid.getPid());
         }
+        return pids;
     }
 
-    /** Return the normal default test ids
-     *
+    /**
+     * Return the normal default test ids
+     * 
      * @param conn
      * @param textcode
      * @param chapter
@@ -366,14 +401,16 @@ public class HaTestDefDao {
      * @return
      * @throws Exception
      */
-    public List<String> getTestIdsBasic(final Connection conn, String textcode, String chapter, int section, int startProblemNumber, int endProblemNumber, HaTestConfig config) throws Exception {
+    public List<String> getTestIdsBasic(final Connection conn, String textcode, String chapter, int section,
+            int startProblemNumber, int endProblemNumber, HaTestConfig config) throws Exception {
         PreparedStatement ps = null;
         ResultSet rs = null;
         try {
             String sql = "";
             if (config != null && config.getChapters().size() > 0) {
-                /** Is a chapter program
-                 *
+                /**
+                 * Is a chapter program
+                 * 
                  */
                 if (chapter == null) {
                     chapter = config.getChapters().get(0);
@@ -388,7 +425,7 @@ public class HaTestDefDao {
 
             ps.setString(1, textcode);
             ps.setString(2, chapter);
-            ps.setInt(3, (section + 1));  // test_segment_slots are zero based
+            ps.setInt(3, (section + 1)); // test_segment_slots are zero based
             ps.setInt(4, startProblemNumber);
             ps.setInt(5, endProblemNumber);
 
@@ -408,8 +445,9 @@ public class HaTestDefDao {
         }
     }
 
-    /** Return the Chapter info for named program or null
-     *
+    /**
+     * Return the Chapter info for named program or null
+     * 
      * @param conn
      * @param programInfo
      * @return The chapter info or null if no chapter
@@ -422,9 +460,9 @@ public class HaTestDefDao {
         String chapter = config.getChapters().size() > 0 ? config.getChapters().get(0) : null;
         if (chapter != null) {
             ChapterInfo ci = new ChapterInfo();
-            /** If chapter is specified then add the chapter number
-             *  to the title
-             *
+            /**
+             * If chapter is specified then add the chapter number to the title
+             * 
              */
             ci.setChapterTitle(chapter);
             HaTestDefDao tdo = new HaTestDefDao();
@@ -460,15 +498,16 @@ public class HaTestDefDao {
         testDef.stateId = rs.getString("state_id");
         testDef.numAlternateTests = rs.getInt("num_alt_tests");
 
-
         CmCacheManager.getInstance().addToCache(CmCacheManager.CacheName.TEST_DEF, testDef.getName(), testDef);
-        CmCacheManager.getInstance().addToCache(CmCacheManager.CacheName.TEST_DEF, String.valueOf(testDef.getTestDefId()), testDef);
+        CmCacheManager.getInstance().addToCache(CmCacheManager.CacheName.TEST_DEF,
+                String.valueOf(testDef.getTestDefId()), testDef);
 
         return testDef;
     }
 
-    /** Return list of TestDefs that are of type programType
-     *
+    /**
+     * Return list of TestDefs that are of type programType
+     * 
      * @param conn
      * @param programType
      * @return
@@ -491,5 +530,3 @@ public class HaTestDefDao {
         }
     }
 }
-
-

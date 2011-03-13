@@ -2,28 +2,31 @@ package hotmath.gwt.shared.server.service.command;
 
 import hotmath.assessment.AssessmentPrescription;
 import hotmath.assessment.AssessmentPrescriptionManager;
+import hotmath.cm.server.model.CmUserProgramDao;
+import hotmath.gwt.cm_admin.server.model.CmCustomProgramDao;
 import hotmath.gwt.cm_admin.server.model.CmStudentDao;
 import hotmath.gwt.cm_rpc.client.rpc.Action;
 import hotmath.gwt.cm_rpc.client.rpc.CmRpcException;
 import hotmath.gwt.cm_rpc.client.rpc.CreateTestRunResponse;
 import hotmath.gwt.cm_rpc.client.rpc.NextAction;
-import hotmath.gwt.cm_rpc.client.rpc.Response;
 import hotmath.gwt.cm_rpc.client.rpc.NextAction.NextActionName;
+import hotmath.gwt.cm_rpc.client.rpc.Response;
 import hotmath.gwt.cm_rpc.server.rpc.ActionHandler;
 import hotmath.gwt.cm_tools.client.model.StudentActiveInfo;
 import hotmath.gwt.shared.client.rpc.action.CreateTestRunAction;
 import hotmath.testset.ha.HaTest;
 import hotmath.testset.ha.HaTestDao;
 import hotmath.testset.ha.HaTestRun;
+import hotmath.testset.ha.StudentUserProgramModel;
 import hotmath.util.sql.SqlUtilities;
-
-import org.apache.log4j.Logger;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.apache.log4j.Logger;
 
 
 
@@ -50,6 +53,8 @@ public class CreateTestRunCommand implements ActionHandler<CreateTestRunAction, 
         
         startTime = beginTime = System.currentTimeMillis();
         new CmStudentDao().verifyActiveProgram(conn, action.getTestId(), action.getUserId());
+        
+        CreateTestRunResponse testRunInfo = new CreateTestRunResponse();
 
         if (logger.isInfoEnabled()) {
         	logger.info(String.format("+++ execute(): verifyActiveProgram(): took: %d msec",
@@ -102,6 +107,7 @@ public class CreateTestRunCommand implements ActionHandler<CreateTestRunAction, 
             		System.currentTimeMillis() - startTime));
             }
 
+            
             startTime = System.currentTimeMillis();
             HaTestRun run = HaTestDao.createTestRun(conn, test.getUser().getUid(), test.getTestId(), answeredCorrect, answeredIncorrect, notAnswered);
             if (logger.isInfoEnabled()) {
@@ -128,6 +134,7 @@ public class CreateTestRunCommand implements ActionHandler<CreateTestRunAction, 
                 CmStudentDao dao = new CmStudentDao();
                 StudentActiveInfo activeInfo = dao.loadActiveInfo(conn, test.getUser().getUid());
                 int nextSegment=activeInfo.getActiveSegment() + 1;
+                
                 activeInfo.setActiveSegment( nextSegment );
                 test.getUser().setActiveTestSegment(nextSegment);
                 dao.setActiveInfo(conn, test.getUser().getUid(), activeInfo);
@@ -139,15 +146,26 @@ public class CreateTestRunCommand implements ActionHandler<CreateTestRunAction, 
             	logger.info(String.format("+++ execute(): getPrescription(): took: %d msec",
             		System.currentTimeMillis() - startTime));
             }
+            
+            /** Where should be go next
+             * 
+             */
+            NextAction nextAction = null;
+            StudentUserProgramModel program = new CmUserProgramDao().loadProgramInfoForTest(conn, test.getTestId());
+            if(program.getCustomProgramId() > 0 && 
+                    (test.getUser().getActiveTestSegment() > new CmCustomProgramDao().getTotalSegmentCount(conn, program.getCustomProgramId()))) {
+                    nextAction = new NextAction(NextActionName.STOP_DO_NOT_ALLOW_CONTINUE);
+            }
+            else {
+                nextAction = pres.getNextAction();
+            }
 
-            CreateTestRunResponse testRunInfo = new CreateTestRunResponse();
             
             /** 
              * Let the prescription direct the next action depending on
              * type of test, status, etc.
              */
             startTime = System.currentTimeMillis();
-            NextAction nextAction = pres.getNextAction();
             if (logger.isInfoEnabled()) {
             	logger.info(String.format("+++ execute: Prescription Class: %s, getNextAction(): took: %d msec",
             	    pres.getClass().getName(), System.currentTimeMillis() - startTime));

@@ -191,7 +191,7 @@ public class CustomProgramAddQuizDialog extends Window {
             public void attempt() {
                 CmBusyManager.setBusy(true);
                 
-                GetCustomQuizAction action = new GetCustomQuizAction(adminId, quiz.getQuizName());
+                GetCustomQuizAction action = new GetCustomQuizAction(quiz.getQuizId());
                 setAction(action);
                 CmShared.getCmService().execute(action, this);
             }

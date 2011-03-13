@@ -37,10 +37,12 @@ public class CmQuizzesDao_Test extends CmDbTestCase {
         SaveCustomQuizAction action = new SaveCustomQuizAction(adminId, cpName, ids);
         
         RpcData data = new SaveCustomQuizCommand().execute(conn, action);
+        assertTrue(data.getDataAsInt("custom_quiz_id") > 0);
         assertTrue(data != null && data.getDataAsString("status").equals("OK"));
         
+        int customQuizId = data.getDataAsInt("custom_quiz_id");
         
-        CmList<QuizQuestion> questions = new CmQuizzesDao().getCustomQuizQuestions(conn, adminId, cpName);
+        CmList<QuizQuestion> questions = new CmQuizzesDao().getCustomQuizQuestions(conn,customQuizId);
         assertTrue(questions.size() > 0);
         
         assertTrue(new CmQuizzesDao().deleteCustomQuiz(conn, adminId, cpName));

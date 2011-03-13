@@ -229,14 +229,14 @@ public class PrescriptionContext implements CmContext {
                 }
 
                 // are there more Quizzes in this program?
-                boolean areMoreSegments = !UserInfo.getInstance().isCustomProgram() && UserInfo.getInstance().getTestSegment() < UserInfo.getInstance().getTestSegmentCount();
+                boolean areMoreSegments = UserInfo.getInstance().getTestSegment() < UserInfo.getInstance().getTestSegmentCount();
                 if (areMoreSegments) {
                     new PassedSectionWindow();
                 } else {
                     
                     
-                    if(UserInfo.getInstance().getOnCompletion() == ProgramCompletionAction.STOP) {
-                        new EndOfProgramWindow();
+                    if(UserInfo.getInstance().getOnCompletion() == ProgramCompletionAction.STOP_ALLOW_CONTINUE) {
+                        new EndOfProgramWindow(true);
                         return;
                     }
                     

@@ -1,13 +1,9 @@
 package hotmath.gwt.cm.client.ui.context;
 
 import hotmath.gwt.cm.client.CatchupMath;
-import hotmath.gwt.cm.client.history.CmHistoryManager;
-import hotmath.gwt.cm.client.history.CmLocation;
-import hotmath.gwt.cm.client.history.CmLocation.LocationType;
 import hotmath.gwt.cm.client.ui.EndOfProgramWindow;
 import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_rpc.client.rpc.CreateTestRunResponse;
-import hotmath.gwt.cm_rpc.client.rpc.NextAction.NextActionName;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.ui.CmLogger;
@@ -128,9 +124,10 @@ public class QuizContext implements CmContext {
         close.setText("OK");
         close.addSelectionListener(new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent ce) {
-                
-                /** force a page refresh to load newly changed program.
-                 *  Otherwise, things are out of sync with server.
+
+                /**
+                 * force a page refresh to load newly changed program.
+                 * Otherwise, things are out of sync with server.
                  */
                 CatchupMath.reloadUser();
             }
@@ -168,26 +165,24 @@ public class QuizContext implements CmContext {
             int total = runInfo.getTotal();
 
             int lessonCount = runInfo.getSessionCount();
-            String reviewLessons = "<p class='prescription-info'> " + 
-                                    "You have " + lessonCount + " review " + (lessonCount == 1 ? "topic" : "topics") +
-                                    " to study before advancing to the next quiz." +
-                                    "</p>";
+            String reviewLessons = "<p class='prescription-info'> " + "You have " + lessonCount + " review "
+                    + (lessonCount == 1 ? "topic" : "topics") + " to study before advancing to the next quiz." + "</p>";
 
             String msg = "";
             if (runInfo.getPassed()) {
                 if (correct != total) {
-                    msg += "<p>Your quiz score: <span class='pass-percent'>" + runInfo.getTestCorrectPercent() + "%</span></p>"
-                         + "<p class='pass-congrat'>Congratulations, you passed!</p>" 
-                         + reviewLessons;
+                    msg += "<p>Your quiz score: <span class='pass-percent'>" + runInfo.getTestCorrectPercent()
+                            + "%</span></p>" + "<p class='pass-congrat'>Congratulations, you passed!</p>"
+                            + reviewLessons;
                 } else {
-                    msg += "<p>Your quiz score: <span class='pass-percent'>" + runInfo.getTestCorrectPercent() + "%</span></p>" +
-                           "<p class='info'>You will now be given a quiz for the next section!</p>";
+                    msg += "<p>Your quiz score: <span class='pass-percent'>" + runInfo.getTestCorrectPercent()
+                            + "%</span></p>" + "<p class='info'>You will now be given a quiz for the next section!</p>";
                 }
             } else {
                 // did not pass
-                msg += "<p>Your quiz score: <span class='pass-percent'>" + runInfo.getTestCorrectPercent() + "%</span></p>" + 
-                       "<p>You need to pass: <span class='pass-percent'>" + UserInfo.getInstance().getPassPercentRequired() + "%</span></p>" + 
-                       reviewLessons;
+                msg += "<p>Your quiz score: <span class='pass-percent'>" + runInfo.getTestCorrectPercent()
+                        + "%</span></p>" + "<p>You need to pass: <span class='pass-percent'>"
+                        + UserInfo.getInstance().getPassPercentRequired() + "%</span></p>" + reviewLessons;
             }
 
             Html html = new Html(msg);
@@ -207,26 +202,33 @@ public class QuizContext implements CmContext {
                             CatchupMath.getThisInstance().showPrescriptionPanel();
                         } else {
                             // are there more Quizzes in this program?
-                            boolean areMoreSegments = UserInfo.getInstance().getTestSegment() < UserInfo.getInstance().getTestSegmentCount();
+                            boolean areMoreSegments = UserInfo.getInstance().getTestSegment() < UserInfo.getInstance()
+                                    .getTestSegmentCount();
                             if (areMoreSegments) {
                                 CatchupMath.getThisInstance().showQuizPanel(-1);
                             } else {
-                                switch(UserInfo.getInstance().getOnCompletion()) {
-                                        
-                                    case STOP:
-                                        new EndOfProgramWindow();
-                                        break;
-                                        
-                                    case AUTO_ADVANCE:
-                                        PrescriptionContext.autoAdvanceUser();
-                                        break;
-                                        
-                                    default:
-                                        CatchupMathTools.showAlert("Unknown onCompletion value: " + UserInfo.getInstance().getOnCompletion());
-                                        break;
-                                        
+                                switch (UserInfo.getInstance().getOnCompletion()) {
+
+                                case STOP_ALLOW_CONTINUE:
+                                    new EndOfProgramWindow(true);
+                                    break;
+                                    
+                                case STOP_DO_NOT_ALLOW_CONTINUE:
+                                    new EndOfProgramWindow(false);
+                                    break;
+                                    
+
+                                case AUTO_ADVANCE:
+                                    PrescriptionContext.autoAdvanceUser();
+                                    break;
+
+                                default:
+                                    CatchupMathTools.showAlert("Unknown onCompletion value: "
+                                            + UserInfo.getInstance().getOnCompletion());
+                                    break;
+
                                 }
-                                
+
                             }
                         }
                     } else {
@@ -245,95 +247,100 @@ public class QuizContext implements CmContext {
     }
 
     public void doNext() {
-    	/** if Check Quiz is selected, then do not reshow quiz/whiteboard 
-    	 * 
-    	 */
-    	EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_MODAL_WINDOW_OPEN));
+        /**
+         * if Check Quiz is selected, then do not reshow quiz/whiteboard
+         * 
+         */
+        EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_MODAL_WINDOW_OPEN));
         class MyCmWindow extends CmWindow {
-        	public MyCmWindow() {
-                setSize(330,120);
+            public MyCmWindow() {
+                setSize(330, 120);
                 setStyleName("quiz-context-msg-window");
                 setClosable(false);
-                
+
                 setModal(true);
                 setHeading("Ready to Check Quiz?");
-                add(new Html("<p style='padding: 15px 10px;'>Did you work out your answers carefully?</p>")); 
-                
+                add(new Html("<p style='padding: 15px 10px;'>Did you work out your answers carefully?</p>"));
+
                 addButton(new Button("Yes", new SelectionListener<ButtonEvent>() {
-                	@Override
-                	public void componentSelected(ButtonEvent ce) {
-                		close();
-                        doCheckTest();                		
-                	}
-				}));
-                
-                addButton(new Button("No", new SelectionListener<ButtonEvent>() {
-                	@Override
-                	public void componentSelected(ButtonEvent ce) {
-                		EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_MODAL_WINDOW_CLOSED));
-                		close();
-                	}
+                    @Override
+                    public void componentSelected(ButtonEvent ce) {
+                        close();
+                        doCheckTest();
+                    }
                 }));
-                
+
+                addButton(new Button("No", new SelectionListener<ButtonEvent>() {
+                    @Override
+                    public void componentSelected(ButtonEvent ce) {
+                        EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_MODAL_WINDOW_CLOSED));
+                        close();
+                    }
+                }));
+
                 setVisible(true);
-        	}
+            }
         }
-        
+
         new MyCmWindow();
     }
 
     public void doCheckTest() {
-    	
-    	/** only issue check test if sure there are 
-    	 * no pending question selections.  We have to
-    	 * wait until the request is back to client
-    	 * to make sure it has actually been performed
-    	 * on server.  Otherwise, we cannot be sure the
-    	 * question has been saved on the server.  Then 
-    	 * the quiz would be checked incorrectly.
-    	 * 
-    	 */
-        if(QuizPage.isAnsweringQuestions()) {
-        	new Timer() {
-				@Override
-				public void run() {
-					doCheckTest();
-				}
-			}.schedule(2000);
-        	InfoPopupBox.display("Quiz Check", "There are pending question selections ... waiting..");
-        }
-        else {
-        	doCheckTestAux();
+
+        /**
+         * only issue check test if sure there are no pending question
+         * selections. We have to wait until the request is back to client to
+         * make sure it has actually been performed on server. Otherwise, we
+         * cannot be sure the question has been saved on the server. Then the
+         * quiz would be checked incorrectly.
+         * 
+         */
+        if (QuizPage.isAnsweringQuestions()) {
+            new Timer() {
+                @Override
+                public void run() {
+                    doCheckTest();
+                }
+            }.schedule(2000);
+            InfoPopupBox.display("Quiz Check", "There are pending question selections ... waiting..");
+        } else {
+            doCheckTestAux();
         }
     }
-    
+
     public void doCheckTestAux() {
         new RetryAction<CreateTestRunResponse>() {
             @Override
             public void attempt() {
                 CmBusyManager.setBusy(true);
-                
-                if(CmShared.getQueryParameter("debug") != null) {
+
+                if (CmShared.getQueryParameter("debug") != null) {
                     InfoPopupBox.display("Quiz Check", "Checking quiz ...");
                 }
 
-                CreateTestRunAction action = new CreateTestRunAction(UserInfo.getInstance().getTestId(), UserInfo.getInstance().getUid());
+                CreateTestRunAction action = new CreateTestRunAction(UserInfo.getInstance().getTestId(), UserInfo
+                        .getInstance().getUid());
 
                 setAction(action);
-                CmShared.getCmService().execute(action,this);
+                CmShared.getCmService().execute(action, this);
             }
+
             public void oncapture(CreateTestRunResponse testRunInfo) {
                 try {
-                    
+
                     CmLogger.debug("CreateTestRunResponse: " + testRunInfo);
-                    
+
                     if (testRunInfo.getAction() != null) {
-                        if (testRunInfo.getAction() == NextActionName.AUTO_ASSSIGNED) {
+                        switch (testRunInfo.getAction()) {
+
+                        case AUTO_ASSSIGNED:
                             UserInfo.getInstance().setTestSegment(0); // reset
                             String testName = testRunInfo.getAssignedTest();
                             UserInfo.getInstance().setTestName(testName);
                             showAutoAssignedProgram(testName);
-                        } else if (testRunInfo.getAction() == NextActionName.QUIZ) {
+                            break;
+
+                        case QUIZ:
                             int testSegment = UserInfo.getInstance().getTestSegment();
                             int totalSegments = UserInfo.getInstance().getTestSegmentCount();
                             if ((testSegment + 1) > totalSegments) {
@@ -342,12 +349,25 @@ public class QuizContext implements CmContext {
                                 UserInfo.getInstance().setTestSegment(testSegment + 1);
                                 showNextPlacmentQuiz();
                             }
-                        } else if (testRunInfo.getAction() == NextActionName.PRESCRIPTION) {
+                            break;
+
+                        case PRESCRIPTION:
                             int runId = testRunInfo.getRunId();
                             UserInfo.getInstance().setRunId(runId);
                             UserInfo.getInstance().setSessionNumber(0); // start
 
                             showPrescriptionPanel(testRunInfo);
+                            break;
+
+                        case STOP_ALLOW_CONTINUE:
+                            new EndOfProgramWindow(true);
+                            break;
+                            
+                            
+                        case STOP_DO_NOT_ALLOW_CONTINUE:
+                            new EndOfProgramWindow(false);
+                            break;
+                            
                         }
                     }
                 } catch (Exception e) {
@@ -356,7 +376,7 @@ public class QuizContext implements CmContext {
                     CmBusyManager.setBusy(false);
                 }
             }
-        }.register();        
+        }.register();
     }
 
     public void doPrevious() {
