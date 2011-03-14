@@ -162,7 +162,10 @@ public class QuizPage extends LayoutContainer {
                 _quizInfo = rdata;
                 testQuestionAnswers = rdata.getAnswers();
                 
-                UserInfo.getInstance().setTestSegment(rdata.getQuizSegment());
+                /** Set to zero to force Command to use the
+                 *  current active test segment.
+                 */
+                UserInfo.getInstance().setTestSegment(0);  // rdata.getQuizSegment());
                 UserInfo.getInstance().setTestId(rdata.getTestId());
                 UserInfo.getInstance().setRunId(0); /* not in a prescription */
                 UserInfo.getInstance().setSubTitle(rdata.getSubTitle());
