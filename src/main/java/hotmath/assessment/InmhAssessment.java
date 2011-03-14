@@ -47,18 +47,18 @@ public class InmhAssessment {
 	 * @param pids
 	 */
 	public InmhAssessment(final Connection conn, int userId, String pids[]) throws CmException {
-        logger.debug("InmhAssessment(): pids: " + pids);
+        if (logger.isDebugEnabled()) logger.debug("InmhAssessment(): pids: " + pids);
         _pids = pids;
         for(String p : _pids) {
             try {
-            	logger.debug("Getting Help Items for '" + p + ": " + userId);
+            	if (logger.isDebugEnabled()) logger.debug("Getting Help Items for '" + p + ": " + userId);
             	
                 List<INeedMoreHelpItem> inmhItems = new ArrayList<INeedMoreHelpItem>();   
                 
                 INeedMoreHelpItem items[] = (INeedMoreHelpItem[])CmCacheManager.getInstance().retrieveFromCache(CacheName.INMH_ITEMS, p);
                 if(items == null) {
-                	logger.debug("Retrieving INMH Items for '" + p + ": " + userId);
-                	items = INeedMoreHelpManager.getInstance().getHelpItems(conn,p, "user_id=" + userId);
+                	if (logger.isDebugEnabled()) logger.debug("Retrieving INMH Items for '" + p + ": " + userId);
+                	items = INeedMoreHelpManager.getInstance().getHelpItems(conn, p, "user_id=" + userId);
                 	CmCacheManager.getInstance().addToCache(CacheName.INMH_ITEMS, p, items);
                 }
 
