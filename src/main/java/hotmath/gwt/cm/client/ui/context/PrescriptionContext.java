@@ -310,8 +310,7 @@ public class PrescriptionContext implements CmContext {
                      * 
                      * go directly, do load into history to avoid back/forward 
                     */
-                    int nextTestSegment = UserInfo.getInstance().getTestSegment() + 1;
-                    CatchupMath.getThisInstance().showQuizPanel_gwt(nextTestSegment);
+                    CatchupMath.getThisInstance().showQuizPanel_gwt(UserInfo.getInstance().getTestSegment());
                 }
             }));
             
