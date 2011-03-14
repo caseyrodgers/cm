@@ -2,11 +2,11 @@ package hotmath.cm.dao;
 
 import hotmath.cm.util.CmMultiLinePropertyReader;
 import hotmath.gwt.cm_tools.client.data.HaBasicUser;
+import hotmath.gwt.cm_tools.client.data.HaLoginInfo;
 import hotmath.gwt.cm_tools.client.data.HaBasicUser.UserType;
 import hotmath.gwt.shared.client.util.CmException;
 import hotmath.gwt.shared.client.util.CmExceptionLoginAlreadyConsumed;
 import hotmath.gwt.shared.client.util.CmExceptionLoginInvalid;
-import hotmath.testset.ha.HaLoginInfo;
 import hotmath.testset.ha.HaUserExtendedDao;
 import hotmath.util.sql.SqlUtilities;
 
