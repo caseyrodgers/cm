@@ -1,4 +1,4 @@
-package hotmath.gwt.cm_rpc.server.rpc;
+package hotmath.gwt.shared.client.util;
 
 public interface CmExceptionDoNotNotify {
 
