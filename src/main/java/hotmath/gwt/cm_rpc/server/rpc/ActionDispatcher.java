@@ -11,7 +11,7 @@ import hotmath.gwt.cm_rpc.client.rpc.Action;
 import hotmath.gwt.cm_rpc.client.rpc.CmRpcException;
 import hotmath.gwt.cm_rpc.client.rpc.Response;
 import hotmath.gwt.cm_rpc.server.rpc.ActionDispatcherListener.ActionExecutionType;
-import hotmath.gwt.shared.client.util.CmUserException;
+import hotmath.gwt.shared.client.util.CmExceptionDoNotNotify;
 import hotmath.gwt.shared.server.service.ActionHandlerManualConnectionManagement;
 import hotmath.util.HMConnectionPool;
 import hotmath.util.sql.SqlUtilities;
