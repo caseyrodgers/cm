@@ -10,9 +10,10 @@ import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_rpc.client.rpc.GetUserInfoAction;
 import hotmath.gwt.cm_rpc.server.rpc.ActionDispatcher;
 import hotmath.gwt.cm_tools.client.data.HaBasicUser;
+import hotmath.gwt.cm_tools.client.data.HaLoginInfo;
+import hotmath.gwt.cm_tools.client.data.HaUserLoginInfo;
 import hotmath.gwt.shared.client.rpc.action.LoginAction;
 import hotmath.testset.ha.HaAdmin;
-import hotmath.testset.ha.HaLoginInfo;
 import hotmath.util.HMConnectionPool;
 import hotmath.util.Jsonizer;
 import hotmath.util.sql.SqlUtilities;
@@ -101,10 +102,14 @@ public class LoginService extends HttpServlet {
 			 * cmUser will never be null.
 			 *  
 			 */
-			HaBasicUser cmUser = ActionDispatcher.getInstance().execute(loginAction);
+			
+			HaUserLoginInfo userLoginInfo = ActionDispatcher.getInstance().execute(loginAction);
+
+			HaBasicUser cmUser = userLoginInfo.getHaUser();
+			HaLoginInfo loginInfo = userLoginInfo.getHaLoginInfo();
+
 			assert(cmUser != null);
 
-			HaLoginInfo loginInfo = new HaLoginInfoDao().getLoginInfo(conn, cmUser);
 
 			/** either redirect this user to CM using current information
 			 * or return JSON describing login info.

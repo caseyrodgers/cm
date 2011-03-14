@@ -5,8 +5,9 @@ import hotmath.gwt.cm_rpc.client.rpc.Action;
 import hotmath.gwt.cm_rpc.client.rpc.Response;
 import hotmath.gwt.cm_rpc.server.rpc.ActionHandler;
 import hotmath.gwt.cm_tools.client.data.HaBasicUser;
+import hotmath.gwt.cm_tools.client.data.HaLoginInfo;
+import hotmath.gwt.cm_tools.client.data.HaUserLoginInfo;
 import hotmath.gwt.shared.client.rpc.action.LoginAction;
-import hotmath.testset.ha.HaLoginInfo;
 import hotmath.testset.ha.HaUserFactory;
 
 import java.sql.Connection;
@@ -21,11 +22,11 @@ import org.apache.log4j.Logger;
  * @author bob
  *
  */
-public class LoginCommand implements ActionHandler<LoginAction, HaBasicUser>{
+public class LoginCommand implements ActionHandler<LoginAction, HaUserLoginInfo>{
 
 	private static final Logger LOGGER = Logger.getLogger(LoginCommand.class);
 
-	public HaBasicUser execute(final Connection conn, LoginAction action) throws Exception {
+	public HaUserLoginInfo execute(final Connection conn, LoginAction action) throws Exception {
 
 		HaBasicUser cmUser = null;
 
@@ -61,8 +62,11 @@ public class LoginCommand implements ActionHandler<LoginAction, HaBasicUser>{
 		if (LOGGER.isDebugEnabled()) {
 			LOGGER.debug(String.format("execute(): cmUser is: %s", (cmUser == null)?"NULL":"not null"));
 		}
-		
-		return cmUser;
+		assert(cmUser != null);
+
+		HaLoginInfo loginInfo = new HaLoginInfoDao().getLoginInfo(conn, cmUser);
+
+		return new HaUserLoginInfo(cmUser, loginInfo);
 	}
 
     public Class<? extends Action<? extends Response>> getActionType() {

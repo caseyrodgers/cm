@@ -1,6 +1,5 @@
 package hotmath.gwt.shared.client.util;
 
-import hotmath.gwt.cm_rpc.server.rpc.CmExceptionDoNotNotify;
 
 
 /** Represents any type of user error

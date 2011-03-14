@@ -1,5 +1,5 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
-<%@page import="hotmath.testset.ha.HaLoginInfo"%>
+<%@page import="hotmath.gwt.cm_tools.client.data.HaLoginInfo"%>
 <%
   /** Provide a wrapper around CM Admin initialization to allow for pre-fetching data
       and inserting into initial HTML download

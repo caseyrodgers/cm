@@ -2,6 +2,7 @@ package hotmath.gwt.shared.client.rpc.action;
 
 import hotmath.gwt.cm_rpc.client.rpc.Action;
 import hotmath.gwt.cm_tools.client.data.HaBasicUser;
+import hotmath.gwt.cm_tools.client.data.HaUserLoginInfo;
 
 /**
  *  Login with username and password, or...
@@ -9,7 +10,7 @@ import hotmath.gwt.cm_tools.client.data.HaBasicUser;
  * @author bob
  *
  */
-public class LoginAction implements Action<HaBasicUser> {
+public class LoginAction implements Action<HaUserLoginInfo> {
 
 	private static final long serialVersionUID = 8648836581209771809L;
 
