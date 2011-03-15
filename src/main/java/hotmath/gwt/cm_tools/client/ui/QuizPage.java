@@ -148,6 +148,7 @@ public class QuizPage extends LayoutContainer {
 	        
 	        @Override
 	        public void attempt() {
+
 	            CatchupMathTools.setBusy(true);
 	            GetQuizHtmlAction quizAction = new GetQuizHtmlAction(UserInfo.getInstance().getUid(), UserInfo.getInstance().getTestId(), testSegment);
 	            setAction(quizAction);
@@ -161,11 +162,7 @@ public class QuizPage extends LayoutContainer {
                 CatchupMathTools.setBusy(false);
                 _quizInfo = rdata;
                 testQuestionAnswers = rdata.getAnswers();
-                
-                /** Set to zero to force Command to use the
-                 *  current active test segment.
-                 */
-                UserInfo.getInstance().setTestSegment(0);  // rdata.getQuizSegment());
+                UserInfo.getInstance().setTestSegment(rdata.getQuizSegment());
                 UserInfo.getInstance().setTestId(rdata.getTestId());
                 UserInfo.getInstance().setRunId(0); /* not in a prescription */
                 UserInfo.getInstance().setSubTitle(rdata.getSubTitle());

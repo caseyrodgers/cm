@@ -78,8 +78,10 @@ public class QuizCmGuiDefinition implements CmGuiDefinition {
 	}
 	
 	QuizPage qp;
+	final int FORCE_USE_ACTIVE_SEGMENT = -1;
 	public Widget getCenterWidget() {
-		    qp = new QuizPage(false, testSegment, new CmAsyncRequestImplDefault() {
+	        int testSegmentToRead = FORCE_USE_ACTIVE_SEGMENT; 
+		    qp = new QuizPage(false, testSegmentToRead, new CmAsyncRequestImplDefault() {
 		        
 			public void requestComplete(String quizTitle) {
 			    
