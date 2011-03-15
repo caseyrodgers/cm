@@ -1,9 +1,10 @@
 package hotmath.cm.signup;
 
-import hotmath.cm.dao.HaLoginInfoDao;
 import hotmath.cm.dao.CmUserDao;
+import hotmath.cm.dao.HaLoginInfoDao;
 import hotmath.gwt.cm_admin.server.model.CmAdminDao;
 import hotmath.gwt.cm_admin.server.model.CmStudentDao;
+import hotmath.gwt.cm_tools.client.data.HaLoginInfo;
 import hotmath.gwt.cm_tools.client.model.StudentModel;
 import hotmath.gwt.cm_tools.client.model.StudentModelI;
 import hotmath.gwt.cm_tools.client.model.StudentProgramModel;
@@ -16,12 +17,9 @@ import hotmath.subscriber.service.HmServiceImplDefault;
 import hotmath.subscriber.service.HmServiceManager;
 import hotmath.subscriber.service.HotMathSubscriberServiceFactory;
 import hotmath.testset.ha.HaAdmin;
-import hotmath.testset.ha.HaLoginInfo;
 import hotmath.testset.ha.HaUser;
 import hotmath.util.HMConnectionPool;
 import hotmath.util.sql.SqlUtilities;
-
-import org.apache.log4j.Logger;
 
 import java.io.IOException;
 import java.sql.Connection;
@@ -33,6 +31,8 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import org.apache.log4j.Logger;
 
 import sb.util.SbUtilities;
 
