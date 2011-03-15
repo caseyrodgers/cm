@@ -13,7 +13,10 @@
 %>
 <html>
   <head>
-  <script type="text/javascript" language="javascript" src="/assets/js/MathJax/MathJax.js"></script>
+  <meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7">
+  <script type="text/javascript"
+      src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+  </script>
   <link rel="stylesheet" type="text/css" href="/gwt-resources/gxt-2.2.1/css/gxt-all.css" />
   <link class="gray" rel="stylesheet" type="text/css" href="/gwt-resources/gxt-2.2.1/css/gxt-gray.css" />
   <link rel="stylesheet" type="text/css" href="/css/tutor_widget.css" />
