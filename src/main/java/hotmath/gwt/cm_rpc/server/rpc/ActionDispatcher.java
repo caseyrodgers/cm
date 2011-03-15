@@ -204,12 +204,13 @@ public class ActionDispatcher {
 
         Connection conn = null;
         ActionTypeMap.ActionType actionType = ActionTypeMap.ActionType.UNKNOWN;
+        ActionHandler actionHandler = null;
         try {
             Class clazz = getActionCommand(action);
             if (clazz == null) {
                 throw new CmRpcException("Could not find Action Handler for Action: " + action.getClass().getName());
             }
-            ActionHandler actionHandler = (ActionHandler) clazz.newInstance();
+            actionHandler = (ActionHandler) clazz.newInstance();
 
             if (actionHandler == null)
                 throw new CmRpcException("No such RPC Action Handler defined: " + action.getClass().getName());
@@ -221,10 +222,16 @@ public class ActionDispatcher {
              * manually manage the creation/release of connections.
              */
             if (!(actionHandler instanceof ActionHandlerManualConnectionManagement)) {
-                logger.debug("RPC Action: DB Connection requested");
+                if (logger.isInfoEnabled()) {
+                	logger.info(String.format("RPC Action: (ID:%s) about to request DB Connection, openConnectionCount: (%d)", actionId,
+                			HMConnectionPool.getInstance().getConnectionCount()));
+                }
                 conn = HMConnectionPool.getConnection();                
             } else {
-                logger.debug("RPC Action: DB Connection NOT requested");
+                if (logger.isInfoEnabled()) {
+                	logger.info(String.format("RPC Action: (ID:%s) DB Connection not requested, openConnectionCount: (%d)", actionId,
+                			HMConnectionPool.getInstance().getConnectionCount()));
+                }
             }
 
             actionType = ActionTypeMap.getActionType(clazzName);
@@ -269,6 +276,11 @@ public class ActionDispatcher {
                 }
                 if (HMConnectionPool.getInstance().getConnectionCount() > CONNECTION_WARNING_THRESHOLD) {
                 	logger.warn(String.format("RPC Action: DB openConnectionCount: %d over threshold: %d", HMConnectionPool.getInstance().getConnectionCount(), CONNECTION_WARNING_THRESHOLD));
+                }
+            }
+            else if (actionHandler != null && (actionHandler instanceof ActionHandlerManualConnectionManagement)) {
+                if (logger.isInfoEnabled()) {
+                	logger.info(String.format("RPC Action: (ID:%s) DB Connection not closed, openConnectionCount: (%d)", actionId, HMConnectionPool.getInstance().getConnectionCount()));
                 }
             }
 
