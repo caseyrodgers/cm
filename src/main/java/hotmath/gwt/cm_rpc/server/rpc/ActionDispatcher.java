@@ -264,8 +264,8 @@ public class ActionDispatcher {
         } finally {
             if (conn != null) {
                 SqlUtilities.releaseResources(null, null, conn);
-                if (logger.isDebugEnabled()) {
-                	logger.debug(String.format("RPC Action: (ID:%s) DB Connection closed, openConnectionCount: (%d)", actionId, HMConnectionPool.getInstance().getConnectionCount()));
+                if (logger.isInfoEnabled()) {
+                	logger.info(String.format("RPC Action: (ID:%s) DB Connection closed, openConnectionCount: (%d)", actionId, HMConnectionPool.getInstance().getConnectionCount()));
                 }
                 if (HMConnectionPool.getInstance().getConnectionCount() > CONNECTION_WARNING_THRESHOLD) {
                 	logger.warn(String.format("RPC Action: DB openConnectionCount: %d over threshold: %d", HMConnectionPool.getInstance().getConnectionCount(), CONNECTION_WARNING_THRESHOLD));
