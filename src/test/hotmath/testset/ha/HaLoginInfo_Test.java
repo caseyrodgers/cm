@@ -3,7 +3,7 @@ package hotmath.testset.ha;
 import hotmath.cm.dao.HaLoginInfoDao;
 import hotmath.gwt.cm.server.CmDbTestCase;
 import hotmath.gwt.cm_tools.client.data.HaBasicUser;
-import junit.framework.TestCase;
+import hotmath.gwt.cm_tools.client.data.HaLoginInfo;
 
 public class HaLoginInfo_Test extends CmDbTestCase {
     
