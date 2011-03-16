@@ -7,6 +7,7 @@ import hotmath.cm.server.model.CmUserProgramDao;
 import hotmath.cm.util.CmCacheManager;
 import hotmath.cm.util.CmMultiLinePropertyReader;
 import hotmath.cm.util.CmCacheManager.CacheName;
+import hotmath.gwt.cm_admin.server.model.CmCustomProgramDao;
 import hotmath.gwt.cm_admin.server.model.CmStudentDao;
 import hotmath.gwt.shared.server.service.command.GetPrescriptionCommand;
 import hotmath.util.sql.SqlUtilities;
@@ -179,7 +180,21 @@ public class HaTestDao {
             pstat.setTimestamp(4, new Timestamp(System.currentTimeMillis()));
             pstat.setInt(5, segment);
             pstat.setInt(6, segmentSlot);
-            pstat.setInt(7, config.getSegmentCount());
+            
+            /** If custom program ask program how many segments
+             * 
+             * TODO: why not a dynamic config object?
+             *   
+             */
+            int segmentCount = 0;
+            if(userProgram.getCustomProgramId()>0) {
+                new CmCustomProgramDao().getTotalSegmentCount(conn, userProgram.getCustomProgramId());
+            }
+            else {
+                segmentCount = config.getSegmentCount();
+            }
+            pstat.setInt(7, segmentCount);
+            
             pstat.setInt(8, testIds.size());
 
             // make sure there are not currently defines items for this test
@@ -437,7 +452,9 @@ public class HaTestDao {
             int passPercentRequired = pinfo.getConfig().getPassPercent();
             int testCorrectPercent = GetPrescriptionCommand.getTestPassPercent(answeredCorrect + answeredIncorrect
                     + notAnswered, answeredCorrect);
-            boolean passedQuiz = (testCorrectPercent >= passPercentRequired);
+            
+            /** if user passed quiz or if the custom program which always is passing */
+            boolean passedQuiz = pinfo.getCustomProgramId() > 0 || (testCorrectPercent >= passPercentRequired);
 
             HaTest test = HaTestDao.loadTest(conn, testId);
             String sql = "insert into HA_TEST_RUN(test_id, run_time, answered_correct, answered_incorrect, not_answered,run_session,is_passing)values(?,?,?,?,?,1,?)";
@@ -491,6 +508,7 @@ public class HaTestDao {
             test.getUser().setActiveTest(0); // if test_run is active, test is not
             test.getUser().update(conn);
 
+
             updateTestRunSessions(conn, runId);
             
             HaUserExtendedDao.updateUserExtended(conn, studentUid, testRun);
@@ -499,7 +517,7 @@ public class HaTestDao {
         } catch (HotMathException hme) {
             throw hme;
         } catch (Exception e) {
-            throw new HotMathException(e, "Error looking up Hotmath Advance test: " + e.getMessage());
+            throw new HotMathException(e, "Error looking up test: " + e.getMessage());
         } finally {
             SqlUtilities.releaseResources(rs, pstat, null);
         }
@@ -518,11 +536,9 @@ public class HaTestDao {
      */
     static public void updateTestRunSessions(Connection conn, Integer runId) throws Exception {
         /**
-         * now pre-create the prescription, and extract the total number of
-         * sessions
+         * now pre-create the prescription, and extract the total number of sessions
          * 
-         * NOTE: this is needed because, we need the test_run to create the
-         * prescription.
+         * NOTE: this is needed because, we need the test_run to create the prescription.
          */
         AssessmentPrescription pres = AssessmentPrescriptionManager.getInstance().getPrescription(conn, runId);
         int totalSessions = pres.getSessions().size();
