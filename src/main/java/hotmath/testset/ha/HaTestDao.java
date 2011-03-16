@@ -150,9 +150,11 @@ public class HaTestDao {
             throws HotMathException {
         PreparedStatement pstat = null;
         ResultSet rs = null;
+        
+        String msg = String.format("creating test: uid: %d, segment: %d, testDef: %s", uid, segment, testDef);
         try {
 
-            __logger.debug("creating test: " + uid + ", " + testDef + ", " + segment);
+            __logger.debug(msg);
 
             String sql = "insert into HA_TEST(user_id,user_prog_id,test_def_id,create_time,test_segment,test_segment_slot, total_segments,test_question_count)values(?,?,?,?,?,?,?,?)";
 
@@ -238,7 +240,8 @@ public class HaTestDao {
         } catch (HotMathException hme) {
             throw hme;
         } catch (Exception e) {
-            throw new HotMathException(e, "Error looking up Catchup Math user: " + e.getMessage());
+        	__logger.error(msg, e);
+            throw new HotMathException(e, "Error " + msg + ": " + e.getMessage());
         } finally {
             SqlUtilities.releaseResources(null, pstat, null);
         }
