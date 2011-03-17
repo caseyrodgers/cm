@@ -70,6 +70,9 @@ public class HaTestDef {
     	sb.append(", subjectId= ").append(subjectId);
     	sb.append(", progId=").append(progId);
     	sb.append(", testDefId=").append(testDefId);
+    	sb.append(", stateId=").append(stateId);
+    	sb.append(", indexRelatedPool=").append(indexRelatedPool);
+    	sb.append(", numAlternateTests=").append(numAlternateTests);
     	sb.append(", config=").append(config.toString()).append(" ]");
     	return sb.toString();
     }
