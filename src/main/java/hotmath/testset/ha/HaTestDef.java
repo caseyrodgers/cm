@@ -60,6 +60,19 @@ public class HaTestDef {
         this.numAlternateTests = td.getNumAlternateTests();
     }
 
+    @Override
+    public String toString() {
+    	StringBuilder sb = new StringBuilder();
+    	
+    	sb.append("HaTestDef[ name=").append(name);
+    	sb.append(", textCode=").append(textCode);
+    	sb.append(", chapter= ").append(chapter);
+    	sb.append(", subjectId= ").append(subjectId);
+    	sb.append(", progId=").append(progId);
+    	sb.append(", testDefId=").append(testDefId);
+    	sb.append(", config=").append(config.toString()).append(" ]");
+    	return sb.toString();
+    }
     /** Return the default test configuration for this test def
      * 
      * @return
