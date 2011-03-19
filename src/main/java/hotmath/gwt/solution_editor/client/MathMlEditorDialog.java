@@ -20,13 +20,14 @@ public class MathMlEditorDialog extends Window  {
         publishNative();
     }
     
-    public MathMlEditorDialog(Callback callback, MathMlResource resource) {
+    public MathMlEditorDialog(Callback callback, MathMlResource resource, boolean allowCreate) {
         __instance = this;
         this.callback = callback;
         this.resource = resource != null?resource:new MathMlResource();
         
         setSize(850,550);
         setHeading("Math ML Editor");
+        setClosable(false);
 
         Frame frame = new Frame("/gwt-resources/fmath_wrapper.html");
         frame.setSize("100%", "99%");
@@ -38,20 +39,23 @@ public class MathMlEditorDialog extends Window  {
         add(frame);
 
         
-        String label = resource!=null?"Update":"Create";
-        addButton(new Button(label, new SelectionListener<ButtonEvent>() {
-            public void componentSelected(ButtonEvent be) {
-                MathMlEditorDialog.this.resource.setMathMl(getMathMlFromFlash());
-                MathMlEditorDialog.this.callback.resourceUpdated(MathMlEditorDialog.this.resource);
-                
-                hide();
-            }
-        }));
+        if(allowCreate) {
+            String label = resource!=null?"Update":"Create";
+            addButton(new Button(label, new SelectionListener<ButtonEvent>() {
+                public void componentSelected(ButtonEvent be) {
+                    MathMlEditorDialog.this.resource.setMathMl(getMathMlFromFlash());
+                    MathMlEditorDialog.this.callback.resourceUpdated(MathMlEditorDialog.this.resource);
+                    
+                    hide();
+                }
+            }));
+        }
 
 
         addButton(new Button("Cancel", new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent be) {
                 hide();
+                MathMlEditorDialog.this.callback.resourceUpdated(null);
             }
         }));
 

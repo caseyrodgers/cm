@@ -4,6 +4,7 @@ import hotmath.gwt.cm.client.CatchupMath;
 import hotmath.gwt.cm.client.history.CmHistoryQueue;
 import hotmath.gwt.cm.client.history.CmLocation;
 import hotmath.gwt.cm.client.history.CmLocation.LocationType;
+import hotmath.gwt.cm.client.ui.EndOfProgramWindow;
 import hotmath.gwt.cm.client.ui.HeaderPanel;
 import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_rpc.client.rpc.GetPrescriptionAction;
@@ -248,6 +249,9 @@ public class PrescriptionCmGuiDefinition implements CmGuiDefinition {
                     }
                 } catch (Exception e) {
                 	CmLogger.error("Error reading data from server", e);
+                	if(UserInfo.getInstance().isCustomProgram()) {
+                	    new EndOfProgramWindow(true);
+                	}
                 } finally {
                     CmBusyManager.setBusy(false);
                 }

@@ -14,7 +14,7 @@ public class GetCustomQuizCommand implements ActionHandler<GetCustomQuizAction, 
 
     @Override
     public CmList<QuizQuestion> execute(Connection conn, GetCustomQuizAction action) throws Exception {
-        return new CmQuizzesDao().getCustomQuizQuestions(conn, action.getAdminId());
+        return new CmQuizzesDao().getCustomQuizQuestions(conn, action.getCustomQuizId());
     }
     
     @Override

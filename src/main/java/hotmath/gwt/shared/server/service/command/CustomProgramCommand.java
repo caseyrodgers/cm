@@ -36,8 +36,7 @@ public class CustomProgramCommand implements ActionHandler<CustomProgramAction, 
                 return list;
                 
             case GET_CUSTOM_PROGRAM:
-                int programSegment = 0 ;
-                return new CmCustomProgramDao().getCustomProgramLessons(conn, action.getProgramId(),programSegment);
+                return new CmCustomProgramDao().getCustomProgramLessonsAllSegments(conn, action.getProgramId());
                 
             case SAVE:
                 return new CmCustomProgramDao().saveChanges(conn, action.getAdminId(),action.getProgramId(), action.getProgramName(), action.getLessons());

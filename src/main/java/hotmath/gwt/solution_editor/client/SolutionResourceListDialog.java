@@ -90,7 +90,7 @@ public class SolutionResourceListDialog extends Window {
                     public void resourceUpdated(MathMlResource resource) {
                         createResourceOnServer(resource);
                     }
-                },null);
+                },null, true);
             }
         }));
 
@@ -187,7 +187,7 @@ public class SolutionResourceListDialog extends Window {
                     public void resourceUpdated(MathMlResource resource) {
                         createResourceOnServer(resource);
                     }
-                },resource);
+                },resource,true);
 
 
             }

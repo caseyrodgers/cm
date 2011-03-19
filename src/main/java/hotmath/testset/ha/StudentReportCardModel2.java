@@ -1,14 +1,9 @@
 package hotmath.testset.ha;
 
-import hotmath.gwt.cm_admin.server.model.CmStudentDao;
-import hotmath.gwt.cm_tools.client.model.StudentModel;
 import hotmath.gwt.cm_tools.client.model.StudentProgramReportModelI;
 import hotmath.gwt.cm_tools.client.model.StudentReportCardModelI;
 import hotmath.testset.ha.info.UserInfo;
-import hotmath.testset.ha.info.UserProgramInfo;
-import hotmath.testset.ha.info.UserProgramInfoDao;
 
-import java.sql.Connection;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;

@@ -5,6 +5,7 @@ import hotmath.gwt.cm_core.client.EventBus;
 import hotmath.gwt.cm_core.client.EventTypes;
 import hotmath.gwt.solution_editor.client.SolutionResourceListDialog.Callback;
 import hotmath.gwt.solution_editor.client.rpc.FormatXmlAdminAction;
+import hotmath.gwt.solution_editor.client.rpc.MathMlResource;
 import hotmath.gwt.solution_editor.client.rpc.SolutionAdminResponse;
 import hotmath.gwt.solution_editor.client.rpc.SolutionResource;
 
@@ -64,6 +65,19 @@ public class StepEditorPlainTextDialog extends Window {
                         new CmEvent(hotmath.gwt.solution_editor.client.EventTypes.SOLUTION_EDITOR_CHANGED));
             }
         });
+
+        getHeader().addTool(new Button("MathML Editor", new SelectionListener<ButtonEvent>() {
+            @Override
+            public void componentSelected(ButtonEvent ce) {
+                setVisible(false);
+                new MathMlEditorDialog(new MathMlEditorDialog.Callback() {
+                    @Override
+                    public void resourceUpdated(MathMlResource resource) {
+                        setVisible(true);
+                    }
+                }, null, false);            }
+        }));
+
         getHeader().addTool(new Button("Resources", new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent ce) {
