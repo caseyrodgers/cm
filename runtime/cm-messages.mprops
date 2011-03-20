@@ -30,3 +30,6 @@ Ask your Account Manager for your admin password.
 
 .key=WRONG_PASSWORD_INDIV_ACCT
 The entered password is not correct. The original password was emailed to you from registration@hotmath.com, but you may have changed it.
+
+.key=SYSTEM_ERROR_MSG
+Sorry! An unexpected error has occurred.
