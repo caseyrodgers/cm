@@ -4,6 +4,7 @@ import hotmath.cm.dao.HaLoginInfoDao;
 import hotmath.cm.login.service.lcom.LcomManager;
 import hotmath.cm.login.service.lcom.LcomStudentSignup;
 import hotmath.cm.login.service.lcom.LcomTeacherSignup;
+import hotmath.cm.util.CmMessagePropertyReader;
 import hotmath.gwt.cm_rpc.client.ClientInfo;
 import hotmath.gwt.cm_rpc.client.ClientInfo.UserType;
 import hotmath.gwt.cm_rpc.client.UserInfo;
@@ -13,6 +14,7 @@ import hotmath.gwt.cm_tools.client.data.HaBasicUser;
 import hotmath.gwt.cm_tools.client.data.HaLoginInfo;
 import hotmath.gwt.cm_tools.client.data.HaUserLoginInfo;
 import hotmath.gwt.shared.client.rpc.action.LoginAction;
+import hotmath.gwt.shared.client.util.CmExceptionDoNotNotify;
 import hotmath.testset.ha.HaAdmin;
 import hotmath.util.HMConnectionPool;
 import hotmath.util.Jsonizer;
@@ -200,7 +202,17 @@ public class LoginService extends HttpServlet {
 			}
 		}
 		catch(Exception e) {
-			req.getSession().setAttribute("error-msg", e.getMessage());
+			if (e instanceof CmExceptionDoNotNotify)
+			    req.getSession().setAttribute("error-msg", e.getMessage());
+			else {
+				String msg = null;
+				try {
+					msg = CmMessagePropertyReader.getInstance().getProperty("SYSTEM_ERR_MSG");
+				}
+				catch(Exception cme) {}
+			    req.getSession().setAttribute("error-msg",   msg);
+			}
+			
 			req.getRequestDispatcher("/gwt-resources/login_error.jsp").forward(req, resp);
 			LOGGER.error(String.format("*** Login failed for user: %s, pwd: %s", user, pwd), e);
 		}
