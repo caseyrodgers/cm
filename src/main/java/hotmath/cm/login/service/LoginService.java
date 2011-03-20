@@ -207,7 +207,7 @@ public class LoginService extends HttpServlet {
 			else {
 				String msg = null;
 				try {
-					msg = CmMessagePropertyReader.getInstance().getProperty("SYSTEM_ERR_MSG");
+					msg = CmMessagePropertyReader.getInstance().getProperty("SYSTEM_ERROR_MSG");
 				}
 				catch(Exception cme) {}
 			    req.getSession().setAttribute("error-msg",   msg);
