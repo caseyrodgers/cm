@@ -131,13 +131,12 @@ public class CmInmhStandardResources extends ArrayList<PrescriptionSessionDataRe
         subMenu.add(si);
 
         si = new SubMenuItem("Negatives");
-        si.getItemData().add(
-                new InmhItemData(t, "/learning_activities/interactivities/flashcard_add_sub_neg.swf",
-                        "Adding with Negatives"));
-        si.getItemData().add(
-                new InmhItemData(t, "/learning_activities/interactivities/flashcard_multi_div_neg.swf",
-                        "Multiplying with Negatives"));
+        si.getItemData().add(new InmhItemData(t, "/learning_activities/interactivities/flashcard_add_sub_neg.swf?actType=add","Adding with Negatives"));
+        si.getItemData().add(new InmhItemData(t, "/learning_activities/interactivities/flashcard_add_sub_neg.swf?actType=sub","Subtracting with Negatives"));
+        si.getItemData().add(new InmhItemData(t, "/learning_activities/interactivities/flashcard_multi_div_neg.swf?actType=multi","Multiplying with Negatives"));
+        si.getItemData().add(new InmhItemData(t, "/learning_activities/interactivities/flashcard_multi_div_neg.swf?actType=div","Dividing with Negatives"));
         subMenu.add(si);
+        
 
         si = new SubMenuItem("Order of Operations");
         si.getItemData().add(
