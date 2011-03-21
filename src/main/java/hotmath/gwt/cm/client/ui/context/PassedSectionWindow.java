@@ -17,12 +17,12 @@ import com.extjs.gxt.ui.client.widget.Html;
 import com.extjs.gxt.ui.client.widget.button.Button;
 
 /** Shown after a user has completed a complete program segment
- * 
+ *
  * @author casey
  *
  */
 public class PassedSectionWindow extends CmWindow {
-    
+
     public PassedSectionWindow() {
         addStyleName("passed-section-window");
         String msg = null;
@@ -34,9 +34,9 @@ public class PassedSectionWindow extends CmWindow {
         }
         msg += "<p>You will now be shown the next quiz.</p>";
         setHeading("Congratulations");
-        
+
         EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_MODAL_WINDOW_OPEN, this));
-        
+
         setClosable(false);
         setModal(true);
         add(new Html(msg));
@@ -48,28 +48,28 @@ public class PassedSectionWindow extends CmWindow {
                     new GenericVideoPlayerForMona(MonaVideo.PASS_QUIZ);
                 }
             }));
-    
+
         addButton(new Button("Continue",new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent ce) {
                 close();
-            
+
                 /** move to next quiz
-                 * 
-                 * go directly, do load into history to avoid back/forward 
+                 *
+                 * go directly, do load into history to avoid back/forward
                 */
                 CatchupMath.getThisInstance().showQuizPanel_gwt(UserInfo.getInstance().getTestSegment());
             }
         }));
-        
-        
+
+
         addWindowListener(new WindowListener() {
             @Override
             public void windowHide(WindowEvent we) {
                 EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_MODAL_WINDOW_CLOSED, this));
             }
         });
-        
+
         setVisible(true);
     }
 }
