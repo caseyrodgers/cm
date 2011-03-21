@@ -1197,14 +1197,25 @@ img.resource-item-complete {
   padding: 5px;
 }
 
+#hm_flash_widget.not_used {
+   width: 325px;
+}
+
+.not_used #hm_flash_widget_head {
+   display: none;
+}
+
+#tutoroutput .not_used p {
+   margin: 0;
+}
+
 /** hide the answer when showing quiz results */
 .resource-viewer-impl-results .hm_question_def ul li div+div{
 	display: none;
 }
 
-
 .passed-section-window p {
    font-size: 1.2em;
    margin: 10px;
    padding: 5px;
-}   	
+}
