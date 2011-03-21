@@ -441,6 +441,13 @@ and is_auto_create_template = 0
 ##
 #############
 
+.key=ADD_GROUP_SQL
+
+insert into CM_GROUP 
+  (name, description, is_active, admin_id)
+  values( ?, ?, ?, ?)
+
+
 .key=SUBJECT_CHAPTERS_SQL
 
 select bt.title_number, trim(bt.title) as title, td.textcode
@@ -449,7 +456,16 @@ where td.prog_id = ? and td.subj_id = ?
 and bt.textcode = td.textcode and bt.parent <> 0
 order by bt.title_number   
 
-    
+.key=REMOVE_AUTO_REG_SETUP_SQL
+
+delete u
+from HA_USER u
+JOIN CM_GROUP g ON u.group_id = g.id
+where u.admin_id = ?
+  and g.name = ?
+  and is_auto_create_template = 1
+
+
 .key=SELECT_SUBJECTS_SQL
 
 select sd.*
