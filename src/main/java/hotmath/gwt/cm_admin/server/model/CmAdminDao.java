@@ -23,6 +23,7 @@ import hotmath.gwt.shared.client.model.ProgramSegmentData;
 import hotmath.gwt.shared.client.model.TrendingData;
 import hotmath.gwt.shared.client.rpc.action.SaveAutoRegistrationAction;
 import hotmath.gwt.shared.client.util.CmException;
+import hotmath.gwt.shared.client.util.CmUserException;
 import hotmath.gwt.shared.server.service.command.SaveAutoRegistrationCommand;
 import hotmath.testset.ha.CmProgram;
 import hotmath.testset.ha.HaAdmin;
@@ -58,7 +59,6 @@ public class CmAdminDao {
     public CmAdminDao() {
     	instance = this;
     }
-
     public static CmAdminDao getInstance() {
         if (instance == null) new CmAdminDao();
         return instance;
@@ -243,29 +243,29 @@ public class CmAdminDao {
     }
     
 
-    private static final String ADD_GROUP_SQL = "insert into CM_GROUP (name, description, is_active, admin_id) "
-            + "values( ?, ?, ?, ?)";
-
     public GroupInfoModel addGroup(final Connection conn, Integer adminUid, GroupInfoModel gm) throws Exception {
         PreparedStatement ps = null;
 
-        checkForReservedGroup(gm.getName());
+        if (checkForReservedGroup(gm.getName())) {
+            throw new CmUserException(String.format("The group name you entered, %s, is reserved, please try again", gm.getName()));	
+        }
+
         if (gm.getName() == null) {
         	if (adminUid != null)
             	logger.warn(String.format("addGroup(): adminId: %d; NULL group name passed", adminUid));
         	else
         		logger.warn("addGroup(): NULL admin ID and group name passed");
-            throw new Exception("The group name you entered is NULL.");
+            throw new CmUserException("The group name you entered is NULL, please try again.");
         }
 
 
         Boolean isDuplicate = checkForDuplicateGroup(conn, adminUid, gm);
         if (isDuplicate) {
-            throw new Exception("The group you entered already exists, please try again.");
+            throw new CmUserException(String.format("The group name you entered, %s, already exists, please try again.", gm.getName()));	
         }
 
         try {
-            ps = conn.prepareStatement(ADD_GROUP_SQL);
+            ps = conn.prepareStatement(CmMultiLinePropertyReader.getInstance().getProperty("ADD_GROUP_SQL"));
             ps.setString(1, gm.getName());
             ps.setString(2, null);
             ps.setInt(3, 1);
@@ -368,10 +368,8 @@ public class CmAdminDao {
      * @TODO: obtain from DB?
      * 
      */
-    private void checkForReservedGroup(String name) throws Exception {
-        if (name != null && (name.equals("none") || name.equals("All Students"))) {
-            throw new Exception("The group name '" + name + "' is reserved.");
-        }
+    private boolean checkForReservedGroup(String name) {
+        return (name != null && (name.equals("none") || name.equals("All Students")));
     }
 
     // TODO: assumes a single Admin per school
@@ -474,7 +472,7 @@ public class CmAdminDao {
                 if(ai.getAccountCreateDate() == null)
                     ai.setAccountCreateDate(new GregorianCalendar(2010,1,1).getTime());
                     
-                String cmDate = (dt != null) ? dt.toString() : "2009-12-31";
+                String cmDate = (dt != null) ? dt.toString() : "2011-12-31";
                 /** @TODO: remove hard-coded value */
                 ai.setExpirationDate(cmDate);
                 dt = rs.getDate("tutoring_expire_date");
@@ -730,15 +728,15 @@ public class CmAdminDao {
      * @param groupName
      * @throws Exception
      */
+    
+    
     public void removeAutoRegistrationSetupFor(final Connection conn, Integer adminId, String groupName)
             throws Exception {
 
-        String sql = "delete u " + " from   HA_USER u JOIN CM_GROUP g ON u.group_id = g.id " + " where u.admin_id = ? "
-                + " and    g.name = ?" + " and is_auto_create_template = 1 ";
-
         PreparedStatement pstat = null;
         try {
-            pstat = conn.prepareStatement(sql);
+        	
+            pstat = conn.prepareStatement(CmMultiLinePropertyReader.getInstance().getProperty("REMOVE_AUTO_REG_SETUP_SQL"));
 
             pstat.setInt(1, adminId);
             pstat.setString(2, groupName);

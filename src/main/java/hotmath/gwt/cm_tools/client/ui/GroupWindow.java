@@ -191,6 +191,18 @@ public class GroupWindow extends LayoutContainer {
             	//CmAdminDataReader.getInstance().fireRefreshData();
             	CmBusyManager.setBusy(false);
             }
+            
+            @Override
+            public void onFailure(Throwable caught) {
+                CmBusyManager.setBusy(false);
+                
+                if(caught.getMessage().indexOf("you entered") > 0) {
+                    CatchupMathTools.showAlert("Problem adding group", caught.getMessage());
+                    return;
+                }
+                super.onFailure(caught);
+            }
+
         }.register();
 
 	}
