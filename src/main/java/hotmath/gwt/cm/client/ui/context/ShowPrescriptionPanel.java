@@ -38,10 +38,10 @@ public class ShowPrescriptionPanel extends CmWindow {
         String msg = "";
         if(UserInfo.getInstance().isCustomProgram()) {
             msg += "<p>Your quiz score: " +
-                   "<span class='pass-percent'>" + 
+                   "<span class='pass-percent'>" +
                       runInfo.getTestCorrectPercent() + "%" +
                    "</span></p>";
-            
+
             if(lessonCount > 0) {
                 msg += reviewLessons;
             }

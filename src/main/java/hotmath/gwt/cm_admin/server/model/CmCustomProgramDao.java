@@ -365,6 +365,7 @@ public class CmCustomProgramDao {
         List<ProgramSegment> testSegments = readProgramSegments(conn, programId);
 
         for (ProgramSegment segment : testSegments) {
+            listAll.add(segment.getQuiz());
             for (CustomLessonModel model : segment.getLessons()) {
                 listAll.add(model);
             }
