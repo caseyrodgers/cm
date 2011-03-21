@@ -4,6 +4,7 @@ import hotmath.BookInfo;
 import hotmath.BookInfoManager;
 import hotmath.HotMathException;
 import hotmath.HotMathLogger;
+import hotmath.gwt.cm_admin.server.model.CmCustomProgramDao;
 
 import java.sql.Connection;
 import java.util.List;
@@ -215,8 +216,13 @@ public class HaTestDef {
         } else {
             chap = chapter;
         }
-
-        return new HaTestDefDao().getTestIdsForSegment(conn, userProgram, segment, textCode, chap, config, segmentSlot);
+        
+        if(userProgram.getCustomProgramId() > 0) {
+            return new CmCustomProgramDao().getCustomProgramQuizSegmentPids(conn, userProgram.getCustomProgramId(), segment);
+        }
+        else {
+            return new HaTestDefDao().getTestIdsForSegment(conn, userProgram, segment, textCode, chap, config, segmentSlot);
+        }
     }
 
     public int getTotalSegmentCount() {

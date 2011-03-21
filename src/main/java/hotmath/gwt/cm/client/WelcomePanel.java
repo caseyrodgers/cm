@@ -108,9 +108,16 @@ public class WelcomePanel extends LayoutContainer {
      */
     class StandardInfo extends Html {
         public StandardInfo() {
-            String html = "<p>You will start this Catchup Math session with a quiz.</p>"
-                        + "<p>Please work out your answers carefully using our whiteboard or pencil and paper.</p>"
-                        + "<a style='display: block;margin-left: 10px;text-decoration: underline;color: #00A8FF;' href='#' onclick='showMotivationalVideo_Gwt();return false;'>Watch motivational video</a>";
+            String html = "";
+            if(UserInfo.getInstance().isCustomProgram()) {
+                html = "<p>You will start this Catchup Math custom session with either a quiz or set of lessons.</p>";
+            }
+            else {
+                html = "<p>You will start this Catchup Math session with a quiz.</p>";
+            }
+            html += "<p>Please work out your answers carefully using our whiteboard or pencil and paper.</p>" +
+                    "<a style='display: block;margin-left: 10px;text-decoration: underline;color: #00A8FF;' " +
+                    " href='#' onclick='showMotivationalVideo_Gwt();return false;'>Watch motivational video</a>";
             
             setHtml(html);
         }

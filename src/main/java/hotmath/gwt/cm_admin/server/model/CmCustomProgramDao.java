@@ -129,47 +129,106 @@ public class CmCustomProgramDao {
     }
 
     public int getTotalSegmentCount(final Connection conn, int progId) throws Exception {
-        List<CmList<CustomLessonModel>> segments = readProgramSegments(conn, progId);
-        return segments.size();
+        return readProgramSegments(conn, progId).size();
     }
 
+    /** return true if named program segment has a valid quiz, false otherwise.
+     * 
+     * @param conn
+     * @param programId
+     * @param segment
+     * @return
+     * @throws Exception
+     */
+    public boolean doesProgramSegmentHaveQuiz(final Connection conn, int programId, int segment) throws Exception {
+        List<ProgramSegment> segments = readProgramSegments(conn, programId);
+        Integer qid = segments.get(segment).getQuiz().getQuizId();
+        return qid != null && qid != 1; 
+    }
     /**
-     * Return list of list representing each segment's lessons.
+     * Return list of list representing each program segment.
+     * 
+     * A segment has a Quiz, followed by N-lessons.
      * 
      * @param conn
      * @param programId
      * @return
      * @throws Exception
      */
-    private List<CmList<CustomLessonModel>> readProgramSegments(final Connection conn, int programId) throws Exception {
+    private List<ProgramSegment> readProgramSegments(final Connection conn, int programId) throws Exception {
         PreparedStatement stmt = null;
         try {
-            List<CmList<CustomLessonModel>> testSegments = new ArrayList<CmList<CustomLessonModel>>();
-            CmList<CustomLessonModel> lessons = new CmArrayList<CustomLessonModel>();
+            List<ProgramSegment> programSegments = new ArrayList<ProgramSegment>();
 
             String sql = CmMultiLinePropertyReader.getInstance().getProperty("GET_CUSTOM_PROGRAM_ITEMS");
             stmt = conn.prepareStatement(sql);
             stmt.setInt(1, programId);
             ResultSet rs = stmt.executeQuery();
-            testSegments.add(lessons);
+            
+            /** create the first segment */
+            ProgramSegment segment = new ProgramSegment();
+            programSegments.add(segment);
+            
             while (rs.next()) {
                 int quizId = rs.getInt("custom_quiz");
                 String customQuizName = rs.getString("custom_quiz_name");
                 if (quizId > 0) {
-                    lessons = new CmArrayList<CustomLessonModel>();
-                    testSegments.add(lessons);
-
                     /** is a quiz */
-                    lessons.add(new CustomLessonModel(quizId, customQuizName));
+                    CustomLessonModel cml = new CustomLessonModel(quizId, customQuizName);
+
+                    if(segment.getQuiz() == null) {
+                        segment.setQuiz(cml);
+                    }
+                    else {
+                        /** create a new segment */
+                        segment = new ProgramSegment();
+                        segment.setQuiz(cml);
+                        programSegments.add(segment);
+                    }
                 } else {
+                    /** each segment always has a quiz as first element 
+                     * 
+                     */
+                    if(segment.getQuiz() == null) {
+                        segment.setQuiz(new CustomLessonModel(1,"Empty Quiz"));
+                    }
+                    
                     /** is a lesson */
-                    lessons.add(new CustomLessonModel(rs.getString("lesson"), rs.getString("file"), rs
+                    segment.getLessons().add(new CustomLessonModel(rs.getString("lesson"), rs.getString("file"), rs
                             .getString("subject")));
                 }
             }
-            return testSegments;
+            return programSegments;
         } finally {
             SqlUtilities.releaseResources(null, stmt, null);
+        }
+    }
+    
+    
+    class ProgramSegment {
+        CustomLessonModel quiz;
+        CmList<CustomLessonModel> lessons = new CmArrayList<CustomLessonModel>();
+        
+        public ProgramSegment() {}
+        public ProgramSegment(CustomLessonModel quiz, CmList<CustomLessonModel> lessons) {
+            this.quiz = quiz;
+            this.lessons = lessons;
+        }
+
+        public CustomLessonModel getQuiz() {
+            return quiz;
+        }
+
+        public void setQuiz(CustomLessonModel quiz) {
+            this.quiz = quiz;
+        }
+
+        public CmList<CustomLessonModel> getLessons() {
+            return lessons;
+        }
+
+        public void setLessons(CmList<CustomLessonModel> lessons) {
+            this.lessons = lessons;
         }
     }
 
@@ -269,13 +328,24 @@ public class CmCustomProgramDao {
             int programSegment) throws Exception {
         PreparedStatement stmt = null;
         try {
-            List<CmList<CustomLessonModel>> testSegments = readProgramSegments(conn, programId);
+            List<ProgramSegment> testSegments = readProgramSegments(conn, programId);
 
             if (programSegment > testSegments.size() - 1) {
                 LOGGER.warn("Zero lessons for test segment " + programSegment + ", program_id=" + programId);
                 return new CmArrayList<CustomLessonModel>();
             }
-            return testSegments.get(programSegment);
+            
+            
+            /** return only lessons for this segment 
+             * 
+             */
+            CmList<CustomLessonModel> listOfLessons = new CmArrayList<CustomLessonModel>();
+            for(CustomLessonModel lm: testSegments.get(programSegment).getLessons()) {
+                if(lm.getQuizId() == null) {
+                    listOfLessons.add(lm);
+                }
+            }
+            return listOfLessons;
         } finally {
             SqlUtilities.releaseResources(null, stmt, null);
         }
@@ -284,10 +354,10 @@ public class CmCustomProgramDao {
     public CmList<CustomLessonModel> getCustomProgramLessonsAllSegments(final Connection conn, Integer programId)
             throws Exception {
         CmList<CustomLessonModel> listAll = new CmArrayList<CustomLessonModel>();
-        List<CmList<CustomLessonModel>> testSegments = readProgramSegments(conn, programId);
+        List<ProgramSegment> testSegments = readProgramSegments(conn, programId);
 
-        for (CmList<CustomLessonModel> list : testSegments) {
-            for (CustomLessonModel model : list) {
+        for (ProgramSegment segment : testSegments) {
+            for (CustomLessonModel model : segment.getLessons()) {
                 listAll.add(model);
             }
         }
@@ -307,38 +377,30 @@ public class CmCustomProgramDao {
             throws Exception {
         PreparedStatement stmt = null;
         try {
-            String sql = CmMultiLinePropertyReader.getInstance().getProperty("GET_CUSTOM_PROGRAM_ITEMS");
-            stmt = conn.prepareStatement(sql);
-            stmt.setInt(1, programId);
-            ResultSet rs = stmt.executeQuery();
-            int segments = 0;
-            List<CmList<CustomLessonModel>> testSegments = new ArrayList<CmList<CustomLessonModel>>();
-
-            CmList<CustomLessonModel> lessons = new CmArrayList<CustomLessonModel>();
-            testSegments.add(lessons);
-
-            int activeQuizId = -1;
-            while (rs.next()) {
-                int quizId = rs.getInt("custom_quiz");
-                if (quizId > 0) {
-                    if (segments == programSegment) {
-                        activeQuizId = quizId;
-                        break;
-                    }
-                    segments++;
-                }
+            ProgramSegment segment = readProgramSegments(conn, programId).get(programSegment);
+            CustomLessonModel theQuiz = segment.getQuiz();
+            
+            Integer quid = theQuiz.getQuizId();
+            if(quid == null || quid == 1) {
+                /** dummy, empty quiz */
+                return new CmArrayList<CustomQuizId>();
             }
-
-            if (activeQuizId == -1) {
-                throw new CmException("Segment " + programSegment + " quiz not found: " + programId);
-            }
-
-            CmList<CustomQuizId> questions = new CmQuizzesDao().getCustomQuizIds(conn, activeQuizId);
-            return questions;
-        } finally {
+            CmList<CustomQuizId> quizIds = new CmQuizzesDao().getCustomQuizIds(conn,quid);
+            return quizIds;
+        }
+        finally {
             SqlUtilities.releaseResources(null, stmt, null);
         }
     }
+    
+    public List<String> getCustomProgramQuizSegmentPids(final Connection conn, int programId, int programSegment) throws Exception {
+        List<String> pids = new ArrayList<String>();
+        for(CustomQuizId cqi: getCustomProgramQuizIds(conn, programId, programSegment)) {
+            pids.add(cqi.getPid());
+        }
+        return pids;
+    }
+    
 
     /**
      * return list of custom program lessons for supplied testId

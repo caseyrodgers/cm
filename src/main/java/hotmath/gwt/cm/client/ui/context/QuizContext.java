@@ -77,7 +77,7 @@ public class QuizContext implements CmContext {
 
     public String getContextSubTitle() {
         String title = getTitle();
-        return title + "<h2>Section " + UserInfo.getInstance().getTestSegment() + " of "
+        return title + "<h2>Section " + (UserInfo.getInstance().getTestSegment()+1) + " of "
                 + UserInfo.getInstance().getTestSegmentCount() + "</h2>";
     }
 
@@ -146,106 +146,16 @@ public class QuizContext implements CmContext {
                 });
     }
 
-    private void showPrescriptionPanel(final CreateTestRunResponse runInfo) {
+    private void showPrescriptionPanel(CreateTestRunResponse runInfo) {
 
         if (UserInfo.getInstance().isAutoTestMode()) {
             CatchupMath.getThisInstance().showPrescriptionPanel();
         } else {
-            final CmWindow window = new CmWindow();
-            EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_MODAL_WINDOW_OPEN));
-            window.setModal(true);
-            window.setAutoHeight(true);
-            window.setWidth(330);
-            window.setClosable(false);
-            window.setResizable(false);
-            window.setStyleName("auto-assignment-window");
-            window.setHeading("Quiz Results");
-
-            int correct = runInfo.getCorrect();
-            int total = runInfo.getTotal();
-
-            int lessonCount = runInfo.getSessionCount();
-            String reviewLessons = "<p class='prescription-info'> " + "You have " + lessonCount + " review "
-                    + (lessonCount == 1 ? "topic" : "topics") + " to study before advancing to the next quiz." + "</p>";
-
-            String msg = "";
-            if (runInfo.getPassed()) {
-                if (correct != total) {
-                    msg += "<p>Your quiz score: <span class='pass-percent'>" + runInfo.getTestCorrectPercent()
-                            + "%</span></p>" + "<p class='pass-congrat'>Congratulations, you passed!</p>"
-                            + reviewLessons;
-                } else {
-                    msg += "<p>Your quiz score: <span class='pass-percent'>" + runInfo.getTestCorrectPercent()
-                            + "%</span></p>" + "<p class='info'>You will now be given a quiz for the next section!</p>";
-                }
-            } else {
-                // did not pass
-                msg += "<p>Your quiz score: <span class='pass-percent'>" + runInfo.getTestCorrectPercent()
-                        + "%</span></p>" + "<p>You need to pass: <span class='pass-percent'>"
-                        + UserInfo.getInstance().getPassPercentRequired() + "%</span></p>" + reviewLessons;
-            }
-
-            Html html = new Html(msg);
-            window.add(html);
-
-            Button close = new Button();
-            close.setText("Continue");
-            close.addSelectionListener(new SelectionListener<ButtonEvent>() {
-                public void componentSelected(ButtonEvent ce) {
-
-                    if (runInfo.getPassed()) {
-
-                        // are there any prescriptions to view?
-                        if (runInfo.getSessionCount() > 0) {
-                            /** beginning of prescription */
-                            UserInfo.getInstance().setSessionNumber(0);
-                            CatchupMath.getThisInstance().showPrescriptionPanel();
-                        } else {
-                            // are there more Quizzes in this program?
-                            boolean areMoreSegments = UserInfo.getInstance().getTestSegment() < UserInfo.getInstance()
-                                    .getTestSegmentCount();
-                            if (areMoreSegments) {
-                                CatchupMath.getThisInstance().showQuizPanel(-1);
-                            } else {
-                                switch (UserInfo.getInstance().getOnCompletion()) {
-
-                                case STOP_ALLOW_CONTINUE:
-                                    new EndOfProgramWindow(true);
-                                    break;
-                                    
-                                case STOP_DO_NOT_ALLOW_CONTINUE:
-                                    new EndOfProgramWindow(false);
-                                    break;
-                                    
-
-                                case AUTO_ADVANCE:
-                                    PrescriptionContext.autoAdvanceUser();
-                                    break;
-
-                                default:
-                                    CatchupMathTools.showAlert("Unknown onCompletion value: "
-                                            + UserInfo.getInstance().getOnCompletion());
-                                    break;
-
-                                }
-
-                            }
-                        }
-                    } else {
-                        UserInfo.getInstance().setSessionNumber(0); // beginning
-                        // of
-                        // prescription
-                        CatchupMath.getThisInstance().showPrescriptionPanel();
-                    }
-                    window.close();
-                }
-            });
-
-            window.addButton(close);
-            window.setVisible(true);
+           new ShowPrescriptionPanel(runInfo);
         }
     }
 
+    
     public void doNext() {
         /**
          * if Check Quiz is selected, then do not reshow quiz/whiteboard
@@ -308,6 +218,11 @@ public class QuizContext implements CmContext {
         }
     }
 
+    
+    /** Perform the actual checking of test on server
+     * 
+     * TODO: centralize NextAction handling
+     */
     public void doCheckTestAux() {
         new RetryAction<CreateTestRunResponse>() {
             @Override
@@ -344,7 +259,7 @@ public class QuizContext implements CmContext {
                             int testSegment = UserInfo.getInstance().getTestSegment();
                             int totalSegments = UserInfo.getInstance().getTestSegmentCount();
                             if ((testSegment + 1) > totalSegments) {
-                                CatchupMathTools.showAlert("redirect_action QUIZ: No More Sessions");
+                                CatchupMathTools.showAlert("redirect_action QUIZ: no more sessions");
                             } else {
                                 UserInfo.getInstance().setTestSegment(testSegment + 1);
                                 showNextPlacmentQuiz();

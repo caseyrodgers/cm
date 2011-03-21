@@ -292,7 +292,7 @@ public class HaTestDefDao {
             solsPerSeg = (config != null) ? solsPerSeg = cnt / config.getSegmentCount() : 0;
             solsPerSeg = (solsPerSeg < 5) ? cnt : solsPerSeg;
     
-            segPnEnd = (segment * solsPerSeg);
+            segPnEnd = ((segment+1) * solsPerSeg);
             segPnStart = (segPnEnd - (solsPerSeg - 1));
     
             problemIds = getTestIds(conn, userProgram, textcode, chapter, segmentSlot, segPnStart, segPnEnd, config);

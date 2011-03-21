@@ -220,7 +220,7 @@ public class PrescriptionContext implements CmContext {
             
             CmLogger.debug("Correct percent: " + correctPercent + ", " + passPercentRequired);
             
-            if (correctPercent >= passPercentRequired) {
+            if (UserInfo.getInstance().isCustomProgram() || correctPercent >= passPercentRequired) {
                 
                 // User has passed this section, and is ready to move to next quiz/autoAdvance
                 if (UserInfo.getInstance().isDemoUser()) {
@@ -281,50 +281,6 @@ public class PrescriptionContext implements CmContext {
         }
     }
     
-    class PassedSectionWindow extends CmWindow {
-        
-        public PassedSectionWindow() {
-            String msg = "<div style='font-size: 1.2em;margin: 10px;padding: 5px;'>You passed this section!  You will now be shown the next quiz.</div>";
-            setHeading("Congratulations");
-            
-            EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_MODAL_WINDOW_OPEN, this));
-            
-            setClosable(false);
-            setModal(true);
-            add(new Html(msg));
-            setResizable(false);
-            addButton(
-                new Button("Congratulations Video", new SelectionListener<ButtonEvent>() {
-                    @Override
-                    public void componentSelected(ButtonEvent ce) {
-                        new GenericVideoPlayerForMona(MonaVideo.PASS_QUIZ);
-                    }
-                }));
-        
-            addButton(new Button("Continue",new SelectionListener<ButtonEvent>() {
-                @Override
-                public void componentSelected(ButtonEvent ce) {
-                    close();
-                
-                    /** move to next quiz
-                     * 
-                     * go directly, do load into history to avoid back/forward 
-                    */
-                    CatchupMath.getThisInstance().showQuizPanel_gwt(UserInfo.getInstance().getTestSegment());
-                }
-            }));
-            
-            
-            addWindowListener(new WindowListener() {
-                @Override
-                public void windowHide(WindowEvent we) {
-                    EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_MODAL_WINDOW_CLOSED, this));
-                }
-            });
-            
-            setVisible(true);
-        }
-    }
     
     
     /**

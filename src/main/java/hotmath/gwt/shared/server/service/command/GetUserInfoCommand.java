@@ -74,13 +74,14 @@ public class GetUserInfoCommand implements ActionHandler<GetUserInfoAction, User
              */
             boolean isCustomProgram = testDef.getTestDefId() == CmProgram.CUSTOM_PROGRAM.getDefId();
             if(isCustomProgram) {
-                if(activeInfo.getActiveRunId() == 0) {
-                    /** create custom prescription 
-                     * 
+                if(activeInfo.getActiveRunId() == 0 && activeInfo.getActiveTestId() == 0) {
+                    
+                    /**
                      *  One time per program use.
                      * 
                      *  This is done here because we do not want the user
-                     *  to be directed to a quiz
+                     *  to be directed to a quiz, unless there is one in CP.
+                     *  
                      *  
                      *  Alternatively: ... I see no alternate because the flow is:
                      *  
@@ -91,25 +92,35 @@ public class GetUserInfoCommand implements ActionHandler<GetUserInfoAction, User
                      *     where to send the user.
                      * 
                      */
-                    
-                    /** Now that CPs can have CQs maybe this should only be done
-                     *  when the first CPi (custom program item) is not a quiz.
+
+                    /** Does this custom quiz start with a quiz?
+                     * 
+                     *  If not then create a dummy test as a place holder.
                      */
-                    HaTest custTest = HaTestDao.createTest(conn, action.getUserId(),new HaTestDefDao().getTestDef(conn, CmProgram.CUSTOM_PROGRAM.getDefId()), 0);
-                    custTest.setProgramInfo(userProgram);
-                    HaTestRun testRun = HaTestDao.createTestRun(conn, action.getUserId(), custTest.getTestId(), 10,0,0);
-                    testRun.setHaTest(custTest);
-                    activeInfo.setActiveSegment(1);
-                    activeInfo.setActiveTestId(0);
-                    activeInfo.setActiveRunId(testRun.getRunId());
-                    activeInfo.setActiveRunSession(0);
+                    CmCustomProgramDao cpdao = new CmCustomProgramDao();
+                    if(!cpdao.doesProgramSegmentHaveQuiz(conn, userProgram.getCustomProgramId(), 0)) {
+                        HaTest custTest = HaTestDao.createTest(conn, action.getUserId(),new HaTestDefDao().getTestDef(conn, CmProgram.CUSTOM_PROGRAM.getDefId()), 0);
+                        custTest.setProgramInfo(userProgram);
+                        HaTestRun testRun = HaTestDao.createTestRun(conn, action.getUserId(), custTest.getTestId(), 10,0,0);
+                        testRun.setHaTest(custTest);
+                        
+                        /** make sure the are lessons available for this test run.
+                         * 
+                         * If not then move to next segment, or return end of program?
+                         */
+                        activeInfo.setActiveSegment(1);
+                        activeInfo.setActiveTestId(0);
+                        activeInfo.setActiveRunId(testRun.getRunId());
+                        activeInfo.setActiveRunSession(0);                        
+                    }
+                    
+
                     
                     
                     /** update the total number of program segments
                      * 
                      */
                     programSegmentCount = new CmCustomProgramDao().getTotalSegmentCount(conn,userProgram.getCustomProgramId());
-                    
                     
                     /** save for next time */
                     dao.setActiveInfo(conn, action.getUserId(), activeInfo);

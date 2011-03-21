@@ -15,6 +15,7 @@ import hotmath.gwt.cm_rpc.client.rpc.PrescriptionSessionResponse;
 import hotmath.gwt.cm_rpc.client.rpc.Response;
 import hotmath.gwt.cm_rpc.client.rpc.RpcData;
 import hotmath.gwt.cm_rpc.server.rpc.ActionHandler;
+import hotmath.gwt.cm_tools.client.model.StudentActiveInfo;
 import hotmath.gwt.shared.client.rpc.action.GetViewedInmhItemsAction;
 import hotmath.inmh.INeedMoreHelpItem;
 import hotmath.inmh.INeedMoreHelpResourceType;
@@ -192,10 +193,15 @@ public class GetPrescriptionCommand implements ActionHandler<GetPrescriptionActi
             }
             sessionData.setInmhResources(resources);
 
-            // update this user's active run session
+            /** Update this users current active info
+             * 
+             */
             if (action.getUpdateActionInfo()) {
-                pres.getTest().getUser().setActiveTestRunSession(sessionNumber);
-                pres.getTest().getUser().update(conn);
+                int uid = pres.getTest().getUser().getUid();
+                CmStudentDao dao = new CmStudentDao();
+                StudentActiveInfo activeInfo = dao.loadActiveInfo(conn, uid);
+                activeInfo.setActiveRunSession(sessionNumber);
+                dao.setActiveInfo(conn,uid,activeInfo);
             }
             
             

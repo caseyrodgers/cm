@@ -51,9 +51,12 @@ public class CreateTestRunCommand implements ActionHandler<CreateTestRunAction, 
         long startTime;
         long beginTime;
         
+        CmStudentDao sdao = new CmStudentDao();
         startTime = beginTime = System.currentTimeMillis();
-        new CmStudentDao().verifyActiveProgram(conn, action.getTestId(), action.getUserId());
+        sdao.verifyActiveProgram(conn, action.getTestId(), action.getUserId());
         
+        StudentUserProgramModel userProgram = new CmUserProgramDao().loadProgramInfoCurrent(conn, action.getUserId());
+
         CreateTestRunResponse testRunInfo = new CreateTestRunResponse();
 
         if (logger.isInfoEnabled()) {
@@ -116,7 +119,7 @@ public class CreateTestRunCommand implements ActionHandler<CreateTestRunAction, 
             }
             
             /** 
-             * if user DID NOT pass this quiz, 
+             * if user DID NOT pass this quiz, or is a custom program
              * we increment the quiz slot to show
              * a new alternate quiz on next quiz creation.
              */
@@ -153,7 +156,7 @@ public class CreateTestRunCommand implements ActionHandler<CreateTestRunAction, 
             NextAction nextAction = null;
             StudentUserProgramModel program = new CmUserProgramDao().loadProgramInfoForTest(conn, test.getTestId());
             if(program.getCustomProgramId() > 0 && 
-                    (test.getUser().getActiveTestSegment() > new CmCustomProgramDao().getTotalSegmentCount(conn, program.getCustomProgramId()))) {
+                    (test.getUser().getActiveTestSegment() >= new CmCustomProgramDao().getTotalSegmentCount(conn, program.getCustomProgramId()))) {
                     nextAction = new NextAction(NextActionName.STOP_DO_NOT_ALLOW_CONTINUE);
             }
             else {

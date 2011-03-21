@@ -63,7 +63,7 @@ public class SystemVersionUpdateChecker extends StandardSystemRefreshWindow {
      * 
      * Only call server if window is not currently being displayed.
      */
-    static private void checkForUpdate() {
+    static public void checkForUpdate() {
         if(_theWindow != null)
             return;
         

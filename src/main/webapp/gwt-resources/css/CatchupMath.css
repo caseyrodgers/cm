@@ -858,7 +858,7 @@ img.resource-item-complete {
 }
 .cm-welcome-panel p {
         color: black;
-        padding: 10px;
+        padding: 5px;
 }
 .cm-welcome-panel ul {
         padding: 10px;
@@ -1201,3 +1201,10 @@ img.resource-item-complete {
 .resource-viewer-impl-results .hm_question_def ul li div+div{
 	display: none;
 }
+
+
+.passed-section-window p {
+   font-size: 1.2em;
+   margin: 10px;
+   padding: 5px;
+}   	

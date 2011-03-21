@@ -58,10 +58,19 @@ public class QuizCmGuiDefinition implements CmGuiDefinition {
 	            "</p> ";
 	    }
 	    else {
-            html = "<h1>HOW TO USE CATCHUP MATH</h1>" +
-                   "<p>Take the 10-question quiz to the right.</p>" +
-                   "<p>Then, we will provide you with personalized review and practice.</p>" +
-   	               "<p>Work out your answers carefully on our whiteboard or on paper.</p>";
+	        
+	        if(UserInfo.getInstance().isCustomProgram()) {
+                html = "<h1>HOW TO USE CATCHUP MATH</h1>" +
+                "<p>Take the custom quiz to the right.</p>" +
+                "<p>Then work through any review and practice problems assigned.</p>" +
+                "<p>You can use the whiteboard to help.</p>";
+	        }
+	        else {
+                html = "<h1>HOW TO USE CATCHUP MATH</h1>" +
+                       "<p>Take the 10-question quiz to the right.</p>" +
+                       "<p>Then, we will provide you with personalized review and practice.</p>" +
+       	               "<p>Work out your answers carefully on our whiteboard or on paper.</p>";
+	        }
 	    }
 	    cp.add(new Html(html));
 	    cp.add(new Html(CatchupMathTools.FEEDBACK_MESSAGE));

@@ -2,16 +2,19 @@ package hotmath.gwt.cm.client;
 
 import hotmath.gwt.cm.client.history.CatchupMathHistoryListener;
 import hotmath.gwt.cm.client.history.CmHistoryManager;
+import hotmath.gwt.cm.client.history.CmHistoryQueue;
 import hotmath.gwt.cm.client.history.CmLocation;
 import hotmath.gwt.cm.client.history.CmLocation.LocationType;
 import hotmath.gwt.cm.client.ui.HeaderPanel;
 import hotmath.gwt.cm.client.ui.context.PrescriptionCmGuiDefinition;
+import hotmath.gwt.cm.client.ui.context.PrescriptionContext;
 import hotmath.gwt.cm.client.ui.context.QuizCmGuiDefinition;
 import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.ui.CmLogger;
 import hotmath.gwt.cm_tools.client.ui.CmMainPanel;
+import hotmath.gwt.cm_tools.client.ui.ContextController;
 import hotmath.gwt.cm_tools.client.ui.FooterPanel;
 import hotmath.gwt.cm_tools.client.util.GenericVideoPlayerForMona;
 import hotmath.gwt.cm_tools.client.util.GenericVideoPlayerForMona.MonaVideo;
@@ -252,7 +255,14 @@ public class CatchupMath implements EntryPoint {
      */
     public void startNormalOperation() {
         History.addValueChangeHandler(new CatchupMathHistoryListener());
-        History.fireCurrentHistoryState();
+        
+        
+        
+        /** Don't allow bookmark to move paste server's location
+         * 
+         */
+        // History.fireCurrentHistoryState();
+        
 
         /**
          * Register an event lister waiting to see if user's data change. If it
@@ -280,6 +290,34 @@ public class CatchupMath implements EntryPoint {
             /** or, run the full test? */
             FooterPanel.startAutoTest_Gwt();
         }
+        
+        
+        jumpToFirstLocation();
+        
+    }
+    
+    
+    private void jumpToFirstLocation() {
+
+        // do default action
+        if(UserInfo.getInstance().getRunId() > 0) {
+            
+            if(ContextController.getInstance().getTheContext() instanceof PrescriptionContext) {
+                /** PrescriptionPage is currently in view, simply update its display
+                 * 
+                 */
+                PrescriptionCmGuiDefinition.__instance.getAsyncDataFromServer(UserInfo.getInstance().getSessionNumber());
+            }
+            else {
+                /** Load the PrescriptionContext 
+                 * 
+                 */
+                CatchupMath.getThisInstance().showPrescriptionPanel_gwt();
+            }
+        }
+        else {
+            CatchupMath.getThisInstance().showQuizPanel_gwt(-1);
+        }        
     }
     
     /** Load the CatchupMath.min.js into the address space.

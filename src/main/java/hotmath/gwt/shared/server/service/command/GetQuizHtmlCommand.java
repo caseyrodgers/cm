@@ -15,6 +15,7 @@ import hotmath.gwt.cm_rpc.client.rpc.Response;
 import hotmath.gwt.cm_rpc.client.rpc.RpcData;
 import hotmath.gwt.cm_rpc.server.rpc.ActionHandler;
 import hotmath.gwt.cm_tools.client.model.StudentActiveInfo;
+import hotmath.gwt.shared.client.model.CustomQuizId;
 import hotmath.gwt.shared.client.rpc.action.GetQuizCurrentResultsAction;
 import hotmath.testset.ha.ChapterInfo;
 import hotmath.testset.ha.HaTest;
@@ -92,10 +93,6 @@ public class GetQuizHtmlCommand implements ActionHandler<GetQuizHtmlAction, Quiz
             if (testSegment < 1) {
                 testSegment = activeInfo.getActiveSegment();
             }
-            
-            if(testSegment == 0)
-                testSegment = 1;
-            
 
             HaTest haTest=null;
             int activeTest = activeInfo.getActiveTestId();
@@ -113,7 +110,13 @@ public class GetQuizHtmlCommand implements ActionHandler<GetQuizHtmlAction, Quiz
                 HaTestDef testDef = HaTestDefFactory.createTestDef(conn,testName);
                 haTest = HaTestDao.createTest(conn, uid, testDef, testSegment);
             }
-            String testTitle = haTest.getTitle();            
+            String testTitle = null;
+            if(programInfo.getCustomProgramId() > 0) {
+                testTitle = new CmCustomProgramDao().getCustomProgram(conn,programInfo.getCustomProgramId()).getProgramName();
+            }
+            else {
+                testTitle = haTest.getTitle();
+            }
 
                         
             
