@@ -328,6 +328,14 @@ public class CmCustomProgramDao {
             int programSegment) throws Exception {
         PreparedStatement stmt = null;
         try {
+            
+            
+            /** catch old problem of setting to -1
+             * 
+             */
+            if(programSegment == -1)
+                programSegment = 0;
+            
             List<ProgramSegment> testSegments = readProgramSegments(conn, programId);
 
             if (programSegment > testSegments.size() - 1) {
