@@ -6,11 +6,11 @@
   */
   String securityKey = (String)request.getSession().getAttribute("securityKey");
   if(securityKey == null) {
-	  throw new Exception("'securityKey' could not be found in session");
+      throw new Exception("'securityKey' could not be found in session");
   }
   String jsonizedLoginInfo = (String)request.getSession().getAttribute("jsonizedLoginInfo");
   if(jsonizedLoginInfo == null) {
-	  throw new Exception("'loginInfo' could not be found in session");
+      throw new Exception("'loginInfo' could not be found in session");
   }  
 %>
 <html>
@@ -18,7 +18,7 @@
     <!--  For Tutor/Show Work -->  
     <link rel="stylesheet" href="/css/bookindex_with_tutor_combined.css" type="text/css"/>
     <link rel="stylesheet" type="text/css" href="/gwt-resources/css/CatchupMath.css" />    
-    <link rel="stylesheet" type="text/css" href="/gwt-resources/gxt-2.2.1/css/gxt-all.css" />
+    <link rel="stylesheet" type="text/css" href="/gwt-resources/gxt-2.2.3/css/gxt-all.css" />
     <link rel="stylesheet" type="text/css" href="/gwt-resources/css/CatchupMathAdmin.css" />
    <link rel="stylesheet" type="text/css" href="/css/tutor_widget.css" />
     <meta http-equiv="content-type" content="text/html; charset=UTF-8">
@@ -30,7 +30,7 @@
   <body>
     <div id="loading" style="display:none">
         <div class="loading-indicator">
-        <img src="/gwt-resources/gxt-2.2.1/images/default/shared/large-loading.gif" width="32" height="32"/>Catchup Math Admin<br />
+        <img src="/gwt-resources/gxt-2.2.3/images/default/shared/large-loading.gif" width="32" height="32"/>Catchup Math Admin<br />
         <span id="loading-msg">working...</span>
         </div>
     </div>  

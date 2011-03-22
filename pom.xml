@@ -8,8 +8,8 @@
   <version>1.0-SNAPSHOT</version>
   <name>Catchup Math</name>
   <properties>
-    <gwtVersion>2.1.0</gwtVersion>
-    <gwtHome>${basedir}/libs/gwt-2.1.0</gwtHome>
+    <gwtVersion>2.2.0</gwtVersion>
+    <gwtHome>${basedir}/libs/gwt-2.2.0</gwtHome>
   </properties>
 
   <pluginRepositories>
@@ -232,7 +232,7 @@
     <dependency>
       <groupId>com.extjs.gxt</groupId>
       <artifactId>gxt</artifactId>
-      <version>2.2.1</version>
+      <version>2.2.3</version>
       <scope>compile</scope>
     </dependency>
 
@@ -243,13 +243,14 @@
       <scope>compile</scope>
     </dependency>
 
+<!--
     <dependency>
       <groupId>gwt-log</groupId>
       <artifactId>gwt-log</artifactId>
       <version>3.0.0</version>
       <scope>compile</scope>
     </dependency>
-
+-->
 
     <dependency>
       <groupId>hotmath</groupId>
@@ -509,7 +510,7 @@
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>gwt-maven-plugin</artifactId>
-        <version>1.2</version>
+        <version>2.2.0</version>
         <configuration>
           <gwtHome>${gwtHome}</gwtHome>
           <extraJvmArgs>-Xmx256m -Xms256m -Dgwt.logLevel=INFO</extraJvmArgs>
@@ -518,6 +519,8 @@
           <disableClassMetadata>true</disableClassMetadata>
           <soyc>false</soyc>
           <outputDirectory>${basedir}/src/main/webapp/</outputDirectory>
+          <logLevel>ERROR</logLevel>
+          <style>DETAILED</style>
           <modules>
             <module>hotmath.gwt.cm.CatchupMath</module>
             <module>hotmath.gwt.cm_admin.CatchupMathAdmin</module>
