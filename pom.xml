@@ -517,7 +517,7 @@
           <inplace>true</inplace>
           <disableCastChecking>true</disableCastChecking>
           <disableClassMetadata>true</disableClassMetadata>
-          <soyc>false</soyc>
+          <compileReport>false</compileReport>
           <outputDirectory>${basedir}/src/main/webapp/</outputDirectory>
           <logLevel>ERROR</logLevel>
           <style>DETAILED</style>
