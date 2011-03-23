@@ -30,18 +30,28 @@ import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.ListView;
 import com.extjs.gxt.ui.client.widget.MessageBox;
+import com.extjs.gxt.ui.client.widget.TabItem;
+import com.extjs.gxt.ui.client.widget.TabPanel;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
+import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.menu.MenuItem;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 
+/** Provides lists of available custom programs and quizzes
+ * 
+ * @author casey
+ *
+ */
 public class CustomProgramDialog extends CmWindow {
 
     CmAdminModel adminModel;
 
-    ListView<CustomProgramModel> _listView;
+    ListView<CustomProgramModel> _listViewCp;
+    ListView<CustomProgramModel> _listViewCq;
     boolean _isDebug;
+    TabPanel tabPanelType = new TabPanel();
     
     public CustomProgramDialog(CmAdminModel adminModel) {
         this.adminModel = adminModel;
@@ -49,7 +59,7 @@ public class CustomProgramDialog extends CmWindow {
         setHeading("Catchup Math Custom Program Definitions");
 
         setModal(true);
-        setSize(350, 280);
+        setSize(400, 380);
 
         _isDebug = CmShared.getQueryParameter("debug") != null;
         
@@ -63,18 +73,45 @@ public class CustomProgramDialog extends CmWindow {
     private void buildGui() {
         setLayout(new BorderLayout());
 
-        _listView = new ListView<CustomProgramModel>();
-        _listView.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
+        _listViewCp = new ListView<CustomProgramModel>();
+        _listViewCp.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
         ListStore<CustomProgramModel> store = new ListStore<CustomProgramModel>();
-        _listView.setStore(store);
-        _listView.setDisplayProperty("programName");
-        _listView.addListener(Events.DoubleClick, new Listener<BaseEvent>() {
+        _listViewCp.setStore(store);
+        _listViewCp.setDisplayProperty("programName");
+        _listViewCp.addListener(Events.DoubleClick, new Listener<BaseEvent>() {
             public void handleEvent(BaseEvent be) {
                 editProgram(false);
             }
         });
-        _listView.setTemplate(getTemplateHtml());
-        add(_listView, new BorderLayoutData(LayoutRegion.CENTER));
+        _listViewCp.setTemplate(getTemplateHtml());
+        
+        TabItem tabCustomProgram = new TabItem("Custom Programs");
+        tabCustomProgram.setLayout(new FitLayout());
+        tabCustomProgram.add(_listViewCp);
+        tabPanelType.add(tabCustomProgram);
+        
+
+        
+        
+        
+        _listViewCq = new ListView<CustomProgramModel>();
+        _listViewCq.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
+        store = new ListStore<CustomProgramModel>();
+        _listViewCq.setStore(store);
+        _listViewCq.setDisplayProperty("programName");
+        _listViewCq.addListener(Events.DoubleClick, new Listener<BaseEvent>() {
+            public void handleEvent(BaseEvent be) {
+            }
+        });
+        _listViewCq.setTemplate(getTemplateHtml());
+
+        TabItem tabCustomQuizzes = new TabItem("Custom Quizzes");
+        tabCustomQuizzes.setLayout(new FitLayout());
+        tabCustomQuizzes.add(_listViewCq);
+        tabPanelType.add(tabCustomQuizzes);
+        
+        
+        add(tabPanelType, new BorderLayoutData(LayoutRegion.CENTER));
 
         ToolBar tb = new ToolBar();
         
@@ -127,7 +164,7 @@ public class CustomProgramDialog extends CmWindow {
     }
     
     private void infoForProgram() {
-        final CustomProgramModel sel = _listView.getSelectionModel().getSelectedItem();
+        final CustomProgramModel sel = _listViewCp.getSelectionModel().getSelectedItem();
         if (sel == null) {
             CatchupMathTools.showAlert("Select a custom program first");
             return;
@@ -136,7 +173,7 @@ public class CustomProgramDialog extends CmWindow {
         new CustomProgramInfoSubDialog(sel).setVisible(true);
     }
     private void editProgram(boolean asCopy) {
-        final CustomProgramModel sel = _listView.getSelectionModel().getSelectedItem();
+        final CustomProgramModel sel = _listViewCp.getSelectionModel().getSelectedItem();
         if (sel == null) {
             CatchupMathTools.showAlert("Select a custom program first");
             return;
@@ -158,7 +195,7 @@ public class CustomProgramDialog extends CmWindow {
     }
 
     private void deleteProgram() {
-        final CustomProgramModel sel = _listView.getSelectionModel().getSelectedItem();
+        final CustomProgramModel sel = _listViewCp.getSelectionModel().getSelectedItem();
         if (sel == null) {
             CatchupMathTools.showAlert("Select a custom program first");
             return;
@@ -201,7 +238,7 @@ public class CustomProgramDialog extends CmWindow {
             @Override
             public void oncapture(CmList<CustomProgramModel> value) {
                 CmBusyManager.setBusy(false);
-                _listView.getStore().remove(program);
+                _listViewCp.getStore().remove(program);
             }
         }.register();
     }
@@ -233,8 +270,8 @@ public class CustomProgramDialog extends CmWindow {
                     else
                         nonTemplates.add(program);
                 }
-                _listView.getStore().removeAll();
-                _listView.getStore().add(programs);
+                _listViewCp.getStore().removeAll();
+                _listViewCp.getStore().add(programs);
             }
         }.register();
     }

@@ -22,8 +22,6 @@ import hotmath.gwt.shared.client.rpc.action.DeleteCustomQuizAction;
 import java.util.ArrayList;
 import java.util.List;
 
-import sb.logger.SbLogger;
-
 import com.extjs.gxt.ui.client.Style.LayoutRegion;
 import com.extjs.gxt.ui.client.Style.Orientation;
 import com.extjs.gxt.ui.client.Style.Scroll;
@@ -43,17 +41,18 @@ import com.extjs.gxt.ui.client.store.StoreSorter;
 import com.extjs.gxt.ui.client.util.Margins;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.Html;
+import com.extjs.gxt.ui.client.widget.Label;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.ListView;
 import com.extjs.gxt.ui.client.widget.MessageBox;
-import com.extjs.gxt.ui.client.widget.TabItem;
-import com.extjs.gxt.ui.client.widget.TabPanel;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.button.ButtonBar;
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
 import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
+import com.extjs.gxt.ui.client.widget.layout.ColumnData;
+import com.extjs.gxt.ui.client.widget.layout.ColumnLayout;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.layout.RowData;
 import com.extjs.gxt.ui.client.widget.layout.RowLayout;
@@ -80,8 +79,10 @@ public class CustomProgramDesignerDialog extends CmWindow {
         setModal(true);
         setSize(640, 480);
 
-
+        
+        
         buildGui();
+
         String programName="";
 
         /** if debug mode, the always allow edit */
@@ -131,11 +132,9 @@ public class CustomProgramDesignerDialog extends CmWindow {
     TextField<String> _programName = new TextField<String>();
     private void buildGui() {
         setLayout(new BorderLayout());
-        
+
         String template = "<tpl for=\".\"><div class='x-view-item {customProgramItemClass}'><span style='font-size:.5em;width: 5px;' class='{subjectStyleClass}'>&nbsp;</span>&nbsp;{" + "customProgramItem" + "}</div></tpl>";
 
-        LayoutContainer lc = new LayoutContainer();
-        lc.setLayout(new RowLayout(Orientation.HORIZONTAL));
        
         ListStore<CustomLessonModel> storeAll = new ListStore<CustomLessonModel>();
         storeAll.setStoreSorter(new StoreSorter<CustomLessonModel>() {
@@ -173,32 +172,16 @@ public class CustomProgramDesignerDialog extends CmWindow {
                 addCustomQuizAuto();
             }
         });
-        addQuiz.setToolTip("Create a quiz based on current lessons in custom program.");
-        sectionList.getHeader().addTool(addQuiz);
         
-        final TabPanel tabPanel = new TabPanel();
-        TabItem lessonsTab = new TabItem("Lessons");
-        tabPanel.add(lessonsTab);        
-        lessonsTab.add(new MyListContainer(_listAll,"All Available Lessons",true));
-        lessonsTab.setLayout(new FitLayout());
         
-        final TabItem customQuizzesTab = new TabItem("Custom Quizzes");
-        customQuizzesTab.setLayout(new FitLayout());
-        customQuizzesTab.add( createCustomQuizzesPanel());
-        tabPanel.add(customQuizzesTab);
-        
-        tabPanel.addListener(Events.Select,new Listener<BaseEvent>() {
-            @Override
-            public void handleEvent(BaseEvent be) {
-                if(tabPanel.getSelectedItem() == customQuizzesTab) {
-                    loadCustomQuizDefinitions();
-                }
-            }
-        });
-        
-        lc.add(tabPanel, data);
-        lc.add(sectionList, data);
+        MyListContainer allList = new MyListContainer(_listAll,"All Available Lessons",true);
 
+        LayoutContainer lc = new LayoutContainer();
+        lc.setLayout(new BorderLayout());
+        lc.add(allList, new BorderLayoutData(LayoutRegion.WEST,300));
+        BorderLayoutData bdata = new BorderLayoutData(LayoutRegion.CENTER);
+        bdata.setSplit(true);
+        lc.add(sectionList, bdata);
         
         add(lc, new BorderLayoutData(LayoutRegion.CENTER));
 
@@ -302,7 +285,7 @@ public class CustomProgramDesignerDialog extends CmWindow {
     }
 
     private LayoutContainer createInfoSection(boolean isEditable, String programName) {
-        LayoutContainer lc = new LayoutContainer(new RowLayout(Orientation.HORIZONTAL));
+        LayoutContainer lc = new LayoutContainer(new ColumnLayout());
         
         FormPanel fp = new FormPanel();
         fp.setLabelWidth(90);
@@ -316,21 +299,21 @@ public class CustomProgramDesignerDialog extends CmWindow {
         _programName.setValue(programName);
         _programName.setEnabled(false);
         fp.add(_programName);
-        lc.add(fp);
+        lc.add(fp, new ColumnData(.50));
         
         _programName.focus();
         
         String msg = null;
         if(isEditable)
-            msg = "Drag and drop lessons or custom quizzes from left side to create and reorder the custom program";
+            msg = "Drag and drop lessons from the left side to create and reorder the custom program";
         else {
-            if(customProgram.getIsTemplate())
+            if(customProgram != null && customProgram.getIsTemplate())
                 msg = "<span style='color: red;font-weight: bold'>This program is a Built-in Custom Program.  You can make a copy to customize.</span>";
             else 
                 msg = "<span style='color: red;font-weight: bold'>This program is in use and cannot be edited.</span>";
         }
-        Html html = new Html("<p style='padding: 7px 0; width: 250px;'>" + msg + "</p>");
-        lc.add(html);
+        Html html = new Html("<p style='margin-left: 20px;padding: 7px 10px; '>" + msg + "</p>");
+        lc.add(html,new ColumnData(.50));
         lc.setScrollMode(Scroll.AUTOX);
         return lc;
     }
@@ -362,7 +345,6 @@ public class CustomProgramDesignerDialog extends CmWindow {
                 CustomProgramAction action = new CustomProgramAction(ActionType.GET_ALL_LESSONS);
                 setAction(action);
                 CmShared.getCmService().execute(action, this);
-
             }
 
             @Override
@@ -392,7 +374,6 @@ public class CustomProgramDesignerDialog extends CmWindow {
 
             @Override
             public void oncapture(CmList<CustomLessonModel> lessons) {
-                
                 /** make sure lessons selected are NOT in all
                  * 
                  */
@@ -411,7 +392,7 @@ public class CustomProgramDesignerDialog extends CmWindow {
                 }
                 _listSelected.getStore().removeAll();
                 _listSelected.getStore().add(lessons);
-
+               
                 CmBusyManager.setBusy(false);
             }
         }.register();

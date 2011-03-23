@@ -351,7 +351,7 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
     }
 
     private Button manageGroupButton(final Grid<StudentModelExt> grid) {
-        final Button btn = new StudenPanelButton("Manage Groups");
+        final Button btn = new StudentPanelButton("Manage Groups");
         btn.setToolTip("Manage the group definitions.");
 
         btn.addSelectionListener(new SelectionListener<ButtonEvent>() {
@@ -426,7 +426,7 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
         
         toolbar.add(highlightsButton());
         
-        toolbar.add(new StudenPanelButton("Custom Programs", new SelectionListener<ButtonEvent>() {
+        Button customButton = new StudentPanelButton("Custom", new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent ce) {
                 GWT.runAsync(new CmRunAsyncCallback() {
@@ -434,12 +434,13 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
                     public void onSuccess() {
                         new CustomProgramDialog(_cmAdminMdl);                            
                     }
-                });
+                });                
             }
-        }));
+        });
+        toolbar.add(customButton);
 
         // if (CmShared.getQueryParameter("debug") != null) {
-        toolbar.add(new StudenPanelButton("Program Details", new SelectionListener<ButtonEvent>() {
+        toolbar.add(new StudentPanelButton("Program Details", new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent ce) {
                 GWT.runAsync(new CmRunAsyncCallback() {
@@ -459,7 +460,7 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
     }
 
     private Button createRegistrationButton() {
-        Button btn = new StudenPanelButton("Student Registration");
+        Button btn = new StudentPanelButton("Student Registration");
         btn.setToolTip("Register students with Catchup Math");
         Menu menu = new Menu();
 
@@ -562,7 +563,7 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
     }
 
     private Button createRefreshButton() {
-        Button btn = new StudenPanelButton("Refresh List");
+        Button btn = new StudentPanelButton("Refresh List");
         btn.setToolTip("Refresh Student List with latest information.");
         btn.addSelectionListener(new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent ce) {
@@ -573,7 +574,7 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
     }
 
     private Button trendingReportButton() {
-        Button btn = new StudenPanelButton("Assessment");
+        Button btn = new StudentPanelButton("Assessment");
         btn.setToolTip("Display lessons being assigned the most.");
         btn.addSelectionListener(new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent ce) {
@@ -589,7 +590,7 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
     }
     
     private Button highlightsButton() {
-        Button btn = new StudenPanelButton("Highlights");
+        Button btn = new StudentPanelButton("Highlights");
         btn.setToolTip("Display statistical student highlights");
         btn.addSelectionListener(new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent ce) {
@@ -633,7 +634,7 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
     }
 
     private Button editStudentToolItem(final Grid<StudentModelExt> grid, final CmAdminModel cmAdminMdl) {
-        Button ti = new StudenPanelButton("Edit Student");
+        Button ti = new StudentPanelButton("Edit Student");
         ti.setToolTip("Edit the profile for the selected student.");
 
         ti.addSelectionListener(new SelectionListener<ButtonEvent>() {
@@ -666,7 +667,7 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
     }
 
     private Button studentDetailsToolItem(final Grid<StudentModelExt> grid) {
-        Button ti = new StudenPanelButton("Student Detail History");
+        Button ti = new StudentPanelButton("Student Detail History");
         ti.setToolTip("View details for the selected student.");
 
         ti.addSelectionListener(new SelectionListener<ButtonEvent>() {
@@ -1214,12 +1215,12 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
  * @author casey
  * 
  */
-class StudenPanelButton extends Button {
-    public StudenPanelButton(String name) {
+class StudentPanelButton extends Button {
+    public StudentPanelButton(String name) {
         this(name, null);
     }
     
-    public StudenPanelButton(String name, SelectionListener<ButtonEvent> listener) {
+    public StudentPanelButton(String name, SelectionListener<ButtonEvent> listener) {
         super(name, listener);
         addStyleName("student-grid-panel-button");
         // setWidth(115);        
