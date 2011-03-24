@@ -67,7 +67,8 @@ public class GetStudentGridPageCommand implements
         if (action.getLoadConfig().getLimit() > 0) {
             limit = Math.min(action.getLoadConfig().getOffset() + action.getLoadConfig().getLimit(), limit);
         }
-        for (int i = action.getLoadConfig().getOffset(); i < limit; i++) {
+        int start = (action.getLoadConfig().getOffset() >= 0) ? action.getLoadConfig().getOffset() : 0;
+        for (int i = start; i < limit; i++) {
             sublist.add(studentPool.get(i));
         }
         
@@ -392,9 +393,6 @@ class StudentGridComparator implements Comparator<StudentModelExt> {
      * @return
      */
     private String nz(String z) {
-        if (z == null)
-            return "";
-        else
-            return z;
+    	return (z == null) ? "" : z;
     }
 }
