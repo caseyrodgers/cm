@@ -28,6 +28,7 @@ import hotmath.gwt.cm_tools.client.model.StudentSettingsModel;
 import hotmath.gwt.cm_tools.client.model.StudentShowWorkModel;
 import hotmath.gwt.shared.client.model.UserProgramIsNotActiveException;
 import hotmath.gwt.shared.client.util.CmException;
+import hotmath.gwt.shared.client.util.CmUserException;
 import hotmath.testset.ha.CmProgram;
 import hotmath.testset.ha.HaTestDef;
 import hotmath.testset.ha.HaTestDefDao;
@@ -521,11 +522,11 @@ public class CmStudentDao {
 
         Boolean isDuplicate = checkForDuplicatePasscode(conn, sm);
         if (isDuplicate) {
-            throw new CmException("The passcode you entered is already in use, please try again.");
+            throw new CmUserException("The passcode you entered is already in use, please try again.");
         }
         isDuplicate = checkForDuplicateName(conn, sm);
         if (isDuplicate) {
-            throw new CmException("The name you entered is already in use, please try again.");
+            throw new CmUserException("The name you entered is already in use, please try again.");
         }
 
         try {
@@ -754,7 +755,7 @@ public class CmStudentDao {
         if (passcodeChanged) {
             Boolean isDuplicate = checkForDuplicatePasscode(conn, sm);
             if (isDuplicate) {
-                throw new Exception("The passcode you entered is already in use, please try again.");
+                throw new CmUserException("The passcode you entered is already in use, please try again.");
             }
         }
         if (progIsNew)
