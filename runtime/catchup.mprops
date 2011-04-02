@@ -1199,7 +1199,7 @@ WHERE c.user_id = ?
 ####
 .key=CURRENT_USER_PROGRAM_SQL
 
-SELECT c.id, c.user_id, c.pass_percent, u.admin_id, c.test_def_id, t.test_name, c.test_config_json, c.create_date,
+SELECT c.id, c.user_id, c.pass_percent, c.date_completed, u.admin_id, c.test_def_id, t.test_name, c.test_config_json, c.create_date,
        cp.id as custom_program_id, cp.name as custom_program_name
 FROM      CM_USER_PROGRAM c
 JOIN      HA_USER u             on c.id = u.user_prog_id
@@ -1213,7 +1213,7 @@ WHERE u.uid = ?
 #Load a named User Program record
 ##
 
-SELECT c.id, c.user_id, c.pass_percent, u.admin_id, c.test_def_id, t.test_name, c.test_config_json, c.create_date,
+SELECT c.id, c.user_id, c.pass_percent, c.date_completed, u.admin_id, c.test_def_id, t.test_name, c.test_config_json, c.create_date,
        cp.id as custom_program_id, cp.name as custom_program_name
 FROM      CM_USER_PROGRAM c
 JOIN      HA_USER u             on c.id = u.user_prog_id
@@ -1222,6 +1222,17 @@ LEFT JOIN HA_CUSTOM_PROGRAM cp  on c.custom_program_id = cp.id
 WHERE c.id = ?
 
 
+#########
+.key=USER_PROGRAM_SET_COMPLETE
+#
+# Set user program as complete
+##
+
+update CM_USER_PROGRAM
+set    date_completed = ?
+where  id = ?
+
+ 
 
 ####
 .key=LOAD_USER_PROGRAM_FOR_TEST_SQL
@@ -1230,7 +1241,7 @@ WHERE c.id = ?
 ##
 
 
-SELECT c.id, c.user_id, c.pass_percent, u.admin_id, c.test_def_id, t.test_name, c.test_config_json, c.create_date,
+SELECT c.id, c.user_id, c.pass_percent, c.date_completed, u.admin_id, c.test_def_id, t.test_name, c.test_config_json, c.create_date,
        cp.id as custom_program_id, cp.name as custom_program_name
 FROM      CM_USER_PROGRAM c
 LEFT JOIN HA_TEST ht on ht.user_prog_id = c.id
@@ -2163,3 +2174,22 @@ where lid = ?
 insert into HA_USER_LOGIN(user_id, login_key, user_type, login_time,login_name)
 values(?,?,?,?,?)
 
+
+###########################
+## GetUserInfoCommand #####
+###########################
+
+###########################
+.key=GET_COUNT_UNCOMPLETED_TEST_RUN_LESSONS_PROGRAM
+#
+# return the count of lessons not completed
+
+select count(l.id) as lessons_to_view
+from  HA_TEST_RUN r
+  JOIN HA_TEST_RUN_LESSON l on l.run_id = r.run_id
+where r.run_id = ?
+and l.date_completed is null
+
+
+
+ 
