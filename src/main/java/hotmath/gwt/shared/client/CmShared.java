@@ -149,7 +149,9 @@ public class CmShared implements EntryPoint {
             // current state as the user moves around system.
             int userId = 0;
 
-
+            if (_queryParameters.get("uid") != null) {
+            	userId = Integer.parseInt(_queryParameters.get("uid"));
+            }
             /** 
              *  for testing, if uid is passed allow override.
              */
@@ -284,7 +286,9 @@ public class CmShared implements EntryPoint {
         } 
         else {
             String hostPort = Window.Location.getPort();
-            if (!"80".equals(hostPort)) {
+            int port = Integer.parseInt(hostPort);
+            // only append port number if > 80
+            if (port > 80) {
                 hostName += ":" + hostPort;
             }
         }

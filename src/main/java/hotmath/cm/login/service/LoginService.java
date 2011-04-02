@@ -208,6 +208,7 @@ public class LoginService extends HttpServlet {
 				String msg = null;
 				try {
 					msg = CmMessagePropertyReader.getInstance().getProperty("SYSTEM_ERROR_MSG");
+					LOGGER.debug("msg: " + msg);
 				}
 				catch(Exception cme) {}
 			    req.getSession().setAttribute("error-msg",   msg);
@@ -234,7 +235,8 @@ public class LoginService extends HttpServlet {
 		//if(sn.indexOf("kattare") > -1)
 		//    port = 80;
 
-		return sn + (port != 80?":" + port:"");
+		// only append port number if > 80
+		return sn + ((port > 80) ? ":"+ port : "");
 	}
 
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
