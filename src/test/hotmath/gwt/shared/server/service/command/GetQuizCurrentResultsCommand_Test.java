@@ -20,13 +20,13 @@ public class GetQuizCurrentResultsCommand_Test extends CmDbTestCase {
             setupDemoAccountTestRun();
     }
     public void testCreate() throws Exception {
-        GetQuizCurrentResultsAction action = new GetQuizCurrentResultsAction(_user.getUid());
+        GetQuizCurrentResultsAction action = new GetQuizCurrentResultsAction(_test.getTestId());
         CmList<RpcData> rdata = new GetQuizCurrentResultsCommand().execute(conn, action);
         assertNotNull(rdata);
     }
     
     public void testDispatch() throws Exception {
-        GetQuizCurrentResultsAction action = new GetQuizCurrentResultsAction(_user.getUid());
+        GetQuizCurrentResultsAction action = new GetQuizCurrentResultsAction(_test.getTestId());
         CmList<RpcData> rdata = ActionDispatcher.getInstance().execute(action);
         assertNotNull(rdata);
     }

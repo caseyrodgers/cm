@@ -3,6 +3,7 @@ package hotmath.gwt.shared.server.service;
 import hotmath.gwt.cm.server.CmDbTestCase;
 import hotmath.gwt.cm_admin.server.model.CmStudentDao;
 import hotmath.gwt.cm_rpc.client.UserInfo;
+import hotmath.gwt.cm_rpc.client.UserLoginResponse;
 import hotmath.gwt.cm_rpc.client.rpc.CmArrayList;
 import hotmath.gwt.cm_rpc.client.rpc.CmList;
 import hotmath.gwt.cm_rpc.client.rpc.CreateTestRunResponse;
@@ -263,7 +264,7 @@ public class ActionDispatcher_Test extends CmDbTestCase {
 
     public void testGetUserInfo() throws Exception {
         GetUserInfoAction action = new GetUserInfoAction(uid,"Testing");
-        UserInfo user = ActionDispatcher.getInstance().execute(action);
+        UserLoginResponse user = ActionDispatcher.getInstance().execute(action);
         
         assertNotNull(user);
     }
@@ -296,11 +297,10 @@ public class ActionDispatcher_Test extends CmDbTestCase {
     
     
     public void testGetQuizHtml() throws Exception {
-        GetQuizHtmlAction action = new GetQuizHtmlAction(uid,_test.getTestId(),1);
+        GetQuizHtmlAction action = new GetQuizHtmlAction(_test.getTestId());
         QuizHtmlResult result = ActionDispatcher.getInstance().execute(action);
         
-        assertNotNull(result);
-        assertTrue(result.getTestId() > 0);
+        assertNotNull(result.getQuizHtml());
     }
 
     
