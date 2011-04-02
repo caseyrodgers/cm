@@ -513,7 +513,7 @@
         <version>2.2.0</version>
         <configuration>
           <gwtHome>${gwtHome}</gwtHome>
-          <extraJvmArgs>-Xmx256m -Xms256m -Dgwt.logLevel=INFO</extraJvmArgs>
+          <extraJvmArgs>-Xms1024m -Xmx1024m -Dgwt.logLevel=INFO</extraJvmArgs>
           <inplace>true</inplace>
           <disableCastChecking>true</disableCastChecking>
           <disableClassMetadata>true</disableClassMetadata>
