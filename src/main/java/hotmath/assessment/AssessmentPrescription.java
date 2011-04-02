@@ -5,8 +5,8 @@ import hotmath.HotMathException;
 import hotmath.ProblemID;
 import hotmath.cm.util.CmCacheManager;
 import hotmath.cm.util.CmCacheManager.CacheName;
-import hotmath.gwt.cm_rpc.client.rpc.NextAction;
-import hotmath.gwt.cm_rpc.client.rpc.NextAction.NextActionName;
+import hotmath.gwt.cm_rpc.client.rpc.CmPlace;
+import hotmath.gwt.cm_rpc.client.rpc.CmProgramFlowAction;
 import hotmath.gwt.shared.client.util.CmException;
 import hotmath.inmh.INeedMoreHelpItem;
 import hotmath.inmh.INeedMoreHelpManager;
@@ -87,7 +87,7 @@ public class AssessmentPrescription {
 	 */
 	public AssessmentPrescription(final Connection conn, HaTestRun testRun) throws Exception {
 	    this(conn);
-		logger.info("Creating prescription for run: " + testRun);
+		logger.debug("Creating prescription for run: " + testRun);
 		this.testRun = testRun;
 		
 		readAssessment();
@@ -141,7 +141,7 @@ public class AssessmentPrescription {
 		sortLessonsByRanking(conn, _sessions);
 
 		new HaTestRunDao().addLessonsToTestRun(conn, testRun, _sessions);
-		logger.info("Finished creating prescription for run: " + testRun);
+		logger.debug("Finished creating prescription for run: " + testRun);
 	}
 	
 
@@ -234,7 +234,7 @@ public class AssessmentPrescription {
 	public AssessmentPrescription(final Connection conn,
 			List<TestRunLesson> lessons, HaTestRun testRun) throws CmException {
 
-		logger.info("Creating AssessmentPrescription from existing lessons: "
+		logger.debug("Creating AssessmentPrescription from existing lessons: "
 				+ testRun.getRunId());
 		this.testRun = testRun;
 		_assessment = new InmhAssessment(conn, testRun.getHaTest().getUser()
@@ -244,7 +244,7 @@ public class AssessmentPrescription {
 		// create sessions from persistent data
 		int sessNum = 0;
 		for (TestRunLesson lesson : lessons) {
-			logger.info("Creating AssessmentPrescription for lesson '" + lesson
+			logger.debug("Creating AssessmentPrescription for lesson '" + lesson
 					+ "': " + testRun.getRunId());
 			AssessmentPrescriptionSession session = new AssessmentPrescriptionSession(this);
 			for (RppWidget pid : lesson.getPids()) {
@@ -264,7 +264,7 @@ public class AssessmentPrescription {
     			sessNum++;
 			}
 		}
-		logger.info("Finished creating AssessmentPrescription from lessons: "
+		logger.debug("Finished creating AssessmentPrescription from lessons: "
 				+ testRun.getRunId());
 	}
 
@@ -481,8 +481,8 @@ public class AssessmentPrescription {
 	 * 
 	 * @return
 	 */
-	public NextAction getNextAction() throws Exception {
-		return new NextAction(NextActionName.PRESCRIPTION);
+	public CmProgramFlowAction getNextAction() throws Exception {
+		return new CmProgramFlowAction(CmPlace.PRESCRIPTION);
 	}
 
 	/**

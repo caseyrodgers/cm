@@ -221,7 +221,6 @@ public class CmMainResourceContainer extends LayoutContainer {
      */
 	static protected Integer getCalculatedHeight(CmMainResourceContainer container, CmResourcePanel panel) {
 	    int HEADER_FOOTER_GUTTER=10;
-	    
 		if(panel.getOptimalHeight() == -1) {
 			int h = container.getHeight()-HEADER_FOOTER_GUTTER;
 			if(h < panel.getMinHeight()) {

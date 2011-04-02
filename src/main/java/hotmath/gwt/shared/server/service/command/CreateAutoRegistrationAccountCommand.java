@@ -149,12 +149,12 @@ public class CreateAutoRegistrationAccountCommand implements ActionHandler<Creat
         //TODO: default all of these to 0?
         userInfo.setTestId(activeInfo.getActiveTestId());
         userInfo.setRunId(activeInfo.getActiveRunId());
-        userInfo.setTestSegment(activeInfo.getActiveSegment());
+        userInfo.setProgramSegment(activeInfo.getActiveSegment());
         userInfo.setSessionNumber(activeInfo.getActiveRunSession());
 
         userInfo.setUserName(studentModel.getName());
         userInfo.setBackgroundStyle(studentModel.getBackgroundStyle());
-        userInfo.setTestName(testTitle);
+        userInfo.setProgramName(testTitle);
         userInfo.setSubTitle(subTitle);
         userInfo.setShowWorkRequired(studentModel.getSettings().getShowWorkRequired());
         userInfo.setTutoringAvail(studentModel.getSettings().getTutoringAvailable());
@@ -162,7 +162,7 @@ public class CreateAutoRegistrationAccountCommand implements ActionHandler<Creat
         userInfo.setUserAccountType(accountType);
 
         userInfo.setPassPercentRequired(si.getConfig().getPassPercent());
-        userInfo.setTestSegmentCount(testDef.getTotalSegmentCount());
+        userInfo.setProgramSegmentCount(testDef.getTotalSegmentCount());
 
         //TODO: shouldn't this be 0 and why use action.getUserId()?
         userInfo.setViewCount(dao.getTotalInmHViewCount(conn,action.getUserId()));

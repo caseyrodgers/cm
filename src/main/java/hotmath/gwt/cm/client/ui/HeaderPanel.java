@@ -37,6 +37,7 @@ public class HeaderPanel extends LayoutContainer {
 
 	Label _headerText;
 	Html _helloInfo = new Html();
+	private IconButton helpButton;
 	protected void onRender(Element parent, int index) {
 		super.onRender(parent, index);
 
@@ -46,8 +47,8 @@ public class HeaderPanel extends LayoutContainer {
 		_helloInfo.setStyleName("hello-info");
 		add(_helloInfo);
 		
-		IconButton btn = new IconButton("header-panel-help-btn");
-		btn.addSelectionListener(new SelectionListener<IconButtonEvent>() {
+		helpButton = new IconButton("header-panel-help-btn");
+		helpButton.addSelectionListener(new SelectionListener<IconButtonEvent>() {
 			public void componentSelected(IconButtonEvent ce) {
 				
 				if(ce.getEvent().getCtrlKey()) {
@@ -64,7 +65,7 @@ public class HeaderPanel extends LayoutContainer {
 				}
 			};
 		});		
-		add(btn);
+		add(helpButton);
 		
 		_headerText = new Label();
 		_headerText.addStyleName("header-panel-title");
@@ -81,6 +82,7 @@ public class HeaderPanel extends LayoutContainer {
 			    	case EVENT_TYPE_CONTEXTCHANGED:
 			            CmContext context = (CmContext)event.getEventData();
 	  		            HeaderPanel.__instance.setHeaderTitle();
+	  		            boolean tr = CmMainPanel.__lastInstance == null;
 	  		            if(CmMainPanel.__lastInstance != null) {
 	  		                /** note we set a default heading, no matter what the test type */
 			                CmMainPanel.__lastInstance._westPanel.setHeading(context.getContextSubTitle());
@@ -106,6 +108,11 @@ public class HeaderPanel extends LayoutContainer {
 			    		addLogoutButton();
 			    		break;
 			    		
+			    		
+			    	case EVENT_TYPE_LOGOUT:
+			    	    setLogout();
+			    	    break;
+			    		
 		    }
 		    }});
 	}
@@ -114,6 +121,7 @@ public class HeaderPanel extends LayoutContainer {
 	/** TODO: how to share this between student and admin 
 	 * 
 	 */
+	IconButton logoutButton;
 	private void addLogoutButton() {
 		final CmPartner partner = UserInfoBase.getInstance().getPartner();
 		String logoClass=null;
@@ -124,8 +132,8 @@ public class HeaderPanel extends LayoutContainer {
 			logoClass = "header-panel-logout-btn";
 		}
 			
-		IconButton btn = new IconButton(logoClass);
-		btn.addSelectionListener(new SelectionListener<IconButtonEvent>() {
+		logoutButton = new IconButton(logoClass);
+		logoutButton.addSelectionListener(new SelectionListener<IconButtonEvent>() {
 			public void componentSelected(IconButtonEvent ce) {
 				
 				if(partner != null) {
@@ -142,7 +150,20 @@ public class HeaderPanel extends LayoutContainer {
 				}
 			};
 		});		
-		add(btn);
+		add(logoutButton);
+	}
+	private void setLogout() {
+	    if(logoutButton != null) {
+	        remove(logoutButton);
+	        logoutButton = null;
+	    }
+	    
+	    if(helpButton != null) {
+	        remove(helpButton);
+	        helpButton = null;
+	    }
+	    
+	    layout();
 	}
 	
 	public void setLoginInfo() {

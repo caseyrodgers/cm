@@ -1,13 +1,17 @@
 package hotmath.gwt.shared.server.service.command;
 
-import hotmath.cm.server.model.CmUserProgramDao;
+import hotmath.cm.program.CmProgramFlow;
+import hotmath.cm.util.CmMultiLinePropertyReader;
 import hotmath.gwt.cm_admin.server.model.CmAdminDao;
 import hotmath.gwt.cm_admin.server.model.CmCustomProgramDao;
 import hotmath.gwt.cm_admin.server.model.CmStudentDao;
 import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_rpc.client.UserInfo.AccountType;
-import hotmath.gwt.cm_rpc.client.UserInfo.ProgramCompletionAction;
+import hotmath.gwt.cm_rpc.client.UserInfo.UserProgramCompletionAction;
+import hotmath.gwt.cm_rpc.client.UserLoginResponse;
 import hotmath.gwt.cm_rpc.client.rpc.Action;
+import hotmath.gwt.cm_rpc.client.rpc.CmDestination;
+import hotmath.gwt.cm_rpc.client.rpc.CmPlace;
 import hotmath.gwt.cm_rpc.client.rpc.CmRpcException;
 import hotmath.gwt.cm_rpc.client.rpc.GetUserInfoAction;
 import hotmath.gwt.cm_rpc.client.rpc.Response;
@@ -25,25 +29,30 @@ import hotmath.testset.ha.HaTestDefDao;
 import hotmath.testset.ha.HaTestRun;
 import hotmath.testset.ha.HaTestRunDao;
 import hotmath.testset.ha.StudentUserProgramModel;
+import hotmath.util.sql.SqlUtilities;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 
 import org.apache.log4j.Logger;
 
-import java.sql.Connection;
-
-public class GetUserInfoCommand implements ActionHandler<GetUserInfoAction, UserInfo> {
+public class GetUserInfoCommand implements ActionHandler<GetUserInfoAction, UserLoginResponse> {
 
 	private static final Logger logger = Logger.getLogger(GetUserInfoCommand.class);
 
     @Override
-    public UserInfo execute(final Connection conn, GetUserInfoAction action) throws Exception {
+    public UserLoginResponse execute(final Connection conn, GetUserInfoAction action) throws Exception {
         try {
-            CmStudentDao dao = new CmStudentDao();
-            StudentModelI sm = dao.getStudentModelBase(conn, action.getUserId(), true);
+            CmStudentDao sdao = new CmStudentDao();
+            StudentModelI sm = sdao.getStudentModelBase(conn, action.getUserId(), true);
             StudentSettingsModel settings = sm.getSettings();
             
-            CmUserProgramDao upDao = new CmUserProgramDao();
-            StudentUserProgramModel userProgram = upDao.loadProgramInfoCurrent(conn, action.getUserId());
-            StudentActiveInfo activeInfo = dao.loadActiveInfo(conn, action.getUserId());
+            
+            CmProgramFlow cmProgram = new CmProgramFlow(conn, action.getUserId());
+            StudentUserProgramModel userProgram = cmProgram.getUserProgram();
+            StudentActiveInfo activeInfo = cmProgram.getActiveInfo();
+
             AccountType accountType = new CmAdminDao().getAccountType(conn, sm.getAdminUid());
             
             HaTestDefDao hdao = new HaTestDefDao();
@@ -65,13 +74,8 @@ public class GetUserInfoCommand implements ActionHandler<GetUserInfoAction, User
                 //subTitle = chapterInfo.getChapterTitle();
             }
             
-            
             int programSegmentCount=testDef.getTotalSegmentCount();
-            /** if Custom Program, then force user to prescription phase .. there are no
-             *  quizzes.  However, we still create a Test and a Test Run in order
-             *  to facilitate using the existing infrastructure.
-             *  
-             */
+            
             boolean isCustomProgram = testDef.getTestDefId() == CmProgram.CUSTOM_PROGRAM.getDefId();
             if(isCustomProgram) {
                 if(activeInfo.getActiveRunId() == 0 && activeInfo.getActiveTestId() == 0) {
@@ -99,8 +103,12 @@ public class GetUserInfoCommand implements ActionHandler<GetUserInfoAction, User
                      */
                     CmCustomProgramDao cpdao = new CmCustomProgramDao();
                     if(!cpdao.doesProgramSegmentHaveQuiz(conn, userProgram.getCustomProgramId(), 0)) {
-                        HaTest custTest = HaTestDao.createTest(conn, action.getUserId(),new HaTestDefDao().getTestDef(conn, CmProgram.CUSTOM_PROGRAM.getDefId()), 0);
-                        custTest.setProgramInfo(userProgram);
+                        activeInfo.setActiveSegment(1);
+                        activeInfo.setActiveTestId(0);
+                        activeInfo.setActiveRunSession(0);           
+
+                        HaTest custTest = HaTestDao.createTest(conn, action.getUserId(),new HaTestDefDao().getTestDef(conn, CmProgram.CUSTOM_PROGRAM.getDefId()), activeInfo.getActiveSegment());
+                        custTest.setProgramInfo(cmProgram.getUserProgram());
                         HaTestRun testRun = HaTestDao.createTestRun(conn, action.getUserId(), custTest.getTestId(), 10,0,0);
                         testRun.setHaTest(custTest);
                         
@@ -108,14 +116,8 @@ public class GetUserInfoCommand implements ActionHandler<GetUserInfoAction, User
                          * 
                          * If not then move to next segment, or return end of program?
                          */
-                        activeInfo.setActiveSegment(1);
-                        activeInfo.setActiveTestId(0);
                         activeInfo.setActiveRunId(testRun.getRunId());
-                        activeInfo.setActiveRunSession(0);                        
                     }
-                    
-
-                    
                     
                     /** update the total number of program segments
                      * 
@@ -123,7 +125,7 @@ public class GetUserInfoCommand implements ActionHandler<GetUserInfoAction, User
                     programSegmentCount = new CmCustomProgramDao().getTotalSegmentCount(conn,userProgram.getCustomProgramId());
                     
                     /** save for next time */
-                    dao.setActiveInfo(conn, action.getUserId(), activeInfo);
+                    sdao.setActiveInfo(conn, action.getUserId(), activeInfo);
                 }
                 /** Get the Custom Program's test title assigned by user
                  * 
@@ -137,11 +139,11 @@ public class GetUserInfoCommand implements ActionHandler<GetUserInfoAction, User
             userInfo.setUid(sm.getUid());
             userInfo.setTestId(activeInfo.getActiveTestId());
             userInfo.setRunId(activeInfo.getActiveRunId());
-            userInfo.setTestSegment(activeInfo.getActiveSegment());
+            userInfo.setProgramSegment(activeInfo.getActiveSegment());
             userInfo.setUserName(sm.getName());
             userInfo.setSessionNumber(activeInfo.getActiveRunSession());
             userInfo.setBackgroundStyle(sm.getBackgroundStyle());
-            userInfo.setTestName(testTitle);
+            userInfo.setProgramName(testTitle);
             userInfo.setSubTitle(subTitle);
             userInfo.setShowWorkRequired(settings.getShowWorkRequired());
             userInfo.setTutoringAvail(settings.getTutoringAvailable());
@@ -162,7 +164,7 @@ public class GetUserInfoCommand implements ActionHandler<GetUserInfoAction, User
             userInfo.setSessionCount(sessionCount);
                 
 
-            ProgramCompletionAction onComplete = settings.getStopAtProgramEnd()?ProgramCompletionAction.STOP_ALLOW_CONTINUE:ProgramCompletionAction.AUTO_ADVANCE;
+            UserProgramCompletionAction onComplete = settings.getStopAtProgramEnd()?UserProgramCompletionAction.STOP:UserProgramCompletionAction.AUTO_ADVANCE;
             userInfo.setOnCompletion(onComplete);
             userInfo.setLimitGames(settings.getLimitGames());
             
@@ -171,22 +173,130 @@ public class GetUserInfoCommand implements ActionHandler<GetUserInfoAction, User
              * 
              */
             if(isCustomProgram) {
-                userInfo.setOnCompletion(ProgramCompletionAction.STOP_ALLOW_CONTINUE);
+                /** this really depends on if CP ends on quiz or a test
+                 * 
+                 */
+                userInfo.setOnCompletion(UserProgramCompletionAction.STOP);
             }
 
             userInfo.setUserAccountType(accountType);
-            
             userInfo.setPassPercentRequired(userProgram.getConfig().getPassPercent());
-            userInfo.setTestSegmentCount(programSegmentCount);
-            userInfo.setViewCount(dao.getTotalInmHViewCount(conn,action.getUserId()));
+            userInfo.setProgramSegmentCount(programSegmentCount);
+            userInfo.setViewCount(sdao.getTotalInmHViewCount(conn,action.getUserId()));
+            UserLoginResponse userLoginResponse = new UserLoginResponse(userInfo, determineFirstDestination(conn, userInfo));
+            return userLoginResponse;
             
-            return userInfo;
         } catch (Exception e) {
         	logger.error(String.format("*** Error executing Action: %s", action.toString()), e);
             throw new CmRpcException(e);
         }
     }
+    
+    /** what is the first thing the user is shown?
+     *  
+     *  This is based on the user's current active state.
+     *  
+     *  If user's program is complete:
+     *     If stopAfterComplete, then 
+     *        set firstAction to END_OF_PROGRAM
+     *     else 
+     *        // this should not happen ..?
+     *        // unless error/corrupted ..?
+     *        
+     *  Else
+     *      if runId > 0
+     *          set firstAction to PRESCRIPTION
+     *      else if testId > 0)
+     *          set firstAction to QUIZ
+     *                
+     *      else
+     *          set firstAction to WELCOME    
+     *          
+     *     
+     */
+    CmDestination firstDestination = null;
+    private CmDestination determineFirstDestination(final Connection conn, UserInfo userInfo) throws Exception {
+        CmDestination destination = new CmDestination();
 
+        if(hasUserCompletedProgram(conn, userInfo)) {
+            destination.setPlace(CmPlace.END_OF_PROGRAM);
+        }
+        else if(userInfo.getRunId() > 0) {
+            destination.setPlace(CmPlace.PRESCRIPTION);
+        }
+        else if(userInfo.getTestId() > 0) {
+            destination.setPlace(CmPlace.QUIZ);
+        }
+        else {
+            destination.setPlace(CmPlace.WELCOME);
+        }
+        
+        return destination;
+    }
+    
+    
+    /** Has this user completed the current active program ?
+     * 
+     * @param userInfo
+     * @return
+     * @throws Exception
+     */
+    private boolean hasUserCompletedProgram(final Connection conn, UserInfo userInfo) throws Exception {
+        int totalSegments = userInfo.getProgramSegmentCount();
+        int thisSegment = userInfo.getTestSegment();
+        
+        assert(thisSegment > 0);
+        
+        /** program segments are 1 based
+         * 
+         */
+        if(thisSegment < (totalSegments+1)) {
+            
+            /** we know it is valid
+             * 
+             */
+            if(thisSegment == (totalSegments-1)) {
+                /** on last segment
+                 * 
+                 */
+                
+                /** has the user viewed each lesson in active prescription?
+                 * 
+                 */
+                if(userInfo.getRunId() > 0) {
+                    PreparedStatement ps=null;
+                    try {
+                        String sql = CmMultiLinePropertyReader.getInstance().getProperty("GET_COUNT_UNCOMPLETED_TEST_RUN_LESSONS_PROGRAM");
+                        ps = conn.prepareStatement(sql);
+                        ps.setInt(1, userInfo.getRunId());
+                        ResultSet rs = ps.executeQuery();
+                        rs.first();
+                        int cntToView = rs.getInt(1);
+                        
+                        if(cntToView == 0) {
+                            /** this program is on last segment
+                             *  and all lessons have been completed
+                             */
+                            return true;
+                        }
+                    }
+                    finally {
+                        SqlUtilities.releaseResources(null,ps, null);
+                    }
+                }
+            }
+        }
+        else {
+            return true;  // over the end, bug?
+        }
+
+        /** default is not completed 
+         * 
+         */
+        return false;
+    }
+
+    
     @Override
     public Class<? extends Action<? extends Response>> getActionType() {
         return GetUserInfoAction.class;

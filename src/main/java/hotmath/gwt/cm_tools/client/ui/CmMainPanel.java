@@ -20,6 +20,8 @@ import com.extjs.gxt.ui.client.widget.Html;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -93,10 +95,15 @@ public class CmMainPanel extends LayoutContainer {
 		centerData.setSplit(false);
 		add(_mainContent, centerData);
 
-		Widget w = cmGuiDef.getCenterWidget();
-		if (w != null) {
-			_mainContent.add(w);
-		}
+		Scheduler.get().scheduleDeferred(new ScheduledCommand() {
+            @Override
+            public void execute() {
+                Widget w = cmGuiDef.getCenterWidget();
+                if (w != null) {
+                    _mainContent.add(w);
+                }
+            }
+        });
 	}
 
 	public void expandResourceButtons() {

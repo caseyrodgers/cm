@@ -3,8 +3,8 @@ package hotmath.assessment;
 import hotmath.cm.server.model.CmUserProgramDao;
 import hotmath.gwt.cm_admin.server.model.CmCustomProgramDao;
 import hotmath.gwt.cm_rpc.client.rpc.CmList;
-import hotmath.gwt.cm_rpc.client.rpc.NextAction;
-import hotmath.gwt.cm_rpc.client.rpc.NextAction.NextActionName;
+import hotmath.gwt.cm_rpc.client.rpc.CmPlace;
+import hotmath.gwt.cm_rpc.client.rpc.CmProgramFlowAction;
 import hotmath.gwt.cm_tools.client.model.CustomLessonModel;
 import hotmath.gwt.cm_tools.client.model.CustomLessonModel.Type;
 import hotmath.inmh.INeedMoreHelpItem;
@@ -84,7 +84,7 @@ public class AssessmentPrescriptionCustom extends AssessmentPrescription {
     }
     
     @Override
-    public NextAction getNextAction() throws Exception {
-        return new NextAction(NextActionName.PRESCRIPTION);
+    public CmProgramFlowAction getNextAction() throws Exception {
+        return new CmProgramFlowAction(CmPlace.PRESCRIPTION);
     }
 }

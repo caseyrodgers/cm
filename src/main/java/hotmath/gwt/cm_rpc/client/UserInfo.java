@@ -230,15 +230,15 @@ public class UserInfo implements  Response {
 		return testName;
 	}
 
-	public void setTestName(String testName) {
+	public void setProgramName(String testName) {
 		this.testName = testName;
 	}
 
-	public int getTestSegmentCount() {
+	public int getProgramSegmentCount() {
 		return testSegmentCount;
 	}
 
-	public void setTestSegmentCount(int testSegmentCount) {
+	public void setProgramSegmentCount(int testSegmentCount) {
 		this.testSegmentCount = testSegmentCount;
 	}
 
@@ -246,7 +246,7 @@ public class UserInfo implements  Response {
 		return testSegment;
 	}
 
-	public void setTestSegment(int testSegment) {
+	public void setProgramSegment(int testSegment) {
 		this.testSegment = testSegment;
 	}	
 	
@@ -311,7 +311,7 @@ public class UserInfo implements  Response {
      */
     public String getUserStatus() {
        String status = "uid: " + uid + ", test_id: " + getTestId() + 
-                       ", run_id: " + getRunId() + ", quiz: " + getTestSegment() + "/" + getTestSegmentCount() + 
+                       ", run_id: " + getRunId() + ", quiz: " + getTestSegment() + "/" + getProgramSegmentCount() + 
                        ", prescription: " + getSessionNumber() + "/" + getSessionCount();
        return status;
     }
@@ -326,7 +326,7 @@ public class UserInfo implements  Response {
         this.limitGames = limitGames;
     }
 
-    ProgramCompletionAction onCompletion= ProgramCompletionAction.AUTO_ADVANCE;
+    UserProgramCompletionAction onCompletion= UserProgramCompletionAction.AUTO_ADVANCE;
 
 
     /** Return action indicating what to do once the active
@@ -334,7 +334,7 @@ public class UserInfo implements  Response {
      *  
      * @return
      */
-    public ProgramCompletionAction getOnCompletion() {
+    public UserProgramCompletionAction getOnCompletion() {
         return onCompletion;
     }
 
@@ -342,7 +342,7 @@ public class UserInfo implements  Response {
      * 
      * @param onCompletion
      */
-    public void setOnCompletion(ProgramCompletionAction onCompletion) {
+    public void setOnCompletion(UserProgramCompletionAction onCompletion) {
         this.onCompletion = onCompletion;
     }
 
@@ -406,17 +406,11 @@ public class UserInfo implements  Response {
      * @author casey
      *
      */
-    public enum ProgramCompletionAction {
-        /** Stop when program is completed but
-         *  allow user to continue.
-         * 
-         */
-        STOP_ALLOW_CONTINUE,
-        
+    public enum UserProgramCompletionAction {
         /** Stop when end of problem and 
          *  do not allow user to continue
          */
-        STOP_DO_NOT_ALLOW_CONTINUE,
+        STOP,
         
         /** The user should be auto advanced when completed
          * 

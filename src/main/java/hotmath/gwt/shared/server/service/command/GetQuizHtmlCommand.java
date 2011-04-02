@@ -6,23 +6,20 @@ import hotmath.cm.util.CmCacheManager;
 import hotmath.cm.util.CmCacheManager.CacheName;
 import hotmath.cm.util.CmWebResourceManager;
 import hotmath.gwt.cm_admin.server.model.CmCustomProgramDao;
-import hotmath.gwt.cm_admin.server.model.CmStudentDao;
 import hotmath.gwt.cm_rpc.client.rpc.Action;
 import hotmath.gwt.cm_rpc.client.rpc.CmList;
+import hotmath.gwt.cm_rpc.client.rpc.CmRpcException;
 import hotmath.gwt.cm_rpc.client.rpc.GetQuizHtmlAction;
 import hotmath.gwt.cm_rpc.client.rpc.QuizHtmlResult;
 import hotmath.gwt.cm_rpc.client.rpc.Response;
 import hotmath.gwt.cm_rpc.client.rpc.RpcData;
 import hotmath.gwt.cm_rpc.server.rpc.ActionHandler;
-import hotmath.gwt.cm_tools.client.model.StudentActiveInfo;
-import hotmath.gwt.shared.client.model.CustomQuizId;
 import hotmath.gwt.shared.client.rpc.action.GetQuizCurrentResultsAction;
 import hotmath.testset.ha.ChapterInfo;
 import hotmath.testset.ha.HaTest;
 import hotmath.testset.ha.HaTestDao;
 import hotmath.testset.ha.HaTestDef;
 import hotmath.testset.ha.HaTestDefDao;
-import hotmath.testset.ha.HaTestDefFactory;
 import hotmath.testset.ha.StudentUserProgramModel;
 import hotmath.util.VelocityTemplateFromStringManager;
 
@@ -40,76 +37,36 @@ import org.apache.log4j.Logger;
 import sb.util.SbFile;
 
 
-/** If user is re-taking the current segment, then move to next
- * slot.
- */
 
-/** TODO: how to know if this a retake?
- * 
+/** Return the requested, existing QUIZ html 
+ *  named by the action.testId
+ *  
+ *  it is an an error for the text to not exist.
+ *  
+ * @author casey
+ *
  */
-
-/** determine the quiz slot to use.  
- * 
- * We reuse the slot if:
- * 
- * 1. user has never seen this quiz.
- * 2. user has never seen this quiz segment.
- * 3. user passed last quiz segment.
- * 
- * 
- * We increment the slot if:
- * 
- * 1. user failed current segment
- * 2. user is re-taking same segment
- * 
- * 
- */    
 public class GetQuizHtmlCommand implements ActionHandler<GetQuizHtmlAction, QuizHtmlResult> {
 
     static final Logger logger = Logger.getLogger(GetQuizHtmlCommand.class);
     @Override
     public QuizHtmlResult execute(final Connection conn, GetQuizHtmlAction action) throws Exception {
 
-        new CmStudentDao().verifyActiveProgram(conn, action.getTestId());
-
-        int testSegment = action.getTestSegment();
-        int uid = action.getUid();
+        if (action.getTestId() == 0) {
+            throw new CmRpcException("Invalid QUIZ request: " + action);
+        }
 
         try {
             String quizHtmlTemplate = readQuizHtmlTemplate();
             Map<String, Object> map = new HashMap<String, Object>();
 
-            CmUserProgramDao upDao = new CmUserProgramDao();
-            StudentUserProgramModel programInfo = upDao.loadProgramInfoCurrent(conn, uid);
+            StudentUserProgramModel programInfo = new CmUserProgramDao().loadProgramInfoForTest(conn, action.getTestId());
 
-            String testName = programInfo.getTestName();
+            
+            int testId = action.getTestId();
 
-            CmStudentDao dao = new CmStudentDao();
-            StudentActiveInfo activeInfo = dao.loadActiveInfo(conn, uid);
-
-            /** if -1, then use current active segment
-             * 
-             */
-            if (testSegment < 1) {
-                testSegment = activeInfo.getActiveSegment();
-            }
-
-            HaTest haTest=null;
-            int activeTest = activeInfo.getActiveTestId();
-            if(activeTest > 0 && activeInfo.getActiveSegment() == testSegment) {
-                /** load an existing test
-                 * 
-                 */
-                haTest = HaTestDao.loadTest(conn, activeTest);
-                uid = haTest.getUser().getUserKey();
-                testSegment = haTest.getSegment();
-            }
-            else {
-                /** create and register a new test
-                 */
-                HaTestDef testDef = HaTestDefFactory.createTestDef(conn,testName);
-                haTest = HaTestDao.createTest(conn, uid, testDef, testSegment);
-            }
+            HaTest haTest = HaTestDao.loadTest(conn, testId);
+            
             String testTitle = null;
             if(programInfo.getCustomProgramId() > 0) {
                 testTitle = new CmCustomProgramDao().getCustomProgram(conn,programInfo.getCustomProgramId()).getProgramName();
@@ -117,7 +74,6 @@ public class GetQuizHtmlCommand implements ActionHandler<GetQuizHtmlAction, Quiz
             else {
                 testTitle = haTest.getTitle();
             }
-
                         
             
             /** is this quiz HTML already in the cache?
@@ -126,10 +82,10 @@ public class GetQuizHtmlCommand implements ActionHandler<GetQuizHtmlAction, Quiz
              *  html in the cache via the QuizCachedInfo.
              */
             HaTestDef testDef = haTest.getTestDef();
-            String cacheKey = testDef.getTestDefId() + "_" + testDef.getTestInitJson(haTest) + "_" + haTest.getSegment() + "_" + activeInfo.getActiveSegmentSlot();
+            String cacheKey = testDef.getTestDefId() + "_" + testDef.getTestInitJson(haTest) + "_" + haTest.getSegment() + "_" + haTest.getSegmentSlot();
             QuizCacheInfo cacheInfo = (QuizCacheInfo)CmCacheManager.getInstance().retrieveFromCache(CacheName.TEST_HTML, cacheKey);
             if(cacheInfo == null) {
-                logger.info("Create quiz HTML and adding to cache");
+                logger.info("Create quiz HTML and add to cache");
                 
                 HaTestSet testSet = new HaTestSet(conn,haTest.getPids());
                 
@@ -148,7 +104,7 @@ public class GetQuizHtmlCommand implements ActionHandler<GetQuizHtmlAction, Quiz
                     subTitle = chapterInfo.getChapterTitle();
                 }
                 else {
-                    subTitle = haTest.getSubTitle(testSegment);
+                    subTitle = haTest.getSubTitle(haTest.getSegment());
                 }  
 
                 String spritedHtml = quizHtml; //  processHtmlForSprites(quizHtml);
@@ -160,14 +116,13 @@ public class GetQuizHtmlCommand implements ActionHandler<GetQuizHtmlAction, Quiz
                 logger.info("Retrieved quiz HTML from cache");
             }
             
-            GetQuizCurrentResultsAction resultsAction = new GetQuizCurrentResultsAction(action.getUid());
+            GetQuizCurrentResultsAction resultsAction = new GetQuizCurrentResultsAction(action.getTestId());
             CmList<RpcData> currentResponses = new GetQuizCurrentResultsCommand().execute(conn, resultsAction);
 
             QuizHtmlResult result = new QuizHtmlResult();
-            result.setUserId(uid);
             result.setQuizHtml(cacheInfo.quizHtml);
             result.setTestId(haTest.getTestId());
-            result.setQuizSegment(testSegment);
+            result.setQuizSegment(haTest.getSegment());
             
             
             int segmentCount=0;
@@ -184,8 +139,12 @@ public class GetQuizHtmlCommand implements ActionHandler<GetQuizHtmlAction, Quiz
             result.setTestId(haTest.getTestId());
             result.setAnswers(cacheInfo.testSet.getAnswers());
             result.setCurrentSelections(currentResponses);
+            
+            
             return result;
+            
         } catch (Exception e) {
+            /** for catching error during debugging */
             throw e;
         }
     }

@@ -4,6 +4,7 @@ import hotmath.cm.util.CmWebResourceManager;
 import hotmath.gwt.cm_rpc.client.rpc.Action;
 import hotmath.gwt.cm_rpc.client.rpc.GetQuizHtmlAction;
 import hotmath.gwt.cm_rpc.client.rpc.GetQuizHtmlSpritedAction;
+import hotmath.gwt.cm_rpc.client.rpc.QuizHtmlResponse;
 import hotmath.gwt.cm_rpc.client.rpc.QuizHtmlResult;
 import hotmath.gwt.cm_rpc.client.rpc.Response;
 import hotmath.gwt.cm_rpc.server.rpc.ActionHandler;
@@ -20,7 +21,7 @@ public class GetQuizHtmlSpritedCommand implements ActionHandler<GetQuizHtmlSprit
     
     @Override
     public QuizHtmlResult execute(Connection conn, GetQuizHtmlSpritedAction action) throws Exception {
-        GetQuizHtmlAction htmlAction = new GetQuizHtmlAction(action.getUid(), action.getTestId(), 0);
+        GetQuizHtmlAction htmlAction = new GetQuizHtmlAction(action.getTestId());
         QuizHtmlResult result = new GetQuizHtmlCommand().execute(conn, htmlAction);
         
         String html = result.getQuizHtml();

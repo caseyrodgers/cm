@@ -31,7 +31,7 @@ public class ReportCardInfoPanel extends LayoutContainer {
         }
         else {
             int segment = user.getTestSegment()==0?1:user.getTestSegment();
-            html += "You are currently taking quiz segment " + segment + " of " + user.getTestSegmentCount();
+            html += "You are currently taking quiz segment " + segment + " of " + user.getProgramSegmentCount();
         }
         return html;
     }

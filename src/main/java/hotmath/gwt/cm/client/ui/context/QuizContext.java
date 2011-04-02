@@ -1,36 +1,29 @@
 package hotmath.gwt.cm.client.ui.context;
 
 import hotmath.gwt.cm.client.CatchupMath;
-import hotmath.gwt.cm.client.ui.EndOfProgramWindow;
+import hotmath.gwt.cm.client.ui.context.HaveYouCheckedYourWorkWindow.Callback;
 import hotmath.gwt.cm_rpc.client.UserInfo;
+import hotmath.gwt.cm_rpc.client.rpc.CmPlace;
 import hotmath.gwt.cm_rpc.client.rpc.CreateTestRunResponse;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
-import hotmath.gwt.cm_tools.client.ui.CmLogger;
 import hotmath.gwt.cm_tools.client.ui.InfoPopupBox;
 import hotmath.gwt.cm_tools.client.ui.NextPanelInfo;
 import hotmath.gwt.cm_tools.client.ui.NextPanelInfoImplDefault;
 import hotmath.gwt.cm_tools.client.ui.QuizPage;
-import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
 import hotmath.gwt.cm_tools.client.ui.context.CmContext;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.data.CmAsyncRequestImplDefault;
-import hotmath.gwt.shared.client.eventbus.CmEvent;
-import hotmath.gwt.shared.client.eventbus.EventBus;
-import hotmath.gwt.shared.client.eventbus.EventType;
 import hotmath.gwt.shared.client.rpc.RetryAction;
 import hotmath.gwt.shared.client.rpc.action.CreateTestRunAction;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.IconButtonEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.widget.Component;
-import com.extjs.gxt.ui.client.widget.Html;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
-import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.button.IconButton;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -75,10 +68,15 @@ public class QuizContext implements CmContext {
         return getTitle();
     }
 
+    /** Return the quiz context title
+     * 
+     *  NOTE: the test segments are 1 based.
+     *  
+     */
     public String getContextSubTitle() {
         String title = getTitle();
-        return title + "<h2>Section " + (UserInfo.getInstance().getTestSegment()+1) + " of "
-                + UserInfo.getInstance().getTestSegmentCount() + "</h2>";
+        return title + "<h2>Section " + (UserInfo.getInstance().getTestSegment()) + " of "
+                + UserInfo.getInstance().getProgramSegmentCount() + "</h2>";
     }
 
     public NextPanelInfo getNextPanelInfo() {
@@ -104,39 +102,6 @@ public class QuizContext implements CmContext {
         return list;
     }
 
-    private void showAutoAssignedProgram(String assignedName) {
-        final CmWindow window = new CmWindow();
-        window.setModal(true);
-        window.setHeight(175);
-        window.setWidth(300);
-        window.setClosable(false);
-        window.setResizable(false);
-        window.setStyleName("auto-assignment-window");
-        String msg = "<p>You are now enrolled in: <br/><b>" + assignedName + "</b><br/> "
-                + "You will be able to move ahead quickly to more advanced " + "programs as you pass the quizzes.</p>";
-
-        Html html = new Html(msg);
-
-        window.setHeading("Quiz results");
-        window.add(html);
-
-        Button close = new Button();
-        close.setText("OK");
-        close.addSelectionListener(new SelectionListener<ButtonEvent>() {
-            public void componentSelected(ButtonEvent ce) {
-
-                /**
-                 * force a page refresh to load newly changed program.
-                 * Otherwise, things are out of sync with server.
-                 */
-                CatchupMath.reloadUser();
-            }
-        });
-
-        window.addButton(close);
-        window.setVisible(true);
-    }
-
     private void showNextPlacmentQuiz() {
         CatchupMathTools.showAlert("Quiz results", "Good job - we'll now give another quiz.",
                 new CmAsyncRequestImplDefault() {
@@ -146,53 +111,22 @@ public class QuizContext implements CmContext {
                 });
     }
 
-    private void showPrescriptionPanel(CreateTestRunResponse runInfo) {
+    private void showQuizResults(CreateTestRunResponse runInfo) {
 
         if (UserInfo.getInstance().isAutoTestMode()) {
             CatchupMath.getThisInstance().showPrescriptionPanel();
         } else {
-           new ShowPrescriptionPanel(runInfo);
+            new QuizCheckResultsWindow(runInfo);
         }
     }
 
-    
     public void doNext() {
-        /**
-         * if Check Quiz is selected, then do not reshow quiz/whiteboard
-         * 
-         */
-        EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_MODAL_WINDOW_OPEN));
-        class MyCmWindow extends CmWindow {
-            public MyCmWindow() {
-                setSize(330, 120);
-                setStyleName("quiz-context-msg-window");
-                setClosable(false);
-
-                setModal(true);
-                setHeading("Ready to Check Quiz?");
-                add(new Html("<p style='padding: 15px 10px;'>Did you work out your answers carefully?</p>"));
-
-                addButton(new Button("Yes", new SelectionListener<ButtonEvent>() {
-                    @Override
-                    public void componentSelected(ButtonEvent ce) {
-                        close();
-                        doCheckTest();
-                    }
-                }));
-
-                addButton(new Button("No", new SelectionListener<ButtonEvent>() {
-                    @Override
-                    public void componentSelected(ButtonEvent ce) {
-                        EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_MODAL_WINDOW_CLOSED));
-                        close();
-                    }
-                }));
-
-                setVisible(true);
+        new HaveYouCheckedYourWorkWindow(new Callback() {
+            @Override
+            public void quizIsReadyToBeChecked() {
+                doCheckTest();
             }
-        }
-
-        new MyCmWindow();
+        });
     }
 
     public void doCheckTest() {
@@ -218,8 +152,8 @@ public class QuizContext implements CmContext {
         }
     }
 
-    
-    /** Perform the actual checking of test on server
+    /**
+     * Perform the actual checking of test on server
      * 
      * TODO: centralize NextAction handling
      */
@@ -241,54 +175,21 @@ public class QuizContext implements CmContext {
             }
 
             public void oncapture(CreateTestRunResponse testRunInfo) {
-                try {
+                CmBusyManager.setBusy(false);
 
-                    CmLogger.debug("CreateTestRunResponse: " + testRunInfo);
-
-                    if (testRunInfo.getAction() != null) {
-                        switch (testRunInfo.getAction()) {
-
-                        case AUTO_ASSSIGNED:
-                            UserInfo.getInstance().setTestSegment(0); // reset
-                            String testName = testRunInfo.getAssignedTest();
-                            UserInfo.getInstance().setTestName(testName);
-                            showAutoAssignedProgram(testName);
-                            break;
-
-                        case QUIZ:
-                            int testSegment = UserInfo.getInstance().getTestSegment();
-                            int totalSegments = UserInfo.getInstance().getTestSegmentCount();
-                            if ((testSegment + 1) > totalSegments) {
-                                CatchupMathTools.showAlert("redirect_action QUIZ: no more sessions");
-                            } else {
-                                UserInfo.getInstance().setTestSegment(testSegment + 1);
-                                showNextPlacmentQuiz();
-                            }
-                            break;
-
-                        case PRESCRIPTION:
-                            int runId = testRunInfo.getRunId();
-                            UserInfo.getInstance().setRunId(runId);
-                            UserInfo.getInstance().setSessionNumber(0); // start
-
-                            showPrescriptionPanel(testRunInfo);
-                            break;
-
-                        case STOP_ALLOW_CONTINUE:
-                            new EndOfProgramWindow(true);
-                            break;
-                            
-                            
-                        case STOP_DO_NOT_ALLOW_CONTINUE:
-                            new EndOfProgramWindow(false);
-                            break;
-                            
-                        }
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                } finally {
-                    CmBusyManager.setBusy(false);
+                UserInfo.getInstance().setRunId(testRunInfo.getRunId());
+                UserInfo.getInstance().setSessionNumber(0); // start
+                UserInfo.getInstance().setCorrectPercent(testRunInfo.getTestCorrectPercent());
+                
+                
+                /** check here if SelfPlacement test and handle special
+                 * 
+                 */
+                if(testRunInfo.getNextAction().getPlace() == CmPlace.AUTO_PLACEMENT) {
+                    new AutoAdvancedProgramWindow(testRunInfo.getAssignedTest());
+                }
+                else {
+                    showQuizResults(testRunInfo);
                 }
             }
         }.register();

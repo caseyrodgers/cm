@@ -7,7 +7,7 @@ import java.util.List;
 import com.google.gwt.user.client.rpc.IsSerializable;
 
 /** 
- *   A single INMH resource + all items POJO
+ *   A single lesson resource
  *   
  * @author Casey
  *

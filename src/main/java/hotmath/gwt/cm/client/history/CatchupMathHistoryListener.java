@@ -39,7 +39,7 @@ public class CatchupMathHistoryListener implements ValueChangeHandler<String> {
                 /** Load the PrescriptionContext 
                  * 
                  */
-                CatchupMath.getThisInstance().showPrescriptionPanel_gwt();
+                CatchupMath.getThisInstance().showPrescriptionPanel_gwt(null);
             }
         }
         else {

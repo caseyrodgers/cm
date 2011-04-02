@@ -6,6 +6,7 @@ import hotmath.cm.login.service.lcom.LcomStudentSignup;
 import hotmath.cm.login.service.lcom.LcomTeacherSignup;
 import hotmath.cm.util.CmMessagePropertyReader;
 import hotmath.gwt.cm_rpc.client.ClientInfo;
+import hotmath.gwt.cm_rpc.client.UserLoginResponse;
 import hotmath.gwt.cm_rpc.client.ClientInfo.UserType;
 import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_rpc.client.rpc.GetUserInfoAction;
@@ -191,8 +192,9 @@ public class LoginService extends HttpServlet {
 				}
 				else {
 					clientInfo.setUserType(UserType.STUDENT);
-					UserInfo userInfo = ActionDispatcher.getInstance().execute(new GetUserInfoAction(loginInfo.getUserId(),loginInfo.getLoginName()));
-					String jsonizedUserInfo = Jsonizer.toJson(userInfo);
+					UserLoginResponse response = ActionDispatcher.getInstance().execute(new GetUserInfoAction(loginInfo.getUserId(),loginInfo.getLoginName()));
+					UserInfo userInfo = response.getUserInfo();
+					String jsonizedUserInfo = Jsonizer.toJson(response);
 					req.getSession().setAttribute("jsonizedUserInfo", jsonizedUserInfo);
 
 					req.getRequestDispatcher("/cm_student/launch.jsp").forward(req, resp);

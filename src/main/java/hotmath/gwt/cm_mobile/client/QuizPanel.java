@@ -7,6 +7,7 @@ import hotmath.gwt.cm_rpc.client.rpc.CmList;
 import hotmath.gwt.cm_rpc.client.rpc.GetQuizHtmlAction;
 import hotmath.gwt.cm_rpc.client.rpc.MultiActionRequestAction;
 import hotmath.gwt.cm_rpc.client.rpc.PrescriptionSessionResponse;
+import hotmath.gwt.cm_rpc.client.rpc.QuizHtmlResponse;
 import hotmath.gwt.cm_rpc.client.rpc.QuizHtmlResult;
 import hotmath.gwt.cm_rpc.client.rpc.RpcData;
 import hotmath.gwt.cm_rpc.client.rpc.SaveQuizCurrentResultAction;
@@ -126,18 +127,19 @@ public class QuizPanel extends AbstractPagePanel {
         
         CatchupMathMobile.__instance.getControlPanel().showBusy(true);
         CmMobileUser user = CatchupMathMobile.__instance.user;
-        GetQuizHtmlAction action = new GetQuizHtmlAction(user.getUserId(),user.getTestId(), user.getTestSegment());
+        GetQuizHtmlAction action = new GetQuizHtmlAction(user.getTestId());
         CatchupMathMobile.getCmService().execute(action, new AsyncCallback<QuizHtmlResult>() {
             @Override
-            public void onSuccess(QuizHtmlResult result) {
+            public void onSuccess(QuizHtmlResult response) {
+                QuizHtmlResult htmlResult = response;
                 mainPanel.remove(0);
-                mainPanel.add(new HTML(result.getQuizHtml()));
-                testQuestionAnswers = result.getAnswers();
+                mainPanel.add(new HTML(htmlResult.getQuizHtml()));
+                testQuestionAnswers = htmlResult.getAnswers();
                 
-                CatchupMathMobile.__instance.user.setTestId(result.getTestId());
+                CatchupMathMobile.__instance.user.setTestId(htmlResult.getTestId());
                 
                 /** mark the correct selections */
-                CmList<RpcData> al = result.getCurrentSelections(); 
+                CmList<RpcData> al = htmlResult.getCurrentSelections(); 
                 for(RpcData rd: al) {
                     setSolutionQuestionAnswerIndex(rd.getDataAsString("pid"),rd.getDataAsString("answer"));
                 }

@@ -57,7 +57,7 @@ public class AssessmentPrescriptionManager {
 	    /** First check memory cache
 	     * 
 	     */
-		__logger.info("Getting prescription for: " + runId);
+		__logger.debug("Getting prescription for: " + runId);
 	    AssessmentPrescription pres = (AssessmentPrescription)CmCacheManager.getInstance().retrieveFromCache(CacheName.PRESCRIPTION, runId.toString());
 		if(pres == null) {
 			__logger.debug("Creating new prescription for: " + runId);

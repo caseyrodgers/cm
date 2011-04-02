@@ -26,6 +26,7 @@ public class StudentUserProgramModel {
     HaTestDef testDef;
     int customProgramId;
     String customProgramName;
+    boolean isComplete;
     
     
     public String getCustomProgramName() {
@@ -109,13 +110,21 @@ public class StudentUserProgramModel {
 		this.testDef = testDef;
 	}
 
-    
+    public boolean isComplete() {
+        return isComplete;
+    }
+    public void setComplete(boolean isComplete) {
+        this.isComplete = isComplete;
+    }
+    public void setCustomProgramId(int customProgramId) {
+        this.customProgramId = customProgramId;
+    }
     @Override
     public String toString() {
-        return "StudentUserProgramModel [adminId=" + adminId + ", config=" + config + ", createDate=" + createDate
-                + ", customProgramId=" + customProgramId + ", id=" + id + ", passPercent=" + passPercent + ", testDef="
-                + testDef + ", testDefId=" + testDefId + ", testName=" + testName + ", tests=" + tests + ", userId="
-                + userId + "]";
+        return "StudentUserProgramModel [id=" + id + ", userId=" + userId + ", testDefId=" + testDefId
+                + ", passPercent=" + passPercent + ", testName=" + testName + ", adminId=" + adminId + ", createDate="
+                + createDate + ", config=" + config + ", testDef=" + testDef + ", customProgramId=" + customProgramId
+                + ", customProgramName=" + customProgramName + ", isComplete=" + isComplete + ", tests=" + tests + "]";
     }
     
 }

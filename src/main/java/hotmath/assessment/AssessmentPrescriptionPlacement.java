@@ -1,8 +1,8 @@
 package hotmath.assessment;
 
 import hotmath.gwt.cm_admin.server.model.CmStudentDao;
-import hotmath.gwt.cm_rpc.client.rpc.NextAction;
-import hotmath.gwt.cm_rpc.client.rpc.NextAction.NextActionName;
+import hotmath.gwt.cm_rpc.client.rpc.CmPlace;
+import hotmath.gwt.cm_rpc.client.rpc.CmProgramFlowAction;
 import hotmath.gwt.cm_tools.client.model.StudentActiveInfo;
 import hotmath.gwt.cm_tools.client.model.StudentModelI;
 import hotmath.testset.ha.CmProgram;
@@ -29,7 +29,7 @@ public class AssessmentPrescriptionPlacement extends AssessmentPrescription {
     }
 
     @Override
-    public NextAction getNextAction() throws Exception  {
+    public CmProgramFlowAction getNextAction() throws Exception  {
         int correct = getTestRun().getAnsweredCorrect();
         int total = getTest().getNumTestQuestions();
 
@@ -37,7 +37,7 @@ public class AssessmentPrescriptionPlacement extends AssessmentPrescription {
 
         CmProgram program=null;
         
-        NextAction nextAction = new NextAction();
+        CmProgramFlowAction nextAction = new CmProgramFlowAction();
         // some trigger, in this case > 1 wrong answers.
         if ((total - correct) > 1) {
             /** Sign user up for the current subject program.
@@ -72,11 +72,12 @@ public class AssessmentPrescriptionPlacement extends AssessmentPrescription {
         HaUser user = getTestRun().getHaTest().getUser();        
 
         if (program != null) {
+
             // next action is another quiz
             /** @TODO: Need to set test config json when assigning test
              * 
              */
-            nextAction.setNextAction(NextActionName.AUTO_ASSSIGNED);
+            nextAction.setNextAction(CmPlace.AUTO_PLACEMENT);
             CmStudentDao dao = new CmStudentDao();
             
             // now update the ActiveInfo to empty
@@ -124,7 +125,7 @@ public class AssessmentPrescriptionPlacement extends AssessmentPrescription {
             nextAction.setAssignedTestId(active.getActiveTestId());
         }
         else {
-            nextAction.setNextAction(NextActionName.QUIZ);
+            nextAction.setNextAction(CmPlace.QUIZ);
         }
         return nextAction;
     }

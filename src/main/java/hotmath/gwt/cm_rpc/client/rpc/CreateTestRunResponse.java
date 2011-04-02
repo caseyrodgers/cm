@@ -1,6 +1,5 @@
 package hotmath.gwt.cm_rpc.client.rpc;
 
-import hotmath.gwt.cm_rpc.client.rpc.NextAction.NextActionName;
 
 
 
@@ -11,7 +10,7 @@ import hotmath.gwt.cm_rpc.client.rpc.NextAction.NextActionName;
  */
 public class CreateTestRunResponse implements Response {
     
-    NextActionName action;
+    CmProgramFlowAction nextAction;
     Integer runId;
     Integer correct;
     Integer total;
@@ -28,8 +27,8 @@ public class CreateTestRunResponse implements Response {
 
     public CreateTestRunResponse() {}
     
-    public CreateTestRunResponse(NextActionName action, Integer runId, Integer correct, Integer total, Boolean passed) {
-        this.action = action;
+    public CreateTestRunResponse(CmProgramFlowAction nextAction, Integer runId, Integer correct, Integer total, Boolean passed) {
+        this.nextAction = nextAction;
         this.runId = runId;
         this.correct = correct;
         this.total = total;
@@ -67,14 +66,7 @@ public class CreateTestRunResponse implements Response {
     public void setTestSegment(Integer testSegment) {
         this.testSegment = testSegment;
     }
-
-
-    public NextActionName getAction() {
-        return action;
-    }
-    public void setAction(NextActionName action) {
-        this.action = action;
-    }
+    
     public Integer getRunId() {
         return runId;
     }
@@ -121,9 +113,18 @@ public class CreateTestRunResponse implements Response {
         this.testId = testId;
     }
 
+
+    public CmProgramFlowAction getNextAction() {
+        return nextAction;
+    }
+
+    public void setNextAction(CmProgramFlowAction nextAction) {
+        this.nextAction = nextAction;
+    }
+
     @Override
     public String toString() {
-        return "CreateTestRunResponse [action=" + action + ", assignedTest=" + assignedTest + ", correct=" + correct
+        return "CreateTestRunResponse [assignedTest=" + assignedTest + ", correct=" + correct
                 + ", passed=" + passed + ", runId=" + runId + ", sessionCount=" + sessionCount + ", sessionName="
                 + sessionName + ", testCorrectPercent=" + testCorrectPercent + ", testId=" + testId + ", testSegment="
                 + testSegment + ", total=" + total + "]";

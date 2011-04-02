@@ -4,7 +4,7 @@ import hotmath.gwt.cm.client.CatchupMath;
 import hotmath.gwt.cm.client.history.CmHistoryQueue;
 import hotmath.gwt.cm.client.history.CmLocation;
 import hotmath.gwt.cm.client.history.CmLocation.LocationType;
-import hotmath.gwt.cm.client.ui.EndOfProgramWindow;
+import hotmath.gwt.cm.client.ui.EndOfProgramPanel;
 import hotmath.gwt.cm.client.ui.HeaderPanel;
 import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_rpc.client.rpc.GetPrescriptionAction;
@@ -56,7 +56,161 @@ public class PrescriptionCmGuiDefinition implements CmGuiDefinition {
     public PrescriptionCmGuiDefinition() {
         __instance = this;
         context = new PrescriptionContext(this);
+    }
 
+   
+    LayoutContainer _main;
+
+    private Widget createGui() {
+        _main = new LayoutContainer();
+        _main.setLayout(new FitLayout());
+
+        _guiWidget = new PrescriptionResourcePanel();
+        _main.add(_guiWidget, new BorderLayoutData(LayoutRegion.CENTER, .75f));
+
+        _main.add(new PrescriptionInfoPanel(PrescriptionCmGuiDefinition.__instance), new BorderLayoutData(LayoutRegion.SOUTH, .30f));
+
+        _main.layout();
+        return _main;
+    }
+    
+    public Widget getWestWidget() {
+        return createGui();
+    }
+
+    /**
+     * Read data from server and build UI when complete
+     * 
+     */
+    public void getAsyncDataFromServer(int sessionNumber) {
+
+        // check for a pending History CmLocation change
+        final CmLocation location = CmHistoryQueue.getInstance().popLocation();
+        if (location != null) {
+            if (location.getLocationType() == LocationType.PRESCRIPTION)
+                sessionNumber = location.getLocationNumber();
+        }
+
+        // If we are currently on requested session, no need for server call
+        if (isReady && UserInfo.getInstance().getSessionNumber() == sessionNumber) {
+            // update the request resource viewed
+            setLocation(location);
+            return;
+        }
+
+        final int sessionNumberF = sessionNumber;
+
+        // clear any existing resource
+        CmMainPanel.__lastInstance._mainContent.removeResource();
+        CmMainPanel.__lastInstance._mainContent.layout();
+
+        CmBusyManager.setBusy(true);
+
+        CmLogger.info("PrescriptionCmGuiDefinition.getAsyncDataFromServer:" + sessionNumber + ", " + location);
+
+        new RetryAction<PrescriptionSessionResponse>() {
+
+            @Override
+            public void attempt() {
+                boolean updateActive = UserInfo.getInstance().isActiveUser();
+                GetPrescriptionAction action = new GetPrescriptionAction(UserInfo.getInstance().getRunId(), sessionNumberF, updateActive);
+                setAction(action);
+                CmShared.getCmService().execute(action,this);
+            }            
+            @Override
+            public void oncapture(PrescriptionSessionResponse prescriptionResponse) {
+                try {
+                    setPrescriptionData(prescriptionResponse,sessionNumberF);
+                } catch (Exception e) {
+                	CmLogger.error("Error reading data from server", e);
+                	if(UserInfo.getInstance().isCustomProgram()) {
+                	    new EndOfProgramPanel();
+                	}
+                } finally {
+                    CmBusyManager.setBusy(false);
+                }
+
+            }
+        }.register();
+
+    }
+
+    
+    public void setPrescriptionData(PrescriptionSessionResponse prescriptionResponse, int sessionNumber) {
+        if (prescriptionResponse != null) {
+            
+            CmLogger.debug("PrescriptionSessionResponse: " + prescriptionResponse);
+            
+            UserInfo.getInstance().setSessionNumber(sessionNumber);
+
+            context.setPrescriptionData(prescriptionResponse.getPrescriptionData());
+
+            UserInfo.getInstance().setSessionCount(context.prescriptionData.getSessionTopics().size());
+
+            isReady = true; // signal data is ready
+
+            _guiWidget.buildUi(context.prescriptionData);
+
+            ContextController.getInstance().setCurrentContext(context);
+
+            if (UserInfo.getInstance().isAutoTestMode()) {
+                context.runAutoTest();
+            }
+
+            // setLocation(location);
+        } else {
+            CatchupMathTools.showAlert("There was a problem reading this prescription data");
+        }
+    }
+    
+    /**
+     * Maintain a shared list of registered resources to allow for easy access
+     * to individual resource items.
+     * 
+     */
+    static Map<String, List<InmhItemData>> _registeredResources = new HashMap<String, List<InmhItemData>>();
+
+    /**
+     * Update the current resource loaded
+     * 
+     * @param location
+     */
+    private void setLocation(CmLocation location) {
+        if (location != null) {
+            String resourceTypeToView = location.getResourceType();
+            if (resourceTypeToView != null) {
+
+                List<InmhItemData> resourceList = _registeredResources.get(resourceTypeToView);
+                if (resourceList != null) {
+                    // select the Nth item
+                    if (location.getResourceNumber() > -1) {
+
+                        InmhItemData itemData = resourceList.get(location.getResourceNumber());
+                        CmMainPanel.__lastInstance._mainContent.showResource(itemData);
+
+                    } else {
+                        String resourceId = location.getResourceId();
+                        InmhItemData item = new InmhItemData();
+                        item.setType(resourceTypeToView);
+                        item.setFile(resourceId);
+                        CmMainPanel.__lastInstance._mainContent.showResource(item);
+                    }
+                }
+            }
+        }
+    }
+
+    public Widget getCenterWidget() {
+        return null;
+    }
+
+    public String getTitle() {
+        return "Prescription Resource";
+    }
+    
+    
+    public void disableGameResources() {
+        _guiWidget.disableGames();
     }
 
     /**
@@ -66,7 +220,7 @@ public class PrescriptionCmGuiDefinition implements CmGuiDefinition {
      */
     public void markResourceAsViewed(final InmhItemData resourceItem) {
         if (UserInfo.getInstance().getRunId() == 0)
-        	CmLogger.error("PrescriptionCmGuiDefinition: run_id is null!");
+            CmLogger.error("PrescriptionCmGuiDefinition: run_id is null!");
 
         /**
          * 
@@ -85,7 +239,7 @@ public class PrescriptionCmGuiDefinition implements CmGuiDefinition {
             
             public void oncapture(RpcData result) {
 
-            	CmLogger.debug("PrescriptionResourceAccord: setItemAsViewed: " + resourceItem);
+                CmLogger.debug("PrescriptionResourceAccord: setItemAsViewed: " + resourceItem);
 
                 boolean isSolutionResource = (resourceItem.getType().equals("practice") || resourceItem.getType()
                         .equals("cmextra"));
@@ -154,163 +308,7 @@ public class PrescriptionCmGuiDefinition implements CmGuiDefinition {
         };
         t.schedule(1);
     }
-
-    LayoutContainer _main;
-
-    public Widget getWestWidget() {
-        _main = new LayoutContainer();
-        _main.setLayout(new FitLayout());
-
-        _guiWidget = new PrescriptionResourcePanel();
-        _main.add(_guiWidget, new BorderLayoutData(LayoutRegion.CENTER, .75f));
-        // get the data for the prescription from the database
-
-        getAsyncDataFromServer(UserInfo.getInstance().getSessionNumber());
-
-        _main.add(new PrescriptionInfoPanel(PrescriptionCmGuiDefinition.__instance), new BorderLayoutData(
-                LayoutRegion.SOUTH, .30f));
-
-        _main.layout();
-        return _main;
-    }
-
-    /**
-     * Read data from server and build UI when complete
-     * 
-     */
-    public void getAsyncDataFromServer(int sessionNumber) {
-
-        // check for a pending History CmLocation change
-        final CmLocation location = CmHistoryQueue.getInstance().popLocation();
-        if (location != null) {
-            if (location.getLocationType() == LocationType.PRESCRIPTION)
-                sessionNumber = location.getLocationNumber();
-        }
-
-        // If we are currently on requested session, no need for server call
-        if (isReady && UserInfo.getInstance().getSessionNumber() == sessionNumber) {
-            // update the request resource viewed
-            setLocation(location);
-            return;
-        }
-
-        final int sessionNumberF = sessionNumber;
-
-        // clear any existing resource
-        CmMainPanel.__lastInstance._mainContent.removeResource();
-        CmMainPanel.__lastInstance._mainContent.layout();
-
-        CmBusyManager.setBusy(true);
-
-        CmLogger.info("PrescriptionCmGuiDefinition.getAsyncDataFromServer:" + sessionNumber + ", " + location);
-
-        new RetryAction<PrescriptionSessionResponse>() {
-
-            @Override
-            public void attempt() {
-                boolean updateActive = UserInfo.getInstance().isActiveUser();
-                GetPrescriptionAction action = new GetPrescriptionAction(UserInfo.getInstance().getRunId(), sessionNumberF, updateActive);
-                setAction(action);
-                CmShared.getCmService().execute(action,this);
-            }            
-            @Override
-            public void oncapture(PrescriptionSessionResponse rdata) {
-                try {
-                    if (rdata != null) {
-                        
-                        CmLogger.debug("PrescriptionSessionResponse: " + rdata);
-                        
-                        UserInfo.getInstance().setSessionNumber(sessionNumberF);
-                       
-
-                        UserInfo.getInstance().setCorrectPercent(rdata.getCorrectPercent());
-                        if (!UserInfo.getInstance().isCustomProgram() && UserInfo.getInstance().getCorrectPercent() == 100) {
-                            getContext().doNext();
-                            return;
-                        }
-
-                        context.setPrescriptionData(rdata.getPrescriptionData());
-
-                        UserInfo.getInstance().setSessionCount(context.prescriptionData.getSessionTopics().size());
-
-                        isReady = true; // signal data is ready
-
-                        _guiWidget.buildUi(context.prescriptionData);
-
-                        ContextController.getInstance().setCurrentContext(context);
-
-                        if (UserInfo.getInstance().isAutoTestMode()) {
-                            context.runAutoTest();
-                        }
-
-                        setLocation(location);
-                    } else {
-                        CatchupMathTools.showAlert("There was a problem reading this prescription data");
-                    }
-                } catch (Exception e) {
-                	CmLogger.error("Error reading data from server", e);
-                	if(UserInfo.getInstance().isCustomProgram()) {
-                	    new EndOfProgramWindow(true);
-                	}
-                } finally {
-                    CmBusyManager.setBusy(false);
-                }
-
-            }
-        }.register();
-
-    }
-
-    /**
-     * Maintain a shared list of registered resources to allow for easy access
-     * to individual resource items.
-     * 
-     */
-    static Map<String, List<InmhItemData>> _registeredResources = new HashMap<String, List<InmhItemData>>();
-
-    /**
-     * Update the current resource loaded
-     * 
-     * @param location
-     */
-    private void setLocation(CmLocation location) {
-        if (location != null) {
-            String resourceTypeToView = location.getResourceType();
-            if (resourceTypeToView != null) {
-
-                List<InmhItemData> resourceList = _registeredResources.get(resourceTypeToView);
-                if (resourceList != null) {
-                    // select the Nth item
-                    if (location.getResourceNumber() > -1) {
-
-                        InmhItemData itemData = resourceList.get(location.getResourceNumber());
-                        CmMainPanel.__lastInstance._mainContent.showResource(itemData);
-
-                    } else {
-                        String resourceId = location.getResourceId();
-                        InmhItemData item = new InmhItemData();
-                        item.setType(resourceTypeToView);
-                        item.setFile(resourceId);
-                        CmMainPanel.__lastInstance._mainContent.showResource(item);
-                    }
-                }
-            }
-        }
-    }
-
-    public Widget getCenterWidget() {
-        return null;
-    }
-
-    public String getTitle() {
-        return "Prescription Resource";
-    }
     
-    
-    public void disableGameResources() {
-        _guiWidget.disableGames();
-    }
-
     /**
      * Mark the pid as being viewed called from external JS
      * 

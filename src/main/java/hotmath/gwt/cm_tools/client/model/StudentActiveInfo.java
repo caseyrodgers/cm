@@ -11,8 +11,8 @@ package hotmath.gwt.cm_tools.client.model;
  *  defined in HA_USER.user_prog_id -> CM_USER_PROGRAM.id
  *  
  *   
- *   Each quiz is defined by a test_segment (1-n) and a test_segment_slot
- *   The slot is between 1 and N.  The slot is updated each time the user does not pass a segment.
+ *   Each quiz is defined by a test_segment (0-n) and a test_segment_slot
+ *   The slot is between 0 and N.  The slot is updated each time the user does not pass a segment.
  *   
  *   Each quiz's solutions are taken from the given slot, so if a user repeats a segment they 
  *   get different questions.
@@ -22,11 +22,11 @@ package hotmath.gwt.cm_tools.client.model;
  */
 public class StudentActiveInfo {
     
-    Integer activeRunId=0;
-    Integer activeTestId=0;
-    Integer activeSegment=0;
-    Integer activeSegmentSlot=0;
-    Integer activeRunSession=0;
+    int activeRunId=0;
+    int activeTestId=0;
+    int activeSegment=0;
+    int activeSegmentSlot=0;
+    int activeRunSession=0;
     
     
     public Integer getActiveRunId() {

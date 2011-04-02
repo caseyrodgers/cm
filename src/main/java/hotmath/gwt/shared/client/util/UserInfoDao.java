@@ -2,7 +2,9 @@ package hotmath.gwt.shared.client.util;
 
 import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_rpc.client.UserInfo.AccountType;
-import hotmath.gwt.cm_rpc.client.UserInfo.ProgramCompletionAction;
+import hotmath.gwt.cm_rpc.client.UserInfo.UserProgramCompletionAction;
+import hotmath.gwt.cm_rpc.client.UserLoginResponse;
+import hotmath.gwt.cm_rpc.client.rpc.CmDestination;
 import hotmath.gwt.cm_rpc.client.rpc.GetUserInfoAction;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.ui.CmLogger;
@@ -28,7 +30,7 @@ public class UserInfoDao {
      * @return
      */
     static public void loadUser(final int uid, final CmAsyncRequest callback) {
-        new RetryAction<UserInfo>() {
+        new RetryAction<UserLoginResponse>() {
             @Override
             public void attempt() {
                 CmBusyManager.setBusy(true);
@@ -37,8 +39,9 @@ public class UserInfoDao {
                 CmShared.getCmService().execute(action, this);
             }
             @Override
-            public void oncapture(UserInfo user) {
+            public void oncapture(UserLoginResponse loginResponse) {
 
+                UserInfo user = loginResponse.getUserInfo();
                 UserInfo.setInstance(user);
                 
                 // if run_id passed in, then allow user to view_only
@@ -75,10 +78,11 @@ public class UserInfoDao {
      * @param json
      * @throws Exception
      */
-    static public void loadUser(String json) throws Exception {
+    static public CmDestination loadUserAndReturnFirstAction(String json) throws Exception {
     	try {
-	    	 JSONValue jsonValue = JSONParser.parse(json);
-	         JSONObject o = jsonValue.isObject();
+	    	 JSONValue loginInfo = JSONParser.parse(json);
+	         JSONObject o = loginInfo.isObject().get("userInfo").isObject();
+	         JSONObject nextAction = loginInfo.isObject().get("nextAction").isObject();
 	         
 	         UserInfo ui = new UserInfo();
 	         ui.setUid(getJsonInt(o.get("uid")));
@@ -99,9 +103,9 @@ public class UserInfoDao {
 	         ui.setShowWorkRequired(o.get("showWorkRequired").isBoolean().booleanValue());
 	         ui.setSubTitle(getJsonString(o.get("subTitle")));
 	         ui.setTestId(getJsonInt(o.get("testId")));
-	         ui.setTestName(getJsonString(o.get("testName")));
-	         ui.setTestSegment(getJsonInt(o.get("testSegment")));
-	         ui.setTestSegmentCount(getJsonInt(o.get("testSegmentCount")));
+	         ui.setProgramName(getJsonString(o.get("testName")));
+	         ui.setProgramSegment(getJsonInt(o.get("testSegment")));
+	         ui.setProgramSegmentCount(getJsonInt(o.get("programSegmentCount")));
 	         ui.setTutoringAvail(o.get("tutoringAvail").isBoolean().booleanValue());
 	         ui.setViewCount(getJsonInt(o.get("viewCount")));
 	         
@@ -116,10 +120,10 @@ public class UserInfoDao {
 	         
 	         String onCompletion = getJsonString(o.get("onCompletion"));
 	         if(onCompletion.equals("AUTO_ADVANCE")) {
-	        	 ui.setOnCompletion(ProgramCompletionAction.AUTO_ADVANCE);
+	        	 ui.setOnCompletion(UserProgramCompletionAction.AUTO_ADVANCE);
 	         }
 	         else {
-	        	 ui.setOnCompletion(ProgramCompletionAction.STOP_ALLOW_CONTINUE);
+	        	 ui.setOnCompletion(UserProgramCompletionAction.STOP);
 	         }
 	         
 	         
@@ -139,7 +143,10 @@ public class UserInfoDao {
              UserInfo.setInstance(ui);
              
              // fire an event on the event bus, passing new userinfo
-             EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_USERCHANGED,ui));	         
+             EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_USERCHANGED,ui));	 
+             
+             String place = nextAction.get("place").isString().stringValue();
+             return new CmDestination(place);
 	         
     	}
     	catch(Exception e) {

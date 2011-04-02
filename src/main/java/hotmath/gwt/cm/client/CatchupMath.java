@@ -2,14 +2,20 @@ package hotmath.gwt.cm.client;
 
 import hotmath.gwt.cm.client.history.CatchupMathHistoryListener;
 import hotmath.gwt.cm.client.history.CmHistoryManager;
-import hotmath.gwt.cm.client.history.CmHistoryQueue;
 import hotmath.gwt.cm.client.history.CmLocation;
 import hotmath.gwt.cm.client.history.CmLocation.LocationType;
+import hotmath.gwt.cm.client.ui.CmProgramFlowClientManager;
+import hotmath.gwt.cm.client.ui.EndOfProgramPanel;
 import hotmath.gwt.cm.client.ui.HeaderPanel;
 import hotmath.gwt.cm.client.ui.context.PrescriptionCmGuiDefinition;
 import hotmath.gwt.cm.client.ui.context.PrescriptionContext;
 import hotmath.gwt.cm.client.ui.context.QuizCmGuiDefinition;
 import hotmath.gwt.cm_rpc.client.UserInfo;
+import hotmath.gwt.cm_rpc.client.rpc.CmDestination;
+import hotmath.gwt.cm_rpc.client.rpc.CmPlace;
+import hotmath.gwt.cm_rpc.client.rpc.CmProgramFlowAction;
+import hotmath.gwt.cm_rpc.client.rpc.PrescriptionSessionResponse;
+import hotmath.gwt.cm_rpc.client.rpc.QuizHtmlResult;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.ui.CmLogger;
@@ -174,7 +180,7 @@ public class CatchupMath implements EntryPoint {
     private void processLoginComplete(final Integer uid) {
     	try {
 	    	String jsonUserInfo = getUserInfoFromExtenalJs();
-	    	UserInfoDao.loadUser(jsonUserInfo);
+	    	CmDestination firstLocation = UserInfoDao.loadUserAndReturnFirstAction(jsonUserInfo);
 	
 	    	if (CmShared.getQueryParameterValue("type").equals("su")) {
 	    		UserInfo.getInstance().setUserAccountType(UserInfo.UserType.SINGLE_USER);
@@ -182,9 +188,14 @@ public class CatchupMath implements EntryPoint {
 	    	if (UserInfo.getInstance().isSingleUser())
 	    		Window.setTitle("Catchup Math: Student");
 	    	
+            if(firstLocation.getPlace() == CmPlace.END_OF_PROGRAM) {
+                showEndOfProgramPanel();
+                return;
+            }
+            
+            
 	    	String ac = UserInfoBase.getInstance().getCmStartType();
 	    	if(ac == null)ac = "";
-	    	
 	    	if (ac.equals("AUTO_CREATE")) {
 	    		/**
 	    		 * self registration
@@ -198,7 +209,7 @@ public class CatchupMath implements EntryPoint {
 	    	} else if (CmShared.getQueryParameter("debug_info") != null) {
 	    		setDebugOverrideInformation(CmShared.getQueryParameter("debug_info"));
 	    		__thisInstance.startNormalOperation();
-	    	} else if (UserInfo.getInstance().getRunId() > 0) {
+	    	} else if (firstLocation.getPlace() == CmPlace.PRESCRIPTION || firstLocation.getPlace() == CmPlace.QUIZ) {
 	    		/**
 	    		 * already has active session, just move to current
 	    		 * position.
@@ -256,8 +267,6 @@ public class CatchupMath implements EntryPoint {
     public void startNormalOperation() {
         History.addValueChangeHandler(new CatchupMathHistoryListener());
         
-        
-        
         /** Don't allow bookmark to move paste server's location
          * 
          */
@@ -298,6 +307,39 @@ public class CatchupMath implements EntryPoint {
     
     
     private void jumpToFirstLocation() {
+        CmProgramFlowClientManager.getActiveProgramState(new CmProgramFlowClientManager.Callback() {
+            @Override
+            public void programFlow(CmProgramFlowAction flowResponse) {
+                
+                switch(flowResponse.getPlace()) {
+                    case QUIZ:
+                        
+                        /** show the quiz panel with data included
+                         *  in the next action object.
+                         */
+                        showQuizPanel(flowResponse.getQuizResult());
+                        break;
+                        
+                    case PRESCRIPTION:
+                        
+                        showPrescriptionPanel(flowResponse.getPrescriptionResponse());
+                        break;
+                        
+                    case END_OF_PROGRAM:
+                        showEndOfProgramPanel();
+                        break;
+                        
+                     default:
+                         CmLogger.error("Unknown NextAction type: " + flowResponse);
+                            
+                }
+                CmLogger.info(flowResponse.toString());
+            }
+        });
+    }
+    
+    
+    private void jumpToFirstLocation2() {
 
         // do default action
         if(UserInfo.getInstance().getRunId() > 0) {
@@ -312,7 +354,7 @@ public class CatchupMath implements EntryPoint {
                 /** Load the PrescriptionContext 
                  * 
                  */
-                CatchupMath.getThisInstance().showPrescriptionPanel_gwt();
+                CatchupMath.getThisInstance().showPrescriptionPanel_gwt(null);
             }
         }
         else {
@@ -362,6 +404,22 @@ public class CatchupMath implements EntryPoint {
     public void showQuizPanel(int segmentNumber) {
         showQuizPanel_gwt(segmentNumber);
     }
+    
+    public void showQuizPanel(final QuizHtmlResult quizHtml) {
+            GWT.runAsync(new CmRunAsyncCallback() {
+
+                @Override
+                public void onSuccess() {
+                    HeaderPanel.__instance.enable();
+
+                    _mainContainer.removeAll();
+                    _mainContainer.setLayout(new FitLayout());
+                    _mainContainer.add(new CmMainPanel(new QuizCmGuiDefinition(quizHtml)));
+                    _mainContainer.layout();
+                }
+            });
+        }
+    
 
     public void showQuizPanel_gwt(final int segmentNumber) {
 
@@ -402,8 +460,28 @@ public class CatchupMath implements EntryPoint {
         CmLocation location = new CmLocation(LocationType.PRESCRIPTION, UserInfo.getInstance().getSessionNumber());
         CmHistoryManager.getInstance().addHistoryLocation(location);
     }
+    
+    public void showPrescriptionPanel(PrescriptionSessionResponse prescriptionResponse) {
+        
+        UserInfo.getInstance().setCorrectPercent(prescriptionResponse.getCorrectPercent());
+        if(ContextController.getInstance().getTheContext() instanceof PrescriptionContext) {
+            /** PrescriptionPage is currently in view, simply update its display
+             * 
+             */
+            PrescriptionCmGuiDefinition.__instance.getAsyncDataFromServer(UserInfo.getInstance().getSessionNumber());
+            
+        }
+        else {
+            /** Load the PrescriptionContext 
+             * 
+             */
+            showPrescriptionPanel_gwt(prescriptionResponse);
+        }
+        
+    }
 
-    public void showPrescriptionPanel_gwt() {
+
+    public void showPrescriptionPanel_gwt(final PrescriptionSessionResponse prescriptionResponse) {
 
         GWT.runAsync(new CmRunAsyncCallback() {
             @Override
@@ -412,8 +490,14 @@ public class CatchupMath implements EntryPoint {
 
                 _mainContainer.removeAll();
                 _mainContainer.setLayout(new FitLayout());
-                _mainContainer.add(new CmMainPanel(new PrescriptionCmGuiDefinition()));
+                PrescriptionCmGuiDefinition prescriptionGui = new PrescriptionCmGuiDefinition();
+                _mainContainer.add(new CmMainPanel(prescriptionGui));
                 _mainContainer.layout();
+                
+                /** set the data returned from the server
+                 *  as the initial lesson shown
+                 */
+                prescriptionGui.setPrescriptionData(prescriptionResponse,prescriptionResponse.getPrescriptionData().getCurrSession().getSessionNumber());
             }
         });
     }
@@ -426,7 +510,6 @@ public class CatchupMath implements EntryPoint {
      */
     public void showAutoRegistration_gwt() {
         GWT.runAsync(new CmRunAsyncCallback() {
-
             @Override
             public void onSuccess() {
                 _mainContainer.removeAll();
@@ -437,6 +520,20 @@ public class CatchupMath implements EntryPoint {
         });
     }
 
+    
+    public void showEndOfProgramPanel() {
+        GWT.runAsync(new CmRunAsyncCallback() {
+            @Override
+            public void onSuccess() {
+                _mainContainer.removeAll();
+                _mainContainer.setLayout(new FitLayout());
+                _mainContainer.add(new EndOfProgramPanel());
+                _mainContainer.layout();
+            }
+        });
+    }
+    
+    
     /**
      * Provides helper method to load a resource into the current
      * PrespccriptionContext

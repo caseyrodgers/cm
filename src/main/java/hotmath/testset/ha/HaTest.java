@@ -26,6 +26,7 @@ public class HaTest {
 	List<String> pids = new ArrayList<String>();
 	HaTestDef testDef;
 	int segment;
+	int segmentSlot;
 	int totalSegments;
 	int numTestQuestions;
 	Timestamp createTime;
@@ -110,6 +111,14 @@ public class HaTest {
 	
 	public int getSegment() {
 		return this.segment;
+	}
+	
+	public void setSegmentSlot(int slot) {
+	    this.segmentSlot = slot;
+	}
+	
+	public int getSegmentSlot() {
+	    return this.segmentSlot;
 	}
 
     /** 

@@ -176,5 +176,11 @@ public enum EventType{
      *  all MathJax has been fully rendered.
      *  
      */
-    EVENT_TYPE_MATHJAX_RENDER
+    EVENT_TYPE_MATHJAX_RENDER,
+    
+    
+    /** Perform any needed GUI or server action 
+     *  required to be in a logout state
+     */
+    EVENT_TYPE_LOGOUT
 }

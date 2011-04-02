@@ -29,11 +29,7 @@ public class GetQuizCurrentResultsCommand implements ActionHandler<GetQuizCurren
     public CmList<RpcData> execute(final Connection conn, GetQuizCurrentResultsAction action) throws Exception {
         try {
             CmArrayList<RpcData> rpcData = new CmArrayList<RpcData>();
-            int testId = HaUser.lookUser(conn, action.getUid(), null).getActiveTest();
-            if (testId == 0)
-                return rpcData;
-
-            List<HaTestRunResult> testResults = HaTestDao.getTestCurrentResponses(conn, testId);
+            List<HaTestRunResult> testResults = HaTestDao.getTestCurrentResponses(conn, action.getTestId());
 
             for (HaTestRunResult tr : testResults) {
                 if (tr.isAnswered()) {

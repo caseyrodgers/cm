@@ -46,6 +46,12 @@ public class GetPrescriptionAction implements Action<PrescriptionSessionResponse
         this.updateActiveInfo = updateActiveInfo;
     }
 
+    
+    /** Should the active information be updated
+     *  for this request?
+     *  
+     * @return
+     */
     public boolean getUpdateActionInfo() {
         return updateActiveInfo;
     }

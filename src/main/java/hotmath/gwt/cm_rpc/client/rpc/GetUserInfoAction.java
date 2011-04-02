@@ -1,8 +1,8 @@
 package hotmath.gwt.cm_rpc.client.rpc;
 
-import hotmath.gwt.cm_rpc.client.UserInfo;
+import hotmath.gwt.cm_rpc.client.UserLoginResponse;
 
-public class GetUserInfoAction implements Action<UserInfo>{
+public class GetUserInfoAction implements Action<UserLoginResponse>{
     
     int userId;
     String loginName;

@@ -83,6 +83,36 @@ public class CmUserProgramDao {
             SqlUtilities.releaseResources(rs, ps, null);
         }        
     }
+    
+    
+    /** Mark this user program has being complete.
+     * 
+     *  This is saved as a static value to allow
+     *  for quick checks on the status of a program
+     *  without having dynamically check.
+     *  
+     *  return true if program was successfully set to completed.
+     *  
+     * @param conn
+     * @param userProgId
+     * @throws Exception
+     */
+    public boolean setProgramAsComplete(final Connection conn, int userProgId, boolean trueOrFalse) throws Exception {
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+
+        String sql = CmMultiLinePropertyReader.getInstance().getProperty("USER_PROGRAM_SET_COMPLETE");
+        try {
+            ps = conn.prepareStatement(sql);
+            ps.setDate(1, trueOrFalse?new java.sql.Date(System.currentTimeMillis()):null);
+            ps.setInt(2, userProgId);
+            
+            int res = ps.executeUpdate();
+            return res==1;
+        } finally {
+            SqlUtilities.releaseResources(rs, ps, null);
+        }        
+    }
 
     /**
      * Return all User Programs for the specified User
@@ -193,7 +223,7 @@ public class CmUserProgramDao {
         supm.setConfig(new HaTestConfig(passPercent, rs.getString("test_config_json")));
         supm.setCustomProgramId(rs.getInt("custom_program_id"));
         supm.setCustomProgramName(rs.getString("custom_program_name"));
-        
+        supm.setComplete(rs.getDate("date_completed") != null);
 
         return supm;
     }

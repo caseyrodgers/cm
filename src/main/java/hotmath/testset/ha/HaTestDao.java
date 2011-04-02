@@ -151,6 +151,8 @@ public class HaTestDao {
         PreparedStatement pstat = null;
         ResultSet rs = null;
         
+        assert(segment>0);
+        
         String msg = String.format("creating test: uid: %d, segment: %d, testDef: %s", uid, segment, testDef);
         try {
 
@@ -172,7 +174,7 @@ public class HaTestDao {
             HaUser user = HaUser.lookUser(conn, uid, null);
             HaTestConfig config = user.getTestConfig();
 
-            List<String> testIds = testDef.getTestIdsForSegment(conn,userProgram, segment, config, segmentSlot);
+            List<String> testIds = testDef.getTestIdsForSegment(conn,userProgram, segment-1, config, segmentSlot);
 
             pstat.setInt(1, uid);
             pstat.setInt(2, userProgram.getId());
@@ -271,6 +273,7 @@ public class HaTestDao {
             test.setTestId(rs.getInt("test_id"));
             test.setUser(HaUser.lookUser(conn, rs.getInt("user_id"), null));
             test.setSegment(rs.getInt("test_segment"));
+            test.setSegmentSlot(rs.getInt("test_segment_slot"));
             test.setNumTestQuestions(rs.getInt("test_question_count"));
             test.setTotalSegments(rs.getInt("total_segments"));
 

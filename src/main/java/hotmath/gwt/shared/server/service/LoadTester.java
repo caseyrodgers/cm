@@ -1,7 +1,9 @@
 package hotmath.gwt.shared.server.service;
 
+import hotmath.cm.program.CmProgramFlow;
 import hotmath.gwt.cm_admin.server.model.CmStudentDao;
 import hotmath.gwt.cm_rpc.client.UserInfo;
+import hotmath.gwt.cm_rpc.client.UserLoginResponse;
 import hotmath.gwt.cm_rpc.client.rpc.CreateTestRunResponse;
 import hotmath.gwt.cm_rpc.client.rpc.GetPrescriptionAction;
 import hotmath.gwt.cm_rpc.client.rpc.GetQuizHtmlAction;
@@ -45,12 +47,12 @@ public class LoadTester {
 
             ActionDispatcher dispatcher = ActionDispatcher.getInstance();
 
-            UserInfo user = dispatcher.execute(new GetUserInfoAction(_userId,"Testing"));
-
+            UserLoginResponse loginResponse = dispatcher.execute(new GetUserInfoAction(_userId,"Testing"));
+            UserInfo user = loginResponse.getUserInfo();
             _dao.assignProgramToStudent(conn, user.getUid(), CmProgram.CAHSEEHM, null);
             
 
-            QuizHtmlResult result = dispatcher.execute(new GetQuizHtmlAction(user.getUid(),0, 1));
+            QuizHtmlResult result = dispatcher.execute(new GetQuizHtmlAction(new CmProgramFlow(conn,_userId).getActiveInfo().getActiveTestId()));
             int testId = result.getTestId();
 
             CreateTestRunResponse userInfo = dispatcher.execute(new CreateTestRunAction(testId, user.getUid()));
@@ -68,5 +70,4 @@ public class LoadTester {
             SqlUtilities.releaseResources(null, null, conn);
         }
     }
-
 }

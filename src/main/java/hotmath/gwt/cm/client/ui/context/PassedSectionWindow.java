@@ -1,6 +1,6 @@
 package hotmath.gwt.cm.client.ui.context;
 
-import hotmath.gwt.cm.client.CatchupMath;
+import hotmath.gwt.cm.client.ui.CmProgramFlowClientManager;
 import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
 import hotmath.gwt.cm_tools.client.util.GenericVideoPlayerForMona;
@@ -54,11 +54,7 @@ public class PassedSectionWindow extends CmWindow {
             public void componentSelected(ButtonEvent ce) {
                 close();
 
-                /** move to next quiz
-                 *
-                 * go directly, do load into history to avoid back/forward
-                */
-                CatchupMath.getThisInstance().showQuizPanel_gwt(UserInfo.getInstance().getTestSegment());
+                CmProgramFlowClientManager.moveToNextInProgramFlow();
             }
         }));
 

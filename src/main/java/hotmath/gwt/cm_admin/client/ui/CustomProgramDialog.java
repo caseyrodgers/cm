@@ -106,6 +106,11 @@ public class CustomProgramDialog extends CmWindow {
         _listViewCq.setTemplate(getTemplateHtml());
 
         TabItem tabCustomQuizzes = new TabItem("Custom Quizzes");
+        
+        if(CmShared.getQueryParameter("debug") != null) {
+            tabCustomQuizzes.setEnabled(false);
+        }
+        
         tabCustomQuizzes.setLayout(new FitLayout());
         tabCustomQuizzes.add(_listViewCq);
         tabPanelType.add(tabCustomQuizzes);
@@ -144,6 +149,8 @@ public class CustomProgramDialog extends CmWindow {
             }
         }, "Get information about selected custom program."));
 
+        
+        
         add(tb, new BorderLayoutData(LayoutRegion.NORTH, 35));
         addCloseButton();
     }

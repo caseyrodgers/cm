@@ -9,7 +9,6 @@ import hotmath.gwt.cm_rpc.client.rpc.SaveQuizCurrentResultAction;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.util.ProcessTracker;
 import hotmath.gwt.shared.client.CmShared;
-import hotmath.gwt.shared.client.data.CmAsyncRequest;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
 import hotmath.gwt.shared.client.eventbus.CmEventListener;
 import hotmath.gwt.shared.client.eventbus.EventBus;
@@ -21,23 +20,24 @@ import java.util.List;
 import com.extjs.gxt.ui.client.Style.Scroll;
 import com.extjs.gxt.ui.client.widget.Html;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
-import com.google.gwt.user.client.Command;
-import com.google.gwt.user.client.DeferredCommand;
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 
 public class QuizPage extends LayoutContainer {
 	
     static QuizPage __lastInstance;
 	
-	CmAsyncRequest callbackWhenComplete;
 	static List<Integer> testQuestionAnswers;
 	QuizHtmlResult _quizInfo;
 	
-	public QuizPage(boolean loadActive, int testSegment, CmAsyncRequest callbackWhenComplete) {
+	public QuizPage(boolean loadActive, QuizHtmlResult quizInfo) {
 	    __lastInstance = this;
 	    setScrollMode(Scroll.AUTOY);
-		this.callbackWhenComplete = callbackWhenComplete;
 		setStyleName("quiz-panel");
-		getQuizHtmlFromServer(loadActive, testSegment);
+
+		setQuizHtmlResult(quizInfo);
+
+        CmMainPanel.setQuizQuestionDisplayAsActive(CmMainPanel.getLastQuestionPid());
 	}
 
 	
@@ -88,6 +88,7 @@ public class QuizPage extends LayoutContainer {
     }
     
     
+    
     /** Display the Quiz Html.
      * 
      * Mark all the currently selected questions.
@@ -101,11 +102,6 @@ public class QuizPage extends LayoutContainer {
 		    html.addStyleName("debug-mode");
 		}
 		add(html);
-		layout();
-        callbackWhenComplete.requestComplete(_quizInfo.getTitle());
-        
-        CmMainPanel.setQuizQuestionDisplayAsActive(CmMainPanel.getLastQuestionPid());
-        
         /** reset each displayed quiz */
         questionProcessTracker.finish();
 	}
@@ -119,7 +115,8 @@ public class QuizPage extends LayoutContainer {
 	    initializeQuiz();
 
 	    CmLogger.debug("QuizPage: marking user selections: " + this);
-	    DeferredCommand.addCommand(new Command() {
+	    
+	    Scheduler.get().scheduleDeferred(new ScheduledCommand() {
             @Override
             public void execute() {
                 try {
@@ -128,10 +125,11 @@ public class QuizPage extends LayoutContainer {
                     }
                 }
                 catch(Exception e) {
-                    e.printStackTrace();
+                    CmLogger.error("Error marking user test answers", e);
                 }
             }
         });
+
 	}
 	
 	private native void initializeQuiz() /*-{
@@ -150,43 +148,47 @@ public class QuizPage extends LayoutContainer {
 	        public void attempt() {
 
 	            CatchupMathTools.setBusy(true);
-	            GetQuizHtmlAction quizAction = new GetQuizHtmlAction(UserInfo.getInstance().getUid(), UserInfo.getInstance().getTestId(), testSegment);
+	            GetQuizHtmlAction quizAction = new GetQuizHtmlAction(UserInfo.getInstance().getTestId());
 	            setAction(quizAction);
-	            quizAction.setLoadActive(loadActive);
 	            CmLogger.info("QuizPage.getQuizHtmlFromServer: " + quizAction);
 	            CmShared.getCmService().execute(quizAction, this);
 	        }
 	        
             @Override
-            public void oncapture(QuizHtmlResult rdata) {
-                CatchupMathTools.setBusy(false);
-                _quizInfo = rdata;
-                testQuestionAnswers = rdata.getAnswers();
-                UserInfo.getInstance().setTestSegment(rdata.getQuizSegment());
-                UserInfo.getInstance().setTestId(rdata.getTestId());
-                UserInfo.getInstance().setRunId(0); /* not in a prescription */
-                UserInfo.getInstance().setSubTitle(rdata.getSubTitle());
-                
-                UserInfo.getInstance().setTestSegmentCount(rdata.getQuizSegmentCount());
-                
-                if(rdata.getUserId() != UserInfo.getInstance().getUid()) {
-                    UserInfo.getInstance().setActiveUser(false);
-                    UserInfo.getInstance().setUserName("Guest user on account: " + rdata.getUserId());
-                    EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_USERCHANGED));
-                }
-                
-                displayQuizHtml(rdata.getQuizHtml());
-                
-                DeferredCommand.addCommand(new Command() {
-                    @Override
-                    public void execute() {
-                        markUserAnswers();
-                    }
-                });
+            public void oncapture(QuizHtmlResult quizResponse) {
+                setQuizHtmlResult(quizResponse);
             }
         }.register();	    
 	}
 	
+	
+	private void setQuizHtmlResult(QuizHtmlResult quizResponse) {
+	    CatchupMathTools.setBusy(false);
+
+        _quizInfo = quizResponse;
+        testQuestionAnswers = _quizInfo.getAnswers();
+        UserInfo.getInstance().setProgramSegment(_quizInfo.getQuizSegment());
+        UserInfo.getInstance().setTestId(_quizInfo.getTestId());
+        UserInfo.getInstance().setRunId(0); /* not in a prescription */
+        UserInfo.getInstance().setSubTitle(_quizInfo.getSubTitle());
+        
+        UserInfo.getInstance().setProgramSegmentCount(_quizInfo.getQuizSegmentCount());
+        
+        if(_quizInfo.getUserId() != UserInfo.getInstance().getUid()) {
+            System.out.println("Not active user!");
+//            UserInfo.getInstance().setActiveUser(false);
+//            UserInfo.getInstance().setUserName("Guest user on account: " + _quizInfo.getUserId());
+//            EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_USERCHANGED));
+        }
+        
+        displayQuizHtml(_quizInfo.getQuizHtml());
+        
+        Scheduler.get().scheduleDeferred(new ScheduledCommand() {
+            @Override
+            public void execute() {
+                markUserAnswers();            }
+        });
+	}
     
 	static private MyProcessTracker questionProcessTracker = new MyProcessTracker();
 	static public boolean isAnsweringQuestions() {

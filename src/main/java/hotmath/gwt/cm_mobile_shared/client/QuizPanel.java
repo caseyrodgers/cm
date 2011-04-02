@@ -7,12 +7,15 @@ import hotmath.gwt.cm_mobile_shared.client.page.QuizPage;
 import hotmath.gwt.cm_mobile_shared.client.rpc.CmMobileUser;
 import hotmath.gwt.cm_mobile_shared.client.rpc.CreateTestRunMobileAction;
 import hotmath.gwt.cm_rpc.client.rpc.CmList;
+import hotmath.gwt.cm_rpc.client.rpc.CmPlace;
 import hotmath.gwt.cm_rpc.client.rpc.GetQuizHtmlAction;
 import hotmath.gwt.cm_rpc.client.rpc.MultiActionRequestAction;
 import hotmath.gwt.cm_rpc.client.rpc.PrescriptionSessionResponse;
+import hotmath.gwt.cm_rpc.client.rpc.QuizHtmlResponse;
 import hotmath.gwt.cm_rpc.client.rpc.QuizHtmlResult;
 import hotmath.gwt.cm_rpc.client.rpc.RpcData;
 import hotmath.gwt.cm_rpc.client.rpc.SaveQuizCurrentResultAction;
+
 
 import java.util.List;
 
@@ -130,7 +133,7 @@ public class QuizPanel extends AbstractPagePanel {
         EventBus.getInstance().fireEvent(new CmEvent(EventTypes.EVENT_SERVER_START));
         
         CmMobileUser user = CatchupMathMobileShared.__instance.user;
-        GetQuizHtmlAction action = new GetQuizHtmlAction(user.getUserId(),user.getTestId(), user.getTestSegment());
+        GetQuizHtmlAction action = new GetQuizHtmlAction(user.getTestId());
         CatchupMathMobileShared.getCmService().execute(action, new AsyncCallback<QuizHtmlResult>() {
             @Override
             public void onSuccess(QuizHtmlResult result) {

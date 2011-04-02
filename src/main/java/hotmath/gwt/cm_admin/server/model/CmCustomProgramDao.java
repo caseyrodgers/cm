@@ -128,6 +128,13 @@ public class CmCustomProgramDao {
         }
     }
 
+    /** Find the total segment count for the named custom program 
+     * 
+     * @param conn
+     * @param progId
+     * @return
+     * @throws Exception
+     */
     public int getTotalSegmentCount(final Connection conn, int progId) throws Exception {
         return readProgramSegments(conn, progId).size();
     }
@@ -334,11 +341,15 @@ public class CmCustomProgramDao {
              * 
              */
             if(programSegment == -1)
-                programSegment = 0;
+                programSegment = 1;
+            
+            
+            assert(programSegment > 0);
+
             
             List<ProgramSegment> testSegments = readProgramSegments(conn, programId);
 
-            if (programSegment > testSegments.size() - 1) {
+            if (programSegment > testSegments.size()) {
                 LOGGER.warn("Zero lessons for test segment " + programSegment + ", program_id=" + programId);
                 return new CmArrayList<CustomLessonModel>();
             }
@@ -346,9 +357,10 @@ public class CmCustomProgramDao {
             
             /** return only lessons for this segment 
              * 
+             * NOTE: programSegment is 1 based
              */
             CmList<CustomLessonModel> listOfLessons = new CmArrayList<CustomLessonModel>();
-            for(CustomLessonModel lm: testSegments.get(programSegment).getLessons()) {
+            for(CustomLessonModel lm: testSegments.get(programSegment-1).getLessons()) {
                 if(lm.getQuizId() == null) {
                     listOfLessons.add(lm);
                 }

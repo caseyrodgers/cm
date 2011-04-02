@@ -6,18 +6,23 @@ import hotmath.gwt.cm_rpc.client.rpc.RpcData;
 
 public class GetQuizCurrentResultsAction implements Action<CmList<RpcData>> {
     
-    Integer uid;
+    int testId;
     public GetQuizCurrentResultsAction() {}
     
-    public GetQuizCurrentResultsAction(Integer uid) {
-        this.uid = uid;
+    public GetQuizCurrentResultsAction(int testId) {
+        this.testId = testId;
     }
 
-    public Integer getUid() {
-        return uid;
+    public int getTestId() {
+        return testId;
     }
 
-    public void setUid(Integer uid) {
-        this.uid = uid;
+    public void setTestId(int testId) {
+        this.testId = testId;
+    }
+
+    @Override
+    public String toString() {
+        return "GetQuizCurrentResultsAction [testId=" + testId + "]";
     }
 }

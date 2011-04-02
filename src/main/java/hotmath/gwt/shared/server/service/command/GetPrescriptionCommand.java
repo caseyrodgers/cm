@@ -3,6 +3,7 @@ package hotmath.gwt.shared.server.service.command;
 import hotmath.assessment.AssessmentPrescription;
 import hotmath.assessment.AssessmentPrescriptionManager;
 import hotmath.assessment.AssessmentPrescriptionSession;
+import hotmath.cm.program.CmProgramFlow;
 import hotmath.gwt.cm_admin.server.model.CmStudentDao;
 import hotmath.gwt.cm_rpc.client.rpc.Action;
 import hotmath.gwt.cm_rpc.client.rpc.CmRpcException;
@@ -15,12 +16,10 @@ import hotmath.gwt.cm_rpc.client.rpc.PrescriptionSessionResponse;
 import hotmath.gwt.cm_rpc.client.rpc.Response;
 import hotmath.gwt.cm_rpc.client.rpc.RpcData;
 import hotmath.gwt.cm_rpc.server.rpc.ActionHandler;
-import hotmath.gwt.cm_tools.client.model.StudentActiveInfo;
 import hotmath.gwt.shared.client.rpc.action.GetViewedInmhItemsAction;
 import hotmath.inmh.INeedMoreHelpItem;
 import hotmath.inmh.INeedMoreHelpResourceType;
 import hotmath.testset.ha.HaTestRun;
-import hotmath.testset.ha.HaTestRunDao;
 
 import java.sql.Connection;
 import java.util.ArrayList;
@@ -30,25 +29,13 @@ import org.apache.log4j.Logger;
 
 
 
-/**
- * Transfer data from local data structures into JSON
+/** Read an existing prescription based on a test run
  * 
- * 
- * Show all INMH types, and provide an empty one where none exist
- * 
- * Lesson, Video, Activities, Required Problems, Extra Problems
- * 
- * 
- * marks the user object with the current active session
- * 
- * @param runId
- *            The run id
- * @param sessionNumber
- *            The session number to load
- * @param updateActiveInfo
- *            Should the user's active info be updated. If false, then no
- *            user state is changed.
- * 
+ *  and return data that represents a single program
+ *  prescription lesson.
+ *  
+ * @author casey
+ *
  */
 public class GetPrescriptionCommand implements ActionHandler<GetPrescriptionAction, PrescriptionSessionResponse> {
 
@@ -61,20 +48,23 @@ public class GetPrescriptionCommand implements ActionHandler<GetPrescriptionActi
         int runId = action.getRunId();
         int sessionNumber = action.getSessionNumber();
         try {
-            AssessmentPrescription pres = AssessmentPrescriptionManager.getInstance().getPrescription(conn, runId);
+            
+            AssessmentPrescription prescription = AssessmentPrescriptionManager.getInstance().getPrescription(conn, runId);
             
             __logger.debug("verifing prescription: " + action);
-            new CmStudentDao().verifyActiveProgram(conn, pres.getTest().getTestId());
+            new CmStudentDao().verifyActiveProgram(conn, prescription.getTest().getTestId());
 
-
-            int totalSessions = pres.getSessions().size();
+            int totalSessions = prescription.getSessions().size();
             if (totalSessions == 0) {
-                // no prescription created (no missed answers?)
-                RpcData rdata = new RpcData();
-                rdata.putData("correct_percent", 100);
-                
+                /** no prescription created (no missed answers?)
+                 * 
+                 * This might be a bug in that an empty prescription
+                 * is associated with a runId. 
+                 * 
+                 * return a default response
+                 */
                 PrescriptionSessionResponse resp = new PrescriptionSessionResponse();
-                resp.setCorrectPercent(100);
+                resp.setCorrectPercent(100);  /** why does this need to 100? */
                 return resp;
             }
             // which session
@@ -83,17 +73,27 @@ public class GetPrescriptionCommand implements ActionHandler<GetPrescriptionActi
                 		runId, sessionNumber, totalSessions));
                 sessionNumber = 0;
             }
-            AssessmentPrescriptionSession sess = pres.getSessions().get(sessionNumber);
+            
+            CmProgramFlow cmProgram = new CmProgramFlow(conn, prescription.getTest().getUser().getUid());
+            
 
+            AssessmentPrescriptionSession session = prescription.getSessions().get(sessionNumber);
             PrescriptionData presData = new PrescriptionData();
-
-            List<AssessmentPrescription.SessionData> practiceProblems = sess.getSessionDataFor(sess.getTopic());
+            
+            
+            /** We now take the prescription and extract and massage
+             *  it's data into a PrescriptionSessionResponse object.
+             */
+            List<AssessmentPrescription.SessionData> practiceProblems = session.getSessionDataFor(session.getTopic());
             PrescriptionSessionDataResource problemsResource = new PrescriptionSessionDataResource();
             problemsResource.setType("practice");
             
             __logger.debug("assigning problems to prescription: " + action);
             
-            /** label either as Problems or Activities */
+            /** label either as Problems (RPP) or Activities (RPA)
+             * 
+             *  All RPs will be with RPP or RPA, never both. 
+             */
             boolean isActivity=practiceProblems.get(0).getWidgetArgs()!=null;
             String title = "Required Practice " + (isActivity?"Activities":"Problems");
             problemsResource.setLabel(title);
@@ -114,29 +114,32 @@ public class GetPrescriptionCommand implements ActionHandler<GetPrescriptionActi
             lessonResource.setLabel("Review Lesson");
             InmhItemData lessonId = new InmhItemData();
 
-            // Get the lesson this session is based on
-            // each session is a single topic
-            INeedMoreHelpItem item = sess.getSessionCategories().get(0);
+            /** Get the lesson for this session
+             * (NOTE: this is using the INMH code in HM)
+             */
+            INeedMoreHelpItem item = session.getSessionCategories().get(0);
             lessonId.setTitle(item.getTitle());
             lessonId.setFile(item.getFile());
             lessonId.setType(item.getType());
             lessonResource.getItems().add(lessonId);
 
-            // always send complete list of all topics
-            // @TODO: should we have an initialize phase and return this info
-            // This would impose two request/response
+            /** Always send complete list of all lesson names.
+             * TODO: many should be done in initialize phase?
+             * TODO: why do need the full list?
+             */
+            __logger.debug("creating list of session names: " + action);
             PrescriptionSessionData sessionData = new PrescriptionSessionData();
             sessionData.setSessionRpa(isActivity);
-            for (AssessmentPrescriptionSession s : pres.getSessions()) {
+            for (AssessmentPrescriptionSession s : prescription.getSessions()) {
                 presData.getSessionTopics().add(s.getTopic());
             }
             presData.setCurrSession(sessionData);
 
             
             __logger.debug("Getting prescription resource items: " + action);
-            sessionData.setTopic(sess.getTopic(),item.getFile());
+            sessionData.setTopic(session.getTopic(),item.getFile());
             sessionData.setSessionNumber(sessionNumber);
-            for (INeedMoreHelpResourceType t : sess.getPrescriptionInmhTypesDistinct(conn)) {
+            for (INeedMoreHelpResourceType t : session.getPrescriptionInmhTypesDistinct(conn)) {
 
                 // skip the workbooks for now.
                 if (t.getTypeDef().getType().equals("workbook"))
@@ -156,7 +159,9 @@ public class GetPrescriptionCommand implements ActionHandler<GetPrescriptionActi
                 sessionData.getInmhResources().add(resource);
             }
 
-            // add a results resource type to allow user to view current results
+            /** 
+             * Add a results resource type to allow user to view current results.
+             */
             PrescriptionSessionDataResource resultsResource = new PrescriptionSessionDataResource();
             resultsResource.setType("results");
             resultsResource.setLabel("Quiz Results");
@@ -168,14 +173,16 @@ public class GetPrescriptionCommand implements ActionHandler<GetPrescriptionActi
             
             
             
-            __logger.debug("creating prescription sessions: " + action);
-            
+            __logger.debug("adding prescription sessions: " + action);
             sessionData.getInmhResources().add(lessonResource);
             sessionData.getInmhResources().add(problemsResource);
             sessionData.getInmhResources().add(resultsResource);
 
 
-            /** Call action and request list of INMH items */
+            /** 
+             * Get list of lesson resources that have been viewed. 
+             */
+            __logger.debug("getting list of viewed lessons: " + action);
             GetViewedInmhItemsAction getViewedAction = new GetViewedInmhItemsAction(runId);
             List<RpcData> rdata = new GetViewedInmhItemsCommand().execute(conn, getViewedAction).getRpcData();
             
@@ -192,32 +199,16 @@ public class GetPrescriptionCommand implements ActionHandler<GetPrescriptionActi
                 }
             }
             sessionData.setInmhResources(resources);
-
-            /** Update this users current active info
-             * 
-             */
-            if (action.getUpdateActionInfo()) {
-                int uid = pres.getTest().getUser().getUid();
-                CmStudentDao dao = new CmStudentDao();
-                StudentActiveInfo activeInfo = dao.loadActiveInfo(conn, uid);
-                activeInfo.setActiveRunSession(sessionNumber);
-                dao.setActiveInfo(conn,uid,activeInfo);
-            }
             
+            cmProgram.markSessionAsActive(conn, sessionNumber);
             
-            
-            /** Mark this lesson as being viewed
-             * 
-             */
-            new HaTestRunDao().setLessonViewed(conn,runId,sessionNumber);
-            
-            HaTestRun testRun = pres.getTestRun();
+            HaTestRun testRun = prescription.getTestRun();
             
             PrescriptionSessionResponse response = new PrescriptionSessionResponse();
             response.setRunId(testRun.getRunId());
             response.setPrescriptionData(presData);
-            response.setCorrectPercent(getTestPassPercent(testRun.getAnsweredCorrect() + testRun.getAnsweredIncorrect() + testRun.getNotAnswered(), pres.getTestRun().getAnsweredCorrect()));
-            response.setProgramTitle(pres.getTest().getTestDef().getTitle());
+            response.setCorrectPercent(getTestPassPercent(testRun.getAnsweredCorrect() + testRun.getAnsweredIncorrect() + testRun.getNotAnswered(), prescription.getTestRun().getAnsweredCorrect()));
+            response.setProgramTitle(prescription.getTest().getTestDef().getTitle());
             
 
             return response;

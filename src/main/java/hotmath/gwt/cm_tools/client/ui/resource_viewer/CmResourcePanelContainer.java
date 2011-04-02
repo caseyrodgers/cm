@@ -15,6 +15,8 @@ import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.layout.CenterLayout;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 
 /**
  * Class to define a standard container for all resources.
@@ -112,7 +114,7 @@ public class CmResourcePanelContainer extends ContentPanel {
         } else {
             setMaximize(panel);
         }
-        
+
         setPanelWidget(panel, false, false);
     }
 
@@ -125,17 +127,16 @@ public class CmResourcePanelContainer extends ContentPanel {
      * 
      * @param panel
      */
-    public void setOptimized(CmResourcePanel panel) {
-
+    public void setOptimized(final CmResourcePanel panel) {
         if (viewerState == ResourceViewerState.OPTIMIZED)
             return;
 
         CmResourcePanelContainer.this.container.setLayout(new CenterLayout());
         CmResourcePanelContainer.this.setWidth(panel.getOptimalWidth());
-        CmResourcePanelContainer.this.setHeight(CmMainResourceContainer.getCalculatedHeight(
-                CmResourcePanelContainer.this.container, panel));
+        CmResourcePanelContainer.this.setHeight(CmMainResourceContainer.getCalculatedHeight(CmResourcePanelContainer.this.container, panel));
 
-        /** If container needs to be fully reset
+        /**
+         * If container needs to be fully reset
          * 
          */
         if (panel instanceof ResourceViewerImplActivity) {
@@ -143,7 +144,7 @@ public class CmResourcePanelContainer extends ContentPanel {
             CmResourcePanelContainer.this.add(panel.getResourcePanel());
             CmResourcePanelContainer.this.container.layout();
         }
-        
+
         viewerState = ResourceViewerState.OPTIMIZED;
 
         if (_maximize != null)
@@ -174,15 +175,15 @@ public class CmResourcePanelContainer extends ContentPanel {
         // maximize the resource area
         //
         CmResourcePanelContainer.this.container.setLayout(new FitLayout());
-        /** If container needs to be fully reset
+        /**
+         * If container needs to be fully reset
          * 
          */
         if (panel instanceof ResourceViewerImplActivity) {
             CmResourcePanelContainer.this.removeAll();
             CmResourcePanelContainer.this.add(panel.getResourcePanel());
         }
-        
-        
+
         viewerState = ResourceViewerState.MAXIMIZED;
 
         if (_maximize != null)

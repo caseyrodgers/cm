@@ -1,4 +1,4 @@
-package hotmath.gwt.cm.client.ui;
+package hotmath.gwt.cm_tools.client.ui.ui;
 
 import hotmath.gwt.cm_tools.client.ui.InfoPopupBox;
 import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
@@ -9,6 +9,7 @@ import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.widget.Html;
 import com.extjs.gxt.ui.client.widget.button.Button;
+import com.google.gwt.user.client.Window;
 
 /** Standard dialog to show when users are set to 
  *  stop after completing active program.
@@ -17,35 +18,34 @@ import com.extjs.gxt.ui.client.widget.button.Button;
  *
  */
 public class EndOfProgramWindow extends CmWindow {
-    public EndOfProgramWindow() {
-        this(true);
-    }
+
+    public static String msg = 
+        "<div style='background: white; padding: 20px;'>" +
+        "<p>The program that you have been assigned is completed and you have been logged out.</p>" +  
+        "<p>Please check with your teacher to discuss your next assignment.</p>" +
+        "</div>";
     
-    public EndOfProgramWindow(boolean canContinue) {
+    public EndOfProgramWindow() {
         addStyleName("end-of-program-window");
         setHeading("Program Completed!");
         setModal(true);
         
 
         
-        String msg = "<p>Congratulations! You have completed this program.</p>";
-        if(canContinue) {
-            msg += "<p>You are welcome to continue until you are assigned another program.</p>";
-            addCloseButton();
-        }
-        else {
-            msg += "<p>Please wait until you are assigned another program.</p>";
-            setClosable(false);
-            addButton(createCheckButton());
-        }
-        
-        
+        setClosable(false);
         
         if(CmShared.getQueryParameter("debug") == null) {
             setClosable(false);
         }
         
-        add(new Html("<div style='padding: 5px;'>" + msg + "</div>"));
+        add(new Html(msg));
+        
+        addButton(new Button("OK", new SelectionListener<ButtonEvent>() {
+            @Override
+            public void componentSelected(ButtonEvent ce) {
+                Window.Location.assign("/");
+            }
+        }));
         setSize(300,175);
         setResizable(false);
         setVisible(true);
