@@ -377,13 +377,9 @@ public class PrescriptionContext implements CmContext {
      * 
      */
     public void runAutoTestAux() {
-        int timeToWait = 1;
-
-        String msg = "Testing lesson: " + prescriptionData.getCurrSession().getTopic();
-        AutoTestWindow.getInstance().addLogMessage(msg);
-
-        AutoTestWindow.getInstance().addLogMessage("User Status: " + UserInfo.getInstance().getUserStatus());
-
+        AutoTestWindow.getInstance().addLogMessage("Testing lesson: " + 
+                prescriptionData.getCurrSession().getTopic() + ", " +
+                UserInfo.getInstance().getUserStatus());
         /**
          * prepare a stack of resources to run, then run them one by one
          * 
@@ -412,24 +408,12 @@ public class PrescriptionContext implements CmContext {
 
             @Override
             public void requestComplete(String requestData) {
-                /**
-                 * Move to next test, prescription or completion
-                 */
-
                 int cs = prescriptionData.getCurrSession().getSessionNumber();
                 int ts = prescriptionData.getSessionTopics().size();
                 if ((cs + 1) < ts) {
                     prescriptionCm.getAsyncDataFromServer(cs + 1);
                 } else {
-                    int nextSegment = UserInfo.getInstance().getTestSegment();
-                    if (nextSegment < UserInfo.getInstance().getProgramSegmentCount()) {
-                        nextSegment += 1;
-                        AutoTestWindow.getInstance().addLogMessage("Testing Quiz: " + nextSegment);
-                        UserInfo.getInstance().setProgramSegment(nextSegment);
-                        CatchupMath.getThisInstance().showQuizPanel(nextSegment);
-                    } else {
-                        CatchupMathTools.showAlert("Auto Test has completed at " + nextSegment + "!");
-                    }
+                    CmProgramFlowClientManager.moveToNextInProgramFlow();
                 }
             }
         });

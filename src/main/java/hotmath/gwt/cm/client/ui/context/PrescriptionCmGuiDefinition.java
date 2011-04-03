@@ -79,7 +79,8 @@ public class PrescriptionCmGuiDefinition implements CmGuiDefinition {
     }
 
     /**
-     * Read data from server and build UI when complete
+     * Read data for a single lesson from server 
+     * and populate UI when complete
      * 
      */
     public void getAsyncDataFromServer(int sessionNumber) {
