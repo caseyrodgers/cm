@@ -286,10 +286,11 @@ public class CmShared implements EntryPoint {
         } 
         else {
             String hostPort = Window.Location.getPort();
-            int port = Integer.parseInt(hostPort);
+            int port = (hostPort != null && hostPort.trim().length() > 0) ?
+            		Integer.parseInt(hostPort) : 80;
             // only append port number if > 80
             if (port > 80) {
-                hostName += ":" + hostPort;
+                hostName += ":" + port;
             }
         }
         
