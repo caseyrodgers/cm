@@ -35,6 +35,7 @@ import hotmath.gwt.shared.client.rpc.action.RunNetTestAction.TestApplication;
 import hotmath.gwt.shared.client.util.CmRunAsyncCallback;
 import hotmath.gwt.shared.client.util.NetTestWindow;
 import hotmath.gwt.shared.client.util.UserInfoDao;
+import hotmath.testset.ha.HaUser;
 
 import com.extjs.gxt.ui.client.Style.LayoutRegion;
 import com.extjs.gxt.ui.client.event.BaseEvent;
@@ -167,6 +168,18 @@ public class CatchupMath implements EntryPoint {
      */
     static public void reloadUser() {
         String url="/loginService?uid=" + UserInfo.getInstance().getUid();
+        
+        if(CmShared.getQueryParameter("debug") != null) {
+            url += "&debug=true";
+            
+            if(CmShared.getQueryParameter("auto_test")!= null) {
+                url += "&auto_test=true";
+            }
+            
+            if(CmShared.getQueryParameter("test_rpp_only") != null ) {
+                url += "&test_rpp_only=true";
+            }
+        }
         Window.Location.assign(url);        
     }
     

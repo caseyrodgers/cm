@@ -270,6 +270,12 @@ public class CmProgramFlow {
             }            
             activeInfo.setActiveRunSession(session);
             sdao.setActiveInfo(conn, userProgram.getUserId(), activeInfo);
+            
+            /** Mark this lesson as being viewed
+            *
+            */
+           new HaTestRunDao().setLessonViewed(conn,activeInfo.getActiveRunId(),session);
+
         }
         catch (Exception e) {
             throw new CmProgramFlowException("Error advancing program", e);
