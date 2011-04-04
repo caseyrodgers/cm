@@ -1,9 +1,11 @@
 package hotmath.gwt.cm.client.ui.context;
 
 import hotmath.gwt.cm.client.CatchupMath;
+import hotmath.gwt.cm.client.ui.CmProgramFlowClientManager;
 import hotmath.gwt.cm.client.ui.context.HaveYouCheckedYourWorkWindow.Callback;
 import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_rpc.client.rpc.CmPlace;
+import hotmath.gwt.cm_rpc.client.rpc.CmProgramFlowAction;
 import hotmath.gwt.cm_rpc.client.rpc.CreateTestRunResponse;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
@@ -114,7 +116,23 @@ public class QuizContext implements CmContext {
     private void showQuizResults(CreateTestRunResponse runInfo) {
 
         if (UserInfo.getInstance().isAutoTestMode()) {
-            CatchupMath.getThisInstance().showPrescriptionPanel();
+            CmProgramFlowClientManager.getActiveProgramState(new CmProgramFlowClientManager.Callback() {
+                
+                @Override
+                public void programFlow(CmProgramFlowAction flowResponse) {
+                    
+                    switch(flowResponse.getPlace()) {
+                    
+                    case PRESCRIPTION:
+                        CatchupMath.getThisInstance().showPrescriptionPanel(flowResponse.getPrescriptionResponse());
+                        break;
+                        
+                        
+                        default: 
+                            CatchupMathTools.showAlert("Invalid Auto Test result: " + flowResponse);
+                    }
+                }
+            });
         } else {
             new QuizCheckResultsWindow(runInfo);
         }
