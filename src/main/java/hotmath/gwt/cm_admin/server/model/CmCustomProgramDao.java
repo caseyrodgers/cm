@@ -665,7 +665,7 @@ public class CmCustomProgramDao {
                 sm.setUid(rs.getInt("uid"));
                 info.getAssignedStudents().add(sm);
             }
-            info.setLessons(getCustomProgramLessons(conn, program.getProgramId(), 0));
+            info.setLessons(getCustomProgramLessons(conn, program.getProgramId(), 1));
             return info;
         } finally {
             SqlUtilities.releaseResources(null, stmt, null);

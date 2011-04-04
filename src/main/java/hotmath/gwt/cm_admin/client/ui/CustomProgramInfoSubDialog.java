@@ -113,7 +113,7 @@ public class CustomProgramInfoSubDialog extends CmWindow {
             getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
             ListStore<CustomLessonModel> store = new ListStore<CustomLessonModel>();
             setStore(store);
-            setDisplayProperty("lesson");
+            setDisplayProperty("customProgramItem");
         }
         public void setProgramInfo(CustomProgramInfoModel info) {
             getStore().add(info.getLessons());
