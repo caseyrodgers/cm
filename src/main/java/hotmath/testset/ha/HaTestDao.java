@@ -174,7 +174,7 @@ public class HaTestDao {
             HaUser user = HaUser.lookUser(conn, uid, null);
             HaTestConfig config = user.getTestConfig();
 
-            List<String> testIds = testDef.getTestIdsForSegment(conn,userProgram, segment-1, config, segmentSlot);
+            List<String> testIds = testDef.getTestIdsForSegment(conn,userProgram, segment, config, segmentSlot);
 
             pstat.setInt(1, uid);
             pstat.setInt(2, userProgram.getId());

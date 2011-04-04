@@ -141,15 +141,22 @@ public class CmCustomProgramDao {
 
     /** return true if named program segment has a valid quiz, false otherwise.
      * 
+     * NOTE: segmentNum is 1 based.
+     * 
      * @param conn
      * @param programId
      * @param segment
      * @return
      * @throws Exception
      */
-    public boolean doesProgramSegmentHaveQuiz(final Connection conn, int programId, int segment) throws Exception {
+    public boolean doesProgramSegmentHaveQuiz(final Connection conn, int programId, int segmentNum) throws Exception {
+        assert(segmentNum > 0);
         List<ProgramSegment> segments = readProgramSegments(conn, programId);
-        Integer qid = segments.get(segment).getQuiz().getQuizId();
+        CustomLessonModel quiz = segments.get(segmentNum-1).getQuiz();  // segmentNum is 1 based
+        Integer qid = null;
+        if(quiz != null)
+            qid = quiz.getQuizId();
+         
         return qid != null && qid != 1; 
     }
     /**
@@ -388,12 +395,14 @@ public class CmCustomProgramDao {
      */
     public CmList<CustomQuizId> getCustomProgramQuizIds(final Connection conn, int programId, int programSegment)
             throws Exception {
+        assert(programSegment>0);
         PreparedStatement stmt = null;
+        
         try {
-            ProgramSegment segment = readProgramSegments(conn, programId).get(programSegment);
+            ProgramSegment segment = readProgramSegments(conn, programId).get(programSegment-1);
             CustomLessonModel theQuiz = segment.getQuiz();
             
-            Integer quid = theQuiz.getQuizId();
+            Integer quid = theQuiz != null?theQuiz.getQuizId():null;
             if(quid == null || quid == 1) {
                 /** dummy, empty quiz */
                 return new CmArrayList<CustomQuizId>();

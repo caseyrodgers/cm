@@ -102,7 +102,7 @@ public class GetUserInfoCommand implements ActionHandler<GetUserInfoAction, User
                      *  If not then create a dummy test as a place holder.
                      */
                     CmCustomProgramDao cpdao = new CmCustomProgramDao();
-                    if(!cpdao.doesProgramSegmentHaveQuiz(conn, userProgram.getCustomProgramId(), 0)) {
+                    if(!cpdao.doesProgramSegmentHaveQuiz(conn, userProgram.getCustomProgramId(), 1)) {
                         activeInfo.setActiveSegment(1);
                         activeInfo.setActiveTestId(0);
                         activeInfo.setActiveRunSession(0);           
