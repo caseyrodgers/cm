@@ -193,13 +193,6 @@ public class CmCustomProgramDao {
                         programSegments.add(segment);
                     }
                 } else {
-                    /** each segment always has a quiz as first element 
-                     * 
-                     */
-                    if(segment.getQuiz() == null) {
-                        segment.setQuiz(new CustomLessonModel(1,"Empty Quiz"));
-                    }
-                    
                     /** is a lesson */
                     segment.getLessons().add(new CustomLessonModel(rs.getString("lesson"), rs.getString("file"), rs
                             .getString("subject")));
@@ -377,7 +370,6 @@ public class CmCustomProgramDao {
         List<ProgramSegment> testSegments = readProgramSegments(conn, programId);
 
         for (ProgramSegment segment : testSegments) {
-            listAll.add(segment.getQuiz());
             for (CustomLessonModel model : segment.getLessons()) {
                 listAll.add(model);
             }

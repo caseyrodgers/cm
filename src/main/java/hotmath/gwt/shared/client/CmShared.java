@@ -149,9 +149,9 @@ public class CmShared implements EntryPoint {
             // current state as the user moves around system.
             int userId = 0;
 
-            if (_queryParameters.get("uid") != null) {
-            	userId = Integer.parseInt(_queryParameters.get("uid"));
-            }
+//            if (_queryParameters.get("uid") != null) {
+//            	userId = Integer.parseInt(_queryParameters.get("uid"));
+//            }
             /** 
              *  for testing, if uid is passed allow override.
              */
