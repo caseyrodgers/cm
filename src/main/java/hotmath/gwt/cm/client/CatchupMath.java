@@ -173,7 +173,7 @@ public class CatchupMath implements EntryPoint {
             url += "&debug=true";
             
             if(UserInfo.getInstance().isActiveUser()) {
-                url += "&auto_test=true";
+                url += "&type=auto_test";
             }
             
             if(CmShared.getQueryParameter("test_rpp_only") != null ) {
