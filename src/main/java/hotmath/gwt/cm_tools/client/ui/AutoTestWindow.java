@@ -8,7 +8,6 @@ import java.util.Date;
 import com.extjs.gxt.ui.client.Style.LayoutRegion;
 import com.extjs.gxt.ui.client.data.BaseModel;
 import com.extjs.gxt.ui.client.data.BaseModelData;
-import com.extjs.gxt.ui.client.data.ModelData;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.store.ListStore;
@@ -18,7 +17,8 @@ import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.ListView;
 import com.extjs.gxt.ui.client.widget.Slider;
 import com.extjs.gxt.ui.client.widget.button.Button;
-import com.extjs.gxt.ui.client.widget.form.ComboBox;
+import com.extjs.gxt.ui.client.widget.button.ToggleButton;
+import com.extjs.gxt.ui.client.widget.form.CheckBox;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.google.gwt.user.client.ui.Label;
@@ -34,7 +34,7 @@ public class AutoTestWindow extends ContentPanel {
     
 
     ListView<LogModel> _listView = new ListView<LogModel>();
-
+    ToggleButton _logEnable;
     private AutoTestWindow() {
         
         setSize(500,200);
@@ -71,6 +71,17 @@ public class AutoTestWindow extends ContentPanel {
         
         getHeader().addTool(btn);
         getHeader().addTool(stop);
+        
+        
+        _logEnable = new ToggleButton("Enable Log");
+        getHeader().addTool(_logEnable);
+        getHeader().addTool(new Button("Clear", new SelectionListener<ButtonEvent>() {
+            @Override
+            public void componentSelected(ButtonEvent ce) {
+                _listView.getStore().removeAll();
+            }
+        }));
+        
         add(_listView);
         
         _listView.getStore().setMonitorChanges(true);
@@ -78,11 +89,17 @@ public class AutoTestWindow extends ContentPanel {
     }
     
     public void addLogMessage(String msg) {
-        
+
         if(!(getParent() == CmMainPanel.__lastInstance)) {
             CmMainPanel.__lastInstance.add(this, new BorderLayoutData(LayoutRegion.SOUTH));
             CmMainPanel.__lastInstance.layout();
         }
+        
+        
+        if(!_logEnable.isPressed()) {
+            return;
+        }
+        
         
         LogModel lm = new LogModel(msg);
         _listView.getStore().add(lm);
