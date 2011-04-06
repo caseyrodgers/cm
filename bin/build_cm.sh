@@ -1,4 +1,4 @@
-## Build the enter CM package
+## Build the entire CM package
 #
 # Only do this if the target directory does not exist
 #
