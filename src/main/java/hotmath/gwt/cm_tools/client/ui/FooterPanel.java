@@ -115,6 +115,7 @@ public class FooterPanel extends LayoutContainer {
 			@Override
 			public void onSuccess() {
 				AutoTestWindow.getInstance().setVisible(true);
+				AutoTestWindow.getInstance().startAutoTest();
 			}
 
 			@Override

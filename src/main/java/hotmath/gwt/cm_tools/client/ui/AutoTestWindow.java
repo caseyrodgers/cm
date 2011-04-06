@@ -49,7 +49,7 @@ public class AutoTestWindow extends ContentPanel {
 
         _listView.getStore().setMonitorChanges(true);
         
-        addLogMessage("Auto Test startup");
+        addLogMessage("Auto Test ready");
     }
     
     public void addLogMessage(String msg) {
@@ -93,7 +93,7 @@ public class AutoTestWindow extends ContentPanel {
         close.setToolTip("Close the auto test window");
         
         final ToggleButton run = new ToggleButton("Run");
-        
+        run.toggle(true);
         run.addSelectionListener(new SelectionListener<ButtonEvent>() {
             
             public void componentSelected(ButtonEvent ce) {
@@ -140,7 +140,7 @@ public class AutoTestWindow extends ContentPanel {
     	}
     }
     
-    private void startAutoTest() {
+    public void startAutoTest() {
         UserInfo.getInstance().setAutoTestMode(true);
         CmContext context = ContextController.getInstance().getTheContext();
         if(context != null)
