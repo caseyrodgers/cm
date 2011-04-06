@@ -140,7 +140,6 @@ public class ResourceViewerImplResults extends CmResourcePanelImplWithWhiteboard
    
     private native void hideAnswerResults() /*-{
         $wnd.hideQuizQuestionResults();
-    
     }-*/;
     
     @Override

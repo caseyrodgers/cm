@@ -2,6 +2,7 @@ package hotmath.gwt.cm_tools.client.ui;
 
 
 import hotmath.gwt.cm_rpc.client.UserInfo;
+import hotmath.gwt.cm_tools.client.ui.context.CmContext;
 
 import java.util.Date;
 
@@ -12,16 +13,12 @@ import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
-import com.extjs.gxt.ui.client.widget.HorizontalPanel;
-import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.ListView;
 import com.extjs.gxt.ui.client.widget.Slider;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.button.ToggleButton;
-import com.extjs.gxt.ui.client.widget.form.CheckBox;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
-import com.google.gwt.user.client.ui.Label;
 
 public class AutoTestWindow extends ContentPanel {
     
@@ -38,54 +35,21 @@ public class AutoTestWindow extends ContentPanel {
     private AutoTestWindow() {
         
         setSize(500,200);
-        setTitle("Catchup Student Auto Test");
-
         setHeading("Auto Test Log");
-        
-        setTopComponent(createTopForm());
         setLayout(new FitLayout());
         
         _listView.setSimpleTemplate("<div>{message}</div>");
         ListStore<LogModel> store =new ListStore<LogModel>();
         _listView.setStore(store);
-        
-        Button btn = new Button("Close");
-        btn.addSelectionListener(new SelectionListener<ButtonEvent>() {
-            
-            public void componentSelected(ButtonEvent ce) {
-                UserInfo.getInstance().setAutoTestMode(false);
-                CmMainPanel.__lastInstance.remove(AutoTestWindow.this);
-                CmMainPanel.__lastInstance.layout();
-                __instance = null;
-            }
-        });
-        
-        Button stop = new Button("Stop");
-        stop.addSelectionListener(new SelectionListener<ButtonEvent>() {
-            
-            public void componentSelected(ButtonEvent ce) {
-                addLogMessage("Stopping auto test");
-                UserInfo.getInstance().setAutoTestMode(false);
-            }
-        });
-        
-        getHeader().addTool(btn);
-        getHeader().addTool(stop);
-        
-        
-        _logEnable = new ToggleButton("Enable Log");
-        getHeader().addTool(_logEnable);
-        getHeader().addTool(new Button("Clear", new SelectionListener<ButtonEvent>() {
-            @Override
-            public void componentSelected(ButtonEvent ce) {
-                _listView.getStore().removeAll();
-            }
-        }));
-        
+
+
         add(_listView);
         
-        _listView.getStore().setMonitorChanges(true);
+        setupTools();
 
+        _listView.getStore().setMonitorChanges(true);
+        
+        addLogMessage("Auto Test startup");
     }
     
     public void addLogMessage(String msg) {
@@ -113,19 +77,64 @@ public class AutoTestWindow extends ContentPanel {
     
     
     Slider _waitTimeForSingleResourceSlider = new Slider();
-    private LayoutContainer createTopForm() {
+    private void setupTools() {
+
+
+        Button close = new Button("Close");
+        close.addSelectionListener(new SelectionListener<ButtonEvent>() {
+            
+            public void componentSelected(ButtonEvent ce) {
+                UserInfo.getInstance().setAutoTestMode(false);
+                CmMainPanel.__lastInstance.remove(AutoTestWindow.this);
+                CmMainPanel.__lastInstance.layout();
+                __instance = null;
+            }
+        });
+        close.setToolTip("Close the auto test window");
         
-        LayoutContainer lc = new HorizontalPanel();
+        final ToggleButton run = new ToggleButton("Run");
+        run.toggle(true);
         
-        _waitTimeForSingleResourceSlider.setWidth(50);
+        run.addSelectionListener(new SelectionListener<ButtonEvent>() {
+            
+            public void componentSelected(ButtonEvent ce) {
+                
+                if(run.isPressed()) {
+                    addLogMessage("Starting auto test");
+                    startAutoTest();
+                }
+                else {
+                    UserInfo.getInstance().setAutoTestMode(false);
+                    addLogMessage("Stopping auto test");
+                }
+                
+            }
+        });
+        run.setToolTip("Toggle the auto test process");
+        
+        _logEnable = new ToggleButton("Enable Log");
+        _logEnable.toggle(true);
+
+        _waitTimeForSingleResourceSlider.setWidth(100);
         _waitTimeForSingleResourceSlider.setMaxValue(3000*4);
         _waitTimeForSingleResourceSlider.setValue(3000*2);
         _waitTimeForSingleResourceSlider.setToolTip("Time between resource item loads");
         
-        Label l = new Label("Interval time: ");
-        lc.add(l);
-        lc.add(_waitTimeForSingleResourceSlider);
-        return lc;
+        getHeader().addTool(close);
+        getHeader().addTool(run);
+        getHeader().addTool(_logEnable);
+        getHeader().addTool(new Button("Clear", new SelectionListener<ButtonEvent>() {
+            @Override
+            public void componentSelected(ButtonEvent ce) {
+                _listView.getStore().removeAll();
+            }
+        }));
+        
+        getHeader().addTool(_waitTimeForSingleResourceSlider);
+        
+        
+        
+        startAutoTest();
     }
     
     class TestType extends BaseModelData {
@@ -134,6 +143,12 @@ public class AutoTestWindow extends ContentPanel {
     	}
     }
     
+    private void startAutoTest() {
+        UserInfo.getInstance().setAutoTestMode(true);
+        CmContext context = ContextController.getInstance().getTheContext();
+        if(context != null)
+            context.runAutoTest();        
+    }
     
     public int getTimeForSingleResource() {
         return _waitTimeForSingleResourceSlider.getValue();

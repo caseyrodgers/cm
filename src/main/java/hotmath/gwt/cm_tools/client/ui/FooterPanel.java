@@ -115,10 +115,6 @@ public class FooterPanel extends LayoutContainer {
 			@Override
 			public void onSuccess() {
 				AutoTestWindow.getInstance().setVisible(true);
-				UserInfo.getInstance().setAutoTestMode(true);
-				CmContext context = ContextController.getInstance().getTheContext();
-				if(context != null)
-				    context.runAutoTest();
 			}
 
 			@Override
