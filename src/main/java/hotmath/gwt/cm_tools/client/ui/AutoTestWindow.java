@@ -93,7 +93,6 @@ public class AutoTestWindow extends ContentPanel {
         close.setToolTip("Close the auto test window");
         
         final ToggleButton run = new ToggleButton("Run");
-        run.toggle(true);
         
         run.addSelectionListener(new SelectionListener<ButtonEvent>() {
             
@@ -120,21 +119,19 @@ public class AutoTestWindow extends ContentPanel {
         _waitTimeForSingleResourceSlider.setValue(3000*2);
         _waitTimeForSingleResourceSlider.setToolTip("Time between resource item loads");
         
-        getHeader().addTool(close);
+        getHeader().addTool(_waitTimeForSingleResourceSlider);
+        
         getHeader().addTool(run);
         getHeader().addTool(_logEnable);
-        getHeader().addTool(new Button("Clear", new SelectionListener<ButtonEvent>() {
+        Button clear = new Button("Clear", new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent ce) {
                 _listView.getStore().removeAll();
             }
-        }));
-        
-        getHeader().addTool(_waitTimeForSingleResourceSlider);
-        
-        
-        
-        startAutoTest();
+        });
+        clear.setToolTip("Clear the log window");
+        getHeader().addTool(clear);
+        getHeader().addTool(close);
     }
     
     class TestType extends BaseModelData {
