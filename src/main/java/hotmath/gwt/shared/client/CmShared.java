@@ -52,6 +52,14 @@ public class CmShared implements EntryPoint {
         return _queryParameters.get(name);
     }
     
+    static public void setQueryParameter(String name, String value) {
+        _queryParameters.put(name, value);
+    }
+
+    static public void removeQueryParameter(String name) {
+        _queryParameters.remove(name);
+    }
+    
     /** Return parameter for value or empty string if not set
      * 
      * @param name

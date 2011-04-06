@@ -13,6 +13,8 @@ import com.extjs.gxt.ui.client.widget.Html;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.RunAsyncCallback;
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -111,11 +113,10 @@ public class FooterPanel extends LayoutContainer {
 	public static void startAutoTest_Gwt() {
 
 		GWT.runAsync(new RunAsyncCallback() {
-
 			@Override
 			public void onSuccess() {
-				AutoTestWindow.getInstance().setVisible(true);
-				AutoTestWindow.getInstance().startAutoTest();
+			    AutoTestWindow.getInstance().setVisible(true);
+                AutoTestWindow.getInstance().startAutoTest();
 			}
 
 			@Override

@@ -3,6 +3,7 @@ package hotmath.gwt.cm_tools.client.ui;
 
 import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_tools.client.ui.context.CmContext;
+import hotmath.gwt.shared.client.CmShared;
 
 import java.util.Date;
 
@@ -49,7 +50,7 @@ public class AutoTestWindow extends ContentPanel {
 
         _listView.getStore().setMonitorChanges(true);
         
-        addLogMessage("Auto Test ready");
+        // addLogMessage("Auto Test ready");
     }
     
     public void addLogMessage(String msg) {
@@ -111,6 +112,26 @@ public class AutoTestWindow extends ContentPanel {
         });
         run.setToolTip("Toggle the auto test process");
         
+        final ToggleButton rppOnly = new ToggleButton("RPP/RPA only");
+        if(CmShared.getQueryParameter("test_rpp_only") != null) {
+            rppOnly.toggle(true);
+        }
+        rppOnly.addSelectionListener(new SelectionListener<ButtonEvent>() {
+            @Override
+            public void componentSelected(ButtonEvent ce) {
+                if(rppOnly.isPressed()) {
+                    addLogMessage("Enabling RPP only mode");
+                    CmShared.setQueryParameter("test_rpp_only", "true");
+                }
+                else {
+                    addLogMessage("Disabling RPP only mode");
+                    CmShared.removeQueryParameter("test_rpp_only");
+                }
+            }
+        });
+        rppOnly.setToolTip("Only show RPPs or RPAs when enabled");
+        
+        
         _logEnable = new ToggleButton("Enable Log");
         _logEnable.toggle(true);
 
@@ -120,8 +141,9 @@ public class AutoTestWindow extends ContentPanel {
         _waitTimeForSingleResourceSlider.setToolTip("Time between resource item loads");
         
         getHeader().addTool(_waitTimeForSingleResourceSlider);
-        
+
         getHeader().addTool(run);
+        getHeader().addTool(rppOnly);
         getHeader().addTool(_logEnable);
         Button clear = new Button("Clear", new SelectionListener<ButtonEvent>() {
             @Override
