@@ -1,0 +1,11 @@
+<module rename-to='cm_qa'>
+
+      <inherits name="com.google.gwt.user.User" />
+      <inherits name="com.extjs.gxt.ui.GXT"/>
+      <inherits name='hotmath.gwt.cm_core.CmCore'/>
+      <inherits name='hotmath.gwt.cm_tools.CatchupMathTools'/>
+      <inherits name='hotmath.gwt.cm_rpc.CmRpc'/>
+
+
+      <entry-point class='hotmath.gwt.cm_qa.client.CmQa'/>
+</module>
