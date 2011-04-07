@@ -49,6 +49,7 @@ public class CmQa implements EntryPoint {
                 public void handleEvent(MessageBoxEvent be) {
                     if(be.getValue() != null) {
                         CmQa.__userName = be.getValue();
+                        setUserName();
                     }
                     else {
                         _mainPort.removeAll();
@@ -58,9 +59,12 @@ public class CmQa implements EntryPoint {
                 }
             });
         }
-        
-        userNameLabel.setText("User: " + CmQa.__userName);
+        setUserName();
         RootPanel.get().add(_mainPort);
+    }
+    
+    private void setUserName() {
+        userNameLabel.setText("User: " + CmQa.__userName);        
     }
     
     
