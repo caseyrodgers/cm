@@ -1,5 +1,6 @@
 package hotmath.gwt.cm_qa.server;
 
+import hotmath.gwt.cm_rpc.client.model.CategoryModel;
 import hotmath.gwt.cm_rpc.client.model.QaEntryModel;
 import hotmath.gwt.cm_rpc.client.rpc.CmArrayList;
 import hotmath.gwt.cm_rpc.client.rpc.CmList;
@@ -20,9 +21,12 @@ public class CmQaDao {
             String sql = "select category, item, description, verified_time, is_problem " +
                          "from QA_ITEM i " +
                          " where i.category like ? " +
-                         "order by category, item";
+                         "order by load_order, item";
             ps = conn.prepareStatement(sql);
             
+            if(category == null) {
+                category = "NOT_SPECIFIED";
+            }
             ps.setString(1, category.equals("all")?"%":category);
             ResultSet rs = ps.executeQuery();
             
@@ -39,6 +43,24 @@ public class CmQaDao {
         }
     }
     
+    public CmList<CategoryModel> getQaCategories(final Connection conn) throws Exception {
+        
+        PreparedStatement ps=null;
+        try {
+            String sql = "select * from QA_CATEGORY ORDER BY category_name";
+            ps = conn.prepareStatement(sql);
+            ResultSet rs = ps.executeQuery();
+            
+            CmList<CategoryModel> items = new CmArrayList<CategoryModel>();
+            while(rs.next()) {
+                items.add(new CategoryModel(rs.getString("category_name")));
+            }
+            return items;
+        }
+        finally {
+            SqlUtilities.releaseResources(null, ps, null);
+        }
+    }
     
     public boolean saveQaItem(final Connection conn, String userName, String item, boolean verified, boolean isProblem) throws Exception {
         PreparedStatement ps=null;

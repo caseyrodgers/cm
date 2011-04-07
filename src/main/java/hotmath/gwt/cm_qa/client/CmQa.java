@@ -1,17 +1,32 @@
 package hotmath.gwt.cm_qa.client;
+import hotmath.gwt.cm_core.client.CmEvent;
 import hotmath.gwt.cm_core.client.CmGwtUtils;
+import hotmath.gwt.cm_core.client.EventBus;
+import hotmath.gwt.cm_rpc.client.model.CategoryModel;
+import hotmath.gwt.cm_rpc.client.rpc.CmList;
 import hotmath.gwt.cm_rpc.client.rpc.CmService;
 import hotmath.gwt.cm_rpc.client.rpc.CmServiceAsync;
+import hotmath.gwt.cm_rpc.client.rpc.GetQaCategoriesAction;
+import hotmath.gwt.shared.client.rpc.RetryAction;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import com.extjs.gxt.ui.client.Style.LayoutRegion;
+import com.extjs.gxt.ui.client.data.BaseModel;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.MessageBoxEvent;
+import com.extjs.gxt.ui.client.event.SelectionChangedEvent;
+import com.extjs.gxt.ui.client.event.SelectionChangedListener;
+import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.Component;
+import com.extjs.gxt.ui.client.widget.HorizontalPanel;
 import com.extjs.gxt.ui.client.widget.Html;
 import com.extjs.gxt.ui.client.widget.Label;
-import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.Viewport;
+import com.extjs.gxt.ui.client.widget.form.ComboBox;
+import com.extjs.gxt.ui.client.widget.form.ComboBox.TriggerAction;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
 import com.google.gwt.core.client.EntryPoint;
@@ -22,19 +37,10 @@ import com.google.gwt.user.client.ui.RootPanel;
 
 public class CmQa implements EntryPoint {
     Viewport _mainPort = new Viewport();
-    public static String __category;
     public static String __userName;
-    
+    public static String __category;
     public void onModuleLoad() {
         
-        __category = CmGwtUtils.getQueryParameter("category");
-        if(__category == null) {
-            MessageBox.alert("Error", "The category must be specified in the URL (ie, category=?)", new Listener<MessageBoxEvent>() {
-                @Override
-                public void  handleEvent(MessageBoxEvent be) {
-                }
-            });
-        }
         _mainPort.setLayout(new BorderLayout());
         
         _mainPort.add(createHeader(), new BorderLayoutData(LayoutRegion.NORTH,50));
@@ -61,6 +67,9 @@ public class CmQa implements EntryPoint {
         }
         setUserName();
         RootPanel.get().add(_mainPort);
+        
+        
+        readCategoriesFromServer();
     }
     
     private void setUserName() {
@@ -69,18 +78,53 @@ public class CmQa implements EntryPoint {
     
     
     Label userNameLabel = new Label();
+    ComboBox<CategoryModelGxt> _categoryCombo;
     private Component createHeader() {
-        LayoutContainer lc = new LayoutContainer();
-        lc.add(new Html("<h1>QA Items for " + __category + "</h1>"));
-        lc.add(userNameLabel);
+        HorizontalPanel lc = new HorizontalPanel();
+        lc.setSpacing(10);
+        
+        _categoryCombo = new ComboBox<CategoryModelGxt>();
+        
+        lc.add(new Html("<div style='font-weight: bold;font-size: 120%'>Catchup Math QA Items</div>"));
+        lc.add(userNameLabel);        
+        _categoryCombo.setStore(new ListStore<CategoryModelGxt>());
+        _categoryCombo.setEditable(false);
+        _categoryCombo.setEmptyText("-- Select Category --");
+        _categoryCombo.setTriggerAction(TriggerAction.ALL);
+        _categoryCombo.setDisplayField("category");
+        _categoryCombo.addSelectionChangedListener(new SelectionChangedListener<CategoryModelGxt>() {
+            @Override
+            public void selectionChanged(SelectionChangedEvent<CategoryModelGxt> se) {
+                EventBus.getInstance().fireEvent(new CmEvent(EventTypes.CATEGORY_CHANGED, se.getSelectedItem().getCategory()));
+            }
+        });
+
+        lc.add(_categoryCombo);
+        
+        
         return lc;
     }
     
+    private void readCategoriesFromServer() {
+        new RetryAction<CmList<CategoryModel>>() {
+            
+            @Override
+            public void attempt() {
+                GetQaCategoriesAction action = new GetQaCategoriesAction();
+                setAction(action);
+                CmQa.getCmService().execute(action, this);
+            }
+            
+            @Override
+            public void oncapture(CmList<CategoryModel> items) {
+                _categoryCombo.getStore().add(CategoryModelGxt.convert(items));
+            }
+        }.register();            
+    }
     
     private Component createBody() {
         return new CmQaBody();
     } 
-    
     
 
     /**
@@ -105,6 +149,27 @@ public class CmQa implements EntryPoint {
         _cmService = (CmServiceAsync) GWT.create(CmService.class);
         ((ServiceDefTarget) _cmService).setServiceEntryPoint(point + "services/cmService");
     }    
-    
-    
 }
+
+
+
+
+class CategoryModelGxt extends BaseModel {
+    
+    public CategoryModelGxt(String category) {
+        set("category", category);
+    }
+    
+    public String getCategory() {
+        return get("category");
+    }
+    public static List<CategoryModelGxt> convert(CmList<CategoryModel> items) {
+        
+        List<CategoryModelGxt> list = new ArrayList<CategoryModelGxt>();
+        for(int i=0,t=items.size();i<t;i++) {
+            list.add(new CategoryModelGxt(items.get(i).getCategory()));
+        }
+        return list;
+    }
+}
+

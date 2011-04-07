@@ -1,5 +1,8 @@
 package hotmath.gwt.cm_qa.client;
 
+import hotmath.gwt.cm_core.client.CmEvent;
+import hotmath.gwt.cm_core.client.CmEventListener;
+import hotmath.gwt.cm_core.client.EventBus;
 import hotmath.gwt.cm_rpc.client.model.QaEntryModel;
 import hotmath.gwt.cm_rpc.client.rpc.CmList;
 import hotmath.gwt.cm_rpc.client.rpc.GetQaItemsAction;
@@ -23,6 +26,7 @@ import com.extjs.gxt.ui.client.event.SelectionEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
+import com.extjs.gxt.ui.client.widget.Label;
 import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.CheckBox;
@@ -53,7 +57,15 @@ public class CmQaBody extends ContentPanel {
         
         setLayout(new FitLayout());
         add(_grid);
-        getQaItems();
+        
+        EventBus.getInstance().addEventListener(new CmEventListener() {
+            @Override
+            public void handleEvent(CmEvent event) {
+                if(event.getEventType() == EventTypes.CATEGORY_CHANGED) {
+                    getQaItems(event.getEventData().toString());
+                }
+            }
+        });
     }
     
     
@@ -101,7 +113,7 @@ public class CmQaBody extends ContentPanel {
         ColumnConfig column = new ColumnConfig();
         column.setId("item");
         column.setHeader("QA Item");
-        column.setWidth(240);
+        column.setWidth(140);
         column.setSortable(true);
         configs.add(column);
 
@@ -110,6 +122,19 @@ public class CmQaBody extends ContentPanel {
         desc.setHeader("Description");
         desc.setWidth(400);
         desc.setSortable(true);
+        desc.setRenderer(new GridCellRenderer<QaEntryModelGxt>() {
+            @Override
+            public Object render(QaEntryModelGxt model, String property, ColumnData config, int rowIndex, int colIndex,
+                    ListStore<QaEntryModelGxt> store, Grid<QaEntryModelGxt> grid) {
+                
+                String msg = (String)model.get("description");
+                Label l = new Label(msg);
+                l.setToolTip(msg);
+                return l; 
+            }
+        });
+        
+        
         configs.add(desc);
         
         
@@ -192,19 +217,20 @@ public class CmQaBody extends ContentPanel {
     }
     
     
-    protected void getQaItems() {
+    protected void getQaItems(final String category) {
         
         new RetryAction<CmList<QaEntryModel>>() {
             
             @Override
             public void attempt() {
-                GetQaItemsAction action = new GetQaItemsAction(CmQa.__category);
+                GetQaItemsAction action = new GetQaItemsAction(category);
                 setAction(action);
                 CmQa.getCmService().execute(action, this);
             }
             
             @Override
             public void oncapture(CmList<QaEntryModel> items) {
+                _grid.getStore().removeAll();
                 _grid.getStore().add(QaEntryModelGxt.convert(items));
                 __isReady = true;
             }
