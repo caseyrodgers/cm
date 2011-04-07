@@ -33,9 +33,10 @@ public class FooterPanel extends LayoutContainer {
 
 		if (CmShared.getQueryParameter("debug") != null) {
 			html += "<li><a href='javascript:void(0)' onclick='resetProgram_Gwt();return false;'>Reset</a></li>";
-			html += "<li><a href='javascript:void(0)' onclick='showPrescriptionData_Gwt();return false;'>prescription data</a>";
-			html += "<li><a href='javascript:void(0)' onclick='showPrescriptionSession_Gwt();return false;'>prescription sessions</a>";
-			html += "<li><a href='javascript:void(0)' onclick='startAutoTest_Gwt();return false;'>Auto Test</a>";
+			html += "<li><a href='javascript:void(0)' onclick='showPrescriptionData_Gwt();return false;'>prescription data</a></li>";
+			html += "<li><a href='javascript:void(0)' onclick='showPrescriptionSession_Gwt();return false;'>prescription sessions</a></li>";
+			html += "<li><a href='javascript:void(0)' onclick='startAutoTest_Gwt();return false;'>Auto Test</a></li>";
+			html += "<li>CM_HOME_URL: " + CmShared.CM_HOME_URL + "</li>";
 		}
 
 		html += "</ul>" + "<div>Brought to you by Hotmath.com</div>";
