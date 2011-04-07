@@ -54,17 +54,15 @@ public class CmProgramFlow {
     public CmProgramFlow(final Connection conn, int userId) throws Exception {
         this.activeInfo = sdao.loadActiveInfo(conn, userId);
         
-        /** make the segment 1 based
-         *
-         *  why?
-         */
-//        if(this.activeInfo.getActiveRunId() == 0) {
-//            this.activeInfo.setActiveSegment(1);
-//        }
-        
-        
         this.userProgram = updao.loadProgramInfoCurrent(conn, userId);
         this.student = sdao.getStudentModel(conn, userProgram.getUserId());
+        
+        /** make the program segment 1 based
+        */
+       if(this.activeInfo.getActiveRunId() == 0) {
+           this.activeInfo.setActiveSegment(1);
+           sdao.setActiveInfo(conn, userId, activeInfo);
+       }
     }
 
     /**
