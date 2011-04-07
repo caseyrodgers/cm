@@ -35,6 +35,8 @@ public class AutoTestWindow extends ContentPanel {
     ToggleButton _logEnable;
     private AutoTestWindow() {
         
+        CmShared.setQueryParameter("test_rpp_only", "true");
+
         setSize(500,200);
         setHeading("Auto Test Log");
         setLayout(new FitLayout());

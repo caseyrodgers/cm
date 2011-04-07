@@ -59,7 +59,7 @@ public class CmProgramFlow {
         
         /** make the program segment 1 based
         */
-       if(this.activeInfo.getActiveRunId() == 0) {
+       if(this.activeInfo.getActiveSegment() == 0) {
            this.activeInfo.setActiveSegment(1);
            sdao.setActiveInfo(conn, userId, activeInfo);
        }
