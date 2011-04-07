@@ -55,11 +55,12 @@ public class CmProgramFlow {
         this.activeInfo = sdao.loadActiveInfo(conn, userId);
         
         /** make the segment 1 based
-         * 
+         *
+         *  why?
          */
-        if(this.activeInfo.getActiveRunId() == 0) {
-            this.activeInfo.setActiveSegment(1);
-        }
+//        if(this.activeInfo.getActiveRunId() == 0) {
+//            this.activeInfo.setActiveSegment(1);
+//        }
         
         
         this.userProgram = updao.loadProgramInfoCurrent(conn, userId);
@@ -200,6 +201,16 @@ public class CmProgramFlow {
         return action;
     }
 
+    /** Setup so the active item is to retake the current segment
+     */
+    public CmProgramFlowAction retakeActiveProgramSegment(final Connection conn) throws Exception {
+        activeInfo.setActiveRunId(0);
+        activeInfo.setActiveTestId(0);
+        sdao.setActiveInfo(conn, userProgram.getUserId(), activeInfo);
+        
+        return getActiveFlowAction(conn);
+    }
+    
     /**
      * create a brand new test for the current segment
      * 
@@ -367,9 +378,9 @@ public class CmProgramFlow {
      * @throws Exception
      */
     public void reset(final Connection conn) throws Exception {
+        activeInfo.setActiveSegment(1);
         activeInfo.setActiveRunId(0);
         activeInfo.setActiveRunSession(0);
-        activeInfo.setActiveSegment(0);
         activeInfo.setActiveSegmentSlot(0);
         activeInfo.setActiveTestId(0);
 
@@ -401,7 +412,7 @@ public class CmProgramFlow {
      * @return
      */
     public boolean areMoreSegments() {
-        return activeInfo.getActiveSegment() + 1 < userProgram.getConfig().getSegmentCount();
+        return activeInfo.getActiveSegment() < userProgram.getConfig().getSegmentCount();
     }
 
     /**

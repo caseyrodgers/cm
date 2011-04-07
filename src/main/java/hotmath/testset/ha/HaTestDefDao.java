@@ -253,6 +253,8 @@ public class HaTestDefDao {
     public List<String> getTestIdsForSegment(final Connection conn, StudentUserProgramModel userProgram, int segment,
             String textcode, String chapter, HaTestConfig config, int segmentSlot) throws Exception {
 
+        assert(segment > 0);
+        
         /**
          * Custom program?
          * 
@@ -292,7 +294,7 @@ public class HaTestDefDao {
             solsPerSeg = (config != null) ? solsPerSeg = cnt / config.getSegmentCount() : 0;
             solsPerSeg = (solsPerSeg < 5) ? cnt : solsPerSeg;
     
-            segPnEnd = ((segment+1) * solsPerSeg);
+            segPnEnd = ((segment) * solsPerSeg);
             segPnStart = (segPnEnd - (solsPerSeg - 1));
     
             problemIds = getTestIds(conn, userProgram, textcode, chapter, segmentSlot, segPnStart, segPnEnd, config);
