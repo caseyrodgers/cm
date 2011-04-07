@@ -54,7 +54,7 @@ public class PassedSectionWindow extends CmWindow {
             public void componentSelected(ButtonEvent ce) {
                 close();
 
-                CmProgramFlowClientManager.moveToNextInProgramFlow();
+                CmProgramFlowClientManager.moveToNextSegmentInProgram();
             }
         }));
 

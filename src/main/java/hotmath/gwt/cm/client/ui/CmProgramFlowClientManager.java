@@ -32,6 +32,11 @@ public class CmProgramFlowClientManager {
     static public void getActiveProgramState(final Callback callback) {
         getProgramState(callback, FlowType.ACTIVE);
     }
+    
+    static public void retakeActiveProgramSegment(final Callback callback) {
+        getProgramState(callback, FlowType.RETAKE_SEGMENT);
+    }
+    
     static private void getProgramState(final Callback callback, final FlowType flowType) {
 
         new RetryAction<CmProgramFlowAction>() {
@@ -53,10 +58,11 @@ public class CmProgramFlowClientManager {
             }
         }.register();       
     }    
+
     
-    static public void moveToNextInProgramFlow() {
-        CmProgramFlowClientManager.getNextActiveProgramState(new Callback() {
-            
+    static Callback __callBack;
+    static {
+        __callBack = new Callback() {
             @Override
             public void programFlow(CmProgramFlowAction flowResponse) {
                 switch(flowResponse.getPlace()) {
@@ -85,8 +91,16 @@ public class CmProgramFlowClientManager {
                         break;
                 }
             }
-        });
-        
+        };
+    }
+
+    static public void moveToNextSegmentInProgram() {
+        CmProgramFlowClientManager.getNextActiveProgramState(__callBack);
+    }
+    
+    
+    static public void retakeProgramSegment() {
+        CmProgramFlowClientManager.retakeActiveProgramSegment(__callBack);
     }
 
     public static interface Callback {

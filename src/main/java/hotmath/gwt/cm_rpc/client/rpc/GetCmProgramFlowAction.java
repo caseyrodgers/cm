@@ -4,7 +4,7 @@ public class GetCmProgramFlowAction implements Action<CmProgramFlowAction>{
     
     int userId;
     
-    public enum FlowType {ACTIVE,NEXT};
+    public enum FlowType {ACTIVE,NEXT,RETAKE_SEGMENT};
     
     FlowType flowType;
     

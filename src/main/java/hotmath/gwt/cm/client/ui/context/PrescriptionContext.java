@@ -243,7 +243,7 @@ public class PrescriptionContext implements CmContext {
             public void handleEvent(MessageBoxEvent be) {
                 EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_MODAL_WINDOW_CLOSED, this));
                 if (be.getButtonClicked().getText().equals("Yes")) {
-                    CmProgramFlowClientManager.moveToNextInProgramFlow();
+                    CmProgramFlowClientManager.retakeProgramSegment();
                 } else {
                     ContextController.getInstance().setCurrentContext(PrescriptionContext.this);
                 }
@@ -413,7 +413,7 @@ public class PrescriptionContext implements CmContext {
                 if ((cs + 1) < ts) {
                     prescriptionCm.getAsyncDataFromServer(cs + 1);
                 } else {
-                    CmProgramFlowClientManager.moveToNextInProgramFlow();
+                    CmProgramFlowClientManager.moveToNextSegmentInProgram();
                 }
             }
         });
