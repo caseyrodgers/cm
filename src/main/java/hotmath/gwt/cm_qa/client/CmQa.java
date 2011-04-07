@@ -29,7 +29,7 @@ public class CmQa implements EntryPoint {
         
         __category = CmGwtUtils.getQueryParameter("category");
         if(__category == null) {
-            MessageBox.alert("Error", "Please specify the category", new Listener<MessageBoxEvent>() {
+            MessageBox.alert("Error", "The category must be specified in the URL (ie, category=?)", new Listener<MessageBoxEvent>() {
                 @Override
                 public void  handleEvent(MessageBoxEvent be) {
                 }
@@ -49,13 +49,18 @@ public class CmQa implements EntryPoint {
                 public void handleEvent(MessageBoxEvent be) {
                     if(be.getValue() != null) {
                         CmQa.__userName = be.getValue();
-                        
-                        userNameLabel.setText(CmQa.__userName);
-                        RootPanel.get().add(_mainPort);
+                    }
+                    else {
+                        _mainPort.removeAll();
+                        _mainPort.add(new Label("User must be specified"));
+                        _mainPort.layout();
                     }
                 }
             });
         }
+        
+        userNameLabel.setText("User: " + CmQa.__userName);
+        RootPanel.get().add(_mainPort);
     }
     
     

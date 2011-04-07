@@ -7,13 +7,15 @@ public class QaEntryModel implements Response {
     String item;
     String description;
     boolean verified;
+    boolean problem;
     
     public QaEntryModel() {}
     
-    public QaEntryModel(String item, String description, boolean verified) {
+    public QaEntryModel(String item, String description, boolean verified, boolean problem) {
         this.item = item;
         this.description = description;
         this.verified = verified;
+        this.problem = problem;
     }
 
     public String getItem() {
@@ -40,8 +42,17 @@ public class QaEntryModel implements Response {
         this.verified = verified;
     }
 
+    public boolean isProblem() {
+        return problem;
+    }
+
+    public void setProblem(boolean problem) {
+        this.problem = problem;
+    }
+
     @Override
     public String toString() {
-        return "QaEntryModel [item=" + item + ", description=" + description + ", verified=" + verified + "]";
+        return "QaEntryModel [item=" + item + ", description=" + description + ", verified=" + verified + ", problem="
+                + problem + "]";
     }
 }

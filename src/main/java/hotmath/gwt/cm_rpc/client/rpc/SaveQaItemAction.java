@@ -6,13 +6,23 @@ public class SaveQaItemAction implements Action<RpcData>{
     String userName;
     String item;
     boolean verified;
+    boolean problem;
     
     public SaveQaItemAction(){}
     
-    public SaveQaItemAction(String userName, String item, boolean verified) {
+    public SaveQaItemAction(String userName, String item, boolean verified, boolean problem) {
         this.userName = userName;
         this.item = item;
         this.verified = verified;
+        this.problem = problem;
+    }
+
+    public boolean isProblem() {
+        return problem;
+    }
+
+    public void setProblem(boolean problem) {
+        this.problem = problem;
     }
 
     public String getUserName() {
@@ -41,7 +51,8 @@ public class SaveQaItemAction implements Action<RpcData>{
 
     @Override
     public String toString() {
-        return "SaveQaItemAction [userName=" + userName + ", item=" + item + ", verified=" + verified + "]";
+        return "SaveQaItemAction [userName=" + userName + ", item=" + item + ", verified=" + verified + ", problem="
+                + problem + "]";
     }
 
 }
