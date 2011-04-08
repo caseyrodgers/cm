@@ -117,6 +117,7 @@ public class CmQa implements EntryPoint {
             
             @Override
             public void oncapture(CmList<CategoryModel> items) {
+                //_categoryCombo.getStore().add(new CategoryModelGxt("all"));
                 _categoryCombo.getStore().add(CategoryModelGxt.convert(items));
             }
         }.register();            

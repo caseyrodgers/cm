@@ -28,6 +28,7 @@ import com.extjs.gxt.ui.client.store.Store;
 import com.extjs.gxt.ui.client.store.StoreSorter;
 import com.extjs.gxt.ui.client.util.Margins;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
+import com.extjs.gxt.ui.client.widget.HorizontalPanel;
 import com.extjs.gxt.ui.client.widget.Html;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.ListView;
@@ -77,9 +78,10 @@ class ManageGroupsAssignStudents extends CmWindow {
 	Button _btnSave;
 
 	private void drawGui() {
-		LayoutContainer lc = new LayoutContainer();
-		lc.setLayout(new RowLayout(Orientation.HORIZONTAL));
-		
+	    
+	    setLayout(new BorderLayout());
+	    
+
 		StoreSorter<StudentModelExt> sorter = new StoreSorter<StudentModelExt>() {
             @Override
             public int compare(Store<StudentModelExt> store, StudentModelExt m1, StudentModelExt m2,
@@ -134,14 +136,9 @@ class ManageGroupsAssignStudents extends CmWindow {
 		new ListViewDragSource(_listAll);
 		new ListViewDragSource(_listInGroup);
 
-		RowData data = new RowData(.5, 1);
-		data.setMargins(new Margins(5));
-
-		lc.add(new MyListContainer(_listAll, "Students Not In Group", false),
-				data);
-
-		lc.add(new MyListContainer(_listInGroup, "Students In Group", true),
-				data);
+	    LayoutContainer lc = new LayoutContainer(new BorderLayout());
+		lc.add(new MyListContainer(_listAll, "Students Not In Group", false),new BorderLayoutData(LayoutRegion.WEST,270));
+		lc.add(new MyListContainer(_listInGroup, "Students In Group", true),new BorderLayoutData(LayoutRegion.CENTER));
 
 		add(lc, new BorderLayoutData(LayoutRegion.CENTER));
 

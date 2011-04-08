@@ -113,14 +113,14 @@ public class CmQaBody extends ContentPanel {
         ColumnConfig column = new ColumnConfig();
         column.setId("item");
         column.setHeader("QA Item");
-        column.setWidth(140);
+        column.setWidth(240);
         column.setSortable(true);
         configs.add(column);
 
         ColumnConfig desc = new ColumnConfig();
         desc.setId("description");
         desc.setHeader("Description");
-        desc.setWidth(400);
+        desc.setWidth(600);
         desc.setSortable(true);
         desc.setRenderer(new GridCellRenderer<QaEntryModelGxt>() {
             @Override
@@ -149,8 +149,8 @@ public class CmQaBody extends ContentPanel {
                 System.out.println("Test");
             }
         });
-        grid.setWidth("500px");
-        grid.setHeight("300px");
+        //grid.setWidth("500px");
+        //grid.setHeight("300px");
         grid.setStateful(true);
         grid.setLoadMask(true);
         grid.addPlugin(verifiedColumn);
