@@ -1,14 +1,12 @@
 package hotmath.gwt.cm.client.ui.context;
 
 import hotmath.gwt.cm.client.CatchupMath;
-import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
 
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.widget.Html;
 import com.extjs.gxt.ui.client.widget.button.Button;
-import com.google.gwt.user.client.Timer;
 
 /** Auto Advanced information dialog.
  * 
@@ -48,15 +46,6 @@ public class AutoAdvancedProgramWindow extends CmWindow {
                 CatchupMath.reloadUser();
             }
         });
-        
-        if(UserInfo.getInstance().isAutoTestMode()) {
-            new Timer() {
-                @Override
-                public void run() {
-                    CatchupMath.reloadUser();
-                }
-            }.schedule(1000);
-        }
 
         addButton(close);
         setVisible(true);
