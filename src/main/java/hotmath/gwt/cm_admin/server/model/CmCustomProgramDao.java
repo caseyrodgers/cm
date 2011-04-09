@@ -701,7 +701,7 @@ public class CmCustomProgramDao {
      */
     public int getSubjectLevel(String subject) throws Exception {
         if (subject == null || subject.length() == 0)
-            return 3; // *no subject equals alg 1 by default
+            return 10; // *no subject equals alg 1 by default
         
         else if (subject.equals("Ess"))
             return 8;
