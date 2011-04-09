@@ -8,6 +8,7 @@ import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.data.CmAsyncRequest;
 import hotmath.gwt.shared.client.rpc.RetryAction;
+import hotmath.gwt.shared.client.rpc.RetryActionManager;
 import hotmath.gwt.shared.client.rpc.action.AddGroupAction;
 
 import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
@@ -198,6 +199,7 @@ public class GroupWindow extends LayoutContainer {
                 
                 if(caught.getMessage().indexOf("you entered") > 0) {
                     CatchupMathTools.showAlert("Problem adding group", caught.getMessage());
+                    RetryActionManager.getInstance().requestComplete(this);
                     return;
                 }
                 super.onFailure(caught);
