@@ -686,22 +686,33 @@ public class CmCustomProgramDao {
      * 
      * TODO: This should not be hard-coded here, use table.
      * 
+     *
+     * 
+     *     -- grade levels provided by Ananthi
+           Algebra 2 = 12
+           Geometry = 11
+           Algebra 1 = 10
+           Pre-Algebra = 9
+           Essentials = 8
+     * 
+     * 
      * @param subject
      * @return
      */
     public int getSubjectLevel(String subject) throws Exception {
         if (subject == null || subject.length() == 0)
             return 3; // *no subject equals alg 1 by default
+        
         else if (subject.equals("Ess"))
-            return 1;
+            return 8;
         else if (subject.equals("Pre-Alg"))
-            return 2;
+            return 9;
         else if (subject.equals("Alg 1"))
-            return 3;
+            return 10;
         else if (subject.equals("Geom"))
-            return 4;
+            return 11;
         else if (subject.equals("Alg 2"))
-            return 5;
+            return 12;
         else
             return 99;
     }
