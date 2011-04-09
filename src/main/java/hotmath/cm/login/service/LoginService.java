@@ -20,6 +20,7 @@ import hotmath.testset.ha.HaAdmin;
 import hotmath.util.HMConnectionPool;
 import hotmath.util.Jsonizer;
 import hotmath.util.sql.SqlUtilities;
+import hotmath.gwt.cm_rpc.client.rpc.CmRpcException;
 
 import java.io.IOException;
 import java.net.URLDecoder;
@@ -193,7 +194,7 @@ public class LoginService extends HttpServlet {
 				else {
 					clientInfo.setUserType(UserType.STUDENT);
 					UserLoginResponse response = ActionDispatcher.getInstance().execute(new GetUserInfoAction(loginInfo.getUserId(),loginInfo.getLoginName()));
-					UserInfo userInfo = response.getUserInfo();
+					//UserInfo userInfo = response.getUserInfo();
 					String jsonizedUserInfo = Jsonizer.toJson(response);
 					req.getSession().setAttribute("jsonizedUserInfo", jsonizedUserInfo);
 
@@ -206,11 +207,14 @@ public class LoginService extends HttpServlet {
 		catch(Exception e) {
 			if (e instanceof CmExceptionDoNotNotify)
 			    req.getSession().setAttribute("error-msg", e.getMessage());
+			else if (e instanceof CmRpcException && ((CmRpcException)e).isUserException()) {
+                req.getSession().setAttribute("error-msg", e.getMessage());				
+			}
 			else {
 				String msg = null;
 				try {
 					msg = CmMessagePropertyReader.getInstance().getProperty("SYSTEM_ERROR_MSG");
-					LOGGER.debug("msg: " + msg);
+					LOGGER.error(msg, e);
 				}
 				catch(Exception cme) {}
 			    req.getSession().setAttribute("error-msg",   msg);
