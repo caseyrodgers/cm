@@ -8,6 +8,7 @@ import hotmath.cm.util.report.StudentReportCard;
 import hotmath.cm.util.report.StudentSummaryReport;
 import hotmath.gwt.cm_admin.server.model.CmAdminDao;
 import hotmath.gwt.cm_rpc.client.rpc.Action;
+import hotmath.gwt.cm_rpc.client.rpc.CmRpcException;
 import hotmath.gwt.cm_rpc.client.rpc.Response;
 import hotmath.gwt.cm_rpc.server.rpc.ActionHandler;
 import hotmath.gwt.cm_tools.client.model.StudentModelExt;
@@ -95,39 +96,37 @@ public class GeneratePdfCommand implements ActionHandler<GeneratePdfAction, CmWe
     		/** 
     		 * write PDF ByteArrayOutputStream to a ServletOutputStream
     		 */
-    		 if (baos != null) {
+    		 assert(baos != null);
 
-    			 // write to temporary file to be cleaned up later
-    			 String outputBase = CmWebResourceManager.getInstance().getFileBase();
+			 // write to temporary file to be cleaned up later
+			 String outputBase = CmWebResourceManager.getInstance().getFileBase();
 
-    			 // if outputBase/adminId directory doesn't exist, create it
+			 // if outputBase/adminId directory doesn't exist, create it
 
-    			 String unique = Long.toString(System.currentTimeMillis());
+			 String unique = Long.toString(System.currentTimeMillis());
 
-    			 outputBase = outputBase + "/" + adminId;
-    			 String outputDir = ensureOutputDir(outputBase, unique);
+			 outputBase = outputBase + "/" + adminId;
+			 String outputDir = ensureOutputDir(outputBase, unique);
 
-    			 File filePath = new File(outputDir, reportName + ".pdf");
-    			 logger.info("Writing PDF output: " + filePath);
-    			 FileOutputStream fw = null;
-    			 try {
-    				 fw = new FileOutputStream(filePath);
-    				 baos.writeTo(fw);
+			 File filePath = new File(outputDir, reportName + ".pdf");
+			 logger.info("Writing PDF output: " + filePath);
+			 FileOutputStream fw = null;
+			 try {
+				 fw = new FileOutputStream(filePath);
+				 baos.writeTo(fw);
 
-    				 return new CmWebResource(filePath.getPath(), CmWebResourceManager.getInstance().getFileBase(), CmWebResourceManager.getInstance().getWebBase());
-    			 }
-    			 finally {
-    				 if (fw != null) fw.close();
-    			 }
-    		 }
-    		 else {
-    			 throw new Exception("PDF generation failed");
-    		 }
+				 return new CmWebResource(filePath.getPath(), CmWebResourceManager.getInstance().getFileBase(), CmWebResourceManager.getInstance().getWebBase());
+			 }
+			 finally {
+				 if (fw != null) fw.close();
+			 }
     	}
     	catch(Throwable th) {
-    		logger.error(String.format("*** Error generating pdfType: %s", action.getPdfType()), th);
+    	    /** we want to throw an exception to be able track the excpetion and
+    	     * return an approriate error message.  Not just null.
+    	     */
+    	    throw new CmRpcException("*** Error generating pdfType: " + action.getPdfType(), th);
     	}
-    	return null;
     }
 
     @Override

@@ -54,10 +54,9 @@ public class ResourceViewerImplTutor extends CmResourcePanelImplWithWhiteboard {
         if(CmShared.getQueryParameter("debug") != null) {
             addListener(Events.OnDoubleClick, new Listener<BaseEvent>() {
                 public void handleEvent(BaseEvent be) {
-                    showSolutionEditorForPid(getPid());
+                    CatchupMathTools.showAlert("solution pid: " + getPid());
                 }
             });
-            
             sinkEvents(Event.ONDBLCLICK);
         }
     }

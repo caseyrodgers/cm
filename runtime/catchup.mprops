@@ -1189,7 +1189,7 @@ order by lesson_name asc
 .key=ALL_USER_PROGRAM_SQL
 
 SELECT c.id, c.user_id, c.pass_percent, u.admin_id, c.test_def_id, t.test_name, c.test_config_json, c.create_date,
-       cp.id as custom_program_id, cp.name as custom_program_name
+       cp.id as custom_program_id, cp.name as custom_program_name,c.date_completed
 FROM      CM_USER_PROGRAM c
 JOIN      HA_USER u             on c.user_id = u.uid
 JOIN      HA_TEST_DEF t         on c.test_def_id = t.test_def_id
