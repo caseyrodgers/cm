@@ -1,7 +1,5 @@
 package hotmath.gwt.cm_rpc.client.rpc;
 
-import hotmath.gwt.shared.client.util.CmUserException;
-
 public class CmRpcException extends Exception implements java.io.Serializable {
 
 	String message;
@@ -14,7 +12,19 @@ public class CmRpcException extends Exception implements java.io.Serializable {
 
 		message = e.getMessage();
 		
-		isUserException = (e instanceof CmUserException);
+		if(message == null) {
+		    message = e.getClass().getName();
+		}
+	}
+
+	public CmRpcException(Exception e, boolean isUserException) {
+
+	    // make sure stack trace ends up in log
+	    e.printStackTrace();
+
+		message = e.getMessage();
+		
+		this.isUserException = isUserException;
 
 		if(message == null) {
 		    message = e.getClass().getName();
