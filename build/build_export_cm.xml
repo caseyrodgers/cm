@@ -34,6 +34,7 @@
         <pathelement location="${lib}/json-tools/1.5/lib/jsontools-core-1.5.jar"/>
         <pathelement location="${lib}/jdom/1.0/lib/jdom.jar"/>
         <pathelement location="${lib}/velocity/1.4/lib/velocity-1.4.jar"/>
+        <pathelement location="${lib}/json-tools/1.5/lib/antlr-2.7.5.jar"/>
     </path>
 
     <taskdef name="foreach" classname="net.sf.antcontrib.logic.ForEach"/>
