@@ -250,7 +250,7 @@ public class GetUserInfoCommand implements ActionHandler<GetUserInfoAction, User
         /** program segments are 1 based
          * 
          */
-        if(thisSegment < totalSegments) {
+        if(thisSegment <= totalSegments) {
             
             /** we know it is valid
              * 
