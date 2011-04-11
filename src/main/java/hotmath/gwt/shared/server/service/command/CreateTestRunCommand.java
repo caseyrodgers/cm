@@ -176,6 +176,7 @@ public class CreateTestRunCommand implements ActionHandler<CreateTestRunAction, 
             }
             else {
                 cmProgram.getActiveInfo().setActiveRunId(run.getRunId());
+                cmProgram.getActiveInfo().setActiveRunSession(0);
             }
             
             if(nextAction == null) {
