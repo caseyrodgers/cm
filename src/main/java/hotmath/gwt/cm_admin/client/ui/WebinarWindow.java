@@ -16,7 +16,7 @@ public class WebinarWindow extends CmWindow {
     String videoPlayerId = "flowPlayer_" + System.currentTimeMillis();
     
     public WebinarWindow() {
-        String swf = "/assets/webinar/cm_training_video_jan_2011/CM Training video Jan 2011_controller.swf";
+        String swf = "http://catchupmath.com/assets/webinar/cm_training_video_jan_2011/CM Training video Jan 2011_controller.swf";
 
         setHeading("Teaching with Catchup Math");
         setSize(800,498);
@@ -31,7 +31,7 @@ public class WebinarWindow extends CmWindow {
          *  if in cache it only plays once.
          *  
          */
-        String flashVars = "autostart=false&thumb=/assets/webinar/cm_training_video_jan_2011/FirstFrame.png&thumbscale=45&color=0x1A1A1A,0x1A1A1";
+        String flashVars = "autostart=false&thumb=http://catchupmath.com/assets/webinar/cm_training_video_jan_2011/FirstFrame.png&thumbscale=45&color=0x1A1A1A,0x1A1A1";
         SWFWidget swfWidget = new SWFWidget(swf, "100%", "100%", s);
 
         swfWidget.addFlashVar("config", flashVars);
