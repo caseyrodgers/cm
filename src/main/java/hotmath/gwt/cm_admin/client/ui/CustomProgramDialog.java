@@ -107,9 +107,7 @@ public class CustomProgramDialog extends CmWindow {
 
         TabItem tabCustomQuizzes = new TabItem("Custom Quizzes");
         
-        if(CmShared.getQueryParameter("debug") == null) {
-            tabCustomQuizzes.setEnabled(true);
-        }
+        tabCustomQuizzes.setEnabled(CmShared.getQueryParameter("debug") != null);
         
         tabCustomQuizzes.setLayout(new FitLayout());
         tabCustomQuizzes.add(_listViewCq);
