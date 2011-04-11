@@ -1,17 +1,19 @@
 package hotmath.gwt.cm_tools.client.ui;
 
+import hotmath.gwt.cm_rpc.client.rpc.CmList;
+import hotmath.gwt.cm_rpc.client.rpc.CmServiceAsync;
+import hotmath.gwt.cm_rpc.client.rpc.ResetStudentActivityAction;
+import hotmath.gwt.cm_rpc.client.rpc.RpcData;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.model.StudentActivityModel;
 import hotmath.gwt.cm_tools.client.model.StudentModelExt;
-import hotmath.gwt.cm_rpc.client.rpc.CmList;
-import hotmath.gwt.cm_rpc.client.rpc.CmServiceAsync;
 import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.rpc.RetryAction;
 import hotmath.gwt.shared.client.rpc.action.GeneratePdfAction;
-import hotmath.gwt.shared.client.rpc.action.GetStudentActivityAction;
 import hotmath.gwt.shared.client.rpc.action.GeneratePdfAction.PdfType;
+import hotmath.gwt.shared.client.rpc.action.GetStudentActivityAction;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -22,13 +24,16 @@ import com.extjs.gxt.ui.client.Style.LayoutRegion;
 import com.extjs.gxt.ui.client.Style.SelectionMode;
 import com.extjs.gxt.ui.client.core.XTemplate;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
+import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.MenuEvent;
+import com.extjs.gxt.ui.client.event.MessageBoxEvent;
 import com.extjs.gxt.ui.client.event.SelectionChangedEvent;
 import com.extjs.gxt.ui.client.event.SelectionChangedListener;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.util.Util;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
+import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
@@ -151,15 +156,42 @@ public class StudentDetailsWindow extends CmWindow {
 		Menu menu = new Menu();
 		menu.add(detailDebug);
 
-		MenuItem detailLogin = new MenuItem("Login/View");
-		detailLogin.addSelectionListener(new SelectionListener<MenuEvent>() {
+		MenuItem resetHistory = new MenuItem("Reset History");
+		resetHistory.setToolTip("Reset student's history to this point");
+		resetHistory.addSelectionListener(new SelectionListener<MenuEvent>() {
 		    public void componentSelected(MenuEvent ce) {
 		        StudentActivityModel sm = samGrid.getSelectionModel().getSelectedItem();
-		        loginAsSelectedUser(sm);
+		        resetHistory(sm);
 		    }
 		});
-		menu.add(detailLogin);
+		menu.add(resetHistory);
 		return menu;
+	}
+	
+	private void resetHistory(final StudentActivityModel studentModel) {
+	    MessageBox.confirm("Reset History","Are you sure you want to reset this student's history to this point, erasing all later entries?", new Listener<MessageBoxEvent>() {
+	        @Override
+	        public void handleEvent(MessageBoxEvent be) {
+	            if(!be.isCancelled()) {
+	                resetHistoryAux(studentModel);
+	            }
+	        }
+	    });
+	}
+	private void resetHistoryAux(final StudentActivityModel studentActivity) {
+	    
+	    new RetryAction<RpcData>() {
+            public void oncapture(RpcData list) {
+                getStudentActivityRPC(samGrid.getStore(), studentModel);
+            }
+
+            @Override
+            public void attempt() {
+                ResetStudentActivityAction action = new ResetStudentActivityAction(studentModel.getUid(),studentActivity.getTestId(), studentActivity.getRunId());
+                setAction(action);
+                CmShared.getCmService().execute(action, this);
+            }
+        }.register();
 	}
 
     /**
@@ -392,6 +424,7 @@ public class StudentDetailsWindow extends CmWindow {
         new RetryAction<CmList<StudentActivityModel>>() {
             public void oncapture(CmList<StudentActivityModel> list) {
                 try {
+                    store.removeAll();
                     store.add(list);
 
                     _studentCount.setText("count: " + list.size());

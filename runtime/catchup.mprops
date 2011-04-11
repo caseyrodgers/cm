@@ -282,6 +282,36 @@ group by s.test_run_id, s.is_quiz, s.use_date
 order by s.view_time asc, s.test_run_id asc, s.session_number asc
 
 
+
+##################
+## Reset student history (remove) from named test_id
+##################
+.key=RESET_STUDENT_ACTIVITY_TEST_RUN
+########
+
+delete r
+from HA_TEST_RUN r
+  join HA_TEST t on t.test_id = r.test_id
+where t.user_id = ?
+and run_id >= ?
+
+
+##################
+## Reset student history (remove) from named test_id
+##################
+.key=RESET_STUDENT_ACTIVITY_TEST
+########
+
+delete
+from HA_TEST
+where user_id = ?
+and test_id >= ?
+
+
+
+
+
+
     
 .key=TEST_RESULTS
 
