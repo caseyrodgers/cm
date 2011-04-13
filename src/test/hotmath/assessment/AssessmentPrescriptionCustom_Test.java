@@ -35,8 +35,7 @@ public class AssessmentPrescriptionCustom_Test extends CmDbTestCase {
         
         CmProgram program = CmProgram.CUSTOM_PROGRAM;
         StudentProgramModel studentProgram = new StudentProgramModel();
-        studentProgram.setCustomProgramId(KNOWN_CUSTOM_PROGRAM_ID);
-        studentProgram.setCustomProgramName("Test Custom Program");
+        studentProgram.getCustom().setCustomProgram(KNOWN_CUSTOM_PROGRAM_ID,"Test Custom Program");
         studentProgram.setSubjectId("");
         studentProgram.setProgramType("Custom");
         

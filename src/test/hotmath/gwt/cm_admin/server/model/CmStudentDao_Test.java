@@ -46,13 +46,13 @@ public class CmStudentDao_Test extends CmDbTestCase {
     
     public void testAssignCustomProgram() throws Exception {
         StudentProgramModel spm = new StudentProgramModel();
-        spm.setCustomProgramId(7);
+        spm.getCustom().setCustomProgramId(7);
         spm.setProgramType(CmProgram.CUSTOM_PROGRAM.getProgramType());
         spm.setSubjectId("");
         _dao.assignProgramToStudent(conn, _user.getUid(), spm,null,null);
         
         StudentModelI sm = _dao.getStudentModel(_user.getUid());
-        assertTrue(sm.getProgram().getCustomProgramId() == spm.getCustomProgramId());
+        assertTrue(sm.getProgram().getCustom().getCustomProgramId() == spm.getCustom().getCustomProgramId());
     }
     
     
@@ -81,22 +81,13 @@ public class CmStudentDao_Test extends CmDbTestCase {
     }
     
     
-    public void testMoveToNextQuizSegmentSlot() throws Exception {
-        StudentActiveInfo active1 = _dao.moveToNextQuizSegmentSlot(conn, _test.getTestId(),_test.getTestDef().getNumAlternateTests());
-        StudentActiveInfo active = _dao.moveToNextQuizSegmentSlot(conn, _test.getTestId(), _test.getTestDef().getNumAlternateTests());
-        assertNotNull(active);
-        
-        assertTrue(active1.getActiveSegmentSlot() != active.getActiveSegmentSlot());
-    }
-        
-    
     public void testgetTotalInmHViewCount() throws Exception {
         Integer count = _dao.getTotalInmHViewCount(conn,_test.getTestId());
         assertNotNull(count);
     }
     
     public void testGetStudentBasic() throws Exception {
-        StudentModelI sm = _dao.getStudentModelBasic(conn,_user.getUid());
+        StudentModelI sm = _dao.getStudentModel(conn,_user.getUid());
         assertNotNull(sm);
         assertTrue(sm.getUid() > 0);
     }

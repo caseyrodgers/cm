@@ -21,13 +21,13 @@
 .key=STUDENT_SUMMARY
 
 SELECT h.uid, upper(h.user_name) as name, h.user_passcode as passcode, h.user_email as email, h.admin_id as admin_uid,
-       h.user_prog_id, h.is_show_work_required, h.is_tutoring_available, h.active_segment, h.gui_background_style, h.is_demo,
-       p.test_def_id, p.create_date, concat(p.pass_percent,'%') as pass_percent, p.test_config_json,
+       h.user_prog_id, h.is_show_work_required, h.is_tutoring_available, h.active_segment, h.gui_background_style, h.is_demo,h.active_test_id,
+       p.test_def_id, p.create_date, concat(p.pass_percent,'%') as pass_percent, p.test_config_json,p.date_completed,
        ifnull(s.limit_games, 0) as limit_games, ifnull(s.show_work_required, 0) as show_work_required,
        ifnull(s.stop_at_program_end, 0) as stop_at_program_end, ifnull(s.tutoring_available, 0) as tutoring_available,
        trim(concat(ifnull(d.subj_id,''), ' ', d.prog_id)) as program, d.prog_id, d.subj_id,
        ifnull(g.id, 0) as group_id, ifnull(g.name, 'none') as group_name, g.is_active, g.is_self_reg,
-       cp.id as custom_program_id, cp.name as custom_program_name,
+       cp.id as custom_program_id, cp.name as custom_program_name,q.qid as custom_quiz_id, q.name as custom_quiz_name,
        if ((h.active_run_id > 0),
            lpad(concat(format(ux.last_quiz,0),'%'),4,' '),
            if((h.active_test_id > 0), 'Started', ' ') ) as last_quiz,
@@ -49,24 +49,30 @@ LEFT JOIN CM_GROUP g
    on g.id = h.group_id
 LEFT JOIN HA_CUSTOM_PROGRAM cp 
    on cp.id = p.custom_program_id
+LEFT JOIN HA_CUSTOM_QUIZ q
+   on q.qid = p.custom_quiz_id   
 LEFT JOIN HA_USER_EXTENDED ux on ux.user_id = h.uid
 LEFT JOIN (SELECT uid, count(*) as tutoring_use 
            FROM HA_USER_TUTORING_SESSION ts
            GROUP by uid) ut on ut.uid = h.uid
 
 
+## The base query for reading student data, including
+## any currently assigned program/custom program/custom quiz
+##
 .key=STUDENT_SUMMARY_BASE
 
 SELECT h.uid, upper(h.user_name) as name, h.user_passcode as passcode, h.user_email as email, h.admin_id as admin_uid,
-       h.user_prog_id, h.is_show_work_required, h.is_tutoring_available, h.active_segment, h.gui_background_style, h.is_demo,
-       p.test_def_id, p.create_date, p.pass_percent, p.test_config_json,
+       h.user_prog_id, h.is_show_work_required, h.is_tutoring_available, h.active_segment,  h.gui_background_style, h.is_demo,h.active_test_id,
+       p.test_def_id, p.create_date, p.pass_percent, p.test_config_json,p.date_completed,
        ifnull(s.limit_games, 0) as limit_games, ifnull(s.show_work_required, 0) as show_work_required,
        ifnull(s.stop_at_program_end, 0) as stop_at_program_end, ifnull(s.tutoring_available, 0) as tutoring_available,
        trim(concat(ifnull(d.subj_id,''), ' ', d.prog_id)) as program, d.prog_id, d.subj_id,
        ifnull(g.id, 0) as group_id, ifnull(g.name, 'none') as group_name, g.is_active, g.is_self_reg,
        ifnull(ux.current_lesson, 0) as current_lesson, ifnull(ux.lesson_count, 0) as lesson_count,
        ifnull(ux.lessons_completed, 0) as lessons_completed,
-       cp.id as custom_program_id, cp.name as custom_program_name
+       cp.id as custom_program_id, cp.name as custom_program_name,
+       q.qid as custom_quiz_id, q.name as custom_quiz_name
 FROM  HA_ADMIN a 
 INNER JOIN HA_USER h 
    on a.aid = h.admin_id  
@@ -80,7 +86,12 @@ LEFT JOIN CM_GROUP g
    on g.id = h.group_id
 LEFT JOIN HA_CUSTOM_PROGRAM cp 
    on cp.id = p.custom_program_id
-LEFT JOIN HA_USER_EXTENDED ux on ux.user_id = h.uid
+LEFT JOIN HA_USER_EXTENDED ux 
+   on ux.user_id = h.uid
+LEFT JOIN HA_CUSTOM_QUIZ q
+  on q.qid = p.custom_quiz_id
+  
+  
 
 
 .key=STUDENT_SUMMARY_EXTENDED
@@ -398,6 +409,13 @@ insert CM_USER_PROGRAM (user_id, admin_id, test_def_id, create_date,test_config_
 values (?, ?, (select max(test_def_id) as test_def_id from HA_TEST_DEF where prog_id = ? and subj_id = ? and is_active = 1), ?, ?,?)
 
 
+.key=INSERT_STUDENT_PROGRAM_CUSTOM_QUIZ
+
+insert CM_USER_PROGRAM (user_id, admin_id, test_def_id, pass_percent, create_date, test_config_json,custom_quiz_id)
+values (?, ?, (select max(test_def_id) as test_def_id from HA_TEST_DEF where prog_id = ? and subj_id = ? and is_active = 1), ?, ?,?,?)
+
+
+
 .key=GET_TEST_DEF_BY_PROG_SUBJECT
 select max(test_def_id) as test_def_id 
 from HA_TEST_DEF 
@@ -613,6 +631,8 @@ select   d.id,
          d.needs_state,
          null as custom_program_id,
          null as custom_program_name,
+          0 as custom_quiz_id,
+          null as custom_quiz_name,         
          d.load_order,
          0 as is_template
 from     HA_PROG_DEF d
@@ -624,6 +644,24 @@ where    d.is_active = 1
                             
 union
                             
+select      'Custom Quiz' as id,
+            q.name as title,
+            'Custom Program' as description,
+            0 as needs_subject,
+            0 as needs_chapter,
+            0 as needs_pass_percent,
+            0 as needs_state,
+            0 as custom_program_id,
+            null as custom_program_name,
+            q.qid as custom_quiz_id,
+            q.name as custom_quiz_name,
+            999 as load_order,
+            0 as is_template
+from   HA_ADMIN a join HA_CUSTOM_QUIZ q on q.admin_id = a.aid
+where    a.aid = ?
+
+union
+                            
 select      'Custom' as id,
             cp.name as title,
             'Custom Program' as description,
@@ -633,6 +671,8 @@ select      'Custom' as id,
             0 as needs_state,
             cp.id as custom_program_id,
             cp.name as custom_program_name,
+            0 as custom_quiz_id,
+            null as custom_quiz_name,
             999 as load_order,
             is_template
 from   HA_ADMIN a join HA_CUSTOM_PROGRAM cp on cp.admin_id = a.aid
@@ -640,7 +680,6 @@ where    a.aid = ?
 or is_template = 1
                             
 order by load_order, id, title                      
-           
            
            
 .key=ACCOUNT_TYPE_LOOKUP
@@ -1230,11 +1269,13 @@ WHERE c.user_id = ?
 .key=CURRENT_USER_PROGRAM_SQL
 
 SELECT c.id, c.user_id, c.pass_percent, c.date_completed, u.admin_id, c.test_def_id, t.test_name, c.test_config_json, c.create_date,
-       cp.id as custom_program_id, cp.name as custom_program_name
+       cp.id as custom_program_id, cp.name as custom_program_name, q.qid as custom_quiz_id, q.name as custom_quiz_name
+
 FROM      CM_USER_PROGRAM c
 JOIN      HA_USER u             on c.id = u.user_prog_id
 JOIN      HA_TEST_DEF t         on c.test_def_id = t.test_def_id
-LEFT JOIN HA_CUSTOM_PROGRAM cp  on c.custom_program_id = cp.id 
+LEFT JOIN HA_CUSTOM_PROGRAM cp  on c.custom_program_id = cp.id
+LEFT JOIN HA_CUSTOM_QUIZ q on q.qid = c.custom_quiz_id
 WHERE u.uid = ?
 
 ####
@@ -1244,11 +1285,12 @@ WHERE u.uid = ?
 ##
 
 SELECT c.id, c.user_id, c.pass_percent, c.date_completed, u.admin_id, c.test_def_id, t.test_name, c.test_config_json, c.create_date,
-       cp.id as custom_program_id, cp.name as custom_program_name
+       cp.id as custom_program_id, cp.name as custom_program_name, q.qid as custom_quiz_id, q.name as custom_quiz_name
 FROM      CM_USER_PROGRAM c
 JOIN      HA_USER u             on c.id = u.user_prog_id
 JOIN      HA_TEST_DEF t         on c.test_def_id = t.test_def_id
 LEFT JOIN HA_CUSTOM_PROGRAM cp  on c.custom_program_id = cp.id
+LEFT JOIN HA_CUSTOM_QUIZ q on q.qid = c.custom_quiz_id
 WHERE c.id = ?
 
 
@@ -1272,12 +1314,13 @@ where  id = ?
 
 
 SELECT c.id, c.user_id, c.pass_percent, c.date_completed, u.admin_id, c.test_def_id, t.test_name, c.test_config_json, c.create_date,
-       cp.id as custom_program_id, cp.name as custom_program_name
+       cp.id as custom_program_id, cp.name as custom_program_name, q.qid as custom_quiz_id, q.name as custom_quiz_name
 FROM      CM_USER_PROGRAM c
 LEFT JOIN HA_TEST ht on ht.user_prog_id = c.id
 JOIN      HA_USER u             on c.id = u.user_prog_id
 JOIN      HA_TEST_DEF t         on c.test_def_id = t.test_def_id
 LEFT JOIN HA_CUSTOM_PROGRAM cp  on c.custom_program_id = cp.id
+LEFT JOIN HA_CUSTOM_QUIZ q on q.qid = c.custom_quiz_id
 WHERE ht.test_id = ?
 
 

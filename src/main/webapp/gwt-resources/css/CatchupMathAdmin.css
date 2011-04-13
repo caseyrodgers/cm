@@ -322,20 +322,8 @@ trending-data-student-list-item {
 	
 
 
-/** On RegisterStudent program combo box place
-    a small square at first position of each 
-    custom program.
-     
-    Each line has the dot defined, but turned off by default.
-*/
-.customProgramDot {
-	display: none;
-}
 
-/** turn on by setting */
-.customProgram .customProgramDot {
-	display: inline;
-}
+.customProgram
 
 .program-read-only {
 	color: red;
@@ -351,6 +339,11 @@ trending-data-student-list-item {
 	padding-bottom: 10px;
 }
 
+.isCustom {
+	color: red;
+}
+	
+	
 /** attempt to override ext-js style */
 #program-details-panel .x-ftree2-selected {
     background-color: #DFE8F6 !important;
