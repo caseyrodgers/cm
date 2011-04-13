@@ -163,7 +163,14 @@ public class ResourceViewerImplTutor extends CmResourcePanelImplWithWhiteboard {
             public void oncapture(SolutionInfo result) {
             	_solutionInfo = result;
                 String html = result.getHtml();
-                boolean hasShowWork = result.isHasShowWork();
+                
+                /** We want to NOT show the Show Work
+                 *  buttons over the tutor, so force
+                 *  it off.
+                 *  
+                 *  result.isHasShowWork();
+                 */
+                boolean hasShowWork = true; 
                 
                 tutorPanel = new Html(html);
                 tutorPanel.setStyleName("tutor_solution_wrapper");
@@ -207,15 +214,15 @@ public class ResourceViewerImplTutor extends CmResourcePanelImplWithWhiteboard {
      * @param pid
      */
     protected void whiteBoardHasBeenUpdated(String pid) {
-        if (UserInfo.getInstance().isShowWorkRequired() && !this.hasShowWork && this.pid.equals(pid)) {
-            /** 
-             * this solution's whiteboard has been updated, so
-             * we must make sure the ForceShowWork button is removed
-             */
-            initializeTutor(pid, this.getResourceItem().getTitle(), true, false,_solutionInfo.getJs());
-
-            hasShowWork = true;
-        }
+//        if (UserInfo.getInstance().isShowWorkRequired() && !this.hasShowWork && this.pid.equals(pid)) {
+//            /** 
+//             * this solution's whiteboard has been updated, so
+//             * we must make sure the ForceShowWork button is removed
+//             */
+//            initializeTutor(pid, this.getResourceItem().getTitle(), true, false,_solutionInfo.getJs());
+//
+//            hasShowWork = true;
+//        }
         
         //createWhiteboardSnapshot_Jsni();
     }

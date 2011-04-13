@@ -38,10 +38,10 @@ public class StudyProgramExt extends BaseModelData {
 		set("label", pre + title);
 	}
 	
-	public int getCustomProgramId() {
+	public Integer getCustomProgramId() {
 	    return get("customProgramId");
 	}
-    public int getCustomQuizId() {
+    public Integer getCustomQuizId() {
         return get("customQuizId");
     }
     
