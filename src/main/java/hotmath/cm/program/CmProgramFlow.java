@@ -80,7 +80,7 @@ public class CmProgramFlow {
     public CmProgramFlowAction getActiveFlowAction(final Connection conn) throws Exception {
 
         if (userProgram.isComplete()) {
-            if(student.getSettings().getStopAtProgramEnd()) {
+            if(student.getSettings().getStopAtProgramEnd() || userProgram.isCustom()) {
                 return new CmProgramFlowAction(CmPlace.END_OF_PROGRAM);
             }
             else 
@@ -312,7 +312,7 @@ public class CmProgramFlow {
      * Mark this program as being complete. All further flow movements will
      * throw an exception
      */
-    private void markProgramAsCompleted(final Connection conn, boolean trueOrFalse) throws Exception {
+    public void markProgramAsCompleted(final Connection conn, boolean trueOrFalse) throws Exception {
         if (updao.setProgramAsComplete(conn, userProgram.getId(), trueOrFalse)) {
             /** update our instance */
             userProgram.setComplete(trueOrFalse);

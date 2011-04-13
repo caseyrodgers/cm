@@ -5,10 +5,13 @@ import com.extjs.gxt.ui.client.data.BaseModelData;
 public class StudyProgramExt extends BaseModelData {
 
 	private static final long serialVersionUID = 5574506049604177840L;
+	StudyProgramModel program;
 
-	public StudyProgramExt(String title, String shortTitle, String descr, Integer needsSubject,
+	public StudyProgramExt(StudyProgramModel program, String title, String shortTitle, String descr, Integer needsSubject,
 	    Integer needsChapters, Integer needsPassPercent,Integer customProgramId, String customProgramName) {
 
+	    this.program = program;
+	    
 		set("title", title);
 		set("shortTitle", shortTitle);
 		set("descr", descr);
@@ -17,14 +20,37 @@ public class StudyProgramExt extends BaseModelData {
 		set("needsPassPercent", needsPassPercent);
 		set("customProgramName", customProgramName);
 		set("customProgramId", customProgramId);
+		set("customQuizId", program.getCustomQuizId());
+		set("customQuizName", program.getCustomQuizName());
 
 		/** set css style to identify as custom program
 		 * 
 		 */
-		String customStyle="";
-		if(customProgramId != null & customProgramId > 0) {
-		    customStyle = "customProgram";
+		String pre="";
+		if(program.isCustomProgram()) {
+		    set("styleIsCustomProgram","isCustom");
+		    pre="CP:";
 		}
-		set("styleIsCustomProgram",customStyle);
+		else if(program.isCustomQuiz()) {
+		    set("styleIsCustomProgram","isCustom");
+		    pre="CQ:";
+		}
+		set("label", pre + title);
 	}
+	
+	public int getCustomProgramId() {
+	    return get("customProgramId");
+	}
+    public int getCustomQuizId() {
+        return get("customQuizId");
+    }
+    
+    public String getCustomProgramName() {
+        return get("customProgramName");
+    }
+
+    public String getCustomQuizName() {
+        return get("customQuizName");
+    }    
+    
 }

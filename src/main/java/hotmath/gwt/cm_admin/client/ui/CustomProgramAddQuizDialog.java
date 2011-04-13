@@ -351,9 +351,7 @@ public class CustomProgramAddQuizDialog extends Window {
         LayoutContainer lc = new LayoutContainer();
         lc.addStyleName("custom-program-questions-container");
 
-        lc.setLayout(new RowLayout(Orientation.HORIZONTAL));
-        RowData data = new RowData(.5, 1);
-        data.setMargins(new Margins(5));
+        lc.setLayout(new BorderLayout());
         
         ContentPanel cpLeft = new ContentPanel();
         //cpLeft.setHeading("Available Questions");
@@ -371,14 +369,16 @@ public class CustomProgramAddQuizDialog extends Window {
         _tabQuestions.setScrollMode(Scroll.AUTO);
         _tabPanel.add(_tabQuestions);
         cpLeft.add(_tabPanel);
-        lc.add(cpLeft, data);
+        BorderLayoutData ld = new BorderLayoutData(LayoutRegion.WEST, 400);
+        ld.setSplit(true);
+        lc.add(cpLeft, ld);
         
         
         ContentPanel cpRight = new ContentPanel();
         cpRight.setHeading("Questions in Custom Quiz");
         cpRight.add(_listCustomQuiz);
         cpRight.setLayout(new FitLayout());
-        lc.add(cpRight, data);
+        lc.add(cpRight, new BorderLayoutData(LayoutRegion.CENTER));
         
         return lc;  
     }

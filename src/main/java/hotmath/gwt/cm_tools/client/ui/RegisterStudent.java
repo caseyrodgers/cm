@@ -8,6 +8,7 @@ import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.model.AccountInfoModel;
 import hotmath.gwt.cm_tools.client.model.ChapterModel;
 import hotmath.gwt.cm_tools.client.model.CmAdminModel;
+import hotmath.gwt.cm_tools.client.model.CustomProgramComposite;
 import hotmath.gwt.cm_tools.client.model.GroupInfoModel;
 import hotmath.gwt.cm_tools.client.model.StudentModel;
 import hotmath.gwt.cm_tools.client.model.StudentModelExt;
@@ -392,7 +393,7 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
 	private native String getProgramTemplate() /*-{ 
 	    return  [ 
 	   '<tpl for=".">', 
-	   '<div class="x-combo-list-item {styleIsCustomProgram}" qtip="{descr}"><span class="customProgramDot">CP:</span>&nbsp;{title}</div>', 
+	   '<div class="x-combo-list-item {styleIsCustomProgram}" qtip="{descr}">{label}</div>', 
 	   '</tpl>' 
 	   ].join(""); 
 	   }-*/;  
@@ -501,7 +502,7 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
             public void oncapture(CmList<StudyProgramModel> spmList) {
                 List<StudyProgramExt> progList = new ArrayList <StudyProgramExt> ();
                 for (StudyProgramModel spm : spmList) {
-                    progList.add(new StudyProgramExt(spm.getTitle(), spm.getShortTitle(), spm.getDescr(), 
+                    progList.add(new StudyProgramExt(spm,spm.getTitle(), spm.getShortTitle(), spm.getDescr(), 
                                                   spm.getNeedsSubject(),spm.getNeedsChapters(), spm.getNeedsPassPercent(),
                                                   spm.getCustomProgramId(), spm.getCustomProgramName()));
                 }
@@ -653,8 +654,8 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
 	    StudentProgramModel program = stuMdl.getProgram();
 		String shortName = program.getProgramType();
 		
-		if(program.isCustomProgram()) {
-		    shortName = program.getCustomProgramName();
+		if(program.getCustom().isCustom()) {
+		    shortName = program.getCustom().getCustomName();
 		}
 		
 		if (shortName != null) {
@@ -684,6 +685,11 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
         if(sp.get("customProgramName") != null && sp.get("customProgramName").equals(shortName)) {
             return true;
         }
+        
+        if(sp.get("customQuizName") != null && sp.get("customQuizName").equals(shortName)) {
+            return true;
+        }
+        
         if(st.equals("chap") && shortName.toLowerCase().indexOf(" chap") > -1) {
             return true;
         }
@@ -845,15 +851,15 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
         }
         
         ComboBox<StudyProgramExt> cb = (ComboBox<StudyProgramExt>) fs.getItemByItemId("prog-combo");
-        StudyProgramExt sp = cb.getValue();
+        StudyProgramExt studyProgExt = cb.getValue();
         cb.clearInvalid();
-        if (sp == null) {
+        if (studyProgExt == null) {
             cb.focus();
             cb.forceInvalid(ENTRY_REQUIRED_MSG);
             cb.expand();
             throw new CmExceptionValidationFailed();
         }
-        String prog = sp.get("shortTitle");
+        String prog = studyProgExt.get("shortTitle");
 
         ComboBox<SubjectModel> cs = (ComboBox<SubjectModel>) fs.getItemByItemId("subj-combo");
         SubjectModel sub = cs.getValue();
@@ -861,7 +867,7 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
         if (sub != null) {
             prog = sub.get("abbrev") + " " + prog;
         }
-        if (((Integer)sp.get("needsSubject")).intValue() > 0 && sub == null) {
+        if (((Integer)studyProgExt.get("needsSubject")).intValue() > 0 && sub == null) {
             cs.focus();
             cs.forceInvalid(ENTRY_REQUIRED_MSG);
             cs.expand();
@@ -874,7 +880,7 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
         if (chap != null) {
             prog = prog + " " + chap.get("number");
         }
-        if (((Integer)sp.get("needsChapters")).intValue() > 0 && chap == null) {
+        if (((Integer)studyProgExt.get("needsChapters")).intValue() > 0 && chap == null) {
             cc.focus();
             cc.forceInvalid(ENTRY_REQUIRED_MSG);
             cc.expand();
@@ -908,15 +914,25 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
         String chapTitle = (chap != null) ? chap.getTitle() : null;
         sm.setChapter(chapTitle);
 
-        String progId = (sp != null) ? (String)sp.get("shortTitle") : null;        
+        String progId = (studyProgExt != null) ? (String)studyProgExt.get("shortTitle") : null;        
         String subjId = (sub != null) ? sub.getAbbrev() : "";
 
+        
+        /** Why is this constructed here?
+         *  Why not pass in the StudyProgramModel (Ext)
+         *  
+         *  Perhaps, have a .convert on StudyProgramModelExt.
+         *  
+         */
         StudentProgramModel program = sm.getProgram();
         program.setProgramId((isNew == false)?stuMdl.getProgram().getProgramId():null);
         program.setProgramType(progId);
         program.setSubjectId(subjId);
-        program.setCustomProgramId((Integer)sp.get("customProgramId"));
-        program.setCustomProgramName((String)sp.get("customProgramName"));
+        
+        program.setCustom(new CustomProgramComposite(
+                studyProgExt.getCustomProgramId(),studyProgExt.getCustomProgramName(),
+                studyProgExt.getCustomQuizId(),studyProgExt.getCustomQuizName()));
+
 
         /** Validation complete 
          * 

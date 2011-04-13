@@ -118,14 +118,24 @@ public class CreateTestRunCommand implements ActionHandler<CreateTestRunAction, 
             HaTestRun run = HaTestDao.createTestRun(conn, test.getUser().getUid(), test.getTestId(), answeredCorrect, answeredIncorrect, notAnswered);
           	logger.debug(String.format("+++ execute(): createTestRun(): took: %d msec",System.currentTimeMillis() - startTime));
             
-            
-            startTime = System.currentTimeMillis();
-            AssessmentPrescription pres = AssessmentPrescriptionManager.getInstance().getPrescription(conn, run.getRunId());
-            logger.debug(String.format("+++ execute(): getPrescription(): took: %d msec",System.currentTimeMillis() - startTime));
+          	
+          	AssessmentPrescription pres=null;
+          	if(cmProgram.getUserProgram().getCustomQuizId() > 0) {
+                /** if a Custom Quiz, then no need to create a prescription
+                 * 
+                 */
+          	    
+          	    cmProgram.markProgramAsCompleted(conn, true);
+          	}
+          	else {
+          	    startTime = System.currentTimeMillis();
+          	    pres = AssessmentPrescriptionManager.getInstance().getPrescription(conn, run.getRunId());
+          	    logger.debug(String.format("+++ execute(): getPrescription(): took: %d msec",System.currentTimeMillis() - startTime));
+          	}
             
             testRunInfo.setRunId(run.getRunId());
             testRunInfo.setTestCorrectPercent(GetPrescriptionCommand.getTestPassPercent(run.getAnsweredCorrect() + run.getAnsweredIncorrect() + run.getNotAnswered(), run.getAnsweredCorrect()));
-            testRunInfo.setSessionCount(pres.getSessions().size());
+            testRunInfo.setSessionCount(pres != null?pres.getSessions().size():0);
             if(testRunInfo.getSessionCount() > 0)
                 testRunInfo.setSessionName(pres.getSessions().get(0).getTopic());
             else {
@@ -153,18 +163,18 @@ public class CreateTestRunCommand implements ActionHandler<CreateTestRunAction, 
              */
             startTime = System.currentTimeMillis();
            
-            logger.debug(String.format("+++ execute: Prescription Class: %s, getNextAction(): took: %d msec",pres.getClass().getName(), System.currentTimeMillis() - startTime));
+            logger.debug(String.format("+++ execute: Prescription Class: %s, getNextAction(): took: %d msec",pres!=null?pres.getClass().getName():"No Prescription", System.currentTimeMillis() - startTime));
             
             testRunInfo.setCorrect(answeredCorrect);
-            testRunInfo.setTotal(pres.getTest().getTestQuestionCount());
+            testRunInfo.setTotal(test.getTestQuestionCount());
             testRunInfo.setPassed(run.isPassing());
             
             /** Manage the program flow, if required
              * 
              */
             CmProgramFlowAction nextAction=null;
-            if(pres.getSessions().size() == 0) {
-                if(run.getHaTest().getTestDef() instanceof HaTestDefPlacement && pres.getNextAction().getPlace() == CmPlace.AUTO_PLACEMENT) {
+            if(pres == null || pres.getSessions().size() == 0) {
+                if(run.getHaTest().getTestDef() instanceof HaTestDefPlacement && pres != null && pres.getNextAction().getPlace() == CmPlace.AUTO_PLACEMENT) {
                     /** special case for placement tests
                      * 
                      */

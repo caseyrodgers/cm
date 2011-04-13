@@ -192,6 +192,8 @@ public class HaTestDao {
             if(userProgram.getCustomProgramId()>0) {
                 segmentCount = new CmCustomProgramDao().getTotalSegmentCount(conn, userProgram.getCustomProgramId());
             }
+            else if(userProgram.getCustomQuizId() > 0)
+                segmentCount = 1;
             else {
                 segmentCount = config.getSegmentCount();
             }

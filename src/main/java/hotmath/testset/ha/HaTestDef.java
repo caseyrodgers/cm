@@ -5,8 +5,11 @@ import hotmath.BookInfoManager;
 import hotmath.HotMathException;
 import hotmath.HotMathLogger;
 import hotmath.gwt.cm_admin.server.model.CmCustomProgramDao;
+import hotmath.gwt.cm_admin.server.model.CmQuizzesDao;
+import hotmath.gwt.shared.client.model.CustomQuizId;
 
 import java.sql.Connection;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -219,6 +222,13 @@ public class HaTestDef {
         
         if(userProgram.getCustomProgramId() > 0) {
             return new CmCustomProgramDao().getCustomProgramQuizSegmentPids(conn, userProgram.getCustomProgramId(), segment);
+        }
+        if(userProgram.getCustomQuizId() > 0) {
+            List<String> pids = new ArrayList<String>();
+            for(CustomQuizId cqi: new CmQuizzesDao().getCustomQuizIds(conn, userProgram.getCustomQuizId())) {
+                pids.add(cqi.getPid());
+            }
+            return pids; 
         }
         else {
             return new HaTestDefDao().getTestIdsForSegment(conn, userProgram, segment, textCode, chap, config, segmentSlot);

@@ -274,7 +274,7 @@ public class GetStudentGridPageCommand implements
     }
 
     private String formatQuizzes(StudentModelI sm) {
-        if ((sm.getPassingCount() > 0 || sm.getNotPassingCount() > 0) && sm.getProgram().isCustomProgram() == false) {
+        if ((sm.getPassingCount() > 0 || sm.getNotPassingCount() > 0) && sm.getProgram().getCustom().isCustom() == false) {
         	if (logger.isDebugEnabled())
         	    logger.debug("+++ formatQuizzes: " + String.format("%d passed out of %d", sm.getPassingCount(), (sm.getPassingCount()+sm.getNotPassingCount())));
             return String.format("%d passed out of %d", sm.getPassingCount(), (sm.getPassingCount()+sm.getNotPassingCount()));
@@ -330,6 +330,11 @@ class StudentGridComparator implements Comparator<StudentModelExt> {
     }
 
     public int compare(StudentModelExt p1, StudentModelExt p2) {
+        
+        
+        boolean p1IsCustom = p1.getProgram().getCustom().isCustom();
+        boolean p2IsCustom = p2.getProgram().getCustom().isCustom();
+        
     	if (sortField.equals(StudentModelExt.NAME_KEY)) {
             return p1.getName().compareToIgnoreCase(p2.getName());
         } else if (sortField.equals(StudentModelExt.PASSCODE_KEY)) {
@@ -348,8 +353,8 @@ class StudentGridComparator implements Comparator<StudentModelExt> {
             return p1.getTutoringUse() - p2.getTutoringUse();
         } else if (sortField.equals(StudentModelExt.LAST_QUIZ_KEY)) { 
         	
-            String lq1 = (p1.getProgram().isCustomProgram()) ? "" : p1.getLastQuiz();
-            String lq2 = (p2.getProgram().isCustomProgram()) ? "" : p2.getLastQuiz();
+            String lq1 = (p1IsCustom) ? "" : p1.getLastQuiz();
+            String lq2 = (p2IsCustom) ? "" : p2.getLastQuiz();
             
             if ((lq1 == null || lq1.trim().length() == 0) && (lq2 == null | lq2.trim().length() == 0)) return 0;
             
@@ -357,29 +362,32 @@ class StudentGridComparator implements Comparator<StudentModelExt> {
 
         } else if(sortField.equals(StudentModelExt.PASSING_COUNT_KEY)) {
         	
-        	int t1 = (p1.getProgram().isCustomProgram()) ? 0 : p1.getNotPassingCount() + p1.getPassingCount();
-        	int t2 = (p2.getProgram().isCustomProgram()) ? 0 : p2.getNotPassingCount() + p2.getPassingCount();
+        	int t1 = (p1IsCustom) ? 0 : p1.getNotPassingCount() + p1.getPassingCount();
+        	int t2 = (p2IsCustom) ? 0 : p2.getNotPassingCount() + p2.getPassingCount();
 
             // check total # quizzes
         	if (t1 != t2) return t1 - t2;
         	
         	// total same, sort by number passed
-        	int pass1 = (p1.getProgram().isCustomProgram()) ? 0 : p1.getPassingCount();
-        	int pass2 = (p2.getProgram().isCustomProgram()) ? 0 : p2.getPassingCount();
+        	int pass1 = (p1IsCustom) ? 0 : p1.getPassingCount();
+        	int pass2 = (p2IsCustom) ? 0 : p2.getPassingCount();
         	int pDiff = pass1 - pass2;
         	if (pDiff != 0) return pDiff;
-        	
-            // following test disabled for now
-        	if (false && t1 > 0 && t2 > 0) {
-            	// sort on ratio of passed quizzes
-            	float f1 = (float) p1.getPassingCount() / (float) t1;
-            	float f2 = (float) p2.getPassingCount() / (float) t2;
-            	if (f1 != f2) {
-        	    	return (f1 < f2) ? -1 : 1;
-        	    }
-        	}
+//        	
+//            // following test disabled for now
+//        	if (false && t1 > 0 && t2 > 0) {
+//            	// sort on ratio of passed quizzes
+//            	float f1 = (float) p1.getPassingCount() / (float) t1;
+//            	float f2 = (float) p2.getPassingCount() / (float) t2;
+//            	if (f1 != f2) {
+//        	    	return (f1 < f2) ? -1 : 1;
+//        	    }
+//        	}
 
-            // passed ratios the same or not available, sort on total number of tests taken
+            /** 
+             *  passed ratios the same or not available, 
+             *  so sort on total number of tests taken
+             */
             return t1 - t2;
         }
 

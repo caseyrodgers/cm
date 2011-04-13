@@ -135,8 +135,7 @@ public class StudentReportCard {
         	}
 
         	if (rc.getPrescribedLessonList().size() > 0) {
-        		sm.getProgram().isCustomProgram();
-        		addPrescribedLessons(rc, sm.getProgram().isCustomProgram(), document);
+        		addPrescribedLessons(rc, sm.getProgram().getCustom().isCustom(), document);
         	}
 
         	document.add(Chunk.NEWLINE);
@@ -283,7 +282,7 @@ public class StudentReportCard {
         sb.append(": ");
         Phrase initialProg = ReportUtils.buildParagraphLabel(sb.toString(), initialProgDesc);
 
-        Boolean isCurrentProgCustom = sm.getProgram().isCustomProgram();
+        Boolean isCurrentProgCustom = sm.getProgram().getCustom().isCustom();
         
         String lastProgDesc = rc.getLastProgramName();
         

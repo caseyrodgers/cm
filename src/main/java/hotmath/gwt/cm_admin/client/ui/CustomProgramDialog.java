@@ -1,9 +1,13 @@
 package hotmath.gwt.cm_admin.client.ui;
 
+import hotmath.gwt.cm_admin.client.ui.CustomProgramAddQuizDialog.Callback;
+import hotmath.gwt.cm_qa.client.EventTypes;
 import hotmath.gwt.cm_rpc.client.rpc.CmList;
+import hotmath.gwt.cm_rpc.client.rpc.RpcData;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.model.CmAdminModel;
+import hotmath.gwt.cm_tools.client.model.CustomLessonModel;
 import hotmath.gwt.cm_tools.client.model.CustomProgramModel;
 import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
 import hotmath.gwt.shared.client.CmShared;
@@ -11,8 +15,10 @@ import hotmath.gwt.shared.client.data.CmAsyncRequestImplDefault;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
 import hotmath.gwt.shared.client.eventbus.EventBus;
 import hotmath.gwt.shared.client.eventbus.EventType;
+import hotmath.gwt.shared.client.model.CustomQuizDef;
 import hotmath.gwt.shared.client.rpc.RetryAction;
 import hotmath.gwt.shared.client.rpc.action.CustomProgramDefinitionAction;
+import hotmath.gwt.shared.client.rpc.action.DeleteCustomQuizAction;
 import hotmath.gwt.shared.client.rpc.action.CustomProgramDefinitionAction.ActionType;
 
 import java.util.ArrayList;
@@ -49,7 +55,7 @@ public class CustomProgramDialog extends CmWindow {
     CmAdminModel adminModel;
 
     ListView<CustomProgramModel> _listViewCp;
-    ListView<CustomProgramModel> _listViewCq;
+    ListView<CustomLessonModel> _listViewCq;
     boolean _isDebug;
     TabPanel tabPanelType = new TabPanel();
     
@@ -80,10 +86,10 @@ public class CustomProgramDialog extends CmWindow {
         _listViewCp.setDisplayProperty("programName");
         _listViewCp.addListener(Events.DoubleClick, new Listener<BaseEvent>() {
             public void handleEvent(BaseEvent be) {
-                editProgram(false);
+                editCustomProgram(false);
             }
         });
-        _listViewCp.setTemplate(getTemplateHtml());
+        _listViewCp.setTemplate(getTemplateHtmlForPrograms());
         
         TabItem tabCustomProgram = new TabItem("Custom Programs");
         tabCustomProgram.setLayout(new FitLayout());
@@ -91,19 +97,15 @@ public class CustomProgramDialog extends CmWindow {
         tabPanelType.add(tabCustomProgram);
         
 
-        
-        
-        
-        _listViewCq = new ListView<CustomProgramModel>();
+        _listViewCq = new ListView<CustomLessonModel>(new ListStore<CustomLessonModel>());
+        _listViewCq.setDisplayProperty("customProgramItem");
         _listViewCq.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
-        store = new ListStore<CustomProgramModel>();
-        _listViewCq.setStore(store);
-        _listViewCq.setDisplayProperty("programName");
         _listViewCq.addListener(Events.DoubleClick, new Listener<BaseEvent>() {
             public void handleEvent(BaseEvent be) {
+                editCustomQuiz();
             }
         });
-        _listViewCq.setTemplate(getTemplateHtml());
+        _listViewCq.setTemplate(getTemplateHtmlForQuizzes());
 
         TabItem tabCustomQuizzes = new TabItem("Custom Quizzes");
         
@@ -113,6 +115,18 @@ public class CustomProgramDialog extends CmWindow {
         tabCustomQuizzes.add(_listViewCq);
         tabPanelType.add(tabCustomQuizzes);
         
+        /** lazy load the custom quizzes */
+        tabPanelType.addListener(Events.Select, new Listener<BaseEvent>() {
+            @Override
+            public void handleEvent(BaseEvent be) {
+                if(tabPanelType.getSelectedItem().getText().contains("Quiz")) {
+                    if(_listViewCq.getStore().getCount() == 0) {
+                        loadCustomQuizDefinitions();
+                    }
+                }
+            }
+        });
+        
         
         add(tabPanelType, new BorderLayoutData(LayoutRegion.CENTER));
 
@@ -120,44 +134,98 @@ public class CustomProgramDialog extends CmWindow {
         
         tb.add(new MyButtonWithTooltip("New", new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent ce) {
-                addNewCustomProgram();
+                addNewCustom();
             }
-        }, "Create a new blank custom program."));
+        }, "Create a new blank custom item."));
         
         tb.add(new MyButtonWithTooltip("Copy", new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent ce) {
-                editProgram(true);
+                if(!isCpTabSelected()) {
+                    CatchupMathTools.showAlert("Not implemented for Quizzes");
+                }
+                else {
+                    editCustomProgram(true);
+                }
             }
-        }, "Create new custom program by copying an existing one."));
+        }, "Create new custom item by copying an existing one."));
 
         tb.add(new MyButtonWithTooltip("Edit", new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent ce) {
-                editProgram(false);
+                editCustom();
             }
-        }, "Edit the selected custom program."));
+        }, "Edit the selected custom item."));
 
         tb.add(new MyButtonWithTooltip("Delete", new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent ce) {
                 deleteProgram();
             }
-        }, "Delete selected custom program"));
+        }, "Delete selected custom item"));
         tb.add(new MyButtonWithTooltip("Info", new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent ce) {
-                infoForProgram();
+                if(!isCpTabSelected()) {
+                    CatchupMathTools.showAlert("Not implemented for Quizzes");
+                }
+                else {
+                    infoForProgram();
+                }
             }
-        }, "Get information about selected custom program."));
+        }, "Get information about selected custom item."));
 
         
         
         add(tb, new BorderLayoutData(LayoutRegion.NORTH, 35));
         addCloseButton();
     }
+
+    /** Return true if the Custom Programs tab is selected
+     * 
+     * @return
+     */
+    private boolean isCpTabSelected() {
+        return tabPanelType.getSelectedItem().getText().contains("Programs");
+    }
+        
+    private void addNewCustom() {
+        if(isCpTabSelected()) {
+            addNewCustomProgram();
+        }
+        else {
+            addNewCustomQuiz();
+        }
+    }
     
-    private String getTemplateHtml() {
+    private void editCustom() {
+        if(isCpTabSelected()) {
+            editCustomProgram(false);
+        }
+        else {
+            editCustomQuiz();
+        }
+    }
+    
+    private void editCustomQuiz() {
+        
+        CustomLessonModel quiz = _listViewCq.getSelectionModel().getSelectedItem();
+        CustomQuizDef def = new CustomQuizDef(quiz.getQuizId(), quiz.getQuiz(),adminModel.getId());
+        new CustomProgramAddQuizDialog(new Callback() {
+            @Override
+            public void quizCreated() {
+                loadCustomQuizDefinitions();
+            }
+        },def);
+        
+    }
+    
+    private String getTemplateHtmlForPrograms() {
         String template = "<tpl for=\".\"><div class='x-view-item'><span class='{styleName}'>{programName}</span></div></tpl>";
         return template;
     }
 
+    private String getTemplateHtmlForQuizzes() {
+        String template = "<tpl for=\".\"><div class='x-view-item'><span class='{styleName}'>{customProgramItem}</span></div></tpl>";
+        return template;
+    }
+    
     public void addNewCustomProgram() {
         new CustomProgramDesignerDialog(adminModel, new CmAsyncRequestImplDefault() {
             @Override
@@ -168,6 +236,16 @@ public class CustomProgramDialog extends CmWindow {
         });        
     }
     
+    public void addNewCustomQuiz() {
+        new CustomProgramAddQuizDialog(new Callback() {
+            @Override
+            public void quizCreated() {
+                loadCustomQuizDefinitions();
+            }
+        },null);       
+    }
+    
+    
     private void infoForProgram() {
         final CustomProgramModel sel = _listViewCp.getSelectionModel().getSelectedItem();
         if (sel == null) {
@@ -177,7 +255,8 @@ public class CustomProgramDialog extends CmWindow {
         
         new CustomProgramInfoSubDialog(sel).setVisible(true);
     }
-    private void editProgram(boolean asCopy) {
+    
+    private void editCustomProgram(boolean asCopy) {
         final CustomProgramModel sel = _listViewCp.getSelectionModel().getSelectedItem();
         if (sel == null) {
             CatchupMathTools.showAlert("Select a custom program first");
@@ -200,6 +279,44 @@ public class CustomProgramDialog extends CmWindow {
     }
 
     private void deleteProgram() {
+        if(isCpTabSelected()) {
+            deleteCustomProgram();
+        }
+        else {
+            deleteCustomQuiz();
+        }
+    }
+    
+    private void deleteCustomQuiz() {
+        CustomLessonModel quiz = _listViewCq.getSelectionModel().getSelectedItem();
+        final CustomQuizDef def = new CustomQuizDef(quiz.getQuizId(), quiz.getQuiz(),adminModel.getId());
+        MessageBox.confirm("Delete Custom Quiz?", "Are you sure you want to delete custom quiz '" + def.getQuizName() + "'?", new Listener<MessageBoxEvent>() {
+            public void handleEvent(MessageBoxEvent be) {
+                deleteCustomQuiz(def);
+            }
+        });
+    }
+    
+    private void deleteCustomQuiz(final CustomQuizDef def) {
+
+        new RetryAction<RpcData>() {
+            @Override
+            public void attempt() {
+                CmBusyManager.setBusy(true);
+                DeleteCustomQuizAction action = new DeleteCustomQuizAction(adminModel.getId(), def.getQuizName());
+                setAction(action);
+                CmShared.getCmService().execute(action, this);
+            }
+
+            @Override
+            public void oncapture(RpcData result) {
+                CmBusyManager.setBusy(false);
+                loadCustomQuizDefinitions();
+            }
+        }.register();        
+    }
+    
+    private void deleteCustomProgram() {
         final CustomProgramModel sel = _listViewCp.getSelectionModel().getSelectedItem();
         if (sel == null) {
             CatchupMathTools.showAlert("Select a custom program first");
@@ -248,6 +365,32 @@ public class CustomProgramDialog extends CmWindow {
         }.register();
     }
 
+       
+    private void loadCustomQuizDefinitions() {
+
+        new RetryAction<CmList<CustomQuizDef>>() {
+            @Override
+            public void attempt() {
+                CmBusyManager.setBusy(true);
+                GetCustProgQuizDefsAction action = new GetCustProgQuizDefsAction(adminModel.getId());
+                setAction(action);
+                CmShared.getCmService().execute(action, this);
+            }
+
+            @Override
+            public void oncapture(CmList<CustomQuizDef> defs) {
+                CmBusyManager.setBusy(false);              
+                List<CustomLessonModel> gmodels = new ArrayList<CustomLessonModel>();
+                for(int i=0,t=defs.size();i<t;i++) {
+                    gmodels.add(new CustomLessonModel(defs.get(i).getQuizId(), defs.get(i).getQuizName()));
+                }
+                _listViewCq.getStore().removeAll();                    
+                _listViewCq.getStore().add(gmodels);
+            }
+        }.register();        
+    }
+    
+    
     private void getCustomProgramDefinitions() {
         new RetryAction<CmList<CustomProgramModel>>() {
             @Override

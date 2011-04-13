@@ -159,10 +159,10 @@ public class HaUserExtendedDao {
         "select * from HA_USER_EXTENDED where user_id = ?";
 
     static public void resetUserExtendedLessonStatusForUid(final Connection conn, StudentProgramModel program, int userId) throws Exception {
-    	if (program.isCustomProgram()) {
+    	if (program.getCustom().isCustom()) {
     		CmCustomProgramDao dao = new CmCustomProgramDao();
     		int programSegment = 1;
-    		CmList<CustomLessonModel> list = dao.getCustomProgramLessons(conn, program.getCustomProgramId(),programSegment);
+    		CmList<CustomLessonModel> list = dao.getCustomProgramLessons(conn, program.getCustom().getCustomProgramId(),programSegment);
     	    updateUserExtendedLessonStatusForUid(conn, userId, (list!=null)?list.size():0);    		
     	}
     	else {

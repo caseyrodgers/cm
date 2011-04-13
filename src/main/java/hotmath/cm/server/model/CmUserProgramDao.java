@@ -223,6 +223,8 @@ public class CmUserProgramDao {
         supm.setConfig(new HaTestConfig(passPercent, rs.getString("test_config_json")));
         supm.setCustomProgramId(rs.getInt("custom_program_id"));
         supm.setCustomProgramName(rs.getString("custom_program_name"));
+        supm.setCustomQuizId(rs.getInt("custom_quiz_id"));
+        supm.setCustomQuizName(rs.getString("custom_quiz_name"));
         supm.setComplete(rs.getDate("date_completed") != null);
 
         return supm;

@@ -555,6 +555,7 @@ public class CmAdminDao {
             pstmt = conn.prepareStatement(CmMultiLinePropertyReader.getInstance().getProperty(
                     "ADMIN_PROGRAM_DEFINITIONS"));
             pstmt.setInt(1, uid);
+            pstmt.setInt(2, uid);
             rs = pstmt.executeQuery();
             rval = loadProgramDefinitions(rs);
             return rval;
@@ -668,6 +669,8 @@ public class CmAdminDao {
             StudyProgramModel m = new StudyProgramModel();
             m.setCustomProgramId(rs.getInt("custom_program_id"));
             m.setCustomProgramName(rs.getString("custom_program_name"));
+            m.setCustomQuizId(rs.getInt("custom_quiz_id"));
+            m.setCustomQuizName(rs.getString("custom_quiz_name"));
             m.setShortTitle(rs.getString("id"));
             m.setTitle(rs.getString("title"));
             m.setDescr(rs.getString("description"));

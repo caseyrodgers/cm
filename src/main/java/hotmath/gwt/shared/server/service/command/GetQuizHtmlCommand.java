@@ -71,6 +71,9 @@ public class GetQuizHtmlCommand implements ActionHandler<GetQuizHtmlAction, Quiz
             if(programInfo.getCustomProgramId() > 0) {
                 testTitle = new CmCustomProgramDao().getCustomProgram(conn,programInfo.getCustomProgramId()).getProgramName();
             }
+            else if(programInfo.getCustomQuizId() > 0) {
+                testTitle =  programInfo.getCustomQuizName();
+            }
             else {
                 testTitle = haTest.getTitle();
             }

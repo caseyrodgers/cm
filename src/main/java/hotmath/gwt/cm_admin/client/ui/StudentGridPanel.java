@@ -845,7 +845,7 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
 			public Object render(StudentModelExt sm, String property,
 					ColumnData config, int rowIndex, int colIndex,
 					ListStore<StudentModelExt> store, Grid<StudentModelExt> grid) {
-                if (sm.getProgram().isCustomProgram()) {
+                if (sm.getProgram().getCustom().isCustom()) {
                 	return "";
                 }
                 else {
@@ -868,7 +868,7 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
 			public Object render(StudentModelExt sm, String property,
 					ColumnData config, int rowIndex, int colIndex,
 					ListStore<StudentModelExt> store, Grid<StudentModelExt> grid) {
-				if (! sm.getProgram().isCustomProgram() && (sm.getPassingCount() > 0 || sm.getNotPassingCount() > 0)) {
+				if (! sm.getProgram().getCustom().isCustomLessons() && (sm.getPassingCount() > 0 || sm.getNotPassingCount() > 0)) {
                 	StringBuffer sb = new StringBuffer();
                 	sb.append(sm.getPassingCount()).append(" passed out of ");
                 	sb.append(sm.getPassingCount() + sm.getNotPassingCount());

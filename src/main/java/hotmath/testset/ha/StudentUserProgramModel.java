@@ -6,7 +6,7 @@ import java.util.Date;
 import java.util.List;
 
 /** Identifies a complete Catchup Math program
- * which defines all aspects of a problem.  
+ * which defines all aspects of a program.  
  * 
  * Includes the test_def and the custom configuration info.
  * 
@@ -26,8 +26,13 @@ public class StudentUserProgramModel {
     HaTestDef testDef;
     int customProgramId;
     String customProgramName;
+    int customQuizId;
+    String customQuizName;
     boolean isComplete;
     
+    public StudentUserProgramModel() {}
+
+    List<HaTest> tests;
     
     public String getCustomProgramName() {
         return customProgramName;
@@ -41,8 +46,23 @@ public class StudentUserProgramModel {
     public void setCustomProgramId(Integer customProgramId) {
         this.customProgramId = customProgramId;
     }
-
-    List<HaTest> tests;
+    
+    public int getCustomQuizId() {
+        return customQuizId;
+    }
+    public void setCustomQuizId(int customQuizId) {
+        this.customQuizId = customQuizId;
+    }
+    public String getCustomQuizName() {
+        return customQuizName;
+    }
+    public void setCustomQuizName(String customQuizName) {
+        this.customQuizName = customQuizName;
+    }
+    
+    public boolean isCustom() {
+        return getCustomProgramId() > 0 || getCustomQuizId() > 0;
+    }
     
     public HaTestConfig getConfig() {
         return config;
@@ -124,7 +144,7 @@ public class StudentUserProgramModel {
         return "StudentUserProgramModel [id=" + id + ", userId=" + userId + ", testDefId=" + testDefId
                 + ", passPercent=" + passPercent + ", testName=" + testName + ", adminId=" + adminId + ", createDate="
                 + createDate + ", config=" + config + ", testDef=" + testDef + ", customProgramId=" + customProgramId
-                + ", customProgramName=" + customProgramName + ", isComplete=" + isComplete + ", tests=" + tests + "]";
+                + ", customProgramName=" + customProgramName + ", customQuizId=" + customQuizId + ", customQuizName="
+                + customQuizName + ", isComplete=" + isComplete + ", tests=" + tests + "]";
     }
-    
 }

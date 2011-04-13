@@ -14,6 +14,9 @@ public class StudyProgramModel implements IsSerializable {
     private Integer needsChapters;
     private Integer needsPassPercent;
     private Integer needsState;
+    
+    private Integer customQuizId;
+    private String customQuizName;
 
     private Integer customProgramId;
     private String customProgramName;
@@ -23,11 +26,13 @@ public class StudyProgramModel implements IsSerializable {
     }
 
     public StudyProgramModel(Integer programId, String title, String shortTitle, String descr, Integer customProgramId,
-            String customProgramName, Integer needsSubject, Integer needsChapters, Integer needsPassPercent,
+            String customProgramName, Integer customQuizId, String customQuizName, Integer needsSubject, Integer needsChapters, Integer needsPassPercent,
             Integer needsState) {
         this.programId = programId;
         this.customProgramId = customProgramId;
         this.customProgramName = customProgramName;
+        this.customQuizId = customQuizId;
+        this.customQuizName = customQuizName;
         this.title = title;
         this.shortTitle = shortTitle;
         this.descr = descr;
@@ -35,6 +40,22 @@ public class StudyProgramModel implements IsSerializable {
         this.needsChapters = needsChapters;
         this.needsPassPercent = needsPassPercent;
         this.needsState = needsState;
+    }
+
+    public Integer getCustomQuizId() {
+        return customQuizId;
+    }
+
+    public void setCustomQuizId(Integer customQuizId) {
+        this.customQuizId = customQuizId;
+    }
+
+    public String getCustomQuizName() {
+        return customQuizName;
+    }
+
+    public void setCustomQuizName(String customQuizName) {
+        this.customQuizName = customQuizName;
     }
 
     public Boolean getIsTemplate() {
@@ -53,9 +74,19 @@ public class StudyProgramModel implements IsSerializable {
         this.customProgramName = customProgramName;
     }
 
-    public boolean isCustomProgram() {
-        return customProgramId != null && customProgramId > 0;
+    public boolean isCustom() {
+        return isCustomQuiz() || isCustomProgram();
     }
+    
+    public boolean isCustomQuiz() {
+        return (customQuizId != null && customQuizId > 0);
+    }
+
+    
+    public boolean isCustomProgram() {
+        return (customProgramId != null && customProgramId > 0);
+    }
+
 
     public Integer getProgramId() {
         return programId;
@@ -135,5 +166,15 @@ public class StudyProgramModel implements IsSerializable {
 
     public void setSubjectId(String subjectId) {
         this.subjectId = subjectId;
+    }
+
+    @Override
+    public String toString() {
+        return "StudyProgramModel [programId=" + programId + ", title=" + title + ", shortTitle=" + shortTitle
+                + ", descr=" + descr + ", subjectId=" + subjectId + ", needsSubject=" + needsSubject
+                + ", needsChapters=" + needsChapters + ", needsPassPercent=" + needsPassPercent + ", needsState="
+                + needsState + ", customQuizId=" + customQuizId + ", customQuizName=" + customQuizName
+                + ", customProgramId=" + customProgramId + ", customProgramName=" + customProgramName + ", isTemplate="
+                + isTemplate + "]";
     }
 }

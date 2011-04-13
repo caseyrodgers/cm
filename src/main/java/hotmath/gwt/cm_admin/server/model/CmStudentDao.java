@@ -15,6 +15,8 @@ import hotmath.gwt.cm_rpc.client.rpc.CmList;
 import hotmath.gwt.cm_rpc.client.rpc.CmRpcException;
 import hotmath.gwt.cm_tools.client.model.AccountInfoModel;
 import hotmath.gwt.cm_tools.client.model.ChapterModel;
+import hotmath.gwt.cm_tools.client.model.CustomProgramComposite;
+import hotmath.gwt.cm_tools.client.model.CustomProgramComposite.Type;
 import hotmath.gwt.cm_tools.client.model.LessonItemModel;
 import hotmath.gwt.cm_tools.client.model.StringHolder;
 import hotmath.gwt.cm_tools.client.model.StudentActiveInfo;
@@ -1086,7 +1088,7 @@ public class CmStudentDao {
         /** check for setting of StudyProgram, and implement override
          *  We should depreciate using instance vars to identify the program
          */
-        if(sm.getProgram().isCustomProgram()) {
+        if(sm.getProgram().isCustom()) {
             return addStudentProgramCustom(conn, sm);
         }
         
@@ -1175,10 +1177,15 @@ public class CmStudentDao {
      * @throws Exception
      */
     public StudentModelI addStudentProgramCustom(final Connection conn, StudentModelI sm) throws Exception {
+        if(sm.getProgram().getCustom().getType() == Type.QUIZ) {
+            return addStudentProgramCustomQuiz(conn, sm);
+        }
+
 
         StudentProgramModel studyProgram = sm.getProgram();
         if(studyProgram == null)
             throw new CmException("StudentProgramModel cannot be null: " + sm);
+
 
         PreparedStatement ps = null;
         try {
@@ -1193,7 +1200,7 @@ public class CmStudentDao {
                 ps.setInt(5, passPcnt);
                 ps.setTimestamp(6, new Timestamp(System.currentTimeMillis()));
                 ps.setString(7, sm.getJson());
-                ps.setInt(8, sm.getProgram().getCustomProgramId());
+                ps.setInt(8, sm.getProgram().getCustom().getCustomProgramId());
             } else {
                 ps = conn.prepareStatement(CmMultiLinePropertyReader.getInstance().getProperty("INSERT_STUDENT_PROGRAM_NULL_PASS_PERCENT_SQL"));
                 ps.setInt(1, sm.getUid());
@@ -1202,7 +1209,7 @@ public class CmStudentDao {
                 ps.setString(4, studyProgram.getSubjectId());
                 ps.setTimestamp(5, new Timestamp(System.currentTimeMillis()));
                 ps.setString(6, sm.getJson());
-                ps.setInt(7, sm.getProgram().getCustomProgramId());
+                ps.setInt(7, sm.getProgram().getCustom().getCustomProgramId());
             }
             int result = ps.executeUpdate();
             if (result == 1) {
@@ -1223,6 +1230,48 @@ public class CmStudentDao {
         return sm;
     }
 
+    
+    public StudentModelI addStudentProgramCustomQuiz(final Connection conn, StudentModelI sm) throws Exception {
+        
+
+        StudentProgramModel studyProgram = sm.getProgram();
+        if(studyProgram == null)
+            throw new CmException("StudentProgramModel cannot be null: " + sm);
+
+        
+        PreparedStatement ps = null;
+        try {
+            String pp = sm.getPassPercent();
+            int passPcnt = getPercentFromString(pp);
+            ps = conn.prepareStatement(CmMultiLinePropertyReader.getInstance().getProperty("INSERT_STUDENT_PROGRAM_CUSTOM_QUIZ"));
+            ps.setInt(1, sm.getUid());
+            ps.setInt(2, sm.getAdminUid());
+            ps.setString(3, studyProgram.getProgramType());
+            ps.setString(4, studyProgram.getSubjectId());
+            ps.setInt(5, passPcnt);
+            ps.setTimestamp(6, new Timestamp(System.currentTimeMillis()));
+            ps.setString(7, sm.getJson());
+            ps.setInt(8, sm.getProgram().getCustom().getCustomQuizId());
+            
+            int result = ps.executeUpdate();
+            if (result == 1) {
+                // now get value of auto-increment id from CM_USER_PROGRAM
+                int newKey = SqlUtilities.getLastInsertId(conn);
+                studyProgram.setProgramId(newKey);
+            }
+            
+            sm.setSectionNum(0);
+            setActiveInfo(conn, sm.getUid(), new StudentActiveInfo());
+        } catch (Exception e) {
+            String m = String.format("*** Error adding student program for student with uid: %d", sm.getUid());
+            logger.error(m, e);
+            throw new Exception(m, e);
+        } finally {
+            SqlUtilities.releaseResources(null, ps, null);
+        }
+        return sm;
+
+    }
     
     
     /** Set the test config json for this student by reading
@@ -1661,8 +1710,10 @@ public class CmStudentDao {
             sprm.setProgramId(rs.getInt("user_prog_id"));
             sprm.setProgramType(rs.getString("prog_id"));
             sprm.setSubjectId(rs.getString("subj_id"));
-            sprm.setCustomProgramId(rs.getInt("custom_program_id"));
-            sprm.setCustomProgramName(rs.getString("custom_program_name"));
+            sprm.setCustom(new CustomProgramComposite(
+                    rs.getInt("custom_program_id"), rs.getString("custom_program_name"),
+                    rs.getInt("custom_quiz_id"),rs.getString("custom_quiz_name")));
+
             
         	StudentSettingsModel mdl = sm.getSettings();
 		    mdl.setLimitGames(rs.getInt("limit_games") > 0);
@@ -1680,9 +1731,12 @@ public class CmStudentDao {
             sm.setPassPercent(passPercent);
             sm.setBackgroundStyle(rs.getString("gui_background_style"));
             sm.setSectionNum(rs.getInt("active_segment"));
+            
+            int activeTestId = rs.getInt("active_test_id");
+            boolean isComplete = rs.getDate("date_completed") != null;
 
             setupProgramStatus(sm, rs.getString("program"), rs.getString("test_config_json"),
-            		rs.getInt("current_lesson"), rs.getInt("lesson_count"), rs.getInt("lessons_completed"));
+            		rs.getInt("current_lesson"), rs.getInt("lesson_count"), rs.getInt("lessons_completed"),activeTestId, isComplete);
             
             l.add(sm);
         }
@@ -1696,16 +1750,20 @@ public class CmStudentDao {
      * 
      */
     private void setupProgramStatus(StudentModelI student, String programName, String testConfigJson,
-        int currentLesson, int lessonCount, int isLessonsCompleted) {
+        int currentLesson, int lessonCount, int isLessonsCompleted, int activeTestId, boolean isCompleted) {
 
         StudentProgramModel program = student.getProgram();
-        if (program.isCustomProgram() == false) {
+        if (program.isCustom() == false) {
             program.setProgramDescription(programName);
             student.setStatus(getStatus(program.getProgramId(), student.getSectionNum(), testConfigJson));
         }
-        else {
-            program.setProgramDescription("CP: " + program.getCustomProgramName());
+        else if(program.getCustom().getType() == Type.LESSONS) {
+            program.setProgramDescription("CP: " + program.getCustom().getCustomProgramName());
             student.setStatus(getCustomProgramStatus(currentLesson, lessonCount, isLessonsCompleted));             
+        }
+        else if(program.getCustom().getType() == Type.QUIZ) {
+            program.setProgramDescription("CQ: " + program.getCustom().getCustomQuizName());
+            student.setStatus(getCustomQuizStatus(activeTestId, isCompleted));             
         }
     }
     
@@ -1744,13 +1802,18 @@ public class CmStudentDao {
             program.setProgramId(rs.getInt("user_prog_id"));
             program.setSubjectId(rs.getString("subj_id"));
             program.setProgramType(rs.getString("prog_id"));
-            program.setCustomProgramId(rs.getInt("custom_program_id"));
-            program.setCustomProgramName(rs.getString("custom_program_name"));
+            
+            program.setCustom(new CustomProgramComposite(
+                    rs.getInt("custom_program_id"),rs.getString("custom_program_name"),
+                    rs.getInt("custom_quiz_id"), rs.getString("custom_quiz_name")
+                    ));
             
             sm.setProgram(program);
 
+            int activeTestId = rs.getInt("active_test_id");
+            boolean isCompleted = rs.getDate("date_completed") != null;
             setupProgramStatus(sm, rs.getString("program"), rs.getString("test_config_json"),
-            	rs.getInt("current_lesson"), rs.getInt("lesson_count"), rs.getInt("lessons_completed"));
+            	rs.getInt("current_lesson"), rs.getInt("lesson_count"), rs.getInt("lessons_completed"), activeTestId, isCompleted);
 
             l.add(sm);
         }
@@ -1782,6 +1845,18 @@ public class CmStudentDao {
             return "Completed";
         }
         return "Not started";
+    }
+    
+    private String getCustomQuizStatus(int currentTestId, boolean isCompleted) {
+        if(!isCompleted && currentTestId > 0) {
+            return "Started";
+        }
+        else if(isCompleted) {
+            return "Completed";
+        }
+        else {
+            return "Not Started";    
+        }
     }
     
     private List<StudentModelI> loadStudentExtendedSummaries(ResultSet rs) throws Exception {
@@ -2154,8 +2229,7 @@ public class CmStudentDao {
 
         sm.getProgram().setProgramType(program.getProgramType());
         sm.getProgram().setSubjectId(program.getSubjectId());
-        sm.getProgram().setCustomProgramId(program.getCustomProgramId());
-        sm.getProgram().setCustomProgramName(program.getCustomProgramName());
+        sm.getProgram().getCustom().setCustomProgram(program.getCustom().getCustomProgramId(), program.getCustom().getCustomProgramName());
         sm.setProgramChanged(true);
         sm.setChapter(chapter);
         sm.setPassPercent(passPercent);

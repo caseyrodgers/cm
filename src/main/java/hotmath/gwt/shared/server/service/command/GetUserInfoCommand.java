@@ -179,6 +179,15 @@ public class GetUserInfoCommand implements ActionHandler<GetUserInfoAction, User
                 userInfo.setOnCompletion(UserProgramCompletionAction.STOP);
             }
 
+            
+            
+            
+            /** set if either custom Quiz or custom program
+             * 
+             */
+            userInfo.setCustomProgram(cmProgram.getUserProgram().isCustom());
+            
+            
             userInfo.setUserAccountType(accountType);
             userInfo.setPassPercentRequired(userProgram.getConfig().getPassPercent());
             userInfo.setProgramSegmentCount(programSegmentCount);

@@ -12,10 +12,13 @@ public class StudentProgramModel implements IsSerializable{
     Integer programId;
     String subjectId;
     String programType;
-    int customProgramId;  /** is int to make sure not null */
-    String customProgramName;
+
+    CustomProgramComposite custom = new CustomProgramComposite();
+    
     String programDescription;
 
+
+    public StudentProgramModel() {}
 
     /** 
      * 
@@ -29,6 +32,15 @@ public class StudentProgramModel implements IsSerializable{
         this.subjectId = subjectId;
     }
 
+    
+    public CustomProgramComposite getCustom() {
+        return custom;
+    }
+
+    public void setCustom(CustomProgramComposite customProgram) {
+        this.custom = customProgram;
+    }
+
     public String getProgramDescription() {
         return programDescription;
     }
@@ -37,29 +49,10 @@ public class StudentProgramModel implements IsSerializable{
         this.programDescription = programDescription;
     }
 
-    public String getCustomProgramName() {
-        return customProgramName;
+    public boolean isCustom() {
+        return custom.isCustom();
     }
 
-    public void setCustomProgramName(String customProgramName) {
-        this.customProgramName = customProgramName;
-    }
-
-    public StudentProgramModel() {}
-
-    public Integer getCustomProgramId() {
-        return customProgramId;
-    }
-
-    public void setCustomProgramId(Integer customProgramId) {
-        this.customProgramId = customProgramId;
-    }
-
-    
-    public boolean isCustomProgram() {
-        return this.customProgramId > 0?true:false;
-    }
-    
     public Integer getProgramId() {
         return programId;
     }
@@ -83,11 +76,4 @@ public class StudentProgramModel implements IsSerializable{
     public void setProgramType(String programType) {
         this.programType = programType;
     }
-    
-    @Override
-    public String toString() {
-        return "StudentProgramModel [customProgramId=" + customProgramId + ", customProgramName=" + customProgramName
-                + ", programDescription=" + programDescription + ", programId=" + programId + ", programType="
-                + programType + ", subjectId=" + subjectId + "]";
-    }    
 }
