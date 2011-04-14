@@ -167,7 +167,7 @@ public class LogMonitor {
         Connection conn=null;
         PreparedStatement ps=null;
         
-        if(_writeToDb)
+        if(!_writeToDb)
             return;
         
         try {
