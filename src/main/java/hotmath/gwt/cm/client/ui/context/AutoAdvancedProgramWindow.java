@@ -1,7 +1,7 @@
 package hotmath.gwt.cm.client.ui.context;
 
-import hotmath.gwt.cm.client.CatchupMath;
 import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
+import hotmath.gwt.shared.client.CmShared;
 
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
@@ -43,7 +43,7 @@ public class AutoAdvancedProgramWindow extends CmWindow {
                  * force a page refresh to load newly changed program.
                  * Otherwise, things are out of sync with server.
                  */
-                CatchupMath.reloadUser();
+                CmShared.reloadUser();
             }
         });
 

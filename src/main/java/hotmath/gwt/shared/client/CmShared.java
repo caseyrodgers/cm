@@ -1,5 +1,6 @@
 package hotmath.gwt.shared.client;
 
+import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_rpc.client.rpc.CmService;
 import hotmath.gwt.cm_rpc.client.rpc.CmServiceAsync;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
@@ -224,6 +225,27 @@ public class CmShared implements EntryPoint {
     }
     
     
+    /** Reload the current user's page allowing any changed
+     * program configuration to take effect.
+     * 
+     * 
+     */
+    static public void reloadUser() {
+        String url="/loginService?uid=" + UserInfo.getInstance().getUid();
+        
+        if(CmShared.getQueryParameter("debug") != null) {
+            url += "&debug=true";
+            
+            if(UserInfo.getInstance().isAutoTestMode()) {
+                url += "&type=auto_test";
+            }
+            
+            if(CmShared.getQueryParameter("test_rpp_only") != null ) {
+                url += "&test_rpp_only=true";
+            }
+        }
+        Window.Location.assign(url);        
+    }    
     
     
     static private String getSecurityKey() {
