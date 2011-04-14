@@ -290,7 +290,7 @@ select date_format(iu.view_time,'%Y-%m-%d') as use_date, date_format(iu.view_tim
  
 ) s
 group by s.test_run_id, s.is_quiz, s.use_date
-order by s.view_time asc, s.test_run_id asc, s.session_number asc
+order by s.view_time asc, s.test_id asc, s.test_run_id asc, s.session_number asc
 
 
 
