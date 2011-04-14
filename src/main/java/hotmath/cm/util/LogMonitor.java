@@ -44,14 +44,18 @@ public class LogMonitor {
 
     LogTailer _tailer;
     boolean _logIsReady;
+    boolean _writeToDb=true;
 
     private void stopTailing() {
         _tailer.stopTailing();
     }
 
     private LogMonitor(String file) {
-        
-        System.out.println("Reading log ..");
+        this(file, true);
+    }
+    private LogMonitor(String file, boolean writeToDb) {
+        _writeToDb = writeToDb;
+        System.out.println("Processing log: " + file + " (write_to_db=" + writeToDb + ")");
 
         _tailer = new LogTailer(new File(file), 2000, true);
         _tailer.addLogFileTailerListener(new LogFileTailerListener() {
@@ -114,7 +118,8 @@ public class LogMonitor {
         	if (argMatcher.find()) {
         		args = argMatcher.group(1);
         	}
-
+        	
+            System.out.println(String.format("cm_log record=%d %s,%d,%s,%s", (++recordsWritten), userType, userId, actionName, id));
         	writeDatabaseRecord("start", timeStamp, actionName, args, -1, userId, userType, id);
         } else {
             /**
@@ -151,12 +156,19 @@ public class LogMonitor {
             }
         }
     }
+    
+    public void setWriteToDb(boolean writeToDb) {
+        _writeToDb = writeToDb;
+    }
+    
     int recordsWritten=0;
     private void writeDatabaseRecord(String type, String timeStamp, String actionName, String args, int elapseTime,int userId, String userType,
     		String actionId)  {
         Connection conn=null;
         PreparedStatement ps=null;
-        System.out.println(String.format("cm_log record=%d %s,%d,%s,%s", (++recordsWritten), userType, userId, actionName, actionId));
+        
+        if(_writeToDb)
+            return;
         
         try {
             String sql = "insert into HA_ACTION_LOG(type, time_stamp, action_name, action_args, elapse_time, user_id, user_type, action_id)values(?,?,?,?,?,?,?,?)";
@@ -194,10 +206,13 @@ public class LogMonitor {
 
     static public void main(String as[]) {
         try {
-            if (as.length != 1)
-                throw new Exception("usage: ... logfile");
+            if (as.length < 1)
+                throw new Exception("usage: ... logfile [-write_to_db=true]");
+            
+            SbUtilities.addOptions(as);
+            boolean writeToDb = SbUtilities.getBoolean(SbUtilities.getOption("write_to_db", "true"));
 
-            new LogMonitor(as[0]);
+            new LogMonitor(as[0], writeToDb);
         } catch (Exception e) {
             e.printStackTrace();
         }
