@@ -20,6 +20,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import pl.rmalinowski.gwt2swf.client.utils.SWFObjectUtil;
+
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.json.client.JSONObject;
@@ -124,7 +126,26 @@ public class CmShared implements EntryPoint {
         });
     }
     
-    
+
+    /** Return the current browser User Agent
+     * 
+     * @return
+     */
+    public static String getBrowserInfo() {
+        try {
+            String userAgent = getUserAgent();
+            String flashVersion = "Flash version: " + SWFObjectUtil.getPlayerVersion().toString();
+            return userAgent + ", " + flashVersion;
+        }
+        catch(Throwable th) {
+            th.printStackTrace();
+            return "Could not read browser info: " + th.getMessage();
+        }
+    }
+    public static native String getUserAgent() /*-{
+        return navigator.userAgent.toLowerCase();
+    }-*/;
+
     static native void processMathJax() /*-{
         // defined in CatchupMath.js
         $wnd.processMathJax();

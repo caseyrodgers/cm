@@ -1,11 +1,15 @@
 package hotmath.gwt.shared.client.rpc.action;
 
 import hotmath.gwt.cm_rpc.client.rpc.Action;
-import hotmath.gwt.cm_tools.client.data.HaBasicUser;
 import hotmath.gwt.cm_tools.client.data.HaUserLoginInfo;
 
 /**
  *  Login with username and password, or...
+ *  
+ *  
+ *  TODO: why is this duplicated in LogUserInAction?
+ *  
+ *  
  *  
  * @author bob
  *
@@ -22,6 +26,8 @@ public class LoginAction implements Action<HaUserLoginInfo> {
     boolean isDebug;
     int     uid;
     
+    String browserInfo;
+    
     public LoginAction() {}
     
     public LoginAction(String userName, String password) {
@@ -31,6 +37,18 @@ public class LoginAction implements Action<HaUserLoginInfo> {
 
     public String getPassword() {
         return password;
+    }
+
+    public String getBrowserInfo() {
+        return browserInfo;
+    }
+
+    public void setBrowserInfo(String browserInfo) {
+        this.browserInfo = browserInfo;
+    }
+
+    public static long getSerialversionuid() {
+        return serialVersionUID;
     }
 
     public void setPassword(String password) {

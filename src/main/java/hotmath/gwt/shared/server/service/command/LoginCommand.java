@@ -64,7 +64,7 @@ public class LoginCommand implements ActionHandler<LoginAction, HaUserLoginInfo>
 		}
 		assert(cmUser != null);
 
-		HaLoginInfo loginInfo = new HaLoginInfoDao().getLoginInfo(conn, cmUser);
+		HaLoginInfo loginInfo = new HaLoginInfoDao().getLoginInfo(conn, cmUser, action.getBrowserInfo());
 
 		return new HaUserLoginInfo(cmUser, loginInfo);
 	}

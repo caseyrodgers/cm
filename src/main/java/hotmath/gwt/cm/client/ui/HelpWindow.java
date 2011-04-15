@@ -452,7 +452,8 @@ public class HelpWindow extends CmWindow {
      * 
      */
     static private String getFeedbackStateInfo() {
-       return ContextController.getInstance().toString(); 
+       String msg = "user_agent=" + CmShared.getBrowserInfo() + ", " + ContextController.getInstance().toString();
+       return msg;
     }
 }
         

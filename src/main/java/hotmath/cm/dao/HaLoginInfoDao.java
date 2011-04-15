@@ -20,14 +20,13 @@ public class HaLoginInfoDao {
     public HaLoginInfoDao(){}
 
     
-    public HaLoginInfo getLoginInfo(final Connection conn, HaBasicUser user) throws Exception {
+    public HaLoginInfo getLoginInfo(final Connection conn, HaBasicUser user, String browserInfo) throws Exception {
         
         HaLoginInfo loginInfo = new HaLoginInfo();
-        loginInfo.setKey(addLoginInfo(conn, user));
+        loginInfo.setKey(addLoginInfo(conn, user, browserInfo));
         loginInfo.setUserId(user.getUserKey());
         loginInfo.setType(user.getUserType().toString());
         loginInfo.setLoginName(user.getLoginName());
-        
         return loginInfo;
     }    
 
@@ -95,7 +94,7 @@ public class HaLoginInfoDao {
     }    
     
 
-    public String addLoginInfo(final Connection conn, HaBasicUser user) throws Exception {
+    public String addLoginInfo(final Connection conn, HaBasicUser user, String browserInfo) throws Exception {
         
         PreparedStatement pstat = null;
 
@@ -110,6 +109,7 @@ public class HaLoginInfoDao {
             pstat.setString(3, user.getUserType().toString());
             pstat.setTimestamp(4, new Timestamp(System.currentTimeMillis()));
             pstat.setString(5,user.getLoginName());
+            pstat.setString(6, browserInfo);
     
             if(pstat.executeUpdate() != 1)
                 throw new Exception("could not not insert new HA_USER_LOGIN record");

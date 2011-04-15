@@ -331,7 +331,7 @@ public class AutoStudentRegistrationPanel extends CmMainResourceContainer {
         w.setSize(300,130);
         w.addButton(new Button("Get Login Info", new SelectionListener<ButtonEvent>() {
         	public void componentSelected(ButtonEvent ce) {
-                LogUserInAction action = new LogUserInAction(null,password);
+                LogUserInAction action = new LogUserInAction(null,password, CmShared.getBrowserInfo());
                 CmShared.getCmService().execute(action,new CmAsyncCallback<RpcData>() {
                 	public void onSuccess(RpcData result) {
                         CmBusyManager.setBusy(false);

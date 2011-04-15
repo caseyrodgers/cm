@@ -109,12 +109,12 @@ public class ActionDispatcher_Test extends CmDbTestCase {
     }
     
     public void testLogUserInAction() throws Exception {
-        LogUserInAction action = new LogUserInAction(_user.getLoginName(),_user.getPassword());
+        LogUserInAction action = new LogUserInAction(_user.getLoginName(),_user.getPassword(),"test");
         RpcData rdata = ActionDispatcher.getInstance().execute(action);
         
         assertTrue(rdata.getDataAsString("key") != null);
         
-        action = new LogUserInAction(_user.getLoginName(),"NOT_EXIST-" + System.currentTimeMillis());
+        action = new LogUserInAction(_user.getLoginName(),"NOT_EXIST-" + System.currentTimeMillis(),"test");
         rdata = ActionDispatcher.getInstance().execute(action);
         
         assertTrue(rdata.getDataAsString("message") != null);

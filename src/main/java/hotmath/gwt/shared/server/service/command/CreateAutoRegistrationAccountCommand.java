@@ -13,6 +13,7 @@ import hotmath.gwt.cm_rpc.client.rpc.RpcData;
 import hotmath.gwt.cm_rpc.server.rpc.ActionHandler;
 import hotmath.gwt.cm_tools.client.model.StudentActiveInfo;
 import hotmath.gwt.cm_tools.client.model.StudentModelI;
+import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.rpc.action.CreateAutoRegistrationAccountAction;
 import hotmath.gwt.shared.client.util.CmUserException;
 import hotmath.testset.ha.ChapterInfo;
@@ -173,7 +174,7 @@ public class CreateAutoRegistrationAccountCommand implements ActionHandler<Creat
         huser.setLoginName(action.getUser());
         
         RpcData rdata = new RpcData();
-        rdata.putData("key", new HaLoginInfoDao().addLoginInfo(conn, huser));
+        rdata.putData("key", new HaLoginInfoDao().addLoginInfo(conn, huser, "auto_registration"));
         return rdata;
     }
     

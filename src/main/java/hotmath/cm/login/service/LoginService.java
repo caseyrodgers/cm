@@ -97,6 +97,7 @@ public class LoginService extends HttpServlet {
 			loginAction.setType(type);
 			loginAction.setUid(uid);
 			loginAction.setUserName(user);
+			loginAction.setBrowserInfo(req.getHeader("User-Agent"));
 
 
 			/** Try to log in, Action will throw exception on 

@@ -6,6 +6,8 @@ import hotmath.gwt.cm_rpc.client.rpc.RpcData;
 /**
  *  Log user with password into Cm and return login key
  *  
+ *  TODO: why is this duplicated in LoginAction?
+ *  
  * @author casey
  *
  */
@@ -13,13 +15,15 @@ public class LogUserInAction implements Action<RpcData> {
     
     String password;
     String userName;
+    String browserInfo;
     
     
     public LogUserInAction() {}
     
-    public LogUserInAction(String userName, String password) {
+    public LogUserInAction(String userName, String password, String browserInfo) {
         this.userName = userName;
         this.password = password;
+        this.browserInfo = browserInfo;
     }
 
     public String getPassword() {
@@ -36,5 +40,13 @@ public class LogUserInAction implements Action<RpcData> {
 
     public void setUserName(String userName) {
         this.userName = userName;
+    }
+
+    public String getBrowserInfo() {
+        return browserInfo;
+    }
+
+    public void setBrowserInfo(String browserInfo) {
+        this.browserInfo = browserInfo;
     }
 }
