@@ -87,21 +87,18 @@ public class CmAdminDao_Test extends CmDbTestCase {
     }
 
 
-    
-    
     public void testUpdateGroup() throws Exception {
         GroupInfoModel gm = setupDemoGroup();
         String newGroupName = gm.getName() + "_updated";
-        new CmAdminDao().updateGroup(conn,gm.getId(),newGroupName);
-        
-        // how to test?
+        new CmAdminDao().updateGroup(conn, _user.getUid(), gm.getId(),newGroupName);
+        assertFalse(new CmAdminDao().checkForDuplicateGroup(conn, _user.getAid(), gm.getName()));
     }
 
     
     public void testDeleteGroup() throws Exception {
         GroupInfoModel gm = setupDemoGroup();
         new CmAdminDao().deleteGroup(conn,_user.getUid(),gm.getId());
-        assertFalse(new CmAdminDao().checkForDuplicateGroup(conn, _user.getAid(), gm));
+        assertFalse(new CmAdminDao().checkForDuplicateGroup(conn, _user.getAid(), gm.getName()));
     }
 
     
@@ -140,7 +137,7 @@ public class CmAdminDao_Test extends CmDbTestCase {
          * change it once to Pre-Alg Integers
          * 
          */
-        StudentModelI sm = _dao.getStudentModel(conn, TEST_ID, false);
+        StudentModelI sm = _dao.getStudentModelBase(conn, TEST_ID, false);
         _dao.assignProgramToStudent(conn, TEST_ID,CmProgram.PREALG_CHAP, "Integers");
         
         StudentUserProgramModel pi = new CmUserProgramDao().loadProgramInfoCurrent(conn, TEST_ID);
@@ -155,7 +152,7 @@ public class CmAdminDao_Test extends CmDbTestCase {
          * change it once to Alg 2
          * 
          */
-        StudentModelI sm = _dao.getStudentModel(TEST_ID);
+        StudentModelI sm = _dao.getStudentModelBase(conn, TEST_ID);
         sm.getProgram().setProgramType("Prof");
         sm.getProgram().setSubjectId("Alg 2");
         sm.setProgramChanged(true);
@@ -169,7 +166,7 @@ public class CmAdminDao_Test extends CmDbTestCase {
          * change it again to Alg 1
          * 
          */
-        sm = _dao.getStudentModel(TEST_ID);
+        sm = _dao.getStudentModelBase(conn, TEST_ID);
         sm.getProgram().setProgramType("Prof");
         sm.getProgram().setSubjectId("Alg 1");
         sm.setProgramChanged(true);
@@ -182,7 +179,7 @@ public class CmAdminDao_Test extends CmDbTestCase {
         /** Change it again to Pre-Alg
          * 
          */
-        sm = _dao.getStudentModel(TEST_ID);
+        sm = _dao.getStudentModelBase(conn, TEST_ID);
         sm.getProgram().setProgramType("Prof");
         sm.getProgram().setSubjectId("Pre-Alg");
         sm.setProgramChanged(true);
