@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+ 
+<html>
+<head>
+    <title>Test_1</title>
+    <script type="text/javascript" src="jquery-1.5.1.js"></script>
+    <script type="text/javascript" src="test_1.js"></script>
+	<style>
+  #canvas-container { position: relative; }
+  #ocanvas { border: 1px solid #000; }
+  #canvas { position: absolute; top: 0px; left: 0px; border: 1px solid #ff0000; }
+</style>
+</head>
+<body>
+
+<div id="container">
+    <div id="tools">
+        <button id="button_pencil" type="button" id="drawpolyline">pencil</button>	    
+	    <button id="button_line" type="button">line</button>
+	    <button id="button_rectangle" type="button">rectagle</button>
+	    <button id="button_oval" type="button">oval</button>	
+	   
+    </div> <!-- /tools -->
+	<div id="drawsection">
+	    <div id="canvas-container">
+			<canvas id="ocanvas" width="500" height="500"></canvas>
+	        <canvas id="canvas" width="500" height="500"></canvas>
+	    </div>
+	</div><!-- /drawsection -->
+</div> <!-- /container -->
+</body>
+</html>
