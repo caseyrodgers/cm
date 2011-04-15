@@ -119,7 +119,7 @@ public class LogMonitor {
         		args = argMatcher.group(1);
         	}
         	
-            System.out.println(String.format("cm_log record=%d %s, %s,%d,%s,%s", timeStamp,(++recordsWritten), userType, userId, actionName, id));
+            System.out.println(String.format("cm_log record=%d %s, %s,%d,%s,%s", (++recordsWritten),timeStamp, userType, userId, actionName, id));
         	writeDatabaseRecord("start", timeStamp, actionName, args, -1, userId, userType, id);
         } else {
             /**
