@@ -1,5 +1,6 @@
 package hotmath.gwt.cm_tools.client.ui.resource_viewer;
 
+import hotmath.gwt.cm_tools.client.ui.viewer.CmResourcePanelImplWithWhiteboard;
 import hotmath.gwt.cm_tools.client.ui.viewer.ResourceViewerImplActivity;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
 import hotmath.gwt.shared.client.eventbus.EventBus;
@@ -15,8 +16,6 @@ import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.layout.CenterLayout;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
-import com.google.gwt.core.client.Scheduler;
-import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 
 /**
  * Class to define a standard container for all resources.
@@ -189,6 +188,18 @@ public class CmResourcePanelContainer extends ContentPanel {
         if (_maximize != null)
             _maximize.setText(SHRINK_TEXT);
 
+
+
+        /** If a whiteboard, then do not allow Shrink
+         * 
+         */
+        if(panel instanceof CmResourcePanelImplWithWhiteboard) {
+            if( ((CmResourcePanelImplWithWhiteboard)panel).isWhiteboardActive() ) {
+                /** Cannot shrink Whiteboard */
+                _maximize.setEnabled(false);
+            }
+        }
+        
         /**
          * Reset the panel widget, if needed
          * 
