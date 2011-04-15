@@ -246,23 +246,7 @@ public class CmAdminDao {
     public GroupInfoModel addGroup(final Connection conn, Integer adminUid, GroupInfoModel gm) throws Exception {
         PreparedStatement ps = null;
 
-        if (checkForReservedGroup(gm.getName())) {
-            throw new CmUserException(String.format("The group name you entered, %s, is reserved, please try again", gm.getName()));	
-        }
-
-        if (gm.getName() == null) {
-        	if (adminUid != null)
-            	logger.warn(String.format("addGroup(): adminId: %d; NULL group name passed", adminUid));
-        	else
-        		logger.warn("addGroup(): NULL admin ID and group name passed");
-            throw new CmUserException("The group name you entered is NULL, please try again.");
-        }
-
-
-        Boolean isDuplicate = checkForDuplicateGroup(conn, adminUid, gm);
-        if (isDuplicate) {
-            throw new CmUserException(String.format("The group name you entered, %s, already exists, please try again.", gm.getName()));	
-        }
+        performGroupNameChecks(conn, adminUid, gm.getName(), "addGroup()");
 
         try {
             ps = conn.prepareStatement(CmMultiLinePropertyReader.getInstance().getProperty("ADD_GROUP_SQL"));
@@ -334,16 +318,9 @@ public class CmAdminDao {
         }
     }
 
-    public void updateGroup(final Connection conn, Integer groupId, String name) throws Exception {
-
-        checkForReservedGroup(name);
-        if (name == null) {
-        	if (groupId != null)
-            	logger.warn(String.format("updateGroup(): groupId: %d; NULL group name passed", groupId));
-        	else
-        		logger.warn("updateGroup(): NULL group ID and group name passed");
-            throw new Exception("The group name you entered is NULL.");
-        }
+    public void updateGroup(final Connection conn, Integer adminUid, Integer groupId, String name) throws Exception {
+    	
+    	performGroupNameChecks(conn, adminUid, name, "updateGroup()");
 
         PreparedStatement ps = null;
         try {
@@ -360,6 +337,30 @@ public class CmAdminDao {
         }
     }
 
+    private void performGroupNameChecks(final Connection conn, Integer adminUid, String name, String methodName) throws Exception {
+
+    	if (logger.isDebugEnabled()) {
+    		logger.debug(String.format("+++ performGroupNameChecks(): adminUid: %d, name: %s, methodName(): %s",
+    				adminUid, name, methodName));
+    	}
+        if (checkForReservedGroup(name)) {
+            throw new CmUserException(String.format("The group name you entered, %s, is reserved, please try again", name));	
+        }
+
+        if (name == null) {
+        	if (adminUid != null)
+            	logger.warn(String.format("%s: adminId: %d; NULL group name passed", methodName, adminUid));
+        	else
+        		logger.warn("addGroup(): NULL admin ID and group name passed");
+            throw new CmUserException("The group name you entered is NULL, please try again.");
+        }
+
+        Boolean isDuplicate = checkForDuplicateGroup(conn, adminUid, name);
+        if (isDuplicate) {
+            throw new CmUserException(String.format("The group name you entered, %s, already exists, please try again.", name));	
+        }
+
+    }
     /**
      * Do not allow groups to be named as already existing default names
      * 
@@ -375,20 +376,20 @@ public class CmAdminDao {
     // TODO: assumes a single Admin per school
     private static final String CHECK_DUPLICATE_GROUP_SQL = "select 1 from CM_GROUP where name = ? and admin_id in (?, 0)";
 
-    public Boolean checkForDuplicateGroup(final Connection conn, Integer adminUid, GroupInfoModel gm) throws Exception {
+    public Boolean checkForDuplicateGroup(final Connection conn, Integer adminUid, String name) throws Exception {
         PreparedStatement ps = null;
         ResultSet rs = null;
 
         try {
             ps = conn.prepareStatement(CHECK_DUPLICATE_GROUP_SQL);
-            ps.setString(1, gm.getName());
+            ps.setString(1, name);
             ps.setInt(2, adminUid);
 
             rs = ps.executeQuery();
             return (rs.next());
         } catch (Exception e) {
-            logger.error(String.format("*** Error checking for group: %s, adminUid: %d", gm.getName(), adminUid), e);
-            throw new Exception(String.format("*** Error checking for group: %s ***", gm.getName()));
+            logger.error(String.format("*** Error checking for group: %s, adminUid: %d", name, adminUid), e);
+            throw new Exception(String.format("*** Error checking for group: %s ***", name));
         } finally {
             SqlUtilities.releaseResources(rs, ps, null);
         }
