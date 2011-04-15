@@ -90,7 +90,7 @@ public class CmAdminDao_Test extends CmDbTestCase {
     public void testUpdateGroup() throws Exception {
         GroupInfoModel gm = setupDemoGroup();
         String newGroupName = gm.getName() + "_updated";
-        new CmAdminDao().updateGroup(conn, _user.getUid(), gm.getId(),newGroupName);
+        new CmAdminDao().updateGroup(conn, _user.getAid(), gm.getId(),newGroupName);
         assertFalse(new CmAdminDao().checkForDuplicateGroup(conn, _user.getAid(), gm.getName()));
     }
 
