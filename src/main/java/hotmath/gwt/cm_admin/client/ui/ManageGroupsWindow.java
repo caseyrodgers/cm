@@ -16,6 +16,7 @@ import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.data.CmAsyncRequest;
 import hotmath.gwt.shared.client.data.CmAsyncRequestImplDefault;
 import hotmath.gwt.shared.client.rpc.RetryAction;
+import hotmath.gwt.shared.client.rpc.RetryActionManager;
 import hotmath.gwt.shared.client.rpc.action.GetGroupAggregateInfoAction;
 import hotmath.gwt.shared.client.rpc.action.GetTemplateForSelfRegGroupAction;
 import hotmath.gwt.shared.client.rpc.action.GroupManagerAction;
@@ -358,6 +359,19 @@ public class ManageGroupsWindow extends CmWindow {
                 CmAdminDataReader.getInstance().fireRefreshData();
             	CmBusyManager.setBusy(false);
             }
+
+            @Override
+            public void onFailure(Throwable caught) {
+                CmBusyManager.setBusy(false);
+                
+                if(caught.getMessage().indexOf("you entered") > 0) {
+                    CatchupMathTools.showAlert("Problem renaming group", caught.getMessage());
+                    RetryActionManager.getInstance().requestComplete(this);
+                    return;
+                }
+                super.onFailure(caught);
+            }
+
         }.register();
 
     }
