@@ -31,7 +31,7 @@ public class GroupManagerCommand implements ActionHandler<GroupManagerAction, Rp
         if(action.getActionType() == GroupManagerAction.ActionType.DELETE)
             doDelete(conn,action.getAdminId(), action.getGroupId());
         else if(action.getActionType() == GroupManagerAction.ActionType.UPDATE)
-            doUpdate(conn,action.getGroupId(), action.getGroupName());
+            doUpdate(conn, action.getAdminId(), action.getGroupId(), action.getGroupName());
         else if(action.getActionType() == GroupManagerAction.ActionType.UNREGISTER_STUDENTS)
             doUnregister(conn, action.getAdminId(), action.getGroupId());
         else if(action.getActionType() == GroupManagerAction.ActionType.GROUP_PROGRAM_ASSIGNMENT)
@@ -74,10 +74,9 @@ public class GroupManagerCommand implements ActionHandler<GroupManagerAction, Rp
      * @param groupName
      * @throws Exception
      */
-    private void doUpdate(final Connection conn, Integer groupId, String groupName) throws Exception {
-        new CmAdminDao().updateGroup(conn, groupId, groupName);
+    private void doUpdate(final Connection conn, Integer adminUid, Integer groupId, String groupName) throws Exception {
+        new CmAdminDao().updateGroup(conn, adminUid, groupId, groupName);
     }
-    
     
     
     private void doUnregister(final Connection conn, Integer adminId,Integer groupId) throws Exception {
