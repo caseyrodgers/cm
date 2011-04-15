@@ -16,6 +16,7 @@ import hotmath.gwt.cm_tools.client.data.HaLoginInfo;
 import hotmath.gwt.cm_tools.client.data.HaUserLoginInfo;
 import hotmath.gwt.shared.client.rpc.action.LoginAction;
 import hotmath.gwt.shared.client.util.CmExceptionDoNotNotify;
+import hotmath.gwt.shared.client.util.CmUserException;
 import hotmath.testset.ha.HaAdmin;
 import hotmath.util.HMConnectionPool;
 import hotmath.util.Jsonizer;
@@ -206,10 +207,10 @@ public class LoginService extends HttpServlet {
 			}
 		}
 		catch(Exception e) {
-			if (e instanceof CmExceptionDoNotNotify)
+			if ( (e instanceof CmExceptionDoNotNotify)
+			        || e instanceof CmRpcException && ((CmRpcException)e).isUserException()
+			        || e instanceof CmUserException) {
 			    req.getSession().setAttribute("error-msg", e.getMessage());
-			else if (e instanceof CmRpcException && ((CmRpcException)e).isUserException()) {
-                req.getSession().setAttribute("error-msg", e.getMessage());				
 			}
 			else {
 				String msg = null;
