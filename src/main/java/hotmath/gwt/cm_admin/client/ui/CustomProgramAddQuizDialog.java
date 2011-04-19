@@ -212,7 +212,7 @@ public class CustomProgramAddQuizDialog extends Window {
                 }
             }
             
-            _listCustomQuiz.getStore().add(question);
+            _listCustomQuiz.getStore().add(new QuizQuestionModel(question));
             markSelectedItem(_listCustomQuiz, question);
         }
     }
@@ -528,7 +528,7 @@ public class CustomProgramAddQuizDialog extends Window {
     private int getQuestionNum(List<QuizQuestionModel> models, QuizQuestionModel question) {
         for (int i = 0, t = models.size(); i < t; i++) {
             QuizQuestionModel qqm = models.get(i);
-            if (qqm == question) {
+            if (qqm.equals(question)) {
                 return i;
             }
         }
@@ -546,7 +546,8 @@ public class CustomProgramAddQuizDialog extends Window {
         selection.add(question);
         list.getSelectionModel().setSelection(selection);
         
-        list.getElement(getQuestionNum(list.getStore().getModels(),question)).scrollIntoView();
+        int num = getQuestionNum(list.getStore().getModels(),question);
+        list.getElement(num).scrollIntoView();
     }
 
     private ContentPanel createQuestionListPanel(Widget widget) {
@@ -657,6 +658,16 @@ class QuizQuestionModel extends BaseModelData {
 
     public Integer getCorrectAnswer() {
         return get("correctAnswer");
+    }
+    
+    @Override
+    public boolean equals(Object obj) {
+        if(obj instanceof QuizQuestionModel) {
+            return ((QuizQuestionModel)obj).getPid().equals(getPid());
+        }
+        else {
+            return super.equals(obj);
+        }
     }
 }
 
