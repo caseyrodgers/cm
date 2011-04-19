@@ -245,6 +245,10 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
             }
         });
         CmAdminDataReader.getInstance().addReader(this);
+        
+        
+        
+        new CustomProgramAddQuizDialog(null,null);
     }
 
     public void refreshData() {

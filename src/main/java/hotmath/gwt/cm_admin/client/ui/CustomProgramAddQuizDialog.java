@@ -24,13 +24,11 @@ import java.util.List;
 import com.extjs.gxt.ui.client.Style.LayoutRegion;
 import com.extjs.gxt.ui.client.Style.Scroll;
 import com.extjs.gxt.ui.client.data.BaseModelData;
-import com.extjs.gxt.ui.client.dnd.DND.Feedback;
-import com.extjs.gxt.ui.client.dnd.ListViewDragSource;
-import com.extjs.gxt.ui.client.dnd.ListViewDropTarget;
 import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
+import com.extjs.gxt.ui.client.event.MessageBoxEvent;
 import com.extjs.gxt.ui.client.event.SelectionChangedEvent;
 import com.extjs.gxt.ui.client.event.SelectionChangedListener;
 import com.extjs.gxt.ui.client.event.SelectionListener;
@@ -43,6 +41,7 @@ import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.Html;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.ListView;
+import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.TabItem;
 import com.extjs.gxt.ui.client.widget.TabPanel;
 import com.extjs.gxt.ui.client.widget.Window;
@@ -211,6 +210,17 @@ public class CustomProgramAddQuizDialog extends Window {
             _listCustomQuiz.getStore().remove(question);
         }
     }
+    
+    private void removeAllSelectedQuestionFromCustomQuiz() {
+        MessageBox.confirm("Remove Questions", "Remove all questions from custom quiz?",new Listener<MessageBoxEvent>() {
+            public void handleEvent(MessageBoxEvent be) {
+                if(!be.isCancelled()) {
+                    _listCustomQuiz.getStore().removeAll();
+                }
+            }
+        });
+    }
+    
     
     private void loadCustomQuiz(final CustomQuizDef quiz) {
         new RetryAction<CmList<QuizQuestion>>() {
@@ -438,19 +448,24 @@ public class CustomProgramAddQuizDialog extends Window {
         cpRight.setLayout(new FitLayout());
         lc.add(cpRight, new BorderLayoutData(LayoutRegion.CENTER));
         
-        cpRight.getHeader().addTool(new MyButtonWithTip("Remove","Remove the selected question from the custom program",  new SelectionListener<ButtonEvent>() {
+        cpRight.getHeader().addTool(new MyButtonWithTip("Remove","Remove the selected question from the custom quiz",  new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent ce) {
                 removeSelectedQuestionFromCustomQuiz();
             }
         }));
+        cpRight.getHeader().addTool(new MyButtonWithTip("Remove All","Remove all questions from the custom quiz",  new SelectionListener<ButtonEvent>() {
+            public void componentSelected(ButtonEvent ce) {
+                removeAllSelectedQuestionFromCustomQuiz();
+            }
+        }));
         
-        cpRight.getHeader().addTool(new MyButtonWithTip("Move Down","Move the selected question down in the custom program",  new SelectionListener<ButtonEvent>() {
+        cpRight.getHeader().addTool(new MyButtonWithTip("Move Down","Move the selected question down in the custom quiz",  new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent ce) {
                 moveSelectedQuestionInProgramDown();
             }
         }));
         
-        cpRight.getHeader().addTool(new MyButtonWithTip("Move Up","Move the selected question up in the custom program",  new SelectionListener<ButtonEvent>() {
+        cpRight.getHeader().addTool(new MyButtonWithTip("Move Up","Move the selected question up in the custom quiz",  new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent ce) {
                 moveSelectedQuestionInProgramUp();
             }
@@ -593,7 +608,7 @@ class QuizQuestionModel extends BaseModelData {
     
     private String createUniqRadioButtonName(String html) {
         String newNameTag = "quiz_question_" + Random.nextInt();
-        String ret = html.replaceAll("name.*question_.*\"", "name=\"" + newNameTag + "\"");
+        String ret = html.replaceAll("name=\"question_.*\" id=", "name=\"" + newNameTag + "\" id=");
         return ret;
     }
     
