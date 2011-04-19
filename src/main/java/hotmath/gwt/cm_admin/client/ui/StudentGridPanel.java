@@ -248,7 +248,7 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
         
         
         
-        new CustomProgramAddQuizDialog(null,null);
+        // new CustomProgramAddQuizDialog(null,null);
     }
 
     public void refreshData() {
