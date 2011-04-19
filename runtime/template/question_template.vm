@@ -1,0 +1,6 @@
+<div class='question_div'>
+   <hr/>
+   <div class='question_text' guid='$pid'>
+       $questionStatement  
+   </div>
+</div>
