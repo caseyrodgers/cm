@@ -41,6 +41,7 @@ import com.extjs.gxt.ui.client.store.StoreListener;
 import com.extjs.gxt.ui.client.store.StoreSorter;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.Html;
+import com.extjs.gxt.ui.client.widget.Label;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.ListView;
 import com.extjs.gxt.ui.client.widget.MessageBox;
@@ -111,6 +112,12 @@ public class CustomProgramAddQuizDialog extends Window {
         _mainPanel = createBodyPanel();
 
         _listCustomQuiz.setStore(new ListStore<QuizQuestionModel>());
+        _listCustomQuiz.getStore().addStoreListener(new StoreListener<QuizQuestionModel>() {
+            @Override
+            public void handleEvent(StoreEvent<QuizQuestionModel> e) {
+                _totalCount.setText("Count: " + _listCustomQuiz.getStore().getCount());
+            }
+        });
         _listCustomQuiz
                 .setTemplate("<tpl for=\".\"><div style='padding: 15px;white-space: normal' class='x-view-item'>{question}</div></tpl>");
 
@@ -428,6 +435,7 @@ public class CustomProgramAddQuizDialog extends Window {
                                                                              }
                                                                              }-*/;
 
+    Label _totalCount = new Label("Count: 0");
     private LayoutContainer createBodyPanel() {
         LayoutContainer lc = new LayoutContainer();
         lc.addStyleName("custom-program-questions-container");
@@ -455,9 +463,17 @@ public class CustomProgramAddQuizDialog extends Window {
 
         ContentPanel cpRight = new ContentPanel();
         cpRight.setHeading("Questions in Custom Quiz");
-        cpRight.add(_listCustomQuiz);
-        cpRight.setLayout(new FitLayout());
+        cpRight.setLayout(new BorderLayout());
+        cpRight.add(_listCustomQuiz, new BorderLayoutData(LayoutRegion.CENTER));
+        
+        _totalCount.setStyleAttribute("margin-right", "5px");
+        LayoutContainer foot = new LayoutContainer();
+        foot.setStyleAttribute("text-align", "right");
+        foot.add(_totalCount);
+        cpRight.add(foot, new BorderLayoutData(LayoutRegion.SOUTH, 15));
+        
         lc.add(cpRight, new BorderLayoutData(LayoutRegion.CENTER));
+        
 
         Button removeBtn = new Button("Remove");
         Menu removeMenu = new Menu();
