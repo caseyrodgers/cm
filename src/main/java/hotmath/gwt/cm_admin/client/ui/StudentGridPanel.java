@@ -262,7 +262,7 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
         CmAdminDataReader.getInstance().addReader(this);
 
         if (CmShared.getQueryParameter("show_quiz") != null) {
-            new CustomProgramAddQuizDialog(null, null);
+            new CustomProgramAddQuizDialog(null, null, false);
         }
     }
 

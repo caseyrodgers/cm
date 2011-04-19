@@ -4,8 +4,8 @@ import hotmath.gwt.cm_admin.server.model.CmCustomProgramDao;
 import hotmath.gwt.cm_rpc.client.rpc.Action;
 import hotmath.gwt.cm_rpc.client.rpc.Response;
 import hotmath.gwt.cm_rpc.server.rpc.ActionHandler;
-import hotmath.gwt.shared.client.model.CustomProgramInfoModel;
-import hotmath.gwt.shared.client.rpc.action.CustomProgramInfoAction;
+import hotmath.gwt.shared.client.model.CustomQuizInfoModel;
+import hotmath.gwt.shared.client.rpc.action.CustomQuizInfoAction;
 
 import java.sql.Connection;
 
@@ -16,16 +16,15 @@ import java.sql.Connection;
  * @author casey
  *
  */
-public class CustomProgramInfoCommand implements ActionHandler<CustomProgramInfoAction, CustomProgramInfoModel> {
+public class CustomQuizInfoCommand implements ActionHandler<CustomQuizInfoAction, CustomQuizInfoModel> {
 
     @Override
-    public CustomProgramInfoModel execute(Connection conn, CustomProgramInfoAction action) throws Exception {
-        return new CmCustomProgramDao().getCustomProgramInfo(conn,action.getAdminId(), action.getProgram());
+    public CustomQuizInfoModel execute(Connection conn, CustomQuizInfoAction action) throws Exception {
+        return new CmCustomProgramDao().getCustomQuizInfo(conn,action.getAdminId(), action.getQuiz().getQuizId());
     }
 
     @Override
     public Class<? extends Action<? extends Response>> getActionType() {
-        // TODO Auto-generated method stub
-        return CustomProgramInfoAction.class;
+        return CustomQuizInfoAction.class;
     }
 }

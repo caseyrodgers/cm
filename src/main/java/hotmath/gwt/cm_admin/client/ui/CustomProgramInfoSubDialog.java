@@ -21,7 +21,6 @@ import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 public class CustomProgramInfoSubDialog extends CmWindow {
 
     CustomProgramModel program;
-
     public CustomProgramInfoSubDialog(CustomProgramModel program) {
         this.program = program;
         setModal(true);

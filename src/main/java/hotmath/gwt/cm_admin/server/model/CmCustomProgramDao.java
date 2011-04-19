@@ -10,6 +10,7 @@ import hotmath.gwt.cm_tools.client.model.StudentModelExt;
 import hotmath.gwt.shared.client.model.CustomProgramInfoModel;
 import hotmath.gwt.shared.client.model.CustomQuizDef;
 import hotmath.gwt.shared.client.model.CustomQuizId;
+import hotmath.gwt.shared.client.model.CustomQuizInfoModel;
 import hotmath.gwt.shared.client.model.QuizQuestion;
 import hotmath.gwt.shared.client.util.CmException;
 import hotmath.util.sql.SqlUtilities;
@@ -675,6 +676,30 @@ public class CmCustomProgramDao {
                 info.getAssignedStudents().add(sm);
             }
             info.setLessons(getCustomProgramLessons(conn, program.getProgramId(), 1));
+            return info;
+        } finally {
+            SqlUtilities.releaseResources(null, stmt, null);
+        }
+    }
+    
+    public CustomQuizInfoModel getCustomQuizInfo(final Connection conn, Integer adminId,
+            int quizId) throws Exception {
+        PreparedStatement stmt = null;
+        try {
+            CustomQuizInfoModel info = new CustomQuizInfoModel();
+            stmt = conn.prepareStatement(CmMultiLinePropertyReader.getInstance().getProperty("CUSTOM_QUIZ_INFO_INUSE"));
+            stmt.setInt(1, adminId);
+            stmt.setInt(2, quizId);
+
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                StudentModelExt sm = new StudentModelExt();
+                sm.setAdminUid(adminId);
+                sm.setName(rs.getString("user_name"));
+                sm.setUid(rs.getInt("uid"));
+                info.getAssignedStudents().add(sm);
+            }
+            info.setQuestionCount( new CmQuizzesDao().getCustomQuizIds(conn,quizId).size());
             return info;
         } finally {
             SqlUtilities.releaseResources(null, stmt, null);

@@ -3,6 +3,7 @@ package hotmath.gwt.cm_admin.server.model;
 import hotmath.gwt.cm.server.CmDbTestCase;
 import hotmath.gwt.cm_rpc.client.rpc.CmList;
 import hotmath.gwt.cm_tools.client.model.CustomLessonModel;
+import hotmath.gwt.shared.client.model.CustomQuizDef;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,6 +21,10 @@ public class CmCustomProgramDao_Test extends CmDbTestCase {
             setupDemoAccount();
     }
     
+    public void testCustGetQuizInfo() throws Exception {
+        CustomQuizDef def = new CmQuizzesDao().getCustomQuizDefinitions(conn,2).get(0);
+        assertTrue(new CmCustomProgramDao().getCustomQuizInfo(conn, 2, def.getQuizId()).getAssignedStudents().size() > 0);
+    }
     public void testCustGetAll() throws Exception {
         /** requires row for samples HA_CUSTOM_PROGRAM */
         CmList<CustomLessonModel> models = new CmCustomProgramDao().getAllLessons(conn);

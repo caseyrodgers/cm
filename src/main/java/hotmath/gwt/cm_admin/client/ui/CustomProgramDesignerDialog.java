@@ -507,7 +507,7 @@ public class CustomProgramDesignerDialog extends CmWindow {
                     public void quizCreated() {
                         loadCustomQuizDefinitions();
                     }
-                },null);
+                },null,false);
             }
         }));
         
@@ -522,7 +522,7 @@ public class CustomProgramDesignerDialog extends CmWindow {
                     public void quizCreated() {
                         loadCustomQuizDefinitions();
                     }
-                },def);
+                },def,false);
             }
         }));
 

@@ -15,7 +15,7 @@ public class CustomProgramInfoAction implements Action<CustomProgramInfoModel>{
         this.adminId = adminId;
         this.program = program;
     }
-    
+
     public Integer getAdminId() {
         return adminId;
     }
@@ -34,6 +34,6 @@ public class CustomProgramInfoAction implements Action<CustomProgramInfoModel>{
 
     @Override
     public String toString() {
-        return "CustomProgramInfoAction [adminId=" + adminId + ", program=" + program + "]";
+        return "CustomProgramInfoAction [program=" + program + ", adminId=" + adminId + "]";
     }
 }    

@@ -1725,6 +1725,16 @@ where u.admin_id = ?
 and  cp.id = ?;
 
 
+.key=CUSTOM_QUIZ_INFO_INUSE
+
+select u.uid, u.user_name
+from   HA_CUSTOM_QUIZ q
+  JOIN CM_USER_PROGRAM up on up.custom_quiz_id = q.qid
+  JOIN HA_USER u on u.uid = up.user_id
+where u.admin_id = ?
+and  q.qid = ?
+
+
 .key=CUSTOM_PROGRAM_INFO_ASSIGNED
 
 select distinct u.uid, u.user_name

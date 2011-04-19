@@ -80,7 +80,7 @@ public class CustomProgramAddQuizDialog extends Window {
 
     int adminId;
 
-    public CustomProgramAddQuizDialog(Callback callback, CustomQuizDef quiz) {
+    public CustomProgramAddQuizDialog(Callback callback, CustomQuizDef quiz, boolean asCopy) {
         this.callback = callback;
         this._customQuiz = quiz;
 
@@ -199,6 +199,9 @@ public class CustomProgramAddQuizDialog extends Window {
 
         if (_customQuiz != null) {
             loadCustomQuiz(_customQuiz);
+            if(asCopy) {
+                _customQuiz = new CustomQuizDef(0, "Copy of " + _customQuiz.getQuizName(), adminId);
+            }
         } else {
             _customQuiz = new CustomQuizDef(0, "New Custom Quiz", adminId);
         }

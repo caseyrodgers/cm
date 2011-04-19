@@ -256,8 +256,11 @@ public class CmShared implements EntryPoint {
      * 
      */
     static public void reloadUser() {
-        String url="/loginService?uid=" + UserInfo.getInstance().getUid();
-        
+        int uid = UserInfoBase.getInstance().getUid();
+        String url="/loginService?uid=" + uid;
+        if(UserInfo.getInstance() == null) {
+            url += "&type=ADMIN";
+        }
         if(CmShared.getQueryParameter("debug") != null) {
             url += "&debug=true";
             
