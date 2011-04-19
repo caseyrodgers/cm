@@ -231,6 +231,21 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
                 }
             });
             contextMenu.add(clientTests);
+            
+            MenuItem resetUser = new MenuItem("Reset User");
+            resetUser.addSelectionListener(new SelectionListener<MenuEvent>() {
+                public void componentSelected(MenuEvent ce) {
+                    MessageBox.confirm("Reset User", "Reset user to beginning of current program?",new Listener<MessageBoxEvent>() {
+                        public void handleEvent(MessageBoxEvent be) {
+                            if(!be.isCancelled()) {
+                                int uid = _grid.getSelectionModel().getSelectedItem().getUid();
+                                CmShared.resetProgram_Gwt(uid);
+                            }
+                        }
+                    });
+                }
+            });
+            contextMenu.add(resetUser);
         }
 
         _grid.setContextMenu(contextMenu);

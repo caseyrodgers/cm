@@ -189,7 +189,7 @@ public class HelpWindow extends CmWindow {
                             new Listener<MessageBoxEvent>() {
                                 public void handleEvent(MessageBoxEvent be) {
                                     if (be.getButtonClicked().getText().equals("Yes")) {
-                                        FooterPanel.resetProgram_Gwt();
+                                        CmShared.resetProgram_Gwt(UserInfo.getInstance().getUid());
                                     }
                                 }
                             });

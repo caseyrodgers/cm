@@ -274,10 +274,10 @@ public class CatchupMath implements EntryPoint {
             public void handleEvent(CmEvent event) {
                 if (event.getEventType() == EventType.EVENT_TYPE_USER_PROGRAM_CHANGED) {
                     if (((Boolean) event.getEventData()) == true) {
-                        FooterPanel.resetProgram_Gwt();
+                        CmShared.resetProgram_Gwt(UserInfo.getInstance().getUid());
                     } else {
                         // just refresh page
-                        FooterPanel.refreshPage();
+                        CmShared.refreshPage();
                     }
                 }
             }

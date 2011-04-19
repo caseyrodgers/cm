@@ -3,6 +3,7 @@ package hotmath.gwt.shared.client;
 import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_rpc.client.rpc.CmService;
 import hotmath.gwt.cm_rpc.client.rpc.CmServiceAsync;
+import hotmath.gwt.cm_rpc.client.rpc.RpcData;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.ui.CmLogger;
 import hotmath.gwt.shared.client.data.CmAsyncRequestImplDefault;
@@ -12,8 +13,10 @@ import hotmath.gwt.shared.client.eventbus.EventBus;
 import hotmath.gwt.shared.client.eventbus.EventType;
 import hotmath.gwt.shared.client.model.CmPartner;
 import hotmath.gwt.shared.client.model.UserInfoBase;
+import hotmath.gwt.shared.client.rpc.action.ResetUserAction;
 import hotmath.gwt.shared.client.util.CmException;
 import hotmath.gwt.shared.client.util.CmExceptionLoginInvalid;
+import hotmath.gwt.shared.client.util.CmRunAsyncCallback;
 import hotmath.gwt.shared.client.util.SystemVersionUpdateChecker;
 
 import java.util.HashMap;
@@ -28,6 +31,7 @@ import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONParser;
 import com.google.gwt.json.client.JSONValue;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.rpc.ServiceDefTarget;
 
 public class CmShared implements EntryPoint {
@@ -377,7 +381,14 @@ public class CmShared implements EntryPoint {
         final CmServiceAsync cmService = (CmServiceAsync)GWT.create(CmService.class);
         ((ServiceDefTarget) cmService).setServiceEntryPoint(point + "services/cmService");
         _serviceInstance = cmService;
+        
+        
+        registerGlobalGwtJsMethods();
     }
+    
+    static private native void registerGlobalGwtJsMethods() /*-{
+        $wnd.resetProgram_Gwt = @hotmath.gwt.shared.client.CmShared::resetProgram_Gwt();
+    }-*/;
 
     /** create JSNI to return KEY JS variable set during login
      * 
@@ -395,7 +406,10 @@ public class CmShared implements EntryPoint {
     static private native String getLoginInfoFromExtenalJs() /*-{
         var d = $doc.getElementById('login_info');
         return d.innerHTML;
-    }-*/;    
+    }-*/;
+    
+    
+    
     
     static private native String getHostName() /*-{
                                                var host = window.location.host;
@@ -410,4 +424,50 @@ public class CmShared implements EntryPoint {
                                                }
                                                return host;
                                                }-*/;
+    
+    /**
+     * Reset the current user's path through CM
+     * 
+     */
+    static public void resetProgram_Gwt() {
+        resetProgram_Gwt(UserInfo.getInstance().getUid());
+    }
+    static public void resetProgram_Gwt(final int uid) {
+        GWT.runAsync(new CmRunAsyncCallback() {
+            @Override
+            public void onSuccess() {
+                CmServiceAsync s = CmShared.getCmService();
+                int altTest=0;
+                try {
+                    altTest = Integer.parseInt(CmShared.getQueryParameter("alt_test"));
+                    CmLogger.info("Resetting to alternate test " + altTest);
+                }
+                catch(Exception e) {
+                    //quiet
+                }
+                
+                s.execute(new ResetUserAction(uid,altTest),
+                        new AsyncCallback<RpcData>() {
+
+                            @Override
+                            public void onSuccess(RpcData result) {
+                                refreshPage();
+                            }
+
+                            public void onFailure(Throwable caught) {
+                                CatchupMathTools.showAlert(caught.getMessage());
+                            }
+                        });
+            }
+        });
+    }    
+    
+
+    /**
+     * Reload current page
+     * 
+     */
+    static public void refreshPage() {
+        CmShared.reloadUser();
+    }    
 }

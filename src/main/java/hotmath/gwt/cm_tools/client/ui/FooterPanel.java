@@ -1,12 +1,7 @@
 package hotmath.gwt.cm_tools.client.ui;
 
 import hotmath.gwt.cm_rpc.client.UserInfo;
-import hotmath.gwt.cm_rpc.client.rpc.CmServiceAsync;
-import hotmath.gwt.cm_rpc.client.rpc.RpcData;
-import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.shared.client.CmShared;
-import hotmath.gwt.shared.client.rpc.action.ResetUserAction;
-import hotmath.gwt.shared.client.util.CmRunAsyncCallback;
 
 import com.extjs.gxt.ui.client.widget.Html;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
@@ -14,7 +9,6 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.RunAsyncCallback;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public class FooterPanel extends LayoutContainer {
 
@@ -39,48 +33,6 @@ public class FooterPanel extends LayoutContainer {
 		html += "</ul>" + "<div>Brought to you by Hotmath.com</div>";
 
 		add(new Html(html));
-	}
-
-	/**
-	 * Reset the current user's path through CM
-	 * 
-	 */
-	static public void resetProgram_Gwt() {
-		GWT.runAsync(new CmRunAsyncCallback() {
-			@Override
-			public void onSuccess() {
-				CmServiceAsync s = CmShared.getCmService();
-				int altTest=0;
-				try {
-				    altTest = Integer.parseInt(CmShared.getQueryParameter("alt_test"));
-				    CmLogger.info("Resetting to alternate test " + altTest);
-				}
-				catch(Exception e) {
-				    //quiet
-				}
-				
-				s.execute(new ResetUserAction(UserInfo.getInstance().getUid(),altTest),
-						new AsyncCallback<RpcData>() {
-
-							@Override
-							public void onSuccess(RpcData result) {
-								refreshPage();
-							}
-
-							public void onFailure(Throwable caught) {
-								CatchupMathTools.showAlert(caught.getMessage());
-							}
-						});
-			}
-		});
-	}
-
-	/**
-	 * Reload current page
-	 * 
-	 */
-	static public void refreshPage() {
-	    CmShared.reloadUser();
 	}
 
 	private static void showPrescriptionSession_Gwt() {
@@ -130,7 +82,6 @@ public class FooterPanel extends LayoutContainer {
 	 * 
 	 */
 	static private native void publishNative() /*-{
-		$wnd.resetProgram_Gwt = @hotmath.gwt.cm_tools.client.ui.FooterPanel::resetProgram_Gwt();
 		$wnd.showPrescriptionData_Gwt = @hotmath.gwt.cm_tools.client.ui.FooterPanel::showPrescriptionData_Gwt();
 		$wnd.showPrescriptionSession_Gwt = @hotmath.gwt.cm_tools.client.ui.FooterPanel::showPrescriptionSession_Gwt();
 		$wnd.startAutoTest_Gwt = @hotmath.gwt.cm_tools.client.ui.FooterPanel::startAutoTest_Gwt();

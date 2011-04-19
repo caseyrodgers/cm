@@ -1,8 +1,8 @@
 package hotmath.gwt.shared.client.util;
 
 
-import hotmath.gwt.cm_tools.client.ui.FooterPanel;
 import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
+import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
 import hotmath.gwt.shared.client.eventbus.EventBus;
 import hotmath.gwt.shared.client.eventbus.EventType;
@@ -38,7 +38,7 @@ public class StandardSystemRefreshWindow extends CmWindow {
         addButton(new Button("Refresh Page", new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent ce) {
-                FooterPanel.refreshPage();
+                CmShared.refreshPage();
             }
         }));
     }
