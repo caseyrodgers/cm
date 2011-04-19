@@ -273,7 +273,7 @@ public class AssessmentPrescriptionSession {
                         break;
                     }
                 }
-                INeedMoreHelpItem inmhItem = INeedMoreHelpItemFactory.create(rs.getString("link_type"), rs.getString("link_key"), rs.getString("link_title"));
+                INeedMoreHelpItem inmhItem = INeedMoreHelpItemFactory.create(conn, rs.getString("link_type"), rs.getString("link_key"), rs.getString("link_title"));
 
                 // only add items that at, or below the current
                 // test grade level.

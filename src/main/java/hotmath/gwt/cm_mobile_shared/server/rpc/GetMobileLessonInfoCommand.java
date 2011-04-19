@@ -208,7 +208,7 @@ public class GetMobileLessonInfoCommand implements ActionHandler<GetMobileLesson
                         INeedMoreHelpResourceTypeDef.RESOURCE_TYPES.get(type));
                 inmhType.setTopic(topic);
 
-                INeedMoreHelpItem inmhItem = INeedMoreHelpItemFactory.create(rs.getString("link_type"),
+                INeedMoreHelpItem inmhItem = INeedMoreHelpItemFactory.create(conn, rs.getString("link_type"),
                         rs.getString("link_key"), rs.getString("link_title"));
 
                 inmhType.addResource(inmhItem);

@@ -8,16 +8,18 @@ public class QuizQuestion implements Response {
     String programName;
     String questionId;
     String quizHtml;
+    Integer correctAnswer;
     String pid;
     
     public QuizQuestion() {}
     
-    public QuizQuestion(String questionId, String lesson, String programName,String pid, String quizHtml) {
+    public QuizQuestion(String questionId, String lesson, String programName,String pid, String quizHtml, Integer correctAnswer) {
         this.questionId = questionId;
         this.lesson = lesson;
         this.programName = programName;
         this.pid = pid;
         this.quizHtml = quizHtml;
+        this.correctAnswer = correctAnswer;
     }
     
     public String getLesson() {
@@ -55,5 +57,13 @@ public class QuizQuestion implements Response {
 
     public void setPid(String pid) {
         this.pid = pid;
+    }
+
+    public Integer getCorrectAnswer() {
+        return correctAnswer;
+    }
+
+    public void setCorrectAnswer(Integer correctAnswer) {
+        this.correctAnswer = correctAnswer;
     }
 }

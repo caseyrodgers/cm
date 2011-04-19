@@ -412,6 +412,31 @@ program-details-panel .x-ftree2-node-over {
 	display: none;
 }
 
-.custom-program-questions-container input {
-	display: none;
+
+.custom-program-questions-container .question_responses p,
+.custom-program-questions-container .question_responses input {
+    display: inline;
+    margin: 0;
 }
+
+.question_div {
+    font: 12pt "Times New Roman",Times,serif;
+}
+
+.question_text p {
+      line-height: 1.3em;
+}
+  
+.question_div hr {
+    width: 200px;
+    color: blue;
+}
+
+.question_responses {
+   margin-top: 15px;
+}
+ 
+.custom-program-questions-container .question_responses li {
+    padding-bottom: 5px;
+}
+  

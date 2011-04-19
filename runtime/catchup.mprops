@@ -2148,6 +2148,7 @@ from inmh_map m
 where m.file = ?
 and b.grade_level <= ?
 and d.is_active = 1
+and solutionxml like '%<question>%'
 order by guid
           
 

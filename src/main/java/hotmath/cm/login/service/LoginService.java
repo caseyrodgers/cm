@@ -17,6 +17,8 @@ import hotmath.gwt.cm_tools.client.data.HaUserLoginInfo;
 import hotmath.gwt.shared.client.rpc.action.LoginAction;
 import hotmath.gwt.shared.client.util.CmExceptionDoNotNotify;
 import hotmath.gwt.shared.client.util.CmUserException;
+import hotmath.gwt.shared.server.service.command.GetUserInfoCommand;
+import hotmath.gwt.shared.server.service.command.LoginCommand;
 import hotmath.testset.ha.HaAdmin;
 import hotmath.util.HMConnectionPool;
 import hotmath.util.Jsonizer;
@@ -109,7 +111,7 @@ public class LoginService extends HttpServlet {
 			 *  
 			 */
 			
-			HaUserLoginInfo userLoginInfo = ActionDispatcher.getInstance().execute(loginAction);
+			HaUserLoginInfo userLoginInfo = new LoginCommand().execute(conn, loginAction);
 
 			HaBasicUser cmUser = userLoginInfo.getHaUser();
 			HaLoginInfo loginInfo = userLoginInfo.getHaLoginInfo();
@@ -195,7 +197,7 @@ public class LoginService extends HttpServlet {
 				}
 				else {
 					clientInfo.setUserType(UserType.STUDENT);
-					UserLoginResponse response = ActionDispatcher.getInstance().execute(new GetUserInfoAction(loginInfo.getUserId(),loginInfo.getLoginName()));
+					UserLoginResponse response = new GetUserInfoCommand().execute(conn, new GetUserInfoAction(loginInfo.getUserId(),loginInfo.getLoginName()));
 					//UserInfo userInfo = response.getUserInfo();
 					String jsonizedUserInfo = Jsonizer.toJson(response);
 					req.getSession().setAttribute("jsonizedUserInfo", jsonizedUserInfo);

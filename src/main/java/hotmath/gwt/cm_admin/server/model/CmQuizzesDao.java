@@ -1,6 +1,7 @@
 package hotmath.gwt.cm_admin.server.model;
 
 import hotmath.SolutionManager;
+import hotmath.cm.util.CatchupMathProperties;
 import hotmath.cm.util.CmMultiLinePropertyReader;
 import hotmath.gwt.cm_rpc.client.rpc.CmArrayList;
 import hotmath.gwt.cm_rpc.client.rpc.CmList;
@@ -9,14 +10,19 @@ import hotmath.gwt.shared.client.model.CustomQuizId;
 import hotmath.gwt.shared.client.model.QuizQuestion;
 import hotmath.solution.Solution;
 import hotmath.solution.SolutionPostProcess;
+import hotmath.util.VelocityTemplateFromStringManager;
 import hotmath.util.sql.SqlUtilities;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.log4j.Logger;
+
+import sb.util.SbFile;
 
 /**
  * try to centralize quiz db operations
@@ -112,11 +118,18 @@ public class CmQuizzesDao {
             int num=1;
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
-                String questionId = rs.getString("program_name") + ": " + (num++);
+                String questionId = rs.getString("program_name") + ": " + (num);
                 String pid = rs.getString("guid");
-                String quizHtml=getHtml?getQuestionHtml(pid):"";
+                String quizHtml="";
+                int correctAnswer=-1;
+                if(getHtml) {
+                    QuizQuestionParsed quizQuestion = getQuestionHtml(conn, num, pid);
+                    quizHtml = quizQuestion.getStatement();
+                    correctAnswer = quizQuestion.getCorrectAnswer();
+                }
+                num++;
                 
-                list.add(new QuizQuestion(questionId,lessonFile, rs.getString("program_name"), pid, quizHtml));
+                list.add(new QuizQuestion(questionId,lessonFile, rs.getString("program_name"), pid, quizHtml, correctAnswer));
             }
         } finally {
             SqlUtilities.releaseResources(null, ps, null);
@@ -191,13 +204,18 @@ public class CmQuizzesDao {
             ps.setInt(1, customQuizId);
 
             ResultSet rs = ps.executeQuery();
+            int problemNumber=1;
             while (rs.next()) {
                 String pid = rs.getString("pid");
-                String quizHtml = getQuestionHtml(pid);
+                
+                QuizQuestionParsed question = getQuestionHtml(conn, problemNumber++, pid);
+                String quizHtml = question.getStatement();
+                int correctAnswer = question.getCorrectAnswer();
                 
                 QuizQuestion quizQuestion = new QuizQuestion();
                 quizQuestion.setPid(pid);
                 quizQuestion.setQuizHtml(quizHtml);
+                quizQuestion.setCorrectAnswer(correctAnswer);
                 
                 list.add(quizQuestion);
             }
@@ -219,11 +237,36 @@ public class CmQuizzesDao {
      * @return
      * @throws Exception
      */
-    private String getQuestionHtml(String pid) throws Exception {
-        Solution sol = SolutionManager.getSolution(pid,true);
+    private QuizQuestionParsed getQuestionHtml(final Connection conn, int problemNumber, String pid) throws Exception {
+        Solution sol = SolutionManager.getSolution(conn, pid,true);
         String statement = postProcessor.processHTML_SolutionImagesAbsolute(sol.getStatement(), sol.getSolutionImagesURI(), null);
         
-        return statement;
+        QuizQuestionParsed quizQuestion = new QuizQuestionParsed(getQuizHtml(problemNumber,pid,statement ));
+        return quizQuestion;
+    }
+    
+    
+    private String getQuizHtml(int num, String pid, String statement) throws Exception {
+        try {
+            String questionTemplate = readQuestionTemplate();
+            Map<String, Object> map = new HashMap<String, Object>();
+
+            map.put("problemNumber", new Integer(num));
+            map.put("questionStatement",statement);
+            map.put("pid",pid);
+
+            String quizHtml = VelocityTemplateFromStringManager.getInstance().processTemplate(questionTemplate, map);
+            return quizHtml;
+        }
+        finally {
+            //System.out.println("getQuizHtml");
+        }
+    }
+    
+    private String readQuestionTemplate() throws Exception {
+        String questionTemplate = new SbFile(CatchupMathProperties.getInstance().getCatchupRuntime() 
+                + "/template/question_template.vm").getFileContents().toString("\n");
+        return questionTemplate;
     }
 
     /** Return grade level for named subject.  Only 

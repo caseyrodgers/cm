@@ -22,6 +22,7 @@ public class CmQuizzesDao_Test extends CmDbTestCase {
         String lesson= "topics/adding-and-subtracting-decimals.html";
         CmList<QuizQuestion> questions = new CmQuizzesDao().getQuestionsFor(conn, lesson, "pre-alg");
         assertTrue(questions.get(0).getQuizHtml().length() > 0);
+        assertTrue(questions.get(0).getCorrectAnswer() > 0);
     }
     
     public void testSaveLoad() throws Exception {

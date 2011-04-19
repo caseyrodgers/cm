@@ -299,8 +299,10 @@ function editQuizQuestion(o) {
  * TODO: why doesn't IE ajacent child selector work?
  * 
  */
-function hideQuizQuestionResults() {
-    var ts = document.getElementById('testset_div');
+function hideQuizQuestionResults(tagName) {
+    if(!tagName)
+        tagName = 'testset_div';
+    var ts = document.getElementById(tagName);
     if(ts) {
         var divs = ts.getElementsByTagName("div");
         for(var i=0, t=divs.length; i < t; i++) {
@@ -311,4 +313,33 @@ function hideQuizQuestionResults() {
         }
         processMathJax();
     }
+}
+
+/** Take list of input elements, and mark each as readonly
+ *  and select the correct answer as identified in the
+ *  answers array.
+ *  
+ * @param questionList
+ * @param answers
+ */
+function prepareCustomQuizForDisplay(questionList, answers) {
+    var divs = questionList.getElementsByTagName("input");
+    var questionNum=0;
+    var nextCorrect=0;
+    for(var i=0, t=divs.length;i<t;i++) {
+        if(i > 3 && (i % 4) == 0) {
+            questionNum++;
+        }
+        divs[i].disabled = true;
+        var choiceThisQuestion = i - (questionNum * 4);
+        if(answers[questionNum] == choiceThisQuestion) {
+            divs[i].checked = true;
+        }
+    }
+}
+
+
+function get_type(thing){
+    if(thing===null)return "[object Null]"; // special case
+    return Object.prototype.toString.call(thing);
 }
