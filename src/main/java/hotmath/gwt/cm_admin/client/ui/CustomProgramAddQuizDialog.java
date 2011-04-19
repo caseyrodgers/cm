@@ -607,8 +607,9 @@ class QuizQuestionModel extends BaseModelData {
     }
     
     private String createUniqRadioButtonName(String html) {
-        String newNameTag = "quiz_question_" + Random.nextInt();
-        String ret = html.replaceAll("name=\"question_.*\" id=", "name=\"" + newNameTag + "\" id=");
+        //html = "before name=\"question_256\" after"; 
+        String newNameTag = "quiz_question_" + Random.nextInt(1000);
+        String ret = html.replaceAll("name=\"question_[0-9]*\"", "\"" + newNameTag + "\"");
         return ret;
     }
     
