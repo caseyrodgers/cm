@@ -3,32 +3,60 @@
 <html>
 <head>
     <title>Test_1</title>
+	
+<!--[if IE]><script src="excanvas.js"></script><![endif]-->
+
     <script type="text/javascript" src="jquery-1.5.1.js"></script>
     <script type="text/javascript" src="test_1.js"></script>
+	<script language="javascript" type="text/javascript">
+	 $(document).ready(function () {
+            $('#inputBox').hide();
+
+            
+        });
+function renderWhiteBoard(){
+var data="{\"dataArr\":[{\"x\":182,\"y\":121,\"id\":\"move\",\"color\":\"#000000\",\"name\":\"\",\"layer\":\"1\"},{\"x\":182,\"y\":120,\"id\":\"line\"},{\"x\":182,\"y\":119,\"id\":\"line\"},{\"x\":180,\"y\":116,\"id\":\"line\"},{\"x\":180,\"y\":112,\"id\":\"line\"},{\"x\":179,\"y\":106,\"id\":\"line\"},{\"x\":180,\"y\":100,\"id\":\"line\"},{\"x\":180,\"y\":96,\"id\":\"line\"},{\"x\":181,\"y\":92,\"id\":\"line\"},{\"x\":185,\"y\":89,\"id\":\"line\"},{\"x\":192,\"y\":87,\"id\":\"line\"},{\"x\":202,\"y\":87,\"id\":\"line\"},{\"x\":213,\"y\":88,\"id\":\"line\"},{\"x\":226,\"y\":94,\"id\":\"line\"},{\"x\":231,\"y\":98,\"id\":\"line\"},{\"x\":232,\"y\":104,\"id\":\"line\"},{\"x\":232,\"y\":110,\"id\":\"line\"},{\"x\":229,\"y\":117,\"id\":\"line\"},{\"x\":225,\"y\":125,\"id\":\"line\"},{\"x\":218,\"y\":132,\"id\":\"line\"},{\"x\":210,\"y\":141,\"id\":\"line\"},{\"x\":193,\"y\":154,\"id\":\"line\"},{\"x\":178,\"y\":165,\"id\":\"line\"},{\"x\":167,\"y\":174,\"id\":\"line\"},{\"x\":158,\"y\":180,\"id\":\"line\"},{\"x\":151,\"y\":185,\"id\":\"line\"},{\"x\":149,\"y\":188,\"id\":\"line\"},{\"x\":147,\"y\":189,\"id\":\"line\"},{\"x\":145,\"y\":191,\"id\":\"line\"},{\"x\":144,\"y\":193,\"id\":\"line\"},{\"x\":144,\"y\":195,\"id\":\"line\"},{\"x\":144,\"y\":196,\"id\":\"line\"},{\"x\":144,\"y\":197,\"id\":\"line\"},{\"x\":145,\"y\":197,\"id\":\"line\"},{\"x\":147,\"y\":196,\"id\":\"line\"},{\"x\":150,\"y\":192,\"id\":\"line\"},{\"x\":153,\"y\":188,\"id\":\"line\"},{\"x\":157,\"y\":184,\"id\":\"line\"},{\"x\":159,\"y\":180,\"id\":\"line\"},{\"x\":165,\"y\":176,\"id\":\"line\"},{\"x\":170,\"y\":173,\"id\":\"line\"},{\"x\":176,\"y\":171,\"id\":\"line\"},{\"x\":183,\"y\":171,\"id\":\"line\"},{\"x\":192,\"y\":171,\"id\":\"line\"},{\"x\":203,\"y\":175,\"id\":\"line\"},{\"x\":209,\"y\":178,\"id\":\"line\"},{\"x\":215,\"y\":182,\"id\":\"line\"},{\"x\":220,\"y\":185,\"id\":\"line\"},{\"x\":225,\"y\":189,\"id\":\"line\"},{\"x\":232,\"y\":191,\"id\":\"line\"},{\"x\":237,\"y\":193,\"id\":\"line\"},{\"x\":246,\"y\":193,\"id\":\"line\"},{\"x\":256,\"y\":192,\"id\":\"line\"},{\"x\":263,\"y\":188,\"id\":\"line\"},{\"x\":269,\"y\":184,\"id\":\"line\"},{\"x\":275,\"y\":179,\"id\":\"line\"},{\"x\":278,\"y\":174,\"id\":\"line\"},{\"x\":280,\"y\":171,\"id\":\"line\"},{\"x\":281,\"y\":167,\"id\":\"line\"},{\"x\":282,\"y\":165,\"id\":\"line\"},{\"x\":283,\"y\":163,\"id\":\"line\"},{\"x\":283,\"y\":162,\"id\":\"line\"},{\"x\":283,\"y\":162,\"id\":\"line\"}],\"id\":1}"
+$.fn.updateWhiteboard([["draw",[data]]]);
+$.fn.updateWhiteboard([["draw",["{\"dataArr\":[{\"x\":100,\"y\":200,\"name\":\"graphImage\",\"addImage\":true}],\"id\":12}"]]]);
+}
+</script>
 	<style>
   #canvas-container { position: relative; }
   #ocanvas { border: 1px solid #000; }
   #canvas { position: absolute; top: 0px; left: 0px; border: 1px solid #ff0000; }
+   #gcanvas { position: absolute; top: 0px; left: 0px; border: 1px solid #ff0000; }
+    #tcanvas { position: absolute; top: 0px; left: 0px; border: 1px solid #ff0000; }
+	#inputBox { position: absolute; top: 0px; left: 0px; border: 1px solid #333333;}
 </style>
 </head>
 <body>
 
 <div id="container">
     <div id="tools">
-        <button id="button_pencil" type="button" id="drawpolyline">pencil</button>	    
-	    <button id="button_line" type="button">line</button>
-	    <button id="button_rectangle" type="button">rectagle</button>
-	    <button id="button_oval" type="button">oval</button>	
-	   
+	 <button id="button_text" type="button">Text</button>
+        <button id="button_pencil" type="button">Pencil</button>	    
+	    <button id="button_line" type="button">Line</button>
+	    <button id="button_rectangle" type="button">Rectagle</button>
+	    <button id="button_oval" type="button">Oval</button>
+ <button id="button_eraser" type="button">Eraser</button>		
+	   <button id="button_gr2D" type="button">2D-graph</button>
+	   	   <button id="button_nL" type="button">Numberline</button>
+		     <button id="button_clear" type="button">Clear</button>
+			 <button id="button_load" type="button" onclick="renderWhiteBoard()">Load Data</button>
     </div> <!-- /tools -->
 	<div id="drawsection">
 	    <div id="canvas-container">
-			<canvas id="ocanvas" width="500" height="500"></canvas>
-	        <canvas id="canvas" width="500" height="500"></canvas>
+			<canvas id="ocanvas" width="800" height="500"></canvas>
+			<canvas id="gcanvas" width="800" height="500"></canvas>
+			<canvas id="tcanvas" width="800" height="500"></canvas>
+	        <canvas id="canvas" width="800" height="500"></canvas>
+			<div id="inputBox">
+			<textarea id="content"></textarea>
+			<button id="done_btn" type="button">Done</button> 
+			</div>
 	    </div>
+		
 	</div><!-- /drawsection -->
 </div> <!-- /container -->
-
-<div style='background: green;position: absolute;top: 50px;left: 50px;width: 200px;height: 100px'>This is a test</div>
 </body>
 </html>
