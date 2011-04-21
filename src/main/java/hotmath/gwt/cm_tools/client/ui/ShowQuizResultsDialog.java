@@ -55,6 +55,8 @@ public class ShowQuizResultsDialog extends CmWindow {
                 int total = rdata.getDataAsInt("quiz_question_count");
                 int correct = rdata.getDataAsInt("quiz_correct_count");
                 String title = rdata.getDataAsString("title");
+                
+                setHeading("Quiz Results: " + title);
 
                 Html quizPanel = new Html(html);
 

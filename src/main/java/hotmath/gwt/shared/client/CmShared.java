@@ -124,7 +124,7 @@ public class CmShared implements EntryPoint {
                      * 
                      */
                     CmLogger.info("Processing MathML with MathJax");
-                    processMathJax();
+                    //processMathJax();
                 }
             }
         });

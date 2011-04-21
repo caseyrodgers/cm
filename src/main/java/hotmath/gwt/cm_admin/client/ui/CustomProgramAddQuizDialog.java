@@ -462,7 +462,7 @@ public class CustomProgramAddQuizDialog extends Window {
         _tabQuestions.setScrollMode(Scroll.AUTO);
         _tabPanel.add(_tabQuestions);
         cpLeft.add(_tabPanel);
-        BorderLayoutData ld = new BorderLayoutData(LayoutRegion.WEST, 400);
+        BorderLayoutData ld = new BorderLayoutData(LayoutRegion.WEST, 300);
         ld.setSplit(true);
         lc.add(cpLeft, ld);
 
