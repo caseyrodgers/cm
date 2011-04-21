@@ -105,6 +105,7 @@ public class StudentDetailsWindow extends CmWindow {
         toolBar.add(showWorkBtn());
         toolBar.add(showTopicsBtn());
         toolBar.add(displayReportCardToolItem(studentModel));
+        toolBar.add(showQuizResultsBtn());
         toolBar.add(new FillToolItem());
         toolBar.add(displayPrintableReportToolItem(studentModel));
 
@@ -222,6 +223,7 @@ public class StudentDetailsWindow extends CmWindow {
         if (this.samGrid.getStore().getCount() == 0) {
             _showTopicsBtn.disable();
             _showWorkButton.disable();
+            _showQuizResults.disable();
         } else {
             _showWorkButton.enable();
             _showTopicsBtn.enable();
@@ -233,12 +235,27 @@ public class StudentDetailsWindow extends CmWindow {
                     _showTopicsBtn.disable();
                 else
                     _showTopicsBtn.enable();
+                
+                _showQuizResults.enable();
             }
         }
     }
 
-    Button _showTopicsBtn, _showWorkButton;
+    Button _showTopicsBtn, _showWorkButton, _showQuizResults;
 
+    private Button showQuizResultsBtn() {
+        _showQuizResults = new Button("Quiz Results", new SelectionListener<ButtonEvent>() {
+            @Override
+            public void componentSelected(ButtonEvent ce) {
+                StudentActivityModel sam = samGrid.getSelectionModel().getSelectedItem();
+                new ShowQuizResultsDialog(sam.getRunId());
+            }
+        });
+        _showQuizResults.addStyleName("student-details-panel-sw-btn");
+        _showQuizResults.disable();
+        
+        return _showQuizResults;
+    }
     private Button showTopicsBtn() {
         SelectionListener<ButtonEvent> stListener = new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent ce) {

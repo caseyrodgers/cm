@@ -56,7 +56,7 @@ public class ResourceViewerImplResults extends CmResourcePanelImplWithWhiteboard
      * @param disabled
      *            Should the selection control be made disabled.
      */
-    private native void setSolutionQuestionAnswerIndex(String pid, String which, boolean disabled)/*-{
+    static private native void setSolutionQuestionAnswerIndex(String pid, String which, boolean disabled)/*-{
                                                                                                   $wnd.setSolutionQuestionAnswerIndex(pid,which,disabled);
                                                                                                   }-*/;
 
@@ -111,7 +111,7 @@ public class ResourceViewerImplResults extends CmResourcePanelImplWithWhiteboard
      * 
      * @param resultJson
      */
-    private void markAnswers(String resultJson) {
+    static public void markAnswers(String resultJson) {
         try {
             JSONValue jsonValue = JSONParser.parse(resultJson);
             JSONArray a = jsonValue.isArray();
@@ -133,7 +133,7 @@ public class ResourceViewerImplResults extends CmResourcePanelImplWithWhiteboard
         }
     }
 
-    private native void setQuizQuestionResult(String pid, String result) /*-{
+    static private native void setQuizQuestionResult(String pid, String result) /*-{
                                                                          $wnd.setQuizQuestionResult(pid, result);
                                                                          }-*/;
 

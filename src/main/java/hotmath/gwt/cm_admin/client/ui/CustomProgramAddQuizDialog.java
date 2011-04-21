@@ -89,7 +89,9 @@ public class CustomProgramAddQuizDialog extends Window {
         setId("custom_quiz_design");
 
         setHeading("Define Custom Quiz");
-        setSize(800, 700);
+        setSize(640, 480);
+        setMaximizable(true);
+        setModal(true);
 
         addStyleName("custom-program-add-quiz-dialog");
 

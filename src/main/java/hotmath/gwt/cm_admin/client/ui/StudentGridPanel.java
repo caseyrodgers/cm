@@ -883,7 +883,7 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
             @Override
             public Object render(StudentModelExt sm, String property, ColumnData config, int rowIndex, int colIndex,
                     ListStore<StudentModelExt> store, Grid<StudentModelExt> grid) {
-                if (!sm.getProgram().getCustom().isCustomLessons()
+                if (!sm.getProgram().isCustom()
                         && (sm.getPassingCount() > 0 || sm.getNotPassingCount() > 0)) {
                     StringBuffer sb = new StringBuffer();
                     sb.append(sm.getPassingCount()).append(" passed out of ");
