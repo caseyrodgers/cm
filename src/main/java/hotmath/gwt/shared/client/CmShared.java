@@ -14,6 +14,7 @@ import hotmath.gwt.shared.client.eventbus.EventType;
 import hotmath.gwt.shared.client.model.CmPartner;
 import hotmath.gwt.shared.client.model.UserInfoBase;
 import hotmath.gwt.shared.client.rpc.action.ResetUserAction;
+import hotmath.gwt.shared.client.util.CmAsyncCallback;
 import hotmath.gwt.shared.client.util.CmException;
 import hotmath.gwt.shared.client.util.CmExceptionLoginInvalid;
 import hotmath.gwt.shared.client.util.CmRunAsyncCallback;
@@ -31,16 +32,11 @@ import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONParser;
 import com.google.gwt.json.client.JSONValue;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.rpc.ServiceDefTarget;
 
 public class CmShared implements EntryPoint {
     
     static public String __loginName;
-
-    static {
-    	setupServices();
-    }
 
     @Override
     public void onModuleLoad() { }
@@ -365,14 +361,13 @@ public class CmShared implements EntryPoint {
      */
     static CmServiceAsync _serviceInstance;
     static public CmServiceAsync getCmService() {
+        if(_serviceInstance == null) {
+            setupServices();
+        }
         return _serviceInstance;
     }
     
 
-    /**
-     * Register any RPC services with the system
-     * 
-     */
     static private void setupServices() {
         CmLogger.info("CatchupMathTools: Setting up services");
         
@@ -450,15 +445,10 @@ public class CmShared implements EntryPoint {
                 }
                 
                 s.execute(new ResetUserAction(uid,altTest),
-                        new AsyncCallback<RpcData>() {
-
+                        new CmAsyncCallback<RpcData>() {
                             @Override
                             public void onSuccess(RpcData result) {
                                 refreshPage();
-                            }
-
-                            public void onFailure(Throwable caught) {
-                                CatchupMathTools.showAlert(caught.getMessage());
                             }
                         });
             }

@@ -142,7 +142,7 @@ public class CustomProgramAddQuizDialog extends Window {
                 + "customProgramItem" + "}</div></tpl>";
         _listLessons.setTemplate(template);
         _tabLessons.add(_listLessons);
-        _tabLessons.setScrollMode(Scroll.AUTO);
+        _tabLessons.setScrollMode(Scroll.AUTOY);
 
         _listLessons.addListener(Events.DoubleClick, new Listener<BaseEvent>() {
             @Override

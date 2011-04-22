@@ -35,7 +35,6 @@ import hotmath.gwt.shared.client.rpc.action.RunNetTestAction.TestApplication;
 import hotmath.gwt.shared.client.util.CmRunAsyncCallback;
 import hotmath.gwt.shared.client.util.NetTestWindow;
 import hotmath.gwt.shared.client.util.UserInfoDao;
-import hotmath.testset.ha.HaUser;
 
 import com.extjs.gxt.ui.client.Style.LayoutRegion;
 import com.extjs.gxt.ui.client.event.BaseEvent;
@@ -48,6 +47,7 @@ import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.RunAsyncCallback;
 import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.RootPanel;
@@ -57,7 +57,7 @@ import com.google.gwt.user.client.ui.RootPanel;
  */
 public class CatchupMath implements EntryPoint {
     static {
-        publishNative();
+       publishNative();
     }
 
     /**
@@ -117,26 +117,7 @@ public class CatchupMath implements EntryPoint {
         /** Turn on debugging CSS */
         if (CmShared.getQueryParameter("debug") != null) {
             _mainPort.addStyleName("debug-on");
-            if(CmShared.getQueryParameter("show_log") != null)
-                CmLogger.getInstance().enable(true);
         }
-
-        /**
-         * Install listener to track any changes to the main window
-         * 
-         */
-        _mainPort.addListener(Events.Resize, new Listener<BaseEvent>() {
-            public void handleEvent(BaseEvent be) {
-                GWT.runAsync(new CmRunAsyncCallback() {
-                    @Override
-                    public void onSuccess() {
-                        if (CmMainPanel.__lastInstance != null && CmMainPanel.__lastInstance._mainContent != null) {
-                            EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_WINDOW_RESIZED));
-                        }
-                    }
-                });
-            }
-        });
 
         /**
          * Add the main panel to the "hm_content" div on the CatchupMath.html
@@ -144,23 +125,27 @@ public class CatchupMath implements EntryPoint {
          */
         RootPanel.get("main-content").add(_mainPort);
 
-        GWT.runAsync(new CmRunAsyncCallback() {
-            @Override
-            public void onSuccess() {
-                /**
-                 * Login to CM asynchronously passing a callback that will be
-                 * notified when the login process is complete.
-                 * 
-                 */
-                CmShared.handleLoginProcessAsync(new CmLoginAsync() {
-                    public void loginSuccessful(Integer uid) {
-                        processLoginComplete(uid);
-                    }
-                });
+        CmShared.handleLoginProcessAsync(new CmLoginAsync() {
+            public void loginSuccessful(Integer uid) {
+                processLoginComplete(uid);
             }
         });
     }
 
+    
+    public void installMainPanelListener() {
+        /**
+         * Install listener to track any changes to the main window
+         * 
+         */
+        _mainPort.addListener(Events.Resize, new Listener<BaseEvent>() {
+            public void handleEvent(BaseEvent be) {
+                if (CmMainPanel.__lastInstance != null && CmMainPanel.__lastInstance._mainContent != null) {
+                    EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_WINDOW_RESIZED));
+                }
+            }   
+        });        
+    }
     
     
 
@@ -206,7 +191,7 @@ public class CatchupMath implements EntryPoint {
 	    		 * already has active session, just move to current
 	    		 * position.
 	    		 */
-	    		__thisInstance.startNormalOperation();
+	    		startNormalOperation();
 	    	} else {
 	    		/**
 	    		 * Otherwise, show the welcome screen to new visits
@@ -257,6 +242,24 @@ public class CatchupMath implements EntryPoint {
      * 
      */
     public void startNormalOperation() {
+        GWT.runAsync(new RunAsyncCallback() {
+            @Override
+            public void onSuccess() {
+                startNormalOperations();
+            }
+            
+            @Override
+            public void onFailure(Throwable reason) {
+                Window.alert("Error starting up Catchup Math: " + reason);
+            }
+        });
+        
+    }
+    
+    private void startNormalOperations() {
+        
+        installMainPanelListener();
+        
         History.addValueChangeHandler(new CatchupMathHistoryListener());
         
         /** Don't allow bookmark to move paste server's location
@@ -354,29 +357,6 @@ public class CatchupMath implements EntryPoint {
         }        
     }
     
-    /** Load the CatchupMath.min.js into the address space.
-     * 
-     *  This is done here to minimize the initial load time.
-     *  
-     *  TODO: Potential timing problem if tutor is requested before code
-     *  loaded, perhaps add a call back from load before moving forward.
-     *  
-     *  Move to TutorViewer.
-     */
-//    private native void loadCatchupMathExternalJs() /*-{
-//        var el = document.createElement('script');
-//        el.src = '/gwt-resources/js/CatchupMath.min.js';
-//        el.type = 'text/javascript';
-//        try {
-//           var d = $doc.getElementsByTagName("head")[0].appendChild(el);
-//           alert(d.appendChild);
-//           d.appendChild(el);
-//        }
-//        catch(e) {
-//            alert('There was a problem loading an external JS file: ' + e);
-//        }
-//    }-*/;
-
     /**
      * Helper page to create the Login page
      * 
@@ -430,16 +410,18 @@ public class CatchupMath implements EntryPoint {
     }
 
     public void showWelcomePanel() {
-        /**
-         * @TODO: why not event driven?
-         */
-        HeaderPanel.__instance.enable();
+        GWT.runAsync(new CmRunAsyncCallback() {
+            @Override
+            public void onSuccess() {
+                HeaderPanel.__instance.enable();
 
-        _mainContainer.removeAll();
-        _mainContainer.setLayout(new FitLayout());
-        _mainContainer.add(new WelcomePanel());
+                _mainContainer.removeAll();
+                _mainContainer.setLayout(new FitLayout());
+                _mainContainer.add(new WelcomePanel());
 
-        _mainContainer.layout();
+                _mainContainer.layout();
+            }
+        });
     }
 
     /**
@@ -560,12 +542,14 @@ public class CatchupMath implements EntryPoint {
      * 
      */
     static private native void publishNative() /*-{
+        // Set global variable to signal that CM system has been initialized.
+        // This is checked in CatchupMath.html to indicate that a loading error occurred.
+        $wnd.__cmInitialized = true;
+    }-*/;
+    
+    static private native void publishNativeJsAfterLoad() /*-{
                                                $wnd.doLoadResource_Gwt = @hotmath.gwt.cm.client.CatchupMath::doResourceLoad(Ljava/lang/String;Ljava/lang/String;);
                                                
                                                $wnd.showMotivationalVideo_Gwt = @hotmath.gwt.cm.client.CatchupMath::showMotivationalVideo_Gwt();
-
-                                               // Set global variable to signal that CM system has been initialized.
-                                               // This is checked in CatchupMath.html to indicate that a loading error occurred.
-                                               $wnd.__cmInitialized = true;
                                                }-*/;
 }
