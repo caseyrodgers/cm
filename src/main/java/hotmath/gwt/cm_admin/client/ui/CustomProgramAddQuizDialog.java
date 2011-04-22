@@ -579,7 +579,7 @@ public class CustomProgramAddQuizDialog extends Window {
         cp.add(widget);
 
         cp.getHeader().addTool(
-                new MyButtonWithTip("Add", "Add the selected lesson question to custom program",
+                new MyButtonWithTip("Add", "Add the selected question to custom quiz",
                         new SelectionListener<ButtonEvent>() {
                             public void componentSelected(ButtonEvent ce) {
                                 addSelectedQuestionToCustomQuiz();

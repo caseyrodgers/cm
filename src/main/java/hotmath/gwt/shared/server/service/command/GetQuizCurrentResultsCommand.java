@@ -10,7 +10,6 @@ import hotmath.gwt.cm_rpc.server.rpc.ActionHandler;
 import hotmath.gwt.shared.client.rpc.action.GetQuizCurrentResultsAction;
 import hotmath.testset.ha.HaTestDao;
 import hotmath.testset.ha.HaTestRunResult;
-import hotmath.testset.ha.HaUser;
 import hotmath.util.sql.SqlUtilities;
 
 import java.sql.Connection;

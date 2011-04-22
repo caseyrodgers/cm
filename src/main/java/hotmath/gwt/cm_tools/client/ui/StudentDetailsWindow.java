@@ -236,7 +236,11 @@ public class StudentDetailsWindow extends CmWindow {
                 else
                     _showTopicsBtn.enable();
                 
-                _showQuizResults.enable();
+                if(sam.getIsQuiz()) {
+                    _showQuizResults.enable();
+                }
+                else 
+                    _showQuizResults.disable();
             }
         }
     }

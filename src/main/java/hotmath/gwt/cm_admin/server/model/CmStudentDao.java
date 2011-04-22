@@ -469,6 +469,8 @@ public class CmStudentDao {
             ps.setInt(2, uid);
             ps.setInt(3, uid);
             ps.setInt(4,uid);
+            ps.setInt(5,uid);
+            ps.setInt(6,uid);
             rs = ps.executeQuery();
 
             l = loadStudentActivity(conn, rs);
@@ -1891,6 +1893,7 @@ public class CmStudentDao {
 
         while (rs.next()) {
             StudentActivityModel m = new StudentActivityModel();
+            m.setIsCustomQuiz(rs.getBoolean("is_custom_quiz"));
             m.setProgramDescr(rs.getString("program"));
             m.setUseDate(rs.getString("use_date"));
             m.setStart(rs.getString("start_time"));
@@ -1987,7 +1990,10 @@ public class CmStudentDao {
         }
 
         for (StudentActivityModel m : l) {
-            if (!m.getIsQuiz()) {
+            if(m.getIsCustomQuiz()) {
+                m.setActivity(m.getRunId()!= null?"Completed":"Taking");
+            }
+            else if (!m.getIsQuiz()) {
                 Integer runId = m.getRunId();
                 StudentActivityModel q = h.get(runId);
                 if (q != null) {
@@ -2000,7 +2006,17 @@ public class CmStudentDao {
                 }
             }
         }
+    }
 
+    
+    /** Return true if this student activity model is
+     *  for a custom quiz
+     *  
+     * @param sm
+     * @return
+     */
+    private boolean isCustomQuiz(StudentActivityModel sm) {
+        return sm.getProgramDescr().startsWith("CQ:");
     }
 
     /** Load all lessons referenced by this runId, including any chapter programs

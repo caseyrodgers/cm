@@ -221,7 +221,7 @@ where s.last_use_date  like '%YYY%'
 ###
 .key=STUDENT_ACTIVITY
 
-select max(s.use_date) as use_date, date_format(min(s.view_time),'%h:%i %p') as start_time,
+select is_custom_quiz, max(s.use_date) as use_date, date_format(min(s.view_time),'%h:%i %p') as start_time,
   date_format(max(s.view_time),'%h:%i %p') as stop_time, max(s.view_time) as view_time,
   max(s.run_date) as run_date,
   s.answered_correct, s.answered_incorrect, s.not_answered, s.program, s.prog_id, s.subj_id, s.test_config_json,
@@ -230,7 +230,7 @@ select max(s.use_date) as use_date, date_format(min(s.view_time),'%h:%i %p') as 
   s.total_sessions
 from (
 
- select date_format(l.create_time,'%Y-%m-%d') as use_date, date_format(l.create_time,'%h:%i %p') as start_time,
+ select 0 as is_custom_quiz, date_format(l.create_time,'%Y-%m-%d') as use_date, date_format(l.create_time,'%h:%i %p') as start_time,
    null as stop_time, l.create_time as view_time,
    date_format(l.create_time,'%Y-%m-%d') as run_date,
    0 as answered_correct, 0 as answered_incorrect, 0 as not_answered,
@@ -247,7 +247,7 @@ from (
 
  union
  
- select date_format(l.create_time,'%Y-%m-%d') as use_date, date_format(l.create_time,'%h:%i %p') as start_time,
+ select 0 as is_custom_quiz, date_format(l.create_time,'%Y-%m-%d') as use_date, date_format(l.create_time,'%h:%i %p') as start_time,
    date_format(r.run_time,'%h:%i %p') as stop_time, r.run_time as view_time,
    date_format(r.run_time,'%Y-%m-%d') as run_date,
    r.answered_correct, r.answered_incorrect, r.not_answered,
@@ -255,15 +255,16 @@ from (
    l.test_id as test_id, l.test_segment, td.test_def_id as test_def_id,
    r.run_id as test_run_id, 0 as total_sessions,
    'Quiz-' as activity, 1 as is_quiz, l.test_segment as session_number
- from  HA_TEST l INNER JOIN HA_USER u ON l.user_id = u.uid
+ from  HA_TEST l 
+ join HA_USER u ON l.user_id = u.uid
  join HA_TEST_RUN r on r.test_id = l.test_id
  join HA_TEST_DEF td on td.test_def_id = l.test_def_id
- join CM_USER_PROGRAM p on p.user_id = u.uid and p.id = l.user_prog_id and p.custom_program_id is null
+ join CM_USER_PROGRAM p on p.user_id = u.uid and p.id = l.user_prog_id and (p.custom_program_id is null && p.custom_quiz_id is null)
  where u.uid = ?
  
  union
- 
-select date_format(iu.view_time,'%Y-%m-%d') as use_date, date_format(iu.view_time,'%h:%i %p') as start_time,
+
+select 0 as is_custom_quiz, date_format(iu.view_time,'%Y-%m-%d') as use_date, date_format(iu.view_time,'%h:%i %p') as start_time,
   date_format(iu.view_time,'%h:%i %p') as stop_time, iu.view_time as view_time,
   date_format(iu.view_time,'%Y-%m-%d') as run_date,
   0 as answered_correct, 0 as answered_incorrect, 0 as not_answered,
@@ -287,6 +288,36 @@ select date_format(iu.view_time,'%Y-%m-%d') as use_date, date_format(iu.view_tim
  join CM_USER_PROGRAM p on p.user_id = u.uid and p.id = l.user_prog_id
  left join HA_CUSTOM_PROGRAM cp on cp.id = p.custom_program_id and p.custom_program_id is not null
  where u.uid = ?
+ 
+ 
+ union 
+ 
+ 
+ select 1 as is_custom_quiz, date_format(r.run_time,'%Y-%m-%d') as use_date, date_format(l.create_time,'%h:%i %p') as start_time,
+  date_format(r.run_time,'%h:%i %p') as stop_time,  l.create_time as view_time,
+  date_format(r.run_time,'%Y-%m-%d') as run_date,
+  r.answered_correct, r.answered_incorrect, r.not_answered,
+  if (p.custom_quiz_id is null, concat(td.subj_id, ' ', td.prog_id), concat('CQ: ', q.name)) as program, td.prog_id, td.subj_id, p.test_config_json,
+  l.test_id as test_id, iu.session_number as test_segment, td.test_def_id as test_def_id,
+  r.run_id as test_run_id, r.total_sessions as total_sessions,
+  if (p.custom_quiz_id is null, 'Review-', 'Review') as activity, 1 as is_quiz, iu.session_number as session_number
+ from  HA_TEST l INNER JOIN HA_USER u ON l.user_id = u.uid
+ join HA_TEST_RUN r on r.test_id = l.test_id
+ left join (
+     select l.run_id,max(l.lesson_number) as session_number,max(lesson_viewed) as view_time
+     from    HA_TEST_RUN_LESSON l
+         JOIN HA_TEST_RUN_LESSON_PID p on p.lid = l.id
+         JOIN HA_TEST_RUN r on r.run_id = l.run_id
+         JOIN HA_TEST t on t.test_id = r.test_id
+     where t.user_id = ?
+     and l.lesson_viewed is not null
+     group by l.run_id, l.lesson_file
+ ) iu on iu.run_id = r.run_id
+ join HA_TEST_DEF td on td.test_def_id = l.test_def_id
+ join CM_USER_PROGRAM p on p.user_id = u.uid and p.id = l.user_prog_id
+ join HA_CUSTOM_QUIZ q on q.qid = p.custom_quiz_id
+ where u.uid = ?
+ 
  
 ) s
 group by s.test_run_id, s.is_quiz, s.use_date

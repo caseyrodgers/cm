@@ -70,7 +70,7 @@ public class CmReportCardDao {
 			 rval.setInitialProgramDate(pm.getCreateDate());
 			 
 			 pm = filteredList.get(filteredList.size() - 1);
-			 testName = (pm.getCustomProgramId() == 0) ? pm.getTestName() : "CP: " + pm.getCustomProgramName();
+			 testName = getTestName(pm);
 			 chapList = pm.getConfig().getChapters();
 			 if (chapList != null && chapList.size() > 0) {
 				 // getChapters() returns a List - using only the first one
@@ -107,6 +107,21 @@ public class CmReportCardDao {
 			 SqlUtilities.releaseResources(null, null, null);
 		 }
 		 return rval;
+	 }
+	 
+	 private String getTestName(StudentUserProgramModel pm) {
+	     String name=null;
+	     if(pm.getCustomProgramId() > 0) {
+	         name = "CP: " + pm.getCustomProgramName();	     
+	     }
+	     else if(pm.getCustomQuizId() > 0) {
+	         name = "CQ: " + pm.getCustomQuizName();
+	     }
+	     else {
+	         name = pm.getTestName();
+	     }
+	     
+	     return name;
 	 }
 
 	 private String buildProgramName(final Connection conn, StudentUserProgramModel pm, String chapter, String testName) throws Exception {

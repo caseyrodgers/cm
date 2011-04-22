@@ -15,6 +15,7 @@ public class StudentActivityModel extends BaseModel implements Response {
 	public static final String IS_QUIZ_KEY = "is-quiz";
 	public static final String RUN_ID_KEY = "run-id";
 	public static final String TEST_ID_KEY = "test-id";
+	public static final String IS_CUSTOM_QUIZ_KEY = "is-custom-quiz";
 	
 	public String getActivity() {
 		return get(ACTIVITY_KEY);
@@ -22,6 +23,14 @@ public class StudentActivityModel extends BaseModel implements Response {
 
 	public void setActivity(String activity) {
 		set(ACTIVITY_KEY, activity);
+	}
+	
+	public void setIsCustomQuiz(Boolean yesNo) {
+	    set(IS_CUSTOM_QUIZ_KEY, yesNo);
+	}
+	
+	public Boolean getIsCustomQuiz() {
+	    return get(IS_CUSTOM_QUIZ_KEY);
 	}
 
 	/** catch null program name to avoid nullexception 
