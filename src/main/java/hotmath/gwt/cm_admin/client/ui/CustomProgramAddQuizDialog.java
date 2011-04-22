@@ -89,7 +89,7 @@ public class CustomProgramAddQuizDialog extends Window {
         setId("custom_quiz_design");
 
         setHeading("Define Custom Quiz");
-        setSize(640, 480);
+        setSize(750, 480);
         setMaximizable(true);
         setModal(true);
 
@@ -142,7 +142,7 @@ public class CustomProgramAddQuizDialog extends Window {
                 + "customProgramItem" + "}</div></tpl>";
         _listLessons.setTemplate(template);
         _tabLessons.add(_listLessons);
-        _tabLessons.setScrollMode(Scroll.AUTOY);
+        _tabLessons.setScrollMode(Scroll.AUTO);
 
         _listLessons.addListener(Events.DoubleClick, new Listener<BaseEvent>() {
             @Override
@@ -459,10 +459,10 @@ public class CustomProgramAddQuizDialog extends Window {
         _tabPanel.add(_tabLessons);
 
         _tabQuestions = new TabItem("Questions");
-        _tabQuestions.setScrollMode(Scroll.AUTO);
+        _tabQuestions.setScrollMode(Scroll.AUTOX);
         _tabPanel.add(_tabQuestions);
         cpLeft.add(_tabPanel);
-        BorderLayoutData ld = new BorderLayoutData(LayoutRegion.WEST, 300);
+        BorderLayoutData ld = new BorderLayoutData(LayoutRegion.WEST, 380);
         ld.setSplit(true);
         lc.add(cpLeft, ld);
 
