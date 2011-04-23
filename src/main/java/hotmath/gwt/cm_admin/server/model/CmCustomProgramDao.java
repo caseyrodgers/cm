@@ -21,6 +21,8 @@ import java.sql.ResultSet;
 import java.sql.Statement;
 import java.sql.Types;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 
@@ -97,12 +99,19 @@ public class CmCustomProgramDao {
                 }
                 lessons.add(use);
             }
+            Collections.sort(lessons, new Comparator<CustomLessonModel>() {
+                @Override
+                public int compare(CustomLessonModel o1, CustomLessonModel o2) {
+                    return o1.getLesson().compareTo(o2.getLesson());
+                }
+            });
+
             return lessons;
         } finally {
             SqlUtilities.releaseResources(null, stmt, null);
         }
     }
-
+    
     private void checkForDuplicates(HashMap<String, List<CustomLessonModel>> map) {
         System.out.println("List of files with more than one lesson:");
         for (String f : map.keySet()) {

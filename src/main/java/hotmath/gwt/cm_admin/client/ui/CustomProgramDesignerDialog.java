@@ -23,9 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.extjs.gxt.ui.client.Style.LayoutRegion;
-import com.extjs.gxt.ui.client.Style.Orientation;
 import com.extjs.gxt.ui.client.Style.Scroll;
-import com.extjs.gxt.ui.client.Style.SortDir;
 import com.extjs.gxt.ui.client.dnd.DND.Feedback;
 import com.extjs.gxt.ui.client.dnd.ListViewDragSource;
 import com.extjs.gxt.ui.client.dnd.ListViewDropTarget;
@@ -36,12 +34,9 @@ import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.MessageBoxEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.store.ListStore;
-import com.extjs.gxt.ui.client.store.Store;
-import com.extjs.gxt.ui.client.store.StoreSorter;
 import com.extjs.gxt.ui.client.util.Margins;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.Html;
-import com.extjs.gxt.ui.client.widget.Label;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.ListView;
 import com.extjs.gxt.ui.client.widget.MessageBox;
@@ -55,7 +50,6 @@ import com.extjs.gxt.ui.client.widget.layout.ColumnData;
 import com.extjs.gxt.ui.client.widget.layout.ColumnLayout;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.layout.RowData;
-import com.extjs.gxt.ui.client.widget.layout.RowLayout;
 
 public class CustomProgramDesignerDialog extends CmWindow {
 
@@ -119,9 +113,7 @@ public class CustomProgramDesignerDialog extends CmWindow {
             enableForm(true);
         else 
             enableForm(_isEditable);
-
-        _listAll.getStore().sort("lesson", SortDir.ASC);
-
+        
         setVisible(true);
     }
 
@@ -137,18 +129,6 @@ public class CustomProgramDesignerDialog extends CmWindow {
 
        
         ListStore<CustomLessonModel> storeAll = new ListStore<CustomLessonModel>();
-        storeAll.setStoreSorter(new StoreSorter<CustomLessonModel>() {
-            @Override
-            public int compare(Store<CustomLessonModel> store, CustomLessonModel m1, CustomLessonModel m2,
-                    String property) {
-                    if (property != null) {
-                        String v1 = m1.getLesson();
-                        String v2 = m2.getLesson();
-                        return comparator.compare(v1, v2);
-                    }            
-                    return super.compare(store, m1, m2, property);
-                }            
-        });
 
         _listAll.setStore(storeAll);
         _listAll.setTemplate(template);
@@ -166,13 +146,6 @@ public class CustomProgramDesignerDialog extends CmWindow {
         data.setMargins(new Margins(5));
         
         MyListContainer sectionList = new MyListContainer(_listSelected,"Selections in Program",false);
-        Button addQuiz = new Button("Add Quiz", new SelectionListener<ButtonEvent>() {
-            @Override
-            public void componentSelected(ButtonEvent ce) {
-                addCustomQuizAuto();
-            }
-        });
-        
         
         MyListContainer allList = new MyListContainer(_listAll,"All Available Lessons",true);
 
@@ -547,18 +520,7 @@ public class CustomProgramDesignerDialog extends CmWindow {
 
         return cpPanel;
     }
-    
-    static class LessonNameStoreSorter extends StoreSorter<CustomLessonModel> {
-        @Override
-        public int compare(Store<CustomLessonModel> store, CustomLessonModel m1, CustomLessonModel m2, String property) {
-            if (property != null) {
-                String v1 = m1.getLesson();
-                String v2 = m2.getLesson();
-                return comparator.compare(v1, v2);
-            }            
-            return super.compare(store, m1, m2, property);
-        }
-    }
+
     
     static class MyListContainer extends ContentPanel {
          MyListContainer(ListView<CustomLessonModel> listView, String title, boolean showFilter) {

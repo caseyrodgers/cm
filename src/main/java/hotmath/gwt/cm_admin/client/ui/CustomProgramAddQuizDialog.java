@@ -240,7 +240,7 @@ public class CustomProgramAddQuizDialog extends Window {
         MessageBox.confirm("Remove Questions", "Remove all questions from custom quiz?",
                 new Listener<MessageBoxEvent>() {
                     public void handleEvent(MessageBoxEvent be) {
-                        if (!be.isCancelled()) {
+                        if (!be.isCancelled() && be.getButtonClicked().getText().equalsIgnoreCase("Yes")) {
                             _listCustomQuiz.getStore().removeAll();
                         }
                     }
