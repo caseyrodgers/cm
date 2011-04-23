@@ -254,7 +254,7 @@ public class GetUserInfoCommand implements ActionHandler<GetUserInfoAction, User
         int totalSegments = userInfo.getProgramSegmentCount();
         int thisSegment = userInfo.getTestSegment();
         
-        assert(thisSegment > 0);
+        //assert(thisSegment > 0);
         
         /** program segments are 1 based
          * 
