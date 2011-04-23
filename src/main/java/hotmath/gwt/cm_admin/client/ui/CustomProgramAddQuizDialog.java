@@ -218,7 +218,7 @@ public class CustomProgramAddQuizDialog extends Window {
             
             for(int i=0,t=_listCustomQuiz.getStore().getCount();i<t;i++) {
                 if(_listCustomQuiz.getStore().getAt(i).equals(question)) {
-                    CatchupMathTools.showAlert("This question is already in the custom quiz");
+                    CatchupMathTools.showAlert("This question is already in the custom quiz.");
                     markSelectedItem(_listCustomQuiz, _listCustomQuiz.getStore().getAt(i));
                     return;
                 }
@@ -234,17 +234,25 @@ public class CustomProgramAddQuizDialog extends Window {
         if (question != null) {
             _listCustomQuiz.getStore().remove(question);
         }
+        else {
+            showMustSelectQuestionMessage();
+        }
     }
 
     private void removeAllSelectedQuestionFromCustomQuiz() {
-        MessageBox.confirm("Remove Questions", "Remove all questions from custom quiz?",
-                new Listener<MessageBoxEvent>() {
-                    public void handleEvent(MessageBoxEvent be) {
-                        if (!be.isCancelled() && be.getButtonClicked().getText().equalsIgnoreCase("Yes")) {
-                            _listCustomQuiz.getStore().removeAll();
+        if(_listCustomQuiz.getStore().getCount() == 0) {
+            CatchupMathTools.showAlert("No questions in custom quiz to delete.");
+        }
+        else {
+            MessageBox.confirm("Remove Questions", "Remove all questions from custom quiz?",
+                    new Listener<MessageBoxEvent>() {
+                        public void handleEvent(MessageBoxEvent be) {
+                            if (!be.isCancelled() && be.getButtonClicked().getText().equalsIgnoreCase("Yes")) {
+                                _listCustomQuiz.getStore().removeAll();
+                            }
                         }
-                    }
-                });
+                    });
+        }
     }
 
     private void loadCustomQuiz(final CustomQuizDef quiz) {
@@ -482,7 +490,7 @@ public class CustomProgramAddQuizDialog extends Window {
 
         Button removeBtn = new Button("Remove");
         Menu removeMenu = new Menu();
-        removeMenu.add(new MyMenuItemWithTip("Remove", "Remove the selected question from the custom quiz",
+        removeMenu.add(new MyMenuItemWithTip("Remove", "Remove the selected question from the custom quiz.",
                 new SelectionListener<MenuEvent>() {
                     public void componentSelected(MenuEvent ce) {
                         removeSelectedQuestionFromCustomQuiz();
@@ -498,7 +506,7 @@ public class CustomProgramAddQuizDialog extends Window {
         cpRight.getHeader().addTool(removeBtn);
 
         cpRight.getHeader().addTool(
-                new MyButtonWithTip("Move Down", "Move the selected question down in the custom quiz",
+                new MyButtonWithTip("Move Down", "Move the selected question down in the custom quiz.",
                         new SelectionListener<ButtonEvent>() {
                             public void componentSelected(ButtonEvent ce) {
                                 moveSelectedQuestionInProgramDown();
@@ -506,7 +514,7 @@ public class CustomProgramAddQuizDialog extends Window {
                         }));
 
         cpRight.getHeader().addTool(
-                new MyButtonWithTip("Move Up", "Move the selected question up in the custom quiz",
+                new MyButtonWithTip("Move Up", "Move the selected question up in the custom quiz.",
                         new SelectionListener<ButtonEvent>() {
                             public void componentSelected(ButtonEvent ce) {
                                 moveSelectedQuestionInProgramUp();
@@ -516,33 +524,45 @@ public class CustomProgramAddQuizDialog extends Window {
     }
 
     private void moveSelectedQuestionInProgramDown() {
-        if (_listCustomQuiz.getStore().getCount() > 1) {
-            ListStore<QuizQuestionModel> str = _listCustomQuiz.getStore();
-            QuizQuestionModel question = _listCustomQuiz.getSelectionModel().getSelectedItem();
-            if (question != null) {
-                int num = getQuestionNum(str.getModels(), question);
-                if (num + 1 < str.getCount()) {
-                    _listCustomQuiz.getStore().remove(question);
-                    _listCustomQuiz.getStore().insert(question, num + 1);
+        ListStore<QuizQuestionModel> str = _listCustomQuiz.getStore();
+        QuizQuestionModel question = _listCustomQuiz.getSelectionModel().getSelectedItem();
+        if (question != null) {
+            int num = getQuestionNum(str.getModels(), question);
+            if (num + 1 < str.getCount()) {
+                _listCustomQuiz.getStore().remove(question);
+                 _listCustomQuiz.getStore().insert(question, num + 1);
 
-                    markSelectedItem(_listCustomQuiz, question);
-                }
+                 markSelectedItem(_listCustomQuiz, question);
             }
+            else {
+                CatchupMathTools.showAlert("This is already the last question in the custom quiz.");
+            }
+        }
+        else {
+            showMustSelectQuestionMessage();
         }
     }
 
+    private void showMustSelectQuestionMessage() {
+        CatchupMathTools.showAlert("Select a question first.");
+    }
+    
     private void moveSelectedQuestionInProgramUp() {
-        if (_listCustomQuiz.getStore().getCount() > 1) {
-            ListStore<QuizQuestionModel> str = _listCustomQuiz.getStore();
-            QuizQuestionModel question = _listCustomQuiz.getSelectionModel().getSelectedItem();
-            if (question != null) {
-                int num = getQuestionNum(str.getModels(), question);
-                if (num > 0) {
-                    _listCustomQuiz.getStore().remove(question);
-                    _listCustomQuiz.getStore().insert(question, num - 1);
-                    markSelectedItem(_listCustomQuiz, question);
-                }
+        ListStore<QuizQuestionModel> str = _listCustomQuiz.getStore();
+        QuizQuestionModel question = _listCustomQuiz.getSelectionModel().getSelectedItem();
+        if (question != null) {
+            int num = getQuestionNum(str.getModels(), question);
+            if (num > 0) {
+                _listCustomQuiz.getStore().remove(question);
+                _listCustomQuiz.getStore().insert(question, num - 1);
+                markSelectedItem(_listCustomQuiz, question);
             }
+            else {
+                CatchupMathTools.showAlert("This is already the first question in the custom quiz.");
+            }
+        }
+        else {
+            showMustSelectQuestionMessage();
         }
     }
 
@@ -579,7 +599,7 @@ public class CustomProgramAddQuizDialog extends Window {
         cp.add(widget);
 
         cp.getHeader().addTool(
-                new MyButtonWithTip("Add", "Add the selected question to custom quiz",
+                new MyButtonWithTip("Add", "Add the selected question to custom quiz.",
                         new SelectionListener<ButtonEvent>() {
                             public void componentSelected(ButtonEvent ce) {
                                 addSelectedQuestionToCustomQuiz();
