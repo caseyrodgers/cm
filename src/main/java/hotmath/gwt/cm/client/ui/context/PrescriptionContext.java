@@ -265,7 +265,7 @@ public class PrescriptionContext implements CmContext {
         /**
          * are there more Quizzes in this program?
          */
-        boolean areMoreSegments = UserInfo.getInstance().getTestSegment() < UserInfo.getInstance().getProgramSegmentCount();
+        boolean areMoreSegments = (!UserInfo.getInstance().isCustomProgram() && (UserInfo.getInstance().getTestSegment() < UserInfo.getInstance().getProgramSegmentCount()));
         if (areMoreSegments) {
             new PassedSectionWindow();
         } else {
