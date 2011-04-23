@@ -33,3 +33,6 @@ The entered password is not correct. The original password was emailed to you fr
 
 .key=SYSTEM_ERROR_MSG
 Sorry! An unexpected error has occurred.
+
+.key=LOGIN_NAME_NOT_RECOGNIZED
+The Login Name is not recognized. School Login Names are a school code (e.g., jfk752). 

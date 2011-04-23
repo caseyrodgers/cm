@@ -238,7 +238,7 @@ public class HaUserFactory {
 
 			//checkForAdminLoginFailure(;, userName);
 
-            throw new CmUserException(CmMessagePropertyReader.getInstance().getProperty("STUDENT_OR_ADMIN_WRONG_PASSWORD_SCHOOL_ACCT"));
+            throw new CmUserException(CmMessagePropertyReader.getInstance().getProperty("LOGIN_NAME_NOT_RECOGNIZED"));
 		} catch (CmException cme) {
 			throw cme;
 		} catch (Exception e) {
