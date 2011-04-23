@@ -198,8 +198,7 @@ public class CmMainPanel extends LayoutContainer {
 							if (__lastInstance != null
 								&& __lastInstance._mainContent != null
 								&& __lastInstance._lastResourceViewer != null
-								&& __lastInstance._lastResourceViewer instanceof CmResourcePanelImplWithWhiteboard
-								&& ((CmResourcePanelImplWithWhiteboard)__lastInstance._lastResourceViewer).isWhiteboardActive()) {
+								&& __lastInstance._lastResourceViewer instanceof CmResourcePanelImplWithWhiteboard) {
 									/**
 									 * If the whiteboard is active
 									 * hide the current resource to avoid Flash
