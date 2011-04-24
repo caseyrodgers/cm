@@ -39,7 +39,16 @@ public class CmShared implements EntryPoint {
     static public String __loginName;
 
     @Override
-    public void onModuleLoad() { }
+    public void onModuleLoad() {
+        if(getQueryParameter("show_log") != null) {
+            GWT.runAsync(new CmRunAsyncCallback() {
+                @Override
+                public void onSuccess() {
+                    CmLogger.getInstance().enable(true);
+                }
+            });
+        }
+    }
 
     static Map<String, String> _queryParameters = new HashMap<String, String>();
 
