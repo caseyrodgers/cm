@@ -3,6 +3,7 @@ package hotmath.gwt.cm_tools.client.ui;
 import hotmath.gwt.cm_tools.client.ui.resource_viewer.CmMainResourceContainer;
 import hotmath.gwt.cm_tools.client.ui.resource_viewer.CmResourcePanel;
 import hotmath.gwt.cm_tools.client.ui.viewer.CmResourcePanelImplWithWhiteboard;
+import hotmath.gwt.cm_tools.client.ui.viewer.ResourceViewerImplTutor;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
 import hotmath.gwt.shared.client.eventbus.CmEventListenerImplDefault;
 import hotmath.gwt.shared.client.eventbus.EventBus;
@@ -198,7 +199,9 @@ public class CmMainPanel extends LayoutContainer {
 							if (__lastInstance != null
 								&& __lastInstance._mainContent != null
 								&& __lastInstance._lastResourceViewer != null
-								&& __lastInstance._lastResourceViewer instanceof CmResourcePanelImplWithWhiteboard) {
+								&& (__lastInstance._lastResourceViewer instanceof CmResourcePanelImplWithWhiteboard
+							         && ((CmResourcePanelImplWithWhiteboard)__lastInstance._lastResourceViewer).isWhiteboardActive()
+							         || __lastInstance._lastResourceViewer instanceof ResourceViewerImplTutor)){
 									/**
 									 * If the whiteboard is active
 									 * hide the current resource to avoid Flash
@@ -213,7 +216,10 @@ public class CmMainPanel extends LayoutContainer {
 							if (__lastInstance != null
 									&& __lastInstance._mainContent != null
 									&& __lastInstance._lastResourceViewer != null
-									&& __lastInstance._lastResourceViewer instanceof CmResourcePanelImplWithWhiteboard) {
+									&& __lastInstance._lastResourceViewer instanceof CmResourcePanelImplWithWhiteboard
+	                                && (__lastInstance._lastResourceViewer instanceof CmResourcePanelImplWithWhiteboard
+	                                        && ((CmResourcePanelImplWithWhiteboard)__lastInstance._lastResourceViewer).isWhiteboardActive()
+	                                        || __lastInstance._lastResourceViewer instanceof ResourceViewerImplTutor)){
 								       /** If whiteboard is active, restore any resources
 								        * 
 								        */
