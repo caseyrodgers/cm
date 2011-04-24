@@ -54,6 +54,9 @@
       setTimeout(checkForCompletion, 60000);
 
       var __securityKey = '<%= securityKey %>';
+      
+      /** Disable MathJax */
+      function processMathJax() {}
     </script>
     <div id='login_info' style='display: none'>
         <%= jsonizedLoginInfo %>

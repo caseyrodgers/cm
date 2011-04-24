@@ -94,12 +94,18 @@ public class HaLoginInfoDao {
     }    
     
 
+    static int __login_key_uniquer=0;
     public String addLoginInfo(final Connection conn, HaBasicUser user, String browserInfo) throws Exception {
         
         PreparedStatement pstat = null;
 
         try {
-            String key = "cm_" + System.currentTimeMillis();
+            /** during login storm we can have duplicates on mills alone
+             *  so we use the static uniquer
+             * 
+             */
+            String key = "cm_" + System.currentTimeMillis() + "_" + (__login_key_uniquer++);
+            
             // first see if user is in admin
             String sql = CmMultiLinePropertyReader.getInstance().getProperty("INSERT_LOGIN_INFO");
             pstat = conn.prepareStatement(sql);
