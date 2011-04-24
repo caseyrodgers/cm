@@ -103,6 +103,7 @@ public class HaLoginInfoDao {
             /** during login storm we can have duplicates on mills alone
              *  so we use the static uniquer
              * 
+             * TODO: make thread-safe.
              */
             String key = "cm_" + System.currentTimeMillis() + "_" + (__login_key_uniquer++);
             

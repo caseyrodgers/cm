@@ -16,6 +16,7 @@ function flashWhiteboardOut(jsonOut) {
 // called when the flash whiteboard loses focus
 // 
 function flashLostFocus() {
+    //alert('flash whiteboard lost focus');
 	parent.flushWhiteboardChanges();
 }
 
@@ -23,6 +24,7 @@ function flashLostFocus() {
 // commands.  Funnel it back to parent
 // JSNI defined method in ShowWorkPanel.class
 function flashWhiteboardIsReady() {
+   //alert('flash whiteboard is ready');
    parent.flashWhiteboardIsReady();   // call back to GWT JSNI
 }
 

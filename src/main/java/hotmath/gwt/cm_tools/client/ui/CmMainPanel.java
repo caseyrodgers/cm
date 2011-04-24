@@ -213,8 +213,7 @@ public class CmMainPanel extends LayoutContainer {
 							if (__lastInstance != null
 									&& __lastInstance._mainContent != null
 									&& __lastInstance._lastResourceViewer != null
-									&& __lastInstance._lastResourceViewer instanceof CmResourcePanelImplWithWhiteboard
-									&& ((CmResourcePanelImplWithWhiteboard)__lastInstance._lastResourceViewer).isWhiteboardActive()) {
+									&& __lastInstance._lastResourceViewer instanceof CmResourcePanelImplWithWhiteboard) {
 								       /** If whiteboard is active, restore any resources
 								        * 
 								        */
