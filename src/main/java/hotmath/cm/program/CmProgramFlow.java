@@ -55,7 +55,7 @@ public class CmProgramFlow {
         this.activeInfo = sdao.loadActiveInfo(conn, userId);
         
         this.userProgram = updao.loadProgramInfoCurrent(conn, userId);
-        this.student = sdao.getStudentModel(conn, userProgram.getUserId());
+        this.student = sdao.getStudentModel(conn, userProgram.getUserId(),true);
         
         /** make the program segment 1 based
         */
