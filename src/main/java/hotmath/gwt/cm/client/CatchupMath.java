@@ -58,6 +58,7 @@ import com.google.gwt.user.client.ui.RootPanel;
 public class CatchupMath implements EntryPoint {
     static {
        publishNative();
+       publishNativeJsAfterLoad();
     }
 
     /**
@@ -332,31 +333,7 @@ public class CatchupMath implements EntryPoint {
             }
         });
     }
-    
-    
-    private void jumpToFirstLocation2() {
-
-        // do default action
-        if(UserInfo.getInstance().getRunId() > 0) {
-            
-            if(ContextController.getInstance().getTheContext() instanceof PrescriptionContext) {
-                /** PrescriptionPage is currently in view, simply update its display
-                 * 
-                 */
-                PrescriptionCmGuiDefinition.__instance.getAsyncDataFromServer(UserInfo.getInstance().getSessionNumber());
-            }
-            else {
-                /** Load the PrescriptionContext 
-                 * 
-                 */
-                CatchupMath.getThisInstance().showPrescriptionPanel_gwt(null);
-            }
-        }
-        else {
-            CatchupMath.getThisInstance().showQuizPanel_gwt(-1);
-        }        
-    }
-    
+     
     /**
      * Helper page to create the Login page
      * 
