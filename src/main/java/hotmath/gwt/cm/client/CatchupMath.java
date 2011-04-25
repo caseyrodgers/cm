@@ -436,7 +436,7 @@ public class CatchupMath implements EntryPoint {
     }
     
     public void showPrescriptionPanel(PrescriptionSessionResponse prescriptionResponse) {
-        
+        CmLogger.info("Showing prescription panel: " + prescriptionResponse);
         UserInfo.getInstance().setCorrectPercent(prescriptionResponse.getCorrectPercent());
         if(ContextController.getInstance().getTheContext() instanceof PrescriptionContext) {
             /** PrescriptionPage is currently in view, simply update its display

@@ -57,7 +57,7 @@ public class CmHistoryQueue {
      * @return
      */
     public Boolean isInitializingToNonStandard() {
-        return countLocations < 2 && lastLocation.getLocationType() == CmLocation.LocationType.PRESCRIPTION;
+        return countLocations < 2 && (lastLocation != null && lastLocation.getLocationType() == CmLocation.LocationType.PRESCRIPTION);
     }
 
 }

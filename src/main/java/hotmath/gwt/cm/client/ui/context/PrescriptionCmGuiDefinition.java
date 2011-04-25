@@ -140,14 +140,14 @@ public class PrescriptionCmGuiDefinition implements CmGuiDefinition {
     public void setPrescriptionData(PrescriptionSessionResponse prescriptionResponse, int sessionNumber) {
         if (prescriptionResponse != null) {
             
-            CmLogger.debug("PrescriptionSessionResponse: " + prescriptionResponse);
+            CmLogger.debug("Data: " + prescriptionResponse + ", Context: " + context + ", UserInfo: " + UserInfo.getInstance());
             
             UserInfo.getInstance().setSessionNumber(sessionNumber);
 
             context.setPrescriptionData(prescriptionResponse.getPrescriptionData());
-
+            
             UserInfo.getInstance().setSessionCount(context.prescriptionData.getSessionTopics().size());
-
+            
             isReady = true; // signal data is ready
 
             _guiWidget.buildUi(context.prescriptionData);

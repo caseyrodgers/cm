@@ -520,7 +520,7 @@
           <compileReport>false</compileReport>
           <outputDirectory>${basedir}/src/main/webapp/</outputDirectory>
           <logLevel>ERROR</logLevel>
-          <style>OBF</style>
+          <style>DETAILED</style>
           <modules>
             <module>hotmath.gwt.cm.CatchupMath</module>
             <module>hotmath.gwt.cm_admin.CatchupMathAdmin</module>

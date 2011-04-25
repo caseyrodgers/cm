@@ -1,15 +1,12 @@
 package hotmath.gwt.cm.client.ui.context;
 
-import hotmath.gwt.cm.client.CatchupMath;
 import hotmath.gwt.cm.client.history.CmHistoryManager;
 import hotmath.gwt.cm.client.history.CmLocation;
 import hotmath.gwt.cm.client.history.CmLocation.LocationType;
 import hotmath.gwt.cm.client.ui.CmProgramFlowClientManager;
-import hotmath.gwt.cm.client.ui.CmProgramFlowClientManager.Callback;
 import hotmath.gwt.cm.client.ui.context.CmAutoTest.ResourceObject;
 import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_rpc.client.UserInfo.UserProgramCompletionAction;
-import hotmath.gwt.cm_rpc.client.rpc.CmProgramFlowAction;
 import hotmath.gwt.cm_rpc.client.rpc.InmhItemData;
 import hotmath.gwt.cm_rpc.client.rpc.PrescriptionData;
 import hotmath.gwt.cm_rpc.client.rpc.PrescriptionSessionDataResource;
@@ -58,8 +55,7 @@ public class PrescriptionContext implements CmContext {
 
     public void setPrescriptionData(PrescriptionData prescriptionData) {
         this.prescriptionData = prescriptionData;
-        EventBus.getInstance().fireEvent(
-                new CmEvent(EventType.EVENT_TYPE_TOPIC_CHANGED, prescriptionData.getCurrSession().getTopic()));
+        EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_TOPIC_CHANGED, prescriptionData.getCurrSession().getTopic()));
     }
 
     public void setCorrectPercent(int correctPercent) {

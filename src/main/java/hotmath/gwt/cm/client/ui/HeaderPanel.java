@@ -89,18 +89,14 @@ public class HeaderPanel extends LayoutContainer {
 	  		            }
 	  		            break;
 			    	case EVENT_TYPE_TOPIC_CHANGED:
-			            	GWT.runAsync(new CmRunAsyncCallback() {
-								@Override
-								public void onSuccess() {
-				                    /** Only show modal popup if not in auto test mode 
-				                     * 
-				                     */
-				                    if(CmShared.getQueryParameter("debug") != null || UserInfo.getInstance().isAutoTestMode() || CmHistoryQueue.getInstance().isInitializingToNonStandard())
-				                        InfoPopupBox.display(new CmInfoConfig("Current Topic", "Current topic is: " + event.getEventData()));
-				                    else
-				                        new ContextChangeMessage((String)event.getEventData());
-								}
-							});
+					        /** Only show modal popup if not in auto test mode 
+					         * 
+					         */
+					        if(CmShared.getQueryParameter("debug") != null || UserInfo.getInstance().isAutoTestMode() || CmHistoryQueue.getInstance().isInitializingToNonStandard())
+					            InfoPopupBox.display(new CmInfoConfig("Current Topic", "Current topic is: " + event.getEventData()));
+					        else {
+					            new ContextChangeMessage((String)event.getEventData());
+					        }
 			    	break;
 			    	
 			    	case EVENT_TYPE_USER_LOGIN:
