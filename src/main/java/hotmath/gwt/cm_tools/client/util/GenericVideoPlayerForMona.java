@@ -13,8 +13,8 @@ public class GenericVideoPlayerForMona extends GenericVideoPlayer {
     
     
     static public enum MonaVideo {
-        MOTIVATIONAL("http://catchupmath.com/resources/videos/mona_motivational_video.flv", "Motivational Video"),
-        PASS_QUIZ("http://catchupmath.com/resources/videos/mona_congrats.flv","Congratulations" );
+        MOTIVATIONAL("http://catchupmath.com/assets/videos/mona_motivational_video.flv", "Motivational Video"),
+        PASS_QUIZ("http://catchupmath.com/assets/videos/mona_congrats.flv","Congratulations" );
         
         private String title;
         private String file;
