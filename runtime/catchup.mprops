@@ -221,7 +221,7 @@ where s.last_use_date  like '%YYY%'
 ###
 .key=STUDENT_ACTIVITY
 
-select is_custom_quiz, max(s.use_date) as use_date, date_format(min(s.view_time),'%h:%i %p') as start_time,
+select load_order,is_custom_quiz, max(s.use_date) as use_date, date_format(min(s.view_time),'%h:%i %p') as start_time,
   date_format(max(s.view_time),'%h:%i %p') as stop_time, max(s.view_time) as view_time,
   max(s.run_date) as run_date,
   s.answered_correct, s.answered_incorrect, s.not_answered, s.program, s.prog_id, s.subj_id, s.test_config_json,
@@ -230,7 +230,7 @@ select is_custom_quiz, max(s.use_date) as use_date, date_format(min(s.view_time)
   s.total_sessions
 from (
 
- select 0 as is_custom_quiz, date_format(l.create_time,'%Y-%m-%d') as use_date, date_format(l.create_time,'%h:%i %p') as start_time,
+ select 1 as load_order,0 as is_custom_quiz, date_format(l.create_time,'%Y-%m-%d') as use_date, date_format(l.create_time,'%h:%i %p') as start_time,
    null as stop_time, l.create_time as view_time,
    date_format(l.create_time,'%Y-%m-%d') as run_date,
    0 as answered_correct, 0 as answered_incorrect, 0 as not_answered,
@@ -247,7 +247,7 @@ from (
 
  union
  
- select 0 as is_custom_quiz, date_format(l.create_time,'%Y-%m-%d') as use_date, date_format(l.create_time,'%h:%i %p') as start_time,
+ select 2 as load_order,0 as is_custom_quiz, date_format(l.create_time,'%Y-%m-%d') as use_date, date_format(l.create_time,'%h:%i %p') as start_time,
    date_format(r.run_time,'%h:%i %p') as stop_time, r.run_time as view_time,
    date_format(r.run_time,'%Y-%m-%d') as run_date,
    r.answered_correct, r.answered_incorrect, r.not_answered,
@@ -264,7 +264,7 @@ from (
  
  union
 
-select 0 as is_custom_quiz, date_format(iu.view_time,'%Y-%m-%d') as use_date, date_format(iu.view_time,'%h:%i %p') as start_time,
+select 3 as load_order,0 as is_custom_quiz, date_format(iu.view_time,'%Y-%m-%d') as use_date, date_format(iu.view_time,'%h:%i %p') as start_time,
   date_format(iu.view_time,'%h:%i %p') as stop_time, iu.view_time as view_time,
   date_format(iu.view_time,'%Y-%m-%d') as run_date,
   0 as answered_correct, 0 as answered_incorrect, 0 as not_answered,
@@ -293,7 +293,7 @@ select 0 as is_custom_quiz, date_format(iu.view_time,'%Y-%m-%d') as use_date, da
  union 
  
  
- select 1 as is_custom_quiz, date_format(r.run_time,'%Y-%m-%d') as use_date, date_format(l.create_time,'%h:%i %p') as start_time,
+ select 4 as load_order, 1 as is_custom_quiz, date_format(r.run_time,'%Y-%m-%d') as use_date, date_format(l.create_time,'%h:%i %p') as start_time,
   date_format(r.run_time,'%h:%i %p') as stop_time,  l.create_time as view_time,
   date_format(r.run_time,'%Y-%m-%d') as run_date,
   r.answered_correct, r.answered_incorrect, r.not_answered,
@@ -321,7 +321,7 @@ select 0 as is_custom_quiz, date_format(iu.view_time,'%Y-%m-%d') as use_date, da
  
 ) s
 group by s.test_run_id, s.is_quiz, s.use_date
-order by s.view_time asc, s.test_id asc, s.test_run_id asc, s.session_number asc
+order by s.view_time asc, load_order, s.test_id asc, s.test_run_id asc, s.session_number asc
 
 
 
