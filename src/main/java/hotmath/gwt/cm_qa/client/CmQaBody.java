@@ -10,6 +10,7 @@ import hotmath.gwt.cm_rpc.client.rpc.RpcData;
 import hotmath.gwt.cm_rpc.client.rpc.SaveQaItemAction;
 import hotmath.gwt.cm_rpc.client.rpc.SaveQaItemProblemAction;
 import hotmath.gwt.cm_tools.client.model.StudentModelExt;
+import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
 import hotmath.gwt.shared.client.rpc.RetryAction;
 
 import java.util.ArrayList;
@@ -66,6 +67,17 @@ public class CmQaBody extends ContentPanel {
                 }
             }
         });
+        
+//        getHeader().addTool(new Button("Screen Capture", new SelectionListener<ButtonEvent>() {
+//            @Override
+//            public void componentSelected(ButtonEvent ce) {
+//                CmWindow w = new CmWindow();
+//                w.setSize(400,400);
+//                w.addCloseButton();
+//                w.add(new ScreenCaptureApplet());
+//                w.setVisible(true);
+//            }
+//        }));
     }
     
     

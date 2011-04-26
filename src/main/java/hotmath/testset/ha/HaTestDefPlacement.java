@@ -37,7 +37,7 @@ public class HaTestDefPlacement extends HaTestDef {
 		    testSegmentSlot++;
 
 		HaTestDefDao dao = new HaTestDefDao();
-		return dao.getTestIdsForPlacementSegment(conn, segment, this.TEXTCODE, this.PLACEMENT_CHAPTERS[segment], config, testSegmentSlot);
+		return dao.getTestIdsForPlacementSegment(conn, segment, this.TEXTCODE, this.PLACEMENT_CHAPTERS[segment-1], config, testSegmentSlot);
     }
 
 	@Override

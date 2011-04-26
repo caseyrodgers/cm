@@ -261,23 +261,25 @@ public class CmShared implements EntryPoint {
      * 
      */
     static public void reloadUser() {
-        int uid = UserInfoBase.getInstance().getUid();
-        String url="/loginService?uid=" + uid;
-        if(UserInfo.getInstance() == null) {
-            url += "&type=ADMIN";
-        }
-        if(CmShared.getQueryParameter("debug") != null) {
-            url += "&debug=true";
-            
-            if(UserInfo.getInstance().isAutoTestMode()) {
-                url += "&type=auto_test";
-            }
-            
-            if(CmShared.getQueryParameter("test_rpp_only") != null ) {
-                url += "&test_rpp_only=true";
-            }
-        }
-        Window.Location.assign(url);        
+        Window.Location.reload();
+        
+//        int uid = UserInfoBase.getInstance().getUid();
+//        String url="/loginService?uid=" + uid;
+//        if(UserInfo.getInstance() == null) {
+//            url += "&type=ADMIN";
+//        }
+//        if(CmShared.getQueryParameter("debug") != null) {
+//            url += "&debug=true";
+//            
+//            if(UserInfo.getInstance().isAutoTestMode()) {
+//                url += "&type=auto_test";
+//            }
+//            
+//            if(CmShared.getQueryParameter("test_rpp_only") != null ) {
+//                url += "&test_rpp_only=true";
+//            }
+//        }
+//        Window.Location.assign(url);        
     }    
     
     
