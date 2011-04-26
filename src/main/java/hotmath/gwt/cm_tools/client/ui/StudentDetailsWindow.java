@@ -236,7 +236,7 @@ public class StudentDetailsWindow extends CmWindow {
                 else
                     _showTopicsBtn.enable();
                 
-                if(sam.getIsQuiz()) {
+                if(sam.getIsQuiz() && sam.getRunId() > 0) {
                     _showQuizResults.enable();
                 }
                 else 

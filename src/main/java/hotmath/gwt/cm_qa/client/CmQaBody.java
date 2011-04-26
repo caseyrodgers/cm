@@ -10,7 +10,6 @@ import hotmath.gwt.cm_rpc.client.rpc.RpcData;
 import hotmath.gwt.cm_rpc.client.rpc.SaveQaItemAction;
 import hotmath.gwt.cm_rpc.client.rpc.SaveQaItemProblemAction;
 import hotmath.gwt.cm_tools.client.model.StudentModelExt;
-import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
 import hotmath.gwt.shared.client.rpc.RetryAction;
 
 import java.util.ArrayList;
@@ -45,20 +44,20 @@ import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.user.client.Window;
 
 public class CmQaBody extends ContentPanel {
-    
+
     static CmQaBody __instance;
     static boolean __isReady;
     Grid<QaEntryModelGxt> _grid;
     public CmQaBody() {
-        
+
         __instance = this;
-        
+
         ListStore<QaEntryModelGxt> store = new ListStore<QaEntryModelGxt>();
         _grid = defineGrid(store);
-        
+
         setLayout(new FitLayout());
         add(_grid);
-        
+
         EventBus.getInstance().addEventListener(new CmEventListener() {
             @Override
             public void handleEvent(CmEvent event) {
@@ -67,36 +66,33 @@ public class CmQaBody extends ContentPanel {
                 }
             }
         });
-        
-//        getHeader().addTool(new Button("Screen Capture", new SelectionListener<ButtonEvent>() {
-//            @Override
-//            public void componentSelected(ButtonEvent ce) {
-//                CmWindow w = new CmWindow();
-//                w.setSize(400,400);
-//                w.addCloseButton();
-//                w.add(new ScreenCaptureApplet());
-//                w.setVisible(true);
-//            }
-//        }));
+        getHeader().addTool(new Button("Screen Capture", new SelectionListener<ButtonEvent>() {
+            @Override
+            public void componentSelected(ButtonEvent ce) {
+                final ScreenCaptureAppletLoader sl = new ScreenCaptureAppletLoader();
+                getHeader().addTool(sl);
+                getHeader().removeTool(ce.getComponent());
+            }
+        }));
     }
-    
-    
+
+
     private Grid<QaEntryModelGxt> defineGrid(final ListStore<QaEntryModelGxt> store) {
-        
+
         List<ColumnConfig> configs = new ArrayList<ColumnConfig>();
 
-        
+
         CheckColumnConfig verifiedColumn = new CheckColumnConfig("verified", "Verified", 55);
-        CellEditor checkBoxEditor = new CellEditor(new CheckBox());  
-        verifiedColumn.setEditor(checkBoxEditor);  
+        CellEditor checkBoxEditor = new CellEditor(new CheckBox());
+        verifiedColumn.setEditor(checkBoxEditor);
         configs.add(verifiedColumn);
-        
+
         CheckColumnConfig problemColumn = new CheckColumnConfig("problem", "Problem", 55);
-        
-        CellEditor problemEditor = new CellEditor(new CheckBox());  
-        problemColumn.setEditor(problemEditor);  
-        configs.add(problemColumn);  
-        
+
+        CellEditor problemEditor = new CellEditor(new CheckBox());
+        problemColumn.setEditor(problemEditor);
+        configs.add(problemColumn);
+
         ColumnConfig addProblemConfig = new ColumnConfig();
         addProblemConfig.setDataIndex("");
         addProblemConfig.setWidth(100);
@@ -106,7 +102,7 @@ public class CmQaBody extends ContentPanel {
                 Button editButton = new Button("Problem", new SelectionListener<ButtonEvent>() {
                     @Override
                     public void componentSelected(ButtonEvent ce) {
-                        
+
                         MessageBox.prompt("QA Item Problem", "Describe problem: ",true, new Listener<MessageBoxEvent>() {
                             @Override
                             public void handleEvent(MessageBoxEvent be) {
@@ -138,18 +134,18 @@ public class CmQaBody extends ContentPanel {
             @Override
             public Object render(QaEntryModelGxt model, String property, ColumnData config, int rowIndex, int colIndex,
                     ListStore<QaEntryModelGxt> store, Grid<QaEntryModelGxt> grid) {
-                
+
                 String msg = (String)model.get("description");
                 Label l = new Label(msg);
                 l.setToolTip(msg);
-                return l; 
+                return l;
             }
         });
-        
-        
+
+
         configs.add(desc);
-        
-        
+
+
         final EditorGrid<QaEntryModelGxt> grid = new EditorGrid<QaEntryModelGxt>(store, new ColumnModel(configs));
         grid.setAutoExpandColumn("item");
         grid.setBorders(true);
@@ -167,8 +163,8 @@ public class CmQaBody extends ContentPanel {
         grid.setLoadMask(true);
         grid.addPlugin(verifiedColumn);
         grid.addPlugin(problemColumn);
-        
-        
+
+
         grid.addListener(Events.CellMouseDown, new Listener<GridEvent>() {
             public void handleEvent(GridEvent e) {
                 Scheduler.get().scheduleDeferred(new ScheduledCommand() {
@@ -183,10 +179,10 @@ public class CmQaBody extends ContentPanel {
 
         return grid;
     }
-    
+
     private void addProblemComment(final QaEntryModelGxt model, final String problemText) {
         new RetryAction<RpcData>() {
-            
+
             @Override
             public void attempt() {
                 model.set("problem", Boolean.TRUE);
@@ -197,20 +193,20 @@ public class CmQaBody extends ContentPanel {
                 setAction(action);
                 CmQa.getCmService().execute(action, this);
             }
-            
+
             @Override
             public void oncapture(RpcData data) {
                 if(!data.getDataAsString("status").equals("OK")) {
                     Window.alert("Error adding problem record");
                 }
             }
-        }.register();       
+        }.register();
     }
-    
+
     protected void saveChangesToServer(final QaEntryModelGxt model) {
 
         new RetryAction<RpcData>() {
-            
+
             @Override
             public void attempt() {
                 QaEntryModel imodel = model.convertTo();
@@ -218,53 +214,53 @@ public class CmQaBody extends ContentPanel {
                 setAction(action);
                 CmQa.getCmService().execute(action, this);
             }
-            
+
             @Override
             public void oncapture(RpcData data) {
                 if(!data.getDataAsString("status").equals("OK")) {
                     Window.alert("Error updating QA item");
                 }
             }
-        }.register();       
+        }.register();
     }
-    
-    
+
+
     protected void getQaItems(final String category) {
-        
+
         new RetryAction<CmList<QaEntryModel>>() {
-            
+
             @Override
             public void attempt() {
                 GetQaItemsAction action = new GetQaItemsAction(category);
                 setAction(action);
                 CmQa.getCmService().execute(action, this);
             }
-            
+
             @Override
             public void oncapture(CmList<QaEntryModel> items) {
                 _grid.getStore().removeAll();
                 _grid.getStore().add(QaEntryModelGxt.convert(items));
                 __isReady = true;
             }
-        }.register();       
+        }.register();
     }
 }
 
 
 class QaEntryModelGxt extends BaseModel {
-    
+
     public QaEntryModelGxt(String item, String description, Boolean verified,Boolean problem) {
         set("item",item );
         set("description", description);
         set("verified", verified);
         set("problem", problem);
     }
-    
+
     public <X extends Object> X set(String name, X value) {
         X x = super.set(name, value);
         return x;
     }
-    
+
     public QaEntryModel convertTo() {
         return new QaEntryModel((String)get("item"), (String)get("description"), (Boolean)get("verified"), (Boolean)get("problem"));
     }
@@ -276,6 +272,6 @@ class QaEntryModelGxt extends BaseModel {
         }
         return models;
     }
-    
-    
+
+
 }
