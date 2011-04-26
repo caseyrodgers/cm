@@ -41,7 +41,7 @@ public class DateRangePickerDialog extends Window {
     Callback callback;
     private DateRangePickerDialog() {
         addStyleName("date-range-picker-dialog");
-        setSize(440,350);
+        setSize(440,375);
         setHeading("Choose Date Range");
         setModal(true);
         setResizable(false);
