@@ -41,16 +41,13 @@ public class DateRangePickerDialog extends Window {
     Callback callback;
     private DateRangePickerDialog() {
         addStyleName("date-range-picker-dialog");
-        setSize(400,350);
+        setSize(440,350);
         setHeading("Choose Date Range");
         setModal(true);
-        setLayout(new RowLayout(Orientation.HORIZONTAL));
-        
-        RowData data = new RowData(.5, 1);
-        data.setMargins(new Margins(5));
-        
-        add(createFromPicker(), data);
-        add(createToPicker(), data);
+        setResizable(false);
+        setLayout(new BorderLayout());
+        add(createFromPicker(), new BorderLayoutData(LayoutRegion.EAST));
+        add(createToPicker(), new BorderLayoutData(LayoutRegion.WEST));
 
         _defaultStartDate = CatchupMathAdmin.getInstance().getAccountInfoPanel().getModel().getAccountCreateDate();
 
