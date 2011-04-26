@@ -1101,14 +1101,15 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
                 public void oncapture(CmStudentPagingLoadResult<StudentModelExt> students) {
                     /** always reset request options */
                     _forceServerRefresh = false;
-                    EventBus.getInstance().fireEvent(
-                            new CmEvent(EventType.EVENT_TYPE_STUDENT_GRID_FILTERED, _pageAction));
-
                     /**
                      * callback the proxy listener
                      * 
                      */
                     currentStudentCount = students.getTotalLength();
+                    
+                    EventBus.getInstance().fireEvent(
+                            new CmEvent(EventType.EVENT_TYPE_STUDENT_GRID_FILTERED, _pageAction));
+
                     callback.onSuccess(students);
                     CmBusyManager.setBusy(false);
                 }

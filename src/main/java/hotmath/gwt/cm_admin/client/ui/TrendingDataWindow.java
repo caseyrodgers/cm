@@ -1,8 +1,7 @@
 package hotmath.gwt.cm_admin.client.ui;
 
-import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_rpc.client.rpc.CmList;
-import hotmath.gwt.cm_rpc.client.rpc.CmServiceAsync;
+import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.ui.PdfWindow;
 import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
 import hotmath.gwt.shared.client.CmShared;
@@ -22,10 +21,12 @@ import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.SelectionListener;
+import com.extjs.gxt.ui.client.widget.Html;
 import com.extjs.gxt.ui.client.widget.TabItem;
 import com.extjs.gxt.ui.client.widget.TabPanel;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.CheckBox;
+import com.extjs.gxt.ui.client.widget.layout.CenterLayout;
 import com.extjs.gxt.ui.client.widget.layout.FillLayout;
 import com.google.gwt.core.client.GWT;
 
@@ -132,6 +133,12 @@ public class TrendingDataWindow extends CmWindow {
     CmAdminTrendingDataI _trendingData;
 
     private void loadTrendDataAsync() {
+        
+        if(StudentGridPanel.instance.currentStudentCount == 0) {
+            showNoStudents();
+            return;
+        }
+        
         new RetryAction<CmAdminTrendingDataI>() {
             @Override
             public void attempt() {
@@ -153,6 +160,12 @@ public class TrendingDataWindow extends CmWindow {
                 layout(true);
             }
         }.register();
+    }
+    
+    private void showNoStudents() {
+        removeAll();
+        setLayout(new CenterLayout());
+        add(new Html("<h2>No students found</h2>"));
     }
 
     private GetAdminTrendingDataAction.DataType onlyActiveOrFullHistory() {
