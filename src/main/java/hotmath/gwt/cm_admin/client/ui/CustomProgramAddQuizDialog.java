@@ -177,7 +177,6 @@ public class CustomProgramAddQuizDialog extends Window {
         });
 
         _listLessons.getSelectionModel().addSelectionChangedListener(new SelectionChangedListener<CustomLessonModel>() {
-
             @Override
             public void selectionChanged(SelectionChangedEvent<CustomLessonModel> se) {
                 _tabQuestions.setEnabled(true);
@@ -208,6 +207,15 @@ public class CustomProgramAddQuizDialog extends Window {
             _customQuiz = new CustomQuizDef(0, "New Custom Quiz", adminId);
         }
         _textQuizName.setValue(_customQuiz.getQuizName());
+        
+        removeAll();
+        
+        TabPanel tp = new TabPanel();
+        TabItem ti = new TabItem("TEST");
+        ti.setScrollMode(Scroll.AUTOY);
+        ti.add(_listLessons);
+        tp.add(ti);
+        add(tp, new BorderLayoutData(LayoutRegion.CENTER));
 
         setVisible(true);
     }

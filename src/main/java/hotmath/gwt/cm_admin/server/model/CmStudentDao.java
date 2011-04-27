@@ -2249,6 +2249,9 @@ public class CmStudentDao {
         if(program.getCustom().getCustomQuizId() > 0) {
             cpComp.setCustomQuiz(program.getCustom().getCustomQuizId(), program.getCustom().getCustomQuizName());
         }
+        else if(program.getCustom().getCustomProgramId() > 0) {
+            cpComp.setCustomProgram(program.getCustom().getCustomProgramId(), program.getCustom().getCustomProgramName());
+        }
         sm.setProgramChanged(true);
         sm.setChapter(chapter);
         sm.setPassPercent(passPercent);
