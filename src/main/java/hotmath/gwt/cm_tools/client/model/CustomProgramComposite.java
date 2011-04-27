@@ -78,6 +78,9 @@ public class CustomProgramComposite implements Serializable {
             type = Type.LESSONS;
             this.customProgramName = name;
             this.customProgramId = progId;
+            
+            this.customQuizId = 0;
+            this.customQuizName = null;
         }
     }
     
@@ -91,6 +94,9 @@ public class CustomProgramComposite implements Serializable {
             type = Type.QUIZ;
             this.customQuizId = quizId;
             this.customQuizName = name;
+            
+            this.customProgramId = 0;
+            this.customProgramName = null;
         }
     }
     

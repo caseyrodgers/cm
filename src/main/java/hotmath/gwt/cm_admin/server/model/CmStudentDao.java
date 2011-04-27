@@ -2252,6 +2252,10 @@ public class CmStudentDao {
         else if(program.getCustom().getCustomProgramId() > 0) {
             cpComp.setCustomProgram(program.getCustom().getCustomProgramId(), program.getCustom().getCustomProgramName());
         }
+        else {
+            /** make sure no custom assigned */
+            sm.getProgram().setCustom(new CustomProgramComposite());
+        }
         sm.setProgramChanged(true);
         sm.setChapter(chapter);
         sm.setPassPercent(passPercent);
