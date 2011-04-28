@@ -142,7 +142,7 @@ public class CustomProgramAddQuizDialog extends Window {
                 + "customProgramItem" + "}</div></tpl>";
         _listLessons.setTemplate(template);
         _tabLessons.add(_listLessons);
-        _tabLessons.setScrollMode(Scroll.AUTO);
+        _tabLessons.setLayout(new FitLayout());
 
         _listLessons.addListener(Events.DoubleClick, new Listener<BaseEvent>() {
             @Override
@@ -208,15 +208,6 @@ public class CustomProgramAddQuizDialog extends Window {
         }
         _textQuizName.setValue(_customQuiz.getQuizName());
         
-        removeAll();
-        
-        TabPanel tp = new TabPanel();
-        TabItem ti = new TabItem("TEST");
-        ti.setScrollMode(Scroll.AUTOY);
-        ti.add(_listLessons);
-        tp.add(ti);
-        add(tp, new BorderLayoutData(LayoutRegion.CENTER));
-
         setVisible(true);
     }
 
@@ -471,11 +462,11 @@ public class CustomProgramAddQuizDialog extends Window {
         _tabPanel = new TabPanel();
 
         _tabLessons = new TabItem("All Lessons");
-        _tabLessons.setScrollMode(Scroll.AUTO);
+        _tabLessons.setLayout(new FitLayout());
         _tabPanel.add(_tabLessons);
 
         _tabQuestions = new TabItem("Questions");
-        _tabQuestions.setScrollMode(Scroll.AUTOX);
+        _tabQuestions.setLayout(new FitLayout());
         _tabPanel.add(_tabQuestions);
         cpLeft.add(_tabPanel);
         BorderLayoutData ld = new BorderLayoutData(LayoutRegion.WEST, 380);

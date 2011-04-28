@@ -13,7 +13,9 @@ import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.user.client.ui.RootPanel;
 
 public class CatchupMathTest implements EntryPoint {
-    public void onModuleLoad() {
+    
+    
+ public void onModuleLoad() {
         
         LayoutContainer main = new LayoutContainer();
         main.setLayout(new FitLayout());
@@ -21,8 +23,7 @@ public class CatchupMathTest implements EntryPoint {
         TabPanel tabPanel = new TabPanel();
         
         TabItem tabItem = new TabItem("TEST");
-        tabItem.setScrollMode(Scroll.AUTO);
-        
+        tabItem.setLayout(new FitLayout());        
         ListView<MyModel> listView = new ListView<MyModel>();
         listView.setStore(createListStore());
 
@@ -35,6 +36,7 @@ public class CatchupMathTest implements EntryPoint {
         
         RootPanel.get().add(viewPort);
     }
+
     
     private ListStore<MyModel> createListStore() {
         ListStore<MyModel> myStore = new ListStore<MyModel>();
