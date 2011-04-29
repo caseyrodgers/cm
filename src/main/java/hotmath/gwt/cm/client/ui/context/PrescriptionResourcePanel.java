@@ -274,7 +274,7 @@ public class PrescriptionResourcePanel extends LayoutContainer {
 
     }
     
-    private static void setLessonCompleted(final String title) {
+    public static void setLessonCompleted(final String title) {
     	
     	final int runId = UserInfo.getInstance().getRunId();
     	final int session = UserInfo.getInstance().getSessionNumber();

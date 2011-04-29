@@ -192,7 +192,7 @@ public class GetUserInfoCommand implements ActionHandler<GetUserInfoAction, User
             userInfo.setPassPercentRequired(userProgram.getConfig().getPassPercent());
             userInfo.setProgramSegmentCount(programSegmentCount);
             userInfo.setViewCount(sdao.getTotalInmHViewCount(conn,action.getUserId()));
-            UserLoginResponse userLoginResponse = new UserLoginResponse(userInfo, determineFirstDestination(conn, userInfo));
+            UserLoginResponse userLoginResponse = new UserLoginResponse(userInfo, determineFirstDestination(conn, userInfo,cmProgram));
             return userLoginResponse;
             
         } catch (Exception e) {
@@ -224,11 +224,29 @@ public class GetUserInfoCommand implements ActionHandler<GetUserInfoAction, User
      *     
      */
     CmDestination firstDestination = null;
-    private CmDestination determineFirstDestination(final Connection conn, UserInfo userInfo) throws Exception {
+    private CmDestination determineFirstDestination(final Connection conn, UserInfo userInfo, CmProgramFlow programFlow) throws Exception {
         CmDestination destination = new CmDestination();
 
-        if(hasUserCompletedProgram(conn, userInfo)) {
-            destination.setPlace(CmPlace.END_OF_PROGRAM);
+        if(userInfo.getRunId() > 0 && hasUserCompletedTestRun(conn, userInfo.getRunId())) {
+            
+            /** did the user pass this segment, if not
+             *  then they must repeat it .. so program 
+             *  is not complete.
+             */
+            HaTestRun testRun = new HaTestRunDao().lookupTestRun(conn, userInfo.getRunId());
+            if(!testRun.isPassing()) {
+                /** repeat the segment
+                 * 
+                 */
+                programFlow.getActiveInfo().setActiveRunId(0);
+                programFlow.getActiveInfo().setActiveTestId(0);
+                destination.setPlace(CmPlace.QUIZ);
+            }
+            else {
+                if(hasUserCompletedProgram(conn, userInfo, programFlow)) {
+                    destination.setPlace(CmPlace.END_OF_PROGRAM);
+                }
+            }
         }
         else if(userInfo.getRunId() > 0) {
             destination.setPlace(CmPlace.PRESCRIPTION);
@@ -250,7 +268,7 @@ public class GetUserInfoCommand implements ActionHandler<GetUserInfoAction, User
      * @return
      * @throws Exception
      */
-    private boolean hasUserCompletedProgram(final Connection conn, UserInfo userInfo) throws Exception {
+    private boolean hasUserCompletedProgram(final Connection conn, UserInfo userInfo, CmProgramFlow cmProgram) throws Exception {
         int totalSegments = userInfo.getProgramSegmentCount();
         int thisSegment = userInfo.getTestSegment();
         
@@ -273,24 +291,8 @@ public class GetUserInfoCommand implements ActionHandler<GetUserInfoAction, User
                  * 
                  */
                 if(userInfo.getRunId() > 0) {
-                    PreparedStatement ps=null;
-                    try {
-                        String sql = CmMultiLinePropertyReader.getInstance().getProperty("GET_COUNT_UNCOMPLETED_TEST_RUN_LESSONS_PROGRAM");
-                        ps = conn.prepareStatement(sql);
-                        ps.setInt(1, userInfo.getRunId());
-                        ResultSet rs = ps.executeQuery();
-                        rs.first();
-                        int cntToView = rs.getInt(1);
-                        
-                        if(cntToView == 0) {
-                            /** this program is on last segment
-                             *  and all lessons have been completed
-                             */
-                            return true;
-                        }
-                    }
-                    finally {
-                        SqlUtilities.releaseResources(null,ps, null);
+                    if(hasUserCompletedTestRun(conn, userInfo.getRunId())) {
+                        return true;
                     }
                 }
             }
@@ -303,6 +305,26 @@ public class GetUserInfoCommand implements ActionHandler<GetUserInfoAction, User
          * 
          */
         return false;
+    }
+
+    /** This test run is fully completed
+    */
+
+    private boolean hasUserCompletedTestRun(final Connection conn, int runId) throws Exception {
+        PreparedStatement ps=null;
+        try {
+            String sql = CmMultiLinePropertyReader.getInstance().getProperty("GET_COUNT_UNCOMPLETED_TEST_RUN_LESSONS_PROGRAM");
+            ps = conn.prepareStatement(sql);
+            ps.setInt(1, runId);
+            ResultSet rs = ps.executeQuery();
+            rs.first();
+            int cntToView = rs.getInt(1);
+            
+            return (cntToView == 0);
+        }
+        finally {
+            SqlUtilities.releaseResources(null,ps, null);
+        }
     }
 
     

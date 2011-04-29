@@ -209,6 +209,10 @@ public class PrescriptionContext implements CmContext {
             int testSegmentToLoad = 0;
 
             CmLogger.debug("Correct percent: " + correctPercent + ", " + passPercentRequired);
+            
+            if(CmShared.getQueryParameter("debug") != null) {
+                PrescriptionResourcePanel.setLessonCompleted(null);
+            }
 
             if (UserInfo.getInstance().isCustomProgram() || correctPercent >= passPercentRequired) {
                 /**
