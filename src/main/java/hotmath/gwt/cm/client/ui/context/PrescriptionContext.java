@@ -174,6 +174,12 @@ public class PrescriptionContext implements CmContext {
     }
 
     private void doMoveNextAux(boolean hasPrescription) {
+        
+        
+        if(CmShared.getQueryParameter("mark_lesson_as_complete") != null) {
+            PrescriptionResourcePanel.setLessonCompleted(null);
+        }
+
 
         /**
          * The current session number
@@ -209,10 +215,6 @@ public class PrescriptionContext implements CmContext {
             int testSegmentToLoad = 0;
 
             CmLogger.debug("Correct percent: " + correctPercent + ", " + passPercentRequired);
-            
-            if(CmShared.getQueryParameter("debug") != null) {
-                PrescriptionResourcePanel.setLessonCompleted(null);
-            }
 
             if (UserInfo.getInstance().isCustomProgram() || correctPercent >= passPercentRequired) {
                 /**
