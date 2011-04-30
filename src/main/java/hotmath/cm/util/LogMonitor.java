@@ -210,7 +210,8 @@ public class LogMonitor {
                 throw new Exception("usage: ... logfile [-write_to_db=true]");
             
             SbUtilities.addOptions(as);
-            boolean writeToDb = SbUtilities.getBoolean(SbUtilities.getOption("write_to_db", "true"));
+            String x = SbUtilities.getOption("true", "write_to_db");
+            boolean writeToDb = SbUtilities.getBoolean(x);
 
             new LogMonitor(as[0], writeToDb);
         } catch (Exception e) {
