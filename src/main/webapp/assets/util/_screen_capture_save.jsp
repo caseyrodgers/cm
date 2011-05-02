@@ -10,7 +10,8 @@
 <%@page import="hotmath.assessment.InmhAssessment"%>
 <%@ page import="sb.util.*,hotmath.concordance.*, hotmath.*,hotmath.testset.*, hotmath.help.*" %>
 <%
-
+String screenShotUrl="";
+try {
    String serverName = request.getServerName();
    int port = request.getServerPort();
    if(port != 80) {
@@ -34,14 +35,17 @@
        }
        offset += inputLen;
    } while(offset < len);
+
    
    SimpleDateFormat format = new SimpleDateFormat("yy_dd_MM_hh_ss");
-   String outputFile=CatchupMathProperties.getInstance().getSolutionBase();
+   String outputFile="/home/hotmath/live/hotmath2/web";
    
-   String baseFile = "/screen_shots/" + format.format(new Date()) + ".jpg";
+   String baseFile = "/help/screen_shots/" + format.format(new Date()) + ".jpg";
    
    outputFile += baseFile;
-   String screenShotUrl = "http://" + serverName + baseFile; 
+
+   screenShotUrl = "http://" + serverName + baseFile; 
+
    FileOutputStream fos = null;
    try {
        fos = new FileOutputStream(new File(outputFile));
@@ -51,5 +55,11 @@
        fos.flush();
        fos.close();
    }
+}
+catch(Exception e) {
+    e.printStackTrace();
+    screenShotUrl = e.getClass().getName() + ": " + e.getMessage();
+
+}
 %>
 <%= screenShotUrl %>
