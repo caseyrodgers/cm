@@ -1,13 +1,17 @@
-$(function () {
+
     var canvas, context,pencil_btn,rect_btn, width, height, x, y, clickX, clickY, penDown = false;
 	var origcanvas, origcontext,currentTool='pencil';
 	var graphcanvas,graphcontext,topcanvas,topcontext,gr2D,nL,graphMode,gr2D_xp,gr2D_yp,nL_xp,nL_yp;
-	var offX,offY,x0,y0,w0,h0,drawingLayer;
+	var offX,offY,x0,y0,w0,h0,drawingLayer,drawcolor,rendering;
 	var graphicData,tool_id
-    canvas = $("#canvas")[0];
-	origcanvas = $("#ocanvas")[0];
-	graphcanvas = $("#gcanvas")[0];
-	topcanvas = $("#tcanvas")[0];
+	var scope=this
+	var isTouchEnabled=false
+	function init(){
+    canvas = $get_Element("#canvas");
+	
+	origcanvas = $get_Element("#ocanvas");
+	graphcanvas = $get_Element("#gcanvas");
+	topcanvas = $get_Element("#tcanvas");
     context = canvas.getContext("2d");
 	origcontext = origcanvas.getContext("2d");
 	graphcontext = graphcanvas.getContext("2d");
@@ -23,8 +27,13 @@ $(function () {
 	gr2D_xp=nL_xp=(width-300)/2;
 	gr2D_yp=(height-300)/2;
 	nL_yp=(height-100)/2;
-	offX=$("#canvas-container").offset().left
-	offY=$("#canvas-container").offset().top
+	gr2D_w=300;
+	gr2D_h=300;
+	nL_w=300;
+	nL_h=100;
+	offX=$get_Element("#canvas-container").offsetLeft
+	offY=$get_Element("#canvas-container").offsetTop;
+	//alert(offX+":"+offY);
 	graphicData={}
 	tool_id={};
 	tool_id['eraser']=0;
@@ -37,67 +46,80 @@ $(function () {
 	tool_id['gr2D']=11;
 	tool_id['nL']=12;
 	drawingLayer='1'
-	var scope=this
-	
+	//Events
     //drawRect(0,0,width,height,'#ff0000');
-	$("#button_text").click(function (event) {
+	$get_Element("#button_text").onclick=function (event) {
 		currentTool='text';
 		
-	});
-	$("#button_pencil").click(function (event) {
+	};
+	$get_Element("#button_pencil").onclick=function (event) {
 		currentTool='pencil';
 		
-	});
-	$("#button_rectangle").click(function (event) {
+	};
+	$get_Element("#button_rectangle").onclick=function (event) {
 		currentTool='rect';
-	});
-	$("#button_line").click(function (event) {
+	};
+	$get_Element("#button_line").onclick=function (event) {
 		currentTool='line';
-	});
-	$("#button_oval").click(function (event) {
+	};
+	$get_Element("#button_oval").onclick=function (event) {
 		currentTool='oval';
-	});
-	$("#button_gr2D").click(function (event) {
+	};
+	$get_Element("#button_gr2D").onclick=function (event) {
 		currentTool='gr2D';		
 		showHideGraph('gr2D')
 		
-	});
-	$("#button_nL").click(function (event) {
+	};
+	$get_Element("#button_nL").onclick=function (event) {
 		currentTool='nL';
 		showHideGraph('nL')
-	});
-	$("#button_clear").click(function (event) {
+	};
+	$get_Element("#button_clear").onclick=function (event) {
 		//resetWhiteBoard();
 		currentTool='pencil'
 		//penDown=false;
 		//graphMode='';
 		//origcanvas.width=graphcanvas.width=topcanvas.width=canvas.width=width;
-		resetWhiteBoard();
-	});
-	$("#button_eraser").click(function (event) {
+		resetWhiteBoard(true);
+	};
+	$get_Element("#button_eraser").onclick=function (event) {
 		//resetWhiteBoard();
 		currentTool='eraser'
-	});
+	};
 	//
-	$("#done_btn").click(function(event){
-	var txt=$("#content").val()
-	graphicData.dataArr[0].text=txt;
+	$get_Element("#done_btn").onclick=function(event){
+	var txt=$get_Element("#content").value;
+	updateText(txt);
 	context.fillText(txt,clickX,clickY)
 	updateCanvas();
 	sendData();
-	$("#content").val('');
-	$("#inputBox").hide();
-	})
+	$get_Element("#content").value="";
+	$get_Element("#inputBox").style.display='none';
+	}
 	//
-    $("#canvas").mousedown(function (_event) {
-	var event=_event?_event:window.event;
+    var ev_onmousedown=function (_event) {
+	isTouchEnabled=_event.type.indexOf('touch')>-1
+	if(isTouchEnabled){
+		canvas.removeEventListener("mousedown",ev_onmousedown,false);
+		canvas.removeEventListener("mouseup",ev_onmouseup,false);
+		canvas.removeEventListener("mousemove",ev_onmousemove,false);
+	}
+	/*else{
+		canvas.removeEventListener('touchstart',ev_onmousedown, false);
+		canvas.removeEventListener('touchmove',ev_onmousemove, false);
+		canvas.removeEventListener('touchend',ev_onmouseup, false);
+	}*/
+		var event=_event?_event:window.event;
+		event=isTouchEnabled? _event.targetTouches[0]:event;
         var dx, dy, dist;
 		dx = event.layerX?event.layerX:event.pageX-offX;
 		dy = event.layerY?event.layerY:event.pageY-offY;
-context.lineWidth = 2.0
-    context.strokeStyle = "rgb(0, 0, 0)";		
+		
+		context.lineWidth = 2.0
+		context.strokeStyle = "rgb(0, 0, 0)";		
         if(dx>=0&&dx<width) {
             penDown = true;
+			rendering=false;
             clickX = dx;
             clickY = dy;
             x = dx;
@@ -110,43 +132,65 @@ context.lineWidth = 2.0
 			graphicData.id = tool_id[currentTool];
 			if(currentTool=='pencil'){
             context.beginPath();
-            context.moveTo(x,y);			
+            context.moveTo(clickX,clickY);			
 			}else if(currentTool=='eraser'){
             
             erase(x,y);			
 			}
+			drawcolor=colorToNumber(context.strokeStyle)
 			if(currentTool=='text'){
 			 penDown = false;
-			graphicData.dataArr[0] = {x:x, y:y,text:"", color:context.strokeStyle, name:"",layer:drawingLayer};
-			
+			 
+			graphicData.dataArr[0] = {x:x, y:y,text:"", color:drawcolor, name:"",layer:drawingLayer};
+			//alert("0:: "+graphicData.dataArr[0])
 			showTextBox();
 			}else{
-			graphicData.dataArr[graphicData.dataArr.length] = {x:x, y:y, id:"move", color:context.strokeStyle, name:"",layer:drawingLayer};
+			graphicData.dataArr[graphicData.dataArr.length] = {x:x, y:y, id:"move", color:drawcolor, name:"",layer:drawingLayer};
 			}
         }else {
             penDown = false;
         }
-    });
+		_event.preventDefault();
+  // _event.stopPropagation();
+    };
  
-    $("#canvas").mouseup(function (_event) {
-	var event=_event?_event:window.event;
+    var ev_onmouseup=function (_event) {
+		var event=_event?_event:window.event;
+		event=_event.type.indexOf('touch')>-1? _event.targetTouches[0]:event;
+		/*if(penDown){
+		x = event.layerX?event.layerX:event.pageX-offX;
+		y = event.layerY?event.layerY:event.pageY-offY;
+		}*/
+		if(rendering){
         penDown = false;
 		if(currentTool=='rect'||currentTool=='oval'){
 		graphicData.dataArr[0].w=w0
 		graphicData.dataArr[0].h=h0
+		graphicData.dataArr[0].xs=w0/400
+		graphicData.dataArr[0].ys=h0/400
 		}else if(currentTool=='line'||currentTool=='pencil'||currentTool=='eraser'){
-		graphicData.dataArr[graphicData.dataArr.length] = {x:x, y:y, id:"line"};
+		//alert(_event.type+": "+clickX+":"+clickY+":"+x+":"+y);
+		//{x:x-clickX, y:y-clickY, id:"line"}
+		var xp=x-clickX
+		var yp=y-clickY
+		xp=currentTool=='eraser'?x:xp
+		yp=currentTool=='eraser'?y:yp
+		graphicData.dataArr[graphicData.dataArr.length] = {x:xp, y:yp, id:"line"};
 		}
 		if(currentTool!='eraser'){
 		updateCanvas ();		
 		context.beginPath();
 		}
 		sendData();
-    });
+		rendering=false;
+		}
+    };
  
-    $("#canvas").mousemove(function (_event) {
+   var ev_onmousemove=function (_event) {
 	var event=_event?_event:window.event;
+	event=_event.type.indexOf('touch')>-1? _event.targetTouches[0]:event;
         if(penDown) {
+		rendering=true;
 			if(currentTool!='pencil'&&currentTool!='text'){
 			
 				context.clearRect(0, 0, canvas.width, canvas.height);
@@ -176,26 +220,61 @@ context.lineWidth = 2.0
 					erase(x,y);		
 					graphicData.dataArr[graphicData.dataArr.length] = {x:x, y:y, id:"line"};
 				}else{
-				graphicData.dataArr[graphicData.dataArr.length] = {x:x, y:y, id:"line"};
+				graphicData.dataArr[graphicData.dataArr.length] = {x:x-clickX, y:y-clickY,id:"line"};
 				drawLine();
 				}
 				
 			}
         }
-    });
-	function showTextBox(){
-	$("#inputBox").css({"top":clickY, "left":clickX, "position":"absolute"});
-	$("#inputBox").show();
+		_event.preventDefault();
+		// _event.stopPropagation();
+    };
+	canvas.addEventListener("mousedown",ev_onmousedown,false);
+	canvas.addEventListener("mouseup",ev_onmouseup,false);
+	canvas.addEventListener("mousemove",ev_onmousemove,false);
+	//touchscreen specific - to prevent web page being scrolled while drawing
+	document.body.addEventListener('touchstart',function(event){event.preventDefault();},false);
+	document.body.addEventListener('touchmove',function(event){event.preventDefault();},false); 
+	// attach the touchstart, touchmove, touchend event listeners.
+	canvas.addEventListener('touchstart',ev_onmousedown, false);
+	canvas.addEventListener('touchmove',ev_onmousemove, false);
+	canvas.addEventListener('touchend',ev_onmouseup, false);
 	}
-	function resetWhiteBoard(){
+	function $get_Element(n){
+	var str=n.indexOf("#")>-1?n.split("#")[1]:n
+	return document.getElementById(str);
+	}
+	function updateText(txt){
+	//alert(graphicData.dataArr)
+	graphicData.dataArr[0].text=txt;
+	}
+	function showTextBox(){
+	//$get_Element("#inputBox").css({"top":clickY, "left":clickX, "position":"absolute"});
+	$get_Element("#inputBox").style.display='block';
+	//$get_Element("#inputBox").style.position="absolute";
+	$get_Element("#inputBox").style.top=clickY+"px";
+	$get_Element("#inputBox").style.left=clickX+"px";
+	$get_Element("#content").focus();
+	//alert($get_Element("#content"))
+	//alert($get_Element("#inputBox").style.top+":"+$get_Element("#inputBox").style.left)
+	
+	}
+	function resetWhiteBoard(boo){
 		penDown=false;
 		graphMode='';
 		origcanvas.width=graphcanvas.width=topcanvas.width=canvas.width=width;
-		clear();
+		origcontext.clearRect(0, 0, canvas.width, canvas.height);
+		graphcontext.clearRect(0, 0, canvas.width, canvas.height);
+		topcontext.clearRect(0, 0, canvas.width, canvas.height);
+		context.clearRect(0, 0, canvas.width, canvas.height);
+		if(boo){
+		clear(true);
+		}
 	}
 	function showHideGraph(flag,x,y){
 		graphcanvas.width=graphcanvas.width;
 		graphcanvas.height=graphcanvas.height;
+		graphcontext.clearRect(0, 0, canvas.width, canvas.height);
 		graphicData.dataArr = [];
 		graphicData.id = tool_id[currentTool];
 		var addGraph=false
@@ -203,22 +282,28 @@ context.lineWidth = 2.0
 			graphMode="";
 			drawingLayer='1'
 		}else{
-			var gr,xp,yp
+			var gr,xp,yp,xs,ys
 			graphMode=flag;
 			if(flag=='gr2D'){
 				gr=gr2D
-				xp=x?x:gr2D_xp
-				yp=y?y:gr2D_yp
+				xp=x?x-(gr2D_w/2):gr2D_xp
+				yp=y?y-(gr2D_h/2):gr2D_yp
+				xs=x?x:gr2D_xp+(gr2D_w/2)
+				ys=y?y:gr2D_yp+(gr2D_h/2)
 			}else{
 				gr=nL;
-				xp=x?x:nL_xp
-				yp=y?y:nL_yp
+				xp=x?x-(nL_w/2):nL_xp
+				yp=y?y-(nL_h/2):nL_yp
+				xs=x?x:nL_xp+(nL_w/2)
+				ys=y?y:nL_yp+(nL_h/2)
 			}
 			drawingLayer='3'
 			addGraph=true;
+			//graphcontext.drawImage(gr,xp,yp);
 			graphcontext.drawImage(gr,xp,yp);
 		}
-		graphicData.dataArr.push({x:xp, y:yp, name:"graphImage", addImage:addGraph});
+		
+		graphicData.dataArr.push({x:xs, y:ys, name:"graphImage", addImage:addGraph});
 		sendData();
 	}
 	function mouseOverGraph(){
@@ -250,8 +335,10 @@ context.lineWidth = 2.0
 		context.beginPath();
 	}
 	function erase(x,y){
-	origcontext.clearRect(x-4,y-4,8,8)
-	topcontext.clearRect(x-4,y-4,8,8)
+	var ew=10
+	var ep=ew/2
+	origcontext.clearRect(x-ep,y-ep,ew,ew)
+	topcontext.clearRect(x-ep,y-ep,ew,ew)
 	//alert(origcontext.clearRect)
 	}
     function drawLine() {
@@ -354,7 +441,7 @@ context.lineWidth = 2.0
 	function sendDataToSERVER(jsdata){
 		var jsonStr = convertObjToString(jsdata);
 		//console.log("Sending json string: " + jsonStr);
-		flashWhiteboardOut(jsonStr);
+		flashWhiteboardOut(jsonStr,true);
 	}
 	
 	function cloneObject(obj){
@@ -404,21 +491,31 @@ context.lineWidth = 2.0
 		var idName;
 		drawingLayer=graphic_data[0].layer?graphic_data[0].layer:drawingLayer;
 		context.lineWidth = 2.0
-    context.strokeStyle = "rgb(0, 0, 0)";
+		context.strokeStyle = "rgb(0, 0, 0)";
+		var deb=""
 		if (graphic_id === 0) {		
-			for (var i = 0; i < dLength; i++) {			
-				x0 = graphic_data[i].x;
-				y0 = graphic_data[i].y;
-				erase(x0,y0)
+			for (var i = 0; i < dLength; i++) {	
+							
+					x1 = graphic_data[i].x;
+					y1 = graphic_data[i].y;
+					deb+=x1+":"+y1+"||"
+					erase(x1,y1)
+				
+				
 			}
 		}
+		//alert(deb)
 		if (graphic_id === 3 || graphic_id === 1) {
 			for (i = 0; i < dLength; i++) {
+				x1 = graphic_data[i].x;
+				y1 = graphic_data[i].y;
 				if (graphic_data[i].id == "move") {
 					context.beginPath();
-					context.moveTo(graphic_data[i].x, graphic_data[i].y);
+					context.moveTo(x1, y1);
+					x0 = x1
+					y0 = y1
 				} else {
-					context.lineTo(graphic_data[i].x, graphic_data[i].y);
+					context.lineTo(x0+x1, y0+y1);
 				}
 			}
 			context.stroke()
@@ -437,11 +534,13 @@ context.lineWidth = 2.0
 		}
 		if (graphic_id === 4 || graphic_id === 5) {
 			var fName = graphic_id == 4 ? drawRect : drawOval;
-			for ( i = 0; i < dLength; i++) {			
+			for ( i = 0; i < dLength; i++) {	
+				var xd=graphic_data[i].xs<0?-1:1
+				var yd=graphic_data[i].ys<0?-1:1
 				x0=graphic_data[i].x
 				y0=graphic_data[i].y
-				w0=graphic_data[i].w
-				h0=graphic_data[i].h
+				w0=graphic_data[i].w*xd
+				h0=graphic_data[i].h*yd
 				fName(x0,y0,w0,h0);
 			}
 			updateCanvas ()
@@ -451,7 +550,7 @@ context.lineWidth = 2.0
 			showHideGraph(idName,graphic_data[0].x,graphic_data[0].y)		
 		}
 	}
-	 $.fn.updateWhiteboard=function(cmdArray) {	
+	updateWhiteboard=function(cmdArray) {	
 		var oaL = cmdArray.length;	
 		for (var l = 0; l < oaL; l++) {		
 			if (cmdArray[l] instanceof Array) {
@@ -468,14 +567,29 @@ context.lineWidth = 2.0
 		//updateScroller();
 	}
 	//function receives jsonData and renders it to the screen
-	$.fn.draw = function (json_str) {	
+	draw = function (json_str) {	
 		var grobj = convertStringToObj(json_str);
 		renderObj(grobj);
 	}
-	function clear() {
+	function colorToNumber(c){
+		var n=c.split('#').join('0x');
+		return Number(n);
 	}
-	function flashWhiteboardOut(data){
-	//console.log(data);
+	function clear(boo) {
+		if(!boo){
+			resetWhiteBoard(false)
+		}
+	}
+	function flashWhiteboardOut(data,boo){	
+		console.log(data);	
+		/*if(boo){
+			var flashObject=getFlashMovie('sw_wb');
+			data=data.split("\\").join("")
+			data=data.substring(1,data.length-1);
+			flashObject.updateWhiteboard([["draw",[data]]]);
+			//renderFlashWhiteBoard(data);
+		}else{
+			renderJSWhiteBoard(data)
+		}*/
 	}
 //--!
-});
