@@ -35,6 +35,10 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.ServiceDefTarget;
 
 public class CmShared implements EntryPoint {
+
+    static {
+        setupServices();
+    }
     
     static public String __loginName;
 
@@ -372,9 +376,6 @@ public class CmShared implements EntryPoint {
      */
     static CmServiceAsync _serviceInstance;
     static public CmServiceAsync getCmService() {
-        if(_serviceInstance == null) {
-            setupServices();
-        }
         return _serviceInstance;
     }
     
@@ -441,6 +442,7 @@ public class CmShared implements EntryPoint {
     static public void resetProgram_Gwt() {
         resetProgram_Gwt(UserInfo.getInstance().getUid());
     }
+    
     static public void resetProgram_Gwt(final int uid) {
         GWT.runAsync(new CmRunAsyncCallback() {
             @Override

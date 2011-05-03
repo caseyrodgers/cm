@@ -309,7 +309,6 @@ public class CatchupMath implements EntryPoint {
                 
                 switch(flowResponse.getPlace()) {
                     case QUIZ:
-                        
                         /** show the quiz panel with data included
                          *  in the next action object.
                          */

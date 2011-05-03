@@ -1,5 +1,6 @@
 package hotmath.gwt.cm_admin.client.ui;
 
+import hotmath.gwt.cm_rpc.client.rpc.RpcData;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.model.CmAdminDataReader;
@@ -13,6 +14,7 @@ import hotmath.gwt.cm_tools.client.ui.AutoRegisterStudentSetup;
 import hotmath.gwt.cm_tools.client.ui.BulkStudentRegistrationWindow;
 import hotmath.gwt.cm_tools.client.ui.CmLogger;
 import hotmath.gwt.cm_tools.client.ui.GroupSelectorWidget;
+import hotmath.gwt.cm_tools.client.ui.InfoPopupBox;
 import hotmath.gwt.cm_tools.client.ui.PdfWindow;
 import hotmath.gwt.cm_tools.client.ui.RegisterStudent;
 import hotmath.gwt.cm_tools.client.ui.StudentDetailsWindow;
@@ -29,7 +31,9 @@ import hotmath.gwt.shared.client.rpc.action.GeneratePdfAction;
 import hotmath.gwt.shared.client.rpc.action.GeneratePdfAction.PdfType;
 import hotmath.gwt.shared.client.rpc.action.GetStudentGridPageAction;
 import hotmath.gwt.shared.client.rpc.action.GetStudentGridPageExtendedAction;
+import hotmath.gwt.shared.client.rpc.action.ResetUserAction;
 import hotmath.gwt.shared.client.rpc.action.UnregisterStudentsAction;
+import hotmath.gwt.shared.client.util.CmAsyncCallback;
 import hotmath.gwt.shared.client.util.CmRunAsyncCallback;
 
 import java.util.ArrayList;
@@ -239,7 +243,7 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
                         public void handleEvent(MessageBoxEvent be) {
                             if(!be.isCancelled()) {
                                 int uid = _grid.getSelectionModel().getSelectedItem().getUid();
-                                CmShared.resetProgram_Gwt(uid);
+                                resetProgramForUser(uid);
                             }
                         }
                     });
@@ -264,6 +268,30 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
         if (CmShared.getQueryParameter("show_quiz") != null) {
             new CustomProgramAddQuizDialog(null, null, false);
         }
+    }
+    
+    private void resetProgramForUser(final int uid) {
+        new RetryAction<RpcData>() {
+            @Override
+            public void attempt() {
+                CmBusyManager.setBusy(true);
+                ResetUserAction action = new ResetUserAction(uid, 0);
+                setAction(action);
+                CmShared.getCmService().execute(action, this);
+            }
+
+            @Override
+            public void oncapture(RpcData result) {
+                CmBusyManager.setBusy(false);
+                if(!result.getDataAsString("status").equals("OK")) {
+                    CatchupMathTools.showAlert("Error resetting user: " + result);
+                }
+                else {
+                    InfoPopupBox.display("Reset User", "User '" + uid + "' reset successfully");
+                   refreshDataNow(uid);
+                }
+            }
+        }.register();
     }
 
     public void refreshData() {
