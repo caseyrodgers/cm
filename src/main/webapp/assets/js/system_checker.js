@@ -1,3 +1,5 @@
+var systemIsOk=true;
+
 function setupPageLocal() {
     var os = BrowserDetect.os;
     
@@ -44,6 +46,7 @@ function checkBrowser() {
     if(isOk) {
         str = '<img src="/gwt-resources/images/check_correct.png"/>';
     } else {
+        systemIsOk=false;
         str = '<img src="/gwt-resources/images/check_incorrect.png"/>';
     }
     
@@ -69,6 +72,7 @@ function checkFlash() {
         isOk=true;
     }
     else {
+        systemIsOk=false;
         versionStr += ' Not OK!';
     }
     
@@ -96,6 +100,7 @@ function checkCookies() {
     if(isOk) {
         str = '<img src="/gwt-resources/images/check_correct.png"/>';
     } else {
+        systemIsOk=false;
         str = '<img src="/gwt-resources/images/check_incorrect.png"/>';
     }
 
@@ -135,6 +140,7 @@ function setNetworkSpeed(timeSpent) {
     if(isOk) {
         str = '<img src="/gwt-resources/images/check_correct.png"/>';
     } else {
+        systemIsOk=false;
         str = '<img src="/gwt-resources/images/check_incorrect.png"/>';
     }
 
@@ -145,7 +151,6 @@ function setNetworkSpeed(timeSpent) {
     }
     
     return str;    
-    
 }
 
 function checkNetwork(div) {
@@ -159,10 +164,14 @@ function checkNetwork(div) {
             var id = id; // Transaction ID.
             var data = o.responseText; // Response data.
             div.innerHTML = setNetworkSpeed(timeElapsed);
+            setFinalMessage();
         };
         
         function onError(id, o, args) {
+            systemIsOk=false;
             div.innerHTML = setNetworkSpeed(0);
+            
+            setFinalMessage();
         };
 
      
@@ -177,6 +186,16 @@ function checkNetwork(div) {
         // NOTE: This transaction does not use a configuration object.
         var request = Y.io(uri);
     });
+}
+
+function setFinalMessage() {
+    if(systemIsOk) {
+        $get('final_message').innerHTML = '<p class="ready">Your system is ready to run Catchup Math!</p>';
+    }
+    else {
+        $get('final_message').innerHTML = '<p class="not_ready">Your system is NOT ready to run Catchup Math.  While Catchup Math might run on your computer you should expect problems.</p>';
+    }
+        
 }
 
 var BrowserDetect = {

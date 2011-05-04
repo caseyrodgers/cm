@@ -38,6 +38,22 @@ pageTracker._trackPageview();
 .column {
   padding-right: 25px;
 }
+
+div div p img {
+   margin-right: 10px;
+}
+
+#final_message {
+    font-size: 1.2em;
+    font-weight: bold;
+}
+
+.not_ready {
+    color: red;
+}
+
+.ready {
+}
 </style>
 <!-- InstanceEndEditable -->
     </head>
@@ -118,16 +134,21 @@ pageTracker._trackPageview();
                         <!-- InstanceBeginEditable name="main-content" -->
     <h1>Catchup Math System Requirement Checker</h1>
     <p>This page will check your computer system and make sure it is capable of running Catchup Math.</p>
-    <h2>JavaScript</h2>
-    <div id='javascript_check'><p><img style='margin-right: 10px;'src='/gwt-resources/images/check_incorrect.png'/>Not enabled.  You need to have Javascript enabled.</p></div>
-    <h2>Browser</h2>
-    <div id='browser_check'><p>..checking..</p></div>
-    <h2>Flash</h2>
-    <div id='flash_check'><p>..checking..</p></div>
-    <h2>Cookies</h2>
-    <div id='cookie_check'><p>..checking..</p></div>
-    <h2>Network Speed</h2>
-    <div id='network_check'><p>..checking..</p></div>
+    <div style='margin-left:10px'>
+	    <h2>JavaScript</h2>
+	    <div id='javascript_check'><p><img style='margin-right: 10px;'src='/gwt-resources/images/check_incorrect.png'/>Not enabled.  You need to have Javascript enabled.</p></div>
+	    <h2>Browser</h2>
+	    <div id='browser_check'><p>..checking..</p></div>
+	    <h2>Flash</h2>
+	    <div id='flash_check'><p>..checking..</p></div>
+	    <h2>Cookies</h2>
+	    <div id='cookie_check'><p>..checking..</p></div>
+	    <h2>Network Speed</h2>
+	    <div id='network_check'><p>..checking..</p></div>
+	    
+	    <div id='final_message'></div>
+	    
+	</div>
     </div>
     </div>
     <!-- InstanceEndEditable -->
