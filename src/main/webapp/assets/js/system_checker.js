@@ -115,11 +115,11 @@ function setNetworkSpeed(timeSpent) {
     if(timeSpent == 0) {
         isOk = false
     }
-    else if(timeSpent < 100) {
+    else if(timeSpent < 200) {
         isOk = true;
         speed = 'Fast';
     }
-    else if(timeSpent < 500) {
+    else if(timeSpent < 700) {
         isOk = true;
         speed = 'Medium';
     }
