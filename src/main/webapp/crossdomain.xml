@@ -1,0 +1,5 @@
+<cross-domain-policy>
+    <allow-access-from domain="*.learning.com"/>
+    <allow-access-from domain="*.hotmath.com"/>
+    <allow-access-from domain="hotmath.com"/>
+</cross-domain-policy>
