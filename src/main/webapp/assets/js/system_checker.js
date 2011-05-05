@@ -207,7 +207,7 @@ function setFinalMessage() {
     if (systemIsOk) {
         $get('final_message').innerHTML = '<p class="ready">Your system is ready to run Catchup Math!</p>';
     } else {
-        $get('final_message').innerHTML = '<p class="not_ready">Your system is NOT ready to run Catchup Math.  While Catchup Math might run on your computer you should expect problems.</p>';
+        $get('final_message').innerHTML = '<p class="not_ready">Your system is NOT ready to run Catchup Math.  We recommend that you upgrade or use a different computer.</p>';
     }
 
 }

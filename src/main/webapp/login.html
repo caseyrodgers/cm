@@ -36,11 +36,14 @@ pageTracker._trackPageview();
    }
 
    #system_check {
-       color: white;
-	   text-decoration: underline;
 	   position: absolute;
-	   left: 50px;
-	   top: 60px;	   
+	   left: 10px;
+	   top: 210px;	   
+   }
+   
+   #system_check a {
+	   color: black;
+	   text-decoration: underline;
    }
 
 </style>
@@ -122,9 +125,14 @@ pageTracker._trackPageview();
                 <div id='main-content' class='yui3-g'>
                     <div class='yui3-u-1'>
                         <!-- InstanceBeginEditable name="main-content" -->
-        <a id='system_check' href='/system_checker.html'>
-            Will your computer run Catchup Math?
-        </a>
+        <div id='system_check'>
+        <p>
+         First time using Catchup Math on this computer?
+         <a style='display: block' href='/system_checker.html'>
+            Check compatibility
+         </a>
+        </p>
+        </div>
         <h1>Catchup Math Login</h1>
         <div id='login-wrapper' class='round-corners body-left'>
           <form autocomplete="off" id="login_form" onSubmit="return doLogin();" action="/loginService" method="POST">
