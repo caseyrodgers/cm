@@ -8,15 +8,11 @@ function setupPageLocal() {
         $get('footer-find').style.display = 'none';
         $get('footer').style.display = 'none';
     }
-    
-    
-    var os = BrowserDetect.os;
 
     $get('javascript_check').innerHTML = '<p><img src="/gwt-resources/images/check_correct.png"/>OK</p>';
     $get('browser_check').innerHTML = checkBrowser();
     $get('window_check').innerHTML = checkWindowSize();
     $get('flash_check').innerHTML = checkFlash();
-    $get('cookie_check').innerHTML = checkCookies();
     checkNetwork($get('network_check'));
 }
 
@@ -129,14 +125,13 @@ function checkWindowSize() {
     if (isOk) {
         str = '<img src="/gwt-resources/images/check_correct.png"/>';
     } else {
-        systemIsOk = false;
         str = '<img src="/gwt-resources/images/check_incorrect.png"/>';
     }
 
     str = '<p>' + str + windowStr + '</p>';
 
     if (!isOk) {
-        str += '<p style="color: red;font-size: 1.1em;">Window size should be at least 800/600.  Catchup Math may still run by your browser display is less than optimal. </p>';
+        str += '<p style="color: red;font-size: 1.1em;">Increase the size of your browser window (if possible) to take full advantage of Catchup Math. </p>';
     }
     return str;
 }
@@ -216,7 +211,7 @@ function setFinalMessage() {
     if (systemIsOk) {
         $get('final_message').innerHTML = '<p class="ready">Your system is ready to run Catchup Math!</p>';
     } else {
-        $get('final_message').innerHTML = '<p class="not_ready">Your system is NOT ready to run Catchup Math.  We recommend that you upgrade or use a different computer.</p>';
+        $get('final_message').innerHTML = '<p class="not_ready">You may wish to change your configuration or use a different computer for best use of Catchup Math.</p>';
     }
 
 }
