@@ -12,7 +12,6 @@ import hotmath.gwt.cm_tools.client.model.StudentModelI;
 import hotmath.gwt.cm_tools.client.ui.CmLogger;
 import hotmath.gwt.cm_tools.client.ui.CmMainPanel;
 import hotmath.gwt.cm_tools.client.ui.ContextController;
-import hotmath.gwt.cm_tools.client.ui.FooterPanel;
 import hotmath.gwt.cm_tools.client.ui.RegisterStudent;
 import hotmath.gwt.cm_tools.client.ui.StudentDetailsWindow;
 import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
@@ -38,6 +37,7 @@ import com.extjs.gxt.ui.client.event.SelectionChangedListener;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.event.WindowListener;
 import com.extjs.gxt.ui.client.store.ListStore;
+import com.extjs.gxt.ui.client.widget.HorizontalPanel;
 import com.extjs.gxt.ui.client.widget.Html;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.MessageBox;
@@ -46,8 +46,11 @@ import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.ComboBox;
 import com.extjs.gxt.ui.client.widget.form.ComboBox.TriggerAction;
 import com.extjs.gxt.ui.client.widget.form.FieldSet;
+import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.layout.FlowLayout;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.user.client.DOM;
+import com.google.gwt.user.client.ui.Frame;
 import com.google.gwt.user.client.ui.Label;
 
 public class HelpWindow extends CmWindow {
@@ -237,20 +240,14 @@ public class HelpWindow extends CmWindow {
         fs.add(btnFeedback);
 
 
-        Button btnNetTest = new MyOptionButton("Connection Check");
-        btnNetTest.addStyleName("button");
-        btnNetTest.addSelectionListener(new SelectionListener<ButtonEvent>() {
+        Button btnComputerCheck = new MyOptionButton("Computer Check");
+        btnComputerCheck.addStyleName("button");
+        btnComputerCheck.addSelectionListener(new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent ce) {
-                GWT.runAsync(new CmRunAsyncCallback() {
-                    @Override
-                    public void onSuccess() {
-                        new NetTestWindow(TestApplication.CM_STUDENT,UserInfo.getInstance().getUid()).runTests();
-                    }
-                });
+                new ComputerCheckWindow();
             }
         });
-        fs.add(btnNetTest);
-
+        fs.add(btnComputerCheck);
         /** Only the owner of the account has access to history */
         if (!UserInfo.getInstance().isActiveUser())
             btn.setEnabled(false);
@@ -267,7 +264,8 @@ public class HelpWindow extends CmWindow {
         
         
         if(CmShared.getQueryParameter("debug") != null) {
-            add(new Button("Show CmLogger",new SelectionListener<ButtonEvent>() {
+            LayoutContainer lc = new HorizontalPanel();
+            lc.add(new Button("Show CmLogger",new SelectionListener<ButtonEvent>() {
                 @Override
                 public void componentSelected(ButtonEvent ce) {
                     GWT.runAsync(new CmRunAsyncCallback() {
@@ -278,6 +276,17 @@ public class HelpWindow extends CmWindow {
                     });
                 }
             }));
+            lc.add(new Button("Connection Check", new SelectionListener<ButtonEvent>() {
+                public void componentSelected(ButtonEvent ce) {
+                    GWT.runAsync(new CmRunAsyncCallback() {
+                        @Override
+                        public void onSuccess() {
+                            new NetTestWindow(TestApplication.CM_STUDENT,UserInfo.getInstance().getUid()).runTests();
+                        }
+                    });
+                }
+            }));
+            add(lc);
         }
     }
     
@@ -478,6 +487,30 @@ class MyOptionButton extends Button {
     
     public MyOptionButton(String name) {
         super(name);
-        setWidth(115);        
+        setWidth(110);        
+    }
+}
+
+
+class ComputerCheckWindow extends CmWindow {
+    public ComputerCheckWindow() {
+        setHeading("Computer Check");
+        addCloseButton();
+        setModal(true);
+        setSize(640,650);
+        setLayout(new FitLayout());
+        add(new ComputerCheckIFrame());
+        
+        setVisible(true);
+    }
+}
+
+class ComputerCheckIFrame extends Frame {
+    public ComputerCheckIFrame() {
+        super("/system_checker.html?hide=true");
+        DOM.setElementProperty(this.getElement(), "frameBorder", "no"); // disable
+        DOM.setElementPropertyInt(this.getElement(), "border", 0); // disable
+        DOM.setElementPropertyInt(this.getElement(), "frameSpacing", 0); // disable
+        DOM.setElementProperty(this.getElement(), "scrolling", "yes"); // disable
     }
 }

@@ -1,6 +1,15 @@
 var systemIsOk = true;
 
 function setupPageLocal() {
+    
+    if(window.location.search.indexOf('hide') > -1) {
+        $get('main-content').parentNode.parentNode.style.background = 'white';
+        $get('header').parentNode.style.display = 'none';
+        $get('footer-find').style.display = 'none';
+        $get('footer').style.display = 'none';
+    }
+    
+    
     var os = BrowserDetect.os;
 
     $get('javascript_check').innerHTML = '<p><img src="/gwt-resources/images/check_correct.png"/>OK</p>';
@@ -226,11 +235,13 @@ function areCookiesEnabled() {
 }
 
 function getBrowserWindowSize() {
+    var win = window.parent;
+    
     var myWidth = 0, myHeight = 0;
-    if (typeof (window.innerWidth) == 'number') {
+    if (typeof (win.innerWidth) == 'number') {
         // Non-IE
-        myWidth = window.innerWidth;
-        myHeight = window.innerHeight;
+        myWidth = win.innerWidth;
+        myHeight = win.innerHeight;
     } else if (document.documentElement
             && (document.documentElement.clientWidth || document.documentElement.clientHeight)) {
         // IE 6+ in 'standards compliant mode'

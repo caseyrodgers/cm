@@ -7,7 +7,6 @@ import pl.rmalinowski.gwt2swf.client.ui.SWFSettings;
 import pl.rmalinowski.gwt2swf.client.ui.SWFWidget;
 import pl.rmalinowski.gwt2swf.client.utils.PlayerVersion;
 import pl.rmalinowski.gwt2swf.client.utils.SWFObjectUtil;
-import sb.util.SbUtilities;
 
 import com.extjs.gxt.ui.client.widget.Html;
 import com.google.gwt.user.client.ui.Widget;
