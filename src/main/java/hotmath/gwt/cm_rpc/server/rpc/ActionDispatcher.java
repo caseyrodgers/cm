@@ -49,7 +49,7 @@ import sb.mail.SbMailManager;
  */
 public class ActionDispatcher {
 	
-	private static final int CONNECTION_WARNING_THRESHOLD = 10;
+	public static final int CONNECTION_WARNING_THRESHOLD = 10;
 
     static private ActionDispatcher __instance;
     
