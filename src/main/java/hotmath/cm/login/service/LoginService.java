@@ -4,6 +4,7 @@ import hotmath.cm.dao.HaLoginInfoDao;
 import hotmath.cm.login.service.lcom.LcomManager;
 import hotmath.cm.login.service.lcom.LcomStudentSignup;
 import hotmath.cm.login.service.lcom.LcomTeacherSignup;
+import hotmath.cm.server.listener.ContextListener;
 import hotmath.cm.util.CmMessagePropertyReader;
 import hotmath.gwt.cm_rpc.client.ClientInfo;
 import hotmath.gwt.cm_rpc.client.UserLoginResponse;
@@ -59,6 +60,16 @@ public class LoginService extends HttpServlet {
 
 	static final Logger LOGGER = Logger.getLogger(LoginService.class.getName());
 	static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+	
+    static String startDate;
+    
+    static {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+        if(ContextListener.getStartDate() != null)
+            startDate = sdf.format(ContextListener.getStartDate());
+        else
+            startDate = sdf.format(System.currentTimeMillis());
+    }
 
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		String user = req.getParameter("user");
@@ -66,9 +77,19 @@ public class LoginService extends HttpServlet {
 		String action = req.getParameter("action");
 		String key = req.getParameter("key");
 		boolean isDebug=false;
+		
+		ClientInfo clientInfo = new ClientInfo();
+		clientInfo.setUserType(UserType.UNKNOWN);
+    	String actionId = new StringBuilder().append(startDate).append(".").append("LOGIN").toString();
+    	
+        LOGGER.info(String.format("RPC Action (userId:%d,userType:%s) (ID:%s) executing: %s toString: %s",
+            	clientInfo.getUserId(), clientInfo.getUserType(), actionId, LoginService.class.getName(), action.toString()));
 
 		Connection conn=null;
 		try {
+
+        	LOGGER.info(String.format("RPC Action: (ID:%s) about to request DB Connection, openConnectionCount: (%d)", actionId,
+        			HMConnectionPool.getInstance().getConnectionCount()));
 
 		    conn = HMConnectionPool.getConnection();
 		    
@@ -186,7 +207,6 @@ public class LoginService extends HttpServlet {
 
 				req.getSession().setAttribute("securityKey", loginInfo.getKey());
 
-				ClientInfo clientInfo = new ClientInfo();
 				clientInfo.setUserId(loginInfo.getUserId());
 
 				if(cmUser instanceof HaAdmin) {
@@ -229,6 +249,13 @@ public class LoginService extends HttpServlet {
 		}
 		finally {
 		    SqlUtilities.releaseResources(null, null, conn);
+
+            LOGGER.info(String.format("RPC Action: (ID:%s) DB Connection %s, openConnectionCount: (%d)",
+            		actionId, (conn != null)?"closed":"NULL, not closed", HMConnectionPool.getInstance().getConnectionCount()));
+            if (HMConnectionPool.getInstance().getConnectionCount() > ActionDispatcher.CONNECTION_WARNING_THRESHOLD) {
+            	LOGGER.warn(String.format("RPC Action: DB openConnectionCount: %d over threshold: %d", HMConnectionPool.getInstance().getConnectionCount(), ActionDispatcher.CONNECTION_WARNING_THRESHOLD));
+            }
+
 		}
 	}
 
