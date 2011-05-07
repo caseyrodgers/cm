@@ -1,5 +1,6 @@
 package hotmath.gwt.shared.server.service.command.stress;
 
+import hotmath.cm.server.listener.ContextListener;
 import hotmath.gwt.cm_rpc.client.rpc.CmProgramFlowAction;
 import hotmath.gwt.cm_rpc.client.rpc.GetCmProgramFlowAction;
 import hotmath.gwt.cm_rpc.client.rpc.GetCmProgramFlowAction.FlowType;
@@ -33,7 +34,7 @@ public class CmStress extends Thread {
     public void startTest(int delay) {
         System.out.println("Login test: " + this);
         try {
-            //Thread.sleep(delay);
+            Thread.sleep(delay);
             start();
         }
         catch(Exception e) {
@@ -62,6 +63,9 @@ public class CmStress extends Thread {
             HaUserLoginInfo loginInfo = ActionDispatcher.getInstance().execute(login);
 
             int userId = loginInfo.getHaLoginInfo().getUserId();
+
+            int delay = SbUtilities.getRandomNumber(10) * 1000;
+            Thread.sleep(delay);
 
 
             GetCmProgramFlowAction flowAction = new GetCmProgramFlowAction(userId,FlowType.ACTIVE);
@@ -97,17 +101,20 @@ public class CmStress extends Thread {
 
     static public void main(String as[]) {
 
+        new ContextListener();
         SbUtilities.addOptions(as);
 
-        int count = SbUtilities.getInt(SbUtilities.getOption("10", "-count"));
+        int count = SbUtilities.getInt(SbUtilities.getOption("1000", "-count"));
 
         Connection conn = null;
         PreparedStatement ps = null;
         try {
             String sql = "select a.user_name, u.user_passcode "
                 + "from HA_ADMIN a "
+                + " JOIN SUBSCRIBERS s on s.id = a.subscriber_id "
                 + " JOIN HA_USER u on u.admin_id = a.aid "
                 + " where u.is_active = 1 "
+                + " and admin_id != 13 "
                 + " and is_auto_create_template = 0 "
                 + " order by rand() "
                 + " limit " + count;
