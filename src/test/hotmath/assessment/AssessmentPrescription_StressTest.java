@@ -34,7 +34,7 @@ public class AssessmentPrescription_StressTest extends CmDbTestCase {
                 }
                 System.out.println("----------");
                 if(cnt == 0) {
-                    System.out.println("WARNING: no lessions!");
+                    System.out.println("WARNING: no lessons!");
                 }
             }
         }
