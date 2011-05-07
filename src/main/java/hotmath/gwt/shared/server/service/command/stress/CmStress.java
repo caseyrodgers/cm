@@ -17,9 +17,9 @@ import sb.util.SbUtilities;
 
 /**
  * Standalone tool to stress test the Login Process
- * 
+ *
  * @author casey
- * 
+ *
  */
 public class CmStress extends Thread {
 
@@ -42,50 +42,50 @@ public class CmStress extends Thread {
     }
 
     @Override
-    public String toString() {
+        public String toString() {
         return "CmStress [user=" + user + ", pass=" + pass + "]";
     }
-    
+
     static int __counter;
 
     @Override
-    public void run() {
+        public void run() {
 
-        
+
         int id = __counter++;
         long start = System.currentTimeMillis();
         try {
-            
+
             System.out.println(id + " test start");
-            
+
             LoginAction login = new LoginAction(this.user, this.pass);
             HaUserLoginInfo loginInfo = ActionDispatcher.getInstance().execute(login);
-            
+
             int userId = loginInfo.getHaLoginInfo().getUserId();
-            
-            
+
+
             GetCmProgramFlowAction flowAction = new GetCmProgramFlowAction(userId,FlowType.ACTIVE);
             CmProgramFlowAction flowActive = ActionDispatcher.getInstance().execute(flowAction);
 
             switch(flowActive.getPlace()) {
-                case AUTO_ADVANCED_PROGRAM:
-                    break;
-                    
-                case AUTO_PLACEMENT:
-                    break;
-                   
-                case END_OF_PROGRAM:
-                    break;
-                    
-                case PRESCRIPTION:
-                    assert(flowActive.getPrescriptionResponse() != null);
-                    break;
-                    
-                case QUIZ:
-                    assert(flowActive.getQuizResult()!=null);
-                    break;
+            case AUTO_ADVANCED_PROGRAM:
+                break;
+
+            case AUTO_PLACEMENT:
+                break;
+
+            case END_OF_PROGRAM:
+                break;
+
+            case PRESCRIPTION:
+                assert(flowActive.getPrescriptionResponse() != null);
+                break;
+
+            case QUIZ:
+                assert(flowActive.getQuizResult()!=null);
+                break;
             }
-            
+
             System.out.println(id + " test complete, time: " + (System.currentTimeMillis() - start) / 1000);
 
         } catch(Exception e) {
@@ -98,15 +98,15 @@ public class CmStress extends Thread {
     static public void main(String as[]) {
 
         SbUtilities.addOptions(as);
-        
+
         int count = SbUtilities.getInt(SbUtilities.getOption("10", "-count"));
-        
+
         Connection conn = null;
         PreparedStatement ps = null;
         try {
-            String sql = "select a.user_name, u.user_passcode " 
+            String sql = "select a.user_name, u.user_passcode "
                 + "from HA_ADMIN a "
-                + " JOIN HA_USER u on u.admin_id = a.aid " 
+                + " JOIN HA_USER u on u.admin_id = a.aid "
                 + " where u.is_active = 1 "
                 + " and is_auto_create_template = 0 "
                 + " order by rand() "

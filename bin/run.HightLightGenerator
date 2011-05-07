@@ -1,1 +1,1 @@
-mvn exec:java -Dexec.mainClass="hotmath.gwt.cm_admin.server.model.highlight.CmHighLightManager" -Dexec.args=$1 -o
+mvn exec:java -Dexec.mainClass="hotmath.gwt.cm_admin.server.model.highlight.CmHighLightManager" -Dexec.args=$1
