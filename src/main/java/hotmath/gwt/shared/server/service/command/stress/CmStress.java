@@ -17,7 +17,7 @@ import java.sql.ResultSet;
 import sb.util.SbUtilities;
 
 /**
- * Standalone tool to stress test the Login Process
+ * Stand alone tool and called from /assets/util to stress test the Login Process
  *
  * @author casey
  *
@@ -25,14 +25,20 @@ import sb.util.SbUtilities;
 public class CmStress extends Thread {
 
     String user, pass;
+    int delay;
 
-    public CmStress(String user, String pass) {
+    static int __counter;
+
+
+    public CmStress(String user, String pass, int delay) {
         this.user = user;
         this.pass = pass;
+        this.delay = delay;
     }
 
-    public void startTest(int delay) {
-        System.out.println("Login test: " + this);
+    int id = __counter++;
+    public void startTest() {
+        System.out.println("Login test " + id + ": " + this);
         try {
             Thread.sleep(delay);
             start();
@@ -43,29 +49,27 @@ public class CmStress extends Thread {
     }
 
     @Override
-        public String toString() {
-        return "CmStress [user=" + user + ", pass=" + pass + "]";
+    public String toString() {
+        return "CmStress [user=" + user + ", pass=" + pass + ", delay=" + delay + "]";
     }
-
-    static int __counter;
-
+    
     @Override
         public void run() {
 
 
-        int id = __counter++;
         long start = System.currentTimeMillis();
         try {
 
-            System.out.println(id + " test start");
+
+            int delayTime = SbUtilities.getRandomNumber(10) * delay;
+
+            System.out.println(id + " test start (delay=" + delayTime + ")");
 
             LoginAction login = new LoginAction(this.user, this.pass);
             HaUserLoginInfo loginInfo = ActionDispatcher.getInstance().execute(login);
 
             int userId = loginInfo.getHaLoginInfo().getUserId();
-
-            int delay = SbUtilities.getRandomNumber(10) * 1000;
-            Thread.sleep(delay);
+            Thread.sleep(delayTime);
 
 
             GetCmProgramFlowAction flowAction = new GetCmProgramFlowAction(userId,FlowType.ACTIVE);
@@ -105,6 +109,7 @@ public class CmStress extends Thread {
         SbUtilities.addOptions(as);
 
         int count = SbUtilities.getInt(SbUtilities.getOption("1000", "-count"));
+        int delay = SbUtilities.getInt(SbUtilities.getOption("1000", "-delay"));
 
         Connection conn = null;
         PreparedStatement ps = null;
@@ -126,7 +131,7 @@ public class CmStress extends Thread {
                 String uName = rs.getString("user_name");
                 String uPass = rs.getString("user_passcode");
 
-                new CmStress(uName, uPass).startTest(2000);
+                new CmStress(uName, uPass, delay).startTest();
             }
         } catch (Exception e) {
             e.printStackTrace();

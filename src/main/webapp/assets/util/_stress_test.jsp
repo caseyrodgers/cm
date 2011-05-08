@@ -5,8 +5,9 @@
 <%@ page import="sb.util.*,hotmath.inmh.*,java.util.*,hotmath.solution.*,hotmath.*,hotmath.assessment.*,hotmath.util.*, hotmath.util.sql.*,java.sql.*" %>
 <%
     int runId = SbUtilities.getInt(request.getParameter("count"));
+    int delay = SbUtilities.getInt(request.getParameter("delay"));
 
-     String as[] = {"-count=" + runId};
+     String as[] = {"-count=" + runId, "-delay=" + delay};
      CmStress.main(as);
 %>
 </head>
