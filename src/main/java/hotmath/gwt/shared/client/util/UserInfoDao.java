@@ -145,7 +145,8 @@ public class UserInfoDao {
              // fire an event on the event bus, passing new userinfo
              EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_USERCHANGED,ui));	 
              
-             String place = nextAction.get("place").isString().stringValue();
+             String placeVal = nextAction.get("place").toString();
+             String place = (placeVal != null && !placeVal.equals("null"))?placeVal:"PRESCRIPTION";
              return new CmDestination(place);
 	         
     	}
@@ -153,6 +154,7 @@ public class UserInfoDao {
     		throw new Exception("Could not create UserInfo from JSON", e);
     	}
     }
+
     
     static private String getJsonString(JSONValue o) {
     	return o.isString() != null ?o.isString().stringValue():null;

@@ -233,18 +233,27 @@ public class GetUserInfoCommand implements ActionHandler<GetUserInfoAction, User
              *  then they must repeat it .. so program 
              *  is not complete.
              */
+
             HaTestRun testRun = new HaTestRunDao().lookupTestRun(conn, userInfo.getRunId());
             if(!testRun.isPassing()) {
+                
+                programFlow.getActiveInfo().setActiveRunId(0);
+                programFlow.getActiveInfo().setActiveTestId(0);
+                programFlow.saveActiveInfo(conn);
+                
                 /** repeat the segment
                  * 
                  */
-                programFlow.getActiveInfo().setActiveRunId(0);
-                programFlow.getActiveInfo().setActiveTestId(0);
                 destination.setPlace(CmPlace.QUIZ);
             }
             else {
                 if(hasUserCompletedProgram(conn, userInfo, programFlow)) {
                     destination.setPlace(CmPlace.END_OF_PROGRAM);
+                }
+                else {
+                    //programFlow.moveToNextProgramSegment(conn);
+                    
+                    //destination.setPlace(CmPlace.QUIZ);
                 }
             }
         }
