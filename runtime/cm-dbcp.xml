@@ -1,0 +1,20 @@
+<!DOCTYPE properrties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+    <comment>CM dbcp properties</comment>
+    <entry key="db.url">jdbc:mysql://hotmath.kattare.com:3306/hotmath_test</entry>
+    <entry key="db.username">hmadmin</entry>
+    <entry key="db.password">hmadmin</entry>
+
+    <entry key="cpool.maxWait">60000</entry>
+    <entry key="cpool.initialSize">10</entry>
+    <entry key="cpool.maxIdle">3</entry>
+    <entry key="cpool.maxActive">150</entry>
+    <entry key="cpool.testOnBorrow">1</entry>
+    <entry key="cpool.testOnReturn">1</entry>
+    <entry key="cpool.testOnIdle">1</entry>
+    <entry key="cpool.timeBetweenEvictionRunsMillis">90000</entry>
+    <entry key="cpool.minEvictableIdleTimeMillis">300000</entry>
+    <entry key="cpool.logAbandoned">0</entry>
+    <entry key="cpool.removeAbandoned">0</entry>
+    <entry key="cpool.removeAbandonedTimeout">300</entry>
+</properties>
