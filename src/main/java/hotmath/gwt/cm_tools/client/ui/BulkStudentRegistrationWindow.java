@@ -84,10 +84,9 @@ public class BulkStudentRegistrationWindow extends RegisterStudent {
 		fs.add(_uploadForm);
 		fs
 				.add(new Html(
-						"<p style='padding: 10px;'>Upload a TAB DELIMITED TEXT file. " +
-						"You can create this using Excel with the first column as the student name, " +
-						"and the second column the password. " +
-						"Use Excel's \"Save as type\" drop down menu to convert to a Tab delimited text file.</p>"));
+						"<p style='padding: 10px;'>Upload a TAB DELIMITED TEXT file with two columns, with the first column as the student name (e.g., Smith, John), " +
+						"and the second column as password (e.g., 23242342). Use Excel's \"Save As...\" drop down menu to save as a " +
+						"Text (Tab delimited) file. </p>"));
 
 		_window.removeAll();
 		_window.setLayout(new BorderLayout());
