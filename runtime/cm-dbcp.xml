@@ -1,4 +1,4 @@
-<!DOCTYPE properrties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
 <properties>
     <comment>CM dbcp properties</comment>
     <entry key="db.url">jdbc:mysql://hotmath.kattare.com:3306/hotmath_test</entry>
@@ -11,7 +11,7 @@
     <entry key="cpool.maxActive">150</entry>
     <entry key="cpool.testOnBorrow">1</entry>
     <entry key="cpool.testOnReturn">1</entry>
-    <entry key="cpool.testOnIdle">1</entry>
+    <entry key="cpool.testWhileIdle">1</entry>
     <entry key="cpool.timeBetweenEvictionRunsMillis">90000</entry>
     <entry key="cpool.minEvictableIdleTimeMillis">300000</entry>
     <entry key="cpool.logAbandoned">0</entry>
