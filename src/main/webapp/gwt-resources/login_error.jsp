@@ -296,7 +296,7 @@ pageTracker._trackPageview();
         <!-- InstanceBeginEditable name="AfterJavascriptLoad" --><!-- AfterJavascriptLoad -->
 		<script>
 		  function doLoginAgain() {
-       	     history.go(-1);
+       	     document.location = '/login.html';
           }
 		</script>
 		<!-- InstanceEndEditable -->
