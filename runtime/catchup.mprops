@@ -510,6 +510,20 @@ where uid = ?
 and is_auto_create_template = 0
 
 
+
+.key=LOAD_ACTIVE_INFO
+
+select active_run_id, active_test_id, active_segment, active_segment_slot, active_run_session 
+from HA_USER 
+where uid = ?
+
+
+.key=SAVE_ACTIVE_INFO
+
+update HA_USER 
+set active_run_id = ?, active_test_id = ?, active_segment = ?, active_segment_slot = ?, active_run_session = ? 
+where uid = ?
+
         
 #############
 ##
@@ -1036,7 +1050,15 @@ SELECT title
 FROM   BOOK_TOC t
 WHERE  level = 2
   AND  textcode = ?
-ORDER BY cast(title_number as unsigned) 
+ORDER BY cast(title_number as unsigned)
+
+
+
+.key=CREATE_NEW_TEST
+
+insert into HA_TEST(user_id,user_prog_id,test_def_id,create_time,test_segment,test_segment_slot, total_segments,test_question_count)
+values(?,?,?,?,?,?,?,?)
+ 
 
 ##
 ## Class: HaTestDefDescription
@@ -1098,6 +1120,7 @@ from   HA_USER u
              and p.id = u.user_prog_id)
         left join HA_TEST_DEF d
            on d.test_def_id = p.test_def_id
+$$WHERE_CLAUSE$$           
              
 ##
 ## Class: HaTestRunDao

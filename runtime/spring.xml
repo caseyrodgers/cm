@@ -1,0 +1,37 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
+
+	<bean id="helloBean" class="hotmath.spring.HelloWorld">
+		<property name="name" value="Mkyong" />
+	</bean>
+
+	<bean id="dataSource" destroy-method="close"
+		class="org.apache.commons.dbcp.BasicDataSource">
+		<property name="driverClassName" value="com.mysql.jdbc.Driver" />
+        <property name="username" value="hmadmin"/>
+        <property name="password" value="hmadmin"/>
+        <property name="url" value="jdbc:mysql://hotmath.kattare.com/hotmath_test?user=hmadmin"/>
+        <property name="initialSize" value="1"/>
+        <property name="maxActive" value="10"/>		
+	</bean>
+	
+	<bean id="abstractJdbcDao" abstract="true" class="org.springframework.jdbc.core.support.SimpleJdbcDaoSupport">
+        <property name="dataSource" ref="dataSource"/>
+    </bean>
+    
+    <bean id="testDao" class="hotmath.conn.TestDao" parent="abstractJdbcDao"/>
+    <bean id="cmUserProgramDao" class="hotmath.cm.server.model.CmUserProgramDao" parent="abstractJdbcDao"/>
+    <bean id="cmStudentDao" class="hotmath.gwt.cm_admin.server.model.CmStudentDao" parent="abstractJdbcDao"/>
+    <bean id="haTestDefDao" class="hotmath.testset.ha.HaTestDefDao" parent="abstractJdbcDao"/>
+    <bean id="cmAdminDao" class="hotmath.gwt.cm_admin.server.model.CmAdminDao" parent="abstractJdbcDao"/>
+    <bean id="haTestDao" class="hotmath.testset.ha.HaTestDao" parent="abstractJdbcDao"/>
+    <bean id="haTestRunDao" class="hotmath.testset.ha.HaTestRunDao" parent="abstractJdbcDao"/>
+    <bean id="haUserDao" class="hotmath.testset.ha.HaUserDao" parent="abstractJdbcDao"/>
+    <bean id="cmCustomProgramDao" class="hotmath.gwt.cm_admin.server.model.CmCustomProgramDao" parent="abstractJdbcDao"/>
+    <bean id="cmQuizzesDao" class="hotmath.gwt.cm_admin.server.model.CmQuizzesDao" parent="abstractJdbcDao"/>
+    
+
+</beans>
+
