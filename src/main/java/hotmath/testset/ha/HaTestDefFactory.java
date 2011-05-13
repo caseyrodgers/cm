@@ -26,12 +26,12 @@ public class HaTestDefFactory {
 	 * @return
 	 * @throws Exception
 	 */
-	public static HaTestDef createTestDef(final Connection conn, String name) throws Exception {
+	public static HaTestDef createTestDef(String name) throws Exception {
 		if(name.indexOf("Auto-Enrollment") > -1) {
-			return new HaTestDefPlacement(conn, name);
+			return new HaTestDefPlacement(name);
 		}
 		else {
-			return new HaTestDefDao().getTestDef(conn, name);
+			return HaTestDefDao.getInstance().getTestDef(name);
 		}
 	}
 	
@@ -57,7 +57,7 @@ public class HaTestDefFactory {
 	        if(!rs.first())
 	        	throw new Exception("Test definition not found");
 	        
-	        return createTestDef(conn, rs.getString("test_name"));
+	        return createTestDef(rs.getString("test_name"));
 	    }
 	    finally {
 	        SqlUtilities.releaseResources(rs,pstat,null);

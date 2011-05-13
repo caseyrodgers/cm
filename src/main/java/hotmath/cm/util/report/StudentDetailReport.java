@@ -48,10 +48,10 @@ public class StudentDetailReport {
 				(List<Integer>)CmCacheManager.getInstance().retrieveFromCache(REPORT_ID, reportId);
 			stuUid = studentUids.get(0);
 			
-	        AccountInfoModel info = new CmAdminDao().getAccountInfo(conn, adminId);
+	        AccountInfoModel info = CmAdminDao.getInstance().getAccountInfo(conn, adminId);
             if (info == null) return null;
 
-        	CmStudentDao studentDao = new CmStudentDao();
+        	CmStudentDao studentDao = CmStudentDao.getInstance();
         	List<StudentActivityModel> sList = studentDao.getStudentActivity(conn, stuUid);
         	StudentModelI sm = studentDao.getStudentModelBase(conn, stuUid, false);
 						

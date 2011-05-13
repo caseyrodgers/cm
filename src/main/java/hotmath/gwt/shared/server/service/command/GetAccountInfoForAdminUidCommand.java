@@ -14,7 +14,7 @@ public class GetAccountInfoForAdminUidCommand implements ActionHandler<GetAccoun
 
     @Override
     public AccountInfoModel execute(Connection conn, GetAccountInfoForAdminUidAction action) throws Exception {
-        CmAdminDao dao = new CmAdminDao();
+        CmAdminDao dao = CmAdminDao.getInstance();
         AccountInfoModel aInfo = dao.getAccountInfo(conn, action.getUid());
         if(aInfo.getIsTutoringEnabled()) {
             try {

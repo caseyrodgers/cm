@@ -13,7 +13,7 @@ public class UnregisterStudentsCommand implements ActionHandler<UnregisterStuden
 
     @Override
     public StringHolder execute(Connection conn, UnregisterStudentsAction action) throws Exception {
-        CmStudentDao dao = new CmStudentDao();
+        CmStudentDao dao = CmStudentDao.getInstance();
         return dao.unregisterStudents(conn, action.getStudentList());
     }
 

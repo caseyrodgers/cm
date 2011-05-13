@@ -44,7 +44,7 @@ public class GetUserInfoCommand implements ActionHandler<GetUserInfoAction, User
     @Override
     public UserLoginResponse execute(final Connection conn, GetUserInfoAction action) throws Exception {
         try {
-            CmStudentDao sdao = new CmStudentDao();
+            CmStudentDao sdao = CmStudentDao.getInstance();
             StudentModelI sm = sdao.getStudentModelBase(conn, action.getUserId(), true);
             StudentSettingsModel settings = sm.getSettings();
             
@@ -53,10 +53,10 @@ public class GetUserInfoCommand implements ActionHandler<GetUserInfoAction, User
             StudentUserProgramModel userProgram = cmProgram.getUserProgram();
             StudentActiveInfo activeInfo = cmProgram.getActiveInfo();
 
-            AccountType accountType = new CmAdminDao().getAccountType(conn, sm.getAdminUid());
+            AccountType accountType = CmAdminDao.getInstance().getAccountType(conn, sm.getAdminUid());
             
-            HaTestDefDao hdao = new HaTestDefDao();
-            HaTestDef testDef = hdao.getTestDef(conn, userProgram.getTestDefId());
+            HaTestDefDao hdao = HaTestDefDao.getInstance();
+            HaTestDef testDef = hdao.getTestDef(userProgram.getTestDefId());
             
             ChapterInfo chapterInfo = hdao.getChapterInfo(conn, userProgram);
 
@@ -101,13 +101,13 @@ public class GetUserInfoCommand implements ActionHandler<GetUserInfoAction, User
                      * 
                      *  If not then create a dummy test as a place holder.
                      */
-                    CmCustomProgramDao cpdao = new CmCustomProgramDao();
+                    CmCustomProgramDao cpdao = CmCustomProgramDao.getInstance();
                     if(!cpdao.doesProgramSegmentHaveQuiz(conn, userProgram.getCustomProgramId(), 1)) {
                         activeInfo.setActiveSegment(1);
                         activeInfo.setActiveTestId(0);
                         activeInfo.setActiveRunSession(0);           
 
-                        HaTest custTest = HaTestDao.createTest(conn, action.getUserId(),new HaTestDefDao().getTestDef(conn, CmProgram.CUSTOM_PROGRAM.getDefId()), activeInfo.getActiveSegment());
+                        HaTest custTest = HaTestDao.getInstance().createTest(action.getUserId(),HaTestDefDao.getInstance().getTestDef(CmProgram.CUSTOM_PROGRAM.getDefId()), activeInfo.getActiveSegment());
                         custTest.setProgramInfo(cmProgram.getUserProgram());
                         HaTestRun testRun = HaTestDao.createTestRun(conn, action.getUserId(), custTest.getTestId(), 10,0,0);
                         testRun.setHaTest(custTest);
@@ -122,7 +122,7 @@ public class GetUserInfoCommand implements ActionHandler<GetUserInfoAction, User
                     /** update the total number of program segments
                      * 
                      */
-                    programSegmentCount = new CmCustomProgramDao().getTotalSegmentCount(conn,userProgram.getCustomProgramId());
+                    programSegmentCount = CmCustomProgramDao.getInstance().getTotalSegmentCount(conn,userProgram.getCustomProgramId());
                     
                     /** save for next time */
                     sdao.setActiveInfo(conn, action.getUserId(), activeInfo);
@@ -130,8 +130,8 @@ public class GetUserInfoCommand implements ActionHandler<GetUserInfoAction, User
                 /** Get the Custom Program's test title assigned by user
                  * 
                  */
-                CustomProgramModel customProgram = new CmCustomProgramDao().getCustomProgram(conn, userProgram.getCustomProgramId());
-                programSegmentCount = new CmCustomProgramDao().getTotalSegmentCount(conn,userProgram.getCustomProgramId());
+                CustomProgramModel customProgram = CmCustomProgramDao.getInstance().getCustomProgram(conn, userProgram.getCustomProgramId());
+                programSegmentCount = CmCustomProgramDao.getInstance().getTotalSegmentCount(conn,userProgram.getCustomProgramId());
                 testTitle = customProgram.getProgramName();
             }
             
@@ -155,10 +155,10 @@ public class GetUserInfoCommand implements ActionHandler<GetUserInfoAction, User
             int sessionCount=0;
             if(userInfo.getRunId() > 0) {
                 if(isCustomProgram) {
-                    sessionCount = new CmCustomProgramDao().getCustomProgramLessons(conn, userProgram.getCustomProgramId(), userInfo.getTestSegment()).size();
+                    sessionCount = CmCustomProgramDao.getInstance().getCustomProgramLessons(conn, userProgram.getCustomProgramId(), userInfo.getTestSegment()).size();
                 }
                 else {
-                    sessionCount = new HaTestRunDao().getTestRunLessons(conn,userInfo.getRunId()).size();
+                    sessionCount = HaTestRunDao.getInstance().getTestRunLessons(conn,userInfo.getRunId()).size();
                 }
             }
             userInfo.setSessionCount(sessionCount);
@@ -234,7 +234,7 @@ public class GetUserInfoCommand implements ActionHandler<GetUserInfoAction, User
              *  is not complete.
              */
 
-            HaTestRun testRun = new HaTestRunDao().lookupTestRun(conn, userInfo.getRunId());
+            HaTestRun testRun = HaTestRunDao.getInstance().lookupTestRun(conn, userInfo.getRunId());
             if(!testRun.isPassing()) {
                 
                 programFlow.getActiveInfo().setActiveRunId(0);

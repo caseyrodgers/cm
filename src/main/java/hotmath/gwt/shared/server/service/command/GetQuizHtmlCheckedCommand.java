@@ -44,7 +44,7 @@ public class GetQuizHtmlCheckedCommand implements ActionHandler<GetQuizHtmlCheck
             String quizHtmlTemplate = GetQuizHtmlCommand.readQuizHtmlTemplate();
             Map<String, Object> map = new HashMap<String, Object>();
 
-            HaTest haTest = HaTestDao.loadTest(autoConn, action.getTestId());
+            HaTest haTest = HaTestDao.getInstance().loadTest( action.getTestId());
             String testTitle = haTest.getTitle();
 
             HaTestSet _testSet = new HaTestSet(autoConn, haTest.getPids());

@@ -22,18 +22,18 @@ public class CmCustomProgramDao_Test extends CmDbTestCase {
     }
     
     public void testCustGetQuizInfo() throws Exception {
-        CustomQuizDef def = new CmQuizzesDao().getCustomQuizDefinitions(conn,2).get(0);
-        assertTrue(new CmCustomProgramDao().getCustomQuizInfo(conn, 2, def.getQuizId()).getAssignedStudents().size() > 0);
+        CustomQuizDef def = CmQuizzesDao.getInstance().getCustomQuizDefinitions(2).get(0);
+        assertTrue(CmCustomProgramDao.getInstance().getCustomQuizInfo(conn,2, def.getQuizId()).getAssignedStudents().size() > 0);
     }
     public void testCustGetAll() throws Exception {
         /** requires row for samples HA_CUSTOM_PROGRAM */
-        CmList<CustomLessonModel> models = new CmCustomProgramDao().getAllLessons(conn);
+        CmList<CustomLessonModel> models = CmCustomProgramDao.getInstance().getAllLessons(conn);
         assertTrue(models.size() > 0);
     }
     
     public void testCustProgs() throws Exception {
         /** requires row for samples HA_CUSTOM_PROGRAM */
-        assertTrue(new CmCustomProgramDao().getCustomPrograms(conn, 2).size() > 0);
+        assertTrue(CmCustomProgramDao.getInstance().getCustomPrograms(conn, 2).size() > 0);
     }
     
     public void testCreateNew() throws Exception {
@@ -42,16 +42,16 @@ public class CmCustomProgramDao_Test extends CmDbTestCase {
         List<CustomLessonModel> lessons = new ArrayList<CustomLessonModel>();
         lessons.add(new CustomLessonModel("Square Root", "topics/square-roots.html", "alg1"));
         lessons.add(new CustomLessonModel(0, "Auto Quiz"));        
-        new CmCustomProgramDao().createNewCustomProgram(conn, _user.getAid(),programName, lessons);
+        CmCustomProgramDao.getInstance().createNewCustomProgram(conn, _user.getAid(),programName, lessons);
     }
     
     public void testDelete() throws Exception {
         /** todo .. actually test it! */
-        new CmCustomProgramDao().deleteCustomProgram(conn,-1);
+        CmCustomProgramDao.getInstance().deleteCustomProgram(conn,-1);
     }
 
     public void testGetAll() throws Exception {
-        assertTrue(new CmCustomProgramDao().getAllLessons(conn).size() > 0);
+        assertTrue(CmCustomProgramDao.getInstance().getAllLessons(conn).size() > 0);
     }
 
 }

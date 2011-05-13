@@ -130,7 +130,7 @@ public class ActionDispatcher_Test extends CmDbTestCase {
     
     public void testSetLessonCompletedCommand() throws Exception {
 
-        String lesson = new HaTestRunDao().getTestRunLessons(conn, _testRun.getRunId()).get(0).getLesson();
+        String lesson = HaTestRunDao.getInstance().getTestRunLessons(conn, _testRun.getRunId()).get(0).getLesson();
         
         SetLessonCompletedAction action = new SetLessonCompletedAction(lesson,_testRun.getRunId(), 0);
         RpcData rdata = ActionDispatcher.getInstance().execute(action);
@@ -194,7 +194,7 @@ public class ActionDispatcher_Test extends CmDbTestCase {
     
     public void testCreateAutoRegistrationAccountsCommand() throws Exception {
         
-        StudentModelI student = new CmStudentDao().getStudentModelBase(conn, uid);
+        StudentModelI student = CmStudentDao.getInstance().getStudentModelBase(conn, uid);
         AutoRegistrationSetup preview = new AutoRegistrationSetup();
         
         CmList<AutoRegistrationEntry> entries = new CmArrayList<AutoRegistrationEntry>();
@@ -215,7 +215,7 @@ public class ActionDispatcher_Test extends CmDbTestCase {
     
     public void testCreateAutoRegistrationPreviewCommand() throws Exception {
         
-        StudentModelI student = new CmStudentDao().getStudentModelBase(conn, uid);
+        StudentModelI student = CmStudentDao.getInstance().getStudentModelBase(conn, uid);
         
         CreateAutoRegistrationPreviewAction action = new CreateAutoRegistrationPreviewAction(student,"key");
         AutoRegistrationSetup autoSetup = ActionDispatcher.getInstance().execute(action);

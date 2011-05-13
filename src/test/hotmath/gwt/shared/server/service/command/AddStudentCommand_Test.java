@@ -25,7 +25,7 @@ public class AddStudentCommand_Test extends CmDbTestCase {
 
 	
 	public void testCreate() throws Exception {
-		StudentModelI sm = new CmStudentDao().getStudentModelBasic(conn, _user.getUid());
+		StudentModelI sm = CmStudentDao.getInstance().getStudentModelBasic(conn, _user.getUid());
 		sm.setPasscode("NEW_" + System.currentTimeMillis());
 		AddStudentAction action = new AddStudentAction(sm);
 		StudentModelI ret = new AddStudentCommand().execute(conn, action);

@@ -42,7 +42,7 @@ public class GetStudentGridPageHelper {
     	if (studentUids.size() < 1) return;
 
     	// get missing data
-    	List<StudentModelI> extendedSummaries = new CmStudentDao().getStudentExtendedSummaries(conn, studentUids);
+    	List<StudentModelI> extendedSummaries = CmStudentDao.getInstance().getStudentExtendedSummaries(conn, studentUids);
 
     	// load extended summaries into a Map
     	Map<Integer, StudentModelI> map = new HashMap<Integer, StudentModelI>();
@@ -88,7 +88,7 @@ public class GetStudentGridPageHelper {
     	
     	if (uids.size() < 1) return;
     	
-    	CmStudentDao dao = new CmStudentDao();
+    	CmStudentDao dao = CmStudentDao.getInstance();
     	List<StudentModelI> extendedData = dao.getStudentExtendedData(conn, hasFieldKey, uids);
     	
     	if (LOGGER.isDebugEnabled())

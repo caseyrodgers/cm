@@ -20,7 +20,7 @@ public class CustomProgramInfoCommand implements ActionHandler<CustomProgramInfo
 
     @Override
     public CustomProgramInfoModel execute(Connection conn, CustomProgramInfoAction action) throws Exception {
-        return new CmCustomProgramDao().getCustomProgramInfo(conn,action.getAdminId(), action.getProgram());
+        return CmCustomProgramDao.getInstance().getCustomProgramInfo(conn,action.getAdminId(), action.getProgram());
     }
 
     @Override

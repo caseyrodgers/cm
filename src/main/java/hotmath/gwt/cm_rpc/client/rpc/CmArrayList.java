@@ -12,5 +12,4 @@ import java.util.ArrayList;
 public class CmArrayList<x> extends ArrayList<x> implements CmList<x> {
 
 	private static final long serialVersionUID = -5979089962747405346L;
-
 }

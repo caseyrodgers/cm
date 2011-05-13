@@ -58,12 +58,12 @@ public class LcomManager {
 				 * 
 				 */
 				try {
-					GroupInfoModel group = new CmAdminDao().getGroup(conn, teacher.getAdminId(), student.getStudentCourseId());
+					GroupInfoModel group = CmAdminDao.getInstance().getGroup(conn, teacher.getAdminId(), student.getStudentCourseId());
 					if(group == null) {
 						group = new GroupInfoModel();
 						group.setGroupName(student.getStudentCourseId());
 						group.setIsActive(true);
-						new CmAdminDao().addGroup(conn, teacher.getAdminId(), group);
+						CmAdminDao.getInstance().addGroup(conn, teacher.getAdminId(), group);
 					}
 				}
 				catch(Exception e) {

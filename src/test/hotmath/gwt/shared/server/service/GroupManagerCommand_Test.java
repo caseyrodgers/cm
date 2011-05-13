@@ -26,12 +26,12 @@ public class GroupManagerCommand_Test extends CmDbTestCase {
         if(_user == null)
             setupDemoAccount();
         
-        _groupModel = new CmAdminDao().addGroup(conn, _user.getAid(), group);
+        _groupModel = CmAdminDao.getInstance().addGroup(conn, _user.getAid(), group);
     }
     
     @Override
     protected void tearDown() throws Exception {
-        new CmAdminDao().deleteGroup(conn,_user.getAid(), _groupModel.getId());
+        CmAdminDao.getInstance().deleteGroup(conn,_user.getAid(), _groupModel.getId());
         super.tearDown();
     }
     

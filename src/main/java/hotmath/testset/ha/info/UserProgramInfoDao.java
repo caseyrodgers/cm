@@ -30,7 +30,7 @@ public class UserProgramInfoDao {
      */
     public UserProgramInfo getUserProgramInfo(final Connection conn, Integer userProgId) throws Exception {
         UserProgramInfo  info = new UserProgramInfo();
-        info.setProgram(new CmUserProgramDao().loadProgramInfo(conn, userProgId));
+        info.setProgram(CmUserProgramDao.getInstance().loadProgramInfo(conn, userProgId));
         info.setTests(HaTestDao.getProgramTests(conn, userProgId));
         
         return info;

@@ -20,7 +20,7 @@ public class CustomQuizInfoCommand implements ActionHandler<CustomQuizInfoAction
 
     @Override
     public CustomQuizInfoModel execute(Connection conn, CustomQuizInfoAction action) throws Exception {
-        return new CmCustomProgramDao().getCustomQuizInfo(conn,action.getAdminId(), action.getQuiz().getQuizId());
+        return CmCustomProgramDao.getInstance().getCustomQuizInfo(conn,action.getAdminId(), action.getQuiz().getQuizId());
     }
 
     @Override

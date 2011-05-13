@@ -20,7 +20,7 @@ public class CmQuizzesDao_Test extends CmDbTestCase {
     
     public void testGetQuesions() throws Exception {
         String lesson= "topics/adding-and-subtracting-decimals.html";
-        CmList<QuizQuestion> questions = new CmQuizzesDao().getQuestionsFor(conn, lesson, "pre-alg");
+        CmList<QuizQuestion> questions = CmQuizzesDao.getInstance().getQuestionsFor(conn, lesson, "pre-alg");
         assertTrue(questions.get(0).getQuizHtml().length() > 0);
         assertTrue(questions.get(0).getCorrectAnswer() > 0);
     }
@@ -43,9 +43,9 @@ public class CmQuizzesDao_Test extends CmDbTestCase {
         
         int customQuizId = data.getDataAsInt("custom_quiz_id");
         
-        CmList<QuizQuestion> questions = new CmQuizzesDao().getCustomQuizQuestions(conn,customQuizId);
+        CmList<QuizQuestion> questions = CmQuizzesDao.getInstance().getCustomQuizQuestions(conn,customQuizId);
         assertTrue(questions.size() > 0);
         
-        assertTrue(new CmQuizzesDao().deleteCustomQuiz(conn, adminId, cpName));
+        assertTrue(CmQuizzesDao.getInstance().deleteCustomQuiz(conn, adminId, cpName));
     }
 }

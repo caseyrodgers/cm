@@ -13,6 +13,8 @@ import hotmath.gwt.shared.client.model.CustomQuizId;
 import hotmath.gwt.shared.client.model.CustomQuizInfoModel;
 import hotmath.gwt.shared.client.model.QuizQuestion;
 import hotmath.gwt.shared.client.util.CmException;
+import hotmath.spring.SpringManager;
+import hotmath.util.HMConnectionPool;
 import hotmath.util.sql.SqlUtilities;
 
 import java.sql.Connection;
@@ -27,15 +29,25 @@ import java.util.HashMap;
 import java.util.List;
 
 import org.apache.log4j.Logger;
+import org.springframework.jdbc.core.simple.SimpleJdbcDaoSupport;
 
 import sb.util.SbUtilities;
 
-public class CmCustomProgramDao {
+public class CmCustomProgramDao extends SimpleJdbcDaoSupport {
 
     private static final Logger LOGGER = Logger.getLogger(CmCustomProgramDao.class);
 
-    public CmCustomProgramDao() {
+    static private CmCustomProgramDao __instance;
+    static public CmCustomProgramDao getInstance() throws Exception {
+        if(__instance == null) {
+            __instance = (CmCustomProgramDao)SpringManager.getInstance().getBeanFactory().getBean("cmCustomProgramDao");
+        }
+        return __instance;
     }
+    
+    private CmCustomProgramDao() {
+    }
+    
 
     /**
      * Return complete list of lessons that can be used to create a custom
@@ -403,12 +415,14 @@ public class CmCustomProgramDao {
      * @return
      * @throws Exception
      */
-    public CmList<CustomQuizId> getCustomProgramQuizIds(final Connection conn, int programId, int programSegment)
+    public CmList<CustomQuizId> getCustomProgramQuizIds(int programId, int programSegment)
             throws Exception {
         assert(programSegment>0);
         PreparedStatement stmt = null;
         
+        Connection conn=null;
         try {
+            conn = HMConnectionPool.getConnection();
             ProgramSegment segment = readProgramSegments(conn, programId).get(programSegment-1);
             CustomLessonModel theQuiz = segment.getQuiz();
             
@@ -417,17 +431,17 @@ public class CmCustomProgramDao {
                 /** dummy, empty quiz */
                 return new CmArrayList<CustomQuizId>();
             }
-            CmList<CustomQuizId> quizIds = new CmQuizzesDao().getCustomQuizIds(conn,quid);
+            CmList<CustomQuizId> quizIds = CmQuizzesDao.getInstance().getCustomQuizIds(quid);
             return quizIds;
         }
         finally {
-            SqlUtilities.releaseResources(null, stmt, null);
+            SqlUtilities.releaseResources(null, stmt, conn);
         }
     }
     
-    public List<String> getCustomProgramQuizSegmentPids(final Connection conn, int programId, int programSegment) throws Exception {
+    public List<String> getCustomProgramQuizSegmentPids(int programId, int programSegment) throws Exception {
         List<String> pids = new ArrayList<String>();
-        for(CustomQuizId cqi: getCustomProgramQuizIds(conn, programId, programSegment)) {
+        for(CustomQuizId cqi: getCustomProgramQuizIds(programId, programSegment)) {
             pids.add(cqi.getPid());
         }
         return pids;
@@ -442,11 +456,15 @@ public class CmCustomProgramDao {
      * @return
      * @throws Exception
      */
-    public CmList<CustomLessonModel> getCustomProgramLessonsForTestId(final Connection conn, Integer testId)
+    public CmList<CustomLessonModel> getCustomProgramLessonsForTestId(Integer testId)
             throws Exception {
         PreparedStatement stmt = null;
         ResultSet rs = null;
+        
+        Connection conn=null;
         try {
+            conn = HMConnectionPool.getConnection();
+            
             CmList<CustomLessonModel> lessons = new CmArrayList<CustomLessonModel>();
             String sql = CmMultiLinePropertyReader.getInstance().getProperty("CUSTOM_PROGRAM_LESSONS_FOR_TEST_ID");
             stmt = conn.prepareStatement(sql);
@@ -462,7 +480,7 @@ public class CmCustomProgramDao {
             }
             return lessons;
         } finally {
-            SqlUtilities.releaseResources(rs, stmt, null);
+            SqlUtilities.releaseResources(rs, stmt, conn);
         }
     }
 
@@ -530,7 +548,7 @@ public class CmCustomProgramDao {
          * create a pool from which to choose questions
          * 
          */
-        CmQuizzesDao dao = new CmQuizzesDao();
+        CmQuizzesDao dao = CmQuizzesDao.getInstance();
 
         int maxFromEachLesson = 2;
 
@@ -547,7 +565,7 @@ public class CmCustomProgramDao {
 
     static final String CUSTOM_QUIZ_TEMPLATE = "Auto Custom Quiz: ";
     private String getNextCustomQuizNumberForAdmin(final Connection conn, int adminId) throws Exception {
-        CmList<CustomQuizDef> defs = new CmQuizzesDao().getCustomQuizDefinitions(conn, adminId);
+        CmList<CustomQuizDef> defs = CmQuizzesDao.getInstance().getCustomQuizDefinitions(adminId);
         int max=0;
         for (CustomQuizDef cpm : defs) {
             String quizName = cpm.getQuizName();
@@ -708,7 +726,7 @@ public class CmCustomProgramDao {
                 sm.setUid(rs.getInt("uid"));
                 info.getAssignedStudents().add(sm);
             }
-            info.setQuestionCount( new CmQuizzesDao().getCustomQuizIds(conn,quizId).size());
+            info.setQuestionCount( CmQuizzesDao.getInstance().getCustomQuizIds(quizId).size());
             return info;
         } finally {
             SqlUtilities.releaseResources(null, stmt, null);

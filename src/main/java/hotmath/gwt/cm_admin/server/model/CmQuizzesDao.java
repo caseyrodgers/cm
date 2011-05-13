@@ -10,17 +10,21 @@ import hotmath.gwt.shared.client.model.CustomQuizId;
 import hotmath.gwt.shared.client.model.QuizQuestion;
 import hotmath.solution.Solution;
 import hotmath.solution.SolutionPostProcess;
+import hotmath.spring.SpringManager;
 import hotmath.util.VelocityTemplateFromStringManager;
 import hotmath.util.sql.SqlUtilities;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
+import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.simple.SimpleJdbcDaoSupport;
 
 import sb.util.SbFile;
 
@@ -31,9 +35,20 @@ import sb.util.SbFile;
  * 
  */
 
-public class CmQuizzesDao {
+public class CmQuizzesDao extends SimpleJdbcDaoSupport  {
     
     final static Logger __logger = Logger.getLogger(CmQuizzesDao.class);
+    
+    
+    static private CmQuizzesDao __instance;
+    static public CmQuizzesDao getInstance() throws Exception {
+        if(__instance == null) {
+            __instance = (CmQuizzesDao)SpringManager.getInstance().getBeanFactory().getBean("cmQuizzesDao");
+        }
+        return __instance;
+    }
+    
+    private CmQuizzesDao() {/* empty */}
     
     public int saveCustomQuiz(final Connection conn, int adminId, String cpName, List<CustomQuizId> ids) throws Exception {
         
@@ -104,6 +119,7 @@ public class CmQuizzesDao {
         return getQuestionsFor(conn, lesson, subject, true);
     }
 
+    
     public CmList<QuizQuestion> getQuestionsFor(final Connection conn, String lessonFile, String subject, boolean getHtml) throws Exception {
         CmList<QuizQuestion> list = new CmArrayList<QuizQuestion>();
 
@@ -244,6 +260,58 @@ public class CmQuizzesDao {
         QuizQuestionParsed quizQuestion = new QuizQuestionParsed(getQuizHtml(problemNumber,pid,statement ));
         return quizQuestion;
     }
+
+    
+
+    public CmList<CustomQuizDef> getCustomQuizDefinitions(final int adminId) throws Exception {
+        
+        List<CustomQuizDef> quizIds = getJdbcTemplate().query(
+                CmMultiLinePropertyReader.getInstance().getProperty("GET_CUSTOM_QUIZ_DEFS"),
+                new Object[]{adminId},
+                new RowMapper<CustomQuizDef>() {
+                    @Override
+                    public CustomQuizDef mapRow(ResultSet rs, int rowNum) throws SQLException {
+                        return new CustomQuizDef(
+                                rs.getInt("quiz_id"), 
+                                rs.getString("quiz_name"),
+                                adminId);
+                    }
+                });
+        
+        CmList<CustomQuizDef> list = new CmArrayList<CustomQuizDef>();
+        list.addAll(quizIds);
+        return list;
+    }
+    
+    /** Return list of question HTML for custom quiz
+     *
+     * TODO: return List instead of CmList
+     * 
+     * @param conn
+     * @param adminId
+     * @param cpName
+     * @return
+     * @throws Exception
+     */
+    public CmList<CustomQuizId> getCustomQuizIds(int customQuizId) throws Exception {
+        
+        List<CustomQuizId> quizIds = getJdbcTemplate().query(
+                CmMultiLinePropertyReader.getInstance().getProperty("GET_CUSTOM_QUIZ_IDS"),
+                new Object[]{customQuizId},
+                new RowMapper<CustomQuizId>() {
+                    @Override
+                    public CustomQuizId mapRow(ResultSet rs, int rowNum) throws SQLException {
+
+                        String pid = rs.getString("pid");
+                        return new CustomQuizId(pid, rowNum);
+                    }
+                });
+        
+        CmList<CustomQuizId> list = new CmArrayList<CustomQuizId>();
+        list.addAll(quizIds);
+        return list;
+    }
+    
     
     
     private String getQuizHtml(int num, String pid, String statement) throws Exception {
@@ -298,54 +366,5 @@ public class CmQuizzesDao {
         } else {
             return 0;
         }
-    }
-    
-
-    public CmList<CustomQuizDef> getCustomQuizDefinitions(final Connection conn, int adminId) throws Exception {
-        PreparedStatement ps = null;
-        try {
-            CmList<CustomQuizDef> list = new CmArrayList<CustomQuizDef>();
-            ps = conn.prepareStatement(CmMultiLinePropertyReader.getInstance().getProperty("GET_CUSTOM_QUIZ_DEFS"));
-            ps.setInt(1, adminId);
-            ResultSet rs = ps.executeQuery();
-            while(rs.next()) {
-                list.add(new CustomQuizDef(rs.getInt("quiz_id"), rs.getString("quiz_name"),adminId));
-            }
-            return list;
-        }
-        finally {
-            SqlUtilities.releaseResources(null, ps,null);
-        }
-    }
-    
-    /** Return list of question HTML for custom quiz
-     * 
-     * @param conn
-     * @param adminId
-     * @param cpName
-     * @return
-     * @throws Exception
-     */
-    public CmList<CustomQuizId> getCustomQuizIds(final Connection conn, int customQuizId) throws Exception {
-        CmList<CustomQuizId> list = new CmArrayList<CustomQuizId>();
-
-        PreparedStatement ps = null;
-        try {
-            String sql = CmMultiLinePropertyReader.getInstance().getProperty("GET_CUSTOM_QUIZ_IDS");
-            ps = conn.prepareStatement(sql);
-            
-            
-            ps.setInt(1, customQuizId);
-
-            ResultSet rs = ps.executeQuery();
-            int order=0;
-            while (rs.next()) {
-                String pid = rs.getString("pid");
-                list.add(new CustomQuizId(pid, order++));
-            }
-        } finally {
-            SqlUtilities.releaseResources(null, ps, null);
-        }
-        return list;
     }    
 }

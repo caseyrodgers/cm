@@ -23,7 +23,7 @@ public class ResetStudentActivityCommand implements ActionHandler<ResetStudentAc
         
         assert(action.getTestId() > 0);
         
-        HaTest test = HaTestDao.loadTest(conn,action.getTestId());
+        HaTest test = HaTestDao.getInstance().loadTest(action.getTestId());
         
         PreparedStatement ps = null;
         try {

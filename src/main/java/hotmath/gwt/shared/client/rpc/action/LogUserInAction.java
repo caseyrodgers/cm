@@ -49,4 +49,10 @@ public class LogUserInAction implements Action<RpcData> {
     public void setBrowserInfo(String browserInfo) {
         this.browserInfo = browserInfo;
     }
+
+    @Override
+    public String toString() {
+        return "LogUserInAction [password=" + password + ", userName=" + userName + ", browserInfo=" + browserInfo
+                + "]";
+    }
 }

@@ -42,7 +42,7 @@ public class AssessmentPrescriptionManager {
 	 */
 	public AssessmentPrescription createPrescription(final Connection conn, int testId,String pids,int answeredCorrect, int answeredIncorrect, int notAnswered) throws Exception {
 		
-		HaTest test = HaTestDao.loadTest(conn,testId);
+		HaTest test = HaTestDao.getInstance().loadTest(testId);
 		AssessmentPrescription pres =
 			AssessmentPrescriptionFactory.create(conn, HaTestDao.createTestRun(conn, test.getUser().getUid(), testId,answeredCorrect, answeredIncorrect, notAnswered));
 
@@ -64,7 +64,7 @@ public class AssessmentPrescriptionManager {
 			/**
 			 * first need to lookup the test for this run
 			 */
-			HaTestRun testRun = new HaTestRunDao().lookupTestRun(conn, runId);
+			HaTestRun testRun = HaTestRunDao.getInstance().lookupTestRun(conn, runId);
 
 			if(testRun.getHaTest().getTestDef().getName().indexOf("Auto-Enrollment") > -1)
 			    pres = AssessmentPrescriptionFactory.create(conn, testRun);

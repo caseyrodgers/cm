@@ -15,7 +15,7 @@ public class SaveAdminEmailCommand implements ActionHandler<SaveAdminEmailAction
 	
 	@Override
 	public StringHolder execute(Connection conn, SaveAdminEmailAction action)throws Exception {
-		new CmAdminDao().setAdminPassword(conn, action.getAdminId(), action.getEmail());
+	    CmAdminDao.getInstance().setAdminPassword(conn, action.getAdminId(), action.getEmail());
 		return new StringHolder("OK");
 	}
 	

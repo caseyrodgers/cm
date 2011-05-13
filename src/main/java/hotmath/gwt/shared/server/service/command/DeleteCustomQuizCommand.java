@@ -18,7 +18,7 @@ public class DeleteCustomQuizCommand implements ActionHandler<DeleteCustomQuizAc
 
     @Override
     public RpcData execute(Connection conn, DeleteCustomQuizAction action) throws Exception {
-        new CmQuizzesDao().deleteCustomQuiz(conn, action.getAdminId(), action.getName());
+        CmQuizzesDao.getInstance().deleteCustomQuiz(conn, action.getAdminId(), action.getName());
         return new RpcData("status=OK");
     }
 

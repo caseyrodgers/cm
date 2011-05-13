@@ -16,7 +16,7 @@ public class GetSubjectDefinitionsCommand implements ActionHandler<GetSubjectDef
 
     @Override
     public CmList<SubjectModel> execute(Connection conn, GetSubjectDefinitionsAction action) throws Exception {
-            CmAdminDao cma = new CmAdminDao();
+            CmAdminDao cma = CmAdminDao.getInstance();
             
             CmList<SubjectModel> list = new CmArrayList<SubjectModel>();
             list.addAll(cma.getSubjectDefinitions(action.getProgId()));

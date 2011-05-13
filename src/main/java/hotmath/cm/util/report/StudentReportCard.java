@@ -83,7 +83,7 @@ public class StudentReportCard {
 
         List<Integer> studentUids = (List<Integer>) CmCacheManager.getInstance().retrieveFromCache(REPORT_ID, reportId);
 
-        CmAdminDao adminDao = new CmAdminDao();
+        CmAdminDao adminDao = CmAdminDao.getInstance();
 
         AccountInfoModel info = adminDao.getAccountInfo(conn,adminId);
         
@@ -93,7 +93,7 @@ public class StudentReportCard {
         }
 
         CmReportCardDao rcDao = new CmReportCardDao();
-        CmStudentDao studentDao = new CmStudentDao();
+        CmStudentDao studentDao = CmStudentDao.getInstance();
 
         Document document = new Document();
         baos = new ByteArrayOutputStream();

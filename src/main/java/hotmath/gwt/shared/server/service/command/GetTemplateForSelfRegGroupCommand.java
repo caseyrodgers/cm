@@ -13,7 +13,7 @@ public class GetTemplateForSelfRegGroupCommand implements ActionHandler<GetTempl
 
     @Override
     public StudentModelI execute(Connection conn, GetTemplateForSelfRegGroupAction action) throws Exception {
-       StudentModelI sm = new CmStudentDao().getTemplateForSelfRegGroup(conn, action.getGroupId());
+       StudentModelI sm = CmStudentDao.getInstance().getTemplateForSelfRegGroup(conn, action.getGroupId());
        return sm;
     }
 

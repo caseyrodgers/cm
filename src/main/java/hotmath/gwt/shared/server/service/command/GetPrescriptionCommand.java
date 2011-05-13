@@ -52,7 +52,7 @@ public class GetPrescriptionCommand implements ActionHandler<GetPrescriptionActi
             AssessmentPrescription prescription = AssessmentPrescriptionManager.getInstance().getPrescription(conn, runId);
             
             __logger.debug("verifing prescription: " + action);
-            new CmStudentDao().verifyActiveProgram(conn, prescription.getTest().getTestId());
+            CmStudentDao.getInstance().verifyActiveProgram(conn, prescription.getTest().getTestId());
 
             int totalSessions = prescription.getSessions().size();
             if (totalSessions == 0) {

@@ -96,7 +96,7 @@ public class GetStudentGridPageCommand implements
         if (action.isForceRefresh() || _allStudents == null) {
             logger.debug("aid=" + action.getAdminId() + " creating _allStudents");
             _allStudents = new ArrayList<StudentModelExt>();
-            for (StudentModelI smi : new CmStudentDao().getStudentSummaries(conn, action.getAdminId(), true)) {
+            for (StudentModelI smi : CmStudentDao.getInstance().getStudentSummaries(conn, action.getAdminId(), true)) {
                 _allStudents.add(new StudentModelExt(smi));
             }
             CmCacheManager.getInstance().addToCache(CacheName.STUDENT_PAGED_DATA, cacheKey, _allStudents);

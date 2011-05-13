@@ -28,7 +28,7 @@ public class CmStudentDao_Test extends CmDbTestCase {
         if(_test == null)
             setupDemoAccountTest();
         
-        _dao = new CmStudentDao();
+        _dao = CmStudentDao.getInstance();
     }
     
     
@@ -99,7 +99,7 @@ public class CmStudentDao_Test extends CmDbTestCase {
     }
     
     public void testGetStudentActive() throws Exception {
-        StudentActiveInfo active = _dao.loadActiveInfo(conn, _user.getUid());
+        StudentActiveInfo active = _dao.loadActiveInfo(_user.getUid());
         assertNotNull(active);
     }
     
@@ -115,7 +115,7 @@ public class CmStudentDao_Test extends CmDbTestCase {
     }
     
     public void testGetStudentProgram() throws Exception {
-        StudentUserProgramModel pi = new CmUserProgramDao().loadProgramInfoCurrent(conn, _user.getUid());
+        StudentUserProgramModel pi = CmUserProgramDao.getInstance().loadProgramInfoCurrent(_user.getUid());
         assertNotNull(pi);
         assertTrue(pi.getTestDefId() > 0);
     }

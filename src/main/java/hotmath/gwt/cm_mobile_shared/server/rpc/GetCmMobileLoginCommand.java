@@ -30,8 +30,8 @@ public class GetCmMobileLoginCommand implements ActionHandler<GetCmMobileLoginAc
         if(basicUser.getUserType() != UserType.STUDENT)
             throw new CmException("Invalid user type: " + basicUser.getUserType());
         
-        StudentModelI sm = new CmStudentDao().getStudentModelBase(conn, basicUser.getUserKey());
-        StudentActiveInfo active = new CmStudentDao().loadActiveInfo(conn, sm.getUid());
+        StudentModelI sm = CmStudentDao.getInstance().getStudentModelBase(conn, basicUser.getUserKey());
+        StudentActiveInfo active = CmStudentDao.getInstance().loadActiveInfo(sm.getUid());
         CmMobileUser mobileUser = new CmMobileUser(sm.getUid(),active.getActiveTestId(),active.getActiveSegment(),active.getActiveSegmentSlot(),active.getActiveRunId());
         
         /** get list of previous prescribed lessons? 

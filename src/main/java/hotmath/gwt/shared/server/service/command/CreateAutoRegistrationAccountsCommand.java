@@ -35,7 +35,7 @@ public class CreateAutoRegistrationAccountsCommand implements ActionHandler<Crea
         //studentTemplate.setGroupId(groupModel.getId());
         
         
-        CmStudentDao dao = new CmStudentDao();
+        CmStudentDao dao = CmStudentDao.getInstance();
         int errorCount=0;
         
         for(AutoRegistrationEntry entry: action.getAccountsToCreate()) {

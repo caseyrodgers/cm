@@ -13,7 +13,7 @@ public class UpdateStudentCommand implements ActionHandler<UpdateStudentAction, 
 
     @Override
     public StudentModelI execute(Connection conn, UpdateStudentAction action) throws Exception {
-        CmStudentDao dao = new CmStudentDao();
+        CmStudentDao dao = CmStudentDao.getInstance();
         return dao.updateStudent(conn, action.getStudent(), action.getStuChanged(), action.getProgChanged(), action.getProgIsNew(), action.getPasscodeChanged(),
         		action.getPassPercentChanged());
     }

@@ -23,7 +23,7 @@ public class CmTestUtils {
             conn = HMConnectionPool.getConnection();
             HaBasicUser user = HaUserFactory.createDemoUser();
 
-            new CmStudentDao().assignProgramToStudent(conn, user.getUserKey(),program,null);
+            CmStudentDao.getInstance().assignProgramToStudent(conn, user.getUserKey(),program,null);
             
             return user.getUserKey();
             

@@ -62,7 +62,7 @@ public class GroupManagerCommand implements ActionHandler<GroupManagerAction, Rp
      * @throws Exception
      */
     private void doDelete(final Connection conn, Integer adminId, Integer groupId) throws Exception {
-        new CmAdminDao().deleteGroup(conn, adminId, groupId);
+        CmAdminDao.getInstance().deleteGroup(conn, adminId, groupId);
     }
     
     
@@ -75,12 +75,12 @@ public class GroupManagerCommand implements ActionHandler<GroupManagerAction, Rp
      * @throws Exception
      */
     private void doUpdate(final Connection conn, Integer adminUid, Integer groupId, String groupName) throws Exception {
-        new CmAdminDao().updateGroup(conn, adminUid, groupId, groupName);
+        CmAdminDao.getInstance().updateGroup(conn, adminUid, groupId, groupName);
     }
     
     
     private void doUnregister(final Connection conn, Integer adminId,Integer groupId) throws Exception {
-        CmStudentDao dao = new CmStudentDao();
+        CmStudentDao dao = CmStudentDao.getInstance();
         List<StudentModelI> cmList = new ArrayList<StudentModelI>();
 
         PreparedStatement ps=null;
@@ -146,7 +146,7 @@ public class GroupManagerCommand implements ActionHandler<GroupManagerAction, Rp
             
             //String passPercent = studentTemplate.getPassPercent();
             
-            CmStudentDao dao = new CmStudentDao();
+            CmStudentDao dao = CmStudentDao.getInstance();
             ResultSet rs = ps.executeQuery();
             while(rs.next()) {
                 dao.assignProgramToStudent(conn, rs.getInt("uid"),studentTemplate.getProgram(), studentTemplate.getChapter(),studentTemplate.getPassPercent(),studentTemplate.getSettings(),isSelfReg);
@@ -183,7 +183,7 @@ public class GroupManagerCommand implements ActionHandler<GroupManagerAction, Rp
                 ps.setInt(1,groupId);
             }
             
-            CmStudentDao dao = new CmStudentDao();
+            CmStudentDao dao = CmStudentDao.getInstance();
             ResultSet rs = ps.executeQuery();
             while(rs.next()) {
                 dao.updateStudentSettings(conn, rs.getInt("uid"), showWorkRequired, !disallowTutoring, limitGames, stopAtProgramEnd, passPercent);

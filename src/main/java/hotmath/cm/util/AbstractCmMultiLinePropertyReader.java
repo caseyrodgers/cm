@@ -2,6 +2,7 @@ package hotmath.cm.util;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
@@ -93,4 +94,15 @@ public abstract class AbstractCmMultiLinePropertyReader extends Properties {
         String val = getProperty(key);
         return SbUtilities.replaceTokens(val, replacements);
     }
+    
+    public String getProperty(String key, String[] replacements) {
+        Map<String,String> map = new HashMap<String, String>();
+        for(String pair: replacements) {
+            String row[] = pair.split("\\|");
+            if(row.length == 2) {
+                map.put(row[0], row[1]);
+            }
+        }
+        return getProperty(key, map); 
+    }    
 }

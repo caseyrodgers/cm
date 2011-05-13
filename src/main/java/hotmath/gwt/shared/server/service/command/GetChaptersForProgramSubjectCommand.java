@@ -14,7 +14,7 @@ public class GetChaptersForProgramSubjectCommand implements ActionHandler<GetCha
 
 	@Override
 	public CmList<ChapterModel> execute(Connection conn,GetChaptersForProgramSubjectAction action) throws Exception {
-            CmAdminDao cma = new CmAdminDao();
+            CmAdminDao cma = CmAdminDao.getInstance();
             return cma.getChaptersForProgramSubject(conn, action.getProgId(), action.getSubjId());
 	}
 

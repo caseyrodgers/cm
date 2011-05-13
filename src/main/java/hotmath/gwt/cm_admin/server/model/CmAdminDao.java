@@ -25,6 +25,7 @@ import hotmath.gwt.shared.client.rpc.action.SaveAutoRegistrationAction;
 import hotmath.gwt.shared.client.util.CmException;
 import hotmath.gwt.shared.client.util.CmUserException;
 import hotmath.gwt.shared.server.service.command.SaveAutoRegistrationCommand;
+import hotmath.spring.SpringManager;
 import hotmath.testset.ha.CmProgram;
 import hotmath.testset.ha.HaAdmin;
 import hotmath.testset.ha.HaTestDef;
@@ -36,12 +37,15 @@ import java.io.FileWriter;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
 import java.util.List;
 
 import org.apache.log4j.Logger;
+import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.simple.SimpleJdbcDaoSupport;
 
 /**
  * <code>CmAdminDao</code> provides data access methods for CM Admin
@@ -50,19 +54,19 @@ import org.apache.log4j.Logger;
  * 
  */
 
-public class CmAdminDao {
+public class CmAdminDao extends SimpleJdbcDaoSupport {
 
     private static final Logger logger = Logger.getLogger(CmAdminDao.class);
 
-    private static CmAdminDao instance;
+    private static CmAdminDao __instance;
+    public static CmAdminDao getInstance() throws Exception {
+        if(__instance == null) {
+            __instance = (CmAdminDao)SpringManager.getInstance().getBeanFactory().getBean("cmAdminDao");
+        }
+        return __instance;
+    }
     
-    public CmAdminDao() {
-    	instance = this;
-    }
-    public static CmAdminDao getInstance() {
-        if (instance == null) new CmAdminDao();
-        return instance;
-    }
+    private CmAdminDao() { /** empty */}
 
     // TODO add Subject selection by school type (non-college, college)
 
@@ -444,57 +448,52 @@ public class CmAdminDao {
         }
     }
 
-    public AccountInfoModel getAccountInfo(final Connection conn, Integer adminUid) throws Exception {
-        AccountInfoModel ai = new AccountInfoModel();
+    public AccountInfoModel getAccountInfo(final Connection conn, final Integer adminUid) throws Exception {
+        AccountInfoModel accountInfo = this.getJdbcTemplate().queryForObject(
+                CmMultiLinePropertyReader.getInstance().getProperty("ACCOUNT_INFO_SQL"), 
+                new Object[] { adminUid,adminUid,adminUid,adminUid },
+                new RowMapper<AccountInfoModel>() {
+                    public AccountInfoModel mapRow(ResultSet rs, int rowNum) throws SQLException {
+                        try {
+                            AccountInfoModel ai = new AccountInfoModel();
+                            ai.setSubscriberId(rs.getString("id"));
+                            ai.setSchoolName(rs.getString("school_name"));
+                            ai.setSchoolUserName(rs.getString("responsible_name"));
+                            ai.setAdminUserName(rs.getString("user_name"));
+                            ai.setMaxStudents(rs.getInt("max_students"));
+                            ai.setTotalStudents(rs.getInt("student_count"));
+                            java.sql.Date dt = rs.getDate("catchup_expire_date");
+                            ai.setAccountCreateDate(rs.getDate("account_create_date"));
+                            
+                            /** if account create is null (test account), use default
+                             * 
+                             */
+                            if(ai.getAccountCreateDate() == null)
+                                ai.setAccountCreateDate(new GregorianCalendar(2010,1,1).getTime());
+                                
+                            String cmDate = (dt != null) ? dt.toString() : "2011-12-31";
+                            /** @TODO: remove hard-coded value */
+                            ai.setExpirationDate(cmDate);
+                            dt = rs.getDate("tutoring_expire_date");
+                            if (dt != null && dt.after(new java.sql.Date(System.currentTimeMillis()))) {
+                                ai.setHasTutoring("Enabled");
+                            } else {
+                                ai.setHasTutoring("Not Enabled");
+                            }
+                            // java.sql.Time time = rs.getTime("login_time");
+                            // DateFormat df = DateFormat.getDateTimeInstance();
+                            ai.setLastLogin(rs.getString("login_date_time"));
+                            
+                            return ai;
 
-        PreparedStatement ps = null;
-        ResultSet rs = null;
+                        } catch (Exception e) {
+                            logger.error("Error creating AccountInfoModel: " + adminUid, e);
+                            throw new SQLException(e.getMessage());
+                        }
+                    }
+                });
 
-        try {
-            ps = conn.prepareStatement(CmMultiLinePropertyReader.getInstance().getProperty("ACCOUNT_INFO_SQL"));
-            ps.setInt(1, adminUid);
-            ps.setInt(2, adminUid);
-            ps.setInt(3, adminUid);
-            ps.setInt(4, adminUid);
-            rs = ps.executeQuery();
-            if (rs.next()) {
-                ai.setSubscriberId(rs.getString("id"));
-                ai.setSchoolName(rs.getString("school_name"));
-                ai.setSchoolUserName(rs.getString("responsible_name"));
-                ai.setAdminUserName(rs.getString("user_name"));
-                ai.setMaxStudents(rs.getInt("max_students"));
-                ai.setTotalStudents(rs.getInt("student_count"));
-                java.sql.Date dt = rs.getDate("catchup_expire_date");
-                ai.setAccountCreateDate(rs.getDate("account_create_date"));
-                
-                /** if account create is null (test account), use default
-                 * 
-                 */
-                if(ai.getAccountCreateDate() == null)
-                    ai.setAccountCreateDate(new GregorianCalendar(2010,1,1).getTime());
-                    
-                String cmDate = (dt != null) ? dt.toString() : "2011-12-31";
-                /** @TODO: remove hard-coded value */
-                ai.setExpirationDate(cmDate);
-                dt = rs.getDate("tutoring_expire_date");
-                if (dt != null && dt.after(new java.sql.Date(System.currentTimeMillis()))) {
-                    ai.setHasTutoring("Enabled");
-                } else {
-                    ai.setHasTutoring("Not Enabled");
-                }
-                // java.sql.Time time = rs.getTime("login_time");
-                // DateFormat df = DateFormat.getDateTimeInstance();
-                ai.setLastLogin(rs.getString("login_date_time"));
-            } else {
-                throw new Exception("*** No Account data found ***");
-            }
-        } catch (Exception e) {
-            logger.error(String.format("*** Error getting account info for admin id: %d", adminUid), e);
-            throw new Exception("*** Error getting Account data ***");
-        } finally {
-            SqlUtilities.releaseResources(rs, ps, null);
-        }
-        return ai;
+        return accountInfo;
     }
 
     /**
@@ -1060,7 +1059,7 @@ public class CmAdminDao {
             boolean useActiveOnly) throws Exception {
         PreparedStatement ps = null;
         try {
-            HaTestDef testDef = new HaTestDefDao().getTestDef(conn, testDefId);
+            HaTestDef testDef = HaTestDefDao.getInstance().getTestDef(testDefId);
 
             String name = testDef.getName();
             ProgramData pd = new ProgramData(name, testDef.getTestDefId());

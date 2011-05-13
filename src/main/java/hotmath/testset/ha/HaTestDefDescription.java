@@ -156,13 +156,13 @@ public class HaTestDefDescription {
         try {
             conn = HMConnectionPool.getConnection();
 
-            HaTestDef def = new HaTestDefDao().getTestDef(conn, testName);
+            HaTestDef def = HaTestDefDao.getInstance().getTestDef(testName);
             if (config == null)
                 config = def.getTestConfig();
 
-            HaTestDefDao dao = new HaTestDefDao();
+            HaTestDefDao dao = HaTestDefDao.getInstance();
             
-            int totalPidsInProgram = dao.getTestIds(conn, testRun.getHaTest().getProgramInfo(), def.getTextCode(), def.getChapter(), 0, 0, 99999, config)
+            int totalPidsInProgram = dao.getTestIds(testRun.getHaTest().getProgramInfo(), def.getTextCode(), def.getChapter(), 0, 0, 99999, config)
                     .size();
             int pidsInASegment = totalPidsInProgram / def.getTotalSegmentCount();
 
@@ -174,7 +174,7 @@ public class HaTestDefDescription {
              * program
              * 
              */
-            List<String> pids = dao.getTestIds(conn, testRun.getHaTest().getProgramInfo(), def.getTextCode(), def.getChapter(), 0, start, end, config);
+            List<String> pids = dao.getTestIds(testRun.getHaTest().getProgramInfo(), def.getTextCode(), def.getChapter(), 0, start, end, config);
 
             /**
              * Create a dummy TestRun

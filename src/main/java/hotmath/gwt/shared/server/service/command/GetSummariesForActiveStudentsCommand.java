@@ -22,7 +22,7 @@ public class GetSummariesForActiveStudentsCommand implements ActionHandler<GetSu
 
     
     public CmList<StudentModelI> execute(Connection conn, GetSummariesForActiveStudentsAction action) throws Exception {
-        CmStudentDao dao = new CmStudentDao();
+        CmStudentDao dao = CmStudentDao.getInstance();
         
         CmList<StudentModelI> cmList = new CmArrayList<StudentModelI>();
         cmList.addAll(dao.getSummariesForActiveStudents(conn, action.getAdminId()));

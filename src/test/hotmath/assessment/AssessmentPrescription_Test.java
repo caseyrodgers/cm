@@ -71,9 +71,9 @@ public class AssessmentPrescription_Test extends CmDbTestCase {
         
         userId = setupDemoAccount();
         
-        testDef = new HaTestDefDao().getTestDef(conn, CA_STATE_TEST);
+        testDef = HaTestDefDao.getInstance().getTestDef(CA_STATE_TEST);
         
-        HaTest test = HaTestDao.createTest(conn, userId, testDef, 1);
+        HaTest test = HaTestDao.getInstance().createTest(userId, testDef, 1);
         testRun = HaTestDao.createTestRun(conn, userId, test.getTestId(),0, 1, 9);
     }
     

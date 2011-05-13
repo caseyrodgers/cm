@@ -60,16 +60,16 @@ public class GetQuizHtmlCommand implements ActionHandler<GetQuizHtmlAction, Quiz
             String quizHtmlTemplate = readQuizHtmlTemplate();
             Map<String, Object> map = new HashMap<String, Object>();
 
-            StudentUserProgramModel programInfo = new CmUserProgramDao().loadProgramInfoForTest(conn, action.getTestId());
+            StudentUserProgramModel programInfo = CmUserProgramDao.getInstance().loadProgramInfoForTest(conn, action.getTestId());
 
             
             int testId = action.getTestId();
 
-            HaTest haTest = HaTestDao.loadTest(conn, testId);
+            HaTest haTest = HaTestDao.getInstance().loadTest(testId);
             
             String testTitle = null;
             if(programInfo.getCustomProgramId() > 0) {
-                testTitle = new CmCustomProgramDao().getCustomProgram(conn,programInfo.getCustomProgramId()).getProgramName();
+                testTitle = CmCustomProgramDao.getInstance().getCustomProgram(conn,programInfo.getCustomProgramId()).getProgramName();
             }
             else if(programInfo.getCustomQuizId() > 0) {
                 testTitle =  programInfo.getCustomQuizName();
@@ -100,7 +100,7 @@ public class GetQuizHtmlCommand implements ActionHandler<GetQuizHtmlAction, Quiz
                 String quizHtml = VelocityTemplateFromStringManager.getInstance().processTemplate(quizHtmlTemplate, map);
                 //  quizHtml = processHtmlForSprites(quizHtml);
                 
-                ChapterInfo chapterInfo = new HaTestDefDao().getChapterInfo(conn, programInfo);
+                ChapterInfo chapterInfo = HaTestDefDao.getInstance().getChapterInfo(conn, programInfo);
                 String subTitle=null;
                 if(chapterInfo != null) {
                     testTitle += ", #" + chapterInfo.getChapterNumber();
@@ -130,7 +130,7 @@ public class GetQuizHtmlCommand implements ActionHandler<GetQuizHtmlAction, Quiz
             
             int segmentCount=0;
             if(programInfo.getCustomProgramId() > 0) {
-                segmentCount = new CmCustomProgramDao().getTotalSegmentCount(conn, programInfo.getCustomProgramId());
+                segmentCount = CmCustomProgramDao.getInstance().getTotalSegmentCount(conn, programInfo.getCustomProgramId());
             }
             else {
                 segmentCount = haTest.getTotalSegments();

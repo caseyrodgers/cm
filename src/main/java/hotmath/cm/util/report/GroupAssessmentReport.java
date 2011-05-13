@@ -45,7 +45,7 @@ public class GroupAssessmentReport {
         ByteArrayOutputStream baos = null;
         List<Integer> studentUids = (List<Integer>) CmCacheManager.getInstance().retrieveFromCache(REPORT_ID, reportId);
 
-        CmAdminDao adminDao = new CmAdminDao();
+        CmAdminDao adminDao = CmAdminDao.getInstance();
 
         AccountInfoModel info = adminDao.getAccountInfo(conn, adminId);
         if (info == null)

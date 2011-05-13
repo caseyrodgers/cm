@@ -17,12 +17,12 @@ public class GroupManagerAssignCommand implements ActionHandler<GroupManagerAssi
 		
 		switch(action.getType()) {
 		case GET_STUDENTS:
-			response.setInGroup(new CmAdminDao().getGroupStudents(conn,action.getGroup()));
-			response.setNotInGroup(new CmAdminDao().getGroupStudentsNotIn(conn,action.getGroup()));
+			response.setInGroup(CmAdminDao.getInstance().getGroupStudents(conn,action.getGroup()));
+			response.setNotInGroup(CmAdminDao.getInstance().getGroupStudentsNotIn(conn,action.getGroup()));
 			break;
 			
 		case SAVE_STUDENTS:
-            new CmAdminDao().setGroupStudents(conn, action.getGroup(), action.getGroupStudents());
+		    CmAdminDao.getInstance().setGroupStudents(conn, action.getGroup(), action.getGroupStudents());
             break;
 			
 		}

@@ -26,7 +26,7 @@ grad test would loop
  */
 public class EndOfProgramHandler {
 
-	private CmStudentDao dao = new CmStudentDao();
+	private CmStudentDao dao = CmStudentDao.getInstance();
 
 	StudentModelI student;
     
@@ -52,9 +52,9 @@ public class EndOfProgramHandler {
      * @throws Exception
      */
     public StudentUserProgramModel getNextProgram(final Connection conn) throws Exception {
-    	CmUserProgramDao upDao = new CmUserProgramDao();
+    	CmUserProgramDao upDao = CmUserProgramDao.getInstance();
 
-    	StudentUserProgramModel programCurr = upDao.loadProgramInfoCurrent(conn,student.getUid());
+    	StudentUserProgramModel programCurr = upDao.loadProgramInfoCurrent(student.getUid());
 
     	if(programCurr.getTestDefId() == CmProgram.ESSENTIALS.getDefId()
     			|| programCurr.getTestDefId() == CmProgram.ESSENTIALS_V1.getDefId()){
@@ -114,7 +114,7 @@ public class EndOfProgramHandler {
     		}
     	}
 
-    	StudentUserProgramModel programNext = upDao.loadProgramInfoCurrent(conn, student.getUid());
+    	StudentUserProgramModel programNext = upDao.loadProgramInfoCurrent(student.getUid());
     	return programNext;
     }
     
@@ -130,8 +130,8 @@ public class EndOfProgramHandler {
 
         HaTestConfig config = program.getConfig();
         String chapter = config.getChapters().get(0);
-        HaTestDefDao dao = new HaTestDefDao(); 
-        List<String> chapters = dao.getProgramChapters(conn, dao.getTestDef(conn, program.getTestDefId()));
+        HaTestDefDao dao = HaTestDefDao.getInstance(); 
+        List<String> chapters = dao.getProgramChapters(conn, dao.getTestDef(program.getTestDefId()));
         
         String nextChapter = getNextChapter(chapters, chapter);
         if(nextChapter != null) {

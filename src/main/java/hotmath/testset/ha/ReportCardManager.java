@@ -21,7 +21,7 @@ public class ReportCardManager {
     static public StudentReportCardModel2 createModel(final Connection conn, Integer userId) throws Exception {
         StudentReportCardModel2 rmodel = new StudentReportCardModel2();
 
-        StudentModelI student = new CmStudentDao().getStudentModel(conn, userId, false);
+        StudentModelI student = CmStudentDao.getInstance().getStudentModel(conn, userId, false);
         List<UserProgramInfo> userInfos = new UserProgramInfoDao().getUserProgramInfoForUser(conn, userId);
         
         UserProgramInfoDao upid = new UserProgramInfoDao();

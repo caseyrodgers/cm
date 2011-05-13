@@ -20,7 +20,7 @@ public class SetLessonCompletedCommand implements ActionHandler<SetLessonComplet
     @Override
     public RpcData execute(Connection conn, SetLessonCompletedAction action) throws Exception {
         
-        new HaTestRunDao().setLessonCompleted(conn, action.getRunId(), action.getSession());
+        HaTestRunDao.getInstance().setLessonCompleted(conn, action.getRunId(), action.getSession());
         return new RpcData("status=OK");
     }
 

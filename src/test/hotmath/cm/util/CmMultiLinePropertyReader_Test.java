@@ -10,7 +10,7 @@ public class CmMultiLinePropertyReader_Test extends TestCase {
     public CmMultiLinePropertyReader_Test(String name) {
         super(name);
     }
-
+    
     @Override
     protected void setUp() throws Exception {
         CmMultiLinePropertyReader.getInstance().put("PROP_1", "PROPERTY_1");
@@ -40,5 +40,4 @@ public class CmMultiLinePropertyReader_Test extends TestCase {
         String p = CmMultiLinePropertyReader.getInstance().getProperty("NOT_EXIST");
         assertTrue(p == null);
     }
-
 }

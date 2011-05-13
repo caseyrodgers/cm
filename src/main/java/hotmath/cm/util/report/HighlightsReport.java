@@ -64,13 +64,13 @@ public class HighlightsReport {
     public ByteArrayOutputStream makePdf(final Connection conn, Integer adminId) throws Exception {
         ByteArrayOutputStream baos = null;
         String filterDescription;
-        filterDescription = ReportUtils.getFilterDescription(conn, adminId, new CmAdminDao(), filterMap);
+        filterDescription = ReportUtils.getFilterDescription(conn, adminId, CmAdminDao.getInstance(), filterMap);
 
         Document document = new Document();
         baos = new ByteArrayOutputStream();
         PdfWriter.getInstance(document, baos);
 
-        AccountInfoModel info = new CmAdminDao().getAccountInfo(conn,adminId);
+        AccountInfoModel info = CmAdminDao.getInstance().getAccountInfo(conn,adminId);
         
         int rowCount = 0;
         String countLabel = null;

@@ -52,15 +52,15 @@ public class CmDbTestCase extends DbTestCase {
         
         HaUser user = HaUser.lookUser(conn, setupDemoAccount(),null);
         
-        HaTestDef testDef = new HaTestDefDao().getTestDef(conn, user.getAssignedTestName());
-        _test = HaTestDao.createTest(conn,user.getUid(), testDef, 1);
+        HaTestDef testDef = HaTestDefDao.getInstance().getTestDef(user.getAssignedTestName());
+        _test = HaTestDao.getInstance().createTest(user.getUid(), testDef, 1);
         
         return _test;
     }
     
     
     public HaTestRun setupDemoAccountTestRun() throws Exception {
-        HaTest test = HaTestDao.loadTest(conn, setupDemoAccountTest().getTestId());
+        HaTest test = HaTestDao.getInstance().loadTest(setupDemoAccountTest().getTestId());
         String pids[] = test.getPids().toArray(new String[test.getPids().size()]);
         _testRun = HaTestDao.createTestRun(conn, test.getUser().getUid(), test.getTestId(), 0,0,0);
         
@@ -77,7 +77,7 @@ public class CmDbTestCase extends DbTestCase {
     
     public AssessmentPrescription setupDemoAccountPrescription() throws Exception {
 
-        HaTestRun testRun = new HaTestRunDao().lookupTestRun(conn, setupDemoAccountTestRun().getRunId());
+        HaTestRun testRun = HaTestRunDao.getInstance().lookupTestRun(conn, setupDemoAccountTestRun().getRunId());
         
         int c =  testRun.getAnsweredCorrect();
         int i = testRun.getAnsweredIncorrect();
@@ -99,7 +99,7 @@ public class CmDbTestCase extends DbTestCase {
         GroupInfoModel group = new GroupInfoModel();
         group.setGroupName("demo_" + System.currentTimeMillis());
         group.setDescription("Demo Group");
-        _groupModel = new CmAdminDao().addGroup(conn, _user.getAid(), group);
+        _groupModel = CmAdminDao.getInstance().addGroup(conn, _user.getAid(), group);
         return _groupModel;
     }
 }

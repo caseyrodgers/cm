@@ -36,7 +36,7 @@ public class CreateAutoRegistrationPreviewCommand implements ActionHandler<Creat
         AutoRegistrationSetup preview = new AutoRegistrationSetup();
         
 
-        CmStudentDao dao = new CmStudentDao();
+        CmStudentDao dao = CmStudentDao.getInstance();
         
         
         BulkRegLoader bulkLoader = (BulkRegLoader)CmCacheManager.getInstance().retrieveFromCache(CacheName.BULK_UPLOAD_FILE, action.getUploadKey());

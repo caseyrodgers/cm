@@ -18,7 +18,7 @@ public class GetLessonItemsForCustomProgramTestCommand implements ActionHandler<
     @Override
     public CmList<LessonItemModel> execute(Connection conn, GetLessonItemsForCustomProgramTestAction action) throws Exception {
         
-    	List<CustomLessonModel> cmList = new CmCustomProgramDao().getCustomProgramLessonsForTestId(conn, action.getTestId());
+    	List<CustomLessonModel> cmList = CmCustomProgramDao.getInstance().getCustomProgramLessonsForTestId( action.getTestId());
     	
     	CmList<LessonItemModel> list = new CmArrayList<LessonItemModel>();
 

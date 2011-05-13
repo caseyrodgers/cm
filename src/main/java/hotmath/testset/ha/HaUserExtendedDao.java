@@ -160,7 +160,7 @@ public class HaUserExtendedDao {
 
     static public void resetUserExtendedLessonStatusForUid(final Connection conn, StudentProgramModel program, int userId) throws Exception {
     	if (program.getCustom().isCustom()) {
-    		CmCustomProgramDao dao = new CmCustomProgramDao();
+    		CmCustomProgramDao dao = CmCustomProgramDao.getInstance();
     		int programSegment = 1;
     		CmList<CustomLessonModel> list = dao.getCustomProgramLessons(conn, program.getCustom().getCustomProgramId(),programSegment);
     	    updateUserExtendedLessonStatusForUid(conn, userId, (list!=null)?list.size():0);    		

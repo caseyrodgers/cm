@@ -23,7 +23,7 @@ public class SetBackgroundStyleCommand implements ActionHandler<SetBackgroundSty
     public RpcData execute(Connection conn, SetBackgroundStyleAction action) throws Exception {
         try {
             conn = HMConnectionPool.getConnection();
-            new CmStudentDao().setBackgroundStyle(conn, action.getUid(),action.getStyleName());
+            CmStudentDao.getInstance().setBackgroundStyle(conn, action.getUid(),action.getStyleName());
             
             RpcData rData = new RpcData("status=OK");
             return rData;

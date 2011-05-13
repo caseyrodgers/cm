@@ -17,7 +17,7 @@ public class GetLessonItemsForTestRunCommand implements ActionHandler<GetLessonI
     @Override
     public CmList<LessonItemModel> execute(Connection conn, GetLessonItemsForTestRunAction action) throws Exception {
         
-        List<LessonItemModel> list = new CmStudentDao().getLessonItemsForTestRun(conn, action.getRunId());
+        List<LessonItemModel> list = CmStudentDao.getInstance().getLessonItemsForTestRun(conn, action.getRunId());
         CmList<LessonItemModel> toRet = new CmArrayList<LessonItemModel>();
         if(list != null) {
             //  now move each CmList (smaller RPC)

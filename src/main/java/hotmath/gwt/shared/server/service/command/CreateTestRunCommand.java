@@ -51,7 +51,7 @@ public class CreateTestRunCommand implements ActionHandler<CreateTestRunAction, 
         
         CreateTestRunResponse testRunInfo = new CreateTestRunResponse();
 
-        CmStudentDao sdao = new CmStudentDao();
+        CmStudentDao sdao = CmStudentDao.getInstance();
         startTime = beginTime = System.currentTimeMillis();
         sdao.verifyActiveProgram(conn, action.getTestId(), action.getUserId());
 
@@ -68,7 +68,7 @@ public class CreateTestRunCommand implements ActionHandler<CreateTestRunAction, 
             int answeredIncorrect = 0;
 
             startTime = System.currentTimeMillis();
-            HaTest test = HaTestDao.loadTest(conn, action.getTestId());
+            HaTest test = HaTestDao.getInstance().loadTest(action.getTestId());
             logger.debug(String.format("+++ execute(): loadTest(): took: %d msec",System.currentTimeMillis() - startTime));
             
             startTime = System.currentTimeMillis();
@@ -153,7 +153,7 @@ public class CreateTestRunCommand implements ActionHandler<CreateTestRunAction, 
              */
             if(!run.isPassing()) {
                 startTime = System.currentTimeMillis();
-                new CmStudentDao().moveToNextQuizSegmentSlot(conn,test.getUser().getUid(), test.getTestDef().getNumAlternateTests());
+                CmStudentDao.getInstance().moveToNextQuizSegmentSlot(conn,test.getUser().getUid(), test.getTestDef().getNumAlternateTests());
                 	logger.debug(String.format("+++ execute(): moveToNextQuizSegmentSlot(): took: %d msec",System.currentTimeMillis() - startTime));
             }
             

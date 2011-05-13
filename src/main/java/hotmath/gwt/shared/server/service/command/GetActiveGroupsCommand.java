@@ -15,7 +15,7 @@ public class GetActiveGroupsCommand implements ActionHandler<GetActiveGroupsActi
 
     @Override
     public CmList<GroupInfoModel> execute(final Connection conn, GetActiveGroupsAction action) throws Exception {
-        CmAdminDao cma = new CmAdminDao();
+        CmAdminDao cma = CmAdminDao.getInstance();
         return cma.getActiveGroups(conn, action.getUid());
     }
 

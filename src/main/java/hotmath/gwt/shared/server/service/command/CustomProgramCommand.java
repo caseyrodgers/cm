@@ -30,19 +30,19 @@ public class CustomProgramCommand implements ActionHandler<CustomProgramAction, 
                 CmList<CustomLessonModel> list = (CmList<CustomLessonModel>)CmCacheManager.getInstance()
                     .retrieveFromCache(CacheName.CUSTOM_PROGRAM_LESSONS, CacheName.CUSTOM_PROGRAM_LESSONS);
                 if(list == null) {
-                    list = new CmCustomProgramDao().getAllLessons(conn);
+                    list = CmCustomProgramDao.getInstance().getAllLessons(conn);
                     CmCacheManager.getInstance().addToCache(CacheName.CUSTOM_PROGRAM_LESSONS, CacheName.CUSTOM_PROGRAM_LESSONS, list);
                 }
                 return list;
                 
             case GET_CUSTOM_PROGRAM:
-                return new CmCustomProgramDao().getCustomProgramLessonsAllSegments(conn, action.getProgramId());
+                return CmCustomProgramDao.getInstance().getCustomProgramLessonsAllSegments(conn, action.getProgramId());
                 
             case SAVE:
-                return new CmCustomProgramDao().saveChanges(conn, action.getAdminId(),action.getProgramId(), action.getProgramName(), action.getLessons());
+                return CmCustomProgramDao.getInstance().saveChanges(conn, action.getAdminId(),action.getProgramId(), action.getProgramName(), action.getLessons());
                   
             case CREATE:                
-                CustomProgramModel newProgram = new CmCustomProgramDao().createNewCustomProgram(conn, action.getAdminId(), action.getProgramName(), action.getLessons());
+                CustomProgramModel newProgram = CmCustomProgramDao.getInstance().createNewCustomProgram(conn, action.getAdminId(), action.getProgramName(), action.getLessons());
                 return new CmArrayList<CustomLessonModel>();
                 
             default:

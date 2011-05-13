@@ -20,7 +20,7 @@ import hotmath.gwt.shared.server.service.ActionHandlerManualConnectionManagement
 public class GetReportDefCommand implements ActionHandlerManualConnectionManagement, ActionHandler<GetReportDefAction, StringHolder> {
 
 	public StringHolder execute(Connection conn, GetReportDefAction action) throws Exception { 
-        CmAdminDao dao = new CmAdminDao();
+        CmAdminDao dao = CmAdminDao.getInstance();
         return new StringHolder(dao.getPrintableStudentReportId(action.getStudentUids()));
     }
 

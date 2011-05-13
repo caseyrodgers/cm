@@ -154,7 +154,7 @@ public class CmPilotCreate {
 
     private void setupPilotGroups(final Connection conn, Integer aid) throws Exception {
     	
-    	CmAdminDao dao = new CmAdminDao();
+    	CmAdminDao dao = CmAdminDao.getInstance();
 
         // - quizme - a self-reg group for auto-enroll program
         dao.createSelfRegistrationGroup(conn, aid, "quizme", CmProgram.AUTO_ENROLL, false, false);
@@ -206,7 +206,7 @@ public class CmPilotCreate {
     private StudentModelI addJohnDoeUser(final Connection conn, Integer aid, String name, String password,
             boolean showWorkEnabled, boolean tutoringEnabled, int tutoringHours) throws Exception {
 
-        CmStudentDao cmDao = new CmStudentDao();
+        CmStudentDao cmDao = CmStudentDao.getInstance();
 
         StudentModelI sm = checkIfJohnDoeExists(conn, aid, password);
         if (sm != null)
@@ -241,7 +241,7 @@ public class CmPilotCreate {
      * @throws Exception
      */
     private StudentModelI checkIfJohnDoeExists(final Connection conn, Integer aid, String password) throws Exception {
-        List<StudentModelI> students = new CmStudentDao().getStudentModelByPassword(conn, aid, password);
+        List<StudentModelI> students = CmStudentDao.getInstance().getStudentModelByPassword(conn, aid, password);
         for (StudentModelI s : students) {
             if (s.getPasscode().equals(password))
                 return s;
@@ -439,7 +439,7 @@ public class CmPilotCreate {
     			int aid = rs.getInt("aid");
 
     			try {
-    				new CmAdminDao().createSelfRegistrationGroup(conn, aid,"essentials" , CmProgram.ESSENTIALS, false, false);
+    			    CmAdminDao.getInstance().createSelfRegistrationGroup(conn, aid,"essentials" , CmProgram.ESSENTIALS, false, false);
     			}
     			catch(Exception ex) {
     				logger.error("Error creating group", ex);

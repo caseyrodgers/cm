@@ -1,20 +1,23 @@
 package hotmath.testset.ha;
 
 import hotmath.HotMathException;
+import hotmath.HotMathProperties;
 import hotmath.assessment.AssessmentPrescription;
 import hotmath.assessment.AssessmentPrescriptionManager;
 import hotmath.cm.server.model.CmUserProgramDao;
 import hotmath.cm.util.CmCacheManager;
-import hotmath.cm.util.CmMultiLinePropertyReader;
 import hotmath.cm.util.CmCacheManager.CacheName;
+import hotmath.cm.util.CmMultiLinePropertyReader;
 import hotmath.gwt.cm_admin.server.model.CmCustomProgramDao;
 import hotmath.gwt.cm_admin.server.model.CmStudentDao;
 import hotmath.gwt.shared.server.service.command.GetPrescriptionCommand;
+import hotmath.spring.SpringManager;
 import hotmath.util.sql.SqlUtilities;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -23,6 +26,11 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
+import org.springframework.jdbc.core.PreparedStatementCreator;
+import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.simple.SimpleJdbcDaoSupport;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 
 /**
  * defines data access methods for HaTest
@@ -31,11 +39,21 @@ import org.apache.log4j.Logger;
  * 
  */
 
-public class HaTestDao {
+public class HaTestDao extends SimpleJdbcDaoSupport {
 
     static Logger __logger = Logger.getLogger(HaTest.class);
 
-    public HaTestDao() {
+    static private HaTestDao __instance;
+
+    static public HaTestDao getInstance() throws Exception {
+        if (__instance == null) {
+            __instance = (HaTestDao) SpringManager.getInstance().getBeanFactory().getBean("haTestDao");
+        }
+        return __instance;
+    }
+
+    private HaTestDao() {
+        /** empty */
     }
 
     /**
@@ -47,8 +65,8 @@ public class HaTestDao {
      * @param answer
      * @throws Exception
      */
-    public static void saveTestQuestionChange(final Connection conn, final Integer testId, String pid, int answer, boolean isCorrect)
-            throws Exception {
+    public static void saveTestQuestionChange(final Connection conn, final Integer testId, String pid, int answer,
+            boolean isCorrect) throws Exception {
         PreparedStatement pstat = null;
         try {
             String sql = "insert into HA_TEST_CURRENT(test_id, pid, response_number, is_correct)value(?,?,?,?)";
@@ -146,112 +164,95 @@ public class HaTestDao {
      * @return
      * @throws HotMathException
      */
-    static public HaTest createTest(final Connection conn, Integer uid, HaTestDef testDef, int segment)
-            throws HotMathException {
-        PreparedStatement pstat = null;
-        ResultSet rs = null;
-        
-        assert(segment>0);
-        
+    public HaTest createTest(final Integer uid, final HaTestDef testDef, final int segment)
+            throws Exception {
+
+        assert (segment > 0);
         String msg = String.format("creating test: uid: %d, segment: %d, testDef: %s", uid, segment, testDef);
-        try {
+        __logger.debug(msg);
 
-            __logger.debug(msg);
+        final StudentUserProgramModel userProgram = CmUserProgramDao.getInstance().loadProgramInfoCurrent(uid);
 
-            String sql = "insert into HA_TEST(user_id,user_prog_id,test_def_id,create_time,test_segment,test_segment_slot, total_segments,test_question_count)values(?,?,?,?,?,?,?,?)";
+        /**
+         * Determine determine which alternate test to use
+         * 
+         * @see CreateTestRunCommand.java
+         */
+        final int segmentSlot = CmStudentDao.getInstance().loadActiveInfo(uid).getActiveSegmentSlot();
 
-            pstat = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+        HaUser user = HaUserDao.getInstance().lookUser(uid, false);
+        final HaTestConfig config = user.getTestConfig();
 
-            // get the program info used to create this test
-            StudentUserProgramModel userProgram = new CmUserProgramDao().loadProgramInfoCurrent(conn, uid);
+        final List<String> testIds = testDef.getTestIdsForSegment(userProgram, segment, config, segmentSlot);
 
-            /**
-             * Determine the proper quiz zone to use
-             *  @see CreateTestRunCommand.java
-             */
-            int segmentSlot = new CmStudentDao().loadActiveInfo(conn, uid).getActiveSegmentSlot();
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+        getJdbcTemplate().update(new PreparedStatementCreator() {
+            public PreparedStatement createPreparedStatement(final Connection connection) throws SQLException {
+                try {
+                    String sql = CmMultiLinePropertyReader.getInstance().getProperty("CREATE_NEW_TEST");
+                    PreparedStatement ps = connection.prepareStatement(sql, new String[] { "id" });
+                    ps.setInt(1, uid);
+                    ps.setInt(2, userProgram.getId());
+                    ps.setInt(3, testDef.getTestDefId());
+                    ps.setTimestamp(4, new Timestamp(System.currentTimeMillis()));
+                    ps.setInt(5, segment);
+                    ps.setInt(6, segmentSlot);
 
-            HaUser user = HaUser.lookUser(conn, uid, null);
-            HaTestConfig config = user.getTestConfig();
+                    /**
+                     * If custom program ask program how many segments
+                     * 
+                     * TODO: why not a dynamic config object?
+                     * 
+                     */
+                    int segmentCount = 0;
+                    if (userProgram.getCustomProgramId() > 0) {
+                        segmentCount = CmCustomProgramDao.getInstance().getTotalSegmentCount(connection,userProgram.getCustomProgramId());
+                    } else if (userProgram.getCustomQuizId() > 0)
+                        segmentCount = 1;
+                    else {
+                        segmentCount = config.getSegmentCount();
+                    }
+                    ps.setInt(7, segmentCount);
 
-            List<String> testIds = testDef.getTestIdsForSegment(conn,userProgram, segment, config, segmentSlot);
+                    ps.setInt(8, testIds.size());
 
-            pstat.setInt(1, uid);
-            pstat.setInt(2, userProgram.getId());
-            pstat.setInt(3, testDef.getTestDefId());
-            pstat.setTimestamp(4, new Timestamp(System.currentTimeMillis()));
-            pstat.setInt(5, segment);
-            pstat.setInt(6, segmentSlot);
-            
-            /** If custom program ask program how many segments
-             * 
-             * TODO: why not a dynamic config object?
-             *   
-             */
-            int segmentCount = 0;
-            if(userProgram.getCustomProgramId()>0) {
-                segmentCount = new CmCustomProgramDao().getTotalSegmentCount(conn, userProgram.getCustomProgramId());
-            }
-            else if(userProgram.getCustomQuizId() > 0)
-                segmentCount = 1;
-            else {
-                segmentCount = config.getSegmentCount();
-            }
-            pstat.setInt(7, segmentCount);
-            
-            pstat.setInt(8, testIds.size());
-
-            // make sure there are not currently defines items for this test
-            // Statement stmt = conn.createStatement();
-            // stmt.executeUpdate("delete from HA_TEST_IDS where test_id);
-            // stmt.close();
-
-            int cnt = pstat.executeUpdate();
-            if (cnt != 1)
-                throw new HotMathException("Create not create new test for: " + uid); // but
-                                                                                      // why?
-
-            // extract the auto created pk
-            int testId = -1;
-            try {
-                rs = pstat.getGeneratedKeys();
-                if (rs.next()) {
-                    testId = rs.getInt(1);
-                } else {
-                    throw new HotMathException("Error creating PK for test");
+                    return ps;
+                } catch (Exception e) {
+                    __logger.error(e.getMessage(), e);
+                    throw new SQLException("Error creating test run", e);
                 }
-            } finally {
-                SqlUtilities.releaseResources(rs, pstat, null);
             }
+        }, keyHolder);
 
-            // insert IDS to use for this test
-            pstat = conn.prepareStatement("insert into HA_TEST_IDS(test_id, pid) values(?,?)");
-            for (String pid : testIds) {
-                pstat.setInt(1, testId);
-                pstat.setString(2, pid);
+        // extract the auto created pk
+        final int testId = keyHolder.getKey().intValue();
 
-                if (pstat.executeUpdate() != 1)
-                    throw new Exception("Could not add a problem id to a test");
-            }
+        for (final String pid : testIds) {
+            // insert IDS for use with this test
+            int count = getJdbcTemplate().update(new PreparedStatementCreator() {
+                @Override
+                public PreparedStatement createPreparedStatement(Connection conn) throws SQLException {
+                    PreparedStatement ps = conn.prepareStatement("insert into HA_TEST_IDS(test_id, pid) values(?,?)");
+                    ps.setInt(1, testId);
+                    ps.setString(2, pid);
 
-            // mark this user's record indicating this test as the active
-            user.setActiveTest(testId);
-            user.setActiveTestRunId(null);
-            user.setActiveTestSegment(segment);
-            user.update(conn);
-
-            return loadTest(conn, testId);
-        } catch (HotMathException hme) {
-            throw hme;
-        } catch (Exception e) {
-        	__logger.error(msg, e);
-            throw new HotMathException(e, "Error " + msg + ": " + e.getMessage());
-        } finally {
-            SqlUtilities.releaseResources(null, pstat, null);
+                    return ps;
+                }
+            });
+            if (count != 1)
+                throw new Exception("Could not add a problem id to a test");
         }
+
+        // mark this user's record indicating this test as the active
+        user.setActiveTest(testId);
+        user.setActiveTestRunId(null);
+        user.setActiveTestSegment(segment);
+        user.update();
+
+        return loadTest(testId);
     }
 
-    static public HaTest loadTest(final Connection conn, int testId) throws HotMathException {
+    public HaTest loadTest(final int testId) throws Exception {
 
         __logger.debug("Loading test: " + testId);
 
@@ -259,65 +260,69 @@ public class HaTestDao {
         if (testCached != null)
             return testCached;
 
-        PreparedStatement pstat = null;
-        ResultSet rs = null;
-        try {
-            String sql = CmMultiLinePropertyReader.getInstance().getProperty("HA_TEST_LOAD");
-            pstat = conn.prepareStatement(sql);
-            pstat.setInt(1, testId);
-            rs = pstat.executeQuery();
-            if (!rs.first()) {
-                __logger.warn("Could not load test for testId: " + testId);
-                throw new HotMathException("Could not load test");
-            }
+        
+            StudentUserProgramModel programInfo = new StudentUserProgramModel(); 
+            HaTest test = getJdbcTemplate().queryForObject(
+                    CmMultiLinePropertyReader.getInstance().getProperty("HA_TEST_LOAD"),
+                    new Object[]{testId},
+                    new RowMapper<HaTest>() {
+                        @Override
+                        public HaTest mapRow(ResultSet rs, int rowNum) throws SQLException {
+                            try {
+                                HaTest test = new HaTest();
+                                test.setTestId(rs.getInt("test_id"));
+                                test.setUser(HaUserDao.getInstance().lookUser(rs.getInt("user_id"), false));
+                                test.setSegment(rs.getInt("test_segment"));
+                                test.setSegmentSlot(rs.getInt("test_segment_slot"));
+                                test.setNumTestQuestions(rs.getInt("test_question_count"));
+                                test.setTotalSegments(rs.getInt("total_segments"));
+                                
+            
+                                test.setProgramInfo(new StudentUserProgramModel());
+                                Integer prgId = rs.getInt("prog_id");
+                                if (prgId != null && prgId > 0) {
+                                    /**
+                                     * (new style) use data from CM_USER_PROGRAM attached to this
+                                     * test record
+                                     * 
+                                     */
+                                    __logger.debug("Loading test program info from CM_USER_PROGRAM: " + testId + ", " + prgId);
+                                    StudentUserProgramModel programInfo = test.getProgramInfo();
+                                    programInfo.setId(prgId);
+                                    programInfo.setAdminId(rs.getInt("admin_id"));
+                                    programInfo.setCreateDate(rs.getDate("prog_create_date"));
+                                    programInfo.setTestDefId(rs.getInt("prog_test_def_id"));
+                                    programInfo.setTestName(rs.getString("prog_test_name"));
+                                    programInfo.setConfig(new HaTestConfig(rs.getString("test_config_json")));
+                                }
+                                else {
+                                        /**
+                                         * fall back to extracting program info attached to user
+                                         * 
+                                         */
+                                        __logger.debug("Loading test program info from current assigned program: " + testId);
+                                        test.setProgramInfo(CmUserProgramDao.getInstance().loadProgramInfoCurrent(test.getUser().getUid()));                
+                                }                                    
+                                
+                                // todo: remove connection
+                                Connection conn=HotMathProperties.getInstance().getDataSourceObject().getSbDBConnection().getConnection();
+                                test.setTestDef(HaTestDefFactory.createTestDef(conn, test.getProgramInfo().getTestDefId()));
 
-            HaTest test = new HaTest();
-            test.setTestId(rs.getInt("test_id"));
-            test.setUser(HaUser.lookUser(conn, rs.getInt("user_id"), null));
-            test.setSegment(rs.getInt("test_segment"));
-            test.setSegmentSlot(rs.getInt("test_segment_slot"));
-            test.setNumTestQuestions(rs.getInt("test_question_count"));
-            test.setTotalSegments(rs.getInt("total_segments"));
+                                
+                                return test;
+                            } catch (Exception e) {
+                                __logger.error("Error loading test: " + testId);
+                                throw new SQLException(e.getMessage(), e);
+                            }
+                        }
+                    });
 
-            /**
-             * Create program model and add to HaTest object
-             * 
-             */
-            StudentUserProgramModel programInfo = null;
-            Integer prgId = rs.getInt("prog_id");
-            if (prgId != null && prgId > 0) {
-                /**
-                 * (new style) use data from CM_USER_PROGRAM attached to this
-                 * test record
-                 * 
-                 */
-                __logger.debug("Loading test program info from CM_USER_PROGRAM: " + testId + ", " + prgId);
-
-                programInfo = new StudentUserProgramModel();
-                programInfo.setId(prgId);
-                programInfo.setAdminId(rs.getInt("admin_id"));
-                programInfo.setCreateDate(rs.getDate("prog_create_date"));
-                programInfo.setTestDefId(rs.getInt("prog_test_def_id"));
-                programInfo.setTestName(rs.getString("prog_test_name"));
-                programInfo.setConfig(new HaTestConfig(rs.getString("test_config_json")));
-            } else {
-                /**
-                 * fall back to extracting program info attached to user
-                 * 
-                 */
-                __logger.debug("Loading test program info from current assigned program: " + testId);
-
-                programInfo = new CmUserProgramDao().loadProgramInfoCurrent(conn, test.getUser().getUid());
-            }
-
-            test.setProgramInfo(programInfo);
-            test.setTestDef(HaTestDefFactory.createTestDef(conn, programInfo.getTestDefId()));
 
             /**
              * Get all ids defined for test and add to HaTest object
              * 
              */
-            List<String> testIds = getTestIdsForTest(conn, test.getTestId());
+            List<String> testIds = getTestIdsForTest(test.getTestId());
             for (String pid : testIds) {
                 test.addPid(pid);
             }
@@ -328,13 +333,6 @@ public class HaTestDao {
             CmCacheManager.getInstance().addToCache(CacheName.TEST, testId, test);
 
             return test;
-        } catch (HotMathException hme) {
-            throw hme;
-        } catch (Exception e) {
-            throw new HotMathException(e, "Error looking up Hotmath Advance user: " + e.getMessage());
-        } finally {
-            SqlUtilities.releaseResources(rs, pstat, null);
-        }
     }
 
     /**
@@ -370,7 +368,7 @@ public class HaTestDao {
                 __logger.debug("loadTestsForProgramList(): pstat: " + pstat.toString());
 
             rs = pstat.executeQuery();
-            
+
             List<Integer> testIds = new ArrayList<Integer>();
 
             while (rs.next()) {
@@ -393,10 +391,11 @@ public class HaTestDao {
 
                 // collect testIds
                 testIds.add(test.getTestId());
-                
+
                 list.add(test);
             }
-            if (list.size() == 0) return list;
+            if (list.size() == 0)
+                return list;
 
             /*
              * Get pids for all tests in list
@@ -409,11 +408,12 @@ public class HaTestDao {
             for (HaTest test : list) {
                 Integer testId = test.getTestId();
                 List<String> pids = testPidMap.get(testId);
-                if (pids == null) continue;
-                
+                if (pids == null)
+                    continue;
+
                 for (String pid : pids) {
                     test.addPid(pid);
-                }                
+                }
             }
             return list;
 
@@ -440,8 +440,8 @@ public class HaTestDao {
      * @return
      * @throws HotMathException
      */
-    public static HaTestRun createTestRun(final Connection conn, Integer studentUid, Integer testId,int answeredCorrect, int answeredIncorrect, int notAnswered)
-            throws HotMathException {
+    public static HaTestRun createTestRun(final Connection conn, Integer studentUid, Integer testId,
+            int answeredCorrect, int answeredIncorrect, int notAnswered) throws HotMathException {
         PreparedStatement pstat = null;
         ResultSet rs = null;
         try {
@@ -452,16 +452,19 @@ public class HaTestDao {
              * This information is used to move to the next quiz slot.
              * 
              */
-            CmUserProgramDao dao = new CmUserProgramDao();
-            StudentUserProgramModel pinfo = dao.loadProgramInfoCurrent(conn, studentUid);
+            CmUserProgramDao dao = CmUserProgramDao.getInstance();
+            StudentUserProgramModel pinfo = dao.loadProgramInfoCurrent(studentUid);
             int passPercentRequired = pinfo.getConfig().getPassPercent();
             int testCorrectPercent = GetPrescriptionCommand.getTestPassPercent(answeredCorrect + answeredIncorrect
                     + notAnswered, answeredCorrect);
-            
-            /** if user passed quiz or if the custom program which always is passing */
+
+            /**
+             * if user passed quiz or if the custom program which always is
+             * passing
+             */
             boolean passedQuiz = pinfo.getCustomProgramId() > 0 || (testCorrectPercent >= passPercentRequired);
 
-            HaTest test = HaTestDao.loadTest(conn, testId);
+            HaTest test = HaTestDao.getInstance().loadTest(testId);
             String sql = "insert into HA_TEST_RUN(test_id, run_time, answered_correct, answered_incorrect, not_answered,run_session,is_passing)values(?,?,?,?,?,1,?)";
             pstat = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
             HaTestRun testRun = new HaTestRun();
@@ -510,12 +513,12 @@ public class HaTestDao {
              * update this User's row to indicate new action test run
              */
             test.getUser().setActiveTestRunId(testRun.getRunId());
-            test.getUser().setActiveTest(0); // if test_run is active, test is not
-            test.getUser().update(conn);
-
+            test.getUser().setActiveTest(0); // if test_run is active, test is
+                                             // not
+            test.getUser().update();
 
             updateTestRunSessions(conn, runId);
-            
+
             HaUserExtendedDao.updateUserExtended(conn, studentUid, testRun);
 
             return testRun;
@@ -541,9 +544,11 @@ public class HaTestDao {
      */
     static public void updateTestRunSessions(Connection conn, Integer runId) throws Exception {
         /**
-         * now pre-create the prescription, and extract the total number of sessions
+         * now pre-create the prescription, and extract the total number of
+         * sessions
          * 
-         * NOTE: this is needed because, we need the test_run to create the prescription.
+         * NOTE: this is needed because, we need the test_run to create the
+         * prescription.
          */
         AssessmentPrescription pres = AssessmentPrescriptionManager.getInstance().getPrescription(conn, runId);
         int totalSessions = pres.getSessions().size();
@@ -573,46 +578,36 @@ public class HaTestDao {
      * @return
      * @throws Exception
      */
-    static public List<String> getTestIdsForTest(final Connection conn, int testId) throws Exception {
-
-        List<String> pids = new ArrayList<String>();
-        PreparedStatement pstat = null;
-        ResultSet rs = null;
-
-        try {
-            // now read test's pids
-            String sql = "select * from HA_TEST_IDS where test_id = ?";
-            pstat = conn.prepareStatement(sql);
-            pstat.setInt(1, testId);
-            rs = pstat.executeQuery();
-            if (!rs.first()) {
-                __logger.warn("Could not load pids for testId: " + testId);
-            } else {
-                do {
-                    pids.add(rs.getString("pid"));
-                } while (rs.next());
-            }
-            return pids;
-        } finally {
-            SqlUtilities.releaseResources(rs, pstat, null);
-        }
+    public List<String> getTestIdsForTest(int testId) throws Exception {
+        
+        return getJdbcTemplate().query(
+                "select * from HA_TEST_IDS where test_id = ?",
+                new Object[]{testId},
+                new RowMapper<String>() {
+                    @Override
+                    public String mapRow(ResultSet rs, int rowNum) throws SQLException {
+                        return rs.getString("pid");
+                    }
+                });
     }
 
     /**
-     * Return Map of (testId, pids) that represents all pids in each test for all segments.
+     * Return Map of (testId, pids) that represents all pids in each test for
+     * all segments.
      * 
      * @param testIds
      * 
      * @return
      * @throws Exception
      */
-    static public Map<Integer,List<String>> getPidsForTestIds(final Connection conn, List<Integer> testIds) throws Exception {
+    static public Map<Integer, List<String>> getPidsForTestIds(final Connection conn, List<Integer> testIds)
+            throws Exception {
 
-    	Map<Integer, List<String>> testPidMap = new HashMap<Integer, List<String>> ();
-    	
-		String testIdStr = testIds.toString().substring(1);
-    	testIdStr = testIdStr.substring(0, testIdStr.length()-1);
-    	
+        Map<Integer, List<String>> testPidMap = new HashMap<Integer, List<String>>();
+
+        String testIdStr = testIds.toString().substring(1);
+        testIdStr = testIdStr.substring(0, testIdStr.length() - 1);
+
         List<String> pids = new ArrayList<String>();
         PreparedStatement pstat = null;
         ResultSet rs = null;
@@ -620,23 +615,23 @@ public class HaTestDao {
         try {
             // read tests' pids
             String sql = "select test_id, pid from HA_TEST_IDS where test_id in (XXX) order by test_id";
-        	String sqlWithTestIds = sql.replaceFirst("XXX", testIdStr);
-            
+            String sqlWithTestIds = sql.replaceFirst("XXX", testIdStr);
+
             pstat = conn.prepareStatement(sqlWithTestIds);
             rs = pstat.executeQuery();
             if (!rs.first()) {
                 __logger.warn("Could not load pids for testIds: " + testIds);
             } else {
-            	int lastId = -1;
-            	while (rs.next()) {
-            		int tid = rs.getInt("test_id");
-            		if (tid != lastId) {
-            			lastId = tid;
-            	        pids = new ArrayList<String>();
-            	        testPidMap.put(tid, pids);
-            		}
+                int lastId = -1;
+                while (rs.next()) {
+                    int tid = rs.getInt("test_id");
+                    if (tid != lastId) {
+                        lastId = tid;
+                        pids = new ArrayList<String>();
+                        testPidMap.put(tid, pids);
+                    }
                     pids.add(rs.getString("pid"));
-            	}
+                }
             }
             return testPidMap;
         } finally {
@@ -665,13 +660,14 @@ public class HaTestDao {
 
             List<HaTest> tests = new ArrayList<HaTest>();
 
-            stmt = conn.prepareStatement("select user_prog_id, test_id from HA_TEST where user_prog_id = ? order by create_time");
+            stmt = conn
+                    .prepareStatement("select user_prog_id, test_id from HA_TEST where user_prog_id = ? order by create_time");
             stmt.setInt(1, progId);
             rs = stmt.executeQuery();
             while (rs.next()) {
-                HaTest test = HaTestDao.loadTest(conn, rs.getInt("user_prog_id"));
+                HaTest test = HaTestDao.getInstance().loadTest(rs.getInt("user_prog_id"));
 
-                List<HaTestRun> testRuns = new HaTestRunDao().lookupTestRunsForTest(conn, rs.getInt("test_id"));
+                List<HaTestRun> testRuns = HaTestRunDao.getInstance().lookupTestRunsForTest(conn, rs.getInt("test_id"));
                 test.setTestRuns(testRuns);
 
                 tests.add(test);

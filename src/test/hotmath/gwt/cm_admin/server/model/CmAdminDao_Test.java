@@ -30,7 +30,7 @@ public class CmAdminDao_Test extends CmDbTestCase {
 
     protected void setUp() throws Exception {
         super.setUp();
-        _dao = new CmStudentDao();
+        _dao = CmStudentDao.getInstance();
         
         if(_user == null)
             TEST_ID = setupDemoAccount();
@@ -38,29 +38,29 @@ public class CmAdminDao_Test extends CmDbTestCase {
     }
 
     public void testGetInfo() throws Exception {
-        AccountInfoModel ac = new CmAdminDao().getAccountInfo(conn,_user.getAid());
+        AccountInfoModel ac = CmAdminDao.getInstance().getAccountInfo(conn,_user.getAid());
         assertTrue(ac != null);
     }
     
     public void testGetAccountType() throws Exception {
-        AccountType ac = new CmAdminDao().getAccountType(conn,_user.getAid());
+        AccountType ac = CmAdminDao.getInstance().getAccountType(conn,_user.getAid());
         assertTrue(ac == AccountType.SCHOOL_TEACHER);
     }
     
     
     public void testSetEmail() throws Exception {
-    	new CmAdminDao().setAdminPassword(conn, _user.getAid(),"test@test.com");
+        CmAdminDao.getInstance().setAdminPassword(conn, _user.getAid(),"test@test.com");
     }
 
 
     public void testCreateSelfRegistrationGroup() throws Exception {
-        List<GroupInfoModel> groups = new CmAdminDao().getActiveGroups(conn, _user.getAid());
+        List<GroupInfoModel> groups = CmAdminDao.getInstance().getActiveGroups(conn, _user.getAid());
         
         /** remove all groups
          * 
          */
         for(GroupInfoModel g: groups) {
-            new CmAdminDao().deleteGroup(conn, _user.getAid(),g.getId());
+            CmAdminDao.getInstance().deleteGroup(conn, _user.getAid(),g.getId());
         }
         
         String testGroup = "TEST_SELF_REG";
@@ -68,15 +68,15 @@ public class CmAdminDao_Test extends CmDbTestCase {
         conn.createStatement().executeUpdate("delete from HA_USER where admin_id = " + _user.getAid() + " and user_name = '" + testGroup + "'");
 
         
-        new CmAdminDao().createSelfRegistrationGroup(conn, _user.getAid(), testGroup, CmProgram.ALG1_PROF, false, true);
+        CmAdminDao.getInstance().createSelfRegistrationGroup(conn, _user.getAid(), testGroup, CmProgram.ALG1_PROF, false, true);
         
-        groups = new CmAdminDao().getActiveGroups(conn, _user.getAid());
+        groups = CmAdminDao.getInstance().getActiveGroups(conn, _user.getAid());
         
         boolean found=false;
         for(GroupInfoModel g: groups) {
             if(g.getName().equals(testGroup)) {
                 found=true;
-                List<StudentModelI> students = new CmStudentDao().getStudentModelByUserName(conn, _user.getAid(), testGroup);
+                List<StudentModelI> students = CmStudentDao.getInstance().getStudentModelByUserName(conn, _user.getAid(), testGroup);
                 assertTrue(students.size() > 0);
                 
                 assertTrue(students.get(0).getProgram().getProgramType().equals(CmProgram.ALG1_PROF.getProgramType()));
@@ -90,26 +90,26 @@ public class CmAdminDao_Test extends CmDbTestCase {
     public void testUpdateGroup() throws Exception {
         GroupInfoModel gm = setupDemoGroup();
         String newGroupName = gm.getName() + "_updated";
-        new CmAdminDao().updateGroup(conn, _user.getAid(), gm.getId(),newGroupName);
-        assertFalse(new CmAdminDao().checkForDuplicateGroup(conn, _user.getAid(), gm.getName()));
+        CmAdminDao.getInstance().updateGroup(conn, _user.getAid(), gm.getId(),newGroupName);
+        assertFalse(CmAdminDao.getInstance().checkForDuplicateGroup(conn, _user.getAid(), gm.getName()));
     }
 
     
     public void testDeleteGroup() throws Exception {
         GroupInfoModel gm = setupDemoGroup();
-        new CmAdminDao().deleteGroup(conn,_user.getUid(),gm.getId());
-        assertFalse(new CmAdminDao().checkForDuplicateGroup(conn, _user.getAid(), gm.getName()));
+        CmAdminDao.getInstance().deleteGroup(conn,_user.getUid(),gm.getId());
+        assertFalse(CmAdminDao.getInstance().checkForDuplicateGroup(conn, _user.getAid(), gm.getName()));
     }
 
     
     public void testGetSubjectDefinitions() throws Exception {
-        List<SubjectModel> sm = new CmAdminDao().getSubjectDefinitions(CmProgram.ALG1_PROF.getProgramType());
+        List<SubjectModel> sm = CmAdminDao.getInstance().getSubjectDefinitions(CmProgram.ALG1_PROF.getProgramType());
         assertNotNull(sm);
         assertTrue(sm.size() > 0);
     }
     
     public void testGetChaptersForProgramSubject() throws Exception {
-        CmAdminDao dao = new CmAdminDao();
+        CmAdminDao dao = CmAdminDao.getInstance();
         CmProgram p = CmProgram.GEOM_CHAP;
         List<ChapterModel> chaps = dao.getChaptersForProgramSubject(conn,p.getProgramType(), p.getSubject());
         assertNotNull(chaps);
@@ -121,7 +121,7 @@ public class CmAdminDao_Test extends CmDbTestCase {
 
     
     public void testStudentActiveInfo() throws Exception {
-        StudentActiveInfo activeInfo = _dao.loadActiveInfo(conn, TEST_ID);
+        StudentActiveInfo activeInfo = _dao.loadActiveInfo(TEST_ID);
         assertNotNull(activeInfo);
     }
 
@@ -140,7 +140,7 @@ public class CmAdminDao_Test extends CmDbTestCase {
         StudentModelI sm = _dao.getStudentModelBase(conn, TEST_ID, false);
         _dao.assignProgramToStudent(conn, TEST_ID,CmProgram.PREALG_CHAP, "Integers");
         
-        StudentUserProgramModel pi = new CmUserProgramDao().loadProgramInfoCurrent(conn, TEST_ID);
+        StudentUserProgramModel pi = CmUserProgramDao.getInstance().loadProgramInfoCurrent(TEST_ID);
         assertNotNull(pi);
         assertTrue(pi.getConfig().getChapters().get(0).equals("Integers"));
     }
@@ -158,7 +158,7 @@ public class CmAdminDao_Test extends CmDbTestCase {
         sm.setProgramChanged(true);
         _dao.updateStudent(conn, sm, true, false, true, false,false);
 
-        StudentUserProgramModel progInfo =new CmUserProgramDao().loadProgramInfoCurrent(conn, TEST_ID);
+        StudentUserProgramModel progInfo =CmUserProgramDao.getInstance().loadProgramInfoCurrent(TEST_ID);
         assertTrue(progInfo.getTestName().equals("Algebra 2 Proficiency"));
 
         
@@ -172,7 +172,7 @@ public class CmAdminDao_Test extends CmDbTestCase {
         sm.setProgramChanged(true);
         _dao.updateStudent(conn, sm, true, false, true, false,false);
 
-        progInfo = new CmUserProgramDao().loadProgramInfoCurrent(conn, TEST_ID);
+        progInfo = CmUserProgramDao.getInstance().loadProgramInfoCurrent(TEST_ID);
         assertTrue(progInfo.getTestName().equals("Algebra 1 Proficiency"));
         
         
@@ -185,12 +185,12 @@ public class CmAdminDao_Test extends CmDbTestCase {
         sm.setProgramChanged(true);
         _dao.updateStudent(conn, sm, true, false, true, false,false);
 
-        progInfo = new CmUserProgramDao().loadProgramInfoCurrent(conn, TEST_ID);
+        progInfo = CmUserProgramDao.getInstance().loadProgramInfoCurrent(TEST_ID);
         assertTrue(progInfo.getTestName().equalsIgnoreCase("Pre-algebra Proficiency"));
     }
 
     public void testLoadStudentUserProgramModel() throws Exception {
-        StudentUserProgramModel up = new CmUserProgramDao().loadProgramInfoCurrent(conn, TEST_ID);
+        StudentUserProgramModel up = CmUserProgramDao.getInstance().loadProgramInfoCurrent(TEST_ID);
         assertNotNull(up);
 
         assertTrue(up.getTestDefId() > 0);

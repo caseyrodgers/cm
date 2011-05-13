@@ -34,9 +34,6 @@ import java.util.List;
  */
 public class SaveAutoRegistrationCommand implements ActionHandler<SaveAutoRegistrationAction, RpcData> {
 
-    private CmAdminDao daoa = CmAdminDao.getInstance();
-    private CmStudentDao dao = new CmStudentDao();
-    
     @Override
     public RpcData execute(Connection conn, SaveAutoRegistrationAction action) throws Exception {
     
@@ -46,7 +43,7 @@ public class SaveAutoRegistrationCommand implements ActionHandler<SaveAutoRegist
         
         // Group name cannot be the same as a student password for the current Admin
         student.setPasscode(groupName.trim());
-        Boolean isPasscodeTaken = dao.checkForDuplicatePasscode(conn, student);
+        Boolean isPasscodeTaken = CmStudentDao.getInstance().checkForDuplicatePasscode(conn, student);
         if (isPasscodeTaken == true) {
             throw new CmUserException("Group name cannot be the same as the password of an existing student.");
         }
@@ -54,13 +51,13 @@ public class SaveAutoRegistrationCommand implements ActionHandler<SaveAutoRegist
         // first make sure this group exists
         // If the group already exists then use it, but first
         // remove any existing auto_create_template account based on this group.
-        List<GroupInfoModel> groups = daoa.getActiveGroups(conn, student.getAdminUid());
+        List<GroupInfoModel> groups = CmAdminDao.getInstance().getActiveGroups(conn, student.getAdminUid());
         for(GroupInfoModel gm: groups) {
             String gname = gm.getName();  // contains null for default (NONE) user 
             if(gname != null && gname.equals(groupName)) {
                 groupModel = gm;
 
-                daoa.removeAutoRegistrationSetupFor(conn, student.getAdminUid(), groupName);
+                CmAdminDao.getInstance().removeAutoRegistrationSetupFor(conn, student.getAdminUid(), groupName);
                 
                 break;
             }
@@ -68,17 +65,17 @@ public class SaveAutoRegistrationCommand implements ActionHandler<SaveAutoRegist
         if(groupModel == null) {
             groupModel = new GroupInfoModel();
             groupModel.setGroupName(student.getGroup());
-            groupModel = daoa.addGroup(conn, action.getAdminId(),groupModel);
+            groupModel = CmAdminDao.getInstance().addGroup(conn, action.getAdminId(),groupModel);
         }
         
         student.setGroupId(groupModel.getId().toString());
         
         student.setPasscode(student.getGroup() + "_" + System.currentTimeMillis());  // make unique
         
-        StudentModelI sm = dao.addStudent(conn, student);
+        StudentModelI sm = CmStudentDao.getInstance().addStudent(conn, student);
         
         
-        daoa.markAccountAsAutoRegistrationSetup(conn, sm.getUid());
+        CmAdminDao.getInstance().markAccountAsAutoRegistrationSetup(conn, sm.getUid());
         
         RpcData rdata = new RpcData("status=OK");
         return rdata;

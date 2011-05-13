@@ -30,7 +30,7 @@ public class HaTestRun {
     }
 
     public void setSessionNumber(final Connection conn, int sn) throws Exception {
-    	HaTestRunDao dao = new HaTestRunDao();
+    	HaTestRunDao dao = HaTestRunDao.getInstance();
     	dao.setSessionNumber(conn, runId, sn);
     	this.sessionNumber = sn;
     }
@@ -102,7 +102,7 @@ public class HaTestRun {
      * @throws Exception
      */
     public void transferCurrentToTestRun(final Connection conn) throws Exception {
-        HaTestRunDao dao = new HaTestRunDao();
+        HaTestRunDao dao = HaTestRunDao.getInstance();
 
         // @TODO: why is this needed?  Is this not a new (empty) run?
         dao.removeAllQuizResponses(conn, this.runId);

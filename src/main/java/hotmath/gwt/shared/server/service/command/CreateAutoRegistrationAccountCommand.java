@@ -71,7 +71,7 @@ public class CreateAutoRegistrationAccountCommand implements ActionHandler<Creat
         PreparedStatement stmt = null;
         ResultSet rs = null;
         
-        CmStudentDao dao = new CmStudentDao();
+        CmStudentDao dao = CmStudentDao.getInstance();
         millis = System.currentTimeMillis();
         StudentModelI studentModel = dao.getStudentModelBase(conn, action.getUserId(), true);
     	if (__logger.isDebugEnabled())
@@ -104,22 +104,22 @@ public class CreateAutoRegistrationAccountCommand implements ActionHandler<Creat
     	if (__logger.isDebugEnabled())
         	__logger.debug("+++ CARAC addStudent() took: " + (System.currentTimeMillis()-millis) + " msec");
 
-        CmUserProgramDao upDao = new CmUserProgramDao();
+        CmUserProgramDao upDao = CmUserProgramDao.getInstance();
         millis = System.currentTimeMillis();
         // TODO: make ProgramInfo an attribute of Student Model and skip this lookup
-        StudentUserProgramModel si = upDao.loadProgramInfoCurrent(conn, studentModel.getUid());
+        StudentUserProgramModel si = upDao.loadProgramInfoCurrent(studentModel.getUid());
     	if (__logger.isDebugEnabled())
         	__logger.debug("+++ CARAC loadProgramInfoCurrent() took: " + (System.currentTimeMillis()-millis) + " msec");
 
     	// TODO: student was just created, shouldn't  all active info be 0
         millis = System.currentTimeMillis();
-        StudentActiveInfo activeInfo = dao.loadActiveInfo(conn, studentModel.getUid());
+        StudentActiveInfo activeInfo = dao.loadActiveInfo(studentModel.getUid());
     	if (__logger.isDebugEnabled())
         	__logger.debug("+++ CARAC loadActiveInfo() took: " + (System.currentTimeMillis()-millis) + " msec");
                 
-        HaTestDefDao hdao = new HaTestDefDao();
+        HaTestDefDao hdao = HaTestDefDao.getInstance();
         millis = System.currentTimeMillis();
-        HaTestDef testDef = hdao.getTestDef(conn, si.getTestDefId());
+        HaTestDef testDef = hdao.getTestDef(si.getTestDefId());
     	if (__logger.isDebugEnabled())
         	__logger.debug("+++ CARAC getTestDef() took: " + (System.currentTimeMillis()-millis) + " msec");
         
@@ -129,7 +129,7 @@ public class CreateAutoRegistrationAccountCommand implements ActionHandler<Creat
         	__logger.debug("+++ CARAC getChapterInfo() took: " + (System.currentTimeMillis()-millis) + " msec");
         
         millis = System.currentTimeMillis();
-        AccountType accountType = new CmAdminDao().getAccountType(conn,studentModel.getAdminUid());
+        AccountType accountType = CmAdminDao.getInstance().getAccountType(conn,studentModel.getAdminUid());
     	if (__logger.isDebugEnabled())
         	__logger.debug("+++ CARAC getAccountType() took: " + (System.currentTimeMillis()-millis) + " msec");
 

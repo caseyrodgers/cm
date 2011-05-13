@@ -18,10 +18,10 @@ public class CustomProgramDefinitionCommand implements
     public CmList<CustomProgramModel> execute(Connection conn, CustomProgramDefinitionAction action) throws Exception {
         switch (action.getAction()) {
             case GET:
-                return new CmCustomProgramDao().getCustomPrograms(conn, action.getAdminId());
+                return CmCustomProgramDao.getInstance().getCustomPrograms(conn, action.getAdminId());
     
             case DELETE:
-                new CmCustomProgramDao().deleteCustomProgram(conn, action.getProgramId());
+                CmCustomProgramDao.getInstance().deleteCustomProgram(conn, action.getProgramId());
                 return null;
     
             default:

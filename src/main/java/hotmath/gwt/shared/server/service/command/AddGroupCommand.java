@@ -19,7 +19,7 @@ public class AddGroupCommand implements ActionHandler<AddGroupAction, GroupInfoM
 
     @Override
     public GroupInfoModel execute(Connection conn, AddGroupAction action) throws Exception {
-        CmAdminDao cma = new CmAdminDao();
+        CmAdminDao cma = CmAdminDao.getInstance();
         return cma.addGroup(conn, action.getAdminId(), action.getGroup());
     }
 

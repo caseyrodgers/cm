@@ -17,8 +17,8 @@ public class HaTestDefPlacement extends HaTestDef {
 	    // silent
 	}
 	
-	public HaTestDefPlacement(final Connection conn, String name) throws Exception {
-		HaTestDef td = new HaTestDefDao().getTestDef(conn, name);
+	public HaTestDefPlacement(String name) throws Exception {
+		HaTestDef td = HaTestDefDao.getInstance().getTestDef(name);
 		super.init(td);
 	}
 
@@ -30,14 +30,14 @@ public class HaTestDefPlacement extends HaTestDef {
 	 */
 
 	@Override
-	public List<String> getTestIdsForSegment(final Connection conn, StudentUserProgramModel program, int segment, HaTestConfig config, int testSegmentSlot) throws Exception {
+	public List<String> getTestIdsForSegment(StudentUserProgramModel program, int segment, HaTestConfig config, int testSegmentSlot) throws Exception {
 		_lastSegment = segment;
 
 		if(testSegmentSlot == 0)
 		    testSegmentSlot++;
 
-		HaTestDefDao dao = new HaTestDefDao();
-		return dao.getTestIdsForPlacementSegment(conn, segment, this.TEXTCODE, this.PLACEMENT_CHAPTERS[segment-1], config, testSegmentSlot);
+		HaTestDefDao dao = HaTestDefDao.getInstance();
+		return dao.getTestIdsForPlacementSegment(segment, this.TEXTCODE, this.PLACEMENT_CHAPTERS[segment-1], config, testSegmentSlot);
     }
 
 	@Override

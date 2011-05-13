@@ -46,15 +46,15 @@ public class CmProgramFlow {
     final static Logger __logger = Logger.getLogger(CmProgramFlow.class);
 
     StudentUserProgramModel userProgram;
-    CmStudentDao sdao = new CmStudentDao();
-    CmUserProgramDao updao = new CmUserProgramDao();
+    CmStudentDao sdao = CmStudentDao.getInstance();
+    CmUserProgramDao updao = CmUserProgramDao.getInstance();
     StudentActiveInfo activeInfo;
     StudentModelI student;
 
     public CmProgramFlow(final Connection conn, int userId) throws Exception {
-        this.activeInfo = sdao.loadActiveInfo(conn, userId);
+        this.activeInfo = sdao.loadActiveInfo(userId);
         
-        this.userProgram = updao.loadProgramInfoCurrent(conn, userId);
+        this.userProgram = updao.loadProgramInfoCurrent( userId);
         this.student = sdao.getStudentModel(conn, userProgram.getUserId(),true);
         
         /** make the program segment 1 based
@@ -222,7 +222,7 @@ public class CmProgramFlow {
          * create and register a new test
          */
         HaTestDef testDef = userProgram.getTestDef();
-        return HaTestDao.createTest(conn, userProgram.getUserId(), testDef, activeInfo.getActiveSegment());
+        return HaTestDao.getInstance().createTest(userProgram.getUserId(), testDef, activeInfo.getActiveSegment());
     }
 
     /**
@@ -234,7 +234,7 @@ public class CmProgramFlow {
      */
     public boolean hasPassedCurrentSegment(final Connection conn) throws Exception {
         if (activeInfo.getActiveRunId() > 0) {
-            HaTestRun testRun = new HaTestRunDao().lookupTestRun(conn, activeInfo.getActiveRunId());
+            HaTestRun testRun = HaTestRunDao.getInstance().lookupTestRun(conn, activeInfo.getActiveRunId());
             return testRun.isPassing();
         } else {
             return false;
@@ -283,7 +283,7 @@ public class CmProgramFlow {
             /** Mark this lesson as being viewed
             *
             */
-           new HaTestRunDao().setLessonViewed(conn,activeInfo.getActiveRunId(),session);
+            HaTestRunDao.getInstance().setLessonViewed(conn,activeInfo.getActiveRunId(),session);
 
         }
         catch (Exception e) {
@@ -366,7 +366,7 @@ public class CmProgramFlow {
          * Mark this lesson as being viewed
          * 
          */
-        new HaTestRunDao().setLessonViewed(conn, activeInfo.getActiveRunId(), activeInfo.getActiveRunSession());
+        HaTestRunDao.getInstance().setLessonViewed(conn, activeInfo.getActiveRunId(), activeInfo.getActiveRunSession());
     }
 
     /**

@@ -100,12 +100,12 @@ public class CatchupSignupServlet extends HttpServlet {
             /** create or re-create the HA_ADMIN user 
              *  associated with this SUBSCRIBER record
              */
-            CmAdminDao cad = new CmAdminDao();
+            CmAdminDao cad = CmAdminDao.getInstance();
             HaAdmin haAdmin = cad.getAdmin(sub.getId());
             String uniquePassword = sub.getPassword();
             if(haAdmin == null) {
                 String uniqAdminUser = "admin_" + sifo.getCardEmail();
-                haAdmin = new CmAdminDao().addAdmin(sub.getId(),uniqAdminUser, uniquePassword);
+                haAdmin = CmAdminDao.getInstance().addAdmin(sub.getId(),uniqAdminUser, uniquePassword);
             }
             
             
@@ -140,7 +140,7 @@ public class CatchupSignupServlet extends HttpServlet {
                  Connection conn=null;
                  try {
                      conn = HMConnectionPool.getConnection();
-                     CmStudentDao csd = new CmStudentDao();
+                     CmStudentDao csd = CmStudentDao.getInstance();
                      student = csd.addStudent(conn, student);
                  }
                  finally {

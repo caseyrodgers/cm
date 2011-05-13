@@ -13,7 +13,7 @@ public class AddStudentCommand implements ActionHandler<AddStudentAction, Studen
 
     @Override
     public StudentModelI execute(Connection conn, AddStudentAction action) throws Exception {
-        CmStudentDao dao = new CmStudentDao();
+        CmStudentDao dao = CmStudentDao.getInstance();
         return dao.addStudent(conn, action.getStudent());
     }
 

@@ -20,7 +20,7 @@ public class GetStudentShowWorkCommand implements ActionHandler<GetStudentShowWo
 
     @Override
     public CmList<StudentShowWorkModel> execute(final Connection conn, GetStudentShowWorkAction action) throws Exception {
-        return new CmStudentDao().getStudentShowWork(conn, action.getUid(), action.getRunId());
+        return CmStudentDao.getInstance().getStudentShowWork(conn, action.getUid(), action.getRunId());
     }
 
     @Override

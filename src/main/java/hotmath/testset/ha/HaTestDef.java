@@ -211,7 +211,7 @@ public class HaTestDef {
     List<String> list;
     int _lastSegment;
 
-    public List<String> getTestIdsForSegment(final Connection conn, StudentUserProgramModel userProgram, int segment, HaTestConfig config, int segmentSlot) throws Exception {
+    public List<String> getTestIdsForSegment(StudentUserProgramModel userProgram, int segment, HaTestConfig config, int segmentSlot) throws Exception {
         _lastSegment = segment;
         String chap = "";
         if (config.getChapters().size() > 0) {
@@ -221,17 +221,17 @@ public class HaTestDef {
         }
         
         if(userProgram.getCustomProgramId() > 0) {
-            return new CmCustomProgramDao().getCustomProgramQuizSegmentPids(conn, userProgram.getCustomProgramId(), segment);
+            return CmCustomProgramDao.getInstance().getCustomProgramQuizSegmentPids(userProgram.getCustomProgramId(), segment);
         }
         if(userProgram.getCustomQuizId() > 0) {
             List<String> pids = new ArrayList<String>();
-            for(CustomQuizId cqi: new CmQuizzesDao().getCustomQuizIds(conn, userProgram.getCustomQuizId())) {
+            for(CustomQuizId cqi: CmQuizzesDao.getInstance().getCustomQuizIds(userProgram.getCustomQuizId())) {
                 pids.add(cqi.getPid());
             }
             return pids; 
         }
         else {
-            return new HaTestDefDao().getTestIdsForSegment(conn, userProgram, segment, textCode, chap, config, segmentSlot);
+            return HaTestDefDao.getInstance().getTestIdsForSegment(userProgram, segment, textCode, chap, config, segmentSlot);
         }
     }
 

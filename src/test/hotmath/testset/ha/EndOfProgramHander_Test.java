@@ -17,7 +17,7 @@ public class EndOfProgramHander_Test extends CmDbTestCase {
     protected void setUp() throws Exception {
         super.setUp();
         
-        dao = new CmStudentDao();
+        dao = CmStudentDao.getInstance();
         userId = setupDemoAccount();
     }
 
@@ -92,8 +92,8 @@ public class EndOfProgramHander_Test extends CmDbTestCase {
     
     public void testEndOfProgramChapterTestGeoChap2Prof() throws Exception {
 
-        HaTestDefDao tda = new HaTestDefDao();
-        List<String> chaps = tda.getProgramChapters(conn, tda.getTestDef(conn, CmProgram.GEOM_CHAP.getDefId()));
+        HaTestDefDao tda = HaTestDefDao.getInstance();
+        List<String> chaps = tda.getProgramChapters(conn, tda.getTestDef(CmProgram.GEOM_CHAP.getDefId()));
         
         String lastChap = chaps.get(chaps.size()-1);
         
@@ -189,7 +189,7 @@ public class EndOfProgramHander_Test extends CmDbTestCase {
         dao.assignProgramToStudent(conn,userId, CmProgram.PREALG_CHAP, "Integers");
 
         // read currently set program info
-        StudentUserProgramModel currProgram = new CmUserProgramDao().loadProgramInfoCurrent(conn,userId);
+        StudentUserProgramModel currProgram = CmUserProgramDao.getInstance().loadProgramInfoCurrent(userId);
         
         EndOfProgramHandler eop = new EndOfProgramHandler();
         eop.loadStudent(conn, userId);
@@ -209,7 +209,7 @@ public class EndOfProgramHander_Test extends CmDbTestCase {
      * 
      */
     protected void tearDown() throws Exception {
-        CmStudentDao dao = new CmStudentDao();
+        CmStudentDao dao = CmStudentDao.getInstance();
         dao.removeUser(conn,dao.getStudentModel(userId));
     }
     
@@ -247,7 +247,7 @@ public class EndOfProgramHander_Test extends CmDbTestCase {
     public void testEndOfProgramAssignValid() throws Exception {
         
         // get curr
-        StudentUserProgramModel currProgram = new CmUserProgramDao().loadProgramInfoCurrent(conn,userId);
+        StudentUserProgramModel currProgram = CmUserProgramDao.getInstance().loadProgramInfoCurrent(userId);
         
         // auto assign next
         EndOfProgramHandler eop = new EndOfProgramHandler();

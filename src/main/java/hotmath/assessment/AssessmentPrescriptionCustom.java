@@ -33,7 +33,7 @@ public class AssessmentPrescriptionCustom extends AssessmentPrescription {
         
         this.testRun = testRun;
         
-        int custProgId = new CmUserProgramDao().loadProgramInfoForTest(conn, testRun.getHaTest().getTestId()).getCustomProgramId();
+        int custProgId = CmUserProgramDao.getInstance().loadProgramInfoForTest(conn, testRun.getHaTest().getTestId()).getCustomProgramId();
         if(custProgId == 0) {
             throw new Exception("custom program ID must be specified");
         }
@@ -41,7 +41,7 @@ public class AssessmentPrescriptionCustom extends AssessmentPrescription {
         readAssessment();        
         
         int segment=testRun.getHaTest().getSegment();
-        CmList<CustomLessonModel> progLessons = new CmCustomProgramDao().getCustomProgramLessons(conn, custProgId, segment);
+        CmList<CustomLessonModel> progLessons = CmCustomProgramDao.getInstance().getCustomProgramLessons(conn, custProgId, segment);
         int sessNum = 0;
         for(CustomLessonModel cpProgItem: progLessons) {
             AssessmentPrescriptionSession session=null;
@@ -80,7 +80,7 @@ public class AssessmentPrescriptionCustom extends AssessmentPrescription {
             }
             
         }
-        new HaTestRunDao().addLessonsToTestRun(conn,testRun, _sessions);
+        HaTestRunDao.getInstance().addLessonsToTestRun(conn,testRun, _sessions);
     }
     
     @Override

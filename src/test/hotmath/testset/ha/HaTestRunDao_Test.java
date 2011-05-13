@@ -24,7 +24,7 @@ public class HaTestRunDao_Test extends CmDbTestCase {
         /** create from persistent state
          * 
          */
-        List<TestRunLesson> lessons = new HaTestRunDao().loadTestRunLessonsAndPids(conn, testRun.getRunId());
+        List<TestRunLesson> lessons = HaTestRunDao.getInstance().loadTestRunLessonsAndPids(conn, testRun.getRunId());
 
         AssessmentPrescription apLoaded = new AssessmentPrescription(conn,lessons,testRun);
         
@@ -35,7 +35,7 @@ public class HaTestRunDao_Test extends CmDbTestCase {
     public void testMarkLessonAsViewed() throws Exception  {
         HaTestRun testRun = (_testRun != null?_testRun:setupDemoAccountTestRun());
         
-        HaTestRunDao dao = new HaTestRunDao();
+        HaTestRunDao dao = HaTestRunDao.getInstance();
         dao.setLessonViewed(conn, _testRun.getRunId(), 1);
         List<TestRunLessonModel> lessons = dao.getTestRunLessons(conn, testRun.getRunId());
         
@@ -45,14 +45,14 @@ public class HaTestRunDao_Test extends CmDbTestCase {
     public void testAddLessons() throws Exception {
         AssessmentPrescription p = setupDemoAccountPrescription();
         
-        new HaTestRunDao().addLessonsToTestRun(conn,_testRun, p.getSessions());
+        HaTestRunDao.getInstance().addLessonsToTestRun(conn,_testRun, p.getSessions());
     }
 
 
     public void testGetTestRunLessons() throws Exception  {
         HaTestRun testRun = (_testRun != null?_testRun:setupDemoAccountTestRun());
         
-        List<TestRunLessonModel> lessons = new HaTestRunDao().getTestRunLessons(conn, testRun.getRunId());
+        List<TestRunLessonModel> lessons = HaTestRunDao.getInstance().getTestRunLessons(conn, testRun.getRunId());
         assertTrue(lessons != null);
         assertTrue(lessons.size() > 0);
         assertTrue(lessons.get(0).getFile() != null);
@@ -62,7 +62,7 @@ public class HaTestRunDao_Test extends CmDbTestCase {
     public void testMarkLessonAsCompleted() throws Exception  {
         HaTestRun testRun = (_testRun != null?_testRun:setupDemoAccountTestRun());
         
-        HaTestRunDao dao = new HaTestRunDao();
+        HaTestRunDao dao = HaTestRunDao.getInstance();
         List<TestRunLessonModel> lessons = dao.getTestRunLessons(conn, testRun.getRunId());
         
         dao.markLessonAsCompleted(conn, _testRun.getRunId(), lessons.get(0).getLesson());

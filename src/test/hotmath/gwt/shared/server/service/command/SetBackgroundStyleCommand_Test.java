@@ -25,6 +25,6 @@ public class SetBackgroundStyleCommand_Test extends CmDbTestCase {
         RpcData rdata = ActionDispatcher.getInstance().execute(action);
         assertTrue(rdata.getDataAsString("status").equals("OK"));
         
-        assertTrue(new CmStudentDao().getStudentModel(_user.getUid()).getBackgroundStyle().equals("test-style"));
+        assertTrue(CmStudentDao.getInstance().getStudentModel(_user.getUid()).getBackgroundStyle().equals("test-style"));
     }
 }

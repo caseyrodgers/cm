@@ -35,7 +35,7 @@ public class AssessmentPrescriptionCustomMobile extends AssessmentPrescription {
             _sessions.add(session);
             sessNum++;
         }
-        new HaTestRunDao().addLessonsToTestRun(conn,testRun, _sessions);
+        HaTestRunDao.getInstance().addLessonsToTestRun(conn,testRun, _sessions);
     }
 
 }

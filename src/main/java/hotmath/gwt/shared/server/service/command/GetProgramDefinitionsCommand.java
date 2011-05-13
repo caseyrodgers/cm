@@ -22,7 +22,7 @@ public class GetProgramDefinitionsCommand implements ActionHandler<GetProgramDef
     @Override
     public CmList<StudyProgramModel> execute(final Connection conn, GetProgramDefinitionsAction action) throws Exception {
         CmList<StudyProgramModel> cml = new CmArrayList<StudyProgramModel>();
-        CmAdminDao dao = new CmAdminDao();
+        CmAdminDao dao = CmAdminDao.getInstance();
         cml.addAll(dao.getProgramDefinitions(conn,action.getAdminId()));
         return cml;
     }

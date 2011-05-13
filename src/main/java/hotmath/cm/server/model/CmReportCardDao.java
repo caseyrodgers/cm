@@ -46,7 +46,7 @@ public class CmReportCardDao {
 		 StudentReportCardModelI rval = new StudentReportCardModel();
 		 try {
 
-			 CmUserProgramDao upDao = new CmUserProgramDao();
+			 CmUserProgramDao upDao = CmUserProgramDao.getInstance();
 			 List<StudentUserProgramModel> list = upDao.loadProgramInfoAll(conn, studentUid);
 			 List<StudentUserProgramModel> filteredList = findFirstLastUserProgramInDateRange(list, beginDate, endDate);
 
@@ -85,7 +85,7 @@ public class CmReportCardDao {
 
 			 // load HaTest and HaTestRun
 			 List<HaTest> testList = loadQuizData(conn, filteredList);
-			 StudentActiveInfo ai = new CmStudentDao().loadActiveInfo(conn, studentUid);
+			 StudentActiveInfo ai = CmStudentDao.getInstance().loadActiveInfo(studentUid);
 			 setFirstLastProgramStatus(conn, rval, testList, pm, ai);
 
 			 // set first and last activity date based on quiz data (HaTest and HaTestRun)
@@ -126,7 +126,7 @@ public class CmReportCardDao {
 
 	 private String buildProgramName(final Connection conn, StudentUserProgramModel pm, String chapter, String testName) throws Exception {
 
-		 CmAdminDao adminDao = new CmAdminDao();
+		 CmAdminDao adminDao = CmAdminDao.getInstance();
 		 String subjectId = pm.getTestDef().getSubjectId();
 		 String progId = pm.getTestDef().getProgId();
 		 pm.getTestDef().getTotalSegmentCount();
@@ -192,7 +192,7 @@ public class CmReportCardDao {
 	 }
 	 
 	 private boolean lessonsCompleted(final Connection conn, int runId) throws Exception {
-		 HaTestRunDao dao = new HaTestRunDao();
+		 HaTestRunDao dao = HaTestRunDao.getInstance();
 		 return dao.testRunLessonsCompleted(conn, runId);
 	 }
 

@@ -58,7 +58,7 @@ public class GeneratePdfCommand implements ActionHandler<GeneratePdfAction, CmWe
     		}
     		PdfType pdfType = action.getPdfType();
 
-    		String reportId = new CmAdminDao().getPrintableStudentReportId(studentUids);
+    		String reportId = CmAdminDao.getInstance().getPrintableStudentReportId(studentUids);
 
     		ByteArrayOutputStream baos = null;
     		if (pdfType == PdfType.STUDENT_SUMMARY) {

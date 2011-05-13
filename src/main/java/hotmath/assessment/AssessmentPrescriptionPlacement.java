@@ -78,7 +78,7 @@ public class AssessmentPrescriptionPlacement extends AssessmentPrescription {
              * 
              */
             nextAction.setNextAction(CmPlace.AUTO_PLACEMENT);
-            CmStudentDao dao = new CmStudentDao();
+            CmStudentDao dao = CmStudentDao.getInstance();
             
             // now update the ActiveInfo to empty
             StudentActiveInfo active = new StudentActiveInfo();

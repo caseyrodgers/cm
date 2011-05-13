@@ -287,7 +287,7 @@ public class HaUserFactory {
 			String demoUser = "catchup_demo";
 			String demoPwd = "demo_" + System.currentTimeMillis();
 
-			CmStudentDao cmDao = new CmStudentDao();
+			CmStudentDao cmDao = CmStudentDao.getInstance();
 
 			StudentModel student = new StudentModel();
 			student.setName("Student: " + System.currentTimeMillis());
@@ -328,14 +328,14 @@ public class HaUserFactory {
 
 			pstat = conn.prepareStatement(sql);
 
-			CmStudentDao cmDao = new CmStudentDao();
+			CmStudentDao cmDao = CmStudentDao.getInstance();
 
 			StudentModel student = new StudentModel();
 			student.setName(userName);
 			student.setPasscode(userPass);
 			student.setAdminUid(adminId);
 
-			GroupInfoModel group = new CmAdminDao().getGroup(conn, adminId,
+			GroupInfoModel group = CmAdminDao.getInstance().getGroup(conn, adminId,
 					groupName);
 			if (group == null)
 				throw new CmException("Group '" + groupName
@@ -580,8 +580,8 @@ public class HaUserFactory {
 			
 			int uid = u.getUserKey();
 			
-			StudentModelI student = new CmStudentDao().getStudentModelBase(conn, uid);
-			StudentActiveInfo sai = new CmStudentDao().loadActiveInfo(conn, uid);
+			StudentModelI student = CmStudentDao.getInstance().getStudentModelBase(conn, uid);
+			StudentActiveInfo sai = CmStudentDao.getInstance().loadActiveInfo(uid);
 			System.out.println("Info: " + student.getUid() + ", " + sai.getActiveSegment());
 		}
 		

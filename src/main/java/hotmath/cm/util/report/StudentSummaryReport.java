@@ -49,8 +49,8 @@ public class StudentSummaryReport {
         try {
             conn = HMConnectionPool.getConnection();
 
-            CmAdminDao adminDao = new CmAdminDao();
-            CmStudentDao studentDao = new CmStudentDao();
+            CmAdminDao adminDao = CmAdminDao.getInstance();
+            CmStudentDao studentDao = CmStudentDao.getInstance();
             info = adminDao.getAccountInfo(adminId);
             if (info == null)
                 return null;

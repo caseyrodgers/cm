@@ -19,14 +19,15 @@ public class CmUserProgramDao_Test extends CmDbTestCase {
     
     
     public void testLoadUserProgram() throws Exception {
-        StudentUserProgramModel  supm = new CmUserProgramDao().loadProgramInfo(conn, _test.getProgramInfo().getId());
+        StudentUserProgramModel  supm = CmUserProgramDao.getInstance().loadProgramInfo(conn, _test.getProgramInfo().getId());
         assertTrue(supm.getId().equals(_test.getProgramInfo().getId()));
     }
+    
     public void testSetAsComplete() throws Exception {
-        boolean res = new CmUserProgramDao().setProgramAsComplete(conn, _test.getProgramInfo().getId(), true);
+        boolean res = CmUserProgramDao.getInstance().setProgramAsComplete(conn, _test.getProgramInfo().getId(), true);
         assertTrue(res);
         
-        res = new CmUserProgramDao().setProgramAsComplete(conn, _test.getProgramInfo().getId(), false);
+        res = CmUserProgramDao.getInstance().setProgramAsComplete(conn, _test.getProgramInfo().getId(), false);
         assertTrue(res);
     }
 }

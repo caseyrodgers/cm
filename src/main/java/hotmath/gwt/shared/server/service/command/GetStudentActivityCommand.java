@@ -16,7 +16,7 @@ public class GetStudentActivityCommand implements ActionHandler<GetStudentActivi
 
     @Override
     public CmList<StudentActivityModel>  execute(Connection conn, GetStudentActivityAction action) throws Exception {
-       CmStudentDao dao = new CmStudentDao();
+       CmStudentDao dao = CmStudentDao.getInstance();
        List<StudentActivityModel> activity = dao.getStudentActivity(conn, action.getStudent().getUid());
 
        CmList<StudentActivityModel> list = new CmArrayList<StudentActivityModel>();

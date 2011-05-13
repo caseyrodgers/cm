@@ -40,7 +40,7 @@ public class GetStudentGridPageExtendedCommand implements  ActionHandler<GetStud
 	 * 
 	 */
 	public CmStudentPagingLoadResult<StudentModelExt> execute(Connection conn, GetStudentGridPageExtendedAction action)   throws Exception {
-    	CmStudentDao dao = new CmStudentDao();
+    	CmStudentDao dao = CmStudentDao.getInstance();
     	List<StudentModelI> extendedSummaries = dao.getStudentExtendedSummaries(conn, action.getStudentUids());
     	
     	List<StudentModelExt> studentsExt = new ArrayList<StudentModelExt>();

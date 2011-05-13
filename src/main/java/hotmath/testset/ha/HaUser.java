@@ -11,6 +11,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.util.HashMap;
 
 import org.apache.log4j.Logger;
 
@@ -199,33 +200,8 @@ public class HaUser extends HaBasicUserImpl {
 	 *   
 	 * @throws Exception
 	 */
-	public void update(final Connection conn) throws HotMathException {
-		PreparedStatement pstat=null;
-		try {
-	    	HaTestDef def = HaTestDefFactory.createTestDef(conn, getAssignedTestName());			
-			
-		    String sql = "update HA_USER set active_test_id = ?, active_run_id = ?, active_segment = ?, active_run_session = ?, " +
-		       "test_def_id = ? " +
-	          " where uid = ?";
-   	        pstat = conn.prepareStatement(sql);
-	        pstat.setInt(1,getActiveTest());
-	        pstat.setInt(2,getActiveTestRunId());
-	        pstat.setInt(3,getActiveTestSegment());
-	        pstat.setInt(4,getActiveTestRunSession());
-	        pstat.setInt(5,def.getTestDefId());
-	        pstat.setInt(6,getUid());
-	        
-	        Logger.getLogger(HaUser.class.getName()).debug("Updating HA_USER: " + pstat.toString());
-            
-			if(pstat.executeUpdate() == 0)
-				throw new HotMathException("Could not update user record: " + getUid());
-		}
-		catch(Exception e) {
-			throw new HotMathException(e, "Error updating user record");
-		}
-		finally {
-			SqlUtilities.releaseResources(null,pstat,null);
-		}			
+	public void update() throws Exception {
+	    HaUserDao.getInstance().updateUser(this);
 	}
 	
 	/** Lookup and return HaUser user based on uid (PK), does not use HA_USER cache
@@ -273,11 +249,17 @@ public class HaUser extends HaBasicUserImpl {
 	            if (user != null) return user;
 			}
 	        
-			String sql = CmMultiLinePropertyReader.getInstance().getProperty("HA_USER_LOOKUP_USER");
+			
+			String whereClause="";
 			if(uid != null)
-				sql += " where u.uid = ?";
+				whereClause = " where u.uid = ?";
 			else 
-				sql += " where u.user_name = ?";
+			    whereClause = " where u.user_name = ?";
+			
+			final String fWhereClause = whereClause;
+			String sql = CmMultiLinePropertyReader.getInstance().getProperty(
+			        "HA_USER_LOOKUP_USER",
+			        new String[]{"WHERE_CLAUSE|" + fWhereClause});
 			
 			pstat = conn.prepareStatement(sql);
 			user = new HaUser();

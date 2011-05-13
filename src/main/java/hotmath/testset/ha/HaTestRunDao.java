@@ -6,19 +6,34 @@ import hotmath.assessment.AssessmentPrescription.SessionData;
 import hotmath.assessment.AssessmentPrescriptionSession;
 import hotmath.assessment.RppWidget;
 import hotmath.cm.util.CmMultiLinePropertyReader;
+import hotmath.spring.SpringManager;
 import hotmath.util.sql.SqlUtilities;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 import org.apache.log4j.Logger;
+import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.simple.SimpleJdbcDaoSupport;
 
-public class HaTestRunDao {
+public class HaTestRunDao extends SimpleJdbcDaoSupport {
+    
+    
+    static private HaTestRunDao __instance;
+    static public HaTestRunDao getInstance() throws Exception {
+        if(__instance == null) {
+            __instance = (HaTestRunDao)SpringManager.getInstance().getBeanFactory().getBean("haTestRunDao");
+        }
+        return __instance;
+    }
+    
+    private HaTestRunDao() {/** empty */ }
 
     final static Logger __logger = Logger.getLogger(AssessmentPrescriptionSession.class);
     
@@ -307,51 +322,52 @@ public class HaTestRunDao {
 	 * @return
 	 * @throws HotMathException
 	 */
-	public HaTestRun lookupTestRun(final Connection conn, int runId) throws HotMathException {
-	    PreparedStatement pstat = null;
-	    ResultSet rs = null;
-	    try {
-	        String sql = CmMultiLinePropertyReader.getInstance().getProperty("TEST_RUN_LOOKUP");
-	
-	        pstat = conn.prepareStatement(sql);
-	
-	        pstat.setInt(1, runId);
-	
-	        rs = pstat.executeQuery();
-	        if (!rs.first())
-	            throw new Exception("No such test run: " + runId);
-	
-	        HaTestRun testRun = new HaTestRun();
-	        testRun.setRunId(runId);
-	        testRun.setRunTime(rs.getTimestamp("run_time").getTime());
-	        testRun.setSessionNumber(conn, rs.getInt("run_session"));
-	        testRun.setAnsweredCorrect((rs.getInt("answered_correct")));
-	        testRun.setAnsweredIncorrect((rs.getInt("answered_incorrect")));
-	        testRun.setNotAnswered((rs.getInt("not_answered")));
-	        testRun.setPassing(rs.getInt("is_passing")==0?false:true);
-	
-	        testRun.setHaTest(HaTestDao.loadTest(conn,rs.getInt("test_id")));
-	        do {
-	            String pid = rs.getString("pid");
-	            if (pid == null)
-	                continue;
-	
-	            HaTestRunResult result = new HaTestRunResult();
-	            result.setPid(pid);
-	            result.setResult(rs.getString("answer_status"));
-	            result.setResultId(rs.getInt("rid"));
-	            result.setResponseIndex(rs.getInt("answer_index"));
-	
-	            testRun.results.add(result);
-	        } while (rs.next());
-	        return testRun;
-	    } catch (HotMathException hme) {
-	        throw hme;
-	    } catch (Exception e) {
-	        throw new HotMathException(e, "Error adding run result: " + e.getMessage());
-	    } finally {
-	        SqlUtilities.releaseResources(rs, pstat, null);
-	    }
+	public HaTestRun lookupTestRun(final Connection conn, final int runId) throws Exception {
+	    
+        final HaTestRun testRun = new HaTestRun();
+        testRun.setRunId(runId);
+
+        List<HaTestRunResult> testRunResult = this.getJdbcTemplate().query(
+	            CmMultiLinePropertyReader.getInstance().getProperty("TEST_RUN_LOOKUP"),
+                new Object[]{runId},
+                new RowMapper<HaTestRunResult>() {
+                    public HaTestRunResult mapRow(ResultSet rs, int rowNum) throws SQLException {
+                        try {
+                            if(rowNum == 0) {
+                                testRun.setRunTime(rs.getTimestamp("run_time").getTime());
+                                testRun.setSessionNumber(conn, rs.getInt("run_session"));
+                                testRun.setAnsweredCorrect((rs.getInt("answered_correct")));
+                                testRun.setAnsweredIncorrect((rs.getInt("answered_incorrect")));
+                                testRun.setNotAnswered((rs.getInt("not_answered")));
+                                testRun.setPassing(rs.getInt("is_passing")==0?false:true);
+                            }
+    
+                            HaTestRunResult testResult = new HaTestRunResult();
+                            
+                            testRun.setHaTest(HaTestDao.getInstance().loadTest(rs.getInt("test_id")));
+                            
+                            String pid = rs.getString("pid");            
+                            if (pid != null) {
+                                testResult.setPid(pid);
+                                testResult.setResult(rs.getString("answer_status"));
+                                testResult.setResultId(rs.getInt("rid"));
+                                testResult.setResponseIndex(rs.getInt("answer_index"));
+                
+                                testRun.results.add(testResult);
+                            }
+                            
+                            return testResult;
+                            
+                        }
+                        catch(Exception e) {
+                            __logger.error("Error getting test run: " + runId);
+                            throw new SQLException(e.getMessage(),e);
+                        }
+                    }
+                });
+        
+        
+        return testRun;
 	}
 
 
@@ -441,18 +457,9 @@ public class HaTestRunDao {
     }
     
     public void setSessionNumber(final Connection conn, int runId, int sn) throws Exception {
-        PreparedStatement pstat = null;
-        try {
-            String sql = CmMultiLinePropertyReader.getInstance().getProperty("TEST_RUN_SET_SESSION_NUMBER");
-            pstat = conn.prepareStatement(sql);
-            pstat.setInt(1, sn);
-            pstat.setInt(2, runId);
-            int cnt = pstat.executeUpdate();
-            if (cnt != 1)
-                throw new HotMathException("Could not update session_number for run_id = " + runId);
-        } finally {
-            SqlUtilities.releaseResources(null, pstat, null);
-        }
+        getSimpleJdbcTemplate().update(
+                CmMultiLinePropertyReader.getInstance().getProperty("TEST_RUN_SET_SESSION_NUMBER"),
+                new Object[]{sn,runId});
     }
 
     /** determine if all Lessons for TestRun have been completed

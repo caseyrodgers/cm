@@ -31,19 +31,23 @@ import hotmath.gwt.cm_tools.client.model.StudentShowWorkModel;
 import hotmath.gwt.shared.client.model.UserProgramIsNotActiveException;
 import hotmath.gwt.shared.client.util.CmException;
 import hotmath.gwt.shared.client.util.CmUserException;
+import hotmath.spring.SpringManager;
 import hotmath.testset.ha.CmProgram;
+import hotmath.testset.ha.HaTestConfig;
 import hotmath.testset.ha.HaTestDef;
 import hotmath.testset.ha.HaTestDefDao;
 import hotmath.testset.ha.HaTestDefDescription;
 import hotmath.testset.ha.HaTestRun;
 import hotmath.testset.ha.HaTestRunDao;
 import hotmath.testset.ha.HaUserExtendedDao;
+import hotmath.testset.ha.StudentUserProgramModel;
 import hotmath.util.HMConnectionPool;
 import hotmath.util.sql.SqlUtilities;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
 import java.sql.Types;
@@ -61,16 +65,26 @@ import java.util.Set;
 import org.apache.log4j.Logger;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.simple.SimpleJdbcDaoSupport;
 
 import sb.util.SbUtilities;
 
-public class CmStudentDao {
+public class CmStudentDao extends SimpleJdbcDaoSupport {
 
-    private static final Logger logger = Logger.getLogger(CmStudentDao.class);
+    private static final Logger __logger = Logger.getLogger(CmStudentDao.class);
 
     public static final int GROUP_NONE_ID = 1;
+    
+    static private CmStudentDao __instance;
+    static public CmStudentDao getInstance() throws Exception {
+        if(__instance == null) {
+            __instance = (CmStudentDao)SpringManager.getInstance().getBeanFactory().getBean("cmStudentDao");
+        }
+        return __instance;
+    }
 
-    public CmStudentDao() {
+    private CmStudentDao() {
     }
 
     enum StudentSqlType {
@@ -170,7 +184,7 @@ public class CmStudentDao {
             
             loadChapterInfo(conn, l);
         } catch (Exception e) {
-            logger.error(String.format("*** Error getting student summaries for Admin uid: %d", adminUid), e);
+            __logger.error(String.format("*** Error getting student summaries for Admin uid: %d", adminUid), e);
             throw new Exception("*** Error getting student summary data ***");
         } finally {
             SqlUtilities.releaseResources(rs, ps, null);
@@ -200,7 +214,7 @@ public class CmStudentDao {
             loadChapterInfo(conn, l);
         }
         catch (Exception e) {
-            logger.error(String.format("*** Error getting selected student summaries for Admin uid: %d", adminUid), e);
+            __logger.error(String.format("*** Error getting selected student summaries for Admin uid: %d", adminUid), e);
             throw new Exception("*** Error getting student summary data ***");        	
         }
         finally {
@@ -237,7 +251,7 @@ public class CmStudentDao {
             
             loadChapterInfo(conn, l);
         } catch (Exception e) {
-            logger.error(String.format("*** Error getting student base summaries for Admin uid: %d", adminUid), e);
+            __logger.error(String.format("*** Error getting student base summaries for Admin uid: %d", adminUid), e);
             throw new Exception("*** Error getting student base summary data ***");
         } finally {
             SqlUtilities.releaseResources(rs, ps, null);
@@ -270,7 +284,7 @@ public class CmStudentDao {
             
             loadChapterInfo(conn, l);
         } catch (Exception e) {
-            logger.error(String.format("*** Error getting student base summaries for Admin uid: %d", adminUid), e);
+            __logger.error(String.format("*** Error getting student base summaries for Admin uid: %d", adminUid), e);
             throw new Exception("*** Error getting student base summary data ***");
         } finally {
             SqlUtilities.releaseResources(rs, ps, null);
@@ -296,7 +310,7 @@ public class CmStudentDao {
     		rs = ps.executeQuery();
     		l = loadStudentExtendedSummaries(rs);
     	} catch (Exception e) {
-            logger.error(String.format("*** Error getting student extended summary data for uids: %s", uidStr), e);
+            __logger.error(String.format("*** Error getting student extended summary data for uids: %s", uidStr), e);
 			throw new Exception("*** Error getting student extended summary data ***");
         } finally {
             SqlUtilities.releaseResources(rs, ps, null);
@@ -348,7 +362,7 @@ public class CmStudentDao {
     		rs = ps.executeQuery();
     		l = loadStudentExtendedData(hasFieldKey, rs);
     	} catch (Exception e) {
-            logger.error(String.format("*** Error getting student extended data for uids: %s, sql: ", uidStr, sqlWithUids), e);
+            __logger.error(String.format("*** Error getting student extended data for uids: %s, sql: ", uidStr, sqlWithUids), e);
 			throw new Exception("*** Error getting student extended data ***");
         } finally {
             SqlUtilities.releaseResources(rs, ps, null);
@@ -388,23 +402,23 @@ public class CmStudentDao {
      * 
      */
 	private void loadChapterInfo(final Connection conn, List<StudentModelI> l) throws Exception {
-
-		CmAdminDao dao = new CmAdminDao();
-		
 		for (StudentModelI sm : l) {
-			String chapter = sm.getChapter();
-			if (chapter != null) {
-				String subjId = sm.getProgram().getSubjectId();
-		        List <ChapterModel> cmList = dao.getChaptersForProgramSubject(conn, "Chap", subjId);
-		        for (ChapterModel cm : cmList) {
-		        	if (cm.getTitle().equals(chapter)) {
-		        		sm.getProgram().setProgramDescription(new StringBuilder(sm.getProgram().getProgramDescription()).append(" ").append(cm.getNumber()).toString());
-		        		break;
-		        	}
-		        }
-		        
-			}
+			loadChapterInfo(conn, sm);
 		}
+	}
+	
+	private void loadChapterInfo(final Connection conn, StudentModelI sm) throws Exception {
+	    String chapter = sm.getChapter();
+        if (chapter != null) {
+            String subjId = sm.getProgram().getSubjectId();
+            List <ChapterModel> cmList = CmAdminDao.getInstance().getChaptersForProgramSubject(conn, "Chap", subjId);
+            for (ChapterModel cm : cmList) {
+                if (cm.getTitle().equals(chapter)) {
+                    sm.getProgram().setProgramDescription(new StringBuilder(sm.getProgram().getProgramDescription()).append(" ").append(cm.getNumber()).toString());
+                    break;
+                }
+            }
+        }	    
 	}
 
 	private List<StudentModelI> loadStudentExtendedData(String hasFieldKey, ResultSet rs) throws Exception {
@@ -442,7 +456,7 @@ public class CmStudentDao {
 	}
 
 	public Boolean isTutoringEnabledForAdmin(final Connection conn, Integer aid) throws Exception {
-	    AccountInfoModel aim = new CmAdminDao().getAccountInfo(conn, aid);
+	    AccountInfoModel aim = CmAdminDao.getInstance().getAccountInfo(conn, aid);
 	    String hasTutoring = aim.getHasTutoring();
 	    if(hasTutoring != null && hasTutoring.equals("Enabled")) {
 	        return true;
@@ -475,7 +489,7 @@ public class CmStudentDao {
 
             l = loadStudentActivity(conn, rs);
         } catch (Exception e) {
-            logger.error(String.format("*** Error getting student details for student uid: %d", uid), e);
+            __logger.error(String.format("*** Error getting student details for student uid: %d", uid), e);
             throw new Exception("*** Error getting student details ***");
         } finally {
             SqlUtilities.releaseResources(rs, ps, null);
@@ -510,7 +524,7 @@ public class CmStudentDao {
     		}
     	}
     	catch (Exception e) {
-    		logger.error(String.format("*** Error getting lesson items for runId:  %d", runId), e);
+    		__logger.error(String.format("*** Error getting lesson items for runId:  %d", runId), e);
     		throw new Exception("*** Error getting Lesson Items ***");
     	}
     	finally {
@@ -543,7 +557,7 @@ public class CmStudentDao {
             
             //TODO: getGroupId() returns null sometimes - need to determine why/how
             if (sm.getGroupId() == null) {
-            	logger.warn(String.format("+++ addStudent(): with null group; Admin ID: %d, isDemoUser: %d",
+            	__logger.warn(String.format("+++ addStudent(): with null group; Admin ID: %d, isDemoUser: %d",
             			sm.getAdminUid(), (sm.getIsDemoUser() != null && sm.getIsDemoUser()) ? 1 : 0));
             }
 
@@ -554,7 +568,7 @@ public class CmStudentDao {
             catch (NumberFormatException e) {
                 //TODO: getGroupId() returns non-numeric sometimes - need to determine why/how
             	groupId = GROUP_NONE_ID;
-            	logger.warn(String.format("+++ addStudent(): with invalid group; Admin ID: %d, groupId: %s, isDemoUser: %d",
+            	__logger.warn(String.format("+++ addStudent(): with invalid group; Admin ID: %d, groupId: %s, isDemoUser: %d",
             			sm.getAdminUid(), sm.getGroupId(), (sm.getIsDemoUser() != null && sm.getIsDemoUser()) ? 1 : 0));            	
             }
             
@@ -575,7 +589,7 @@ public class CmStudentDao {
             }
         } catch (Exception e) {
         	String msg = String.format("Error adding Student: %s, Passcode: %s ***", sm.getName(), sm.getPasscode());
-        	logger.error(msg, e);
+        	__logger.error(msg, e);
             throw new Exception(msg, e);
         } finally {
             SqlUtilities.releaseResources(rs, ps, null);
@@ -635,7 +649,7 @@ public class CmStudentDao {
             }
             catch (Exception e) {
             	removeErrorCount++;
-            	logger.error(String.format("*** Error removing student with uid: %d", sm.getUid()), e);
+            	__logger.error(String.format("*** Error removing student with uid: %d", sm.getUid()), e);
             }
             finally {
                 SqlUtilities.releaseResources(rsCheck, stmt, null);
@@ -652,13 +666,13 @@ public class CmStudentDao {
                 ps.setInt(2, sm.getUid());
                 if (ps.executeUpdate() < 1) {
                 	deactivateErrorCount++;
-                	logger.error(String.format("*** Error deactivating student with uid: %d", sm.getUid()));
+                	__logger.error(String.format("*** Error deactivating student with uid: %d", sm.getUid()));
                 }
                 deactivateCount++;
             }
             catch (Exception e) {
             	deactivateErrorCount++;
-            	logger.error(String.format("*** Error deactivating student with uid: %d", sm.getUid()), e);
+            	__logger.error(String.format("*** Error deactivating student with uid: %d", sm.getUid()), e);
             }
             finally {
                 SqlUtilities.releaseResources(null, ps, null);            	
@@ -713,11 +727,11 @@ public class CmStudentDao {
             ps.setString(1, sb.toString());
             ps.setInt(2, sm.getUid());
             if (ps.executeUpdate() < 1) {
-                logger.error(String.format("user deactivation failed; SQL: %s", ps.toString()));
+                __logger.error(String.format("user deactivation failed; SQL: %s", ps.toString()));
                 throw new Exception(String.format("*** Error deactivating student with uid: %d", sm.getUid()));
             }
         } catch (Exception e) {
-            logger.error(String.format("*** Error deactivating student with uid: %d", sm.getUid()), e);
+            __logger.error(String.format("*** Error deactivating student with uid: %d", sm.getUid()), e);
             throw new Exception(String.format("*** Error deactivating student with uid: %d", sm.getUid()));
         } finally {
             SqlUtilities.releaseResources(rs, ps, conn);
@@ -741,14 +755,14 @@ public class CmStudentDao {
         ResultSet rs = null;
 
         try {
-            logger.info("Removing user: " + sm.getUid());
+            __logger.info("Removing user: " + sm.getUid());
             ps = conn.prepareStatement(REMOVE_USER_SQL);
             ps.setInt(1, sm.getUid());
             if (ps.executeUpdate() == 0) {
-                logger.warn("User was not removed");
+                __logger.warn("User was not removed");
             }
         } catch (Exception e) {
-        	logger.error(String.format("*** Error removing user with Uid: %d", sm.getUid()), e);
+        	__logger.error(String.format("*** Error removing user with Uid: %d", sm.getUid()), e);
         } finally {
             SqlUtilities.releaseResources(rs, ps, null);
         }
@@ -775,7 +789,7 @@ public class CmStudentDao {
         if (passPercentChanged) {
         	Integer passPercent = getPercentFromString(sm.getPassPercent());
         	
-            new CmUserProgramDao().setProgramPassPercent(conn, sm.getProgram().getProgramId(), passPercent);
+        	CmUserProgramDao.getInstance().setProgramPassPercent(conn, sm.getProgram().getProgramId(), passPercent);
         }
         return sm;
     }
@@ -799,7 +813,7 @@ public class CmStudentDao {
             rs = ps.executeQuery();
             return (rs.next());
         } catch (Exception e) {
-            logger.error(String.format("*** Error checking passcode for student with uid: %d", sm.getUid()), e);
+            __logger.error(String.format("*** Error checking passcode for student with uid: %d", sm.getUid()), e);
             throw new Exception(String.format("*** Error checking passcode for student: %s ***", sm.getName()));
         } finally {
             SqlUtilities.releaseResources(rs, ps, null);
@@ -819,14 +833,14 @@ public class CmStudentDao {
             ps.setInt(2, (sm.getUid() != null) ? sm.getUid() : -1);
             ps.setInt(3, sm.getAdminUid());
 
-            if (logger.isDebugEnabled()) {
-            	logger.debug(String.format("+++ checkForDuplicateName(): query: %s", ps.toString()));
+            if (__logger.isDebugEnabled()) {
+            	__logger.debug(String.format("+++ checkForDuplicateName(): query: %s", ps.toString()));
             }
 
             rs = ps.executeQuery();
             return (rs.next());
         } catch (Exception e) {
-            logger.error(String.format("*** Error checking name for student with uid: %d", sm.getUid()), e);
+            __logger.error(String.format("*** Error checking name for student with uid: %d", sm.getUid()), e);
             throw new Exception(String.format("*** Error checking name for student: %s ***", sm.getName()));
         } finally {
             SqlUtilities.releaseResources(rs, ps, null);
@@ -889,7 +903,7 @@ public class CmStudentDao {
             updateStudentSettings(conn, sm, null);
 
         } catch (Exception e) {
-            logger.error(String.format("*** Error updating student with uid: %d", sm.getUid()), e);
+            __logger.error(String.format("*** Error updating student with uid: %d", sm.getUid()), e);
             throw new Exception(String.format("*** Error occurred while updating student: %s ***", sm.getName()));
         } finally {
             SqlUtilities.releaseResources(rs, ps, null);
@@ -899,7 +913,7 @@ public class CmStudentDao {
             	ci.setUserId(0);
             	ci.setUserType(ClientInfo.UserType.UNKNOWN);
             }
-            logger.info(String.format("+++ updateStudent(): (userId:%d,userType:%s) elapsed time: %d msec",
+            __logger.info(String.format("+++ updateStudent(): (userId:%d,userType:%s) elapsed time: %d msec",
             	ci.getUserId(), ci.getUserType(), System.currentTimeMillis() - startTime));
         }
         return sm;
@@ -930,13 +944,13 @@ public class CmStudentDao {
             
             // TODO: should we return if single user not found?
             if(cnt != 1)
-                logger.warn("user not found to update: " + uid);
+                __logger.warn("user not found to update: " + uid);
             
             /** update the current program information with new pass percentages
              * 
              */
             StudentModelI sm = getStudentModelBase(conn, uid);
-            new CmUserProgramDao().setProgramPassPercent(conn, sm.getProgram().getProgramId(),passPercent);
+            CmUserProgramDao.getInstance().setProgramPassPercent(conn, sm.getProgram().getProgramId(),passPercent);
 
         } finally {
             SqlUtilities.releaseResources(null, ps, null);
@@ -1018,7 +1032,7 @@ public class CmStudentDao {
             int cnt = ps.executeUpdate();
 
             if (cnt != 1) {
-                logger.warn(String.format("updateStudentOptions(): update failed for uid: %d, sql: %s", uid, ps.toString()));
+                __logger.warn(String.format("updateStudentOptions(): update failed for uid: %d, sql: %s", uid, ps.toString()));
             }
 
             /**
@@ -1026,7 +1040,7 @@ public class CmStudentDao {
              */
             if (passPercent != null) {
                 StudentModelI sm = getStudentModelBase(conn, uid, true);  /** always include templates */
-                new CmUserProgramDao().setProgramPassPercent(conn, sm.getProgram().getProgramId(), passPercent);
+                CmUserProgramDao.getInstance().setProgramPassPercent(conn, sm.getProgram().getProgramId(), passPercent);
             }
 
         } finally {
@@ -1066,11 +1080,11 @@ public class CmStudentDao {
             setActiveInfo(conn, sm.getUid(), new StudentActiveInfo());
 
         } catch (Exception e) {
-            logger.error(String.format("*** Error updating student with uid: %d", sm.getUid()), e);
+            __logger.error(String.format("*** Error updating student with uid: %d", sm.getUid()), e);
             throw new Exception(String.format("*** Error occurred while updating Student: %s ***", sm.getName()));
         } finally {
             SqlUtilities.releaseResources(null, ps, null);
-            logger.info(String.format("+++ updateStudentProgram(): (userId:%d, userType:%s), elapsed time: %d msec",
+            __logger.info(String.format("+++ updateStudentProgram(): (userId:%d, userType:%s), elapsed time: %d msec",
             	ClientInfoHolder.get().getUserId(), ClientInfoHolder.get().getUserType(), System.currentTimeMillis()-startTime));
         }
         return sm;
@@ -1136,16 +1150,16 @@ public class CmStudentDao {
              * 
              */
             StudentActiveInfo info = new StudentActiveInfo();
-            HaTestDef testDef = new HaTestDefDao().getTestDef(conn,sp.getProgramType(), sp.getSubjectId() );
+            HaTestDef testDef = HaTestDefDao.getInstance().getTestDef(conn,sp.getProgramType(), sp.getSubjectId() );
             if(testDef.getNumAlternateTests() > 0) {
             	int randStartSeg = SbUtilities.getRandomNumber(testDef.getNumAlternateTests());
             	info.setActiveSegmentSlot(randStartSeg);
             }
-            logger.info("Setting Active Info: " + info);
+            __logger.info("Setting Active Info: " + info);
             setActiveInfo(conn, sm.getUid(), info);
         } catch (Exception e) {
             String m = String.format("*** Error adding student program for student with uid: %d", sm.getUid());
-            logger.error(m, e);
+            __logger.error(m, e);
             throw new Exception(m, e);
         } finally {
             SqlUtilities.releaseResources(null, ps, null);
@@ -1155,7 +1169,7 @@ public class CmStudentDao {
             	ci.setUserId(0);
             	ci.setUserType(UserType.UNKNOWN);
             }
-            logger.info(String.format("+++ addStudentProgram(): (userId:%d,userType:%s), elapsed time: %d",
+            __logger.info(String.format("+++ addStudentProgram(): (userId:%d,userType:%s), elapsed time: %d",
             		ci.getUserId(), ci.getUserType(), System.currentTimeMillis()-startTime));
         }
         return sm;
@@ -1224,7 +1238,7 @@ public class CmStudentDao {
             setActiveInfo(conn, sm.getUid(), new StudentActiveInfo());
         } catch (Exception e) {
             String m = String.format("*** Error adding student program for student with uid: %d", sm.getUid());
-            logger.error(m, e);
+            __logger.error(m, e);
             throw new Exception(m, e);
         } finally {
             SqlUtilities.releaseResources(null, ps, null);
@@ -1266,7 +1280,7 @@ public class CmStudentDao {
             setActiveInfo(conn, sm.getUid(), new StudentActiveInfo());
         } catch (Exception e) {
             String m = String.format("*** Error adding student program for student with uid: %d", sm.getUid());
-            logger.error(m, e);
+            __logger.error(m, e);
             throw new Exception(m, e);
         } finally {
             SqlUtilities.releaseResources(null, ps, null);
@@ -1382,7 +1396,7 @@ public class CmStudentDao {
                 swModels.add(s);
             }
         } catch (Exception e) {
-        	logger.error(String.format("*** Error getting show work for Uid: %d", uid), e);
+        	__logger.error(String.format("*** Error getting show work for Uid: %d", uid), e);
         } finally {
             SqlUtilities.releaseResources(rs, ps, null);
         }
@@ -1453,7 +1467,7 @@ public class CmStudentDao {
             return getStudentModel(conn, uid, includeSelfRegTemplate);
         }
         catch (Exception e) {
-            logger.error(String.format("*** Error obtaining data for student UID: %d", uid), e);
+            __logger.error(String.format("*** Error obtaining data for student UID: %d", uid), e);
             throw new Exception(String.format("*** Error obtaining data for student with UID: %d", uid));
         } finally {
             SqlUtilities.releaseResources(null, null, conn);
@@ -1470,45 +1484,78 @@ public class CmStudentDao {
      * 
      * @throws Exception
      */
-    public StudentModelI getStudentModel(final Connection conn, Integer uid, Boolean includeSelfRegTemplate) throws Exception {
-        
-        long timeStart = System.currentTimeMillis();
-        PreparedStatement ps = null;
-        ResultSet rs = null;
+    public StudentModelI getStudentModel(final Connection conn, final Integer uid, Boolean includeSelfRegTemplate)
+            throws Exception {
 
-        try {
-            ps = conn.prepareStatement(getStudentSql(StudentSqlType.SINGLE_STUDENT, includeSelfRegTemplate));
-            ps.setInt(1, uid);
-            ps.setInt(2, 1);
-            rs = ps.executeQuery();
+        String sql = getStudentSql(StudentSqlType.SINGLE_STUDENT, includeSelfRegTemplate);
+        StudentModelI studentModel = this.getJdbcTemplate().queryForObject(sql, new Object[] { uid, 1 },
+                new RowMapper<StudentModelI>() {
+                    public StudentModelI mapRow(ResultSet rs, int rowNum) throws SQLException {
+                        try {
+                            StudentModel sm = new StudentModel();
+                            sm.setUid(rs.getInt("uid"));
+                            sm.setAdminUid(rs.getInt("admin_uid"));
+                            sm.setName(rs.getString("name"));
+                            sm.setPasscode(rs.getString("passcode"));
+                            sm.setEmail(rs.getString("email"));
+                            sm.setTutoringUse(rs.getInt("tutoring_use"));
 
-            List<StudentModelI> l = null;
-            l = loadStudentSummaries(rs);
-            if (l.size() == 0)
-                throw new Exception(String.format("Student with UID: %d was not found", uid));
-            if (l.size() > 1)
-                throw new Exception(String.format("Student with UID: %d matches more than one row", uid));
+                            int groupId = rs.getInt("group_id");
+                            sm.setGroupId(String.valueOf(groupId));
+                            sm.setGroup(rs.getString("group_name"));
 
-            loadChapterInfo(conn, l);
-            
-            StudentModelI sm = l.get(0);
-            
-            if(sm.getSettings().getTutoringAvailable()) {
-                /** make sure the admin has tutoring enabled too
-                 * 
-                 */
-                sm.getSettings().setTutoringAvailable(isTutoringEnabledForAdmin(conn, sm.getAdminUid()));
-            }
-            return sm; 
-        } catch (Exception e) {
-            logger.error(String.format("*** Error obtaining data for student UID: %d", uid), e);
-            throw new Exception(String.format("*** Error obtaining data for student with UID: %d", uid));
-        } finally {
-            SqlUtilities.releaseResources(rs, ps, null);
-            logger.debug(String.format("End getStudentModel(), UID: %d, elapsed seconds: %d", uid, ((System.currentTimeMillis() - timeStart)/1000)));
+                            StudentProgramModel sprm = sm.getProgram();
+                            sprm.setProgramDescription(rs.getString("program"));
+                            sprm.setProgramId(rs.getInt("user_prog_id"));
+                            sprm.setProgramType(rs.getString("prog_id"));
+                            sprm.setSubjectId(rs.getString("subj_id"));
+                            sprm.setCustom(new CustomProgramComposite(rs.getInt("custom_program_id"), rs
+                                    .getString("custom_program_name"), rs.getInt("custom_quiz_id"), rs
+                                    .getString("custom_quiz_name")));
+
+                            StudentSettingsModel mdl = sm.getSettings();
+                            mdl.setLimitGames(rs.getInt("limit_games") > 0);
+                            mdl.setShowWorkRequired(rs.getInt("show_work_required") > 0);
+                            mdl.setStopAtProgramEnd(rs.getInt("stop_at_program_end") > 0);
+                            mdl.setTutoringAvailable(rs.getInt("tutoring_available") > 0);
+
+                            sm.setLastQuiz(rs.getString("last_quiz"));
+                            sm.setChapter(getChapter(rs.getString("test_config_json")));
+                            sm.setLastLogin(rs.getString("last_use_date"));
+                            sm.setTotalUsage(0);
+                            sm.setNotPassingCount(rs.getInt("not_passing_count"));
+                            sm.setPassingCount(rs.getInt("passing_count"));
+                            String passPercent = rs.getString("pass_percent");
+                            sm.setPassPercent(passPercent);
+                            sm.setBackgroundStyle(rs.getString("gui_background_style"));
+                            sm.setSectionNum(rs.getInt("active_segment"));
+
+                            int activeTestId = rs.getInt("active_test_id");
+                            boolean isComplete = rs.getDate("date_completed") != null;
+
+                            setupProgramStatus(sm, rs.getString("program"), rs.getString("test_config_json"),
+                                    rs.getInt("current_lesson"), rs.getInt("lesson_count"),
+                                    rs.getInt("lessons_completed"), activeTestId, isComplete);
+
+                            return sm;
+                        } catch (Exception e) {
+                            __logger.error("Error creating StudentUserProgramModel: " + uid, e);
+                            throw new SQLException(e.getMessage());
+                        }
+                    }
+                });
+
+        loadChapterInfo(conn, studentModel);
+
+        if (studentModel.getSettings().getTutoringAvailable()) {
+            /**
+             * make sure the admin has tutoring enabled too
+             * 
+             */
+            studentModel.getSettings().setTutoringAvailable(isTutoringEnabledForAdmin(conn, studentModel.getAdminUid()));
         }
-    }
-    
+        return studentModel;
+    }    
     
     /** Return list of students with specified admin_id and password 
      * 
@@ -1620,11 +1667,11 @@ public class CmStudentDao {
             return sm;
 
         } catch (Exception e) {
-            logger.error(String.format("*** Error obtaining data for student UID: %d", uid), e);
+            __logger.error(String.format("*** Error obtaining data for student UID: %d", uid), e);
             throw new Exception(String.format("*** Error obtaining data for student with UID: %d", uid));
         } finally {
             SqlUtilities.releaseResources(rs, ps, null);
-            logger.info(String.format("End getStudentModelBasic(), UID: %d, elapsed seconds: %d", uid, ((System.currentTimeMillis() - timeStart)/1000)));
+            __logger.info(String.format("End getStudentModelBasic(), UID: %d, elapsed seconds: %d", uid, ((System.currentTimeMillis() - timeStart)/1000)));
         }
     }
 
@@ -1682,11 +1729,11 @@ public class CmStudentDao {
             }
             return sm; 
         } catch (Exception e) {
-            logger.error(String.format("*** Error obtaining data for student UID: %d, includeSelfRegTemplate: %s", uid, includeSelfRegTemplate), e);
+            __logger.error(String.format("*** Error obtaining data for student UID: %d, includeSelfRegTemplate: %s", uid, includeSelfRegTemplate), e);
             throw new Exception(String.format("*** Error obtaining data for student with UID: %d", uid));
         } finally {
             SqlUtilities.releaseResources(rs, ps, null);
-            logger.info(String.format("End getStudentModelBase(), UID: %d, elapsed seconds: %d", uid, ((System.currentTimeMillis() - timeStart)/1000)));
+            __logger.info(String.format("End getStudentModelBase(), UID: %d, elapsed seconds: %d", uid, ((System.currentTimeMillis() - timeStart)/1000)));
         }
     }
     
@@ -1831,7 +1878,7 @@ public class CmStudentDao {
                     return sb.toString();
                 }
                 catch(Exception e) {
-                    logger.error(String.format("*** Error getting status for user_prog_id: %d, test_config_json: %s", userProgId, testConfigJson), e);
+                    __logger.error(String.format("*** Error getting status for user_prog_id: %d, test_config_json: %s", userProgId, testConfigJson), e);
                 }
             }
         }
@@ -1889,7 +1936,7 @@ public class CmStudentDao {
     private List<StudentActivityModel> loadStudentActivity(final Connection conn, ResultSet rs) throws Exception {
 
         List<StudentActivityModel> l = new ArrayList<StudentActivityModel>();
-        CmAdminDao cmaDao = new CmAdminDao();
+        CmAdminDao cmaDao = CmAdminDao.getInstance();
 
         while (rs.next()) {
             StudentActivityModel m = new StudentActivityModel();
@@ -2031,7 +2078,7 @@ public class CmStudentDao {
     	List<LessonItemModel> l = new ArrayList<LessonItemModel>();
 
 	    HaTestDefDescription tdDesc = null;
-	    HaTestRun testRun = new HaTestRunDao().lookupTestRun(conn, runId);	        
+	    HaTestRun testRun = HaTestRunDao.getInstance().lookupTestRun(conn, runId);	        
 	    tdDesc = HaTestDefDescription.getHaTestDefDescription(testRun);
 
 		// identify incomplete topics
@@ -2073,7 +2120,7 @@ public class CmStudentDao {
                 chap = ja.getString(0);
             }
         } catch (Exception e) {
-            logger.error("*** Error extracting Chapter from JSON", e);
+            __logger.error("*** Error extracting Chapter from JSON", e);
         }
 
         return chap;
@@ -2118,39 +2165,41 @@ public class CmStudentDao {
      * @return
      * @throws Exception
      */
-    public StudentActiveInfo loadActiveInfo(final Connection conn, Integer userId) throws Exception {
-        PreparedStatement ps = null;
-        ResultSet rs = null;
+    public StudentActiveInfo loadActiveInfo(final Integer userId) throws Exception {
+        String sql = CmMultiLinePropertyReader.getInstance().getProperty("LOAD_ACTIVE_INFO");
+         StudentActiveInfo activeInfo = this.getJdbcTemplate().queryForObject(
+                sql,
+                new Object[]{userId},
+                new RowMapper<StudentActiveInfo>() {
+                    public StudentActiveInfo mapRow(ResultSet rs, int rowNum) throws SQLException {
+                        StudentActiveInfo activeInfo = new StudentActiveInfo();
+                        try {
+                            activeInfo.setActiveRunId(rs.getInt("active_run_id"));
+                            activeInfo.setActiveRunSession(rs.getInt("active_run_session"));
+                            activeInfo.setActiveSegment(rs.getInt("active_segment"));
+                            activeInfo.setActiveTestId(rs.getInt("active_test_id"));
+                            activeInfo.setActiveSegmentSlot(rs.getInt("active_segment_slot"));
 
-        String sql = "select active_run_id, active_test_id, active_segment, active_segment_slot, active_run_session from HA_USER where uid = ? ";
-        try {
-            StudentActiveInfo activeInfo = new StudentActiveInfo();
+                            return activeInfo;
+                        }
+                        catch(Exception e) {
+                            __logger.error("Error creating StudentUserProgramModel: " + userId, e);
+                            throw new SQLException(e.getMessage());
+                        }
+                    }
+                });
 
-            ps = conn.prepareStatement(sql);
 
-            ps.setInt(1, userId);
-            rs = ps.executeQuery();
-            if (rs.first()) {
-                activeInfo.setActiveRunId(rs.getInt("active_run_id"));
-                activeInfo.setActiveRunSession(rs.getInt("active_run_session"));
-                activeInfo.setActiveSegment(rs.getInt("active_segment"));
-                activeInfo.setActiveTestId(rs.getInt("active_test_id"));
-                activeInfo.setActiveSegmentSlot(rs.getInt("active_segment_slot"));
-            }
-
-            /** Check to see if this program supports alternate tests, if so
-             *  pass along the segment_slot to use .. otherwise, make sure it 
-             *  is zero to always use the same slot
-             */
-            if(activeInfo.getActiveSegmentSlot() > 0) {
-            	CmUserProgramDao upDao = new CmUserProgramDao();
-                if(upDao.loadProgramInfoCurrent(conn, userId).getTestDef().getNumAlternateTests() == 0)
-                   activeInfo.setActiveSegmentSlot(0);
-            }
-            return activeInfo;
-        } finally {
-            SqlUtilities.releaseResources(rs, ps, null);
+        /** Check to see if this program supports alternate tests, if so
+         *  pass along the segment_slot to use .. otherwise, make sure it 
+         *  is zero to always use the same slot
+         */
+        if(activeInfo.getActiveSegmentSlot() > 0) {
+        	CmUserProgramDao upDao = CmUserProgramDao.getInstance();
+            if(upDao.loadProgramInfoCurrent(userId).getTestDef().getNumAlternateTests() == 0)
+               activeInfo.setActiveSegmentSlot(0);
         }
+        return activeInfo;
     }
 
     
@@ -2163,7 +2212,7 @@ public class CmStudentDao {
      * @throws Exception
      */
     public StudentActiveInfo moveToNextQuizSegmentSlot(final Connection conn, Integer userId, int numSlotsInProgram) throws Exception {
-        StudentActiveInfo activeInfo = loadActiveInfo(conn, userId);
+        StudentActiveInfo activeInfo = loadActiveInfo(userId);
         
         int segmentSlot = activeInfo.getActiveSegmentSlot();
         segmentSlot++;
@@ -2191,21 +2240,15 @@ public class CmStudentDao {
     public void setActiveInfo(final Connection conn, Integer userId, StudentActiveInfo activeInfo) throws Exception {
         PreparedStatement ps = null;
 
-        String sql = "update HA_USER set active_run_id = ?, active_test_id = ?, active_segment = ?, active_segment_slot = ?, active_run_session = ? where uid = ? ";
-        try {
-            ps = conn.prepareStatement(sql);
-
-            ps.setInt(1, activeInfo.getActiveRunId());
-            ps.setInt(2, activeInfo.getActiveTestId());
-            ps.setInt(3, activeInfo.getActiveSegment());
-            ps.setInt(4, activeInfo.getActiveSegmentSlot());
-            ps.setInt(5, activeInfo.getActiveRunSession());
-            ps.setInt(6, userId);
-            if (ps.executeUpdate() != 1)
-                throw new Exception("Could not update active information for id: " + userId);
-        } finally {
-            SqlUtilities.releaseResources(null, ps, null);
-        }
+        getSimpleJdbcTemplate().update(
+                CmMultiLinePropertyReader.getInstance().getProperty("SAVE_ACTIVE_INFO"),
+                new Object[]{
+                    activeInfo.getActiveRunId(),
+                    activeInfo.getActiveTestId(),
+                    activeInfo.getActiveSegment(),
+                    activeInfo.getActiveSegmentSlot(),
+                    activeInfo.getActiveRunSession(),
+                    userId});
     }
     
 
@@ -2281,7 +2324,7 @@ public class CmStudentDao {
             }
         }
         catch(Exception e) {
-        	logger.error(String.format("*** Error getting percent from passPercent: %s", passPercent), e);
+        	__logger.error(String.format("*** Error getting percent from passPercent: %s", passPercent), e);
         }
         return 0;
     }
@@ -2308,7 +2351,7 @@ public class CmStudentDao {
             return rs.getInt(1);
 
         } catch (Exception e) {
-        	logger.error(String.format("*** Error getting INMH view count for Uid: %d", uid), e);
+        	__logger.error(String.format("*** Error getting INMH view count for Uid: %d", uid), e);
             throw new CmRpcException("Error adding test run item view: " + e.getMessage());
         } finally {
             SqlUtilities.releaseResources(null, pstat, null);
@@ -2324,7 +2367,7 @@ public class CmStudentDao {
             ps.setInt(2, uid);
             int c = ps.executeUpdate();
             if(c != 1)
-                logger.warn("Could not update background style for user: " + uid);
+                __logger.warn("Could not update background style for user: " + uid);
         }
         finally {
             SqlUtilities.releaseResources(null,ps,null);
@@ -2373,7 +2416,7 @@ public class CmStudentDao {
             }
         }
         catch (Exception e) {
-        	logger.warn(">>> verifyActiveProgram(): program is not active for testId: " + testId);
+        	__logger.warn(">>> verifyActiveProgram(): program is not active for testId: " + testId);
         	throw e;
         }
         finally {
@@ -2424,7 +2467,7 @@ public class CmStudentDao {
             }
         }
         catch (Exception e) {
-        	logger.warn(String.format(">>> verifyActiveProgram(): program is not active uid: %d, testId: %d", uid, testId));
+        	__logger.warn(String.format(">>> verifyActiveProgram(): program is not active uid: %d, testId: %d", uid, testId));
         	throw e;
         }
         finally {

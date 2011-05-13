@@ -83,7 +83,7 @@ public class CmProgramListingDao {
      */
     private ProgramType createProficiencyProgramType(final Connection conn, String type, String title) throws Exception {
     	
-    	HaTestDefDao dao = new HaTestDefDao();
+    	HaTestDefDao dao = HaTestDefDao.getInstance();
     	
     	List<HaTestDef> testDefs = dao.getTestDefsForProgramType(conn, type);;
     	
@@ -114,7 +114,7 @@ public class CmProgramListingDao {
      */
     private ProgramType createSubjectAndChapterProgramType(final Connection conn, String type, String label) throws Exception {
     	
-    	HaTestDefDao dao = new HaTestDefDao();
+    	HaTestDefDao dao = HaTestDefDao.getInstance();
     	
     	List<HaTestDef> testDefs = dao.getTestDefs(conn, type);
     	
@@ -203,8 +203,8 @@ public class CmProgramListingDao {
             /** first get list of PIDS that make this quiz segment
              * 
              */
-            HaTestDefDao hda = new HaTestDefDao();
-            HaTestDef testDef = hda.getTestDef(conn, testDefId);
+            HaTestDefDao hda = HaTestDefDao.getInstance();
+            HaTestDef testDef = hda.getTestDef(testDefId);
             
             CmList<ProgramLesson> lessons = new CmArrayList<ProgramLesson>();
             
@@ -231,7 +231,7 @@ public class CmProgramListingDao {
         	if (logger.isDebugEnabled())
                 logger.debug(String.format("+++ getLessonsFor(): textCode: %s, chapter: %s", testDef.getTextCode(), chapter));
             
-            List<String> pids = hda.getTestIdsForSegment(conn, userProgram, segment, testDef.getTextCode(), chapter, testDef.getTestConfig(), 0);
+            List<String> pids = hda.getTestIdsForSegment(userProgram, segment, testDef.getTextCode(), chapter, testDef.getTestConfig(), 0);
         	if (logger.isDebugEnabled())
                 logger.debug(String.format("+++ getLessonsFor(): pids.size(): %d", pids.size()));
             

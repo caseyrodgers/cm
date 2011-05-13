@@ -136,8 +136,8 @@ public class PrescriptionReport {
      * @throws Exception
      */
     private void testProgramChapterTests(CmProgram progDef) throws Exception {
-        HaTestDefDao dao = new HaTestDefDao();
-        List<String> chapters = dao.getProgramChapters(_conn,dao.getTestDef(_conn, progDef.getDefId()));
+        HaTestDefDao dao = HaTestDefDao.getInstance();
+        List<String> chapters = dao.getProgramChapters(_conn,dao.getTestDef(progDef.getDefId()));
 
         //chapters = Arrays.asList(chapters.get(6));
         
@@ -157,14 +157,14 @@ public class PrescriptionReport {
      */
     private void testCurrentlyAssignedProgram(final Connection conn) throws Exception {
 
-        StudentUserProgramModel userProgram = new CmUserProgramDao().loadProgramInfoCurrent(_conn, _uid);
+        StudentUserProgramModel userProgram = CmUserProgramDao.getInstance().loadProgramInfoCurrent(_uid);
 
         logMessage(-1, "Testing program: " + userProgram);
 
         HaTestDef testDef = userProgram.getTestDef();
 
         
-        CmStudentDao sda = new CmStudentDao();
+        CmStudentDao sda = CmStudentDao.getInstance();
         StudentModelI sm = sda.getStudentModel(userProgram.getUserId());
         int altTests = testDef.getNumAlternateTests();
         if(altTests == 0)
@@ -172,7 +172,7 @@ public class PrescriptionReport {
         
         for(int altTest=0;altTest < altTests;altTest++) {
             logMessage(-1,"Testing alternate test: " + testDef + " " + altTest);
-            StudentActiveInfo activeInfo = sda.loadActiveInfo(conn, userProgram.getUserId());
+            StudentActiveInfo activeInfo = sda.loadActiveInfo(userProgram.getUserId());
             activeInfo.setActiveSegmentSlot(altTest);
             sda.setActiveInfo(conn, userProgram.getUserId(), activeInfo);
             
@@ -185,7 +185,7 @@ public class PrescriptionReport {
     
                 HaTest test = null;
                 try {
-                    test = HaTestDao.createTest(_conn, _uid, testDef, segment);
+                    test = HaTestDao.getInstance().createTest(_uid, testDef, segment);
                 } catch (Exception e) {
                     logMessage(-1, "Error creating test: " + userProgram, e);
                     continue;
@@ -351,7 +351,7 @@ public class PrescriptionReport {
      * @throws Exception
      */
     private void setupNewUserAndProgram(CmProgram progDef, String chapter) throws Exception {
-        new CmStudentDao().assignProgramToStudent(_conn, _uid, progDef, chapter);
+        CmStudentDao.getInstance().assignProgramToStudent(_conn, _uid, progDef, chapter);
     }
 
     private void logMessage(int runId, String msg) throws Exception {

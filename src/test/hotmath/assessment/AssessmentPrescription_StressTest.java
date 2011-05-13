@@ -16,10 +16,10 @@ public class AssessmentPrescription_StressTest extends CmDbTestCase {
     
     
     public void testStressAllTests() throws Exception {
-        List<String> testNames = new HaTestDefDao().getTestNames(conn);
+        List<String> testNames = HaTestDefDao.getInstance().getTestNames(conn);
         for(String tn: testNames) {
 
-            HaTestDef testDef = new HaTestDefDao().getTestDef(conn, tn);
+            HaTestDef testDef = HaTestDefDao.getInstance().getTestDef(tn);
             
             /** The all have at least 4 sections
              * 

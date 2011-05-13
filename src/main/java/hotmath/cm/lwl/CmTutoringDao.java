@@ -54,9 +54,9 @@ public class CmTutoringDao {
         
         logger.info("Getting tutor information for: " + uid);
         
-        StudentModelI student = new CmStudentDao().getStudentModelBasic(conn, uid);
+        StudentModelI student = CmStudentDao.getInstance().getStudentModelBasic(conn, uid);
         Integer adminId = student.getAdminUid();
-        AccountInfoModel accountInfo = new CmAdminDao().getAccountInfo(adminId);
+        AccountInfoModel accountInfo = CmAdminDao.getInstance().getAccountInfo(adminId);
         
         StudentTutoringInfo studentTutoringInfo = null;
         LwlAccountInfo studentLwlInfo= getUserLwlInfo(conn, uid); 
@@ -79,7 +79,7 @@ public class CmTutoringDao {
         // if a school account, then read the schoolNumber associated with the school
         HotMathSubscriber sub = HotMathSubscriberManager.findSubscriber(studentTutoringInfo.getSubscriberId());
         if(sub.getSubscriberType().equals("ST")) {
-            AccountInfoModel school = new CmAdminDao().getAccountInfo(student.getAdminUid());
+            AccountInfoModel school = CmAdminDao.getInstance().getAccountInfo(student.getAdminUid());
             
             /** If this school does not have tutoring enabled, then throw exception  
              * 
@@ -168,7 +168,7 @@ public class CmTutoringDao {
         HotMathSubscriber sub = new HotMathSubscriber();
         sub.setId(uid.toString());
 
-        StudentModelI sm = new CmStudentDao().getStudentModelBasic(conn, uid);
+        StudentModelI sm = CmStudentDao.getInstance().getStudentModelBasic(conn, uid);
         
         
         /** Setup a default LWL account to act as placeholder
@@ -209,9 +209,9 @@ public class CmTutoringDao {
      */
     public void addTutoring(final Connection conn, Integer uid) throws Exception {
         
-        StudentModelI student = new CmStudentDao().getStudentModelBasic(conn, uid);
+        StudentModelI student = CmStudentDao.getInstance().getStudentModelBasic(conn, uid);
         Integer adminId = student.getAdminUid();
-        AccountInfoModel accountInfo = new CmAdminDao().getAccountInfo(adminId);
+        AccountInfoModel accountInfo = CmAdminDao.getInstance().getAccountInfo(adminId);
         String subId = accountInfo.getSubscriberId();
         
         

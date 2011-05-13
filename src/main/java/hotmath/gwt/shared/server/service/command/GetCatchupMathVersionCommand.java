@@ -21,7 +21,7 @@ public class GetCatchupMathVersionCommand implements ActionHandler<GetCatchupMat
     @Override
     public CatchupMathVersion execute(Connection conn, GetCatchupMathVersionAction action) throws Exception {
         
-        new CmStudentDao().verifyActiveProgram(conn,action.getCurrentTestId());
+        CmStudentDao.getInstance().verifyActiveProgram(conn,action.getCurrentTestId());
         
         return new CatchupMathVersion(CatchupMathProperties.getInstance().getClientVersionNumber());
     }

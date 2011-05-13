@@ -140,7 +140,7 @@ public class AssessmentPrescription {
 
 		sortLessonsByRanking(conn, _sessions);
 
-		new HaTestRunDao().addLessonsToTestRun(conn, testRun, _sessions);
+		HaTestRunDao.getInstance().addLessonsToTestRun(conn, testRun, _sessions);
 		logger.debug("Finished creating prescription for run: " + testRun);
 	}
 	

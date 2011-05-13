@@ -39,16 +39,16 @@ public class AssessmentPrescriptionCustom_Test extends CmDbTestCase {
         studentProgram.setSubjectId("");
         studentProgram.setProgramType("Custom");
         
-        new CmStudentDao().assignProgramToStudent(conn, _user.getUid(), studentProgram,null, "80%", new StudentSettingsModel(),false);
+        CmStudentDao.getInstance().assignProgramToStudent(conn, _user.getUid(), studentProgram,null, "80%", new StudentSettingsModel(),false);
         
-        CmUserProgramDao upDao = new CmUserProgramDao();
+        CmUserProgramDao upDao = CmUserProgramDao.getInstance();
         
-        StudentUserProgramModel userProgram = upDao.loadProgramInfoCurrent(conn, _user.getUid());
+        StudentUserProgramModel userProgram = upDao.loadProgramInfoCurrent(_user.getUid());
         
         userProgram.setCustomProgramId(KNOWN_CUSTOM_PROGRAM_ID);
-        userProgram.setTestDef(new HaTestDefDao().getTestDef(conn, CmProgram.CUSTOM_PROGRAM.getDefId()));
+        userProgram.setTestDef(HaTestDefDao.getInstance().getTestDef(CmProgram.CUSTOM_PROGRAM.getDefId()));
 
-        HaTest custTest = HaTestDao.createTest(conn, _user.getUid(),userProgram.getTestDef(), 0);
+        HaTest custTest = HaTestDao.getInstance().createTest(_user.getUid(),userProgram.getTestDef(), 0);
         
         custTest.setProgramInfo(userProgram);
         custTest.setTestDef(custTest.getTestDef());
@@ -64,7 +64,7 @@ public class AssessmentPrescriptionCustom_Test extends CmDbTestCase {
          * 
          */
         
-        HaTest custTest2 = HaTestDao.createTest(conn, _user.getUid(),userProgram.getTestDef(), 1);
+        HaTest custTest2 = HaTestDao.getInstance().createTest(_user.getUid(),userProgram.getTestDef(), 1);
         
         custTest2.setProgramInfo(userProgram);
         custTest2.setTestDef(custTest2.getTestDef());
