@@ -6,18 +6,101 @@
 	var graphicData,tool_id
 	var scope=this
 	var isTouchEnabled=false
-	function init(){
-    canvas = $get_Element("#canvas");
+	function renderText(xt,xp,yp){
+		var txt=xt?xt:$get_Element("#content").value;
+		//alert(txt);
 	
+		var str=txt.split("\n")
+		var x0=xp?xp:clickX
+		var y0=yp?yp:clickY
+		var ht=15
+		for(var i=0;i<str.length;i++){
+	
+			context.fillText(str[i],x0,y0)
+			y0+=ht
+		}
+		updateCanvas();
+		if(!xt){
+			updateText(txt);
+			sendData();
+			$get_Element("#content").value="";
+			$get_Element("#inputBox").style.display='none';
+		}
+	//alert($get_Element("#inputBox").style.display)
+	}
+	function onkeyupHandler(){
+			//
+	}
+	function onkeydownHandler(_event){
+		var event=_event?_event:window.event;
+			
+		if(currentTool=='text'&&event.keyCode==13){
+			if(!event.shiftKey){
+				if (event.preventDefault) { 
+					event.preventDefault(); 
+				}else{
+					event.returnValue = false;
+				}			
+				renderText();
+			}
+		}
+	}
+	function resetButtonHighlite(){
+	$get_Element("#button_text").style.border='1px solid #000000';
+	$get_Element("#button_pencil").style.border='1px solid #000000';
+	$get_Element("#button_line").style.border='1px solid #000000';
+	$get_Element("#button_rect").style.border='1px solid #000000';
+	$get_Element("#button_oval").style.border='1px solid #000000';
+	$get_Element("#button_eraser").style.border='1px solid #000000';
+	//
+	}
+	function buttonHighlite(t){
+	resetButtonHighlite();
+	$get_Element("#button_"+t).style.border='2px solid #ff9900';
+	}
+function viewport()
+{
+var e = window
+, a = 'inner';
+
+if ( !( 'innerWidth' in window ) )
+{
+a = 'client';
+e = document.documentElement || document.body;
+}
+
+return { width : e[ a+'Width' ] , height : e[ a+'Height' ] }
+}
+function getDocHeight() {
+    var D = document;
+    return Math.max(
+        Math.max(D.body.scrollHeight, D.documentElement.scrollHeight),
+        Math.max(D.body.offsetHeight, D.documentElement.offsetHeight),
+        Math.max(D.body.clientHeight, D.documentElement.clientHeight)
+    );
+}
+	function init(){
+	document.onkeydown=onkeydownHandler;
+		document.onkeyup=onkeyupHandler;
+		
+    canvas = $get_Element("#canvas");
+	var siz=viewport()
+	var docWidth=siz.width;
+	var docHeight=siz.height;
+	var topOff=$get_Element("#tools").offsetHeight+$get_Element("#tools").offsetTop+15
+	var leftOff=$get_Element("#tools").offsetLeft+15
 	origcanvas = $get_Element("#ocanvas");
 	graphcanvas = $get_Element("#gcanvas");
 	topcanvas = $get_Element("#tcanvas");
+	canvas.width=origcanvas.width=graphcanvas.width=topcanvas.width=docWidth-leftOff;
+	canvas.height=origcanvas.height=graphcanvas.height=topcanvas.height=docHeight-topOff;
     context = canvas.getContext("2d");
 	origcontext = origcanvas.getContext("2d");
 	graphcontext = graphcanvas.getContext("2d");
 	topcontext = topcanvas.getContext("2d");
     width = canvas.width;
     height = canvas.height;
+	//alert(width+":"+height)
 	 context.font=origcontext.font =topcontext.font="12px sans-serif";
 	gr2D=new Image();
 	gr2D.src='gr2D.png';
@@ -46,55 +129,66 @@
 	tool_id['gr2D']=11;
 	tool_id['nL']=12;
 	drawingLayer='1'
+	$get_Element("#button_pencil").style.border='2px solid #ff9900';
 	//Events
     //drawRect(0,0,width,height,'#ff0000');
 	$get_Element("#button_text").onclick=function (event) {
+	//$get_Element("#drawsection").style.cursor='crosshair';
 		currentTool='text';
-		
+		buttonHighlite(currentTool)
 	};
 	$get_Element("#button_pencil").onclick=function (event) {
+		//$get_Element("#drawsection").style.cursor='url("imgs/pencil.png"),auto';
+
 		currentTool='pencil';
-		
+		buttonHighlite(currentTool)
 	};
-	$get_Element("#button_rectangle").onclick=function (event) {
+	$get_Element("#button_rect").onclick=function (event) {
+	//$get_Element("#drawsection").style.cursor='crosshair';
 		currentTool='rect';
+		buttonHighlite(currentTool)
 	};
 	$get_Element("#button_line").onclick=function (event) {
+	//$get_Element("#drawsection").style.cursor='crosshair';
 		currentTool='line';
+		buttonHighlite(currentTool)
 	};
 	$get_Element("#button_oval").onclick=function (event) {
+	//$get_Element("#drawsection").style.cursor='crosshair';
 		currentTool='oval';
+		buttonHighlite(currentTool)
 	};
 	$get_Element("#button_gr2D").onclick=function (event) {
+	//$get_Element("#drawsection").style.cursor='url("imgs/pencil.png"),auto';
 		currentTool='gr2D';		
 		showHideGraph('gr2D')
-		
+		buttonHighlite('pencil')
 	};
 	$get_Element("#button_nL").onclick=function (event) {
+	//$get_Element("#drawsection").style.cursor='url("imgs/pencil.png"),auto';
 		currentTool='nL';
 		showHideGraph('nL')
+		buttonHighlite('pencil')
 	};
 	$get_Element("#button_clear").onclick=function (event) {
+	//$get_Element("#drawsection").style.cursor='url("imgs/pencil.png"),auto';
 		//resetWhiteBoard();
 		currentTool='pencil'
+		buttonHighlite(currentTool)
 		//penDown=false;
 		//graphMode='';
 		//origcanvas.width=graphcanvas.width=topcanvas.width=canvas.width=width;
 		resetWhiteBoard(true);
 	};
 	$get_Element("#button_eraser").onclick=function (event) {
+	//$get_Element("#drawsection").style.cursor='url("imgs/eraser.png"),auto';
 		//resetWhiteBoard();
 		currentTool='eraser'
+		buttonHighlite(currentTool)
 	};
 	//
 	$get_Element("#done_btn").onclick=function(event){
-	var txt=$get_Element("#content").value;
-	updateText(txt);
-	context.fillText(txt,clickX,clickY)
-	updateCanvas();
-	sendData();
-	$get_Element("#content").value="";
-	$get_Element("#inputBox").style.display='none';
+	renderText();
 	}
 	//
     var ev_onmousedown=function (_event) {
@@ -110,13 +204,20 @@
 		canvas.removeEventListener('touchend',ev_onmouseup, false);
 	}*/
 		var event=_event?_event:window.event;
+		
 		event=isTouchEnabled? _event.targetTouches[0]:event;
         var dx, dy, dist;
+		if(event.layerX||event.pageX){
 		dx = event.layerX?event.layerX:event.pageX-offX;
 		dy = event.layerY?event.layerY:event.pageY-offY;
-		
+		}else{
+		dx=event.clientX-offX
+		dy=event.clientY-offY
+		}
+		//alert(dx+":"+event.clientX)	
 		context.lineWidth = 2.0
-		context.strokeStyle = "rgb(0, 0, 0)";		
+		context.strokeStyle = "rgb(0, 0, 0)";	
+	
         if(dx>=0&&dx<width) {
             penDown = true;
 			rendering=false;
@@ -150,7 +251,7 @@
         }else {
             penDown = false;
         }
-		_event.preventDefault();
+		if(event.preventDefault) event.preventDefault();
   // _event.stopPropagation();
     };
  
@@ -196,8 +297,16 @@
 				context.clearRect(0, 0, canvas.width, canvas.height);
 			}
              
-			x = event.layerX?event.layerX:event.pageX-offX;
-			y = event.layerY?event.layerY:event.pageY-offY;
+			//x = event.layerX?event.layerX:event.pageX-offX;
+			//y = event.layerY?event.layerY:event.pageY-offY;
+			
+			if(event.layerX||event.pageX){
+		x = event.layerX?event.layerX:event.pageX-offX;
+		y = event.layerY?event.layerY:event.pageY-offY;
+		}else{
+		x=event.clientX-offX
+		y=event.clientY-offY
+		}
   
 			if(currentTool=='rect'||currentTool=='oval'){
 			
@@ -226,9 +335,10 @@
 				
 			}
         }
-		_event.preventDefault();
+		if(event.preventDefault) event.preventDefault();
 		// _event.stopPropagation();
     };
+	if(document.addEventListener){
 	canvas.addEventListener("mousedown",ev_onmousedown,false);
 	canvas.addEventListener("mouseup",ev_onmouseup,false);
 	canvas.addEventListener("mousemove",ev_onmousemove,false);
@@ -239,6 +349,18 @@
 	canvas.addEventListener('touchstart',ev_onmousedown, false);
 	canvas.addEventListener('touchmove',ev_onmousemove, false);
 	canvas.addEventListener('touchend',ev_onmouseup, false);
+	}else{
+	canvas.attachEvent("onmousedown",ev_onmousedown);
+	canvas.attachEvent("onmouseup",ev_onmouseup);
+	canvas.attachEvent("onmousemove",ev_onmousemove);
+	//touchscreen specific - to prevent web page being scrolled while drawing
+	document.body.attachEvent('touchstart',function(event){event.preventDefault();});
+	document.body.attachEvent('touchmove',function(event){event.preventDefault();}); 
+	// attach the touchstart, touchmove, touchend event listeners.
+	canvas.attachEvent('touchstart',ev_onmousedown);
+	canvas.attachEvent('touchmove',ev_onmousemove);
+	canvas.attachEvent('touchend',ev_onmouseup);
+	}
 	}
 	function $get_Element(n){
 	var str=n.indexOf("#")>-1?n.split("#")[1]:n
@@ -281,7 +403,11 @@
 		if((graphMode=='gr2D'&&flag=='gr2D')||(graphMode=='nL'&&flag=='nL')){
 			graphMode="";
 			drawingLayer='1'
+			$get_Element("#button_gr2D").style.border='1px solid #000000';
+			$get_Element("#button_nL").style.border='1px solid #000000';
 		}else{
+		$get_Element("#button_gr2D").style.border='1px solid #000000';
+			$get_Element("#button_nL").style.border='1px solid #000000';
 			var gr,xp,yp,xs,ys
 			graphMode=flag;
 			if(flag=='gr2D'){
@@ -290,12 +416,14 @@
 				yp=y?y-(gr2D_h/2):gr2D_yp
 				xs=x?x:gr2D_xp+(gr2D_w/2)
 				ys=y?y:gr2D_yp+(gr2D_h/2)
+				$get_Element("#button_gr2D").style.border='2px solid #ff0000';
 			}else{
 				gr=nL;
 				xp=x?x-(nL_w/2):nL_xp
 				yp=y?y-(nL_h/2):nL_yp
 				xs=x?x:nL_xp+(nL_w/2)
 				ys=y?y:nL_yp+(nL_h/2)
+				$get_Element("#button_nL").style.border='2px solid #ff0000';
 			}
 			drawingLayer='3'
 			addGraph=true;
@@ -527,7 +655,8 @@
 				if (graphic_data[i].text != "" || graphic_data[i].text != undefined) {
 					x0 = graphic_data[i].x;
 					y0 = graphic_data[i].y;
-					context.fillText(graphic_data[i].text, x0, y0);
+					//context.fillText(graphic_data[i].text, x0, y0);
+					renderText(xt,x0,y0)
 				}
 			}
 			updateCanvas ()
@@ -547,7 +676,7 @@
 		}
 		if (graphic_id === 11 || graphic_id ===12) {
 			idName = graphic_id == 11 ? "gr2D" : "nL";
-			showHideGraph(idName,graphic_data[0].x,graphic_data[0].y)		
+			showHideGraph(idName,graphic_data[0].x,graphic_data[0].y);		
 		}
 	}
 	updateWhiteboard=function(cmdArray) {	
@@ -581,7 +710,7 @@
 		}
 	}
 	function flashWhiteboardOut(data,boo){	
-		console.log(data);	
+		//console.log(data);	
 		/*if(boo){
 			var flashObject=getFlashMovie('sw_wb');
 			data=data.split("\\").join("")

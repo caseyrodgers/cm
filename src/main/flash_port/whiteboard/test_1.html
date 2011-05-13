@@ -18,32 +18,135 @@ updateWhiteboard([["draw",['{"dataArr":[{"name":"graphImage","addImage":true,"x"
 }
 </script>
 	<style>
-  #canvas-container { position: relative; }
+#canvas-container { position: relative; }
   #ocanvas { border: 1px solid #000; }
-  #canvas { position: absolute; top: 0px; left: 0px; border: 1px solid #ff0000; }
-   #gcanvas { position: absolute; top: 0px; left: 0px; border: 1px solid #ff0000; }
-    #tcanvas { position: absolute; top: 0px; left: 0px; border: 1px solid #ff0000; }
+  #canvas { position: absolute; top: 0px; left: 0px; border: 1px solid #000000; }
+   #gcanvas { position: absolute; top: 0px; left: 0px; border: 1px solid #000000; }
+    #tcanvas { position: absolute; top: 0px; left: 0px; border: 1px solid #000000; }
 	#inputBox { position: absolute; border: 1px solid #333333; display:none;}
+	#tools
+{
+height:35px;
+    padding-left:5px;
+	padding-top:3px;
+	background:#eeeeee;
+	border-bottom:1px solid #000000;
+	box-shadow:0 3px 5px rgba(0,0,0,0.5);
+	-webkit-box-shadow:0 3px 5px rgba(0,0,0,0.5);
+	-moz-box-shadow:0 3px 5px rgba(0,0,0,0.5);
+}
+button
+    {
+        width:50px;
+        height:30px;
+        vertical-align:middle;
+		margin:0px;
+		padding:0px;
+        cursor: pointer;
+        cursor: hand;
+        font-family: Arial, Tahoma, Verdana, Calibri;
+        text-align:center;        
+        border: 1px solid #000000;
+		background:#ececec;
+		background-image:-moz-linear-gradient(left,  #ececec,  #ffffff);
+	background-image:-webkit-gradient(linear, left top, right top, from(#ececec), to(#ffffff));	
+	-webkit-box-shadow:2px 2px 3px rgba(51,51,51,0.7);
+	-moz-box-shadow:2px 3px 3px rgba(51,51,51,0.7);
+	box-shadow:2px 2px 3px rgba(51,51,51,0.7);
+	<!--filter:  progid:DXImageTransform.Microsoft.gradient(startColorstr='#ececec', endColorstr='#ffffff');-->
+    }
+	
+	.btnType1{
+        width:45px;
+        height: 25px;
+    }
+	#button_clear{
+	
+        width:50px;
+        height: 30px;
+    }
+	#done_btn{
+        width:45px;
+        height: 25px;
+    }
+	#button_text{
+	background-image:url(imgs/txt.png);
+	background-image:url(imgs/txt.png), -moz-linear-gradient(left,  #ececec,  #ffffff);
+	background-image:url(imgs/txt.png), -webkit-gradient(linear, left top, right top, from(#ececec), to(#ffffff));
+	background-repeat:no-repeat;
+	background-position:center; 
+	}
+	#button_pencil{
+	background-image:url(imgs/pencil.png);
+	background-image:url(imgs/pencil.png), -moz-linear-gradient(left,  #ececec,  #ffffff);
+	background-image:url(imgs/pencil.png), -webkit-gradient(linear, left top, right top, from(#ececec), to(#ffffff));
+	background-repeat:no-repeat;
+	background-position:center;
+	}
+	#button_line{
+	background-image:url(imgs/line.png);
+	background-image:url(imgs/line.png), -moz-linear-gradient(left,  #ececec,  #ffffff);
+	background-image:url(imgs/line.png), -webkit-gradient(linear, left top, right top, from(#ececec), to(#ffffff));
+	background-repeat:no-repeat;
+	background-position:center;
+	}
+	#button_rect{
+	background-image:url(imgs/rect.png);
+	background-image:url(imgs/rect.png), -moz-linear-gradient(left,  #ececec,  #ffffff);
+	background-image:url(imgs/rect.png), -webkit-gradient(linear, left top, right top, from(#ececec), to(#ffffff));
+	background-repeat:no-repeat;
+	background-position:center;
+	}
+	#button_oval{
+	background-image:url(imgs/oval.png);
+	background-image:url(imgs/oval.png), -moz-linear-gradient(left,  #ececec,  #ffffff);
+	background-image:url(imgs/oval.png), -webkit-gradient(linear, left top, right top, from(#ececec), to(#ffffff));
+	background-repeat:no-repeat;
+	background-position:center;
+	}
+	#button_eraser{
+	background-image:url(imgs/eraser.png);
+	background-image:url(imgs/eraser.png), -moz-linear-gradient(left,  #ececec,  #ffffff);
+	background-image:url(imgs/eraser.png), -webkit-gradient(linear, left top, right top, from(#ececec), to(#ffffff));
+	background-repeat:no-repeat;
+	background-position:center;
+	}
+	#button_gr2D{
+	background-image:url(imgs/gr_2d.png);
+	background-image:url(imgs/gr_2d.png), -moz-linear-gradient(left,  #ececec,  #ffffff);
+	background-image:url(imgs/gr_2d.png), -webkit-gradient(linear, left top, right top, from(#ececec), to(#ffffff));
+	background-repeat:no-repeat;
+	background-position:center;
+	}
+	#button_nL{	
+	background-image:url(imgs/gr_nL.png);
+	background-image:url(imgs/gr_nL.png), -moz-linear-gradient(left,  #ececec,  #ffffff);
+	background-image:url(imgs/gr_nL.png), -webkit-gradient(linear, left top, right top, from(#ececec), to(#ffffff));
+	background-repeat:no-repeat;
+	background-position:center;
+
+	}
 </style>
+
 </head>
 <body onload='init()'>
 
 <div id="container">
     <div id="tools">
-	 <button id="button_text" type="button">Text</button>
-        <button id="button_pencil" type="button">Pencil</button>	    
-	    <button id="button_line" type="button">Line</button>
-	    <button id="button_rectangle" type="button">Rectagle</button>
-	    <button id="button_oval" type="button">Oval</button>
- <button id="button_eraser" type="button">Eraser</button>		
-	   <button id="button_gr2D" type="button">2D-graph</button>
-	   	   <button id="button_nL" type="button">Numberline</button>
-		     <button id="button_clear" type="button">Clear</button>
-			 <button id="button_load" type="button" onclick="renderWhiteBoard()">Load Data</button>
+	 <button id="button_text"  title="Text"></button>
+        <button id="button_pencil"  title="Draw or write"></button>	    
+	    <button id="button_line"  title="Lines"></button>
+	    <button id="button_rect"  title="Rectangles"></button>
+	    <button id="button_oval" title="Circles/Ellipses"></button>
+ <button id="button_eraser" title="Erase"></button>		
+	   <button id="button_gr2D" title="2D Graph"></button>
+	   	   <button id="button_nL" title="Number line"></button>
+		     <button id="button_clear" title="Clear Whiteboard">Clear</button>
+			 <!--<button id="button_load" type="button" onclick="renderWhiteBoard()">Load Data</button>-->
     </div> <!-- /tools -->
 	<div id="drawsection">
 	    <div id="canvas-container">
-			<canvas id="ocanvas" width="800" height="500"></canvas>
+			<canvas id="ocanvas" width="800" height="500">(Your browser doesn't support canvas)</canvas>
 			<canvas id="gcanvas" width="800" height="500"></canvas>
 			<canvas id="tcanvas" width="800" height="500"></canvas>
 	        <canvas id="canvas" width="800" height="500"></canvas>
