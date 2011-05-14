@@ -2073,6 +2073,7 @@ from   v_HA_USER_ACTIVE u
                     join HA_TEST_RUN r
                       on r.test_id = t.test_id
              where  r.run_time between ? and ?
+             and t.user_id in ($$UID_LIST$$)
              group  by user_id) qv
          on qv.user_id = u.uid
        join HA_TEST t
@@ -2104,6 +2105,7 @@ from   v_HA_USER_ACTIVE u
                     join HA_TEST_RUN r
                       on r.test_id = t.test_id
              where  r.run_time between ? and ?
+             and t.user_id in ( $$UID_LIST$$ )
              group  by user_id) qv
          on qv.user_id = u.uid
        join HA_TEST t
@@ -2138,6 +2140,7 @@ from   v_HA_USER_ACTIVE u
                     join HA_TEST_RUN r
                       on r.test_id = t.test_id
              where  r.run_time between ? and ?
+             and t.user_id in ($$UID_LIST$$)
              group  by user_id) qv
          on qv.user_id = u.uid
        join HA_TEST t
@@ -2168,6 +2171,7 @@ from   v_HA_USER_ACTIVE u
        join (select user_id,
                     max(id)
              from   CM_USER_PROGRAM
+             where  user_id in ($$UID_LIST$$)
              group  by user_id) c2
          on c2.user_id = u.uid
        join HA_TEST_RUN r
