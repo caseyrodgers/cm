@@ -27,6 +27,7 @@ import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.Label;
+import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.CheckBox;
@@ -42,6 +43,7 @@ import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.RootPanel;
 
 public class CmQaBody extends ContentPanel {
 
@@ -70,8 +72,7 @@ public class CmQaBody extends ContentPanel {
             @Override
             public void componentSelected(ButtonEvent ce) {
                 final ScreenCaptureAppletLoader sl = new ScreenCaptureAppletLoader();
-                getHeader().addTool(sl);
-                getHeader().removeTool(ce.getComponent());
+                RootPanel.get("screen-capture").add(sl);
             }
         }));
     }

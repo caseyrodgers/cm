@@ -7,11 +7,13 @@ import hotmath.gwt.cm_admin.server.model.highlight.CmHighLightManager.HighLightS
 import hotmath.gwt.cm_rpc.client.rpc.CmArrayList;
 import hotmath.gwt.cm_rpc.client.rpc.CmList;
 import hotmath.gwt.shared.client.rpc.action.HighlightReportData;
+import hotmath.spring.SpringManager;
 import hotmath.util.sql.SqlUtilities;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -20,12 +22,25 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
+import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.simple.SimpleJdbcDaoSupport;
 
 
-public class CmHighlightsDao {
+public class CmHighlightsDao extends SimpleJdbcDaoSupport{
 
 
     final static Logger __logger = Logger.getLogger(CmHighlightsDao.class);
+    
+    static private CmHighlightsDao __instance;
+    static public CmHighlightsDao getInstance() throws Exception {
+        if(__instance == null) {
+            __instance = (CmHighlightsDao)SpringManager.getInstance().getBeanFactory().getBean("cmHighlightsDao");
+        }
+        return __instance;
+    }
+    
+    
+    private CmHighlightsDao() {/** empty */}
     
     /** 
      * 
@@ -41,33 +56,17 @@ public class CmHighlightsDao {
      * @return
      * @throws Exception
      */
-    public CmList<HighlightReportData> getReportGreatestEffort(final Connection conn, List<String> uids, Date from, Date to) throws Exception {
-        
-        
-        String sql = CmMultiLinePropertyReader.getInstance().getProperty("HIGHLIGHT_REPORT_GREATEST_EFFORT",createInListMap(createInList(uids)) );
-            
-        
-        CmList<HighlightReportData> list=new CmArrayList<HighlightReportData>();
-        
-        PreparedStatement ps=null;
-        try {
-            ps = conn.prepareStatement(sql);
-            String[] vals = QueryHelper.getDateTimeRange(from, to);
-            ps.setString(1, vals[0]);
-            ps.setString(2, vals[1]);
-
-            __logger.info("report sql: " + ps);
-            
-            ResultSet rs = ps.executeQuery();
-            while(rs.next()) {
-                list.add(new HighlightReportData(rs.getInt("uid"), rs.getString("user_name"), rs.getString("lessons_viewed")));
-            }
-        }
-        finally {
-            SqlUtilities.releaseResources(null,ps,null);
-        }
-        
-        
+    public List<HighlightReportData> getReportGreatestEffort(List<String> uids, Date from, Date to) throws Exception {
+        String[] vals = QueryHelper.getDateTimeRange(from, to);
+        List<HighlightReportData> list = getJdbcTemplate().query(
+                CmMultiLinePropertyReader.getInstance().getProperty("HIGHLIGHT_REPORT_GREATEST_EFFORT",createInListMap(createInList(uids)) ),
+                new Object[]{vals[0], vals[1]},
+                new RowMapper<HighlightReportData>() {
+                    @Override
+                    public HighlightReportData mapRow(ResultSet rs, int rowNum) throws SQLException {
+                        return new HighlightReportData(rs.getInt("uid"), rs.getString("user_name"), rs.getString("lessons_viewed"));
+                    }
+                });
         
         return list;
     }
@@ -140,7 +139,6 @@ public class CmHighlightsDao {
     public CmList<HighlightReportData> getReportQuizzesPassed(final Connection conn, List<String> uids, Date from, Date to) throws Exception {
         
         String sql = CmMultiLinePropertyReader.getInstance().getProperty("HIGHLIGHT_REPORT_QUIZZES_PASSED",createInListMap(createInList(uids)) );
-        
         
         CmList<HighlightReportData> list=new CmArrayList<HighlightReportData>();
         
@@ -265,29 +263,18 @@ public class CmHighlightsDao {
      * @throws Exception
      */
 
-    public CmList<HighlightReportData> getReportFailedCurrentQuizzes(final Connection conn, List<String> uids, Date from, Date to) throws Exception {
+    public List<HighlightReportData> getReportFailedCurrentQuizzes(List<String> uids, Date from, Date to) throws Exception {
         
-        String sql = CmMultiLinePropertyReader.getInstance().getProperty("HIGHLIGHT_REPORT_FAILED_CURRENT_QUIZ",createInListMap(createInList(uids)) );        
-        CmList<HighlightReportData> list=new CmArrayList<HighlightReportData>();
-        
-        PreparedStatement ps=null;
-        try {
-            ps = conn.prepareStatement(sql);
-            String[] vals = QueryHelper.getDateTimeRange(from, to);
-            ps.setString(1, vals[0]);
-            ps.setString(2, vals[1]);
-            
-            __logger.info("report sql: " + ps);
-            
-            ResultSet rs = ps.executeQuery();
-            while(rs.next()) {
-                list.add(new HighlightReportData(rs.getInt("uid"), rs.getString("user_name"), rs.getString("failed_quizzes")));
-            }
-        }
-        finally {
-            SqlUtilities.releaseResources(null,ps,null);
-        }
-        return list;
+        String[] vals = QueryHelper.getDateTimeRange(from, to);
+        return getJdbcTemplate().query(
+                CmMultiLinePropertyReader.getInstance().getProperty("HIGHLIGHT_REPORT_FAILED_CURRENT_QUIZ",createInListMap(createInList(uids))),
+                new Object[]{vals[0],vals[1]},
+                new RowMapper<HighlightReportData>() {
+                    @Override
+                    public HighlightReportData mapRow(ResultSet rs, int rowNum) throws SQLException {
+                        return new HighlightReportData(rs.getInt("uid"), rs.getString("user_name"), rs.getString("failed_quizzes"));                       
+                    }
+                });
     }
     
     

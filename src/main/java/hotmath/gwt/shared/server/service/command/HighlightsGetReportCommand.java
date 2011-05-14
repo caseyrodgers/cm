@@ -2,6 +2,7 @@ package hotmath.gwt.shared.server.service.command;
 
 import hotmath.gwt.cm_admin.server.model.CmHighlightsDao;
 import hotmath.gwt.cm_rpc.client.rpc.Action;
+import hotmath.gwt.cm_rpc.client.rpc.CmArrayList;
 import hotmath.gwt.cm_rpc.client.rpc.CmList;
 import hotmath.gwt.cm_rpc.client.rpc.Response;
 import hotmath.gwt.cm_rpc.server.rpc.ActionHandler;
@@ -44,10 +45,10 @@ public class HighlightsGetReportCommand implements ActionHandler< HighlightsGetR
             for(StudentModelExt student: studentPool) {
                 uids.add(Integer.toString(student.getUid()));
             }
-            CmHighlightsDao dao = new CmHighlightsDao();
+            CmHighlightsDao dao = CmHighlightsDao.getInstance();
             switch(action.getType()) {
                 case GREATEST_EFFORT:
-                    list = dao.getReportGreatestEffort(conn, uids, fromDate, toDate);
+                    list = toCmList(dao.getReportGreatestEffort(uids, fromDate, toDate));
                     break;
                     
                 case LEAST_EFFORT:
@@ -71,7 +72,7 @@ public class HighlightsGetReportCommand implements ActionHandler< HighlightsGetR
                     break;   
 
                 case FAILED_CURRENT_QUIZZES:
-                    list = dao.getReportFailedCurrentQuizzes(conn, uids, fromDate, toDate);
+                    list = toCmList(dao.getReportFailedCurrentQuizzes(uids, fromDate, toDate));
                     break; 
                     
                 case LOGINS_PER_WEEK:
@@ -96,14 +97,21 @@ public class HighlightsGetReportCommand implements ActionHandler< HighlightsGetR
                     
                     
                     default:
-                        throw new Exception("Uknown report type: " + action);
+                        throw new Exception("Unknown report type: " + action);
             }
+            
             return list;
         }
         catch(Exception e) {
             e.printStackTrace();
             throw e;
         }
+    }
+    
+    private CmList<HighlightReportData> toCmList(List<HighlightReportData> list) {
+        CmList<HighlightReportData> listOut = new CmArrayList<HighlightReportData>();
+        listOut.addAll(list);
+        return listOut;
     }
     
     private List<String> getUids(final Connection conn) throws Exception {

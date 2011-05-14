@@ -66,9 +66,7 @@ public class CmQa implements EntryPoint {
             });
         }
         setUserName();
-        RootPanel.get().add(_mainPort);
-        
-        
+        RootPanel.get("main-view-port").add(_mainPort);
         readCategoriesFromServer();
     }
     
