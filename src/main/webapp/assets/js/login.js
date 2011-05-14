@@ -23,9 +23,6 @@ function doLogin() {
     }
 }
 
-function setupPageLocal() {
-    alert('setup page');
-}
 
 var _overlay;
 
