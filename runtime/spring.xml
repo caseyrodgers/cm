@@ -31,6 +31,7 @@ http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
     <bean id="haUserDao" class="hotmath.testset.ha.HaUserDao" parent="abstractJdbcDao"/>
     <bean id="cmCustomProgramDao" class="hotmath.gwt.cm_admin.server.model.CmCustomProgramDao" parent="abstractJdbcDao"/>
     <bean id="cmQuizzesDao" class="hotmath.gwt.cm_admin.server.model.CmQuizzesDao" parent="abstractJdbcDao"/>
+    <bean id="cmHighlightsDao" class="hotmath.gwt.cm_admin.server.model.CmHighlightsDao" parent="abstractJdbcDao"/>
     
 
 </beans>
