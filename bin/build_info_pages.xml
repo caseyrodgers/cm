@@ -1,0 +1,10 @@
+<!--
+    build file to create the solutions and INMH data export files that need
+    to be inported into the live server:   export
+
+    And, a generalized way to import the export files into the live server: import_inmh
+-->
+<project basedir="." default="" name="build_info_pages">
+    <target name='build_info_pages'>
+    </target>
+</project>
