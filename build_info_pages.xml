@@ -1,0 +1,19 @@
+<!--
+   Create a build consisting of only CM info pages.
+   
+   To deploy (overwriting existing)
+
+       cp -r target/info_build target/cm-1.0-SNAPSHOT
+
+-->
+<project basedir="." default="build_info_pages" name="build_info_pages">
+    <target name="clear">
+        <delete dir='target/info_build'/>
+    </target>
+    <target name='build_info_pages' depends='clear'>
+        <echo>Building Info Pages</echo>
+    	<copy todir="target/info_build">
+    		<fileset dir="src/main/webapp" excludes="WEB-INF/**,help/**,css/**,js/**,tutor/**,util/**,whiteboard/**,images/**,gwt-resources/**,cm_*/**,solution_editor/**,solution_manager/**,wordproblems/**,screen_shots/**,zeroclipboard/**,learning_activities/**"/>
+    	</copy>
+    </target>
+</project>
