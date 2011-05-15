@@ -1,0 +1,20 @@
+#tfq_list li {
+	list-style-type: circle;
+	list-style: circle;
+	list-style: circle;
+	margin-left: 20px;
+	margin-right: 10px;
+	list-style-position: outside;
+	padding-bottom: 10px;
+}
+
+#faq_list  li h2 {
+	margin-left: 10px;
+	font-size: 1.1em;
+}
+
+ul#tfq_list {
+	padding-left: 0px;
+	margin-top: 20px;
+	margin-bottom: 20px;
+}
