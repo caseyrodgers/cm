@@ -32,8 +32,8 @@ public class FindBug_SkippedQuizzes {
         
         String sqlAids = "select aid from HA_ADMIN";
         
-        if(adminId == -1) {
-            sqlAids = " WHERE aid in (select aid from HA_ADMIN where date_created > date_add(a.create_date, INTERVAL -2 month)) ";
+        if(adminId < 0) {
+            sqlAids += " WHERE aid in (select aid from HA_ADMIN where create_date > date_add(now(), INTERVAL " + adminId + " month)) ";
         }
         else if(adminId > 0) {
             sqlAids += " WHERE aid = " + adminId;
