@@ -1369,8 +1369,8 @@ SELECT c.id, c.user_id, c.pass_percent, c.date_completed, u.admin_id, c.test_def
        cp.id as custom_program_id, cp.name as custom_program_name, q.qid as custom_quiz_id, q.name as custom_quiz_name
 FROM      CM_USER_PROGRAM c
 LEFT JOIN HA_TEST ht on ht.user_prog_id = c.id
-JOIN      HA_USER u             on c.id = u.user_prog_id
-JOIN      HA_TEST_DEF t         on c.test_def_id = t.test_def_id
+JOIN      HA_TEST_DEF t on c.test_def_id = t.test_def_id
+LEFT JOIN HA_USER u  on c.id = u.user_prog_id
 LEFT JOIN HA_CUSTOM_PROGRAM cp  on c.custom_program_id = cp.id
 LEFT JOIN HA_CUSTOM_QUIZ q on q.qid = c.custom_quiz_id
 WHERE ht.test_id = ?
