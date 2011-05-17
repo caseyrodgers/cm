@@ -31,7 +31,11 @@ public class FindBug_SkippedQuizzes {
     public void findSkippedQuizzes(final Connection conn, int adminId) throws Exception {
         
         String sqlAids = "select aid from HA_ADMIN";
-        if(adminId > 0) {
+        
+        if(adminId == -1) {
+            sqlAids = " WHERE aid in (select aid from HA_ADMIN where date_created > date_add(a.create_date, INTERVAL -2 month)) ";
+        }
+        else if(adminId > 0) {
             sqlAids += " WHERE aid = " + adminId;
         }
         sqlAids += " order by aid desc";
