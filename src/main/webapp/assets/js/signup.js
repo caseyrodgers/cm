@@ -1,6 +1,6 @@
-var _card_what_msg='<p class="tooltip" >The Card Verification Number is a 3-digit number printed on the back of the card, except for Amex it is a 4-digit number on the front of the card.</p>';
+var _card_what_msg='<p class="tooltip_2" >The Card Verification Number is a 3-digit number printed on the back of the card, except for Amex it is a 4-digit number on the front of the card.</p>';
 
-var _terms_msg = '<p class="tooltip">Please review our sample session before buying, as the purchase price (as well as any live tutoring purchased) is non-refundable.  Subscription is for use by one person, and may be suspended if abused. We provide our service as-is and when-available. Compensation for claims you may have (including consequential and punitive damages) shall be limited to the amount you have paid for Catchup Math services.</p>';
+var _terms_msg = '<p class="tooltip_2">Please review our sample session before buying, as the purchase price (as well as any live tutoring purchased) is non-refundable.  Subscription is for use by one person, and may be suspended if abused. We provide our service as-is and when-available. Compensation for claims you may have (including consequential and punitive damages) shall be limited to the amount you have paid for Catchup Math services.</p>';
 
 
 function setupSignupPage() {
@@ -17,7 +17,12 @@ function setupSignupPage() {
    
    new YAHOO.widget.Tooltip("terms_inf", {
         context:"terms_info",  
-        text:_terms_msg, 
+        text:_terms_msg,
+        styles: { 
+            backgroundColor: "#333",
+            color: "#eee",
+            borderColor: "#fff",
+        },
         autodismissdelay:15000,
         showDelay:400 }
    );     

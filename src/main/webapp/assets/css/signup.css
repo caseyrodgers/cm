@@ -370,12 +370,32 @@ span.underline{
     position: relative;
 }
 
+.tooltip_2 {
+    padding: 20px;
+    background: url(/assets/images/postit_2.png) no-repeat scroll 0 0 transparent;
+    width: 225px;
+}
 
+.tooltip_X p {
+    padding: 40px 30px 15px 30px;
+    font-size: .9em;
+}
+
+.tooltip_X p {
+    color: #666666;
+    font-family: 'Neucha', arial, serif;
+    margin-bottom: 0;
+    padding-bottom: 0;
+    padding-top: 30px;
+}
 
 .tooltip {
    width: 200px;
    text-align: left;
    padding: 5px;
+   background-color: #CD722C;
+   color: #000000;
+   border: 1px;
 }
 
 
