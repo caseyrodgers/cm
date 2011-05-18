@@ -18,11 +18,6 @@ function setupSignupPage() {
    new YAHOO.widget.Tooltip("terms_inf", {
         context:"terms_info",  
         text:_terms_msg,
-        styles: { 
-            backgroundColor: "#333",
-            color: "#eee",
-            borderColor: "#fff",
-        },
         autodismissdelay:15000,
         showDelay:400 }
    );     
