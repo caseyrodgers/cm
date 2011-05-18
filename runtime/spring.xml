@@ -13,8 +13,19 @@ http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
         <property name="username" value="hmadmin"/>
         <property name="password" value="hmadmin"/>
         <property name="url" value="jdbc:mysql://hotmath.kattare.com/hotmath_test?user=hmadmin"/>
-        <property name="initialSize" value="1"/>
-        <property name="maxActive" value="10"/>		
+        
+        <property name="initialSize" value="10"/>
+        <property name="maxActive" value="150"/>
+        <property name="maxWait" value="60000"/>
+        <property name="maxIdle" value="3"/>
+        <property name="validationQuery" value="select 1"/>
+        <property name="testOnBorrow" value="1"/>
+        <property name="testOnReturn" value="1"/>
+        <property name="testWhileIdle" value="1"/>
+        <property name="timeBetweenEvictionRunsMillis" value="60000"/>
+        <property name="minEvictableIdleTimeMillis" value="30000"/>
+        <property name="logAbandoned" value="0"/>
+        <property name="removeAbandoned" value="0"/>
 	</bean>
 	
 	<bean id="abstractJdbcDao" abstract="true" class="org.springframework.jdbc.core.support.SimpleJdbcDaoSupport">
@@ -22,7 +33,7 @@ http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
     </bean>
     
     <bean id="testDao" class="hotmath.conn.TestDao" parent="abstractJdbcDao"/>
-    <bean id="cmUserProgramDao" class="hotmath.cm.server.model.CmUserProgramDao" parent="abstractJdbcDao"/>
+    <bean id="hotmath.cm.server.model.CmUserProgramDao" class="hotmath.cm.server.model.CmUserProgramDao" parent="abstractJdbcDao"/>
     <bean id="cmStudentDao" class="hotmath.gwt.cm_admin.server.model.CmStudentDao" parent="abstractJdbcDao"/>
     <bean id="haTestDefDao" class="hotmath.testset.ha.HaTestDefDao" parent="abstractJdbcDao"/>
     <bean id="cmAdminDao" class="hotmath.gwt.cm_admin.server.model.CmAdminDao" parent="abstractJdbcDao"/>

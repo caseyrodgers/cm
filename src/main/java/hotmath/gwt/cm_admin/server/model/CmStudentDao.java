@@ -33,14 +33,12 @@ import hotmath.gwt.shared.client.util.CmException;
 import hotmath.gwt.shared.client.util.CmUserException;
 import hotmath.spring.SpringManager;
 import hotmath.testset.ha.CmProgram;
-import hotmath.testset.ha.HaTestConfig;
 import hotmath.testset.ha.HaTestDef;
 import hotmath.testset.ha.HaTestDefDao;
 import hotmath.testset.ha.HaTestDefDescription;
 import hotmath.testset.ha.HaTestRun;
 import hotmath.testset.ha.HaTestRunDao;
 import hotmath.testset.ha.HaUserExtendedDao;
-import hotmath.testset.ha.StudentUserProgramModel;
 import hotmath.util.HMConnectionPool;
 import hotmath.util.sql.SqlUtilities;
 
@@ -1540,7 +1538,7 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
                             return sm;
                         } catch (Exception e) {
                             __logger.error("Error creating StudentUserProgramModel: " + uid, e);
-                            throw new SQLException(e.getMessage());
+                            throw new SQLException(e.getMessage(),e);
                         }
                     }
                 });
@@ -2393,34 +2391,23 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
      * If not throw exception.
      * @param testId
      */
-    public void verifyActiveProgram(final Connection conn, int testId) throws Exception {
+    public void verifyActiveProgram(int testId) throws Exception {
         
         if(testId == 0)
             return ;
         
-        PreparedStatement ps=null;
-        ResultSet rs = null;
-        try {
-            String sql = CmMultiLinePropertyReader.getInstance().getProperty("VERIFY_IS_ACTIVE_PROGRAM");
-            ps = conn.prepareStatement(sql);
-            ps.setInt(1, testId);
-            rs = ps.executeQuery();
-            if(rs.next()) {
-                /** value will equal 1 if program is active
-                 *  otherwise, testId is not 
-                 *  created from the active program.   
-                 */
-                if(rs.getInt(1) != 1) {
-                    throw new UserProgramIsNotActiveException();
-                }
-            }
-        }
-        catch (Exception e) {
-        	__logger.warn(">>> verifyActiveProgram(): program is not active for testId: " + testId);
-        	throw e;
-        }
-        finally {
-            SqlUtilities.releaseResources(rs,ps,null);
+        Integer count = getJdbcTemplate().queryForObject(
+                CmMultiLinePropertyReader.getInstance().getProperty("VERIFY_IS_ACTIVE_PROGRAM"),
+                new Object[]{testId},
+                new RowMapper<Integer>() {
+                    @Override
+                    public Integer mapRow(ResultSet rs, int rowNum) throws SQLException {
+                        return rs.getInt(1);
+                    }
+                });
+        
+        if(count != 1) {
+            throw new UserProgramIsNotActiveException();
         }
     }
 
@@ -2444,7 +2431,7 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
             return;
         
     	if (uid == 0) {
-    		verifyActiveProgram(conn, testId);
+    		verifyActiveProgram(testId);
     		return;
     	}
     		

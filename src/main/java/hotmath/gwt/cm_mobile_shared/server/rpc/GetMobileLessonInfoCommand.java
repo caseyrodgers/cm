@@ -46,7 +46,7 @@ public class GetMobileLessonInfoCommand implements ActionHandler<GetMobileLesson
                 HaTestDefDao.getInstance().getTestDef(CmProgram.CUSTOM_PROGRAM.getDefId()), -1);
         StudentUserProgramModel userProgram = new StudentUserProgramModel();
         custTest.setProgramInfo(userProgram);
-        HaTestRun testRun = HaTestDao.createTestRun(conn, userId, custTest.getTestId(), 10, 0, 0);
+        HaTestRun testRun = HaTestDao.getInstance().createTestRun(conn, userId, custTest.getTestId(), 10, 0, 0);
         testRun.setHaTest(custTest);
 
         List<CustomLessonModel> lessonModels = new ArrayList<CustomLessonModel>();

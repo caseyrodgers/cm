@@ -44,7 +44,7 @@ public class AssessmentPrescriptionManager {
 		
 		HaTest test = HaTestDao.getInstance().loadTest(testId);
 		AssessmentPrescription pres =
-			AssessmentPrescriptionFactory.create(conn, HaTestDao.createTestRun(conn, test.getUser().getUid(), testId,answeredCorrect, answeredIncorrect, notAnswered));
+			AssessmentPrescriptionFactory.create(conn, HaTestDao.getInstance().createTestRun(conn, test.getUser().getUid(), testId,answeredCorrect, answeredIncorrect, notAnswered));
 
 		CmCacheManager.getInstance().addToCache(CacheName.PRESCRIPTION, pres.getTestRun().getRunId().toString(), pres);
 		return pres;

@@ -7,6 +7,7 @@ import hotmath.gwt.cm_rpc.client.rpc.RpcData;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.ui.CmLogger;
+import hotmath.gwt.cm_tools.client.ui.InfoPopupBox;
 import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.data.CmAsyncRequestImplDefault;
@@ -171,31 +172,44 @@ public abstract class RetryAction<T> implements AsyncCallback<T> {
             }
             else {
                 
-                sendInfoAboutRetriedCommand("failed", throwable);
-                
-                /** Perform as synchronous call in Window.confirm to stop
-                 *  the flow of new requests until this one is taken care of.
-                 */
-                String msg = "A server error has occurred.\n" 
-                + "You may retry this operation by clicking 'OK'.\n"
-                + "However if the error persists, contact Technical Support.";
-                
-                if(CmShared.getQueryParameter("debug") != null) {
-                    msg += "\n\n" + throwable.getMessage();
-                }
-                
-                if(Window.confirm(msg)) {
-                    sendInfoAboutRetriedCommand("retried", null);
-                    attempt();
+                if( isInformationalOnlyException(error)){
+                    InfoPopupBox.display("Information",error.getMessage());
                 }
                 else {
-                    sendInfoAboutRetriedCommand("canceled",null);
-                	onCancel();
+                    sendInfoAboutRetriedCommand("failed", throwable);
+                    
+                    /** Perform as sync hronous call in Window.confirm to stop
+                     *  the flow of new requests until this one is taken care of.
+                     */
+                    String msg = "A server error has occurred.\n" 
+                    + "You may retry this operation by clicking 'OK'.\n"
+                    + "However if the error persists, contact Technical Support.";
+                    
+                    if(CmShared.getQueryParameter("debug") != null) {
+                        msg += "\n\n" + throwable.getMessage();
+                    }
+                    
+                    if(Window.confirm(msg)) {
+                        sendInfoAboutRetriedCommand("retried", null);
+                        attempt();
+                    }
+                    else {
+                        sendInfoAboutRetriedCommand("canceled",null);
+                    	onCancel();
+                    }
                 }
             }
         }
     }
 
+    private boolean isInformationalOnlyException(Throwable th) {
+        if(th.getMessage().indexOf("test has already been checked") > -1) {
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
     
     /*
      * possible usage: close a window that is not functional when an action fails

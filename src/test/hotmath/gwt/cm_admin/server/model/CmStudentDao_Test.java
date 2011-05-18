@@ -58,13 +58,13 @@ public class CmStudentDao_Test extends CmDbTestCase {
     
     public void testVerifyActiveProgram() throws Exception {
        try {
-           _dao.verifyActiveProgram(conn, _test.getTestId());
+           _dao.verifyActiveProgram(_test.getTestId());
        }
        catch(UserProgramIsNotActiveException up) {
            assertTrue(true);
        }
        try {
-           _dao.verifyActiveProgram(conn, -11);
+           _dao.verifyActiveProgram(-11);
            assertTrue(true);
        }
        catch(UserProgramIsNotActiveException up) {

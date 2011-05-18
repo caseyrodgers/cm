@@ -440,12 +440,35 @@ public class HaTestDao extends SimpleJdbcDaoSupport {
      * @return
      * @throws HotMathException
      */
-    public static HaTestRun createTestRun(final Connection conn, Integer studentUid, Integer testId,
+    public HaTestRun createTestRun(final Connection conn, Integer studentUid, Integer testId,
             int answeredCorrect, int answeredIncorrect, int notAnswered) throws HotMathException {
         PreparedStatement pstat = null;
         ResultSet rs = null;
+        
+        /** There should not be any existing test run for this test_id
+         *  
+         *  if there is then, it is a duplicate and is an exception.
+         *  
+         *  Throw exception to help find this bug!
+         */
+        Integer count = getJdbcTemplate().queryForObject(
+                "select count(*) from HA_TEST_RUN where test_id = ?",
+                new Object[]{testId},
+                new RowMapper<Integer>() {
+                    @Override
+                    public Integer mapRow(ResultSet rs, int rowNum) throws SQLException {
+                        return rs.getInt(1);
+                    }
+                });
+
+        
         try {
 
+            if(count > 0) {
+                throw new Exception("This test has already been checked");
+            }
+                        
+            
             /**
              * Determine if user passed this quiz/test
              * 
@@ -465,7 +488,8 @@ public class HaTestDao extends SimpleJdbcDaoSupport {
             boolean passedQuiz = pinfo.getCustomProgramId() > 0 || (testCorrectPercent >= passPercentRequired);
 
             HaTest test = HaTestDao.getInstance().loadTest(testId);
-            String sql = "insert into HA_TEST_RUN(test_id, run_time, answered_correct, answered_incorrect, not_answered,run_session,is_passing)values(?,?,?,?,?,1,?)";
+            String sql = "insert into HA_TEST_RUN(test_id, run_time, answered_correct, " +
+                         " answered_incorrect, not_answered,run_session,is_passing)values(?,?,?,?,?,1,?)";
             pstat = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
             HaTestRun testRun = new HaTestRun();
 

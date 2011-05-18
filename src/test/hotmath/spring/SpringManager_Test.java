@@ -32,7 +32,7 @@ public class SpringManager_Test extends TestCase{
     
     public void testCreateCmUserProgramDao() throws Exception {
         SpringManager manager = SpringManager.getInstance();
-        CmUserProgramDao testDao = (CmUserProgramDao)manager.getBeanFactory().getBean("cmUserProgramDao");
+        CmUserProgramDao testDao = (CmUserProgramDao)manager.getBeanFactory().getBean(CmUserProgramDao.class.getName());
         assertNotNull(testDao);
     }    
     

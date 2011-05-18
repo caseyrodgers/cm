@@ -139,6 +139,12 @@ public class QuizContext implements CmContext {
     }
 
     public void doNext() {
+        if(_isCheckingQuiz) {
+            InfoPopupBox.display("Already Checking", "The quiz is currently being checked...");
+            return;
+        }
+                
+        
         new HaveYouCheckedYourWorkWindow(new Callback() {
             @Override
             public void quizIsReadyToBeChecked() {
@@ -169,6 +175,9 @@ public class QuizContext implements CmContext {
             doCheckTestAux();
         }
     }
+    
+
+    boolean _isCheckingQuiz;
 
     /**
      * Perform the actual checking of test on server
@@ -176,10 +185,13 @@ public class QuizContext implements CmContext {
      * TODO: centralize NextAction handling
      */
     public void doCheckTestAux() {
+        
         new RetryAction<CreateTestRunResponse>() {
             @Override
             public void attempt() {
                 CmBusyManager.setBusy(true);
+                
+                _isCheckingQuiz = true;
 
                 if (CmShared.getQueryParameter("debug") != null) {
                     InfoPopupBox.display("Quiz Check", "Checking quiz ...");
@@ -193,23 +205,34 @@ public class QuizContext implements CmContext {
             }
 
             public void oncapture(CreateTestRunResponse testRunInfo) {
-                CmBusyManager.setBusy(false);
-
-                UserInfo.getInstance().setRunId(testRunInfo.getRunId());
-                UserInfo.getInstance().setSessionNumber(0); // start
-                UserInfo.getInstance().setCorrectPercent(testRunInfo.getTestCorrectPercent());
-                
-                
-                /** check here if SelfPlacement test and handle special
-                 * 
-                 */
-                if(testRunInfo.getNextAction().getPlace() == CmPlace.AUTO_PLACEMENT) {
-                    new AutoAdvancedProgramWindow(testRunInfo.getAssignedTest());
+                try {
+                    CmBusyManager.setBusy(false);
+    
+                    UserInfo.getInstance().setRunId(testRunInfo.getRunId());
+                    UserInfo.getInstance().setSessionNumber(0); // start
+                    UserInfo.getInstance().setCorrectPercent(testRunInfo.getTestCorrectPercent());
+                    
+                    
+                    /** check here if SelfPlacement test and handle special
+                     * 
+                     */
+                    if(testRunInfo.getNextAction().getPlace() == CmPlace.AUTO_PLACEMENT) {
+                        new AutoAdvancedProgramWindow(testRunInfo.getAssignedTest());
+                    }
+                    else {
+                        showQuizResults(testRunInfo);
+                    }
                 }
-                else {
-                    showQuizResults(testRunInfo);
+                finally {
+                    _isCheckingQuiz = false;
                 }
             }
+            
+            public void onFailure(Throwable error) {
+                super.onFailure(error);
+                _isCheckingQuiz = false;    
+            }
+            
         }.register();
     }
 

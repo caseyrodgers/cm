@@ -109,7 +109,7 @@ public class GetUserInfoCommand implements ActionHandler<GetUserInfoAction, User
 
                         HaTest custTest = HaTestDao.getInstance().createTest(action.getUserId(),HaTestDefDao.getInstance().getTestDef(CmProgram.CUSTOM_PROGRAM.getDefId()), activeInfo.getActiveSegment());
                         custTest.setProgramInfo(cmProgram.getUserProgram());
-                        HaTestRun testRun = HaTestDao.createTestRun(conn, action.getUserId(), custTest.getTestId(), 10,0,0);
+                        HaTestRun testRun = HaTestDao.getInstance().createTestRun(conn, action.getUserId(), custTest.getTestId(), 10,0,0);
                         testRun.setHaTest(custTest);
                         
                         /** make sure the are lessons available for this test run.
@@ -273,6 +273,9 @@ public class GetUserInfoCommand implements ActionHandler<GetUserInfoAction, User
     
     /** Has this user completed the current active program ?
      * 
+     * 
+     *  NOTE: segment is 1 based.
+     *  
      * @param userInfo
      * @return
      * @throws Exception

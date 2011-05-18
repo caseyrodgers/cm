@@ -60,7 +60,7 @@ public class GetQuizHtmlCommand implements ActionHandler<GetQuizHtmlAction, Quiz
             String quizHtmlTemplate = readQuizHtmlTemplate();
             Map<String, Object> map = new HashMap<String, Object>();
 
-            StudentUserProgramModel programInfo = CmUserProgramDao.getInstance().loadProgramInfoForTest(conn, action.getTestId());
+            StudentUserProgramModel programInfo = CmUserProgramDao.getInstance().loadProgramInfoForTest(action.getTestId());
 
             
             int testId = action.getTestId();

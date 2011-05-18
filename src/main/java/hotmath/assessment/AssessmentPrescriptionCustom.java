@@ -33,7 +33,7 @@ public class AssessmentPrescriptionCustom extends AssessmentPrescription {
         
         this.testRun = testRun;
         
-        int custProgId = CmUserProgramDao.getInstance().loadProgramInfoForTest(conn, testRun.getHaTest().getTestId()).getCustomProgramId();
+        int custProgId = CmUserProgramDao.getInstance().loadProgramInfoForTest(testRun.getHaTest().getTestId()).getCustomProgramId();
         if(custProgId == 0) {
             throw new Exception("custom program ID must be specified");
         }

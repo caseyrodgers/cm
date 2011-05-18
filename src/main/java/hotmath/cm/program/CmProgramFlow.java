@@ -59,7 +59,7 @@ public class CmProgramFlow {
         
         /** make the program segment 1 based
         */
-       if(this.activeInfo.getActiveSegment() == 0) {
+       if(this.activeInfo.getActiveSegment() < 1) {
            this.activeInfo.setActiveSegment(1);
            sdao.setActiveInfo(conn, userId, activeInfo);
        }
@@ -95,7 +95,7 @@ public class CmProgramFlow {
              * If no quiz for current segment, then create a new one
              */
             if (activeInfo.getActiveTestId() == 0) {
-                activeInfo.setActiveTestId(createNewProgramSegment(conn).getTestId());
+                activeInfo.setActiveTestId(createNewProgramSegment().getTestId());
             }
             return new CmProgramFlowAction(new GetQuizHtmlCommand().execute(conn,new GetQuizHtmlAction(activeInfo.getActiveTestId())));
         }
@@ -189,7 +189,7 @@ public class CmProgramFlow {
             /** brand new program, create the first segment
              * 
              */
-            createNewProgramSegment(conn);
+            createNewProgramSegment();
             action = getActiveFlowAction(conn);
             assert(action.getPlace() == CmPlace.PRESCRIPTION
                     || action.getPlace() == CmPlace.QUIZ);
@@ -214,7 +214,7 @@ public class CmProgramFlow {
      * 
      * @param conn
      */
-    private HaTest createNewProgramSegment(final Connection conn) throws Exception {
+    private HaTest createNewProgramSegment() throws Exception {
 
         verifyProgramFlowIsStillActive();
 

@@ -34,7 +34,7 @@ public class HaTest_Test extends CmDbTestCase {
     public void testCreateTestRun() throws Exception {
         HaTest test = HaTestDao.getInstance().loadTest( _test.getTestId());
         String pids[] = { "pid_1", "pid_2" };
-        HaTestRun testRun = HaTestDao.createTestRun(conn, test.getUser().getUid(), test.getTestId(), 0, 0, 0);
+        HaTestRun testRun = HaTestDao.getInstance().createTestRun(conn, test.getUser().getUid(), test.getTestId(), 0, 0, 0);
         assertNotNull(testRun);
 
         assertTrue(testRun.getTestRunResults().size() > 0);

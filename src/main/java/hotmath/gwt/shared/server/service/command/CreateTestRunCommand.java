@@ -115,7 +115,7 @@ public class CreateTestRunCommand implements ActionHandler<CreateTestRunAction, 
            
             logger.debug(String.format("+++ execute(): getting current test results took: %d msec",System.currentTimeMillis() - startTime));
             startTime = System.currentTimeMillis();
-            HaTestRun run = HaTestDao.createTestRun(conn, test.getUser().getUid(), test.getTestId(), answeredCorrect, answeredIncorrect, notAnswered);
+            HaTestRun run = HaTestDao.getInstance().createTestRun(conn, test.getUser().getUid(), test.getTestId(), answeredCorrect, answeredIncorrect, notAnswered);
           	logger.debug(String.format("+++ execute(): createTestRun(): took: %d msec",System.currentTimeMillis() - startTime));
             
           	

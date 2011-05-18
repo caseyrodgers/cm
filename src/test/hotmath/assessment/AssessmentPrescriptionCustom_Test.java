@@ -52,7 +52,7 @@ public class AssessmentPrescriptionCustom_Test extends CmDbTestCase {
         
         custTest.setProgramInfo(userProgram);
         custTest.setTestDef(custTest.getTestDef());
-        HaTestRun testRun = HaTestDao.createTestRun(conn, _user.getUid(), custTest.getTestId(), 10,0,0);
+        HaTestRun testRun = HaTestDao.getInstance().createTestRun(conn, _user.getUid(), custTest.getTestId(), 10,0,0);
         testRun.setHaTest(custTest);
         
         AssessmentPrescriptionCustom custom = new AssessmentPrescriptionCustom(conn, testRun);
@@ -68,7 +68,7 @@ public class AssessmentPrescriptionCustom_Test extends CmDbTestCase {
         
         custTest2.setProgramInfo(userProgram);
         custTest2.setTestDef(custTest2.getTestDef());
-        HaTestRun testRun2 = HaTestDao.createTestRun(conn, _user.getUid(), custTest2.getTestId(), 10,0,0);
+        HaTestRun testRun2 = HaTestDao.getInstance().createTestRun(conn, _user.getUid(), custTest2.getTestId(), 10,0,0);
         testRun.setHaTest(custTest2);
         
         AssessmentPrescriptionCustom custom2 = new AssessmentPrescriptionCustom(conn, testRun2);

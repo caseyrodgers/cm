@@ -229,7 +229,7 @@ public class PrescriptionReport {
                      * first create the test run based on ONE pid
                      * 
                      */
-                    HaTestRun testRun = HaTestDao.createTestRun(_conn, _uid, test.getTestId(), 0, 1, 0);
+                    HaTestRun testRun = HaTestDao.getInstance().createTestRun(_conn, _uid, test.getTestId(), 0, 1, 0);
     
                     /**
                      * then the prescription by missing the ONE pid
