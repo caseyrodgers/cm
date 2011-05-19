@@ -10,6 +10,9 @@
 <%@page import="hotmath.assessment.InmhAssessment"%>
 <%@ page import="sb.util.*,hotmath.concordance.*, hotmath.*,hotmath.testset.*, hotmath.help.*" %>
 <%
+/** Store posed data as screen shot 
+    in static place on Catchup Math 
+*/
 String screenShotUrl="";
 try {
    String serverName = request.getServerName();

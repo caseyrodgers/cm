@@ -1,7 +1,9 @@
 package hotmath.gwt.cm.client.ui.context;
 
 import hotmath.gwt.cm.client.ui.CmProgramFlowClientManager;
+import hotmath.gwt.cm.client.ui.StandardFlowCallback;
 import hotmath.gwt.cm_rpc.client.UserInfo;
+import hotmath.gwt.cm_rpc.client.rpc.CmProgramFlowAction;
 import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
 import hotmath.gwt.cm_tools.client.util.GenericVideoPlayerForMona;
 import hotmath.gwt.cm_tools.client.util.GenericVideoPlayerForMona.MonaVideo;
@@ -52,9 +54,15 @@ public class PassedSectionWindow extends CmWindow {
         addButton(new Button("Continue",new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent ce) {
-                close();
-
-                CmProgramFlowClientManager.moveToNextSegmentInProgram();
+                
+                CmProgramFlowClientManager.getNextActiveProgramState(new StandardFlowCallback() {
+                    @Override
+                    public void programFlow(CmProgramFlowAction flowResponse) {
+                        super.programFlow(flowResponse);
+                        
+                        close();
+                    }
+                });
             }
         }));
 
