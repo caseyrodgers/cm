@@ -39,6 +39,7 @@ import hotmath.testset.ha.HaTestDefDescription;
 import hotmath.testset.ha.HaTestRun;
 import hotmath.testset.ha.HaTestRunDao;
 import hotmath.testset.ha.HaUserExtendedDao;
+import hotmath.testset.ha.StudentUserProgramModel;
 import hotmath.util.HMConnectionPool;
 import hotmath.util.sql.SqlUtilities;
 
@@ -454,7 +455,7 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
 	}
 
 	public Boolean isTutoringEnabledForAdmin(final Connection conn, Integer aid) throws Exception {
-	    AccountInfoModel aim = CmAdminDao.getInstance().getAccountInfo(conn, aid);
+	    AccountInfoModel aim = CmAdminDao.getInstance().getAccountInfo(aid);
 	    String hasTutoring = aim.getHasTutoring();
 	    if(hasTutoring != null && hasTutoring.equals("Enabled")) {
 	        return true;
@@ -782,7 +783,7 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
             updateStudentProgram(conn, sm);
         
         if (programChanged || progIsNew)
-            HaUserExtendedDao.resetUserExtendedLessonStatusForUid(conn, sm.getUid());
+            HaUserExtendedDao.getInstance().resetUserExtendedLessonStatusForUid(conn, sm.getUid());
 
         if (passPercentChanged) {
         	Integer passPercent = getPercentFromString(sm.getPassPercent());
@@ -2265,6 +2266,14 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
         assignProgramToStudent(conn, uid,progToAssign, chapter, null);
     }
 
+    public void assignProgramToStudent(final Connection conn, Integer uid, StudentUserProgramModel userProgram) throws Exception {
+        StudentProgramModel progToAssign = new StudentProgramModel();
+        HaTestDef testDef = HaTestDefDao.getInstance().getTestDef(userProgram.getTestDefId());
+        progToAssign.setProgramType(testDef.getProgId());
+        progToAssign.setSubjectId(testDef.getSubjectId());
+        assignProgramToStudent(conn, uid,progToAssign, testDef.getChapter(), null);  
+    }
+    
     public void assignProgramToStudent(final Connection conn, Integer uid, StudentProgramModel program, String chapter, String passPercent) throws Exception {
         assignProgramToStudent(conn, uid, program, chapter, passPercent, null,false);
     }

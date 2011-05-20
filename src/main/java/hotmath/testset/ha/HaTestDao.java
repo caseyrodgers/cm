@@ -262,7 +262,7 @@ public class HaTestDao extends SimpleJdbcDaoSupport {
 
         
             StudentUserProgramModel programInfo = new StudentUserProgramModel(); 
-            HaTest test = getJdbcTemplate().queryForObject(
+            List<HaTest> tests = getJdbcTemplate().query(
                     CmMultiLinePropertyReader.getInstance().getProperty("HA_TEST_LOAD"),
                     new Object[]{testId},
                     new RowMapper<HaTest>() {
@@ -318,6 +318,24 @@ public class HaTestDao extends SimpleJdbcDaoSupport {
                     });
 
 
+            
+            /** There should be only one test for a given test_id
+             *  
+             *  If multiple, then is in error. 
+             *  
+             *  Report error and return first test found.
+             *  
+             *  
+             */
+            if(tests.size() == 0) {
+                throw new Exception("No such test found: " + testId);
+            }
+            else if(tests.size() > 1) {
+                __logger.warn("More than one test found for test_id " + testId);
+            }
+            
+            HaTest test = tests.get(0);
+            
             /**
              * Get all ids defined for test and add to HaTest object
              * 

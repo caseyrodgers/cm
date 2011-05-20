@@ -46,7 +46,7 @@ public class StudentListReport {
         List<Integer> studentUids = (List<Integer>) CmCacheManager.getInstance().retrieveFromCache(REPORT_ID, reportId);
 
         CmAdminDao adminDao = CmAdminDao.getInstance();
-        AccountInfoModel info = adminDao.getAccountInfo(conn,adminId);
+        AccountInfoModel info = adminDao.getAccountInfo(adminId);
         
         List<StudentModelI> students = CmStudentDao.getInstance().getStudentModels(conn,uids);
 

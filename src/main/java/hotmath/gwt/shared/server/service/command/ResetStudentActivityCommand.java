@@ -2,6 +2,7 @@ package hotmath.gwt.shared.server.service.command;
 
 import hotmath.cm.program.CmProgramFlow;
 import hotmath.cm.util.CmMultiLinePropertyReader;
+import hotmath.gwt.cm_admin.server.model.CmStudentDao;
 import hotmath.gwt.cm_rpc.client.rpc.Action;
 import hotmath.gwt.cm_rpc.client.rpc.ResetStudentActivityAction;
 import hotmath.gwt.cm_rpc.client.rpc.Response;
@@ -10,11 +11,17 @@ import hotmath.gwt.cm_rpc.server.rpc.ActionHandler;
 import hotmath.gwt.cm_tools.client.model.StudentActiveInfo;
 import hotmath.testset.ha.HaTest;
 import hotmath.testset.ha.HaTestDao;
+import hotmath.testset.ha.HaUserExtendedDao;
 import hotmath.util.sql.SqlUtilities;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 
+/** Reset the user to the named test program/segment
+ * 
+ * @author casey
+ *
+ */
 public class ResetStudentActivityCommand implements ActionHandler<ResetStudentActivityAction, RpcData>{
 
 
@@ -23,8 +30,7 @@ public class ResetStudentActivityCommand implements ActionHandler<ResetStudentAc
         
         assert(action.getTestId() > 0);
         
-        HaTest test = HaTestDao.getInstance().loadTest(action.getTestId());
-        
+        HaTest resetToTest = HaTestDao.getInstance().loadTest(action.getTestId());
         PreparedStatement ps = null;
         try {
             String sql = CmMultiLinePropertyReader.getInstance().getProperty("RESET_STUDENT_ACTIVITY_TEST_RUN");
@@ -48,12 +54,19 @@ public class ResetStudentActivityCommand implements ActionHandler<ResetStudentAc
             SqlUtilities.releaseResources(null, ps, null);
         }
         
+        
+        CmStudentDao.getInstance().assignProgramToStudent(conn, action.getUserId(), resetToTest.getProgramInfo());
+
+        
+        
+        HaUserExtendedDao.getInstance().resyncUserExtendedLessonStatusForUid(conn,action.getUserId());
+        
         /** update active flow to selected test segment
          * 
          */
         CmProgramFlow flow = new CmProgramFlow(conn,action.getUserId());
         StudentActiveInfo active = flow.getActiveInfo();
-        active.setActiveSegment(test.getSegment());
+        active.setActiveSegment(resetToTest.getSegment());
         active.setActiveRunId(0);
         active.setActiveRunSession(0);
         active.setActiveTestId(0);

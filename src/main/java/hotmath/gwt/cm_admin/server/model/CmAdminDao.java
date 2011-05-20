@@ -115,7 +115,7 @@ public class CmAdminDao extends SimpleJdbcDaoSupport {
     }
 
     public GroupInfoModel getGroup(final Connection conn, int adminId, String groupName) throws Exception {
-    	CmList<GroupInfoModel> groups = getActiveGroups(conn, adminId);
+    	List<GroupInfoModel> groups = getActiveGroups(adminId);
     	for(GroupInfoModel g: groups) {
     		if(g.getName().equals(groupName))
     			return g;
@@ -123,28 +123,22 @@ public class CmAdminDao extends SimpleJdbcDaoSupport {
     	return null;
     }
 
-    public CmList<GroupInfoModel> getActiveGroups(final Connection conn, Integer adminUid) throws Exception {
-        CmList<GroupInfoModel> l = null;
-
-        PreparedStatement ps = null;
-        ResultSet rs = null;
-
-        try {
-            ps = conn.prepareStatement(CmMultiLinePropertyReader.getInstance().getProperty("SELECT_GROUPS_SQL"));
-            ps.setInt(1, adminUid);
-            ps.setInt(2, adminUid);
-            ps.setInt(3, 1);
-            ps.setInt(4, 1);
-            rs = ps.executeQuery();
-
-            l = loadGroups(rs);
-        } catch (Exception e) {
-            logger.error(String.format("*** Error getting groups for admin uid: %d", adminUid), e);
-            throw new Exception("*** Error getting Group data ***");
-        } finally {
-            SqlUtilities.releaseResources(rs, ps, null);
-        }
-        return l;
+    public List<GroupInfoModel> getActiveGroups(Integer adminUid) throws Exception {
+        return getJdbcTemplate().query(
+                CmMultiLinePropertyReader.getInstance().getProperty("SELECT_GROUPS_SQL"),
+                new Object[]{adminUid,adminUid,1,1},
+                new RowMapper<GroupInfoModel>() {
+                    @Override
+                    public GroupInfoModel mapRow(ResultSet rs, int rowNum) throws SQLException {
+                        GroupInfoModel m = new GroupInfoModel();
+                        m.setId(rs.getInt("id"));
+                        m.setGroupName(rs.getString("name"));
+                        m.setIsActive(rs.getInt("is_active") != 0);
+                        m.setIsSelfReg(rs.getInt("is_auto_create_template") != 0);
+                        return m;
+                    }
+                }
+        );
     }
     
     
@@ -436,19 +430,7 @@ public class CmAdminDao extends SimpleJdbcDaoSupport {
             SqlUtilities.releaseResources(rs, ps, null);
         }
     }
-
-    public AccountInfoModel getAccountInfo(Integer adminUid) throws Exception {
-        Connection conn = null;
-
-        try {
-            conn = HMConnectionPool.getConnection();
-            return getAccountInfo(conn, adminUid);
-        } finally {
-            SqlUtilities.releaseResources(null, null, conn);
-        }
-    }
-
-    public AccountInfoModel getAccountInfo(final Connection conn, final Integer adminUid) throws Exception {
+    public AccountInfoModel getAccountInfo(final Integer adminUid) throws Exception {
         AccountInfoModel accountInfo = this.getJdbcTemplate().queryForObject(
                 CmMultiLinePropertyReader.getInstance().getProperty("ACCOUNT_INFO_SQL"), 
                 new Object[] { adminUid,adminUid,adminUid,adminUid },

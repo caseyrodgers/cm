@@ -43,6 +43,8 @@ http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
     <bean id="cmCustomProgramDao" class="hotmath.gwt.cm_admin.server.model.CmCustomProgramDao" parent="abstractJdbcDao"/>
     <bean id="cmQuizzesDao" class="hotmath.gwt.cm_admin.server.model.CmQuizzesDao" parent="abstractJdbcDao"/>
     <bean id="cmHighlightsDao" class="hotmath.gwt.cm_admin.server.model.CmHighlightsDao" parent="abstractJdbcDao"/>
+    <bean id="hotmath.testset.ha.HaUserExtendedDao" class="hotmath.testset.ha.HaUserExtendedDao" parent="abstractJdbcDao"/>
+    
     
 
 </beans>

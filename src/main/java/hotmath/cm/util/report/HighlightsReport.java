@@ -70,7 +70,7 @@ public class HighlightsReport {
         baos = new ByteArrayOutputStream();
         PdfWriter.getInstance(document, baos);
 
-        AccountInfoModel info = CmAdminDao.getInstance().getAccountInfo(conn,adminId);
+        AccountInfoModel info = CmAdminDao.getInstance().getAccountInfo(adminId);
         
         int rowCount = 0;
         String countLabel = null;

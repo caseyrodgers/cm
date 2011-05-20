@@ -85,7 +85,7 @@ public class StudentReportCard {
 
         CmAdminDao adminDao = CmAdminDao.getInstance();
 
-        AccountInfoModel info = adminDao.getAccountInfo(conn,adminId);
+        AccountInfoModel info = adminDao.getAccountInfo(adminId);
         
         if (info == null) {
             logger.warn("*** Account info is NULL for adminId: " + adminId);

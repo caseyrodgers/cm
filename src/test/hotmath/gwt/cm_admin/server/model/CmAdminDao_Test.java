@@ -36,9 +36,14 @@ public class CmAdminDao_Test extends CmDbTestCase {
             TEST_ID = setupDemoAccount();
 
     }
-
+    
+    public void testGetGroup() throws Exception {
+        GroupInfoModel ac = CmAdminDao.getInstance().getGroup(conn, _user.getAid(), "Teacher-1");
+        assertTrue(ac != null);
+    }
+    
     public void testGetInfo() throws Exception {
-        AccountInfoModel ac = CmAdminDao.getInstance().getAccountInfo(conn,_user.getAid());
+        AccountInfoModel ac = CmAdminDao.getInstance().getAccountInfo(_user.getAid());
         assertTrue(ac != null);
     }
     
@@ -54,7 +59,7 @@ public class CmAdminDao_Test extends CmDbTestCase {
 
 
     public void testCreateSelfRegistrationGroup() throws Exception {
-        List<GroupInfoModel> groups = CmAdminDao.getInstance().getActiveGroups(conn, _user.getAid());
+        List<GroupInfoModel> groups = CmAdminDao.getInstance().getActiveGroups( _user.getAid());
         
         /** remove all groups
          * 
@@ -70,7 +75,7 @@ public class CmAdminDao_Test extends CmDbTestCase {
         
         CmAdminDao.getInstance().createSelfRegistrationGroup(conn, _user.getAid(), testGroup, CmProgram.ALG1_PROF, false, true);
         
-        groups = CmAdminDao.getInstance().getActiveGroups(conn, _user.getAid());
+        groups = CmAdminDao.getInstance().getActiveGroups(_user.getAid());
         
         boolean found=false;
         for(GroupInfoModel g: groups) {

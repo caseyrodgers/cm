@@ -2332,4 +2332,32 @@ and l.date_completed is null
 
 
 
- 
+#############################
+### HaUserExtendedDao #####
+#############################
+
+###################################
+.key=SET_UPDATE_EXTENDED_DATA
+
+update HA_USER_EXTENDED 
+  set quiz_pass_count = ?, 
+   quiz_not_pass_count = ?, 
+   last_quiz = ?,
+   last_login = ?
+    
+where user_id = ?
+
+
+###############################
+.key=GET_LAST_QUIZ_STATUS
+##
+# Return the pass percent of the last quiz taken
+##
+
+select round((answered_correct  /  (answered_correct + answered_incorrect + not_answered)) * 100) as last_quiz_percent
+from HA_TEST t
+  JOIN HA_TEST_RUN r
+    on r.test_id = t.test_id
+where t.user_id = ?
+order by r.run_time desc
+limit 1;

@@ -2,18 +2,23 @@ package hotmath.testset.ha;
 
 import hotmath.HotMathException;
 import hotmath.cm.util.CmMultiLinePropertyReader;
-import hotmath.util.sql.SqlUtilities;
-
 import hotmath.gwt.cm_admin.server.model.CmCustomProgramDao;
 import hotmath.gwt.cm_rpc.client.rpc.CmList;
 import hotmath.gwt.cm_tools.client.model.CustomLessonModel;
 import hotmath.gwt.cm_tools.client.model.StudentProgramModel;
+import hotmath.spring.SpringManager;
+import hotmath.util.sql.SqlUtilities;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.Date;
+import java.util.List;
 
 import org.apache.log4j.Logger;
+import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.simple.SimpleJdbcDaoSupport;
 
 /**
  * Defines data access methods for HA_USER_EXTENDED
@@ -22,9 +27,19 @@ import org.apache.log4j.Logger;
  *
  */
 
-public class HaUserExtendedDao {
+public class HaUserExtendedDao extends SimpleJdbcDaoSupport {
 	
     private static final Logger LOGGER = Logger.getLogger(HaTest.class);
+    
+    
+    static private HaUserExtendedDao __instance;
+    static public HaUserExtendedDao getInstance() throws Exception {
+        if(__instance == null) {
+            __instance = (HaUserExtendedDao)SpringManager.getInstance().getBeanFactory().getBean(HaUserExtendedDao.class.getName());
+        }
+        return __instance;
+    }
+    
     
     private HaUserExtendedDao() { ; }
 
@@ -75,7 +90,6 @@ public class HaUserExtendedDao {
     		SqlUtilities.releaseResources(rs, stmt, null);
     		SqlUtilities.releaseResources(null, stmt2, null);
     	}
-    	
     }
 
     static final String SELECT_USER_EXTENDED_SQL = 
@@ -157,6 +171,66 @@ public class HaUserExtendedDao {
 
     static final String SELECT_USER_EXTENDED_BY_UID_SQL = 
         "select * from HA_USER_EXTENDED where user_id = ?";
+    
+    
+    public void resyncUserExtendedLessonStatusForUid(final Connection conn, int userId) {
+        try {
+            Integer passQuizzes = getJdbcTemplate().queryForObject(
+                    "select count(*) from HA_TEST t JOIN HA_TEST_RUN r on r.test_id = t.test_id where user_id = ? and is_passing = 1",
+                    new Object[]{userId},
+                    new RowMapper<Integer>() {
+                        @Override
+                        public Integer mapRow(ResultSet rs, int rowNum) throws SQLException {
+                            return rs.getInt(1);
+                        }
+                    });
+            
+            Integer notPassQuizzes = getJdbcTemplate().queryForObject(
+                    "select count(*) from HA_TEST t JOIN HA_TEST_RUN r on r.test_id = t.test_id where user_id = ? and is_passing = 0",
+                    new Object[]{userId},
+                    new RowMapper<Integer>() {
+                        @Override
+                        public Integer mapRow(ResultSet rs, int rowNum) throws SQLException {
+                            return rs.getInt(1);
+                        }
+                    });
+            
+            List<Integer> lastQuizzes = getJdbcTemplate().query(
+                    CmMultiLinePropertyReader.getInstance().getProperty("GET_LAST_QUIZ_STATUS"),
+                    new Object[]{userId},
+                    new RowMapper<Integer>() {
+                        @Override
+                        public Integer mapRow(ResultSet rs, int rowNum) throws SQLException {
+                            return rs.getInt(1);
+                        }
+                    });            
+            Integer lastQuiz = null;
+            if(lastQuizzes.size() > 0) {
+                lastQuiz = lastQuizzes.get(0);
+            }
+            
+            Date lastLogin = getJdbcTemplate().queryForObject(
+                    "select max(create_time) from HA_TEST where user_id = ?",
+                    new Object[]{userId},
+                    new RowMapper<Date>() {
+                        @Override
+                        public Date mapRow(ResultSet rs, int rowNum) throws SQLException {
+                            return rs.getDate(1);
+                        }
+                     });        
+            
+            int count = getJdbcTemplate().update(
+                    CmMultiLinePropertyReader.getInstance().getProperty("SET_UPDATE_EXTENDED_DATA"),
+                    new Object[]{passQuizzes,notPassQuizzes,lastQuiz,lastLogin,userId}
+            );
+            
+            LOGGER.debug("Updated " + count);
+            
+        }
+        catch(Exception e) {
+            e.printStackTrace();
+        }
+    }
 
     static public void resetUserExtendedLessonStatusForUid(final Connection conn, StudentProgramModel program, int userId) throws Exception {
     	if (program.getCustom().isCustom()) {
@@ -170,7 +244,7 @@ public class HaUserExtendedDao {
     	}
     }
 
-    static public void resetUserExtendedLessonStatusForUid(final Connection conn, int userId) throws Exception {
+    public void resetUserExtendedLessonStatusForUid(final Connection conn, int userId) throws Exception {
     	updateUserExtendedLessonStatusForUid(conn, userId, 0);
     }
 

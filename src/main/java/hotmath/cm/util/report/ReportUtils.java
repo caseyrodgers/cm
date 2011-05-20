@@ -1,7 +1,14 @@
 package hotmath.cm.util.report;
 
+import hotmath.gwt.cm_admin.server.model.CmAdminDao;
+import hotmath.gwt.cm_tools.client.model.AccountInfoModel;
+import hotmath.gwt.cm_tools.client.model.GroupInfoModel;
+import hotmath.gwt.cm_tools.client.model.StudentModelI;
+import hotmath.gwt.shared.client.rpc.action.GetStudentGridPageAction.FilterType;
+
 import java.awt.Color;
 import java.sql.Connection;
+import java.util.List;
 import java.util.Map;
 
 import com.lowagie.text.Chunk;
@@ -11,13 +18,6 @@ import com.lowagie.text.HeaderFooter;
 import com.lowagie.text.Paragraph;
 import com.lowagie.text.Phrase;
 import com.lowagie.text.pdf.PdfPTable;
-
-import hotmath.gwt.cm_admin.server.model.CmAdminDao;
-import hotmath.gwt.cm_rpc.client.rpc.CmList;
-import hotmath.gwt.cm_tools.client.model.AccountInfoModel;
-import hotmath.gwt.cm_tools.client.model.GroupInfoModel;
-import hotmath.gwt.cm_tools.client.model.StudentModelI;
-import hotmath.gwt.shared.client.rpc.action.GetStudentGridPageAction.FilterType;
 
 
 public class ReportUtils {
@@ -126,7 +126,7 @@ public class ReportUtils {
     		
     		if (filterMap.containsKey(FilterType.GROUP)) {
            		Integer groupId = Integer.valueOf(filterMap.get(FilterType.GROUP));
-    			CmList<GroupInfoModel> groups = dao.getActiveGroups(conn, adminId);
+    			List<GroupInfoModel> groups = dao.getActiveGroups(adminId);
     			for(GroupInfoModel group : groups) {
     				if (group.getId().equals(groupId)) {
     					sb.append("Group: ").append(group.getName());

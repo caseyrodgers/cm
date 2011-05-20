@@ -51,7 +51,7 @@ public class SaveAutoRegistrationCommand implements ActionHandler<SaveAutoRegist
         // first make sure this group exists
         // If the group already exists then use it, but first
         // remove any existing auto_create_template account based on this group.
-        List<GroupInfoModel> groups = CmAdminDao.getInstance().getActiveGroups(conn, student.getAdminUid());
+        List<GroupInfoModel> groups = CmAdminDao.getInstance().getActiveGroups(student.getAdminUid());
         for(GroupInfoModel gm: groups) {
             String gname = gm.getName();  // contains null for default (NONE) user 
             if(gname != null && gname.equals(groupName)) {

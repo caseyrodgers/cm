@@ -11,6 +11,7 @@ import hotmath.testset.ha.HaTestDao;
 import hotmath.testset.ha.HaTestDefDao;
 import hotmath.testset.ha.HaTestRunDao;
 import hotmath.testset.ha.HaUserDao;
+import hotmath.testset.ha.HaUserExtendedDao;
 import junit.framework.TestCase;
 
 public class SpringManager_Test extends TestCase{
@@ -88,5 +89,12 @@ public class SpringManager_Test extends TestCase{
         SpringManager manager = SpringManager.getInstance();
         CmHighlightsDao testDao = (CmHighlightsDao)manager.getBeanFactory().getBean("cmHighlightsDao");
         assertNotNull(testDao);
-    }    
+    }
+    
+    public void testCmExtendedDataDao() throws Exception {
+        SpringManager manager = SpringManager.getInstance();
+        hotmath.testset.ha.HaUserExtendedDao testDao = (HaUserExtendedDao)manager.getBeanFactory().getBean("hotmath.testset.ha.HaUserExtendedDao");
+        assertNotNull(testDao);
+    }
+    
 }

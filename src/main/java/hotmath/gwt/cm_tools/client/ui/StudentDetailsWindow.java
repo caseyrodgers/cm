@@ -10,6 +10,8 @@ import hotmath.gwt.cm_tools.client.model.StudentActivityModel;
 import hotmath.gwt.cm_tools.client.model.StudentModelExt;
 import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
 import hotmath.gwt.shared.client.CmShared;
+import hotmath.gwt.shared.client.eventbus.CmEvent;
+import hotmath.gwt.shared.client.eventbus.EventType;
 import hotmath.gwt.shared.client.rpc.RetryAction;
 import hotmath.gwt.shared.client.rpc.action.GeneratePdfAction;
 import hotmath.gwt.shared.client.rpc.action.GeneratePdfAction.PdfType;
@@ -45,7 +47,6 @@ import com.extjs.gxt.ui.client.widget.menu.Menu;
 import com.extjs.gxt.ui.client.widget.menu.MenuItem;
 import com.extjs.gxt.ui.client.widget.toolbar.FillToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
@@ -157,7 +158,7 @@ public class StudentDetailsWindow extends CmWindow {
 		Menu menu = new Menu();
 		menu.add(detailDebug);
 
-		MenuItem resetHistory = new MenuItem("Reset History");
+		MenuItem resetHistory = new MenuItem("Reset To Here");
 		resetHistory.setToolTip("Reset student's history to this point");
 		resetHistory.addSelectionListener(new SelectionListener<MenuEvent>() {
 		    public void componentSelected(MenuEvent ce) {
@@ -184,6 +185,7 @@ public class StudentDetailsWindow extends CmWindow {
 	    new RetryAction<RpcData>() {
             public void oncapture(RpcData list) {
                 getStudentActivityRPC(samGrid.getStore(), studentModel);
+                hotmath.gwt.shared.client.eventbus.EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_REFRESH_STUDENT_DATA));
             }
 
             @Override
@@ -194,20 +196,6 @@ public class StudentDetailsWindow extends CmWindow {
             }
         }.register();
 	}
-
-    /**
-     * Login as selected user, connecting to selected test/run
-     * 
-     */
-    private void loginAsSelectedUser(StudentActivityModel sm) {
-
-        String server = CmShared.getServerForCmStudent();
-
-        String url = server + "/cm_student/CatchupMath.html?debug=true&uid=" + studentModel.getUid() + "&debug_info="
-                + studentModel.getUid() + ":" + sm.getTestId() + ":" + sm.getRunId();
-
-        Window.open(url, "_blank", "location=1,menubar=1,resizable=1,scrollbars=1");
-    }
 
     /**
      * Enable or disable buttons depending on user state.

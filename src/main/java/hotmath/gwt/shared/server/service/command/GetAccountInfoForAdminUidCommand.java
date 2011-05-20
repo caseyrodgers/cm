@@ -15,7 +15,7 @@ public class GetAccountInfoForAdminUidCommand implements ActionHandler<GetAccoun
     @Override
     public AccountInfoModel execute(Connection conn, GetAccountInfoForAdminUidAction action) throws Exception {
         CmAdminDao dao = CmAdminDao.getInstance();
-        AccountInfoModel aInfo = dao.getAccountInfo(conn, action.getUid());
+        AccountInfoModel aInfo = dao.getAccountInfo(action.getUid());
         if(aInfo.getIsTutoringEnabled()) {
             try {
                 int minutes = LWLIntegrationManager.getInstance().getRemainingMinute(aInfo.getSubscriberId());

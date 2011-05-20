@@ -47,7 +47,7 @@ public class GroupAssessmentReport {
 
         CmAdminDao adminDao = CmAdminDao.getInstance();
 
-        AccountInfoModel info = adminDao.getAccountInfo(conn, adminId);
+        AccountInfoModel info = adminDao.getAccountInfo(adminId);
         if (info == null)
             return null;
 
