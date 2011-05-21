@@ -4,11 +4,18 @@ import hotmath.cm.util.CatchupMathProperties;
 import hotmath.flusher.Flushable;
 import hotmath.flusher.HotmathFlusher;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.xml.XmlBeanFactory;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
+
+import sb.util.SbFile;
+import sb.util.SbUtilities;
 
 
 /** Handle the creation of the Spring Context
@@ -44,7 +51,18 @@ public class SpringManager {
     BeanFactory _beanFactory;
     private SpringManager() throws Exception {
         __logger.info("Creating new SpringManager");
-        Resource res = new FileSystemResource(CatchupMathProperties.getInstance().getCatchupRuntime() + "/spring.xml");
+        Map<String,String> map = new HashMap<String,String>(){
+            {
+                put("user", CatchupMathProperties.getInstance().getProperty("dbpool.user", "hmadmin"));
+                put("password", CatchupMathProperties.getInstance().getProperty("dbpool.password", "hmadmin"));
+                put("url", CatchupMathProperties.getInstance().getProperty("dbpool.url", "jdbc:mysql://hotmath.kattare.com/hotmath_test?user=$$USER$$"));
+            }
+        };
+        String xml = SbUtilities.replaceTokens(
+                new SbFile(CatchupMathProperties.getInstance().getCatchupRuntime() + "/spring.xml").getFileContents().toString("\n"), 
+                map);
+                
+        Resource res = new ByteArrayResource(xml.getBytes());
         _beanFactory = new XmlBeanFactory(res);
     }
     
