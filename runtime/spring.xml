@@ -10,8 +10,8 @@ http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
 	<bean id="dataSource" destroy-method="close"
 		class="org.apache.commons.dbcp.BasicDataSource">
 		<property name="driverClassName" value="com.mysql.jdbc.Driver" />
-        <property name="username" value="$$PASSWORD$$"/>
-        <property name="password" value="$$USER$$"/>
+        <property name="username" value="$$USER$$"/>
+        <property name="password" value="$$PASSWORD$$"/>
         <property name="url" value="$$URL$$"/>
         
         <property name="initialSize" value="10"/>
