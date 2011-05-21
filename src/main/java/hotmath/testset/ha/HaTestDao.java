@@ -164,6 +164,7 @@ public class HaTestDao extends SimpleJdbcDaoSupport {
      * @return
      * @throws HotMathException
      */
+    static public final int EMPTY_TEST = -1;
     public HaTest createTest(final Integer uid, final HaTestDef testDef, final int segment)
             throws Exception {
 
@@ -183,7 +184,7 @@ public class HaTestDao extends SimpleJdbcDaoSupport {
         HaUser user = HaUserDao.getInstance().lookUser(uid, false);
         final HaTestConfig config = user.getTestConfig();
 
-        final List<String> testIds = (List<String>)(segment == -1?new ArrayList<String>():testDef.getTestIdsForSegment(userProgram, segment, config, segmentSlot));
+        final List<String> testIds = (List<String>)(segment == EMPTY_TEST?new ArrayList<String>():testDef.getTestIdsForSegment(userProgram, segment, config, segmentSlot));
 
         KeyHolder keyHolder = new GeneratedKeyHolder();
         getJdbcTemplate().update(new PreparedStatementCreator() {

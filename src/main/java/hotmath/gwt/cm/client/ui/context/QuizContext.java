@@ -154,6 +154,8 @@ public class QuizContext implements CmContext {
     }
 
     public void doCheckTest() {
+        
+        _isCheckingQuiz = true;
 
         /**
          * only issue check test if sure there are no pending question
@@ -190,8 +192,6 @@ public class QuizContext implements CmContext {
             @Override
             public void attempt() {
                 CmBusyManager.setBusy(true);
-                
-                _isCheckingQuiz = true;
 
                 if (CmShared.getQueryParameter("debug") != null) {
                     InfoPopupBox.display("Quiz Check", "Checking quiz ...");

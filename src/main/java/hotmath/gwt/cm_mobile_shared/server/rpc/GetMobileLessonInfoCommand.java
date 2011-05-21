@@ -42,7 +42,7 @@ public class GetMobileLessonInfoCommand implements ActionHandler<GetMobileLesson
 
         int userId = 23487;
 
-        HaTest custTest = HaTestDao.getInstance().createTest(userId,HaTestDefDao.getInstance().getTestDef(CmProgram.CUSTOM_PROGRAM.getDefId()), -1);
+        HaTest custTest = HaTestDao.getInstance().createTest(userId,HaTestDefDao.getInstance().getTestDef(CmProgram.CUSTOM_PROGRAM.getDefId()), HaTestDao.EMPTY_TEST);
         StudentUserProgramModel userProgram = new StudentUserProgramModel();
         custTest.setProgramInfo(userProgram);
         HaTestRun testRun = HaTestDao.getInstance().createTestRun(conn, userId, custTest.getTestId(), 10, 0, 0);

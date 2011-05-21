@@ -60,6 +60,7 @@ public class PassedSectionWindow extends CmWindow {
                     public void programFlow(CmProgramFlowAction flowResponse) {
                         super.programFlow(flowResponse);
                         
+                        /** Only close dialog after complete round trip to server */
                         close();
                     }
                 });
