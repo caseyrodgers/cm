@@ -167,7 +167,7 @@ public class HaTestDao extends SimpleJdbcDaoSupport {
     public HaTest createTest(final Integer uid, final HaTestDef testDef, final int segment)
             throws Exception {
 
-        assert (segment > 0);
+        assert (segment != 0);
         String msg = String.format("creating test: uid: %d, segment: %d, testDef: %s", uid, segment, testDef);
         __logger.debug(msg);
 
@@ -183,7 +183,7 @@ public class HaTestDao extends SimpleJdbcDaoSupport {
         HaUser user = HaUserDao.getInstance().lookUser(uid, false);
         final HaTestConfig config = user.getTestConfig();
 
-        final List<String> testIds = testDef.getTestIdsForSegment(userProgram, segment, config, segmentSlot);
+        final List<String> testIds = (List<String>)(segment == -1?new ArrayList<String>():testDef.getTestIdsForSegment(userProgram, segment, config, segmentSlot));
 
         KeyHolder keyHolder = new GeneratedKeyHolder();
         getJdbcTemplate().update(new PreparedStatementCreator() {
