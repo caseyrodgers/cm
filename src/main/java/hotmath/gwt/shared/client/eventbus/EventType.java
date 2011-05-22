@@ -182,5 +182,5 @@ public enum EventType{
     /** Perform any needed GUI or server action 
      *  required to be in a logout state
      */
-    EVENT_TYPE_LOGOUT
+    EVENT_TYPE_LOGOUT,
 }

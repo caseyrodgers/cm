@@ -9,6 +9,7 @@ import hotmath.gwt.cm_rpc.client.rpc.CmProgramFlowAction;
 import hotmath.gwt.cm_rpc.client.rpc.CreateTestRunResponse;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
+import hotmath.gwt.cm_tools.client.ui.ContextController;
 import hotmath.gwt.cm_tools.client.ui.InfoPopupBox;
 import hotmath.gwt.cm_tools.client.ui.NextPanelInfo;
 import hotmath.gwt.cm_tools.client.ui.NextPanelInfoImplDefault;
@@ -31,6 +32,7 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.Timer;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Widget;
@@ -96,7 +98,7 @@ public class QuizContext implements CmContext {
 
         btn.addSelectionListener(new SelectionListener<IconButtonEvent>() {
             public void componentSelected(IconButtonEvent ce) {
-                doNext();
+                ContextController.getInstance().doNext();
             }
         });
 
@@ -139,23 +141,18 @@ public class QuizContext implements CmContext {
     }
 
     public void doNext() {
-        if(_isCheckingQuiz) {
-            InfoPopupBox.display("Already Checking", "The quiz is currently being checked...");
-            return;
-        }
-                
-        
         new HaveYouCheckedYourWorkWindow(new Callback() {
             @Override
             public void quizIsReadyToBeChecked() {
                 doCheckTest();
             }
+            @Override
+            public void quizWasCanceled() {
+            }
         });
     }
 
     public void doCheckTest() {
-        
-        _isCheckingQuiz = true;
 
         /**
          * only issue check test if sure there are no pending question
@@ -178,9 +175,6 @@ public class QuizContext implements CmContext {
         }
     }
     
-
-    boolean _isCheckingQuiz;
-
     /**
      * Perform the actual checking of test on server
      * 
@@ -205,34 +199,23 @@ public class QuizContext implements CmContext {
             }
 
             public void oncapture(CreateTestRunResponse testRunInfo) {
-                try {
-                    CmBusyManager.setBusy(false);
-    
-                    UserInfo.getInstance().setRunId(testRunInfo.getRunId());
-                    UserInfo.getInstance().setSessionNumber(0); // start
-                    UserInfo.getInstance().setCorrectPercent(testRunInfo.getTestCorrectPercent());
-                    
-                    
-                    /** check here if SelfPlacement test and handle special
-                     * 
-                     */
-                    if(testRunInfo.getNextAction().getPlace() == CmPlace.AUTO_PLACEMENT) {
-                        new AutoAdvancedProgramWindow(testRunInfo.getAssignedTest());
-                    }
-                    else {
-                        showQuizResults(testRunInfo);
-                    }
+                CmBusyManager.setBusy(false);
+
+                UserInfo.getInstance().setRunId(testRunInfo.getRunId());
+                UserInfo.getInstance().setSessionNumber(0); // start
+                UserInfo.getInstance().setCorrectPercent(testRunInfo.getTestCorrectPercent());
+                
+                
+                /** check here if SelfPlacement test and handle special
+                 * 
+                 */
+                if(testRunInfo.getNextAction().getPlace() == CmPlace.AUTO_PLACEMENT) {
+                    new AutoAdvancedProgramWindow(testRunInfo.getAssignedTest());
                 }
-                finally {
-                    _isCheckingQuiz = false;
+                else {
+                    showQuizResults(testRunInfo);
                 }
             }
-            
-            public void onFailure(Throwable error) {
-                super.onFailure(error);
-                _isCheckingQuiz = false;    
-            }
-            
         }.register();
     }
 

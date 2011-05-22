@@ -25,7 +25,7 @@ public class HaveYouCheckedYourWorkWindow extends CmWindow {
         addButton(new Button("Yes", new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent ce) {
-                close();
+                close();                
                 callback.quizIsReadyToBeChecked();
             }
         }));
@@ -35,6 +35,7 @@ public class HaveYouCheckedYourWorkWindow extends CmWindow {
             public void componentSelected(ButtonEvent ce) {
                 EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_MODAL_WINDOW_CLOSED));
                 close();
+                callback.quizWasCanceled();
             }
         }));
 
@@ -43,5 +44,6 @@ public class HaveYouCheckedYourWorkWindow extends CmWindow {
     
     static public interface Callback {
         void quizIsReadyToBeChecked();
+        void quizWasCanceled();
     }
 }

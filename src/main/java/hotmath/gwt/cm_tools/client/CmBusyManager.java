@@ -25,6 +25,7 @@ public class CmBusyManager {
 
 	
 	static Viewport __viewPort;
+	
 	/** Set the main viewport used for isBusy masking
 	 * 
 	 * @param viewPort
@@ -74,13 +75,12 @@ public class CmBusyManager {
      * @param trueFalse True to start new busystate, false to complete a corresponding one
      */
     static public void setBusy(boolean trueFalse) {
-    	setBusy(trueFalse,false);
+    	setBusy(trueFalse,true);
     }
     
     
     static private void showBusy(BusyState state) {
     	//System.out.println("showBusy " + __busyStates.size() + ": " + state.useMask);
-    	
     	if(state.useMask) {
     		__viewPort.mask();
     	}
@@ -108,10 +108,13 @@ public class CmBusyManager {
     	        __viewPort.unmask();
     		}
     	}
+    	
     	if(__busyStates.size() == 0) {
     		// System.out.println("Removing busy indicator");
     	    RootPanel.get("loading").setVisible(false);
     	}
+    	
+    	__viewPort.unmask();
     }
     
     /** Force reset of the isBusy stack and
@@ -127,7 +130,7 @@ public class CmBusyManager {
 
 
 class BusyState {
-	boolean useMask;
+	boolean useMask=true;
 	public BusyState(boolean useMask) {
 		this.useMask = useMask;
 	}

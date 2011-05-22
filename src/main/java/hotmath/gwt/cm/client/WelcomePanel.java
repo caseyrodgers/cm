@@ -63,6 +63,8 @@ public class WelcomePanel extends LayoutContainer {
     }
 
     private void startup() {
+        
+        _goBtn.setEnabled(false);
         try {
             CmBusyManager.setBusy(true);
 
@@ -75,6 +77,7 @@ public class WelcomePanel extends LayoutContainer {
 
                 @Override
                 public void onFailure(Throwable reason) {
+                    _goBtn.setEnabled(true);
                     Window.alert("Error starting CM normal operations: " + reason.getLocalizedMessage());
                 }
             });
