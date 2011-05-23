@@ -2343,7 +2343,10 @@ update HA_USER_EXTENDED
   set quiz_pass_count = ?, 
    quiz_not_pass_count = ?, 
    last_quiz = ?,
-   last_login = ?
+   last_login = ?,
+   current_lesson = ?,
+   lesson_count = ?,
+   lessons_completed = ?
     
 where user_id = ?
 
@@ -2361,3 +2364,58 @@ from HA_TEST t
 where t.user_id = ?
 order by r.run_time desc
 limit 1;
+
+###########
+# data for reset of HA_USER_EXTENDED for a single student
+##
+.key=GET_USER_EXTENDED_RESET
+##
+
+select 'PASS_COUNT' as name, count(*) as value
+from HA_TEST t
+JOIN HA_TEST_RUN r on r.test_id = t.test_id
+where is_passing = 1 and user_id = ?
+
+union 
+
+select 'NOT_PASS_COUNT' as name, count(*) as value
+from HA_TEST t
+JOIN HA_TEST_RUN r on r.test_id = t.test_id
+where is_passing = 1 and user_id = ?
+
+union
+
+select 'LAST_QUIZ' as name, max(round((answered_correct  /  (answered_correct + answered_incorrect + not_answered)) * 100)) as value
+from HA_TEST t
+JOIN HA_TEST_RUN r on r.test_id = t.test_id
+where t.user_id = ?
+
+union
+
+select 'LAST_LOGIN' as name, max(create_time) as value
+from HA_TEST
+where user_id = ?
+
+union
+
+select 'CURRENT_LESSON' as name, count(*) as value
+from HA_TEST t
+JOIN HA_TEST_RUN tr on tr.test_id = t.test_id 
+JOIN HA_TEST_RUN_LESSON rl on rl.run_id = tr.run_id and rl.lesson_viewed is not null 
+where t.user_id = ?
+
+union
+
+select 'LESSON_COUNT' as name, count(*) as value
+from HA_TEST t
+JOIN HA_TEST_RUN tr on tr.test_id = t.test_id 
+JOIN HA_TEST_RUN_LESSON rl on rl.run_id = tr.run_id
+where t.user_id = ?
+
+union
+
+select 'LESSONS_COMPLETED' as name,  count(*) as value
+from HA_TEST t
+JOIN HA_TEST_RUN tr on tr.test_id = t.test_id 
+JOIN HA_TEST_RUN_LESSON rl on rl.run_id = tr.run_id and rl.date_completed is not null 
+where t.user_id = ?
