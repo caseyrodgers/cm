@@ -14,7 +14,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.springframework.jdbc.core.RowMapper;
@@ -126,6 +128,12 @@ public class HaUserExtendedDao extends SimpleJdbcDaoSupport {
         updateUserExtendedLessonStatus(conn, testRun.getRunId(), lessonCount);
     }
 
+    /**
+     * @param conn
+     * @param runId - the run ID (HA_TEST_RUN)
+     * @param lessonCount - the lesson count (total) to set for specified run ID
+     * @throws Exception
+     */
     static public void updateUserExtendedLessonStatus(final Connection conn, Integer runId, int lessonCount) throws Exception {
 
     	ResultSet rs = null;
@@ -151,10 +159,10 @@ public class HaUserExtendedDao extends SimpleJdbcDaoSupport {
         			stmt2.executeUpdate();
     			}
         		else {
-    	    		LOGGER.warn("*** updateUserExtendedLessonStatus(): Inserting User extended lesson status data, userId: " + userId);
-        			// perform insert (shouldn't happen)
+        			// update for userId (shouldn't happen)
+    	    		LOGGER.warn("*** updateUserExtendedLessonStatus(): runId match not found, updating User extended lesson status data by userId, userId: " + userId);
     	    		if (userId != 0)
-        	    		insertUserExtendedLessonStatus(conn, userId, lessonCount);
+        	    		updateUserExtendedLessonStatusForUid(conn, userId, lessonCount);
     		    }
     		}
     	}
@@ -172,43 +180,37 @@ public class HaUserExtendedDao extends SimpleJdbcDaoSupport {
     static final String SELECT_USER_EXTENDED_BY_UID_SQL = 
         "select * from HA_USER_EXTENDED where user_id = ?";
     
+    /*
+     * TODO:
+     * 
+     * select "pass_quiz_count" as key, count(*) as value ......
+     */
     
     public void resyncUserExtendedLessonStatusForUid(final Connection conn, int userId) {
         try {
-            Integer passQuizzes = getJdbcTemplate().queryForObject(
-                    "select count(*) from HA_TEST t JOIN HA_TEST_RUN r on r.test_id = t.test_id where user_id = ? and is_passing = 1",
-                    new Object[]{userId},
-                    new RowMapper<Integer>() {
-                        @Override
-                        public Integer mapRow(ResultSet rs, int rowNum) throws SQLException {
-                            return rs.getInt(1);
-                        }
-                    });
-            
-            Integer notPassQuizzes = getJdbcTemplate().queryForObject(
-                    "select count(*) from HA_TEST t JOIN HA_TEST_RUN r on r.test_id = t.test_id where user_id = ? and is_passing = 0",
-                    new Object[]{userId},
-                    new RowMapper<Integer>() {
-                        @Override
-                        public Integer mapRow(ResultSet rs, int rowNum) throws SQLException {
-                            return rs.getInt(1);
-                        }
-                    });
-            
-            List<Integer> lastQuizzes = getJdbcTemplate().query(
-                    CmMultiLinePropertyReader.getInstance().getProperty("GET_LAST_QUIZ_STATUS"),
-                    new Object[]{userId},
-                    new RowMapper<Integer>() {
-                        @Override
-                        public Integer mapRow(ResultSet rs, int rowNum) throws SQLException {
-                            return rs.getInt(1);
-                        }
-                    });            
-            Integer lastQuiz = null;
-            if(lastQuizzes.size() > 0) {
-                lastQuiz = lastQuizzes.get(0);
-            }
-            
+        	List<NameValue> nvPairs = getJdbcTemplate().query(
+        			CmMultiLinePropertyReader.getInstance().getProperty("GET_USER_EXTENDED_RESET"),
+        			new Object[]{userId, userId, userId, userId, userId, userId,userId},
+        			new RowMapper<NameValue>() {
+        				@Override
+        				public NameValue mapRow(ResultSet rs, int RowNum) throws SQLException {
+        				    return new NameValue(rs.getString(1), rs.getInt(2));	
+        				}
+        			});
+        	
+        	Map<String, Integer> nvMap = new HashMap<String,Integer>();
+        	for (NameValue nv : nvPairs) {
+        		nvMap.put(nv.getName(), nv.getValue());
+        	}
+        			
+        	Integer passQuizzes = nvMap.get("PASS_COUNT");
+        	Integer notPassQuizzes = nvMap.get("NOT_PASS_COUNT");
+        	Integer lastQuiz = nvMap.get("LAST_QUIZ");
+        	Integer currentLesson = nvMap.get("CURRENT_LESSON");
+        	Integer lessonCount = nvMap.get("LESSON_COUNT");
+        	Integer lessonsCompleted = nvMap.get("LESSONS_COMPLETED");
+        	Integer isLessonsComplete = (lessonsCompleted > 0 && lessonsCompleted == lessonCount) ? 1 : 0;
+
             Date lastLogin = getJdbcTemplate().queryForObject(
                     "select max(create_time) from HA_TEST where user_id = ?",
                     new Object[]{userId},
@@ -221,15 +223,41 @@ public class HaUserExtendedDao extends SimpleJdbcDaoSupport {
             
             int count = getJdbcTemplate().update(
                     CmMultiLinePropertyReader.getInstance().getProperty("SET_UPDATE_EXTENDED_DATA"),
-                    new Object[]{passQuizzes,notPassQuizzes,lastQuiz,lastLogin,userId}
+                    new Object[]{passQuizzes,notPassQuizzes,lastQuiz,lastLogin,currentLesson,lessonCount,isLessonsComplete,userId}
             );
             
-            LOGGER.debug("Updated " + count);
+            if (LOGGER.isDebugEnabled()) LOGGER.debug("Updated " + count);
             
         }
         catch(Exception e) {
             e.printStackTrace();
         }
+    }
+
+    private class NameValue {
+		private String name;
+		private int    value;
+    	
+    	NameValue(String name, int value) {
+    		this.setName(name);
+    		this.setValue(value);
+    	}
+
+		void setName(String name) {
+			this.name = name;
+		}
+
+		String getName() {
+			return name;
+		}
+
+		void setValue(int value) {
+			this.value = value;
+		}
+
+		int getValue() {
+			return value;
+		}
     }
 
     static public void resetUserExtendedLessonStatusForUid(final Connection conn, StudentProgramModel program, int userId) throws Exception {
@@ -250,7 +278,7 @@ public class HaUserExtendedDao extends SimpleJdbcDaoSupport {
 
     static public void updateUserExtendedLessonCompleted(final Connection conn, int runId, int lessonNumber) throws Exception {
     	int uid = runIdToUid(conn, runId);
-    	updateUserExtendedLessonCompletedForUid(conn, uid, lessonNumber);
+    	updateUserExtendedLessonsCompletedForUid(conn, uid, lessonNumber);
     }
  
     static public void updateUserExtendedLessonStatusForUid(final Connection conn, int userId, int lessonCount) throws Exception {
@@ -287,7 +315,7 @@ public class HaUserExtendedDao extends SimpleJdbcDaoSupport {
     	
     }
     
-    static public void updateUserExtendedLessonCompletedForUid(final Connection conn, int userId, int lessonNumber) throws Exception {
+    static public void updateUserExtendedLessonsCompletedForUid(final Connection conn, int userId, int lessonNumber) throws Exception {
 
     	ResultSet rs = null;
     	PreparedStatement stmt = null;
@@ -310,7 +338,7 @@ public class HaUserExtendedDao extends SimpleJdbcDaoSupport {
     			stmt2.executeUpdate();
     		}
         	else {
-    	    	LOGGER.warn("*** updateUserExtendedLessonCompletedForUid(): Inserting User extended lesson completed data, userId: " + userId);
+    	    	LOGGER.warn("*** updateUserExtendedLessonsCompletedForUid(): Inserting User extended lesson completed data, userId: " + userId);
         		// perform insert (shouldn't happen)
         	    insertUserExtendedLessonCompleted(conn, userId);
     		}
