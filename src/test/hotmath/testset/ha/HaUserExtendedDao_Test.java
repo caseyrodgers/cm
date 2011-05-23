@@ -23,7 +23,7 @@ public class HaUserExtendedDao_Test extends CmDbTestCase {
     public void testResyncUserExtendedLessonStatusForUid() throws Exception {
         int uid = setupDemoAccount();
         
-        dao.resyncUserExtendedLessonStatusForUid(conn, uid);
+        dao.resyncUserExtendedLessonStatusForUid(uid);
         assertTrue(true);
     }    
     

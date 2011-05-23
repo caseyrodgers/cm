@@ -59,7 +59,7 @@ public class ResetStudentActivityCommand implements ActionHandler<ResetStudentAc
 
         
         
-        HaUserExtendedDao.getInstance().resyncUserExtendedLessonStatusForUid(conn,action.getUserId());
+        HaUserExtendedDao.getInstance().resyncUserExtendedLessonStatusForUid(action.getUserId());
         
         /** update active flow to selected test segment
          * 

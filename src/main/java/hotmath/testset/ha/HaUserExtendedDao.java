@@ -179,14 +179,8 @@ public class HaUserExtendedDao extends SimpleJdbcDaoSupport {
 
     static final String SELECT_USER_EXTENDED_BY_UID_SQL = 
         "select * from HA_USER_EXTENDED where user_id = ?";
-    
-    /*
-     * TODO:
-     * 
-     * select "pass_quiz_count" as key, count(*) as value ......
-     */
-    
-    public void resyncUserExtendedLessonStatusForUid(final Connection conn, int userId) {
+        
+    public void resyncUserExtendedLessonStatusForUid(int userId) {
         try {
         	List<NameValue> nvPairs = getJdbcTemplate().query(
         			CmMultiLinePropertyReader.getInstance().getProperty("GET_USER_EXTENDED_RESET"),
