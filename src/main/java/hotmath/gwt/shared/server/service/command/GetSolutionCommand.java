@@ -1,8 +1,6 @@
 package hotmath.gwt.shared.server.service.command;
 
-import hotmath.HotMathException;
 import hotmath.HotMathLogger;
-import hotmath.HotMathProperties;
 import hotmath.HotMathUtilities;
 import hotmath.ProblemID;
 import hotmath.gwt.cm_rpc.client.rpc.Action;
@@ -62,7 +60,7 @@ public class GetSolutionCommand implements ActionHandler<GetSolutionAction, Solu
             
             ProblemID ppid = new ProblemID(pid);
             
-            SolutionParts sp = __creator.getSolutionHTML(null, pid);
+            SolutionParts sp = __creator.getSolutionHTML(conn, null, pid);
             String solutionHtml= sp.getMainHtml();
             
             String path = ppid.getSolutionPath_DirOnly("solutions");

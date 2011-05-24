@@ -49,7 +49,7 @@ public class GetMobileSolutionCommand implements ActionHandler<GetMobileSolution
     public SolutionResponse execute(final Connection conn, GetMobileSolutionAction action) throws Exception {
         try {
             String pid = action.getPid();
-            SolutionParts parts = __creator.getSolutionHTML(__tutorProps, pid);
+            SolutionParts parts = __creator.getSolutionHTML(conn, __tutorProps, pid);
             String solutionHtml = parts.getMainHtml();
 
             ProblemID ppid = new ProblemID(pid);
