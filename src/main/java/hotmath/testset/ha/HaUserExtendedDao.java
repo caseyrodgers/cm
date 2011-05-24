@@ -206,7 +206,7 @@ public class HaUserExtendedDao extends SimpleJdbcDaoSupport {
         	Integer isLessonsComplete = (lessonsCompleted > 0 && lessonsCompleted == lessonCount) ? 1 : 0;
 
             Date lastLogin = getJdbcTemplate().queryForObject(
-                    "select max(create_time) from HA_TEST where user_id = ?",
+        			CmMultiLinePropertyReader.getInstance().getProperty("GET_USER_EXTENDED_RESET_LOGIN"),
                     new Object[]{userId},
                     new RowMapper<Date>() {
                         @Override

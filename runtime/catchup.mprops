@@ -2419,3 +2419,9 @@ from HA_TEST t
 JOIN HA_TEST_RUN tr on tr.test_id = t.test_id 
 JOIN HA_TEST_RUN_LESSON rl on rl.run_id = tr.run_id and rl.date_completed is not null 
 where t.user_id = ?
+
+###
+.key=GET_USER_EXTENDED_RESET_LOGIN
+##
+
+select max(login_time) from HA_USER_LOGIN where user_id = ?
