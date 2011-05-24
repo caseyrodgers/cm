@@ -8,6 +8,7 @@ import hotmath.solution.writer.SolutionHTMLCreator;
 import hotmath.solution.writer.TutorProperties;
 
 import java.io.File;
+import java.sql.Connection;
 
 import sb.util.SbFile;
 
@@ -27,7 +28,7 @@ public class SolutionHTMLCreatorImplFileSystem implements SolutionHTMLCreator {
     }
 
     @Override
-    public SolutionParts getSolutionHTML(TutorProperties tutorProps, String guid) throws HotMathException {
+    public SolutionParts getSolutionHTML(final Connection conn, TutorProperties tutorProps, String guid) throws HotMathException {
         try {
             String base = CatchupMathProperties.getInstance().getSolutionBase();
 
