@@ -63,7 +63,7 @@ public class CmSolutionManagerDao {
             
             String outputBase = CatchupMathProperties.getInstance().getSolutionBase() + HotMathProperties.getInstance().getStaticSolutionsDir();
             
-            StaticWriter.writeSolutionFile(__creator, pid, __tutorProps, outputBase, false, null);            
+            StaticWriter.writeSolutionFile(conn, __creator, pid, __tutorProps, outputBase, false, null);            
         }
         finally {
             SqlUtilities.releaseResources(null,ps,null);
@@ -136,7 +136,7 @@ public class CmSolutionManagerDao {
                 throw new Exception("Could not create solution xml: " + newSolutionPid);
 
             String outputBase = CatchupMathProperties.getInstance().getSolutionBase() + HotMathProperties.getInstance().getStaticSolutionsDir();
-            StaticWriter.writeSolutionFile(__creator, newSolutionPid, __tutorProps, outputBase, false, null);
+            StaticWriter.writeSolutionFile(conn, __creator, newSolutionPid, __tutorProps, outputBase, false, null);
             
             
             return newSolutionPid;
