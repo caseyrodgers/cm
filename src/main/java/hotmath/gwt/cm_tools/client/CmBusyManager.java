@@ -88,7 +88,8 @@ public class CmBusyManager {
     }
     
     
-    /** Make the busy window disappear, no matter the state */
+    /** Make the busy window disappear, 
+     * no matter the state */
     static private void hideBusy(BusyState bs) {
     	//System.out.println("hideBusy " + (__busyStates.size()+1) + ": " + bs.useMask);
     	if(bs.useMask) {

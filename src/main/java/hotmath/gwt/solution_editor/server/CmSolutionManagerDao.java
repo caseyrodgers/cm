@@ -8,7 +8,6 @@ import hotmath.cm.util.service.SolutionDef;
 import hotmath.gwt.cm_rpc.client.rpc.CmArrayList;
 import hotmath.gwt.cm_rpc.client.rpc.CmList;
 import hotmath.gwt.solution_editor.client.SolutionSearchModel;
-import hotmath.gwt.solution_editor.client.rpc.SolutionMeta;
 import hotmath.gwt.solution_editor.server.solution.TutorSolution;
 import hotmath.solution.StaticWriter;
 import hotmath.solution.writer.SolutionHTMLCreatorIimplVelocity;
@@ -45,7 +44,7 @@ public class CmSolutionManagerDao {
         return MD5.getMD5(xml);
     }
     
-    
+
     public void saveSolutionXml(final Connection conn, String pid, String xml) throws Exception {
         PreparedStatement ps=null;
         try {
@@ -63,7 +62,7 @@ public class CmSolutionManagerDao {
             
             String outputBase = CatchupMathProperties.getInstance().getSolutionBase() + HotMathProperties.getInstance().getStaticSolutionsDir();
             
-            StaticWriter.writeSolutionFile(conn, __creator, pid, __tutorProps, outputBase, false, null);            
+            StaticWriter.writeSolutionFile(conn,__creator, pid, __tutorProps, outputBase, false, null);            
         }
         finally {
             SqlUtilities.releaseResources(null,ps,null);
@@ -136,7 +135,7 @@ public class CmSolutionManagerDao {
                 throw new Exception("Could not create solution xml: " + newSolutionPid);
 
             String outputBase = CatchupMathProperties.getInstance().getSolutionBase() + HotMathProperties.getInstance().getStaticSolutionsDir();
-            StaticWriter.writeSolutionFile(conn, __creator, newSolutionPid, __tutorProps, outputBase, false, null);
+            StaticWriter.writeSolutionFile(conn,__creator, newSolutionPid, __tutorProps, outputBase, false, null);
             
             
             return newSolutionPid;
