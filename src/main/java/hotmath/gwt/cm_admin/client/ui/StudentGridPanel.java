@@ -889,7 +889,7 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
             @Override
             public Object render(StudentModelExt sm, String property, ColumnData config, int rowIndex, int colIndex,
                     ListStore<StudentModelExt> store, Grid<StudentModelExt> grid) {
-                if (sm.getProgram().getCustom().isCustom()) {
+                if (sm.getProgram().getCustom().isCustomLessons()) {
                     return "";
                 } else {
                     return sm.getLastQuiz();
