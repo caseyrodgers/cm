@@ -145,7 +145,7 @@ public class UserInfoDao {
              // fire an event on the event bus, passing new userinfo
              EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_USERCHANGED,ui));	 
              
-             String placeVal = nextAction.get("place").toString();
+             String placeVal = nextAction.get("place").isString().stringValue();
              String place = (placeVal != null && !placeVal.equals("null"))?placeVal:"PRESCRIPTION";
              return new CmDestination(place);
 	         

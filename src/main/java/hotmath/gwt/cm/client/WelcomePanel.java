@@ -66,7 +66,7 @@ public class WelcomePanel extends LayoutContainer {
         
         _goBtn.setEnabled(false);
         try {
-            CmBusyManager.setBusy(true);
+            CmBusyManager.setBusy(true,false);
 
             GWT.runAsync(new RunAsyncCallback() {
 
