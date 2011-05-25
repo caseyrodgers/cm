@@ -2077,7 +2077,7 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
     	List<LessonItemModel> l = new ArrayList<LessonItemModel>();
 
 	    HaTestDefDescription tdDesc = null;
-	    HaTestRun testRun = HaTestRunDao.getInstance().lookupTestRun(conn, runId);	        
+	    HaTestRun testRun = HaTestRunDao.getInstance().lookupTestRun(runId);	        
 	    tdDesc = HaTestDefDescription.getHaTestDefDescription(testRun);
 
 		// identify incomplete topics

@@ -5,6 +5,7 @@ import hotmath.gwt.cm_rpc.client.rpc.CmProgramFlowAction;
 import hotmath.gwt.cm_rpc.client.rpc.GetCmProgramFlowAction;
 import hotmath.gwt.cm_rpc.client.rpc.GetCmProgramFlowAction.FlowType;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
+import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.ui.CmLogger;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.rpc.RetryAction;
@@ -41,7 +42,7 @@ public class CmProgramFlowClientManager {
             
             @Override
             public void attempt() {
-                CatchupMathTools.setBusy(true);
+                CmBusyManager.setBusy(true, false);
                 GetCmProgramFlowAction action = new GetCmProgramFlowAction(UserInfo.getInstance().getUid(), flowType);
                 setAction(action);
                 CmLogger.info("showActiveProgramState: " + action);
@@ -50,7 +51,7 @@ public class CmProgramFlowClientManager {
             
             @Override
             public void oncapture(CmProgramFlowAction nextAction) {
-                CatchupMathTools.setBusy(false);
+                CmBusyManager.setBusy(false);
                 
                 callback.programFlow(nextAction);
             }

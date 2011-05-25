@@ -64,7 +64,7 @@ public class AssessmentPrescriptionManager {
 			/**
 			 * first need to lookup the test for this run
 			 */
-			HaTestRun testRun = HaTestRunDao.getInstance().lookupTestRun(conn, runId);
+			HaTestRun testRun = HaTestRunDao.getInstance().lookupTestRun(runId);
 
 			if(testRun.getHaTest().getTestDef().getName().indexOf("Auto-Enrollment") > -1)
 			    pres = AssessmentPrescriptionFactory.create(conn, testRun);

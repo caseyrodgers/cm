@@ -77,7 +77,7 @@ public class CmDbTestCase extends DbTestCase {
     
     public AssessmentPrescription setupDemoAccountPrescription() throws Exception {
 
-        HaTestRun testRun = HaTestRunDao.getInstance().lookupTestRun(conn, setupDemoAccountTestRun().getRunId());
+        HaTestRun testRun = HaTestRunDao.getInstance().lookupTestRun(setupDemoAccountTestRun().getRunId());
         
         int c =  testRun.getAnsweredCorrect();
         int i = testRun.getAnsweredIncorrect();

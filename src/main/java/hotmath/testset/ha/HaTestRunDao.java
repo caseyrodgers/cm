@@ -322,7 +322,7 @@ public class HaTestRunDao extends SimpleJdbcDaoSupport {
 	 * @return
 	 * @throws HotMathException
 	 */
-	public HaTestRun lookupTestRun(final Connection conn, final int runId) throws Exception {
+	public HaTestRun lookupTestRun(final int runId) throws Exception {
 	    
         final HaTestRun testRun = new HaTestRun();
         testRun.setRunId(runId);
@@ -335,7 +335,7 @@ public class HaTestRunDao extends SimpleJdbcDaoSupport {
                         try {
                             if(rowNum == 0) {
                                 testRun.setRunTime(rs.getTimestamp("run_time").getTime());
-                                testRun.setSessionNumber(conn, rs.getInt("run_session"));
+                                testRun.setSessionNumber(rs.getInt("run_session"));
                                 testRun.setAnsweredCorrect((rs.getInt("answered_correct")));
                                 testRun.setAnsweredIncorrect((rs.getInt("answered_incorrect")));
                                 testRun.setNotAnswered((rs.getInt("not_answered")));
@@ -391,7 +391,7 @@ public class HaTestRunDao extends SimpleJdbcDaoSupport {
 	        pstat.setInt(1, testId);
 	        rs = pstat.executeQuery();
 	        while(rs.next()) {
-	            runs.add(lookupTestRun(conn, rs.getInt("run_id")));
+	            runs.add(lookupTestRun(rs.getInt("run_id")));
 	        }
 	        
 	        return runs;
@@ -456,7 +456,7 @@ public class HaTestRunDao extends SimpleJdbcDaoSupport {
         }
     }
     
-    public void setSessionNumber(final Connection conn, int runId, int sn) throws Exception {
+    public void setSessionNumber(int runId, int sn) throws Exception {
         getSimpleJdbcTemplate().update(
                 CmMultiLinePropertyReader.getInstance().getProperty("TEST_RUN_SET_SESSION_NUMBER"),
                 new Object[]{sn,runId});

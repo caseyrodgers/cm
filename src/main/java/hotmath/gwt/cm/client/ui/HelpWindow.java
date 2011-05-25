@@ -167,7 +167,7 @@ public class HelpWindow extends CmWindow {
 
         vp.add(fs);
 
-        if (UserInfo.getInstance().isSingleUser()) {
+        if (UserInfo.getInstance().isSingleUser() || CmShared.getQueryParameter("debug") != null) {
             fs = new FieldSet();
             fs.setLayout(new FlowLayout());
             fs.setHeading("Configuration");

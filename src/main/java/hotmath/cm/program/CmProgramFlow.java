@@ -234,7 +234,7 @@ public class CmProgramFlow {
      */
     public boolean hasPassedCurrentSegment(final Connection conn) throws Exception {
         if (activeInfo.getActiveRunId() > 0) {
-            HaTestRun testRun = HaTestRunDao.getInstance().lookupTestRun(conn, activeInfo.getActiveRunId());
+            HaTestRun testRun = HaTestRunDao.getInstance().lookupTestRun(activeInfo.getActiveRunId());
             return testRun.isPassing();
         } else {
             return false;

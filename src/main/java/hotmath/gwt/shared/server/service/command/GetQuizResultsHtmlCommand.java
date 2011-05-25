@@ -39,7 +39,7 @@ public class GetQuizResultsHtmlCommand implements ActionHandler<GetQuizResultsHt
     @Override
     public RpcData execute(final Connection conn, GetQuizResultsHtmlAction action) throws CmRpcException {
         try {
-            HaTestRun testRun = HaTestRunDao.getInstance().lookupTestRun(conn, action.getRunId());
+            HaTestRun testRun = HaTestRunDao.getInstance().lookupTestRun(action.getRunId());
             
             List<HaTestRunResult> results = testRun.getTestRunResults();
             String resultJson = "";

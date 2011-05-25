@@ -29,9 +29,9 @@ public class HaTestRun {
         return this.sessionNumber;
     }
 
-    public void setSessionNumber(final Connection conn, int sn) throws Exception {
+    public void setSessionNumber(int sn) throws Exception {
     	HaTestRunDao dao = HaTestRunDao.getInstance();
-    	dao.setSessionNumber(conn, runId, sn);
+    	dao.setSessionNumber(runId, sn);
     	this.sessionNumber = sn;
     }
 

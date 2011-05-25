@@ -227,24 +227,25 @@ public class GetUserInfoCommand implements ActionHandler<GetUserInfoAction, User
     private CmDestination determineFirstDestination(final Connection conn, UserInfo userInfo, CmProgramFlow programFlow) throws Exception {
         CmDestination destination = new CmDestination();
         
-        if(programFlow.getUserProgram().getCustomQuizId() > 0) {
+        
+        /** Special cases 
+         * 
+         */
+        if(programFlow.getUserProgram().isCustom() 
+                && programFlow.getActiveFlowAction(conn).getPlace() == CmPlace.END_OF_PROGRAM) {
             /** is a custom quiz, so we must check separately.
              * 
              */
-            if(programFlow.getActiveFlowAction(conn).getPlace() == CmPlace.END_OF_PROGRAM) { 
-                destination.setPlace(CmPlace.END_OF_PROGRAM);
-                return destination;
-            }
+            destination.setPlace(CmPlace.END_OF_PROGRAM);
         }
-
-        if(userInfo.getRunId() > 0 && hasUserCompletedTestRun(conn, userInfo.getRunId())) {
+        else if(userInfo.getRunId() > 0 && hasUserCompletedTestRun(conn, userInfo.getRunId())) {
             
             /** did the user pass this segment, if not
              *  then they must repeat it .. so program 
              *  is not complete.
              */
 
-            HaTestRun testRun = HaTestRunDao.getInstance().lookupTestRun(conn, userInfo.getRunId());
+            HaTestRun testRun = HaTestRunDao.getInstance().lookupTestRun(userInfo.getRunId());
             if(!testRun.isPassing()) {
                 
                 programFlow.getActiveInfo().setActiveRunId(0);
@@ -268,7 +269,13 @@ public class GetUserInfoCommand implements ActionHandler<GetUserInfoAction, User
             }
         }
         else if(userInfo.getRunId() > 0) {
-            destination.setPlace(CmPlace.PRESCRIPTION);
+            
+            if(programFlow.getActiveInfo().getActiveRunSession() == 0) {
+                destination.setPlace(CmPlace.WELCOME);    
+            }
+            else {
+                destination.setPlace(CmPlace.PRESCRIPTION);
+            }
         }
         else if(userInfo.getTestId() > 0) {
             destination.setPlace(CmPlace.QUIZ);
