@@ -28,7 +28,7 @@ SELECT h.uid, upper(h.user_name) as name, h.user_passcode as passcode, h.user_em
        trim(concat(ifnull(d.subj_id,''), ' ', d.prog_id)) as program, d.prog_id, d.subj_id,
        ifnull(g.id, 0) as group_id, ifnull(g.name, 'none') as group_name, g.is_active, g.is_self_reg,
        cp.id as custom_program_id, cp.name as custom_program_name,q.qid as custom_quiz_id, q.name as custom_quiz_name,
-       if ((h.active_run_id > 0),
+       if (((h.active_run_id > 0) or (q.qid is not null and p.date_completed is not null)),
            lpad(concat(format(ux.last_quiz,0),'%'),4,' '),
            if((h.active_test_id > 0), 'Started', ' ') ) as last_quiz,
        date_format(ux.last_login,'%Y-%m-%d') as last_use_date, 
