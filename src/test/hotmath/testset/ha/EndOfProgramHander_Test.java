@@ -31,21 +31,21 @@ public class EndOfProgramHander_Test extends CmDbTestCase {
         StudentUserProgramModel nextProgram = eop.getNextProgram(conn);
         
         // this should just loop around
-        assertTrue(nextProgram.getTestDefId() == CmProgram.CAHSEEHM.getDefId());
+        assertTrue(nextProgram.getTestDefId() == CmProgram.NATIONAL.getDefId());
     } 
     
     
     public void testEndOfProgramCahseeHmProf() throws Exception {
 
         // assign chapter test to test student (last chapter)
-        dao.assignProgramToStudent(conn, userId, CmProgram.CAHSEEHM_V1, null);
+        dao.assignProgramToStudent(conn, userId, CmProgram.CAHSEEHM, null);
         
         EndOfProgramHandler eop = new EndOfProgramHandler();
         eop.loadStudent(conn, userId);
         StudentUserProgramModel nextProgram = eop.getNextProgram(conn);
         
         // this should just loop around
-        assertTrue(nextProgram.getTestDefId() == CmProgram.ALG2_PROF.getDefId());
+        assertTrue(nextProgram.getTestDefId() == CmProgram.CAHSEEHM.getDefId());
     } 
     
     public void testEndOfProgramEssentials() throws Exception {
@@ -72,7 +72,7 @@ public class EndOfProgramHander_Test extends CmDbTestCase {
         StudentUserProgramModel nextProgram = eop.getNextProgram(conn);
         
         // this should just loop around
-        assertTrue(nextProgram.getTestDefId() == CmProgram.ALG2_PROF.getDefId());
+        assertTrue(nextProgram.getTestDefId() == CmProgram.NATIONAL.getDefId());
     }  
     
     public void testEndOfProgramChapterTestGeoChap() throws Exception {
@@ -132,7 +132,7 @@ public class EndOfProgramHander_Test extends CmDbTestCase {
         StudentUserProgramModel nextProgram = eop.getNextProgram(conn);
         
         // this should just loop around
-        assertTrue(nextProgram.getTestDefId() == CmProgram.ALG2_PROF.getDefId());
+        assertTrue(nextProgram.getTestDefId() == CmProgram.CAHSEEHM.getDefId());
     }  
     
     
@@ -169,7 +169,7 @@ public class EndOfProgramHander_Test extends CmDbTestCase {
     public void testEndOfProgramChapterTestPreAlgChap() throws Exception {
 
         // assign chapter test to test student (last chapter)
-        dao.assignProgramToStudent(conn,userId, CmProgram.PREALG_CHAP, "Linear Equations and Inequalities");
+        dao.assignProgramToStudent(conn,userId, CmProgram.PREALG_CHAP, "Measurements");
         
         EndOfProgramHandler eop = new EndOfProgramHandler();
         eop.loadStudent(conn, userId);

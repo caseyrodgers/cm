@@ -75,16 +75,16 @@ public class EndOfProgramHandler {
     		updateProgram(conn, CmProgram.ALG2_PROF.getSubject(), CmProgram.ALG2_PROF.getProgramType(),null);
     	}
     	else if(programCurr.getTestDefId() == CmProgram.ALG2_PROF.getDefId() || programCurr.getTestDefId() == CmProgram.ALG2_PROF_V1.getDefId()) {
-    		updateProgram(conn, CmProgram.CAHSEEHM.getSubject(),CmProgram.CAHSEEHM.getProgramType(),null);
+    		updateProgram(conn, CmProgram.NATIONAL.getSubject(),CmProgram.NATIONAL.getProgramType(),null);
     	}
     	else if(programCurr.getTestDefId() == CmProgram.NATIONAL.getDefId() || programCurr.getTestDefId() == CmProgram.NATIONAL_V1.getDefId()) {
     		// reset/repeat
-    		updateProgram(conn, CmProgram.ALG2_PROF.getSubject(), CmProgram.ALG2_PROF.getProgramType(),null);
+    		updateProgram(conn, CmProgram.NATIONAL.getSubject(), CmProgram.NATIONAL.getProgramType(),null);
     	}
     	else if( programCurr.getTestDefId() == CmProgram.CAHSEEHM.getDefId() 
     	        || programCurr.getTestDefId() == CmProgram.CAHSEEHM_V1.getDefId() ) {
     		// reset/repeat
-    		updateProgram(conn, CmProgram.ALG2_PROF.getSubject(), CmProgram.ALG2_PROF.getProgramType(),null);
+    		updateProgram(conn, CmProgram.CAHSEEHM.getSubject(), CmProgram.CAHSEEHM.getProgramType(),null);
     	}  
     	
     	else if(programCurr.getTestDefId() == CmProgram.TAKS.getDefId()) {
