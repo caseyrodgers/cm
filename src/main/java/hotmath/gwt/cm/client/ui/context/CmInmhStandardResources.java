@@ -194,7 +194,8 @@ public class CmInmhStandardResources extends ArrayList<PrescriptionSessionDataRe
         si.getItemData().add(new InmhItemData(t, "/learning_activities/interactivities/slope.swf","Slope"));
         si.getItemData().add(new InmhItemData(t, "/learning_activities/interactivities/distance_formula.swf","Distance Formula"));
         si.getItemData().add(new InmhItemData(t, "/learning_activities/interactivities/catchthefly_cm.swf ","Finding Coordinates"));
-        si.getItemData().add(new InmhItemData(t, "/learning_activities/interactivities/slope_intercept_form.swf","Slope-Intercept Form"));        
+        si.getItemData().add(new InmhItemData(t, "/learning_activities/interactivities/slope_intercept_form.swf","Slope-Intercept Form"));
+        si.getItemData().add(new InmhItemData(t, "/learning_activities/interactivities/plot_numberline.swf","Plot on the Number Line"));        
         
         subMenu.add(si);
 
