@@ -257,7 +257,7 @@ public class AutoStudentRegistrationPanel extends CmMainResourceContainer {
                  * 
                  * @TODO: move to specific object away from RpcData
                  * 
-                 * if error_message is non-null, then an a programatic
+                 * if error_message is non-null, then a programmatic
                  * (local domain) error occurred.  As opposed to a lower 
                  * level exception that would be caught by the generic
                  * error handlers.

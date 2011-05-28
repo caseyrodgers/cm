@@ -178,7 +178,7 @@ public abstract class RetryAction<T> implements AsyncCallback<T> {
                 else {
                     sendInfoAboutRetriedCommand("failed", throwable);
                     
-                    /** Perform as sync hronous call in Window.confirm to stop
+                    /** Perform as synchronous call in Window.confirm to stop
                      *  the flow of new requests until this one is taken care of.
                      */
                     String msg = "A server error has occurred.\n" 

@@ -55,7 +55,7 @@ public class StudentActiveInfo {
     }
     
     
-    /** The quiz's segment slot, identifing which alternate 
+    /** The quiz's segment slot, identifying which alternate 
      *  questions sets are used.
      *  
      * @return
