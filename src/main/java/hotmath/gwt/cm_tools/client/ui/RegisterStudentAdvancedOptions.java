@@ -25,7 +25,7 @@ import com.extjs.gxt.ui.client.widget.layout.FormLayout;
 /**
  * Register Student Advanced Options UI
  * 
- * set pass percent, require show work, enable tutoring
+ * set pass percent, require show work, enable tutoring, disallow games
  * 
  * @author bob
  *
@@ -106,9 +106,10 @@ public class RegisterStudentAdvancedOptions extends LayoutContainer {
         isGamesLimited = new CheckBox();
         isGamesLimited.setId("limit_games");
         isGamesLimited.setValue(((StudentSettingsModel) advOptionsMap.get(StudentModelExt.SETTINGS_KEY)).getLimitGames());
+        isGamesLimited.setToolTip("If checked, then no Games can be played.");
         
         limitGames = new CheckBoxGroup();
-        limitGames.setFieldLabel("Limit Games to One per Lesson");
+        limitGames.setFieldLabel("Disallow Games");
         limitGames.setId("limit_games");
 		limitGames.add(isGamesLimited);
 		
