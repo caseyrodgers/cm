@@ -6,7 +6,7 @@ import hotmath.flusher.HotmathFlusher;
 import org.apache.log4j.Logger;
 
 /**
- * Provides a means of reading in mulit-line property files without having to
+ * Provides a means of reading in multi-line property files without having to
  * provide line continuation escapes.
  * 
  * Each entry is marked as follows:
@@ -26,11 +26,11 @@ import org.apache.log4j.Logger;
  * 
  * 
  * 
- * default property file: src/main/resources/hotmath/cm/util/catchup.mprops
- * (note it lives in resources, not java)
+ * default property file: runtime/catchup.mprops
+ * (note it lives in runtime not src/main)
  * 
  * 
- * You can cause a re-read of the propertes by flushing the server via
+ * You can cause a re-read of the properties by flushing the server via
  * loading resources/util/cm_system_flush.jsp.
  
  * 
