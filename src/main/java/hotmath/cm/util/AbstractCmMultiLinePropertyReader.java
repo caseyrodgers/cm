@@ -12,7 +12,7 @@ import sb.util.SbUtilities;
 
 /* Extracted from CmMultiLinePropertyReader
 * 
-* Provides a means of reading in mulit-line property files without having to
+* Provides a means of reading in multi-line property files without having to
 * provide line continuation escapes.
 * 
 * Each entry is marked as follows:
