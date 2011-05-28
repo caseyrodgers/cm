@@ -5,6 +5,7 @@ package hotmath.gwt.shared.client.util;
 /** Represents any type of user error
  *    - duplicate passcode
  *    - duplicate name
+ *    - duplicate group
  *    - ...
  * 
  * @author casey
