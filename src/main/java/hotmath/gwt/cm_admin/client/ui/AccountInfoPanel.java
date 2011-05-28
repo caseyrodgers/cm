@@ -105,7 +105,7 @@ public class AccountInfoPanel extends LayoutContainer implements CmAdminDataRefr
                 CmServiceAsync s = CmShared.getCmService();
                 GetAccountInfoForAdminUidAction action = new GetAccountInfoForAdminUidAction(uid);
                 setAction(action);
-                CmLogger.info("AccountInfoPanel: reading student info RPC");
+                CmLogger.info("AccountInfoPanel: reading admin info RPC");
                 s.execute(action,this);
             }
 
