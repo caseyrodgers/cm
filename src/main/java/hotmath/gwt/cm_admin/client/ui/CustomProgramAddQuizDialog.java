@@ -283,7 +283,8 @@ public class CustomProgramAddQuizDialog extends Window {
         try {
             saveCustomQuizAux();
         } catch (Exception e) {
-            CatchupMathTools.showAlert("Could Not Save", "The form was not saved due to the following problem: " + e.getMessage());
+            e.printStackTrace();
+            CatchupMathTools.showAlert("Could Not Save", e.getMessage());
         }
     }
 
@@ -295,7 +296,7 @@ public class CustomProgramAddQuizDialog extends Window {
         }
         final List<CustomQuizId> ids = getCustomQuizIds();
         if (ids.size() == 0) {
-            throw new Exception("No questions in quiz");
+            throw new Exception("Quizzes must have one or more questions.");
         }
 
         new RetryAction<RpcData>() {
