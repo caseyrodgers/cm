@@ -6,6 +6,7 @@
            color: #333333;
            padding: 15px;
            font-family: Tahoma,'Cantarell',sans-serif;
+           font-size: 1.2em;
         }
         .cp-help-win h2{
            color: #6DAD00;
@@ -28,6 +29,7 @@
             font-size: 0.9em;
             list-style: disc outside none;
             margin-left: 15px;
+            line-height: 1.2em;
         }
     </ui:style>
 	<g:HTMLPanel styleName="{style.cp-help-win}">

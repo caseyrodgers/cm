@@ -6,7 +6,7 @@ import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 
 public class CustomProgramHelpWindow extends CmWindow {
     public CustomProgramHelpWindow() {
-        setSize(370,350);
+        setSize(400,390);
         setModal(true);
         setMaximizable(true);
         setHeading("Custom Program Help");
