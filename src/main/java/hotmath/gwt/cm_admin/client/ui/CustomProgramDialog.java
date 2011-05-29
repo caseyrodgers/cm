@@ -169,6 +169,11 @@ public class CustomProgramDialog extends CmWindow {
                 }
             }
         }, "Get information about selected custom item."));
+        tb.add(new MyButtonWithTooltip("Help", new SelectionListener<ButtonEvent>() {
+            public void componentSelected(ButtonEvent ce) {
+                new CustomProgramHelpWindow();
+            }
+        }, "Get information about selected custom item."));        
 
         add(tb, new BorderLayoutData(LayoutRegion.NORTH, 35));
         addCloseButton();

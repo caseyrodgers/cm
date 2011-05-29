@@ -1,0 +1,61 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui">
+	<ui:style>
+        .cp-help-win {
+           color: #333333;
+           padding: 15px;
+           font-family: Tahoma,'Cantarell',sans-serif;
+        }
+        .cp-help-win h2{
+           color: #6DAD00;
+           font-size: 1.5em;
+           margin-bottom: 5px;
+        }
+        
+        .cp-help-win p {
+            color: #666666;
+            font-size: 1em;
+            margin-bottom: 5px;
+         }
+         
+        .cp-help-win ul{
+            margin-bottom: 10px;
+        }
+        
+        .cp-help-win li {
+            color: #666666;
+            font-size: 0.9em;
+            list-style: disc outside none;
+            margin-left: 15px;
+        }
+    </ui:style>
+	<g:HTMLPanel styleName="{style.cp-help-win}">
+
+		<h2>Custom Program</h2>
+		<ul>
+			<li>Create custom lesson-sequences with no quizzes</li>
+			<li>For a new custom program, select "New"</li>
+			<li>Drag lessons from left panel to right panel</li>
+			<li>Drag lessons back to remove</li>
+			<li>Drag lessons up or down to change sequence</li>
+			<li>Assign via Student Registration or Manage Groups</li>
+		</ul>
+
+		<h2>Custom Quiz</h2>
+		<ul>
+			<li>Create a custom test or quiz of any length</li>
+			<li>Select Custom Program tab</li>
+			<li>For a new custom quiz, select "New"</li>
+			<li>Double-click on lesson name to see question bank</li>
+			<li>Select a question, then click "Add"</li>
+			<li>Assign via Student Registration or Manage Groups</li>
+			<li>Students cannot change answers after submitting</li>
+			<li>Tell students to show work on whiteboard</li>
+		</ul>
+		<p>
+			For more help, please contact your Account Manager.
+        </p>
+
+	</g:HTMLPanel>
+</ui:UiBinder> 
