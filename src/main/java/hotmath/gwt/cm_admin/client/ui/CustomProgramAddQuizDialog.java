@@ -283,7 +283,7 @@ public class CustomProgramAddQuizDialog extends Window {
         try {
             saveCustomQuizAux();
         } catch (Exception e) {
-            com.google.gwt.user.client.Window.alert("Validation Error: " + e.getMessage());
+            CatchupMathTools.showAlert("Could Not Save", "The form was not saved due to the following problem: " + e.getMessage());
         }
     }
 

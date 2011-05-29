@@ -310,7 +310,7 @@ public class CustomProgramDialog extends CmWindow {
         MessageBox.confirm("Delete Custom Quiz?", "Are you sure you want to delete custom quiz '" + def.getQuizName()
                 + "'?", new Listener<MessageBoxEvent>() {
             public void handleEvent(MessageBoxEvent be) {
-                if (!be.isCancelled()) {
+                if (be.getButtonClicked().getText().equals("Yes")) {
                     new RetryAction<RpcData>() {
                         @Override
                         public void attempt() {
