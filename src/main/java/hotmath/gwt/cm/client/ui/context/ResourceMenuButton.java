@@ -22,6 +22,7 @@ import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.menu.CheckMenuItem;
 import com.extjs.gxt.ui.client.widget.menu.Menu;
 import com.extjs.gxt.ui.client.widget.menu.MenuItem;
+import com.google.gwt.user.client.Window;
 
 /** Create a button with an optional attached menu
  *  to display CM resources where the proper placement is calculated
@@ -51,7 +52,14 @@ class ResourceMenuButton extends Button {
            setEnabled(false);
         }
         else if(resource.getItems().size() > 1) {
-            setMenu(createNewResourceMenu(resource));
+            if (isResourceAvailable(resource)) {
+            	Menu menu = createNewResourceMenu(resource);
+                setMenu(menu);
+            }
+            else {
+            	this.disable();
+                //this.setToolTip("Sorry, " + resource.getLabel() + " are not available.");            	
+            }
         }
         else {
         	resouresToRegister.addAll(resource.getItems());
@@ -163,76 +171,71 @@ class ResourceMenuButton extends Button {
     
     private Menu createNewResourceMenu(final PrescriptionSessionDataResource resource) {
 
-        fixupResourceItems(resource);
 
-        /** all resources are viewed by default
-         * 
-         */
-        boolean isComplete=true;
-        
-        Menu menu = new Menu();
+    	Menu menu = new Menu();
 
-        for (final InmhItemData id : resource.getItems()) {
-            /** complete only if all items are viewed
-             *  
-             */
-            if(id.isViewed() == false)
-                isComplete = false;
-            
-            MenuItem item = null;
-            if(resource.getType().equals("practice")) {
-                final CheckMenuItem citem = new CheckMenuItem(id.getTitle());
-                citem.setChecked(id.isViewed(), true);
-                item = citem;
-                item.addListener(Events.CheckChange, new Listener<BaseEvent>() {
-                     @Override
-                    public void handleEvent(BaseEvent be) {
-                         citem.setChecked(id.isViewed(),true);
-                    }
-                });
-            }
-            else {
-                item = new MenuItem(id.getTitle());
-            }            
-            
-            item.setHideOnClick(true);
-            
-            menu.add(item);
-            item.addSelectionListener(new SelectionListener<MenuEvent>() {
-                public void componentSelected(MenuEvent ce) {
-                    
-                    /** Remove any existing resource viewers 
-                     * 
-                     * @TODO: This needs to be centralized  (throw a CLOSE event?)
-                     */
-                    Integer ordinalPosition=-1;
-                    for(int i=0,t=resource.getItems().size();i<t;i++) {
-                        if(resource.getItems().get(i).getFile().equals(id.getFile())) {
-                            ordinalPosition=i;
-                            break;
-                        }
-                    }
-                    
-                    if(isResourceAvailable(resource)) {
-                        CmHistoryManager.loadResourceIntoHistory(resource.getType(),ordinalPosition.toString());
-                    }
-                    else {
-                        InfoPopupBox.display("Math Games", "Sorry, games are not available.");
-                    }
-                }
-            });
-        }
-        
-        if(resource.getType().equals("practice") && isComplete) { 
-           indicateCompletion();
-        }
-        
-        resouresToRegister.addAll(resource.getItems());
-        
-        return menu;
+    	/** all resources are viewed by default
+    	 * 
+    	 */
+    	boolean isComplete=true;
+
+    	fixupResourceItems(resource);
+
+    	for (final InmhItemData id : resource.getItems()) {
+    		/** complete only if all items are viewed
+    		 *  
+    		 */
+    		if(id.isViewed() == false)
+    			isComplete = false;
+
+    		MenuItem item = null;
+    		if(resource.getType().equals("practice")) {
+    			final CheckMenuItem citem = new CheckMenuItem(id.getTitle());
+    			citem.setChecked(id.isViewed(), true);
+    			item = citem;
+    			item.addListener(Events.CheckChange, new Listener<BaseEvent>() {
+    				@Override
+    				public void handleEvent(BaseEvent be) {
+    					citem.setChecked(id.isViewed(),true);
+    				}
+    			});
+    		}
+    		else {
+    			item = new MenuItem(id.getTitle());
+    		}            
+
+    		item.setHideOnClick(true);
+
+    		menu.add(item);
+    		item.addSelectionListener(new SelectionListener<MenuEvent>() {
+    			public void componentSelected(MenuEvent ce) {
+
+    				/** Remove any existing resource viewers 
+    				 * 
+    				 * @TODO: This needs to be centralized  (throw a CLOSE event?)
+    				 */
+    				Integer ordinalPosition=-1;
+    				for(int i=0,t=resource.getItems().size();i<t;i++) {
+    					if(resource.getItems().get(i).getFile().equals(id.getFile())) {
+    						ordinalPosition=i;
+    						break;
+    					}
+    				}
+    				CmHistoryManager.loadResourceIntoHistory(resource.getType(),ordinalPosition.toString());
+    			}
+    		});
+    	}
+
+    	if(resource.getType().equals("practice") && isComplete) { 
+    		indicateCompletion();
+    	}
+
+    	resouresToRegister.addAll(resource.getItems());
+
+    	return menu;
     }
     
-    /** Proivide a method to have submenus.  If a submenu
+    /** Provide a method to have submenus.  If a submenu
      *  has a null title, then show the first item as the 
      *  a normal MenuItem without a submenu.
      *  
@@ -293,7 +296,7 @@ class ResourceMenuButton extends Button {
     		}
     		else {
 	        	MenuItem item = new MenuItem(smi.getTitle());
-	        	//menu.add(item);
+
 	        	item.setSubMenu(buildMenu(smi.getItemData()));
 	        	
 	        	menu.add(item);
