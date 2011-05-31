@@ -281,6 +281,12 @@ public class CustomProgramAddQuizDialog extends Window {
 
     private void saveCustomQuiz() {
         try {
+            final List<CustomQuizId> ids = getCustomQuizIds();
+            if (ids.size() == 0) {
+                CatchupMathTools.showAlert("There are no questions assigned to this custom quiz.");
+                return;
+            }
+            
             saveCustomQuizAux();
         } catch (Exception e) {
             e.printStackTrace();

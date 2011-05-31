@@ -358,7 +358,7 @@ public class CustomProgramDialog extends CmWindow {
                 CmBusyManager.setBusy(false);
 
                 if (info.getAssignedStudents().size() > 0) {
-                    CatchupMathTools.showAlert("This custom quiz cannot be deleted because it is currently in use.");
+                    CatchupMathTools.showAlert("This custom quiz cannot be deleted because it has been assigned to students.");
                 } else {
                     deleteCustomQuizDo(def);
                 }
@@ -374,7 +374,7 @@ public class CustomProgramDialog extends CmWindow {
         }
 
         if (!_isDebug && sel.getAssignedCount() > 0) {
-            CatchupMathTools.showAlert("This program cannot be deleted because it is currently in use.");
+            CatchupMathTools.showAlert("This custom program cannot be deleted because it has been assigned to students.");
             return;
         }
 
