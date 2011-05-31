@@ -287,11 +287,11 @@ public class CmShared implements EntryPoint {
     }    
     
     
-    static private String getSecurityKey() {
+    static public String getSecurityKey() {
     	String key = _queryParameters.get("key");
     	if(key == null) {
-    		// see if pass in JS variable
-    		key = getSecurityKeyFromExtenalJs();
+    		// see if key in JS variable
+    		key = getSecurityKeyFromExternalJs();
     	}
     	
     	return key;
@@ -404,7 +404,7 @@ public class CmShared implements EntryPoint {
      * 
      * @return
      */
-    static private native String getSecurityKeyFromExtenalJs() /*-{
+    static private native String getSecurityKeyFromExternalJs() /*-{
         return $wnd.__securityKey;
     }-*/;
     
