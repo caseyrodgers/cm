@@ -13,6 +13,7 @@ import hotmath.gwt.shared.client.eventbus.EventBus;
 import hotmath.gwt.shared.client.eventbus.EventType;
 import hotmath.gwt.shared.client.model.CmPartner;
 import hotmath.gwt.shared.client.model.UserInfoBase;
+import hotmath.gwt.shared.client.rpc.LogRetryActionFailedAction;
 import hotmath.gwt.shared.client.rpc.action.ResetUserAction;
 import hotmath.gwt.shared.client.util.CmAsyncCallback;
 import hotmath.gwt.shared.client.util.CmException;
@@ -20,6 +21,7 @@ import hotmath.gwt.shared.client.util.CmExceptionLoginInvalid;
 import hotmath.gwt.shared.client.util.CmRunAsyncCallback;
 import hotmath.gwt.shared.client.util.SystemVersionUpdateChecker;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -28,11 +30,14 @@ import pl.rmalinowski.gwt2swf.client.utils.SWFObjectUtil;
 
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.GWT.UncaughtExceptionHandler;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONParser;
 import com.google.gwt.json.client.JSONValue;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.rpc.ServiceDefTarget;
+import com.google.gwt.user.client.rpc.StatusCodeException;
 
 public class CmShared implements EntryPoint {
 
@@ -52,6 +57,32 @@ public class CmShared implements EntryPoint {
                 }
             });
         }
+        
+        
+        GWT.setUncaughtExceptionHandler(new UncaughtExceptionHandler() {
+            @Override
+            public void onUncaughtException(Throwable e) {
+                try {
+                    String nameAndTime = getClass().getName() + ": Uncaught exception: " + new Date();
+                    CmShared.getCmService().execute(
+                            new LogRetryActionFailedAction("uncaught exception", UserInfo.getInstance().getUid(),nameAndTime,null,CmShared.getStackTraceAsString(e)),
+                            new AsyncCallback<RpcData>() {
+                        @Override
+                        public void onSuccess(RpcData result) {
+                            CmLogger.info("Retry operation logged");
+                        }
+
+                        @Override
+                        public void onFailure(Throwable exe) {
+                            if(CmShared.getQueryParameter("debug") != null)
+                                Window.alert("Error sending info about uncaught exception: " + exe);
+                        }
+                    });
+                }
+                catch(Exception x) {
+                    CmLogger.error("Uncaught exception: " + x.getMessage(), x);
+                }
+        }});
     }
 
     static Map<String, String> _queryParameters = new HashMap<String, String>();
@@ -475,5 +506,28 @@ public class CmShared implements EntryPoint {
      */
     static public void refreshPage() {
         CmShared.reloadUser();
+    }
+    
+    /** Return stack trace as string, or null if 
+     * throwable is null.
+     * 
+     * @param th
+     * @return
+     */
+    static public String getStackTraceAsString(Throwable th) {
+        if(th == null)
+            return null;
+        
+        
+        final StringBuilder result = new StringBuilder();
+        if(th instanceof StatusCodeException)
+            result.append("HTTP ERROR CODE: ").append(((StatusCodeException)th).getStatusCode()).append("\n");
+                
+        result.append(th.toString()).append("\n");
+
+        for (StackTraceElement element : th.getStackTrace() ){
+            result.append( element ).append("\n");
+        }
+        return result.toString();
     }    
 }
