@@ -20,7 +20,7 @@ public class HaLoginInfoDao_Test extends CmDbTestCase {
     
     public void testGetLogin() throws Exception {
         HaUser user = HaUser.lookupUserByPasscode(conn, _user.getPassword());
-        HaLoginInfo info = new HaLoginInfoDao().getLoginInfo(conn, user, "test");
+        HaLoginInfo info = new HaLoginInfoDao().getLoginInfo(conn, user, "test", false);
         
         assertTrue(info.getKey() != null);
     }

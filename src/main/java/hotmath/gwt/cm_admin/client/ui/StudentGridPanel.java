@@ -240,7 +240,7 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
                 public void componentSelected(MenuEvent ce) {
                     MessageBox.confirm("Reset User", "Reset user to beginning of current program?",new Listener<MessageBoxEvent>() {
                         public void handleEvent(MessageBoxEvent be) {
-                            if(!be.isCancelled()) {
+                            if(be.getButtonClicked().getText().equals("Yes")) {
                                 int uid = _grid.getSelectionModel().getSelectedItem().getUid();
                                 resetProgramForUser(uid);
                             }

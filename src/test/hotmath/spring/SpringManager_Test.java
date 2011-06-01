@@ -1,5 +1,6 @@
 package hotmath.spring;
 
+import hotmath.cm.server.model.CmReportCardDao;
 import hotmath.cm.server.model.CmUserProgramDao;
 import hotmath.conn.TestDao;
 import hotmath.gwt.cm_admin.server.model.CmAdminDao;
@@ -93,8 +94,15 @@ public class SpringManager_Test extends TestCase{
     
     public void testCmExtendedDataDao() throws Exception {
         SpringManager manager = SpringManager.getInstance();
-        hotmath.testset.ha.HaUserExtendedDao testDao = (HaUserExtendedDao)manager.getBeanFactory().getBean("hotmath.testset.ha.HaUserExtendedDao");
+        HaUserExtendedDao testDao = (HaUserExtendedDao)manager.getBeanFactory().getBean("hotmath.testset.ha.HaUserExtendedDao");
         assertNotNull(testDao);
     }
     
+    
+    public void testCmReportCardDao() throws Exception {
+        SpringManager manager = SpringManager.getInstance();
+        CmReportCardDao testDao = (CmReportCardDao)manager.getBeanFactory().getBean("hotmath.cm.server.model.CmReportCardDao");
+        assertNotNull(testDao);
+    }
+
 }

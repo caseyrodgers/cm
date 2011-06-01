@@ -34,6 +34,7 @@ public class LoginCommand implements ActionHandler<LoginAction, HaUserLoginInfo>
 		String username = action.getUserName();
 		String passwd = action.getPassword();
 		String type = action.getType();
+		boolean isRealLogin = action.isRealLogin();
 
 		if (type == null) type = "STUDENT";
 		
@@ -64,7 +65,7 @@ public class LoginCommand implements ActionHandler<LoginAction, HaUserLoginInfo>
 		}
 		assert(cmUser != null);
 
-		HaLoginInfo loginInfo = new HaLoginInfoDao().getLoginInfo(conn, cmUser, action.getBrowserInfo());
+		HaLoginInfo loginInfo = new HaLoginInfoDao().getLoginInfo(conn, cmUser, action.getBrowserInfo(),isRealLogin);
 
 		return new HaUserLoginInfo(cmUser, loginInfo);
 	}

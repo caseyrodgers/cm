@@ -78,6 +78,14 @@ public class LoginService extends HttpServlet {
 		String key = req.getParameter("key");
 		boolean isDebug=false;
 		
+		/** real_login passed as hidden input from login.html
+		 *   
+		 *  We want to mark a login from the login.html file special. 
+		 *  This service is called on any refresh which should be 
+		 *  distinguished from a 'real_login'.
+		 */
+		boolean isRealLogin = req.getParameter("real_login")!=null;
+		
 		ClientInfo clientInfo = new ClientInfo();
 		clientInfo.setUserType(UserType.UNKNOWN);
 		clientInfo.setUserId(-1);
@@ -123,6 +131,7 @@ public class LoginService extends HttpServlet {
 			loginAction.setUid(uid);
 			loginAction.setUserName(user);
 			loginAction.setBrowserInfo(req.getHeader("User-Agent"));
+			loginAction.setRealLogin(isRealLogin);
 
 
 			/** Try to log in, Action will throw exception on 

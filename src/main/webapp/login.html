@@ -136,6 +136,7 @@ pageTracker._trackPageview();
         <h1>Catchup Math Login</h1>
         <div id='login-wrapper' class='round-corners body-left'>
           <form autocomplete="off" id="login_form" onSubmit="return doLogin();" action="/loginService" method="POST">
+            <input type='hidden' name='real_login' value='true'/>
             <div class="section">
               <div class="field">
                 <label>Login Name:</label>

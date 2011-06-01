@@ -26,6 +26,8 @@ public class LoginAction implements Action<HaUserLoginInfo> {
     boolean isDebug;
     int     uid;
     
+    boolean realLogin;
+    
     String browserInfo;
     
     public LoginAction() {}
@@ -33,6 +35,14 @@ public class LoginAction implements Action<HaUserLoginInfo> {
     public LoginAction(String userName, String password) {
         this.userName = userName;
         this.password = password;
+    }
+
+    public boolean isRealLogin() {
+        return realLogin;
+    }
+
+    public void setRealLogin(boolean realLogin) {
+        this.realLogin = realLogin;
     }
 
     public String getPassword() {
@@ -97,7 +107,8 @@ public class LoginAction implements Action<HaUserLoginInfo> {
 
     @Override
     public String toString() {
-        return "LoginAction [userName=" + userName + ", type=" + type + ", key=" + key + ", isDebug=" + isDebug
-                + ", uid=" + uid + "]";
+        return "LoginAction [password=" + password + ", userName=" + userName + ", type=" + type + ", key=" + key
+                + ", isDebug=" + isDebug + ", uid=" + uid + ", realLogin=" + realLogin + ", browserInfo=" + browserInfo
+                + "]";
     }
 }

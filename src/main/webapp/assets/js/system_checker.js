@@ -71,7 +71,7 @@ function checkFlash() {
             + playerVersion.release;
 
     var isOk = false;
-    if (majorVersion >= 9) {
+    if (false && majorVersion >= 9) {
         isOk = true;
     } else {
         systemIsOk = false;
@@ -87,7 +87,10 @@ function checkFlash() {
     str = '<p>' + str + 'Version: ' + versionStr + '</p>';
 
     if (!isOk) {
-        str += '<p style="color: red;font-size: 1.1em;">You need to have at least version 9 of Flash installed.</p>';
+        str += '<p style="color: red;font-size: 1.1em;">' +
+               'You need to have at least version 9 of Flash installed. ' +
+               'You can download the latest Flash player <a href="http://get.adobe.com/flashplayer/">here</a>.'
+               '<p>';
     }
 
     return str;

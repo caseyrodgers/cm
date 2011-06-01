@@ -92,7 +92,7 @@ public class StudentReportCard {
             return null;
         }
 
-        CmReportCardDao rcDao = new CmReportCardDao();
+        CmReportCardDao rcDao = CmReportCardDao.getInstance();
         CmStudentDao studentDao = CmStudentDao.getInstance();
 
         Document document = new Document();

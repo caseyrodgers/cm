@@ -174,7 +174,7 @@ public class CreateAutoRegistrationAccountCommand implements ActionHandler<Creat
         huser.setLoginName(action.getUser());
         
         RpcData rdata = new RpcData();
-        rdata.putData("key", new HaLoginInfoDao().addLoginInfo(conn, huser, "auto_registration"));
+        rdata.putData("key", new HaLoginInfoDao().addLoginInfo(conn, huser, "auto_registration",true));
         return rdata;
     }
     

@@ -2,8 +2,8 @@ package hotmath.cm.dao;
 
 import hotmath.cm.util.CmMultiLinePropertyReader;
 import hotmath.gwt.cm_tools.client.data.HaBasicUser;
-import hotmath.gwt.cm_tools.client.data.HaLoginInfo;
 import hotmath.gwt.cm_tools.client.data.HaBasicUser.UserType;
+import hotmath.gwt.cm_tools.client.data.HaLoginInfo;
 import hotmath.gwt.shared.client.util.CmException;
 import hotmath.gwt.shared.client.util.CmExceptionLoginAlreadyConsumed;
 import hotmath.gwt.shared.client.util.CmExceptionLoginInvalid;
@@ -20,10 +20,10 @@ public class HaLoginInfoDao {
     public HaLoginInfoDao(){}
 
     
-    public HaLoginInfo getLoginInfo(final Connection conn, HaBasicUser user, String browserInfo) throws Exception {
+    public HaLoginInfo getLoginInfo(final Connection conn, HaBasicUser user, String browserInfo, boolean isRealLogin) throws Exception {
         
         HaLoginInfo loginInfo = new HaLoginInfo();
-        loginInfo.setKey(addLoginInfo(conn, user, browserInfo));
+        loginInfo.setKey(addLoginInfo(conn, user, browserInfo,isRealLogin));
         loginInfo.setUserId(user.getUserKey());
         loginInfo.setType(user.getUserType().toString());
         loginInfo.setLoginName(user.getLoginName());
@@ -95,8 +95,18 @@ public class HaLoginInfoDao {
     
 
     static int __login_key_uniquer=0;
-    public String addLoginInfo(final Connection conn, HaBasicUser user, String browserInfo) throws Exception {
-        
+    
+    /** 
+     *  Create new login record.
+     *  
+     * @param conn
+     * @param user
+     * @param browserInfo
+     * @param isRealLogin  Is this login a real login from the login page.
+     * @return
+     * @throws Exception
+     */
+    public String addLoginInfo(final Connection conn, HaBasicUser user, String browserInfo, boolean isRealLogin) throws Exception {
         PreparedStatement pstat = null;
 
         try {
@@ -117,6 +127,7 @@ public class HaLoginInfoDao {
             pstat.setTimestamp(4, new Timestamp(System.currentTimeMillis()));
             pstat.setString(5,user.getLoginName());
             pstat.setString(6, browserInfo);
+            pstat.setInt(7, isRealLogin?1:0);
     
             if(pstat.executeUpdate() != 1)
                 throw new Exception("could not not insert new HA_USER_LOGIN record");

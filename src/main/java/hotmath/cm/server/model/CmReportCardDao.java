@@ -8,6 +8,7 @@ import hotmath.gwt.cm_tools.client.model.ChapterModel;
 import hotmath.gwt.cm_tools.client.model.StudentActiveInfo;
 import hotmath.gwt.cm_tools.client.model.StudentReportCardModel;
 import hotmath.gwt.cm_tools.client.model.StudentReportCardModelI;
+import hotmath.spring.SpringManager;
 import hotmath.testset.ha.HaTest;
 import hotmath.testset.ha.HaTestDao;
 import hotmath.testset.ha.HaTestRunDao;
@@ -17,6 +18,7 @@ import hotmath.util.sql.SqlUtilities;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -24,6 +26,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
+import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.simple.SimpleJdbcDaoSupport;
 
 /**
  * Defines data access methods for a Catchup Math Report Card
@@ -32,12 +36,19 @@ import org.apache.log4j.Logger;
  * 
  */
 
-public class CmReportCardDao {
+public class CmReportCardDao extends SimpleJdbcDaoSupport {
 
 	private static final Logger logger = Logger.getLogger(CmReportCardDao.class);
-
-	public CmReportCardDao() {
+	
+	static private CmReportCardDao __instance;
+	static public CmReportCardDao getInstance() throws Exception {
+	    if(__instance == null) {
+	        __instance = (CmReportCardDao)SpringManager.getInstance().getBeanFactory().getBean("hotmath.cm.server.model.CmReportCardDao");
+	    }
+	    return __instance;
 	}
+
+	private CmReportCardDao() {}
 
 	/**
 	 */
@@ -95,7 +106,7 @@ public class CmReportCardDao {
 			 loadQuizResults(filteredList, rval, conn);
 
 			 // load resource usage data for initial through last programs
-			 loadResourceUsage(filteredList, rval, conn);
+			 loadResourceUsage(filteredList, rval);
 
 			 // load prescribed lesson data for initial through last programs
 			 loadPrescribedLessons(filteredList, rval, conn);
@@ -276,48 +287,46 @@ public class CmReportCardDao {
 
 	 }
 
-	 private void loadResourceUsage(List<StudentUserProgramModel> list, StudentReportCardModelI rc, Connection conn) throws Exception {
-		 PreparedStatement ps = null;
-		 ResultSet rs = null;
-		 Integer uid = list.get(0).getUserId();
+	 private void loadResourceUsage(List<StudentUserProgramModel> list, StudentReportCardModelI rc) throws Exception {
+	     
+	     String date = String.format("%1$tY-%1$tm-%1$td", list.get(0).getCreateDate());
+	     Integer uid = list.get(0).getUserId();
+	     
+         final Map<String, Integer> usageMap = new HashMap<String, Integer>();
+         rc.setResourceUsage(usageMap);
+	     
+         Integer loginCount = getJdbcTemplate().queryForObject(
+	             CmMultiLinePropertyReader.getInstance().getProperty("LOGIN_COUNT"),
+	             new Object[]{uid, date},
+	             new RowMapper<Integer>() {
+	                 @Override
+	                public Integer mapRow(ResultSet rs, int rowNum) throws SQLException {
+	                     return rs.getInt(1);
+	                }
+	             });
+	             
+         usageMap.put("login", loginCount);
 
-		 try { 
-			 // login count
-			 String date = String.format("%1$tY-%1$tm-%1$td", list.get(0).getCreateDate());
-			 String sql = CmMultiLinePropertyReader.getInstance().getProperty("LOGIN_COUNT");
-			 ps = conn.prepareStatement(sql);
-			 ps.setInt(1, uid);
-			 ps.setString(2, date);
-			 rs = ps.executeQuery();
-			 Map<String, Integer> usageMap = new HashMap<String, Integer>();
-			 rc.setResourceUsage(usageMap);
-			 if (rs.first()) {
-				 Integer loginCount = rs.getInt(1);
-				 usageMap.put("login", loginCount);
-			 }
-			 SqlUtilities.releaseResources(rs, ps, null);
-
-			 // resource usage counts
-			 sql = CmMultiLinePropertyReader.getInstance().getProperty("RESOURCE_USAGE_COUNT");
-			 String progIds = getProgIdList(list);
-			 ps = conn.prepareStatement(sql.replaceAll("XXX", progIds));
-			 rs = ps.executeQuery();
-			 while (rs.next()) {
-				 Integer count = rs.getInt(1);
-				 String resource = rs.getString(2);
-				 usageMap.put(resource, count);
-			 }
-
-		 }
-		 catch (Exception e) {
-			 logger.error(String.format("*** Error obtaining usage results for student UID: %d", uid), e);
-			 throw new Exception(String.format("*** Error obtaining usage results for student with UID: %d", uid));	        	
-		 }
-		 finally {
-			 SqlUtilities.releaseResources(rs, ps, null);
-		 }
-
-
+         
+         class UsageCount {
+	         int count;
+	         String resource;
+	         public UsageCount(int count,String r) {
+                 this.count = count;
+	             this.resource = r;
+	         }
+	     }
+	     List<UsageCount> ucl = getJdbcTemplate().query(
+	             CmMultiLinePropertyReader.getInstance().getProperty("RESOURCE_USAGE_COUNT").replaceAll("XXX", getProgIdList(list)),
+	             new RowMapper<UsageCount>() {
+	                 @Override
+	                public UsageCount mapRow(ResultSet rs, int rowNum) throws SQLException {
+	                    return new UsageCount(rs.getInt(1), rs.getString(2));
+	                }
+                });
+	     for(UsageCount uc: ucl) {
+	         usageMap.put(uc.resource, uc.count);
+	     }
 	 }
 
 	 private void loadPrescribedLessons(List<StudentUserProgramModel> list, StudentReportCardModelI rc, Connection conn) throws Exception {
