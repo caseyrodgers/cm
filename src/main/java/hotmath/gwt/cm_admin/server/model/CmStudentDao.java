@@ -1840,7 +1840,6 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
             sm.setGroupId(String.valueOf(rs.getInt("group_id")));
             sm.setGroup(rs.getString("group_name"));
 
-            sm.setSectionNum(rs.getInt("active_segment"));
             sm.setChapter(getChapter(rs.getString("test_config_json")));
             sm.setJson(rs.getString("test_config_json"));
             sm.setSectionNum(rs.getInt("active_segment"));
