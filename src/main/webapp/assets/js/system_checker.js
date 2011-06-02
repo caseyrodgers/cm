@@ -71,7 +71,7 @@ function checkFlash() {
             + playerVersion.release;
 
     var isOk = false;
-    if (false && majorVersion >= 9) {
+    if (majorVersion >= 9) {
         isOk = true;
     } else {
         systemIsOk = false;
