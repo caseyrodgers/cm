@@ -12,6 +12,8 @@ import hotmath.gwt.cm_tools.client.ui.resource_viewer.CmResourcePanelImplDefault
 import hotmath.gwt.cm_tools.client.ui.viewer.CmResourcePanelImplWithWhiteboard;
 import hotmath.gwt.cm_tools.client.ui.viewer.ShowWorkPanel;
 import hotmath.gwt.shared.client.CmShared;
+import hotmath.gwt.shared.client.model.UserInfoBase;
+import hotmath.gwt.shared.client.model.UserInfoBase.Mode;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -114,7 +116,7 @@ public class QuizCmGuiDefinition implements CmGuiDefinition {
             @Override
             public List<Component> getContainerTools() {
                 ArrayList<Component> list2 = new ArrayList<Component>();
-                if (CmShared.getQueryParameter("debug") != null) {
+                if (CmShared.getQueryParameter("debug") != null || UserInfoBase.getInstance().getMode() == Mode.TEACHER_MODE) {
                     list2.add(new Button("Mark Correct", new SelectionListener<ButtonEvent>() {
                         @Override
                         public void componentSelected(ButtonEvent ce) {

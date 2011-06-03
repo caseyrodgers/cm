@@ -9,6 +9,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  */
 public class UserInfoBase implements IsSerializable {
 
+    public enum Mode{TEACHER_MODE, STUDENT_MODE};
 	static protected UserInfoBase __instance;
 
 	int uid;
@@ -26,6 +27,8 @@ public class UserInfoBase implements IsSerializable {
 
 	// is the user active (true) or inactive (false)
 	boolean isActive;
+	
+	Mode mode = Mode.STUDENT_MODE;
 
 	static public UserInfoBase getInstance() {
 	    if (__instance == null) {
@@ -58,6 +61,15 @@ public class UserInfoBase implements IsSerializable {
         this.isOwner = activeUser;
     }
 
+    
+    public void setMode(Mode mode) {
+        this.mode = mode;
+    }
+    
+    public Mode getMode() {
+        return mode;
+    }
+    
 	public boolean isActive() {
 		return isActive;
 	}

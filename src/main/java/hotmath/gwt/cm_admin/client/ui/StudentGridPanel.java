@@ -188,6 +188,15 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
             }
         });
         contextMenu.add(editUser);
+        
+        MenuItem teacherMode = new MenuItem("Teacher Mode Login");
+        teacherMode.addSelectionListener(new SelectionListener<MenuEvent>() {
+            public void componentSelected(MenuEvent ce) {
+                loginAsSelectedUser(true);
+                contextMenu.hide();
+            }
+        });
+        contextMenu.add(teacherMode);
 
         if (CmShared.getQueryParameter("debug") != null) {
             MenuItem studentDetails = new MenuItem("Student Details");
@@ -202,7 +211,7 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
             MenuItem loginAsUser = new MenuItem("Login as User");
             loginAsUser.addSelectionListener(new SelectionListener<MenuEvent>() {
                 public void componentSelected(MenuEvent ce) {
-                    loginAsSelectedUser();
+                    loginAsSelectedUser(false);
                     contextMenu.hide();
                 }
             });
@@ -416,27 +425,18 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
     /**
      * Log in as selected user (student)
      * 
-     * This is this is not the same thing as CM_HOME_URL for example, on the
-     * test server:
-     * 
-     * from hotmath.kattare.com:8081 (for admin) to hotmath.kattare.com (for
-     * student) and logout of student (at hotmath.kattare.com) and back to
-     * hotmath.kattare.com:8081
-     * 
-     * for live server, it is:
-     * 
-     * catchupmath.com (admin) -> hotmath.com (student) and logout of student
-     * must go back to catchupmath.comd
-     * 
-     * I'm for generalizing this, we must deal with all cases.
      * 
      */
-    private void loginAsSelectedUser() {
+    private void loginAsSelectedUser(boolean teacherMode) {
         StudentModelExt sm = getSelectedStudent();
         if (sm == null)
             return;
+        
+        
+        String mode=teacherMode?"mode=t":"debug=true";
+        
         String server = CmShared.getServerForCmStudent();
-        String url = server + "/loginService?uid=" + sm.getUid() + "&debug=true";
+        String url = server + "/loginService?uid=" + sm.getUid() + "&" + mode;
         Window.open(url, "_blank", "location=1,menubar=1,resizable=1,scrollbars=yes");
     }
 

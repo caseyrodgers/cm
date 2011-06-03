@@ -13,6 +13,7 @@ import hotmath.gwt.shared.client.eventbus.EventBus;
 import hotmath.gwt.shared.client.eventbus.EventType;
 import hotmath.gwt.shared.client.model.CmPartner;
 import hotmath.gwt.shared.client.model.UserInfoBase;
+import hotmath.gwt.shared.client.model.UserInfoBase.Mode;
 import hotmath.gwt.shared.client.rpc.LogRetryActionFailedAction;
 import hotmath.gwt.shared.client.rpc.action.ResetUserAction;
 import hotmath.gwt.shared.client.util.CmAsyncCallback;
@@ -273,9 +274,11 @@ public class CmShared implements EntryPoint {
                     String email = o.get("email").isString().stringValue();
                     UserInfoBase.getInstance().setEmail(email);
                     
+                    if(CmShared.getQueryParameter("mode") != null && CmShared.getQueryParameter("mode").equals("t")) {
+                        UserInfoBase.getInstance().setMode(Mode.TEACHER_MODE);    
+                    }
             		
             		EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_USER_LOGIN));
-
                 }
                 if (!needToValidate) {
                     callback.loginSuccessful(userId);

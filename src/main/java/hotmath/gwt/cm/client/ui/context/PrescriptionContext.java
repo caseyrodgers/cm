@@ -22,6 +22,8 @@ import hotmath.gwt.shared.client.data.CmAsyncRequestImplDefault;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
 import hotmath.gwt.shared.client.eventbus.EventBus;
 import hotmath.gwt.shared.client.eventbus.EventType;
+import hotmath.gwt.shared.client.model.UserInfoBase;
+import hotmath.gwt.shared.client.model.UserInfoBase.Mode;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -123,13 +125,12 @@ public class PrescriptionContext implements CmContext {
              * 
              * if 'debug' parameter is on URL, then this check is skipped
              */
-            if ((UserInfo.getInstance().isActiveUser() && !allViewed) && CmShared.getQueryParameter("debug") == null) {
+            if ((UserInfo.getInstance().isActiveUser() && !allViewed) && 
+                    (CmShared.getQueryParameter("debug") == null && UserInfoBase.getInstance().getMode() == Mode.STUDENT_MODE)) {
 
                 /**
-                 * YUCK ... Expand the practice problems.
+                 * Expand the practice problems.
                  * 
-                 * @TODO: figure better way... Perhaps add listener to the
-                 *        accordion
                  */
                 ((PrescriptionCmGuiDefinition) CmMainPanel.__lastInstance.cmGuiDef)._guiWidget
                         .expandResourcePracticeProblems();
