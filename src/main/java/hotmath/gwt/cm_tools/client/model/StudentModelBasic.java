@@ -116,6 +116,12 @@ public class StudentModelBasic implements StudentModelI, IsSerializable{
     }
 
     @Override
+    public Integer getSectionCount() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
     public Integer getSectionNum() {
         // TODO Auto-generated method stub
         return null;
@@ -201,6 +207,12 @@ public class StudentModelBasic implements StudentModelI, IsSerializable{
 
     @Override
     public void setProgramChanged(Boolean changed) {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public void setSectionCount(Integer sectionCount) {
         // TODO Auto-generated method stub
         
     }

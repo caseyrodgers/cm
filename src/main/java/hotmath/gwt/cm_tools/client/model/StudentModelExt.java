@@ -10,6 +10,7 @@ public class StudentModelExt extends BaseModel implements Serializable, StudentM
     
     public static final String GROUP_KEY = "group";
     public static final String GROUP_ID_KEY = "groupId";
+    public static final String SECTION_COUNT_KEY = "sectionCount";
     public static final String SECTION_NUM_KEY = "sectionNum";
     public static final String USER_PROGRAM_KEY = "userProgramId";
     public static final String CHAPTER_KEY = "chapter";
@@ -55,6 +56,7 @@ public class StudentModelExt extends BaseModel implements Serializable, StudentM
     public void setStudent(StudentModelI student) {
         set(GROUP_KEY, student.getGroup());
         set(GROUP_ID_KEY, student.getGroupId());
+        set(SECTION_COUNT_KEY, student.getSectionCount());
         set(SECTION_NUM_KEY, student.getSectionNum());
         set(USER_PROGRAM_KEY, student.getProgram().getProgramId());
         set(CHAPTER_KEY, student.getChapter());
@@ -142,6 +144,16 @@ public class StudentModelExt extends BaseModel implements Serializable, StudentM
     @Override
     public void setGroupId(String groupId) {
         set(GROUP_ID_KEY, groupId);
+    }
+
+    @Override
+    public void setSectionCount(Integer sectionCount) {
+        set(SECTION_NUM_KEY, sectionCount);
+    }
+
+    @Override
+    public Integer getSectionCount() {
+        return get(SECTION_COUNT_KEY);
     }
 
     @Override

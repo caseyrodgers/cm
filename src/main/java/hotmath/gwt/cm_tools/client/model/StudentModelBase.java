@@ -25,6 +25,7 @@ public class StudentModelBase implements IsSerializable, StudentModelI {
     Boolean isDemoUser;
     String  groupId;
     String  group;
+    Integer sectionCount;
     Integer sectionNum;
     Integer userProgramId;
     
@@ -185,6 +186,11 @@ public class StudentModelBase implements IsSerializable, StudentModelI {
     }
 
     @Override
+    public Integer getSectionCount() {
+        return sectionCount;
+    }
+
+    @Override
     public Integer getSectionNum() {
         return sectionNum;
     }
@@ -250,6 +256,11 @@ public class StudentModelBase implements IsSerializable, StudentModelI {
     @Override
     public void setProgramChanged(Boolean changed) {
         // not implemented
+    }
+
+    @Override
+    public void setSectionCount(Integer sectionCount) {
+        this.sectionCount = sectionCount;
     }
 
     @Override

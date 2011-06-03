@@ -5,6 +5,7 @@ public class StudentModel implements StudentModelI {
 
     String group;
     String groupId;
+    Integer sectionCount;
     Integer sectionNum;
     String chapter;
     String lastQuiz;
@@ -56,6 +57,14 @@ public class StudentModel implements StudentModelI {
 
     public void setGroupId(String groupId) {
         this.groupId = groupId;
+    }
+
+    public Integer getSectionCount() {
+        return sectionCount;
+    }
+
+    public void setSectionCount(Integer sectionCount) {
+        this.sectionCount = sectionCount;
     }
 
     public Integer getSectionNum() {
