@@ -63,6 +63,7 @@ import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcDaoSupport;
@@ -1532,7 +1533,9 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
                             int activeTestId = rs.getInt("active_test_id");
                             boolean isComplete = rs.getDate("date_completed") != null;
 
-                            setupProgramStatus(sm, rs.getString("program"), rs.getString("test_config_json"),
+                            setupSectionCount(sm, rs.getString("test_config_json"));
+
+                            setupProgramStatus(sm, rs.getString("program"),
                                     rs.getInt("current_lesson"), rs.getInt("lesson_count"),
                                     rs.getInt("lessons_completed"), activeTestId, isComplete);
 
@@ -1783,7 +1786,9 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
             int activeTestId = rs.getInt("active_test_id");
             boolean isComplete = rs.getDate("date_completed") != null;
 
-            setupProgramStatus(sm, rs.getString("program"), rs.getString("test_config_json"),
+            setupSectionCount(sm, rs.getString("test_config_json"));
+
+            setupProgramStatus(sm, rs.getString("program"),
             		rs.getInt("current_lesson"), rs.getInt("lesson_count"), rs.getInt("lessons_completed"),activeTestId, isComplete);
             
             l.add(sm);
@@ -1797,13 +1802,13 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
      *  For custom programs, add the CP:PROG_NAME and looks up the status info
      * 
      */
-    private void setupProgramStatus(StudentModelI student, String programName, String testConfigJson,
+    private void setupProgramStatus(StudentModelI student, String programName,
         int currentLesson, int lessonCount, int isLessonsCompleted, int activeTestId, boolean isCompleted) {
 
         StudentProgramModel program = student.getProgram();
         if (program.isCustom() == false) {
             program.setProgramDescription(programName);
-            student.setStatus(getStatus(program.getProgramId(), student.getSectionNum(), testConfigJson));
+            student.setStatus(getStatus(program.getProgramId(), student.getSectionNum(), student.getSectionCount()));
         }
         else if(program.getCustom().getType() == Type.LESSONS) {
             program.setProgramDescription("CP: " + program.getCustom().getCustomProgramName());
@@ -1859,7 +1864,10 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
 
             int activeTestId = rs.getInt("active_test_id");
             boolean isCompleted = rs.getDate("date_completed") != null;
-            setupProgramStatus(sm, rs.getString("program"), rs.getString("test_config_json"),
+
+            setupSectionCount(sm, rs.getString("test_config_json"));
+
+            setupProgramStatus(sm, rs.getString("program"),
             	rs.getInt("current_lesson"), rs.getInt("lesson_count"), rs.getInt("lessons_completed"), activeTestId, isCompleted);
 
             l.add(sm);
@@ -1867,18 +1875,32 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
         return l;
     }
 
-    private String getStatus(Integer userProgId, Integer activeSegment, String testConfigJson) {
+	private int getSectionCountXXX(String testConfigJson) throws JSONException {
+		JSONObject jo = new JSONObject(testConfigJson);
+		int sectionCount = jo.getInt("segments");
+		return sectionCount;
+	}
+
+	private void setupSectionCount(StudentModelI student, String testConfigJson) throws JSONException {
+		int sectionCount = 0;
+		try {
+			StudentProgramModel prog = student.getProgram();
+			if (! prog.isCustom()) {
+                JSONObject jo = new JSONObject(testConfigJson);
+                sectionCount = jo.getInt("segments");
+			}
+		}
+		catch (Exception e) {
+            __logger.error(String.format("*** Error getting section count for user_id: %d, user_prog_id: %d, test_config_json: %s",
+            		student.getUid(), student.getProgram().getProgramId(), testConfigJson), e);
+		}
+		student.setSectionCount(sectionCount);
+    }
+
+    private String getStatus(Integer userProgId, Integer activeSegment, Integer segmentCount) {
         if (activeSegment > 0) {
-            if (testConfigJson != null) {
-            	try {
-                    JSONObject jo = new JSONObject(testConfigJson);
-                    StringBuilder sb = new StringBuilder("Section ").append(activeSegment).append(" of ").append(jo.getInt("segments"));
-                    return sb.toString();
-                }
-                catch(Exception e) {
-                    __logger.error(String.format("*** Error getting status for user_prog_id: %d, test_config_json: %s", userProgId, testConfigJson), e);
-                }
-            }
+            StringBuilder sb = new StringBuilder("Section ").append(activeSegment).append(" of ").append(segmentCount);
+            return sb.toString();
         }
         return "Not started";
     }
