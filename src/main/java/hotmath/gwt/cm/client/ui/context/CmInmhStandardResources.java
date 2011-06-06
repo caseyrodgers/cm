@@ -200,10 +200,10 @@ public class CmInmhStandardResources extends ArrayList<PrescriptionSessionDataRe
                 new InmhItemData(t, "/learning_activities/interactivities/flashcard_exp_power_power.swf",
                         "Power of a Power Property"));
         si.getItemData().add(
-                new InmhItemData(t, "/learning_activities/interactivities/flashcard_exp_power_product.swf",
+                new InmhItemData(t, "/learning_activities/interactivities/flashcard_exp_power_prod.swf",
                         "Power of a Product Property"));
         si.getItemData().add(
-                new InmhItemData(t, "/learning_activities/interactivities/flashcard_exp_product_power.swf",
+                new InmhItemData(t, "/learning_activities/interactivities/flashcard_exp_prod_power.swf",
                         "Product of Powers Property"));        
 
         subMenu.add(si);
