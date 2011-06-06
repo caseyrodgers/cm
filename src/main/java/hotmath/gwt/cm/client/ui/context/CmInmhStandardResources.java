@@ -64,6 +64,7 @@ public class CmInmhStandardResources extends ArrayList<PrescriptionSessionDataRe
         resourceType.setSubMenuItems(menu);
         add(resourceType);
     }
+
     private List<SubMenuItem> createEnglishSubmenu(String t, PrescriptionSessionDataResource resourceType) {
 
         List<SubMenuItem> subMenu = new ArrayList<SubMenuItem>();
@@ -97,10 +98,7 @@ public class CmInmhStandardResources extends ArrayList<PrescriptionSessionDataRe
                 new InmhItemData(t, "/learning_activities/interactivities/flashcard_convert_fractodeci.swf",
                         "Converting Fractions to Decimals"));
         si.getItemData().add(
-                new InmhItemData(t, "/learning_activities/interactivities/flashcard_reciprocals.swf",
-                        "Reciprocals"));
-
-        
+                new InmhItemData(t, "/learning_activities/interactivities/flashcard_reciprocals.swf", "Reciprocals"));
 
         subMenu.add(si);
 
@@ -114,10 +112,9 @@ public class CmInmhStandardResources extends ArrayList<PrescriptionSessionDataRe
         si.getItemData().add(
                 new InmhItemData(t, "/learning_activities/interactivities/flashcard_multi_deci.swf",
                         "Multiplying Decimals"));
-        si.getItemData().add(
-                new InmhItemData(t, "/learning_activities/interactivities/flashcard_div_deci.swf",
+        si.getItemData()
+                .add(new InmhItemData(t, "/learning_activities/interactivities/flashcard_div_deci.swf",
                         "Dividing Decimals"));
-        
 
         subMenu.add(si);
 
@@ -131,12 +128,19 @@ public class CmInmhStandardResources extends ArrayList<PrescriptionSessionDataRe
         subMenu.add(si);
 
         si = new SubMenuItem("Negatives");
-        si.getItemData().add(new InmhItemData(t, "/learning_activities/interactivities/flashcard_add_sub_neg.swf?actType=add","Adding with Negatives"));
-        si.getItemData().add(new InmhItemData(t, "/learning_activities/interactivities/flashcard_add_sub_neg.swf?actType=sub","Subtracting with Negatives"));
-        si.getItemData().add(new InmhItemData(t, "/learning_activities/interactivities/flashcard_multi_div_neg.swf?actType=multi","Multiplying with Negatives"));
-        si.getItemData().add(new InmhItemData(t, "/learning_activities/interactivities/flashcard_multi_div_neg.swf?actType=div","Dividing with Negatives"));
+        si.getItemData().add(
+                new InmhItemData(t, "/learning_activities/interactivities/flashcard_add_sub_neg.swf?actType=add",
+                        "Adding with Negatives"));
+        si.getItemData().add(
+                new InmhItemData(t, "/learning_activities/interactivities/flashcard_add_sub_neg.swf?actType=sub",
+                        "Subtracting with Negatives"));
+        si.getItemData().add(
+                new InmhItemData(t, "/learning_activities/interactivities/flashcard_multi_div_neg.swf?actType=multi",
+                        "Multiplying with Negatives"));
+        si.getItemData().add(
+                new InmhItemData(t, "/learning_activities/interactivities/flashcard_multi_div_neg.swf?actType=div",
+                        "Dividing with Negatives"));
         subMenu.add(si);
-        
 
         si = new SubMenuItem("Order of Operations");
         si.getItemData().add(
@@ -185,18 +189,44 @@ public class CmInmhStandardResources extends ArrayList<PrescriptionSessionDataRe
                 new InmhItemData(t, "/learning_activities/interactivities/flashcard_props_exponents.swf",
                         "Properties of Exponents"));
         
+        
+        si.getItemData().add(
+                new InmhItemData(t, "/learning_activities/interactivities/flashcard_exp_quotient_power.swf",
+                        "Quotient of Powers Property"));
+        si.getItemData().add(
+                new InmhItemData(t, "/learning_activities/interactivities/flashcard_exp_power_quotient.swf",
+                        "Power of a Quotient Property"));
+        si.getItemData().add(
+                new InmhItemData(t, "/learning_activities/interactivities/flashcard_exp_power_power.swf",
+                        "Power of a Power Property"));
+        si.getItemData().add(
+                new InmhItemData(t, "/learning_activities/interactivities/flashcard_exp_power_product.swf",
+                        "Power of a Product Property"));
+        si.getItemData().add(
+                new InmhItemData(t, "/learning_activities/interactivities/flashcard_exp_product_power.swf",
+                        "Product of Powers Property"));        
+
         subMenu.add(si);
-        
-        
+
         si = new SubMenuItem("Graphing");
-        si.getItemData().add(new InmhItemData(t, "/learning_activities/interactivities/inequality_one_variable.swf","Inequality in One Variable"));
-        si.getItemData().add(new InmhItemData(t, "/learning_activities/interactivities/plot_coordplane.swf","Plotting Coordinates"));
-        si.getItemData().add(new InmhItemData(t, "/learning_activities/interactivities/slope.swf","Slope"));
-        si.getItemData().add(new InmhItemData(t, "/learning_activities/interactivities/distance_formula.swf","Distance Formula"));
-        si.getItemData().add(new InmhItemData(t, "/learning_activities/interactivities/catchthefly_cm.swf ","Finding Coordinates"));
-        si.getItemData().add(new InmhItemData(t, "/learning_activities/interactivities/slope_intercept_form.swf","Slope-Intercept Form"));
-        si.getItemData().add(new InmhItemData(t, "/learning_activities/interactivities/plot_numberline.swf","Plot on the Number Line"));        
-        
+        si.getItemData().add(
+                new InmhItemData(t, "/learning_activities/interactivities/inequality_one_variable.swf",
+                        "Inequality in One Variable"));
+        si.getItemData()
+                .add(new InmhItemData(t, "/learning_activities/interactivities/plot_coordplane.swf",
+                        "Plotting Coordinates"));
+        si.getItemData().add(new InmhItemData(t, "/learning_activities/interactivities/slope.swf", "Slope"));
+        si.getItemData().add(
+                new InmhItemData(t, "/learning_activities/interactivities/distance_formula.swf", "Distance Formula"));
+        si.getItemData().add(
+                new InmhItemData(t, "/learning_activities/interactivities/catchthefly_cm.swf ", "Finding Coordinates"));
+        si.getItemData().add(
+                new InmhItemData(t, "/learning_activities/interactivities/slope_intercept_form.swf",
+                        "Slope-Intercept Form"));
+        si.getItemData().add(
+                new InmhItemData(t, "/learning_activities/interactivities/plot_numberline.swf",
+                        "Plot on the Number Line"));
+
         subMenu.add(si);
 
         si = new SubMenuItem(null);
@@ -264,71 +294,103 @@ public class CmInmhStandardResources extends ArrayList<PrescriptionSessionDataRe
                 new InmhItemData(t, "/learning_activities/interactivities/flashcard_reciprocals.swf?lang=es",
                         "Rec&iacute;procos"));
         subMenu.add(si);
-        
 
         si = new SubMenuItem("Decimales");
-        si.getItemData().add(new InmhItemData(t, "/learning_activities/interactivities/flashcard_add_sub_deci.swf?lang=es","Sumando decimales"));
-        si.getItemData().add(new InmhItemData(t, "/learning_activities/interactivities/flashcard_convert_decitofrac.swf?lang=es","Convirtiendo decimales en fracciones"));
-        si.getItemData().add(new InmhItemData(t, "/learning_activities/interactivities/flashcard_multi_deci.swf?lang=es","Multiplicando decimales"));
+        si.getItemData().add(
+                new InmhItemData(t, "/learning_activities/interactivities/flashcard_add_sub_deci.swf?lang=es",
+                        "Sumando decimales"));
+        si.getItemData().add(
+                new InmhItemData(t, "/learning_activities/interactivities/flashcard_convert_decitofrac.swf?lang=es",
+                        "Convirtiendo decimales en fracciones"));
+        si.getItemData().add(
+                new InmhItemData(t, "/learning_activities/interactivities/flashcard_multi_deci.swf?lang=es",
+                        "Multiplicando decimales"));
         subMenu.add(si);
-        
-        
+
         si = new SubMenuItem("Porcentajes");
-        si.getItemData().add(new InmhItemData(t, "/learning_activities/interactivities/flashcard_percents_level1.swf?lang=es","Porcentajes: Nivel 1"));  
-        si.getItemData().add(new InmhItemData(t, "/learning_activities/interactivities/flashcard_percents_level2.swf?lang=es","Porcentajes: Nivel 2"));
+        si.getItemData().add(
+                new InmhItemData(t, "/learning_activities/interactivities/flashcard_percents_level1.swf?lang=es",
+                        "Porcentajes: Nivel 1"));
+        si.getItemData().add(
+                new InmhItemData(t, "/learning_activities/interactivities/flashcard_percents_level2.swf?lang=es",
+                        "Porcentajes: Nivel 2"));
         subMenu.add(si);
 
-        
         si = new SubMenuItem("Negativos");
-        si.getItemData().add(new InmhItemData(t, "/learning_activities/interactivities/flashcard_add_sub_neg.swf?lang=es","Sumas con negativos"));
-        si.getItemData().add(new InmhItemData(t, "/learning_activities/interactivities/flashcard_multi_div_neg.swf?lang=es","Multiplicando con negativos"));
+        si.getItemData().add(
+                new InmhItemData(t, "/learning_activities/interactivities/flashcard_add_sub_neg.swf?lang=es",
+                        "Sumas con negativos"));
+        si.getItemData().add(
+                new InmhItemData(t, "/learning_activities/interactivities/flashcard_multi_div_neg.swf?lang=es",
+                        "Multiplicando con negativos"));
         subMenu.add(si);
 
-        
         si = new SubMenuItem("Orden de las operaciones");
-        si.getItemData().add(new InmhItemData(t, "/learning_activities/interactivities/flashcard_oops_level1.swf?lang=es","Orden de las operaciones: Nivel 1"));
-        si.getItemData().add(new InmhItemData(t, "/learning_activities/interactivities/flashcard_oops_level2.swf?lang=es","Orden de las operaciones: Nivel 2"));
-        subMenu.add(si);
-        
-        
-        si = new SubMenuItem(null);
-        si.getItemData().add(new InmhItemData(t, "/learning_activities/interactivities/flashcard_comparing_quantities.swf","Comparando cantidades"));
+        si.getItemData().add(
+                new InmhItemData(t, "/learning_activities/interactivities/flashcard_oops_level1.swf?lang=es",
+                        "Orden de las operaciones: Nivel 1"));
+        si.getItemData().add(
+                new InmhItemData(t, "/learning_activities/interactivities/flashcard_oops_level2.swf?lang=es",
+                        "Orden de las operaciones: Nivel 2"));
         subMenu.add(si);
 
-        
+        si = new SubMenuItem(null);
+        si.getItemData().add(
+                new InmhItemData(t, "/learning_activities/interactivities/flashcard_comparing_quantities.swf",
+                        "Comparando cantidades"));
+        subMenu.add(si);
+
         si = new SubMenuItem("Multiplicaci&oacute;n");
-        si.getItemData().add(new InmhItemData(t, "/learning_activities/interactivities/flashcard_multi.swf?lang=es","Hechos de la multiplicaci&oacute;n"));
-        si.getItemData().add(new InmhItemData(t, "/learning_activities/interactivities/flashcard_dist_prop.swf?lang=es","La propiedad distributiva"));        
-        subMenu.add(si);
-        
-        
-        si = new SubMenuItem(null);
-        si.getItemData().add(new InmhItemData(t, "/learning_activities/interactivities/prime_factorization.swf","Factorizaci&oacute;n prima"));
+        si.getItemData().add(
+                new InmhItemData(t, "/learning_activities/interactivities/flashcard_multi.swf?lang=es",
+                        "Hechos de la multiplicaci&oacute;n"));
+        si.getItemData().add(
+                new InmhItemData(t, "/learning_activities/interactivities/flashcard_dist_prop.swf?lang=es",
+                        "La propiedad distributiva"));
         subMenu.add(si);
 
-        
         si = new SubMenuItem(null);
-        si.getItemData().add(new InmhItemData(t, "/learning_activities/interactivities/flashcard_gcf.swf","Factores comunes m&aacute;s grandes"));
+        si.getItemData().add(
+                new InmhItemData(t, "/learning_activities/interactivities/prime_factorization.swf",
+                        "Factorizaci&oacute;n prima"));
+        subMenu.add(si);
+
+        si = new SubMenuItem(null);
+        si.getItemData().add(
+                new InmhItemData(t, "/learning_activities/interactivities/flashcard_gcf.swf",
+                        "Factores comunes m&aacute;s grandes"));
         subMenu.add(si);
 
         si = new SubMenuItem("Exponentes");
-        si.getItemData().add(new InmhItemData(t, "/learning_activities/interactivities/flashcard_exponents_level1.swf?lang=es","Exponentes: Nivel 1"));
-        si.getItemData().add(new InmhItemData(t, "/learning_activities/interactivities/flashcard_exponents_level2.swf?lang=es","Exponentes: Nivel 2"));        
-        si.getItemData().add(new InmhItemData(t, "/learning_activities/interactivities/flashcard_props_exponents.swf?lang=es","Propiedades de los exponentes"));
+        si.getItemData().add(
+                new InmhItemData(t, "/learning_activities/interactivities/flashcard_exponents_level1.swf?lang=es",
+                        "Exponentes: Nivel 1"));
+        si.getItemData().add(
+                new InmhItemData(t, "/learning_activities/interactivities/flashcard_exponents_level2.swf?lang=es",
+                        "Exponentes: Nivel 2"));
+        si.getItemData().add(
+                new InmhItemData(t, "/learning_activities/interactivities/flashcard_props_exponents.swf?lang=es",
+                        "Propiedades de los exponentes"));
         subMenu.add(si);
 
-        
         si = new SubMenuItem("Graficando");
-        si.getItemData().add(new InmhItemData(t, "/learning_activities/interactivities/inequality_one_variable.swf?lang=es","Desigualdad con una variable"));
-//        si.getItemData().add(new InmhItemData(t, "/learning_activities/interactivities/plot_coordplane.swf?lang=es","Graficando coordenadas"));
-//        si.getItemData().add(new InmhItemData(t, "/learning_activities/interactivities/slope.swf?lang=es","Pendiente"));
-//        si.getItemData().add(new InmhItemData(t, "/learning_activities/interactivities/distance_formula.swf?lang=es","F&oacute;rmula de la distancia"));
+        si.getItemData().add(
+                new InmhItemData(t, "/learning_activities/interactivities/inequality_one_variable.swf?lang=es",
+                        "Desigualdad con una variable"));
+        // si.getItemData().add(new InmhItemData(t,
+        // "/learning_activities/interactivities/plot_coordplane.swf?lang=es","Graficando coordenadas"));
+        // si.getItemData().add(new InmhItemData(t,
+        // "/learning_activities/interactivities/slope.swf?lang=es","Pendiente"));
+        // si.getItemData().add(new InmhItemData(t,
+        // "/learning_activities/interactivities/distance_formula.swf?lang=es","F&oacute;rmula de la distancia"));
         subMenu.add(si);
 
         si = new SubMenuItem(null);
-        si.getItemData().add(new InmhItemData(t, "/learning_activities/interactivities/flashcard_wordproblems_level1.swf","Problemas con palabras"));
+        si.getItemData().add(
+                new InmhItemData(t, "/learning_activities/interactivities/flashcard_wordproblems_level1.swf",
+                        "Problemas con palabras"));
         subMenu.add(si);
-        
+
         return subMenu;
     }
 }

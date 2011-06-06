@@ -11,8 +11,8 @@ import hotmath.gwt.shared.server.service.ActionHandlerManualConnectionManagement
 
 import java.sql.Connection;
 
-/** Return current version information for Cm system
- *  that has been backed into compiled code.
+/** Check users' current local state information looking
+ *  for out of sync data.
  *  
  * 
  * @author casey
