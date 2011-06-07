@@ -399,7 +399,8 @@ public class CmAdminDao extends SimpleJdbcDaoSupport {
         String key = new StringBuilder(progId).append(".").append(subjId).toString();
         List<ChapterModel> list = (List<ChapterModel>) CmCacheManager.getInstance().retrieveFromCache(SUBJECT_CHAPTERS, key);
         
-        logger.debug("key: + " + key + " size: " + list!=null?0:list.size());
+        if (logger.isDebugEnabled())
+        	logger.debug("key: + " + key + " size: " + ((list!=null) ? list.size() : 0));
         
         if (list != null)
             return list;
