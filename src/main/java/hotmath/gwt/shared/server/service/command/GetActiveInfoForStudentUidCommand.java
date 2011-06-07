@@ -12,7 +12,7 @@ import java.sql.Connection;
 
 import org.apache.log4j.Logger;
 
-/** Get Student Active Info Model via CmProgramFlow
+/** Get Student Active Info via CmProgramFlow
  *  
  * @author bob
  *
