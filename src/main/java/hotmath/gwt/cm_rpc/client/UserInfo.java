@@ -17,7 +17,7 @@ public class UserInfo implements  Response {
 	int runId;
 	int sessionNumber=0;
 	int testSegment=1;
-	int testSegmentCount=4;  /* TODO: is this needed? */
+	int programSegmentCount=4;
 	String testName;
 	String userName;
 	int viewCount;
@@ -235,11 +235,11 @@ public class UserInfo implements  Response {
 	}
 
 	public int getProgramSegmentCount() {
-		return testSegmentCount;
+		return programSegmentCount;
 	}
 
-	public void setProgramSegmentCount(int testSegmentCount) {
-		this.testSegmentCount = testSegmentCount;
+	public void setProgramSegmentCount(int programSegmentCount) {
+		this.programSegmentCount = programSegmentCount;
 	}
 
 	public int getTestSegment() {
@@ -356,7 +356,7 @@ public class UserInfo implements  Response {
                 + ", onCompletion=" + onCompletion + ", passPercentRequired=" + passPercentRequired + ", password="
                 + password + ", runId=" + runId + ", sessionCount=" + sessionCount + ", sessionNumber=" + sessionNumber
                 + ", subTitle=" + subTitle + ", testId=" + testId + ", testName=" + testName + ", testSegment="
-                + testSegment + ", testSegmentCount=" + testSegmentCount + ", uid=" + uid + ", userAccountType="
+                + testSegment + ", testSegmentCount=" + programSegmentCount + ", uid=" + uid + ", userAccountType="
                 + userAccountType + ", userName=" + userName + ", viewCount=" + viewCount + "]";
     }
     
