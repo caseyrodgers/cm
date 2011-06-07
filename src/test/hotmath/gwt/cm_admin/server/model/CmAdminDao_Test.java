@@ -3,10 +3,10 @@ package hotmath.gwt.cm_admin.server.model;
 import hotmath.cm.server.model.CmUserProgramDao;
 import hotmath.gwt.cm.server.CmDbTestCase;
 import hotmath.gwt.cm_rpc.client.UserInfo.AccountType;
+import hotmath.gwt.cm_rpc.client.model.StudentActiveInfo;
 import hotmath.gwt.cm_tools.client.model.AccountInfoModel;
 import hotmath.gwt.cm_tools.client.model.ChapterModel;
 import hotmath.gwt.cm_tools.client.model.GroupInfoModel;
-import hotmath.gwt.cm_tools.client.model.StudentActiveInfo;
 import hotmath.gwt.cm_tools.client.model.StudentModelI;
 import hotmath.gwt.cm_tools.client.model.SubjectModel;
 import hotmath.testset.ha.CmProgram;
@@ -116,7 +116,7 @@ public class CmAdminDao_Test extends CmDbTestCase {
     public void testGetChaptersForProgramSubject() throws Exception {
         CmAdminDao dao = CmAdminDao.getInstance();
         CmProgram p = CmProgram.GEOM_CHAP;
-        List<ChapterModel> chaps = dao.getChaptersForProgramSubject(conn,p.getProgramType(), p.getSubject());
+        List<ChapterModel> chaps = dao.getChaptersForProgramSubject(p.getProgramType(), p.getSubject());
         assertNotNull(chaps);
         assertTrue(chaps.size() > 0);
         

@@ -1,8 +1,8 @@
 package hotmath.gwt.shared.server.service.command;
 
 import hotmath.gwt.cm.server.CmDbTestCase;
+import hotmath.gwt.cm_rpc.client.model.StudentActiveInfo;
 import hotmath.gwt.cm_rpc.client.rpc.GetActiveInfoForStudentUidAction;
-import hotmath.gwt.cm_tools.client.model.StudentActiveInfoModel;
 
 public class GetActiveInfoForStudentUidCommand_Test extends CmDbTestCase {
     public GetActiveInfoForStudentUidCommand_Test(String name) {
@@ -23,7 +23,7 @@ public class GetActiveInfoForStudentUidCommand_Test extends CmDbTestCase {
     	action.setUserId(_test.getUser().getUid());
     	
     	GetActiveInfoForStudentUidCommand cmd = new GetActiveInfoForStudentUidCommand();
-    	StudentActiveInfoModel mdl = cmd.execute(conn, action);
+    	StudentActiveInfo mdl = cmd.execute(conn, action);
     	
     	assert(mdl != null && mdl.getActiveSegment() >= 0); 
     }
