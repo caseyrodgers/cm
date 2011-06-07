@@ -394,42 +394,31 @@ public class CmAdminDao extends SimpleJdbcDaoSupport {
     }
 
     @SuppressWarnings("unchecked")
-    public CmList<ChapterModel> getChaptersForProgramSubject(final Connection conn, String progId, String subjId)
-            throws Exception {
+    public List<ChapterModel> getChaptersForProgramSubject(String progId, String subjId) throws Exception {
 
         String key = new StringBuilder(progId).append(".").append(subjId).toString();
-        CmList<ChapterModel> l = (CmList<ChapterModel>) CmCacheManager.getInstance().retrieveFromCache(
-                SUBJECT_CHAPTERS, key);
+        List<ChapterModel> list = (List<ChapterModel>) CmCacheManager.getInstance().retrieveFromCache(SUBJECT_CHAPTERS, key);
+        
+        logger.debug("key: + " + key + " size: " + list!=null?0:list.size());
+        
+        if (list != null)
+            return list;
+        
+        list = getJdbcTemplate().query(
+                CmMultiLinePropertyReader.getInstance().getProperty("SUBJECT_CHAPTERS_SQL"),
+                new Object[]{progId,subjId},
+                new RowMapper<ChapterModel>() {
+                    @Override
+                    public ChapterModel mapRow(ResultSet rs, int rowNum) throws SQLException {
+                        return new ChapterModel(String.valueOf(rs.getInt("title_number")), rs.getString("title"));
+                    }
+                });
 
-        if (logger.isDebugEnabled()) {
-            logger.debug(String.format("+++ getChaptersForProgramSubject(): key: %s, retrieved: %s", key,
-                    ((l == null) ? "NULL" : l.size())));
-        }
-
-        if (l != null)
-            return l;
-
-        PreparedStatement ps = null;
-        ResultSet rs = null;
-        try {
-
-            String sql = CmMultiLinePropertyReader.getInstance().getProperty("SUBJECT_CHAPTERS_SQL");
-            ps = conn.prepareStatement(sql);
-            ps.setString(1, progId);
-            ps.setString(2, subjId);
-            rs = ps.executeQuery();
-            l = loadChapters(rs);
-
-            CmCacheManager.getInstance().addToCache(SUBJECT_CHAPTERS, key, l);
-
-            return l;
-        } catch (Exception e) {
-            logger.error(String.format("*** Error getting chapters for progId: %s, subjId: %s", progId, subjId), e);
-            throw new Exception("*** Error getting Chapter list ***", e);
-        } finally {
-            SqlUtilities.releaseResources(rs, ps, null);
-        }
+         CmCacheManager.getInstance().addToCache(SUBJECT_CHAPTERS, key, list);
+         
+         return list;
     }
+    
     public AccountInfoModel getAccountInfo(final Integer adminUid) throws Exception {
         AccountInfoModel accountInfo = this.getJdbcTemplate().queryForObject(
                 CmMultiLinePropertyReader.getInstance().getProperty("ACCOUNT_INFO_SQL"), 

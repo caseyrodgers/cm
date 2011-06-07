@@ -2,7 +2,8 @@ package hotmath.gwt.shared.server.service;
 
 
 
-/** Marks a given class as requesting auto connection management
+/** Marks a given class as handling it's own connection management.
+ * 
  *  If a class implements this interface, that Command object 
  *  will not have a DB connection automatically created, thus
  *  it will need to manually manage the DB connections. 

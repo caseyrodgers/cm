@@ -17,6 +17,6 @@ public abstract class CmRunAsyncCallback implements RunAsyncCallback {
 	@Override
 	public void onFailure(Throwable reason) {
 	    CmLogger.error("Error loading fragment", reason);
-	    new SystemVersionUpdateChecker();
+	    new SystemSyncChecker();
 	}
 }

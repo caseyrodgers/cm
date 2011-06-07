@@ -15,7 +15,7 @@ import hotmath.gwt.shared.client.eventbus.CmEvent;
 import hotmath.gwt.shared.client.eventbus.EventBus;
 import hotmath.gwt.shared.client.eventbus.EventType;
 import hotmath.gwt.shared.client.util.NotActiveProgramWindow;
-import hotmath.gwt.shared.client.util.SystemVersionUpdateChecker;
+import hotmath.gwt.shared.client.util.SystemSyncChecker;
 
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
@@ -247,7 +247,7 @@ public abstract class RetryAction<T> implements AsyncCallback<T> {
     }
     
     public void onNewVersion() {
-        new SystemVersionUpdateChecker();        
+        new SystemSyncChecker();        
     }
     
     public Action<? extends Response> activeAction;

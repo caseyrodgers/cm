@@ -2,6 +2,7 @@ package hotmath.gwt.shared.server.service.command;
 
 import hotmath.gwt.cm_admin.server.model.CmAdminDao;
 import hotmath.gwt.cm_rpc.client.rpc.Action;
+import hotmath.gwt.cm_rpc.client.rpc.CmArrayList;
 import hotmath.gwt.cm_rpc.client.rpc.CmList;
 import hotmath.gwt.cm_rpc.client.rpc.Response;
 import hotmath.gwt.cm_rpc.server.rpc.ActionHandler;
@@ -15,7 +16,9 @@ public class GetChaptersForProgramSubjectCommand implements ActionHandler<GetCha
 	@Override
 	public CmList<ChapterModel> execute(Connection conn,GetChaptersForProgramSubjectAction action) throws Exception {
             CmAdminDao cma = CmAdminDao.getInstance();
-            return cma.getChaptersForProgramSubject(conn, action.getProgId(), action.getSubjId());
+            CmList<ChapterModel> list = new CmArrayList<ChapterModel>();
+            list.addAll(cma.getChaptersForProgramSubject(action.getProgId(), action.getSubjId()));
+            return list;
 	}
 
 	@Override
@@ -23,6 +26,4 @@ public class GetChaptersForProgramSubjectCommand implements ActionHandler<GetCha
 		// TODO Auto-generated method stub
 		return GetChaptersForProgramSubjectAction.class;
 	}
-	
-
 }

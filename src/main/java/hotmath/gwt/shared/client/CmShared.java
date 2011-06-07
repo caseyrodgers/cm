@@ -20,7 +20,7 @@ import hotmath.gwt.shared.client.util.CmAsyncCallback;
 import hotmath.gwt.shared.client.util.CmException;
 import hotmath.gwt.shared.client.util.CmExceptionLoginInvalid;
 import hotmath.gwt.shared.client.util.CmRunAsyncCallback;
-import hotmath.gwt.shared.client.util.SystemVersionUpdateChecker;
+import hotmath.gwt.shared.client.util.SystemSyncChecker;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -210,7 +210,7 @@ public class CmShared implements EntryPoint {
      */
     static public void handleLoginProcessAsync(final CmLoginAsync callback) {
         try {
-        	 SystemVersionUpdateChecker.monitorVersionChanges();
+        	 SystemSyncChecker.monitorVersionChanges();
         	 
             /** Provide shortcut, single argument entry for debugging a user
              */

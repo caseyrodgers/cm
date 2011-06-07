@@ -17,7 +17,7 @@ public class UserInfo implements  Response {
 	int runId;
 	int sessionNumber=0;
 	int testSegment=1;
-	int testSegmentCount=4;
+	int testSegmentCount=4;  /* TODO: is this needed? */
 	String testName;
 	String userName;
 	int viewCount;

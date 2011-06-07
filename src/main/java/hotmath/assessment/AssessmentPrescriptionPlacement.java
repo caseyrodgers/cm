@@ -1,9 +1,9 @@
 package hotmath.assessment;
 
 import hotmath.gwt.cm_admin.server.model.CmStudentDao;
+import hotmath.gwt.cm_rpc.client.model.StudentActiveInfo;
 import hotmath.gwt.cm_rpc.client.rpc.CmPlace;
 import hotmath.gwt.cm_rpc.client.rpc.CmProgramFlowAction;
-import hotmath.gwt.cm_tools.client.model.StudentActiveInfo;
 import hotmath.gwt.cm_tools.client.model.StudentModelI;
 import hotmath.testset.ha.CmProgram;
 import hotmath.testset.ha.HaTestRun;

@@ -3,9 +3,8 @@ package hotmath.cm.server.model;
 import hotmath.cm.util.CmMultiLinePropertyReader;
 import hotmath.gwt.cm_admin.server.model.CmAdminDao;
 import hotmath.gwt.cm_admin.server.model.CmStudentDao;
-import hotmath.gwt.cm_rpc.client.rpc.CmList;
+import hotmath.gwt.cm_rpc.client.model.StudentActiveInfo;
 import hotmath.gwt.cm_tools.client.model.ChapterModel;
-import hotmath.gwt.cm_tools.client.model.StudentActiveInfo;
 import hotmath.gwt.cm_tools.client.model.StudentReportCardModel;
 import hotmath.gwt.cm_tools.client.model.StudentReportCardModelI;
 import hotmath.spring.SpringManager;
@@ -142,7 +141,7 @@ public class CmReportCardDao extends SimpleJdbcDaoSupport {
 		 String progId = pm.getTestDef().getProgId();
 		 pm.getTestDef().getTotalSegmentCount();
 		 
-		 CmList<ChapterModel> cmList = adminDao.getChaptersForProgramSubject(conn, progId, subjectId);
+		 List<ChapterModel> cmList = adminDao.getChaptersForProgramSubject(progId, subjectId);
 		 String chapNumb = null;
 		 for (ChapterModel cm : cmList) {
 		     if (chapter.equalsIgnoreCase(cm.getTitle().trim())) {

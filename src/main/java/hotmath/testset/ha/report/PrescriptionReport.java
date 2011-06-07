@@ -8,7 +8,7 @@ import hotmath.assessment.AssessmentPrescriptionSession;
 import hotmath.cm.server.model.CmUserProgramDao;
 import hotmath.cm.util.ActionInfo;
 import hotmath.gwt.cm_admin.server.model.CmStudentDao;
-import hotmath.gwt.cm_tools.client.model.StudentActiveInfo;
+import hotmath.gwt.cm_rpc.client.model.StudentActiveInfo;
 import hotmath.gwt.cm_tools.client.model.StudentModelI;
 import hotmath.gwt.shared.server.service.CmTestUtils;
 import hotmath.inmh.INeedMoreHelpItem;

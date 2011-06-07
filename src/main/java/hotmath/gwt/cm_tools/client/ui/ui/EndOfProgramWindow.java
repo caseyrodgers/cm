@@ -3,7 +3,7 @@ package hotmath.gwt.cm_tools.client.ui.ui;
 import hotmath.gwt.cm_tools.client.ui.InfoPopupBox;
 import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
 import hotmath.gwt.shared.client.CmShared;
-import hotmath.gwt.shared.client.util.SystemVersionUpdateChecker;
+import hotmath.gwt.shared.client.util.SystemSyncChecker;
 
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
@@ -60,7 +60,7 @@ public class EndOfProgramWindow extends CmWindow {
             @Override
             public void componentSelected(ButtonEvent ce) {
                 InfoPopupBox.display("Check for program assignment", "Checking for new program assignment...");
-                SystemVersionUpdateChecker.checkForUpdate();
+                SystemSyncChecker.checkForUpdate();
             }
         });
         

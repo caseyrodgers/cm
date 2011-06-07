@@ -10,6 +10,7 @@ import hotmath.cm.util.ClientInfoHolder;
 import hotmath.cm.util.CmMultiLinePropertyReader;
 import hotmath.gwt.cm_rpc.client.ClientInfo;
 import hotmath.gwt.cm_rpc.client.ClientInfo.UserType;
+import hotmath.gwt.cm_rpc.client.model.StudentActiveInfo;
 import hotmath.gwt.cm_rpc.client.rpc.CmArrayList;
 import hotmath.gwt.cm_rpc.client.rpc.CmList;
 import hotmath.gwt.cm_rpc.client.rpc.CmRpcException;
@@ -19,7 +20,6 @@ import hotmath.gwt.cm_tools.client.model.CustomProgramComposite;
 import hotmath.gwt.cm_tools.client.model.CustomProgramComposite.Type;
 import hotmath.gwt.cm_tools.client.model.LessonItemModel;
 import hotmath.gwt.cm_tools.client.model.StringHolder;
-import hotmath.gwt.cm_tools.client.model.StudentActiveInfo;
 import hotmath.gwt.cm_tools.client.model.StudentActivityModel;
 import hotmath.gwt.cm_tools.client.model.StudentModel;
 import hotmath.gwt.cm_tools.client.model.StudentModelBase;
@@ -403,15 +403,15 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
      */
 	private void loadChapterInfo(final Connection conn, List<StudentModelI> l) throws Exception {
 		for (StudentModelI sm : l) {
-			loadChapterInfo(conn, sm);
+			loadChapterInfo(sm);
 		}
 	}
 	
-	private void loadChapterInfo(final Connection conn, StudentModelI sm) throws Exception {
+	private void loadChapterInfo(StudentModelI sm) throws Exception {
 	    String chapter = sm.getChapter();
         if (chapter != null) {
             String subjId = sm.getProgram().getSubjectId();
-            List <ChapterModel> cmList = CmAdminDao.getInstance().getChaptersForProgramSubject(conn, "Chap", subjId);
+            List <ChapterModel> cmList = CmAdminDao.getInstance().getChaptersForProgramSubject("Chap", subjId);
             for (ChapterModel cm : cmList) {
                 if (cm.getTitle().equals(chapter)) {
                     sm.getProgram().setProgramDescription(new StringBuilder(sm.getProgram().getProgramDescription()).append(" ").append(cm.getNumber()).toString());
@@ -1547,7 +1547,7 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
                     }
                 });
 
-        loadChapterInfo(conn, studentModel);
+        loadChapterInfo(studentModel);
 
         if (studentModel.getSettings().getTutoringAvailable()) {
             /**
@@ -1886,8 +1886,10 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
 		try {
 			StudentProgramModel prog = student.getProgram();
 			if (! prog.isCustom()) {
-                JSONObject jo = new JSONObject(testConfigJson);
-                sectionCount = jo.getInt("segments");
+			    if(testConfigJson != null) { 
+			        JSONObject jo = new JSONObject(testConfigJson);
+			        sectionCount = jo.getInt("segments");
+			    }
 			}
 		}
 		catch (Exception e) {
@@ -1972,7 +1974,7 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
             if (progId.equalsIgnoreCase("chap")) {
             	String subjId = rs.getString("subj_id");
                 String chapter = getChapter(rs.getString("test_config_json"));
-		        List <ChapterModel> cmList = cmaDao.getChaptersForProgramSubject(conn, "Chap", subjId);
+		        List <ChapterModel> cmList = cmaDao.getChaptersForProgramSubject("Chap", subjId);
 		        for (ChapterModel cm : cmList) {
 		        	if (cm.getTitle().equals(chapter)) {
 		        		m.setProgramDescr(new StringBuilder(m.getProgramDescr()).append(" ").append(cm.getNumber()).toString());
