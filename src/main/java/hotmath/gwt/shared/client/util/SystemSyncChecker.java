@@ -46,8 +46,10 @@ public class SystemSyncChecker extends StandardSystemRefreshWindow {
         setVisible(true);
     }
     
-    public SystemSyncChecker(String msg) {
-        super("Auto Log Out", msg);
+    public SystemSyncChecker(String title, String msg) {
+        super(title, msg);
+        _theWindow = this;
+        setVisible(true);
     }
 
     /** Monitor server for version changes.
@@ -88,8 +90,8 @@ public class SystemSyncChecker extends StandardSystemRefreshWindow {
                  if(version.getVersion() != CatchupMathVersionInfo.getBuildVersion()) {
                      new SystemSyncChecker(version);
                  }
-                 else if(info.getCurrentUserLoginKey() != null || info.getCurrentUserLoginKey().equals(CmShared.getSecurityKey())) {
-                     new SystemSyncChecker("You have been logged out");
+                 else if(info.getCurrentUserLoginKey() != null && !info.getCurrentUserLoginKey().equals(CmShared.getSecurityKey())) {
+                     new SystemSyncChecker("Auto Log Out", "You have been automatically logged out.  You can refresh this page to log back in.");
                  }
             }
              @Override
