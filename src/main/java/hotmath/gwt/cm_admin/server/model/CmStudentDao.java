@@ -1875,12 +1875,6 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
         return l;
     }
 
-	private int getSectionCountXXX(String testConfigJson) throws JSONException {
-		JSONObject jo = new JSONObject(testConfigJson);
-		int sectionCount = jo.getInt("segments");
-		return sectionCount;
-	}
-
 	private void setupSectionCount(StudentModelI student, String testConfigJson) throws JSONException {
 		int sectionCount = 0;
 		try {
@@ -1889,6 +1883,7 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
 			    if(testConfigJson != null) { 
 			        JSONObject jo = new JSONObject(testConfigJson);
 			        sectionCount = jo.getInt("segments");
+			        prog.setSectionCount(sectionCount);
 			    }
 			}
 		}
