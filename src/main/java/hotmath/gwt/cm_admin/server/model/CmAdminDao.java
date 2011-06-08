@@ -414,7 +414,7 @@ public class CmAdminDao extends SimpleJdbcDaoSupport {
                         return new ChapterModel(String.valueOf(rs.getInt("title_number")), rs.getString("title"));
                     }
                 });
-
+        
          CmCacheManager.getInstance().addToCache(SUBJECT_CHAPTERS, key, list);
          
          return list;

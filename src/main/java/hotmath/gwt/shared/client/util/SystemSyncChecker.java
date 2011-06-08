@@ -4,6 +4,7 @@ import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_tools.client.ui.CmLogger;
 import hotmath.gwt.shared.client.CatchupMathVersionInfo;
 import hotmath.gwt.shared.client.CmShared;
+import hotmath.gwt.shared.client.model.UserInfoBase;
 import hotmath.gwt.shared.client.rpc.action.GetUserSyncAction;
 import hotmath.gwt.shared.client.rpc.result.CatchupMathVersion;
 import hotmath.gwt.shared.client.rpc.result.UserSyncInfo;
@@ -19,11 +20,11 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  */
 public class SystemSyncChecker extends StandardSystemRefreshWindow {
 
-    static final int CHECK_EVERY = 1000 * 60 * 15;
+    static final int CHECK_EVERY = 1000 * 60; //  * 15;
     static SystemSyncChecker _theWindow;
 
     public SystemSyncChecker() {
-        this(null);
+        this((CatchupMathVersion)null);
     }
     
     public SystemSyncChecker(CatchupMathVersion version) {
@@ -43,6 +44,10 @@ public class SystemSyncChecker extends StandardSystemRefreshWindow {
             return;
         
         setVisible(true);
+    }
+    
+    public SystemSyncChecker(String msg) {
+        super("Auto Log Out", msg);
     }
 
     /** Monitor server for version changes.
@@ -74,7 +79,7 @@ public class SystemSyncChecker extends StandardSystemRefreshWindow {
          * 
          */
         UserInfo ui=UserInfo.getInstance();
-         GetUserSyncAction action = new GetUserSyncAction(ui.getUid());
+         GetUserSyncAction action = new GetUserSyncAction(UserInfoBase.getInstance().getUid());
          CmShared.getCmService().execute(action, new AsyncCallback<UserSyncInfo>() {
              @Override
             public void onSuccess(UserSyncInfo info) {
@@ -82,6 +87,9 @@ public class SystemSyncChecker extends StandardSystemRefreshWindow {
                  CmLogger.debug("GetCatchupMathVersionAction: " + version.getVersion() + " current: " + CatchupMathVersionInfo.getBuildVersion());
                  if(version.getVersion() != CatchupMathVersionInfo.getBuildVersion()) {
                      new SystemSyncChecker(version);
+                 }
+                 else if(info.getCurrentUserLoginKey() != null || info.getCurrentUserLoginKey().equals(CmShared.getSecurityKey())) {
+                     new SystemSyncChecker("You have been logged out");
                  }
             }
              @Override

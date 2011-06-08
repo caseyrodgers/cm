@@ -18,14 +18,15 @@ public class GetActiveInfoForStudentUidCommand_Test extends CmDbTestCase {
     }
     
     public void testGetActiveInfo() throws Exception {
-    	
     	GetActiveInfoForStudentUidAction action = new GetActiveInfoForStudentUidAction();
     	action.setUserId(_test.getUser().getUid());
     	
     	GetActiveInfoForStudentUidCommand cmd = new GetActiveInfoForStudentUidCommand();
     	StudentActiveInfo mdl = cmd.execute(conn, action);
     	
-    	assert(mdl != null && mdl.getActiveSegment() >= 0); 
+    	assertNotNull(mdl);
+    	assertTrue(mdl.getActiveSegment()>0);
+    	assertTrue(mdl.getActiveProgram().getSegmentCount() > 0);
     }
     
 }

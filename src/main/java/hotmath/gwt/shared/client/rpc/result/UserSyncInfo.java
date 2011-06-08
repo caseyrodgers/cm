@@ -1,12 +1,9 @@
 package hotmath.gwt.shared.client.rpc.result;
 
-import hotmath.gwt.cm_rpc.client.model.StudentActiveInfo;
 import hotmath.gwt.cm_rpc.client.rpc.Response;
 
 /** Encapsulates the information about a current 
- * users state in their active program.  Also,the current
- * state of the CM client version in use is compared against
- * the current
+ * users status.   
  * 
  *  
  * @author casey
@@ -14,13 +11,13 @@ import hotmath.gwt.cm_rpc.client.rpc.Response;
  */
 public class UserSyncInfo implements Response{
     CatchupMathVersion versionInfo;
-    StudentActiveInfo activeInfo;
+    String currentUserLoginKey;
     
     public UserSyncInfo() {}
     
-    public UserSyncInfo(CatchupMathVersion version, StudentActiveInfo activeInfo) {
+    public UserSyncInfo(CatchupMathVersion version, String currentUserLoginKey) {
         this.versionInfo = version;        
-        this.activeInfo = activeInfo;
+        this.currentUserLoginKey = currentUserLoginKey;
     }
 
     public CatchupMathVersion getVersionInfo() {
@@ -31,16 +28,17 @@ public class UserSyncInfo implements Response{
         this.versionInfo = versionInfo;
     }
 
-    public StudentActiveInfo getActiveInfo() {
-        return activeInfo;
+    public String getCurrentUserLoginKey() {
+        return currentUserLoginKey;
     }
 
-    public void setActiveInfo(StudentActiveInfo activeInfo) {
-        this.activeInfo = activeInfo;
+    public void setCurrentUserLoginKey(String currentUserLoginKey) {
+        this.currentUserLoginKey = currentUserLoginKey;
     }
+    
 
     @Override
     public String toString() {
-        return "UserSyncInfo [versionInfo=" + versionInfo + ", activeInfo=" + activeInfo + "]";
+        return "UserSyncInfo [versionInfo=" + versionInfo + ", currentUserLoginKey=" + currentUserLoginKey + "]";
     }
 }

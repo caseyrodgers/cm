@@ -30,9 +30,38 @@ public class StudentActiveInfo implements Response{
     int activeSegmentSlot=0;
     int activeRunSession=0;
 
-    public StudentActiveInfo() {
-    }
+    CmProgramInfo activeProgram;
+    
+    public StudentActiveInfo() { /* empty */ }
  
+    public CmProgramInfo getActiveProgram() {
+        return activeProgram;
+    }
+
+    public void setActiveProgram(CmProgramInfo activeProgram) {
+        this.activeProgram = activeProgram;
+    }
+
+    public void setActiveRunId(int activeRunId) {
+        this.activeRunId = activeRunId;
+    }
+
+    public void setActiveTestId(int activeTestId) {
+        this.activeTestId = activeTestId;
+    }
+
+    public void setActiveSegment(int activeSegment) {
+        this.activeSegment = activeSegment;
+    }
+
+    public void setActiveSegmentSlot(int activeSegmentSlot) {
+        this.activeSegmentSlot = activeSegmentSlot;
+    }
+
+    public void setActiveRunSession(int activeRunSession) {
+        this.activeRunSession = activeRunSession;
+    }
+
     public Integer getActiveRunId() {
         return activeRunId;
     }
@@ -72,8 +101,8 @@ public class StudentActiveInfo implements Response{
     }
     @Override
     public String toString() {
-        return "StudentActiveInfo [activeRunId=" + activeRunId + ", activeRunSession=" + activeRunSession
-                + ", activeSegment=" + activeSegment + ", activeSegmentSlot=" + activeSegmentSlot + ", activeTestId="
-                + activeTestId + "]";
+        return "StudentActiveInfo [activeRunId=" + activeRunId + ", activeTestId=" + activeTestId + ", activeSegment="
+                + activeSegment + ", activeSegmentSlot=" + activeSegmentSlot + ", activeRunSession=" + activeRunSession
+                + ", activeProgram=" + activeProgram + "]";
     }
 }

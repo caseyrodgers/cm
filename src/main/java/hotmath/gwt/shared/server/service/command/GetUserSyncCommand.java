@@ -1,6 +1,6 @@
 package hotmath.gwt.shared.server.service.command;
 
-import hotmath.cm.program.CmProgramFlow;
+import hotmath.cm.dao.HaLoginInfoDao;
 import hotmath.cm.util.CatchupMathProperties;
 import hotmath.gwt.cm_rpc.client.rpc.Action;
 import hotmath.gwt.cm_rpc.client.rpc.Response;
@@ -24,7 +24,7 @@ public class GetUserSyncCommand implements ActionHandler<GetUserSyncAction, User
     public UserSyncInfo execute(Connection conn, GetUserSyncAction action) throws Exception {
        return new UserSyncInfo(
                 new CatchupMathVersion(CatchupMathProperties.getInstance().getClientVersionNumber()),
-                new CmProgramFlow(conn, action.getUid()).getActiveInfo());
+                HaLoginInfoDao.getInstance().getLatestLoginKey(action.getUid()));
     }
     
     @Override

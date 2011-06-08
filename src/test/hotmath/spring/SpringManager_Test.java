@@ -1,5 +1,6 @@
 package hotmath.spring;
 
+import hotmath.cm.dao.HaLoginInfoDao;
 import hotmath.cm.server.model.CmReportCardDao;
 import hotmath.cm.server.model.CmUserProgramDao;
 import hotmath.conn.TestDao;
@@ -98,11 +99,15 @@ public class SpringManager_Test extends TestCase{
         assertNotNull(testDao);
     }
     
-    
     public void testCmReportCardDao() throws Exception {
         SpringManager manager = SpringManager.getInstance();
         CmReportCardDao testDao = (CmReportCardDao)manager.getBeanFactory().getBean("hotmath.cm.server.model.CmReportCardDao");
         assertNotNull(testDao);
     }
-
+    
+    public void testHaLoginInfoDao() throws Exception {
+        SpringManager manager = SpringManager.getInstance();
+        HaLoginInfoDao testDao = (HaLoginInfoDao)manager.getBeanFactory().getBean("hotmath.cm.dao.HaLoginInfoDao");
+        assertNotNull(testDao);
+    }
 }

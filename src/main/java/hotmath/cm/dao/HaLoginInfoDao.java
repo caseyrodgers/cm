@@ -7,17 +7,31 @@ import hotmath.gwt.cm_tools.client.data.HaLoginInfo;
 import hotmath.gwt.shared.client.util.CmException;
 import hotmath.gwt.shared.client.util.CmExceptionLoginAlreadyConsumed;
 import hotmath.gwt.shared.client.util.CmExceptionLoginInvalid;
+import hotmath.spring.SpringManager;
 import hotmath.testset.ha.HaUserExtendedDao;
 import hotmath.util.sql.SqlUtilities;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.util.List;
 
-public class HaLoginInfoDao {
+import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.simple.SimpleJdbcDaoSupport;
+
+public class HaLoginInfoDao extends SimpleJdbcDaoSupport {
     
-    public HaLoginInfoDao(){}
+    private static HaLoginInfoDao __instance;
+    public static HaLoginInfoDao getInstance() throws Exception {
+        if(__instance == null) {
+            __instance = (HaLoginInfoDao)SpringManager.getInstance().getBeanFactory().getBean(HaLoginInfoDao.class.getName());
+        }
+        return __instance;
+    }
+    
+    private HaLoginInfoDao(){}
 
     
     public HaLoginInfo getLoginInfo(final Connection conn, HaBasicUser user, String browserInfo, boolean isRealLogin) throws Exception {
@@ -31,6 +45,33 @@ public class HaLoginInfoDao {
     }    
 
   
+    /** Return the latest login key for this user.
+     * 
+     *  This will be the 'active' login for this user.
+     *  
+     * @param uid
+     * @return
+     * @throws Exception
+     */
+    public String getLatestLoginKey(int uid) throws Exception {
+        String key=null;
+        if(uid > 0) {
+            List<String> list = getJdbcTemplate().query(
+                    CmMultiLinePropertyReader.getInstance().getProperty("GET_LOGIN_INFO_KEY"),
+                    new Object[]{uid},
+                    new RowMapper<String>() {
+                        @Override
+                        public String mapRow(ResultSet rs, int rowNum) throws SQLException {
+                            return rs.getString("login_key");
+                        }
+                    });
+            if(list.size() > 0) {
+                key = list.get(0);
+            }
+        }
+        return key;
+    }
+    
     
     /** Reads login information for key
      *  Throws exception if not found, or invalid.

@@ -14,7 +14,7 @@ public class ProcessLoginRequestCommand implements ActionHandler<ProcessLoginReq
     
     @Override
     public UserInfo execute(Connection conn, ProcessLoginRequestAction action) throws Exception {
-            HaLoginInfo haLoginInfo = new HaLoginInfoDao().getLoginInfo(conn, action.getKey());
+            HaLoginInfo haLoginInfo = HaLoginInfoDao.getInstance().getLoginInfo(conn, action.getKey());
             UserInfo userInfo = new UserInfo();
             userInfo.setUid(haLoginInfo.getUserId());
             userInfo.setLoginName(haLoginInfo.getLoginName());

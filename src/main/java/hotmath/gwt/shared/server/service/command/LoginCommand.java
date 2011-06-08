@@ -43,7 +43,7 @@ public class LoginCommand implements ActionHandler<LoginAction, HaUserLoginInfo>
 			String key = action.getKey();
 
 			if (key != null) {
-				HaLoginInfo hi = new HaLoginInfoDao().getLoginInfo(conn, key);
+				HaLoginInfo hi = HaLoginInfoDao.getInstance().getLoginInfo(conn, key);
 				uid = hi.getUserId();
 				cmUser = HaUserFactory.getLoginUserInfo(conn, uid, type);
 				username = cmUser.getLoginName();
@@ -65,7 +65,7 @@ public class LoginCommand implements ActionHandler<LoginAction, HaUserLoginInfo>
 		}
 		assert(cmUser != null);
 
-		HaLoginInfo loginInfo = new HaLoginInfoDao().getLoginInfo(conn, cmUser, action.getBrowserInfo(),isRealLogin);
+		HaLoginInfo loginInfo = HaLoginInfoDao.getInstance().getLoginInfo(conn, cmUser, action.getBrowserInfo(),isRealLogin);
 
 		return new HaUserLoginInfo(cmUser, loginInfo);
 	}
