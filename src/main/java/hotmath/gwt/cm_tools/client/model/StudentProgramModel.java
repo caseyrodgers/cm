@@ -10,13 +10,13 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 public class StudentProgramModel implements IsSerializable{
 
     Integer programId;
-    String subjectId;
-    String programType;
+    String  subjectId;
+    String  programType;
+    Integer sectionCount;
 
     CustomProgramComposite custom = new CustomProgramComposite();
     
     String programDescription;
-
 
     public StudentProgramModel() {}
 
@@ -25,14 +25,15 @@ public class StudentProgramModel implements IsSerializable{
      * @param programId The PK for the CM_USER_PROGRAM
      * @param subjectId The subject id
      * @param programType The type of program (Prof, Chap ,etc..)
+     * @param sectionCount The number of sections / segments
      */
-    public StudentProgramModel(Integer programId, String subjectId, String programType) {
+    public StudentProgramModel(Integer programId, String subjectId, String programType, Integer sectionCount) {
         this.programId = programId;
         this.programType = programType;        
         this.subjectId = subjectId;
+        this.sectionCount = sectionCount;
     }
 
-    
     public CustomProgramComposite getCustom() {
         return custom;
     }
@@ -76,4 +77,19 @@ public class StudentProgramModel implements IsSerializable{
     public void setProgramType(String programType) {
         this.programType = programType;
     }
+
+    public Integer getSectionCount() {
+		return sectionCount;
+	}
+
+	public void setSectionCount(Integer sectionCount) {
+		this.sectionCount = sectionCount;
+	}
+
+	@Override
+    public String toString() {
+        return "StudentProgramModel [programId=" + programId + ", subjectID=" + subjectId
+                + ", programType=" + programType + ", " + custom.toString() + "]";
+    };
+
 }
