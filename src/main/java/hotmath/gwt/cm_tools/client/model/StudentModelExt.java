@@ -33,6 +33,7 @@ public class StudentModelExt extends BaseModel implements Serializable, StudentM
     public static final String BACKGROUND_STYLE = "background_style";
     public static final String DEMO_USER_KEY = "demo_user";
     public static final String PROGRAM_DESCR_KEY = "program";
+    public static final String PROGRAM_TYPE_KEY  = "program-type";
     public static final String PASSING_COUNT_KEY = "passing-count";
     public static final String HAS_PASSING_COUNT_KEY = "has-passing-count";
     public static final String NOT_PASSING_COUNT_KEY = "not-passing-count";
