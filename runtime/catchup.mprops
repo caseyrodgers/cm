@@ -682,13 +682,12 @@ select   d.id,
           0 as custom_quiz_id,
           null as custom_quiz_name,         
          d.load_order,
+         ifnull(td.segment_count, 0) as segment_count,
          0 as is_template
-from     HA_PROG_DEF d
+from     HA_PROG_DEF d, HA_TEST_DEF td
 where    d.is_active = 1
-         and exists (select 1
-                     from   HA_TEST_DEF td
-                     where  d.id = td.prog_id
-                            and td.is_active = 1)
+  and    td.is_active = 1
+  and    d.id = td.prog_id
                             
 union
                             
@@ -704,6 +703,7 @@ select      'Custom Quiz' as id,
             q.qid as custom_quiz_id,
             q.name as custom_quiz_name,
             999 as load_order,
+            0 as segment_count,
             0 as is_template
 from   HA_ADMIN a join HA_CUSTOM_QUIZ q on q.admin_id = a.aid
 where    a.aid = ?
@@ -722,6 +722,7 @@ select      'Custom' as id,
             0 as custom_quiz_id,
             null as custom_quiz_name,
             999 as load_order,
+            0 as segment_count,
             is_template
 from   HA_ADMIN a join HA_CUSTOM_PROGRAM cp on cp.admin_id = a.aid
 where    a.aid = ? 
