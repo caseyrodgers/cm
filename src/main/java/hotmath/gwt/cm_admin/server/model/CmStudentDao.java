@@ -10,6 +10,7 @@ import hotmath.cm.util.ClientInfoHolder;
 import hotmath.cm.util.CmMultiLinePropertyReader;
 import hotmath.gwt.cm_rpc.client.ClientInfo;
 import hotmath.gwt.cm_rpc.client.ClientInfo.UserType;
+import hotmath.gwt.cm_rpc.client.model.CmProgramType;
 import hotmath.gwt.cm_rpc.client.model.StudentActiveInfo;
 import hotmath.gwt.cm_rpc.client.rpc.CmArrayList;
 import hotmath.gwt.cm_rpc.client.rpc.CmList;
@@ -573,7 +574,7 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
             }
             
             ps.setInt(4, groupId);
-            ps.setString(5, sm.getProgram().getProgramType());
+            ps.setString(5, sm.getProgram().getProgramType().getType());
             ps.setString(6, sm.getProgram().getSubjectId());
             ps.setInt(7, sm.getAdminUid());
             ps.setInt(8, (sm.getIsDemoUser() != null && sm.getIsDemoUser()) ? 1 : 0);
@@ -893,7 +894,7 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
             // if group Id has not been set default to GROUP_NONE_ID
             ps.setInt(3, (sm.getGroupId() != null) ? Integer.parseInt(sm.getGroupId()):GROUP_NONE_ID);
             
-            ps.setString(4, spm.getProgramType());
+            ps.setString(4, spm.getProgramType().getType());
             ps.setString(5, spm.getSubjectId());
             ps.setInt(6, spm.getProgramId());
             ps.setString(7, sm.getBackgroundStyle());
@@ -1121,7 +1122,7 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
                 ps = conn.prepareStatement(CmMultiLinePropertyReader.getInstance().getProperty("INSERT_STUDENT_PROGRAM_SQL"));
                 ps.setInt(1, sm.getUid());
                 ps.setInt(2, sm.getAdminUid());
-                ps.setString(3, sp.getProgramType());
+                ps.setString(3, sp.getProgramType().getType());
                 ps.setString(4, sp.getSubjectId());
                 ps.setInt(5, passPcnt);
                 ps.setTimestamp(6, new Timestamp(System.currentTimeMillis()));
@@ -1131,7 +1132,7 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
                 ps = conn.prepareStatement(CmMultiLinePropertyReader.getInstance().getProperty("INSERT_STUDENT_PROGRAM_NULL_PASS_PERCENT_SQL"));
                 ps.setInt(1, sm.getUid());
                 ps.setInt(2, sm.getAdminUid());
-                ps.setString(3, sp.getProgramType());
+                ps.setString(3, sp.getProgramType().getType());
                 ps.setString(4, sp.getSubjectId());
                 ps.setTimestamp(5, new Timestamp(System.currentTimeMillis()));
                 ps.setString(6, sm.getJson());
@@ -1150,7 +1151,7 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
              * 
              */
             StudentActiveInfo info = new StudentActiveInfo();
-            HaTestDef testDef = HaTestDefDao.getInstance().getTestDef(conn,sp.getProgramType(), sp.getSubjectId() );
+            HaTestDef testDef = HaTestDefDao.getInstance().getTestDef(conn,sp.getProgramType().getType(), sp.getSubjectId() );
             if(testDef.getNumAlternateTests() > 0) {
             	int randStartSeg = SbUtilities.getRandomNumber(testDef.getNumAlternateTests());
             	info.setActiveSegmentSlot(randStartSeg);
@@ -1211,7 +1212,7 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
                 ps = conn.prepareStatement(CmMultiLinePropertyReader.getInstance().getProperty("INSERT_STUDENT_PROGRAM_SQL"));
                 ps.setInt(1, sm.getUid());
                 ps.setInt(2, sm.getAdminUid());
-                ps.setString(3, studyProgram.getProgramType());
+                ps.setString(3, studyProgram.getProgramType().getType());
                 ps.setString(4, studyProgram.getSubjectId());
                 ps.setInt(5, passPcnt);
                 ps.setTimestamp(6, new Timestamp(System.currentTimeMillis()));
@@ -1221,7 +1222,7 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
                 ps = conn.prepareStatement(CmMultiLinePropertyReader.getInstance().getProperty("INSERT_STUDENT_PROGRAM_NULL_PASS_PERCENT_SQL"));
                 ps.setInt(1, sm.getUid());
                 ps.setInt(2, sm.getAdminUid());
-                ps.setString(3, studyProgram.getProgramType());
+                ps.setString(3, studyProgram.getProgramType().getType());
                 ps.setString(4, studyProgram.getSubjectId());
                 ps.setTimestamp(5, new Timestamp(System.currentTimeMillis()));
                 ps.setString(6, sm.getJson());
@@ -1262,7 +1263,7 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
             ps = conn.prepareStatement(CmMultiLinePropertyReader.getInstance().getProperty("INSERT_STUDENT_PROGRAM_CUSTOM_QUIZ"));
             ps.setInt(1, sm.getUid());
             ps.setInt(2, sm.getAdminUid());
-            ps.setString(3, studyProgram.getProgramType());
+            ps.setString(3, studyProgram.getProgramType().getType());
             ps.setString(4, studyProgram.getSubjectId());
             ps.setInt(5, passPcnt);
             ps.setTimestamp(6, new Timestamp(System.currentTimeMillis()));
@@ -1315,7 +1316,7 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
         try {
             ps2 = conn.prepareStatement(sql);
             ps2.setString(1, sm.getProgram().getSubjectId());
-            String progId = sm.getProgram().getProgramType();
+            String progId = sm.getProgram().getProgramType().getType();
             ps2.setString(2, progId);
             rs = ps2.executeQuery();
             if (rs.next()) {
@@ -1759,7 +1760,12 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
             StudentProgramModel sprm = sm.getProgram();
             sprm.setProgramDescription(rs.getString("program"));
             sprm.setProgramId(rs.getInt("user_prog_id"));
-            sprm.setProgramType(rs.getString("prog_id"));
+
+            String progId = rs.getString("prog_id").toUpperCase();
+            progId = (progId != null) ? progId.replaceAll(" ", "") : progId;
+            CmProgramType progType = (progId != null) ? CmProgramType.valueOf(progId) : null;
+            sprm.setProgramType(progType);
+
             sprm.setSubjectId(rs.getString("subj_id"));
             sprm.setCustom(new CustomProgramComposite(
                     rs.getInt("custom_program_id"), rs.getString("custom_program_name"),
@@ -2246,7 +2252,7 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
     /**
      * Set the active information for the named user
      * 
-     * @TODO: Move to 1-to-1 table HA_USER_ACTIVE, or set is_active flag in HA_USER_PROGRAM
+     * @TODO: Move to 1-to-1 table HA_USER_ACTIVE, or set is_active flag in CM_USER_PROGRAM
      * @TODO: move all active info to here (including the studentModel.getSection)
      * @param conn
      * @param userId
