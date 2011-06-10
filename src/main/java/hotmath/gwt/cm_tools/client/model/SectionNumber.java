@@ -7,8 +7,8 @@ public class SectionNumber extends BaseModelData {
 
 	private static final long serialVersionUID = 5784605077473777063L;
 
-	public SectionNumber(String percent) {
-        set("section-number", percent);
+	public SectionNumber(String number) {
+        set("section-number", number);
     }
 
     public String getSectionNumber() {
