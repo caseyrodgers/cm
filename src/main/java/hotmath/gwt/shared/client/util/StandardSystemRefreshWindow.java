@@ -22,6 +22,9 @@ import com.extjs.gxt.ui.client.widget.button.Button;
 public class StandardSystemRefreshWindow extends CmWindow {
 
     public StandardSystemRefreshWindow(String title, String message) {
+        this(title, message, null);
+    }
+    public StandardSystemRefreshWindow(String title, String message, Button btn) {
         EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_MODAL_WINDOW_OPEN));
 
         setSize(300, 200);
@@ -35,11 +38,15 @@ public class StandardSystemRefreshWindow extends CmWindow {
 
         String msg = "<div style='font-size: 110%;padding: 10px;'>" + message + "</div>";
         add(new Html(msg));
-        addButton(new Button("Refresh Page", new SelectionListener<ButtonEvent>() {
-            @Override
-            public void componentSelected(ButtonEvent ce) {
-                CmShared.refreshPage();
-            }
-        }));
+        if(btn == null) {
+            btn = new Button("Refresh Page", new SelectionListener<ButtonEvent>() {
+                @Override
+                public void componentSelected(ButtonEvent ce) {
+                    CmShared.refreshPage();
+                }
+            });
+        }
+        addButton(btn);
+            
     }
 }

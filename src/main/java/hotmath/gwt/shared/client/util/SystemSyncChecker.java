@@ -1,5 +1,6 @@
 package hotmath.gwt.shared.client.util;
 
+
 import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_tools.client.ui.CmLogger;
 import hotmath.gwt.shared.client.CatchupMathVersionInfo;
@@ -9,8 +10,12 @@ import hotmath.gwt.shared.client.rpc.action.GetUserSyncAction;
 import hotmath.gwt.shared.client.rpc.result.CatchupMathVersion;
 import hotmath.gwt.shared.client.rpc.result.UserSyncInfo;
 
+import com.extjs.gxt.ui.client.event.ButtonEvent;
+import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.widget.Html;
+import com.extjs.gxt.ui.client.widget.button.Button;
 import com.google.gwt.user.client.Timer;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 /** Display a message from central server
@@ -46,8 +51,8 @@ public class SystemSyncChecker extends StandardSystemRefreshWindow {
         setVisible(true);
     }
     
-    public SystemSyncChecker(String title, String msg) {
-        super(title, msg);
+    public SystemSyncChecker(String title, String msg, Button btn) {
+        super(title, msg, btn);
         _theWindow = this;
         setVisible(true);
     }
@@ -91,7 +96,14 @@ public class SystemSyncChecker extends StandardSystemRefreshWindow {
                      new SystemSyncChecker(version);
                  }
                  else if(info.getCurrentUserLoginKey() != null && !info.getCurrentUserLoginKey().equals(CmShared.getSecurityKey())) {
-                     new SystemSyncChecker("Auto Log Out", "You have been automatically logged out.  You can refresh this page to log back in.");
+                     new SystemSyncChecker("Auto Log Out", "You have been automatically logged out due to multiple logins. Please log back in to continue.",
+                             
+                             new Button("Logout", new SelectionListener<ButtonEvent>() {
+                                 @Override
+                                 public void componentSelected(ButtonEvent ce) {
+                                     Window.Location.assign("/login.html");
+                                 }
+                             }));
                  }
             }
              @Override
