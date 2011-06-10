@@ -651,6 +651,7 @@ public class CmAdminDao extends SimpleJdbcDaoSupport {
             m.setNeedsPassPercent(rs.getInt("needs_pass_percent"));
             m.setNeedsState(rs.getInt("needs_state"));
             m.setIsTemplate(rs.getInt("is_template") != 0);
+            m.setSectionCount(rs.getInt("segment_count"));
             l.add(m);
         }
         return l;
