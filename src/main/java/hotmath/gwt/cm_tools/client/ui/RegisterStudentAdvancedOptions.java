@@ -1,6 +1,7 @@
 package hotmath.gwt.cm_tools.client.ui;
 
 import hotmath.gwt.cm_tools.client.model.CmAdminModel;
+import hotmath.gwt.cm_tools.client.model.SectionNumber;
 import hotmath.gwt.cm_tools.client.model.StudentModelExt;
 import hotmath.gwt.cm_tools.client.model.StudentSettingsModel;
 import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
@@ -27,6 +28,8 @@ import com.extjs.gxt.ui.client.widget.layout.FormLayout;
  * 
  * set pass percent, require show work, enable tutoring, disallow games
  * 
+ * reset active section if in Proficiency or Grad Prep program
+ * 
  * @author bob
  *
  */
@@ -43,6 +46,7 @@ public class RegisterStudentAdvancedOptions extends LayoutContainer {
 	private CheckBoxGroup stopAtProgramEnd;
 
 	private ComboBox <PassPercent> passCombo;
+	private ComboBox <SectionNumber> sectionCombo;
 
 	private FieldSet fs;
 	private CmAdminModel cmAdminMdl;
@@ -51,22 +55,27 @@ public class RegisterStudentAdvancedOptions extends LayoutContainer {
 	private AdvOptCallback callback;
 	private boolean passPercentReqd;
 	private Map<String,Object> advOptionsMap;
+
+	private int sectionCount;
+	private String currentSection;
+	private boolean sectionIsSettable;
 	
-	public RegisterStudentAdvancedOptions(AdvOptCallback callback, CmAdminModel cm, Map <String,Object> optionMap, boolean isNew,
+	public RegisterStudentAdvancedOptions(AdvOptCallback callback, CmAdminModel cm, Integer studentUid, Map <String,Object> optionMap, boolean isNew,
 		boolean passPercentReqd) {
-	    this.callback = callback;
+
+		this.callback = callback;
 		this.cmAdminMdl = cm;
 		this.advOptionsMap = optionMap;
 		this.passPercentReqd = passPercentReqd;
+		this.currentSection = String.valueOf((Integer) advOptionsMap.get(StudentModelExt.SECTION_NUM_KEY));
+		this.sectionCount = (Integer) advOptionsMap.get(StudentModelExt.SECTION_COUNT_KEY);
+		this.sectionIsSettable = (Boolean) advOptionsMap.get("section-is-settable");
 
 		advOptWindow = new CmWindow();
 		advOptWindow.add(optionsForm(isNew, passPercentReqd));
- 		advOptWindow.show();
+		
+		setForm();
 
- 		if (passPercentReqd)
- 			passCombo.focus();
- 		else
- 			passCombo.disable();
 	}
 	
 	private FormPanel optionsForm(boolean isNew, boolean passPercentReqd) {
@@ -81,9 +90,6 @@ public class RegisterStudentAdvancedOptions extends LayoutContainer {
 		fp.setButtonAlign(HorizontalAlignment.CENTER);
 		fp.setLayout(new FormLayout());
 
-		passCombo = new PassPercentCombo(passPercentReqd);
-        setPassPercentSelection();
-
         advOptions = new FieldSet();
         
 		FormLayout fl = new FormLayout();
@@ -92,6 +98,9 @@ public class RegisterStudentAdvancedOptions extends LayoutContainer {
 		
 		advOptions.setLayout(fl);
         advOptions.addStyleName("register-student-fieldset");
+
+        passCombo = new PassPercentCombo(passPercentReqd);
+        setPassPercentSelection();
 		advOptions.add(passCombo);
 
 		isShowWorkRequired = new CheckBox();
@@ -124,6 +133,12 @@ public class RegisterStudentAdvancedOptions extends LayoutContainer {
 		stopAtProgramEnd.add(isStopAtProgramEnd);
 		advOptions.add(stopAtProgramEnd);
 
+		if (sectionIsSettable) {
+    		sectionCombo = new SectionNumberCombo(sectionCount);
+            setSectionNumberSelection();
+		    advOptions.add(sectionCombo);
+        }
+
 		advOptWindow.setHeading((isNew)?"Set Options":"Edit Options");
 		advOptWindow.setWidth(formWidth+10);
 		advOptWindow.setHeight(formHeight+20);
@@ -150,6 +165,22 @@ public class RegisterStudentAdvancedOptions extends LayoutContainer {
         return fp;
 	}
 
+	private void setForm() {
+		advOptWindow.show();
+
+ 		if (passPercentReqd)
+ 			passCombo.focus();
+ 		else
+ 			passCombo.disable();
+
+		boolean sectionSelectAvail = (Boolean)advOptionsMap.get("SECTION_SELECT_AVAIL");
+		if (! sectionSelectAvail)
+			sectionCombo.disable();
+		else
+	        setSectionNumberSelection();
+
+	}
+
 	private void setPassPercentSelection() {
 		String passPercent = (String) advOptionsMap.get(StudentModelExt.PASS_PERCENT_KEY);
 		
@@ -170,6 +201,19 @@ public class RegisterStudentAdvancedOptions extends LayoutContainer {
 					passCombo.enable();
 					break;
 				}
+			}
+		}
+	}
+
+	private void setSectionNumberSelection() {
+
+		List<SectionNumber> list = sectionCombo.getStore().getModels();
+		for (SectionNumber p : list) {
+			if (currentSection.equals(p.getSectionNumber())) {
+				sectionCombo.setOriginalValue(p);
+				sectionCombo.setValue(p);
+				sectionCombo.enable();
+				break;
 			}
 		}
 	}

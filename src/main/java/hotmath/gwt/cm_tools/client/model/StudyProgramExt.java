@@ -8,7 +8,7 @@ public class StudyProgramExt extends BaseModelData {
 	StudyProgramModel program;
 
 	public StudyProgramExt(StudyProgramModel program, String title, String shortTitle, String descr, Integer needsSubject,
-	    Integer needsChapters, Integer needsPassPercent,Integer customProgramId, String customProgramName) {
+	    Integer needsChapters, Integer needsPassPercent, Integer customProgramId, String customProgramName) {
 
 	    this.program = program;
 	    
@@ -22,6 +22,9 @@ public class StudyProgramExt extends BaseModelData {
 		set("customProgramId", customProgramId);
 		set("customQuizId", program.getCustomQuizId());
 		set("customQuizName", program.getCustomQuizName());
+		set("isProficiency", program.getIsProficiency());
+		set("isGradPrep", program.getIsGradPrep());
+		set("sectionCount", program.getSectionCount());
 
 		/** set css style to identify as custom program
 		 * 
@@ -53,4 +56,7 @@ public class StudyProgramExt extends BaseModelData {
         return get("customQuizName");
     }    
     
+    public Integer getSectionCount() {
+    	return get("sectionCount");
+    }
 }

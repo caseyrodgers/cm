@@ -1,6 +1,7 @@
 package hotmath.gwt.cm_tools.client.ui;
 
 import hotmath.gwt.cm_rpc.client.UserInfo;
+import hotmath.gwt.cm_rpc.client.model.CmProgramType;
 import hotmath.gwt.cm_rpc.client.rpc.CmList;
 import hotmath.gwt.cm_rpc.client.rpc.CmServiceAsync;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
@@ -58,6 +59,7 @@ import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.layout.FormLayout;
 import com.google.gwt.user.client.Timer;
+import com.google.gwt.user.client.Window;
 
 /**
  * Provides UI for registering new students and modifying the registration of
@@ -75,6 +77,9 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
 	private boolean skipComboSet;
 	private boolean loading;
 	private boolean passPercentReqd;
+	private Boolean sectionSelectAvail = false;
+	private Integer sectionCount;
+	private Integer activeSection;
 	
 	private StudentModelI stuMdl;
 	private StudentSettingsModel stuSettingsMdl;
@@ -118,6 +123,9 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
 			subjectId = stuMdl.getProgram().getSubjectId();
 			passPercent = stuMdl.getPassPercent();
 			stuSettingsMdl = stuMdl.getSettings();
+			activeSection = stuMdl.getSectionNum();
+			sectionCount = stuMdl.getSectionCount();
+			sectionSelectAvail = isSectionSelectAvail(stuMdl.getProgram().getProgramType());
 		}
 
 		cmAdminMdl = cm;
@@ -231,12 +239,12 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
 		_fsProgram.add(progCombo);
 		
 		subjStore = new ListStore <SubjectModel> ();
-		getSubjectList((stuMdl != null)?stuMdl.getProgram().getProgramType():null, subjStore);
+		getSubjectList((stuMdl != null)?stuMdl.getProgram().getProgramType().getType():null, subjStore);
 		subjCombo = subjectCombo(subjStore);
 		_fsProgram.add(subjCombo);
 
 		chapStore = new ListStore <ChapterModel> ();
-        getChapterListRPC((stuMdl != null)?stuMdl.getProgram().getProgramType():null, subjectId, false, chapStore);
+        getChapterListRPC((stuMdl != null)?stuMdl.getProgram().getProgramType().getType():null, subjectId, false, chapStore);
 		chapCombo = chapterCombo(chapStore);
 		_fsProgram.add(chapCombo);        
 
@@ -316,11 +324,22 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
                 }
                 advOptionsMap.put(StudentModelExt.PASS_PERCENT_KEY, passPercent);
                 advOptionsMap.put(StudentModelExt.SETTINGS_KEY, ssm);
+                stuMdl.getUid();
+                advOptionsMap.put(StudentModelExt.SECTION_COUNT_KEY, sectionCount);
+                advOptionsMap.put(StudentModelExt.SECTION_NUM_KEY, activeSection);
+                advOptionsMap.put("section-is-settable", sectionSelectAvail);
 
-                new RegisterStudentAdvancedOptions(callback, cmAdminMdl, advOptionsMap, isNew, passPercentReqd).setVisible(true);              
+                new RegisterStudentAdvancedOptions(callback, cmAdminMdl, stuMdl.getUid(), advOptionsMap, isNew, passPercentReqd).setVisible(true);              
             }
         });
 		return btn;
+	}
+
+	private boolean isSectionSelectAvail(CmProgramType type) {
+		return (type == CmProgramType.PROF             ||
+				type == CmProgramType.GRADPREP         ||
+				type == CmProgramType.GRADPREPNATIONAL ||
+				type == CmProgramType.GRADPREPTX);
 	}
 
 	private ComboBox<StudyProgramExt> programCombo(ListStore<StudyProgramExt> store, final FieldSet fs) {
@@ -340,25 +359,29 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
 		combo.setSelectOnFocus(true);
 		combo.setEmptyText("-- select a program --");
 		combo.setWidth(280);
-        		
+
 	    combo.addSelectionChangedListener(new SelectionChangedListener<StudyProgramExt>() {
 	        @SuppressWarnings("unchecked")
 			public void selectionChanged(SelectionChangedEvent<StudyProgramExt> se) {
-	        	
+
 	        	if (loading) return;
-	        	
+
 	            StudyProgramExt sp = se.getSelectedItem();
 				int needsSubject = ((Integer)sp.get("needsSubject")).intValue();
 				int needsChapters = ((Integer)sp.get("needsChapters")).intValue();
 				passPercentReqd = ((Integer)sp.get("needsPassPercent")).intValue() > 0;
-				
+
+				sectionSelectAvail = (Boolean)sp.get("isProficiency") || (Boolean)sp.get("isGradPrep");
+				sectionCount = sp.getSectionCount();
+				activeSection = 1;
+
 				advOptionsBtn.enable();
-				
+
 	        	ComboBox <SubjectModel> cb = (ComboBox<SubjectModel>) fs.getItemByItemId("subj-combo");
-	        	
+
 	        	skipComboSet = true;
 	        	subjectId = null;
-	        	
+
 	        	if (needsSubject > 0) {
 	        		cb.clearSelections();
 	        		cb.enable();
@@ -502,8 +525,8 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
             public void oncapture(CmList<StudyProgramModel> spmList) {
                 List<StudyProgramExt> progList = new ArrayList <StudyProgramExt> ();
                 for (StudyProgramModel spm : spmList) {
-                    progList.add(new StudyProgramExt(spm,spm.getTitle(), spm.getShortTitle(), spm.getDescr(), 
-                                                  spm.getNeedsSubject(),spm.getNeedsChapters(), spm.getNeedsPassPercent(),
+                    progList.add(new StudyProgramExt(spm, spm.getTitle(), spm.getShortTitle(), spm.getDescr(), 
+                                                  spm.getNeedsSubject(), spm.getNeedsChapters(), spm.getNeedsPassPercent(),
                                                   spm.getCustomProgramId(), spm.getCustomProgramName()));
                 }
                 progStore.add(progList);
@@ -652,7 +675,7 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
 	
 	private StudyProgramExt setProgramSelection() {
 	    StudentProgramModel program = stuMdl.getProgram();
-		String shortName = program.getProgramType();
+		String shortName = program.getProgramType().getType();
 		
 		if(program.getCustom().isCustom()) {
 		    shortName = program.getCustom().getCustomName();
