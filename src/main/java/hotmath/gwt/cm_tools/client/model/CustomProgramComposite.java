@@ -153,7 +153,7 @@ public class CustomProgramComposite implements Serializable {
 
     @Override
     public String toString() {
-        return "CustomProgram [customProgramId=" + customProgramId + ", customProgramName=" + customProgramName
+        return "CustomProgramComposite [customProgramId=" + customProgramId + ", customProgramName=" + customProgramName
                 + ", customQuizId=" + customQuizId + ", customQuizName=" + customQuizName + ", type=" + type + "]";
     };
 }
