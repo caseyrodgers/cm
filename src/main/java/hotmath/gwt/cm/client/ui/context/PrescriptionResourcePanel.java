@@ -107,11 +107,11 @@ public class PrescriptionResourcePanel extends LayoutContainer {
         }
         fs.add(rbtn);
         
-        for (PrescriptionSessionDataResource type : new CmInmhStandardResources()) {
-    		registeredResources.add(type);
-    		ResourceMenuButton btn = new ResourceMenuButton(type);
+        for (PrescriptionSessionDataResource resource : new CmInmhStandardResources()) {
+    		registeredResources.add(resource);
+    		ResourceMenuButton btn = new ResourceMenuButton(resource);
     		fs.add(btn);
-    		resourceButtons.put(type.getType(), btn);
+    		resourceButtons.put(resource.getType(), btn);
         }
         add(fs);
         
