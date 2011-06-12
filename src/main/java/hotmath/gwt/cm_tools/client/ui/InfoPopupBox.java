@@ -38,7 +38,7 @@ public class InfoPopupBox extends ContentPanel {
 	 */
 	public static void display(String title, String text) {
 		InfoConfig config = new InfoConfig(title, text);
-		config.display = 4000; // show message for 5 secs
+		config.display = 4000; // show message for 4 secs
 		display(config);
 	}
 
@@ -51,7 +51,7 @@ public class InfoPopupBox extends ContentPanel {
 	 * @param text
 	 *            the info text
 	 * @param params
-	 *            the paramters to be applied to the title and text
+	 *            the parameters to be applied to the title and text
 	 */
 	public static void display(String title, String text, Params params) {
 		InfoConfig config = new InfoConfig(title, text, params);
