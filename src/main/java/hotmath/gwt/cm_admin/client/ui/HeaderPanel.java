@@ -64,15 +64,25 @@ public class HeaderPanel extends LayoutContainer {
         });
         add(guide);
         
-        IconButton traning = new IconButton("header-panel-training-btn");
-        traning.setToolTip("Watch a 20-minute video about teaching with Catchup Math");
-        traning.addSelectionListener(new SelectionListener<IconButtonEvent>() {
+        IconButton training = new IconButton("header-panel-training-btn");
+        training.setToolTip("Watch a 20-minute video about teaching with Catchup Math");
+        training.addSelectionListener(new SelectionListener<IconButtonEvent>() {
             public void componentSelected(IconButtonEvent ce) {
                 new WebinarWindow();
             }
         });
-        add(traning);
+        add(training);
         
+        // TODO: add button change via CSS when updates page is changed
+        IconButton updates = new IconButton("header-panel-updates-btn");
+        updates.setToolTip("Learn about recent Catchup Math updates");
+        updates.addSelectionListener(new SelectionListener<IconButtonEvent>() {
+            public void componentSelected(IconButtonEvent ce) {
+                new RecentUpdatesWindow();
+            }
+        });
+        add(updates);
+
         EventBus.getInstance().addEventListener(new CmEventListener() {
 			
 			@Override
