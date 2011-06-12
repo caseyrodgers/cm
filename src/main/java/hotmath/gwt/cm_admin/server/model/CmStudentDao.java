@@ -1762,7 +1762,7 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
             sprm.setProgramId(rs.getInt("user_prog_id"));
 
             String progId = rs.getString("prog_id").toUpperCase();
-            progId = (progId != null) ? progId.replaceAll(" ", "") : progId;
+            progId = (progId != null) ? progId.replaceAll(" ", "").replaceAll("-", "") : progId;
             CmProgramType progType = (progId != null) ? CmProgramType.valueOf(progId) : null;
             sprm.setProgramType(progType);
 
