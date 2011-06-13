@@ -3,9 +3,15 @@ package hotmath.gwt.cm_rpc.client.model;
 
 public enum CmProgramType {
 
-    PROF("Prof", "PROF"), CHAP("Chap", "CHAP"), GRADPREP("Grad Prep", "GRADPREP"), GRADPREPTX("Grad Prep Tx",
-                                                                                              "GRADPREPTX"), GRADPREPNATIONAL("Grad Prep National", "GRADPREPNATIONAL"), CUSTOM("Custom", "CUSTOM"), CUSTOMQUIZ(
-                                                                                                                                                                                                                "Custom Quiz", "CUSTOMQUIZ"), AUTOENROLL("Auth-Enroll", "AUTOENROLL"),UNKNOWN("UnknownType", "UKNOWN");
+    AUTOENROLL("Auth-Enroll", "AUTOENROLL"),
+    CHAP("Chap", "CHAP"),
+    CUSTOM("Custom","CUSTOM"),
+    CUSTOMQUIZ("Custom Quiz", "CUSTOMQUIZ"),
+    GRADPREP("Grad Prep","GRADPREP"),
+    GRADPREPNATIONAL("Grad Prep National", "GRADPREPNATIONAL"),
+    GRADPREPTX("Grad Prep Tx", "GRADPREPTX"),
+    PROF("Prof", "PROF"),
+    UNKNOWN("UnknownType", "UKNOWN");
 
     private final String type;
     private final String name;
