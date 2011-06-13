@@ -76,7 +76,7 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
     private static final Logger __logger = Logger.getLogger(CmStudentDao.class);
 
     public static final int GROUP_NONE_ID = 1;
-    
+
     static private CmStudentDao __instance;
     static public CmStudentDao getInstance() throws Exception {
         if(__instance == null) {
@@ -95,12 +95,12 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
     /**
      * Return the StudentSummary sql for either a single student or all Students
      * under a given Admin.
-     * 
+     *
      * @TODO: move this to a view to allow easy reuse.
-     * 
+     *
      * @param sqlType
      * @param includeSelfRegistrationTemplates  If true, then is_auto_create_template records are included
-     * 
+     *
      * @return
      */
     private String getStudentSql(StudentSqlType sqlType, Boolean includeSelfRegistrationTemplates) throws Exception {
@@ -108,19 +108,19 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
 
         switch (sqlType) {
         case ALL_STUDENTS_FOR_ADMIN:
-        	studentSql += " WHERE a.aid = ? ";
-        	break;
+                studentSql += " WHERE a.aid = ? ";
+                break;
         case SINGLE_STUDENT:
-        	studentSql += " WHERE h.uid = ? ";
-        	break;
+                studentSql += " WHERE h.uid = ? ";
+                break;
         case SELECTED_STUDENTS_FOR_ADMIN:
-        	studentSql += " WHERE a.aid = ? AND h.uid in (XXX) ";
+                studentSql += " WHERE a.aid = ? AND h.uid in (XXX) ";
         }
-        
+
         // to filter the Self Registration Setup records
         if(!includeSelfRegistrationTemplates)
             studentSql += " AND h.is_auto_create_template = 0 ";
-        
+
 
         studentSql += " and h.is_active = ? " +
                 "ORDER by h.user_name asc";
@@ -131,12 +131,12 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
     /**
      * Return the StudentSummary sql for either a single student or all Students
      * under a given Admin.
-     * 
+     *
      * @TODO: move this to a view to allow easy reuse.
-     * 
+     *
      * @param sqlType
      * @param includeSelfRegistrationTemplates  If true, then is_auto_create_template records are included
-     * 
+     *
      * @return
      */
     private String getStudentSummarySql(StudentSqlType sqlType, Boolean includeSelfRegistrationTemplates) throws Exception {
@@ -148,12 +148,12 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
             // single student
             studentSql += " WHERE h.uid = ? ";
         }
-        
-        
+
+
         // to filter the Self Registration Setup records
         if(!includeSelfRegistrationTemplates)
             studentSql += " AND h.is_auto_create_template = 0 ";
-        
+
 
         studentSql += " and h.is_active = ? " +
                 "ORDER by h.user_name asc";
@@ -182,7 +182,7 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
             rs = ps.executeQuery();
 
             l = loadStudentSummaries(rs);
-            
+
             loadChapterInfo(conn, l);
         } catch (Exception e) {
             __logger.error(String.format("*** Error getting student summaries for Admin uid: %d", adminUid), e);
@@ -196,32 +196,32 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
     public List<StudentModelI> getStudentSummaries(final Connection conn, Integer adminUid, List<Integer> uids, Boolean isActive) throws Exception {
         List<StudentModelI> l = null;
 
-    	String uidStr = getUidString(uids);
+        String uidStr = getUidString(uids);
 
-    	String sql = getStudentSql(StudentSqlType.SELECTED_STUDENTS_FOR_ADMIN, false);
-    	String sqlWithUids = sql.replaceAll("XXX", uidStr);
+        String sql = getStudentSql(StudentSqlType.SELECTED_STUDENTS_FOR_ADMIN, false);
+        String sqlWithUids = sql.replaceAll("XXX", uidStr);
 
         PreparedStatement ps = null;
         ResultSet rs = null;
-        
+
         try {
-        	ps = conn.prepareStatement(sqlWithUids);
-        	ps.setInt(1, adminUid);
+                ps = conn.prepareStatement(sqlWithUids);
+                ps.setInt(1, adminUid);
             ps.setInt(2, (isActive) ? 1 : 0);
             rs = ps.executeQuery();
 
             l = loadStudentSummaries(rs);
-            
+
             loadChapterInfo(conn, l);
         }
         catch (Exception e) {
             __logger.error(String.format("*** Error getting selected student summaries for Admin uid: %d", adminUid), e);
-            throw new Exception("*** Error getting student summary data ***");        	
+            throw new Exception("*** Error getting student summary data ***");
         }
         finally {
-        	SqlUtilities.releaseResources(rs, ps, null);
+                SqlUtilities.releaseResources(rs, ps, null);
         }
-        
+
         return l;
     }
 
@@ -241,15 +241,15 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
         ResultSet rs = null;
 
         try {
-        	Boolean tutoringEnabledForAdmin = isTutoringEnabledForAdmin(conn, adminUid);
-        	
+                Boolean tutoringEnabledForAdmin = isTutoringEnabledForAdmin(conn, adminUid);
+
             ps = conn.prepareStatement(getStudentSummarySql(StudentSqlType.ALL_STUDENTS_FOR_ADMIN, false));
             ps.setInt(1, adminUid);
             ps.setInt(2, (isActive) ? 1 : 0);
             rs = ps.executeQuery();
 
             l = loadStudentBaseSummaries(rs, tutoringEnabledForAdmin);
-            
+
             loadChapterInfo(conn, l);
         } catch (Exception e) {
             __logger.error(String.format("*** Error getting student base summaries for Admin uid: %d", adminUid), e);
@@ -259,7 +259,7 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
         }
         return l;
     }
-    
+
     public List<StudentModelI> getStudentBaseSummaries(final Connection conn, Integer adminUid, List<Integer> uids, Boolean isActive) throws Exception {
         List<StudentModelI> l = null;
 
@@ -267,22 +267,22 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
         ResultSet rs = null;
 
         try {
-        	Boolean tutoringEnabledForAdmin = isTutoringEnabledForAdmin(conn, adminUid);
-        	
-        	String sql = CmMultiLinePropertyReader.getInstance().getProperty("STUDENT_SUMMARY_BASE");
-        	StringBuilder sb = new StringBuilder(sql);
-        	sb.append(" WHERE a.aid = ? ");
-        	sb.append(" AND h.uid in (").append(getUidString(uids)).append(")");
+                Boolean tutoringEnabledForAdmin = isTutoringEnabledForAdmin(conn, adminUid);
+
+                String sql = CmMultiLinePropertyReader.getInstance().getProperty("STUDENT_SUMMARY_BASE");
+                StringBuilder sb = new StringBuilder(sql);
+                sb.append(" WHERE a.aid = ? ");
+                sb.append(" AND h.uid in (").append(getUidString(uids)).append(")");
             sb.append(" AND h.is_active = ? ");
             sb.append(" ORDER by h.user_name asc");
-        	
+
             ps = conn.prepareStatement(sb.toString());
             ps.setInt(1, adminUid);
             ps.setInt(2, (isActive) ? 1 : 0);
             rs = ps.executeQuery();
 
             l = loadStudentBaseSummaries(rs, tutoringEnabledForAdmin);
-            
+
             loadChapterInfo(conn, l);
         } catch (Exception e) {
             __logger.error(String.format("*** Error getting student base summaries for Admin uid: %d", adminUid), e);
@@ -294,77 +294,77 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
     }
 
     public List<StudentModelI> getStudentExtendedSummaries(final Connection conn, List<Integer> studentUids) throws Exception {
-    	
-    	List<StudentModelI> l = null;
-    	
-    	String sql = CmMultiLinePropertyReader.getInstance().getProperty("STUDENT_SUMMARY_EXTENDED");
-    	
-    	String uidStr = getUidString(studentUids);
-    			
-    	String sqlWithUids = sql.replaceAll("XXX", uidStr);
 
-    	PreparedStatement ps = null;
-    	ResultSet rs = null;
-    	
-    	try {
-    		ps = conn.prepareStatement(sqlWithUids);
-    		rs = ps.executeQuery();
-    		l = loadStudentExtendedSummaries(rs);
-    	} catch (Exception e) {
+        List<StudentModelI> l = null;
+
+        String sql = CmMultiLinePropertyReader.getInstance().getProperty("STUDENT_SUMMARY_EXTENDED");
+
+        String uidStr = getUidString(studentUids);
+
+        String sqlWithUids = sql.replaceAll("XXX", uidStr);
+
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+
+        try {
+                ps = conn.prepareStatement(sqlWithUids);
+                rs = ps.executeQuery();
+                l = loadStudentExtendedSummaries(rs);
+        } catch (Exception e) {
             __logger.error(String.format("*** Error getting student extended summary data for uids: %s", uidStr), e);
-			throw new Exception("*** Error getting student extended summary data ***");
+                        throw new Exception("*** Error getting student extended summary data ***");
         } finally {
             SqlUtilities.releaseResources(rs, ps, null);
         }
         return l;
     }
 
-	private String getUidString(List<Integer> studentUids) {
-		if (studentUids == null) return " ";
-		String uidStr = studentUids.toString().substring(1);
-    	uidStr = uidStr.substring(0, uidStr.length()-1);
-		return uidStr;
-	}
-    
-	private String getUidString(Set<Integer> studentUids) {
-		String uidStr = studentUids.toString().substring(1);
-    	uidStr = uidStr.substring(0, uidStr.length()-1);
-		return uidStr;
-	}
-    
+        private String getUidString(List<Integer> studentUids) {
+                if (studentUids == null) return " ";
+                String uidStr = studentUids.toString().substring(1);
+        uidStr = uidStr.substring(0, uidStr.length()-1);
+                return uidStr;
+        }
+
+        private String getUidString(Set<Integer> studentUids) {
+                String uidStr = studentUids.toString().substring(1);
+        uidStr = uidStr.substring(0, uidStr.length()-1);
+                return uidStr;
+        }
+
     private static Map<String, String> queryKeyMap = new HashMap<String, String>();
-    
+
     static {
-    	queryKeyMap.put(HAS_LAST_LOGIN_KEY,    "STUDENT_LAST_LOGIN");
-    	queryKeyMap.put(HAS_LAST_QUIZ_KEY,     "STUDENT_LAST_QUIZ");
-    	queryKeyMap.put(HAS_PASSING_COUNT_KEY, "STUDENT_PASSING_COUNT");
-    	queryKeyMap.put(HAS_TUTORING_USE_KEY,  "STUDENT_TUTORING_USE");    	
+        queryKeyMap.put(HAS_LAST_LOGIN_KEY,    "STUDENT_LAST_LOGIN");
+        queryKeyMap.put(HAS_LAST_QUIZ_KEY,     "STUDENT_LAST_QUIZ");
+        queryKeyMap.put(HAS_PASSING_COUNT_KEY, "STUDENT_PASSING_COUNT");
+        queryKeyMap.put(HAS_TUTORING_USE_KEY,  "STUDENT_TUTORING_USE");
     }
-    
+
     public List<StudentModelI> getStudentExtendedData(final Connection conn, String hasFieldKey, List<Integer>uids) throws Exception {
-    	
-    	List<StudentModelI> l = null;
-    	
-    	String queryKey = queryKeyMap.get(hasFieldKey);
-    	
-    	if (queryKey == null) throw new IllegalStateException("extended data requested for: " + hasFieldKey);
-    	
-    	String sql = CmMultiLinePropertyReader.getInstance().getProperty(queryKey);
-    	
-    	String uidStr = getUidString(uids);
-    	
-    	String sqlWithUids = sql.replaceFirst("XXX", uidStr);
-    	
-    	PreparedStatement ps = null;
-    	ResultSet rs = null;
-    	
-    	try {
-    		ps = conn.prepareStatement(sqlWithUids);
-    		rs = ps.executeQuery();
-    		l = loadStudentExtendedData(hasFieldKey, rs);
-    	} catch (Exception e) {
+
+        List<StudentModelI> l = null;
+
+        String queryKey = queryKeyMap.get(hasFieldKey);
+
+        if (queryKey == null) throw new IllegalStateException("extended data requested for: " + hasFieldKey);
+
+        String sql = CmMultiLinePropertyReader.getInstance().getProperty(queryKey);
+
+        String uidStr = getUidString(uids);
+
+        String sqlWithUids = sql.replaceFirst("XXX", uidStr);
+
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+
+        try {
+                ps = conn.prepareStatement(sqlWithUids);
+                rs = ps.executeQuery();
+                l = loadStudentExtendedData(hasFieldKey, rs);
+        } catch (Exception e) {
             __logger.error(String.format("*** Error getting student extended data for uids: %s, sql: ", uidStr, sqlWithUids), e);
-			throw new Exception("*** Error getting student extended data ***");
+                        throw new Exception("*** Error getting student extended data ***");
         } finally {
             SqlUtilities.releaseResources(rs, ps, null);
         }
@@ -373,43 +373,43 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
 
 
 /*
-	private void loadChapInfo(final Connection conn, List<StudentModelBaseI> l) throws Exception {
+        private void loadChapInfo(final Connection conn, List<StudentModelBaseI> l) throws Exception {
 
-		CmAdminDao dao = CmAdminDao.getInstance();
-		
-		for (StudentModelBaseI sm : l) {
-			StudentUserProgramModelBase upm = sm.getUserProgramModel();
-			String chapter = upm.getChapter();
-			if (chapter != null) {
-				String subjId = upm.getTestDefBase().getSubjId();
-		        List <ChapterModel> cmList = dao.getChaptersForProgramSubject(conn, "Chap", subjId);
-		        for (ChapterModel cm : cmList) {
-		        	if (cm.getTitle().equals(chapter)) {
-		        		upm.setChapterNumber(Integer.valueOf(cm.getNumber()));
-		        		break;
-		        	}
-		        }
-			}
-		}
-	}
+                CmAdminDao dao = CmAdminDao.getInstance();
+
+                for (StudentModelBaseI sm : l) {
+                        StudentUserProgramModelBase upm = sm.getUserProgramModel();
+                        String chapter = upm.getChapter();
+                        if (chapter != null) {
+                                String subjId = upm.getTestDefBase().getSubjId();
+                        List <ChapterModel> cmList = dao.getChaptersForProgramSubject(conn, "Chap", subjId);
+                        for (ChapterModel cm : cmList) {
+                                if (cm.getTitle().equals(chapter)) {
+                                        upm.setChapterNumber(Integer.valueOf(cm.getNumber()));
+                                        break;
+                                }
+                        }
+                        }
+                }
+        }
 */
-    
-    
-    /** Load chapter information in the the program description and 
+
+
+    /** Load chapter information in the the program description and
      *  set a value on the Studen Model?
-     * 
-     *  Question: should the model be immutable?  Why would'nt the 
+     *
+     *  Question: should the model be immutable?  Why would'nt the
      *  program model be responsible for the program?
-     * 
+     *
      */
-	private void loadChapterInfo(final Connection conn, List<StudentModelI> l) throws Exception {
-		for (StudentModelI sm : l) {
-			loadChapterInfo(sm);
-		}
-	}
-	
-	private void loadChapterInfo(StudentModelI sm) throws Exception {
-	    String chapter = sm.getChapter();
+        private void loadChapterInfo(final Connection conn, List<StudentModelI> l) throws Exception {
+                for (StudentModelI sm : l) {
+                        loadChapterInfo(sm);
+                }
+        }
+
+        private void loadChapterInfo(StudentModelI sm) throws Exception {
+            String chapter = sm.getChapter();
         if (chapter != null) {
             String subjId = sm.getProgram().getSubjectId();
             List <ChapterModel> cmList = CmAdminDao.getInstance().getChaptersForProgramSubject("Chap", subjId);
@@ -419,12 +419,12 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
                     break;
                 }
             }
-        }	    
-	}
+        }
+        }
 
-	private List<StudentModelI> loadStudentExtendedData(String hasFieldKey, ResultSet rs) throws Exception {
-		List<StudentModelI> l = new ArrayList<StudentModelI>();
-		
+        private List<StudentModelI> loadStudentExtendedData(String hasFieldKey, ResultSet rs) throws Exception {
+                List<StudentModelI> l = new ArrayList<StudentModelI>();
+
         while (rs.next()) {
             StudentModelI sm = new StudentModel();
 
@@ -432,11 +432,11 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
             sm.setAdminUid(rs.getInt("admin_uid"));
 
             sm.setTotalUsage(0);
-            
+
             if (HAS_LAST_LOGIN_KEY.equals(hasFieldKey)) {
                 sm.setLastLogin(rs.getString("last_use_date"));
             }
-            
+
             else if (HAS_LAST_QUIZ_KEY.equals(hasFieldKey)) {
                 sm.setLastQuiz(rs.getString("last_quiz"));
             }
@@ -452,27 +452,27 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
 
             l.add(sm);
         }
-		
-		return l;
-	}
 
-	public Boolean isTutoringEnabledForAdmin(final Connection conn, Integer aid) throws Exception {
-	    AccountInfoModel aim = CmAdminDao.getInstance().getAccountInfo(aid);
-	    String hasTutoring = aim.getHasTutoring();
-	    if(hasTutoring != null && hasTutoring.equals("Enabled")) {
-	        return true;
-	    }
-	    else {
-	        return false;
-	    }
-	}
+                return l;
+        }
 
-	/** Return list of activity records for student detail
-	 * 
-	 * @param uid
-	 * @return
-	 * @throws Exception
-	 */
+        public Boolean isTutoringEnabledForAdmin(final Connection conn, Integer aid) throws Exception {
+            AccountInfoModel aim = CmAdminDao.getInstance().getAccountInfo(aid);
+            String hasTutoring = aim.getHasTutoring();
+            if(hasTutoring != null && hasTutoring.equals("Enabled")) {
+                return true;
+            }
+            else {
+                return false;
+            }
+        }
+
+        /** Return list of activity records for student detail
+         *
+         * @param uid
+         * @return
+         * @throws Exception
+         */
     public List<StudentActivityModel> getStudentActivity(final Connection conn, int uid) throws Exception {
         List<StudentActivityModel> l = null;
 
@@ -499,39 +499,39 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
     }
 
 
-    
-    /** Return list of LessionItemModels that represent the unique 
+
+    /** Return list of LessionItemModels that represent the unique
      *  list of lessons applied to this runid
-     *  
+     *
      * @param conn
      * @param runId
      * @return
      * @throws Exception
      */
     public List <LessonItemModel> getLessonItemsForTestRun(final Connection conn, Integer runId) throws Exception {
-   	    List <LessonItemModel> l = null;
-    	
-    	PreparedStatement ps = null;
-    	ResultSet rs = null;
-    	
-    	try {
-    		ps = conn.prepareStatement(CmMultiLinePropertyReader.getInstance().getProperty("TEST_RESULTS"));
-    		ps.setInt(1, runId);
-    		rs = ps.executeQuery();
-    		
-    		if (rs.next()) {
-    			l = loadLessonItems(conn, runId, rs);
-    			sortLessonItems(l);
-    		}
-    	}
-    	catch (Exception e) {
-    		__logger.error(String.format("*** Error getting lesson items for runId:  %d", runId), e);
-    		throw new Exception("*** Error getting Lesson Items ***");
-    	}
-    	finally {
-    		SqlUtilities.releaseResources(rs, ps, null);
-    	}
-    	return l;
+            List <LessonItemModel> l = null;
+
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+
+        try {
+                ps = conn.prepareStatement(CmMultiLinePropertyReader.getInstance().getProperty("TEST_RESULTS"));
+                ps.setInt(1, runId);
+                rs = ps.executeQuery();
+
+                if (rs.next()) {
+                        l = loadLessonItems(conn, runId, rs);
+                        sortLessonItems(l);
+                }
+        }
+        catch (Exception e) {
+                __logger.error(String.format("*** Error getting lesson items for runId:  %d", runId), e);
+                throw new Exception("*** Error getting Lesson Items ***");
+        }
+        finally {
+                SqlUtilities.releaseResources(rs, ps, null);
+        }
+        return l;
     }
 
 
@@ -549,17 +549,17 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
         }
 
         try {
-        	sm.setBackgroundStyle(getBackgroundImageRamdom());
-        	
+                sm.setBackgroundStyle(getBackgroundImageRamdom());
+
             ps = conn.prepareStatement(CmMultiLinePropertyReader.getInstance().getProperty("ADD_STUDENT_SQL"));
             ps.setString(1, sm.getName());
             ps.setString(2, sm.getPasscode());
             ps.setInt(3, 0);
-            
+
             //TODO: getGroupId() returns null sometimes - need to determine why/how
             if (sm.getGroupId() == null) {
-            	__logger.warn(String.format("+++ addStudent(): with null group; Admin ID: %d, isDemoUser: %d",
-            			sm.getAdminUid(), (sm.getIsDemoUser() != null && sm.getIsDemoUser()) ? 1 : 0));
+                __logger.warn(String.format("+++ addStudent(): with null group; Admin ID: %d, isDemoUser: %d",
+                                sm.getAdminUid(), (sm.getIsDemoUser() != null && sm.getIsDemoUser()) ? 1 : 0));
             }
 
             int groupId;
@@ -568,11 +568,11 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
             }
             catch (NumberFormatException e) {
                 //TODO: getGroupId() returns non-numeric sometimes - need to determine why/how
-            	groupId = GROUP_NONE_ID;
-            	__logger.warn(String.format("+++ addStudent(): with invalid group; Admin ID: %d, groupId: %s, isDemoUser: %d",
-            			sm.getAdminUid(), sm.getGroupId(), (sm.getIsDemoUser() != null && sm.getIsDemoUser()) ? 1 : 0));            	
+                groupId = GROUP_NONE_ID;
+                __logger.warn(String.format("+++ addStudent(): with invalid group; Admin ID: %d, groupId: %s, isDemoUser: %d",
+                                sm.getAdminUid(), sm.getGroupId(), (sm.getIsDemoUser() != null && sm.getIsDemoUser()) ? 1 : 0));
             }
-            
+
             ps.setInt(4, groupId);
             ps.setString(5, sm.getProgram().getProgramType().getType());
             ps.setString(6, sm.getProgram().getSubjectId());
@@ -589,33 +589,33 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
                 HaUserExtendedDao.resetUserExtendedLessonStatusForUid(conn, sm.getProgram(), sm.getUid());
             }
         } catch (Exception e) {
-        	String msg = String.format("Error adding Student: %s, Passcode: %s ***", sm.getName(), sm.getPasscode());
-        	__logger.error(msg, e);
+                String msg = String.format("Error adding Student: %s, Passcode: %s ***", sm.getName(), sm.getPasscode());
+                __logger.error(msg, e);
             throw new Exception(msg, e);
         } finally {
             SqlUtilities.releaseResources(rs, ps, null);
         }
         return sm;
     }
-    
+
     /** Return two dim array showing registered
      *  and available background wallpapers.
      * @return
      */
     private String[][] getBackgrounds() {
-    	 String bgs[][] = {
-     		{"Catchup Math","resource-container"},
-     		{"Clouds","resource-container-clouds"},
-     		{"Forest","resource-container-forest"},
-     		{"Meadow","resource-container-sunrise"},
-     		{"Mountain Bike","resource-container-bike1"},
-     		{"Snowman","resource-container-snowman"},
-     		{"Sunfield","resource-container-sunfield"},
-     		{"Tulips","resource-container-tulips"},
+         String bgs[][] = {
+                {"Catchup Math","resource-container"},
+                {"Clouds","resource-container-clouds"},
+                {"Forest","resource-container-forest"},
+                {"Meadow","resource-container-sunrise"},
+                {"Mountain Bike","resource-container-bike1"},
+                {"Snowman","resource-container-snowman"},
+                {"Sunfield","resource-container-sunfield"},
+                {"Tulips","resource-container-tulips"},
      };
      return bgs;
     }
-    
+
     private String getBackgroundImageRamdom() {
         String bgMap[][] = getBackgrounds();
         int which = SbUtilities.getRandomNumber(bgMap.length);
@@ -623,13 +623,13 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
     }
 
     public StringHolder unregisterStudents(final Connection conn, List<StudentModelI> smList) {
-    	int removeCount = 0;
-    	int removeErrorCount = 0;
-    	int deactivateCount = 0;
-    	int deactivateErrorCount = 0;
+        int removeCount = 0;
+        int removeErrorCount = 0;
+        int deactivateCount = 0;
+        int deactivateErrorCount = 0;
         PreparedStatement ps = null;
-        
-    	for (StudentModelI sm : smList) {
+
+        for (StudentModelI sm : smList) {
             Statement stmt = null;
             ResultSet rsCheck = null;
             try {
@@ -639,7 +639,7 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
                 stmt = conn.createStatement();
                 Map<String,String> map = new HashMap<String, String>();
                 map.put("uid", sm.getUid().toString());
-                
+
                 String sql = CmMultiLinePropertyReader.getInstance().getProperty("STUDENT_CAN_BE_DELETED",map);
                 rsCheck = stmt.executeQuery(sql);
                 if(!rsCheck.first()) {
@@ -649,13 +649,13 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
                 }
             }
             catch (Exception e) {
-            	removeErrorCount++;
-            	__logger.error(String.format("*** Error removing student with uid: %d", sm.getUid()), e);
+                removeErrorCount++;
+                __logger.error(String.format("*** Error removing student with uid: %d", sm.getUid()), e);
             }
             finally {
                 SqlUtilities.releaseResources(rsCheck, stmt, null);
             }
-            
+
             /*
              * account has been used, deactivate
              */
@@ -666,36 +666,36 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
                 ps.setString(1, sb.toString());
                 ps.setInt(2, sm.getUid());
                 if (ps.executeUpdate() < 1) {
-                	deactivateErrorCount++;
-                	__logger.error(String.format("*** Error deactivating student with uid: %d", sm.getUid()));
+                        deactivateErrorCount++;
+                        __logger.error(String.format("*** Error deactivating student with uid: %d", sm.getUid()));
                 }
                 deactivateCount++;
             }
             catch (Exception e) {
-            	deactivateErrorCount++;
-            	__logger.error(String.format("*** Error deactivating student with uid: %d", sm.getUid()), e);
+                deactivateErrorCount++;
+                __logger.error(String.format("*** Error deactivating student with uid: %d", sm.getUid()), e);
             }
             finally {
-                SqlUtilities.releaseResources(null, ps, null);            	
+                SqlUtilities.releaseResources(null, ps, null);
             }
-    	}
-    	StringHolder sh = new StringHolder();
-    	StringBuilder sb = new StringBuilder();
-    	sb.append("{ deactivateCount: '").append(deactivateCount).append("', deactivateErrorCount: '").append(deactivateErrorCount).append("'");
-    	sb.append(", removeCount: '").append(removeCount).append("', removeErrorCount: '").append(removeErrorCount).append("' }");
-    	sh.setResponse(sb.toString());
-        return sh;	
+        }
+        StringHolder sh = new StringHolder();
+        StringBuilder sb = new StringBuilder();
+        sb.append("{ deactivateCount: '").append(deactivateCount).append("', deactivateErrorCount: '").append(deactivateErrorCount).append("'");
+        sb.append(", removeCount: '").append(removeCount).append("', removeErrorCount: '").append(removeErrorCount).append("' }");
+        sh.setResponse(sb.toString());
+        return sh;
     }
-    
+
     /**
      * The student's passcode is set to their uid + '.' + current time in msec
      * to avoid "locking up" up the previous passcode and to prevent passcode
      * uniqueness collisions.
-     * 
-     * 
+     *
+     *
      * NOTE: if student has no history (no entry in HA_TEST), then delete
      *       from DB instead of deactivating.
-     * 
+     *
      */
     public StudentModel deactivateUser(StudentModel sm) throws Exception {
         Connection conn = null;
@@ -704,9 +704,9 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
 
         try {
             conn = HMConnectionPool.getConnection();
-            
+
             /** Remove from DB if user has never used account
-             * 
+             *
              */
             Statement stmt = null;
             try {
@@ -716,7 +716,7 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
                     removeUser(conn, sm);
                     return sm;
                 }
-                
+
             }
             finally {
                 SqlUtilities.releaseResources(null,stmt,null);
@@ -743,11 +743,11 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
 
     /**
      * Remove this user from the admin's scope
-     * 
+     *
      * @TODO: move to archive?
-     * 
+     *
      * @param sm
-     * 
+     *
      */
     public void removeUser(final Connection conn, StudentModelI sm) {
         final String REMOVE_USER_SQL = "delete from HA_USER where uid = ?";
@@ -763,7 +763,7 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
                 __logger.warn("User was not removed");
             }
         } catch (Exception e) {
-        	__logger.error(String.format("*** Error removing user with Uid: %d", sm.getUid()), e);
+                __logger.error(String.format("*** Error removing user with Uid: %d", sm.getUid()), e);
         } finally {
             SqlUtilities.releaseResources(rs, ps, null);
         }
@@ -783,14 +783,14 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
             updateStudent(conn, sm);
         if (programChanged)
             updateStudentProgram(conn, sm);
-        
+
         if (programChanged || progIsNew)
             HaUserExtendedDao.getInstance().resetUserExtendedLessonStatusForUid(conn, sm.getUid());
 
         if (passPercentChanged) {
-        	Integer passPercent = getPercentFromString(sm.getPassPercent());
-        	
-        	CmUserProgramDao.getInstance().setProgramPassPercent(conn, sm.getProgram().getProgramId(), passPercent);
+                Integer passPercent = getPercentFromString(sm.getPassPercent());
+
+                CmUserProgramDao.getInstance().setProgramPassPercent(conn, sm.getProgram().getProgramId(), passPercent);
         }
         return sm;
     }
@@ -835,7 +835,7 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
             ps.setInt(3, sm.getAdminUid());
 
             if (__logger.isDebugEnabled()) {
-            	__logger.debug(String.format("+++ checkForDuplicateName(): query: %s", ps.toString()));
+                __logger.debug(String.format("+++ checkForDuplicateName(): query: %s", ps.toString()));
             }
 
             rs = ps.executeQuery();
@@ -849,14 +849,14 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
     }
 
     /** Return true if this admin has a user with password
-     * 
+     *
      * @param conn
      * @param adminId
      * @param password
      * @return
      */
     public Boolean checkPasswordInUse(final Connection conn, Integer adminId, String password) throws Exception {
-        
+
         Statement stmt=null;
         try {
             stmt = conn.createStatement();
@@ -866,14 +866,14 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
         finally {
             SqlUtilities.releaseResources(null,stmt, null);
         }
-        
+
     }
-    
+
 
     /** Update the StudentModel
-     * 
+     *
      * @TODO: move the sectionNum to segmentNum and then move to ActiveInfo
-     * 
+     *
      * @param sm
      * @return
      * @throws Exception
@@ -882,18 +882,18 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
         PreparedStatement ps = null;
         ResultSet rs = null;
         long startTime = System.currentTimeMillis();
-        
+
         try {
             StudentProgramModel spm = sm.getProgram();
-            
+
             ps = conn.prepareStatement(CmMultiLinePropertyReader.getInstance().getProperty("UPDATE_STUDENT_SQL"));
             ps.setString(1, sm.getName());
             ps.setString(2, sm.getPasscode());
             // ps.setString(3, sm.getEmail());
-            
+
             // if group Id has not been set default to GROUP_NONE_ID
             ps.setInt(3, (sm.getGroupId() != null) ? Integer.parseInt(sm.getGroupId()):GROUP_NONE_ID);
-            
+
             ps.setString(4, spm.getProgramType().getType());
             ps.setString(5, spm.getSubjectId());
             ps.setInt(6, spm.getProgramId());
@@ -910,22 +910,22 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
             SqlUtilities.releaseResources(rs, ps, null);
             ClientInfo ci = ClientInfoHolder.get();
             if (ci == null) {
-            	ci = new ClientInfo();
-            	ci.setUserId(0);
-            	ci.setUserType(ClientInfo.UserType.UNKNOWN);
+                ci = new ClientInfo();
+                ci.setUserId(0);
+                ci.setUserType(ClientInfo.UserType.UNKNOWN);
             }
             __logger.info(String.format("+++ updateStudent(): (userId:%d,userType:%s) elapsed time: %d msec",
-            	ci.getUserId(), ci.getUserType(), System.currentTimeMillis() - startTime));
+                ci.getUserId(), ci.getUserType(), System.currentTimeMillis() - startTime));
         }
         return sm;
     }
-    
-    
-    /** Update the main properties for this user.  The main properties 
+
+
+    /** Update the main properties for this user.  The main properties
      * are the ones that directly control the users current program.
-     * 
+     *
      * @TODO: would be nice to have a way to update only the 'set' fields in a StudentModel
-     * 
+     *
      * @param conn
      * @param uid
      * @param showWorkRequired
@@ -942,13 +942,13 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
             ps.setBoolean(2, tutoringAvailable);
             ps.setInt(3, uid);
             int cnt = ps.executeUpdate();
-            
+
             // TODO: should we return if single user not found?
             if(cnt != 1)
                 __logger.warn("user not found to update: " + uid);
-            
+
             /** update the current program information with new pass percentages
-             * 
+             *
              */
             StudentModelI sm = getStudentModelBase(conn, uid);
             CmUserProgramDao.getInstance().setProgramPassPercent(conn, sm.getProgram().getProgramId(),passPercent);
@@ -957,41 +957,41 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
             SqlUtilities.releaseResources(null, ps, null);
         }
     }
-    
+
 
     public StudentSettingsModel getStudentSettings(final Connection conn, Integer uid) throws Exception {
-    	
-    	PreparedStatement ps = null;
-    	ResultSet rs = null;
-    	
-    	StudentSettingsModel mdl = new StudentSettingsModel();
-    	
-    	try {
-       	    ps = conn.prepareStatement("SETTINGS_SELECT_SQL");
-    	    ps.setInt(1, uid);
-    	    rs = ps.executeQuery();
-     	    if (rs.next()) {
-    		    mdl.setLimitGames(rs.getInt("limit_games") > 0);
-    		    mdl.setShowWorkRequired(rs.getInt("show_work_required") > 0);
-    		    mdl.setStopAtProgramEnd(rs.getInt("stop_at_program_end") > 0);
-    		    mdl.setTutoringAvailable(rs.getInt("tutoring_available") > 0);
-    	    }
-    	}
-    	finally {
-        	SqlUtilities.releaseResources(rs, ps, null);    		
-    	}
-    	return mdl;
+
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+
+        StudentSettingsModel mdl = new StudentSettingsModel();
+
+        try {
+            ps = conn.prepareStatement("SETTINGS_SELECT_SQL");
+            ps.setInt(1, uid);
+            rs = ps.executeQuery();
+            if (rs.next()) {
+                    mdl.setLimitGames(rs.getInt("limit_games") > 0);
+                    mdl.setShowWorkRequired(rs.getInt("show_work_required") > 0);
+                    mdl.setStopAtProgramEnd(rs.getInt("stop_at_program_end") > 0);
+                    mdl.setTutoringAvailable(rs.getInt("tutoring_available") > 0);
+            }
+        }
+        finally {
+                SqlUtilities.releaseResources(rs, ps, null);
+        }
+        return mdl;
     }
 
-    
+
     public void updateStudentSettings(final Connection conn, StudentModelI sm, Integer passPercent) throws Exception {
-    	StudentSettingsModel ssm = sm.getSettings();
+        StudentSettingsModel ssm = sm.getSettings();
         updateStudentSettings(conn, sm.getUid(), ssm.getShowWorkRequired(), ssm.getTutoringAvailable(),
-        		ssm.getLimitGames(), ssm.getStopAtProgramEnd(), passPercent);
+                        ssm.getLimitGames(), ssm.getStopAtProgramEnd(), passPercent);
     }
 
     /** Update settings for the specified user.
-     * 
+     *
      * @param conn
      * @param uid
      * @param showWorkRequired
@@ -1000,35 +1000,35 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
      * @param stopAtProgramEnd
      * @param passPercent
      * @throws Exception
-     */    
+     */
     public void updateStudentSettings(final Connection conn, Integer uid, Boolean showWorkRequired, Boolean tutoringAvailable,
-    	Boolean limitGames, Boolean stopAtProgramEnd, Integer passPercent) throws Exception {
+        Boolean limitGames, Boolean stopAtProgramEnd, Integer passPercent) throws Exception {
 
-    	PreparedStatement ps = null;
+        PreparedStatement ps = null;
         ResultSet rs = null;
 
         try {
 
-        	String insertSql = "insert into HA_USER_SETTINGS (limit_games, show_work_required, stop_at_program_end, tutoring_available, user_id) values (?, ?, ?, ?, ?)";
-        	String updateSql = "update HA_USER_SETTINGS set limit_games=?, show_work_required=?, stop_at_program_end=?, tutoring_available=? where user_id=?";
+                String insertSql = "insert into HA_USER_SETTINGS (limit_games, show_work_required, stop_at_program_end, tutoring_available, user_id) values (?, ?, ?, ?, ?)";
+                String updateSql = "update HA_USER_SETTINGS set limit_games=?, show_work_required=?, stop_at_program_end=?, tutoring_available=? where user_id=?";
 
-        	ps = conn.prepareStatement(CmMultiLinePropertyReader.getInstance().getProperty("SETTINGS_SELECT_SQL"));
-        	ps.setInt(1, uid);
-        	rs = ps.executeQuery();
+                ps = conn.prepareStatement(CmMultiLinePropertyReader.getInstance().getProperty("SETTINGS_SELECT_SQL"));
+                ps.setInt(1, uid);
+                rs = ps.executeQuery();
 
-        	if (rs.next()) {
-        		// perform update
-            	ps = conn.prepareStatement(updateSql);
-        	}
-        	else {
-        		// perform insert
-            	ps = conn.prepareStatement(insertSql);
-        	}
-        	ps.setInt(1, (limitGames)?1:0);
-        	ps.setInt(2, (showWorkRequired)?1:0);
-        	ps.setInt(3, (stopAtProgramEnd)?1:0);
-        	ps.setInt(4, (tutoringAvailable)?1:0);
-        	ps.setInt(5, uid);
+                if (rs.next()) {
+                        // perform update
+                ps = conn.prepareStatement(updateSql);
+                }
+                else {
+                        // perform insert
+                ps = conn.prepareStatement(insertSql);
+                }
+                ps.setInt(1, (limitGames)?1:0);
+                ps.setInt(2, (showWorkRequired)?1:0);
+                ps.setInt(3, (stopAtProgramEnd)?1:0);
+                ps.setInt(4, (tutoringAvailable)?1:0);
+                ps.setInt(5, uid);
 
             int cnt = ps.executeUpdate();
 
@@ -1086,7 +1086,7 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
         } finally {
             SqlUtilities.releaseResources(null, ps, null);
             __logger.info(String.format("+++ updateStudentProgram(): (userId:%d, userType:%s), elapsed time: %d msec",
-            	ClientInfoHolder.get().getUserId(), ClientInfoHolder.get().getUserType(), System.currentTimeMillis()-startTime));
+                ClientInfoHolder.get().getUserId(), ClientInfoHolder.get().getUserType(), System.currentTimeMillis()-startTime));
         }
         return sm;
     }
@@ -1094,27 +1094,27 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
 
 
     /**
-     * 
+     *
      * @param conn
      * @param sm
      * @return
      * @throws Exception
      */
     public StudentModelI addStudentProgram(final Connection conn, StudentModelI sm) throws Exception {
-        
+
         /** check for setting of StudyProgram, and implement override
          *  We should depreciate using instance vars to identify the program
          */
         if(sm.getProgram().isCustom()) {
             return addStudentProgramCustom(conn, sm);
         }
-        
+
         PreparedStatement ps = null;
         long startTime = System.currentTimeMillis();
         try {
-            
+
             StudentProgramModel sp = sm.getProgram();
-            
+
             setTestConfig(conn, sm);
             String pp = sm.getPassPercent();
             if (pp != null) {
@@ -1144,17 +1144,17 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
                 int newKey = SqlUtilities.getLastInsertId(conn);
                 sp.setProgramId(newKey);
            }
-            
+
             sm.setSectionNum(0);
-            
+
             /** Setup random first quiz, if supported
-             * 
+             *
              */
             StudentActiveInfo info = new StudentActiveInfo();
             HaTestDef testDef = HaTestDefDao.getInstance().getTestDef(conn,sp.getProgramType().getType(), sp.getSubjectId() );
             if(testDef.getNumAlternateTests() > 0) {
-            	int randStartSeg = SbUtilities.getRandomNumber(testDef.getNumAlternateTests());
-            	info.setActiveSegmentSlot(randStartSeg);
+                int randStartSeg = SbUtilities.getRandomNumber(testDef.getNumAlternateTests());
+                info.setActiveSegmentSlot(randStartSeg);
             }
             __logger.info("Setting Active Info: " + info);
             setActiveInfo(conn, sm.getUid(), info);
@@ -1166,28 +1166,28 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
             SqlUtilities.releaseResources(null, ps, null);
             ClientInfo ci = ClientInfoHolder.get();
             if (ci == null) {
-            	ci = new ClientInfo();
-            	ci.setUserId(0);
-            	ci.setUserType(UserType.UNKNOWN);
+                ci = new ClientInfo();
+                ci.setUserId(0);
+                ci.setUserType(UserType.UNKNOWN);
             }
             __logger.info(String.format("+++ addStudentProgram(): (userId:%d,userType:%s), elapsed time: %d",
-            		ci.getUserId(), ci.getUserType(), System.currentTimeMillis()-startTime));
+                        ci.getUserId(), ci.getUserType(), System.currentTimeMillis()-startTime));
         }
         return sm;
     }
-    
+
     /** add a new custom program based on contents of StudyProgram in StudentModel
-     * 
-     * 
-     * A custom program is defined in HA_CUSTOM_PROGRAM with a 'id' that represents 
+     *
+     *
+     * A custom program is defined in HA_CUSTOM_PROGRAM with a 'id' that represents
      * a distinct custom program.  The test_config_json points to this id via its configuration:
-     * 
+     *
      * {custom_program_id:XXX}
-     * 
+     *
      * Where XXX is the actual custom program id.
-     * 
-     * 
-     * 
+     *
+     *
+     *
      * @param conn
      * @param sm
      * @return
@@ -1234,7 +1234,7 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
                 int newKey = SqlUtilities.getLastInsertId(conn);
                 studyProgram.setProgramId(newKey);
             }
-            
+
             sm.setSectionNum(0);
             setActiveInfo(conn, sm.getUid(), new StudentActiveInfo());
         } catch (Exception e) {
@@ -1247,15 +1247,15 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
         return sm;
     }
 
-    
+
     public StudentModelI addStudentProgramCustomQuiz(final Connection conn, StudentModelI sm) throws Exception {
-        
+
 
         StudentProgramModel studyProgram = sm.getProgram();
         if(studyProgram == null)
             throw new CmException("StudentProgramModel cannot be null: " + sm);
 
-        
+
         PreparedStatement ps = null;
         try {
             String pp = sm.getPassPercent();
@@ -1269,14 +1269,14 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
             ps.setTimestamp(6, new Timestamp(System.currentTimeMillis()));
             ps.setString(7, sm.getJson());
             ps.setInt(8, sm.getProgram().getCustom().getCustomQuizId());
-            
+
             int result = ps.executeUpdate();
             if (result == 1) {
                 // now get value of auto-increment id from CM_USER_PROGRAM
                 int newKey = SqlUtilities.getLastInsertId(conn);
                 studyProgram.setProgramId(newKey);
             }
-            
+
             sm.setSectionNum(0);
             setActiveInfo(conn, sm.getUid(), new StudentActiveInfo());
         } catch (Exception e) {
@@ -1289,20 +1289,20 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
         return sm;
 
     }
-    
-    
+
+
     /** Set the test config json for this student by reading
      *  the template json from HA_TEST_DEF and parsing/setting.
-     *  
+     *
      *  This actually will set the json field in the StudentModel.
-     *  
+     *
      *   Format the test config json that
      *   will provide custom configuration
-     *   for this program. 
-     *  
-     *  
+     *   for this program.
+     *
+     *
      *  @TODO:  get chapter out of StudentModel, it should be in StudentModelProgramInfo
-     *  
+     *
      * @param conn
      * @param sm
      * @throws Exception
@@ -1335,20 +1335,20 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
             throw new CmException("Could not configure test",e);
         } finally {
             SqlUtilities.releaseResources(rs, ps2, null);
-        }            
+        }
     }
-    
+
     /**
      * Return list of StudentShowWorkModel that represent distinct list of
      * problems that actually have show work.
-     * 
-     * 
+     *
+     *
      * If run_id is passed, then limit to only run_id
-     * 
+     *
      * @TODO: modify SQL to restrict on run_id if passed. (if run_id == null,
      *        then return all, if run_id != null restrict)?
-     * 
-     * 
+     *
+     *
      *        viewed al
      * @param uid
      * @return
@@ -1373,9 +1373,9 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
 
                 /**
                  * Quick hack to restrict to runId if specified
-                 * 
+                 *
                  * If runId is not set, then all records are returned.
-                 * 
+                 *
                  */
                 if (runId != null) {
                     if (rs.getInt("run_id") != runId)
@@ -1397,7 +1397,7 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
                 swModels.add(s);
             }
         } catch (Exception e) {
-        	__logger.error(String.format("*** Error getting show work for Uid: %d", uid), e);
+                __logger.error(String.format("*** Error getting show work for Uid: %d", uid), e);
         } finally {
             SqlUtilities.releaseResources(rs, ps, null);
         }
@@ -1407,21 +1407,21 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
 
     /**
      * Create a complete StudentModel for the named student with user_id.
-     * 
+     *
      * @param uid
      *            The user_id of student
      * @return a new StudentModel
-     * 
+     *
      * @throws Exception
      *             if student not found
      */
     public StudentModelI getStudentModel(Integer uid) throws Exception {
         // default is without templates
-        return getStudentModel(uid, false);  
+        return getStudentModel(uid, false);
     }
-    
+
     /** return list of StudentModelI objects matching list of uids.
-     * 
+     *
      * @param conn
      * @param uids
      * @return
@@ -1437,30 +1437,30 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
 
     /**
      * Return a StudentModel identified by uid.
-     * 
+     *
      * @param conn
      * @param uid
      * @return
-     * 
+     *
      * @throws Exception
      */
     public StudentModelI getStudentModel(final Connection conn, Integer uid) throws Exception {
         // default is without templates
-        return getStudentModel(conn, uid, false);  
+        return getStudentModel(conn, uid, false);
     }
-    
-    
+
+
     /** Return student model named by uid
-     *  
+     *
      * @param uid
      * @param includeSelfRegTemplate  If true, then is_auto_create_template will be considered
      * @return
-     * 
-     * 
+     *
+     *
      * @throws Exception
      */
     public StudentModelI getStudentModel(Integer uid, Boolean includeSelfRegTemplate) throws Exception {
-        
+
         Connection conn = null;
 
         try {
@@ -1474,15 +1474,15 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
             SqlUtilities.releaseResources(null, null, conn);
         }
     }
-            
+
     /** Return student model named by uid
-     *  
+     *
      * @param conn
      * @param uid
      * @param includeSelfRegTemplate  If true, then is_auto_create_template will be considered
      * @return
-     * 
-     * 
+     *
+     *
      * @throws Exception
      */
     public StudentModelI getStudentModel(final Connection conn, final Integer uid, Boolean includeSelfRegTemplate)
@@ -1553,15 +1553,15 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
         if (studentModel.getSettings().getTutoringAvailable()) {
             /**
              * make sure the admin has tutoring enabled too
-             * 
+             *
              */
             studentModel.getSettings().setTutoringAvailable(isTutoringEnabledForAdmin(conn, studentModel.getAdminUid()));
         }
         return studentModel;
-    }    
-    
-    /** Return list of students with specified admin_id and password 
-     * 
+    }
+
+    /** Return list of students with specified admin_id and password
+     *
      * @param conn
      * @param aid
      * @param password
@@ -1570,7 +1570,7 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
      */
     public List<StudentModelI> getStudentModelByPassword(final Connection conn, Integer aid, String password) throws Exception {
         List<StudentModelI> students = new ArrayList<StudentModelI>();
-        
+
         ResultSet rs = null;
         try {
             rs = conn.createStatement().executeQuery("select uid from HA_USER where admin_id = " + aid + " and user_passcode = '" + password + "'");
@@ -1582,9 +1582,9 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
             SqlUtilities.releaseResources(rs, null, null);
         }
     }
-    
-    /** Return list of students with specified admin_id and user name 
-     * 
+
+    /** Return list of students with specified admin_id and user name
+     *
      * @param conn
      * @param aid
      * @param userName
@@ -1593,7 +1593,7 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
      */
     public List<StudentModelI> getStudentModelByUserName(final Connection conn, Integer aid, String userName) throws Exception {
         List<StudentModelI> students = new ArrayList<StudentModelI>();
-        
+
         ResultSet rs = null;
         try {
             rs = conn.createStatement().executeQuery("select uid from HA_USER where admin_id = " + aid + " and user_name = '" + userName + "'");
@@ -1606,13 +1606,13 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
         }
     }
 
-    
+
     /**
      * Return a basic student object that only contains the most important data.
-     * 
+     *
      * The other pieces of info will be loaded lazily.
-     *  
-     * 
+     *
+     *
      * @param conn
      * @param uid
      * @return
@@ -1622,8 +1622,8 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
     public StudentModelI getStudentModelBasic(final Connection conn, Integer uid) throws Exception {
         /*
          * TODO: should be able to use:
-         * 
-    	return getStudentModelBase(conn, uid, true);
+         *
+        return getStudentModelBase(conn, uid, true);
         */
         String sql = "select u.*, " +
                      " ifnull(s.limit_games, 0) as limit_games, ifnull(s.show_work_required, 0) as show_work_required, " +
@@ -1638,7 +1638,7 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
             rs = ps.executeQuery(sql);
             if(!rs.first())
                 throw new CmException("No such student id: " + uid);
-            
+
             StudentModelI sm = new StudentModelBasic();
             sm.setUid(uid);
             sm.setUid(rs.getInt("uid"));
@@ -1650,16 +1650,16 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
             sm.getProgram().setProgramId(rs.getInt("user_prog_id"));
             sm.setBackgroundStyle(rs.getString("gui_background_style"));
             sm.setIsDemoUser(rs.getInt("is_demo")==0?false:true);
-            
+
             StudentSettingsModel mdl = sm.getSettings();
             mdl.setShowWorkRequired(rs.getInt("show_work_required")==0?false:true);
             mdl.setTutoringAvailable(rs.getInt("tutoring_available")==0?false:true);
             mdl.setLimitGames(rs.getInt("limit_games")==0?false:true);
-            mdl.setStopAtProgramEnd(rs.getInt("stop_at_program_end")==0?false:true);            
-            
+            mdl.setStopAtProgramEnd(rs.getInt("stop_at_program_end")==0?false:true);
+
             /** Check for tutoring available.
-             * 
-             * If the student has been enabled, make sure the admin has it 
+             *
+             * If the student has been enabled, make sure the admin has it
              * enabled.  This is to allow for tighter messaging and not send
              * the user to LWL if the admin has not registered.
              */
@@ -1679,29 +1679,29 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
     }
 
     /** Return student model named by uid
-     *  
+     *
      * @param conn
      * @param uid
      * @return
-     * 
+     *
      * @throws Exception
      */
     public StudentModelI getStudentModelBase(final Connection conn, Integer uid) throws Exception {
-    	return getStudentModelBase(conn, uid, false);
+        return getStudentModelBase(conn, uid, false);
     }
 
     /** Return student model named by uid
-     *  
+     *
      * @param conn
      * @param uid
      * @param includeSelfRegTemplate  If false, then records with is_auto_create_template=1 will be excluded
      * @return
-     * 
-     * 
+     *
+     *
      * @throws Exception
      */
     public StudentModelI getStudentModelBase(final Connection conn, Integer uid, Boolean includeSelfRegTemplate) throws Exception {
-        
+
         long timeStart = System.currentTimeMillis();
         PreparedStatement ps = null;
         ResultSet rs = null;
@@ -1720,17 +1720,17 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
                 throw new Exception(String.format("Student with UID: %d matches more than one row", uid));
 
             loadChapterInfo(conn, l);
-            
+
             StudentModelI sm = l.get(0);
-            
+
             if(sm.getSettings().getTutoringAvailable()) {
                 /**
                  * make sure the admin has tutoring enabled
                  */
-            	//TODO: incorporate Admin tutoring value in Summary SQL
+                //TODO: incorporate Admin tutoring value in Summary SQL
                 sm.getSettings().setTutoringAvailable(isTutoringEnabledForAdmin(conn, sm.getAdminUid()));
             }
-            return sm; 
+            return sm;
         } catch (Exception e) {
             __logger.error(String.format("*** Error obtaining data for student UID: %d, includeSelfRegTemplate: %s", uid, includeSelfRegTemplate), e);
             throw new Exception(String.format("*** Error obtaining data for student with UID: %d", uid));
@@ -1739,7 +1739,7 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
             __logger.info(String.format("End getStudentModelBase(), UID: %d, elapsed seconds: %d", uid, ((System.currentTimeMillis() - timeStart)/1000)));
         }
     }
-    
+
     private List<StudentModelI> loadStudentSummaries(ResultSet rs) throws Exception {
 
         List<StudentModelI> l = new ArrayList<StudentModelI>();
@@ -1763,7 +1763,13 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
 
             String progId = rs.getString("prog_id").toUpperCase();
             progId = (progId != null) ? progId.replaceAll(" ", "").replaceAll("-", "") : progId;
+
+            /** What to do if CmProgramType.valueOf() does not exist?   It throws nasty exception!
+                TODO:   need better way to determine CmProgramType.
+             */
             CmProgramType progType = (progId != null) ? CmProgramType.valueOf(progId) : null;
+
+
             sprm.setProgramType(progType);
 
             sprm.setSubjectId(rs.getString("subj_id"));
@@ -1771,12 +1777,12 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
                     rs.getInt("custom_program_id"), rs.getString("custom_program_name"),
                     rs.getInt("custom_quiz_id"),rs.getString("custom_quiz_name")));
 
-            
-        	StudentSettingsModel mdl = sm.getSettings();
-		    mdl.setLimitGames(rs.getInt("limit_games") > 0);
-		    mdl.setShowWorkRequired(rs.getInt("show_work_required") > 0);
-		    mdl.setStopAtProgramEnd(rs.getInt("stop_at_program_end") > 0);
-		    mdl.setTutoringAvailable(rs.getInt("tutoring_available") > 0);
+
+                StudentSettingsModel mdl = sm.getSettings();
+                    mdl.setLimitGames(rs.getInt("limit_games") > 0);
+                    mdl.setShowWorkRequired(rs.getInt("show_work_required") > 0);
+                    mdl.setStopAtProgramEnd(rs.getInt("stop_at_program_end") > 0);
+                    mdl.setTutoringAvailable(rs.getInt("tutoring_available") > 0);
 
             sm.setLastQuiz(rs.getString("last_quiz"));
             sm.setChapter(getChapter(rs.getString("test_config_json")));
@@ -1788,25 +1794,25 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
             sm.setPassPercent(passPercent);
             sm.setBackgroundStyle(rs.getString("gui_background_style"));
             sm.setSectionNum(rs.getInt("active_segment"));
-            
+
             int activeTestId = rs.getInt("active_test_id");
             boolean isComplete = rs.getDate("date_completed") != null;
 
             setupSectionCount(sm, rs.getString("test_config_json"));
 
             setupProgramStatus(sm, rs.getString("program"),
-            		rs.getInt("current_lesson"), rs.getInt("lesson_count"), rs.getInt("lessons_completed"),activeTestId, isComplete);
-            
+                        rs.getInt("current_lesson"), rs.getInt("lesson_count"), rs.getInt("lessons_completed"),activeTestId, isComplete);
+
             l.add(sm);
         }
         return l;
     }
 
-    
+
     /** Format status and or custom program label for display.
-     * 
+     *
      *  For custom programs, add the CP:PROG_NAME and looks up the status info
-     * 
+     *
      */
     private void setupProgramStatus(StudentModelI student, String programName,
         int currentLesson, int lessonCount, int isLessonsCompleted, int activeTestId, boolean isCompleted) {
@@ -1818,14 +1824,14 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
         }
         else if(program.getCustom().getType() == Type.LESSONS) {
             program.setProgramDescription("CP: " + program.getCustom().getCustomProgramName());
-            student.setStatus(getCustomProgramStatus(currentLesson, lessonCount, isLessonsCompleted));             
+            student.setStatus(getCustomProgramStatus(currentLesson, lessonCount, isLessonsCompleted));
         }
         else if(program.getCustom().getType() == Type.QUIZ) {
             program.setProgramDescription("CQ: " + program.getCustom().getCustomQuizName());
-            student.setStatus(getCustomQuizStatus(activeTestId, isCompleted));             
+            student.setStatus(getCustomQuizStatus(activeTestId, isCompleted));
         }
     }
-    
+
     private List<StudentModelI> loadStudentBaseSummaries(ResultSet rs, Boolean tutoringEnabledForAdmin) throws Exception {
 
         List<StudentModelI> l = new ArrayList<StudentModelI>();
@@ -1839,12 +1845,12 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
             sm.setPasscode(rs.getString("passcode"));
             sm.setEmail(rs.getString("email"));
             sm.setIsDemoUser(rs.getInt("is_demo") > 0);
-            
-        	StudentSettingsModel mdl = sm.getSettings();
-		    mdl.setLimitGames(rs.getInt("limit_games") > 0);
-		    mdl.setShowWorkRequired(rs.getInt("show_work_required") > 0);
-		    mdl.setStopAtProgramEnd(rs.getInt("stop_at_program_end") > 0);
-		    mdl.setTutoringAvailable(rs.getInt("tutoring_available") > 0 && ((tutoringEnabledForAdmin == null) || tutoringEnabledForAdmin));
+
+                StudentSettingsModel mdl = sm.getSettings();
+                    mdl.setLimitGames(rs.getInt("limit_games") > 0);
+                    mdl.setShowWorkRequired(rs.getInt("show_work_required") > 0);
+                    mdl.setStopAtProgramEnd(rs.getInt("stop_at_program_end") > 0);
+                    mdl.setTutoringAvailable(rs.getInt("tutoring_available") > 0 && ((tutoringEnabledForAdmin == null) || tutoringEnabledForAdmin));
 
             sm.setBackgroundStyle(rs.getString("gui_background_style"));
 
@@ -1860,12 +1866,12 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
             program.setProgramId(rs.getInt("user_prog_id"));
             program.setSubjectId(rs.getString("subj_id"));
             program.setProgramType(rs.getString("prog_id"));
-            
+
             program.setCustom(new CustomProgramComposite(
                     rs.getInt("custom_program_id"),rs.getString("custom_program_name"),
                     rs.getInt("custom_quiz_id"), rs.getString("custom_quiz_name")
                     ));
-            
+
             sm.setProgram(program);
 
             int activeTestId = rs.getInt("active_test_id");
@@ -1874,30 +1880,30 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
             setupSectionCount(sm, rs.getString("test_config_json"));
 
             setupProgramStatus(sm, rs.getString("program"),
-            	rs.getInt("current_lesson"), rs.getInt("lesson_count"), rs.getInt("lessons_completed"), activeTestId, isCompleted);
+                rs.getInt("current_lesson"), rs.getInt("lesson_count"), rs.getInt("lessons_completed"), activeTestId, isCompleted);
 
             l.add(sm);
         }
         return l;
     }
 
-	private void setupSectionCount(StudentModelI student, String testConfigJson) throws JSONException {
-		int sectionCount = 0;
-		try {
-			StudentProgramModel prog = student.getProgram();
-			if (! prog.isCustom()) {
-			    if(testConfigJson != null) { 
-			        JSONObject jo = new JSONObject(testConfigJson);
-			        sectionCount = jo.getInt("segments");
-			        prog.setSectionCount(sectionCount);
-			    }
-			}
-		}
-		catch (Exception e) {
+        private void setupSectionCount(StudentModelI student, String testConfigJson) throws JSONException {
+                int sectionCount = 0;
+                try {
+                        StudentProgramModel prog = student.getProgram();
+                        if (! prog.isCustom()) {
+                            if(testConfigJson != null) {
+                                JSONObject jo = new JSONObject(testConfigJson);
+                                sectionCount = jo.getInt("segments");
+                                prog.setSectionCount(sectionCount);
+                            }
+                        }
+                }
+                catch (Exception e) {
             __logger.error(String.format("*** Error getting section count for user_id: %d, user_prog_id: %d, test_config_json: %s",
-            		student.getUid(), student.getProgram().getProgramId(), testConfigJson), e);
-		}
-		student.setSectionCount(sectionCount);
+                        student.getUid(), student.getProgram().getProgramId(), testConfigJson), e);
+                }
+                student.setSectionCount(sectionCount);
     }
 
     private String getStatus(Integer userProgId, Integer activeSegment, Integer segmentCount) {
@@ -1912,13 +1918,13 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
         if (currentLesson > 0) {
             if (isLessonsCompleted == 0) {
                 StringBuilder sb = new StringBuilder();
-            	return sb.append("Lesson ").append(currentLesson).append(" of " ).append(lessonCount).toString();
+                return sb.append("Lesson ").append(currentLesson).append(" of " ).append(lessonCount).toString();
             }
             return "Completed";
         }
         return "Not started";
     }
-    
+
     private String getCustomQuizStatus(int currentTestId, boolean isCompleted) {
         if(!isCompleted && currentTestId > 0) {
             return "Started";
@@ -1927,10 +1933,10 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
             return "Completed";
         }
         else {
-            return "Not Started";    
+            return "Not Started";
         }
     }
-    
+
     private List<StudentModelI> loadStudentExtendedSummaries(ResultSet rs) throws Exception {
 
         List<StudentModelI> l = new ArrayList<StudentModelI>();
@@ -1948,14 +1954,14 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
             sm.setNotPassingCount(rs.getInt("not_passing_count"));
             sm.setPassingCount(rs.getInt("passing_count"));
             sm.setTutoringUse(rs.getInt("tutoring_use"));
-            
+
             // logger.debug("+++ passing count: " + sm.getPassingCount() + ", not passing count: " + sm.getNotPassingCount());
 
             l.add(sm);
         }
         return l;
     }
-    
+
     private List<StudentActivityModel> loadStudentActivity(final Connection conn, ResultSet rs) throws Exception {
 
         List<StudentActivityModel> l = new ArrayList<StudentActivityModel>();
@@ -1973,15 +1979,15 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
             String progId = rs.getString("prog_id");
 
             if (progId.equalsIgnoreCase("chap")) {
-            	String subjId = rs.getString("subj_id");
+                String subjId = rs.getString("subj_id");
                 String chapter = getChapter(rs.getString("test_config_json"));
-		        List <ChapterModel> cmList = cmaDao.getChaptersForProgramSubject("Chap", subjId);
-		        for (ChapterModel cm : cmList) {
-		        	if (cm.getTitle().equals(chapter)) {
-		        		m.setProgramDescr(new StringBuilder(m.getProgramDescr()).append(" ").append(cm.getNumber()).toString());
-		        		break;
-		        	}
-		        }
+                        List <ChapterModel> cmList = cmaDao.getChaptersForProgramSubject("Chap", subjId);
+                        for (ChapterModel cm : cmList) {
+                                if (cm.getTitle().equals(chapter)) {
+                                        m.setProgramDescr(new StringBuilder(m.getProgramDescr()).append(" ").append(cm.getNumber()).toString());
+                                        break;
+                                }
+                        }
             }
 
             int runId = rs.getInt("test_run_id");
@@ -1991,7 +1997,7 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
             sb.append(rs.getString("activity"));
 
             boolean isQuiz = (rs.getInt("is_quiz") > 0);
-            m.setIsQuiz(isQuiz);    
+            m.setIsQuiz(isQuiz);
             if (isQuiz) {
                 sb.append(sectionNum);
             }
@@ -2008,12 +2014,12 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
                     sb.append(Math.round(percent)).append("% correct");
                 }
                 else {
-                	sb.append("Started");
+                        sb.append("Started");
                 }
             } else {
                 int inProgress = 0; // lessonsViewed % problemsPerLesson;
                 int totalSessions = rs.getInt("total_sessions");
-                
+
                 int lessonsViewed = rs.getInt("session_number") + 1;
 
                 if (lessonsViewed >= 0) {
@@ -2078,10 +2084,10 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
         }
     }
 
-    
+
     /** Return true if this student activity model is
      *  for a custom quiz
-     *  
+     *
      * @param sm
      * @return
      */
@@ -2090,39 +2096,39 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
     }
 
     /** Load all lessons referenced by this runId, including any chapter programs
-     * 
+     *
      * @param runId
      * @param rs
      * @return
      * @throws Exception
      */
     private List<LessonItemModel> loadLessonItems(final Connection conn, Integer runId, ResultSet rs) throws Exception {
-        
-    	List<LessonItemModel> l = new ArrayList<LessonItemModel>();
 
-	    HaTestDefDescription tdDesc = null;
-	    HaTestRun testRun = HaTestRunDao.getInstance().lookupTestRun(runId);	        
-	    tdDesc = HaTestDefDescription.getHaTestDefDescription(testRun);
+        List<LessonItemModel> l = new ArrayList<LessonItemModel>();
 
-		// identify incomplete topics
-		Set <String> assignedTopics = new HashSet<String>();
-		do {
-			if (!"correct".equalsIgnoreCase(rs.getString("answer_status"))) {
-			    assignedTopics.add(rs.getString("file"));
-			}
-		} while (rs.next());
-		
-    	for (InmhItemData item : tdDesc.getLessonItems()) {
-    		LessonItemModel mdl = new LessonItemModel();
-    		mdl.setName(item.getInmhItem().getTitle());
-    		String file = item.getInmhItem().getFile();
-    		mdl.setFile(file);
-    		mdl.setPrescribed((assignedTopics.contains(file))?"Prescribed":"");
-    		l.add(mdl);
-    	}
-    	return l;
+            HaTestDefDescription tdDesc = null;
+            HaTestRun testRun = HaTestRunDao.getInstance().lookupTestRun(runId);
+            tdDesc = HaTestDefDescription.getHaTestDefDescription(testRun);
+
+                // identify incomplete topics
+                Set <String> assignedTopics = new HashSet<String>();
+                do {
+                        if (!"correct".equalsIgnoreCase(rs.getString("answer_status"))) {
+                            assignedTopics.add(rs.getString("file"));
+                        }
+                } while (rs.next());
+
+        for (InmhItemData item : tdDesc.getLessonItems()) {
+                LessonItemModel mdl = new LessonItemModel();
+                mdl.setName(item.getInmhItem().getTitle());
+                String file = item.getInmhItem().getFile();
+                mdl.setFile(file);
+                mdl.setPrescribed((assignedTopics.contains(file))?"Prescribed":"");
+                l.add(mdl);
+        }
+        return l;
     }
-    
+
     private void sortLessonItems(List<LessonItemModel> list) {
         Collections.sort(list, new Comparator<LessonItemModel>() {
             public int compare(LessonItemModel o1, LessonItemModel o2) {
@@ -2151,39 +2157,39 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
 
     /**
      * get auto-create template for specified Group ID
-     * 
+     *
      * @param conn
      * @param groupId
      * @return
      * @throws Exception
      */
     public StudentModelI getTemplateForSelfRegGroup(final Connection conn, Integer groupId) throws Exception {
-    	PreparedStatement ps = null;
-    	ResultSet rs = null;
-    	
-    	String sql = "select uid from HA_USER where group_id = ? and is_auto_create_template = 1";
-    	
-    	try {
-    		ps = conn.prepareStatement(sql);
-    		ps.setInt(1, groupId);
-    		rs = ps.executeQuery();
-    		if (rs.first()) {
-    			int uid = rs.getInt(1);
-    			return getStudentModelBase(conn, uid, true); 
-    		}
-    		else {
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+
+        String sql = "select uid from HA_USER where group_id = ? and is_auto_create_template = 1";
+
+        try {
+                ps = conn.prepareStatement(sql);
+                ps.setInt(1, groupId);
+                rs = ps.executeQuery();
+                if (rs.first()) {
+                        int uid = rs.getInt(1);
+                        return getStudentModelBase(conn, uid, true);
+                }
+                else {
                 throw new Exception(String.format("Auto Reg Template for Group ID: %d was not found", groupId));
-    		}
-    	}
-    	finally {
-    		SqlUtilities.releaseResources(rs, ps, null);
-    	}
+                }
+        }
+        finally {
+                SqlUtilities.releaseResources(rs, ps, null);
+        }
     }
 
     /**
      * Load this user's currently active state information. This shows the
      * current test/run and session the user is currently viewing.
-     * 
+     *
      * @param userId
      * @return
      * @throws Exception
@@ -2214,20 +2220,20 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
 
 
         /** Check to see if this program supports alternate tests, if so
-         *  pass along the segment_slot to use .. otherwise, make sure it 
+         *  pass along the segment_slot to use .. otherwise, make sure it
          *  is zero to always use the same slot
          */
         if(activeInfo.getActiveSegmentSlot() > 0) {
-        	CmUserProgramDao upDao = CmUserProgramDao.getInstance();
+                CmUserProgramDao upDao = CmUserProgramDao.getInstance();
             if(upDao.loadProgramInfoCurrent(userId).getTestDef().getNumAlternateTests() == 0)
                activeInfo.setActiveSegmentSlot(0);
         }
         return activeInfo;
     }
 
-    
+
     /** Move this user to the next quiz slot or back to zero
-     * 
+     *
      *  A quiz slot acts like a circular data structure, rolling over back to zero.
      * @param conn
      * @param userId
@@ -2236,29 +2242,29 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
      */
     public StudentActiveInfo moveToNextQuizSegmentSlot(final Connection conn, Integer userId, int numSlotsInProgram) throws Exception {
         StudentActiveInfo activeInfo = loadActiveInfo(userId);
-        
+
         int segmentSlot = activeInfo.getActiveSegmentSlot();
         segmentSlot++;
-        
+
         if(segmentSlot > (numSlotsInProgram-1))
             segmentSlot = 0; // roll over, back to zero
-        
+
         activeInfo.setActiveSegmentSlot(segmentSlot);
         setActiveInfo(conn, userId, activeInfo);
-        
+
         return activeInfo;
     }
-    
+
     /**
      * Set the active information for the named user
-     * 
+     *
      * @TODO: Move to 1-to-1 table HA_USER_ACTIVE, or set is_active flag in CM_USER_PROGRAM
      * @TODO: move all active info to here (including the studentModel.getSection)
      * @param conn
      * @param userId
      * @param activeInfo
      * @throws Exception If record cannot be updated
-     * 
+     *
      */
     public void setActiveInfo(final Connection conn, Integer userId, StudentActiveInfo activeInfo) throws Exception {
         PreparedStatement ps = null;
@@ -2273,10 +2279,10 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
                     activeInfo.getActiveRunSession(),
                     userId});
     }
-    
+
 
     /** Helper function to assign the named program/subject to the student identified by uid
-     * 
+     *
      * @param uid
      * @param subId
      * @param progId
@@ -2295,15 +2301,15 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
         HaTestDef testDef = HaTestDefDao.getInstance().getTestDef(userProgram.getTestDefId());
         progToAssign.setProgramType(testDef.getProgId());
         progToAssign.setSubjectId(testDef.getSubjectId());
-        assignProgramToStudent(conn, uid,progToAssign, testDef.getChapter(), null);  
+        assignProgramToStudent(conn, uid,progToAssign, testDef.getChapter(), null);
     }
-    
+
     public void assignProgramToStudent(final Connection conn, Integer uid, StudentProgramModel program, String chapter, String passPercent) throws Exception {
         assignProgramToStudent(conn, uid, program, chapter, passPercent, null,false);
     }
 
     /** Assign program to student.
-     *  
+     *
      * @param conn
      * @param uid
      * @param program
@@ -2335,7 +2341,7 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
         sm.setPassPercent(passPercent);
 
         setTestConfig(conn, sm);
-        updateStudent(conn, sm, true, false, true, false, false);        
+        updateStudent(conn, sm, true, false, true, false, false);
 
         int percent = getPercentFromString(passPercent);
         if(settings != null) {
@@ -2351,17 +2357,17 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
                 if(passPercent.endsWith("%")) {
                     passPercent = passPercent.substring(0, passPercent.length()-1);
                 }
-                return Integer.parseInt(passPercent);                
+                return Integer.parseInt(passPercent);
             }
         }
         catch(Exception e) {
-        	__logger.error(String.format("*** Error getting percent from passPercent: %s", passPercent), e);
+                __logger.error(String.format("*** Error getting percent from passPercent: %s", passPercent), e);
         }
         return 0;
     }
-    
+
     /** Return total count of INMH items by this user
-     * 
+     *
      * @param conn
      * @param uid
      * @return
@@ -2373,7 +2379,7 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
             String sql = "select count(*) from v_HA_USER_INMH_VIEWS_TOTAL " +
                           " where item_type in ('practice','cmextra') " +
                           " and uid = ?";
-            
+
             pstat = conn.prepareStatement(sql);
             pstat.setInt(1, uid);
             ResultSet rs = pstat.executeQuery();
@@ -2382,13 +2388,13 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
             return rs.getInt(1);
 
         } catch (Exception e) {
-        	__logger.error(String.format("*** Error getting INMH view count for Uid: %d", uid), e);
+                __logger.error(String.format("*** Error getting INMH view count for Uid: %d", uid), e);
             throw new CmRpcException("Error adding test run item view: " + e.getMessage());
         } finally {
             SqlUtilities.releaseResources(null, pstat, null);
         }
     }
-    
+
     public void setBackgroundStyle(final Connection conn, int uid, String style) throws Exception {
         PreparedStatement ps=null;
         try {
@@ -2404,31 +2410,31 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
             SqlUtilities.releaseResources(null,ps,null);
         }
     }
-    
-    
-    /** 
+
+
+    /**
      * Verify that this is the currently active
      * program for this user. This is to make sure
      * we do not update any state information after it
      * has been set while this program has been loaded.
-     * 
-     *  
+     *
+     *
      * Given a testId, make sure that its CM_PROGRAM
      * is the currently active CM_PROGRAM for this user.
-     * 
+     *
      * If this testId is not from the currently active
      * program for the test's user, then an exception is
      * thrown.
-     * 
-     * 
+     *
+     *
      * If not throw exception.
      * @param testId
      */
     public void verifyActiveProgram(int testId) throws Exception {
-        
+
         if(testId == 0)
             return ;
-        
+
         Integer count = getJdbcTemplate().queryForObject(
                 CmMultiLinePropertyReader.getInstance().getProperty("VERIFY_IS_ACTIVE_PROGRAM"),
                 new Object[]{testId},
@@ -2438,36 +2444,36 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
                         return rs.getInt(1);
                     }
                 });
-        
+
         if(count != 1) {
             throw new UserProgramIsNotActiveException();
         }
     }
 
-    /** 
+    /**
      * Verify that this is the currently active
      * program for the specified student (uid).
-     * 
+     *
      * Given a testId and uid, make sure that its CM_PROGRAM
      * is the currently active CM_PROGRAM for the student.
-     * 
+     *
      * If this testId is not from the currently active
      * program for the test's user, return false; otherwise
      * return true.
-     * 
+     *
      * @param testId
      * @param uid
      */
     public void verifyActiveProgram(final Connection conn, int testId, int uid) throws Exception {
-        
+
         if(testId == 0)
             return;
-        
-    	if (uid == 0) {
-    		verifyActiveProgram(testId);
-    		return;
-    	}
-    		
+
+        if (uid == 0) {
+                verifyActiveProgram(testId);
+                return;
+        }
+
         PreparedStatement ps=null;
         ResultSet rs = null;
         try {
@@ -2478,17 +2484,17 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
             rs = ps.executeQuery();
             if(rs.next()) {
                 /** value will equal 1 if program is active
-                 *  otherwise, testId is not 
-                 *  created from the active program.   
+                 *  otherwise, testId is not
+                 *  created from the active program.
                  */
                 if(rs.getInt(1) != 1) {
-                	throw new UserProgramIsNotActiveException();
+                        throw new UserProgramIsNotActiveException();
                 }
             }
         }
         catch (Exception e) {
-        	__logger.warn(String.format(">>> verifyActiveProgram(): program is not active uid: %d, testId: %d", uid, testId));
-        	throw e;
+                __logger.warn(String.format(">>> verifyActiveProgram(): program is not active uid: %d, testId: %d", uid, testId));
+                throw e;
         }
         finally {
             SqlUtilities.releaseResources(rs,ps,null);
