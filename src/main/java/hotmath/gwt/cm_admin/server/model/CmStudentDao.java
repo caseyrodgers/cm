@@ -1767,7 +1767,7 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
             /** What to do if CmProgramType.valueOf() does not exist?   It throws nasty exception!
                 TODO:   need better way to determine CmProgramType.
              */
-            CmProgramType progType = (progId != null) ? CmProgramType.valueOf(progId) : null;
+            CmProgramType progType = (progId != null) ? CmProgramType.lookup(progId) : null;
 
 
             sprm.setProgramType(progType);
