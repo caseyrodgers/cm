@@ -295,7 +295,7 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
 
 	private Button advancedOptionsBtn() {
 		Button btn = new Button("Advanced Options");
-		btn.setToolTip("Set Pass Percent, Require Show Work, Enable Tutoring");
+		btn.setToolTip("Disallow games, Change pass percentage, etc.");
 		btn.setWidth("110px");
         btn.addSelectionListener(new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent ce) {
