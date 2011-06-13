@@ -5,7 +5,7 @@ import hotmath.gwt.cm_rpc.client.model.CmProgramType;
 import com.google.gwt.user.client.rpc.IsSerializable;
 
 /** represents a uniquely identified student user program
- * 
+ *
  * @author casey
  *
  */
@@ -17,13 +17,13 @@ public class StudentProgramModel implements IsSerializable{
     Integer sectionCount;
 
     CustomProgramComposite custom = new CustomProgramComposite();
-    
+
     String programDescription;
 
     public StudentProgramModel() {}
 
-    /** 
-     * 
+    /**
+     *
      * @param programId The PK for the CM_USER_PROGRAM
      * @param subjectId The subject id
      * @param programType The type of program (Prof, Chap ,etc..)
@@ -31,7 +31,7 @@ public class StudentProgramModel implements IsSerializable{
      */
     public StudentProgramModel(Integer programId, String subjectId, CmProgramType programType, Integer sectionCount) {
         this.programId = programId;
-        this.programType = programType;        
+        this.programType = programType;
         this.subjectId = subjectId;
         this.sectionCount = sectionCount;
     }
@@ -81,18 +81,18 @@ public class StudentProgramModel implements IsSerializable{
     }
 
     public void setProgramType(String programType) {
-        this.programType = CmProgramType.valueOf(programType);
+        this.programType = CmProgramType.lookup(programType);
     }
 
     public Integer getSectionCount() {
-		return sectionCount;
-	}
+                return sectionCount;
+        }
 
-	public void setSectionCount(Integer sectionCount) {
-		this.sectionCount = sectionCount;
-	}
+        public void setSectionCount(Integer sectionCount) {
+                this.sectionCount = sectionCount;
+        }
 
-	@Override
+        @Override
     public String toString() {
         return "StudentProgramModel [programId=" + programId + ", subjectID=" + subjectId
                 + ", programType=" + programType + ", " + custom.toString() + "]";
