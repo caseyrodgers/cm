@@ -85,14 +85,14 @@ public class StudentProgramModel implements IsSerializable{
     }
 
     public Integer getSectionCount() {
-                return sectionCount;
-        }
+        return sectionCount;
+    }
 
-        public void setSectionCount(Integer sectionCount) {
-                this.sectionCount = sectionCount;
-        }
+    public void setSectionCount(Integer sectionCount) {
+        this.sectionCount = sectionCount;
+    }
 
-        @Override
+    @Override
     public String toString() {
         return "StudentProgramModel [programId=" + programId + ", subjectID=" + subjectId
                 + ", programType=" + programType + ", " + custom.toString() + "]";
