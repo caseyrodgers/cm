@@ -29,7 +29,7 @@ public class UpdateStudentAction implements Action<StudentModelI> {
     @Override
     public String toString() {
         return "UpdateStudentAction [passcodeChanged=" + passcodeChanged + ", progChanged=" + progChanged
-                + ", progIsNew=" + progIsNew + ", stuChanged=" + stuChanged + ", passPercent=" + passPercentChanged 
+                + ", progIsNew=" + progIsNew + ", stuChanged=" + stuChanged + ", passPercentChanged=" + passPercentChanged 
                 + ", student=" + student + "]";
     }
 
