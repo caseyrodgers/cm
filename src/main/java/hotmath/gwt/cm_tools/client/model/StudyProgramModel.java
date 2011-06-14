@@ -1,5 +1,7 @@
 package hotmath.gwt.cm_tools.client.model;
 
+import hotmath.gwt.cm_rpc.client.model.CmProgramType;
+
 import com.google.gwt.user.client.rpc.IsSerializable;
 
 public class StudyProgramModel implements IsSerializable {
@@ -24,8 +26,8 @@ public class StudyProgramModel implements IsSerializable {
     private String customProgramName;
 
     private Boolean isTemplate;
-    private Boolean isProficiency;
-    private Boolean isGradPrep;
+    
+    private CmProgramType programType;
 
     public StudyProgramModel() {
     }
@@ -72,20 +74,12 @@ public class StudyProgramModel implements IsSerializable {
         this.isTemplate = isTemplate;
     }
 
-    public Boolean getIsProficiency() {
-		return isProficiency;
+    public CmProgramType getProgramType() {
+		return programType;
 	}
 
-	public void setIsProficiency(Boolean isProficiency) {
-		this.isProficiency = isProficiency;
-	}
-
-	public Boolean getIsGradPrep() {
-		return isGradPrep;
-	}
-
-	public void setIsGradPrep(Boolean isGradPrep) {
-		this.isGradPrep = isGradPrep;
+	public void setProgramType(CmProgramType programType) {
+		this.programType = programType;
 	}
 
 	public String getCustomProgramName() {
@@ -203,7 +197,6 @@ public class StudyProgramModel implements IsSerializable {
                 + ", needsChapters=" + needsChapters + ", needsPassPercent=" + needsPassPercent + ", needsState="
                 + needsState + ", customQuizId=" + customQuizId + ", customQuizName=" + customQuizName
                 + ", customProgramId=" + customProgramId + ", customProgramName=" + customProgramName + ", isTemplate="
-                + isTemplate + ", isProficiency=" + isProficiency + ", isGradPrep=" + isGradPrep 
-                + ", sectionCount= " + sectionCount + "]";
+                + isTemplate  + ", sectionCount= " + sectionCount + ", programType= " + programType.getType() + "]";
     }
 }
