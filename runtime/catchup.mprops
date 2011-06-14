@@ -392,6 +392,7 @@ set    user_name = ?,
                              and subj_id = ?
                              and is_active = 1),
        user_prog_id = ?,
+       active_segment = ?,
        gui_background_style = ?
 where  uid = ?
 
@@ -688,6 +689,7 @@ from     HA_PROG_DEF d, HA_TEST_DEF td
 where    d.is_active = 1
   and    td.is_active = 1
   and    d.id = td.prog_id
+  and d.load_order < 100
                             
 union
                             
