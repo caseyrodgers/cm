@@ -59,7 +59,6 @@ import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.layout.FormLayout;
 import com.google.gwt.user.client.Timer;
-import com.google.gwt.user.client.Window;
 
 /**
  * Provides UI for registering new students and modifying the registration of
@@ -304,6 +303,7 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
 					void setAdvancedOptions(Map<String, Object> optionMap) {
 						stuSettingsMdl = (StudentSettingsModel) optionMap.get(StudentModelExt.SETTINGS_KEY);
 						passPercent = (String) optionMap.get(StudentModelExt.PASS_PERCENT_KEY);
+						activeSection = (Integer) optionMap.get(StudentModelExt.SECTION_NUM_KEY);
 					}
                 };
                 final Map<String,Object>advOptionsMap = new HashMap <String,Object> ();
@@ -324,12 +324,12 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
                 }
                 advOptionsMap.put(StudentModelExt.PASS_PERCENT_KEY, passPercent);
                 advOptionsMap.put(StudentModelExt.SETTINGS_KEY, ssm);
-                stuMdl.getUid();
+
                 advOptionsMap.put(StudentModelExt.SECTION_COUNT_KEY, sectionCount);
                 advOptionsMap.put(StudentModelExt.SECTION_NUM_KEY, activeSection);
                 advOptionsMap.put("section-is-settable", sectionSelectAvail);
 
-                new RegisterStudentAdvancedOptions(callback, cmAdminMdl, stuMdl.getUid(), advOptionsMap, isNew, passPercentReqd).setVisible(true);              
+                new RegisterStudentAdvancedOptions(callback, cmAdminMdl, advOptionsMap, isNew, passPercentReqd).setVisible(true);              
             }
         });
 		return btn;
@@ -370,8 +370,9 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
 				int needsSubject = ((Integer)sp.get("needsSubject")).intValue();
 				int needsChapters = ((Integer)sp.get("needsChapters")).intValue();
 				passPercentReqd = ((Integer)sp.get("needsPassPercent")).intValue() > 0;
+				
+				sectionSelectAvail = sp.isGradPrep() || sp.isProficiency();
 
-				sectionSelectAvail = (Boolean)sp.get("isProficiency") || (Boolean)sp.get("isGradPrep");
 				sectionCount = sp.getSectionCount();
 				activeSection = 1;
 
@@ -850,7 +851,6 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
             }
         }
 
-        
         String groupId=null;
         String group=null;
         ComboBox<GroupInfoModel> cg = (ComboBox<GroupInfoModel>) fp.getItemByItemId("group-combo");
@@ -933,6 +933,7 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
         sm.setGroup(group);
         sm.setAdminUid(cmAdminMdl.getId());
         sm.setPassPercent(passPercent);
+        sm.setSectionNum(activeSection);
 
         String chapTitle = (chap != null) ? chap.getTitle() : null;
         sm.setChapter(chapTitle);
@@ -973,8 +974,8 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
          *        the client should only have to update the POJO and say go.
          * 
          */
-        if (isNew) {                    
-            sm.setSectionNum(0);
+        if (isNew) {
+            sm.setSectionNum( (activeSection != null) ? activeSection : 0);
             sm.setStatus("Not started");
             sm.setTotalUsage(0);
             addUserRPC(sm);
@@ -990,7 +991,6 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
             sm.getProgram().setProgramId(stuMdl.getProgram().getProgramId());
             sm.setJson(stuMdl.getJson());
             sm.setStatus(stuMdl.getStatus());
-            sm.setSectionNum(stuMdl.getSectionNum());
             sm.setProgramChanged(false);
             if (! name.equals(stuMdl.getName()) ||
                 ! (groupId != null && groupId.equals(stuMdl.getGroupId()))) {
@@ -999,6 +999,17 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
             if (! passcode.equals(stuMdl.getPasscode())) {
                 passcodeChanged = true;
                 stuChanged = true;
+            }
+
+            Integer prevSectionNum = stuMdl.getSectionNum();
+            if ( (prevSectionNum == null && activeSection != null) ||
+            	 (prevSectionNum != null && activeSection == null) ||
+            	 (prevSectionNum != null && ! prevSectionNum.equals(activeSection))) {
+                sm.setSectionNum(activeSection);
+            	stuChanged = true;
+            }
+            else {
+                sm.setSectionNum(prevSectionNum);
             }
             
             if (stuMdl.getProgram().getProgramDescription() == null || isDifferentProgram(stuMdl,prog)) {

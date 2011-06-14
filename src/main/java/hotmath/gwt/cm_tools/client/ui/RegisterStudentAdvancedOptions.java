@@ -60,7 +60,7 @@ public class RegisterStudentAdvancedOptions extends LayoutContainer {
 	private String currentSection;
 	private boolean sectionIsSettable;
 	
-	public RegisterStudentAdvancedOptions(AdvOptCallback callback, CmAdminModel cm, Integer studentUid, Map <String,Object> optionMap, boolean isNew,
+	public RegisterStudentAdvancedOptions(AdvOptCallback callback, CmAdminModel cm, Map <String,Object> optionMap, boolean isNew,
 		boolean passPercentReqd) {
 
 		this.callback = callback;
@@ -208,10 +208,10 @@ public class RegisterStudentAdvancedOptions extends LayoutContainer {
 	private void setSectionNumberSelection() {
 
 		List<SectionNumber> list = sectionCombo.getStore().getModels();
-		for (SectionNumber p : list) {
-			if (currentSection.equals(p.getSectionNumber())) {
-				sectionCombo.setOriginalValue(p);
-				sectionCombo.setValue(p);
+		for (SectionNumber n : list) {
+			if (currentSection.equals(n.getSectionNumber())) {
+				sectionCombo.setOriginalValue(n);
+				sectionCombo.setValue(n);
 				sectionCombo.enable();
 				break;
 			}
@@ -225,6 +225,10 @@ public class RegisterStudentAdvancedOptions extends LayoutContainer {
 				PassPercent p = passCombo.getStore().getAt(PassPercentCombo.DEFAULT_PERCENT_IDX);
 				passCombo.setOriginalValue(p);
 				passCombo.setValue(p);
+				
+				SectionNumber n = sectionCombo.getStore().getAt(0);
+				sectionCombo.setOriginalValue(n);
+				sectionCombo.setValue(n);
 	    		
 	        	isShowWorkRequired.setValue(false);
 	            isGamesLimited.setValue(false);
@@ -257,10 +261,14 @@ public class RegisterStudentAdvancedOptions extends LayoutContainer {
                 ssm.setStopAtProgramEnd(isStopAtProgramEnd.getValue());
                 ssm.setLimitGames(isGamesLimited.getValue());
                 
+                SectionNumber sn = sectionCombo.getValue();
+                Integer sectionNum = (sn != null) ? Integer.parseInt(sn.getSectionNumber()) : 11;
+                
                 Map<String, Object> optionMap = new HashMap<String, Object>();
                 
                 optionMap.put(StudentModelExt.PASS_PERCENT_KEY, passPercent);
                 optionMap.put(StudentModelExt.SETTINGS_KEY, ssm);
+                optionMap.put(StudentModelExt.SECTION_NUM_KEY, sectionNum);
                 
                 callback.setAdvancedOptions(optionMap);
 
