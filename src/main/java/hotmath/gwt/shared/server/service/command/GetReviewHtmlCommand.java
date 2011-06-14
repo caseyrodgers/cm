@@ -34,14 +34,14 @@ public class GetReviewHtmlCommand implements ActionHandler<GetReviewHtmlAction, 
         
         /** Read the appropriate file and return HTML.
          * 
-         * If Spanish is requested, then return English and a warning message
+         * If Spanish is requested but not available, return English and a warning message
          * 
          */
         if(action.isSpanish() && !result.isHasSpanish()) {
             result.setWarning("Spanish version of this lesson not available");
             action.setSpanish(false);
         }
-        String html = new SbFile(filePath + "/" + getFile(action.getFile(),action.isSpanish())).getFileContents().toString("\n");
+        String html = new SbFile(filePath + "/" + getFile(action.getFile(), action.isSpanish())).getFileContents().toString("\n");
         
         HmContentExtractor ext = new HmContentExtractor();
         String htmlCooked = ext.extractContent(html, getBaseDirectory(action.isSpanish()));
