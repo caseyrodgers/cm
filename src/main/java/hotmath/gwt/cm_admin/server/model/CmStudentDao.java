@@ -897,8 +897,9 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
             ps.setString(4, spm.getProgramType().getType());
             ps.setString(5, spm.getSubjectId());
             ps.setInt(6, spm.getProgramId());
-            ps.setString(7, sm.getBackgroundStyle());
-            ps.setInt(8, sm.getUid());
+            ps.setInt(7, sm.getSectionNum());
+            ps.setString(8, sm.getBackgroundStyle());
+            ps.setInt(9, sm.getUid());
             int result = ps.executeUpdate();
 
             updateStudentSettings(conn, sm, null);
