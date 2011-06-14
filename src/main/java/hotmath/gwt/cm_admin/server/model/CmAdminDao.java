@@ -6,6 +6,7 @@ import hotmath.cm.util.CmCacheManager;
 import hotmath.cm.util.CmMultiLinePropertyReader;
 import hotmath.cm.util.QueryHelper;
 import hotmath.gwt.cm_rpc.client.UserInfo.AccountType;
+import hotmath.gwt.cm_rpc.client.model.CmProgramType;
 import hotmath.gwt.cm_rpc.client.rpc.CmArrayList;
 import hotmath.gwt.cm_rpc.client.rpc.CmList;
 import hotmath.gwt.cm_tools.client.model.AccountInfoModel;
@@ -652,6 +653,12 @@ public class CmAdminDao extends SimpleJdbcDaoSupport {
             m.setNeedsState(rs.getInt("needs_state"));
             m.setIsTemplate(rs.getInt("is_template") != 0);
             m.setSectionCount(rs.getInt("segment_count"));
+            
+            String progId = rs.getString("id").toUpperCase();
+            progId = (progId != null) ? progId.replaceAll(" ", "").replaceAll("-", "") : progId;
+            CmProgramType progType = (progId != null) ? CmProgramType.valueOf(progId) : null;
+            
+            m.setProgramType(progType);
             l.add(m);
         }
         return l;

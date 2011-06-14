@@ -1,5 +1,9 @@
 package hotmath.gwt.cm_tools.client.model;
 
+//import hotmath.gwt.cm_rpc.client.model.CmProgramType;
+
+import hotmath.gwt.cm_rpc.client.model.CmProgramType;
+
 import com.extjs.gxt.ui.client.data.BaseModelData;
 
 public class StudyProgramExt extends BaseModelData {
@@ -22,9 +26,8 @@ public class StudyProgramExt extends BaseModelData {
 		set("customProgramId", customProgramId);
 		set("customQuizId", program.getCustomQuizId());
 		set("customQuizName", program.getCustomQuizName());
-		set("isProficiency", program.getIsProficiency());
-		set("isGradPrep", program.getIsGradPrep());
 		set("sectionCount", program.getSectionCount());
+		set("programType", program.getProgramType());
 
 		/** set css style to identify as custom program
 		 * 
@@ -59,4 +62,17 @@ public class StudyProgramExt extends BaseModelData {
     public Integer getSectionCount() {
     	return get("sectionCount");
     }
+    
+    public boolean isProficiency() {
+    	return (CmProgramType.PROF == (CmProgramType) get("programType"));
+    }
+    
+    public boolean isGradPrep() {
+    	CmProgramType progType = (CmProgramType) get("programType");
+
+    	return (CmProgramType.GRADPREP == progType ||
+    			CmProgramType.GRADPREPTX == progType ||
+    			CmProgramType.GRADPREPNATIONAL == progType);    	
+    }
+    
 }
