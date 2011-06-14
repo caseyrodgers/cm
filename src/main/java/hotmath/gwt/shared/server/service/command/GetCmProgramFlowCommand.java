@@ -18,7 +18,7 @@ import org.apache.log4j.Logger;
  */
 public class GetCmProgramFlowCommand implements ActionHandler<GetCmProgramFlowAction, CmProgramFlowAction> {
 
-    static final Logger logger = Logger.getLogger(GetQuizHtmlCommand.class);
+    static final Logger logger = Logger.getLogger(GetCmProgramFlowCommand.class);
 
     @Override
     public CmProgramFlowAction execute(Connection conn, GetCmProgramFlowAction action) throws Exception {
