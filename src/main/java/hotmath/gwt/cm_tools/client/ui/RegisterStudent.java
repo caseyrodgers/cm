@@ -326,6 +326,7 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
                 advOptionsMap.put(StudentModelExt.SETTINGS_KEY, ssm);
 
                 advOptionsMap.put(StudentModelExt.SECTION_COUNT_KEY, sectionCount);
+                if (activeSection == null) activeSection = new Integer(0);
                 advOptionsMap.put(StudentModelExt.SECTION_NUM_KEY, activeSection);
                 advOptionsMap.put("section-is-settable", sectionSelectAvail);
 
