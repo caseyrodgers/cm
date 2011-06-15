@@ -12,7 +12,7 @@ import java.util.List;
 
 public class CmUserDao {
     
-    
+	
     /** Return list of HaUser objects that are currently
      *  assigned to the given adminId.
      *  

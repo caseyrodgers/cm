@@ -92,6 +92,7 @@ public class LoadSolutionMetaCommand implements ActionHandler<LoadSolutionMetaAc
         return processed;
     }
     
+
     String _html;
     Parser _parser;
     DOMFragmentParser _parserBalancer;
@@ -139,7 +140,6 @@ public class LoadSolutionMetaCommand implements ActionHandler<LoadSolutionMetaAc
                                                 }
                                             }
                                         }
-                                        
                                         return false;
                                     }
                                });
@@ -238,8 +238,6 @@ public class LoadSolutionMetaCommand implements ActionHandler<LoadSolutionMetaAc
         if (imageHeight < 45) return "middle";
         return "text-top";    
     }
-
-    
     
 
     @Override

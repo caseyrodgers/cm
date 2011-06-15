@@ -50,7 +50,7 @@ public class CmInitialzation extends HttpServlet {
         String file = getInitParameter("log4j-init-file");
         // if the log4j-init-file is not set, then no point in trying
         if (file != null) {
-            PropertyConfigurator.configure(prefix + file);
+            PropertyConfigurator.configure(new File(prefix,file).getPath());
             logger.info("Catchup Math Log4J intialized");
         }
         
