@@ -208,8 +208,15 @@ public class RegisterStudentAdvancedOptions extends LayoutContainer {
 	private void setSectionNumberSelection() {
 
 		List<SectionNumber> list = sectionCombo.getStore().getModels();
+
+        /*
+         * don't want to place "0" in the section number list...
+         * If incoming section number was "0", then select "1"
+         */
+		String selectSection = ("0".equals(currentSection)) ? "1" : currentSection;
+
 		for (SectionNumber n : list) {
-			if (currentSection.equals(n.getSectionNumber())) {
+			if (selectSection.equals(n.getSectionNumber())) {
 				sectionCombo.setOriginalValue(n);
 				sectionCombo.setValue(n);
 				sectionCombo.enable();
@@ -261,8 +268,15 @@ public class RegisterStudentAdvancedOptions extends LayoutContainer {
                 ssm.setStopAtProgramEnd(isStopAtProgramEnd.getValue());
                 ssm.setLimitGames(isGamesLimited.getValue());
                 
+                /*
+                 * don't want to place "0" in the section number list...
+                 * If incoming section number was "0" and selected value is "1", then
+                 * return "0" as the selected value.
+                 * 
+                 */
                 SectionNumber sn = sectionCombo.getValue();
-                Integer sectionNum = (sn != null) ? Integer.parseInt(sn.getSectionNumber()) : 11;
+                Integer sectionNum = (sn != null) ? Integer.parseInt(sn.getSectionNumber()) : 0;
+                if (sectionNum == 1 && currentSection.equals("0")) sectionNum = 0;
                 
                 Map<String, Object> optionMap = new HashMap<String, Object>();
                 
