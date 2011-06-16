@@ -554,7 +554,7 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
             ps = conn.prepareStatement(CmMultiLinePropertyReader.getInstance().getProperty("ADD_STUDENT_SQL"));
             ps.setString(1, sm.getName());
             ps.setString(2, sm.getPasscode());
-            ps.setInt(3, 0);
+            ps.setInt(3, sm.getSectionNum());
 
             //TODO: getGroupId() returns null sometimes - need to determine why/how
             if (sm.getGroupId() == null) {
@@ -1079,7 +1079,9 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
 
             int result = ps.executeUpdate();
 
-            setActiveInfo(conn, sm.getUid(), new StudentActiveInfo());
+            StudentActiveInfo activeInfo = new StudentActiveInfo();
+            if (sm.getSectionNum() != null) activeInfo.setActiveSegment(sm.getSectionNum());
+            setActiveInfo(conn, sm.getUid(), activeInfo);
 
         } catch (Exception e) {
             __logger.error(String.format("*** Error updating student with uid: %d", sm.getUid()), e);
@@ -1144,9 +1146,9 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
                 // now get value of auto-increment id from CM_USER_PROGRAM
                 int newKey = SqlUtilities.getLastInsertId(conn);
                 sp.setProgramId(newKey);
-           }
+            }
 
-            sm.setSectionNum(0);
+            if (sm.getSectionNum() == null) sm.setSectionNum(0);
 
             /** Setup random first quiz, if supported
              *
