@@ -1003,11 +1003,13 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
             }
 
             Integer prevSectionNum = stuMdl.getSectionNum();
+            boolean sectionNumChanged = false;
             if ( (prevSectionNum == null && activeSection != null) ||
             	 (prevSectionNum != null && activeSection == null) ||
             	 (prevSectionNum != null && ! prevSectionNum.equals(activeSection))) {
                 sm.setSectionNum(activeSection);
             	stuChanged = true;
+            	sectionNumChanged = true;
             }
             else {
                 sm.setSectionNum(prevSectionNum);
@@ -1015,7 +1017,7 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
             
             if (stuMdl.getProgram().getProgramDescription() == null || isDifferentProgram(stuMdl,prog)) {
                 sm.setStatus("Not started");
-                sm.setSectionNum(0);
+                if (sectionNumChanged == false) sm.setSectionNum(0);
                 sm.setProgramChanged(true);
                 // don't know what the program Id will be so set to null
                 sm.getProgram().setProgramId(null);
