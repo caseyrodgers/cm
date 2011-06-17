@@ -149,7 +149,8 @@ public class GroupManagerCommand implements ActionHandler<GroupManagerAction, Rp
             CmStudentDao dao = CmStudentDao.getInstance();
             ResultSet rs = ps.executeQuery();
             while(rs.next()) {
-                dao.assignProgramToStudent(conn, rs.getInt("uid"),studentTemplate.getProgram(), studentTemplate.getChapter(),studentTemplate.getPassPercent(),studentTemplate.getSettings(),isSelfReg);
+                dao.assignProgramToStudent(conn, rs.getInt("uid"), studentTemplate.getProgram(), studentTemplate.getChapter(),
+                		studentTemplate.getPassPercent(), studentTemplate.getSettings(), isSelfReg, studentTemplate.getSectionNum());
             }
         }
         finally {

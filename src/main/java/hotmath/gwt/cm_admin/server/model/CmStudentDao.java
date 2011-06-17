@@ -2296,7 +2296,7 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
         StudentProgramModel progToAssign = new StudentProgramModel();
         progToAssign.setProgramType(program.getProgramType());
         progToAssign.setSubjectId(program.getSubject());
-        assignProgramToStudent(conn, uid,progToAssign, chapter, null);
+        assignProgramToStudent(conn, uid, progToAssign, chapter, null);
     }
 
     public void assignProgramToStudent(final Connection conn, Integer uid, StudentUserProgramModel userProgram) throws Exception {
@@ -2304,11 +2304,11 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
         HaTestDef testDef = HaTestDefDao.getInstance().getTestDef(userProgram.getTestDefId());
         progToAssign.setProgramType(testDef.getProgId());
         progToAssign.setSubjectId(testDef.getSubjectId());
-        assignProgramToStudent(conn, uid,progToAssign, testDef.getChapter(), null);
+        assignProgramToStudent(conn, uid, progToAssign, testDef.getChapter(), null);
     }
 
     public void assignProgramToStudent(final Connection conn, Integer uid, StudentProgramModel program, String chapter, String passPercent) throws Exception {
-        assignProgramToStudent(conn, uid, program, chapter, passPercent, null,false);
+        assignProgramToStudent(conn, uid, program, chapter, passPercent, null, false, 0);
     }
 
     /** Assign program to student.
@@ -2320,9 +2320,11 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
      * @param passPercent
      * @param settings
      * @param includeSelfRegGroups  (must be set to true if updating self-reg user template)
+     * @param sectionNum
      * @throws Exception
      */
-    public void assignProgramToStudent(final Connection conn, Integer uid, StudentProgramModel program, String chapter, String passPercent,StudentSettingsModel settings,boolean includeSelfRegGroups) throws Exception {
+    public void assignProgramToStudent(final Connection conn, Integer uid, StudentProgramModel program, String chapter, String passPercent,
+    		StudentSettingsModel settings, boolean includeSelfRegGroups, Integer sectionNum) throws Exception {
 
         StudentModelI sm = getStudentModelBase(conn, uid,includeSelfRegGroups);
 
@@ -2342,6 +2344,7 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
         sm.setProgramChanged(true);
         sm.setChapter(chapter);
         sm.setPassPercent(passPercent);
+        sm.setSectionNum(sectionNum);
 
         setTestConfig(conn, sm);
         updateStudent(conn, sm, true, false, true, false, false);

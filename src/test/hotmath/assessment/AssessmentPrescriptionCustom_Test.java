@@ -39,7 +39,7 @@ public class AssessmentPrescriptionCustom_Test extends CmDbTestCase {
         studentProgram.setSubjectId("");
         studentProgram.setProgramType("Custom");
         
-        CmStudentDao.getInstance().assignProgramToStudent(conn, _user.getUid(), studentProgram,null, "80%", new StudentSettingsModel(),false);
+        CmStudentDao.getInstance().assignProgramToStudent(conn, _user.getUid(), studentProgram,null, "80%", new StudentSettingsModel(),false, 1);
         
         CmUserProgramDao upDao = CmUserProgramDao.getInstance();
         
