@@ -31,11 +31,6 @@
 	text-align: center;
 }
 
-.header-panel-updates-btn-over {
-	background: url(/gwt-resources/images/admin_getting_started-over.png)
-		no-repeat center left !important;
-}
-
 .header-panel-guide-btn {
 	position: absolute;
 	top: 3px;
@@ -71,10 +66,15 @@
 	position: absolute;
 	top: 3px;
 	right: 205px	; 
-	background :url(/gwt-resources/images/admin_getting_started.png) no-repeat center left !important;
+	background :url(/gwt-resources/images/recent_updates-2_normal.png) no-repeat center left !important;
 	height: 32px;
 	width: 144px;
-	background: url(/gwt-resources/images/admin_getting_started.png)
+	background: url(/gwt-resources/images/recent_updates-2_normal.png)
+		no-repeat center left !important;
+}
+
+.header-panel-updates-btn-over {
+	background: url(/gwt-resources/images/recent_updates-2_over.png)
 		no-repeat center left !important;
 }
 
