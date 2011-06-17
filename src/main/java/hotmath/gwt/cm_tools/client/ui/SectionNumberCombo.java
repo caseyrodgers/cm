@@ -19,7 +19,7 @@ public class SectionNumberCombo extends ComboBox<SectionNumber> {
         sectionStore.add(getSectionNumberList(sectionCount));
 
         setValue(sectionStore.getAt(2));
-        setFieldLabel("Set Section");
+        setFieldLabel("Select Section");
         setForceSelection(false);
         setDisplayField("section-number");
         setEditable(false);
