@@ -6,9 +6,9 @@ import hotmath.gwt.cm_rpc.client.rpc.CmArrayList;
 import hotmath.gwt.cm_rpc.client.rpc.CmList;
 import hotmath.gwt.cm_rpc.client.rpc.Response;
 import hotmath.gwt.cm_rpc.server.rpc.ActionHandler;
+import hotmath.gwt.cm_rpc.server.service.ActionHandlerManualConnectionManagement;
 import hotmath.gwt.cm_tools.client.model.SubjectModel;
 import hotmath.gwt.shared.client.rpc.action.GetSubjectDefinitionsAction;
-import hotmath.gwt.shared.server.service.ActionHandlerManualConnectionManagement;
 
 import java.sql.Connection;
 

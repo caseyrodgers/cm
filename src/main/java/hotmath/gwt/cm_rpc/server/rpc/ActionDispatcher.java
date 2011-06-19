@@ -1,19 +1,17 @@
 package hotmath.gwt.cm_rpc.server.rpc;
 
-import hotmath.cm.server.listener.ContextListener;
-import hotmath.cm.util.ActionTypeMap;
-import hotmath.cm.util.ClientInfoHolder;
 import hotmath.flusher.Flushable;
 import hotmath.flusher.HotmathFlusher;
 import hotmath.gwt.cm_rpc.client.ClientInfo;
 import hotmath.gwt.cm_rpc.client.ClientInfo.UserType;
+import hotmath.gwt.cm_rpc.client.CmExceptionDoNotNotify;
+import hotmath.gwt.cm_rpc.client.CmUserException;
 import hotmath.gwt.cm_rpc.client.rpc.Action;
 import hotmath.gwt.cm_rpc.client.rpc.CmRpcException;
 import hotmath.gwt.cm_rpc.client.rpc.Response;
 import hotmath.gwt.cm_rpc.server.rpc.ActionDispatcherListener.ActionExecutionType;
-import hotmath.gwt.shared.client.util.CmExceptionDoNotNotify;
-import hotmath.gwt.shared.client.util.CmUserException;
-import hotmath.gwt.shared.server.service.ActionHandlerManualConnectionManagement;
+import hotmath.gwt.cm_rpc.server.service.ActionHandlerManualConnectionManagement;
+import hotmath.gwt.cm_rpc.server.service.ClientInfoHolder;
 import hotmath.util.HMConnectionPool;
 import hotmath.util.sql.SqlUtilities;
 
@@ -22,6 +20,7 @@ import java.io.StringWriter;
 import java.sql.Connection;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -451,14 +450,6 @@ public class ActionDispatcher {
         return x;
     }
 
-    private static String standardPlaces[] = {
-    	"hotmath.gwt.shared.server.service.command.",
-        "hotmath.gwt.cm_mobile.server.rpc.",
-        "hotmath.gwt.cm_mobile_shared.server.rpc.",
-        "hotmath.gwt.solution_editor.server.rpc.",
-        "hotmath.gwt.cm_activity.server.rpc."
-    };
-
     /* extract name and construct command class name
      * using standard package.
      */
@@ -471,8 +462,27 @@ public class ActionDispatcher {
         String p[] = actionName.split("\\.");
         String cmdName = p[p.length-1];
         cmdName = cmdName.substring(0, cmdName.length() - 6) + "Command";
-        for(int i=0;i<standardPlaces.length;i++) {
-            String commandClass = standardPlaces[i] + cmdName;
+        
+        String assumedCmdPackage = "";
+        for(int i=0;i<p.length-1;i++) {
+            assumedCmdPackage += p[i] + ".";
+        }
+        assumedCmdPackage = assumedCmdPackage.replace("client", "server");
+        
+        /** Create a list of possible places to search
+         *  NOTE: the addition of the auto-created server
+         *  command assumed name
+         */
+        List<String> places = Arrays.asList(
+            "hotmath.gwt.shared.server.service.command.",
+            "hotmath.gwt.cm_mobile.server.rpc.",
+            "hotmath.gwt.cm_mobile_shared.server.rpc.",
+            "hotmath.gwt.solution_editor.server.rpc.",
+            "hotmath.gwt.cm_activity.server.rpc.",
+            assumedCmdPackage
+            );
+        for(String place: places) {
+            String commandClass = place + cmdName;
             try {
                 /** create instance and get object */
                 logger.info("Auto registering action command: " + cmdName);

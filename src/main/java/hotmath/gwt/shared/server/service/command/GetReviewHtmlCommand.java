@@ -6,7 +6,7 @@ import hotmath.gwt.cm_rpc.client.rpc.GetReviewHtmlAction;
 import hotmath.gwt.cm_rpc.client.rpc.LessonResult;
 import hotmath.gwt.cm_rpc.client.rpc.Response;
 import hotmath.gwt.cm_rpc.server.rpc.ActionHandler;
-import hotmath.gwt.shared.server.service.ActionHandlerManualConnectionManagement;
+import hotmath.gwt.cm_rpc.server.service.ActionHandlerManualConnectionManagement;
 import hotmath.util.HmContentExtractor;
 
 import java.io.File;

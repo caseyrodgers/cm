@@ -1,7 +1,7 @@
 package hotmath.gwt.shared.client.model;
 
+import hotmath.gwt.cm_rpc.client.CmExceptionDoNotNotify;
 import hotmath.gwt.shared.client.util.CmException;
-import hotmath.gwt.shared.client.util.CmExceptionDoNotNotify;
 
 /** Thrown when a user's client representation
  *  is out of sync with the actual server side

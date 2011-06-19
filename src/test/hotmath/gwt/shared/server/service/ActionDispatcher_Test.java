@@ -4,8 +4,10 @@ import hotmath.gwt.cm.server.CmDbTestCase;
 import hotmath.gwt.cm_admin.server.model.CmStudentDao;
 import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_rpc.client.UserLoginResponse;
+import hotmath.gwt.cm_rpc.client.rpc.Action;
 import hotmath.gwt.cm_rpc.client.rpc.CmArrayList;
 import hotmath.gwt.cm_rpc.client.rpc.CmList;
+import hotmath.gwt.cm_rpc.client.rpc.CmRpcException;
 import hotmath.gwt.cm_rpc.client.rpc.CreateTestRunResponse;
 import hotmath.gwt.cm_rpc.client.rpc.GetPrescriptionAction;
 import hotmath.gwt.cm_rpc.client.rpc.GetQuizHtmlAction;
@@ -72,6 +74,33 @@ public class ActionDispatcher_Test extends CmDbTestCase {
         
         uid = _user.getUid();
     }
+    
+    
+    
+    public void testActionDoesNotExist() throws Exception {
+        try {
+            class TestAction implements Action{};
+            ActionDispatcher.getInstance().execute(new TestAction());
+            assert(false);
+        }
+        catch(CmRpcException e) {
+            // expected
+        }
+        catch(Exception ee) {
+            assert(false);
+        }
+    }
+    
+    public void testGetSolution() throws Exception {
+        
+        GetSolutionAction action = new GetSolutionAction(uid, TEST_PID);
+        SolutionInfo data = ActionDispatcher.getInstance().execute(action);
+        
+        assertNotNull(data);
+        assertNotNull(data.getHtml());
+        assertNotNull(data.getJs());;
+    }
+    
 
     public void testSendErrorNotification() throws Exception {
         GetSolutionAction action = new GetSolutionAction(uid, "DOES_NOT_EXIST");
@@ -97,17 +126,8 @@ public class ActionDispatcher_Test extends CmDbTestCase {
         }
         assertTrue("Should never reach here",false);
     }
-    
-    public void testGetSolution() throws Exception {
-        
-        GetSolutionAction action = new GetSolutionAction(uid, TEST_PID);
-        SolutionInfo data = ActionDispatcher.getInstance().execute(action);
-        
-        assertNotNull(data);
-        assertNotNull(data.getHtml());
-        assertNotNull(data.getJs());;
-    }
-    
+
+
     public void testLogUserInAction() throws Exception {
         LogUserInAction action = new LogUserInAction(_user.getLoginName(),_user.getPassword(),"test");
         RpcData rdata = ActionDispatcher.getInstance().execute(action);

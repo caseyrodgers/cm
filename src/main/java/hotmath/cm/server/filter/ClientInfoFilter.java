@@ -13,7 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.log4j.Logger;
 
 import hotmath.gwt.cm_rpc.client.ClientInfo;
-import hotmath.cm.util.ClientInfoHolder;
+import hotmath.gwt.cm_rpc.server.service.ClientInfoHolder;
 
 /**
  *
