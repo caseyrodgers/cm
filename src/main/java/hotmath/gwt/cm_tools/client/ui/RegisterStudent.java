@@ -611,12 +611,13 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
 	}
 
 	protected void updateUserRPC(final StudentModel sm, final Boolean stuChanged, final Boolean progChanged, final Boolean progIsNew,
-	        final Boolean passcodeChanged, final Boolean passPercentChanged) {
+	        final Boolean passcodeChanged, final Boolean passPercentChanged, final Boolean sectionNumChanged) {
 		new RetryAction<StudentModelI> () {
 		    @Override
 		    public void attempt() {
 		        CmBusyManager.setBusy(true);
-		        UpdateStudentAction action = new UpdateStudentAction(sm,stuChanged,progChanged,progIsNew,passcodeChanged,passPercentChanged);
+		        UpdateStudentAction action =
+		        	new UpdateStudentAction(sm,stuChanged,progChanged,progIsNew,passcodeChanged,passPercentChanged,sectionNumChanged);
 		        setAction(action);
 		        CmShared.getCmService().execute(action,this);
 		    }
@@ -1024,6 +1025,7 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
 
                 progIsNew = true;
                 progChanged = false;
+                sectionNumChanged = false;
                 stuChanged = true;
             }
 
@@ -1035,7 +1037,7 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
             	passPercentChanged = ! sm.getProgramChanged();
 
             if (stuChanged || progChanged || progIsNew || passPercentChanged) {
-                updateUserRPC(sm, stuChanged, progChanged, progIsNew, passcodeChanged, passPercentChanged);
+                updateUserRPC(sm, stuChanged, progChanged, progIsNew, passcodeChanged, passPercentChanged, sectionNumChanged);
             }
             else {
                 _window.close();
