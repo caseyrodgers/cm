@@ -10,9 +10,9 @@ public enum CmProgramType {
     GRADPREP("Grad Prep","GRADPREP"),
     GRADPREPNATIONAL("Grad Prep National", "GRADPREPNATIONAL"),
     GRADPREPTX("Grad Prep Tx", "GRADPREPTX"),
+    MATHJAX("MathJax", "MATHJAX"),
     PROF("Prof", "PROF"),
-    UNKNOWN("UnknownType", "UKNOWN"),
-    MATHJAX("MathJax", "MATHJAX");
+    UNKNOWN("UnknownType", "UKNOWN");
 
     private final String type;
     private final String name;
