@@ -1,5 +1,7 @@
 package hotmath.gwt.shared.server.service.command;
 
+import org.junit.Test;
+
 import hotmath.cm.program.CmProgramFlow;
 import hotmath.gwt.cm.server.CmDbTestCase;
 import hotmath.gwt.cm_rpc.client.rpc.CmPlace;
@@ -34,5 +36,17 @@ public class GetCmProgramFlowCommand_Test extends CmDbTestCase {
         assertTrue(nextAction.getPlace() == CmPlace.QUIZ);
         
         assertTrue(seg+1 == cmProgram.getActiveTestSegment());
-    }    
+        
+    }
+    
+    @Test
+    public void setActiveSegment() throws Exception {
+    	CmProgramFlow flow = new CmProgramFlow(conn, _test.getUser().getUid());
+
+    	flow.getActiveInfo().setActiveSegment(2);
+    	flow.saveActiveInfo(conn);
+
+    	flow = new CmProgramFlow(conn, _test.getUser().getUid());
+    	assertTrue(flow.getActiveInfo().getActiveSegment() == 2);
+    }
 }
