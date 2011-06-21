@@ -1,0 +1,71 @@
+a {
+    display:inline-block;
+    position:relative;
+}
+
+a:hover,
+a:focus {
+    color:#36c;
+}
+a:active {
+    top:1px;
+}
+
+a[tooltip]:after {
+    border-top:10px solid #36c;
+    border-left:10px solid transparent;
+    border-right:10px solid transparent;
+    content:"";
+    display:none;
+    height:0;
+    left:25%;
+    position:absolute;
+    width:0;
+}
+a[tooltip]:before {
+    border:1px solid #36c;
+    color:#fff;
+    content:attr(tooltip);
+    display:none;
+    font-family:sans-serif;
+    z-index:10000;
+    font-size:14px;
+    height:28px;
+    left:0;
+    line-height:28px;
+    padding:0 14px;
+    position:absolute;
+    text-shadow:0 -1px 1px rgba(0,0,0,.5);
+    white-space:nowrap;
+    background:#36c;
+    background:-webkit-linear-gradient(rgba(255,255,255,.4), rgba(0,0,0,0)),
+               rgba(51,102,204,1);
+    background:-moz-linear-gradient(rgba(255,255,255,.4), rgba(0,0,0,0)),
+               rgba(51,102,204,1);
+    background:-o-linear-gradient(rgba(255,255,255,.4), rgba(0,0,0,0)),
+               rgba(51,102,204,1);
+    background:linear-gradient(rgba(255,255,255,.4), rgba(0,0,0,0)),
+               rgba(51,102,204,1);
+    -webkit-border-radius:5px;
+       -moz-border-radius:5px;
+         -o-border-radius:5px;
+            border-radius:5px;
+    -webkit-box-shadow:0 0 3px rgba(0,0,0,.5);
+       -moz-box-shadow:0 0 3px rgba(0,0,0,.5);
+         -o-box-shadow:0 0 3px rgba(0,0,0,.5);
+            box-shadow:0 0 3px rgba(0,0,0,.5);
+}
+a[tooltip]:hover:after {
+    display:block;
+    top:-10px;
+}
+a[tooltip]:hover:before {
+    display:block;
+    top:-40px;
+}
+a[tooltip]:active:after {
+    top:-11px;
+}
+a[tooltip]:active:before {
+    top:-41px;
+}
