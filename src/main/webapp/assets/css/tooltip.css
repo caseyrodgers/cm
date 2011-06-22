@@ -27,16 +27,17 @@ a[tooltip]:before {
     color:#fff;
     content:attr(tooltip);
     display:none;
-    font-family:sans-serif;
     z-index:10000;
-    font-size:14px;
-    height:28px;
+    font-size:0.8em;
+    min-height:28px;
+    height:auto;
+    max-width:400px;
+    min-width:260px;
     left:0;
-    line-height:28px;
-    padding:0 14px;
+    line-height:1.4em;
+    padding:0 8px;
     position:absolute;
-    text-shadow:0 -1px 1px rgba(0,0,0,.5);
-    white-space:nowrap;
+    white-space:normal;
     background:#36c;
     background:-webkit-linear-gradient(rgba(255,255,255,.4), rgba(0,0,0,0)),
                rgba(51,102,204,1);
