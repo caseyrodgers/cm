@@ -1,5 +1,5 @@
 <!DOCTYPE HTML PUBLIC"-// W3C//DTD HTML 4.01//EN"" http://www.w3.org/TR/html4/strict.dtd">
-<%@page import="hotmath.gwt.shared.client.util.CmUserException"%>
+<%@page import="hotmath.gwt.cm_rpc.client.CmUserException"%>
 <html><!-- InstanceBegin template="/Templates/main.dwt" codeOutsideHTMLIsLocked="false" -->
     <head>
         <!-- InstanceBeginEditable name="doctitle" -->
