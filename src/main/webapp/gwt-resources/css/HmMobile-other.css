@@ -1,0 +1,160 @@
+
+/*
+body div {
+	border: solid #00FF00;
+}
+*/
+
+
+
+div.page.left 
+{
+	display: none;
+}
+
+
+
+div.page.right 
+{
+	display: none;
+}
+
+
+
+
+#header .backButton {
+	display: inline;
+	cursor: pointer;
+}
+
+
+#header .backButton.pos-left {
+	display: none;
+}
+#header .backButton.pos-right {
+	display: none;
+}
+
+
+#header .title {
+	display: inline;
+	margin-left: 50px;
+}
+
+#header .title.pos-left {
+	display: none;
+}
+#header .title.pos-right {
+	display: none;
+}
+
+
+
+
+div.page li.group {
+	cursor: pointer;
+}
+
+
+
+#header .backButton {
+	color: #FFFFFF;
+}
+
+div.portrait #header .backButton.pos-left {
+	color: #FFFFFF;
+}
+div.landscape #header .backButton.pos-left {
+	color: #FFFFFF;
+}
+
+
+div.portrait #header .backButton.pos-right {
+	color: #FFFFFF;
+}
+div.landscape #header .backButton.pos-right {
+	color: #FFFFFF;
+}
+
+
+
+#header .backButton.animate-on {
+	color: #FFFFFF;
+}
+
+#header .backButton.animate-off {
+	color: #FFFFFF;
+}
+
+/* touched state for the buttons */
+#header .backButton:active {
+	color: #FFFFFF;
+}
+
+
+
+
+
+
+
+
+#header .title {
+	color: #FFFFFF;
+	
+}
+
+
+#header .title.pos-center.button-off {
+	color: #FFFFFF;
+}
+
+
+
+div.portrait #header .title.pos-center.button-on.portrait-overflow-off {
+	color: #FFFFFF;
+}
+
+div.portrait #header .title.pos-center.button-on.portrait-overflow-on {
+	color: #FFFFFF;
+}
+
+div.landscape #header .title.pos-center.button-on.landscape-overflow-off {
+	color: #FFFFFF;
+}
+
+div.landscape #header .title.pos-center.button-on.landscape-overflow-on {
+	color: #FFFFFF;
+}
+
+
+#header .title.pos-left {
+	color: #FFFFFF;
+}
+div.landscape #header .title.pos-left {
+	color: #FFFFFF;
+}
+
+
+#header .title.pos-right {
+	color: #FFFFFF;
+}
+div.landscape #header .title.pos-right {
+	color: #FFFFFF;
+}
+
+
+
+#header .title.animate-on {
+	color: #FFFFFF;
+}
+
+#header .title.animate-off {
+	color: #FFFFFF;
+}
+
+
+
+
+
+
+

@@ -474,12 +474,13 @@ public class ActionDispatcher {
          *  command assumed name
          */
         List<String> places = Arrays.asList(
+            assumedCmdPackage,
             "hotmath.gwt.shared.server.service.command.",
             "hotmath.gwt.cm_mobile.server.rpc.",
             "hotmath.gwt.cm_mobile_shared.server.rpc.",
             "hotmath.gwt.solution_editor.server.rpc.",
-            "hotmath.gwt.cm_activity.server.rpc.",
-            assumedCmdPackage
+            "hotmath.gwt.cm_activity.server.rpc."
+            
             );
         for(String place: places) {
             String commandClass = place + cmdName;

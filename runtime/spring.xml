@@ -46,6 +46,7 @@ http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
     <bean id="hotmath.testset.ha.HaUserExtendedDao" class="hotmath.testset.ha.HaUserExtendedDao" parent="abstractJdbcDao"/>
     <bean id="hotmath.cm.server.model.CmReportCardDao" class="hotmath.cm.server.model.CmReportCardDao" parent="abstractJdbcDao"/>
     <bean id="hotmath.cm.dao.HaLoginInfoDao" class="hotmath.cm.dao.HaLoginInfoDao" parent="abstractJdbcDao"/>
+        <bean id="hotmath.gwt.hm_mobile.server.dao.BooksDao" class="hotmath.gwt.hm_mobile.server.dao.BooksDao" parent="abstractJdbcDao"/>
     
 
 </beans>

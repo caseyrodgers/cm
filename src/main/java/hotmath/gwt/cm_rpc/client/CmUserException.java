@@ -1,6 +1,6 @@
 package hotmath.gwt.cm_rpc.client;
 
-import hotmath.gwt.shared.client.util.CmException;
+import hotmath.gwt.cm_rpc.client.rpc.CmRpcException;
 
 
 
@@ -13,7 +13,7 @@ import hotmath.gwt.shared.client.util.CmException;
  * @author casey
  *
  */
-public class CmUserException extends CmException implements CmExceptionDoNotNotify{
+public class CmUserException extends CmRpcException implements CmExceptionDoNotNotify{
     
 	private static final long serialVersionUID = 6319270152152288015L;
 

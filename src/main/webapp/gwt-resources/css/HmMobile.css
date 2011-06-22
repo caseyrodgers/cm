@@ -1,0 +1,884 @@
+body {
+  margin: 0px;
+  padding: 0px;
+  background-image: url('/gwt-resources/images/mobile/default_bkg.png');
+  background-repeat: repeat;
+  font-family: Helvetica;
+  /* ensure that we don't get the default callout following a long touch on
+  an element, which is a default behavior in Mobile Safari */
+  -webkit-touch-callout: none;
+  /* disable the Mobile Safari default behavior to adjust font size automatically
+  to improve readability */
+  -webkit-text-size-adjust: none;
+}
+
+
+
+.book-item {
+	clear: both;
+    height: 83px;
+	margin-bottom: 15px;
+}
+
+.book-item img {
+	float: left;
+	margin-right: 10px;
+}
+
+.book-item div {
+}
+
+.bookViewImpl li {
+	list-style-type: none;
+}
+
+
+.mainPage {
+    padding: 15px;
+}
+.bookInfoBox {
+    clear: both;
+    width:
+    300;
+    height: 90px;
+}
+.pageInfo {
+    text-align: center;
+    float: left;
+    margin-right: 10px;
+}
+.pageNumberDiv {
+    clear: both;
+    margin-top: 10px;
+}
+
+.slider {
+    float: right;
+    width: 90%;
+}
+
+.bookInfoBox img {
+    float: left;
+}
+
+.p-num-div {
+  display: none;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#startup {
+	display: table-cell;
+	vertical-align: middle;
+	height: 356px;
+ }
+
+#startup > div {
+	width: 320px;
+	text-align: center;
+}
+
+#header {
+	position: relative;
+	z-index: 5;
+	height: 40px;
+	background-image: url('/gwt-resources/images/mobile/header_middle.png');
+	border-bottom: 1px solid rgb(45, 54, 66);
+}
+#pad1 {
+	display: block;
+	width: 18px;
+	height: 50px;
+	float: left;
+}
+
+#pad3 {
+	display: block;
+	width: 18px;
+	height: 50px;
+	float: left;
+}
+
+.pad2 {
+	display: block;
+	height: 50px;
+}
+
+#header .backButton {
+
+  
+  /* the buttons should be displayed on top of the titles so that they can always receive touches */
+  z-index: 1;
+
+  font-size: 12px;
+  font-weight: bold;
+  text-align: center;
+  color: white;
+  text-shadow: rgba(0, 0, 0, .6) 0px -1px 0px;
+  /* set up the chrome background */
+  -webkit-border-image : url('/gwt-resources/images/back_button.png') 0 4 0 13;
+  border-width : 0 4px 0 13px;
+  padding-top: 7px;
+  padding-right: 4px;
+  /* base metrics used to ensure a minumum size and specify a max size that can be used to trim the contents */
+  //min-width: 40px;
+  //max-width: 60px;
+  height: 23px; 
+  /* enfore trimming if the label is too long */
+  white-space : nowrap;
+  overflow : hidden;
+  text-overflow: ellipsis;
+}
+
+
+div.portrait #header .backButton {
+	width: 60px;
+}
+
+div.landscape #header .backButton {
+	width: 90px;
+}
+
+
+#header .title {
+  /* base metrics */
+  height: 31px;
+  margin-top: 3px;
+  margin-left: 5px;
+  margin-right: 5px;
+  /* the titles should be displayed below the button so that they don't receive touches */
+  z-index: 0;
+  /* set up the font appearance */
+  font-size: 16pt;
+  font-weight: bold;
+  color: white;
+  text-shadow: rgba(0, 0, 0, .6) 0px -1px 0px;
+  /* enfore trimming if the label is too long */
+  white-space : nowrap;
+  overflow : hidden;
+  text-overflow: ellipsis;
+
+
+}
+
+div.portrait #header .title.button-off {
+	width: 310px;
+	text-align: center;
+}
+
+div.portrait #header .title.button-on.portrait-overflow-off {
+	width: 310px;
+	text-align: center;
+}
+
+div.portrait #header .title.button-on.portrait-overflow-on {
+	width: 218px;
+	text-align: left;
+}
+
+
+
+
+div.landscape #header .title.button-off {
+	width: 470px;
+	text-align: center;
+}
+
+div.landscape #header .title.button-on.landscape-overflow-off {
+	width: 470px;
+	text-align: center;
+}
+
+div.landscape #header .title.button-on.landscape-overflow-on {
+	/*width: 355px;*/
+	width: 310px;
+	text-align: left;
+}
+
+
+
+
+
+
+div.page 
+{
+	#width: 320px;
+	min-height: 376px;
+}
+
+div.landscape div.page 
+{
+	#width: 480px;
+	min-height: 228px;
+	
+}
+
+
+
+#main-content {
+}
+
+table {
+  width: 100%;
+}
+
+#testset_div {
+    
+}
+
+.question_solution_link {
+	display: none;
+}
+
+#testset_div p {
+   font-family:"Times New Roman",Times,serif;
+   font-size:12pt;
+}
+
+#testset_div li {
+  line-height:2em;
+}
+
+#testset_div li {
+  list-style-image:none;
+  list-style-position:outside;
+  list-style-type:none;
+}
+
+#testset_div ul {
+  font-family:"Times New Roman",Times,serif;
+  font-size:12pt;
+  text-align:left;
+}
+
+
+#testset_div .question_div {
+   padding:10px;
+}
+
+.debug-hide {
+  display: none;
+}	
+
+.question_responses p {
+  display:inline;
+  margin:0;
+}
+
+
+.question_head {
+	background: red;
+	text-align: center;
+}
+
+question_head_text {
+	font-weight: bold;
+	font-size: large;
+	font-family:sans-serif;
+}
+
+/** Tutor styles */
+#tutor_embedded {
+  width: 100%;
+}
+
+#tutoroutput {
+        font: 12pt "Times New Roman", Times, serif;
+        width: 500px;
+}
+
+
+.check-quiz-link {
+  display: none;
+}
+
+.percent-complete {
+        background: green;
+        border: 1px solid red;
+        font-weight: bold;
+        text-align: right;
+}
+.percent-complete-wrapper {
+        background-color: red;
+        height: 6px;
+        width: 100%;
+}
+.percent-complete-wrapper img {
+        height: 4px;
+}
+.percent-complete-title {
+        display: block;
+        position: absolute;
+        right: 0;
+        width: 200px;
+}
+
+
+/** tutor sytles */
+#show-work-force,#tutoring_button {
+   display: none;
+}
+
+
+#steps_next {
+  margin-right: 10px;
+}
+
+.step_title_step {
+   background: #E7C2AA;
+   -moz-border-radius:0 0 15px 0;
+   border-radius: 0 0 15px 0;
+   width: 100px;
+}
+
+.hint {
+   background: #DEFF66;
+}
+.step_title_hint {
+  background: #6F7F33;
+  color: white;
+  width: 100px;
+  padding-left: 2px;
+   -moz-border-radius:0 0 15px 0;
+   border-radius: 0 0 15px 0;
+}
+
+.step_content {
+   -moz-border-radius:0 0 15px 15px;
+   border-radius: 0 0 15px 15px;
+}
+
+#control-floater {
+	width: 25px;
+	background: yellow;
+	z-index: 10;
+	display: block;
+	position: absolute;
+	top: 10px;
+	right: 10px;
+}
+
+#control-floater.hide {
+	visibility: hidden;
+}
+
+#control-floater.control-panel-expanded {
+	background: green;
+}
+#control-panel-expanded button {
+	width: 150px;
+	margin-bottom: 3px;
+}
+
+#control-panel-expanded {
+	display: none;
+	position: absolute;
+	top: 40;
+	width: 250px;
+	z-index: 999;
+	background: yellow;
+	padding: 10px;
+}
+
+#control-panel-expanded.show {
+	display: block;
+}
+
+#startup.hide {
+	display: none;
+}
+
+#pages_container {
+	padding: 10px;
+}
+
+
+
+
+div.page ul.touch {
+  width: 300px;
+  padding: 0px;
+  margin: 0;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+div.landscape div.page ul.touch {
+ h width: 460px;
+}
+
+div.page ul.touch li {
+  list-style-type: none;
+  background-color: white;
+  border-style: solid;
+  border-width: 1px 1px 0px 1px;
+  border-color: rgb(171,173,176);  
+  margin: 0px;
+  padding-top: 14px;
+  padding-left: 10px;
+  padding-right: 20px;
+  /* ensure that long pieces of text get trimmed */
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/*
+this matches the first list item, which needs rounding in the top corners
+and no bottom border as the item below will already draw a border at its top
+*/
+div.page ul.touch li:first-child {
+  -webkit-border-top-left-radius: 8px;
+  -webkit-border-top-right-radius: 8px;
+  border: 1px solid rgb(171,173,176);
+  border-bottom-width: 0;
+}
+
+/*
+this matches the last list item, which needs rounding in the bottom corners
+and a bottom border
+*/
+div.page ul.touch li:last-child {
+  -webkit-border-bottom-left-radius: 8px;
+  -webkit-border-bottom-right-radius: 8px;
+  border: 1px solid rgb(171,173,176);
+  margin-bottom: 5px;
+}
+
+/*
+list items with the .group class are those that can be tapped to drill
+further down and therefore need an arrow in the background to indicate that
+*/
+div.page ul.touch li.group {
+  background-image: url('/gwt-resources/images/mobile/chevron.png');
+  background-repeat: no-repeat;
+  background-position: 280px 18px;
+}
+
+div.landscape div.page ul.touch li.group {
+  background-position: 440px 18px;
+}
+
+/* this is for the touched state of list items */
+div.page ul.touch li.group:active {
+  background-image: url('/gwt-resources/images/mobile/chevron_touched.png'), url('/gwt-resources/images/mobile/item_background_touched.png');
+  background-position: 280px 18px, 0 0;
+  background-repeat: no-repeat, repeat-x;
+  color: white;
+
+  /* why is this needed background-image should take care of it
+  background: #0082F0;
+ */
+}
+
+div.landscape div.page ul.touch li.group:active {
+  background-position: 440px 18px, 0 0;
+}
+
+
+#hm_flash_widget.not_used {
+	display: none;
+}
+
+
+.search-bar {
+	margin-top: 5px;
+	background: #9CABBF;
+}
+
+.search-bar span {
+	font-size: 1.5em;
+	margin: 0 5px;
+	
+}
+
+.search-bar .selected {
+	font-size: 1.8em;
+	font-weight: bold;
+	background-color: yellow;
+}
+
+.topic-view-page-panel ul {
+	margin: 0 0 0 0px;
+	padding: 0;
+}
+
+.topic-view-page-panel li {
+	list-style: none;
+	margin-left: 0px;
+}
+
+
+.topic-view-page-panel .resource_type {
+   width: 250px;
+   color: white;
+   padding: 2px;
+   background-color: #7086A4;
+   margin: 10px 0 4px 0;
+   -moz-border-radius:0 15px 0px 0;
+   border-radius: 0 15px 0px 0;
+}
+
+.topic-view-page-panel .resource_type button {
+	margin-bottom: 5px;
+	font-size: 1.1em;
+}
+
+#steps_tail {
+    background-color: #DEDEDE;
+    font-size: 20px;
+    padding: 5px;
+    -moz-border-radius:10px;
+    border-radius: 10px;
+}
+
+#steps_tail button {
+   1em;
+}
+
+
+#steps_head_title {
+	display: none;
+}
+
+.popup-message {
+	background: white;
+	-moz-border-radius:10px;
+    border-radius: 10px;
+	border: 2px solid #6E84A2;
+	padding: 10px;
+	font-size: 1.2em;
+    -moz-box-shadow: 3px 3px 3px #666;
+    -webkit-box-shadow: 3px 3px 3px #666;
+    box-shadow: 3px 3px 3px #666;
+}
+
+.popup-message.error {
+	color: red;
+}
+
+.topic-view-page-panel .resource-button {
+	width: 200px;
+	height: 50px;
+	margin: 3px;
+}
+
+
+#search-list-items {
+	font-size: 1.2em;
+}
+
+
+#tutor_message {
+	color: red;
+	font-size: .9em;
+}
+
+.search-box {
+	margin-bottom: 10px;
+}
+
+
+
+
+
+/** Search List Tab panel */
+.gwt-DecoratedTabBar {
+}
+
+.gwt-DecoratedTabBar .gwt-TabBarFirst {
+  width: 5px;  /* first tab distance from the left */
+}
+
+.gwt-DecoratedTabBar .gwt-TabBarRest {
+}
+
+.gwt-DecoratedTabBar .gwt-TabBarItem {
+  border-collapse: collapse;
+  margin-left: 6px;
+}
+
+.gwt-DecoratedTabBar .tabTopCenter {
+  padding: 0px;
+  background: #d0e4f6;
+}
+
+.gwt-DecoratedTabBar .tabTopLeft,
+.gwt-DecoratedTabBar .tabTopRight {
+  padding: 0px;
+  zoom: 1;
+}
+
+.gwt-DecoratedTabBar .tabTopLeftInner,
+.gwt-DecoratedTabBar .tabTopRightInner {
+  width: 6px;
+  height: 6px;
+}
+
+.gwt-DecoratedTabBar .tabTopLeft {
+  background: url(images/corner.png) no-repeat 0px -55px;
+  -background: url(images/corner_ie6.png) no-repeat 0px -55px;
+}
+
+.gwt-DecoratedTabBar .tabTopRight {
+  background: url(images/corner.png) no-repeat -6px -55px;
+  -background: url(images/corner_ie6.png) no-repeat -6px -55px;
+}
+
+.gwt-DecoratedTabBar .tabMiddleLeft,
+.gwt-DecoratedTabBar .tabMiddleRight {
+  width: 6px;
+  padding: 0px;
+  background: #d0e4f6;
+}
+
+.gwt-DecoratedTabBar .tabMiddleLeftInner,
+.gwt-DecoratedTabBar .tabMiddleRightInner {
+  width: 1px;
+  height: 1px;
+}
+
+.gwt-DecoratedTabBar .tabMiddleCenter {
+  padding: 0px 4px 2px 4px;
+  cursor: pointer;
+  cursor: hand;
+  color: black;
+  font-weight: bold;
+  text-align: center;
+  background: #d0e4f6;
+}
+
+.gwt-DecoratedTabBar .gwt-TabBarItem-selected .tabTopCenter {
+  background: #92c1f0;
+}
+
+.gwt-DecoratedTabBar .gwt-TabBarItem-selected .tabTopLeft {
+  background-position: 0px -61px;
+}
+
+.gwt-DecoratedTabBar .gwt-TabBarItem-selected .tabTopRight {
+  background-position: -6px -61px;
+}
+
+.gwt-DecoratedTabBar .gwt-TabBarItem-selected .tabMiddleLeft,
+.gwt-DecoratedTabBar .gwt-TabBarItem-selected .tabMiddleRight {
+  background: #92c1f0;
+}
+
+.gwt-DecoratedTabBar .gwt-TabBarItem-selected .tabMiddleCenter {
+  cursor: default;
+  background: #92c1f0;
+}
+
+.gwt-DecoratedTabBar .gwt-TabBarItem-disabled .tabMiddleCenter {
+  cursor: default;
+  color: #999999;
+}
+
+html>body .gwt-DecoratedTabBar {
+}
+
+* html .gwt-DecoratedTabBar .tabTopLeftInner,
+* html .gwt-DecoratedTabBar .tabTopRightInner {
+  width: 6px;
+  height: 6px;
+  overflow: hidden;
+}
+
+.gwt-TabPanel {
+}
+
+.gwt-TabPanelBottom {
+  border-color: #92c1f0;
+  border-style: solid;
+  border-width: 3px 2px 2px;
+  overflow: hidden;
+  padding: 6px;
+}
+
+/** End Search List Tab Panel */
+
+
+
+
+.question_guess {
+	line-height: 2.5em;
+}
+
+.question_guess img {
+	display: inline;
+	margin-left: 10px;
+}
+	
+	
+.question_guess p {
+	display: inline;
+	margin: 5px;
+	padding: 5px;
+}
+
+
+.questionResponseAnswer {
+	background: #DDDEEE;
+	margin: 10px;
+	padding: 10px;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+/** tutor_flash_widget.css */
+
+/** Tutor Widget Styles */
+
+#hm_flash_object {
+	
+}
+
+
+#hm_flash_widget {
+  margin-top: 5px;
+  position: relative;
+  width: 275px;
+  -moz-border-radius: 5%;
+  border-radius: 5%;
+  -moz-box-shadow: 3px 3px 3px #666;
+  -webkit-box-shadow: 3px 3px 3px #666;
+  box-shadow: 3px 3px 3px #666;
+  
+  border: 2px solid #F94600;
+  border-left: 10px solid #F94600;
+}
+
+#hm_flash_widget_head {
+	margin: 0 2px;
+	border-bottom: 1px solid black;
+	margin-top: 5px;
+	font-family: Tahoma,Arial;
+	font-size: .9em;
+	color: #F94600;
+	font-weight: bold;
+	text-align: center;
+}
+
+#hm_widget_form {
+   font-size: 1.3em;
+   margin: 15px 10px;
+   padding: 10px 0 0 0;
+   min-height: 80px;
+   height:auto !important;
+   height:80px;
+}
+
+#widget_bar {
+  width: 40px;
+  height: 2px;
+  background: black;
+  font-weight: bold;
+  padding: 0;
+  margin: 2px 0px 0 0;
+}
+
+#widget_input_field_1,#widget_input_field_2 {
+	font-weight: bold;
+	width: 95px;
+}
+
+#widget_submit {
+    /* position: absolute;
+    top: 35px;
+    right: 3px;
+    */
+    
+    margin: 15px 10px 10px 0px;
+}	
+
+
+#hm_flash_widget.not_used p{
+   padding: 10px;
+   font-size: .8em;
+   color: red;
+   font-family:tahoma;
+}
+
+
+
+.widget-fraction {
+	padding: 2px;
+	margin-bottom: 3px;
+	width: 100px;
+	border: 1px solid black;
+    -moz-border-radius: 5%;
+    border-radius: 5%;
+}
+
+
+.widget-fraction input  {
+	border: none;
+    text-align: center;	
+}
+
+#hm_flash_widget .divider {
+	height: 3px;
+	background: black;
+	line-height: 3px;
+	width: 80px;
+}
+
+
+#hm_widget_form.point-slope-form span {
+}
+
+#hm_widget_form.science-notation {
+}
+
+
+#hm_flash_widget_indicator img {
+	
+}
+
+
+
+.hm_question_def {}
+.hm_question_def ul{
+   padding: 10px;
+   margin: 0px;
+}
+.hm_question_def li {
+	list-style: none;
+	line-height: 1.5em;
+}
+
+.hm_question_def li div:first-child img {
+  margin-right: 5px;
+}

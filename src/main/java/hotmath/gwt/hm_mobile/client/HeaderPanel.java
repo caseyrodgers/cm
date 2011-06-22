@@ -1,6 +1,5 @@
-package hotmath.gwt.cm_mobile2.client;
+package hotmath.gwt.hm_mobile.client;
 
-import hotmath.gwt.cm_mobile_shared.client.Controller;
 import hotmath.gwt.cm_mobile_shared.client.page.IPage;
 import hotmath.gwt.cm_mobile_shared.client.util.GenericTextTag;
 import hotmath.gwt.cm_mobile_shared.client.util.ObservableStack;
@@ -67,10 +66,10 @@ public class HeaderPanel extends Composite {
                                                                          var instance = this;
 
                                                                          var callBack = function(e){
-                                                                         instance.@hotmath.gwt.cm_mobile2.client.HeaderPanel::onDomTransitionEnded()();
+                                                                         instance.@hotmath.gwt.hm_mobile.client.HeaderPanel::onDomTransitionEnded()();
                                                                          };
 
-                                                                         element.addEventListener('webkitTransitionEnd', callBack, false);	
+                                                                         element.addEventListener('webkitTransitionEnd', callBack, false);  
                                                                          }
                                                                          catch (err)
                                                                          {
@@ -396,3 +395,4 @@ public class HeaderPanel extends Composite {
 
     }
 }
+

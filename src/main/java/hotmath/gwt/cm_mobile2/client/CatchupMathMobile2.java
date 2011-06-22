@@ -1,8 +1,14 @@
 package hotmath.gwt.cm_mobile2.client;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import hotmath.gwt.cm_mobile2.client.TopicViewPagePanel.Callback;
 import hotmath.gwt.cm_mobile_shared.client.CatchupMathMobileShared;
 import hotmath.gwt.cm_mobile_shared.client.CmMobileResourceViewer;
+import hotmath.gwt.cm_mobile_shared.client.ControlAction;
+import hotmath.gwt.cm_mobile_shared.client.ControlPanel;
+import hotmath.gwt.cm_mobile_shared.client.Controller;
 import hotmath.gwt.cm_mobile_shared.client.ScreenOrientation;
 import hotmath.gwt.cm_mobile_shared.client.TokenParser;
 import hotmath.gwt.cm_mobile_shared.client.event.CmEvent;
@@ -49,7 +55,21 @@ public class CatchupMathMobile2 implements EntryPoint, OrientationChangedHandler
         
         /** add the floater
          */
-        _controlPanel = new ControlPanel();
+        /** Add default actions */
+        List<ControlAction> defaultActions = new ArrayList<ControlAction>();
+        defaultActions.add(new ControlAction("Search for a lesson") {
+            @Override
+            public void doAction() {
+                Controller.navigateToTopicList();
+            }
+        });
+        defaultActions.add(new ControlAction("Login") {
+            @Override
+            public void doAction() {
+                Controller.navigateToLogin();
+            }
+        });
+        _controlPanel = new ControlPanel(defaultActions);
         _rootPanel.add(_controlPanel);     
         _rootPanel.add(createApplicationPanel());
    

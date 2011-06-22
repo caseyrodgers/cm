@@ -9,6 +9,11 @@ public class ListItem extends ComplexPanel implements HasText {
     public ListItem() { 
             setElement(DOM.createElement("LI")); 
     } 
+    
+    public ListItem(String text) {
+        super();
+        setText(text);
+    }
     public void add(Widget w) { 
             super.add(w, getElement()); 
     } 
