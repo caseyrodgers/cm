@@ -1,0 +1,155 @@
+.sexy_cm_green span span {
+    font-size: 15px;
+    font-weight: normal;
+    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.5);
+}
+.sexy_cm_green:hover span, .sexy_cm_green:focus span {
+    background-position: 100% -40px;
+}
+.sexy_cm_green:hover span span, .sexy_cm_green:focus span span {
+    background-position: 0 -40px;
+}
+.sexy_cm_green:active span {
+    background-position: 100% -80px;
+}
+.sexy_cm_green:active span span {
+    background-position: 0 -80px;
+}
+.sexy_cm_green[disabled] span, .sexy_cm_green.disabled span {
+    background-position: 100% -120px;
+}
+.sexy_cm_green[disabled] span span, .sexy_cm_green.disabled span span {
+    background-position: 0 -120px;
+}
+.sexybutton.sexy_cm_green, .sexybutton.sexy_cm_green:hover, .sexybutton.sexy_cm_green:focus {
+    color: white !important;
+}
+.sexybutton.sexy_cm_green[disabled], .sexybutton.sexy_cm_green[disabled]:hover, .sexybutton.sexy_cm_green[disabled]:active, .sexybutton.sexy_cm_green[disabled]:focus, .sexybutton.sexy_cm_green.disabled, .sexybutton.sexy_cm_green.disabled:hover, .sexybutton.sexy_cm_green.disabled:active, .sexybutton.sexy_cm_green.disabled:focus {
+    color: #333333 !important;
+}
+.sexybutton.sexy_cm_green span span {
+    background-image: url("/assets/images/sexybuttons/sexybutton_green_left.png");
+}
+.sexybutton.sexy_cm_green span {
+    background-image: url("/assets/images/sexybuttons/sexybutton_green_right.png");
+}
+.sexybutton.sexy_cm_green span {
+    height: 40px;
+    line-height: 40px;
+}
+.sexy_cm_gray span span {
+    font-size: 15px;
+    font-weight: normal;
+    text-shadow: none;
+}
+
+.sexy_cm_gray:hover span, .sexy_cm_gray:focus span {
+    background-position: 100% -40px;
+}
+.sexy_cm_gray:hover span span, .sexy_cm_gray:focus span span {
+    background-position: 0 -40px;
+}
+.sexy_cm_gray:active span {
+    background-position: 100% -80px;
+}
+.sexy_cm_gray:active span span {
+    background-position: 0 -80px;
+}
+.sexy_cm_gray[disabled] span, .sexy_cm_gray.disabled span {
+    background-position: 100% -120px;
+}
+.sexy_cm_gray[disabled] span span, .sexy_cm_gray.disabled span span {
+    background-position: 0 -120px;
+}
+.sexybutton.sexy_cm_gray, .sexybutton.sexy_cm_gray:hover, .sexybutton.sexy_cm_gray:focus {
+    color: black !important;
+}
+.sexybutton.sexy_cm_gray[disabled], .sexybutton.sexy_cm_gray[disabled]:hover, .sexybutton.sexy_cm_gray[disabled]:active, .sexybutton.sexy_cm_gray[disabled]:focus, .sexybutton.sexy_cm_gray.disabled, .sexybutton.sexy_cm_gray.disabled:hover, .sexybutton.sexy_cm_gray.disabled:active, .sexybutton.sexy_cm_gray.disabled:focus {
+    color: #333333 !important;
+}
+.sexybutton.sexy_cm_gray span span {
+    background-image: url("/assets/images/sexybuttons/sexybutton_login_left.png");
+}
+.sexybutton.sexy_cm_gray span {
+    background-image: url("/assets/images/sexybuttons/sexybutton_login_right.png");
+}
+.sexybutton.sexy_cm_gray span {
+    height: 40px;
+    line-height: 40px;
+}
+.sexybutton_xxl-aqua span span {
+    font-size: 25px;
+    font-weight: normal;
+}
+.sexybutton_xxl-aqua:hover span, .sexybutton_xxl-aqua:focus span {
+    background-position: 100% -90px;
+}
+.sexybutton_xxl-aqua:hover span span, .sexybutton_xxl-aqua:focus span span {
+    background-position: 0 -90px;
+}
+.sexybutton_xxl-aqua:active span {
+    background-position: 100% -180px;
+}
+.sexybutton_xxl-aqua:active span span {
+    background-position: 0 -180px;
+}
+.sexybutton_xxl-aqua[disabled] span, .sexybutton_xxl-aqua.disabled span {
+    background-position: 100% -270px;
+}
+.sexybutton_xxl-aqua[disabled] span span, .sexybutton_xxl-aqua.disabled span span {
+    background-position: 0 -270px;
+}
+.sexybutton.sexybutton_xxl-aqua, .sexybutton.sexybutton_xxl-aqua:hover, .sexybutton.sexybutton_xxl-aqua:focus {
+    color: white !important;
+}
+.sexybutton.sexybutton_xxl-aqua[disabled], .sexybutton.sexybutton_xxl-aqua[disabled]:hover, .sexybutton.sexybutton_xxl-aqua[disabled]:active, .sexybutton.sexybutton_xxl-aqua[disabled]:focus, .sexybutton.sexybutton_xxl-aqua.disabled, .sexybutton.sexybutton_xxl-aqua.disabled:hover, .sexybutton.sexybutton_xxl-aqua.disabled:active, .sexybutton.sexybutton_xxl-aqua.disabled:focus {
+    color: #333333 !important;
+}
+.sexybutton.sexybutton_xxl-aqua span span {
+    background-image: url("/assets/images/sexybuttons/sexybutton_xxl-aqua_left.png");
+}
+.sexybutton.sexybutton_xxl-aqua span {
+    background-image: url("/assets/images/sexybuttons/sexybutton_xxl-aqua_right.png");
+}
+.sexybutton.sexybutton_xxl-aqua span {
+    height: 90px;
+    line-height: 90px;
+}
+.sexybutton_xxl-green span span {
+    font-size: 25px;
+    font-weight: normal;
+}
+.sexybutton_xxl-green:hover span, .sexybutton_xxl-green:focus span {
+    background-position: 100% -90px;
+}
+.sexybutton_xxl-green:hover span span, .sexybutton_xxl-green:focus span span {
+    background-position: 0 -90px;
+}
+.sexybutton_xxl-green:active span {
+    background-position: 100% -180px;
+}
+.sexybutton_xxl-green:active span span {
+    background-position: 0 -180px;
+}
+.sexybutton_xxl-green[disabled] span, .sexybutton_xxl-green.disabled span {
+    background-position: 100% -270px;
+}
+.sexybutton_xxl-green[disabled] span span, .sexybutton_xxl-green.disabled span span {
+    background-position: 0 -270px;
+}
+.sexybutton.sexybutton_xxl-green, .sexybutton.sexybutton_xxl-green:hover, .sexybutton.sexybutton_xxl-green:focus {
+    color: white !important;
+}
+.sexybutton.sexybutton_xxl-green[disabled], .sexybutton.sexybutton_xxl-green[disabled]:hover, .sexybutton.sexybutton_xxl-green[disabled]:active, .sexybutton.sexybutton_xxl-green[disabled]:focus, .sexybutton.sexybutton_xxl-green.disabled, .sexybutton.sexybutton_xxl-green.disabled:hover, .sexybutton.sexybutton_xxl-green.disabled:active, .sexybutton.sexybutton_xxl-green.disabled:focus {
+    color: #333333 !important;
+}
+.sexybutton.sexybutton_xxl-green span span {
+    background-image: url("/assets/images/sexybuttons/sexybutton_xxl-green_left.png");
+}
+.sexybutton.sexybutton_xxl-green span {
+    background-image: url("/assets/images/sexybuttons/sexybutton_xxl-green_right.png");
+}
+.sexybutton.sexybutton_xxl-green span {
+    height: 90px;
+    line-height: 90px;
+}

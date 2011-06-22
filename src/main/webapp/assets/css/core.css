@@ -878,7 +878,11 @@ div#postit  a + p {
 }
 
 
-#webinar-image {
-    margin-left: 20px;
-    margin-top: 10px;
+.webinar-info {
+	color: #00BDBD;
+	margin-bottom: 10px;
+}
+
+.webinar-info img {
+	margin-right: 10px;
 }

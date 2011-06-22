@@ -66,6 +66,14 @@ body {
 }
 
 
+.CategoryListViewImpl li {
+	text-align: center;
+}
+
+.CategoryListViewImpl button {
+	width: 250px;
+	margin-bottom: 15px;
+}
 
 
 
