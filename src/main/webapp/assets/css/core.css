@@ -876,3 +876,9 @@ div#postit  a + p {
 .yui3-widget-hd .close span {
    font-size: .8em;
 }
+
+
+#webinar-image {
+    margin-left: 20px;
+    margin-top: 10px;
+}
