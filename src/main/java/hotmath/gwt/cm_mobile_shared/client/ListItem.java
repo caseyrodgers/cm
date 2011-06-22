@@ -8,7 +8,9 @@ import com.google.gwt.user.client.ui.Widget;
 public class ListItem extends ComplexPanel implements HasText { 
     public ListItem() { 
             setElement(DOM.createElement("LI")); 
-    } 
+    }
+    
+    
     public void add(Widget w) { 
             super.add(w, getElement()); 
     } 

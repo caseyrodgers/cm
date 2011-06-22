@@ -6,6 +6,7 @@ import java.util.Stack;
 import com.google.gwt.event.shared.GwtEvent;
 import com.google.gwt.event.shared.HandlerManager;
 import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.user.client.Window;
 
 /** A stack object that tracks and notifies
  *  listeners when objects are added or popped.
@@ -61,12 +62,11 @@ public class ObservableStack<E> implements Iterable<E> {
 	}
 
 	private HandlerManager ensureHandlers() {
-		return mHandlerManager == null ? mHandlerManager = new HandlerManager(
-				this) : mHandlerManager;
+	    Window.alert("Ensuring handlers");
+		return mHandlerManager == null ? mHandlerManager = new HandlerManager(this) : mHandlerManager;
 	}
 
-	void firePushEvent(
-			GwtEvent<ObservableStackPushEvent.ObservableStackPushHandler<E>> event) {
+	void firePushEvent(GwtEvent<ObservableStackPushEvent.ObservableStackPushHandler<E>> event) {
 		ensureHandlers().fireEvent(event);
 	}
 
