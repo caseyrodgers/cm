@@ -12,24 +12,26 @@ body {
   -webkit-text-size-adjust: none;
 }
 
-
+ul {
+	padding: 0;
+}
 
 .book-item {
-	clear: both;
+    clear: both;
     height: 83px;
-	margin-bottom: 15px;
+    margin-bottom: 15px;
 }
 
 .book-item img {
-	float: left;
-	margin-right: 10px;
+    float: left;
+    margin-right: 10px;
 }
 
 .book-item div {
 }
 
 .bookViewImpl li {
-	list-style-type: none;
+    list-style-type: none;
 }
 
 
@@ -67,12 +69,13 @@ body {
 
 
 .CategoryListViewImpl li {
-	text-align: center;
+    text-align: center;
 }
 
-.CategoryListViewImpl button {
-	width: 250px;
-	margin-bottom: 15px;
+.CategoryListViewImpl button.sexybutton {
+    width: 150px;
+    margin-bottom: 15px;
+    color: black !important;
 }
 
 
@@ -99,40 +102,40 @@ body {
 
 
 #startup {
-	display: table-cell;
-	vertical-align: middle;
-	height: 356px;
+    display: table-cell;
+    vertical-align: middle;
+    height: 356px;
  }
 
 #startup > div {
-	width: 320px;
-	text-align: center;
+    width: 320px;
+    text-align: center;
 }
 
 #header {
-	position: relative;
-	z-index: 5;
-	height: 40px;
-	background-image: url('/gwt-resources/images/mobile/header_middle.png');
-	border-bottom: 1px solid rgb(45, 54, 66);
+    position: relative;
+    z-index: 5;
+    height: 40px;
+    background-image: url('/gwt-resources/images/mobile/header_middle.png');
+    border-bottom: 1px solid rgb(45, 54, 66);
 }
 #pad1 {
-	display: block;
-	width: 18px;
-	height: 50px;
-	float: left;
+    display: block;
+    width: 18px;
+    height: 50px;
+    float: left;
 }
 
 #pad3 {
-	display: block;
-	width: 18px;
-	height: 50px;
-	float: left;
+    display: block;
+    width: 18px;
+    height: 50px;
+    float: left;
 }
 
 .pad2 {
-	display: block;
-	height: 50px;
+    display: block;
+    height: 50px;
 }
 
 #header .backButton {
@@ -163,11 +166,11 @@ body {
 
 
 div.portrait #header .backButton {
-	width: 60px;
+    width: 60px;
 }
 
 div.landscape #header .backButton {
-	width: 90px;
+    width: 90px;
 }
 
 
@@ -193,37 +196,37 @@ div.landscape #header .backButton {
 }
 
 div.portrait #header .title.button-off {
-	width: 310px;
-	text-align: center;
+    width: 310px;
+    text-align: center;
 }
 
 div.portrait #header .title.button-on.portrait-overflow-off {
-	width: 310px;
-	text-align: center;
+    width: 310px;
+    text-align: center;
 }
 
 div.portrait #header .title.button-on.portrait-overflow-on {
-	width: 218px;
-	text-align: left;
+    width: 218px;
+    text-align: left;
 }
 
 
 
 
 div.landscape #header .title.button-off {
-	width: 470px;
-	text-align: center;
+    width: 470px;
+    text-align: center;
 }
 
 div.landscape #header .title.button-on.landscape-overflow-off {
-	width: 470px;
-	text-align: center;
+    width: 470px;
+    text-align: center;
 }
 
 div.landscape #header .title.button-on.landscape-overflow-on {
-	/*width: 355px;*/
-	width: 310px;
-	text-align: left;
+    /*width: 355px;*/
+    width: 310px;
+    text-align: left;
 }
 
 
@@ -233,15 +236,15 @@ div.landscape #header .title.button-on.landscape-overflow-on {
 
 div.page 
 {
-	#width: 320px;
-	min-height: 376px;
+    #width: 320px;
+    min-height: 376px;
 }
 
 div.landscape div.page 
 {
-	#width: 480px;
-	min-height: 228px;
-	
+    #width: 480px;
+    min-height: 228px;
+    
 }
 
 
@@ -258,7 +261,7 @@ table {
 }
 
 .question_solution_link {
-	display: none;
+    display: none;
 }
 
 #testset_div p {
@@ -289,7 +292,7 @@ table {
 
 .debug-hide {
   display: none;
-}	
+}   
 
 .question_responses p {
   display:inline;
@@ -298,14 +301,14 @@ table {
 
 
 .question_head {
-	background: red;
-	text-align: center;
+    background: red;
+    text-align: center;
 }
 
 question_head_text {
-	font-weight: bold;
-	font-size: large;
-	font-family:sans-serif;
+    font-weight: bold;
+    font-size: large;
+    font-family:sans-serif;
 }
 
 /** Tutor styles */
@@ -380,47 +383,47 @@ question_head_text {
 }
 
 #control-floater {
-	width: 25px;
-	background: yellow;
-	z-index: 10;
-	display: block;
-	position: absolute;
-	top: 10px;
-	right: 10px;
+    width: 25px;
+    background: yellow;
+    z-index: 10;
+    display: block;
+    position: absolute;
+    top: 10px;
+    right: 10px;
 }
 
 #control-floater.hide {
-	visibility: hidden;
+    visibility: hidden;
 }
 
 #control-floater.control-panel-expanded {
-	background: green;
+    background: green;
 }
 #control-panel-expanded button {
-	width: 150px;
-	margin-bottom: 3px;
+    width: 150px;
+    margin-bottom: 3px;
 }
 
 #control-panel-expanded {
-	display: none;
-	position: absolute;
-	top: 40;
-	width: 250px;
-	z-index: 999;
-	background: yellow;
-	padding: 10px;
+    display: none;
+    position: absolute;
+    top: 40;
+    width: 250px;
+    z-index: 999;
+    background: yellow;
+    padding: 10px;
 }
 
 #control-panel-expanded.show {
-	display: block;
+    display: block;
 }
 
 #startup.hide {
-	display: none;
+    display: none;
 }
 
 #pages_container {
-	padding: 10px;
+    padding: 10px;
 }
 
 
@@ -507,35 +510,35 @@ div.landscape div.page ul.touch li.group:active {
 
 
 #hm_flash_widget.not_used {
-	display: none;
+    display: none;
 }
 
 
 .search-bar {
-	margin-top: 5px;
-	background: #9CABBF;
+    margin-top: 5px;
+    background: #9CABBF;
 }
 
 .search-bar span {
-	font-size: 1.5em;
-	margin: 0 5px;
-	
+    font-size: 1.5em;
+    margin: 0 5px;
+    
 }
 
 .search-bar .selected {
-	font-size: 1.8em;
-	font-weight: bold;
-	background-color: yellow;
+    font-size: 1.8em;
+    font-weight: bold;
+    background-color: yellow;
 }
 
 .topic-view-page-panel ul {
-	margin: 0 0 0 0px;
-	padding: 0;
+    margin: 0 0 0 0px;
+    padding: 0;
 }
 
 .topic-view-page-panel li {
-	list-style: none;
-	margin-left: 0px;
+    list-style: none;
+    margin-left: 0px;
 }
 
 
@@ -550,8 +553,8 @@ div.landscape div.page ul.touch li.group:active {
 }
 
 .topic-view-page-panel .resource_type button {
-	margin-bottom: 5px;
-	font-size: 1.1em;
+    margin-bottom: 5px;
+    font-size: 1.1em;
 }
 
 #steps_tail {
@@ -568,44 +571,44 @@ div.landscape div.page ul.touch li.group:active {
 
 
 #steps_head_title {
-	display: none;
+    display: none;
 }
 
 .popup-message {
-	background: white;
-	-moz-border-radius:10px;
+    background: white;
+    -moz-border-radius:10px;
     border-radius: 10px;
-	border: 2px solid #6E84A2;
-	padding: 10px;
-	font-size: 1.2em;
+    border: 2px solid #6E84A2;
+    padding: 10px;
+    font-size: 1.2em;
     -moz-box-shadow: 3px 3px 3px #666;
     -webkit-box-shadow: 3px 3px 3px #666;
     box-shadow: 3px 3px 3px #666;
 }
 
 .popup-message.error {
-	color: red;
+    color: red;
 }
 
 .topic-view-page-panel .resource-button {
-	width: 200px;
-	height: 50px;
-	margin: 3px;
+    width: 200px;
+    height: 50px;
+    margin: 3px;
 }
 
 
 #search-list-items {
-	font-size: 1.2em;
+    font-size: 1.2em;
 }
 
 
 #tutor_message {
-	color: red;
-	font-size: .9em;
+    color: red;
+    font-size: .9em;
 }
 
 .search-box {
-	margin-bottom: 10px;
+    margin-bottom: 10px;
 }
 
 
@@ -732,26 +735,26 @@ html>body .gwt-DecoratedTabBar {
 
 
 .question_guess {
-	line-height: 2.5em;
+    line-height: 2.5em;
 }
 
 .question_guess img {
-	display: inline;
-	margin-left: 10px;
+    display: inline;
+    margin-left: 10px;
 }
-	
-	
+    
+    
 .question_guess p {
-	display: inline;
-	margin: 5px;
-	padding: 5px;
+    display: inline;
+    margin: 5px;
+    padding: 5px;
 }
 
 
 .questionResponseAnswer {
-	background: #DDDEEE;
-	margin: 10px;
-	padding: 10px;
+    background: #DDDEEE;
+    margin: 10px;
+    padding: 10px;
 }
 
 
@@ -770,7 +773,7 @@ html>body .gwt-DecoratedTabBar {
 /** Tutor Widget Styles */
 
 #hm_flash_object {
-	
+    
 }
 
 
@@ -789,14 +792,14 @@ html>body .gwt-DecoratedTabBar {
 }
 
 #hm_flash_widget_head {
-	margin: 0 2px;
-	border-bottom: 1px solid black;
-	margin-top: 5px;
-	font-family: Tahoma,Arial;
-	font-size: .9em;
-	color: #F94600;
-	font-weight: bold;
-	text-align: center;
+    margin: 0 2px;
+    border-bottom: 1px solid black;
+    margin-top: 5px;
+    font-family: Tahoma,Arial;
+    font-size: .9em;
+    color: #F94600;
+    font-weight: bold;
+    text-align: center;
 }
 
 #hm_widget_form {
@@ -818,8 +821,8 @@ html>body .gwt-DecoratedTabBar {
 }
 
 #widget_input_field_1,#widget_input_field_2 {
-	font-weight: bold;
-	width: 95px;
+    font-weight: bold;
+    width: 95px;
 }
 
 #widget_submit {
@@ -829,7 +832,7 @@ html>body .gwt-DecoratedTabBar {
     */
     
     margin: 15px 10px 10px 0px;
-}	
+}   
 
 
 #hm_flash_widget.not_used p{
@@ -842,25 +845,25 @@ html>body .gwt-DecoratedTabBar {
 
 
 .widget-fraction {
-	padding: 2px;
-	margin-bottom: 3px;
-	width: 100px;
-	border: 1px solid black;
+    padding: 2px;
+    margin-bottom: 3px;
+    width: 100px;
+    border: 1px solid black;
     -moz-border-radius: 5%;
     border-radius: 5%;
 }
 
 
 .widget-fraction input  {
-	border: none;
-    text-align: center;	
+    border: none;
+    text-align: center; 
 }
 
 #hm_flash_widget .divider {
-	height: 3px;
-	background: black;
-	line-height: 3px;
-	width: 80px;
+    height: 3px;
+    background: black;
+    line-height: 3px;
+    width: 80px;
 }
 
 
@@ -872,7 +875,7 @@ html>body .gwt-DecoratedTabBar {
 
 
 #hm_flash_widget_indicator img {
-	
+    
 }
 
 
@@ -883,8 +886,8 @@ html>body .gwt-DecoratedTabBar {
    margin: 0px;
 }
 .hm_question_def li {
-	list-style: none;
-	line-height: 1.5em;
+    list-style: none;
+    line-height: 1.5em;
 }
 
 .hm_question_def li div:first-child img {
