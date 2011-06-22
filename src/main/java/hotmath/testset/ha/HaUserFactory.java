@@ -302,6 +302,7 @@ public class HaUserFactory {
 			student.getSettings().setTutoringAvailable(false);
 			student.getSettings().setShowWorkRequired(false);
 			student.setIsDemoUser(true);
+			student.setSectionNum(1);
 
 			cmDao.addStudent(conn, student);
 
