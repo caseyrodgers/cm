@@ -23,7 +23,7 @@
   </filter-mapping>
 
   <listener>
-    <listener-class>hotmath.cm.server.listener.ContextListener</listener-class>
+    <listener-class>hotmath.gwt.cm_rpc.server.rpc.ContextListener</listener-class>
   </listener>
  
   <servlet>
@@ -136,6 +136,13 @@
       /cm/services/cmService
     </url-pattern>
   </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>CmService</servlet-name>
+    <url-pattern>
+      /hm_mobile/services/cmService
+    </url-pattern>
+  </servlet-mapping>
+  
 
   <servlet>
     <servlet-name>GeneratePDFService</servlet-name>
