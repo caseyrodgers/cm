@@ -74,4 +74,9 @@ public class HomeViewImpl extends AbstractPagePanel implements HomeView,IPage {
     public void doNavigate(ClickEvent ce) {
         HmMobile.__clientFactory.getEventBus().fireEvent(new ShowCategoryListEvent());
     }
+    
+    @Override
+    public String getTitle() {
+        return "Hotmath Mobile!";
+    }
 }

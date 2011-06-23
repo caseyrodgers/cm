@@ -182,4 +182,11 @@ public class BookViewImpl extends AbstractPagePanel implements BookView, IPage {
         // TODO Auto-generated method stub
         return null;
     }
+    
+    @Override
+    public String getTitle() {
+        return "Book Problem Index";
+    }
 }
+
+

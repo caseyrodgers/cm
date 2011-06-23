@@ -4,6 +4,12 @@ import hotmath.gwt.cm_mobile_shared.client.page.IPage;
 
 import com.google.gwt.event.shared.GwtEvent;
 
+/** Fired when a new page should be loaded into the 
+ *  IPage GUI stack.
+ *  
+ * @author casey
+ *
+ */
 public class LoadNewPageEvent extends GwtEvent<LoadNewPageEventHandler> {
 	public static Type<LoadNewPageEventHandler> TYPE = new Type<LoadNewPageEventHandler>();
 

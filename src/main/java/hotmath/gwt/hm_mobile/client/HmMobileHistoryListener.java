@@ -20,6 +20,7 @@ import hotmath.gwt.hm_mobile.client.view.TutorView;
 
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.google.gwt.event.shared.UmbrellaException;
 import com.google.gwt.user.client.Window;
 
 public class HmMobileHistoryListener implements ValueChangeHandler<String> {
@@ -34,9 +35,7 @@ public class HmMobileHistoryListener implements ValueChangeHandler<String> {
                 final String type = token.getType();
                 
                 if(type == null || type.length() == 0 || type.equals("home")) {
-                    
                     HomeView view = HmMobile.__clientFactory.getHomeView();
-                    
                     HmMobile.__clientFactory.getEventBus().fireEvent(new LoadNewPageEvent((IPage)view));
                 }
                 else if(type.equals("CategoryListPlace")) {
@@ -82,7 +81,13 @@ public class HmMobileHistoryListener implements ValueChangeHandler<String> {
                 }
             }
             catch(Exception ex) {
-                Window.alert("Error processing history: [" + event.getValue() + "]" + ex.getMessage());
+                String causes=ex.getMessage();
+                if(ex instanceof UmbrellaException) {
+                    for(Throwable th: ((UmbrellaException)ex).getCauses()) {
+                        causes += "\n" + th.getMessage() + "\n";
+                    }
+                }
+                Window.alert("Error processing history: [" + causes + "]" + ", " + event.getValue());
             }
         }
 }

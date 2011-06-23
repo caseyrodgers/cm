@@ -2,12 +2,10 @@ package hotmath.gwt.hm_mobile.client.view;
 
 import hotmath.gwt.cm_mobile_shared.client.AbstractPagePanel;
 import hotmath.gwt.cm_mobile_shared.client.ControlAction;
+import hotmath.gwt.cm_mobile_shared.client.ListItem;
 import hotmath.gwt.cm_mobile_shared.client.TokenParser;
 import hotmath.gwt.cm_mobile_shared.client.page.IPage;
 import hotmath.gwt.cm_mobile_shared.client.util.GenericContainerTag;
-import hotmath.gwt.cm_mobile_shared.client.util.GenericTextTag;
-import hotmath.gwt.cm_mobile_shared.client.util.TouchClickEvent;
-import hotmath.gwt.cm_mobile_shared.client.util.TouchClickEvent.TouchClickHandler;
 import hotmath.gwt.hm_mobile.client.HmMobile;
 import hotmath.gwt.hm_mobile.client.event.ShowBookListEvent;
 import hotmath.gwt.hm_mobile.client.model.CategoryModel;
@@ -16,35 +14,45 @@ import hotmath.gwt.hm_mobile.client.place.BookListPlace;
 import java.util.List;
 
 import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.IsWidget;
 
 public class CategoryListViewImpl extends AbstractPagePanel implements CategoryListView,IPage {
+    
+    
 	Presenter presenter;
 	
 	public CategoryListViewImpl() {
+	    
+	    FlowPanel fp = new FlowPanel();
+	    fp.add(new HTML("<h1>Select Subject</h1>"));
 	    GenericContainerTag listItems = new GenericContainerTag("ul");
-        listItems.add(new MyListItem("Pre-Algebra"));
-	    listItems.add(new MyListItem("Algebra 1"));
-        listItems.add(new MyListItem("Geometry"));
-        listItems.add(new MyListItem("Algebra 2"));
-        listItems.add(new MyListItem("Calculus"));
-	    initWidget(listItems);
+
+	    ClickHandler cl = new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent arg0) {
+                MyButton mb = (MyButton) arg0.getSource();
+                String category = mb.getCategory();
+                HmMobile.__clientFactory.getEventBus().fireEvent(new ShowBookListEvent(new CategoryModel(category)));
+                
+            }
+        };
+	    
+	    listItems.add(new MyListItem(new MyButton("Pre-Algebra",cl)));
+	    listItems.add(new MyListItem(new MyButton("Algebra 1",cl)));
+        listItems.add(new MyListItem(new MyButton("Geometry",cl)));
+        listItems.add(new MyListItem(new MyButton("Algebra 2",cl)));
+        listItems.add(new MyListItem(new MyButton("Calculus",cl)));
+
+        listItems.addStyleName("CategoryListViewImpl");
+
+        fp.add(listItems);
+	    initWidget(fp);
 	}
 
-	class MyListItem extends GenericTextTag<String> {
-	    public MyListItem(String text) {
-	        super("li");
-	        setText(text);
-	        
-	        addHandler(new TouchClickHandler<String>() {
-	            @Override
-	            public void touchClick(TouchClickEvent<String> event) {
-	                CategoryModel category = new CategoryModel(event.getTarget().getText());
-	                HmMobile.__clientFactory.getEventBus().fireEvent(new ShowBookListEvent(category));
-	            }
-            });
-	    }
-	}
 	
 	@Override
     public void setCategoryList(List<CategoryModel> categories) {
@@ -90,5 +98,36 @@ public class CategoryListViewImpl extends AbstractPagePanel implements CategoryL
     @Override
     public TokenParser getBackButtonLocation() {
         return new TokenParser();
+    }
+    
+    
+    @Override
+    public String getTitle() {
+        return "Available Subjects";
+    }
+}
+
+
+class MyButton extends Button {
+    String category;
+    public MyButton(String name,ClickHandler cl) {
+        super();
+        this.category = name;
+        setStyleName("sexybutton");
+        addStyleName("sexybutton_xxl-aqua");
+        getElement().setInnerHTML("<span><span>" + name + "</span></span>");
+        
+        addClickHandler(cl);
+    }
+    
+    public String getCategory() {
+        return category;
+    }
+}
+
+class MyListItem extends ListItem {
+    public MyListItem(MyButton myButton) {
+        super();
+        add(myButton);
     }
 }

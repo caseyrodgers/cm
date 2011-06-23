@@ -84,4 +84,9 @@ public class TutorViewImpl extends AbstractPagePanel implements TutorView, IPage
     public TokenParser getBackButtonLocation() {
         return null;
     }
+    
+    @Override
+    public String getTitle() {
+        return "Tutor View";
+    }
 }

@@ -64,7 +64,10 @@ public class HmMobile implements EntryPoint, OrientationChangedHandler {
     Place defaultPlace = new HomePlace("");
     ControlPanel _controlPanel;
 
+    public static HmMobile __instance;
+    
     public void onModuleLoad() {
+        __instance = this;
         _rootPanel = RootPanel.get("main-content");
         try {
             
@@ -91,10 +94,10 @@ public class HmMobile implements EntryPoint, OrientationChangedHandler {
     
             History.addValueChangeHandler(new HmMobileHistoryListener());
             
-            History.fireCurrentHistoryState();
+            initializeExternalJs();
             
             CatchupMathMobileShared.__instance.hideBusyPanel();
-            initializeExternalJs();
+            History.fireCurrentHistoryState();
         }
         catch(Exception e) {
             e.printStackTrace();
@@ -163,13 +166,15 @@ public class HmMobile implements EntryPoint, OrientationChangedHandler {
         eb.addHandler(ShowHomeViewEvent.TYPE, new ShowHomeViewEventHandler() {
             @Override
             public void showHome() {
-                History.newItem("ShowHomePlace");
+                History.newItem("HomeViewPlace");
             }
         });
 
         
         
-        
+        /** Provide central place to insert into IPage system 
+         * 
+         */
         eb.addHandler(LoadNewPageEvent.TYPE, new LoadNewPageEventHandler() {
             @Override
             public void loadPage(IPage page) {

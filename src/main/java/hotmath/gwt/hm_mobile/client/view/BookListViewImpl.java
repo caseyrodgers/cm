@@ -121,4 +121,9 @@ public class BookListViewImpl extends AbstractPagePanel implements BookListView,
     public TokenParser getBackButtonLocation() {
         return null;
     }
+    
+    @Override
+    public String getTitle() {
+        return "Available Books";
+    }
 }
