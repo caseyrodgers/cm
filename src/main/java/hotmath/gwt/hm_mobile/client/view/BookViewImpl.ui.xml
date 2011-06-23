@@ -1,0 +1,47 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui">
+
+	<ui:style>
+	</ui:style>
+
+	<g:HTMLPanel id='BookViewImpl'>
+		<div class='book-item'>
+			<img ui:field="bookImage" />
+			<div>
+				<div class='field'>
+					<span ui:field="title" />
+				</div>
+				<div class='field'>
+					<span ui:field="author" />
+				</div>
+				<div class='field'>
+					<span>Pages: </span>
+					<span ui:field="minPage" />
+					-
+					<span ui:field="maxPage" />
+				</div>
+			</div>
+		</div>
+
+		<div>
+			<div style='float: left'>
+				Page:
+				<g:TextBox ui:field='pageNumber' />
+			</div>
+			<g:Button styleName='sexybutton' ui:field="getProblems">
+				<span>
+					<span>Go</span>
+				</span>
+			</g:Button>
+		</div>
+		<br style='clear: both;' />
+		<g:HTMLPanel ui:field="problemNumberDiv">
+			<h2>
+				Problems on page:
+				<span ui:field="pageProbNums" />
+			</h2>
+			<g:HTMLPanel ui:field="problemNumberList"></g:HTMLPanel>
+		</g:HTMLPanel>
+	</g:HTMLPanel>
+</ui:UiBinder> 
