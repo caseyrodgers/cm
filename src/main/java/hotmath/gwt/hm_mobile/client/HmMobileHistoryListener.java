@@ -18,6 +18,7 @@ import hotmath.gwt.hm_mobile.client.view.BookListView;
 import hotmath.gwt.hm_mobile.client.view.BookSearchView;
 import hotmath.gwt.hm_mobile.client.view.BookView;
 import hotmath.gwt.hm_mobile.client.view.CategoryListView;
+import hotmath.gwt.hm_mobile.client.view.HelpView;
 import hotmath.gwt.hm_mobile.client.view.HomeView;
 import hotmath.gwt.hm_mobile.client.view.TutorView;
 
@@ -82,6 +83,12 @@ public class HmMobileHistoryListener implements ValueChangeHandler<String> {
                 	BookSearchView view = HmMobile.__clientFactory.getBookSearchView();
                 	BookSearchActivity act = new BookSearchActivity(new BookSearchPlace(""), HmMobile.__clientFactory);
                 	view.setPresenter(act);
+                	
+                	HmMobile.__clientFactory.getEventBus().fireEvent(new LoadNewPageEvent((IPage)view));
+                }
+                else if(type.equals("HelpPlace")) {
+                	HelpView view = HmMobile.__clientFactory.getHelpView();
+                	
                 	
                 	HmMobile.__clientFactory.getEventBus().fireEvent(new LoadNewPageEvent((IPage)view));
                 }

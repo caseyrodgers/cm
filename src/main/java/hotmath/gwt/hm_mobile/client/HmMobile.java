@@ -23,6 +23,8 @@ import hotmath.gwt.hm_mobile.client.event.ShowBookViewEvent;
 import hotmath.gwt.hm_mobile.client.event.ShowBookViewEventHandler;
 import hotmath.gwt.hm_mobile.client.event.ShowCategoryListEvent;
 import hotmath.gwt.hm_mobile.client.event.ShowCategoryListEventHandler;
+import hotmath.gwt.hm_mobile.client.event.ShowHelpEvent;
+import hotmath.gwt.hm_mobile.client.event.ShowHelpEventHandler;
 import hotmath.gwt.hm_mobile.client.event.ShowHomeViewEvent;
 import hotmath.gwt.hm_mobile.client.event.ShowHomeViewEventHandler;
 import hotmath.gwt.hm_mobile.client.event.ShowTutorViewEvent;
@@ -200,9 +202,12 @@ public class HmMobile implements EntryPoint, OrientationChangedHandler {
 			}
         });
         
-        
-        
-        
+        eb.addHandler(ShowHelpEvent.TYPE,new ShowHelpEventHandler() {
+			@Override
+			public void showHelp() {
+				History.newItem("HelpPlace");
+			}
+		});
         
         
         eb.addHandler(BackDiscoveryEvent.TYPE,new BackDiscoveryEventHandler() {
@@ -294,7 +299,7 @@ class MyControlPanel extends ControlPanel {
         __defaultList.add(new ControlAction("Help") {
             @Override
             public void doAction() {
-                Controller.navigateToTopicList();
+                HmMobile.__clientFactory.getEventBus().fireEvent(new ShowHelpEvent());
             }
         });        
     }

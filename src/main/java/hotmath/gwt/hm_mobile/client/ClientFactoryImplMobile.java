@@ -8,6 +8,8 @@ import hotmath.gwt.hm_mobile.client.view.BookView;
 import hotmath.gwt.hm_mobile.client.view.BookViewImpl;
 import hotmath.gwt.hm_mobile.client.view.CategoryListView;
 import hotmath.gwt.hm_mobile.client.view.CategoryListViewImpl;
+import hotmath.gwt.hm_mobile.client.view.HelpView;
+import hotmath.gwt.hm_mobile.client.view.HelpViewImpl;
 import hotmath.gwt.hm_mobile.client.view.HomeView;
 import hotmath.gwt.hm_mobile.client.view.HomeViewImpl;
 import hotmath.gwt.hm_mobile.client.view.MainMobileView;
@@ -30,6 +32,7 @@ public class ClientFactoryImplMobile implements ClientFactory {
     BookView bookView = new BookViewImpl();
     TutorView tutorView = new TutorViewImpl();
     BookSearchView searchView = new BookSearchViewImpl();
+    HelpView helpView = new HelpViewImpl();
     
     @Override
     public EventBus getEventBus() {
@@ -77,5 +80,9 @@ public class ClientFactoryImplMobile implements ClientFactory {
     public BookSearchView getBookSearchView() {
         return searchView;
     }
+    
+    public HelpView getHelpView() {
+		return helpView;
+	}
 
 }

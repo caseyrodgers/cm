@@ -31,7 +31,8 @@ http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
 	<bean id="abstractJdbcDao" abstract="true" class="org.springframework.jdbc.core.support.SimpleJdbcDaoSupport">
         <property name="dataSource" ref="dataSource"/>
     </bean>
-    
+
+    <!-- DAOs used by CM -->    
     <bean id="testDao" class="hotmath.conn.TestDao" parent="abstractJdbcDao"/>
     <bean id="hotmath.cm.server.model.CmUserProgramDao" class="hotmath.cm.server.model.CmUserProgramDao" parent="abstractJdbcDao"/>
     <bean id="cmStudentDao" class="hotmath.gwt.cm_admin.server.model.CmStudentDao" parent="abstractJdbcDao"/>
@@ -46,7 +47,10 @@ http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
     <bean id="hotmath.testset.ha.HaUserExtendedDao" class="hotmath.testset.ha.HaUserExtendedDao" parent="abstractJdbcDao"/>
     <bean id="hotmath.cm.server.model.CmReportCardDao" class="hotmath.cm.server.model.CmReportCardDao" parent="abstractJdbcDao"/>
     <bean id="hotmath.cm.dao.HaLoginInfoDao" class="hotmath.cm.dao.HaLoginInfoDao" parent="abstractJdbcDao"/>
-        <bean id="hotmath.gwt.hm_mobile.server.dao.BooksDao" class="hotmath.gwt.hm_mobile.server.dao.BooksDao" parent="abstractJdbcDao"/>
+
+
+    <!-- DAOs used by HM Mobile -->    
+    <bean id="hotmath.gwt.hm_mobile.server.dao.BooksDao" class="hotmath.gwt.hm_mobile.server.dao.BooksDao" parent="abstractJdbcDao"/>
     
 
 </beans>

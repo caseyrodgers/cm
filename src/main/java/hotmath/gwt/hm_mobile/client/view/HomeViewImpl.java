@@ -58,7 +58,7 @@ public class HomeViewImpl extends AbstractPagePanel implements HomeView,IPage {
 
     @Override
     public String getBackButtonText() {
-        return "You are home!";
+        return null;
     }
 
     @Override
