@@ -34,6 +34,7 @@ import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.MessageBoxEvent;
 import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.MessageBox;
+import com.extjs.gxt.ui.client.widget.Text;
 import com.extjs.gxt.ui.client.widget.button.IconButton;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.RunAsyncCallback;
@@ -73,25 +74,36 @@ public class PrescriptionContext implements CmContext {
 
     IconButton _previousButton;
     IconButton _nextButton;
+    Text       _buttonText;
 
     public List<Component> getTools() {
 
         List<Component> list = new ArrayList<Component>();
-        _previousButton = new IconButtonWithDropDownTooltip("cm-main-panel-prev-icon");
+        
+        _buttonText = new Text();
+        _buttonText.setText(" ");
+        _buttonText.addStyleName("cm-main-panel-prev-next-text");
+        _buttonText.setEnabled(true);
+        
+        _previousButton = new IconButtonWithTooltip("cm-main-panel-prev-icon", Direction.PREVIOUS);
         _previousButton.addListener(Events.Select, new Listener<BaseEvent>() {
             public void handleEvent(BaseEvent be) {
                 ContextController.getInstance().doPrevious();
             }
         });
-
         list.add(_previousButton);
-        _nextButton = new IconButtonWithDropDownTooltip("cm-main-panel-next-icon");
+
+        _nextButton = new IconButtonWithTooltip("cm-main-panel-next-icon", Direction.NEXT);
         _nextButton.addListener(Events.Select, new Listener<BaseEvent>() {
             public void handleEvent(BaseEvent be) {
                 ContextController.getInstance().doNext();
             }
         });
         list.add(_nextButton);
+        
+        list.add(_buttonText);
+        _buttonText.enable();
+
         return list;
     }
 
@@ -485,6 +497,46 @@ public class PrescriptionContext implements CmContext {
                     EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_CONTEXT_TOOLTIP_SHOW, tip));
                 }
             });
+            addListener(Events.OnMouseOut, new Listener<BaseEvent>() {
+                @Override
+                public void handleEvent(BaseEvent be) {
+                    EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_CONTEXT_TOOLTIP_HIDE, ""));
+                }
+            });
         }
     }
+
+    /**
+     * IconButton that has text tooltip
+     * 
+     * @author bob
+     * 
+     */
+    class IconButtonWithTooltip extends IconButton {
+    	
+    	final Direction direction;
+    	
+        public IconButtonWithTooltip(String style, Direction dir) {
+            super(style);
+
+            this.direction = dir;
+            
+            addListener(Events.OnMouseOver, new Listener<BaseEvent>() {
+                @Override
+                public void handleEvent(BaseEvent be) {
+
+                	String tip = getTooltipText(direction, prescriptionData);
+
+                    _buttonText.setText(tip);
+                }
+            });
+            addListener(Events.OnMouseOut, new Listener<BaseEvent>() {
+                @Override
+                public void handleEvent(BaseEvent be) {
+                	_buttonText.setText("");
+                }
+            });
+        }
+    }
+
 }
