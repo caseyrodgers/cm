@@ -1,0 +1,34 @@
+<!--  Tutor GUTS go here -->
+<style>
+    #tutoroutput .step {
+       color: black;
+    }
+</style>
+<div id='tutor_embedded' style='display: block'>
+  </div>
+    <!-- HOTMATH BODY START -->
+    <div id="tutoroutput" style='display: block;position: relative;'>
+        <div id='tutor_raw_steps_wrapper'>
+            $solution_html
+        </div>
+        
+        <div id='steps_tail' style='position: relative'>
+	        <a class='sexybutton' id='steps_prev' href="#"
+	            onclick="TutorManager.showPreviousStep();return false;" accesskey="p">
+	            <span><span>
+	            Previous
+	            </span></span>
+	        </a>
+	        <a class='sexybutton' id='steps_next' href="#" onclick="TutorManager.showNextStep();return false;" accesskey="s">
+	            <span><span>Next</span></span>
+	        </a>
+	        <div class='cm-tutor-button-bar-bottom' style='display: none;float: right;'>
+	           <a class='button debug-off' href='javascript:void(0)' onclick='expandAllSteps();return false;'>Expand</a>
+	       </div>
+	       <div id='tutor_message' style='position: static;left: 100px;color: red;'float: right'/>
+        <img id='scrollTo-button' src='/assets/images/spacer.gif'>
+    </div>
+    <!-- HOTMATH BODY END -->
+</div>
+<!--  END TUTOR GUTS  -->
+<div class='debug-hide'>$pid</div>
