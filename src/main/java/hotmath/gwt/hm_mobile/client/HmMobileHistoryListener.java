@@ -1,6 +1,6 @@
 package hotmath.gwt.hm_mobile.client;
 
-import hotmath.gwt.cm_mobile_shared.client.TokenParser;
+import hotmath.gwt.cm_mobile_shared.client.TokenParserGeneric;
 import hotmath.gwt.cm_mobile_shared.client.page.IPage;
 import hotmath.gwt.hm_mobile.client.activity.BookListActivity;
 import hotmath.gwt.hm_mobile.client.activity.BookSearchActivity;
@@ -34,9 +34,9 @@ public class HmMobileHistoryListener implements ValueChangeHandler<String> {
             try {
                 String historyToken = event.getValue();
     
-                final TokenParser token = new TokenParser(historyToken);
+                final TokenParserGeneric token = new TokenParserGeneric(historyToken);
     
-                final String type = token.getType();
+                final String type = token.getToken(0);
                 
                 if(type == null || type.length() == 0 || type.equals("home")) {
                     HomeView view = HmMobile.__clientFactory.getHomeView();
@@ -49,15 +49,15 @@ public class HmMobileHistoryListener implements ValueChangeHandler<String> {
                     HmMobile.__clientFactory.getEventBus().fireEvent(new LoadNewPageEvent((IPage)view));
                 }
                 else if(type.equals("BookListPlace")) {
-                    BookListActivity activity = new BookListActivity(new BookListPlace(token.getLesson()),HmMobile.__clientFactory);
+                    BookListActivity activity = new BookListActivity(new BookListPlace(token.getToken(1)),HmMobile.__clientFactory);
                     BookListView view = HmMobile.__clientFactory.getBookListView();
                     view.setPresenter(activity);
-                    activity.doLoadBookForSubject(token.getLesson());
+                    activity.doLoadBookForSubject(token.getToken(1));
                     
                     HmMobile.__clientFactory.getEventBus().fireEvent(new LoadNewPageEvent((IPage)view));
                 }
                 else if(type.equals("BookViewPlace")) {
-                    String textCode = token.getLesson();
+                    String textCode = token.getToken(1);
                     BookViewActivity act = new BookViewActivity(new BookViewPlace(textCode), HmMobile.__clientFactory);
     
                     BookView view = HmMobile.__clientFactory.getBookView();
@@ -67,7 +67,7 @@ public class HmMobileHistoryListener implements ValueChangeHandler<String> {
                     HmMobile.__clientFactory.getEventBus().fireEvent(new LoadNewPageEvent((IPage)view));
                 }
                 else if(type.equals("TutorViewPlace")) {
-                    String pid = token.getLesson();
+                    String pid = token.getToken(1);
                     TutorViewActivity act = new TutorViewActivity(new TutorViewPlace(pid),HmMobile.__clientFactory);
                     TutorView view = HmMobile.__clientFactory.getTutorView();
                     view.setPresenter(act);
