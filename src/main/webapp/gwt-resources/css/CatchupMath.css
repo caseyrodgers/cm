@@ -305,7 +305,7 @@ h1, h2, h3, h4 {
         top: 50%;
 }
 .cm-main-panel-button-panel {
-        height: 50px;
+        height: 65px;
         position: relative;
 }
 .cm-main-panel-prev-icon {
@@ -333,6 +333,17 @@ h1, h2, h3, h4 {
 .cm-main-panel-next-icon-over {
         background: url(/gwt-resources/images/next_topic-over.png) no-repeat
                 center left !important;
+}
+.cm-main-panel-prev-next-text {
+    position: relative;
+    left: 0;
+    top: 50;
+    color: yellow;
+    padding-left: 5px;
+    padding-top: 5px;
+    width: 219px;
+    height: 20px;
+    background-color: #43464B
 }
 .cm-main-panel-next-quiz {
         background: url(/gwt-resources/images/check_quiz.png) no-repeat center
