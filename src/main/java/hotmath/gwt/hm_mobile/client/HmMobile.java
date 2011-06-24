@@ -177,7 +177,7 @@ public class HmMobile implements EntryPoint, OrientationChangedHandler {
         eb.addHandler(ShowCategoryListEvent.TYPE, new ShowCategoryListEventHandler() {
             @Override
             public void showCategoryList() {
-                History.newItem("CategoryListPlace + uniq()");
+                History.newItem("CategoryListPlace"  + uniq());
             }
         });
 

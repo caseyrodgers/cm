@@ -7,6 +7,6 @@
 	<g:HTMLPanel>
 		<h1>Hotmath Mobile Help</h1>
 		<p>Find your math textbook and then explore the Hotmath Solutions.</p>
-		<p>Get additional information at <a href='http://catchupmath.com/'>Catchup Math</a></p>]
+		<p>Get additional information at <a href='http://catchupmath.com/'>Catchup Math</a></p>
 	</g:HTMLPanel>
 </ui:UiBinder> 
