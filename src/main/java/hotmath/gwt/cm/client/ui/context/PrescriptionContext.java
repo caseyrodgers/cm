@@ -497,12 +497,6 @@ public class PrescriptionContext implements CmContext {
                     EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_CONTEXT_TOOLTIP_SHOW, tip));
                 }
             });
-            addListener(Events.OnMouseOut, new Listener<BaseEvent>() {
-                @Override
-                public void handleEvent(BaseEvent be) {
-                    EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_CONTEXT_TOOLTIP_HIDE, ""));
-                }
-            });
         }
     }
 
